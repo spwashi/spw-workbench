@@ -1,0 +1,63 @@
+# Domain Registry
+#
+# Modules and initialization order.
+# @see ../src/core/domains/
+
+^["domains"]{
+  core.       # 0: infrastructure
+  design.     # 1: visual system
+  ui.         # 2: components
+  lang.       # 3: language engine
+  viz.        # 4: visualizations
+  features.   # 5: interactive behaviors
+  app.        # 6: application shell
+  runtime.    # 7: execution engine
+  debug.      # 8: development tools
+  cli.        # 9: command-line interface
+}
+
+^["core"]{
+  #path: "../src/core"
+
+  domains.      # WHAT exists
+  conventions.  # HOW named
+  timing.       # WHEN happens (top-down)
+  lifecycle.    # Component states (bottom-up)
+  state.
+  events.
+  accessibility.
+  quality.      # 4/5 BBBH
+  tally.        # Countable structures
+  operators.
+  layers.       # Phasor model
+}
+
+^["lang"]{
+  #path: "../src/lang"
+  #wraps: "../src/lib/spw"
+
+  hooks.        # Timing integration
+  lexer.
+  parser.
+  grammar.
+  types.
+}
+
+^["viz"]{
+  #path: "../src/viz"
+
+  ast.
+  tokens.
+  flow.
+  steps.
+  hooks.
+}
+
+^["runtime"]{
+  #path: "../src/runtime"
+
+  interpreter.
+  state.        # Valence (5/5 BBBH)
+  document.
+  repl.
+}

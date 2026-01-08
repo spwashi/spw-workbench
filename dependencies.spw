@@ -1,0 +1,37 @@
+# Dependencies
+#
+# Module relationships.
+
+^["dependencies"]{
+  core > []
+  design > [core]
+  ui > [core, design]
+  lang > [core]
+  viz > [core, lang]
+  runtime > [core, lang]
+  features > [core, ui, viz]
+  debug > [core, runtime]
+  cli > [core, lang, runtime]
+  app > [core, design, ui, lang, viz, features]
+}
+
+^["portability"]{
+  ../src/lib/spw^portable.
+  ../src/runtime/interpreter^portable.
+
+  ../src/viz^bound.
+  ../src/design^bound.
+  ../src/app^bound.
+}
+
+^["direction"]{
+  timing!       # Top-down
+  domains!
+
+  lifecycle?    # Bottom-up
+  events?
+}
+
+^["wrappers"]{
+  lang ~ lib/spw    # lang wraps lib/spw with hooks
+}
