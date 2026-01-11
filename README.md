@@ -20,3 +20,5 @@ docs/
 - **Understanding the architecture?** See `design/goals.md`
 - **Need a top-down map?** Read `architecture-map.md`
 - **Curious about origins?** Read `design/history.md`
+- **Need the full map?** Open `index.spw`
+- **Working with feature flags?** See `feature-registry.spw`

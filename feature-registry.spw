@@ -1,0 +1,59 @@
+# Feature Registry
+#
+# Naming, ownership, and versioning for feature flags.
+
+^["naming"]{
+  # Canonical shape
+  spw.{layer}.{feature}[.{subfeature}]
+
+  # Reserved layer tags
+  layer: core | infra | lang | runtime | viz | ui | design | features | app | platform | dialects
+
+  # Core is for language primitives (operators/modifiers/containers).
+  core: spw.core.operators | spw.core.modifiers | spw.core.containers
+}
+
+^["versioning"]{
+  # Optional suffixes for evolution and stability
+  spw.{layer}.{feature}@v{major}.{minor}
+  spw.{layer}.{feature}@v{major}.{minor}:{status}
+
+  # Status tags
+  status: stable | preview | experimental | deprecated
+
+  # Examples
+  example: spw.core.operators@v0.1
+  example: spw.runtime.goals@v0.2:preview
+}
+
+^["ownership"]{
+  # Each feature should live in the layer that owns its behavior.
+  core: domains, conventions, layers, operators, quality, tally
+  infra: timing, lifecycle, state, accessibility
+  lang: grammar, lexer, parser, dialects
+  runtime: interpreter, registers, goals
+  viz: tokens, AST, flow, steps
+  ui: component registry, stacking
+  design: themes, token bank
+  features: keyboard, onboarding, inspector
+  app: integrations and orchestration
+  platform: bootstrapping and environment wiring
+}
+
+^["sources"]{
+  # Current feature sets
+  ../src/runtime/session/state.ts.
+  ../src/app/components/spw-runtime-hud.ts.
+
+  # Related docs
+  ./hud-runtime.spw.
+  ./patterns.spw.
+}
+
+^["rules"]{
+  # Rules of thumb
+  1. Only one layer owns a feature ID.
+  2. Version bump on behavior change, not just implementation change.
+  3. Status tag required for anything not stable.
+  4. Deprecated features must list a replacement.
+}

@@ -3,18 +3,19 @@
 # Module relationships.
 
 ^["dependencies"]{
-  infra > []
+  core > []
+  infra > [core]
   lib/spw > []
-  design > [infra]
-  ui > [infra, design]
-  lang > [infra, lib/spw]
-  viz > [infra, lang]
-  runtime > [infra, lang]
-  features > [infra, ui, viz]
+  design > [core]
+  ui > [core, design]
+  lang > [core, infra, lib/spw]
+  viz > [core, infra, lang]
+  runtime > [core, infra, lang]
+  features > [core, infra, ui, viz]
   debug > [infra, runtime]
   cli > [infra, lang, runtime]
-  app > [infra, design, ui, lang, viz, features, runtime]
-  platform > [app, infra, design, ui, features]
+  app > [core, infra, design, ui, lang, viz, features, runtime]
+  platform > [app, core, infra, design, ui, features]
 }
 
 ^["portability"]{

@@ -13,20 +13,36 @@
   ../src/lang/.                # Hooks, events, timing
 }
 
+^["stack"]{
+  # Top-down workbench layers (outer → inner)
+  ../src/platform/.            # Browser entrypoint + wiring
+  ../src/app/.                 # Workbench glue + adapters
+  ../src/features/.            # User behaviors
+  ../src/ui/.                  # Portable UI
+  ../src/design/.              # Themes, tokens
+  ../src/viz/.                 # Visualizations
+  ../src/runtime/.             # Execution engine
+  ../src/lang/.                # Language surface
+  ../src/infra/.               # Timing, state, lifecycle, a11y
+  ../src/core/.                # Domains, conventions, layers, operators
+}
+
 ^["spec-to-impl"]{
-  ../lib/spw-v0.1.0-alpha/infra/SPEC.md > ../src/lib/spw/grammar/
+  ../lib/spw-v0.1.0-alpha/core/SPEC.md > ../src/lib/spw/grammar/
   ../lib/spw-v0.1.0-alpha/runtime/REGISTERS.md > ../src/runtime/interpreter/
-  ../lib/spw-v0.1.0-alpha/domains/PROFILES.md > ../src/infra/domains/
+  ../lib/spw-v0.1.0-alpha/domains/PROFILES.md > ../src/core/domains/
 }
 
 ^["portable"]{
   # Can be extracted as npm package
   ../src/lib/spw/.             # Zero workbench dependencies
-  ../src/runtime/interpreter/. # Minimal infra dependency
+  ../src/core/.                # Spw primitives
+  ../src/runtime/interpreter/. # Minimal infra/core dependency
 }
 
 ^["bound"]{
   # Workbench-specific
+  ../src/platform/.
   ../src/viz/.
   ../src/design/.
   ../src/features/.

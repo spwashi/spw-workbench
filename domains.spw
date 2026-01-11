@@ -1,35 +1,41 @@
 # Domain Registry
 #
 # Modules and initialization order.
-# @see ../src/infra/domains/
+# @see ../src/core/domains/
 
 ^["domains"]{
-  core.       # 0: infrastructure
-  design.     # 1: visual system
-  ui.         # 2: components
-  lang.       # 3: language engine
-  viz.        # 4: visualizations
-  features.   # 5: interactive behaviors
-  app.        # 6: application shell
-  runtime.    # 7: execution engine
-  debug.      # 8: development tools
-  cli.        # 9: command-line interface
+  core.       # 0: primitives
+  infra.      # 1: infrastructure
+  design.     # 2: visual system
+  ui.         # 3: components
+  lang.       # 4: language engine
+  viz.        # 5: visualizations
+  features.   # 6: interactive behaviors
+  app.        # 7: application shell
+  runtime.    # 8: execution engine
+  debug.      # 9: development tools
+  cli.        # 10: command-line interface
+  platform.   # 11: entrypoint wiring
 }
 
 ^["core"]{
-  #path: "../src/infra"
+  #path: "../src/core"
 
   domains.      # WHAT exists
   conventions.  # HOW named
-  timing.       # WHEN happens (top-down)
-  lifecycle.    # Component states (bottom-up)
-  state.
-  events.
-  accessibility.
+  layers.       # Phasor model
+  operators.    # Sigil semantics
   quality.      # 4/5 BBBH
   tally.        # Countable structures
-  operators.
-  layers.       # Phasor model
+}
+
+^["infra"]{
+  #path: "../src/infra"
+
+  timing.       # WHEN happens (top-down)
+  lifecycle.    # Component states (bottom-up)
+  state.        # Global application state
+  accessibility.
 }
 
 ^["lang"]{

@@ -30,36 +30,40 @@ Start from the outer shell and move inward:
    The language surface (`lang`) and its parser implementation (`lib/spw`).
 
 8) **Infra** (`src/infra/`)  
-   Cross-cutting infrastructure: events, timing, lifecycle, state, a11y.
+   Cross-cutting infrastructure: timing, lifecycle, state, a11y.
+
+9) **Core** (`src/core/`)  
+   Spw primitives: domains, conventions, layers, operators, quality, tally.
 
 ## Import Rules (Clarity > Convenience)
 
 - `lang` is the *public* API for the parser/types; import `lib/spw` only inside `lang`.
+- `core` is the semantic base; keep it minimal and portable.
 - `infra` should be pure infrastructure (no UI or runtime dependencies).
 - `app` and `platform` are the only layers allowed to wire cross-layer flows.
-- Prefer barrel exports for public entrypoints; avoid deep imports across layers.
+- Prefer layer index exports (`src/{layer}/index.ts`) for public entrypoints; avoid deep imports across layers.
 
 ## Spw Design Taste (What to Notice)
 
 - **Operators as meaning**: the sigils are semantic (not just syntax). See
-  `src/infra/operators.ts` and `docs/patterns.spw`.
+  `src/core/operators.ts` and `docs/patterns.spw`.
 - **Three-layer phasor**: syntactic / semantic / pragmatic. See
-  `docs/phasor.spw` and `src/infra/layers/`.
+  `docs/phasor.spw` and `src/core/layers/`.
 - **Qualities (BBBH)**: boon/bane/bone/honk expresses design pressure.
-  See `docs/quality.spw` and `src/infra/quality.ts`.
+  See `docs/quality.spw` and `src/core/quality.ts`.
 - **Domain projection**: domain-specific meaning is a first-class axis.
-  See `docs/domains.spw` and `src/infra/domains/`.
+  See `docs/domains.spw` and `src/core/domains/`.
 
 ## Navigation Trails (Pick One)
 
 - *Language mechanics*: `src/lang/` → `src/lib/spw/` → `src/runtime/`
-- *Visualization mapping*: `src/viz/` → `src/lang/` → `src/infra/events/`
+- *Visualization mapping*: `src/viz/` → `src/lang/` → `src/infra/timing/`
 - *UI composition*: `src/ui/` → `src/design/` → `src/app/components/`
 - *Interaction behavior*: `src/features/` → `src/infra/timing/`
 
 ## Research Notes
 
 If you are porting Spw to another language/runtime, mirror the same layering:
-`infra` (timing/events/state) → `lang` (surface) → `runtime` (execution) → `viz`
+`core` (primitives) → `infra` (timing/state) → `lang` (surface) → `runtime` → `viz`
 and `ui` as optional adapters. This keeps the language core portable and the
 workbench bindings replaceable.
