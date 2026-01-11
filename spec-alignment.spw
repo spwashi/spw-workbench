@@ -11,22 +11,10 @@
 
 ^["New Forms (not in current docs)"]{
   #critical{
-    ?[capsules]{
-      #syntax: "<c[key:val ...]>{ ... }"
-      #purpose: "local configuration layer"
-      #location: "core/CONTAINERS.md or new core/CAPSULES.md"
-    }
-
-    ?[n-range]{
-      #syntax: "(( ... ))"
-      #purpose: "emphasis / hedge / epistemic texture"
-      #location: "core/CONTAINERS.md addition"
-    }
-
-    ?[streaming]{
-      #syntax: "<<{source} ... >> @sink"
-      #purpose: "streaming boundaries"
-      #location: "core/CONTAINERS.md or new core/STREAMS.md"
+    =[@src/lib/spw/grammar/]{
+      #implemented: "capsules <tag[params]{body}>, n-range ((...)), streaming <<...>>@sink"
+      #docs_missing: "spec write-up still needed"
+      #location: "new core/CAPSULES.md, core/STREAMS.md additions"
     }
   }
 
@@ -60,11 +48,9 @@
   }
 
   #integrity{
-    ?[canonicalization]{
-      #rules: "line endings, whitespace, ASCII, header order, rhythm"
-      #hashing: "sha256 primary, optional Merkle"
-      #location: "new core/INTEGRITY.md"
-      #code_impact: "src/lib/spw/canonical/"
+    =[@src/lib/spw/canonical/]{
+      #implemented: "canonicalize() + hashString() normalization layer"
+      #docs_missing: "write core/INTEGRITY.md with rules + hashing options"
     }
   }
 
@@ -125,14 +111,13 @@
     # New: / (path), : (pairing), -> (mapping)
   }
 
-  #action: "Reconcile operator sets in SPEC.md; clarify ^seed vs ^ operator"
+  #action: "Reconcile operator sets in SPEC.md; clarify ^seed vs ^ operator; document added connectors (/ : -> & | ..) and container forms"
 }
 
 ^["Code Alignment Needed"]{
   #new_directories{
     @src/runtime/goals/       # goal-based execution
     @src/runtime/pipeline/    # distill/extract stages
-    @src/lib/spw/canonical/   # canonicalization
     @src/core/strata/         # char->word->token->node->block->file->upstream
   }
 
