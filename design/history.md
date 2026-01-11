@@ -45,4 +45,4 @@ Wonder About Pi(e).
 
 ---
 
-*See `/src/core/tally.ts` for the generic implementation.*
+*See `/src/infra/tally.ts` for the generic implementation.*

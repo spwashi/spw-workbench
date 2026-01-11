@@ -18,4 +18,5 @@ docs/
 
 - **New to Spw?** Start with `lang/few-shot.spw.md`
 - **Understanding the architecture?** See `design/goals.md`
+- **Need a top-down map?** Read `architecture-map.md`
 - **Curious about origins?** Read `design/history.md`
