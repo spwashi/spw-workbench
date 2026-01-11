@@ -2,49 +2,54 @@
 #
 # Codebase layers and their relationships.
 
+^["roots"]{
+  @src:  ~"../src"
+  @spec: ~"../lib/spw-v0.1.0-alpha"
+}
+
 ^["layers"]{
   # Specification (what Spw should be)
-  ../lib/spw-v0.1.0-alpha/.    # Markdown docs, grammar rules
+  @spec/                       # Markdown docs, grammar rules
 
   # Implementation (how it works)
-  ../src/lib/spw/.             # Lexer, parser, types
+  @src/lib/spw/                # Lexer, parser, types
 
   # Integration (workbench bindings)
-  ../src/lang/.                # Hooks, events, timing
+  @src/lang/                   # Hooks, events, timing
 }
 
 ^["stack"]{
   # Top-down workbench layers (outer → inner)
-  ../src/platform/.            # Browser entrypoint + wiring
-  ../src/app/.                 # Workbench glue + adapters
-  ../src/features/.            # User behaviors
-  ../src/ui/.                  # Portable UI
-  ../src/design/.              # Themes, tokens
-  ../src/viz/.                 # Visualizations
-  ../src/runtime/.             # Execution engine
-  ../src/lang/.                # Language surface
-  ../src/infra/.               # Timing, state, lifecycle, a11y
-  ../src/core/.                # Domains, conventions, layers, operators
+  @src/platform/               # Browser entrypoint + wiring
+  @src/app/                    # Workbench glue + adapters
+  @src/features/               # User behaviors
+  @src/ui/                     # Portable UI
+  @src/design/                 # Themes, tokens
+  @src/viz/                    # Visualizations
+  @src/runtime/                # Execution engine
+  @src/lang/                   # Language surface
+  @src/infra/                  # Timing, state, lifecycle, a11y
+  @src/core/                   # Domains, conventions, layers, operators
 }
 
 ^["spec-to-impl"]{
-  ../lib/spw-v0.1.0-alpha/core/SPEC.md > ../src/lib/spw/grammar/
-  ../lib/spw-v0.1.0-alpha/runtime/REGISTERS.md > ../src/runtime/interpreter/
-  ../lib/spw-v0.1.0-alpha/domains/PROFILES.md > ../src/core/domains/
+  @spec/core/SPEC.md           -> @src/lib/spw/grammar/
+  @spec/runtime/REGISTERS.md   -> @src/runtime/interpreter/
+  @spec/domains/PROFILES.md    -> @src/core/domains/
 }
 
 ^["portable"]{
   # Can be extracted as npm package
-  ../src/lib/spw/.             # Zero workbench dependencies
-  ../src/core/.                # Spw primitives
-  ../src/runtime/interpreter/. # Minimal infra/core dependency
+  @src/lib/spw/                # Zero workbench dependencies
+  @src/core/                   # Spw primitives
+  @src/runtime/interpreter/    # Minimal infra/core dependency
 }
 
 ^["bound"]{
   # Workbench-specific
-  ../src/platform/.
-  ../src/viz/.
-  ../src/design/.
-  ../src/features/.
-  ../src/app/.
+  @src/platform/
+  @src/viz/
+  @src/design/
+  @src/features/
+  @src/app/
 }

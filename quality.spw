@@ -1,44 +1,47 @@
 # Quality Annotations
 #
 # BBBH applied to codebase structure.
-# @see ../src/core/quality.ts
-# @see ../src/core/tally.ts
+
+^["roots"]{
+  @src:  ~"../src"
+  @spec: ~"../lib/spw-v0.1.0-alpha"
+  @here: ~"."
+}
 
 ^["boon"]{
   # Clear value, stable, clean
-  ../src/core/domains.
-  ../src/core/conventions.
-  ../src/lib/spw.
+  @src/core/domains/
+  @src/core/conventions/
+  @src/lib/spw/
 }
 
 ^["bane"]{
   # Friction points, needs refactor
-  ../src/platform/main.ts.     # 1222 lines
-  ../src/design/components.ts. # 778 lines
+  @src/platform/main.ts        # Split target
 }
 
 ^["bone"]{
   # Structural necessity
-  ../src/core/index.ts.
-  ../src/infra/timing/index.ts.
+  @src/core/index.ts
+  @src/infra/timing/index.ts
 }
 
 ^["bonk"]{
   # High-impact if changed
-  ../src/core/domains.         # Changes ripple
-  ../src/lib/spw/types.        # Breaks consumers
+  @src/core/domains/           # Changes ripple
+  @src/lib/spw/types.ts        # Breaks consumers
 }
 
 ^["honk"]{
   # Attention-worthy
-  ./index.spw.                 # This map
-  ../src/core/tally.ts.        # bbbh signature
+  ~"./index.spw"               # This map
+  @src/core/tally.ts           # bbbh signature
 }
 
 ^["split"]{
   # Quality vs Valence
-  ../src/core/quality.ts.      # 4/5 (boon, bane, bone, honk)
-  ../src/runtime/state.        # 5/5 + null (adds bonk)
+  @src/core/quality.ts         # 4/5 (boon, bane, bone, honk)
+  @src/runtime/state/          # 5/5 + null (adds bonk)
 
   #note: "Partial application creates learnable edge"
 }

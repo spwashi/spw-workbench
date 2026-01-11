@@ -2,6 +2,10 @@
 #
 # Browser capabilities that could enhance Spw Workbench.
 
+^["roots"]{
+  @src: ~"../src"
+}
+
 ^["storage"]{
   ?[IndexedDB]{
     #purpose: "Persistent structured storage"
@@ -34,7 +38,7 @@
     #purpose: "Background threads"
     #opportunity: "Parse without blocking UI"
     #api: "new Worker(), postMessage()"
-    #current: "../src/lib/spw/ could run in worker"
+    #current: "@src/lib/spw/ could run in worker"
   }
 
   ?[SharedArrayBuffer]{
@@ -55,7 +59,7 @@
   ?[Canvas 2D]{
     #purpose: "Bitmap drawing"
     #opportunity: "Flow graph visualization, custom rendering"
-    #current: "../src/viz/flow/ uses HTML, could use Canvas"
+    #current: "@src/viz/flow/ uses HTML, could use Canvas"
   }
 
   ?[WebGL / WebGPU]{
@@ -158,7 +162,7 @@
     #purpose: "Timing measurements"
     #opportunity: "Parse performance metrics"
     #api: "performance.mark(), performance.measure()"
-    #current: "../src/lib/spw/instrumentation/ uses this"
+    #current: "@src/lib/spw/instrumentation/ uses this"
   }
 
   ?[Intersection Observer]{
@@ -208,17 +212,17 @@
 
 ^["priority"]{
   # High value, low effort
-  ../src/lib/spw/ > Web Worker.     # Non-blocking parse
-  Clipboard API.                     # Copy/paste enhancement
-  IndexedDB.                         # Persistent projects
+  @src/lib/spw/ > Web Worker        # Non-blocking parse
+  Clipboard API                      # Copy/paste enhancement
+  IndexedDB                          # Persistent projects
 
   # High value, medium effort
-  File System Access.                # Open/save files
-  Service Worker.                    # Offline support
-  Canvas 2D.                         # Better flow viz
+  File System Access                 # Open/save files
+  Service Worker                     # Offline support
+  Canvas 2D                          # Better flow viz
 
   # Exploratory
-  Web Audio.                         # Sonification
-  WebRTC.                            # P2P collab
-  WebGPU.                            # Large graph rendering
+  Web Audio                          # Sonification
+  WebRTC                             # P2P collab
+  WebGPU                             # Large graph rendering
 }

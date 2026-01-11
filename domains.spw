@@ -1,69 +1,73 @@
 # Domain Registry
 #
 # Modules and initialization order.
-# @see ../src/core/domains/
+# @see @src/core/domains/
+
+^["roots"]{
+  @src: ~"../src"
+}
 
 ^["domains"]{
-  core.       # 0: primitives
-  infra.      # 1: infrastructure
-  design.     # 2: visual system
-  ui.         # 3: components
-  lang.       # 4: language engine
-  viz.        # 5: visualizations
-  features.   # 6: interactive behaviors
-  app.        # 7: application shell
-  runtime.    # 8: execution engine
-  debug.      # 9: development tools
-  cli.        # 10: command-line interface
-  platform.   # 11: entrypoint wiring
+  core        # 0: primitives
+  infra       # 1: infrastructure
+  design      # 2: visual system
+  ui          # 3: components
+  lang        # 4: language engine
+  viz         # 5: visualizations
+  features    # 6: interactive behaviors
+  app         # 7: application shell
+  runtime     # 8: execution engine
+  debug       # 9: development tools
+  cli         # 10: command-line interface
+  platform    # 11: entrypoint wiring
 }
 
 ^["core"]{
-  #path: "../src/core"
+  #path: @src/core/
 
-  domains.      # WHAT exists
-  conventions.  # HOW named
-  layers.       # Phasor model
-  operators.    # Sigil semantics
-  quality.      # 4/5 BBBH
-  tally.        # Countable structures
+  domains       # WHAT exists
+  conventions   # HOW named
+  layers        # Phasor model
+  operators     # Sigil semantics
+  quality       # 4/5 BBBH
+  tally         # Countable structures
 }
 
 ^["infra"]{
-  #path: "../src/infra"
+  #path: @src/infra/
 
-  timing.       # WHEN happens (top-down)
-  lifecycle.    # Component states (bottom-up)
-  state.        # Global application state
-  accessibility.
+  timing        # WHEN happens (top-down)
+  lifecycle     # Component states (bottom-up)
+  state         # Global application state
+  accessibility
 }
 
 ^["lang"]{
-  #path: "../src/lang"
-  #wraps: "../src/lib/spw"
+  #path: @src/lang/
+  #wraps: @src/lib/spw/
 
-  hooks.        # Timing integration
-  lexer.
-  parser.
-  grammar.
-  types.
+  hooks         # Timing integration
+  lexer
+  parser
+  grammar
+  types
 }
 
 ^["viz"]{
-  #path: "../src/viz"
+  #path: @src/viz/
 
-  ast.
-  tokens.
-  flow.
-  steps.
-  hooks.
+  ast
+  tokens
+  flow
+  steps
+  hooks
 }
 
 ^["runtime"]{
-  #path: "../src/runtime"
+  #path: @src/runtime/
 
-  interpreter.
-  state.        # Valence (5/5 BBBH)
-  document.
-  repl.
+  interpreter
+  state         # Valence (5/5 BBBH)
+  document
+  repl
 }

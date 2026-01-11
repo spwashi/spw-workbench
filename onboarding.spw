@@ -2,14 +2,19 @@
 #
 # For new developers and LLMs.
 
+^["roots"]{
+  @src:  ~"../src"
+  @here: ~"."
+}
+
 ^["path"]{
   !["Start here"]
-  .. @["./README.md"]
-  .. @["./index.spw"]
-  .. @["../src/core/domains"]
-  .. @["../src/core/conventions"]
-  .. @["../src/lib/spw"]
-  .. @["../src/viz"]
+  .. ~"./README.md"
+  .. ~"./index.spw"
+  .. @src/core/domains/
+  .. @src/core/conventions/
+  .. @src/lib/spw/
+  .. @src/viz/
   .. ?[@ready]{
        !boon["Contribute!"]
      | !bone["Ask questions"]
@@ -20,39 +25,39 @@
   # For LLMs navigating this codebase:
 
   # High salience (easy to find)
-  =["parse"]: ../src/lang/index.ts
-  =["Layer"]: ../src/core/layers
-  =["Quality"]: ../src/core/quality.ts
-  =["domains"]: ../src/core/domains
-  =["Valence"]: ../src/runtime/state
+  =["parse"]: @src/lang/index.ts
+  =["Layer"]: @src/core/layers/
+  =["Quality"]: @src/core/quality.ts
+  =["domains"]: @src/core/domains/
+  =["Valence"]: @src/runtime/state/
 
   # Low salience (requires exploration)
-  =["token matchers"]: ../src/lib/spw/lexer/matchers
-  =["theme tokens"]: ../src/design/themes/token-bank.ts
+  =["token matchers"]: @src/lib/spw/lexer/matchers/
+  =["theme tokens"]: @src/design/themes/token-bank.ts
 }
 
 ^["landmarks"]{
   # Key files to read first:
-  ../src/core/index.ts.          # Core barrel
-  ../src/infra/index.ts.         # Infra barrel
-  ../src/core/domains/index.ts.  # Domain registry
-  ../src/lib/spw/index.ts.      # Language engine entry
-  ../src/platform/main.ts.      # App entry (large)
+  @src/core/index.ts             # Core barrel
+  @src/infra/index.ts            # Infra barrel
+  @src/core/domains/index.ts     # Domain registry
+  @src/lib/spw/index.ts          # Language engine entry
+  @src/platform/main.ts          # App entry (large)
 }
 
 ^["questions"]{
   ?["Where is X defined?"]{
-    @["./patterns.spw"]
-    @["../src/core/conventions"]
+    ~"./patterns.spw"
+    @src/core/conventions/
   }
 
   ?["How do modules relate?"]{
-    @["./dependencies.spw"]
-    @["../src/core/domains"]
+    ~"./dependencies.spw"
+    @src/core/domains/
   }
 
   ?["What is the phasor model?"]{
-    @["./phasor.spw"]
-    @["../src/core/layers"]
+    ~"./phasor.spw"
+    @src/core/layers/
   }
 }

@@ -1,0 +1,45 @@
+# docs audit guide
+#
+# Review checklist for docs/ changes.
+
+^["meta"]{
+  @location: docs/
+  @description: "Project-level documentation"
+}
+
+^["signals"]{
+  # Red flags during review:
+
+  !["accuracy"]
+  .. Docs diverging from code
+  .. Outdated dependency graphs
+  .. Stale architecture descriptions
+
+  !["structure"]
+  .. Missing index entries
+  .. Broken cross-references
+  .. Orphaned documents
+}
+
+^["questions"]{
+  # Ask before approving:
+  .. "Does this match current implementation?"
+  .. "Is this linked from index.spw?"
+  .. "Are cross-references valid?"
+}
+
+^["index"]{
+  # Key documentation files:
+  .. index.spw               # Master index
+  .. toc.spw                 # Table of contents
+  .. dependencies.spw        # Dependency graph
+  .. architecture.spw        # System architecture
+  .. domains.spw             # Domain descriptions
+}
+
+^["sync"]{
+  # Keep in sync with:
+  .. src/core/domains/index.ts    # Domain registry
+  .. eslint.config.js             # Layer rules
+  .. per-domain audit-guide.spw   # Review checklists
+}

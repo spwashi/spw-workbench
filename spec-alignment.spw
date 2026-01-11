@@ -2,6 +2,11 @@
 #
 # Gap analysis: v0.1.0-alpha docs vs v0.1.0-prealpha seed spec.
 
+^["roots"]{
+  @src:  ~"../src"
+  @spec: ~"../lib/spw-v0.1.0-alpha"
+}
+
 ^[alignment]
 
 ^["New Forms (not in current docs)"]{
@@ -84,8 +89,8 @@
   #taste_posture_split{
     #existing: "Taste@ as meta-domain for aesthetic evaluation"
     #new_spec{
-      Spw.Taste > TasteProfile.    # aesthetic: layout/pacing only
-      Spw.Posture > BehaviorProfile.   # behavioral: safety/performance/rigor
+      Spw.Taste > TasteProfile     # aesthetic: layout/pacing only
+      Spw.Posture > BehaviorProfile    # behavioral: safety/performance/rigor
     }
     #action: "Split domains/TASTE.md, add domains/POSTURE.md"
     #aliases{
@@ -97,14 +102,14 @@
   #dialect_tokens{
     #existing: "Spw.l, Spw.b, Spw.x (geometry) + Spw.p, Spw.q, Spw.t (function)"
     #new_spec{
-      spw.b. # baseline/boon
-      spw.l. # library/layer
-      spw.m. # material/machine
-      spw.x. # linkage graph
-      spw.p. # prose/presentation
-      spw.q. # query
-      spw.r. # reduction/distillation
-      spw.t. # topology
+      spw.b  # baseline/boon
+      spw.l  # library/layer
+      spw.m  # material/machine
+      spw.x  # linkage graph
+      spw.p  # prose/presentation
+      spw.q  # query
+      spw.r  # reduction/distillation
+      spw.t  # topology
     }
     #action: "Update dialects/ to include new tokens, clarify existing"
   }
@@ -125,65 +130,65 @@
 
 ^["Code Alignment Needed"]{
   #new_directories{
-    src/runtime/goals/.       # goal-based execution
-    src/runtime/pipeline/.    # distill/extract stages
-    src/lib/spw/canonical/.   # canonicalization
-    src/core/strata/.         # char->word->token->node->block->file->upstream
+    @src/runtime/goals/       # goal-based execution
+    @src/runtime/pipeline/    # distill/extract stages
+    @src/lib/spw/canonical/   # canonicalization
+    @src/core/strata/         # char->word->token->node->block->file->upstream
   }
 
   #terminology_updates{
-    ?[design/themes/]{
+    ?[@src/design/themes/]{
       #current: "theme manager, style tokens"
       #align_to: "TasteProfile concepts where applicable"
     }
 
-    ?[features/onboarding/]{
+    ?[@src/features/onboarding/]{
       #current: "disclosure levels, feature visibility"
       #align_to: "onboard goal semantics"
     }
   }
 
   #parser_extensions{
-    src/lib/spw/grammar. # capsule syntax, n-range, streaming
+    @src/lib/spw/grammar/  # capsule syntax, n-range, streaming
   }
 }
 
 ^["Documentation Update Priority"]{
   #phase_1["Critical - Breaks Coherence"]{
-    core/CAPSULES.md.     # new file for capsule syntax
-    core/INTEGRITY.md.    # canonicalization + hashing
-    runtime/GOALS.md.     # goal tokens
-    domains/POSTURE.md.   # split from Taste
+    @spec/core/CAPSULES.md     # new file for capsule syntax
+    @spec/core/INTEGRITY.md    # canonicalization + hashing
+    @spec/runtime/GOALS.md     # goal tokens
+    @spec/domains/POSTURE.md   # split from Taste
   }
 
   #phase_2["Important - Completes Model"]{
-    runtime/PIPELINE.md.  # distill/extract stages
-    core/SEEDS.md.        # formalize ^seed
-    dialects/GEOMETRY.md. # update with spw.r, spw.m
+    @spec/runtime/PIPELINE.md  # distill/extract stages
+    @spec/core/SEEDS.md        # formalize ^seed
+    @spec/dialects/GEOMETRY.md # update with spw.r, spw.m
   }
 
   #phase_3["Enhancement"]{
-    runtime/CACHE-IR.md.
-    core/SAFETY.md.       # NEV/capabilities
-    applications/QUERY.md. # spw.q examples
+    @spec/runtime/CACHE-IR.md
+    @spec/core/SAFETY.md       # NEV/capabilities
+    @spec/applications/QUERY.md  # spw.q examples
   }
 }
 
 ^["Feature Documentation Strategy"]{
   #principle{
     "Each feature has three homes:
-     1. lib/spw-v0.1.0-alpha/ - specification (what)
+     1. @spec/ - specification (what)
      2. docs/*.spw - codebase topology (where)
-     3. src/**/README.md - implementation notes (how)"
+     3. @src/**/README.md - implementation notes (how)"
   }
 
   #flow{
-    spec > implementation > integration.
-    lib/spw-v0.1.0-alpha/ > src/lib/spw/ > src/lang/.
+    spec > implementation > integration
+    @spec/ > @src/lib/spw/ > @src/lang/
   }
 
   #traceability{
-    "Use @[] references between docs and code"
+    "Use @root/path and ~\"./local\" references"
     "Update docs/architecture.spw when spec changes"
   }
 }
