@@ -1,0 +1,54 @@
+# Next Directions
+#
+# Development priorities and opportunities.
+
+^["immediate"]{
+  # Structural debt
+  main.ts^bane.                # 1222 lines, split into modules
+  design/components.ts^bane.   # 778 lines, extract patterns
+
+  # Missing hooks
+  ../src/runtime/hooks.ts.     # Runtime domain timing
+  ../src/debug/hooks.ts.       # Debug domain timing
+  ../src/cli/hooks.ts.         # CLI domain timing
+}
+
+^["short-term"]{
+  # Conformance alignment
+  ?[Level 1: Parser]{
+    ../src/lib/spw/lexer.
+    ../src/lib/spw/parser.
+    ../src/lib/spw/grammar.
+    @["../lib/spw-v0.1.0-alpha/core/CONFORMANCE.md"]
+  }
+
+  # Test coverage
+  ../src/lib/spw/__tests__/.   # Expand fixtures
+  ../src/runtime/__tests__/.   # Interpreter tests
+}
+
+^["medium-term"]{
+  # Conformance Level 2: Evaluator
+  ?[semantic execution]{
+    ../src/runtime/interpreter.
+    ../src/runtime/state.       # Valence handling
+    @["../lib/spw-v0.1.0-alpha/runtime/REGISTERS.md"]
+  }
+
+  # Domain profiles
+  ?[domain polymorphism]{
+    @["../lib/spw-v0.1.0-alpha/domains/PROFILES.md"]
+    ../src/semantics/.          # Knowledge representation
+  }
+}
+
+^["long-term"]{
+  # Conformance Level 3: Full
+  lsp/.                        # Language Server Protocol
+  wasm/.                       # WebAssembly compilation
+  collab/.                     # Real-time collaboration
+
+  # Ecosystem
+  plugins/.                    # Extension system
+  packages/.                   # Extractable modules
+}

@@ -1,0 +1,34 @@
+# Architecture
+#
+# Codebase layers and their relationships.
+
+^["layers"]{
+  # Specification (what Spw should be)
+  ../lib/spw-v0.1.0-alpha/.    # Markdown docs, grammar rules
+
+  # Implementation (how it works)
+  ../src/lib/spw/.             # Lexer, parser, types
+
+  # Integration (workbench bindings)
+  ../src/lang/.                # Hooks, events, timing
+}
+
+^["spec-to-impl"]{
+  ../lib/spw-v0.1.0-alpha/core/SPEC.md > ../src/lib/spw/grammar/
+  ../lib/spw-v0.1.0-alpha/runtime/REGISTERS.md > ../src/runtime/interpreter/
+  ../lib/spw-v0.1.0-alpha/domains/PROFILES.md > ../src/core/domains/
+}
+
+^["portable"]{
+  # Can be extracted as npm package
+  ../src/lib/spw/.             # Zero workbench dependencies
+  ../src/runtime/interpreter/. # Minimal core dependency
+}
+
+^["bound"]{
+  # Workbench-specific
+  ../src/viz/.
+  ../src/design/.
+  ../src/features/.
+  ../src/app/.
+}

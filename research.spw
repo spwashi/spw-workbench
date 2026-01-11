@@ -1,0 +1,134 @@
+# Research Lanes
+#
+# Syntax and applied computer science investigations.
+
+^["syntax"]{
+  # Parsing theory
+  ?[deterministic parsing]{
+    #goal: "Every valid expression has exactly one parse tree"
+    #method: "PEG-style ordered choice, no backtracking"
+    #ref: "Bryan Ford, Parsing Expression Grammars"
+  }
+
+  ?[incremental parsing]{
+    #goal: "Reparse only changed regions"
+    #method: "Tree-sitter style edit-aware parsing"
+    #opportunity: "Real-time feedback in editor"
+  }
+
+  ?[error recovery]{
+    #goal: "Meaningful errors, graceful degradation"
+    #method: "Synchronization tokens, panic mode"
+    #ref: "Compiler error recovery literature"
+  }
+
+  # Grammar evolution
+  ?[macro system]{
+    #goal: "User-defined operators"
+    #tension: "Determinism vs expressiveness"
+    #deferred: true
+  }
+
+  ?[hygiene]{
+    #goal: "Capture-avoiding substitution"
+    #ref: "Scheme macro hygiene, Rust macros"
+  }
+}
+
+^["semantics"]{
+  # Type systems
+  ?[gradual typing]{
+    #goal: "Optional types, soundness where annotated"
+    #ref: "Siek & Taha, Gradual Typing"
+    #opportunity: "Quality modifiers as type hints"
+  }
+
+  ?[effect systems]{
+    #goal: "Track side effects in types"
+    #ref: "Koka, Eff, algebraic effects"
+    #connection: "Valence as effect marker"
+  }
+
+  # Domain polymorphism
+  ?[contextual semantics]{
+    #goal: "Same syntax, domain-specific meaning"
+    #ref: "../lib/spw-v0.1.0-alpha/domains/PROFILES.md"
+    #example: "!['signal'] means different things in Hardware@ vs Theatre@"
+  }
+}
+
+^["runtime"]{
+  # Execution models
+  ?[register machine]{
+    #ref: "../lib/spw-v0.1.0-alpha/runtime/REGISTERS.md"
+    #registers: "input, output, accumulator, anchor, context"
+  }
+
+  ?[continuation passing]{
+    #goal: "First-class control flow"
+    #opportunity: "Debugger step-through, time travel"
+  }
+
+  ?[lazy evaluation]{
+    #goal: "Demand-driven computation"
+    #opportunity: "Infinite structures, memoization"
+  }
+
+  # Concurrency
+  ?[actor model]{
+    #goal: "Message-passing concurrency"
+    #connection: "<> couple operator as channel"
+  }
+
+  ?[dataflow]{
+    #goal: "Reactive updates"
+    #connection: ".. sequence as dependency edge"
+  }
+}
+
+^["cognition"]{
+  # Learning science connections
+  ?[chunking]{
+    #ref: "Miller, Magical Number Seven"
+    #connection: "Container nesting depth limits"
+  }
+
+  ?[cognitive load]{
+    #goal: "Minimize working memory burden"
+    #method: "Progressive disclosure, disclosure levels"
+  }
+
+  ?[transfer]{
+    #goal: "Skills apply across domains"
+    #connection: "Domain polymorphism enables transfer"
+  }
+
+  # Notation as tool of thought
+  ?[Iverson notation]{
+    #ref: "Ken Iverson, Notation as a Tool of Thought"
+    #principle: "Concise notation enables thinking"
+  }
+}
+
+^["applications"]{
+  # From spec
+  @["../lib/spw-v0.1.0-alpha/applications/HARDWARE.md"]
+  @["../lib/spw-v0.1.0-alpha/applications/THEATRE.md"]
+  @["../lib/spw-v0.1.0-alpha/applications/BROADCAST.md"]
+
+  # Extensions
+  ?[music]{
+    #goal: "Spw as music notation"
+    #operators: "! as note, ~ as rhythm, <> as harmony"
+  }
+
+  ?[choreography]{
+    #goal: "Dance/movement notation"
+    #connection: "Theatre@ extended with spatial operators"
+  }
+
+  ?[protocol design]{
+    #goal: "Network protocol specification"
+    #connection: "<> as message exchange, ? as state machine"
+  }
+}

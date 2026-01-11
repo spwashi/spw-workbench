@@ -1,0 +1,224 @@
+# Web API Integration Opportunities
+#
+# Browser capabilities that could enhance Spw Workbench.
+
+^["storage"]{
+  ?[IndexedDB]{
+    #purpose: "Persistent structured storage"
+    #opportunity: "Save parse history, AST cache, user projects"
+    #api: "window.indexedDB"
+  }
+
+  ?[Cache API]{
+    #purpose: "Request/response caching"
+    #opportunity: "Offline support, fast reload"
+    #api: "caches.open(), cache.put()"
+  }
+
+  ?[File System Access]{
+    #purpose: "Read/write local files"
+    #opportunity: "Open .spw files, save projects"
+    #api: "showOpenFilePicker(), showSaveFilePicker()"
+    #note: "Chromium only, progressive enhancement"
+  }
+
+  ?[Origin Private File System]{
+    #purpose: "Sandboxed file storage"
+    #opportunity: "Project workspace without permissions"
+    #api: "navigator.storage.getDirectory()"
+  }
+}
+
+^["workers"]{
+  ?[Web Workers]{
+    #purpose: "Background threads"
+    #opportunity: "Parse without blocking UI"
+    #api: "new Worker(), postMessage()"
+    #current: "../src/lib/spw/ could run in worker"
+  }
+
+  ?[SharedArrayBuffer]{
+    #purpose: "Shared memory between threads"
+    #opportunity: "Fast AST transfer to worker"
+    #api: "new SharedArrayBuffer()"
+    #note: "Requires cross-origin isolation headers"
+  }
+
+  ?[Service Worker]{
+    #purpose: "Network proxy, offline"
+    #opportunity: "PWA, work offline"
+    #api: "navigator.serviceWorker.register()"
+  }
+}
+
+^["graphics"]{
+  ?[Canvas 2D]{
+    #purpose: "Bitmap drawing"
+    #opportunity: "Flow graph visualization, custom rendering"
+    #current: "../src/viz/flow/ uses HTML, could use Canvas"
+  }
+
+  ?[WebGL / WebGPU]{
+    #purpose: "GPU-accelerated graphics"
+    #opportunity: "Large graph rendering, 3D AST visualization"
+    #api: "canvas.getContext('webgl2'), navigator.gpu"
+  }
+
+  ?[OffscreenCanvas]{
+    #purpose: "Canvas in worker"
+    #opportunity: "Render visualizations without blocking"
+    #api: "new OffscreenCanvas(), transferControlToOffscreen()"
+  }
+}
+
+^["input"]{
+  ?[Clipboard API]{
+    #purpose: "Read/write clipboard"
+    #opportunity: "Copy AST as JSON, paste Spw code"
+    #api: "navigator.clipboard.readText(), writeText()"
+    #current: "Could enhance editor"
+  }
+
+  ?[Drag and Drop]{
+    #purpose: "File/element dragging"
+    #opportunity: "Drop .spw files, drag AST nodes"
+    #api: "dragstart, dragover, drop events"
+  }
+
+  ?[Pointer Events]{
+    #purpose: "Unified mouse/touch/pen"
+    #opportunity: "Touch-friendly inspector, pen annotation"
+    #api: "pointerdown, pointermove, pointerup"
+  }
+
+  ?[Keyboard API]{
+    #purpose: "Physical key detection"
+    #opportunity: "Keyboard layout awareness for shortcuts"
+    #api: "navigator.keyboard.getLayoutMap()"
+    #note: "Limited support"
+  }
+}
+
+^["media"]{
+  ?[Web Audio]{
+    #purpose: "Audio processing"
+    #opportunity: "Sonification of parse events, audio feedback"
+    #api: "new AudioContext(), oscillator, gain"
+    #connection: "Spw music notation research lane"
+  }
+
+  ?[Speech Synthesis]{
+    #purpose: "Text-to-speech"
+    #opportunity: "Read code aloud, accessibility"
+    #api: "speechSynthesis.speak()"
+  }
+
+  ?[Speech Recognition]{
+    #purpose: "Voice input"
+    #opportunity: "Dictate Spw code"
+    #api: "new SpeechRecognition()"
+    #note: "Experimental"
+  }
+
+  ?[Media Capture]{
+    #purpose: "Camera/microphone access"
+    #opportunity: "Video tutorials, screen recording"
+    #api: "navigator.mediaDevices.getUserMedia()"
+  }
+}
+
+^["communication"]{
+  ?[WebSocket]{
+    #purpose: "Bidirectional real-time"
+    #opportunity: "Collaborative editing, REPL server"
+    #api: "new WebSocket()"
+  }
+
+  ?[WebRTC]{
+    #purpose: "Peer-to-peer communication"
+    #opportunity: "P2P collaboration without server"
+    #api: "RTCPeerConnection, RTCDataChannel"
+  }
+
+  ?[Broadcast Channel]{
+    #purpose: "Cross-tab messaging"
+    #opportunity: "Sync state across tabs"
+    #api: "new BroadcastChannel()"
+  }
+
+  ?[Server-Sent Events]{
+    #purpose: "Server push"
+    #opportunity: "Live updates from language server"
+    #api: "new EventSource()"
+  }
+}
+
+^["performance"]{
+  ?[Performance API]{
+    #purpose: "Timing measurements"
+    #opportunity: "Parse performance metrics"
+    #api: "performance.mark(), performance.measure()"
+    #current: "../src/lib/spw/instrumentation/ uses this"
+  }
+
+  ?[Intersection Observer]{
+    #purpose: "Visibility detection"
+    #opportunity: "Virtualize long token lists, lazy render"
+    #api: "new IntersectionObserver()"
+  }
+
+  ?[Resize Observer]{
+    #purpose: "Element size changes"
+    #opportunity: "Responsive panel layout"
+    #api: "new ResizeObserver()"
+  }
+
+  ?[Idle Callback]{
+    #purpose: "Run during idle time"
+    #opportunity: "Background parsing, prefetching"
+    #api: "requestIdleCallback()"
+  }
+}
+
+^["pwa"]{
+  ?[Web App Manifest]{
+    #purpose: "Installable app metadata"
+    #opportunity: "Install as desktop app"
+    #file: "manifest.json"
+  }
+
+  ?[Push API]{
+    #purpose: "Server push notifications"
+    #opportunity: "Notify when parse server ready"
+    #api: "PushManager.subscribe()"
+  }
+
+  ?[Background Sync]{
+    #purpose: "Defer until online"
+    #opportunity: "Queue saves when offline"
+    #api: "registration.sync.register()"
+  }
+
+  ?[Share Target]{
+    #purpose: "Receive shared content"
+    #opportunity: "Share code snippets to workbench"
+    #manifest: "share_target"
+  }
+}
+
+^["priority"]{
+  # High value, low effort
+  ../src/lib/spw/ > Web Worker.     # Non-blocking parse
+  Clipboard API.                     # Copy/paste enhancement
+  IndexedDB.                         # Persistent projects
+
+  # High value, medium effort
+  File System Access.                # Open/save files
+  Service Worker.                    # Offline support
+  Canvas 2D.                         # Better flow viz
+
+  # Exploratory
+  Web Audio.                         # Sonification
+  WebRTC.                            # P2P collab
+  WebGPU.                            # Large graph rendering
+}
