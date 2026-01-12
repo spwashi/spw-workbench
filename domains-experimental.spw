@@ -1,0 +1,83 @@
+# Experimental Domains
+#
+# Sketches for new Spw domains: Prompt@, Vector@/Tensor@, Sheaf@, Quantum@.
+# These are experimental and subject to syntax iteration.
+
+^["roots"]{
+  @examples: ~"../examples"
+}
+
+^["prompt"]{
+  # Purpose: prompt engineering primitives.
+  # Syntax ideas:
+  Prompt@{
+    !persona["assistant"]       # persona capsule
+    .. !constraints["brief|factual|json"]
+    .. !context[{project: "hud"}]
+    .. !task["summarize"]{ @input }
+  }
+
+  # Tests:
+  @examples/experimental/prompt.spw
+}
+
+^["vector_tensor"]{
+  # Purpose: vector/tensor analysis.
+  # Syntax ideas:
+  Vector@{
+    ^v[1, 0, 0]^vector          # typed vector literal
+    .. ~normalize[v]            # transform
+    .. @proj["xy"]              # projection
+  }
+
+  Tensor@{
+    ^T[[[1,0],[0,1]]]^tensor{   # rank/dtype metadata optional
+      #sym: true
+      #shape: [2,2]
+      #dtype: "float32"
+    }
+    .. ~contract[T, i1=i2]
+  }
+
+  # Tests:
+  @examples/experimental/vector.spw
+  @examples/experimental/tensor.spw
+}
+
+^["sheaf"]{
+  # Purpose: sheaf manipulation.
+  # Syntax ideas:
+  Sheaf@{
+    <sheaf["cover": "U1,U2"]{   # capsule for sheaf metadata
+      ^["section:U1"]{ !["f1"] }
+      ^["section:U2"]{ !["f2"] }
+      .. <>glue["U1","U2"]      # couple + glue
+    }>
+  }
+
+  # Tests:
+  @examples/experimental/sheaf.spw
+}
+
+^["quantum"]{
+  # Purpose: quantum parsing/semantics.
+  # Syntax ideas:
+  Quantum@{
+    !["|0>"]                    # state prep
+    .. ~superpose[ |0>, |1> ]   # wave
+    .. ?measure["z"]{           # probe with measurement
+         *{ !boon["|0>"] | !bane["|1>"] }
+       }
+  }
+
+  # Tests:
+  @examples/experimental/quantum.spw
+}
+
+^["container-physics"]{
+  # UAL dialect idea: containers as fundamental particles.
+  # Concept (<>), Scene (()), Mode ([]), Definition ({}).
+  # Intrinsic labels (optional): {_A ... }_A  ; A{} == {_A }_A
+  # Streaming (<< >>) = layered concept entry; N-range (( )) = emphasis wrapper.
+  # Operators remain explicit in Spw for determinism; UAL normalizer could reduce scripts to container-only plus metadata.
+}

@@ -1,0 +1,66 @@
+# Semantics & Physics Notes
+#
+# How sigils behave as particles/regions, and modes for experimental parsing.
+
+^["roles"]{
+  # Region atoms:
+  "<>": "concept/capsule (definition of what)"
+  "()": "scene/context (where)"
+  "[]": "mode/params (how/config)"
+  "{}": "definition/apply-context (do)"
+  "<< >>": "layered concept / stream wrapper"
+  "(( ))": "emphasis/hedge wrapper"
+
+  # Operator layering:
+  # 1) enter/exit regions (containers)
+  # 2) modifiers (valence)
+  # 3) operators (! ^ ~ <> ? * = @ and extensions)
+  # 4) connectors (.. -> / & | :)
+}
+
+^["whitespace_modes"]{
+  default: "inert whitespace; tokens bound explicitly"
+  dense: "collapse whitespace; prefer tighter binding"
+  poetic: "allow adjacency binding; lower precedence than explicit connectors"
+}
+
+^["locality"]{
+  # Per-region frames; entering a container pushes locality.
+  # Operators act on top frame, then outer frames for resolution.
+  # Registers per frame: concept, scene, mode, definition.
+}
+
+^["multipass_parsing"]{
+  # Passes:
+  #  - lex
+  #  - coarse parse (structure)
+  #  - semantic refinement (modes/locality/labels)
+  # Controls:
+  #  - lookahead: number of tokens to peek
+  #  - rewind: allow backtracking for ambiguity testing
+  #  - granularity: coarse | fine
+  # Outputs:
+  #  - branch traces for ambiguous sections
+}
+
+^["topological_prompting"]{
+  # Permissive mode for mismatched braces:
+  #  - Treat unmatched regions as open fields (record, don't fail)
+  #  - Clustering rules: nearest neighbor by label; record gaps
+  #  - Useful for cognitive/semiotic prompts; not for execution
+  # Brace perturbation (e.g., replace '}' with '>'):
+  #  - Use diff analyzer to report semantic drift vs canonical AST
+}
+
+^["intrinsics"]{
+  # "_" sugar: "?_query" -> "?(query)" (normalize to explicit form)
+  # Labels: A{} == {_A }_A ; labels are metadata; semantics unchanged
+  # Physical properties: encode as annotations (#color, #material)
+}
+
+^["nl_preview"]{
+  # For ambiguous parses, emit NL previews per branch:
+  #  - "Interpretation A: probe over concept region"
+  #  - "Interpretation B: apply mode to scene"
+  # Enables parallel LLM threads on finer-grained semantics.
+}
