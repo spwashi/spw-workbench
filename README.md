@@ -4,6 +4,13 @@
 
 ```
 docs/
+├── contributing/     # Contributor onboarding guides
+│   ├── README.md     # Hub page with persona selector
+│   ├── researchers.md
+│   ├── engineers.md
+│   ├── hobby-coders.md
+│   └── common-tasks.md
+│
 ├── design/           # Design decisions and history
 │   ├── goals.md      # Product design goals
 │   └── history.md    # Origin story, influences
@@ -16,6 +23,12 @@ docs/
 
 ## Entry Points
 
+### For Contributors
+- **Ready to contribute?** Start with `contributing/README.md` (contributing guide hub)
+- **Your persona:** Choose [researchers](contributing/researchers.md), [engineers](contributing/engineers.md), or [hobby coders](contributing/hobby-coders.md)
+- **Common tasks?** See `contributing/common-tasks.md`
+
+### For Users & Learners
 - **Complete navigation?** Open `toc.spw` (table of contents)
 - **New to Spw?** Start with `lang/few-shot.spw.md`
 - **Understanding the architecture?** See `design/goals.md`
