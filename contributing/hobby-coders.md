@@ -55,6 +55,31 @@ Press **Ctrl+Space** for help menu.
 
 ---
 
+## Contributor Plan (6 Weeks)
+
+A lightweight plan for building momentum through creative outputs.
+
+**Week 1:** Create 3 small seeds and label what each operator means in your domain.
+**Week 2:** Draft a new domain mapping and write one example that shows it off.
+**Week 3:** Turn that example into a short tutorial (5-10 steps).
+**Week 4:** Share your work in a discussion and collect feedback.
+**Week 5:** Refine examples for clarity; add one visual guide or diagram.
+**Week 6:** Submit a PR with examples or tutorials in `docs/`.
+
+## Time Budgets
+
+**30-45 min/day**
+- 15 min create or refine a seed
+- 10 min add a note or tutorial step
+- 10 min share or reflect on feedback
+
+**2-3 sessions/week**
+- Session A: create examples
+- Session B: write a tutorial or domain description
+- Session C: polish and submit
+
+---
+
 ## The Three Application Domains
 
 Spw is designed to interpret the same seed in different ways. Three domains come built-in:

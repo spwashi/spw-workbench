@@ -56,6 +56,31 @@ npm run lint:fix                     # Auto-fix style
 
 ---
 
+## Contributor Plan (6 Weeks)
+
+A practical plan for compounding system leverage.
+
+**Week 1:** Choose a domain, read its docs, and list its invariants and boundaries.
+**Week 2:** Ship a small feature or refactor with tests and `npm run lint:layers`.
+**Week 3:** Add instrumentation or performance profiling; show before/after metrics.
+**Week 4:** Reduce coupling (extract helpers, tighten interfaces, document contracts).
+**Week 5:** Harden edge cases (errors, timeouts, accessibility) and update docs.
+**Week 6:** Publish a reusable pattern or component and write a brief postmortem.
+
+## Time Budgets
+
+**30-45 min/day**
+- 10 min reading or boundary review
+- 20 min focused change + tests
+- 10 min doc note or metric capture
+
+**2-3 sessions/week**
+- Session A: scope + design + risk list
+- Session B: implement + tests + lint:layers
+- Session C: measure + document + PR draft
+
+---
+
 ## The 12-Domain Architecture
 
 The codebase is organized as a strict layered system. Inner layers cannot import from outer layers. This prevents technical debt and ensures components are composable.

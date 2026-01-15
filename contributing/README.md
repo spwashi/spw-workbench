@@ -13,6 +13,14 @@ Choose the guide that matches your background and interests:
 | **Impact Area** | Language theory, validation | Libraries, platforms, services | Examples, creative applications |
 | **[→ View Guide →](researchers.md)** | [Researchers Guide](researchers.md) | [Engineers Guide](engineers.md) | [Hobby Coders Guide](hobby-coders.md) |
 
+## Plans by Persona
+
+Each guide includes a 6-week contributor plan:
+
+- **Researchers:** `researchers.md#contributor-plan-6-weeks`
+- **Engineers:** `engineers.md#contributor-plan-6-weeks`
+- **Hobby Coders:** `hobby-coders.md#contributor-plan-6-weeks`
+
 ---
 
 ## All Contributors
@@ -20,6 +28,7 @@ Choose the guide that matches your background and interests:
 Regardless of your path, everyone uses:
 
 - **[Common Tasks](common-tasks.md)** — How to build, test, commit, and debug
+- **[New Spw Form Template](new-form-template.md)** — Checklist for adding language forms
 - **[AGENTS.md](../AGENTS.md)** — General rules (layer boundaries, testing, code style)
 - **[CONTRIBUTING.md](../CONTRIBUTING.md)** — Quick entry point (start here if you haven't read it)
 

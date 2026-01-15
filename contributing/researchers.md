@@ -47,6 +47,31 @@ Open `lib/spw-v0.1.0-alpha/SPEC.md`. Skim the operators section (5 min).
 
 ---
 
+## Contributor Plan (6 Weeks)
+
+A compact plan that turns curiosity into research output.
+
+**Week 1:** Pick a research question, read `lib/spw-v0.1.0-alpha/SPEC.md`, define a metric and dataset.
+**Week 2:** Add instrumentation in `src/lib/spw/instrumentation/` or `src/runtime/`, collect a baseline.
+**Week 3:** Apply probability/stats to validate data quality (sampling, variance, error bars).
+**Week 4:** Run the study or corpus analysis; compute and visualize results.
+**Week 5:** Interpret findings; draft a memo in `docs/research.spw` or `docs/design-research.spw`.
+**Week 6:** Propose a spec or UX change and open a PR with methods + artifacts.
+
+## Time Budgets
+
+**30-45 min/day**
+- 10 min reading or hypothesis refinement
+- 15 min instrumentation or data collection
+- 10 min notes or analysis summary
+
+**2-3 sessions/week**
+- Session A: reading + experiment design
+- Session B: implementation + baseline collection
+- Session C: analysis + memo draft
+
+---
+
 ## Research Areas You Can Contribute To
 
 ### 1. Operator Semantics and Domain Polymorphism

@@ -9,6 +9,7 @@ docs/
 │   ├── researchers.md
 │   ├── engineers.md
 │   ├── hobby-coders.md
+│   ├── new-form-template.md
 │   └── common-tasks.md
 │
 ├── design/           # Design decisions and history
@@ -26,7 +27,9 @@ docs/
 ### For Contributors
 - **Ready to contribute?** Start with `contributing/README.md` (contributing guide hub)
 - **Your persona:** Choose [researchers](contributing/researchers.md), [engineers](contributing/engineers.md), or [hobby coders](contributing/hobby-coders.md)
+- **Contributor plans:** 6-week plans with time-budget variants in each persona guide
 - **Common tasks?** See `contributing/common-tasks.md`
+- **Adding a language form?** See `contributing/new-form-template.md`
 
 ### For Users & Learners
 - **Complete navigation?** Open `toc.spw` (table of contents)

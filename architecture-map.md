@@ -8,8 +8,8 @@ prioritizes *how to find the idea you want* over exhaustiveness.
 Start from the outer shell and move inward:
 
 1) **Platform** (`src/platform/`)  
-   Browser entrypoint and wiring. This is where the app is bootstrapped and
-   layers are connected (`src/platform/main.ts`).
+   Browser entrypoint and wiring. The app entrypoint is `src/platform/main.ts`,
+   with wiring in `src/platform/bootstrap.ts`.
 
 2) **App** (`src/app/`)  
    Workbench glue and app-specific components (integration, adapters, HUD).
