@@ -1,0 +1,77 @@
+# Lens Walk Research Protocol
+#
+# Deep prompting for linguistics and physical chemistry.
+
+^["roots"]{
+  @docs: ~"."
+  @src: ~"../src"
+  @examples: ~"../examples"
+  @scripts: ~"../scripts"
+  @spec: ~"../lib/spw-v0.1.0-alpha"
+}
+
+^["premise"]{
+  #goal: "Use lens-walk prompts as experiments"
+  #method: "Perturb -> measure -> compare -> interpret"
+}
+
+^["protocol"]{
+  step-1: "Select a seed (example or corpus snippet)"
+  step-2: "Generate perturbations (swap one operator or container)"
+  step-3: "Collect syntactic deltas (tokens, AST)"
+  step-4: "Collect semantic deltas (relations, flow)"
+  step-5: "Collect pragmatic deltas (runtime output, errors)"
+  step-6: "Write a contradiction log"
+}
+
+^["measures"]{
+  tokens: "count, churn, boundary shifts"
+  ast: "depth, branching, stability"
+  relations: "edge count, cycles, orphan nodes"
+  runtime: "error count, step count, valence distribution"
+}
+
+^["perturbations"]{
+  #from: @docs/semantics-physics.spw
+  container-swap: "<> to () or []"
+  operator-swap: "! to ? or ^"
+  whitespace-mode: "default vs dense vs poetic"
+  brace-perturb: "replace } with > and compare"
+}
+
+^["instruments"]{
+  @src/lib/spw/lexer/
+  @src/lib/spw/parser/
+  @src/lang/semantic/
+  @src/runtime/interpreter/
+  @src/viz/flow/
+  @scripts/analyzers/spw-perturb.ts
+  @scripts/analyzers/pattern-learner.ts
+}
+
+^["linguistics-track"]{
+  #hypothesis-1: "Operator order acts like word order"
+  #hypothesis-2: "Containers encode constituency"
+  #probe: "Compare token sequences to dependency arcs"
+  #output: "Ambiguity table per operator"
+}
+
+^["chemistry-track"]{
+  #hypothesis-1: "Valence modifiers act like potential shifts"
+  #hypothesis-2: "Containers mark phases or fields"
+  #probe: "Treat flow edges as reaction paths"
+  #output: "Barrier map across lenses"
+}
+
+^["artifacts"]{
+  @examples/basic/hello-world.spw
+  @examples/patterns/transform-chain.spw
+  @examples/test-suite/edge-cases.spw
+  @spec/core/OPERATORS.md
+  @spec/runtime/REGISTERS.md
+}
+
+^["notes"]{
+  #record: "Contradiction, resolution attempt, and next perturbation"
+  #share: "Attach seed, lens order, and tool output"
+}
