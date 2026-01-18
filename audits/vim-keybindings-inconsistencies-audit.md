@@ -12,6 +12,13 @@ Audit of recent commits reveals **7 critical inconsistencies** between the vim k
 
 **Impact**: The critical rendering bug is fixed, operator/valence motions are now wired (and auditable), but user-facing clarity issues remain (layer naming, tooltips, and immediate visual feedback).
 
+## Update: 2026-01-18 (Post-Audit Fixes)
+
+- **Key capture clarity**: Geology now indicates `Typing` vs `Command` vs `Dialog`, and marks bindings as active/dormant with reasons.
+- **Leader safety**: `<space>` leader (activation toggles) is disabled while typing and in STEPPING mode to avoid hijacking text entry or debug stepping.
+- **Geology accessibility**: Binding chips are keyboard-focusable; `j/k` and `h/l` work locally inside the panel without triggering global shortcuts.
+- **Styles actually load**: `src/features/keyboard/components/keybinding-geology.css` is imported from `src/styles/index.css` (previously depended on “unstyled default” rendering).
+
 ---
 
 ## Critical Findings

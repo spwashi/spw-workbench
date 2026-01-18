@@ -12,11 +12,17 @@ docs/
 │   ├── new-form-template.md
 │   └── common-tasks.md
 │
+├── audits/           # Intentional review lanes (coherence, learnability)
+│   ├── index.spw     # Audit index
+│   ├── ontological-geometry-audit.md
+│   └── vim-keybindings-inconsistencies-audit.md
+│
 ├── design/           # Design decisions and history
 │   ├── goals.md      # Product design goals
 │   ├── history.md    # Origin story, influences
 │   ├── research-episodes-plan.md      # Research/recording development plan
 │   ├── semantic-features-model.md     # Semantics→visual mapping theory
+│   ├── cognitive-hierarchy-visual-theming.md # Salience/temperature/theming theory
 │   └── phase-3-flow-inspector-plan.md # Flow inspector implementation plan
 │
 ├── lang/             # Spw language documentation
@@ -43,6 +49,7 @@ docs/
 - **Roadmap view?** Read `directions.spw` (1–3–6 month priorities)
 - **Episode plan (research/recording)?** Read `design/research-episodes-plan.md`
 - **Theming semantics model?** Read `design/semantic-features-model.md`
+- **Visual hierarchy/theming theory?** Read `design/cognitive-hierarchy-visual-theming.md`
 - **Flow inspector implementation plan?** Read `design/phase-3-flow-inspector-plan.md`
 - **Need the full map?** Open `index.spw`
 - **Working with feature flags?** See `feature-registry.spw`

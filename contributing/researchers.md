@@ -117,6 +117,17 @@ A compact plan that turns curiosity into research output.
 
 **Question:** How well does the interface support different cognitive and learning profiles?
 
+## Research Contribution Progression
+
+As you move beyond the six-week plan, treat the research contribution profile as a progression through increasingly strategic impact layers:
+
+1. **Explorer (Weeks 0–2)** – Learn the grammar, experiment in the workbench, and ask “Why does this feel right/wrong?” Use the hero GIF/demo in the README to internalize the three lenses and describe the trigger that drew you in.
+2. **Instrumentalist (Weeks 2–4)** – Design measurements (keyboard/metrics instrumentation, token budgets, accessibility checks) and collect data. Document hypotheses and outcomes in `docs/market-research-log.spw` or `docs/launch-feedback.spw`.
+3. **Translator (Weeks 4–6)** – Turn findings into tangible contributions: spec notes, UX tweaks, new docs, or tooling that explains the layered architecture to others. Draft a short launch-style post (X/Discord thread) that frames your work as an experiment in “enforced cognitive layers + human+AI co-design,” citing the README/mobile hero.
+4. **Architect (Post-week 6)** – Mentor new researchers, steward the case-study narrative, and help validate marketing/engagement experiments (README text swaps, social posts, hero GIF updates) so that contributor interest stays aligned with the Spw philosophy.
+
+Each stage feeds the next: the marketing research plan becomes part of your instrumentation, and your documentation is the field report that attracts the next cohort.
+
 **Example Research:**
 - WCAG accessibility compliance testing
 - Screen reader compatibility analysis

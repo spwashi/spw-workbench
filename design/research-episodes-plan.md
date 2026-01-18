@@ -84,6 +84,7 @@ Goal: enable artists to ship cohesive skins without breaking layout/accessibilit
 ## Companion Specs
 
 - `docs/design/semantic-features-model.md` — semantics-first theming primitives (intensity/proximity/clarity) + LOD + grounding.
+- `docs/design/cognitive-hierarchy-visual-theming.md` — mathematical/visual foundations (salience, temperature, learnability) and unification plan.
 - `docs/design/phase-3-flow-inspector-plan.md` — Episode 9 implementation plan for making the Flow inspector real and synchronized with geology.
 
 ## Season Plan (Episodes)
