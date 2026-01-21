@@ -10,84 +10,84 @@
 ^[alignment]
 
 ^["New Forms (not in current docs)"]{
-  #critical{
+  ~#critical{
     =[@src/lib/spw/grammar/]{
-      #implemented: "capsules <tag[params]{body}>, n-range ((...)), streaming <<...>>@sink"
-      #docs_missing: "spec write-up still needed"
-      #location: "new core/CAPSULES.md, core/STREAMS.md additions"
+      ~#implemented: "capsules <tag[params]{body}>, n-range ((...)), streaming <<...>>@sink"
+      ~#docs_missing: "spec write-up still needed"
+      ~#location: "new core/CAPSULES.md, core/STREAMS.md additions"
     }
   }
 
-  #seed_formalization{
+  ~#seed_formalization{
     ?[seed_form]{
-      #syntax: "^seed[\"Name v:...\"]{ ... }"
-      #purpose: "unit of authoring + distribution"
-      #existing: "mentioned but not formalized as THE authoring unit"
-      #location: "README.md or new core/SEEDS.md"
+      ~#syntax: "^seed[\"Name v:...\"]{ ... }"
+      ~#purpose: "unit of authoring + distribution"
+      ~#existing: "mentioned but not formalized as THE authoring unit"
+      ~#location: "README.md or new core/SEEDS.md"
     }
   }
 }
 
 ^["New Concepts (require new docs)"]{
-  #goals{
+  ~#goals{
     ?[runtime_goals]{
-      #tokens: "explain, index, execute, onboard, audit"
-      #purpose: "first-class runtime modes"
-      #location: "new runtime/GOALS.md"
-      #code_impact: "src/runtime/goals/ directory"
+      ~#tokens: "explain, index, execute, onboard, audit"
+      ~#purpose: "first-class runtime modes"
+      ~#location: "new runtime/GOALS.md"
+      ~#code_impact: "src/runtime/goals/ directory"
     }
   }
 
-  #pipeline{
+  ~#pipeline{
     ?[distill_extract]{
-      #stages: "prime -> wonder -> desugar -> extract -> precipitate"
-      #strata: "char, word, token, node, block, file, upstream"
-      #location: "new runtime/PIPELINE.md"
-      #code_impact: "src/runtime/pipeline/ directory"
+      ~#stages: "prime -> wonder -> desugar -> extract -> precipitate"
+      ~#strata: "char, word, token, node, block, file, upstream"
+      ~#location: "new runtime/PIPELINE.md"
+      ~#code_impact: "src/runtime/pipeline/ directory"
     }
   }
 
-  #integrity{
+  ~#integrity{
     =[@src/lib/spw/canonical/]{
-      #implemented: "canonicalize() + hashString() normalization layer"
-      #docs_missing: "write core/INTEGRITY.md with rules + hashing options"
+      ~#implemented: "canonicalize() + hashString() normalization layer"
+      ~#docs_missing: "write core/INTEGRITY.md with rules + hashing options"
     }
   }
 
-  #generated_ir{
+  ~#generated_ir{
     ?[cache_ir]{
-      #name: "Spw.c.CacheIR"
-      #purpose: "container + operator topography + normalized metadata"
-      #location: "new runtime/CACHE-IR.md"
+      ~#name: "Spw.c.CacheIR"
+      ~#purpose: "container + operator topography + normalized metadata"
+      ~#location: "new runtime/CACHE-IR.md"
     }
   }
 
-  #capability{
+  ~#capability{
     ?[nev]{
-      #name: "Normalized Effect IDs"
-      #purpose: "capability gating for unsafe effects"
-      #location: "new runtime/CAPABILITIES.md or core/SAFETY.md"
+      ~#name: "Normalized Effect IDs"
+      ~#purpose: "capability gating for unsafe effects"
+      ~#location: "new runtime/CAPABILITIES.md or core/SAFETY.md"
     }
   }
 }
 
 ^["Terminology Alignment"]{
-  #taste_posture_split{
-    #existing: "Taste@ as meta-domain for aesthetic evaluation"
-    #new_spec{
+  ~#taste_posture_split{
+    ~#existing: "Taste@ as meta-domain for aesthetic evaluation"
+    ~#new_spec{
       Spw.Taste > TasteProfile     # aesthetic: layout/pacing only
       Spw.Posture > BehaviorProfile    # behavioral: safety/performance/rigor
     }
-    #action: "Split domains/TASTE.md, add domains/POSTURE.md"
-    #aliases{
+    ~#action: "Split domains/TASTE.md, add domains/POSTURE.md"
+    ~#aliases{
       "Spw.Profile.*" == "Spw.Posture.*"
       "Spw.Stance.*"  == "Spw.Posture.*"
     }
   }
 
-  #dialect_tokens{
-    #existing: "Spw.l, Spw.b, Spw.x (geometry) + Spw.p, Spw.q, Spw.t (function)"
-    #new_spec{
+  ~#dialect_tokens{
+    ~#existing: "Spw.l, Spw.b, Spw.x (geometry) + Spw.p, Spw.q, Spw.t (function)"
+    ~#new_spec{
       spw.b  # baseline/boon
       spw.l  # library/layer
       spw.m  # material/machine
@@ -97,62 +97,62 @@
       spw.r  # reduction/distillation
       spw.t  # topology
     }
-    #action: "Update dialects/ to include new tokens, clarify existing"
+    ~#action: "Update dialects/ to include new tokens, clarify existing"
   }
 }
 
 ^["Operator Alignment"]{
-  #existing_8: "! ^ ~ <> ? * = @"
-  #new_15: "! ? * ~ = @ # . <> / : .. -> & |"
+  ~#existing_8: "! ^ ~ <> ? * = @"
+  ~#new_15: "! ? * ~ = @ # . <> / : .. -> & |"
 
-  #differences{
+  ~#differences{
     # ^: existing uses as "tap/anchor"; new uses ^seed as form
     # #: both have as annotation/header
     # New: / (path), : (pairing), -> (mapping)
   }
 
-  #action: "Reconcile operator sets in SPEC.md; clarify ^seed vs ^ operator; document added connectors (/ : -> & | ..) and container forms"
+  ~#action: "Reconcile operator sets in SPEC.md; clarify ^seed vs ^ operator; document added connectors (/ : -> & | ..) and container forms"
 }
 
 ^["Code Alignment Needed"]{
-  #new_directories{
+  ~#new_directories{
     @src/runtime/goals/       # goal-based execution
     @src/runtime/pipeline/    # distill/extract stages
     @src/core/strata/         # char->word->token->node->block->file->upstream
   }
 
-  #terminology_updates{
+  ~#terminology_updates{
     ?[@src/design/themes/]{
-      #current: "theme manager, style tokens"
-      #align_to: "TasteProfile concepts where applicable"
+      ~#current: "theme manager, style tokens"
+      ~#align_to: "TasteProfile concepts where applicable"
     }
 
     ?[@src/features/onboarding/]{
-      #current: "disclosure levels, feature visibility"
-      #align_to: "onboard goal semantics"
+      ~#current: "disclosure levels, feature visibility"
+      ~#align_to: "onboard goal semantics"
     }
   }
 
-  #parser_extensions{
+  ~#parser_extensions{
     @src/lib/spw/grammar/  # capsule syntax, n-range, streaming
   }
 }
 
 ^["Documentation Update Priority"]{
-  #phase_1["Critical - Breaks Coherence"]{
+  ~#phase_1["Critical - Breaks Coherence"]{
     @spec/core/CAPSULES.md     # new file for capsule syntax
     @spec/core/INTEGRITY.md    # canonicalization + hashing
     @spec/runtime/GOALS.md     # goal tokens
     @spec/domains/POSTURE.md   # split from Taste
   }
 
-  #phase_2["Important - Completes Model"]{
+  ~#phase_2["Important - Completes Model"]{
     @spec/runtime/PIPELINE.md  # distill/extract stages
     @spec/core/SEEDS.md        # formalize ^seed
     @spec/dialects/GEOMETRY.md # update with spw.r, spw.m
   }
 
-  #phase_3["Enhancement"]{
+  ~#phase_3["Enhancement"]{
     @spec/runtime/CACHE-IR.md
     @spec/core/SAFETY.md       # NEV/capabilities
     @spec/applications/QUERY.md  # spw.q examples
@@ -160,19 +160,19 @@
 }
 
 ^["Feature Documentation Strategy"]{
-  #principle{
+  ~#principle{
     "Each feature has three homes:
      1. @spec/ - specification (what)
      2. docs/*.spw - codebase topology (where)
      3. @src/**/README.md - implementation notes (how)"
   }
 
-  #flow{
+  ~#flow{
     spec > implementation > integration
     @spec/ > @src/lib/spw/ > @src/lang/
   }
 
-  #traceability{
+  ~#traceability{
     "Use @root/path and ~\"./local\" references"
     "Update docs/architecture.spw when spec changes"
   }

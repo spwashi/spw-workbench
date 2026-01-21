@@ -8,12 +8,12 @@
 }
 
 ^["Concept"]{
-  #purpose{
+  ~#purpose{
     "HUD displays runtime context: what's active, what's available, what's constrained."
     "Like a cockpit instrument panel for Spw execution."
   }
 
-  #metaphor{
+  ~#metaphor{
     sheaf: "Bundle of seeds being worked on together"
     session: "Active evaluation context with accumulated state"
     profile: "Combination of phase selections"
@@ -24,7 +24,7 @@
 ^["Phase Profile Model"]{
 
   ^["Profile Definition"]{
-    #structure{
+    ~#structure{
       name: "identifier"
       surface: "block | linear | natural | streaming"
       structure: "explicit | inferred"
@@ -33,7 +33,7 @@
       presentation: "TasteProfile reference"
     }
 
-    #example{
+    ~#example{
       ^profile["research.hardware"]{
         surface: block
         structure: inferred
@@ -45,7 +45,7 @@
   }
 
   ^["Profile Inheritance"]{
-    #base_profiles{
+    ~#base_profiles{
       ^profile["Spw.Defaults"]{
         surface: block
         structure: inferred
@@ -71,20 +71,20 @@
       }
     }
 
-    #extension{
+    ~#extension{
       "^profile[\"my.profile\" extends:\"Spw.Defaults\"]{ ... }"
       "Override only what differs"
     }
   }
 
   ^["Profile Composition"]{
-    #layering{
+    ~#layering{
       "Profiles can layer: later overrides earlier"
       "Capsule config overrides profile"
       "Explicit always beats implicit"
     }
 
-    #example{
+    ~#example{
       session.profiles: ["Spw.Defaults", "research.hardware"]
       capsule: "<c[orientation:explain]>"
       result: "block.inferred.Hardware.explain.Literate"
@@ -95,7 +95,7 @@
 ^["Feature Versioning Model"]{
 
   ^["Feature Registry"]{
-    #structure{
+    ~#structure{
       feature_id: "namespaced identifier"
       version: "semver"
       status: "stable | preview | experimental | deprecated"
@@ -103,7 +103,7 @@
       conflicts: "list of incompatible features"
     }
 
-    #core_features{
+    ~#core_features{
       ^feature["spw.core.operators"]{
         version: "0.1.0"
         status: stable
@@ -156,7 +156,7 @@
   }
 
   ^["Feature Gates"]{
-    #activation{
+    ~#activation{
       "Features have default state based on status"
       stable: "on by default"
       preview: "off by default, opt-in"
@@ -164,13 +164,13 @@
       deprecated: "on but warns, opt-out"
     }
 
-    #capsule_syntax{
+    ~#capsule_syntax{
       enable: "<c[features:+{capsules goals}]>"
       disable: "<c[features:-{deprecated.old}]>"
       require: "<c[features:!{streaming}]>"  # error if unavailable
     }
 
-    #session_override{
+    ~#session_override{
       "Runtime can force-enable/disable features"
       "Useful for testing, debugging, conformance checking"
     }
@@ -180,14 +180,14 @@
 ^["HUD Display Model"]{
 
   ^["Session Panel"]{
-    #displays{
+    ~#displays{
       active_sheaf: "Name and path of current seed bundle"
       session_id: "Unique identifier for this evaluation"
       started: "Timestamp"
       profile_stack: "Active profiles in order"
     }
 
-    #example{
+    ~#example{
       "┌─ Session ─────────────────────────┐"
       "│ Sheaf: ~/projects/demo.spw        │"
       "│ ID: sess_7f3a2b                   │"
@@ -198,7 +198,7 @@
   }
 
   ^["Phase Panel"]{
-    #displays{
+    ~#displays{
       surface: "Current surface dialect with indicator"
       structure: "Current structure mode"
       projection: "Active domain(s)"
@@ -206,7 +206,7 @@
       presentation: "Active taste profile"
     }
 
-    #example{
+    ~#example{
       "┌─ Phases ──────────────────────────┐"
       "│ Surface:      ▓ block             │"
       "│ Structure:    ▓ inferred          │"
@@ -216,7 +216,7 @@
       "└───────────────────────────────────┘"
     }
 
-    #indicators{
+    ~#indicators{
       "▓": "Explicitly set"
       "░": "Inherited/default"
       "◊": "Overridden by capsule"
@@ -224,14 +224,14 @@
   }
 
   ^["Feature Panel"]{
-    #displays{
+    ~#displays{
       conformance: "L1 / L2 / L3"
       features_enabled: "List of active features"
       features_available: "List of available but inactive"
       features_blocked: "List of unavailable (version/conflict)"
     }
 
-    #example{
+    ~#example{
       "┌─ Features ────────────────────────┐"
       "│ Conformance: L2                   │"
       "│                                   │"
@@ -245,7 +245,7 @@
   }
 
   ^["Posture Panel"]{
-    #displays{
+    ~#displays{
       active_posture: "Current BehaviorProfile"
       verification: "Level indicator"
       logging: "Level indicator"
@@ -253,7 +253,7 @@
       capabilities: "Granted caps list"
     }
 
-    #example{
+    ~#example{
       "┌─ Posture ─────────────────────────┐"
       "│ Profile: ResearchRigorous         │"
       "│                                   │"
@@ -268,14 +268,14 @@
   }
 
   ^["Goal Panel"]{
-    #displays{
+    ~#displays{
       active_goal: "Current runtime goal"
       pipeline_stage: "Current stage in pipeline"
       reduction_mode: "Condense/expand/preserve"
       strata_target: "Extraction level"
     }
 
-    #example{
+    ~#example{
       "┌─ Goal ────────────────────────────┐"
       "│ Active: explain                   │"
       "│                                   │"
@@ -287,13 +287,13 @@
   }
 
   ^["Capsule Stack"]{
-    #displays{
+    ~#displays{
       "Stack of active capsule configurations"
       "Most recent (innermost) at top"
       "Shows which keys are set at each level"
     }
 
-    #example{
+    ~#example{
       "┌─ Capsule Stack ───────────────────┐"
       "│ 2: <c[goal:explain]>              │"
       "│ 1: <c[use:Posture.Research]>      │"
@@ -307,7 +307,7 @@
 ^["Implementation Architecture"]{
 
   ^["Runtime State"]{
-    #types{
+    ~#types{
       ^type["SessionState"]{
         id: string
         sheaf: SheafRef
@@ -339,7 +339,7 @@
   }
 
   ^["State Bus"]{
-    #events{
+    ~#events{
       session.start: "New session began"
       session.end: "Session completed"
       profile.push: "Profile added to stack"
@@ -353,7 +353,7 @@
       phase.change: "Phase config changed"
     }
 
-    #subscription{
+    ~#subscription{
       "HUD subscribes to state bus"
       "Updates panels on relevant events"
       "Debounces rapid changes"
@@ -361,12 +361,12 @@
   }
 
   ^["Persistence"]{
-    #session_state{
+    ~#session_state{
       "Session state can be serialized"
       "Enables: save/restore, sharing, replay"
     }
 
-    #sheaf_metadata{
+    ~#sheaf_metadata{
       "Sheaf can declare preferred profiles/features"
       "Stored in seed header or companion file"
     }
@@ -386,19 +386,19 @@
   }
 
   ^["Layout Options"]{
-    #sidebar{
+    ~#sidebar{
       "Vertical stack in right sidebar"
       "Collapsible panels"
       "Minimal mode shows only indicators"
     }
 
-    #floating{
+    ~#floating{
       "Floating overlay"
       "Draggable, resizable"
       "Can dock to edges"
     }
 
-    #statusbar{
+    ~#statusbar{
       "Compact single-line summary"
       "Click to expand details"
       "Always visible"
@@ -406,18 +406,18 @@
   }
 
   ^["Interaction"]{
-    #read_only{
+    ~#read_only{
       "HUD displays current state"
       "Does not directly modify"
     }
 
-    #quick_actions{
+    ~#quick_actions{
       "Click profile to see details"
       "Click feature to see docs"
       "Click capsule to jump to source"
     }
 
-    #configuration{
+    ~#configuration{
       "Settings panel for defaults"
       "Profile editor"
       "Feature gate configuration"

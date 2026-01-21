@@ -9,22 +9,22 @@
 
 ^["Phase Profile Naming"]{
 
-  #current_model{
+  ~#current_model{
     surface > structure > projection > orientation > presentation.
 
-    #issue: "Names are abstract; hard to remember mapping to tokens"
-    #issue: "spw.b, spw.l, spw.x don't clearly map to phases"
+    ~#issue: "Names are abstract; hard to remember mapping to tokens"
+    ~#issue: "spw.b, spw.l, spw.x don't clearly map to phases"
   }
 
   ^["Naming Principles"]{
-    #goals{
+    ~#goals{
       memorable: "Names should stick after one reading"
       compositional: "Names should combine naturally"
       mnemonic: "Abbreviations should be obvious"
       distinct: "No confusing overlaps"
     }
 
-    #anti_patterns{
+    ~#anti_patterns{
       jargon: "Avoid terms that need lookup"
       overload: "Don't reuse terms from other contexts"
       ambiguity: "Avoid similar-sounding names"
@@ -34,7 +34,7 @@
   ^["Alternative Naming Schemes"]{
 
     ^["Craft Metaphor"]{
-      #mapping{
+      ~#mapping{
         surface: "material"     # what you're working with
         structure: "form"       # how it's shaped
         projection: "meaning"   # what it signifies
@@ -42,15 +42,15 @@
         presentation: "finish"  # how it appears
       }
 
-      #composition: "Spw.block.inferred.Hardware.query.terse"
-      #becomes: "Spw.block.Hardware.query:terse"
+      ~#composition: "Spw.block.inferred.Hardware.query.terse"
+      ~#becomes: "Spw.block.Hardware.query:terse"
 
-      #pros: "Tangible, craftsperson feel"
-      #cons: "May feel too physical for abstract work"
+      ~#pros: "Tangible, craftsperson feel"
+      ~#cons: "May feel too physical for abstract work"
     }
 
     ^["Journey Metaphor"]{
-      #mapping{
+      ~#mapping{
         surface: "source"       # where text comes from
         structure: "path"       # how it's traversed
         projection: "lens"      # what filter applies
@@ -58,12 +58,12 @@
         presentation: "view"    # what you see
       }
 
-      #pros: "Natural flow, goal-oriented"
-      #cons: "View/lens overlap conceptually"
+      ~#pros: "Natural flow, goal-oriented"
+      ~#cons: "View/lens overlap conceptually"
     }
 
     ^["Layer Metaphor"]{
-      #mapping{
+      ~#mapping{
         surface: "skin"         # outer syntax
         structure: "bone"       # internal structure
         projection: "soul"      # interpretive essence
@@ -71,12 +71,12 @@
         presentation: "face"    # display form
       }
 
-      #pros: "Memorable, embodied"
-      #cons: "Skin/face distinction unclear"
+      ~#pros: "Memorable, embodied"
+      ~#cons: "Skin/face distinction unclear"
     }
 
     ^["Direct Naming"]{
-      #mapping{
+      ~#mapping{
         surface: "lex"          # lexing phase
         structure: "parse"      # parsing phase
         projection: "domain"    # domain binding
@@ -84,15 +84,15 @@
         presentation: "style"   # style application
       }
 
-      #composition: "Spw.block.infer.Hardware.query.terse"
+      ~#composition: "Spw.block.infer.Hardware.query.terse"
 
-      #pros: "Technical, precise"
-      #cons: "Less memorable, more jargon"
+      ~#pros: "Technical, precise"
+      ~#cons: "Less memorable, more jargon"
     }
   }
 
   ^["Token Reconciliation"]{
-    #current_tokens{
+    ~#current_tokens{
       spw.b: "block (surface)"
       spw.l: "linear (surface)"
       spw.x: "linkage (orientation)"
@@ -103,7 +103,7 @@
       spw.m: "material/machine (projection?)"
     }
 
-    #proposal{
+    ~#proposal{
       # Surface tokens (how text looks)
       spw.b: "block"
       spw.l: "linear"
@@ -128,14 +128,14 @@
       # Use TasteProfile names instead
     }
 
-    #shorthand_examples{
+    ~#shorthand_examples{
       "spw.b.i.q": "block, inferred, query"
       "spw.l.e.r": "linear, explicit, reduce"
       "spw.b.Hardware.q": "block, Hardware domain, query"
     }
   }
 
-  #recommendation{
+  ~#recommendation{
     "Keep phase names abstract (surface/structure/projection/orientation/presentation)"
     "Use concrete token abbreviations for actual selection"
     "Domain@ notation for projection phase"
@@ -147,13 +147,13 @@
 ^["Feature Versioning and Configuration"]{
 
   ^["Current State"]{
-    #codebase{
+    ~#codebase{
       conformance_levels: "L1 (parser), L2 (evaluator), L3 (full)"
       feature_visibility: "disclosure levels (beginner, intermediate, advanced)"
       no_formal_feature_flags
     }
 
-    #spec{
+    ~#spec{
       boundaries: "locked, optional, deferred"
       version_string: "0.1.0-prealpha"
       trajectory: "0.1.0 → 0.2.0 → 0.3.0 → 1.0.0"
@@ -163,38 +163,38 @@
   ^["Lessons from Other Systems"]{
 
     ^["Rust Editions"]{
-      #pattern: "Edition = breaking change boundary"
-      #example: "rust 2015, 2018, 2021"
-      #benefit: "Old code compiles; new features opt-in"
-      #apply_to_spw: "Spw editions for breaking syntax changes"
+      ~#pattern: "Edition = breaking change boundary"
+      ~#example: "rust 2015, 2018, 2021"
+      ~#benefit: "Old code compiles; new features opt-in"
+      ~#apply_to_spw: "Spw editions for breaking syntax changes"
     }
 
     ^["TypeScript strictness"]{
-      #pattern: "Graduated strictness via flags"
-      #example: "strict, noImplicitAny, strictNullChecks"
-      #benefit: "Incremental adoption"
-      #apply_to_spw: "Posture flags as strictness levels"
+      ~#pattern: "Graduated strictness via flags"
+      ~#example: "strict, noImplicitAny, strictNullChecks"
+      ~#benefit: "Incremental adoption"
+      ~#apply_to_spw: "Posture flags as strictness levels"
     }
 
     ^["Feature Flags (general)"]{
-      #pattern: "Runtime or compile-time toggles"
-      #benefit: "Ship incomplete features safely"
-      #caution: "Flag debt accumulates"
+      ~#pattern: "Runtime or compile-time toggles"
+      ~#benefit: "Ship incomplete features safely"
+      ~#caution: "Flag debt accumulates"
     }
 
     ^["Clojure Spec"]{
-      #pattern: "Specs as data, versioned independently"
-      #benefit: "Contracts evolve separately from implementation"
-      #apply_to_spw: "Capsule configs as spec data"
+      ~#pattern: "Specs as data, versioned independently"
+      ~#benefit: "Contracts evolve separately from implementation"
+      ~#apply_to_spw: "Capsule configs as spec data"
     }
   }
 
   ^["Proposed Versioning Model"]{
 
     ^["Seed Versioning"]{
-      #format: "^seed[\"Name v:major.minor.patch-stage\"]"
+      ~#format: "^seed[\"Name v:major.minor.patch-stage\"]"
 
-      #stages{
+      ~#stages{
         prealpha: "Experimental, breaking changes expected"
         alpha: "Feature-complete prototype, may change"
         beta: "Stabilizing, limited changes"
@@ -202,53 +202,53 @@
         stable: "Released, semantic versioning applies"
       }
 
-      #example: "^seed[\"MyLib v:0.3.0-beta\"]"
+      ~#example: "^seed[\"MyLib v:0.3.0-beta\"]"
     }
 
     ^["Capability Declaration"]{
-      #in_capsule{
+      ~#in_capsule{
         "<c[requires:Spw@0.1.0 features:{capsules goals}]>{ ... }"
       }
 
-      #meaning: "This content requires Spw 0.1.0+ with capsules and goals"
-      #benefit: "Explicit compatibility, graceful degradation"
+      ~#meaning: "This content requires Spw 0.1.0+ with capsules and goals"
+      ~#benefit: "Explicit compatibility, graceful degradation"
     }
 
     ^["Feature Gates"]{
-      #levels{
+      ~#levels{
         stable: "Default, always available"
         preview: "Opt-in, may change"
         experimental: "Explicit enable, will change"
         deprecated: "Works but warns, will remove"
       }
 
-      #syntax{
+      ~#syntax{
         "<c[features:+preview.streaming]>{ <<...>> }"
         "<c[features:-deprecated.old_syntax]>{ ... }"
       }
     }
 
     ^["Conformance Badges"]{
-      #purpose: "Mark implementation conformance level"
+      ~#purpose: "Mark implementation conformance level"
 
-      #example{
-        "#conformance:L2"
-        "#conformance:L3.partial{missing:reflection}"
+      ~#example{
+        "~#conformance:L2"
+        "~#conformance:L3.partial{missing:reflection}"
       }
     }
   }
 
   ^["Configuration Hierarchy"]{
-    #layers{
+    ~#layers{
       1: "Language spec (locked)"
       2: "Seed declaration (author intent)"
       3: "Capsule config (local override)"
       4: "Runtime flags (execution context)"
     }
 
-    #resolution: "Later layers override earlier; explicit beats implicit"
+    ~#resolution: "Later layers override earlier; explicit beats implicit"
 
-    #example{
+    ~#example{
       "Spw spec says reduction is default"
       "Seed declares goal:explain"
       "Capsule overrides to goal:audit"
@@ -262,128 +262,128 @@
   ^["Notation and Ergonomics"]{
 
     ^["APL/J/K"]{
-      #lesson: "Density enables thinking"
-      #insight: "Concise notation lets you hold more in working memory"
-      #apply: "Spw operators should be memorable, not just short"
-      #caution: "Density without learnability is exclusionary"
+      ~#lesson: "Density enables thinking"
+      ~#insight: "Concise notation lets you hold more in working memory"
+      ~#apply: "Spw operators should be memorable, not just short"
+      ~#caution: "Density without learnability is exclusionary"
     }
 
     ^["Forth"]{
-      #lesson: "Stack-based composition is powerful"
-      #insight: "Postfix notation eliminates precedence confusion"
-      #apply: "Consider stack-like evaluation model for runtime"
-      #caution: "Pure postfix is hard to read for complex expressions"
+      ~#lesson: "Stack-based composition is powerful"
+      ~#insight: "Postfix notation eliminates precedence confusion"
+      ~#apply: "Consider stack-like evaluation model for runtime"
+      ~#caution: "Pure postfix is hard to read for complex expressions"
     }
 
     ^["Lisp/Scheme"]{
-      #lesson: "Homoiconicity enables metaprogramming"
-      #insight: "Code as data; macros as functions on code"
-      #apply: "X# reflection, (( )) hedging lean this direction"
-      #caution: "Macro hygiene is hard; keep deferred until understood"
+      ~#lesson: "Homoiconicity enables metaprogramming"
+      ~#insight: "Code as data; macros as functions on code"
+      ~#apply: "X# reflection, (( )) hedging lean this direction"
+      ~#caution: "Macro hygiene is hard; keep deferred until understood"
     }
 
     ^["Haskell"]{
-      #lesson: "Types as documentation and verification"
-      #insight: "Expressive types catch errors early"
-      #apply: ":: type annotations in Spw 0.3.0"
-      #caution: "Type inference complexity; start simple"
+      ~#lesson: "Types as documentation and verification"
+      ~#insight: "Expressive types catch errors early"
+      ~#apply: ":: type annotations in Spw 0.3.0"
+      ~#caution: "Type inference complexity; start simple"
     }
   }
 
   ^["Safety and Capability"]{
 
     ^["Rust"]{
-      #lesson: "Ownership prevents whole classes of bugs"
-      #insight: "Affine types track resource lifecycles"
-      #apply: "Effect tracking via NEV; capability gating"
-      #caution: "Borrow checker learning curve is steep"
+      ~#lesson: "Ownership prevents whole classes of bugs"
+      ~#insight: "Affine types track resource lifecycles"
+      ~#apply: "Effect tracking via NEV; capability gating"
+      ~#caution: "Borrow checker learning curve is steep"
     }
 
     ^["Capability-based Security"]{
-      #examples: "E language, Wasm, Deno"
-      #lesson: "Capabilities are unforgeable tokens"
-      #insight: "Least privilege by default"
-      #apply: "caps:{} in capsules; posture.ProductionSafe"
+      ~#examples: "E language, Wasm, Deno"
+      ~#lesson: "Capabilities are unforgeable tokens"
+      ~#insight: "Least privilege by default"
+      ~#apply: "caps:{} in capsules; posture.ProductionSafe"
     }
 
     ^["Erlang/OTP"]{
-      #lesson: "Let it crash; supervise recovery"
-      #insight: "Isolation enables fault tolerance"
-      #apply: "Seed boundaries as isolation units"
+      ~#lesson: "Let it crash; supervise recovery"
+      ~#insight: "Isolation enables fault tolerance"
+      ~#apply: "Seed boundaries as isolation units"
     }
   }
 
   ^["Composition and Modules"]{
 
     ^["ML Modules"]{
-      #lesson: "Modules are first-class; signatures separate"
-      #insight: "Module functors enable generic programming"
-      #apply: "Seed as module; capsule as signature overlay"
+      ~#lesson: "Modules are first-class; signatures separate"
+      ~#insight: "Module functors enable generic programming"
+      ~#apply: "Seed as module; capsule as signature overlay"
     }
 
     ^["Go"]{
-      #lesson: "Simplicity over cleverness"
-      #insight: "Fewer features = easier tooling"
-      #apply: "Resist feature creep; maintain 8 operator limit"
+      ~#lesson: "Simplicity over cleverness"
+      ~#insight: "Fewer features = easier tooling"
+      ~#apply: "Resist feature creep; maintain 8 operator limit"
     }
 
     ^["Clojure"]{
-      #lesson: "Immutability by default; explicit mutation"
-      #insight: "Persistent data structures enable sharing"
-      #apply: "Bindings are immutable; = locks rather than assigns"
+      ~#lesson: "Immutability by default; explicit mutation"
+      ~#insight: "Persistent data structures enable sharing"
+      ~#apply: "Bindings are immutable; = locks rather than assigns"
     }
 
     ^["Nix"]{
-      #lesson: "Purely functional builds; content-addressed"
-      #insight: "Hash-based identity enables caching"
-      #apply: "canonical_text → sha256 → CAS storage"
+      ~#lesson: "Purely functional builds; content-addressed"
+      ~#insight: "Hash-based identity enables caching"
+      ~#apply: "canonical_text → sha256 → CAS storage"
     }
   }
 
   ^["Parsing and Syntax"]{
 
     ^["PEG/Packrat"]{
-      #lesson: "Ordered choice eliminates ambiguity"
-      #insight: "Memoization makes it O(n)"
-      #apply: "Spw already uses PEG-style; maintain determinism"
+      ~#lesson: "Ordered choice eliminates ambiguity"
+      ~#insight: "Memoization makes it O(n)"
+      ~#apply: "Spw already uses PEG-style; maintain determinism"
     }
 
     ^["Tree-sitter"]{
-      #lesson: "Incremental parsing for real-time feedback"
-      #insight: "Concrete syntax tree preserves all tokens"
-      #apply: "Consider incremental parsing for editor integration"
+      ~#lesson: "Incremental parsing for real-time feedback"
+      ~#insight: "Concrete syntax tree preserves all tokens"
+      ~#apply: "Consider incremental parsing for editor integration"
     }
 
     ^["Markdown/CommonMark"]{
-      #lesson: "Spec ambiguity causes incompatibility"
-      #insight: "Test suite is the real spec"
-      #apply: "Conformance tests are normative; prose is descriptive"
+      ~#lesson: "Spec ambiguity causes incompatibility"
+      ~#insight: "Test suite is the real spec"
+      ~#apply: "Conformance tests are normative; prose is descriptive"
     }
   }
 
   ^["Developer Experience"]{
 
     ^["Elm"]{
-      #lesson: "Compiler as assistant, not adversary"
-      #insight: "Error messages should teach"
-      #apply: "goal:onboard should produce Elm-quality hints"
+      ~#lesson: "Compiler as assistant, not adversary"
+      ~#insight: "Error messages should teach"
+      ~#apply: "goal:onboard should produce Elm-quality hints"
     }
 
     ^["Ruby"]{
-      #lesson: "Optimize for programmer happiness"
-      #insight: "Ergonomics matter more than purity"
-      #apply: "Taste profiles; gentle defaults for beginners"
+      ~#lesson: "Optimize for programmer happiness"
+      ~#insight: "Ergonomics matter more than purity"
+      ~#apply: "Taste profiles; gentle defaults for beginners"
     }
 
     ^["Jupyter/REPLs"]{
-      #lesson: "Immediate feedback accelerates learning"
-      #insight: "Notebook format = code + output + narrative"
-      #apply: "goal:explain should produce notebook-like output"
+      ~#lesson: "Immediate feedback accelerates learning"
+      ~#insight: "Notebook format = code + output + narrative"
+      ~#apply: "goal:explain should produce notebook-like output"
     }
   }
 
   ^["Synthesis"]{
-    #key_lessons{
+    ~#key_lessons{
       notation: "Concise but learnable; mnemonic over terse"
       safety: "Capability-based; explicit over implicit"
       composition: "Immutable by default; modules with signatures"
@@ -391,7 +391,7 @@
       dx: "Error messages teach; feedback is immediate"
     }
 
-    #spw_differentiators{
+    ~#spw_differentiators{
       "Domain polymorphism is rare - lean into it"
       "Operator-as-wavefunction is novel - develop the theory"
       "Goal-first execution is unusual - make it central"
@@ -401,19 +401,19 @@
 }
 
 ^["Action Items"]{
-  #phase_naming{
+  ~#phase_naming{
     1: "Finalize token abbreviations (spw.b, spw.l, etc.)"
     2: "Document phase → token mapping clearly"
     3: "Consider dropping single-letter tokens for clarity"
   }
 
-  #versioning{
+  ~#versioning{
     1: "Add version field to seed syntax"
     2: "Implement feature gate parsing in capsules"
     3: "Create conformance test suite"
   }
 
-  #dx_lessons{
+  ~#dx_lessons{
     1: "Prioritize error message quality (goal:onboard)"
     2: "Consider incremental parsing for editor"
     3: "Build REPL with immediate feedback"
