@@ -34,10 +34,55 @@
   runtime: interpreter, registers, goals
   viz: tokens, AST, flow, steps
   ui: component registry, stacking
-  design: themes, token bank
+  design: themes, token bank, personality, cognitive bridge, spirits, liminal
   features: keyboard, onboarding, inspector
   app: integrations and orchestration
   platform: bootstrapping and environment wiring
+}
+
+^["design-features"]{
+  !["Design Domain Features"]
+
+  ^feature["spw.design.personality"]{
+    version: "0.1.0"
+    status: preview
+    description: "Theme personality model — cognitively-grounded trait vectors (warmth, rhythm, grain, luminanceCycle, particleDensity, motionCharacter, depth)"
+    source: "@src/design/themes/personality/"
+  }
+
+  ^feature["spw.design.cognitive-bridge"]{
+    version: "0.1.0"
+    status: preview
+    description: "JS→CSS bridge computing --spw-narrative-* and --spw-cognitive-* custom properties from personality + semantic features"
+    source: "@src/design/themes/cognitive-bridge.ts"
+    requires: ["spw.design.personality"]
+  }
+
+  ^feature["spw.design.spirits"]{
+    version: "0.1.0"
+    status: preview
+    description: "Per-theme ambient @keyframes animations (9 spirits across nebula, atelier, hud families)"
+    source: "src/styles/themes/spirits.css"
+    requires: ["spw.design.personality", "spw.design.cognitive-bridge"]
+    gates: ["prefers-reduced-motion", "data-performance-mode"]
+  }
+
+  ^feature["spw.design.liminal"]{
+    version: "0.1.0"
+    status: preview
+    description: "Three-phase theme transitions (dissolve → liminal → crystallize) when switching between themes with personality"
+    source: "src/styles/themes/liminal.css"
+    requires: ["spw.design.cognitive-bridge"]
+    trigger: "html[data-theme-transitioning='true']"
+  }
+
+  ^feature["spw.design.echoes"]{
+    version: "0.1.0"
+    status: preview
+    description: "Cognitive-responsive echo opacity and micro-echo decorations on tokens and panel headers"
+    source: "src/styles/themes/echoes.css"
+    requires: ["spw.design.cognitive-bridge"]
+  }
 }
 
 ^["roots"]{

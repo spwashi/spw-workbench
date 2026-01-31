@@ -24,12 +24,35 @@
   @src/app/                    # Workbench glue + adapters
   @src/features/               # User behaviors
   @src/ui/                     # Portable UI
-  @src/design/                 # Themes, tokens
+  @src/design/                 # Themes, tokens, personality, cognitive bridge
   @src/viz/                    # Visualizations
   @src/runtime/                # Execution engine
   @src/lang/                   # Language surface
   @src/infra/                  # Timing, state, lifecycle, a11y
   @src/core/                   # Domains, conventions, layers, operators
+}
+
+^["design-depth"]{
+  # The design layer now has cognitive depth.
+  # Each theme carries a personality (trait vector) that drives
+  # atmospheric CSS through a JS→CSS bridge.
+
+  ^["flow"]{
+    personality  -> cognitive-bridge  -> ":root CSS custom properties"
+    semantic-features -> cognitive-bridge  -> "--spw-cognitive-* tokens"
+    personality.spirits -> applySpirits() -> ".spirit-* CSS classes"
+    theme-switch -> liminalTransition() -> "html[data-theme-transitioning]"
+  }
+
+  ^["css-layers"]{
+    textures.css    # grain (--spw-narrative-grain-opacity)
+    echoes.css      # echo leitmotifs (--spw-narrative-echo-opacity-*)
+    spirits.css     # ambient @keyframes (9 spirits)
+    liminal.css     # transition states
+    nebula.css      # breath, cognitive glow
+    atelier.css     # motion easing, focus envelope
+    mood.css        # pulse speed, warmth tint
+  }
 }
 
 ^["spec-to-impl"]{
