@@ -1,0 +1,79 @@
+# Feature Coherence
+#
+# Ensure each feature feels coherent end-to-end across panels, layouts, and runtime posture.
+
+^["roots"]{
+  @src: ~"../src"
+}
+
+^["definition"]{
+  ~#boutique: "A feature earns attention because its behaviors, visuals, and affordances are tuned across the whole interface."
+  ~#coherence: "Feature identity survives layout changes, position shifts, and runtime posture."
+}
+
+^["principles"]{
+  ~#single_profile: "Each feature declares one primary experience profile (axes + goals)."
+  ~#position_awareness: "Panels change behavior per position, but keep feature intent intact."
+  ~#runtime_link: "Authoring surfaces respond to runtime posture (live/paused/replay/explain)."
+  ~#micro_consistency: "Icons, verbs, and labels remain consistent across panels."
+  ~#explorability: "Movement and rearrangement reveal new affordances, not just new placement."
+}
+
+^["feature_profiles"]{
+  # Seed profiles for the two priority features.
+
+  ^["context-management"]{
+    ~#intent: "Maintain spatial + semantic awareness across panels."
+    ~#primary_axes{
+      perspective: inspecting
+      genre: analytic
+      cadence: browse
+    }
+    ~#position_bias{
+      docked_left: "structure-first, tree navigation, region map"
+      docked_right: "detail-first, actions + provenance"
+      docked_bottom: "timeline-first, session activity"
+    }
+    ~#runtime_posture{
+      live: "pulsing highlights + live selection sync"
+      paused: "snapshot compare + diff pins"
+      replay: "event breadcrumb trail"
+      explain: "guided callouts + semantic hints"
+    }
+  }
+
+  ^["authoring"]{
+    ~#intent: "Compose and transform source with immediate feedback."
+    ~#primary_axes{
+      perspective: authoring
+      genre: operational
+      cadence: work
+    }
+    ~#position_bias{
+      docked_left: "navigation + quick switches"
+      docked_right: "inline diagnostics + actions"
+      docked_bottom: "runtime log + prompts"
+    }
+    ~#runtime_posture{
+      live: "inline semantic pulses + smart hints"
+      paused: "diff overlays + provenance"
+      replay: "cursor timeline + event scrub"
+      explain: "operator cues + guided annotations"
+    }
+  }
+}
+
+^["preset_layouts"]{
+  # Presets define position, behavior bias, and density.
+  ~#default_presets{
+    focus_authoring: "Editor center, context left, diagnostics right, runtime bottom"
+    inspect_context: "Context left, inspector right, editor compact center"
+    runtime_playback: "Runtime bottom, editor center, timeline emphasis"
+  }
+  ~#notes: "Presets should map to behavior overrides, not just layout changes."
+}
+
+^["implementation-notes"]{
+  ~#scope: "First implementation uses presets + resize. Drag/drop can follow later."
+  ~#ownership: "Feature profiles live in docs; mapping helpers in @src/ui/ or @src/features/."
+}

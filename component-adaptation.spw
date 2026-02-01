@@ -1,0 +1,184 @@
+# Component Adaptation
+#
+# How components change structure + behavior based on space, detail, perspective, and genre.
+
+^["roots"]{
+  @src: ~"../src"
+}
+
+^["goal"]{
+  ~#intent: "Every component adapts to the context it is placed in."
+  ~#axes: [space, detail, perspective, genre, position, runtime_posture, cadence]
+  ~#contract: "Adapters change structure and behavior without changing the underlying data model."
+}
+
+^["axes"]{
+
+  ^["space"]{
+    ~#definition: "Physical area and aspect ratio available to the component."
+    ~#inputs{
+      width_px: "container width"
+      height_px: "container height"
+      aspect: "width / height"
+      density: "current UI density mode"
+    }
+    ~#buckets{
+      micro: "<= 240px short-side; single-line, icon-first"
+      compact: "241-480px short-side; condensed, 1-2 blocks"
+      regular: "481-960px short-side; standard layout"
+      expansive: "> 960px short-side; multi-column, rich"
+    }
+  }
+
+  ^["detail"]{
+    ~#definition: "How much information and explanation is exposed by default."
+    ~#inputs{
+      disclosure_level: "beginner/intermediate/advanced"
+      intent: "browse vs inspect vs edit"
+      time_budget: "quick glance vs deep work"
+    }
+    ~#levels{
+      hint: "signals only (status, title, primary action)"
+      summary: "primary facts + one level of context"
+      full: "complete content + secondary tools"
+      deep: "analysis, provenance, diagnostics, history"
+    }
+  }
+
+  ^["perspective"]{
+    ~#definition: "The viewer's role and goal while using the component."
+    ~#modes{
+      authoring: "compose/edit content"
+      reading: "consume content"
+      inspecting: "interrogate structure"
+      debugging: "trace causes, timing, state"
+      presenting: "clean, guided, minimal chrome"
+    }
+  }
+
+  ^["genre"]{
+    ~#definition: "The narrative/semantic flavor that styles the component's behavior."
+    ~#types{
+      analytic: "precision, crisp hierarchy, metrics"
+      narrative: "story flow, gentle pacing"
+      operational: "controls, status, throughput"
+      poetic: "atmosphere, texture, ambiguity"
+      pedagogic: "explainers, callouts, progression"
+    }
+  }
+
+  ^["position"]{
+    ~#definition: "Where a component sits in the layout, and the behavioral bias it implies."
+    ~#modes{
+      docked_left: "navigation + structural context"
+      docked_right: "inspection + action"
+      docked_bottom: "timeline + activity"
+      floating: "transient tool, quick glance"
+      stacked: "series of related panels"
+      center: "primary workspace surface"
+    }
+  }
+
+  ^["runtime_posture"]{
+    ~#definition: "Runtime stance that alters the interface and semantics for authoring surfaces."
+    ~#modes{
+      live: "reactive overlays, semantic pulses"
+      paused: "frozen semantics + diffs"
+      replay: "timeline scrub + event breadcrumbs"
+      explain: "guided annotations, operator cues"
+    }
+  }
+
+  ^["cadence"]{
+    ~#definition: "The interaction tempo expected of the user in this view."
+    ~#levels{
+      glance: "single-action, < 5s"
+      browse: "scan and compare"
+      work: "continuous editing"
+      deep_work: "sustained, layered attention"
+    }
+  }
+}
+
+^["adaptation-rules"]{
+  ~#priority: "Space and detail set the structural skeleton; perspective, genre, and position tune behavior + styling."
+
+  ^["structure"]{
+    ~#space_reduction: "When space tightens, reduce columns -> collapse sections -> iconize -> summarize."
+    ~#detail_gating: "Detail level controls disclosure: hint < summary < full < deep."
+    ~#progressive_disclosure: "Prefer reveal-on-demand (hover, expand, focus) over removing data."
+  }
+
+  ^["behavior"]{
+    ~#position_bias{
+      docked_left: "prioritize navigation + structure"
+      docked_right: "prioritize inspection + actions"
+      docked_bottom: "prioritize timeline + throughput"
+      floating: "transient tools, minimal chrome"
+      stacked: "shared headers, tight spacing"
+    }
+    ~#perspective_bias{
+      authoring: "surface primary edit actions, inline affordances"
+      reading: "minimize chrome, emphasize flow"
+      inspecting: "expose structure, relationships, IDs"
+      debugging: "show timing, state, provenance"
+      presenting: "lock layout, remove extra controls"
+    }
+    ~#genre_bias{
+      analytic: "grid alignment, numeric emphasis"
+      narrative: "stepwise reveal, soft transitions"
+      operational: "batch actions, status badges"
+      poetic: "texture, rhythm, ambiguity tolerated"
+      pedagogic: "callouts, annotations, guided order"
+    }
+  }
+}
+
+^["component-contract"]{
+  ~#required_inputs{
+    space_bucket: "micro | compact | regular | expansive"
+    detail_level: "hint | summary | full | deep"
+    perspective: "authoring | reading | inspecting | debugging | presenting"
+    genre: "analytic | narrative | operational | poetic | pedagogic"
+    position: "docked_left | docked_right | docked_bottom | floating | stacked | center"
+    runtime_posture: "live | paused | replay | explain"
+    cadence: "glance | browse | work | deep_work"
+  }
+
+  ~#outputs{
+    layout_variant: "structural template (slots, columns, density)"
+    behavior_variant: "interaction set (hover, expand, batch, reveal)"
+    style_variant: "token adjustments + theme overlays"
+  }
+}
+
+^["reference-matrix"]{
+  # Example adaptation map; each component should declare its own variants.
+
+  ^["panel"]{
+    micro: {layout:"stacked", actions:"primary-only", chrome:"icon"}
+    compact: {layout:"stacked", actions:"primary+secondary", chrome:"minimal"}
+    regular: {layout:"two-row", actions:"full", chrome:"standard"}
+    expansive: {layout:"two-column", actions:"full+batch", chrome:"rich"}
+  }
+
+  ^["card"]{
+    hint: {content:"title+status", interactions:"tap"}
+    summary: {content:"title+meta", interactions:"tap+hover"}
+    full: {content:"title+meta+body", interactions:"expand"}
+    deep: {content:"title+meta+body+provenance", interactions:"expand+inspect"}
+  }
+
+  ^["editor-panel"]{
+    live: {overlays:"semantic pulses", gutter:"inline hints"}
+    paused: {overlays:"diff+provenance", gutter:"frozen hints"}
+    replay: {overlays:"timeline scrub", gutter:"event breadcrumbs"}
+    explain: {overlays:"guided annotations", gutter:"operator cues"}
+  }
+}
+
+^["implementation-notes"]{
+  ~#ownership: "Each component owns its variant mapping; shared helpers live in @src/ui/ or @src/design/."
+  ~#data_flow: "State derives from container measurements + disclosure settings + view mode."
+  ~#guardrail: "No variant should lose critical user actions; instead change prominence and placement."
+}

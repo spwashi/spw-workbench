@@ -1,0 +1,35 @@
+# A11y Tree Preview
+#
+# Accessibility as a parallel representation.
+
+^["goal"]{
+  ~#intent: "Expose the accessibility tree alongside text, AST, context."
+  ~#contract: "Accessibility is a first-class state surface."
+}
+
+^["exposure"]{
+  ~#fields{
+    role: "computed role"
+    name: "accessible name"
+    state: "expanded/selected/disabled"
+    focus_path: "tab order path"
+    live_announcements: "queued announcements"
+  }
+}
+
+^["ui"]{
+  ~#panel: "Screen Reader Preview"
+  ~#behaviors{
+    follow_focus: "always show current focus"
+    snapshot: "capture tree on major state changes"
+    diff: "compare before/after updates"
+  }
+}
+
+^["implementation"]{
+  ~#guidance{
+    semantics_first: "use HTML semantics before ARIA"
+    shared_state: "derive names from tuple/state"
+    focus_visual: "mirror focus in visible UI"
+  }
+}
