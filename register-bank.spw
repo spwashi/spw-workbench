@@ -1,0 +1,49 @@
+# Register Bank
+#
+# Command-mode registers for yank/paste memory.
+
+^"intent"{
+  goal: "Make y/p command mode register-aware and visible",
+  surface: ["context panel", "command history", "keyboard hints"],
+  settings: ["contextPanel.showRegisters"],
+  mode: ": or / (command line)",
+}
+
+^"registers"{
+  default: '"',
+  history: ['0','1','2','3','4','5','6','7','8','9'],
+  named: ['a'..'z'],
+}
+
+^"workflow"{
+  enter: ": or /",       # command line
+  select: '"' + <key>,    # set active register
+  yank:   'y',            # yank into active register (also updates default/history)
+  paste:  'p',            # paste from active register
+  exit:   'Esc',
+}
+
+^"sources"{
+  yank_priority: [
+    "editor selection",
+    "AST node (inspect/transform)",
+    "landmark path (active region/component)",
+  ],
+  kinds: ["selection", "node", "landmark", "html"],
+}
+
+^"visibility"{
+  context_panel: {
+    section: "Registers",
+    shows: ["active register", "recent history", "named registers"],
+  },
+  settings: {
+    toggle: "Context Panel → Register Bank",
+    dataset: "data-context-panel-registers",
+  }
+}
+
+^"notes"{
+  "Register clicks in context panel set active register.",
+  "Landmark yanks flow through the same register bank.",
+}

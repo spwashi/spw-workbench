@@ -58,14 +58,24 @@
 }
 
 ^["operators"]{
-  ~#core: "! ^ ~ <> ? * = @"
+  ~#core: "! ^ ~ <> ? * = @ #"
   ~#extended: "/ : .. -> & |"
   ~#containers: "< >" (capsule)  "<< >>" (stream)  "((" "))" (n-range)
+  # Evaluate prefix/postfix/infix interpretations for keyboard operators.
+  # # = vibration/resonance; can act as a dimension marker in prose/docs.
 }
 
 ^["intrinsics"]{
-  # "_" may label an operator (sugar): "?_query" -> "?(query)"
-  # Keep canonical form explicit to avoid ambiguity; normalize sugar in tooling.
+  # "_" labels an operator (sugar): "?_query[target]" -> operatorLabel = "_query"
+  # Labels are distinct from modifiers; store on Operation.operatorLabel.
+  # Keep canonical forms explicit when emitting; normalize label sugar in tooling.
+  # Labels can tune valence in follow-on operations: "%_bias", "^_merge", "?_probe".
+}
+
+^["lexing"]{
+  # Lex profiles allow tunable syntax per document or experiment.
+  # "prose" profile: disables "#" operator, treats unknown chars as TEXT.
+  # Reference/docs inputs default to the "prose" profile.
 }
 
 ^["regions"]{
@@ -74,11 +84,29 @@
   #   A{}          == {_A }_A
   # Region labels are metadata; semantics remain the same body/scope.
   # Physical properties of braces (color/material) should be annotations (~#color, ~#material), not syntax.
+  # Overlapping regions (conceptual):
+  #   {_A concept (_B focal point }_A[transition:300ms] (<new subject>) )_B
+  # Use overlaps to represent co-existing scopes; transitions live in annotations/capsules.
 }
 
 ^["data"]{
   data-spw-{domain}
   data-spw-{domain}-{suffix}
+}
+
+^["data-state"]{
+  data-spw-space-leader: "Space key leader active; waiting for next key"
+  data-spw-actionable: "Actions available on the action target (ex: 'yp')"
+  data-spw-action-role: "focus | selection | action (element-level)"
+  data-spw-action-scope: "fine | medium | coarse (element-level)"
+  data-spw-action-kind: "selection | node | component | panel | region | element (root)"
+  data-spw-action-anchor: "focus | selection (root)"
+  data-spw-focus-scope: "fine | medium | coarse (root)"
+  data-spw-selection-scope: "fine | medium | coarse (root)"
+  data-spw-command-prefix: "Active command line prefix (':' or '/')"
+  data-spw-drawer-auto-open: "Enable auto-open for the detail drawer"
+  data-selected-range: "AST node participates in visual range selection"
+  data-selected-anchor: "AST node is the visual selection anchor"
 }
 
 ^["state"]{
