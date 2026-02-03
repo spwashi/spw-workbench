@@ -1,0 +1,125 @@
+# Focus + Navigation Audit
+#
+# Keyboard, mouse, focus, and selection pass for learnability and scope.
+
+^["roots"]{
+  @src: ~"../../src"
+  @here: ~"."
+}
+
+^["intent"]{
+  ~#goal: "Make focus, selection, and action targets predictable across LoD."
+  ~#why: "Tabbing and scope cues are the spine of learnable navigation."
+  ~#lens: "Every element can become a macguffin for narrative engagement."
+}
+
+^["scope"]{
+  ~keyboard: "Tab/Shift+Tab, Space leader, command prefixes, yank/paste, registers"
+  ~mouse: "hover/focus affordance, click-to-copy, cursor -> target mapping"
+  ~focus: "roving tabindex, region cycling, focus restoration"
+  ~selection: "text selection vs node selection vs component selection"
+}
+
+^["current-behavior"]{
+  ~tab: "Layer-aware tabbing (fine/medium/coarse) via roving groups."
+  ~coarse: "Tab cycles regions when in pragmatic layer."
+  ~fine: "Tab cycles token-level items in syntactic layer."
+  ~medium: "Tab cycles block/component targets in semantic layer."
+  ~yank: "Yank uses action target scope; registers store type + scope."
+  ~paste: "Paste applies to editor or action target, depending on scope."
+}
+
+^["implementation-notes"]{
+  ~roving: "@src/infra/accessibility/focus.ts (RovingTabindex)"
+  ~scoped-nav: "@src/features/keyboard/scoped-navigation.ts"
+  ~keyboard: "@src/features/keyboard/keyboard-manager.ts"
+  ~layers: "@src/core/layers/layers.ts"
+  ~registers: "@src/features/keyboard/register-bank.ts"
+  ~targets: "@src/features/keyboard/action-targets.ts"
+}
+
+^["findings"]{
+  1. `data-spw-tab-index` ordering is respected but only on elements that opt in (coarse panels currently set; inner components still follow DOM order).
+  2. `LAYER_META.semantic.tabSelector` includes `[data-spw-component]`, which can create very large roving groups and dilute intent.
+  3. Roving tabindex refreshes order on every focus sync; active element wins but index can jump when DOM mutations reorder nodes.
+  4. Region cycling (coarse) works but does not expose clear focus/selection/action distinctions in the UI.
+  5. Action target scope exists but does not always match user-visible focus cues (learnability risk).
+}
+
+^["risks"]{
+  ~tab-exit: "Tab may land on hidden or non-actionable elements when data-spw-component is broad."
+  ~focus-clarity: "Focus/selection/action cues are still visually similar, especially in compact themes."
+  ~register-ambiguity: "Yank/paste targets feel implicit when no payload summary is shown."
+}
+
+^["pain-points"]{
+  1. Tabbing feels inconsistent when focus moves between groups or the app shell.
+  2. Focus/selection/action targets are not visually distinct enough to be learnable.
+  3. The active LoD is not always reflected in the tab order or hint labels.
+  4. Registers do not always reveal what will happen on paste.
+  5. Action cues can vanish without feedback, leaving intent ambiguous.
+}
+
+^["navigation-contract"]{
+  ~focus: "what is currently navigable"
+  ~selection: "what is currently selected"
+  ~action: "what a command will act on"
+  ~scope: "fine | medium | coarse"
+  ~rule: "focus != selection != action (unless explicitly bound)"
+}
+
+^["tab-order"]{
+  ~data-spw-tab-scope: "Defines LoD for tab navigation."
+  ~data-spw-tab-index: "Optional ordering hint within a scope."
+  ~rule: "Coarse tab order should follow app structure: header -> sidebar -> editor -> inspector -> context -> footer."
+}
+
+^["registers-and-scope"]{
+  ~registers: "Visible bank with kind/scope/format"
+  ~yank: "Use action target scope + LoD to select payload"
+  ~paste: "Prefer editor insertion when editor is focused"
+  ~copy: "Shift+click should copy structured packets (id + path + scope)"
+}
+
+^["macguffin-patterns"]{
+  ~pattern: "Each element exposes a small story hook (what it is, what it does, what it contains)."
+  ~hook: "Click/hover reveals a payload that can be yanked or inspected."
+  ~memory: "Registers act as narrative bookmarks with scope metadata."
+}
+
+^["recommendations"]{
+  1. Make action, focus, and selection visually distinct (three outlines, three cues).
+  2. Enforce tab ordering with `data-spw-tab-index` for coarse targets and define defaults for key medium/fine groups.
+  3. Surface register scope + payload kind in context panel and tooltips.
+  4. Provide a compact console/audit log for focus + yank + paste actions.
+  5. Add optional focus mode overlays per LoD to reduce cognitive load.
+  6. Narrow medium-level tab scope to explicit `data-spw-tab-scope="medium"` for higher signal.
+}
+
+^["browser-apis"]{
+  ~Selection: "document.getSelection(), selectionchange"
+  ~Caret: "document.caretRangeFromPoint(), caretPositionFromPoint()"
+  ~Clipboard: "navigator.clipboard.readText(), ClipboardItem"
+  ~Focus: "document.activeElement, FocusEvent"
+  ~Keyboard: "KeyboardEvent.key, .code, .repeat"
+  ~inert: "Element.inert for trapping"
+  ~FocusVisible: ":focus-visible + prefers-reduced-motion"
+  ~Observers: "IntersectionObserver, ResizeObserver, MutationObserver"
+  ~VisualViewport: "zoom/layout changes for focus alignment"
+}
+
+^["test-pass"]{
+  ~keyboard: "Tab/Shift+Tab through each region + LoD"
+  ~mouse: "Hover to see target, click to copy, shift-click for packet"
+  ~selection: "Editor selection vs AST node selection"
+  ~registers: "Yank from text, paste into editor, inspect register"
+  ~focus: "Esc returns to previous region reliably"
+}
+
+^["sources"]{
+  @src/features/keyboard/keyboard-manager.ts
+  @src/features/keyboard/scoped-navigation.ts
+  @src/infra/accessibility/focus.ts
+  @src/features/keyboard/action-targets.ts
+  @src/features/keyboard/register-bank.ts
+}
