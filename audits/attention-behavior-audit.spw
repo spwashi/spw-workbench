@@ -1,0 +1,118 @@
+# Attention + Behavior Audit
+#
+# Local-first audit lane for attentional and behavioral coherence.
+# Goal: quantify orientation, friction, and recovery while preserving privacy.
+
+^["roots"]{
+  @src: ~"../../src"
+  @docs: ~".."
+}
+
+^["intent"]{
+  ~#goal: "Measure whether attention cues and interaction pathways reduce cognitive load."
+  ~#scope: "Keyboard-first navigation, perspective shifts, LoD/disclosure, register actions, parse recovery."
+  ~#privacy: "Local-first only; no network transmission by default."
+}
+
+^["state-spaces"]{
+  # Attentional state A_t (where cognition appears to be allocated)
+  ~A_t: "(region, attention_owner, selection_owner, action_target, lod, disclosure, perspective, stage, theme)"
+
+  # Behavioral state B_t (what the user actually does)
+  ~B_t: "(mode, command, target_kind, outcome, latency_bucket, modality)"
+
+  # modality ∈ {keyboard, mouse, mixed}
+  # outcome ∈ {success, error, abandon}
+}
+
+^["event-schema"]{
+  # Required local telemetry events
+  ~spw.attention.focus_change: "region + owner shift"
+  ~spw.attention.selection_change: "selection owner/range change"
+  ~spw.attention.action_target_change: "target routing change"
+  ~spw.context.perspective_change: "activation lens shift"
+  ~spw.context.lod_change: "fine|medium|coarse"
+  ~spw.context.disclosure_change: "basic|guide|deep|full"
+  ~spw.ui.inspector_tab_change: "AST|TOKENS|FLOW|STEPS"
+  ~spw.command.executed: "verb + target + result"
+  ~spw.parse.result: "success|warning|error"
+  ~spw.register.yank: "register + payload type"
+  ~spw.register.paste: "register + target"
+  ~spw.nav.marker_jump: "vim-style marker jump"
+}
+
+^["payload-contract"]{
+  ~required: ["ts", "sessionId", "stateTuple", "source"]
+  ~optional: ["from", "to", "command", "durationMs", "success", "errorCode"]
+
+  # stateTuple = { perspective, lod, disclosure, stage, theme, mode, region }
+}
+
+^["markov-models"]{
+  # Transition estimates
+  ~P_A[i,j]: "Pr(A_{t+1}=j | A_t=i)"
+  ~P_B[i,j]: "Pr(B_{t+1}=j | B_t=i)"
+
+  # Entropy (orientation load proxy)
+  ~H_A: "-Σ_i π_i Σ_j P_A[i,j] log2 P_A[i,j]"
+  ~H_B: "-Σ_i π_i Σ_j P_B[i,j] log2 P_B[i,j]"
+
+  # Conditional coupling (did attention help behavior?)
+  ~I_AB: "Mutual information I(A_t; B_{t+1})"
+
+  # Recovery latency after parse errors
+  ~T_recover: "E[steps(error_state -> success_state)]"
+
+  # Reversal/churn index (A→B→A loops)
+  ~R_loop: "count(length-3 palindromic transitions) / total transitions"
+}
+
+^["derived-metrics"]{
+  ~orientation_latency: "time from view change to first stable focus event"
+  ~settling_time: "time until no focus/selection churn for N ms"
+  ~keyboard_ratio: "keyboard_events / total_navigation_events"
+  ~register_efficiency: "successful_paste / total_yank"
+  ~lod_effectiveness: "Δ(task_time, error_rate) across LoD"
+  ~disclosure_effectiveness: "Δ(reversal_loops, help_usage) across disclosure levels"
+}
+
+^["experiments"]{
+  ?[perceptibility_a_b]{
+    ~A: "single-channel cues (opacity only)"
+    ~B: "multi-channel cues (opacity + border + tint + optional audio tick)"
+    ~measure: ["orientation_latency", "R_loop", "task_completion"]
+  }
+
+  ?[stage_gating]{
+    ~A: "Stage 0 functional"
+    ~B: "Stage 3 poetic"
+    ~measure: ["H_A", "settling_time", "error_recovery"]
+    ~guardrail: "reduced-motion mode must keep completion parity"
+  }
+
+  ?[keyboard_streamer_path]{
+    ~goal: "No-mouse fast navigation for recordings"
+    ~measure: ["keyboard_ratio", "marker_jump_success", "focus_trap_errors"]
+  }
+}
+
+^["accessibility-constraints"]{
+  ~focus_visibility: "Always visible focus ring in every theme/stage"
+  ~contrast_floor: "Active target text and controls remain WCAG-compliant"
+  ~motion_policy: "prefers-reduced-motion disables phasor-like modulation"
+  ~audio_policy: "audio cues optional, never sole channel"
+}
+
+^["implementation-checklist"]{
+  1. "Implement typed telemetry registry in infra with ring buffer."
+  2. "Compute P_A and P_B locally from event streams."
+  3. "Expose Attention Debug Overlay (opt-in) with last N events + core metrics."
+  4. "Add export to JSON for offline analysis."
+  5. "Add keyboard-first task battery and benchmark snapshots."
+}
+
+^["references"]{
+  @docs/research.spw
+  @docs/lsp-dap-workers.spw
+  @docs/audits/focus-navigation-audit.spw
+}

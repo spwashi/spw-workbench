@@ -3,8 +3,8 @@
 # Command-mode registers for yank/paste memory.
 
 ^"intent"{
-  goal: "Make y/p command mode register-aware and visible",
-  surface: ["context panel", "command history", "keyboard hints"],
+  goal: "Make y/p command mode register-aware, container-aware, and visible",
+  surface: ["context panel", "command history", "keyboard hints", "command line"],
   settings: ["contextPanel.showRegisters"],
   mode: ": or / (command line)",
 }
@@ -16,11 +16,17 @@
 }
 
 ^"workflow"{
-  enter: ": or /",       # command line
+  enter: ": or /",        # command line
   select: '"' + <key>,    # set active register
   yank:   'y',            # yank into active register (also updates default/history)
   paste:  'p',            # paste from active register
   exit:   'Esc',
+}
+
+^"packet_shape"{
+  canonical: "<concept>(scene)[mode]{definition}",
+  packet_fields: ["concept", "scene", "mode", "definition", "source_ref", "lod", "perspective"],
+  fallback: "plain text packet when container parse is unavailable",
 }
 
 ^"sources"{
@@ -32,13 +38,26 @@
   kinds: ["selection", "node", "landmark", "html"],
 }
 
+^"selection_semantics"{
+  mode_rules: [
+    "Fine: prefer token or node selection packets",
+    "Medium: prefer block packets with mode metadata",
+    "Coarse: prefer region packets anchored by source_ref",
+  ],
+  paste_rules: [
+    "editor: paste definition/body first, preserve packet metadata in register",
+    "inspector: focus matching token/node when packet carries source_ref",
+    "context: show packet summary and active register lineage",
+  ],
+}
+
 ^"visibility"{
   context_panel: {
     section: "Registers",
-    shows: ["active register", "recent history", "named registers"],
+    shows: ["active register", "recent history", "named registers", "packet kind", "source ref"],
   },
   settings: {
-    toggle: "Context Panel → Register Bank",
+    toggle: "Context Panel -> Register Bank",
     dataset: "data-context-panel-registers",
   }
 }
@@ -46,4 +65,5 @@
 ^"notes"{
   "Register clicks in context panel set active register.",
   "Landmark yanks flow through the same register bank.",
+  "Packets should prefer canonical operator and container names in visible labels.",
 }
