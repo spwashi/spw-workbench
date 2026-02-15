@@ -2,6 +2,14 @@
 
 > Generated 2026-02-14. Source: `keybinding-geology.ts`, `layout.css`, `state.css`, `tokens.css`
 
+## Update (2026-02-15)
+
+This snapshot is still useful as a drift record, but the migration plan has evolved:
+
+- Canonical anchor is now `.spw-panel-context` (with `.context-awareness-panel` retained as a compatibility alias).
+- Context-panel selectors in `src/styles/layout.css`, `src/features/keyboard/geology/components/keybinding-geology.css`, and `src/styles/geology-subsystems.css` are being scoped under `.spw-panel-context` to prevent global collisions and attribute-selector leaks.
+- Toggle visuals are converging on ARIA-first state styling (`[aria-checked="true"]`) with `.active` as a compatibility class during transition.
+
 ## Summary
 
 - **89** unique classnames emitted by `keybinding-geology.ts`
@@ -127,34 +135,34 @@ The same semantic domain uses both conventions:
 
 ### Option A: Scope via ancestor (minimal change)
 
-Keep existing classnames but scope all CSS under `.context-awareness-panel`:
+Keep existing classnames but scope all CSS under `.spw-panel-context`:
 
 ```css
-.context-awareness-panel .state-grid { ... }
-.context-awareness-panel .register-bank { ... }
+.spw-panel-context .state-grid { ... }
+.spw-panel-context .register-bank { ... }
 ```
 
 **Pro**: Cheap. No TS changes.
 **Con**: Doesn't fix naming inconsistencies or orphan classes.
 
-### Option B: Prefix everything with `geo-` (normalize)
+### Option B: Add canonical `spw-panel-context-*` companions (normalize)
 
-Rename all classnames to use a short, consistent prefix:
+Keep current classes as compatibility, but add canonical `spw-panel-context-*` companions
+to all context-panel elements (and migrate CSS + JS selectors to prefer canonical):
 
 | Current                   | Proposed                    |
 |---------------------------|-----------------------------|
-| `state-grid`              | `geo-state-grid`            |
-| `state-item`              | `geo-state-item`            |
-| `register-bank`           | `geo-register-bank`         |
-| `register-entry`          | `geo-register-entry`        |
-| `target-row`              | `geo-target-row`            |
-| `context-toggle-btn`      | `geo-toggle-btn`            |
-| `section-hint`            | `geo-section-hint`          |
-| `empty-state`             | `geo-empty`                 |
-| `clear-history-btn`       | `geo-clear-history`         |
+| `state-grid`              | `spw-panel-context-state-grid`            |
+| `state-item`              | `spw-panel-context-state-item`            |
+| `register-bank`           | `spw-panel-context-register-bank`         |
+| `register-entry`          | `spw-panel-context-register-entry`        |
+| `target-row`              | `spw-panel-context-target-row`            |
+| `context-toggle-btn`      | `spw-panel-context-toggle-btn`            |
+| `empty-state`             | `spw-panel-context-empty-state`           |
+| `clear-history-btn`       | `spw-panel-context-clear-history-btn`     |
 
 **Pro**: Clean, collision-proof, grep-friendly.
-**Con**: Moderate TS + CSS churn. JS selectors must all update.
+**Con**: Moderate TS + CSS churn. JS selectors must update and compat must be maintained.
 
 ### Option C: CSS-module / data-attribute based (future)
 
@@ -170,9 +178,9 @@ Use `data-geo-*` attributes as the primary selectors, classnames become structur
 
 ### Recommended: Option B with an immediate Option A bridge
 
-1. **Now**: Add `.context-awareness-panel` scoping in CSS for the 47 unstlyled classes
-2. **Next**: Progressively rename to `geo-` prefix, subsystem by subsystem
-3. **Later**: Consider data-attribute migration if the component grows further
+1. **Now**: Scope selectors under `.spw-panel-context` to prevent global collisions/leaks
+2. **Next**: Add canonical `spw-panel-context-*` companions and migrate CSS/JS to prefer them
+3. **Later**: Consider data-attribute-first selectors (`data-spw-component`, `data-action`) for larger refactors
 
 ---
 
