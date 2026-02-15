@@ -12,6 +12,7 @@ Define and audit the contract between DOM state (`data-*`, `aria-*`), UI interac
 - Use canonical namespaced selectors for new component classes (`.spw-*`) and `data-spw-*` keys for stable semantic identity.
 - Prefer ARIA and native attributes (`[hidden]`, `[aria-selected]`, `[aria-expanded]`, etc.) over class-state toggles for widget state.
 - Keep legacy aliases in compatibility zones explicit and time-bounded.
+- Track legacy classnames and migration status in `docs/classname-contract.md`.
 
 ## Generation
 - Refresh this document snapshot: `npm run generate:ui-contract`
