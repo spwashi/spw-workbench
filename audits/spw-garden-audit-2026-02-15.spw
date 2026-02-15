@@ -1,0 +1,150 @@
+# Spw Garden Audit
+#
+# Date: 2026-02-15
+# Scope: .spw documents across docs/, src/*/docs/, and related beds (examples, snapshots).
+#
+# Metaphor: documents are plants; references are roots; cross-links are pollination;
+# audits are pruning notes; knowledge is fruit.
+
+^["roots"]{
+  @docs: ~".."
+  @src: ~"../../src"
+  @examples: ~"../../examples"
+  @here: ~"."
+}
+
+^["meta"]{
+  @domain: docs
+  @owner: audits
+  @description: "Structural + referential audit of .spw documentation (garden metaphor)"
+}
+
+^["inventory"]{
+  total_files: 108
+  beds: {
+    docs: 48
+    src_docs: 35
+    src_other: 1
+    examples: 16
+    snapshots: 5
+    skills: 1
+    root: 2
+  }
+}
+
+^["growth-model"]{
+  # A lightweight heuristic for documentation maturity:
+  seed: "no roots/meta scaffolding; mostly prose; references are brittle"
+  sprout: "roots present; references become navigable"
+  bloom: "roots + meta; the plant has identity (domain/owner/intent)"
+  fruit: "roots + meta + explicit file/questions; high navigability and reuse"
+}
+
+^["growth-snapshot"]{
+  # Applies only to doc-like beds (docs/, src-docs/, root).
+  seeds: 32
+  sprouts: 45
+  blooms: 1
+  fruits: 7
+}
+
+^["needs-water"]{
+  !["Doc-like files missing ^[\"roots\"] scaffolding"]
+  .. ~"../../audit-guide.spw"
+  .. @docs/a11y-tree.spw
+  .. @docs/affordance-ladder.spw
+  .. @docs/agent-loop.spw
+  .. @docs/audit-guide.spw
+  .. @docs/audits/localization-events-performance-2026-02-14.spw
+  .. @docs/data-attribute-normalization.spw
+  .. @docs/experimentation.spw
+  .. @docs/exploration-log.spw
+  .. @docs/lsp-dap-workers.spw
+  .. @docs/navigation-probe.spw
+  .. @docs/operator-atlas.spw
+  .. @docs/operators.spw
+  .. @docs/register-bank.spw
+  .. @docs/screenshot-protocol.spw
+  .. @docs/semantics-physics.spw
+  .. @docs/shadow-dom-policy.spw
+  .. @docs/theme-progression.spw
+  .. @docs/theme-stage-0-snapshots.spw
+  .. @src/app/docs/audit-guide.spw
+  .. @src/cli/docs/audit-guide.spw
+  .. @src/core/docs/audit-guide.spw
+  .. @src/debug/docs/audit-guide.spw
+  .. @src/design/docs/audit-guide.spw
+  .. @src/features/docs/audit-guide.spw
+  .. @src/infra/docs/audit-guide.spw
+  .. @src/platform/docs/audit-guide.spw
+  .. @src/runtime/docs/audit-guide.spw
+  .. @src/runtime/docs/dom-semantics.spw
+  .. @src/styles/docs/audit-guide.spw
+  .. @src/ui/docs/audit-guide.spw
+  .. @src/viz/docs/audit-guide.spw
+
+  !["Doc-like files with roots but missing ^[\"meta\"] identity"]
+  .. @docs/architecture.spw
+  .. @docs/audits/attention-behavior-audit.spw
+  .. @docs/audits/focus-navigation-audit.spw
+  .. @docs/audits/index.spw
+  .. @docs/component-adaptation.spw
+  .. @docs/data-attributes-audit.spw
+  .. @docs/dependencies.spw
+  .. @docs/design-mode-audit.spw
+  .. @docs/design-research.spw
+  .. @docs/directions.spw
+  .. @docs/domains-experimental.spw
+  .. @docs/domains.spw
+  .. @docs/feature-coherence.spw
+  .. @docs/feature-registry.spw
+  .. @docs/footer-slots.spw
+  .. @docs/hud-runtime.spw
+  .. @docs/index.spw
+  .. @docs/lens-walk-research.spw
+  .. @docs/lens-walk.spw
+  .. @docs/onboarding-flow.spw
+  .. @docs/onboarding.spw
+  .. @docs/patterns.spw
+  .. @docs/phasor.spw
+  .. @docs/pilot-matrices.spw
+  .. @docs/quality.spw
+  .. @docs/research.spw
+  .. @docs/spec-alignment.spw
+  .. @docs/toc.spw
+  .. @docs/web-apis.spw
+  .. @docs/web-components.spw
+  .. ~"../../index.spw"
+  .. @src/app/docs/index.spw
+  .. @src/cli/docs/index.spw
+  .. @src/core/docs/index.spw
+  .. @src/debug/docs/index.spw
+  .. @src/design/docs/index.spw
+  .. @src/features/docs/index.spw
+  .. @src/infra/docs/index.spw
+  .. @src/platform/docs/index.spw
+  .. @src/runtime/docs/index.spw
+  .. @src/seed/docs/index.spw
+  .. @src/semantics/docs/index.spw
+  .. @src/styles/docs/index.spw
+  .. @src/ui/docs/index.spw
+  .. @src/viz/docs/index.spw
+}
+
+^["implicit-roots"]{
+  # Files that use default roots (@src, @docs, @examples, @spec) without declaring them locally.
+  # This is valid, but making roots explicit improves portability and reduces ontology drift.
+  !["Top implicit-root users (sample)"]
+  .. @docs/audit-guide.spw  # uses implicit roots: src
+  .. @src/platform/docs/audit-guide.spw  # uses implicit roots: src
+  .. @src/runtime/docs/audit-guide.spw  # uses implicit roots: src
+  .. @src/ui/docs/audit-guide.spw  # uses implicit roots: src
+}
+
+^["recommendations"]{
+  1. Add ^["meta"] blocks to the core docs in docs/ (architecture, operators, patterns, etc).
+  2. Prefer explicit roots (@here, @src) in each doc when the file has many cross-references.
+  3. Use question blocks (?["…"]{ … }) as a standard navigation probe surface for each major doc.
+  4. Keep index.spw files as "fruit": stable lists of links, minimal prose, consistent roots.
+  5. Treat audits as pruning notes: link from docs/audits/index.spw and reference the affected files under ^["files"].
+}
