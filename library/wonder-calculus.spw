@@ -1,0 +1,57 @@
+# Wonder Calculus
+#
+# Axioms for motivated wonder: Spw as a notation for asking questions about itself.
+# These rules ensure that introspection ($) and measurement (%) are rigorous.
+
+^"roots"{
+  @here: ~"."
+  @ops:  ~"../../src/runtime/interpreter/operators.ts"
+}
+
+^"axioms"{
+  # The six fundamental truths of the system:
+
+  ~#symmetry{
+    statement: "?X ≡ ?Y iff X and Y produce the same hash under all perspectives"
+    imply: "Identity is perspective-invariant. A thing is itself no matter how you look at it."
+    test: "@(lens_A).hash(X) === @(lens_B).hash(X)"
+  }
+
+  ~#grounding{
+    statement: "#X is immutable — once resonated, the register is permanent"
+    imply: "Library addresses are stable. You can bookmark a grounded reference."
+    test: "registers.resonate(X); registers.set(X) → false"
+  }
+
+  ~#complement{
+    statement: "~X and *X are dual — potential collapses to value"
+    imply: "Every concrete value has a corresponding deferred form."
+    test: "*~X === X (collapse of potential yields value)"
+  }
+
+  ~#emergence{
+    statement: "&[a, b] ≠ a + b — merged forms have properties the parts lack"
+    imply: "The whole is distinct from the sum of parts. Confluence creates new provenance."
+    test: "$(&[a,b]).mergedFrom !== null"
+  }
+
+  ~#reflexivity{
+    statement: "$X examines X — the substrate operator is self-referential"
+    imply: "The system can contain a model of itself. Metacognition is built-in."
+    test: "$($X).topology === '#'"
+  }
+
+  ~#measure{
+    statement: "%X returns a scalar ∈ [0,1] — every structure has a magnitude"
+    imply: "All things are comparable. Heterogeneity collapses to normalized intensity."
+    test: "%(any_structure) >= 0 && %(any_structure) <= 1"
+  }
+}
+
+^"theorems"{
+  # Derived properties useful for library science:
+
+  commutativity: "&[a, b] ≡ &[b, a] (order of merge sources does not affect final value, usually)"
+  depth: "##X is a resonance of a resonance (meta-tagging)"
+  completeness: "For every value V, there exists a projection P in each container form <> () [] {}"
+}
