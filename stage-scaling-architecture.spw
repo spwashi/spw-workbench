@@ -1,0 +1,89 @@
+@spw:boundary stage-scaling-architecture
+@spw:module  core/conventions/theme-stage
+@spw:module  styles/themes/stages.css
+@spw:module  styles/properties.css
+@spw:module  platform/bootstrap/settings.ts
+
+# Stage Scaling Architecture
+
+## Ownership Chain
+
+  theme-base × stage-scale × perf-scale × user-scale → effective value
+
+  - Themes own RESTING personality values (life-pulse, physics-stiffness, etc.)
+  - Stages set SCALE FACTORS (--spw-stage-*-scale) that compress or amplify
+  - Performance dimensions (--spw-perf-*-scale) provide GPU cost tuning
+  - User scales (--spw-user-*-scale) allow per-dimension override via settings
+
+## Scale Dimensions
+
+  metabolic   → life-pulse, signal-noise, space-pacing, physics-stiffness
+  atmosphere  → panel-atmosphere-*, entity-*, theme-ambient-noise
+  motion      → physics-tempo, interaction-delay, attention transitions
+  depth       → parallax-depth, lighting-intensity, border-material
+  ornament    → sigil-opacity, ornament-opacity, bg-texture-intensity
+
+## Stage Curve
+
+  Stage 0 (Functional):
+    metabolic: 0.3   atmosphere: 0.2   motion: 0.6   depth: 0    ornament: 0.1
+    valences: [bone, boon]
+
+  Stage 1 (Atmospheric):
+    metabolic: 0.6   atmosphere: 0.5   motion: 0.8   depth: 0.3  ornament: 0.5
+    valences: [bone, boon]
+
+  Stage 2 (Instrumental):
+    metabolic: 1.0   atmosphere: 0.85  motion: 1.0   depth: 0.65 ornament: 0.8
+    valences: [bone, boon, bane]
+
+  Stage 3 (Poetic):
+    metabolic: 1.3   atmosphere: 1.0   motion: 1.15  depth: 1.0  ornament: 1.0
+    valences: [bone, boon, bane, bonk, honk]
+
+## Valence Guard Logic
+
+  Stage 0–1: bane/bonk/honk suppressed via CSS filter: none
+  Stage 2:   bonk/honk suppressed
+  Stage 3:   all five unlock — full expression
+
+## Performance Mode Decomposition
+
+  Binary performance.mode = true becomes sugar for:
+    atmosphere: 0   motion: 0.3   lighting: 0   ornament: 0   depth: 0
+
+  Individual dimensions tunable via:
+    performance.atmosphere, performance.motion, etc.
+
+## Consumer Map
+
+  life-pulse        → runtime-dynamics.css, component-integration.css, harmonic-scale.css
+  physics-stiffness → normalization-pass.css, harmonic-scale.css, runtime-dynamics.css
+  physics-tempo     → state.css (motion transitions)
+  signal-noise      → harmonic-scale.css, component-integration.css, panels.css
+  space-pacing      → spirits.css, responsive.css, harmonic-scale.css
+  interaction-delay → component-integration.css, harmonic-scale.css, runtime-dynamics.css
+  atmosphere-*      → panel-atmosphere-svg.css
+  entity-*          → intent-bar.css
+  parallax-depth    → attention-density.css, parallax.css
+  lighting-intensity→ stages.css focal-point gradient
+
+## Theme Resting Values
+
+  Nebula:   life-pulse: 20s, physics-stiffness: 70, physics-damping: 12
+  Atelier:  life-pulse: var(--atelier-breath-duration), physics-stiffness: 90
+  Liminal:  life-pulse: 0s (stillness), physics-stiffness: 180
+  Echoes:   life-pulse: 0s (silence), physics-stiffness: 200
+
+## @property Registrations (properties.css)
+
+  --spw-stage-metabolic-scale   <number> inherits initial: 1
+  --spw-stage-atmosphere-scale  <number> inherits initial: 1
+  --spw-stage-motion-scale      <number> inherits initial: 1
+  --spw-stage-depth-scale       <number> inherits initial: 1
+  --spw-stage-ornament-scale    <number> inherits initial: 1
+  --spw-perf-atmosphere-scale   <number> inherits initial: 1
+  --spw-perf-motion-scale       <number> inherits initial: 1
+  --spw-perf-lighting-scale     <number> inherits initial: 1
+  --spw-perf-ornament-scale     <number> inherits initial: 1
+  --spw-perf-depth-scale        <number> inherits initial: 1
