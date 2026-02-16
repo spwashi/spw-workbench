@@ -76,3 +76,53 @@
   @src/features/
   @src/app/
 }
+
+^["navigation"]{
+  # .spw files function as architectural shaders for codebase navigation.
+  # A reader (human or agent) uses operators as navigation primitives:
+  #
+  #   @ = "look from here"     → set perspective / working directory
+  #   # = "this is a landmark" → grounded reference, safe to bookmark
+  #   ? = "should I go here?"  → probe a path before committing
+  #   $ = "what am I on?"      → introspect the current file/register
+  #   % = "how relevant?"      → measure relevance before diving deeper
+  #   & = "combine these"      → merge findings from multiple explorations
+  #   ^ = "go up"              → return to parent scope / broader context
+  #   . = "go into"            → traverse into a property / subdirectory
+  #
+  # The spirit sequence ?~<#.>@(#.)&[#.]*{#.}^ is the canonical
+  # navigation loop: probe → name → observe → merge → value → integrate.
+
+  ~<spirit>"./spirit-sequence.spw"
+  ~<library>"./library/library.spw"
+}
+
+^["literary_layers"]{
+  # Three co-existing description layers for every module:
+  #
+  # 1. TypeScript — implementation (what the machine executes)
+  # 2. CSS        — presentation  (how the human sees it)
+  # 3. Spw        — intention     (why it exists, what it connects to)
+  #
+  # Each .spw file is a "shader program" that tells readers how to
+  # render the module's meaning. Like GLSL programs that transform
+  # vertices into pixels, .spw files transform file trees into understanding.
+
+  @src/*/docs/index.spw        # per-layer intention maps
+  @src/app/components/**/*.spw # per-component valence + surface docs
+  docs/library/library.spw     # self-cataloging bibliography
+}
+
+^["wonder"]{
+  # Mathematical introspection via $ and %:
+  #
+  # $[architecture].topology      → "what kind of document is this?"
+  # %[architecture]               → "how significant relative to the whole?"
+  # $[architecture].grounded      → true (this document is a landmark)
+  #
+  # Every .spw file can answer questions about itself.
+  # See docs/library/wonder-calculus.spw for the formal axioms.
+
+  ~<calculus>"./library/wonder-calculus.spw"
+  ~<probes>"./library/wonder-probes.spw"
+}
