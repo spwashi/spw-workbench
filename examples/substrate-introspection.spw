@@ -1,0 +1,38 @@
+# Example: Substrate Introspection
+#
+# $[x] returns RegisterMeta — the register itself, not its value.
+
+^"example"{ ~#name: "substrate-introspection", ~#demonstrates: "materialize() returns register metadata" }
+
+^"input"{
+  # Ground a value:
+  #[color, "red"]
+
+  # Read it a few times:
+  .color
+  .color
+  .color
+
+  # Introspect:
+  $[color]
+}
+
+^"expected"{
+  meta: {
+    name: "color",
+    topology: "#",
+    accessMode: "category",
+    containerAffinity: "[]",
+    provenance: "#",
+    grounded: true,
+    accessCount: 3,
+    lastAccessed: "timestamp",
+  }
+}
+
+^"notes"{
+  "$X gives metadata, not the value 'red'.",
+  "accessCount tracks how many times get() was called.",
+  "lastAccessed is a Date.now() timestamp.",
+  "containerAffinity is inferred from the accessMode.",
+}

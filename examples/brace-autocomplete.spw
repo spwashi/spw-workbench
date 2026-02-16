@@ -1,0 +1,46 @@
+# Example: Brace Autocomplete
+#
+# Cursor in different brace contexts → different completions.
+
+^"example"{ ~#name: "brace-autocomplete", ~#demonstrates: "cursor context determines register-sensitive completions" }
+
+^"input"{
+  # Given these grounded registers:
+  #[color, "red"]
+  #[shape, "circle"]
+  ={radius: 5, area: 78.5}
+
+  # Cursor positions and expected completions:
+}
+
+^"expected"{
+  cursor_in_frame: {
+    typed: ".[",
+    context: "[ register (category)",
+    completions: ["color", "shape"],
+    reason: "containerAffinity === '[]' → shows grounded names",
+  }
+  cursor_in_scope: {
+    typed: ".{",
+    context: "{ register (property)",
+    completions: ["radius", "area"],
+    reason: "containerAffinity === '{}' → shows property keys",
+  }
+  cursor_in_concept: {
+    typed: ".<",
+    context: "< register (concept)",
+    completions: [],
+    reason: "no concept couplings defined yet",
+  }
+  cursor_in_capsule: {
+    typed: ".(",
+    context: "( register (perspective)",
+    completions: [],
+    reason: "no observer scopes pushed yet",
+  }
+}
+
+^"notes"{
+  "Completions come from registers whose containerAffinity matches the brace type.",
+  "Empty completions are valid — they mean no registers match that context.",
+}

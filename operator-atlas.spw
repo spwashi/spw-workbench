@@ -1,15 +1,41 @@
 # Operator Atlas
 #
-# Symbol weight and resonance across language, math, and UI.
+# Symbol weight, resonance, and structural affinity across domains.
+
+^"source_files"{
+  ~<affinities>"../../src/runtime/state/type-affinities.ts"
+  ~<operators>"../../src/runtime/interpreter/operators.ts"
+  ~<builtins>"../../src/runtime/interpreter/builtins.ts"
+  ~<perspectives>"../../src/ui/i18n/perspectives.ts"
+}
 
 ^["goal"]{
   ~#intent: "Learn how operators carry meaning across domains."
-  ~#output: "A living atlas of symbol weight."
+  ~#output: "A living atlas of symbol weight and structural affinity."
 }
 
 ^["scope"]{
-  ~#initial_set: ["?", "!", "^", "~", "<>", "::", "/", "@", "#", "⊥", "Δ"]
+  ~#sigils: ["?", "!", "^", "~", "*", "=", "@", "#", ".", "&", "$", "%"]
   ~#domains: ["math", "programming", "linguistics", "logic", "comics", "ui"]
+}
+
+^["canonical_containers"]{
+  # Four operators that answer a structuring question
+  '#' { question: "What are its parts?",       container: "[]", runtime: "SpwFrame",     node: "FrameNode"   }
+  '.' { question: "What are its properties?",   container: "{}", runtime: "SpwScope",     node: "ScopeNode"   }
+  '?' { question: "What might it become?",      container: "<>", runtime: "SpwReference", node: "ConceptNode" }
+  '@' { question: "Who is looking?",            container: "()", runtime: "SpwConcept",   node: "CapsuleNode" }
+}
+
+^["transformers"]{
+  # Seven operators that don't wrap — they act
+  '!' { role: "consumes",   result: "void",    note: "injection / side-effect"   }
+  '*' { role: "unwraps",    result: "value",   note: "reification / collapse"    }
+  '%' { role: "reduces",    result: "scalar",  note: "measure ∈ [0,1]"          }
+  '$' { role: "reflects",   result: "meta",    note: "register introspection"    }
+  '~' { role: "defers",     result: "closure", note: "superposition / potential" }
+  '^' { role: "promotes",   result: "parent",  note: "scope elevation"           }
+  '&' { role: "merges",     result: "join",    note: "confluence with provenance"}
 }
 
 ^["record"]{
@@ -19,6 +45,8 @@
     domains: "where it appears"
     feel: "urgency/softness/authority/uncertainty"
     failure_modes: "regex, HTML, markdown, shell ambiguity"
+    accessMode: "RegisterAccessMode from types.ts"
+    containerAffinity: "natural container form"
   }
 }
 
@@ -30,6 +58,16 @@
   }
 }
 
+^["composition"]{
+  ~#compound_expressions{
+    "$#":   "substrate of resonance — meta of a grounded register"
+    "$#&":  "substrate of resonance merged — meta of merged groundings"
+    "&a:$#": "confluent alias of substrate-resonance"
+    ".[]":  "ground into a frame — property access into categorized items"
+    "@()":  "perspective capsule — observer wrapping"
+  }
+}
+
 ^["ui"]{
   ~#inspector_panel: "Inspector → Operators"
   ~#list_items{
@@ -37,5 +75,7 @@
     neighbors: "common adjacency"
     examples: "snippets"
     conflicts: "markdown vs code vs Spw"
+    accessMode: "typed access method used"
+    affinity: "container form"
   }
 }

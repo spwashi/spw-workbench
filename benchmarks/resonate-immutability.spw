@@ -1,0 +1,31 @@
+# Benchmark: Resonate Immutability
+#
+# Measures grounded register rejection rate under write pressure.
+
+^"benchmark"{ ~#name: "resonate-immutability", ~#metric: "ratio" }
+
+^"setup"{
+  # Ground N registers:
+  grounded_count: 100
+  write_attempts: 1000,
+
+  # Each grounded register gets 10 overwrite attempts via set()
+}
+
+^"run"{
+  ground_phase: {
+    call: "registers.resonate(name, value) for 100 names",
+    expected: "100 successful groundings",
+  }
+  overwrite_phase: {
+    call: "registers.set(name, newValue) for each grounded name × 10",
+    expected: "1000 rejections (all return false)",
+  }
+}
+
+^"baseline"{
+  rejection_rate: 1.0,
+  note: "100% of overwrites to grounded registers must be rejected",
+  ground_success_rate: 1.0,
+  note_2: "re-grounding the same name must also be rejected",
+}

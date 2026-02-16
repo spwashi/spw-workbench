@@ -1,0 +1,27 @@
+# Benchmark: Confluent Fan-In
+#
+# Measures merge performance as source count grows.
+
+^"benchmark"{ ~#name: "confluent-fanin", ~#metric: "latency_ms" }
+
+^"setup"{
+  source_counts: [2, 5, 10, 25, 50, 100]
+  value_type: "object"  # {key_i: i}
+  iterations_per_count: 1000
+}
+
+^"run"{
+  # For each source count N:
+  # 1. Create N registers with object values
+  # 2. Call confluent("result", ...sourceNames)
+  # 3. Measure latency
+  # 4. Verify merged object has all N keys
+}
+
+^"baseline"{
+  fan_2_ms: 0.01,
+  fan_10_ms: 0.05,
+  fan_100_ms: 0.5,
+  scaling: "should be approximately linear in source count",
+  note: "Object.assign on N objects is O(total keys)",
+}

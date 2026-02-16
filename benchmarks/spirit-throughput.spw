@@ -1,0 +1,34 @@
+# Benchmark: Spirit Throughput
+#
+# Full spirit sequence cycles/sec on varying AST sizes.
+
+^"benchmark"{ ~#name: "spirit-throughput", ~#metric: "ops/sec" }
+
+^"setup"{
+  node_counts: [10, 50, 100, 500, 1000]
+  cycle: "?~<#.>@(#.)&[#.]*{#.}^"
+  phases_per_cycle: 6
+}
+
+^"run"{
+  # For each node count N:
+  # 1. Generate N synthetic AST nodes
+  # 2. Walk the spirit sequence on each node
+  # 3. Measure total cycles per second
+  # 4. Report per-phase breakdown
+
+  synthetic_node: {
+    type: "Operation",
+    operator: "!",
+    frame: ["hello"],
+    body: null,
+  }
+}
+
+^"baseline"{
+  nodes_10:   { cycles_per_sec: 50000, per_phase_us: 3.3  }
+  nodes_100:  { cycles_per_sec: 5000,  per_phase_us: 33   }
+  nodes_1000: { cycles_per_sec: 500,   per_phase_us: 333  }
+  scaling: "linear in node count (no phase interaction between nodes)"
+  bottleneck: "confluent() phase — Object.assign dominates at large merge counts"
+}

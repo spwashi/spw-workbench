@@ -1,0 +1,32 @@
+# Benchmark: Register Access
+#
+# Measures access() latency vs inline property traversal.
+
+^"benchmark"{ ~#name: "register-access", ~#metric: "latency_ms" }
+
+^"setup"{
+  # Create a deeply nested object:
+  =[deep, {a: {b: {c: {d: {e: "leaf"}}}}}]
+
+  iterations: 10000
+  path: ["a", "b", "c", "d", "e"]
+}
+
+^"run"{
+  # Via registers.access():
+  access_method: {
+    call: "registers.access(deep, ['a','b','c','d','e'])",
+    expected: "leaf",
+  }
+
+  # Via inline traversal:
+  inline_method: {
+    call: "deep.a.b.c.d.e",
+    expected: "leaf",
+  }
+}
+
+^"baseline"{
+  inline_latency_ms: 0.001,
+  note: "access() should be within 2x of inline for depth ≤ 10",
+}

@@ -1,0 +1,25 @@
+# Benchmark: Measure Types
+#
+# Measures measure() across different value types.
+
+^"benchmark"{ ~#name: "measure-types", ~#metric: "ops/sec" }
+
+^"setup"{
+  types: ["number", "string", "array", "object", "boolean", "null"]
+  scale: 10
+  iterations: 10000
+}
+
+^"run"{
+  number:  { value: 7,                  expected: 0.7,  note: "7 / 10"              }
+  string:  { value: "hello",            expected: 0.5,  note: "5 / 10"              }
+  array:   { value: [1, 2, 3],          expected: 0.3,  note: "3 / 10"              }
+  object:  { value: {a: 1, b: 2},       expected: 0.2,  note: "2 / 10"              }
+  boolean: { value: true,               expected: 1.0,  note: "true → 1"            }
+  null_v:  { value: null,               expected: 0.0,  note: "null → 0"            }
+}
+
+^"baseline"{
+  ops_per_second: 1000000,
+  note: "measure() is a simple branch — should be microsecond-level",
+}
