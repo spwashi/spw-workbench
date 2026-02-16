@@ -1,0 +1,62 @@
+# Spw Library
+#
+# A recursive bibliography of the language's own constructs.
+# The `~<concept>` and `~#tag` conventions make .spw files self-cataloging.
+
+^"roots"{
+  @here: ~"."
+}
+
+^"collection"{
+  # The library is built from the codebase's own documentation files.
+  # Each entry is a grounded reference.
+
+  # --- Core Specs ---
+  #[spec:register,   ~#spec <register>"../../docs/register-bank.spw"]
+  #[spec:brace,      ~#spec <register>"../../docs/brace-registers.spw"]
+  #[spec:spirit,     ~#spec <operator>"../../docs/spirit-sequence.spw"]
+  #[spec:refs,       ~#spec <syntax>"../../docs/reference-conventions.spw"]
+  #[atlas:operator,  ~#atlas <operator>"../../docs/operator-atlas.spw"]
+
+  # --- Examples ---
+  #[ex:auto,         ~#example <register>"../../docs/examples/brace-autocomplete.spw"]
+  #[ex:ground,       ~#example <register>"../../docs/examples/grounded-register.spw"]
+  #[ex:merge,        ~#example <operator>"../../docs/examples/merge-provenance.spw"]
+  #[ex:meta,         ~#example <operator>"../../docs/examples/substrate-introspection.spw"]
+  #[ex:measure,      ~#example <operator>"../../docs/examples/measure-normalization.spw"]
+  #[ex:spirit,       ~#example <operator>"../../docs/examples/spirit-cycle.spw"]
+
+  # --- Benchmarks ---
+  #[bench:access,    ~#bench <performance>"../../docs/benchmarks/register-access.spw"]
+  #[bench:immut,     ~#bench <integrity>"../../docs/benchmarks/resonate-immutability.spw"]
+  #[bench:fanin,     ~#bench <scaling>"../../docs/benchmarks/confluent-fanin.spw"]
+  #[bench:types,     ~#bench <performance>"../../docs/benchmarks/measure-types.spw"]
+  #[bench:throughput,~#bench <scaling>"../../docs/benchmarks/spirit-throughput.spw"]
+}
+
+^"query_language"{
+  # How to browse the library using registers and operators.
+
+  # 1. Introspection ($) — "What is this entry?"
+  #    $[spec:register] → { name: "spec:register", grounded: true, ... }
+
+  # 2. Measurement (%) — "How significant is this?"
+  #    %[spec:register] → 0.8 (core spec)
+  #    %[ex:auto]       → 0.3 (single example)
+
+  # 3. Categorization ([]) — "Group by tag"
+  #    &[~#spec] → list of all specs
+  #    &[~#example] → list of all examples
+
+  # 4. Concept Coupling (<>) — "Find related concepts"
+  #    &[<register>] → [spec:register, spec:brace, ex:auto, ex:ground]
+}
+
+^"curation"{
+  # The library grows through the `git` commit log.
+  # See git-concordance.spw for conventions.
+
+  policy: "Every .spw file committed is a candidate for the library."
+  filtering: "Only grounded (#) entries are permanent."
+  archiving: "Deprecated entries move to the ~#compost tag."
+}
