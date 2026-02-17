@@ -646,3 +646,36 @@ Each lens family has different weighting priorities.
 **Status**: Phase 2 complete (Lens algebra formalized).
 
 **Next**: Create PROBE-CALCULUS.md integrating measurement theory with saturation model.
+
+---
+
+## 15. Lens as Gain Chain (Implementation Bridge)
+
+The shader renderer in `src/infra/shaders/shader-renderer.ts` already implements lens algebra via a multiplicative **gain chain**. Each lens maps to a gain stage:
+
+| Lens Concept | Shader Implementation |
+|:-------------|:----------------------|
+| Lens | `ContextShaderProfile` (10 named profiles: visual, editing, debug, ...) |
+| Lens weight vector | `{ ambientGain, reactionGain, focusRadiusScale, focusStrengthScale, microStrengthScale }` |
+| Lens composition | Multiplicative gain staging in `render()` (7 factors) |
+| Lens identity | `neutral` profile (all gains = 1.0) |
+| VU metering | `getGainReport()` — per-factor log-scale contribution |
+
+### Narrative Bias as Additive Lens
+
+In addition to multiplicative gains, the renderer applies **additive 4D bias vectors** per context and cadence:
+
+```
+narrative(w, r, g, d) = base(CSS) + context_bias + cadence_bias
+```
+
+Where `w` = warmth, `r` = rhythm, `g` = grain, `d` = depth.
+
+This is a second composition mode: while gain stages multiply, narrative biases **sum**. A future operator lens would add a third mode: **spatial gain** via the proposed 9D `SpatialLensProfile`.
+
+### Connection to Theory
+
+The theoretical diagonal weighting matrices from §4 reduce to scalar gain factors when applied to the 1D intensity channel. The commutativity proof (§5) holds because scalar multiplication is commutative. The narrative bias extends this to a 4D space where composition is additive — still commutative, still associative.
+
+See also: `docs/theory/spw/looper-architecture.spw` for the full render pipeline mapping.
+

@@ -1,0 +1,140 @@
+# Spatial Model
+#
+# The visual attention geometry of the Spw runtime.
+# Defines how operator weights modulate spatial focus in the shader pipeline.
+# This file documents the 9D SpatialLensProfile and the 2-level Focal Hierarchy.
+
+^["source_files"]{
+  ~<shader_renderer>"../../src/infra/shaders/shader-renderer.ts"
+  ~<shader_context>"../../src/infra/shaders/shader-context.ts"
+  ~<shader_types>"../../src/infra/shaders/types.ts"
+  ~<stage_shaders>"../../src/features/shaders/stage-shaders.ts"
+  ~<type_affinities>"../../src/runtime/state/type-affinities.ts"
+}
+
+^["meta"]{
+  @domain: design
+  @kind: spatial-architecture
+  @description: "Visual attention geometry modulated by operator topology"
+  @version: "0.1.0"
+}
+
+^["uniform_vectors"]{
+  # Five allocated vec4 uniforms in the shader pipeline.
+  # Three are currently unused — reserved for operator/runtime state.
+
+  ~#u_runtime{
+    current: [0, 0, 0, 0]
+    proposed: "register saturation vector: [σ_ground, σ_locus, σ_resonance, σ_probe]"
+    type: "vec4"
+    update_cadence: "per-frame via RuntimeShaderBridge"
+  }
+
+  ~#u_ontology{
+    current: [0, 0, 0, 0]
+    proposed: "type activation levels: [schema_depth, binding_count, scope_depth, ast_height]"
+    type: "vec4"
+    update_cadence: "per-parse via ShaderSceneScanner"
+  }
+
+  ~#u_bbbh{
+    current: [0, 0, 0, 0]
+    meaning: "boon/bane/bone/honk valence weights"
+    type: "vec4"
+    update_cadence: "per-frame via bbbh-pass"
+    link: ~<valence>"./valence-architecture.spw"
+  }
+
+  ~#u_material{
+    current: [0, 0.5, 1.0, 0]
+    proposed: "operator weight vector (packed): [ground_bias, locus_bias, resonance_bias, probe_bias]"
+    type: "vec4"
+    update_cadence: "on lens change"
+  }
+
+  ~#u_narrative{
+    current: "(warmth, rhythm, grain, depth)"
+    proposed: "(valence, rhythm, grain, depth)"
+    type: "4 × float uniforms"
+    update_cadence: "per-frame via syncOptics"
+    css_sources: [
+      "--spw-narrative-warmth",
+      "--spw-narrative-rhythm",
+      "--spw-narrative-grain",
+      "--spw-narrative-depth"
+    ]
+  }
+}
+
+^["focal_hierarchy"]{
+  # Two-level spatial focus: Region (macro) → MicroFocus (token/node)
+
+  ~#region_focus{
+    uniforms: ["u_focus", "u_focusRadius", "u_focusStrength"]
+    source: "Active [data-region] element bounding rect"
+    scaled_by: ["ContextShaderProfile.focusRadiusScale", "RegionShaderProfile.radiusScale"]
+    description: "The coarse attention cone — which panel has focus"
+  }
+
+  ~#micro_focus{
+    uniforms: ["u_microFocus", "u_microFocusRadius", "u_microFocusStrength"]
+    source: "Selected [data-node-id] or [data-token-index] element"
+    scaled_by: ["ContextShaderProfile.microStrengthScale", "RegionShaderProfile.microBoost"]
+    description: "The fine attention point — which token or node is selected"
+    selectors: [
+      "[data-node-id][data-selected=\"true\"]",
+      "[data-token-index][aria-selected=\"true\"]",
+      "[data-selected-range=\"true\"]",
+      "[data-selection-target=\"true\"]"
+    ]
+  }
+}
+
+^["spatial_lens_profile"]{
+  # Proposed: Extend RegionShaderProfile from 4D to 9D
+  # by adding operator-weighted spatial modifiers.
+
+  ~#existing_dimensions{
+    radiusScale:    "How wide is the attention cone?"
+    strengthScale:  "How bright is the focus?"
+    boost:          "Region-level amplification"
+    microBoost:     "Token-level amplification"
+  }
+
+  ~#proposed_dimensions{
+    groundBias:     ". — how much does ground flatten the field?"
+    locusBias:      "@ — how much does focus sharpen the cone?"
+    resonanceBias:  "# — how much do anchors glow?"
+    probeBias:      "? — how much do questions pulse?"
+    injectionBias:  "! — how much do actions flash?"
+  }
+}
+
+^["region_profiles"]{
+  # Existing per-region shader profiles from shader-renderer.ts
+
+  ~#editor{    radiusScale: 0.95, strengthScale: 1.15, boost: 1.12, microBoost: 1.1  }
+  ~#inspector{ radiusScale: 0.86, strengthScale: 1.22, boost: 1.06, microBoost: 1.18 }
+  ~#geology{   radiusScale: 1.08, strengthScale: 0.92, boost: 0.98, microBoost: 0.88 }
+  ~#sidebar{   radiusScale: 1.08, strengthScale: 0.90, boost: 0.96, microBoost: 0.85 }
+  ~#header{    radiusScale: 1.22, strengthScale: 0.82, boost: 0.93, microBoost: 0.72 }
+  ~#footer{    radiusScale: 1.14, strengthScale: 0.86, boost: 0.95, microBoost: 0.75 }
+}
+
+^["wonder"]{
+  ?["Can operator weights modulate spatial focus?"]
+    ~#answer: "Yes. A lens that amplifies resonanceBias makes all #-anchored
+      elements glow more brightly in the shader. A lens that amplifies probeBias
+      makes ?-pending elements pulse. The spatial model becomes operator-aware."
+
+  ?["What does a 9D spatial profile feel like?"]
+    ~#answer: "Like switching between microscope objectives. Each lens not only
+      changes what you see (interpretation) but how the light falls (geometry).
+      A critic@ lens sharpens questions and dims actions. A theatre@ lens
+      widens the stage and makes injections flash."
+
+  ?["How does this connect to the valence architecture?"]
+    ~#answer: "The u_bbbh vector carries valence weights to the GPU.
+      The spatial lens profile adds operator weights alongside valence weights.
+      Together they form the full material-attention profile of a component."
+}

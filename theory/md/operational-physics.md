@@ -881,3 +881,42 @@ See: OPERATIONAL-PHYSICS.md for details.
 **Status**: Ready to commit theoretical direction
 **Next Action**: Execute Phase 4A implementation
 **Timeline**: 4 weeks for full implementation
+
+---
+
+## Material Properties for Resonant Cognition
+
+The shader renderer's narrative personality system (`u_warmth`, `u_rhythm`, `u_narrativeGrain`, `u_depth`) provides the material substrate for operational physics. These properties modulate the visual "feel" of saturation.
+
+### Current 4D Narrative Vector
+
+| Property | Uniform | Range | Cognitive Channel |
+|:---------|:--------|:------|:-----------------|
+| Warmth | `u_warmth` | [0,1] | Arousal (partial — conflates valence) |
+| Rhythm | `u_rhythm` | [0,1] | Temporal binding |
+| Grain | `u_narrativeGrain` | [0,1] | Perceptual salience |
+| Depth | `u_depth` | [0,1] | Hierarchical processing |
+
+### Proposed 6D Refinement
+
+Split into two vec4 packs using existing unused shader uniform slots:
+
+- **Pack 1** (`u_narrative`): `(valence, rhythm, grain, depth)` — base material properties
+- **Pack 2** (`u_resonance`): `(coherence, novelty, warmth, arc)` — cognitive state
+
+Where:
+- `valence` ∈ [-1, 1]: approach/avoidance (split from warmth)
+- `coherence` ∈ [0, 1]: pattern completeness (maps to scene readiness σ)
+- `novelty` ∈ [0, 1]: surprise/expectation violation (drives schema updating)
+
+### Hardware Scaling
+
+For advanced hardware, saturation evaluation extends to **saturation matrices** where each brace pair contributes a row vector to a per-scope matrix. Script execution becomes matrix reduction — each operator application is a row operation. This enables parallel saturation evaluation on hardware with matrix instruction sets (Tensor Cores, AMX).
+
+The `%` operator returns saturation with precision dependent on execution context:
+- GPU (WebGL): `mediump float` (~3 decimal digits)
+- CPU (JS runtime): IEEE 754 `f64` (~15 digits)
+- Serialization: `f32` or `f16` for network transfer
+
+See also: `docs/theory/spw/spatial-model.spw` for the uniform vector mapping.
+
