@@ -1,0 +1,106 @@
+# Operator Normal Form (ONF)
+#
+# Every surface expression reduces to: σ(args...)[reg=R ...]
+# Sigil is the callee. No named verbs. Arguments are positional.
+#
+# @see src/lang/grammar/onf-spec.md
+
+^"rule"{
+  form:   "σ(args...)[reg=R ...]"
+  sigil:  "the operator character (callee)"
+  args:   "positional, left-to-right"
+  frames: "reg + arbitrary key-value metadata"
+  note:   "momentum frames excluded from semantic hash"
+}
+
+^"normalization_table"{
+  "x / y"    → "/(x, y)[reg=proj]"
+  "x!"       → "!(x)[reg=hydrate]"
+  "~x"       → "~(x)[reg=defer]"
+  "#[a, b]"  → "#(a, b)[reg=set]"
+  ".{k: v}"  → ".({k: v})[reg=facet]"
+  "?<a, b>"  → "?(a, b)[reg=stream]"
+  "_"        → "_()[reg=hole]"
+  "`phrase`" → "`(phrase)[reg=phrase]"
+}
+
+^"fixity"{
+  prefix:  { example: "!x",    clause: "imperative", onf: "!(x)" }
+  infix:   { example: "x / y", clause: "narrative",  onf: "/(x, y)" }
+  postfix: { example: "x!",    clause: "declarative", onf: "!(x)" }
+  note:    "All three fixity positions reduce to the same ONF."
+}
+
+^"invariants"{
+  idempotent:       "normalizeToONF(parse(desugar(src))) is idempotent"
+  hash_stable:      "ONF → semantic_hash excludes momentum frames"
+  dialect_gated:    "no implicit rewrites in default pipeline"
+  round_trip:       "surface → ONF → expand → surface is identity"
+}
+
+^"register_frame_constructors"{
+  "#[...]"  { operator: "#", container: "[]", reg: "set",         meaning: "category / ground-truth set" }
+  ".{...}"  { operator: ".", container: "{}", reg: "facet",       meaning: "property facet / definition" }
+  "@(...)"  { operator: "@", container: "()", reg: "perspective", meaning: "observer scope" }
+  "?<...>"  { operator: "?", container: "<>", reg: "stream",      meaning: "becoming / durational stream" }
+}
+
+^"open_questions"{
+  # Should all operators reduce to the same σ(args...)[frames...] shape?
+  # Or does each sigil define its own reduction strategy?
+  #
+  # Status: open. Do not assume uniform ONF until tested.
+}
+
+^"tiered_normalization"{
+  # Instead of one ONF, consider three tiers:
+  #
+  # SNF  (Surface Normal Form)
+  #   What the lexer produces. Flat token stream, no reduction.
+  #   Memory: O(1) state. Speed: single pass.
+  #
+  # SiNF (Sigil Normal Form)
+  #   Per-sigil reduction. Each operator's subtree is normalized
+  #   by its own automaton. !x and x! both → !(x), but !(x) and
+  #   ~(x) remain structurally different.
+  #   Memory: O(depth) for context stack.
+  #
+  # SeNF (Semantic Normal Form)
+  #   Full cross-sigil normalization. !(~x) might force the thunk.
+  #   Church-Rosser question lives here: do all paths converge?
+  #   Memory: O(program) for full analysis.
+  #
+  # Lexer → SNF. Parser + reducers → SiNF. Optimizer → SeNF.
+  # Each consumer picks the tier it needs.
+}
+
+^"per_sigil_automata"{
+  # Each sigil class defines a reduction state machine:
+
+  "!" { strategy: "eager",       path: "evaluate → dispatch → capture",   terminal: "register binding (void)" }
+  "~" { strategy: "lazy",        path: "quote → suspend",                  terminal: "thunk (no reduction)"    }
+  "?" { strategy: "interactive", path: "open channel → wait → bind",       terminal: "stream head or timeout"  }
+  "." { strategy: "structural",  path: "extract keys → define shape",      terminal: "property map"            }
+  "^" { strategy: "integrative", path: "elevate → compose → bind",         terminal: "promoted value"          }
+  "#" { strategy: "categorical", path: "enumerate → ground → set",         terminal: "category set"            }
+  "@" { strategy: "perspectival",path: "scope → observe → report",         terminal: "observation"             }
+  "=" { strategy: "binding",     path: "evaluate RHS → bind LHS",          terminal: "configuration entry"     }
+  "&" { strategy: "confluent",   path: "collect → merge → fanin",          terminal: "merged stream"           }
+  "*" { strategy: "resolving",   path: "materialize → unwrap → value",     terminal: "concrete value"          }
+  "$" { strategy: "substrate",   path: "introspect → meta-read",           terminal: "substrate reference"     }
+  "%" { strategy: "measuring",   path: "sample → normalize → ratio",       terminal: "unit scalar"             }
+
+  # Key question: do cross-sigil reductions commute?
+  # !(~x) ≠ ~(!x) — eagerness and laziness don't commute.
+  # This is a feature, not a bug.
+  #
+  # See: docs/theory/spw/register-geometry.spw
+}
+
+^"implementation"{
+  types:     "src/seed/types/ast/onf.ts"
+  normalize: "src/seed/normalize.ts"
+  spec:      "src/lang/grammar/onf-spec.md"
+  frames:    "src/lang/grammar/register-frames.md"
+  geometry:  "docs/theory/spw/register-geometry.spw"
+}
