@@ -1,66 +1,129 @@
 # Operators Canonical Reference
 #
-# Canonical "13 operators + 4 containers" map for current docs and UI tokens.
+# Canonical 12 operators + 4 containers for docs, UI tokens, and ONF.
+# @see src/seed/types/token.ts (OperatorKind)
+# @see src/core/types/branded.ts (OperatorSigil)
 
-^"intent"{
-  goal: "Keep symbolic semantics stable while runtime naming evolves",
-  shape: "operator meaning + container roles + migration aliases",
-  note: "Canonical names are language-facing; renderer aliases remain backward compatible.",
-}
+^seed[Spw.Operators v:0.3 @profile:Spw.b @intent:canonical_map]
+{_ops
 
-^"operators"{
-  "~": "potential"
-  "#": "vibration"
-  ".": "ground"
-  "?": "wonder"
-  "!": "action"
-  "*": "value"
-  "&": "subject"
-  "@": "perspective"
-  "^": "ascension"
-  "$": "substrate"
-  "%": "measure"
-  "=": "configuration"
-  # 12 sigils total. Must stay consistent with OperatorKind in seed/types/token.ts
-  # and OperatorSigil in core/types/branded.ts.
-}
+  ## ── Operators (12 sigils) ──────────────────────────────────
 
-^"containers"{
-  "<>": "concept"
-  "()": "scene"
-  "[]": "mode"
-  "{}": "definition"
-}
+  operators: .{
+    `~` = potential
+    `#` = vibration
+    `.` = ground
+    `?` = wonder
+    `!` = action
+    `*` = value
+    `&` = subject
+    `@` = perspective
+    `^` = ascension
+    `$` = substrate
+    `%` = measure
+    `=` = configuration
+  }[reg=facet]
 
-^"compositional_form"{
-  "<concept>(scene)[mode]{body}": "primary layered authoring bundle",
-  "flow": "concept -> scene -> mode -> definition",
-  emphasis: "Prefer container stack for scoped semantics over ad-hoc prose markers.",
-}
+  ## ── Containers (4 brace pairs) ─────────────────────────────
 
-^"runtime_aliases"{
-  purpose: "Bridge canonical semantics to existing UI/operator color token names",
-  map: {
-    action: "inject"
-    perspective: "tap"
-    potential: "wave"
-    concept: "couple"
-    wonder: "probe"
-    ascension: "branch"
-    subject: "bias"
-    definition: "emit"
-    vibration: "reflect"
-  }
-}
+  containers: .{
+    `<>` = concept
+    `()` = scene
+    `[]` = mode
+    `{}` = definition
+  }[reg=facet]
 
-^"lsp_dap_prep"{
-  lsp: "Use canonical names in diagnostics/hover text to reduce vocabulary drift.",
-  dap: "Emit canonical operator labels in step events for stable debug narration.",
-  sheaf: "Cache subset parses by container stack key: <>()[]{} + operator signature.",
-}
+  ## ── Register Frame Constructors ────────────────────────────
+  ## Operator × Container → canonical register
 
-^"notes"{
-  "LoD should gate visibility of semantic layers, not globally dim most UI.",
-  "Stage should modulate atmosphere and motion intensity, not core readability.",
-  "Context panel should surface canonical operator labels when showing action packets.",
-}
+  register_frames: #[
+    .{ combo = `#[...]`,  operator = `#`, container = `[]`, reg = set,         meaning = `category / ground-truth set` },
+    .{ combo = `.{...}`,  operator = `.`, container = `{}`, reg = facet,       meaning = `property facet / definition` },
+    .{ combo = `@(...)`,  operator = `@`, container = `()`, reg = perspective, meaning = `observer scope` },
+    .{ combo = `?<...>`,  operator = `?`, container = `<>`, reg = stream,      meaning = `becoming / durational stream` }
+  ][reg=set]
+
+  ## ── Compositional Form ─────────────────────────────────────
+
+  compositional_form: .{
+    pattern  = `<concept>(scene)[mode]{body}`
+    flow     = `concept -> scene -> mode -> definition`
+    emphasis = `Prefer container stack for scoped semantics over ad-hoc prose markers.`
+  }[reg=facet]
+
+  ## ── ONF Reduction ──────────────────────────────────────────
+  ## Every surface expression → σ(args...)[reg=R ...]
+
+  onf_examples: #[
+    .{ surface = `x / y`,    onf = `/(x, y)[reg=proj]` },
+    .{ surface = `x!`,       onf = `!(x)[reg=hydrate]` },
+    .{ surface = `~x`,       onf = `~(x)[reg=defer]` },
+    .{ surface = `#[a, b]`,  onf = `#(a, b)[reg=set]` },
+    .{ surface = `.{k: v}`,  onf = `.({k: v})[reg=facet]` },
+    .{ surface = `?<a, b>`,  onf = `?(a, b)[reg=stream]` },
+    .{ surface = `_`,        onf = `_()[reg=hole]` },
+    .{ surface = `` `phrase` ``, onf = `` `(phrase)[reg=phrase]` `` }
+  ][reg=set]
+
+  ## ── Runtime Aliases ────────────────────────────────────────
+  ## Bridge canonical → existing UI/operator color token names
+
+  runtime_aliases: .{
+    action      = inject
+    perspective = tap
+    potential   = wave
+    concept     = couple
+    wonder      = probe
+    ascension   = branch
+    subject     = bias
+    definition  = emit
+    vibration   = reflect
+  }[reg=facet]
+
+  ## ── Per-Sigil Strategies ───────────────────────────────────
+  ## From onf.spw per_sigil_automata
+
+  strategies: #[
+    .{ sigil = `!`, strategy = eager,       path = ?<evaluate, dispatch, capture>,    terminal = `register binding` },
+    .{ sigil = `~`, strategy = lazy,        path = ?<quote, suspend>,                 terminal = `thunk` },
+    .{ sigil = `?`, strategy = interactive, path = ?<open_channel, wait, bind>,       terminal = `stream head` },
+    .{ sigil = `.`, strategy = structural,  path = ?<extract_keys, define_shape>,     terminal = `property map` },
+    .{ sigil = `^`, strategy = integrative, path = ?<elevate, compose, bind>,         terminal = `promoted value` },
+    .{ sigil = `#`, strategy = categorical, path = ?<enumerate, ground, set>,         terminal = `category set` },
+    .{ sigil = `@`, strategy = perspectival,path = ?<scope, observe, report>,         terminal = `observation` },
+    .{ sigil = `=`, strategy = binding,     path = ?<evaluate_RHS, bind_LHS>,         terminal = `configuration entry` },
+    .{ sigil = `&`, strategy = confluent,   path = ?<collect, merge, fanin>,          terminal = `merged stream` },
+    .{ sigil = `*`, strategy = resolving,   path = ?<materialize, unwrap, value>,     terminal = `concrete value` },
+    .{ sigil = `$`, strategy = substrate,   path = ?<introspect, meta_read>,          terminal = `substrate reference` },
+    .{ sigil = `%`, strategy = measuring,   path = ?<sample, normalize, ratio>,       terminal = `unit scalar` }
+  ][reg=set]
+
+  ## ── Adopted Heuristics (from Grok probes v0.5–0.8) ────────
+
+  heuristics: #[
+    .{ id = proj_chain,     rule = `x / y / z → /(x,#[y,z])[proj]`,   type = auto },
+    .{ id = tag_select,     rule = `x #tag → /(x,#tag)[proj tag]`,     type = auto },
+    .{ id = facet_bias,     rule = `key = val in .{} → .(key,val)`,    type = auto },
+    .{ id = cascade_merge,  rule = `&(l1[p=10],l2[p=20]) → % picks l2`, type = gated },
+    .{ id = lazy_force,     rule = `data~! → !(~(data))`,              type = auto },
+    .{ id = unify_backtrack,rule = `?(x,.{k=_[V]})[b=on]`,            type = gated },
+    .{ id = resolve_cascade,rule = `x/p with layers → /(x,p)[resolve=cascade]`, type = auto }
+  ][reg=set]
+
+  ## ── LSP / DAP Prep ────────────────────────────────────────
+
+  lsp_dap: .{
+    lsp   = `Use canonical names in diagnostics/hover text`
+    dap   = `Emit canonical operator labels in step events`
+    sheaf = `Cache subset parses by container stack key`
+  }[reg=facet]
+
+  ## ── Notes ──────────────────────────────────────────────────
+
+  notes: #[
+    `LoD should gate visibility of semantic layers, not globally dim most UI.`,
+    `Stage should modulate atmosphere and motion intensity, not core readability.`,
+    `Context panel should surface canonical operator labels when showing action packets.`
+  ]
+
+}_ops

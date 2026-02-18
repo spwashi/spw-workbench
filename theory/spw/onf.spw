@@ -4,103 +4,151 @@
 # Sigil is the callee. No named verbs. Arguments are positional.
 #
 # @see src/lang/grammar/onf-spec.md
+# @see docs/theory/spw/register-geometry.spw
 
-^"rule"{
-  form:   "σ(args...)[reg=R ...]"
-  sigil:  "the operator character (callee)"
-  args:   "positional, left-to-right"
-  frames: "reg + arbitrary key-value metadata"
-  note:   "momentum frames excluded from semantic hash"
-}
+^seed[Spw.ONF v:0.3 @profile:Spw.b @intent:normalization_spec]
+{_onf
 
-^"normalization_table"{
-  "x / y"    → "/(x, y)[reg=proj]"
-  "x!"       → "!(x)[reg=hydrate]"
-  "~x"       → "~(x)[reg=defer]"
-  "#[a, b]"  → "#(a, b)[reg=set]"
-  ".{k: v}"  → ".({k: v})[reg=facet]"
-  "?<a, b>"  → "?(a, b)[reg=stream]"
-  "_"        → "_()[reg=hole]"
-  "`phrase`" → "`(phrase)[reg=phrase]"
-}
+  ## ── Core Rule ──────────────────────────────────────────────
 
-^"fixity"{
-  prefix:  { example: "!x",    clause: "imperative", onf: "!(x)" }
-  infix:   { example: "x / y", clause: "narrative",  onf: "/(x, y)" }
-  postfix: { example: "x!",    clause: "declarative", onf: "!(x)" }
-  note:    "All three fixity positions reduce to the same ONF."
-}
+  rule: .{
+    form   = `σ(args...)[reg=R ...]`
+    sigil  = `the operator character (callee)`
+    args   = `positional, left-to-right`
+    frames = `reg + arbitrary key-value metadata`
+    note   = `momentum frames excluded from semantic hash`
+  }[reg=facet]
 
-^"invariants"{
-  idempotent:       "normalizeToONF(parse(desugar(src))) is idempotent"
-  hash_stable:      "ONF → semantic_hash excludes momentum frames"
-  dialect_gated:    "no implicit rewrites in default pipeline"
-  round_trip:       "surface → ONF → expand → surface is identity"
-}
+  ## ── Normalization Table ────────────────────────────────────
 
-^"register_frame_constructors"{
-  "#[...]"  { operator: "#", container: "[]", reg: "set",         meaning: "category / ground-truth set" }
-  ".{...}"  { operator: ".", container: "{}", reg: "facet",       meaning: "property facet / definition" }
-  "@(...)"  { operator: "@", container: "()", reg: "perspective", meaning: "observer scope" }
-  "?<...>"  { operator: "?", container: "<>", reg: "stream",      meaning: "becoming / durational stream" }
-}
+  normalization: #[
+    .{ surface = `x / y`,    onf = `/(x, y)[reg=proj]` },
+    .{ surface = `x!`,       onf = `!(x)[reg=hydrate]` },
+    .{ surface = `~x`,       onf = `~(x)[reg=defer]` },
+    .{ surface = `#[a, b]`,  onf = `#(a, b)[reg=set]` },
+    .{ surface = `.{k: v}`,  onf = `.({k: v})[reg=facet]` },
+    .{ surface = `?<a, b>`,  onf = `?(a, b)[reg=stream]` },
+    .{ surface = `_`,        onf = `_()[reg=hole]` },
+    .{ surface = `` `phrase` ``, onf = `` `(phrase)[reg=phrase]` `` },
+    .{ surface = `x = y`,    onf = `=(x, y)[reg=config]` },
+    .{ surface = `&(a, b)`,  onf = `&(a, b)[reg=merge]` },
+    .{ surface = `%x`,       onf = `%(x)[reg=measure]` },
+    .{ surface = `$x`,       onf = `$(x)[reg=substrate]` }
+  ][reg=set]
 
-^"open_questions"{
-  # Should all operators reduce to the same σ(args...)[frames...] shape?
-  # Or does each sigil define its own reduction strategy?
-  #
-  # Status: open. Do not assume uniform ONF until tested.
-}
+  ## ── Fixity ─────────────────────────────────────────────────
+  ## All fixity positions reduce to the same ONF
 
-^"tiered_normalization"{
-  # Instead of one ONF, consider three tiers:
-  #
-  # SNF  (Surface Normal Form)
-  #   What the lexer produces. Flat token stream, no reduction.
-  #   Memory: O(1) state. Speed: single pass.
-  #
-  # SiNF (Sigil Normal Form)
-  #   Per-sigil reduction. Each operator's subtree is normalized
-  #   by its own automaton. !x and x! both → !(x), but !(x) and
-  #   ~(x) remain structurally different.
-  #   Memory: O(depth) for context stack.
-  #
-  # SeNF (Semantic Normal Form)
-  #   Full cross-sigil normalization. !(~x) might force the thunk.
-  #   Church-Rosser question lives here: do all paths converge?
-  #   Memory: O(program) for full analysis.
-  #
-  # Lexer → SNF. Parser + reducers → SiNF. Optimizer → SeNF.
-  # Each consumer picks the tier it needs.
-}
+  fixity: #[
+    .{ pos = prefix,  example = `!x`,    clause = imperative,  onf = `!(x)` },
+    .{ pos = infix,   example = `x / y`, clause = narrative,   onf = `/(x, y)` },
+    .{ pos = postfix, example = `x!`,    clause = declarative, onf = `!(x)` }
+  ][reg=set]
 
-^"per_sigil_automata"{
-  # Each sigil class defines a reduction state machine:
+  ## ── Invariants ─────────────────────────────────────────────
 
-  "!" { strategy: "eager",       path: "evaluate → dispatch → capture",   terminal: "register binding (void)" }
-  "~" { strategy: "lazy",        path: "quote → suspend",                  terminal: "thunk (no reduction)"    }
-  "?" { strategy: "interactive", path: "open channel → wait → bind",       terminal: "stream head or timeout"  }
-  "." { strategy: "structural",  path: "extract keys → define shape",      terminal: "property map"            }
-  "^" { strategy: "integrative", path: "elevate → compose → bind",         terminal: "promoted value"          }
-  "#" { strategy: "categorical", path: "enumerate → ground → set",         terminal: "category set"            }
-  "@" { strategy: "perspectival",path: "scope → observe → report",         terminal: "observation"             }
-  "=" { strategy: "binding",     path: "evaluate RHS → bind LHS",          terminal: "configuration entry"     }
-  "&" { strategy: "confluent",   path: "collect → merge → fanin",          terminal: "merged stream"           }
-  "*" { strategy: "resolving",   path: "materialize → unwrap → value",     terminal: "concrete value"          }
-  "$" { strategy: "substrate",   path: "introspect → meta-read",           terminal: "substrate reference"     }
-  "%" { strategy: "measuring",   path: "sample → normalize → ratio",       terminal: "unit scalar"             }
+  invariants: .{
+    idempotent    = `normalizeToONF(parse(desugar(src))) is idempotent`
+    hash_stable   = `ONF → semantic_hash excludes momentum frames`
+    dialect_gated = `no implicit rewrites in default pipeline`
+    round_trip    = `surface → ONF → expand → surface is identity`
+  }[reg=facet]
 
-  # Key question: do cross-sigil reductions commute?
-  # !(~x) ≠ ~(!x) — eagerness and laziness don't commute.
-  # This is a feature, not a bug.
-  #
-  # See: docs/theory/spw/register-geometry.spw
-}
+  ## ── Register Frame Constructors ────────────────────────────
 
-^"implementation"{
-  types:     "src/seed/types/ast/onf.ts"
-  normalize: "src/seed/normalize.ts"
-  spec:      "src/lang/grammar/onf-spec.md"
-  frames:    "src/lang/grammar/register-frames.md"
-  geometry:  "docs/theory/spw/register-geometry.spw"
-}
+  register_frames: #[
+    .{ form = `#[...]`,  operator = `#`, container = `[]`, reg = set,         meaning = `category / ground-truth set` },
+    .{ form = `.{...}`,  operator = `.`, container = `{}`, reg = facet,       meaning = `property facet / definition` },
+    .{ form = `@(...)`,  operator = `@`, container = `()`, reg = perspective, meaning = `observer scope` },
+    .{ form = `?<...>`,  operator = `?`, container = `<>`, reg = stream,      meaning = `becoming / durational stream` }
+  ][reg=set]
+
+  ## ── Tiered Normalization ───────────────────────────────────
+  ## Instead of one ONF, three tiers:
+
+  tiers: #[
+    .{
+      tier     = SNF
+      name     = `Surface Normal Form`
+      what     = `Flat token stream, no reduction`
+      producer = lexer
+      memory   = `O(1) state`
+      speed    = `single pass`
+    },
+    .{
+      tier     = SiNF
+      name     = `Sigil Normal Form`
+      what     = `Per-sigil reduction. !x and x! both → !(x), but !(x) and ~(x) remain distinct.`
+      producer = `parser + reducers`
+      memory   = `O(depth) for context stack`
+      speed    = `per-sigil automaton`
+    },
+    .{
+      tier     = SeNF
+      name     = `Semantic Normal Form`
+      what     = `Full cross-sigil normalization. !(~x) might force the thunk.`
+      producer = optimizer
+      memory   = `O(program) for full analysis`
+      speed    = `Church-Rosser: do all paths converge?`
+    }
+  ][reg=set]
+
+  tier_pipeline: ?< lexer, SNF, `parser + reducers`, SiNF, optimizer, SeNF >[reg=pipeline]
+
+  ## ── Per-Sigil Automata ─────────────────────────────────────
+
+  automata: #[
+    .{ sigil = `!`, strategy = eager,        path = ?<evaluate, dispatch, capture>,   terminal = `register binding (void)` },
+    .{ sigil = `~`, strategy = lazy,         path = ?<quote, suspend>,                terminal = `thunk (no reduction)` },
+    .{ sigil = `?`, strategy = interactive,  path = ?<open_channel, wait, bind>,      terminal = `stream head or timeout` },
+    .{ sigil = `.`, strategy = structural,   path = ?<extract_keys, define_shape>,    terminal = `property map` },
+    .{ sigil = `^`, strategy = integrative,  path = ?<elevate, compose, bind>,        terminal = `promoted value` },
+    .{ sigil = `#`, strategy = categorical,  path = ?<enumerate, ground, set>,        terminal = `category set` },
+    .{ sigil = `@`, strategy = perspectival, path = ?<scope, observe, report>,        terminal = `observation` },
+    .{ sigil = `=`, strategy = binding,      path = ?<evaluate_RHS, bind_LHS>,        terminal = `configuration entry` },
+    .{ sigil = `&`, strategy = confluent,    path = ?<collect, merge, fanin>,          terminal = `merged stream` },
+    .{ sigil = `*`, strategy = resolving,    path = ?<materialize, unwrap, value>,     terminal = `concrete value` },
+    .{ sigil = `$`, strategy = substrate,    path = ?<introspect, meta_read>,          terminal = `substrate reference` },
+    .{ sigil = `%`, strategy = measuring,    path = ?<sample, normalize, ratio>,       terminal = `unit scalar` }
+  ][reg=set]
+
+  ## Key: cross-sigil reductions don't commute
+  ## !(~x) ≠ ~(!x) — eagerness and laziness are distinct homotopy classes
+
+  ## ── Adopted Heuristics (Grok v0.5–0.8) ────────────────────
+
+  heuristics: #[
+    .{ id = proj_chain,       surface = `x / y / z`,           onf = `/(x,#[y,z])[proj]`,            tier = SiNF, type = auto },
+    .{ id = tag_select,       surface = `x #tag`,              onf = `/(x,#tag)[proj tag]`,           tier = SiNF, type = auto },
+    .{ id = facet_bias,       surface = `key = val in .{}`,    onf = `.(key,val)[facet]`,             tier = SiNF, type = auto },
+    .{ id = lazy_force,       surface = `data~!`,              onf = `!(~(data))[hydrate]`,           tier = SeNF, type = auto },
+    .{ id = apply_post,       surface = `x *f`,                onf = `*(x,f)[apply]`,                 tier = SiNF, type = auto },
+    .{ id = singleton_set,    surface = `#[x]`,                onf = `#(x)[set singleton]`,           tier = SiNF, type = auto },
+    .{ id = cascade_merge,    surface = `&(l1[p=10],l2[p=20])`, onf = `&(l1,l2)[merge cascade]`,     tier = SeNF, type = gated },
+    .{ id = nested_facet,     surface = `.{.{k:v}}`,           onf = `.(.(k,v))[facet nested]`,       tier = SiNF, type = auto },
+    .{ id = unify_backtrack,  surface = `?(x,.{k=_[V]})[b=on]`, onf = `?(x,.(k,_[V]))[unify b=on]`, tier = SeNF, type = gated },
+    .{ id = resolve_cascade,  surface = `x/p with layers`,    onf = `/(x,p)[proj resolve=cascade]`,  tier = SeNF, type = auto },
+    .{ id = cascade_in_backtrack, surface = `?[b=on r=cascade]`, onf = `?[unify b=on r=cascade]`,    tier = SeNF, type = gated },
+    .{ id = mid_pipe_unify,   surface = `data~!#filter ?(x)`,  onf = `?(#(!(~(data)),filter),x)`,   tier = SeNF, type = gated }
+  ][reg=set]
+
+  ## ── Open Questions ─────────────────────────────────────────
+
+  open_questions: #[
+    `Should all operators reduce to the same σ(args)[frames] shape?`,
+    `Or does each sigil define its own reduction strategy?`,
+    `Status: tiered approach (SNF/SiNF/SeNF) chosen over uniform ONF.`,
+    `SeNF termination: Turing-complete features like unify may not terminate.`
+  ]
+
+  ## ── Implementation ─────────────────────────────────────────
+
+  implementation: .{
+    types     = `src/seed/types/ast/onf.ts`
+    normalize = `src/seed/normalize.ts`
+    spec      = `src/lang/grammar/onf-spec.md`
+    frames    = `src/lang/grammar/register-frames.md`
+    geometry  = `docs/theory/spw/register-geometry.spw`
+  }[reg=facet]
+
+}_onf

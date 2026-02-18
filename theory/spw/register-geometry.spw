@@ -4,127 +4,137 @@
 # Reduction automata trace geodesics through this space.
 #
 # @see docs/theory/spw/onf.spw (tiered normalization, per-sigil automata)
+# @see docs/theory/spw/operators.spw (12 sigils, 4 containers)
 
-^"tensor_axes"{
-  # Five axes define the full register space:
-  #
-  # 1. Sigil       (12 operators: ! ^ ~ ? * = @ # . & $ %)
-  # 2. Container   (4 brace pairs: [] {} <> ())
-  # 3. Layer       (4 LoD levels — naming TBD, see open_naming)
-  # 4. Quality     (4 BBBH: boon, bane, bone, honk)
-  # 5. Representation (4 semiotic: syntactic, semantic, pragmatic, meta)
-  #
-  # Full tensor: 12 × 4 × 4 × 4 × 4 = 3,072 cells.
-  # Most cells are empty. Reduction automata determine which are reachable.
-}
+^seed[Spw.Register.Geometry v:0.2 @profile:Spw.b @intent:fiber_bundle_model]
+{_geom
 
-^"fiber_bundle"{
-  # Base space: Sigil × Container = 48 points
-  #   This is "where" an operation lives — its operator and its container context.
-  #
-  # Fiber: Layer × Quality × Representation = 64 dimensions
-  #   This is "what" the operation carries — its depth, valence, and semiotic level.
-  #
-  # A register entry is a point in the total space: base × fiber.
-  # A reduction automaton is a section of the bundle:
-  #   it assigns, to each base point, a PATH through the fiber.
+  ## ── Tensor Axes ────────────────────────────────────────────
+  ## Five axes define the full register space:
 
-  base:  "Sigil(12) × Container(4)"
-  fiber: "Layer(4) × Quality(4) × Representation(4)"
-  total: "base × fiber = 3,072 cells"
-}
+  axes: #[
+    .{ axis = 1, name = Sigil,          size = 12, members = #[`!`,`^`,`~`,`?`,`*`,`=`,`@`,`#`,`.`,`&`,`$`,`%`] },
+    .{ axis = 2, name = Container,      size = 4,  members = #[`[]`,`{}`,`<>`,`()`] },
+    .{ axis = 3, name = Layer,          size = 4,  members = #[signal, pattern, flow, structure] },
+    .{ axis = 4, name = Quality,        size = 4,  members = #[boon, bane, bone, honk] },
+    .{ axis = 5, name = Representation, size = 4,  members = #[syntactic, semantic, pragmatic, meta] }
+  ][reg=set]
 
-^"reduction_as_geodesic"{
-  # Each sigil's automaton traces a different path through the fiber:
+  ## Full tensor: 12 × 4 × 4 × 4 × 4 = 3,072 cells.
+  ## Most cells are empty. Reduction automata determine which are reachable.
 
-  "!" { path: "token → node → effect → register",  dims: "layer descent (1D curve)"     }
-  "~" { path: "token → node → node → node",         dims: "collapses to point (0D)"      }
-  "?" { path: "token → node → wait ↔ wait ↔ wait",  dims: "flow × time surface (2D)"     }
-  "." { path: "token → structure",                    dims: "teleport, no continuous path"  }
+  ## ── Fiber Bundle ───────────────────────────────────────────
 
-  # The dimensionality of the path determines optimization complexity:
-  #   0D (point)   → trivially normalizable (~ is already normal)
-  #   1D (curve)   → single reduction sequence (! is deterministic)
-  #   2D (surface) → nondeterministic, may need exploration (? depends on environment)
-}
+  bundle: .{
+    base  = `Sigil(12) × Container(4)`
+    fiber = `Layer(4) × Quality(4) × Representation(4)`
+    total = `base × fiber = 3,072 cells`
+  }[reg=facet]
 
-^"affinity_constraints"{
-  # OPERATOR_AFFINITIES in register-bank.ts pin fiber dimensions:
-  #
-  # ! → accessMode: kinetic    → pins Quality axis
-  # = → accessMode: property   → pins Quality axis
-  # ? → accessMode: conditional → Quality remains free (depends on query result)
-  #
-  # Each pinned axis reduces the fiber dimension by 4×.
-  #   64-dim fiber with 1 pin → 16 cells
-  #   64-dim fiber with 2 pins → 4 cells
-  #   64-dim fiber with 3 pins → 1 cell (fully determined)
-  #
-  # Optimization: if a sigil pins 2+ axes, the reducer only traverses
-  # a 4D or 1D subspace. This is the geometric source of compilation speed.
-}
+  ## A register entry is a point in the total space: base × fiber.
+  ## A reduction automaton is a section of the bundle:
+  ##   it assigns, to each base point, a PATH through the fiber.
 
-^"container_algebra"{
-  # The 4 container pairs form Klein four group V₄ (ℤ₂ × ℤ₂):
-  #
-  #   [] ↔ {} : individuation ↔ definition    (what vs how)
-  #   <> ↔ () : coupling ↔ observation         (relation vs perspective)
-  #
-  # V₄ acts on the base space by permuting container axes.
-  # This means every expression has 4 "views" related by symmetry:
-  #
-  #   #[a, b]   — categorical view   (what set?)
-  #   .{a: b}   — definitional view  (what structure?)
-  #   ?<a, b>   — liminal view       (what coupling?)
-  #   @(a, b)   — agentive view      (who observes?)
-  #
-  # The register-frame constructors ARE the V₄ action applied to the base space.
-}
+  ## ── Reduction as Geodesic ──────────────────────────────────
 
-^"confluence_topology"{
-  # Church-Rosser as topology:
-  #
-  # If the reduction simplex is contractible, all paths converge.
-  # If not, there are nontrivial loops — different reduction orders
-  # give genuinely different results.
-  #
-  # Expected: NOT contractible.
-  #   !(~x) ≠ ~(!x)  — forcing a thunk ≠ deferring an action
-  #   These are distinct homotopy classes.
-  #
-  # The fundamental group π₁ of the reduction space encodes
-  # which sigil-pairs fail to commute. This is the algebra
-  # of evaluation order.
-  #
-  # Practical consequence: the optimizer cannot freely reorder
-  # cross-sigil operations. It must respect the group structure.
-}
+  geodesics: #[
+    .{ sigil = `!`, path = ?<token, node, effect, register>,       dims = `1D curve (layer descent)`,       complexity = deterministic },
+    .{ sigil = `~`, path = ?<token, node, node, node>,             dims = `0D point (collapses)`,           complexity = trivial },
+    .{ sigil = `?`, path = ?<token, node, wait, wait, wait>,       dims = `2D surface (flow × time)`,       complexity = nondeterministic },
+    .{ sigil = `.`, path = ?<token, structure>,                     dims = `teleport (no continuous path)`,  complexity = structural }
+  ][reg=set]
 
-^"open_naming"{
-  # The current layer names are: signal, pattern, flow, structure
-  # (from branded.ts Layer type)
-  #
-  # These were chosen for LoD (Level of Detail) in the workbench UI.
-  # But as fiber dimensions in register geometry, they may not be
-  # the right abstraction.
-  #
-  # Alternative framings:
-  #   token → expression → evaluation → storage    (compiler pipeline)
-  #   form → syntax → semantics → pragmatics       (semiotic, but collides with Representation axis)
-  #   surface → parsed → reduced → committed        (lifecycle)
-  #   character → phrase → clause → discourse       (linguistic granularity)
-  #
-  # The right names should be orthogonal to the other 4 axes
-  # and should describe WHERE in the reduction pipeline you are,
-  # not WHAT you're looking at (that's the Representation axis).
-  #
-  # Status: open. Current names are provisional.
-}
+  ## Dimensionality → optimization complexity:
+  ##   0D (point)   → trivially normalizable (~ is already normal)
+  ##   1D (curve)   → single reduction sequence (! is deterministic)
+  ##   2D (surface) → nondeterministic, may need exploration (? depends on environment)
 
-^"references"{
-  onf:          "docs/theory/spw/onf.spw"
-  brace_regs:   "docs/runtime/spw/brace-registers.spw"
-  register_bank:"src/features/keyboard/registers/register-bank.ts"
-  spw_algebra:  "src/core/types/spw-algebra.ts"
-  branded:      "src/core/types/branded.ts"
-}
+  ## ── Affinity Constraints ───────────────────────────────────
+
+  affinities: #[
+    .{ sigil = `!`, accessMode = kinetic,     pins = Quality,  effect = `64-dim → 16 cells` },
+    .{ sigil = `=`, accessMode = property,    pins = Quality,  effect = `64-dim → 16 cells` },
+    .{ sigil = `?`, accessMode = conditional, pins = _,        effect = `Quality remains free` }
+  ][reg=set]
+
+  ## Each pinned axis reduces the fiber dimension by 4×.
+  ##   64-dim fiber with 1 pin → 16 cells
+  ##   64-dim fiber with 2 pins → 4 cells
+  ##   64-dim fiber with 3 pins → 1 cell (fully determined)
+  ##
+  ## Optimization: if a sigil pins 2+ axes, the reducer only traverses
+  ## a 4D or 1D subspace. This is the geometric source of compilation speed.
+
+  ## ── Container Algebra ──────────────────────────────────────
+  ## The 4 container pairs form Klein four group V₄ (ℤ₂ × ℤ₂)
+
+  container_algebra: .{
+    duality_1 = .{ `[]` = individuation, `{}` = definition,  axis = `what vs how` }
+    duality_2 = .{ `<>` = coupling,      `()` = observation, axis = `relation vs perspective` }
+  }[reg=facet]
+
+  ## V₄ acts on the base space by permuting container axes.
+  ## Every expression has 4 "views" related by symmetry:
+
+  views: #[
+    .{ container = `#[a, b]`, view = categorical,  question = `what set?` },
+    .{ container = `.{a: b}`, view = definitional,  question = `what structure?` },
+    .{ container = `?<a, b>`, view = liminal,       question = `what coupling?` },
+    .{ container = `@(a, b)`, view = agentive,      question = `who observes?` }
+  ][reg=set]
+
+  ## The register-frame constructors ARE the V₄ action applied to the base space.
+
+  ## ── Confluence Topology ────────────────────────────────────
+  ## Church-Rosser as topology
+
+  confluence: .{
+    contractible = false
+    reason       = `!(~x) ≠ ~(!x) — forcing a thunk ≠ deferring an action`
+    consequence  = `These are distinct homotopy classes.`
+    fundamental_group = `π₁ encodes which sigil-pairs fail to commute`
+    practical    = `Optimizer cannot freely reorder cross-sigil operations`
+  }[reg=facet]
+
+  ## The non-commutative pairs (from Grok probes):
+  non_commutative: #[
+    .{ pair = #[`!`,`~`], reason = `eagerness vs laziness` },
+    .{ pair = #[`?`,`&`], reason = `stream vs merge ordering` },
+    .{ pair = #[`%`,`&`], reason = `measure before vs after merge` }
+  ][reg=set]
+
+  ## ── Cascade + Depth Integration (Grok v0.8) ───────────────
+
+  cascade_geometry: .{
+    layers      = `[cascade=base|layer] adds depth axis to fiber`
+    priority    = `[priority=N] orders layers for % resolution`
+    proj_resolve = `/ chain triggers cascade resolve before access`
+    depth_limit  = `[depth=N] gates recursive ?<> nesting`
+  }[reg=facet]
+
+  ## ── Layer Naming (Open) ────────────────────────────────────
+
+  open_naming: .{
+    current   = #[signal, pattern, flow, structure]
+    provenance = `branded.ts Layer type, chosen for LoD in workbench UI`
+    candidates = #[
+      .{ frame = compiler_pipeline, names = #[token, expression, evaluation, storage] },
+      .{ frame = semiotic,          names = #[form, syntax, semantics, pragmatics] },
+      .{ frame = lifecycle,         names = #[surface, parsed, reduced, committed] },
+      .{ frame = linguistic,        names = #[character, phrase, clause, discourse] }
+    ]
+    constraint = `Names should be orthogonal to the other 4 axes`
+    status     = `open — current names are provisional`
+  }[reg=facet]
+
+  ## ── References ─────────────────────────────────────────────
+
+  references: .{
+    onf           = `docs/theory/spw/onf.spw`
+    brace_regs    = `docs/runtime/spw/brace-registers.spw`
+    register_bank = `src/features/keyboard/registers/register-bank.ts`
+    spw_algebra   = `src/core/types/spw-algebra.ts`
+    branded       = `src/core/types/branded.ts`
+  }[reg=facet]
+
+}_geom
