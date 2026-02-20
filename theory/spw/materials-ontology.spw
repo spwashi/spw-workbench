@@ -3,14 +3,17 @@
 # A proof-of-concept demonstrating Spw's utility as a rigorous academic notation 
 # for physical sciences, mapping core MSE concepts to Spw operators and structures.
 
-^"roots"{
-  @here: ~"."
-  @theory: ~".."
-}
+.{
+  domain = `roots`
+  here = `~.`
+  theory = `~..`
+}[reg=facet]
 
-^"domain:crystallography"{
+.{
+  domain = `crystallography`
+  
   # Lattices are modeled as sets of symmetrical basis vectors
-  lattices: #[
+  lattices = #[
     "simple_cubic"
     "body_centered_cubic" (bcc)
     "face_centered_cubic" (fcc)
@@ -19,50 +22,54 @@
 
   # A crystal is a resonated (grounded) lattice structure
   # #crystal ≡ ?lattice (observation collapses potential to a specific structure)
-  .{
+  crystal_structure = .{
     unit_cell = ?lattices.bcc
     basis = #[Fe, Fe]
   }[reg=crystal_structure]
-}
+}[reg=facet]
 
-^"domain:defects"{
+.{
+  domain = `defects`
+  
   # Defects are the friction (bane) that give materials their strength (bone)
   
   # Point defects (0D)
-  vacancies: ~atom        # A missing atom is a potential site
-  interstitials: !atom    # An extra atom forced into the lattice
+  vacancies = ~atom        # A missing atom is a potential site
+  interstitials = !atom    # An extra atom forced into the lattice
 
   # Line defects (1D)
-  dislocations: .{
+  dislocations = .{
     edge   = `Extra half-plane of atoms`
     screw  = `Helical displacement offset`
     burger = `Vector denoting the distortion`
   }[reg=defect]
 
   # Planar defects (2D)
-  grain_boundaries: &[grain_A, grain_B]  # Emergent property of two mismatched lattices meeting
-}
+  grain_boundaries = &[grain_A, grain_B]  # Emergent property of two mismatched lattices meeting
+}[reg=facet]
 
-^"domain:thermodynamics_and_phases"{
+.{
+  domain = `thermodynamics_and_phases`
+  
   # The complement operator (~) perfectly models latent heat and enthalpy
   
   # Melting: Solid + Heat -> Liquid
-  melt: *#solid -> ~liquid  # The grounded solid absorbs potential (*) to become fluid (~)
+  melt = *#solid -> ~liquid  # The grounded solid absorbs potential (*) to become fluid (~)
   
   # Solidification / Nucleation
-  crystallize: *~liquid -> #solid  # Fluid potential collapses into a grounded structure
+  crystallize = *~liquid -> #solid  # Fluid potential collapses into a grounded structure
 
   # Phase Diagrams / Eutectics
   # Alloying is not additive but emergent
-  alloy: &[element_A, element_B]
-  bronze: &[copper, tin]
-}
+  alloy = &[element_A, element_B]
+  bronze = &[copper, tin]
+}[reg=facet]
 
-^"domain:mechanics"{
-  # Stress and Strain tensors represented as facets
+.{
+  domain = `mechanics`
   
-  .{
-    # Stress tensor (sigma)
+  # Stress and Strain tensors represented as facets
+  stress_tensor = .{
     sigma_xx = 100
     sigma_yy = 0
     sigma_zz = 0
@@ -70,16 +77,18 @@
   }[reg=stress_tensor]
 
   # Yield strength is a normalization threshold (%)
-  yield_threshold: %stress > 0.002  # 0.2% offset yield
+  yield_threshold = %stress > 0.002  # 0.2% offset yield
   
   # Fracture is the ultimate system bonk
-  fracture: !bonk
-}
+  fracture = !bonk
+}[reg=facet]
 
-^"domain:characterization"{
+.{
+  domain = `characterization`
+  
   # The meta-operator ($) models analytical techniques that measure the structure itself
   
-  XRD: $(#crystal)     # X-Ray Diffraction measures the grounded lattice spacing
-  SEM: $(grain_boundaries) # Scanning Electron Microscopy observes the emergent boundaries
-  EDS: ?(alloy.composition) # Energy Dispersive Spectroscopy queries the atomic makeup
-}
+  XRD = $(#crystal)     # X-Ray Diffraction measures the grounded lattice spacing
+  SEM = $(grain_boundaries) # Scanning Electron Microscopy observes the emergent boundaries
+  EDS = ?(alloy.composition) # Energy Dispersive Spectroscopy queries the atomic makeup
+}[reg=facet]
