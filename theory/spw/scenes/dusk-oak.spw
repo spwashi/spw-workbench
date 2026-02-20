@@ -1,4 +1,4 @@
-^seed[Scene.Painting v:0.1 @profile:Spw.b @intent:visual_scene_for_interpretation]
+^seed[Scene.Painting v:0.6 @profile:Spw.b @intent:visual_scene_for_interpretation]
 @doc: "A visual scene encoded in Spw. Each register frame is a painting instruction. Cascade layers = paint layers. % salience = opacity/weight. ? streams = motion/duration. Interpret as: oil on canvas, large format, dusk."
 
 ## -------------------------------------------------------
@@ -52,6 +52,16 @@
     brushwork = `wide flat brush, horizontal strokes`
   }[cascade=layer priority=10]
 
+  ## L1.5: star field
+  stars: .{
+    region = `upper 30% of canvas`
+    color = `chalk`
+    visibility = `sparse, cold white points`
+    opacity = 0.8
+    technique = `fine brush tip, pinprick application`
+    note = `piercing the upper indigo`
+  }[cascade=layer priority=15]
+
   ## L2: earth
   earth: .{
     region = `lower 40% of canvas`
@@ -63,6 +73,16 @@
     texture = `impasto, palette knife, horizontal drag`
     technique = `thick application, visible ridges`
   }[cascade=layer priority=10]
+
+  ## L2.5: fog
+  fog: .{
+    region = `earth line, creeping upward into horizon band`
+    color = `ash`
+    opacity = 0.4
+    blur = `heavy horizontal drift`
+    technique = `dry brush over impasto ridges`
+    note = `competes with ember for salience`
+  }[cascade=layer priority=25 %salience=contest]
 
   ## L3: atmosphere — haze and dust
   atmosphere: .{
@@ -96,6 +116,28 @@
     light_catch = `right edge of trunk catches ember light — thin chalk highlight`
   }[cascade=layer priority=30]
 
+  ## L4.5: second tree
+  second_tree: .{
+    position = `far right edge, 90% from left edge`
+    height = `spans 20% of canvas height, rooted at earth line`
+    silhouette: .{
+      form = `bare sapling`
+      trunk: .{ width = `thread-thin`, color = `void` }
+      branches: #[ `two faint upright lines` ]
+    }
+    technique = `thin brush edge, single pass`
+    depth_cue = `smaller, lighter value, less contrast (implied distance)`
+  }[cascade=layer priority=35]
+
+  ## L4.8: bird
+  bird: .{
+    position = `on right horizontal bare limb of main tree`
+    form = `small, crouched silhouette`
+    color = `void`
+    technique = `single dab of thick paint`
+    state = `single, still`
+  }[cascade=layer priority=38]
+
   ## L5: moon
   moon: .{
     position = `upper right quadrant, 72% from left, 18% from top`
@@ -110,6 +152,16 @@
     }
     technique = `small round brush, single loaded stroke for disc; glaze for halo`
   }[cascade=layer priority=40 %salience=high]
+
+  ## L5.5: moon crack
+  moon_crack: .{
+    position = `across the lower left quadrant of the moon disc`
+    form = `thin dark line`
+    color = `indigo`
+    opacity = 0.6
+    technique = `scratched through wet paint (sgraffito)`
+    note = `barely visible`
+  }[cascade=layer priority=45]
 
   ## L6: foreground detail
   foreground: .{
@@ -215,12 +267,9 @@
 
 {_evolution
   v0.1: `initial scene — tree, moon, dusk sky, ember horizon`
+  v0.6: `added stars, fog, second tree, bird, and moon crack`
   next: #[
-    `v0.2: add star field to upper sky (sparse, cold white points)`,
-    `v0.3: introduce fog layer at earth line (% salience contest with ember)`,
-    `v0.4: second tree, far right, smaller — distance implied`,
-    `v0.5: bird silhouette on the horizontal branch — single, still`,
-    `v0.6: crack the moon — thin dark line, barely visible`
+    `v0.7: introduce subtle color artifact (chromatic aberration) on high-contrast edges`
   ]
   note = `each version is a compositional decision, not a correction`
 }
