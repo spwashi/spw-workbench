@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/xhtml-entities.dtd">
+<topic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/topic.v2.xsd"
+       title="Validation Playbook" id="validation-playbook">
+    <p>This playbook defines the standard verification sequence before staging and committing changes in the workbench.</p>
+
+    <tabs>
+        <tab title="Fast loop">
+            <code-block lang="bash">npm run test:run
+npm run lint:writerside
+npm run lint:docs
+npm run lint:spw</code-block>
+        </tab>
+        <tab title="Extended loop">
+            <code-block lang="bash">npm run lint:changed
+bash .agents/skills/spw-commit-review/scripts/layer-check.sh
+bash .agents/skills/spw-commit-review/scripts/spw-syntax-audit.sh</code-block>
+        </tab>
+    </tabs>
+
+    <procedure title="Run a complete local validation pass" id="run-complete-local-validation-pass">
+        <step>
+            <p>Run Writerside integrity, docs/path validation, and Spw parser validation:</p>
+            <code-block lang="bash">npm run lint:writerside
+npm run lint:docs
+npm run lint:spw</code-block>
+        </step>
+        <step>
+            <p>Run tests:</p>
+            <code-block lang="bash">npm run test:run</code-block>
+        </step>
+        <step>
+            <p>Audit layer boundaries and syntax generations:</p>
+            <code-block lang="bash">bash .agents/skills/spw-commit-review/scripts/layer-check.sh
+bash .agents/skills/spw-commit-review/scripts/spw-syntax-audit.sh</code-block>
+        </step>
+        <step>
+            <p>Review changed paths and ensure they match your stated intent:</p>
+            <code-block lang="bash">git status --short
+git diff --name-only</code-block>
+        </step>
+    </procedure>
+
+    <p>Use this sequence as the default gate for docs, parser, runtime, and UI changes.</p>
+
+    <seealso>
+        <category ref="spw-workbench">
+            <a href="developer-workflow.md">Developer Workflow</a>
+            <a href="writerside-integration.md">Writerside Integration</a>
+            <a href="quick-start-checklist.topic">Quick Start Checklist</a>
+            <a href="maintenance-surface.topic">Maintenance Surface</a>
+            <a href="workbench-architecture.md">Workbench Architecture</a>
+        </category>
+    </seealso>
+</topic>
