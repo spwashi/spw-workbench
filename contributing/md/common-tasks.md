@@ -360,13 +360,27 @@ const count: number = 5;
 
 ## Fuzz Profiles (Code Quality)
 
-Code quality checks beyond tests. Use before committing:
+Code quality checks beyond tests. Profiles are now composable, so you can run
+single lenses, stage aliases, or custom combinations.
 
 ```bash
+npm run fuzz:explore
+npm run fuzz:stabilize
 npm run fuzz:all
+npm run fuzz:ship
+npm run fuzz --profile=types+async
+npm run fuzz --profile=types+runtime --level=warn
+npm run fuzz:explore --target=src/runtime/
 ```
 
-This runs all checks:
+Common stage aliases:
+- **fuzz:explore** — Fast warning-level signal while iterating
+- **fuzz:stabilize** — Type/async/dead/runtime checks before review
+- **fuzz:refactor** — Refactor pressure (types + complexity + purity + dead)
+- **fuzz:ship** — Strict pre-merge gate (error-level)
+- **fuzz:all** — Full matrix at warning level
+
+Single-dimension lenses:
 - **fuzz:types** — Unsafe `any` types, type assertions
 - **fuzz:complexity** — Functions that are too long/complex
 - **fuzz:async** — Floating promises, async issues
