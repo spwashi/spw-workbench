@@ -1,0 +1,36 @@
+# Screenshot Prompt Protocol
+#
+# Make screenshot-driven prompting explicit and testable.
+
+^["goal"]{
+  ~#intent: "Convert implicit visual cues into structured prompts."
+  ~#contract: "Screenshots are treated as structured inputs."
+}
+
+^["protocol"]{
+  ~#fields{
+    anchor: "primary subject (editor/inspector/context)"
+    task: "critique/redesign/extract/summarize/generate"
+    constraints: "preserve layout/motion/a11y/etc"
+    output_mode: "narrative/spec/component plan/SVG/CSS tokens"
+  }
+}
+
+^["experiment_design"]{
+  ~#ablation{
+    anchor: "vary anchor only"
+    task: "vary task only"
+    output: "vary output mode only"
+  }
+  ~#compare{
+    focus: "what the model fixates on"
+    omissions: "what is ignored"
+    hallucinations: "what is invented"
+  }
+}
+
+^["ui"]{
+  ~#feature: "Prompt from Screenshot"
+  ~#panel_fields: ["anchor", "task", "constraints", "output_mode"]
+  ~#storage: "write each run into the Exploration Log"
+}

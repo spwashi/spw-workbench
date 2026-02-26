@@ -1,0 +1,94 @@
+# Brace Registers
+#
+# Left/right brace pairs as register dyads for cursor-aware autocomplete.
+# Each brace half populates a register; cursor position determines context.
+
+^"source_files"{
+  ~<keyboard>"../../src/features/keyboard/registers/register-bank.ts"
+  ~<affinities>"../../src/runtime/state/type-affinities.ts"
+  ~<types>"../../src/runtime/state/types.ts"
+}
+
+^"dyads"{
+  # Each brace pair forms an identifier→value register dyad.
+  # Left brace = objective (what to name), right brace = subjective (what was found).
+
+  '[' { role: "identifier", question: "What category?", affinity: "category",    autocomplete: "tags, grounded names, resonance bindings"   }
+  ']' { role: "value",      answer: "These parts",      captures: "frame content" }
+
+  '{' { role: "identifier", question: "Which property?", affinity: "property",    autocomplete: "scope keys, property paths, definitions"    }
+  '}' { role: "value",      answer: "This structure",    captures: "scope content" }
+
+  '<' { role: "identifier", question: "What coupling?",  affinity: "conditional",  autocomplete: "concept labels, relation names, couplings"  }
+  '>' { role: "value",      answer: "This concept",      captures: "coupling body" }
+
+  '(' { role: "identifier", question: "Who observes?",   affinity: "perspective",  autocomplete: "observer names, scope labels, perspectives" }
+  ')' { role: "value",      answer: "This section",      captures: "capsule body"  }
+}
+
+^"cursor_context"{
+  # Cursor position determines which brace register is active.
+  #
+  # cursor is inside [   → [ register active (category completions)
+  # cursor is inside {   → { register active (property completions)
+  # cursor is inside <>  → < register active (concept completions)
+  # cursor is inside ()  → ( register active (perspective completions)
+
+  detection: "Walk backward from cursor to find unclosed left brace"
+  nesting: "Innermost unclosed brace wins (stack-based)"
+  ambiguity: "If no unclosed brace, use default register"
+}
+
+^"capture"{
+  # Closing a brace populates the right-register with what was inside.
+  #
+  # user types: [foo]
+  #   → ']' register captures "foo" as category value
+  #   → available for paste, cross-reference, or next-cycle input
+  #
+  # user types: {x: 1, y: 2}
+  #   → '}' register captures '{x: 1, y: 2}' as scope value
+
+  trigger: "right brace keystroke"
+  content: "text between matching left and right brace"
+  format: "raw source text (syntactic level)"
+  provenance: "brace type determines accessMode"
+}
+
+^"autocomplete_flow"{
+  # 1. Detect cursor context (which brace)
+  # 2. Look up containerAffinity for that brace type
+  # 3. Query all registers where containerAffinity matches
+  # 4. Sort by lastUsed / relevance
+  # 5. Present as completions
+
+  filter_key: "containerAffinity"
+  source: "OPERATOR_AFFINITIES mapping in keyboard register-bank.ts"
+  sort: "lastUsed descending, then alphabetical"
+}
+
+^"composition"{
+  # Compound brace expressions inherit both registers.
+  #
+  # $[x]  → substrate in category context
+  #         $ register (meta) + [ register (category)
+  #         autocomplete: grounded register names (for introspection)
+  #
+  # @()   → perspective in capsule context
+  #         @ register (perspective) + ( register (observer)
+  #
+  # .[k]  → ground into frame — property into categorized items
+  #         . register (property) + [ register (category)
+
+  rule: "operator register provides mode, brace register provides context"
+  precedence: "operator before brace (operator is the verb, brace is the container)"
+}
+
+^"notes"{
+  "Brace registers are 8 additional single-char registers: [ ] { } < > ( )",
+  "They coexist with the 12 operator registers and 10 history + 26 named registers.",
+  "Left brace registers are write-on-open (populated when brace is typed).",
+  "Right brace registers are write-on-close (populated when brace is completed).",
+  "Empty braces [] {} <> () produce a capture of '' (empty string).",
+  "Nested braces create a stack: innermost context wins for autocomplete.",
+}

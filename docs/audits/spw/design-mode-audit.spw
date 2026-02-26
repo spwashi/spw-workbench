@@ -1,0 +1,79 @@
+# Design Mode Utility Vector
+#
+# Design mode as a layered component action system and ontology inspector.
+
+^["roots"]{
+  @src: ~"../src"
+  @here: ~"."
+}
+
+^["current-behavior"]{
+  ~#toggle: "Ctrl+Shift+D (global)"
+  ~#panel: "P (when enabled)"
+  ~#overlay: "hover tooltip + click to copy component id"
+  ~#safety: "disabled while prism mode is active"
+  ~#primary-surface: "data-spw-component (fallback: data-component)"
+}
+
+^["issues"]{
+  ~#intrusive: "floating button and overlay interrupt flow; not LoD-aware."
+  ~#insufficient-meaning: "shows id but not structure, scope, or actions."
+  ~#disconnect: "does not integrate with action targets or registers."
+  ~#a11y-gap: "no focus mapping or keyboard‑first path."
+}
+
+^["target-utility"]{
+  # Design mode as ontology inspector + action surface
+  ~#goal: "Expose component identity, containment, scope, and action affordances."
+  ~#goal: "Bridge component geometry to semantic physics (LoD, disclosure, context)."
+  ~#goal: "Support differential intent: select at LoD A, act at LoD B."
+}
+
+^["integration-vector"]{
+  # Use existing data surfaces instead of inventing new ones.
+  uses: [
+    "data-spw-component",
+    "data-region",
+    "data-panel-id",
+    "data-spw-slot",
+    "data-lod-weight",
+    "data-spw-action-role",
+    "data-spw-actionable",
+    "data-spw-action-scope"
+  ]
+  signals: [
+    "data-spw-space-leader",
+    "data-spw-register-*",
+    "data-lod",
+    "data-activation-context"
+  ]
+}
+
+^["proposed-affordances"]{
+  1. "Hover shows: component id, scope, actions, and LoD delta."
+  2. "Click yanks a structured landmark packet (id + path + scope)."
+  3. "Shift-click toggles inspect mode for that component (register + tokens)."
+  4. "Alt-click cycles LoD weight override (fine/medium/coarse)."
+  5. "Keyboard: Tab cycles actionable components; Enter confirms; Space leader arms actions."
+}
+
+^["llm-readiness"]{
+  ~#contract: "Design mode should emit a compact context packet per component."
+  ~#packet: "{id, path, scope, actions, lod, disclosure, context, register-active}"
+  ~#intent: "One- or two-year horizon: LLM can interpret the geometry + action surface."
+}
+
+^["next-actions"]{
+  1. "Standardize data-spw-component (remove data-component fallback)."
+  2. "Bind design mode overlay to action-target snapshot; show LoD delta."
+  3. "Adopt register toggles (inspect/format) in design mode actions."
+  4. "Expose keyboard-first design mode controls (no pointer required)."
+}
+
+^["sources"]{
+  @src/design/mode/transitions.ts
+  @src/design/mode/effects.ts
+  @src/features/keyboard/navigation/action-targets.ts
+  @src/features/keyboard/registers/register-bank.ts
+  @src/styles/state.css
+}

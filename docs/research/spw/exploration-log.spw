@@ -1,0 +1,67 @@
+# Exploration Log
+#
+# A replayable, diffable log of probes and outcomes.
+
+^["goal"]{
+  ~#intent: "Turn exploration into a versioned artifact."
+  ~#contract: "Every run is traceable to inputs, context, and outputs."
+}
+
+^["units"]{
+  probe: "question or action that initiates a run"
+  result: "captured outputs (text/image/AST/trace)"
+  surprise: "unexpected behavior or mismatch"
+  hypothesis: "testable explanation"
+  next: "smallest follow-up experiment"
+}
+
+^["inputs"]{
+  ~#required{
+    timestamp: "ISO 8601"
+    model: "name + version"
+    prompt: "primary instruction"
+    screenshot: "file reference or hash"
+    ui_state_hash: "hash of tuple + selection + layout"
+    settings: "disclosure/lod/genre/posture/theme"
+    seed: "optional seed/context"
+  }
+  ~#optional{
+    lens: "active lens or panel"
+    selection_anchor: "token/node anchor"
+    run_group: "experiment batch id"
+  }
+}
+
+^["outputs"]{
+  ~#required{
+    text: "generated response text"
+  }
+  ~#optional{
+    image: "image outputs or references"
+    ast_delta: "diff summary"
+    interaction_trace: "gesture sequence"
+    a11y_notes: "accessibility tree snapshot"
+  }
+}
+
+^["schema"]{
+  ~#storage: "JSONL or per-run JSON with stable ids."
+  ~#keys{
+    id: "run id"
+    batch: "experiment group"
+    probe: "probe text"
+    result: "result payload"
+    surprise: "surprise notes"
+    hypothesis: "testable claim"
+    next: "next run plan"
+  }
+}
+
+^["ui"]{
+  ~#panel: "Exploration Log panel"
+  ~#behaviors{
+    diff: "compare runs side-by-side"
+    replay: "re-open state snapshot"
+    tag: "label surprises and hypotheses"
+  }
+}

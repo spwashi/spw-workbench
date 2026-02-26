@@ -1,0 +1,108 @@
+# Web Components + Shadow DOM Strategy
+#
+# Decision rules and component hierarchy for Spw action-target semantics.
+
+^["roots"]{
+  @src: ~"../src"
+  @here: ~"."
+}
+
+^["intent"]{
+  ~#goal: "Use web components to increase cohesion without hiding semantic targets."
+  ~#why: "Action targets, design mode, and theme responsiveness depend on a stable state surface."
+  ~#lens: "Light DOM for state; Shadow DOM for precision."
+}
+
+^["shadow-dom-value"]{
+  ~encapsulation: "Prevents style bleed and stabilizes component visuals."
+  ~structure: "Slots + parts formalize layout contracts."
+  ~performance: "adoptedStyleSheets + CSS vars reduce rerender costs."
+  ~a11y: "ElementInternals for consistent ARIA roles and naming."
+}
+
+^["shadow-dom-costs"]{
+  ~design-mode: "Global selectors cannot see inside closed shadow trees."
+  ~action-targets: "Focus and target discovery becomes harder if internals are hidden."
+  ~theming: "Requires ::part and CSS vars for external styling."
+}
+
+^["decision-rules"]{
+  1. If an element must be a focus/selection/action target, keep it in light DOM.
+  2. If it is a leaf visual primitive (chip, kbd, badge), Shadow DOM is safe.
+  3. If it needs theme-driven styling, prefer Shadow DOM + CSS vars + ::part.
+  4. If design mode must inspect internals, expose parts via exportparts.
+  5. If the element is used in selection/yank/paste flows, keep the host in light DOM with data-spw-component.
+}
+
+^["component-hierarchy"]{
+  ~shell.light: [app, header, main, sidebar, editor, inspector, geology-panel, footer]
+  ~panels.light: [drawer, command-bar, context-tuner, key-hint-bar, prompting-rail]
+  ~primitives.shadow: [spw-chip, spw-kbd, spw-badge, spw-toggle, spw-pill]
+  ~hybrid: "spw-panel can be light DOM with internal shadow primitives."
+}
+
+^["host-contract"]{
+  # Host elements remain visible to action-targets and design mode.
+  ~data-spw-component: "identity"
+  ~data-spw-tab-scope: "fine|medium|coarse"
+  ~data-lod-weight: "fine|medium|coarse"
+  ~data-spw-actionable: "yp, run, ref, etc."
+  ~data-panel-id: "panel identity"
+  ~aria-label: "readable identity for focus"
+}
+
+^["shadow-contract"]{
+  # Shadow DOM internals exposed for themes and design mode.
+  ~part: "header, title, actions, body"
+  ~exportparts: "forward parts to host for theming"
+  ~css-vars: "all theme accents via --spw-* tokens"
+  ~event-bridge: "dispatch spw:action / spw:target from host"
+}
+
+^["design-mode-bridge"]{
+  ~rule: "design mode inspects host + part metadata only"
+  ~pattern: "host.dataset.spwComponent + host.dataset.spwPartMap"
+  ~copy: "copy id/path/payload from host"
+  ~highlight: "outline host; optional part highlight via CSS var"
+}
+
+^["theming-strategy"]{
+  ~css-vars: "Use CSS variables as primary theme contract"
+  ~adopted: "Use adoptedStyleSheets for theme bundles"
+  ~part: "Expose stable parts for theme accents"
+  ~host-context: ":host-context([data-theme=...]) for rare overrides"
+}
+
+^["focus-and-a11y"]{
+  ~delegatesFocus: "Enable for primitives if internal input/button should receive focus"
+  ~ElementInternals: "Define role, name, states per component"
+  ~focus-visible: "Use :focus-visible inside shadow to reduce noise"
+}
+
+^["migration-path"]{
+  1. Build primitives as web components: spw-chip, spw-kbd, spw-badge.
+  2. Convert headers to use primitives (keep header host in light DOM).
+  3. Introduce spw-panel as a wrapper with light DOM host + shadow primitives.
+  4. Expose parts and exportparts for theme tuning.
+  5. Add design-mode part introspection if needed.
+}
+
+^["learning-plan"]{
+  ~custom-elements: "define, lifecycle, observedAttributes"
+  ~shadow: "attachShadow, slots, ::slotted, :host"
+  ~styling: "::part, exportparts, adoptedStyleSheets"
+  ~a11y: "ElementInternals, formAssociated, aria mapping"
+  ~events: "CustomEvent bridging from shadow to host"
+}
+
+^["notes"]{
+  ~constraint: "Keep action-target semantics and register flows in light DOM."
+  ~goal: "Use Shadow DOM to stabilize appearance, not to hide meaning."
+}
+
+^["sources"]{
+  @src/app/components/_shared/component-contract.ts
+  @src/features/keyboard/navigation/action-targets.ts
+  @src/design/mode/effects/tooltip.ts
+  @src/styles/themes/
+}

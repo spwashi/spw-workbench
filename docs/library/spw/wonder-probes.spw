@@ -1,0 +1,68 @@
+# Wonder Probes
+#
+# Standard introspection questions ($) and measurements (%) for system self-analysis.
+# These probes answer: "What am I? How big am I? How deep am I?"
+
+^"roots"{
+  @here: ~"."
+}
+
+^"catalog"{
+  # Identity Probes
+  # Answer "What is this?"
+
+  $["topology"]{
+    probe: "$[x].topology"
+    returns: "'#' | '.' | '@' | '&' | etc"
+    meaning: "The operator that created this register"
+  }
+
+  $["provenance"]{
+    probe: "$[x].provenance"
+    returns: "'#' | '&' | '@'"
+    meaning: "How this value came to be (grounded, merged, observed)"
+  }
+
+  $["stability"]{
+    probe: "$[x].grounded"
+    returns: "boolean"
+    meaning: "Is this immutable? (Safe to link/bookmark)"
+  }
+
+  $["affinity"]{
+    probe: "$[x].containerAffinity"
+    returns: "'[]' | '{}' | '<>' | '()'"
+    meaning: "What shape of container does this naturally inhabit?"
+  }
+}
+
+^"measures"{
+  # Magnitude Probes
+  # Answer "How much is this?"
+
+  %["intensity"]{
+    probe: "%[x]"
+    returns: "0..1"
+    meaning: "Normalized magnitude (length/count/value)"
+  }
+
+  %["popularity"]{
+    probe: "%[x.accessCount, 100]"
+    returns: "0..1"
+    meaning: "Usage frequency relative to 100 accesses"
+  }
+
+  %["complexity"]{
+    probe: "%[x.depth, 10]"
+    returns: "0..1"
+    meaning: "Nesting depth relative to 10 levels"
+  }
+}
+
+^"usage"{
+  # The library uses these probes to auto-classify entries:
+
+  auto_tag: "If $[x].grounded, tag ~#stable"
+  auto_rank: "Sort search results by %[x.accessCount]"
+  auto_warn: "If %[x.complexity] > 0.8, flag for refactor (~#prune)"
+}

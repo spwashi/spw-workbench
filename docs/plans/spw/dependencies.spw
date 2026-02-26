@@ -1,0 +1,44 @@
+# Dependencies
+#
+# Module relationships.
+
+^["roots"]{
+  @src: ~"../src"
+}
+
+^["dependencies"]{
+  core > []
+  infra > [core]
+  lib/spw > []
+  design > [core]
+  ui > [core, design]
+  lang > [core, infra, lib/spw]
+  viz > [core, infra, lang]
+  runtime > [core, infra, lang]
+  features > [core, infra, ui, viz]
+  debug > [infra, runtime]
+  cli > [infra, lang, runtime]
+  app > [core, infra, design, ui, lang, viz, features, runtime]
+  platform > [app, core, infra, design, ui, features]
+}
+
+^["portability"]{
+  @src/seed/^portable
+  @src/runtime/interpreter/^portable
+
+  @src/viz/^bound
+  @src/design/^bound
+  @src/app/^bound
+}
+
+^["direction"]{
+  timing!       # Top-down
+  domains!
+
+  lifecycle?    # Bottom-up
+  events?
+}
+
+^["wrappers"]{
+  lang ~ lib/spw    # lang wraps lib/spw with hooks
+}

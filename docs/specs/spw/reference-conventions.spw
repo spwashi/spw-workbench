@@ -1,0 +1,79 @@
+# Reference Conventions
+#
+# How .spw files reference external resources, other docs, and runtime concepts.
+# Three established patterns plus two extensions.
+
+^"established"{
+  ~#file_payload{
+    syntax: '~"relative/path"'
+    meaning: "Deferred file reference — load on demand"
+    example: '~"./register-bank.spw"'
+    analogy: "CSS @import url()"
+    container: "~" # potential/superposition — the file *might* be loaded
+  }
+  ~#root_alias{
+    syntax: "@alias/path"
+    meaning: "Root-relative identity — bound at doc root"
+    example: "@src/runtime/state/types.ts"
+    analogy: "TypeScript path alias"
+    container: "@" # perspective/locus — the alias *names a viewpoint*
+  }
+  ~#index_listing{
+    syntax: '.. ~"path"'
+    meaning: "Parent-child link — this doc contains that doc"
+    example: '.. ~"./audits"'
+    analogy: "Directory listing"
+    container: ".." # ground traversal — navigate the tree
+  }
+}
+
+^"extensions"{
+  ~#concept_coupled_ref{
+    syntax: '~<concept>"path"'
+    meaning: "File reference coupled with a named concept"
+    examples: [
+      '~<register>"../../src/runtime/state/register-bank.ts"',
+      '~<operator>"../../src/runtime/interpreter/operators.ts"',
+      '~<affinity>"../../src/runtime/state/type-affinities.ts"',
+    ]
+    read_as: "Load this file *as* this concept"
+    grep: "~<" # greppable: search for concept-coupled refs
+    analogy: "CSS @layer name { @import url() }"
+    container: "<>" # concept — the coupling names the relationship
+    parse_rule: "~ < identifier > string"
+  }
+  ~#tagged_ref{
+    syntax: '~#tag "path"'
+    meaning: "Resonance-tagged reference — grounded identity"
+    examples: [
+      '~#spec "./brace-registers.spw"',
+      '~#research "./spirit-sequence.spw"',
+      '~#example "./examples/grounded-register.spw"',
+      '~#bench "./benchmarks/register-access.spw"',
+    ]
+    read_as: "This file is *categorized as* this tag"
+    grep: "~#" # greppable: search for tagged refs
+    container: "#" # resonance — the tag is a grounded label
+    parse_rule: "~ # identifier string"
+  }
+}
+
+^"composition"{
+  ~#layered_ref{
+    note: "Extensions can compose"
+    examples: [
+      '~#spec <register>"./brace-registers.spw"',
+      '~#bench <throughput>"./benchmarks/spirit-throughput.spw"',
+    ]
+    read_as: "Tagged and concept-coupled file reference"
+    order: "tag first, then concept, then path"
+  }
+}
+
+^"conventions"{
+  paths: "Always relative from the referencing file"
+  roots: "Define @alias in ^[roots]{} at doc top"
+  index: "Every directory should have an index.spw"
+  grep_friendly: "~< and ~# are unique prefixes for ripgrep"
+  existing_compat: "Plain ~\"path\" remains valid (no concept, no tag)"
+}

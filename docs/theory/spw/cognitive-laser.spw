@@ -1,0 +1,55 @@
+# Cognitive Laser Pointer — Differential Block Projection
+# theory.spw.pointer
+
+The **Cognitive Laser Pointer** is a differential interface metaphor where the user's *focus* (gaze/caret) acts as a projective query against the system.
+
+Instead of passively viewing state, the user's attention *projects* a Spw Block onto the environment, altering how the system interprets input and renders feedback.
+
+## 1. The Differential Signal
+
+The system tracks the **differential** between the user's current context and the system's resting state. This differential is encoded as a **Block Projection**.
+
+```spw
+Projection = Lens(Focus, Selection) -> Block
+```
+
+- **Focus**: The active UI region or semantic node (e.g. `editor`, `inspector`, `sidebar`).
+- **Selection**: The specific content held in focus (e.g. text range, AST node).
+
+## 2. Projection Atlas
+
+The **Atlas** maps regions to Spw Operators, defining the semantic "flavor" of the projection.
+
+| Region | Operator | Sigil | Meaning |
+| :--- | :--- | :--- | :--- |
+| **Editor** | Action | `!` | Kinetic energy, creation, mutation |
+| **Inspector** | Wonder | `?` | Investigation, query, debug |
+| **Sidebar** | Structure | `%` | Architecture, hierarchy, organization |
+| **Context** | Perspective | `@` | Point of view, lens, filter |
+
+## 3. Block Structure
+
+A projection is serialized as a Spw Block:
+
+### Granular Focus (No Selection)
+Prefix syntax indicating "working within" a structure.
+```spw
+%["sidebar"]  // Operating within the sidebar structure
+```
+
+### Specific Selection (Has Selection)
+Postfix syntax indicating "operating upon" a subject.
+```spw
+editor!["function main()..."] // Acting upon the specific code function
+```
+
+## 4. Shader Resonance
+
+The projection drives the **Shader Pipeline** by injecting semantic saturation values (`u_material`).
+
+- **Injection (`!` Action)**: High saturation Red/Orange.
+- **Probe (`?` Wonder)**: High saturation Cyan/Blue.
+- **Ground (`.` Signal)**: Low saturation, ambient Green.
+- **Structure (`%` Matrix)**: High contrast, ordered patterns.
+
+This feedback loop ensures the visual environment *feels* like the cognitive mode the user is inhabiting.

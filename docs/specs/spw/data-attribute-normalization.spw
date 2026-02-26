@@ -1,0 +1,172 @@
+# Data Attribute Normalization
+#
+# First-pass normalization for perspective-aware salience and Spw cognitive model alignment.
+
+^"intent"{
+  goal: "Stabilize semantic attributes while making salience responsive to perspective and LoD.",
+  model: "LoD controls structural visibility; perspective controls attentional routing; stage controls atmosphere.",
+  rule: "Never use atmosphere tokens to reduce core readability.",
+}
+
+^"tiers"{
+  ^"stable_semantic"{
+    attrs: [
+      "data-spw-component",
+      "data-region",
+      "data-spw-slot",
+      "data-lod-weight",
+      "data-lod-min",
+      "data-disclosure-min",
+      "data-spw-action-role",
+      "data-spw-actionable",
+    ],
+    purpose: "identity and structural semantics",
+    lifecycle: "persistent while element exists",
+  }
+
+  ^"session_state"{
+    attrs: [
+      "data-mode",
+      "data-lod",
+      "data-disclosure",
+      "data-theme",
+      "data-theme-stage",
+      "data-activation-context",
+      "data-performance-mode",
+    ],
+    purpose: "global application state",
+    lifecycle: "root/documentElement only",
+  }
+
+  ^"transient_attention"{
+    attrs: [
+      "data-active",
+      "data-selected",
+      "data-spw-action-flash",
+      "data-spw-space-leader",
+      "data-settings-open",
+      "data-screenshot-prompt-open",
+      "data-spw-design-panel",
+    ],
+    purpose: "momentary interaction feedback",
+    lifecycle: "event-bound; auto-cleaned",
+  }
+}
+
+^"perspective_routing"{
+  visual: {
+    primary: "editor",
+    secondary: "inspector",
+    tertiary: "geology",
+  }
+  editing: {
+    primary: "editor",
+    secondary: "geology",
+    tertiary: "inspector",
+  }
+  reporting: {
+    primary: "geology",
+    secondary: "inspector",
+    tertiary: "editor",
+  }
+  debug: {
+    primary: "inspector",
+    secondary: "editor",
+    tertiary: "geology",
+  }
+  design: {
+    primary: "geology",
+    secondary: "editor",
+    tertiary: "inspector",
+  }
+  diagnostic: {
+    primary: "inspector",
+    secondary: "geology",
+    tertiary: "editor",
+  }
+  pedagogical: {
+    primary: "geology",
+    secondary: "editor",
+    tertiary: "inspector",
+  }
+  performance: {
+    primary: "editor",
+    secondary: "inspector",
+    tertiary: "geology",
+  }
+  structural: {
+    primary: "inspector",
+    secondary: "geology",
+    tertiary: "editor",
+  }
+}
+
+^"lod_behavior"{
+  fine: {
+    show: ["tokens", "node-level controls", "detailed key hints"],
+    hide: ["coarse-only summaries"],
+    dim_rule: "do not dim primary region below readable threshold",
+  }
+  medium: {
+    show: ["block-level controls", "state summaries", "register snapshot"],
+    hide: ["fine-only diagnostics"],
+    dim_rule: "tertiary region may soften, text remains >= secondary contrast",
+  }
+  coarse: {
+    show: ["region-level status", "action targets", "register intent"],
+    hide: ["fine control chrome", "dense diagnostics"],
+    dim_rule: "replace opacity loss with component exclusion where possible",
+  }
+}
+
+^"perspective_x_lod_matrix"{
+  note: "Perspective dictates how LoD redistributes regional attention weights.",
+  visual: {
+    fine:   "editor:1.00 inspector:0.80 geology:0.45"
+    medium: "editor:1.00 inspector:0.75 geology:0.55"
+    coarse: "editor:0.85 inspector:0.65 geology:1.00"
+  }
+  debug: {
+    fine:   "editor:0.75 inspector:1.00 geology:0.50"
+    medium: "editor:0.70 inspector:1.00 geology:0.55"
+    coarse: "editor:0.55 inspector:1.00 geology:0.50"
+  }
+  reporting: {
+    fine:   "editor:0.45 inspector:0.80 geology:1.00"
+    medium: "editor:0.50 inspector:0.80 geology:1.00"
+    coarse: "editor:0.40 inspector:0.65 geology:1.00"
+  }
+}
+
+^"layout_profile_combinatorics"{
+  dimensions: ["renderSpeed", "tokenDistribution", "symbolNavigation", "lspAssist", "dapTrace"],
+  profiles: {
+    render_speed:       "3,1,1,1,0"
+    token_distribution: "1,3,2,2,1"
+    symbol_navigation:  "1,2,3,2,1"
+    lsp_assist:         "1,2,2,3,2"
+    dap_trace:          "1,1,2,2,3"
+  },
+  semantics: "Each profile tilts weights and UI affordance exposure without mutating stable semantic attrs.",
+}
+
+^"redistribution_rules"{
+  "Rule 1: Keep stable_semantic attrs fixed across perspective changes.",
+  "Rule 2: Perspective updates should rewrite only transient_attention + routing classes.",
+  "Rule 3: LoD should gate component visibility using data-lod-min/data-lod-only, not global opacity.",
+  "Rule 4: Stage tokens may increase ornament/motion but must not reduce body-text legibility.",
+  "Rule 5: Command-mode focus must expose actionable target semantics in context panel + footer.",
+}
+
+^"next_steps"{
+  implementation: [
+    "Add typed attribute registry in core conventions",
+    "Route all root dataset writes through registry-backed helpers",
+    "Audit selectors that couple stage + dimming and move dimming to perspective routing",
+  ],
+  verification: [
+    "keyboard-only walk (no mouse): focus, selection, action, yank/paste",
+    "LoD sweep: fine -> medium -> coarse with readability check",
+    "perspective sweep with region primacy assertions",
+  ],
+}

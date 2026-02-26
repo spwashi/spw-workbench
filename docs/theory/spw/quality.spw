@@ -1,0 +1,77 @@
+# Quality Annotations (The Valence Pentad)
+#
+# The BBBH pentad applied to codebase structure as a measurable material and cognitive property.
+# Valence represents the "thermodynamic state" and "cognitive load" of a codebase element.
+
+^["roots"]{
+  @src:  ~"../src"
+  @spec: ~"../lib/spw-v0.1.0-alpha"
+  @here: ~"."
+}
+
+^["boon"]{
+  # Materials Science: High ductility, low defect density, favorable thermodynamic state (annealed).
+  # Learning Science: Germane cognitive load (effort that actively constructs schemas). Flow state.
+  # Measurable Metrics:
+  #   - High test coverage
+  #   - Clean extensibility without breaking changes
+  #   - Predictable pure functions and stable domain types
+  @src/core/domains/
+  @src/core/conventions/
+  @src/seed/
+}
+
+^["bane"]{
+  # Materials Science: Fatigue, corrosion, stress concentrations, parasitic spontaneous reactions.
+  # Learning Science: Extraneous cognitive load (effort wasted on noise and poor presentation).
+  # Measurable Metrics:
+  #   - High file churn rate / Git hotspots
+  #   - Cyclic or tangled dependencies
+  #   - Fragmented, imperative, or side-effect-heavy logic
+  @src/platform/bootstrap.ts   # Split target: Too many responsibilities in one file
+}
+
+^["bone"]{
+  # Materials Science: Stiffness, load-bearing capacity, yield strength, skeletal lattice.
+  # Learning Science: Intrinsic cognitive load (effort required by the inherent complexity of the material).
+  # Measurable Metrics:
+  #   - Foundational abstractions and interfaces
+  #   - High referential fan-out (many dependents) but low fan-in (few dependencies)
+  #   - Rarely changes, high penalty for refactoring
+  @src/core/index.ts
+  @src/infra/timing/index.ts
+}
+
+^["bonk"]{
+  # Materials Science: Phase transition thresholds, brittle fracture mechanics (if this breaks, it shatters).
+  # Learning Science: Threshold concepts or cognitive dissonance peaks (permanent alterations in understanding).
+  # Measurable Metrics:
+  #   - High blast radius for any API change
+  #   - SemVer major bumps
+  #   - Type boundary crossings (e.g. parser to AST)
+  @src/core/domains/
+  @src/seed/types.ts
+}
+
+^["honk"]{
+  # Materials Science: Acoustic emission testing, detectable indicator states, fluorescence anomalies.
+  # Learning Science: Orienting responses, salience cues, focus anchors.
+  # Measurable Metrics:
+  #   - Warning logs, telemetry spikes
+  #   - Performance hotspots (measured by APM)
+  #   - Visual debugging overlays or `// @spw:todo` markers
+  ~"../index.spw"
+  @src/core/tally.ts
+}
+
+^["timing"]{
+  # BBBH as a timing pass: progression from bone (structure) to bane (friction) to boon (flow).
+  # bonk/honk serve as event-driven overlays.
+  @src/infra/timing/bbbh-pass.ts
+}
+
+^["split"]{
+  # Intersections of Quality vs Valence
+  @src/core/quality.ts
+  @src/runtime/state/
+}

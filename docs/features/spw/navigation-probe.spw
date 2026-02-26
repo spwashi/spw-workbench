@@ -1,0 +1,86 @@
+# Navigation, Breadcrumbs, and Probes
+#
+# Practical semantics for using Spw as:
+# 1) register/navigation behavior language
+# 2) breadcrumb/tagging language
+# 3) nested probe language
+# 4) sequential yield pipeline language
+
+^"intent"{
+  goal: "Make focus movement and register updates explicit, inspectable, and replayable.",
+  principle: "Every step yields structure, not just value.",
+  defaults: [
+    "No hidden global mutation by navigation/probe operations",
+    "Bindings from probes are scope-local unless explicitly exported",
+    "Breadcrumb emission is append-only event data, not control flow",
+  ],
+}
+
+^"yield_packet"{
+  shape: "{ value, focus, registers, crumbs, tags, step }",
+  fields: {
+    value: "Current payload (SpwValue)"
+    focus: "Address-like cursor (node/region/component/register target)"
+    registers: "Delta only: { set, clear, touched }"
+    crumbs: "Ordered breadcrumb additions for this step"
+    tags: "Semantic labels for ranking/filtering/explaining"
+    step: "Execution metadata: index, operator, source span"
+  },
+  note: "Packets are runtime-observable and should support replay/debug UI.",
+}
+
+^"domains"{
+  @nav: {
+    purpose: "Move focus/cursor through semantic structure."
+    verbs: ["next", "prev", "parent", "child", "enter", "exit", "jump"]
+    contract: "Produces updated focus in packet.focus; does not mutate registers unless explicit."
+  }
+
+  @crumb: {
+    purpose: "Emit breadcrumb trail for intent/history/explanation."
+    forms: ["intent", "region", "source", "confidence", "mode", "operator"]
+    contract: "Appends packet.crumbs and packet.tags; never rewrites past crumbs."
+  }
+
+  @probe: {
+    purpose: "Scoped structural query/match over current or nested focus."
+    behavior: [
+      "Creates local probe scope"
+      "Captures bindings locally"
+      "Returns observation packet(s)"
+    ],
+    export_rule: "Only explicit export promotes bindings to outer scope/registers.",
+  }
+}
+
+^"pipeline_semantics"{
+  "..": "Sequential yield connector: consume previous packet, produce next packet.",
+  sequence_rule: [
+    "Input to step N is packet from step N-1",
+    "Each operator adds packet deltas, never opaque side effects",
+    "Terminal result is last packet.value plus accumulated trail",
+  ],
+  debugger_rule: "Runtime stepper should render per-step packet deltas.",
+}
+
+^"register_model"{
+  register_as_sink: "Registers receive explicit packet.register deltas only.",
+  register_as_source: "References resolve against current scope + named register bank.",
+  register_as_trail: "Register writes include breadcrumb tags for provenance.",
+  anti_drift: "Avoid direct global register writes inside match/probe internals.",
+}
+
+^"canonical_examples"{
+  editor_navigation: "?[editor] .. @nav.next .. @crumb.intent[\"inspect-token\"]",
+  context_focus_jump: "?[context] .. @nav.jump[\"panel:registers\"] .. @crumb.region[\"context-panel\"]",
+  ast_probe: "?match[@focus]{ [@node, ...@rest] => @probe[@node], _ => ![null] }",
+  command_palette_trace: "?[cmd] .. @crumb.mode[\"command\"] .. @crumb.source[@focus]",
+  replayable_selection: "?[selection] .. @probe[\"node-range\"] .. @crumb.intent[\"replayable\"]",
+}
+
+^"implementation_order"{
+  1: "Define packet types and step-delta format in runtime state docs/types."
+  2: "Add @nav/@crumb/@probe operator labels with deterministic no-op-safe fallbacks."
+  3: "Surface packet stream in context panel + step inspector."
+  4: "Add conformance tests: scope isolation, suffix-aware spread match, breadcrumb replay."
+}

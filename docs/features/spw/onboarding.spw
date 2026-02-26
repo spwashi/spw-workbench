@@ -1,0 +1,90 @@
+# Learning Path
+#
+# For new developers and LLMs.
+
+^["roots"]{
+  @src:  ~"../src"
+  @here: ~"."
+}
+
+^["path"]{
+  !["Start here"]
+  .. ~"../../README.md"
+  .. ~"../../index.spw"
+  .. @src/core/domains/
+  .. @src/core/conventions/
+  .. @src/seed/
+  .. @src/viz/
+  .. ?[@ready]{
+       !boon["Contribute!"]
+     | !bone["Ask questions"]
+     }
+}
+
+^["prompting"]{
+  !["Lens-walk prompts"]
+  .. ~"./lens-walk.spw"
+  .. ~"./onboarding-flow.spw"
+  .. ~"../../research/spw/lens-walk-research.spw"
+}
+
+^["contributors"]{
+  !["Contributor plans"]
+  .. ~"../../contributing/README.md"
+  .. ~"../../contributing/md/researchers.md"
+  .. ~"../../contributing/md/engineers.md"
+  .. ~"../../contributing/md/hobby-coders.md"
+}
+
+^["direction"]{
+  !["Roadmap"]
+  .. ~"../../plans/spw/directions.spw"
+}
+
+^["token-efficient"]{
+  # For LLMs navigating this codebase:
+
+  # High salience (easy to find)
+  =["parse"]: @src/lang/index.ts
+  =["Layer"]: @src/core/layers/
+  =["Quality"]: @src/core/quality.ts
+  =["domains"]: @src/core/domains/
+  =["Valence"]: @src/runtime/state/
+  =["canonicalize"]: @src/seed/canonical/
+
+  # Low salience (requires exploration)
+  =["token matchers"]: @src/seed/lexer/matchers/
+  =["theme tokens"]: @src/design/themes/token-bank.ts
+}
+
+^["landmarks"]{
+  # Key files to read first:
+  @src/core/index.ts             # Core barrel
+  @src/infra/index.ts            # Infra barrel
+  @src/core/domains/index.ts     # Domain registry
+  @src/seed/index.ts          # Language engine entry
+  @src/platform/main.ts          # App entrypoint
+  @src/platform/bootstrap.ts     # App wiring (large)
+}
+
+^["questions"]{
+  ?["Where is X defined?"]{
+    ~"../../plans/spw/patterns.spw"
+    @src/core/conventions/
+  }
+
+  ?["How do modules relate?"]{
+    ~"../../plans/spw/dependencies.spw"
+    @src/core/domains/
+  }
+
+  ?["What is the phasor model?"]{
+    ~"../../theory/spw/phasor.spw"
+    @src/core/layers/
+  }
+
+  ?["How do we normalize text?"]{
+     @src/seed/canonical/
+     ~#use: "Run canonicalize() before hashing or diffing sources"
+  }
+}

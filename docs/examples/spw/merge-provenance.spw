@@ -1,0 +1,29 @@
+# Example: Merge Provenance
+#
+# &[a, b, c] merges with tracked source registers.
+
+^"example"{ ~#name: "merge-provenance", ~#demonstrates: "confluent() tracks which sources contributed" }
+
+^"input"{
+  # Set up sources:
+  =[x, {a: 1}]
+  =[y, {b: 2}]
+  =[z, {c: 3}]
+
+  # Merge:
+  &[x, y, z]
+}
+
+^"expected"{
+  merged_value: { a: 1, b: 2, c: 3 },
+  provenance: "&",
+  accessMode: "confluent",
+  mergedFrom: ["x", "y", "z"],
+}
+
+^"notes"{
+  "Object sources are merged via Object.assign.",
+  "Array sources are concatenated.",
+  "Mixed sources are collected into an array.",
+  "mergedFrom field preserves the source register names.",
+}

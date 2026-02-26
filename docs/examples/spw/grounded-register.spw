@@ -1,0 +1,41 @@
+# Example: Grounded Register
+#
+# #[name, value] creates an immutable register via resonate().
+
+^"example"{ ~#name: "grounded-register", ~#demonstrates: "immutable identity binding via resonate()" }
+
+^"input"{
+  # Ground a truth:
+  #[pi, 3.14159]
+
+  # Attempt to overwrite:
+  =[pi, 2.71828]
+
+  # Read the value:
+  .pi
+}
+
+^"expected"{
+  after_ground: {
+    register: "pi",
+    value: 3.14159,
+    grounded: true,
+    provenance: "#",
+    accessMode: "category",
+  }
+  after_overwrite_attempt: {
+    register: "pi",
+    value: 3.14159,
+    changed: false,
+    reason: "set() returns false for grounded registers",
+  }
+  after_read: {
+    result: 3.14159,
+  }
+}
+
+^"notes"{
+  "resonate() sets grounded=true on the RegisterValue.",
+  "set() checks grounded flag and rejects writes to grounded registers.",
+  "delete() also rejects deletion of grounded registers.",
+}

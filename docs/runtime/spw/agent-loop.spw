@@ -1,0 +1,32 @@
+# Agent Loop
+#
+# Reversible loop for agent-assisted edits and SVG/motion output.
+
+^["goal"]{
+  ~#intent: "Agent output becomes structure, not just text."
+  ~#contract: "Every patch is previewable, stageable, and replayable."
+}
+
+^["loop"]{
+  select: "user selects span/node/context"
+  intent: "generate SVG / refactor / explain / add motion spec"
+  respond: "agent returns patch + explanation + checks + preview artifacts"
+  decide: "apply, stage, replay reasoning"
+}
+
+^["state_preservation"]{
+  ~#requirements{
+    selection_anchor: "preserve by token/node id"
+    ast_remap: "map highlights by identity"
+    snapshots: "before/after with delta"
+  }
+}
+
+^["outputs"]{
+  ~#artifacts{
+    patch: "diff or changeset"
+    explanation: "reasoning summary"
+    checks: "lint/a11y/perf"
+    previews: "SVG/motion tokens"
+  }
+}

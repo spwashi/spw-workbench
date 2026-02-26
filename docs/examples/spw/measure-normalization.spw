@@ -1,0 +1,38 @@
+# Example: Measure Normalization
+#
+# %[x, scale] returns a normalized scalar ∈ [0,1].
+
+^"example"{ ~#name: "measure-normalization", ~#demonstrates: "measure() normalizes values to [0,1]" }
+
+^"input"{
+  =[count, 7]
+  =[items, [1, 2, 3, 4, 5]]
+  =[flag, true]
+  =[empty, null]
+
+  # Measure with default scale (10):
+  %[count]
+  %[items]
+  %[flag]
+  %[empty]
+
+  # Measure with custom scale:
+  %[count, 100]
+}
+
+^"expected"{
+  count_default:  { input: 7,     scale: 10,  result: 0.7   }
+  items_default:  { input: [5],   scale: 10,  result: 0.5   }
+  flag_default:   { input: true,  scale: 10,  result: 1.0   }
+  empty_default:  { input: null,  scale: 10,  result: 0.0   }
+  count_custom:   { input: 7,     scale: 100, result: 0.07  }
+}
+
+^"notes"{
+  "Numbers: value / scale, clamped to [0,1].",
+  "Arrays: length / scale.",
+  "Objects: key count / scale.",
+  "Booleans: true → 1, false → 0.",
+  "null/undefined: always 0.",
+  "Strings: length / scale.",
+}

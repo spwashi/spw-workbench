@@ -1,0 +1,256 @@
+# Audio Architecture
+#
+# The Web Audio renderer as a second mixing console.
+# Maps genre narrative bias to synthesis parameters,
+# quality to voice character, and gain staging to layered mix.
+# Connection: the audio gain chain IS the shader gain chain's acoustic twin.
+
+^["source_files"]{
+  ~<looper>"./looper-architecture.spw"
+  ~<valence>"./valence-architecture.spw"
+  ~<operator_atlas>"./operator-atlas.spw"
+  ~<sfx_synth>"../../src/infra/audio/sfx-synthesizer.ts"
+  ~<voice>"../../src/infra/audio/synthesis/voice.ts"
+  ~<types>"../../src/infra/audio/synthesis/types.ts"
+  ~<audio_bus>"../../src/infra/audio/audio-bus.ts"
+  ~<genre_presets>"../../src/publishing/genre/presets.ts"
+  ~<quality>"../../src/core/quality.ts"
+}
+
+^["meta"]{
+  @domain: infrastructure
+  @kind: render-pipeline
+  @description: "The Web Audio API as a second mixing console — genre-driven, quality-voiced, gain-staged"
+  @version: "0.1.0"
+  @sister: "looper-architecture.spw"
+}
+
+^["thesis"]{
+  # The shader renderer is already described as a mixing console
+  # (see looper-architecture.spw ^["audio_analogy"]).
+  # Audio completes this metaphor: the GPU renders light,
+  # the Web Audio API renders sound, both consume the same
+  # NarrativeBias vector and Quality system.
+
+  ~#principle: "Audio does not bridge TO shaders — both renderers
+    consume the same data model. NarrativeBias is the shared spine."
+
+  ~#anti_pattern: "Parallel parameter systems that drift apart.
+    If a genre's warmth=0.8 makes shaders golden,
+    it must also make audio warm (lower cutoff, richer harmonics).
+    One source of truth, two renderers."
+}
+
+^["narrative_bias_mapping"]{
+  # The 4D narrative bias vector maps to audio parameters.
+  # These are the same dimensions as looper-architecture.spw ^["narrative_bias"].
+
+  ~#warmth{
+    shader: "color temperature / emotional tone"
+    audio:  "filter cutoff frequency"
+    rule:   "Higher warmth → lower cutoff → warmer, rounder sound"
+    range:  "cutoff ∈ [200Hz, 8kHz], linear interpolation"
+    anchor: "warmth=0 → bright/clinical, warmth=1 → velvet/intimate"
+  }
+
+  ~#rhythm{
+    shader: "temporal regularity / pulse rate"
+    audio:  "envelope tempo scaling"
+    rule:   "Higher rhythm → shorter attack/decay → snappier events"
+    range:  "tempo scale ∈ [0.3, 2.0], gated by PacingMode"
+    anchor: "rhythm=0 → glacial swells, rhythm=1 → crisp ticks"
+    pacing_gate: "immersive caps at 0.5×, immediate allows 2.0×"
+  }
+
+  ~#grain{
+    shader: "textural noise / organic quality"
+    audio:  "noise mix level + effect wetness"
+    rule:   "Higher grain → more noise layering, textural complexity"
+    range:  "noise mix ∈ [0, 0.4], genre-bounded"
+    anchor: "grain=0 → pure/synthetic, grain=1 → textured/organic"
+    taste:  "academic-paper caps grain at 0.1 (clinical purity)"
+  }
+
+  ~#depth{
+    shader: "spatial layering / parallax"
+    audio:  "reverb wet mix + high-freq rolloff + distance attenuation"
+    rule:   "Higher depth → more reverb, muffled highs, quieter presence"
+    range:  "reverb wet ∈ [0, 0.8], cutoff rolloff ∈ [20kHz, 2kHz]"
+    anchor: "depth=0 → intimate/dry, depth=1 → cathedral/distant"
+  }
+}
+
+^["taste_anchors"]{
+  # Taste anchors are genre presets, not abstract materials.
+  # Each genre's narrativeBias is a curated point in the 4D space.
+  # Synthesis interpolates between these points — never extrapolates.
+
+  ~#ambient_meditation{
+    bias: { w: 0.5, r: 0.1, g: 0.05, d: 1.0 }
+    character: "Silky, distant, glacial swells, cathedral reverb"
+    anti_cheese: "Never add rhythm. Never brighten. Let it breathe."
+  }
+
+  ~#live_performance{
+    bias: { w: 0.9, r: 1.0, g: 0.2, d: 0.3 }
+    character: "Hot, snappy, present, slight room verb"
+    anti_cheese: "Never muddy. Transients must cut. Keep dry."
+  }
+
+  ~#academic_paper{
+    bias: { w: 0.2, r: 0.8, g: 0.1, d: 0.9 }
+    character: "Cool, rhythmic, clinical, deep but transparent"
+    anti_cheese: "No drama. No vibrato. Precision only."
+  }
+
+  ~#code_jam{
+    bias: { w: 0.6, r: 0.9, g: 0.3, d: 0.15 }
+    character: "Warm but fast, textured feedback, very present"
+    anti_cheese: "Never reverberant. Tactile, not atmospheric."
+  }
+
+  ~#general_rule: "The genre's narrativeBias bounds the generative space.
+    Parameters are clamped to the genre's character envelope.
+    This prevents drift into uncurated territory."
+}
+
+^["quality_voicing"]{
+  # Quality (boon/bane/bone/honk) shapes HOW a voice sounds,
+  # not WHAT it plays. This is the runtime valence dimension.
+
+  ~#boon{
+    gesture:   "ascending confirmation"
+    frequency: "+frequencyShift (bounded by genre warmth)"
+    envelope:  "short attack, moderate sustain"
+    effect:    "slight chorus, brightening"
+    feel:      "a nod, a green light, warm resolution"
+  }
+
+  ~#bane{
+    gesture:   "descending tension"
+    frequency: "-frequencyShift (bounded by genre warmth)"
+    envelope:  "sharp attack, fast decay"
+    effect:    "dry, narrow, constrained"
+    feel:      "a wince, a red flash, cool retraction"
+  }
+
+  ~#bone{
+    gesture:   "neutral acknowledgment"
+    frequency: "no shift (identity)"
+    envelope:  "balanced, genre default"
+    effect:    "none (transparent)"
+    feel:      "a click, a dot, structural punctuation"
+  }
+
+  ~#honk{
+    gesture:   "attention burst"
+    frequency: "detune (bounded by genre grain)"
+    envelope:  "sharp attack, no sustain, abrupt release"
+    effect:    "FM modulation, micro noise burst"
+    feel:      "a horn, a flag, dissonant demand"
+  }
+
+  ~#constraint: "Quality voicing is always bounded by the active genre.
+    A 'honk' in ambient-meditation is a gentle shimmer.
+    A 'honk' in code-jam is a sharp click.
+    Same quality, different taste."
+}
+
+^["gain_chain"]{
+  # Audio gain chain mirrors the shader gain chain
+  # (see looper-architecture.spw ^["gain_chain"]).
+  # 6 multiplicative stages, same compositional model.
+
+  ~#stage_1{ label: "stageGate",     source: "Theme stage (0–3)",    role: "Master fader"       }
+  ~#stage_2{ label: "genreGain",     source: "GenreDefinition",      role: "Taste ceiling"      }
+  ~#stage_3{ label: "sidechain",     source: "Active voice count",   role: "Ducking"            }
+  ~#stage_4{ label: "contextGain",   source: "ActivationContext",    role: "Context weight"     }
+  ~#stage_5{ label: "narrativeGain", source: "NarrativeBias",        role: "Intent gain"        }
+  ~#stage_6{ label: "qualityGain",   source: "Quality (bbbh)",       role: "Valence emphasis"   }
+
+  ~#formula: "audioGain = clamp(Π(stages), 0, 1)"
+  ~#metering: "getAudioGainReport() mirrors getGainReport() — per-stage VU"
+}
+
+^["layered_synthesis"]{
+  # Events don't play "on top" — they interact with the running mix.
+
+  ~#ducking{
+    trigger:   "voice-start event"
+    target:    "ambience gain node"
+    behavior:  "Reduce ambient level by 3–6dB during voice playback"
+    release:   "Exponential ramp back over 200ms after voice-end"
+    rationale: "Prevents masking. SFX occupy the foreground momentarily."
+  }
+
+  ~#harmonic_alignment{
+    trigger:   "SFX patch selection"
+    constraint: "SFX base frequency should sit in a harmonic relationship
+      with the current ambient track's root (if playing)"
+    method:    "Snap SFX frequency to nearest harmonic of ambient root"
+    fallback:  "If no ambient, use genre's warmth-derived base freq"
+  }
+
+  ~#masking_avoidance{
+    trigger:   "High register density (many active registers)"
+    behavior:  "Reduce mid-frequency emphasis (500Hz–2kHz) to prevent
+      perceptual muddiness when many voices overlap"
+    method:    "Dynamic EQ cut on master bus, depth proportional to voice count"
+  }
+}
+
+^["css_surface"]{
+  # Audio state exposed to CSS, mirroring optics variables.
+
+  ~#variables{
+    "--spw-audio-gain":  "computeAudioGain() — master output level"
+    "--spw-audio-depth": "narrative depth — reverb/spatial distance"
+    "--spw-audio-grain": "narrative grain — texture amount"
+  }
+
+  ~#optics_parallel{
+    gain:  "--spw-optics-gain   ↔ --spw-audio-gain"
+    depth: "--spw-optics-aperture ↔ --spw-audio-depth"
+    grain: "--spw-optics-grain   ↔ --spw-audio-grain"
+  }
+}
+
+^["wonder"]{
+  ?["Is the audio renderer a second mixing console?"]
+    ~#answer: "Yes. The shader renderer is the visual mixing console
+      (7-stage gain chain, narrative bias as EQ, reaction as transient shaper).
+      The audio renderer is the acoustic mixing console
+      (6-stage gain chain, same narrative bias, quality as voice character).
+      Both consume EnvironmentConfig. Both produce gain reports.
+      Together they form a multimodal compositor."
+
+  ?["What prevents generative sound from feeling cheesy?"]
+    ~#answer: "Taste anchors. Every genre preset defines a curated
+      narrativeBias vector that bounds the generative parameter space.
+      AMBIENT_MEDITATION caps rhythm at 0.1 and grain at 0.05.
+      CODE_JAM caps depth at 0.15. These constraints prevent
+      the system from generating uncurated combinations.
+      Additionally, quality voicing is always genre-bounded:
+      a 'honk' in ambient-meditation is a shimmer, not a klaxon."
+
+  ?["How do events interact with the running mix?"]
+    ~#answer: "Three mechanisms:
+      1. Ducking — ambience recedes when voices play (sidechain).
+      2. Harmonic alignment — SFX frequencies snap to ambient harmonics.
+      3. Masking avoidance — mid-freq EQ cut when voice count is high.
+      Events carve space in the mix rather than stacking on top."
+
+  ?["What is the relationship to EnvironmentConfig?"]
+    ~#answer: "EnvironmentConfig captures the full dimensional state:
+      genre, activationContext, layer, pacing, theme.
+      Both renderers (shader + audio) derive their parameters
+      from this single snapshot. Changing genre changes everything —
+      visual warmth, shader bias, and audio character shift together."
+}
+
+^["spatial_references"]{
+  ~<looper>"./looper-architecture.spw"
+  ~<valence>"./valence-architecture.spw"
+  ~<spatial>"./spatial-model.spw"
+  ~<operator_atlas>"./operator-atlas.spw"
+}

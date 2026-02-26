@@ -1,0 +1,56 @@
+# LSP + DAP Workers
+#
+# Preparation notes for integrating language/debug protocols via Web Workers.
+
+^['roots']{
+  @src: ~"../src"
+}
+
+^['intent']{
+  ~#goal: "Run parse, analysis, and debug orchestration off the main thread."
+  ~#benefit: "Keep UI responsive; unify external IDE integration with in-app tooling."
+}
+
+^['protocols']{
+  ?[LSP]{
+    ~#role: "Language Server Protocol (JSON-RPC 2.0)"
+    ~#surface: "Document symbols, diagnostics, completion, hover"
+    ~#worker: "@src/platform/workers/spw-language-worker.ts"
+  }
+
+  ?[DAP]{
+    ~#role: "Debug Adapter Protocol"
+    ~#surface: "Breakpoints, stack frames, stepping"
+    ~#worker: "@src/platform/workers/spw-language-worker.ts"
+  }
+}
+
+^['worker-contract']{
+  ~#types: "@src/infra/worker/protocol.ts"
+  ~#client: "@src/platform/workers/spw-language-client.ts"
+
+  ^['message-envelopes']{
+    ~#parse: "{type:'parse', text, options} → parse.result"
+    ~#analyze: "{type:'analyze', text} → analyze.result"
+    ~#lsp: "{type:'lsp.request', payload: JSON-RPC} → lsp.response"
+    ~#dap: "{type:'dap.request', payload: DAP} → dap.response"
+  }
+}
+
+^['data-boundary']{
+  ~#rule: "Workers exchange plain data (structured clone)."
+  ~#examples: ["tokens", "AST nodes", "diagnostics", "execution trace"]
+  ~#non-goals: "No DOM access inside workers."
+}
+
+^['versioning']{
+  ~#doc_id: "Every request should include docId + version where possible."
+  ~#cancellation: "Allow cancel messages to avoid stale responses."
+}
+
+^['next-steps']{
+  ~#phase_0: "Keep worker as a mirror of parse/analyze (no UI wiring)."
+  ~#phase_1: "Move diagnostics + tokenization behind worker with fallbacks."
+  ~#phase_2: "Bridge DAP stepping into inspector + flow view."
+  ~#phase_3: "Expose LSP over stdio for external IDEs (Vim/Neovim) and DAP over sockets."
+}

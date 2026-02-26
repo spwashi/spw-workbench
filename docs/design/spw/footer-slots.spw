@@ -1,0 +1,65 @@
+# Footer Slot Registry
+#
+# Slot map for the HUD footer. Defines ordering, intent, and ownership rules.
+
+^["roots"]{
+  @src: ~"../src"
+}
+
+^["intent"]{
+  ~#goal: "The footer is a programmable status rail for state reflection and transient controls."
+  ~#principle: "Slots prefer small, low-distraction elements that reinforce context and afford navigation."
+  ~#placement: "Footer slots should remain consistent across layout presets; components adapt to space buckets."
+}
+
+^["slots"]{
+
+  ^["timestamp"]{
+    ~#id: "footer.timestamp"
+    ~#role: "Last-sync + session timing"
+    ~#owner: "platform bootstrap"
+    ~#visibility: "always unless status bar hidden"
+    ~#notes: "Keep short; do not add interactive controls here."
+  }
+
+  ^["prompting-rail"]{
+    ~#id: "prompting-rail"
+    ~#role: "Prompt cues, tuple reflection, whisper line"
+    ~#owner: "app/components/prompting-rail"
+    ~#visibility: "settings: promptingRail.enabled"
+    ~#notes: "Adapts to compact/stacked/minimal modes; can cycle context, LoD, disclosure, genre."
+  }
+
+  ^["tour-controls"]{
+    ~#id: "lens-walk-controls"
+    ~#role: "Lens walk starter + step controls"
+    ~#owner: "app/components/onboarding-tour"
+    ~#visibility: "settings: layout.showTourControls"
+    ~#notes: "Reserve space when active; should never occlude key hints."
+  }
+
+  ^["key-hint-bar"]{
+    ~#id: "key-hint-bar"
+    ~#role: "Contextual keyboard hints"
+    ~#owner: "app/components/keyboard-hints"
+    ~#visibility: "always unless status bar hidden"
+    ~#notes: "Shrinks or rotates hints based on disclosure + mode."
+  }
+}
+
+^["ordering"]{
+  ~#baseline: [timestamp, prompting-rail, tour-controls, key-hint-bar]
+  ~#insertion_rule: "Transient components (tour-controls) insert before key-hint-bar."
+  ~#compact_rule: "When space is compact, prompting-rail can collapse or hide before key-hint-bar."
+}
+
+^["controls"]{
+  ~#status_bar: "layout.showStatusBar hides the entire footer"
+  ~#prompting_rail: "promptingRail.enabled and promptingRail.mode control rail visibility + layout"
+  ~#tour_controls: "layout.showTourControls hides lens walk controls"
+}
+
+^["future_slots"]{
+  ~#candidates: ["runtime-trace", "intent-bar", "session-health", "notification-pulse"]
+  ~#rule: "Any new footer slot must declare a hide rule and a compact-mode fallback."
+}

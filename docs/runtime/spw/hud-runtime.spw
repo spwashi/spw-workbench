@@ -1,0 +1,454 @@
+# HUD Runtime Mode
+#
+# Interface for observing active profiles, features, and session state.
+
+^["roots"]{
+  @src:  ~"../src"
+  @spec: ~"../lib/spw-v0.1.0-alpha"
+}
+
+^["Concept"]{
+  ~#purpose{
+    "HUD displays runtime context: what's active, what's available, what's constrained."
+    "Like a cockpit instrument panel for Spw execution."
+  }
+
+  ~#metaphor{
+    sheaf: "Bundle of seeds being worked on together"
+    session: "Active evaluation context with accumulated state"
+    profile: "Combination of phase selections"
+    features: "Enabled/disabled capabilities"
+  }
+}
+
+^["Phase Profile Model"]{
+
+  ^["Profile Definition"]{
+    ~#structure{
+      name: "identifier"
+      surface: "block | linear | natural | streaming"
+      structure: "explicit | inferred"
+      projection: "Domain@ | polymorphic"
+      orientation: "query | template | reduce | link | topology | direct"
+      presentation: "TasteProfile reference"
+    }
+
+    ~#example{
+      ^profile["research.hardware"]{
+        surface: block
+        structure: inferred
+        projection: Hardware@
+        orientation: query
+        presentation: Spw.Taste.Literate
+      }
+    }
+  }
+
+  ^["Profile Inheritance"]{
+    ~#base_profiles{
+      ^profile["Spw.Defaults"]{
+        surface: block
+        structure: inferred
+        projection: polymorphic
+        orientation: direct
+        presentation: Spw.Taste.Literate
+      }
+
+      ^profile["Spw.Minimal"]{
+        surface: linear
+        structure: explicit
+        projection: polymorphic
+        orientation: reduce
+        presentation: Spw.Taste.Terse
+      }
+
+      ^profile["Spw.Exploratory"]{
+        surface: block
+        structure: inferred
+        projection: polymorphic
+        orientation: query
+        presentation: Spw.Taste.Annotated
+      }
+    }
+
+    ~#extension{
+      "^profile[\"my.profile\" extends:\"Spw.Defaults\"]{ ... }"
+      "Override only what differs"
+    }
+  }
+
+  ^["Profile Composition"]{
+    ~#layering{
+      "Profiles can layer: later overrides earlier"
+      "Capsule config overrides profile"
+      "Explicit always beats implicit"
+    }
+
+    ~#example{
+      session.profiles: ["Spw.Defaults", "research.hardware"]
+      capsule: "<c[orientation:explain]>"
+      result: "block.inferred.Hardware.explain.Literate"
+    }
+  }
+}
+
+^["Feature Versioning Model"]{
+
+  ^["Feature Registry"]{
+    ~#structure{
+      feature_id: "namespaced identifier"
+      version: "semver"
+      status: "stable | preview | experimental | deprecated"
+      requires: "list of dependency features"
+      conflicts: "list of incompatible features"
+    }
+
+    ~#core_features{
+      ^feature["spw.core.operators"]{
+        version: "0.1.0"
+        status: stable
+        description: "8 core operators"
+      }
+
+      ^feature["spw.core.modifiers"]{
+        version: "0.1.0"
+        status: stable
+        description: "5 valence modifiers (boon/bane/bone/bonk/honk)"
+      }
+
+      ^feature["spw.core.containers"]{
+        version: "0.1.0"
+        status: stable
+        description: "4 container types"
+      }
+
+      ^feature["spw.core.capsules"]{
+        version: "0.1.0-prealpha"
+        status: preview
+        description: "Configuration layers <c[...]>{}"
+      }
+
+      ^feature["spw.core.streaming"]{
+        version: "0.1.0-prealpha"
+        status: experimental
+        description: "Stream boundaries <<{}>>"
+      }
+
+      ^feature["spw.core.nrange"]{
+        version: "0.1.0-prealpha"
+        status: preview
+        description: "N-range emphasis (( ))"
+      }
+
+      ^feature["spw.runtime.goals"]{
+        version: "0.1.0-prealpha"
+        status: preview
+        description: "Goal-based execution modes"
+      }
+
+      ^feature["spw.runtime.reflection"]{
+        version: "0.2.0"
+        status: experimental
+        description: "X# operator reflection"
+        deferred: true
+      }
+    }
+  }
+
+  ^["Feature Gates"]{
+    ~#activation{
+      "Features have default state based on status"
+      stable: "on by default"
+      preview: "off by default, opt-in"
+      experimental: "off, requires explicit enable"
+      deprecated: "on but warns, opt-out"
+    }
+
+    ~#capsule_syntax{
+      enable: "<c[features:+{capsules goals}]>"
+      disable: "<c[features:-{deprecated.old}]>"
+      require: "<c[features:!{streaming}]>"  # error if unavailable
+    }
+
+    ~#session_override{
+      "Runtime can force-enable/disable features"
+      "Useful for testing, debugging, conformance checking"
+    }
+  }
+}
+
+^["HUD Display Model"]{
+
+  ^["Session Panel"]{
+    ~#displays{
+      active_sheaf: "Name and path of current seed bundle"
+      session_id: "Unique identifier for this evaluation"
+      started: "Timestamp"
+      profile_stack: "Active profiles in order"
+    }
+
+    ~#example{
+      "┌─ Session ─────────────────────────┐"
+      "│ Sheaf: ~/projects/demo.spw        │"
+      "│ ID: sess_7f3a2b                   │"
+      "│ Started: 14:32:07                 │"
+      "│ Profiles: Defaults → research     │"
+      "└───────────────────────────────────┘"
+    }
+  }
+
+  ^["Phase Panel"]{
+    ~#displays{
+      surface: "Current surface dialect with indicator"
+      structure: "Current structure mode"
+      projection: "Active domain(s)"
+      orientation: "Current goal/mode"
+      presentation: "Active taste profile"
+    }
+
+    ~#example{
+      "┌─ Phases ──────────────────────────┐"
+      "│ Surface:      ▓ block             │"
+      "│ Structure:    ▓ inferred          │"
+      "│ Projection:   ▓ Hardware@         │"
+      "│ Orientation:  ▓ query             │"
+      "│ Presentation: ░ Literate          │"
+      "└───────────────────────────────────┘"
+    }
+
+    ~#indicators{
+      "▓": "Explicitly set"
+      "░": "Inherited/default"
+      "◊": "Overridden by capsule"
+    }
+  }
+
+  ^["Feature Panel"]{
+    ~#displays{
+      conformance: "L1 / L2 / L3"
+      features_enabled: "List of active features"
+      features_available: "List of available but inactive"
+      features_blocked: "List of unavailable (version/conflict)"
+    }
+
+    ~#example{
+      "┌─ Features ────────────────────────┐"
+      "│ Conformance: L2                   │"
+      "│                                   │"
+      "│ ● operators      ● modifiers     │"
+      "│ ● containers     ◐ capsules      │"
+      "│ ○ streaming      ○ reflection    │"
+      "│                                   │"
+      "│ ● stable  ◐ preview  ○ off       │"
+      "└───────────────────────────────────┘"
+    }
+  }
+
+  ^["Posture Panel"]{
+    ~#displays{
+      active_posture: "Current BehaviorProfile"
+      verification: "Level indicator"
+      logging: "Level indicator"
+      determinism: "Required/optional"
+      capabilities: "Granted caps list"
+    }
+
+    ~#example{
+      "┌─ Posture ─────────────────────────┐"
+      "│ Profile: ResearchRigorous         │"
+      "│                                   │"
+      "│ Verification: ████░ strict        │"
+      "│ Logging:      █████ full          │"
+      "│ Determinism:  ███░░ when_req      │"
+      "│ Ergonomics:   ███░░ moderate      │"
+      "│                                   │"
+      "│ Caps: [io:read] [net:local]       │"
+      "└───────────────────────────────────┘"
+    }
+  }
+
+  ^["Goal Panel"]{
+    ~#displays{
+      active_goal: "Current runtime goal"
+      pipeline_stage: "Current stage in pipeline"
+      reduction_mode: "Condense/expand/preserve"
+      strata_target: "Extraction level"
+    }
+
+    ~#example{
+      "┌─ Goal ────────────────────────────┐"
+      "│ Active: explain                   │"
+      "│                                   │"
+      "│ Pipeline: prime → [wonder] → ... │"
+      "│ Reduction: expand                 │"
+      "│ Strata: node                      │"
+      "└───────────────────────────────────┘"
+    }
+  }
+
+  ^["Capsule Stack"]{
+    ~#displays{
+      "Stack of active capsule configurations"
+      "Most recent (innermost) at top"
+      "Shows which keys are set at each level"
+    }
+
+    ~#example{
+      "┌─ Capsule Stack ───────────────────┐"
+      "│ 2: <c[goal:explain]>              │"
+      "│ 1: <c[use:Posture.Research]>      │"
+      "│ 0: <c[dialects:{x t}]>            │"
+      "│ ─: (session defaults)             │"
+      "└───────────────────────────────────┘"
+    }
+  }
+}
+
+^["Implementation Architecture"]{
+
+  ^["Runtime State"]{
+    ~#types{
+      ^type["SessionState"]{
+        id: string
+        sheaf: SheafRef
+        profiles: ProfileStack
+        features: FeatureSet
+        capsules: CapsuleStack
+        goal: GoalToken
+        posture: PostureProfile
+        taste: TasteProfile
+        phases: PhaseConfig
+        capabilities: CapabilitySet
+        strata: StrataTarget
+      }
+
+      ^type["PhaseConfig"]{
+        surface: SurfaceDialect
+        structure: StructureMode
+        projection: DomainSet
+        orientation: OrientationMode
+        presentation: TasteProfile
+      }
+
+      ^type["FeatureSet"]{
+        enabled: Set<FeatureId>
+        available: Set<FeatureId>
+        blocked: Map<FeatureId, BlockReason>
+      }
+    }
+  }
+
+  ^["State Bus"]{
+    ~#events{
+      session.start: "New session began"
+      session.end: "Session completed"
+      profile.push: "Profile added to stack"
+      profile.pop: "Profile removed from stack"
+      capsule.enter: "Entered capsule scope"
+      capsule.exit: "Exited capsule scope"
+      feature.enable: "Feature activated"
+      feature.disable: "Feature deactivated"
+      goal.change: "Goal changed"
+      posture.change: "Posture changed"
+      phase.change: "Phase config changed"
+    }
+
+    ~#subscription{
+      "HUD subscribes to state bus"
+      "Updates panels on relevant events"
+      "Debounces rapid changes"
+    }
+  }
+
+  ^["Persistence"]{
+    ~#session_state{
+      "Session state can be serialized"
+      "Enables: save/restore, sharing, replay"
+    }
+
+    ~#sheaf_metadata{
+      "Sheaf can declare preferred profiles/features"
+      "Stored in seed header or companion file"
+    }
+  }
+}
+
+^["UI Components"]{
+
+  ^["Proposed Components"]{
+    spw-session-panel
+    spw-phase-panel
+    spw-feature-panel
+    spw-posture-panel
+    spw-goal-panel
+    spw-capsule-stack
+    spw-runtime-hud       # Container for all panels
+  }
+
+  ^["Layout Options"]{
+    ~#sidebar{
+      "Vertical stack in right sidebar"
+      "Collapsible panels"
+      "Minimal mode shows only indicators"
+    }
+
+    ~#floating{
+      "Floating overlay"
+      "Draggable, resizable"
+      "Can dock to edges"
+    }
+
+    ~#statusbar{
+      "Compact single-line summary"
+      "Click to expand details"
+      "Always visible"
+    }
+  }
+
+  ^["Interaction"]{
+    ~#read_only{
+      "HUD displays current state"
+      "Does not directly modify"
+    }
+
+    ~#quick_actions{
+      "Click profile to see details"
+      "Click feature to see docs"
+      "Click capsule to jump to source"
+    }
+
+    ~#configuration{
+      "Settings panel for defaults"
+      "Profile editor"
+      "Feature gate configuration"
+    }
+  }
+}
+
+^["Integration Points"]{
+
+  ^["With Editor"]{
+    "Capsule entry/exit updates HUD"
+    "Cursor position affects 'current capsule' display"
+    "Syntax highlighting reflects active features"
+  }
+
+  ^["With Parser"]{
+    "Parser reports feature usage"
+    "HUD shows which features seed requires"
+    "Conformance check against enabled features"
+  }
+
+  ^["With Interpreter"]{
+    "Goal/posture affect evaluation"
+    "HUD shows pipeline progress"
+    "Strata extraction visualized"
+  }
+
+  ^["With Onboarding"]{
+    "Disclosure level affects which panels show"
+    "Beginner: minimal (goal only)"
+    "Intermediate: core panels"
+    "Advanced: all panels"
+  }
+}

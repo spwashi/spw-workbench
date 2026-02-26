@@ -1,0 +1,45 @@
+# Example: Spirit Cycle
+#
+# Full ?~<#.>@(#.)&[#.]*{#.}^ walkthrough on a simple node.
+
+^"example"{ ~#name: "spirit-cycle", ~#demonstrates: "six-phase interpreter cycle on a concrete value" }
+
+^"input"{
+  # Given a node to process:
+  =[node, { type: "greeting", text: "hello world" }]
+
+  # Spirit cycle:
+  # Phase 1: ?~ — probe into superposition
+  ?~[node]
+
+  # Phase 2: <#.> — name the coupling
+  <#[node.type]>
+
+  # Phase 3: @(#.) — observe from a perspective
+  @(#[node.text])
+
+  # Phase 4: &[#.] — merge categorized truths
+  &[node.type, node.text]
+
+  # Phase 5: *{#.} — materialize properties
+  *{type: node.type, text: node.text}
+
+  # Phase 6: ^ — integrate upward
+  ^
+}
+
+^"expected"{
+  phase_1: { result: "deferred probe of node",                  register: "condition = true"  }
+  phase_2: { result: "concept coupling named 'greeting'",       container: "<greeting>"       }
+  phase_3: { result: "observer scope with 'hello world'",       scope: "@hello world"         }
+  phase_4: { result: "merged ['greeting', 'hello world']",      mergedFrom: ["node.type", "node.text"] }
+  phase_5: { result: "{type: 'greeting', text: 'hello world'}", collapsed: true               }
+  phase_6: { result: "bound to parent scope",                   direction: "upward"           }
+}
+
+^"notes"{
+  "Each phase uses a different operator + container pair.",
+  "The #. kernel (resonance.ground) appears in phases 2–5.",
+  "Phase 6 feeds into phase 1 of the next cycle.",
+  "Termination: when ?~ returns falsy.",
+}

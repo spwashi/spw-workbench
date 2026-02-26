@@ -1,0 +1,52 @@
+# Git Concordance
+#
+# Using git commit messages as library catalog cards.
+# Internal documentation becomes a stress test of the language.
+
+^"conventions"{
+  summary: "imperative mood, < 50 chars"
+  body: "Spw expression demonstrating the change"
+  footer: "Library metadata (concepts, tags)"
+}
+
+^"message_structure"{
+  # Example commit message:
+  #
+  # feat: implement brace registers
+  #
+  # #[brace:dyad, {
+  #   left: "[", right: "]",
+  #   context: "category",
+  #   capture: true
+  # }]
+  #
+  # ~<concept> "register-bank"
+  # ~#tag "feature"
+  # ~#ticket "WS-123"
+
+  parsing_rules: [
+    "Subject line is the human-readable index",
+    "Body contains executable Spw (the stress test)",
+    "Footer lines starting with ~ are library metadata",
+  ]
+}
+
+^"concordance_query"{
+  # Git log as a queryable database:
+
+  # Find all commits defining specific concepts:
+  # git log --grep="~<concept>"
+
+  # Find evolutionary sequence of a feature:
+  # git log -p -- "docs/library/library.spw"
+
+  # Extract all grounded expressions from history:
+  # git log --format="%b" | grep "^#\["
+}
+
+^"usage"{
+  # This makes the git log a queryable concordance of:
+  # 1. Syntax evolution (how expressions changed over time)
+  # 2. Concept introduction (when ~<concept> first appeared)
+  # 3. Feature density (frequency of ~#tag)
+}

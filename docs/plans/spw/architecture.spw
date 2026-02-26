@@ -1,0 +1,128 @@
+# Architecture
+#
+# Codebase layers and their relationships.
+
+^["roots"]{
+  @src:  ~"../src"
+  @spec: ~"../lib/spw-v0.1.0-alpha"
+}
+
+^["layers"]{
+  # Specification (what Spw should be)
+  @spec/                       # Markdown docs, grammar rules
+
+  # Implementation (how it works)
+  @src/seed/                # Lexer, parser, types
+
+  # Integration (workbench bindings)
+  @src/lang/                   # Hooks, events, timing
+}
+
+^["stack"]{
+  # Top-down workbench layers (outer → inner)
+  @src/platform/               # Browser entrypoint + wiring
+  @src/app/                    # Workbench glue + adapters
+  @src/features/               # User behaviors
+  @src/ui/                     # Portable UI
+  @src/design/                 # Themes, tokens, personality, cognitive bridge
+  @src/viz/                    # Visualizations
+  @src/runtime/                # Execution engine
+  @src/lang/                   # Language surface
+  @src/infra/                  # Timing, state, lifecycle, a11y
+  @src/core/                   # Domains, conventions, layers, operators
+}
+
+^["design-depth"]{
+  # The design layer now has cognitive depth.
+  # Each theme carries a personality (trait vector) that drives
+  # atmospheric CSS through a JS→CSS bridge.
+
+  ^["flow"]{
+    personality  -> cognitive-bridge  -> ":root CSS custom properties"
+    semantic-features -> cognitive-bridge  -> "--spw-cognitive-* tokens"
+    personality.spirits -> applySpirits() -> ".spirit-* CSS classes"
+    theme-switch -> liminalTransition() -> "html[data-theme-transitioning]"
+  }
+
+  ^["css-layers"]{
+    textures.css    # grain (--spw-narrative-grain-opacity)
+    echoes.css      # echo leitmotifs (--spw-narrative-echo-opacity-*)
+    spirits.css     # ambient @keyframes (9 spirits)
+    liminal.css     # transition states
+    nebula.css      # breath, cognitive glow
+    atelier.css     # motion easing, focus envelope
+    mood.css        # pulse speed, warmth tint
+  }
+}
+
+^["spec-to-impl"]{
+  @spec/core/SPEC.md           -> @src/seed/grammar/
+  @spec/runtime/REGISTERS.md   -> @src/runtime/interpreter/
+  @spec/domains/PROFILES.md    -> @src/core/domains/
+}
+
+^["portable"]{
+  # Can be extracted as npm package
+  @src/seed/                # Zero workbench dependencies
+  @src/core/                   # Spw primitives
+  @src/runtime/interpreter/    # Minimal infra/core dependency
+}
+
+^["bound"]{
+  # Workbench-specific
+  @src/platform/
+  @src/viz/
+  @src/design/
+  @src/features/
+  @src/app/
+}
+
+^["navigation"]{
+  # .spw files function as architectural shaders for codebase navigation.
+  # A reader (human or agent) uses operators as navigation primitives:
+  #
+  #   @ = "look from here"     → set perspective / working directory
+  #   # = "this is a landmark" → grounded reference, safe to bookmark
+  #   ? = "should I go here?"  → probe a path before committing
+  #   $ = "what am I on?"      → introspect the current file/register
+  #   % = "how relevant?"      → measure relevance before diving deeper
+  #   & = "combine these"      → merge findings from multiple explorations
+  #   ^ = "go up"              → return to parent scope / broader context
+  #   . = "go into"            → traverse into a property / subdirectory
+  #
+  # The spirit sequence ?~<#.>@(#.)&[#.]*{#.}^ is the canonical
+  # navigation loop: probe → name → observe → merge → value → integrate.
+
+  ~<spirit>"./spirit-sequence.spw"
+  ~<library>"./library/library.spw"
+}
+
+^["literary_layers"]{
+  # Three co-existing description layers for every module:
+  #
+  # 1. TypeScript — implementation (what the machine executes)
+  # 2. CSS        — presentation  (how the human sees it)
+  # 3. Spw        — intention     (why it exists, what it connects to)
+  #
+  # Each .spw file is a "shader program" that tells readers how to
+  # render the module's meaning. Like GLSL programs that transform
+  # vertices into pixels, .spw files transform file trees into understanding.
+
+  @src/*/docs/index.spw        # per-layer intention maps
+  @src/app/components/**/*.spw # per-component valence + surface docs
+  docs/library/library.spw     # self-cataloging bibliography
+}
+
+^["wonder"]{
+  # Mathematical introspection via $ and %:
+  #
+  # $[architecture].topology      → "what kind of document is this?"
+  # %[architecture]               → "how significant relative to the whole?"
+  # $[architecture].grounded      → true (this document is a landmark)
+  #
+  # Every .spw file can answer questions about itself.
+  # See docs/library/wonder-calculus.spw for the formal axioms.
+
+  ~<calculus>"./library/wonder-calculus.spw"
+  ~<probes>"./library/wonder-probes.spw"
+}
