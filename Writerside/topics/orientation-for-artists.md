@@ -35,4 +35,4 @@ npm install
 npm run lint:spw
 ```
 
-See also: [Exhibits](exhibits.md) and [Documentation Map](documentation-map.md).
+See also: [Exhibits](exhibits.md), [Prompt Packs](prompt-packs.md), [Claims](claims.md), [Instruments](instruments.md), and [Documentation Map](documentation-map.md).

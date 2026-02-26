@@ -8,6 +8,9 @@ This Writerside instance is focused on contributor onboarding and maintenance wo
 
 - [](orientation-for-artists.md)
 - [](exhibits.md)
+- [](prompt-packs.md)
+- [](claims.md)
+- [](instruments.md)
 - [](quick-start-checklist.topic)
 - [](developer-workflow.md)
 - [](experiments-and-skills.md)
@@ -16,7 +19,6 @@ This Writerside instance is focused on contributor onboarding and maintenance wo
 - [](workbench-architecture.md)
 - [](philosophy-and-references.md)
 - [](documentation-map.md)
-
 ## Reader Paths
 
 <tabs>
@@ -33,6 +35,9 @@ This Writerside instance is focused on contributor onboarding and maintenance wo
         <list>
             <li><a href="orientation-for-artists.md"/></li>
             <li><a href="exhibits.md"/></li>
+            <li><a href="prompt-packs.md"/></li>
+            <li><a href="claims.md"/></li>
+            <li><a href="instruments.md"/></li>
             <li><a href="workbench-architecture.md"/></li>
             <li><a href="philosophy-and-references.md"/></li>
             <li><a href="documentation-map.md"/></li>
