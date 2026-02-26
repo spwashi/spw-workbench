@@ -1,0 +1,106 @@
+# Orphaned Files Note
+#
+# Reachability audit snapshot for disconnected source files.
+
+^["roots"]{
+  @repo: ~"."
+  @agents: ~"./.agents"
+}
+
+meta: .{
+  kind = `orphaned-files-note`
+  audited_on = `2026-02-23`
+  scope = `src`
+}[reg=facet]
+
+method: .{
+  orphaned_means = #[
+    `file is under src/`,
+    `not reachable from runtime entry (src/platform/main.ts)`,
+    `not reachable from tests (src/**/*.{test,spec}.ts)`,
+    `not reachable from script/extension roots (scripts/**, extensions/vscode-spw/src/**)`,
+  ][reg=set]
+
+  static_edges = #[
+    `import ... from ...`,
+    `export ... from ...`,
+    `import(...)`,
+    `@import ...`,
+    `new Worker(new URL(..., import.meta.url), ...)`,
+  ][reg=set]
+
+  caveat = `Disconnect signal only; requires human review before deletion.`
+}[reg=facet]
+
+removed: .{
+  confidence = `high`
+  files = #[
+    `migrate-tokens.js`,
+    `scripts/rebase/__pycache__/commit_narrative.cpython-313.pyc`,
+    `src/typescript.svg`,
+    `token-baseline-2026-01-12.txt`,
+  ][reg=set]
+}[reg=facet]
+
+orphans: .{
+  count = 57
+  files = #[
+    `src/app/components/_shared/valence-map.ts`,
+    `src/app/components/audio-controls/audio-controls.ts`,
+    `src/app/components/audio-controls/index.ts`,
+    `src/app/components/command-bar/valence/bane.css`,
+    `src/app/components/command-bar/valence/bone.css`,
+    `src/app/components/command-bar/valence/bonk.css`,
+    `src/app/components/command-bar/valence/boon.css`,
+    `src/app/components/command-bar/valence/honk.css`,
+    `src/app/components/command-bar/valence/index.ts`,
+    `src/app/hooks.ts`,
+    `src/core/types/events.ts`,
+    `src/core/types/spw-brands.ts`,
+    `src/debug/index.ts`,
+    `src/debug/yield-capture.ts`,
+    `src/debug/yield-capture/export.ts`,
+    `src/design/components/validation.ts`,
+    `src/design/svg/index.ts`,
+    `src/design/svg/operator-glyphs.ts`,
+    `src/design/themes/audio/quality-voicing.ts`,
+    `src/design/themes/css-token-audit.ts`,
+    `src/design/themes/packs/examples.ts`,
+    `src/design/themes/personality/projection-space.ts`,
+    `src/design/themes/phase-cluster.ts`,
+    `src/design/themes/phase-tokens.ts`,
+    `src/design/token-migration.ts`,
+    `src/design/tokens/annotation-tokens.ts`,
+    `src/design/tokens/token-registry.ts`,
+    `src/features/annotations/index.ts`,
+    `src/features/annotations/types.ts`,
+    `src/features/clipboard/clipboard-channel.ts`,
+    `src/features/docs/doc-structure-channel.ts`,
+    `src/features/keyboard/audit/index.ts`,
+    `src/features/keyboard/geology/components/fluency-development-log.css`,
+    `src/features/keyboard/geology/components/fluency-report.css`,
+    `src/features/keyboard/geology/components/index.ts`,
+    `src/features/keyboard/geology/index.ts`,
+    `src/features/keyboard/navigation/index.ts`,
+    `src/features/keyboard/registers/index.ts`,
+    `src/features/keyboard/vim/index.ts`,
+    `src/infra/audio/audio-css-bridge.ts`,
+    `src/infra/audio/audio-gain-chain.ts`,
+    `src/infra/audio/audio-narrative-bridge.ts`,
+    `src/infra/audio/synthesis/smoothing.ts`,
+    `src/infra/lifecycle/trace.ts`,
+    `src/infra/shaders/index.ts`,
+    `src/infra/shaders/shader-bus.ts`,
+    `src/infra/state/derivative-state.ts`,
+    `src/lang/hooks.ts`,
+    `src/platform/index.ts`,
+    `src/platform/manifold-bridge.ts`,
+    `src/platform/pointer-tracker.ts`,
+    `src/platform/register-bridge.ts`,
+    `src/runtime/api/spw-interface.ts`,
+    `src/runtime/repl/audio-commands.ts`,
+    `src/styles/adaptation/attention-density.css`,
+    `src/test/property.ts`,
+    `src/viz/hooks.ts`,
+  ][reg=set]
+}[reg=facet]

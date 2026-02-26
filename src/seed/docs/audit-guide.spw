@@ -1,0 +1,80 @@
+# seed audit guide
+#
+# Review checklist for src/seed/ changes.
+
+meta: .{
+  domain      = `seed`
+  initOrder   = `-1`
+  description = `Lexer, parser, types — the extractable core of Spw`
+  kind        = `audit-guide`
+  portability = `browser + Node.js + standalone npm`
+}[reg=facet]
+
+purpose: .{
+  review-goal = `Ensure portability is preserved — zero workbench dependencies, deterministic parsing`
+  risk-level  = `CRITICAL — seed is the language itself. Parser bugs affect everything.`
+}[reg=facet]
+
+allowed: #[
+  `nothing — seed has zero workbench dependencies`
+][reg=set]
+
+forbidden: #[
+  `@/core/*`     `@/infra/*`    `@/runtime/*`  `@/design/*`
+  `@/ui/*`       `@/viz/*`      `@/features/*` `@/debug/*`
+  `@/cli/*`      `@/app/*`      `@/platform/*` `@/publishing/*`
+  `@/styles/*`
+][reg=set]
+
+signals: .{
+  dependency-creep = #[
+    `Any import from a workbench layer — destroys npm extractability`
+    `DOM references — seed must work in Node.js`
+    `Browser API usage — seed must work headless`
+  ]
+  determinism = #[
+    `Non-deterministic parsing — same input must always produce same AST`
+    `Random or date-dependent behavior — breaks reproducibility`
+    `Mutation during parse — parse must be pure`
+  ]
+  golden-snapshots = #[
+    `__tests__/snapshots/phase-4-golden/ changes require explicit approval`
+    `5 canonical parse outputs are the regression baseline`
+  ]
+}[reg=facet]
+
+decisions: .{
+  workbench-test = `Can this run without the workbench? → Yes: seed/. No: lang/hooks.ts.`
+  determinism    = `Is the parser deterministic for this input? → Must always be yes.`
+  portability    = `Does this break the npm-extractable contract? → Blocking issue.`
+}[reg=facet]
+
+questions: #[
+  `Can this run without the workbench?`
+  `Is the parser deterministic for this input?`
+  `Does this break the npm-extractable contract?`
+  `Does this change require golden snapshot updates?`
+][reg=set]
+
+bonk: #[
+  @here/grammar/
+  @here/__tests__/snapshots/phase-4-golden/
+  @here/lexer/
+  @here/parser/
+][reg=impact]
+
+portability: .{
+  targets = #[
+    `Browser`
+    `Node.js`
+    `Standalone npm package`
+    `Tests without DOM`
+  ]
+  invariants = .{
+    parse_stability       = `parse(F0) never panics`
+    f2_determinism        = `same AST → same bytes`
+    hash_idempotence      = `Hash(F2) = Hash(serialize(parse(F2)))`
+    mount_plane_safety    = `mounts never return $`
+    materialize_gate      = `only materialize() produces $`
+  }[reg=facet]
+}[reg=facet]

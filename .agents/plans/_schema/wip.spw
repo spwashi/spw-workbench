@@ -1,0 +1,147 @@
+# wip.spw — convention
+#
+# Structured development stream for agent feature branches.
+# Lives at: .agents/plans/<slug>/wip.spw
+# Schema at: .agents/plans/_schema/
+#
+# Design roots:
+#   Memory management — sections are memory regions with access rules
+#   Projection design — same document, multiple read patterns
+#   Diffability — every entry has a stable identity in git
+
+# ──────────────────────────────────────────────
+# MEMORY MODEL
+# ──────────────────────────────────────────────
+#
+# Each section maps to a memory region:
+#
+#   working set  ^["intent"] ^["open"] ^["commits"]
+#                Hot. Actively consulted. Mutable.
+#
+#   stream       ^["stream"]
+#                Append-only log. Warm. Grows monotonically.
+#
+#   cache        ^["cache"]
+#                Derived facts. Recomputed, not hand-edited.
+#                Enables fast agent context loading (~5 lines).
+#
+#   cold         ^["done"]
+#                Written once at merge. Becomes CHANGELOG source.
+#
+# Eviction rules:
+#   - Stream entries are never deleted, only annotated.
+#   - Open questions are removed when resolved — resolution logged in stream first.
+#   - Cache is recomputed — never hand-edited.
+
+# ──────────────────────────────────────────────
+# STREAM SYNTAX
+# ──────────────────────────────────────────────
+#
+# Append operator: >>
+#
+#   >>[YYYY-MM-DD HH:MM] <type> — <content>
+#
+# Types:
+#   observe   — something noticed in the code
+#   decide    — a choice made (with rationale)
+#   surprise  — something unexpected (the interesting part)
+#   revise    — changing a prior decision (reference the original)
+#   blocked   — waiting on external input
+#   taste     — a craft quality observation (naming, layering, containment)
+#   rebase    — branch rebase checkpoint and base-sha updates
+#   hygiene   — isolation of unrelated drift or tooling-only cleanup
+#
+# The >> evokes shell append-redirect. Each entry is uniquely keyed
+# by timestamp + type, producing clean single-line diffs.
+
+# ──────────────────────────────────────────────
+# OPEN QUESTION SYNTAX
+# ──────────────────────────────────────────────
+#
+# ?[label]: "question text"
+#
+# Short stable key for cross-reference in stream entries.
+# Removing a ?[label] line is a clean deletion in git diff.
+# The paired >> entry in the stream provides the audit trail.
+
+# ──────────────────────────────────────────────
+# COMMIT SYNTAX
+# ──────────────────────────────────────────────
+#
+# ~[N]: "sigil[scope] — human description"
+#
+# Sigils follow the project commit conventions (see commit-review workflow):
+#
+#   &[scope]      — integrate / merge / restructure
+#   ![scope]      — test / verify
+#   .[scope]       — documentation / .spw updates
+#   ^seed[scope]  — new seed or probe
+#   vocab[scope]  — type / naming refactor
+#   #[scope]      — new spec or config
+#
+# The ~ operator conveys temporal flow — a commit plan is a sequence.
+# Numeric keys [N] are stable across edits: reordering means renumbering.
+#
+# Amendments:
+#   # ~[N]: "DROPPED — reason"
+#   # ~[N]: "MERGED INTO ~[M] — reason"
+#   ~[N]: "wip[scope] — exploratory; may be squashed"
+
+# ──────────────────────────────────────────────
+# CACHE
+# ──────────────────────────────────────────────
+#
+# Derived key-value facts — fast context loading for agents entering mid-task.
+#
+# Standard keys:
+#   ~#status:      "planning | active | blocked | review | done"
+#   ~#base_ref:    "main@<sha> used for branch baseline"
+#   ~#rebased_at:  "timestamp of last successful rebase"
+#   ~#hygiene_split: "branch/ref used to isolate unrelated drift"
+#   ~#files_hot:   "comma-separated list of files currently being modified"
+#   ~#next_commit: "N — the next ~[N] to be committed"
+#   ~#open_count:  "number of unresolved ?[] entries"
+#   ~#last_stream: "timestamp of most recent >> entry"
+#   ~#taste_debt:  "craft concerns noticed but deferred"
+
+# ──────────────────────────────────────────────
+# DONE
+# ──────────────────────────────────────────────
+#
+# Written at merge time. Source for CHANGELOG craft entries.
+#
+#   ~#shipped:   [list of ~[N] that landed]
+#   ~#dropped:   [list of ~[N] that were cut, with reasons]
+#   ~#surprised: "narrative of what changed the approach"
+#   ~#duration:  "wall-clock time from first >> to merge"
+#   ~#taste:     "what craft quality improved — naming, layering, containment, etc."
+
+# ──────────────────────────────────────────────
+# PROJECTIONS
+# ──────────────────────────────────────────────
+#
+# The same wip.spw supports multiple read patterns:
+#
+#   $["agent prompt"]
+#     reads: ^["intent"] + ^["cache"] + ^["open"] + ^["commits"]
+#     skips: ^["stream"] (too verbose for context windows)
+#     purpose: agent enters mid-task, orients in ~20 lines
+#
+#   $["human review"]
+#     reads: ^["intent"] + ^["commits"] + ^["stream"] (filtered: decide + surprise + taste)
+#     skips: ^["cache"]
+#     purpose: reviewer sees decisions, surprises, and craft observations
+#
+#   $["timeline"]
+#     reads: ^["stream"] (all entries, chronological)
+#     purpose: replay the development narrative as literature
+#
+#   $["changelog"]
+#     reads: ^["intent"] + ^["done"]
+#     purpose: auto-generate a CHANGELOG craft entry at merge time
+
+# ──────────────────────────────────────────────
+# TEMPLATE
+# ──────────────────────────────────────────────
+#
+# Copy .agents/plans/_schema/wip-template.spw to .agents/plans/<slug>/wip.spw
