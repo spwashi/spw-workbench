@@ -6,6 +6,8 @@ This Writerside instance is focused on contributor onboarding and maintenance wo
 
 ## Navigation
 
+- [](orientation-for-artists.md)
+- [](exhibits.md)
 - [](quick-start-checklist.topic)
 - [](developer-workflow.md)
 - [](experiments-and-skills.md)
@@ -27,6 +29,15 @@ This Writerside instance is focused on contributor onboarding and maintenance wo
             <li><a href="philosophy-and-references.md"/></li>
         </list>
     </tab>
+    <tab title="Artist">
+        <list>
+            <li><a href="orientation-for-artists.md"/></li>
+            <li><a href="exhibits.md"/></li>
+            <li><a href="workbench-architecture.md"/></li>
+            <li><a href="philosophy-and-references.md"/></li>
+            <li><a href="documentation-map.md"/></li>
+        </list>
+    </tab>
     <tab title="Maintainer">
         <list>
             <li><a href="maintenance-surface.topic"/></li>
@@ -42,13 +53,12 @@ This Writerside instance is focused on contributor onboarding and maintenance wo
 ## Core command set
 
 ```bash
-nvm use
-npm run dev
-npm run test:run
-npm run lint:writerside
-npm run lint:docs
+npm install
 npm run lint:spw
 ```
+
+> Note: some workflow commands in other topics assume a fuller workbench toolchain.
+> The canon rewrite keeps the kernel healthy first.
 
 ## What this project emphasizes
 
@@ -65,6 +75,8 @@ npm run lint:spw
 
 <seealso>
     <category ref="spw-workbench">
+        <a href="orientation-for-artists.md"/>
+        <a href="exhibits.md"/>
         <a href="quick-start-checklist.topic"/>
         <a href="developer-workflow.md"/>
         <a href="writerside-integration.md"/>
