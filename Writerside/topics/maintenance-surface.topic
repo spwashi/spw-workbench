@@ -4,48 +4,35 @@
 <topic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/topic.v2.xsd"
        title="Maintenance Surface" id="maintenance-surface">
-    <p>A maintainer-oriented index of validation loops, audits, and common repair tasks.</p>
+    <p>A maintainer-oriented index of validation loops and common repair tasks for the canon repo.</p>
 
     <tabs>
-        <tab title="Fast loop">
-            <code-block lang="bash">npm run test:run
+        <tab title="Fast loop (canon)">
+            <code-block lang="bash">npm run lint:spw
 npm run lint:writerside
-npm run lint:docs
-npm run lint:spw</code-block>
+npm run lint:docs</code-block>
         </tab>
-        <tab title="Extended loop">
-            <code-block lang="bash">npm run lint:changed
-bash .agents/skills/spw-commit-review/scripts/layer-check.sh
-bash .agents/skills/spw-commit-review/scripts/spw-syntax-audit.sh</code-block>
-        </tab>
-        <tab title="Deep dive">
-            <code-block lang="bash">npm run audit:md
-npm run audit:ui-selectors
-npm run analyze:patterns</code-block>
+        <tab title="Strict refs (when applicable)">
+            <code-block lang="bash">npm run lint:docs:strict</code-block>
         </tab>
     </tabs>
 
     <procedure title="Common repair tasks" id="common-repair-tasks">
         <step>
-            <p>Docs &amp; Writerside:</p>
-            <code-block lang="bash">npm run lint:writerside
-npm run lint:docs</code-block>
-            <p>Fix missing topics/links, ensure instance ids and build-profiles align.</p>
+            <p>Writerside:</p>
+            <code-block lang="bash">npm run lint:writerside</code-block>
+            <p>Fix missing topics/links; ensure instance ids and build-profiles align.</p>
+        </step>
+        <step>
+            <p>Canon docs:</p>
+            <code-block lang="bash">npm run lint:docs</code-block>
+            <p>Use <code>lint:docs:strict</code> only when the referenced surfaces are present.</p>
         </step>
         <step>
             <p>Spw parser and syntax:</p>
             <code-block lang="bash">npm run lint:spw
 bash .agents/skills/spw-commit-review/scripts/spw-syntax-audit.sh</code-block>
             <p>Resolve parser diagnostics before editing unrelated files.</p>
-        </step>
-        <step>
-            <p>Layer boundaries:</p>
-            <code-block lang="bash">bash .agents/skills/spw-commit-review/scripts/layer-check.sh</code-block>
-            <p>Verify imports against <code>src/core/domains/index.ts</code> and adjust boundaries or call sites.</p>
-        </step>
-        <step>
-            <p>UI containment:</p>
-            <code-block lang="bash">bash .agents/skills/spw-ui-containment-audit/scripts/containment-scan.sh</code-block>
         </step>
     </procedure>
 

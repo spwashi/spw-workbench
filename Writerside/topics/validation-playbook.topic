@@ -4,37 +4,35 @@
 <topic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/topic.v2.xsd"
        title="Validation Playbook" id="validation-playbook">
-    <p>This playbook defines the standard verification sequence before staging and committing changes in the workbench.</p>
+    <p>This playbook defines the standard verification sequence before staging and committing changes in the canon repo.</p>
 
     <tabs>
-        <tab title="Fast loop">
-            <code-block lang="bash">npm run test:run
+        <tab title="Fast loop (canon)">
+            <code-block lang="bash">npm run lint:spw
 npm run lint:writerside
-npm run lint:docs
-npm run lint:spw</code-block>
+npm run lint:docs</code-block>
         </tab>
-        <tab title="Extended loop">
-            <code-block lang="bash">npm run lint:changed
-bash .agents/skills/spw-commit-review/scripts/layer-check.sh
-bash .agents/skills/spw-commit-review/scripts/spw-syntax-audit.sh</code-block>
+        <tab title="Strict refs (when applicable)">
+            <code-block lang="bash">npm run lint:docs:strict</code-block>
+        </tab>
+        <tab title="Syntax generations (optional)">
+            <code-block lang="bash">bash .agents/skills/spw-commit-review/scripts/spw-syntax-audit.sh</code-block>
         </tab>
     </tabs>
 
     <procedure title="Run a complete local validation pass" id="run-complete-local-validation-pass">
         <step>
-            <p>Run Writerside integrity, docs/path validation, and Spw parser validation:</p>
-            <code-block lang="bash">npm run lint:writerside
-npm run lint:docs
-npm run lint:spw</code-block>
+            <p>Run Spw parser validation and Writerside integrity:</p>
+            <code-block lang="bash">npm run lint:spw
+npm run lint:writerside</code-block>
         </step>
         <step>
-            <p>Run tests:</p>
-            <code-block lang="bash">npm run test:run</code-block>
+            <p>Run canon docs check:</p>
+            <code-block lang="bash">npm run lint:docs</code-block>
         </step>
         <step>
-            <p>Audit layer boundaries and syntax generations:</p>
-            <code-block lang="bash">bash .agents/skills/spw-commit-review/scripts/layer-check.sh
-bash .agents/skills/spw-commit-review/scripts/spw-syntax-audit.sh</code-block>
+            <p>Optional: run strict reference integrity if you are touching `.spw` references across broader workbench surfaces:</p>
+            <code-block lang="bash">npm run lint:docs:strict</code-block>
         </step>
         <step>
             <p>Review changed paths and ensure they match your stated intent:</p>
@@ -43,15 +41,14 @@ git diff --name-only</code-block>
         </step>
     </procedure>
 
-    <p>Use this sequence as the default gate for docs, parser, runtime, and UI changes.</p>
+    <p>Use this sequence as the default gate for docs, kernel, spec, and tooling changes.</p>
 
     <seealso>
         <category ref="spw-workbench">
             <a href="developer-workflow.md">Developer Workflow</a>
             <a href="writerside-integration.md">Writerside Integration</a>
             <a href="quick-start-checklist.topic">Quick Start Checklist</a>
-            <a href="maintenance-surface.topic">Maintenance Surface</a>
-            <a href="workbench-architecture.md">Workbench Architecture</a>
+            <a href="orientation-for-artists.md">Orientation</a>
         </category>
     </seealso>
 </topic>

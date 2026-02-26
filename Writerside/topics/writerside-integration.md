@@ -1,6 +1,6 @@
 # Writerside Integration
 
-This topic explains how Writerside content is integrated into repository validation and release hygiene.
+This topic explains how Writerside content is integrated into repository validation.
 
 ## Files and responsibilities
 
@@ -11,11 +11,12 @@ This topic explains how Writerside content is integrated into repository validat
 - `Writerside/c.list`: category registry used by related-links sections.
 - `Writerside/v.list`: shared variables including `%product%`.
 
-## Validation commands
+## Validation commands (canon repo)
 
 ```bash
 npm run lint:writerside
 npm run lint:docs
+npm run lint:docs:strict
 ```
 
 `lint:writerside` checks:
@@ -24,7 +25,14 @@ npm run lint:docs
 - build-profile instance alignment
 - local links between Writerside topics
 
-`lint:docs` runs both `.spw` reference integrity and Writerside integrity.
+`lint:docs` (canon-safe) checks:
+- Writerside integrity only
+
+`lint:docs:strict` checks:
+- `.spw` reference integrity (root refs + local refs)
+- Writerside integrity
+
+Note: `lint:docs:strict` assumes the repo contains the referenced workbench surfaces (for example, `src/` beyond the kernel). In early canon, it is expected to fail until those modules are imported.
 
 ## Build instances
 
@@ -39,8 +47,8 @@ npm run lint:docs
     <tab title="Public">
         <list>
             <li>Instance: <code>spw-workbench-public</code></li>
-            <li>Intended for broad orientation and architecture context</li>
-            <li>Excludes maintainer-only workflow depth</li>
+            <li>Intended for artist-first orientation and architecture context</li>
+            <li>Focused on exhibits, claims, instruments, and prompt packs</li>
         </list>
     </tab>
 </tabs>
@@ -53,10 +61,11 @@ npm run lint:docs
 
 <seealso>
     <category ref="spw-workbench">
-        <a href="developer-workflow.md"/>
-        <a href="validation-playbook.topic"/>
-        <a href="maintenance-surface.topic"/>
-        <a href="experiments-and-skills.md"/>
+        <a href="orientation-for-artists.md"/>
+        <a href="exhibits.md"/>
+        <a href="prompt-packs.md"/>
+        <a href="claims.md"/>
+        <a href="instruments.md"/>
         <a href="documentation-map.md"/>
     </category>
 </seealso>

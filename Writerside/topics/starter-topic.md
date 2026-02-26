@@ -74,8 +74,9 @@ npm run lint:spw
 
 ### Troubleshooting cues {collapsible="true"}
 
-- If `lint:docs` fails, check moved file references and root aliases first.
+- If `lint:docs` fails, run `npm run lint:writerside` and inspect Writerside topic links first.
 - If `lint:spw` fails, inspect parser diagnostics before editing unrelated files.
+- If `lint:docs:strict` fails, it usually means the canon repo does not yet contain the referenced workbench surfaces.
 - If commit hooks flag layer issues, verify imports against `src/core/domains/index.ts`.
 
 <seealso>
