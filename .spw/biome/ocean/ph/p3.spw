@@ -1,15 +1,32 @@
 # P3
 #
 # Phase 3 (@): observe scoped truth.
+# Push perspective, read from a named position, collect observations.
 
 #>spw_ocean_p3
+#:phase #!observation
 
 ^"phase"{
   token: "@(#.)"
+  =dialect: "experimental.ocean.phase"
   optional: {
     depth: "1..n"
     proj: "stable|experimental"
     lsp_hint: "def|link|sym"
     cache_read: "hot_first|warm_first"
+  }
+
+  %[physics]{
+    "liminality: 2 (field) — observer pushes perspective across scope boundary",
+    "frequency: high — observe is the most used phase in LSP interaction",
+    "coupling: moderate — observations pull from the coupling graph",
+    "cache: hot tier — hover and definition resolve through p3 observe",
+  }
+
+  %[lsp_role]{
+    "hover provider reads from the observe phase — cursor is the observer",
+    "definition provider resolves through observe → hot cache → warm fallback",
+    "workspace symbols aggregate observations across all files",
+    "cache: hot tier — observe results expire in 8 beats",
   }
 }

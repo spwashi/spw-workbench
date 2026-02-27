@@ -1,14 +1,30 @@
 # P4
 #
 # Phase 4 (&): merge categorized truths.
+# Combine observations from multiple scopes into one cohesive frame.
 
 #>spw_ocean_p4
+#:phase #!merge
 
 ^"phase"{
   token: "&[#.]"
+  =dialect: "experimental.ocean.phase"
   optional: {
     merge: "strict|soft|clustered"
     couple_min: "0..1"
-    cluster_ref: ".spw/biome/ocean/algos/cluster.spw"
+    cluster_ref: ~"../algos/cluster.spw"
+  }
+
+  %[physics]{
+    "liminality: 3 (cluster) — merge reaches across module boundaries",
+    "frequency: low — merges happen at section/file granularity",
+    "coupling: high — merge entangles frames that share annotations",
+    "cache: warm tier — merged clusters are stable between saves",
+  }
+
+  %[lsp_role]{
+    "annotation index clusters are p4 products — concept groups across files",
+    "CodeLens annotation counts reflect merge density per frame",
+    "cache: warm tier — cluster membership changes on save, not on keystroke",
   }
 }

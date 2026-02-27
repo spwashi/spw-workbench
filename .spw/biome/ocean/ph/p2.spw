@@ -1,14 +1,30 @@
 # P2
 #
 # Phase 2 (<#.>): name coupling.
+# Assigns names to probed candidates, binding potential into structure.
 
 #>spw_ocean_p2
+#:phase #!naming
 
 ^"phase"{
   token: "<#.>"
+  =dialect: "experimental.ocean.phase"
   optional: {
     name_mode: "strict|fuzzy"
     coupling_floor: "0..1"
     ref_shape: "local|cross"
+  }
+
+  %[physics]{
+    "liminality: 1 (neighbor) — names bind to the immediate vicinity",
+    "frequency: medium — naming happens once per probe candidate",
+    "coupling: rising — coupling floor determines how strongly names bind",
+    "cache: warm tier — name bindings are stable once established",
+  }
+
+  %[lsp_role]{
+    "documentLink relies on named refs — p2 is the naming layer",
+    "completion provider suggests names from the coupling graph",
+    "cache: warm tier — name resolution rarely changes mid-session",
   }
 }
