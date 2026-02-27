@@ -1,0 +1,543 @@
+{
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "name": "Spw",
+    "scopeName": "source.spw",
+    "patterns": [
+        {
+            "include": "#comments"
+        },
+        {
+            "include": "#strings"
+        },
+        {
+            "include": "#literals"
+        },
+        {
+            "include": "#valences"
+        },
+        {
+            "include": "#seeds"
+        },
+        {
+            "include": "#projections"
+        },
+        {
+            "include": "#vocab"
+        },
+        {
+            "include": "#registers"
+        },
+        {
+            "include": "#annotations"
+        },
+        {
+            "include": "#wip-constructs"
+        },
+        {
+            "include": "#sigils"
+        },
+        {
+            "include": "#operators"
+        },
+        {
+            "include": "#containers"
+        },
+        {
+            "include": "#punctuation"
+        }
+    ],
+    "repository": {
+        "comments": {
+            "patterns": [
+                {
+                    "name": "comment.line.double-slash.spw",
+                    "match": "//.*$"
+                },
+                {
+                    "comment": "Decorative separator: # ──────",
+                    "name": "comment.line.separator.spw",
+                    "match": "^\\s*#\\s*[─━═─]{4,}.*$"
+                },
+                {
+                    "name": "comment.line.phase-banner.spw",
+                    "match": "^\\s*#\\s*---.*---\\s*$"
+                },
+                {
+                    "comment": "File metadata: # Branch: / # Started:",
+                    "name": "comment.line.metadata.spw",
+                    "match": "^#\\s+(Branch|Started|Status|Author):.*$"
+                },
+                {
+                    "comment": "File header: # wip — slug",
+                    "name": "markup.heading.file-header.spw",
+                    "match": "^#\\s+wip\\s+—.*$"
+                },
+                {
+                    "comment": "Section comment header: # MEMORY MODEL, # TEMPLATE, etc.",
+                    "name": "comment.line.section-heading.spw",
+                    "match": "^\\s*#\\s+[A-Z][A-Z ]+$"
+                },
+                {
+                    "name": "comment.line.hash.spw",
+                    "match": "^\\s*#.*$"
+                },
+                {
+                    "name": "comment.block.spw",
+                    "begin": "/\\*",
+                    "end": "\\*/"
+                }
+            ]
+        },
+        "strings": {
+            "patterns": [
+                {
+                    "name": "string.quoted.double.spw",
+                    "begin": "\"",
+                    "end": "\"",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.begin.spw"
+                        }
+                    },
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.end.spw"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "name": "constant.character.escape.spw",
+                            "match": "\\\\."
+                        },
+                        {
+                            "name": "meta.string.seed.spw",
+                            "match": "\\^seed\\[[\\w]+\\]"
+                        },
+                        {
+                            "name": "meta.string.sigil-frame.spw",
+                            "match": "(?:&|vocab|![a-z])\\[[\\w]+\\]"
+                        },
+                        {
+                            "name": "punctuation.separator.em-dash.spw",
+                            "match": "\u2014"
+                        },
+                        {
+                            "name": "meta.string.lab-number.spw",
+                            "match": "Lab \\d+\\.\\d+"
+                        },
+                        {
+                            "name": "meta.string.scaffold.spw",
+                            "match": "\\bscaffold\\b"
+                        }
+                    ]
+                },
+                {
+                    "comment": "Tilde-string: ~\"./path\"",
+                    "name": "string.quoted.tilde-ref.spw",
+                    "begin": "(~)(\")",
+                    "beginCaptures": {
+                        "1": {
+                            "name": "keyword.operator.sigil.potential.tilde-ref.spw"
+                        },
+                        "2": {
+                            "name": "punctuation.definition.string.begin.tilde-ref.spw"
+                        }
+                    },
+                    "end": "(\")",
+                    "endCaptures": {
+                        "1": {
+                            "name": "punctuation.definition.string.end.tilde-ref.spw"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "name": "string.unquoted.path.tilde-ref.spw",
+                            "match": "[^\"]*"
+                        }
+                    ]
+                },
+                {
+                    "name": "string.quoted.single.spw",
+                    "begin": "'",
+                    "end": "'",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.begin.spw"
+                        }
+                    },
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.end.spw"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "name": "constant.character.escape.spw",
+                            "match": "\\\\."
+                        }
+                    ]
+                },
+                {
+                    "name": "string.quoted.backtick.spw",
+                    "begin": "`",
+                    "end": "`",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.begin.spw"
+                        }
+                    },
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.end.spw"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "name": "constant.character.escape.spw",
+                            "match": "\\\\."
+                        }
+                    ]
+                }
+            ]
+        },
+        "literals": {
+            "patterns": [
+                {
+                    "name": "constant.numeric.spw",
+                    "match": "-?\\d+(\\.\\d+)?"
+                },
+                {
+                    "name": "constant.language.boolean.spw",
+                    "match": "\\b(true|false|null)\\b"
+                },
+                {
+                    "name": "variable.other.hole.spw",
+                    "match": "\\b_\\b"
+                }
+            ]
+        },
+        "valences": {
+            "patterns": [
+                {
+                    "name": "keyword.valence.boon.spw",
+                    "match": "!boon\\b"
+                },
+                {
+                    "name": "keyword.valence.bane.spw",
+                    "match": "!bane\\b"
+                },
+                {
+                    "name": "keyword.valence.bone.spw",
+                    "match": "!bone\\b"
+                },
+                {
+                    "name": "keyword.valence.bonk.spw",
+                    "match": "!bonk\\b"
+                },
+                {
+                    "name": "keyword.valence.honk.spw",
+                    "match": "!honk\\b"
+                }
+            ]
+        },
+        "seeds": {
+            "patterns": [
+                {
+                    "name": "keyword.control.seed.spw",
+                    "match": "\\^seed\\b"
+                }
+            ]
+        },
+        "projections": {
+            "patterns": [
+                {
+                    "comment": "$[\"label\"] — introspection/projection operator",
+                    "name": "keyword.operator.projection.spw",
+                    "match": "\\$\\[\"[^\"]*\"\\]"
+                },
+                {
+                    "comment": "$ sigil — introspection",
+                    "name": "keyword.operator.sigil.introspection.spw",
+                    "match": "\\$(?=[a-zA-Z_\\[])"
+                }
+            ]
+        },
+        "vocab": {
+            "patterns": [
+                {
+                    "name": "keyword.control.vocab.spw",
+                    "match": "vocab\\[[^\\]]*\\]"
+                }
+            ]
+        },
+        "registers": {
+            "patterns": [
+                {
+                    "name": "variable.other.register.spw",
+                    "match": "\\bv:\\d+"
+                },
+                {
+                    "name": "variable.other.register.spw",
+                    "match": "@profile:\\S+"
+                },
+                {
+                    "name": "variable.other.register.spw",
+                    "match": "@region:\\S+"
+                },
+                {
+                    "name": "variable.other.register.spw",
+                    "match": "@reg:\\S+"
+                },
+                {
+                    "name": "variable.other.register.spw",
+                    "match": "@ghost:\\S*"
+                }
+            ]
+        },
+        "annotations": {
+            "patterns": [
+                {
+                    "name": "entity.name.tag.annotation.focus.spw",
+                    "match": "~#focus"
+                },
+                {
+                    "name": "entity.name.tag.annotation.taste.spw",
+                    "match": "~#taste"
+                },
+                {
+                    "name": "entity.name.tag.annotation.goal.spw",
+                    "match": "~#goal"
+                },
+                {
+                    "name": "entity.name.tag.annotation.status.spw",
+                    "match": "~#status"
+                },
+                {
+                    "name": "entity.name.tag.annotation.spw",
+                    "match": "~#[a-zA-Z_][a-zA-Z0-9_-]*"
+                }
+            ]
+        },
+        "wip-constructs": {
+            "patterns": [
+                {
+                    "comment": "File header: # wip — slug",
+                    "name": "markup.heading.file-header.spw",
+                    "match": "^#\\s+wip\\s+—.*$"
+                },
+                {
+                    "comment": "File metadata: # Branch: / # Started:",
+                    "name": "comment.line.metadata.spw",
+                    "match": "^#\\s+(Branch|Started|Status|Author):.*$"
+                },
+                {
+                    "comment": "Section headers: ^[\"commits\"]",
+                    "name": "markup.heading.section.spw",
+                    "match": "\\^\\[\"\\w+\"\\]"
+                },
+                {
+                    "comment": "Stream entries: >>[timestamp] action —",
+                    "name": "meta.stream.entry.spw",
+                    "begin": "(>>)(\\[)([^\\]]+)(\\])\\s+(\\w+)\\s*(—)",
+                    "beginCaptures": {
+                        "1": {
+                            "name": "keyword.operator.stream-out.spw"
+                        },
+                        "2": {
+                            "name": "punctuation.definition.bracket.spw"
+                        },
+                        "3": {
+                            "name": "meta.stream.timestamp.spw"
+                        },
+                        "4": {
+                            "name": "punctuation.definition.bracket.spw"
+                        },
+                        "5": {
+                            "name": "keyword.other.stream-action.spw"
+                        },
+                        "6": {
+                            "name": "punctuation.separator.em-dash.spw"
+                        }
+                    },
+                    "end": "$",
+                    "patterns": [
+                        {
+                            "include": "#strings"
+                        },
+                        {
+                            "include": "#annotations"
+                        },
+                        {
+                            "include": "#sigils"
+                        }
+                    ]
+                },
+                {
+                    "name": "variable.other.open-question.spw",
+                    "match": "\\?\\[[^\\]]*\\]"
+                },
+                {
+                    "comment": "Commit range: ~[1..10] — must precede commit-entry",
+                    "name": "variable.other.commit-range.spw",
+                    "match": "~\\[\\d+\\.\\.\\d+\\]"
+                },
+                {
+                    "comment": "Commit entry: ~[1]",
+                    "name": "variable.other.commit-entry.spw",
+                    "match": "~\\[\\d+\\]"
+                }
+            ]
+        },
+        "sigils": {
+            "patterns": [
+                {
+                    "comment": "Path access: word/word/word (file-like paths with dots, dashes, parent-traversal)",
+                    "name": "entity.name.type.path.spw",
+                    "match": "(?:\\.\\.|[A-Za-z_@])[A-Za-z0-9_.\\-]*(?:/(?:\\.\\.|[A-Za-z_@*])[A-Za-z0-9_.\\-*]*)+"
+                },
+                {
+                    "name": "keyword.operator.sigil.action.spw",
+                    "match": "!(?=[^bh\\[])|!(?=\\[)"
+                },
+                {
+                    "comment": "Sigil-path: @docs/index.spw, @here/keyboard/index.ts",
+                    "name": "entity.name.type.sigil-path.spw",
+                    "match": "@[a-zA-Z_][a-zA-Z0-9_]*(?:/(?:\\.\\.|[A-Za-z_*])[A-Za-z0-9_.\\-*]*)+"
+                },
+                {
+                    "name": "keyword.operator.sigil.perspective.spw",
+                    "match": "@[a-zA-Z_][a-zA-Z0-9_.]*"
+                },
+                {
+                    "name": "keyword.operator.sigil.integration.spw",
+                    "match": "\\^[a-zA-Z_][a-zA-Z0-9_]*|\\^(?=[\\[{\"'])"
+                },
+                {
+                    "name": "keyword.operator.sigil.wonder.spw",
+                    "match": "\\?match\\b|\\?[a-zA-Z_][a-zA-Z0-9_.]*|\\?(?=[^a-zA-Z_])"
+                },
+                {
+                    "name": "keyword.operator.sigil.potential.spw",
+                    "match": "~[a-zA-Z_][a-zA-Z0-9_]*|~(?=[^#a-zA-Z_])|~$"
+                },
+                {
+                    "name": "keyword.operator.sigil.value.spw",
+                    "match": "\\*"
+                },
+                {
+                    "name": "keyword.operator.sigil.schema.spw",
+                    "match": "#[a-zA-Z_][a-zA-Z0-9_]*|#(?=[^a-zA-Z_])"
+                },
+                {
+                    "name": "keyword.operator.sigil.subject.spw",
+                    "match": "&[a-zA-Z_][a-zA-Z0-9_]*|&(?=[^a-zA-Z_])"
+                }
+            ]
+        },
+        "operators": {
+            "patterns": [
+                {
+                    "name": "keyword.operator.arrow.spw",
+                    "match": "=>|->"
+                },
+                {
+                    "name": "keyword.operator.comparison.spw",
+                    "match": "[=!<>]="
+                },
+                {
+                    "name": "keyword.operator.sigil.set.spw",
+                    "match": "="
+                },
+                {
+                    "name": "keyword.operator.spread.spw",
+                    "match": "\\.\\.\\."
+                },
+                {
+                    "name": "keyword.operator.range.spw",
+                    "match": "\\d+\\.\\.\\d+"
+                },
+                {
+                    "name": "keyword.operator.connector.spw",
+                    "match": "\\.\\."
+                },
+                {
+                    "name": "keyword.operator.stream-in.spw",
+                    "match": "<<"
+                },
+                {
+                    "name": "keyword.operator.stream-out.spw",
+                    "match": ">>"
+                },
+                {
+                    "comment": "List prefix: ..",
+                    "name": "keyword.operator.list-prefix.spw",
+                    "match": "\\.\\.(?=\\s)"
+                },
+                {
+                    "name": "keyword.operator.n-range.spw",
+                    "match": "\\(\\(|\\)\\)"
+                },
+                {
+                    "name": "punctuation.separator.em-dash.spw",
+                    "match": "\u2014"
+                }
+            ]
+        },
+        "containers": {
+            "patterns": [
+                {
+                    "name": "punctuation.definition.brace.spw",
+                    "match": "[{}]"
+                },
+                {
+                    "name": "punctuation.definition.bracket.spw",
+                    "match": "[\\[\\]]"
+                },
+                {
+                    "name": "punctuation.definition.paren.spw",
+                    "match": "[()]"
+                },
+                {
+                    "name": "punctuation.definition.angle.open.spw",
+                    "match": "<(?![<=])"
+                },
+                {
+                    "name": "punctuation.definition.angle.close.spw",
+                    "match": "(?<![>=!])>"
+                }
+            ]
+        },
+        "punctuation": {
+            "patterns": [
+                {
+                    "name": "keyword.operator.chunk-binder.spw",
+                    "match": "::"
+                },
+                {
+                    "name": "punctuation.separator.colon.spw",
+                    "match": ":"
+                },
+                {
+                    "name": "punctuation.separator.comma.spw",
+                    "match": ","
+                },
+                {
+                    "name": "punctuation.separator.semicolon.spw",
+                    "match": ";"
+                },
+                {
+                    "name": "punctuation.separator.pipe.spw",
+                    "match": "\\|"
+                },
+                {
+                    "name": "punctuation.separator.dot.spw",
+                    "match": "\\."
+                },
+                {
+                    "name": "punctuation.definition.fence.spw",
+                    "match": "^---$"
+                }
+            ]
+        }
+    }
+}

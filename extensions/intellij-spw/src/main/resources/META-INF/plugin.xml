@@ -1,0 +1,41 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>com.spwashi.spw</id>
+    <name>Spw Language Support</name>
+    <vendor email="support@spwashi.com" url="https://github.com/spwashi">spwashi</vendor>
+
+    <description><![CDATA[
+    Spw (Symbolic Processing Workbench) language support with richer semantic highlighting and optional LSP.
+    <br>
+    Highlights:
+    <ul>
+      <li>Semantic TextMate scopes for clearer navigation and color semantics</li>
+      <li>File type support for <code>.spw</code></li>
+      <li>Optional LSP integration with per-project configuration</li>
+    </ul>
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.plugins.textmate</depends>
+    <depends>com.intellij.modules.lsp</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType name="Spw"
+                  implementationClass="com.spwashi.spw.SpwFileType"
+                  fieldName="INSTANCE"
+                  language="Spw"
+                  extensions="spw"/>
+        
+        <platform.lsp.serverSupportProvider implementation="com.spwashi.spw.SpwLspServerSupportProvider"/>
+        <notificationGroup id="Spw LSP" displayType="BALLOON"/>
+        <projectConfigurable
+            id="spw.lsp"
+            groupId="tools"
+            displayName="Spw LSP"
+            instance="com.spwashi.spw.settings.SpwLspConfigurable"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="com.intellij.textmate">
+        <bundleProvider implementation="com.spwashi.spw.SpwTextMateBundleProvider"/>
+    </extensions>
+</idea-plugin>
