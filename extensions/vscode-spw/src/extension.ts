@@ -619,5 +619,55 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    context.subscriptions.push(linkProvider, completionProvider, hoverProvider, symbolProvider, semanticTokensProvider, workspaceSymbolProvider);
+    // =========================================================================
+    // CodeLensProvider (annotation metrics above frames and anchors)
+    // =========================================================================
+    const codeLensProvider = vscode.languages.registerCodeLensProvider(documentSelector, {
+        provideCodeLenses(document: vscode.TextDocument): vscode.CodeLens[] {
+            const lenses: vscode.CodeLens[] = [];
+            const fileAnnotations = annotationIndex.forFile(document.uri);
+
+            for (let i = 0; i < document.lineCount; i++) {
+                const line = document.lineAt(i).text;
+
+                // ^["frame"] or ^"frame" → show annotation count in this section
+                const frameMatch = line.match(/^\s*\^(?:\["([^"]+)"\]|"([^"]+)")/);
+                if (frameMatch) {
+                    const frameName = frameMatch[1] || frameMatch[2];
+                    const inFrame = fileAnnotations.filter(a => a.sectionLabel === frameName);
+                    if (inFrame.length > 0) {
+                        const kinds = new Map<string, number>();
+                        for (const a of inFrame) kinds.set(a.kind, (kinds.get(a.kind) || 0) + 1);
+                        const parts: string[] = [];
+                        for (const [k, v] of kinds) parts.push(`${v} ${k}`);
+                        const range = new vscode.Range(i, 0, i, line.length);
+                        lenses.push(new vscode.CodeLens(range, {
+                            title: `$(symbol-misc) ${parts.join(', ')}`,
+                            command: '',
+                        }));
+                    }
+                }
+
+                // #>anchor → show cross-file reference count
+                const anchorMatch = line.match(/#>([a-zA-Z_][a-zA-Z0-9_]*)/);
+                if (anchorMatch) {
+                    const name = anchorMatch[1];
+                    const refs = annotationIndex.lookup(name);
+                    const otherFiles = refs.filter(r => r.file.toString() !== document.uri.toString());
+                    const fileCount = new Set(otherFiles.map(r => r.file.toString())).size;
+                    if (fileCount > 0) {
+                        const range = new vscode.Range(i, 0, i, line.length);
+                        lenses.push(new vscode.CodeLens(range, {
+                            title: `$(references) ${fileCount} file ref(s)`,
+                            command: 'workbench.action.showAllSymbols',
+                            arguments: [name],
+                        }));
+                    }
+                }
+            }
+            return lenses;
+        }
+    });
+
+    context.subscriptions.push(linkProvider, completionProvider, hoverProvider, symbolProvider, semanticTokensProvider, workspaceSymbolProvider, codeLensProvider);
 }
