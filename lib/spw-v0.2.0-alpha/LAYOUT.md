@@ -18,11 +18,17 @@ lib/spw-v0.2.0-alpha/
     layout.spw
     theory-bridge.spw
   core/
+    index.spw
   runtime/
+    index.spw
   dialects/
+    index.spw
   domains/
+    index.spw
   applications/
+    index.spw
   infra/
+    index.spw
 ```
 
 ## Surface Pairing
@@ -32,6 +38,12 @@ lib/spw-v0.2.0-alpha/
 | Library overview | `README.md` | `architecture/index.spw` |
 | Structural map | `ARCHITECTURE.md`, `LAYOUT.md` | `architecture/layout.spw` |
 | Theory coupling | `ARCHITECTURE.md` | `architecture/theory-bridge.spw` |
+| Core kernel | `core/*.md` | `core/index.spw` |
+| Runtime execution | `runtime/*.md` | `runtime/index.spw` |
+| Dialect map | `dialects/*.md` | `dialects/index.spw` |
+| Domain lenses | `domains/*.md` | `domains/index.spw` |
+| Applications | `applications/*.md` | `applications/index.spw` |
+| Infrastructure | `infra/*.md` | `infra/index.spw` |
 | Delta tracking | `DELTAS.md`, `CHANGELOG.md` | (future support surface) |
 
 ## Naming Rules

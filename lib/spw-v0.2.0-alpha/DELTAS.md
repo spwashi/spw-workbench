@@ -36,9 +36,21 @@ Architecture support status (2026-02-26):
   - valence
   - composition
 
-Remaining status:
-- Non-core folders still include redirect stubs and should migrate incrementally.
-- Redirect stubs remain acceptable outside `core/` and `runtime/` during alpha.
+Dialect status (2026-02-27):
+- `dialects/*.md` redirect stubs replaced with v0.2.0 contract stubs.
+- Dialect docs now follow the shared scaffold (Status/Contract/Invariants/Hooks/Questions).
+- Added `dialects/index.spw` as navigable architecture support surface.
+- `Spw.q` (query) now has implementation backing in `src/seed/query/`.
+- Phase composition model documented with shorthands and defaults.
+- Geometry dialects document `Spw.l ↔ Spw.b` conversion rules and `canonicalize()` hook.
+
+Domains/Applications/Infra status (2026-02-27):
+- `domains/*.md` redirect stubs replaced with v0.2.0 contract stubs (TASTE, PROFILES, POSTURE).
+- `applications/*.md` redirect stubs replaced with v0.2.0 contract stubs (HARDWARE, THEATRE, BROADCAST, QUERY).
+- `infra/CONFORMANCE.md` upgraded with 6 conformance levels mapped to implementation locations.
+- QUERY.md now links to the shipped `spwq` toolchain.
+
+All strata are now authored v0.2.0 contract stubs. No redirect stubs remain.
 
 ## Proposed v0.2.0 focus areas
 

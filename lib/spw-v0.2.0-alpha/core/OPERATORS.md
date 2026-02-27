@@ -17,6 +17,15 @@ Operators encode transformation intent and must preserve parseability and tracea
 - Operator evaluation order is explicit or derivable from grouping.
 - Unknown operators fail with actionable diagnostics.
 
+## Accessor Polarity (Emerging v0.2 Model)
+
+- `#` is the **extrinsic** property accessor (environmental/contextual surface).
+- `.` is the **intrinsic** property accessor (internal/structural surface).
+
+Directional suffix proposals:
+- `expr#` biases toward **projection** (emit/select outward-facing view).
+- `expr.` biases toward **reduction** (collapse/select inward-facing structure).
+
 ## Implementation Hooks
 
 - Token types and operator values: `src/seed/types/token.ts`
@@ -27,3 +36,5 @@ Operators encode transformation intent and must preserve parseability and tracea
 
 - Should v0.2.0 lock operator precedence classes or keep profile-driven precedence?
 - Which legacy forms remain accepted under compatibility mode?
+- Should suffix `#` and suffix `.` be first-class syntax or desugar to explicit projection/reduction forms?
+- What is the cleanest L/R symmetric selector grammar so projections/reductions feel equivalent across brace directions?

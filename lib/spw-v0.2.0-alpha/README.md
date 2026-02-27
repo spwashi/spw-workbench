@@ -10,8 +10,8 @@ Design intent:
 Current release-prep status:
 - `core/` is now authored as v0.2.0 contract stubs (no redirect placeholders).
 - `runtime/` is now authored as v0.2.0 contract stubs (no redirect placeholders).
-- `architecture/` now provides `.spw` support surfaces for layout and theory bridging.
-- `domains/`, `dialects/`, `applications/`, and `infra/` are still mixed redirect/authoring surfaces.
+- `dialects/` is now authored as v0.2.0 contract stubs with `index.spw` architecture support.
+- `domains/`, `applications/`, and `infra/` are now authored as v0.2.0 contract stubs.
 - `DELTAS.md` is the canonical tracker for what has shipped and what is pending.
 
 See also:

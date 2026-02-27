@@ -23,10 +23,10 @@ This document defines the layout and semantics bridge for the library so archite
 |---|---|---|---|
 | `core/` | language kernel contracts | markdown stubs | authored v0.2 stubs |
 | `runtime/` | execution + state contracts | markdown stubs | authored v0.2 stubs |
-| `dialects/` | syntax family guidance | markdown stubs | mixed redirects |
-| `domains/` | posture/profile/taste | markdown stubs | mixed redirects |
-| `applications/` | applied expression surfaces | markdown stubs | mixed redirects |
-| `infra/` | conformance + infra posture | markdown stubs | mixed redirects |
+| `dialects/` | syntax family guidance | markdown stubs + `.spw` | authored v0.2 stubs |
+| `domains/` | posture/profile/taste | markdown stubs | authored v0.2 stubs |
+| `applications/` | applied expression surfaces | markdown stubs | authored v0.2 stubs |
+| `infra/` | conformance + infra posture | markdown stubs | authored v0.2 stubs |
 | `architecture/` | structural + theory bridge | `.spw` supports | introduced in this pass |
 
 ## Brace-First Thesis
@@ -40,6 +40,8 @@ Spw treats braces as primordial semantic constructs rather than mere punctuation
 Unified Augmentation Language (UAL) framing:
 - these four brace constructs are useful as universal augmentation primitives across C-ish language families
 - Spw asks: what if braces had opposite spin, and what if every operator were real and semantically actionable
+- emerging operator polarity note: `#` trends extrinsic/projection, `.` trends intrinsic/reduction (especially in suffix position)
+- ergonomic symmetry target: selection should feel natural from either left- or right-brace anchors across containers
 
 ## Plane-Axis Selection Model
 
@@ -54,6 +56,11 @@ Spw references can select concepts across these axes:
 - composition
 
 The architecture claim is that path references alone are insufficient in liminal scopes; axis-aware selection is required for stable concept targeting.
+
+Flow implication notes (active design):
+- binding and indexing should preserve/access explicit projection-vs-reduction intent
+- brace orientation can be modeled as charge to reason about L/R selector ergonomics
+- high-context parse profiles may allow selector sugar; low-context profiles should remain explicit and deterministic
 
 ## Architecture Supports
 
