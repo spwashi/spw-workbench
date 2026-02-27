@@ -2,12 +2,16 @@
 #
 # Codebase layers and their relationships.
 
+#>architecture
+
 ^["roots"]{
   @src:  ~"../src"
   @spec: ~"../lib/spw-v0.1.0-alpha"
 }
 
 ^["layers"]{
+  #:architecture #!layering
+
   # Specification (what Spw should be)
   @spec/                       # Markdown docs, grammar rules
 
@@ -20,13 +24,14 @@
 
 ^["stack"]{
   # Top-down workbench layers (outer → inner)
+  #:stack #!depth
   @src/platform/               # Browser entrypoint + wiring
   @src/app/                    # Workbench glue + adapters
   @src/features/               # User behaviors
   @src/ui/                     # Portable UI
   @src/design/                 # Themes, tokens, personality, cognitive bridge
   @src/viz/                    # Visualizations
-  @src/runtime/                # Execution engine
+  @src/runtime/                # Execution engine  #>runtime
   @src/lang/                   # Language surface
   @src/infra/                  # Timing, state, lifecycle, a11y
   @src/core/                   # Domains, conventions, layers, operators
@@ -92,9 +97,17 @@
   #
   # The spirit sequence ?~<#.>@(#.)&[#.]*{#.}^ is the canonical
   # navigation loop: probe → name → observe → merge → value → integrate.
+  #!navigation
 
   ~<spirit>"./spirit-sequence.spw"
   ~<library>"./library/library.spw"
+
+  %[nav_affordances]{
+    "#>anchor tags create jump targets across .spw files",
+    "#:lens tags categorize content for filtered views",
+    "#!intent tags mark what a section does, not just what it is",
+    "%[measure] blocks quantify relevance for prioritization",
+  }
 }
 
 ^["literary_layers"]{
@@ -125,4 +138,11 @@
 
   ~<calculus>"./library/wonder-calculus.spw"
   ~<probes>"./library/wonder-probes.spw"
+
+  %[wonder_meets_physics]{
+    "$[cell].liminality  → how far this cell's influence carries",
+    "$[cell].frequency   → how actively this cell is being written",
+    "$[cell].coupling    → how entangled with neighboring cells",
+    "%[cell]             → observation depth (measureDepth increments)",
+  }
 }

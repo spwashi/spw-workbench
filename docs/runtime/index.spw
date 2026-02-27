@@ -2,12 +2,14 @@
 #
 # Execution engine, performance optimization, protocols, and state management.
 
+#>runtime
+
 ^["roots"]{
   @here: ~"."
 }
 
 ^["engine"]{
-  !["Execution Models"]
+  !["Execution Models"]  #:core
   .. ~<foundation>"./spw/runtime-foundation.spw"      # Parse-to-runtime bridge + stub contracts
   .. ~<foundation>"./md/runtime-foundation.md"        # Release-day implementation notes
   .. ~<runtime>"./spw/agent-loop.spw"                 # Reversible agent loop
@@ -16,9 +18,66 @@
   .. ~<registers>"./spw/register-bank.spw"            # Operator-typed register bank
 }
 
+^["acoustic_fields"]{
+  # RegisterMeta now tracks four composable physics fields.
+  # These give the runtime a memory model beyond simple read/write.
+  #:physics #!observation
+
+  =liminality: "scope-awareness (0=local, 1=threshold, 2=transitional, 3=global)"
+  =frequency:  "writes/sec — measured from circular timestamp buffer (last 10)"
+  =coupling:   "inter-cell edges / (total - 1) — bidirectional entanglement"
+  =measureDepth: "observation count — each measure() call increments"
+
+  %[implications]{
+    "high-frequency cells are 'hot' — candidates for caching or deduplication",
+    "high-coupling cells are 'entangled' — changes cascade to neighbors",
+    "deep measureDepth means heavy observation — possible performance concern",
+    "liminality 3 (global) cells cross scope boundaries — require careful GC",
+  }
+}
+
+^["phase_enrichment"]{
+  # Register cells progress through phases: lex → parse → sem → eval → runtime.
+  # Each phase adds a facet without losing earlier information.
+  #:enrichment #!progressive
+
+  =phases: ["lex", "parse", "sem", "eval", "runtime"]
+  =memoryWeight: "phase_index / total_phases — higher phases have greater weight"
+
+  ?["When does enrichment matter?"]{
+    "incremental parsing: enrich from lex to parse without re-lexing",
+    "hot reload: only re-enrich from the changed phase forward",
+    "LSP coloring: semantic tokens use phase to choose token modifiers",
+  }
+}
+
 ^["performance"]{
-  !["Optimization & Web APIs"]
+  !["Optimization & Web APIs"]  #:perf
   .. ~<perf>"./md/optimization-plan.md"              # Performance optimization plan
   .. ~<lsp>"./spw/lsp-dap-workers.spw"                # Worker protocol prep for LSP/DAP
   .. ~<web>"./spw/web-apis.spw"                       # Browser API opportunities
+}
+
+^["lsp_semantics"]{
+  # The semantic token provider maps Spw physics to editor colors.
+  #:lsp #!visual
+
+  =tokenTypes: ["operator", "type", "variable", "property", "function", "string", "keyword", "comment"]
+  =tokenModifiers: ["declaration", "definition", "readonly", "deprecated", "modification", "async"]
+
+  sigil_map: {
+    '^': { type: "keyword",   modifier: "declaration",   read: "framing / root"     }
+    '!': { type: "function",  modifier: "modification",  read: "hydrate / inject"   }
+    '?': { type: "function",  modifier: "async",         read: "probe / query"      }
+    '~': { type: "variable",  modifier: "deprecated",    read: "defer / lazy"       }
+    '=': { type: "property",  modifier: "readonly",      read: "config / constraint"}
+    '%': { type: "operator",  modifier: "none",          read: "measure / observe"  }
+    '#': { type: "type",      modifier: "none",          read: "annotation / topic" }
+  }
+
+  %[cross_plugin]{
+    "VSCode: DocumentSemanticTokensProvider (character scanner)",
+    "IntelliJ: TextMate grammar (shared spw.tmLanguage.json)",
+    "Neovim: Vim syntax groups (spwSig* → Spw* highlights)",
+  }
 }

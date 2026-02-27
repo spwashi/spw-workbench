@@ -3,6 +3,8 @@
 # ?~<#.>@(#.)&[#.]*{#.}^ — a six-phase interpreter cycle.
 # The programmable spirit of scripting automata.
 
+#>spirit_sequence
+
 ^"source_files"{
   ~<operators>"../../src/runtime/interpreter/operators.ts"
   ~<register>"../../src/runtime/state/register-bank.ts"
@@ -10,32 +12,36 @@
 }
 
 ^"sequence"{
-  raw: "?~<#.>@(#.)&[#.]*{#.}^"
+  =raw: "?~<#.>@(#.)&[#.]*{#.}^"
 
   # Parse into six phases:
+  #:lex
   phase_1: { tokens: "?~",      read: "probe into superposition"           }
   phase_2: { tokens: "<#.>",    read: "name the coupling (concept)"        }
+  #:sem
   phase_3: { tokens: "@(#.)",   read: "observe the ground truth (capsule)" }
   phase_4: { tokens: "&[#.]",   read: "merge categorized truths (frame)"   }
+  #:eval
   phase_5: { tokens: "*{#.}",   read: "materialize properties (scope)"     }
   phase_6: { tokens: "^",       read: "integrate upward"                   }
 }
 
 ^"invariant"{
   # The kernel #. (resonance.ground) threads through every container type.
-  # Same grounded truth, four different projections:
+  #!invariant
 
   '<#.>' { container: "<>", projection: "named — the coupling identifies it"     }
   '(#.)' { container: "()", projection: "scoped — observed from a perspective"   }
   '[#.]' { container: "[]", projection: "categorized — parts are enumerated"     }
   '{#.}' { container: "{}", projection: "propertied — structure is explicit"     }
 
-  reads_as: "#. is the atom; containers are the lens"
+  =reads_as: "#. is the atom; containers are the lens"
 }
 
 ^"automata"{
   # A naive interpreter walks this sequence per-node.
   # Each phase uses a different operator + container pair.
+  #:interpreter #!walk
 
   cycle: [
     { phase: 1, operator: "?", container: "none", action: "probe — is there something here?"           }
@@ -46,13 +52,14 @@
     { phase: 6, operator: "^", container: "none", action: "integrate — bind upward to parent scope"     }
   ]
 
-  loop: "phase 6 (^) feeds back into phase 1 (?) of the next cycle"
-  termination: "when ? returns falsy — nothing more to process"
+  =loop: "phase 6 (^) feeds back into phase 1 (?) of the next cycle"
+  =termination: "when ? returns falsy — nothing more to process"
 }
 
 ^"projections"{
   # Each container form is a different view of the same data.
   # The spirit sequence visits all four projections per cycle.
+  #:lens #topic
 
   photonics: {
     '?': "measurement",    '~': "wavefunction",  '@': "observer",
@@ -70,8 +77,36 @@
   }
 }
 
+^"acoustic_model"{
+  # Each phase has a natural liminality and frequency.
+  # The spirit sequence is also a wave that rises and falls.
+  #:physics #!resonance
+
+  liminality: {
+    '?': 0,      # local — probes are scoped to the immediate node
+    '~': 1,      # threshold — naming opens the possibility space
+    '@': 2,      # transitional — observation crosses scope boundaries
+    '&': 2,      # transitional — merging couples disparate frames
+    '*': 1,      # threshold — collapsing re-grounds from abstract
+    '^': 3,      # global — integration binds upward, escaping scope
+  }
+
+  %[frequency]{
+    "probe-phases (?,~) are high-frequency — many small writes",
+    "merge-phases (&,*) are medium — fewer, heavier operations",
+    "integration (^) is low-frequency — one binding per cycle",
+  }
+
+  %[coupling]{
+    "& creates coupling edges between registers it merges",
+    "^ propagates coupling upward through parent scopes",
+    "coupling strength normalizes per-cell: edges / (total_cells - 1)",
+  }
+}
+
 ^"implementation"{
   # The spirit sequence maps to existing runtime functions:
+  #>impl
 
   '?~'    { fn: "applyWonder → applyPotential", creates: "deferred probe"           }
   '<#.>'  { fn: "applyExchange(resonate, access)", creates: "concept-coupled ground" }
@@ -79,6 +114,13 @@
   '&[#.]' { fn: "applyConfluence(confluent)", creates: "merged frame"               }
   '*{#.}' { fn: "applyValue(access)", creates: "collapsed scope"                    }
   '^'     { fn: "applyIntegration", creates: "parent binding"                       }
+
+  # Register operations per phase:
+  '?'  { register: "promote(key)",   effect: "probing increases liminality"   }
+  '~'  { register: "set(key, deferred)", effect: "write records frequency"   }
+  '&'  { register: "couple(a, b)",   effect: "merging creates coupling edges" }
+  '*'  { register: "measure(key)",   effect: "collapsing increments measureDepth" }
+  '^'  { register: "demote(key)",    effect: "integration re-grounds liminality"  }
 }
 
 ^"notes"{
@@ -88,4 +130,5 @@
   "The #. kernel ensures type safety: every projection has a ground truth.",
   "Operator repetition (##, .., @@) increases depth within a phase.",
   "The sequence reads left-to-right as objective→subjective flow.",
+  "%[depth] tracks how many times a cell has been observed — observer effect.",
 }
