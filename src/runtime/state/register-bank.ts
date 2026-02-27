@@ -1,7 +1,10 @@
 import { descriptorForKey } from './type-affinities'
 import type {
+  PhaseFacet,
+  PhaseEnvelope,
   RegisterEntry,
   RegisterMeta,
+  RegisterPhase,
   RegisterSnapshot,
   RegisterWriteOptions,
   RuntimePacket,
@@ -9,6 +12,7 @@ import type {
   RuntimeValue,
   ScopeFrame,
 } from './types'
+import { PHASE_ORDER } from './types'
 
 const DEFAULT_ACTIVE_KEY = '"'
 const HISTORY_KEYS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] as const
@@ -136,9 +140,9 @@ export class RegisterBank {
 
     const descriptor = options.descriptor
       ? {
-          ...entry.meta.descriptor,
-          ...options.descriptor,
-        }
+        ...entry.meta.descriptor,
+        ...options.descriptor,
+      }
       : entry.meta.descriptor
 
     entry.value = cloneRuntimeValue(value)
@@ -151,7 +155,40 @@ export class RegisterBank {
       provenance: this.pushProvenance(entry.meta.provenance, options.source ?? 'set'),
     }
 
+    // Phase enrichment — additive, in-place on existing cells
+    if (options.phase) {
+      entry.meta.phases = this.advancePhase(
+        entry.meta.phases,
+        options.phase,
+        options.source ?? 'set',
+      )
+    }
+
     return true
+  }
+
+  /**
+   * Enrich a register cell's phase without changing its value.
+   * Useful for progressive enrichment (e.g., lex → parse → sem).
+   */
+  enrichPhase(key: string, phase: RegisterPhase, source?: string): boolean {
+    const entry = this.entries.get(key)
+    if (!entry) return false
+
+    entry.meta.phases = this.advancePhase(
+      entry.meta.phases,
+      phase,
+      source ?? `enrich:${phase}`,
+    )
+    entry.meta.lastUsedAt = nowIso()
+    return true
+  }
+
+  /**
+   * Return the current phase of a register cell, or undefined if unphased.
+   */
+  phaseOf(key: string): RegisterPhase | undefined {
+    return this.entries.get(key)?.meta.phases?.current
   }
 
   get(key: string = this.activeKey): RuntimeValue {
@@ -271,6 +308,13 @@ export class RegisterBank {
           descriptor: { ...entry.meta.descriptor },
           provenance: [...entry.meta.provenance],
           lenses: [...entry.meta.lenses],
+          phases: entry.meta.phases
+            ? {
+              ...entry.meta.phases,
+              facets: entry.meta.phases.facets.map(f => ({ ...f })),
+              lineage: entry.meta.phases.lineage ? [...entry.meta.phases.lineage] : undefined,
+            }
+            : undefined,
         },
       }
     }
@@ -343,5 +387,37 @@ export class RegisterBank {
     const bucket = this.lensIndex.get(lens) ?? new Set<string>()
     bucket.add(key)
     this.lensIndex.set(lens, bucket)
+  }
+
+  /**
+   * Advance (or create) a phase envelope — in-place, additive.
+   * If the cell is already at the target phase, the facet is still recorded.
+   */
+  private advancePhase(
+    existing: PhaseEnvelope | undefined,
+    phase: RegisterPhase,
+    source: string,
+  ): PhaseEnvelope {
+    const phaseIndex = PHASE_ORDER.indexOf(phase)
+    const facet: PhaseFacet = {
+      phase,
+      enrichedAt: nowIso(),
+      source,
+      memoryWeight: phaseIndex >= 0 ? (phaseIndex + 1) / PHASE_ORDER.length : 0.5,
+    }
+
+    if (!existing) {
+      return {
+        current: phase,
+        facets: [facet],
+      }
+    }
+
+    return {
+      current: phase,
+      facets: [...existing.facets, facet],
+      lineage: existing.lineage,
+      evictable: existing.evictable,
+    }
   }
 }
