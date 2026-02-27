@@ -7,6 +7,8 @@
 import type {
   Token,
   ExpressionNode,
+  BindingNode,
+  BulletNode,
   OperationNode,
   SequenceNode,
   FrameNode,
@@ -25,16 +27,17 @@ import {
   peek,
   advance,
   skipWhitespace,
+  token,
   literal,
   choice,
   lazy,
   named,
 } from '../combinators'
-import { operator, connector, identifier } from './tokens'
-import { referenceNode } from './references'
+import { operator, connector, colon, identifier } from './tokens'
+import { referenceNode, annotationNode, pathRefNode } from './references'
 import { modifierChain } from './modifiers'
 import { frameNode, bodyNode, scopeNode, capsuleNode, streamNode, nrangeNode } from './containers'
-import { literalNode } from './literals'
+import { literalNode, identifierNode } from './literals'
 import { wildcardNode, spreadNode, matchArmNode } from './patterns'
 
 /**
@@ -349,6 +352,25 @@ export const operationNode: Parser<OperationNode> = named('operation',
       }
     }
 
+    // Optional subject for operators that take a direct term payload (e.g. ^"setup"{...})
+    let subject: TermNode | undefined
+    if (operatorToken.value === '^') {
+      skipWhitespace(stream)
+      if (current(stream).type === 'STRING' || current(stream).type === 'IDENTIFIER' || current(stream).type === 'OPERATOR' || current(stream).type === 'CAPSULE_OPEN') {
+        const subjGen = choice<TermNode>(pathRefNode, referenceNode, identifierNode, literalNode, capsuleNode, scopeNode, wildcardNode, spreadNode)(stream, depth + 1)
+        let subjStep = subjGen.next()
+        while (!subjStep.done) {
+          yield subjStep.value
+          subjStep = subjGen.next()
+        }
+
+        if (subjStep.value.success) {
+          subject = subjStep.value.value!
+          consumed += subjStep.value.consumed
+        }
+      }
+    }
+
     // Optional frame
     let frame: FrameNode | undefined
     skipWhitespace(stream)
@@ -360,10 +382,12 @@ export const operationNode: Parser<OperationNode> = named('operation',
         frameStep = frameGen.next()
       }
 
-      if (frameStep.value.success) {
-        frame = frameStep.value.value
-        consumed += frameStep.value.consumed
+      if (!frameStep.value.success) {
+        return { success: false, consumed: 0, error: frameStep.value.error }
       }
+
+      frame = frameStep.value.value
+      consumed += frameStep.value.consumed
     }
 
     // Optional body
@@ -377,10 +401,12 @@ export const operationNode: Parser<OperationNode> = named('operation',
         bodyStep = bodyGen.next()
       }
 
-      if (bodyStep.value.success) {
-        body = bodyStep.value.value
-        consumed += bodyStep.value.consumed
+      if (!bodyStep.value.success) {
+        return { success: false, consumed: 0, error: bodyStep.value.error }
       }
+
+      body = bodyStep.value.value
+      consumed += bodyStep.value.consumed
     }
 
     // Optional inline payload for line-scoped operators (#, ?)
@@ -403,7 +429,107 @@ export const operationNode: Parser<OperationNode> = named('operation',
       operatorLabel,
       frame,
       body,
+      subject,
       linePayload,
+    }
+
+    return { success: true, value: node, consumed }
+  }
+)
+
+/**
+ * Bullet item: .. <expression>
+ */
+export const bulletNode: Parser<BulletNode> = named('bullet',
+  function* bulletParser(stream, depth) {
+    const startPos = getPosition(stream)
+
+    const markGen = token('CONNECTOR', '..')(stream, depth + 1)
+    let markStep = markGen.next()
+    while (!markStep.done) {
+      yield markStep.value
+      markStep = markGen.next()
+    }
+
+    if (!markStep.value.success) {
+      return { success: false, consumed: 0, error: markStep.value.error }
+    }
+
+    let consumed = markStep.value.consumed
+    const marker = markStep.value.value! as Token<'CONNECTOR'>
+
+    skipWhitespace(stream)
+
+    // If the bullet starts with a Spw trigger, parse as expression; otherwise capture prose text on the same line.
+    const markerLine = marker.span.start.line
+    const t0 = current(stream)
+    const isSpw = (
+      t0.type === 'OPERATOR'
+      || t0.type === 'CAPSULE_OPEN'
+      || t0.type === 'STREAM_OPEN'
+      || t0.type === 'NRANGE_OPEN'
+      || t0.type === 'CONTAINER_OPEN'
+    )
+
+    if (isSpw) {
+      const itemGen = expressionNode(stream, depth + 1)
+      let itemStep = itemGen.next()
+      while (!itemStep.done) {
+        yield itemStep.value
+        itemStep = itemGen.next()
+      }
+
+      if (!itemStep.value.success) {
+        return { success: false, consumed: 0, error: itemStep.value.error }
+      }
+
+      consumed += itemStep.value.consumed
+      const endPos = getPosition(stream)
+
+      const node: BulletNode = {
+        type: 'Bullet',
+        span: { start: startPos, end: endPos },
+        marker,
+        item: itemStep.value.value!,
+      }
+
+      return { success: true, value: node, consumed }
+    }
+
+    const collected: Token[] = []
+    while (true) {
+      const tok = current(stream)
+      if (tok.type === 'EOF') break
+      if (tok.span.start.line !== markerLine) break
+      if (tok.type === 'COMMENT') break
+      collected.push(tok)
+      advance(stream)
+      consumed += 1
+    }
+
+    let startIdx = 0
+    while (startIdx < collected.length && collected[startIdx].type === 'WHITESPACE') startIdx++
+    let endIdx = collected.length - 1
+    while (endIdx >= startIdx && collected[endIdx].type === 'WHITESPACE') endIdx--
+
+    const text = startIdx <= endIdx
+      ? collected.slice(startIdx, endIdx + 1).map((t) => t.value).join('')
+      : ''
+
+    const chunk: ProseChunkNode = {
+      type: 'ProseChunk',
+      span: startIdx <= endIdx
+        ? { start: collected[startIdx].span.start, end: collected[endIdx].span.end }
+        : { start: marker.span.end, end: marker.span.end },
+      text,
+    }
+
+    const endPos = getPosition(stream)
+    const node: BulletNode = {
+      type: 'Bullet',
+      span: { start: startPos, end: endPos },
+      marker,
+      item: chunk,
     }
 
     return { success: true, value: node, consumed }
@@ -490,8 +616,12 @@ export const termNode: Parser<TermNode> = lazy(() => named('term',
     }
 
     const fallbackGen = choice<TermNode>(
+      bulletNode,
+      annotationNode,
+      pathRefNode,
       referenceNode,
       operationNode,
+      identifierNode,
       wildcardNode,
       spreadNode,
       scopeNode,
@@ -538,6 +668,52 @@ export const expressionImpl: Parser<ExpressionNode> = named('expression',
     ]
     const connectors: Token<'CONNECTOR'>[] = []
     let consumed = firstStep.value.consumed
+
+    // Binding: <term> : <expression>
+    skipWhitespace(stream)
+    if (current(stream).type === 'COLON') {
+      const colonGen = colon(stream, depth + 1)
+      let colonStep = colonGen.next()
+      while (!colonStep.done) {
+        yield colonStep.value
+        colonStep = colonGen.next()
+      }
+
+      if (!colonStep.value.success) {
+        return { success: false, consumed: 0, error: colonStep.value.error }
+      }
+      consumed += colonStep.value.consumed
+
+      skipWhitespace(stream)
+      const rhsGen = expressionNode(stream, depth + 1)
+      let rhsStep = rhsGen.next()
+      while (!rhsStep.done) {
+        yield rhsStep.value
+        rhsStep = rhsGen.next()
+      }
+
+      if (!rhsStep.value.success) {
+        return { success: false, consumed: 0, error: rhsStep.value.error }
+      }
+      consumed += rhsStep.value.consumed
+
+      const endPos = getPosition(stream)
+      const binding: BindingNode = {
+        type: 'Binding',
+        span: { start: startPos, end: endPos },
+        key: firstStep.value.value!,
+        value: rhsStep.value.value!,
+      }
+
+      const node: ExpressionNode = {
+        type: 'Expression',
+        span: { start: startPos, end: endPos },
+        terms: [binding as unknown as TermNode],
+        connectors: [],
+      }
+
+      return { success: true, value: node, consumed }
+    }
 
     // (connector term)*
     while (true) {

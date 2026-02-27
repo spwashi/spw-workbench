@@ -4,18 +4,16 @@
  * Parameters: (name:)? value
  */
 
-import type { Token, ParameterNode, LiteralNode, ReferenceNode } from '../types'
+import type { Token, ParameterNode, LiteralNode, ReferenceNode, ExpressionNode } from '../types'
 import {
   type Parser,
   getPosition,
   current,
   skipWhitespace,
-  choice,
   named,
 } from '../combinators'
-import { identifier, colon } from './tokens'
-import { literalNode } from './literals'
-import { referenceNode } from './references'
+import { identifier, stringLit, colon } from './tokens'
+import { expressionNode } from './expressions'
 
 /**
  * Parameter: (name:)? value
@@ -24,25 +22,25 @@ export const parameterNode: Parser<ParameterNode> = named('parameter',
   function* parameterParser(stream, depth) {
     const startPos = getPosition(stream)
     let consumed = 0
-    let nameToken: Token<'IDENTIFIER'> | undefined
+    let nameToken: Token<'IDENTIFIER' | 'STRING'> | undefined
 
     // Try name: prefix
     skipWhitespace(stream)
-    if (current(stream).type === 'IDENTIFIER') {
+    if (current(stream).type === 'IDENTIFIER' || current(stream).type === 'STRING') {
       const savedPos = stream.position
 
-      const idGen = identifier(stream, depth + 1)
-      let idStep = idGen.next()
-      while (!idStep.done) {
-        yield idStep.value
-        idStep = idGen.next()
+      const nameGen = (current(stream).type === 'STRING' ? stringLit : identifier)(stream, depth + 1)
+      let nameStep = nameGen.next()
+      while (!nameStep.done) {
+        yield nameStep.value
+        nameStep = nameGen.next()
       }
 
-      if (idStep.value.success) {
+      if (nameStep.value.success) {
         skipWhitespace(stream)
         if (current(stream).type === 'COLON') {
-          nameToken = idStep.value.value
-          consumed += idStep.value.consumed
+          nameToken = nameStep.value.value
+          consumed += nameStep.value.consumed
 
           const colonGen = colon(stream, depth + 1)
           let colonStep = colonGen.next()
@@ -61,8 +59,8 @@ export const parameterNode: Parser<ParameterNode> = named('parameter',
       }
     }
 
-    // Value: literal or reference
-    const valueGen = choice<ReferenceNode | LiteralNode>(referenceNode, literalNode)(stream, depth + 1)
+    // Value: expression (most general), with a small simplification pass
+    const valueGen = expressionNode(stream, depth + 1)
     let valueStep = valueGen.next()
     while (!valueStep.done) {
       yield valueStep.value
@@ -74,13 +72,22 @@ export const parameterNode: Parser<ParameterNode> = named('parameter',
     }
 
     consumed += valueStep.value.consumed
+
+    let value = valueStep.value.value as ExpressionNode
+    if (value.type === 'Expression' && value.connectors.length == 0 && value.terms.length == 1) {
+      const only = value.terms[0] as any
+      if (only.type === 'Literal' || only.type === 'Reference') {
+        value = only
+      }
+    }
+
     const endPos = getPosition(stream)
 
     const node: ParameterNode = {
       type: 'Parameter',
       span: { start: startPos, end: endPos },
       name: nameToken,
-      value: valueStep.value.value as LiteralNode | ReferenceNode,
+      value: value as any,
     }
 
     return { success: true, value: node, consumed }

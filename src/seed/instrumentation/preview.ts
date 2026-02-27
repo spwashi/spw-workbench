@@ -1,6 +1,9 @@
 import type {
   SeedNode,
   ExpressionNode,
+  BindingNode,
+  BulletNode,
+  PathRefNode,
   OperationNode,
   ScopeNode,
   ReferenceNode,
@@ -10,6 +13,8 @@ import type {
   CapsuleNode,
   StreamNode,
   LiteralNode,
+  IdentifierNode,
+  AnnotationNode,
   ParameterNode,
   ProseNode,
 } from '../types'
@@ -21,6 +26,11 @@ function describeOperation(op: OperationNode): string {
   const body = op.body ? describeBody(op.body) : ''
   const inline = op.linePayload?.text ? ` ${op.linePayload.text}` : ''
   return `${mod}${op.operator.value}${label}${frame}${body ? ` {${body}}` : ''}${inline}`.trim()
+}
+
+function describePathRef(ref: PathRefNode): string {
+  const tag = ref.tag ? `<${ref.tag.value}>` : ''
+  return `~${tag}${ref.path.token.value}`
 }
 
 function describeReference(ref: ReferenceNode): string {
@@ -83,16 +93,43 @@ function describeScope(scope: ScopeNode): string {
   return `(${name ? name + ': ' : ''}${describeSequence(scope.sequence)})`
 }
 
-function describeTerm(term: ExpressionNode['terms'][number]): string {
+function describeTerm(term: ExpressionNode['terms'][number] | any): string {
   switch (term.type) {
+    case 'Binding': return describeBinding(term as BindingNode)
+    case 'Bullet': return describeBullet(term as BulletNode)
+    case 'PathRef': return describePathRef(term as PathRefNode)
     case 'Operation': return describeOperation(term as OperationNode)
     case 'Reference': return describeReference(term as ReferenceNode)
     case 'Scope': return describeScope(term as ScopeNode)
     case 'Capsule': return describeCapsule(term as CapsuleNode)
     case 'Stream': return describeStream(term as StreamNode)
     case 'NRange': return describeNRange(term as NRangeNode)
+    case 'Literal': return (term as LiteralNode).token.value
+    case 'Identifier': return (term as IdentifierNode).token.value
+    case 'Annotation': {
+      const a = term as AnnotationNode
+      if (!a.value) return `~#${a.name.value}`
+      const v = a.value as any
+      if (v.type === 'Literal') return `~#${a.name.value} ${v.token.value}`
+      if (v.type === 'Reference') return `~#${a.name.value} ${describeReference(v)}`
+      if (v.type === 'PathRef') return `~#${a.name.value} ${describePathRef(v)}`
+      return `~#${a.name.value}`
+    }
     default: return 'Unknown'
   }
+}
+
+function describeBinding(b: BindingNode): string {
+  const key = describeTerm(b.key)
+  const value = describeExpression(b.value)
+  return `${key}: ${value}`
+}
+
+function describeBullet(b: BulletNode): string {
+  const item = b.item.type === 'ProseChunk'
+    ? (b.item.text || '').trim()
+    : describeExpression(b.item)
+  return `.. ${item}`.trim()
 }
 
 function describeExpression(expr: ExpressionNode): string {
@@ -142,7 +179,9 @@ export function previewAST(ast: SeedNode | null | undefined): string {
   if (!ast) return 'No AST'
   const expr = ast.expression.type === 'Expression'
     ? describeExpression(ast.expression)
-    : describeProse(ast.expression as ProseNode)
+    : ast.expression.type === 'Sequence'
+      ? describeSequence(ast.expression as any)
+      : describeProse(ast.expression as ProseNode)
   const annotations = ast.annotations?.map(a => `#${a.name.value}`).join(' ')
   return [annotations, expr].filter(Boolean).join(' ').trim()
 }

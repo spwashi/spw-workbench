@@ -9,6 +9,7 @@ import type {
   ReferenceNode,
   AnnotationNode,
   LiteralNode,
+  PathRefNode,
 } from '../types'
 import {
   type Parser,
@@ -21,7 +22,7 @@ import {
   choice,
   named,
 } from '../combinators'
-import { annotation, colon } from './tokens'
+import { annotation, colon, capsuleOpen, capsuleClose, identifier, stringLit } from './tokens'
 import { literalNode } from './literals'
 
 function isReferencePathToken(token: Token): boolean {
@@ -126,6 +127,126 @@ export const referenceNode: Parser<ReferenceNode> = named('reference',
 )
 
 /**
+ * Local path reference node: ~"./path" or ~<tag>"./path"
+ */
+export const pathRefNode: Parser<PathRefNode> = named('pathRef',
+  function* pathRefParser(stream, depth) {
+    const startPos = getPosition(stream)
+
+    // Required ~ operator
+    const tildeGen = token('OPERATOR', '~')(stream, depth + 1)
+    let tildeStep = tildeGen.next()
+    while (!tildeStep.done) {
+      yield tildeStep.value
+      tildeStep = tildeGen.next()
+    }
+
+    if (!tildeStep.value.success) {
+      return { success: false, consumed: 0, error: tildeStep.value.error }
+    }
+
+    let consumed = tildeStep.value.consumed
+    const tildeToken = tildeStep.value.value! as Token<'OPERATOR'>
+
+    // Optional <tag>
+    skipWhitespace(stream)
+    let tag: Token<'IDENTIFIER'> | undefined
+
+    if (current(stream).type === 'CAPSULE_OPEN') {
+      const openGen = capsuleOpen(stream, depth + 1)
+      let openStep = openGen.next()
+      while (!openStep.done) {
+        yield openStep.value
+        openStep = openGen.next()
+      }
+
+      if (!openStep.value.success) {
+        return { success: false, consumed: 0, error: openStep.value.error }
+      }
+      consumed += openStep.value.consumed
+
+      skipWhitespace(stream)
+      const tagGen = identifier(stream, depth + 1)
+      let tagStep = tagGen.next()
+      while (!tagStep.done) {
+        yield tagStep.value
+        tagStep = tagGen.next()
+      }
+
+      if (!tagStep.value.success) {
+        return {
+          success: false,
+          consumed: 0,
+          error: tagStep.value.error ?? {
+            message: 'Expected tag identifier inside <...>',
+            expected: ['identifier'],
+            found: current(stream).type,
+            recoverable: false,
+          },
+        }
+      }
+
+      tag = tagStep.value.value!
+      consumed += tagStep.value.consumed
+
+      skipWhitespace(stream)
+      const closeGen = capsuleClose(stream, depth + 1)
+      let closeStep = closeGen.next()
+      while (!closeStep.done) {
+        yield closeStep.value
+        closeStep = closeGen.next()
+      }
+
+      if (!closeStep.value.success) {
+        return { success: false, consumed: 0, error: closeStep.value.error }
+      }
+      consumed += closeStep.value.consumed
+    }
+
+    // Required string literal path
+    skipWhitespace(stream)
+    const strGen = stringLit(stream, depth + 1)
+    let strStep = strGen.next()
+    while (!strStep.done) {
+      yield strStep.value
+      strStep = strGen.next()
+    }
+
+    if (!strStep.value.success) {
+      return {
+        success: false,
+        consumed: 0,
+        error: strStep.value.error ?? {
+          message: 'Expected string literal path after ~',
+          expected: ['string'],
+          found: current(stream).type,
+          recoverable: false,
+        },
+      }
+    }
+
+    const strTok = strStep.value.value!
+    consumed += strStep.value.consumed
+
+    const endPos = getPosition(stream)
+
+    const node: PathRefNode = {
+      type: 'PathRef',
+      span: { start: startPos, end: endPos },
+      operator: tildeToken,
+      tag,
+      path: {
+        type: 'Literal',
+        span: { start: strTok.span.start, end: strTok.span.end },
+        token: strTok,
+      },
+    }
+
+    return { success: true, value: node, consumed }
+  }
+)
+
+/**
  * Annotation node: ~#name or ~#name: value
  */
 export const annotationNode: Parser<AnnotationNode> = named('annotation',
@@ -156,8 +277,8 @@ export const annotationNode: Parser<AnnotationNode> = named('annotation',
       span: annToken.span,
     }
 
-    // Optional : value
-    let valueNode: LiteralNode | ReferenceNode | undefined
+    // Optional value: either : value, or whitespace-delimited value (common in docs)
+    let valueNode: LiteralNode | ReferenceNode | PathRefNode | undefined
 
     skipWhitespace(stream)
     if (current(stream).type === 'COLON') {
@@ -171,8 +292,8 @@ export const annotationNode: Parser<AnnotationNode> = named('annotation',
       if (colonStep.value.success) {
         consumed += colonStep.value.consumed
 
-        // Try reference or literal
-        const valueGen = choice<ReferenceNode | LiteralNode>(referenceNode, literalNode)(stream, depth + 1)
+        // Try pathRef, reference, or literal
+        const valueGen = choice<PathRefNode | ReferenceNode | LiteralNode>(pathRefNode, referenceNode, literalNode)(stream, depth + 1)
         let valueStep = valueGen.next()
         while (!valueStep.done) {
           yield valueStep.value
@@ -183,6 +304,20 @@ export const annotationNode: Parser<AnnotationNode> = named('annotation',
           consumed += valueStep.value.consumed
           valueNode = valueStep.value.value as LiteralNode | ReferenceNode
         }
+      }
+    } else {
+      // Whitespace-delimited value (e.g. ~#example "./examples")
+      skipWhitespace(stream)
+      const valueGen = choice<PathRefNode | ReferenceNode | LiteralNode>(pathRefNode, referenceNode, literalNode)(stream, depth + 1)
+      let valueStep = valueGen.next()
+      while (!valueStep.done) {
+        yield valueStep.value
+        valueStep = valueGen.next()
+      }
+
+      if (valueStep.value.success) {
+        consumed += valueStep.value.consumed
+        valueNode = valueStep.value.value as PathRefNode | ReferenceNode | LiteralNode
       }
     }
 
