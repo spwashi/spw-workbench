@@ -14,10 +14,27 @@ import type { ASTNode } from './index'
 export interface SeedNode extends ASTNode {
   type: 'Seed'
   annotations: AnnotationNode[]
-  expression: ExpressionNode | ProseNode
+  expression: ExpressionNode | SequenceNode | ProseNode
 }
 
-export type TermNode = OperationNode | ScopeNode | ReferenceNode | CapsuleNode | StreamNode | NRangeNode | BodyNode | LiteralNode | FrameNode | MatchNode | WildcardNode | SpreadNode
+export type TermNode =
+  | BindingNode
+  | BulletNode
+  | PathRefNode
+  | OperationNode
+  | ScopeNode
+  | ReferenceNode
+  | CapsuleNode
+  | StreamNode
+  | NRangeNode
+  | BodyNode
+  | FrameNode
+  | LiteralNode
+  | IdentifierNode
+  | AnnotationNode
+  | MatchNode
+  | WildcardNode
+  | SpreadNode
 
 export interface MatchNode extends ASTNode {
   type: 'Match'
@@ -58,6 +75,29 @@ export interface ExpressionNode extends ASTNode {
 export interface SequenceNode extends ASTNode {
   type: 'Sequence'
   expressions: ExpressionNode[]
+}
+
+// ============================================================================
+// Binding / Bullet / Local Path Reference
+// ============================================================================
+
+export interface BindingNode extends ASTNode {
+  type: 'Binding'
+  key: TermNode
+  value: ExpressionNode
+}
+
+export interface BulletNode extends ASTNode {
+  type: 'Bullet'
+  marker: Token<'CONNECTOR'>
+  item: ExpressionNode | ProseChunkNode
+}
+
+export interface PathRefNode extends ASTNode {
+  type: 'PathRef'
+  operator: Token<'OPERATOR'>
+  tag?: Token<'IDENTIFIER'>
+  path: LiteralNode
 }
 
 // ============================================================================
@@ -121,7 +161,7 @@ export interface ModifierChainNode extends ASTNode {
 
 export interface ScopeNode extends ASTNode {
   type: 'Scope'
-  name?: Token<'IDENTIFIER'>
+  name?: Token<'IDENTIFIER' | 'STRING'>
   openLabel?: Token<'IDENTIFIER'>
   closeLabel?: Token<'IDENTIFIER'>
   sequence: SequenceNode
@@ -168,13 +208,13 @@ export interface IdentifierNode extends ASTNode {
 export interface AnnotationNode extends ASTNode {
   type: 'Annotation'
   name: Token<'IDENTIFIER'>
-  value?: LiteralNode | ReferenceNode
+  value?: LiteralNode | ReferenceNode | PathRefNode
 }
 
 export interface ParameterNode extends ASTNode {
   type: 'Parameter'
-  name?: Token<'IDENTIFIER'>
-  value: LiteralNode | ReferenceNode | ExpressionNode
+  name?: Token<'IDENTIFIER' | 'STRING'>
+  value: LiteralNode | ReferenceNode | PathRefNode | ExpressionNode
 }
 
 // ============================================================================

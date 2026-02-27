@@ -45,8 +45,8 @@ export interface ParserOptions {
 }
 
 export const DEFAULT_OPTIONS: ParserOptions = {
-  includeComments: false,
-  includeWhitespace: false,
+  includeComments: true,
+  includeWhitespace: true,
   maxErrors: 10,
   debug: false,
   lexProfile: undefined,

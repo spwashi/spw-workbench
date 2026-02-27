@@ -1,7 +1,8 @@
 import type { ParseEvent, SeedNode, ParserOptions } from '../types'
+import { DEFAULT_OPTIONS } from '../types'
 import type { ParseOutput } from './output'
 import { tokenize, resolveLexProfile } from '../lexer'
-import { createTokenStream } from '../combinators'
+import { createTokenStream, current, skipWhitespace, getPosition } from '../combinators'
 import { seedNode } from '../grammar'
 
 /**
@@ -14,11 +15,12 @@ export function parse(
   options: Partial<ParserOptions> = {}
 ): ParseOutput<SeedNode> {
   const startTime = performance.now()
+  const opts: ParserOptions = { ...DEFAULT_OPTIONS, ...options }
   const events: ParseEvent[] = []
   const errors: ParseEvent[] = []
   const warnings: ParseEvent[] = []
 
-  const lexProfile = resolveLexProfile(options.lexProfile)
+  const lexProfile = resolveLexProfile(opts.lexProfile)
   const lexGen = tokenize(input, 0, { profile: lexProfile })
   let lexStep = lexGen.next()
 
@@ -34,10 +36,11 @@ export function parse(
   }
 
   const tokens = lexStep.value
-
-  const filteredTokens = options.includeWhitespace
-    ? tokens
-    : tokens.filter(t => t.type !== 'WHITESPACE' && t.type !== 'COMMENT')
+  const filteredTokens = tokens.filter(t => {
+    if (!opts.includeWhitespace && t.type === 'WHITESPACE') return false
+    if (!opts.includeComments && t.type === 'COMMENT') return false
+    return true
+  })
 
   const stream = createTokenStream(filteredTokens)
   const parseGen = seedNode(stream, 0)
@@ -55,10 +58,38 @@ export function parse(
   }
 
   const result = parseStep.value
+
+  // Enforce full consumption: a successful parse must end at EOF.
+  // This prevents partial parses (common source of false-positive lints).
+  let success = result.success
+  if (success) {
+    skipWhitespace(stream)
+    if (current(stream).type !== 'EOF') {
+      success = false
+      const pos = getPosition(stream)
+      const found = current(stream)
+      const evt = {
+        type: 'error' as const,
+        rule: 'parse',
+        position: pos,
+        data: {
+          message: `Unexpected trailing tokens starting at ${found.type} (${JSON.stringify(found.value)})`,
+          expected: ['EOF'],
+          found: found.type,
+          recoverable: false,
+        },
+        timestamp: performance.now(),
+        depth: 0,
+      }
+      events.push(evt)
+      errors.push(evt)
+    }
+  }
+
   const duration = performance.now() - startTime
 
   return {
-    success: result.success,
+    success,
     ast: result.value,
     tokens,
     events,

@@ -1,7 +1,7 @@
 /**
  * Seed Parser
  *
- * Top-level Spw grammar rule: annotation* expression
+ * Top-level Spw grammar rule: annotation* sequence
  */
 
 import type { SeedNode, AnnotationNode, ParseEvent } from '../types'
@@ -13,11 +13,11 @@ import {
   named,
 } from '../combinators'
 import { annotationNode } from './references'
-import { expressionNode } from './expressions'
+import { sequenceNode } from './expressions'
 import { proseNode } from './prose'
 
 /**
- * Seed: annotation* expression
+ * Seed: annotation* sequence
  */
 export const seedNode: Parser<SeedNode> = named('seed',
   function* seedParser(stream, depth) {
@@ -44,30 +44,40 @@ export const seedNode: Parser<SeedNode> = named('seed',
       consumed += annResult.consumed
     }
 
-    // expression first, prose fallback
-    // Expression remains the canonical top-level form for deterministic parsing.
+    // sequence first, prose fallback
+    // Sequence remains the canonical top-level form for deterministic parsing.
     // Prose is a fallback for mixed narrative documents.
     let exprResult
     {
-      const expressionGen = expressionNode(stream, depth + 1)
-      let expressionStep = expressionGen.next()
-      while (!expressionStep.done) {
-        yield expressionStep.value as ParseEvent
-        expressionStep = expressionGen.next()
-      }
-      exprResult = expressionStep.value
-    }
+      const savedPos = stream.position
 
-    if (!exprResult.success) {
-      const proseGen = proseNode(stream, depth + 1)
-      let proseStep = proseGen.next()
-      while (!proseStep.done) {
-        yield proseStep.value as ParseEvent
-        proseStep = proseGen.next()
+      const sequenceGen = sequenceNode(stream, depth + 1)
+      let sequenceStep = sequenceGen.next()
+      while (!sequenceStep.done) {
+        yield sequenceStep.value as ParseEvent
+        sequenceStep = sequenceGen.next()
       }
-      exprResult = proseStep.value
-      if (!exprResult.success) {
-        return { success: false, consumed: 0, error: exprResult.error }
+      exprResult = sequenceStep.value
+
+      // If we didn't reach EOF, the file likely contains prose-heavy lines; fall back to prose parsing.
+      skipWhitespace(stream)
+      const reachedEOF = current(stream).type === 'EOF'
+      if (!reachedEOF) {
+        stream.position = savedPos
+      }
+
+      // sequenceNode can succeed with consumed=0; treat that as failure so we fall back to prose.
+      if (!reachedEOF || !(exprResult.success && exprResult.consumed > 0)) {
+        const proseGen = proseNode(stream, depth + 1)
+        let proseStep = proseGen.next()
+        while (!proseStep.done) {
+          yield proseStep.value as ParseEvent
+          proseStep = proseGen.next()
+        }
+        exprResult = proseStep.value
+        if (!exprResult.success) {
+          return { success: false, consumed: 0, error: exprResult.error }
+        }
       }
     }
 
