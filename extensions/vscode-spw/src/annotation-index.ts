@@ -26,7 +26,7 @@ export interface AnnotationEntry {
 /** Matches #-annotations:  #word  #:word  #!word  #>word */
 const ANNOTATION_RE = /#(!|:|>)?([a-zA-Z_][a-zA-Z0-9_]*)/g;
 /** Matches frame headers: ^["label"] or ^"label" */
-const FRAME_RE = /^\s*\^(?:\[")([^"]+)(?:"\])|^\s*\^"([^"]+)"/;
+const FRAME_RE = /^\s*\^(?:\["([^"]+)"\]|"([^"]+)")/;
 
 function kindFromPrefix(prefix: string | undefined): AnnotationKind {
     switch (prefix) {
@@ -47,6 +47,8 @@ export class AnnotationIndex {
     private byFile = new Map<string, AnnotationEntry[]>();
     private watcher: vscode.FileSystemWatcher | undefined;
     private disposables: vscode.Disposable[] = [];
+    private updatedEmitter = new vscode.EventEmitter<void>();
+    readonly onDidUpdate = this.updatedEmitter.event;
 
     // -- lifecycle -----------------------------------------------------------
 
@@ -54,8 +56,8 @@ export class AnnotationIndex {
         await this.rebuild();
 
         this.watcher = vscode.workspace.createFileSystemWatcher('**/*.spw');
-        this.watcher.onDidChange(uri => this.reindexFile(uri));
-        this.watcher.onDidCreate(uri => this.reindexFile(uri));
+        this.watcher.onDidChange(uri => void this.reindexFile(uri));
+        this.watcher.onDidCreate(uri => void this.reindexFile(uri));
         this.watcher.onDidDelete(uri => this.removeFile(uri));
         this.disposables.push(this.watcher);
 
@@ -63,13 +65,14 @@ export class AnnotationIndex {
         this.disposables.push(
             vscode.workspace.onDidSaveTextDocument(doc => {
                 if (doc.languageId === 'spw') {
-                    this.reindexFile(doc.uri);
+                    void this.reindexFile(doc.uri);
                 }
             })
         );
     }
 
     dispose(): void {
+        this.updatedEmitter.dispose();
         this.disposables.forEach(d => d.dispose());
     }
 
@@ -84,6 +87,7 @@ export class AnnotationIndex {
         for (const file of files) {
             await this.indexFile(file);
         }
+        this.updatedEmitter.fire();
     }
 
     private async indexFile(uri: vscode.Uri): Promise<void> {
@@ -99,6 +103,7 @@ export class AnnotationIndex {
     private async reindexFile(uri: vscode.Uri): Promise<void> {
         this.removeFile(uri);
         await this.indexFile(uri);
+        this.updatedEmitter.fire();
     }
 
     private removeFile(uri: vscode.Uri): void {
@@ -114,6 +119,7 @@ export class AnnotationIndex {
         }
         this.entries = this.entries.filter(e => e.file.toString() !== key);
         this.byFile.delete(key);
+        this.updatedEmitter.fire();
     }
 
     private parseText(uri: vscode.Uri, text: string): void {
