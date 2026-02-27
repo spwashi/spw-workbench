@@ -1,0 +1,93 @@
+# Util
+#
+# Spw expression utility primitives for composition and interpretation.
+
+#>spw_ocean_expr_util
+
+^"intent"{
+  ~#goal: "Provide reusable expression utilities across query, ops, and spells."
+  ~#selector_registry: ".spw/biome/ocean/query/sel.spw"
+  ~#hot_layer: ".spw/biome/ocean/query/hot.spw"
+}
+
+^"selector_semantics"{
+  create: {
+    meaning: "A selector is created by defining include + combine + grounding in query/sel.spw."
+    source: ".spw/biome/ocean/query/sel.spw#selector[...]"
+    output: selector_id
+  }
+
+  reference: {
+    meaning: "A selector is referenced by selector_id (not raw expression strings)."
+    forms: [
+      "use: [macro, selector, refs]",
+      "selector: refs_navigable",
+      "utility input: [selector_id, ...]",
+    ]
+    output: selector_ref
+  }
+
+  resolve: {
+    meaning: "A selector reference resolves through registry, then optional hot replacement."
+    path: [
+      ".spw/biome/ocean/query/sel.spw",
+      ".spw/biome/ocean/query/hot.spw#replacement",
+    ]
+    output: selector_effective
+  }
+}
+
+^util[compose]{
+  input: [selector_a, selector_b, strategy]
+  strategies: [union, descent, ranked, aggregate, cluster]
+  output: selector_composite
+}
+
+^util[create]{
+  input: [include_set, combine_mode, grounding_mode]
+  output: selector_id
+  source: ".spw/biome/ocean/query/sel.spw"
+}
+
+^util[reference]{
+  input: [selector_id]
+  output: selector_ref
+  note: "Selector refs are symbolic handles used by q/t/ops/spells."
+}
+
+^util[bind]{
+  input: [selector_id, params]
+  output: selector_bound
+  note: "Binds runtime params without rewriting selector definitions."
+}
+
+^util[ground]{
+  input: [selector_id, mode]
+  mode: [grounded, bound]
+  output: selector_grounded
+}
+
+^util[project]{
+  input: [selector_id, lens_id]
+  lens: [core, probe, relation]
+  output: projection_ref
+  generated: ".spw/gen/index.spw"
+}
+
+^util[aggregate]{
+  input: [selector_id, axis]
+  axis: [branch, phase, biome, grounding, selector]
+  output: aggregate_ref
+  trace: ".spw/biome/ocean/trace.spw"
+}
+
+^util[hot_replace]{
+  input: [selector_id, tier]
+  tier: [hot, warm, cold]
+  output: selector_effective
+  source: ".spw/biome/ocean/query/hot.spw#replacement"
+}
+
+^"invariant"{
+  "Utility transforms must preserve selector identity lineage in trace."
+}

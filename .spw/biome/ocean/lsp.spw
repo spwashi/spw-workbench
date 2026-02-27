@@ -1,0 +1,26 @@
+# Lsp
+#
+# Modular LSP behavior for ocean biome surfaces.
+
+#>spw_ocean_lsp
+#:lsp #!modularity
+
+^"intent"{
+  ~#goal: "Separate editor-facing LSP behavior from runtime interpretation behavior."
+}
+
+^behavior[open_context]{
+  source: [@biome/query/hot.spw#context[on_open], @biome/spells/spells.spw#context[on_open]]
+  strength: "apply shelf-aware context on open"
+}
+
+^behavior[references]{
+  source: @biome/links/links.spw
+  strength: "cross-tree root refs + adjacency-aware link jumps"
+  enhancement: "prefix/postfix & should stay clickable around refs"
+}
+
+^behavior[symbols]{
+  source: [@spw/workspace.spw, @biome/index.spw]
+  strength: "module shelves + selector/lens/spell symbols for fast navigation"
+}

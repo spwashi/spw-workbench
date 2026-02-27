@@ -1,0 +1,64 @@
+# Geom
+#
+# Geometric and mathematical intuition layer for projection/nesting behavior.
+
+#>spw_ocean_geom
+#:math #!geometry
+
+^"intent"{
+  ~#goal: "Build math intuition for runtime structure and interpretation cost."
+}
+
+^math[d_path]{
+  symbol: d
+  expr: [shortest_path, root, node]
+}
+
+^math[r_spread]{
+  symbol: r
+  expr: [max, [distance, selector, projection_target]]
+}
+
+^math[k_curvature]{
+  symbol: k
+  expr: [div, [delta, selector_effective], [delta, depth]]
+}
+
+^math[rho_density]{
+  symbol: rho
+  expr: [div, edges, [mul, nodes, [sub, nodes, 1]]]
+}
+
+^math[e_energy]{
+  symbol: E
+  expr: [mul, depth, breadth, [add, 1, coupling_density]]
+}
+
+^metric[depth]{
+  meaning: "nesting depth as graph distance from root frame"
+  formula: [math, d_path]
+}
+
+^metric[radius]{
+  meaning: "projection spread from one selector to generated targets"
+  formula: [math, r_spread]
+}
+
+^metric[curvature]{
+  meaning: "how sharply interpretation changes between adjacent containers"
+  formula: [math, k_curvature]
+}
+
+^metric[coupling_density]{
+  meaning: "merge edge density among considered concepts"
+  formula: [math, rho_density]
+}
+
+^metric[energy]{
+  meaning: "approximate interpretation effort"
+  formula: [math, e_energy]
+}
+
+^"invariant"{
+  "Metrics guide intuition; they do not alter canonical semantics."
+}

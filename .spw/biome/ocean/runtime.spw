@@ -1,0 +1,25 @@
+# Runtime
+#
+# Modular runtime behavior for interpretation and projection.
+
+#>spw_ocean_runtime
+#:runtime #!modularity
+
+^"intent"{
+  ~#goal: "Keep runtime interpretation logic modular and trace-first."
+}
+
+^behavior[selector_resolution]{
+  source: [@biome/query/sel.spw, @biome/query/hot.spw]
+  stage: "resolve -> hot_replace -> effective_selector"
+}
+
+^behavior[projection]{
+  source: [@biome/ops/cycle.spw, @spw/gen/index.spw]
+  stage: "project -> generate -> trace"
+}
+
+^behavior[math_geometry]{
+  source: [@biome/algos/geom.spw, @spw/consequence.spw]
+  stage: "measure -> aggregate -> consequence"
+}
