@@ -80,6 +80,26 @@ export type RegisterPhase =
  */
 export const PHASE_ORDER: readonly RegisterPhase[] = ['lex', 'parse', 'sem', 'opt', 'prag'] as const
 
+// ── Liminality model ──────────────────────────────────────────
+
+/**
+ * Liminality — scope-awareness level for memory management.
+ * Controls GC policy and hardware-aligned memory placement.
+ *
+ *   0 = local   (stack, GC on block exit)
+ *   1 = liminal (heap, GC on scope exit, aware of peers)
+ *   2 = visible (pinned, GC on navigate-away)
+ *   3 = global  (persistent, survives session)
+ */
+export type Liminality = 0 | 1 | 2 | 3
+
+export const LIMINALITY_LABELS: Record<Liminality, string> = {
+  0: 'local',
+  1: 'liminal',
+  2: 'visible',
+  3: 'global',
+} as const
+
 /**
  * Per-phase metadata produced when a cell is enriched.
  * Facets are additive — the cell keeps all its earlier facets.
@@ -143,6 +163,17 @@ export interface RegisterMeta {
   phases?: PhaseEnvelope
   /** Typed address — undefined for legacy cells created with bare string keys */
   address?: RegisterAddress
+
+  // ── Acoustic fields ───────────────────────────────────────
+
+  /** Liminality — scope-awareness level (0=local … 3=global) */
+  liminality?: Liminality
+  /** Acoustic frequency — writes/sec over sliding window */
+  frequency?: number
+  /** Coupling — normalized inter-register reference density (0–1) */
+  coupling?: number
+  /** Measure depth — count of %[] observations applied to this cell */
+  measureDepth?: number
 }
 
 export interface RegisterEntry {

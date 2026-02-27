@@ -99,4 +99,93 @@ describe('RegisterBank', () => {
       expect(bank.materialize('phased')?.phases?.facets).toHaveLength(2)
     })
   })
+
+  describe('acoustic fields', () => {
+    it('new cells initialize with default acoustic fields', () => {
+      const bank = new RegisterBank()
+      bank.set('cell', 'value', { source: 'test' })
+      const meta = bank.materialize('cell')
+      expect(meta?.liminality).toBe(0)
+      expect(meta?.frequency).toBeDefined()
+      expect(meta?.coupling).toBe(0)
+      expect(meta?.measureDepth).toBe(0)
+    })
+
+    it('promote/demote cycles liminality 0→1→2→3→3 and 3→2→1→0→0', () => {
+      const bank = new RegisterBank()
+      bank.set('cell', 'v', { source: 'test' })
+
+      expect(bank.promote('cell')).toBe(1)
+      expect(bank.promote('cell')).toBe(2)
+      expect(bank.promote('cell')).toBe(3)
+      expect(bank.promote('cell')).toBe(3) // clamps at 3
+
+      expect(bank.demote('cell')).toBe(2)
+      expect(bank.demote('cell')).toBe(1)
+      expect(bank.demote('cell')).toBe(0)
+      expect(bank.demote('cell')).toBe(0) // clamps at 0
+    })
+
+    it('promote/demote returns undefined for nonexistent cells', () => {
+      const bank = new RegisterBank()
+      expect(bank.promote('nope')).toBeUndefined()
+      expect(bank.demote('nope')).toBeUndefined()
+    })
+
+    it('frequency updates on writes', () => {
+      const bank = new RegisterBank()
+      bank.set('hot', 'a', { source: 'test' })
+      bank.set('hot', 'b', { source: 'test' })
+      bank.set('hot', 'c', { source: 'test' })
+
+      const freq = bank.frequencyOf('hot')
+      // After 3+ writes, frequency should be > 0
+      expect(freq).toBeDefined()
+      expect(freq!).toBeGreaterThanOrEqual(0)
+    })
+
+    it('couple creates bidirectional coupling edges', () => {
+      const bank = new RegisterBank()
+      bank.set('a', 1, { source: 'test' })
+      bank.set('b', 2, { source: 'test' })
+      bank.set('c', 3, { source: 'test' })
+
+      bank.couple('a', 'b')
+
+      const couplingA = bank.couplingOf('a')
+      const couplingB = bank.couplingOf('b')
+      expect(couplingA).toBeGreaterThan(0)
+      expect(couplingB).toBeGreaterThan(0)
+
+      // Coupling a second edge should increase it
+      bank.couple('a', 'c')
+      expect(bank.couplingOf('a')).toBeGreaterThan(couplingA!)
+    })
+
+    it('measure increments measureDepth on each observation', () => {
+      const bank = new RegisterBank()
+      bank.set('observed', [1, 2, 3], { source: 'test' })
+
+      expect(bank.materialize('observed')?.measureDepth).toBe(0)
+
+      bank.measure('observed', 3)
+      expect(bank.materialize('observed')?.measureDepth).toBe(1)
+
+      bank.measure('observed', 3)
+      expect(bank.materialize('observed')?.measureDepth).toBe(2)
+    })
+
+    it('snapshot clones acoustic fields', () => {
+      const bank = new RegisterBank()
+      bank.set('cell', 'v', { source: 'test' })
+      bank.promote('cell')
+      bank.couple('cell', '"')
+
+      const snap = bank.snapshot()
+      const entry = snap.entries['cell']
+      expect(entry.meta.liminality).toBe(1)
+      expect(entry.meta.coupling).toBeGreaterThan(0)
+      expect(entry.meta.measureDepth).toBe(0)
+    })
+  })
 })

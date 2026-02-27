@@ -2,6 +2,7 @@ import { descriptorForKey } from './type-affinities'
 import type {
   PhaseFacet,
   PhaseEnvelope,
+  Liminality,
   RegisterEntry,
   RegisterMeta,
   RegisterPhase,
@@ -104,7 +105,13 @@ function clamp01(value: number): number {
 export class RegisterBank {
   private readonly entries = new Map<string, RegisterEntry>()
   private readonly lensIndex = new Map<string, Set<string>>()
+  /** Circular buffer of write timestamps per cell (last N) for frequency computation */
+  private readonly writeTimestamps = new Map<string, number[]>()
+  /** Coupling edges: Map<keyA, Set<keyB>> (bidirectional) */
+  private readonly couplingEdges = new Map<string, Set<string>>()
   private activeKey = DEFAULT_ACTIVE_KEY
+
+  private static readonly FREQUENCY_WINDOW_SIZE = 10
 
   constructor(initial: Record<string, RuntimeValue> = {}) {
     this.ensureEntry(DEFAULT_ACTIVE_KEY)
@@ -154,6 +161,9 @@ export class RegisterBank {
       immutable: options.immutable ?? entry.meta.immutable,
       provenance: this.pushProvenance(entry.meta.provenance, options.source ?? 'set'),
     }
+
+    // Track write timestamp for frequency computation
+    this.recordWriteTimestamp(key)
 
     // Phase enrichment — additive, in-place on existing cells
     if (options.phase) {
@@ -290,9 +300,63 @@ export class RegisterBank {
   }
 
   measure(name: string, scale = 1): number {
+    const entry = this.entries.get(name)
+    if (entry) {
+      entry.meta.measureDepth = (entry.meta.measureDepth ?? 0) + 1
+    }
     const value = this.get(name)
     const denominator = scale > 0 ? scale : 1
     return clamp01(runtimeMagnitude(value) / denominator)
+  }
+
+  // ── Liminality ──────────────────────────────────────────────
+
+  /** Promote a cell's liminality (0→1→2→3). Returns new level or undefined if cell doesn't exist. */
+  promote(key: string): Liminality | undefined {
+    const entry = this.entries.get(key)
+    if (!entry) return undefined
+    const current = entry.meta.liminality ?? 0
+    const next = Math.min(current + 1, 3) as Liminality
+    entry.meta.liminality = next
+    return next
+  }
+
+  /** Demote a cell's liminality (3→2→1→0). Returns new level or undefined if cell doesn't exist. */
+  demote(key: string): Liminality | undefined {
+    const entry = this.entries.get(key)
+    if (!entry) return undefined
+    const current = entry.meta.liminality ?? 0
+    const next = Math.max(current - 1, 0) as Liminality
+    entry.meta.liminality = next
+    return next
+  }
+
+  /** Return the current acoustic frequency of a cell (writes/sec). */
+  frequencyOf(key: string): number | undefined {
+    return this.entries.get(key)?.meta.frequency
+  }
+
+  // ── Coupling ───────────────────────────────────────────────
+
+  /** Register a coupling edge between two cells. Bidirectional. */
+  couple(keyA: string, keyB: string): void {
+    this.ensureEntry(keyA)
+    this.ensureEntry(keyB)
+
+    // Add bidirectional edges
+    if (!this.couplingEdges.has(keyA)) this.couplingEdges.set(keyA, new Set())
+    if (!this.couplingEdges.has(keyB)) this.couplingEdges.set(keyB, new Set())
+    this.couplingEdges.get(keyA)!.add(keyB)
+    this.couplingEdges.get(keyB)!.add(keyA)
+
+    // Update normalized coupling on both cells
+    this.updateCoupling(keyA)
+    this.updateCoupling(keyB)
+  }
+
+  /** Return the coupling value (0–1) for a cell. */
+  couplingOf(key: string): number | undefined {
+    return this.entries.get(key)?.meta.coupling
   }
 
   snapshot(): RegisterSnapshot {
@@ -365,6 +429,10 @@ export class RegisterBank {
         immutable: false,
         provenance: ['init'],
         lenses: [],
+        liminality: 0,
+        frequency: 0,
+        coupling: 0,
+        measureDepth: 0,
       },
     }
 
@@ -419,5 +487,40 @@ export class RegisterBank {
       lineage: existing.lineage,
       evictable: existing.evictable,
     }
+  }
+
+  /** Record a write timestamp and recompute acoustic frequency for a cell. */
+  private recordWriteTimestamp(key: string): void {
+    const now = Date.now()
+    let timestamps = this.writeTimestamps.get(key)
+    if (!timestamps) {
+      timestamps = []
+      this.writeTimestamps.set(key, timestamps)
+    }
+
+    timestamps.push(now)
+    // Keep only the last N timestamps (circular buffer)
+    if (timestamps.length > RegisterBank.FREQUENCY_WINDOW_SIZE) {
+      timestamps.splice(0, timestamps.length - RegisterBank.FREQUENCY_WINDOW_SIZE)
+    }
+
+    // Compute frequency: writes per second over the window
+    const entry = this.entries.get(key)
+    if (entry && timestamps.length >= 2) {
+      const windowMs = now - timestamps[0]
+      entry.meta.frequency = windowMs > 0
+        ? (timestamps.length - 1) / (windowMs / 1000)
+        : 0
+    }
+  }
+
+  /** Recompute normalized coupling for a cell based on its edge count. */
+  private updateCoupling(key: string): void {
+    const entry = this.entries.get(key)
+    if (!entry) return
+    const edges = this.couplingEdges.get(key)
+    const edgeCount = edges ? edges.size : 0
+    const totalCells = Math.max(this.entries.size - 1, 1) // exclude self
+    entry.meta.coupling = clamp01(edgeCount / totalCells)
   }
 }
