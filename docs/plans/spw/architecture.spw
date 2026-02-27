@@ -7,6 +7,57 @@
 ^["roots"]{
   @src:  ~"../src"
   @spec: ~"../lib/spw-v0.1.0-alpha"
+  @spw:  ~"../../.spw"
+}
+
+^[".spw_directory"]{
+  # The .spw/ directory is the workspace's living control plane.
+  # It holds experimental biomes, harness probes, tuning corpus,
+  # and evolution logs — all as .spw files.
+  #:architecture #!convention
+  #>spw_directory
+
+  =manifest: ~"../../.spw/workspace.spw"
+
+  structure: {
+    biome:      "experimental dialect spaces (ocean, future biomes)"
+    harness:    "probes, evaluations, runs — measurement infrastructure"
+    dev:        "hot reload loops and developer tooling"
+    evolution:  "scoped syntax experiments, opt-in per path"
+    gen:        "generated projections (excluded from IDE by convention)"
+    literate:   "literate programming exhibits"
+    reflection: "loop observation, concept clustering, projection refs"
+    tuning:     "curated corpus for model tuning"
+  }
+
+  naming: {
+    # Naming conventions for .spw files and directories.
+    #!convention
+
+    "prefer full words over abbreviations — 'phase' not 'ph', 'cache' not 'c'",
+    "prefer folders over hyphens — 'harness/probes/loop.spw' not 'probe-loop.spw'",
+    "one #>anchor per file — unique, prefixed with 'spw_' for namespace clarity",
+    "=dialect: marks experimental files — 'experimental.ocean.phase'",
+    "=channel: marks stability — 'stable' or 'experimental'",
+  }
+
+  annotations: {
+    # Every .spw file should carry these for LSP discoverability.
+    #:lsp
+
+    "one #>anchor — unique jump target, navigable via Cmd+T",
+    "#:lens — categorizes the file for concept clustering",
+    "#!intent — declares what the file does, not just what it is",
+    "%[measure] — quantifies caching tier, physics, or relevance",
+    "=config: — declares constraints, policies, or parameters",
+  }
+
+  %[cache_alignment]{
+    "biome files map to cache tiers via the ocean cache model",
+    "harness probes are warm-tier cached (stable between fill cycles)",
+    "generated projections are cold-tier (rebuilt, not frequently read)",
+    "workspace.spw itself is never cached — always read fresh",
+  }
 }
 
 ^["layers"]{
