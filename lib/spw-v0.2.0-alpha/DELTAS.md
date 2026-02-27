@@ -8,8 +8,18 @@ Principle: changes should read like an argument.
 
 ## Status
 
-Most documents in this library are currently redirect stubs to v0.1.0-alpha.
-As v0.2.0 material is authored, stubs should be replaced with canonical text.
+Core status (2026-02-26):
+- `core/*.md` redirect stubs replaced with v0.2.0 contract stubs.
+- Core files now follow a shared scaffold:
+  - `## Status`
+  - `## v0.2.0 Contract Stub`
+  - `## Invariants`
+  - `## Implementation Hooks`
+  - `## Open Questions`
+
+Remaining status:
+- Non-core folders still include redirect stubs and should migrate incrementally.
+- Redirect stubs remain acceptable outside `core/` during alpha.
 
 ## Proposed v0.2.0 focus areas
 
@@ -24,3 +34,10 @@ A redirect stub MUST:
 - Declare itself as a redirect stub.
 - Point to the v0.1.0-alpha canonical source path.
 - Point to this DELTAS.md for planned/known differences.
+
+## Release-prep checks
+
+For v0.2.0-alpha prep, run:
+- `npm run lint:v020` (core contract-stub integrity)
+- `npm run lint:spw` (parse validation for `.spw`)
+- `npm run lint:docs:strict` (path and Writerside consistency)

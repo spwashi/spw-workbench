@@ -7,9 +7,12 @@ Design intent:
 - Preserve the older v0.1.0-alpha library as an archival reference.
 - Make changes legible as a small set of deltas, not a rewrite storm.
 
-If a file here is marked as a redirect stub, it points to the v0.1.0-alpha
-canonical text until the v0.2.0 material is authored.
+Current release-prep status:
+- `core/` is now authored as v0.2.0 contract stubs (no redirect placeholders).
+- `runtime/`, `domains/`, `dialects/`, `applications/`, and `infra/` are still mixed redirect/authoring surfaces.
+- `DELTAS.md` is the canonical tracker for what has shipped and what is pending.
 
 See also:
 - ../spw-v0.1.0-alpha/ (archival reference)
 - ./DELTAS.md (what changed / what is planned)
+- ./core/ (v0.2.0 contract stubs for core implementation prep)
