@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import { AnnotationIndex } from './annotation-index';
 
 export function activate(context: vscode.ExtensionContext) {
     const documentSelector = { language: 'spw' };
@@ -497,6 +498,13 @@ export function activate(context: vscode.ExtensionContext) {
         },
         legend
     );
+
+    // =========================================================================
+    // Annotation Index (workspace-wide #-annotation scanner)
+    // =========================================================================
+    const annotationIndex = new AnnotationIndex();
+    annotationIndex.activate();
+    context.subscriptions.push({ dispose: () => annotationIndex.dispose() });
 
     context.subscriptions.push(linkProvider, completionProvider, hoverProvider, symbolProvider, semanticTokensProvider);
 }
