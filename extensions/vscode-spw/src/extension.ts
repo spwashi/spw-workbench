@@ -301,6 +301,28 @@ export function activate(context: vscode.ExtensionContext) {
                 return new vscode.Hover(md, new vscode.Range(position.line, position.character, position.line, position.character + 1));
             }
 
+            // ── 3.5. @-root hover ────────────────────────────────
+            const rootMatch = /@([A-Za-z_][A-Za-z0-9_]*)/.exec(line);
+            if (rootMatch && position.character >= (rootMatch.index ?? 0) && position.character <= (rootMatch.index ?? 0) + rootMatch[0].length) {
+                const sigil = '@' + rootMatch[1];
+                const segments = ROOT_MAP[sigil];
+                if (segments) {
+                    const md = new vscode.MarkdownString();
+                    md.appendMarkdown(`**\`${sigil}\`** → \`${segments.join('/')}\`\n\n`);
+                    // Count annotations under this root
+                    const rootPath = segments.join('/');
+                    const allAnnotations = annotationIndex.all();
+                    const underRoot = allAnnotations.filter(a => a.file.fsPath.includes(rootPath));
+                    const uniqueFiles = new Set(underRoot.map(a => a.file.fsPath));
+                    const lenses = [...new Set(underRoot.filter(a => a.kind === 'lens').map(a => a.name))];
+                    md.appendMarkdown(`**${uniqueFiles.size}** file(s), **${underRoot.length}** annotation(s)\n\n`);
+                    if (lenses.length > 0) {
+                        md.appendMarkdown(`Lenses: ${lenses.slice(0, 8).map(l => `\`#:${l}\``).join(', ')}\n`);
+                    }
+                    return new vscode.Hover(md, new vscode.Range(position.line, rootMatch.index ?? 0, position.line, (rootMatch.index ?? 0) + rootMatch[0].length));
+                }
+            }
+
             // ── 4. Path peek (existing) ────────────────────────────
             const pathRegex = /(?:~[^"]*"([^"]+)")|(?:(@[A-Za-z_][A-Za-z0-9_]*)(?:\/(?:\.\.|[A-Za-z_*])[A-Za-z0-9_.\-*]*)+)|(?:(?:\.\.|[A-Za-z_])[A-Za-z0-9_.\-]*(?:\/(?:\.\.|[A-Za-z_*])[A-Za-z0-9_.\-*]*)+)/g;
             const range = document.getWordRangeAtPosition(position, pathRegex);
