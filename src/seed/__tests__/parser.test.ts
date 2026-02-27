@@ -5,6 +5,24 @@
 import { describe, it, expect } from 'vitest'
 import { parse, parseExpression } from '../parser'
 
+function primaryExpression(result: ReturnType<typeof parse>) {
+  const root = result.ast?.expression
+  if (!root) {
+    throw new Error('Expected root expression')
+  }
+  if (root.type === 'Expression') {
+    return root
+  }
+  if (root.type === 'Sequence') {
+    const first = root.expressions[0]
+    if (!first) {
+      throw new Error('Expected at least one expression in sequence')
+    }
+    return first
+  }
+  throw new Error(`Expected Expression or Sequence, found ${root.type}`)
+}
+
 describe('Parser', () => {
   describe('Basic Parsing', () => {
     it('handles empty input', () => {
@@ -44,12 +62,7 @@ describe('Parser', () => {
     it('parses underscore operator labels', () => {
       const result = parse('?_query["x"]')
       expect(result.success).toBe(true)
-
-      const expression = result.ast?.expression
-      expect(expression?.type).toBe('Expression')
-      if (!expression || expression.type !== 'Expression') {
-        throw new Error('Expected Expression')
-      }
+      const expression = primaryExpression(result)
       const term = expression.terms[0]
       expect(term?.type).toBe('Operation')
       if (term && term.type === 'Operation') {
@@ -61,12 +74,7 @@ describe('Parser', () => {
     it('parses @_label as a labeled operation (not a reference)', () => {
       const result = parse('@_nav["next"]')
       expect(result.success).toBe(true)
-
-      const expression = result.ast?.expression
-      expect(expression?.type).toBe('Expression')
-      if (!expression || expression.type !== 'Expression') {
-        throw new Error('Expected Expression')
-      }
+      const expression = primaryExpression(result)
 
       const term = expression.terms[0]
       expect(term?.type).toBe('Operation')
@@ -92,12 +100,7 @@ describe('Parser', () => {
     it('parses modifier after operator', () => {
       const result = parse('!boon["value"]')
       expect(result.success).toBe(true)
-
-      const expression = result.ast?.expression
-      expect(expression?.type).toBe('Expression')
-      if (!expression || expression.type !== 'Expression') {
-        throw new Error('Expected Expression')
-      }
+      const expression = primaryExpression(result)
       const term = expression.terms[0]
       expect(term?.type).toBe('Operation')
       if (term && term.type === 'Operation') {
@@ -108,12 +111,7 @@ describe('Parser', () => {
     it('parses chained modifiers after operator', () => {
       const result = parse('!bone.boon["config"]')
       expect(result.success).toBe(true)
-
-      const expression = result.ast?.expression
-      expect(expression?.type).toBe('Expression')
-      if (!expression || expression.type !== 'Expression') {
-        throw new Error('Expected Expression')
-      }
+      const expression = primaryExpression(result)
       const term = expression.terms[0]
       expect(term?.type).toBe('Operation')
       if (term && term.type === 'Operation') {
@@ -166,12 +164,7 @@ describe('Parser', () => {
     it('keeps bare frame values as literals (not references)', () => {
       const result = parse('![42]')
       expect(result.success).toBe(true)
-
-      const expression = result.ast?.expression
-      expect(expression?.type).toBe('Expression')
-      if (!expression || expression.type !== 'Expression') {
-        throw new Error('Expected Expression')
-      }
+      const expression = primaryExpression(result)
 
       const term = expression.terms[0]
       expect(term?.type).toBe('Operation')
@@ -193,12 +186,7 @@ describe('Parser', () => {
     it('parses explicit frame references with @', () => {
       const result = parse('![@value]')
       expect(result.success).toBe(true)
-
-      const expression = result.ast?.expression
-      expect(expression?.type).toBe('Expression')
-      if (!expression || expression.type !== 'Expression') {
-        throw new Error('Expected Expression')
-      }
+      const expression = primaryExpression(result)
 
       const term = expression.terms[0]
       expect(term?.type).toBe('Operation')
@@ -234,6 +222,38 @@ describe('Parser', () => {
       const result = parse('![1, 2, 3]')
       expect(result.success).toBe(true)
     })
+
+    it('rejects bare local path sugar in low-context mode', () => {
+      const result = parseExpression('~./runtime')
+      expect(result.success).toBe(false)
+    })
+
+    it('accepts bare local path sugar in high-context mode and desugars to quoted payload', () => {
+      const result = parseExpression('~./runtime', { contextMode: 'high' })
+      expect(result.success).toBe(true)
+      const term = result.ast?.terms[0]
+      expect(term?.type).toBe('PathRef')
+      if (!term || term.type !== 'PathRef') {
+        throw new Error('Expected PathRef')
+      }
+      expect(term.path.token.value).toBe('"./runtime"')
+    })
+
+    it('accepts annotation path sugar in high-context mode and desugars to quoted payload', () => {
+      const result = parse('~#spec ./runtime/spw/register-bank.spw', { contextMode: 'high' })
+      expect(result.success).toBe(true)
+      expect(result.ast?.annotations.length).toBeGreaterThan(0)
+      const ann = result.ast?.annotations[0]
+      expect(ann?.type).toBe('Annotation')
+      if (!ann || ann.type !== 'Annotation') {
+        throw new Error('Expected Annotation')
+      }
+      expect(ann.value?.type).toBe('Literal')
+      if (!ann.value || ann.value.type !== 'Literal') {
+        throw new Error('Expected annotation literal value')
+      }
+      expect(ann.value.token.value).toBe('"./runtime/spw/register-bank.spw"')
+    })
   })
 
   describe('Flow Connectors', () => {
@@ -256,22 +276,14 @@ describe('Parser', () => {
     it('parses mapping connector', () => {
       const result = parse('![1] -> ![2]')
       expect(result.success).toBe(true)
-      const expression = result.ast?.expression
-      expect(expression?.type).toBe('Expression')
-      if (!expression || expression.type !== 'Expression') {
-        throw new Error('Expected Expression')
-      }
+      const expression = primaryExpression(result)
       expect(expression.connectors[0].value).toBe('->')
     })
 
     it('parses path connector', () => {
       const result = parse('![1] / ![2]')
       expect(result.success).toBe(true)
-      const expression = result.ast?.expression
-      expect(expression?.type).toBe('Expression')
-      if (!expression || expression.type !== 'Expression') {
-        throw new Error('Expected Expression')
-      }
+      const expression = primaryExpression(result)
       expect(expression.connectors[0].value).toBe('/')
     })
   })
@@ -280,33 +292,21 @@ describe('Parser', () => {
     it('parses n-range wrapper', () => {
       const result = parse('(( !["x"] ))')
       expect(result.success).toBe(true)
-      const expression = result.ast?.expression
-      expect(expression?.type).toBe('Expression')
-      if (!expression || expression.type !== 'Expression') {
-        throw new Error('Expected Expression')
-      }
+      const expression = primaryExpression(result)
       expect(expression.terms[0]?.type).toBe('NRange')
     })
 
     it('parses streaming boundary', () => {
       const result = parse('<< !["x"] >>')
       expect(result.success).toBe(true)
-      const expression = result.ast?.expression
-      expect(expression?.type).toBe('Expression')
-      if (!expression || expression.type !== 'Expression') {
-        throw new Error('Expected Expression')
-      }
+      const expression = primaryExpression(result)
       expect(expression.terms[0]?.type).toBe('Stream')
     })
 
     it('parses streaming boundary with sink', () => {
       const result = parse('<< !["x"] >> @sink')
       expect(result.success).toBe(true)
-      const expression = result.ast?.expression
-      expect(expression?.type).toBe('Expression')
-      if (!expression || expression.type !== 'Expression') {
-        throw new Error('Expected Expression')
-      }
+      const expression = primaryExpression(result)
       const term = expression.terms[0]
       if (term && term.type === 'Stream') {
         expect(term.sink?.type).toBe('Reference')
@@ -316,11 +316,7 @@ describe('Parser', () => {
     it('parses capsule shell', () => {
       const result = parse('<c[1]{ !["y"] }>')
       expect(result.success).toBe(true)
-      const expression = result.ast?.expression
-      expect(expression?.type).toBe('Expression')
-      if (!expression || expression.type !== 'Expression') {
-        throw new Error('Expected Expression')
-      }
+      const expression = primaryExpression(result)
       expect(expression.terms[0]?.type).toBe('Capsule')
     })
   })

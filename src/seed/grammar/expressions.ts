@@ -153,6 +153,14 @@ export const matchNode: Parser<MatchNode> = named('match',
 
 const INLINE_PAYLOAD_OPERATORS = new Set(['#', '?'])
 const INLINE_PAYLOAD_PUNCT = new Set(['.', '#', '?', '!'])
+const LOW_CONTEXT_PATH_SUGAR_ERROR =
+  'Unquoted local path references are high-context sugar. Use ~"..." or parse with contextMode: "high".'
+
+function isBarePathStartToken(token: Token): boolean {
+  if (token.type === 'OPERATOR' && token.value === '.') return true
+  if (token.type === 'CONNECTOR' && (token.value === '..' || token.value === '/')) return true
+  return false
+}
 
 function shouldStopLinePayload(token: Token, previous?: Token): boolean {
   if (token.type === 'COMMENT') return true
@@ -253,6 +261,26 @@ export const operationNode: Parser<OperationNode> = named('operation',
 
     const operatorToken = opStep.value.value!
     consumed += opStep.value.consumed
+
+    // In low-context mode, `~` followed by ./, ../, or /... is reserved for quoted path refs only.
+    // Prevent treating this form as a generic operation chain.
+    skipWhitespace(stream)
+    if (
+      operatorToken.value === '~'
+      && stream.contextMode === 'low'
+      && isBarePathStartToken(current(stream))
+    ) {
+      return {
+        success: false,
+        consumed: 0,
+        error: {
+          message: LOW_CONTEXT_PATH_SUGAR_ERROR,
+          expected: ['string'],
+          found: current(stream).type,
+          recoverable: false,
+        },
+      }
+    }
 
     // Optional operator label (strict adjacency required: !label, not ! label)
     // Note: lexeme() skips trailing whitespace, so we must check token positions.
