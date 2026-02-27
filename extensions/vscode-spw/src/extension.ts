@@ -168,29 +168,115 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     // =========================================================================
+    // Annotation Index (workspace-wide #-annotation scanner)
+    // =========================================================================
+    const annotationIndex = new AnnotationIndex();
+    annotationIndex.activate();
+    context.subscriptions.push({ dispose: () => annotationIndex.dispose() });
+
+    // =========================================================================
+    // Operator Semantics Table (from spirit sequence)
+    // =========================================================================
+    const SIGIL_SEMANTICS: Record<string, { role: string; physics: string; phase: string }> = {
+        '^': { role: 'integration / framing', physics: 'emission — bind upward', phase: 'phase 6' },
+        '!': { role: 'action / injection', physics: 'kinetic — fires effect on world', phase: 'phase 0' },
+        '?': { role: 'wonder / probe', physics: 'measurement — is there something?', phase: 'phase 1' },
+        '~': { role: 'potential / superposition', physics: 'wavefunction — defer, name', phase: 'phase 2' },
+        '@': { role: 'perspective / observer', physics: 'observation — push scope', phase: 'phase 3' },
+        '&': { role: 'confluence / merge', physics: 'entanglement — combine frames', phase: 'phase 4' },
+        '*': { role: 'value / collapse', physics: 'collapse — scope to concrete', phase: 'phase 5' },
+        '=': { role: 'config / constraint', physics: 'bias — forcing state', phase: 'binding' },
+        '%': { role: 'measure / observation', physics: 'scalar — quantify relevance', phase: 'observe' },
+        '#': { role: 'annotation / resonance', physics: 'vibration — self-reference, meta', phase: 'meta' },
+        '.': { role: 'ground / access', physics: 'ground state — context, separator', phase: 'access' },
+    };
+
+    // =========================================================================
     // HoverProvider (Semantic Path Peek)
     // =========================================================================
     const hoverProvider = vscode.languages.registerHoverProvider(documentSelector, {
-        async provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) {
+        async provideHover(document: vscode.TextDocument, position: vscode.Position, _token: vscode.CancellationToken) {
+            const line = document.lineAt(position).text;
+            const charAtPos = line[position.character];
+
+            // ── 1. #-annotation hover ──────────────────────────────
+            const annotRe = /#(!|:|>)?([a-zA-Z_][a-zA-Z0-9_]*)/g;
+            let annotMatch: RegExpExecArray | null;
+            while ((annotMatch = annotRe.exec(line)) !== null) {
+                const start = annotMatch.index;
+                const end = start + annotMatch[0].length;
+                if (position.character >= start && position.character < end) {
+                    const prefix = annotMatch[1] || '';
+                    const name = annotMatch[2];
+                    const kindLabel: Record<string, string> = { '': 'topic', ':': 'lens', '!': 'intent', '>': 'anchor' };
+                    const kind = kindLabel[prefix] || 'topic';
+                    const entries = annotationIndex.lookup(name);
+                    const fileCount = new Set(entries.map(e => e.file.toString())).size;
+
+                    const md = new vscode.MarkdownString();
+                    md.appendMarkdown(`**#${prefix}${name}** — *${kind}*\n\n`);
+                    md.appendMarkdown(`Referenced in **${fileCount}** file(s), **${entries.length}** occurrence(s)\n\n`);
+                    const seen = new Set<string>();
+                    for (const e of entries) {
+                        const rel = vscode.workspace.asRelativePath(e.file);
+                        if (!seen.has(rel) && seen.size < 5) {
+                            seen.add(rel);
+                            md.appendMarkdown(`- \`${rel}\`:${e.line + 1}${e.sectionLabel ? ` (${e.sectionLabel})` : ''}\n`);
+                        }
+                    }
+                    if (fileCount > 5) md.appendMarkdown(`- *...and ${fileCount - 5} more*\n`);
+                    return new vscode.Hover(md, new vscode.Range(position.line, start, position.line, end));
+                }
+            }
+
+            // ── 2. ^["frame"] hover ────────────────────────────────
+            const frameRe = /\^(?:\["([^"]+)"\]|"([^"]+)")/;
+            const frameMatch = line.match(frameRe);
+            if (frameMatch) {
+                const fStart = line.indexOf(frameMatch[0]);
+                const fEnd = fStart + frameMatch[0].length;
+                if (position.character >= fStart && position.character < fEnd) {
+                    const frameName = frameMatch[1] || frameMatch[2];
+                    const fileAnnotations = annotationIndex.forFile(document.uri);
+                    const inSection = fileAnnotations.filter(a => a.sectionLabel === frameName);
+                    const md = new vscode.MarkdownString();
+                    md.appendMarkdown(`**^["${frameName}"]** — *frame*\n\n`);
+                    if (inSection.length > 0) {
+                        md.appendMarkdown(`Annotations:\n\n`);
+                        const pfx: Record<string, string> = { topic: '#', lens: '#:', intent: '#!', anchor: '#>' };
+                        for (const a of inSection) md.appendMarkdown(`- \`${pfx[a.kind]}${a.name}\` (${a.kind})\n`);
+                    } else {
+                        md.appendMarkdown(`*No annotations in this frame*\n`);
+                    }
+                    return new vscode.Hover(md, new vscode.Range(position.line, fStart, position.line, fEnd));
+                }
+            }
+
+            // ── 3. Bare sigil hover ────────────────────────────────
+            if (charAtPos && SIGIL_SEMANTICS[charAtPos]) {
+                const sem = SIGIL_SEMANTICS[charAtPos];
+                const md = new vscode.MarkdownString();
+                md.appendMarkdown(`**\`${charAtPos}\`** — *${sem.role}*\n\n`);
+                md.appendMarkdown(`| | |\n|:--|:--|\n`);
+                md.appendMarkdown(`| **Physics** | ${sem.physics} |\n`);
+                md.appendMarkdown(`| **Phase** | ${sem.phase} |\n`);
+                return new vscode.Hover(md, new vscode.Range(position.line, position.character, position.line, position.character + 1));
+            }
+
+            // ── 4. Path peek (existing) ────────────────────────────
             const pathRegex = /(?:~[^"]*"([^"]+)")|(?:(@[A-Za-z_][A-Za-z0-9_]*)(?:\/(?:\.\.|[A-Za-z_*])[A-Za-z0-9_.\-*]*)+)|(?:(?:\.\.|[A-Za-z_])[A-Za-z0-9_.\-]*(?:\/(?:\.\.|[A-Za-z_*])[A-Za-z0-9_.\-*]*)+)/g;
             const range = document.getWordRangeAtPosition(position, pathRegex);
-
             if (!range) return null;
 
             const matchedText = document.getText(range);
             let targetUri: vscode.Uri | undefined;
-
-            // Re-run regex on the extracted text to get capture groups
-            // Reset lastIndex because it's a global regex instance
             pathRegex.lastIndex = 0;
             const match = pathRegex.exec(matchedText);
             if (!match) return null;
 
-            // Resolve URI (same logic as DocumentLink)
             if (match[1]) {
-                const relativePath = match[1];
                 const dir = path.dirname(document.uri.fsPath);
-                targetUri = vscode.Uri.file(path.resolve(dir, relativePath));
+                targetUri = vscode.Uri.file(path.resolve(dir, match[1]));
             } else if (match[2]) {
                 const sigil = match[2];
                 const workspaceFolders = vscode.workspace.workspaceFolders;
@@ -213,25 +299,20 @@ export function activate(context: vscode.ExtensionContext) {
             } else {
                 const workspaceFolders = vscode.workspace.workspaceFolders;
                 if (workspaceFolders && workspaceFolders.length > 0) {
-                    const root = workspaceFolders[0].uri.fsPath;
-                    targetUri = vscode.Uri.file(path.join(root, matchedText));
+                    targetUri = vscode.Uri.file(path.join(workspaceFolders[0].uri.fsPath, matchedText));
                 }
             }
-
             if (!targetUri) return null;
 
             try {
                 const fileData = await vscode.workspace.fs.readFile(targetUri);
                 const fileText = new TextDecoder('utf-8').decode(fileData);
                 const lines = fileText.split('\n').slice(0, 10);
-
                 const markdown = new vscode.MarkdownString();
                 markdown.appendCodeblock(lines.join('\n') + (fileText.split('\n').length > 10 ? '\n...' : ''), 'spw');
                 markdown.appendMarkdown(`\n*Peek: \`${vscode.workspace.asRelativePath(targetUri)}\`*`);
-
                 return new vscode.Hover(markdown, range);
-            } catch (err) {
-                // File unreadable or doesn't exist
+            } catch {
                 return null;
             }
         }
@@ -498,13 +579,6 @@ export function activate(context: vscode.ExtensionContext) {
         },
         legend
     );
-
-    // =========================================================================
-    // Annotation Index (workspace-wide #-annotation scanner)
-    // =========================================================================
-    const annotationIndex = new AnnotationIndex();
-    annotationIndex.activate();
-    context.subscriptions.push({ dispose: () => annotationIndex.dispose() });
 
     // =========================================================================
     // WorkspaceSymbolProvider (#-annotation navigation via Cmd+T)
