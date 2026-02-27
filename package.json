@@ -9,6 +9,7 @@
   "scripts": {
     "lsp": "node --import tsx scripts/lsp/stdio-upstream-bridge.ts",
     "lint:v020": "node --import tsx scripts/analyzers/v020-core-stub-check.ts",
+    "lint:v020:runtime": "node --import tsx scripts/analyzers/v020-runtime-stub-check.ts && node --import tsx scripts/analyzers/runtime-filename-check.ts",
     "lint:spw": "node --import tsx scripts/analyzers/spw-syntax-validate.ts -- --exclude .agents",
     "lint:writerside": "node --import tsx scripts/analyzers/writerside-check.ts",
     "lint:docs": "node --import tsx scripts/analyzers/writerside-check.ts",
@@ -16,6 +17,7 @@
     "build:vscode": "cd extensions/vscode-spw && npm install && npm run compile",
     "build:intellij": "cd extensions/intellij-spw && ./gradlew buildPlugin",
     "build:extensions": "npm run build:vscode && npm run build:intellij",
+    "test:runtime": "vitest --config vitest.runtime.config.ts run",
     "test:dom": "vitest --config vitest.dom.config.ts run",
     "test:dom:watch": "vitest --config vitest.dom.config.ts"
   },

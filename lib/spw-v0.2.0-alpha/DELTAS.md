@@ -17,9 +17,14 @@ Core status (2026-02-26):
   - `## Implementation Hooks`
   - `## Open Questions`
 
+Runtime status (2026-02-26):
+- `runtime/*.md` redirect stubs replaced with v0.2.0 contract stubs.
+- Runtime docs now align to `src/runtime` foundation surfaces (state, interpreter, pipeline).
+- `#` operator framing in runtime docs now includes aggregation/intersection + lens-indexed cache targeting.
+
 Remaining status:
 - Non-core folders still include redirect stubs and should migrate incrementally.
-- Redirect stubs remain acceptable outside `core/` during alpha.
+- Redirect stubs remain acceptable outside `core/` and `runtime/` during alpha.
 
 ## Proposed v0.2.0 focus areas
 
@@ -39,5 +44,6 @@ A redirect stub MUST:
 
 For v0.2.0-alpha prep, run:
 - `npm run lint:v020` (core contract-stub integrity)
+- `npm run lint:v020:runtime` (runtime contract-stub + filename integrity)
 - `npm run lint:spw` (parse validation for `.spw`)
 - `npm run lint:docs:strict` (path and Writerside consistency)

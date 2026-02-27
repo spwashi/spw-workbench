@@ -1,0 +1,49 @@
+# Runtime Foundation (v0.2.0-alpha)
+#
+# Release-day bridge from parse output to runtime state.
+
+^"intent"{
+  goal: "Establish a deterministic runtime baseline while full VM semantics remain in-progress",
+  posture: ["incremental", "testable", "portable"],
+  release_day: "Ship runtime scaffolding + clear extension seams",
+}
+
+^"source_files"{
+  ~<runtime>"../../src/runtime/index.ts"
+  ~<state>"../../src/runtime/state/types.ts"
+  ~<registers>"../../src/runtime/state/register-bank.ts"
+  ~<interpreter>"../../src/runtime/interpreter/interpreter.ts"
+  ~<pipeline>"../../src/runtime/pipeline/run-spw.ts"
+}
+
+^"flow"{
+  parse: "runSpw() parses source (with desugar default) via src/seed",
+  normalize: "interpreter converts AST to ONF via normalizeToONF",
+  execute: "evaluate ONF into RuntimeValue + register deltas",
+  report: "return parse output + runtime trace + register snapshot",
+}
+
+^"resonance"{
+  operator: "#",
+  role: "aggregation/intersection + lens-indexed cache targeting",
+  behavior: [
+    "single operand: direct resonate write",
+    "array operands: strict intersection reduction",
+    "record operands: key intersection with equal-value guard"
+  ],
+  cache_lens: "resonate(name, value, lens) updates lens index for cache optimizers",
+}
+
+^"naming"{
+  policy: "kebab-case runtime filenames",
+  checker: "scripts/analyzers/runtime-filename-check.ts",
+  note: "__tests__ and README.md are explicit exceptions",
+}
+
+^"release_deferred"{
+  deferred: [
+    "bytecode/VM execution",
+    "UI keyboard binding integration",
+    "multi-surface runtime persistence"
+  ]
+}
