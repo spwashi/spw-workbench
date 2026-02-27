@@ -59,19 +59,31 @@ class SpwLspServerSupportProvider : LspServerSupportProvider {
             return
         }
 
-        val scriptPath = Paths.get(workDir, "scripts", "lsp", "stdio-server.ts")
-        if (!Files.isRegularFile(scriptPath)) {
-            notifyOnce(project, LspStartupIssue.MissingServerScript, "Spw LSP script not found at ${scriptPath}.")
+        if (!Files.isRegularFile(Paths.get(workDir, "package.json"))) {
+            notifyOnce(
+                project,
+                LspStartupIssue.MissingPackageJson,
+                "Spw LSP requires a package.json in the configured working directory: $workDir."
+            )
             return
         }
 
-        if (!isExecutableAvailable("npx", workDir)) {
-            notifyOnce(project, LspStartupIssue.MissingNpx, "Spw LSP requires Node.js with npx available in PATH.")
+        if (!hasLspScript(workDir)) {
+            notifyOnce(
+                project,
+                LspStartupIssue.MissingLspScript,
+                "Spw LSP requires an \"lsp\" script in package.json (expected command: npm run lsp)."
+            )
+            return
+        }
+
+        if (!isExecutableAvailable("npm", workDir)) {
+            notifyOnce(project, LspStartupIssue.MissingNpm, "Spw LSP requires Node.js with npm available in PATH.")
             return
         }
 
         serverStarter.ensureServerStarted(
-            SpwLspServerDescriptor(project, "Spw", listOf("npx", "tsx", scriptPath.toString()), workDir)
+            SpwLspServerDescriptor(project, "Spw", listOf("npm", "run", "lsp"), workDir)
         )
     }
 
@@ -97,6 +109,16 @@ class SpwLspServerSupportProvider : LspServerSupportProvider {
         }
     }
 
+    private fun hasLspScript(workDir: String): Boolean {
+        val packageJsonPath = Paths.get(workDir, "package.json")
+        if (!Files.isRegularFile(packageJsonPath)) return false
+        return try {
+            Files.readString(packageJsonPath).contains("\"lsp\"")
+        } catch (_: Exception) {
+            false
+        }
+    }
+
     private fun notifyOnce(project: Project, issue: LspStartupIssue, message: String) {
         val notified = project.getUserData(NOTIFIED_ISSUES_KEY) ?: mutableSetOf<LspStartupIssue>().also {
             project.putUserData(NOTIFIED_ISSUES_KEY, it)
@@ -113,8 +135,9 @@ class SpwLspServerSupportProvider : LspServerSupportProvider {
     private enum class LspStartupIssue {
         MissingProjectRoot,
         MissingWorkDir,
-        MissingServerScript,
-        MissingNpx,
+        MissingPackageJson,
+        MissingLspScript,
+        MissingNpm,
         MissingCommand,
     }
 

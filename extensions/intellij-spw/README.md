@@ -40,7 +40,7 @@ To run a development instance of IntelliJ with the plugin installed:
 By default, the plugin starts the LSP server using:
 
 ```
-npx tsx scripts/lsp/stdio-server.ts
+npm run lsp
 ```
 
 If your project layout differs, open **Settings | Tools | Spw LSP** and configure a custom command
@@ -48,7 +48,9 @@ and/or working directory.
 
 Tips:
 - Leave fields empty to use defaults.
-- Set the working directory to the repo root containing `scripts/lsp/stdio-server.ts`.
+- Set the working directory to the repo root containing `package.json` with an `lsp` script.
+- The default launcher checks, in order: `SPW_LSP_SERVER_PATH`, local `scripts/lsp/stdio-server.ts`,
+  then the `remote.lore.url` checkout path for `scripts/lsp/stdio-server.ts`.
 
 ### Color Semantics
 
