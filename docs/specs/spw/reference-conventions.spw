@@ -77,3 +77,81 @@
   grep_friendly: "~< and ~# are unique prefixes for ripgrep"
   existing_compat: "Plain ~\"path\" remains valid (no concept, no tag)"
 }
+
+^"quote_policy"{
+  local_path_refs: {
+    syntax: '~"path"',
+    rule: "quotes required",
+    why: "removes lexical ambiguity and preserves exact payload boundaries"
+  }
+  root_alias_refs: {
+    syntax: "@alias/path",
+    rule: "unquoted path segments",
+    why: "keeps identity concise and readable while preserving root binding semantics"
+  }
+  root_declarations: {
+    syntax: '@alias: ~"path"',
+    rule: "quoted payload required",
+    why: "root bindings are file-system payloads and should parse like other ~ paths"
+  }
+  parser_modes: {
+    low_context: "strict: unquoted local path sugar is rejected with an actionable parse error",
+    high_context: "ergonomic: unquoted local sugar (e.g. ~./x, ~#tag ./x, ~<tag>./x) is accepted and desugared to quoted canonical form"
+  }
+}
+
+^"noise_convenience_consistency"{
+  default_human_docs: {
+    recommendation: "Prefer @alias/path for repeated roots; use ~\"...\" for local adjacency.",
+    noise: "low-to-medium",
+    convenience: "high once roots are declared",
+    consistency: "high"
+  }
+  generated_runtime_state: {
+    recommendation: "Prefer ~\"relative/from/state-file\" for navigation portability across editors/LSP stacks.",
+    noise: "medium (deep traversals can be verbose)",
+    convenience: "high (no root bootstrap required)",
+    consistency: "high and machine-deterministic"
+  }
+  prose_mentions: {
+    recommendation: "Use backticks for examples; avoid accidental reference syntax unless navigation is intended.",
+    noise: "low",
+    convenience: "high",
+    consistency: "prevents accidental links"
+  }
+}
+
+^"semantic_implications"{
+  '~"path"': "potential/deferred file payload; the path is data to be resolved",
+  "@alias/path": "perspectival identity anchored by a bound root",
+  "~<concept>\"path\"": "deferred payload with explicit conceptual coupling",
+  "~#tag \"path\"": "deferred payload with resonance-class tagging"
+}
+
+^"counterexamples"{
+  accidental_ref_in_prose: {
+    anti: "Writing ~\"foo\" in prose-only context unintentionally creates a navigable reference.",
+    correction: "Use backticks when illustrating syntax without binding intent."
+  }
+  mixed_style_drift: {
+    anti: "Same file alternates between deep ~\"../../../...\" and undeclared @alias paths.",
+    correction: "Declare roots up front or stay purely relative for that file."
+  }
+  hidden_semantic_shift: {
+    anti: "Replacing @alias/path with plain prose path silently drops root-binding semantics.",
+    correction: "Keep navigable references in explicit Spw forms."
+  }
+}
+
+^"falsify_quote_policy"{
+  disproof_signals: [
+    "quoted local refs produce lower navigation reliability than unquoted alternatives",
+    "unquoted root refs create measurable parser ambiguity in real corpora",
+    "runtime snapshots with relative ~ refs show worse portability than root-bound refs across editor integrations"
+  ],
+  checks: [
+    "npm run lint:docs:strict",
+    "npm run lsp:smoke",
+    "npm run spwq -- docs/index.spw --selector=pathRefs --format=lines"
+  ]
+}

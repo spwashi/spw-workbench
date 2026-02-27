@@ -65,6 +65,7 @@ export * from './ast/nodes'
 export type {
   ParserState,
   ParserContext,
+  ParseContextMode,
   ParserOptions,
 } from './state'
 export { DEFAULT_OPTIONS } from './state'

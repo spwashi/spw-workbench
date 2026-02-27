@@ -3,6 +3,16 @@ Connecting External Editors to the Spw Language Server
 Requirements: Node 22+ with TSX installed. The language server entry point is `npm run lsp`
 from the root of the spw-workbench repo.
 
+Current local server capabilities:
+- `textDocument/definition` for Spw path refs (`~"..."`) and root refs (`@root/...`)
+- `textDocument/documentLink` for navigable path refs
+- Full-text sync (`textDocumentSync: Full`) for stable AST-based selection
+- AST selector (`spwq`) supports parser context modes (`--context=high|low`); high mode accepts local path sugar and desugars to canonical quoted payloads.
+
+Validation:
+- `npm run lsp:smoke` runs a stdio smoke test for definition + documentLink navigation.
+- `npm run spwq -- docs/index.spw --selector=pathRefs --format=lines` prints AST-selected path refs (jq-style starter).
+
 Neovim (nvim-lspconfig):
 
   local lspconfig = require('lspconfig')

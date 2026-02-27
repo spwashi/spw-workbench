@@ -10,13 +10,18 @@ export interface TokenStream {
   tokens: Token[]
   position: number
   marks: number[]  // Stack of positions for backtracking
+  contextMode: 'low' | 'high'
 }
 
-export function createTokenStream(tokens: Token[]): TokenStream {
+export function createTokenStream(
+  tokens: Token[],
+  contextMode: 'low' | 'high' = 'low'
+): TokenStream {
   return {
     tokens,
     position: 0,
     marks: [],
+    contextMode,
   }
 }
 

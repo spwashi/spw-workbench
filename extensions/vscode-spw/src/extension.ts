@@ -43,6 +43,13 @@ export function activate(context: vscode.ExtensionContext) {
                             let resolvedRoot = root;
                             if (sigil === '@docs') resolvedRoot = path.join(root, 'docs');
                             else if (sigil === '@src') resolvedRoot = path.join(root, 'src');
+                            else if (sigil === '@lib') resolvedRoot = path.join(root, 'lib');
+                            else if (sigil === '@theory') resolvedRoot = path.join(root, 'docs', 'theory');
+                            else if (sigil === '@scripts') resolvedRoot = path.join(root, 'scripts');
+                            else if (sigil === '@core') resolvedRoot = path.join(root, 'src', 'core');
+                            else if (sigil === '@runtime') resolvedRoot = path.join(root, 'src', 'runtime');
+                            else if (sigil === '@design') resolvedRoot = path.join(root, 'src', 'design');
+                            else if (sigil === '@infra') resolvedRoot = path.join(root, 'src', 'infra');
                             else if (sigil === '@here') resolvedRoot = path.dirname(document.uri.fsPath);
 
                             const relativePart = matchedText.slice(sigil.length + 1); // skip `@docs/`
@@ -79,10 +86,22 @@ export function activate(context: vscode.ExtensionContext) {
 
                 // Complete @-roots
                 if (linePrefix.endsWith('@')) {
-                    const roots = ['docs', 'src', 'spec', 'here'];
+                    const roots = [
+                        { name: 'docs', detail: 'Documentation root' },
+                        { name: 'src', detail: 'Source root' },
+                        { name: 'lib', detail: 'Library specs (v0.2.0-alpha)' },
+                        { name: 'theory', detail: 'Theory docs (lens-algebra, operator-algebra)' },
+                        { name: 'scripts', detail: 'CLI scripts (spwq, analyzers)' },
+                        { name: 'spec', detail: 'Specification root' },
+                        { name: 'here', detail: 'Current file directory' },
+                        { name: 'core', detail: 'Core operator contracts' },
+                        { name: 'runtime', detail: 'Runtime execution contracts' },
+                        { name: 'design', detail: 'Design system root' },
+                        { name: 'infra', detail: 'Infrastructure root' },
+                    ];
                     for (const root of roots) {
-                        const item = new vscode.CompletionItem(root, vscode.CompletionItemKind.Folder);
-                        item.detail = `Spw path root`;
+                        const item = new vscode.CompletionItem(root.name, vscode.CompletionItemKind.Folder);
+                        item.detail = root.detail;
                         items.push(item);
                     }
                     return items;
@@ -179,6 +198,13 @@ export function activate(context: vscode.ExtensionContext) {
                     let resolvedRoot = root;
                     if (sigil === '@docs') resolvedRoot = path.join(root, 'docs');
                     else if (sigil === '@src') resolvedRoot = path.join(root, 'src');
+                    else if (sigil === '@lib') resolvedRoot = path.join(root, 'lib');
+                    else if (sigil === '@theory') resolvedRoot = path.join(root, 'docs', 'theory');
+                    else if (sigil === '@scripts') resolvedRoot = path.join(root, 'scripts');
+                    else if (sigil === '@core') resolvedRoot = path.join(root, 'src', 'core');
+                    else if (sigil === '@runtime') resolvedRoot = path.join(root, 'src', 'runtime');
+                    else if (sigil === '@design') resolvedRoot = path.join(root, 'src', 'design');
+                    else if (sigil === '@infra') resolvedRoot = path.join(root, 'src', 'infra');
                     else if (sigil === '@here') resolvedRoot = path.dirname(document.uri.fsPath);
                     const relativePart = matchedText.slice(sigil.length + 1);
                     targetUri = vscode.Uri.file(path.join(resolvedRoot, relativePart));
@@ -216,51 +242,102 @@ export function activate(context: vscode.ExtensionContext) {
     const symbolProvider = vscode.languages.registerDocumentSymbolProvider(documentSelector, {
         provideDocumentSymbols(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.DocumentSymbol[] {
             const symbols: vscode.DocumentSymbol[] = [];
-            const rootRegex = /^\s*\^\["([^"]+)"\]/;
-            const subRegex = /^\s*!\["([^"]+)"\]/;
+            const tapRegex = /^(\s*)\^\["([^"]+)"\]/;
+            const injectRegex = /^(\s*)!(?:boon|bone|bane|bonk|honk)?\["([^"]+)"\]/;
+            const probeRegex = /^(\s*)\?\["([^"]+)"\]/;
+            const configRegex = /^(\s*)=([a-zA-Z_][a-zA-Z0-9_]*):/;
 
-            let currentRoot: vscode.DocumentSymbol | null = null;
+            // Stack-based nesting via indentation
+            const stack: { indent: number; symbol: vscode.DocumentSymbol }[] = [];
+
+            function addSymbol(sym: vscode.DocumentSymbol, indent: number) {
+                // Pop stack to find parent at lower indentation
+                while (stack.length > 0 && stack[stack.length - 1].indent >= indent) {
+                    stack.pop();
+                }
+                if (stack.length > 0) {
+                    stack[stack.length - 1].symbol.children.push(sym);
+                    // Extend parent range
+                    const parent = stack[stack.length - 1].symbol;
+                    parent.range = new vscode.Range(parent.range.start, sym.range.end);
+                } else {
+                    symbols.push(sym);
+                }
+                stack.push({ indent, symbol: sym });
+            }
 
             for (let i = 0; i < document.lineCount; i++) {
                 const line = document.lineAt(i);
+                const lineRange = new vscode.Range(new vscode.Position(i, 0), new vscode.Position(i, line.text.length));
 
-                // Match root level ^["name"]
-                const rootMatch = rootRegex.exec(line.text);
-                if (rootMatch) {
-                    const name = rootMatch[1];
-                    const range = new vscode.Range(new vscode.Position(i, 0), new vscode.Position(i, line.text.length));
-                    const selectionRange = new vscode.Range(new vscode.Position(i, rootMatch.index), new vscode.Position(i, rootMatch.index + rootMatch[0].length));
-                    currentRoot = new vscode.DocumentSymbol(
-                        name,
-                        'Spw Domain',
-                        vscode.SymbolKind.Module,
-                        range,
-                        selectionRange
+                // ^["name"] — domain/tap (Module)
+                const tapMatch = tapRegex.exec(line.text);
+                if (tapMatch) {
+                    const indent = tapMatch[1].length;
+                    const name = tapMatch[2];
+                    const selRange = new vscode.Range(
+                        new vscode.Position(i, tapMatch.index),
+                        new vscode.Position(i, tapMatch.index + tapMatch[0].length)
                     );
-                    symbols.push(currentRoot);
+                    const sym = new vscode.DocumentSymbol(
+                        name, 'Spw Domain', vscode.SymbolKind.Module, lineRange, selRange
+                    );
+                    addSymbol(sym, indent);
                     continue;
                 }
 
-                // Match sub-level !["name"]
-                const subMatch = subRegex.exec(line.text);
-                if (subMatch && currentRoot) {
-                    const name = subMatch[1];
-                    const range = new vscode.Range(new vscode.Position(i, 0), new vscode.Position(i, line.text.length));
-                    const selectionRange = new vscode.Range(new vscode.Position(i, subMatch.index), new vscode.Position(i, subMatch.index + subMatch[0].length));
-                    const subSymbol = new vscode.DocumentSymbol(
-                        name,
-                        'Spw Facet',
-                        vscode.SymbolKind.Class,
-                        range,
-                        selectionRange
+                // !["name"] / !boon["name"] — inject (Event)
+                const injectMatch = injectRegex.exec(line.text);
+                if (injectMatch) {
+                    const indent = injectMatch[1].length;
+                    const name = injectMatch[2];
+                    const selRange = new vscode.Range(
+                        new vscode.Position(i, injectMatch.index),
+                        new vscode.Position(i, injectMatch.index + injectMatch[0].length)
                     );
-                    currentRoot.children.push(subSymbol);
+                    const sym = new vscode.DocumentSymbol(
+                        name, 'Spw Facet', vscode.SymbolKind.Event, lineRange, selRange
+                    );
+                    addSymbol(sym, indent);
+                    continue;
+                }
 
-                    // Extend the root's range to encompass this child
-                    currentRoot.range = new vscode.Range(currentRoot.range.start, range.end);
-                } else if (!subMatch && currentRoot) {
-                    // Extend the root's range for normal lines
-                    currentRoot.range = new vscode.Range(currentRoot.range.start, new vscode.Position(i, line.text.length));
+                // ?["name"] — probe (Boolean)
+                const probeMatch = probeRegex.exec(line.text);
+                if (probeMatch) {
+                    const indent = probeMatch[1].length;
+                    const name = probeMatch[2];
+                    const selRange = new vscode.Range(
+                        new vscode.Position(i, probeMatch.index),
+                        new vscode.Position(i, probeMatch.index + probeMatch[0].length)
+                    );
+                    const sym = new vscode.DocumentSymbol(
+                        `? ${name}`, 'Spw Probe', vscode.SymbolKind.Boolean, lineRange, selRange
+                    );
+                    addSymbol(sym, indent);
+                    continue;
+                }
+
+                // =key: — config (Property)
+                const configMatch = configRegex.exec(line.text);
+                if (configMatch) {
+                    const indent = configMatch[1].length;
+                    const name = configMatch[2];
+                    const selRange = new vscode.Range(
+                        new vscode.Position(i, configMatch.index),
+                        new vscode.Position(i, configMatch.index + configMatch[0].length)
+                    );
+                    const sym = new vscode.DocumentSymbol(
+                        `= ${name}`, 'Spw Config', vscode.SymbolKind.Property, lineRange, selRange
+                    );
+                    addSymbol(sym, indent);
+                    continue;
+                }
+
+                // Extend current deepest symbol's range
+                if (stack.length > 0) {
+                    const top = stack[stack.length - 1].symbol;
+                    top.range = new vscode.Range(top.range.start, lineRange.end);
                 }
             }
             return symbols;

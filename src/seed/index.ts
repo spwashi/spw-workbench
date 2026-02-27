@@ -53,6 +53,7 @@ export type {
   PatternNode,
   ParseGenerator,
   ParseResult,
+  ParseContextMode,
   ParserOptions,
   LexProfile,
   LexOptions,
@@ -172,3 +173,40 @@ export { previewAST } from './instrumentation/preview'
 
 // Sugar/desugar helpers
 export { desugar, parseDesugared, type DesugarResult } from './normalize'
+
+// Query (spw.q dialect)
+export type {
+  SpwPattern,
+  SpwSelector,
+  SpwMatch,
+  SpwMatchSpan,
+  SigilSelector,
+  BraceSelector,
+} from './query'
+
+export {
+  spwq,
+  matchAll,
+  matchAt,
+  and,
+  or,
+  not,
+  descend,
+  seq,
+  PATH_REFS,
+  REFERENCES,
+  NAVIGABLE,
+  DOMAIN_ROOTS,
+  DOMAIN_ROOTS_FULL,
+  HYDRATE_OPS,
+  DEFER_OPS,
+  QUERY_OPS,
+  CONFIG_OPS,
+  ANNOTATION_OPS,
+  OPS_WITH_FRAMES,
+  OPS_WITH_BODIES,
+  SCOPES,
+  BOON_OPS,
+  BONE_OPS,
+  ANY,
+} from './query'

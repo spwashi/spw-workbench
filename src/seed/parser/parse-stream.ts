@@ -1,5 +1,6 @@
 import type { ParseEvent, SeedNode, ParserOptions } from '../types'
 import type { ParseOutput } from './output'
+import { DEFAULT_OPTIONS } from '../types'
 import { tokenize, resolveLexProfile } from '../lexer'
 import { createTokenStream } from '../combinators'
 import { seedNode } from '../grammar'
@@ -12,11 +13,12 @@ export function* parseStream(
   options: Partial<ParserOptions> = {}
 ): Generator<ParseEvent, ParseOutput<SeedNode>, void> {
   const startTime = performance.now()
+  const opts: ParserOptions = { ...DEFAULT_OPTIONS, ...options }
   const events: ParseEvent[] = []
   const errors: ParseEvent[] = []
   const warnings: ParseEvent[] = []
 
-  const lexProfile = resolveLexProfile(options.lexProfile)
+  const lexProfile = resolveLexProfile(opts.lexProfile)
   const lexGen = tokenize(input, 0, { profile: lexProfile })
   let lexStep = lexGen.next()
 
@@ -30,11 +32,11 @@ export function* parseStream(
 
   const tokens = lexStep.value
 
-  const filteredTokens = options.includeWhitespace
+  const filteredTokens = opts.includeWhitespace
     ? tokens
     : tokens.filter(t => t.type !== 'WHITESPACE' && t.type !== 'COMMENT')
 
-  const stream = createTokenStream(filteredTokens)
+  const stream = createTokenStream(filteredTokens, opts.contextMode)
   const parseGen = seedNode(stream, 0)
   let parseStep = parseGen.next()
 

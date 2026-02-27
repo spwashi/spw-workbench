@@ -42,7 +42,7 @@ export function parse(
     return true
   })
 
-  const stream = createTokenStream(filteredTokens)
+  const stream = createTokenStream(filteredTokens, opts.contextMode)
   const parseGen = seedNode(stream, 0)
   let parseStep = parseGen.next()
 

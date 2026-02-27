@@ -10,9 +10,11 @@ import type {
   AnnotationNode,
   LiteralNode,
   PathRefNode,
+  ErrorEventData,
 } from '../types'
 import {
   type Parser,
+  type TokenStream,
   getPosition,
   current,
   peek,
@@ -48,6 +50,91 @@ function buildReferencePath(tokens: Token[]): { raw: string; parts: string[]; sp
     : raw.split('.').filter(Boolean)
   const span = { start: tokens[0].span.start, end: tokens[tokens.length - 1].span.end }
   return { raw, parts, span }
+}
+
+function isBarePathStartToken(token: Token): boolean {
+  if (token.type === 'OPERATOR' && token.value === '.') return true
+  if (token.type === 'CONNECTOR' && (token.value === '..' || token.value === '/')) return true
+  return false
+}
+
+function isBarePathToken(token: Token): boolean {
+  if (token.type === 'IDENTIFIER' || token.type === 'NUMBER') return true
+  if (token.type === 'CONNECTOR' && (token.value === '/' || token.value === '..')) return true
+  if (token.type === 'OPERATOR' && (token.value === '.' || token.value === '*')) return true
+  return false
+}
+
+function isContiguous(left: Token, right: Token): boolean {
+  return left.span.end.offset === right.span.start.offset
+}
+
+function peekBarePathTokens(stream: TokenStream): Token[] {
+  const first = stream.tokens[stream.position]
+  if (!first || !isBarePathStartToken(first)) return []
+
+  const tokens: Token[] = []
+  let cursor = stream.position
+  let previous: Token | undefined
+
+  while (cursor < stream.tokens.length) {
+    const token = stream.tokens[cursor]
+    if (!token || !isBarePathToken(token)) break
+    if (previous && !isContiguous(previous, token)) break
+    tokens.push(token)
+    previous = token
+    cursor += 1
+  }
+
+  if (tokens.length === 0) return []
+  const raw = tokens.map((token) => token.value).join('')
+  if (!(raw.startsWith('./') || raw.startsWith('../') || raw.startsWith('/'))) {
+    return []
+  }
+  return tokens
+}
+
+function consumeTokenCount(stream: TokenStream, count: number): void {
+  for (let i = 0; i < count; i += 1) {
+    advance(stream)
+  }
+}
+
+function quotePath(path: string): string {
+  return `"${path.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+}
+
+function stringTokenFromBarePath(tokens: Token[]): Token<'STRING'> {
+  const raw = tokens.map((token) => token.value).join('')
+  return {
+    type: 'STRING',
+    value: quotePath(raw),
+    span: {
+      start: tokens[0].span.start,
+      end: tokens[tokens.length - 1].span.end,
+    },
+    kind: '"',
+  }
+}
+
+function emitPathSugarWarning(
+  stream: TokenStream,
+  depth: number,
+  message: string
+) {
+  return {
+    type: 'warning' as const,
+    rule: 'pathRef.sugar',
+    position: getPosition(stream),
+    data: {
+      message,
+      expected: ['string'],
+      found: current(stream).type,
+      recoverable: true,
+    } satisfies ErrorEventData,
+    timestamp: performance.now(),
+    depth,
+  }
 }
 
 /**
@@ -203,7 +290,7 @@ export const pathRefNode: Parser<PathRefNode> = named('pathRef',
       consumed += closeStep.value.consumed
     }
 
-    // Required string literal path
+    // Required string literal path (high-context can desugar bare ./path tokens)
     skipWhitespace(stream)
     const strGen = stringLit(stream, depth + 1)
     let strStep = strGen.next()
@@ -212,21 +299,49 @@ export const pathRefNode: Parser<PathRefNode> = named('pathRef',
       strStep = strGen.next()
     }
 
+    let strTok: Token<'STRING'> | undefined
     if (!strStep.value.success) {
-      return {
-        success: false,
-        consumed: 0,
-        error: strStep.value.error ?? {
-          message: 'Expected string literal path after ~',
-          expected: ['string'],
-          found: current(stream).type,
-          recoverable: false,
-        },
+      const barePathTokens = peekBarePathTokens(stream)
+      if (barePathTokens.length > 0) {
+        if (stream.contextMode === 'low') {
+          return {
+            success: false,
+            consumed: 0,
+            error: {
+              message: 'Unquoted local path references are high-context sugar. Use ~"..." or parse with contextMode: "high".',
+              expected: ['string'],
+              found: current(stream).type,
+              recoverable: false,
+            },
+          }
+        }
+
+        strTok = stringTokenFromBarePath(barePathTokens)
+        consumeTokenCount(stream, barePathTokens.length)
+        consumed += barePathTokens.length
+        yield emitPathSugarWarning(
+          stream,
+          depth,
+          'Desugared bare local path to canonical quoted path reference.'
+        )
+      } else {
+        return {
+          success: false,
+          consumed: 0,
+          error: strStep.value.error ?? {
+            message: 'Expected string literal path after ~',
+            expected: ['string'],
+            found: current(stream).type,
+            recoverable: false,
+          },
+        }
       }
     }
 
-    const strTok = strStep.value.value!
-    consumed += strStep.value.consumed
+    if (!strTok) {
+      strTok = strStep.value.value!
+      consumed += strStep.value.consumed
+    }
 
     const endPos = getPosition(stream)
 
@@ -303,6 +418,36 @@ export const annotationNode: Parser<AnnotationNode> = named('annotation',
         if (valueStep.value.success) {
           consumed += valueStep.value.consumed
           valueNode = valueStep.value.value as LiteralNode | ReferenceNode
+        } else {
+          const barePathTokens = peekBarePathTokens(stream)
+          if (barePathTokens.length > 0) {
+            if (stream.contextMode === 'low') {
+              return {
+                success: false,
+                consumed: 0,
+                error: {
+                  message: 'Unquoted annotation path payload is high-context sugar. Use ~#tag "./path" or parse with contextMode: "high".',
+                  expected: ['string'],
+                  found: current(stream).type,
+                  recoverable: false,
+                },
+              }
+            }
+
+            const strTok = stringTokenFromBarePath(barePathTokens)
+            consumeTokenCount(stream, barePathTokens.length)
+            consumed += barePathTokens.length
+            valueNode = {
+              type: 'Literal',
+              span: { start: strTok.span.start, end: strTok.span.end },
+              token: strTok,
+            }
+            yield emitPathSugarWarning(
+              stream,
+              depth,
+              'Desugared unquoted annotation path payload to canonical quoted string.'
+            )
+          }
         }
       }
     } else {
@@ -318,6 +463,36 @@ export const annotationNode: Parser<AnnotationNode> = named('annotation',
       if (valueStep.value.success) {
         consumed += valueStep.value.consumed
         valueNode = valueStep.value.value as PathRefNode | ReferenceNode | LiteralNode
+      } else {
+        const barePathTokens = peekBarePathTokens(stream)
+        if (barePathTokens.length > 0) {
+          if (stream.contextMode === 'low') {
+            return {
+              success: false,
+              consumed: 0,
+              error: {
+                message: 'Unquoted annotation path payload is high-context sugar. Use ~#tag "./path" or parse with contextMode: "high".',
+                expected: ['string'],
+                found: current(stream).type,
+                recoverable: false,
+              },
+            }
+          }
+
+          const strTok = stringTokenFromBarePath(barePathTokens)
+          consumeTokenCount(stream, barePathTokens.length)
+          consumed += barePathTokens.length
+          valueNode = {
+            type: 'Literal',
+            span: { start: strTok.span.start, end: strTok.span.end },
+            token: strTok,
+          }
+          yield emitPathSugarWarning(
+            stream,
+            depth,
+            'Desugared unquoted annotation path payload to canonical quoted string.'
+          )
+        }
       }
     }
 
