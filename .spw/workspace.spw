@@ -1,0 +1,134 @@
+# Spw Workspace Manifest
+#
+# Control-plane defaults for local .spw artifacts.
+# Keeps literate exhibits, harness runs, and tuning corpus in one place.
+
+#>spw_workspace
+#:manifest
+
+^"roots"{
+  @repo: ~".."
+  @spw: ~"."
+  @docs: ~"../docs"
+  @seed: ~"../src/seed"
+  @spec: ~"../lib/spw-v0.2.0-alpha"
+}
+
+^"dialect"{
+  ~#default: "Spw.block.inferred.(none).(none).literate"
+  ~#author_geometry: "Spw.b"
+  ~#canonical_geometry: "Spw.l"
+}
+
+^"spirit_sequence"{
+  ~#source: ~"../docs/design/spw/spirit-sequence.spw"
+  =raw: "?~<#.>@(#.)&[#.]*{#.}^"
+  ~#contract: "All workspace automation maps to the six-phase cycle."
+}
+
+^"lsp"{
+  #:lsp #!discovery
+  ~#manifest_role: "workspace discovery + root/path navigation bounds"
+  ~#index_roots: [~"./", ~"../docs", ~"../lib/spw-v0.2.0-alpha", ~"../src/seed"]
+  ~#navigable_selector: "$~\"_\" | $@_"
+  ~#domain_roots_selector: "$^[_]"
+  ~#cache_contract: ~"./biome/ocean/algos/cache.spw"
+  ~#dense_dialect_contract: ~"./biome/ocean/experiments/syntax.spw"
+  ~#ux_contract: ~"./biome/ocean/ux.spw"
+  ~#future_capabilities: [
+    "workspace symbols",
+    "code lens for harness runs",
+    "semantic links for literate tangles",
+    "cache-aware LSP selector resolution",
+  ]
+
+  %[composability]{
+    "workspace.spw is the root manifest; docs/index.spw is the documentation root",
+    "both share @roots patterns — workspace for .spw/, docs for docs/",
+    "the annotation index scans both trees, creating one concept graph",
+  }
+}
+
+^"literate"{
+  ~#root: ~"./literate"
+  ~#entry_spec: ~"./literate/literate-spec.spw"
+  ~#tangle_mode: "explicit-targets-only"
+  ~#invariant: "Literate projection never mutates canonical source exhibits."
+}
+
+^"reflection"{
+  ~#root: ~"./reflection"
+  ~#entry_spec: ~"./reflection/loop-observation.spw"
+  ~#focus: "loop, observation fields, concept clustering, projection references"
+}
+
+^"evolution"{
+  ~#root: ~"./evolution"
+  ~#entry_spec: ~"./evolution/scoped-evolution.spw"
+  ~#mode: "experimental syntax is opt-in and path-scoped"
+}
+
+^"development"{
+  ~#root: ~"./dev"
+  ~#entry_spec: ~"./dev/hot-reload-loop.spw"
+  ~#runtime: "npm run spw:dev"
+}
+
+^"ocean_atlas"{
+  ~#root: ~"./biome/ocean"
+  ~#index: ~"./biome/ocean/index.spw"
+  ~#biomes: ~"./biome/ocean/atlas.spw"
+  ~#style_currents: ~"./biome/ocean/style.spw"
+  ~#channel: "experimental"
+  ~#core_rule: "Biome metaphors may vary; spirit-sequence core stays cohesive."
+}
+
+^"projections"{
+  ~#generated_root: ~"./gen"
+  ~#index: ~"./gen/index.spw"
+  ~#note: "Generated projection directories are ignored to stand out in IDEs."
+}
+
+^"reference_language_optimizations"{
+  ~#cache: ~"./biome/ocean/algos/cache.spw"
+  ~#phase: ~"./biome/ocean/phase.spw"
+  ~#custom_expr: ~"./biome/ocean/expr/custom.spw"
+  ~#relationship_expr: ~"./biome/ocean/expr/rel.spw"
+  ~#query_registry: ~"./biome/ocean/query/sel.spw"
+  ~#query_hot: ~"./biome/ocean/query/hot.spw"
+  ~#literature_shapes: ~"./biome/ocean/lit.spw"
+  ~#trace: ~"./biome/ocean/trace.spw"
+  ~#goal: "Surface caching + interpretation optimizations for Spw as reference language."
+}
+
+^"harness"{
+  #:harness #!evaluation
+  ~#runs_root: ~"./harness/runs"
+  ~#runs_contract: ~"./harness/runs/runs-index.spw"
+  ~#eval_root: ~"./harness/evals"
+  ~#eval_contract: ~"./harness/evals/baseline-evals.spw"
+  ~#memory_contract: ~"./harness/memory-surface.spw"
+  ~#probe_contract: ~"./harness/probes/probe-loop.spw"
+  ~#probe_archive: ~"./harness/probes/archive-index.spw"
+  ~#context_root: ~"../.agents"
+  ~#prompt_unit: "run-snapshot (not per-message)"
+  ~#prompt_policy: "capture task intent + references; exclude raw chat transcripts by default"
+  ~#dedupe_key: "intent_hash + context_refs + model"
+  ~#required_fields: ["prompt", "model", "seed", "artifacts", "checks", "verdict"]
+}
+
+^"tuning"{
+  #:tuning #!curation
+  ~#corpus_root: ~"./tuning/corpus"
+  ~#policy: ~"./tuning/corpus/corpus-policy.spw"
+  ~#admission_gate: "only harness-approved artifacts may enter the corpus"
+  ~#traceability: "every corpus item links to one run id and one reviewer verdict"
+}
+
+^"invariants"{
+  "Presentation taste never changes canonical_text or hash.",
+  "Harness runs are append-only records.",
+  "Per-message chat logs are not required harness artifacts.",
+  "Tuning corpus is curated; no raw prompt dumps without review.",
+  "Root refs resolve through this manifest before fallback heuristics.",
+}

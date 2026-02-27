@@ -1,0 +1,58 @@
+# Probe Loop
+#
+# Measurement probes are declared first, filled during loops, then archived.
+
+#>spw_probe_loop
+#:harness #!measurement
+
+^"intent"{
+  ~#goal: "Operationalize observations as measurable probes."
+  ~#metaphor: "Operators act like windmills/current probes in a semantic flow field."
+}
+
+^"templates"{
+  probe_template: {
+    probe_id: "string"
+    status: "declared|active|filled|archived"
+    loop_phase: "?~|@|&|*|^"
+    beat_scale: "micro|meso|macro"
+    beat_unit: "event|phase|episode"
+    operator_focus: "?, ~, @, &, *, ^"
+    lens_profile: "focal_depth/aperture/magnification/aberration"
+    measure: "what is sampled"
+    aggregate_rule: "how repeated beats roll up into one measure value"
+    source_refs: ["refs to files/fields"]
+    fill_rule: "when and how values are recorded"
+    archive_target: ".spw/harness/probes/archive-index.spw"
+  }
+}
+
+^"examples"{
+  p001: {
+    probe_id: "p001-current-at-observe"
+    status: "declared"
+    loop_phase: "@"
+    beat_scale: "meso"
+    beat_unit: "phase"
+    operator_focus: "@"
+    lens_profile: "focal_depth=2 aperture=medium magnification=high aberration=low"
+    measure: "count of stable refs resolved per observe cycle"
+    aggregate_rule: "sum resolved refs per @ phase, then normalize by context ref count"
+    source_refs: [".spw/workspace.spw#lsp", ".spw/reflection/loop-observation.spw#projection_refs"]
+    fill_rule: "fill at end of each @ phase batch"
+    archive_target: ".spw/harness/probes/archive-index.spw"
+  }
+}
+
+^"archive_rule"{
+  ~#trigger: "when status transitions to filled"
+  ~#action: "append entry into archive-index and mark probe archived"
+
+  %[observer_effect]{
+    "each probe fill increments the target cell's measureDepth",
+    "deep measureDepth signals heavy observation — candidate for caching",
+    "probe results are warm-tier cached until the next fill cycle",
+  }
+
+  =probe_window: 10
+}

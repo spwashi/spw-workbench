@@ -1,0 +1,29 @@
+# Phase
+#
+# Composable phase registry for bespoke per-phase config.
+
+#>spw_ocean_phase
+#:registry #!composition
+
+^"intent"{
+  ~#goal: "Short, composable phase files with optional bespoke config."
+}
+
+^"files"{
+  p1: ~"./ph/p1.spw"
+  p2: ~"./ph/p2.spw"
+  p3: ~"./ph/p3.spw"
+  p4: ~"./ph/p4.spw"
+  p5: ~"./ph/p5.spw"
+  p6: ~"./ph/p6.spw"
+}
+
+^"invariant"{
+  "Each phase file is optional-config only; core semantics remain in spirit sequence."
+
+  %[phase_model]{
+    "phases compose into the spirit sequence: ?~ <#.> @(#.) &[#.] *{#.} ^",
+    "each phase file adds bespoke config without overriding core semantics",
+    "phase config is warm-tier cached — stable between edits, invalidated on save",
+  }
+}

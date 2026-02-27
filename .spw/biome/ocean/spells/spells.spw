@@ -1,0 +1,107 @@
+# Spells
+#
+# Operator recipes with a controlled "magic sense".
+
+#>spw_ocean_spells
+#:spell #!composition
+
+^"intent"{
+  ~#goal: "Codify expressive operator compositions as reusable spell forms."
+  ~#rule: "Spells are deterministic macros, not hidden side effects."
+  ~#relation_surface: ".spw/biome/ocean/expr/rel.spw"
+  ~#selector_surface: ".spw/biome/ocean/query/sel.spw"
+}
+
+^context[on_open]{
+  lsp: {
+    apply: [macro, spell, use]
+    probes: [currentProbe, reefMerge, tideLift]
+    lenses: [probe, core, relation]
+    selectors: [refs_navigable, aggregate_branch, invariants_core]
+    trace: ~"../trace.spw"
+  }
+}
+
+^"macro"{
+  #:spell
+  sequence: {
+    probe_observe: {
+      prime: "?~<#.>"
+      observe: "@(#.)"
+    }
+
+    merge_materialize: {
+      merge: "&[#.]"
+      materialize: "*{#.}"
+    }
+
+    integrate_only: {
+      integrate: "^"
+    }
+  }
+
+  effect: {
+    focus_probe: {
+      relation: "<with>(in)"
+      interpretation: "probe then scoped observation of one focused stream"
+      projection: ".spw/gen/lens/probe.spw"
+    }
+
+    cohesive_merge: {
+      relation: "[among]{of}"
+      interpretation: "merge clustered associations and materialize one coherent frame"
+      projection: ".spw/gen/lens/core.spw"
+    }
+
+    upward_lift: {
+      relation: "{of}"
+      interpretation: "integrate result upward to parent scope"
+      projection: ".spw/gen/build/tide-lift.spw"
+    }
+  }
+
+  cache: {
+    hot: { tier: hot, replacement: refs_hot }
+    warm: { tier: warm, replacement: aggregate_warm }
+    cold: { tier: cold, replacement: none }
+  }
+
+  grounding: {
+    bound_refs: { reference: bound, selector: refs_navigable }
+    grounded_aggregate: { reference: grounded, selector: aggregate_branch }
+    grounded_invariants: { reference: grounded, selector: invariants_core }
+  }
+
+  %[composability]{
+    "spells compose: sequence + effect + cache + grounding",
+    "each layer is independently cacheable at its own tier",
+    "spell resolution is hot-tier cached — reused within the current loop",
+  }
+}
+
+^spell[currentProbe]{
+  use: {
+    sequence: [macro, sequence, probe_observe]
+    effect: [macro, effect, focus_probe]
+    cache: [macro, cache, hot]
+    grounding: [macro, grounding, bound_refs]
+  }
+}
+
+^spell[reefMerge]{
+  use: {
+    sequence: [macro, sequence, merge_materialize]
+    effect: [macro, effect, cohesive_merge]
+    cache: [macro, cache, warm]
+    grounding: [macro, grounding, grounded_aggregate]
+  }
+}
+
+^spell[tideLift]{
+  use: {
+    sequence: [macro, sequence, integrate_only]
+    effect: [macro, effect, upward_lift]
+    cache: [macro, cache, cold]
+    grounding: [macro, grounding, grounded_invariants]
+  }
+}

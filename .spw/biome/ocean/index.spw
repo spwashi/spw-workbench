@@ -1,0 +1,87 @@
+# Ocean Index
+#
+# Modular entrypoint for the experimental ocean biome.
+
+#>spw_ocean_index
+#:biome #!modularity
+
+^"intent"{
+  ~#goal: "Keep ocean experiments modular while preserving one Spw core."
+  ~#channel: "experimental"
+}
+
+^"modules"{
+  #:lsp
+  layout: {
+    #:layout
+    atlas: ~"./atlas.spw"
+    style: ~"./style.spw"
+    shape: ~"./shape.spw"
+    lit: ~"./lit.spw"
+    ux: ~"./ux.spw"
+  }
+
+  libraries: {
+    biomes: ~"./libs.spw"
+    phase: ~"./phase.spw"
+    trace: ~"./trace.spw"
+  }
+
+  algorithms: {
+    #:cache
+    cache: ~"./algos/cache.spw"
+    cluster: ~"./algos/cluster.spw"
+  }
+
+  expressions: {
+    custom: ~"./expr/custom.spw"
+    arc: ~"./expr/arc.spw"
+    rel: ~"./expr/rel.spw"
+    links: ~"./links/links.spw"
+    derivatives: ~"./derivatives/derivs.spw"
+  }
+
+  experiments: {
+    #:experimental
+    syntax: ~"./experiments/syntax.spw"
+    spells: ~"./spells/spells.spw"
+  }
+
+  query: {
+    q: ~"./query/q.spw"
+    sel: ~"./query/sel.spw"
+    hot: ~"./query/hot.spw"
+    t: ~"./template/t.spw"
+    ops: ~"./ops/cycle.spw"
+  }
+
+  %[dialect]{
+    "ocean is the experimental dialect — stable features graduate to core",
+    "=channel: experimental marks files that may change between versions",
+  }
+
+  %[cache_strategy]{
+    "layout + algorithms  → warm cache (stable paths, moderate churn)",
+    "expressions + query  → hot cache (active during interpretation)",
+    "experiments          → cold cache (evolving, low hit rate)",
+  }
+}
+
+^links[core]{
+  refs: [
+    ~"../../workspace.spw",
+    ~"../../../docs/design/spw/spirit-sequence.spw",
+    ~"../../../lib/spw-v0.2.0-alpha/applications/QUERY.md",
+  ]
+}
+
+^links[module]{
+  refs: [
+    ~"./links/links.spw",
+    ~"./derivatives/derivs.spw",
+    ~"./trace.spw",
+    ~"./query/sel.spw",
+    ~"./query/hot.spw",
+    ~"../../gen/index.spw",
+  ]
+}
