@@ -1,0 +1,63 @@
+# Dialect
+#
+# Query dialect guidance for operator combinatorics and labeled structures.
+
+#>spw_ocean_query_dialect
+#:dialect #!query
+
+^"intent"{
+  ~#goal: "Offer Spw-native query dialect contracts for operator/braces/label semantics."
+}
+
+^dialect[Spw.q]{
+  role: "selector registry + symbolic handles"
+  focus: [selector, grounding, replacement]
+  source: @biome/query/q.spw
+}
+
+^dialect[Spw.t]{
+  role: "repeatable run templates"
+  focus: [inputs, steps, outputs, invariants]
+  source: @biome/template/t.spw
+}
+
+^dialect[Spw.l]{
+  role: "block/literature query perspective"
+  focus: [block_shape, frame_labels, projection_lenses]
+  source: @biome/lit.spw
+}
+
+^query[operator_sequence]{
+  shape: "?~@&*^"
+  meaning: "phase-flow perspective query across files"
+  script: "npm run spw:seq -- --seq '?~@&*^' --root .spw"
+}
+
+^query[brace_sequence]{
+  shape: "<>{}"
+  meaning: "container-shape symmetry query across files"
+  script: "npm run spw:seq -- --braces '<>{}' --root .spw --model lattice"
+}
+
+^query[label_disposition]{
+  shape: "?_query and {_example ... }_example"
+  meaning: "intrinsic-labeled operator/brace semantics"
+  script: "npm run spw:seq -- --seq '?_query' --label query --root .spw"
+}
+
+^query[projection_build]{
+  shape: "query -> rank -> project -> trace"
+  meaning: "use query results to drive generated structures and lens updates"
+  script: "npm run spw:seq -- --seq '?~@&*^' --braces '<>{}' --model lattice --root .spw --top 20"
+  projection: [@gen/index.spw, @biome/ops/cycle.spw, @biome/trace.spw]
+}
+
+^query[learning_loop]{
+  shape: "intuitive baseline vs experimental variant"
+  meaning: "compare model dispositions (fluid/lattice/thermal/quantum) and preserve evidence"
+  script: "npm run spw:mem:dump -- --dump-root /tmp/spw-mem-dumps --label loop && npm run spw:seq -- --seq '?~@&*^' --mode hybrid --surface hybrid --model lattice --root .spw --top 20"
+}
+
+^"invariant"{
+  "Dialect queries should stay parseable and replayable across runtime memory dumps."
+}
