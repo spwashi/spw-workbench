@@ -506,5 +506,44 @@ export function activate(context: vscode.ExtensionContext) {
     annotationIndex.activate();
     context.subscriptions.push({ dispose: () => annotationIndex.dispose() });
 
-    context.subscriptions.push(linkProvider, completionProvider, hoverProvider, symbolProvider, semanticTokensProvider);
+    // =========================================================================
+    // WorkspaceSymbolProvider (#-annotation navigation via Cmd+T)
+    // =========================================================================
+    const workspaceSymbolProvider = vscode.languages.registerWorkspaceSymbolProvider({
+        provideWorkspaceSymbols(query: string): vscode.SymbolInformation[] {
+            const results: vscode.SymbolInformation[] = [];
+            // Strip leading # if user types it in query
+            const q = query.startsWith('#') ? query.slice(1) : query;
+            const entries = q ? annotationIndex.search(q) : annotationIndex.all();
+
+            // Kind mapping
+            const kindMap: Record<string, vscode.SymbolKind> = {
+                topic: vscode.SymbolKind.Key,
+                lens: vscode.SymbolKind.Enum,
+                intent: vscode.SymbolKind.Event,
+                anchor: vscode.SymbolKind.Interface,
+            };
+            const prefixMap: Record<string, string> = {
+                topic: '#', lens: '#:', intent: '#!', anchor: '#>',
+            };
+
+            for (const entry of entries) {
+                const label = `${prefixMap[entry.kind]}${entry.name}`;
+                const location = new vscode.Location(
+                    entry.file,
+                    new vscode.Position(entry.line, 0)
+                );
+                const si = new vscode.SymbolInformation(
+                    label,
+                    kindMap[entry.kind] || vscode.SymbolKind.Key,
+                    entry.sectionLabel || '',
+                    location
+                );
+                results.push(si);
+            }
+            return results;
+        }
+    });
+
+    context.subscriptions.push(linkProvider, completionProvider, hoverProvider, symbolProvider, semanticTokensProvider, workspaceSymbolProvider);
 }
