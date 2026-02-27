@@ -14,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
             // Basic regex to find tilde-strings, @-paths, and src/ paths
             // Note: This is a simplification. The TextMate grammar is the real source of truth,
             // but VSCode APIs require language servers (semantic tokens) or regex here.
-            const pathRegex = /(?:~"([^"]+)")|(?:(@[A-Za-z_][A-Za-z0-9_]*)(?:\/(?:\.\.|[A-Za-z_*])[A-Za-z0-9_.\-*]*)+)|(?:(?:\.\.|[A-Za-z_])[A-Za-z0-9_.\-]*(?:\/(?:\.\.|[A-Za-z_*])[A-Za-z0-9_.\-*]*)+)/g;
+            const pathRegex = /(?:~[^"]*"([^"]+)")|(?:(@[A-Za-z_][A-Za-z0-9_]*)(?:\/(?:\.\.|[A-Za-z_*])[A-Za-z0-9_.\-*]*)+)|(?:(?:\.\.|[A-Za-z_])[A-Za-z0-9_.\-]*(?:\/(?:\.\.|[A-Za-z_*])[A-Za-z0-9_.\-*]*)+)/g;
 
             for (let i = 0; i < document.lineCount; i++) {
                 const line = document.lineAt(i);
@@ -171,7 +171,7 @@ export function activate(context: vscode.ExtensionContext) {
     // =========================================================================
     const hoverProvider = vscode.languages.registerHoverProvider(documentSelector, {
         async provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) {
-            const pathRegex = /(?:~"([^"]+)")|(?:(@[A-Za-z_][A-Za-z0-9_]*)(?:\/(?:\.\.|[A-Za-z_*])[A-Za-z0-9_.\-*]*)+)|(?:(?:\.\.|[A-Za-z_])[A-Za-z0-9_.\-]*(?:\/(?:\.\.|[A-Za-z_*])[A-Za-z0-9_.\-*]*)+)/g;
+            const pathRegex = /(?:~[^"]*"([^"]+)")|(?:(@[A-Za-z_][A-Za-z0-9_]*)(?:\/(?:\.\.|[A-Za-z_*])[A-Za-z0-9_.\-*]*)+)|(?:(?:\.\.|[A-Za-z_])[A-Za-z0-9_.\-]*(?:\/(?:\.\.|[A-Za-z_*])[A-Za-z0-9_.\-*]*)+)/g;
             const range = document.getWordRangeAtPosition(position, pathRegex);
 
             if (!range) return null;

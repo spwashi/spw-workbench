@@ -1,0 +1,130 @@
+# Application Stratum Architecture Support
+# Navigable index for applied expression surfaces
+
+^["roots"]{
+  @here: ~"."
+  @lib:  ~".."
+  @theory: ~"../../../docs/theory"
+}
+
+^["surfaces"]{
+  .. ~<query>"./QUERY.md"
+  .. ~<hardware>"./HARDWARE.md"
+  .. ~<theatre>"./THEATRE.md"
+  .. ~<broadcast>"./BROADCAST.md"
+}
+
+# ── Implemented applications ─────────────────────────────────
+
+^["query"]{
+  =dialect: "Spw.q"
+  =status: "shipped"
+  !boon["Structural selection over AST"]
+
+  ^["entry-points"]{
+    !"spwq(ast, selector)"            # returns SpwMatch[]
+    !"spwq.at(ast, position, sel)"    # deepest match at cursor
+    !"spwq.fromSource(source, sel)"   # parse + query convenience
+  }
+
+  ^["presets"]{
+    =count: 15
+
+    ^["structural"]{
+      .. !"NAVIGABLE"       # ~"_" | @_ — path refs or references
+      .. !"DOMAIN_ROOTS"    # ^[_] — domain roots with frames
+      .. !"DOMAIN_ROOTS_FULL" # ^[_]{_} — with body
+    }
+
+    ^["by-sigil"]{
+      .. !"HYDRATE_OPS"     # !_ — injection
+      .. !"QUERY_OPS"       # ?_ — probes
+      .. !"CONFIG_OPS"      # =_ — bindings
+      .. !"DEFER_OPS"       # ~_ — deferred
+      .. !"ANNOTATION_OPS"  # #_ — metadata
+    }
+
+    ^["by-shape"]{
+      .. !"OPS_WITH_FRAMES" # _[_] — framed
+      .. !"OPS_WITH_BODIES" # _{_} — bodied
+      .. !"SCOPES"          # (_) — scoped
+    }
+
+    ^["by-modifier"]{
+      .. !"BOON_OPS"        # !boon_
+      .. !"BONE_OPS"        # !bone_
+    }
+  }
+
+  ^["cli"]{
+    =command: "npm run spwq -- <file.spw> [--selector=<name>]"
+    !["21 named selectors: navigable, refs, pathRefs, rootRefs, domains, domains+, scopes, hydrate, probes, configs, defers, taps, annotations, ops:frame, ops:body, boon, bone, all"]
+    !["--summary flag adds depth distribution and node type breakdown"]
+  }
+
+  ^["lsp"]{
+    =integration: "spw-selector.ts adapter"
+    !"spwq.at() powers definition-go-to"
+    !"Presets wire into document link handlers"
+    @scripts/lsp/spw-selector.ts
+  }
+
+  @src/seed/query
+  @scripts/spwq.ts
+}
+
+# ── Formalized applications (not yet machined) ───────────────
+
+^["lens-instances"]{
+  !["Each domain is an operator reinterpretation lens"]
+
+  ^["Hardware@"]{
+    =reinterprets: "operators as circuit primitives"
+    =inject: "! → voltage source"
+    =anchor: "^ → node label"
+    =emit: "@ → output driver"
+    ?["Shader renderer implements gain chain — is this lens algebra?"]
+      ~#answer: "Partially — visual lens, not AST-level projection"
+    ~<detail>"./HARDWARE.md"
+  }
+
+  ^["Theatre@"]{
+    =reinterprets: "operators as dramatic actions"
+    =inject: "! → entrance"
+    =probe: "? → dramatic question"
+    =emit: "@ → exit"
+    ?["Why does ? map to 'dramatic question'?"]
+      ~#answer: "Same cognitive operation: test condition, branch on result"
+    ~<detail>"./THEATRE.md"
+  }
+
+  ^["Broadcast@"]{
+    =reinterprets: "operators as signal routing"
+    =inject: "! → signal source"
+    =anchor: "^ → channel assignment"
+    =emit: "@ → transmission"
+    ~<detail>"./BROADCAST.md"
+  }
+}
+
+# ── Theory references ────────────────────────────────────────
+
+^["theory"]{
+  .. ~<lens>"../../../docs/theory/md/lens-algebra.md"
+  .. ~<cognitive>"../../../docs/theory/spw/cognitive-laser.spw"
+  .. ~<operators>"../../../docs/theory/spw/operators.spw"
+  .. ~<valence>"../../../docs/theory/spw/valence-architecture.spw"
+  .. ~<audio>"../../../docs/theory/spw/audio-architecture.spw"
+}
+
+# ── Feature crosslinks ───────────────────────────────────────
+
+^["feature-docs"]{
+  !["User-facing features from docs/features/"]
+  .. ~<onboarding>"../../../docs/features/spw/onboarding.spw"
+  .. ~<flow>"../../../docs/features/spw/onboarding-flow.spw"
+  .. ~<lens-walk>"../../../docs/features/spw/lens-walk.spw"
+  .. ~<nav>"../../../docs/features/spw/navigation-probe.spw"
+  .. ~<registry>"../../../docs/features/spw/feature-registry.spw"
+  .. ~<coherence>"../../../docs/features/spw/feature-coherence.spw"
+}

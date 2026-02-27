@@ -1,0 +1,159 @@
+# Dialect Architecture Support
+# Navigable index for the dialect stratum
+
+^["roots"]{
+  @here: ~"."
+  @lib:  ~".."
+  @theory: ~"../../../docs/theory/spw"
+}
+
+^["surfaces"]{
+  !["Contract documents"]
+  .. ~<functions>"./FUNCTIONS.md"
+  .. ~<geometry>"./GEOMETRY.md"
+  .. ~<phases>"./PHASES.md"
+}
+
+# ── Geometry × Function: the two independent axes ────────────
+
+^["geometry"]{
+  ^["linear"]{
+    =dialect: "Spw.l"
+    =dimension: 1
+    =purpose: "storage, transmission, hashing"
+    =whitespace: "insignificant"
+    =connectors: "all explicit (..)"
+    ?["Is lossless round-trip Spw.b ↔ Spw.l achieved?"]
+      ~#answer: "canonicalize() exists but no explicit toLinear()/toBlock()"
+    @src/seed/canonical  # ships canonicalize()
+  }
+
+  ^["block"]{
+    =dialect: "Spw.b"
+    =dimension: 2
+    =purpose: "authoring, reading, version control"
+    =whitespace: "indentation significant"
+    =connectors: "implicit (newline = sequence)"
+    !boon["Primary authoring surface — nesting carries meaning"]
+    @src/seed/grammar     # ships block parsing
+    @src/seed/lexer       # ships DEFAULT_LEX_PROFILE
+  }
+
+  ^["index"]{
+    =dialect: "Spw.x"
+    =dimension: 0
+    =purpose: "linking, composition, lazy loading"
+    ?["How does Spw.x resolution relate to lore-remote?"]
+      ~#status: "open question"
+  }
+}
+
+^["function"]{
+  ^["query"]{
+    =dialect: "Spw.q"
+    =strategy: "2-pass (schema → resolve)"
+    !boon["Shipped as src/seed/query/"]
+
+    ^["presets"]{
+      .. !"NAVIGABLE"       # ~"_" | @_
+      .. !"DOMAIN_ROOTS"    # ^[_]
+      .. !"HYDRATE_OPS"     # !_
+      .. !"OPS_WITH_FRAMES" # ![_]
+      .. !"QUERY_OPS"       # ?_
+      .. !"CONFIG_OPS"      # =_
+    }
+
+    ?["Can selectors filter by depth?"]
+      ~#status: "not yet — proposed as $_:0..2"
+  }
+
+  ^["template"]{
+    =dialect: "Spw.t"
+    =strategy: "2-pass (slots → bind)"
+
+    ^["slot-syntax"]{
+      .. ="_name"     # required slot
+      .. ="_name?"    # optional slot
+      .. ="_items..." # spread slot
+      .. ="_name:type" # typed slot
+    }
+
+    ?["Are slots reducible to ONF wildcard registers?"]
+      ~#status: "open question"
+    ?["Parser handles _ as wildcard — binding layer?"]
+      ~#status: "not implemented"
+  }
+}
+
+# ── Phase lifecycle ──────────────────────────────────────────
+
+^["phases"]{
+  !["Five-phase model: each varies independently"]
+
+  ^["surface"]{ =concern: "lexing", =question: "how are characters grouped?" }
+  ^["structure"]{ =concern: "parsing", =question: "how do tokens compose?" }
+  ^["projection"]{ =concern: "semantics", =question: "what does this mean?" }
+  ^["orientation"]{ =concern: "runtime", =question: "what is the goal?" }
+  ^["presentation"]{ =concern: "output", =question: "how is the result displayed?" }
+
+  ^["composition"]{
+    =syntax: "Spw.<surface>.<structure>.<domain>.<orientation>.<presentation>"
+    =default: "Spw.block.inferred.(none).(none).literate"
+
+    ^["shorthands"]{
+      .. ="Spw.b"   # block.inferred
+      .. ="Spw.l"   # linear.explicit
+      .. ="Spw.q"   # *.*.*.query.*
+      .. ="Spw.t"   # *.*.*.template.*
+    }
+  }
+}
+
+# ── Implementation status ────────────────────────────────────
+
+^["implementation"]{
+  !boon["shipped"]{
+    .. @src/seed/query       # spw.q pattern matcher
+    .. @src/seed/canonical   # spw.l canonicalization
+    .. @src/seed/lexer       # spw.b surface lexing
+    .. @src/seed/grammar     # spw.b structure parsing
+  }
+
+  !bone["deferred"]{
+    .. ?"Spw.t slot binding"
+    .. ?"Spw.x resolution (registry, hash, versioned)"
+    .. ?"Dialect annotation (#dialect: Spw.b.q)"
+    .. ?"Predicate evaluation (?[condition])"
+  }
+}
+
+# ── Theory references ────────────────────────────────────────
+
+^["theory"]{
+  .. ~"../../../docs/theory/spw/onf.spw"
+  .. ~"../../../docs/theory/spw/register-geometry.spw"
+  .. ~"../../../docs/theory/spw/operators.spw"
+  .. ~"../../../docs/theory/spw/valence-architecture.spw"
+}
+
+# ── Library crosslinks ───────────────────────────────────────
+
+^["library-docs"]{
+  !["Self-cataloging library from docs/library/"]
+  .. ~<library>"../../../docs/library/spw/library.spw"
+  .. ~<concordance>"../../../docs/library/spw/git-concordance.spw"
+  .. ~<calculus>"../../../docs/library/spw/wonder-calculus.spw"
+  .. ~<probes>"../../../docs/library/spw/wonder-probes.spw"
+}
+
+# ── Examples crosslinks ──────────────────────────────────────
+
+^["examples-docs"]{
+  !["Usage examples from docs/examples/"]
+  .. ~<autocomplete>"../../../docs/examples/spw/brace-autocomplete.spw"
+  .. ~<grounded>"../../../docs/examples/spw/grounded-register.spw"
+  .. ~<measure>"../../../docs/examples/spw/measure-normalization.spw"
+  .. ~<merge>"../../../docs/examples/spw/merge-provenance.spw"
+  .. ~<spirit>"../../../docs/examples/spw/spirit-cycle.spw"
+  .. ~<substrate>"../../../docs/examples/spw/substrate-introspection.spw"
+}

@@ -1,0 +1,139 @@
+# Runtime Stratum Architecture Support
+# Navigable index for execution and state contracts
+
+^["roots"]{
+  @here: ~"."
+  @lib:  ~".."
+  @runtime-docs: ~"../../../docs/runtime"
+  @src-runtime:  ~"../../../src/runtime"
+}
+
+# ── Ethos ────────────────────────────────────────────────────
+
+meta: .{
+  domain    = `runtime`
+  initOrder = `1`
+  kind      = `stratum-map`
+  note      = `Execution contracts — how parsed Spw becomes evaluable state`
+}[reg=facet]
+
+purpose: .{
+  role       = `Define the evaluation model, register bank, and pipeline contracts`
+  invariant  = `Runtime depends only on core — never on domains, applications, or design`
+  philosophy = `The runtime is where the algebra becomes material. Parse output gains agency.`
+}[reg=facet]
+
+garden: .{
+  is            = `5 contract stubs covering pipeline, registers, cache-IR, goals, and trajectory`
+  could_become  = `A full evaluation engine with agent-loop, memoization, and DAP integration`
+  connects_to   = `core/ provides the algebra. runtime/ adds execution. infra/ adds timing.`
+  growth_risk   = `Feature creep from the agent-loop pattern — keep evaluation deterministic.`
+}[reg=facet]
+
+valence: .{
+  boon = `Reversible agent-loop model enables undo/replay`
+  bane = `Evaluation is stub-level — no real interpreter yet`
+  bone = `Pipeline contracts define the parse-to-runtime bridge`
+  bonk = `Connecting to real LSP/DAP workers would change the concurrency model`
+  honk = `register-bank.spw maps operators to typed register slots`
+}[reg=quality]
+
+# ── Contract Surfaces ───────────────────────────────────────
+
+^["contracts"]{
+  !["5 runtime contracts"]
+
+  ^["pipeline"]{
+    =file: "PIPELINE.md"
+    =concern: "parse → evaluate → present"
+    ~<detail>"./PIPELINE.md"
+  }
+
+  ^["registers"]{
+    =file: "REGISTERS.md"
+    =concern: "operator-typed state slots"
+    ~<detail>"./REGISTERS.md"
+    ~<bank>"../../../docs/runtime/spw/register-bank.spw"
+    ~<braces>"../../../docs/runtime/spw/brace-registers.spw"
+  }
+
+  ^["cache-ir"]{
+    =file: "CACHE-IR.md"
+    =concern: "memoized intermediate representation"
+    ~<detail>"./CACHE-IR.md"
+  }
+
+  ^["goals"]{
+    =file: "GOALS.md"
+    =concern: "orientation and intent tracking"
+    ~<detail>"./GOALS.md"
+  }
+
+  ^["trajectory"]{
+    =file: "TRAJECTORY.md"
+    =concern: "execution path and phase transitions"
+    ~<detail>"./TRAJECTORY.md"
+  }
+}
+
+# ── Engine Architecture ─────────────────────────────────────
+
+^["engine"]{
+  !["Execution models from docs/runtime/"]
+
+  ^["foundation"]{
+    =status: "documented, not fully machined"
+    ~<spw>"../../../docs/runtime/spw/runtime-foundation.spw"
+    ~<md>"../../../docs/runtime/md/runtime-foundation.md"
+    ?["Is the parse-to-runtime bridge complete?"]
+      ~#status: "partial — pipeline contract exists but evaluation is stub"
+  }
+
+  ^["agent-loop"]{
+    =status: "design-proposed"
+    =model: "reversible loop — undo/replay/branch"
+    ~<detail>"../../../docs/runtime/spw/agent-loop.spw"
+    ?["Does the agent-loop require a full interpreter?"]
+      ~#answer: "No — can operate on AST + register state without evaluation"
+  }
+
+  ^["hud"]{
+    =status: "design-proposed"
+    =concern: "session, phase, and feature HUD overlay"
+    ~<detail>"../../../docs/runtime/spw/hud-runtime.spw"
+  }
+}
+
+# ── Performance & Workers ───────────────────────────────────
+
+^["performance"]{
+  !["Protocol and optimization"]
+
+  ^["lsp-dap"]{
+    =status: "researched"
+    =concern: "worker protocol prep for LSP and DAP"
+    ~<detail>"../../../docs/runtime/spw/lsp-dap-workers.spw"
+    ?["Can spwq power the LSP document symbol handler?"]
+      ~#answer: "Yes — spwq.at() maps cursor position to deepest match"
+  }
+
+  ^["web-apis"]{
+    =status: "researched"
+    =concern: "browser API opportunities (rAF, IntersectionObserver)"
+    ~<detail>"../../../docs/runtime/spw/web-apis.spw"
+  }
+
+  ^["looper"]{
+    =status: "theory-level"
+    ~<detail>"../../../docs/theory/spw/looper-architecture.spw"
+  }
+}
+
+# ── Theory References ───────────────────────────────────────
+
+^["theory"]{
+  .. ~<valence>"../../../docs/theory/spw/valence-architecture.spw"
+  .. ~<register>"../../../docs/theory/spw/register-geometry.spw"
+  .. ~<cognitive>"../../../docs/theory/spw/cognitive-laser.spw"
+  .. ~<looper>"../../../docs/theory/spw/looper-architecture.spw"
+}
