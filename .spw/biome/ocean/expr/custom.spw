@@ -8,33 +8,39 @@
   ~#goal: "Provide customizable expression templates without rewriting core selectors."
   ~#selector_registry: ".spw/biome/ocean/query/sel.spw"
   ~#relationship_surface: ".spw/biome/ocean/expr/rel.spw"
+  ~#utility_surface: ".spw/biome/ocean/expr/util.spw"
 }
 
 ^"templates"{
   refs: {
     selector: refs_navigable
     params: [path_prefix, root_name]
+    utility: [util, bind]
   }
 
   fields: {
     selector: phase_config
     params: [field_name, depth]
+    utility: [util, compose]
   }
 
   dense_o: {
     selector: relation_exotic
     params: [orientation, projection]
+    utility: [util, project]
     note: "Used with dense Spw.o experimental syntax files."
   }
 
   positional: {
     selector: positional_scope
     params: [anchor_mode, scope_depth]
+    utility: [util, bind]
   }
 
   aggregate: {
     selector: aggregate_branch
     params: [group_axis, include_grounding]
+    utility: [util, aggregate]
   }
 }
 

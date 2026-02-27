@@ -8,6 +8,33 @@
   ~#goal: "Expose readable, referenceable, and updatable query selectors."
   ~#selector_registry: ".spw/biome/ocean/query/sel.spw"
   ~#hot_layer: ".spw/biome/ocean/query/hot.spw"
+  ~#utility_surface: ".spw/biome/ocean/expr/util.spw"
+}
+
+^"macro"{
+  selector_registry: ".spw/biome/ocean/query/sel.spw"
+
+  selector: {
+    refs: refs_navigable
+    probes: probes_active
+    invariants: invariants_core
+    phase: phase_config
+    positionality: positional_scope
+    aggregation: aggregate_branch
+    relations: relation_exotic
+  }
+
+  grounding: {
+    grounded_ref: {
+      meaning: "canonical refs anchored to stable source files"
+      examples: [".spw/workspace.spw#invariants", ".spw/biome/ocean/index.spw#modules"]
+    }
+
+    bound_ref: {
+      meaning: "contextual refs bound to branch, phase, or hot replacement"
+      examples: [".spw/biome/ocean/trace.spw#model", ".spw/biome/ocean/query/hot.spw#replacement"]
+    }
+  }
 }
 
 ^"forms"{
@@ -37,48 +64,41 @@
 }
 
 ^selectors[refs]{
-  id: refs_navigable
-  source: ".spw/biome/ocean/query/sel.spw#selector[refs_navigable]"
+  use: [macro, selector, refs]
+  utility: [util, compose]
 }
 
 ^selectors[probes]{
-  id: probes_active
-  source: ".spw/biome/ocean/query/sel.spw#selector[probes_active]"
+  use: [macro, selector, probes]
+  utility: [util, project]
 }
 
 ^selectors[invariants]{
-  id: invariants_core
-  source: ".spw/biome/ocean/query/sel.spw#selector[invariants_core]"
+  use: [macro, selector, invariants]
+  utility: [util, ground]
 }
 
 ^selectors[phase]{
-  id: phase_config
-  source: ".spw/biome/ocean/query/sel.spw#selector[phase_config]"
+  use: [macro, selector, phase]
+  utility: [util, bind]
 }
 
 ^selectors[positionality]{
-  id: positional_scope
-  source: ".spw/biome/ocean/query/sel.spw#selector[positional_scope]"
+  use: [macro, selector, positionality]
+  utility: [util, bind]
 }
 
 ^selectors[aggregation]{
-  id: aggregate_branch
-  source: ".spw/biome/ocean/query/sel.spw#selector[aggregate_branch]"
+  use: [macro, selector, aggregation]
+  utility: [util, aggregate]
 }
 
 ^selectors[relations]{
-  id: relation_exotic
-  source: ".spw/biome/ocean/query/sel.spw#selector[relation_exotic]"
+  use: [macro, selector, relations]
+  utility: [util, compose]
 }
 
 ^"reference_model"{
-  grounded_ref: {
-    meaning: "canonical refs anchored to stable source files"
-    examples: [".spw/workspace.spw#invariants", ".spw/biome/ocean/index.spw#modules"]
-  }
-
-  bound_ref: {
-    meaning: "contextual refs bound to branch, phase, or hot replacement"
-    examples: [".spw/biome/ocean/trace.spw#model", ".spw/biome/ocean/query/hot.spw#replacement"]
-  }
+  grounded_ref: [macro, grounding, grounded_ref]
+  bound_ref: [macro, grounding, bound_ref]
 }
