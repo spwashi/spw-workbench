@@ -4,7 +4,7 @@
  * Query .spw files using the selector algebra.
  *
  * Usage:
- *   npm run spwq -- <file> [--selector=<name>] [--format=json|lines] [--summary]
+ *   npm run spwq -- <file> [--selector=<name>] [--expr=<spw-expr>] [--format=json|lines] [--summary]
  *
  * Selectors (structural):
  *   navigable  — refs + pathRefs (default)
@@ -60,12 +60,14 @@ import {
   BONE_OPS,
   ANY,
 } from '../src/seed'
+import { tryParseSelector } from '../src/seed/query/selector-expr'
 
 // ── Args ─────────────────────────────────────────────────────
 
 const args = process.argv.slice(2)
 const file = args.find((a) => !a.startsWith('--'))
 const selectorArg = args.find((a) => a.startsWith('--selector='))?.split('=')[1] ?? 'navigable'
+const exprArg = args.find((a) => a.startsWith('--expr='))?.split('=').slice(1).join('=')
 const formatArg = args.find((a) => a.startsWith('--format='))?.split('=')[1] ?? 'lines'
 const showSummary = args.includes('--summary')
 
@@ -114,11 +116,37 @@ function SELECTOR_MAP_INIT(): Record<string, SpwSelector> {
 }
 
 const SELECTOR_MAP = SELECTOR_MAP_INIT()
-const selector = SELECTOR_MAP[selectorArg]
-if (!selector) {
-  console.error(`Unknown selector: ${selectorArg}`)
-  console.error(`Available: ${Object.keys(SELECTOR_MAP).join(', ')}`)
-  process.exit(1)
+
+// Resolve selector: --expr takes priority, then --selector (preset or expression fallback)
+let selector: SpwSelector
+let selectorLabel: string
+
+if (exprArg) {
+  const parsed = tryParseSelector(exprArg)
+  if (!parsed) {
+    console.error(`Failed to parse expression: ${exprArg}`)
+    process.exit(1)
+  }
+  selector = parsed
+  selectorLabel = exprArg
+} else {
+  const preset = SELECTOR_MAP[selectorArg]
+  if (preset) {
+    selector = preset
+    selectorLabel = selectorArg
+  } else {
+    // Try parsing --selector value as an expression
+    const parsed = tryParseSelector(selectorArg)
+    if (parsed) {
+      selector = parsed
+      selectorLabel = selectorArg
+    } else {
+      console.error(`Unknown selector: ${selectorArg}`)
+      console.error(`Available presets: ${Object.keys(SELECTOR_MAP).join(', ')}`)
+      console.error(`Or use --expr="^[]" for Spw-native expressions`)
+      process.exit(1)
+    }
+  }
 }
 
 // ── Parse and query ──────────────────────────────────────────
@@ -201,7 +229,7 @@ if (showSummary) {
 
   console.error('')
   console.error(`── summary ──────────────────────────────────`)
-  console.error(`  selector:   ${selectorArg}`)
+  console.error(`  selector:   ${selectorLabel}`)
   console.error(`  matches:    ${matches.length}`)
   console.error(`  max depth:  ${maxDepth}`)
   console.error(`  node types: ${[...types].join(', ')}`)

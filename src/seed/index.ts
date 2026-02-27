@@ -210,3 +210,9 @@ export {
   BONE_OPS,
   ANY,
 } from './query'
+
+export {
+  parseSelector,
+  tryParseSelector,
+  SelectorParseError,
+} from './query/selector-expr'
