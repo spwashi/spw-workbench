@@ -246,6 +246,7 @@ export function activate(context: vscode.ExtensionContext) {
             const injectRegex = /^(\s*)!(?:boon|bone|bane|bonk|honk)?\["([^"]+)"\]/;
             const probeRegex = /^(\s*)\?\["([^"]+)"\]/;
             const configRegex = /^(\s*)=([a-zA-Z_][a-zA-Z0-9_]*):/;
+            const annotationRegex = /^(\s*)#(!|:|>)?([a-zA-Z_][a-zA-Z0-9_]*)/;
 
             // Stack-based nesting via indentation
             const stack: { indent: number; symbol: vscode.DocumentSymbol }[] = [];
@@ -334,6 +335,45 @@ export function activate(context: vscode.ExtensionContext) {
                     continue;
                 }
 
+                // #-annotations: topic, lens, intent, anchor
+                const annotationMatch = annotationRegex.exec(line.text);
+                if (annotationMatch) {
+                    const indent = annotationMatch[1].length;
+                    const prefix = annotationMatch[2] || '';
+                    const name = annotationMatch[3];
+
+                    let symbolKind: vscode.SymbolKind;
+                    let detail: string;
+                    switch (prefix) {
+                        case ':':
+                            symbolKind = vscode.SymbolKind.Enum;
+                            detail = 'Spw Lens';
+                            break;
+                        case '!':
+                            symbolKind = vscode.SymbolKind.Event;
+                            detail = 'Spw Intent';
+                            break;
+                        case '>':
+                            symbolKind = vscode.SymbolKind.Interface;
+                            detail = 'Spw Anchor';
+                            break;
+                        default:
+                            symbolKind = vscode.SymbolKind.Key;
+                            detail = 'Spw Topic';
+                            break;
+                    }
+
+                    const selRange = new vscode.Range(
+                        new vscode.Position(i, annotationMatch.index),
+                        new vscode.Position(i, annotationMatch.index + annotationMatch[0].length)
+                    );
+                    const sym = new vscode.DocumentSymbol(
+                        `# ${name}`, detail, symbolKind, lineRange, selRange
+                    );
+                    addSymbol(sym, indent);
+                    continue;
+                }
+
                 // Extend current deepest symbol's range
                 if (stack.length > 0) {
                     const top = stack[stack.length - 1].symbol;
@@ -344,5 +384,119 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    context.subscriptions.push(linkProvider, completionProvider, hoverProvider, symbolProvider);
+    // =========================================================================
+    // DocumentSemanticTokensProvider (Phase-Aware Coloring)
+    // =========================================================================
+    const tokenTypes = ['operator', 'type', 'variable', 'property', 'function', 'string', 'keyword', 'comment'];
+    const tokenModifiers = ['declaration', 'definition', 'readonly', 'deprecated', 'modification', 'async'];
+    const legend = new vscode.SemanticTokensLegend(tokenTypes, tokenModifiers);
+
+    const semanticTokensProvider = vscode.languages.registerDocumentSemanticTokensProvider(
+        documentSelector,
+        {
+            provideDocumentSemanticTokens(document: vscode.TextDocument): vscode.SemanticTokens {
+                const builder = new vscode.SemanticTokensBuilder(legend);
+
+                for (let i = 0; i < document.lineCount; i++) {
+                    const lineText = document.lineAt(i).text;
+                    let col = 0;
+
+                    while (col < lineText.length) {
+                        const ch = lineText[col];
+                        const rest = lineText.slice(col);
+
+                        // Skip whitespace
+                        if (/\s/.test(ch)) { col++; continue; }
+
+                        // Comments (lines starting with // after optional whitespace)
+                        if (rest.startsWith('//')) {
+                            builder.push(i, col, lineText.length - col, tokenTypes.indexOf('comment'), 0);
+                            break;
+                        }
+
+                        // #-annotations: #word, #:word, #!word, #>word
+                        const hashMatch = rest.match(/^#(!|:|>)?([a-zA-Z_][a-zA-Z0-9_]*)/);
+                        if (hashMatch) {
+                            const len = hashMatch[0].length;
+                            builder.push(i, col, len, tokenTypes.indexOf('type'), 0);
+                            col += len;
+                            continue;
+                        }
+
+                        // Sigil operators with semantic modifiers
+                        if (ch === '^') {
+                            // ^ = keyword.declaration (framing/root)
+                            builder.push(i, col, 1, tokenTypes.indexOf('keyword'), 1 << tokenModifiers.indexOf('declaration'));
+                            col++; continue;
+                        }
+                        if (ch === '!') {
+                            // ! = function.modification (hydrate/inject)
+                            builder.push(i, col, 1, tokenTypes.indexOf('function'), 1 << tokenModifiers.indexOf('modification'));
+                            col++; continue;
+                        }
+                        if (ch === '?') {
+                            // ? = function.async (probe/query)
+                            builder.push(i, col, 1, tokenTypes.indexOf('function'), 1 << tokenModifiers.indexOf('async'));
+                            col++; continue;
+                        }
+                        if (ch === '~') {
+                            // ~ = variable.deprecated (defer/lazy)
+                            builder.push(i, col, 1, tokenTypes.indexOf('variable'), 1 << tokenModifiers.indexOf('deprecated'));
+                            col++; continue;
+                        }
+                        if (ch === '=') {
+                            // = = property.readonly (config/constraint)
+                            builder.push(i, col, 1, tokenTypes.indexOf('property'), 1 << tokenModifiers.indexOf('readonly'));
+                            col++; continue;
+                        }
+                        if (ch === '%') {
+                            // % = operator (measure)
+                            builder.push(i, col, 1, tokenTypes.indexOf('operator'), 0);
+                            col++; continue;
+                        }
+                        if (ch === '@') {
+                            // @ references
+                            const refMatch = rest.match(/^@[a-zA-Z_][a-zA-Z0-9_]*/);
+                            if (refMatch) {
+                                builder.push(i, col, refMatch[0].length, tokenTypes.indexOf('variable'), 0);
+                                col += refMatch[0].length;
+                                continue;
+                            }
+                            builder.push(i, col, 1, tokenTypes.indexOf('variable'), 0);
+                            col++; continue;
+                        }
+                        if (ch === '.' || ch === '&' || ch === '$' || ch === '*') {
+                            builder.push(i, col, 1, tokenTypes.indexOf('operator'), 0);
+                            col++; continue;
+                        }
+
+                        // Containers
+                        if (ch === '[' || ch === ']' || ch === '{' || ch === '}' ||
+                            ch === '(' || ch === ')' || ch === '<' || ch === '>') {
+                            builder.push(i, col, 1, tokenTypes.indexOf('operator'), 1 << tokenModifiers.indexOf('definition'));
+                            col++; continue;
+                        }
+
+                        // Quoted strings
+                        if (ch === '"') {
+                            const strMatch = rest.match(/^"([^"\\]|\\.)*"/);
+                            if (strMatch) {
+                                builder.push(i, col, strMatch[0].length, tokenTypes.indexOf('string'), 0);
+                                col += strMatch[0].length;
+                                continue;
+                            }
+                        }
+
+                        // Everything else: skip
+                        col++;
+                    }
+                }
+
+                return builder.build();
+            }
+        },
+        legend
+    );
+
+    context.subscriptions.push(linkProvider, completionProvider, hoverProvider, symbolProvider, semanticTokensProvider);
 }

@@ -78,8 +78,9 @@
                     "match": "^\\s*#\\s+[A-Z][A-Z ]+$"
                 },
                 {
+                    "comment": "Hash comment — only lines starting with # followed by space (not #word annotations)",
                     "name": "comment.line.hash.spw",
-                    "match": "^\\s*#.*$"
+                    "match": "^\\s*#\\s+.*$"
                 },
                 {
                     "name": "comment.block.spw",
@@ -315,6 +316,26 @@
                 {
                     "name": "entity.name.tag.annotation.spw",
                     "match": "~#[a-zA-Z_][a-zA-Z0-9_-]*"
+                },
+                {
+                    "comment": "#>word — anchor annotation (jump target)",
+                    "name": "entity.name.tag.annotation.anchor.spw",
+                    "match": "#>[a-zA-Z_][a-zA-Z0-9_]*"
+                },
+                {
+                    "comment": "#!word — intent annotation",
+                    "name": "entity.name.tag.annotation.intent.spw",
+                    "match": "#![a-zA-Z_][a-zA-Z0-9_]*"
+                },
+                {
+                    "comment": "#:word — lens annotation",
+                    "name": "entity.name.tag.annotation.lens.spw",
+                    "match": "#:[a-zA-Z_][a-zA-Z0-9_]*"
+                },
+                {
+                    "comment": "#word — topic annotation (inline, not at line start)",
+                    "name": "entity.name.tag.annotation.topic.spw",
+                    "match": "(?<=\\s)#[a-zA-Z_][a-zA-Z0-9_]*"
                 }
             ]
         },
@@ -427,6 +448,11 @@
                 {
                     "name": "keyword.operator.sigil.schema.spw",
                     "match": "#[a-zA-Z_][a-zA-Z0-9_]*|#(?=[^a-zA-Z_])"
+                },
+                {
+                    "comment": "% measure/observation sigil",
+                    "name": "keyword.operator.sigil.measure.spw",
+                    "match": "%(?=[\\[{a-zA-Z_])|%"
                 },
                 {
                     "name": "keyword.operator.sigil.subject.spw",

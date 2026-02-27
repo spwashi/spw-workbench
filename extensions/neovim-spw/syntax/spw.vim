@@ -16,7 +16,7 @@ syntax case match
 
 " ── Comments ────────────────────────────────────────────────────
 syntax match   spwLineComment   '//.*$'                                 display
-syntax match   spwHashComment   '^\s*#\s[^-].*$'                         display
+syntax match   spwHashComment   '^\s*#\s\+[^-].*$'                       display
 syntax match   spwPhaseComment  '^\s*#\s*---.*---\s*$'                    display
 syntax region  spwBlockComment  start='/\*' end='\*/'
 
@@ -111,6 +111,16 @@ syntax match   spwDotOp      '\.'                               display
 " # vibration/schema — resonance, self-reference, meta
 syntax match   spwSigSchema  '#[a-zA-Z_][a-zA-Z0-9_]*'  display
 syntax match   spwSigSchema  '#'                           display
+
+" % measure/observation — collapse to scalar
+syntax match   spwSigMeasure  '%\[[^\]]*\]'  display
+syntax match   spwSigMeasure  '%'            display
+
+" #-annotation subtypes (before generic #schema)
+syntax match   spwAnnotAnchor  '#>[a-zA-Z_][a-zA-Z0-9_]*'  display
+syntax match   spwAnnotIntent  '#![a-zA-Z_][a-zA-Z0-9_]*'  display
+syntax match   spwAnnotLens    '#:[a-zA-Z_][a-zA-Z0-9_]*'  display
+syntax match   spwAnnotTopic   '\s\zs#[a-zA-Z_][a-zA-Z0-9_]*'  display
 
 " & subject/entanglement
 syntax match   spwSigSubject  '&[a-zA-Z_][a-zA-Z0-9_]*'  display
@@ -216,8 +226,15 @@ highlight link spwSigWonder       SpwBonk       " ? uncertainty / probe
 highlight link spwSigPotential    SpwPotential  " ~ superposition / possible
 highlight link spwSigValue        Type          " * measurement / collapse
 highlight link spwSigSchema       PreProc       " # resonance / meta
+highlight link spwSigMeasure      SpwMeasure    " % observation / scalar
 highlight link spwSigSubject      Identifier    " & entanglement
 highlight link spwSigSet          Statement     " = bias / assign
+
+" #-annotation subtypes
+highlight link spwAnnotAnchor     SpwAnchor
+highlight link spwAnnotIntent     SpwIntent
+highlight link spwAnnotLens       SpwLens
+highlight link spwAnnotTopic      SpwTopic
 
 " Operators and connectors
 highlight link spwArrow      SpwBoon
@@ -312,5 +329,14 @@ highlight default SpwVocab     guifg=#83a598 gui=bold      ctermfg=109 cterm=bol
 
 " Separators
 highlight default SpwEmDash    guifg=#665c54                ctermfg=241
+
+" Measure sigil
+highlight default SpwMeasure   guifg=#8ec07c gui=italic    ctermfg=108 cterm=italic
+
+" #-annotation subtypes
+highlight default SpwAnchor    guifg=#8ec07c gui=underline  ctermfg=108 cterm=underline
+highlight default SpwIntent    guifg=#b8bb26 gui=bold      ctermfg=142 cterm=bold
+highlight default SpwLens      guifg=#d3869b gui=italic    ctermfg=175 cterm=italic
+highlight default SpwTopic     guifg=#a89984                ctermfg=246
 
 let b:current_syntax = 'spw'
