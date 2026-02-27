@@ -56,6 +56,18 @@
     target: [".spw/biome/ocean/index.spw", ".spw/biome/ocean/atlas.spw", ".spw/biome/ocean/style.spw", ".spw/workspace.spw"]
     pass: "each biome links to core contracts and does not redefine core invariants"
   }
+
+  operator_sequence_query: {
+    prompt: "Ensure operator/braces/label combinatorics can be queried across .spw surfaces."
+    target: ["scripts/spw-ls.ts", "scripts/spw-ls-core.ts", ".spw/biome/ocean/query/dialect.spw", ".spw/biome/ocean/template/t.spw"]
+    pass: "liminal query supports operators, braces, labels, probe expressions, and model hints"
+  }
+
+  memory_lattice_replay: {
+    prompt: "Ensure runtime memory can be dumped, listed, and reloaded as replayable snapshots."
+    target: ["scripts/spw-mem.ts", ".agents/state/register-conventions.spw", ".spw/harness/memory-surface.spw"]
+    pass: "dump/list/load commands preserve runtime state cells and manifest integrity"
+  }
 }
 
 ^"scoring"{
@@ -68,6 +80,8 @@
     evolution_scope: 0.1
     dev_hot_reload: 0.1
     biome_cohesion: 0.05
+    operator_sequence_query: 0.05
+    memory_lattice_replay: 0.05
   }
   ~#threshold_accept: 0.9
 }
