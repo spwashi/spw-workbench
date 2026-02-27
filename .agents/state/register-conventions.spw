@@ -1,0 +1,61 @@
+# Agent Register State Conventions
+
+^"register_surface"{
+  location: ".agents/state/runtime/",
+  ownership: "runtime snapshots and hot caches for skill scripts",
+  git_policy: "runtime surface is local-only and ignored; schema docs stay versioned"
+}
+
+^"serialization"{
+  primary_format: ".spw",
+  sidecar_format: "tab-separated cache ring for fast append/prune",
+  write_mode: "atomic (tmp + move)",
+  schema_tags: [
+    "spw.poll-state.v1",
+    "spw.register-bus.v1"
+  ]
+}
+
+^"interpretability"{
+  claims: [
+    "state files must include human-readable top blocks (register_state, inventory, checks)",
+    "recent_runs keeps bounded history for replay and debugging",
+    "status values are explicit (clean/issue/idle/disabled/none/pass/fail/warn)"
+  ]
+}
+
+^"portability"{
+  constraints: [
+    "no absolute machine-specific paths in serialized state",
+    "timestamps serialized in UTC ISO-8601",
+    "all values are plain scalars or shallow records"
+  ]
+}
+
+^"hot_reload"{
+  token: "hot_reload_token mirrors updated_at and changes every write",
+  loop_contract: "watch loops may re-read state file without parser warmup",
+  retention: "recent cache window is bounded (default 8 snapshots)"
+}
+
+^"writer_resilience"{
+  install_flow: "tmp write -> (optional validation) -> lock + backup -> atomic move -> rollback on failure",
+  validation_modes: ["off", "fast", "strict"],
+  default_mode: "fast",
+  tuning_flags: ["--state-validate", "--state-lock-retries", "--state-keep-backup"]
+}
+
+^"bus_contract"{
+  bus_file: ".agents/state/runtime/register-bus.state.spw",
+  aggregation_mode: "one per-skill file + one aggregated index bus",
+  entry_shape: "{ id, path, ref, mtime_epoch, bytes, status, summary }",
+  summary_shape: "{ status, scope, watch, interval_seconds, total_files, source_files, spw_files, golden_files, lint, fuzz, spw_parse, golden, nearby_refs }"
+}
+
+^"path_refs"{
+  syntax: '~"relative/path/from/state/file"',
+  note: "Snapshots include both `path` and `ref`; `ref` uses local tilde-path form for editor/LSP navigation portability.",
+  quote_policy: "quotes required for `ref` payloads; this keeps serialized paths lexically explicit and parser-stable.",
+  noise_policy: "prefer shortest relative form (`./`, `../`) and keep canonical repo-relative `path` alongside `ref` for readability.",
+  nearby_entry_shape: "{ path, ref, lines, status }"
+}
