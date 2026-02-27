@@ -17,6 +17,13 @@ if [ $SPW_HELP -eq 1 ]; then spw_print_help; exit 0; fi
 
 # ---------------------------------------------------------------------------
 
+STATE_STATUS="clean"
+STATE_SCOPE="context_loader"
+STATE_SOURCE_COUNT=$(spw_count_files "src" '*.ts' -not -path '*/__tests__/*')
+STATE_SPW_COUNT=$(spw_count_files "docs/theory/spw" '*.spw')
+STATE_TOTAL_COUNT=$((STATE_SOURCE_COUNT + STATE_SPW_COUNT))
+STATE_NEARBY="docs/theory/spw;src;lib/spw-v0.2.0-alpha/architecture"
+
 spw_seed "$SPW_SCRIPT_NAME" "1.1" "context_loader"
 spw_section_open "vocabulary_map"
 
@@ -50,8 +57,11 @@ spw_set_close
 
 echo ""
 spw_set_open "branded_types"
-if [ -f "src/core/types/branded.ts" ]; then
-  grep 'export type' src/core/types/branded.ts 2>/dev/null | sed 's/export type \([^ =]*\).*/    `\1`,/' || true
+if [ -f "src/seed/types/token.ts" ]; then
+  grep -E 'export type (OperatorKind|ModifierKind|ConnectorKind|ContainerKind|TokenType)' src/seed/types/token.ts 2>/dev/null | sed 's/export type \([^ =]*\).*/    `\1`,/' || true
+fi
+if [ -f "src/runtime/state/types.ts" ]; then
+  grep -E 'export type (RegisterAccessMode|ContainerAffinity)' src/runtime/state/types.ts 2>/dev/null | sed 's/export type \([^ =]*\).*/    `\1`,/' || true
 fi
 spw_set_close
 
@@ -66,7 +76,7 @@ spw_set_close
 
 echo ""
 spw_facet_open "normalization_pipeline"
-echo "    SNF  = \`surface lexer output (src/lib/spw/lexer/)\`"
+echo "    SNF  = \`surface lexer output (src/seed/lexer/)\`"
 echo "    SiNF = \`per-sigil reduction (src/seed/types/ast/onf.ts)\`"
 echo "    SeNF = \`cross-sigil semantic normalization (open research)\`"
 spw_facet_close
@@ -74,7 +84,31 @@ spw_facet_close
 spw_section_close "vocabulary_map"
 spw_affordances_open
 spw_affordance "npm run lint:spw" "parse-validate all .spw files"
+spw_affordance "npm run lint:v020:architecture" "library architecture/theory bridge integrity"
+spw_affordance "npm run lint:v020:runtime" "runtime contract + naming integrity"
 spw_affordance "npm run audit:spw-garden" ".spw structural health"
 spw_affordance "npm run analyze:perturb" "What changes when X changes"
 spw_affordance "npm run audit" "Extract and classify all @spw: annotation sites"
 spw_affordances_close
+
+if [ ! -f "docs/theory/spw/operators.spw" ]; then
+  STATE_STATUS="issue"
+fi
+
+spw_state_write \
+  --id "semantics-check" \
+  --schema "spw.skill-state.v1" \
+  --status "$STATE_STATUS" \
+  --scope "$STATE_SCOPE" \
+  --watch 0 \
+  --interval 0 \
+  --total "$STATE_TOTAL_COUNT" \
+  --source "$STATE_SOURCE_COUNT" \
+  --spw "$STATE_SPW_COUNT" \
+  --golden-files 0 \
+  --lint "none" \
+  --fuzz "none" \
+  --spw-parse "none" \
+  --golden "clear" \
+  --nearby "$STATE_NEARBY" \
+  --writer ".agents/skills/spw-semantics-rigor/scripts/semantics-check.sh"

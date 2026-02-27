@@ -77,6 +77,10 @@ Update this skill when:
 
 - `bash .agents/skills/spw-ui-containment-audit/scripts/containment-scan.sh [path]` — find overflow/positioning/z-index/margin issues
 
+## Shared Spw Integration
+
+`containment-scan.sh` uses `scripts/spw-lib.sh` so containment audits share the same Spw section/facet instrumentation format as other skills.
+
 ## Resources
 
 - Use `.agents/skills/spw-ui-containment-audit/references/containment-checklist.md` for search patterns and common fixes.

@@ -75,6 +75,12 @@ bash .agents/skills/spw-commit-review/scripts/poll-review.sh --scope=staged --fu
 
 # Optional: include Gen1/Gen2 syntax hints for .spw files
 bash .agents/skills/spw-commit-review/scripts/poll-review.sh --scope=changed --gen-hints
+
+# Optional: skip writing runtime register snapshots for one-off probes
+bash .agents/skills/spw-commit-review/scripts/poll-review.sh --scope=changed --no-state
+
+# Optional: use strict parser validation for snapshot writes (slower, more durable)
+bash .agents/skills/spw-commit-review/scripts/poll-review.sh --scope=changed --state-validate=strict
 ```
 
 This polls:
@@ -82,6 +88,9 @@ This polls:
 - FUZZ profile checks on the same files
 - `.spw` parse validation
 - golden snapshot modifications
+- runtime register snapshot updates at `.agents/state/runtime/poll-review.state.spw`
+- aggregated register bus updates at `.agents/state/runtime/register-bus.state.spw`
+- snapshot `nearby_spw` refs are dynamic (scope + changed-file adjacency) and extension/LSP navigable via local tilde refs (`~"relative/path"` from the runtime state file)
 
 Generation syntax hints are intentionally optional in polling (`--gen-hints`), so the default loop stays focused on fast correctness feedback.
 
@@ -141,6 +150,6 @@ When the hook flags issues, fix them:
 
 ## Scripts
 
-- `bash .agents/skills/spw-commit-review/scripts/poll-review.sh [options]` — poll changed/staged files for lint, fuzz, and .spw checks
+- `bash .agents/skills/spw-commit-review/scripts/poll-review.sh [options]` — poll changed/staged files for lint, fuzz, and .spw checks; writes per-skill state + register bus under `.agents/state/runtime/` unless `--no-state`
 - `bash .agents/skills/spw-commit-review/scripts/spw-syntax-audit.sh [path]` — full .spw syntax generation report
 - `bash .agents/skills/spw-commit-review/scripts/layer-check.sh` — import boundary verification

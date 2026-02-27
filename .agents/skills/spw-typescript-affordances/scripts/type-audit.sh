@@ -15,6 +15,12 @@ spw_parse_args "$@"
 if [ $SPW_HELP -eq 1 ]; then spw_print_help; exit 0; fi
 
 TARGET="${SPW_POSITIONAL[0]:-src}"
+STATE_STATUS="clean"
+STATE_SCOPE="$TARGET"
+STATE_SOURCE_COUNT=$(spw_count_files "$TARGET" '*.ts' -not -path '*/__tests__/*')
+STATE_SPW_COUNT=$(spw_count_files "docs/theory/spw" '*.spw')
+STATE_TOTAL_COUNT=$((STATE_SOURCE_COUNT + STATE_SPW_COUNT))
+STATE_NEARBY="$TARGET;src/seed/types;src/runtime/state"
 
 # ---------------------------------------------------------------------------
 
@@ -26,6 +32,7 @@ if [ -f "src/core/types/branded.ts" ]; then
   grep 'export type' src/core/types/branded.ts 2>/dev/null | sed 's/export type \([^ =]*\).*/    `\1`,/' || true
 else
   spw_bonk "src/core/types/branded.ts not found"
+  STATE_STATUS="issue"
 fi
 spw_set_close
 
@@ -90,3 +97,21 @@ spw_affordance "npm run fuzz:types" "Full type safety scan"
 spw_affordance "npm run audit:types" "@spw:types debt markers"
 spw_affordance "npm run build" "tsc catches all type errors"
 spw_affordances_close
+
+spw_state_write \
+  --id "type-audit" \
+  --schema "spw.skill-state.v1" \
+  --status "$STATE_STATUS" \
+  --scope "$STATE_SCOPE" \
+  --watch 0 \
+  --interval 0 \
+  --total "$STATE_TOTAL_COUNT" \
+  --source "$STATE_SOURCE_COUNT" \
+  --spw "$STATE_SPW_COUNT" \
+  --golden-files 0 \
+  --lint "none" \
+  --fuzz "none" \
+  --spw-parse "none" \
+  --golden "clear" \
+  --nearby "$STATE_NEARBY" \
+  --writer ".agents/skills/spw-typescript-affordances/scripts/type-audit.sh"

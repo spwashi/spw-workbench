@@ -15,6 +15,12 @@ spw_parse_args "$@"
 if [ $SPW_HELP -eq 1 ]; then spw_print_help; exit 0; fi
 
 TARGET="${SPW_POSITIONAL[0]:-src}"
+STATE_STATUS="clean"
+STATE_SCOPE="$TARGET"
+STATE_SOURCE_COUNT=$(spw_count_files "$TARGET" '*.ts' -not -path '*/__tests__/*')
+STATE_SPW_COUNT=$(spw_count_files "$TARGET" '*.spw')
+STATE_TOTAL_COUNT=$((STATE_SOURCE_COUNT + STATE_SPW_COUNT))
+STATE_NEARBY="$TARGET;docs/research"
 
 # ---------------------------------------------------------------------------
 
@@ -100,3 +106,21 @@ spw_section_close "data_surface_map"
 spw_affordances_open
 spw_affordance "npm run audit" "Extract and classify all @spw: annotation sites"
 spw_affordances_close
+
+spw_state_write \
+  --id "privacy-scan" \
+  --schema "spw.skill-state.v1" \
+  --status "$STATE_STATUS" \
+  --scope "$STATE_SCOPE" \
+  --watch 0 \
+  --interval 0 \
+  --total "$STATE_TOTAL_COUNT" \
+  --source "$STATE_SOURCE_COUNT" \
+  --spw "$STATE_SPW_COUNT" \
+  --golden-files 0 \
+  --lint "none" \
+  --fuzz "none" \
+  --spw-parse "none" \
+  --golden "clear" \
+  --nearby "$STATE_NEARBY" \
+  --writer ".agents/skills/spw-privacy-engineering/scripts/privacy-scan.sh"

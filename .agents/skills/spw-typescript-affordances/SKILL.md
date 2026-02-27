@@ -24,19 +24,19 @@ description: Apply TypeScript language and compiler affordances in this repo to 
 
 ## Codebase-Specific Types
 
-### Branded Types (`src/core/types/branded.ts`)
-All domain primitives use branded string types:
+### Seed/Runtime Type Primitives
+Core type primitives currently live in:
+- `src/seed/types/token.ts`
+- `src/runtime/state/types.ts`
+
+Key runtime-facing primitives:
 
 | Type | Values | Used For |
 |---|---|---|
-| `OperatorSigil` | `! ^ ~ ? * = @ # . & $ %` | Operator identity |
-| `Layer` | `signal \| pattern \| flow \| structure` | Interpretive depth |
-| `Quality` | `boon \| bane \| bone \| bonk \| honk` | Valence pentad |
-| `RegisterKind` | `set \| facet \| stream \| perspective` | Register frame types |
-| `Region` | `editor \| inspector \| sidebar \| ...` | UI regions |
-| `ActivationContext` | `visual \| editing \| reporting \| debug \| ...` | Context states |
-| `LensName` | `syntactic \| semantic \| pragmatic` | Lens triangulation |
-| `EventKind` | 30+ events | Event catalog |
+| `OperatorKind` | `! ^ ~ ? * = @ # . & $ %` | Operator identity |
+| `ContainerKind` | brace and stream delimiters | Structural topology |
+| `RegisterAccessMode` | kinetic/property/perspective/... | Runtime register access semantics |
+| `ContainerAffinity` | category/property/conditional/... | Runtime register-context affinity |
 
 ### Type Patterns in Use
 - `as const satisfies Record<Brand, Meta>` — narrowest literal type with shape validation
@@ -70,6 +70,10 @@ Update this skill when:
 ## Scripts
 
 - `bash .agents/skills/spw-typescript-affordances/scripts/type-audit.sh [path]` — scan for `any`, `Record<string,...>`, type assertions
+
+## Shared Spw Integration
+
+`type-audit.sh` uses the shared `scripts/spw-lib.sh` utility for consistent output framing and scope filtering.
 
 ## Resources
 

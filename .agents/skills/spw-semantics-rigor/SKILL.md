@@ -72,8 +72,17 @@ When formalizing genre-adjacent semantics, define and enforce the *axis invarian
 npm run audit:spw-garden    # Audit .spw doc files for structural health
 npm run analyze:perturb     # Perturbation analysis — what changes when X changes
 npm run audit               # Extract and classify all @spw: annotation sites
+npm run lint:v020:architecture  # Library architecture/theory bridge integrity
+npm run lint:v020:runtime   # Runtime contract + naming integrity
 npm run lint:docs           # Check .spw path references are valid
 ```
+
+## Shared Spw Integration
+
+Skill scripts use the shared utility at `scripts/spw-lib.sh` for:
+- argument parsing (`--match`, `--exclude`)
+- consistent section/set/facet output framing
+- common affordance rendering across skills
 
 ## Skill Care
 
@@ -95,4 +104,4 @@ Update this skill when:
 - Reference `docs/theory/spw/onf.spw` for the normalization spec.
 - Reference `docs/theory/spw/operators.spw` for canonical operator definitions.
 - Reference `docs/theory/spw/register-geometry.spw` for the fiber bundle model.
-- Reference `src/lang/docs/operant-perspectives.spw` for cross-domain operator readings.
+- Reference `lib/spw-v0.2.0-alpha/architecture/theory-bridge.spw` for library-level operator/brace theory bridging.

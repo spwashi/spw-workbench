@@ -14,7 +14,16 @@ spw_parse_args "$@"
 if [ $SPW_HELP -eq 1 ]; then spw_print_help; exit 0; fi
 
 MODE="${SPW_POSITIONAL[0]:-context}"
-LINT_SCRIPT="${SPW_LINT_SCRIPT:-lint:changed}"
+LINT_SCRIPT="${SPW_LINT_SCRIPT:-lint:spw}"
+STATE_STATUS="clean"
+STATE_SCOPE="$MODE"
+STATE_LINT="none"
+STATE_FUZZ="none"
+STATE_SPW_PARSE="none"
+STATE_SOURCE_COUNT=$(spw_count_files "src" '*.ts' -not -path '*/__tests__/*')
+STATE_SPW_COUNT=$(spw_count_files "src" '*.spw')
+STATE_TOTAL_COUNT=$((STATE_SOURCE_COUNT + STATE_SPW_COUNT))
+STATE_NEARBY="src"
 
 # ---------------------------------------------------------------------------
 
@@ -24,7 +33,7 @@ case "$MODE" in
     spw_section_open "context"
 
     spw_set_open "domain_sizes"
-    for domain in core infra design ui lang viz runtime features debug cli app platform; do
+    while IFS= read -r domain; do
       if ! filter_path "$domain"; then continue; fi
       if [ -d "src/$domain" ]; then
         ts=$(spw_count_files "src/$domain" '*.ts' -not -path '*/__tests__/*')
@@ -32,7 +41,7 @@ case "$MODE" in
         spw=$(spw_count_files "src/$domain" '*.spw')
         echo "    .{ domain = \`$domain\`, ts = $ts, tests = $tests, spw = $spw },"
       fi
-    done
+    done < <(find src -mindepth 1 -maxdepth 1 -type d -print | xargs -n1 basename | sort)
     spw_set_close
 
     echo ""
@@ -45,7 +54,7 @@ case "$MODE" in
 
     echo ""
     spw_set_open "test_gaps"
-    for domain in core infra design ui lang viz runtime features debug cli app platform; do
+    while IFS= read -r domain; do
       if ! filter_path "$domain"; then continue; fi
       if [ -d "src/$domain" ]; then
         ts=$(spw_count_files "src/$domain" '*.ts' -not -path '*/__tests__/*' -not -name '*.test.ts')
@@ -54,7 +63,7 @@ case "$MODE" in
           echo "    .{ domain = \`$domain\`, source_files = $ts, tests = 0, state = \`untested\` },"
         fi
       fi
-    done
+    done < <(find src -mindepth 1 -maxdepth 1 -type d -print | xargs -n1 basename | sort)
     spw_set_close
 
     spw_section_close "context"
@@ -68,24 +77,77 @@ case "$MODE" in
 
   quick)
     spw_honk "Running: lint + test..."
-    npm run "$LINT_SCRIPT"
-    npm run test:run
-    spw_boon "Quick check passed"
+    if npm run "$LINT_SCRIPT"; then
+      STATE_LINT="pass"
+    else
+      STATE_LINT="fail"
+      STATE_STATUS="issue"
+    fi
+    if npm run test:run; then
+      :
+    else
+      STATE_STATUS="issue"
+    fi
+    if [ "$STATE_STATUS" = "clean" ]; then
+      spw_boon "Quick check passed"
+    else
+      spw_bonk "Quick check found issues"
+    fi
     ;;
 
   full)
     spw_honk "Running: lint + test + build + fuzz + audit..."
-    npm run "$LINT_SCRIPT"
-    npm run test:run
-    if [ "${SKIP_BUILD:-}" != "1" ]; then
-      npm run build
+    if npm run "$LINT_SCRIPT"; then
+      STATE_LINT="pass"
+    else
+      STATE_LINT="fail"
+      STATE_STATUS="issue"
     fi
-    npm run fuzz:all || true
-    npm run audit:md || true
-    spw_boon "Full check complete"
+    if npm run test:run; then
+      :
+    else
+      STATE_STATUS="issue"
+    fi
+    if [ "${SKIP_BUILD:-}" != "1" ]; then
+      if ! npm run build; then
+        STATE_STATUS="issue"
+      fi
+    fi
+    if npm run fuzz:all; then
+      STATE_FUZZ="pass"
+    else
+      STATE_FUZZ="warn"
+    fi
+    if ! npm run audit:md; then
+      spw_bone "audit:md returned non-zero (non-blocking)"
+    fi
+    if [ "$STATE_STATUS" = "clean" ]; then
+      spw_boon "Full check complete"
+    else
+      spw_bonk "Full check found issues"
+    fi
     ;;
 
   *)
     echo "Usage: $0 [context|quick|full]"
+    STATE_STATUS="issue"
     ;;
 esac
+
+spw_state_write \
+  --id "craft-check" \
+  --schema "spw.skill-state.v1" \
+  --status "$STATE_STATUS" \
+  --scope "$STATE_SCOPE" \
+  --watch 0 \
+  --interval 0 \
+  --total "$STATE_TOTAL_COUNT" \
+  --source "$STATE_SOURCE_COUNT" \
+  --spw "$STATE_SPW_COUNT" \
+  --golden-files 0 \
+  --lint "$STATE_LINT" \
+  --fuzz "$STATE_FUZZ" \
+  --spw-parse "$STATE_SPW_PARSE" \
+  --golden "clear" \
+  --nearby "$STATE_NEARBY" \
+  --writer ".agents/skills/spw-craft-quality/scripts/craft-check.sh"

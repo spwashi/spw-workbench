@@ -44,6 +44,13 @@ if [ ${#SPW_POSITIONAL[@]} -ge 2 ]; then TS_TARGET="${SPW_POSITIONAL[1]}"; fi
 
 # ---------------------------------------------------------------------------
 
+STATE_STATUS="clean"
+STATE_SCOPE="$CSS_TARGET|$TS_TARGET"
+STATE_SOURCE_COUNT=$(spw_count_files "$TS_TARGET" '*.ts' -not -path '*/__tests__/*')
+STATE_SPW_COUNT=$(spw_count_files "$TS_TARGET" '*.spw')
+STATE_TOTAL_COUNT=$((STATE_SOURCE_COUNT + STATE_SPW_COUNT))
+STATE_NEARBY="$CSS_TARGET;$TS_TARGET"
+
 spw_seed "$SPW_SCRIPT_NAME" "1.1" "context_loader"
 spw_section_open "ui_layout_structure"
 
@@ -101,3 +108,21 @@ spw_affordance "npm run audit:ui-selectors" "Selector baseline audit"
 spw_affordance "npm run audit:context-panel" "Context panel contract"
 spw_affordance "npm run fuzz:runtime" "Layout logic bugs in JS"
 spw_affordances_close
+
+spw_state_write \
+  --id "containment-scan" \
+  --schema "spw.skill-state.v1" \
+  --status "$STATE_STATUS" \
+  --scope "$STATE_SCOPE" \
+  --watch 0 \
+  --interval 0 \
+  --total "$STATE_TOTAL_COUNT" \
+  --source "$STATE_SOURCE_COUNT" \
+  --spw "$STATE_SPW_COUNT" \
+  --golden-files 0 \
+  --lint "none" \
+  --fuzz "none" \
+  --spw-parse "none" \
+  --golden "clear" \
+  --nearby "$STATE_NEARBY" \
+  --writer ".agents/skills/spw-ui-containment-audit/scripts/containment-scan.sh"

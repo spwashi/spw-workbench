@@ -66,6 +66,10 @@ Update this skill when:
 
 - `bash .agents/skills/spw-craft-quality/scripts/craft-check.sh` — lint + test + build loop
 
+## Shared Spw Integration
+
+`craft-check.sh` relies on `scripts/spw-lib.sh` so craft reports follow the same Spw instrumentation shape as other skills.
+
 ## Resources
 
 - Use `.agents/skills/spw-craft-quality/references/craft-checklist.md` as the default review checklist.

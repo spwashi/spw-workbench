@@ -37,6 +37,16 @@ fi
 
 # ---------------------------------------------------------------------------
 
+STATE_STATUS="clean"
+STATE_SCOPE="$ACTION${NAME:+:$NAME}"
+STATE_SOURCE_COUNT=$(spw_count_files "src" '*.ts' -not -path '*/__tests__/*')
+STATE_SPW_COUNT=$(spw_count_files "src" '*.spw')
+STATE_TOTAL_COUNT=$((STATE_SOURCE_COUNT + STATE_SPW_COUNT))
+STATE_NEARBY="src"
+if [ "$ACTION" = "prime" ]; then
+  STATE_NEARBY="src/styles;src/design"
+fi
+
 case "$ACTION" in
   prime)
     spw_seed "$SPW_SCRIPT_NAME.Prime" "1.1" "context_loader"
@@ -103,6 +113,7 @@ case "$ACTION" in
     if [ -z "$switch" ]; then
       spw_bonk "No experiment gate found for '$NAME'"
       spw_dim "→ Add: data-experiment=\"$NAME\" on a container element"
+      STATE_STATUS="issue"
     else
       spw_boon "Gate found:"
       echo "$switch" | while read -r line; do spw_dim "  $line"; done
@@ -127,6 +138,7 @@ case "$ACTION" in
     if [ -n "$leftover" ]; then
       spw_bonk "Remaining artifacts:"
       echo "$leftover" | while read -r line; do spw_dim "  $line"; done
+      STATE_STATUS="issue"
     else
       spw_boon "Clean — no artifacts for '$NAME'"
     fi
@@ -134,5 +146,24 @@ case "$ACTION" in
 
   *)
     echo "Usage: $0 [prime|check|cleanup] [experiment-name]"
+    STATE_STATUS="issue"
     ;;
 esac
+
+spw_state_write \
+  --id "css-experiment-gate" \
+  --schema "spw.skill-state.v1" \
+  --status "$STATE_STATUS" \
+  --scope "$STATE_SCOPE" \
+  --watch 0 \
+  --interval 0 \
+  --total "$STATE_TOTAL_COUNT" \
+  --source "$STATE_SOURCE_COUNT" \
+  --spw "$STATE_SPW_COUNT" \
+  --golden-files 0 \
+  --lint "none" \
+  --fuzz "none" \
+  --spw-parse "none" \
+  --golden "clear" \
+  --nearby "$STATE_NEARBY" \
+  --writer ".agents/skills/spw-css-dom-lab/scripts/css-experiment-gate.sh"

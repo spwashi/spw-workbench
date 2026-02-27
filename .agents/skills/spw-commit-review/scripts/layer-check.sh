@@ -2,7 +2,7 @@
 # layer-check.sh — Context loader: domain architecture map
 #
 # Primes an agent with:
-#   - All 12 domains with file counts and key paths
+#   - Active source strata with file counts and key paths
 #   - Import violations (if any)
 #   - Dependency direction rules
 #   - Where to add new code based on domain responsibility
@@ -16,13 +16,19 @@ if [ $SPW_HELP -eq 1 ]; then spw_print_help; exit 0; fi
 
 # ---------------------------------------------------------------------------
 
+STATE_SCOPE="context_loader"
+STATE_SOURCE_COUNT=$(spw_count_files "src" '*.ts' -not -path '*/__tests__/*')
+STATE_SPW_COUNT=$(spw_count_files "lib/spw-v0.2.0-alpha" '*.spw')
+STATE_TOTAL_COUNT=$((STATE_SOURCE_COUNT + STATE_SPW_COUNT))
+STATE_NEARBY="src;lib/spw-v0.2.0-alpha/architecture"
+
 spw_seed "$SPW_SCRIPT_NAME" "1.1" "context_loader"
 spw_section_open "domain_architecture_map"
 
 spw_set_open "layer_inventory"
 
-# Count files per domain
-for domain in core infra design ui lang viz runtime features debug cli app platform; do
+# Count files per source stratum
+for domain in $(find src -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort); do
   if ! filter_path "$domain"; then continue; fi
   if [ -d "src/$domain" ]; then
     ts_count=$(spw_count_files "src/$domain" '*.ts' -not -path '*/__tests__/*')
@@ -41,10 +47,9 @@ spw_set_close
 
 echo ""
 spw_facet_open "key_isolation_boundaries"
-echo "    \`lib/spw\` = \`MUST NOT import from @/ (portable parser core)\`"
-echo "    \`core\`    = \`MUST NOT import from infra/design/ui/lang/viz/runtime/features/debug/cli/app/platform\`"
-echo "    \`lang\`    = \`MUST NOT import from viz/features/app/platform\`"
-echo "    \`runtime\` = \`MUST NOT import from features/app/platform\`"
+echo "    \`src/seed\`    = \`MUST remain portable: no @/ imports or UI/platform coupling\`"
+echo "    \`src/runtime\` = \`MUST depend on seed/state contracts; avoid UI/platform coupling\`"
+echo "    \`src/testing\` = \`MAY depend on seed/runtime for harness and verification\`"
 spw_facet_close
 echo ""
 
@@ -52,16 +57,16 @@ spw_set_open "import_violations"
 
 ERRORS=0
 
-violations=$(grep -rn "from '@/" src/lib/spw/ --include='*.ts' 2>/dev/null || true)
+violations=$(grep -rn "from '@/" src/seed/ --include='*.ts' 2>/dev/null || true)
 if [ -n "$violations" ]; then
-  echo "    .{ layer = \`lib/spw\`, violations = ${#violations} },"
+  echo "    .{ layer = \`seed\`, violations = ${#violations} },"
   ERRORS=$((ERRORS + $(echo "$violations" | wc -l)))
 fi
 
-core_violations=$(grep -rn "from '@/\(infra\|design\|ui\|lang\|viz\|runtime\|features\|debug\|cli\|app\|platform\)" src/core/ --include='*.ts' 2>/dev/null || true)
-if [ -n "$core_violations" ]; then
-  echo "    .{ layer = \`core\`, violations = ${#core_violations} },"
-  ERRORS=$((ERRORS + $(echo "$core_violations" | wc -l)))
+runtime_violations=$(grep -rn "from '@/" src/runtime/ --include='*.ts' 2>/dev/null || true)
+if [ -n "$runtime_violations" ]; then
+  echo "    .{ layer = \`runtime\`, violations = ${#runtime_violations} },"
+  ERRORS=$((ERRORS + $(echo "$runtime_violations" | wc -l)))
 fi
 
 spw_set_close "%total=$ERRORS"
@@ -74,16 +79,13 @@ fi
 
 echo ""
 spw_facet_open "where_to_add_code"
-echo "    new_type_branded_primitive = \`src/core/types/\`"
-echo "    new_parser_lexer_feature   = \`src/lib/spw/ (no @/ imports)\`"
-echo "    new_ui_component           = \`src/ui/elements/ or src/app/components/\`"
-echo "    new_visual_ast_renderer    = \`src/viz/\`"
-echo "    new_repl_command           = \`src/runtime/repl/\`"
-echo "    new_keyboard_shortcut      = \`src/features/keyboard/\`"
-echo "    new_css_token              = \`src/design/tokens/\`"
-echo "    new_theme                  = \`src/design/themes/\`"
-echo "    new_activation_context     = \`src/core/contexts/\`"
-echo "    new_spw_doc                = \`docs/<stratum>/spw/ or src/<domain>/docs/\`"
+echo "    new_parser_lexer_feature   = \`src/seed/\`"
+echo "    new_runtime_state_logic    = \`src/runtime/state/\`"
+echo "    new_runtime_pipeline_step  = \`src/runtime/pipeline/\`"
+echo "    new_runtime_interpretation = \`src/runtime/interpreter/\`"
+echo "    new_dom_harness_probe      = \`src/testing/\`"
+echo "    new_spec_contract_doc      = \`lib/spw-v0.2.0-alpha/\`"
+echo "    new_theory_bridge_doc      = \`docs/theory/ or lib/spw-v0.2.0-alpha/architecture/\`"
 spw_facet_close
 spw_section_close "domain_architecture_map"
 
@@ -91,3 +93,26 @@ spw_affordances_open
 spw_affordance "bash .agents/skills/spw-commit-review/scripts/spw-syntax-audit.sh" "audit .spw file landscape"
 spw_affordance "npm run audit:ui-selectors" "verify UI separation"
 spw_affordances_close
+
+STATE_STATUS="clean"
+if [ "$ERRORS" -gt 0 ]; then
+  STATE_STATUS="issue"
+fi
+
+spw_state_write \
+  --id "layer-check" \
+  --schema "spw.skill-state.v1" \
+  --status "$STATE_STATUS" \
+  --scope "$STATE_SCOPE" \
+  --watch 0 \
+  --interval 0 \
+  --total "$STATE_TOTAL_COUNT" \
+  --source "$STATE_SOURCE_COUNT" \
+  --spw "$STATE_SPW_COUNT" \
+  --golden-files 0 \
+  --lint "none" \
+  --fuzz "none" \
+  --spw-parse "none" \
+  --golden "clear" \
+  --nearby "$STATE_NEARBY" \
+  --writer ".agents/skills/spw-commit-review/scripts/layer-check.sh"
