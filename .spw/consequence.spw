@@ -1,0 +1,45 @@
+# Consequence
+#
+# Discoverable consequences of projection and nesting.
+
+#>spw_consequence
+#:analysis #!consequence
+
+^"intent"{
+  ~#goal: "Model and discover consequences of projection and nesting depth."
+  ~#inputs: [@spw/topology.spw, @spw/gen/index.spw, @biome/trace.spw]
+}
+
+^factor[projection]{
+  depth: "number of projection hops from source to generated shelf"
+  breadth: "number of projection targets per selector"
+  geometry: [@biome/algos/geom.spw#metric[depth], @biome/algos/geom.spw#metric[radius]]
+  consequence: {
+    cache_pressure: "higher breadth increases warm/hot invalidation frequency"
+    drift_risk: "higher depth increases semantic drift risk"
+    trace_load: "higher depth increases trace volume"
+  }
+}
+
+^factor[nesting]{
+  depth: "container nesting level"
+  adjacency_density: "count of adjacent relationship containers"
+  geometry: [@biome/algos/geom.spw#metric[curvature], @biome/algos/geom.spw#metric[coupling_density]]
+  consequence: {
+    readability: "moderate nesting improves locality; excessive nesting obscures intent"
+    interpretation_cost: "deeper nesting increases parse + selection traversal cost"
+    coupling_pressure: "adjacency density increases coupling and merge complexity"
+  }
+}
+
+^discover[method]{
+  aggregate: [util, aggregate]
+  geometry_eval: @biome/algos/geom.spw
+  axes: [branch, phase, biome, grounding, selector]
+  outputs: [projection_consequence, nesting_consequence, mitigation_hint]
+}
+
+^mitigation[hint]{
+  projection: "prefer @roots and shallow projection chains for stable shelves"
+  nesting: "flatten non-essential layers; preserve semantic adjacency where meaningful"
+}

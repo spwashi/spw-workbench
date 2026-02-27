@@ -1,0 +1,51 @@
+# Editing
+#
+# Subroot-oriented raw-text editing heuristics.
+
+#>spw_editing
+#:editor #!heuristics
+
+^"intent"{
+  ~#goal: "Orient editing behavior by subroot category."
+  ~#source: @spw/shelves.spw
+}
+
+^category[macro]{
+  subroots: [@biome/spells, @biome/expr, @biome/query]
+  heuristics: {
+    prefer_symbol_refs: true
+    auto_quote: false
+    preserve_container_adjacency: true
+    prioritize_macro_folding: true
+  }
+}
+
+^category[measurement]{
+  subroots: [@harness/probes, @harness/evals, @biome/trace]
+  heuristics: {
+    prefer_structured_fields: true
+    enforce_measure_keys: true
+    suggest_aggregation_axes: true
+    auto_quote: false
+  }
+}
+
+^category[prose]{
+  subroots: [@spw/literate, @spw/reflection, @docs]
+  heuristics: {
+    allow_raw_text: true
+    preserve_line_rhythm: true
+    semantic_anchor_prompts: true
+    auto_quote: selective
+  }
+}
+
+^category[runtime]{
+  subroots: [@hot, @biome/algos, @biome/ops]
+  heuristics: {
+    prioritize_selector_resolution: true
+    show_projection_owner: true
+    highlight_generated_targets: true
+    auto_quote: false
+  }
+}

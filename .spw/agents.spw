@@ -1,0 +1,24 @@
+# Agents
+#
+# Agent-harness shelf mapping for .spw workflows.
+
+#>spw_agents
+#:convention #!agents
+
+^"roots"{
+  @agents: ~"../.agents"
+  @plans: ~"../.agents/plans"
+  @state: ~"../.agents/state"
+  @skills: ~"../.agents/skills"
+}
+
+^"integration"{
+  harness: @spw/harness
+  memory: @spw/harness/memory-surface.spw
+  probes: @spw/harness/probes
+}
+
+^"policy"{
+  "agent context snapshots should reference @plans and @state, not raw chat logs",
+  "agent-derived projections must be marked generated when written under @gen",
+}

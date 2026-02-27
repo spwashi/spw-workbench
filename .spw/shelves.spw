@@ -1,0 +1,33 @@
+# Shelves
+#
+# Root-shelf convention for cross-tree references.
+
+#>spw_shelves
+#:roots #!convention
+
+^"roots"{
+  @repo: ~".."
+  @spw: ~"."
+  @biome: ~"./biome/ocean"
+  @harness: ~"./harness"
+  @gen: ~"./gen"
+  @hot: ~"./hot.spw"
+  @agents: ~"../.agents"
+  @docs: ~"../docs"
+  @src: ~"../src"
+  @spec: ~"../lib/spw-v0.2.0-alpha"
+}
+
+^"shelf_policy"{
+  "Use @roots for cross-tree references.",
+  "Use relative ~\"./...\" only for siblings in the same shelf.",
+  "Generated shelves under @gen are projection surfaces.",
+}
+
+^"orientation"{
+  macro: [@biome/spells, @biome/expr, @biome/query]
+  measurement: [@harness/probes, @harness/evals, @biome/trace]
+  prose: [@spw/literate, @spw/reflection, @docs]
+  runtime: [@hot, @biome/algos, @biome/ops]
+  editor_heuristics: @spw/editing.spw
+}

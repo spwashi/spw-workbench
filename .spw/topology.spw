@@ -1,0 +1,51 @@
+# Topology
+#
+# Subroot topology for subagents, cache trees, and key spaces.
+
+#>spw_topology
+#:topology #!routing
+
+^"intent"{
+  ~#goal: "Make subroot routing deterministic for agents, caches, and references."
+}
+
+^subroot[biome]{
+  path: @biome
+  subtree: [@biome/algos, @biome/expr, @biome/query, @biome/spells, @biome/ops]
+  subagent: explorer
+  cache_tree: @gen/cache/biome
+  cache_key_prefix: biome
+  topology_refs: [@biome/index.spw, @biome/links/links.spw]
+}
+
+^subroot[harness]{
+  path: @harness
+  subtree: [@harness/runs, @harness/evals, @harness/probes]
+  subagent: worker
+  cache_tree: @gen/cache/harness
+  cache_key_prefix: harness
+  topology_refs: [@spw/harness/memory-surface.spw, @spw/harness/probes/probe-loop.spw]
+}
+
+^subroot[hot]{
+  path: @hot
+  subtree: [@biome/query/hot.spw, @biome/ops/cycle.spw]
+  subagent: awaiter
+  cache_tree: @gen/cache/hot
+  cache_key_prefix: hot
+  topology_refs: [@hot, @gen/index.spw]
+}
+
+^subroot[agents]{
+  path: @agents
+  subtree: [@plans, @state, @skills]
+  subagent: worker
+  cache_tree: @gen/cache/agents
+  cache_key_prefix: agents
+  topology_refs: [@spw/agents.spw]
+}
+
+^"invariant"{
+  "Each subroot owns one cache-key prefix and one cache tree.",
+  "Subagent routing follows subroot ownership unless explicitly overridden.",
+}
