@@ -6,6 +6,40 @@ export function activate(context: vscode.ExtensionContext) {
     const documentSelector = { language: 'spw' };
 
     // =========================================================================
+    // @-Root Map (workspace-relative path resolution for sigil roots)
+    // =========================================================================
+    const ROOT_MAP: Record<string, string[]> = {
+        '@docs': ['docs'],
+        '@src': ['src'],
+        '@lib': ['lib'],
+        '@spec': ['lib', 'spw-v0.2.0-alpha'],
+        '@theory': ['docs', 'theory'],
+        '@scripts': ['scripts'],
+        '@core': ['src', 'core'],
+        '@runtime': ['src', 'runtime'],
+        '@design': ['src', 'design'],
+        '@infra': ['src', 'infra'],
+        '@spw': ['.spw'],
+        '@biome': ['.spw', 'biome', 'ocean'],
+        '@harness': ['.spw', 'harness'],
+        '@gen': ['.spw', 'gen'],
+        '@hot': ['.spw', 'hot.spw'],
+        '@shelves': ['.spw', 'shelves.spw'],
+        '@topology': ['.spw', 'topology.spw'],
+        '@agents': ['.agents'],
+        '@plans': ['.agents', 'plans'],
+        '@state': ['.agents', 'state'],
+        '@skills': ['.agents', 'skills'],
+        '@library': ['docs', 'library'],
+    };
+
+    function resolveRoot(sigil: string, workspaceRoot: string, documentUri: vscode.Uri): string {
+        if (sigil === '@here') return path.dirname(documentUri.fsPath);
+        const segments = ROOT_MAP[sigil];
+        return segments ? path.join(workspaceRoot, ...segments) : workspaceRoot;
+    }
+
+    // =========================================================================
     // DocumentLinkProvider (Clickable Paths)
     // =========================================================================
     const linkProvider = vscode.languages.registerDocumentLinkProvider(documentSelector, {
@@ -22,8 +56,20 @@ export function activate(context: vscode.ExtensionContext) {
                 let match;
                 while ((match = pathRegex.exec(line.text)) !== null) {
                     const matchedText = match[0];
-                    const startPos = new vscode.Position(i, match.index);
-                    const endPos = new vscode.Position(i, match.index + matchedText.length);
+                    let startCol = match.index;
+                    let endCol = match.index + matchedText.length;
+
+                    // Expand click target to include adjacent prefix/postfix '&'
+                    // so users can click '&@root/path' or '@root/path&' directly.
+                    if (startCol > 0 && line.text[startCol - 1] === '&') {
+                        startCol -= 1;
+                    }
+                    if (endCol < line.text.length && line.text[endCol] === '&') {
+                        endCol += 1;
+                    }
+
+                    const startPos = new vscode.Position(i, startCol);
+                    const endPos = new vscode.Position(i, endCol);
                     const range = new vscode.Range(startPos, endPos);
 
                     let targetUri: vscode.Uri | undefined;
@@ -36,22 +82,10 @@ export function activate(context: vscode.ExtensionContext) {
                     }
                     // 2. Sigil paths e.g. @docs/index.spw or @src/index.spw
                     else if (match[2]) {
-                        const sigil = match[2]; // e.g. "@docs"
+                        const sigil = match[2];
                         const workspaceFolders = vscode.workspace.workspaceFolders;
                         if (workspaceFolders && workspaceFolders.length > 0) {
-                            const root = workspaceFolders[0].uri.fsPath;
-                            // Naive resolution for common Spw roots
-                            let resolvedRoot = root;
-                            if (sigil === '@docs') resolvedRoot = path.join(root, 'docs');
-                            else if (sigil === '@src') resolvedRoot = path.join(root, 'src');
-                            else if (sigil === '@lib') resolvedRoot = path.join(root, 'lib');
-                            else if (sigil === '@theory') resolvedRoot = path.join(root, 'docs', 'theory');
-                            else if (sigil === '@scripts') resolvedRoot = path.join(root, 'scripts');
-                            else if (sigil === '@core') resolvedRoot = path.join(root, 'src', 'core');
-                            else if (sigil === '@runtime') resolvedRoot = path.join(root, 'src', 'runtime');
-                            else if (sigil === '@design') resolvedRoot = path.join(root, 'src', 'design');
-                            else if (sigil === '@infra') resolvedRoot = path.join(root, 'src', 'infra');
-                            else if (sigil === '@here') resolvedRoot = path.dirname(document.uri.fsPath);
+                            const resolvedRoot = resolveRoot(sigil, workspaceFolders[0].uri.fsPath, document.uri);
 
                             const relativePart = matchedText.slice(sigil.length + 1); // skip `@docs/`
                             targetUri = vscode.Uri.file(path.join(resolvedRoot, relativePart));
@@ -87,19 +121,11 @@ export function activate(context: vscode.ExtensionContext) {
 
                 // Complete @-roots
                 if (linePrefix.endsWith('@')) {
-                    const roots = [
-                        { name: 'docs', detail: 'Documentation root' },
-                        { name: 'src', detail: 'Source root' },
-                        { name: 'lib', detail: 'Library specs (v0.2.0-alpha)' },
-                        { name: 'theory', detail: 'Theory docs (lens-algebra, operator-algebra)' },
-                        { name: 'scripts', detail: 'CLI scripts (spwq, analyzers)' },
-                        { name: 'spec', detail: 'Specification root' },
-                        { name: 'here', detail: 'Current file directory' },
-                        { name: 'core', detail: 'Core operator contracts' },
-                        { name: 'runtime', detail: 'Runtime execution contracts' },
-                        { name: 'design', detail: 'Design system root' },
-                        { name: 'infra', detail: 'Infrastructure root' },
-                    ];
+                    const roots = Object.keys(ROOT_MAP).map(k => ({
+                        name: k.slice(1),
+                        detail: ROOT_MAP[k].join('/'),
+                    }));
+                    roots.push({ name: 'here', detail: 'Current file directory' });
                     for (const root of roots) {
                         const item = new vscode.CompletionItem(root.name, vscode.CompletionItemKind.Folder);
                         item.detail = root.detail;
@@ -119,15 +145,12 @@ export function activate(context: vscode.ExtensionContext) {
                         const relativePrefix = fsPathMatch[1];
                         searchDir = path.resolve(path.dirname(document.uri.fsPath), relativePrefix);
                     }
-                    // @docs/ absolute path
+                    // @root/ absolute path
                     else if (fsPathMatch[2]) {
                         const sigil = `@${fsPathMatch[2]}`;
                         const workspaceFolders = vscode.workspace.workspaceFolders;
                         if (workspaceFolders && workspaceFolders.length > 0) {
-                            const root = workspaceFolders[0].uri.fsPath;
-                            if (sigil === '@docs') searchDir = path.join(root, 'docs');
-                            else if (sigil === '@src') searchDir = path.join(root, 'src');
-                            else if (sigil === '@here') searchDir = path.dirname(document.uri.fsPath);
+                            searchDir = resolveRoot(sigil, workspaceFolders[0].uri.fsPath, document.uri);
                         }
                     }
 
@@ -281,18 +304,7 @@ export function activate(context: vscode.ExtensionContext) {
                 const sigil = match[2];
                 const workspaceFolders = vscode.workspace.workspaceFolders;
                 if (workspaceFolders && workspaceFolders.length > 0) {
-                    const root = workspaceFolders[0].uri.fsPath;
-                    let resolvedRoot = root;
-                    if (sigil === '@docs') resolvedRoot = path.join(root, 'docs');
-                    else if (sigil === '@src') resolvedRoot = path.join(root, 'src');
-                    else if (sigil === '@lib') resolvedRoot = path.join(root, 'lib');
-                    else if (sigil === '@theory') resolvedRoot = path.join(root, 'docs', 'theory');
-                    else if (sigil === '@scripts') resolvedRoot = path.join(root, 'scripts');
-                    else if (sigil === '@core') resolvedRoot = path.join(root, 'src', 'core');
-                    else if (sigil === '@runtime') resolvedRoot = path.join(root, 'src', 'runtime');
-                    else if (sigil === '@design') resolvedRoot = path.join(root, 'src', 'design');
-                    else if (sigil === '@infra') resolvedRoot = path.join(root, 'src', 'infra');
-                    else if (sigil === '@here') resolvedRoot = path.dirname(document.uri.fsPath);
+                    const resolvedRoot = resolveRoot(sigil, workspaceFolders[0].uri.fsPath, document.uri);
                     const relativePart = matchedText.slice(sigil.length + 1);
                     targetUri = vscode.Uri.file(path.join(resolvedRoot, relativePart));
                 }

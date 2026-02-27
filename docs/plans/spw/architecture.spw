@@ -5,9 +5,16 @@
 #>architecture
 
 ^["roots"]{
-  @src:  ~"../../../src"
-  @spec: ~"../../../lib/spw-v0.2.0-alpha"
-  @spw:  ~"../../../.spw"
+  # @-roots resolve from workspace root. See ROOT_MAP in extension.ts.
+  # Use @-roots for cross-tree references; relative paths for siblings only.
+  @repo:    ~"../../.."
+  @src:     ~"../../../src"
+  @spec:    ~"../../../lib/spw-v0.2.0-alpha"
+  @spw:     ~"../../../.spw"
+  @biome:   ~"../../../.spw/biome/ocean"
+  @harness: ~"../../../.spw/harness"
+  @gen:     ~"../../../.spw/gen"
+  @library: ~"../../../docs/library"
 }
 
 ^[".spw_directory"]{
@@ -17,11 +24,11 @@
   #:architecture #!convention
   #>spw_directory
 
-  =manifest: ~"../../.spw/workspace.spw"
+  =manifest: @spw/workspace.spw
 
   structure: {
     biome:      "experimental dialect spaces (ocean, future biomes)"
-    harness:    "probes, evaluations, runs — measurement infrastructure"
+    harness:    "probes, evaluations, runs - measurement infrastructure"
     dev:        "hot reload loops and developer tooling"
     evolution:  "scoped syntax experiments, opt-in per path"
     gen:        "generated projections (excluded from IDE by convention)"
@@ -34,11 +41,12 @@
     # Naming conventions for .spw files and directories.
     #!convention
 
-    "prefer full words over abbreviations — 'phase' not 'ph', 'cache' not 'c'",
-    "prefer folders over hyphens — 'harness/probes/loop.spw' not 'probe-loop.spw'",
+    "prefer composable short names when indexed by role (q, t, ph/p1..p6)",
+    "prefer folders over hyphens - 'harness/probes/loop.spw' not 'probe-loop.spw'",
     "one #>anchor per file — unique, prefixed with 'spw_' for namespace clarity",
     "=dialect: marks experimental files — 'experimental.ocean.phase'",
     "=channel: marks stability — 'stable' or 'experimental'",
+    "cross-tree references should use @roots; relative paths only for siblings",
   }
 
   annotations: {
@@ -50,6 +58,16 @@
     "#!intent — declares what the file does, not just what it is",
     "%[measure] — quantifies caching tier, physics, or relevance",
     "=config: — declares constraints, policies, or parameters",
+  }
+
+  path_convention: {
+    # Path resolution strategy for .spw files.
+    #!convention
+
+    "use @-roots for cross-tree references: @src/, @spec/, @spw/, @library/",
+    "use relative paths only for siblings within the same directory tree",
+    "@here resolves to the current file's directory",
+    "new @-roots are declared in ROOT_MAP in extension.ts",
   }
 
   %[cache_alignment]{
@@ -151,7 +169,7 @@
   #!navigation
 
   ~<spirit>"./spirit-sequence.spw"
-  ~<library>"./library/library.spw"
+  ~<library>@library/library.spw
 
   %[nav_affordances]{
     "#>anchor tags create jump targets across .spw files",
@@ -187,8 +205,8 @@
   # Every .spw file can answer questions about itself.
   # See docs/library/wonder-calculus.spw for the formal axioms.
 
-  ~<calculus>"../../library/spw/wonder-calculus.spw"
-  ~<probes>"../../library/spw/wonder-probes.spw"
+  ~<calculus>@library/spw/wonder-calculus.spw
+  ~<probes>@library/spw/wonder-probes.spw
 
   %[wonder_meets_physics]{
     "$[cell].liminality  → how far this cell's influence carries",
