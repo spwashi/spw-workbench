@@ -1,0 +1,32 @@
+# Skills Instrumentation Utility Contract
+
+^["utility_contract"]{
+  file: "scripts/spw-lib.sh",
+  purpose: "shared Spw output framing and argument parsing for skill scripts",
+  guarantees: [
+    "stable section/set/facet/affordance wrappers",
+    "filter_path support for scoped scans",
+    "portable file-count utilities"
+  ]
+}
+
+^["instrumentation_affordances"]{
+  baseline: [
+    "npm run lint:spw",
+    "npm run audit",
+    "npm run analyze:perturb"
+  ],
+  release_gates: [
+    "npm run lint:v020",
+    "npm run lint:v020:runtime",
+    "npm run lint:v020:architecture"
+  ]
+}
+
+^["falsify"]{
+  disproof: [
+    "skill scripts fail due to missing shared utility",
+    "skill tooling references commands not present in package scripts",
+    "instrumentation output diverges across skills without shared wrappers"
+  ]
+}
