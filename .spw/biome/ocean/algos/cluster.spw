@@ -1,0 +1,27 @@
+# Cluster Algorithm
+#
+# Concept clustering strategy for ocean biome artifacts.
+
+#>spw_ocean_cluster_algo
+
+^"intent"{
+  ~#goal: "Group concepts by operator, lens profile, and biome context."
+}
+
+^"features"{
+  keys: ["operator_focus", "loop_phase", "lens_profile", "biome", "channel"]
+  distance: "weighted overlap on keys + ref intersection"
+  output: "cluster_id + exemplar refs + cohesion score"
+}
+
+^"cache"{
+  ~#reuse: "cluster results cached by dataset hash + weights"
+  ~#invalidate: "any key-field drift or weight change"
+}
+
+^"enhancements"{
+  lsp: {
+    workspace_symbol: "reuse cluster buckets for symbol grouping"
+    semantic_token_hint: "map cluster cohesion to token modifiers"
+  }
+}

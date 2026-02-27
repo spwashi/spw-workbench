@@ -1,0 +1,49 @@
+# Reference Currents
+#
+# Linking registry for ocean-biome projections.
+
+#>spw_ocean_reference_currents
+
+^"intent"{
+  ~#goal: "Make linking explicit and queryable with Spw selectors."
+}
+
+^"roots"{
+  @ocean: ~"../"
+  @core: ~"../../../"
+  @docs: ~"../../../../docs"
+  @lib: ~"../../../../lib/spw-v0.2.0-alpha"
+}
+
+^"selectors"{
+  ~#registry: ".spw/biome/ocean/query/sel.spw"
+  ~#navigable: refs_navigable
+  ~#fields: phase_config
+  ~#positional: positional_scope
+  ~#aggregate: aggregate_branch
+}
+
+^links[core]{
+  refs: [~"../atlas.spw", ~"../index.spw", @core/workspace.spw, @docs/design/spw/spirit-sequence.spw]
+}
+
+^links[style]{
+  refs: [~"../style.spw", @core/reflection/loop-observation.spw, ~"../expr/custom.spw"]
+}
+
+^links[syntax]{
+  refs: [~"../experiments/syntax.spw", @core/evolution/scoped-evolution.spw]
+}
+
+^links[cache]{
+  refs: [~"../algos/cache.spw", @lib/applications/QUERY.md]
+}
+
+^"adjacency"{
+  prepositions: {
+    with: "< >"
+    in: "( )"
+    among: "[ ]"
+    of: "{ }"
+  }
+}

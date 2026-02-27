@@ -1,0 +1,67 @@
+# Loop Observation
+#
+# Reflective guide for how Spw work loops, concept clusters, and projections behave.
+
+#>spw_loop_observation
+
+^"loop"{
+  ~#sequence: "?~<#.>@(#.)&[#.]*{#.}^"
+  ~#phase_read: {
+    "?~": "probe and name"
+    "@": "observe from a scoped perspective"
+    "&": "merge categorized evidence"
+    "*": "materialize properties"
+    "^": "integrate upward for next cycle"
+  }
+}
+
+^"observation_fields"{
+  ~#required: [
+    "focus",
+    "phase",
+    "operator",
+    "container",
+    "projection",
+    "evidence_refs",
+    "next_action",
+  ]
+
+  ~#operator_motifs: {
+    windmill: "operator turns over repeated context to reveal stable direction"
+    current_probe: "operator samples flow/pressure at one position in the loop"
+  }
+}
+
+^"clustering"{
+  ~#goal: "Group concepts by shared operators, containers, and projection fields."
+  ~#cluster_keys: ["operator", "container", "projection", "intent"]
+  ~#output: "cluster cards with one canonical label and linked evidence refs"
+}
+
+^"projection_refs"{
+  ~#paths: ["~\"...\"", "@root/..."]
+  ~#fields: ["^\"...\"", "~#...", "=..."]
+  ~#selector_start: "$~\"_\" | $@_"
+  ~#selector_fields: "$^\"_\"_"
+  ~#optical_lens_fields: {
+    focal_depth: "how far the projection reaches through nested scopes"
+    aperture: "how much context is admitted into one observation"
+    magnification: "detail level for one cluster or field"
+    aberration: "distortion risk from overfit perspective"
+  }
+}
+
+^"review_cadence"{
+  ~#per_loop: "record one concise observation snapshot"
+  ~#per_milestone: "archive clusters and unresolved questions"
+}
+
+^"beat_and_scale"{
+  ~#beat: "smallest state advance in a loop (one measured transition)"
+  ~#aggregation: "aggregated beats rolled into one snapshot delta"
+  ~#scales: {
+    micro: "single operator event"
+    meso: "phase cycle (?~ -> @ -> & -> * -> ^)"
+    macro: "episode/workstream over many cycles"
+  }
+}

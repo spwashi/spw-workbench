@@ -1,0 +1,49 @@
+# Hot
+#
+# Hot interpretation layer for selector replacement and projection filters.
+
+#>spw_ocean_hot
+
+^"intent"{
+  ~#goal: "Allow runtime selector replacement in hot paths while preserving traceability."
+}
+
+^context[on_open]{
+  lsp: {
+    apply: [replacement, lens, filter]
+    selectors: [refs_navigable, probes_active, relation_exotic, aggregate_branch]
+    generated: ~"../../../gen/index.spw"
+  }
+}
+
+^"replacement"{
+  hot: {
+    refs_navigable: refs_hot
+    probes_active: probes_hot
+    phase_config: phase_hot
+  }
+
+  warm: {
+    refs_navigable: refs_warm
+    aggregate_branch: aggregate_warm
+  }
+}
+
+^lens[core]{
+  selector: refs_navigable
+  output: ".spw/gen/lens/core.spw"
+}
+
+^lens[probe]{
+  selector: probes_active
+  output: ".spw/gen/lens/probe.spw"
+}
+
+^lens[relation]{
+  selector: relation_exotic
+  output: ".spw/gen/lens/relation.spw"
+}
+
+^"invariant"{
+  "Every hot replacement must record original selector id and replacement id in trace."
+}

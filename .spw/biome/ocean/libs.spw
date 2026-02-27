@@ -1,0 +1,91 @@
+# Biome Libraries
+#
+# Each biome is a library surface with register behavior and physical basis.
+
+#>spw_ocean_libs
+
+^"base_registers"{
+  liminality: "scope transition potential"
+  frequency: "operation cadence"
+  coupling: "edge density between merged cells"
+  measure_depth: "observation depth count"
+  phase_ref: ".spw/biome/ocean/phase.spw"
+}
+
+^"reef_lib"{
+  library: "Reef@"
+  extends: ["liminality", "coupling"]
+  defines: ["branch_density", "coral_memory"]
+  physics: {
+    space: "local lattice (high adjacency)"
+    time: "short tidal windows"
+    reference: "nearby path and field refs"
+  }
+  consideration_shape: "cluster-first with local coherence pressure"
+  resolution_shape: "incremental stabilization via dense merges"
+}
+
+^"pelagic_lib"{
+  library: "Pelagic@"
+  extends: ["frequency", "measure_depth"]
+  defines: ["drift_vector", "horizon_span"]
+  physics: {
+    space: "open volume (low adjacency, long range)"
+    time: "long drift intervals"
+    reference: "broad cross-domain refs"
+  }
+  consideration_shape: "survey-first with wide lens aperture"
+  resolution_shape: "late convergence after broad sampling"
+}
+
+^"estuary_lib"{
+  library: "Estuary@"
+  extends: ["liminality", "frequency"]
+  defines: ["salinity_gradient", "gate_pressure"]
+  physics: {
+    space: "boundary layers between stable/experimental zones"
+    time: "gate-aligned bursts"
+    reference: "dual-channel refs (stable + experimental)"
+  }
+  consideration_shape: "boundary checking and compatibility tests"
+  resolution_shape: "promote, hold, or rollback by probe evidence"
+}
+
+^"benthic_lib"{
+  library: "Benthic@"
+  extends: ["coupling", "measure_depth"]
+  defines: ["sediment_index", "archive_pressure"]
+  physics: {
+    space: "archive floor (stratified layers)"
+    time: "slow compaction cycles"
+    reference: "immutable archived refs"
+  }
+  consideration_shape: "history-weighted retrieval"
+  resolution_shape: "append-only archival decisions"
+}
+
+^"tidal_lib"{
+  library: "Tidal@"
+  extends: ["frequency", "liminality"]
+  defines: ["beat_rate", "reload_phase"]
+  physics: {
+    space: "active working set"
+    time: "fast beat loops"
+    reference: "changed-file refs"
+  }
+  consideration_shape: "rapid parse/validate cycles"
+  resolution_shape: "short feedback loops with immediate correction"
+}
+
+^"seagrass_lib"{
+  library: "Seagrass@"
+  extends: ["coupling", "frequency"]
+  defines: ["root_net", "signal_clarity"]
+  physics: {
+    space: "networked meadow (medium adjacency)"
+    time: "seasonal stabilization cycles"
+    reference: "curated corpus refs"
+  }
+  consideration_shape: "quality filtering and continuity checks"
+  resolution_shape: "promote curated exemplars to corpus"
+}

@@ -1,0 +1,30 @@
+# Codebase Derivatives
+#
+# Derived surfaces generated from canonical codebase anchors.
+
+#>spw_ocean_derivatives
+
+^"intent"{
+  ~#goal: "Expose useful derivatives without mutating source-of-truth files."
+  ~#rule: "Every derivative includes a source ref and regeneration note."
+}
+
+^"derivatives"{
+  spirit_wave_map: {
+    source: "docs/design/spw/spirit-sequence.spw"
+    projection: "operator flow + beat scale summary"
+    consumer: ".spw/biome/ocean/style.spw"
+  }
+
+  query_current_index: {
+    source: "lib/spw-v0.2.0-alpha/applications/QUERY.md"
+    projection: "selector palette for link navigation"
+    consumer: ".spw/biome/ocean/links/links.spw"
+  }
+
+  phase_salinity_profile: {
+    source: "lib/spw-v0.2.0-alpha/dialects/PHASES.md"
+    projection: "stable vs experimental channel pressure"
+    consumer: ".spw/evolution/scoped-evolution.spw"
+  }
+}

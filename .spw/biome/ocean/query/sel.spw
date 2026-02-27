@@ -1,0 +1,51 @@
+# Sel
+#
+# Symbolic selector registry (no quoted selector expressions).
+
+#>spw_ocean_sel
+
+^"intent"{
+  ~#goal: "Define selectors as named, composable structures."
+}
+
+^selector[refs_navigable]{
+  include: [path_ref, root_ref]
+  combine: union
+  grounding: grounded
+}
+
+^selector[probes_active]{
+  include: [links_probe, field_probe]
+  combine: union
+  grounding: bound
+}
+
+^selector[invariants_core]{
+  include: [field_invariant, field_invariants]
+  combine: union
+  grounding: grounded
+}
+
+^selector[phase_config]{
+  include: [field_phase, field_optional]
+  combine: descent
+  grounding: bound
+}
+
+^selector[positional_scope]{
+  include: [nearest_ref, enclosing_scope, ancestor_frame]
+  combine: ranked
+  grounding: bound
+}
+
+^selector[aggregate_branch]{
+  include: [trace_branch, trace_runtime, trace_loaded, trace_considered]
+  combine: aggregate
+  grounding: grounded
+}
+
+^selector[relation_exotic]{
+  include: [relation_with, relation_in, relation_among, relation_of]
+  combine: cluster
+  grounding: bound
+}

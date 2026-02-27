@@ -1,0 +1,73 @@
+# Harness Evaluation Baseline
+#
+# Minimal regression suites for harness and LSP-oriented workflows.
+
+#>spw_harness_evals
+
+^"intent"{
+  ~#goal: "Define deterministic baseline checks for agent harness runs."
+}
+
+^"suites"{
+  parse_stability: {
+    prompt: "Parse workspace and docs references without syntax errors."
+    target: [".spw/workspace.spw", "docs/design/spw/spirit-sequence.spw"]
+    pass: "all targets parse successfully"
+  }
+
+  navigation_links: {
+    prompt: "Resolve navigable refs with selector parity to LSP."
+    target: ["$~\"_\" | $@_"]
+    pass: "all manifest refs resolve to existing paths"
+  }
+
+  literate_contract: {
+    prompt: "Validate literate exhibits declare explicit tangle targets."
+    target: [".spw/literate/literate-spec.spw"]
+    pass: "all tangles have from_block + to_path + mode"
+  }
+
+  prompt_compaction: {
+    prompt: "Ensure harness prompt snapshots are compacted and reference-based."
+    target: [".spw/harness/runs/runs-index.spw", ".spw/harness/memory-surface.spw"]
+    pass: "no suite requires raw transcript capture; memory refs are present"
+  }
+
+  probe_lifecycle: {
+    prompt: "Ensure probes can be declared, filled, and archived by loop."
+    target: [".spw/harness/probes/probe-loop.spw", ".spw/harness/probes/archive-index.spw"]
+    pass: "all templates have status fields and archive destinations"
+  }
+
+  evolution_scope: {
+    prompt: "Ensure experimental syntax is scoped and opt-in."
+    target: [".spw/evolution/scoped-evolution.spw"]
+    pass: "experiments have explicit scope, guard, and rollback"
+  }
+
+  dev_hot_reload: {
+    prompt: "Ensure hot reload loop validates changed .spw files continuously."
+    target: [".spw/dev/hot-reload-loop.spw", "scripts/spw-dev.ts"]
+    pass: "watcher formats + validates only changed files and reports phase beats"
+  }
+
+  biome_cohesion: {
+    prompt: "Ensure ocean biomes remain expressive while preserving one core ontology."
+    target: [".spw/biome/ocean/index.spw", ".spw/biome/ocean/atlas.spw", ".spw/biome/ocean/style.spw", ".spw/workspace.spw"]
+    pass: "each biome links to core contracts and does not redefine core invariants"
+  }
+}
+
+^"scoring"{
+  ~#weights: {
+    parse_stability: 0.2
+    navigation_links: 0.2
+    literate_contract: 0.15
+    prompt_compaction: 0.1
+    probe_lifecycle: 0.1
+    evolution_scope: 0.1
+    dev_hot_reload: 0.1
+    biome_cohesion: 0.05
+  }
+  ~#threshold_accept: 0.9
+}

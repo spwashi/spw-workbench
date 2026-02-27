@@ -1,0 +1,33 @@
+# Hot Reload Loop
+#
+# Development server contract for rapid .spw iteration.
+
+#>spw_hot_reload_loop
+
+^"intent"{
+  ~#goal: "Provide fast feedback while editing .spw artifacts."
+  ~#entry: "npm run spw:dev"
+}
+
+^"watch_scope"{
+  ~#roots: [".spw", "docs/design/spw", "lib/spw-v0.2.0-alpha"]
+  ~#file_types: [".spw"]
+}
+
+^"loop"{
+  beat_1: "detect changed .spw file"
+  beat_2: "canonicalize changed file"
+  beat_3: "parse and report syntax health"
+  beat_4: "surface probe/evolution impact hints"
+}
+
+^"surface"{
+  ~#status_fields: ["file", "parse_ok", "error_count", "phase_hint", "next_action"]
+  ~#phase_hint_rule: "map watcher events to ?~, @, &, *, ^ when possible"
+}
+
+^"invariants"{
+  "Hot reload never rewrites unrelated files.",
+  "Formatting and validation stay scoped to changed paths.",
+  "Errors surface with line/column and operator context.",
+}

@@ -1,0 +1,52 @@
+# Literate Spec
+#
+# Contract for literate exhibits that mix narrative and executable blocks.
+
+#>spw_literate_spec
+
+^"intent"{
+  ~#goal: "Treat prose + code as one artifact with explicit projection targets."
+  ~#phase_binding: "?~ orient, @ observe code, & merge refs, * materialize tangles, ^ integrate outputs."
+}
+
+^"exhibit_schema"{
+  ~#required_fields: [
+    "id",
+    "title",
+    "intent",
+    "sources",
+    "tangles",
+    "checks",
+    "status",
+  ]
+
+  source_block: {
+    kind: "spw|ts|md|json|sh",
+    label: "human meaning for the block",
+    content_ref: "inline or linked payload",
+  }
+
+  tangle_block: {
+    from_block: "source block id",
+    to_path: "repo-relative output path",
+    mode: "overwrite|append|verify-only",
+  }
+}
+
+^"example"{
+  exhibit: {
+    id: "hello-lens"
+    title: "Hello Lens Walk"
+    intent: "Narrate a lens prompt and project one helper module."
+    sources: ["block:intro-md", "block:helper-ts"]
+    tangles: [{ from_block: "helper-ts", to_path: "src/example/hello-lens.ts", mode: "verify-only" }]
+    checks: ["npm run lint", "npm run test:runtime -- --runInBand"]
+    status: "draft"
+  }
+}
+
+^"invariants"{
+  "Each tangle target is declared before generation.",
+  "Narrative and code blocks share one exhibit id for traceability.",
+  "Generated files round-trip back to the source block hash.",
+}

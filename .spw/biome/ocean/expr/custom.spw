@@ -1,0 +1,44 @@
+# Custom Expressions
+#
+# Parameterized Spw expressions for ocean-biome querying.
+
+#>spw_ocean_expr_custom
+
+^"intent"{
+  ~#goal: "Provide customizable expression templates without rewriting core selectors."
+  ~#selector_registry: ".spw/biome/ocean/query/sel.spw"
+  ~#relationship_surface: ".spw/biome/ocean/expr/rel.spw"
+}
+
+^"templates"{
+  refs: {
+    selector: refs_navigable
+    params: [path_prefix, root_name]
+  }
+
+  fields: {
+    selector: phase_config
+    params: [field_name, depth]
+  }
+
+  dense_o: {
+    selector: relation_exotic
+    params: [orientation, projection]
+    note: "Used with dense Spw.o experimental syntax files."
+  }
+
+  positional: {
+    selector: positional_scope
+    params: [anchor_mode, scope_depth]
+  }
+
+  aggregate: {
+    selector: aggregate_branch
+    params: [group_axis, include_grounding]
+  }
+}
+
+^"cache_contract"{
+  ~#key: "template_id + params + file_hash"
+  ~#store: ".spw/harness/memory-surface.spw"
+}

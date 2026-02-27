@@ -1,0 +1,84 @@
+# Q
+#
+# Spw.q query surface for ocean biome operations.
+
+#>spw_ocean_q
+
+^"intent"{
+  ~#goal: "Expose readable, referenceable, and updatable query selectors."
+  ~#selector_registry: ".spw/biome/ocean/query/sel.spw"
+  ~#hot_layer: ".spw/biome/ocean/query/hot.spw"
+}
+
+^"forms"{
+  literal_frame: {
+    form: "[\"bla\"]"
+    readability: "medium"
+    referencability: "high"
+    updatability: "high"
+    use: "stable labels and long-lived refs"
+  }
+
+  quoted_literal: {
+    form: "\"bla\""
+    readability: "high"
+    referencability: "medium"
+    updatability: "medium"
+    use: "human-facing prose and titles"
+  }
+
+  bare_symbol: {
+    form: "bla"
+    readability: "high"
+    referencability: "low"
+    updatability: "low"
+    use: "short local symbols only"
+  }
+}
+
+^selectors[refs]{
+  id: refs_navigable
+  source: ".spw/biome/ocean/query/sel.spw#selector[refs_navigable]"
+}
+
+^selectors[probes]{
+  id: probes_active
+  source: ".spw/biome/ocean/query/sel.spw#selector[probes_active]"
+}
+
+^selectors[invariants]{
+  id: invariants_core
+  source: ".spw/biome/ocean/query/sel.spw#selector[invariants_core]"
+}
+
+^selectors[phase]{
+  id: phase_config
+  source: ".spw/biome/ocean/query/sel.spw#selector[phase_config]"
+}
+
+^selectors[positionality]{
+  id: positional_scope
+  source: ".spw/biome/ocean/query/sel.spw#selector[positional_scope]"
+}
+
+^selectors[aggregation]{
+  id: aggregate_branch
+  source: ".spw/biome/ocean/query/sel.spw#selector[aggregate_branch]"
+}
+
+^selectors[relations]{
+  id: relation_exotic
+  source: ".spw/biome/ocean/query/sel.spw#selector[relation_exotic]"
+}
+
+^"reference_model"{
+  grounded_ref: {
+    meaning: "canonical refs anchored to stable source files"
+    examples: [".spw/workspace.spw#invariants", ".spw/biome/ocean/index.spw#modules"]
+  }
+
+  bound_ref: {
+    meaning: "contextual refs bound to branch, phase, or hot replacement"
+    examples: [".spw/biome/ocean/trace.spw#model", ".spw/biome/ocean/query/hot.spw#replacement"]
+  }
+}

@@ -1,0 +1,36 @@
+# T
+#
+# Spw.t query template for repeatable biome runs.
+
+#>spw_ocean_t
+
+^"intent"{
+  ~#goal: "Template a repeatable query run with probe + invariant checks."
+}
+
+^"template"{
+  inputs: {
+    branch: "branch id"
+    selector: "Spw.q selector id"
+    target: "path or biome scope"
+    phase: "phase id (p1..p6)"
+  }
+
+  steps: [
+    "assert clean working tree for target scope",
+    "resolve selector id through selector registry",
+    "apply optional hot replacement by runtime tier",
+    "execute resolved selector against target",
+    "record loaded/considered refs in trace",
+    "verify updated probes and invariants",
+    "emit/update generated lens projections",
+    "emit run summary + next action",
+  ]
+
+  outputs: {
+    trace: ".spw/biome/ocean/trace.spw"
+    probes: ".spw/harness/probes/archive-index.spw"
+    invariants: ".spw/workspace.spw#invariants"
+    projections: ".spw/gen/index.spw"
+  }
+}

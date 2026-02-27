@@ -1,0 +1,65 @@
+# Memory Surface
+#
+# Spw-native memory model for harness runs.
+# Emphasizes compact references over transcript accumulation.
+
+#>spw_memory_surface
+
+^"intent"{
+  ~#goal: "Represent working memory as structured Spw fields and projections."
+  ~#non_goal: "Persist every chat message as raw prompt context."
+}
+
+^"registers"{
+  intent_register: {
+    description: "Current run objective and acceptance criteria."
+    source: [".agents/plans/*/wip.spw#intent", ".spw/workspace.spw#invariants"]
+  }
+
+  context_register: {
+    description: "Curated refs to files, plans, and diagnostics."
+    source: [".agents/plans/*/wip.spw#cache", ".agents/state/runtime/*.state.spw"]
+  }
+
+  projection_register: {
+    description: "Observed lens for interpretation (lex/sem/eval/presentation)."
+    source: ["docs/design/spw/spirit-sequence.spw#sequence", "lib/spw-v0.2.0-alpha/dialects/PHASES.md"]
+  }
+
+  cluster_register: {
+    description: "Concept clusters grouped by shared fields and operators."
+    source: [".spw/reflection/loop-observation.spw#clustering"]
+  }
+}
+
+^"compaction"{
+  step_1: "Extract stable intent and constraints."
+  step_2: "Replace repeated prose with refs + hashes."
+  step_3: "Keep deltas only: new facts, changed assumptions, open questions."
+  step_4: "Emit one run snapshot into harness/runs."
+}
+
+^"projection"{
+  ~#summary_fields: [
+    "goal",
+    "current_phase",
+    "context_refs",
+    "cluster_keys",
+    "lens_profile",
+    "open_questions",
+    "next_action",
+  ]
+  ~#lens_profile: {
+    focal_depth: "scope depth sampled in this memory snapshot"
+    aperture: "context width admitted"
+    magnification: "detail granularity"
+    aberration: "distortion warning flag"
+  }
+  ~#selectors: ["$^\"intent\"_", "$^\"registers\"_", "$^\"projection\"_"]
+}
+
+^"invariants"{
+  "Prompt snapshots must be reference-first and hash-addressable where possible.",
+  "Memory surfaces optimize retrieval, not full transcript replay.",
+  "A run can be reproduced from snapshot + refs without every chat turn.",
+}

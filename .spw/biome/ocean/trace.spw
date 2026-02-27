@@ -1,0 +1,53 @@
+# Trace
+#
+# Branch-level runtime trace for loaded and considered Spw blocks/concepts.
+
+#>spw_ocean_trace
+
+^"intent"{
+  ~#goal: "Trace which blocks and concepts are loaded and considered per branch."
+  ~#focus: "runtime performance, cache behavior, interpretation coverage"
+}
+
+^"model"{
+  branch: {
+    id: "branch identifier"
+    runtime: {
+      beats: "count of processing beats"
+      durationMs: "total runtime in milliseconds"
+      positionality: {
+        nearest: "count of nearest-anchor lookups"
+        enclosing: "count of enclosing-scope lookups"
+        ancestor: "count of ancestor-frame lookups"
+      }
+      cache: {
+        hitRate: "0..1"
+        missRate: "0..1"
+      }
+    }
+    loaded: {
+      blockRefs: ["resolved .spw block refs"]
+      conceptRefs: ["resolved concept refs"]
+      groundedRefs: ["refs anchored to stable source"]
+      boundRefs: ["refs bound to branch/phase/hot selector"]
+    }
+    considered: {
+      blockRefs: ["subset actually interpreted"]
+      conceptRefs: ["subset actually interpreted"]
+      groundedRefs: ["grounded subset considered"]
+      boundRefs: ["bound subset considered"]
+    }
+  }
+}
+
+^"aggregation"{
+  byBranch: "per branch summary"
+  byPhase: "per phase load/consider ratio"
+  byBiome: "per biome load/consider ratio"
+  byGrounding: "grounded vs bound ratios"
+  bySelector: "selector id coverage and replacement frequency"
+}
+
+^"invariant"{
+  "Trace data is reference-based; avoid transcript duplication."
+}

@@ -1,0 +1,35 @@
+# Scoped Evolution
+#
+# Experimental syntax policy with explicit scope and rollback.
+
+#>spw_scoped_evolution
+
+^"intent"{
+  ~#goal: "Allow syntax evolution without destabilizing baseline workflows."
+  ~#mode: "opt-in, path-scoped, probe-backed."
+}
+
+^"channels"{
+  stable: {
+    description: "Default grammar and tooling behavior."
+    scope: ["src/seed/**", "docs/design/spw/**", ".spw/**"]
+  }
+
+  experimental: {
+    description: "New operators/forms gated behind explicit markers."
+    scope: [".spw/experiments/**", ".spw/biome/ocean/**", "docs/research/spw/**"]
+    gate: "feature marker + probe coverage + rollback recipe"
+  }
+}
+
+^"rollout"{
+  step_1: "declare experiment and impacted files"
+  step_2: "define probes for parse stability and semantic drift"
+  step_3: "run meso-scale loops with hot reload"
+  step_4: "promote to stable only if probe archive trend is positive"
+}
+
+^"rollback"{
+  ~#trigger: "probe failures or unresolved aberration risk"
+  ~#action: "disable experiment marker and restore stable channel paths"
+}

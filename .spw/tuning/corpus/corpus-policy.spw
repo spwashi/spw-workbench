@@ -1,0 +1,46 @@
+# Tuning Corpus Policy
+#
+# Curation and admission rules for training/evaluation-ready corpus items.
+
+#>spw_tuning_corpus_policy
+
+^"intent"{
+  ~#goal: "Only promote high-signal, reviewed artifacts into tuning corpus."
+  ~#ethos: "Traceable provenance over volume."
+}
+
+^"admission"{
+  ~#required: [
+    "item_id",
+    "run_id",
+    "source_path",
+    "reviewer",
+    "license",
+    "quality_score",
+    "verdict",
+  ]
+  ~#gate: "verdict == accept and quality_score >= 0.9"
+}
+
+^"exclusions"{
+  "No secrets, credentials, or private tokens.",
+  "No PII without explicit redaction + approval record.",
+  "No unresolved TODO/FIXME placeholders in training examples.",
+}
+
+^"lineage"{
+  ~#traceability: "Every corpus item links to one harness run id."
+  ~#reproducibility: "Source path and revision hash are required."
+}
+
+^"seed_item"{
+  item: {
+    item_id: "corpus-0001"
+    run_id: "run-0001"
+    source_path: ".spw/workspace.spw"
+    reviewer: "human-required"
+    license: "repo-internal"
+    quality_score: 1.0
+    verdict: "accept"
+  }
+}

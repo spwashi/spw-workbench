@@ -1,0 +1,35 @@
+# Cycle
+#
+# Operational cycle for clean-run query execution and probe verification.
+
+#>spw_ocean_cycle
+
+^"intent"{
+  ~#goal: "Run deterministic query cycles with measurable probe updates."
+}
+
+^"flow"{
+  clean: {
+    check: "git status --short"
+    expect: "target scope is clean before run"
+  }
+
+  query: {
+    command: "npm run spwq -- <file> --selector=<selector_id>"
+    template: ".spw/biome/ocean/template/t.spw"
+    registry: ".spw/biome/ocean/query/sel.spw"
+    hot: ".spw/biome/ocean/query/hot.spw"
+  }
+
+  verify: {
+    probes: ".spw/harness/probes/archive-index.spw"
+    invariants: ".spw/workspace.spw#invariants"
+    trace: ".spw/biome/ocean/trace.spw"
+    projections: ".spw/gen/index.spw"
+  }
+
+  prime: {
+    transform: ".spw/biome/ocean/expr/arc.spw"
+    note: "optionally remap concept arcs from () to <> for register priming"
+  }
+}

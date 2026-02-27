@@ -1,0 +1,67 @@
+# Harness Runs Index
+#
+# Append-only ledger for agent and LLM harness runs.
+
+#>spw_harness_runs
+
+^"intent"{
+  ~#goal: "Capture each harness run as a replayable, reviewable artifact."
+  ~#scope: "Run metadata, checks, scores, and decision status."
+}
+
+^"run_schema"{
+  ~#required_fields: [
+    "run_id",
+    "timestamp",
+    "task",
+    "prompt_snapshot_ref",
+    "context_refs",
+    "memory_refs",
+    "probe_refs",
+    "model",
+    "seed",
+    "inputs",
+    "outputs",
+    "checks",
+    "score",
+    "verdict",
+  ]
+
+  outputs: {
+    patch: "optional diff artifact"
+    report: "markdown or spw summary"
+    traces: "logs, diagnostics, timing"
+  }
+
+  verdict: "accept|reject|needs-review"
+}
+
+^"prompt_capture"{
+  ~#unit: "one snapshot per harness run"
+  ~#capture: "resolved intent + relevant context refs"
+  ~#default_exclusion: "raw per-message conversation transcript"
+  ~#context_root: ~"../../../.agents"
+  ~#memory_contract: ~"../memory-surface.spw"
+}
+
+^"retention"{
+  ~#policy: "append-only"
+  ~#edit_rule: "new evidence appends a new run id; prior runs are immutable"
+}
+
+^"seed_entry"{
+  run: {
+    run_id: "run-0001"
+    timestamp: "2026-02-27T00:00:00Z"
+    task: "bootstrap .spw workspace scaffold"
+    prompt_snapshot_ref: ".agents/plans/seed/wip.spw#agent_prompt"
+    context_refs: [".agents/plans/seed/wip.spw", ".spw/workspace.spw"]
+    memory_refs: [".agents/plans/seed/wip.spw#cache", ".spw/harness/memory-surface.spw#projection"]
+    probe_refs: [".spw/harness/probes/probe-loop.spw#templates", ".spw/harness/probes/archive-index.spw#active"]
+    model: "gpt-5-codex"
+    seed: "spirit-sequence-v1"
+    checks: ["lint:spw"]
+    score: 1.0
+    verdict: "accept"
+  }
+}
