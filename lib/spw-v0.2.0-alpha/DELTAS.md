@@ -22,6 +22,20 @@ Runtime status (2026-02-26):
 - Runtime docs now align to `src/runtime` foundation surfaces (state, interpreter, pipeline).
 - `#` operator framing in runtime docs now includes aggregation/intersection + lens-indexed cache targeting.
 
+Architecture support status (2026-02-26):
+- Added `ARCHITECTURE.md` + `LAYOUT.md` as normalized library architecture surfaces.
+- Added `architecture/*.spw` supports for layout navigation and theory bridging.
+- Introduced UAL framing for brace-first semantics and opposite-spin/operator-reality research prompts.
+- Introduced plane-axis concept selection model:
+  - liminality
+  - tangibility
+  - conception
+  - familiarity
+  - salience
+  - objectivity-subjectivity
+  - valence
+  - composition
+
 Remaining status:
 - Non-core folders still include redirect stubs and should migrate incrementally.
 - Redirect stubs remain acceptable outside `core/` and `runtime/` during alpha.
@@ -32,6 +46,7 @@ Remaining status:
 - Stronger conformance rules (placeholders, currying, boundary semantics).
 - Runtime registers and reflection story (what becomes reified in v0.2.0).
 - Profiles as first-class experimentation surfaces (taste, posture, fuzz).
+- Brace-first semantics as cross-language augmentation primitives (UAL).
 
 ## Redirect policy
 
@@ -45,5 +60,6 @@ A redirect stub MUST:
 For v0.2.0-alpha prep, run:
 - `npm run lint:v020` (core contract-stub integrity)
 - `npm run lint:v020:runtime` (runtime contract-stub + filename integrity)
+- `npm run lint:v020:architecture` (lib architecture surface + theory bridge integrity)
 - `npm run lint:spw` (parse validation for `.spw`)
 - `npm run lint:docs:strict` (path and Writerside consistency)
