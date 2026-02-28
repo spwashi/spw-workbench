@@ -50,8 +50,7 @@ syntax match   spwValHonk  '!honk\>'   display
 
 " ── SEEDS — ^seed[...] declarations ─────────────────────────────
 " ^seed is integration (^) applied to a seed label
-syntax match   spwSeedKw  '^seed\>'  display
-syntax match   spwSeedKw  '^\^seed\>'  display
+syntax match   spwSeedKw  '\^seed\>'  display
 
 " ── VOCAB — vocab[...] vocabulary/type declarations ──────────────
 syntax match   spwVocabKw  'vocab\[[^\]]*\]'  display

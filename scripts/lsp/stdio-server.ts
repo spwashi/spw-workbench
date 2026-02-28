@@ -275,7 +275,11 @@ async function resolveReferencePath(
   }
 
   const rootName = hit.root ?? ''
+  const defaults = defaultRoots(docDir)
   let rootBase = roots[rootName]
+  if (rootBase && !await fileExists(rootBase) && defaults[rootName]) {
+    rootBase = defaults[rootName]
+  }
   if (!rootBase) {
     const direct = path.join(WORKSPACE_ROOT, rootName)
     if (await fileExists(direct)) rootBase = direct
@@ -570,38 +574,39 @@ async function hover(params: any): Promise<LspHover | null> {
   }
 
   // 6. @root hover
-  const rootMatch = /@([A-Za-z_][A-Za-z0-9_]*)/.exec(line)
-  if (rootMatch) {
-    const rootStart = rootMatch.index ?? 0
+  const rootRe = /@([A-Za-z_][A-Za-z0-9_]*)/g
+  let rootMatch: RegExpExecArray | null
+  while ((rootMatch = rootRe.exec(line)) !== null) {
+    const rootStart = rootMatch.index
     const rootEnd = rootStart + rootMatch[0].length
-    if (pos.character >= rootStart && pos.character <= rootEnd) {
-      const rootName = rootMatch[1]
-      const docPath = pathFromUri(uri)
-      const roots = mergeRoots(source, path.dirname(docPath || WORKSPACE_ROOT))
-      const resolved = roots[rootName]
-      if (resolved) {
-        const rel = path.relative(WORKSPACE_ROOT, resolved)
-        const annotationsUnder = serverIndex.allAnnotations().filter(e =>
-          e.file.startsWith(resolved) || e.file.includes(`/${rootName}/`)
-        )
-        const uniqueFiles = new Set(annotationsUnder.map(e => e.file))
-        const lenses = [...new Set(annotationsUnder.filter(e => e.kind === 'lens').map(e => e.name))]
+    if (pos.character < rootStart || pos.character > rootEnd) continue
 
-        let md = `**\`@${rootName}\`** \u2192 \`${rel}\`\n\n`
-        md += `**${uniqueFiles.size}** file(s), **${annotationsUnder.length}** annotation(s)\n\n`
-        if (lenses.length > 0) {
-          md += `Lenses: ${lenses.slice(0, 8).map(l => `\`#:${l}\``).join(', ')}\n`
-        }
+    const rootName = rootMatch[1]
+    const docPath = pathFromUri(uri)
+    const roots = mergeRoots(source, path.dirname(docPath || WORKSPACE_ROOT))
+    const resolved = roots[rootName]
+    if (resolved) {
+      const rel = path.relative(WORKSPACE_ROOT, resolved)
+      const annotationsUnder = serverIndex.allAnnotations().filter(e =>
+        e.file.startsWith(resolved) || e.file.includes(`/${rootName}/`)
+      )
+      const uniqueFiles = new Set(annotationsUnder.map(e => e.file))
+      const lenses = [...new Set(annotationsUnder.filter(e => e.kind === 'lens').map(e => e.name))]
 
-        return {
-          contents: { kind: 'markdown', value: md },
-          range: { start: { line: pos.line, character: rootStart }, end: { line: pos.line, character: rootEnd } },
-        }
+      let md = `**\`@${rootName}\`** \u2192 \`${rel}\`\n\n`
+      md += `**${uniqueFiles.size}** file(s), **${annotationsUnder.length}** annotation(s)\n\n`
+      if (lenses.length > 0) {
+        md += `Lenses: ${lenses.slice(0, 8).map(l => `\`#:${l}\``).join(', ')}\n`
+      }
+
+      return {
+        contents: { kind: 'markdown', value: md },
+        range: { start: { line: pos.line, character: rootStart }, end: { line: pos.line, character: rootEnd } },
       }
     }
   }
 
-  // 6. Path peek
+  // 7. Path peek
   const doc = serverIndex.getDocument(uri)
   if (doc) {
     const hit = findPathRefAtPosition(doc.selectorHits, pos.line, pos.character)
