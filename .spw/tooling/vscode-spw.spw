@@ -1,0 +1,27 @@
+# Tooling VSCode
+#
+# Register of native Spw plugins and language features for VS Code.
+
+#>spw_tooling_vscode
+#:tooling #!editor
+
+^seed[Tooling.VSCode.Extension v:0.1 @profile:Spw.b @intent:native-vscode-parallel-to-intellij]
+.tooling.vscode {
+  extension.name: "spw-language"
+  contributes: {
+    folding: "FoldingRangeProvider.ts — regex ^[\"frame\"]{…} + ^subroot[…] + ^property[…] (brace-depth counting)"
+    outline: "DocumentSymbolProvider.ts — ^\"name\", #>anchor, # Heading, ^subroot[…] → navigable Structure view"
+    snippets: "spw.code-snippets — frame/intent/anno/subroot/prop + symmetry.{sym:D4} + brace.left/right"
+    semantic.tokens: "SemanticTokensProvider.ts — lightweight operator/glyph/brace-side highlighting (no parser)"
+    code.lens: "CodeLensProvider.ts — gutter lenses on #>anchor + symmetry applications"
+    color.custom: "package.json contributes.colors + themes/spw-dark.json — full TextMate scope overrides"
+  }
+  files: {
+    src/providers/FoldingRangeProvider.ts
+    src/providers/DocumentSymbolProvider.ts
+    src/providers/SemanticTokensProvider.ts
+    src/providers/CodeLensProvider.ts
+    snippets/spw.code-snippets
+    themes/spw-dark.json
+  }
+}

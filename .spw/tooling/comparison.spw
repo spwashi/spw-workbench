@@ -1,0 +1,21 @@
+# Tooling Comparison
+#
+# Feature parity matrix and recommendations for Spw IDE tooling.
+
+#>spw_tooling_comparison
+#:tooling #!editor
+
+^seed[Tooling.Comparison v:0.1 @profile:Spw.b @intent:feature-parity-matrix]
+.tooling.comparison {
+  feature.matrix: {
+    folding: {intellij:"SpwFoldingBuilder.kt (regex+brace-depth+frame-name placeholder)",vscode:"FoldingRangeProvider.ts (regex+brace-depth)"}
+    structure.outline: {intellij:"SpwStructureViewFactory.kt (dedicated Structure tool window)",vscode:"DocumentSymbolProvider.ts (Outline panel)"}
+    snippets.templates: {intellij:"Live Templates (spwTemplates.xml)",vscode:"spw.code-snippets (JSON + symmetry + brace.left)"}
+    coloring: {intellij:"SpwColorSettingsPage.kt (dedicated page + demo text)",vscode:"SemanticTokensProvider.ts + themes/spw-dark.json"}
+    gutter.markers: {intellij:"SpwAnnotationLineMarkerProvider.kt (icons on #>anchor)",vscode:"CodeLensProvider.ts (lenses on #> + symmetry)"}
+  }
+  intellij.advantages: "Deeper native integration, dedicated settings pages, stronger structure view, custom ColorSettingsPage"
+  vscode.advantages: "Lightweight (faster startup), semantic tokens for operators/glyphs, easier cross-platform, JSON snippets"
+  parity.level: "High — both 100% regex-based (zero full parser), brace-depth counting, symmetry + brace.sides support"
+  recommendation: "Use IntelliJ for heavy canon work, VS Code for quick edits + multi-platform"
+}
