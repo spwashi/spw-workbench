@@ -639,7 +639,7 @@ export class ServerIndex {
         // key format: "biome/spells" or "harness/probes" etc.
         const slashIdx = key.indexOf('/')
         const shelfName = slashIdx >= 0 ? key.slice(0, slashIdx) : key
-        const subPath   = slashIdx >= 0 ? key.slice(slashIdx + 1) : ''
+        const subPath = slashIdx >= 0 ? key.slice(slashIdx + 1) : ''
         const shelfBase = this.shelfRoots.get(shelfName)
         if (!shelfBase) continue
         const target = subPath ? path.join(shelfBase, subPath) : shelfBase
@@ -694,6 +694,11 @@ export class ServerIndex {
       trimTrailingWhitespace: true,
       ensureFinalNewline: true,
       collapseBlankLines: false,
+      indentBraces: true,
+      indentSize: 2,
+      alignComments: true,
+      commentColumn: 40,
+      blankLineBetweenFrames: true,
     }).source
   }
 
