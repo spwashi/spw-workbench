@@ -268,7 +268,8 @@ function mergeConfig(target: Required<SpwConfig>, source: Partial<SpwConfig>): v
 // ── Root resolution ─────────────────────────────────────────────
 
 function defaultRoots(fileDir: string): RootMap {
-  return {
+  // Static fallback roots (used before workspace scan or when shelves.spw is absent)
+  const hardcoded: RootMap = {
     docs: path.join(WORKSPACE_ROOT, 'docs'),
     src: path.join(WORKSPACE_ROOT, 'src'),
     spec: path.join(WORKSPACE_ROOT, 'lib', 'spw-v0.2.0-alpha'),
@@ -286,6 +287,12 @@ function defaultRoots(fileDir: string): RootMap {
     here: fileDir,
     repo: WORKSPACE_ROOT,
   }
+  // Overlay with shelf roots parsed from shelves.spw (dynamic, self-describing)
+  const shelves = serverIndex.getShelfRoots()
+  for (const [name, absPath] of shelves) {
+    hardcoded[name] = absPath
+  }
+  return hardcoded
 }
 
 function parseRoots(source: string, fileDir: string): RootMap {
@@ -864,8 +871,16 @@ async function hover(params: any): Promise<LspHover | null> {
             for (const a of fileAnnotations) kinds.set(a.kind, (kinds.get(a.kind) ?? 0) + 1)
             const kindSummary = [...kinds.entries()].map(([k, n]) => `${n} ${k}`).join(', ')
 
+            const plane = serverIndex.getWorkspacePlaneForFile(resolved)
+            const category = serverIndex.getCategoryForFile(resolved)
+            const isGenerated = serverIndex.isGeneratedFile(resolved)
+
             let md = `\u2192 \`${rel}\`\n\n`
-            md += `Subroot: ${subroot} | Cache: ${tier}`
+            const metaParts: string[] = [`Subroot: ${subroot}`, `Cache: ${tier}`]
+            if (plane) metaParts.push(`Plane: ${plane}`)
+            if (category) metaParts.push(`Category: ${category}`)
+            if (isGenerated) metaParts.push('**generated**')
+            md += metaParts.join(' | ')
             if (kindSummary) md += ` | Annotations: ${kindSummary}`
             md += '\n\n```spw\n' + lines.join('\n')
             if (fileText.split('\n').length > 10) md += '\n...'
@@ -1116,7 +1131,58 @@ async function completion(params: any): Promise<LspCompletionItem[]> {
     return items
   }
 
-  // 3. File-system completion for ~"../" and @root/
+  // 3. Sigil keyword completions (at line start or after whitespace)
+  const sigilPrefixMatch = /(?:^|\s)([\^!@&*?~#=%.])$/.exec(prefix)
+  if (sigilPrefixMatch) {
+    const sigil = sigilPrefixMatch[1]
+    const sem = SIGIL_SEMANTICS[sigil]
+    if (sem) {
+      // Suggest the sigil's primary syntactic forms
+      const sigilSnippets: Record<string, Array<{ label: string; insert: string }>> = {
+        '^': [
+          { label: '^["section"] {', insert: '^["${1:section}"] {\n\t$0\n}' },
+          { label: '^seed[name]', insert: '^seed[${1:name}]' },
+          { label: '^selector[name]', insert: '^selector[${1:name}]' },
+        ],
+        '!': [
+          { label: '!boon["label"]', insert: '!boon["${1:label}"]' },
+          { label: '!bone["label"]', insert: '!bone["${1:label}"]' },
+          { label: '!bonk["label"]', insert: '!bonk["${1:label}"]' },
+        ],
+        '#': [
+          { label: '#>anchor', insert: '#>${1:anchor}' },
+          { label: '#:lens', insert: '#:${1:lens}' },
+          { label: '#!intent', insert: '#!${1:intent}' },
+        ],
+        '@': [],  // handled by @-root completion above
+        '?': [
+          { label: '?["question"]', insert: '?["${1:question}"]' },
+          { label: '?match', insert: '?match' },
+        ],
+        '~': [
+          { label: '~"path/to/file"', insert: '~"${1:path}"' },
+          { label: '~[N]', insert: '~[${1:N}]' },
+        ],
+        '&': [
+          { label: '&[label]', insert: '&[${1:label}]' },
+          { label: '&name', insert: '&${1:name}' },
+        ],
+      }
+      const snippets = sigilSnippets[sigil] ?? []
+      for (const s of snippets) {
+        items.push({
+          label: s.label,
+          kind: CK.Keyword,
+          detail: `${sem.role} — ${sem.physics}`,
+          insertText: s.insert,
+          sortText: `0-${s.label}`,
+        })
+      }
+      if (snippets.length > 0) return items
+    }
+  }
+
+  // 4. File-system completion for ~"../" and @root/
   const fsMatch = /(?:~"((?:\.\.?\/)+)|@([A-Za-z_]\w*)\/)([^"]*)$/.exec(prefix)
   if (fsMatch) {
     let searchDir: string | undefined
@@ -1220,6 +1286,26 @@ function codeLens(params: any): LspCodeLens[] {
         title: `\u2190 generated from ${path.relative(WORKSPACE_ROOT, path.resolve(WORKSPACE_ROOT, proj.specOwner.replace(/^\.\//, '')))}`,
         command: '',
       },
+    })
+  }
+
+  // Workspace plane + category lens (first line of .spw/ files)
+  const plane = serverIndex.getWorkspacePlaneForFile(docPath)
+  const category = serverIndex.getCategoryForFile(docPath)
+  const isGenerated = serverIndex.isGeneratedFile(docPath)
+
+  if (isGenerated) {
+    lenses.unshift({
+      range: { start: { line: 0, character: 0 }, end: { line: 0, character: 1 } },
+      command: { title: '\u26a0 generated surface — do not hand-edit', command: '' },
+    })
+  } else if (plane || category) {
+    const parts: string[] = []
+    if (plane) parts.push(plane)
+    if (category) parts.push(category)
+    lenses.unshift({
+      range: { start: { line: 0, character: 0 }, end: { line: 0, character: 1 } },
+      command: { title: `\u25c8 ${parts.join(' \u00b7 ')}`, command: '' },
     })
   }
 
@@ -1357,6 +1443,107 @@ async function inlayHints(params: any): Promise<LspInlayHint[]> {
   return hints
 }
 
+// ── References ──────────────────────────────────────────────────
+
+async function references(params: any): Promise<LspLocation[]> {
+  const uri = params?.textDocument?.uri
+  const pos = params?.position as LspPosition | undefined
+  if (!uri || !pos) return []
+
+  const source = await getDocumentText(uri)
+  if (source === null) return []
+
+  const line = source.split('\n')[pos.line] ?? ''
+
+  // 1. Annotation reference: find #name at cursor, return all workspace hits
+  const annotRe = /#(!|:|>)?([a-zA-Z_][a-zA-Z0-9_]*)/g
+  let annotMatch: RegExpExecArray | null
+  while ((annotMatch = annotRe.exec(line)) !== null) {
+    const start = annotMatch.index
+    const end = start + annotMatch[0].length
+    if (pos.character < start || pos.character >= end) continue
+
+    const name = annotMatch[2]
+    const entries = serverIndex.lookupAnnotation(name)
+    return entries.map(entry => ({
+      uri: uriFromPath(entry.file),
+      range: {
+        start: { line: entry.line, character: 0 },
+        end: { line: entry.line, character: 0 },
+      },
+    }))
+  }
+
+  // 2. Selector name: return definition site
+  const selRe = /\b([a-z][a-z0-9]*(?:_[a-z][a-z0-9]*)+)\b/g
+  let selMatch: RegExpExecArray | null
+  while ((selMatch = selRe.exec(line)) !== null) {
+    const start = selMatch.index
+    const end = start + selMatch[0].length
+    if (pos.character < start || pos.character >= end) continue
+
+    const def = serverIndex.getSelectorDef(selMatch[1])
+    if (!def) continue
+    return [{
+      uri: uriFromPath(def.file),
+      range: { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } },
+    }]
+  }
+
+  return []
+}
+
+// ── Folding Ranges ───────────────────────────────────────────────
+
+interface LspFoldingRange { startLine: number; endLine: number; kind?: string }
+
+function foldingRanges(params: any): LspFoldingRange[] {
+  const uri = params?.textDocument?.uri
+  if (!uri) return []
+
+  const doc = serverIndex.getDocument(uri)
+  if (!doc) return []
+
+  const lines = doc.text.split('\n')
+  const ranges: LspFoldingRange[] = []
+
+  // Brace-depth folding for { ... } blocks (frames, definitions)
+  const stack: Array<{ startLine: number }> = []
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i]
+    let inString = false
+    for (let j = 0; j < line.length; j += 1) {
+      const ch = line[j]
+      if (ch === '"' || ch === "'") { inString = !inString; continue }
+      if (inString) continue
+      if (line[j - 1] === '/' && ch === '/') break // line comment
+      if (ch === '{') {
+        stack.push({ startLine: i })
+      } else if (ch === '}') {
+        const top = stack.pop()
+        if (top && i > top.startLine) {
+          ranges.push({ startLine: top.startLine, endLine: i })
+        }
+      }
+    }
+  }
+
+  // Block comment folding /* ... */
+  for (let i = 0; i < lines.length; i += 1) {
+    if (lines[i].trimStart().startsWith('/*')) {
+      for (let j = i + 1; j < lines.length; j += 1) {
+        if (lines[j].includes('*/')) {
+          if (j > i) ranges.push({ startLine: i, endLine: j, kind: 'comment' })
+          i = j
+          break
+        }
+      }
+    }
+  }
+
+  return ranges
+}
+
 // ── Request dispatcher ──────────────────────────────────────────
 
 async function handleRequest(message: JsonRpcRequest): Promise<void> {
@@ -1377,6 +1564,7 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
             textDocumentSync: 1,
             definitionProvider: true,
             declarationProvider: true,
+            referencesProvider: true,
             documentLinkProvider: { resolveProvider: false },
             hoverProvider: true,
             documentSymbolProvider: true,
@@ -1385,6 +1573,7 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
             codeLensProvider: { resolveProvider: false },
             documentFormattingProvider: true,
             inlayHintProvider: true,
+            foldingRangeProvider: true,
           },
         })
 
@@ -1435,6 +1624,14 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
 
       case 'textDocument/inlayHint':
         sendResult(id, await inlayHints(message.params))
+        return
+
+      case 'textDocument/references':
+        sendResult(id, await references(message.params))
+        return
+
+      case 'textDocument/foldingRange':
+        sendResult(id, foldingRanges(message.params))
         return
 
       case 'spw/select': {
@@ -1503,6 +1700,17 @@ function handleNotification(message: JsonRpcRequest): void {
       serverIndex.closeDocument(uri)
       // Clear diagnostics on close
       sendNotification('textDocument/publishDiagnostics', { uri, diagnostics: [] })
+      return
+    }
+
+    case 'workspace/didChangeWatchedFiles': {
+      const changes = Array.isArray(message.params?.changes) ? message.params.changes : []
+      for (const change of changes as Array<{ uri: string; type: number }>) {
+        const filePath = pathFromUri(change.uri)
+        if (!filePath || !filePath.endsWith('.spw')) continue
+        // type 3 = deleted; 1 = created; 2 = changed
+        void serverIndex.refreshFileAnnotations(filePath)
+      }
       return
     }
 

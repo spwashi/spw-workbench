@@ -110,6 +110,10 @@ export const SIGIL_SEMANTICS: Record<string, SigilSemantic> = {
 const SPIRIT_SEQUENCE = '?~ <#.> @(#.) &[#.] *{#.} ^'
 const SPIRIT_PHASES = ['?~', '<#.>', '@(#.)', '&[#.]', '*{#.}', '^']
 
+function escapeMarkdownInline(value: string): string {
+  return value.replace(/[\\`*_{}\[\]()#+\-.!|]/g, '\\$&')
+}
+
 // ── ServerIndex ─────────────────────────────────────────────────
 
 export class ServerIndex {
@@ -121,6 +125,14 @@ export class ServerIndex {
   private selectorDefs = new Map<string, SelectorDefinition>()
   private beat = 0
   private workspaceRoot: string
+
+  // ── Workspace config (loaded from .spw/shelves.spw, topology.spw, editing.spw) ──
+  private shelfRoots = new Map<string, string>()             // name → absolute path
+  private topologySubroots = new Map<string, {               // name → topology entry
+    resolvedPath: string
+    cachePrefix: string
+  }>()
+  private editingCategories = new Map<string, string[]>()    // category → shelf key array
 
   constructor(workspaceRoot: string) {
     this.workspaceRoot = workspaceRoot
@@ -254,6 +266,68 @@ export class ServerIndex {
     doc.annotations = this.extractAnnotations(doc.filePath, doc.text)
   }
 
+  // ── Workspace config loading ──────────────────────────────────
+
+  /** Parse @name: ~"./path" entries from .spw/shelves.spw */
+  private async loadShelves(): Promise<void> {
+    const shelvesPath = path.join(this.workspaceRoot, '.spw', 'shelves.spw')
+    try {
+      const text = await fs.readFile(shelvesPath, 'utf8')
+      const shelvesDir = path.dirname(shelvesPath)
+      const re = /^\s*@([A-Za-z0-9_-]+):\s*~"([^"]+)"/gm
+      let m: RegExpExecArray | null
+      while ((m = re.exec(text)) !== null) {
+        this.shelfRoots.set(m[1], path.resolve(shelvesDir, m[2]))
+      }
+    } catch {
+      // shelves.spw not found — fall back to defaults later
+    }
+  }
+
+  /** Parse ^subroot[name]{ path: @shelf ... cache_key_prefix: ... } from topology.spw */
+  private async loadTopology(): Promise<void> {
+    const topologyPath = path.join(this.workspaceRoot, '.spw', 'topology.spw')
+    try {
+      const text = await fs.readFile(topologyPath, 'utf8')
+      const blockRe = /\^subroot\[([A-Za-z0-9_-]+)\]([\s\S]*?)(?=\^subroot\[|\^"|$)/g
+      let m: RegExpExecArray | null
+      while ((m = blockRe.exec(text)) !== null) {
+        const name = m[1]
+        const body = m[2]
+        const prefixMatch = body.match(/cache_key_prefix:\s*([A-Za-z0-9_-]+)/)
+        const cachePrefix = prefixMatch?.[1] ?? name
+        const pathMatch = body.match(/path:\s*@([A-Za-z0-9_-]+)/)
+        const shelfName = pathMatch?.[1] ?? name
+        const resolvedPath = this.shelfRoots.get(shelfName) ??
+          path.join(this.workspaceRoot, '.spw', name)
+        this.topologySubroots.set(name, { resolvedPath, cachePrefix })
+      }
+    } catch {
+      // topology.spw not found
+    }
+  }
+
+  /** Parse ^category[name]{ subroots: [@root/sub, ...] } from editing.spw */
+  private async loadEditing(): Promise<void> {
+    const editingPath = path.join(this.workspaceRoot, '.spw', 'editing.spw')
+    try {
+      const text = await fs.readFile(editingPath, 'utf8')
+      const blockRe = /\^category\[([A-Za-z0-9_-]+)\]([\s\S]*?)(?=\^category\[|\^"|$)/g
+      let m: RegExpExecArray | null
+      while ((m = blockRe.exec(text)) !== null) {
+        const name = m[1]
+        const body = m[2]
+        const subrootsMatch = body.match(/subroots:\s*\[([^\]]+)\]/)
+        const keys = subrootsMatch
+          ? (subrootsMatch[1].match(/@([A-Za-z0-9_/-]+)/g) ?? []).map(s => s.slice(1))
+          : []
+        this.editingCategories.set(name, keys)
+      }
+    } catch {
+      // editing.spw not found
+    }
+  }
+
   // ── Workspace scanning ────────────────────────────────────────
 
   async scanWorkspace(): Promise<void> {
@@ -262,6 +336,11 @@ export class ServerIndex {
     this.annotationsByFile.clear()
     this.projections = []
     this.selectorDefs.clear()
+
+    // Load workspace config files first (shelves → topology depends on shelf roots)
+    await this.loadShelves()
+    await this.loadTopology()
+    await this.loadEditing()
 
     const spwFiles = await this.collectSpwFiles(this.workspaceRoot)
 
@@ -356,6 +435,22 @@ export class ServerIndex {
       byFile.push(entry)
     } else {
       this.annotationsByFile.set(entry.file, [entry])
+    }
+  }
+
+  /** Re-read a file from disk and refresh its annotation index entry. */
+  async refreshFileAnnotations(filePath: string): Promise<void> {
+    try {
+      const text = await fs.readFile(filePath, 'utf8')
+      this.removeAnnotationsForFile(filePath)
+      const annotations = this.extractAnnotations(filePath, text)
+      for (const entry of annotations) {
+        this.addAnnotation(entry)
+      }
+      this.extractSelectorDefs(filePath, text)
+    } catch {
+      // file deleted or unreadable — clear its entries
+      this.removeAnnotationsForFile(filePath)
     }
   }
 
@@ -511,6 +606,13 @@ export class ServerIndex {
   // ── Topology ──────────────────────────────────────────────────
 
   getSubrootForFile(filePath: string): string | null {
+    // Prefer topology-derived subroots (from topology.spw)
+    for (const [name, { resolvedPath }] of this.topologySubroots) {
+      if (filePath === resolvedPath || filePath.startsWith(resolvedPath + path.sep)) {
+        return name
+      }
+    }
+    // Fallback: path-pattern heuristics
     const rel = path.relative(this.workspaceRoot, filePath).replace(/\\/g, '/')
     if (rel.startsWith('.spw/biome/')) return 'biome'
     if (rel.startsWith('.spw/harness/')) return 'harness'
@@ -528,6 +630,60 @@ export class ServerIndex {
     if (sub === 'hot') return 'hot'
     if (sub === 'harness') return 'warm'
     return 'warm'
+  }
+
+  /** Which editing category does a file belong to? (macro/measurement/prose/runtime) */
+  getCategoryForFile(filePath: string): string | null {
+    for (const [catName, keys] of this.editingCategories) {
+      for (const key of keys) {
+        // key format: "biome/spells" or "harness/probes" etc.
+        const slashIdx = key.indexOf('/')
+        const shelfName = slashIdx >= 0 ? key.slice(0, slashIdx) : key
+        const subPath   = slashIdx >= 0 ? key.slice(slashIdx + 1) : ''
+        const shelfBase = this.shelfRoots.get(shelfName)
+        if (!shelfBase) continue
+        const target = subPath ? path.join(shelfBase, subPath) : shelfBase
+        if (filePath === target || filePath.startsWith(target + path.sep)) {
+          return catName
+        }
+      }
+    }
+    // Fallback by subroot name
+    const sub = this.getSubrootForFile(filePath)
+    if (sub === 'biome') return 'macro'
+    if (sub === 'harness') return 'measurement'
+    if (sub === 'hot') return 'runtime'
+    if (sub === 'agents') return 'runtime'
+    return null
+  }
+
+  /** Which workspace plane owns this file? */
+  getWorkspacePlaneForFile(filePath: string): string | null {
+    const rel = path.relative(this.workspaceRoot, filePath).replace(/\\/g, '/')
+    const spwRel = rel.startsWith('.spw/') ? rel.slice(5) : rel
+    if (/^gen\//.test(spwRel)) return 'projection'
+    if (/^registries\//.test(spwRel)) return 'register'
+    if (/^applications\//.test(spwRel)) return 'application'
+    if (/^conventions\//.test(spwRel)) return 'convention'
+    if (/^patterns\//.test(spwRel)) return 'pattern'
+    if (/^harness\//.test(spwRel)) return 'measurement'
+    if (/^literate\//.test(spwRel)) return 'pattern'
+    if (/^biome\//.test(spwRel)) return 'biome'
+    if (/^(index|workspace|mount|shelves|topology|editing|canon-mount|hot)\.spw$/.test(spwRel)) {
+      return 'control'
+    }
+    return null
+  }
+
+  /** True if the file lives in the generated projection surface (.spw/gen/) */
+  isGeneratedFile(filePath: string): boolean {
+    const rel = path.relative(this.workspaceRoot, filePath).replace(/\\/g, '/')
+    return rel.startsWith('.spw/gen/')
+  }
+
+  /** The parsed shelf roots from shelves.spw (name → absolute path). */
+  getShelfRoots(): Map<string, string> {
+    return this.shelfRoots
   }
 
   // ── Formatting ────────────────────────────────────────────────
@@ -553,7 +709,10 @@ export class ServerIndex {
 
     const phases = SPIRIT_PHASES
     const idx = Math.min(sem.phaseIndex, phases.length - 1)
-    const markers = phases.map((p, i) => i === idx ? `**${p}**` : p)
+    const markers = phases.map((p, i) => {
+      const safe = escapeMarkdownInline(p)
+      return i === idx ? `**${safe}**` : safe
+    })
     return markers.join(' ')
   }
 
