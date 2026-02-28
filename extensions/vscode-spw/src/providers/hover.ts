@@ -72,7 +72,7 @@ export function registerHoverProvider(spw: SpwContext): vscode.Disposable {
         }
       }
 
-      // 3. Bare sigil hover
+      // 3. Bare sigil hover — with operator envelope context
       if (charAtPos && spw.SIGIL_SEMANTICS[charAtPos]) {
         const sem = spw.SIGIL_SEMANTICS[charAtPos]
         const md = new vscode.MarkdownString()
@@ -80,10 +80,46 @@ export function registerHoverProvider(spw: SpwContext): vscode.Disposable {
         md.appendMarkdown('| | |\n|:--|:--|\n')
         md.appendMarkdown(`| **Physics** | ${sem.physics} |\n`)
         md.appendMarkdown(`| **Phase** | ${sem.phase} |\n`)
+
+        // Operator envelope — show surrounding operator context
+        const operatorSet = new Set(Object.keys(spw.SIGIL_SEMANTICS))
+        const col = position.character
+
+        // Scan backward for preceding operator
+        let prevOp = ''
+        for (let i = col - 1; i >= 0; i--) {
+          const ch = line[i]
+          if (ch && operatorSet.has(ch)) { prevOp = ch; break }
+          if (ch && /\S/.test(ch) && !operatorSet.has(ch)) break
+        }
+
+        // Scan forward for following operator
+        let nextOp = ''
+        for (let i = col + 1; i < line.length; i++) {
+          const ch = line[i]
+          if (ch && operatorSet.has(ch)) { nextOp = ch; break }
+          if (ch && /\S/.test(ch) && !operatorSet.has(ch)) break
+        }
+
+        if (prevOp || nextOp) {
+          md.appendMarkdown('\n---\n**Envelope**:\n')
+          const parts: string[] = []
+          if (prevOp) {
+            const prevSem = spw.SIGIL_SEMANTICS[prevOp]
+            parts.push(`\`${prevOp}\` ${prevSem?.phase ?? ''}`)
+          }
+          parts.push(`**\`${charAtPos}\`** ${sem.phase}`)
+          if (nextOp) {
+            const nextSem = spw.SIGIL_SEMANTICS[nextOp]
+            parts.push(`\`${nextOp}\` ${nextSem?.phase ?? ''}`)
+          }
+          md.appendMarkdown(parts.join(' → ') + '\n')
+        }
+
         return new vscode.Hover(md, new vscode.Range(position.line, position.character, position.line, position.character + 1))
       }
 
-      // 3.5. @-root hover
+      // 3.5. @-root hover — with topology + shelf category
       const rootMatch = /@([A-Za-z_][A-Za-z0-9_]*)/.exec(line)
       if (rootMatch) {
         const rootStart = rootMatch.index ?? 0
@@ -95,15 +131,47 @@ export function registerHoverProvider(spw: SpwContext): vscode.Disposable {
             const md = new vscode.MarkdownString()
             md.appendMarkdown(`**\`${sigil}\`** → \`${segments.join('/')}\`\n\n`)
 
+            // Shelf category from shelves.spw orientation
+            const SHELF_CATEGORIES: Record<string, { category: string; icon: string }> = {
+              '@biome': { category: 'runtime', icon: '🌊' },
+              '@src': { category: 'runtime', icon: '⚙️' },
+              '@core': { category: 'runtime', icon: '⚙️' },
+              '@runtime': { category: 'runtime', icon: '⚙️' },
+              '@hot': { category: 'runtime', icon: '🔥' },
+              '@harness': { category: 'measurement', icon: '📐' },
+              '@docs': { category: 'prose', icon: '📖' },
+              '@library': { category: 'prose', icon: '📖' },
+              '@theory': { category: 'prose', icon: '📖' },
+              '@spec': { category: 'prose', icon: '📋' },
+              '@spw': { category: 'macro', icon: '🔧' },
+              '@gen': { category: 'macro', icon: '✨' },
+              '@scripts': { category: 'macro', icon: '🔧' },
+              '@agents': { category: 'macro', icon: '🤖' },
+              '@plans': { category: 'macro', icon: '🤖' },
+              '@skills': { category: 'macro', icon: '🤖' },
+              '@state': { category: 'measurement', icon: '📊' },
+              '@design': { category: 'macro', icon: '🎨' },
+              '@infra': { category: 'macro', icon: '🏗️' },
+            }
+
+            const shelfInfo = SHELF_CATEGORIES[sigil]
+            if (shelfInfo) {
+              md.appendMarkdown(`${shelfInfo.icon} **${shelfInfo.category}** shelf\n\n`)
+            }
+
             const rootPath = segments.join('/')
             const allAnnotations = spw.annotationIndex.all()
             const underRoot = allAnnotations.filter((entry) => entry.file.fsPath.includes(rootPath))
             const uniqueFiles = new Set(underRoot.map((entry) => entry.file.fsPath))
             const lenses = [...new Set(underRoot.filter((entry) => entry.kind === 'lens').map((entry) => entry.name))]
+            const intents = [...new Set(underRoot.filter((entry) => entry.kind === 'intent').map((entry) => entry.name))]
 
             md.appendMarkdown(`**${uniqueFiles.size}** file(s), **${underRoot.length}** annotation(s)\n\n`)
             if (lenses.length > 0) {
-              md.appendMarkdown(`Lenses: ${lenses.slice(0, 8).map((lens) => `\`#:${lens}\``).join(', ')}\n`)
+              md.appendMarkdown(`Lenses: ${lenses.slice(0, 8).map((lens) => `\`#:${lens}\``).join(', ')}\n\n`)
+            }
+            if (intents.length > 0) {
+              md.appendMarkdown(`Intents: ${intents.slice(0, 6).map((intent) => `\`#!${intent}\``).join(', ')}\n`)
             }
 
             return new vscode.Hover(md, new vscode.Range(position.line, rootStart, position.line, rootEnd))

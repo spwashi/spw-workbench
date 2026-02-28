@@ -30,12 +30,29 @@ class ConceptsTreeDataProvider implements vscode.TreeDataProvider<ConceptNode> {
   getTreeItem(element: ConceptNode): vscode.TreeItem {
     if (element.kind === 'group') {
       const kindSet = new Set(element.entries.map((entry) => entry.kind))
+      const fileSet = new Set(element.entries.map((entry) => entry.file.fsPath))
       const label = `${element.name}`
       const item = new vscode.TreeItem(label, vscode.TreeItemCollapsibleState.Collapsed)
-      item.description = `${element.entries.length}`
-      item.tooltip = `${element.entries.length} occurrence(s) across ${kindSet.size} kind(s)`
+      item.description = `${element.entries.length} · ${fileSet.size} file${fileSet.size > 1 ? 's' : ''}`
+
+      // Kind distribution for tooltip
+      const kindCounts = new Map<string, number>()
+      for (const entry of element.entries) {
+        kindCounts.set(entry.kind, (kindCounts.get(entry.kind) || 0) + 1)
+      }
+      const kindSummary = [...kindCounts.entries()].map(([k, c]) => `${c} ${k}`).join(', ')
+      item.tooltip = `${element.entries.length} occurrence(s) across ${fileSet.size} file(s): ${kindSummary}`
       item.contextValue = 'spwConceptGroup'
-      item.iconPath = new vscode.ThemeIcon('symbol-key')
+
+      // Kind-specific icon based on dominant kind
+      const dominantKind = [...kindCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'topic'
+      const kindIcons: Record<string, string> = {
+        topic: 'symbol-key',
+        lens: 'eye',
+        intent: 'zap',
+        anchor: 'link',
+      }
+      item.iconPath = new vscode.ThemeIcon(kindIcons[dominantKind] || 'symbol-key')
       return item
     }
 

@@ -1,6 +1,8 @@
 import * as vscode from 'vscode'
 import type { SpwContext } from '../context'
 
+const PHASE_SIGILS = ['^', '!', '?', '~', '@', '&', '*', '=', '%', '#'] as const
+
 export function registerCodeLensProvider(spw: SpwContext): vscode.Disposable {
   return vscode.languages.registerCodeLensProvider(spw.documentSelector, {
     provideCodeLenses(document: vscode.TextDocument): vscode.CodeLens[] {
@@ -22,6 +24,37 @@ export function registerCodeLensProvider(spw: SpwContext): vscode.Disposable {
             const summary = [...kindCounts.entries()].map(([kind, count]) => `${count} ${kind}`).join(', ')
             lenses.push(new vscode.CodeLens(new vscode.Range(lineIndex, 0, lineIndex, line.length), {
               title: `$(symbol-misc) ${summary}`,
+              command: '',
+            }))
+          }
+
+          // Operator frequency mini-bar — scan frame body for phase distribution
+          const sigilCounts = new Map<string, number>()
+          let braceDepth = 0
+          let inBody = false
+          for (let bodyLine = lineIndex; bodyLine < document.lineCount; bodyLine++) {
+            const bodyText = document.lineAt(bodyLine).text
+            for (const ch of bodyText) {
+              if (ch === '{') { braceDepth++; inBody = true }
+              if (ch === '}') braceDepth--
+            }
+            if (inBody) {
+              for (const ch of bodyText) {
+                if ((PHASE_SIGILS as readonly string[]).includes(ch)) {
+                  sigilCounts.set(ch, (sigilCounts.get(ch) || 0) + 1)
+                }
+              }
+            }
+            if (inBody && braceDepth <= 0) break
+          }
+
+          if (sigilCounts.size > 0) {
+            const bar = PHASE_SIGILS
+              .filter((s) => (sigilCounts.get(s) ?? 0) > 0)
+              .map((s) => `${s}${sigilCounts.get(s)}`)
+              .join(' ')
+            lenses.push(new vscode.CodeLens(new vscode.Range(lineIndex, 0, lineIndex, line.length), {
+              title: `$(pulse) ${bar}`,
               command: '',
             }))
           }
