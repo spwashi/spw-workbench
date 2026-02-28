@@ -41,6 +41,127 @@ export interface SpwSelectorHit {
   root?: string
 }
 
+interface LinePosition {
+  line: number
+  character: number
+}
+
+const REF_ENVELOPE_OPERATORS = new Set(['&', '^', '*', '?', '~', '!', '%', '='])
+
+function buildLineOffsets(source: string): number[] {
+  const offsets = [0]
+  for (let i = 0; i < source.length; i += 1) {
+    if (source[i] === '\n') offsets.push(i + 1)
+  }
+  return offsets
+}
+
+function offsetToPosition(offsets: number[], offset: number): LinePosition {
+  let lo = 0
+  let hi = offsets.length - 1
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1
+    const start = offsets[mid]
+    const next = mid + 1 < offsets.length ? offsets[mid + 1] : Number.POSITIVE_INFINITY
+    if (offset < start) {
+      hi = mid - 1
+    } else if (offset >= next) {
+      lo = mid + 1
+    } else {
+      return { line: mid, character: offset - start }
+    }
+  }
+  return { line: 0, character: offset }
+}
+
+function buildSpan(source: string, startOffset: number, endOffsetExclusive: number): SpwSelectorSpan {
+  const offsets = buildLineOffsets(source)
+  const start = offsetToPosition(offsets, startOffset)
+  const end = offsetToPosition(offsets, Math.max(startOffset, endOffsetExclusive - 1))
+  return {
+    startOffset,
+    endOffset: endOffsetExclusive,
+    startLine: start.line,
+    startCharacter: start.character,
+    endLine: end.line,
+    endCharacter: end.character,
+  }
+}
+
+function fallbackPathRefs(source: string): SpwSelectorHit[] {
+  const hits: SpwSelectorHit[] = []
+
+  // ~"./path", ~#label "./path", ~<label>"./path"
+  const pathRegex = /~[^"\n]*"([^"]+)"/g
+  let pathMatch: RegExpExecArray | null
+  while ((pathMatch = pathRegex.exec(source)) !== null) {
+    const raw = pathMatch[0] ?? ''
+    const target = pathMatch[1] ?? ''
+    if (!target) continue
+    const start = pathMatch.index
+    const end = start + raw.length
+    hits.push({
+      kind: 'pathRef',
+      raw,
+      target,
+      span: buildSpan(source, start, end),
+    })
+  }
+
+  // @root/path
+  const rootRegex = /@([A-Za-z_][A-Za-z0-9_]*)\/([A-Za-z0-9_.\-/*]+)/g
+  let rootMatch: RegExpExecArray | null
+  while ((rootMatch = rootRegex.exec(source)) !== null) {
+    const raw = rootMatch[0] ?? ''
+    const root = rootMatch[1] ?? ''
+    const target = rootMatch[2] ?? ''
+    if (!raw || !root || !target) continue
+    const start = rootMatch.index
+    const end = start + raw.length
+    hits.push({
+      kind: 'rootRef',
+      raw,
+      root,
+      target,
+      span: buildSpan(source, start, end),
+    })
+  }
+
+  return hits
+}
+
+function isEnvelopeOperator(ch: string | undefined): boolean {
+  return !!ch && REF_ENVELOPE_OPERATORS.has(ch)
+}
+
+function expandSpanWithOperatorEnvelope(source: string, span: SpwSelectorSpan): SpwSelectorSpan {
+  const lines = source.split('\n')
+  const next = { ...span }
+
+  const startLineText = lines[next.startLine] ?? ''
+  while (next.startCharacter > 0 && isEnvelopeOperator(startLineText[next.startCharacter - 1])) {
+    next.startCharacter -= 1
+    next.startOffset = Math.max(0, next.startOffset - 1)
+  }
+
+  const endLineText = lines[next.endLine] ?? ''
+  let suffixIndex = next.endCharacter + 1
+  while (suffixIndex < endLineText.length && isEnvelopeOperator(endLineText[suffixIndex])) {
+    next.endCharacter += 1
+    next.endOffset += 1
+    suffixIndex += 1
+  }
+
+  return next
+}
+
+function withOperatorEnvelopeExpandedSpans(source: string, hits: SpwSelectorHit[]): SpwSelectorHit[] {
+  return hits.map((hit) => ({
+    ...hit,
+    span: expandSpanWithOperatorEnvelope(source, hit.span),
+  }))
+}
+
 // ── Match → Hit conversion ───────────────────────────────────
 
 function matchToHit(match: SpwMatch): SpwSelectorHit | null {
@@ -105,7 +226,12 @@ export function selectPathRefs(source: string): SpwSelectorHit[] {
     if (hit) hits.push(hit)
   }
 
-  return hits
+  if (hits.length > 0) {
+    return withOperatorEnvelopeExpandedSpans(source, hits)
+  }
+
+  const fallbackHits = fallbackPathRefs(source)
+  return withOperatorEnvelopeExpandedSpans(source, fallbackHits)
 }
 
 export function findPathRefAtPosition(

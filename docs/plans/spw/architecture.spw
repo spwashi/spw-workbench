@@ -179,6 +179,27 @@
   }
 }
 
+^["query_projection"]{
+  # Query the repository from operator/brace/label perspectives, then
+  # build projection structures from ranked results.
+  #:query #!projection
+
+  ~<workbench>"./query-projection-workbench.spw"
+
+  commands: {
+    memory_dump: "npm run spw:mem:dump -- --dump-root /tmp/spw-mem-dumps --label pre-loop --include-extra"
+    sequence_query: "npm run spw:seq -- --seq '?~@&*^' --braces '<>{}' --surface hybrid --mode hybrid --model lattice --root .spw --top 20"
+    label_query: "npm run spw:seq -- --seq '?_query' --label query --surface hybrid --mode hybrid --root .spw --top 20"
+    memory_restore: "npm run spw:mem:load -- --dump-root /tmp/spw-mem-dumps --wipe"
+  }
+
+  %[material_properties]{
+    "density is one dimension of material properties",
+    "viscosity, elasticity, porosity, anisotropy add complementary tuning signals",
+    "material model source: @biome/algos/material.spw",
+  }
+}
+
 ^["literary_layers"]{
   # Three co-existing description layers for every module:
   #
