@@ -71,6 +71,14 @@ interface LspTextEdit {
   newText: string
 }
 
+interface LspInlayHint {
+  position: LspPosition
+  label: string
+  kind?: 1 | 2
+  paddingLeft?: boolean
+  paddingRight?: boolean
+}
+
 interface JsonRpcRequest {
   jsonrpc: '2.0'
   id?: number | string
@@ -238,13 +246,23 @@ async function resolveCandidate(target: string): Promise<string | null> {
   return null
 }
 
-async function resolveReferencePath(hit: SpwSelectorHit, source: string, docPath: string): Promise<string | null> {
+async function resolveReferencePath(
+  hit: SpwSelectorHit,
+  source: string,
+  docPath: string,
+  options?: { allowDirectory?: boolean },
+): Promise<string | null> {
   const docDir = path.dirname(docPath)
   const roots = mergeRoots(source, docDir)
+  const allowDirectory = options?.allowDirectory === true
 
   if (hit.kind === 'pathRef') {
     if (hit.target.includes('*')) return null
-    return resolveCandidate(path.resolve(docDir, hit.target))
+    const target = path.resolve(docDir, hit.target)
+    const resolved = await resolveCandidate(target)
+    if (resolved) return resolved
+    if (allowDirectory && await statKind(target) === 'dir') return target
+    return null
   }
 
   const rootName = hit.root ?? ''
@@ -258,7 +276,11 @@ async function resolveReferencePath(hit: SpwSelectorHit, source: string, docPath
     }
   }
   if (!rootBase || hit.target.includes('*')) return null
-  return resolveCandidate(path.resolve(rootBase, hit.target))
+  const target = path.resolve(rootBase, hit.target)
+  const resolved = await resolveCandidate(target)
+  if (resolved) return resolved
+  if (allowDirectory && await statKind(target) === 'dir') return target
+  return null
 }
 
 // ── Document text helper ────────────────────────────────────────
@@ -311,7 +333,7 @@ async function publishDiagnostics(uri: string): Promise<void> {
   const docPath = doc.filePath
   const source = doc.text
   for (const hit of doc.selectorHits) {
-    const resolved = await resolveReferencePath(hit, source, docPath)
+    const resolved = await resolveReferencePath(hit, source, docPath, { allowDirectory: true })
     if (resolved) continue
 
     const target = hit.kind === 'pathRef' ? hit.target : `@${hit.root}/${hit.target}`
@@ -505,14 +527,39 @@ async function hover(params: any): Promise<LspHover | null> {
     }
   }
 
-  // 5. @root hover
+  // 5. Symmetry hover
+  const symRe = /(?:\{sym:(D4|Z4)\}|#\[(D4|Z4)\])/
+  const symMatch = line.match(symRe)
+  if (symMatch) {
+    const symStart = line.indexOf(symMatch[0])
+    const symEnd = symStart + symMatch[0].length
+    if (pos.character >= symStart && pos.character < symEnd) {
+      const group = symMatch[1] || symMatch[2]
+      let md = `**${group} Symmetry** \u2014 *geometry*\n\n`
+      if (group === 'D4') {
+        md += `Dihedral group of order 8. Applies 8 geometric transformations (4 rotations, 4 reflections).\n\n`
+        md += `- **Mirrors** \`.left\` \u2194 \`.right\`\n`
+        md += `- **Register updates** reflect automatically.\n`
+      } else if (group === 'Z4') {
+        md += `Cyclic group of order 4. Applies 4 rotational states (0\u21921\u21922\u21923\u21920).\n\n`
+        md += `- **Cycles** through clock-like evolution.\n`
+      }
+      return {
+        contents: { kind: 'markdown', value: md },
+        range: { start: { line: pos.line, character: symStart }, end: { line: pos.line, character: symEnd } }
+      }
+    }
+  }
+
+  // 6. @root hover
   const rootMatch = /@([A-Za-z_][A-Za-z0-9_]*)/.exec(line)
   if (rootMatch) {
     const rootStart = rootMatch.index ?? 0
     const rootEnd = rootStart + rootMatch[0].length
     if (pos.character >= rootStart && pos.character <= rootEnd) {
       const rootName = rootMatch[1]
-      const roots = defaultRoots(path.dirname(pathFromUri(uri) || WORKSPACE_ROOT))
+      const docPath = pathFromUri(uri)
+      const roots = mergeRoots(source, path.dirname(docPath || WORKSPACE_ROOT))
       const resolved = roots[rootName]
       if (resolved) {
         const rel = path.relative(WORKSPACE_ROOT, resolved)
@@ -543,12 +590,35 @@ async function hover(params: any): Promise<LspHover | null> {
     if (hit) {
       const docPath = pathFromUri(uri)
       if (docPath) {
-        const resolved = await resolveReferencePath(hit, source, docPath)
+        const resolved = await resolveReferencePath(hit, source, docPath, { allowDirectory: true })
         if (resolved) {
           try {
+            const resolvedKind = await statKind(resolved)
+            const rel = path.relative(WORKSPACE_ROOT, resolved)
+            if (resolvedKind === 'dir') {
+              const entries = await fs.readdir(resolved, { withFileTypes: true })
+              const visible = entries.filter((entry) => !entry.name.startsWith('.'))
+              const preview = visible.slice(0, 8)
+              const rendered = preview
+                .map((entry) => `- ${entry.isDirectory() ? '[dir]' : '[file]'} \`${entry.name}${entry.isDirectory() ? '/' : ''}\``)
+                .join('\n')
+
+              let md = `→ \`${rel}/\`\n\n`
+              md += `Directory reference (${visible.length} entry${visible.length === 1 ? '' : 'ies'})`
+              if (rendered) md += `\n\n${rendered}`
+              if (visible.length > preview.length) md += `\n- ...and ${visible.length - preview.length} more`
+
+              return {
+                contents: { kind: 'markdown', value: md },
+                range: {
+                  start: { line: hit.span.startLine, character: hit.span.startCharacter },
+                  end: { line: hit.span.endLine, character: hit.span.endCharacter },
+                },
+              }
+            }
+
             const fileText = await fs.readFile(resolved, 'utf8')
             const lines = fileText.split('\n').slice(0, 10)
-            const rel = path.relative(WORKSPACE_ROOT, resolved)
             const subroot = serverIndex.getSubrootForFile(resolved) || 'workspace'
             const tier = serverIndex.getCacheTierForFile(resolved)
             const fileAnnotations = serverIndex.annotationsForFile(resolved)
@@ -598,7 +668,7 @@ async function definition(params: any): Promise<LspLocation[] | null> {
   const hit = findPathRefAtPosition(hits, position.line, position.character)
   if (!hit) return null
 
-  const resolved = await resolveReferencePath(hit, source, docPath)
+  const resolved = await resolveReferencePath(hit, source, docPath, { allowDirectory: true })
   if (!resolved) return null
 
   return [{
@@ -623,7 +693,7 @@ async function documentLinks(params: any): Promise<Array<{ range: LspRange; targ
   const links: Array<{ range: LspRange; target: string }> = []
 
   for (const hit of hits) {
-    const resolved = await resolveReferencePath(hit, source, docPath)
+    const resolved = await resolveReferencePath(hit, source, docPath, { allowDirectory: true })
     if (!resolved) continue
     links.push({
       range: {
@@ -776,7 +846,7 @@ async function completion(params: any): Promise<LspCompletionItem[]> {
 
   // 1. @-root completion
   if (prefix.endsWith('@')) {
-    const roots = defaultRoots(path.dirname(pathFromUri(uri) || WORKSPACE_ROOT))
+    const roots = mergeRoots(source, path.dirname(pathFromUri(uri) || WORKSPACE_ROOT))
     for (const [name, resolved] of Object.entries(roots)) {
       if (name === 'here' || name === 'repo') continue
       items.push({
@@ -815,7 +885,7 @@ async function completion(params: any): Promise<LspCompletionItem[]> {
     if (fsMatch[1]) {
       searchDir = path.resolve(path.dirname(pathFromUri(uri) || ''), fsMatch[1])
     } else if (fsMatch[2]) {
-      const roots = defaultRoots(path.dirname(pathFromUri(uri) || WORKSPACE_ROOT))
+      const roots = mergeRoots(source, path.dirname(pathFromUri(uri) || WORKSPACE_ROOT))
       searchDir = roots[fsMatch[2]]
     }
 
@@ -940,6 +1010,46 @@ function formatting(params: any): LspTextEdit[] {
   }]
 }
 
+async function inlayHints(params: any): Promise<LspInlayHint[]> {
+  const uri = params?.textDocument?.uri
+  const range = params?.range as LspRange | undefined
+  if (!uri || !range) return []
+
+  const source = await getDocumentText(uri)
+  if (source === null) return []
+
+  const lines = source.split('\n')
+  const hints: LspInlayHint[] = []
+
+  const startLine = Math.max(0, range.start.line)
+  const endLine = Math.min(lines.length - 1, range.end.line)
+
+  for (let i = startLine; i <= endLine; i += 1) {
+    const line = lines[i]
+    if (line.trim().startsWith('#') && !line.includes('#!')) continue
+
+    for (let c = 0; c < line.length; c += 1) {
+      const char = line[c]
+      const sem = SIGIL_SEMANTICS[char]
+      // Only hint core phase operators
+      if (sem && sem.phaseIndex >= 0) {
+        // Heuristic: only hint if it's acting as an operator (followed by space, brace, identifier, or end of line)
+        if (c + 1 === line.length || /[ \w<\[{(]/.test(line[c + 1])) {
+          const registerName = sem.role.split('/')[0].trim()
+          const label = registerName.charAt(0).toUpperCase() + registerName.slice(1)
+          hints.push({
+            position: { line: i, character: c + 1 },
+            label: `[${label}]`,
+            kind: 1, // Type hint
+            paddingLeft: true,
+          })
+        }
+      }
+    }
+  }
+  return hints
+}
+
 // ── Request dispatcher ──────────────────────────────────────────
 
 async function handleRequest(message: JsonRpcRequest): Promise<void> {
@@ -966,6 +1076,7 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
             completionProvider: { triggerCharacters: ['@', '~', '/', '#'] },
             codeLensProvider: { resolveProvider: false },
             documentFormattingProvider: true,
+            inlayHintProvider: true,
           },
         })
 
@@ -1012,6 +1123,10 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
 
       case 'textDocument/formatting':
         sendResult(id, formatting(message.params))
+        return
+
+      case 'textDocument/inlayHint':
+        sendResult(id, await inlayHints(message.params))
         return
 
       case 'spw/select': {
