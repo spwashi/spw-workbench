@@ -62,7 +62,7 @@ Frames are the primary structural unit. See [cache.spw](.spw/biome/ocean/algos/c
 
 ## Dialects
 
-Spw has seven dialect markers, unified in [dialect-spec.spw](.spw/dialect-spec.spw). The [workspace manifest](.spw/workspace.spw) declares the default. Query dialects are in [dialect.spw](.spw/biome/ocean/query/dialect.spw).
+Spw has seven dialect markers, unified in [dialect-spec.spw](.spw/registries/dialect-spec.spw). The [workspace manifest](.spw/workspace.spw) declares the default. Query dialects are in [dialect.spw](.spw/biome/ocean/query/dialect.spw).
 
 ### Lexing Dialects
 
@@ -88,7 +88,16 @@ The [`.spw/`](.spw/) directory is the canon root. Shelf convention is in [shelve
 ```
 .spw/
 ├── index.spw              # workspace manifest
-├── dialect-spec.spw       # unified dialect registry
+├── registries/
+│   ├── dialect-spec.spw       # unified dialect registry
+│   ├── register-bank.spw      # operator-typed register slots
+│   └── curiosity-brace.spw    # brace-side and symmetry ergonomics
+├── applications/
+│   └── symmetry/              # native dihedral actions
+│       ├── symmetry-ui-design.spw
+│       └── ...
+├── tooling/
+│   └── intellij-plugin.spw    # native syntax/structural features
 ├── canon-mount.spw        # multi-dialect mount seed
 ├── shelves.spw            # @-root convention
 ├── topology.spw           # subroot routing
