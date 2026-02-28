@@ -30,32 +30,64 @@
 ^query[operator_sequence]{
   shape: "?~@&*^"
   meaning: "phase-flow perspective query across files"
-  script: "npm run spw:seq -- --seq '?~@&*^' --root .spw"
+  script: "npm run spw:ls -- --seq '?~@&*^' --root .spw"
 }
 
 ^query[brace_sequence]{
   shape: "<>{}"
   meaning: "container-shape symmetry query across files"
-  script: "npm run spw:seq -- --braces '<>{}' --root .spw --model lattice"
+  script: "npm run spw:ls -- --braces '<>{}' --root .spw --model lattice"
 }
 
 ^query[label_disposition]{
   shape: "?_query and {_example ... }_example"
   meaning: "intrinsic-labeled operator/brace semantics"
-  script: "npm run spw:seq -- --seq '?_query' --label query --root .spw"
+  script: "npm run spw:ls -- --seq '?_query' --label query --root .spw"
+}
+
+^query[liminal_probe]{
+  shape: "?(subject).["
+  meaning: "probe sequence materialization after selector charge within local block contexts"
+  script: "npm run spw:ls -- --seq '?~@' --probe '?(subject).[' --probe-window 16 --equiv soft --root .spw --top 20"
+}
+
+^query[register_gate_sequence]{
+  shape: ".[ .] .( .) .{ .} .< .>"
+  meaning: "direct register access gates from sequence space"
+  script: "npm run spw:ls -- --seq '.[~@.}' --equiv soft --root .spw --top 20"
+}
+
+^query[dangling_register_ref]{
+  shape: "?~& with incomplete blocks"
+  meaning: "uncompleted scripts are surfaced as dangling registers; & may reference them in soft equiv mode"
+  script: "npm run spw:ls -- --seq '?~&' --equiv soft --root .spw --top 20"
 }
 
 ^query[projection_build]{
   shape: "query -> rank -> project -> trace"
   meaning: "use query results to drive generated structures and lens updates"
-  script: "npm run spw:seq -- --seq '?~@&*^' --braces '<>{}' --model lattice --root .spw --top 20"
+  script: "npm run spw:ls -- --seq '?~@&*^' --braces '<>{}' --model lattice --root .spw --top 20"
   projection: [@gen/index.spw, @biome/ops/cycle.spw, @biome/trace.spw]
 }
 
 ^query[learning_loop]{
   shape: "intuitive baseline vs experimental variant"
   meaning: "compare model dispositions (fluid/lattice/thermal/quantum) and preserve evidence"
-  script: "npm run spw:mem:dump -- --dump-root /tmp/spw-mem-dumps --label loop && npm run spw:seq -- --seq '?~@&*^' --mode hybrid --surface hybrid --model lattice --root .spw --top 20"
+  script: "npm run spw:mem:dump -- --dump-root /tmp/spw-mem-dumps --label loop && npm run spw:ls -- --seq '?~@&*^' --probe '?(subject).[' --mode hybrid --surface hybrid --model lattice --root .spw --top 20"
+}
+
+^semantics[operators]{
+  substrate: "$ is substrate/addressing potential (what medium is selected)"
+  merge: "& is composition/reference merge (how fields combine)"
+  context: "@ shifts observer context (perspective + thread-local synchronization)"
+  ground_handle: ". is a ground handle for bound register lookup or identifier anchoring"
+  equiv_soft: "soft mode enables exploratory equivalence classes (e.g. # ~ .[/.], . ~ {, @ ~ .})"
+}
+
+^semantics[containers]{
+  liminal: "<> tends toward priming/transition boundaries"
+  material: "{} tends toward materialized bodies/owned scope"
+  uncompleted: "unclosed containers are treated as dangling registers"
 }
 
 ^"invariant"{

@@ -7,6 +7,7 @@ ROOT="${3:-.spw}"
 LABEL="${4:-}"
 DUMP_LABEL="${5:-probe-loop}"
 PROBE_EXPR="${6:-}"
+EQUIV_MODE="${7:-strict}"
 DUMP_ROOT="${SPW_MEM_DUMP_ROOT:-/tmp/spw-mem-dumps}"
 
 npm run -s spw:mem:dump -- --dump-root "$DUMP_ROOT" --label "$DUMP_LABEL" --include-extra >/dev/null
@@ -18,6 +19,7 @@ fi
 if [[ -n "$PROBE_EXPR" ]]; then
   CMD+=(--probe "$PROBE_EXPR")
 fi
+CMD+=(--equiv "$EQUIV_MODE")
 
 "${CMD[@]}"
 

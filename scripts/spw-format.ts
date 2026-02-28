@@ -9,21 +9,43 @@ interface CliArgs {
   targets: string[]
   check: boolean
   help: boolean
+  mode: 'canonical' | 'equiv'
+}
+
+interface MutationCounts {
+  seqAliasToLs: number
+  dotPostfixNormalized: number
+  wildcardExpanded: number
 }
 
 const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', '.agents'])
 
 function parseArgs(argv: string[]): CliArgs {
   const args = argv.slice(2)
-  const parsed: CliArgs = { targets: [], check: false, help: false }
+  const parsed: CliArgs = { targets: [], check: false, help: false, mode: 'canonical' }
 
-  for (const arg of args) {
+  for (let i = 0; i < args.length; i += 1) {
+    const arg = args[i]
     if (arg === '--check') {
       parsed.check = true
       continue
     }
     if (arg === '--help' || arg === '-h') {
       parsed.help = true
+      continue
+    }
+    if (arg === '--mode') {
+      const next = (args[i + 1] ?? 'canonical').toLowerCase()
+      parsed.mode = next === 'equiv' ? 'equiv' : 'canonical'
+      i += 1
+      continue
+    }
+    if (arg === '--mode=equiv' || arg === 'equiv') {
+      parsed.mode = 'equiv'
+      continue
+    }
+    if (arg === '--mode=canonical' || arg === 'canonical') {
+      parsed.mode = 'canonical'
       continue
     }
     parsed.targets.push(arg)
@@ -41,16 +63,19 @@ function printHelp(): void {
 Spw Formatter (canonical mode)
 
 Usage:
-  node --import tsx scripts/spw-format.ts [targets...] [--check]
+  node --import tsx scripts/spw-format.ts [targets...] [--check] [--mode canonical|equiv]
 
 Behavior:
   - Formats .spw files by applying canonicalize():
     normalize newlines + trim trailing whitespace + ensure final newline.
+  - equiv mode additionally normalizes script/operator equivalence shorthands
+    and prints mutation contours per file.
   - Directories are walked recursively.
 
 Examples:
   npm run spw:format
   npm run spw:format:check
+  node --import tsx scripts/spw-format.ts .spw --mode equiv
   node --import tsx scripts/spw-format.ts docs/design/spw
 `)
 }
@@ -95,9 +120,52 @@ async function collectSpwFiles(target: string): Promise<string[]> {
   return files
 }
 
-async function formatFile(filePath: string, check: boolean): Promise<boolean> {
+function zeroMutations(): MutationCounts {
+  return {
+    seqAliasToLs: 0,
+    dotPostfixNormalized: 0,
+    wildcardExpanded: 0,
+  }
+}
+
+function applyEquivMutations(source: string): { source: string; mutations: MutationCounts } {
+  const mutations = zeroMutations()
+  let next = source
+
+  next = next.replace(/npm run spw:seq --/g, () => {
+    mutations.seqAliasToLs += 1
+    return 'npm run spw:ls --'
+  })
+
+  next = next.replace(/\.\*/g, () => {
+    mutations.wildcardExpanded += 1
+    return '*()'
+  })
+
+  next = next.replace(/\.([!?~@&*=%#$^_])/g, (_match, token: string) => {
+    mutations.dotPostfixNormalized += 1
+    return token
+  })
+
+  return { source: next, mutations }
+}
+
+function mergeMutations(a: MutationCounts, b: MutationCounts): MutationCounts {
+  return {
+    seqAliasToLs: a.seqAliasToLs + b.seqAliasToLs,
+    dotPostfixNormalized: a.dotPostfixNormalized + b.dotPostfixNormalized,
+    wildcardExpanded: a.wildcardExpanded + b.wildcardExpanded,
+  }
+}
+
+function hasMutations(mutations: MutationCounts): boolean {
+  return mutations.seqAliasToLs > 0 || mutations.dotPostfixNormalized > 0 || mutations.wildcardExpanded > 0
+}
+
+async function formatFile(filePath: string, check: boolean, mode: 'canonical' | 'equiv'): Promise<{ changed: boolean; mutations: MutationCounts }> {
   const original = await fs.readFile(filePath, 'utf8')
-  const formatted = canonicalize(original, {
+  const mutationStep = mode === 'equiv' ? applyEquivMutations(original) : { source: original, mutations: zeroMutations() }
+  const formatted = canonicalize(mutationStep.source, {
     normalizeNewlines: true,
     trimTrailingWhitespace: true,
     ensureFinalNewline: true,
@@ -105,14 +173,14 @@ async function formatFile(filePath: string, check: boolean): Promise<boolean> {
   }).source
 
   if (formatted === original) {
-    return false
+    return { changed: false, mutations: mutationStep.mutations }
   }
 
   if (!check) {
     await fs.writeFile(filePath, formatted, 'utf8')
   }
 
-  return true
+  return { changed: true, mutations: mutationStep.mutations }
 }
 
 async function main(): Promise<void> {
@@ -137,12 +205,18 @@ async function main(): Promise<void> {
   }
 
   let changed = 0
+  let contour = zeroMutations()
   for (const file of files) {
-    const didChange = await formatFile(file, cli.check)
-    if (didChange) {
+    const result = await formatFile(file, cli.check, cli.mode)
+    contour = mergeMutations(contour, result.mutations)
+    if (result.changed) {
       changed += 1
       const rel = path.relative(repoRoot, file)
-      console.log(`${cli.check ? 'needs-format' : 'formatted'}: ${rel}`)
+      let suffix = ''
+      if (cli.mode === 'equiv' && hasMutations(result.mutations)) {
+        suffix = ` [mutations seq->ls=${result.mutations.seqAliasToLs}, dot=${result.mutations.dotPostfixNormalized}, wildcard=${result.mutations.wildcardExpanded}]`
+      }
+      console.log(`${cli.check ? 'needs-format' : 'formatted'}: ${rel}${suffix}`)
     }
   }
 
@@ -150,6 +224,12 @@ async function main(): Promise<void> {
     console.error(`spw-format: ${changed} file(s) need formatting.`)
     process.exitCode = 1
     return
+  }
+
+  if (cli.mode === 'equiv') {
+    console.log(
+      `spw-format contour: seq->ls=${contour.seqAliasToLs}, dot-postfix=${contour.dotPostfixNormalized}, wildcard-expand=${contour.wildcardExpanded}`,
+    )
   }
 
   console.log(`spw-format: ${files.length} file(s) scanned, ${changed} ${cli.check ? 'need' : 'updated'}.`)
