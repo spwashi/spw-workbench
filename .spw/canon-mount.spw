@@ -45,9 +45,16 @@
 ^"dialect_lexing"{
   #:dialect #!rules
   Spw.b: { rule: "newline = statement boundary", scope: ".spw/ exhibits" }
-  Spw.l: { rule: "; compress; newline-as-space", scope: ".spw/ seeds" }
-  Spw.x: { rule: "@profile:Spw.x~#[…] + readonly @lock", scope: "live .spw/" }
+  Spw.l: { rule: "semicolon compression is proposed; newline-as-space remains baseline", scope: ".spw/ seeds" }
+  Spw.x: { rule: "@profile:Spw.x~#[…] + advisory @lock policy", scope: "live .spw/" }
   Spw.m: { rule: "pure ONF — F2-idempotent", scope: "hash source" }
+}
+
+^"mount_slice_v01"{
+  #:mount #!status
+  active_now: [".spw/index.spw", ".spw/mount.spw", "scripts/spw-mount.ts", ".spw/harness/evals/baseline-evals.spw#suites.mount_slice_v01"]
+  proposed_next: ["semicolon-as-boundary in scoped dialect mode", "; prefixed line semantics", "@lock runtime enforcement layer"]
+  interpreted_constructs: ["example:<>", "example:;", "example:?<> (proposal)"]
 }
 
 ^"hashing"{
