@@ -24,3 +24,11 @@ endif
 if has('nvim-0.8')
   lua require('spw-lsp').start()
 endif
+
+" Fallback action maps for Spw UX commands.
+" These remain available even if LSP on_attach keymaps are delayed/overridden.
+if !exists('g:spw_lsp_keymaps') || g:spw_lsp_keymaps
+  nnoremap <silent><buffer> <localleader>a <Cmd>SpwCodeAction<CR>
+  nnoremap <silent><buffer> <localleader>q <Cmd>SpwRefsQuickfix<CR>
+  nnoremap <silent><buffer> <localleader>p <Cmd>SpwPeekRef<CR>
+endif

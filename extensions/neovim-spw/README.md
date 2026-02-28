@@ -55,10 +55,15 @@ vim.g.spw_lsp_folds = false
 
 Set on attach (disable with `vim.g.spw_lsp_keymaps = false`):
 
+`<localleader>` is your Neovim `maplocalleader` key. If you never set it, Vim default is `\`.
+
 | Key | Action |
 |-----|--------|
 | `gf` | Open Spw reference under cursor (`~"..."` or `@root/...`) |
 | `gF` | Open Spw reference and jump to `#anchor` (line number or label) |
+| `<localleader>a` | Spw code action at cursor (create missing target, or fallback LSP actions) |
+| `<localleader>q` | Populate quickfix with unresolved references in current buffer |
+| `<localleader>p` | Preview reference under cursor and jump to `#anchor` |
 | `gd` | Go to definition |
 | `K` | Hover docs |
 | `gr` | References |
@@ -74,6 +79,18 @@ Set on attach (disable with `vim.g.spw_lsp_keymaps = false`):
 | `:SpwRestart` | Restart the LSP server |
 | `:SpwStop` | Stop the LSP server |
 | `:SpwInlayHints` | Toggle inlay hints for current buffer |
+| `:SpwOpenRef` | Open reference under cursor and jump to `#anchor` |
+| `:SpwPeekRef` | Preview reference under cursor and jump to `#anchor` |
+| `:SpwRefsQuickfix` | Quickfix list of unresolved references in current buffer |
+| `:SpwCodeAction` | Local Spw code actions under cursor |
+
+If a leader mapping does not trigger, inspect what owns it in the current buffer:
+
+```vim
+:verbose nmap <localleader>a
+:verbose nmap <localleader>q
+:verbose nmap <localleader>p
+```
 
 ## File creation ergonomics
 

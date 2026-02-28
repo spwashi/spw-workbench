@@ -18,6 +18,29 @@
 
 local M = {}
 
+---@param msg string
+---@param level integer
+local function notify(msg, level)
+  if vim.notify then
+    vim.notify(msg, level, { title = 'spw' })
+  end
+end
+
+---@param bufnr integer
+---@return boolean
+local function has_lsp_code_action_provider(bufnr)
+  local get_clients = vim.lsp.get_clients or vim.lsp.get_active_clients
+  if not get_clients then return false end
+
+  local clients = get_clients({ bufnr = bufnr })
+  for _, client in ipairs(clients) do
+    if client.supports_method and client:supports_method('textDocument/codeAction') then
+      return true
+    end
+  end
+  return false
+end
+
 --- Locate the workspace root by walking up from `bufpath` looking for
 --- marker files that indicate an Spw project.
 ---@param bufpath string
@@ -105,27 +128,57 @@ local function build_roots(root, bufdir, lines)
   return roots
 end
 
----@param line string
----@param col0 number
----@return string|nil, string|nil, string|nil
-local function detect_ref_under_cursor(line, col0)
-  local col1 = col0 + 1
+---@class SpwRef
+---@field kind '"path"'|'"root"'
+---@field target string
+---@field rootName string|nil
+---@field start_col number
+---@field end_col number
+---@field text string
 
-  -- ~"..." or ~<label>"..."
+---@param line string
+---@return SpwRef[]
+local function collect_refs_in_line(line)
+  local refs = {}
+
+  -- ~"..." and ~<label>"..."
   for s, ref, e in line:gmatch('()~[^"]-"([^"]+)"()') do
-    if col1 >= s and col1 <= e then
-      return 'path', ref, nil
-    end
+    table.insert(refs, {
+      kind = 'path',
+      target = ref,
+      rootName = nil,
+      start_col = s - 1,
+      end_col = e - 2,
+      text = line:sub(s, e - 1),
+    })
   end
 
   -- @root/path
   for s, rootName, target, e in line:gmatch('()@([%w_%-]+)/([^%s"%)%]}>,;]+)()') do
-    if col1 >= s and col1 <= e then
-      return 'root', target, rootName
-    end
+    table.insert(refs, {
+      kind = 'root',
+      target = target,
+      rootName = rootName,
+      start_col = s - 1,
+      end_col = e - 2,
+      text = line:sub(s, e - 1),
+    })
   end
 
-  return nil, nil, nil
+  table.sort(refs, function(a, b) return a.start_col < b.start_col end)
+  return refs
+end
+
+---@param line string
+---@param col0 number
+---@return SpwRef|nil
+local function ref_under_cursor(line, col0)
+  for _, ref in ipairs(collect_refs_in_line(line)) do
+    if col0 >= ref.start_col and col0 <= ref.end_col then
+      return ref
+    end
+  end
+  return nil
 end
 
 ---@param target string
@@ -136,6 +189,53 @@ local function split_anchor(target)
     return file_part, anchor
   end
   return target, nil
+end
+
+---@param ref SpwRef
+---@param root string
+---@param bufdir string
+---@param lines string[]
+---@return string, string|nil, boolean, boolean
+local function resolve_ref(ref, root, bufdir, lines)
+  local targetNoAnchor, anchor = split_anchor(ref.target)
+  local roots = build_roots(root, bufdir, lines)
+
+  local resolved
+  if ref.kind == 'path' then
+    resolved = vim.fn.fnamemodify(bufdir .. '/' .. targetNoAnchor, ':p')
+  else
+    local base = roots[ref.rootName] or (root .. '/' .. ref.rootName)
+    resolved = vim.fn.fnamemodify(base .. '/' .. targetNoAnchor, ':p')
+  end
+
+  local exists = vim.fn.filereadable(resolved) == 1 or vim.fn.isdirectory(resolved) == 1
+  local is_dir_intent = targetNoAnchor:sub(-1) == '/'
+  return resolved, anchor, exists, is_dir_intent
+end
+
+---@param ref SpwRef
+---@param resolved string
+---@param is_dir_intent boolean
+local function create_missing_ref_target(ref, resolved, is_dir_intent)
+  local ok, err = pcall(function()
+    if is_dir_intent then
+      vim.fn.mkdir(resolved, 'p')
+      return
+    end
+
+    vim.fn.mkdir(vim.fn.fnamemodify(resolved, ':h'), 'p')
+    if vim.fn.filereadable(resolved) == 0 then
+      vim.fn.writefile({}, resolved)
+    end
+  end)
+
+  if not ok then
+    notify(('Failed to create %s: %s'):format(ref.text, tostring(err)), vim.log.levels.ERROR)
+    return false
+  end
+
+  notify(('Created target for %s'):format(ref.text), vim.log.levels.INFO)
+  return true
 end
 
 ---@param s string
@@ -153,11 +253,14 @@ end
 
 ---@param bufnr integer
 ---@param anchor string
+---@return boolean
 local function jump_to_anchor(bufnr, anchor)
-  if not anchor or anchor == '' then return end
+  if not anchor or anchor == '' then return false end
   if anchor:match('^%d+$') then
-    vim.api.nvim_win_set_cursor(0, { tonumber(anchor), 0 })
-    return
+    local max_line = vim.api.nvim_buf_line_count(bufnr)
+    local line = math.max(1, math.min(tonumber(anchor), max_line))
+    vim.api.nvim_win_set_cursor(0, { line, 0 })
+    return true
   end
 
   local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
@@ -177,16 +280,18 @@ local function jump_to_anchor(bufnr, anchor)
     for _, c in ipairs(candidates) do
       if line_lc:find(c, 1, true) then
         vim.api.nvim_win_set_cursor(0, { i, 0 })
-        return
+        return true
       end
     end
 
     local md_heading = line:match('^%s*#+%s+(.+)$')
     if md_heading and normalize_slug(md_heading) == anchor_slug then
       vim.api.nvim_win_set_cursor(0, { i, 0 })
-      return
+      return true
     end
   end
+
+  return false
 end
 
 ---Open Spw reference under cursor (~"..." or @root/path).
@@ -203,35 +308,166 @@ function M.open_ref_under_cursor(opts)
 
   local row, col0 = unpack(vim.api.nvim_win_get_cursor(0))
   local line = vim.api.nvim_buf_get_lines(bufnr, row - 1, row, false)[1] or ''
-  local kind, target, rootName = detect_ref_under_cursor(line, col0)
-  if not kind or not target then
+  local ref = ref_under_cursor(line, col0)
+  if not ref then
     vim.cmd(opts.jump_anchor and 'normal! gF' or 'normal! gf')
     return
   end
 
-  local targetNoAnchor, anchor = split_anchor(target)
   local root = vim.g.spw_lsp_root or find_root(bufpath)
   local bufdir = vim.fn.fnamemodify(bufpath, ':h')
   local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
-  local roots = build_roots(root, bufdir, lines)
-
-  local resolved
-  if kind == 'path' then
-    resolved = vim.fn.fnamemodify(bufdir .. '/' .. targetNoAnchor, ':p')
-  else
-    local base = roots[rootName] or (root .. '/' .. rootName)
-    resolved = vim.fn.fnamemodify(base .. '/' .. targetNoAnchor, ':p')
-  end
+  local resolved, anchor, existed = resolve_ref(ref, root, bufdir, lines)
 
   vim.cmd('edit ' .. vim.fn.fnameescape(resolved))
+  if not existed then
+    notify('Opened missing target. Use :w to create it on disk.', vim.log.levels.INFO)
+  end
   if opts.jump_anchor then
-    jump_to_anchor(vim.api.nvim_get_current_buf(), anchor)
+    local jumped = jump_to_anchor(vim.api.nvim_get_current_buf(), anchor)
+    if anchor and not jumped then
+      notify(('Anchor not found: #%s'):format(anchor), vim.log.levels.WARN)
+    end
   end
 end
 
 ---Open Spw reference under cursor and jump to #anchor when present.
 function M.open_ref_under_cursor_and_anchor()
   M.open_ref_under_cursor({ jump_anchor = true })
+end
+
+---Preview Spw reference under cursor in preview window.
+---@param opts? { jump_anchor?: boolean }
+function M.peek_ref_under_cursor(opts)
+  opts = opts or {}
+  local bufnr = vim.api.nvim_get_current_buf()
+  local bufpath = vim.api.nvim_buf_get_name(bufnr)
+  if bufpath == '' then return end
+
+  local row, col0 = unpack(vim.api.nvim_win_get_cursor(0))
+  local line = vim.api.nvim_buf_get_lines(bufnr, row - 1, row, false)[1] or ''
+  local ref = ref_under_cursor(line, col0)
+  if not ref then
+    notify('No Spw reference under cursor.', vim.log.levels.INFO)
+    return
+  end
+
+  local root = vim.g.spw_lsp_root or find_root(bufpath)
+  local bufdir = vim.fn.fnamemodify(bufpath, ':h')
+  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+  local resolved, anchor, exists = resolve_ref(ref, root, bufdir, lines)
+  if not exists then
+    notify('Target does not exist yet; use code action to create.', vim.log.levels.WARN)
+    return
+  end
+
+  local current_win = vim.api.nvim_get_current_win()
+  vim.cmd('pedit ' .. vim.fn.fnameescape(resolved))
+  local ok = pcall(vim.cmd, 'wincmd P')
+  if ok and opts.jump_anchor then
+    local jumped = jump_to_anchor(vim.api.nvim_get_current_buf(), anchor)
+    if anchor and not jumped then
+      notify(('Anchor not found in preview: #%s'):format(anchor), vim.log.levels.WARN)
+    end
+  end
+  if ok then
+    vim.api.nvim_set_current_win(current_win)
+  end
+end
+
+---Collect unresolved references in current buffer and load quickfix.
+function M.references_to_quickfix()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local bufpath = vim.api.nvim_buf_get_name(bufnr)
+  if bufpath == '' then return end
+
+  local root = vim.g.spw_lsp_root or find_root(bufpath)
+  local bufdir = vim.fn.fnamemodify(bufpath, ':h')
+  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+  local items = {}
+
+  for row, line in ipairs(lines) do
+    for _, ref in ipairs(collect_refs_in_line(line)) do
+      local resolved, _, exists = resolve_ref(ref, root, bufdir, lines)
+      if not exists then
+        table.insert(items, {
+          bufnr = bufnr,
+          lnum = row,
+          col = ref.start_col + 1,
+          text = ('unresolved %s → %s'):format(ref.text, resolved),
+          type = 'W',
+        })
+      end
+    end
+  end
+
+  vim.fn.setqflist({}, 'r', { title = 'Spw unresolved references', items = items })
+  if #items > 0 then
+    vim.cmd('copen')
+  else
+    notify('No unresolved references in current buffer.', vim.log.levels.INFO)
+    vim.cmd('cclose')
+  end
+end
+
+---Show local Spw code actions at cursor (create missing target) then fallback to LSP actions.
+function M.code_action_under_cursor()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local bufpath = vim.api.nvim_buf_get_name(bufnr)
+  local lspCanCodeAction = has_lsp_code_action_provider(bufnr)
+  if bufpath == '' then
+    if lspCanCodeAction then
+      vim.lsp.buf.code_action()
+    else
+      notify('No LSP code-action provider is attached to this buffer.', vim.log.levels.INFO)
+    end
+    return
+  end
+
+  local row, col0 = unpack(vim.api.nvim_win_get_cursor(0))
+  local line = vim.api.nvim_buf_get_lines(bufnr, row - 1, row, false)[1] or ''
+  local ref = ref_under_cursor(line, col0)
+  if not ref then
+    if lspCanCodeAction then
+      vim.lsp.buf.code_action()
+    else
+      notify('No Spw reference under cursor and no LSP code-action provider attached.', vim.log.levels.INFO)
+    end
+    return
+  end
+
+  local root = vim.g.spw_lsp_root or find_root(bufpath)
+  local bufdir = vim.fn.fnamemodify(bufpath, ':h')
+  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+  local resolved, _, exists, is_dir_intent = resolve_ref(ref, root, bufdir, lines)
+  if exists then
+    if lspCanCodeAction then
+      vim.lsp.buf.code_action()
+    else
+      notify('Target already exists; no local create action needed.', vim.log.levels.INFO)
+    end
+    return
+  end
+
+  local choices = {
+    ('Create missing target: %s'):format(ref.text),
+    'Cancel',
+  }
+  local showLspChoice = nil
+  if lspCanCodeAction then
+    showLspChoice = 'Show LSP code actions'
+    table.insert(choices, 2, showLspChoice)
+  end
+
+  vim.ui.select(choices, { prompt = 'Spw actions' }, function(choice)
+    if choice == choices[1] then
+      if create_missing_ref_target(ref, resolved, is_dir_intent) then
+        vim.cmd('edit ' .. vim.fn.fnameescape(resolved))
+      end
+    elseif showLspChoice and choice == showLspChoice then
+      vim.lsp.buf.code_action()
+    end
+  end)
 end
 
 --- Called when the Spw LSP client attaches to a buffer.
@@ -263,6 +499,9 @@ function M._on_attach(_, bufnr)
   map('gd',         vim.lsp.buf.definition,                          'Spw: go to definition')
   map('gf',         M.open_ref_under_cursor,                         'Spw: open reference under cursor')
   map('gF',         M.open_ref_under_cursor_and_anchor,              'Spw: open reference and jump to #anchor')
+  map('<localleader>a', M.code_action_under_cursor,                  'Spw: code action under cursor')
+  map('<localleader>q', M.references_to_quickfix,                    'Spw: unresolved refs to quickfix')
+  map('<localleader>p', function() M.peek_ref_under_cursor({ jump_anchor = true }) end, 'Spw: preview reference')
   map('K',          vim.lsp.buf.hover,                               'Spw: hover docs')
   map('gr',         vim.lsp.buf.references,                          'Spw: references')
   map('<leader>rn', vim.lsp.buf.rename,                              'Spw: rename symbol')
@@ -336,6 +575,26 @@ if not vim.g._spw_lsp_commands_loaded then
 
   vim.api.nvim_create_user_command('SpwStop', M.stop, {
     desc = 'Stop the Spw LSP server',
+  })
+
+  vim.api.nvim_create_user_command('SpwOpenRef', function()
+    M.open_ref_under_cursor({ jump_anchor = true })
+  end, {
+    desc = 'Open Spw reference under cursor and jump to #anchor',
+  })
+
+  vim.api.nvim_create_user_command('SpwPeekRef', function()
+    M.peek_ref_under_cursor({ jump_anchor = true })
+  end, {
+    desc = 'Preview Spw reference under cursor and jump to #anchor',
+  })
+
+  vim.api.nvim_create_user_command('SpwRefsQuickfix', M.references_to_quickfix, {
+    desc = 'Populate quickfix with unresolved Spw references in current buffer',
+  })
+
+  vim.api.nvim_create_user_command('SpwCodeAction', M.code_action_under_cursor, {
+    desc = 'Spw local code actions under cursor',
   })
 end
 

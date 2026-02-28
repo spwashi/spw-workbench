@@ -512,6 +512,44 @@ async function main(): Promise<void> {
       ok('hover — @root / sigil')
     } catch (e) { fail('hover — @root / sigil', e) }
 
+    // ── 2.5 References ────────────────────────────────────────────
+
+    try {
+      const localRefPos = findLineAndCharacter(docsIndexSource, './runtime')
+      const refs = await client.request('textDocument/references', {
+        textDocument: { uri: docsIndexUri },
+        position: localRefPos,
+        context: { includeDeclaration: true },
+      })
+      assert(Array.isArray(refs), 'Expected references array for local path ref')
+      assert(refs.length > 0, 'Expected at least one reference for local path ref')
+      ok('references — path ref (~"...")')
+    } catch (e) { fail('references — path ref (~"...")', e) }
+
+    try {
+      const architecturePath = path.join(repoRoot, 'docs', 'waypoints', 'spw', 'architecture.spw')
+      const architectureUri = pathToFileURL(architecturePath).toString()
+      const architectureSource = await fs.readFile(architecturePath, 'utf8')
+      client.notify('textDocument/didOpen', {
+        textDocument: {
+          uri: architectureUri,
+          languageId: 'spw',
+          version: 1,
+          text: architectureSource,
+        },
+      })
+
+      const rootRefPos = findLineAndCharacter(architectureSource, '@src/seed/')
+      const refs = await client.request('textDocument/references', {
+        textDocument: { uri: architectureUri },
+        position: rootRefPos,
+        context: { includeDeclaration: true },
+      })
+      assert(Array.isArray(refs), 'Expected references array for @root ref')
+      assert(refs.length > 0, 'Expected at least one reference for @root ref')
+      ok('references — @root path ref')
+    } catch (e) { fail('references — @root path ref', e) }
+
     // ── 3. Document Symbols ───────────────────────────────────────
 
     try {

@@ -11,6 +11,7 @@
  */
 
 import { promises as fs } from 'node:fs'
+import type { Dirent } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { findPathRefAtPosition, selectPathRefs, type SpwSelectorHit } from './spw-selector'
@@ -158,6 +159,8 @@ let CONFIG: Required<SpwConfig> = { ...DEFAULT_CONFIG }
 
 const DIAGNOSTIC_DEBOUNCE = new Map<string, ReturnType<typeof setTimeout>>()
 const DIAGNOSTIC_DELAY_MS = 300
+const WORKSPACE_FILES_CACHE_TTL_MS = 5_000
+let workspaceFilesCache: { at: number; files: string[] } | null = null
 
 // ── Logging ─────────────────────────────────────────────────────
 
@@ -381,6 +384,61 @@ async function resolveReferencePath(
   return null
 }
 
+async function collectWorkspaceSpwFiles(dir: string, out: string[]): Promise<void> {
+  let entries: Dirent[]
+  try {
+    entries = await fs.readdir(dir, { withFileTypes: true })
+  } catch {
+    return
+  }
+
+  const excluded = new Set(CONFIG.workspace.exclude ?? [])
+  excluded.delete('.spw')
+
+  for (const entry of entries) {
+    const target = path.join(dir, entry.name)
+    if (entry.isDirectory()) {
+      if (excluded.has(entry.name)) continue
+      await collectWorkspaceSpwFiles(target, out)
+      continue
+    }
+    if (entry.isFile() && entry.name.endsWith('.spw')) out.push(target)
+  }
+}
+
+async function getWorkspaceSpwFiles(): Promise<string[]> {
+  const now = Date.now()
+  if (workspaceFilesCache && now - workspaceFilesCache.at < WORKSPACE_FILES_CACHE_TTL_MS) {
+    return workspaceFilesCache.files
+  }
+  const files: string[] = []
+  await collectWorkspaceSpwFiles(WORKSPACE_ROOT, files)
+  workspaceFilesCache = { at: now, files }
+  return files
+}
+
+async function mapWithConcurrency<T, R>(
+  items: T[],
+  concurrency: number,
+  mapper: (item: T) => Promise<R>,
+): Promise<R[]> {
+  const out: R[] = new Array(items.length)
+  let cursor = 0
+
+  async function worker(): Promise<void> {
+    while (true) {
+      const i = cursor
+      cursor += 1
+      if (i >= items.length) return
+      out[i] = await mapper(items[i])
+    }
+  }
+
+  const workers = Array.from({ length: Math.max(1, Math.min(concurrency, items.length || 1)) }, () => worker())
+  await Promise.all(workers)
+  return out
+}
+
 function stripAnchor(target: string): string {
   const hashIdx = target.indexOf('#')
   return hashIdx >= 0 ? target.slice(0, hashIdx) : target
@@ -483,7 +541,7 @@ async function suggestNearbyReference(
 
   const parent = path.dirname(searchBase)
   const missingName = path.basename(searchBase)
-  let entries: Array<Awaited<ReturnType<typeof fs.readdir>>[number]>
+  let entries: Dirent[]
   try {
     entries = await fs.readdir(parent, { withFileTypes: true })
   } catch {
@@ -1455,7 +1513,48 @@ async function references(params: any): Promise<LspLocation[]> {
 
   const line = source.split('\n')[pos.line] ?? ''
 
-  // 1. Annotation reference: find #name at cursor, return all workspace hits
+  // 1. Path reference: ~"..." or @root/..., return all workspace hits that resolve to same target.
+  const docPath = pathFromUri(uri)
+  if (docPath) {
+    const doc = serverIndex.getDocument(uri)
+    const hits = doc?.selectorHits ?? selectPathRefs(source)
+    const hit = findPathRefAtPosition(hits, pos.line, pos.character)
+    if (hit) {
+      const resolved = await resolveReferencePath(hit, source, docPath, { allowDirectory: true })
+      if (resolved) {
+        const targetPath = stripAnchor(resolved)
+        const files = await getWorkspaceSpwFiles()
+        const basenameNeedle = path.basename(targetPath)
+
+        const perFile = await mapWithConcurrency(files, 16, async (filePath) => {
+          const fileUri = uriFromPath(filePath)
+          const fileText = await getDocumentText(fileUri)
+          if (fileText === null) return [] as LspLocation[]
+          if (!fileText.includes(basenameNeedle)) return [] as LspLocation[]
+
+          const candidateHits = selectPathRefs(fileText)
+          const matches: LspLocation[] = []
+          for (const candidate of candidateHits) {
+            const candidateResolved = await resolveReferencePath(candidate, fileText, filePath, { allowDirectory: true })
+            if (!candidateResolved) continue
+            if (stripAnchor(candidateResolved) !== targetPath) continue
+            matches.push({
+              uri: fileUri,
+              range: {
+                start: { line: candidate.span.startLine, character: candidate.span.startCharacter },
+                end: { line: candidate.span.endLine, character: candidate.span.endCharacter },
+              },
+            })
+          }
+          return matches
+        })
+
+        return perFile.flat()
+      }
+    }
+  }
+
+  // 2. Annotation reference: find #name at cursor, return all workspace hits
   const annotRe = /#(!|:|>)?([a-zA-Z_][a-zA-Z0-9_]*)/g
   let annotMatch: RegExpExecArray | null
   while ((annotMatch = annotRe.exec(line)) !== null) {
@@ -1474,7 +1573,7 @@ async function references(params: any): Promise<LspLocation[]> {
     }))
   }
 
-  // 2. Selector name: return definition site
+  // 3. Selector name: return definition site
   const selRe = /\b([a-z][a-z0-9]*(?:_[a-z][a-z0-9]*)+)\b/g
   let selMatch: RegExpExecArray | null
   while ((selMatch = selRe.exec(line)) !== null) {
