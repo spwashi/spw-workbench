@@ -47,6 +47,7 @@ interface LinePosition {
 }
 
 const REF_ENVELOPE_OPERATORS = new Set(['&', '^', '*', '?', '~', '!', '%', '='])
+const REF_BOUNDARY_CHARS = new Set(['(', '[', '{', ',', ':', '=', '|', '&', '^', '*', '?', '~', '!', '%'])
 
 function buildLineOffsets(source: string): number[] {
   const offsets = [0]
@@ -88,16 +89,28 @@ function buildSpan(source: string, startOffset: number, endOffsetExclusive: numb
   }
 }
 
+function isBoundaryBeforeRef(ch: string): boolean {
+  if (!ch) return true
+  if (/\s/.test(ch)) return true
+  return REF_BOUNDARY_CHARS.has(ch)
+}
+
 function fallbackPathRefs(source: string): SpwSelectorHit[] {
   const hits: SpwSelectorHit[] = []
 
-  // ~"./path", ~#label "./path", ~<label>"./path"
-  const pathRegex = /~[^"\n]*"([^"]+)"/g
+  // ~"./path", ~ <tag> "./path"
+  // Keep this intentionally strict to avoid matching arbitrary "~" inside prose/commands.
+  const pathRegex = /~\s*(?:<[^>\n"]+>\s*)?"([^"\n]+)"/g
   let pathMatch: RegExpExecArray | null
   while ((pathMatch = pathRegex.exec(source)) !== null) {
     const raw = pathMatch[0] ?? ''
     const target = pathMatch[1] ?? ''
     if (!target) continue
+
+    // Guard against accidental mid-token captures while keeping operator-wrapped refs discoverable.
+    const prev = pathMatch.index > 0 ? source[pathMatch.index - 1] : ''
+    if (!isBoundaryBeforeRef(prev)) continue
+
     const start = pathMatch.index
     const end = start + raw.length
     hits.push({
@@ -112,10 +125,21 @@ function fallbackPathRefs(source: string): SpwSelectorHit[] {
   const rootRegex = /@([A-Za-z_][A-Za-z0-9_]*)\/([A-Za-z0-9_.\-/*]+)/g
   let rootMatch: RegExpExecArray | null
   while ((rootMatch = rootRegex.exec(source)) !== null) {
-    const raw = rootMatch[0] ?? ''
+    let raw = rootMatch[0] ?? ''
     const root = rootMatch[1] ?? ''
-    const target = rootMatch[2] ?? ''
+    let target = rootMatch[2] ?? ''
     if (!raw || !root || !target) continue
+
+    const prev = rootMatch.index > 0 ? source[rootMatch.index - 1] : ''
+    if (!isBoundaryBeforeRef(prev)) continue
+
+    // Keep wildcard refs (e.g. "@spw/harness/*"), but trim postfix envelope "*" wrappers.
+    if (target.endsWith('*') && !target.endsWith('/*')) {
+      target = target.slice(0, -1)
+      raw = raw.slice(0, -1)
+      if (!target || !raw) continue
+    }
+
     const start = rootMatch.index
     const end = start + raw.length
     hits.push({

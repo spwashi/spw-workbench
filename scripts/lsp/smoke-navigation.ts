@@ -258,6 +258,68 @@ async function main(): Promise<void> {
       },
     })
 
+    // ── Open .spw/agents.spw (directory ref target) ───────────────
+
+    const agentsPath = path.join(repoRoot, '.spw', 'agents.spw')
+    const agentsUri = pathToFileURL(agentsPath).toString()
+    const agentsSource = await fs.readFile(agentsPath, 'utf8')
+
+    client.notify('textDocument/didOpen', {
+      textDocument: {
+        uri: agentsUri,
+        languageId: 'spw',
+        version: 1,
+        text: agentsSource,
+      },
+    })
+
+    // ── Open synthetic incomplete doc (fallback selector path) ─────
+
+    const wrappedPath = path.join(repoRoot, '.spw', '__lsp-smoke-wrapped.spw')
+    const wrappedUri = pathToFileURL(wrappedPath).toString()
+    const wrapOps = ['&', '^', '*', '?', '~', '!', '%', '=']
+    const wrappedPathLinesSource = wrapOps
+      .map((op, idx) => `  mount_ref_${idx + 1}: ${op}~"./mount.spw"${op}`)
+      .join('\n')
+    const wrappedRootLinesSource = wrapOps
+      .map((op, idx) => `  root_ref_${idx + 1}: ${op}@spw/harness${op}`)
+      .join('\n')
+    const wrappedSource = `^"demo"{\n${wrappedPathLinesSource}\n${wrappedRootLinesSource}\n`
+    const wrappedLines = wrappedSource.split(/\r?\n/)
+    const wrappedPathRefs = wrapOps.map((op) => {
+      const lineIndex = wrappedLines.findIndex((line) => line.includes(`${op}~"./mount.spw"${op}`))
+      assert(lineIndex >= 0, `Expected wrapped reference line for operator ${op}`)
+      const line = wrappedLines[lineIndex]
+      const lead = line.indexOf(op)
+      const pathStart = line.indexOf('./mount.spw')
+      const tail = line.lastIndexOf(op)
+      assert(lead >= 0, `Expected wrapped leading operator in synthetic source for ${op}`)
+      assert(pathStart >= 0, `Expected wrapped path in synthetic source for ${op}`)
+      assert(tail > lead, `Expected wrapped trailing operator in synthetic source for ${op}`)
+      return { op, lineIndex, lead, pathStart, tail }
+    })
+    const wrappedRootRefs = wrapOps.map((op) => {
+      const lineIndex = wrappedLines.findIndex((line) => line.includes(`${op}@spw/harness${op}`))
+      assert(lineIndex >= 0, `Expected wrapped root-ref line for operator ${op}`)
+      const line = wrappedLines[lineIndex]
+      const lead = line.indexOf(op)
+      const rootStart = line.indexOf('@spw/harness')
+      const tail = line.lastIndexOf(op)
+      assert(lead >= 0, `Expected wrapped leading operator in synthetic root-ref source for ${op}`)
+      assert(rootStart >= 0, `Expected wrapped root-ref in synthetic source for ${op}`)
+      assert(tail > lead, `Expected wrapped trailing operator in synthetic root-ref source for ${op}`)
+      return { op, lineIndex, lead, rootStart, tail }
+    })
+
+    client.notify('textDocument/didOpen', {
+      textDocument: {
+        uri: wrappedUri,
+        languageId: 'spw',
+        version: 1,
+        text: wrappedSource,
+      },
+    })
+
     // ── 1. Navigation: definition + documentLink ──────────────────
 
     try {
@@ -304,6 +366,84 @@ async function main(): Promise<void> {
       assert(Array.isArray(links) && links.length > 0, 'Expected at least one documentLink result')
       ok('documentLink — docs/index.spw')
     } catch (e) { fail('documentLink — docs/index.spw', e) }
+
+    try {
+      const dirRefPos = findLineAndCharacter(agentsSource, '@spw/harness')
+      const dirDef = await client.request('textDocument/definition', {
+        textDocument: { uri: agentsUri },
+        position: dirRefPos,
+      })
+      assert(Array.isArray(dirDef) && dirDef.length > 0, 'Expected directory definition result')
+      const dirUri = dirDef[0]?.uri as string
+      assert(dirUri.includes('/.spw/harness'), `Unexpected directory definition URI: ${dirUri}`)
+      ok('definition — @root directory ref')
+    } catch (e) { fail('definition — @root directory ref', e) }
+
+    try {
+      for (const wrappedRef of wrappedPathRefs) {
+        const wrappedPositions = [wrappedRef.lead, wrappedRef.pathStart + 2, wrappedRef.tail]
+        for (const character of wrappedPositions) {
+          const wrappedDef = await client.request('textDocument/definition', {
+            textDocument: { uri: wrappedUri },
+            position: { line: wrappedRef.lineIndex, character },
+          })
+          assert(Array.isArray(wrappedDef) && wrappedDef.length > 0, 'Expected wrapped path definition result')
+          const wrappedTarget = wrappedDef[0]?.uri as string
+          assert(wrappedTarget.includes('/.spw/mount.spw'), `Unexpected wrapped definition URI: ${wrappedTarget}`)
+        }
+      }
+      ok('definition — wrapped operator path refs (prefix/postfix)')
+    } catch (e) { fail('definition — wrapped operator path refs (prefix/postfix)', e) }
+
+    try {
+      for (const wrappedRef of wrappedRootRefs) {
+        const wrappedPositions = [wrappedRef.lead, wrappedRef.rootStart + 2, wrappedRef.tail]
+        for (const character of wrappedPositions) {
+          const wrappedDef = await client.request('textDocument/definition', {
+            textDocument: { uri: wrappedUri },
+            position: { line: wrappedRef.lineIndex, character },
+          })
+          assert(
+            Array.isArray(wrappedDef) && wrappedDef.length > 0,
+            `Expected wrapped root definition result for operator ${wrappedRef.op} at char ${character}`,
+          )
+          const wrappedTarget = wrappedDef[0]?.uri as string
+          assert(wrappedTarget.includes('/.spw/harness'), `Unexpected wrapped root definition URI: ${wrappedTarget}`)
+        }
+      }
+      ok('definition — wrapped operator root refs (prefix/postfix)')
+    } catch (e) { fail('definition — wrapped operator root refs (prefix/postfix)', e) }
+
+    try {
+      const dirLinks = await client.request('textDocument/documentLink', {
+        textDocument: { uri: agentsUri },
+      })
+      assert(Array.isArray(dirLinks) && dirLinks.length > 0, 'Expected at least one documentLink in agents.spw')
+      assert(
+        dirLinks.some((entry: any) => typeof entry?.target === 'string' && entry.target.includes('/.spw/harness')),
+        'Expected directory documentLink target for @spw/harness',
+      )
+      ok('documentLink — @root directory ref')
+    } catch (e) { fail('documentLink — @root directory ref', e) }
+
+    try {
+      const wrappedSelect = await client.request('spw/select', {
+        textDocument: { uri: wrappedUri },
+      })
+      assert(Array.isArray(wrappedSelect), 'Expected selector hits array for wrapped source')
+      const expectedWrappedHits = wrapOps.length * 2
+      assert(wrappedSelect.length === expectedWrappedHits, `Expected ${expectedWrappedHits} wrapped selector hits`)
+      const byLine = new Map<number, any>()
+      for (const hit of wrappedSelect) byLine.set(hit?.span?.startLine, hit)
+      const wrappedRefs = [...wrappedPathRefs, ...wrappedRootRefs]
+      for (const wrappedRef of wrappedRefs) {
+        const wrappedHit = byLine.get(wrappedRef.lineIndex)
+        assert(!!wrappedHit, `Expected selector hit for wrapped operator ${wrappedRef.op}`)
+        assert(wrappedHit.span.startCharacter <= wrappedRef.lead, `Expected span to include prefix operator ${wrappedRef.op}`)
+        assert(wrappedHit.span.endCharacter >= wrappedRef.tail, `Expected span to include postfix operator ${wrappedRef.op}`)
+      }
+      ok('spw/select — wrapped spans include operators')
+    } catch (e) { fail('spw/select — wrapped spans include operators', e) }
 
     // ── 2. Hover ──────────────────────────────────────────────────
 

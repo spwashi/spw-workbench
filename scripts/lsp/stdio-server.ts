@@ -258,10 +258,19 @@ async function resolveReferencePath(
 
   if (hit.kind === 'pathRef') {
     if (hit.target.includes('*')) return null
-    const target = path.resolve(docDir, hit.target)
+
+    let cleanTarget = hit.target
+    let hash = ''
+    const hashIdx = cleanTarget.indexOf('#')
+    if (hashIdx >= 0) {
+      hash = cleanTarget.slice(hashIdx)
+      cleanTarget = cleanTarget.slice(0, hashIdx)
+    }
+
+    const target = cleanTarget ? path.resolve(docDir, cleanTarget) : docPath
     const resolved = await resolveCandidate(target)
-    if (resolved) return resolved
-    if (allowDirectory && await statKind(target) === 'dir') return target
+    if (resolved) return resolved + hash
+    if (allowDirectory && await statKind(target) === 'dir') return target + hash
     return null
   }
 
@@ -276,10 +285,19 @@ async function resolveReferencePath(
     }
   }
   if (!rootBase || hit.target.includes('*')) return null
-  const target = path.resolve(rootBase, hit.target)
+
+  let cleanTarget = hit.target
+  let hash = ''
+  const hashIdx = cleanTarget.indexOf('#')
+  if (hashIdx >= 0) {
+    hash = cleanTarget.slice(hashIdx)
+    cleanTarget = cleanTarget.slice(0, hashIdx)
+  }
+
+  const target = cleanTarget ? path.resolve(rootBase, cleanTarget) : docPath
   const resolved = await resolveCandidate(target)
-  if (resolved) return resolved
-  if (allowDirectory && await statKind(target) === 'dir') return target
+  if (resolved) return resolved + hash
+  if (allowDirectory && await statKind(target) === 'dir') return target + hash
   return null
 }
 
