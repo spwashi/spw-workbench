@@ -41,10 +41,12 @@ class SpwStructureViewElement(private val psiFile: PsiFile) : StructureViewTreeE
         val elements = mutableListOf<TreeElement>()
 
         // Scan for structure patterns
-        val lines = text.split("\n")
+        val lines = text.lineSequence().toList()
         for ((index, line) in lines.withIndex()) {
+            val lineText = line.trimEnd('\r')
+
             // Headings: # Title
-            val headingMatch = Regex("""^(#{1,3})\s+(.+)""").find(line)
+            val headingMatch = HEADING_PATTERN.find(lineText)
             if (headingMatch != null) {
                 val level = headingMatch.groupValues[1].length
                 val title = headingMatch.groupValues[2].trim()
@@ -53,7 +55,7 @@ class SpwStructureViewElement(private val psiFile: PsiFile) : StructureViewTreeE
             }
 
             // Frames: ^["name"] or ^"name"
-            val frameMatch = Regex("""^\s*\^(?:\["([^"]+)"\]|"([^"]+)")""").find(line)
+            val frameMatch = FRAME_PATTERN.find(lineText)
             if (frameMatch != null) {
                 val name = frameMatch.groupValues[1].ifEmpty { frameMatch.groupValues[2] }
                 elements.add(SpwStructureNode("^\"$name\"", "frame", index, psiFile))
@@ -61,7 +63,7 @@ class SpwStructureViewElement(private val psiFile: PsiFile) : StructureViewTreeE
             }
 
             // Typed blocks: ^subroot[name], ^property[name], ^metric[name], etc
-            val typedMatch = Regex("""^\s*\^(\w+)\[([^\]]+)\]""").find(line)
+            val typedMatch = TYPED_PATTERN.find(lineText)
             if (typedMatch != null) {
                 val type = typedMatch.groupValues[1]
                 val name = typedMatch.groupValues[2]
@@ -70,7 +72,7 @@ class SpwStructureViewElement(private val psiFile: PsiFile) : StructureViewTreeE
             }
 
             // Anchors: #>name
-            val anchorMatch = Regex("""#>([a-zA-Z_][a-zA-Z0-9_]*)""").find(line)
+            val anchorMatch = ANCHOR_PATTERN.find(lineText)
             if (anchorMatch != null) {
                 val name = anchorMatch.groupValues[1]
                 elements.add(SpwStructureNode("#>$name", "anchor", index, psiFile))
@@ -78,6 +80,13 @@ class SpwStructureViewElement(private val psiFile: PsiFile) : StructureViewTreeE
         }
 
         return elements.toTypedArray()
+    }
+
+    companion object {
+        private val HEADING_PATTERN = Regex("""^(#{1,3})\s+(.+)""")
+        private val FRAME_PATTERN = Regex("""^\s*\^(?:\["([^"]+)"\]|"([^"]+)")""")
+        private val TYPED_PATTERN = Regex("""^\s*\^(\w+)\[([^\]]+)\]""")
+        private val ANCHOR_PATTERN = Regex("""#>([a-zA-Z_][a-zA-Z0-9_]*)""")
     }
 }
 

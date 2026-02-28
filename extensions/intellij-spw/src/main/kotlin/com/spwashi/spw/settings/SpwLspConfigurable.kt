@@ -100,6 +100,5 @@ class SpwLspConfigurable(private val project: Project) : Configurable {
     private fun updateEnabledState(enabled: Boolean) {
         commandField?.isEnabled = enabled
         workDirField?.isEnabled = enabled
-        workDirField?.button?.setEnabled(enabled)
     }
 }

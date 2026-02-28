@@ -6,7 +6,6 @@ import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.PsiTreeUtil
 
 class SpwFoldingBuilder : FoldingBuilderEx() {
 
@@ -15,16 +14,13 @@ class SpwFoldingBuilder : FoldingBuilderEx() {
         val text = document.text
         val lineCount = document.lineCount
 
-        // Match frame/subroot/property/metric/etc patterns followed by {
-        val framePattern = Regex("""^\s*\^(?:\["([^"]+)"\]|"([^"]+)"|(\w+)\[([^\]]+)\])""")
-
         var lineIndex = 0
         while (lineIndex < lineCount) {
             val lineStart = document.getLineStartOffset(lineIndex)
             val lineEnd = document.getLineEndOffset(lineIndex)
             val lineText = text.substring(lineStart, lineEnd)
 
-            val match = framePattern.find(lineText)
+            val match = FRAME_LINE_PATTERN.find(lineText)
             if (match != null) {
                 // Find opening brace on this line or next
                 val braceStart = findOpenBrace(text, lineEnd)
@@ -44,7 +40,7 @@ class SpwFoldingBuilder : FoldingBuilderEx() {
             }
 
             // Heading folding: # Title folds until next heading at same or higher level
-            val headingMatch = Regex("""^(#{1,3})\s+(.+)""").find(lineText)
+            val headingMatch = HEADING_PATTERN.find(lineText)
             if (headingMatch != null) {
                 val level = headingMatch.groupValues[1].length
                 val foldEnd = findNextHeadingOrEnd(document, text, lineIndex + 1, level, lineCount)
@@ -69,7 +65,7 @@ class SpwFoldingBuilder : FoldingBuilderEx() {
     override fun getPlaceholderText(node: ASTNode): String {
         val text = node.text
         // Try to show frame name in placeholder
-        val frameMatch = Regex("""\^(?:\["([^"]+)"\]|"([^"]+)"|(\w+)\[([^\]]+)\])""").find(text)
+        val frameMatch = FRAME_INLINE_PATTERN.find(text)
         return if (frameMatch != null) {
             val name = frameMatch.groupValues[1].ifEmpty {
                 frameMatch.groupValues[2].ifEmpty {
@@ -86,12 +82,14 @@ class SpwFoldingBuilder : FoldingBuilderEx() {
 
     private fun findOpenBrace(text: String, fromIndex: Int): Int {
         val searchEnd = minOf(fromIndex + 200, text.length)
+        var newlines = 0
         for (i in fromIndex until searchEnd) {
-            val ch = text[i]
-            if (ch == '{') return i
-            if (ch == '\n') {
-                // Check next line for opening brace
-                continue
+            when (text[i]) {
+                '{' -> return i
+                '\n' -> {
+                    newlines += 1
+                    if (newlines > 1) return -1
+                }
             }
         }
         return -1
@@ -99,8 +97,32 @@ class SpwFoldingBuilder : FoldingBuilderEx() {
 
     private fun findMatchingClose(text: String, openIndex: Int): Int {
         var depth = 0
+        var inString = false
+        var inLineComment = false
+        var escaped = false
         for (i in openIndex until text.length) {
-            when (text[i]) {
+            val ch = text[i]
+
+            if (inLineComment) {
+                if (ch == '\n') inLineComment = false
+                continue
+            }
+
+            if (inString) {
+                if (escaped) {
+                    escaped = false
+                    continue
+                }
+                when (ch) {
+                    '\\' -> escaped = true
+                    '"' -> inString = false
+                }
+                continue
+            }
+
+            when (ch) {
+                '#' -> inLineComment = true
+                '"' -> inString = true
                 '{' -> depth++
                 '}' -> {
                     depth--
@@ -116,9 +138,15 @@ class SpwFoldingBuilder : FoldingBuilderEx() {
             val lineStart = document.getLineStartOffset(i)
             val lineEnd = document.getLineEndOffset(i)
             val lineText = text.substring(lineStart, lineEnd)
-            val headingMatch = Regex("""^(#{1,$level})\s""").find(lineText)
-            if (headingMatch != null) return i
+            val headingMatch = HEADING_PATTERN.find(lineText)
+            if (headingMatch != null && headingMatch.groupValues[1].length <= level) return i
         }
         return lineCount
+    }
+
+    companion object {
+        private val FRAME_LINE_PATTERN = Regex("""^\s*\^(?:\["([^"]+)"\]|"([^"]+)"|(\w+)\[([^\]]+)\])""")
+        private val FRAME_INLINE_PATTERN = Regex("""\^(?:\["([^"]+)"\]|"([^"]+)"|(\w+)\[([^\]]+)\])""")
+        private val HEADING_PATTERN = Regex("""^(#{1,3})\s+(.+)""")
     }
 }

@@ -113,10 +113,53 @@ class SpwLspServerSupportProvider : LspServerSupportProvider {
         val packageJsonPath = Paths.get(workDir, "package.json")
         if (!Files.isRegularFile(packageJsonPath)) return false
         return try {
-            Files.readString(packageJsonPath).contains("\"lsp\"")
+            val content = Files.readString(packageJsonPath)
+            val scriptsIdx = content.indexOf("\"scripts\"")
+            if (scriptsIdx < 0) return false
+
+            val scriptsObjectStart = content.indexOf('{', scriptsIdx)
+            if (scriptsObjectStart < 0) return false
+
+            val scriptsObject = extractJsonObject(content, scriptsObjectStart) ?: return false
+            LSP_SCRIPT_PATTERN.containsMatchIn(scriptsObject)
         } catch (_: Exception) {
             false
         }
+    }
+
+    private fun extractJsonObject(content: String, objectStart: Int): String? {
+        var depth = 0
+        var inString = false
+        var escaped = false
+
+        for (i in objectStart until content.length) {
+            val ch = content[i]
+
+            if (inString) {
+                if (escaped) {
+                    escaped = false
+                    continue
+                }
+                when (ch) {
+                    '\\' -> escaped = true
+                    '"' -> inString = false
+                }
+                continue
+            }
+
+            when (ch) {
+                '"' -> inString = true
+                '{' -> depth += 1
+                '}' -> {
+                    depth -= 1
+                    if (depth == 0) {
+                        return content.substring(objectStart, i + 1)
+                    }
+                }
+            }
+        }
+
+        return null
     }
 
     private fun notifyOnce(project: Project, issue: LspStartupIssue, message: String) {
@@ -144,6 +187,7 @@ class SpwLspServerSupportProvider : LspServerSupportProvider {
     companion object {
         private const val LSP_NOTIFICATION_GROUP = "Spw LSP"
         private val NOTIFIED_ISSUES_KEY = Key.create<MutableSet<LspStartupIssue>>("spw.lsp.startup.issues")
+        private val LSP_SCRIPT_PATTERN = Regex(""""lsp"\s*:""")
     }
 }
 
