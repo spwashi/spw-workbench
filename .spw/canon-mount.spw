@@ -1,0 +1,71 @@
+# Canon Root Mount
+#
+# Promotes .spw/ to live canon root for all seeds, indexes, and agent outputs.
+# Based on multi-dialect lexing and F2-idempotent canonicalization.
+
+#>spw_canon_mount
+#:dialect #!canon
+
+^seed[Workbench.SpwDir.Mount v:0.1 @profile:Spw.x~#[ops.register_frames,ops.probe,ops.matrix,surface.hash] @intent:canon-root]
+?(
+  @(
+    Orchestrator,
+    #[
+      SyntaxEvolver .{target:".spw/",dialect:Spw.l,task:"lexer+parser+all-seeds"},
+      CanonicalizerHasher .{target:".spw/",dialect:Spw.m,task:"ONF+F2+hash"},
+      FuzzerAdversary .{target:".spw/",dialect:Spw.l,task:"ASI+newline+mount"},
+      ParserGrammar .{target:".spw/",dialect:Spw.b,task:"EBNF+fixity"},
+      ProjectionMedia .{target:".spw/",dialect:Spw.b,task:"exhibits+runtime"}
+    ][reg=workbench.spw.root]
+  ),
+  "promote .spw/ to live canon root; migrate index.spw + docs-seed/"
+)
+
+^"onf_desugaring"{
+  #:dialect #!canonicalization
+  # ONF/Spw.m desugaring (F2-idempotent, semantic-hash stable)
+  ^seed[Workbench.SpwDir.Mount.ONF v:0.1 @profile:Spw.m @intent:canon-root]
+  ?(
+    @(Orchestrator,#[SyntaxEvolver,CanonicalizerHasher,FuzzerAdversary,ParserGrammar,ProjectionMedia]),
+    "promote .spw/ to live canon root; migrate index.spw + docs-seed/"
+  )
+}
+
+^"adversarial"{
+  #:dialect #!fuzz
+  # Adversarial test seed — fuzzes .spw/ mount, root index.spw relocation, dot-dir ASI
+  ^seed[Workbench.SpwDir.Adversary v:0.1 @profile:Spw.l @intent:fuzz]
+  ?<mount .spw/>
+    index.spw
+    .agents/
+    docs-seed/
+  # Spw.b boundary on dot-dir; Spw.m must canonicalize without ambiguity
+}
+
+^"dialect_lexing"{
+  #:dialect #!rules
+  Spw.b: { rule: "newline = statement boundary", scope: ".spw/ exhibits" }
+  Spw.l: { rule: "; compress; newline-as-space", scope: ".spw/ seeds" }
+  Spw.x: { rule: "@profile:Spw.x~#[…] + readonly @lock", scope: "live .spw/" }
+  Spw.m: { rule: "pure ONF — F2-idempotent", scope: "hash source" }
+}
+
+^"hashing"{
+  #:canon #!invariant
+  semantic_hash: "hash(canonical(Spw.m)) — unchanged"
+  surface_hash: "locks .spw/ payloads for episode stability"
+}
+
+^"migration"{
+  #:ops #!migration
+  step_1: "drop seed into .spw/ or .agents/ — Orchestrator auto-binds"
+  step_2: "next episode commit: Workbench.SpwDir.Mount v:0.1"
+  step_3: "branch update becomes live canon surface"
+  invariant: "agents hardened to .spw/"
+}
+
+^"invariant"{
+  "All rewrites produce valid Spw."
+  "Use this exact combinatorics to evolve the entire workbench inside .spw/."
+  "Ready for v0.2.0."
+}
