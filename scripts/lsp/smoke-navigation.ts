@@ -18,6 +18,7 @@ class LspClient {
   private pending = new Map<number, { resolve: (value: any) => void, reject: (error: Error) => void }>()
   private nextId = 1
   private incoming = Buffer.alloc(0)
+  private notificationHandlers = new Map<string, ((params: any) => void)[]>()
 
   constructor(cwd: string) {
     this.child = spawn(
@@ -58,18 +59,18 @@ class LspClient {
       const headerEnd = this.incoming.indexOf('\r\n\r\n')
       if (headerEnd === -1) return
 
-      const headerRaw = this.incoming.slice(0, headerEnd).toString('utf8')
+      const headerRaw = this.incoming.subarray(0, headerEnd).toString('utf8')
       const lengthLine = headerRaw
         .split('\r\n')
         .find((line) => line.toLowerCase().startsWith('content-length:'))
       if (!lengthLine) {
-        this.incoming = this.incoming.slice(headerEnd + 4)
+        this.incoming = this.incoming.subarray(headerEnd + 4)
         continue
       }
 
       const contentLength = Number(lengthLine.split(':')[1]?.trim() ?? '')
       if (!Number.isFinite(contentLength) || contentLength < 0) {
-        this.incoming = this.incoming.slice(headerEnd + 4)
+        this.incoming = this.incoming.subarray(headerEnd + 4)
         continue
       }
 
@@ -77,10 +78,12 @@ class LspClient {
       const bodyEnd = bodyStart + contentLength
       if (this.incoming.length < bodyEnd) return
 
-      const body = this.incoming.slice(bodyStart, bodyEnd).toString('utf8')
-      this.incoming = this.incoming.slice(bodyEnd)
+      const body = this.incoming.subarray(bodyStart, bodyEnd).toString('utf8')
+      this.incoming = this.incoming.subarray(bodyEnd)
 
       const message = JSON.parse(body) as JsonRpcMessage
+
+      // Handle responses to requests
       if (typeof message.id === 'number') {
         const pending = this.pending.get(message.id)
         if (!pending) continue
@@ -89,6 +92,14 @@ class LspClient {
           pending.reject(new Error(`${message.error.code}: ${message.error.message}`))
         } else {
           pending.resolve(message.result)
+        }
+      }
+
+      // Handle server-initiated notifications
+      if (message.method && typeof message.id !== 'number') {
+        const handlers = this.notificationHandlers.get(message.method) ?? []
+        for (const handler of handlers) {
+          handler(message.params)
         }
       }
     }
@@ -120,6 +131,29 @@ class LspClient {
     this.send({ jsonrpc: '2.0', method, params })
   }
 
+  /** Register a handler for server-initiated notifications */
+  onNotification(method: string, handler: (params: any) => void): void {
+    const handlers = this.notificationHandlers.get(method) ?? []
+    handlers.push(handler)
+    this.notificationHandlers.set(method, handlers)
+  }
+
+  /** Wait for a notification matching a predicate */
+  waitForNotification(method: string, predicate: (params: any) => boolean, timeoutMs = 5000): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        reject(new Error(`timeout waiting for notification ${method}`))
+      }, timeoutMs)
+
+      this.onNotification(method, (params) => {
+        if (predicate(params)) {
+          clearTimeout(timer)
+          resolve(params)
+        }
+      })
+    })
+  }
+
   async close(): Promise<void> {
     try {
       await this.request('shutdown', null, 2000)
@@ -149,17 +183,45 @@ function findLineAndCharacter(source: string, pattern: string): { line: number, 
   return { line, character: character + Math.floor(pattern.length / 2) }
 }
 
+let passed = 0
+let failed = 0
+
+function ok(label: string): void {
+  passed++
+  process.stdout.write(`  ✓ ${label}\n`)
+}
+
+function fail(label: string, error: unknown): void {
+  failed++
+  const detail = error instanceof Error ? error.message : String(error)
+  process.stderr.write(`  ✗ ${label}: ${detail}\n`)
+}
+
 async function main(): Promise<void> {
   const repoRoot = process.cwd()
   const client = new LspClient(repoRoot)
 
   try {
-    await client.request('initialize', {
+    // ── Initialize ────────────────────────────────────────────────
+
+    const initResult = await client.request('initialize', {
       processId: process.pid,
       rootUri: pathToFileURL(repoRoot).toString(),
       capabilities: {},
     })
     client.notify('initialized', {})
+
+    // Verify capabilities declared
+    const cap = initResult?.capabilities ?? {}
+    assert(cap.hoverProvider, 'Expected hoverProvider capability')
+    assert(cap.documentSymbolProvider, 'Expected documentSymbolProvider capability')
+    assert(cap.workspaceSymbolProvider, 'Expected workspaceSymbolProvider capability')
+    assert(cap.completionProvider, 'Expected completionProvider capability')
+    assert(cap.codeLensProvider, 'Expected codeLensProvider capability')
+    assert(cap.documentFormattingProvider, 'Expected documentFormattingProvider capability')
+    ok('initialize — all capabilities declared')
+
+    // ── Open docs/index.spw ───────────────────────────────────────
 
     const docsIndexPath = path.join(repoRoot, 'docs', 'index.spw')
     const docsIndexUri = pathToFileURL(docsIndexPath).toString()
@@ -174,43 +236,199 @@ async function main(): Promise<void> {
       },
     })
 
-    const localRefPos = findLineAndCharacter(docsIndexSource, './runtime')
-    const localDef = await client.request('textDocument/definition', {
-      textDocument: { uri: docsIndexUri },
-      position: localRefPos,
-    })
-    assert(Array.isArray(localDef) && localDef.length > 0, 'Expected local-path definition result')
-    const localUri = localDef[0]?.uri as string
-    assert(localUri.includes('/docs/runtime/index.spw'), `Unexpected local-path definition URI: ${localUri}`)
+    // ── Open .spw/workspace.spw (rich test target) ────────────────
 
-    const architecturePath = path.join(repoRoot, 'docs', 'waypoints', 'spw', 'architecture.spw')
-    const architectureUri = pathToFileURL(architecturePath).toString()
-    const architectureSource = await fs.readFile(architecturePath, 'utf8')
+    const workspacePath = path.join(repoRoot, '.spw', 'workspace.spw')
+    const workspaceUri = pathToFileURL(workspacePath).toString()
+    const workspaceSource = await fs.readFile(workspacePath, 'utf8')
+
+    // Set up diagnostics listener before opening
+    const diagPromise = client.waitForNotification(
+      'textDocument/publishDiagnostics',
+      (params: any) => params?.uri === workspaceUri,
+      8000,
+    )
 
     client.notify('textDocument/didOpen', {
       textDocument: {
-        uri: architectureUri,
+        uri: workspaceUri,
         languageId: 'spw',
         version: 1,
-        text: architectureSource,
+        text: workspaceSource,
       },
     })
 
-    const rootRefPos = findLineAndCharacter(architectureSource, '@src/seed/')
-    const rootDef = await client.request('textDocument/definition', {
-      textDocument: { uri: architectureUri },
-      position: rootRefPos,
-    })
-    assert(Array.isArray(rootDef) && rootDef.length > 0, 'Expected root-path definition result')
-    const rootUri = rootDef[0]?.uri as string
-    assert(rootUri.includes('/src/seed/'), `Unexpected root-path definition URI: ${rootUri}`)
+    // ── 1. Navigation: definition + documentLink ──────────────────
 
-    const links = await client.request('textDocument/documentLink', {
-      textDocument: { uri: docsIndexUri },
-    })
-    assert(Array.isArray(links) && links.length > 0, 'Expected at least one documentLink result')
+    try {
+      const localRefPos = findLineAndCharacter(docsIndexSource, './runtime')
+      const localDef = await client.request('textDocument/definition', {
+        textDocument: { uri: docsIndexUri },
+        position: localRefPos,
+      })
+      assert(Array.isArray(localDef) && localDef.length > 0, 'Expected local-path definition result')
+      const localUri = localDef[0]?.uri as string
+      assert(localUri.includes('/docs/runtime/index.spw'), `Unexpected local-path definition URI: ${localUri}`)
+      ok('definition — local path ref')
+    } catch (e) { fail('definition — local path ref', e) }
 
-    process.stdout.write('LSP smoke navigation passed\n')
+    try {
+      const architecturePath = path.join(repoRoot, 'docs', 'waypoints', 'spw', 'architecture.spw')
+      const architectureUri = pathToFileURL(architecturePath).toString()
+      const architectureSource = await fs.readFile(architecturePath, 'utf8')
+
+      client.notify('textDocument/didOpen', {
+        textDocument: {
+          uri: architectureUri,
+          languageId: 'spw',
+          version: 1,
+          text: architectureSource,
+        },
+      })
+
+      const rootRefPos = findLineAndCharacter(architectureSource, '@src/seed/')
+      const rootDef = await client.request('textDocument/definition', {
+        textDocument: { uri: architectureUri },
+        position: rootRefPos,
+      })
+      assert(Array.isArray(rootDef) && rootDef.length > 0, 'Expected root-path definition result')
+      const rootUri = rootDef[0]?.uri as string
+      assert(rootUri.includes('/src/seed/'), `Unexpected root-path definition URI: ${rootUri}`)
+      ok('definition — @root path ref')
+    } catch (e) { fail('definition — @root path ref', e) }
+
+    try {
+      const links = await client.request('textDocument/documentLink', {
+        textDocument: { uri: docsIndexUri },
+      })
+      assert(Array.isArray(links) && links.length > 0, 'Expected at least one documentLink result')
+      ok('documentLink — docs/index.spw')
+    } catch (e) { fail('documentLink — docs/index.spw', e) }
+
+    // ── 2. Hover ──────────────────────────────────────────────────
+
+    try {
+      // Hover on ^"roots" frame header in workspace.spw
+      const framePos = findLineAndCharacter(workspaceSource, '^"roots"')
+      const hoverFrame = await client.request('textDocument/hover', {
+        textDocument: { uri: workspaceUri },
+        position: { line: framePos.line, character: 0 },
+      })
+      assert(hoverFrame && hoverFrame.contents, 'Expected hover contents for frame')
+      const hoverText = typeof hoverFrame.contents === 'string'
+        ? hoverFrame.contents
+        : hoverFrame.contents.value ?? ''
+      assert(hoverText.length > 0, 'Expected non-empty hover text for frame')
+      ok('hover — frame header (^)')
+    } catch (e) { fail('hover — frame header (^)', e) }
+
+    try {
+      // Hover on #:manifest annotation
+      const annotPos = findLineAndCharacter(workspaceSource, '#:manifest')
+      const hoverAnnot = await client.request('textDocument/hover', {
+        textDocument: { uri: workspaceUri },
+        position: annotPos,
+      })
+      assert(hoverAnnot && hoverAnnot.contents, 'Expected hover contents for annotation')
+      ok('hover — annotation (#:)')
+    } catch (e) { fail('hover — annotation (#:)', e) }
+
+    try {
+      // Hover on a sigil character (~ or @ or ^)
+      const sigilPos = findLineAndCharacter(workspaceSource, '@repo:')
+      const hoverSigil = await client.request('textDocument/hover', {
+        textDocument: { uri: workspaceUri },
+        position: { line: sigilPos.line, character: sigilPos.character },
+      })
+      // Sigil hover might be a @root hover instead — both are valid
+      assert(hoverSigil && hoverSigil.contents, 'Expected hover contents for @root or sigil')
+      ok('hover — @root / sigil')
+    } catch (e) { fail('hover — @root / sigil', e) }
+
+    // ── 3. Document Symbols ───────────────────────────────────────
+
+    try {
+      const symbols = await client.request('textDocument/documentSymbol', {
+        textDocument: { uri: workspaceUri },
+      })
+      assert(Array.isArray(symbols), 'Expected document symbol array')
+      assert(symbols.length > 0, 'Expected at least one document symbol')
+      // Should have frame symbols like "roots", "dialect", "spirit_sequence"
+      const names = symbols.map((s: any) => s.name)
+      assert(names.some((n: string) => n.includes('roots')), 'Expected "roots" frame in symbols')
+      ok('documentSymbol — workspace.spw')
+    } catch (e) { fail('documentSymbol — workspace.spw', e) }
+
+    // ── 4. Workspace Symbols ──────────────────────────────────────
+
+    try {
+      const wsSymbols = await client.request('workspace/symbol', {
+        query: 'manifest',
+      })
+      assert(Array.isArray(wsSymbols), 'Expected workspace symbol array')
+      // The annotation index should find #:manifest across the workspace
+      ok('workspaceSymbol — query "manifest"')
+    } catch (e) { fail('workspaceSymbol — query "manifest"', e) }
+
+    // ── 5. Completion ─────────────────────────────────────────────
+
+    try {
+      // Trigger completion after @ character (root completion)
+      const atPos = findLineAndCharacter(workspaceSource, '@repo:')
+      const completion = await client.request('textDocument/completion', {
+        textDocument: { uri: workspaceUri },
+        position: { line: atPos.line, character: atPos.character + 1 },
+      })
+      assert(completion, 'Expected completion result')
+      const items = Array.isArray(completion) ? completion : (completion.items ?? [])
+      assert(Array.isArray(items), 'Expected completion items array')
+      ok('completion — @root trigger')
+    } catch (e) { fail('completion — @root trigger', e) }
+
+    // ── 6. Code Lens ──────────────────────────────────────────────
+
+    try {
+      const codeLenses = await client.request('textDocument/codeLens', {
+        textDocument: { uri: workspaceUri },
+      })
+      assert(Array.isArray(codeLenses), 'Expected code lens array')
+      // workspace.spw has ^"roots" with annotations — should generate lenses
+      ok('codeLens — workspace.spw')
+    } catch (e) { fail('codeLens — workspace.spw', e) }
+
+    try {
+      // Also test against docs/index.spw which has #>docs anchor
+      const docsLenses = await client.request('textDocument/codeLens', {
+        textDocument: { uri: docsIndexUri },
+      })
+      assert(Array.isArray(docsLenses), 'Expected code lens array for docs')
+      ok('codeLens — docs/index.spw')
+    } catch (e) { fail('codeLens — docs/index.spw', e) }
+
+    // ── 7. Formatting ─────────────────────────────────────────────
+
+    try {
+      const edits = await client.request('textDocument/formatting', {
+        textDocument: { uri: workspaceUri },
+        options: { tabSize: 2, insertSpaces: true },
+      })
+      assert(Array.isArray(edits), 'Expected formatting edits array')
+      ok('formatting — workspace.spw')
+    } catch (e) { fail('formatting — workspace.spw', e) }
+
+    // ── 8. Diagnostics (async — wait for notification) ────────────
+
+    try {
+      const diagParams = await diagPromise
+      assert(diagParams?.uri === workspaceUri, 'Expected diagnostics for workspace.spw')
+      assert(Array.isArray(diagParams.diagnostics), 'Expected diagnostics array')
+      ok(`diagnostics — workspace.spw (${diagParams.diagnostics.length} items)`)
+    } catch (e) { fail('diagnostics — workspace.spw', e) }
+
+    // ── Summary ───────────────────────────────────────────────────
+
+    process.stdout.write(`\nLSP smoke: ${passed} passed, ${failed} failed\n`)
+    if (failed > 0) process.exit(1)
   } finally {
     await client.close()
   }
@@ -218,6 +436,6 @@ async function main(): Promise<void> {
 
 void main().catch((error) => {
   const details = error instanceof Error ? error.message : String(error)
-  process.stderr.write(`LSP smoke navigation failed: ${details}\n`)
+  process.stderr.write(`LSP smoke test failed: ${details}\n`)
   process.exit(1)
 })
