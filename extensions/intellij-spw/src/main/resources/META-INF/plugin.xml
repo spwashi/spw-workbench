@@ -12,6 +12,10 @@
       <li>Semantic TextMate highlighting — operators (<code>!</code>, <code>^</code>, <code>~</code>, <code>?</code>, <code>=</code>, <code>@</code>), valence modifiers (boon/bane/bone/bonk/honk), and container semantics</li>
       <li>File type support for <code>.spw</code> — architecture scaffolds, theory docs, wip streams</li>
       <li>Optional LSP integration (configurable per-project: <code>npm run lsp</code> or custom command)</li>
+      <li><b>Structure View</b> — navigable outline of frames, subroots, properties, anchors, and headings (Cmd+7)</li>
+      <li><b>Code Folding</b> — fold <code>^["frame"]{}</code> blocks and <code># Heading</code> sections</li>
+      <li><b>Live Templates</b> — <code>frame</code>, <code>intent</code>, <code>anno</code>, <code>subroot</code>, <code>prop</code>, <code>episode</code>, <code>stream</code> (type + Tab)</li>
+      <li><b>Gutter Icons</b> — visual markers for <code>#&gt;anchor</code> and <code>^["frame"]</code> lines</li>
       <li><code>spwq</code> selector algebra — 15 presets for structural selection over AST</li>
       <li>@-root resolution — <code>@docs</code>, <code>@src</code>, <code>@lib</code>, <code>@theory</code>, <code>@scripts</code>, <code>@core</code>, <code>@runtime</code>, <code>@design</code>, <code>@infra</code>, <code>@here</code></li>
     </ul>
@@ -35,9 +39,26 @@
             groupId="tools"
             displayName="Spw LSP"
             instance="com.spwashi.spw.settings.SpwLspConfigurable"/>
+
+        <!-- Native folding for ^["frame"]{} blocks and # headings -->
+        <lang.foldingBuilder language="Spw"
+                             implementationClass="com.spwashi.spw.SpwFoldingBuilder"/>
+
+        <!-- Structure view (Cmd+7) -->
+        <lang.psiStructureViewFactory language="Spw"
+                                       implementationClass="com.spwashi.spw.SpwStructureViewFactory"/>
+
+        <!-- Gutter icons for anchors and frames -->
+        <codeInsight.lineMarkerProvider language="Spw"
+                                         implementationClass="com.spwashi.spw.SpwAnnotationLineMarkerProvider"/>
+
+        <!-- Live template context -->
+        <liveTemplateContext implementation="com.spwashi.spw.SpwTemplateContext"/>
+        <defaultLiveTemplates file="/liveTemplates/spwTemplates.xml"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij.textmate">
         <bundleProvider implementation="com.spwashi.spw.SpwTextMateBundleProvider"/>
     </extensions>
 </idea-plugin>
+

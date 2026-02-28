@@ -1,0 +1,57 @@
+<templateSet group="Spw">
+  <template name="frame" value="^[&quot;$NAME$&quot;]{&#10;  $END$&#10;}" description="Spw frame block" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <context>
+      <option name="Spw" value="true"/>
+    </context>
+  </template>
+
+  <template name="intent" value="^&quot;intent&quot;{&#10;  ~#goal: &quot;$GOAL$&quot;&#10;  $END$&#10;}" description="Spw intent frame" toReformat="false" toShortenFQNames="false">
+    <variable name="GOAL" expression="" defaultValue="&quot;describe goal&quot;" alwaysStopAt="true"/>
+    <context>
+      <option name="Spw" value="true"/>
+    </context>
+  </template>
+
+  <template name="anno" value="#&gt;$NAME$&#10;#:$LENS$ #!$INTENT$" description="Spw annotation triplet (anchor + lens + intent)" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;anchor_name&quot;" alwaysStopAt="true"/>
+    <variable name="LENS" expression="" defaultValue="&quot;lens&quot;" alwaysStopAt="true"/>
+    <variable name="INTENT" expression="" defaultValue="&quot;intent&quot;" alwaysStopAt="true"/>
+    <context>
+      <option name="Spw" value="true"/>
+    </context>
+  </template>
+
+  <template name="subroot" value="^subroot[$NAME$]{&#10;  path: @$ROOT$&#10;  subtree: [$END$]&#10;}" description="Spw subroot block" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="ROOT" expression="" defaultValue="&quot;root&quot;" alwaysStopAt="true"/>
+    <context>
+      <option name="Spw" value="true"/>
+    </context>
+  </template>
+
+  <template name="prop" value="^property[$NAME$]{&#10;  meaning: &quot;$MEANING$&quot;&#10;  measure: [$END$]&#10;}" description="Spw property block" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="MEANING" expression="" defaultValue="&quot;describe meaning&quot;" alwaysStopAt="true"/>
+    <context>
+      <option name="Spw" value="true"/>
+    </context>
+  </template>
+
+  <template name="episode" value="#[episode]{&#10;  ~[scene]{ &quot;$SCENE$&quot; }&#10;  ![change]{ intent: &quot;$INTENT$&quot; }&#10;}" description="Spw episode/commit block" toReformat="false" toShortenFQNames="false">
+    <variable name="SCENE" expression="" defaultValue="&quot;describe scene&quot;" alwaysStopAt="true"/>
+    <variable name="INTENT" expression="" defaultValue="&quot;describe change&quot;" alwaysStopAt="true"/>
+    <context>
+      <option name="Spw" value="true"/>
+    </context>
+  </template>
+
+  <template name="stream" value="&gt;&gt;[$DATE$] $VERB$ — $NOTE$" description="Spw wip stream entry" toReformat="false" toShortenFQNames="false">
+    <variable name="DATE" expression="date(&quot;yyyy-MM-dd HH:mm&quot;)" defaultValue="" alwaysStopAt="false"/>
+    <variable name="VERB" expression="enum(&quot;observe&quot;,&quot;decide&quot;,&quot;revise&quot;,&quot;pause&quot;,&quot;done&quot;)" defaultValue="&quot;observe&quot;" alwaysStopAt="true"/>
+    <variable name="NOTE" expression="" defaultValue="&quot;description&quot;" alwaysStopAt="true"/>
+    <context>
+      <option name="Spw" value="true"/>
+    </context>
+  </template>
+</templateSet>
