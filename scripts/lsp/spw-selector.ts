@@ -75,8 +75,7 @@ function offsetToPosition(offsets: number[], offset: number): LinePosition {
   return { line: 0, character: offset }
 }
 
-function buildSpan(source: string, startOffset: number, endOffsetExclusive: number): SpwSelectorSpan {
-  const offsets = buildLineOffsets(source)
+function buildSpan(offsets: number[], startOffset: number, endOffsetExclusive: number): SpwSelectorSpan {
   const start = offsetToPosition(offsets, startOffset)
   const end = offsetToPosition(offsets, Math.max(startOffset, endOffsetExclusive - 1))
   return {
@@ -97,6 +96,7 @@ function isBoundaryBeforeRef(ch: string): boolean {
 
 function fallbackPathRefs(source: string): SpwSelectorHit[] {
   const hits: SpwSelectorHit[] = []
+  const offsets = buildLineOffsets(source)
 
   // ~"./path", ~ <tag> "./path"
   // Keep this intentionally strict to avoid matching arbitrary "~" inside prose/commands.
@@ -117,7 +117,7 @@ function fallbackPathRefs(source: string): SpwSelectorHit[] {
       kind: 'pathRef',
       raw,
       target,
-      span: buildSpan(source, start, end),
+      span: buildSpan(offsets, start, end),
     })
   }
 
@@ -147,7 +147,7 @@ function fallbackPathRefs(source: string): SpwSelectorHit[] {
       raw,
       root,
       target,
-      span: buildSpan(source, start, end),
+      span: buildSpan(offsets, start, end),
     })
   }
 
@@ -158,8 +158,7 @@ function isEnvelopeOperator(ch: string | undefined): boolean {
   return !!ch && REF_ENVELOPE_OPERATORS.has(ch)
 }
 
-function expandSpanWithOperatorEnvelope(source: string, span: SpwSelectorSpan): SpwSelectorSpan {
-  const lines = source.split('\n')
+function expandSpanWithOperatorEnvelope(lines: string[], span: SpwSelectorSpan): SpwSelectorSpan {
   const next = { ...span }
 
   const startLineText = lines[next.startLine] ?? ''
@@ -180,9 +179,10 @@ function expandSpanWithOperatorEnvelope(source: string, span: SpwSelectorSpan): 
 }
 
 function withOperatorEnvelopeExpandedSpans(source: string, hits: SpwSelectorHit[]): SpwSelectorHit[] {
+  const lines = source.split('\n')
   return hits.map((hit) => ({
     ...hit,
-    span: expandSpanWithOperatorEnvelope(source, hit.span),
+    span: expandSpanWithOperatorEnvelope(lines, hit.span),
   }))
 }
 

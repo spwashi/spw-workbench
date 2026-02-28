@@ -5,6 +5,8 @@ import com.intellij.ide.util.treeView.smartTree.TreeElement
 import com.intellij.lang.PsiStructureViewFactory
 import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.fileEditor.OpenFileDescriptor
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import javax.swing.Icon
 
@@ -42,51 +44,61 @@ class SpwStructureViewElement(private val psiFile: PsiFile) : StructureViewTreeE
 
         // Scan for structure patterns
         val lines = text.lineSequence().toList()
+        val document = PsiDocumentManager.getInstance(psiFile.project).getDocument(psiFile)
+        var fallbackOffset = 0
         for ((index, line) in lines.withIndex()) {
             val lineText = line.trimEnd('\r')
+            val lineStartOffset = document?.getLineStartOffset(index) ?: fallbackOffset
 
             // Headings: # Title
-            val headingMatch = HEADING_PATTERN.find(lineText)
-            if (headingMatch != null) {
-                val level = headingMatch.groupValues[1].length
-                val title = headingMatch.groupValues[2].trim()
-                elements.add(SpwStructureNode("§ $title", "heading level $level", index, psiFile))
+            val heading = SpwLineParsers.parseHeading(lineText)
+            if (heading != null) {
+                elements.add(
+                    SpwStructureNode(
+                        label = "§ ${heading.title}",
+                        kind = "heading level ${heading.level}",
+                        lineNumber = index,
+                        lineStartOffset = lineStartOffset,
+                        psiFile = psiFile,
+                    )
+                )
+                fallbackOffset += line.length + 1
                 continue
             }
 
-            // Frames: ^["name"] or ^"name"
-            val frameMatch = FRAME_PATTERN.find(lineText)
-            if (frameMatch != null) {
-                val name = frameMatch.groupValues[1].ifEmpty { frameMatch.groupValues[2] }
-                elements.add(SpwStructureNode("^\"$name\"", "frame", index, psiFile))
-                continue
-            }
-
-            // Typed blocks: ^subroot[name], ^property[name], ^metric[name], etc
-            val typedMatch = TYPED_PATTERN.find(lineText)
-            if (typedMatch != null) {
-                val type = typedMatch.groupValues[1]
-                val name = typedMatch.groupValues[2]
-                elements.add(SpwStructureNode("$type[$name]", type, index, psiFile))
+            val frame = SpwLineParsers.parseFrame(lineText)
+            if (frame != null) {
+                elements.add(
+                    SpwStructureNode(
+                        label = frame.presentation,
+                        kind = frame.kind,
+                        lineNumber = index,
+                        lineStartOffset = lineStartOffset,
+                        psiFile = psiFile,
+                    )
+                )
+                fallbackOffset += line.length + 1
                 continue
             }
 
             // Anchors: #>name
-            val anchorMatch = ANCHOR_PATTERN.find(lineText)
-            if (anchorMatch != null) {
-                val name = anchorMatch.groupValues[1]
-                elements.add(SpwStructureNode("#>$name", "anchor", index, psiFile))
+            val anchor = SpwLineParsers.parseAnchor(lineText)
+            if (anchor != null) {
+                elements.add(
+                    SpwStructureNode(
+                        label = "#>${anchor.name}",
+                        kind = "anchor",
+                        lineNumber = index,
+                        lineStartOffset = lineStartOffset,
+                        psiFile = psiFile,
+                    )
+                )
             }
+
+            fallbackOffset += line.length + 1
         }
 
         return elements.toTypedArray()
-    }
-
-    companion object {
-        private val HEADING_PATTERN = Regex("""^(#{1,3})\s+(.+)""")
-        private val FRAME_PATTERN = Regex("""^\s*\^(?:\["([^"]+)"\]|"([^"]+)")""")
-        private val TYPED_PATTERN = Regex("""^\s*\^(\w+)\[([^\]]+)\]""")
-        private val ANCHOR_PATTERN = Regex("""#>([a-zA-Z_][a-zA-Z0-9_]*)""")
     }
 }
 
@@ -94,8 +106,9 @@ class SpwStructureNode(
     private val label: String,
     private val kind: String,
     private val lineNumber: Int,
+    private val lineStartOffset: Int,
     private val psiFile: PsiFile,
-) : TreeElement {
+) : StructureViewTreeElement {
 
     override fun getPresentation(): ItemPresentation {
         return object : ItemPresentation {
@@ -105,5 +118,14 @@ class SpwStructureNode(
         }
     }
 
+    override fun getValue(): Any = psiFile
     override fun getChildren(): Array<TreeElement> = emptyArray()
+
+    override fun navigate(requestFocus: Boolean) {
+        val virtualFile = psiFile.virtualFile ?: return
+        OpenFileDescriptor(psiFile.project, virtualFile, lineStartOffset).navigate(requestFocus)
+    }
+
+    override fun canNavigate(): Boolean = psiFile.virtualFile != null
+    override fun canNavigateToSource(): Boolean = canNavigate()
 }

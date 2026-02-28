@@ -1,0 +1,33 @@
+# CLI Conventions
+#
+# Public command grammar for an immaculate Spw CLI surface.
+
+#>spw_cli_conventions
+#:cli #!convention
+
+^"command_model"{
+  entry: "npm run spw -- <command> [flags]"
+  public_commands: [query, ls, seq, mount, mem, format, dev]
+  internal_composition: "scripts/spw-cli/{args,query,run,types}.ts"
+}
+
+^"query_grammar"{
+  from: "--from <roots>"
+  select: "--select <fields>"
+  where: "--where <clauses>"
+  limit: "--limit <n>"
+  summary: "--summary"
+  selector: "--selector <preset> or --expr <selector_expr>"
+}
+
+^"ergonomics"{
+  sql_inspired: "from/select/where/limit composition over query rows"
+  css_inspired: "structural selector intuition over references, roots, and adjacency"
+  prolog_inspired: "summary outputs support iterative question->goal refinement toward REPL workflows"
+}
+
+^"invariant"{
+  "Public command names stay stable as internals evolve.",
+  "CLI output should remain scriptable and human-readable.",
+}
+

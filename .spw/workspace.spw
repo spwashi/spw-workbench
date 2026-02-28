@@ -24,6 +24,8 @@
   control_plane: "index.spw -> dispatch -> mount/workspace/biome/harness/gen"
   register_plane: "registries/* define operator physics and brace symmetry"
   application_plane: "applications/symmetry/* consume registries and project domain behaviors"
+  convention_plane: "conventions/* defines naming, selection, and relation ergonomics"
+  pattern_plane: "patterns/* provides reusable scalable + literate architecture recipes"
   measurement_plane: "harness/{evals,probes,runs,memory-surface} measures and archives loop evidence"
   projection_plane: "gen/* is generated output; manifests and registries remain source-of-truth surfaces"
 }
@@ -77,8 +79,24 @@
 ^"literate"{
   ~#root: ~"./literate"
   ~#entry_spec: ~"./literate/literate-spec.spw"
+  ~#architecture_exhibits: ~"./literate/architecture/index.spw"
   ~#tangle_mode: "explicit-targets-only"
   ~#invariant: "Literate projection never mutates canonical source exhibits."
+}
+
+^"conventions"{
+  ~#root: ~"./conventions"
+  ~#entry_spec: ~"./conventions/index.spw"
+  ~#selection: ~"./conventions/selection.spw"
+  ~#naming: ~"./conventions/naming.spw"
+  ~#cli: ~"./conventions/cli.spw"
+}
+
+^"patterns"{
+  ~#root: ~"./patterns"
+  ~#entry_spec: ~"./patterns/index.spw"
+  ~#literate_architecture: ~"./patterns/literate-architecture.spw"
+  ~#query_composition: ~"./patterns/query-composition.spw"
 }
 
 ^"reflection"{
@@ -131,6 +149,16 @@
   ~#symmetry_forecast_registry: ~"./applications/symmetry/symmetry-forecast-projection-sound.spw"
   ~#symmetry_cognitive_registry: ~"./applications/symmetry/symmetry-cognitive-engine.spw"
   ~#symmetry_spellcasting_registry: ~"./applications/symmetry/symmetry-spellcasting-pattern.spw"
+  ~#conventions_root: ~"./conventions"
+  ~#conventions_spec: ~"./conventions/index.spw"
+  ~#selection_conventions: ~"./conventions/selection.spw"
+  ~#naming_conventions: ~"./conventions/naming.spw"
+  ~#cli_conventions: ~"./conventions/cli.spw"
+  ~#patterns_root: ~"./patterns"
+  ~#patterns_spec: ~"./patterns/index.spw"
+  ~#pattern_literate_architecture: ~"./patterns/literate-architecture.spw"
+  ~#pattern_query_composition: ~"./patterns/query-composition.spw"
+  ~#literate_architecture_exhibits: ~"./literate/architecture/index.spw"
   ~#tooling_intellij_registry: ~"./tooling/intellij-plugin.spw"
   ~#goal: "Surface caching + interpretation optimizations for Spw as reference language."
 }
@@ -174,5 +202,6 @@
   "Harness runs are append-only records.",
   "Per-message chat logs are not required harness artifacts.",
   "Tuning corpus is curated; no raw prompt dumps without review.",
+  "Conventions and patterns stay canonical; generated bodies stay in /gen.",
   "Root refs resolve through this manifest before fallback heuristics.",
 }

@@ -61,7 +61,8 @@ To customize colors: **Settings | Editor | Color Scheme | TextMate Bundles | Spw
 
 ### Navigation
 
-Section blocks like `^["roots"]{ ... }` are foldable to keep large files scannable.
+Section blocks like `^['roots']{ ... }`, `^["roots"]{ ... }`, `^[Integration]['roots']{ ... }`,
+and `^seed[...]` are foldable and indexed in Structure View to keep large files scannable.
 
 ## Implementation Roadmap
 

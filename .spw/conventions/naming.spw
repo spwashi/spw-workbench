@@ -1,0 +1,26 @@
+# Naming Conventions
+#
+# Script and surface naming model for internal cohesion.
+
+#>spw_naming_conventions
+#:naming #!cohesion
+
+^"scripts"{
+  prefix: "spw-* for CLI executables and composed engines"
+  composed_dirs: "scripts/spw-cli/* for dispatcher internals by concern"
+  command_surface: "npm run spw -- <command> as stable public entrypoint"
+  compatibility: "legacy scripts (spw:ls, spw:seq, spwq) remain as direct engines"
+}
+
+^"spw_files"{
+  folders_over_hyphen: "prefer folder composition for family growth"
+  short_names: "use short stable names once role context is clear"
+  anchors: "one #>spw_* anchor per canonical file"
+  root_refs: "@root/path for cross-tree, ~\"./sibling\" for local adjacency"
+}
+
+^"invariant"{
+  "Naming must expose ownership and composition boundaries.",
+  "Public command names stay stable; internals evolve behind composed modules.",
+}
+

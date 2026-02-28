@@ -20,39 +20,37 @@ class SpwAnnotationLineMarkerProvider : LineMarkerProvider {
         val lineText = context.text
 
         // Anchor marker: #>name
-        val anchorMatch = ANCHOR_PATTERN.find(lineText)
-        if (anchorMatch != null) {
-            val name = anchorMatch.groupValues[1]
-            val anchorStart = context.startOffset + anchorMatch.range.first
-            val anchorEndExclusive = context.startOffset + anchorMatch.range.last + 1
-            if (offset in anchorStart until anchorEndExclusive && (text.contains("#>") || text.contains(name))) {
+        val anchor = SpwLineParsers.parseAnchor(lineText)
+        if (anchor != null) {
+            val anchorStart = context.startOffset + anchor.range.first
+            val anchorEndExclusive = context.startOffset + anchor.range.last + 1
+            if (offset in anchorStart until anchorEndExclusive && (text.contains("#>") || text.contains(anchor.name))) {
                 return LineMarkerInfo(
                     element,
                     element.textRange,
                     AllIcons.Gutter.ImplementedMethod,
-                    { "Anchor: #>$name — navigate to references" },
+                    { "Anchor: #>${anchor.name} — navigate to references" },
                     null,
                     GutterIconRenderer.Alignment.LEFT,
-                    { "Anchor #>$name" }
+                    { "Anchor #>${anchor.name}" }
                 )
             }
         }
 
-        // Frame marker: ^["name"] or ^"name"
-        val frameMatch = FRAME_PATTERN.find(lineText)
-        if (frameMatch != null) {
-            val name = frameMatch.groupValues[1].ifEmpty { frameMatch.groupValues[2] }
-            val frameStart = context.startOffset + frameMatch.range.first
-            val frameEndExclusive = context.startOffset + frameMatch.range.last + 1
-            if (offset in frameStart until frameEndExclusive && (text.contains("^") || text.startsWith("\""))) {
+        // Frame marker: ^['name'], ^["name"], ^"name", ^type[name]
+        val frame = SpwLineParsers.parseFrame(lineText)
+        if (frame != null) {
+            val frameStart = context.startOffset + frame.range.first
+            val frameEndExclusive = context.startOffset + frame.range.last + 1
+            if (offset in frameStart until frameEndExclusive && text.contains("^")) {
                 return LineMarkerInfo(
                     element,
                     element.textRange,
                     AllIcons.Nodes.Tag,
-                    { "Frame: ^\"$name\"" },
+                    { "${frame.kind}: ${frame.presentation}" },
                     null,
                     GutterIconRenderer.Alignment.LEFT,
-                    { "Frame ^\"$name\"" }
+                    { frame.presentation }
                 )
             }
         }
@@ -83,8 +81,4 @@ class SpwAnnotationLineMarkerProvider : LineMarkerProvider {
         val text: String,
     )
 
-    companion object {
-        private val ANCHOR_PATTERN = Regex("""#>([a-zA-Z_][a-zA-Z0-9_]*)""")
-        private val FRAME_PATTERN = Regex("""^\s*\^(?:\["([^"]+)"\]|"([^"]+)")""")
-    }
 }

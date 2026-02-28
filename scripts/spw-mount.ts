@@ -64,6 +64,13 @@ const REQUIRED_RESTRUCTURE = [
   '.spw/registries/curiosity-brace.spw',
   '.spw/registries/dialect-spec.spw',
   '.spw/registries/register-bank.spw',
+  '.spw/conventions/index.spw',
+  '.spw/conventions/selection.spw',
+  '.spw/conventions/naming.spw',
+  '.spw/conventions/cli.spw',
+  '.spw/patterns/index.spw',
+  '.spw/patterns/literate-architecture.spw',
+  '.spw/patterns/query-composition.spw',
   '.spw/applications/symmetry/symmetry-applications.spw',
   '.spw/applications/symmetry/symmetry-ui-design.spw',
   '.spw/applications/symmetry/symmetry-forecast-projection-sound.spw',
@@ -89,6 +96,14 @@ const INDEX_RESTRUCTURE_REFS = [
   './applications/symmetry/symmetry-forecast-projection-sound.spw',
   './applications/symmetry/symmetry-cognitive-engine.spw',
   './applications/symmetry/symmetry-spellcasting-pattern.spw',
+  './conventions/index.spw',
+  './conventions/selection.spw',
+  './conventions/naming.spw',
+  './conventions/cli.spw',
+  './patterns/index.spw',
+  './patterns/literate-architecture.spw',
+  './patterns/query-composition.spw',
+  './literate/architecture/index.spw',
   './tooling/intellij-plugin.spw',
 ]
 
@@ -104,6 +119,16 @@ const WORKSPACE_RESTRUCTURE_REFS = [
   '~#symmetry_forecast_registry: ~"./applications/symmetry/symmetry-forecast-projection-sound.spw"',
   '~#symmetry_cognitive_registry: ~"./applications/symmetry/symmetry-cognitive-engine.spw"',
   '~#symmetry_spellcasting_registry: ~"./applications/symmetry/symmetry-spellcasting-pattern.spw"',
+  '~#conventions_root: ~"./conventions"',
+  '~#conventions_spec: ~"./conventions/index.spw"',
+  '~#selection_conventions: ~"./conventions/selection.spw"',
+  '~#naming_conventions: ~"./conventions/naming.spw"',
+  '~#cli_conventions: ~"./conventions/cli.spw"',
+  '~#patterns_root: ~"./patterns"',
+  '~#patterns_spec: ~"./patterns/index.spw"',
+  '~#pattern_literate_architecture: ~"./patterns/literate-architecture.spw"',
+  '~#pattern_query_composition: ~"./patterns/query-composition.spw"',
+  '~#literate_architecture_exhibits: ~"./literate/architecture/index.spw"',
   '~#tooling_intellij_registry: ~"./tooling/intellij-plugin.spw"',
 ]
 
@@ -396,7 +421,15 @@ const INDEX_TEMPLATE = `# Spw Index
   @symmetry_cog: ~"./applications/symmetry/symmetry-cognitive-engine.spw"
   @symmetry_spell: ~"./applications/symmetry/symmetry-spellcasting-pattern.spw"
   @tooling_intellij: ~"./tooling/intellij-plugin.spw"
+  @conventions: ~"./conventions/index.spw"
+  @selection_conventions: ~"./conventions/selection.spw"
+  @naming_conventions: ~"./conventions/naming.spw"
+  @cli_conventions: ~"./conventions/cli.spw"
+  @patterns: ~"./patterns/index.spw"
+  @pattern_literate_architecture: ~"./patterns/literate-architecture.spw"
+  @pattern_query_composition: ~"./patterns/query-composition.spw"
   @biome: ~"./biome/ocean/index.spw"
+  @literate_architecture: ~"./literate/architecture/index.spw"
   @harness: ~"./harness/evals/baseline-evals.spw"
   @gen: ~"./gen/index.spw"
   @hot: ~"./hot.spw"
@@ -411,6 +444,14 @@ const INDEX_TEMPLATE = `# Spw Index
   projections: @gen
   runtime_hot: @hot
   routing: @topology
+  conventions: @conventions
+  conventions_selection: @selection_conventions
+  conventions_naming: @naming_conventions
+  conventions_cli: @cli_conventions
+  patterns: @patterns
+  pattern_literate_architecture: @pattern_literate_architecture
+  pattern_query_composition: @pattern_query_composition
+  literate_architecture: @literate_architecture
   dialect: @dialect_registry
   registers: @register_bank_registry
   curiosity: @curiosity_brace

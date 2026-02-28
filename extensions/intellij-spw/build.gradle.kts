@@ -15,6 +15,8 @@ repositories {
 }
 
 dependencies {
+    testImplementation(kotlin("test"))
+
     intellijPlatform {
         intellijIdeaUltimate("2024.2.1")
         bundledPlugin("org.jetbrains.plugins.textmate")
@@ -56,5 +58,8 @@ tasks {
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
         }
+    }
+    test {
+        useJUnitPlatform()
     }
 }

@@ -1,0 +1,41 @@
+# Selection Ergonomics
+#
+# Query ergonomics for key/value/result/consequence/register/scene/topic axes.
+
+#>spw_selection_conventions
+#:selection #!query
+
+^"axes"{
+  key: "selector key or operator frame identity"
+  value: "resolved payload/body chosen by selector"
+  result: "materialized query row or projection output"
+  consequence: "downstream effect recorded in .spw/consequence.spw"
+  register: "state slot affected by operator sequence"
+  scene: "narrative context for a query run"
+  topic: "anchored concept scope (#topic, #:lens, #!intent)"
+}
+
+^"container_relations"{
+  links[core]: ["@spw/index.spw", "@spw/workspace.spw", "@spw/registries/dialect-spec.spw"]
+  links[selection]: ["@spw/biome/ocean/query/sel.spw", "@spw/biome/ocean/query/dialect.spw"]
+  enhancements[lsp]: ["@spw/tooling/vscode-spw.spw", "@spw/tooling/intellij-plugin.spw"]
+  probes[current]: ["@spw/harness/probes/probe-loop.spw", "@spw/harness/evals/baseline-evals.spw"]
+}
+
+^"query_forms"{
+  css_inspired: "selector chaining with scoped containment and adjacency"
+  sql_inspired: "from/select/where style projection over multi-file surfaces"
+  prolog_inspired: "interactive rule/goal exploration by iterative query prompts"
+}
+
+^"examples"{
+  deep_ref_query: "npm run spw -- query --from .spw,docs --selector navigable --where \"kind in PathRef|Reference\" --select file,kind,root,target,line,column"
+  esoteric_selector: "npm run spw -- query --from .spw --expr \"$~\\\"_\\\" | $@_\" --where \"root=spw\" --summary"
+  sequence_probe: "npm run spw -- ls --seq '?~@&*^' --probe '?(scene).[' --root .spw,docs --mode hybrid --surface hybrid"
+}
+
+^"invariant"{
+  "Selectors should be readable, referencable, and updateable.",
+  "Selection axes stay explicit so query intent is auditable and replayable.",
+}
+

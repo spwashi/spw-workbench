@@ -320,6 +320,21 @@ async function main(): Promise<void> {
       },
     })
 
+    // ── Open onboarding doc (stale local @src root override fallback) ──
+
+    const onboardingPath = path.join(repoRoot, 'docs', 'features', 'spw', 'onboarding.spw')
+    const onboardingUri = pathToFileURL(onboardingPath).toString()
+    const onboardingSource = await fs.readFile(onboardingPath, 'utf8')
+
+    client.notify('textDocument/didOpen', {
+      textDocument: {
+        uri: onboardingUri,
+        languageId: 'spw',
+        version: 1,
+        text: onboardingSource,
+      },
+    })
+
     // ── 1. Navigation: definition + documentLink ──────────────────
 
     try {
@@ -378,6 +393,18 @@ async function main(): Promise<void> {
       assert(dirUri.includes('/.spw/harness'), `Unexpected directory definition URI: ${dirUri}`)
       ok('definition — @root directory ref')
     } catch (e) { fail('definition — @root directory ref', e) }
+
+    try {
+      const onboardingRefPos = findLineAndCharacter(onboardingSource, '@src/seed/')
+      const onboardingDef = await client.request('textDocument/definition', {
+        textDocument: { uri: onboardingUri },
+        position: onboardingRefPos,
+      })
+      assert(Array.isArray(onboardingDef) && onboardingDef.length > 0, 'Expected onboarding @src fallback definition result')
+      const onboardingTarget = onboardingDef[0]?.uri as string
+      assert(onboardingTarget.includes('/src/seed/'), `Unexpected onboarding fallback definition URI: ${onboardingTarget}`)
+      ok('definition — stale @root override falls back to workspace root')
+    } catch (e) { fail('definition — stale @root override falls back to workspace root', e) }
 
     try {
       for (const wrappedRef of wrappedPathRefs) {
