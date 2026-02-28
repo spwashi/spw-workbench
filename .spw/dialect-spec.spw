@@ -1,100 +1,21 @@
-# Dialect Specification
+# Dialect Registry
 #
-# Unified dialect registry for lexing, canonicalization, and query perspectives.
+# Single source of truth for all Spw dialect markers.
 
-#>spw_dialect_spec
+#>spw_dialect_registry
 #:dialect #!specification
 
-^"intent"{
-  ~#goal: "Single source of truth for all Spw dialect markers and their lexing rules."
-  ~#invariant: "Every .spw file operates within exactly one dialect at parse time."
+^seed[Dialect.Registry.Clean v:0.1 @profile:Spw.b @intent:accurate-useful]
+.dialect.registry {
+  Spw.b: .{role:"block",      lex:"newline=statement boundary", scope:".spw/ exhibits + specs + architecture", geometry:"author", default:true}
+  Spw.l: .{role:"line",       lex:"single-line compact (newline-as-space)", scope:"queries + probes + selectors", geometry:"search"}
+  Spw.m: .{role:"mathematical",lex:"pure Operator Normal Form (F2-idempotent)", scope:"hash source + canonical truth", geometry:"machine"}
+  Spw.x: .{role:"executable", lex:"@profile:Spw.x~#[flags] + @lock advisory", scope:"live .spw/ + runtime + hot evolution", geometry:"executable"}
 }
-
-^dialect[Spw.b]{
-  #:dialect #!block
-  full_name: "block mode"
-  lexing: "newline = statement boundary"
-  scope: ".spw/ exhibits, formal specs, architecture files"
-  use_when: "structure matters more than prose density"
-  examples: [".spw/shelves.spw", ".spw/topology.spw", ".spw/biome/ocean/algos/cache.spw"]
-  ~#author_geometry: "Spw.b"
-  source: .spw/workspace.spw#dialect
-}
-
-^dialect[Spw.l]{
-  #:dialect #!line
-  full_name: "line mode"
-  lexing: "single-line expression — compact, search-bar compatible"
-  scope: "query expressions, probe arguments, selector shorthand"
-  use_when: "the entire expression fits on one line, like a search bar"
-  examples: ["?~@&*^", "$![_]/$^[_]", "npm run spw:seq -- --seq '?~@&*^'"]
-  query_ref: .spw/biome/ocean/query/dialect.spw#Spw.l
-}
-
-^dialect[Spw.m]{
-  #:dialect #!mathematical
-  full_name: "mathematical / ONF mode"
-  lexing: "pure Operator Normal Form — F2-idempotent"
-  scope: "hash source, canonicalization, semantic comparison"
-  use_when: "canonical identity must be stable across rewrites"
-  property: "canonical(canonical(x)) ≡ canonical(x)"
-  hash_contract: "semantic_hash = hash(canonical(Spw.m))"
-  source: .spw/canon-mount.spw#onf_desugaring
-}
-
-^dialect[Spw.x]{
-  #:dialect #!executable
-  full_name: "executable / live mode"
-  lexing: "@profile:Spw.x~#[…] + advisory @lock policy"
-  scope: "live .spw/ — runtime state, hot replacement"
-  use_when: "files are being actively evolved by agents or dev loops"
-  examples: [".spw/hot.spw", ".spw/dev/hot-reload-loop.spw"]
-  lock_policy: "advisory — agents respect @lock but enforcement is deferred"
-  source: .spw/canon-mount.spw#mount_slice_v01
-}
-
-^dialect[Spw.o]{
-  #:dialect #!ocean
-  full_name: "ocean / dense mode"
-  lexing: "operator-forward, minimal prose, dense forms"
-  scope: ".spw/biome/ocean/** — experimental dialect"
-  use_when: "exploring operator combinatorics in compact notation"
-  gate: "probe coverage + cache-aware LSP smoke checks"
-  rollback: "disable Spw.o marker → fallback to baseline selectors"
-  source: .spw/biome/ocean/experiments/syntax.spw
-}
-
-^dialect[Spw.q]{
-  #:dialect #!query
-  full_name: "query perspective"
-  focus: [selector, grounding, replacement]
-  scope: "selector registry + symbolic handles"
-  source: .spw/biome/ocean/query/q.spw
-  ref: .spw/biome/ocean/query/dialect.spw#Spw.q
-}
-
-^dialect[Spw.t]{
-  #:dialect #!template
-  full_name: "template perspective"
-  focus: [inputs, steps, outputs, invariants]
-  scope: "repeatable run templates"
-  source: .spw/biome/ocean/template/t.spw
-  ref: .spw/biome/ocean/query/dialect.spw#Spw.t
-}
-
-^"default_resolution"{
-  #:dialect #!inference
-  # When no explicit dialect marker, the workspace default applies:
-  default: "Spw.block.inferred.(none).(none).literate"
-  author_geometry: "Spw.b"
-  canonical_geometry: "Spw.l"
-  # Phase files use: "experimental.ocean.phase"
-  source: .spw/workspace.spw#dialect
-}
-
-^"invariant"{
-  "Every .spw file has exactly one active dialect at parse time."
-  "Dialect markers are advisory — the parser infers when absent."
-  "Spw.m canonicalization is the ground truth for semantic identity."
-  "Dialect switching within a file is not supported (F2 stability)."
-}
+.extensions #[Spw.o (ocean), Spw.q (query), Spw.t (template)] .{gate:"probe+cache", fallback:"Spw.l"}
+.invariants #[
+  "exactly one active dialect per .spw file at parse time"
+  "absent marker → Spw.b (author geometry in .spw/)"
+  "Spw.m is always the semantic ground truth for hash + identity"
+  "dialect switching inside file forbidden (F2 stability)"
+]
