@@ -1,0 +1,55 @@
+# Register Bank
+#
+# Single source of truth for operator-typed register slots.
+
+#>spw_register_bank
+#:register #!specification
+
+^seed[Registers.Registry.Clean v:0.1 @profile:Spw.b @intent:accurate-useful]
+.register.bank {
+  operator: {
+    '!': .{name:"Action",access:"kinetic",affinity:"void",phase:0}
+    '?': .{name:"Wonder",access:"conditional",affinity:"<>",phase:1}
+    '~': .{name:"Potential",access:"deferred",affinity:"block",phase:2}
+    '@': .{name:"Perspective",access:"perspective",affinity:"()",phase:3}
+    '&': .{name:"Confluence",access:"confluent",affinity:"merge",phase:4}
+    '*': .{name:"Value",access:"resolved",affinity:"value",phase:5}
+    '^': .{name:"Integration",access:"structural",affinity:"promote",phase:6}
+    '=': .{name:"Set",access:"property",affinity:"{}"}
+    '#': .{name:"Resonance",access:"category",affinity:"[]"}
+    '.': .{name:"Subject",access:"property",affinity:"{}"}
+    '$': .{name:"Substrate",access:"material",affinity:"meta"}
+    '%': .{name:"Measure",access:"ratio",affinity:"scalar"}
+  }
+  typed_access: {
+    access: .{op:".",sig:"(base,path[])→SpwValue",note:"property traversal"}
+    resonate: .{op:"#",sig:"(name,value,tag?)→boolean",note:"immutable lens-indexed"}
+    observe: .{op:"@",sig:"(observer,value)→ScopeFrame",note:"sheaf push"}
+    confluent: .{op:"&",sig:"(name,…sources)→RegValue",note:"tracked merge"}
+    materialize: .{op:"$",sig:"(name)→RegisterMeta",note:"meta only"}
+    measure: .{op:"%",sig:"(name,scale?)→[0,1]",note:"normalized"}
+  }
+  phase_mutations: {
+    '?': .{register:"promote(key)",effect:"liminality 0→1→2→3"}
+    '~': .{register:"set(key,deferred)",effect:"write timestamp"}
+    '&': .{register:"couple(a,b)",effect:"bidirectional edges"}
+    '*': .{register:"measure(key)",effect:"increment measureDepth"}
+    '^': .{register:"demote(key)",effect:"liminality 3→2→1→0"}
+  }
+  acoustic: {
+    liminality: .{range:"0–3",up:"?",down:"^",meaning:"mutation openness"}
+    frequency: .{unit:"writes/sec",source:"~ timestamps",meaning:"acoustic energy"}
+    coupling: .{range:"0–1",source:"& edge count",formula:"edges/(total-1)",meaning:"entanglement"}
+  }
+  storage: {default:'"',history:['0'..'9'],named:['a'..'z']}
+  packet: {canonical:"<concept>(scene)[mode]{definition}",fields:#[concept,scene,mode,definition,source_ref,lod,perspective]}
+}
+.invariants #[
+  "active register always defined"
+  "writes preserve provenance + timestamp"
+  "# resonate idempotent (lens-indexed)"
+  "$ materialize returns RegisterMeta only"
+  "% always [0,1]"
+  "?^ cycle tracks liminality"
+  "& edges always bidirectional"
+]
