@@ -86,10 +86,10 @@ function M.start()
     settings = {},
     capabilities = vim.lsp.protocol.make_client_capabilities(),
 
-    -- Enable inlay hints if Neovim supports them (0.10+)
-    init_options = {
-      inlayHints = true,
-    },
+    -- Forward user settings as initializationOptions
+    -- These overlay .spw/config.json on the server side.
+    -- Usage: vim.g.spw_lsp_settings = { inlayHints = { paths = false } }
+    init_options = vim.g.spw_lsp_settings or {},
   })
 
   -- Auto-enable inlay hints when the server attaches (Neovim 0.10+)

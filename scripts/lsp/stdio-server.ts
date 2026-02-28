@@ -75,8 +75,34 @@ interface LspInlayHint {
   position: LspPosition
   label: string
   kind?: 1 | 2
+  tooltip?: string
   paddingLeft?: boolean
   paddingRight?: boolean
+}
+
+interface SpwConfig {
+  inlayHints?: {
+    paths?: boolean
+    annotations?: boolean
+    frames?: boolean
+  }
+  diagnostics?: {
+    unresolvedRefs?: 'error' | 'warning' | 'hint' | 'off'
+    staleProjections?: boolean
+  }
+  roots?: Record<string, string>
+  workspace?: {
+    exclude?: string[]
+  }
+  formatOnSave?: boolean
+}
+
+const DEFAULT_CONFIG: Required<SpwConfig> = {
+  inlayHints: { paths: true, annotations: true, frames: true },
+  diagnostics: { unresolvedRefs: 'warning', staleProjections: true },
+  roots: {},
+  workspace: { exclude: ['node_modules', '.git', '.claude'] },
+  formatOnSave: false,
 }
 
 interface JsonRpcRequest {
@@ -128,6 +154,7 @@ let WORKSPACE_ROOT = REPO_ROOT
 let SHUTDOWN = false
 let incoming = Buffer.alloc(0)
 let serverIndex: ServerIndex
+let CONFIG: Required<SpwConfig> = { ...DEFAULT_CONFIG }
 
 const DIAGNOSTIC_DEBOUNCE = new Map<string, ReturnType<typeof setTimeout>>()
 const DIAGNOSTIC_DELAY_MS = 300
@@ -196,6 +223,48 @@ function parseWorkspaceRoot(params: any): string {
   return WORKSPACE_ROOT
 }
 
+// ── Config loading ──────────────────────────────────────────────
+
+async function loadConfig(root: string, initOptions?: any): Promise<Required<SpwConfig>> {
+  const base = { ...DEFAULT_CONFIG }
+
+  // 1. Try .spw/config.json
+  const configPath = path.join(root, '.spw', 'config.json')
+  try {
+    const raw = await fs.readFile(configPath, 'utf8')
+    const parsed = JSON.parse(raw) as Partial<SpwConfig>
+    log(`loaded config from ${configPath}`)
+    mergeConfig(base, parsed)
+  } catch {
+    // No config file — that's fine
+  }
+
+  // 2. Overlay client initializationOptions (if any)
+  if (initOptions && typeof initOptions === 'object') {
+    mergeConfig(base, initOptions as Partial<SpwConfig>)
+  }
+
+  return base
+}
+
+function mergeConfig(target: Required<SpwConfig>, source: Partial<SpwConfig>): void {
+  if (source.inlayHints) {
+    target.inlayHints = { ...target.inlayHints, ...source.inlayHints }
+  }
+  if (source.diagnostics) {
+    target.diagnostics = { ...target.diagnostics, ...source.diagnostics }
+  }
+  if (source.roots) {
+    target.roots = { ...target.roots, ...source.roots }
+  }
+  if (source.workspace) {
+    target.workspace = { ...target.workspace, ...source.workspace }
+  }
+  if (source.formatOnSave !== undefined) {
+    target.formatOnSave = source.formatOnSave
+  }
+}
+
 // ── Root resolution ─────────────────────────────────────────────
 
 function defaultRoots(fileDir: string): RootMap {
@@ -228,7 +297,7 @@ function parseRoots(source: string, fileDir: string): RootMap {
 }
 
 function mergeRoots(source: string, fileDir: string): RootMap {
-  return { ...defaultRoots(fileDir), ...parseRoots(source, fileDir) }
+  return { ...defaultRoots(fileDir), ...CONFIG.roots, ...parseRoots(source, fileDir) }
 }
 
 async function resolveCandidate(target: string): Promise<string | null> {
@@ -305,6 +374,145 @@ async function resolveReferencePath(
   return null
 }
 
+function stripAnchor(target: string): string {
+  const hashIdx = target.indexOf('#')
+  return hashIdx >= 0 ? target.slice(0, hashIdx) : target
+}
+
+function normalizeRelPath(value: string): string {
+  const rel = value.replace(/\\/g, '/')
+  if (!rel) return './'
+  if (rel.startsWith('.')) return rel
+  return `./${rel}`
+}
+
+function levenshteinDistance(a: string, b: string): number {
+  if (a === b) return 0
+  if (!a.length) return b.length
+  if (!b.length) return a.length
+
+  const rows = a.length + 1
+  const cols = b.length + 1
+  const dp: number[] = new Array(rows * cols).fill(0)
+  const at = (r: number, c: number) => r * cols + c
+
+  for (let r = 0; r < rows; r += 1) dp[at(r, 0)] = r
+  for (let c = 0; c < cols; c += 1) dp[at(0, c)] = c
+
+  for (let r = 1; r < rows; r += 1) {
+    for (let c = 1; c < cols; c += 1) {
+      const cost = a[r - 1] === b[c - 1] ? 0 : 1
+      dp[at(r, c)] = Math.min(
+        dp[at(r - 1, c)] + 1,
+        dp[at(r, c - 1)] + 1,
+        dp[at(r - 1, c - 1)] + cost,
+      )
+    }
+  }
+
+  return dp[at(rows - 1, cols - 1)]
+}
+
+function scoreCandidateName(inputName: string, candidateName: string): number {
+  const input = inputName.toLowerCase()
+  const candidate = candidateName.toLowerCase()
+  const inputStem = input.replace(/\.[^.]+$/, '')
+  const candidateStem = candidate.replace(/\.[^.]+$/, '')
+
+  let score = 0
+  if (input === candidate) score += 100
+  if (inputStem === candidateStem) score += 80
+  if (candidate.startsWith(input) || input.startsWith(candidate)) score += 45
+  if (candidate.includes(input) || input.includes(candidate)) score += 25
+  if (input.includes('spw-v') && candidate.includes('spw-v')) score += 20
+
+  const dist = levenshteinDistance(inputStem, candidateStem)
+  const maxLen = Math.max(inputStem.length, candidateStem.length, 1)
+  const distScore = Math.max(0, 40 - Math.round((dist / maxLen) * 40))
+  score += distScore
+
+  return score
+}
+
+async function suggestNearbyReference(
+  hit: SpwSelectorHit,
+  source: string,
+  docPath: string,
+): Promise<string | null> {
+  if (hit.target.includes('*')) return null
+
+  const docDir = path.dirname(docPath)
+  const cleanTarget = stripAnchor(hit.target)
+  const roots = mergeRoots(source, docDir)
+
+  let searchBase: string
+  let toRefText: (absolute: string) => string
+
+  if (hit.kind === 'pathRef') {
+    searchBase = cleanTarget ? path.resolve(docDir, cleanTarget) : docPath
+    toRefText = (absolute) => normalizeRelPath(path.relative(docDir, absolute))
+  } else {
+    const rootName = hit.root ?? ''
+    const defaults = defaultRoots(docDir)
+    let rootBase = roots[rootName]
+    if (rootBase && !await fileExists(rootBase) && defaults[rootName]) {
+      rootBase = defaults[rootName]
+    }
+    if (!rootBase) {
+      const direct = path.join(WORKSPACE_ROOT, rootName)
+      if (await fileExists(direct)) rootBase = direct
+      else {
+        const src = path.join(WORKSPACE_ROOT, 'src', rootName)
+        rootBase = (await fileExists(src)) ? src : direct
+      }
+    }
+    if (!rootBase) return null
+    searchBase = cleanTarget ? path.resolve(rootBase, cleanTarget) : docPath
+    toRefText = (absolute) => {
+      const rel = path.relative(rootBase, absolute).replace(/\\/g, '/')
+      return rel ? `@${rootName}/${rel}` : `@${rootName}/`
+    }
+  }
+
+  const parent = path.dirname(searchBase)
+  const missingName = path.basename(searchBase)
+  let entries: Array<Awaited<ReturnType<typeof fs.readdir>>[number]>
+  try {
+    entries = await fs.readdir(parent, { withFileTypes: true })
+  } catch {
+    return null
+  }
+
+  if (entries.length === 0) return null
+
+  const versionCandidates = entries.filter((entry) => /^spw-v\d+\.\d+\.\d+-alpha$/i.test(entry.name))
+  if (/^spw-v\d+\.\d+\.\d+-alpha$/i.test(missingName) && versionCandidates.length > 0) {
+    const sorted = versionCandidates
+      .map((entry) => {
+        const m = /^spw-v(\d+)\.(\d+)\.(\d+)-alpha$/i.exec(entry.name)
+        return { entry, major: Number(m?.[1] ?? 0), minor: Number(m?.[2] ?? 0), patch: Number(m?.[3] ?? 0) }
+      })
+      .sort((a, b) => b.major - a.major || b.minor - a.minor || b.patch - a.patch)
+    const best = sorted[0]?.entry
+    if (best) {
+      const absolute = path.join(parent, best.name)
+      return toRefText(absolute)
+    }
+  }
+
+  const scored = entries
+    .map((entry) => {
+      const score = scoreCandidateName(missingName, entry.name)
+      return { entry, score }
+    })
+    .sort((a, b) => b.score - a.score)
+
+  const top = scored[0]
+  if (!top || top.score < 45) return null
+
+  return toRefText(path.join(parent, top.entry.name))
+}
+
 // ── Document text helper ────────────────────────────────────────
 
 async function getDocumentText(uri: string): Promise<string | null> {
@@ -352,41 +560,49 @@ async function publishDiagnostics(uri: string): Promise<void> {
   }
 
   // 2. Broken refs
-  const docPath = doc.filePath
-  const source = doc.text
-  for (const hit of doc.selectorHits) {
-    const resolved = await resolveReferencePath(hit, source, docPath, { allowDirectory: true })
-    if (resolved) continue
+  const refSeverity = CONFIG.diagnostics.unresolvedRefs
+  if (refSeverity !== 'off') {
+    const severityMap: Record<string, number> = { error: 1, warning: 2, hint: 4 }
+    const severity = severityMap[refSeverity ?? 'warning'] ?? 2
+    const docPath = doc.filePath
+    const source = doc.text
+    for (const hit of doc.selectorHits) {
+      const resolved = await resolveReferencePath(hit, source, docPath, { allowDirectory: true })
+      if (resolved) continue
 
-    const target = hit.kind === 'pathRef' ? hit.target : `@${hit.root}/${hit.target}`
-    diagnostics.push({
-      range: {
-        start: { line: hit.span.startLine, character: hit.span.startCharacter },
-        end: { line: hit.span.endLine, character: hit.span.endCharacter },
-      },
-      severity: 2,
-      source: 'spw',
-      message: `unresolved reference: ${target}`,
-    })
+      const target = hit.kind === 'pathRef' ? hit.target : `@${hit.root}/${hit.target}`
+      diagnostics.push({
+        range: {
+          start: { line: hit.span.startLine, character: hit.span.startCharacter },
+          end: { line: hit.span.endLine, character: hit.span.endCharacter },
+        },
+        severity,
+        source: 'spw',
+        message: `unresolved reference: ${target}`,
+      })
+    }
   }
 
   // 3. Stale projections
-  const projections = serverIndex.getProjectionsFromSpecOwner(docPath)
-  for (const proj of projections) {
-    const genPath = path.resolve(WORKSPACE_ROOT, proj.root.replace(/^\.\//, '').replace(/\/$/, ''))
-    try {
-      const specStat = await fs.stat(docPath)
-      const genStat = await fs.stat(genPath)
-      if (specStat.mtimeMs > genStat.mtimeMs) {
-        diagnostics.push({
-          range: { start: { line: 0, character: 0 }, end: { line: 0, character: 1 } },
-          severity: 3,
-          source: 'spw',
-          message: `projection "${proj.name}" may be stale (spec changed since last generation)`,
-        })
+  if (CONFIG.diagnostics.staleProjections) {
+    const docPath2 = doc.filePath
+    const projections = serverIndex.getProjectionsFromSpecOwner(docPath2)
+    for (const proj of projections) {
+      const genPath = path.resolve(WORKSPACE_ROOT, proj.root.replace(/^\.\//, '').replace(/\/$/, ''))
+      try {
+        const specStat = await fs.stat(docPath2)
+        const genStat = await fs.stat(genPath)
+        if (specStat.mtimeMs > genStat.mtimeMs) {
+          diagnostics.push({
+            range: { start: { line: 0, character: 0 }, end: { line: 0, character: 1 } },
+            severity: 3,
+            source: 'spw',
+            message: `projection "${proj.name}" may be stale (spec changed since last generation)`,
+          })
+        }
+      } catch {
+        // generated file doesn't exist — that's ok
       }
-    } catch {
-      // generated file doesn't exist — that's ok
     }
   }
 
@@ -532,15 +748,14 @@ async function hover(params: any): Promise<LspHover | null> {
   // 4. Sigil hover with spirit sequence context
   if (charAtPos && SIGIL_SEMANTICS[charAtPos]) {
     const sem = SIGIL_SEMANTICS[charAtPos]
-    const spiritPhase = serverIndex.getSpiritPhaseForSigil(charAtPos)
 
     let md = `**\`${charAtPos}\`** \u2014 *${sem.role}*\n\n`
-    md += `| | |\n|:--|:--|\n`
-    md += `| **Physics** | ${sem.physics} |\n`
-    md += `| **Phase** | ${sem.phase} |\n`
-    md += `| **Tuning** | ${sem.tuning} |\n`
-    if (spiritPhase) {
-      md += `\nSpirit sequence: \`${spiritPhase}\`\n`
+    md += `Physics: ${sem.physics}\n\n`
+    md += `Phase: ${sem.phase}\n\n`
+    md += `Tuning: ${sem.tuning}\n`
+    if (sem.phaseIndex >= 0) {
+      md += `\nSpirit sequence: ${serverIndex.getSpiritSequence()}\n`
+      md += `Active phase: ${sem.phaseIndex + 1}\n`
     }
 
     return {
@@ -1038,38 +1253,107 @@ async function inlayHints(params: any): Promise<LspInlayHint[]> {
   const range = params?.range as LspRange | undefined
   if (!uri || !range) return []
 
+  const docPath = pathFromUri(uri)
+  if (!docPath) return []
+
   const source = await getDocumentText(uri)
   if (source === null) return []
 
+  const doc = serverIndex.getDocument(uri)
+  if (!doc) return []
+
   const lines = source.split('\n')
   const hints: LspInlayHint[] = []
+  const fileAnnotations = serverIndex.annotationsForFile(docPath)
 
-  const startLine = Math.max(0, range.start.line)
-  const endLine = Math.min(lines.length - 1, range.end.line)
+  const frameKindsBySection = new Map<string, Map<string, number>>()
+  for (const entry of fileAnnotations) {
+    if (!entry.sectionLabel) continue
+    const byKind = frameKindsBySection.get(entry.sectionLabel) ?? new Map<string, number>()
+    byKind.set(entry.kind, (byKind.get(entry.kind) ?? 0) + 1)
+    frameKindsBySection.set(entry.sectionLabel, byKind)
+  }
 
-  for (let i = startLine; i <= endLine; i += 1) {
-    const line = lines[i]
-    if (line.trim().startsWith('#') && !line.includes('#!')) continue
+  // 1) Path status hints for ~"..." and @root/ references.
+  if (CONFIG.inlayHints.paths) {
+    // Show both resolved and unresolved refs so missing paths are obvious.
+    for (const hit of doc.selectorHits) {
+      const sl = hit.span.startLine
+      if (sl < range.start.line || sl > range.end.line) continue
 
-    for (let c = 0; c < line.length; c += 1) {
-      const char = line[c]
-      const sem = SIGIL_SEMANTICS[char]
-      // Only hint core phase operators
-      if (sem && sem.phaseIndex >= 0) {
-        // Heuristic: only hint if it's acting as an operator (followed by space, brace, identifier, or end of line)
-        if (c + 1 === line.length || /[ \w<\[{(]/.test(line[c + 1])) {
-          const registerName = sem.role.split('/')[0].trim()
-          const label = registerName.charAt(0).toUpperCase() + registerName.slice(1)
-          hints.push({
-            position: { line: i, character: c + 1 },
-            label: `[${label}]`,
-            kind: 1, // Type hint
-            paddingLeft: true,
-          })
+      const resolved = await resolveReferencePath(hit, source, docPath, { allowDirectory: true })
+      const lineText = lines[hit.span.endLine] ?? ''
+      const hintAt = Math.min(hit.span.endCharacter + 1, lineText.length)
+
+    if (!resolved) continue
+
+      const cleanResolved = resolved.replace(/#.*$/, '')
+      const rel = path.relative(WORKSPACE_ROOT, cleanResolved)
+      const target = hit.kind === 'pathRef' ? hit.target : `@${hit.root}/${hit.target}`
+      const targetClean = target.replace(/#.*$/, '').replace(/^\.\//, '')
+      if (rel === targetClean) continue
+
+      hints.push({
+        position: { line: hit.span.endLine, character: hintAt },
+        label: ` => ${rel}`,
+        kind: 2,
+        tooltip: `Resolved target: ${cleanResolved}`,
+        paddingLeft: true,
+      })
+    }
+  } // end CONFIG.inlayHints.paths
+
+  // 2) Line-local annotation density hints.
+  const annotRe = /#(!|:|>)?([a-zA-Z_][a-zA-Z0-9_]*)/g
+  if (CONFIG.inlayHints.annotations || CONFIG.inlayHints.frames) {
+    for (let lineNo = Math.max(0, range.start.line); lineNo <= Math.min(lines.length - 1, range.end.line); lineNo += 1) {
+      const line = lines[lineNo] ?? ''
+
+      if (CONFIG.inlayHints.frames) {
+        const frameMatch = line.match(/^\s*\^(?:\["([^"]+)"\]|"([^"]+)"|\[([A-Za-z_]\w*)\])/)
+        if (frameMatch) {
+          const frameName = frameMatch[1] || frameMatch[2] || frameMatch[3] || ''
+          const byKind = frameKindsBySection.get(frameName) ?? new Map<string, number>()
+          const summary = [...byKind.entries()].map(([kind, count]) => `${count} ${kind}`).join(', ')
+      if (summary) {
+        hints.push({
+          position: { line: lineNo, character: line.length },
+          label: ` [${summary}]`,
+          kind: 2,
+          tooltip: 'Frame-local annotation summary.',
+          paddingLeft: true,
+        })
+      }
         }
       }
+
+      if (!CONFIG.inlayHints.annotations) continue
+
+      annotRe.lastIndex = 0
+      const names: string[] = []
+      let match: RegExpExecArray | null
+      while ((match = annotRe.exec(line)) !== null) {
+        names.push(match[2])
+      }
+
+      if (names.length === 0) continue
+
+      const unique = [...new Set(names)]
+      const summary = unique
+        .slice(0, 2)
+        .map((name) => `${name}:${serverIndex.lookupAnnotation(name).length}`)
+        .join(', ')
+
+      hints.push({
+        position: { line: lineNo, character: line.length },
+        label: ` [anno ${summary}${unique.length > 2 ? ', ...' : ''}]`,
+        kind: 2,
+        tooltip: 'Workspace occurrence counts for annotation names on this line.',
+        paddingLeft: true,
+      })
     }
   }
+
   return hints
 }
 
@@ -1083,11 +1367,12 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
     switch (message.method) {
       case 'initialize': {
         WORKSPACE_ROOT = parseWorkspaceRoot(message.params)
+        CONFIG = await loadConfig(WORKSPACE_ROOT, message.params?.initializationOptions)
         serverIndex = new ServerIndex(WORKSPACE_ROOT)
-        log(`initialize workspace=${WORKSPACE_ROOT}`)
+        log(`initialize workspace=${WORKSPACE_ROOT} config=${JSON.stringify(CONFIG)}`)
 
         sendResult(id, {
-          serverInfo: { name: 'spw-lsp', version: '0.2.0-alpha.2' },
+          serverInfo: { name: 'spw-lsp', version: '0.2.0-alpha.3' },
           capabilities: {
             textDocumentSync: 1,
             definitionProvider: true,
