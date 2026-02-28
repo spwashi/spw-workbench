@@ -1,0 +1,56 @@
+# Spw Index
+#
+# Canon-root index for .spw surfaces.
+
+#>spw_index
+#:index #!canon
+
+^"intent"{
+  ~#goal: "Provide one root entrypoint for mount, workspace, biome, harness, and projection surfaces."
+}
+
+^"roots"{
+  @spw: ~"."
+  @workspace: ~"./workspace.spw"
+  @mount: ~"./mount.spw"
+  @canon_mount: ~"./canon-mount.spw"
+  @dialect_registry: ~"./registries/dialect-spec.spw"
+  @register_bank_registry: ~"./registries/register-bank.spw"
+  @curiosity_brace: ~"./registries/curiosity-brace.spw"
+  @symmetry_apps: ~"./applications/symmetry/symmetry-applications.spw"
+  @symmetry_ui: ~"./applications/symmetry/symmetry-ui-design.spw"
+  @symmetry_fps: ~"./applications/symmetry/symmetry-forecast-projection-sound.spw"
+  @symmetry_cog: ~"./applications/symmetry/symmetry-cognitive-engine.spw"
+  @symmetry_spell: ~"./applications/symmetry/symmetry-spellcasting-pattern.spw"
+  @tooling_intellij: ~"./tooling/intellij-plugin.spw"
+  @biome: ~"./biome/ocean/index.spw"
+  @harness: ~"./harness/evals/baseline-evals.spw"
+  @gen: ~"./gen/index.spw"
+  @hot: ~"./hot.spw"
+  @topology: ~"./topology.spw"
+}
+
+^"dispatch"{
+  mount: @mount
+  workspace: @workspace
+  biome: @biome
+  harness: @harness
+  projections: @gen
+  runtime_hot: @hot
+  routing: @topology
+  dialect: @dialect_registry
+  registers: @register_bank_registry
+  curiosity: @curiosity_brace
+  symmetry_applications: @symmetry_apps
+  symmetry_ui: @symmetry_ui
+  symmetry_forecast_projection_sound: @symmetry_fps
+  symmetry_cognitive: @symmetry_cog
+  symmetry_spellcasting_pattern: @symmetry_spell
+  tooling_intellij: @tooling_intellij
+}
+
+^"invariant"{
+  "index.spw is a stable map, not a high-churn projection body",
+  "mount.spw is ONF-safe source of truth for mount slice state",
+  "canon-mount.spw may contain richer experimental/literary framing",
+}

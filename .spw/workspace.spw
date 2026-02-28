@@ -9,12 +9,32 @@
 ^"roots"{
   @repo: ~".."
   @spw: ~"."
+  @index: ~"./index.spw"
+  @mount: ~"./mount.spw"
   @shelves: ~"./shelves.spw"
   @hot: ~"./hot.spw"
   @agents: ~"./agents.spw"
   @docs: ~"../docs"
   @seed: ~"../src/seed"
   @spec: ~"../lib/spw-v0.2.0-alpha"
+}
+
+^"relationships"{
+  #:relationship #!topology
+  control_plane: "index.spw -> dispatch -> mount/workspace/biome/harness/gen"
+  register_plane: "registries/* define operator physics and brace symmetry"
+  application_plane: "applications/symmetry/* consume registries and project domain behaviors"
+  measurement_plane: "harness/{evals,probes,runs,memory-surface} measures and archives loop evidence"
+  projection_plane: "gen/* is generated output; manifests and registries remain source-of-truth surfaces"
+}
+
+^"priming_concepts_frames_bodies"{
+  #:semantics #!materialization
+  priming: "operator sequence charges a register disposition before materialization"
+  concept: "named potential carried by register + references; may remain unbound"
+  frame: "structured container that orients relations, probes, and lenses"
+  body: "materialized projection or resolved artifact generated from a frame"
+  transition_rule: "priming -> concept -> frame -> body is reversible via probe/archive replay"
 }
 
 ^"dialect"{
@@ -32,12 +52,14 @@
 ^"lsp"{
   #:lsp #!discovery
   ~#manifest_role: "workspace discovery + root/path navigation bounds"
-  ~#index_roots: [~"./", ~"../docs", ~"../lib/spw-v0.2.0-alpha", ~"../src/seed"]
+  ~#index_roots: [~"./", ~"./index.spw", ~"../docs", ~"../lib/spw-v0.2.0-alpha", ~"../src/seed"]
   ~#navigable_selector: "$~\"_\" | $@_"
   ~#domain_roots_selector: "$^[_]"
   ~#cache_contract: ~"./biome/ocean/algos/cache.spw"
   ~#dense_dialect_contract: ~"./biome/ocean/experiments/syntax.spw"
   ~#ux_contract: ~"./biome/ocean/ux.spw"
+  ~#operator_envelope_contract: [&, ^, *, ?, ~, !, %, =]
+  ~#operator_envelope_behavior: "prefix/postfix wrappers preserve selector span + definition/documentLink navigation"
   ~#future_capabilities: [
     "workspace symbols",
     "code lens for harness runs",
@@ -101,6 +123,15 @@
   ~#query_hot: ~"./biome/ocean/query/hot.spw"
   ~#literature_shapes: ~"./biome/ocean/lit.spw"
   ~#trace: ~"./biome/ocean/trace.spw"
+  ~#curiosity_brace_registry: ~"./registries/curiosity-brace.spw"
+  ~#dialect_registry: ~"./registries/dialect-spec.spw"
+  ~#register_bank_registry: ~"./registries/register-bank.spw"
+  ~#symmetry_application_registry: ~"./applications/symmetry/symmetry-applications.spw"
+  ~#symmetry_ui_registry: ~"./applications/symmetry/symmetry-ui-design.spw"
+  ~#symmetry_forecast_registry: ~"./applications/symmetry/symmetry-forecast-projection-sound.spw"
+  ~#symmetry_cognitive_registry: ~"./applications/symmetry/symmetry-cognitive-engine.spw"
+  ~#symmetry_spellcasting_registry: ~"./applications/symmetry/symmetry-spellcasting-pattern.spw"
+  ~#tooling_intellij_registry: ~"./tooling/intellij-plugin.spw"
   ~#goal: "Surface caching + interpretation optimizations for Spw as reference language."
 }
 
@@ -118,6 +149,16 @@
   ~#prompt_policy: "capture task intent + references; exclude raw chat transcripts by default"
   ~#dedupe_key: "intent_hash + context_refs + model"
   ~#required_fields: ["prompt", "model", "seed", "artifacts", "checks", "verdict"]
+  ~#memory_policy: "runtime memory is script-addressable and snapshot-oriented; loop surfaces carry compact context"
+}
+
+^"memory_locations"{
+  #:memory #!placement
+  hot: ".spw/hot.spw (active loop context, high mutation)"
+  warm: ".spw/harness/memory-surface.spw (run snapshots, probe fills, replay inputs)"
+  cold: ".spw/harness/probes/archive-index.spw + .spw/harness/runs/* (append-only evidence)"
+  generated: ".spw/gen/* (projection bodies, rebuildable from refs + snapshots)"
+  invariant: "memory location is explicit and queryable; ownership remains visible by path and root"
 }
 
 ^"tuning"{

@@ -1,0 +1,37 @@
+# Mount
+#
+# ONF-safe mount source of truth for .spw canon-root behavior.
+
+#>spw_mount
+#:mount #!canon
+
+^seed[Workbench.Mount.V01.ONF v:0.1 @profile:Spw.m @intent:mount-slice]
+?(
+  @(Orchestrator,#[SyntaxEvolver,CanonicalizerHasher,FuzzerAdversary,ParserGrammar,ProjectionMedia]),
+  "implement Mount v0.1 slice; treat .spw as canon root and validate mount invariants"
+)
+
+^"runtime_contract"{
+  index: ~"./index.spw"
+  workspace: ~"./workspace.spw"
+  canon_mount: ~"./canon-mount.spw"
+  eval: ~"./harness/evals/baseline-evals.spw"
+}
+
+^"lock_policy"{
+  @lock: "advisory construct in v0.1 (validated by script, not parser-enforced)"
+  semantic_hash: "hash(canonical(Spw.m))"
+  surface_hash: "runtime write policy may lock selected .spw payloads"
+}
+
+^"experimental_surface"{
+  semicolon_newline_space: "proposed and tracked by diagnostics; not grammar-default in this slice"
+  semicolon_prefixed_line: "proposed comment/compress style; diagnostics only in v0.1"
+  interpreted_examples: ["example:<>", "example:;", "example:?<>"]
+  status: "speculative ergonomics under scoped evolution"
+}
+
+^"invariant"{
+  "ONF seed in mount.spw stays parse-clean and hash-stable",
+  "experimental syntax remains opt-in until grammar and fuzz gates pass",
+}
