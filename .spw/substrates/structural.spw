@@ -1,0 +1,79 @@
+# Substrates
+#
+# A substrate is a processing context where register events react.
+# The main pipeline operates on the structural substrate (batch, sequential).
+# Additional substrates add event-driven and resonance processing.
+#
+# Each .spw file in this directory declares a named substrate.
+# The runtime discovers substrates by scanning .spw/substrates/*.spw.
+
+#>spw_substrates
+#:architecture #!pipeline
+#:layer #!pragmatics
+
+^"structural"{
+  #:substrate #!main
+  ~#description: "The main pipeline — desugar, parse, normalize, interpret"
+  ~#processing: "batch, sequential, deterministic"
+  ~#equivalent: "Substrate('structural')"
+
+  ^"stages"{
+    .. desugar    // source → desugared source
+    .. parse      // source → AST
+    .. normalize  // AST → ONF
+    .. interpret  // ONF → register state
+  }
+
+  ^"precipitates"{
+    ~#model: "each stage yields a precipitate — the product that crystallizes out"
+    ~#affordance: "precipitateToSpw() renders any precipitate as operable Spw text"
+    ~#projection: "projectionToSpw() coagulates all stages into a single aggregate frame"
+  }
+}
+
+^"reactive"{
+  #:substrate #!event-driven
+  ~#description: "Event-driven register processing — handlers react to writes"
+  ~#processing: "event-sourced, non-blocking"
+  ~#equivalent: "Substrate('reactive')"
+
+  ^"bindings"{
+    ~#model: "handlers bind to patterns on the substrate"
+    ~#patterns: ["exact key", "* (wildcard)", "write:* (kind-based)"]
+    ~#deferral: "~ in Spw is a substrate binding — it waits for catalysis"
+  }
+
+  ^"events"{
+    .. write         // register set()
+    .. couple        // register couple()
+    .. phase-advance // phase enrichment
+    .. mark          // positional mark
+  }
+}
+
+^"resonance"{
+  #:substrate #!discovery
+  ~#description: "Post-pipeline scan for emergent coupling between registers"
+  ~#processing: "batch scan of event log after main pipeline completes"
+  ~#equivalent: "detectResonances(substrate)"
+
+  ^"detectors"{
+    .. value-echo       // same value in two registers
+    .. phase-sync       // same phase within tight time window
+    .. frequency-lock   // similar write frequency
+    .. implicit-couple  // value of A references key of B
+  }
+
+  ^"chemistry"{
+    ~#analogy: "the resonance substrate discovers bonds that were not explicitly declared"
+    ~#explicit: "<> coupling is declared in source"
+    ~#implicit: "resonance finds coupling that emerges from register state"
+  }
+}
+
+^"convention"{
+  #:protocol #!discovery
+  ~#scan_path: ".spw/substrates/*.spw"
+  ~#inheritance: "sites create their own .spw/substrates/ with domain-specific bindings"
+  ~#isolation: "each substrate processes independently; coupling via shared register keys"
+}
