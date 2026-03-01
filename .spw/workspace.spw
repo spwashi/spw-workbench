@@ -5,6 +5,7 @@
 
 #>spw_workspace
 #:manifest
+#:layer #!pragmatics
 
 ^"roots"{
   @repo: ~".."
@@ -228,3 +229,9 @@
   "Conventions and patterns stay canonical; generated bodies stay in /gen.",
   "Root refs resolve through this manifest before fallback heuristics.",
 }
+
+?["How does @-root resolution cascade from this manifest to the LSP?"]
+  #:scope #!workspace
+  $@_                     // selector: expand all @-root declarations
+  ~#root_resolution_chain // priming: workspace.spw → shelves.spw → LSP defaultRoots → config.json
+  !release{ "hover on any @root shows full resolution chain" }
