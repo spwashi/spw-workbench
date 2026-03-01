@@ -9,7 +9,7 @@ describe('runSpw', () => {
     if (!result.success) return
 
     expect(result.parse.success).toBe(true)
-    expect(result.runtime.registers.activeKey).toBe('"')
+    expect(result.runtime.registers.focusKey).toBe('"')
     expect(result.runtime.traces.length).toBeGreaterThan(0)
   })
 

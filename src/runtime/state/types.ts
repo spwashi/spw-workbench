@@ -192,7 +192,7 @@ export interface RegisterWriteOptions {
 }
 
 export interface RegisterSnapshot {
-  activeKey: string
+  focusKey: string
   entries: Record<string, RegisterEntry>
   lensIndex: Record<string, string[]>
 }

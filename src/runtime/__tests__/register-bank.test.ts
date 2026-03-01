@@ -5,12 +5,12 @@ describe('RegisterBank', () => {
   it('yanks into active, default, and history registers', () => {
     const bank = new RegisterBank()
 
-    bank.setActive('a')
-    bank.yank('boon')
+    bank.focus('a')
+    bank.extract('boon')
 
-    expect(bank.paste('a')).toBe('boon')
-    expect(bank.paste('"')).toBe('boon')
-    expect(bank.paste('0')).toBe('boon')
+    expect(bank.deposit('a')).toBe('boon')
+    expect(bank.deposit('"')).toBe('boon')
+    expect(bank.deposit('0')).toBe('boon')
   })
 
   it('indexes resonate writes by lens and allows updates', () => {
@@ -18,7 +18,7 @@ describe('RegisterBank', () => {
 
     expect(bank.resonate('sig', 'first', 'cache.render')).toBe(true)
     expect(bank.resonate('sig', 'second', 'cache.render')).toBe(true)
-    expect(bank.paste('sig')).toBe('second')
+    expect(bank.deposit('sig')).toBe('second')
     expect(bank.keysForLens('cache.render')).toContain('sig')
     expect(bank.materialize('sig')?.lenses).toContain('cache.render')
   })

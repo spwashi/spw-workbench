@@ -16,7 +16,7 @@ import type {
 } from './types'
 import { PHASE_ORDER } from './types'
 
-const DEFAULT_ACTIVE_KEY = '"'
+const DEFAULT_FOCUS_KEY = '"'
 const HISTORY_KEYS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] as const
 
 function nowIso(): string {
@@ -110,7 +110,7 @@ export class RegisterBank {
   private readonly writeTimestamps = new Map<string, number[]>()
   /** Coupling edges: Map<keyA, Set<keyB>> (bidirectional) */
   private readonly couplingEdges = new Map<string, Set<string>>()
-  private activeKey = DEFAULT_ACTIVE_KEY
+  private focusKey = DEFAULT_FOCUS_KEY
   /** Optional substrate for event-driven processing. Opt-in: zero overhead when null. */
   private substrate: Substrate | null = null
 
@@ -118,7 +118,7 @@ export class RegisterBank {
 
   constructor(initial: Record<string, RuntimeValue> = {}, substrate?: Substrate) {
     if (substrate) this.substrate = substrate
-    this.ensureEntry(DEFAULT_ACTIVE_KEY)
+    this.ensureEntry(DEFAULT_FOCUS_KEY)
     for (const [key, value] of Object.entries(initial)) {
       this.set(key, value, { source: 'init', force: true })
     }
@@ -136,13 +136,13 @@ export class RegisterBank {
     return prev
   }
 
-  setActive(key: string): void {
+  focus(key: string): void {
     this.ensureEntry(key)
-    this.activeKey = key
+    this.focusKey = key
   }
 
-  getActiveKey(): string {
-    return this.activeKey
+  getFocusKey(): string {
+    return this.focusKey
   }
 
   listKeys(): string[] {
@@ -227,22 +227,22 @@ export class RegisterBank {
     return this.entries.get(key)?.meta.phases?.current
   }
 
-  get(key: string = this.activeKey): RuntimeValue {
+  get(key: string = this.focusKey): RuntimeValue {
     const entry = this.ensureEntry(key)
     return cloneRuntimeValue(entry.value)
   }
 
-  yank(value: RuntimeValue, source = 'yank'): boolean {
-    const wroteActive = this.set(this.activeKey, value, { source })
-    this.set(DEFAULT_ACTIVE_KEY, value, { source: `${source}:default`, force: true })
+  extract(value: RuntimeValue, source = 'extract'): boolean {
+    const wroteActive = this.set(this.focusKey, value, { source })
+    this.set(DEFAULT_FOCUS_KEY, value, { source: `${source}:default`, force: true })
     this.rotateHistory(value, source)
     return wroteActive
   }
 
-  paste(key: string = this.activeKey): RuntimeValue {
+  deposit(key: string = this.focusKey): RuntimeValue {
     const entry = this.ensureEntry(key)
     entry.meta.lastUsedAt = nowIso()
-    entry.meta.provenance = this.pushProvenance(entry.meta.provenance, 'paste')
+    entry.meta.provenance = this.pushProvenance(entry.meta.provenance, 'deposit')
     return cloneRuntimeValue(entry.value)
   }
 
@@ -454,7 +454,7 @@ export class RegisterBank {
     }
 
     return {
-      activeKey: this.activeKey,
+      focusKey: this.focusKey,
       entries,
       lensIndex,
     }

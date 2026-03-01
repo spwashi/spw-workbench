@@ -176,7 +176,7 @@ function evaluate(node: ONFNode, context: EvalContext): RuntimeValue {
     }
 
     case '=': {
-      const key = frameString(node) ?? context.registers.getActiveKey()
+      const key = frameString(node) ?? context.registers.getFocusKey()
       const value = args[0] ?? null
       context.registers.set(key, value, { source: 'interpret:set', force: true })
       return value
@@ -187,14 +187,14 @@ function evaluate(node: ONFNode, context: EvalContext): RuntimeValue {
         const scale = typeof args[1] === 'number' ? args[1] : 1
         return context.registers.measure(args[0], scale)
       }
-      const fallbackKey = frameString(node) ?? context.registers.getActiveKey()
+      const fallbackKey = frameString(node) ?? context.registers.getFocusKey()
       return context.registers.measure(fallbackKey)
     }
 
     case '$': {
       const key = typeof args[0] === 'string'
         ? args[0]
-        : frameString(node) ?? context.registers.getActiveKey()
+        : frameString(node) ?? context.registers.getFocusKey()
       const meta = context.registers.materialize(key)
       return meta ? coerceRuntimeValue(meta) : null
     }
@@ -228,7 +228,7 @@ function evaluate(node: ONFNode, context: EvalContext): RuntimeValue {
     case '*': {
       // Value/collapse: resolve to concrete value, write to active register
       const collapsed = args[0] ?? null
-      const key = frameString(node) ?? context.registers.getActiveKey()
+      const key = frameString(node) ?? context.registers.getFocusKey()
       context.registers.set(key, collapsed, { source: 'interpret:collapse', force: true })
       trace(context, 'interpret', `collapse *${key} → ${typeof collapsed}`)
       return collapsed
