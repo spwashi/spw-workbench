@@ -1,0 +1,91 @@
+# Claim Locks
+#
+# Git-diff-friendly multi-agent collision prevention.
+# Agents ^claim a scope before writing, ^release when done.
+# Locks are tracked as structured entries in this file.
+# Git merge conflicts on this file ARE the conflict resolution signal.
+
+#>spw_state_locks
+#:state #!locks
+#:layer #!pragmatics
+
+^"protocol"{
+  #:convention #!locking
+
+  acquire: {
+    ~#step_1: "check active_locks for overlapping scope"
+    ~#step_2: "if no conflict, append entry to active_locks"
+    ~#step_3: "git add .spw/state/locks.spw && git commit -m '^claim[scope]'"
+    ~#step_4: "if merge conflict on commit → your lock collided → back off and retry"
+    ~#invariant: "the commit itself IS the lock acquisition — no external lock service needed"
+  }
+
+  release: {
+    ~#step_1: "remove your entry from active_locks"
+    ~#step_2: "git add .spw/state/locks.spw && git commit -m '^release[scope]'"
+    ~#invariant: "a lock exists if and only if its entry is in the committed version of this file"
+  }
+
+  expire: {
+    ~#rule: "locks older than ttl_minutes are stale"
+    ~#action: "any agent may remove expired locks with commit message '^expire[agent-id]'"
+    ~#default_ttl: 30  // minutes, configurable in agent-surface.spw#defaults
+  }
+
+  conflict: {
+    ~#detection: "two entries with overlapping scope paths"
+    ~#resolution: "both agents pause; human inspects this file; human removes one lock"
+    ~#signal: "git merge conflict on this file = structural collision detection"
+  }
+}
+
+^"lock_schema"{
+  #:template #!lock_entry
+  template: {
+    agent:      "string — agent identity (e.g. gemini-03ef, human-local)"
+    scope:      "string — path or @root that this lock covers"
+    type:       "string — intent: refactor | feature | fix | audit | publish"
+    claimed_at: "ISO8601 timestamp"
+    ttl_minutes: "number — auto-expire after this many minutes (default: 30)"
+    note:       "string — optional description of what the agent is doing"
+  }
+}
+
+^"active_locks"[
+  // Empty — no active locks. Agents append entries here.
+  // Example:
+  // { agent: "gemini-03ef", scope: "@src/runtime", type: "refactor", claimed_at: "2026-03-01T14:00Z", ttl_minutes: 30, note: "restructuring pipeline stages" },
+]
+
+^"history"{
+  #:audit #!trail
+  ~#convention: "released locks move here as a git-visible audit trail; prune monthly"
+  released: [
+    // { agent: "...", scope: "...", claimed_at: "...", released_at: "...", type: "..." },
+  ]
+}
+
+^"invariant"{
+  "A scope is locked if and only if an unexpired entry exists in active_locks.",
+  "Git merge conflicts on this file are intentional — they signal agent collisions.",
+  "Lock entries are append-only during acquisition; removal is release or expiry.",
+  "The history section provides an audit trail without polluting the active state.",
+}
+
+#>wonder_spw_state_locks_1
+?["What is the game theory of lock acquisition in a git-first protocol?"]{
+  #:depth #!mathematical  // lens: formal structure
+  ~#nash_equilibrium: "agents that always back off on conflict lose throughput; agents that never back off cause cascading failures"
+  ~<harness/claim-protocol.spw>  // claim template this extends
+  !probe{ "model two agents competing for the same scope: what TTL minimizes wasted work? does the strategy change with 3+ agents?" }
+  $%[file.frame_count, file.annotation_density]
+}
+
+#>wonder_spw_state_locks_2
+?["What does a diff of this file across 50 commits reveal about workspace collaboration patterns?"]{
+  #:depth #!experiential  // lens: curated collection
+  ~#past: "git log --oneline -- .spw/state/locks.spw | head -20"
+  ~#pattern: "clustering of locks by scope reveals hot zones; clustering by agent reveals specialization"
+  !probe{ "after 50 commits, plot lock frequency by scope. the heat map IS the collaboration topology." }
+  $%[file.frame_count, file.annotation_density]
+}
