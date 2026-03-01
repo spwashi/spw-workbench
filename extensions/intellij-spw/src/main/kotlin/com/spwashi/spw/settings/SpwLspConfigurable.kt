@@ -3,7 +3,7 @@ package com.spwashi.spw.settings
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.TextFieldWithBrowseButton
+import com.intellij.ui.components.fields.TextFieldWithBrowseButton
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBTextField
@@ -29,8 +29,8 @@ class SpwLspConfigurable(private val project: Project) : Configurable {
                 addActionListener { updateEnabledState(isSelected) }
             }
             commandField = JBTextField().apply {
-                toolTipText = "Override the LSP command (e.g. \"npm run lsp\")."
-                emptyText.text = "Default: npm run lsp"
+                toolTipText = "Override the LSP command (e.g. \"npx tsx scripts/lsp/stdio-server.ts\")."
+                emptyText.text = "Default: npx tsx scripts/lsp/stdio-server.ts"
                 text = initialState.command
             }
             workDirField = TextFieldWithBrowseButton().apply {
@@ -38,15 +38,16 @@ class SpwLspConfigurable(private val project: Project) : Configurable {
                 val descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
                 addBrowseFolderListener(
                     "Select Spw LSP Working Directory",
-                    "Choose the folder that contains package.json with an \"lsp\" script.",
+                    "Choose the folder that contains scripts/lsp/stdio-server.ts.",
                     project,
                     descriptor
                 )
+                textField.emptyText.text = "Default: project root"
                 text = initialState.workDir
             }
 
             val helperLabel = JBLabel(
-                "Leave fields empty to use defaults. The working directory should contain package.json with an \"lsp\" script."
+                "Leave fields empty to use defaults. The working directory should contain scripts/lsp/stdio-server.ts."
             ).apply {
                 foreground = UIUtil.getContextHelpForeground()
                 font = UIUtil.getLabelFont(UIUtil.FontSize.SMALL)
@@ -100,5 +101,6 @@ class SpwLspConfigurable(private val project: Project) : Configurable {
     private fun updateEnabledState(enabled: Boolean) {
         commandField?.isEnabled = enabled
         workDirField?.isEnabled = enabled
+        workDirField?.button?.isEnabled = enabled
     }
 }

@@ -73,6 +73,17 @@ internal object SpwLineParsers {
         return null
     }
 
+    data class ClaimMatch(
+        val id: String,
+        val range: IntRange,
+    )
+
+    fun parseClaimId(lineText: String): ClaimMatch? {
+        val match = CLAIM_PATTERN.find(lineText) ?: return null
+        val id = match.groupValues[1]
+        return ClaimMatch(id = id, range = match.range)
+    }
+
     private val HEADING_PATTERN = Regex("""^\s*(#{1,3})\s+(.+)""")
     private val ANCHOR_PATTERN = Regex("""#>([a-zA-Z_][a-zA-Z0-9_]*)""")
 
@@ -84,4 +95,8 @@ internal object SpwLineParsers {
     private val FRAME_PATTERN = Regex(
         """^\s*\^(?:\s*\[[A-Za-z_][A-Za-z0-9_.-]*])*\s*(?:\[\s*(['"])([^'"]+)\1\s*]|(['"])([^'"]+)\3|([A-Za-z_][A-Za-z0-9_]*)\[([^\]]+)])"""
     )
+
+    // Claim protocol: ^claim[c001-brace-symmetry]
+    private val CLAIM_PATTERN = Regex("""^\s*\^claim\[([^\]]+)]""")
 }
+

@@ -93,6 +93,22 @@ class SpwStructureViewElement(private val psiFile: PsiFile) : StructureViewTreeE
                         psiFile = psiFile,
                     )
                 )
+                fallbackOffset += line.length + 1
+                continue
+            }
+
+            // Claims: ^claim[c001-brace-symmetry]
+            val claim = SpwLineParsers.parseClaimId(lineText)
+            if (claim != null) {
+                elements.add(
+                    SpwStructureNode(
+                        label = "⚑ ${claim.id}",
+                        kind = "claim",
+                        lineNumber = index,
+                        lineStartOffset = lineStartOffset,
+                        psiFile = psiFile,
+                    )
+                )
             }
 
             fallbackOffset += line.length + 1
