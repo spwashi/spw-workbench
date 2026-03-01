@@ -1,0 +1,97 @@
+# Agent Surface
+#
+# Machine-readable affordance map for agent onboarding.
+# An agent landing in this workspace reads this file FIRST
+# to understand what it can read, write, query, and avoid.
+
+#>spw_agent_surface
+#:manifest #!affordances
+#:layer #!pragmatics
+
+^"capabilities"{
+  !read{
+    @docs                        // all documentation
+    @spec                        // language spec (v0.2.0-alpha)
+    @spw                         // workspace manifest and conventions
+    @seed                        // grammar seeds and parser
+    ~"../src"                    // source code
+    ~"../.agents"                // agent plans and state
+  }
+  !write{
+    ~"../.agents/plans"          // new plan directories
+    ~"../.agents/state/runtime"  // runtime state files
+    ~"../docs"                   // documentation (with review)
+    ~"../dist"                   // build outputs
+    ~"./state/locks.spw"         // observable state and locks
+    ~"./surfaces/index.spw"      // web surface definitions
+  }
+  !query{
+    $?["_"]@spw                  // wonder blocks across workspace
+    $^["_"]@docs                 // frames in documentation
+    $#_@workspace                // annotations workspace-wide
+    $%[_]                        // metric measurement points
+  }
+  !avoid{
+    @lib                         // upstream library — read only
+    ~"../src/seed/grammar"       // parser core — modify with extreme care
+    ~"./registries/brace-physics.spw"  // foundational spec — append only
+  }
+}
+
+^"entry_points"{
+  #:onboarding #!sequence
+  ~#step_1: ~"workspace.spw"              // root manifest, kernel layers, roots
+  ~#step_2: ~"conventions/index.spw"      // naming, selection, CLI conventions
+  ~#step_3: ~"topology.spw"              // how files relate
+  ~#step_4: ~"harness/claim-protocol.spw" // how claims are tested
+  ~#step_5: ~"./state/observable.json"      // current runtime metrics
+  ~#step_6: ~"./state/locks.spw"            // active agent locks
+  ~#step_7: ~"./surfaces/index.spw"         // web publishing surfaces
+}
+
+^"dialect"{
+  parser: @spec/core
+  version: "0.2.0-alpha"
+  extensions: [
+    "wonder-blocks",             // ?["..."]{ } queryable frames
+    "claim-chains",              // claim → spec → impl → probe
+    "metric-binding",            // $%[metric] runtime measurement
+    "brace-physics",             // charge, tension, depth budget
+    "layer-classification",      // #:layer #!{grammar|semantics|pragmatics}
+  ]
+}
+
+^"defaults"{
+  #:ergonomics #!documented
+  ~#observable_refresh: "on-save"         // LSP reloads observable.json on textDocument/didSave
+  ~#lock_ttl_minutes: 30                  // default claim lock time-to-live
+  ~#lock_conflict_policy: "pause-both"    // overlapping scopes → both agents pause
+  ~#publish_target: "dist/publish/"       // web surface output directory
+  ~#query_result_limit: 50                // max results for $-selector queries
+  ~#depth_budget: 4                       // nesting depth warning threshold
+}
+
+^"agent_identity"{
+  #:protocol #!handshake
+  ~#convention: "agents write their ID to lock entries using the format: agent-type-conversationId"
+  ~#example: "gemini-03ef, claude-a1b2, human-local"
+  ~#anonymous: "agents without IDs use 'anon-{timestamp}' — locks expire at default TTL"
+}
+
+#>wonder_spw_agentsurface_1
+?["What affordance is most dangerous to grant?"]{
+  #:depth #!experiential  // lens: ecological zone
+  $^["capabilities"]@here => %[write.scope_count, avoid.scope_count]
+  ~#tension: "write access enables agency; avoid zones protect invariants — where is the boundary?"
+  !probe{ "list every !write scope. For each, ask: what breaks if an agent writes incorrectly here? The highest-consequence scope reveals the trust gradient." }
+  $%[file.frame_count, file.annotation_density]
+}
+
+#>wonder_spw_agentsurface_2
+?["How does the entry_points sequence change as the workspace evolves?"]{
+  #:depth #!computational  // lens: curated collection
+  ~<workspace.spw>  // the root that this file indexes
+  ~#hypothesis: "onboarding sequence reflects importance ordering — but importance shifts as the workspace matures"
+  !probe{ "compare today's step_1..step_7 ordering with what you'd choose for a workspace with 10× more files. What reorders?" }
+  $%[file.frame_count, file.annotation_density]
+}
