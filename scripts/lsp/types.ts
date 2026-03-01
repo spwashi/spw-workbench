@@ -203,3 +203,42 @@ export interface InlayHintParams {
     textDocument: TextDocumentIdentifier
     range: LspRange
 }
+
+// ── Handler Dependencies ────────────────────────────────────────
+// All capability handler clusters receive this interface.
+// An LLM agent reading this type knows every dependency available.
+
+import type { ServerIndex } from './server-index'
+import type { SpwSelectorHit } from './spw-selector'
+
+export interface HandlerDeps {
+    serverIndex: ServerIndex
+    config: Required<SpwConfig>
+    workspaceRoot: string
+
+    // Path resolution
+    pathFromUri(uri: string): string | null
+    uriFromPath(filePath: string): string
+    resolveReferencePath(
+        hit: SpwSelectorHit, source: string, docPath: string,
+        options?: { allowDirectory?: boolean },
+    ): Promise<string | null>
+    suggestNearbyReference(
+        hit: SpwSelectorHit, source: string, docPath: string,
+    ): Promise<string | null>
+    defaultRoots(fileDir: string): RootMap
+    mergeRoots(source: string, fileDir: string): RootMap
+    getDocumentText(uri: string): Promise<string | null>
+    getWorkspaceSpwFiles(): Promise<string[]>
+    mapWithConcurrency<T, R>(items: T[], concurrency: number, mapper: (item: T) => Promise<R>): Promise<R[]>
+
+    // Transport
+    sendNotification(method: string, params: any): void
+    log(message: string): void
+
+    // Runtime
+    trialRunSpw(source: string, uri: string): any
+    loadObservableState(): Promise<Record<string, any>>
+    observableState: Record<string, any> | null
+    observableStateLoadedAt: number
+}
