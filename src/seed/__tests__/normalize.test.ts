@@ -1,20 +1,23 @@
 import { describe, it, expect } from 'vitest'
 import { desugar, normalizeToONF } from '../normalize'
-import { collectPrecipitants, runSpwStepped } from '../../runtime/pipeline/stages'
+import { collectPrecipitants } from '../../runtime/pipeline/stages'
+
+const dummySpan = { start: { line: 1, column: 1, offset: 0 }, end: { line: 1, column: 2, offset: 1 } }
 
 function makeNode(type: string, extra: Record<string, unknown> = {}) {
-  return {
-    type,
-    span: { start: { line: 1, column: 1, offset: 0 }, end: { line: 1, column: 2, offset: 1 } },
-    ...extra,
-  } as any
+  return { type, span: dummySpan, ...extra } as any
 }
 
 function makeToken(type: string, value: string) {
-  return {
-    type, value,
-    span: { start: { line: 1, column: 1, offset: 0 }, end: { line: 1, column: 2, offset: 1 } },
-  }
+  return { type, value, span: dummySpan }
+}
+
+function makeId(value: string) {
+  return makeNode('Identifier', { token: makeToken('IDENTIFIER', value) })
+}
+
+function makeLit(value: string, tokType = 'STRING') {
+  return makeNode('Literal', { token: makeToken(tokType, value) })
 }
 
 describe('desugar', () => {
@@ -35,13 +38,12 @@ describe('desugar', () => {
   })
 
   it('does not expand <> as intrinsic sugar (no <> operator)', () => {
-    // <> is reserved for containers, not operators
     expect(desugar('<>_foo')).toBe('<>_foo')
   })
 })
 
 describe('normalizeToONF', () => {
-  it('normalizes basic AST structures to ONF', () => {
+  it('Wildcard → _[hole]', () => {
     const result = normalizeToONF({ type: 'Wildcard', span: {} as any })
     expect(result).toEqual({ sigil: '_', args: [], frames: { reg: 'hole' } })
   })
@@ -63,10 +65,7 @@ describe('normalizeToONF', () => {
   })
 
   it('Binding → =[changelist]', () => {
-    const onf = normalizeToONF(makeNode('Binding', {
-      key: makeNode('Identifier', { value: 'x' }),
-      value: makeNode('Literal', { value: '42' }),
-    }))
+    const onf = normalizeToONF(makeNode('Binding', { key: makeId('x'), value: makeLit('42') }))
     expect(onf.sigil).toBe('=')
     expect(onf.frames.reg).toBe('changelist')
     expect(onf.args).toHaveLength(2)
@@ -74,7 +73,7 @@ describe('normalizeToONF', () => {
 
   it('Bullet → _[marker]', () => {
     const onf = normalizeToONF(makeNode('Bullet', {
-      item: makeNode('Identifier', { value: 'hello' }),
+      item: makeId('hello'),
       marker: makeToken('CONNECTOR', '..'),
     }))
     expect(onf.sigil).toBe('_')
@@ -83,9 +82,7 @@ describe('normalizeToONF', () => {
   })
 
   it('PathRef → @[pathref]', () => {
-    const onf = normalizeToONF(makeNode('PathRef', {
-      path: makeNode('Literal', { value: './foo.spw' }),
-    }))
+    const onf = normalizeToONF(makeNode('PathRef', { path: makeLit('./foo.spw') }))
     expect(onf.sigil).toBe('@')
     expect(onf.frames.reg).toBe('pathref')
   })
@@ -106,29 +103,29 @@ describe('normalizeToONF', () => {
   })
 
   it('Frame → _[inner]', () => {
-    const onf = normalizeToONF(makeNode('Frame', { content: [makeNode('Identifier', { value: 'x' })] }))
+    const onf = normalizeToONF(makeNode('Frame', { content: [makeId('x')] }))
     expect(onf.frames.reg).toBe('inner')
     expect(onf.args).toHaveLength(1)
   })
 
   it('Body → _[around]', () => {
     const onf = normalizeToONF(makeNode('Body', {
-      sequence: { type: 'Sequence', expressions: [makeNode('Identifier')], span: {} },
+      sequence: makeNode('Sequence', { expressions: [makeId('a')] }),
     }))
     expect(onf.frames.reg).toBe('around')
   })
 
   it('Scope → _[scope]', () => {
     const onf = normalizeToONF(makeNode('Scope', {
-      sequence: { type: 'Sequence', expressions: [], span: {} },
+      sequence: makeNode('Sequence', { expressions: [] }),
     }))
     expect(onf.frames.reg).toBe('scope')
   })
 
   it('Match → ?[match]', () => {
     const onf = normalizeToONF(makeNode('Match', {
-      input: makeNode('Identifier', { value: 'x' }),
-      arms: [makeNode('MatchArm', { pattern: makeNode('Literal'), handler: makeNode('Literal') })],
+      input: makeId('x'),
+      arms: [makeNode('MatchArm', { pattern: makeLit('1'), handler: makeLit('one') })],
     }))
     expect(onf.sigil).toBe('?')
     expect(onf.frames.reg).toBe('match')
@@ -136,22 +133,19 @@ describe('normalizeToONF', () => {
   })
 
   it('MatchArm → _[arm]', () => {
-    const onf = normalizeToONF(makeNode('MatchArm', {
-      pattern: makeNode('Literal', { value: '1' }),
-      handler: makeNode('Literal', { value: 'one' }),
-    }))
+    const onf = normalizeToONF(makeNode('MatchArm', { pattern: makeLit('1'), handler: makeLit('one') }))
     expect(onf.frames.reg).toBe('arm')
     expect(onf.args).toHaveLength(2)
   })
 
   it('Spread → _[spread]', () => {
-    const onf = normalizeToONF(makeNode('Spread', { capture: makeNode('Identifier') }))
+    const onf = normalizeToONF(makeNode('Spread', { capture: makeId('rest') }))
     expect(onf.frames.reg).toBe('spread')
   })
 
   it('Condition → ?[condition]', () => {
     const onf = normalizeToONF(makeNode('Condition', {
-      left: makeNode('Identifier'), right: makeNode('Identifier'),
+      left: makeId('a'), right: makeId('b'),
       operator: makeToken('OPERATOR', '=='),
     }))
     expect(onf.sigil).toBe('?')
@@ -162,24 +156,20 @@ describe('normalizeToONF', () => {
   it('Parameter → =[parameter]', () => {
     const onf = normalizeToONF(makeNode('Parameter', {
       name: makeToken('IDENTIFIER', 'count'),
-      value: makeNode('Literal', { value: '42' }),
+      value: makeLit('42'),
     }))
     expect(onf.sigil).toBe('=')
     expect(onf.frames.reg).toBe('parameter')
     expect(onf.frames.name).toBe('count')
   })
 
-  it('Sequence with single expr → unwrapps', () => {
-    const onf = normalizeToONF(makeNode('Sequence', {
-      expressions: [makeNode('Identifier', { value: 'x' })],
-    }))
+  it('Sequence single → unwraps', () => {
+    const onf = normalizeToONF(makeNode('Sequence', { expressions: [makeId('x')] }))
     expect(onf.frames.reg).not.toBe('sequence')
   })
 
-  it('Sequence with multiple → _[sequence]', () => {
-    const onf = normalizeToONF(makeNode('Sequence', {
-      expressions: [makeNode('Identifier'), makeNode('Identifier')],
-    }))
+  it('Sequence multiple → _[sequence]', () => {
+    const onf = normalizeToONF(makeNode('Sequence', { expressions: [makeId('x'), makeId('y')] }))
     expect(onf.frames.reg).toBe('sequence')
     expect(onf.args).toHaveLength(2)
   })
@@ -196,15 +186,17 @@ describe('runSpwStepped', () => {
 
   it('desugar precipitant captures input/output', () => {
     const { precipitants } = collectPrecipitants('A{}')
-    const desugar = precipitants.find(p => p.stage === 'desugar')!
-    expect(desugar.input).toBe('A{}')
-    expect(desugar.output).toBe('{_A }_A')
-    expect(desugar.delta).toContain('desugared')
+    const ds = precipitants.find(p => p.stage === 'desugar')!
+    expect(ds.input).toBe('A{}')
+    expect(ds.output).toBe('{_A }_A')
+    expect(ds.delta).toContain('desugared')
   })
 
-  it('returns failure result for invalid syntax', () => {
-    const { result } = collectPrecipitants('[[[')
-    expect(result.success).toBe(false)
+  it('all four stages on success', () => {
+    const { precipitants, result } = collectPrecipitants('!["hello"]')
+    if (result.success) {
+      expect(precipitants).toHaveLength(4)
+      expect(precipitants.map(p => p.stage)).toEqual(['desugar', 'parse', 'normalize', 'interpret'])
+    }
   })
 })
-

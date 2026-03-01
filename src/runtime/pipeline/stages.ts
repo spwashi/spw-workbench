@@ -268,3 +268,141 @@ export function buildProjection(precipitants: AnyPrecipitant[]): PipelineProject
     }
     return projection
 }
+
+// ── Spw Rendering ───────────────────────────────────────────────
+
+/**
+ * Render a precipitant's state as an operable Spw expression.
+ *
+ * Each stage renders differently:
+ *   desugar   → identity (already Spw source)
+ *   parse     → AST as annotation frame tree
+ *   normalize → ONF as canonical σ(args)[reg=...] form
+ *   interpret → register entries as $[key] expressions
+ */
+export function precipitantToSpw(p: AnyPrecipitant): string {
+    switch (p.stage) {
+        case 'desugar':
+            return p.output
+
+        case 'parse':
+            return astToSpw(p.output.ast ?? null)
+
+        case 'normalize':
+            return onfToSpw(p.output)
+
+        case 'interpret':
+            return registersToSpw(p.registersAfter)
+    }
+}
+
+/**
+ * Coagulate an entire projection into a single aggregate Spw frame.
+ * Applies the operational sequence: desugar | parse | normalize | interpret
+ */
+export function projectionToSpw(precipitants: AnyPrecipitant[]): string {
+    const lines: string[] = ['^"pipeline"{']
+    for (const p of precipitants) {
+        const spw = precipitantToSpw(p)
+        const indented = spw.split('\n').map(l => `    ${l}`).join('\n')
+        lines.push(`  ^"${p.stage}"{`)
+        lines.push(`    %[delta] "${p.delta}"`)
+        lines.push(indented)
+        lines.push(`  }`)
+    }
+    lines.push('}')
+    return lines.join('\n')
+}
+
+// ── Spw renderers per stage ─────────────────────────────────────
+
+function astToSpw(ast: SeedNode | null): string {
+    if (!ast) return '_ // empty AST'
+    return renderAstNode(ast, 0)
+}
+
+function renderAstNode(node: SeedNode, depth: number): string {
+    const indent = '  '.repeat(depth)
+    const type = node.type
+    const token = (node as any).token
+    const value = token?.value
+
+    // Leaf: render as annotated value
+    if (value !== undefined) {
+        return `${indent}@${type.toLowerCase()} "${value}"`
+    }
+
+    // Branch: render children
+    const childKeys = Object.keys(node).filter(
+        k => !['type', 'span', 'token'].includes(k)
+    )
+    if (childKeys.length === 0) {
+        return `${indent}#:node #!${type}`
+    }
+
+    const lines = [`${indent}^["${type}"]{`]
+    for (const key of childKeys) {
+        const child = (node as any)[key]
+        if (child && typeof child === 'object' && 'type' in child) {
+            lines.push(`${indent}  .. @${key}`)
+            lines.push(renderAstNode(child, depth + 2))
+        } else if (Array.isArray(child)) {
+            for (const item of child) {
+                if (item && typeof item === 'object' && 'type' in item) {
+                    lines.push(renderAstNode(item, depth + 1))
+                }
+            }
+        }
+    }
+    lines.push(`${indent}}`)
+    return lines.join('\n')
+}
+
+function onfToSpw(node: ONFNode): string {
+    return renderONFNode(node, 0)
+}
+
+function renderONFNode(node: ONFNode, depth: number): string {
+    const indent = '  '.repeat(depth)
+    const reg = node.frames.reg ?? ''
+    const value = node.frames.value
+
+    // Build frames annotation
+    const frameParts: string[] = []
+    if (reg) frameParts.push(`reg=${reg}`)
+    if (value !== undefined) frameParts.push(`value="${value}"`)
+    const frameStr = frameParts.length > 0 ? `[${frameParts.join(', ')}]` : ''
+
+    // Leaf
+    if (node.args.length === 0) {
+        return `${indent}${node.sigil}${frameStr}`
+    }
+
+    // Branch
+    const lines = [`${indent}${node.sigil}${frameStr}{`]
+    for (const arg of node.args) {
+        lines.push(renderONFNode(arg, depth + 1))
+    }
+    lines.push(`${indent}}`)
+    return lines.join('\n')
+}
+
+function registersToSpw(snapshot: RegisterSnapshot): string {
+    const entries = Object.entries(snapshot.entries) as [string, any][]
+    if (entries.length === 0) return '// no registers'
+
+    const lines: string[] = []
+    for (const [key, entry] of entries) {
+        const val = entry.value
+        const valStr = val === null ? 'null'
+            : typeof val === 'string' ? `"${val}"`
+                : typeof val === 'number' ? String(val)
+                    : JSON.stringify(val)
+        const phase = entry.meta?.phases?.current
+        const writes = entry.meta?.writes ?? 0
+        const meta = [phase && `phase=${phase}`, `w=${writes}`].filter(Boolean).join(', ')
+        lines.push(`$["${key}"] ${valStr}  // ${meta}`)
+    }
+    return lines.join('\n')
+}
+

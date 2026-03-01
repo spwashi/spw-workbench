@@ -57,4 +57,6 @@ export {
   runSpwStepped,
   collectPrecipitants,
   buildProjection,
+  precipitantToSpw,
+  projectionToSpw,
 } from './pipeline/stages'
