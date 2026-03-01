@@ -123,8 +123,37 @@ function evaluate(node: ONFNode, context: EvalContext): RuntimeValue {
 
   switch (node.sigil) {
     case '_': {
+      const reg = frameString(node, 'reg')
+
+      // Marker: register as named mark position
+      if (reg === 'marker') {
+        const item = args[0] ?? null
+        const markerName = frameString(node, 'marker')
+        if (markerName) {
+          context.registers.markPosition(markerName, item)
+        }
+        return item
+      }
+
+      // Fold: return modifier metadata
+      if (reg === 'fold') {
+        const value = node.frames.value
+        return value === undefined ? null : coerceRuntimeValue(value)
+      }
+
+      // Text: raw prose content
+      if (reg === 'text' || reg === 'prose') {
+        return args.length > 0 ? args : coerceRuntimeValue(node.frames.value ?? null)
+      }
+
+      // Sequence: return args array
+      if (reg === 'sequence') {
+        return args
+      }
+
+      // Default: return frames value or null
       const value = node.frames.value
-      return value === undefined ? null : coerceRuntimeValue(value)
+      return value === undefined ? (args.length > 0 ? args[args.length - 1] : null) : coerceRuntimeValue(value)
     }
 
     case '#': {
@@ -194,6 +223,53 @@ function evaluate(node: ONFNode, context: EvalContext): RuntimeValue {
 
     case '~': {
       return { deferred: args[0] ?? null }
+    }
+
+    case '*': {
+      // Value/collapse: resolve to concrete value, write to active register
+      const collapsed = args[0] ?? null
+      const key = frameString(node) ?? context.registers.getActiveKey()
+      context.registers.set(key, collapsed, { source: 'interpret:collapse', force: true })
+      trace(context, 'interpret', `collapse *${key} → ${typeof collapsed}`)
+      return collapsed
+    }
+
+    case '<>': {
+      // Coupling: couple registers
+      if (args.length >= 2 && typeof args[0] === 'string' && typeof args[1] === 'string') {
+        context.registers.couple(args[0], args[1])
+      }
+      return args
+    }
+
+    // ── Connector sigils ───────────────────────────────────────
+
+    case '..' as any: {
+      // Sequence connector: collect all args
+      return args
+    }
+
+    case '|' as any: {
+      // Alternative connector: return first truthy arg
+      for (const arg of args) {
+        if (arg !== null && arg !== undefined && arg !== false) return arg
+      }
+      return null
+    }
+
+    case '/' as any: {
+      // Projection connector: project left through right
+      const base = args[0]
+      const projection = args[1]
+      if (typeof projection === 'string' && isRuntimeRecord(base)) {
+        return (base as Record<string, RuntimeValue>)[projection] ?? null
+      }
+      return args[args.length - 1] ?? null
+    }
+
+    case '->' as any: {
+      // Transform connector: pipe left into right
+      return args[args.length - 1] ?? null
     }
 
     default: {

@@ -336,6 +336,28 @@ export class RegisterBank {
     return this.entries.get(key)?.meta.frequency
   }
 
+  // ── Marks ──────────────────────────────────────────────────
+
+  /**
+   * Register a named positional mark — Vim `'a` equivalent.
+   * Stores the value at a mark-prefixed register key.
+   */
+  markPosition(name: string, value: RuntimeValue): void {
+    const markKey = `mark:${name}`
+    this.set(markKey, value, {
+      source: `mark:${name}`,
+      descriptor: { name: `Mark ${name}`, accessMode: 'structural', containerAffinity: 'value' },
+      force: true,
+    })
+  }
+
+  /**
+   * Retrieve a named mark's value.
+   */
+  getMark(name: string): RuntimeValue {
+    return this.get(`mark:${name}`)
+  }
+
   // ── Coupling ───────────────────────────────────────────────
 
   /** Register a coupling edge between two cells. Bidirectional. */

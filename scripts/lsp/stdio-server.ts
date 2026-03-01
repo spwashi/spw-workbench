@@ -19,6 +19,8 @@ import {
   ServerIndex,
   SIGIL_SEMANTICS,
 } from './server-index'
+import { runSpw } from '../../src/runtime/pipeline/run-spw'
+import type { RunSpwResult } from '../../src/runtime/pipeline/types'
 
 // ── LSP Types ───────────────────────────────────────────────────
 
@@ -178,6 +180,34 @@ async function loadObservableState(): Promise<Record<string, any>> {
     if (!observableState) observableState = {}
   }
   return observableState!
+}
+
+// ── Runtime trial cache ─────────────────────────────────────────
+// Lightweight trial interpretation for LSP enrichment.
+// Cache result per-document with a short TTL to avoid hammering the interpreter.
+const runtimeTrialCache = new Map<string, { at: number; result: RunSpwResult }>()
+const RUNTIME_TRIAL_TTL_MS = 2_000
+
+function trialRunSpw(source: string, uri: string): RunSpwResult {
+  const cached = runtimeTrialCache.get(uri)
+  if (cached && Date.now() - cached.at < RUNTIME_TRIAL_TTL_MS) {
+    return cached.result
+  }
+  try {
+    const result = runSpw(source)
+    runtimeTrialCache.set(uri, { at: Date.now(), result })
+    return result
+  } catch {
+    // Interpreter threw — return a safe failure
+    const fail: RunSpwResult = {
+      success: false,
+      source,
+      parse: { success: false, ast: null, events: [], errors: [] } as any,
+      issues: [{ stage: 'interpret', message: 'Runtime trial failed' }],
+    }
+    runtimeTrialCache.set(uri, { at: Date.now(), result: fail })
+    return fail
+  }
 }
 
 // ── Logging ─────────────────────────────────────────────────────
@@ -750,6 +780,25 @@ async function publishDiagnostics(uri: string): Promise<void> {
     }
   }
 
+  // 6. Runtime diagnostics — hint-level issues from trial interpretation
+  try {
+    const trial = trialRunSpw(doc.text, uri)
+    if (!trial.success && trial.issues) {
+      for (const issue of trial.issues) {
+        // Skip parse issues — already handled above
+        if (issue.stage === 'parse') continue
+        diagnostics.push({
+          range: { start: { line: 0, character: 0 }, end: { line: 0, character: 1 } },
+          severity: 4, // Hint
+          source: `spw-runtime:${issue.stage}`,
+          message: issue.message,
+        })
+      }
+    }
+  } catch {
+    // Runtime trial failed — don't break diagnostics
+  }
+
   sendNotification('textDocument/publishDiagnostics', { uri, diagnostics })
 }
 
@@ -1029,7 +1078,7 @@ async function hover(params: any): Promise<LspHover | null> {
     }
   }
 
-  // 7. Sigil hover with spirit sequence context
+  // 7. Sigil hover with spirit sequence context + runtime enrichment
   if (charAtPos && SIGIL_SEMANTICS[charAtPos]) {
     const sem = SIGIL_SEMANTICS[charAtPos]
 
@@ -1040,6 +1089,33 @@ async function hover(params: any): Promise<LspHover | null> {
     if (sem.phaseIndex >= 0) {
       md += `\nSpirit sequence: ${serverIndex.getSpiritSequence()}\n`
       md += `Active phase: ${sem.phaseIndex + 1}\n`
+    }
+
+    // Runtime enrichment: trial runSpw on surrounding expression
+    try {
+      const trial = trialRunSpw(source, uri)
+      if (trial.success) {
+        const snapshot = trial.runtime.registers
+        const entries = Object.entries(snapshot.entries) as [string, any][]
+        const sigil = charAtPos
+        // Find registers related to this sigil
+        const related = entries.filter(([, e]: [string, any]) =>
+          e.meta.descriptor?.name?.toLowerCase().includes(sigil) ||
+          e.meta.provenance?.some((p: string) => p.includes(sigil))
+        )
+        if (related.length > 0) {
+          md += `\n---\n\n**Runtime** (${entries.length} registers)\n\n`
+          for (const [key, entry] of related.slice(0, 5) as [string, any][]) {
+            const phase = entry.meta.phases?.current ?? '—'
+            const writes = entry.meta.writes
+            md += `- \`${key}\`: phase=${phase}, writes=${writes}\n`
+          }
+        } else if (entries.length > 0) {
+          md += `\n---\n\n*Runtime: ${entries.length} register(s) active*\n`
+        }
+      }
+    } catch {
+      // Runtime trial failed — don't break hover
     }
 
     return {
@@ -1540,6 +1616,28 @@ function codeLens(params: any): LspCodeLens[] {
           range: { start: { line: i, character: 0 }, end: { line: i, character: line.length } },
           command: { title: `\u2197 ${fileCount} file ref(s)`, command: '' },
         })
+      }
+
+      // Runtime register summary for anchor lines
+      try {
+        const trial = trialRunSpw(doc.text, uri)
+        if (trial.success) {
+          const regEntries = trial.runtime.registers.entries as Record<string, any>
+          const regCount = Object.keys(regEntries).length
+          const maxPhaseEntry = (Object.values(regEntries) as any[])
+            .filter((e: any) => e.meta.phases?.current)
+            .sort((a: any, b: any) => {
+              const order = ['lex', 'parse', 'sem', 'opt', 'prag']
+              return order.indexOf(b.meta.phases!.current) - order.indexOf(a.meta.phases!.current)
+            })[0]
+          const maxPhase = maxPhaseEntry?.meta.phases?.current ?? '—'
+          lenses.push({
+            range: { start: { line: i, character: 0 }, end: { line: i, character: line.length } },
+            command: { title: `\u25c6 ${regCount} reg · phase:${maxPhase}`, command: '' },
+          })
+        }
+      } catch {
+        // Runtime trial failed — skip lens
       }
     }
 

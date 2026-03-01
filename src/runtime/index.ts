@@ -40,3 +40,21 @@ export type {
 } from './pipeline/types'
 
 export { runSpw } from './pipeline/run-spw'
+
+export type {
+  StageName,
+  Precipitant,
+  PipelineProjection,
+  AnyPrecipitant,
+  DesugarPrecipitant,
+  ParsePrecipitant,
+  NormalizePrecipitant,
+  InterpretPrecipitant,
+} from './pipeline/stages'
+
+export {
+  STAGE_ORDER,
+  runSpwStepped,
+  collectPrecipitants,
+  buildProjection,
+} from './pipeline/stages'
