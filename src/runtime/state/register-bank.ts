@@ -1,4 +1,5 @@
 import { descriptorForKey } from './type-affinities'
+import type { Substrate } from '../pipeline/substrate'
 import type {
   PhaseFacet,
   PhaseEnvelope,
@@ -110,14 +111,29 @@ export class RegisterBank {
   /** Coupling edges: Map<keyA, Set<keyB>> (bidirectional) */
   private readonly couplingEdges = new Map<string, Set<string>>()
   private activeKey = DEFAULT_ACTIVE_KEY
+  /** Optional substrate for event-driven processing. Opt-in: zero overhead when null. */
+  private substrate: Substrate | null = null
 
   private static readonly FREQUENCY_WINDOW_SIZE = 10
 
-  constructor(initial: Record<string, RuntimeValue> = {}) {
+  constructor(initial: Record<string, RuntimeValue> = {}, substrate?: Substrate) {
+    if (substrate) this.substrate = substrate
     this.ensureEntry(DEFAULT_ACTIVE_KEY)
     for (const [key, value] of Object.entries(initial)) {
       this.set(key, value, { source: 'init', force: true })
     }
+  }
+
+  /** Attach a substrate for event-driven processing. */
+  attachSubstrate(substrate: Substrate): void {
+    this.substrate = substrate
+  }
+
+  /** Detach the current substrate. */
+  detachSubstrate(): Substrate | null {
+    const prev = this.substrate
+    this.substrate = null
+    return prev
   }
 
   setActive(key: string): void {
@@ -173,6 +189,16 @@ export class RegisterBank {
         options.source ?? 'set',
       )
     }
+
+    // Substrate emission — event-driven processing
+    this.substrate?.emit({
+      kind: 'write',
+      key,
+      value: entry.value,
+      phase: options.phase,
+      source: options.source,
+      at: nowIso(),
+    })
 
     return true
   }
@@ -349,6 +375,15 @@ export class RegisterBank {
       descriptor: { name: `Mark ${name}`, accessMode: 'structural', containerAffinity: 'value' },
       force: true,
     })
+
+    // Substrate emission (mark-specific, in addition to write from set())
+    this.substrate?.emit({
+      kind: 'mark',
+      key: markKey,
+      value,
+      source: `mark:${name}`,
+      at: nowIso(),
+    })
   }
 
   /**
@@ -374,6 +409,15 @@ export class RegisterBank {
     // Update normalized coupling on both cells
     this.updateCoupling(keyA)
     this.updateCoupling(keyB)
+
+    // Substrate emission
+    this.substrate?.emit({
+      kind: 'couple',
+      key: keyA,
+      value: this.get(keyA),
+      coupledWith: keyB,
+      at: nowIso(),
+    })
   }
 
   /** Return the coupling value (0–1) for a cell. */

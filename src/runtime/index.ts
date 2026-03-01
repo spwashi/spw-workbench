@@ -60,3 +60,16 @@ export {
   precipitateToSpw,
   projectionToSpw,
 } from './pipeline/stages'
+
+export type {
+  RegisterEvent,
+  RegisterEventKind,
+  Resonance,
+  ResonanceType,
+  SubstrateHandler,
+} from './pipeline/substrate'
+
+export { Substrate } from './pipeline/substrate'
+
+export { detectResonances } from './pipeline/resonance'
+
