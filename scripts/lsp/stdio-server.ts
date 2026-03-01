@@ -871,7 +871,131 @@ async function hover(params: any): Promise<LspHover | null> {
     }
   }
 
-  // 4. Sigil hover with spirit sequence context
+  // 4. Wonder block hover: ?["..."] shows full wonder with depth axis + probe
+  const wonderRe = /\?\["([^"]+)"\]/
+  const wonderMatch = line.match(wonderRe)
+  if (wonderMatch) {
+    const wStart = line.indexOf(wonderMatch[0])
+    const wEnd = wStart + wonderMatch[0].length
+    if (pos.character >= wStart && pos.character < wEnd) {
+      const questionText = wonderMatch[1]
+      // Collect the wonder block body (lines following this one that are indented or braced)
+      const allLines = source.split('\n')
+      const bodyLines: string[] = []
+      let braceDepth = 0
+      const openBrace = line.includes('{')
+      if (openBrace) braceDepth = 1
+      for (let j = pos.line + 1; j < allLines.length && j < pos.line + 12; j++) {
+        const bl = allLines[j]
+        if (openBrace) {
+          for (const ch of bl) {
+            if (ch === '{') braceDepth++
+            else if (ch === '}') braceDepth--
+          }
+          bodyLines.push(bl)
+          if (braceDepth <= 0) break
+        } else {
+          if (bl.startsWith('  ') || bl.trim() === '') bodyLines.push(bl)
+          else break
+        }
+      }
+
+      // Extract depth axis and lens from body
+      const depthLine = bodyLines.find(l => l.includes('#:depth'))
+      const depthMatch = depthLine?.match(/#!([a-z]+)/)
+      const lensMatch = depthLine?.match(/\/\/\s*lens:\s*(.+)/)
+      const probeLine = bodyLines.find(l => l.includes('!probe{'))
+      const probeMatch = probeLine?.match(/!probe\{\s*"([^"]+)"\s*\}/)
+      const metricLine = bodyLines.find(l => l.includes('$%['))
+      const metricMatch = metricLine?.match(/\$%\[([^\]]+)\]/)
+
+      let md = `**\u2753 Wonder**\n\n`
+      md += `> ${questionText}\n\n`
+      if (depthMatch) md += `**Depth axis:** ${depthMatch[1]}`
+      if (lensMatch) md += ` · **Lens:** ${lensMatch[1].trim()}`
+      if (depthMatch || lensMatch) md += '\n\n'
+      if (metricMatch) md += `**Metrics:** \`$%[${metricMatch[1]}]\`\n\n`
+      if (probeMatch) md += `**Probe:** ${probeMatch[1]}\n`
+
+      return {
+        contents: { kind: 'markdown', value: md },
+        range: { start: { line: pos.line, character: wStart }, end: { line: pos.line, character: wEnd } },
+      }
+    }
+  }
+
+  // 5. Layer hover: #:layer #!grammar shows layer description
+  const layerRe = /#:layer\s+#!([a-z]+)/
+  const layerMatch = line.match(layerRe)
+  if (layerMatch) {
+    const lStart = line.indexOf(layerMatch[0])
+    const lEnd = lStart + layerMatch[0].length
+    if (pos.character >= lStart && pos.character < lEnd) {
+      const layerName = layerMatch[1]
+      const layerDesc: Record<string, string> = {
+        grammar: 'Defines parse-time rules, token shapes, and structural invariants. Files in this layer are the language\'s skeleton.',
+        semantics: 'Maps structure to meaning — claims, theories, proofs. Files in this layer carry falsifiable propositions.',
+        pragmatics: 'Shapes developer workflow, conventions, tooling. Files in this layer orient attention and reduce friction.',
+      }
+      // Count files in this layer across workspace
+      const allAnnotations = serverIndex.allAnnotations()
+      const layerCount = new Set(
+        allAnnotations.filter(a => a.name === layerName && a.kind === 'intent').map(a => a.file)
+      ).size
+
+      let md = `**#:layer #!${layerName}** — *kernel layer*\n\n`
+      md += `${layerDesc[layerName] || 'Custom layer.'}\n\n`
+      md += `**${layerCount}** file(s) in this layer across the workspace.\n`
+
+      return {
+        contents: { kind: 'markdown', value: md },
+        range: { start: { line: pos.line, character: lStart }, end: { line: pos.line, character: lEnd } },
+      }
+    }
+  }
+
+  // 6. Metric hover: $%[metric] shows description
+  const metricHoverRe = /\$%\[([^\]]+)\]/
+  const metricHoverMatch = line.match(metricHoverRe)
+  if (metricHoverMatch) {
+    const mStart = line.indexOf(metricHoverMatch[0])
+    const mEnd = mStart + metricHoverMatch[0].length
+    if (pos.character >= mStart && pos.character < mEnd) {
+      const metrics = metricHoverMatch[1].split(',').map(m => m.trim())
+      const metricDescs: Record<string, string> = {
+        'file.frame_count': 'Number of ^-frames in this file',
+        'file.annotation_density': 'Annotations per line (higher = more semantic richness)',
+        'file.brace_depth_max': 'Maximum nesting depth of braces',
+        'cache.tier': 'Cache temperature tier (hot/warm/cold)',
+        'cache.hit_ms': 'Average cache hit latency in milliseconds',
+        'cache.hit_ratio': 'Ratio of cache hits to total lookups',
+        'registry.entry_count': 'Number of entries in this registry',
+        'registry.referrer_count': 'Files that reference this registry',
+        'harness.run_count': 'Total probe/eval runs executed',
+        'harness.pass_rate': 'Ratio of passing probes to total',
+        'runtime.stage': 'Current runtime pipeline stage',
+        'runtime.latency_ms': 'End-to-end pipeline latency',
+        'lsp.request_count': 'LSP requests served since start',
+        'lsp.avg_response_ms': 'Average response time in ms',
+        'phase.index': 'Current spirit phase (0-5)',
+        'phase.duration_ms': 'Time spent in current phase',
+      }
+
+      let md = `**\`$%[${metricHoverMatch[1]}]\`** — *measurement point*\n\n`
+      for (const m of metrics) {
+        const desc = metricDescs[m] || `Runtime-bindable metric: ${m}`
+        md += `- **${m}**: ${desc}\n`
+      }
+      md += `\n*These metrics can be bound to live runtime values via the register bank.*\n`
+
+      return {
+        contents: { kind: 'markdown', value: md },
+        range: { start: { line: pos.line, character: mStart }, end: { line: pos.line, character: mEnd } },
+      }
+    }
+  }
+
+  // 7. Sigil hover with spirit sequence context
   if (charAtPos && SIGIL_SEMANTICS[charAtPos]) {
     const sem = SIGIL_SEMANTICS[charAtPos]
 
@@ -1408,24 +1532,52 @@ function codeLens(params: any): LspCodeLens[] {
     })
   }
 
-  // Workspace plane + category lens (first line of .spw/ files)
+  // File metrics banner — enriched plane + category + counts
   const plane = serverIndex.getWorkspacePlaneForFile(docPath)
   const category = serverIndex.getCategoryForFile(docPath)
   const isGenerated = serverIndex.isGeneratedFile(docPath)
+
+  // Count file-level metrics
+  const frameCount = lines.filter(l => /^\s*\^(?:\["[^"]+"\]|"[^"]+"|\[[A-Za-z_]\w*\])/.test(l)).length
+  const annotCount = fileAnnotations.length
+  let maxBraceDepth = 0
+  { let d = 0; for (const l of lines) { for (const c of l) { if (c === '{') d++; else if (c === '}') d = Math.max(0, d - 1); } if (d > maxBraceDepth) maxBraceDepth = d; } }
+  const wonderCount = lines.filter(l => /^\s*#>wonder_/.test(l)).length
+  // Operator distribution for the file
+  const opDist: Record<string, number> = {}
+  for (const l of lines) { for (const c of l) { if ('~?!^%&*='.includes(c)) opDist[c] = (opDist[c] || 0) + 1 } }
+  const opSummary = Object.entries(opDist).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([op, n]) => `${op}:${n}`).join(' ')
+
+  // Layer detection
+  const layerLine = lines.find(l => l.includes('#:layer'))
+  const layerNameMatch = layerLine?.match(/#!([a-z]+)/)
+  const layerLabel = layerNameMatch?.[1]
 
   if (isGenerated) {
     lenses.unshift({
       range: { start: { line: 0, character: 0 }, end: { line: 0, character: 1 } },
       command: { title: '\u26a0 generated surface — do not hand-edit', command: '' },
     })
-  } else if (plane || category) {
+  } else {
     const parts: string[] = []
-    if (plane) parts.push(plane)
+    if (layerLabel) parts.push(layerLabel)
+    else if (plane) parts.push(plane)
     if (category) parts.push(category)
+    parts.push(`${frameCount}^`)
+    parts.push(`${annotCount}#`)
+    parts.push(`d${maxBraceDepth}`)
+    if (wonderCount > 0) parts.push(`${wonderCount}\u2753`)
     lenses.unshift({
       range: { start: { line: 0, character: 0 }, end: { line: 0, character: 1 } },
       command: { title: `\u25c8 ${parts.join(' \u00b7 ')}`, command: '' },
     })
+    // Operator distribution lens on line 0
+    if (opSummary) {
+      lenses.push({
+        range: { start: { line: 0, character: 0 }, end: { line: 0, character: 1 } },
+        command: { title: `\u2261 ${opSummary}`, command: '' },
+      })
+    }
   }
 
   return lenses
@@ -1557,6 +1709,66 @@ async function inlayHints(params: any): Promise<LspInlayHint[]> {
         paddingLeft: true,
       })
     }
+  }
+
+  // 3) Brace depth + charge hints on lines that change nesting
+  {
+    let depth = 0
+    // Count depth up to the visible range start
+    for (let i = 0; i < range.start.line && i < lines.length; i++) {
+      for (const c of lines[i]) {
+        if (c === '{') depth++
+        else if (c === '}') depth = Math.max(0, depth - 1)
+      }
+    }
+    for (let lineNo = Math.max(0, range.start.line); lineNo <= Math.min(lines.length - 1, range.end.line); lineNo++) {
+      const line = lines[lineNo]
+      const openCount = (line.match(/\{/g) || []).length
+      const closeCount = (line.match(/\}/g) || []).length
+      const prevDepth = depth
+      for (const c of line) {
+        if (c === '{') depth++
+        else if (c === '}') depth = Math.max(0, depth - 1)
+      }
+      // Show depth hint when entering deeper nesting
+      if (openCount > 0 && depth >= 2) {
+        hints.push({
+          position: { line: lineNo, character: line.length },
+          label: ` \u2502d${depth}`,
+          kind: 2,
+          tooltip: `Brace depth: ${depth} (${openCount > closeCount ? '+tension' : openCount < closeCount ? '\u2212discharge' : 'balanced'})`,
+          paddingLeft: true,
+        })
+      } else if (closeCount > 0 && prevDepth >= 3 && depth < prevDepth) {
+        hints.push({
+          position: { line: lineNo, character: line.length },
+          label: ` \u2502d${depth}\u2212`,
+          kind: 2,
+          tooltip: `Discharge: depth ${prevDepth} \u2192 ${depth}`,
+          paddingLeft: true,
+        })
+      }
+    }
+  }
+
+  // 4) Operator census hint on #> anchor lines
+  for (let lineNo = Math.max(0, range.start.line); lineNo <= Math.min(lines.length - 1, range.end.line); lineNo++) {
+    const line = lines[lineNo]
+    if (!/^\s*#>/.test(line)) continue
+    // Count operators in the file (or just show on first anchor)
+    const opDist: Record<string, number> = {}
+    for (const l of lines) { for (const c of l) { if ('~?!^%&*='.includes(c)) opDist[c] = (opDist[c] || 0) + 1 } }
+    const census = Object.entries(opDist).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([op, n]) => `${op}:${n}`).join(' ')
+    if (census) {
+      hints.push({
+        position: { line: lineNo, character: line.length },
+        label: ` [${census}]`,
+        kind: 2,
+        tooltip: 'File operator census: operator frequency distribution.',
+        paddingLeft: true,
+      })
+    }
+    break // only on first anchor
   }
 
   return hints
