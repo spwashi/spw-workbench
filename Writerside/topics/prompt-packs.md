@@ -16,7 +16,7 @@ A prompt pack is a small, versioned set of prompts that:
 ## Where prompt packs live
 
 Recommended:
-- `docs/suno-prompts/` for audio-oriented packs
+- `docs/song-prompts/` for audio-oriented packs
 - `docs/prompts/` for general packs
 
 ## Minimal structure

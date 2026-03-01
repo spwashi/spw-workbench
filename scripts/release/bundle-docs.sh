@@ -11,7 +11,7 @@ mkdir -p "$OUT_DIR"
 
 OUT_FILE="$OUT_DIR/spw-docs-${VERSION}.tar.gz"
 
-INCLUDE=("docs" "docs-seed" "Writerside")
+INCLUDE=("docs" "Writerside")
 printf 'Bundling docs into %s\n' "$OUT_FILE"
 tar -czf "$OUT_FILE" "${INCLUDE[@]}"
 

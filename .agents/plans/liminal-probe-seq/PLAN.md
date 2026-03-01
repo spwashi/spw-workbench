@@ -18,7 +18,7 @@ Taste note: improve expressiveness and naming clarity while preserving correctne
 ## Files
 
 [NEW] scripts/spw-ls.ts — liminal selection CLI entry and probe semantics.
-[MOD] scripts/spw-seq.ts — compatibility wrapper to preserve existing automation.
+[MOD] scripts/spw-ls.ts — unified CLI with --entry-name and --compat flags (absorbs spw-seq.ts).
 [MOD] package.json — add `spw:ls` and route `spw:seq` alias.
 [MOD] .spw/biome/ocean/query/dialect.spw — update query recipe commands.
 [MOD] .spw/harness/evals/baseline-evals.spw — include liminal probe eval target.

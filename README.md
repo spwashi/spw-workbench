@@ -20,7 +20,7 @@ Every operator has a role, a physics, and a phase in the [six-phase interpreter 
 | `#` | annotation / resonance | vibration — self-reference | meta |
 | `.` | ground / access | ground state — context | access |
 
-Operator combinatorics are queryable via [`spw:seq`](scripts/spw-seq.ts) and [`spw:ls`](scripts/spw-ls.ts). See [operator-lattice skill](.agents/skills/spw-operator-lattice/SKILL.md) for probe recipes.
+Operator combinatorics are queryable via [`spw:ls`](scripts/spw-ls.ts) (and `spw:seq` alias). See [operator-lattice skill](.agents/skills/spw-operator-lattice/SKILL.md) for probe recipes.
 
 ## Containers
 
@@ -133,7 +133,7 @@ The [material model](.spw/biome/ocean/algos/material.spw) maps physical intuitio
 |:--|:--|:--|
 | **density** | concept packing / coupling pressure | cluster first, narrow lens |
 | **viscosity** | resistance to change under hot iteration | [hot replacement guard](.spw/biome/ocean/query/hot.spw) |
-| **elasticity** | recovery from projection perturbation | [scoped evolution](.spw/evolution/scoped-evolution.spw) |
+| **elasticity** | recovery from projection perturbation | [scoped evolution](.spw/scoped-evolution.spw) |
 | **porosity** | cross-boundary permeability | root convention, [selector grounding](.spw/biome/ocean/query/sel.spw) |
 | **anisotropy** | directional bias in query traversal | [consequence trace](.spw/consequence.spw) |
 
@@ -152,7 +152,7 @@ The geometry formulas are in [geom.spw](.spw/biome/ocean/algos/geom.spw).
 
 | Command | Source | What |
 |:--|:--|:--|
-| `npm run spw:seq` | [spw-seq.ts](scripts/spw-seq.ts) | Operator/brace/label query with ranking |
+| `npm run spw:seq` | [spw-ls.ts](scripts/spw-ls.ts) | Operator/brace/label query with ranking (compat alias) |
 | `npm run spw:ls` | [spw-ls.ts](scripts/spw-ls.ts) | Liminal selection CLI with [probe expressions](scripts/spw-ls/probe.ts) |
 | `npm run spw:mem:dump` | [spw-mem.ts](scripts/spw-mem.ts) | Snapshot [runtime memory](.spw/harness/memory-surface.spw) lattice |
 | `npm run spw:format` | [spw-format.ts](scripts/spw-format.ts) | Canonical formatting ([Spw.m ONF](.spw/canon-mount.spw)) |

@@ -38,7 +38,7 @@ function resolveForward(command: string): string | null {
     case 'select':
       return 'scripts/spw-ls.ts'
     case 'seq':
-      return 'scripts/spw-seq.ts'
+      return 'scripts/spw-ls.ts'
     case 'mount':
       return 'scripts/spw-mount.ts'
     case 'mem':
