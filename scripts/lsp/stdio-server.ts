@@ -1429,7 +1429,7 @@ async function inlayHints(params: any): Promise<LspInlayHint[]> {
       const lineText = lines[hit.span.endLine] ?? ''
       const hintAt = Math.min(hit.span.endCharacter + 1, lineText.length)
 
-    if (!resolved) continue
+      if (!resolved) continue
 
       const cleanResolved = resolved.replace(/#.*$/, '')
       const rel = path.relative(WORKSPACE_ROOT, cleanResolved)
@@ -1459,15 +1459,15 @@ async function inlayHints(params: any): Promise<LspInlayHint[]> {
           const frameName = frameMatch[1] || frameMatch[2] || frameMatch[3] || ''
           const byKind = frameKindsBySection.get(frameName) ?? new Map<string, number>()
           const summary = [...byKind.entries()].map(([kind, count]) => `${count} ${kind}`).join(', ')
-      if (summary) {
-        hints.push({
-          position: { line: lineNo, character: line.length },
-          label: ` [${summary}]`,
-          kind: 2,
-          tooltip: 'Frame-local annotation summary.',
-          paddingLeft: true,
-        })
-      }
+          if (summary) {
+            hints.push({
+              position: { line: lineNo, character: line.length },
+              label: ` [${summary}]`,
+              kind: 2,
+              tooltip: 'Frame-local annotation summary.',
+              paddingLeft: true,
+            })
+          }
         }
       }
 
@@ -1592,6 +1592,235 @@ async function references(params: any): Promise<LspLocation[]> {
   return []
 }
 
+// ── Rename ──────────────────────────────────────────────────────
+
+interface LspPrepareRenameResult {
+  range: LspRange
+  placeholder: string
+}
+
+interface LspWorkspaceEdit {
+  changes: Record<string, LspTextEdit[]>
+}
+
+/**
+ * Identify the renameable symbol at the cursor position.
+ * Returns the symbol range and current text, or null if not renameable.
+ */
+async function prepareRename(params: any): Promise<LspPrepareRenameResult | null> {
+  const uri = params?.textDocument?.uri
+  const pos = params?.position as LspPosition | undefined
+  if (!uri || !pos) return null
+
+  const source = await getDocumentText(uri)
+  if (source === null) return null
+
+  const line = source.split('\n')[pos.line] ?? ''
+
+  // 1. Annotation: #name, #:name, #!name, #>name, ~#name
+  const annotRe = /(?:~)?#(!|:|>)?([a-zA-Z_][a-zA-Z0-9_-]*)/g
+  let annotMatch: RegExpExecArray | null
+  while ((annotMatch = annotRe.exec(line)) !== null) {
+    // The renameable part is just the name (group 2)
+    const nameStart = annotMatch.index + annotMatch[0].length - annotMatch[2].length
+    const nameEnd = nameStart + annotMatch[2].length
+    if (pos.character < nameStart || pos.character >= nameEnd) continue
+
+    return {
+      range: {
+        start: { line: pos.line, character: nameStart },
+        end: { line: pos.line, character: nameEnd },
+      },
+      placeholder: annotMatch[2],
+    }
+  }
+
+  // 2. @root reference: @rootName or @rootName/path
+  const rootRe = /@([a-zA-Z_][a-zA-Z0-9_]*)/g
+  let rootMatch: RegExpExecArray | null
+  while ((rootMatch = rootRe.exec(line)) !== null) {
+    const nameStart = rootMatch.index + 1 // skip @
+    const nameEnd = nameStart + rootMatch[1].length
+    if (pos.character < rootMatch.index || pos.character >= nameEnd) continue
+
+    return {
+      range: {
+        start: { line: pos.line, character: nameStart },
+        end: { line: pos.line, character: nameEnd },
+      },
+      placeholder: rootMatch[1],
+    }
+  }
+
+  // 3. Frame name: ^["name"], ^['name'], ^"name", ^'name'
+  const frameRe = /\^(?:\[(["'])([^"']+)\1\]|(["'])([^"']+)\3)/g
+  let frameMatch: RegExpExecArray | null
+  while ((frameMatch = frameRe.exec(line)) !== null) {
+    const name = frameMatch[2] || frameMatch[4]
+    if (!name) continue
+    const nameInLine = frameMatch[0]
+    const fullStart = frameMatch.index
+    const fullEnd = fullStart + nameInLine.length
+    if (pos.character < fullStart || pos.character >= fullEnd) continue
+
+    // Find the name within the match for precise rename range
+    const nameOffset = nameInLine.indexOf(name)
+    const nameStart = fullStart + nameOffset
+    const nameEnd = nameStart + name.length
+
+    return {
+      range: {
+        start: { line: pos.line, character: nameStart },
+        end: { line: pos.line, character: nameEnd },
+      },
+      placeholder: name,
+    }
+  }
+
+  return null
+}
+
+/**
+ * Rename a symbol across the workspace.
+ * Uses the same resolution logic as references() but produces TextEdits.
+ */
+async function rename(params: any): Promise<LspWorkspaceEdit | null> {
+  const uri = params?.textDocument?.uri
+  const pos = params?.position as LspPosition | undefined
+  const newName = params?.newName as string | undefined
+  if (!uri || !pos || !newName) return null
+
+  const source = await getDocumentText(uri)
+  if (source === null) return null
+
+  const line = source.split('\n')[pos.line] ?? ''
+  const changes: Record<string, LspTextEdit[]> = {}
+
+  function addEdit(editUri: string, range: LspRange, text: string): void {
+    if (!changes[editUri]) changes[editUri] = []
+    changes[editUri].push({ range, newText: text })
+  }
+
+  // 1. Annotation rename: find all #name across workspace, replace name portion
+  const annotRe = /(?:~)?#(!|:|>)?([a-zA-Z_][a-zA-Z0-9_-]*)/g
+  let annotMatch: RegExpExecArray | null
+  while ((annotMatch = annotRe.exec(line)) !== null) {
+    const nameStart = annotMatch.index + annotMatch[0].length - annotMatch[2].length
+    const nameEnd = nameStart + annotMatch[2].length
+    if (pos.character < nameStart || pos.character >= nameEnd) continue
+
+    const oldName = annotMatch[2]
+    const entries = serverIndex.lookupAnnotation(oldName)
+
+    // Also scan all workspace files for raw text matches
+    const files = await getWorkspaceSpwFiles()
+    const annotPattern = new RegExp(`((?:~)?#(?:!|:|>)?)${escapeRegex(oldName)}\\b`, 'g')
+
+    await mapWithConcurrency(files, 16, async (filePath) => {
+      const fileUri = uriFromPath(filePath)
+      const fileText = await getDocumentText(fileUri)
+      if (fileText === null || !fileText.includes(oldName)) return
+
+      const fileLines = fileText.split('\n')
+      for (let lineNo = 0; lineNo < fileLines.length; lineNo++) {
+        let m: RegExpExecArray | null
+        annotPattern.lastIndex = 0
+        while ((m = annotPattern.exec(fileLines[lineNo])) !== null) {
+          const prefixLen = m[1].length
+          const editStart = m.index + prefixLen
+          addEdit(fileUri, {
+            start: { line: lineNo, character: editStart },
+            end: { line: lineNo, character: editStart + oldName.length },
+          }, newName)
+        }
+      }
+    })
+
+    return { changes }
+  }
+
+  // 2. @root rename: find all @rootName across workspace, replace root name
+  const rootRe = /@([a-zA-Z_][a-zA-Z0-9_]*)/g
+  let rootMatch: RegExpExecArray | null
+  while ((rootMatch = rootRe.exec(line)) !== null) {
+    const nameStart = rootMatch.index + 1
+    const nameEnd = nameStart + rootMatch[1].length
+    if (pos.character < rootMatch.index || pos.character >= nameEnd) continue
+
+    const oldRoot = rootMatch[1]
+    const files = await getWorkspaceSpwFiles()
+    const rootPattern = new RegExp(`@${escapeRegex(oldRoot)}\\b`, 'g')
+
+    await mapWithConcurrency(files, 16, async (filePath) => {
+      const fileUri = uriFromPath(filePath)
+      const fileText = await getDocumentText(fileUri)
+      if (fileText === null || !fileText.includes(`@${oldRoot}`)) return
+
+      const fileLines = fileText.split('\n')
+      for (let lineNo = 0; lineNo < fileLines.length; lineNo++) {
+        let m: RegExpExecArray | null
+        rootPattern.lastIndex = 0
+        while ((m = rootPattern.exec(fileLines[lineNo])) !== null) {
+          addEdit(fileUri, {
+            start: { line: lineNo, character: m.index + 1 }, // skip @
+            end: { line: lineNo, character: m.index + 1 + oldRoot.length },
+          }, newName)
+        }
+      }
+    })
+
+    return { changes }
+  }
+
+  // 3. Frame name rename: find all ^["name"] / ^"name" / ^['name'] across workspace
+  const frameRe = /\^(?:\[(["'])([^"']+)\1\]|(["'])([^"']+)\3)/g
+  let frameMatch: RegExpExecArray | null
+  while ((frameMatch = frameRe.exec(line)) !== null) {
+    const name = frameMatch[2] || frameMatch[4]
+    if (!name) continue
+    const fullStart = frameMatch.index
+    const fullEnd = fullStart + frameMatch[0].length
+    if (pos.character < fullStart || pos.character >= fullEnd) continue
+
+    const oldName = name
+    const files = await getWorkspaceSpwFiles()
+    // Match frame patterns containing the old name
+    const framePattern = new RegExp(
+      `\\^(?:\\[(["'])${escapeRegex(oldName)}\\1\\]|(["'])${escapeRegex(oldName)}\\2)`,
+      'g',
+    )
+
+    await mapWithConcurrency(files, 16, async (filePath) => {
+      const fileUri = uriFromPath(filePath)
+      const fileText = await getDocumentText(fileUri)
+      if (fileText === null || !fileText.includes(oldName)) return
+
+      const fileLines = fileText.split('\n')
+      for (let lineNo = 0; lineNo < fileLines.length; lineNo++) {
+        let m: RegExpExecArray | null
+        framePattern.lastIndex = 0
+        while ((m = framePattern.exec(fileLines[lineNo])) !== null) {
+          // Find the name within the match
+          const nameOffset = m[0].indexOf(oldName)
+          const editStart = m.index + nameOffset
+          addEdit(fileUri, {
+            start: { line: lineNo, character: editStart },
+            end: { line: lineNo, character: editStart + oldName.length },
+          }, newName)
+        }
+      }
+    })
+
+    return { changes }
+  }
+
+  return null
+}
+
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 // ── Folding Ranges ───────────────────────────────────────────────
 
 interface LspFoldingRange { startLine: number; endLine: number; kind?: string }
@@ -1664,6 +1893,7 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
             definitionProvider: true,
             declarationProvider: true,
             referencesProvider: true,
+            renameProvider: { prepareProvider: true },
             documentLinkProvider: { resolveProvider: false },
             hoverProvider: true,
             documentSymbolProvider: true,
@@ -1727,6 +1957,14 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
 
       case 'textDocument/references':
         sendResult(id, await references(message.params))
+        return
+
+      case 'textDocument/prepareRename':
+        sendResult(id, await prepareRename(message.params))
+        return
+
+      case 'textDocument/rename':
+        sendResult(id, await rename(message.params))
         return
 
       case 'textDocument/foldingRange':
