@@ -1,0 +1,126 @@
+# Publishing Surface
+#
+# Defines how .spw frames project to publishable web content.
+# This is the default surface for the workspace.
+# Plugins can extend or override these projection rules.
+
+#>spw_surfaces_publish
+#:surface #!publishing
+#:layer #!pragmatics
+
+^"projection_rules"{
+  #:architecture #!transforms
+
+  exhibit: {
+    ~#source: "$^[\"_\"]@literate"
+    ~#output: "html"
+    ~#description: "literate exhibits become <article> elements with spw data attributes"
+    slot_mapping: {
+      "^[\"name\"]"   : "<article data-spw-frame='{name}'>"
+      "~#prose"        : "<p class='spw-prose'>"
+      "~#code"         : "<pre data-spw-highlight class='spw-code'>"
+      "!probe{}"       : "<aside class='spw-probe' data-spw-depth='{depth}'>"
+      "?[\"...\"]{ }"  : "<details class='spw-wonder'><summary>{question}</summary>{body}</details>"
+      "#>anchor"       : "<span id='{anchor}' class='spw-anchor'>"
+      "#:layer"        : "<meta name='spw-layer' content='{layer}'>"
+      "$%[metric]"     : "<data class='spw-metric' data-key='{metric}' value='{value}'>"
+    }
+  }
+
+  data: {
+    ~#source: "$^[\"_\"]@registries"
+    ~#output: "json"
+    ~#description: "registries become structured JSON for API consumption"
+    transform: {
+      "^[\"name\"]{...}" : "{ \"frame\": \"{name}\", \"annotations\": [...], \"children\": [...] }"
+      "$%[metric]"       : "{ \"metric\": \"{key}\", \"value\": \"{value}\" }"
+    }
+  }
+
+  feed: {
+    ~#source: "$?[\"_\"]@spw"
+    ~#output: "rss"
+    ~#description: "wonder blocks become RSS items — subscribe to a workspace's questions"
+    transform: {
+      "?[\"question\"]{}" : "<item><title>{question}</title><description>{probe}</description><category>{depth}</category></item>"
+    }
+  }
+
+  prose: {
+    ~#source: "$^[\"_\"]@docs"
+    ~#output: "markdown"
+    ~#description: "documentation frames become readable markdown"
+    transform: {
+      "^[\"name\"]{}"  : "## {name}\n\n"
+      "~#text"          : "{text}\n\n"
+      "!probe{}"        : "> **Probe:** {text}\n\n"
+      "?[\"...\"]{ }"   : "### ❓ {question}\n\n{body}\n\n"
+    }
+  }
+}
+
+^"publishing_pipeline"{
+  #:workflow #!pipeline
+
+  default: {
+    select:   { query: "$^[\"_\"]@docs", filter: "#:layer #!pragmatics" }
+    transform: { surface: "prose" }
+    validate:  { checks: ["no-broken-refs", "no-empty-frames", "well-formed-html"] }
+    emit:      { target: "dist/publish/", format: "markdown" }
+  }
+
+  exhibits: {
+    select:   { query: "$^[\"_\"]@literate" }
+    transform: { surface: "exhibit" }
+    validate:  { checks: ["no-broken-refs", "valid-html5"] }
+    emit:      { target: "dist/publish/exhibits/", format: "html" }
+  }
+
+  api: {
+    select:   { query: "$^[\"_\"]@registries" }
+    transform: { surface: "data" }
+    validate:  { checks: ["valid-json"] }
+    emit:      { target: "dist/publish/api/", format: "json" }
+  }
+
+  wonder_feed: {
+    select:   { query: "$?[\"_\"]@spw" }
+    transform: { surface: "feed" }
+    validate:  { checks: ["valid-xml"] }
+    emit:      { target: "dist/publish/feeds/wonder.xml", format: "rss" }
+  }
+}
+
+^"css_convention"{
+  #:design #!styling
+  ~#namespace: "spw-"                          // all CSS classes prefixed
+  ~#theme_variable_prefix: "--spw-"            // CSS custom properties
+  ~#base_styles: "dist/publish/spw-base.css"   // generated base stylesheet
+  class_mapping: {
+    "spw-frame"   : "article-level container"
+    "spw-prose"   : "paragraph text"
+    "spw-code"    : "highlighted code block"
+    "spw-probe"   : "investigation prompt aside"
+    "spw-wonder"  : "expandable question block"
+    "spw-anchor"  : "navigable anchor point"
+    "spw-metric"  : "runtime-bindable data element"
+  }
+}
+
+#>wonder_spw_surfaces_publish_1
+?["What CSS properties map naturally to Spw operator semantics?"]{
+  #:depth #!stylistic  // lens: material grain
+  ~#mapping: "~ → opacity/transition, ^ → position/elevation, # → color/hue, ! → animation/emphasis, ? → outline/border-style"
+  ~<../registries/brace-physics.spw>  // brace charge → CSS transform?
+  !probe{ "implement one: map brace depth to CSS nesting level. does :has() selectability mirror $ selectability?" }
+  $%[file.frame_count, file.annotation_density]
+}
+
+#>wonder_spw_surfaces_publish_2
+?["What would a decade of plugins built on this protocol look like?"]{
+  #:depth #!educational  // lens: ecological zone
+  ~<plugin-protocol.spw>  // the extensibility contract
+  ~#decade_vision: "year 1: publishing. year 3: collaborative editing. year 5: live computation. year 10: emergent dialects"
+  !probe{ "name 3 plugins that would exist by year 3 that nobody has thought of yet. what selector patterns do they need?" }
+  $%[file.frame_count, file.annotation_density]
+}

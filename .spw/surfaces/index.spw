@@ -1,0 +1,80 @@
+# Surfaces Registry
+#
+# Declares the available web surfaces and output formats.
+# Surfaces project .spw frames into publishable web content.
+# Each surface defines a pipeline: select → transform → validate → emit.
+
+#>spw_surfaces_index
+#:registry #!surfaces
+#:layer #!pragmatics
+
+^"surfaces"{
+  publish:         ~"./publish.spw"          // publishing projection rules
+  plugin_protocol: ~"./plugin-protocol.spw"  // how plugins register surfaces
+}
+
+^"output_formats"{
+  html: {
+    template: "exhibit"
+    mime: "text/html"
+    extension: ".html"
+    ~#use_case: "publishable articles, interactive exhibits, documentation pages"
+  }
+  json: {
+    template: "data"
+    mime: "application/json"
+    extension: ".json"
+    ~#use_case: "API responses, structured data exports, state snapshots"
+  }
+  markdown: {
+    template: "prose"
+    mime: "text/markdown"
+    extension: ".md"
+    ~#use_case: "readable documentation, blog posts, changelogs"
+  }
+  rss: {
+    template: "feed"
+    mime: "application/rss+xml"
+    extension: ".xml"
+    ~#use_case: "syndication feeds for wonder blocks, frame updates, workspace changelog"
+  }
+  openapi: {
+    template: "api"
+    mime: "application/yaml"
+    extension: ".yaml"
+    ~#use_case: "API contracts derived from frame schemas"
+  }
+}
+
+^"pipeline_stages"{
+  #:architecture #!pipeline
+  select:    { input: "$-selector query", output: "matched frames[]" }
+  transform: { input: "matched frames[]", output: "rendered content[]" }
+  validate:  { input: "rendered content[]", output: "validated content[]" }
+  emit:      { input: "validated content[]", output: "files in dist/publish/" }
+}
+
+^"conventions"{
+  ~#output_dir: "dist/publish/"                     // default from agent-surface.spw#defaults
+  ~#naming: "{root}/{frame-slug}.{extension}"        // output file naming pattern
+  ~#overwrite: "never overwrite without --force"     // safety default
+  ~#encoding: "utf-8"                                // always
+}
+
+#>wonder_spw_surfaces_index_1
+?["What output format would best serve a workspace that publishes its own evolution?"]{
+  #:depth #!experiential  // lens: curated collection
+  ~<publish.spw>  // the publishing rules this indexes
+  ~#hypothesis: "RSS for changelog, HTML for exhibits, JSON for tooling — but what format captures the *learning* that happened?"
+  !probe{ "imagine subscribing to a workspace's RSS feed of wonder resolutions. what would each entry look like?" }
+  $%[file.frame_count, file.annotation_density]
+}
+
+#>wonder_spw_surfaces_index_2
+?["How should the pipeline handle frames that resist projection?"]{
+  #:depth #!mathematical  // lens: formal structure
+  ~#unprojectable: "some frames exist purely as internal structure — they have no natural web representation"
+  ~<plugin-protocol.spw>  // plugins could handle edge cases
+  !probe{ "identify 3 frames in @docs that would lose essential meaning if projected to HTML. what makes them unprojectable?" }
+  $%[file.frame_count, file.annotation_density]
+}

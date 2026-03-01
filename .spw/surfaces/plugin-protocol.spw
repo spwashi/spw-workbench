@@ -1,0 +1,137 @@
+# Plugin Protocol
+#
+# Framework for extending the Spw surface ecosystem.
+# Plugins declare input selectors, output format, and transform rules.
+# The workspace discovers plugins by scanning .spw/surfaces/plugins/*.spw
+# and validates their selector patterns against the live workspace index.
+
+#>spw_surfaces_plugin_protocol
+#:protocol #!extensibility
+#:layer #!pragmatics
+
+^"registration"{
+  #:template #!plugin_entry
+  template: {
+    name:       "string — unique plugin identifier (kebab-case)"
+    version:    "semver — plugin version"
+    author:     "string — creator identity"
+    selectors:  ["$-query patterns this plugin consumes"]
+    output:     "format name from surfaces/index.spw#output_formats"
+    transform:  "path to .spw file containing projection rules"
+    config: {
+      ~#description: "plugin-specific configuration with documented defaults"
+    }
+    hooks: {
+      before_select:    "optional — runs before selector evaluation"
+      after_select:     "optional — can filter/enrich matched frames"
+      before_transform: "optional — pre-transform hook"
+      after_transform:  "optional — post-transform validation"
+      before_emit:      "optional — final gate before output"
+      after_emit:       "optional — cleanup, notification, indexing"
+      on_error:         "optional — error handling strategy"
+    }
+    dependencies: ["other plugin names this plugin requires"]
+  }
+}
+
+^"lifecycle"{
+  #:architecture #!pipeline
+
+  discovery: {
+    ~#scan_path: ".spw/surfaces/plugins/*.spw"
+    ~#registration_frame: "$^[\"plugin\"]@plugin_file"
+    ~#validation: "check that all selector patterns resolve against workspace index"
+  }
+
+  validation: {
+    ~#selector_check: "every selector in plugin.selectors must match ≥1 frame"
+    ~#output_check: "plugin.output must exist in surfaces/index.spw#output_formats"
+    ~#dependency_check: "all dependencies must be discoverable"
+    ~#version_check: "dialect version compatibility (parser >= plugin.min_dialect)"
+  }
+
+  execution: {
+    ~#order: "discovery → validation → select → hooks → transform → hooks → emit → hooks"
+    ~#parallelism: "independent plugins can run in parallel; dependent plugins run in topological order"
+    ~#isolation: "plugins cannot modify each other's selected frames — they receive copies"
+  }
+
+  composition: {
+    ~#chaining: "output of plugin A can feed input of plugin B via shared selectors"
+    ~#example: "plugin:spw-wonder-rss selects ?[\"_\"] → emits RSS → plugin:spw-rss-notify reads RSS → sends notifications"
+    ~#contract: "composed plugins must agree on intermediate format (usually JSON)"
+  }
+}
+
+^"example_plugins"{
+  #:reference #!catalog
+
+  "spw-wonder-rss": {
+    ~#description: "publishes wonder blocks as an RSS feed"
+    selectors: ["$?[\"_\"]@spw"]
+    output: "rss"
+    ~#status: "planned"
+  }
+
+  "spw-exhibit-html": {
+    ~#description: "renders literate exhibits as interactive HTML pages"
+    selectors: ["$^[\"_\"]@literate"]
+    output: "html"
+    ~#status: "planned"
+  }
+
+  "spw-registry-api": {
+    ~#description: "exposes registries as JSON API endpoints"
+    selectors: ["$^[\"_\"]@registries"]
+    output: "json"
+    ~#status: "planned"
+  }
+
+  "spw-changelog": {
+    ~#description: "generates a changelog from git history of .spw files"
+    selectors: ["$^[\"_\"]@docs"]
+    output: "markdown"
+    ~#status: "planned"
+  }
+
+  "spw-taxonomy": {
+    ~#description: "builds a navigable taxonomy from #:layer and annotation co-occurrence"
+    selectors: ["$#_@workspace"]
+    output: "html"
+    ~#status: "planned"
+  }
+}
+
+^"ecosystem_vision"{
+  ~#year_1: "publishing — static site generation from .spw frames (exhibits, docs, feeds)"
+  ~#year_2: "live surfaces — web components that bind to $%[metrics] and update in real time"
+  ~#year_3: "collaborative — multiple editors sharing .spw state via CRDTs or git sync"
+  ~#year_5: "computational — plugins that run probes and write results back to .spw files"
+  ~#year_10: "emergent — the plugin ecosystem develops idioms that feed back into the dialect"
+  ~#invariant: "every year's plugins must work with the previous year's .spw files — backward compatibility is non-negotiable"
+}
+
+^"invariant"{
+  "Plugins are .spw files — the protocol is self-describing.",
+  "Plugin discovery uses selector queries — the same mechanism plugins themselves use.",
+  "A workspace with zero plugins still publishes via the default pipeline.",
+  "Plugin composition is explicit — no implicit middleware chains.",
+  "Backward compatibility across dialect versions is a hard constraint.",
+}
+
+#>wonder_spw_surfaces_pluginprotocol_1
+?["What is the simplest plugin that would be genuinely useful?"]{
+  #:depth #!computational  // lens: molecular binding
+  ~#candidates: ["line-count badge", "annotation graph", "wonder-resolution tracker", "frame diff viewer"]
+  !probe{ "implement the smallest useful plugin: one selector, one output format, <50 lines. what is it?" }
+  $%[file.frame_count, file.annotation_density]
+}
+
+#>wonder_spw_surfaces_pluginprotocol_2
+?["How does the plugin ecosystem resist the WordPress trap of incompatible bloat?"]{
+  #:depth #!experiential  // lens: ecological zone
+  ~#wordpress_trap: "thousands of plugins, most poorly maintained, many conflicting, users can't distinguish quality"
+  ~#counter_strategy: "selector-based composition means plugins that don't share selectors can't conflict"
+  !probe{ "design a 'plugin health' metric: what signals distinguish a thriving plugin from an abandoned one?" }
+  $%[file.frame_count, file.annotation_density]
+}

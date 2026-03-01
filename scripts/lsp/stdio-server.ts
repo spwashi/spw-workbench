@@ -162,6 +162,24 @@ const DIAGNOSTIC_DELAY_MS = 300
 const WORKSPACE_FILES_CACHE_TTL_MS = 5_000
 let workspaceFilesCache: { at: number; files: string[] } | null = null
 
+// Observable state sidecar — loaded on save, used in $%[metric] hover
+let observableState: Record<string, any> | null = null
+let observableStateLoadedAt = 0
+
+async function loadObservableState(): Promise<Record<string, any>> {
+  const statePath = path.join(WORKSPACE_ROOT, '.spw', 'state', 'observable.json')
+  try {
+    const text = await fs.readFile(statePath, 'utf8')
+    observableState = JSON.parse(text)
+    observableStateLoadedAt = Date.now()
+    log('observable state loaded')
+  } catch {
+    // File doesn't exist or is malformed — use empty state
+    if (!observableState) observableState = {}
+  }
+  return observableState!
+}
+
 // ── Logging ─────────────────────────────────────────────────────
 
 function log(message: string): void {
@@ -982,11 +1000,27 @@ async function hover(params: any): Promise<LspHover | null> {
       }
 
       let md = `**\`$%[${metricHoverMatch[1]}]\`** — *measurement point*\n\n`
+
+      // Try to show live values from observable.json
+      const state = observableState || {}
+      let hasLive = false
+
       for (const m of metrics) {
         const desc = metricDescs[m] || `Runtime-bindable metric: ${m}`
-        md += `- **${m}**: ${desc}\n`
+        const liveValue = state[m]
+        if (liveValue !== undefined && liveValue !== null) {
+          md += `- **${m}**: \`${liveValue}\` — ${desc}\n`
+          hasLive = true
+        } else {
+          md += `- **${m}**: ${desc}\n`
+        }
       }
-      md += `\n*These metrics can be bound to live runtime values via the register bank.*\n`
+
+      if (hasLive) {
+        md += `\n*Live values from \`.spw/state/observable.json\` (refreshed on save).*\n`
+      } else {
+        md += `\n*No live values — populate \`.spw/state/observable.json\` to bind.*\n`
+      }
 
       return {
         contents: { kind: 'markdown', value: md },
@@ -2157,6 +2191,7 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
         WORKSPACE_ROOT = parseWorkspaceRoot(message.params)
         CONFIG = await loadConfig(WORKSPACE_ROOT, message.params?.initializationOptions)
         serverIndex = new ServerIndex(WORKSPACE_ROOT)
+        loadObservableState()  // load .spw/state/observable.json on startup
         log(`initialize workspace=${WORKSPACE_ROOT} config=${JSON.stringify(CONFIG)}`)
 
         sendResult(id, {
@@ -2301,6 +2336,8 @@ function handleNotification(message: JsonRpcRequest): void {
       if (!uri) return
       serverIndex.saveDocument(uri)
       debounceDiagnostics(uri)
+      // Reload observable state on any save (lightweight — single JSON file)
+      loadObservableState()
       return
     }
 
