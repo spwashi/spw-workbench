@@ -29,6 +29,28 @@ This document defines the layout and semantics bridge for the library so archite
 | `infra/` | conformance + infra posture | markdown stubs | authored v0.2 stubs |
 | `architecture/` | structural + theory bridge | `.spw` supports | introduced in this pass |
 
+## 3-Layer Kernel
+
+The ontology is organized into three layers with inward dependency flow:
+
+| Layer | Time | Owns | Invariant |
+|:--|:--|:--|:--|
+| **Grammar** | parse | operators, containers, seeds, tokens | Facts verified at parse time; no runtime dependency |
+| **Semantics** | meaning | planes, axes, polarity, spirit sequence | Claims falsifiable via probes; never mutate grammar |
+| **Pragmatics** | use | shelves, editing, biome, process, tooling | Conventions orient usage without constraining grammar or semantics |
+
+Dependency direction: `pragmatics → semantics → grammar` (never reversed).
+
+See [LAYERS.md](./core/LAYERS.md) for worked examples and [`.spw/workspace.spw#kernel`](../../.spw/workspace.spw) for the canonical declaration.
+
+## Rendering Portability
+
+Spw files are **plain-text-first**: they must be legible without a custom renderer. Target surfaces include:
+- **Terminal** — TUI tools, `cat`, `grep`, `less`
+- **Obsidian** — block-level markdown-adjacent rendering
+- **Notion** — code block embedding
+- **IDE** — semantic tokens, CodeLens, hover
+
 ## Brace-First Thesis
 
 Spw treats braces as primordial semantic constructs rather than mere punctuation:

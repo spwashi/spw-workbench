@@ -25,9 +25,10 @@
 }
 
 ^"orientation"{
-  macro: [@biome/spells, @biome/expr, @biome/query]
-  measurement: [@harness/probes, @harness/evals, @biome/trace]
-  prose: [@spw/literate, @spw/reflection, @docs]
-  runtime: [@hot, @biome/algos, @biome/ops]
-  editor_heuristics: @spw/editing.spw
+  macro: [@biome/spells, @biome/expr, @biome/query]    #:layer #!pragmatics
+  measurement: [@harness/probes, @harness/evals, @biome/trace]    #:layer #!cross_cutting
+  prose: [@spw/literate, @spw/process, @docs]    #:layer #!pragmatics
+  runtime: [@hot, @biome/algos, @biome/ops]    #:layer #!semantics
+  editor_heuristics: @spw/editing.spw    #:layer #!pragmatics
+  ~#rendering: "plain-text-first; legible in terminal, Obsidian, Notion without custom renderer"
 }
