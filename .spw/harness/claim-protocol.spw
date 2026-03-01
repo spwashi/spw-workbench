@@ -1,0 +1,76 @@
+# Claim Protocol
+#
+# Wire architectural claims to falsifiable probes.
+# Every claim in the .spw corpus should be testable.
+
+#>spw_claim_protocol
+#:harness #!protocol
+
+^"intent"{
+  ~#goal: "Connect architectural claims to measurement probes so the ontology is self-verifying."
+  ~#layer: "cross-cutting (grammar claims, semantic claims, and pragmatic claims all use this protocol)"
+}
+
+^"template"{
+  claim_template: {
+    claim_id: "string (e.g. c001-brace-symmetry)"
+    layer: "grammar | semantics | pragmatics"
+    hypothesis: "what we believe to be true"
+    measure: "what observable quantity would confirm or deny it"
+    falsification: "threshold or condition that would disprove the claim"
+    probe_ref: "path to the probe that tests this claim"
+    spec_ref: "path to the spec that declares the invariant"
+    impl_ref: "path to the implementation that realizes the claim"
+    status: "untested | active | confirmed | refuted"
+  }
+}
+
+^"examples"{
+  c001: {
+    claim_id: "c001-brace-symmetry"
+    layer: "grammar"
+    hypothesis: "L/R brace anchors produce symmetric selection ergonomics"
+    measure: "selector hit rate from left vs right anchor across 100 queries"
+    falsification: "asymmetric hit rate > 15%"
+    probe_ref: ".spw/harness/probes/probe-loop.spw"
+    spec_ref: "lib/spw-v0.2.0-alpha/core/CONTAINERS.md"
+    impl_ref: "src/seed/grammar/containers.ts"
+    status: "untested"
+  }
+
+  c002: {
+    claim_id: "c002-accessor-polarity"
+    layer: "semantics"
+    hypothesis: "# trends extrinsic/projection, . trends intrinsic/reduction in authored .spw files"
+    measure: "corpus scan: ratio of # in projection context vs . in reduction context"
+    falsification: "polarity consistency < 70% across .spw corpus"
+    probe_ref: ".spw/harness/probes/probe-loop.spw"
+    spec_ref: "lib/spw-v0.2.0-alpha/core/OPERATORS.md"
+    impl_ref: "src/seed/lexer/matchers/operators.ts"
+    status: "untested"
+  }
+
+  c003: {
+    claim_id: "c003-plain-text-legibility"
+    layer: "pragmatics"
+    hypothesis: ".spw files are legible without a custom renderer in terminal, Obsidian, and Notion"
+    measure: "readability score: can a reader extract intent from raw text in < 30 seconds"
+    falsification: "more than 20% of .spw files require rendered view to understand intent"
+    probe_ref: ".spw/harness/probes/probe-loop.spw"
+    spec_ref: ".spw/workspace.spw#process"
+    impl_ref: "n/a (convention, not code)"
+    status: "untested"
+  }
+}
+
+^"chain"{
+  ~#description: "The claim chain traces from .spw assertion to spec to implementation to test."
+  ~#flow: "^claim[id] -> spec_ref (invariant) -> impl_ref (code) -> probe_ref (measurement)"
+  ~#gap_signal: "Any claim without all four links is architectural debt."
+}
+
+^"invariant"{
+  "Every architectural claim should be expressible as a claim template.",
+  "Claims with status 'refuted' trigger a review, not silent deletion.",
+  "The claim chain is the minimal unit of architectural self-knowledge.",
+}

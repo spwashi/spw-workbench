@@ -19,15 +19,38 @@
   @spec: ~"../lib/spw-v0.2.0-alpha"
 }
 
+^"kernel"{
+  #:ontology #!layers
+  grammar: {
+    #:layer #!parse_time
+    owns: "operators, containers, seeds, token stability, composition order"
+    surfaces: [@spec, @seed]
+    invariant: "Grammar facts are verified at parse time and do not depend on runtime state."
+  }
+  semantics: {
+    #:layer #!meaning_time
+    owns: "planes, axes, polarity, selection model, spirit sequence, materialization cycle"
+    surfaces: [~"./registries", ~"./applications", ~"./literate"]
+    invariant: "Semantic claims are falsifiable via probes and do not mutate grammar."
+  }
+  pragmatics: {
+    #:layer #!use_time
+    owns: "shelves, editing heuristics, topology, biome metaphor, process loops, tooling"
+    surfaces: [~"./conventions", ~"./patterns", ~"./biome", ~"./tooling", ~"./process"]
+    invariant: "Pragmatic conventions orient usage without constraining grammar or semantics."
+  }
+}
+
 ^"relationships"{
   #:relationship #!topology
-  control_plane: "index.spw -> dispatch -> mount/workspace/biome/harness/gen"
-  register_plane: "registries/* define operator physics and brace symmetry"
-  application_plane: "applications/symmetry/* consume registries and project domain behaviors"
-  convention_plane: "conventions/* defines naming, selection, and relation ergonomics"
-  pattern_plane: "patterns/* provides reusable scalable + literate architecture recipes"
-  measurement_plane: "harness/{evals,probes,runs,memory-surface} measures and archives loop evidence"
-  projection_plane: "gen/* is generated output; manifests and registries remain source-of-truth surfaces"
+  control: "index.spw -> dispatch -> mount/workspace (grammar + semantics bridge)"
+  register: "registries/* define operator physics and brace symmetry (semantics)"
+  application: "applications/symmetry/* consume registries and project domain behaviors (semantics)"
+  convention: "conventions/* defines naming, selection, and relation ergonomics (pragmatics)"
+  pattern: "patterns/* provides reusable architecture recipes (pragmatics)"
+  measurement: "harness/{evals,probes,runs,memory-surface} measures and archives loop evidence (cross-cutting)"
+  projection: "gen/* is generated output; manifests and registries remain source-of-truth surfaces"
+  process: "process/* describes iteration loops: observation, evolution, hot-reload (pragmatics)"
 }
 
 ^"priming_concepts_frames_bodies"{
@@ -99,19 +122,22 @@
   ~#query_composition: ~"./patterns/query-composition.spw"
 }
 
-^"reflection"{
-  ~#entry_spec: ~"./loop-observation.spw"
-  ~#focus: "loop, observation fields, concept clustering, projection references"
-}
-
-^"evolution"{
-  ~#entry_spec: ~"./scoped-evolution.spw"
-  ~#mode: "experimental syntax is opt-in and path-scoped"
-}
-
-^"development"{
-  ~#entry_spec: ~"./hot-reload-loop.spw"
-  ~#runtime: "npm run spw:dev"
+^"process"{
+  #:layer #!pragmatics
+  ~#root: ~"./process"
+  observation: {
+    ~#entry_spec: ~"./process/loop-observation.spw"
+    ~#focus: "loop, observation fields, concept clustering, projection references"
+  }
+  evolution: {
+    ~#entry_spec: ~"./process/scoped-evolution.spw"
+    ~#mode: "experimental syntax is opt-in and path-scoped"
+  }
+  hot_reload: {
+    ~#entry_spec: ~"./process/hot-reload-loop.spw"
+    ~#runtime: "npm run spw:dev"
+  }
+  ~#rendering: "plain-text-first; must be legible in terminal, Obsidian, Notion without custom renderer"
 }
 
 ^"ocean_atlas"{

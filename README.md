@@ -133,7 +133,7 @@ The [material model](.spw/biome/ocean/algos/material.spw) maps physical intuitio
 |:--|:--|:--|
 | **density** | concept packing / coupling pressure | cluster first, narrow lens |
 | **viscosity** | resistance to change under hot iteration | [hot replacement guard](.spw/biome/ocean/query/hot.spw) |
-| **elasticity** | recovery from projection perturbation | [scoped evolution](.spw/scoped-evolution.spw) |
+| **elasticity** | recovery from projection perturbation | [scoped evolution](.spw/process/scoped-evolution.spw) |
 | **porosity** | cross-boundary permeability | root convention, [selector grounding](.spw/biome/ocean/query/sel.spw) |
 | **anisotropy** | directional bias in query traversal | [consequence trace](.spw/consequence.spw) |
 
