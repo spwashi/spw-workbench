@@ -168,3 +168,38 @@ export const CK = {
     Reference: 18,
     Field: 5,
 } as const
+
+// ── Request Param Types ─────────────────────────────────────────
+
+export interface TextDocumentIdentifier {
+    uri: string
+}
+
+export interface TextDocumentPositionParams {
+    textDocument: TextDocumentIdentifier
+    position: LspPosition
+}
+
+export interface DocumentParams {
+    textDocument: TextDocumentIdentifier
+}
+
+export interface HoverParams extends TextDocumentPositionParams { }
+export interface DefinitionParams extends TextDocumentPositionParams { }
+export interface CompletionParams extends TextDocumentPositionParams { }
+export interface ReferencesParams extends TextDocumentPositionParams {
+    context?: { includeDeclaration?: boolean }
+}
+export interface RenameParams extends TextDocumentPositionParams {
+    newName: string
+}
+
+export interface DocumentFormattingParams {
+    textDocument: TextDocumentIdentifier
+    options: { tabSize: number; insertSpaces: boolean }
+}
+
+export interface InlayHintParams {
+    textDocument: TextDocumentIdentifier
+    range: LspRange
+}
