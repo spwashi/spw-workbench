@@ -2,6 +2,8 @@
 #
 # Make screenshot-driven prompting explicit and testable.
 
+#:layer #!semantics
+
 ^["goal"]{
   ~#intent: "Convert implicit visual cues into structured prompts."
   ~#contract: "Screenshots are treated as structured inputs."
@@ -34,3 +36,8 @@
   ~#panel_fields: ["anchor", "task", "constraints", "output_mode"]
   ~#storage: "write each run into the Exploration Log"
 }
+
+?["What semantic claim does this document make that could be falsified?"]
+  #:scope #!file
+  ~#probe: "trace which claims or conventions reference this surface"
+
