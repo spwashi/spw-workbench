@@ -671,6 +671,67 @@ async function publishDiagnostics(uri: string): Promise<void> {
     }
   }
 
+  // 4. Brace physics — depth budget
+  {
+    const lines = doc.text.split('\n')
+    let depth = 0
+    let maxDepthLine = -1
+    let maxDepth = 0
+    for (let i = 0; i < lines.length; i++) {
+      for (const ch of lines[i]) {
+        if (ch === '{') depth++
+        else if (ch === '}') depth = Math.max(0, depth - 1)
+      }
+      if (depth > maxDepth) {
+        maxDepth = depth
+        maxDepthLine = i
+      }
+    }
+    if (maxDepth >= 5 && maxDepthLine >= 0) {
+      diagnostics.push({
+        range: { start: { line: maxDepthLine, character: 0 }, end: { line: maxDepthLine, character: 1 } },
+        severity: 4, // Hint
+        source: 'spw-physics',
+        message: `Nesting depth ${maxDepth} exceeds budget (4). Consider extracting a named sub-frame.`,
+      })
+    }
+  }
+
+  // 5. Brace physics — valence composition
+  {
+    const text = doc.text
+    const frameRe = /\^(?:\["([^"]+)"\]|"([^"]+)"|'([^']+)')\s*\{/g
+    let frameMatch: RegExpExecArray | null
+    while ((frameMatch = frameRe.exec(text)) !== null) {
+      const frameName = frameMatch[1] || frameMatch[2] || frameMatch[3]
+      const braceStart = text.indexOf('{', frameMatch.index + frameMatch[0].length - 1)
+      if (braceStart < 0) continue
+
+      // Find the matching close brace
+      let depth = 1
+      let blockEnd = braceStart + 1
+      for (; blockEnd < text.length && depth > 0; blockEnd++) {
+        if (text[blockEnd] === '{') depth++
+        else if (text[blockEnd] === '}') depth--
+      }
+
+      const block = text.slice(braceStart, blockEnd)
+      const hasBoon = /!boon\b/.test(block)
+      const hasBane = /!bane\b/.test(block)
+
+      if (hasBoon && hasBane) {
+        // Find the line number of the frame declaration
+        const lineNo = text.slice(0, frameMatch.index).split('\n').length - 1
+        diagnostics.push({
+          range: { start: { line: lineNo, character: 0 }, end: { line: lineNo, character: frameMatch[0].length } },
+          severity: 4, // Hint
+          source: 'spw-physics',
+          message: `Frame "${frameName}" holds mixed valence (!boon + !bane) — intentional tension?`,
+        })
+      }
+    }
+  }
+
   sendNotification('textDocument/publishDiagnostics', { uri, diagnostics })
 }
 

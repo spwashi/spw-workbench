@@ -128,12 +128,37 @@ Frames select; bodies materialize. The choice is semantic, not stylistic.
 {random stuff here}        # Body: correct for general containment
 ```
 
+## Brace Charge Model
+
+Left and right braces are **not symmetric**. They carry opposite charge:
+
+| Brace | Left (Open) | Right (Close) |
+|:---:|:--|:--|
+| `{` / `}` | +tension — accumulates semantic mass | −discharge — collapses field into unit |
+| `[` / `]` | +selection — pins a coordinate | −release — lets go of selection |
+| `(` / `)` | +containment — captures flow | −emission — releases captured flow |
+| `<` / `>` | +channel — directs into conduit | −delivery — completes the conduit |
+
+### Tension Gradient
+
+The distance (line count) between `{` and `}` is the **tension gradient**:
+
+- **1 line** (percussive): `!deploy{ @prod }` — snap, immediate
+- **10–50 lines** (sustained): held note, weight builds until `}` releases
+- **50+ lines** (epic): gravitational body with internal sub-structure
+
+### Depth Budget
+
+Recommended maximum nesting depth: **4**. Beyond that, extract a named sub-frame.
+
 ## Invariants
 
 - Container boundaries are preserved in AST output.
 - Ambiguous container shapes resolve consistently under one rule-set.
 - Invalid nesting fails fast with position-rich diagnostics.
 - Each brace pair has one semantic meaning — selection, scope, materialization, or channel.
+- Left braces accumulate charge; right braces discharge.
+- Nesting depth past 4 is a structural smell.
 
 ## Implementation Hooks
 
@@ -141,9 +166,10 @@ Frames select; bodies materialize. The choice is semantic, not stylistic.
 - Container parser tests: `src/seed/__tests__/container-disambiguation.test.ts`
 - Parsing entry points: `src/seed/parser/parse.ts`
 - Container kind types: `src/seed/types/token.ts#ContainerKind`
+- Brace physics registry: `.spw/registries/brace-physics.spw`
 
 ## Open Questions
 
 - Should mixed container families be normalized or preserved as-authored?
 - Which ambiguity cases need profile toggles versus one canonical rule?
-- How does brace charge (L/R orientation) affect selector ergonomics?
+

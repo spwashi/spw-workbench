@@ -1,0 +1,232 @@
+# Brace Physics Registry
+#
+# How braces act as force carriers in the Spw semantic field.
+# Left braces accumulate charge; right braces discharge meaning.
+# The distance between them is the tension gradient.
+
+#>spw_brace_physics
+#:layer #!grammar
+
+^"charge_table"{
+  #:ontology #!brace_physics
+  # Each brace pair carries an asymmetric charge.
+  # The left member accumulates; the right member discharges.
+
+  curly: {
+    open:  "{ — tension accumulator — opens a semantic field"
+    close: "} — discharge — collapses the field into a unit"
+    physics: "gravitational well — everything inside orbits the frame identity"
+    charge: "+tension / −discharge"
+    spirit_phase: "materialization boundary"
+  }
+  square: {
+    open:  "[ — selection — pins a coordinate in possibility space"
+    close: "] — release — lets go of the selection"
+    physics: "laser pointer — selects one thing from a continuum"
+    charge: "+selection / −release"
+    spirit_phase: "addressing boundary"
+  }
+  paren: {
+    open:  "( — containment — captures flow"
+    close: ") — emission — releases captured flow"
+    physics: "cupped hands — holds without binding"
+    charge: "+containment / −emission"
+    spirit_phase: "flow boundary"
+  }
+  angle: {
+    open:  "< — channel — directs intent into a typed conduit"
+    close: "> — delivery — completes the conduit"
+    charge: "+channel / −delivery"
+    spirit_phase: "projection boundary"
+  }
+}
+
+^"tension_gradient"{
+  #:semantics #!brace_tension
+  # The distance between { and } creates semantic mass.
+  # Short spans are percussive; long spans sustain.
+
+  percussive: {
+    pattern: "!deploy{ @prod }"
+    lines: 1
+    feel: "snap — immediate, decisive"
+    reading_speed: "glance"
+  }
+  sustained: {
+    pattern: "^[\"migration\"]{ ... 40 lines ... }"
+    lines: "10-50"
+    feel: "held note — weight builds until } releases it"
+    reading_speed: "scan, then collapse"
+  }
+  epic: {
+    pattern: "^[\"workspace\"]{ ... 200+ lines ... }"
+    lines: "50+"
+    feel: "gravitational body — has its own internal structure"
+    reading_speed: "navigate by sub-frames, never read linearly"
+  }
+
+  depth_budget: {
+    recommended_max: 4
+    warning_threshold: 5
+    #!invariant: "Nesting past 4 signals entanglement — extract a sub-frame."
+    extraction_rule: "Name the nested frame and reference it; don't inline complexity."
+  }
+}
+
+^"operator_tenses"{
+  #:semantics #!flow_direction
+  # Operators impose temporal direction within a frame.
+  # Flow reads left-to-right as time reads past-to-future.
+
+  subjunctive: {
+    sigil: "~"
+    tense: "what could be — unresolved potential"
+    feel: "anticipation, possibility, future"
+    flow: "opens a timeline"
+  }
+  interrogative: {
+    sigil: "?"
+    tense: "what is asked — suspended between knowing and not"
+    feel: "wonder, tension held as question"
+    flow: "pauses the timeline"
+  }
+  imperative: {
+    sigil: "!"
+    tense: "what must happen — committed force"
+    feel: "present, decisive, action"
+    flow: "advances the timeline"
+  }
+  perfective: {
+    sigil: "^"
+    tense: "what was made — crystallized result"
+    feel: "past, settled, artifact"
+    flow: "closes the timeline"
+  }
+  observational: {
+    sigil: "%"
+    tense: "what is measured — the act of looking"
+    feel: "present, receptive, non-invasive"
+    flow: "reads the timeline without advancing it"
+  }
+
+  canonical_flow: "~ => ? => ! => ^ (potential → wonder → action → result)"
+  #!invariant: "Reversing the flow (^ before ~) signals intentional time-reversal."
+}
+
+^"valence_composition"{
+  #:semantics #!valence
+  # Valence annotations compose within a frame.
+  # The frame's overall charge is the sum of its valence markers.
+
+  uniform: {
+    pattern: "^[\"success\"]{ !boon ... !boon ... }"
+    result: "stable — single polarity, no internal tension"
+    feel: "resolved, consonant"
+  }
+  mixed: {
+    pattern: "^[\"integration\"]{ !boon ... !bane ... }"
+    result: "tense — holds contradiction"
+    feel: "dissonant, intentional — the frame IS the container for conflict"
+  }
+  neutral: {
+    pattern: "^[\"structure\"]{ !bone ... !bone ... }"
+    result: "ground state — no charge, resting"
+    feel: "skeletal, foundational"
+  }
+  catalytic: {
+    pattern: "^[\"transition\"]{ !bonk ... }"
+    result: "phase change — exists only during transformation"
+    feel: "flash, ignition, momentary"
+  }
+
+  #!invariant: "Mixed valence is not an error — it's a signal that the frame holds tension deliberately."
+}
+
+^"wonder_as_query"{
+  #:pragmatics #!wonder_semantics
+  # ?[...] questions are not decorative. They are executable queries.
+  # Each wonder question has scope, selector expansion, and priming semantics.
+
+  anatomy: {
+    question: "?[\"text\"] — the human-readable prompt"
+    scope: "#:scope — what this question ranges over (file, frame, workspace)"
+    selector: "$~\"_\" — the selector expression this question expands to"
+    priming: "~#var — variables this question primes for downstream use"
+    handle: "#>anchor — the anchor name for cross-reference"
+    release: "!release — what action resolves this question"
+  }
+
+  example_simple: {
+    // A wonder question that the LSP can act on
+    ?["Which @-roots resolve from this frame?"]
+      #:scope #!frame
+      $@_              // selector: expand all @-root references
+      ~#resolved_roots // priming: populate this variable with results
+      #>wonder_roots   // handle: reachable by #>wonder_roots
+      !release{ "hover or code lens shows resolved list" }
+  }
+
+  example_comparison: {
+    // A wonder question that compares v0.1.0 and v0.2.0 specs
+    ?["How did the operator table change between versions?"]
+      #:scope #!workspace
+      $^["operators"]@spec            // selector: operators frame in v0.2.0
+      $^["operators"]@spec/../spw-v0.1.0-alpha  // selector: operators frame in v0.1.0
+      ~#delta                          // priming: the diff between them
+      !release{ "side-by-side in editor diff" }
+  }
+
+  example_hot: {
+    // A wonder question that triggers hot-replacement exploration
+    ?["What happens if I rename this annotation?"]
+      #:scope #!workspace
+      $#focus           // selector: expand all #focus annotations
+      ~#rename_preview  // priming: preview of what rename would touch
+      !release{ "F2 rename with preview pane" }
+  }
+
+  lsp_hooks: {
+    recognition: "LSP recognizes ?[...] blocks with $-selectors as executable"
+    code_lens: "Show 'Run Query' code lens above each ?[...] block"
+    hover: "Hover on $-selector shows expansion preview"
+    completion: "Inside ?[...], trigger $ completion for available selectors"
+  }
+
+  #!invariant: "Every wonder question should be answerable by selector expansion."
+  #!invariant: "Wonder questions with no $-selector are prose-only — valid but inert."
+}
+
+^"brace_side_semantics"{
+  #:grammar #!brace_sides
+  # Extension of curiosity-brace.spw — how left/right brace-sides
+  # map to the charge model.
+
+  left: {
+    role: "intrinsic — the identity, the key, the charge accumulator"
+    physics: "what the frame IS before it has content"
+    example: "^[\"identity\"]{ — the { carries the frame's name and intent"
+  }
+  right: {
+    role: "extrinsic — the value, the discharge, the materialized content"
+    physics: "what the frame PRODUCES when it collapses"
+    example: "} — this } releases everything accumulated since {"
+  }
+  resonance: {
+    rule: "left and right braces resonate across distance"
+    visibility: "editor highlights both when cursor touches either"
+    symmetry: "D4 symmetry applies: .left ↔ .right reflects in register bank"
+  }
+}
+
+^"invariants"{
+  "Left braces accumulate charge; right braces discharge.",
+  "Tension gradient is proportional to the line-count between { and }.",
+  "Nesting depth past 4 is a structural smell.",
+  "Mixed valence is intentional tension, not an error.",
+  "Operator tense flows ~ → ? → ! → ^ within a well-formed frame.",
+  "Wonder questions with $-selectors are executable queries.",
+}
+
+?["Does the charge model extend to non-brace operators like = and :?"]
+  #:scope #!grammar
+  ~#answer: "= is assignment (config operator, neutral charge). : is separator (no charge, purely structural). The charge model applies only to paired delimiters that create and collapse fields."
