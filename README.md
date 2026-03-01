@@ -15,8 +15,9 @@ npm run lsp              # start language server
 Each site creates its own `.spw/` directory:
 
 ```
-your-project/
+your-site/
 ├── .spw/
+│   ├── _workbench/            # git submodule → spwashi/spw-workbench
 │   ├── index.spw              # workspace manifest
 │   ├── state/
 │   │   └── observable.spw     # runtime metrics (%[key] measurement points)
@@ -26,6 +27,21 @@ your-project/
 │       └── structural.spw     # substrate bindings (event-driven processing)
 ├── content/
 └── package.json
+```
+
+### Site Integration
+
+Add the workbench as a git submodule:
+
+```bash
+git submodule add https://github.com/spwashi/spw-workbench .spw/_workbench
+```
+
+The `_workbench` prefix signals infrastructure — the parser, runtime, substrate engine, and LSP live here. Site-specific `.spw` files reference base configurations via relative paths:
+
+```spw
+# inherit publish rules from the workbench
+~"_workbench/.spw/surfaces/publish.spw"
 ```
 
 ## Substrates
