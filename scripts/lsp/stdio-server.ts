@@ -19,244 +19,72 @@ import {
   ServerIndex,
   SIGIL_SEMANTICS,
 } from './server-index'
-import { runSpw } from '../../src/runtime/pipeline/run-spw'
-import type { RunSpwResult } from '../../src/runtime/pipeline/types'
 
-// ── LSP Types ───────────────────────────────────────────────────
+// ── Extracted modules ───────────────────────────────────────────
+import type {
+  LspPosition, LspRange, LspLocation,
+  LspDiagnostic, LspSymbolInfo, LspDocumentSymbol,
+  LspCompletionItem, LspCodeLens, LspHover, LspTextEdit,
+  LspInlayHint, LspFoldingRange, LspPrepareRenameResult, LspWorkspaceEdit,
+  SpwConfig, RootMap, JsonRpcRequest, JsonRpcResponse,
+} from './types'
+import { SK, CK, DEFAULT_CONFIG } from './types'
+import { ServerContext } from './context'
 
-interface LspPosition { line: number; character: number }
-interface LspRange { start: LspPosition; end: LspPosition }
-interface LspLocation { uri: string; range: LspRange }
+// ── Server state (via context) ──────────────────────────────────
 
-interface LspDiagnostic {
-  range: LspRange
-  severity: number // 1=Error 2=Warning 3=Info 4=Hint
-  source: string
-  message: string
-}
+const ctx = new ServerContext(process.cwd())
 
-interface LspSymbolInfo {
-  name: string
-  kind: number
-  location: LspLocation
-  containerName?: string
-}
-
-interface LspDocumentSymbol {
-  name: string
-  detail: string
-  kind: number
-  range: LspRange
-  selectionRange: LspRange
-  children?: LspDocumentSymbol[]
-}
-
-interface LspCompletionItem {
-  label: string
-  kind: number
-  detail?: string
-  insertText?: string
-  sortText?: string
-}
-
-interface LspCodeLens {
-  range: LspRange
-  command?: { title: string; command: string; arguments?: any[] }
-}
-
-interface LspHover {
-  contents: { kind: 'markdown'; value: string }
-  range?: LspRange
-}
-
-interface LspTextEdit {
-  range: LspRange
-  newText: string
-}
-
-interface LspInlayHint {
-  position: LspPosition
-  label: string
-  kind?: 1 | 2
-  tooltip?: string
-  paddingLeft?: boolean
-  paddingRight?: boolean
-}
-
-interface SpwConfig {
-  inlayHints?: {
-    paths?: boolean
-    annotations?: boolean
-    frames?: boolean
-  }
-  diagnostics?: {
-    unresolvedRefs?: 'error' | 'warning' | 'hint' | 'off'
-    staleProjections?: boolean
-  }
-  roots?: Record<string, string>
-  workspace?: {
-    exclude?: string[]
-  }
-  formatOnSave?: boolean
-}
-
-const DEFAULT_CONFIG: Required<SpwConfig> = {
-  inlayHints: { paths: true, annotations: true, frames: true },
-  diagnostics: { unresolvedRefs: 'warning', staleProjections: true },
-  roots: {},
-  workspace: { exclude: ['node_modules', '.git', '.claude'] },
-  formatOnSave: false,
-}
-
-interface JsonRpcRequest {
-  jsonrpc: '2.0'
-  id?: number | string
-  method: string
-  params?: any
-}
-
-interface JsonRpcResponse {
-  jsonrpc: '2.0'
-  id: number | string | null
-  result?: any
-  error?: { code: number; message: string; data?: any }
-}
-
-type RootMap = Record<string, string>
-
-// ── SymbolKind constants ────────────────────────────────────────
-
-const SK = {
-  Module: 2,
-  Property: 7,
-  Event: 24,
-  Boolean: 17,
-  Key: 20,
-  Enum: 10,
-  Interface: 11,
-  Variable: 13,
-  Struct: 23,
-  Folder: 19,
-  File: 1,
-} as const
-
-// ── CompletionItemKind constants ────────────────────────────────
-
-const CK = {
-  Folder: 19,
-  File: 17,
-  Keyword: 14,
-  Reference: 18,
-  Field: 5,
-} as const
-
-// ── Server state ────────────────────────────────────────────────
-
-const REPO_ROOT = process.cwd()
-let WORKSPACE_ROOT = REPO_ROOT
-let SHUTDOWN = false
+// Legacy aliases — these forward to ctx for backward compatibility
+// during the incremental decomposition. Each capability function
+// will be migrated to accept ctx directly.
+const REPO_ROOT = ctx.repoRoot
+let WORKSPACE_ROOT = ctx.workspaceRoot
+let SHUTDOWN = ctx.shutdown
 let incoming = Buffer.alloc(0)
 let serverIndex: ServerIndex
-let CONFIG: Required<SpwConfig> = { ...DEFAULT_CONFIG }
+let CONFIG: Required<SpwConfig> = ctx.config
 
-const DIAGNOSTIC_DEBOUNCE = new Map<string, ReturnType<typeof setTimeout>>()
-const DIAGNOSTIC_DELAY_MS = 300
-const WORKSPACE_FILES_CACHE_TTL_MS = 5_000
-let workspaceFilesCache: { at: number; files: string[] } | null = null
+const DIAGNOSTIC_DEBOUNCE = ctx.diagnosticDebounce
+const DIAGNOSTIC_DELAY_MS = ctx.diagnosticDelayMs
+const WORKSPACE_FILES_CACHE_TTL_MS = ctx.workspaceFilesCacheTtlMs
+let workspaceFilesCache = ctx.workspaceFilesCache
 
-// Observable state sidecar — loaded on save, used in $%[metric] hover
-let observableState: Record<string, any> | null = null
-let observableStateLoadedAt = 0
+let observableState = ctx.observableState
+let observableStateLoadedAt = ctx.observableStateLoadedAt
 
 async function loadObservableState(): Promise<Record<string, any>> {
-  const statePath = path.join(WORKSPACE_ROOT, '.spw', 'state', 'observable.spw')
-  try {
-    const text = await fs.readFile(statePath, 'utf8')
-    const state: Record<string, any> = {}
-    // Parse %[key] value lines from Spw
-    // Matches: .. %[key]  value  or  %[key] value
-    const metricRe = /(?:\.\.\s*)?%\[([^\]]+)\]\s+(.+)/g
-    let m: RegExpExecArray | null
-    while ((m = metricRe.exec(text)) !== null) {
-      const key = m[1].trim()
-      let val: any = m[2].trim()
-      // Strip trailing comments
-      const commentIdx = val.indexOf('//')
-      if (commentIdx >= 0) val = val.slice(0, commentIdx).trim()
-      // Parse value
-      if (val === 'null') val = null
-      else if (val === 'true') val = true
-      else if (val === 'false') val = false
-      else if (/^-?\d+(\.\d+)?$/.test(val)) val = Number(val)
-      else if (val.startsWith('"') && val.endsWith('"')) val = val.slice(1, -1)
-      // Prepend frame prefix: find containing ^"frame" for dotted key
-      const linesBefore = text.slice(0, m.index)
-      const frameMatch = linesBefore.match(/\^"([^"]+)"\s*\{[^}]*$/s)
-      const prefix = frameMatch ? `${frameMatch[1]}.` : ''
-      state[`${prefix}${key}`] = val
-    }
-    observableState = state
-    observableStateLoadedAt = Date.now()
-    log('observable state loaded from .spw')
-  } catch {
-    if (!observableState) observableState = {}
-  }
-  return observableState!
+  const result = await ctx.loadObservableState()
+  observableState = ctx.observableState
+  observableStateLoadedAt = ctx.observableStateLoadedAt
+  return result
 }
 
-// ── Runtime trial cache ─────────────────────────────────────────
-// Lightweight trial interpretation for LSP enrichment.
-// Cache result per-document with a short TTL to avoid hammering the interpreter.
-const runtimeTrialCache = new Map<string, { at: number; result: RunSpwResult }>()
+const runtimeTrialCache = new Map<string, { at: number; result: any }>()
 const RUNTIME_TRIAL_TTL_MS = 2_000
 
-function trialRunSpw(source: string, uri: string): RunSpwResult {
-  const cached = runtimeTrialCache.get(uri)
-  if (cached && Date.now() - cached.at < RUNTIME_TRIAL_TTL_MS) {
-    return cached.result
-  }
-  try {
-    const result = runSpw(source)
-    runtimeTrialCache.set(uri, { at: Date.now(), result })
-    return result
-  } catch {
-    // Interpreter threw — return a safe failure
-    const fail: RunSpwResult = {
-      success: false,
-      source,
-      parse: { success: false, ast: null, events: [], errors: [] } as any,
-      issues: [{ stage: 'interpret', message: 'Runtime trial failed' }],
-    }
-    runtimeTrialCache.set(uri, { at: Date.now(), result: fail })
-    return fail
-  }
+function trialRunSpw(source: string, uri: string) {
+  return ctx.trialRunSpw(source, uri)
 }
-
-// ── Logging ─────────────────────────────────────────────────────
 
 function log(message: string): void {
-  if (!process.env.SPW_LSP_TRACE) return
-  process.stderr.write(`[spw-lsp] ${message}\n`)
+  ctx.log(message)
 }
 
-// ── JSON-RPC transport ──────────────────────────────────────────
-
 function send(payload: JsonRpcResponse | JsonRpcRequest): void {
-  const body = JSON.stringify(payload)
-  const header = `Content-Length: ${Buffer.byteLength(body, 'utf8')}\r\n\r\n`
-  process.stdout.write(header + body)
+  ctx.send(payload)
 }
 
 function sendResult(id: number | string | null, result: any): void {
-  send({ jsonrpc: '2.0', id, result })
+  ctx.sendResult(id, result)
 }
 
 function sendError(id: number | string | null, code: number, message: string, data?: any): void {
-  send({ jsonrpc: '2.0', id, error: { code, message, data } })
+  ctx.sendError(id, code, message, data)
 }
 
 function sendNotification(method: string, params: any): void {
-  send({ jsonrpc: '2.0', method, params } as any)
+  ctx.sendNotification(method, params)
 }
 
 // ── URI/path helpers ────────────────────────────────────────────
@@ -2021,15 +1849,6 @@ async function references(params: any): Promise<LspLocation[]> {
 
 // ── Rename ──────────────────────────────────────────────────────
 
-interface LspPrepareRenameResult {
-  range: LspRange
-  placeholder: string
-}
-
-interface LspWorkspaceEdit {
-  changes: Record<string, LspTextEdit[]>
-}
-
 /**
  * Identify the renameable symbol at the cursor position.
  * Returns the symbol range and current text, or null if not renameable.
@@ -2250,7 +2069,7 @@ function escapeRegex(str: string): string {
 
 // ── Folding Ranges ───────────────────────────────────────────────
 
-interface LspFoldingRange { startLine: number; endLine: number; kind?: string }
+
 
 function foldingRanges(params: any): LspFoldingRange[] {
   const uri = params?.textDocument?.uri
