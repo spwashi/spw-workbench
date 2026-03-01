@@ -24,7 +24,14 @@
   "Transform is reversible and logged in trace before promotion."
 }
 
-?["How does this convention shape the developer's experience?"]
-  #:scope #!file
-  ~#probe: "trace which workflows or tooling reference this surface"
+?["How does selector expansion compose across nested $-expressions?"]
+  #:depth #!educational  // lens: collection
+  $($@_ => $^[_]) => &[result.flatten]
+  ~<@spw/conventions/selection.spw>
+  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
 
+?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
+  #:depth #!mathematical  // lens: formula
+  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
+  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
+  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }

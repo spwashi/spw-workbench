@@ -66,7 +66,14 @@
   review_policy: "keep layout edits adjacent to delta notes",
 }
 
-?["What parse-time guarantee does this surface provide?"]
-  #:scope #!file
-  ~#probe: "trace references to this surface"
+?["How does selector expansion compose across nested $-expressions?"]
+  #:depth #!educational  // lens: collection
+  $($@_ => $^[_]) => &[result.flatten]
+  ~<@spw/conventions/selection.spw>
+  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
 
+?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
+  #:depth #!mathematical  // lens: formula
+  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
+  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
+  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }

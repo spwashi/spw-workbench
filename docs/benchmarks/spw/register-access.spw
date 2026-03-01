@@ -33,7 +33,14 @@
   note: "access() should be within 2x of inline for depth ≤ 10",
 }
 
-?["What semantic claim does this document make that could be falsified?"]
-  #:scope #!file
-  ~#probe: "trace which claims or conventions reference this surface"
+?["How does selector expansion compose across nested $-expressions?"]
+  #:depth #!educational  // lens: collection
+  $($@_ => $^[_]) => &[result.flatten]
+  ~<@spw/conventions/selection.spw>
+  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
 
+?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
+  #:depth #!mathematical  // lens: formula
+  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
+  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
+  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }

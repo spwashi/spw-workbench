@@ -46,3 +46,15 @@
   ~"publishing, authoring, and theme personality."
   ~"it ends with v0.1.0."
 }
+
+?["Is the tension gradient ∫{depth}d(lines) a useful complexity metric?"]
+  #:depth #!mathematical  // lens: formula
+  $%[brace.depth, brace.span] => ~#tension_integral
+  ~<@spw/registries/brace-physics.spw>
+  !probe{ "compute ∫₀ⁿ depth(line) dline for every frame; correlate with cognitive load ratings from 3 readers" }
+
+?["What is the brace depth distribution across the entire workspace?"]
+  #:depth #!computational  // lens: cell
+  $%[brace.max_depth]@repo/**/*.spw => ~#depth_histogram
+  ~<@spec/core/CONTAINERS.md>
+  !probe{ "generate histogram of max depths; verify: should follow power law if extraction discipline holds" }

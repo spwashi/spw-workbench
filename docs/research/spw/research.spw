@@ -147,3 +147,15 @@
   ~"../../theory/spw/semantics-physics.spw"
   ~"../../theory/spw/phasor.spw"
 }
+
+?["What happens to register bank state when two frames bind the same address?"]
+  #:depth #!computational  // lens: molecule
+  $^["frame_a"]{@x} & $^["frame_b"]{@x} => %[register.conflict]
+  ~<@spw/registries/register-bank.spw>
+  !probe{ "simulate concurrent write to register @x; does last-write-wins or merge-by-valence apply?" }
+
+?["Does the register bank form a lattice under the refinement ordering?"]
+  #:depth #!mathematical  // lens: formula
+  $%[register.state_a] ⊔ $%[register.state_b] => ~#join
+  ~<@spec/runtime/REGISTERS.md>
+  !probe{ "verify: join exists for every pair; meet distributes over join; identify the top and bottom elements" }
