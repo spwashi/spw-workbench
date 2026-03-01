@@ -7,49 +7,54 @@
 ^"example"{ ~#name: "grounded-register", ~#demonstrates: "immutable identity binding via resonate()" }
 
 ^"input"{
-  # Ground a truth:
-  #[pi, 3.14159]
+ # Ground a truth:
+ #[pi, 3.14159]
 
-  # Attempt to overwrite:
-  =[pi, 2.71828]
+ # Attempt to overwrite:
+ =[pi, 2.71828]
 
-  # Read the value:
-  .pi
+ # Read the value:
+ .pi
 }
 
 ^"expected"{
-  after_ground: {
-    register: "pi",
-    value: 3.14159,
-    grounded: true,
-    provenance: "#",
-    accessMode: "category",
-  }
-  after_overwrite_attempt: {
-    register: "pi",
-    value: 3.14159,
-    changed: false,
-    reason: "set() returns false for grounded registers",
-  }
-  after_read: {
-    result: 3.14159,
-  }
+ after_ground: {
+ register: "pi",
+ value: 3.14159,
+ grounded: true,
+ provenance: "#",
+ accessMode: "category",
+ }
+ after_overwrite_attempt: {
+ register: "pi",
+ value: 3.14159,
+ changed: false,
+ reason: "set() returns false for grounded registers",
+ }
+ after_read: {
+ result: 3.14159,
+ }
 }
 
 ^"notes"{
-  "resonate() sets grounded=true on the RegisterValue.",
-  "set() checks grounded flag and rejects writes to grounded registers.",
-  "delete() also rejects deletion of grounded registers.",
+ "resonate() sets grounded=true on the RegisterValue.",
+ "set() checks grounded flag and rejects writes to grounded registers.",
+ "delete() also rejects deletion of grounded registers.",
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_examples_spw_groundedregister_1
+?["How would a biology portfolio express example?"]{
+  #:depth #!stylistic // lens: living system
+  ~#translation_target: "biology"
+  ~#source_concept: "example"
+  !probe{ "rewrite the root frame in biology vocabulary; where the translation breaks reveals Spw's untranslatable concepts." }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_examples_spw_groundedregister_2
+?["How does this file's voice differ from spw/grounded-register (spw/grounded-register)?"]{
+  #:depth #!educational // lens: curated collection
+  ~<@_> // nearest neighbor
+  $%[op.distribution]@here vs $%[op.distribution]@_
+  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
+}

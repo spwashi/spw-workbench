@@ -7,36 +7,42 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Short, composable phase files with optional bespoke config."
+ ~#goal: "Short, composable phase files with optional bespoke config."
 }
 
 ^"files"{
-  p1: ~"./ph/p1.spw"
-  p2: ~"./ph/p2.spw"
-  p3: ~"./ph/p3.spw"
-  p4: ~"./ph/p4.spw"
-  p5: ~"./ph/p5.spw"
-  p6: ~"./ph/p6.spw"
+ p1: ~"./ph/p1.spw"
+ p2: ~"./ph/p2.spw"
+ p3: ~"./ph/p3.spw"
+ p4: ~"./ph/p4.spw"
+ p5: ~"./ph/p5.spw"
+ p6: ~"./ph/p6.spw"
 }
 
 ^"invariant"{
-  "Each phase file is optional-config only; core semantics remain in spirit sequence."
+ "Each phase file is optional-config only; core semantics remain in spirit sequence."
 
-  %[phase_model]{
-    "phases compose into the spirit sequence: ?~ <#.> @(#.) &[#.] *{#.} ^",
-    "each phase file adds bespoke config without overriding core semantics",
-    "phase config is warm-tier cached — stable between edits, invalidated on save",
-  }
+ %[phase_model]{
+ "phases compose into the spirit sequence: ?~ <#.> @(#.) &[#.] *{#.} ^",
+ "each phase file adds bespoke config without overriding core semantics",
+ "phase config is warm-tier cached — stable between edits, invalidated on save",
+ }
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_spw_biome_ocean_phase_1
+?["What is the algebraic closure of files (ocean/phase)?"]{
+  #:depth #!computational // lens: formal structure
+  $^["intent"]@biome => %[formula.measure]
+  ~<./ph/p1.spw>
+  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
+  $%[phase.index, phase.duration_ms, phase.entropy]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_spw_biome_ocean_phase_2
+?["What is the felt rhythm of reading Phase?"]{
+  #:depth #!mathematical // lens: material grain
+  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
+  ~#structure: "intent → files → invariant" // frame flow
+  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark grain boundaries." }
+  ~<.spw/biome/ocean/atlas.spw>  // nearest neighbor
+}

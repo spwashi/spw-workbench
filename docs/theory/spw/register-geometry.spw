@@ -11,144 +11,151 @@
 ^seed[Spw.Register.Geometry v:0.2 @profile:Spw.b @intent:fiber_bundle_model]
 {_geom
 
-  ## ── Tensor Axes ────────────────────────────────────────────
-  ## Five axes define the full register space:
+ ## ── Tensor Axes ────────────────────────────────────────────
+ ## Five axes define the full register space:
 
-  axes: #[
-    .{ axis = 1, name = Sigil,          size = 12, members = #[`!`,`^`,`~`,`?`,`*`,`=`,`@`,`#`,`.`,`&`,`$`,`%`] },
-    .{ axis = 2, name = Container,      size = 4,  members = #[`[]`,`{}`,`<>`,`()`] },
-    .{ axis = 3, name = Layer,          size = 4,  members = #[signal, pattern, flow, structure] },
-    .{ axis = 4, name = Quality,        size = 4,  members = #[boon, bane, bone, honk] },
-    .{ axis = 5, name = Representation, size = 4,  members = #[syntactic, semantic, pragmatic, meta] }
-  ][reg=set]
+ axes: #[
+ .{ axis = 1, name = Sigil, size = 12, members = #[`!`,`^`,`~`,`?`,`*`,`=`,`@`,`#`,`.`,`&`,`$`,`%`] },
+ .{ axis = 2, name = Container, size = 4, members = #[`[]`,`{}`,`<>`,`()`] },
+ .{ axis = 3, name = Layer, size = 4, members = #[signal, pattern, flow, structure] },
+ .{ axis = 4, name = Quality, size = 4, members = #[boon, bane, bone, honk] },
+ .{ axis = 5, name = Representation, size = 4, members = #[syntactic, semantic, pragmatic, meta] }
+ ][reg=set]
 
-  ## Full tensor: 12 × 4 × 4 × 4 × 4 = 3,072 cells.
-  ## Most cells are empty. Reduction automata determine which are reachable.
+ ## Full tensor: 12 × 4 × 4 × 4 × 4 = 3,072 cells.
+ ## Most cells are empty. Reduction automata determine which are reachable.
 
-  ## ── Fiber Bundle ───────────────────────────────────────────
+ ## ── Fiber Bundle ───────────────────────────────────────────
 
-  bundle: .{
-    base  = `Sigil(12) × Container(4)`
-    fiber = `Layer(4) × Quality(4) × Representation(4)`
-    total = `base × fiber = 3,072 cells`
-  }[reg=facet]
+ bundle: .{
+ base = `Sigil(12) × Container(4)`
+ fiber = `Layer(4) × Quality(4) × Representation(4)`
+ total = `base × fiber = 3,072 cells`
+ }[reg=facet]
 
-  ## A register entry is a point in the total space: base × fiber.
-  ## A reduction automaton is a section of the bundle:
-  ##   it assigns, to each base point, a PATH through the fiber.
+ ## A register entry is a point in the total space: base × fiber.
+ ## A reduction automaton is a section of the bundle:
+ ## it assigns, to each base point, a PATH through the fiber.
 
-  ## ── Reduction as Geodesic ──────────────────────────────────
+ ## ── Reduction as Geodesic ──────────────────────────────────
 
-  geodesics: #[
-    .{ sigil = `!`, path = ?<token, node, effect, register>,       dims = `1D curve (layer descent)`,       complexity = deterministic },
-    .{ sigil = `~`, path = ?<token, node, node, node>,             dims = `0D point (collapses)`,           complexity = trivial },
-    .{ sigil = `?`, path = ?<token, node, wait, wait, wait>,       dims = `2D surface (flow × time)`,       complexity = nondeterministic },
-    .{ sigil = `.`, path = ?<token, structure>,                     dims = `teleport (no continuous path)`,  complexity = structural }
-  ][reg=set]
+ geodesics: #[
+ .{ sigil = `!`, path = ?<token, node, effect, register>, dims = `1D curve (layer descent)`, complexity = deterministic },
+ .{ sigil = `~`, path = ?<token, node, node, node>, dims = `0D point (collapses)`, complexity = trivial },
+ .{ sigil = `?`, path = ?<token, node, wait, wait, wait>, dims = `2D surface (flow × time)`, complexity = nondeterministic },
+ .{ sigil = `.`, path = ?<token, structure>, dims = `teleport (no continuous path)`, complexity = structural }
+ ][reg=set]
 
-  ## Dimensionality → optimization complexity:
-  ##   0D (point)   → trivially normalizable (~ is already normal)
-  ##   1D (curve)   → single reduction sequence (! is deterministic)
-  ##   2D (surface) → nondeterministic, may need exploration (? depends on environment)
+ ## Dimensionality → optimization complexity:
+ ## 0D (point) → trivially normalizable (~ is already normal)
+ ## 1D (curve) → single reduction sequence (! is deterministic)
+ ## 2D (surface) → nondeterministic, may need exploration (? depends on environment)
 
-  ## ── Affinity Constraints ───────────────────────────────────
+ ## ── Affinity Constraints ───────────────────────────────────
 
-  affinities: #[
-    .{ sigil = `!`, accessMode = kinetic,     pins = Quality,  effect = `64-dim → 16 cells` },
-    .{ sigil = `=`, accessMode = property,    pins = Quality,  effect = `64-dim → 16 cells` },
-    .{ sigil = `?`, accessMode = conditional, pins = _,        effect = `Quality remains free` }
-  ][reg=set]
+ affinities: #[
+ .{ sigil = `!`, accessMode = kinetic, pins = Quality, effect = `64-dim → 16 cells` },
+ .{ sigil = `=`, accessMode = property, pins = Quality, effect = `64-dim → 16 cells` },
+ .{ sigil = `?`, accessMode = conditional, pins = _, effect = `Quality remains free` }
+ ][reg=set]
 
-  ## Each pinned axis reduces the fiber dimension by 4×.
-  ##   64-dim fiber with 1 pin → 16 cells
-  ##   64-dim fiber with 2 pins → 4 cells
-  ##   64-dim fiber with 3 pins → 1 cell (fully determined)
-  ##
-  ## Optimization: if a sigil pins 2+ axes, the reducer only traverses
-  ## a 4D or 1D subspace. This is the geometric source of compilation speed.
+ ## Each pinned axis reduces the fiber dimension by 4×.
+ ## 64-dim fiber with 1 pin → 16 cells
+ ## 64-dim fiber with 2 pins → 4 cells
+ ## 64-dim fiber with 3 pins → 1 cell (fully determined)
+ ##
+ ## Optimization: if a sigil pins 2+ axes, the reducer only traverses
+ ## a 4D or 1D subspace. This is the geometric source of compilation speed.
 
-  ## ── Container Algebra ──────────────────────────────────────
-  ## The 4 container pairs form Klein four group V₄ (ℤ₂ × ℤ₂)
+ ## ── Container Algebra ──────────────────────────────────────
+ ## The 4 container pairs form Klein four group V₄ (ℤ₂ × ℤ₂)
 
-  container_algebra: .{
-    duality_1 = .{ `[]` = individuation, `{}` = definition,  axis = `what vs how` }
-    duality_2 = .{ `<>` = coupling,      `()` = observation, axis = `relation vs perspective` }
-  }[reg=facet]
+ container_algebra: .{
+ duality_1 = .{ `[]` = individuation, `{}` = definition, axis = `what vs how` }
+ duality_2 = .{ `<>` = coupling, `()` = observation, axis = `relation vs perspective` }
+ }[reg=facet]
 
-  ## V₄ acts on the base space by permuting container axes.
-  ## Every expression has 4 "views" related by symmetry:
+ ## V₄ acts on the base space by permuting container axes.
+ ## Every expression has 4 "views" related by symmetry:
 
-  views: #[
-    .{ container = `#[a, b]`, view = categorical,  question = `what set?` },
-    .{ container = `.{a: b}`, view = definitional,  question = `what structure?` },
-    .{ container = `?<a, b>`, view = liminal,       question = `what coupling?` },
-    .{ container = `@(a, b)`, view = agentive,      question = `who observes?` }
-  ][reg=set]
+ views: #[
+ .{ container = `#[a, b]`, view = categorical, question = `what set?` },
+ .{ container = `.{a: b}`, view = definitional, question = `what structure?` },
+ .{ container = `?<a, b>`, view = liminal, question = `what coupling?` },
+ .{ container = `@(a, b)`, view = agentive, question = `who observes?` }
+ ][reg=set]
 
-  ## The register-frame constructors ARE the V₄ action applied to the base space.
+ ## The register-frame constructors ARE the V₄ action applied to the base space.
 
-  ## ── Confluence Topology ────────────────────────────────────
-  ## Church-Rosser as topology
+ ## ── Confluence Topology ────────────────────────────────────
+ ## Church-Rosser as topology
 
-  confluence: .{
-    contractible = false
-    reason       = `!(~x) ≠ ~(!x) — forcing a thunk ≠ deferring an action`
-    consequence  = `These are distinct homotopy classes.`
-    fundamental_group = `π₁ encodes which sigil-pairs fail to commute`
-    practical    = `Optimizer cannot freely reorder cross-sigil operations`
-  }[reg=facet]
+ confluence: .{
+ contractible = false
+ reason = `!(~x) ≠ ~(!x) — forcing a thunk ≠ deferring an action`
+ consequence = `These are distinct homotopy classes.`
+ fundamental_group = `π₁ encodes which sigil-pairs fail to commute`
+ practical = `Optimizer cannot freely reorder cross-sigil operations`
+ }[reg=facet]
 
-  ## The non-commutative pairs (from Grok probes):
-  non_commutative: #[
-    .{ pair = #[`!`,`~`], reason = `eagerness vs laziness` },
-    .{ pair = #[`?`,`&`], reason = `stream vs merge ordering` },
-    .{ pair = #[`%`,`&`], reason = `measure before vs after merge` }
-  ][reg=set]
+ ## The non-commutative pairs (from Grok probes):
+ non_commutative: #[
+ .{ pair = #[`!`,`~`], reason = `eagerness vs laziness` },
+ .{ pair = #[`?`,`&`], reason = `stream vs merge ordering` },
+ .{ pair = #[`%`,`&`], reason = `measure before vs after merge` }
+ ][reg=set]
 
-  ## ── Cascade + Depth Integration (Grok v0.8) ───────────────
+ ## ── Cascade + Depth Integration (Grok v0.8) ───────────────
 
-  cascade_geometry: .{
-    layers      = `[cascade=base|layer] adds depth axis to fiber`
-    priority    = `[priority=N] orders layers for % resolution`
-    proj_resolve = `/ chain triggers cascade resolve before access`
-    depth_limit  = `[depth=N] gates recursive ?<> nesting`
-  }[reg=facet]
+ cascade_geometry: .{
+ layers = `[cascade=base|layer] adds depth axis to fiber`
+ priority = `[priority=N] orders layers for % resolution`
+ proj_resolve = `/ chain triggers cascade resolve before access`
+ depth_limit = `[depth=N] gates recursive ?<> nesting`
+ }[reg=facet]
 
-  ## ── Layer Naming (Open) ────────────────────────────────────
+ ## ── Layer Naming (Open) ────────────────────────────────────
 
-  open_naming: .{
-    current   = #[signal, pattern, flow, structure]
-    provenance = `branded.ts Layer type, chosen for LoD in workbench UI`
-    candidates = #[
-      .{ frame = compiler_pipeline, names = #[token, expression, evaluation, storage] },
-      .{ frame = semiotic,          names = #[form, syntax, semantics, pragmatics] },
-      .{ frame = lifecycle,         names = #[surface, parsed, reduced, committed] },
-      .{ frame = linguistic,        names = #[character, phrase, clause, discourse] }
-    ]
-    constraint = `Names should be orthogonal to the other 4 axes`
-    status     = `open — current names are provisional`
-  }[reg=facet]
+ open_naming: .{
+ current = #[signal, pattern, flow, structure]
+ provenance = `branded.ts Layer type, chosen for LoD in workbench UI`
+ candidates = #[
+ .{ frame = compiler_pipeline, names = #[token, expression, evaluation, storage] },
+ .{ frame = semiotic, names = #[form, syntax, semantics, pragmatics] },
+ .{ frame = lifecycle, names = #[surface, parsed, reduced, committed] },
+ .{ frame = linguistic, names = #[character, phrase, clause, discourse] }
+ ]
+ constraint = `Names should be orthogonal to the other 4 axes`
+ status = `open — current names are provisional`
+ }[reg=facet]
 
-  ## ── References ─────────────────────────────────────────────
+ ## ── References ─────────────────────────────────────────────
 
-  references: .{
-    onf           = `docs/theory/spw/onf.spw`
-    brace_regs    = `docs/runtime/spw/brace-registers.spw`
-    register_bank = `src/features/keyboard/registers/register-bank.ts`
-    spw_algebra   = `src/core/types/spw-algebra.ts`
-    branded       = `src/core/types/branded.ts`
-  }[reg=facet]
+ references: .{
+ onf = `docs/theory/spw/onf.spw`
+ brace_regs = `docs/runtime/spw/brace-registers.spw`
+ register_bank = `src/features/keyboard/registers/register-bank.ts`
+ spw_algebra = `src/core/types/spw-algebra.ts`
+ branded = `src/core/types/branded.ts`
+ }[reg=facet]
 
 }_geom
 
-?["Does the Cayley table for brace×operator composition close under {FRAME}?"]
-  #:depth #!mathematical  // lens: formula
-  $^seed[_.sym:D4] => %[register.left, register.right]
-  ~<@spec/core/OPERATORS.md>
-  !probe{ "construct the group action table; check if .left ↔ .right reflection commutes with ~ → ! operator tense shift" }
+#>wonder_docs_theory_spw_registergeometry_1
+?["What happens when you zoom from the concept level to the workspace level in Register Geometry?"]{
+  #:depth #!mathematical // lens: ecological zone
+  $^["_"]@here => &[@workspace] // local → global projection
+  ~#zoom_in: "Spw.Register.Geometry v:0.2 @profile:Spw.b @intent:fiber_bundle_model" // this file's atom
+  !probe{ "the atom is concept-scale; zoom out: what workspace-level pattern does this concept participate in?" }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["What orbits emerge when D4 acts on nested brace pairs?"]
-  #:depth #!computational  // lens: molecule
-  $^[_.sym] => &[orbit.stabilizer]
-  ~<@spw/registries/curiosity-brace.spw>
-  !probe{ "enumerate fixed points of the dihedral action on {{{}}} nesting depth 3; count distinct register states" }
+#>wonder_docs_theory_spw_registergeometry_2
+?["What ripples if #register_geometry changes in this file?"]{
+  #:depth #!stylistic // lens: molecular binding
+  $#mathematical@workspace => %[reference.count, depth.downstream]
+  ~#downstream: "trace all files that reference this surface"
+  !probe{ "imagine renaming #mathematical to #mathematical_v2; count broken references; the count reveals how deeply views is woven into the workspace." }
+  $%[register.bank_size, register.active_bindings]
+  ~<docs/theory/spw/audio-architecture.spw>  // nearest neighbor
+}

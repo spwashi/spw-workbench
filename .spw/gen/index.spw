@@ -7,46 +7,53 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Make generated projections explicit and easy to spot in IDEs."
+ ~#goal: "Make generated projections explicit and easy to spot in IDEs."
 }
 
 ^projection[lens]{
-  root: ".spw/gen/lens/"
-  source: ".spw/biome/ocean/query/hot.spw#lens"
-  spec_owner: ".spw/biome/ocean/query/hot.spw"
-  generator_owner: ".spw/biome/ocean/ops/cycle.spw"
-  status: generated
+ root: ".spw/gen/lens/"
+ source: ".spw/biome/ocean/query/hot.spw#lens"
+ spec_owner: ".spw/biome/ocean/query/hot.spw"
+ generator_owner: ".spw/biome/ocean/ops/cycle.spw"
+ status: generated
 }
 
 ^projection[cache]{
-  root: ".spw/gen/cache/"
-  source: ".spw/biome/ocean/algos/cache.spw"
-  spec_owner: ".spw/biome/ocean/algos/cache.spw"
-  generator_owner: ".spw/biome/ocean/ops/cycle.spw"
-  status: generated
+ root: ".spw/gen/cache/"
+ source: ".spw/biome/ocean/algos/cache.spw"
+ spec_owner: ".spw/biome/ocean/algos/cache.spw"
+ generator_owner: ".spw/biome/ocean/ops/cycle.spw"
+ status: generated
 }
 
 ^projection[build]{
-  root: ".spw/gen/build/"
-  source: ".spw/biome/ocean/ops/cycle.spw"
-  spec_owner: ".spw/biome/ocean/ops/cycle.spw"
-  generator_owner: ".spw/biome/ocean/ops/cycle.spw"
-  status: generated
+ root: ".spw/gen/build/"
+ source: ".spw/biome/ocean/ops/cycle.spw"
+ spec_owner: ".spw/biome/ocean/ops/cycle.spw"
+ generator_owner: ".spw/biome/ocean/ops/cycle.spw"
+ status: generated
 }
 
 ^"invariant"{
-  "Projection roots are generated surfaces and should not be hand-edited."
-  "Spec owner defines shape; generator owner materializes files."
+ "Projection roots are generated surfaces and should not be hand-edited."
+ "Spec owner defines shape; generator owner materializes files."
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_spw_gen_index_1
+?["What ripples if #index changes in this file?"]{
+  #:depth #!mathematical // lens: curated collection
+  $#experiential@workspace => %[reference.count, depth.downstream]
+  ~#downstream: "trace all files that reference this surface"
+  !probe{ "imagine renaming #experiential to #experiential_v2; count broken references; the count reveals how deeply intent is woven into the workspace." }
+  $%[runtime.stage, runtime.queue_depth]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_spw_gen_index_2
+?["What happens when you zoom from the workflow level to the workspace level in Gen?"]{
+  #:depth #!stylistic // lens: living system
+  $^["_"]@here => &[@workspace] // local → global projection
+  ~#zoom_in: "intent" // this file's atom
+  !probe{ "the atom is workflow-scale; zoom out: what workspace-level pattern does this workflow participate in?" }
+  $%[runtime.stage, runtime.queue_depth]
+  ~<.spw/agents.spw>  // nearest neighbor
+}

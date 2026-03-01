@@ -4,141 +4,149 @@
 #:layer #!grammar
 
 ^["roots"]{
-  @here: ~"."
-  @lib:  ~".."
-  @theory: ~"../../../docs/theory"
+ @here: ~"."
+ @lib: ~".."
+ @theory: ~"../../../docs/theory"
 }
 
 ^["surfaces"]{
-  .. ~<query>"./QUERY.md"
-  .. ~<hardware>"./HARDWARE.md"
-  .. ~<theatre>"./THEATRE.md"
-  .. ~<broadcast>"./BROADCAST.md"
+ .. ~<query>"./QUERY.md"
+ .. ~<hardware>"./HARDWARE.md"
+ .. ~<theatre>"./THEATRE.md"
+ .. ~<broadcast>"./BROADCAST.md"
 }
 
 # ── Implemented applications ─────────────────────────────────
 
 ^["query"]{
-  =dialect: "Spw.q"
-  =status: "shipped"
-  !boon["Structural selection over AST"]
+ =dialect: "Spw.q"
+ =status: "shipped"
+ !boon["Structural selection over AST"]
 
-  ^["entry-points"]{
-    !"spwq(ast, selector)"            # returns SpwMatch[]
-    !"spwq.at(ast, position, sel)"    # deepest match at cursor
-    !"spwq.fromSource(source, sel)"   # parse + query convenience
-  }
+ ^["entry-points"]{
+ !"spwq(ast, selector)" # returns SpwMatch[]
+ !"spwq.at(ast, position, sel)" # deepest match at cursor
+ !"spwq.fromSource(source, sel)" # parse + query convenience
+ }
 
-  ^["presets"]{
-    =count: 15
+ ^["presets"]{
+ =count: 15
 
-    ^["structural"]{
-      .. !"NAVIGABLE"       # ~"_" | @_ — path refs or references
-      .. !"DOMAIN_ROOTS"    # ^[_] — domain roots with frames
-      .. !"DOMAIN_ROOTS_FULL" # ^[_]{_} — with body
-    }
+ ^["structural"]{
+ .. !"NAVIGABLE" # ~"_" | @_ — path refs or references
+ .. !"DOMAIN_ROOTS" # ^[_] — domain roots with frames
+ .. !"DOMAIN_ROOTS_FULL" # ^[_]{_} — with body
+ }
 
-    ^["by-sigil"]{
-      .. !"HYDRATE_OPS"     # !_ — injection
-      .. !"QUERY_OPS"       # ?_ — probes
-      .. !"CONFIG_OPS"      # =_ — bindings
-      .. !"DEFER_OPS"       # ~_ — deferred
-      .. !"ANNOTATION_OPS"  # #_ — metadata
-    }
+ ^["by-sigil"]{
+ .. !"HYDRATE_OPS" # !_ — injection
+ .. !"QUERY_OPS" # ?_ — probes
+ .. !"CONFIG_OPS" # =_ — bindings
+ .. !"DEFER_OPS" # ~_ — deferred
+ .. !"ANNOTATION_OPS" # #_ — metadata
+ }
 
-    ^["by-shape"]{
-      .. !"OPS_WITH_FRAMES" # _[_] — framed
-      .. !"OPS_WITH_BODIES" # _{_} — bodied
-      .. !"SCOPES"          # (_) — scoped
-    }
+ ^["by-shape"]{
+ .. !"OPS_WITH_FRAMES" # _[_] — framed
+ .. !"OPS_WITH_BODIES" # _{_} — bodied
+ .. !"SCOPES" # (_) — scoped
+ }
 
-    ^["by-modifier"]{
-      .. !"BOON_OPS"        # !boon_
-      .. !"BONE_OPS"        # !bone_
-    }
-  }
+ ^["by-modifier"]{
+ .. !"BOON_OPS" # !boon_
+ .. !"BONE_OPS" # !bone_
+ }
+ }
 
-  ^["cli"]{
-    =command: "npm run spwq -- <file.spw> [--selector=<name>]"
-    !["21 named selectors: navigable, refs, pathRefs, rootRefs, domains, domains+, scopes, hydrate, probes, configs, defers, taps, annotations, ops:frame, ops:body, boon, bone, all"]
-    !["--summary flag adds depth distribution and node type breakdown"]
-  }
+ ^["cli"]{
+ =command: "npm run spwq -- <file.spw> [--selector=<name>]"
+ !["21 named selectors: navigable, refs, pathRefs, rootRefs, domains, domains+, scopes, hydrate, probes, configs, defers, taps, annotations, ops:frame, ops:body, boon, bone, all"]
+ !["--summary flag adds depth distribution and node type breakdown"]
+ }
 
-  ^["lsp"]{
-    =integration: "spw-selector.ts adapter"
-    !"spwq.at() powers definition-go-to"
-    !"Presets wire into document link handlers"
-    @scripts/lsp/spw-selector.ts
-  }
+ ^["lsp"]{
+ =integration: "spw-selector.ts adapter"
+ !"spwq.at() powers definition-go-to"
+ !"Presets wire into document link handlers"
+ @scripts/lsp/spw-selector.ts
+ }
 
-  @src/seed/query
-  @scripts/spwq.ts
+ @src/seed/query
+ @scripts/spwq.ts
 }
 
 # ── Formalized applications (not yet machined) ───────────────
 
 ^["lens-instances"]{
-  !["Each domain is an operator reinterpretation lens"]
+ !["Each domain is an operator reinterpretation lens"]
 
-  ^["Hardware@"]{
-    =reinterprets: "operators as circuit primitives"
-    =inject: "! → voltage source"
-    =anchor: "^ → node label"
-    =emit: "@ → output driver"
-    ?["Shader renderer implements gain chain — is this lens algebra?"]
-      ~#answer: "Partially — visual lens, not AST-level projection"
-    ~<detail>"./HARDWARE.md"
-  }
+ ^["Hardware@"]{
+ =reinterprets: "operators as circuit primitives"
+ =inject: "! → voltage source"
+ =anchor: "^ → node label"
+ =emit: "@ → output driver"
 
-  ^["Theatre@"]{
-    =reinterprets: "operators as dramatic actions"
-    =inject: "! → entrance"
-    =probe: "? → dramatic question"
-    =emit: "@ → exit"
-    ?["Why does ? map to 'dramatic question'?"]
-      ~#answer: "Same cognitive operation: test condition, branch on result"
-    ~<detail>"./THEATRE.md"
-  }
+ ?["Shader renderer implements gain chain — is this lens algebra?"]
+ ~#answer: "Partially — visual lens, not AST-level projection"
+ ~<detail>"./HARDWARE.md"
+ }
 
-  ^["Broadcast@"]{
-    =reinterprets: "operators as signal routing"
-    =inject: "! → signal source"
-    =anchor: "^ → channel assignment"
-    =emit: "@ → transmission"
-    ~<detail>"./BROADCAST.md"
-  }
+ ^["Theatre@"]{
+ =reinterprets: "operators as dramatic actions"
+ =inject: "! → entrance"
+ =probe: "? → dramatic question"
+ =emit: "@ → exit"
+
+ ?["Why does ? map to 'dramatic question'?"]
+ ~#answer: "Same cognitive operation: test condition, branch on result"
+ ~<detail>"./THEATRE.md"
+ }
+
+ ^["Broadcast@"]{
+ =reinterprets: "operators as signal routing"
+ =inject: "! → signal source"
+ =anchor: "^ → channel assignment"
+ =emit: "@ → transmission"
+ ~<detail>"./BROADCAST.md"
+ }
 }
 
 # ── Theory references ────────────────────────────────────────
 
 ^["theory"]{
-  .. ~<lens>"../../../docs/theory/md/lens-algebra.md"
-  .. ~<cognitive>"../../../docs/theory/spw/cognitive-laser.spw"
-  .. ~<operators>"../../../docs/theory/spw/operators.spw"
-  .. ~<valence>"../../../docs/theory/spw/valence-architecture.spw"
-  .. ~<audio>"../../../docs/theory/spw/audio-architecture.spw"
+ .. ~<lens>"../../../docs/theory/md/lens-algebra.md"
+ .. ~<cognitive>"../../../docs/theory/spw/cognitive-laser.spw"
+ .. ~<operators>"../../../docs/theory/spw/operators.spw"
+ .. ~<valence>"../../../docs/theory/spw/valence-architecture.spw"
+ .. ~<audio>"../../../docs/theory/spw/audio-architecture.spw"
 }
 
 # ── Feature crosslinks ───────────────────────────────────────
 
 ^["feature-docs"]{
-  !["User-facing features from docs/features/"]
-  .. ~<onboarding>"../../../docs/features/spw/onboarding.spw"
-  .. ~<flow>"../../../docs/features/spw/onboarding-flow.spw"
-  .. ~<lens-walk>"../../../docs/features/spw/lens-walk.spw"
-  .. ~<nav>"../../../docs/features/spw/navigation-probe.spw"
-  .. ~<registry>"../../../docs/features/spw/feature-registry.spw"
-  .. ~<coherence>"../../../docs/features/spw/feature-coherence.spw"
+ !["User-facing features from docs/features/"]
+ .. ~<onboarding>"../../../docs/features/spw/onboarding.spw"
+ .. ~<flow>"../../../docs/features/spw/onboarding-flow.spw"
+ .. ~<lens-walk>"../../../docs/features/spw/lens-walk.spw"
+ .. ~<nav>"../../../docs/features/spw/navigation-probe.spw"
+ .. ~<registry>"../../../docs/features/spw/feature-registry.spw"
+ .. ~<coherence>"../../../docs/features/spw/feature-coherence.spw"
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_lib_spwv020alpha_applications_index_1
+?["What invariant holds across every frame in Application Stratum Architecture Support?"]{
+  #:depth #!computational // lens: material grain
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to roots's frames; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[app.transform_count, app.symmetry_applications]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_lib_spwv020alpha_applications_index_2
+?["What was Application Stratum Architecture Support before it was this, and what could it become?"]{
+  #:depth #!mathematical // lens: formal structure
+  ~#past: "git log --oneline -- lib/spw-v0.2.0-alpha/applications/index.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[app.transform_count, app.symmetry_applications]
+}

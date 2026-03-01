@@ -6,113 +6,119 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Expose readable, referenceable, and updatable query selectors."
-  ~#selector_registry: ".spw/biome/ocean/query/sel.spw"
-  ~#hot_layer: ".spw/biome/ocean/query/hot.spw"
-  ~#dialect_surface: ".spw/biome/ocean/query/dialect.spw"
-  ~#utility_surface: ".spw/biome/ocean/expr/util.spw"
+ ~#goal: "Expose readable, referenceable, and updatable query selectors."
+ ~#selector_registry: ".spw/biome/ocean/query/sel.spw"
+ ~#hot_layer: ".spw/biome/ocean/query/hot.spw"
+ ~#dialect_surface: ".spw/biome/ocean/query/dialect.spw"
+ ~#utility_surface: ".spw/biome/ocean/expr/util.spw"
 }
 
 ^"macro"{
-  selector_registry: ".spw/biome/ocean/query/sel.spw"
+ selector_registry: ".spw/biome/ocean/query/sel.spw"
 
-  selector: {
-    refs: refs_navigable
-    probes: probes_active
-    invariants: invariants_core
-    phase: phase_config
-    positionality: positional_scope
-    aggregation: aggregate_branch
-    relations: relation_exotic
-  }
+ selector: {
+ refs: refs_navigable
+ probes: probes_active
+ invariants: invariants_core
+ phase: phase_config
+ positionality: positional_scope
+ aggregation: aggregate_branch
+ relations: relation_exotic
+ }
 
-  grounding: {
-    grounded_ref: {
-      meaning: "canonical refs anchored to stable source files"
-      examples: [".spw/workspace.spw#invariants", ".spw/biome/ocean/index.spw#modules"]
-    }
+ grounding: {
+ grounded_ref: {
+ meaning: "canonical refs anchored to stable source files"
+ examples: [".spw/workspace.spw#invariants", ".spw/biome/ocean/index.spw#modules"]
+ }
 
-    bound_ref: {
-      meaning: "contextual refs bound to branch, phase, or hot replacement"
-      examples: [".spw/biome/ocean/trace.spw#model", ".spw/biome/ocean/query/hot.spw#replacement"]
-    }
-  }
+ bound_ref: {
+ meaning: "contextual refs bound to branch, phase, or hot replacement"
+ examples: [".spw/biome/ocean/trace.spw#model", ".spw/biome/ocean/query/hot.spw#replacement"]
+ }
+ }
 }
 
 ^"forms"{
-  literal_frame: {
-    form: "[\"bla\"]"
-    readability: "medium"
-    referencability: "high"
-    updatability: "high"
-    use: "stable labels and long-lived refs"
-  }
+ literal_frame: {
+ form: "[\"bla\"]"
+ readability: "medium"
+ referencability: "high"
+ updatability: "high"
+ use: "stable labels and long-lived refs"
+ }
 
-  quoted_literal: {
-    form: "\"bla\""
-    readability: "high"
-    referencability: "medium"
-    updatability: "medium"
-    use: "human-facing prose and titles"
-  }
+ quoted_literal: {
+ form: "\"bla\""
+ readability: "high"
+ referencability: "medium"
+ updatability: "medium"
+ use: "human-facing prose and titles"
+ }
 
-  bare_symbol: {
-    form: "bla"
-    readability: "high"
-    referencability: "low"
-    updatability: "low"
-    use: "short local symbols only"
-  }
+ bare_symbol: {
+ form: "bla"
+ readability: "high"
+ referencability: "low"
+ updatability: "low"
+ use: "short local symbols only"
+ }
 }
 
 ^selectors[refs]{
-  use: [macro, selector, refs]
-  utility: [util, compose]
+ use: [macro, selector, refs]
+ utility: [util, compose]
 }
 
 ^selectors[probes]{
-  use: [macro, selector, probes]
-  utility: [util, project]
+ use: [macro, selector, probes]
+ utility: [util, project]
 }
 
 ^selectors[invariants]{
-  use: [macro, selector, invariants]
-  utility: [util, ground]
+ use: [macro, selector, invariants]
+ utility: [util, ground]
 }
 
 ^selectors[phase]{
-  use: [macro, selector, phase]
-  utility: [util, bind]
+ use: [macro, selector, phase]
+ utility: [util, bind]
 }
 
 ^selectors[positionality]{
-  use: [macro, selector, positionality]
-  utility: [util, bind]
+ use: [macro, selector, positionality]
+ utility: [util, bind]
 }
 
 ^selectors[aggregation]{
-  use: [macro, selector, aggregation]
-  utility: [util, aggregate]
+ use: [macro, selector, aggregation]
+ utility: [util, aggregate]
 }
 
 ^selectors[relations]{
-  use: [macro, selector, relations]
-  utility: [util, compose]
+ use: [macro, selector, relations]
+ utility: [util, compose]
 }
 
 ^"reference_model"{
-  grounded_ref: [macro, grounding, grounded_ref]
-  bound_ref: [macro, grounding, bound_ref]
+ grounded_ref: [macro, grounding, grounded_ref]
+ bound_ref: [macro, grounding, bound_ref]
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_spw_biome_ocean_query_q_1
+?["What is the ecological temperature of reading Q?"]{
+  #:depth #!experiential // lens: ecological zone
+  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
+  ~#structure: "intent → macro → forms" // frame flow
+  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark biome edges." }
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_spw_biome_ocean_query_q_2
+?["What concept is conspicuously absent from Q?"]{
+  #:depth #!computational // lens: molecular binding
+  ~#present: [#educational, #mathematical]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[query.selector_depth, query.result_count]
+  ~<.spw/biome/ocean/query/dialect.spw>  // nearest neighbor
+}

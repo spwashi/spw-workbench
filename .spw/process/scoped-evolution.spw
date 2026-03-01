@@ -6,43 +6,49 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Allow syntax evolution without destabilizing baseline workflows."
-  ~#mode: "opt-in, path-scoped, probe-backed."
+ ~#goal: "Allow syntax evolution without destabilizing baseline workflows."
+ ~#mode: "opt-in, path-scoped, probe-backed."
 }
 
 ^"channels"{
-  stable: {
-    description: "Default grammar and tooling behavior."
-    scope: ["src/seed/**", "docs/design/spw/**", ".spw/**"]
-  }
+ stable: {
+ description: "Default grammar and tooling behavior."
+ scope: ["src/seed/**", "docs/design/spw/**", ".spw/**"]
+ }
 
-  experimental: {
-    description: "New operators/forms gated behind explicit markers."
-    scope: [".spw/experiments/**", ".spw/biome/ocean/**", "docs/research/spw/**"]
-    gate: "feature marker + probe coverage + rollback recipe"
-  }
+ experimental: {
+ description: "New operators/forms gated behind explicit markers."
+ scope: [".spw/experiments/**", ".spw/biome/ocean/**", "docs/research/spw/**"]
+ gate: "feature marker + probe coverage + rollback recipe"
+ }
 }
 
 ^"rollout"{
-  step_1: "declare experiment and impacted files"
-  step_2: "define probes for parse stability and semantic drift"
-  step_3: "run meso-scale loops with hot reload"
-  step_4: "promote to stable only if probe archive trend is positive"
+ step_1: "declare experiment and impacted files"
+ step_2: "define probes for parse stability and semantic drift"
+ step_3: "run meso-scale loops with hot reload"
+ step_4: "promote to stable only if probe archive trend is positive"
 }
 
 ^"rollback"{
-  ~#trigger: "probe failures or unresolved aberration risk"
-  ~#action: "disable experiment marker and restore stable channel paths"
+ ~#trigger: "probe failures or unresolved aberration risk"
+ ~#action: "disable experiment marker and restore stable channel paths"
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_spw_process_scopedevolution_1
+?["How does intent teach channels?"]{
+  #:depth #!educational // lens: material grain
+  $^["intent"] => $^["channels"] // trace the edge
+  &[@_, @spw] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[process.cycle_time_ms, process.iteration_count]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_spw_process_scopedevolution_2
+?["What is the algebraic closure of channels (process/scoped-evolution)?"]{
+  #:depth #!experiential // lens: formal structure
+  $^["intent"]@_ => %[formula.measure]
+  ~<.spw/process/scoped-evolution.spw> // introspect
+  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
+  $%[process.cycle_time_ms, process.iteration_count]
+}

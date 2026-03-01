@@ -6,101 +6,106 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Provide reusable expression utilities across query, ops, and spells."
-  ~#selector_registry: ".spw/biome/ocean/query/sel.spw"
-  ~#hot_layer: ".spw/biome/ocean/query/hot.spw"
+ ~#goal: "Provide reusable expression utilities across query, ops, and spells."
+ ~#selector_registry: ".spw/biome/ocean/query/sel.spw"
+ ~#hot_layer: ".spw/biome/ocean/query/hot.spw"
 }
 
 ^"selector_semantics"{
-  create: {
-    meaning: "A selector is created by defining include + combine + grounding in query/sel.spw."
-    source: ".spw/biome/ocean/query/sel.spw#selector[...]"
-    output: selector_id
-  }
+ create: {
+ meaning: "A selector is created by defining include + combine + grounding in query/sel.spw."
+ source: ".spw/biome/ocean/query/sel.spw#selector[...]"
+ output: selector_id
+ }
 
-  reference: {
-    meaning: "A selector is referenced by selector_id (not raw expression strings)."
-    forms: [
-      "use: [macro, selector, refs]",
-      "selector: refs_navigable",
-      "utility input: [selector_id, ...]",
-    ]
-    output: selector_ref
-  }
+ reference: {
+ meaning: "A selector is referenced by selector_id (not raw expression strings)."
+ forms: [
+ "use: [macro, selector, refs]",
+ "selector: refs_navigable",
+ "utility input: [selector_id, ...]",
+ ]
+ output: selector_ref
+ }
 
-  resolve: {
-    meaning: "A selector reference resolves through registry, then optional hot replacement."
-    path: [
-      ".spw/biome/ocean/query/sel.spw",
-      ".spw/biome/ocean/query/hot.spw#replacement",
-    ]
-    output: selector_effective
-  }
+ resolve: {
+ meaning: "A selector reference resolves through registry, then optional hot replacement."
+ path: [
+ ".spw/biome/ocean/query/sel.spw",
+ ".spw/biome/ocean/query/hot.spw#replacement",
+ ]
+ output: selector_effective
+ }
 }
 
 ^util[compose]{
-  input: [selector_a, selector_b, strategy]
-  strategies: [union, descent, ranked, aggregate, cluster]
-  output: selector_composite
+ input: [selector_a, selector_b, strategy]
+ strategies: [union, descent, ranked, aggregate, cluster]
+ output: selector_composite
 }
 
 ^util[create]{
-  input: [include_set, combine_mode, grounding_mode]
-  output: selector_id
-  source: ".spw/biome/ocean/query/sel.spw"
+ input: [include_set, combine_mode, grounding_mode]
+ output: selector_id
+ source: ".spw/biome/ocean/query/sel.spw"
 }
 
 ^util[reference]{
-  input: [selector_id]
-  output: selector_ref
-  note: "Selector refs are symbolic handles used by q/t/ops/spells."
+ input: [selector_id]
+ output: selector_ref
+ note: "Selector refs are symbolic handles used by q/t/ops/spells."
 }
 
 ^util[bind]{
-  input: [selector_id, params]
-  output: selector_bound
-  note: "Binds runtime params without rewriting selector definitions."
+ input: [selector_id, params]
+ output: selector_bound
+ note: "Binds runtime params without rewriting selector definitions."
 }
 
 ^util[ground]{
-  input: [selector_id, mode]
-  mode: [grounded, bound]
-  output: selector_grounded
+ input: [selector_id, mode]
+ mode: [grounded, bound]
+ output: selector_grounded
 }
 
 ^util[project]{
-  input: [selector_id, lens_id]
-  lens: [core, probe, relation]
-  output: projection_ref
-  generated: ".spw/gen/index.spw"
+ input: [selector_id, lens_id]
+ lens: [core, probe, relation]
+ output: projection_ref
+ generated: ".spw/gen/index.spw"
 }
 
 ^util[aggregate]{
-  input: [selector_id, axis]
-  axis: [branch, phase, biome, grounding, selector]
-  output: aggregate_ref
-  trace: ".spw/biome/ocean/trace.spw"
+ input: [selector_id, axis]
+ axis: [branch, phase, biome, grounding, selector]
+ output: aggregate_ref
+ trace: ".spw/biome/ocean/trace.spw"
 }
 
 ^util[hot_replace]{
-  input: [selector_id, tier]
-  tier: [hot, warm, cold]
-  output: selector_effective
-  source: ".spw/biome/ocean/query/hot.spw#replacement"
+ input: [selector_id, tier]
+ tier: [hot, warm, cold]
+ output: selector_effective
+ source: ".spw/biome/ocean/query/hot.spw#replacement"
 }
 
 ^"invariant"{
-  "Utility transforms must preserve selector identity lineage in trace."
+ "Utility transforms must preserve selector identity lineage in trace."
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_spw_biome_ocean_expr_util_1
+?["How would a materials science portfolio express intent?"]{
+  #:depth #!stylistic // lens: material grain
+  ~#translation_target: "materials science"
+  ~#source_concept: "intent"
+  !probe{ "rewrite the root frame in materials science vocabulary; where the translation breaks reveals Spw's untranslatable concepts." }
+  $%[expr.node_count, expr.operator_variety]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_spw_biome_ocean_expr_util_2
+?["How does this file's voice differ from expr/util (expr/util)?"]{
+  #:depth #!educational // lens: formal structure
+  ~<@biome> // nearest neighbor
+  $%[op.distribution]@here vs $%[op.distribution]@biome
+  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
+}

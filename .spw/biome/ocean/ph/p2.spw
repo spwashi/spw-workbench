@@ -8,36 +8,43 @@
 #:layer #!pragmatics
 
 ^"phase"{
-  token: "<#.>"
-  =dialect: "experimental.ocean.phase"
-  optional: {
-    name_mode: "strict|fuzzy"
-    coupling_floor: "0..1"
-    ref_shape: "local|cross"
-  }
+ token: "<#.>"
+ =dialect: "experimental.ocean.phase"
+ optional: {
+ name_mode: "strict|fuzzy"
+ coupling_floor: "0..1"
+ ref_shape: "local|cross"
+ }
 
-  %[physics]{
-    "liminality: 1 (neighbor) — names bind to the immediate vicinity",
-    "frequency: medium — naming happens once per probe candidate",
-    "coupling: rising — coupling floor determines how strongly names bind",
-    "cache: warm tier — name bindings are stable once established",
-  }
+ %[physics]{
+ "liminality: 1 (neighbor) — names bind to the immediate vicinity",
+ "frequency: medium — naming happens once per probe candidate",
+ "coupling: rising — coupling floor determines how strongly names bind",
+ "cache: warm tier — name bindings are stable once established",
+ }
 
-  %[lsp_role]{
-    "documentLink relies on named refs — p2 is the naming layer",
-    "completion provider suggests names from the coupling graph",
-    "cache: warm tier — name resolution rarely changes mid-session",
-  }
+ %[lsp_role]{
+ "documentLink relies on named refs — p2 is the naming layer",
+ "completion provider suggests names from the coupling graph",
+ "cache: warm tier — name resolution rarely changes mid-session",
+ }
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_spw_biome_ocean_ph_p2_1
+?["What concept is conspicuously absent from P2?"]{
+  #:depth #!stylistic // lens: formal structure
+  ~#present: [#phase, #naming, #experiential]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[phase.index, phase.duration_ms, phase.entropy]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_spw_biome_ocean_ph_p2_2
+?["How does phase teach phase — ph/p2?"]{
+  #:depth #!educational // lens: material grain
+  $^["phase"] => $^["phase"] // trace the edge
+  &[@biome, @spw] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[phase.index, phase.duration_ms, phase.entropy]
+  ~<.spw/biome/ocean/ph/p1.spw>  // nearest neighbor
+}

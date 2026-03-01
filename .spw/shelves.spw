@@ -6,41 +6,47 @@
 #:roots #!convention
 
 ^"roots"{
-  @repo: ~".."
-  @spw: ~"."
-  @biome: ~"./biome/ocean"
-  @harness: ~"./harness"
-  @gen: ~"./gen"
-  @hot: ~"./hot.spw"
-  @agents: ~"../.agents"
-  @docs: ~"../docs"
-  @src: ~"../src"
-  @spec: ~"../lib/spw-v0.2.0-alpha"
+ @repo: ~".."
+ @spw: ~"."
+ @biome: ~"./biome/ocean"
+ @harness: ~"./harness"
+ @gen: ~"./gen"
+ @hot: ~"./hot.spw"
+ @agents: ~"../.agents"
+ @docs: ~"../docs"
+ @src: ~"../src"
+ @spec: ~"../lib/spw-v0.2.0-alpha"
 }
 
 ^"shelf_policy"{
-  "Use @roots for cross-tree references.",
-  "Use relative ~\"./...\" only for siblings in the same shelf.",
-  "Generated shelves under @gen are projection surfaces.",
+ "Use @roots for cross-tree references.",
+ "Use relative ~\"./...\" only for siblings in the same shelf.",
+ "Generated shelves under @gen are projection surfaces.",
 }
 
 ^"orientation"{
-  macro: [@biome/spells, @biome/expr, @biome/query]    #:layer #!pragmatics
-  measurement: [@harness/probes, @harness/evals, @biome/trace]    #:layer #!cross_cutting
-  prose: [@spw/literate, @spw/process, @docs]    #:layer #!pragmatics
-  runtime: [@hot, @biome/algos, @biome/ops]    #:layer #!semantics
-  editor_heuristics: @spw/editing.spw    #:layer #!pragmatics
-  ~#rendering: "plain-text-first; legible in terminal, Obsidian, Notion without custom renderer"
+ macro: [@biome/spells, @biome/expr, @biome/query] #:layer #!pragmatics
+ measurement: [@harness/probes, @harness/evals, @biome/trace] #:layer #!cross_cutting
+ prose: [@spw/literate, @spw/process, @docs] #:layer #!pragmatics
+ runtime: [@hot, @biome/algos, @biome/ops] #:layer #!semantics
+ editor_heuristics: @spw/editing.spw #:layer #!pragmatics
+ ~#rendering: "plain-text-first; legible in terminal, Obsidian, Notion without custom renderer"
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_spw_shelves_1
+?["What is the felt rhythm of reading Shelves?"]{
+  #:depth #!experiential // lens: material grain
+  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
+  ~#structure: "roots → shelf_policy → orientation" // frame flow
+  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark grain boundaries." }
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_spw_shelves_2
+?["What concept is conspicuously absent from Shelves?"]{
+  #:depth #!computational // lens: formal structure
+  ~#present: [#roots, #convention, #cross_cutting]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[runtime.stage, runtime.queue_depth]
+  ~<.spw/agents.spw>  // nearest neighbor
+}

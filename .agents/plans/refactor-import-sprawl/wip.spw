@@ -5,66 +5,71 @@
 #:layer #!pragmatics
 
 ^["intent"]{
-  ~#goal: "Consolidate file and folder sprawl in src/platform/bootstrap by turning a simple file-move operation into a rigorous masterclass on Module Topologies, Layer Boundaries, and Dependency Injection."
-  ~#taste: "layering, naming, and clarity by actively developing taste for the mathematical constraints of scalable codebase topology."
+ ~#goal: "Consolidate file and folder sprawl in src/platform/bootstrap by turning a simple file-move operation into a rigorous masterclass on Module Topologies, Layer Boundaries, and Dependency Injection."
+ ~#taste: "layering, naming, and clarity by actively developing taste for the mathematical constraints of scalable codebase topology."
 }
 
 ^["stream"]{
-  >>[2026-02-20 01:42] observe — platform/bootstrap has 21 flat files blending pure initialization (init-*.ts) with UI layout/panel wiring (dock-overlay.ts, drawer.ts, panel-layout.ts).
-  >>[2026-02-20 01:42] observe — ui/elements has corresponding folders (dock-overlay, settings-panel) where the bootstrap wiring logically belongs, or it should be in `src/app`.
-  >>[2026-02-20 01:43] decide — Group initialization into `platform/bootstrap/init/`, extract panel/UI layout wiring to `app/layout/` or `app/panels/`, and move feature-specific logic to `features/`.
-  >>[2026-02-20 05:35] revise — Expanded plan to 26 commits to emphasize taste development through strict dependency graph visualization, DI linting, and formal architectural boundary enforcement.
+ >>[2026-02-20 01:42] observe — platform/bootstrap has 21 flat files blending pure initialization (init-*.ts) with UI layout/panel wiring (dock-overlay.ts, drawer.ts, panel-layout.ts).
+ >>[2026-02-20 01:42] observe — ui/elements has corresponding folders (dock-overlay, settings-panel) where the bootstrap wiring logically belongs, or it should be in `src/app`.
+ >>[2026-02-20 01:43] decide — Group initialization into `platform/bootstrap/init/`, extract panel/UI layout wiring to `app/layout/` or `app/panels/`, and move feature-specific logic to `features/`.
+ >>[2026-02-20 05:35] revise — Expanded plan to 26 commits to emphasize taste development through strict dependency graph visualization, DI linting, and formal architectural boundary enforcement.
 }
 
 ^["open"]{
 }
 
 ^["commits"]{
-  ~[1]: "&[arch] — baseline: generate initial dependency graph visualization of bootstrap sprawl"
-  ~[2]: "^seed[arch] — explicitly define the topological DAG (Infra ← Platform ← App ← UI)"
-  ~[3]: "![arch] — introduce strict dependency linting rules (eslint-plugin-boundaries) to enforce DAG"
-  ~[4]: "&[arch] — audit: fix existing import violations breaking the new topological rules"
-  ~[5]: "&[arch] — audit: resolve any circular dependency warning loops originating in bootstrap"
-  ~[6]: "vocab[app] — define the Spw structural nomenclature for Application vs Platform boundaries"
-  ~[7]: "&[app/layout] — extract 'dock-overlay' and 'drawer' out of platform and into the app layer"
-  ~[8]: "&[app/layout] — extract 'panel-layout' and 'panel-docking' out of platform and into the app layer"
-  ~[9]: "&[app/state] — extract 'theme-manager' and 'mode-manager' into application orchestrators"
-  ~[10]: "&[app] — extract application 'stage-gates' lifecycle controller"
-  ~[11]: "![app] — resolve resulting dependency breakages and document the new App orchestration graph"
-  ~[12]: "vocab[features] — define the standard for Feature 'wiring' abstractions"
-  ~[13]: "&[features/editor] — extract 'editor-wiring' and 'authoring-wiring' out of bootstrap"
-  ~[14]: "&[features/settings] — extract 'settings-wiring' and 'settings-actions' out of bootstrap"
-  ~[15]: "&[features/audio] — extract 'audio-wiring' out of bootstrap"
-  ~[16]: "&[features] — extract remaining 'inspector' and 'onboarding' peripheral wirings"
-  ~[17]: "vocab[platform] — define the strict deterministic lifecycle of the boot sequence"
-  ~[18]: "&[bootstrap] — restructure remaining flat initialization scripts into platform/bootstrap/init/"
-  ~[19]: "&[bootstrap] — enforce strict phase-ordering (e.g. init-worker before init-prism)"
-  ~[20]: "&[bootstrap] — refactor the central init.ts file to reflect the new phased boot sequence"
-  ~[21]: "&[di] — audit: review where global singletons are used vs injected dependencies"
-  ~[22]: "&[di] — refactor critical boot sequence params to utilize explicit dependency injection"
-  ~[23]: "![bootstrap] — execute rigorous headless boot tests to ensure timing invariants aren't broken"
-  ~[24]: "&[arch] — delete the legacy flat bootstrap folder entirely"
-  ~[25]: ".[docs] — construct the interactive Module Topology visualization for the workbench"
-  ~[26]: ".[docs] — write the curriculum: 'Developing Taste in Spw Architectural Topologies'"
+ ~[1]: "&[arch] — baseline: generate initial dependency graph visualization of bootstrap sprawl"
+ ~[2]: "^seed[arch] — explicitly define the topological DAG (Infra ← Platform ← App ← UI)"
+ ~[3]: "![arch] — introduce strict dependency linting rules (eslint-plugin-boundaries) to enforce DAG"
+ ~[4]: "&[arch] — audit: fix existing import violations breaking the new topological rules"
+ ~[5]: "&[arch] — audit: resolve any circular dependency warning loops originating in bootstrap"
+ ~[6]: "vocab[app] — define the Spw structural nomenclature for Application vs Platform boundaries"
+ ~[7]: "&[app/layout] — extract 'dock-overlay' and 'drawer' out of platform and into the app layer"
+ ~[8]: "&[app/layout] — extract 'panel-layout' and 'panel-docking' out of platform and into the app layer"
+ ~[9]: "&[app/state] — extract 'theme-manager' and 'mode-manager' into application orchestrators"
+ ~[10]: "&[app] — extract application 'stage-gates' lifecycle controller"
+ ~[11]: "![app] — resolve resulting dependency breakages and document the new App orchestration graph"
+ ~[12]: "vocab[features] — define the standard for Feature 'wiring' abstractions"
+ ~[13]: "&[features/editor] — extract 'editor-wiring' and 'authoring-wiring' out of bootstrap"
+ ~[14]: "&[features/settings] — extract 'settings-wiring' and 'settings-actions' out of bootstrap"
+ ~[15]: "&[features/audio] — extract 'audio-wiring' out of bootstrap"
+ ~[16]: "&[features] — extract remaining 'inspector' and 'onboarding' peripheral wirings"
+ ~[17]: "vocab[platform] — define the strict deterministic lifecycle of the boot sequence"
+ ~[18]: "&[bootstrap] — restructure remaining flat initialization scripts into platform/bootstrap/init/"
+ ~[19]: "&[bootstrap] — enforce strict phase-ordering (e.g. init-worker before init-prism)"
+ ~[20]: "&[bootstrap] — refactor the central init.ts file to reflect the new phased boot sequence"
+ ~[21]: "&[di] — audit: review where global singletons are used vs injected dependencies"
+ ~[22]: "&[di] — refactor critical boot sequence params to utilize explicit dependency injection"
+ ~[23]: "![bootstrap] — execute rigorous headless boot tests to ensure timing invariants aren't broken"
+ ~[24]: "&[arch] — delete the legacy flat bootstrap folder entirely"
+ ~[25]: ".[docs] — construct the interactive Module Topology visualization for the workbench"
+ ~[26]: ".[docs] — write the curriculum: 'Developing Taste in Spw Architectural Topologies'"
 }
 
 ^["cache"]{
-  ~#status: "planning"
-  ~#files_hot: ""
-  ~#next_commit: "1"
-  ~#open_count: "0"
-  ~#last_stream: ""
-  ~#taste_debt: ""
+ ~#status: "planning"
+ ~#files_hot: ""
+ ~#next_commit: "1"
+ ~#open_count: "0"
+ ~#last_stream: ""
+ ~#taste_debt: ""
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_agents_plans_refactorimportsprawl_wip_1
+?["How would a biology portfolio express refactor-import-sprawl/wip?"]{
+  #:depth #!stylistic // lens: living system
+  ~#translation_target: "biology"
+  ~#source_concept: "intent"
+  !probe{ "rewrite the root frame in biology vocabulary; where the translation breaks reveals Spw's untranslatable concepts." }
+  $%[plan.commit_count, plan.phase_progress]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_agents_plans_refactorimportsprawl_wip_2
+?["How does this file's voice differ from refactor-import-sprawl/wip (refactor-import-sprawl/wip)?"]{
+  #:depth #!educational // lens: curated collection
+  ~<@biome> // nearest neighbor
+  $%[op.distribution]@here vs $%[op.distribution]@biome
+  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
+}

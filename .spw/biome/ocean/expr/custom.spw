@@ -6,58 +6,64 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Provide customizable expression templates without rewriting core selectors."
-  ~#selector_registry: ".spw/biome/ocean/query/sel.spw"
-  ~#relationship_surface: ".spw/biome/ocean/expr/rel.spw"
-  ~#utility_surface: ".spw/biome/ocean/expr/util.spw"
+ ~#goal: "Provide customizable expression templates without rewriting core selectors."
+ ~#selector_registry: ".spw/biome/ocean/query/sel.spw"
+ ~#relationship_surface: ".spw/biome/ocean/expr/rel.spw"
+ ~#utility_surface: ".spw/biome/ocean/expr/util.spw"
 }
 
 ^"templates"{
-  refs: {
-    selector: refs_navigable
-    params: [path_prefix, root_name]
-    utility: [util, bind]
-  }
+ refs: {
+ selector: refs_navigable
+ params: [path_prefix, root_name]
+ utility: [util, bind]
+ }
 
-  fields: {
-    selector: phase_config
-    params: [field_name, depth]
-    utility: [util, compose]
-  }
+ fields: {
+ selector: phase_config
+ params: [field_name, depth]
+ utility: [util, compose]
+ }
 
-  dense_o: {
-    selector: relation_exotic
-    params: [orientation, projection]
-    utility: [util, project]
-    note: "Used with dense Spw.o experimental syntax files."
-  }
+ dense_o: {
+ selector: relation_exotic
+ params: [orientation, projection]
+ utility: [util, project]
+ note: "Used with dense Spw.o experimental syntax files."
+ }
 
-  positional: {
-    selector: positional_scope
-    params: [anchor_mode, scope_depth]
-    utility: [util, bind]
-  }
+ positional: {
+ selector: positional_scope
+ params: [anchor_mode, scope_depth]
+ utility: [util, bind]
+ }
 
-  aggregate: {
-    selector: aggregate_branch
-    params: [group_axis, include_grounding]
-    utility: [util, aggregate]
-  }
+ aggregate: {
+ selector: aggregate_branch
+ params: [group_axis, include_grounding]
+ utility: [util, aggregate]
+ }
 }
 
 ^"cache_contract"{
-  ~#key: "template_id + params + file_hash"
-  ~#store: ".spw/harness/memory-surface.spw"
+ ~#key: "template_id + params + file_hash"
+ ~#store: ".spw/harness/memory-surface.spw"
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_spw_biome_ocean_expr_custom_1
+?["What is the curation density of templates (expr/custom)?"]{
+  #:depth #!computational // lens: curated collection
+  $^["intent"]@biome => %[collection.measure]
+  ~<.spw/biome/ocean/expr/custom.spw> // introspect
+  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
+  $%[expr.node_count, expr.operator_variety]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_spw_biome_ocean_expr_custom_2
+?["What is the metabolic signature of reading Custom Expressions?"]{
+  #:depth #!mathematical // lens: living system
+  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
+  ~#structure: "intent → templates → cache_contract" // frame flow
+  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark structural joints." }
+  ~<.spw/biome/ocean/expr/arc.spw>  // nearest neighbor
+}

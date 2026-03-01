@@ -5,90 +5,97 @@
 #:layer #!grammar
 
 meta: .{
-  domain      = `seed`
-  initOrder   = `-1`
-  description = `Lexer, parser, types — the extractable core of Spw`
-  kind        = `audit-guide`
-  portability = `browser + Node.js + standalone npm`
+ domain = `seed`
+ initOrder = `-1`
+ description = `Lexer, parser, types — the extractable core of Spw`
+ kind = `audit-guide`
+ portability = `browser + Node.js + standalone npm`
 }[reg=facet]
 
 purpose: .{
-  review-goal = `Ensure portability is preserved — zero workbench dependencies, deterministic parsing`
-  risk-level  = `CRITICAL — seed is the language itself. Parser bugs affect everything.`
+ review-goal = `Ensure portability is preserved — zero workbench dependencies, deterministic parsing`
+ risk-level = `CRITICAL — seed is the language itself. Parser bugs affect everything.`
 }[reg=facet]
 
 allowed: #[
-  `nothing — seed has zero workbench dependencies`
+ `nothing — seed has zero workbench dependencies`
 ][reg=set]
 
 forbidden: #[
-  `@/core/*`     `@/infra/*`    `@/runtime/*`  `@/design/*`
-  `@/ui/*`       `@/viz/*`      `@/features/*` `@/debug/*`
-  `@/cli/*`      `@/app/*`      `@/platform/*` `@/publishing/*`
-  `@/styles/*`
+ `@/core/*` `@/infra/*` `@/runtime/*` `@/design/*`
+ `@/ui/*` `@/viz/*` `@/features/*` `@/debug/*`
+ `@/cli/*` `@/app/*` `@/platform/*` `@/publishing/*`
+ `@/styles/*`
 ][reg=set]
 
 signals: .{
-  dependency-creep = #[
-    `Any import from a workbench layer — destroys npm extractability`
-    `DOM references — seed must work in Node.js`
-    `Browser API usage — seed must work headless`
-  ]
-  determinism = #[
-    `Non-deterministic parsing — same input must always produce same AST`
-    `Random or date-dependent behavior — breaks reproducibility`
-    `Mutation during parse — parse must be pure`
-  ]
-  golden-snapshots = #[
-    `__tests__/snapshots/phase-4-golden/ changes require explicit approval`
-    `5 canonical parse outputs are the regression baseline`
-  ]
+ dependency-creep = #[
+ `Any import from a workbench layer — destroys npm extractability`
+ `DOM references — seed must work in Node.js`
+ `Browser API usage — seed must work headless`
+ ]
+ determinism = #[
+ `Non-deterministic parsing — same input must always produce same AST`
+ `Random or date-dependent behavior — breaks reproducibility`
+ `Mutation during parse — parse must be pure`
+ ]
+ golden-snapshots = #[
+ `__tests__/snapshots/phase-4-golden/ changes require explicit approval`
+ `5 canonical parse outputs are the regression baseline`
+ ]
 }[reg=facet]
 
 decisions: .{
-  workbench-test = `Can this run without the workbench? → Yes: seed/. No: lang/hooks.ts.`
-  determinism    = `Is the parser deterministic for this input? → Must always be yes.`
-  portability    = `Does this break the npm-extractable contract? → Blocking issue.`
+ workbench-test = `Can this run without the workbench? → Yes: seed/. No: lang/hooks.ts.`
+ determinism = `Is the parser deterministic for this input? → Must always be yes.`
+ portability = `Does this break the npm-extractable contract? → Blocking issue.`
 }[reg=facet]
 
 questions: #[
-  `Can this run without the workbench?`
-  `Is the parser deterministic for this input?`
-  `Does this break the npm-extractable contract?`
-  `Does this change require golden snapshot updates?`
+ `Can this run without the workbench?`
+ `Is the parser deterministic for this input?`
+ `Does this break the npm-extractable contract?`
+ `Does this change require golden snapshot updates?`
 ][reg=set]
 
 bonk: #[
-  @here/grammar/
-  @here/__tests__/snapshots/phase-4-golden/
-  @here/lexer/
-  @here/parser/
+ @here/grammar/
+ @here/__tests__/snapshots/phase-4-golden/
+ @here/lexer/
+ @here/parser/
 ][reg=impact]
 
 portability: .{
-  targets = #[
-    `Browser`
-    `Node.js`
-    `Standalone npm package`
-    `Tests without DOM`
-  ]
-  invariants = .{
-    parse_stability       = `parse(F0) never panics`
-    f2_determinism        = `same AST → same bytes`
-    hash_idempotence      = `Hash(F2) = Hash(serialize(parse(F2)))`
-    mount_plane_safety    = `mounts never return $`
-    materialize_gate      = `only materialize() produces $`
-  }[reg=facet]
+ targets = #[
+ `Browser`
+ `Node.js`
+ `Standalone npm package`
+ `Tests without DOM`
+ ]
+ invariants = .{
+ parse_stability = `parse(F0) never panics`
+ f2_determinism = `same AST → same bytes`
+ hash_idempotence = `Hash(F2) = Hash(serialize(parse(F2)))`
+ mount_plane_safety = `mounts never return $`
+ materialize_gate = `only materialize() produces $`
+ }[reg=facet]
 }[reg=facet]
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_src_seed_docs_auditguide_1
+?["What happens when you zoom from the token level to the workspace level in seed audit guide?"]{
+  #:depth #!mathematical // lens: living system
+  $^["_"]@here => &[@workspace] // local → global projection
+  ~#zoom_in: "seed audit guide" // this file's atom
+  !probe{ "the atom is token-scale; zoom out: what workspace-level pattern does this token participate in?" }
+  $%[runtime.stage, runtime.queue_depth]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_src_seed_docs_auditguide_2
+?["What ripples if #audit_guide changes in this file?"]{
+  #:depth #!stylistic // lens: curated collection
+  $#educational@workspace => %[reference.count, depth.downstream]
+  ~#downstream: "trace all files that reference this surface"
+  !probe{ "imagine renaming #educational to #educational_v2; count broken references; the count reveals how deeply seed audit guide is woven into the workspace." }
+  $%[runtime.stage, runtime.queue_depth]
+  ~<src/seed/docs/index.spw>  // nearest neighbor
+}

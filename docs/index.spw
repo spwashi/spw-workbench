@@ -6,67 +6,74 @@
 #:layer #!pragmatics
 
 ^["roots"]{
-  @src:  ~"../src"
-  @here: ~"."
+ @src: ~"../src"
+ @here: ~"."
 }
 
 ^["inherit"]{
-  .. ~"../index.spw"
+ .. ~"../index.spw"
 }
 
 ^["files"]{
-  !["Docs files"]
-  .. ~"./toc.spw"                   # Table of contents (start here)
-  .. ~"./README.md"
+ !["Docs files"]
+ .. ~"./toc.spw" # Table of contents (start here)
+ .. ~"./README.md"
 }
 
 ^["folders"]{
-  !["Docs folders"]  #:sections
-  .. ~"./theory"    # Theoretical modeling, Algebra, Physics, Calculus
-  .. ~"./specs"     # Formalization, Contracts, Policies
-  .. ~"./runtime"   # Spw runtime registers, LSP, Workers, Performance
-  .. ~"./features"  # Feature development, Onboarding, Keyboard
-  .. ~"./design"    # Design, Taste balancing, Themes, Components
-  .. ~"./plans"     # Roadmaps, Blueprints, Directions
-  .. ~"./research"  # Exploration, Logs, Matrices
-  .. ~"./audits"    # Active audits
-  
-  .. ~"./archive"
-  .. ~"./contributing"
-  .. ~"./lang"
-  .. ~#example "./examples"
-  .. ~#bench "./benchmarks"
-  .. ~#catalog "./library"
+ !["Docs folders"] #:sections
+ .. ~"./theory" # Theoretical modeling, Algebra, Physics, Calculus
+ .. ~"./specs" # Formalization, Contracts, Policies
+ .. ~"./runtime" # Spw runtime registers, LSP, Workers, Performance
+ .. ~"./features" # Feature development, Onboarding, Keyboard
+ .. ~"./design" # Design, Taste balancing, Themes, Components
+ .. ~"./plans" # Roadmaps, Blueprints, Directions
+ .. ~"./research" # Exploration, Logs, Matrices
+ .. ~"./audits" # Active audits
+
+ .. ~"./archive"
+ .. ~"./contributing"
+ .. ~"./lang"
+ .. ~#example "./examples"
+ .. ~#bench "./benchmarks"
+ .. ~#catalog "./library"
 }
 
 ^["src-indexes"]{
-  !["Per-layer indexes"]  #:impl
-  .. @src/core/docs/index.spw
-  .. @src/platform/docs/index.spw
-  .. @src/publishing/docs/index.spw
-  .. @src/app/docs/index.spw
-  .. @src/infra/docs/index.spw
-  .. @src/lang/docs/index.spw
-  .. @src/seed/docs/index.spw
-  .. @src/runtime/docs/index.spw
-  .. @src/viz/docs/index.spw
-  .. @src/ui/docs/index.spw
-  .. @src/design/docs/index.spw
-  .. @src/features/docs/index.spw
-  .. @src/debug/docs/index.spw
-  .. @src/cli/docs/index.spw
-  .. @src/semantics/docs/index.spw
-  .. @src/styles/docs/index.spw
+ !["Per-layer indexes"] #:impl
+ .. @src/core/docs/index.spw
+ .. @src/platform/docs/index.spw
+ .. @src/publishing/docs/index.spw
+ .. @src/app/docs/index.spw
+ .. @src/infra/docs/index.spw
+ .. @src/lang/docs/index.spw
+ .. @src/seed/docs/index.spw
+ .. @src/runtime/docs/index.spw
+ .. @src/viz/docs/index.spw
+ .. @src/ui/docs/index.spw
+ .. @src/design/docs/index.spw
+ .. @src/features/docs/index.spw
+ .. @src/debug/docs/index.spw
+ .. @src/cli/docs/index.spw
+ .. @src/semantics/docs/index.spw
+ .. @src/styles/docs/index.spw
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_index_1
+?["What ripples if #sections changes in this file?"]{
+  #:depth #!mathematical // lens: molecular binding
+  $#sections@workspace => %[reference.count, depth.downstream]
+  ~<../index.spw> // first downstream dependency
+  !probe{ "imagine renaming #sections to #sections_v2; count broken references; the count reveals how deeply roots is woven into the workspace." }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_index_2
+?["What happens when you zoom from the workflow level to the workspace level in Documentation Index?"]{
+  #:depth #!stylistic // lens: ecological zone
+  $^["_"]@here => &[@workspace] // local → global projection
+  ~#zoom_in: "roots" // this file's atom
+  !probe{ "the atom is workflow-scale; zoom out: what workspace-level pattern does this workflow participate in?" }
+  $%[register.bank_size, register.active_bindings]
+  ~<docs/toc.spw>  // nearest neighbor
+}

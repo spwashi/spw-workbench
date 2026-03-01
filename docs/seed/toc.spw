@@ -3,29 +3,35 @@
 #:layer #!grammar
 
 ^['roots']{
-  @docs: ~'..'
-  @spec: ~'../../lib/spw-v0.2.0-alpha'
-  @seed: ~'../../src/seed'
+ @docs: ~'..'
+ @spec: ~'../../lib/spw-v0.2.0-alpha'
+ @seed: ~'../../src/seed'
 }
 
 ^['kernel']{
-  !['Kernel']
-  @seed/
+ !['Kernel']
+ @seed/
 }
 
 ^['spec']{
-  !['Spec Library (v0.2.0-alpha)']
-  @spec/
+ !['Spec Library (v0.2.0-alpha)']
+ @spec/
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_seed_toc_1
+?["How does this file's voice differ from @docs?"]{
+  #:depth #!educational // lens: curated collection
+  ~<@docs> // nearest neighbor
+  $%[op.distribution]@here vs $%[op.distribution]@docs
+  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_seed_toc_2
+?["What invariant holds across every frame in Table of Contents (Canon)?"]{
+  #:depth #!experiential // lens: living system
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to table of contents (canon)'s frames; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[file.frame_count, file.annotation_density, file.brace_depth_max]
+  ~<docs/index.spw>  // nearest neighbor
+}

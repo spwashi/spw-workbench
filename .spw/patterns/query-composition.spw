@@ -7,32 +7,39 @@
 #:layer #!pragmatics
 
 ^"pipeline"{
-  from: "select roots and adjacency surfaces"
-  select: "choose fields to surface (file/kind/root/target/line/text)"
-  where: "filter by sigil, kind, root, label, or text containment"
-  probe: "apply sequence probe to estimate priming and realization"
-  consequence: "record findings for replay and tuning"
+ from: "select roots and adjacency surfaces"
+ select: "choose fields to surface (file/kind/root/target/line/text)"
+ where: "filter by sigil, kind, root, label, or text containment"
+ probe: "apply sequence probe to estimate priming and realization"
+ consequence: "record findings for replay and tuning"
 }
 
 ^"sql_css_blend"{
-  css: "scoped selector intuition for structure and adjacency"
-  sql: "projection/filter composition over rows"
-  spw: "operator + brace + label semantics as first-class query dimensions"
+ css: "scoped selector intuition for structure and adjacency"
+ sql: "projection/filter composition over rows"
+ spw: "operator + brace + label semantics as first-class query dimensions"
 }
 
 ^"example"{
-  command: "npm run spw -- query --from .spw,docs --selector navigable --where \"kind in PathRef|Reference,root=spw\" --select file,kind,root,target,line,column --summary"
-  followup: "npm run spw -- ls --seq '?~@&*^' --probe '?(topic).[' --root .spw,docs --equiv soft --mode hybrid"
+ command: "npm run spw -- query --from .spw,docs --selector navigable --where \"kind in PathRef|Reference,root=spw\" --select file,kind,root,target,line,column --summary"
+ followup: "npm run spw -- ls --seq '?~@&*^' --probe '?(topic).[' --root .spw,docs --equiv soft --mode hybrid"
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_spw_patterns_querycomposition_1
+?["What concept is conspicuously absent from Query Composition Pattern?"]{
+  #:depth #!stylistic // lens: molecular binding
+  ~#present: [#pattern, #query, #educational]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[runtime.stage, runtime.queue_depth]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_spw_patterns_querycomposition_2
+?["How does pipeline teach sql_css_blend?"]{
+  #:depth #!educational // lens: ecological zone
+  $^["pipeline"] => $^["sql_css_blend"] // trace the edge
+  &[@_, @spw] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[runtime.stage, runtime.queue_depth]
+  ~<.spw/patterns/index.spw>  // nearest neighbor
+}

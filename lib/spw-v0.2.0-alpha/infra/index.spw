@@ -4,140 +4,149 @@
 #:layer #!grammar
 
 ^["roots"]{
-  @here: ~"."
-  @lib:  ~".."
-  @audits:     ~"../../../docs/audits"
-  @benchmarks: ~"../../../docs/benchmarks"
-  @specs:      ~"../../../docs/specs"
-  @scripts:    ~"../../../scripts"
+ @here: ~"."
+ @lib: ~".."
+ @audits: ~"../../../docs/audits"
+ @benchmarks: ~"../../../docs/benchmarks"
+ @specs: ~"../../../docs/specs"
+ @scripts: ~"../../../scripts"
 }
 
 # ── Ethos ────────────────────────────────────────────────────
 
 meta: .{
-  domain    = `infra`
-  initOrder = `8`
-  kind      = `stratum-map`
-  note      = `Infrastructure contracts — conformance, validation, and measurement`
+ domain = `infra`
+ initOrder = `8`
+ kind = `stratum-map`
+ note = `Infrastructure contracts — conformance, validation, and measurement`
 }[reg=facet]
 
 purpose: .{
-  role       = `Define conformance levels, audit procedures, and benchmark contracts`
-  invariant  = `Infra validates — it does not define semantics. That's core's job.`
-  philosophy = `If you can't measure it, you can't improve it. Infra makes quality visible.`
+ role = `Define conformance levels, audit procedures, and benchmark contracts`
+ invariant = `Infra validates — it does not define semantics. That's core's job.`
+ philosophy = `If you can't measure it, you can't improve it. Infra makes quality visible.`
 }[reg=facet]
 
 garden: .{
-  is            = `1 conformance contract + audit guides + benchmarks`
-  could_become  = `A full CI-integrated conformance gate with automated taste scoring`
-  connects_to   = `core/ defines what to check. infra/ checks it. domains/ adds taste overlay.`
-  growth_risk   = `Audit fatigue — too many checks slow development without improving quality.`
+ is = `1 conformance contract + audit guides + benchmarks`
+ could_become = `A full CI-integrated conformance gate with automated taste scoring`
+ connects_to = `core/ defines what to check. infra/ checks it. domains/ adds taste overlay.`
+ growth_risk = `Audit fatigue — too many checks slow development without improving quality.`
 }[reg=facet]
 
 valence: .{
-  boon = `Conformance levels provide clear milestone targets`
-  bane = `Only level 0-3 implemented — levels 4-5 are aspirational`
-  bone = `lint:spw and lint:v020 scripts provide stable baseline`
-  bonk = `Adding conformance level 6 would restructure the entire quality model`
-  honk = `spwq --selector=domains --summary gives instant structural health`
+ boon = `Conformance levels provide clear milestone targets`
+ bane = `Only level 0-3 implemented — levels 4-5 are aspirational`
+ bone = `lint:spw and lint:v020 scripts provide stable baseline`
+ bonk = `Adding conformance level 6 would restructure the entire quality model`
+ honk = `spwq --selector=domains --summary gives instant structural health`
 }[reg=quality]
 
 # ── Contract Surfaces ───────────────────────────────────────
 
 ^["contracts"]{
-  ^["conformance"]{
-    =file: "CONFORMANCE.md"
-    =levels: 6
-    =implemented: [0, 1, 2, 3]
-    =deferred: [4, 5]
-    ~<detail>"./CONFORMANCE.md"
-  }
+ ^["conformance"]{
+ =file: "CONFORMANCE.md"
+ =levels: 6
+ =implemented: [0, 1, 2, 3]
+ =deferred: [4, 5]
+ ~<detail>"./CONFORMANCE.md"
+ }
 }
 
 # ── Audit Framework ─────────────────────────────────────────
 
 ^["audits"]{
-  !["Audit guides and reports from docs/audits/"]
+ !["Audit guides and reports from docs/audits/"]
 
-  ^["guide"]{
-    =purpose: "how to run and structure audits"
-    ~<guide>"../../../docs/audits/spw/audit-guide.spw"
-    ~<seed-guide>"../../../src/seed/docs/audit-guide.spw"
-  }
+ ^["guide"]{
+ =purpose: "how to run and structure audits"
+ ~<guide>"../../../docs/audits/spw/audit-guide.spw"
+ ~<seed-guide>"../../../src/seed/docs/audit-guide.spw"
+ }
 
-  ^["reports"]{
-    !["Historical audit reports"]
-    .. ~<attention>"../../../docs/audits/spw/attention-behavior-audit.spw"
-    .. ~<data-attr>"../../../docs/audits/spw/data-attributes-audit.spw"
-    .. ~<design-mode>"../../../docs/audits/spw/design-mode-audit.spw"
-    .. ~<focus-nav>"../../../docs/audits/spw/focus-navigation-audit.spw"
-    .. ~<l10n>"../../../docs/audits/spw/localization-events-performance-2026-02-14.spw"
-    .. ~<garden>"../../../docs/audits/spw/spw-garden-audit-2026-02-15.spw"
-  }
+ ^["reports"]{
+ !["Historical audit reports"]
+ .. ~<attention>"../../../docs/audits/spw/attention-behavior-audit.spw"
+ .. ~<data-attr>"../../../docs/audits/spw/data-attributes-audit.spw"
+ .. ~<design-mode>"../../../docs/audits/spw/design-mode-audit.spw"
+ .. ~<focus-nav>"../../../docs/audits/spw/focus-navigation-audit.spw"
+ .. ~<l10n>"../../../docs/audits/spw/localization-events-performance-2026-02-14.spw"
+ .. ~<garden>"../../../docs/audits/spw/spw-garden-audit-2026-02-15.spw"
+ }
 }
 
 # ── Benchmarks ──────────────────────────────────────────────
 
 ^["benchmarks"]{
-  !["Performance and integrity benchmarks from docs/benchmarks/"]
+ !["Performance and integrity benchmarks from docs/benchmarks/"]
 
-  .. ~<confluent>"../../../docs/benchmarks/spw/confluent-fanin.spw"
-  .. ~<measure>"../../../docs/benchmarks/spw/measure-types.spw"
-  .. ~<register>"../../../docs/benchmarks/spw/register-access.spw"
-  .. ~<immut>"../../../docs/benchmarks/spw/resonate-immutability.spw"
-  .. ~<spirit>"../../../docs/benchmarks/spw/spirit-throughput.spw"
+ .. ~<confluent>"../../../docs/benchmarks/spw/confluent-fanin.spw"
+ .. ~<measure>"../../../docs/benchmarks/spw/measure-types.spw"
+ .. ~<register>"../../../docs/benchmarks/spw/register-access.spw"
+ .. ~<immut>"../../../docs/benchmarks/spw/resonate-immutability.spw"
+ .. ~<spirit>"../../../docs/benchmarks/spw/spirit-throughput.spw"
 }
 
 # ── Tooling ─────────────────────────────────────────────────
 
 ^["tooling"]{
-  !["Lint scripts and analyzers"]
+ !["Lint scripts and analyzers"]
 
-  ^["lint-spw"]{
-    =command: "npm run lint:spw"
-    =script: "scripts/analyzers/spw-syntax-validate.ts"
-    ?["Does lint:spw use the real parser?"]
-      ~#answer: "Yes — parses every .spw file with src/seed/parse()"
-  }
+ ^["lint-spw"]{
+ =command: "npm run lint:spw"
+ =script: "scripts/analyzers/spw-syntax-validate.ts"
 
-  ^["lint-v020"]{
-    =commands: ["lint:v020", "lint:v020:architecture", "lint:v020:runtime"]
-    ?["Are all strata covered by lint scripts?"]
-      ~#status: "core, runtime, architecture — dialects/domains/applications not yet linted"
-  }
+ ?["Does lint:spw use the real parser?"]
+ ~#answer: "Yes — parses every .spw file with src/seed/parse()"
+ }
 
-  ^["spwq"]{
-    =command: "npm run spwq"
-    =selectors: 21
-    ~<script>"../../../scripts/spwq.ts"
-    ?["Can spwq output conformance-level summary per file?"]
-      ~#status: "not yet — proposed feature"
-  }
+ ^["lint-v020"]{
+ =commands: ["lint:v020", "lint:v020:architecture", "lint:v020:runtime"]
+
+ ?["Are all strata covered by lint scripts?"]
+ ~#status: "core, runtime, architecture — dialects/domains/applications not yet linted"
+ }
+
+ ^["spwq"]{
+ =command: "npm run spwq"
+ =selectors: 21
+ ~<script>"../../../scripts/spwq.ts"
+
+ ?["Can spwq output conformance-level summary per file?"]
+ ~#status: "not yet — proposed feature"
+ }
 }
 
 # ── Specs Crosslinks ────────────────────────────────────────
 
 ^["specs"]{
-  !["Normative specs that infra validates"]
-  .. ~<shadow-dom>"../../../docs/specs/spw/shadow-dom-policy.spw"
-  .. ~<alignment>"../../../docs/specs/spw/spec-alignment.spw"
+ !["Normative specs that infra validates"]
+ .. ~<shadow-dom>"../../../docs/specs/spw/shadow-dom-policy.spw"
+ .. ~<alignment>"../../../docs/specs/spw/spec-alignment.spw"
 }
 
 # ── Theory References ───────────────────────────────────────
 
 ^["theory"]{
-  .. ~<quality>"../../../docs/theory/spw/quality.spw"
-  .. ~<valence>"../../../docs/theory/spw/valence-architecture.spw"
+ .. ~<quality>"../../../docs/theory/spw/quality.spw"
+ .. ~<valence>"../../../docs/theory/spw/valence-architecture.spw"
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_lib_spwv020alpha_infra_index_1
+?["What concept is conspicuously absent from Infra Stratum Architecture Support?"]{
+  #:depth #!stylistic // lens: molecular binding
+  ~#present: [#educational, #mathematical]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_lib_spwv020alpha_infra_index_2
+?["How does roots teach contracts?"]{
+  #:depth #!educational // lens: ecological zone
+  $^["roots"] => $^["contracts"] // trace the edge
+  &[@here, @lib] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[register.bank_size, register.active_bindings]
+}

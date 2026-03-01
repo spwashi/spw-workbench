@@ -5,56 +5,62 @@
 #:layer #!pragmatics
 
 ^["intent"]{
-  ~#goal: "<why this branch exists — 1-3 sentences>"
-  ~#taste: "<which craft quality is being improved>"
+ ~#goal: "<why this branch exists — 1-3 sentences>"
+ ~#taste: "<which craft quality is being improved>"
 }
 
 ^["stream"]{
-  # Append entries chronologically. Never edit prior entries.
-  # >>[YYYY-MM-DD HH:MM] <type> — <content>
-  # Types: observe, decide, surprise, revise, blocked, taste, rebase, hygiene
+ # Append entries chronologically. Never edit prior entries.
+ # >>[YYYY-MM-DD HH:MM] <type> — <content>
+ # Types: observe, decide, surprise, revise, blocked, taste, rebase, hygiene
 }
 
 ^["open"]{
-  # Unresolved questions. Remove when resolved (log resolution in stream first).
-  # ?[label]: "question"
+ # Unresolved questions. Remove when resolved (log resolution in stream first).
+ # ?[label]: "question"
 }
 
 ^["commits"]{
-  # Planned commits in order. Use project sigil conventions.
-  # ~[N]: "sigil[scope] — description"
-  ~[1]: "<sigil>[<scope>] — <description>"
+ # Planned commits in order. Use project sigil conventions.
+ # ~[N]: "sigil[scope] — description"
+ ~[1]: "<sigil>[<scope>] — <description>"
 }
 
 ^["cache"]{
-  ~#status: "planning"
-  ~#base_ref: "main@<sha>"
-  ~#rebased_at: ""
-  ~#hygiene_split: "none"
-  ~#files_hot: ""
-  ~#next_commit: "1"
-  ~#open_count: "0"
-  ~#last_stream: ""
-  ~#taste_debt: ""
+ ~#status: "planning"
+ ~#base_ref: "main@<sha>"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: ""
+ ~#next_commit: "1"
+ ~#open_count: "0"
+ ~#last_stream: ""
+ ~#taste_debt: ""
 }
 
 ^["done"]{
-  # Written at merge time.
-  # ~#shipped: []
-  # ~#dropped: []
-  # ~#surprised: ""
-  # ~#duration: ""
-  # ~#taste: ""
+ # Written at merge time.
+ # ~#shipped: []
+ # ~#dropped: []
+ # ~#surprised: ""
+ # ~#duration: ""
+ # ~#taste: ""
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_agents_plans__schema_wiptemplate_1
+?["What is the algebraic closure of stream (_schema/wip-template)?"]{
+  #:depth #!computational // lens: formal structure
+  $^["intent"]@biome => %[formula.measure]
+  ~<.agents/plans/_schema/wip-template.spw> // introspect
+  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
+  $%[plan.commit_count, plan.phase_progress]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_agents_plans__schema_wiptemplate_2
+?["What is the felt rhythm of reading wip — <slug>?"]{
+  #:depth #!mathematical // lens: material grain
+  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
+  ~#structure: "intent → stream → open" // frame flow
+  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark grain boundaries." }
+  ~<.agents/plans/_schema/wip.spw>  // nearest neighbor
+}

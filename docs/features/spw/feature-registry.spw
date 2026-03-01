@@ -5,119 +5,125 @@
 #:layer #!pragmatics
 
 ^["naming"]{
-  # Canonical shape
-  spw.{layer}.{feature}[.{subfeature}]
+ # Canonical shape
+ spw.{layer}.{feature}[.{subfeature}]
 
-  # Reserved layer tags
-  layer: core | infra | lang | runtime | viz | ui | design | features | app | platform | dialects
+ # Reserved layer tags
+ layer: core | infra | lang | runtime | viz | ui | design | features | app | platform | dialects
 
-  # Core is for language primitives (operators/modifiers/containers).
-  core: spw.core.operators | spw.core.modifiers | spw.core.containers
+ # Core is for language primitives (operators/modifiers/containers).
+ core: spw.core.operators | spw.core.modifiers | spw.core.containers
 }
 
 ^["versioning"]{
-  # Optional suffixes for evolution and stability
-  spw.{layer}.{feature}@v{major}.{minor}
-  spw.{layer}.{feature}@v{major}.{minor}:{status}
+ # Optional suffixes for evolution and stability
+ spw.{layer}.{feature}@v{major}.{minor}
+ spw.{layer}.{feature}@v{major}.{minor}:{status}
 
-  # Status tags
-  status: stable | preview | experimental | deprecated
+ # Status tags
+ status: stable | preview | experimental | deprecated
 
-  # Examples
-  example: spw.core.operators@v0.1
-  example: spw.runtime.goals@v0.2:preview
+ # Examples
+ example: spw.core.operators@v0.1
+ example: spw.runtime.goals@v0.2:preview
 }
 
 ^["ownership"]{
-  # Each feature should live in the layer that owns its behavior.
-  core: domains, conventions, layers, operators, quality, tally
-  infra: timing, lifecycle, state, accessibility
-  lang: grammar, lexer, parser, dialects
-  runtime: interpreter, registers, goals
-  viz: tokens, AST, flow, steps
-  ui: component registry, stacking
-  design: themes, token bank, personality, cognitive bridge, spirits, liminal
-  features: keyboard, onboarding, inspector
-  app: integrations and orchestration
-  platform: bootstrapping and environment wiring
+ # Each feature should live in the layer that owns its behavior.
+ core: domains, conventions, layers, operators, quality, tally
+ infra: timing, lifecycle, state, accessibility
+ lang: grammar, lexer, parser, dialects
+ runtime: interpreter, registers, goals
+ viz: tokens, AST, flow, steps
+ ui: component registry, stacking
+ design: themes, token bank, personality, cognitive bridge, spirits, liminal
+ features: keyboard, onboarding, inspector
+ app: integrations and orchestration
+ platform: bootstrapping and environment wiring
 }
 
 ^["design-features"]{
-  !["Design Domain Features"]
+ !["Design Domain Features"]
 
-  ^feature["spw.design.personality"]{
-    version: "0.1.0"
-    status: preview
-    description: "Theme personality model — cognitively-grounded trait vectors (warmth, rhythm, grain, luminanceCycle, particleDensity, motionCharacter, depth)"
-    source: "@src/design/themes/personality/"
-  }
+ ^feature["spw.design.personality"]{
+ version: "0.1.0"
+ status: preview
+ description: "Theme personality model — cognitively-grounded trait vectors (warmth, rhythm, grain, luminanceCycle, particleDensity, motionCharacter, depth)"
+ source: "@src/design/themes/personality/"
+ }
 
-  ^feature["spw.design.cognitive-bridge"]{
-    version: "0.1.0"
-    status: preview
-    description: "JS→CSS bridge computing --spw-narrative-* and --spw-cognitive-* custom properties from personality + semantic features"
-    source: "@src/design/themes/cognitive-bridge.ts"
-    requires: ["spw.design.personality"]
-  }
+ ^feature["spw.design.cognitive-bridge"]{
+ version: "0.1.0"
+ status: preview
+ description: "JS→CSS bridge computing --spw-narrative-* and --spw-cognitive-* custom properties from personality + semantic features"
+ source: "@src/design/themes/cognitive-bridge.ts"
+ requires: ["spw.design.personality"]
+ }
 
-  ^feature["spw.design.spirits"]{
-    version: "0.1.0"
-    status: preview
-    description: "Per-theme ambient @keyframes animations (9 spirits across nebula, atelier, hud families)"
-    source: "src/styles/themes/spirits.css"
-    requires: ["spw.design.personality", "spw.design.cognitive-bridge"]
-    gates: ["prefers-reduced-motion", "data-performance-mode"]
-  }
+ ^feature["spw.design.spirits"]{
+ version: "0.1.0"
+ status: preview
+ description: "Per-theme ambient @keyframes animations (9 spirits across nebula, atelier, hud families)"
+ source: "src/styles/themes/spirits.css"
+ requires: ["spw.design.personality", "spw.design.cognitive-bridge"]
+ gates: ["prefers-reduced-motion", "data-performance-mode"]
+ }
 
-  ^feature["spw.design.liminal"]{
-    version: "0.1.0"
-    status: preview
-    description: "Three-phase theme transitions (dissolve → liminal → crystallize) when switching between themes with personality"
-    source: "src/styles/themes/liminal.css"
-    requires: ["spw.design.cognitive-bridge"]
-    trigger: "html[data-theme-transitioning='true']"
-  }
+ ^feature["spw.design.liminal"]{
+ version: "0.1.0"
+ status: preview
+ description: "Three-phase theme transitions (dissolve → liminal → crystallize) when switching between themes with personality"
+ source: "src/styles/themes/liminal.css"
+ requires: ["spw.design.cognitive-bridge"]
+ trigger: "html[data-theme-transitioning='true']"
+ }
 
-  ^feature["spw.design.echoes"]{
-    version: "0.1.0"
-    status: preview
-    description: "Cognitive-responsive echo opacity and micro-echo decorations on tokens and panel headers"
-    source: "src/styles/themes/echoes.css"
-    requires: ["spw.design.cognitive-bridge"]
-  }
+ ^feature["spw.design.echoes"]{
+ version: "0.1.0"
+ status: preview
+ description: "Cognitive-responsive echo opacity and micro-echo decorations on tokens and panel headers"
+ source: "src/styles/themes/echoes.css"
+ requires: ["spw.design.cognitive-bridge"]
+ }
 }
 
 ^["roots"]{
-  @src:  ~"../src"
-  @here: ~"."
+ @src: ~"../src"
+ @here: ~"."
 }
 
 ^["sources"]{
-  # Current feature sets
-  @src/runtime/session/state.ts
-  @src/app/components/spw-runtime-hud/spw-runtime-hud.ts
+ # Current feature sets
+ @src/runtime/session/state.ts
+ @src/app/components/spw-runtime-hud/spw-runtime-hud.ts
 
-  # Related docs
-  ~"../../runtime/spw/hud-runtime.spw"
-  ~"../../plans/spw/patterns.spw"
+ # Related docs
+ ~"../../runtime/spw/hud-runtime.spw"
+ ~"../../plans/spw/patterns.spw"
 }
 
 ^["rules"]{
-  # Rules of thumb
-  1. Only one layer owns a feature ID.
-  2. Version bump on behavior change, not just implementation change.
-  3. Status tag required for anything not stable.
-  4. Deprecated features must list a replacement.
+ # Rules of thumb
+ 1. Only one layer owns a feature ID.
+ 2. Version bump on behavior change, not just implementation change.
+ 3. Status tag required for anything not stable.
+ 4. Deprecated features must list a replacement.
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_features_spw_featureregistry_1
+?["What is the felt rhythm of reading Feature Registry?"]{
+  #:depth #!experiential // lens: material grain
+  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
+  ~#structure: "naming → versioning → ownership" // frame flow
+  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark grain boundaries." }
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_features_spw_featureregistry_2
+?["What concept is conspicuously absent from Feature Registry?"]{
+  #:depth #!computational // lens: formal structure
+  ~#present: [#educational, #mathematical]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[register.bank_size, register.active_bindings]
+  ~<docs/features/spw/feature-coherence.spw>  // nearest neighbor
+}

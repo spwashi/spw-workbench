@@ -5,42 +5,49 @@
 #:layer #!semantics
 
 ^["goal"]{
-  ~#intent: "Agent output becomes structure, not just text."
-  ~#contract: "Every patch is previewable, stageable, and replayable."
+ ~#intent: "Agent output becomes structure, not just text."
+ ~#contract: "Every patch is previewable, stageable, and replayable."
 }
 
 ^["loop"]{
-  select: "user selects span/node/context"
-  intent: "generate SVG / refactor / explain / add motion spec"
-  respond: "agent returns patch + explanation + checks + preview artifacts"
-  decide: "apply, stage, replay reasoning"
+ select: "user selects span/node/context"
+ intent: "generate SVG / refactor / explain / add motion spec"
+ respond: "agent returns patch + explanation + checks + preview artifacts"
+ decide: "apply, stage, replay reasoning"
 }
 
 ^["state_preservation"]{
-  ~#requirements{
-    selection_anchor: "preserve by token/node id"
-    ast_remap: "map highlights by identity"
-    snapshots: "before/after with delta"
-  }
+ ~#requirements{
+ selection_anchor: "preserve by token/node id"
+ ast_remap: "map highlights by identity"
+ snapshots: "before/after with delta"
+ }
 }
 
 ^["outputs"]{
-  ~#artifacts{
-    patch: "diff or changeset"
-    explanation: "reasoning summary"
-    checks: "lint/a11y/perf"
-    previews: "SVG/motion tokens"
-  }
+ ~#artifacts{
+ patch: "diff or changeset"
+ explanation: "reasoning summary"
+ checks: "lint/a11y/perf"
+ previews: "SVG/motion tokens"
+ }
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_runtime_spw_agentloop_1
+?["What concept is conspicuously absent from Agent Loop?"]{
+  #:depth #!stylistic // lens: molecular binding
+  ~#present: [#educational, #mathematical]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[file.frame_count, file.annotation_density, file.brace_depth_max]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_runtime_spw_agentloop_2
+?["How does goal teach loop?"]{
+  #:depth #!educational // lens: ecological zone
+  $^["goal"] => $^["loop"] // trace the edge
+  &[@_, @spw] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[file.frame_count, file.annotation_density, file.brace_depth_max]
+  ~<docs/runtime/spw/brace-registers.spw>  // nearest neighbor
+}

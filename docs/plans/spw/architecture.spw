@@ -6,290 +6,296 @@
 #:layer #!pragmatics
 
 ^["roots"]{
-  # @-roots resolve from workspace root. See ROOT_MAP in extension.ts.
-  # Use @-roots for cross-tree references; relative paths for siblings only.
-  @repo:    ~"../../.."
-  @src:     ~"../../../src"
-  @spec:    ~"../../../lib/spw-v0.2.0-alpha"
-  @spw:     ~"../../../.spw"
-  @biome:   ~"../../../.spw/biome/ocean"
-  @harness: ~"../../../.spw/harness"
-  @gen:     ~"../../../.spw/gen"
-  @library: ~"../../../docs/library"
+ # @-roots resolve from workspace root. See ROOT_MAP in extension.ts.
+ # Use @-roots for cross-tree references; relative paths for siblings only.
+ @repo: ~"../../.."
+ @src: ~"../../../src"
+ @spec: ~"../../../lib/spw-v0.2.0-alpha"
+ @spw: ~"../../../.spw"
+ @biome: ~"../../../.spw/biome/ocean"
+ @harness: ~"../../../.spw/harness"
+ @gen: ~"../../../.spw/gen"
+ @library: ~"../../../docs/library"
 }
 
 ^[".spw_directory"]{
-  # The .spw/ directory is the workspace's living control plane.
-  # It holds experimental biomes, harness probes, tuning corpus,
-  # and evolution logs — all as .spw files.
-  #:architecture #!convention
-  #>spw_directory
+ # The .spw/ directory is the workspace's living control plane.
+ # It holds experimental biomes, harness probes, tuning corpus,
+ # and evolution logs — all as .spw files.
+ #:architecture #!convention
+ #>spw_directory
 
-  =manifest: @spw/workspace.spw
+ =manifest: @spw/workspace.spw
 
-  structure: {
-    biome:      "experimental dialect spaces (ocean, future biomes)"
-    harness:    "probes, evaluations, runs - measurement infrastructure"
-    dev:        "hot reload loops and developer tooling"
-    evolution:  "scoped syntax experiments, opt-in per path"
-    gen:        "generated projections (excluded from IDE by convention)"
-    literate:   "literate programming exhibits"
-    reflection: "loop observation, concept clustering, projection refs"
-    tuning:     "curated corpus for model tuning"
-  }
+ structure: {
+ biome: "experimental dialect spaces (ocean, future biomes)"
+ harness: "probes, evaluations, runs - measurement infrastructure"
+ dev: "hot reload loops and developer tooling"
+ evolution: "scoped syntax experiments, opt-in per path"
+ gen: "generated projections (excluded from IDE by convention)"
+ literate: "literate programming exhibits"
+ reflection: "loop observation, concept clustering, projection refs"
+ tuning: "curated corpus for model tuning"
+ }
 
-  naming: {
-    # Naming conventions for .spw files and directories.
-    #!convention
+ naming: {
+ # Naming conventions for .spw files and directories.
+ #!convention
 
-    "prefer composable short names when indexed by role (q, t, ph/p1..p6)",
-    "prefer folders over hyphens - 'harness/probes/loop.spw' not 'probe-loop.spw'",
-    "one #>anchor per file — unique, prefixed with 'spw_' for namespace clarity",
-    "=dialect: marks experimental files — 'experimental.ocean.phase'",
-    "=channel: marks stability — 'stable' or 'experimental'",
-    "cross-tree references should use @roots; relative paths only for siblings",
-  }
+ "prefer composable short names when indexed by role (q, t, ph/p1..p6)",
+ "prefer folders over hyphens - 'harness/probes/loop.spw' not 'probe-loop.spw'",
+ "one #>anchor per file — unique, prefixed with 'spw_' for namespace clarity",
+ "=dialect: marks experimental files — 'experimental.ocean.phase'",
+ "=channel: marks stability — 'stable' or 'experimental'",
+ "cross-tree references should use @roots; relative paths only for siblings",
+ }
 
-  annotations: {
-    # Every .spw file should carry these for LSP discoverability.
-    #:lsp
+ annotations: {
+ # Every .spw file should carry these for LSP discoverability.
+ #:lsp
 
-    "one #>anchor — unique jump target, navigable via Cmd+T",
-    "#:lens — categorizes the file for concept clustering",
-    "#!intent — declares what the file does, not just what it is",
-    "%[measure] — quantifies caching tier, physics, or relevance",
-    "=config: — declares constraints, policies, or parameters",
-  }
+ "one #>anchor — unique jump target, navigable via Cmd+T",
+ "#:lens — categorizes the file for concept clustering",
+ "#!intent — declares what the file does, not just what it is",
+ "%[measure] — quantifies caching tier, physics, or relevance",
+ "=config: — declares constraints, policies, or parameters",
+ }
 
-  path_convention: {
-    # Path resolution strategy for .spw files.
-    #!convention
+ path_convention: {
+ # Path resolution strategy for .spw files.
+ #!convention
 
-    "use @-roots for cross-tree references: @src/, @spec/, @spw/, @library/",
-    "use relative paths only for siblings within the same directory tree",
-    "@here resolves to the current file's directory",
-    "new @-roots are declared in ROOT_MAP in extension.ts",
-  }
+ "use @-roots for cross-tree references: @src/, @spec/, @spw/, @library/",
+ "use relative paths only for siblings within the same directory tree",
+ "@here resolves to the current file's directory",
+ "new @-roots are declared in ROOT_MAP in extension.ts",
+ }
 
-  %[cache_alignment]{
-    "biome files map to cache tiers via the ocean cache model",
-    "harness probes are warm-tier cached (stable between fill cycles)",
-    "generated projections are cold-tier (rebuilt, not frequently read)",
-    "workspace.spw itself is never cached — always read fresh",
-  }
+ %[cache_alignment]{
+ "biome files map to cache tiers via the ocean cache model",
+ "harness probes are warm-tier cached (stable between fill cycles)",
+ "generated projections are cold-tier (rebuilt, not frequently read)",
+ "workspace.spw itself is never cached — always read fresh",
+ }
 }
 
 ^["semantic_relationships"]{
-  #:relationship #!spw
+ #:relationship #!spw
 
-  graph: {
-    "index.spw -> dispatches canonical roots and runtime surfaces",
-    "workspace.spw -> defines root convention and LSP navigation bounds",
-    "registries/* -> define dialect + register + brace semantics",
-    "applications/symmetry/* -> consume registries and project domain operators",
-    "harness/* -> executes probes, scores invariants, archives measurements",
-    "gen/* -> projection output; excluded from canonical authoring surfaces",
-  }
+ graph: {
+ "index.spw -> dispatches canonical roots and runtime surfaces",
+ "workspace.spw -> defines root convention and LSP navigation bounds",
+ "registries/* -> define dialect + register + brace semantics",
+ "applications/symmetry/* -> consume registries and project domain operators",
+ "harness/* -> executes probes, scores invariants, archives measurements",
+ "gen/* -> projection output; excluded from canonical authoring surfaces",
+ }
 
-  ownership: {
-    canonical_text: ".spw/{index,workspace,mount,canon-mount}.spw"
-    generated_text: ".spw/gen/*"
-    measurement_records: ".spw/harness/{runs,probes,evals}/*"
-  }
+ ownership: {
+ canonical_text: ".spw/{index,workspace,mount,canon-mount}.spw"
+ generated_text: ".spw/gen/*"
+ measurement_records: ".spw/harness/{runs,probes,evals}/*"
+ }
 
-  operator_contract: {
-    envelope_ops: [&, ^, *, ?, ~, !, %, =]
-    envelope_behavior: "prefix/postfix wrappers preserve reference selection and navigation spans"
-    subject_confluence: "& combines references and keeps provenance explicit"
-    substrate_measure: "$ and % expose material state + observation depth"
-  }
+ operator_contract: {
+ envelope_ops: [&, ^, *, ?, ~, !, %, =]
+ envelope_behavior: "prefix/postfix wrappers preserve reference selection and navigation spans"
+ subject_confluence: "& combines references and keeps provenance explicit"
+ substrate_measure: "$ and % expose material state + observation depth"
+ }
 }
 
 ^["priming_materialization"]{
-  #:semantics #!memory
+ #:semantics #!memory
 
-  cycle: {
-    priming: "operator sequence charges disposition in register bank"
-    concept: "potential idea remains unbound but queryable"
-    frame: "container geometry orients lenses/probes/relations"
-    body: "materialized projection with file ownership and trace refs"
-  }
+ cycle: {
+ priming: "operator sequence charges disposition in register bank"
+ concept: "potential idea remains unbound but queryable"
+ frame: "container geometry orients lenses/probes/relations"
+ body: "materialized projection with file ownership and trace refs"
+ }
 
-  locations: {
-    hot: ".spw/hot.spw"
-    warm: ".spw/harness/memory-surface.spw"
-    cold: ".spw/harness/{runs,probes/archive-index}.spw"
-    generated: ".spw/gen/*"
-  }
+ locations: {
+ hot: ".spw/hot.spw"
+ warm: ".spw/harness/memory-surface.spw"
+ cold: ".spw/harness/{runs,probes/archive-index}.spw"
+ generated: ".spw/gen/*"
+ }
 }
 
 ^["layers"]{
-  #:architecture #!layering
+ #:architecture #!layering
 
-  # Specification (what Spw should be)
-  @spec/                       # Markdown docs, grammar rules
+ # Specification (what Spw should be)
+ @spec/ # Markdown docs, grammar rules
 
-  # Implementation (how it works)
-  @src/seed/                # Lexer, parser, types
+ # Implementation (how it works)
+ @src/seed/ # Lexer, parser, types
 
-  # Integration (workbench bindings)
-  @src/lang/                   # Hooks, events, timing
+ # Integration (workbench bindings)
+ @src/lang/ # Hooks, events, timing
 }
 
 ^["stack"]{
-  # Top-down workbench layers (outer → inner)
-  #:stack #!depth
-  @src/platform/               # Browser entrypoint + wiring
-  @src/app/                    # Workbench glue + adapters
-  @src/features/               # User behaviors
-  @src/ui/                     # Portable UI
-  @src/design/                 # Themes, tokens, personality, cognitive bridge
-  @src/viz/                    # Visualizations
-  @src/runtime/                # Execution engine  #>runtime
-  @src/lang/                   # Language surface
-  @src/infra/                  # Timing, state, lifecycle, a11y
-  @src/core/                   # Domains, conventions, layers, operators
+ # Top-down workbench layers (outer → inner)
+ #:stack #!depth
+ @src/platform/ # Browser entrypoint + wiring
+ @src/app/ # Workbench glue + adapters
+ @src/features/ # User behaviors
+ @src/ui/ # Portable UI
+ @src/design/ # Themes, tokens, personality, cognitive bridge
+ @src/viz/ # Visualizations
+ @src/runtime/ # Execution engine #>runtime
+ @src/lang/ # Language surface
+ @src/infra/ # Timing, state, lifecycle, a11y
+ @src/core/ # Domains, conventions, layers, operators
 }
 
 ^["design-depth"]{
-  # The design layer now has cognitive depth.
-  # Each theme carries a personality (trait vector) that drives
-  # atmospheric CSS through a JS→CSS bridge.
+ # The design layer now has cognitive depth.
+ # Each theme carries a personality (trait vector) that drives
+ # atmospheric CSS through a JS→CSS bridge.
 
-  ^["flow"]{
-    personality  -> cognitive-bridge  -> ":root CSS custom properties"
-    semantic-features -> cognitive-bridge  -> "--spw-cognitive-* tokens"
-    personality.spirits -> applySpirits() -> ".spirit-* CSS classes"
-    theme-switch -> liminalTransition() -> "html[data-theme-transitioning]"
-  }
+ ^["flow"]{
+ personality -> cognitive-bridge -> ":root CSS custom properties"
+ semantic-features -> cognitive-bridge -> "--spw-cognitive-* tokens"
+ personality.spirits -> applySpirits() -> ".spirit-* CSS classes"
+ theme-switch -> liminalTransition() -> "html[data-theme-transitioning]"
+ }
 
-  ^["css-layers"]{
-    textures.css    # grain (--spw-narrative-grain-opacity)
-    echoes.css      # echo leitmotifs (--spw-narrative-echo-opacity-*)
-    spirits.css     # ambient @keyframes (9 spirits)
-    liminal.css     # transition states
-    nebula.css      # breath, cognitive glow
-    atelier.css     # motion easing, focus envelope
-    mood.css        # pulse speed, warmth tint
-  }
+ ^["css-layers"]{
+ textures.css # grain (--spw-narrative-grain-opacity)
+ echoes.css # echo leitmotifs (--spw-narrative-echo-opacity-*)
+ spirits.css # ambient @keyframes (9 spirits)
+ liminal.css # transition states
+ nebula.css # breath, cognitive glow
+ atelier.css # motion easing, focus envelope
+ mood.css # pulse speed, warmth tint
+ }
 }
 
 ^["spec-to-impl"]{
-  @spec/core/SPEC.md           -> @src/seed/grammar/
-  @spec/runtime/REGISTERS.md   -> @src/runtime/interpreter/
-  @spec/domains/PROFILES.md    -> @src/core/domains/
+ @spec/core/SPEC.md -> @src/seed/grammar/
+ @spec/runtime/REGISTERS.md -> @src/runtime/interpreter/
+ @spec/domains/PROFILES.md -> @src/core/domains/
 }
 
 ^["portable"]{
-  # Can be extracted as npm package
-  @src/seed/                # Zero workbench dependencies
-  @src/core/                   # Spw primitives
-  @src/runtime/interpreter/    # Minimal infra/core dependency
+ # Can be extracted as npm package
+ @src/seed/ # Zero workbench dependencies
+ @src/core/ # Spw primitives
+ @src/runtime/interpreter/ # Minimal infra/core dependency
 }
 
 ^["bound"]{
-  # Workbench-specific
-  @src/platform/
-  @src/viz/
-  @src/design/
-  @src/features/
-  @src/app/
+ # Workbench-specific
+ @src/platform/
+ @src/viz/
+ @src/design/
+ @src/features/
+ @src/app/
 }
 
 ^["navigation"]{
-  # .spw files function as architectural shaders for codebase navigation.
-  # A reader (human or agent) uses operators as navigation primitives:
-  #
-  #   @ = "look from here"     → set perspective / working directory
-  #   # = "this is a landmark" → grounded reference, safe to bookmark
-  #   ? = "should I go here?"  → probe a path before committing
-  #   $ = "what am I on?"      → introspect the current file/register
-  #   % = "how relevant?"      → measure relevance before diving deeper
-  #   & = "combine these"      → merge findings from multiple explorations
-  #   ^ = "go up"              → return to parent scope / broader context
-  #   . = "go into"            → traverse into a property / subdirectory
-  #
-  # The spirit sequence ?~<#.>@(#.)&[#.]*{#.}^ is the canonical
-  # navigation loop: probe → name → observe → merge → value → integrate.
-  #!navigation
+ # .spw files function as architectural shaders for codebase navigation.
+ # A reader (human or agent) uses operators as navigation primitives:
+ #
+ # @ = "look from here" → set perspective / working directory
+ # # = "this is a landmark" → grounded reference, safe to bookmark
+ # ? = "should I go here?" → probe a path before committing
+ # $ = "what am I on?" → introspect the current file/register
+ # % = "how relevant?" → measure relevance before diving deeper
+ # & = "combine these" → merge findings from multiple explorations
+ # ^ = "go up" → return to parent scope / broader context
+ # . = "go into" → traverse into a property / subdirectory
+ #
+ # The spirit sequence ?~<#.>@(#.)&[#.]*{#.}^ is the canonical
+ # navigation loop: probe → name → observe → merge → value → integrate.
+ #!navigation
 
-  ~<spirit>"./spirit-sequence.spw"
-  ~<library>@library/library.spw
+ ~<spirit>"./spirit-sequence.spw"
+ ~<library>@library/library.spw
 
-  %[nav_affordances]{
-    "#>anchor tags create jump targets across .spw files",
-    "#:lens tags categorize content for filtered views",
-    "#!intent tags mark what a section does, not just what it is",
-    "%[measure] blocks quantify relevance for prioritization",
-  }
+ %[nav_affordances]{
+ "#>anchor tags create jump targets across .spw files",
+ "#:lens tags categorize content for filtered views",
+ "#!intent tags mark what a section does, not just what it is",
+ "%[measure] blocks quantify relevance for prioritization",
+ }
 }
 
 ^["query_projection"]{
-  # Query the repository from operator/brace/label perspectives, then
-  # build projection structures from ranked results.
-  #:query #!projection
+ # Query the repository from operator/brace/label perspectives, then
+ # build projection structures from ranked results.
+ #:query #!projection
 
-  ~<workbench>"./query-projection-workbench.spw"
+ ~<workbench>"./query-projection-workbench.spw"
 
-  commands: {
-    memory_dump: "npm run spw:mem:dump -- --dump-root /tmp/spw-mem-dumps --label pre-loop --include-extra"
-    sequence_query: "npm run spw:seq -- --seq '?~@&*^' --braces '<>{}' --surface hybrid --mode hybrid --model lattice --root .spw --top 20"
-    label_query: "npm run spw:seq -- --seq '?_query' --label query --surface hybrid --mode hybrid --root .spw --top 20"
-    memory_restore: "npm run spw:mem:load -- --dump-root /tmp/spw-mem-dumps --wipe"
-  }
+ commands: {
+ memory_dump: "npm run spw:mem:dump -- --dump-root /tmp/spw-mem-dumps --label pre-loop --include-extra"
+ sequence_query: "npm run spw:seq -- --seq '?~@&*^' --braces '<>{}' --surface hybrid --mode hybrid --model lattice --root .spw --top 20"
+ label_query: "npm run spw:seq -- --seq '?_query' --label query --surface hybrid --mode hybrid --root .spw --top 20"
+ memory_restore: "npm run spw:mem:load -- --dump-root /tmp/spw-mem-dumps --wipe"
+ }
 
-  %[material_properties]{
-    "density is one dimension of material properties",
-    "viscosity, elasticity, porosity, anisotropy add complementary tuning signals",
-    "material model source: @biome/algos/material.spw",
-  }
+ %[material_properties]{
+ "density is one dimension of material properties",
+ "viscosity, elasticity, porosity, anisotropy add complementary tuning signals",
+ "material model source: @biome/algos/material.spw",
+ }
 }
 
 ^["literary_layers"]{
-  # Three co-existing description layers for every module:
-  #
-  # 1. TypeScript — implementation (what the machine executes)
-  # 2. CSS        — presentation  (how the human sees it)
-  # 3. Spw        — intention     (why it exists, what it connects to)
-  #
-  # Each .spw file is a "shader program" that tells readers how to
-  # render the module's meaning. Like GLSL programs that transform
-  # vertices into pixels, .spw files transform file trees into understanding.
+ # Three co-existing description layers for every module:
+ #
+ # 1. TypeScript — implementation (what the machine executes)
+ # 2. CSS — presentation (how the human sees it)
+ # 3. Spw — intention (why it exists, what it connects to)
+ #
+ # Each .spw file is a "shader program" that tells readers how to
+ # render the module's meaning. Like GLSL programs that transform
+ # vertices into pixels, .spw files transform file trees into understanding.
 
-  @src/*/docs/index.spw        # per-layer intention maps
-  @src/app/components/**/*.spw # per-component valence + surface docs
-  docs/library/library.spw     # self-cataloging bibliography
+ @src/*/docs/index.spw # per-layer intention maps
+ @src/app/components/**/*.spw # per-component valence + surface docs
+ docs/library/library.spw # self-cataloging bibliography
 }
 
 ^["wonder"]{
-  # Mathematical introspection via $ and %:
-  #
-  # $[architecture].topology      → "what kind of document is this?"
-  # %[architecture]               → "how significant relative to the whole?"
-  # $[architecture].grounded      → true (this document is a landmark)
-  #
-  # Every .spw file can answer questions about itself.
-  # See docs/library/wonder-calculus.spw for the formal axioms.
+ # Mathematical introspection via $ and %:
+ #
+ # $[architecture].topology → "what kind of document is this?"
+ # %[architecture] → "how significant relative to the whole?"
+ # $[architecture].grounded → true (this document is a landmark)
+ #
+ # Every .spw file can answer questions about itself.
+ # See docs/library/wonder-calculus.spw for the formal axioms.
 
-  ~<calculus>@library/spw/wonder-calculus.spw
-  ~<probes>@library/spw/wonder-probes.spw
+ ~<calculus>@library/spw/wonder-calculus.spw
+ ~<probes>@library/spw/wonder-probes.spw
 
-  %[wonder_meets_physics]{
-    "$[cell].liminality  → how far this cell's influence carries",
-    "$[cell].frequency   → how actively this cell is being written",
-    "$[cell].coupling    → how entangled with neighboring cells",
-    "%[cell]             → observation depth (measureDepth increments)",
-  }
+ %[wonder_meets_physics]{
+ "$[cell].liminality → how far this cell's influence carries",
+ "$[cell].frequency → how actively this cell is being written",
+ "$[cell].coupling → how entangled with neighboring cells",
+ "%[cell] → observation depth (measureDepth increments)",
+ }
 }
 
-?["Does the Cayley table for brace×operator composition close under {FRAME}?"]
-  #:depth #!mathematical  // lens: formula
-  $^seed[_.sym:D4] => %[register.left, register.right]
-  ~<@spec/core/OPERATORS.md>
-  !probe{ "construct the group action table; check if .left ↔ .right reflection commutes with ~ → ! operator tense shift" }
+#>wonder_docs_plans_spw_architecture_1
+?["What happens when you zoom from the workflow level to the workspace level in Architecture?"]{
+  #:depth #!mathematical // lens: living system
+  $^["_"]@here => &[@workspace] // local → global projection
+  ~#zoom_in: "roots" // this file's atom
+  !probe{ "the atom is workflow-scale; zoom out: what workspace-level pattern does this workflow participate in?" }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["What orbits emerge when D4 acts on nested brace pairs?"]
-  #:depth #!computational  // lens: molecule
-  $^[_.sym] => &[orbit.stabilizer]
-  ~<@spw/registries/curiosity-brace.spw>
-  !probe{ "enumerate fixed points of the dihedral action on {{{}}} nesting depth 3; count distinct register states" }
+#>wonder_docs_plans_spw_architecture_2
+?["What ripples if #architecture changes in this file?"]{
+  #:depth #!stylistic // lens: curated collection
+  $#architecture@workspace => %[reference.count, depth.downstream]
+  ~<../../../.spw> // first downstream dependency
+  !probe{ "imagine renaming #architecture to #architecture_v2; count broken references; the count reveals how deeply roots is woven into the workspace." }
+  $%[register.bank_size, register.active_bindings]
+}

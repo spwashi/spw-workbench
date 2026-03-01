@@ -5,83 +5,90 @@
 #:layer #!grammar
 
 ^["roots"]{
-  @here: ~".."
+ @here: ~".."
 }
 
 ^["inherit"]{
-  .. ~"../../index.spw"
+ .. ~"../../index.spw"
 }
 
 meta: .{
-  domain    = `seed`
-  initOrder = `-1`
-  kind      = `stratum-map`
-  note      = `Extractable core — zero workbench dependencies`
+ domain = `seed`
+ initOrder = `-1`
+ kind = `stratum-map`
+ note = `Extractable core — zero workbench dependencies`
 }[reg=facet]
 
 purpose: .{
-  role       = `The portable parser — can run anywhere without the workbench`
-  invariant  = `Zero imports from any @/ path. Must work in browser, Node, and as standalone npm.`
-  philosophy = `seed is the language itself. Everything else is tooling around it.`
+ role = `The portable parser — can run anywhere without the workbench`
+ invariant = `Zero imports from any @/ path. Must work in browser, Node, and as standalone npm.`
+ philosophy = `seed is the language itself. Everything else is tooling around it.`
 }[reg=facet]
 
 folder: .{
-  path = `src/seed`
-  docs = `./README.md`
+ path = `src/seed`
+ docs = `./README.md`
 }[reg=facet]
 
 files: #[
-  @here/index.ts
-  @here/lexer.ts
-  @here/parser.ts
-  @here/grammar.ts
-  @here/types.ts
-  @here/normalize.ts
+ @here/index.ts
+ @here/lexer.ts
+ @here/parser.ts
+ @here/grammar.ts
+ @here/types.ts
+ @here/normalize.ts
 ][reg=set]
 
 folders: #[
-  @here/canonical/
-  @here/combinators/
-  @here/docs/
-  @here/grammar/
-  @here/instrumentation/
-  @here/lexer/
-  @here/parser/
-  @here/types/
-  @here/__tests__/
+ @here/canonical/
+ @here/combinators/
+ @here/docs/
+ @here/grammar/
+ @here/instrumentation/
+ @here/lexer/
+ @here/parser/
+ @here/types/
+ @here/__tests__/
 ][reg=set]
 
 patterns: .{
-  combinator-parser   = `Parser combinators in combinators/ — pure functions that compose. Each combinator handles one grammar rule.`
-  lexer-tokenizer     = `lexer/ produces a flat token stream. 12 operator sigils, backtick strings, guillemets, holes.`
-  grammar-definition  = `grammar/ defines containers (<>()[]{}), operators (!^~?*=@#.&$%), and modifiers (bone/boon/bane/bonk/honk).`
-  golden-snapshots    = `__tests__/snapshots/phase-4-golden/ contains 5 canonical parse outputs. Changes here need explicit approval.`
-  instrumentation     = `instrumentation/ provides debug/trace hooks that are no-ops in production. Zero-cost when not attached.`
+ combinator-parser = `Parser combinators in combinators/ — pure functions that compose. Each combinator handles one grammar rule.`
+ lexer-tokenizer = `lexer/ produces a flat token stream. 12 operator sigils, backtick strings, guillemets, holes.`
+ grammar-definition = `grammar/ defines containers (<>()[]{}), operators (!^~?*=@#.&$%), and modifiers (bone/boon/bane/bonk/honk).`
+ golden-snapshots = `__tests__/snapshots/phase-4-golden/ contains 5 canonical parse outputs. Changes here need explicit approval.`
+ instrumentation = `instrumentation/ provides debug/trace hooks that are no-ops in production. Zero-cost when not attached.`
 }[reg=facet]
 
 garden: .{
-  is            = `A working 12-operator parser with Gen 3 syntax support`
-  could_become  = `@spw/seed npm package — the shareable parser core`
-  connects_to   = `lang/ wraps it with workbench hooks. runtime/ evaluates its output.`
-  growth_risk   = `Accidentally importing workbench code. Losing portability.`
+ is = `A working 12-operator parser with Gen 3 syntax support`
+ could_become = `@spw/seed npm package — the shareable parser core`
+ connects_to = `lang/ wraps it with workbench hooks. runtime/ evaluates its output.`
+ growth_risk = `Accidentally importing workbench code. Losing portability.`
 }[reg=facet]
 
 valence: .{
-  boon = `Complete portability — runs anywhere JavaScript runs`
-  bane = `Cannot use any workbench convenience (state, timing, events)`
-  bone = `Golden snapshots enforce parse stability across changes`
-  bonk = `Grammar changes affect every downstream consumer`
-  honk = `The combinator architecture makes adding new syntax compositional`
+ boon = `Complete portability — runs anywhere JavaScript runs`
+ bane = `Cannot use any workbench convenience (state, timing, events)`
+ bone = `Golden snapshots enforce parse stability across changes`
+ bonk = `Grammar changes affect every downstream consumer`
+ honk = `The combinator architecture makes adding new syntax compositional`
 }[reg=quality]
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_src_seed_docs_index_1
+?["What invariant holds across every frame in seed docs?"]{
+  #:depth #!computational // lens: material grain
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to roots's frames; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[runtime.stage, runtime.queue_depth]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_src_seed_docs_index_2
+?["What was seed docs before it was this, and what could it become?"]{
+  #:depth #!mathematical // lens: formal structure
+  ~#past: "git log --oneline -- src/seed/docs/index.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[runtime.stage, runtime.queue_depth]
+  ~<src/seed/docs/audit-guide.spw>  // nearest neighbor
+}

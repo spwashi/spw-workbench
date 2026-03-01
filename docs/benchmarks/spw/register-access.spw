@@ -7,40 +7,46 @@
 ^"benchmark"{ ~#name: "register-access", ~#metric: "latency_ms" }
 
 ^"setup"{
-  # Create a deeply nested object:
-  =[deep, {a: {b: {c: {d: {e: "leaf"}}}}}]
+ # Create a deeply nested object:
+ =[deep, {a: {b: {c: {d: {e: "leaf"}}}}}]
 
-  iterations: 10000
-  path: ["a", "b", "c", "d", "e"]
+ iterations: 10000
+ path: ["a", "b", "c", "d", "e"]
 }
 
 ^"run"{
-  # Via registers.access():
-  access_method: {
-    call: "registers.access(deep, ['a','b','c','d','e'])",
-    expected: "leaf",
-  }
+ # Via registers.access():
+ access_method: {
+ call: "registers.access(deep, ['a','b','c','d','e'])",
+ expected: "leaf",
+ }
 
-  # Via inline traversal:
-  inline_method: {
-    call: "deep.a.b.c.d.e",
-    expected: "leaf",
-  }
+ # Via inline traversal:
+ inline_method: {
+ call: "deep.a.b.c.d.e",
+ expected: "leaf",
+ }
 }
 
 ^"baseline"{
-  inline_latency_ms: 0.001,
-  note: "access() should be within 2x of inline for depth ≤ 10",
+ inline_latency_ms: 0.001,
+ note: "access() should be within 2x of inline for depth ≤ 10",
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_benchmarks_spw_registeraccess_1
+?["How does this file's voice differ from spw/register-access (spw/register-access)?"]{
+  #:depth #!educational // lens: molecular binding
+  ~<@_> // nearest neighbor
+  $%[op.distribution]@here vs $%[op.distribution]@_
+  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_benchmarks_spw_registeraccess_2
+?["What invariant holds across every frame in Benchmark: Register Access?"]{
+  #:depth #!experiential // lens: ecological zone
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to benchmark's frames; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[register.bank_size, register.active_bindings]
+  ~<docs/benchmarks/spw/confluent-fanin.spw>  // nearest neighbor
+}

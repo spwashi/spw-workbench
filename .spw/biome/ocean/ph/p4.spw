@@ -8,36 +8,43 @@
 #:layer #!pragmatics
 
 ^"phase"{
-  token: "&[#.]"
-  =dialect: "experimental.ocean.phase"
-  optional: {
-    merge: "strict|soft|clustered"
-    couple_min: "0..1"
-    cluster_ref: ~"../algos/cluster.spw"
-  }
+ token: "&[#.]"
+ =dialect: "experimental.ocean.phase"
+ optional: {
+ merge: "strict|soft|clustered"
+ couple_min: "0..1"
+ cluster_ref: ~"../algos/cluster.spw"
+ }
 
-  %[physics]{
-    "liminality: 3 (cluster) — merge reaches across module boundaries",
-    "frequency: low — merges happen at section/file granularity",
-    "coupling: high — merge entangles frames that share annotations",
-    "cache: warm tier — merged clusters are stable between saves",
-  }
+ %[physics]{
+ "liminality: 3 (cluster) — merge reaches across module boundaries",
+ "frequency: low — merges happen at section/file granularity",
+ "coupling: high — merge entangles frames that share annotations",
+ "cache: warm tier — merged clusters are stable between saves",
+ }
 
-  %[lsp_role]{
-    "annotation index clusters are p4 products — concept groups across files",
-    "CodeLens annotation counts reflect merge density per frame",
-    "cache: warm tier — cluster membership changes on save, not on keystroke",
-  }
+ %[lsp_role]{
+ "annotation index clusters are p4 products — concept groups across files",
+ "CodeLens annotation counts reflect merge density per frame",
+ "cache: warm tier — cluster membership changes on save, not on keystroke",
+ }
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_spw_biome_ocean_ph_p4_1
+?["What ripples if #phase changes in this file?"]{
+  #:depth #!mathematical // lens: molecular binding
+  $#phase@workspace => %[reference.count, depth.downstream]
+  ~<../algos/cluster.spw> // first downstream dependency
+  !probe{ "imagine renaming #phase to #phase_v2; count broken references; the count reveals how deeply phase is woven into the workspace." }
+  $%[phase.index, phase.duration_ms, phase.entropy]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_spw_biome_ocean_ph_p4_2
+?["What happens when you zoom from the workflow level to the workspace level in P4?"]{
+  #:depth #!stylistic // lens: ecological zone
+  $^["_"]@here => &[@workspace] // local → global projection
+  ~#zoom_in: "phase" // this file's atom
+  !probe{ "the atom is workflow-scale; zoom out: what workspace-level pattern does this workflow participate in?" }
+  $%[phase.index, phase.duration_ms, phase.entropy]
+  ~<.spw/biome/ocean/ph/p1.spw>  // nearest neighbor
+}

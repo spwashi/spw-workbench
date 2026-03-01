@@ -3,77 +3,83 @@
 #:layer #!grammar
 
 ^"strata"{
-  core: {
-    role: "kernel contracts",
-    path: "../core",
-    status: "authored v0.2 stubs"
-  }
+ core: {
+ role: "kernel contracts",
+ path: "../core",
+ status: "authored v0.2 stubs"
+ }
 
-  runtime: {
-    role: "execution/state contracts",
-    path: "../runtime",
-    status: "authored v0.2 stubs"
-  }
+ runtime: {
+ role: "execution/state contracts",
+ path: "../runtime",
+ status: "authored v0.2 stubs"
+ }
 
-  dialects: {
-    role: "syntax families",
-    path: "../dialects",
-    status: "authored v0.2 stubs"
-  }
+ dialects: {
+ role: "syntax families",
+ path: "../dialects",
+ status: "authored v0.2 stubs"
+ }
 
-  domains: {
-    role: "posture/profile/taste",
-    path: "../domains",
-    status: "authored v0.2 stubs"
-  }
+ domains: {
+ role: "posture/profile/taste",
+ path: "../domains",
+ status: "authored v0.2 stubs"
+ }
 
-  applications: {
-    role: "applied expression surfaces",
-    path: "../applications",
-    status: "authored v0.2 stubs"
-  }
+ applications: {
+ role: "applied expression surfaces",
+ path: "../applications",
+ status: "authored v0.2 stubs"
+ }
 
-  infra: {
-    role: "infra conformance",
-    path: "../infra",
-    status: "authored v0.2 stubs"
-  }
+ infra: {
+ role: "infra conformance",
+ path: "../infra",
+ status: "authored v0.2 stubs"
+ }
 }
 
 ^"pairings"{
-  markdown: [
-    "../README.md",
-    "../ARCHITECTURE.md",
-    "../LAYOUT.md",
-    "../DELTAS.md"
-  ]
+ markdown: [
+ "../README.md",
+ "../ARCHITECTURE.md",
+ "../LAYOUT.md",
+ "../DELTAS.md"
+ ]
 
-  spw: [
-    "./index.spw",
-    "./layout.spw",
-    "./theory-bridge.spw",
-    "../core/index.spw",
-    "../runtime/index.spw",
-    "../dialects/index.spw",
-    "../domains/index.spw",
-    "../applications/index.spw",
-    "../infra/index.spw"
-  ]
+ spw: [
+ "./index.spw",
+ "./layout.spw",
+ "./theory-bridge.spw",
+ "../core/index.spw",
+ "../runtime/index.spw",
+ "../dialects/index.spw",
+ "../domains/index.spw",
+ "../applications/index.spw",
+ "../infra/index.spw"
+ ]
 }
 
 ^"normalization"{
-  filename_policy: "kebab-case for architecture supports",
-  review_policy: "keep layout edits adjacent to delta notes",
+ filename_policy: "kebab-case for architecture supports",
+ review_policy: "keep layout edits adjacent to delta notes",
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_lib_spwv020alpha_architecture_layout_1
+?["How does strata teach pairings?"]{
+  #:depth #!educational // lens: ecological zone
+  $^["strata"] => $^["pairings"] // trace the edge
+  &[@_, @spw] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[runtime.stage, runtime.queue_depth]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_lib_spwv020alpha_architecture_layout_2
+?["What is the binding energy of strata?"]{
+  #:depth #!experiential // lens: molecular binding
+  $^["strata"]@_ => %[molecule.measure]
+  ~<lib/spw-v0.2.0-alpha/architecture/layout.spw> // introspect
+  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
+  $%[runtime.stage, runtime.queue_depth]
+}

@@ -6,59 +6,66 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Define selectors as named, composable structures."
+ ~#goal: "Define selectors as named, composable structures."
 }
 
 ^selector[refs_navigable]{
-  include: [path_ref, root_ref]
-  combine: union
-  grounding: grounded
+ include: [path_ref, root_ref]
+ combine: union
+ grounding: grounded
 }
 
 ^selector[probes_active]{
-  include: [links_probe, field_probe]
-  combine: union
-  grounding: bound
+ include: [links_probe, field_probe]
+ combine: union
+ grounding: bound
 }
 
 ^selector[invariants_core]{
-  include: [field_invariant, field_invariants]
-  combine: union
-  grounding: grounded
+ include: [field_invariant, field_invariants]
+ combine: union
+ grounding: grounded
 }
 
 ^selector[phase_config]{
-  include: [field_phase, field_optional]
-  combine: descent
-  grounding: bound
+ include: [field_phase, field_optional]
+ combine: descent
+ grounding: bound
 }
 
 ^selector[positional_scope]{
-  include: [nearest_ref, enclosing_scope, ancestor_frame]
-  combine: ranked
-  grounding: bound
+ include: [nearest_ref, enclosing_scope, ancestor_frame]
+ combine: ranked
+ grounding: bound
 }
 
 ^selector[aggregate_branch]{
-  include: [trace_branch, trace_runtime, trace_loaded, trace_considered]
-  combine: aggregate
-  grounding: grounded
+ include: [trace_branch, trace_runtime, trace_loaded, trace_considered]
+ combine: aggregate
+ grounding: grounded
 }
 
 ^selector[relation_exotic]{
-  include: [relation_with, relation_in, relation_among, relation_of]
-  combine: cluster
-  grounding: bound
+ include: [relation_with, relation_in, relation_among, relation_of]
+ combine: cluster
+ grounding: bound
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_spw_biome_ocean_query_sel_1
+?["What concept is conspicuously absent from Sel?"]{
+  #:depth #!stylistic // lens: molecular binding
+  ~#present: [#educational, #mathematical]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[query.selector_depth, query.result_count]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_spw_biome_ocean_query_sel_2
+?["How does intent teach refs_navigable?"]{
+  #:depth #!educational // lens: ecological zone
+  $^["intent"] => $^["refs_navigable"] // trace the edge
+  &[@_, @spw] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[query.selector_depth, query.result_count]
+  ~<.spw/biome/ocean/query/dialect.spw>  // nearest neighbor
+}

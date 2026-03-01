@@ -7,141 +7,149 @@
 #:layer #!semantics
 
 ^["source_files"]{
-  ~<shader_renderer>"../../src/infra/shaders/shader-renderer.ts"
-  ~<stage_shaders>"../../src/features/shaders/stage-shaders.ts"
-  ~<composition>"../../src/design/themes/shaders/composition.ts"
-  ~<shader_bridge>"../../src/app/runtime-shader-bridge.ts"
-  ~<rhythmic_poller>"../../src/infra/shaders/rhythmic-poller.ts"
-  ~<scene_scanner>"../../src/infra/shaders/shader-scene-scanner.ts"
+ ~<shader_renderer>"../../src/infra/shaders/shader-renderer.ts"
+ ~<stage_shaders>"../../src/features/shaders/stage-shaders.ts"
+ ~<composition>"../../src/design/themes/shaders/composition.ts"
+ ~<shader_bridge>"../../src/app/runtime-shader-bridge.ts"
+ ~<rhythmic_poller>"../../src/infra/shaders/rhythmic-poller.ts"
+ ~<scene_scanner>"../../src/infra/shaders/shader-scene-scanner.ts"
 }
 
 ^["meta"]{
-  @domain: infrastructure
-  @kind: render-pipeline
-  @description: "The rAF render loop as a multiplicative gain chain — lens algebra in real time"
-  @version: "0.1.0"
+ @domain: infrastructure
+ @kind: render-pipeline
+ @description: "The rAF render loop as a multiplicative gain chain — lens algebra in real time"
+ @version: "0.1.0"
 }
 
 ^["gain_chain"]{
-  # The render loop applies 7 multiplicative gain factors per frame.
-  # This is directly analogous to a mixing console channel strip.
+ # The render loop applies 7 multiplicative gain factors per frame.
+ # This is directly analogous to a mixing console channel strip.
 
-  ~#stage_1{ label: "baseIntensity",    source: "Stage gate (0–3)",       role: "Master fader"       }
-  ~#stage_2{ label: "intensityWeight",  source: "Theme profile",          role: "Channel trim"       }
-  ~#stage_3{ label: "ambientScale",     source: "User preference (0–3)",  role: "Ambient send"       }
-  ~#stage_4{ label: "contextGain",      source: "ContextShaderProfile",   role: "Context EQ"         }
-  ~#stage_5{ label: "semanticAmbient",  source: "SemanticProfile",        role: "Intent gain"        }
-  ~#stage_6{ label: "semanticIntensity", source: "SemanticProfile",       role: "Intensity gain"     }
-  ~#stage_7{ label: "widthFactor",      source: "Editor panel width",     role: "Width compensation" }
+ ~#stage_1{ label: "baseIntensity", source: "Stage gate (0–3)", role: "Master fader" }
+ ~#stage_2{ label: "intensityWeight", source: "Theme profile", role: "Channel trim" }
+ ~#stage_3{ label: "ambientScale", source: "User preference (0–3)", role: "Ambient send" }
+ ~#stage_4{ label: "contextGain", source: "ContextShaderProfile", role: "Context EQ" }
+ ~#stage_5{ label: "semanticAmbient", source: "SemanticProfile", role: "Intent gain" }
+ ~#stage_6{ label: "semanticIntensity", source: "SemanticProfile", role: "Intensity gain" }
+ ~#stage_7{ label: "widthFactor", source: "Editor panel width", role: "Width compensation" }
 
-  ~#formula: "u_intensity = Π(stage_1 × stage_2 × ... × stage_7), clamped to [0, 2.0]"
-  ~#metering: "getGainReport() returns per-factor log-scale contribution (VU metering)"
-  ~#ceiling: "isIntensityCeiling() returns true if raw product > 2.0 (headroom exceeded)"
+ ~#formula: "u_intensity = Π(stage_1 × stage_2 × ... × stage_7), clamped to [0, 2.0]"
+ ~#metering: "getGainReport() returns per-factor log-scale contribution (VU metering)"
+ ~#ceiling: "isIntensityCeiling() returns true if raw product > 2.0 (headroom exceeded)"
 }
 
 ^["narrative_bias"]{
-  # Additive 4D bias vectors per context and cadence.
-  # These compose by addition, not multiplication.
+ # Additive 4D bias vectors per context and cadence.
+ # These compose by addition, not multiplication.
 
-  ~#dimensions{
-    w: "warmth — color temperature / emotional tone"
-    r: "rhythm — temporal regularity / pulse rate"
-    g: "grain — textural noise / organic quality"
-    d: "depth — spatial layering / parallax"
-  }
+ ~#dimensions{
+ w: "warmth — color temperature / emotional tone"
+ r: "rhythm — temporal regularity / pulse rate"
+ g: "grain — textural noise / organic quality"
+ d: "depth — spatial layering / parallax"
+ }
 
-  ~#context_examples{
-    visual:      { w: 0,     r: 0,     g: 0,     d: 0     }
-    editing:     { w: +0.08, r: +0.04, g: 0,     d: +0.03 }
-    debug:       { w: -0.05, r: +0.10, g: +0.02, d: 0     }
-    diagnostic:  { w: -0.08, r: +0.12, g: +0.04, d: -0.05 }
-    design:      { w: +0.05, r: -0.03, g: +0.06, d: +0.08 }
-  }
+ ~#context_examples{
+ visual: { w: 0, r: 0, g: 0, d: 0 }
+ editing: { w: +0.08, r: +0.04, g: 0, d: +0.03 }
+ debug: { w: -0.05, r: +0.10, g: +0.02, d: 0 }
+ diagnostic: { w: -0.08, r: +0.12, g: +0.04, d: -0.05 }
+ design: { w: +0.05, r: -0.03, g: +0.06, d: +0.08 }
+ }
 
-  ~#cadence_examples{
-    glance:    { w: -0.03, r: +0.06, g: -0.02, d: -0.04 }
-    browse:    { w: 0,     r: 0,     g: 0,     d: 0     }
-    deep_work: { w: +0.06, r: -0.04, g: +0.02, d: +0.06 }
-  }
+ ~#cadence_examples{
+ glance: { w: -0.03, r: +0.06, g: -0.02, d: -0.04 }
+ browse: { w: 0, r: 0, g: 0, d: 0 }
+ deep_work: { w: +0.06, r: -0.04, g: +0.02, d: +0.06 }
+ }
 
-  ~#composition: "final = base(CSS) + context_bias + cadence_bias, clamped [0, 1]"
+ ~#composition: "final = base(CSS) + context_bias + cadence_bias, clamped [0, 1]"
 }
 
 ^["render_loop"]{
-  # Per-frame pipeline (60fps target)
+ # Per-frame pipeline (60fps target)
 
-  ~#step_01: "Compute time delta → u_time"
-  ~#step_02: "Detect context transitions → fire reaction pulse (kind=2)"
-  ~#step_03: "Apply reaction decay (exponential: *= reactionDecay)"
-  ~#step_04: "Compose gain chain (7 multiplicative factors)"
-  ~#step_05: "syncOptics: CSS custom properties → shader uniforms"
-  ~#step_06: "syncRegionFocus: active [data-region] → focal geometry"
-  ~#step_07: "syncMicroFocus: selected node/token → micro-focus point"
-  ~#step_08: "ShaderSceneScanner: multi-pass CSS scan → material + Spw decoration"
-  ~#step_09: "RuntimeShaderBridge: runtime events → uniform overlay"
-  ~#step_10: "draw: full-screen quad with all uniforms → GPU"
+ ~#step_01: "Compute time delta → u_time"
+ ~#step_02: "Detect context transitions → fire reaction pulse (kind=2)"
+ ~#step_03: "Apply reaction decay (exponential: *= reactionDecay)"
+ ~#step_04: "Compose gain chain (7 multiplicative factors)"
+ ~#step_05: "syncOptics: CSS custom properties → shader uniforms"
+ ~#step_06: "syncRegionFocus: active [data-region] → focal geometry"
+ ~#step_07: "syncMicroFocus: selected node/token → micro-focus point"
+ ~#step_08: "ShaderSceneScanner: multi-pass CSS scan → material + Spw decoration"
+ ~#step_09: "RuntimeShaderBridge: runtime events → uniform overlay"
+ ~#step_10: "draw: full-screen quad with all uniforms → GPU"
 }
 
 ^["lens_connection"]{
-  # The gain chain IS the lens algebra.
-  # Each gain stage is a lens weight.
+ # The gain chain IS the lens algebra.
+ # Each gain stage is a lens weight.
 
-  ~#mapping{
-    lens: "ContextShaderProfile"
-    lens_weight: "{ ambientGain, reactionGain, focusRadiusScale, ... }"
-    lens_composition: "Multiplicative gain staging in render()"
-    lens_identity: "neutral profile (all gains = 1.0)"
-    vu_metering: "getGainReport()"
-  }
+ ~#mapping{
+ lens: "ContextShaderProfile"
+ lens_weight: "{ ambientGain, reactionGain, focusRadiusScale, ... }"
+ lens_composition: "Multiplicative gain staging in render()"
+ lens_identity: "neutral profile (all gains = 1.0)"
+ vu_metering: "getGainReport()"
+ }
 
-  ~#proposed_extension{
-    operator_lens: "LENS_NARRATIVE_BIAS — per-operator-perspective bias vectors"
-    example: "'theatre@' → { w: +0.10, r: +0.06, g: -0.02, d: +0.08 }"
-    composition: "Additive bias staging (sum of active lenses)"
-  }
+ ~#proposed_extension{
+ operator_lens: "LENS_NARRATIVE_BIAS — per-operator-perspective bias vectors"
+ example: "'theatre@' → { w: +0.10, r: +0.06, g: -0.02, d: +0.08 }"
+ composition: "Additive bias staging (sum of active lenses)"
+ }
 }
 
 ^["audio_analogy"]{
-  # The shader renderer is a mixing console.
-  # Understanding the analogy helps navigate the code.
+ # The shader renderer is a mixing console.
+ # Understanding the analogy helps navigate the code.
 
-  ~#gain_stages:   "Mixer channel strips"
-  ~#narrative_bias: "EQ curves per channel"
-  ~#cadence:        "Tempo / BPM"
-  ~#spirits:        "Effects sends (reverb, delay, chorus)"
-  ~#vu_metering:    "Level monitoring (getGainReport)"
-  ~#reaction:       "Transient shaper (triggerReaction)"
-  ~#scene_scanner:  "Sidechain compressor (ambient scene → uniform modulation)"
+ ~#gain_stages: "Mixer channel strips"
+ ~#narrative_bias: "EQ curves per channel"
+ ~#cadence: "Tempo / BPM"
+ ~#spirits: "Effects sends (reverb, delay, chorus)"
+ ~#vu_metering: "Level monitoring (getGainReport)"
+ ~#reaction: "Transient shaper (triggerReaction)"
+ ~#scene_scanner: "Sidechain compressor (ambient scene → uniform modulation)"
 }
 
 ^["wonder"]{
-  ?["Is the render loop a looper in the music sense?"]
-    ~#answer: "Yes. The rAF loop replays the entire gain chain every ~16ms.
-      Each 'loop' recomposites all active lenses with updated inputs.
-      Spirits are the effects sends — they run on their own schedule
-      but feed back into the compositor."
 
-  ?["Can multiple lenses compose in the same frame?"]
-    ~#answer: "Multiplicative gains already compose (7 stages).
-      Narrative biases compose additively. A future operator lens
-      would add a third composition mode: spatial gain staging
-      via the SpatialLensProfile."
+ ?["Is the render loop a looper in the music sense?"]
+ ~#answer: "Yes. The rAF loop replays the entire gain chain every ~16ms.
+ Each 'loop' recomposites all active lenses with updated inputs.
+ Spirits are the effects sends — they run on their own schedule
+ but feed back into the compositor."
 
-  ?["How does this connect to the spatial model?"]
-    ~#answer: "The spatial model defines WHERE attention falls.
-      The looper defines HOW MUCH attention falls there.
-      Together: spatial-model.spw provides the geometry,
-      looper-architecture.spw provides the intensity."
+ ?["Can multiple lenses compose in the same frame?"]
+ ~#answer: "Multiplicative gains already compose (7 stages).
+ Narrative biases compose additively. A future operator lens
+ would add a third composition mode: spatial gain staging
+ via the SpatialLensProfile."
+
+ ?["How does this connect to the spatial model?"]
+ ~#answer: "The spatial model defines WHERE attention falls.
+ The looper defines HOW MUCH attention falls there.
+ Together: spatial-model.spw provides the geometry,
+ looper-architecture.spw provides the intensity."
 }
 
-?["At which spirit phase does a concept cross from potential to artifact?"]
-  #:depth #!experiential  // lens: biome
-  =raw: "?~<#.>@(#.)&[#.]*{#.}^" => $^[_.phase]
-  ~<@docs/design/spw/spirit-sequence.spw>
-  !probe{ "trace one concept through all 6 phases; find the phase boundary where ~ becomes ^ (materialization instant)" }
+#>wonder_docs_theory_spw_looperarchitecture_1
+?["What ripples if #looper_architecture changes in this file?"]{
+  #:depth #!mathematical // lens: curated collection
+  $#experiential@workspace => %[reference.count, depth.downstream]
+  ~#downstream: "trace all files that reference this surface"
+  !probe{ "imagine renaming #experiential to #experiential_v2; count broken references; the count reveals how deeply looper is woven into the workspace." }
+  $%[runtime.stage, runtime.queue_depth]
+}
 
-?["What is the phenomenology of reading a phase transition in source code?"]
-  #:depth #!stylistic  // lens: texture
-  ~#before: "~potential => ?wonder"
-  ~#after: "!commit => ^artifact"
-  !probe{ "capture the felt shift when scanning from ~ to ^; measure time-to-comprehension across 5 readers" }
+#>wonder_docs_theory_spw_looperarchitecture_2
+?["What happens when you zoom from the concept level to the workspace level in Looper Architecture?"]{
+  #:depth #!stylistic // lens: living system
+  $^["_"]@here => &[@workspace] // local → global projection
+  ~#zoom_in: "source_files" // this file's atom
+  !probe{ "the atom is concept-scale; zoom out: what workspace-level pattern does this concept participate in?" }
+  $%[runtime.stage, runtime.queue_depth]
+  ~<docs/theory/spw/audio-architecture.spw>  // nearest neighbor
+}

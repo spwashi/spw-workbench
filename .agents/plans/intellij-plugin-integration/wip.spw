@@ -5,64 +5,70 @@
 #:layer #!pragmatics
 
 ^["intent"]{
-  ~#goal: "Harden the IntelliJ Spw plugin integration: ensure TextMate bundles load reliably, guard LSP startup failures, and add basic configuration hooks for editors that are not the repo root."
-  ~#taste: "correctness + clarity"
+ ~#goal: "Harden the IntelliJ Spw plugin integration: ensure TextMate bundles load reliably, guard LSP startup failures, and add basic configuration hooks for editors that are not the repo root."
+ ~#taste: "correctness + clarity"
 }
 
 ^["stream"]{
-  # Append entries chronologically. Never edit prior entries.
-  # >>[YYYY-MM-DD HH:MM] <type> — <content>
-  >>[2026-02-23 09:45] hygiene — Planning after initial integration edits; align plan with current changes and avoid unrelated build artifacts.
-  >>[2026-02-23 09:47] taste — Favor explicit integration wiring and user-visible diagnostics over silent failures.
-  >>[2026-02-23 10:05] decide — Add LSP settings model + configurable, wire LSP command override, and add file icon resource.
-  >>[2026-02-23 10:28] decide — Review integration changes, tighten LSP settings validation, add TextMate bundle diagnostics, and separate repo boilerplate cleanup.
-  # Types: observe, decide, surprise, revise, blocked, taste, rebase, hygiene
+ # Append entries chronologically. Never edit prior entries.
+ # >>[YYYY-MM-DD HH:MM] <type> — <content>
+ >>[2026-02-23 09:45] hygiene — Planning after initial integration edits; align plan with current changes and avoid unrelated build artifacts.
+ >>[2026-02-23 09:47] taste — Favor explicit integration wiring and user-visible diagnostics over silent failures.
+ >>[2026-02-23 10:05] decide — Add LSP settings model + configurable, wire LSP command override, and add file icon resource.
+ >>[2026-02-23 10:28] decide — Review integration changes, tighten LSP settings validation, add TextMate bundle diagnostics, and separate repo boilerplate cleanup.
+ # Types: observe, decide, surprise, revise, blocked, taste, rebase, hygiene
 }
 
 ^["open"]{
-  # Unresolved questions. Remove when resolved (log resolution in stream first).
-  # ?[label]: "question"
+ # Unresolved questions. Remove when resolved (log resolution in stream first).
+ # ?[label]: "question"
 }
 
 ^["commits"]{
-  # Planned commits in order. Use project sigil conventions.
-  # ~[N]: "sigil[scope] — description"
-  ~[1]: "#[intellij-spw] — wire TextMate bundle + LSP preflight notifications"
-  ~[2]: "&[intellij-spw] — add LSP settings hooks and configuration UI"
-  ~[3]: ".[intellij-spw] — add file icon and align docs/build metadata"
-  ~[4]: "&[intellij-spw] — tighten LSP settings + TextMate diagnostics"
-  ~[5]: "#[repo] — ignore build artifacts and remove local Gradle props"
+ # Planned commits in order. Use project sigil conventions.
+ # ~[N]: "sigil[scope] — description"
+ ~[1]: "#[intellij-spw] — wire TextMate bundle + LSP preflight notifications"
+ ~[2]: "&[intellij-spw] — add LSP settings hooks and configuration UI"
+ ~[3]: ".[intellij-spw] — add file icon and align docs/build metadata"
+ ~[4]: "&[intellij-spw] — tighten LSP settings + TextMate diagnostics"
+ ~[5]: "#[repo] — ignore build artifacts and remove local Gradle props"
 }
 
 ^["cache"]{
-  ~#status: "in-progress"
-  ~#base_ref: "main@58cd708a6b1e2ee40e972ffde90bbd1cbecbc154"
-  ~#rebased_at: "n/a (origin/main unavailable)"
-  ~#hygiene_split: "unrelated local build artifacts present; avoid touching and keep out of commits"
-  ~#files_hot: "extensions/intellij-spw/src/main/resources/META-INF/plugin.xml; extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwLspServerSupportProvider.kt"
-  ~#next_commit: "4"
-  ~#open_count: "0"
-  ~#last_stream: "2026-02-23 10:28"
-  ~#taste_debt: ""
+ ~#status: "in-progress"
+ ~#base_ref: "main@here"
+ ~#rebased_at: "n/a (origin/main unavailable)"
+ ~#hygiene_split: "unrelated local build artifacts present; avoid touching and keep out of commits"
+ ~#files_hot: "extensions/intellij-spw/src/main/resources/META-INF/plugin.xml; extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwLspServerSupportProvider.kt"
+ ~#next_commit: "4"
+ ~#open_count: "0"
+ ~#last_stream: "2026-02-23 10:28"
+ ~#taste_debt: ""
 }
 
 ^["done"]{
-  # Written at merge time.
-  # ~#shipped: []
-  # ~#dropped: []
-  # ~#surprised: ""
-  # ~#duration: ""
-  # ~#taste: ""
+ # Written at merge time.
+ # ~#shipped: []
+ # ~#dropped: []
+ # ~#surprised: ""
+ # ~#duration: ""
+ # ~#taste: ""
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_agents_plans_intellijpluginintegration_w_1
+?["What happens when you zoom from the workflow level to the workspace level in wip — intellij-plugin-integration?"]{
+  #:depth #!mathematical // lens: material grain
+  $^["_"]@here => &[@workspace] // local → global projection
+  ~#zoom_in: "intent" // this file's atom
+  !probe{ "the atom is workflow-scale; zoom out: what workspace-level pattern does this workflow participate in?" }
+  $%[lsp.request_count, lsp.avg_response_ms]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_agents_plans_intellijpluginintegration_w_2
+?["What ripples if #wip changes in this file?"]{
+  #:depth #!stylistic // lens: formal structure
+  $#experiential@workspace => %[reference.count, depth.downstream]
+  ~#downstream: "trace all files that reference this surface"
+  !probe{ "imagine renaming #experiential to #experiential_v2; count broken references; the count reveals how deeply intent is woven into the workspace." }
+  $%[lsp.request_count, lsp.avg_response_ms]
+}

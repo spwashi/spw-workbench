@@ -3,44 +3,49 @@
 #:layer #!pragmatics
 
 ^["utility_contract"]{
-  file: "scripts/spw-lib.sh",
-  purpose: "shared Spw output framing and argument parsing for skill scripts",
-  guarantees: [
-    "stable section/set/facet/affordance wrappers",
-    "filter_path support for scoped scans",
-    "portable file-count utilities"
-  ]
+ file: "scripts/spw-lib.sh",
+ purpose: "shared Spw output framing and argument parsing for skill scripts",
+ guarantees: [
+ "stable section/set/facet/affordance wrappers",
+ "filter_path support for scoped scans",
+ "portable file-count utilities"
+ ]
 }
 
 ^["instrumentation_affordances"]{
-  baseline: [
-    "npm run lint:spw",
-    "npm run audit",
-    "npm run analyze:perturb"
-  ],
-  release_gates: [
-    "npm run lint:v020",
-    "npm run lint:v020:runtime",
-    "npm run lint:v020:architecture"
-  ]
+ baseline: [
+ "npm run lint:spw",
+ "npm run audit",
+ "npm run analyze:perturb"
+ ],
+ release_gates: [
+ "npm run lint:v020",
+ "npm run lint:v020:runtime",
+ "npm run lint:v020:architecture"
+ ]
 }
 
 ^["falsify"]{
-  disproof: [
-    "skill scripts fail due to missing shared utility",
-    "skill tooling references commands not present in package scripts",
-    "instrumentation output diverges across skills without shared wrappers"
-  ]
+ disproof: [
+ "skill scripts fail due to missing shared utility",
+ "skill tooling references commands not present in package scripts",
+ "instrumentation output diverges across skills without shared wrappers"
+ ]
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_agents_plans_skillsinstrumentationutilit_1
+?["How would a biology portfolio express utility_contract?"]{
+  #:depth #!stylistic // lens: living system
+  ~#translation_target: "biology"
+  ~#source_concept: "utility_contract"
+  !probe{ "rewrite the root frame in biology vocabulary; where the translation breaks reveals Spw's untranslatable concepts." }
+  $%[runtime.stage, runtime.queue_depth]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_agents_plans_skillsinstrumentationutilit_2
+?["How does this file's voice differ from skills-instrumentation-utility/skills-instrumentation-utility (skills-instrumentation-utility/skills-instrumentation-utility)?"]{
+  #:depth #!educational // lens: curated collection
+  ~<@_> // nearest neighbor
+  $%[op.distribution]@here vs $%[op.distribution]@_
+  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
+}

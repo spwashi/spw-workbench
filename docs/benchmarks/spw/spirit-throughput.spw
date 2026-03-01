@@ -7,42 +7,49 @@
 ^"benchmark"{ ~#name: "spirit-throughput", ~#metric: "ops/sec" }
 
 ^"setup"{
-  node_counts: [10, 50, 100, 500, 1000]
-  cycle: "?~<#.>@(#.)&[#.]*{#.}^"
-  phases_per_cycle: 6
+ node_counts: [10, 50, 100, 500, 1000]
+ cycle: "?~<#.>@(#.)&[#.]*{#.}^"
+ phases_per_cycle: 6
 }
 
 ^"run"{
-  # For each node count N:
-  # 1. Generate N synthetic AST nodes
-  # 2. Walk the spirit sequence on each node
-  # 3. Measure total cycles per second
-  # 4. Report per-phase breakdown
+ # For each node count N:
+ # 1. Generate N synthetic AST nodes
+ # 2. Walk the spirit sequence on each node
+ # 3. Measure total cycles per second
+ # 4. Report per-phase breakdown
 
-  synthetic_node: {
-    type: "Operation",
-    operator: "!",
-    frame: ["hello"],
-    body: null,
-  }
+ synthetic_node: {
+ type: "Operation",
+ operator: "!",
+ frame: ["hello"],
+ body: null,
+ }
 }
 
 ^"baseline"{
-  nodes_10:   { cycles_per_sec: 50000, per_phase_us: 3.3  }
-  nodes_100:  { cycles_per_sec: 5000,  per_phase_us: 33   }
-  nodes_1000: { cycles_per_sec: 500,   per_phase_us: 333  }
-  scaling: "linear in node count (no phase interaction between nodes)"
-  bottleneck: "confluent() phase — Object.assign dominates at large merge counts"
+ nodes_10: { cycles_per_sec: 50000, per_phase_us: 3.3 }
+ nodes_100: { cycles_per_sec: 5000, per_phase_us: 33 }
+ nodes_1000: { cycles_per_sec: 500, per_phase_us: 333 }
+ scaling: "linear in node count (no phase interaction between nodes)"
+ bottleneck: "confluent() phase — Object.assign dominates at large merge counts"
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_benchmarks_spw_spiritthroughput_1
+?["What concept is conspicuously absent from Benchmark: Spirit Throughput?"]{
+  #:depth #!stylistic // lens: formal structure
+  ~#present: [#educational, #mathematical]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[bench.sample_count, bench.p50_ms, bench.p99_ms]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_benchmarks_spw_spiritthroughput_2
+?["How does benchmark teach setup — spw/spirit-throughput?"]{
+  #:depth #!educational // lens: material grain
+  $^["benchmark"] => $^["setup"] // trace the edge
+  &[@_, @spw] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[bench.sample_count, bench.p50_ms, bench.p99_ms]
+  ~<docs/benchmarks/spw/confluent-fanin.spw>  // nearest neighbor
+}

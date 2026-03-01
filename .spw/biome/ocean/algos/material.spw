@@ -7,63 +7,69 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Map physical-material intuition to query/runtime optimization techniques."
+ ~#goal: "Map physical-material intuition to query/runtime optimization techniques."
 }
 
 ^property[density]{
-  meaning: "how many refs/concepts are packed in the active scope"
-  measure: [metric, coupling_density]
-  effect: "high density increases merge and interpretation pressure"
-  tuning: [cluster_first, narrow_lens, raise_cache_tier]
+ meaning: "how many refs/concepts are packed in the active scope"
+ measure: [metric, coupling_density]
+ effect: "high density increases merge and interpretation pressure"
+ tuning: [cluster_first, narrow_lens, raise_cache_tier]
 }
 
 ^property[viscosity]{
-  meaning: "resistance to change across hot iterations"
-  proxy: [cache_hit_rate, replacement_stability]
-  effect: "high viscosity stabilizes but can slow adaptation"
-  tuning: [hot_replace_guard, phased_invalidation, warm_window]
+ meaning: "resistance to change across hot iterations"
+ proxy: [cache_hit_rate, replacement_stability]
+ effect: "high viscosity stabilizes but can slow adaptation"
+ tuning: [hot_replace_guard, phased_invalidation, warm_window]
 }
 
 ^property[elasticity]{
-  meaning: "ability to absorb query/projection perturbation and recover"
-  proxy: [rollback_cost, projection_rebuild_time]
-  effect: "high elasticity supports experimentation with bounded risk"
-  tuning: [scoped_evolution, replayable_dumps, invariant_checks]
+ meaning: "ability to absorb query/projection perturbation and recover"
+ proxy: [rollback_cost, projection_rebuild_time]
+ effect: "high elasticity supports experimentation with bounded risk"
+ tuning: [scoped_evolution, replayable_dumps, invariant_checks]
 }
 
 ^property[porosity]{
-  meaning: "how permeable boundaries are between biomes, roots, and phases"
-  proxy: [cross_root_ref_ratio, adjacency_density]
-  effect: "high porosity increases reuse and coupling simultaneously"
-  tuning: [root_convention, selector_grounding, projection_owner_clarity]
+ meaning: "how permeable boundaries are between biomes, roots, and phases"
+ proxy: [cross_root_ref_ratio, adjacency_density]
+ effect: "high porosity increases reuse and coupling simultaneously"
+ tuning: [root_convention, selector_grounding, projection_owner_clarity]
 }
 
 ^property[anisotropy]{
-  meaning: "directional bias in query traversal and projection flow"
-  proxy: [branch_phase_skew, observer_depth_bias]
-  effect: "anisotropy can optimize one direction while degrading others"
-  tuning: [model_select, axis_balancing, consequence_trace]
+ meaning: "directional bias in query traversal and projection flow"
+ proxy: [branch_phase_skew, observer_depth_bias]
+ effect: "anisotropy can optimize one direction while degrading others"
+ tuning: [model_select, axis_balancing, consequence_trace]
 }
 
 ^model[optimization]{
-  fluid: "explore breadth, maximize coverage, tolerate drift"
-  lattice: "optimize symmetry/local consistency, minimize coupling spread"
-  thermal: "minimize interpretation energy under constrained budget"
-  quantum: "defer collapse, preserve alternatives until measurement"
+ fluid: "explore breadth, maximize coverage, tolerate drift"
+ lattice: "optimize symmetry/local consistency, minimize coupling spread"
+ thermal: "minimize interpretation energy under constrained budget"
+ quantum: "defer collapse, preserve alternatives until measurement"
 }
 
 ^"invariant"{
-  "Material properties guide tuning decisions; canonical semantics remain stable."
+ "Material properties guide tuning decisions; canonical semantics remain stable."
 }
 
-?["Does the Cayley table for brace×operator composition close under {FRAME}?"]
-  #:depth #!mathematical  // lens: formula
-  $^seed[_.sym:D4] => %[register.left, register.right]
-  ~<@spec/core/OPERATORS.md>
-  !probe{ "construct the group action table; check if .left ↔ .right reflection commutes with ~ → ! operator tense shift" }
+#>wonder_spw_biome_ocean_algos_material_1
+?["How does intent teach density?"]{
+  #:depth #!educational // lens: material grain
+  $^["intent"] => $^["density"] // trace the edge
+  &[@spec, @spw] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[material.density, material.phase_state]
+}
 
-?["What orbits emerge when D4 acts on nested brace pairs?"]
-  #:depth #!computational  // lens: molecule
-  $^[_.sym] => &[orbit.stabilizer]
-  ~<@spw/registries/curiosity-brace.spw>
-  !probe{ "enumerate fixed points of the dihedral action on {{{}}} nesting depth 3; count distinct register states" }
+#>wonder_spw_biome_ocean_algos_material_2
+?["What is the algebraic closure of property (algos/material)?"]{
+  #:depth #!experiential // lens: formal structure
+  $^["intent"]@spec => %[formula.measure]
+  ~<.spw/biome/ocean/algos/material.spw> // introspect
+  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
+  $%[material.density, material.phase_state]
+}

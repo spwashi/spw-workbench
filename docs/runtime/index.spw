@@ -6,91 +6,98 @@
 #:layer #!semantics
 
 ^["roots"]{
-  @here: ~"."
+ @here: ~"."
 }
 
 ^["engine"]{
-  !["Execution Models"]  #:core
-  .. ~<foundation>"./spw/runtime-foundation.spw"      # Parse-to-runtime bridge + stub contracts
-  .. ~<foundation>"./md/runtime-foundation.md"        # Release-day implementation notes
-  .. ~<runtime>"./spw/agent-loop.spw"                 # Reversible agent loop
-  .. ~<registers>"./spw/brace-registers.spw"          # Brace dyads for autocomplete
-  .. ~<hud>"./spw/hud-runtime.spw"                    # Session/phase/feature HUD
-  .. ~<registers>"./spw/register-bank.spw"            # Operator-typed register bank
+ !["Execution Models"] #:core
+ .. ~<foundation>"./spw/runtime-foundation.spw" # Parse-to-runtime bridge + stub contracts
+ .. ~<foundation>"./md/runtime-foundation.md" # Release-day implementation notes
+ .. ~<runtime>"./spw/agent-loop.spw" # Reversible agent loop
+ .. ~<registers>"./spw/brace-registers.spw" # Brace dyads for autocomplete
+ .. ~<hud>"./spw/hud-runtime.spw" # Session/phase/feature HUD
+ .. ~<registers>"./spw/register-bank.spw" # Operator-typed register bank
 }
 
 ^["acoustic_fields"]{
-  # RegisterMeta now tracks four composable physics fields.
-  # These give the runtime a memory model beyond simple read/write.
-  #:physics #!observation
+ # RegisterMeta now tracks four composable physics fields.
+ # These give the runtime a memory model beyond simple read/write.
+ #:physics #!observation
 
-  =liminality: "scope-awareness (0=local, 1=threshold, 2=transitional, 3=global)"
-  =frequency:  "writes/sec — measured from circular timestamp buffer (last 10)"
-  =coupling:   "inter-cell edges / (total - 1) — bidirectional entanglement"
-  =measureDepth: "observation count — each measure() call increments"
+ =liminality: "scope-awareness (0=local, 1=threshold, 2=transitional, 3=global)"
+ =frequency: "writes/sec — measured from circular timestamp buffer (last 10)"
+ =coupling: "inter-cell edges / (total - 1) — bidirectional entanglement"
+ =measureDepth: "observation count — each measure() call increments"
 
-  %[implications]{
-    "high-frequency cells are 'hot' — candidates for caching or deduplication",
-    "high-coupling cells are 'entangled' — changes cascade to neighbors",
-    "deep measureDepth means heavy observation — possible performance concern",
-    "liminality 3 (global) cells cross scope boundaries — require careful GC",
-  }
+ %[implications]{
+ "high-frequency cells are 'hot' — candidates for caching or deduplication",
+ "high-coupling cells are 'entangled' — changes cascade to neighbors",
+ "deep measureDepth means heavy observation — possible performance concern",
+ "liminality 3 (global) cells cross scope boundaries — require careful GC",
+ }
 }
 
 ^["phase_enrichment"]{
-  # Register cells progress through phases: lex → parse → sem → eval → runtime.
-  # Each phase adds a facet without losing earlier information.
-  #:enrichment #!progressive
+ # Register cells progress through phases: lex → parse → sem → eval → runtime.
+ # Each phase adds a facet without losing earlier information.
+ #:enrichment #!progressive
 
-  =phases: ["lex", "parse", "sem", "eval", "runtime"]
-  =memoryWeight: "phase_index / total_phases — higher phases have greater weight"
+ =phases: ["lex", "parse", "sem", "eval", "runtime"]
+ =memoryWeight: "phase_index / total_phases — higher phases have greater weight"
 
-  ?["When does enrichment matter?"]{
-    "incremental parsing: enrich from lex to parse without re-lexing",
-    "hot reload: only re-enrich from the changed phase forward",
-    "LSP coloring: semantic tokens use phase to choose token modifiers",
-  }
+ ?["When does enrichment matter?"]{
+ "incremental parsing: enrich from lex to parse without re-lexing",
+ "hot reload: only re-enrich from the changed phase forward",
+ "LSP coloring: semantic tokens use phase to choose token modifiers",
+ }
 }
 
 ^["performance"]{
-  !["Optimization & Web APIs"]  #:perf
-  .. ~<perf>"./md/optimization-plan.md"              # Performance optimization plan
-  .. ~<lsp>"./spw/lsp-dap-workers.spw"                # Worker protocol prep for LSP/DAP
-  .. ~<web>"./spw/web-apis.spw"                       # Browser API opportunities
+ !["Optimization & Web APIs"] #:perf
+ .. ~<perf>"./md/optimization-plan.md" # Performance optimization plan
+ .. ~<lsp>"./spw/lsp-dap-workers.spw" # Worker protocol prep for LSP/DAP
+ .. ~<web>"./spw/web-apis.spw" # Browser API opportunities
 }
 
 ^["lsp_semantics"]{
-  # The semantic token provider maps Spw physics to editor colors.
-  #:lsp #!visual
+ # The semantic token provider maps Spw physics to editor colors.
+ #:lsp #!visual
 
-  =tokenTypes: ["operator", "type", "variable", "property", "function", "string", "keyword", "comment"]
-  =tokenModifiers: ["declaration", "definition", "readonly", "deprecated", "modification", "async"]
+ =tokenTypes: ["operator", "type", "variable", "property", "function", "string", "keyword", "comment"]
+ =tokenModifiers: ["declaration", "definition", "readonly", "deprecated", "modification", "async"]
 
-  sigil_map: {
-    '^': { type: "keyword",   modifier: "declaration",   read: "framing / root"     }
-    '!': { type: "function",  modifier: "modification",  read: "hydrate / inject"   }
-    '?': { type: "function",  modifier: "async",         read: "probe / query"      }
-    '~': { type: "variable",  modifier: "deprecated",    read: "defer / lazy"       }
-    '=': { type: "property",  modifier: "readonly",      read: "config / constraint"}
-    '%': { type: "operator",  modifier: "none",          read: "measure / observe"  }
-    '#': { type: "type",      modifier: "none",          read: "annotation / topic" }
-  }
+ sigil_map: {
+ '^': { type: "keyword", modifier: "declaration", read: "framing / root" }
+ '!': { type: "function", modifier: "modification", read: "hydrate / inject" }
+ '?': { type: "function", modifier: "async", read: "probe / query" }
+ '~': { type: "variable", modifier: "deprecated", read: "defer / lazy" }
+ '=': { type: "property", modifier: "readonly", read: "config / constraint"}
+ '%': { type: "operator", modifier: "none", read: "measure / observe" }
+ '#': { type: "type", modifier: "none", read: "annotation / topic" }
+ }
 
-  %[cross_plugin]{
-    "VSCode: DocumentSemanticTokensProvider (character scanner)",
-    "IntelliJ: TextMate grammar (shared spw.tmLanguage.json)",
-    "Neovim: Vim syntax groups (spwSig* → Spw* highlights)",
-  }
+ %[cross_plugin]{
+ "VSCode: DocumentSemanticTokensProvider (character scanner)",
+ "IntelliJ: TextMate grammar (shared spw.tmLanguage.json)",
+ "Neovim: Vim syntax groups (spwSig* → Spw* highlights)",
+ }
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_runtime_index_1
+?["What invariant holds across every frame in Runtime Index?"]{
+  #:depth #!computational // lens: living system
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to roots's frames; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_runtime_index_2
+?["What was Runtime Index before it was this, and what could it become?"]{
+  #:depth #!mathematical // lens: curated collection
+  ~#past: "git log --oneline -- docs/runtime/index.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[register.bank_size, register.active_bindings]
+  ~<docs/index.spw>  // nearest neighbor
+}

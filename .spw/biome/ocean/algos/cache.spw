@@ -7,75 +7,81 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Cache expensive selector/link resolution with deterministic invalidation."
-  ~#lspFocus: "definition, documentLink, and workspace symbol warm paths."
+ ~#goal: "Cache expensive selector/link resolution with deterministic invalidation."
+ ~#lspFocus: "definition, documentLink, and workspace symbol warm paths."
 }
 
 ^"keys"{
-  #:cache
-  shape: {
-    fileHash: "canonicalize(source).hash"
-    selectorId: refs_navigable
-    dialect: "active dialect marker"
-    channel: "stable|experimental"
-  }
-  =eviction: "hash-prefix match — on source change, expire all keys sharing the file hash prefix"
+ #:cache
+ shape: {
+ fileHash: "canonicalize(source).hash"
+ selectorId: refs_navigable
+ dialect: "active dialect marker"
+ channel: "stable|experimental"
+ }
+ =eviction: "hash-prefix match — on source change, expire all keys sharing the file hash prefix"
 }
 
 ^"tiers"{
-  #:cache #!tiering
-  hot: {
-    ttlBeats: 8
-    scope: "active files in current loop"
-    =warmth: "high frequency writes — promote on repeated access"
-  }
-  warm: {
-    ttlBeats: 64
-    scope: "recent project refs"
-    =warmth: "medium frequency — demote after ttl beats without access"
-  }
-  cold: {
-    ttlBeats: 256
-    scope: "full biome scans"
-    =warmth: "low frequency — archive candidate after expiry"
-  }
+ #:cache #!tiering
+ hot: {
+ ttlBeats: 8
+ scope: "active files in current loop"
+ =warmth: "high frequency writes — promote on repeated access"
+ }
+ warm: {
+ ttlBeats: 64
+ scope: "recent project refs"
+ =warmth: "medium frequency — demote after ttl beats without access"
+ }
+ cold: {
+ ttlBeats: 256
+ scope: "full biome scans"
+ =warmth: "low frequency — archive candidate after expiry"
+ }
 
-  %[lsp_warm_paths]{
-    "documentLink   → hot tier (resolves on every keystroke in visible files)",
-    "hover          → hot tier (user cursor position, high frequency)",
-    "workspaceSymbol → warm tier (annotation index, rebuilt on save)",
-    "codeLens       → warm tier (per-document, rebuilt on annotation index change)",
-    "definition     → cold tier (stable paths, rarely change)",
-  }
+ %[lsp_warm_paths]{
+ "documentLink → hot tier (resolves on every keystroke in visible files)",
+ "hover → hot tier (user cursor position, high frequency)",
+ "workspaceSymbol → warm tier (annotation index, rebuilt on save)",
+ "codeLens → warm tier (per-document, rebuilt on annotation index change)",
+ "definition → cold tier (stable paths, rarely change)",
+ }
 }
 
 ^"enhancements"{
-  #:lsp #!integration
-  lsp: {
-    definition: "try hot cache -> warm cache -> compute"
-    document_link: "batch query by selector and path family"
-    workspace_symbol: "cluster cache by biome/module"
-    invalidation: "on canonical hash change, expire matching key prefix"
-    branch_trace: .spw/biome/ocean/trace.spw
-    selector_hot_replacement: .spw/biome/ocean/query/hot.spw
-    selector_registry: .spw/biome/ocean/query/sel.spw
-  }
+ #:lsp #!integration
+ lsp: {
+ definition: "try hot cache -> warm cache -> compute"
+ document_link: "batch query by selector and path family"
+ workspace_symbol: "cluster cache by biome/module"
+ invalidation: "on canonical hash change, expire matching key prefix"
+ branch_trace: .spw/biome/ocean/trace.spw
+ selector_hot_replacement: .spw/biome/ocean/query/hot.spw
+ selector_registry: .spw/biome/ocean/query/sel.spw
+ }
 
-  %[coupling]{
-    "high-coupling cells cascade invalidation to neighbors",
-    "cache keys include coupling edges — coupled files share eviction fate",
-    "the annotation index is itself a warm-tier cache of concept clusters",
-  }
+ %[coupling]{
+ "high-coupling cells cascade invalidation to neighbors",
+ "cache keys include coupling edges — coupled files share eviction fate",
+ "the annotation index is itself a warm-tier cache of concept clusters",
+ }
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_spw_biome_ocean_algos_cache_1
+?["How does this file's voice differ from algos/cache (algos/cache)?"]{
+  #:depth #!educational // lens: molecular binding
+  ~<@biome> // nearest neighbor
+  $%[op.distribution]@here vs $%[op.distribution]@biome
+  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_spw_biome_ocean_algos_cache_2
+?["What invariant holds across every frame in Cache Algorithm?"]{
+  #:depth #!experiential // lens: ecological zone
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to every frame in this file; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[cache.tier, cache.hit_ms, cache.eviction_count]
+  ~<.spw/biome/ocean/algos/cluster.spw>  // nearest neighbor
+}

@@ -6,60 +6,67 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Treat prose + code as one artifact with explicit projection targets."
-  ~#phase_binding: "?~ orient, @ observe code, & merge refs, * materialize tangles, ^ integrate outputs."
+ ~#goal: "Treat prose + code as one artifact with explicit projection targets."
+ ~#phase_binding: "?~ orient, @ observe code, & merge refs, * materialize tangles, ^ integrate outputs."
 }
 
 ^"exhibit_schema"{
-  ~#required_fields: [
-    "id",
-    "title",
-    "intent",
-    "sources",
-    "tangles",
-    "checks",
-    "status",
-  ]
+ ~#required_fields: [
+ "id",
+ "title",
+ "intent",
+ "sources",
+ "tangles",
+ "checks",
+ "status",
+ ]
 
-  source_block: {
-    kind: "spw|ts|md|json|sh",
-    label: "human meaning for the block",
-    content_ref: "inline or linked payload",
-  }
+ source_block: {
+ kind: "spw|ts|md|json|sh",
+ label: "human meaning for the block",
+ content_ref: "inline or linked payload",
+ }
 
-  tangle_block: {
-    from_block: "source block id",
-    to_path: "repo-relative output path",
-    mode: "overwrite|append|verify-only",
-  }
+ tangle_block: {
+ from_block: "source block id",
+ to_path: "repo-relative output path",
+ mode: "overwrite|append|verify-only",
+ }
 }
 
 ^"example"{
-  exhibit: {
-    id: "hello-lens"
-    title: "Hello Lens Walk"
-    intent: "Narrate a lens prompt and project one helper module."
-    sources: ["block:intro-md", "block:helper-ts"]
-    tangles: [{ from_block: "helper-ts", to_path: "src/example/hello-lens.ts", mode: "verify-only" }]
-    checks: ["npm run lint", "npm run test:runtime -- --runInBand"]
-    status: "draft"
-  }
+ exhibit: {
+ id: "hello-lens"
+ title: "Hello Lens Walk"
+ intent: "Narrate a lens prompt and project one helper module."
+ sources: ["block:intro-md", "block:helper-ts"]
+ tangles: [{ from_block: "helper-ts", to_path: "src/example/hello-lens.ts", mode: "verify-only" }]
+ checks: ["npm run lint", "npm run test:runtime -- --runInBand"]
+ status: "draft"
+ }
 }
 
 ^"invariants"{
-  "Each tangle target is declared before generation.",
-  "Narrative and code blocks share one exhibit id for traceability.",
-  "Generated files round-trip back to the source block hash.",
+ "Each tangle target is declared before generation.",
+ "Narrative and code blocks share one exhibit id for traceability.",
+ "Generated files round-trip back to the source block hash.",
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_spw_literate_literatespec_1
+?["What concept is conspicuously absent from Literate Spec?"]{
+  #:depth #!stylistic // lens: curated collection
+  ~#present: [#educational, #mathematical]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[exhibit.prose_ratio, exhibit.tangle_targets]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_spw_literate_literatespec_2
+?["How does intent teach exhibit_schema?"]{
+  #:depth #!educational // lens: living system
+  $^["intent"] => $^["exhibit_schema"] // trace the edge
+  &[@_, @spw] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[exhibit.prose_ratio, exhibit.tangle_targets]
+  ~<.spw/agents.spw>  // nearest neighbor
+}

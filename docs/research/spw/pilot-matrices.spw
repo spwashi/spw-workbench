@@ -5,124 +5,131 @@
 #:layer #!semantics
 
 ^["roots"]{
-  @src: ~"../src"
+ @src: ~"../src"
 }
 
 ^["pilots"]{
-  ^["authoring-editor"]{
-    ~#files{
-      .. @src/app/components/authoring-editor/authoring-editor.ts
-      .. @src/ui/elements/editor-highlight/spw-editor-highlight.ts
-    }
-    ~#intent: "Primary authoring surface with runtime-aware postures."
-  }
+ ^["authoring-editor"]{
+ ~#files{
+ .. @src/app/components/authoring-editor/authoring-editor.ts
+ .. @src/ui/elements/editor-highlight/spw-editor-highlight.ts
+ }
+ ~#intent: "Primary authoring surface with runtime-aware postures."
+ }
 
-  ^["context-tuner"]{
-    ~#files{
-      .. @src/app/components/context-tuner/context-tuner.ts
-    }
-    ~#intent: "Global context control panel for layer, disclosure, genre, theme."
-  }
+ ^["context-tuner"]{
+ ~#files{
+ .. @src/app/components/context-tuner/context-tuner.ts
+ }
+ ~#intent: "Global context control panel for layer, disclosure, genre, theme."
+ }
 
-  ^["detail-drawer"]{
-    ~#files{
-      .. @src/app/components/detail-drawer/detail-drawer.ts
-    }
-    ~#intent: "Selection detail surface for nodes/tokens/flow."
-  }
+ ^["detail-drawer"]{
+ ~#files{
+ .. @src/app/components/detail-drawer/detail-drawer.ts
+ }
+ ~#intent: "Selection detail surface for nodes/tokens/flow."
+ }
 }
 
 ^["matrices"]{
-  ^["authoring-editor"]{
-    # Space + detail affect structure; runtime_posture adds overlays.
-    ~#space{
-      micro: "single textarea, hide scaffolding + sidebar, status minimal"
-      compact: "header + textarea, diagnostics collapsed"
-      regular: "header + textarea + diagnostics"
-      expansive: "header + textarea + sidebar + diagnostics"
-    }
-    ~#detail{
-      hint: "title + cursor status only"
-      summary: "add metrics + basic diagnostics"
-      full: "full diagnostics + sidebar outline"
-      deep: "full diagnostics + operator hints + provenance"
-    }
-    ~#position{
-      docked_left: "outline-first, editor secondary"
-      docked_right: "diagnostics-first, editor secondary"
-      docked_bottom: "metrics + timeline, editor minimized"
-      floating: "quick jot + minimal header"
-      stacked: "shared header + compact metrics"
-    }
-    ~#runtime_posture{
-      live: "semantic pulses + inline hints"
-      paused: "diff overlays + frozen semantics"
-      replay: "timeline scrub + cursor trail"
-      explain: "operator cues + guided callouts"
-    }
-  }
+ ^["authoring-editor"]{
+ # Space + detail affect structure; runtime_posture adds overlays.
+ ~#space{
+ micro: "single textarea, hide scaffolding + sidebar, status minimal"
+ compact: "header + textarea, diagnostics collapsed"
+ regular: "header + textarea + diagnostics"
+ expansive: "header + textarea + sidebar + diagnostics"
+ }
+ ~#detail{
+ hint: "title + cursor status only"
+ summary: "add metrics + basic diagnostics"
+ full: "full diagnostics + sidebar outline"
+ deep: "full diagnostics + operator hints + provenance"
+ }
+ ~#position{
+ docked_left: "outline-first, editor secondary"
+ docked_right: "diagnostics-first, editor secondary"
+ docked_bottom: "metrics + timeline, editor minimized"
+ floating: "quick jot + minimal header"
+ stacked: "shared header + compact metrics"
+ }
+ ~#runtime_posture{
+ live: "semantic pulses + inline hints"
+ paused: "diff overlays + frozen semantics"
+ replay: "timeline scrub + cursor trail"
+ explain: "operator cues + guided callouts"
+ }
+ }
 
-  ^["context-tuner"]{
-    ~#space{
-      micro: "single column, collapsible sections"
-      compact: "tabs for core vs advanced"
-      regular: "two columns, readouts visible"
-      expansive: "multi column + theme preview"
-    }
-    ~#detail{
-      hint: "layer + mode only"
-      summary: "add disclosure + genre"
-      full: "add theme + context"
-      deep: "add performance + motion toggles"
-    }
-    ~#position{
-      docked_right: "persistent, readouts pinned"
-      floating: "transient, reduced chrome"
-      stacked: "shared header + scroll"
-    }
-  }
+ ^["context-tuner"]{
+ ~#space{
+ micro: "single column, collapsible sections"
+ compact: "tabs for core vs advanced"
+ regular: "two columns, readouts visible"
+ expansive: "multi column + theme preview"
+ }
+ ~#detail{
+ hint: "layer + mode only"
+ summary: "add disclosure + genre"
+ full: "add theme + context"
+ deep: "add performance + motion toggles"
+ }
+ ~#position{
+ docked_right: "persistent, readouts pinned"
+ floating: "transient, reduced chrome"
+ stacked: "shared header + scroll"
+ }
+ }
 
-  ^["detail-drawer"]{
-    ~#space{
-      micro: "single tab (properties)"
-      compact: "properties + semantics tabs"
-      regular: "properties + semantics + flow"
-      expansive: "all tabs + edit panel"
-    }
-    ~#detail{
-      hint: "node name + operator only"
-      summary: "properties + operator semantics"
-      full: "add flow + actions"
-      deep: "add provenance + edit panel"
-    }
-    ~#position{
-      docked_right: "tabbed inspection + actions"
-      docked_bottom: "flow-first + timeline emphasis"
-      stacked: "shared tab bar + compact content"
-    }
-  }
+ ^["detail-drawer"]{
+ ~#space{
+ micro: "single tab (properties)"
+ compact: "properties + semantics tabs"
+ regular: "properties + semantics + flow"
+ expansive: "all tabs + edit panel"
+ }
+ ~#detail{
+ hint: "node name + operator only"
+ summary: "properties + operator semantics"
+ full: "add flow + actions"
+ deep: "add provenance + edit panel"
+ }
+ ~#position{
+ docked_right: "tabbed inspection + actions"
+ docked_bottom: "flow-first + timeline emphasis"
+ stacked: "shared tab bar + compact content"
+ }
+ }
 }
 
 ^["presets"]{
-  # Preset-driven rearrangement for early rollout.
-  ~#focus_authoring: "Editor center, context left, detail right, runtime bottom"
-  ~#inspect_context: "Context left, detail right, editor compact center"
-  ~#runtime_playback: "Runtime bottom, editor center, detail right"
+ # Preset-driven rearrangement for early rollout.
+ ~#focus_authoring: "Editor center, context left, detail right, runtime bottom"
+ ~#inspect_context: "Context left, detail right, editor compact center"
+ ~#runtime_playback: "Runtime bottom, editor center, detail right"
 }
 
 ^["notes"]{
-  ~#next: "Add per-component variant resolution in ui/ or features/."
-  ~#guardrail: "Position should change behavior, not just placement."
+ ~#next: "Add per-component variant resolution in ui/ or features/."
+ ~#guardrail: "Position should change behavior, not just placement."
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_research_spw_pilotmatrices_1
+?["What was Pilot Matrices before it was this, and what could it become?"]{
+  #:depth #!experiential // lens: molecular binding
+  ~#past: "git log --oneline -- docs/research/spw/pilot-matrices.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[runtime.stage, runtime.queue_depth]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_research_spw_pilotmatrices_2
+?["How would an ecology algorithm express spw/pilot-matrices?"]{
+  #:depth #!computational // lens: ecological zone
+  ~#translation_target: "ecology"
+  ~#source_concept: "roots"
+  !probe{ "rewrite the root frame in ecology vocabulary; where the translation breaks reveals Spw's untranslatable concepts." }
+  $%[runtime.stage, runtime.queue_depth]
+  ~<docs/research/spw/experimentation.spw>  // nearest neighbor
+}

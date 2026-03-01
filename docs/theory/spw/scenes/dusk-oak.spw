@@ -6,24 +6,24 @@
 ## -------------------------------------------------------
 
 {_canvas
-  .{
-    format = `large`
-    ratio = `4:3`
-    medium = `oil`
-    ground = `linen`
-    light = `dusk`
-    palette: #[
-      .{ name = `void`,       hex = `#0a0a12`, role = `deepest shadow` }
-      .{ name = `indigo`,     hex = `#1a1040`, role = `sky base` }
-      .{ name = `dusk_blue`,  hex = `#2e3a6e`, role = `upper atmosphere` }
-      .{ name = `horizon`,    hex = `#c4703a`, role = `where sky meets earth` }
-      .{ name = `ember`,      hex = `#e8892a`, role = `last light` }
-      .{ name = `ash`,        hex = `#8a8070`, role = `middle ground` }
-      .{ name = `chalk`,      hex = `#f0ece0`, role = `highlight / moon` }
-      .{ name = `moss`,       hex = `#3a4a2a`, role = `earth / foreground` }
-      .{ name = `rust`,       hex = `#7a3a1a`, role = `dried soil` }
-    ]
-  }
+ .{
+ format = `large`
+ ratio = `4:3`
+ medium = `oil`
+ ground = `linen`
+ light = `dusk`
+ palette: #[
+ .{ name = `void`, hex = `#0a0a12`, role = `deepest shadow` }
+ .{ name = `indigo`, hex = `#1a1040`, role = `sky base` }
+ .{ name = `dusk_blue`, hex = `#2e3a6e`, role = `upper atmosphere` }
+ .{ name = `horizon`, hex = `#c4703a`, role = `where sky meets earth` }
+ .{ name = `ember`, hex = `#e8892a`, role = `last light` }
+ .{ name = `ash`, hex = `#8a8070`, role = `middle ground` }
+ .{ name = `chalk`, hex = `#f0ece0`, role = `highlight / moon` }
+ .{ name = `moss`, hex = `#3a4a2a`, role = `earth / foreground` }
+ .{ name = `rust`, hex = `#7a3a1a`, role = `dried soil` }
+ ]
+ }
 }
 
 ## -------------------------------------------------------
@@ -32,171 +32,171 @@
 
 {_layers
 
-  ## L0: ground wash
-  ground_wash: .{
-    color = `void`
-    technique = `broad flat wash, full canvas`
-    opacity = 1.0
-  }[cascade=base priority=0]
+ ## L0: ground wash
+ ground_wash: .{
+ color = `void`
+ technique = `broad flat wash, full canvas`
+ opacity = 1.0
+ }[cascade=base priority=0]
 
-  ## L1: sky
-  sky: .{
-    region = `upper 60% of canvas`
-    gradient: ?<
-      .{ stop=0.0,  color=`void`,      pos=`zenith` }
-      .{ stop=0.35, color=`indigo`,    pos=`mid-sky` }
-      .{ stop=0.70, color=`dusk_blue`, pos=`low sky` }
-      .{ stop=1.0,  color=`horizon`,   pos=`skyline` }
-    >
-    technique = `wet-into-wet vertical blend, soft edges`
-    brushwork = `wide flat brush, horizontal strokes`
-  }[cascade=layer priority=10]
+ ## L1: sky
+ sky: .{
+ region = `upper 60% of canvas`
+ gradient: ?<
+ .{ stop=0.0, color=`void`, pos=`zenith` }
+ .{ stop=0.35, color=`indigo`, pos=`mid-sky` }
+ .{ stop=0.70, color=`dusk_blue`, pos=`low sky` }
+ .{ stop=1.0, color=`horizon`, pos=`skyline` }
+ >
+ technique = `wet-into-wet vertical blend, soft edges`
+ brushwork = `wide flat brush, horizontal strokes`
+ }[cascade=layer priority=10]
 
-  ## L1.5: star field
-  stars: .{
-    region = `upper 30% of canvas`
-    color = `chalk`
-    visibility = `sparse, cold white points`
-    opacity = 0.8
-    technique = `fine brush tip, pinprick application`
-    note = `piercing the upper indigo`
-  }[cascade=layer priority=15]
+ ## L1.5: star field
+ stars: .{
+ region = `upper 30% of canvas`
+ color = `chalk`
+ visibility = `sparse, cold white points`
+ opacity = 0.8
+ technique = `fine brush tip, pinprick application`
+ note = `piercing the upper indigo`
+ }[cascade=layer priority=15]
 
-  ## L2: earth
-  earth: .{
-    region = `lower 40% of canvas`
-    gradient: ?<
-      .{ stop=0.0, color=`horizon`, pos=`earth-sky join` }
-      .{ stop=0.5, color=`ash`,     pos=`middle ground` }
-      .{ stop=1.0, color=`moss`,    pos=`foreground` }
-    >
-    texture = `impasto, palette knife, horizontal drag`
-    technique = `thick application, visible ridges`
-  }[cascade=layer priority=10]
+ ## L2: earth
+ earth: .{
+ region = `lower 40% of canvas`
+ gradient: ?<
+ .{ stop=0.0, color=`horizon`, pos=`earth-sky join` }
+ .{ stop=0.5, color=`ash`, pos=`middle ground` }
+ .{ stop=1.0, color=`moss`, pos=`foreground` }
+ >
+ texture = `impasto, palette knife, horizontal drag`
+ technique = `thick application, visible ridges`
+ }[cascade=layer priority=10]
 
-  ## L2.5: fog
-  fog: .{
-    region = `earth line, creeping upward into horizon band`
-    color = `ash`
-    opacity = 0.4
-    blur = `heavy horizontal drift`
-    technique = `dry brush over impasto ridges`
-    note = `competes with ember for salience`
-  }[cascade=layer priority=25 %salience=contest]
+ ## L2.5: fog
+ fog: .{
+ region = `earth line, creeping upward into horizon band`
+ color = `ash`
+ opacity = 0.4
+ blur = `heavy horizontal drift`
+ technique = `dry brush over impasto ridges`
+ note = `competes with ember for salience`
+ }[cascade=layer priority=25 %salience=contest]
 
-  ## L3: atmosphere — haze and dust
-  atmosphere: .{
-    region = `horizon band, ±8% of canvas height`
-    color = `ember`
-    opacity = 0.55
-    blur = `soft, feathered 12% both directions`
-    technique = `dry brush, horizontal, very light pressure`
-    note = `this is where sky and earth dissolve into each other`
-  }[cascade=layer priority=20 %salience=high]
+ ## L3: atmosphere — haze and dust
+ atmosphere: .{
+ region = `horizon band, ±8% of canvas height`
+ color = `ember`
+ opacity = 0.55
+ blur = `soft, feathered 12% both directions`
+ technique = `dry brush, horizontal, very light pressure`
+ note = `this is where sky and earth dissolve into each other`
+ }[cascade=layer priority=20 %salience=high]
 
-  ## L4: the tree
-  tree: .{
-    position = `left of center, 38% from left edge`
-    height = `spans 55% of canvas height, rooted at earth line`
-    silhouette: .{
-      form = `solitary dead oak, asymmetric crown`
-      lean = `slight right, into the light`
-      trunk: .{
-        width = `narrow at base, 2% canvas width`
-        color = `void`
-        texture = `rough, cracked bark — palette knife vertical strokes`
-      }
-      branches: #[
-        .{ dir=`upper-left`,  reach=`long, 3 major forks`, weight=`heavy` }
-        .{ dir=`upper-right`, reach=`shorter, broken tip`,  weight=`medium` }
-        .{ dir=`right`,       reach=`single bare limb, horizontal`, weight=`light` }
-      ]
-    }
-    technique = `fine brush for silhouette edges, dry brush for bark texture`
-    light_catch = `right edge of trunk catches ember light — thin chalk highlight`
-  }[cascade=layer priority=30]
+ ## L4: the tree
+ tree: .{
+ position = `left of center, 38% from left edge`
+ height = `spans 55% of canvas height, rooted at earth line`
+ silhouette: .{
+ form = `solitary dead oak, asymmetric crown`
+ lean = `slight right, into the light`
+ trunk: .{
+ width = `narrow at base, 2% canvas width`
+ color = `void`
+ texture = `rough, cracked bark — palette knife vertical strokes`
+ }
+ branches: #[
+ .{ dir=`upper-left`, reach=`long, 3 major forks`, weight=`heavy` }
+ .{ dir=`upper-right`, reach=`shorter, broken tip`, weight=`medium` }
+ .{ dir=`right`, reach=`single bare limb, horizontal`, weight=`light` }
+ ]
+ }
+ technique = `fine brush for silhouette edges, dry brush for bark texture`
+ light_catch = `right edge of trunk catches ember light — thin chalk highlight`
+ }[cascade=layer priority=30]
 
-  ## L4.5: second tree
-  second_tree: .{
-    position = `far right edge, 90% from left edge`
-    height = `spans 20% of canvas height, rooted at earth line`
-    silhouette: .{
-      form = `bare sapling`
-      trunk: .{ width = `thread-thin`, color = `void` }
-      branches: #[ `two faint upright lines` ]
-    }
-    technique = `thin brush edge, single pass`
-    depth_cue = `smaller, lighter value, less contrast (implied distance)`
-  }[cascade=layer priority=35]
+ ## L4.5: second tree
+ second_tree: .{
+ position = `far right edge, 90% from left edge`
+ height = `spans 20% of canvas height, rooted at earth line`
+ silhouette: .{
+ form = `bare sapling`
+ trunk: .{ width = `thread-thin`, color = `void` }
+ branches: #[ `two faint upright lines` ]
+ }
+ technique = `thin brush edge, single pass`
+ depth_cue = `smaller, lighter value, less contrast (implied distance)`
+ }[cascade=layer priority=35]
 
-  ## L4.8: bird
-  bird: .{
-    position = `on right horizontal bare limb of main tree`
-    form = `small, crouched silhouette`
-    color = `void`
-    technique = `single dab of thick paint`
-    state = `single, still`
-  }[cascade=layer priority=38]
+ ## L4.8: bird
+ bird: .{
+ position = `on right horizontal bare limb of main tree`
+ form = `small, crouched silhouette`
+ color = `void`
+ technique = `single dab of thick paint`
+ state = `single, still`
+ }[cascade=layer priority=38]
 
-  ## L5: moon
-  moon: .{
-    position = `upper right quadrant, 72% from left, 18% from top`
-    form = `full, slightly veiled`
-    color = `chalk`
-    diameter = `4% of canvas width`
-    glow: .{
-      radius = `18% of canvas width`
-      color = `dusk_blue`
-      opacity = 0.3
-      technique = `soft glaze, circular motion, very thin paint`
-    }
-    technique = `small round brush, single loaded stroke for disc; glaze for halo`
-  }[cascade=layer priority=40 %salience=high]
+ ## L5: moon
+ moon: .{
+ position = `upper right quadrant, 72% from left, 18% from top`
+ form = `full, slightly veiled`
+ color = `chalk`
+ diameter = `4% of canvas width`
+ glow: .{
+ radius = `18% of canvas width`
+ color = `dusk_blue`
+ opacity = 0.3
+ technique = `soft glaze, circular motion, very thin paint`
+ }
+ technique = `small round brush, single loaded stroke for disc; glaze for halo`
+ }[cascade=layer priority=40 %salience=high]
 
-  ## L5.5: moon crack
-  moon_crack: .{
-    position = `across the lower left quadrant of the moon disc`
-    form = `thin dark line`
-    color = `indigo`
-    opacity = 0.6
-    technique = `scratched through wet paint (sgraffito)`
-    note = `barely visible`
-  }[cascade=layer priority=45]
+ ## L5.5: moon crack
+ moon_crack: .{
+ position = `across the lower left quadrant of the moon disc`
+ form = `thin dark line`
+ color = `indigo`
+ opacity = 0.6
+ technique = `scratched through wet paint (sgraffito)`
+ note = `barely visible`
+ }[cascade=layer priority=45]
 
-  ## L6: foreground detail
-  foreground: .{
-    region = `bottom 15% of canvas`
-    elements: #[
-      .{ form=`dry grass tufts`,   color=`rust`,  technique=`fan brush, upward flicks` }
-      .{ form=`scattered stones`,  color=`ash`,   technique=`palette knife, flat dabs` }
-      .{ form=`root suggestion`,   color=`void`,  technique=`thin brush, horizontal lines` }
-    ]
-    depth_cue = `darkest values here, highest contrast with sky`
-  }[cascade=layer priority=50]
+ ## L6: foreground detail
+ foreground: .{
+ region = `bottom 15% of canvas`
+ elements: #[
+ .{ form=`dry grass tufts`, color=`rust`, technique=`fan brush, upward flicks` }
+ .{ form=`scattered stones`, color=`ash`, technique=`palette knife, flat dabs` }
+ .{ form=`root suggestion`, color=`void`, technique=`thin brush, horizontal lines` }
+ ]
+ depth_cue = `darkest values here, highest contrast with sky`
+ }[cascade=layer priority=50]
 
-  ## L7: light effects — final pass
-  light_effects: .{
-    moon_path: .{
-      region = `vertical column below moon, through earth`
-      color = `chalk`
-      opacity = 0.12
-      technique = `very thin glaze, vertical soft brush`
-      note = `moonlight touching the ground, barely visible`
-    }
-    ember_rim: .{
-      region = `horizon line, full width`
-      color = `ember`
-      width = `1.5% canvas height`
-      opacity = 0.8
-      technique = `thin brush, single horizontal stroke, loaded`
-    }
-    tree_glow: .{
-      region = `right edge of tree silhouette`
-      color = `ember`
-      opacity = 0.4
-      technique = `dry brush, feathered outward from trunk edge`
-    }
-  }[cascade=layer priority=60 %salience=highest]
+ ## L7: light effects — final pass
+ light_effects: .{
+ moon_path: .{
+ region = `vertical column below moon, through earth`
+ color = `chalk`
+ opacity = 0.12
+ technique = `very thin glaze, vertical soft brush`
+ note = `moonlight touching the ground, barely visible`
+ }
+ ember_rim: .{
+ region = `horizon line, full width`
+ color = `ember`
+ width = `1.5% canvas height`
+ opacity = 0.8
+ technique = `thin brush, single horizontal stroke, loaded`
+ }
+ tree_glow: .{
+ region = `right edge of tree silhouette`
+ color = `ember`
+ opacity = 0.4
+ technique = `dry brush, feathered outward from trunk edge`
+ }
+ }[cascade=layer priority=60 %salience=highest]
 
 }
 
@@ -205,29 +205,29 @@
 ## -------------------------------------------------------
 
 {_composition
-  rule_of_thirds: .{
-    vertical_lines:   #[ `33%`, `66%` ]
-    horizontal_lines: #[ `33%`, `66%` ]
-    power_points: #[
-      .{ pos=`33%,33%`, element=`moon — placed near but not on point` }
-      .{ pos=`33%,66%`, element=`tree base — anchors here` }
-      .{ pos=`66%,33%`, element=`open sky — breathing room` }
-    ]
-  }
+ rule_of_thirds: .{
+ vertical_lines: #[ `33%`, `66%` ]
+ horizontal_lines: #[ `33%`, `66%` ]
+ power_points: #[
+ .{ pos=`33%,33%`, element=`moon — placed near but not on point` }
+ .{ pos=`33%,66%`, element=`tree base — anchors here` }
+ .{ pos=`66%,33%`, element=`open sky — breathing room` }
+ ]
+ }
 
-  tension: .{
-    primary = `tree (dark, left) vs moon (light, right)`
-    secondary = `ember horizon cutting across both`
-    resolution = `moonlight path connects moon to earth through tree shadow`
-  }
+ tension: .{
+ primary = `tree (dark, left) vs moon (light, right)`
+ secondary = `ember horizon cutting across both`
+ resolution = `moonlight path connects moon to earth through tree shadow`
+ }
 
-  eye_path: ?<
-    .{ step=1, target=`moon`,           reason=`brightest point, upper right` }
-    .{ step=2, target=`ember horizon`,  reason=`warm band pulls eye left` }
-    .{ step=3, target=`tree silhouette`,reason=`dark form anchors gaze` }
-    .{ step=4, target=`foreground`,     reason=`texture grounds the scene` }
-    .{ step=5, target=`sky zenith`,     reason=`void pulls eye upward, cycle restarts` }
-  >
+ eye_path: ?<
+ .{ step=1, target=`moon`, reason=`brightest point, upper right` }
+ .{ step=2, target=`ember horizon`, reason=`warm band pulls eye left` }
+ .{ step=3, target=`tree silhouette`,reason=`dark form anchors gaze` }
+ .{ step=4, target=`foreground`, reason=`texture grounds the scene` }
+ .{ step=5, target=`sky zenith`, reason=`void pulls eye upward, cycle restarts` }
+ >
 }
 
 ## -------------------------------------------------------
@@ -235,30 +235,30 @@
 ## -------------------------------------------------------
 
 {_intent
-  mood: #[`solitude`, `stillness`, `aftermath`, `threshold`]
-  time = `the last 10 minutes of visible light`
-  season = `late autumn`
-  temperature = `cold, windless`
-  sound = `none — the painting is silent`
+ mood: #[`solitude`, `stillness`, `aftermath`, `threshold`]
+ time = `the last 10 minutes of visible light`
+ season = `late autumn`
+ temperature = `cold, windless`
+ sound = `none — the painting is silent`
 
-  what_is_not_shown: #[
-    `no human figures`
-    `no animals`
-    `no artificial light`
-    `no water`
-    `no clouds — sky is clear and final`
-  ]
+ what_is_not_shown: #[
+ `no human figures`
+ `no animals`
+ `no artificial light`
+ `no water`
+ `no clouds — sky is clear and final`
+ ]
 
-  what_the_tree_means: ~(
-    `it has already lost everything
-     it is not dying — it finished dying
-     it stands because standing is what it does now`
-  )
+ what_the_tree_means: ~(
+ `it has already lost everything
+ it is not dying — it finished dying
+ it stands because standing is what it does now`
+ )
 
-  what_the_moon_means: ~(
-    `it arrived before the sun left
-     it does not comfort — it witnesses`
-  )
+ what_the_moon_means: ~(
+ `it arrived before the sun left
+ it does not comfort — it witnesses`
+ )
 }
 
 ## -------------------------------------------------------
@@ -266,22 +266,28 @@
 ## -------------------------------------------------------
 
 {_evolution
-  v0.1: `initial scene — tree, moon, dusk sky, ember horizon`
-  v0.6: `added stars, fog, second tree, bird, and moon crack`
-  next: #[
-    `v0.7: introduce subtle color artifact (chromatic aberration) on high-contrast edges`
-  ]
-  note = `each version is a compositional decision, not a correction`
+ v0.1: `initial scene — tree, moon, dusk sky, ember horizon`
+ v0.6: `added stars, fog, second tree, bird, and moon crack`
+ next: #[
+ `v0.7: introduce subtle color artifact (chromatic aberration) on high-contrast edges`
+ ]
+ note = `each version is a compositional decision, not a correction`
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_theory_spw_scenes_duskoak_1
+?["What is the curation density of Scene.Painting v:0.6 @profile:Spw.b @intent:visual_scene_for_interpretation?"]{
+  #:depth #!computational // lens: curated collection
+  $^["Scene.Painting v:0.6 @profile:Spw.b @intent:visual_scene_for_interpretation"]@profile => %[collection.measure]
+  ~<docs/theory/spw/scenes/dusk-oak.spw> // introspect
+  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_theory_spw_scenes_duskoak_2
+?["What is the metabolic signature of reading ^seed[Scene.Painting v:0.6 @profile:Spw.b @intent:visual_scene_for_interpretation]?"]{
+  #:depth #!mathematical // lens: living system
+  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
+  ~#shape: "pragmatics layer, 1 frames, 2 annotations"
+  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark structural joints." }
+  ~<docs/theory/spw/audio-architecture.spw>  // nearest neighbor
+}

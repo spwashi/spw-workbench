@@ -7,54 +7,61 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Model and discover consequences of projection and nesting depth."
-  ~#inputs: [@spw/topology.spw, @spw/gen/index.spw, @biome/trace.spw]
+ ~#goal: "Model and discover consequences of projection and nesting depth."
+ ~#inputs: [@spw/topology.spw, @spw/gen/index.spw, @biome/trace.spw]
 }
 
 ^factor[projection]{
-  depth: "number of projection hops from source to generated shelf"
-  breadth: "number of projection targets per selector"
-  geometry: [@biome/algos/geom.spw#metric[depth], @biome/algos/geom.spw#metric[radius]]
-  material: [@biome/algos/material.spw#property[density], @biome/algos/material.spw#property[porosity]]
-  consequence: {
-    cache_pressure: "higher breadth increases warm/hot invalidation frequency"
-    drift_risk: "higher depth increases semantic drift risk"
-    trace_load: "higher depth increases trace volume"
-  }
+ depth: "number of projection hops from source to generated shelf"
+ breadth: "number of projection targets per selector"
+ geometry: [@biome/algos/geom.spw#metric[depth], @biome/algos/geom.spw#metric[radius]]
+ material: [@biome/algos/material.spw#property[density], @biome/algos/material.spw#property[porosity]]
+ consequence: {
+ cache_pressure: "higher breadth increases warm/hot invalidation frequency"
+ drift_risk: "higher depth increases semantic drift risk"
+ trace_load: "higher depth increases trace volume"
+ }
 }
 
 ^factor[nesting]{
-  depth: "container nesting level"
-  adjacency_density: "count of adjacent relationship containers"
-  geometry: [@biome/algos/geom.spw#metric[curvature], @biome/algos/geom.spw#metric[coupling_density]]
-  material: [@biome/algos/material.spw#property[viscosity], @biome/algos/material.spw#property[elasticity]]
-  consequence: {
-    readability: "moderate nesting improves locality; excessive nesting obscures intent"
-    interpretation_cost: "deeper nesting increases parse + selection traversal cost"
-    coupling_pressure: "adjacency density increases coupling and merge complexity"
-  }
+ depth: "container nesting level"
+ adjacency_density: "count of adjacent relationship containers"
+ geometry: [@biome/algos/geom.spw#metric[curvature], @biome/algos/geom.spw#metric[coupling_density]]
+ material: [@biome/algos/material.spw#property[viscosity], @biome/algos/material.spw#property[elasticity]]
+ consequence: {
+ readability: "moderate nesting improves locality; excessive nesting obscures intent"
+ interpretation_cost: "deeper nesting increases parse + selection traversal cost"
+ coupling_pressure: "adjacency density increases coupling and merge complexity"
+ }
 }
 
 ^discover[method]{
-  aggregate: [util, aggregate]
-  geometry_eval: @biome/algos/geom.spw
-  axes: [branch, phase, biome, grounding, selector]
-  outputs: [projection_consequence, nesting_consequence, mitigation_hint]
+ aggregate: [util, aggregate]
+ geometry_eval: @biome/algos/geom.spw
+ axes: [branch, phase, biome, grounding, selector]
+ outputs: [projection_consequence, nesting_consequence, mitigation_hint]
 }
 
 ^mitigation[hint]{
-  projection: "prefer @roots and shallow projection chains for stable shelves"
-  nesting: "flatten non-essential layers; preserve semantic adjacency where meaningful"
+ projection: "prefer @roots and shallow projection chains for stable shelves"
+ nesting: "flatten non-essential layers; preserve semantic adjacency where meaningful"
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_spw_consequence_1
+?["What ripples if #analysis changes in this file?"]{
+  #:depth #!mathematical // lens: curated collection
+  $#analysis@workspace => %[reference.count, depth.downstream]
+  ~#downstream: "trace all files that reference this surface"
+  !probe{ "imagine renaming #analysis to #analysis_v2; count broken references; the count reveals how deeply intent is woven into the workspace." }
+  $%[file.frame_count, file.annotation_density, file.brace_depth_max]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_spw_consequence_2
+?["What happens when you zoom from the workflow level to the workspace level in Consequence?"]{
+  #:depth #!stylistic // lens: living system
+  $^["_"]@here => &[@workspace] // local → global projection
+  ~#zoom_in: "intent" // this file's atom
+  !probe{ "the atom is workflow-scale; zoom out: what workspace-level pattern does this workflow participate in?" }
+  $%[file.frame_count, file.annotation_density, file.brace_depth_max]
+  ~<.spw/agents.spw>  // nearest neighbor
+}

@@ -5,89 +5,96 @@
 #:layer #!pragmatics
 
 ^["roots"]{
-  @src: ~"../src"
+ @src: ~"../src"
 }
 
 ^["definition"]{
-  ~#boutique: "A feature earns attention because its behaviors, visuals, and affordances are tuned across the whole interface."
-  ~#coherence: "Feature identity survives layout changes, position shifts, and runtime posture."
+ ~#boutique: "A feature earns attention because its behaviors, visuals, and affordances are tuned across the whole interface."
+ ~#coherence: "Feature identity survives layout changes, position shifts, and runtime posture."
 }
 
 ^["principles"]{
-  ~#single_profile: "Each feature declares one primary experience profile (axes + goals)."
-  ~#position_awareness: "Panels change behavior per position, but keep feature intent intact."
-  ~#runtime_link: "Authoring surfaces respond to runtime posture (live/paused/replay/explain)."
-  ~#micro_consistency: "Icons, verbs, and labels remain consistent across panels."
-  ~#explorability: "Movement and rearrangement reveal new affordances, not just new placement."
+ ~#single_profile: "Each feature declares one primary experience profile (axes + goals)."
+ ~#position_awareness: "Panels change behavior per position, but keep feature intent intact."
+ ~#runtime_link: "Authoring surfaces respond to runtime posture (live/paused/replay/explain)."
+ ~#micro_consistency: "Icons, verbs, and labels remain consistent across panels."
+ ~#explorability: "Movement and rearrangement reveal new affordances, not just new placement."
 }
 
 ^["feature_profiles"]{
-  # Seed profiles for the two priority features.
+ # Seed profiles for the two priority features.
 
-  ^["context-management"]{
-    ~#intent: "Maintain spatial + semantic awareness across panels."
-    ~#primary_axes{
-      perspective: inspecting
-      genre: analytic
-      cadence: browse
-    }
-    ~#position_bias{
-      docked_left: "structure-first, tree navigation, region map"
-      docked_right: "detail-first, actions + provenance"
-      docked_bottom: "timeline-first, session activity"
-    }
-    ~#runtime_posture{
-      live: "pulsing highlights + live selection sync"
-      paused: "snapshot compare + diff pins"
-      replay: "event breadcrumb trail"
-      explain: "guided callouts + semantic hints"
-    }
-  }
+ ^["context-management"]{
+ ~#intent: "Maintain spatial + semantic awareness across panels."
+ ~#primary_axes{
+ perspective: inspecting
+ genre: analytic
+ cadence: browse
+ }
+ ~#position_bias{
+ docked_left: "structure-first, tree navigation, region map"
+ docked_right: "detail-first, actions + provenance"
+ docked_bottom: "timeline-first, session activity"
+ }
+ ~#runtime_posture{
+ live: "pulsing highlights + live selection sync"
+ paused: "snapshot compare + diff pins"
+ replay: "event breadcrumb trail"
+ explain: "guided callouts + semantic hints"
+ }
+ }
 
-  ^["authoring"]{
-    ~#intent: "Compose and transform source with immediate feedback."
-    ~#primary_axes{
-      perspective: authoring
-      genre: operational
-      cadence: work
-    }
-    ~#position_bias{
-      docked_left: "navigation + quick switches"
-      docked_right: "inline diagnostics + actions"
-      docked_bottom: "runtime log + prompts"
-    }
-    ~#runtime_posture{
-      live: "inline semantic pulses + smart hints"
-      paused: "diff overlays + provenance"
-      replay: "cursor timeline + event scrub"
-      explain: "operator cues + guided annotations"
-    }
-  }
+ ^["authoring"]{
+ ~#intent: "Compose and transform source with immediate feedback."
+ ~#primary_axes{
+ perspective: authoring
+ genre: operational
+ cadence: work
+ }
+ ~#position_bias{
+ docked_left: "navigation + quick switches"
+ docked_right: "inline diagnostics + actions"
+ docked_bottom: "runtime log + prompts"
+ }
+ ~#runtime_posture{
+ live: "inline semantic pulses + smart hints"
+ paused: "diff overlays + provenance"
+ replay: "cursor timeline + event scrub"
+ explain: "operator cues + guided annotations"
+ }
+ }
 }
 
 ^["preset_layouts"]{
-  # Presets define position, behavior bias, and density.
-  ~#default_presets{
-    focus_authoring: "Editor center, context left, diagnostics right, runtime bottom"
-    inspect_context: "Context left, inspector right, editor compact center"
-    runtime_playback: "Runtime bottom, editor center, timeline emphasis"
-  }
-  ~#notes: "Presets should map to behavior overrides, not just layout changes."
+ # Presets define position, behavior bias, and density.
+ ~#default_presets{
+ focus_authoring: "Editor center, context left, diagnostics right, runtime bottom"
+ inspect_context: "Context left, inspector right, editor compact center"
+ runtime_playback: "Runtime bottom, editor center, timeline emphasis"
+ }
+ ~#notes: "Presets should map to behavior overrides, not just layout changes."
 }
 
 ^["implementation-notes"]{
-  ~#scope: "First implementation uses presets + resize. Drag/drop can follow later."
-  ~#ownership: "Feature profiles live in docs; mapping helpers in @src/ui/ or @src/features/."
+ ~#scope: "First implementation uses presets + resize. Drag/drop can follow later."
+ ~#ownership: "Feature profiles live in docs; mapping helpers in @src/ui/ or @src/features/."
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_features_spw_featurecoherence_1
+?["What was Feature Coherence before it was this, and what could it become?"]{
+  #:depth #!experiential // lens: molecular binding
+  ~#past: "git log --oneline -- docs/features/spw/feature-coherence.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[runtime.stage, runtime.queue_depth]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_features_spw_featurecoherence_2
+?["How would an ecology algorithm express spw/feature-coherence?"]{
+  #:depth #!computational // lens: ecological zone
+  ~#translation_target: "ecology"
+  ~#source_concept: "roots"
+  !probe{ "rewrite the root frame in ecology vocabulary; where the translation breaks reveals Spw's untranslatable concepts." }
+  $%[runtime.stage, runtime.queue_depth]
+  ~<docs/features/spw/feature-registry.spw>  // nearest neighbor
+}

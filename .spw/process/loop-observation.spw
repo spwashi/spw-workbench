@@ -6,75 +6,82 @@
 #:layer #!pragmatics
 
 ^"loop"{
-  ~#sequence: "?~<#.>@(#.)&[#.]*{#.}^"
-  ~#phase_read: {
-    "?~": "probe and name"
-    "@": "observe from a scoped perspective"
-    "&": "merge categorized evidence"
-    "*": "materialize properties"
-    "^": "integrate upward for next cycle"
-  }
+ ~#sequence: "?~<#.>@(#.)&[#.]*{#.}^"
+ ~#phase_read: {
+ "?~": "probe and name"
+ "@": "observe from a scoped perspective"
+ "&": "merge categorized evidence"
+ "*": "materialize properties"
+ "^": "integrate upward for next cycle"
+ }
 }
 
 ^"observation_fields"{
-  ~#required: [
-    "focus",
-    "phase",
-    "operator",
-    "container",
-    "projection",
-    "evidence_refs",
-    "next_action",
-  ]
+ ~#required: [
+ "focus",
+ "phase",
+ "operator",
+ "container",
+ "projection",
+ "evidence_refs",
+ "next_action",
+ ]
 
-  ~#operator_motifs: {
-    windmill: "operator turns over repeated context to reveal stable direction"
-    current_probe: "operator samples flow/pressure at one position in the loop"
-  }
+ ~#operator_motifs: {
+ windmill: "operator turns over repeated context to reveal stable direction"
+ current_probe: "operator samples flow/pressure at one position in the loop"
+ }
 }
 
 ^"clustering"{
-  ~#goal: "Group concepts by shared operators, containers, and projection fields."
-  ~#cluster_keys: ["operator", "container", "projection", "intent"]
-  ~#output: "cluster cards with one canonical label and linked evidence refs"
+ ~#goal: "Group concepts by shared operators, containers, and projection fields."
+ ~#cluster_keys: ["operator", "container", "projection", "intent"]
+ ~#output: "cluster cards with one canonical label and linked evidence refs"
 }
 
 ^"projection_refs"{
-  ~#paths: ["~\"...\"", "@root/..."]
-  ~#fields: ["^\"...\"", "~#...", "=..."]
-  ~#selector_start: "$~\"_\" | $@_"
-  ~#selector_fields: "$^\"_\"_"
-  ~#optical_lens_fields: {
-    focal_depth: "how far the projection reaches through nested scopes"
-    aperture: "how much context is admitted into one observation"
-    magnification: "detail level for one cluster or field"
-    aberration: "distortion risk from overfit perspective"
-  }
+ ~#paths: ["~\"...\"", "@root/..."]
+ ~#fields: ["^\"...\"", "~#...", "=..."]
+ ~#selector_start: "$~\"_\" | $@_"
+ ~#selector_fields: "$^\"_\"_"
+ ~#optical_lens_fields: {
+ focal_depth: "how far the projection reaches through nested scopes"
+ aperture: "how much context is admitted into one observation"
+ magnification: "detail level for one cluster or field"
+ aberration: "distortion risk from overfit perspective"
+ }
 }
 
 ^"review_cadence"{
-  ~#per_loop: "record one concise observation snapshot"
-  ~#per_milestone: "archive clusters and unresolved questions"
+ ~#per_loop: "record one concise observation snapshot"
+ ~#per_milestone: "archive clusters and unresolved questions"
 }
 
 ^"beat_and_scale"{
-  ~#beat: "smallest state advance in a loop (one measured transition)"
-  ~#aggregation: "aggregated beats rolled into one snapshot delta"
-  ~#scales: {
-    micro: "single operator event"
-    meso: "phase cycle (?~ -> @ -> & -> * -> ^)"
-    macro: "episode/workstream over many cycles"
-  }
+ ~#beat: "smallest state advance in a loop (one measured transition)"
+ ~#aggregation: "aggregated beats rolled into one snapshot delta"
+ ~#scales: {
+ micro: "single operator event"
+ meso: "phase cycle (?~ -> @ -> & -> * -> ^)"
+ macro: "episode/workstream over many cycles"
+ }
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_spw_process_loopobservation_1
+?["What was Loop Observation before it was this, and what could it become?"]{
+  #:depth #!experiential // lens: curated collection
+  ~#past: "git log --oneline -- .spw/process/loop-observation.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[process.cycle_time_ms, process.iteration_count]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_spw_process_loopobservation_2
+?["How would a biology algorithm express loop?"]{
+  #:depth #!computational // lens: living system
+  ~#translation_target: "biology"
+  ~#source_concept: "loop"
+  !probe{ "rewrite the root frame in biology vocabulary; where the translation breaks reveals Spw's untranslatable concepts." }
+  $%[process.cycle_time_ms, process.iteration_count]
+  ~<.spw/process/hot-reload-loop.spw>  // nearest neighbor
+}

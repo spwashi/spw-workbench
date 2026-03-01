@@ -6,166 +6,173 @@
 #:layer #!grammar
 
 ^"established"{
-  ~#file_payload{
-    syntax: '~"relative/path"'
-    meaning: "Deferred file reference — load on demand"
-    example: '~"./register-bank.spw"'
-    analogy: "CSS @import url()"
-    container: "~" # potential/superposition — the file *might* be loaded
-  }
-  ~#root_alias{
-    syntax: "@alias/path"
-    meaning: "Root-relative identity — bound at doc root"
-    example: "@src/runtime/state/types.ts"
-    analogy: "TypeScript path alias"
-    container: "@" # perspective/locus — the alias *names a viewpoint*
-  }
-  ~#index_listing{
-    syntax: '.. ~"path"'
-    meaning: "Parent-child link — this doc contains that doc"
-    example: '.. ~"./audits"'
-    analogy: "Directory listing"
-    container: ".." # ground traversal — navigate the tree
-  }
+ ~#file_payload{
+ syntax: '~"relative/path"'
+ meaning: "Deferred file reference — load on demand"
+ example: '~"./register-bank.spw"'
+ analogy: "CSS @import url()"
+ container: "~" # potential/superposition — the file *might* be loaded
+ }
+ ~#root_alias{
+ syntax: "@alias/path"
+ meaning: "Root-relative identity — bound at doc root"
+ example: "@src/runtime/state/types.ts"
+ analogy: "TypeScript path alias"
+ container: "@" # perspective/locus — the alias *names a viewpoint*
+ }
+ ~#index_listing{
+ syntax: '.. ~"path"'
+ meaning: "Parent-child link — this doc contains that doc"
+ example: '.. ~"./audits"'
+ analogy: "Directory listing"
+ container: ".." # ground traversal — navigate the tree
+ }
 }
 
 ^"extensions"{
-  ~#concept_coupled_ref{
-    syntax: '~<concept>"path"'
-    meaning: "File reference coupled with a named concept"
-    examples: [
-      '~<register>"../../src/runtime/state/register-bank.ts"',
-      '~<operator>"../../src/runtime/interpreter/operators.ts"',
-      '~<affinity>"../../src/runtime/state/type-affinities.ts"',
-    ]
-    read_as: "Load this file *as* this concept"
-    grep: "~<" # greppable: search for concept-coupled refs
-    analogy: "CSS @layer name { @import url() }"
-    container: "<>" # concept — the coupling names the relationship
-    parse_rule: "~ < identifier > string"
-  }
-  ~#tagged_ref{
-    syntax: '~#tag "path"'
-    meaning: "Resonance-tagged reference — grounded identity"
-    examples: [
-      '~#spec "./brace-registers.spw"',
-      '~#research "./spirit-sequence.spw"',
-      '~#example "./examples/grounded-register.spw"',
-      '~#bench "./benchmarks/register-access.spw"',
-    ]
-    read_as: "This file is *categorized as* this tag"
-    grep: "~#" # greppable: search for tagged refs
-    container: "#" # resonance — the tag is a grounded label
-    parse_rule: "~ # identifier string"
-  }
+ ~#concept_coupled_ref{
+ syntax: '~<concept>"path"'
+ meaning: "File reference coupled with a named concept"
+ examples: [
+ '~<register>"../../src/runtime/state/register-bank.ts"',
+ '~<operator>"../../src/runtime/interpreter/operators.ts"',
+ '~<affinity>"../../src/runtime/state/type-affinities.ts"',
+ ]
+ read_as: "Load this file *as* this concept"
+ grep: "~<" # greppable: search for concept-coupled refs
+ analogy: "CSS @layer name { @import url() }"
+ container: "<>" # concept — the coupling names the relationship
+ parse_rule: "~ < identifier > string"
+ }
+ ~#tagged_ref{
+ syntax: '~#tag "path"'
+ meaning: "Resonance-tagged reference — grounded identity"
+ examples: [
+ '~#spec "./brace-registers.spw"',
+ '~#research "./spirit-sequence.spw"',
+ '~#example "./examples/grounded-register.spw"',
+ '~#bench "./benchmarks/register-access.spw"',
+ ]
+ read_as: "This file is *categorized as* this tag"
+ grep: "~#" # greppable: search for tagged refs
+ container: "#" # resonance — the tag is a grounded label
+ parse_rule: "~ # identifier string"
+ }
 }
 
 ^"composition"{
-  ~#layered_ref{
-    note: "Extensions can compose"
-    examples: [
-      '~#spec <register>"./brace-registers.spw"',
-      '~#bench <throughput>"./benchmarks/spirit-throughput.spw"',
-    ]
-    read_as: "Tagged and concept-coupled file reference"
-    order: "tag first, then concept, then path"
-  }
+ ~#layered_ref{
+ note: "Extensions can compose"
+ examples: [
+ '~#spec <register>"./brace-registers.spw"',
+ '~#bench <throughput>"./benchmarks/spirit-throughput.spw"',
+ ]
+ read_as: "Tagged and concept-coupled file reference"
+ order: "tag first, then concept, then path"
+ }
 }
 
 ^"conventions"{
-  paths: "Always relative from the referencing file"
-  roots: "Define @alias in ^[roots]{} at doc top"
-  index: "Every directory should have an index.spw"
-  grep_friendly: "~< and ~# are unique prefixes for ripgrep"
-  existing_compat: "Plain ~\"path\" remains valid (no concept, no tag)"
+ paths: "Always relative from the referencing file"
+ roots: "Define @alias in ^[roots]{} at doc top"
+ index: "Every directory should have an index.spw"
+ grep_friendly: "~< and ~# are unique prefixes for ripgrep"
+ existing_compat: "Plain ~\"path\" remains valid (no concept, no tag)"
 }
 
 ^"quote_policy"{
-  local_path_refs: {
-    syntax: '~"path"',
-    rule: "quotes required",
-    why: "removes lexical ambiguity and preserves exact payload boundaries"
-  }
-  root_alias_refs: {
-    syntax: "@alias/path",
-    rule: "unquoted path segments",
-    why: "keeps identity concise and readable while preserving root binding semantics"
-  }
-  root_declarations: {
-    syntax: '@alias: ~"path"',
-    rule: "quoted payload required",
-    why: "root bindings are file-system payloads and should parse like other ~ paths"
-  }
-  parser_modes: {
-    low_context: "strict: unquoted local path sugar is rejected with an actionable parse error",
-    high_context: "ergonomic: unquoted local sugar (e.g. ~./x, ~#tag ./x, ~<tag>./x) is accepted and desugared to quoted canonical form"
-  }
+ local_path_refs: {
+ syntax: '~"path"',
+ rule: "quotes required",
+ why: "removes lexical ambiguity and preserves exact payload boundaries"
+ }
+ root_alias_refs: {
+ syntax: "@alias/path",
+ rule: "unquoted path segments",
+ why: "keeps identity concise and readable while preserving root binding semantics"
+ }
+ root_declarations: {
+ syntax: '@alias: ~"path"',
+ rule: "quoted payload required",
+ why: "root bindings are file-system payloads and should parse like other ~ paths"
+ }
+ parser_modes: {
+ low_context: "strict: unquoted local path sugar is rejected with an actionable parse error",
+ high_context: "ergonomic: unquoted local sugar (e.g. ~./x, ~#tag ./x, ~<tag>./x) is accepted and desugared to quoted canonical form"
+ }
 }
 
 ^"noise_convenience_consistency"{
-  default_human_docs: {
-    recommendation: "Prefer @alias/path for repeated roots; use ~\"...\" for local adjacency.",
-    noise: "low-to-medium",
-    convenience: "high once roots are declared",
-    consistency: "high"
-  }
-  generated_runtime_state: {
-    recommendation: "Prefer ~\"relative/from/state-file\" for navigation portability across editors/LSP stacks.",
-    noise: "medium (deep traversals can be verbose)",
-    convenience: "high (no root bootstrap required)",
-    consistency: "high and machine-deterministic"
-  }
-  prose_mentions: {
-    recommendation: "Use backticks for examples; avoid accidental reference syntax unless navigation is intended.",
-    noise: "low",
-    convenience: "high",
-    consistency: "prevents accidental links"
-  }
+ default_human_docs: {
+ recommendation: "Prefer @alias/path for repeated roots; use ~\"...\" for local adjacency.",
+ noise: "low-to-medium",
+ convenience: "high once roots are declared",
+ consistency: "high"
+ }
+ generated_runtime_state: {
+ recommendation: "Prefer ~\"relative/from/state-file\" for navigation portability across editors/LSP stacks.",
+ noise: "medium (deep traversals can be verbose)",
+ convenience: "high (no root bootstrap required)",
+ consistency: "high and machine-deterministic"
+ }
+ prose_mentions: {
+ recommendation: "Use backticks for examples; avoid accidental reference syntax unless navigation is intended.",
+ noise: "low",
+ convenience: "high",
+ consistency: "prevents accidental links"
+ }
 }
 
 ^"semantic_implications"{
-  '~"path"': "potential/deferred file payload; the path is data to be resolved",
-  "@alias/path": "perspectival identity anchored by a bound root",
-  "~<concept>\"path\"": "deferred payload with explicit conceptual coupling",
-  "~#tag \"path\"": "deferred payload with resonance-class tagging"
+ '~"path"': "potential/deferred file payload; the path is data to be resolved",
+ "@alias/path": "perspectival identity anchored by a bound root",
+ "~<concept>\"path\"": "deferred payload with explicit conceptual coupling",
+ "~#tag \"path\"": "deferred payload with resonance-class tagging"
 }
 
 ^"counterexamples"{
-  accidental_ref_in_prose: {
-    anti: "Writing ~\"foo\" in prose-only context unintentionally creates a navigable reference.",
-    correction: "Use backticks when illustrating syntax without binding intent."
-  }
-  mixed_style_drift: {
-    anti: "Same file alternates between deep ~\"../../../...\" and undeclared @alias paths.",
-    correction: "Declare roots up front or stay purely relative for that file."
-  }
-  hidden_semantic_shift: {
-    anti: "Replacing @alias/path with plain prose path silently drops root-binding semantics.",
-    correction: "Keep navigable references in explicit Spw forms."
-  }
+ accidental_ref_in_prose: {
+ anti: "Writing ~\"foo\" in prose-only context unintentionally creates a navigable reference.",
+ correction: "Use backticks when illustrating syntax without binding intent."
+ }
+ mixed_style_drift: {
+ anti: "Same file alternates between deep ~\"../../../...\" and undeclared @alias paths.",
+ correction: "Declare roots up front or stay purely relative for that file."
+ }
+ hidden_semantic_shift: {
+ anti: "Replacing @alias/path with plain prose path silently drops root-binding semantics.",
+ correction: "Keep navigable references in explicit Spw forms."
+ }
 }
 
 ^"falsify_quote_policy"{
-  disproof_signals: [
-    "quoted local refs produce lower navigation reliability than unquoted alternatives",
-    "unquoted root refs create measurable parser ambiguity in real corpora",
-    "runtime snapshots with relative ~ refs show worse portability than root-bound refs across editor integrations"
-  ],
-  checks: [
-    "npm run lint:docs:strict",
-    "npm run lsp:smoke",
-    "npm run spwq -- docs/index.spw --selector=pathRefs --format=lines"
-  ]
+ disproof_signals: [
+ "quoted local refs produce lower navigation reliability than unquoted alternatives",
+ "unquoted root refs create measurable parser ambiguity in real corpora",
+ "runtime snapshots with relative ~ refs show worse portability than root-bound refs across editor integrations"
+ ],
+ checks: [
+ "npm run lint:docs:strict",
+ "npm run lsp:smoke",
+ "npm run spwq -- docs/index.spw --selector=pathRefs --format=lines"
+ ]
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_specs_spw_referenceconventions_1
+?["What was Reference Conventions before it was this, and what could it become?"]{
+  #:depth #!experiential // lens: molecular binding
+  ~#past: "git log --oneline -- docs/specs/spw/reference-conventions.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_specs_spw_referenceconventions_2
+?["How would an ecology algorithm express established?"]{
+  #:depth #!computational // lens: ecological zone
+  ~#translation_target: "ecology"
+  ~#source_concept: "established"
+  !probe{ "rewrite the root frame in ecology vocabulary; where the translation breaks reveals Spw's untranslatable concepts." }
+  $%[register.bank_size, register.active_bindings]
+  ~<docs/specs/spw/data-attribute-normalization.spw>  // nearest neighbor
+}

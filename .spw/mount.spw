@@ -8,43 +8,50 @@
 
 ^seed[Workbench.Mount.V01.ONF v:0.1 @profile:Spw.m @intent:mount-slice]
 ?(
-  @(Orchestrator,#[SyntaxEvolver,CanonicalizerHasher,FuzzerAdversary,ParserGrammar,ProjectionMedia]),
-  "implement Mount v0.1 slice; treat .spw as canon root and validate mount invariants"
+ @(Orchestrator,#[SyntaxEvolver,CanonicalizerHasher,FuzzerAdversary,ParserGrammar,ProjectionMedia]),
+ "implement Mount v0.1 slice; treat .spw as canon root and validate mount invariants"
 )
 
 ^"runtime_contract"{
-  index: ~"./index.spw"
-  workspace: ~"./workspace.spw"
-  canon_mount: ~"./canon-mount.spw"
-  eval: ~"./harness/evals/baseline-evals.spw"
+ index: ~"./index.spw"
+ workspace: ~"./workspace.spw"
+ canon_mount: ~"./canon-mount.spw"
+ eval: ~"./harness/evals/baseline-evals.spw"
 }
 
 ^"lock_policy"{
-  @lock: "advisory construct in v0.1 (validated by script, not parser-enforced)"
-  semantic_hash: "hash(canonical(Spw.m))"
-  surface_hash: "runtime write policy may lock selected .spw payloads"
+ @lock: "advisory construct in v0.1 (validated by script, not parser-enforced)"
+ semantic_hash: "hash(canonical(Spw.m))"
+ surface_hash: "runtime write policy may lock selected .spw payloads"
 }
 
 ^"experimental_surface"{
-  semicolon_newline_space: "proposed and tracked by diagnostics; not grammar-default in this slice"
-  semicolon_prefixed_line: "proposed comment/compress style; diagnostics only in v0.1"
-  interpreted_examples: ["example:<>", "example:;", "example:?<>"]
-  status: "speculative ergonomics under scoped evolution"
+ semicolon_newline_space: "proposed and tracked by diagnostics; not grammar-default in this slice"
+ semicolon_prefixed_line: "proposed comment/compress style; diagnostics only in v0.1"
+ interpreted_examples: ["example:<>", "example:;", "example:?<>"]
+ status: "speculative ergonomics under scoped evolution"
 }
 
 ^"invariant"{
-  "ONF seed in mount.spw stays parse-clean and hash-stable",
-  "experimental syntax remains opt-in until grammar and fuzz gates pass",
+ "ONF seed in mount.spw stays parse-clean and hash-stable",
+ "experimental syntax remains opt-in until grammar and fuzz gates pass",
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_spw_mount_1
+?["What was Mount before it was this, and what could it become?"]{
+  #:depth #!experiential // lens: formal structure
+  ~#past: "git log --oneline -- .spw/mount.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[runtime.stage, runtime.queue_depth]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_spw_mount_2
+?["How would a materials science algorithm express Workbench.Mount.V01.ONF v:0.1 @profile:Spw.m @intent:mount-slice?"]{
+  #:depth #!computational // lens: material grain
+  ~#translation_target: "materials science"
+  ~#source_concept: "Workbench.Mount.V01.ONF v:0.1 @profile:Spw.m @intent:mount-slice"
+  !probe{ "rewrite the root frame in materials science vocabulary; where the translation breaks reveals Spw's untranslatable concepts." }
+  $%[runtime.stage, runtime.queue_depth]
+  ~<.spw/agents.spw>  // nearest neighbor
+}

@@ -8,82 +8,88 @@
 #:layer #!semantics
 
 ^"intent"{
-  ~#goal: "Connect architectural claims to measurement probes so the ontology is self-verifying."
-  ~#layer: "cross-cutting (grammar claims, semantic claims, and pragmatic claims all use this protocol)"
+ ~#goal: "Connect architectural claims to measurement probes so the ontology is self-verifying."
+ ~#layer: "cross-cutting (grammar claims, semantic claims, and pragmatic claims all use this protocol)"
 }
 
 ^"template"{
-  claim_template: {
-    claim_id: "string (e.g. c001-brace-symmetry)"
-    layer: "grammar | semantics | pragmatics"
-    hypothesis: "what we believe to be true"
-    measure: "what observable quantity would confirm or deny it"
-    falsification: "threshold or condition that would disprove the claim"
-    probe_ref: "path to the probe that tests this claim"
-    spec_ref: "path to the spec that declares the invariant"
-    impl_ref: "path to the implementation that realizes the claim"
-    status: "untested | active | confirmed | refuted"
-  }
+ claim_template: {
+ claim_id: "string (e.g. c001-brace-symmetry)"
+ layer: "grammar | semantics | pragmatics"
+ hypothesis: "what we believe to be true"
+ measure: "what observable quantity would confirm or deny it"
+ falsification: "threshold or condition that would disprove the claim"
+ probe_ref: "path to the probe that tests this claim"
+ spec_ref: "path to the spec that declares the invariant"
+ impl_ref: "path to the implementation that realizes the claim"
+ status: "untested | active | confirmed | refuted"
+ }
 }
 
 ^"examples"{
-  c001: {
-    claim_id: "c001-brace-symmetry"
-    layer: "grammar"
-    hypothesis: "L/R brace anchors produce symmetric selection ergonomics"
-    measure: "selector hit rate from left vs right anchor across 100 queries"
-    falsification: "asymmetric hit rate > 15%"
-    probe_ref: ".spw/harness/probes/probe-loop.spw"
-    spec_ref: "lib/spw-v0.2.0-alpha/core/CONTAINERS.md"
-    impl_ref: "src/seed/grammar/containers.ts"
-    status: "untested"
-  }
+ c001: {
+ claim_id: "c001-brace-symmetry"
+ layer: "grammar"
+ hypothesis: "L/R brace anchors produce symmetric selection ergonomics"
+ measure: "selector hit rate from left vs right anchor across 100 queries"
+ falsification: "asymmetric hit rate > 15%"
+ probe_ref: ".spw/harness/probes/probe-loop.spw"
+ spec_ref: "lib/spw-v0.2.0-alpha/core/CONTAINERS.md"
+ impl_ref: "src/seed/grammar/containers.ts"
+ status: "untested"
+ }
 
-  c002: {
-    claim_id: "c002-accessor-polarity"
-    layer: "semantics"
-    hypothesis: "# trends extrinsic/projection, . trends intrinsic/reduction in authored .spw files"
-    measure: "corpus scan: ratio of # in projection context vs . in reduction context"
-    falsification: "polarity consistency < 70% across .spw corpus"
-    probe_ref: ".spw/harness/probes/probe-loop.spw"
-    spec_ref: "lib/spw-v0.2.0-alpha/core/OPERATORS.md"
-    impl_ref: "src/seed/lexer/matchers/operators.ts"
-    status: "untested"
-  }
+ c002: {
+ claim_id: "c002-accessor-polarity"
+ layer: "semantics"
+ hypothesis: "# trends extrinsic/projection, . trends intrinsic/reduction in authored .spw files"
+ measure: "corpus scan: ratio of # in projection context vs . in reduction context"
+ falsification: "polarity consistency < 70% across .spw corpus"
+ probe_ref: ".spw/harness/probes/probe-loop.spw"
+ spec_ref: "lib/spw-v0.2.0-alpha/core/OPERATORS.md"
+ impl_ref: "src/seed/lexer/matchers/operators.ts"
+ status: "untested"
+ }
 
-  c003: {
-    claim_id: "c003-plain-text-legibility"
-    layer: "pragmatics"
-    hypothesis: ".spw files are legible without a custom renderer in terminal, Obsidian, and Notion"
-    measure: "readability score: can a reader extract intent from raw text in < 30 seconds"
-    falsification: "more than 20% of .spw files require rendered view to understand intent"
-    probe_ref: ".spw/harness/probes/probe-loop.spw"
-    spec_ref: ".spw/workspace.spw#process"
-    impl_ref: "n/a (convention, not code)"
-    status: "untested"
-  }
+ c003: {
+ claim_id: "c003-plain-text-legibility"
+ layer: "pragmatics"
+ hypothesis: ".spw files are legible without a custom renderer in terminal, Obsidian, and Notion"
+ measure: "readability score: can a reader extract intent from raw text in < 30 seconds"
+ falsification: "more than 20% of .spw files require rendered view to understand intent"
+ probe_ref: ".spw/harness/probes/probe-loop.spw"
+ spec_ref: ".spw/workspace.spw#process"
+ impl_ref: "n/a (convention, not code)"
+ status: "untested"
+ }
 }
 
 ^"chain"{
-  ~#description: "The claim chain traces from .spw assertion to spec to implementation to test."
-  ~#flow: "^claim[id] -> spec_ref (invariant) -> impl_ref (code) -> probe_ref (measurement)"
-  ~#gap_signal: "Any claim without all four links is architectural debt."
+ ~#description: "The claim chain traces from .spw assertion to spec to implementation to test."
+ ~#flow: "^claim[id] -> spec_ref (invariant) -> impl_ref (code) -> probe_ref (measurement)"
+ ~#gap_signal: "Any claim without all four links is architectural debt."
 }
 
 ^"invariant"{
-  "Every architectural claim should be expressible as a claim template.",
-  "Claims with status 'refuted' trigger a review, not silent deletion.",
-  "The claim chain is the minimal unit of architectural self-knowledge.",
+ "Every architectural claim should be expressible as a claim template.",
+ "Claims with status 'refuted' trigger a review, not silent deletion.",
+ "The claim chain is the minimal unit of architectural self-knowledge.",
 }
 
-?["Does the Cayley table for brace×operator composition close under {FRAME}?"]
-  #:depth #!mathematical  // lens: formula
-  $^seed[_.sym:D4] => %[register.left, register.right]
-  ~<@spec/core/OPERATORS.md>
-  !probe{ "construct the group action table; check if .left ↔ .right reflection commutes with ~ → ! operator tense shift" }
+#>wonder_spw_harness_claimprotocol_1
+?["What is the ecological temperature of reading Claim Protocol?"]{
+  #:depth #!experiential // lens: ecological zone
+  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
+  ~#structure: "intent → template → examples" // frame flow
+  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark biome edges." }
+}
 
-?["What orbits emerge when D4 acts on nested brace pairs?"]
-  #:depth #!computational  // lens: molecule
-  $^[_.sym] => &[orbit.stabilizer]
-  ~<@spw/registries/curiosity-brace.spw>
-  !probe{ "enumerate fixed points of the dihedral action on {{{}}} nesting depth 3; count distinct register states" }
+#>wonder_spw_harness_claimprotocol_2
+?["What concept is conspicuously absent from Claim Protocol?"]{
+  #:depth #!computational // lens: molecular binding
+  ~#present: [#harness, #protocol, #mathematical]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[harness.run_count, harness.pass_rate]
+  ~<.spw/harness/memory-surface.spw>  // nearest neighbor
+}

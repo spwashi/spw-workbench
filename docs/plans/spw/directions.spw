@@ -5,107 +5,113 @@
 #:layer #!pragmatics
 
 ^["roots"]{
-  @src:  ~"../src"
-  @spec: ~"../lib/spw-v0.1.0-alpha"
+ @src: ~"../src"
+ @spec: ~"../lib/spw-v0.1.0-alpha"
 }
 
 ^["immediate"]{
-  # Structural debt
-  @src/platform/bootstrap.ts^bane             # 632 lines, split wiring
-  @src/runtime/interpreter/interpreter.ts^bane # 620 lines, split eval/ops
-  @src/design/mode/effects.ts^bane            # 586 lines, split render/tooltip
-  @src/design/themes/token-bank.ts^bane       # 554 lines, split types/mutations/css
-  @src/app/spw-workbench.ts^bane              # 519 lines, split parsing/renderers
-  @src/app/components/mode-toggle/mode-toggle.ts^bane     # 510 lines, split types/groups
+ # Structural debt
+ @src/platform/bootstrap.ts^bane # 632 lines, split wiring
+ @src/runtime/interpreter/interpreter.ts^bane # 620 lines, split eval/ops
+ @src/design/mode/effects.ts^bane # 586 lines, split render/tooltip
+ @src/design/themes/token-bank.ts^bane # 554 lines, split types/mutations/css
+ @src/app/spw-workbench.ts^bane # 519 lines, split parsing/renderers
+ @src/app/components/mode-toggle/mode-toggle.ts^bane # 510 lines, split types/groups
 
-  # Missing hooks
-  .. "Runtime hooks (timing) - TODO"
-  .. "Debug hooks (timing) - TODO"
-  .. "CLI hooks (timing) - TODO"
+ # Missing hooks
+ .. "Runtime hooks (timing) - TODO"
+ .. "Debug hooks (timing) - TODO"
+ .. "CLI hooks (timing) - TODO"
 }
 
 ^["short-term"]{
-  # Conformance alignment
-  ?[Level 1: Parser]{
-    @src/seed/lexer/
-    @src/seed/parser/
-    @src/seed/grammar/
-    @spec/infra/CONFORMANCE.md
-  }
+ # Conformance alignment
+ ?[Level 1: Parser]{
+ @src/seed/lexer/
+ @src/seed/parser/
+ @src/seed/grammar/
+ @spec/infra/CONFORMANCE.md
+ }
 
-  # Test coverage
-  @src/seed/__tests__/          # Expand fixtures
-  @src/runtime/__tests__/          # Interpreter tests
+ # Test coverage
+ @src/seed/__tests__/ # Expand fixtures
+ @src/runtime/__tests__/ # Interpreter tests
 }
 
 ^["medium-term"]{
-  # Conformance Level 2: Evaluator
-  ?[semantic execution]{
-    @src/runtime/interpreter/
-    @src/runtime/state/            # Valence handling
-    @spec/runtime/REGISTERS.md
-  }
+ # Conformance Level 2: Evaluator
+ ?[semantic execution]{
+ @src/runtime/interpreter/
+ @src/runtime/state/ # Valence handling
+ @spec/runtime/REGISTERS.md
+ }
 
-  # Domain profiles
-  ?[domain polymorphism]{
-    @spec/domains/PROFILES.md
-    @src/semantics/                # Knowledge representation
-  }
+ # Domain profiles
+ ?[domain polymorphism]{
+ @spec/domains/PROFILES.md
+ @src/semantics/ # Knowledge representation
+ }
 }
 
 ^["long-term"]{
-  # Conformance Level 3: Full
-  lsp/                             # Language Server Protocol
-  wasm/                            # WebAssembly compilation
-  collab/                          # Real-time collaboration
+ # Conformance Level 3: Full
+ lsp/ # Language Server Protocol
+ wasm/ # WebAssembly compilation
+ collab/ # Real-time collaboration
 
-  # Ecosystem
-  plugins/                         # Extension system
-  packages/                        # Extractable modules
+ # Ecosystem
+ plugins/ # Extension system
+ packages/ # Extractable modules
 }
 
 ^["roadmap-1-3-6"]{
-  # Research first, then engineering, then hobbyist momentum.
+ # Research first, then engineering, then hobbyist momentum.
 
-  ?[1 month]{
-    # Research: rigor + baselines
-    .. "Unified instrumentation + export (CSV/JSON), baseline corpus metrics, runtime trace capture"
-    # Engineering: stability + repeatability
-    .. "Benchmark harness + regression baselines, config/profile validation, deterministic runs"
-    # Hobbyists: fast wonder
-    .. "Starter gallery (10-20 seeds), shareable seed cards (Markdown/HTML)"
-    .. "Success: 1 reproducible dataset, 1 benchmark baseline, 10 shareable examples"
-  }
+ ?[1 month]{
+ # Research: rigor + baselines
+ .. "Unified instrumentation + export (CSV/JSON), baseline corpus metrics, runtime trace capture"
+ # Engineering: stability + repeatability
+ .. "Benchmark harness + regression baselines, config/profile validation, deterministic runs"
+ # Hobbyists: fast wonder
+ .. "Starter gallery (10-20 seeds), shareable seed cards (Markdown/HTML)"
+ .. "Success: 1 reproducible dataset, 1 benchmark baseline, 10 shareable examples"
+ }
 
-  ?[3 months]{
-    # Research: semantic invariants
-    .. "Semantic projection lab MVP, taste profile capture, small cognitive-load study pipeline"
-    # Engineering: platform extensibility
-    .. "Plugin/dialect interface MVP, SDK boundary docs, CI for perf + layer checks"
-    # Hobbyists: fan engagement
-    .. "Gallery with remix + attribution, narrative builder template, export to scripts/storyboards/flow diagrams"
-    .. "Success: 1 research memo, 1 plugin MVP in use, 1 cross-media export path"
-  }
+ ?[3 months]{
+ # Research: semantic invariants
+ .. "Semantic projection lab MVP, taste profile capture, small cognitive-load study pipeline"
+ # Engineering: platform extensibility
+ .. "Plugin/dialect interface MVP, SDK boundary docs, CI for perf + layer checks"
+ # Hobbyists: fan engagement
+ .. "Gallery with remix + attribution, narrative builder template, export to scripts/storyboards/flow diagrams"
+ .. "Success: 1 research memo, 1 plugin MVP in use, 1 cross-media export path"
+ }
 
-  ?[6 months]{
-    # Research: publishable studies
-    .. "Multi-domain invariants study, public dataset + methodology, proposed spec/UX revisions"
-    # Engineering: long-term support
-    .. "Versioned SDKs with migration notes, stable plugin ecosystem, reproducibility dashboards"
-    # Hobbyists: sustained community loop
-    .. "Creator packs + challenges, export to video overlays or interactive web, recurring remix cycles"
-    .. "Success: external contributions, repeatable studies, at least one media collaboration"
-  }
+ ?[6 months]{
+ # Research: publishable studies
+ .. "Multi-domain invariants study, public dataset + methodology, proposed spec/UX revisions"
+ # Engineering: long-term support
+ .. "Versioned SDKs with migration notes, stable plugin ecosystem, reproducibility dashboards"
+ # Hobbyists: sustained community loop
+ .. "Creator packs + challenges, export to video overlays or interactive web, recurring remix cycles"
+ .. "Success: external contributions, repeatable studies, at least one media collaboration"
+ }
 }
 
-?["What happens to register bank state when two frames bind the same address?"]
-  #:depth #!computational  // lens: molecule
-  $^["frame_a"]{@x} & $^["frame_b"]{@x} => %[register.conflict]
-  ~<@spw/registries/register-bank.spw>
-  !probe{ "simulate concurrent write to register @x; does last-write-wins or merge-by-valence apply?" }
+#>wonder_docs_plans_spw_directions_1
+?["What is the algebraic closure of immediate (spw/directions)?"]{
+  #:depth #!computational // lens: formal structure
+  $^["roots"]@src => %[formula.measure]
+  ~<docs/plans/spw/directions.spw> // introspect
+  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["Does the register bank form a lattice under the refinement ordering?"]
-  #:depth #!mathematical  // lens: formula
-  $%[register.state_a] ⊔ $%[register.state_b] => ~#join
-  ~<@spec/runtime/REGISTERS.md>
-  !probe{ "verify: join exists for every pair; meet distributes over join; identify the top and bottom elements" }
+#>wonder_docs_plans_spw_directions_2
+?["What is the felt rhythm of reading Next Directions?"]{
+  #:depth #!mathematical // lens: material grain
+  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
+  ~#structure: "roots → immediate → short-term" // frame flow
+  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark grain boundaries." }
+  ~<docs/plans/spw/architecture.spw>  // nearest neighbor
+}

@@ -6,43 +6,50 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Run deterministic query cycles with measurable probe updates."
+ ~#goal: "Run deterministic query cycles with measurable probe updates."
 }
 
 ^"flow"{
-  clean: {
-    check: "git status --short"
-    expect: "target scope is clean before run"
-  }
+ clean: {
+ check: "git status --short"
+ expect: "target scope is clean before run"
+ }
 
-  query: {
-    command: "npm run spwq -- <file> --selector=<selector_id>"
-    template: ".spw/biome/ocean/template/t.spw"
-    registry: ".spw/biome/ocean/query/sel.spw"
-    hot: ".spw/biome/ocean/query/hot.spw"
-  }
+ query: {
+ command: "npm run spwq -- <file> --selector=<selector_id>"
+ template: ".spw/biome/ocean/template/t.spw"
+ registry: ".spw/biome/ocean/query/sel.spw"
+ hot: ".spw/biome/ocean/query/hot.spw"
+ }
 
-  verify: {
-    probes: ".spw/harness/probes/archive-index.spw"
-    invariants: ".spw/workspace.spw#invariants"
-    trace: ".spw/biome/ocean/trace.spw"
-    projections: ".spw/gen/index.spw"
-  }
+ verify: {
+ probes: ".spw/harness/probes/archive-index.spw"
+ invariants: ".spw/workspace.spw#invariants"
+ trace: ".spw/biome/ocean/trace.spw"
+ projections: ".spw/gen/index.spw"
+ }
 
-  prime: {
-    transform: ".spw/biome/ocean/expr/arc.spw"
-    note: "optionally remap concept arcs from () to <> for register priming"
-  }
+ prime: {
+ transform: ".spw/biome/ocean/expr/arc.spw"
+ note: "optionally remap concept arcs from () to <> for register priming"
+ }
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_spw_biome_ocean_ops_cycle_1
+?["What ripples if #cycle changes in this file?"]{
+  #:depth #!mathematical // lens: curated collection
+  $#educational@workspace => %[reference.count, depth.downstream]
+  ~#downstream: "trace all files that reference this surface"
+  !probe{ "imagine renaming #educational to #educational_v2; count broken references; the count reveals how deeply intent is woven into the workspace." }
+  $%[ops.cycle_count, ops.throughput]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_spw_biome_ocean_ops_cycle_2
+?["What happens when you zoom from the workflow level to the workspace level in Cycle?"]{
+  #:depth #!stylistic // lens: living system
+  $^["_"]@here => &[@workspace] // local → global projection
+  ~#zoom_in: "intent" // this file's atom
+  !probe{ "the atom is workflow-scale; zoom out: what workspace-level pattern does this workflow participate in?" }
+  $%[ops.cycle_count, ops.throughput]
+  ~<.spw/biome/ocean/atlas.spw>  // nearest neighbor
+}

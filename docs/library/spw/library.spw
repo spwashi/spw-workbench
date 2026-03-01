@@ -6,73 +6,79 @@
 #:layer #!semantics
 
 ^"roots"{
-  @here: ~"."
+ @here: ~"."
 }
 
 ^"collection"{
-  # The library is built from the codebase's own documentation files.
-  # Each entry is a grounded reference.
+ # The library is built from the codebase's own documentation files.
+ # Each entry is a grounded reference.
 
-  # --- Core Specs ---
-  #[spec:register,   ~#spec <register>"../../runtime/spw/register-bank.spw"]
-  #[spec:brace,      ~#spec <register>"../../runtime/spw/brace-registers.spw"]
-  #[spec:spirit,     ~#spec <operator>"../../design/spw/spirit-sequence.spw"]
-  #[spec:refs,       ~#spec <syntax>"../../specs/spw/reference-conventions.spw"]
-  #[atlas:operator,  ~#atlas <operator>"../../theory/spw/operator-atlas.spw"]
-  #[spec:calculus,   ~#spec <math>"./wonder-calculus.spw"]
-  #[spec:probes,     ~#spec <tool>"./wonder-probes.spw"]
+ # --- Core Specs ---
+ #[spec:register, ~#spec <register>"../../runtime/spw/register-bank.spw"]
+ #[spec:brace, ~#spec <register>"../../runtime/spw/brace-registers.spw"]
+ #[spec:spirit, ~#spec <operator>"../../design/spw/spirit-sequence.spw"]
+ #[spec:refs, ~#spec <syntax>"../../specs/spw/reference-conventions.spw"]
+ #[atlas:operator, ~#atlas <operator>"../../theory/spw/operator-atlas.spw"]
+ #[spec:calculus, ~#spec <math>"./wonder-calculus.spw"]
+ #[spec:probes, ~#spec <tool>"./wonder-probes.spw"]
 
-  # --- Examples ---
-  #[ex:auto,         ~#example <register>"../../examples/spw/brace-autocomplete.spw"]
-  #[ex:ground,       ~#example <register>"../../examples/spw/grounded-register.spw"]
-  #[ex:merge,        ~#example <operator>"../../examples/spw/merge-provenance.spw"]
-  #[ex:meta,         ~#example <operator>"../../examples/spw/substrate-introspection.spw"]
-  #[ex:measure,      ~#example <operator>"../../examples/spw/measure-normalization.spw"]
-  #[ex:spirit,       ~#example <operator>"../../examples/spw/spirit-cycle.spw"]
+ # --- Examples ---
+ #[ex:auto, ~#example <register>"../../examples/spw/brace-autocomplete.spw"]
+ #[ex:ground, ~#example <register>"../../examples/spw/grounded-register.spw"]
+ #[ex:merge, ~#example <operator>"../../examples/spw/merge-provenance.spw"]
+ #[ex:meta, ~#example <operator>"../../examples/spw/substrate-introspection.spw"]
+ #[ex:measure, ~#example <operator>"../../examples/spw/measure-normalization.spw"]
+ #[ex:spirit, ~#example <operator>"../../examples/spw/spirit-cycle.spw"]
 
-  # --- Benchmarks ---
-  #[bench:access,    ~#bench <performance>"../../benchmarks/spw/register-access.spw"]
-  #[bench:immut,     ~#bench <integrity>"../../benchmarks/spw/resonate-immutability.spw"]
-  #[bench:fanin,     ~#bench <scaling>"../../benchmarks/spw/confluent-fanin.spw"]
-  #[bench:types,     ~#bench <performance>"../../benchmarks/spw/measure-types.spw"]
-  #[bench:throughput,~#bench <scaling>"../../benchmarks/spw/spirit-throughput.spw"]
+ # --- Benchmarks ---
+ #[bench:access, ~#bench <performance>"../../benchmarks/spw/register-access.spw"]
+ #[bench:immut, ~#bench <integrity>"../../benchmarks/spw/resonate-immutability.spw"]
+ #[bench:fanin, ~#bench <scaling>"../../benchmarks/spw/confluent-fanin.spw"]
+ #[bench:types, ~#bench <performance>"../../benchmarks/spw/measure-types.spw"]
+ #[bench:throughput,~#bench <scaling>"../../benchmarks/spw/spirit-throughput.spw"]
 }
 
 ^"query_language"{
-  # How to browse the library using registers and operators.
+ # How to browse the library using registers and operators.
 
-  # 1. Introspection ($) — "What is this entry?"
-  #    $[spec:register] → { name: "spec:register", grounded: true, ... }
+ # 1. Introspection ($) — "What is this entry?"
+ # $[spec:register] → { name: "spec:register", grounded: true, ... }
 
-  # 2. Measurement (%) — "How significant is this?"
-  #    %[spec:register] → 0.8 (core spec)
-  #    %[ex:auto]       → 0.3 (single example)
+ # 2. Measurement (%) — "How significant is this?"
+ # %[spec:register] → 0.8 (core spec)
+ # %[ex:auto] → 0.3 (single example)
 
-  # 3. Categorization ([]) — "Group by tag"
-  #    &[~#spec] → list of all specs
-  #    &[~#example] → list of all examples
+ # 3. Categorization ([]) — "Group by tag"
+ # &[~#spec] → list of all specs
+ # &[~#example] → list of all examples
 
-  # 4. Concept Coupling (<>) — "Find related concepts"
-  #    &[<register>] → [spec:register, spec:brace, ex:auto, ex:ground]
+ # 4. Concept Coupling (<>) — "Find related concepts"
+ # &[<register>] → [spec:register, spec:brace, ex:auto, ex:ground]
 }
 
 ^"curation"{
-  # The library grows through the `git` commit log.
-  # See git-concordance.spw for conventions.
+ # The library grows through the `git` commit log.
+ # See git-concordance.spw for conventions.
 
-  policy: "Every .spw file committed is a candidate for the library."
-  filtering: "Only grounded (#) entries are permanent."
-  archiving: "Deprecated entries move to the ~#compost tag."
+ policy: "Every .spw file committed is a candidate for the library."
+ filtering: "Only grounded (#) entries are permanent."
+ archiving: "Deprecated entries move to the ~#compost tag."
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_library_spw_library_1
+?["How does this file's voice differ from spw/library (spw/library)?"]{
+  #:depth #!educational // lens: curated collection
+  ~<@here> // nearest neighbor
+  $%[op.distribution]@here vs $%[op.distribution]@here
+  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_library_spw_library_2
+?["What invariant holds across every frame in Spw Library?"]{
+  #:depth #!experiential // lens: living system
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to roots's frames; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[register.bank_size, register.active_bindings]
+  ~<docs/library/spw/git-concordance.spw>  // nearest neighbor
+}

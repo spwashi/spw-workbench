@@ -5,45 +5,52 @@
 #:layer #!pragmatics
 
 ^["goal"]{
-  ~#intent: "Expose the accessibility tree alongside text, AST, context."
-  ~#contract: "Accessibility is a first-class state surface."
+ ~#intent: "Expose the accessibility tree alongside text, AST, context."
+ ~#contract: "Accessibility is a first-class state surface."
 }
 
 ^["exposure"]{
-  ~#fields{
-    role: "computed role"
-    name: "accessible name"
-    state: "expanded/selected/disabled"
-    focus_path: "tab order path"
-    live_announcements: "queued announcements"
-  }
+ ~#fields{
+ role: "computed role"
+ name: "accessible name"
+ state: "expanded/selected/disabled"
+ focus_path: "tab order path"
+ live_announcements: "queued announcements"
+ }
 }
 
 ^["ui"]{
-  ~#panel: "Screen Reader Preview"
-  ~#behaviors{
-    follow_focus: "always show current focus"
-    snapshot: "capture tree on major state changes"
-    diff: "compare before/after updates"
-  }
+ ~#panel: "Screen Reader Preview"
+ ~#behaviors{
+ follow_focus: "always show current focus"
+ snapshot: "capture tree on major state changes"
+ diff: "compare before/after updates"
+ }
 }
 
 ^["implementation"]{
-  ~#guidance{
-    semantics_first: "use HTML semantics before ARIA"
-    shared_state: "derive names from tuple/state"
-    focus_visual: "mirror focus in visible UI"
-  }
+ ~#guidance{
+ semantics_first: "use HTML semantics before ARIA"
+ shared_state: "derive names from tuple/state"
+ focus_visual: "mirror focus in visible UI"
+ }
 }
 
-?["Does the Cayley table for brace×operator composition close under {FRAME}?"]
-  #:depth #!mathematical  // lens: formula
-  $^seed[_.sym:D4] => %[register.left, register.right]
-  ~<@spec/core/OPERATORS.md>
-  !probe{ "construct the group action table; check if .left ↔ .right reflection commutes with ~ → ! operator tense shift" }
+#>wonder_docs_design_spw_a11ytree_1
+?["What happens when you zoom from the workflow level to the workspace level in A11y Tree Preview?"]{
+  #:depth #!mathematical // lens: material grain
+  $^["_"]@here => &[@workspace] // local → global projection
+  ~#zoom_in: "goal" // this file's atom
+  !probe{ "the atom is workflow-scale; zoom out: what workspace-level pattern does this workflow participate in?" }
+  $%[design.component_count, design.theme_coverage]
+}
 
-?["What orbits emerge when D4 acts on nested brace pairs?"]
-  #:depth #!computational  // lens: molecule
-  $^[_.sym] => &[orbit.stabilizer]
-  ~<@spw/registries/curiosity-brace.spw>
-  !probe{ "enumerate fixed points of the dihedral action on {{{}}} nesting depth 3; count distinct register states" }
+#>wonder_docs_design_spw_a11ytree_2
+?["What ripples if #a11y_tree changes in this file?"]{
+  #:depth #!stylistic // lens: formal structure
+  $#mathematical@workspace => %[reference.count, depth.downstream]
+  ~#downstream: "trace all files that reference this surface"
+  !probe{ "imagine renaming #mathematical to #mathematical_v2; count broken references; the count reveals how deeply goal is woven into the workspace." }
+  $%[design.component_count, design.theme_coverage]
+  ~<docs/design/spw/affordance-ladder.spw>  // nearest neighbor
+}

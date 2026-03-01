@@ -7,31 +7,38 @@
 #:layer #!pragmatics
 
 ^"phase"{
-  token: "?~"
-  =dialect: "experimental.ocean.phase"
-  optional: {
-    selectors: [refs_navigable, phase_config, relation_exotic]
-    cache: "hot|warm|cold"
-    beat_win: "micro beat window"
-    lens: "narrow|balanced|wide"
-  }
+ token: "?~"
+ =dialect: "experimental.ocean.phase"
+ optional: {
+ selectors: [refs_navigable, phase_config, relation_exotic]
+ cache: "hot|warm|cold"
+ beat_win: "micro beat window"
+ lens: "narrow|balanced|wide"
+ }
 
-  %[physics]{
-    "liminality: 0 (local) — probes are scoped to the immediate node",
-    "frequency: high — many small writes per cycle",
-    "coupling: low — probes are independent until named",
-    "cache: hot tier — probe results expire in 8 beats",
-  }
+ %[physics]{
+ "liminality: 0 (local) — probes are scoped to the immediate node",
+ "frequency: high — many small writes per cycle",
+ "coupling: low — probes are independent until named",
+ "cache: hot tier — probe results expire in 8 beats",
+ }
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_spw_biome_ocean_ph_p1_1
+?["What invariant holds across every frame in P1?"]{
+  #:depth #!computational // lens: ecological zone
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to phase's frames; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[phase.index, phase.duration_ms, phase.entropy]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_spw_biome_ocean_ph_p1_2
+?["What was P1 before it was this, and what could it become?"]{
+  #:depth #!mathematical // lens: molecular binding
+  ~#past: "git log --oneline -- .spw/biome/ocean/ph/p1.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[phase.index, phase.duration_ms, phase.entropy]
+  ~<.spw/biome/ocean/ph/p2.spw>  // nearest neighbor
+}

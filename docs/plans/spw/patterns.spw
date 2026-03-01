@@ -6,133 +6,140 @@
 #:layer #!pragmatics
 
 ^["roots"]{
-  @src: ~"../src"
+ @src: ~"../src"
 }
 
 ^["functions"]{
-  create*: instantiate
-  init*: initialize
-  get*: accessor
-  set*: mutator
-  is*: predicate
-  has*: existence
-  find*: search
-  on*: subscribe
-  emit*: publish
-  parse*: decompose
-  wait*: async
-  enable*: activate
+ create*: instantiate
+ init*: initialize
+ get*: accessor
+ set*: mutator
+ is*: predicate
+ has*: existence
+ find*: search
+ on*: subscribe
+ emit*: publish
+ parse*: decompose
+ wait*: async
+ enable*: activate
 }
 
 ^["css"]{
-  .spw-{domain}-{component}
-  .spw-{domain}-{component}-{element}
-  .spw-{domain}-{component}--{modifier}
-  # See docs/classname-contract.md for canonical vs compatibility rules.
+ .spw-{domain}-{component}
+ .spw-{domain}-{component}-{element}
+ .spw-{domain}-{component}--{modifier}
+ # See docs/classname-contract.md for canonical vs compatibility rules.
 }
 
 ^["css-tokens"]{
-  # Design token namespaces
-  --spw-color-*          # color tokens
-  --spw-space-*          # spacing tokens
-  --spw-font-*           # typography tokens
+ # Design token namespaces
+ --spw-color-* # color tokens
+ --spw-space-* # spacing tokens
+ --spw-font-* # typography tokens
 
-  # Narrative tokens (personality → CSS bridge)
-  --spw-narrative-*      # personality traits as CSS values
-  --spw-narrative-breath-*      # derived breath animation values
-  --spw-narrative-grain-*       # derived grain/texture values
-  --spw-narrative-echo-opacity-*  # derived echo visibility
-  --spw-narrative-motion-*      # derived motion easing
+ # Narrative tokens (personality → CSS bridge)
+ --spw-narrative-* # personality traits as CSS values
+ --spw-narrative-breath-* # derived breath animation values
+ --spw-narrative-grain-* # derived grain/texture values
+ --spw-narrative-echo-opacity-* # derived echo visibility
+ --spw-narrative-motion-* # derived motion easing
 
-  # Cognitive tokens (semantic features → CSS bridge)
-  --spw-cognitive-*      # intensity, proximity, clarity
+ # Cognitive tokens (semantic features → CSS bridge)
+ --spw-cognitive-* # intensity, proximity, clarity
 
-  # Context/region textures
-  --spw-context-texture-*
-  --spw-region-texture-*
+ # Context/region textures
+ --spw-context-texture-*
+ --spw-region-texture-*
 
-  # Theme-specific
-  --echo-opacity-*       # echo leitmotif opacity (lg/md/sm)
-  --echo-base-opacity-*  # base echo values before cognitive modulation
+ # Theme-specific
+ --echo-opacity-* # echo leitmotif opacity (lg/md/sm)
+ --echo-base-opacity-* # base echo values before cognitive modulation
 }
 
 ^["events"]{
-  spw:{domain}:{action}
+ spw:{domain}:{action}
 }
 
 ^["operators"]{
-  ~#core: "! ^ ~ <> ? * = @ #"
-  ~#extended: "/ : .. -> & |"
-  ~#containers: "< >" (capsule)  "<< >>" (stream)  "((" "))" (n-range)
-  # Evaluate prefix/postfix/infix interpretations for keyboard operators.
-  # # = vibration/resonance; can act as a dimension marker in prose/docs.
+ ~#core: "! ^ ~ <> ? * = @ #"
+ ~#extended: "/ : .. -> & |"
+ ~#containers: "< >" (capsule) "<< >>" (stream) "((" "))" (n-range)
+ # Evaluate prefix/postfix/infix interpretations for keyboard operators.
+ # # = vibration/resonance; can act as a dimension marker in prose/docs.
 }
 
 ^["intrinsics"]{
-  # "_" labels an operator (sugar): "?_query[target]" -> operatorLabel = "_query"
-  # Labels are distinct from modifiers; store on Operation.operatorLabel.
-  # Keep canonical forms explicit when emitting; normalize label sugar in tooling.
-  # Labels can tune valence in follow-on operations: "%_bias", "^_merge", "?_probe".
+ # "_" labels an operator (sugar): "?_query[target]" -> operatorLabel = "_query"
+ # Labels are distinct from modifiers; store on Operation.operatorLabel.
+ # Keep canonical forms explicit when emitting; normalize label sugar in tooling.
+ # Labels can tune valence in follow-on operations: "%_bias", "^_merge", "?_probe".
 }
 
 ^["lexing"]{
-  # Lex profiles allow tunable syntax per document or experiment.
-  # "prose" profile: disables "#" operator, treats unknown chars as TEXT.
-  # Reference/docs inputs default to the "prose" profile.
+ # Lex profiles allow tunable syntax per document or experiment.
+ # "prose" profile: disables "#" operator, treats unknown chars as TEXT.
+ # Reference/docs inputs default to the "prose" profile.
 }
 
 ^["regions"]{
-  # Labeled regions (optional):
-  #   {_A ... }_A  == body with region label "A"
-  #   A{}          == {_A }_A
-  # Region labels are metadata; semantics remain the same body/scope.
-  # Physical properties of braces (color/material) should be annotations (~#color, ~#material), not syntax.
-  # Overlapping regions (conceptual):
-  #   {_A concept (_B focal point }_A[transition:300ms] (<new subject>) )_B
-  # Use overlaps to represent co-existing scopes; transitions live in annotations/capsules.
+ # Labeled regions (optional):
+ # {_A ... }_A == body with region label "A"
+ # A{} == {_A }_A
+ # Region labels are metadata; semantics remain the same body/scope.
+ # Physical properties of braces (color/material) should be annotations (~#color, ~#material), not syntax.
+ # Overlapping regions (conceptual):
+ # {_A concept (_B focal point }_A[transition:300ms] (<new subject>) )_B
+ # Use overlaps to represent co-existing scopes; transitions live in annotations/capsules.
 }
 
 ^["data"]{
-  data-spw-{domain}
-  data-spw-{domain}-{suffix}
+ data-spw-{domain}
+ data-spw-{domain}-{suffix}
 }
 
 ^["data-state"]{
-  data-spw-space-leader: "Space key leader active; waiting for next key"
-  data-spw-actionable: "Actions available on the action target (ex: 'yp')"
-  data-spw-action-role: "focus | selection | action (element-level)"
-  data-spw-action-scope: "fine | medium | coarse (element-level)"
-  data-spw-action-kind: "selection | node | component | panel | region | element (root)"
-  data-spw-action-anchor: "focus | selection (root)"
-  data-spw-focus-scope: "fine | medium | coarse (root)"
-  data-spw-selection-scope: "fine | medium | coarse (root)"
-  data-spw-command-prefix: "Active command line prefix (':' or '/')"
-  data-spw-drawer-auto-open: "Enable auto-open for the detail drawer"
-  data-selected-range: "AST node participates in visual range selection"
-  data-selected-anchor: "AST node is the visual selection anchor"
+ data-spw-space-leader: "Space key leader active; waiting for next key"
+ data-spw-actionable: "Actions available on the action target (ex: 'yp')"
+ data-spw-action-role: "focus | selection | action (element-level)"
+ data-spw-action-scope: "fine | medium | coarse (element-level)"
+ data-spw-action-kind: "selection | node | component | panel | region | element (root)"
+ data-spw-action-anchor: "focus | selection (root)"
+ data-spw-focus-scope: "fine | medium | coarse (root)"
+ data-spw-selection-scope: "fine | medium | coarse (root)"
+ data-spw-command-prefix: "Active command line prefix (':' or '/')"
+ data-spw-drawer-auto-open: "Enable auto-open for the detail drawer"
+ data-selected-range: "AST node participates in visual range selection"
+ data-selected-anchor: "AST node is the visual selection anchor"
 }
 
 ^["state"]{
-  {domain}.{component}.{property}
+ {domain}.{component}.{property}
 }
 
 ^["types"]{
-  Phase: pending | loading | ready | error | hidden
-  TimingPhase: pending | init | loading | ready | active | idle | error | destroy
-  Layer: syntactic | semantic | pragmatic
-  Quality: boon | bane | bone | honk
-  Valence: boon | bane | bone | bonk | honk | null
-  StackingLevel: base | content | panels | floating | overlay | modal | notification | system
+ Phase: pending | loading | ready | error | hidden
+ TimingPhase: pending | init | loading | ready | active | idle | error | destroy
+ Layer: syntactic | semantic | pragmatic
+ Quality: boon | bane | bone | honk
+ Valence: boon | bane | bone | bonk | honk | null
+ StackingLevel: base | content | panels | floating | overlay | modal | notification | system
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_plans_spw_patterns_1
+?["What invariant holds across every frame in Naming Patterns?"]{
+  #:depth #!computational // lens: living system
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to roots's frames; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[plan.commit_count, plan.phase_progress]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_plans_spw_patterns_2
+?["What was Naming Patterns before it was this, and what could it become?"]{
+  #:depth #!mathematical // lens: curated collection
+  ~#past: "git log --oneline -- docs/plans/spw/patterns.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[plan.commit_count, plan.phase_progress]
+  ~<docs/plans/spw/architecture.spw>  // nearest neighbor
+}

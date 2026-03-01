@@ -5,66 +5,72 @@
 #:layer #!pragmatics
 
 ^["intent"]{
-  ~#goal: "Start with dumb register cells (value + address), then progressively enrich cells by phase (lex -> parse -> sem -> opt -> prag) while adding operational/positional register semantics for query/runtime coherence."
-  ~#taste: "clarity, layering, expressiveness"
+ ~#goal: "Start with dumb register cells (value + address), then progressively enrich cells by phase (lex -> parse -> sem -> opt -> prag) while adding operational/positional register semantics for query/runtime coherence."
+ ~#taste: "clarity, layering, expressiveness"
 }
 
 ^["stream"]{
-  >> [2026-02-27 01:28] observe — runtime register bank already supports descriptor/provenance/lens but lacks explicit phase progression structure.
-  >> [2026-02-27 01:28] observe — brace register dyad behavior is documented, yet cursor/open-close capture flow is not wired in code.
-  >> [2026-02-27 01:28] decide — preserve existing register APIs (`set/get/yank/paste`) and add phase facets as additive metadata, not a breaking schema reset.
-  >> [2026-02-27 01:28] decide — split selector semantics into operational and positional dimensions to reduce ambiguity for projection/reduction/objective/subjective queries.
-  >> [2026-02-27 01:28] taste — prefer a minimal invariant core with optional enrichment per stage, so early pipeline stays deterministic and cheap.
-  >> [2026-02-27 01:31] decide — keep `parse` and `sem` as coarse buckets for this increment.
-  >> [2026-02-27 01:31] decide — selector surface is Spw-native grammar first (not preset-only aliases).
-  >> [2026-02-27 01:31] decide — phase enrichment is in-place on existing cells; lineage edges remain optional metadata.
-  >> [2026-02-27 01:46] ship — types: RegisterPhase, PhaseFacet (memoryWeight), PhaseEnvelope (evictable), RegisterAddress, PHASE_ORDER
-  >> [2026-02-27 01:46] ship — RegisterBank: enrichPhase(), phaseOf(), phase-aware set(), advancePhase() with weight
-  >> [2026-02-27 01:46] ship — 5 new tests: progressive enrichment, phase-annotated set, unphased cells, memoryWeight derivation, snapshot immutability
-  >> [2026-02-27 01:46] taste — progressive enhancement: facets additive, value preserved through enrichment. Spw serialization: phase maps 1:1 to !phase[] modifier tags. memory granularity: PHASE_ORDER drives eviction priority.
+ >> [2026-02-27 01:28] observe — runtime register bank already supports descriptor/provenance/lens but lacks explicit phase progression structure.
+ >> [2026-02-27 01:28] observe — brace register dyad behavior is documented, yet cursor/open-close capture flow is not wired in code.
+ >> [2026-02-27 01:28] decide — preserve existing register APIs (`set/get/yank/paste`) and add phase facets as additive metadata, not a breaking schema reset.
+ >> [2026-02-27 01:28] decide — split selector semantics into operational and positional dimensions to reduce ambiguity for projection/reduction/objective/subjective queries.
+ >> [2026-02-27 01:28] taste — prefer a minimal invariant core with optional enrichment per stage, so early pipeline stays deterministic and cheap.
+ >> [2026-02-27 01:31] decide — keep `parse` and `sem` as coarse buckets for this increment.
+ >> [2026-02-27 01:31] decide — selector surface is Spw-native grammar first (not preset-only aliases).
+ >> [2026-02-27 01:31] decide — phase enrichment is in-place on existing cells; lineage edges remain optional metadata.
+ >> [2026-02-27 01:46] ship — types: RegisterPhase, PhaseFacet (memoryWeight), PhaseEnvelope (evictable), RegisterAddress, PHASE_ORDER
+ >> [2026-02-27 01:46] ship — RegisterBank: enrichPhase(), phaseOf(), phase-aware set(), advancePhase() with weight
+ >> [2026-02-27 01:46] ship — 5 new tests: progressive enrichment, phase-annotated set, unphased cells, memoryWeight derivation, snapshot immutability
+ >> [2026-02-27 01:46] taste — progressive enhancement: facets additive, value preserved through enrichment. Spw serialization: phase maps 1:1 to !phase[] modifier tags. memory granularity: PHASE_ORDER drives eviction priority.
 }
 
 ^["open"]{
-  ?["selector-expr grammar — Spw-native, not preset-only"]
-  ?["wire --selectorExpr in spwq CLI"]
-  ?["align docs to implemented model"]
+
+ ?["selector-expr grammar — Spw-native, not preset-only"]
+ ?["wire --selectorExpr in spwq CLI"]
+ ?["align docs to implemented model"]
 }
 
 ^["commits"]{
-  ~[1]: ".[plans] — add/refresh plan artifacts with locked decisions"
-  ~[2]: "vocab[runtime] — introduce register address/phase/facet types with backward-compatible defaults"
-  ~[3]: "&[runtime] — evolve RegisterBank for in-place phase annotations and optional lineage"
-  ~[4]: "![runtime] — extend runtime tests for phased enrichment invariants"
-  ~[5]: "^seed[query] — add Spw-native selector expression grammar for operational/positional selectors"
-  ~[6]: "&[spwq] — wire --selectorExpr in CLI and preserve preset compatibility"
-  ~[7]: "![query] — validate selector semantics (including seq behavior and new expression parsing)"
-  ~[8]: ".[docs] — align runtime/query docs to implemented register model and mark deferred brace-cursor flow"
+ ~[1]: ".[plans] — add/refresh plan artifacts with locked decisions"
+ ~[2]: "vocab[runtime] — introduce register address/phase/facet types with backward-compatible defaults"
+ ~[3]: "&[runtime] — evolve RegisterBank for in-place phase annotations and optional lineage"
+ ~[4]: "![runtime] — extend runtime tests for phased enrichment invariants"
+ ~[5]: "^seed[query] — add Spw-native selector expression grammar for operational/positional selectors"
+ ~[6]: "&[spwq] — wire --selectorExpr in CLI and preserve preset compatibility"
+ ~[7]: "![query] — validate selector semantics (including seq behavior and new expression parsing)"
+ ~[8]: ".[docs] — align runtime/query docs to implemented register model and mark deferred brace-cursor flow"
 }
 
 ^["cache"]{
-  ~#status: "implementing"
-  ~#base_ref: "main@0c38b72659c72f1bea276176693ace20adb2e1dd"
-  ~#rebased_at: ""
-  ~#hygiene_split: "none"
-  ~#files_hot: "src/runtime/state/types.ts, src/runtime/state/register-bank.ts, src/seed/query/selector-expr.ts, scripts/spwq.ts"
-  ~#next_commit: "5"
-  ~#open_count: "3"
-  ~#last_stream: "2026-02-27 01:46"
-  ~#taste_debt: ""
+ ~#status: "implementing"
+ ~#base_ref: "main@here"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "src/runtime/state/types.ts, src/runtime/state/register-bank.ts, src/seed/query/selector-expr.ts, scripts/spwq.ts"
+ ~#next_commit: "5"
+ ~#open_count: "3"
+ ~#last_stream: "2026-02-27 01:46"
+ ~#taste_debt: ""
 }
 
 ^["done"]{
-  # Written at merge time.
+ # Written at merge time.
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_agents_plans_registerphaseevolution_wip_1
+?["How does this file's voice differ from @here?"]{
+  #:depth #!educational // lens: molecular binding
+  ~<@here> // nearest neighbor
+  $%[op.distribution]@here vs $%[op.distribution]@here
+  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_agents_plans_registerphaseevolution_wip_2
+?["What invariant holds across every frame in wip — register-phase-evolution?"]{
+  #:depth #!experiential // lens: ecological zone
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to every frame in this file; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[register.bank_size, register.active_bindings]
+}

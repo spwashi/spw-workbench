@@ -5,38 +5,44 @@
 #:layer #!pragmatics
 
 ^["roots"]{
-  @here: ~"."
+ @here: ~"."
 }
 
 ^["learning"]{
-  !["Onboarding & Flow"]
-  .. ~<onboarding>"./spw/onboarding.spw"              # Learning path for devs/LLMs
-  .. ~<onboarding>"./spw/onboarding-flow.spw"          # Onboarding flow reference
-  .. ~<lens>"./spw/lens-walk.spw"                      # Lens-walk prompting guide
+ !["Onboarding & Flow"]
+ .. ~<onboarding>"./spw/onboarding.spw" # Learning path for devs/LLMs
+ .. ~<onboarding>"./spw/onboarding-flow.spw" # Onboarding flow reference
+ .. ~<lens>"./spw/lens-walk.spw" # Lens-walk prompting guide
 }
 
 ^["interaction"]{
-  !["Navigation & Input"]
-  .. ~<vim>"./md/vim-guide.md"                        # Vim keybinding guide
-  .. ~<keyboard>"./md/keyboard-audit.md"              # Keyboard audit
-  .. ~<keyboard>"./md/keyboard-navigation-refactor-plan.md" # Refactor plan
-  .. ~<nav>"./spw/navigation-probe.spw"                # Focus calculus + breadcrumb semantics
+ !["Navigation & Input"]
+ .. ~<vim>"./md/vim-guide.md" # Vim keybinding guide
+ .. ~<keyboard>"./md/keyboard-audit.md" # Keyboard audit
+ .. ~<keyboard>"./md/keyboard-navigation-refactor-plan.md" # Refactor plan
+ .. ~<nav>"./spw/navigation-probe.spw" # Focus calculus + breadcrumb semantics
 }
 
 ^["system"]{
-  !["Registry & Coherence"]
-  .. ~<registry>"./spw/feature-registry.spw"           # Feature naming/versioning
-  .. ~<coherence>"./spw/feature-coherence.spw"         # End-to-end feature coherence
+ !["Registry & Coherence"]
+ .. ~<registry>"./spw/feature-registry.spw" # Feature naming/versioning
+ .. ~<coherence>"./spw/feature-coherence.spw" # End-to-end feature coherence
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_features_index_1
+?["What is the algebraic closure of learning (features/index)?"]{
+  #:depth #!computational // lens: formal structure
+  $^["roots"]@here => %[formula.measure]
+  ~<docs/features/index.spw> // introspect
+  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
+  $%[feature.adoption_rate, feature.discovery_index]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_features_index_2
+?["What is the felt rhythm of reading Features Index?"]{
+  #:depth #!mathematical // lens: material grain
+  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
+  ~#structure: "roots → learning → interaction" // frame flow
+  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark grain boundaries." }
+  ~<docs/index.spw>  // nearest neighbor
+}

@@ -8,236 +8,242 @@
 #:layer #!pragmatics
 
 ^"roots"{
-  @repo: ~".."
-  @spw: ~"."
-  @index: ~"./index.spw"
-  @mount: ~"./mount.spw"
-  @shelves: ~"./shelves.spw"
-  @hot: ~"./hot.spw"
-  @agents: ~"./agents.spw"
-  @docs: ~"../docs"
-  @seed: ~"../src/seed"
-  @spec: ~"../lib/spw-v0.2.0-alpha"
+ @repo: ~".."
+ @spw: ~"."
+ @index: ~"./index.spw"
+ @mount: ~"./mount.spw"
+ @shelves: ~"./shelves.spw"
+ @hot: ~"./hot.spw"
+ @agents: ~"./agents.spw"
+ @docs: ~"../docs"
+ @seed: ~"../src/seed"
+ @spec: ~"../lib/spw-v0.2.0-alpha"
 }
 
 ^"kernel"{
-  #:ontology #!layers
-  grammar: {
-    #:layer #!parse_time
-    owns: "operators, containers, seeds, token stability, composition order"
-    surfaces: [@spec, @seed]
-    invariant: "Grammar facts are verified at parse time and do not depend on runtime state."
-  }
-  semantics: {
-    #:layer #!meaning_time
-    owns: "planes, axes, polarity, selection model, spirit sequence, materialization cycle"
-    surfaces: [~"./registries", ~"./applications", ~"./literate"]
-    invariant: "Semantic claims are falsifiable via probes and do not mutate grammar."
-  }
-  pragmatics: {
-    #:layer #!use_time
-    owns: "shelves, editing heuristics, topology, biome metaphor, process loops, tooling"
-    surfaces: [~"./conventions", ~"./patterns", ~"./biome", ~"./tooling", ~"./process"]
-    invariant: "Pragmatic conventions orient usage without constraining grammar or semantics."
-  }
+ #:ontology #!layers
+ grammar: {
+ #:layer #!parse_time
+ owns: "operators, containers, seeds, token stability, composition order"
+ surfaces: [@spec, @seed]
+ invariant: "Grammar facts are verified at parse time and do not depend on runtime state."
+ }
+ semantics: {
+ #:layer #!meaning_time
+ owns: "planes, axes, polarity, selection model, spirit sequence, materialization cycle"
+ surfaces: [~"./registries", ~"./applications", ~"./literate"]
+ invariant: "Semantic claims are falsifiable via probes and do not mutate grammar."
+ }
+ pragmatics: {
+ #:layer #!use_time
+ owns: "shelves, editing heuristics, topology, biome metaphor, process loops, tooling"
+ surfaces: [~"./conventions", ~"./patterns", ~"./biome", ~"./tooling", ~"./process"]
+ invariant: "Pragmatic conventions orient usage without constraining grammar or semantics."
+ }
 }
 
 ^"relationships"{
-  #:relationship #!topology
-  control: "index.spw -> dispatch -> mount/workspace (grammar + semantics bridge)"
-  register: "registries/* define operator physics and brace symmetry (semantics)"
-  application: "applications/symmetry/* consume registries and project domain behaviors (semantics)"
-  convention: "conventions/* defines naming, selection, and relation ergonomics (pragmatics)"
-  pattern: "patterns/* provides reusable architecture recipes (pragmatics)"
-  measurement: "harness/{evals,probes,runs,memory-surface} measures and archives loop evidence (cross-cutting)"
-  projection: "gen/* is generated output; manifests and registries remain source-of-truth surfaces"
-  process: "process/* describes iteration loops: observation, evolution, hot-reload (pragmatics)"
+ #:relationship #!topology
+ control: "index.spw -> dispatch -> mount/workspace (grammar + semantics bridge)"
+ register: "registries/* define operator physics and brace symmetry (semantics)"
+ application: "applications/symmetry/* consume registries and project domain behaviors (semantics)"
+ convention: "conventions/* defines naming, selection, and relation ergonomics (pragmatics)"
+ pattern: "patterns/* provides reusable architecture recipes (pragmatics)"
+ measurement: "harness/{evals,probes,runs,memory-surface} measures and archives loop evidence (cross-cutting)"
+ projection: "gen/* is generated output; manifests and registries remain source-of-truth surfaces"
+ process: "process/* describes iteration loops: observation, evolution, hot-reload (pragmatics)"
 }
 
 ^"priming_concepts_frames_bodies"{
-  #:semantics #!materialization
-  priming: "operator sequence charges a register disposition before materialization"
-  concept: "named potential carried by register + references; may remain unbound"
-  frame: "structured container that orients relations, probes, and lenses"
-  body: "materialized projection or resolved artifact generated from a frame"
-  transition_rule: "priming -> concept -> frame -> body is reversible via probe/archive replay"
+ #:semantics #!materialization
+ priming: "operator sequence charges a register disposition before materialization"
+ concept: "named potential carried by register + references; may remain unbound"
+ frame: "structured container that orients relations, probes, and lenses"
+ body: "materialized projection or resolved artifact generated from a frame"
+ transition_rule: "priming -> concept -> frame -> body is reversible via probe/archive replay"
 }
 
 ^"dialect"{
-  ~#default: "Spw.block.inferred.(none).(none).literate"
-  ~#author_geometry: "Spw.b"
-  ~#canonical_geometry: "Spw.l"
+ ~#default: "Spw.block.inferred.(none).(none).literate"
+ ~#author_geometry: "Spw.b"
+ ~#canonical_geometry: "Spw.l"
 }
 
 ^"spirit_sequence"{
-  ~#source: ~"../docs/design/spw/spirit-sequence.spw"
-  =raw: "?~<#.>@(#.)&[#.]*{#.}^"
-  ~#contract: "All workspace automation maps to the six-phase cycle."
+ ~#source: ~"../docs/design/spw/spirit-sequence.spw"
+ =raw: "?~<#.>@(#.)&[#.]*{#.}^"
+ ~#contract: "All workspace automation maps to the six-phase cycle."
 }
 
 ^"lsp"{
-  #:lsp #!discovery
-  ~#manifest_role: "workspace discovery + root/path navigation bounds"
-  ~#index_roots: [~"./", ~"./index.spw", ~"../docs", ~"../lib/spw-v0.2.0-alpha", ~"../src/seed"]
-  ~#navigable_selector: "$~\"_\" | $@_"
-  ~#domain_roots_selector: "$^[_]"
-  ~#cache_contract: ~"./biome/ocean/algos/cache.spw"
-  ~#dense_dialect_contract: ~"./biome/ocean/experiments/syntax.spw"
-  ~#ux_contract: ~"./biome/ocean/ux.spw"
-  ~#operator_envelope_contract: [&, ^, *, ?, ~, !, %, =]
-  ~#operator_envelope_behavior: "prefix/postfix wrappers preserve selector span + definition/documentLink navigation"
-  ~#future_capabilities: [
-    "workspace symbols",
-    "code lens for harness runs",
-    "semantic links for literate tangles",
-    "cache-aware LSP selector resolution",
-  ]
+ #:lsp #!discovery
+ ~#manifest_role: "workspace discovery + root/path navigation bounds"
+ ~#index_roots: [~"./", ~"./index.spw", ~"../docs", ~"../lib/spw-v0.2.0-alpha", ~"../src/seed"]
+ ~#navigable_selector: "$~\"_\" | $@_"
+ ~#domain_roots_selector: "$^[_]"
+ ~#cache_contract: ~"./biome/ocean/algos/cache.spw"
+ ~#dense_dialect_contract: ~"./biome/ocean/experiments/syntax.spw"
+ ~#ux_contract: ~"./biome/ocean/ux.spw"
+ ~#operator_envelope_contract: [&, ^, *, ?, ~, !, %, =]
+ ~#operator_envelope_behavior: "prefix/postfix wrappers preserve selector span + definition/documentLink navigation"
+ ~#future_capabilities: [
+ "workspace symbols",
+ "code lens for harness runs",
+ "semantic links for literate tangles",
+ "cache-aware LSP selector resolution",
+ ]
 
-  %[composability]{
-    "workspace.spw is the root manifest; docs/index.spw is the documentation root",
-    "both share @roots patterns — workspace for .spw/, docs for docs/",
-    "the annotation index scans both trees, creating one concept graph",
-  }
+ %[composability]{
+ "workspace.spw is the root manifest; docs/index.spw is the documentation root",
+ "both share @roots patterns — workspace for .spw/, docs for docs/",
+ "the annotation index scans both trees, creating one concept graph",
+ }
 }
 
 ^"literate"{
-  ~#root: ~"./literate"
-  ~#entry_spec: ~"./literate/literate-spec.spw"
-  ~#architecture_exhibits: ~"./literate/architecture/index.spw"
-  ~#tangle_mode: "explicit-targets-only"
-  ~#invariant: "Literate projection never mutates canonical source exhibits."
+ ~#root: ~"./literate"
+ ~#entry_spec: ~"./literate/literate-spec.spw"
+ ~#architecture_exhibits: ~"./literate/architecture/index.spw"
+ ~#tangle_mode: "explicit-targets-only"
+ ~#invariant: "Literate projection never mutates canonical source exhibits."
 }
 
 ^"conventions"{
-  ~#root: ~"./conventions"
-  ~#entry_spec: ~"./conventions/index.spw"
-  ~#selection: ~"./conventions/selection.spw"
-  ~#naming: ~"./conventions/naming.spw"
-  ~#cli: ~"./conventions/cli.spw"
+ ~#root: ~"./conventions"
+ ~#entry_spec: ~"./conventions/index.spw"
+ ~#selection: ~"./conventions/selection.spw"
+ ~#naming: ~"./conventions/naming.spw"
+ ~#cli: ~"./conventions/cli.spw"
 }
 
 ^"patterns"{
-  ~#root: ~"./patterns"
-  ~#entry_spec: ~"./patterns/index.spw"
-  ~#literate_architecture: ~"./patterns/literate-architecture.spw"
-  ~#query_composition: ~"./patterns/query-composition.spw"
+ ~#root: ~"./patterns"
+ ~#entry_spec: ~"./patterns/index.spw"
+ ~#literate_architecture: ~"./patterns/literate-architecture.spw"
+ ~#query_composition: ~"./patterns/query-composition.spw"
 }
 
 ^"process"{
-  #:layer #!pragmatics
-  ~#root: ~"./process"
-  observation: {
-    ~#entry_spec: ~"./process/loop-observation.spw"
-    ~#focus: "loop, observation fields, concept clustering, projection references"
-  }
-  evolution: {
-    ~#entry_spec: ~"./process/scoped-evolution.spw"
-    ~#mode: "experimental syntax is opt-in and path-scoped"
-  }
-  hot_reload: {
-    ~#entry_spec: ~"./process/hot-reload-loop.spw"
-    ~#runtime: "npm run spw:dev"
-  }
-  ~#rendering: "plain-text-first; must be legible in terminal, Obsidian, Notion without custom renderer"
+ #:layer #!pragmatics
+ ~#root: ~"./process"
+ observation: {
+ ~#entry_spec: ~"./process/loop-observation.spw"
+ ~#focus: "loop, observation fields, concept clustering, projection references"
+ }
+ evolution: {
+ ~#entry_spec: ~"./process/scoped-evolution.spw"
+ ~#mode: "experimental syntax is opt-in and path-scoped"
+ }
+ hot_reload: {
+ ~#entry_spec: ~"./process/hot-reload-loop.spw"
+ ~#runtime: "npm run spw:dev"
+ }
+ ~#rendering: "plain-text-first; must be legible in terminal, Obsidian, Notion without custom renderer"
 }
 
 ^"ocean_atlas"{
-  ~#root: ~"./biome/ocean"
-  ~#index: ~"./biome/ocean/index.spw"
-  ~#biomes: ~"./biome/ocean/atlas.spw"
-  ~#style_currents: ~"./biome/ocean/style.spw"
-  ~#channel: "experimental"
-  ~#core_rule: "Biome metaphors may vary; spirit-sequence core stays cohesive."
+ ~#root: ~"./biome/ocean"
+ ~#index: ~"./biome/ocean/index.spw"
+ ~#biomes: ~"./biome/ocean/atlas.spw"
+ ~#style_currents: ~"./biome/ocean/style.spw"
+ ~#channel: "experimental"
+ ~#core_rule: "Biome metaphors may vary; spirit-sequence core stays cohesive."
 }
 
 ^"projections"{
-  ~#generated_root: ~"./gen"
-  ~#index: ~"./gen/index.spw"
-  ~#note: "Generated projection directories are ignored to stand out in IDEs."
+ ~#generated_root: ~"./gen"
+ ~#index: ~"./gen/index.spw"
+ ~#note: "Generated projection directories are ignored to stand out in IDEs."
 }
 
 ^"reference_language_optimizations"{
-  ~#cache: ~"./biome/ocean/algos/cache.spw"
-  ~#phase: ~"./biome/ocean/phase.spw"
-  ~#custom_expr: ~"./biome/ocean/expr/custom.spw"
-  ~#relationship_expr: ~"./biome/ocean/expr/rel.spw"
-  ~#query_registry: ~"./biome/ocean/query/sel.spw"
-  ~#query_hot: ~"./biome/ocean/query/hot.spw"
-  ~#literature_shapes: ~"./biome/ocean/lit.spw"
-  ~#trace: ~"./biome/ocean/trace.spw"
-  ~#curiosity_brace_registry: ~"./registries/curiosity-brace.spw"
-  ~#dialect_registry: ~"./registries/dialect-spec.spw"
-  ~#register_bank_registry: ~"./registries/register-bank.spw"
-  ~#symmetry_application_registry: ~"./applications/symmetry/symmetry-applications.spw"
-  ~#symmetry_ui_registry: ~"./applications/symmetry/symmetry-ui-design.spw"
-  ~#symmetry_forecast_registry: ~"./applications/symmetry/symmetry-forecast-projection-sound.spw"
-  ~#symmetry_cognitive_registry: ~"./applications/symmetry/symmetry-cognitive-engine.spw"
-  ~#symmetry_spellcasting_registry: ~"./applications/symmetry/symmetry-spellcasting-pattern.spw"
-  ~#conventions_root: ~"./conventions"
-  ~#conventions_spec: ~"./conventions/index.spw"
-  ~#selection_conventions: ~"./conventions/selection.spw"
-  ~#naming_conventions: ~"./conventions/naming.spw"
-  ~#cli_conventions: ~"./conventions/cli.spw"
-  ~#patterns_root: ~"./patterns"
-  ~#patterns_spec: ~"./patterns/index.spw"
-  ~#pattern_literate_architecture: ~"./patterns/literate-architecture.spw"
-  ~#pattern_query_composition: ~"./patterns/query-composition.spw"
-  ~#literate_architecture_exhibits: ~"./literate/architecture/index.spw"
-  ~#tooling_intellij_registry: ~"./tooling/intellij-plugin.spw"
-  ~#goal: "Surface caching + interpretation optimizations for Spw as reference language."
+ ~#cache: ~"./biome/ocean/algos/cache.spw"
+ ~#phase: ~"./biome/ocean/phase.spw"
+ ~#custom_expr: ~"./biome/ocean/expr/custom.spw"
+ ~#relationship_expr: ~"./biome/ocean/expr/rel.spw"
+ ~#query_registry: ~"./biome/ocean/query/sel.spw"
+ ~#query_hot: ~"./biome/ocean/query/hot.spw"
+ ~#literature_shapes: ~"./biome/ocean/lit.spw"
+ ~#trace: ~"./biome/ocean/trace.spw"
+ ~#curiosity_brace_registry: ~"./registries/curiosity-brace.spw"
+ ~#dialect_registry: ~"./registries/dialect-spec.spw"
+ ~#register_bank_registry: ~"./registries/register-bank.spw"
+ ~#symmetry_application_registry: ~"./applications/symmetry/symmetry-applications.spw"
+ ~#symmetry_ui_registry: ~"./applications/symmetry/symmetry-ui-design.spw"
+ ~#symmetry_forecast_registry: ~"./applications/symmetry/symmetry-forecast-projection-sound.spw"
+ ~#symmetry_cognitive_registry: ~"./applications/symmetry/symmetry-cognitive-engine.spw"
+ ~#symmetry_spellcasting_registry: ~"./applications/symmetry/symmetry-spellcasting-pattern.spw"
+ ~#conventions_root: ~"./conventions"
+ ~#conventions_spec: ~"./conventions/index.spw"
+ ~#selection_conventions: ~"./conventions/selection.spw"
+ ~#naming_conventions: ~"./conventions/naming.spw"
+ ~#cli_conventions: ~"./conventions/cli.spw"
+ ~#patterns_root: ~"./patterns"
+ ~#patterns_spec: ~"./patterns/index.spw"
+ ~#pattern_literate_architecture: ~"./patterns/literate-architecture.spw"
+ ~#pattern_query_composition: ~"./patterns/query-composition.spw"
+ ~#literate_architecture_exhibits: ~"./literate/architecture/index.spw"
+ ~#tooling_intellij_registry: ~"./tooling/intellij-plugin.spw"
+ ~#goal: "Surface caching + interpretation optimizations for Spw as reference language."
 }
 
 ^"harness"{
-  #:harness #!evaluation
-  ~#runs_root: ~"./harness/runs"
-  ~#runs_contract: ~"./harness/runs/runs-index.spw"
-  ~#eval_root: ~"./harness/evals"
-  ~#eval_contract: ~"./harness/evals/baseline-evals.spw"
-  ~#memory_contract: ~"./harness/memory-surface.spw"
-  ~#probe_contract: ~"./harness/probes/probe-loop.spw"
-  ~#probe_archive: ~"./harness/probes/archive-index.spw"
-  ~#context_root: ~"../.agents"
-  ~#prompt_unit: "run-snapshot (not per-message)"
-  ~#prompt_policy: "capture task intent + references; exclude raw chat transcripts by default"
-  ~#dedupe_key: "intent_hash + context_refs + model"
-  ~#required_fields: ["prompt", "model", "seed", "artifacts", "checks", "verdict"]
-  ~#memory_policy: "runtime memory is script-addressable and snapshot-oriented; loop surfaces carry compact context"
+ #:harness #!evaluation
+ ~#runs_root: ~"./harness/runs"
+ ~#runs_contract: ~"./harness/runs/runs-index.spw"
+ ~#eval_root: ~"./harness/evals"
+ ~#eval_contract: ~"./harness/evals/baseline-evals.spw"
+ ~#memory_contract: ~"./harness/memory-surface.spw"
+ ~#probe_contract: ~"./harness/probes/probe-loop.spw"
+ ~#probe_archive: ~"./harness/probes/archive-index.spw"
+ ~#context_root: ~"../.agents"
+ ~#prompt_unit: "run-snapshot (not per-message)"
+ ~#prompt_policy: "capture task intent + references; exclude raw chat transcripts by default"
+ ~#dedupe_key: "intent_hash + context_refs + model"
+ ~#required_fields: ["prompt", "model", "seed", "artifacts", "checks", "verdict"]
+ ~#memory_policy: "runtime memory is script-addressable and snapshot-oriented; loop surfaces carry compact context"
 }
 
 ^"memory_locations"{
-  #:memory #!placement
-  hot: ".spw/hot.spw (active loop context, high mutation)"
-  warm: ".spw/harness/memory-surface.spw (run snapshots, probe fills, replay inputs)"
-  cold: ".spw/harness/probes/archive-index.spw + .spw/harness/runs/* (append-only evidence)"
-  generated: ".spw/gen/* (projection bodies, rebuildable from refs + snapshots)"
-  invariant: "memory location is explicit and queryable; ownership remains visible by path and root"
+ #:memory #!placement
+ hot: ".spw/hot.spw (active loop context, high mutation)"
+ warm: ".spw/harness/memory-surface.spw (run snapshots, probe fills, replay inputs)"
+ cold: ".spw/harness/probes/archive-index.spw + .spw/harness/runs/* (append-only evidence)"
+ generated: ".spw/gen/* (projection bodies, rebuildable from refs + snapshots)"
+ invariant: "memory location is explicit and queryable; ownership remains visible by path and root"
 }
 
 ^"tuning"{
-  #:tuning #!curation
-  ~#corpus_root: ~"./tuning/corpus"
-  ~#policy: ~"./tuning/corpus/corpus-policy.spw"
-  ~#admission_gate: "only harness-approved artifacts may enter the corpus"
-  ~#traceability: "every corpus item links to one run id and one reviewer verdict"
+ #:tuning #!curation
+ ~#corpus_root: ~"./tuning/corpus"
+ ~#policy: ~"./tuning/corpus/corpus-policy.spw"
+ ~#admission_gate: "only harness-approved artifacts may enter the corpus"
+ ~#traceability: "every corpus item links to one run id and one reviewer verdict"
 }
 
 ^"invariants"{
-  "Presentation taste never changes canonical_text or hash.",
-  "Harness runs are append-only records.",
-  "Per-message chat logs are not required harness artifacts.",
-  "Tuning corpus is curated; no raw prompt dumps without review.",
-  "Conventions and patterns stay canonical; generated bodies stay in /gen.",
-  "Root refs resolve through this manifest before fallback heuristics.",
+ "Presentation taste never changes canonical_text or hash.",
+ "Harness runs are append-only records.",
+ "Per-message chat logs are not required harness artifacts.",
+ "Tuning corpus is curated; no raw prompt dumps without review.",
+ "Conventions and patterns stay canonical; generated bodies stay in /gen.",
+ "Root refs resolve through this manifest before fallback heuristics.",
 }
 
-?["Does the Cayley table for brace×operator composition close under {FRAME}?"]
-  #:depth #!mathematical  // lens: formula
-  $^seed[_.sym:D4] => %[register.left, register.right]
-  ~<@spec/core/OPERATORS.md>
-  !probe{ "construct the group action table; check if .left ↔ .right reflection commutes with ~ → ! operator tense shift" }
+#>wonder_spw_workspace_1
+?["How does this file's voice differ from index — .spw/workspace?"]{
+  #:depth #!educational // lens: formal structure
+  ~<./index.spw> // nearest neighbor
+  $%[op.distribution]@here vs $%[op.distribution]./index.spw
+  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
+}
 
-?["What orbits emerge when D4 acts on nested brace pairs?"]
-  #:depth #!computational  // lens: molecule
-  $^[_.sym] => &[orbit.stabilizer]
-  ~<@spw/registries/curiosity-brace.spw>
-  !probe{ "enumerate fixed points of the dihedral action on {{{}}} nesting depth 3; count distinct register states" }
+#>wonder_spw_workspace_2
+?["What invariant holds across every frame in Spw Workspace Manifest?"]{
+  #:depth #!experiential // lens: material grain
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to roots's frames; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[register.bank_size, register.active_bindings]
+  ~<.spw/agents.spw>  // nearest neighbor
+}

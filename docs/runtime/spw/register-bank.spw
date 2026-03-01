@@ -6,118 +6,125 @@
 #:layer #!semantics
 
 ^"intent"{
-  goal: "Make y/p command mode register-aware, container-aware, and visible",
-  surface: ["context panel", "command history", "keyboard hints", "command line"],
-  settings: ["contextPanel.showRegisters"],
-  mode: ": or / (command line)",
+ goal: "Make y/p command mode register-aware, container-aware, and visible",
+ surface: ["context panel", "command history", "keyboard hints", "command line"],
+ settings: ["contextPanel.showRegisters"],
+ mode: ": or / (command line)",
 }
 
 ^"source_files"{
-  ~<register>"../../src/runtime/state/register-bank.ts"
-  ~<types>"../../src/runtime/state/types.ts"
-  ~<affinities>"../../src/runtime/state/type-affinities.ts"
-  ~<pipeline>"../../src/runtime/pipeline/run-spw.ts"
+ ~<register>"../../src/runtime/state/register-bank.ts"
+ ~<types>"../../src/runtime/state/types.ts"
+ ~<affinities>"../../src/runtime/state/type-affinities.ts"
+ ~<pipeline>"../../src/runtime/pipeline/run-spw.ts"
 }
 
 ^"registers"{
-  default: '"',
-  history: ['0','1','2','3','4','5','6','7','8','9'],
-  named: ['a'..'z'],
+ default: '"',
+ history: ['0','1','2','3','4','5','6','7','8','9'],
+ named: ['a'..'z'],
 }
 
 ^"operator_registers"{
-  # Canonical containers (4)
-  '!': { name: "Action",      accessMode: "kinetic",     affinity: "void"    }
-  '^': { name: "Integration", accessMode: "structural",  affinity: "promote" }
-  '~': { name: "Potential",   accessMode: "deferred",    affinity: "block"   }
-  '?': { name: "Wonder",      accessMode: "conditional", affinity: "<>"      }
-  '*': { name: "Value",       accessMode: "resolved",    affinity: "value"   }
-  '=': { name: "Set",         accessMode: "property",    affinity: "{}"      }
-  '@': { name: "Perspective", accessMode: "perspective", affinity: "()"      }
-  '#': { name: "Resonance",   accessMode: "category",    affinity: "[]"      }
-  '.': { name: "Subject",     accessMode: "property",    affinity: "{}"      }
-  '&': { name: "Confluence",  accessMode: "confluent",   affinity: "merge"   }
-  '$': { name: "Substrate",   accessMode: "material",    affinity: "meta"    }
-  '%': { name: "Measure",     accessMode: "ratio",       affinity: "scalar"  }
+ # Canonical containers (4)
+ '!': { name: "Action", accessMode: "kinetic", affinity: "void" }
+ '^': { name: "Integration", accessMode: "structural", affinity: "promote" }
+ '~': { name: "Potential", accessMode: "deferred", affinity: "block" }
+ '?': { name: "Wonder", accessMode: "conditional", affinity: "<>" }
+ '*': { name: "Value", accessMode: "resolved", affinity: "value" }
+ '=': { name: "Set", accessMode: "property", affinity: "{}" }
+ '@': { name: "Perspective", accessMode: "perspective", affinity: "()" }
+ '#': { name: "Resonance", accessMode: "category", affinity: "[]" }
+ '.': { name: "Subject", accessMode: "property", affinity: "{}" }
+ '&': { name: "Confluence", accessMode: "confluent", affinity: "merge" }
+ '$': { name: "Substrate", accessMode: "material", affinity: "meta" }
+ '%': { name: "Measure", accessMode: "ratio", affinity: "scalar" }
 }
 
 ^"typed_access"{
-  # Six methods on RuntimeState.registers (RegisterBank class)
-  access:      { op: '.', signature: "(base, path[]) → SpwValue",      note: "property traversal"        }
-  resonate:    { op: '#', signature: "(name, value, tag?) → boolean",  note: "immutable identity binding" }
-  observe:     { op: '@', signature: "(observer, value) → ScopeFrame", note: "sheaf section push"         }
-  confluent:   { op: '&', signature: "(name, ...sources) → RegValue",  note: "tracked merge"              }
-  materialize: { op: '$', signature: "(name) → RegisterMeta",         note: "register introspection"     }
-  measure:     { op: '%', signature: "(name, scale?) → number",        note: "normalized [0,1]"           }
+ # Six methods on RuntimeState.registers (RegisterBank class)
+ access: { op: '.', signature: "(base, path[]) → SpwValue", note: "property traversal" }
+ resonate: { op: '#', signature: "(name, value, tag?) → boolean", note: "immutable identity binding" }
+ observe: { op: '@', signature: "(observer, value) → ScopeFrame", note: "sheaf section push" }
+ confluent: { op: '&', signature: "(name, ...sources) → RegValue", note: "tracked merge" }
+ materialize: { op: '$', signature: "(name) → RegisterMeta", note: "register introspection" }
+ measure: { op: '%', signature: "(name, scale?) → number", note: "normalized [0,1]" }
 }
 
 ^"workflow"{
-  enter: ": or /",        # command line
-  select: '"' + <key>,    # set active register
-  yank:   'y',            # yank into active register (also updates default/history)
-  paste:  'p',            # paste from active register
-  exit:   'Esc',
+ enter: ": or /", # command line
+ select: '"' + <key>, # set active register
+ yank: 'y', # yank into active register (also updates default/history)
+ paste: 'p', # paste from active register
+ exit: 'Esc',
 }
 
 ^"packet_shape"{
-  canonical: "<concept>(scene)[mode]{definition}",
-  packet_fields: ["concept", "scene", "mode", "definition", "source_ref", "lod", "perspective"],
-  fallback: "plain text packet when container parse is unavailable",
+ canonical: "<concept>(scene)[mode]{definition}",
+ packet_fields: ["concept", "scene", "mode", "definition", "source_ref", "lod", "perspective"],
+ fallback: "plain text packet when container parse is unavailable",
 }
 
 ^"sources"{
-  yank_priority: [
-    "editor selection",
-    "AST node (inspect/transform)",
-    "landmark path (active region/component)",
-  ],
-  kinds: ["selection", "node", "landmark", "html", "operator"],
+ yank_priority: [
+ "editor selection",
+ "AST node (inspect/transform)",
+ "landmark path (active region/component)",
+ ],
+ kinds: ["selection", "node", "landmark", "html", "operator"],
 }
 
 ^"selection_semantics"{
-  mode_rules: [
-    "Fine: prefer token or node selection packets",
-    "Medium: prefer block packets with mode metadata",
-    "Coarse: prefer region packets anchored by source_ref",
-  ],
-  paste_rules: [
-    "editor: paste definition/body first, preserve packet metadata in register",
-    "inspector: focus matching token/node when packet carries source_ref",
-    "context: show packet summary and active register lineage",
-  ],
+ mode_rules: [
+ "Fine: prefer token or node selection packets",
+ "Medium: prefer block packets with mode metadata",
+ "Coarse: prefer region packets anchored by source_ref",
+ ],
+ paste_rules: [
+ "editor: paste definition/body first, preserve packet metadata in register",
+ "inspector: focus matching token/node when packet carries source_ref",
+ "context: show packet summary and active register lineage",
+ ],
 }
 
 ^"visibility"{
-  context_panel: {
-    section: "Registers",
-    shows: ["active register", "recent history", "named registers", "packet kind", "source ref", "accessMode", "containerAffinity"],
-  },
-  settings: {
-    toggle: "Context Panel -> Register Bank",
-    dataset: "data-context-panel-registers",
-  }
+ context_panel: {
+ section: "Registers",
+ shows: ["active register", "recent history", "named registers", "packet kind", "source ref", "accessMode", "containerAffinity"],
+ },
+ settings: {
+ toggle: "Context Panel -> Register Bank",
+ dataset: "data-context-panel-registers",
+ }
 }
 
 ^"notes"{
-  "Register clicks in context panel set active register.",
-  "Landmark yanks flow through the same register bank.",
-  "Packets should prefer canonical operator and container names in visible labels.",
-  "Prefer packet-delta writes: register updates should be observable as step-level deltas.",
-  "Probe/match captures stay scope-local by default; export to register bank explicitly.",
-  "Attach breadcrumb tags on writes to preserve provenance for replay and navigation.",
-  "Grounded registers (#) are lens-indexed resonance slots; repeated resonate() writes are allowed for cache-oriented reductions.",
-  "Substrate ($) returns RegisterMeta object, not the register value.",
-  "Measure (%) always returns a number in [0,1]; pass scale for meaningful normalization.",
+ "Register clicks in context panel set active register.",
+ "Landmark yanks flow through the same register bank.",
+ "Packets should prefer canonical operator and container names in visible labels.",
+ "Prefer packet-delta writes: register updates should be observable as step-level deltas.",
+ "Probe/match captures stay scope-local by default; export to register bank explicitly.",
+ "Attach breadcrumb tags on writes to preserve provenance for replay and navigation.",
+ "Grounded registers (#) are lens-indexed resonance slots; repeated resonate() writes are allowed for cache-oriented reductions.",
+ "Substrate ($) returns RegisterMeta object, not the register value.",
+ "Measure (%) always returns a number in [0,1]; pass scale for meaningful normalization.",
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_docs_runtime_spw_registerbank_1
+?["What was Register Bank before it was this, and what could it become?"]{
+  #:depth #!experiential // lens: molecular binding
+  ~#past: "git log --oneline -- docs/runtime/spw/register-bank.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_docs_runtime_spw_registerbank_2
+?["How would an ecology algorithm express spw/register-bank?"]{
+  #:depth #!computational // lens: ecological zone
+  ~#translation_target: "ecology"
+  ~#source_concept: "intent"
+  !probe{ "rewrite the root frame in ecology vocabulary; where the translation breaks reveals Spw's untranslatable concepts." }
+  $%[register.bank_size, register.active_bindings]
+  ~<docs/runtime/spw/agent-loop.spw>  // nearest neighbor
+}

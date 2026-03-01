@@ -1,108 +1,115 @@
 # Materials Science Ontology Prototype
 #
-# A proof-of-concept demonstrating Spw's utility as a rigorous academic notation 
+# A proof-of-concept demonstrating Spw's utility as a rigorous academic notation
 # for physical sciences, mapping core MSE concepts to Spw operators and structures.
 
 #:layer #!semantics
 
 .{
-  domain = `roots`
-  here = `~.`
-  theory = `~..`
+ domain = `roots`
+ here = `~.`
+ theory = `~..`
 }[reg=facet]
 
 .{
-  domain = `crystallography`
-  
-  # Lattices are modeled as sets of symmetrical basis vectors
-  lattices = #[
-    "simple_cubic"
-    "body_centered_cubic" (bcc)
-    "face_centered_cubic" (fcc)
-    "hexagonal_close_packed" (hcp)
-  ]
+ domain = `crystallography`
 
-  # A crystal is a resonated (grounded) lattice structure
-  # #crystal ≡ ?lattice (observation collapses potential to a specific structure)
-  crystal_structure = .{
-    unit_cell = ?lattices.bcc
-    basis = #[Fe, Fe]
-  }[reg=crystal_structure]
+ # Lattices are modeled as sets of symmetrical basis vectors
+ lattices = #[
+ "simple_cubic"
+ "body_centered_cubic" (bcc)
+ "face_centered_cubic" (fcc)
+ "hexagonal_close_packed" (hcp)
+ ]
+
+ # A crystal is a resonated (grounded) lattice structure
+ # #crystal ≡ ?lattice (observation collapses potential to a specific structure)
+ crystal_structure = .{
+ unit_cell = ?lattices.bcc
+ basis = #[Fe, Fe]
+ }[reg=crystal_structure]
 }[reg=facet]
 
 .{
-  domain = `defects`
-  
-  # Defects are the friction (bane) that give materials their strength (bone)
-  
-  # Point defects (0D)
-  vacancies = ~atom        # A missing atom is a potential site
-  interstitials = !atom    # An extra atom forced into the lattice
+ domain = `defects`
 
-  # Line defects (1D)
-  dislocations = .{
-    edge   = `Extra half-plane of atoms`
-    screw  = `Helical displacement offset`
-    burger = `Vector denoting the distortion`
-  }[reg=defect]
+ # Defects are the friction (bane) that give materials their strength (bone)
 
-  # Planar defects (2D)
-  grain_boundaries = &[grain_A, grain_B]  # Emergent property of two mismatched lattices meeting
+ # Point defects (0D)
+ vacancies = ~atom # A missing atom is a potential site
+ interstitials = !atom # An extra atom forced into the lattice
+
+ # Line defects (1D)
+ dislocations = .{
+ edge = `Extra half-plane of atoms`
+ screw = `Helical displacement offset`
+ burger = `Vector denoting the distortion`
+ }[reg=defect]
+
+ # Planar defects (2D)
+ grain_boundaries = &[grain_A, grain_B] # Emergent property of two mismatched lattices meeting
 }[reg=facet]
 
 .{
-  domain = `thermodynamics_and_phases`
-  
-  # The complement operator (~) perfectly models latent heat and enthalpy
-  
-  # Melting: Solid + Heat -> Liquid
-  melt = *#solid -> ~liquid  # The grounded solid absorbs potential (*) to become fluid (~)
-  
-  # Solidification / Nucleation
-  crystallize = *~liquid -> #solid  # Fluid potential collapses into a grounded structure
+ domain = `thermodynamics_and_phases`
 
-  # Phase Diagrams / Eutectics
-  # Alloying is not additive but emergent
-  alloy = &[element_A, element_B]
-  bronze = &[copper, tin]
+ # The complement operator (~) perfectly models latent heat and enthalpy
+
+ # Melting: Solid + Heat -> Liquid
+ melt = *#solid -> ~liquid # The grounded solid absorbs potential (*) to become fluid (~)
+
+ # Solidification / Nucleation
+ crystallize = *~liquid -> #solid # Fluid potential collapses into a grounded structure
+
+ # Phase Diagrams / Eutectics
+ # Alloying is not additive but emergent
+ alloy = &[element_A, element_B]
+ bronze = &[copper, tin]
 }[reg=facet]
 
 .{
-  domain = `mechanics`
-  
-  # Stress and Strain tensors represented as facets
-  stress_tensor = .{
-    sigma_xx = 100
-    sigma_yy = 0
-    sigma_zz = 0
-    tau_xy   = 25
-  }[reg=stress_tensor]
+ domain = `mechanics`
 
-  # Yield strength is a normalization threshold (%)
-  yield_threshold = %stress > 0.002  # 0.2% offset yield
-  
-  # Fracture is the ultimate system bonk
-  fracture = !bonk
+ # Stress and Strain tensors represented as facets
+ stress_tensor = .{
+ sigma_xx = 100
+ sigma_yy = 0
+ sigma_zz = 0
+ tau_xy = 25
+ }[reg=stress_tensor]
+
+ # Yield strength is a normalization threshold (%)
+ yield_threshold = %stress > 0.002 # 0.2% offset yield
+
+ # Fracture is the ultimate system bonk
+ fracture = !bonk
 }[reg=facet]
 
 .{
-  domain = `characterization`
-  
-  # The meta-operator ($) models analytical techniques that measure the structure itself
-  
-  XRD = $(#crystal)     # X-Ray Diffraction measures the grounded lattice spacing
-  SEM = $(grain_boundaries) # Scanning Electron Microscopy observes the emergent boundaries
-  EDS = ?(alloy.composition) # Energy Dispersive Spectroscopy queries the atomic makeup
+ domain = `characterization`
+
+ # The meta-operator ($) models analytical techniques that measure the structure itself
+
+ XRD = $(#crystal) # X-Ray Diffraction measures the grounded lattice spacing
+ SEM = $(grain_boundaries) # Scanning Electron Microscopy observes the emergent boundaries
+ EDS = ?(alloy.composition) # Energy Dispersive Spectroscopy queries the atomic makeup
 }[reg=facet]
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_theory_spw_materialsontology_1
+?["What invariant holds across every frame in Materials Science Ontology Prototype?"]{
+  #:depth #!computational // lens: ecological zone
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to materials science ontology prototype's frames; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[theory.claim_count, theory.proof_depth]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_theory_spw_materialsontology_2
+?["What was Materials Science Ontology Prototype before it was this, and what could it become?"]{
+  #:depth #!mathematical // lens: molecular binding
+  ~#past: "git log --oneline -- docs/theory/spw/materials-ontology.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[theory.claim_count, theory.proof_depth]
+  ~<docs/theory/spw/audio-architecture.spw>  // nearest neighbor
+}

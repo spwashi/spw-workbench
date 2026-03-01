@@ -3,81 +3,87 @@
 #:layer #!pragmatics
 
 ^["scope"]{
-  ~request: "Localization pass for UI components using copy modes: english-long, english-terse, spw."
-  ~audit-axis: ["event lifecycle", "render churn", "listener density"]
+ ~request: "Localization pass for UI components using copy modes: english-long, english-terse, spw."
+ ~audit-axis: ["event lifecycle", "render churn", "listener density"]
 }
 
 ^["implemented-now"]{
-  ~copy-mode-source: "root dataset data-ui-copy-mode"
-  ~setting-key: "ui.copyMode"
-  ~setting-options: ["english-long", "english-terse", "spw (label: Spw)"]
+ ~copy-mode-source: "root dataset data-ui-copy-mode"
+ ~setting-key: "ui.copyMode"
+ ~setting-options: ["english-long", "english-terse", "spw (label: Spw)"]
 
-  ~migrated-components: [
-    "src/features/keyboard/geology/components/keybinding-geology.ts",
-    "src/app/components/keyboard-hints.ts",
-    "src/app/attention-hint.ts"
-  ]
+ ~migrated-components: [
+ "src/features/keyboard/geology/components/keybinding-geology.ts",
+ "src/app/components/keyboard-hints.ts",
+ "src/app/attention-hint.ts"
+ ]
 }
 
 ^["event-audit"]{
-  ~listener-density-top: [
-    "src/features/keyboard/geology/components/keybinding-geology.ts (15)",
-    "src/ui/elements/screenshot-prompt-panel/spw-screenshot-prompt-panel.ts (12)",
-    "src/app/components/mode-toggle.ts (11)",
-    "src/app/components/editor-overlay.ts (10)"
-  ]
+ ~listener-density-top: [
+ "src/features/keyboard/geology/components/keybinding-geology.ts (15)",
+ "src/ui/elements/screenshot-prompt-panel/spw-screenshot-prompt-panel.ts (12)",
+ "src/app/components/mode-toggle.ts (11)",
+ "src/app/components/editor-overlay.ts (10)"
+ ]
 
-  ~fixed: [
-    "Deprecated key hint bar now exposes destroy() and disconnects subscriptions/observer.",
-    "Keyboard hint observer now watches data-ui-copy-mode for live copy updates.",
-    "Attention hint removes settings listener on destroy.",
-    "ModeToggle now detaches all bound listeners on destroy() (prevents retained handlers)."
-  ]
+ ~fixed: [
+ "Deprecated key hint bar now exposes destroy() and disconnects subscriptions/observer.",
+ "Keyboard hint observer now watches data-ui-copy-mode for live copy updates.",
+ "Attention hint removes settings listener on destroy.",
+ "ModeToggle now detaches all bound listeners on destroy() (prevents retained handlers)."
+ ]
 }
 
 ^["performance-audit"]{
-  ~innerhtml-churn-top: [
-    "src/features/keyboard/geology/components/keybinding-geology.ts",
-    "src/app/components/detail-drawer.ts",
-    "src/app/components/tooltip.ts",
-    "src/app/components/step-through/render.ts"
-  ]
+ ~innerhtml-churn-top: [
+ "src/features/keyboard/geology/components/keybinding-geology.ts",
+ "src/app/components/detail-drawer.ts",
+ "src/app/components/tooltip.ts",
+ "src/app/components/step-through/render.ts"
+ ]
 
-  ~current-risk: "Large sections still rebuild via innerHTML on updates; acceptable now but should move to granular patching for high-frequency views."
-  ~current-mitigation: "Localization refresh in geology panel updates localized slices without full remount."
+ ~current-risk: "Large sections still rebuild via innerHTML on updates; acceptable now but should move to granular patching for high-frequency views."
+ ~current-mitigation: "Localization refresh in geology panel updates localized slices without full remount."
 }
 
 ^["localization-coverage"]{
-  ~systemized: [
-    "Infra-level copy mode resolver + normalizer",
-    "Settings wiring for global UI copy mode",
-    "Hint labels/tooltips/group labels respond to copy mode",
-    "Attention hint labels/titles/live announcements respond to copy mode"
-  ]
+ ~systemized: [
+ "Infra-level copy mode resolver + normalizer",
+ "Settings wiring for global UI copy mode",
+ "Hint labels/tooltips/group labels respond to copy mode",
+ "Attention hint labels/titles/live announcements respond to copy mode"
+ ]
 
-  ~remaining-high-priority: [
-    "src/app/components/mode-toggle.ts",
-    "src/app/components/editor-overlay.ts",
-    "src/ui/elements/settings-panel/spw-settings-panel.ts",
-    "src/ui/elements/screenshot-prompt-panel/spw-screenshot-prompt-panel.ts"
-  ]
+ ~remaining-high-priority: [
+ "src/app/components/mode-toggle.ts",
+ "src/app/components/editor-overlay.ts",
+ "src/ui/elements/settings-panel/spw-settings-panel.ts",
+ "src/ui/elements/screenshot-prompt-panel/spw-screenshot-prompt-panel.ts"
+ ]
 }
 
 ^["next-pass-plan"]{
-  1. "Extract shared i18n token maps for repeated UI nouns (mode, region, focus, selection, action, context)."
-  2. "Replace high-churn innerHTML writes in top 3 churn files with targeted DOM updates."
-  3. "Convert highest-listener files to delegated handlers where safe."
-  4. "Expand copy-mode support to remaining high-priority components listed above."
+ 1. "Extract shared i18n token maps for repeated UI nouns (mode, region, focus, selection, action, context)."
+ 2. "Replace high-churn innerHTML writes in top 3 churn files with targeted DOM updates."
+ 3. "Convert highest-listener files to delegated handlers where safe."
+ 4. "Expand copy-mode support to remaining high-priority components listed above."
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_audits_spw_localizationeventsperfor_1
+?["What is the algebraic closure of scope?"]{
+  #:depth #!computational // lens: formal structure
+  $^["scope"]@_ => %[formula.measure]
+  ~<docs/audits/spw/localization-events-performance-2026-02-14.spw> // introspect
+  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
+  $%[file.frame_count, file.annotation_density, file.brace_depth_max]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_audits_spw_localizationeventsperfor_2
+?["What is the felt rhythm of reading Localization + Event/Performance Audit (2026-02-14)?"]{
+  #:depth #!mathematical // lens: material grain
+  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
+  ~#structure: "scope → implemented-now → event-audit" // frame flow
+  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark grain boundaries." }
+  ~<docs/audits/spw/attention-behavior-audit.spw>  // nearest neighbor
+}

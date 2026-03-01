@@ -5,60 +5,66 @@
 #:layer #!pragmatics
 
 ^["intent"]{
-  ~#goal: "Promote thin spw-selector.ts into a composable pattern-based selector algebra in src/seed/query/. Selectors use Spw's own sigils, braces, and wildcards — not string type names."
-  ~#taste: "expressiveness, layering — moving selector logic from script-land to library-land"
+ ~#goal: "Promote thin spw-selector.ts into a composable pattern-based selector algebra in src/seed/query/. Selectors use Spw's own sigils, braces, and wildcards — not string type names."
+ ~#taste: "expressiveness, layering — moving selector logic from script-land to library-land"
 }
 
 ^["stream"]{
-  # Append entries chronologically. Never edit prior entries.
-  >> [2026-02-27 05:39] observe — existing spw-selector.ts uses walkAST + two inline matchers (maybePathRef, maybeRootRef). 133 lines, no composability.
-  >> [2026-02-27 05:39] observe — ONF normalization already maps sigils to registers: !, ~, @, ^, #, ., ?, =, &, *, $, %. Selector patterns can mirror this directly.
-  >> [2026-02-27 05:39] decide — selectors will be TS-constructed pattern objects for now (not a string DSL). Serializable subset for lore-remote dispatch.
-  >> [2026-02-27 05:39] decide — new code lives in src/seed/query/ to keep it portable and importable from extension/CLi/LSP.
+ # Append entries chronologically. Never edit prior entries.
+ >> [2026-02-27 05:39] observe — existing spw-selector.ts uses walkAST + two inline matchers (maybePathRef, maybeRootRef). 133 lines, no composability.
+ >> [2026-02-27 05:39] observe — ONF normalization already maps sigils to registers: !, ~, @, ^, #, ., ?, =, &, *, $, %. Selector patterns can mirror this directly.
+ >> [2026-02-27 05:39] decide — selectors will be TS-constructed pattern objects for now (not a string DSL). Serializable subset for lore-remote dispatch.
+ >> [2026-02-27 05:39] decide — new code lives in src/seed/query/ to keep it portable and importable from extension/CLi/LSP.
 }
 
 ^["open"]{
-  ?[wildcard_semantics]: "Should $_ match *any* node or only explicit Wildcard nodes? Design says any node — confirm during implementation."
-  ?[depth_syntax]: "Depth range syntax ($!_:0..2). Is this needed for commit 1-4 or deferred?"
-  ?[serialize_format]: "JSON shape for serializable selectors over spw/select. { sigil, brace, modifier } vs pattern string?"
+ ?[wildcard_semantics]: "Should $_ match *any* node or only explicit Wildcard nodes? Design says any node — confirm during implementation."
+ ?[depth_syntax]: "Depth range syntax ($!_:0..2). Is this needed for commit 1-4 or deferred?"
+ ?[serialize_format]: "JSON shape for serializable selectors over spw/select. { sigil, brace, modifier } vs pattern string?"
 }
 
 ^["commits"]{
-  ~[1]: "^seed[query] — define selector pattern types and SpwMatch interface"
-  ~[2]: "^seed[query] — implement pattern matcher over ASTNode tree"
-  ~[3]: "^seed[query] — add spwq() and spwq.at() entry points"
-  ~[4]: "^seed[query] — define preset selectors (NAVIGABLE, DOMAIN_ROOTS, OPERATIONS)"
-  ~[5]: "&[seed] — barrel export src/seed/query from src/seed/index.ts"
-  ~[6]: "&[lsp] — rewire spw-selector.ts and stdio-server.ts to use src/seed/query"
-  ~[7]: "&[spwq] — update CLI to use presets and pattern API"
-  ~[8]: "![query] — add vitest unit tests for pattern matching and presets"
-  ~[9]: ".[plans] — commit plan artifacts and selector algebra design doc"
+ ~[1]: "^seed[query] — define selector pattern types and SpwMatch interface"
+ ~[2]: "^seed[query] — implement pattern matcher over ASTNode tree"
+ ~[3]: "^seed[query] — add spwq() and spwq.at() entry points"
+ ~[4]: "^seed[query] — define preset selectors (NAVIGABLE, DOMAIN_ROOTS, OPERATIONS)"
+ ~[5]: "&[seed] — barrel export src/seed/query from src/seed/index.ts"
+ ~[6]: "&[lsp] — rewire spw-selector.ts and stdio-server.ts to use src/seed/query"
+ ~[7]: "&[spwq] — update CLI to use presets and pattern API"
+ ~[8]: "![query] — add vitest unit tests for pattern matching and presets"
+ ~[9]: ".[plans] — commit plan artifacts and selector algebra design doc"
 }
 
 ^["cache"]{
-  ~#status: "planning"
-  ~#base_ref: "main@fd98d97"
-  ~#rebased_at: ""
-  ~#hygiene_split: "none"
-  ~#files_hot: "src/seed/query/, scripts/lsp/spw-selector.ts, scripts/lsp/stdio-server.ts"
-  ~#next_commit: "1"
-  ~#open_count: "3"
-  ~#last_stream: "2026-02-27 05:39"
-  ~#taste_debt: ""
+ ~#status: "planning"
+ ~#base_ref: "main@here"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "src/seed/query/, scripts/lsp/spw-selector.ts, scripts/lsp/stdio-server.ts"
+ ~#next_commit: "1"
+ ~#open_count: "3"
+ ~#last_stream: "2026-02-27 05:39"
+ ~#taste_debt: ""
 }
 
 ^["done"]{
-  # Written at merge time.
+ # Written at merge time.
 }
 
-?["Does the Cayley table for brace×operator composition close under {FRAME}?"]
-  #:depth #!mathematical  // lens: formula
-  $^seed[_.sym:D4] => %[register.left, register.right]
-  ~<@spec/core/OPERATORS.md>
-  !probe{ "construct the group action table; check if .left ↔ .right reflection commutes with ~ → ! operator tense shift" }
+#>wonder_agents_plans_spwqdialectselector_wip_1
+?["What happens when you zoom from the workflow level to the workspace level in wip — spwq-dialect-selector?"]{
+  #:depth #!mathematical // lens: ecological zone
+  $^["_"]@here => &[@workspace] // local → global projection
+  ~#zoom_in: "intent" // this file's atom
+  !probe{ "the atom is workflow-scale; zoom out: what workspace-level pattern does this workflow participate in?" }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["What orbits emerge when D4 acts on nested brace pairs?"]
-  #:depth #!computational  // lens: molecule
-  $^[_.sym] => &[orbit.stabilizer]
-  ~<@spw/registries/curiosity-brace.spw>
-  !probe{ "enumerate fixed points of the dihedral action on {{{}}} nesting depth 3; count distinct register states" }
+#>wonder_agents_plans_spwqdialectselector_wip_2
+?["What ripples if #wip changes in this file?"]{
+  #:depth #!stylistic // lens: molecular binding
+  $#mathematical@workspace => %[reference.count, depth.downstream]
+  ~#downstream: "trace all files that reference this surface"
+  !probe{ "imagine renaming #mathematical to #mathematical_v2; count broken references; the count reveals how deeply intent is woven into the workspace." }
+  $%[register.bank_size, register.active_bindings]
+}

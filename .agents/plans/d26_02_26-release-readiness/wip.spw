@@ -5,60 +5,66 @@
 #:layer #!pragmatics
 
 ^["intent"]{
-  ~#goal: "Evaluate and execute a same-day v0.2.0-alpha release path by restoring extension artifacts and tightening spec-lib release metadata."
-  ~#taste: "correctness and clarity through explicit release gates, versions, and known-gap communication."
+ ~#goal: "Evaluate and execute a same-day v0.2.0-alpha release path by restoring extension artifacts and tightening spec-lib release metadata."
+ ~#taste: "correctness and clarity through explicit release gates, versions, and known-gap communication."
 }
 
 ^["stream"]{
-  >>[2026-02-27 00:00] observe — Current rewrite workspace includes lib/spw-v0.2.0-alpha but no checked-in extensions/ directory.
-  >>[2026-02-27 00:00] observe — Existing plans mention VS Code/IntelliJ integration and a release commit, but those files are absent in this branch.
-  >>[2026-02-27 00:00] decide — Treat this as a release-readiness bridge: restore extension surfaces first, then align versions and docs.
-  >>[2026-02-27 00:00] hygiene — Local DOM harness drift exists; keep it out of release commits.
+ >>[2026-02-27 00:00] observe — Current rewrite workspace includes lib/spw-v0.2.0-alpha but no checked-in extensions/ directory.
+ >>[2026-02-27 00:00] observe — Existing plans mention VS Code/IntelliJ integration and a release commit, but those files are absent in this branch.
+ >>[2026-02-27 00:00] decide — Treat this as a release-readiness bridge: restore extension surfaces first, then align versions and docs.
+ >>[2026-02-27 00:00] hygiene — Local DOM harness drift exists; keep it out of release commits.
 }
 
 ^["open"]{
-  ?[tag]: "Should this ship as v0.2.0-alpha (recommended) or v0.2.0?"
-  ?[channel]: "Are we publishing extensions now or preparing source-only release artifacts?"
+ ?[tag]: "Should this ship as v0.2.0-alpha (recommended) or v0.2.0?"
+ ?[channel]: "Are we publishing extensions now or preparing source-only release artifacts?"
 }
 
 ^["commits"]{
-  ~[1]: "&[hygiene] — isolate unrelated local DOM test harness drift from release branch"
-  ~[2]: "&[extensions] — restore extensions surfaces from lore/main"
-  ~[3]: ".[release] — align extension versions and compatibility metadata to 0.2.0-alpha"
-  ~[4]: ".[lib] — update v0.2.0-alpha delta/changelog with explicit ship criteria and known gaps"
-  ~[5]: "![release] — run release smoke checks for seed tests and extension package/build sanity"
-  ~[6]: ".[release] — publish dated release note with scope and constraints"
+ ~[1]: "&[hygiene] — isolate unrelated local DOM test harness drift from release branch"
+ ~[2]: "&[extensions] — restore extensions surfaces from lore/main"
+ ~[3]: ".[release] — align extension versions and compatibility metadata to 0.2.0-alpha"
+ ~[4]: ".[lib] — update v0.2.0-alpha delta/changelog with explicit ship criteria and known gaps"
+ ~[5]: "![release] — run release smoke checks for seed tests and extension package/build sanity"
+ ~[6]: ".[release] — publish dated release note with scope and constraints"
 }
 
 ^["cache"]{
-  ~#status: "planning"
-  ~#base_ref: "main@135364a"
-  ~#rebased_at: ""
-  ~#hygiene_split: "feature/d26_02_26-release-readiness-hygiene (if needed)"
-  ~#files_hot: ".agents/plans/d26_02_26-release-readiness/PLAN.md; .agents/plans/d26_02_26-release-readiness/wip.spw"
-  ~#next_commit: "1"
-  ~#open_count: "2"
-  ~#last_stream: "2026-02-27 00:00"
-  ~#taste_debt: ""
+ ~#status: "planning"
+ ~#base_ref: "main@here"
+ ~#rebased_at: ""
+ ~#hygiene_split: "feature/d26_02_26-release-readiness-hygiene (if needed)"
+ ~#files_hot: ".agents/plans/d26_02_26-release-readiness/PLAN.md; .agents/plans/d26_02_26-release-readiness/wip.spw"
+ ~#next_commit: "1"
+ ~#open_count: "2"
+ ~#last_stream: "2026-02-27 00:00"
+ ~#taste_debt: ""
 }
 
 ^["done"]{
-  # Written at merge time.
-  # ~#shipped: []
-  # ~#dropped: []
-  # ~#surprised: ""
-  # ~#duration: ""
-  # ~#taste: ""
+ # Written at merge time.
+ # ~#shipped: []
+ # ~#dropped: []
+ # ~#surprised: ""
+ # ~#duration: ""
+ # ~#taste: ""
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_agents_plans_d26_02_26releasereadiness_w_1
+?["What was wip — d26_02_26-release-readiness before it was this, and what could it become?"]{
+  #:depth #!experiential // lens: formal structure
+  ~#past: "git log --oneline -- .agents/plans/d26_02_26-release-readiness/wip.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[plan.commit_count, plan.phase_progress]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_agents_plans_d26_02_26releasereadiness_w_2
+?["How would a materials science algorithm express d26_02_26-release-readiness/wip?"]{
+  #:depth #!computational // lens: material grain
+  ~#translation_target: "materials science"
+  ~#source_concept: "intent"
+  !probe{ "rewrite the root frame in materials science vocabulary; where the translation breaks reveals Spw's untranslatable concepts." }
+  $%[plan.commit_count, plan.phase_progress]
+}

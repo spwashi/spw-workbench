@@ -6,38 +6,43 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Expose useful derivatives without mutating source-of-truth files."
-  ~#rule: "Every derivative includes a source ref and regeneration note."
+ ~#goal: "Expose useful derivatives without mutating source-of-truth files."
+ ~#rule: "Every derivative includes a source ref and regeneration note."
 }
 
 ^"derivatives"{
-  spirit_wave_map: {
-    source: "docs/design/spw/spirit-sequence.spw"
-    projection: "operator flow + beat scale summary"
-    consumer: ".spw/biome/ocean/style.spw"
-  }
+ spirit_wave_map: {
+ source: "docs/design/spw/spirit-sequence.spw"
+ projection: "operator flow + beat scale summary"
+ consumer: ".spw/biome/ocean/style.spw"
+ }
 
-  query_current_index: {
-    source: "lib/spw-v0.2.0-alpha/applications/QUERY.md"
-    projection: "selector palette for link navigation"
-    consumer: ".spw/biome/ocean/links/links.spw"
-  }
+ query_current_index: {
+ source: "lib/spw-v0.2.0-alpha/applications/QUERY.md"
+ projection: "selector palette for link navigation"
+ consumer: ".spw/biome/ocean/links/links.spw"
+ }
 
-  phase_salinity_profile: {
-    source: "lib/spw-v0.2.0-alpha/dialects/PHASES.md"
-    projection: "stable vs experimental channel pressure"
-    consumer: ".spw/process/scoped-evolution.spw"
-  }
+ phase_salinity_profile: {
+ source: "lib/spw-v0.2.0-alpha/dialects/PHASES.md"
+ projection: "stable vs experimental channel pressure"
+ consumer: ".spw/process/scoped-evolution.spw"
+ }
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_spw_biome_ocean_derivatives_derivs_1
+?["How would an ecology portfolio express derivatives/derivs?"]{
+  #:depth #!stylistic // lens: ecological zone
+  ~#translation_target: "ecology"
+  ~#source_concept: "intent"
+  !probe{ "rewrite the root frame in ecology vocabulary; where the translation breaks reveals Spw's untranslatable concepts." }
+  $%[biome.diversity_index, biome.annotation_density]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_spw_biome_ocean_derivatives_derivs_2
+?["How does this file's voice differ from derivatives/derivs (derivatives/derivs)?"]{
+  #:depth #!educational // lens: molecular binding
+  ~<@_> // nearest neighbor
+  $%[op.distribution]@here vs $%[op.distribution]@_
+  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
+}

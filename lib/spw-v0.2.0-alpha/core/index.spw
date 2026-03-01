@@ -4,173 +4,179 @@
 #:layer #!grammar
 
 ^["roots"]{
-  @here: ~"."
-  @lib:  ~".."
-  @theory: ~"../../../docs/theory"
-  @specs:  ~"../../../docs/specs"
-  @seed:   ~"../../../src/seed"
+ @here: ~"."
+ @lib: ~".."
+ @theory: ~"../../../docs/theory"
+ @specs: ~"../../../docs/specs"
+ @seed: ~"../../../src/seed"
 }
 
 # ── Ethos ────────────────────────────────────────────────────
 
 meta: .{
-  domain    = `core`
-  initOrder = `0`
-  kind      = `stratum-map`
-  note      = `Kernel contracts — what must be true for any Spw implementation`
+ domain = `core`
+ initOrder = `0`
+ kind = `stratum-map`
+ note = `Kernel contracts — what must be true for any Spw implementation`
 }[reg=facet]
 
 purpose: .{
-  role       = `Define the structural primitives that every Spw surface inherits`
-  invariant  = `No core contract may depend on runtime, domain, or application concepts`
-  philosophy = `The core is the algebra. Everything above is interpretation.`
+ role = `Define the structural primitives that every Spw surface inherits`
+ invariant = `No core contract may depend on runtime, domain, or application concepts`
+ philosophy = `The core is the algebra. Everything above is interpretation.`
 }[reg=facet]
 
 garden: .{
-  is            = `10 contract stubs covering operators, containers, layers, capsules, seeds, boundaries, safety, integrity, conformance, and the SPEC`
-  could_become  = `A standalone core spec publishable as @spw/core — the formal grammar + semantics`
-  connects_to   = `runtime/ extends it with execution. dialects/ specializes it. domains/ reinterprets it.`
-  growth_risk   = `Scope creep: adding runtime or domain concepts to core breaks the algebra boundary.`
+ is = `10 contract stubs covering operators, containers, layers, capsules, seeds, boundaries, safety, integrity, conformance, and the SPEC`
+ could_become = `A standalone core spec publishable as @spw/core — the formal grammar + semantics`
+ connects_to = `runtime/ extends it with execution. dialects/ specializes it. domains/ reinterprets it.`
+ growth_risk = `Scope creep: adding runtime or domain concepts to core breaks the algebra boundary.`
 }[reg=facet]
 
 valence: .{
-  boon = `Every operator has a single semantic role — no overloading`
-  bane = `Contracts are stubs — semantic depth is thin until formalized`
-  bone = `10 markdown contracts provide stable reference surface`
-  bonk = `Adding a 13th operator would cascade through every downstream stratum`
-  honk = `The operator algebra is the heartbeat of the language`
+ boon = `Every operator has a single semantic role — no overloading`
+ bane = `Contracts are stubs — semantic depth is thin until formalized`
+ bone = `10 markdown contracts provide stable reference surface`
+ bonk = `Adding a 13th operator would cascade through every downstream stratum`
+ honk = `The operator algebra is the heartbeat of the language`
 }[reg=quality]
 
 # ── Contract Surfaces ───────────────────────────────────────
 
 ^["contracts"]{
-  !["10 kernel contracts"]
+ !["10 kernel contracts"]
 
-  ^["operators"]{
-    =file: "OPERATORS.md"
-    =count: 12
-    =sigils: ["!", "^", "~", "?", "*", "=", "@", "#", ".", "&", "$", "%"]
-    ~<detail>"./OPERATORS.md"
-    ~<atlas>"../../../docs/theory/spw/operator-atlas.spw"
-    ~<canonical>"../../../docs/theory/spw/operators.spw"
-  }
+ ^["operators"]{
+ =file: "OPERATORS.md"
+ =count: 12
+ =sigils: ["!", "^", "~", "?", "*", "=", "@", "#", ".", "&", "$", "%"]
+ ~<detail>"./OPERATORS.md"
+ ~<atlas>"../../../docs/theory/spw/operator-atlas.spw"
+ ~<canonical>"../../../docs/theory/spw/operators.spw"
+ }
 
-  ^["containers"]{
-    =file: "CONTAINERS.md"
-    =braces: ["<>", "()", "[]", "{}"]
-    ~<detail>"./CONTAINERS.md"
-    ~<geometry>"../../../docs/theory/spw/register-geometry.spw"
-  }
+ ^["containers"]{
+ =file: "CONTAINERS.md"
+ =braces: ["<>", "()", "[]", "{}"]
+ ~<detail>"./CONTAINERS.md"
+ ~<geometry>"../../../docs/theory/spw/register-geometry.spw"
+ }
 
-  ^["layers"]{
-    =file: "LAYERS.md"
-    ~<detail>"./LAYERS.md"
-    ~<phasor>"../../../docs/theory/spw/phasor.spw"
-  }
+ ^["layers"]{
+ =file: "LAYERS.md"
+ ~<detail>"./LAYERS.md"
+ ~<phasor>"../../../docs/theory/spw/phasor.spw"
+ }
 
-  ^["capsules"]{
-    =file: "CAPSULES.md"
-    ~<detail>"./CAPSULES.md"
-  }
+ ^["capsules"]{
+ =file: "CAPSULES.md"
+ ~<detail>"./CAPSULES.md"
+ }
 
-  ^["seeds"]{
-    =file: "SEEDS.md"
-    ~<detail>"./SEEDS.md"
-  }
+ ^["seeds"]{
+ =file: "SEEDS.md"
+ ~<detail>"./SEEDS.md"
+ }
 
-  ^["boundaries"]{
-    =file: "BOUNDARIES.md"
-    ~<detail>"./BOUNDARIES.md"
-  }
+ ^["boundaries"]{
+ =file: "BOUNDARIES.md"
+ ~<detail>"./BOUNDARIES.md"
+ }
 
-  ^["safety"]{
-    =file: "SAFETY.md"
-    ~<detail>"./SAFETY.md"
-  }
+ ^["safety"]{
+ =file: "SAFETY.md"
+ ~<detail>"./SAFETY.md"
+ }
 
-  ^["integrity"]{
-    =file: "INTEGRITY.md"
-    ~<detail>"./INTEGRITY.md"
-  }
+ ^["integrity"]{
+ =file: "INTEGRITY.md"
+ ~<detail>"./INTEGRITY.md"
+ }
 
-  ^["conformance"]{
-    =file: "CONFORMANCE.md"
-    ~<detail>"./CONFORMANCE.md"
-  }
+ ^["conformance"]{
+ =file: "CONFORMANCE.md"
+ ~<detail>"./CONFORMANCE.md"
+ }
 
-  ^["spec"]{
-    =file: "SPEC.md"
-    ~<detail>"./SPEC.md"
-  }
+ ^["spec"]{
+ =file: "SPEC.md"
+ ~<detail>"./SPEC.md"
+ }
 }
 
 # ── Portable Parser ─────────────────────────────────────────
 
 ^["seed"]{
-  !["src/seed — the extractable parser core"]
-  =status: "shipped"
-  =invariant: "zero workbench dependencies"
+ !["src/seed — the extractable parser core"]
+ =status: "shipped"
+ =invariant: "zero workbench dependencies"
 
-  ~<map>"../../../src/seed/docs/index.spw"
+ ~<map>"../../../src/seed/docs/index.spw"
 
-  ^["modules"]{
-    .. @seed/lexer         # 12 operators, backtick strings, guillemets, holes
-    .. @seed/grammar       # containers, operators, modifiers
-    .. @seed/parser        # combinator-based recursive descent
-    .. @seed/canonical     # Spw.l canonicalization
-    .. @seed/query         # spwq selector algebra (15 presets)
-  }
+ ^["modules"]{
+ .. @seed/lexer # 12 operators, backtick strings, guillemets, holes
+ .. @seed/grammar # containers, operators, modifiers
+ .. @seed/parser # combinator-based recursive descent
+ .. @seed/canonical # Spw.l canonicalization
+ .. @seed/query # spwq selector algebra (15 presets)
+ }
 
-  ^["golden-snapshots"]{
-    !["5 canonical parse outputs — changes need approval"]
-    .. ~"../../../src/seed/__tests__/snapshots/phase-4-golden/example-1-inject.spw"
-    .. ~"../../../src/seed/__tests__/snapshots/phase-4-golden/example-2-reflect.spw"
-    .. ~"../../../src/seed/__tests__/snapshots/phase-4-golden/example-3-couple.spw"
-    .. ~"../../../src/seed/__tests__/snapshots/phase-4-golden/example-4-capsule.spw"
-    .. ~"../../../src/seed/__tests__/snapshots/phase-4-golden/example-5-mixed.spw"
-  }
+ ^["golden-snapshots"]{
+ !["5 canonical parse outputs — changes need approval"]
+ .. ~"../../../src/seed/__tests__/snapshots/phase-4-golden/example-1-inject.spw"
+ .. ~"../../../src/seed/__tests__/snapshots/phase-4-golden/example-2-reflect.spw"
+ .. ~"../../../src/seed/__tests__/snapshots/phase-4-golden/example-3-couple.spw"
+ .. ~"../../../src/seed/__tests__/snapshots/phase-4-golden/example-4-capsule.spw"
+ .. ~"../../../src/seed/__tests__/snapshots/phase-4-golden/example-5-mixed.spw"
+ }
 }
 
 # ── Specs & Examples ────────────────────────────────────────
 
 ^["specs"]{
-  !["Normative contracts from docs/specs/"]
-  .. ~<refs>"../../../docs/specs/spw/reference-conventions.spw"
-  .. ~<data>"../../../docs/specs/spw/data-attribute-normalization.spw"
-  .. ~<alignment>"../../../docs/specs/spw/spec-alignment.spw"
+ !["Normative contracts from docs/specs/"]
+ .. ~<refs>"../../../docs/specs/spw/reference-conventions.spw"
+ .. ~<data>"../../../docs/specs/spw/data-attribute-normalization.spw"
+ .. ~<alignment>"../../../docs/specs/spw/spec-alignment.spw"
 }
 
 ^["examples"]{
-  !["Usage examples from docs/examples/"]
-  .. ~<autocomplete>"../../../docs/examples/spw/brace-autocomplete.spw"
-  .. ~<grounded>"../../../docs/examples/spw/grounded-register.spw"
-  .. ~<measure>"../../../docs/examples/spw/measure-normalization.spw"
-  .. ~<merge>"../../../docs/examples/spw/merge-provenance.spw"
-  .. ~<spirit>"../../../docs/examples/spw/spirit-cycle.spw"
-  .. ~<substrate>"../../../docs/examples/spw/substrate-introspection.spw"
+ !["Usage examples from docs/examples/"]
+ .. ~<autocomplete>"../../../docs/examples/spw/brace-autocomplete.spw"
+ .. ~<grounded>"../../../docs/examples/spw/grounded-register.spw"
+ .. ~<measure>"../../../docs/examples/spw/measure-normalization.spw"
+ .. ~<merge>"../../../docs/examples/spw/merge-provenance.spw"
+ .. ~<spirit>"../../../docs/examples/spw/spirit-cycle.spw"
+ .. ~<substrate>"../../../docs/examples/spw/substrate-introspection.spw"
 }
 
 # ── Theory References ───────────────────────────────────────
 
 ^["theory"]{
-  .. ~<operators>"../../../docs/theory/spw/operators.spw"
-  .. ~<atlas>"../../../docs/theory/spw/operator-atlas.spw"
-  .. ~<register>"../../../docs/theory/spw/register-geometry.spw"
-  .. ~<onf>"../../../docs/theory/spw/onf.spw"
-  .. ~<phasor>"../../../docs/theory/spw/phasor.spw"
-  .. ~<quality>"../../../docs/theory/spw/quality.spw"
-  .. ~<physics>"../../../docs/theory/spw/semantics-physics.spw"
-  .. ~<lens>"../../../docs/theory/md/lens-algebra.md"
+ .. ~<operators>"../../../docs/theory/spw/operators.spw"
+ .. ~<atlas>"../../../docs/theory/spw/operator-atlas.spw"
+ .. ~<register>"../../../docs/theory/spw/register-geometry.spw"
+ .. ~<onf>"../../../docs/theory/spw/onf.spw"
+ .. ~<phasor>"../../../docs/theory/spw/phasor.spw"
+ .. ~<quality>"../../../docs/theory/spw/quality.spw"
+ .. ~<physics>"../../../docs/theory/spw/semantics-physics.spw"
+ .. ~<lens>"../../../docs/theory/md/lens-algebra.md"
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_lib_spwv020alpha_core_index_1
+?["What happens when you zoom from the token level to the workspace level in Core Stratum Architecture Support?"]{
+  #:depth #!mathematical // lens: ecological zone
+  $^["_"]@here => &[@workspace] // local → global projection
+  ~#zoom_in: "roots" // this file's atom
+  !probe{ "the atom is token-scale; zoom out: what workspace-level pattern does this token participate in?" }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_lib_spwv020alpha_core_index_2
+?["What ripples if #index changes in this file?"]{
+  #:depth #!stylistic // lens: molecular binding
+  $#educational@workspace => %[reference.count, depth.downstream]
+  ~<../../../src/seed/__tests__/snapshots/phase-4-golden/example-1-inject.spw> // first downstream dependency
+  !probe{ "imagine renaming #educational to #educational_v2; count broken references; the count reveals how deeply roots is woven into the workspace." }
+  $%[register.bank_size, register.active_bindings]
+}

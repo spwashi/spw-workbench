@@ -7,37 +7,44 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Keep Spw surfaces composable as the directory grows."
+ ~#goal: "Keep Spw surfaces composable as the directory grows."
 }
 
 ^"roots"{
-  @selection: ~"./selection.spw"
-  @naming: ~"./naming.spw"
-  @cli: ~"./cli.spw"
-  @workspace: ~"../workspace.spw"
-  @index: ~"../index.spw"
+ @selection: ~"./selection.spw"
+ @naming: ~"./naming.spw"
+ @cli: ~"./cli.spw"
+ @workspace: ~"../workspace.spw"
+ @index: ~"../index.spw"
 }
 
 ^"coverage"{
-  selection_ergonomics: @selection
-  naming_model: @naming
-  cli_model: @cli
-  ownership_contract: @workspace
+ selection_ergonomics: @selection
+ naming_model: @naming
+ cli_model: @cli
+ ownership_contract: @workspace
 }
 
 ^"invariant"{
-  "Conventions prefer composable short names over one-off abbreviations.",
-  "Generated projection bodies stay separate from canonical manifests.",
+ "Conventions prefer composable short names over one-off abbreviations.",
+ "Generated projection bodies stay separate from canonical manifests.",
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_spw_conventions_index_1
+?["What was Conventions Index before it was this, and what could it become?"]{
+  #:depth #!experiential // lens: formal structure
+  ~#past: "git log --oneline -- .spw/conventions/index.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[convention.adherence_score, convention.violation_sites]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_spw_conventions_index_2
+?["How would a materials science algorithm express conventions/index?"]{
+  #:depth #!computational // lens: material grain
+  ~#translation_target: "materials science"
+  ~#source_concept: "intent"
+  !probe{ "rewrite the root frame in materials science vocabulary; where the translation breaks reveals Spw's untranslatable concepts." }
+  $%[convention.adherence_score, convention.violation_sites]
+  ~<.spw/conventions/cli.spw>  // nearest neighbor
+}

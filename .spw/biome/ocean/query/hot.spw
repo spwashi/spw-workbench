@@ -6,60 +6,66 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Allow runtime selector replacement in hot paths while preserving traceability."
+ ~#goal: "Allow runtime selector replacement in hot paths while preserving traceability."
 }
 
 ^context[on_open]{
-  lsp: {
-    apply: [replacement, lens, filter]
-    selectors: [refs_navigable, probes_active, relation_exotic, aggregate_branch]
-    generated: ~"../../../gen/index.spw"
-  }
+ lsp: {
+ apply: [replacement, lens, filter]
+ selectors: [refs_navigable, probes_active, relation_exotic, aggregate_branch]
+ generated: ~"../../../gen/index.spw"
+ }
 }
 
 ^"replacement"{
-  hot: {
-    refs_navigable: refs_hot
-    probes_active: probes_hot
-    phase_config: phase_hot
-  }
+ hot: {
+ refs_navigable: refs_hot
+ probes_active: probes_hot
+ phase_config: phase_hot
+ }
 
-  warm: {
-    refs_navigable: refs_warm
-    aggregate_branch: aggregate_warm
-  }
+ warm: {
+ refs_navigable: refs_warm
+ aggregate_branch: aggregate_warm
+ }
 }
 
 ^lens[core]{
-  selector: refs_navigable
-  output: ".spw/gen/lens/core.spw"
-  owner: ".spw/biome/ocean/query/hot.spw"
+ selector: refs_navigable
+ output: ".spw/gen/lens/core.spw"
+ owner: ".spw/biome/ocean/query/hot.spw"
 }
 
 ^lens[probe]{
-  selector: probes_active
-  output: ".spw/gen/lens/probe.spw"
-  owner: ".spw/biome/ocean/query/hot.spw"
+ selector: probes_active
+ output: ".spw/gen/lens/probe.spw"
+ owner: ".spw/biome/ocean/query/hot.spw"
 }
 
 ^lens[relation]{
-  selector: relation_exotic
-  output: ".spw/gen/lens/relation.spw"
-  owner: ".spw/biome/ocean/query/hot.spw"
+ selector: relation_exotic
+ output: ".spw/gen/lens/relation.spw"
+ owner: ".spw/biome/ocean/query/hot.spw"
 }
 
 ^"invariant"{
-  "Every hot replacement must record original selector id and replacement id in trace."
+ "Every hot replacement must record original selector id and replacement id in trace."
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_spw_biome_ocean_query_hot_1
+?["What is the ecological temperature of reading Hot?"]{
+  #:depth #!experiential // lens: ecological zone
+  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
+  ~#structure: "intent → on_open → replacement" // frame flow
+  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark biome edges." }
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_spw_biome_ocean_query_hot_2
+?["What concept is conspicuously absent from Hot?"]{
+  #:depth #!computational // lens: molecular binding
+  ~#present: [#educational, #mathematical]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[query.selector_depth, query.result_count]
+  ~<.spw/biome/ocean/query/dialect.spw>  // nearest neighbor
+}

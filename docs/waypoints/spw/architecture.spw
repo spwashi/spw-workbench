@@ -6,55 +6,61 @@
 #:layer #!pragmatics
 
 ^["what exists"]{
-  @src/seed/         — ~"lexer, parser, types — the extractable core"
-  @src/app/          — ~"workbench shell, editor, panels"
-  @src/core/         — ~"domain conventions, operators, events"
-  @src/design/       — ~"tokens, token-migration, component coupling"
-  @src/features/     — ~"keyboard manager, onboarding (scaffolded)"
-  @src/infra/        — ~"timing hooks, state management"
-  @src/lang/         — ~"semantic analyzer, canonical printer"
-  @src/runtime/      — ~"session state, config loader, interpreter"
-  @src/ui/           — ~"runtime HUD, component registry"
-  @src/styles/       — ~"CSS token system (migrated from hardcoded)"
-  @src/viz/          — ~"visualization domain (scaffolded)"
+ @src/seed/ — ~"lexer, parser, types — the extractable core"
+ @src/app/ — ~"workbench shell, editor, panels"
+ @src/core/ — ~"domain conventions, operators, events"
+ @src/design/ — ~"tokens, token-migration, component coupling"
+ @src/features/ — ~"keyboard manager, onboarding (scaffolded)"
+ @src/infra/ — ~"timing hooks, state management"
+ @src/lang/ — ~"semantic analyzer, canonical printer"
+ @src/runtime/ — ~"session state, config loader, interpreter"
+ @src/ui/ — ~"runtime HUD, component registry"
+ @src/styles/ — ~"CSS token system (migrated from hardcoded)"
+ @src/viz/ — ~"visualization domain (scaffolded)"
 }
 
 ^["what protects it"]{
-  @scripts/eslint-plugin-spw/  — ~"8 rules: async-safe, bonk, debt, internal, lens, portable, pure, typed"
-  @scripts/analyzers/          — ~"pattern-learner (517 lines), perturbation fuzzer"
-  @scripts/generators/         — ~"domain scaffolder (375 lines)"
+ @scripts/eslint-plugin-spw/ — ~"8 rules: async-safe, bonk, debt, internal, lens, portable, pure, typed"
+ @scripts/analyzers/ — ~"pattern-learner (517 lines), perturbation fuzzer"
+ @scripts/generators/ — ~"domain scaffolder (375 lines)"
 }
 
 ^["what documents it"]{
-  @docs/index.spw              — ~"root navigation map"
-  @docs/plans/spw/architecture.spw       — ~"layer stack"
-  @docs/features/spw/onboarding.spw      — ~"guided reading order"
-  @docs/contributing/          — ~"4 contributor personas: engineer, hobby, researcher, common"
-  @lib/spw-v0.1.0-alpha/      — ~"language specification (SPEC, CONTAINERS, OPERATORS…)"
+ @docs/index.spw — ~"root navigation map"
+ @docs/plans/spw/architecture.spw — ~"layer stack"
+ @docs/features/spw/onboarding.spw — ~"guided reading order"
+ @docs/contributing/ — ~"4 contributor personas: engineer, hobby, researcher, common"
+ @lib/spw-v0.1.0-alpha/ — ~"language specification (SPEC, CONTAINERS, OPERATORS…)"
 }
 
 ^["principles established"]{
-  .[layer-purity]: "imports flow inward only"
-  .[seed-portability]: "seed/ has zero workbench deps"
-  .[token-migration]: "hardcoded → token → variable → theme"
-  .[single-responsibility]: "each file has one reason to change"
+ .[layer-purity]: "imports flow inward only"
+ .[seed-portability]: "seed/ has zero workbench deps"
+ .[token-migration]: "hardcoded → token → variable → theme"
+ .[single-responsibility]: "each file has one reason to change"
 }
 
-?["where next"]{
-  ~"the next epoch (15–26) adds features: keyboard geology,"
-  ~"onboarding tours, CSS namespacing, navigation layers,"
-  ~"publishing, authoring, and theme personality."
-  ~"it ends with v0.1.0."
+?["where next — spw/architecture?"]{
+ ~"the next epoch (15–26) adds features: keyboard geology,"
+ ~"onboarding tours, CSS namespacing, navigation layers,"
+ ~"publishing, authoring, and theme personality."
+ ~"it ends with v0.1.0."
 }
 
-?["Is the tension gradient ∫{depth}d(lines) a useful complexity metric?"]
-  #:depth #!mathematical  // lens: formula
-  $%[brace.depth, brace.span] => ~#tension_integral
-  ~<@spw/registries/brace-physics.spw>
-  !probe{ "compute ∫₀ⁿ depth(line) dline for every frame; correlate with cognitive load ratings from 3 readers" }
+#>wonder_docs_waypoints_spw_architecture_1
+?["What is the metabolic signature of reading ARCHITECTURE — Genesis Checkpoint?"]{
+  #:depth #!experiential // lens: living system
+  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
+  ~#structure: "what exists → what protects it → what documents it" // frame flow
+  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark structural joints." }
+}
 
-?["What is the brace depth distribution across the entire workspace?"]
-  #:depth #!computational  // lens: cell
-  $%[brace.max_depth]@repo/**/*.spw => ~#depth_histogram
-  ~<@spec/core/CONTAINERS.md>
-  !probe{ "generate histogram of max depths; verify: should follow power law if extraction discipline holds" }
+#>wonder_docs_waypoints_spw_architecture_2
+?["What concept is conspicuously absent from ARCHITECTURE — Genesis Checkpoint?"]{
+  #:depth #!computational // lens: curated collection
+  ~#present: [#mathematical, #computational]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[runtime.stage, runtime.queue_depth]
+  ~<docs/waypoints/spw/alpha-v020.spw>  // nearest neighbor
+}

@@ -5,76 +5,83 @@
 #:layer #!semantics
 
 ^["roles"]{
-  # Region atoms:
-  "<>": "concept/capsule (definition of what)"
-  "()": "scene/context (where)"
-  "[]": "mode/params (how/config)"
-  "{}": "definition/apply-context (do)"
-  "<< >>": "layered concept / stream wrapper"
-  "(( ))": "emphasis/hedge wrapper"
+ # Region atoms:
+ "<>": "concept/capsule (definition of what)"
+ "()": "scene/context (where)"
+ "[]": "mode/params (how/config)"
+ "{}": "definition/apply-context (do)"
+ "<< >>": "layered concept / stream wrapper"
+ "(( ))": "emphasis/hedge wrapper"
 
-  # Operator layering:
-  # 1) enter/exit regions (containers)
-  # 2) modifiers (valence)
-  # 3) operators (! ^ ~ <> ? * = @ and extensions)
-  # 4) connectors (.. -> / & | :)
+ # Operator layering:
+ # 1) enter/exit regions (containers)
+ # 2) modifiers (valence)
+ # 3) operators (! ^ ~ <> ? * = @ and extensions)
+ # 4) connectors (.. -> / & | :)
 }
 
 ^["whitespace_modes"]{
-  default: "inert whitespace; tokens bound explicitly"
-  dense: "collapse whitespace; prefer tighter binding"
-  poetic: "allow adjacency binding; lower precedence than explicit connectors"
+ default: "inert whitespace; tokens bound explicitly"
+ dense: "collapse whitespace; prefer tighter binding"
+ poetic: "allow adjacency binding; lower precedence than explicit connectors"
 }
 
 ^["locality"]{
-  # Per-region frames; entering a container pushes locality.
-  # Operators act on top frame, then outer frames for resolution.
-  # Registers per frame: concept, scene, mode, definition.
+ # Per-region frames; entering a container pushes locality.
+ # Operators act on top frame, then outer frames for resolution.
+ # Registers per frame: concept, scene, mode, definition.
 }
 
 ^["multipass_parsing"]{
-  # Passes:
-  #  - lex
-  #  - coarse parse (structure)
-  #  - semantic refinement (modes/locality/labels)
-  # Controls:
-  #  - lookahead: number of tokens to peek
-  #  - rewind: allow backtracking for ambiguity testing
-  #  - granularity: coarse | fine
-  # Outputs:
-  #  - branch traces for ambiguous sections
+ # Passes:
+ # - lex
+ # - coarse parse (structure)
+ # - semantic refinement (modes/locality/labels)
+ # Controls:
+ # - lookahead: number of tokens to peek
+ # - rewind: allow backtracking for ambiguity testing
+ # - granularity: coarse | fine
+ # Outputs:
+ # - branch traces for ambiguous sections
 }
 
 ^["topological_prompting"]{
-  # Permissive mode for mismatched braces:
-  #  - Treat unmatched regions as open fields (record, don't fail)
-  #  - Clustering rules: nearest neighbor by label; record gaps
-  #  - Useful for cognitive/semiotic prompts; not for execution
-  # Brace perturbation (e.g., replace '}' with '>'):
-  #  - Use diff analyzer to report semantic drift vs canonical AST
+ # Permissive mode for mismatched braces:
+ # - Treat unmatched regions as open fields (record, don't fail)
+ # - Clustering rules: nearest neighbor by label; record gaps
+ # - Useful for cognitive/semiotic prompts; not for execution
+ # Brace perturbation (e.g., replace '}' with '>'):
+ # - Use diff analyzer to report semantic drift vs canonical AST
 }
 
 ^["intrinsics"]{
-  # "_" sugar: "?_query" -> "?(query)" (normalize to explicit form)
-  # Labels: A{} == {_A }_A ; labels are metadata; semantics unchanged
-  # Physical properties: encode as annotations (~#color, ~#material)
+ # "_" sugar: "?_query" -> "?(query)" (normalize to explicit form)
+ # Labels: A{} == {_A }_A ; labels are metadata; semantics unchanged
+ # Physical properties: encode as annotations (~#color, ~#material)
 }
 
 ^["nl_preview"]{
-  # For ambiguous parses, emit NL previews per branch:
-  #  - "Interpretation A: probe over concept region"
-  #  - "Interpretation B: apply mode to scene"
-  # Enables parallel LLM threads on finer-grained semantics.
+ # For ambiguous parses, emit NL previews per branch:
+ # - "Interpretation A: probe over concept region"
+ # - "Interpretation B: apply mode to scene"
+ # Enables parallel LLM threads on finer-grained semantics.
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_theory_spw_semanticsphysics_1
+?["What ripples if #semantics_physics changes in this file?"]{
+  #:depth #!mathematical // lens: formal structure
+  $#educational@workspace => %[reference.count, depth.downstream]
+  ~#downstream: "trace all files that reference this surface"
+  !probe{ "imagine renaming #educational to #educational_v2; count broken references; the count reveals how deeply roles is woven into the workspace." }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_theory_spw_semanticsphysics_2
+?["What happens when you zoom from the concept level to the workspace level in Semantics & Physics Notes?"]{
+  #:depth #!stylistic // lens: material grain
+  $^["_"]@here => &[@workspace] // local → global projection
+  ~#zoom_in: "roles" // this file's atom
+  !probe{ "the atom is concept-scale; zoom out: what workspace-level pattern does this concept participate in?" }
+  $%[register.bank_size, register.active_bindings]
+  ~<docs/theory/spw/audio-architecture.spw>  // nearest neighbor
+}

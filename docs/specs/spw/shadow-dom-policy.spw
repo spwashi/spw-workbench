@@ -3,30 +3,37 @@
 #:layer #!grammar
 
 ^["intent"]{
-  summary: "Clarify when to use Shadow DOM vs Light DOM for cohesion + theming.",
-  goal: "Predictable layout, explicit theming hooks, stable component contracts."
+ summary: "Clarify when to use Shadow DOM vs Light DOM for cohesion + theming.",
+ goal: "Predictable layout, explicit theming hooks, stable component contracts."
 }
 
 ^["reference"]{
-  file: "./shadow-dom-policy.md",
-  note: "Canonical policy document (short, readable).",
-  action: "Link from README when ready."
+ file: "./shadow-dom-policy.md",
+ note: "Canonical policy document (short, readable).",
+ action: "Link from README when ready."
 }
 
 ^["practice"]{
-  rule: "Layout + spatial interaction => Light DOM. Widgets + skin => Shadow DOM.",
-  hooks: ["data-spw-component", "parts", "exportparts", "tokens"],
-  events: "Always composed + bubbling for cross-boundary coordination."
+ rule: "Layout + spatial interaction => Light DOM. Widgets + skin => Shadow DOM.",
+ hooks: ["data-spw-component", "parts", "exportparts", "tokens"],
+ events: "Always composed + bubbling for cross-boundary coordination."
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_specs_spw_shadowdompolicy_1
+?["What was Shadow DOM Policy :: Spw before it was this, and what could it become?"]{
+  #:depth #!experiential // lens: molecular binding
+  ~#past: "git log --oneline -- docs/specs/spw/shadow-dom-policy.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[spec.rule_count, spec.conformance_coverage]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_specs_spw_shadowdompolicy_2
+?["How would an ecology algorithm express spw/shadow-dom-policy?"]{
+  #:depth #!computational // lens: ecological zone
+  ~#translation_target: "ecology"
+  ~#source_concept: "intent"
+  !probe{ "rewrite the root frame in ecology vocabulary; where the translation breaks reveals Spw's untranslatable concepts." }
+  $%[spec.rule_count, spec.conformance_coverage]
+  ~<docs/specs/spw/data-attribute-normalization.spw>  // nearest neighbor
+}

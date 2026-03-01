@@ -6,61 +6,67 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Trace which blocks and concepts are loaded and considered per branch."
-  ~#focus: "runtime performance, cache behavior, interpretation coverage"
+ ~#goal: "Trace which blocks and concepts are loaded and considered per branch."
+ ~#focus: "runtime performance, cache behavior, interpretation coverage"
 }
 
 ^"model"{
-  branch: {
-    id: "branch identifier"
-    runtime: {
-      beats: "count of processing beats"
-      durationMs: "total runtime in milliseconds"
-      positionality: {
-        nearest: "count of nearest-anchor lookups"
-        enclosing: "count of enclosing-scope lookups"
-        ancestor: "count of ancestor-frame lookups"
-      }
-      cache: {
-        hitRate: "0..1"
-        missRate: "0..1"
-      }
-    }
-    loaded: {
-      blockRefs: ["resolved .spw block refs"]
-      conceptRefs: ["resolved concept refs"]
-      groundedRefs: ["refs anchored to stable source"]
-      boundRefs: ["refs bound to branch/phase/hot selector"]
-    }
-    considered: {
-      blockRefs: ["subset actually interpreted"]
-      conceptRefs: ["subset actually interpreted"]
-      groundedRefs: ["grounded subset considered"]
-      boundRefs: ["bound subset considered"]
-    }
-  }
+ branch: {
+ id: "branch identifier"
+ runtime: {
+ beats: "count of processing beats"
+ durationMs: "total runtime in milliseconds"
+ positionality: {
+ nearest: "count of nearest-anchor lookups"
+ enclosing: "count of enclosing-scope lookups"
+ ancestor: "count of ancestor-frame lookups"
+ }
+ cache: {
+ hitRate: "0..1"
+ missRate: "0..1"
+ }
+ }
+ loaded: {
+ blockRefs: ["resolved .spw block refs"]
+ conceptRefs: ["resolved concept refs"]
+ groundedRefs: ["refs anchored to stable source"]
+ boundRefs: ["refs bound to branch/phase/hot selector"]
+ }
+ considered: {
+ blockRefs: ["subset actually interpreted"]
+ conceptRefs: ["subset actually interpreted"]
+ groundedRefs: ["grounded subset considered"]
+ boundRefs: ["bound subset considered"]
+ }
+ }
 }
 
 ^"aggregation"{
-  byBranch: "per branch summary"
-  byPhase: "per phase load/consider ratio"
-  byBiome: "per biome load/consider ratio"
-  byGrounding: "grounded vs bound ratios"
-  bySelector: "selector id coverage and replacement frequency"
+ byBranch: "per branch summary"
+ byPhase: "per phase load/consider ratio"
+ byBiome: "per biome load/consider ratio"
+ byGrounding: "grounded vs bound ratios"
+ bySelector: "selector id coverage and replacement frequency"
 }
 
 ^"invariant"{
-  "Trace data is reference-based; avoid transcript duplication."
+ "Trace data is reference-based; avoid transcript duplication."
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_spw_biome_ocean_trace_1
+?["What is the binding energy of model (ocean/trace)?"]{
+  #:depth #!computational // lens: molecular binding
+  $^["intent"]@biome => %[molecule.measure]
+  ~<.spw/biome/ocean/trace.spw> // introspect
+  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
+  $%[trace.span_count, trace.depth_max]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_spw_biome_ocean_trace_2
+?["What is the ecological temperature of reading Trace?"]{
+  #:depth #!mathematical // lens: ecological zone
+  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
+  ~#structure: "intent → model → aggregation" // frame flow
+  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark biome edges." }
+  ~<.spw/biome/ocean/atlas.spw>  // nearest neighbor
+}

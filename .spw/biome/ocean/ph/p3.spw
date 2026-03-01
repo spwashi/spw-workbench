@@ -8,38 +8,44 @@
 #:layer #!pragmatics
 
 ^"phase"{
-  token: "@(#.)"
-  =dialect: "experimental.ocean.phase"
-  optional: {
-    depth: "1..n"
-    proj: "stable|experimental"
-    lsp_hint: "def|link|sym"
-    cache_read: "hot_first|warm_first"
-  }
+ token: "@(#.)"
+ =dialect: "experimental.ocean.phase"
+ optional: {
+ depth: "1..n"
+ proj: "stable|experimental"
+ lsp_hint: "def|link|sym"
+ cache_read: "hot_first|warm_first"
+ }
 
-  %[physics]{
-    "liminality: 2 (field) — observer pushes perspective across scope boundary",
-    "frequency: high — observe is the most used phase in LSP interaction",
-    "coupling: moderate — observations pull from the coupling graph",
-    "cache: hot tier — hover and definition resolve through p3 observe",
-  }
+ %[physics]{
+ "liminality: 2 (field) — observer pushes perspective across scope boundary",
+ "frequency: high — observe is the most used phase in LSP interaction",
+ "coupling: moderate — observations pull from the coupling graph",
+ "cache: hot tier — hover and definition resolve through p3 observe",
+ }
 
-  %[lsp_role]{
-    "hover provider reads from the observe phase — cursor is the observer",
-    "definition provider resolves through observe → hot cache → warm fallback",
-    "workspace symbols aggregate observations across all files",
-    "cache: hot tier — observe results expire in 8 beats",
-  }
+ %[lsp_role]{
+ "hover provider reads from the observe phase — cursor is the observer",
+ "definition provider resolves through observe → hot cache → warm fallback",
+ "workspace symbols aggregate observations across all files",
+ "cache: hot tier — observe results expire in 8 beats",
+ }
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_spw_biome_ocean_ph_p3_1
+?["What is the metabolic signature of reading P3?"]{
+  #:depth #!experiential // lens: living system
+  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
+  ~#shape: "pragmatics layer, 1 frames, 4 annotations"
+  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark structural joints." }
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_spw_biome_ocean_ph_p3_2
+?["What concept is conspicuously absent from P3?"]{
+  #:depth #!computational // lens: curated collection
+  ~#present: [#phase, #observation, #experiential]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[phase.index, phase.duration_ms, phase.entropy]
+  ~<.spw/biome/ocean/ph/p1.spw>  // nearest neighbor
+}

@@ -7,33 +7,40 @@
 ^"benchmark"{ ~#name: "measure-types", ~#metric: "ops/sec" }
 
 ^"setup"{
-  types: ["number", "string", "array", "object", "boolean", "null"]
-  scale: 10
-  iterations: 10000
+ types: ["number", "string", "array", "object", "boolean", "null"]
+ scale: 10
+ iterations: 10000
 }
 
 ^"run"{
-  number:  { value: 7,                  expected: 0.7,  note: "7 / 10"              }
-  string:  { value: "hello",            expected: 0.5,  note: "5 / 10"              }
-  array:   { value: [1, 2, 3],          expected: 0.3,  note: "3 / 10"              }
-  object:  { value: {a: 1, b: 2},       expected: 0.2,  note: "2 / 10"              }
-  boolean: { value: true,               expected: 1.0,  note: "true → 1"            }
-  null_v:  { value: null,               expected: 0.0,  note: "null → 0"            }
+ number: { value: 7, expected: 0.7, note: "7 / 10" }
+ string: { value: "hello", expected: 0.5, note: "5 / 10" }
+ array: { value: [1, 2, 3], expected: 0.3, note: "3 / 10" }
+ object: { value: {a: 1, b: 2}, expected: 0.2, note: "2 / 10" }
+ boolean: { value: true, expected: 1.0, note: "true → 1" }
+ null_v: { value: null, expected: 0.0, note: "null → 0" }
 }
 
 ^"baseline"{
-  ops_per_second: 1000000,
-  note: "measure() is a simple branch — should be microsecond-level",
+ ops_per_second: 1000000,
+ note: "measure() is a simple branch — should be microsecond-level",
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_benchmarks_spw_measuretypes_1
+?["What concept is conspicuously absent from Benchmark: Measure Types?"]{
+  #:depth #!stylistic // lens: formal structure
+  ~#present: [#educational, #mathematical]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[bench.sample_count, bench.p50_ms, bench.p99_ms]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_benchmarks_spw_measuretypes_2
+?["How does benchmark teach setup — spw/measure-types?"]{
+  #:depth #!educational // lens: material grain
+  $^["benchmark"] => $^["setup"] // trace the edge
+  &[@_, @spw] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[bench.sample_count, bench.p50_ms, bench.p99_ms]
+  ~<docs/benchmarks/spw/confluent-fanin.spw>  // nearest neighbor
+}

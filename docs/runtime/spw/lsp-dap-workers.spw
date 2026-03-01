@@ -5,66 +5,73 @@
 #:layer #!semantics
 
 ^['roots']{
-  @src: ~"../src"
+ @src: ~"../src"
 }
 
 ^['intent']{
-  ~#goal: "Run parse, analysis, and debug orchestration off the main thread."
-  ~#benefit: "Keep UI responsive; unify external IDE integration with in-app tooling."
+ ~#goal: "Run parse, analysis, and debug orchestration off the main thread."
+ ~#benefit: "Keep UI responsive; unify external IDE integration with in-app tooling."
 }
 
 ^['protocols']{
-  ?[LSP]{
-    ~#role: "Language Server Protocol (JSON-RPC 2.0)"
-    ~#surface: "Document symbols, diagnostics, completion, hover"
-    ~#worker: "@src/platform/workers/spw-language-worker.ts"
-  }
+ ?[LSP]{
+ ~#role: "Language Server Protocol (JSON-RPC 2.0)"
+ ~#surface: "Document symbols, diagnostics, completion, hover"
+ ~#worker: "@src/platform/workers/spw-language-worker.ts"
+ }
 
-  ?[DAP]{
-    ~#role: "Debug Adapter Protocol"
-    ~#surface: "Breakpoints, stack frames, stepping"
-    ~#worker: "@src/platform/workers/spw-language-worker.ts"
-  }
+ ?[DAP]{
+ ~#role: "Debug Adapter Protocol"
+ ~#surface: "Breakpoints, stack frames, stepping"
+ ~#worker: "@src/platform/workers/spw-language-worker.ts"
+ }
 }
 
 ^['worker-contract']{
-  ~#types: "@src/infra/worker/protocol.ts"
-  ~#client: "@src/platform/workers/spw-language-client.ts"
+ ~#types: "@src/infra/worker/protocol.ts"
+ ~#client: "@src/platform/workers/spw-language-client.ts"
 
-  ^['message-envelopes']{
-    ~#parse: "{type:'parse', text, options} → parse.result"
-    ~#analyze: "{type:'analyze', text} → analyze.result"
-    ~#lsp: "{type:'lsp.request', payload: JSON-RPC} → lsp.response"
-    ~#dap: "{type:'dap.request', payload: DAP} → dap.response"
-  }
+ ^['message-envelopes']{
+ ~#parse: "{type:'parse', text, options} → parse.result"
+ ~#analyze: "{type:'analyze', text} → analyze.result"
+ ~#lsp: "{type:'lsp.request', payload: JSON-RPC} → lsp.response"
+ ~#dap: "{type:'dap.request', payload: DAP} → dap.response"
+ }
 }
 
 ^['data-boundary']{
-  ~#rule: "Workers exchange plain data (structured clone)."
-  ~#examples: ["tokens", "AST nodes", "diagnostics", "execution trace"]
-  ~#non-goals: "No DOM access inside workers."
+ ~#rule: "Workers exchange plain data (structured clone)."
+ ~#examples: ["tokens", "AST nodes", "diagnostics", "execution trace"]
+ ~#non-goals: "No DOM access inside workers."
 }
 
 ^['versioning']{
-  ~#doc_id: "Every request should include docId + version where possible."
-  ~#cancellation: "Allow cancel messages to avoid stale responses."
+ ~#doc_id: "Every request should include docId + version where possible."
+ ~#cancellation: "Allow cancel messages to avoid stale responses."
 }
 
 ^['next-steps']{
-  ~#phase_0: "Keep worker as a mirror of parse/analyze (no UI wiring)."
-  ~#phase_1: "Move diagnostics + tokenization behind worker with fallbacks."
-  ~#phase_2: "Bridge DAP stepping into inspector + flow view."
-  ~#phase_3: "Expose LSP over stdio for external IDEs (Vim/Neovim) and DAP over sockets."
+ ~#phase_0: "Keep worker as a mirror of parse/analyze (no UI wiring)."
+ ~#phase_1: "Move diagnostics + tokenization behind worker with fallbacks."
+ ~#phase_2: "Bridge DAP stepping into inspector + flow view."
+ ~#phase_3: "Expose LSP over stdio for external IDEs (Vim/Neovim) and DAP over sockets."
 }
 
-?["Does the Cayley table for brace×operator composition close under {FRAME}?"]
-  #:depth #!mathematical  // lens: formula
-  $^seed[_.sym:D4] => %[register.left, register.right]
-  ~<@spec/core/OPERATORS.md>
-  !probe{ "construct the group action table; check if .left ↔ .right reflection commutes with ~ → ! operator tense shift" }
+#>wonder_docs_runtime_spw_lspdapworkers_1
+?["What invariant holds across every frame in LSP + DAP Workers?"]{
+  #:depth #!computational // lens: material grain
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to _.sym:D4's frames; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[runtime.stage, runtime.queue_depth]
+}
 
-?["What orbits emerge when D4 acts on nested brace pairs?"]
-  #:depth #!computational  // lens: molecule
-  $^[_.sym] => &[orbit.stabilizer]
-  ~<@spw/registries/curiosity-brace.spw>
-  !probe{ "enumerate fixed points of the dihedral action on {{{}}} nesting depth 3; count distinct register states" }
+#>wonder_docs_runtime_spw_lspdapworkers_2
+?["What was LSP + DAP Workers before it was this, and what could it become?"]{
+  #:depth #!mathematical // lens: formal structure
+  ~#past: "git log --oneline -- docs/runtime/spw/lsp-dap-workers.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[runtime.stage, runtime.queue_depth]
+  ~<docs/runtime/spw/agent-loop.spw>  // nearest neighbor
+}

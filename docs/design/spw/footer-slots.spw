@@ -5,75 +5,81 @@
 #:layer #!pragmatics
 
 ^["roots"]{
-  @src: ~"../src"
+ @src: ~"../src"
 }
 
 ^["intent"]{
-  ~#goal: "The footer is a programmable status rail for state reflection and transient controls."
-  ~#principle: "Slots prefer small, low-distraction elements that reinforce context and afford navigation."
-  ~#placement: "Footer slots should remain consistent across layout presets; components adapt to space buckets."
+ ~#goal: "The footer is a programmable status rail for state reflection and transient controls."
+ ~#principle: "Slots prefer small, low-distraction elements that reinforce context and afford navigation."
+ ~#placement: "Footer slots should remain consistent across layout presets; components adapt to space buckets."
 }
 
 ^["slots"]{
 
-  ^["timestamp"]{
-    ~#id: "footer.timestamp"
-    ~#role: "Last-sync + session timing"
-    ~#owner: "platform bootstrap"
-    ~#visibility: "always unless status bar hidden"
-    ~#notes: "Keep short; do not add interactive controls here."
-  }
+ ^["timestamp"]{
+ ~#id: "footer.timestamp"
+ ~#role: "Last-sync + session timing"
+ ~#owner: "platform bootstrap"
+ ~#visibility: "always unless status bar hidden"
+ ~#notes: "Keep short; do not add interactive controls here."
+ }
 
-  ^["prompting-rail"]{
-    ~#id: "prompting-rail"
-    ~#role: "Prompt cues, tuple reflection, whisper line"
-    ~#owner: "app/components/prompting-rail"
-    ~#visibility: "settings: promptingRail.enabled"
-    ~#notes: "Adapts to compact/stacked/minimal modes; can cycle context, LoD, disclosure, genre."
-  }
+ ^["prompting-rail"]{
+ ~#id: "prompting-rail"
+ ~#role: "Prompt cues, tuple reflection, whisper line"
+ ~#owner: "app/components/prompting-rail"
+ ~#visibility: "settings: promptingRail.enabled"
+ ~#notes: "Adapts to compact/stacked/minimal modes; can cycle context, LoD, disclosure, genre."
+ }
 
-  ^["tour-controls"]{
-    ~#id: "lens-walk-controls"
-    ~#role: "Lens walk starter + step controls"
-    ~#owner: "app/components/onboarding-tour"
-    ~#visibility: "settings: layout.showTourControls"
-    ~#notes: "Reserve space when active; should never occlude key hints."
-  }
+ ^["tour-controls"]{
+ ~#id: "lens-walk-controls"
+ ~#role: "Lens walk starter + step controls"
+ ~#owner: "app/components/onboarding-tour"
+ ~#visibility: "settings: layout.showTourControls"
+ ~#notes: "Reserve space when active; should never occlude key hints."
+ }
 
-  ^["key-hint-bar"]{
-    ~#id: "key-hint-bar"
-    ~#role: "Contextual keyboard hints"
-    ~#owner: "app/components/keyboard-hints"
-    ~#visibility: "always unless status bar hidden"
-    ~#notes: "Shrinks or rotates hints based on disclosure + mode."
-  }
+ ^["key-hint-bar"]{
+ ~#id: "key-hint-bar"
+ ~#role: "Contextual keyboard hints"
+ ~#owner: "app/components/keyboard-hints"
+ ~#visibility: "always unless status bar hidden"
+ ~#notes: "Shrinks or rotates hints based on disclosure + mode."
+ }
 }
 
 ^["ordering"]{
-  ~#baseline: [timestamp, prompting-rail, tour-controls, key-hint-bar]
-  ~#insertion_rule: "Transient components (tour-controls) insert before key-hint-bar."
-  ~#compact_rule: "When space is compact, prompting-rail can collapse or hide before key-hint-bar."
+ ~#baseline: [timestamp, prompting-rail, tour-controls, key-hint-bar]
+ ~#insertion_rule: "Transient components (tour-controls) insert before key-hint-bar."
+ ~#compact_rule: "When space is compact, prompting-rail can collapse or hide before key-hint-bar."
 }
 
 ^["controls"]{
-  ~#status_bar: "layout.showStatusBar hides the entire footer"
-  ~#prompting_rail: "promptingRail.enabled and promptingRail.mode control rail visibility + layout"
-  ~#tour_controls: "layout.showTourControls hides lens walk controls"
+ ~#status_bar: "layout.showStatusBar hides the entire footer"
+ ~#prompting_rail: "promptingRail.enabled and promptingRail.mode control rail visibility + layout"
+ ~#tour_controls: "layout.showTourControls hides lens walk controls"
 }
 
 ^["future_slots"]{
-  ~#candidates: ["runtime-trace", "intent-bar", "session-health", "notification-pulse"]
-  ~#rule: "Any new footer slot must declare a hide rule and a compact-mode fallback."
+ ~#candidates: ["runtime-trace", "intent-bar", "session-health", "notification-pulse"]
+ ~#rule: "Any new footer slot must declare a hide rule and a compact-mode fallback."
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_design_spw_footerslots_1
+?["How does roots teach intent — spw/footer-slots?"]{
+  #:depth #!educational // lens: material grain
+  $^["roots"] => $^["intent"] // trace the edge
+  &[@src, @_] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[runtime.stage, runtime.queue_depth]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_design_spw_footerslots_2
+?["What is the algebraic closure of slots (spw/footer-slots)?"]{
+  #:depth #!experiential // lens: formal structure
+  $^["roots"]@src => %[formula.measure]
+  ~<docs/design/spw/footer-slots.spw> // introspect
+  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
+  $%[runtime.stage, runtime.queue_depth]
+}

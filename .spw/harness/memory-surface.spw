@@ -7,72 +7,79 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Represent working memory as structured Spw fields and projections."
-  ~#non_goal: "Persist every chat message as raw prompt context."
+ ~#goal: "Represent working memory as structured Spw fields and projections."
+ ~#non_goal: "Persist every chat message as raw prompt context."
 }
 
 ^"registers"{
-  intent_register: {
-    description: "Current run objective and acceptance criteria."
-    source: [".agents/plans/*/wip.spw#intent", ".spw/workspace.spw#invariants"]
-  }
+ intent_register: {
+ description: "Current run objective and acceptance criteria."
+ source: [".agents/plans/*/wip.spw#intent", ".spw/workspace.spw#invariants"]
+ }
 
-  context_register: {
-    description: "Curated refs to files, plans, and diagnostics."
-    source: [".agents/plans/*/wip.spw#cache", ".agents/state/runtime/*.state.spw"]
-  }
+ context_register: {
+ description: "Curated refs to files, plans, and diagnostics."
+ source: [".agents/plans/*/wip.spw#cache", ".agents/state/runtime/*.state.spw"]
+ }
 
-  projection_register: {
-    description: "Observed lens for interpretation (lex/sem/eval/presentation)."
-    source: ["docs/design/spw/spirit-sequence.spw#sequence", "lib/spw-v0.2.0-alpha/dialects/PHASES.md"]
-  }
+ projection_register: {
+ description: "Observed lens for interpretation (lex/sem/eval/presentation)."
+ source: ["docs/design/spw/spirit-sequence.spw#sequence", "lib/spw-v0.2.0-alpha/dialects/PHASES.md"]
+ }
 
-  cluster_register: {
-    description: "Concept clusters grouped by shared fields and operators."
-    source: [".spw/process/loop-observation.spw#clustering"]
-  }
+ cluster_register: {
+ description: "Concept clusters grouped by shared fields and operators."
+ source: [".spw/process/loop-observation.spw#clustering"]
+ }
 }
 
 ^"compaction"{
-  step_1: "Extract stable intent and constraints."
-  step_2: "Replace repeated prose with refs + hashes."
-  step_3: "Keep deltas only: new facts, changed assumptions, open questions."
-  step_4: "Emit one run snapshot into harness/runs."
+ step_1: "Extract stable intent and constraints."
+ step_2: "Replace repeated prose with refs + hashes."
+ step_3: "Keep deltas only: new facts, changed assumptions, open questions."
+ step_4: "Emit one run snapshot into harness/runs."
 }
 
 ^"projection"{
-  ~#summary_fields: [
-    "goal",
-    "current_phase",
-    "context_refs",
-    "cluster_keys",
-    "lens_profile",
-    "open_questions",
-    "next_action",
-  ]
-  ~#lens_profile: {
-    focal_depth: "scope depth sampled in this memory snapshot"
-    aperture: "context width admitted"
-    magnification: "detail granularity"
-    aberration: "distortion warning flag"
-  }
-  ~#selectors: ["$^\"intent\"_", "$^\"registers\"_", "$^\"projection\"_"]
+ ~#summary_fields: [
+ "goal",
+ "current_phase",
+ "context_refs",
+ "cluster_keys",
+ "lens_profile",
+ "open_questions",
+ "next_action",
+ ]
+ ~#lens_profile: {
+ focal_depth: "scope depth sampled in this memory snapshot"
+ aperture: "context width admitted"
+ magnification: "detail granularity"
+ aberration: "distortion warning flag"
+ }
+ ~#selectors: ["$^\"intent\"_", "$^\"registers\"_", "$^\"projection\"_"]
 }
 
 ^"invariants"{
-  "Prompt snapshots must be reference-first and hash-addressable where possible.",
-  "Memory surfaces optimize retrieval, not full transcript replay.",
-  "A run can be reproduced from snapshot + refs without every chat turn.",
+ "Prompt snapshots must be reference-first and hash-addressable where possible.",
+ "Memory surfaces optimize retrieval, not full transcript replay.",
+ "A run can be reproduced from snapshot + refs without every chat turn.",
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_spw_harness_memorysurface_1
+?["What invariant holds across every frame in Memory Surface?"]{
+  #:depth #!computational // lens: ecological zone
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to every frame in this file; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[harness.run_count, harness.pass_rate]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_spw_harness_memorysurface_2
+?["What was Memory Surface before it was this, and what could it become?"]{
+  #:depth #!mathematical // lens: molecular binding
+  ~#past: "git log --oneline -- .spw/harness/memory-surface.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[harness.run_count, harness.pass_rate]
+  ~<.spw/harness/claim-protocol.spw>  // nearest neighbor
+}

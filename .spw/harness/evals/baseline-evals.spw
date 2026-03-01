@@ -6,139 +6,146 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Define deterministic baseline checks for agent harness runs."
+ ~#goal: "Define deterministic baseline checks for agent harness runs."
 }
 
 ^"suites"{
-  parse_stability: {
-    prompt: "Parse workspace and docs references without syntax errors."
-    target: [".spw/workspace.spw", "docs/design/spw/spirit-sequence.spw"]
-    pass: "all targets parse successfully"
-  }
+ parse_stability: {
+ prompt: "Parse workspace and docs references without syntax errors."
+ target: [".spw/workspace.spw", "docs/design/spw/spirit-sequence.spw"]
+ pass: "all targets parse successfully"
+ }
 
-  navigation_links: {
-    prompt: "Resolve navigable refs with selector parity to LSP."
-    target: ["$~\"_\" | $@_"]
-    pass: "all manifest refs resolve to existing paths"
-  }
+ navigation_links: {
+ prompt: "Resolve navigable refs with selector parity to LSP."
+ target: ["$~\"_\" | $@_"]
+ pass: "all manifest refs resolve to existing paths"
+ }
 
-  literate_contract: {
-    prompt: "Validate literate exhibits declare explicit tangle targets."
-    target: [".spw/literate/literate-spec.spw"]
-    pass: "all tangles have from_block + to_path + mode"
-  }
+ literate_contract: {
+ prompt: "Validate literate exhibits declare explicit tangle targets."
+ target: [".spw/literate/literate-spec.spw"]
+ pass: "all tangles have from_block + to_path + mode"
+ }
 
-  prompt_compaction: {
-    prompt: "Ensure harness prompt snapshots are compacted and reference-based."
-    target: [".spw/harness/runs/runs-index.spw", ".spw/harness/memory-surface.spw"]
-    pass: "no suite requires raw transcript capture; memory refs are present"
-  }
+ prompt_compaction: {
+ prompt: "Ensure harness prompt snapshots are compacted and reference-based."
+ target: [".spw/harness/runs/runs-index.spw", ".spw/harness/memory-surface.spw"]
+ pass: "no suite requires raw transcript capture; memory refs are present"
+ }
 
-  probe_lifecycle: {
-    prompt: "Ensure probes can be declared, filled, and archived by loop."
-    target: [".spw/harness/probes/probe-loop.spw", ".spw/harness/probes/archive-index.spw"]
-    pass: "all templates have status fields and archive destinations"
-  }
+ probe_lifecycle: {
+ prompt: "Ensure probes can be declared, filled, and archived by loop."
+ target: [".spw/harness/probes/probe-loop.spw", ".spw/harness/probes/archive-index.spw"]
+ pass: "all templates have status fields and archive destinations"
+ }
 
-  evolution_scope: {
-    prompt: "Ensure experimental syntax is scoped and opt-in."
-    target: [".spw/process/scoped-evolution.spw"]
-    pass: "experiments have explicit scope, guard, and rollback"
-  }
+ evolution_scope: {
+ prompt: "Ensure experimental syntax is scoped and opt-in."
+ target: [".spw/process/scoped-evolution.spw"]
+ pass: "experiments have explicit scope, guard, and rollback"
+ }
 
-  dev_hot_reload: {
-    prompt: "Ensure hot reload loop validates changed .spw files continuously."
-    target: [".spw/process/hot-reload-loop.spw", "scripts/spw-dev.ts"]
-    pass: "watcher formats + validates only changed files and reports phase beats"
-  }
+ dev_hot_reload: {
+ prompt: "Ensure hot reload loop validates changed .spw files continuously."
+ target: [".spw/process/hot-reload-loop.spw", "scripts/spw-dev.ts"]
+ pass: "watcher formats + validates only changed files and reports phase beats"
+ }
 
-  biome_cohesion: {
-    prompt: "Ensure ocean biomes remain expressive while preserving one core ontology."
-    target: [".spw/biome/ocean/index.spw", ".spw/biome/ocean/atlas.spw", ".spw/biome/ocean/style.spw", ".spw/workspace.spw"]
-    pass: "each biome links to core contracts and does not redefine core invariants"
-  }
+ biome_cohesion: {
+ prompt: "Ensure ocean biomes remain expressive while preserving one core ontology."
+ target: [".spw/biome/ocean/index.spw", ".spw/biome/ocean/atlas.spw", ".spw/biome/ocean/style.spw", ".spw/workspace.spw"]
+ pass: "each biome links to core contracts and does not redefine core invariants"
+ }
 
-  operator_sequence_query: {
-    prompt: "Ensure operator/braces/label combinatorics can be queried across .spw surfaces."
-    target: ["scripts/spw-ls.ts", "scripts/spw-ls-core.ts", ".spw/biome/ocean/query/dialect.spw", ".spw/biome/ocean/template/t.spw"]
-    pass: "liminal query supports operators, braces, labels, probe expressions, and model hints"
-  }
+ operator_sequence_query: {
+ prompt: "Ensure operator/braces/label combinatorics can be queried across .spw surfaces."
+ target: ["scripts/spw-ls.ts", "scripts/spw-ls-core.ts", ".spw/biome/ocean/query/dialect.spw", ".spw/biome/ocean/template/t.spw"]
+ pass: "liminal query supports operators, braces, labels, probe expressions, and model hints"
+ }
 
-  memory_lattice_replay: {
-    prompt: "Ensure runtime memory can be dumped, listed, and reloaded as replayable snapshots."
-    target: ["scripts/spw-mem.ts", ".agents/state/register-conventions.spw", ".spw/harness/memory-surface.spw"]
-    pass: "dump/list/load commands preserve runtime state cells and manifest integrity"
-  }
+ memory_lattice_replay: {
+ prompt: "Ensure runtime memory can be dumped, listed, and reloaded as replayable snapshots."
+ target: ["scripts/spw-mem.ts", ".agents/state/register-conventions.spw", ".spw/harness/memory-surface.spw"]
+ pass: "dump/list/load commands preserve runtime state cells and manifest integrity"
+ }
 
-  mount_slice_v01: {
-    prompt: "Ensure mount v0.1 surfaces are present, parse-safe, and validator-backed."
-    target: [".spw/index.spw", ".spw/mount.spw", ".spw/canon-mount.spw", "scripts/spw-mount.ts"]
-    pass: "mount utility reports required files + ONF seed + index dispatch contract"
-  }
+ mount_slice_v01: {
+ prompt: "Ensure mount v0.1 surfaces are present, parse-safe, and validator-backed."
+ target: [".spw/index.spw", ".spw/mount.spw", ".spw/canon-mount.spw", "scripts/spw-mount.ts"]
+ pass: "mount utility reports required files + ONF seed + index dispatch contract"
+ }
 
-  symmetry_registry_cohesion: {
-    prompt: "Ensure brace/symmetry registries stay unified, parseable, and discoverable from index roots."
-    target: [
-      ".spw/registries/curiosity-brace.spw",
-      ".spw/registries/dialect-spec.spw",
-      ".spw/registries/register-bank.spw",
-      ".spw/applications/symmetry/symmetry-applications.spw",
-      ".spw/applications/symmetry/symmetry-ui-design.spw",
-      ".spw/applications/symmetry/symmetry-forecast-projection-sound.spw",
-      ".spw/applications/symmetry/symmetry-cognitive-engine.spw",
-      ".spw/applications/symmetry/symmetry-spellcasting-pattern.spw",
-      ".spw/tooling/intellij-plugin.spw",
-      ".spw/index.spw",
-    ]
-    pass: "index roots include registries/applications/tooling surfaces and all moved symmetry files parse"
-  }
+ symmetry_registry_cohesion: {
+ prompt: "Ensure brace/symmetry registries stay unified, parseable, and discoverable from index roots."
+ target: [
+ ".spw/registries/curiosity-brace.spw",
+ ".spw/registries/dialect-spec.spw",
+ ".spw/registries/register-bank.spw",
+ ".spw/applications/symmetry/symmetry-applications.spw",
+ ".spw/applications/symmetry/symmetry-ui-design.spw",
+ ".spw/applications/symmetry/symmetry-forecast-projection-sound.spw",
+ ".spw/applications/symmetry/symmetry-cognitive-engine.spw",
+ ".spw/applications/symmetry/symmetry-spellcasting-pattern.spw",
+ ".spw/tooling/intellij-plugin.spw",
+ ".spw/index.spw",
+ ]
+ pass: "index roots include registries/applications/tooling surfaces and all moved symmetry files parse"
+ }
 
-  convention_pattern_cohesion: {
-    prompt: "Ensure convention and pattern surfaces remain connected to workspace/index and support deep query composition."
-    target: [
-      ".spw/conventions/index.spw",
-      ".spw/conventions/selection.spw",
-      ".spw/conventions/naming.spw",
-      ".spw/conventions/cli.spw",
-      ".spw/patterns/index.spw",
-      ".spw/patterns/literate-architecture.spw",
-      ".spw/patterns/query-composition.spw",
-      ".spw/literate/architecture/index.spw",
-      ".spw/literate/architecture/module-template.spw",
-      ".spw/index.spw",
-      ".spw/workspace.spw",
-    ]
-    pass: "conventions/patterns are indexed, parseable, and queryable via spw query + spw ls surfaces"
-  }
+ convention_pattern_cohesion: {
+ prompt: "Ensure convention and pattern surfaces remain connected to workspace/index and support deep query composition."
+ target: [
+ ".spw/conventions/index.spw",
+ ".spw/conventions/selection.spw",
+ ".spw/conventions/naming.spw",
+ ".spw/conventions/cli.spw",
+ ".spw/patterns/index.spw",
+ ".spw/patterns/literate-architecture.spw",
+ ".spw/patterns/query-composition.spw",
+ ".spw/literate/architecture/index.spw",
+ ".spw/literate/architecture/module-template.spw",
+ ".spw/index.spw",
+ ".spw/workspace.spw",
+ ]
+ pass: "conventions/patterns are indexed, parseable, and queryable via spw query + spw ls surfaces"
+ }
 }
 
 ^"scoring"{
-  ~#weights: {
-    parse_stability: 0.2
-    navigation_links: 0.2
-    literate_contract: 0.15
-    prompt_compaction: 0.1
-    probe_lifecycle: 0.1
-    evolution_scope: 0.1
-    dev_hot_reload: 0.1
-    biome_cohesion: 0.05
-    operator_sequence_query: 0.05
-    memory_lattice_replay: 0.05
-    mount_slice_v01: 0.05
-    symmetry_registry_cohesion: 0.05
-    convention_pattern_cohesion: 0.05
-  }
-  ~#threshold_accept: 0.9
+ ~#weights: {
+ parse_stability: 0.2
+ navigation_links: 0.2
+ literate_contract: 0.15
+ prompt_compaction: 0.1
+ probe_lifecycle: 0.1
+ evolution_scope: 0.1
+ dev_hot_reload: 0.1
+ biome_cohesion: 0.05
+ operator_sequence_query: 0.05
+ memory_lattice_replay: 0.05
+ mount_slice_v01: 0.05
+ symmetry_registry_cohesion: 0.05
+ convention_pattern_cohesion: 0.05
+ }
+ ~#threshold_accept: 0.9
 }
 
-?["Does the Cayley table for brace×operator composition close under {FRAME}?"]
-  #:depth #!mathematical  // lens: formula
-  $^seed[_.sym:D4] => %[register.left, register.right]
-  ~<@spec/core/OPERATORS.md>
-  !probe{ "construct the group action table; check if .left ↔ .right reflection commutes with ~ → ! operator tense shift" }
+#>wonder_spw_harness_evals_baselineevals_1
+?["What invariant holds across every frame in Harness Evaluation Baseline?"]{
+  #:depth #!computational // lens: ecological zone
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to every frame in this file; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[harness.run_count, harness.pass_rate]
+}
 
-?["What orbits emerge when D4 acts on nested brace pairs?"]
-  #:depth #!computational  // lens: molecule
-  $^[_.sym] => &[orbit.stabilizer]
-  ~<@spw/registries/curiosity-brace.spw>
-  !probe{ "enumerate fixed points of the dihedral action on {{{}}} nesting depth 3; count distinct register states" }
+#>wonder_spw_harness_evals_baselineevals_2
+?["What was Harness Evaluation Baseline before it was this, and what could it become?"]{
+  #:depth #!mathematical // lens: molecular binding
+  ~#past: "git log --oneline -- .spw/harness/evals/baseline-evals.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[harness.run_count, harness.pass_rate]
+  ~<.spw/harness/claim-protocol.spw>  // nearest neighbor
+}

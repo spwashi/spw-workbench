@@ -7,53 +7,58 @@
 ^"example"{ ~#name: "spirit-cycle", ~#demonstrates: "six-phase interpreter cycle on a concrete value" }
 
 ^"input"{
-  # Given a node to process:
-  =[node, { type: "greeting", text: "hello world" }]
+ # Given a node to process:
+ =[node, { type: "greeting", text: "hello world" }]
 
-  # Spirit cycle:
-  # Phase 1: ?~ — probe into superposition
-  ?~[node]
+ # Spirit cycle:
+ # Phase 1: ?~ — probe into superposition
+ ?~[node]
 
-  # Phase 2: <#.> — name the coupling
-  <#[node.type]>
+ # Phase 2: <#.> — name the coupling
+ <#[node.type]>
 
-  # Phase 3: @(#.) — observe from a perspective
-  @(#[node.text])
+ # Phase 3: @(#.) — observe from a perspective
+ @(#[node.text])
 
-  # Phase 4: &[#.] — merge categorized truths
-  &[node.type, node.text]
+ # Phase 4: &[#.] — merge categorized truths
+ &[node.type, node.text]
 
-  # Phase 5: *{#.} — materialize properties
-  *{type: node.type, text: node.text}
+ # Phase 5: *{#.} — materialize properties
+ *{type: node.type, text: node.text}
 
-  # Phase 6: ^ — integrate upward
-  ^
+ # Phase 6: ^ — integrate upward
+ ^
 }
 
 ^"expected"{
-  phase_1: { result: "deferred probe of node",                  register: "condition = true"  }
-  phase_2: { result: "concept coupling named 'greeting'",       container: "<greeting>"       }
-  phase_3: { result: "observer scope with 'hello world'",       scope: "@hello world"         }
-  phase_4: { result: "merged ['greeting', 'hello world']",      mergedFrom: ["node.type", "node.text"] }
-  phase_5: { result: "{type: 'greeting', text: 'hello world'}", collapsed: true               }
-  phase_6: { result: "bound to parent scope",                   direction: "upward"           }
+ phase_1: { result: "deferred probe of node", register: "condition = true" }
+ phase_2: { result: "concept coupling named 'greeting'", container: "<greeting>" }
+ phase_3: { result: "observer scope with 'hello world'", scope: "@hello world" }
+ phase_4: { result: "merged ['greeting', 'hello world']", mergedFrom: ["node.type", "node.text"] }
+ phase_5: { result: "{type: 'greeting', text: 'hello world'}", collapsed: true }
+ phase_6: { result: "bound to parent scope", direction: "upward" }
 }
 
 ^"notes"{
-  "Each phase uses a different operator + container pair.",
-  "The #. kernel (resonance.ground) appears in phases 2–5.",
-  "Phase 6 feeds into phase 1 of the next cycle.",
-  "Termination: when ?~ returns falsy.",
+ "Each phase uses a different operator + container pair.",
+ "The #. kernel (resonance.ground) appears in phases 2–5.",
+ "Phase 6 feeds into phase 1 of the next cycle.",
+ "Termination: when ?~ returns falsy.",
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_examples_spw_spiritcycle_1
+?["How would a materials science portfolio express example?"]{
+  #:depth #!stylistic // lens: material grain
+  ~#translation_target: "materials science"
+  ~#source_concept: "example"
+  !probe{ "rewrite the root frame in materials science vocabulary; where the translation breaks reveals Spw's untranslatable concepts." }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_examples_spw_spiritcycle_2
+?["How does this file's voice differ from @hello?"]{
+  #:depth #!educational // lens: formal structure
+  ~<@hello> // nearest neighbor
+  $%[op.distribution]@here vs $%[op.distribution]@hello
+  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
+}

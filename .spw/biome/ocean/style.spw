@@ -7,54 +7,60 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Develop a recognizable visual style while staying reproducible."
-  ~#channels: ["midjourney_frame", "illustration_frame"]
+ ~#goal: "Develop a recognizable visual style while staying reproducible."
+ ~#channels: ["midjourney_frame", "illustration_frame"]
 }
 
 ^"midjourney_frame"{
-  ~#subject: "what is depicted"
-  ~#biome: "ocean biome context (reef/pelagic/estuary/tidal/benthic/seagrass)"
-  ~#lens: "optical lens profile (focal_depth/aperture/magnification/aberration)"
-  ~#materials: "electrolyte + plant motifs for texture and motion"
-  ~#lighting: "phase-aware light cues (probe/observe/merge/materialize/integrate)"
-  ~#negative_space: "what to avoid"
+ ~#subject: "what is depicted"
+ ~#biome: "ocean biome context (reef/pelagic/estuary/tidal/benthic/seagrass)"
+ ~#lens: "optical lens profile (focal_depth/aperture/magnification/aberration)"
+ ~#materials: "electrolyte + plant motifs for texture and motion"
+ ~#lighting: "phase-aware light cues (probe/observe/merge/materialize/integrate)"
+ ~#negative_space: "what to avoid"
 }
 
 ^"illustration_frame"{
-  ~#line_language: "contour and stroke behavior"
-  ~#shape_grammar: "how forms cluster and flow"
-  ~#palette: "temperature and salinity-inspired color logic"
-  ~#texture: "paper/grain/water diffusion strategy"
-  ~#composition: "foreground-current-background layering"
+ ~#line_language: "contour and stroke behavior"
+ ~#shape_grammar: "how forms cluster and flow"
+ ~#palette: "temperature and salinity-inspired color logic"
+ ~#texture: "paper/grain/water diffusion strategy"
+ ~#composition: "foreground-current-background layering"
 }
 
 ^"style_probe_template"{
-  fields: [
-    "style_id",
-    "channel",
-    "prompt_snapshot",
-    "reference_refs",
-    "output_refs",
-    "measures",
-    "verdict",
-  ]
-  measures: ["cohesion", "novelty", "readability", "phase_alignment"]
+ fields: [
+ "style_id",
+ "channel",
+ "prompt_snapshot",
+ "reference_refs",
+ "output_refs",
+ "measures",
+ "verdict",
+ ]
+ measures: ["cohesion", "novelty", "readability", "phase_alignment"]
 }
 
 ^"invariants"{
-  "Style runs reference one biome and one lens profile.",
-  "Style prompts are snapshot-based; avoid unbounded transcript carryover.",
-  "Accepted style probes can be promoted to tuning corpus with reviewer sign-off.",
+ "Style runs reference one biome and one lens profile.",
+ "Style prompts are snapshot-based; avoid unbounded transcript carryover.",
+ "Accepted style probes can be promoted to tuning corpus with reviewer sign-off.",
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_spw_biome_ocean_style_1
+?["How does this file's voice differ from ocean/style (ocean/style)?"]{
+  #:depth #!educational // lens: formal structure
+  ~<@_> // nearest neighbor
+  $%[op.distribution]@here vs $%[op.distribution]@_
+  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_spw_biome_ocean_style_2
+?["What invariant holds across every frame in Style Currents?"]{
+  #:depth #!experiential // lens: material grain
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to every frame in this file; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[style.cascade_depth, style.specificity_max]
+  ~<.spw/biome/ocean/atlas.spw>  // nearest neighbor
+}

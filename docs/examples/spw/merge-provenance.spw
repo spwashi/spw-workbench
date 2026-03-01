@@ -7,37 +7,44 @@
 ^"example"{ ~#name: "merge-provenance", ~#demonstrates: "confluent() tracks which sources contributed" }
 
 ^"input"{
-  # Set up sources:
-  =[x, {a: 1}]
-  =[y, {b: 2}]
-  =[z, {c: 3}]
+ # Set up sources:
+ =[x, {a: 1}]
+ =[y, {b: 2}]
+ =[z, {c: 3}]
 
-  # Merge:
-  &[x, y, z]
+ # Merge:
+ &[x, y, z]
 }
 
 ^"expected"{
-  merged_value: { a: 1, b: 2, c: 3 },
-  provenance: "&",
-  accessMode: "confluent",
-  mergedFrom: ["x", "y", "z"],
+ merged_value: { a: 1, b: 2, c: 3 },
+ provenance: "&",
+ accessMode: "confluent",
+ mergedFrom: ["x", "y", "z"],
 }
 
 ^"notes"{
-  "Object sources are merged via Object.assign.",
-  "Array sources are concatenated.",
-  "Mixed sources are collected into an array.",
-  "mergedFrom field preserves the source register names.",
+ "Object sources are merged via Object.assign.",
+ "Array sources are concatenated.",
+ "Mixed sources are collected into an array.",
+ "mergedFrom field preserves the source register names.",
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_examples_spw_mergeprovenance_1
+?["What invariant holds across every frame in Example: Merge Provenance?"]{
+  #:depth #!computational // lens: material grain
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to example's frames; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_examples_spw_mergeprovenance_2
+?["What was Example: Merge Provenance before it was this, and what could it become?"]{
+  #:depth #!mathematical // lens: formal structure
+  ~#past: "git log --oneline -- docs/examples/spw/merge-provenance.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[register.bank_size, register.active_bindings]
+  ~<docs/examples/spw/brace-autocomplete.spw>  // nearest neighbor
+}

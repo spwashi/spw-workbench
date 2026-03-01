@@ -8,24 +8,31 @@
 
 ^seed[Symmetry.Applications.Explore v:0.1 @profile:Spw.x~#[ops.register_frames,ops.probe,ops.matrix,ops.symmetry,ops.brace.sides,phrase.inline,surface.hash] @intent:explore-applications]
 .symmetry.applications {
-  mirror.binding: "brace sides .{sym:D4} — mutation on .left instantly reflects to .right (register bank coupling)"
-  spatial.grid: "data .{sym:D4} ?<rotate 90> — 2×2 tile auto-rotates/reflects; UI layouts, pixel art"
-  cyclic.process: "state .{sym:Z4} ?<next> — clock-like evolution (0→1→2→3→0) with reflection symmetry"
-  register.mirror: "register.bank.acoustic.coupling .{sym:D4} — frequency + liminality mirrored across cells"
-  geometric.primitive: "shape #[D4] @ scale(2) — dihedral group actions as native operators"
-  query.selector: "probe?left .{sym:D4} — symmetric selectors auto-generate 8 mirrored variants"
-  auto.test: "testcase .{sym:D4} ?<assert> — generates reflections/rotations of test data automatically"
-  example: "grid .{sym:D4} .left: top-left; .right: bottom-right → all 8 symmetries emerge"
+ mirror.binding: "brace sides .{sym:D4} — mutation on .left instantly reflects to .right (register bank coupling)"
+ spatial.grid: "data .{sym:D4} ?<rotate 90> — 2×2 tile auto-rotates/reflects; UI layouts, pixel art"
+ cyclic.process: "state .{sym:Z4} ?<next> — clock-like evolution (0→1→2→3→0) with reflection symmetry"
+ register.mirror: "register.bank.acoustic.coupling .{sym:D4} — frequency + liminality mirrored across cells"
+ geometric.primitive: "shape #[D4] @ scale(2) — dihedral group actions as native operators"
+ query.selector: "probe?left .{sym:D4} — symmetric selectors auto-generate 8 mirrored variants"
+ auto.test: "testcase .{sym:D4} ?<assert> — generates reflections/rotations of test data automatically"
+ example: "grid .{sym:D4} .left: top-left; .right: bottom-right → all 8 symmetries emerge"
 }
 
-?["Does the Cayley table for brace×operator composition close under {FRAME}?"]
-  #:depth #!mathematical  // lens: formula
-  $^seed[_.sym:D4] => %[register.left, register.right]
-  ~<@spec/core/OPERATORS.md>
-  !probe{ "construct the group action table; check if .left ↔ .right reflection commutes with ~ → ! operator tense shift" }
+#>wonder_spw_applications_symmetry_symmetryapplic_1
+?["What ripples if #symmetry changes in this file?"]{
+  #:depth #!mathematical // lens: curated collection
+  $#symmetry@workspace => %[reference.count, depth.downstream]
+  ~#downstream: "trace all files that reference this surface"
+  !probe{ "imagine renaming #symmetry to #symmetry_v2; count broken references; the count reveals how deeply symmetry applications is woven into the workspace." }
+  $%[app.transform_count, app.symmetry_applications]
+}
 
-?["What orbits emerge when D4 acts on nested brace pairs?"]
-  #:depth #!computational  // lens: molecule
-  $^[_.sym] => &[orbit.stabilizer]
-  ~<@spw/registries/curiosity-brace.spw>
-  !probe{ "enumerate fixed points of the dihedral action on {{{}}} nesting depth 3; count distinct register states" }
+#>wonder_spw_applications_symmetry_symmetryapplic_2
+?["What happens when you zoom from the concept level to the workspace level in Symmetry Applications?"]{
+  #:depth #!stylistic // lens: living system
+  $^["_"]@here => &[@workspace] // local → global projection
+  ~#zoom_in: "Symmetry.Applications.Explore v:0.1 @profile:Spw.x~#[ops.register_frames,ops.probe,ops.matrix,ops.symmetry,ops.brace.sides,phrase.inline,surface.hash" // this file's atom
+  !probe{ "the atom is concept-scale; zoom out: what workspace-level pattern does this concept participate in?" }
+  $%[app.transform_count, app.symmetry_applications]
+  ~<.spw/applications/symmetry/symmetry-cognitive-engine.spw>  // nearest neighbor
+}

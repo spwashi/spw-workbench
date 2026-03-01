@@ -5,42 +5,49 @@
 #:layer #!pragmatics
 
 ^["goal"]{
-  ~#intent: "Teach the ethos by climbing capability levels."
-  ~#rule: "One new affordance per level."
+ ~#intent: "Teach the ethos by climbing capability levels."
+ ~#rule: "One new affordance per level."
 }
 
 ^["levels"]{
-  observe: "read-only AST + tokens + mapping tethers"
-  select: "hover/click mapping between text and structure"
-  transform: "safe transforms (format/rename/extract)"
-  compose: "chain transforms into recipes"
-  author: "create operators/macros/lenses"
+ observe: "read-only AST + tokens + mapping tethers"
+ select: "hover/click mapping between text and structure"
+ transform: "safe transforms (format/rename/extract)"
+ compose: "chain transforms into recipes"
+ author: "create operators/macros/lenses"
 }
 
 ^["progressive_enhancement"]{
-  ~#requirements{
-    intermediate_element: "chip/tether/overlay"
-    gesture: "single new gesture"
-    sandbox: "undoable preview"
-  }
+ ~#requirements{
+ intermediate_element: "chip/tether/overlay"
+ gesture: "single new gesture"
+ sandbox: "undoable preview"
+ }
 }
 
 ^["motion_support"]{
-  ~#continuity_rules{
-    selection_tether: "this maps to that"
-    morph_highlight: "same object, different detail"
-    replay_cursor: "how you got here"
-  }
+ ~#continuity_rules{
+ selection_tether: "this maps to that"
+ morph_highlight: "same object, different detail"
+ replay_cursor: "how you got here"
+ }
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_design_spw_affordanceladder_1
+?["What was Affordance Ladder before it was this, and what could it become?"]{
+  #:depth #!experiential // lens: curated collection
+  ~#past: "git log --oneline -- docs/design/spw/affordance-ladder.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[design.component_count, design.theme_coverage]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_design_spw_affordanceladder_2
+?["How would a biology algorithm express spw/affordance-ladder?"]{
+  #:depth #!computational // lens: living system
+  ~#translation_target: "biology"
+  ~#source_concept: "goal"
+  !probe{ "rewrite the root frame in biology vocabulary; where the translation breaks reveals Spw's untranslatable concepts." }
+  $%[design.component_count, design.theme_coverage]
+  ~<docs/design/spw/a11y-tree.spw>  // nearest neighbor
+}

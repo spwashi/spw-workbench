@@ -5,118 +5,125 @@
 #:layer #!pragmatics
 
 ^["roots"]{
-  @src: ~"../src"
-  @here: ~"."
+ @src: ~"../src"
+ @here: ~"."
 }
 
 ^["intent"]{
-  ~#goal: "Use web components to increase cohesion without hiding semantic targets."
-  ~#why: "Action targets, design mode, and theme responsiveness depend on a stable state surface."
-  ~#lens: "Light DOM for state; Shadow DOM for precision."
+ ~#goal: "Use web components to increase cohesion without hiding semantic targets."
+ ~#why: "Action targets, design mode, and theme responsiveness depend on a stable state surface."
+ ~#lens: "Light DOM for state; Shadow DOM for precision."
 }
 
 ^["shadow-dom-value"]{
-  ~encapsulation: "Prevents style bleed and stabilizes component visuals."
-  ~structure: "Slots + parts formalize layout contracts."
-  ~performance: "adoptedStyleSheets + CSS vars reduce rerender costs."
-  ~a11y: "ElementInternals for consistent ARIA roles and naming."
+ ~encapsulation: "Prevents style bleed and stabilizes component visuals."
+ ~structure: "Slots + parts formalize layout contracts."
+ ~performance: "adoptedStyleSheets + CSS vars reduce rerender costs."
+ ~a11y: "ElementInternals for consistent ARIA roles and naming."
 }
 
 ^["shadow-dom-costs"]{
-  ~design-mode: "Global selectors cannot see inside closed shadow trees."
-  ~action-targets: "Focus and target discovery becomes harder if internals are hidden."
-  ~theming: "Requires ::part and CSS vars for external styling."
+ ~design-mode: "Global selectors cannot see inside closed shadow trees."
+ ~action-targets: "Focus and target discovery becomes harder if internals are hidden."
+ ~theming: "Requires ::part and CSS vars for external styling."
 }
 
 ^["decision-rules"]{
-  1. If an element must be a focus/selection/action target, keep it in light DOM.
-  2. If it is a leaf visual primitive (chip, kbd, badge), Shadow DOM is safe.
-  3. If it needs theme-driven styling, prefer Shadow DOM + CSS vars + ::part.
-  4. If design mode must inspect internals, expose parts via exportparts.
-  5. If the element is used in selection/yank/paste flows, keep the host in light DOM with data-spw-component.
+ 1. If an element must be a focus/selection/action target, keep it in light DOM.
+ 2. If it is a leaf visual primitive (chip, kbd, badge), Shadow DOM is safe.
+ 3. If it needs theme-driven styling, prefer Shadow DOM + CSS vars + ::part.
+ 4. If design mode must inspect internals, expose parts via exportparts.
+ 5. If the element is used in selection/yank/paste flows, keep the host in light DOM with data-spw-component.
 }
 
 ^["component-hierarchy"]{
-  ~shell.light: [app, header, main, sidebar, editor, inspector, geology-panel, footer]
-  ~panels.light: [drawer, command-bar, context-tuner, key-hint-bar, prompting-rail]
-  ~primitives.shadow: [spw-chip, spw-kbd, spw-badge, spw-toggle, spw-pill]
-  ~hybrid: "spw-panel can be light DOM with internal shadow primitives."
+ ~shell.light: [app, header, main, sidebar, editor, inspector, geology-panel, footer]
+ ~panels.light: [drawer, command-bar, context-tuner, key-hint-bar, prompting-rail]
+ ~primitives.shadow: [spw-chip, spw-kbd, spw-badge, spw-toggle, spw-pill]
+ ~hybrid: "spw-panel can be light DOM with internal shadow primitives."
 }
 
 ^["host-contract"]{
-  # Host elements remain visible to action-targets and design mode.
-  ~data-spw-component: "identity"
-  ~data-spw-tab-scope: "fine|medium|coarse"
-  ~data-lod-weight: "fine|medium|coarse"
-  ~data-spw-actionable: "yp, run, ref, etc."
-  ~data-panel-id: "panel identity"
-  ~aria-label: "readable identity for focus"
+ # Host elements remain visible to action-targets and design mode.
+ ~data-spw-component: "identity"
+ ~data-spw-tab-scope: "fine|medium|coarse"
+ ~data-lod-weight: "fine|medium|coarse"
+ ~data-spw-actionable: "yp, run, ref, etc."
+ ~data-panel-id: "panel identity"
+ ~aria-label: "readable identity for focus"
 }
 
 ^["shadow-contract"]{
-  # Shadow DOM internals exposed for themes and design mode.
-  ~part: "header, title, actions, body"
-  ~exportparts: "forward parts to host for theming"
-  ~css-vars: "all theme accents via --spw-* tokens"
-  ~event-bridge: "dispatch spw:action / spw:target from host"
+ # Shadow DOM internals exposed for themes and design mode.
+ ~part: "header, title, actions, body"
+ ~exportparts: "forward parts to host for theming"
+ ~css-vars: "all theme accents via --spw-* tokens"
+ ~event-bridge: "dispatch spw:action / spw:target from host"
 }
 
 ^["design-mode-bridge"]{
-  ~rule: "design mode inspects host + part metadata only"
-  ~pattern: "host.dataset.spwComponent + host.dataset.spwPartMap"
-  ~copy: "copy id/path/payload from host"
-  ~highlight: "outline host; optional part highlight via CSS var"
+ ~rule: "design mode inspects host + part metadata only"
+ ~pattern: "host.dataset.spwComponent + host.dataset.spwPartMap"
+ ~copy: "copy id/path/payload from host"
+ ~highlight: "outline host; optional part highlight via CSS var"
 }
 
 ^["theming-strategy"]{
-  ~css-vars: "Use CSS variables as primary theme contract"
-  ~adopted: "Use adoptedStyleSheets for theme bundles"
-  ~part: "Expose stable parts for theme accents"
-  ~host-context: ":host-context([data-theme=...]) for rare overrides"
+ ~css-vars: "Use CSS variables as primary theme contract"
+ ~adopted: "Use adoptedStyleSheets for theme bundles"
+ ~part: "Expose stable parts for theme accents"
+ ~host-context: ":host-context([data-theme=...]) for rare overrides"
 }
 
 ^["focus-and-a11y"]{
-  ~delegatesFocus: "Enable for primitives if internal input/button should receive focus"
-  ~ElementInternals: "Define role, name, states per component"
-  ~focus-visible: "Use :focus-visible inside shadow to reduce noise"
+ ~delegatesFocus: "Enable for primitives if internal input/button should receive focus"
+ ~ElementInternals: "Define role, name, states per component"
+ ~focus-visible: "Use :focus-visible inside shadow to reduce noise"
 }
 
 ^["migration-path"]{
-  1. Build primitives as web components: spw-chip, spw-kbd, spw-badge.
-  2. Convert headers to use primitives (keep header host in light DOM).
-  3. Introduce spw-panel as a wrapper with light DOM host + shadow primitives.
-  4. Expose parts and exportparts for theme tuning.
-  5. Add design-mode part introspection if needed.
+ 1. Build primitives as web components: spw-chip, spw-kbd, spw-badge.
+ 2. Convert headers to use primitives (keep header host in light DOM).
+ 3. Introduce spw-panel as a wrapper with light DOM host + shadow primitives.
+ 4. Expose parts and exportparts for theme tuning.
+ 5. Add design-mode part introspection if needed.
 }
 
 ^["learning-plan"]{
-  ~custom-elements: "define, lifecycle, observedAttributes"
-  ~shadow: "attachShadow, slots, ::slotted, :host"
-  ~styling: "::part, exportparts, adoptedStyleSheets"
-  ~a11y: "ElementInternals, formAssociated, aria mapping"
-  ~events: "CustomEvent bridging from shadow to host"
+ ~custom-elements: "define, lifecycle, observedAttributes"
+ ~shadow: "attachShadow, slots, ::slotted, :host"
+ ~styling: "::part, exportparts, adoptedStyleSheets"
+ ~a11y: "ElementInternals, formAssociated, aria mapping"
+ ~events: "CustomEvent bridging from shadow to host"
 }
 
 ^["notes"]{
-  ~constraint: "Keep action-target semantics and register flows in light DOM."
-  ~goal: "Use Shadow DOM to stabilize appearance, not to hide meaning."
+ ~constraint: "Keep action-target semantics and register flows in light DOM."
+ ~goal: "Use Shadow DOM to stabilize appearance, not to hide meaning."
 }
 
 ^["sources"]{
-  @src/app/components/_shared/component-contract.ts
-  @src/features/keyboard/navigation/action-targets.ts
-  @src/design/mode/effects/tooltip.ts
-  @src/styles/themes/
+ @src/app/components/_shared/component-contract.ts
+ @src/features/keyboard/navigation/action-targets.ts
+ @src/design/mode/effects/tooltip.ts
+ @src/styles/themes/
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_design_spw_webcomponents_1
+?["What invariant holds across every frame in Web Components + Shadow DOM Strategy?"]{
+  #:depth #!computational // lens: living system
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to roots's frames; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_design_spw_webcomponents_2
+?["What was Web Components + Shadow DOM Strategy before it was this, and what could it become?"]{
+  #:depth #!mathematical // lens: curated collection
+  ~#past: "git log --oneline -- docs/design/spw/web-components.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[register.bank_size, register.active_bindings]
+  ~<docs/design/spw/a11y-tree.spw>  // nearest neighbor
+}

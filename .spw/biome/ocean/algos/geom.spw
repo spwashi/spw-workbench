@@ -7,71 +7,78 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Build math intuition for runtime structure and interpretation cost."
+ ~#goal: "Build math intuition for runtime structure and interpretation cost."
 }
 
 ^math[d_path]{
-  symbol: d
-  expr: [shortest_path, root, node]
+ symbol: d
+ expr: [shortest_path, root, node]
 }
 
 ^math[r_spread]{
-  symbol: r
-  expr: [max, [distance, selector, projection_target]]
+ symbol: r
+ expr: [max, [distance, selector, projection_target]]
 }
 
 ^math[k_curvature]{
-  symbol: k
-  expr: [div, [delta, selector_effective], [delta, depth]]
+ symbol: k
+ expr: [div, [delta, selector_effective], [delta, depth]]
 }
 
 ^math[rho_density]{
-  symbol: rho
-  expr: [div, edges, [mul, nodes, [sub, nodes, 1]]]
+ symbol: rho
+ expr: [div, edges, [mul, nodes, [sub, nodes, 1]]]
 }
 
 ^math[e_energy]{
-  symbol: E
-  expr: [mul, depth, breadth, [add, 1, coupling_density]]
+ symbol: E
+ expr: [mul, depth, breadth, [add, 1, coupling_density]]
 }
 
 ^metric[depth]{
-  meaning: "nesting depth as graph distance from root frame"
-  formula: [math, d_path]
+ meaning: "nesting depth as graph distance from root frame"
+ formula: [math, d_path]
 }
 
 ^metric[radius]{
-  meaning: "projection spread from one selector to generated targets"
-  formula: [math, r_spread]
+ meaning: "projection spread from one selector to generated targets"
+ formula: [math, r_spread]
 }
 
 ^metric[curvature]{
-  meaning: "how sharply interpretation changes between adjacent containers"
-  formula: [math, k_curvature]
+ meaning: "how sharply interpretation changes between adjacent containers"
+ formula: [math, k_curvature]
 }
 
 ^metric[coupling_density]{
-  meaning: "merge edge density among considered concepts"
-  formula: [math, rho_density]
+ meaning: "merge edge density among considered concepts"
+ formula: [math, rho_density]
 }
 
 ^metric[energy]{
-  meaning: "approximate interpretation effort"
-  formula: [math, e_energy]
+ meaning: "approximate interpretation effort"
+ formula: [math, e_energy]
 }
 
 ^"invariant"{
-  "Metrics guide intuition; they do not alter canonical semantics."
+ "Metrics guide intuition; they do not alter canonical semantics."
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_spw_biome_ocean_algos_geom_1
+?["What concept is conspicuously absent from Geom?"]{
+  #:depth #!stylistic // lens: curated collection
+  ~#present: [#math, #geometry, #educational]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[geom.vertex_count, geom.symmetry_order]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_spw_biome_ocean_algos_geom_2
+?["How does intent teach d_path?"]{
+  #:depth #!educational // lens: living system
+  $^["intent"] => $^["d_path"] // trace the edge
+  &[@_, @spw] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[geom.vertex_count, geom.symmetry_order]
+  ~<.spw/biome/ocean/algos/cache.spw>  // nearest neighbor
+}

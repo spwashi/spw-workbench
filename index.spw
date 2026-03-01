@@ -5,24 +5,30 @@
 ^seed[Spw.Workbench.Canon v:0.0.0 @profile:Spw.b]
 
 ^['roots']{
-  @docs: ~'./docs'
-  @docs_seed: ~'./docs/seed'
-  @spec: ~'./lib/spw-v0.2.0-alpha'
-  @seed: ~'./src/seed'
+ @docs: ~'./docs'
+ @docs_seed: ~'./docs/seed'
+ @spec: ~'./lib/spw-v0.2.0-alpha'
+ @seed: ~'./src/seed'
 }
 
 ^['start']{
-  .. @docs/toc.spw
+ .. @docs/toc.spw
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_index_1
+?["What concept is conspicuously absent from Spw Workbench (Rewrite Canon)?"]{
+  #:depth #!stylistic // lens: molecular binding
+  ~#present: [#educational, #mathematical]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[file.frame_count, file.annotation_density, file.brace_depth_max]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_index_2
+?["How does Spw.Workbench.Canon v:0.0.0 @profile:Spw.b teach roots?"]{
+  #:depth #!educational // lens: ecological zone
+  $^["Spw.Workbench.Canon v:0.0.0 @profile:Spw.b"] => $^["roots"] // trace the edge
+  &[@profile, @docs] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[file.frame_count, file.annotation_density, file.brace_depth_max]
+}

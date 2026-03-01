@@ -5,189 +5,195 @@
 #:layer #!grammar
 
 ^["roots"]{
-  @src:  ~"../src"
-  @spec: ~"../lib/spw-v0.1.0-alpha"
+ @src: ~"../src"
+ @spec: ~"../lib/spw-v0.1.0-alpha"
 }
 
 ^[alignment]
 
 ^["New Forms (not in current docs)"]{
-  ~#critical{
-    =[@src/seed/grammar/]{
-      ~#implemented: "capsules <tag[params]{body}>, n-range ((...)), streaming <<...>>@sink"
-      ~#docs_missing: "spec write-up still needed"
-      ~#location: "new core/CAPSULES.md, core/STREAMS.md additions"
-    }
-  }
+ ~#critical{
+ =[@src/seed/grammar/]{
+ ~#implemented: "capsules <tag[params]{body}>, n-range ((...)), streaming <<...>>@sink"
+ ~#docs_missing: "spec write-up still needed"
+ ~#location: "new core/CAPSULES.md, core/STREAMS.md additions"
+ }
+ }
 
-  ~#seed_formalization{
-    ?[seed_form]{
-      ~#syntax: "^seed[\"Name v:...\"]{ ... }"
-      ~#purpose: "unit of authoring + distribution"
-      ~#existing: "mentioned but not formalized as THE authoring unit"
-      ~#location: "README.md or new core/SEEDS.md"
-    }
-  }
+ ~#seed_formalization{
+ ?[seed_form]{
+ ~#syntax: "^seed[\"Name v:...\"]{ ... }"
+ ~#purpose: "unit of authoring + distribution"
+ ~#existing: "mentioned but not formalized as THE authoring unit"
+ ~#location: "README.md or new core/SEEDS.md"
+ }
+ }
 }
 
 ^["New Concepts (require new docs)"]{
-  ~#goals{
-    ?[runtime_goals]{
-      ~#tokens: "explain, index, execute, onboard, audit"
-      ~#purpose: "first-class runtime modes"
-      ~#location: "new runtime/GOALS.md"
-      ~#code_impact: "src/runtime/goals/ directory"
-    }
-  }
+ ~#goals{
+ ?[runtime_goals]{
+ ~#tokens: "explain, index, execute, onboard, audit"
+ ~#purpose: "first-class runtime modes"
+ ~#location: "new runtime/GOALS.md"
+ ~#code_impact: "src/runtime/goals/ directory"
+ }
+ }
 
-  ~#pipeline{
-    ?[distill_extract]{
-      ~#stages: "prime -> wonder -> desugar -> extract -> precipitate"
-      ~#strata: "char, word, token, node, block, file, upstream"
-      ~#location: "new runtime/PIPELINE.md"
-      ~#code_impact: "src/runtime/pipeline/ directory"
-    }
-  }
+ ~#pipeline{
+ ?[distill_extract]{
+ ~#stages: "prime -> wonder -> desugar -> extract -> precipitate"
+ ~#strata: "char, word, token, node, block, file, upstream"
+ ~#location: "new runtime/PIPELINE.md"
+ ~#code_impact: "src/runtime/pipeline/ directory"
+ }
+ }
 
-  ~#integrity{
-    =[@src/seed/canonical/]{
-      ~#implemented: "canonicalize() + hashString() normalization layer"
-      ~#docs_missing: "write core/INTEGRITY.md with rules + hashing options"
-    }
-  }
+ ~#integrity{
+ =[@src/seed/canonical/]{
+ ~#implemented: "canonicalize() + hashString() normalization layer"
+ ~#docs_missing: "write core/INTEGRITY.md with rules + hashing options"
+ }
+ }
 
-  ~#generated_ir{
-    ?[cache_ir]{
-      ~#name: "Spw.c.CacheIR"
-      ~#purpose: "container + operator topography + normalized metadata"
-      ~#location: "new runtime/CACHE-IR.md"
-    }
-  }
+ ~#generated_ir{
+ ?[cache_ir]{
+ ~#name: "Spw.c.CacheIR"
+ ~#purpose: "container + operator topography + normalized metadata"
+ ~#location: "new runtime/CACHE-IR.md"
+ }
+ }
 
-  ~#capability{
-    ?[nev]{
-      ~#name: "Normalized Effect IDs"
-      ~#purpose: "capability gating for unsafe effects"
-      ~#location: "new runtime/CAPABILITIES.md or core/SAFETY.md"
-    }
-  }
+ ~#capability{
+ ?[nev]{
+ ~#name: "Normalized Effect IDs"
+ ~#purpose: "capability gating for unsafe effects"
+ ~#location: "new runtime/CAPABILITIES.md or core/SAFETY.md"
+ }
+ }
 }
 
 ^["Terminology Alignment"]{
-  ~#taste_posture_split{
-    ~#existing: "Taste@ as meta-domain for aesthetic evaluation"
-    ~#new_spec{
-      Spw.Taste > TasteProfile     # aesthetic: layout/pacing only
-      Spw.Posture > BehaviorProfile    # behavioral: safety/performance/rigor
-    }
-    ~#action: "Split domains/TASTE.md, add domains/POSTURE.md"
-    ~#aliases{
-      "Spw.Profile.*" == "Spw.Posture.*"
-      "Spw.Stance.*"  == "Spw.Posture.*"
-    }
-  }
+ ~#taste_posture_split{
+ ~#existing: "Taste@ as meta-domain for aesthetic evaluation"
+ ~#new_spec{
+ Spw.Taste > TasteProfile # aesthetic: layout/pacing only
+ Spw.Posture > BehaviorProfile # behavioral: safety/performance/rigor
+ }
+ ~#action: "Split domains/TASTE.md, add domains/POSTURE.md"
+ ~#aliases{
+ "Spw.Profile.*" == "Spw.Posture.*"
+ "Spw.Stance.*" == "Spw.Posture.*"
+ }
+ }
 
-  ~#dialect_tokens{
-    ~#existing: "Spw.l, Spw.b, Spw.x (geometry) + Spw.p, Spw.q, Spw.t (function)"
-    ~#new_spec{
-      spw.b  # baseline/boon
-      spw.l  # library/layer
-      spw.m  # material/machine
-      spw.x  # linkage graph
-      spw.p  # prose/presentation
-      spw.q  # query
-      spw.r  # reduction/distillation
-      spw.t  # topology
-    }
-    ~#action: "Update dialects/ to include new tokens, clarify existing"
-  }
+ ~#dialect_tokens{
+ ~#existing: "Spw.l, Spw.b, Spw.x (geometry) + Spw.p, Spw.q, Spw.t (function)"
+ ~#new_spec{
+ spw.b # baseline/boon
+ spw.l # library/layer
+ spw.m # material/machine
+ spw.x # linkage graph
+ spw.p # prose/presentation
+ spw.q # query
+ spw.r # reduction/distillation
+ spw.t # topology
+ }
+ ~#action: "Update dialects/ to include new tokens, clarify existing"
+ }
 }
 
 ^["Operator Alignment"]{
-  ~#existing_8: "! ^ ~ <> ? * = @"
-  ~#new_15: "! ? * ~ = @ # . <> / : .. -> & |"
+ ~#existing_8: "! ^ ~ <> ? * = @"
+ ~#new_15: "! ? * ~ = @ # . <> / : .. -> & |"
 
-  ~#differences{
-    # ^: existing uses as "tap/anchor"; new uses ^seed as form
-    # #: both have as annotation/header
-    # New: / (path), : (pairing), -> (mapping)
-  }
+ ~#differences{
+ # ^: existing uses as "tap/anchor"; new uses ^seed as form
+ # #: both have as annotation/header
+ # New: / (path), : (pairing), -> (mapping)
+ }
 
-  ~#action: "Reconcile operator sets in SPEC.md; clarify ^seed vs ^ operator; document added connectors (/ : -> & | ..) and container forms"
+ ~#action: "Reconcile operator sets in SPEC.md; clarify ^seed vs ^ operator; document added connectors (/ : -> & | ..) and container forms"
 }
 
 ^["Code Alignment Needed"]{
-  ~#new_directories{
-    @src/runtime/goals/       # goal-based execution
-    @src/runtime/pipeline/    # distill/extract stages
-    @src/core/strata/         # char->word->token->node->block->file->upstream
-  }
+ ~#new_directories{
+ @src/runtime/goals/ # goal-based execution
+ @src/runtime/pipeline/ # distill/extract stages
+ @src/core/strata/ # char->word->token->node->block->file->upstream
+ }
 
-  ~#terminology_updates{
-    ?[@src/design/themes/]{
-      ~#current: "theme manager, style tokens"
-      ~#align_to: "TasteProfile concepts where applicable"
-    }
+ ~#terminology_updates{
+ ?[@src/design/themes/]{
+ ~#current: "theme manager, style tokens"
+ ~#align_to: "TasteProfile concepts where applicable"
+ }
 
-    ?[@src/features/onboarding/]{
-      ~#current: "disclosure levels, feature visibility"
-      ~#align_to: "onboard goal semantics"
-    }
-  }
+ ?[@src/features/onboarding/]{
+ ~#current: "disclosure levels, feature visibility"
+ ~#align_to: "onboard goal semantics"
+ }
+ }
 
-  ~#parser_extensions{
-    @src/seed/grammar/  # capsule syntax, n-range, streaming
-  }
+ ~#parser_extensions{
+ @src/seed/grammar/ # capsule syntax, n-range, streaming
+ }
 }
 
 ^["Documentation Update Priority"]{
-  ~#phase_1["Critical - Breaks Coherence"]{
-    @spec/core/CAPSULES.md     # new file for capsule syntax
-    @spec/core/INTEGRITY.md    # canonicalization + hashing
-    @spec/runtime/GOALS.md     # goal tokens
-    @spec/domains/POSTURE.md   # split from Taste
-  }
+ ~#phase_1["Critical - Breaks Coherence"]{
+ @spec/core/CAPSULES.md # new file for capsule syntax
+ @spec/core/INTEGRITY.md # canonicalization + hashing
+ @spec/runtime/GOALS.md # goal tokens
+ @spec/domains/POSTURE.md # split from Taste
+ }
 
-  ~#phase_2["Important - Completes Model"]{
-    @spec/runtime/PIPELINE.md  # distill/extract stages
-    @spec/core/SEEDS.md        # formalize ^seed
-    @spec/dialects/GEOMETRY.md # update with spw.r, spw.m
-  }
+ ~#phase_2["Important - Completes Model"]{
+ @spec/runtime/PIPELINE.md # distill/extract stages
+ @spec/core/SEEDS.md # formalize ^seed
+ @spec/dialects/GEOMETRY.md # update with spw.r, spw.m
+ }
 
-  ~#phase_3["Enhancement"]{
-    @spec/runtime/CACHE-IR.md
-    @spec/core/SAFETY.md       # NEV/capabilities
-    @spec/applications/QUERY.md  # spw.q examples
-  }
+ ~#phase_3["Enhancement"]{
+ @spec/runtime/CACHE-IR.md
+ @spec/core/SAFETY.md # NEV/capabilities
+ @spec/applications/QUERY.md # spw.q examples
+ }
 }
 
 ^["Feature Documentation Strategy"]{
-  ~#principle{
-    "Each feature has three homes:
-     1. @spec/ - specification (what)
-     2. docs/*.spw - codebase topology (where)
-     3. @src/**/README.md - implementation notes (how)"
-  }
+ ~#principle{
+ "Each feature has three homes:
+ 1. @spec/ - specification (what)
+ 2. docs/*.spw - codebase topology (where)
+ 3. @src/**/README.md - implementation notes (how)"
+ }
 
-  ~#flow{
-    spec > implementation > integration
-    @spec/ > @src/seed/ > @src/lang/
-  }
+ ~#flow{
+ spec > implementation > integration
+ @spec/ > @src/seed/ > @src/lang/
+ }
 
-  ~#traceability{
-    "Use @root/path and ~\"./local\" references"
-    "Update docs/architecture.spw when spec changes"
-  }
+ ~#traceability{
+ "Use @root/path and ~\"./local\" references"
+ "Update docs/architecture.spw when spec changes"
+ }
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_docs_specs_spw_specalignment_1
+?["How does roots teach New Forms (not in current docs)?"]{
+  #:depth #!educational // lens: living system
+  $^["roots"] => $^["New Forms (not in current docs)"] // trace the edge
+  &[@src, @spec] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[runtime.stage, runtime.queue_depth]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_docs_specs_spw_specalignment_2
+?["What is the curation density of New Forms (not in current docs) (spw/spec-alignment)?"]{
+  #:depth #!experiential // lens: curated collection
+  $^["roots"]@src => %[collection.measure]
+  ~<docs/specs/spw/spec-alignment.spw> // introspect
+  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
+  $%[runtime.stage, runtime.queue_depth]
+}

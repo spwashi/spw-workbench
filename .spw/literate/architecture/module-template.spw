@@ -7,32 +7,38 @@
 #:layer #!pragmatics
 
 ^"exhibit_template"{
-  id: "module-name"
-  scene: "what motivates this module right now"
-  concept: "what potential is being primed"
-  frame: {
-    roots: ["@spw", "@docs", "@seed"]
-    links: ["core refs", "adjacent refs", "projection refs"]
-  }
-  body: {
-    canonical_surface: ".spw/<module>/index.spw"
-    generated_surface: ".spw/gen/<module>.spw"
-  }
-  consequence: {
-    probe: ".spw/harness/probes/probe-loop.spw"
-    archive: ".spw/harness/probes/archive-index.spw"
-    score: ".spw/harness/evals/baseline-evals.spw"
-  }
+ id: "module-name"
+ scene: "what motivates this module right now"
+ concept: "what potential is being primed"
+ frame: {
+ roots: ["@spw", "@docs", "@seed"]
+ links: ["core refs", "adjacent refs", "projection refs"]
+ }
+ body: {
+ canonical_surface: ".spw/<module>/index.spw"
+ generated_surface: ".spw/gen/<module>.spw"
+ }
+ consequence: {
+ probe: ".spw/harness/probes/probe-loop.spw"
+ archive: ".spw/harness/probes/archive-index.spw"
+ score: ".spw/harness/evals/baseline-evals.spw"
+ }
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_spw_literate_architecture_moduletemplate_1
+?["What is the felt rhythm of reading Module Exhibit Template?"]{
+  #:depth #!experiential // lens: material grain
+  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
+  ~#shape: "pragmatics layer, 1 frames, 4 annotations"
+  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark grain boundaries." }
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_spw_literate_architecture_moduletemplate_2
+?["What concept is conspicuously absent from Module Exhibit Template?"]{
+  #:depth #!computational // lens: formal structure
+  ~#present: [#template, #literate, #educational]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[exhibit.prose_ratio, exhibit.tangle_targets]
+  ~<.spw/literate/architecture/index.spw>  // nearest neighbor
+}

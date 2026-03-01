@@ -5,59 +5,65 @@
 #:layer #!semantics
 
 ^"intent"{
-  goal: "Establish a deterministic runtime baseline while full VM semantics remain in-progress",
-  posture: ["incremental", "testable", "portable"],
-  release_day: "Ship runtime scaffolding + clear extension seams",
+ goal: "Establish a deterministic runtime baseline while full VM semantics remain in-progress",
+ posture: ["incremental", "testable", "portable"],
+ release_day: "Ship runtime scaffolding + clear extension seams",
 }
 
 ^"source_files"{
-  ~<runtime>"../../src/runtime/index.ts"
-  ~<state>"../../src/runtime/state/types.ts"
-  ~<registers>"../../src/runtime/state/register-bank.ts"
-  ~<interpreter>"../../src/runtime/interpreter/interpreter.ts"
-  ~<pipeline>"../../src/runtime/pipeline/run-spw.ts"
+ ~<runtime>"../../src/runtime/index.ts"
+ ~<state>"../../src/runtime/state/types.ts"
+ ~<registers>"../../src/runtime/state/register-bank.ts"
+ ~<interpreter>"../../src/runtime/interpreter/interpreter.ts"
+ ~<pipeline>"../../src/runtime/pipeline/run-spw.ts"
 }
 
 ^"flow"{
-  parse: "runSpw() parses source (with desugar default) via src/seed",
-  normalize: "interpreter converts AST to ONF via normalizeToONF",
-  execute: "evaluate ONF into RuntimeValue + register deltas",
-  report: "return parse output + runtime trace + register snapshot",
+ parse: "runSpw() parses source (with desugar default) via src/seed",
+ normalize: "interpreter converts AST to ONF via normalizeToONF",
+ execute: "evaluate ONF into RuntimeValue + register deltas",
+ report: "return parse output + runtime trace + register snapshot",
 }
 
 ^"resonance"{
-  operator: "#",
-  role: "aggregation/intersection + lens-indexed cache targeting",
-  behavior: [
-    "single operand: direct resonate write",
-    "array operands: strict intersection reduction",
-    "record operands: key intersection with equal-value guard"
-  ],
-  cache_lens: "resonate(name, value, lens) updates lens index for cache optimizers",
+ operator: "#",
+ role: "aggregation/intersection + lens-indexed cache targeting",
+ behavior: [
+ "single operand: direct resonate write",
+ "array operands: strict intersection reduction",
+ "record operands: key intersection with equal-value guard"
+ ],
+ cache_lens: "resonate(name, value, lens) updates lens index for cache optimizers",
 }
 
 ^"naming"{
-  policy: "kebab-case runtime filenames",
-  checker: "scripts/analyzers/runtime-filename-check.ts",
-  note: "__tests__ and README.md are explicit exceptions",
+ policy: "kebab-case runtime filenames",
+ checker: "scripts/analyzers/runtime-filename-check.ts",
+ note: "__tests__ and README.md are explicit exceptions",
 }
 
 ^"release_deferred"{
-  deferred: [
-    "bytecode/VM execution",
-    "UI keyboard binding integration",
-    "multi-surface runtime persistence"
-  ]
+ deferred: [
+ "bytecode/VM execution",
+ "UI keyboard binding integration",
+ "multi-surface runtime persistence"
+ ]
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_docs_runtime_spw_runtimefoundation_1
+?["What is the algebraic closure of source_files (spw/runtime-foundation)?"]{
+  #:depth #!computational // lens: formal structure
+  $^["intent"]@biome => %[formula.measure]
+  ~<docs/runtime/spw/runtime-foundation.spw> // introspect
+  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_docs_runtime_spw_runtimefoundation_2
+?["What is the felt rhythm of reading Runtime Foundation (v0.2.0-alpha)?"]{
+  #:depth #!mathematical // lens: material grain
+  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
+  ~#structure: "intent → source_files → flow" // frame flow
+  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark grain boundaries." }
+  ~<docs/runtime/spw/agent-loop.spw>  // nearest neighbor
+}

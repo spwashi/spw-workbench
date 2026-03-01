@@ -6,51 +6,58 @@
 #:layer #!pragmatics
 
 ^["roots"]{
-  @here: ~"."
+ @here: ~"."
 }
 
 ^["audits"]{
-  !["Audits"]
-  .. ~"./audits/md/boonhonk-audit.md"                  # 2026-02-15
-  .. ~"./audits/md/concept-implementation-audit.md"    # 2026-02-15
-  .. ~"./audits/md/skill-audit-summary.md"             # 2026-02-15
+ !["Audits"]
+ .. ~"./audits/md/boonhonk-audit.md" # 2026-02-15
+ .. ~"./audits/md/concept-implementation-audit.md" # 2026-02-15
+ .. ~"./audits/md/skill-audit-summary.md" # 2026-02-15
 }
 
 ^["models"]{
-  !["Theoretical Models"]
-  .. ~"./specs/md/container-topology.md"               # 2026-01-18 - Core formulation of container boundaries
-  .. ~"./specs/md/runtime-trajectory-model.md"         # Trajectory runtime state model
-  .. ~"./specs/md/syntax-exploration-model.md"         # Syntax exploration strategy
-  .. ~"./strategy/md/architecture-strategy.md"         # High-level architecture strategy
+ !["Theoretical Models"]
+ .. ~"./specs/md/container-topology.md" # 2026-01-18 - Core formulation of container boundaries
+ .. ~"./specs/md/runtime-trajectory-model.md" # Trajectory runtime state model
+ .. ~"./specs/md/syntax-exploration-model.md" # Syntax exploration strategy
+ .. ~"./strategy/md/architecture-strategy.md" # High-level architecture strategy
 }
 
 ^["reflection"]{
-  !["Reflections"]
-  .. ~"./reflection/md/depth-reflection.md"            # Deep dive into system depth
+ !["Reflections"]
+ .. ~"./reflection/md/depth-reflection.md" # Deep dive into system depth
 }
 
 ^["records"]{
-  !["Decisions & Status"]
-  .. ~"./decisions/md/component-hooks-decision.md"     # 2026-02-12 - Decision on component hooks
-  .. ~"./status/md/vim-implementation-complete.md"     # 2026-01-18 - Vim mode completion record
-  .. ~"./status/md/context-resume-point.md"            # Handoff context point
+ !["Decisions & Status"]
+ .. ~"./decisions/md/component-hooks-decision.md" # 2026-02-12 - Decision on component hooks
+ .. ~"./status/md/vim-implementation-complete.md" # 2026-01-18 - Vim mode completion record
+ .. ~"./status/md/context-resume-point.md" # Handoff context point
 }
 
 ^["notes"]{
-  !["Technical Notes & Scratch"]
-  .. ~"./tech-notes/md/token-efficiency.md"            # 2026-01-12
-  .. ~"./scratch/md/scratch.md"
-  .. ~"./scratch/md/scratch-1.md"
+ !["Technical Notes & Scratch"]
+ .. ~"./tech-notes/md/token-efficiency.md" # 2026-01-12
+ .. ~"./scratch/md/scratch.md"
+ .. ~"./scratch/md/scratch-1.md"
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_archive_index_1
+?["What happens when you zoom from the workflow level to the workspace level in Archive Index?"]{
+  #:depth #!mathematical // lens: living system
+  $^["_"]@here => &[@workspace] // local → global projection
+  ~#zoom_in: "roots" // this file's atom
+  !probe{ "the atom is workflow-scale; zoom out: what workspace-level pattern does this workflow participate in?" }
+  $%[runtime.stage, runtime.queue_depth]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_archive_index_2
+?["What ripples if #index changes in this file?"]{
+  #:depth #!stylistic // lens: curated collection
+  $#educational@workspace => %[reference.count, depth.downstream]
+  ~#downstream: "trace all files that reference this surface"
+  !probe{ "imagine renaming #educational to #educational_v2; count broken references; the count reveals how deeply roots is woven into the workspace." }
+  $%[runtime.stage, runtime.queue_depth]
+  ~<docs/index.spw>  // nearest neighbor
+}

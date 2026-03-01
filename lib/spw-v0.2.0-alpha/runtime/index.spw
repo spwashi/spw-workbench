@@ -4,150 +4,159 @@
 #:layer #!grammar
 
 ^["roots"]{
-  @here: ~"."
-  @lib:  ~".."
-  @runtime-docs: ~"../../../docs/runtime"
-  @src-runtime:  ~"../../../src/runtime"
+ @here: ~"."
+ @lib: ~".."
+ @runtime-docs: ~"../../../docs/runtime"
+ @src-runtime: ~"../../../src/runtime"
 }
 
 # ── Ethos ────────────────────────────────────────────────────
 
 meta: .{
-  domain    = `runtime`
-  initOrder = `1`
-  kind      = `stratum-map`
-  note      = `Execution contracts — how parsed Spw becomes evaluable state`
+ domain = `runtime`
+ initOrder = `1`
+ kind = `stratum-map`
+ note = `Execution contracts — how parsed Spw becomes evaluable state`
 }[reg=facet]
 
 purpose: .{
-  role       = `Define the evaluation model, register bank, and pipeline contracts`
-  invariant  = `Runtime depends only on core — never on domains, applications, or design`
-  philosophy = `The runtime is where the algebra becomes material. Parse output gains agency.`
+ role = `Define the evaluation model, register bank, and pipeline contracts`
+ invariant = `Runtime depends only on core — never on domains, applications, or design`
+ philosophy = `The runtime is where the algebra becomes material. Parse output gains agency.`
 }[reg=facet]
 
 garden: .{
-  is            = `5 contract stubs covering pipeline, registers, cache-IR, goals, and trajectory`
-  could_become  = `A full evaluation engine with agent-loop, memoization, and DAP integration`
-  connects_to   = `core/ provides the algebra. runtime/ adds execution. infra/ adds timing.`
-  growth_risk   = `Feature creep from the agent-loop pattern — keep evaluation deterministic.`
+ is = `5 contract stubs covering pipeline, registers, cache-IR, goals, and trajectory`
+ could_become = `A full evaluation engine with agent-loop, memoization, and DAP integration`
+ connects_to = `core/ provides the algebra. runtime/ adds execution. infra/ adds timing.`
+ growth_risk = `Feature creep from the agent-loop pattern — keep evaluation deterministic.`
 }[reg=facet]
 
 valence: .{
-  boon = `Reversible agent-loop model enables undo/replay`
-  bane = `Evaluation is stub-level — no real interpreter yet`
-  bone = `Pipeline contracts define the parse-to-runtime bridge`
-  bonk = `Connecting to real LSP/DAP workers would change the concurrency model`
-  honk = `register-bank.spw maps operators to typed register slots`
+ boon = `Reversible agent-loop model enables undo/replay`
+ bane = `Evaluation is stub-level — no real interpreter yet`
+ bone = `Pipeline contracts define the parse-to-runtime bridge`
+ bonk = `Connecting to real LSP/DAP workers would change the concurrency model`
+ honk = `register-bank.spw maps operators to typed register slots`
 }[reg=quality]
 
 # ── Contract Surfaces ───────────────────────────────────────
 
 ^["contracts"]{
-  !["5 runtime contracts"]
+ !["5 runtime contracts"]
 
-  ^["pipeline"]{
-    =file: "PIPELINE.md"
-    =concern: "parse → evaluate → present"
-    ~<detail>"./PIPELINE.md"
-  }
+ ^["pipeline"]{
+ =file: "PIPELINE.md"
+ =concern: "parse → evaluate → present"
+ ~<detail>"./PIPELINE.md"
+ }
 
-  ^["registers"]{
-    =file: "REGISTERS.md"
-    =concern: "operator-typed state slots"
-    ~<detail>"./REGISTERS.md"
-    ~<bank>"../../../docs/runtime/spw/register-bank.spw"
-    ~<braces>"../../../docs/runtime/spw/brace-registers.spw"
-  }
+ ^["registers"]{
+ =file: "REGISTERS.md"
+ =concern: "operator-typed state slots"
+ ~<detail>"./REGISTERS.md"
+ ~<bank>"../../../docs/runtime/spw/register-bank.spw"
+ ~<braces>"../../../docs/runtime/spw/brace-registers.spw"
+ }
 
-  ^["cache-ir"]{
-    =file: "CACHE-IR.md"
-    =concern: "memoized intermediate representation"
-    ~<detail>"./CACHE-IR.md"
-  }
+ ^["cache-ir"]{
+ =file: "CACHE-IR.md"
+ =concern: "memoized intermediate representation"
+ ~<detail>"./CACHE-IR.md"
+ }
 
-  ^["goals"]{
-    =file: "GOALS.md"
-    =concern: "orientation and intent tracking"
-    ~<detail>"./GOALS.md"
-  }
+ ^["goals"]{
+ =file: "GOALS.md"
+ =concern: "orientation and intent tracking"
+ ~<detail>"./GOALS.md"
+ }
 
-  ^["trajectory"]{
-    =file: "TRAJECTORY.md"
-    =concern: "execution path and phase transitions"
-    ~<detail>"./TRAJECTORY.md"
-  }
+ ^["trajectory"]{
+ =file: "TRAJECTORY.md"
+ =concern: "execution path and phase transitions"
+ ~<detail>"./TRAJECTORY.md"
+ }
 }
 
 # ── Engine Architecture ─────────────────────────────────────
 
 ^["engine"]{
-  !["Execution models from docs/runtime/"]
+ !["Execution models from docs/runtime/"]
 
-  ^["foundation"]{
-    =status: "documented, not fully machined"
-    ~<spw>"../../../docs/runtime/spw/runtime-foundation.spw"
-    ~<md>"../../../docs/runtime/md/runtime-foundation.md"
-    ?["Is the parse-to-runtime bridge complete?"]
-      ~#status: "partial — pipeline contract exists but evaluation is stub"
-  }
+ ^["foundation"]{
+ =status: "documented, not fully machined"
+ ~<spw>"../../../docs/runtime/spw/runtime-foundation.spw"
+ ~<md>"../../../docs/runtime/md/runtime-foundation.md"
 
-  ^["agent-loop"]{
-    =status: "design-proposed"
-    =model: "reversible loop — undo/replay/branch"
-    ~<detail>"../../../docs/runtime/spw/agent-loop.spw"
-    ?["Does the agent-loop require a full interpreter?"]
-      ~#answer: "No — can operate on AST + register state without evaluation"
-  }
+ ?["Is the parse-to-runtime bridge complete?"]
+ ~#status: "partial — pipeline contract exists but evaluation is stub"
+ }
 
-  ^["hud"]{
-    =status: "design-proposed"
-    =concern: "session, phase, and feature HUD overlay"
-    ~<detail>"../../../docs/runtime/spw/hud-runtime.spw"
-  }
+ ^["agent-loop"]{
+ =status: "design-proposed"
+ =model: "reversible loop — undo/replay/branch"
+ ~<detail>"../../../docs/runtime/spw/agent-loop.spw"
+
+ ?["Does the agent-loop require a full interpreter?"]
+ ~#answer: "No — can operate on AST + register state without evaluation"
+ }
+
+ ^["hud"]{
+ =status: "design-proposed"
+ =concern: "session, phase, and feature HUD overlay"
+ ~<detail>"../../../docs/runtime/spw/hud-runtime.spw"
+ }
 }
 
 # ── Performance & Workers ───────────────────────────────────
 
 ^["performance"]{
-  !["Protocol and optimization"]
+ !["Protocol and optimization"]
 
-  ^["lsp-dap"]{
-    =status: "researched"
-    =concern: "worker protocol prep for LSP and DAP"
-    ~<detail>"../../../docs/runtime/spw/lsp-dap-workers.spw"
-    ?["Can spwq power the LSP document symbol handler?"]
-      ~#answer: "Yes — spwq.at() maps cursor position to deepest match"
-  }
+ ^["lsp-dap"]{
+ =status: "researched"
+ =concern: "worker protocol prep for LSP and DAP"
+ ~<detail>"../../../docs/runtime/spw/lsp-dap-workers.spw"
 
-  ^["web-apis"]{
-    =status: "researched"
-    =concern: "browser API opportunities (rAF, IntersectionObserver)"
-    ~<detail>"../../../docs/runtime/spw/web-apis.spw"
-  }
+ ?["Can spwq power the LSP document symbol handler?"]
+ ~#answer: "Yes — spwq.at() maps cursor position to deepest match"
+ }
 
-  ^["looper"]{
-    =status: "theory-level"
-    ~<detail>"../../../docs/theory/spw/looper-architecture.spw"
-  }
+ ^["web-apis"]{
+ =status: "researched"
+ =concern: "browser API opportunities (rAF, IntersectionObserver)"
+ ~<detail>"../../../docs/runtime/spw/web-apis.spw"
+ }
+
+ ^["looper"]{
+ =status: "theory-level"
+ ~<detail>"../../../docs/theory/spw/looper-architecture.spw"
+ }
 }
 
 # ── Theory References ───────────────────────────────────────
 
 ^["theory"]{
-  .. ~<valence>"../../../docs/theory/spw/valence-architecture.spw"
-  .. ~<register>"../../../docs/theory/spw/register-geometry.spw"
-  .. ~<cognitive>"../../../docs/theory/spw/cognitive-laser.spw"
-  .. ~<looper>"../../../docs/theory/spw/looper-architecture.spw"
+ .. ~<valence>"../../../docs/theory/spw/valence-architecture.spw"
+ .. ~<register>"../../../docs/theory/spw/register-geometry.spw"
+ .. ~<cognitive>"../../../docs/theory/spw/cognitive-laser.spw"
+ .. ~<looper>"../../../docs/theory/spw/looper-architecture.spw"
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_lib_spwv020alpha_runtime_index_1
+?["What ripples if #index changes in this file?"]{
+  #:depth #!mathematical // lens: formal structure
+  $#experiential@workspace => %[reference.count, depth.downstream]
+  ~#downstream: "trace all files that reference this surface"
+  !probe{ "imagine renaming #experiential to #experiential_v2; count broken references; the count reveals how deeply roots is woven into the workspace." }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_lib_spwv020alpha_runtime_index_2
+?["What happens when you zoom from the token level to the workspace level in Runtime Stratum Architecture Support?"]{
+  #:depth #!stylistic // lens: material grain
+  $^["_"]@here => &[@workspace] // local → global projection
+  ~#zoom_in: "roots" // this file's atom
+  !probe{ "the atom is token-scale; zoom out: what workspace-level pattern does this token participate in?" }
+  $%[register.bank_size, register.active_bindings]
+}

@@ -6,61 +6,68 @@
 #:layer #!semantics
 
 ^"conventions"{
-  summary: "imperative mood, < 50 chars"
-  body: "Spw expression demonstrating the change"
-  footer: "Library metadata (concepts, tags)"
+ summary: "imperative mood, < 50 chars"
+ body: "Spw expression demonstrating the change"
+ footer: "Library metadata (concepts, tags)"
 }
 
 ^"message_structure"{
-  # Example commit message:
-  #
-  # feat: implement brace registers
-  #
-  # #[brace:dyad, {
-  #   left: "[", right: "]",
-  #   context: "category",
-  #   capture: true
-  # }]
-  #
-  # ~<concept> "register-bank"
-  # ~#tag "feature"
-  # ~#ticket "WS-123"
+ # Example commit message:
+ #
+ # feat: implement brace registers
+ #
+ # #[brace:dyad, {
+ # left: "[", right: "]",
+ # context: "category",
+ # capture: true
+ # }]
+ #
+ # ~<concept> "register-bank"
+ # ~#tag "feature"
+ # ~#ticket "WS-123"
 
-  parsing_rules: [
-    "Subject line is the human-readable index",
-    "Body contains executable Spw (the stress test)",
-    "Footer lines starting with ~ are library metadata",
-  ]
+ parsing_rules: [
+ "Subject line is the human-readable index",
+ "Body contains executable Spw (the stress test)",
+ "Footer lines starting with ~ are library metadata",
+ ]
 }
 
 ^"concordance_query"{
-  # Git log as a queryable database:
+ # Git log as a queryable database:
 
-  # Find all commits defining specific concepts:
-  # git log --grep="~<concept>"
+ # Find all commits defining specific concepts:
+ # git log --grep="~<concept>"
 
-  # Find evolutionary sequence of a feature:
-  # git log -p -- "docs/library/library.spw"
+ # Find evolutionary sequence of a feature:
+ # git log -p -- "docs/library/library.spw"
 
-  # Extract all grounded expressions from history:
-  # git log --format="%b" | grep "^#\["
+ # Extract all grounded expressions from history:
+ # git log --format="%b" | grep "^#\["
 }
 
 ^"usage"{
-  # This makes the git log a queryable concordance of:
-  # 1. Syntax evolution (how expressions changed over time)
-  # 2. Concept introduction (when ~<concept> first appeared)
-  # 3. Feature density (frequency of ~#tag)
+ # This makes the git log a queryable concordance of:
+ # 1. Syntax evolution (how expressions changed over time)
+ # 2. Concept introduction (when ~<concept> first appeared)
+ # 3. Feature density (frequency of ~#tag)
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_library_spw_gitconcordance_1
+?["What invariant holds across every frame in Git Concordance?"]{
+  #:depth #!computational // lens: ecological zone
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to conventions's frames; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_library_spw_gitconcordance_2
+?["What was Git Concordance before it was this, and what could it become?"]{
+  #:depth #!mathematical // lens: molecular binding
+  ~#past: "git log --oneline -- docs/library/spw/git-concordance.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[register.bank_size, register.active_bindings]
+  ~<docs/library/spw/library.spw>  // nearest neighbor
+}

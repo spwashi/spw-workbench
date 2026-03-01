@@ -6,96 +6,103 @@
 #:layer #!semantics
 
 ^["roots"]{
-  @here: ~"."
+ @here: ~"."
 }
 
 ^["models"]{
-  !["Core Models"]  #:foundation
-  .. ~<algebra>"./md/lens-algebra.md"               # Lens composition algebra
-  .. ~<physics>"./md/operational-physics.md"         # Operational physics of Spw
-  .. ~<algebra>"./md/operator-algebra.md"            # Operator algebra formalization
-  .. ~<calculus>"./md/probe-calculus.md"             # Probe calculus
+ !["Core Models"] #:foundation
+ .. ~<algebra>"./md/lens-algebra.md" # Lens composition algebra
+ .. ~<physics>"./md/operational-physics.md" # Operational physics of Spw
+ .. ~<algebra>"./md/operator-algebra.md" # Operator algebra formalization
+ .. ~<calculus>"./md/probe-calculus.md" # Probe calculus
 }
 
 ^["spw-models"]{
-  !["Spw Specifics"]  #:lang
-  .. ~<atlas>"./spw/operator-atlas.spw"              # Symbol weight atlas
-  .. ~<operators>"./spw/operators.spw"               # Canonical operator map
-  .. ~<phasor>"./spw/phasor.spw"                     # Layer rotation model
-  .. ~<quality>"./spw/quality.spw"                   # BBBH quality annotations
-  .. ~<physics>"./spw/semantics-physics.spw"         # Semantic physics
-  .. ~<valence>"./spw/valence-architecture.spw"      # Valence architecture
-  .. ~<bridge>"../../lib/spw-v0.2.0-alpha/architecture/theory-bridge.spw"
+ !["Spw Specifics"] #:lang
+ .. ~<atlas>"./spw/operator-atlas.spw" # Symbol weight atlas
+ .. ~<operators>"./spw/operators.spw" # Canonical operator map
+ .. ~<phasor>"./spw/phasor.spw" # Layer rotation model
+ .. ~<quality>"./spw/quality.spw" # BBBH quality annotations
+ .. ~<physics>"./spw/semantics-physics.spw" # Semantic physics
+ .. ~<valence>"./spw/valence-architecture.spw" # Valence architecture
+ .. ~<bridge>"../../lib/spw-v0.2.0-alpha/architecture/theory-bridge.spw"
 }
 
 ^["acoustic_theory"]{
-  # The composable physics model extends operator semantics
-  # into measurable runtime behavior.
-  #:physics #!model
+ # The composable physics model extends operator semantics
+ # into measurable runtime behavior.
+ #:physics #!model
 
-  =principle: "every register cell is a waveform with amplitude, frequency, and phase"
+ =principle: "every register cell is a waveform with amplitude, frequency, and phase"
 
-  liminality: {
-    =definition: "scope-awareness of a memory cell (0..3)"
-    =metaphor:   "how far sound carries — local whisper vs. global broadcast"
-    promote: "probing (?) or crossing scope boundaries raises liminality"
-    demote:  "integrating (^) or re-grounding lowers liminality"
-  }
+ liminality: {
+ =definition: "scope-awareness of a memory cell (0..3)"
+ =metaphor: "how far sound carries — local whisper vs. global broadcast"
+ promote: "probing (?) or crossing scope boundaries raises liminality"
+ demote: "integrating (^) or re-grounding lowers liminality"
+ }
 
-  frequency: {
-    =definition: "writes per second over a sliding window"
-    =metaphor:   "how fast a string vibrates — hot cells resonate quickly"
-    =window:     10   # circular buffer depth
-    =unit:       "Hz (writes/sec)"
-  }
+ frequency: {
+ =definition: "writes per second over a sliding window"
+ =metaphor: "how fast a string vibrates — hot cells resonate quickly"
+ =window: 10 # circular buffer depth
+ =unit: "Hz (writes/sec)"
+ }
 
-  coupling: {
-    =definition: "normalized count of bidirectional edges to other cells"
-    =metaphor:   "entanglement — coupled cells co-evolve when either changes"
-    =range:      "0.0 .. 1.0 (edges / (total_cells - 1))"
-  }
+ coupling: {
+ =definition: "normalized count of bidirectional edges to other cells"
+ =metaphor: "entanglement — coupled cells co-evolve when either changes"
+ =range: "0.0 .. 1.0 (edges / (total_cells - 1))"
+ }
 
-  %[measure]{
-    =definition: "observation depth — how many times measure() has been called"
-    =metaphor:   "quantum measurement — observing a cell changes its state"
-    =philosophy: "the observer effect: measurement itself is a physical act"
-  }
+ %[measure]{
+ =definition: "observation depth — how many times measure() has been called"
+ =metaphor: "quantum measurement — observing a cell changes its state"
+ =philosophy: "the observer effect: measurement itself is a physical act"
+ }
 }
 
 ^["annotation_system"]{
-  # #-annotations are Spw's metadata layer.
-  # They thread through documents like resonant labels.
-  #:meta #!annotation
+ # #-annotations are Spw's metadata layer.
+ # They thread through documents like resonant labels.
+ #:meta #!annotation
 
-  #topic    { read: "plain topic label",         outline: "Key"       }
-  #:lens    { read: "categorization / phase",    outline: "Enum"      }
-  #!intent  { read: "purpose / action",          outline: "Event"     }
-  #>anchor  { read: "jump target / bookmark",    outline: "Interface" }
+ #topic { read: "plain topic label", outline: "Key" }
+ #:lens { read: "categorization / phase", outline: "Enum" }
+ #!intent { read: "purpose / action", outline: "Event" }
+ #>anchor { read: "jump target / bookmark", outline: "Interface" }
 
-  %[philosophy]{
-    "annotations are not comments — they carry computational weight",
-    "the outline provider recognizes them as navigable symbols",
-    "semantic tokens color them distinctly from # comments",
-    "they bridge human intent and machine interpretation",
-  }
+ %[philosophy]{
+ "annotations are not comments — they carry computational weight",
+ "the outline provider recognizes them as navigable symbols",
+ "semantic tokens color them distinctly from # comments",
+ "they bridge human intent and machine interpretation",
+ }
 }
 
 ^["lib-scaffolds"]{
-  !["v0.2.0 library navigable surfaces"]  #:lib
-  .. ~<dialects>"../../lib/spw-v0.2.0-alpha/dialects/index.spw"
-  .. ~<domains>"../../lib/spw-v0.2.0-alpha/domains/index.spw"
-  .. ~<applications>"../../lib/spw-v0.2.0-alpha/applications/index.spw"
-  .. ~<architecture>"../../lib/spw-v0.2.0-alpha/architecture/index.spw"
+ !["v0.2.0 library navigable surfaces"] #:lib
+ .. ~<dialects>"../../lib/spw-v0.2.0-alpha/dialects/index.spw"
+ .. ~<domains>"../../lib/spw-v0.2.0-alpha/domains/index.spw"
+ .. ~<applications>"../../lib/spw-v0.2.0-alpha/applications/index.spw"
+ .. ~<architecture>"../../lib/spw-v0.2.0-alpha/architecture/index.spw"
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_theory_index_1
+?["What ripples if #foundation changes in this file?"]{
+  #:depth #!mathematical // lens: molecular binding
+  $#foundation@workspace => %[reference.count, depth.downstream]
+  ~#downstream: "trace all files that reference this surface"
+  !probe{ "imagine renaming #foundation to #foundation_v2; count broken references; the count reveals how deeply roots is woven into the workspace." }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_theory_index_2
+?["What happens when you zoom from the concept level to the workspace level in Theory Index?"]{
+  #:depth #!stylistic // lens: ecological zone
+  $^["_"]@here => &[@workspace] // local → global projection
+  ~#zoom_in: "roots" // this file's atom
+  !probe{ "the atom is concept-scale; zoom out: what workspace-level pattern does this concept participate in?" }
+  $%[register.bank_size, register.active_bindings]
+  ~<docs/index.spw>  // nearest neighbor
+}

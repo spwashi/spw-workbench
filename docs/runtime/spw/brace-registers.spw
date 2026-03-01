@@ -6,103 +6,110 @@
 #:layer #!semantics
 
 ^"source_files"{
-  ~<register>"../../src/runtime/state/register-bank.ts"
-  ~<affinities>"../../src/runtime/state/type-affinities.ts"
-  ~<types>"../../src/runtime/state/types.ts"
+ ~<register>"../../src/runtime/state/register-bank.ts"
+ ~<affinities>"../../src/runtime/state/type-affinities.ts"
+ ~<types>"../../src/runtime/state/types.ts"
 }
 
 ^"dyads"{
-  # Each brace pair forms an identifier→value register dyad.
-  # Left brace = objective (what to name), right brace = subjective (what was found).
+ # Each brace pair forms an identifier→value register dyad.
+ # Left brace = objective (what to name), right brace = subjective (what was found).
 
-  '[' { role: "identifier", question: "What category?", affinity: "category",    autocomplete: "tags, grounded names, resonance bindings"   }
-  ']' { role: "value",      answer: "These parts",      captures: "frame content" }
+ '[' { role: "identifier", question: "What category?", affinity: "category", autocomplete: "tags, grounded names, resonance bindings" }
+ ']' { role: "value", answer: "These parts", captures: "frame content" }
 
-  '{' { role: "identifier", question: "Which property?", affinity: "property",    autocomplete: "scope keys, property paths, definitions"    }
-  '}' { role: "value",      answer: "This structure",    captures: "scope content" }
+ '{' { role: "identifier", question: "Which property?", affinity: "property", autocomplete: "scope keys, property paths, definitions" }
+ '}' { role: "value", answer: "This structure", captures: "scope content" }
 
-  '<' { role: "identifier", question: "What coupling?",  affinity: "conditional",  autocomplete: "concept labels, relation names, couplings"  }
-  '>' { role: "value",      answer: "This concept",      captures: "coupling body" }
+ '<' { role: "identifier", question: "What coupling?", affinity: "conditional", autocomplete: "concept labels, relation names, couplings" }
+ '>' { role: "value", answer: "This concept", captures: "coupling body" }
 
-  '(' { role: "identifier", question: "Who observes?",   affinity: "perspective",  autocomplete: "observer names, scope labels, perspectives" }
-  ')' { role: "value",      answer: "This section",      captures: "capsule body"  }
+ '(' { role: "identifier", question: "Who observes?", affinity: "perspective", autocomplete: "observer names, scope labels, perspectives" }
+ ')' { role: "value", answer: "This section", captures: "capsule body" }
 }
 
 ^"cursor_context"{
-  # Cursor position determines which brace register is active.
-  #
-  # cursor is inside [   → [ register active (category completions)
-  # cursor is inside {   → { register active (property completions)
-  # cursor is inside <>  → < register active (concept completions)
-  # cursor is inside ()  → ( register active (perspective completions)
+ # Cursor position determines which brace register is active.
+ #
+ # cursor is inside [ → [ register active (category completions)
+ # cursor is inside { → { register active (property completions)
+ # cursor is inside <> → < register active (concept completions)
+ # cursor is inside () → ( register active (perspective completions)
 
-  detection: "Walk backward from cursor to find unclosed left brace"
-  nesting: "Innermost unclosed brace wins (stack-based)"
-  ambiguity: "If no unclosed brace, use default register"
+ detection: "Walk backward from cursor to find unclosed left brace"
+ nesting: "Innermost unclosed brace wins (stack-based)"
+ ambiguity: "If no unclosed brace, use default register"
 }
 
 ^"capture"{
-  # Closing a brace populates the right-register with what was inside.
-  #
-  # user types: [foo]
-  #   → ']' register captures "foo" as category value
-  #   → available for paste, cross-reference, or next-cycle input
-  #
-  # user types: {x: 1, y: 2}
-  #   → '}' register captures '{x: 1, y: 2}' as scope value
+ # Closing a brace populates the right-register with what was inside.
+ #
+ # user types: [foo]
+ # → ']' register captures "foo" as category value
+ # → available for paste, cross-reference, or next-cycle input
+ #
+ # user types: {x: 1, y: 2}
+ # → '}' register captures '{x: 1, y: 2}' as scope value
 
-  trigger: "right brace keystroke"
-  content: "text between matching left and right brace"
-  format: "raw source text (syntactic level)"
-  provenance: "brace type determines accessMode"
+ trigger: "right brace keystroke"
+ content: "text between matching left and right brace"
+ format: "raw source text (syntactic level)"
+ provenance: "brace type determines accessMode"
 }
 
 ^"autocomplete_flow"{
-  # 1. Detect cursor context (which brace)
-  # 2. Look up containerAffinity for that brace type
-  # 3. Query all registers where containerAffinity matches
-  # 4. Sort by lastUsed / relevance
-  # 5. Present as completions
+ # 1. Detect cursor context (which brace)
+ # 2. Look up containerAffinity for that brace type
+ # 3. Query all registers where containerAffinity matches
+ # 4. Sort by lastUsed / relevance
+ # 5. Present as completions
 
-  filter_key: "containerAffinity"
-  source: "OPERATOR_AFFINITIES mapping in runtime type-affinities.ts"
-  sort: "lastUsed descending, then alphabetical"
+ filter_key: "containerAffinity"
+ source: "OPERATOR_AFFINITIES mapping in runtime type-affinities.ts"
+ sort: "lastUsed descending, then alphabetical"
 }
 
 ^"composition"{
-  # Compound brace expressions inherit both registers.
-  #
-  # $[x]  → substrate in category context
-  #         $ register (meta) + [ register (category)
-  #         autocomplete: grounded register names (for introspection)
-  #
-  # @()   → perspective in capsule context
-  #         @ register (perspective) + ( register (observer)
-  #
-  # .[k]  → ground into frame — property into categorized items
-  #         . register (property) + [ register (category)
+ # Compound brace expressions inherit both registers.
+ #
+ # $[x] → substrate in category context
+ # $ register (meta) + [ register (category)
+ # autocomplete: grounded register names (for introspection)
+ #
+ # @() → perspective in capsule context
+ # @ register (perspective) + ( register (observer)
+ #
+ # .[k] → ground into frame — property into categorized items
+ # . register (property) + [ register (category)
 
-  rule: "operator register provides mode, brace register provides context"
-  precedence: "operator before brace (operator is the verb, brace is the container)"
+ rule: "operator register provides mode, brace register provides context"
+ precedence: "operator before brace (operator is the verb, brace is the container)"
 }
 
 ^"notes"{
-  "Brace registers are 8 additional single-char registers: [ ] { } < > ( )",
-  "They coexist with the 12 operator registers and 10 history + 26 named registers.",
-  "Left brace registers are write-on-open (populated when brace is typed).",
-  "Right brace registers are write-on-close (populated when brace is completed).",
-  "Empty braces [] {} <> () produce a capture of '' (empty string).",
-  "Nested braces create a stack: innermost context wins for autocomplete.",
+ "Brace registers are 8 additional single-char registers: [ ] { } < > ( )",
+ "They coexist with the 12 operator registers and 10 history + 26 named registers.",
+ "Left brace registers are write-on-open (populated when brace is typed).",
+ "Right brace registers are write-on-close (populated when brace is completed).",
+ "Empty braces [] {} <> () produce a capture of '' (empty string).",
+ "Nested braces create a stack: innermost context wins for autocomplete.",
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_runtime_spw_braceregisters_1
+?["What concept is conspicuously absent from Brace Registers?"]{
+  #:depth #!stylistic // lens: molecular binding
+  ~#present: [#educational, #mathematical]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_runtime_spw_braceregisters_2
+?["How does source_files teach dyads?"]{
+  #:depth #!educational // lens: ecological zone
+  $^["source_files"] => $^["dyads"] // trace the edge
+  &[@_, @spw] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[register.bank_size, register.active_bindings]
+  ~<docs/runtime/spw/agent-loop.spw>  // nearest neighbor
+}

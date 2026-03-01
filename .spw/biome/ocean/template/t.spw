@@ -6,51 +6,58 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Template a repeatable query run with probe + invariant checks."
+ ~#goal: "Template a repeatable query run with probe + invariant checks."
 }
 
 ^"template"{
-  inputs: {
-    branch: "branch id"
-    selector: "Spw.q selector id"
-    dialect: "Spw.q|Spw.t|Spw.l"
-    operator_sequence: "optional operator sequence (e.g. ?~@&*^)"
-    brace_sequence: "optional brace sequence (e.g. <>{})"
-    probe: "optional probe expression (e.g. ?(subject).[)"
-    probe_window: "optional probe lookahead window (default 12)"
-    label: "optional label disposition (e.g. query)"
-    target: "path or biome scope"
-    phase: "phase id (p1..p6)"
-  }
+ inputs: {
+ branch: "branch id"
+ selector: "Spw.q selector id"
+ dialect: "Spw.q|Spw.t|Spw.l"
+ operator_sequence: "optional operator sequence (e.g. ?~@&*^)"
+ brace_sequence: "optional brace sequence (e.g. <>{})"
+ probe: "optional probe expression (e.g. ?(subject).[)"
+ probe_window: "optional probe lookahead window (default 12)"
+ label: "optional label disposition (e.g. query)"
+ target: "path or biome scope"
+ phase: "phase id (p1..p6)"
+ }
 
-  steps: [
-    "assert clean working tree for target scope",
-    "resolve selector id through selector registry",
-    "apply optional hot replacement by runtime tier",
-    "optionally run sequence/braces/label/probe query by dialect perspective",
-    "execute resolved selector against target",
-    "record loaded/considered refs in trace",
-    "verify updated probes and invariants",
-    "emit/update generated lens projections",
-    "emit run summary + next action",
-  ]
+ steps: [
+ "assert clean working tree for target scope",
+ "resolve selector id through selector registry",
+ "apply optional hot replacement by runtime tier",
+ "optionally run sequence/braces/label/probe query by dialect perspective",
+ "execute resolved selector against target",
+ "record loaded/considered refs in trace",
+ "verify updated probes and invariants",
+ "emit/update generated lens projections",
+ "emit run summary + next action",
+ ]
 
-  outputs: {
-    trace: ".spw/biome/ocean/trace.spw"
-    probes: ".spw/harness/probes/archive-index.spw"
-    invariants: ".spw/workspace.spw#invariants"
-    projections: ".spw/gen/index.spw"
-  }
+ outputs: {
+ trace: ".spw/biome/ocean/trace.spw"
+ probes: ".spw/harness/probes/archive-index.spw"
+ invariants: ".spw/workspace.spw#invariants"
+ projections: ".spw/gen/index.spw"
+ }
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_spw_biome_ocean_template_t_1
+?["What concept is conspicuously absent from T?"]{
+  #:depth #!stylistic // lens: molecular binding
+  ~#present: [#experiential, #computational]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[biome.diversity_index, biome.annotation_density]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_spw_biome_ocean_template_t_2
+?["How does intent teach template?"]{
+  #:depth #!educational // lens: ecological zone
+  $^["intent"] => $^["template"] // trace the edge
+  &[@biome, @spw] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[biome.diversity_index, biome.annotation_density]
+  ~<.spw/biome/ocean/atlas.spw>  // nearest neighbor
+}

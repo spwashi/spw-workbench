@@ -7,58 +7,64 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Make subroot routing deterministic for agents, caches, and references."
+ ~#goal: "Make subroot routing deterministic for agents, caches, and references."
 }
 
 ^subroot[biome]{
-  path: @biome
-  subtree: [@biome/algos, @biome/expr, @biome/query, @biome/spells, @biome/ops]
-  subagent: explorer
-  cache_tree: @gen/cache/biome
-  cache_key_prefix: biome
-  topology_refs: [@biome/index.spw, @biome/links/links.spw]
+ path: @biome
+ subtree: [@biome/algos, @biome/expr, @biome/query, @biome/spells, @biome/ops]
+ subagent: explorer
+ cache_tree: @gen/cache/biome
+ cache_key_prefix: biome
+ topology_refs: [@biome/index.spw, @biome/links/links.spw]
 }
 
 ^subroot[harness]{
-  path: @harness
-  subtree: [@harness/runs, @harness/evals, @harness/probes]
-  subagent: worker
-  cache_tree: @gen/cache/harness
-  cache_key_prefix: harness
-  topology_refs: [@spw/harness/memory-surface.spw, @spw/harness/probes/probe-loop.spw]
+ path: @harness
+ subtree: [@harness/runs, @harness/evals, @harness/probes]
+ subagent: worker
+ cache_tree: @gen/cache/harness
+ cache_key_prefix: harness
+ topology_refs: [@spw/harness/memory-surface.spw, @spw/harness/probes/probe-loop.spw]
 }
 
 ^subroot[hot]{
-  path: @hot
-  subtree: [@biome/query/hot.spw, @biome/ops/cycle.spw]
-  subagent: awaiter
-  cache_tree: @gen/cache/hot
-  cache_key_prefix: hot
-  topology_refs: [@hot, @gen/index.spw]
+ path: @hot
+ subtree: [@biome/query/hot.spw, @biome/ops/cycle.spw]
+ subagent: awaiter
+ cache_tree: @gen/cache/hot
+ cache_key_prefix: hot
+ topology_refs: [@hot, @gen/index.spw]
 }
 
 ^subroot[agents]{
-  path: @agents
-  subtree: [@plans, @state, @skills]
-  subagent: worker
-  cache_tree: @gen/cache/agents
-  cache_key_prefix: agents
-  topology_refs: [@spw/agents.spw]
+ path: @agents
+ subtree: [@plans, @state, @skills]
+ subagent: worker
+ cache_tree: @gen/cache/agents
+ cache_key_prefix: agents
+ topology_refs: [@spw/agents.spw]
 }
 
 ^"invariant"{
-  "Each subroot owns one cache-key prefix and one cache tree.",
-  "Subagent routing follows subroot ownership unless explicitly overridden.",
+ "Each subroot owns one cache-key prefix and one cache tree.",
+ "Subagent routing follows subroot ownership unless explicitly overridden.",
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_spw_topology_1
+?["How does this file's voice differ from .spw/topology (.spw/topology)?"]{
+  #:depth #!educational // lens: molecular binding
+  ~<@biome> // nearest neighbor
+  $%[op.distribution]@here vs $%[op.distribution]@biome
+  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_spw_topology_2
+?["What invariant holds across every frame in Topology?"]{
+  #:depth #!experiential // lens: ecological zone
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to every frame in this file; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[file.frame_count, file.annotation_density, file.brace_depth_max]
+  ~<.spw/agents.spw>  // nearest neighbor
+}

@@ -6,77 +6,83 @@
 #:layer #!semantics
 
 ^"roots"{
-  @here: ~"."
+ @here: ~"."
 }
 
 ^"catalog"{
-  # Identity Probes
-  # Answer "What is this?"
+ # Identity Probes
+ # Answer "What is this?"
 
-  $["topology"]{
-    probe: "$[x].topology"
-    returns: "'#' | '.' | '@' | '&' | etc"
-    meaning: "The operator that created this register"
-  }
+ $["topology"]{
+ probe: "$[x].topology"
+ returns: "'#' | '.' | '@' | '&' | etc"
+ meaning: "The operator that created this register"
+ }
 
-  $["provenance"]{
-    probe: "$[x].provenance"
-    returns: "'#' | '&' | '@'"
-    meaning: "How this value came to be (grounded, merged, observed)"
-  }
+ $["provenance"]{
+ probe: "$[x].provenance"
+ returns: "'#' | '&' | '@'"
+ meaning: "How this value came to be (grounded, merged, observed)"
+ }
 
-  $["stability"]{
-    probe: "$[x].grounded"
-    returns: "boolean"
-    meaning: "Is this immutable? (Safe to link/bookmark)"
-  }
+ $["stability"]{
+ probe: "$[x].grounded"
+ returns: "boolean"
+ meaning: "Is this immutable? (Safe to link/bookmark)"
+ }
 
-  $["affinity"]{
-    probe: "$[x].containerAffinity"
-    returns: "'[]' | '{}' | '<>' | '()'"
-    meaning: "What shape of container does this naturally inhabit?"
-  }
+ $["affinity"]{
+ probe: "$[x].containerAffinity"
+ returns: "'[]' | '{}' | '<>' | '()'"
+ meaning: "What shape of container does this naturally inhabit?"
+ }
 }
 
 ^"measures"{
-  # Magnitude Probes
-  # Answer "How much is this?"
+ # Magnitude Probes
+ # Answer "How much is this?"
 
-  %["intensity"]{
-    probe: "%[x]"
-    returns: "0..1"
-    meaning: "Normalized magnitude (length/count/value)"
-  }
+ %["intensity"]{
+ probe: "%[x]"
+ returns: "0..1"
+ meaning: "Normalized magnitude (length/count/value)"
+ }
 
-  %["popularity"]{
-    probe: "%[x.accessCount, 100]"
-    returns: "0..1"
-    meaning: "Usage frequency relative to 100 accesses"
-  }
+ %["popularity"]{
+ probe: "%[x.accessCount, 100]"
+ returns: "0..1"
+ meaning: "Usage frequency relative to 100 accesses"
+ }
 
-  %["complexity"]{
-    probe: "%[x.depth, 10]"
-    returns: "0..1"
-    meaning: "Nesting depth relative to 10 levels"
-  }
+ %["complexity"]{
+ probe: "%[x.depth, 10]"
+ returns: "0..1"
+ meaning: "Nesting depth relative to 10 levels"
+ }
 }
 
 ^"usage"{
-  # The library uses these probes to auto-classify entries:
+ # The library uses these probes to auto-classify entries:
 
-  auto_tag: "If $[x].grounded, tag ~#stable"
-  auto_rank: "Sort search results by %[x.accessCount]"
-  auto_warn: "If %[x.complexity] > 0.8, flag for refactor (~#prune)"
+ auto_tag: "If $[x].grounded, tag ~#stable"
+ auto_rank: "Sort search results by %[x.accessCount]"
+ auto_warn: "If %[x.complexity] > 0.8, flag for refactor (~#prune)"
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_library_spw_wonderprobes_1
+?["How does this file's voice differ from spw/wonder-probes (spw/wonder-probes)?"]{
+  #:depth #!educational // lens: molecular binding
+  ~<@here> // nearest neighbor
+  $%[op.distribution]@here vs $%[op.distribution]@here
+  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_library_spw_wonderprobes_2
+?["What invariant holds across every frame in Wonder Probes?"]{
+  #:depth #!experiential // lens: ecological zone
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to roots's frames; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[register.bank_size, register.active_bindings]
+  ~<docs/library/spw/git-concordance.spw>  // nearest neighbor
+}

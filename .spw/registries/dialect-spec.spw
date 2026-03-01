@@ -8,27 +8,34 @@
 
 ^seed[Dialect.Registry.Clean v:0.1 @profile:Spw.b @intent:accurate-useful]
 .dialect.registry {
-  Spw.b: .{role:"block",      lex:"newline=statement boundary", scope:".spw/ exhibits + specs + architecture", geometry:"author", default:true}
-  Spw.l: .{role:"line",       lex:"single-line compact (newline-as-space)", scope:"queries + probes + selectors", geometry:"search"}
-  Spw.m: .{role:"mathematical",lex:"pure Operator Normal Form (F2-idempotent)", scope:"hash source + canonical truth", geometry:"machine"}
-  Spw.x: .{role:"executable", lex:"@profile:Spw.x~#[flags] + @lock advisory", scope:"live .spw/ + runtime + hot evolution", geometry:"executable"}
+ Spw.b: .{role:"block", lex:"newline=statement boundary", scope:".spw/ exhibits + specs + architecture", geometry:"author", default:true}
+ Spw.l: .{role:"line", lex:"single-line compact (newline-as-space)", scope:"queries + probes + selectors", geometry:"search"}
+ Spw.m: .{role:"mathematical",lex:"pure Operator Normal Form (F2-idempotent)", scope:"hash source + canonical truth", geometry:"machine"}
+ Spw.x: .{role:"executable", lex:"@profile:Spw.x~#[flags] + @lock advisory", scope:"live .spw/ + runtime + hot evolution", geometry:"executable"}
 }
 .extensions #[Spw.o (ocean), Spw.q (query), Spw.t (template)] .{gate:"probe+cache", fallback:"Spw.l"}
 .invariants #[
-  "exactly one active dialect per .spw file at parse time"
-  "absent marker → Spw.b (author geometry in .spw/)"
-  "Spw.m is always the semantic ground truth for hash + identity"
-  "dialect switching inside file forbidden (F2 stability)"
+ "exactly one active dialect per .spw file at parse time"
+ "absent marker → Spw.b (author geometry in .spw/)"
+ "Spw.m is always the semantic ground truth for hash + identity"
+ "dialect switching inside file forbidden (F2 stability)"
 ]
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_spw_registries_dialectspec_1
+?["What happens when you zoom from the token level to the workspace level in Dialect Registry?"]{
+  #:depth #!mathematical // lens: material grain
+  $^["_"]@here => &[@workspace] // local → global projection
+  ~#zoom_in: "Dialect.Registry.Clean v:0.1 @profile:Spw.b @intent:accurate-useful" // this file's atom
+  !probe{ "the atom is token-scale; zoom out: what workspace-level pattern does this token participate in?" }
+  $%[registry.entry_count, registry.referrer_count]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_spw_registries_dialectspec_2
+?["What ripples if #dialect changes in this file? (in registries/dialect-spec)"]{
+  #:depth #!stylistic // lens: formal structure
+  $#dialect@workspace => %[reference.count, depth.downstream]
+  ~#downstream: "trace all files that reference this surface"
+  !probe{ "imagine renaming #dialect to #dialect_v2; count broken references; the count reveals how deeply block is woven into the workspace." }
+  $%[registry.entry_count, registry.referrer_count]
+  ~<.spw/registries/brace-physics.spw>  // nearest neighbor
+}

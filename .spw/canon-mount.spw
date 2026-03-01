@@ -9,135 +9,142 @@
 
 ^seed[Workbench.SpwDir.Mount v:0.1 @profile:Spw.x~#[ops.register_frames,ops.probe,ops.matrix,surface.hash] @intent:canon-root]
 ?(
-  @(
-    Orchestrator,
-    #[
-      SyntaxEvolver .{target:".spw/",dialect:Spw.l,task:"lexer+parser+all-seeds"},
-      CanonicalizerHasher .{target:".spw/",dialect:Spw.m,task:"ONF+F2+hash"},
-      FuzzerAdversary .{target:".spw/",dialect:Spw.l,task:"ASI+newline+mount"},
-      ParserGrammar .{target:".spw/",dialect:Spw.b,task:"EBNF+fixity"},
-      ProjectionMedia .{target:".spw/",dialect:Spw.b,task:"exhibits+runtime"}
-    ][reg=workbench.spw.root]
-  ),
-  "promote .spw/ to live canon root; migrate index.spw + docs/seed/"
+ @(
+ Orchestrator,
+ #[
+ SyntaxEvolver .{target:".spw/",dialect:Spw.l,task:"lexer+parser+all-seeds"},
+ CanonicalizerHasher .{target:".spw/",dialect:Spw.m,task:"ONF+F2+hash"},
+ FuzzerAdversary .{target:".spw/",dialect:Spw.l,task:"ASI+newline+mount"},
+ ParserGrammar .{target:".spw/",dialect:Spw.b,task:"EBNF+fixity"},
+ ProjectionMedia .{target:".spw/",dialect:Spw.b,task:"exhibits+runtime"}
+ ][reg=workbench.spw.root]
+ ),
+ "promote .spw/ to live canon root; migrate index.spw + docs/seed/"
 )
 
 ^"onf_desugaring"{
-  #:dialect #!canonicalization
-  # ONF/Spw.m desugaring (F2-idempotent, semantic-hash stable)
-  ^seed[Workbench.SpwDir.Mount.ONF v:0.1 @profile:Spw.m @intent:canon-root]
-  ?(
-    @(Orchestrator,#[SyntaxEvolver,CanonicalizerHasher,FuzzerAdversary,ParserGrammar,ProjectionMedia]),
-    "promote .spw/ to live canon root; migrate index.spw + docs/seed/"
-  )
+ #:dialect #!canonicalization
+ # ONF/Spw.m desugaring (F2-idempotent, semantic-hash stable)
+ ^seed[Workbench.SpwDir.Mount.ONF v:0.1 @profile:Spw.m @intent:canon-root]
+ ?(
+ @(Orchestrator,#[SyntaxEvolver,CanonicalizerHasher,FuzzerAdversary,ParserGrammar,ProjectionMedia]),
+ "promote .spw/ to live canon root; migrate index.spw + docs/seed/"
+ )
 }
 
 ^"adversarial"{
-  #:dialect #!fuzz
-  # Adversarial test seed — fuzzes .spw/ mount, root index.spw relocation, dot-dir ASI
-  ^seed[Workbench.SpwDir.Adversary v:0.1 @profile:Spw.l @intent:fuzz]
-  ?<mount .spw/>
-    index.spw
-    .agents/
-    docs/seed/
-  # Spw.b boundary on dot-dir; Spw.m must canonicalize without ambiguity
+ #:dialect #!fuzz
+ # Adversarial test seed — fuzzes .spw/ mount, root index.spw relocation, dot-dir ASI
+ ^seed[Workbench.SpwDir.Adversary v:0.1 @profile:Spw.l @intent:fuzz]
+ ?<mount .spw/>
+ index.spw
+ .agents/
+ docs/seed/
+ # Spw.b boundary on dot-dir; Spw.m must canonicalize without ambiguity
 }
 
 ^"dialect_lexing"{
-  #:dialect #!rules
-  # Registry source of truth:
-  =ref: .spw/registries/dialect-spec.spw#spw_dialect_registry
-  =ref: .spw/tooling/vscode-spw.spw#spw_tooling_vscode
-  =ref: .spw/tooling/comparison.spw#spw_tooling_comparison
-  # Summary: Spw.b (block/author), Spw.l (line/search), Spw.m (ONF/machine), Spw.x (executable/live)
+ #:dialect #!rules
+ # Registry source of truth:
+ =ref: .spw/registries/dialect-spec.spw#spw_dialect_registry
+ =ref: .spw/tooling/vscode-spw.spw#spw_tooling_vscode
+ =ref: .spw/tooling/comparison.spw#spw_tooling_comparison
+ # Summary: Spw.b (block/author), Spw.l (line/search), Spw.m (ONF/machine), Spw.x (executable/live)
 }
 
 ^"mount_slice_v01"{
-  #:mount #!status
-  active_now: [".spw/index.spw", ".spw/mount.spw", "scripts/spw-mount.ts", ".spw/harness/evals/baseline-evals.spw#suites.mount_slice_v01"]
-  proposed_next: ["semicolon-as-boundary in scoped dialect mode", "; prefixed line semantics", "@lock runtime enforcement layer"]
-  interpreted_constructs: ["example:<>", "example:;", "example:?<> (proposal)"]
+ #:mount #!status
+ active_now: [".spw/index.spw", ".spw/mount.spw", "scripts/spw-mount.ts", ".spw/harness/evals/baseline-evals.spw#suites.mount_slice_v01"]
+ proposed_next: ["semicolon-as-boundary in scoped dialect mode", "; prefixed line semantics", "@lock runtime enforcement layer"]
+ interpreted_constructs: ["example:<>", "example:;", "example:?<> (proposal)"]
 }
 
 ^"semantic_relationships"{
-  #:semantics #!relationships
-  core_surfaces: {
-    index: ".spw/index.spw#spw_index"
-    mount: ".spw/mount.spw#spw_mount"
-    workspace: ".spw/workspace.spw#spw_workspace"
-    canon: ".spw/canon-mount.spw#spw_canon_mount"
-  }
+ #:semantics #!relationships
+ core_surfaces: {
+ index: ".spw/index.spw#spw_index"
+ mount: ".spw/mount.spw#spw_mount"
+ workspace: ".spw/workspace.spw#spw_workspace"
+ canon: ".spw/canon-mount.spw#spw_canon_mount"
+ }
 
-  registries: {
-    dialect: ".spw/registries/dialect-spec.spw#spw_dialect_registry"
-    registers: ".spw/registries/register-bank.spw#spw_register_bank"
-    curiosity_brace: ".spw/registries/curiosity-brace.spw#spw_curiosity_brace"
-  }
+ registries: {
+ dialect: ".spw/registries/dialect-spec.spw#spw_dialect_registry"
+ registers: ".spw/registries/register-bank.spw#spw_register_bank"
+ curiosity_brace: ".spw/registries/curiosity-brace.spw#spw_curiosity_brace"
+ }
 
-  projections: {
-    owner: ".spw/gen/index.spw"
-    trace: ".spw/biome/ocean/trace.spw"
-    consequences: ".spw/consequence.spw"
-    policy: "projection files are generated surfaces; manifests remain canonical control surfaces"
-  }
+ projections: {
+ owner: ".spw/gen/index.spw"
+ trace: ".spw/biome/ocean/trace.spw"
+ consequences: ".spw/consequence.spw"
+ policy: "projection files are generated surfaces; manifests remain canonical control surfaces"
+ }
 
-  memory: {
-    hot_surface: ".spw/hot.spw"
-    harness_surface: ".spw/harness/memory-surface.spw"
-    probe_archive: ".spw/harness/probes/archive-index.spw"
-    prompt_unit: "run snapshot, not per-message transcript"
-  }
+ memory: {
+ hot_surface: ".spw/hot.spw"
+ harness_surface: ".spw/harness/memory-surface.spw"
+ probe_archive: ".spw/harness/probes/archive-index.spw"
+ prompt_unit: "run snapshot, not per-message transcript"
+ }
 }
 
 ^"materialization_cycle"{
-  #:semantics #!cycle
-  priming: "?/~ operators and selector sequences charge register state"
-  concept: "potential remains addressable before body generation"
-  frame: "containers establish relation geometry and probe scope"
-  body: "projection or artifact resolved from frame + register state"
-  memory_location: "hot -> warm -> cold routing is explicit by path; replay recovers transitions"
+ #:semantics #!cycle
+ priming: "?/~ operators and selector sequences charge register state"
+ concept: "potential remains addressable before body generation"
+ frame: "containers establish relation geometry and probe scope"
+ body: "projection or artifact resolved from frame + register state"
+ memory_location: "hot -> warm -> cold routing is explicit by path; replay recovers transitions"
 }
 
 ^"operator_semantics"{
-  #:ops #!semantics
-  subject_ref: "& (confluence / bound reference)"
-  substrate_ref: "$ (substrate / introspection)"
-  perspective_ref: "@ (rooted perspective and cross-tree scope)"
-  probe: "? (selection, inspect, evaluate)"
-  closure: "^ (register frame, climb, contract)"
-  measure: "% (observation depth / scoring)"
-  envelope_ops: [&, ^, *, ?, ~, !, %, =]
-  envelope_contract: "prefix/postfix wrappers preserve navigable reference spans in LSP selection and definition"
+ #:ops #!semantics
+ subject_ref: "& (confluence / bound reference)"
+ substrate_ref: "$ (substrate / introspection)"
+ perspective_ref: "@ (rooted perspective and cross-tree scope)"
+ probe: "? (selection, inspect, evaluate)"
+ closure: "^ (register frame, climb, contract)"
+ measure: "% (observation depth / scoring)"
+ envelope_ops: [&, ^, *, ?, ~, !, %, =]
+ envelope_contract: "prefix/postfix wrappers preserve navigable reference spans in LSP selection and definition"
 }
 
 ^"hashing"{
-  #:canon #!invariant
-  semantic_hash: "hash(canonical(Spw.m)) — unchanged"
-  surface_hash: "locks .spw/ payloads for episode stability"
+ #:canon #!invariant
+ semantic_hash: "hash(canonical(Spw.m)) — unchanged"
+ surface_hash: "locks .spw/ payloads for episode stability"
 }
 
 ^"migration"{
-  #:ops #!migration
-  step_1: "drop seed into .spw/ or .agents/ — Orchestrator auto-binds"
-  step_2: "next episode commit: Workbench.SpwDir.Mount v:0.1"
-  step_3: "branch update becomes live canon surface"
-  invariant: "agents hardened to .spw/"
+ #:ops #!migration
+ step_1: "drop seed into .spw/ or .agents/ — Orchestrator auto-binds"
+ step_2: "next episode commit: Workbench.SpwDir.Mount v:0.1"
+ step_3: "branch update becomes live canon surface"
+ invariant: "agents hardened to .spw/"
 }
 
 ^"invariant"{
-  "All rewrites produce valid Spw."
-  "Use this exact combinatorics to evolve the entire workbench inside .spw/."
-  "Ready for v0.2.0."
+ "All rewrites produce valid Spw."
+ "Use this exact combinatorics to evolve the entire workbench inside .spw/."
+ "Ready for v0.2.0."
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_spw_canonmount_1
+?["What ripples if #dialect changes in this file? (in .spw/canon-mount)"]{
+  #:depth #!mathematical // lens: molecular binding
+  $#dialect@workspace => %[reference.count, depth.downstream]
+  ~#downstream: "trace all files that reference this surface"
+  !probe{ "imagine renaming #dialect to #dialect_v2; count broken references; the count reveals how deeply lexer+parser+all-seeds is woven into the workspace." }
+  $%[register.bank_size, register.active_bindings]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_spw_canonmount_2
+?["What happens when you zoom from the workflow level to the workspace level in Canon Root Mount?"]{
+  #:depth #!stylistic // lens: ecological zone
+  $^["_"]@here => &[@workspace] // local → global projection
+  ~#zoom_in: "Workbench.SpwDir.Mount v:0.1 @profile:Spw.x~#[ops.register_frames,ops.probe,ops.matrix,surface.hash" // this file's atom
+  !probe{ "the atom is workflow-scale; zoom out: what workspace-level pattern does this workflow participate in?" }
+  $%[register.bank_size, register.active_bindings]
+  ~<.spw/agents.spw>  // nearest neighbor
+}

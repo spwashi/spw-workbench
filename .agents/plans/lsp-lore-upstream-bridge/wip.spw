@@ -5,53 +5,59 @@
 #:layer #!pragmatics
 
 ^["intent"]{
-  ~#goal: "Connect this rewrite repo's editor integrations to an actual LSP startup path by resolving upstream lore server sources when local scripts/lsp/stdio-server.ts is missing."
-  ~#taste: "correctness and layering via one shared runtime LSP command contract (npm run lsp)."
+ ~#goal: "Connect this rewrite repo's editor integrations to an actual LSP startup path by resolving upstream lore server sources when local scripts/lsp/stdio-server.ts is missing."
+ ~#taste: "correctness and layering via one shared runtime LSP command contract (npm run lsp)."
 }
 
 ^["stream"]{
-  >>[2026-02-27 00:00] observe — IntelliJ provider hard-codes scripts/lsp/stdio-server.ts, but scripts/lsp is missing in this repo.
-  >>[2026-02-27 00:00] observe — lore/main contains scripts/lsp/stdio-server.ts and related runtime modules.
-  >>[2026-02-27 00:00] decide — add a launcher script that discovers local server first and lore remote path second, then standardize integrations on npm run lsp.
-  >>[2026-02-27 00:00] hygiene — base ref captured as main@3093487 with no unrelated drift outside .agents/plans.
-  >>[2026-02-27 00:01] revise — implemented scripts/lsp/stdio-upstream-bridge.ts to route LSP startup through env/local/lore-remote resolution.
-  >>[2026-02-27 00:01] revise — switched IntelliJ default startup to npm run lsp and aligned settings hints with package.json lsp script contract.
-  >>[2026-02-27 00:01] taste — centralized runtime wiring reduces duplicated path assumptions across editor integrations.
+ >>[2026-02-27 00:00] observe — IntelliJ provider hard-codes scripts/lsp/stdio-server.ts, but scripts/lsp is missing in this repo.
+ >>[2026-02-27 00:00] observe — lore/main contains scripts/lsp/stdio-server.ts and related runtime modules.
+ >>[2026-02-27 00:00] decide — add a launcher script that discovers local server first and lore remote path second, then standardize integrations on npm run lsp.
+ >>[2026-02-27 00:00] hygiene — base ref captured as main@here with no unrelated drift outside .agents/plans.
+ >>[2026-02-27 00:01] revise — implemented scripts/lsp/stdio-upstream-bridge.ts to route LSP startup through env/local/lore-remote resolution.
+ >>[2026-02-27 00:01] revise — switched IntelliJ default startup to npm run lsp and aligned settings hints with package.json lsp script contract.
+ >>[2026-02-27 00:01] taste — centralized runtime wiring reduces duplicated path assumptions across editor integrations.
 }
 
 ^["open"]{
 }
 
 ^["commits"]{
-  ~[1]: ".[plan] — add lsp-lore-upstream-bridge plan and wip artifacts"
-  ~[2]: "&[lsp] — add root launcher that resolves local or lore-remote stdio server"
-  ~[3]: "&[intellij] — switch default startup to npm run lsp and align settings copy"
-  ~[4]: ".[docs] — document lore upstream fallback path for IntelliJ users"
+ ~[1]: ".[plan] — add lsp-lore-upstream-bridge plan and wip artifacts"
+ ~[2]: "&[lsp] — add root launcher that resolves local or lore-remote stdio server"
+ ~[3]: "&[intellij] — switch default startup to npm run lsp and align settings copy"
+ ~[4]: ".[docs] — document lore upstream fallback path for IntelliJ users"
 }
 
 ^["cache"]{
-  ~#status: "implementing"
-  ~#base_ref: "main@3093487"
-  ~#rebased_at: ""
-  ~#hygiene_split: "none"
-  ~#files_hot: "scripts/lsp/stdio-upstream-bridge.ts, package.json, extensions/intellij-spw/*"
-  ~#next_commit: "2"
-  ~#open_count: "0"
-  ~#last_stream: "2026-02-27 00:01"
-  ~#taste_debt: ""
+ ~#status: "implementing"
+ ~#base_ref: "main@here"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "scripts/lsp/stdio-upstream-bridge.ts, package.json, extensions/intellij-spw/*"
+ ~#next_commit: "2"
+ ~#open_count: "0"
+ ~#last_stream: "2026-02-27 00:01"
+ ~#taste_debt: ""
 }
 
 ^["done"]{
 }
 
-?["Under what conditions does cache eviction resemble cellular apoptosis?"]
-  #:depth #!experiential  // lens: cell
-  $%[cache.tier] => ~#eviction_threshold
-  ~<@biome/ocean/algos/material.spw>
-  !probe{ "plot decay curves for hot→warm→cold tier transitions; compare with biological half-life λ = ln(2)/t½" }
+#>wonder_agents_plans_lsploreupstreambridge_wip_1
+?["What invariant holds across every frame in wip — lsp-lore-upstream-bridge?"]{
+  #:depth #!computational // lens: living system
+  $^["_"]@here => %[shared.property]
+  ~#hypothesis: "all frames in this file share ____"
+  !probe{ "extract the property common to every frame in this file; if none exists, the file may lack cohesion or may be a deliberate collection." }
+  $%[runtime.stage, runtime.queue_depth]
+}
 
-?["What is the expected cache hit ratio under Zipf-distributed access patterns?"]
-  #:depth #!computational  // lens: texture
-  $%[cache.hit_rate, cache.miss_rate] => ~#zipf_alpha
-  ~<@spw/biome/ocean/algos/cluster.spw>
-  !probe{ "model P(hit) = 1 - (1/N)^α for N documents; measure deviation from theoretical optimum" }
+#>wonder_agents_plans_lsploreupstreambridge_wip_2
+?["What was wip — lsp-lore-upstream-bridge before it was this, and what could it become?"]{
+  #:depth #!mathematical // lens: curated collection
+  ~#past: "git log --oneline -- .agents/plans/lsp-lore-upstream-bridge/wip.spw | head -3"
+  ~#future: "what frame would you add next?"
+  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+  $%[runtime.stage, runtime.queue_depth]
+}

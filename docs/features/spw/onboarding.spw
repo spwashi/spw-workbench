@@ -5,100 +5,108 @@
 #:layer #!pragmatics
 
 ^["roots"]{
-  @src:  ~"../src"
-  @here: ~"."
+ @src: ~"../src"
+ @here: ~"."
 }
 
 ^["path"]{
-  !["Start here"]
-  .. ~"../../README.md"
-  .. ~"../../index.spw"
-  .. @src/core/domains/
-  .. @src/core/conventions/
-  .. @src/seed/
-  .. @src/viz/
-  .. ?[@ready]{
-       !boon["Contribute!"]
-     | !bone["Ask questions"]
-     }
+ !["Start here"]
+ .. ~"../../README.md"
+ .. ~"../../index.spw"
+ .. @src/core/domains/
+ .. @src/core/conventions/
+ .. @src/seed/
+ .. @src/viz/
+ .. ?[@ready]{
+ !boon["Contribute!"]
+ | !bone["Ask questions"]
+ }
 }
 
 ^["prompting"]{
-  !["Lens-walk prompts"]
-  .. ~"./lens-walk.spw"
-  .. ~"./onboarding-flow.spw"
-  .. ~"../../research/spw/lens-walk-research.spw"
+ !["Lens-walk prompts"]
+ .. ~"./lens-walk.spw"
+ .. ~"./onboarding-flow.spw"
+ .. ~"../../research/spw/lens-walk-research.spw"
 }
 
 ^["contributors"]{
-  !["Contributor plans"]
-  .. ~"../../contributing/README.md"
-  .. ~"../../contributing/md/researchers.md"
-  .. ~"../../contributing/md/engineers.md"
-  .. ~"../../contributing/md/hobby-coders.md"
+ !["Contributor plans"]
+ .. ~"../../contributing/README.md"
+ .. ~"../../contributing/md/researchers.md"
+ .. ~"../../contributing/md/engineers.md"
+ .. ~"../../contributing/md/hobby-coders.md"
 }
 
 ^["direction"]{
-  !["Roadmap"]
-  .. ~"../../plans/spw/directions.spw"
+ !["Roadmap"]
+ .. ~"../../plans/spw/directions.spw"
 }
 
 ^["token-efficient"]{
-  # For LLMs navigating this codebase:
+ # For LLMs navigating this codebase:
 
-  # High salience (easy to find)
-  =["parse"]: @src/lang/index.ts
-  =["Layer"]: @src/core/layers/
-  =["Quality"]: @src/core/quality.ts
-  =["domains"]: @src/core/domains/
-  =["Valence"]: @src/runtime/state/
-  =["canonicalize"]: @src/seed/canonical/
+ # High salience (easy to find)
+ =["parse"]: @src/lang/index.ts
+ =["Layer"]: @src/core/layers/
+ =["Quality"]: @src/core/quality.ts
+ =["domains"]: @src/core/domains/
+ =["Valence"]: @src/runtime/state/
+ =["canonicalize"]: @src/seed/canonical/
 
-  # Low salience (requires exploration)
-  =["token matchers"]: @src/seed/lexer/matchers/
-  =["theme tokens"]: @src/design/themes/token-bank.ts
+ # Low salience (requires exploration)
+ =["token matchers"]: @src/seed/lexer/matchers/
+ =["theme tokens"]: @src/design/themes/token-bank.ts
 }
 
 ^["landmarks"]{
-  # Key files to read first:
-  @src/core/index.ts             # Core barrel
-  @src/infra/index.ts            # Infra barrel
-  @src/core/domains/index.ts     # Domain registry
-  @src/seed/index.ts          # Language engine entry
-  @src/platform/main.ts          # App entrypoint
-  @src/platform/bootstrap.ts     # App wiring (large)
+ # Key files to read first:
+ @src/core/index.ts # Core barrel
+ @src/infra/index.ts # Infra barrel
+ @src/core/domains/index.ts # Domain registry
+ @src/seed/index.ts # Language engine entry
+ @src/platform/main.ts # App entrypoint
+ @src/platform/bootstrap.ts # App wiring (large)
 }
 
 ^["questions"]{
-  ?["Where is X defined?"]{
-    ~"../../plans/spw/patterns.spw"
-    @src/core/conventions/
-  }
 
-  ?["How do modules relate?"]{
-    ~"../../plans/spw/dependencies.spw"
-    @src/core/domains/
-  }
+ ?["Where is X defined?"]{
+ ~"../../plans/spw/patterns.spw"
+ @src/core/conventions/
+ }
 
-  ?["What is the phasor model?"]{
-    ~"../../theory/spw/phasor.spw"
-    @src/core/layers/
-  }
+ ?["How do modules relate?"]{
+ ~"../../plans/spw/dependencies.spw"
+ @src/core/domains/
+ }
 
-  ?["How do we normalize text?"]{
-     @src/seed/canonical/
-     ~#use: "Run canonicalize() before hashing or diffing sources"
-  }
+ ?["What is the phasor model?"]{
+ ~"../../theory/spw/phasor.spw"
+ @src/core/layers/
+ }
+
+ ?["How do we normalize text?"]{
+ @src/seed/canonical/
+ ~#use: "Run canonicalize() before hashing or diffing sources"
+ }
 }
 
-?["What happens to register bank state when two frames bind the same address?"]
-  #:depth #!computational  // lens: molecule
-  $^["frame_a"]{@x} & $^["frame_b"]{@x} => %[register.conflict]
-  ~<@spw/registries/register-bank.spw>
-  !probe{ "simulate concurrent write to register @x; does last-write-wins or merge-by-valence apply?" }
+#>wonder_docs_features_spw_onboarding_1
+?["What concept is conspicuously absent from Learning Path?"]{
+  #:depth #!stylistic // lens: molecular binding
+  ~#present: [#computational, #mathematical]
+  ~#expected_but_missing: "?" // the reader fills this gap
+  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+  $%[runtime.stage, runtime.queue_depth]
+}
 
-?["Does the register bank form a lattice under the refinement ordering?"]
-  #:depth #!mathematical  // lens: formula
-  $%[register.state_a] ⊔ $%[register.state_b] => ~#join
-  ~<@spec/runtime/REGISTERS.md>
-  !probe{ "verify: join exists for every pair; meet distributes over join; identify the top and bottom elements" }
+#>wonder_docs_features_spw_onboarding_2
+?["How does roots teach path?"]{
+  #:depth #!educational // lens: ecological zone
+  $^["roots"] => $^["path"] // trace the edge
+  &[@src, @here] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[runtime.stage, runtime.queue_depth]
+  ~<docs/features/spw/feature-coherence.spw>  // nearest neighbor
+}

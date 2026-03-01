@@ -7,46 +7,52 @@
 ^"example"{ ~#name: "measure-normalization", ~#demonstrates: "measure() normalizes values to [0,1]" }
 
 ^"input"{
-  =[count, 7]
-  =[items, [1, 2, 3, 4, 5]]
-  =[flag, true]
-  =[empty, null]
+ =[count, 7]
+ =[items, [1, 2, 3, 4, 5]]
+ =[flag, true]
+ =[empty, null]
 
-  # Measure with default scale (10):
-  %[count]
-  %[items]
-  %[flag]
-  %[empty]
+ # Measure with default scale (10):
+ %[count]
+ %[items]
+ %[flag]
+ %[empty]
 
-  # Measure with custom scale:
-  %[count, 100]
+ # Measure with custom scale:
+ %[count, 100]
 }
 
 ^"expected"{
-  count_default:  { input: 7,     scale: 10,  result: 0.7   }
-  items_default:  { input: [5],   scale: 10,  result: 0.5   }
-  flag_default:   { input: true,  scale: 10,  result: 1.0   }
-  empty_default:  { input: null,  scale: 10,  result: 0.0   }
-  count_custom:   { input: 7,     scale: 100, result: 0.07  }
+ count_default: { input: 7, scale: 10, result: 0.7 }
+ items_default: { input: [5], scale: 10, result: 0.5 }
+ flag_default: { input: true, scale: 10, result: 1.0 }
+ empty_default: { input: null, scale: 10, result: 0.0 }
+ count_custom: { input: 7, scale: 100, result: 0.07 }
 }
 
 ^"notes"{
-  "Numbers: value / scale, clamped to [0,1].",
-  "Arrays: length / scale.",
-  "Objects: key count / scale.",
-  "Booleans: true → 1, false → 0.",
-  "null/undefined: always 0.",
-  "Strings: length / scale.",
+ "Numbers: value / scale, clamped to [0,1].",
+ "Arrays: length / scale.",
+ "Objects: key count / scale.",
+ "Booleans: true → 1, false → 0.",
+ "null/undefined: always 0.",
+ "Strings: length / scale.",
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_docs_examples_spw_measurenormalization_1
+?["How does example teach input?"]{
+  #:depth #!educational // lens: living system
+  $^["example"] => $^["input"] // trace the edge
+  &[@_, @spw] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[file.frame_count, file.annotation_density, file.brace_depth_max]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_docs_examples_spw_measurenormalization_2
+?["What is the curation density of example?"]{
+  #:depth #!experiential // lens: curated collection
+  $^["example"]@_ => %[collection.measure]
+  ~<docs/examples/spw/measure-normalization.spw> // introspect
+  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
+  $%[file.frame_count, file.annotation_density, file.brace_depth_max]
+}

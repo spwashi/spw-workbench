@@ -6,54 +6,60 @@
 #:layer #!pragmatics
 
 ^"intent"{
-  ~#goal: "Only promote high-signal, reviewed artifacts into tuning corpus."
-  ~#ethos: "Traceable provenance over volume."
+ ~#goal: "Only promote high-signal, reviewed artifacts into tuning corpus."
+ ~#ethos: "Traceable provenance over volume."
 }
 
 ^"admission"{
-  ~#required: [
-    "item_id",
-    "run_id",
-    "source_path",
-    "reviewer",
-    "license",
-    "quality_score",
-    "verdict",
-  ]
-  ~#gate: "verdict == accept and quality_score >= 0.9"
+ ~#required: [
+ "item_id",
+ "run_id",
+ "source_path",
+ "reviewer",
+ "license",
+ "quality_score",
+ "verdict",
+ ]
+ ~#gate: "verdict == accept and quality_score >= 0.9"
 }
 
 ^"exclusions"{
-  "No secrets, credentials, or private tokens.",
-  "No PII without explicit redaction + approval record.",
-  "No unresolved TODO/FIXME placeholders in training examples.",
+ "No secrets, credentials, or private tokens.",
+ "No PII without explicit redaction + approval record.",
+ "No unresolved TODO/FIXME placeholders in training examples.",
 }
 
 ^"lineage"{
-  ~#traceability: "Every corpus item links to one harness run id."
-  ~#reproducibility: "Source path and revision hash are required."
+ ~#traceability: "Every corpus item links to one harness run id."
+ ~#reproducibility: "Source path and revision hash are required."
 }
 
 ^"seed_item"{
-  item: {
-    item_id: "corpus-0001"
-    run_id: "run-0001"
-    source_path: ".spw/workspace.spw"
-    reviewer: "human-required"
-    license: "repo-internal"
-    quality_score: 1.0
-    verdict: "accept"
-  }
+ item: {
+ item_id: "corpus-0001"
+ run_id: "run-0001"
+ source_path: ".spw/workspace.spw"
+ reviewer: "human-required"
+ license: "repo-internal"
+ quality_score: 1.0
+ verdict: "accept"
+ }
 }
 
-?["How does selector expansion compose across nested $-expressions?"]
-  #:depth #!educational  // lens: collection
-  $($@_ => $^[_]) => &[result.flatten]
-  ~<@spw/conventions/selection.spw>
-  !probe{ "expand $@biome/$^[algos] step by step; show intermediate selector states like a debugger" }
+#>wonder_spw_tuning_corpus_corpuspolicy_1
+?["How does intent teach admission?"]{
+  #:depth #!educational // lens: material grain
+  $^["intent"] => $^["admission"] // trace the edge
+  &[@_, @spw] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[file.frame_count, file.annotation_density, file.brace_depth_max]
+}
 
-?["Is selector composition associative? Does ($a => $b) => $c equal $a => ($b => $c)?"]
-  #:depth #!mathematical  // lens: formula
-  ~#left_assoc: "$($@docs => $^[theory]) => $#concept"
-  ~#right_assoc: "$@docs => $($^[theory] => $#concept)"
-  !probe{ "enumerate cases where associativity breaks; these are the interesting compositional edges" }
+#>wonder_spw_tuning_corpus_corpuspolicy_2
+?["What is the algebraic closure of admission (corpus/corpus-policy)?"]{
+  #:depth #!experiential // lens: formal structure
+  $^["intent"]@_ => %[formula.measure]
+  ~<.spw/tuning/corpus/corpus-policy.spw> // introspect
+  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
+  $%[file.frame_count, file.annotation_density, file.brace_depth_max]
+}

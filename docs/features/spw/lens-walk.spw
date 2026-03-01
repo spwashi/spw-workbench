@@ -5,113 +5,120 @@
 #:layer #!pragmatics
 
 ^["roots"]{
-  @docs: ~"."
-  @src: ~"../src"
-  @examples: ~"../examples"
+ @docs: ~"."
+ @src: ~"../src"
+ @examples: ~"../examples"
 }
 
 ^["intent"]{
-  ~#goal: "Use the codebase as a blackboard instrument"
-  ~#audience: "Computational linguistics enthusiasts and physical chemists"
-  ~#tone: "Cognitively stimulating, philosophical bubble-breaker"
+ ~#goal: "Use the codebase as a blackboard instrument"
+ ~#audience: "Computational linguistics enthusiasts and physical chemists"
+ ~#tone: "Cognitively stimulating, philosophical bubble-breaker"
 }
 
 ^["references"]{
-  ~"../../theory/spw/phasor.spw"
-  ~"../../theory/spw/semantics-physics.spw"
-  ~"./onboarding-flow.spw"
+ ~"../../theory/spw/phasor.spw"
+ ~"../../theory/spw/semantics-physics.spw"
+ ~"./onboarding-flow.spw"
 }
 
 ^["loop"]{
-  ~#sequence: "observe -> perturb -> compare -> reframe -> log"
-  ~#rule: "Change one variable at a time"
-  ~#output: "One paragraph per lens"
+ ~#sequence: "observe -> perturb -> compare -> reframe -> log"
+ ~#rule: "Change one variable at a time"
+ ~#output: "One paragraph per lens"
 }
 
 ^["lenses"]{
-  syntactic: "form, tokens, structure"
-  semantic: "meaning, relations, constraints"
-  pragmatic: "effect, runtime, output"
+ syntactic: "form, tokens, structure"
+ semantic: "meaning, relations, constraints"
+ pragmatic: "effect, runtime, output"
 }
 
 ^["boards"]{
-  !["Instrument boards"]
+ !["Instrument boards"]
 
-  ?["Tokens board"]{
-    ~#lens: syntactic
-    ~#anchor: @src/seed/lexer/
-    ~#view: @src/viz/tokens/
-    ~#sample: @examples/basic/operators.spw
-    ~#prompt: "What is the smallest change that flips token boundaries?"
-    ~#break: "Assume whitespace binds; what breaks?"
-  }
+ ?["Tokens board"]{
+ ~#lens: syntactic
+ ~#anchor: @src/seed/lexer/
+ ~#view: @src/viz/tokens/
+ ~#sample: @examples/basic/operators.spw
+ ~#prompt: "What is the smallest change that flips token boundaries?"
+ ~#break: "Assume whitespace binds; what breaks?"
+ }
 
-  ?["AST board"]{
-    ~#lens: syntactic
-    ~#anchor: @src/seed/parser/
-    ~#view: @src/viz/ast/
-    ~#sample: @examples/basic/containers.spw
-    ~#prompt: "Which container choices keep structure stable?"
-    ~#break: "Swap one container type; how does the tree rewire?"
-  }
+ ?["AST board"]{
+ ~#lens: syntactic
+ ~#anchor: @src/seed/parser/
+ ~#view: @src/viz/ast/
+ ~#sample: @examples/basic/containers.spw
+ ~#prompt: "Which container choices keep structure stable?"
+ ~#break: "Swap one container type; how does the tree rewire?"
+ }
 
-  ?["Semantics board"]{
-    ~#lens: semantic
-    ~#anchor: @src/lang/semantic/
-    ~#view: @src/viz/flow/
-    ~#sample: @examples/patterns/data-flow.spw
-    ~#prompt: "Which relations feel primary vs derived?"
-    ~#break: "Erase a label; does meaning stay coherent?"
-  }
+ ?["Semantics board"]{
+ ~#lens: semantic
+ ~#anchor: @src/lang/semantic/
+ ~#view: @src/viz/flow/
+ ~#sample: @examples/patterns/data-flow.spw
+ ~#prompt: "Which relations feel primary vs derived?"
+ ~#break: "Erase a label; does meaning stay coherent?"
+ }
 
-  ?["Runtime board"]{
-    ~#lens: pragmatic
-    ~#anchor: @src/runtime/interpreter/
-    ~#view: @src/viz/steps/
-    ~#sample: @examples/test-suite/error-recovery.spw
-    ~#prompt: "Where does execution decide to stop or continue?"
-    ~#break: "Force an error; what still produces value?"
-  }
+ ?["Runtime board"]{
+ ~#lens: pragmatic
+ ~#anchor: @src/runtime/interpreter/
+ ~#view: @src/viz/steps/
+ ~#sample: @examples/test-suite/error-recovery.spw
+ ~#prompt: "Where does execution decide to stop or continue?"
+ ~#break: "Force an error; what still produces value?"
+ }
 }
 
 ^["tracks"]{
-  ?["Computational linguistics"]{
-    ~#focus: "form -> grammar -> meaning"
-    ~#prompt-1: "Treat operators as grammatical markers; what is the minimal grammar that fits?"
-    ~#prompt-2: "Map tokens to a small tagset; where does ambiguity persist?"
-    ~#prompt-3: "Compare AST structure to dependency arcs; which relations are missing?"
-  }
 
-  ?["Physical chemistry"]{
-    ~#focus: "state -> transition -> energy landscape"
-    ~#prompt-1: "Treat containers as phases; what is the phase boundary?"
-    ~#prompt-2: "Model modifiers as energy shifts; where does the system lower energy?"
-    ~#prompt-3: "Track a reaction coordinate across lenses; where is the barrier?"
-  }
+ ?["Computational linguistics"]{
+ ~#focus: "form -> grammar -> meaning"
+ ~#prompt-1: "Treat operators as grammatical markers; what is the minimal grammar that fits?"
+ ~#prompt-2: "Map tokens to a small tagset; where does ambiguity persist?"
+ ~#prompt-3: "Compare AST structure to dependency arcs; which relations are missing?"
+ }
+
+ ?["Physical chemistry"]{
+ ~#focus: "state -> transition -> energy landscape"
+ ~#prompt-1: "Treat containers as phases; what is the phase boundary?"
+ ~#prompt-2: "Model modifiers as energy shifts; where does the system lower energy?"
+ ~#prompt-3: "Track a reaction coordinate across lenses; where is the barrier?"
+ }
 }
 
 ^["card-template"]{
-  ~#lens: "syntactic | semantic | pragmatic"
-  ~#artifact: "tokens | ast | flow | runtime"
-  ~#action: "transform | compare | invert"
-  ~#question: "What assumption does this encoding make?"
-  ~#counterexample: "How could it fail or mislead?"
-  ~#reframe: "Describe it in the other track's language"
+ ~#lens: "syntactic | semantic | pragmatic"
+ ~#artifact: "tokens | ast | flow | runtime"
+ ~#action: "transform | compare | invert"
+ ~#question: "What assumption does this encoding make?"
+ ~#counterexample: "How could it fail or mislead?"
+ ~#reframe: "Describe it in the other track's language"
 }
 
 ^["outputs"]{
-  ~#log: "Record one contradiction and one stable invariant per session"
-  ~#share: "Attach the seed file and the lens order you used"
+ ~#log: "Record one contradiction and one stable invariant per session"
+ ~#share: "Attach the seed file and the lens order you used"
 }
 
-?["At which spirit phase does a concept cross from potential to artifact?"]
-  #:depth #!experiential  // lens: biome
-  =raw: "?~<#.>@(#.)&[#.]*{#.}^" => $^[_.phase]
-  ~<@docs/design/spw/spirit-sequence.spw>
-  !probe{ "trace one concept through all 6 phases; find the phase boundary where ~ becomes ^ (materialization instant)" }
+#>wonder_docs_features_spw_lenswalk_1
+?["How does roots teach intent — spw/lens-walk?"]{
+  #:depth #!educational // lens: living system
+  $^["roots"] => $^["intent"] // trace the edge
+  &[@docs, @src] // confluence of references
+  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+  $%[runtime.stage, runtime.queue_depth]
+}
 
-?["What is the phenomenology of reading a phase transition in source code?"]
-  #:depth #!stylistic  // lens: texture
-  ~#before: "~potential => ?wonder"
-  ~#after: "!commit => ^artifact"
-  !probe{ "capture the felt shift when scanning from ~ to ^; measure time-to-comprehension across 5 readers" }
+#>wonder_docs_features_spw_lenswalk_2
+?["What is the curation density of references (spw/lens-walk)?"]{
+  #:depth #!experiential // lens: curated collection
+  $^["roots"]@docs => %[collection.measure]
+  ~<../../theory/spw/phasor.spw>
+  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
+  $%[runtime.stage, runtime.queue_depth]
+}
