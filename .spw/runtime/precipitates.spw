@@ -1,15 +1,15 @@
-# Precipitant Pipeline
+# Precipitate Pipeline
 #
 # The runtime pipeline as a first-class Spw concept.
-# Each stage transforms the source, yielding a precipitant —
+# Each stage transforms the source, yielding a precipitate —
 # what "falls out" of each reaction pass.
 #
 # source → desugar → parse → normalize → interpret
 #             │         │         │          │
 #             ▼         ▼         ▼          ▼
-#         precipitant  precipitant  precipitant  precipitant
+#         precipitate  precipitate  precipitate  precipitate
 
-#>spw_runtime_precipitants
+#>spw_runtime_precipitates
 #:manifest #!pipeline
 #:layer #!semantics
 
@@ -22,15 +22,15 @@
 
 ^"spw_repr"{
   #:affordance #!self_description
-  ~#invariant: "each stage can render its precipitant as valid Spw text"
-  ~#method: "precipitant.toSpw() → string"
+  ~#invariant: "each stage can render its precipitate as valid Spw text"
+  ~#method: "precipitate.toSpw() → string"
   desugar:   "identity — input and output are already Spw source"
   parse:     "AST → annotation tree: ^[node]{ .. @child ... }"
   normalize: "ONF → σ(args)[reg=...]: the canonical sigil form"
   interpret: "Value → $[key] register expressions"
 }
 
-^"precipitant"{
+^"precipitate"{
   #:schema #!core
   stage:           "StageName — which pass produced this"
   at:              "ISO timestamp of completion"
@@ -43,7 +43,7 @@
 ^"projection"{
   #:schema #!derived
   ~#definition: "a view of one stage's output through another stage's lens"
-  ~#invariant: "every stage's precipitant is a functor image of the previous"
+  ~#invariant: "every stage's precipitate is a functor image of the previous"
   ~#usage: "cross-stage comparison — how does the same concept look in AST vs ONF vs Value?"
   mapping: {
     desugar:   "string → string (syntactic sugar elimination)"
@@ -56,7 +56,7 @@
 ^"vocabulary"{
   #:convention #!naming
   .. stage:        "a named transformation pass"
-  .. precipitant:  "the artifact produced by a stage — what falls out of the reaction"
+  .. precipitate:  "the artifact produced by a stage — what falls out of the reaction"
   .. projection:   "a view of one stage's output through another stage's lens"
   .. metasyntax:   "stage descriptions that describe syntax transformations"
 }
@@ -64,15 +64,15 @@
 ^"consumers"{
   #:affordances #!usage
   step_through: {
-    ~#pattern: "for (const precipitant of runSpwStepped(source)) { ... }"
+    ~#pattern: "for (const precipitate of runSpwStepped(source)) { ... }"
     ~#use_case: "debugger-style stepping through the pipeline"
   }
   dump_to_files: {
-    ~#pattern: "collectPrecipitants(source) → write each to <stage>.json"
+    ~#pattern: "collectPrecipitates(source) → write each to <stage>.json"
     ~#use_case: "offline analysis of per-pass transformations"
   }
   project_across: {
-    ~#pattern: "buildProjection(precipitants) → compare stages"
+    ~#pattern: "buildProjection(precipitates) → compare stages"
     ~#use_case: "understand how a concept mutates through the pipeline"
   }
 }
@@ -84,15 +84,15 @@
   ~"../../src/runtime/pipeline/types.ts"      // Shared types
 }
 
-#>wonder_spw_precipitant_1
-?["What precipitant is most information-dense?"]{
+#>wonder_spw_precipitate_1
+?["What precipitate is most information-dense?"]{
   #:depth #!computational
   ~#hypothesis: "normalize → ONF is the densest pass — it collapses arbitrary tree shapes into uniform σ(args)[frames]"
   !probe{ "measure the ratio of input nodes to output nodes at each stage. which stage has the highest compression ratio?" }
   $%[runtime.stage, runtime.latency_ms]
 }
 
-#>wonder_spw_precipitant_2
+#>wonder_spw_precipitate_2
 ?["How does the pipeline change when Spw evolves?"]{
   #:depth #!experiential
   ~#tension: "new syntax creates new AST nodes, which need new ONF mappings, which need new interpreter handlers"

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { desugar, normalizeToONF } from '../normalize'
-import { collectPrecipitants, precipitantToSpw, projectionToSpw } from '../../runtime/pipeline/stages'
+import { collectPrecipitates, precipitateToSpw, projectionToSpw } from '../../runtime/pipeline/stages'
 
 const dummySpan = { start: { line: 1, column: 1, offset: 0 }, end: { line: 1, column: 2, offset: 1 } }
 
@@ -176,63 +176,63 @@ describe('normalizeToONF', () => {
 })
 
 describe('runSpwStepped', () => {
-  it('yields precipitants for each stage', () => {
-    const { precipitants, result } = collectPrecipitants('!["hello"]')
+  it('yields precipitates for each stage', () => {
+    const { precipitates, result } = collectPrecipitates('!["hello"]')
     expect(result.success).toBe(true)
-    expect(precipitants.length).toBeGreaterThanOrEqual(3)
-    expect(precipitants[0].stage).toBe('desugar')
-    expect(precipitants[1].stage).toBe('parse')
+    expect(precipitates.length).toBeGreaterThanOrEqual(3)
+    expect(precipitates[0].stage).toBe('desugar')
+    expect(precipitates[1].stage).toBe('parse')
   })
 
-  it('desugar precipitant captures input/output', () => {
-    const { precipitants } = collectPrecipitants('A{}')
-    const ds = precipitants.find(p => p.stage === 'desugar')!
+  it('desugar precipitate captures input/output', () => {
+    const { precipitates } = collectPrecipitates('A{}')
+    const ds = precipitates.find(p => p.stage === 'desugar')!
     expect(ds.input).toBe('A{}')
     expect(ds.output).toBe('{_A }_A')
     expect(ds.delta).toContain('desugared')
   })
 
   it('all four stages on success', () => {
-    const { precipitants, result } = collectPrecipitants('!["hello"]')
+    const { precipitates, result } = collectPrecipitates('!["hello"]')
     if (result.success) {
-      expect(precipitants).toHaveLength(4)
-      expect(precipitants.map(p => p.stage)).toEqual(['desugar', 'parse', 'normalize', 'interpret'])
+      expect(precipitates).toHaveLength(4)
+      expect(precipitates.map(p => p.stage)).toEqual(['desugar', 'parse', 'normalize', 'interpret'])
     }
   })
 })
 
-describe('precipitantToSpw', () => {
+describe('precipitateToSpw', () => {
   it('desugar → identity (already Spw source)', () => {
-    const { precipitants } = collectPrecipitants('A{}')
-    const ds = precipitants.find(p => p.stage === 'desugar')!
-    const spw = precipitantToSpw(ds)
+    const { precipitates } = collectPrecipitates('A{}')
+    const ds = precipitates.find(p => p.stage === 'desugar')!
+    const spw = precipitateToSpw(ds)
     expect(spw).toBe('{_A }_A')
   })
 
   it('normalize → ONF sigil form with reg frames', () => {
-    const { precipitants } = collectPrecipitants('!["hello"]')
-    const norm = precipitants.find(p => p.stage === 'normalize')
+    const { precipitates } = collectPrecipitates('!["hello"]')
+    const norm = precipitates.find(p => p.stage === 'normalize')
     if (norm) {
-      const spw = precipitantToSpw(norm)
+      const spw = precipitateToSpw(norm)
       expect(spw).toContain('!')
       expect(spw).toContain('reg=')
     }
   })
 
   it('interpret → register $[key] expressions', () => {
-    const { precipitants } = collectPrecipitants('!["hello"]')
-    const interp = precipitants.find(p => p.stage === 'interpret')
+    const { precipitates } = collectPrecipitates('!["hello"]')
+    const interp = precipitates.find(p => p.stage === 'interpret')
     if (interp) {
-      const spw = precipitantToSpw(interp)
+      const spw = precipitateToSpw(interp)
       expect(spw).toContain('$[')
     }
   })
 
   it('parse → AST annotation tree', () => {
-    const { precipitants } = collectPrecipitants('!["hello"]')
-    const ps = precipitants.find(p => p.stage === 'parse')
+    const { precipitates } = collectPrecipitates('!["hello"]')
+    const ps = precipitates.find(p => p.stage === 'parse')
     if (ps) {
-      const spw = precipitantToSpw(ps)
+      const spw = precipitateToSpw(ps)
       expect(typeof spw).toBe('string')
       expect(spw.length).toBeGreaterThan(0)
     }
@@ -241,8 +241,8 @@ describe('precipitantToSpw', () => {
 
 describe('projectionToSpw', () => {
   it('coagulates all stages into a ^"pipeline" frame', () => {
-    const { precipitants } = collectPrecipitants('!["hello"]')
-    const spw = projectionToSpw(precipitants)
+    const { precipitates } = collectPrecipitates('!["hello"]')
+    const spw = projectionToSpw(precipitates)
     expect(spw).toContain('^"pipeline"')
     expect(spw).toContain('^"desugar"')
     expect(spw).toContain('^"parse"')
@@ -252,8 +252,8 @@ describe('projectionToSpw', () => {
   })
 
   it('output is a string that could be re-parsed', () => {
-    const { precipitants } = collectPrecipitants('A{}')
-    const spw = projectionToSpw(precipitants)
+    const { precipitates } = collectPrecipitates('A{}')
+    const spw = projectionToSpw(precipitates)
     expect(typeof spw).toBe('string')
     expect(spw.split('\n').length).toBeGreaterThan(4)
   })

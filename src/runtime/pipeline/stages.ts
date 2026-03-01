@@ -1,13 +1,13 @@
 /**
  * Stage-Stepping Pipeline
  *
- * A generator-based pipeline that yields a Precipitant per transformation pass.
- * Each precipitant captures what "fell out" of the stage — input, output,
+ * A generator-based pipeline that yields a Precipitate per transformation pass.
+ * Each precipitate captures what "fell out" of the stage — input, output,
  * register snapshot, and a human-readable delta summary.
  *
  * Vocabulary:
  *   Stage       — a named transformation pass (desugar, parse, normalize, interpret)
- *   Precipitant — the artifact produced by a stage
+ *   Precipitate — the artifact produced by a stage
  *   Projection  — a view of one stage's output through another stage's lens
  *
  * @spw:portable - No DOM or app-specific imports allowed
@@ -35,13 +35,13 @@ export const STAGE_ORDER: readonly StageName[] = [
     'interpret',
 ] as const
 
-// ── Precipitant ─────────────────────────────────────────────────
+// ── Precipitate ─────────────────────────────────────────────────
 
 /**
- * A precipitant is what falls out of a transformation stage.
- * Each stage produces exactly one precipitant.
+ * A precipitate is what falls out of a transformation stage.
+ * Each stage produces exactly one precipitate.
  */
-export interface Precipitant<T = unknown> {
+export interface Precipitate<T = unknown> {
     /** Which stage produced this */
     stage: StageName
     /** ISO timestamp of completion */
@@ -57,45 +57,45 @@ export interface Precipitant<T = unknown> {
 }
 
 /**
- * A projection is a collection of precipitants keyed by stage.
+ * A projection is a collection of precipitates keyed by stage.
  * Allows cross-stage comparison of the same source.
  */
 export type PipelineProjection = {
-    [K in StageName]?: Precipitant
+    [K in StageName]?: Precipitate
 }
 
-// ── Typed Precipitants ──────────────────────────────────────────
+// ── Typed Precipitates ──────────────────────────────────────────
 
-export interface DesugarPrecipitant extends Precipitant<string> {
+export interface DesugarPrecipitate extends Precipitate<string> {
     stage: 'desugar'
     input: string
     output: string
 }
 
-export interface ParsePrecipitant extends Precipitant<ParseOutput<SeedNode>> {
+export interface ParsePrecipitate extends Precipitate<ParseOutput<SeedNode>> {
     stage: 'parse'
     input: string
     output: ParseOutput<SeedNode>
 }
 
-export interface NormalizePrecipitant extends Precipitant<ONFNode> {
+export interface NormalizePrecipitate extends Precipitate<ONFNode> {
     stage: 'normalize'
     input: SeedNode
     output: ONFNode
 }
 
-export interface InterpretPrecipitant extends Precipitant<RuntimeValue> {
+export interface InterpretPrecipitate extends Precipitate<RuntimeValue> {
     stage: 'interpret'
     input: ONFNode
     output: RuntimeValue
     registersAfter: RegisterSnapshot
 }
 
-export type AnyPrecipitant =
-    | DesugarPrecipitant
-    | ParsePrecipitant
-    | NormalizePrecipitant
-    | InterpretPrecipitant
+export type AnyPrecipitate =
+    | DesugarPrecipitate
+    | ParsePrecipitate
+    | NormalizePrecipitate
+    | InterpretPrecipitate
 
 // ── Helpers ─────────────────────────────────────────────────────
 
@@ -150,17 +150,17 @@ function summarizeInterpret(value: RuntimeValue, snapshot: RegisterSnapshot): st
 // ── Generator Pipeline ──────────────────────────────────────────
 
 /**
- * Stage-stepping pipeline. Yields a Precipitant after each transformation pass.
+ * Stage-stepping pipeline. Yields a Precipitate after each transformation pass.
  *
  * Usage:
- *   for (const precipitant of runSpwStepped(source)) {
- *     console.log(precipitant.stage, precipitant.delta)
+ *   for (const precipitate of runSpwStepped(source)) {
+ *     console.log(precipitate.stage, precipitate.delta)
  *   }
  */
 export function* runSpwStepped(
     source: string,
     options: RunSpwOptions = {},
-): Generator<AnyPrecipitant, RunSpwResult, void> {
+): Generator<AnyPrecipitate, RunSpwResult, void> {
     const shouldDesugar = options.desugar ?? true
     const registers = options.registers ?? new RegisterBank()
 
@@ -173,7 +173,7 @@ export function* runSpwStepped(
         input: source,
         output: desugared,
         delta: summarizeDesugar(source, desugared),
-    } satisfies DesugarPrecipitant
+    } satisfies DesugarPrecipitate
 
     // ── Stage 2: Parse ──────────────────────────────────────────
     const parseOutput = parse(desugared)
@@ -184,7 +184,7 @@ export function* runSpwStepped(
         input: desugared,
         output: parseOutput,
         delta: summarizeParse(parseOutput),
-    } satisfies ParsePrecipitant
+    } satisfies ParsePrecipitate
 
     // Check for parse failure — return early
     if (!parseOutput.success || !parseOutput.ast || parseOutput.errors.length > 0) {
@@ -212,7 +212,7 @@ export function* runSpwStepped(
         input: parseOutput.ast,
         output: onf,
         delta: summarizeNormalize(onf),
-    } satisfies NormalizePrecipitant
+    } satisfies NormalizePrecipitate
 
     // ── Stage 4: Interpret ──────────────────────────────────────
     const runtime = interpretSeed(
@@ -228,7 +228,7 @@ export function* runSpwStepped(
         output: runtime.value,
         registersAfter: runtime.registers,
         delta: summarizeInterpret(runtime.value, runtime.registers),
-    } satisfies InterpretPrecipitant
+    } satisfies InterpretPrecipitate
 
     return {
         success: true,
@@ -239,31 +239,31 @@ export function* runSpwStepped(
 }
 
 /**
- * Collect all precipitants from a pipeline run.
- * Returns both the precipitants and the final result.
+ * Collect all precipitates from a pipeline run.
+ * Returns both the precipitates and the final result.
  */
-export function collectPrecipitants(
+export function collectPrecipitates(
     source: string,
     options: RunSpwOptions = {},
-): { precipitants: AnyPrecipitant[]; result: RunSpwResult } {
-    const precipitants: AnyPrecipitant[] = []
+): { precipitates: AnyPrecipitate[]; result: RunSpwResult } {
+    const precipitates: AnyPrecipitate[] = []
     const gen = runSpwStepped(source, options)
 
     let step = gen.next()
     while (!step.done) {
-        precipitants.push(step.value)
+        precipitates.push(step.value)
         step = gen.next()
     }
 
-    return { precipitants, result: step.value }
+    return { precipitates, result: step.value }
 }
 
 /**
- * Build a projection map from a set of precipitants.
+ * Build a projection map from a set of precipitates.
  */
-export function buildProjection(precipitants: AnyPrecipitant[]): PipelineProjection {
+export function buildProjection(precipitates: AnyPrecipitate[]): PipelineProjection {
     const projection: PipelineProjection = {}
-    for (const p of precipitants) {
+    for (const p of precipitates) {
         projection[p.stage] = p
     }
     return projection
@@ -272,7 +272,7 @@ export function buildProjection(precipitants: AnyPrecipitant[]): PipelineProject
 // ── Spw Rendering ───────────────────────────────────────────────
 
 /**
- * Render a precipitant's state as an operable Spw expression.
+ * Render a precipitate's state as an operable Spw expression.
  *
  * Each stage renders differently:
  *   desugar   → identity (already Spw source)
@@ -280,7 +280,7 @@ export function buildProjection(precipitants: AnyPrecipitant[]): PipelineProject
  *   normalize → ONF as canonical σ(args)[reg=...] form
  *   interpret → register entries as $[key] expressions
  */
-export function precipitantToSpw(p: AnyPrecipitant): string {
+export function precipitateToSpw(p: AnyPrecipitate): string {
     switch (p.stage) {
         case 'desugar':
             return p.output
@@ -300,10 +300,10 @@ export function precipitantToSpw(p: AnyPrecipitant): string {
  * Coagulate an entire projection into a single aggregate Spw frame.
  * Applies the operational sequence: desugar | parse | normalize | interpret
  */
-export function projectionToSpw(precipitants: AnyPrecipitant[]): string {
+export function projectionToSpw(precipitates: AnyPrecipitate[]): string {
     const lines: string[] = ['^"pipeline"{']
-    for (const p of precipitants) {
-        const spw = precipitantToSpw(p)
+    for (const p of precipitates) {
+        const spw = precipitateToSpw(p)
         const indented = spw.split('\n').map(l => `    ${l}`).join('\n')
         lines.push(`  ^"${p.stage}"{`)
         lines.push(`    %[delta] "${p.delta}"`)

@@ -1,16 +1,16 @@
 import type { RunSpwOptions, RunSpwResult } from './types'
-import { collectPrecipitants } from './stages'
+import { collectPrecipitates } from './stages'
 
 /**
  * Run the full Spw pipeline in one shot.
  * Internally uses the stage-stepping generator for consistency.
  */
 export function runSpw(source: string, options: RunSpwOptions = {}): RunSpwResult {
-  const { precipitants, result } = collectPrecipitants(source, options)
+  const { precipitates, result } = collectPrecipitates(source, options)
 
-  // Attach precipitants to successful results for observability
+  // Attach precipitates to successful results for observability
   if (result.success) {
-    result.precipitants = precipitants
+    result.precipitates = precipitates
   }
 
   return result
