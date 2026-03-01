@@ -169,14 +169,36 @@ let observableState: Record<string, any> | null = null
 let observableStateLoadedAt = 0
 
 async function loadObservableState(): Promise<Record<string, any>> {
-  const statePath = path.join(WORKSPACE_ROOT, '.spw', 'state', 'observable.json')
+  const statePath = path.join(WORKSPACE_ROOT, '.spw', 'state', 'observable.spw')
   try {
     const text = await fs.readFile(statePath, 'utf8')
-    observableState = JSON.parse(text)
+    const state: Record<string, any> = {}
+    // Parse %[key] value lines from Spw
+    // Matches: .. %[key]  value  or  %[key] value
+    const metricRe = /(?:\.\.\s*)?%\[([^\]]+)\]\s+(.+)/g
+    let m: RegExpExecArray | null
+    while ((m = metricRe.exec(text)) !== null) {
+      const key = m[1].trim()
+      let val: any = m[2].trim()
+      // Strip trailing comments
+      const commentIdx = val.indexOf('//')
+      if (commentIdx >= 0) val = val.slice(0, commentIdx).trim()
+      // Parse value
+      if (val === 'null') val = null
+      else if (val === 'true') val = true
+      else if (val === 'false') val = false
+      else if (/^-?\d+(\.\d+)?$/.test(val)) val = Number(val)
+      else if (val.startsWith('"') && val.endsWith('"')) val = val.slice(1, -1)
+      // Prepend frame prefix: find containing ^"frame" for dotted key
+      const linesBefore = text.slice(0, m.index)
+      const frameMatch = linesBefore.match(/\^"([^"]+)"\s*\{[^}]*$/s)
+      const prefix = frameMatch ? `${frameMatch[1]}.` : ''
+      state[`${prefix}${key}`] = val
+    }
+    observableState = state
     observableStateLoadedAt = Date.now()
-    log('observable state loaded')
+    log('observable state loaded from .spw')
   } catch {
-    // File doesn't exist or is malformed — use empty state
     if (!observableState) observableState = {}
   }
   return observableState!
@@ -1050,7 +1072,7 @@ async function hover(params: any): Promise<LspHover | null> {
 
       let md = `**\`$%[${metricHoverMatch[1]}]\`** — *measurement point*\n\n`
 
-      // Try to show live values from observable.json
+      // Try to show live values from observable.spw
       const state = observableState || {}
       let hasLive = false
 
@@ -1066,9 +1088,9 @@ async function hover(params: any): Promise<LspHover | null> {
       }
 
       if (hasLive) {
-        md += `\n*Live values from \`.spw/state/observable.json\` (refreshed on save).*\n`
+        md += `\n*Live values from \`.spw/state/observable.spw\` (refreshed on save).*\n`
       } else {
-        md += `\n*No live values — populate \`.spw/state/observable.json\` to bind.*\n`
+        md += `\n*No live values — populate \`.spw/state/observable.spw\` to bind.*\n`
       }
 
       return {
@@ -2289,7 +2311,7 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
         WORKSPACE_ROOT = parseWorkspaceRoot(message.params)
         CONFIG = await loadConfig(WORKSPACE_ROOT, message.params?.initializationOptions)
         serverIndex = new ServerIndex(WORKSPACE_ROOT)
-        loadObservableState()  // load .spw/state/observable.json on startup
+        loadObservableState()  // load .spw/state/observable.spw on startup
         log(`initialize workspace=${WORKSPACE_ROOT} config=${JSON.stringify(CONFIG)}`)
 
         sendResult(id, {

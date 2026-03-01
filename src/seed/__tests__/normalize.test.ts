@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { desugar, normalizeToONF } from '../normalize'
-import { collectPrecipitants } from '../../runtime/pipeline/stages'
+import { collectPrecipitants, precipitantToSpw, projectionToSpw } from '../../runtime/pipeline/stages'
 
 const dummySpan = { start: { line: 1, column: 1, offset: 0 }, end: { line: 1, column: 2, offset: 1 } }
 
@@ -200,3 +200,62 @@ describe('runSpwStepped', () => {
     }
   })
 })
+
+describe('precipitantToSpw', () => {
+  it('desugar → identity (already Spw source)', () => {
+    const { precipitants } = collectPrecipitants('A{}')
+    const ds = precipitants.find(p => p.stage === 'desugar')!
+    const spw = precipitantToSpw(ds)
+    expect(spw).toBe('{_A }_A')
+  })
+
+  it('normalize → ONF sigil form with reg frames', () => {
+    const { precipitants } = collectPrecipitants('!["hello"]')
+    const norm = precipitants.find(p => p.stage === 'normalize')
+    if (norm) {
+      const spw = precipitantToSpw(norm)
+      expect(spw).toContain('!')
+      expect(spw).toContain('reg=')
+    }
+  })
+
+  it('interpret → register $[key] expressions', () => {
+    const { precipitants } = collectPrecipitants('!["hello"]')
+    const interp = precipitants.find(p => p.stage === 'interpret')
+    if (interp) {
+      const spw = precipitantToSpw(interp)
+      expect(spw).toContain('$[')
+    }
+  })
+
+  it('parse → AST annotation tree', () => {
+    const { precipitants } = collectPrecipitants('!["hello"]')
+    const ps = precipitants.find(p => p.stage === 'parse')
+    if (ps) {
+      const spw = precipitantToSpw(ps)
+      expect(typeof spw).toBe('string')
+      expect(spw.length).toBeGreaterThan(0)
+    }
+  })
+})
+
+describe('projectionToSpw', () => {
+  it('coagulates all stages into a ^"pipeline" frame', () => {
+    const { precipitants } = collectPrecipitants('!["hello"]')
+    const spw = projectionToSpw(precipitants)
+    expect(spw).toContain('^"pipeline"')
+    expect(spw).toContain('^"desugar"')
+    expect(spw).toContain('^"parse"')
+    expect(spw).toContain('^"normalize"')
+    expect(spw).toContain('^"interpret"')
+    expect(spw).toContain('%[delta]')
+  })
+
+  it('output is a string that could be re-parsed', () => {
+    const { precipitants } = collectPrecipitants('A{}')
+    const spw = projectionToSpw(precipitants)
+    expect(typeof spw).toBe('string')
+    expect(spw.split('\n').length).toBeGreaterThan(4)
+  })
+})
+
