@@ -8,7 +8,6 @@ import type {
   Token,
   ExpressionNode,
   BindingNode,
-  BulletNode,
   OperationNode,
   SequenceNode,
   FrameNode,
@@ -16,8 +15,6 @@ import type {
   ProseChunkNode,
   ModifierChainNode,
   TermNode,
-  MatchNode,
-  MatchArmNode,
 } from '../types'
 import {
   type Parser,
@@ -38,118 +35,12 @@ import { referenceNode, annotationNode, pathRefNode } from './references'
 import { modifierChain } from './modifiers'
 import { frameNode, bodyNode, scopeNode, capsuleNode, streamNode, nrangeNode } from './containers'
 import { literalNode, identifierNode } from './literals'
-import { wildcardNode, spreadNode, matchArmNode } from './patterns'
+import { wildcardNode, spreadNode } from './patterns'
+import { matchNode } from './match'
+import { bulletNode } from './bullets'
 
-/**
- * Match: ?match[input] { pat => handler ... }
- */
-export const matchNode: Parser<MatchNode> = named('match',
-  function* matchParser(stream, depth) {
-    const startPos = getPosition(stream)
-
-    // Check for ?
-    const opToken = current(stream)
-    if (opToken.type !== 'OPERATOR' || opToken.value !== '?') return { success: false, consumed: 0 }
-
-    // Check for match label
-    const labelToken = peek(stream, 1)
-    if (labelToken?.type !== 'IDENTIFIER' || labelToken.value !== 'match') return { success: false, consumed: 0 }
-
-    advance(stream)
-    advance(stream)
-    let consumed = 2
-
-    skipWhitespace(stream)
-
-    // Input frame: [ expression ]
-    if (current(stream).type !== 'CONTAINER_OPEN' || current(stream).value !== '[') {
-      return { success: false, consumed: 0 }
-    }
-    advance(stream)
-    consumed += 1
-
-    skipWhitespace(stream)
-    const inputGen = expressionNode(stream, depth + 1)
-    let inputStep = inputGen.next()
-    while (!inputStep.done) {
-      yield inputStep.value
-      inputStep = inputGen.next()
-    }
-
-    if (!inputStep.value.success) return { success: false, consumed: 0 }
-    consumed += inputStep.value.consumed
-    const inputNode = inputStep.value.value!
-
-    skipWhitespace(stream)
-    if (current(stream).type !== 'CONTAINER_CLOSE' || current(stream).value !== ']') {
-      return { success: false, consumed: 0 }
-    }
-    advance(stream)
-    consumed += 1
-
-    skipWhitespace(stream)
-
-    // Body with arms: { arm1 arm2 ... }
-    if (current(stream).type !== 'CONTAINER_OPEN' || current(stream).value !== '{') {
-      return { success: false, consumed: 0 }
-    }
-    advance(stream)
-    consumed += 1
-
-    const arms: MatchArmNode[] = []
-
-    while (true) {
-      skipWhitespace(stream)
-      if (current(stream).type === 'CONTAINER_CLOSE' && current(stream).value === '}') {
-        advance(stream)
-        consumed += 1
-        break
-      }
-
-      if (current(stream).type === 'EOF') {
-        return { success: false, consumed: 0 }
-      }
-
-      const armGen = matchArmNode(stream, depth + 1)
-      let armStep = armGen.next()
-      while (!armStep.done) {
-        yield armStep.value
-        armStep = armGen.next()
-      }
-
-      if (!armStep.value.success) {
-        return {
-          success: false,
-          consumed: 0,
-          error: armStep.value.error ?? {
-            message: 'Invalid match arm',
-            expected: ['pattern => handler'],
-            found: current(stream).type,
-            recoverable: false,
-          },
-        }
-      }
-      arms.push(armStep.value.value!)
-      consumed += armStep.value.consumed
-
-      skipWhitespace(stream)
-      if (current(stream).type === 'COMMA') {
-        advance(stream)
-        consumed += 1
-      }
-    }
-
-    const endPos = getPosition(stream)
-    const node: MatchNode = {
-      type: 'Match',
-      span: { start: startPos, end: endPos },
-      input: inputNode,
-      arms,
-    }
-
-    return { success: true, value: node, consumed }
-  }
-)
+// matchNode — extracted to ./match.ts
+export { matchNode } from './match'
 
 const INLINE_PAYLOAD_OPERATORS = new Set(['#', '?'])
 const INLINE_PAYLOAD_PUNCT = new Set(['.', '#', '?', '!'])
@@ -465,104 +356,8 @@ export const operationNode: Parser<OperationNode> = named('operation',
   }
 )
 
-/**
- * Bullet item: .. <expression>
- */
-export const bulletNode: Parser<BulletNode> = named('bullet',
-  function* bulletParser(stream, depth) {
-    const startPos = getPosition(stream)
-
-    const markGen = token('CONNECTOR', '..')(stream, depth + 1)
-    let markStep = markGen.next()
-    while (!markStep.done) {
-      yield markStep.value
-      markStep = markGen.next()
-    }
-
-    if (!markStep.value.success) {
-      return { success: false, consumed: 0, error: markStep.value.error }
-    }
-
-    let consumed = markStep.value.consumed
-    const marker = markStep.value.value! as Token<'CONNECTOR'>
-
-    skipWhitespace(stream)
-
-    // If the bullet starts with a Spw trigger, parse as expression; otherwise capture prose text on the same line.
-    const markerLine = marker.span.start.line
-    const t0 = current(stream)
-    const isSpw = (
-      t0.type === 'OPERATOR'
-      || t0.type === 'CAPSULE_OPEN'
-      || t0.type === 'STREAM_OPEN'
-      || t0.type === 'NRANGE_OPEN'
-      || t0.type === 'CONTAINER_OPEN'
-    )
-
-    if (isSpw) {
-      const itemGen = expressionNode(stream, depth + 1)
-      let itemStep = itemGen.next()
-      while (!itemStep.done) {
-        yield itemStep.value
-        itemStep = itemGen.next()
-      }
-
-      if (!itemStep.value.success) {
-        return { success: false, consumed: 0, error: itemStep.value.error }
-      }
-
-      consumed += itemStep.value.consumed
-      const endPos = getPosition(stream)
-
-      const node: BulletNode = {
-        type: 'Bullet',
-        span: { start: startPos, end: endPos },
-        marker,
-        item: itemStep.value.value!,
-      }
-
-      return { success: true, value: node, consumed }
-    }
-
-    const collected: Token[] = []
-    while (true) {
-      const tok = current(stream)
-      if (tok.type === 'EOF') break
-      if (tok.span.start.line !== markerLine) break
-      if (tok.type === 'COMMENT') break
-      collected.push(tok)
-      advance(stream)
-      consumed += 1
-    }
-
-    let startIdx = 0
-    while (startIdx < collected.length && collected[startIdx].type === 'WHITESPACE') startIdx++
-    let endIdx = collected.length - 1
-    while (endIdx >= startIdx && collected[endIdx].type === 'WHITESPACE') endIdx--
-
-    const text = startIdx <= endIdx
-      ? collected.slice(startIdx, endIdx + 1).map((t) => t.value).join('')
-      : ''
-
-    const chunk: ProseChunkNode = {
-      type: 'ProseChunk',
-      span: startIdx <= endIdx
-        ? { start: collected[startIdx].span.start, end: collected[endIdx].span.end }
-        : { start: marker.span.end, end: marker.span.end },
-      text,
-    }
-
-    const endPos = getPosition(stream)
-    const node: BulletNode = {
-      type: 'Bullet',
-      span: { start: startPos, end: endPos },
-      marker,
-      item: chunk,
-    }
-
-    return { success: true, value: node, consumed }
-  }
-)
+// bulletNode — extracted to ./bullets.ts
+export { bulletNode } from './bullets'
 
 /**
  * Term: operation | scope | reference
