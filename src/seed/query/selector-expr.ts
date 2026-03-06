@@ -28,7 +28,7 @@
  *   "~\"path\"" → { sigil: '~', value: 'path' }
  *   "*"         → { sigil: '*' }
  *
- * @spw:portable - No DOM or app-specific imports allowed
+ * @spw:portable:seed - No DOM or app-specific imports allowed
  */
 
 import type {

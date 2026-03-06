@@ -7,7 +7,7 @@
  * Sigil is the callee. No named verbs. Arguments are positional.
  * Frames carry register bindings and semantic metadata.
  *
- * @spw:portable - No DOM or app-specific imports allowed
+ * @spw:portable:seed - No DOM or app-specific imports allowed
  * @see src/lang/grammar/onf-spec.md for the full specification
  */
 

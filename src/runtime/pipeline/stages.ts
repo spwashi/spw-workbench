@@ -10,7 +10,7 @@
  *   Precipitate — the artifact produced by a stage
  *   Projection  — a view of one stage's output through another stage's lens
  *
- * @spw:portable - No DOM or app-specific imports allowed
+ * @spw:portable:runtime - No DOM or app-specific imports allowed
  */
 
 import type { SeedNode } from '../../seed/types'
@@ -405,4 +405,3 @@ function registersToSpw(snapshot: RegisterSnapshot): string {
     }
     return lines.join('\n')
 }
-

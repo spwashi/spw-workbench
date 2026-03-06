@@ -11,7 +11,7 @@
  *   Drain      — consume all accumulated events
  *   Resonance  — emergent coupling discovered between register entries
  *
- * @spw:portable - No DOM or app-specific imports allowed
+ * @spw:portable:runtime - No DOM or app-specific imports allowed
  */
 
 import type { RuntimeValue, RegisterPhase } from '../state/types'

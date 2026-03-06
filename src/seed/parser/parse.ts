@@ -8,6 +8,7 @@ import { seedNode } from '../grammar'
 /**
  * Parse Spw source code into AST
  *
+ * @spw:portable:seed - No DOM or app-specific imports allowed
  * @spw:lens:syntactic - structure recognition, form → tree
  */
 export function parse(

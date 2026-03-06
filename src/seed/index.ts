@@ -4,7 +4,7 @@
  * A generator-based parser for the Spw language.
  * All parsing operations yield ParseEvent objects for unified logging and debugging.
  *
- * @spw:portable - No DOM or app-specific imports allowed
+ * @spw:portable:seed - No DOM or app-specific imports allowed
  */
 
 // Core types

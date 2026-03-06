@@ -4,7 +4,7 @@
  * Pattern-based selectors using Spw's own structural vocabulary:
  * sigils, braces, modifiers, and wildcards.
  *
- * @spw:portable - No DOM or app-specific imports allowed
+ * @spw:portable:seed - No DOM or app-specific imports allowed
  */
 
 import type { ASTNode, Span, OperatorKind, ModifierKind } from '../types'

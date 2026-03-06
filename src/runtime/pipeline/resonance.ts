@@ -5,7 +5,7 @@
  * Runs after A-line pipeline completes — discovers implicit relationships
  * that were not explicitly declared via <> coupling.
  *
- * @spw:portable - No DOM or app-specific imports allowed
+ * @spw:portable:runtime - No DOM or app-specific imports allowed
  */
 
 import type { RegisterEvent, Resonance } from './substrate'

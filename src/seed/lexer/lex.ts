@@ -4,6 +4,7 @@ import { tokenize } from './tokenize'
 /**
  * Collect all tokens from input (convenience function)
  *
+ * @spw:portable:seed - No DOM or app-specific imports allowed
  * @spw:lens:syntactic - tokenization operates purely on form
  */
 export function lex(input: string, options: LexOptions = {}): { tokens: Token[]; events: ParseEvent[] } {

@@ -94,7 +94,7 @@ spw_section_close "type_landscape"
 spw_affordances_open
 spw_affordance "npm run lint:spw" "parse-validate all .spw files"
 spw_affordance "npm run fuzz:types" "Full type safety scan"
-spw_affordance "npm run audit:types" "@spw:types debt markers"
+spw_affordance "npm run audit:types" "@spw:types:debt markers"
 spw_affordance "npm run build" "tsc catches all type errors"
 spw_affordances_close
 

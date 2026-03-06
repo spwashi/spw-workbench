@@ -5,7 +5,7 @@
  * Uses Spw's own structural vocabulary: sigils identify operators,
  * braces identify container shapes, modifiers identify valence.
  *
- * @spw:portable - No DOM or app-specific imports allowed
+ * @spw:portable:seed - No DOM or app-specific imports allowed
  */
 
 import type { ASTNode, OperationNode, ReferenceNode, FrameNode, BodyNode, ScopeNode } from '../types'

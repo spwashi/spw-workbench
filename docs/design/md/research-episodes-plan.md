@@ -4,7 +4,7 @@ This document outlines a paced development plan structured as “episodes” sui
 
 The immediate target is **Vim Geology + layered navigation**: auditable key combinations, progressive disclosure, undo/redo foundations, and theming hooks that remain legible under motion and compression.
 
-## Episode Contract `@spw:episode`
+## Episode Contract `@spw:episode:contract`
 
 Each episode ships:
 
@@ -14,24 +14,24 @@ Each episode ships:
 
 Each episode ends with:
 - A **repeatable demo script** (steps + expected UI cues).
-- A **reset path** (restore state for retakes and learner re-entry). `@spw:boundary`
+- A **reset path** (restore state for retakes and learner re-entry). `@spw:boundary:reset`
 
 ## Visual Semantics for Recording + Editing
 
-### Broadcast/Recording Mode `@spw:todo`
+### Broadcast/Recording Mode `@spw:todo:recording`
 
 Goal: stable, readable composition for viewers.
 - Stabilize layout (reduce shifting panels, predictable focus rings).
 - Reduce visual noise (optional reduced motion, calmer backgrounds).
 - Optional **keystroke overlay** that reuses the same semantic palette as Vim Geology.
 
-### Chapter Markers `@spw:todo`
+### Chapter Markers `@spw:todo:chapter-markers`
 
 Goal: make video editing easier by producing edit points.
 - Provide a command that emits a timestamped **chapter marker** into the audit stream.
 - Markers should include: active region, activation context, and current walkthrough step.
 
-### “What Changed” Highlighting `@spw:todo`
+### “What Changed” Highlighting `@spw:todo:delta-highlighting`
 
 Goal: help viewers track edits without narration.
 - When operations mutate code/structure, visually mark affected spans/nodes and log the delta.
@@ -43,7 +43,7 @@ Progressive disclosure is treated as a first-class audit lane:
 - See `docs/audits/ontological-geometry-audit.md` for the “ontological geometry” framing.
 - See `src/features/keyboard/VIM-KEYBINDINGS.md` for current Vim Geology behavior and audit notes.
 
-### Labeling Pass `@spw:todo`
+### Labeling Pass `@spw:todo:labeling`
 
 Tag binding groups and contexts with a tier:
 - **Beginner**: core navigation, focus movement, basic mode switching.
@@ -52,13 +52,13 @@ Tag binding groups and contexts with a tier:
 
 Goal: reduce cognitive load while preserving automaticity by making *relevance* explicit and hiding/revealing detail by default.
 
-### Documentation Markers + Linting `@spw:doclint @spw:todo`
+### Documentation Markers + Linting `@spw:doclint:markers @spw:todo:marker-lint`
 
 Standardize documentation conventions using `@spw:*` markers that can later be linted:
-- `@spw:todo` — actionable gaps with intended follow-up.
-- `@spw:boundary` — where resetting, determinism, and “what counts as state” must stay precise.
-- `@spw:episode` — episode deliverables and demo scripts.
-- `@spw:term` — glossary-worthy terminology (activation context, semantic lens, operator layers).
+- `@spw:todo:follow-up` — actionable gaps with intended follow-up.
+- `@spw:boundary:reset` — where resetting, determinism, and “what counts as state” must stay precise.
+- `@spw:episode:deliverable` — episode deliverables and demo scripts.
+- `@spw:term:glossary` — glossary-worthy terminology (activation context, semantic lens, operator layers).
 
 Linting targets (future):
 - Enforce consistent binding tables (keys → meaning → context → tier).
@@ -74,7 +74,7 @@ Treat CSS as a handle for differential topology:
 
 This supports “hyperlexical communication”: viewers can infer meaning by *shape + color temperature + motion* without reading everything.
 
-### Theme Contract (Artist-Friendly) `@spw:todo`
+### Theme Contract (Artist-Friendly) `@spw:todo:theme-contract`
 
 Goal: enable artists to ship cohesive skins without breaking layout/accessibility.
 - Bound the surface area: CSS variables + a small set of component hooks.
@@ -92,7 +92,7 @@ Goal: enable artists to ship cohesive skins without breaking layout/accessibilit
 ### Season 1 — Foundations (4 episodes)
 
 1) **Baseline + Recording Mode**
-- Add a broadcast/recording preset and ensure a stable “reset to baseline” action. `@spw:boundary`
+- Add a broadcast/recording preset and ensure a stable “reset to baseline” action. `@spw:boundary:reset`
 
 2) **Auditable Keybinding Extraction**
 - Deterministic export of binding groups and the audit stream (grouped by context + layer + active element).

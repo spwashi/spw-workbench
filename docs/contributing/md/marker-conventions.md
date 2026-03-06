@@ -12,8 +12,10 @@ Use the marker chain form:
 
 Examples:
 
-- `@spw:todo`
-- `@spw:portable`
+- `@spw:todo:follow-up`
+- `@spw:portable:seed`
+- `@spw:boundary:reset`
+- `@spw:types:debt`
 - `@spw:lens:syntactic`
 
 ## Contract
@@ -30,6 +32,15 @@ Examples:
 - Add qualifiers when the extra structure changes meaning, not just wording.
 - Keep markers lowercase and comment-friendly.
 - If a new family becomes durable, document it here before spreading it widely.
+
+Observed structured families in the current corpus include:
+
+- `portable:seed`
+- `portable:runtime`
+- `types:debt`
+- `async:debt`
+- `boundary:reset`
+- `episode:contract`
 
 ## Current Decision
 

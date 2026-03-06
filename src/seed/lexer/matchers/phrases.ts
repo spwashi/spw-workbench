@@ -4,6 +4,7 @@
  * Matches backtick-delimited phrases: `...`
  * These are the canonical string form in Spw (guillemets normalize to backticks).
  *
+ * @spw:portable:seed - No DOM or app-specific imports allowed
  * @spw:lens:syntactic - phrase tokenization operates purely on form
  */
 

@@ -53,8 +53,8 @@ Key runtime-facing primitives:
 ```bash
 npm run fuzz:types          # Unsafe any, type assertions, weak inference
 npm run fuzz:async          # Floating promises, unhandled async
-npm run audit:types         # @spw:types markers (known type debt)
-npm run audit:async         # @spw:async markers (known async debt)
+npm run audit:types         # @spw:types:debt markers (known type debt)
+npm run audit:async         # @spw:async:debt markers (known async debt)
 npm run audit:json          # Machine-readable audit output
 npm run build               # tsc — catches all type errors
 ```

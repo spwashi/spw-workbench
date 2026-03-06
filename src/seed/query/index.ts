@@ -1,7 +1,7 @@
 /**
  * Spw Query — barrel export
  *
- * @spw:portable
+ * @spw:portable:seed - No DOM or app-specific imports allowed
  */
 
 // Types and combinators

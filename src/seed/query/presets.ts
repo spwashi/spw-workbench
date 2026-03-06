@@ -4,7 +4,7 @@
  * Common selector patterns built from Spw's structural vocabulary.
  * Each preset is a plain object — serializable for lore-remote dispatch.
  *
- * @spw:portable - No DOM or app-specific imports allowed
+ * @spw:portable:seed - No DOM or app-specific imports allowed
  */
 
 import type { SpwSelector, SpwPattern } from './types'
