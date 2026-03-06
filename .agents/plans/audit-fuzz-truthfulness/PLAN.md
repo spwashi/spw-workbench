@@ -4,7 +4,7 @@ Make the audit and fuzz surfaces truthful, local-first, and explicit about what 
 
 ## Goal
 
-The desired end state is an audit surface whose command names, coverage, and output formats match reality. `audit:*` should say what they scan, `fuzz:*` should map to explicit local runner profiles (`explore`, `stabilize`, `ship`), and the outputs should be structured enough to rank severity and diff across runs. This work is about tightening the contract between command names and actual behavior before further semantic redesign lands on top of it.
+The desired end state is an audit surface whose command names, coverage, and output formats match reality. `audit:*` should say what they scan, `fuzz:*` should map to explicit local runner profiles (`explore`, `stabilize`, `ship`), and the outputs should be structured enough to rank severity and diff across runs. The immediate next step is to publish a truthful package-script map and contributor guidance before adding the aggregated audit runner on top of it.
 
 **Taste note**: clarity, correctness, expressiveness.
 
@@ -18,6 +18,7 @@ The desired end state is an audit surface whose command names, coverage, and out
 - Command names must describe coverage and method, not aspirations.
 - Audit runners must remain local-only and avoid hidden network assumptions.
 - `fuzz:*` profiles should express staged intent (`explore`, `stabilize`, `ship`) rather than alias unrelated scripts.
+- Documented script names are the contract; legacy aliases may remain temporarily, but they should resolve through the truthful names rather than define the surface themselves.
 
 ## Files
 
@@ -52,7 +53,7 @@ The desired end state is an audit surface whose command names, coverage, and out
 
 ## Agentic Hygiene
 
-- Rebase target: `main@8dd4e4129acca3f9566cfe4d2913dae15e27fd28`
+- Rebase target: `main@07ffc5a17a55340c3f7000313df68cf0453a7b10`
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: keep unrelated untracked drift in `src/runtime/state/register-helpers.ts` out of this branch.
 
@@ -68,6 +69,6 @@ A distilled artifact is warranted to preserve the audit contract:
 
 ## Fuzz Strategy
 
-- Explore: `npm run audit:json`
-- Stabilize: `npm run audit && npm run fuzz`
-- Ship gate: `npm run build && npm run test:run && npm run audit:json`
+- Explore: `npm run audit:markers:json && npm run fuzz:explore`
+- Stabilize: `npm run audit && npm run fuzz:stabilize`
+- Ship gate: `npm run build && npm run test:run && npm run lint && npm run audit:markers:json`

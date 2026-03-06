@@ -17,6 +17,12 @@
  >> [2026-03-05 19:06] decide — audit commands must describe their coverage and method, and emit machine-readable output suitable for severity ranking and diffs.
  >> [2026-03-05 19:06] decide — `fuzz:*` profiles should map to explicit local stages (`explore`, `stabilize`, `ship`) instead of aliases to unrelated scripts.
  >> [2026-03-05 19:06] taste — prefer command names that expose guarantees, not aspirations.
+ >> [2026-03-06 03:02] observe — `docs/contributing/md/common-tasks.md` still documents `npm run test`, `lint:fix`, `lint:layers`, and Vite output even though none reflect the current rewrite surface.
+ >> [2026-03-06 03:02] observe — the marker extraction/seed contract shipped at `main@07ffc5a`, so audit naming now needs to treat `audit:markers:*` as the stable baseline rather than an implementation detail.
+ >> [2026-03-06 03:02] decide — commit 2 should introduce truthful `audit:markers:*`, `audit:ui:*`, and `audit:spw:*` names in `package.json`, then keep legacy names as compatibility aliases only where necessary.
+ >> [2026-03-06 03:02] decide — `fuzz:explore`, `fuzz:stabilize`, and `fuzz:ship` should become the documented surface immediately, even if deeper per-lens runners remain a later commit.
+ >> [2026-03-05 23:03] verify — `npm run audit:markers:json`, `npm run audit:ui:selectors`, `npm run audit:spw:syntax`, `npm run lint:docs`, `npm run fuzz:explore`, `npm run fuzz:stabilize`, and `npm run build` all pass after the script-map rewrite.
+ >> [2026-03-05 23:03] observe — nested `npm run audit:spw:syntax -- --match ...` forwarding is awkward because the inner `lint:spw` script already carries `--`; direct validator invocation is safer for filtered checks until commit 3 revisits the audit shell.
 }
 
 ^["open"]{
@@ -34,14 +40,14 @@
 }
 
 ^["cache"]{
- ~#status: "planning"
- ~#base_ref: "main@8dd4e4129acca3f9566cfe4d2913dae15e27fd28"
+ ~#status: "active"
+ ~#base_ref: "main@07ffc5a17a55340c3f7000313df68cf0453a7b10"
  ~#rebased_at: ""
  ~#hygiene_split: "exclude untracked `src/runtime/state/register-helpers.ts` from this branch"
- ~#files_hot: "package.json, scripts/analyzers/spw-marker-audit.ts, scripts/analyzers/ui-contract-audit.ts"
- ~#next_commit: "1"
+ ~#files_hot: "package.json, docs/contributing/md/common-tasks.md, scripts/analyzers/ui-contract-audit.ts"
+ ~#next_commit: "2"
  ~#open_count: "3"
- ~#last_stream: "2026-03-05 19:06"
+ ~#last_stream: "2026-03-05 23:03"
  ~#taste_debt: "avoid turning audit orchestration into another monolithic analyzer"
 }
 

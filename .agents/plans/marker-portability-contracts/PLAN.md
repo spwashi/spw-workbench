@@ -1,23 +1,23 @@
 # Plan: marker-portability-contracts
 
-Extend markers from a useful audit taxonomy into a portable implementation-contract surface for ambitious features and cross-language ports.
+Historical slug retained; the shipped work reframed markers from audit taxonomy into extraction, seed, and semantic contracts for later system decomposition.
 
 ## Goal
 
-The current marker audit now preserves structure, but its distribution still shows a mostly descriptive corpus: `todo`, `boundary`, and `term` remain the dominant families, while only a small slice carries implementation-grade qualifiers like `portable:seed` and `boundary:reset`. The desired end state is a marker contract that can express guarantees, blockers, targets, and evidence for real feature work and for ports to other languages without losing comment ergonomics. Keep the current `family:qualifier` chain as the coarse selector, then evaluate a lightweight attribute layer that survives TS, Rust, Python, and `.spw` comments.
+The marker audit now preserves structure and the shipped corpus carries extraction-oriented contracts such as `portable:seed[...]`, `seed:starter[...]`, `seed:kernel[...]`, `surface:query[...]`, and `extract:blocked[...]`. The durable outcome of this plan is not speculative language ports; it is a marker surface that can express extraction readiness, sparse-file starting points, semantic affinities, blockers, and evidence without losing comment ergonomics.
 
 **Taste note**: clarity, correctness, expressiveness.
 
 ## Scope
 
-- **In scope**: next-phase marker syntax design, analyzer support for richer contracts, machine-readable JSON shape for implementation/port markers, contributor docs, and a small pilot on seed/runtime surfaces that already advertise portability.
-- **Out of scope**: building an actual Rust/Python port, migrating the full corpus in one pass, external registries/services, or a UI for browsing markers.
+- **In scope**: marker contract syntax, analyzer support for attribute bags, machine-readable JSON shape for extraction/seed markers, contributor docs, and a pilot on seed/runtime surfaces that advertise extraction potential.
+- **Out of scope**: building any actual language port, migrating the full corpus in one pass, external registries/services, or a UI for browsing markers.
 
 ## Decisions Locked
 
 - Keep `family:qualifier[:detail]` as the primary grep-friendly selector surface.
-- Evaluate an optional attribute bag after the chain for machine-actionable fields such as target language, layer, status, blocker, and evidence.
-- Markers should describe guarantees and blockers, not only debt and docs taxonomy.
+- Use an optional attribute bag after the chain for machine-actionable fields such as `system`, `extract`, `semantic`, `layer`, `status`, `blocker`, `basis`, and `next`.
+- Markers should describe extraction readiness, starter surfaces, guarantees, and blockers, not only debt and docs taxonomy.
 - Any richer syntax must round-trip cleanly to JSON and remain readable in TS, Rust, Python, Markdown, and `.spw`.
 
 ## Files
@@ -42,7 +42,7 @@ The current marker audit now preserves structure, but its distribution still sho
 
 - Keep the richer syntax optional; a plain chain must remain valid and common.
 - Do not let marker parsing become a mini language runtime; prefer a tiny contract parser with graceful fallback.
-- Pilot only on surfaces where the added metadata materially improves implementation or port decisions.
+- Pilot only on surfaces where the added metadata materially improves extraction or system-seeding decisions.
 
 ## Commits
 
@@ -55,7 +55,7 @@ The current marker audit now preserves structure, but its distribution still sho
 
 ## Agentic Hygiene
 
-- Rebase target: `main@75febc36726f38e8132817ab14685c9ed5d1b421`
+- Rebase target: `main@07ffc5a17a55340c3f7000313df68cf0453a7b10`
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: none
 
@@ -65,12 +65,12 @@ none
 
 ## Spw Artifact
 
-A distilled artifact is warranted because these markers become part of the codebase's implementation and portability contract:
+A distilled artifact is warranted because these markers now form part of the codebase's extraction and semantic contract:
 
 `.agents/plans/marker-portability-contracts/marker-portability-contracts.spw`
 
 ## Fuzz Strategy
 
-- Explore: `npm run audit && node --import tsx scripts/analyzers/spw-marker-audit.ts --format=json --marker=portable:seed`
-- Stabilize: `npm run audit:json`
-- Ship gate: `npm run build && npm run audit && npm run audit:json && git diff --check`
+- Explore: `npm run audit && node --import tsx scripts/analyzers/spw-marker-audit.ts --tag=seed`
+- Stabilize: `npm run audit:markers:json && node --import tsx scripts/analyzers/spw-marker-audit.ts --attribute=extract=candidate`
+- Ship gate: `npm run build && npm run audit && npm run audit:markers:json && git diff --check`

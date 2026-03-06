@@ -4,18 +4,18 @@ Step-by-step instructions for tasks all contributors need to do. This guide appl
 
 ## Running Tests
 
-### Watch Mode (Live Feedback)
-Perfect during development. Tests re-run as you edit files.
+### Watch Mode (DOM Feedback)
+The current rewrite snapshot exposes a watch loop for the DOM suite.
 
 ```bash
-npm run test
+npm run test:dom:watch
 ```
 
 What to expect:
-- Tests run in a watcher
+- DOM-targeted tests run in a watcher
 - Changes to files trigger re-runs automatically
 - Press `q` to quit
-- Great for iterative development
+- Use `npm run test:runtime` for the runtime suite when you want a single fast pass
 
 ### Single Run (CI/Before PR)
 Run tests once and get results. Use this before committing.
@@ -34,14 +34,14 @@ What to expect:
 Test a single file without running the whole suite:
 
 ```bash
-# Run tests for a specific domain
-npm run test:run src/ui/__tests__/
+# Run runtime tests for a specific file
+npm run test:runtime -- src/runtime/__tests__/register-bank.test.ts
 
-# Run a specific test file
-npm run test:run src/lang/__tests__/lexer.test.ts
+# Run DOM tests for a specific file
+npm run test:dom -- src/dom/__tests__/dom-smoke.test.ts
 
 # Run tests matching a pattern
-npm run test:run -- --grep "button"
+npm run test:runtime -- -t "phase"
 ```
 
 ### Reading Test Output
@@ -61,20 +61,19 @@ Coverage: 95% statements, 92% branches, 100% functions
 
 ## Building the Project
 
-### Full Build (TypeScript + Vite)
-Checks all TypeScript types, then builds optimized JavaScript.
+### TypeScript Build Gate
+Checks the TypeScript surface without emitting a bundle.
 
 ```bash
 npm run build
 ```
 
 What it does:
-1. **TypeScript check** — Verifies all types are correct; catches errors
-2. **Vite build** — Optimizes for production; creates `dist/` folder
+1. **TypeScript check** — Verifies all types are correct
+2. **No emit** — Confirms the repo typechecks without producing build artifacts
 
 Use this before:
 - Creating a PR
-- Deploying to production
 - Checking if your types are correct
 
 ### If Build Fails
@@ -103,61 +102,40 @@ ERR! Circular dependency detected: a.ts -> b.ts -> a.ts
 
 ---
 
-## Linting and Style
+## Linting and Audit Surfaces
 
-### Check Style Issues
-Find code style problems without fixing them.
+### Repo Validation
+Run the current local validation surface for canon docs and `.spw` syntax.
 
 ```bash
 npm run lint
 ```
 
-What to expect:
-```
-src/ui/button.ts
-  45:12  error    'x' is assigned a value but never used
-  67:1   warning  Line is too long (121 chars)
-
-2 problems (1 error, 1 warning)
-```
-
-### Auto-Fix Style Issues
-Fix what can be automatically corrected.
-
-```bash
-npm run lint:fix
-```
-
 What it does:
-- Removes unused variables
-- Fixes indentation
-- Reformats code
-- Updates imports alphabetically
+- `npm run lint:spw` — parse-validates `.spw` files through the real parser
+- `npm run lint:docs` — runs the Writerside/doc reference checks
 
-What it **doesn't** do:
-- Fix logic errors
-- Change behavior
-- Remove intentional code
-
-### Check Layer Boundaries
-Verify you're not importing from forbidden domains.
+Useful subcommands:
 
 ```bash
-npm run lint:layers
+npm run lint:spw
+npm run lint:docs
+npm run lint:docs:strict
 ```
 
-What to expect:
-```
-✅ Layer boundaries OK
+### Audit Inventory
+Use the truthful `audit:*` names when you want inventory rather than pass/fail validation.
+
+```bash
+npm run audit                  # Marker inventory
+npm run audit:markers:json     # Machine-readable marker report
+npm run audit:markers:md       # Markdown marker report
+npm run audit:ui:selectors     # UI selector/data-attribute counts
+npm run audit:ui:context-panel # Context panel mention counts
+npm run audit:spw:syntax       # `.spw` syntax audit (alias of lint:spw)
 ```
 
-Or if there's a problem:
-```
-❌ ERROR: src/lang/index.ts imports from src/app/shell.ts
-   - lang (4) cannot import from app (10)
-```
-
-→ Change the import to only use inner domains
+Legacy aliases such as `audit:json`, `audit:md`, `audit:types`, and `audit:ui-selectors` remain available, but the `audit:markers:*`, `audit:ui:*`, and `audit:spw:*` names are the contract going forward.
 
 ---
 
@@ -181,49 +159,47 @@ Shows exactly what changed in each file. Use arrow keys to scroll, `q` to exit.
 
 3. **Run all checks**
 ```bash
-npm run build && npm run test:run && npm run lint:layers
+npm run build && npm run test:run && npm run lint && npm run audit:markers:json
 ```
 
 If all pass ✅, you're safe to commit.
 
 ### Commit Format
 
-Use this format: `scope: description`
+Use the repo’s sigil-based format, not conventional `scope: description` commits.
 
-**Scope examples:**
-- Domain: `ui: `, `lang: `, `runtime: `
-- Feature: `keyboard: `, `editor: `, `onboarding: `
-- Task: `docs: `, `test: `, `build: `
+Common patterns:
+- `.[scope] — docs / plan / canon updates`
+- `#[scope] — contract or spec changes`
+- `&[scope] — integration or wiring`
+- `vocab[scope] — naming / type / contract alignment`
+- `![scope] — verification or test coverage`
 
 **Examples:**
 ```bash
-git commit -m "ui: add CopyButton component"
-git commit -m "lang: improve error messages"
-git commit -m "test: add coverage for keyboard shortcuts"
-git commit -m "docs: explain 12-domain architecture"
+git commit -m ".[plans] — refresh audit-fuzz roadmap"
+git commit -m "#[audit] — define truthful audit/fuzz contract and package script map"
+git commit -m "&[marker] =extend[extraction-seed-contracts] — retag pilots and update craft skill"
 ```
 
-**Good descriptions:**
-- Specific (not "fix stuff")
-- Past tense ("add", "improve", "fix")
-- 50 characters or less
+Every commit body must include exactly one `#[episode]{ ... }` block, and the pre-commit gate requires human authorization before the commit is accepted.
 
-**Bad descriptions:**
-- Too vague: "update", "fix bug"
-- Too long: "Add a really amazing new feature that does awesome things"
-- Wrong format: "Adding new stuff" or "FIXED BUGS"
+**Minimal pattern:**
+
+```bash
+git commit -m "#[audit] — define truthful audit/fuzz contract and package script map" -m $'#[episode]{\n  title = `Audit contract`\n  why = `Make script names match reality`\n  exhibits = #[\n    `package.json`\n  ]\n}'
+```
 
 ### Create the Commit
 ```bash
-git add src/ui/components/copy-button.ts
-git add src/ui/__tests__/copy-button.test.ts
-git commit -m "ui: add CopyButton component"
+git add package.json docs/contributing/md/common-tasks.md
+git commit -m "#[audit] — define truthful audit/fuzz contract and package script map" -m $'#[episode]{\n  title = `Audit contract`\n  why = `Make audit and fuzz script names match their actual checks`\n  exhibits = #[\n    `package.json`\n    `docs/contributing/md/common-tasks.md`\n  ]\n}'
 ```
 
 Or add all changes:
 ```bash
 git add .
-git commit -m "ui: add CopyButton component"
+git commit -m "#[scope] — description" -m $'#[episode]{\n  title = `Episode title`\n  why = `Why this change exists`\n  exhibits = #[\n    `path/to/file`\n  ]\n}'
 ```
 
 ---
@@ -239,7 +215,7 @@ git push origin my-feature-branch
 
 2. **Verify everything passes**
 ```bash
-npm run build && npm run test:run && npm run lint:layers
+npm run build && npm run test:run && npm run lint && npm run audit:markers:json
 ```
 
 ### Open the PR
@@ -247,12 +223,12 @@ npm run build && npm run test:run && npm run lint:layers
 Go to GitHub and click "Open a pull request"
 
 **PR Title:**
-Use same format as commits: `scope: description`
+Use the same sigil-based format as commits.
 
 ```
-ui: add CopyButton component
-lang: improve error messages
-docs: explain layer boundaries
+.[plans] — refresh audit-fuzz roadmap
+#[audit] — define truthful audit/fuzz contract and package script map
+&[marker] =extend[extraction-seed-contracts] — retag pilots and update craft skill
 ```
 
 **PR Description:**
@@ -270,7 +246,7 @@ What did you change? List the main modifications.
 How can someone verify this works?
 - [ ] Manual testing in dev server
 - [ ] All tests passing (npm run test:run)
-- [ ] No layer boundary violations (npm run lint:layers)
+- [ ] Local validation passing (npm run build && npm run test:run && npm run lint)
 
 ## Affected Domains
 Which domains changed? (e.g., ui/, runtime/, docs/)
@@ -305,7 +281,7 @@ For fixes:
 ```bash
 # Make changes
 git add .
-git commit -m "address review feedback: improve button accessibility"
+git commit -m "&[scope] — address review feedback" -m $'#[episode]{\n  title = `Review follow-up`\n  why = `Respond to requested changes`\n  exhibits = #[\n    `path/to/file`\n  ]\n}'
 git push origin my-feature-branch
 # PR automatically updates
 ```
@@ -358,124 +334,59 @@ const count: number = 5;
 
 ---
 
-## Fuzz Profiles (Code Quality)
+## Fuzz Profiles (Current Rewrite Surface)
 
-Code quality checks beyond tests. Profiles are now composable, so you can run
-single lenses, stage aliases, or custom combinations.
+The truthful `fuzz:*` surface is currently stage-based and local-only. Use these names as the supported contract while deeper per-lens runners are rebuilt.
 
 ```bash
 npm run fuzz:explore
 npm run fuzz:stabilize
-npm run fuzz:all
 npm run fuzz:ship
-npm run fuzz --profile=types+async
-npm run fuzz --profile=types+runtime --level=warn
-npm run fuzz:explore --target=src/runtime/
+npm run fuzz:all
 ```
 
 Common stage aliases:
-- **fuzz:explore** — Fast warning-level signal while iterating
-- **fuzz:stabilize** — Type/async/dead/runtime checks before review
-- **fuzz:refactor** — Refactor pressure (types + complexity + purity + dead)
-- **fuzz:ship** — Strict pre-merge gate (error-level)
-- **fuzz:all** — Full matrix at warning level
+- **fuzz:explore** — runtime test surface (`npm run test:runtime`)
+- **fuzz:stabilize** — typecheck + runtime tests
+- **fuzz:ship** — build gate + full test run
+- **fuzz:all** — current alias of `fuzz:ship`
 
 Single-dimension lenses:
-- **fuzz:types** — Unsafe `any` types, type assertions
-- **fuzz:complexity** — Functions that are too long/complex
-- **fuzz:async** — Floating promises, async issues
-- **fuzz:purity** — Functions that mutate parameters
-- **fuzz:dead** — Unused code, dead branches
-- **fuzz:runtime** — Unnecessary conditions
-- **fuzz:naming** — Naming convention violations
+- **fuzz:types** — TypeScript compile surface
+- **fuzz:runtime** — runtime Vitest suite
 
-### Interpreting Output
-
-```
-src/ui/button.ts(45:5) WARN complexity: function is too complex (12)
-  → Function has too many branches; consider breaking it up
-
-src/lang/lexer.ts(100:10) WARN dead: unreachable code
-  → This line is never executed; remove it
-
-src/runtime/eval.ts(23:3) WARN purity: parameter reassigned
-  → Don't modify function parameters
-```
+Compatibility aliases such as `fuzz:complexity`, `fuzz:dead`, `fuzz:naming`, `fuzz:async`, and `fuzz:boonhonk` still exist in this snapshot, but they do **not** yet represent dedicated analyzers. Treat them as transitional until the audit-fuzz rewrite lands the real runners.
 
 ---
 
 ## Measuring Token Efficiency
 
-The project tracks token usage for AI-assisted development.
+There is no dedicated `measure-tokens` script in the current rewrite snapshot.
+
+For a quick size/signal check, use:
 
 ```bash
-npm run measure-tokens
+git diff --stat
+npm run audit:markers:json
+npm run build
 ```
-
-This shows:
-- Current token usage
-- Hotspots (files using most tokens)
-- Trends over time
-
-Output:
-```
-Total Tokens: 245,000
-Top hotspots:
-  - src/lang/parser.ts: 8,500
-  - src/runtime/eval.ts: 7,200
-  - src/ui/components/: 5,100
-
-Optimization opportunities:
-  - Extract large inline data from logic
-  - Keep barrel exports under 30 lines
-```
-
-See `TOKEN-EFFICIENCY.md` for full documentation.
 
 ---
 
-## Debugging in the Browser
+## Using the Spw Dev Loop
 
-### Enable DevTools
-1. Start dev server: `npm run dev`
-2. Open browser DevTools: F12 or Cmd+Option+I
-3. Go to Console tab
+The rewrite snapshot does not expose a generic browser dev-server script. The live local loop that **is** available is the `.spw` watcher:
 
-### Log Output
-```typescript
-console.log('value:', myVariable);
-console.error('error:', error);
-console.table(array);  // Pretty print arrays/objects
+```bash
+npm run spw:dev
 ```
 
-### Breakpoints
-1. Go to Sources tab
-2. Click line number to set breakpoint
-3. Reload page
-4. Execution pauses at breakpoint
-5. Use Step Over/Into/Out buttons to debug
+What it does:
+- Watches the `.spw/` tree
+- Canonicalizes changed `.spw` files
+- Re-parses them and reports token/error counts
 
-### Watch Expressions
-In DevTools console:
-```javascript
-// Watch a variable
-myVariable
-
-// Call a function
-myFunction()
-
-// Check object properties
-myObject.property
-```
-
-### Debug in the REPL
-The language REPL has step-through debugging:
-```
-Ctrl+D           # Step debugger
-Ctrl+N           # Next step
-Ctrl+O           # Step over
-Ctrl+I           # Step into
-```
+Stop it with `Ctrl+C`.
 
 ---
 
@@ -483,20 +394,20 @@ Ctrl+I           # Step into
 
 ### By File
 ```bash
-npm run test:run src/ui/__tests__/button.test.ts
+npm run test:runtime -- src/runtime/__tests__/register-bank.test.ts
 ```
 
 ### By Pattern
 ```bash
-npm run test:run -- --grep "button"
+npm run test:runtime -- -t "phase"
 ```
-Runs all tests with "button" in the name.
+Runs runtime tests with "phase" in the name.
 
 ### By Domain
 ```bash
-npm run test:run src/lang/__tests__/
+npm run test:dom -- src/dom/__tests__/
 ```
-Runs all tests in a directory.
+Runs DOM tests in a directory.
 
 ### Verbose Output
 ```bash
@@ -506,29 +417,20 @@ Shows each test name and time.
 
 ---
 
-## Checking Architecture Boundaries
+## Checking Canon and Spec Surfaces
 
 Before every commit:
 
 ```bash
-npm run lint:layers
+npm run lint
+npm run lint:docs:strict
 ```
 
-This verifies the 12-domain layered architecture is respected.
+When you touch the `v0.2.0-alpha` library architecture specifically, run:
 
-**Example violation:**
+```bash
+npm run lint:v020:architecture
 ```
-src/lang/index.ts:45
-❌ Cannot import from app/ (outer domain)
-   lang (4) depends on: core (0), infra (1)
-   Suggestion: Move to core/ or runtime/ or features/
-```
-
-**To fix:**
-- Move the code to an allowed domain, OR
-- Use a different import from an allowed domain
-
-See `ARCHITECTURE-STRATEGY.md` for the complete dependency graph.
 
 ---
 
@@ -569,17 +471,17 @@ npm run test:run
 npm run build
 # ✅ Should complete without errors
 
-# 3. Check style
-npm run lint:fix
-# ✅ Should auto-fix issues
+# 3. Validate canon/docs
+npm run lint
+# ✅ Should complete without parser/docs failures
 
-# 4. Check boundaries
-npm run lint:layers
-# ✅ Should show "Layer boundaries OK"
+# 4. Capture audit inventory
+npm run audit:markers:json
+# ✅ Should emit machine-readable inventory
 
 # 5. Commit
 git add .
-git commit -m "scope: description"
+git commit -m "#[scope] — description" -m $'#[episode]{\n  title = `Episode title`\n  why = `Why this change exists`\n  exhibits = #[\n    `path/to/file`\n  ]\n}'
 
 # 6. Push
 git push origin branch-name
@@ -591,12 +493,12 @@ If everything ✅, open the PR!
 
 ## Troubleshooting
 
-### "npm run dev" won't start
+### "npm run spw:dev" won't start
 ```bash
 # Clear cache and reinstall
 rm -rf node_modules
 npm install
-npm run dev
+npm run spw:dev
 ```
 
 ### Tests are timing out
@@ -607,8 +509,9 @@ npm run test:run -- --testTimeout=10000
 
 ### Build is very slow
 ```bash
-# Check what's slow
-npm run build -- --analyze
+# Time the core gates directly
+time npm run build
+time npm run test:run
 ```
 
 ### Can't find module errors
@@ -621,13 +524,10 @@ cat src/ui/index.ts | grep 'export'
 # ✅ import { Button } from '@/ui'
 ```
 
-### Changes not showing in browser
+### Changes not showing in the Spw dev loop
 ```bash
-# Hard refresh
-Cmd+Shift+R (Mac) or Ctrl+Shift+R (Windows)
-
-# Or check dev server is running
-npm run dev
+# Restart the watcher
+npm run spw:dev
 ```
 
 ---
@@ -638,9 +538,5 @@ npm run dev
 2. Follow the step-by-step instructions
 3. If you get stuck, check the troubleshooting section
 4. Open an issue if something doesn't work
-
-Good luck! 🚀
-
----
 
 **Back to:** [Contributing Guide Hub](README.md)
