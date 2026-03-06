@@ -20,15 +20,10 @@ import {
     advance,
     skipWhitespace,
     named,
-    lazy,
 } from '../combinators'
 import { matchArmNode } from './patterns'
 import type { ExpressionNode } from '../types'
-
-// Lazy import to break circular dependency: match → expression → term → match
-const expressionNode: Parser<ExpressionNode> = lazy(() =>
-    require('./expressions').expressionNode
-)
+import { expressionNode } from './expressions'
 
 /**
  * Match: ?match[input] { pat => handler ... }

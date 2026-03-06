@@ -134,8 +134,8 @@ describe('Resonance Detection', () => {
     it('detects phase-sync', () => {
         const sub = new Substrate('test')
         const at = new Date().toISOString()
-        sub.emit({ kind: 'write', key: 'a', value: 1, phase: 'sem', at })
-        sub.emit({ kind: 'write', key: 'b', value: 2, phase: 'sem', at })
+        sub.emit({ kind: 'write', key: 'a', value: 1, phase: 'semantic', at })
+        sub.emit({ kind: 'write', key: 'b', value: 2, phase: 'semantic', at })
         const resonances = detectResonances(sub)
         const syncs = resonances.filter(r => r.type === 'phase-sync')
         expect(syncs.length).toBeGreaterThanOrEqual(1)

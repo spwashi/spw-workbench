@@ -636,7 +636,7 @@ export function codeLens(params: DocumentParams, deps: HandlerDeps): LspCodeLens
                     const maxPhaseEntry = (Object.values(regEntries) as any[])
                         .filter((e: any) => e.meta.phases?.current)
                         .sort((a: any, b: any) => {
-                            const order = ['lex', 'parse', 'sem', 'opt', 'prag']
+                            const order = ['lex', 'parse', 'semantic', 'optimize', 'pragmatic']
                             return order.indexOf(b.meta.phases!.current) - order.indexOf(a.meta.phases!.current)
                         })[0]
                     const maxPhase = maxPhaseEntry?.meta.phases?.current ?? '\u2014'

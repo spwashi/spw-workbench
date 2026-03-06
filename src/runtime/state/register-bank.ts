@@ -7,6 +7,7 @@ import type {
   RegisterEntry,
   RegisterMeta,
   RegisterPhase,
+  RegisterPhaseInput,
   RegisterSnapshot,
   RegisterWriteOptions,
   RuntimePacket,
@@ -14,7 +15,7 @@ import type {
   RuntimeValue,
   ScopeFrame,
 } from './types'
-import { PHASE_ORDER } from './types'
+import { LIMINALITY_ORDER, PHASE_ORDER, normalizeRegisterPhase } from './types'
 
 const DEFAULT_FOCUS_KEY = '"'
 const HISTORY_KEYS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] as const
@@ -183,11 +184,18 @@ export class RegisterBank {
 
     // Phase enrichment — additive, in-place on existing cells
     if (options.phase) {
+      const phase = normalizeRegisterPhase(options.phase)
       entry.meta.phases = this.advancePhase(
         entry.meta.phases,
-        options.phase,
+        phase,
         options.source ?? 'set',
       )
+
+      entry.meta.address = {
+        ...(entry.meta.address ?? { key }),
+        key,
+        phase,
+      }
     }
 
     // Substrate emission — event-driven processing
@@ -195,7 +203,7 @@ export class RegisterBank {
       kind: 'write',
       key,
       value: entry.value,
-      phase: options.phase,
+      phase: options.phase ? normalizeRegisterPhase(options.phase) : undefined,
       source: options.source,
       at: nowIso(),
     })
@@ -205,18 +213,34 @@ export class RegisterBank {
 
   /**
    * Enrich a register cell's phase without changing its value.
-   * Useful for progressive enrichment (e.g., lex → parse → sem).
+   * Useful for progressive enrichment (e.g., lex → parse → semantic).
    */
-  enrichPhase(key: string, phase: RegisterPhase, source?: string): boolean {
+  enrichPhase(key: string, phase: RegisterPhaseInput, source?: string): boolean {
     const entry = this.entries.get(key)
     if (!entry) return false
+    const normalizedPhase = normalizeRegisterPhase(phase)
 
     entry.meta.phases = this.advancePhase(
       entry.meta.phases,
-      phase,
-      source ?? `enrich:${phase}`,
+      normalizedPhase,
+      source ?? `enrich:${normalizedPhase}`,
     )
+    entry.meta.address = {
+      ...(entry.meta.address ?? { key }),
+      key,
+      phase: normalizedPhase,
+    }
     entry.meta.lastUsedAt = nowIso()
+
+    this.substrate?.emit({
+      kind: 'phase-advance',
+      key,
+      value: entry.value,
+      phase: normalizedPhase,
+      source: source ?? `enrich:${normalizedPhase}`,
+      at: nowIso(),
+    })
+
     return true
   }
 
@@ -337,22 +361,24 @@ export class RegisterBank {
 
   // ── Liminality ──────────────────────────────────────────────
 
-  /** Promote a cell's liminality (0→1→2→3). Returns new level or undefined if cell doesn't exist. */
+  /** Promote a cell's liminality (local→liminal→visible→global). Returns new level or undefined if cell doesn't exist. */
   promote(key: string): Liminality | undefined {
     const entry = this.entries.get(key)
     if (!entry) return undefined
-    const current = entry.meta.liminality ?? 0
-    const next = Math.min(current + 1, 3) as Liminality
+    const current = entry.meta.liminality ?? LIMINALITY_ORDER[0]
+    const currentIndex = LIMINALITY_ORDER.indexOf(current)
+    const next = LIMINALITY_ORDER[Math.min(currentIndex + 1, LIMINALITY_ORDER.length - 1)]
     entry.meta.liminality = next
     return next
   }
 
-  /** Demote a cell's liminality (3→2→1→0). Returns new level or undefined if cell doesn't exist. */
+  /** Demote a cell's liminality (global→visible→liminal→local). Returns new level or undefined if cell doesn't exist. */
   demote(key: string): Liminality | undefined {
     const entry = this.entries.get(key)
     if (!entry) return undefined
-    const current = entry.meta.liminality ?? 0
-    const next = Math.max(current - 1, 0) as Liminality
+    const current = entry.meta.liminality ?? LIMINALITY_ORDER[0]
+    const currentIndex = LIMINALITY_ORDER.indexOf(current)
+    const next = LIMINALITY_ORDER[Math.max(currentIndex - 1, 0)]
     entry.meta.liminality = next
     return next
   }
@@ -495,7 +521,7 @@ export class RegisterBank {
         immutable: false,
         provenance: ['init'],
         lenses: [],
-        liminality: 0,
+        liminality: LIMINALITY_ORDER[0],
         frequency: 0,
         coupling: 0,
         measureDepth: 0,

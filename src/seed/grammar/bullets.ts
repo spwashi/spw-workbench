@@ -22,13 +22,8 @@ import {
     skipWhitespace,
     token,
     named,
-    lazy,
 } from '../combinators'
-
-// Lazy import to break circular dependency: bullet → expression → term → bullet
-const expressionNode: Parser<ExpressionNode> = lazy(() =>
-    require('./expressions').expressionNode
-)
+import { expressionNode } from './expressions'
 
 /**
  * Bullet item: .. <expression>

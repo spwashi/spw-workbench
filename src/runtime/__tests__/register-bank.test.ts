@@ -32,7 +32,7 @@ describe('RegisterBank', () => {
   })
 
   describe('phase enrichment', () => {
-    it('enrichPhase progressively enriches a cell lex → parse → sem', () => {
+    it('enrichPhase progressively enriches a cell lex → parse → semantic', () => {
       const bank = new RegisterBank()
       bank.set('token', 'hello', { source: 'lexer', phase: 'lex' })
 
@@ -41,8 +41,8 @@ describe('RegisterBank', () => {
       bank.enrichPhase('token', 'parse', 'parser')
       expect(bank.phaseOf('token')).toBe('parse')
 
-      bank.enrichPhase('token', 'sem', 'analyzer')
-      expect(bank.phaseOf('token')).toBe('sem')
+      bank.enrichPhase('token', 'semantic', 'analyzer')
+      expect(bank.phaseOf('token')).toBe('semantic')
 
       // Value unchanged through enrichment
       expect(bank.get('token')).toBe('hello')
@@ -70,15 +70,15 @@ describe('RegisterBank', () => {
       const bank = new RegisterBank()
       bank.set('cell', 'data', { source: 'init', phase: 'lex' })
       bank.enrichPhase('cell', 'parse')
-      bank.enrichPhase('cell', 'sem')
+      bank.enrichPhase('cell', 'semantic')
 
       const meta = bank.materialize('cell')
       const weights = meta?.phases?.facets.map(f => f.memoryWeight) ?? []
       expect(weights).toHaveLength(3)
-      // lex < parse < sem
+      // lex < parse < semantic
       expect(weights[0]).toBeLessThan(weights[1]!)
       expect(weights[1]).toBeLessThan(weights[2]!)
-      // Exact values: lex=0.2, parse=0.4, sem=0.6
+      // Exact values: lex=0.2, parse=0.4, semantic=0.6
       expect(weights[0]).toBeCloseTo(0.2)
       expect(weights[1]).toBeCloseTo(0.4)
       expect(weights[2]).toBeCloseTo(0.6)
@@ -95,7 +95,7 @@ describe('RegisterBank', () => {
       expect(entry.meta.phases?.facets).toHaveLength(2)
 
       // Mutating snapshot shouldn't affect bank
-      entry.meta.phases!.facets.push({ phase: 'sem', enrichedAt: 'fake' })
+      entry.meta.phases!.facets.push({ phase: 'semantic', enrichedAt: 'fake' })
       expect(bank.materialize('phased')?.phases?.facets).toHaveLength(2)
     })
   })
@@ -105,25 +105,25 @@ describe('RegisterBank', () => {
       const bank = new RegisterBank()
       bank.set('cell', 'value', { source: 'test' })
       const meta = bank.materialize('cell')
-      expect(meta?.liminality).toBe(0)
+      expect(meta?.liminality).toBe('local')
       expect(meta?.frequency).toBeDefined()
       expect(meta?.coupling).toBe(0)
       expect(meta?.measureDepth).toBe(0)
     })
 
-    it('promote/demote cycles liminality 0→1→2→3→3 and 3→2→1→0→0', () => {
+    it('promote/demote cycles liminality local→liminal→visible→global', () => {
       const bank = new RegisterBank()
       bank.set('cell', 'v', { source: 'test' })
 
-      expect(bank.promote('cell')).toBe(1)
-      expect(bank.promote('cell')).toBe(2)
-      expect(bank.promote('cell')).toBe(3)
-      expect(bank.promote('cell')).toBe(3) // clamps at 3
+      expect(bank.promote('cell')).toBe('liminal')
+      expect(bank.promote('cell')).toBe('visible')
+      expect(bank.promote('cell')).toBe('global')
+      expect(bank.promote('cell')).toBe('global')
 
-      expect(bank.demote('cell')).toBe(2)
-      expect(bank.demote('cell')).toBe(1)
-      expect(bank.demote('cell')).toBe(0)
-      expect(bank.demote('cell')).toBe(0) // clamps at 0
+      expect(bank.demote('cell')).toBe('visible')
+      expect(bank.demote('cell')).toBe('liminal')
+      expect(bank.demote('cell')).toBe('local')
+      expect(bank.demote('cell')).toBe('local')
     })
 
     it('promote/demote returns undefined for nonexistent cells', () => {
@@ -183,7 +183,7 @@ describe('RegisterBank', () => {
 
       const snap = bank.snapshot()
       const entry = snap.entries['cell']
-      expect(entry.meta.liminality).toBe(1)
+      expect(entry.meta.liminality).toBe('liminal')
       expect(entry.meta.coupling).toBeGreaterThan(0)
       expect(entry.meta.measureDepth).toBe(0)
     })

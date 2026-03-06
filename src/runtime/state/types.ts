@@ -65,40 +65,48 @@ export type RuntimeValue = RuntimeScalar | RuntimeRecord | RuntimeValue[] | Runt
  * Each phase progressively enriches the register cell.
  *
  * Serialization: maps 1:1 to Spw modifier tags:
- *   lex → !lex[], parse → !parse[], sem → !sem[], opt → !opt[], prag → !prag[]
+ *   lex → !lex[], parse → !parse[], semantic → !semantic[],
+ *   optimize → !optimize[], pragmatic → !pragmatic[]
  */
+export const PHASE_ORDER = ['lex', 'parse', 'semantic', 'optimize', 'pragmatic'] as const
+
 export type RegisterPhase =
-  | 'lex'   // tokenization: character → token
-  | 'parse' // structure: token → AST node
-  | 'sem'   // semantics: meaning, type resolution, relations
-  | 'opt'   // optimization: dead-code, constant folding
-  | 'prag'  // pragmatics: runtime context, effects, output
+  typeof PHASE_ORDER[number]
+
+export type RegisterPhaseAlias =
+  | 'sem'
+  | 'opt'
+  | 'prag'
+
+export type RegisterPhaseInput =
+  | RegisterPhase
+  | RegisterPhaseAlias
 
 /**
  * Ordered phase progression — used for comparison, serialization, and eviction priority.
  * Earlier phases are cheaper to recompute and evict first under memory pressure.
  */
-export const PHASE_ORDER: readonly RegisterPhase[] = ['lex', 'parse', 'sem', 'opt', 'prag'] as const
-
-// ── Liminality model ──────────────────────────────────────────
+export function normalizeRegisterPhase(phase: RegisterPhaseInput): RegisterPhase {
+  switch (phase) {
+    case 'sem':
+      return 'semantic'
+    case 'opt':
+      return 'optimize'
+    case 'prag':
+      return 'pragmatic'
+    default:
+      return phase
+  }
+}
 
 /**
  * Liminality — scope-awareness level for memory management.
  * Controls GC policy and hardware-aligned memory placement.
- *
- *   0 = local   (stack, GC on block exit)
- *   1 = liminal (heap, GC on scope exit, aware of peers)
- *   2 = visible (pinned, GC on navigate-away)
- *   3 = global  (persistent, survives session)
  */
-export type Liminality = 0 | 1 | 2 | 3
+export const LIMINALITY_ORDER = ['local', 'liminal', 'visible', 'global'] as const
 
-export const LIMINALITY_LABELS: Record<Liminality, string> = {
-  0: 'local',
-  1: 'liminal',
-  2: 'visible',
-  3: 'global',
-} as const
+export type Liminality =
+  typeof LIMINALITY_ORDER[number]
 
 /**
  * Per-phase metadata produced when a cell is enriched.
@@ -166,7 +174,7 @@ export interface RegisterMeta {
 
   // ── Acoustic fields ───────────────────────────────────────
 
-  /** Liminality — scope-awareness level (0=local … 3=global) */
+  /** Liminality — scope-awareness level */
   liminality?: Liminality
   /** Acoustic frequency — writes/sec over sliding window */
   frequency?: number
@@ -188,7 +196,7 @@ export interface RegisterWriteOptions {
   descriptor?: Partial<RegisterDescriptor>
   force?: boolean
   /** Phase annotation for this write */
-  phase?: RegisterPhase
+  phase?: RegisterPhaseInput
 }
 
 export interface RegisterSnapshot {
