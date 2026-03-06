@@ -11,7 +11,8 @@
  *   Drain      — consume all accumulated events
  *   Resonance  — emergent coupling discovered between register entries
  *
- * @spw:portable:runtime - No DOM or app-specific imports allowed
+ * @spw:portable:runtime[layer=pipeline,system=event-substrate,extract=candidate,basis=no-dom|event-log] - No DOM or app-specific imports allowed
+ * @spw:seed:starter[system=event-substrate,extract=candidate,next=resonance,density=sparse] - Event substrate is a viable sparse base for later extraction
  */
 
 import type { RuntimeValue, RegisterPhase } from '../state/types'

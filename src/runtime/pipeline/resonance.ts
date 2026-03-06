@@ -5,7 +5,8 @@
  * Runs after A-line pipeline completes — discovers implicit relationships
  * that were not explicitly declared via <> coupling.
  *
- * @spw:portable:runtime - No DOM or app-specific imports allowed
+ * @spw:portable:runtime[layer=pipeline,system=resonance-detector,extract=candidate,basis=no-dom|pure-analysis] - No DOM or app-specific imports allowed
+ * @spw:seed:scaffold[system=resonance-detector,extract=candidate,density=sparse,basis=event-log|pure-analysis] - Event-log scaffold is promising but not yet a standalone kernel
  */
 
 import type { RegisterEvent, Resonance } from './substrate'

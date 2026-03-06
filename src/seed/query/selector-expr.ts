@@ -28,7 +28,9 @@
  *   "~\"path\"" → { sigil: '~', value: 'path' }
  *   "*"         → { sigil: '*' }
  *
- * @spw:portable:seed - No DOM or app-specific imports allowed
+ * @spw:surface:query[system=selector-expr,semantic=prolog|sql|css,status=experimental] - Selector expressions are a user-facing query surface
+ * @spw:portable:seed[layer=query,system=selector-engine,extract=candidate,basis=no-dom|pure-data] - No DOM or app-specific imports allowed
+ * @spw:seed:starter[system=selector-engine,extract=candidate,next=match,density=sparse] - Strong sparse starting point for later query extraction
  */
 
 import type {

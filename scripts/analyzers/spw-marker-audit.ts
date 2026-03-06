@@ -2,7 +2,15 @@
 
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
-import { extractSpwMarkers, normalizeMarkerQuery, type ParsedSpwMarker } from './marker-schema'
+import {
+  extractSpwMarkers,
+  markerMatchesAttributeFilter,
+  normalizeMarkerQuery,
+  parseMarkerAttributeFilter,
+  type MarkerAttributeFilter,
+  type ParsedMarkerAttribute,
+  type ParsedSpwMarker,
+} from './marker-schema'
 
 type Format = 'plain' | 'md' | 'json'
 
@@ -10,6 +18,7 @@ interface CLI {
   format: Format
   family: string | null
   marker: string | null
+  attribute: MarkerAttributeFilter | null
 }
 
 interface MarkerHit extends ParsedSpwMarker {
@@ -25,8 +34,12 @@ interface SummaryBucket {
 interface MarkerSummary {
   family: string
   marker: string
+  signature: string
   qualifiers: string[]
   kind: ParsedSpwMarker['kind']
+  form: ParsedSpwMarker['form']
+  attributes: Record<string, string | string[]>
+  attributeEntries: ParsedMarkerAttribute[]
   count: number
 }
 
@@ -38,6 +51,7 @@ function parseArgs(argv: string[]): CLI {
   let format: Format = 'plain'
   let family: string | null = null
   let marker: string | null = null
+  let attribute: MarkerAttributeFilter | null = null
 
   for (const arg of argv.slice(2)) {
     if (arg.startsWith('--format=')) {
@@ -58,6 +72,11 @@ function parseArgs(argv: string[]): CLI {
       continue
     }
 
+    if (arg.startsWith('--attribute=')) {
+      attribute = parseMarkerAttributeFilter(arg.slice('--attribute='.length))
+      continue
+    }
+
     if (arg.startsWith('--tag=')) {
       const query = normalizeMarkerQuery(arg.slice('--tag='.length))
       if (query.includes(':')) {
@@ -69,7 +88,7 @@ function parseArgs(argv: string[]): CLI {
     }
   }
 
-  return { format, family, marker }
+  return { format, family, marker, attribute }
 }
 
 async function walk(dir: string): Promise<string[]> {
@@ -128,19 +147,31 @@ function markerHits(content: string, relPath: string): MarkerHit[] {
 function summarize(hits: MarkerHit[]) {
   const byFamily = new Map<string, number>()
   const byMarker = new Map<string, MarkerSummary>()
+  const byAttribute = new Map<string, number>()
   const byFile = new Map<string, number>()
 
   for (const hit of hits) {
     byFamily.set(hit.family, (byFamily.get(hit.family) ?? 0) + 1)
-    const existingMarker = byMarker.get(hit.normalized)
+    for (const entry of hit.attributeEntries) {
+      byAttribute.set(entry.key, (byAttribute.get(entry.key) ?? 0) + 1)
+    }
+
+    const existingMarker = byMarker.get(hit.signature)
     if (existingMarker) {
       existingMarker.count += 1
     } else {
-      byMarker.set(hit.normalized, {
+      byMarker.set(hit.signature, {
         family: hit.family,
         marker: hit.normalized,
+        signature: hit.signature,
         qualifiers: [...hit.qualifiers],
         kind: hit.kind,
+        form: hit.form,
+        attributes: { ...hit.attributes },
+        attributeEntries: hit.attributeEntries.map(entry => ({
+          key: entry.key,
+          values: [...entry.values],
+        })),
         count: 1,
       })
     }
@@ -148,14 +179,16 @@ function summarize(hits: MarkerHit[]) {
   }
 
   const families = sortBuckets([...byFamily.entries()].map(([name, count]) => ({ name, count })))
+  const attributes = sortBuckets([...byAttribute.entries()].map(([name, count]) => ({ name, count })))
   const markers = [...byMarker.values()].sort((left, right) => {
     if (right.count !== left.count) {
       return right.count - left.count
     }
-    return left.marker.localeCompare(right.marker)
+    return left.signature.localeCompare(right.signature)
   })
+  const contracts = markers.filter(marker => marker.form === 'contract')
   const files = sortBuckets([...byFile.entries()].map(([name, count]) => ({ name, count }))).slice(0, 20)
-  return { families, markers, files }
+  return { families, attributes, markers, contracts, files }
 }
 
 function sortBuckets(buckets: SummaryBucket[]): SummaryBucket[] {
@@ -168,7 +201,7 @@ function sortBuckets(buckets: SummaryBucket[]): SummaryBucket[] {
 }
 
 function printPlain(hits: MarkerHit[]): void {
-  const { families, markers, files } = summarize(hits)
+  const { families, attributes, markers, files } = summarize(hits)
   console.log(`@spw markers: ${hits.length}`)
 
   if (families.length === 0) {
@@ -181,12 +214,26 @@ function printPlain(hits: MarkerHit[]): void {
     console.log(`- ${family.name}: ${family.count}`)
   }
 
+  if (attributes.length > 0) {
+    console.log('Attributes:')
+    for (const attribute of attributes) {
+      console.log(`- ${attribute.name}: ${attribute.count}`)
+    }
+  }
+
   console.log('Markers:')
   for (const marker of markers) {
-    const qualifierSuffix = marker.qualifiers.length > 0
-      ? ` (${marker.kind})`
-      : ''
-    console.log(`- ${marker.marker}: ${marker.count}${qualifierSuffix}`)
+    const suffix = marker.form === 'contract'
+      ? ' (contract)'
+      : marker.qualifiers.length > 0
+        ? ` (${marker.kind})`
+        : ''
+    console.log(`- ${marker.signature}: ${marker.count}${suffix}`)
+  }
+
+  const contractCount = markers.filter(marker => marker.form === 'contract').length
+  if (contractCount > 0) {
+    console.log(`Contracts: ${contractCount}`)
   }
 
   console.log('Top files:')
@@ -195,11 +242,24 @@ function printPlain(hits: MarkerHit[]): void {
   }
 }
 
+function formatAttributes(entries: ParsedMarkerAttribute[]): string {
+  if (entries.length === 0) {
+    return '—'
+  }
+
+  return entries
+    .map(entry => `${entry.key}=${entry.values.join('|')}`)
+    .join(', ')
+}
+
 function printMarkdown(hits: MarkerHit[]): void {
-  const { families, markers, files } = summarize(hits)
+  const { families, attributes, markers, contracts, files } = summarize(hits)
   console.log('# Spw Marker Audit')
   console.log('')
   console.log(`Total markers: **${hits.length}**`)
+  if (contracts.length > 0) {
+    console.log(`Contract markers: **${contracts.length}**`)
+  }
   console.log('')
   console.log('## Families')
   console.log('| Family | Count |')
@@ -207,15 +267,24 @@ function printMarkdown(hits: MarkerHit[]): void {
   for (const family of families) {
     console.log(`| ${family.name} | ${family.count} |`)
   }
+  if (attributes.length > 0) {
+    console.log('')
+    console.log('## Attributes')
+    console.log('| Attribute | Count |')
+    console.log('|---|---:|')
+    for (const attribute of attributes) {
+      console.log(`| ${attribute.name} | ${attribute.count} |`)
+    }
+  }
   console.log('')
   console.log('## Markers')
-  console.log('| Marker | Family | Qualifiers | Count |')
-  console.log('|---|---|---|---:|')
+  console.log('| Signature | Family | Qualifiers | Attributes | Count |')
+  console.log('|---|---|---|---|---:|')
   for (const marker of markers) {
     const qualifierLabel = marker.qualifiers.length > 0
       ? marker.qualifiers.join(', ')
       : '—'
-    console.log(`| ${marker.marker} | ${marker.family} | ${qualifierLabel} | ${marker.count} |`)
+    console.log(`| ${marker.signature} | ${marker.family} | ${qualifierLabel} | ${formatAttributes(marker.attributeEntries)} | ${marker.count} |`)
   }
   console.log('')
   console.log('## Top Files')
@@ -227,34 +296,54 @@ function printMarkdown(hits: MarkerHit[]): void {
 }
 
 function printJson(hits: MarkerHit[]): void {
-  const { families, markers, files } = summarize(hits)
+  const { families, attributes, markers, contracts, files } = summarize(hits)
   console.log(JSON.stringify({
     total: hits.length,
+    contractHits: hits.filter(hit => hit.form === 'contract').length,
+    contractMarkers: contracts.length,
     families: families.map(family => ({ family: family.name, count: family.count })),
     tags: families.map(family => ({ tag: family.name, count: family.count })),
+    attributes: attributes.map(attribute => ({ attribute: attribute.name, count: attribute.count })),
     markers: markers,
+    contracts: contracts,
     files: files.map(file => ({ file: file.name, count: file.count })),
     hits: hits.map(hit => ({
       file: hit.file,
       line: hit.line,
       raw: hit.raw,
       marker: hit.normalized,
+      signature: hit.signature,
       family: hit.family,
       qualifiers: hit.qualifiers,
       kind: hit.kind,
+      form: hit.form,
+      attributes: hit.attributes,
+      attributeEntries: hit.attributeEntries,
     })),
     scanRoots: SCAN_ROOTS,
   }, null, 2))
 }
 
 function filterHits(hits: MarkerHit[], cli: CLI): MarkerHit[] {
+  let filtered = hits
+
   if (cli.marker) {
-    return hits.filter(hit => hit.normalized === cli.marker)
+    const wantsSignature = cli.marker.includes('[')
+    filtered = filtered.filter(hit => wantsSignature
+      ? hit.signature === cli.marker
+      : hit.normalized === cli.marker
+    )
   }
+
   if (cli.family) {
-    return hits.filter(hit => hit.family === cli.family)
+    filtered = filtered.filter(hit => hit.family === cli.family)
   }
-  return hits
+
+  if (cli.attribute) {
+    filtered = filtered.filter(hit => markerMatchesAttributeFilter(hit, cli.attribute!))
+  }
+
+  return filtered
 }
 
 async function main(): Promise<void> {

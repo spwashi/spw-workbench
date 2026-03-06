@@ -10,7 +10,7 @@ description: Improve craft quality of this codebase (naming, layering, types, te
 1. Identify the smallest scope that pays off (one subsystem, one feature slice).
 2. Read the nearest `docs/index.spw` and `docs/audit-guide.spw` for the target stratum.
 3. Define the "quality axis" you are improving (clarity, correctness, testability, performance, UX, a11y).
-4. Run `npm run audit` to see existing `@spw:` debt markers in scope.
+4. Run `npm run audit` to see existing `@spw:` markers in scope, then inspect `seed:*`, `extract:*`, and `surface:*` contracts when the slice could become a reusable system.
 5. Make focused changes that remove root causes (not surface patches).
 6. Add or tighten tests adjacent to the change when it reduces future regressions.
 7. Run the verification loop (see Scripts).
@@ -30,6 +30,7 @@ description: Improve craft quality of this codebase (naming, layering, types, te
 - Prefer data-structure clarity over clever control flow.
 - Treat UI containment/scroll as owned by explicit containers (avoid accidental overflow).
 - Use existing tokens and patterns; avoid introducing new conventions unless necessary.
+- Prefer existing `seed:*` and `extract:*` markers before inventing a new subsystem starting point; if the marker surface is missing, add the smallest honest contract that helps later extraction.
 - When touching `.spw` files, prefer Gen 3 syntax (`.{}` facets, `#[]` sets, `=` bias, `[reg=...]`) over Gen 2.
 - Valence pentad (boon/bane/bone/bonk/honk) should describe how the component's material changes, not just what it does.
 - **Axis legibility**: Every constant should trace to a deformation axis (timing, disclosure, stability, affect, resolution, noise). Named derivations over magic numbers — e.g., `var(--spw-beat)` over `500ms`.
@@ -42,6 +43,9 @@ description: Improve craft quality of this codebase (naming, layering, types, te
 npm run audit               # All @spw: markers (debt, async, types, ui)
 npm run audit:debt          # Technical debt markers
 npm run audit:md            # Markdown report of all markers
+node --import tsx scripts/analyzers/spw-marker-audit.ts --tag=seed                  # Sparse starter and kernel surfaces
+node --import tsx scripts/analyzers/spw-marker-audit.ts --attribute=extract=candidate # Later extraction candidates
+node --import tsx scripts/analyzers/spw-marker-audit.ts --attribute=semantic=css      # CSS-like semantic surfaces
 npm run fuzz:complexity     # Cyclomatic complexity, function size
 npm run fuzz:dead           # Unused code, missing switch cases
 npm run fuzz:naming         # Naming convention violations
@@ -57,6 +61,7 @@ npm run build               # tsc + vite build
 
 Update this skill when:
 - A new `@spw:` marker category is added to the audit system → add it to the tooling table
+- Marker contract keys or starter/extraction conventions change → update the audit queries and workflow guidance
 - A new fuzz profile is added to `package.json` → add it to the tooling table
 - The 12-domain architecture changes (new domain added/removed) → update Codebase-Specific Knowledge
 - The valence pentad changes → update Heuristics
