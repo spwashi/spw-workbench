@@ -1,32 +1,30 @@
 # Plan: register-phase-evolution
 
-Evolve registers from a minimal value+address cell into a phased enrichment model, while introducing operational and positional register surfaces for query/runtime coherence.
+Refine the phased register model from the shipped runtime baseline into a queryable, documented surface that matches the current canonical vocabulary.
 
 ## Goal
 
-The desired end state is a register model that starts simple (`address + value`) and can be incrementally enriched as processing advances (lexing, parsing, semantics, optimization, pragmatics) without schema rewrites. This keeps early pipeline stages cheap and deterministic while enabling richer analysis later. In parallel, we split register concerns into operational intent and positional context so selection/update flows become explicit instead of overloaded.
+The desired end state is a register model whose phase vocabulary is shared by runtime, query tooling, tests, and docs: `lex`, `parse`, `semantic`, `optimize`, `pragmatic`. The additive enrichment mechanics and P0 runtime stabilization already landed on `main@8dd4e41`, so this plan now narrows to selector/query alignment and documentation rather than reopening the build-fix work. Keep enrichment incremental, queryable, and cheap at early stages without another schema reset.
 
-**Taste note**: clarity, layering, expressiveness.
+**Taste note**: clarity, naming, layering.
 
 ## Scope
 
-- **In scope**: register core type evolution, phase-facet enrichment API, in-place facet upgrades with lineage hooks, Spw-native selector expression grammar (`Spw.q`) for operational/positional queries, docs alignment with implemented behavior, targeted runtime/query tests.
-- **Out of scope**: full UI autocomplete brace-capture workflow, semantic optimizer implementation, full rewrite engine (`spwq` mutation mode), broad ONF redesign.
+- **In scope**: selector expression grammar (`Spw.q`), `spwq` integration, canonical phase-name alignment across runtime/query/docs, targeted tests, and narrow runtime touch-ups needed to support the shipped baseline.
+- **Out of scope**: revisiting the P0 phase/liminality repair, renaming `RegisterBank`, the broader chemistry/metaphysics redesign, full optimizer semantics, and UI autocomplete / brace-capture workflows.
 
 ## Decisions Locked
 
-- `parse` and `sem` remain coarse phase buckets in this increment.
-- selector surface is **Spw-native grammar first**, not preset-alias-only.
-- phase enrichment uses **in-place cell upgrades** (lineage optional, not mandatory per transition).
+- Canonical phase vocabulary is `lex`, `parse`, `semantic`, `optimize`, `pragmatic`.
+- Phase enrichment remains additive and in-place on existing cells.
+- Selector surface is **Spw-native grammar first**, not preset-alias-only.
+- `src/runtime/state/register-helpers.ts` is unrelated untracked extraction drift and stays out of scope unless adopted in a dedicated change.
 
 ## Files
 
 ```text
-[MOD] src/runtime/state/types.ts
-[MOD] src/runtime/state/register-bank.ts
-[MOD] src/runtime/state/type-affinities.ts
-[MOD] src/runtime/interpreter/interpreter.ts
-[MOD] src/runtime/pipeline/run-spw.ts
+[MOD?] src/runtime/state/types.ts
+[MOD?] src/runtime/state/register-bank.ts
 [MOD] src/runtime/__tests__/register-bank.test.ts
 [MOD] src/seed/query/types.ts
 [MOD] src/seed/query/match.ts
@@ -39,33 +37,31 @@ The desired end state is a register model that starts simple (`address + value`)
 [MOD] docs/runtime/spw/brace-registers.spw
 [MOD] lib/spw-v0.2.0-alpha/runtime/REGISTERS.md
 [MOD] lib/spw-v0.2.0-alpha/applications/QUERY.md
-[NEW] .agents/plans/register-phase-evolution/wip.spw
-[NEW] .agents/plans/register-phase-evolution/PLAN.md
+[MOD] .agents/plans/register-phase-evolution/wip.spw
+[MOD] .agents/plans/register-phase-evolution/PLAN.md
 [DEL] (none)
 ```
 
 ### Craft guard
 
-- `src/runtime/state/register-bank.ts` is the main growth risk; keep below 600 LOC by extracting helpers if needed.
-- `scripts/spwq.ts` should remain a thin CLI adapter; selector parsing/evaluation belongs in `src/seed/query/`.
+- `src/runtime/state/register-bank.ts` stays a narrow touch-up surface only; if helper extraction becomes necessary, do it as a deliberate follow-on instead of silently adopting the untracked draft helper file.
+- `scripts/spwq.ts` remains a thin CLI adapter; selector parsing and evaluation belong in `src/seed/query/`.
 - Maintain inward layering: `src/runtime` depends on `src/seed` types/interfaces, not app/UI modules.
 
 ## Commits
 
-1. `.[plans] — add/refresh plan artifacts with locked decisions`
-2. `vocab[runtime] — introduce register address/phase/facet types with backward-compatible defaults`
-3. `&[runtime] — evolve RegisterBank for in-place phase annotations and optional lineage`
-4. `![runtime] — extend runtime tests for phased enrichment invariants`
-5. `^seed[query] — add Spw-native selector expression grammar for operational/positional selectors`
-6. `&[spwq] — wire --selectorExpr in CLI and preserve preset compatibility`
-7. `![query] — validate selector semantics (including seq behavior and new expression parsing)`
-8. `.[docs] — align runtime/query docs to implemented register model and explicitly mark deferred brace-cursor flow`
+1. `.[plans] — refresh plan artifacts after P0 runtime stabilization`
+2. `^seed[query] — add Spw-native selector expression grammar for operational/positional selectors`
+3. `vocab[query] — align selector/runtime phase terminology on canonical names`
+4. `&[spwq] — wire selector expressions and canonical phase predicates into CLI flows`
+5. `![query] — validate selector semantics against shipped runtime phase invariants`
+6. `.[docs] — align register/query docs and mark chemistry redesign as a follow-on`
 
 ## Agentic Hygiene
 
-- Rebase target: `main@0c38b72659c72f1bea276176693ace20adb2e1dd`
+- Rebase target: `main@8dd4e4129acca3f9566cfe4d2913dae15e27fd28`
 - Rebase cadence: before commit 1, before merge
-- Hygiene split: none for branch divergence (`main...HEAD` clean). Local working tree contains unrelated edits; this plan isolates changes to the files listed above.
+- Hygiene split: keep unrelated untracked drift in `src/runtime/state/register-helpers.ts` out of this branch; do not adopt or delete it implicitly from this plan.
 
 ## Dependencies
 
@@ -73,12 +69,12 @@ none
 
 ## Spw Artifact
 
-A distilled artifact is warranted to preserve semantics decisions:
+A distilled artifact remains warranted to preserve the selector/phase semantics decisions:
 
 `.agents/plans/register-phase-evolution/register-phase-evolution.spw`
 
 ## Fuzz Strategy
 
-- Explore: `npm run test:runtime -- src/runtime/__tests__/register-bank.test.ts` and `npm run test:runtime -- src/seed/query/__tests__/selector-expr.test.ts`
-- Stabilize: `npm run test:runtime` and `npm run test:run`
-- Ship gate: `npm run lint:spw && npm run lint:v020:runtime && npm run test:run`
+- Explore: `npm run test:runtime -- src/seed/query/__tests__/selector-expr.test.ts`
+- Stabilize: `npm run test:runtime`
+- Ship gate: `npm run build && npm run test:run && npm run lint:spw`

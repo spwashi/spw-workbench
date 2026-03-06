@@ -1,0 +1,68 @@
+# wip — marker-schema-rewrite
+# Branch: feature/marker-schema-rewrite
+# Started: 2026-03-05
+
+#:layer #!pragmatics
+
+^["intent"]{
+ ~#goal: "Recast `@spw` markers from a flat tag counter into a typed annotation surface whose syntax and reports preserve real author intent. Treat the syntax itself as a useful artifact: if a richer schema improves truthfulness and queryability, allow a controlled rewrite with migration."
+ ~#taste: "expressiveness, clarity, correctness"
+}
+
+^["stream"]{
+ >> [2026-03-05 19:06] observe — the corpus already contains multi-segment markers such as `@spw:lens:syntactic`, but the current audit regex captures only the first segment.
+ >> [2026-03-05 19:06] observe — flat tags (`@spw:todo`, `@spw:term`) and richer marker forms coexist, so the syntax is already doing more work than the audit output admits.
+ >> [2026-03-05 19:06] observe — skills and docs tell contributors to trust marker audits, so schema loss directly weakens planning and review quality.
+ >> [2026-03-05 19:06] decide — marker syntax is an author-facing artifact, not just a regex target.
+ >> [2026-03-05 19:06] decide — a schema rewrite is acceptable if it stays comment-friendly and ships with an explicit migration story.
+ >> [2026-03-05 19:06] taste — prefer a small number of orthogonal marker dimensions over ad hoc tag proliferation.
+}
+
+^["open"]{
+ ?["should structured markers stay colon-chained (`@spw:lens:syntactic`) or move to a bracketed form?"]
+ ?["which fields are required versus optional in the rewritten schema?"]
+ ?["how much legacy auto-normalization is acceptable before the schema stops being truthful?"]
+}
+
+^["commits"]{
+ ~[1]: ".[plans] — add marker-schema-rewrite plan artifacts"
+ ~[2]: "#[marker] — define marker taxonomy, syntax candidates, and JSON report contract"
+ ~[3]: "&[marker] — upgrade marker analysis to preserve structured markers and emit richer reports"
+ ~[4]: "vocab[marker] — align pilot marker sites and add compatibility rules"
+ ~[5]: "![marker] — verify legacy and rewritten marker parsing across the pilot corpus"
+ ~[6]: ".[docs] — publish conventions and migration guidance"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@8dd4e4129acca3f9566cfe4d2913dae15e27fd28"
+ ~#rebased_at: ""
+ ~#hygiene_split: "exclude untracked `src/runtime/state/register-helpers.ts` from this branch"
+ ~#files_hot: "scripts/analyzers/spw-marker-audit.ts, package.json, docs/contributing/md/marker-conventions.md"
+ ~#next_commit: "1"
+ ~#open_count: "3"
+ ~#last_stream: "2026-03-05 19:06"
+ ~#taste_debt: "do not let a richer schema become cumbersome to write in comments or `.spw` prose"
+}
+
+^["done"]{
+ # Written at merge time.
+}
+
+#>wonder_agents_plans_markerschemarewrite_wip_1
+?["What is the algebraic closure of stream (marker-schema-rewrite)?"]{
+  #:depth #!computational // lens: formal structure
+  $^["intent"]@biome => %[formula.measure]
+  ~<.agents/plans/marker-schema-rewrite/wip.spw> // introspect
+  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
+  $%[plan.commit_count, plan.phase_progress]
+}
+
+#>wonder_agents_plans_markerschemarewrite_wip_2
+?["What is the felt rhythm of reading wip — marker-schema-rewrite?"]{
+  #:depth #!mathematical // lens: material grain
+  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
+  ~#structure: "intent → stream → open"
+  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark grain boundaries." }
+  ~<.agents/plans/_schema/wip.spw>  // nearest neighbor
+}

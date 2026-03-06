@@ -1,0 +1,68 @@
+# wip — audit-fuzz-truthfulness
+# Branch: feature/audit-fuzz-truthfulness
+# Started: 2026-03-05
+
+#:layer #!pragmatics
+
+^["intent"]{
+ ~#goal: "Make `audit:*` and `fuzz:*` truthful: local-only, coverage-aware, severity-ranked, and explicit about what they actually check. Replace placeholder aliases with runner profiles whose names match their guarantees."
+ ~#taste: "clarity, correctness, expressiveness"
+}
+
+^["stream"]{
+ >> [2026-03-05 19:06] observe — most `audit:*` scripts currently resolve to `scripts/analyzers/spw-marker-audit.ts`, so command names overclaim relative to their output.
+ >> [2026-03-05 19:06] observe — `fuzz:complexity`, `fuzz:dead`, and `fuzz:naming` currently resolve to `npm run audit:md`, which makes the profile names misleading.
+ >> [2026-03-05 19:06] observe — the marker audit scans `src`, `docs`, `lib`, and `.agents/skills`, but misses `scripts/` and `extensions/`.
+ >> [2026-03-05 19:06] observe — older fuzz planning assumed a local ESLint composition surface, but this rewrite snapshot has no local `eslint` dependency or config.
+ >> [2026-03-05 19:06] decide — audit commands must describe their coverage and method, and emit machine-readable output suitable for severity ranking and diffs.
+ >> [2026-03-05 19:06] decide — `fuzz:*` profiles should map to explicit local stages (`explore`, `stabilize`, `ship`) instead of aliases to unrelated scripts.
+ >> [2026-03-05 19:06] taste — prefer command names that expose guarantees, not aspirations.
+}
+
+^["open"]{
+ ?["should `audit:full` include extension builds by default or behind an opt-in flag?"]
+ ?["what minimal JSON schema should every audit mode share?"]
+ ?["how much baseline state should the UI audit persist versus derive live?"]
+}
+
+^["commits"]{
+ ~[1]: ".[plans] — add audit-fuzz-truthfulness plan artifacts"
+ ~[2]: "#[audit] — define truthful audit/fuzz contract and package script map"
+ ~[3]: "&[audit] — add aggregated local audit runner with structured outputs"
+ ~[4]: "&[fuzz] — replace placeholder fuzz profiles with scoped local runners"
+ ~[5]: ".[docs] — align skills and contributor docs to the truthful audit surface"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@8dd4e4129acca3f9566cfe4d2913dae15e27fd28"
+ ~#rebased_at: ""
+ ~#hygiene_split: "exclude untracked `src/runtime/state/register-helpers.ts` from this branch"
+ ~#files_hot: "package.json, scripts/analyzers/spw-marker-audit.ts, scripts/analyzers/ui-contract-audit.ts"
+ ~#next_commit: "1"
+ ~#open_count: "3"
+ ~#last_stream: "2026-03-05 19:06"
+ ~#taste_debt: "avoid turning audit orchestration into another monolithic analyzer"
+}
+
+^["done"]{
+ # Written at merge time.
+}
+
+#>wonder_agents_plans_auditfuzztruthfulness_wip_1
+?["What is the algebraic closure of stream (audit-fuzz-truthfulness)?"]{
+  #:depth #!computational // lens: formal structure
+  $^["intent"]@biome => %[formula.measure]
+  ~<.agents/plans/audit-fuzz-truthfulness/wip.spw> // introspect
+  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
+  $%[plan.commit_count, plan.phase_progress]
+}
+
+#>wonder_agents_plans_auditfuzztruthfulness_wip_2
+?["What is the felt rhythm of reading wip — audit-fuzz-truthfulness?"]{
+  #:depth #!mathematical // lens: material grain
+  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
+  ~#structure: "intent → stream → open"
+  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark grain boundaries." }
+  ~<.agents/plans/_schema/wip.spw>  // nearest neighbor
+}

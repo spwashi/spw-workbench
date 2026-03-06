@@ -5,8 +5,8 @@
 #:layer #!pragmatics
 
 ^["intent"]{
- ~#goal: "Start with dumb register cells (value + address), then progressively enrich cells by phase (lex -> parse -> sem -> opt -> prag) while adding operational/positional register semantics for query/runtime coherence."
- ~#taste: "clarity, layering, expressiveness"
+ ~#goal: "Refine the shipped phased register baseline so runtime, query tooling, tests, and docs all share the canonical phase vocabulary (`lex -> parse -> semantic -> optimize -> pragmatic`). Keep enrichment additive and focus this branch on selector/query/docs alignment rather than reopening the P0 stabilization work."
+ ~#taste: "clarity, naming, layering"
 }
 
 ^["stream"]{
@@ -22,36 +22,38 @@
  >> [2026-02-27 01:46] ship — RegisterBank: enrichPhase(), phaseOf(), phase-aware set(), advancePhase() with weight
  >> [2026-02-27 01:46] ship — 5 new tests: progressive enrichment, phase-annotated set, unphased cells, memoryWeight derivation, snapshot immutability
  >> [2026-02-27 01:46] taste — progressive enhancement: facets additive, value preserved through enrichment. Spw serialization: phase maps 1:1 to !phase[] modifier tags. memory granularity: PHASE_ORDER drives eviction priority.
+ >> [2026-03-05 19:06] ship — P0 runtime stabilization merged on `main` via `8dd4e41`; build, lint, and test are green again.
+ >> [2026-03-05 19:06] revise — replace shorthand phase language (`sem`, `opt`, `prag`) in active planning surfaces with canonical names (`semantic`, `optimize`, `pragmatic`).
+ >> [2026-03-05 19:06] revise — narrow the remaining branch scope to selector grammar, `spwq` wiring, and docs alignment; the build-fix work is no longer part of this plan.
+ >> [2026-03-05 19:06] hygiene — `src/runtime/state/register-helpers.ts` is untracked extraction drift duplicating helpers still defined in `register-bank.ts`; leave it out of this branch.
+ >> [2026-03-05 19:06] taste — keep the next increment narrow; chemistry/metaphysics redesign should sit on top of a query/docs-aligned baseline and truthful audits.
 }
 
 ^["open"]{
-
- ?["selector-expr grammar — Spw-native, not preset-only"]
- ?["wire --selectorExpr in spwq CLI"]
- ?["align docs to implemented model"]
+ ?["selector-expr grammar — operational/positional surface"]
+ ?["wire canonical phase names through spwq"]
+ ?["align docs to the shipped register baseline"]
 }
 
 ^["commits"]{
- ~[1]: ".[plans] — add/refresh plan artifacts with locked decisions"
- ~[2]: "vocab[runtime] — introduce register address/phase/facet types with backward-compatible defaults"
- ~[3]: "&[runtime] — evolve RegisterBank for in-place phase annotations and optional lineage"
- ~[4]: "![runtime] — extend runtime tests for phased enrichment invariants"
- ~[5]: "^seed[query] — add Spw-native selector expression grammar for operational/positional selectors"
- ~[6]: "&[spwq] — wire --selectorExpr in CLI and preserve preset compatibility"
- ~[7]: "![query] — validate selector semantics (including seq behavior and new expression parsing)"
- ~[8]: ".[docs] — align runtime/query docs to implemented register model and mark deferred brace-cursor flow"
+ ~[1]: ".[plans] — refresh plan artifacts after P0 runtime stabilization"
+ ~[2]: "^seed[query] — add Spw-native selector expression grammar for operational/positional selectors"
+ ~[3]: "vocab[query] — align selector/runtime phase terminology on canonical names"
+ ~[4]: "&[spwq] — wire selector expressions and canonical phase predicates into CLI flows"
+ ~[5]: "![query] — validate selector semantics against shipped runtime phase invariants"
+ ~[6]: ".[docs] — align register/query docs and mark chemistry redesign as a follow-on"
 }
 
 ^["cache"]{
- ~#status: "implementing"
- ~#base_ref: "main@here"
+ ~#status: "planning"
+ ~#base_ref: "main@8dd4e4129acca3f9566cfe4d2913dae15e27fd28"
  ~#rebased_at: ""
- ~#hygiene_split: "none"
- ~#files_hot: "src/runtime/state/types.ts, src/runtime/state/register-bank.ts, src/seed/query/selector-expr.ts, scripts/spwq.ts"
- ~#next_commit: "5"
+ ~#hygiene_split: "exclude untracked `src/runtime/state/register-helpers.ts` from this branch"
+ ~#files_hot: "src/seed/query/selector-expr.ts, src/seed/query/match.ts, scripts/spwq.ts, docs/runtime/spw/register-bank.spw"
+ ~#next_commit: "1"
  ~#open_count: "3"
- ~#last_stream: "2026-02-27 01:46"
- ~#taste_debt: ""
+ ~#last_stream: "2026-03-05 19:06"
+ ~#taste_debt: "defer the broader chemistry/metaphysics rename until audits and selector semantics are clearer"
 }
 
 ^["done"]{
