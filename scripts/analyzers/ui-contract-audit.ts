@@ -5,20 +5,40 @@ import path from 'node:path'
 
 interface CLI {
   mode: 'ui-selectors' | 'context-panel'
+  format: 'plain' | 'json'
   update: boolean
 }
 
+interface SelectorAuditResult {
+  mode: 'ui-selectors'
+  filesScanned: number
+  selectorHits: number
+  componentDataHits: number
+  updateRequested: boolean
+}
+
+interface ContextPanelAuditResult {
+  mode: 'context-panel'
+  filesScanned: number
+  panelMentions: number
+}
+
+type UiContractAuditResult = SelectorAuditResult | ContextPanelAuditResult
+
 function parseArgs(argv: string[]): CLI {
   let mode: CLI['mode'] = 'ui-selectors'
+  let format: CLI['format'] = 'plain'
   let update = false
 
   for (const arg of argv.slice(2)) {
     if (arg === '--mode=context-panel') mode = 'context-panel'
     if (arg === '--mode=ui-selectors') mode = 'ui-selectors'
+    if (arg === '--json' || arg === '--format=json') format = 'json'
+    if (arg === '--format=plain') format = 'plain'
     if (arg === '--update') update = true
   }
 
-  return { mode, update }
+  return { mode, format, update }
 }
 
 async function walk(dir: string): Promise<string[]> {
@@ -40,8 +60,7 @@ async function walk(dir: string): Promise<string[]> {
   return files
 }
 
-async function main(): Promise<void> {
-  const cli = parseArgs(process.argv)
+async function runAudit(cli: CLI): Promise<UiContractAuditResult> {
   const files = await walk(path.resolve('.'))
 
   if (cli.mode === 'ui-selectors') {
@@ -54,12 +73,13 @@ async function main(): Promise<void> {
       componentDataHits += (content.match(/data-spw-component/g) ?? []).length
     }
 
-    console.log(`ui selectors discovered: ${selectorHits}`)
-    console.log(`data-spw-component references: ${componentDataHits}`)
-    if (cli.update) {
-      console.log('update flag set: baseline refresh acknowledged (no persistent baseline file in rewrite snapshot)')
+    return {
+      mode: 'ui-selectors',
+      filesScanned: files.length,
+      selectorHits,
+      componentDataHits,
+      updateRequested: cli.update,
     }
-    return
   }
 
   let panelMentions = 0
@@ -68,7 +88,36 @@ async function main(): Promise<void> {
     panelMentions += (content.match(/context panel/gi) ?? []).length
   }
 
-  console.log(`context panel mentions: ${panelMentions}`)
+  return {
+    mode: 'context-panel',
+    filesScanned: files.length,
+    panelMentions,
+  }
+}
+
+function printPlain(result: UiContractAuditResult): void {
+  if (result.mode === 'ui-selectors') {
+    console.log(`ui selectors discovered: ${result.selectorHits}`)
+    console.log(`data-spw-component references: ${result.componentDataHits}`)
+    if (result.updateRequested) {
+      console.log('update flag set: baseline refresh acknowledged (no persistent baseline file in rewrite snapshot)')
+    }
+    return
+  }
+
+  console.log(`context panel mentions: ${result.panelMentions}`)
+}
+
+async function main(): Promise<void> {
+  const cli = parseArgs(process.argv)
+  const result = await runAudit(cli)
+
+  if (cli.format === 'json') {
+    console.log(JSON.stringify(result, null, 2))
+    return
+  }
+
+  printPlain(result)
 }
 
 main().catch(error => {

@@ -128,14 +128,22 @@ Use the truthful `audit:*` names when you want inventory rather than pass/fail v
 
 ```bash
 npm run audit                  # Marker inventory
+npm run audit:full             # Aggregated local audit summary
+npm run audit:full:json        # Aggregated local audit report as JSON
 npm run audit:markers:json     # Machine-readable marker report
 npm run audit:markers:md       # Markdown marker report
 npm run audit:ui:selectors     # UI selector/data-attribute counts
 npm run audit:ui:context-panel # Context panel mention counts
-npm run audit:spw:syntax       # `.spw` syntax audit (alias of lint:spw)
+npm run audit:spw:syntax       # `.spw` syntax audit on the same parser surface as lint:spw
 ```
 
 Legacy aliases such as `audit:json`, `audit:md`, `audit:types`, and `audit:ui-selectors` remain available, but the `audit:markers:*`, `audit:ui:*`, and `audit:spw:*` names are the contract going forward.
+
+For filtered `.spw` syntax checks, call the validator directly so the match flags are unambiguous:
+
+```bash
+node --import tsx scripts/analyzers/spw-syntax-validate.ts --exclude .agents --match quality
+```
 
 ---
 
