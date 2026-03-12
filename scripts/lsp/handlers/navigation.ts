@@ -15,6 +15,26 @@ import type {
 } from '../types'
 import { escapeRegex, stripAnchor } from '../helpers'
 
+function referenceSearchNeedles(hit: { kind: string; root?: string; target: string }, targetPath: string): string[] {
+    const needles = new Set<string>()
+    const cleanTarget = stripAnchor(hit.target).replace(/[\\/]+$/, '')
+    const requestedBase = path.basename(cleanTarget)
+    const resolvedBase = path.basename(targetPath)
+
+    if (hit.target) needles.add(hit.target)
+    if (requestedBase) needles.add(requestedBase)
+    if (resolvedBase) needles.add(resolvedBase)
+    if (/^index\./i.test(resolvedBase)) {
+        const parentName = path.basename(path.dirname(targetPath))
+        if (parentName) needles.add(parentName)
+    }
+    if (hit.kind === 'rootRef' && hit.root) {
+        needles.add(`@${hit.root}/`)
+    }
+
+    return [...needles].filter(Boolean)
+}
+
 // ── Definition ──────────────────────────────────────────────────
 
 export async function definition(params: DefinitionParams, deps: HandlerDeps): Promise<LspLocation[] | null> {
@@ -98,14 +118,28 @@ export async function references(params: ReferencesParams, deps: HandlerDeps): P
                 const targetPath = stripAnchor(resolved)
                 const files = await deps.getWorkspaceSpwFiles()
                 const basenameNeedle = path.basename(targetPath)
+                const needles = referenceSearchNeedles(hit, targetPath)
+                const currentHit: LspLocation = {
+                    uri,
+                    range: {
+                        start: { line: hit.span.startLine, character: hit.span.startCharacter },
+                        end: { line: hit.span.endLine, character: hit.span.endCharacter },
+                    },
+                }
 
                 const perFile = await deps.mapWithConcurrency(files, 16, async (filePath: string) => {
                     const fileUri = deps.uriFromPath(filePath)
                     const fileText = await deps.getDocumentText(fileUri)
                     if (fileText === null) return [] as LspLocation[]
-                    if (!fileText.includes(basenameNeedle)) return [] as LspLocation[]
+                    if (!needles.some((needle) => fileText.includes(needle))) return [] as LspLocation[]
 
-                    const candidateHits = selectPathRefs(fileText)
+                    const candidateHits = selectPathRefs(fileText).filter((candidate) =>
+                        needles.some((needle) => candidate.raw.includes(needle) || candidate.target.includes(needle))
+                    )
+                    if (candidateHits.length === 0 && !fileText.includes(basenameNeedle)) {
+                        return [] as LspLocation[]
+                    }
+
                     const matches: LspLocation[] = []
                     for (const candidate of candidateHits) {
                         const candidateResolved = await deps.resolveReferencePath(candidate, fileText, filePath, { allowDirectory: true })
@@ -122,7 +156,13 @@ export async function references(params: ReferencesParams, deps: HandlerDeps): P
                     return matches
                 })
 
-                return perFile.flat()
+                const seen = new Set<string>()
+                return [currentHit, ...perFile.flat()].filter((location) => {
+                    const key = `${location.uri}:${location.range.start.line}:${location.range.start.character}`
+                    if (seen.has(key)) return false
+                    seen.add(key)
+                    return true
+                })
             }
         }
     }

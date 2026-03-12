@@ -13,6 +13,8 @@ interface JsonRpcMessage {
   error?: { code: number, message: string, data?: any }
 }
 
+const REFERENCE_REQUEST_TIMEOUT_MS = 10_000
+
 class LspClient {
   private child: ChildProcessWithoutNullStreams
   private pending = new Map<number, { resolve: (value: any) => void, reject: (error: Error) => void }>()
@@ -520,7 +522,7 @@ async function main(): Promise<void> {
         textDocument: { uri: docsIndexUri },
         position: localRefPos,
         context: { includeDeclaration: true },
-      })
+      }, REFERENCE_REQUEST_TIMEOUT_MS)
       assert(Array.isArray(refs), 'Expected references array for local path ref')
       assert(refs.length > 0, 'Expected at least one reference for local path ref')
       ok('references — path ref (~"...")')
@@ -544,7 +546,7 @@ async function main(): Promise<void> {
         textDocument: { uri: architectureUri },
         position: rootRefPos,
         context: { includeDeclaration: true },
-      })
+      }, REFERENCE_REQUEST_TIMEOUT_MS)
       assert(Array.isArray(refs), 'Expected references array for @root ref')
       assert(refs.length > 0, 'Expected at least one reference for @root ref')
       ok('references — @root path ref')
