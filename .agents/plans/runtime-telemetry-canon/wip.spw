@@ -1,0 +1,44 @@
+# wip — runtime-telemetry-canon
+# Branch: feature/runtime-telemetry-canon
+# Started: 2026-03-12
+
+#:layer #!pragmatics
+
+^["intent"]{
+ ~#goal: "Amend the upstream valence metadata work and make substrate events plus resonances first-class in runSpw() and collectPrecipitates()."
+ ~#taste: "correctness, clarity, layering"
+}
+
+^["stream"]{
+ >>[2026-03-12 00:00] observe — upstream/main advanced with 125a4cb, which carries valence into register metadata but does not address runtime telemetry returns.
+ >>[2026-03-12 00:01] decide — keep the normalize→interpreter→register metadata path, but amend sticky valence and merged semanticFrames before building telemetry on top.
+ >>[2026-03-12 00:02] decide — public runtime results should return immutable facts: events and resonances, not a live Substrate instance.
+ >>[2026-03-12 00:03] hygiene — base reference recorded at main@24865b70d6a8b44d1d4b386915e5c24333c6a0b9; no unrelated drift before planning.
+ >>[2026-03-12 00:04] taste — host apps should not reconstruct runtime telemetry outside the runtime; the API should expose canonical runtime facts directly.
+}
+
+^["open"]{
+ ?[telemetry_shape]: "Should failure results return raw substrate events accumulated before parse/runtime failure, or should telemetry stay success-only in this increment?"
+}
+
+^["commits"]{
+ ~[1]: ".[plans] — stage runtime telemetry canon plan artifacts"
+ ~[2]: "&[runtime] =amend[upstream-valence-metadata] — carry valence and frames as current-write semantics"
+ ~[3]: "&[runtime] =add[telemetry-returns] — return substrate events and resonances from runSpw and collectPrecipitates"
+ ~[4]: "![runtime] =verify[telemetry-contract] — extend tests for valence, events, resonances, and phase telemetry"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@24865b70d6a8b44d1d4b386915e5c24333c6a0b9"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "src/runtime/pipeline/types.ts, src/runtime/pipeline/run-spw.ts, src/runtime/pipeline/stages.ts, src/runtime/pipeline/substrate.ts, src/runtime/pipeline/resonance.ts, src/runtime/interpreter/interpreter.ts, src/runtime/state/types.ts, src/runtime/state/register-bank.ts, src/seed/normalize.ts, src/seed/types/ast/onf.ts, src/runtime/__tests__/run-spw.test.ts, src/runtime/__tests__/register-bank.test.ts, src/runtime/__tests__/substrate.test.ts"
+ ~#next_commit: "1"
+ ~#open_count: "1"
+ ~#last_stream: "2026-03-12 00:04"
+ ~#taste_debt: ""
+}
+
+^["done"]{
+}
