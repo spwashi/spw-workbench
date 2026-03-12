@@ -5,6 +5,7 @@
 #
 # @see docs/theory/spw/onf.spw (tiered normalization, per-sigil automata)
 # @see docs/theory/spw/operators.spw (12 sigils, 4 containers)
+# @spw:contract:bridge[system=container-algebra,basis=surface-grammar-to-base-axis]
 
 #:layer #!semantics
 
@@ -18,7 +19,7 @@
  .{ axis = 1, name = Sigil, size = 12, members = #[`!`,`^`,`~`,`?`,`*`,`=`,`@`,`#`,`.`,`&`,`$`,`%`] },
  .{ axis = 2, name = Container, size = 4, members = #[`[]`,`{}`,`<>`,`()`] },
  .{ axis = 3, name = Layer, size = 4, members = #[signal, pattern, flow, structure] },
- .{ axis = 4, name = Quality, size = 4, members = #[boon, bane, bone, honk] },
+ .{ axis = 4, name = RuntimeQuality, size = 4, members = #[boon, bane, bone, honk] },
  .{ axis = 5, name = Representation, size = 4, members = #[syntactic, semantic, pragmatic, meta] }
  ][reg=set]
 
@@ -29,8 +30,15 @@
 
  bundle: .{
  base = `Sigil(12) × Container(4)`
- fiber = `Layer(4) × Quality(4) × Representation(4)`
+ fiber = `Layer(4) × RuntimeQuality(4) × Representation(4)`
  total = `base × fiber = 3,072 cells`
+ }[reg=facet]
+
+ bridge_notes: .{
+ base_containers = `The core algebra reduces container space to [] {} <> ().`
+ surface_forms = `docs/theory/spw/semantics-physics.spw may introduce reader-facing mnemonics plus wrapper forms such as << >> and (( )); those wrappers are not extra base axes here.`
+ bracket_note = "`[]` surface 'mode/params' and algebraic 'individuation/categorical' are the same axis seen at different resolutions."
+ quality_note = `Axis 4 is the four-state runtime quality quartet; bonk lives in valence, not in this tensor.`
  }[reg=facet]
 
  ## A register entry is a point in the total space: base × fiber.
@@ -54,9 +62,9 @@
  ## ── Affinity Constraints ───────────────────────────────────
 
  affinities: #[
- .{ sigil = `!`, accessMode = kinetic, pins = Quality, effect = `64-dim → 16 cells` },
- .{ sigil = `=`, accessMode = property, pins = Quality, effect = `64-dim → 16 cells` },
- .{ sigil = `?`, accessMode = conditional, pins = _, effect = `Quality remains free` }
+ .{ sigil = `!`, accessMode = kinetic, pins = RuntimeQuality, effect = `64-dim → 16 cells` },
+ .{ sigil = `=`, accessMode = property, pins = RuntimeQuality, effect = `64-dim → 16 cells` },
+ .{ sigil = `?`, accessMode = conditional, pins = _, effect = `RuntimeQuality remains free` }
  ][reg=set]
 
  ## Each pinned axis reduces the fiber dimension by 4×.

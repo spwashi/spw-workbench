@@ -1,6 +1,7 @@
 # Runtime Index
 #
 # Execution engine, performance optimization, protocols, and state management.
+# @spw:contract:canonical[system=runtime-index,basis=phase-liminality-vocabulary]
 
 #>runtime
 #:layer #!semantics
@@ -24,7 +25,8 @@
  # These give the runtime a memory model beyond simple read/write.
  #:physics #!observation
 
- =liminality: "scope-awareness (0=local, 1=threshold, 2=transitional, 3=global)"
+ =liminality: "scope-awareness (local → liminal → visible → global)"
+ =liminality_order: ["local", "liminal", "visible", "global"]
  =frequency: "writes/sec — measured from circular timestamp buffer (last 10)"
  =coupling: "inter-cell edges / (total - 1) — bidirectional entanglement"
  =measureDepth: "observation count — each measure() call increments"
@@ -33,16 +35,17 @@
  "high-frequency cells are 'hot' — candidates for caching or deduplication",
  "high-coupling cells are 'entangled' — changes cascade to neighbors",
  "deep measureDepth means heavy observation — possible performance concern",
- "liminality 3 (global) cells cross scope boundaries — require careful GC",
+ "global cells cross scope boundaries — require careful GC",
  }
 }
 
 ^["phase_enrichment"]{
- # Register cells progress through phases: lex → parse → sem → eval → runtime.
+ # Register cells progress through phases: lex → parse → semantic → optimize → pragmatic.
  # Each phase adds a facet without losing earlier information.
  #:enrichment #!progressive
 
- =phases: ["lex", "parse", "sem", "eval", "runtime"]
+ =phases: ["lex", "parse", "semantic", "optimize", "pragmatic"]
+ =aliases: ["sem → semantic", "opt → optimize", "prag → pragmatic"]
  =memoryWeight: "phase_index / total_phases — higher phases have greater weight"
 
  ?["When does enrichment matter?"]{

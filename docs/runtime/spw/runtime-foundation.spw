@@ -1,6 +1,7 @@
 # Runtime Foundation (v0.2.0-alpha)
 #
 # Release-day bridge from parse output to runtime state.
+# @spw:contract:canonical[system=runtime-docs,basis=release-baseline]
 
 #:layer #!semantics
 
@@ -8,6 +9,13 @@
  goal: "Establish a deterministic runtime baseline while full VM semantics remain in-progress",
  posture: ["incremental", "testable", "portable"],
  release_day: "Ship runtime scaffolding + clear extension seams",
+}
+
+^"contract"{
+ binding: "This document is the deterministic release-day runtime baseline."
+ canonical_phases: ["lex", "parse", "semantic", "optimize", "pragmatic"]
+ aliases: "Historical shorthands sem/opt/prag may still parse, but they are not the canonical doc vocabulary."
+ falsify: "If this file and src/runtime/state/types.ts disagree, prefer the runtime types and treat other notes as stale."
 }
 
 ^"source_files"{
@@ -19,10 +27,11 @@
 }
 
 ^"flow"{
- parse: "runSpw() parses source (with desugar default) via src/seed",
- normalize: "interpreter converts AST to ONF via normalizeToONF",
- execute: "evaluate ONF into RuntimeValue + register deltas",
- report: "return parse output + runtime trace + register snapshot",
+ lex: "src/seed tokenizes source into the surface stream used by the parser",
+ parse: "runSpw() builds deterministic structure from the token stream",
+ semantic: "the interpreter normalizes AST output to ONF and records semantic-ready structure",
+ optimize: "release-day optimization stays shallow: resonance indexes and cheap reuse hints only",
+ pragmatic: "evaluate ONF into RuntimeValue, register deltas, runtime trace, and reported snapshot",
 }
 
 ^"resonance"{
@@ -46,7 +55,10 @@
  deferred: [
  "bytecode/VM execution",
  "UI keyboard binding integration",
- "multi-surface runtime persistence"
+ "multi-surface runtime persistence",
+ "ambiguity branch tracing",
+ "permissive unmatched-brace prompting",
+ "natural-language branch previews"
  ]
 }
 
