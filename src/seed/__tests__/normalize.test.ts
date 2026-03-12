@@ -199,6 +199,13 @@ describe('runSpwStepped', () => {
       expect(precipitates.map(p => p.stage)).toEqual(['desugar', 'parse', 'normalize', 'interpret'])
     }
   })
+
+  it('returns telemetry alongside the final result', () => {
+    const collected = collectPrecipitates('*boon{"hello"}')
+
+    expect(collected.telemetry).toEqual(collected.result.telemetry)
+    expect(collected.telemetry.events.map(event => event.kind)).toEqual(['phase-advance', 'write'])
+  })
 })
 
 describe('precipitateToSpw', () => {
@@ -258,4 +265,3 @@ describe('projectionToSpw', () => {
     expect(spw.split('\n').length).toBeGreaterThan(4)
   })
 })
-

@@ -15,10 +15,13 @@
  >>[2026-03-12 00:02] decide — public runtime results should return immutable facts: events and resonances, not a live Substrate instance.
  >>[2026-03-12 00:03] hygiene — base reference recorded at main@24865b70d6a8b44d1d4b386915e5c24333c6a0b9; no unrelated drift before planning.
  >>[2026-03-12 00:04] taste — host apps should not reconstruct runtime telemetry outside the runtime; the API should expose canonical runtime facts directly.
+ >>[2026-03-12 00:05] decide — semicolon support is desirable, but it belongs to a later seed-syntax slice rather than this runtime telemetry amendment.
+ >>[2026-03-12 00:06] implement — cherry-picked upstream 125a4cb in amended form, replaced sticky write semantics, and threaded immutable telemetry through runSpw() plus collectPrecipitates().
+ >>[2026-03-12 00:07] verify — npm run test:runtime, npx vitest run src/seed/__tests__/normalize.test.ts, npm run build, npm run test:run, npm run audit:full, and git diff --check passed.
+ >>[2026-03-12 00:08] note — npm run lsp:smoke still times out on textDocument/references path-ref cases; that surface was already outside the telemetry slice and needs a separate follow-up.
 }
 
 ^["open"]{
- ?[telemetry_shape]: "Should failure results return raw substrate events accumulated before parse/runtime failure, or should telemetry stay success-only in this increment?"
 }
 
 ^["commits"]{
@@ -29,14 +32,14 @@
 }
 
 ^["cache"]{
- ~#status: "planning"
+ ~#status: "ready-for-commit"
  ~#base_ref: "main@24865b70d6a8b44d1d4b386915e5c24333c6a0b9"
  ~#rebased_at: ""
  ~#hygiene_split: "none"
- ~#files_hot: "src/runtime/pipeline/types.ts, src/runtime/pipeline/run-spw.ts, src/runtime/pipeline/stages.ts, src/runtime/pipeline/substrate.ts, src/runtime/pipeline/resonance.ts, src/runtime/interpreter/interpreter.ts, src/runtime/state/types.ts, src/runtime/state/register-bank.ts, src/seed/normalize.ts, src/seed/types/ast/onf.ts, src/runtime/__tests__/run-spw.test.ts, src/runtime/__tests__/register-bank.test.ts, src/runtime/__tests__/substrate.test.ts"
- ~#next_commit: "1"
- ~#open_count: "1"
- ~#last_stream: "2026-03-12 00:04"
+ ~#files_hot: "src/runtime/pipeline/types.ts, src/runtime/pipeline/stages.ts, src/runtime/pipeline/substrate.ts, src/runtime/pipeline/resonance.ts, src/runtime/interpreter/interpreter.ts, src/runtime/state/register-bank.ts, src/seed/normalize.ts, scripts/lsp/context.ts, src/runtime/__tests__/run-spw.test.ts, src/runtime/__tests__/register-bank.test.ts, src/runtime/__tests__/substrate.test.ts, src/seed/__tests__/normalize.test.ts"
+ ~#next_commit: "2"
+ ~#open_count: "0"
+ ~#last_stream: "2026-03-12 00:08"
  ~#taste_debt: ""
 }
 

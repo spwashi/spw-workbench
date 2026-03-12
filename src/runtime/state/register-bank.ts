@@ -10,6 +10,7 @@ import type {
   RegisterPhaseInput,
   RegisterSnapshot,
   RegisterWriteOptions,
+  RuntimeValence,
   RuntimePacket,
   RuntimeRecord,
   RuntimeValue,
@@ -65,6 +66,10 @@ function cloneRuntimeValue(value: RuntimeValue): RuntimeValue {
     copy[key] = cloneRuntimeValue(item)
   }
   return copy
+}
+
+function cloneValence(valence: RuntimeValence[] | undefined): RuntimeValence[] {
+  return valence ? [...valence] : []
 }
 
 function mergeRuntimeValues(left: RuntimeValue, right: RuntimeValue): RuntimeValue {
@@ -137,6 +142,11 @@ export class RegisterBank {
     this.substrate = substrate
   }
 
+  /** Inspect the currently attached substrate, if any. */
+  attachedSubstrate(): Substrate | null {
+    return this.substrate
+  }
+
   /** Detach the current substrate. */
   detachSubstrate(): Substrate | null {
     const prev = this.substrate
@@ -171,27 +181,26 @@ export class RegisterBank {
 
     const descriptor = options.descriptor
       ? {
-        ...entry.meta.descriptor,
+        ...descriptorForKey(key),
         ...options.descriptor,
       }
-      : entry.meta.descriptor
+      : descriptorForKey(key)
+
+    const normalizedPhase = options.phase ? normalizeRegisterPhase(options.phase) : undefined
+    const semanticFrames = cloneSemanticFrames(options.semanticFrames)
+    const eventAt = nowIso()
 
     entry.value = cloneRuntimeValue(value)
     entry.meta = {
       ...entry.meta,
       descriptor,
       writes: entry.meta.writes + 1,
-      lastUsedAt: nowIso(),
+      lastUsedAt: eventAt,
       immutable: options.immutable ?? entry.meta.immutable,
-      operator: options.operator ?? entry.meta.operator,
-      registerRole: options.registerRole ?? entry.meta.registerRole,
-      valence: this.pushValence(entry.meta.valence, options.valence),
-      semanticFrames: options.semanticFrames
-        ? {
-          ...(entry.meta.semanticFrames ?? {}),
-          ...cloneSemanticFrames(options.semanticFrames),
-        }
-        : entry.meta.semanticFrames,
+      operator: options.operator,
+      registerRole: options.registerRole,
+      valence: cloneValence(options.valence),
+      semanticFrames,
       provenance: this.pushProvenance(entry.meta.provenance, options.source ?? 'set'),
     }
 
@@ -199,20 +208,32 @@ export class RegisterBank {
     this.recordWriteTimestamp(key)
 
     // Phase enrichment — additive, in-place on existing cells
-    if (options.phase) {
-      const phase = normalizeRegisterPhase(options.phase)
+    if (normalizedPhase) {
       entry.meta.phases = this.advancePhase(
         entry.meta.phases,
-        phase,
+        normalizedPhase,
         options.source ?? 'set',
       )
 
       entry.meta.address = {
         ...(entry.meta.address ?? { key }),
         key,
-        operator: options.operator ?? entry.meta.operator,
-        phase,
+        operator: options.operator,
+        phase: normalizedPhase,
       }
+
+      this.substrate?.emit({
+        kind: 'phase-advance',
+        key,
+        value: entry.value,
+        phase: normalizedPhase,
+        source: options.source,
+        operator: entry.meta.operator,
+        valence: cloneValence(entry.meta.valence),
+        registerRole: entry.meta.registerRole,
+        semanticFrames: cloneSemanticFrames(entry.meta.semanticFrames),
+        at: eventAt,
+      })
     }
 
     // Substrate emission — event-driven processing
@@ -220,9 +241,13 @@ export class RegisterBank {
       kind: 'write',
       key,
       value: entry.value,
-      phase: options.phase ? normalizeRegisterPhase(options.phase) : undefined,
+      phase: normalizedPhase,
       source: options.source,
-      at: nowIso(),
+      operator: entry.meta.operator,
+      valence: cloneValence(entry.meta.valence),
+      registerRole: entry.meta.registerRole,
+      semanticFrames: cloneSemanticFrames(entry.meta.semanticFrames),
+      at: eventAt,
     })
 
     return true
@@ -236,6 +261,7 @@ export class RegisterBank {
     const entry = this.entries.get(key)
     if (!entry) return false
     const normalizedPhase = normalizeRegisterPhase(phase)
+    const eventAt = nowIso()
 
     entry.meta.phases = this.advancePhase(
       entry.meta.phases,
@@ -247,7 +273,7 @@ export class RegisterBank {
       key,
       phase: normalizedPhase,
     }
-    entry.meta.lastUsedAt = nowIso()
+    entry.meta.lastUsedAt = eventAt
 
     this.substrate?.emit({
       kind: 'phase-advance',
@@ -255,7 +281,11 @@ export class RegisterBank {
       value: entry.value,
       phase: normalizedPhase,
       source: source ?? `enrich:${normalizedPhase}`,
-      at: nowIso(),
+      operator: entry.meta.operator,
+      valence: cloneValence(entry.meta.valence),
+      registerRole: entry.meta.registerRole,
+      semanticFrames: cloneSemanticFrames(entry.meta.semanticFrames),
+      at: eventAt,
     })
 
     return true
@@ -367,7 +397,7 @@ export class RegisterBank {
       descriptor: { ...entry.meta.descriptor },
       provenance: [...entry.meta.provenance],
       lenses: [...entry.meta.lenses],
-      valence: [...entry.meta.valence],
+      valence: cloneValence(entry.meta.valence),
       semanticFrames: cloneSemanticFrames(entry.meta.semanticFrames),
     }
   }
@@ -419,6 +449,7 @@ export class RegisterBank {
    */
   markPosition(name: string, value: RuntimeValue, options: RegisterWriteOptions = {}): void {
     const markKey = `mark:${name}`
+    const eventAt = nowIso()
     this.set(markKey, value, {
       ...options,
       source: `mark:${name}`,
@@ -432,7 +463,11 @@ export class RegisterBank {
       key: markKey,
       value,
       source: `mark:${name}`,
-      at: nowIso(),
+      operator: options.operator,
+      valence: cloneValence(options.valence),
+      registerRole: options.registerRole,
+      semanticFrames: cloneSemanticFrames(options.semanticFrames),
+      at: eventAt,
     })
   }
 
@@ -466,6 +501,10 @@ export class RegisterBank {
       key: keyA,
       value: this.get(keyA),
       coupledWith: keyB,
+      operator: this.entries.get(keyA)?.meta.operator,
+      valence: cloneValence(this.entries.get(keyA)?.meta.valence),
+      registerRole: this.entries.get(keyA)?.meta.registerRole,
+      semanticFrames: cloneSemanticFrames(this.entries.get(keyA)?.meta.semanticFrames),
       at: nowIso(),
     })
   }
@@ -488,7 +527,7 @@ export class RegisterBank {
           descriptor: { ...entry.meta.descriptor },
           provenance: [...entry.meta.provenance],
           lenses: [...entry.meta.lenses],
-          valence: [...entry.meta.valence],
+          valence: cloneValence(entry.meta.valence),
           semanticFrames: cloneSemanticFrames(entry.meta.semanticFrames),
           phases: entry.meta.phases
             ? {
@@ -568,18 +607,6 @@ export class RegisterBank {
   private pushLens(lenses: string[], lens: string): string[] {
     if (lenses.includes(lens)) return lenses
     return [...lenses, lens]
-  }
-
-  private pushValence(existing: RegisterMeta['valence'], incoming?: RegisterMeta['valence']): RegisterMeta['valence'] {
-    if (!incoming || incoming.length === 0) return [...existing]
-
-    const next = [...existing]
-    for (const value of incoming) {
-      if (!next.includes(value)) {
-        next.push(value)
-      }
-    }
-    return next
   }
 
   private addLensIndex(lens: string, key: string): void {

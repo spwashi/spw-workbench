@@ -64,7 +64,7 @@ function frameValence(node: ONFNode): RuntimeValence[] | undefined {
 }
 
 function semanticFrames(node: ONFNode): Record<string, unknown> | undefined {
-  const { momentum, ...frames } = node.frames
+  const { momentum, reg, valence, ...frames } = node.frames
   return Object.keys(frames).length > 0 ? { ...frames } : undefined
 }
 
@@ -84,6 +84,7 @@ function writeSemantics(node: ONFNode): RegisterWriteOptions {
     valence: frameValence(node),
     registerRole: frameString(node, 'reg'),
     semanticFrames: semanticFrames(node),
+    phase: 'pragmatic',
   }
 }
 

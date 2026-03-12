@@ -15,7 +15,7 @@
  * @spw:seed:starter[system=event-substrate,extract=candidate,next=resonance,density=sparse] - Event substrate is a viable sparse base for later extraction
  */
 
-import type { RuntimeValue, RegisterPhase } from '../state/types'
+import type { RegisterMeta, RegisterPhase, RuntimeValence, RuntimeValue } from '../state/types'
 
 // ── Event Types ─────────────────────────────────────────────────
 
@@ -32,6 +32,14 @@ export interface RegisterEvent {
     phase?: RegisterPhase
     /** Source/agent that produced this event */
     source?: string
+    /** Operator semantics for the write that produced this event */
+    operator?: RegisterMeta['operator']
+    /** Active valence on this write, if any */
+    valence?: RuntimeValence[]
+    /** Register role for this write, if any */
+    registerRole?: RegisterMeta['registerRole']
+    /** Semantic frames captured for this write, if any */
+    semanticFrames?: RegisterMeta['semanticFrames']
     /** ISO timestamp */
     at: string
     /** For 'couple' events: the other key in the coupling */
@@ -62,6 +70,23 @@ export interface Resonance {
 export type SubstrateHandler = (event: RegisterEvent) => void
 
 // ── Substrate Class ─────────────────────────────────────────────
+
+function cloneSemanticFrames(frames: RegisterMeta['semanticFrames']): RegisterMeta['semanticFrames'] {
+    if (!frames) return undefined
+    return { ...frames }
+}
+
+function cloneValence(valence: RuntimeValence[] | undefined): RuntimeValence[] | undefined {
+    return valence ? [...valence] : undefined
+}
+
+function cloneRegisterEvent(event: RegisterEvent): RegisterEvent {
+    return {
+        ...event,
+        valence: cloneValence(event.valence),
+        semanticFrames: cloneSemanticFrames(event.semanticFrames),
+    }
+}
 
 export class Substrate {
     readonly name: string
@@ -132,9 +157,17 @@ export class Substrate {
      * Drain all accumulated events, returning them and clearing the log.
      */
     drain(): RegisterEvent[] {
-        const drained = [...this.events]
+        const drained = this.snapshot()
         this.events.length = 0
         return drained
+    }
+
+    /**
+     * Clone the accumulated events without consuming them.
+     * `start` lets callers capture only the events emitted during a single run.
+     */
+    snapshot(start = 0): RegisterEvent[] {
+        return this.events.slice(start).map(cloneRegisterEvent)
     }
 
     /**

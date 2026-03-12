@@ -11,7 +11,7 @@ The desired end state is a runtime pipeline where `runSpw()` and `collectPrecipi
 ## Scope
 
 - **In scope**: amend upstream valence/register metadata flow, normalize `RegisterMeta` write semantics, thread substrate ownership through the runtime pipeline, return immutable `events` and `resonances` from public runtime results, and add/update focused tests.
-- **Out of scope**: host-app adapter refactors, broader `RegisterBank` metaphysics redesign, new resonance algorithms, and large docs sweeps beyond narrow API notes if needed.
+ - **Out of scope**: host-app adapter refactors, broader `RegisterBank` metaphysics redesign, new resonance algorithms, semicolon syntax support, and large docs sweeps beyond narrow API notes if needed.
 
 ## Files
 
@@ -28,6 +28,7 @@ The desired end state is a runtime pipeline where `runSpw()` and `collectPrecipi
 [MOD] src/runtime/index.ts
 [MOD] src/seed/normalize.ts
 [MOD] src/seed/types/ast/onf.ts
+[MOD] scripts/lsp/context.ts
 [MOD] src/runtime/__tests__/run-spw.test.ts
 [MOD] src/runtime/__tests__/register-bank.test.ts
 [MOD] src/runtime/__tests__/substrate.test.ts

@@ -34,6 +34,7 @@ export { interpretSeed } from './interpreter/interpreter'
 
 export type {
   RuntimeIssue,
+  RuntimeTelemetry,
   RunSpwOptions,
   RunSpwSuccess,
   RunSpwFailure,
@@ -47,6 +48,7 @@ export type {
   Precipitate,
   PipelineProjection,
   AnyPrecipitate,
+  CollectedPrecipitates,
   DesugarPrecipitate,
   ParsePrecipitate,
   NormalizePrecipitate,

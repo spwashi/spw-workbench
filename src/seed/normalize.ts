@@ -151,10 +151,17 @@ export function normalizeToONF(node: ASTNode): ONFNode {
       switch (sigil) {
         case '!': reg = 'hydrate'; break
         case '~': reg = 'defer'; break
+        case '*': reg = 'collapse'; break
         case '=': reg = 'config'; break
+        case '@': reg = 'observe'; break
+        case '#': reg = 'resonate'; break
         case '&': reg = 'merge'; break
+        case '^': reg = 'integrate'; break
+        case '?': reg = 'probe'; break
         case '%': reg = 'measure'; break
         case '$': reg = 'substrate'; break
+        case '.': reg = 'property'; break
+        case '<>': reg = 'couple'; break
       }
 
       const frames: Record<string, unknown> = {

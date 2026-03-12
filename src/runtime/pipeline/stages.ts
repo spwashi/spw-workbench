@@ -23,7 +23,9 @@ import { parse } from '../../seed/parser'
 import { desugar, normalizeToONF } from '../../seed/normalize'
 import { interpretSeed } from '../interpreter/interpreter'
 import { RegisterBank } from '../state/register-bank'
-import type { RunSpwOptions, RunSpwResult, RuntimeIssue } from './types'
+import { detectResonances } from './resonance'
+import { Substrate } from './substrate'
+import type { RunSpwOptions, RunSpwResult, RuntimeIssue, RuntimeTelemetry } from './types'
 
 // ── Stage Names ─────────────────────────────────────────────────
 
@@ -98,10 +100,68 @@ export type AnyPrecipitate =
     | NormalizePrecipitate
     | InterpretPrecipitate
 
+export interface CollectedPrecipitates {
+    precipitates: AnyPrecipitate[]
+    result: RunSpwResult
+    telemetry: RuntimeTelemetry
+}
+
 // ── Helpers ─────────────────────────────────────────────────────
 
 function nowIso(): string {
     return new Date().toISOString()
+}
+
+interface RuntimeDependencies {
+    registers: RegisterBank
+    substrate: Substrate
+    eventStartIndex: number
+    restore(): void
+}
+
+function prepareRuntimeDependencies(options: RunSpwOptions): RuntimeDependencies {
+    const providedRegisters = options.registers
+    const providedSubstrate = options.substrate
+
+    if (!providedRegisters) {
+        const substrate = providedSubstrate ?? new Substrate('run-spw')
+        return {
+            registers: new RegisterBank({}, substrate),
+            substrate,
+            eventStartIndex: substrate.peek().length,
+            restore() { },
+        }
+    }
+
+    const previousSubstrate = providedRegisters.attachedSubstrate()
+    const substrate = providedSubstrate ?? previousSubstrate ?? new Substrate('run-spw')
+
+    if (previousSubstrate !== substrate) {
+        providedRegisters.attachSubstrate(substrate)
+    }
+
+    return {
+        registers: providedRegisters,
+        substrate,
+        eventStartIndex: substrate.peek().length,
+        restore() {
+            if (previousSubstrate && previousSubstrate !== substrate) {
+                providedRegisters.attachSubstrate(previousSubstrate)
+                return
+            }
+            if (!previousSubstrate && previousSubstrate !== substrate) {
+                providedRegisters.detachSubstrate()
+            }
+        },
+    }
+}
+
+function collectTelemetry(substrate: Substrate, eventStartIndex: number): RuntimeTelemetry {
+    const events = substrate.snapshot(eventStartIndex)
+    return {
+        events,
+        resonances: detectResonances(events),
+    }
 }
 
 function parseIssueMessage(event: { data?: unknown }): string {
@@ -163,7 +223,7 @@ export function* runSpwStepped(
     options: RunSpwOptions = {},
 ): Generator<AnyPrecipitate, RunSpwResult, void> {
     const shouldDesugar = options.desugar ?? true
-    const registers = options.registers ?? new RegisterBank()
+    const { registers, substrate, eventStartIndex, restore } = prepareRuntimeDependencies(options)
 
     // ── Stage 1: Desugar ────────────────────────────────────────
     const desugared = shouldDesugar ? desugar(source) : source
@@ -196,11 +256,14 @@ export function* runSpwStepped(
         if (issues.length === 0) {
             issues.push({ stage: 'parse', message: 'Parse did not produce executable AST' })
         }
+        const telemetry = collectTelemetry(substrate, eventStartIndex)
+        restore()
         return {
             success: false,
             source: desugared,
             parse: parseOutput,
             issues,
+            telemetry,
         }
     }
 
@@ -231,11 +294,15 @@ export function* runSpwStepped(
         delta: summarizeInterpret(runtime.value, runtime.registers),
     } satisfies InterpretPrecipitate
 
+    const telemetry = collectTelemetry(substrate, eventStartIndex)
+    restore()
+
     return {
         success: true,
         source: desugared,
         parse: parseOutput,
         runtime,
+        telemetry,
     }
 }
 
@@ -246,7 +313,7 @@ export function* runSpwStepped(
 export function collectPrecipitates(
     source: string,
     options: RunSpwOptions = {},
-): { precipitates: AnyPrecipitate[]; result: RunSpwResult } {
+): CollectedPrecipitates {
     const precipitates: AnyPrecipitate[] = []
     const gen = runSpwStepped(source, options)
 
@@ -256,7 +323,7 @@ export function collectPrecipitates(
         step = gen.next()
     }
 
-    return { precipitates, result: step.value }
+    return { precipitates, result: step.value, telemetry: step.value.telemetry }
 }
 
 /**

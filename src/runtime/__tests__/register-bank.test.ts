@@ -190,7 +190,7 @@ describe('RegisterBank', () => {
   })
 
   describe('semantic metadata', () => {
-    it('persists operator valence and frame metadata on writes', () => {
+    it('persists current-write operator valence and frame metadata', () => {
       const bank = new RegisterBank()
 
       bank.set('"', 'hello', {
@@ -198,22 +198,45 @@ describe('RegisterBank', () => {
         descriptor: { accessMode: 'resolved', containerAffinity: 'value' },
         operator: '*',
         valence: ['boon'],
-        registerRole: 'hydrate',
-        semanticFrames: { reg: 'hydrate', value: 'greeting', label: 'seed' },
+        registerRole: 'collapse',
+        semanticFrames: { value: 'greeting', label: 'seed' },
         force: true,
       })
 
       const meta = bank.materialize('"')
       expect(meta?.operator).toBe('*')
       expect(meta?.valence).toEqual(['boon'])
-      expect(meta?.registerRole).toBe('hydrate')
+      expect(meta?.registerRole).toBe('collapse')
       expect(meta?.semanticFrames).toMatchObject({
-        reg: 'hydrate',
         value: 'greeting',
         label: 'seed',
       })
       expect(meta?.descriptor.accessMode).toBe('resolved')
       expect(meta?.descriptor.containerAffinity).toBe('value')
+    })
+
+    it('replaces write semantics instead of accumulating stale metadata', () => {
+      const bank = new RegisterBank()
+
+      bank.set('"', 'first', {
+        source: 'interpret:collapse',
+        operator: '*',
+        valence: ['boon'],
+        registerRole: 'collapse',
+        semanticFrames: { label: 'first' },
+        force: true,
+      })
+
+      bank.set('"', 'second', {
+        source: 'rewrite',
+        force: true,
+      })
+
+      const meta = bank.materialize('"')
+      expect(meta?.operator).toBeUndefined()
+      expect(meta?.valence).toEqual([])
+      expect(meta?.registerRole).toBeUndefined()
+      expect(meta?.semanticFrames).toBeUndefined()
     })
 
     it('snapshot clones semantic metadata immutably', () => {
@@ -222,17 +245,17 @@ describe('RegisterBank', () => {
         source: 'interpret:collapse',
         operator: '*',
         valence: ['boon'],
-        semanticFrames: { reg: 'hydrate', value: 'greeting' },
+        semanticFrames: { label: 'seed', value: 'greeting' },
         force: true,
       })
 
       const snap = bank.snapshot()
       snap.entries['"']!.meta.valence.push('bone')
-      ;(snap.entries['"']!.meta.semanticFrames as Record<string, unknown>).reg = 'mutated'
+      ;(snap.entries['"']!.meta.semanticFrames as Record<string, unknown>).label = 'mutated'
 
       const meta = bank.materialize('"')
       expect(meta?.valence).toEqual(['boon'])
-      expect(meta?.semanticFrames?.reg).toBe('hydrate')
+      expect(meta?.semanticFrames?.label).toBe('seed')
     })
   })
 })

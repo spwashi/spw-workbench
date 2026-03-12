@@ -90,6 +90,7 @@ export class ServerContext {
                 source,
                 parse: { success: false, ast: null, events: [], errors: [] } as any,
                 issues: [{ stage: 'interpret', message: 'Runtime trial failed' }],
+                telemetry: { events: [], resonances: [] },
             }
             this.runtimeTrialCache.set(uri, { at: Date.now(), result: fail })
             return fail

@@ -9,16 +9,16 @@
  * @spw:seed:scaffold[system=resonance-detector,extract=candidate,density=sparse,basis=event-log|pure-analysis] - Event-log scaffold is promising but not yet a standalone kernel
  */
 
+import { Substrate } from './substrate'
 import type { RegisterEvent, Resonance } from './substrate'
-import type { Substrate } from './substrate'
 
 // ── Detection ───────────────────────────────────────────────────
 
 /**
  * Scan a substrate's event log and detect all resonances.
  */
-export function detectResonances(substrate: Substrate): Resonance[] {
-    const events = substrate.peek()
+export function detectResonances(substrate: Substrate | readonly RegisterEvent[]): Resonance[] {
+    const events = substrate instanceof Substrate ? substrate.peek() : substrate
     if (events.length < 2) return []
 
     const resonances: Resonance[] = []

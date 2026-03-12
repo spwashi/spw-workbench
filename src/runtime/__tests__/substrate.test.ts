@@ -20,6 +20,27 @@ describe('Substrate', () => {
         expect(sub.eventCount).toBe(0)
     })
 
+    it('snapshot clones event metadata immutably', () => {
+        const sub = new Substrate('test')
+        sub.emit({
+            kind: 'write',
+            key: 'a',
+            value: 'hello',
+            operator: '*',
+            valence: ['boon'],
+            registerRole: 'collapse',
+            semanticFrames: { label: 'seed' },
+            at: new Date().toISOString(),
+        })
+
+        const snapshot = sub.snapshot()
+        snapshot[0].valence?.push('bone')
+        ; (snapshot[0].semanticFrames as Record<string, unknown>).label = 'mutated'
+
+        expect(sub.peek()[0].valence).toEqual(['boon'])
+        expect(sub.peek()[0].semanticFrames).toMatchObject({ label: 'seed' })
+    })
+
     it('dispatches to exact key bindings', () => {
         const sub = new Substrate('test')
         const received: RegisterEvent[] = []
@@ -67,6 +88,33 @@ describe('RegisterBank + Substrate', () => {
         expect(sub.eventCount).toBeGreaterThanOrEqual(1)
         const writes = sub.peek().filter(e => e.kind === 'write' && e.key === 'foo')
         expect(writes.length).toBeGreaterThanOrEqual(1)
+    })
+
+    it('emits phase and write telemetry with current-write semantics', () => {
+        const sub = new Substrate('test')
+        const bank = new RegisterBank({}, sub)
+
+        bank.set('foo', 'bar', {
+            source: 'interpret:collapse',
+            operator: '*',
+            valence: ['boon'],
+            registerRole: 'collapse',
+            semanticFrames: { label: 'seed' },
+            phase: 'pragmatic',
+        })
+
+        const events = sub.peek().filter(e => e.key === 'foo')
+        expect(events.map(event => event.kind)).toEqual(['phase-advance', 'write'])
+        for (const event of events) {
+            expect(event).toMatchObject({
+                key: 'foo',
+                phase: 'pragmatic',
+                operator: '*',
+                valence: ['boon'],
+                registerRole: 'collapse',
+                semanticFrames: { label: 'seed' },
+            })
+        }
     })
 
     it('emits couple events', () => {
@@ -119,6 +167,18 @@ describe('Resonance Detection', () => {
         const echoes = resonances.filter(r => r.type === 'value-echo')
         expect(echoes.length).toBeGreaterThanOrEqual(1)
         expect(echoes[0].strength).toBe(1.0)
+    })
+
+    it('accepts event snapshots directly', () => {
+        const sub = new Substrate('test')
+        const at = new Date().toISOString()
+        sub.emit({ kind: 'write', key: 'a', value: 'same', at })
+        sub.emit({ kind: 'write', key: 'b', value: 'same', at })
+
+        const fromSubstrate = detectResonances(sub)
+        const fromSnapshot = detectResonances(sub.snapshot())
+
+        expect(fromSnapshot).toEqual(fromSubstrate)
     })
 
     it('does not echo null/undefined values', () => {
