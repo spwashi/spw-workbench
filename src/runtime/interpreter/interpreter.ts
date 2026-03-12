@@ -1,8 +1,9 @@
 import { normalizeToONF } from '../../seed/normalize'
-import type { SeedNode } from '../../seed/types'
+import type { OperatorKind, SeedNode } from '../../seed/types'
 import type { ONFNode } from '../../seed/types/ast/onf'
 import { RegisterBank } from '../state/register-bank'
-import type { RuntimeValue } from '../state/types'
+import { descriptorForKey } from '../state/type-affinities'
+import type { RegisterWriteOptions, RuntimeValence, RuntimeValue } from '../state/types'
 import type {
   RuntimeInterpretation,
   RuntimeInterpreterOptions,
@@ -50,6 +51,40 @@ function frameString(node: ONFNode, key = 'value'): string | undefined {
     return raw
   }
   return undefined
+}
+
+function frameValence(node: ONFNode): RuntimeValence[] | undefined {
+  const raw = node.frames.valence
+  if (!Array.isArray(raw)) {
+    return undefined
+  }
+
+  const valence = raw.filter((item): item is RuntimeValence => typeof item === 'string')
+  return valence.length > 0 ? valence : undefined
+}
+
+function semanticFrames(node: ONFNode): Record<string, unknown> | undefined {
+  const { momentum, ...frames } = node.frames
+  return Object.keys(frames).length > 0 ? { ...frames } : undefined
+}
+
+function operatorForNode(node: ONFNode): OperatorKind | undefined {
+  if (node.sigil === '_') {
+    return undefined
+  }
+  return node.sigil as OperatorKind
+}
+
+function writeSemantics(node: ONFNode): RegisterWriteOptions {
+  const operator = operatorForNode(node)
+
+  return {
+    descriptor: operator ? descriptorForKey(operator) : undefined,
+    operator,
+    valence: frameValence(node),
+    registerRole: frameString(node, 'reg'),
+    semanticFrames: semanticFrames(node),
+  }
 }
 
 function isRuntimeRecord(value: RuntimeValue): value is Record<string, RuntimeValue> {
@@ -130,7 +165,10 @@ function evaluate(node: ONFNode, context: EvalContext): RuntimeValue {
         const item = args[0] ?? null
         const markerName = frameString(node, 'marker')
         if (markerName) {
-          context.registers.markPosition(markerName, item)
+          context.registers.markPosition(markerName, item, {
+            ...writeSemantics(node),
+            source: 'interpret:marker',
+          })
         }
         return item
       }
@@ -160,25 +198,38 @@ function evaluate(node: ONFNode, context: EvalContext): RuntimeValue {
       const key = frameString(node) ?? `res-${context.registers.listKeys().length}`
       const lens = frameString(node, 'reg') ?? 'runtime'
       const reduced = reduceResonance(args)
-      context.registers.resonate(key, reduced, lens)
+      context.registers.resonate(key, reduced, lens, {
+        ...writeSemantics(node),
+        source: 'interpret:resonate',
+      })
       return reduced
     }
 
     case '@': {
       const observer = frameString(node) ?? 'runtime'
       const value = args[0] ?? null
-      return context.registers.observe(observer, value)
+      return context.registers.observe(observer, value, {
+        ...writeSemantics(node),
+        source: 'interpret:observe',
+      })
     }
 
     case '&': {
       const key = frameString(node) ?? `merge-${context.registers.listKeys().length}`
-      return context.registers.confluent(key, ...args)
+      return context.registers.confluent(key, args, {
+        ...writeSemantics(node),
+        source: 'interpret:confluent',
+      })
     }
 
     case '=': {
       const key = frameString(node) ?? context.registers.getFocusKey()
       const value = args[0] ?? null
-      context.registers.set(key, value, { source: 'interpret:set', force: true })
+      context.registers.set(key, value, {
+        ...writeSemantics(node),
+        source: 'interpret:set',
+        force: true,
+      })
       return value
     }
 
@@ -229,7 +280,11 @@ function evaluate(node: ONFNode, context: EvalContext): RuntimeValue {
       // Value/collapse: resolve to concrete value, write to active register
       const collapsed = args[0] ?? null
       const key = frameString(node) ?? context.registers.getFocusKey()
-      context.registers.set(key, collapsed, { source: 'interpret:collapse', force: true })
+      context.registers.set(key, collapsed, {
+        ...writeSemantics(node),
+        source: 'interpret:collapse',
+        force: true,
+      })
       trace(context, 'interpret', `collapse *${key} → ${typeof collapsed}`)
       return collapsed
     }

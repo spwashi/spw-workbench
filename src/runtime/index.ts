@@ -2,6 +2,7 @@ export type {
   RegisterAccessMode,
   ContainerAffinity,
   RegisterDescriptor,
+  RuntimeValence,
   RuntimeScalar,
   RuntimeRecord,
   RuntimePacket,
@@ -72,4 +73,3 @@ export type {
 export { Substrate } from './pipeline/substrate'
 
 export { detectResonances } from './pipeline/resonance'
-

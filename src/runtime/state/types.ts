@@ -1,3 +1,5 @@
+import type { ModifierKind, OperatorKind } from '../../seed/types'
+
 export type RegisterAccessMode =
   | 'kinetic'
   | 'structural'
@@ -32,6 +34,8 @@ export interface RegisterDescriptor {
   accessMode: RegisterAccessMode
   containerAffinity: ContainerAffinity
 }
+
+export type RuntimeValence = ModifierKind
 
 export type RuntimeScalar = string | number | boolean | null
 
@@ -167,6 +171,10 @@ export interface RegisterMeta {
   immutable: boolean
   provenance: string[]
   lenses: string[]
+  valence: RuntimeValence[]
+  operator?: OperatorKind
+  registerRole?: string
+  semanticFrames?: Record<string, unknown>
   /** Phase enrichment envelope — undefined for legacy/uninstrumented cells */
   phases?: PhaseEnvelope
   /** Typed address — undefined for legacy cells created with bare string keys */
@@ -195,6 +203,10 @@ export interface RegisterWriteOptions {
   immutable?: boolean
   descriptor?: Partial<RegisterDescriptor>
   force?: boolean
+  operator?: OperatorKind
+  valence?: RuntimeValence[]
+  registerRole?: string
+  semanticFrames?: Record<string, unknown>
   /** Phase annotation for this write */
   phase?: RegisterPhaseInput
 }

@@ -22,4 +22,22 @@ describe('runSpw', () => {
     expect(result.issues.length).toBeGreaterThan(0)
     expect(result.issues[0]?.stage).toBe('parse')
   })
+
+  it('carries operator valence into register metadata', () => {
+    const result = runSpw('*boon{"hello"}')
+
+    expect(result.success).toBe(true)
+    if (!result.success) return
+
+    const focus = result.runtime.registers.entries['"']
+    expect(focus?.value).toBe('"hello"')
+    expect(focus?.meta.operator).toBe('*')
+    expect(focus?.meta.valence).toContain('boon')
+    expect(focus?.meta.registerRole).toBe('op')
+    expect(focus?.meta.descriptor.containerAffinity).toBe('value')
+    expect(focus?.meta.semanticFrames).toMatchObject({
+      reg: 'op',
+      valence: ['boon'],
+    })
+  })
 })

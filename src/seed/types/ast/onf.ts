@@ -11,7 +11,7 @@
  * @see src/lang/grammar/onf-spec.md for the full specification
  */
 
-import type { OperatorKind } from '../token'
+import type { ModifierKind, OperatorKind } from '../token'
 
 // =============================================================================
 // Frame Map
@@ -27,6 +27,8 @@ import type { OperatorKind } from '../token'
  */
 export type FrameMap = {
     reg?: string
+    valence?: ModifierKind[]
+    label?: string
     rewrite?: string
     momentum?: unknown
     [key: string]: unknown

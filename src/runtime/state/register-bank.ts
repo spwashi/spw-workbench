@@ -104,6 +104,13 @@ function clamp01(value: number): number {
   return value
 }
 
+function cloneSemanticFrames(
+  frames: Record<string, unknown> | undefined,
+): Record<string, unknown> | undefined {
+  if (!frames) return undefined
+  return { ...frames }
+}
+
 export class RegisterBank {
   private readonly entries = new Map<string, RegisterEntry>()
   private readonly lensIndex = new Map<string, Set<string>>()
@@ -176,6 +183,15 @@ export class RegisterBank {
       writes: entry.meta.writes + 1,
       lastUsedAt: nowIso(),
       immutable: options.immutable ?? entry.meta.immutable,
+      operator: options.operator ?? entry.meta.operator,
+      registerRole: options.registerRole ?? entry.meta.registerRole,
+      valence: this.pushValence(entry.meta.valence, options.valence),
+      semanticFrames: options.semanticFrames
+        ? {
+          ...(entry.meta.semanticFrames ?? {}),
+          ...cloneSemanticFrames(options.semanticFrames),
+        }
+        : entry.meta.semanticFrames,
       provenance: this.pushProvenance(entry.meta.provenance, options.source ?? 'set'),
     }
 
@@ -194,6 +210,7 @@ export class RegisterBank {
       entry.meta.address = {
         ...(entry.meta.address ?? { key }),
         key,
+        operator: options.operator ?? entry.meta.operator,
         phase,
       }
     }
@@ -296,9 +313,10 @@ export class RegisterBank {
     return cloneRuntimeValue(current)
   }
 
-  resonate(name: string, value: RuntimeValue, tag?: string): boolean {
+  resonate(name: string, value: RuntimeValue, tag?: string, options: RegisterWriteOptions = {}): boolean {
     const lens = tag ?? 'default'
     const resonated = this.set(name, value, {
+      ...options,
       source: `resonate:${lens}`,
       descriptor: descriptorForKey('#'),
       force: true,
@@ -313,7 +331,7 @@ export class RegisterBank {
     return resonated
   }
 
-  observe(observer: string, value: RuntimeValue): ScopeFrame {
+  observe(observer: string, value: RuntimeValue, options: RegisterWriteOptions = {}): ScopeFrame {
     const frame: ScopeFrame = {
       observer,
       value: cloneRuntimeValue(value),
@@ -321,6 +339,7 @@ export class RegisterBank {
     }
 
     this.set('@', frame, {
+      ...options,
       source: `observe:${observer}`,
       descriptor: descriptorForKey('@'),
       force: true,
@@ -329,9 +348,10 @@ export class RegisterBank {
     return frame
   }
 
-  confluent(name: string, ...sources: RuntimeValue[]): RuntimeValue {
+  confluent(name: string, sources: RuntimeValue[], options: RegisterWriteOptions = {}): RuntimeValue {
     const merged = sources.reduce<RuntimeValue>((acc, item) => mergeRuntimeValues(acc, item), undefined)
     this.set(name, merged, {
+      ...options,
       source: 'confluent',
       descriptor: descriptorForKey('&'),
       force: true,
@@ -346,6 +366,9 @@ export class RegisterBank {
       ...entry.meta,
       descriptor: { ...entry.meta.descriptor },
       provenance: [...entry.meta.provenance],
+      lenses: [...entry.meta.lenses],
+      valence: [...entry.meta.valence],
+      semanticFrames: cloneSemanticFrames(entry.meta.semanticFrames),
     }
   }
 
@@ -394,9 +417,10 @@ export class RegisterBank {
    * Register a named positional mark — Vim `'a` equivalent.
    * Stores the value at a mark-prefixed register key.
    */
-  markPosition(name: string, value: RuntimeValue): void {
+  markPosition(name: string, value: RuntimeValue, options: RegisterWriteOptions = {}): void {
     const markKey = `mark:${name}`
     this.set(markKey, value, {
+      ...options,
       source: `mark:${name}`,
       descriptor: { name: `Mark ${name}`, accessMode: 'structural', containerAffinity: 'value' },
       force: true,
@@ -464,6 +488,8 @@ export class RegisterBank {
           descriptor: { ...entry.meta.descriptor },
           provenance: [...entry.meta.provenance],
           lenses: [...entry.meta.lenses],
+          valence: [...entry.meta.valence],
+          semanticFrames: cloneSemanticFrames(entry.meta.semanticFrames),
           phases: entry.meta.phases
             ? {
               ...entry.meta.phases,
@@ -521,6 +547,7 @@ export class RegisterBank {
         immutable: false,
         provenance: ['init'],
         lenses: [],
+        valence: [],
         liminality: LIMINALITY_ORDER[0],
         frequency: 0,
         coupling: 0,
@@ -541,6 +568,18 @@ export class RegisterBank {
   private pushLens(lenses: string[], lens: string): string[] {
     if (lenses.includes(lens)) return lenses
     return [...lenses, lens]
+  }
+
+  private pushValence(existing: RegisterMeta['valence'], incoming?: RegisterMeta['valence']): RegisterMeta['valence'] {
+    if (!incoming || incoming.length === 0) return [...existing]
+
+    const next = [...existing]
+    for (const value of incoming) {
+      if (!next.includes(value)) {
+        next.push(value)
+      }
+    }
+    return next
   }
 
   private addLensIndex(lens: string, key: string): void {

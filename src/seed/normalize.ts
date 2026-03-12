@@ -32,6 +32,81 @@ export function parseDesugared(input: string): DesugarResult {
 }
 
 import type { ASTNode } from './types/ast'
+import type { ModifierKind } from './types'
+
+function frameScalar(node: any): unknown {
+  if (!node || typeof node !== 'object') return undefined
+
+  switch (node.type) {
+    case 'Literal':
+      return node.token?.value
+    case 'Identifier':
+      return node.token?.value
+    case 'Reference':
+      return node.raw ?? node.path?.map((part: any) => part.value).join('.')
+    case 'PathRef':
+      return node.path?.token?.value
+    case 'ProseChunk':
+      return node.text
+    case 'Expression':
+      if (node.terms?.length === 1) {
+        return frameScalar(node.terms[0])
+      }
+      return undefined
+    case 'Parameter':
+      return frameScalar(node.value)
+    default:
+      return undefined
+  }
+}
+
+function extractFrameBindings(frame: any): Record<string, unknown> {
+  if (!frame?.content || !Array.isArray(frame.content)) {
+    return {}
+  }
+
+  const bindings: Record<string, unknown> = {}
+  let positionalAssigned = false
+
+  for (const item of frame.content) {
+    if (!item || typeof item !== 'object') {
+      continue
+    }
+
+    if (item.type === 'Parameter') {
+      const paramValue = frameScalar(item.value)
+      const paramName = item.name?.value
+      if (paramName && paramValue !== undefined) {
+        bindings[paramName] = paramValue
+        continue
+      }
+      if (!positionalAssigned && paramValue !== undefined) {
+        bindings.value = paramValue
+        positionalAssigned = true
+      }
+      continue
+    }
+
+    const scalar = frameScalar(item)
+    if (!positionalAssigned && scalar !== undefined) {
+      bindings.value = scalar
+      positionalAssigned = true
+    }
+  }
+
+  return bindings
+}
+
+function extractValence(op: any): ModifierKind[] | undefined {
+  const modifiers = op.modifiers?.modifiers
+  if (!Array.isArray(modifiers) || modifiers.length === 0) {
+    return undefined
+  }
+
+  return modifiers
+    .map((modifier: any) => modifier.value)
+    .filter((modifier: unknown): modifier is ModifierKind => typeof modifier === 'string')
+}
 
 /**
  * Normalize an AST to Operator Normal Form.
@@ -70,6 +145,7 @@ export function normalizeToONF(node: ASTNode): ONFNode {
       const args: ONFNode[] = []
       if (op.subject) args.push(normalizeToONF(op.subject))
       if (op.body) args.push(normalizeToONF(op.body))
+      if (op.linePayload) args.push(normalizeToONF(op.linePayload))
 
       let reg = 'op'
       switch (sigil) {
@@ -80,7 +156,20 @@ export function normalizeToONF(node: ASTNode): ONFNode {
         case '%': reg = 'measure'; break
         case '$': reg = 'substrate'; break
       }
-      return { sigil: sigil as any, args, frames: { reg } }
+
+      const frames: Record<string, unknown> = {
+        reg,
+        ...extractFrameBindings(op.frame),
+      }
+      const valence = extractValence(op)
+      if (valence && valence.length > 0) {
+        frames.valence = valence
+      }
+      if (op.operatorLabel?.value) {
+        frames.label = op.operatorLabel.value
+      }
+
+      return { sigil: sigil as any, args, frames }
     }
 
     case 'Capsule': {
