@@ -1,0 +1,35 @@
+# Runtime Precipitate Chemistry
+#
+# Distilled note for aligning the shipped runtime pipeline to the chemistry metaphor.
+
+#:layer #!semantics
+
+^"intent"{
+ goal: "Define what precipitates are in the current runtime, what they are not, and how they relate to substrate events and resonance."
+ status: "planning"
+ falsify: "If the runtime can change precipitate meaning without touching src/runtime/pipeline/stages.ts or docs/runtime/spw/runtime-foundation.spw, the model is still too vague."
+}
+
+^"current_runtime"{
+ stages: ["desugar", "parse", "normalize", "interpret"]
+ precipitate: "A stable artifact yielded after one stage transition."
+ substrate: "The event medium attached to register activity during interpretation."
+ telemetry: "A post-run assay consisting of substrate events plus derived resonances."
+ resonance: "A derived pattern detected over the event log, not a precipitate itself."
+}
+
+^"boundaries"{
+ binding_claims: [
+  "Every shipped stage yields exactly one precipitate.",
+  "A write event is not itself a precipitate.",
+  "Resonance is measured from telemetry, not emitted as a stage artifact.",
+  "Interpret is the only current stage that snapshots registersAfter."
+ ]
+ counterexample: "If a host app treats each substrate event as a precipitate, it confuses reaction traces with settled stage products."
+}
+
+^"open_questions"{
+ normalize_language: "Should normalize be framed as clarification, crystallization, or canonical reduction?"
+ aggregate_product: "Should RunSpwSuccess itself count as a final condensate composed of precipitates + telemetry?"
+ assay_granularity: "Do we want per-stage telemetry slices, or only whole-run assay output?"
+}
