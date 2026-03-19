@@ -1,0 +1,33 @@
+# wip — runtime-axis-traceability
+# Branch: feature/runtime-axis-traceability
+# Started: 2026-03-19
+
+#:layer #!pragmatics
+
+^["intent"]{
+ ~#goal: "Make runtime design traces (axes) explicit in the implementation layer."
+ ~#taste: "literature quality — a reader should know *why* a constant is 500ms or *why* an event is buffered."
+}
+
+^["stream"] {
+ >>[2026-03-19 00:00] observe — current `RegisterBank` has several 0-100 scales and timing guards that are 'naked' logic.
+ >>[2026-03-19 00:01] decide — map these to the 'stability' and 'timing' axes documented in `docs/design/axes.spw`.
+}
+
+^["open"] {
+ ?[marker_format]: "Should we use `@spw:axis(stability)` or a more descriptive `@spw:axis:stability` tag?"
+ ?[granularity]: "Do we mark individual constants or the entire function/block that manages the axis?"
+}
+
+^["commits"] {
+ ~[1]: "docs[runtime] — trace RegisterBank logic to stability and timing axes"
+ ~[2]: "docs[runtime] — trace Substrate events to disclosure and noise axes"
+ ~[3]: "audit[infra] — enhance marker audit to recognize @spw:axis traces"
+}
+
+^["cache"] {
+ ~#status: "planning"
+ ~#files_hot: "src/runtime/state/register-bank.ts, src/runtime/pipeline/substrate.ts"
+ ~#next_commit: "1"
+ ~#open_count: "2"
+}

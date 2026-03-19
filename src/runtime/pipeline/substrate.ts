@@ -99,7 +99,7 @@ export class Substrate {
 
     /**
      * Emit a register event.
-     * Logs the event and dispatches to any bound handlers matching the key.
+     * @spw:axis[layer=flow] - Event-driven reaction stream.
      */
     emit(event: RegisterEvent): void {
         this.events.push(event)
@@ -131,16 +131,7 @@ export class Substrate {
 
     /**
      * Bind a handler to a pattern.
-     *
-     * Patterns:
-     *   "key"      — exact register key match
-     *   "*"        — all events
-     *   "write:*"  — all events of a specific kind
-     *
-     * In Spw terms: ~ deferral is a substrate binding.
-     * ~value means "bind this value to the substrate; it resolves when catalyzed."
-     */
-    bind(pattern: string, handler: SubstrateHandler): void {
+     * @spw:axis[layer=pattern] - Structural coupling via handlers.
         const existing = this.bindings.get(pattern) ?? []
         existing.push(handler)
         this.bindings.set(pattern, existing)

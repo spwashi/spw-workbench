@@ -31,6 +31,7 @@ import type { RunSpwOptions, RunSpwResult, RuntimeIssue, RuntimeTelemetry } from
 
 export type StageName = 'desugar' | 'parse' | 'normalize' | 'interpret'
 
+/** @spw:axis[layer=signal|pattern|flow|structure] - Canonical pipeline progression sequence. */
 export const STAGE_ORDER: readonly StageName[] = [
     'desugar',
     'parse',
@@ -42,7 +43,7 @@ export const STAGE_ORDER: readonly StageName[] = [
 
 /**
  * A precipitate is what falls out of a transformation stage.
- * Each stage produces exactly one precipitate.
+ * @spw:axis[representation=syntactic|semantic] - Artifact capture per stage.
  */
 export interface Precipitate<T = unknown> {
     /** Which stage produced this */

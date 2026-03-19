@@ -93,6 +93,9 @@ function mergeRuntimeValues(left: RuntimeValue, right: RuntimeValue): RuntimeVal
 }
 
 function runtimeMagnitude(value: RuntimeValue): number {
+  /**
+   * @spw:axis[representation=4] - Absolute magnitude as weighted resolution.
+   */
   if (value === undefined || value === null) return 0
   if (typeof value === 'number') return Math.abs(value)
   if (typeof value === 'string') return value.length
@@ -104,6 +107,9 @@ function runtimeMagnitude(value: RuntimeValue): number {
 }
 
 function clamp01(value: number): number {
+  /**
+   * @spw:axis[quality=bone] - Normalization clamp for structural stability.
+   */
   if (!Number.isFinite(value)) return 0
   if (value < 0) return 0
   if (value > 1) return 1
@@ -128,6 +134,7 @@ export class RegisterBank {
   /** Optional substrate for event-driven processing. Opt-in: zero overhead when null. */
   private substrate: Substrate | null = null
 
+  /** @spw:axis[timing] - Window size for write cadence resolution. */
   private static readonly FREQUENCY_WINDOW_SIZE = 10
 
   constructor(initial: Record<string, RuntimeValue> = {}, substrate?: Substrate) {
@@ -596,6 +603,7 @@ export class RegisterBank {
 
   private pushProvenance(provenance: string[], source: string): string[] {
     const next = [...provenance, source]
+    /** @spw:axis[stability] - Fixed-depth provenance for memory bound. */
     if (next.length <= 16) return next
     return next.slice(next.length - 16)
   }
@@ -625,6 +633,7 @@ export class RegisterBank {
       phase,
       enrichedAt: nowIso(),
       source,
+      /** @spw:axis[representation=semantic] - Phase weight for cost model. */
       memoryWeight: phaseIndex >= 0 ? (phaseIndex + 1) / PHASE_ORDER.length : 0.5,
     }
 
