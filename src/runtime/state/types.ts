@@ -1,4 +1,5 @@
-import type { ModifierKind, OperatorKind } from '../../seed/types'
+import type { ModifierKind, OperatorKind, RegisterId } from '../../seed/types'
+export type { RegisterId }
 
 export type RegisterAccessMode =
   | 'kinetic'
@@ -142,7 +143,7 @@ export interface PhaseEnvelope {
   /** Ordered facets — each phase adds one */
   facets: PhaseFacet[]
   /** Optional lineage edge: which cell contributed to this enrichment */
-  lineage?: string[]
+  lineage?: RegisterId[]
   /**
    * Memory management: if true, earlier facets can be evicted under pressure.
    * When evicted, only the latest facet + current phase are kept.
@@ -156,7 +157,7 @@ export interface PhaseEnvelope {
  */
 export interface RegisterAddress {
   /** Register key (e.g., '"', '0', 'result') */
-  key: string
+  key: RegisterId
   /** Operator that produced this address */
   operator?: string
   /** Phase at which this address was created */
@@ -164,7 +165,7 @@ export interface RegisterAddress {
 }
 
 export interface RegisterMeta {
-  key: string
+  key: RegisterId
   descriptor: RegisterDescriptor
   writes: number
   lastUsedAt: string
@@ -193,7 +194,7 @@ export interface RegisterMeta {
 }
 
 export interface RegisterEntry {
-  key: string
+  key: RegisterId
   value: RuntimeValue
   meta: RegisterMeta
 }
@@ -212,7 +213,7 @@ export interface RegisterWriteOptions {
 }
 
 export interface RegisterSnapshot {
-  focusKey: string
-  entries: Record<string, RegisterEntry>
-  lensIndex: Record<string, string[]>
+  focusKey: RegisterId
+  entries: Record<RegisterId, RegisterEntry>
+  lensIndex: Record<string, RegisterId[]>
 }

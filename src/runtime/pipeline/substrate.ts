@@ -15,7 +15,7 @@
  * @spw:seed:starter[system=event-substrate,extract=candidate,next=resonance,density=sparse] - Event substrate is a viable sparse base for later extraction
  */
 
-import type { RegisterMeta, RegisterPhase, RuntimeValence, RuntimeValue } from '../state/types'
+import type { RegisterId, RegisterMeta, RegisterPhase, RuntimeValence, RuntimeValue } from '../state/types'
 
 // ── Event Types ─────────────────────────────────────────────────
 
@@ -25,7 +25,7 @@ export interface RegisterEvent {
     /** What happened */
     kind: RegisterEventKind
     /** Which register key was affected */
-    key: string
+    key: RegisterId
     /** Value after the event */
     value: RuntimeValue
     /** Phase at time of event (if applicable) */
@@ -43,7 +43,7 @@ export interface RegisterEvent {
     /** ISO timestamp */
     at: string
     /** For 'couple' events: the other key in the coupling */
-    coupledWith?: string
+    coupledWith?: RegisterId
 }
 
 // ── Resonance Types ─────────────────────────────────────────────
@@ -56,7 +56,7 @@ export type ResonanceType =
 
 export interface Resonance {
     /** The two register keys that resonate */
-    keys: [string, string]
+    keys: [RegisterId, RegisterId]
     /** What kind of resonance was detected */
     type: ResonanceType
     /** How strong the resonance is (0–1) */

@@ -1,59 +1,62 @@
 import { describe, expect, it } from 'vitest'
 import { RegisterBank } from '../state/register-bank'
+import { castToBrand, $register } from '../../seed/types'
 
 describe('RegisterBank', () => {
   it('yanks into active, default, and history registers', () => {
     const bank = new RegisterBank()
 
-    bank.focus('a')
+    bank.focus($register`a`)
     bank.extract('boon')
 
-    expect(bank.deposit('a')).toBe('boon')
-    expect(bank.deposit('"')).toBe('boon')
-    expect(bank.deposit('0')).toBe('boon')
+    expect(bank.deposit($register`a`)).toBe('boon')
+    expect(bank.deposit($register`"`)).toBe('boon')
+    expect(bank.deposit($register`0`)).toBe('boon')
   })
 
   it('indexes resonate writes by lens and allows updates', () => {
     const bank = new RegisterBank()
 
-    expect(bank.resonate('sig', 'first', 'cache.render')).toBe(true)
-    expect(bank.resonate('sig', 'second', 'cache.render')).toBe(true)
-    expect(bank.deposit('sig')).toBe('second')
+    expect(bank.resonate($register`sig`, 'first', 'cache.render')).toBe(true)
+    expect(bank.resonate($register`sig`, 'second', 'cache.render')).toBe(true)
+    expect(bank.deposit($register`sig`)).toBe('second')
     expect(bank.keysForLens('cache.render')).toContain('sig')
-    expect(bank.materialize('sig')?.lenses).toContain('cache.render')
+    expect(bank.materialize($register`sig`)?.lenses).toContain('cache.render')
   })
 
   it('normalizes measure output into [0,1]', () => {
     const bank = new RegisterBank()
 
-    bank.set('measure', [1, 2, 3], { source: 'test' })
-    expect(bank.measure('measure', 3)).toBe(1)
-    expect(bank.measure('measure', 30)).toBeCloseTo(0.1)
+    bank.set($register`measure`, [1, 2, 3], { source: 'test' })
+    expect(bank.measure($register`measure`, 3)).toBe(1)
+    expect(bank.measure($register`measure`, 30)).toBeCloseTo(0.1)
   })
 
   describe('phase enrichment', () => {
     it('enrichPhase progressively enriches a cell lex → parse → semantic', () => {
       const bank = new RegisterBank()
-      bank.set('token', 'hello', { source: 'lexer', phase: 'lex' })
+      const reg = $register`token`
+      bank.set(reg, 'hello', { source: 'lexer', phase: 'lex' })
 
-      expect(bank.phaseOf('token')).toBe('lex')
+      expect(bank.phaseOf(reg)).toBe('lex')
 
-      bank.enrichPhase('token', 'parse', 'parser')
-      expect(bank.phaseOf('token')).toBe('parse')
+      bank.enrichPhase(reg, 'parse', 'parser')
+      expect(bank.phaseOf(reg)).toBe('parse')
 
-      bank.enrichPhase('token', 'semantic', 'analyzer')
-      expect(bank.phaseOf('token')).toBe('semantic')
+      bank.enrichPhase(reg, 'semantic', 'analyzer')
+      expect(bank.phaseOf(reg)).toBe('semantic')
 
       // Value unchanged through enrichment
-      expect(bank.get('token')).toBe('hello')
+      expect(bank.get(reg)).toBe('hello')
     })
 
     it('set() with phase option creates initial phase envelope', () => {
       const bank = new RegisterBank()
-      bank.set('node', { type: 'Expression' }, { source: 'parser', phase: 'parse' })
+      const reg = $register`node`
+      bank.set(reg, { type: 'Expression' }, { source: 'parser', phase: 'parse' })
 
-      expect(bank.phaseOf('node')).toBe('parse')
-      const meta = bank.materialize('node')
+      expect(bank.phaseOf(reg)).toBe('parse')
+      const meta = bank.materialize(reg)
       expect(meta?.phases?.facets).toHaveLength(1)
       expect(meta?.phases?.facets[0].phase).toBe('parse')
       expect(meta?.phases?.facets[0].source).toBe('parser')
@@ -61,18 +64,20 @@ describe('RegisterBank', () => {
 
     it('phaseOf returns undefined for unphased cells', () => {
       const bank = new RegisterBank()
-      bank.set('legacy', 42, { source: 'old' })
+      const reg = $register`legacy`
+      bank.set(reg, 42, { source: 'old' })
 
-      expect(bank.phaseOf('legacy')).toBeUndefined()
+      expect(bank.phaseOf(reg)).toBeUndefined()
     })
 
     it('memoryWeight increases with phase progression', () => {
       const bank = new RegisterBank()
-      bank.set('cell', 'data', { source: 'init', phase: 'lex' })
-      bank.enrichPhase('cell', 'parse')
-      bank.enrichPhase('cell', 'semantic')
+      const reg = $register`cell`
+      bank.set(reg, 'data', { source: 'init', phase: 'lex' })
+      bank.enrichPhase(reg, 'parse')
+      bank.enrichPhase(reg, 'semantic')
 
-      const meta = bank.materialize('cell')
+      const meta = bank.materialize(reg)
       const weights = meta?.phases?.facets.map(f => f.memoryWeight) ?? []
       expect(weights).toHaveLength(3)
       // lex < parse < semantic
@@ -86,25 +91,27 @@ describe('RegisterBank', () => {
 
     it('snapshot preserves phase envelope immutably', () => {
       const bank = new RegisterBank()
-      bank.set('phased', 'value', { source: 'test', phase: 'lex' })
-      bank.enrichPhase('phased', 'parse')
+      const reg = $register`phased`
+      bank.set(reg, 'value', { source: 'test', phase: 'lex' })
+      bank.enrichPhase(reg, 'parse')
 
       const snap = bank.snapshot()
-      const entry = snap.entries['phased']
+      const entry = snap.entries[reg]
       expect(entry.meta.phases?.current).toBe('parse')
       expect(entry.meta.phases?.facets).toHaveLength(2)
 
       // Mutating snapshot shouldn't affect bank
       entry.meta.phases!.facets.push({ phase: 'semantic', enrichedAt: 'fake' })
-      expect(bank.materialize('phased')?.phases?.facets).toHaveLength(2)
+      expect(bank.materialize(reg)?.phases?.facets).toHaveLength(2)
     })
   })
 
   describe('acoustic fields', () => {
     it('new cells initialize with default acoustic fields', () => {
       const bank = new RegisterBank()
-      bank.set('cell', 'value', { source: 'test' })
-      const meta = bank.materialize('cell')
+      const reg = $register`cell`
+      bank.set(reg, 'value', { source: 'test' })
+      const meta = bank.materialize(reg)
       expect(meta?.liminality).toBe('local')
       expect(meta?.frequency).toBeDefined()
       expect(meta?.coupling).toBe(0)
@@ -113,32 +120,34 @@ describe('RegisterBank', () => {
 
     it('promote/demote cycles liminality local→liminal→visible→global', () => {
       const bank = new RegisterBank()
-      bank.set('cell', 'v', { source: 'test' })
+      const reg = $register`cell`
+      bank.set(reg, 'v', { source: 'test' })
 
-      expect(bank.promote('cell')).toBe('liminal')
-      expect(bank.promote('cell')).toBe('visible')
-      expect(bank.promote('cell')).toBe('global')
-      expect(bank.promote('cell')).toBe('global')
+      expect(bank.promote(reg)).toBe('liminal')
+      expect(bank.promote(reg)).toBe('visible')
+      expect(bank.promote(reg)).toBe('global')
+      expect(bank.promote(reg)).toBe('global')
 
-      expect(bank.demote('cell')).toBe('visible')
-      expect(bank.demote('cell')).toBe('liminal')
-      expect(bank.demote('cell')).toBe('local')
-      expect(bank.demote('cell')).toBe('local')
+      expect(bank.demote(reg)).toBe('visible')
+      expect(bank.demote(reg)).toBe('liminal')
+      expect(bank.demote(reg)).toBe('local')
+      expect(bank.demote(reg)).toBe('local')
     })
 
     it('promote/demote returns undefined for nonexistent cells', () => {
       const bank = new RegisterBank()
-      expect(bank.promote('nope')).toBeUndefined()
-      expect(bank.demote('nope')).toBeUndefined()
+      expect(bank.promote($register`nope`)).toBeUndefined()
+      expect(bank.demote($register`nope`)).toBeUndefined()
     })
 
     it('frequency updates on writes', () => {
       const bank = new RegisterBank()
-      bank.set('hot', 'a', { source: 'test' })
-      bank.set('hot', 'b', { source: 'test' })
-      bank.set('hot', 'c', { source: 'test' })
+      const reg = $register`hot`
+      bank.set(reg, 'a', { source: 'test' })
+      bank.set(reg, 'b', { source: 'test' })
+      bank.set(reg, 'c', { source: 'test' })
 
-      const freq = bank.frequencyOf('hot')
+      const freq = bank.frequencyOf(reg)
       // After 3+ writes, frequency should be > 0
       expect(freq).toBeDefined()
       expect(freq!).toBeGreaterThanOrEqual(0)
@@ -146,43 +155,49 @@ describe('RegisterBank', () => {
 
     it('couple creates bidirectional coupling edges', () => {
       const bank = new RegisterBank()
-      bank.set('a', 1, { source: 'test' })
-      bank.set('b', 2, { source: 'test' })
-      bank.set('c', 3, { source: 'test' })
+      const a = $register`a`
+      const b = $register`b`
+      const c = $register`c`
+      bank.set(a, 1, { source: 'test' })
+      bank.set(b, 2, { source: 'test' })
+      bank.set(c, 3, { source: 'test' })
 
-      bank.couple('a', 'b')
+      bank.couple(a, b)
 
-      const couplingA = bank.couplingOf('a')
-      const couplingB = bank.couplingOf('b')
+      const couplingA = bank.couplingOf(a)
+      const couplingB = bank.couplingOf(b)
       expect(couplingA).toBeGreaterThan(0)
       expect(couplingB).toBeGreaterThan(0)
 
       // Coupling a second edge should increase it
-      bank.couple('a', 'c')
-      expect(bank.couplingOf('a')).toBeGreaterThan(couplingA!)
+      bank.couple(a, c)
+      expect(bank.couplingOf(a)).toBeGreaterThan(couplingA!)
     })
 
     it('measure increments measureDepth on each observation', () => {
       const bank = new RegisterBank()
-      bank.set('observed', [1, 2, 3], { source: 'test' })
+      const reg = $register`observed`
+      bank.set(reg, [1, 2, 3], { source: 'test' })
 
-      expect(bank.materialize('observed')?.measureDepth).toBe(0)
+      expect(bank.materialize(reg)?.measureDepth).toBe(0)
 
-      bank.measure('observed', 3)
-      expect(bank.materialize('observed')?.measureDepth).toBe(1)
+      bank.measure(reg, 3)
+      expect(bank.materialize(reg)?.measureDepth).toBe(1)
 
-      bank.measure('observed', 3)
-      expect(bank.materialize('observed')?.measureDepth).toBe(2)
+      bank.measure(reg, 3)
+      expect(bank.materialize(reg)?.measureDepth).toBe(2)
     })
 
     it('snapshot clones acoustic fields', () => {
       const bank = new RegisterBank()
-      bank.set('cell', 'v', { source: 'test' })
-      bank.promote('cell')
-      bank.couple('cell', '"')
+      const reg = $register`cell`
+      const focus = $register`"`
+      bank.set(reg, 'v', { source: 'test' })
+      bank.promote(reg)
+      bank.couple(reg, focus)
 
       const snap = bank.snapshot()
-      const entry = snap.entries['cell']
+      const entry = snap.entries[reg]
       expect(entry.meta.liminality).toBe('liminal')
       expect(entry.meta.coupling).toBeGreaterThan(0)
       expect(entry.meta.measureDepth).toBe(0)
@@ -192,8 +207,9 @@ describe('RegisterBank', () => {
   describe('semantic metadata', () => {
     it('persists current-write operator valence and frame metadata', () => {
       const bank = new RegisterBank()
+      const reg = $register`"`
 
-      bank.set('"', 'hello', {
+      bank.set(reg, 'hello', {
         source: 'interpret:collapse',
         descriptor: { accessMode: 'resolved', containerAffinity: 'value' },
         operator: '*',
@@ -203,7 +219,7 @@ describe('RegisterBank', () => {
         force: true,
       })
 
-      const meta = bank.materialize('"')
+      const meta = bank.materialize(reg)
       expect(meta?.operator).toBe('*')
       expect(meta?.valence).toEqual(['boon'])
       expect(meta?.registerRole).toBe('collapse')
@@ -217,8 +233,9 @@ describe('RegisterBank', () => {
 
     it('replaces write semantics instead of accumulating stale metadata', () => {
       const bank = new RegisterBank()
+      const reg = $register`"`
 
-      bank.set('"', 'first', {
+      bank.set(reg, 'first', {
         source: 'interpret:collapse',
         operator: '*',
         valence: ['boon'],
@@ -227,12 +244,12 @@ describe('RegisterBank', () => {
         force: true,
       })
 
-      bank.set('"', 'second', {
+      bank.set(reg, 'second', {
         source: 'rewrite',
         force: true,
       })
 
-      const meta = bank.materialize('"')
+      const meta = bank.materialize(reg)
       expect(meta?.operator).toBeUndefined()
       expect(meta?.valence).toEqual([])
       expect(meta?.registerRole).toBeUndefined()
@@ -241,7 +258,8 @@ describe('RegisterBank', () => {
 
     it('snapshot clones semantic metadata immutably', () => {
       const bank = new RegisterBank()
-      bank.set('"', 'hello', {
+      const reg = $register`"`
+      bank.set(reg, 'hello', {
         source: 'interpret:collapse',
         operator: '*',
         valence: ['boon'],
@@ -250,10 +268,10 @@ describe('RegisterBank', () => {
       })
 
       const snap = bank.snapshot()
-      snap.entries['"']!.meta.valence.push('bone')
-      ;(snap.entries['"']!.meta.semanticFrames as Record<string, unknown>).label = 'mutated'
+      snap.entries[reg]!.meta.valence.push('bone')
+      ;(snap.entries[reg]!.meta.semanticFrames as Record<string, unknown>).label = 'mutated'
 
-      const meta = bank.materialize('"')
+      const meta = bank.materialize(reg)
       expect(meta?.valence).toEqual(['boon'])
       expect(meta?.semanticFrames?.label).toBe('seed')
     })

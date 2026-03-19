@@ -17,6 +17,7 @@ import type {
   ScopeFrame,
 } from './types'
 import { LIMINALITY_ORDER, PHASE_ORDER, normalizeRegisterPhase } from './types'
+import { RegisterId, castToBrand, $register } from '../../seed/types'
 
 const DEFAULT_FOCUS_KEY = '"'
 const HISTORY_KEYS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] as const
@@ -117,13 +118,13 @@ function cloneSemanticFrames(
 }
 
 export class RegisterBank {
-  private readonly entries = new Map<string, RegisterEntry>()
-  private readonly lensIndex = new Map<string, Set<string>>()
+  private readonly entries = new Map<RegisterId, RegisterEntry>()
+  private readonly lensIndex = new Map<string, Set<RegisterId>>()
   /** Circular buffer of write timestamps per cell (last N) for frequency computation */
   private readonly writeTimestamps = new Map<string, number[]>()
   /** Coupling edges: Map<keyA, Set<keyB>> (bidirectional) */
-  private readonly couplingEdges = new Map<string, Set<string>>()
-  private focusKey = DEFAULT_FOCUS_KEY
+  private readonly couplingEdges = new Map<RegisterId, Set<RegisterId>>()
+  private focusKey = $register`"`
   /** Optional substrate for event-driven processing. Opt-in: zero overhead when null. */
   private substrate: Substrate | null = null
 
@@ -131,9 +132,9 @@ export class RegisterBank {
 
   constructor(initial: Record<string, RuntimeValue> = {}, substrate?: Substrate) {
     if (substrate) this.substrate = substrate
-    this.ensureEntry(DEFAULT_FOCUS_KEY)
+    this.ensureEntry(this.focusKey)
     for (const [key, value] of Object.entries(initial)) {
-      this.set(key, value, { source: 'init', force: true })
+      this.set(RegisterId(key), value, { source: 'init', force: true })
     }
   }
 
@@ -154,26 +155,26 @@ export class RegisterBank {
     return prev
   }
 
-  focus(key: string): void {
+  focus(key: RegisterId): void {
     this.ensureEntry(key)
     this.focusKey = key
   }
 
-  getFocusKey(): string {
+  getFocusKey(): RegisterId {
     return this.focusKey
   }
 
-  listKeys(): string[] {
+  listKeys(): RegisterId[] {
     return [...this.entries.keys()].sort((a, b) => a.localeCompare(b))
   }
 
-  keysForLens(lens: string): string[] {
+  keysForLens(lens: string): RegisterId[] {
     const keys = this.lensIndex.get(lens)
     if (!keys) return []
     return [...keys].sort((a, b) => a.localeCompare(b))
   }
 
-  set(key: string, value: RuntimeValue, options: RegisterWriteOptions = {}): boolean {
+  set(key: RegisterId, value: RuntimeValue, options: RegisterWriteOptions = {}): boolean {
     const entry = this.ensureEntry(key)
     if (entry.meta.immutable && !options.force) {
       return false
@@ -257,7 +258,7 @@ export class RegisterBank {
    * Enrich a register cell's phase without changing its value.
    * Useful for progressive enrichment (e.g., lex → parse → semantic).
    */
-  enrichPhase(key: string, phase: RegisterPhaseInput, source?: string): boolean {
+  enrichPhase(key: RegisterId, phase: RegisterPhaseInput, source?: string): boolean {
     const entry = this.entries.get(key)
     if (!entry) return false
     const normalizedPhase = normalizeRegisterPhase(phase)
@@ -294,23 +295,23 @@ export class RegisterBank {
   /**
    * Return the current phase of a register cell, or undefined if unphased.
    */
-  phaseOf(key: string): RegisterPhase | undefined {
+  phaseOf(key: RegisterId): RegisterPhase | undefined {
     return this.entries.get(key)?.meta.phases?.current
   }
 
-  get(key: string = this.focusKey): RuntimeValue {
+  get(key: RegisterId = this.focusKey): RuntimeValue {
     const entry = this.ensureEntry(key)
     return cloneRuntimeValue(entry.value)
   }
 
   extract(value: RuntimeValue, source = 'extract'): boolean {
     const wroteActive = this.set(this.focusKey, value, { source })
-    this.set(DEFAULT_FOCUS_KEY, value, { source: `${source}:default`, force: true })
+    this.set($register`"`, value, { source: `${source}:default`, force: true })
     this.rotateHistory(value, source)
     return wroteActive
   }
 
-  deposit(key: string = this.focusKey): RuntimeValue {
+  deposit(key: RegisterId = this.focusKey): RuntimeValue {
     const entry = this.ensureEntry(key)
     entry.meta.lastUsedAt = nowIso()
     entry.meta.provenance = this.pushProvenance(entry.meta.provenance, 'deposit')
@@ -343,7 +344,7 @@ export class RegisterBank {
     return cloneRuntimeValue(current)
   }
 
-  resonate(name: string, value: RuntimeValue, tag?: string, options: RegisterWriteOptions = {}): boolean {
+  resonate(name: RegisterId, value: RuntimeValue, tag?: string, options: RegisterWriteOptions = {}): boolean {
     const lens = tag ?? 'default'
     const resonated = this.set(name, value, {
       ...options,
@@ -368,7 +369,7 @@ export class RegisterBank {
       capturedAt: nowIso(),
     }
 
-    this.set('@', frame, {
+    this.set($register`@`, frame, {
       ...options,
       source: `observe:${observer}`,
       descriptor: descriptorForKey('@'),
@@ -378,7 +379,7 @@ export class RegisterBank {
     return frame
   }
 
-  confluent(name: string, sources: RuntimeValue[], options: RegisterWriteOptions = {}): RuntimeValue {
+  confluent(name: RegisterId, sources: RuntimeValue[], options: RegisterWriteOptions = {}): RuntimeValue {
     const merged = sources.reduce<RuntimeValue>((acc, item) => mergeRuntimeValues(acc, item), undefined)
     this.set(name, merged, {
       ...options,
@@ -389,7 +390,7 @@ export class RegisterBank {
     return cloneRuntimeValue(merged)
   }
 
-  materialize(name: string): RegisterMeta | undefined {
+  materialize(name: RegisterId): RegisterMeta | undefined {
     const entry = this.entries.get(name)
     if (!entry) return undefined
     return {
@@ -402,7 +403,7 @@ export class RegisterBank {
     }
   }
 
-  measure(name: string, scale = 1): number {
+  measure(name: RegisterId, scale = 1): number {
     const entry = this.entries.get(name)
     if (entry) {
       entry.meta.measureDepth = (entry.meta.measureDepth ?? 0) + 1
@@ -415,7 +416,7 @@ export class RegisterBank {
   // ── Liminality ──────────────────────────────────────────────
 
   /** Promote a cell's liminality (local→liminal→visible→global). Returns new level or undefined if cell doesn't exist. */
-  promote(key: string): Liminality | undefined {
+  promote(key: RegisterId): Liminality | undefined {
     const entry = this.entries.get(key)
     if (!entry) return undefined
     const current = entry.meta.liminality ?? LIMINALITY_ORDER[0]
@@ -426,7 +427,7 @@ export class RegisterBank {
   }
 
   /** Demote a cell's liminality (global→visible→liminal→local). Returns new level or undefined if cell doesn't exist. */
-  demote(key: string): Liminality | undefined {
+  demote(key: RegisterId): Liminality | undefined {
     const entry = this.entries.get(key)
     if (!entry) return undefined
     const current = entry.meta.liminality ?? LIMINALITY_ORDER[0]
@@ -436,8 +437,7 @@ export class RegisterBank {
     return next
   }
 
-  /** Return the current acoustic frequency of a cell (writes/sec). */
-  frequencyOf(key: string): number | undefined {
+  frequencyOf(key: RegisterId): number | undefined {
     return this.entries.get(key)?.meta.frequency
   }
 
@@ -448,7 +448,7 @@ export class RegisterBank {
    * Stores the value at a mark-prefixed register key.
    */
   markPosition(name: string, value: RuntimeValue, options: RegisterWriteOptions = {}): void {
-    const markKey = `mark:${name}`
+    const markKey = RegisterId(`mark:${name}`)
     const eventAt = nowIso()
     this.set(markKey, value, {
       ...options,
@@ -471,17 +471,14 @@ export class RegisterBank {
     })
   }
 
-  /**
-   * Retrieve a named mark's value.
-   */
   getMark(name: string): RuntimeValue {
-    return this.get(`mark:${name}`)
+    return this.get(RegisterId(`mark:${name}`))
   }
 
   // ── Coupling ───────────────────────────────────────────────
 
   /** Register a coupling edge between two cells. Bidirectional. */
-  couple(keyA: string, keyB: string): void {
+  couple(keyA: RegisterId, keyB: RegisterId): void {
     this.ensureEntry(keyA)
     this.ensureEntry(keyB)
 
@@ -509,8 +506,7 @@ export class RegisterBank {
     })
   }
 
-  /** Return the coupling value (0–1) for a cell. */
-  couplingOf(key: string): number | undefined {
+  couplingOf(key: RegisterId): number | undefined {
     return this.entries.get(key)?.meta.coupling
   }
 
@@ -555,20 +551,20 @@ export class RegisterBank {
     for (let index = HISTORY_KEYS.length - 1; index > 0; index -= 1) {
       const currentKey = HISTORY_KEYS[index]
       const previousKey = HISTORY_KEYS[index - 1]
-      const previousValue = this.entries.get(previousKey)?.value
-      this.set(currentKey, previousValue, {
+      const previousValue = this.entries.get(castToBrand<string, 'SpwRegister'>(previousKey))?.value
+      this.set(castToBrand<string, 'SpwRegister'>(currentKey), previousValue, {
         source: `${source}:history`,
         force: true,
       })
     }
 
-    this.set(HISTORY_KEYS[0], value, {
+    this.set(castToBrand<string, 'SpwRegister'>(HISTORY_KEYS[0]), value, {
       source: `${source}:history`,
       force: true,
     })
   }
 
-  private ensureEntry(key: string): RegisterEntry {
+  private ensureEntry(key: RegisterId): RegisterEntry {
     const existing = this.entries.get(key)
     if (existing) {
       return existing
@@ -609,8 +605,8 @@ export class RegisterBank {
     return [...lenses, lens]
   }
 
-  private addLensIndex(lens: string, key: string): void {
-    const bucket = this.lensIndex.get(lens) ?? new Set<string>()
+  private addLensIndex(lens: string, key: RegisterId): void {
+    const bucket = this.lensIndex.get(lens) ?? new Set<RegisterId>()
     bucket.add(key)
     this.lensIndex.set(lens, bucket)
   }
@@ -648,7 +644,7 @@ export class RegisterBank {
   }
 
   /** Record a write timestamp and recompute acoustic frequency for a cell. */
-  private recordWriteTimestamp(key: string): void {
+  private recordWriteTimestamp(key: RegisterId): void {
     const now = Date.now()
     let timestamps = this.writeTimestamps.get(key)
     if (!timestamps) {
@@ -673,7 +669,7 @@ export class RegisterBank {
   }
 
   /** Recompute normalized coupling for a cell based on its edge count. */
-  private updateCoupling(key: string): void {
+  private updateCoupling(key: RegisterId): void {
     const entry = this.entries.get(key)
     if (!entry) return
     const edges = this.couplingEdges.get(key)
