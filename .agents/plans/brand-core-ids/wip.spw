@@ -1,0 +1,33 @@
+# wip — brand-core-ids
+# Branch: feature/brand-core-ids
+# Started: 2026-03-19
+
+#:layer #!pragmatics
+
+^["intent"]{
+ ~#goal: "Strictly brand core ID types (Frame, Register, Domain) to enforce nominal safety."
+ ~#taste: "safety without friction — zero runtime cost, minimal casting noise."
+}
+
+^["stream"]{
+ >>[2026-03-19 00:00] observe — current IDs are `string` aliases. Mixing is easy and undetected by tsc.
+ >>[2026-03-19 00:01] decide — use the `__brand` convention. Avoid `unique symbol` branding if it complicates interface/serialization.
+}
+
+^["open"]{
+ ?[serialization]: "How do branded types play with JSON.stringify/parse across the LSP boundary?"
+ ?[casting]: "Should we provide explicit `asFrameId()` helpers or rely on manual `as` casts for now?"
+}
+
+^["commits"]{
+ ~[1]: "types[seed] — add branding utility and brand core identifiers (Frame, Register, Domain)"
+ ~[2]: "types[runtime] — apply branded IDs to RegisterBank and Substrate"
+ ~[3]: "test[runtime] — align tests to branded identifier types"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#files_hot: "src/seed/types/ast/nodes.ts, src/runtime/state/register-bank.ts"
+ ~#next_commit: "1"
+ ~#open_count: "2"
+}
