@@ -1,35 +1,80 @@
-# Runtime Precipitate Chemistry
-#
-# Distilled note for aligning the shipped runtime pipeline to the chemistry metaphor.
+# Precipitate Model Alignment — Canonical Chemistry Note
+# @spw:contract:canonical[system=runtime-chemistry,basis=v0.2.0-alpha]
 
 #:layer #!semantics
 
-^"intent"{
- goal: "Define what precipitates are in the current runtime, what they are not, and how they relate to substrate events and resonance."
- status: "planning"
- falsify: "If the runtime can change precipitate meaning without touching src/runtime/pipeline/stages.ts or docs/runtime/spw/runtime-foundation.spw, the model is still too vague."
+^"model"{
+  ~#molecule: "σ[frame]{body} — the fractal unit at every scale."
+  ~#substrate: "The event-log and resonance medium for all runtime state."
+  ~#enzyme: "Normalizer + combinators — reshape without consuming."
+  ~#catalyst: "Query layer (spwq) — enables reactions without being consumed."
+  ~#precipitate: "A stable artifact resulting from a transformation stage."
+  ~#assay: "Instrumentation + telemetry — measures without interfering."
+  ~#membrane: "<> operator — exchange boundary (coupling, capsule, stream)."
 }
 
-^"current_runtime"{
- stages: ["desugar", "parse", "normalize", "interpret"]
- precipitate: "A stable artifact yielded after one stage transition."
- substrate: "The event medium attached to register activity during interpretation."
- telemetry: "A post-run assay consisting of substrate events plus derived resonances."
- resonance: "A derived pattern detected over the event log, not a precipitate itself."
+^"periodic_table"{
+  ~#note: "See src/runtime/state/type-affinities.ts for the canonical table."
+  elements: {
+    "!": "Activation energy — triggers irreversible change",
+    "^": "Covalent bonding — promotes into stable structure",
+    "~": "Activation potential — energy stored, not yet released",
+    "?": "Catalyst site — lowers barrier, not consumed",
+    "*": "Saturation — precipitates at value scale, dissolves at pattern scale",
+    "=": "Configuration — sets the conditions of the reaction",
+    "@": "Observer/assay — measures without disturbing",
+    "#": "Harmonic bond — aggregation by shared frequency",
+    ".": "Extraction — pull component from mixture",
+    "&": "Mixture — multiple streams merging",
+    "$": "Substrate — the medium the reaction occurs in",
+    "%": "Titration — quantitative measurement of concentration",
+    "<>": "Membrane — exchange boundary (coupling, capsule, stream)",
+  }
 }
 
-^"boundaries"{
- binding_claims: [
-  "Every shipped stage yields exactly one precipitate.",
-  "A write event is not itself a precipitate.",
-  "Resonance is measured from telemetry, not emitted as a stage artifact.",
-  "Interpret is the only current stage that snapshots registersAfter."
- ]
- counterexample: "If a host app treats each substrate event as a precipitate, it confuses reaction traces with settled stage products."
+^"bonds"{
+  ~#note: "Four brace pairs = four bond types, fractal at every scale."
+  ionic: "[] — specification of conditions (frame)"
+  covalent: "{} — shared containment (body)"
+  hydrogen: "<> — weak exchange / membrane (capsule)"
+  metallic: "() — delocalized perspective (scope)"
 }
 
-^"open_questions"{
- normalize_language: "Should normalize be framed as clarification, crystallization, or canonical reduction?"
- aggregate_product: "Should RunSpwSuccess itself count as a final condensate composed of precipitates + telemetry?"
- assay_granularity: "Do we want per-stage telemetry slices, or only whole-run assay output?"
+^"stages"{
+  ~#note: "Implementation names kept. Chemistry is a parallel lens."
+  desugar: "Wash — strip impurities from source material"
+  parse: "Crystallize — structure emerges from dissolved source"
+  normalize: "Refine — enzyme reduces crystal to canonical form (ONF)"
+  interpret: "React — substrate + catalyst → precipitate"
+}
+
+^"fractal"{
+  principle: "σ[frame]{body} repeats at every scale."
+  scales: [
+    "token:      ! — a single operator acting",
+    "expression: ^[\"intent\"]{...} — operator + frame + body",
+    "file:       #:layer #!semantics — the file itself is a molecule",
+    "project:    package.json[scripts]{src/} — the repo is a molecule",
+    "install:    .spw/_workbench — the workbench as molecule in another project",
+  ]
+  breaks: {
+    "~": "Three uses (defer, path-ref, annotation) — coherent as 'not yet resolved'",
+    "*": "Inverse at different scales — reframed as 'saturation'",
+    "<>": "Three container grammars — unified as 'membrane / exchange boundary'",
+  }
+}
+
+^"installation"{
+  ~#note: "When the workbench is cloned into .spw/_workbench, it acts as:"
+  solvent: "Substrate dissolves host concepts into Spw's operator grammar."
+  enzyme: "Normalizer + grammar fold host concepts into ONF without consuming them."
+  catalyst: "spwq enables pattern-matching reactions across the host's .spw files."
+  assay: "Audit scripts measure the solution without changing it."
+  precipitate: "Pipeline output — the crystals the host can consume."
+}
+
+^"invariants"{
+  ![stage_continuity]: "Each stage MUST produce exactly one precipitate."
+  ![telemetry_locality]: "Assays are local to the acting stage but buffered in the substrate."
+  ![fractal_consistency]: "σ[frame]{body} must be recognizable at every scale."
 }

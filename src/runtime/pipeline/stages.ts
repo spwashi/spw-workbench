@@ -10,6 +10,12 @@
  *   Precipitate — the artifact produced by a stage
  *   Projection  — a view of one stage's output through another stage's lens
  *
+ * Chemistry (parallel layer — σ[frame]{body} is the molecule at every scale):
+ *   desugar     — Wash: strip impurities from the source material
+ *   parse       — Crystallize: structure emerges from dissolved source
+ *   normalize   — Refine: enzyme reduces crystal to canonical form (ONF)
+ *   interpret   — React: substrate + catalyst → precipitate
+ *
  * @spw:portable:runtime[layer=pipeline,system=stage-pipeline,extract=blocked,basis=no-dom|register-snapshot,blocker=register-coupling] - No DOM or app-specific imports allowed
  * @spw:extract:blocked[system=stage-pipeline,blocker=register-coupling,basis=register-snapshot] - RegisterBank coupling still blocks clean extraction
  */
