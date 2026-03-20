@@ -1,0 +1,44 @@
+# wip — spw-init-dx
+# Branch: feature/spw-init-dx
+# Started: 2026-03-20
+
+#:layer #!pragmatics
+
+^["intent"]{
+ ~#goal: "Make spw the root CLI identity, move installer/bootstrap logic behind spw init, and preserve compatibility for spw-workbench install plus local install scripts."
+ ~#taste: "naming, layering, correctness"
+}
+
+^["stream"]{
+ >>[2026-03-20 16:20] observe — root package still publishes spw-workbench as the only bin and points it at scripts/spw-install.ts even though the command canon now treats spw as the umbrella surface.
+ >>[2026-03-20 16:20] decide — package-owned init should own scaffold logic; scripts/spw-install.ts should become a compatibility wrapper instead of the canonical installer implementation.
+ >>[2026-03-20 16:20] taste — the best DX shape is one CLI with explicit verbs; root identity should not force users into a bootstrap noun before they can reach the actual tool.
+ >>[2026-03-20 16:20] hygiene — branch is clean on main@7e419c7e66816d7f5fc04a340dae94707f53d5d5; no unrelated drift to split.
+}
+
+^["open"]{
+ ?[bin-compat]: "Should spw-workbench remain a published alias to the same umbrella CLI, or stay installer-only for one more release?"
+ ?[script-compat]: "Should local npm scripts expose both spw:init and spw:install, or make spw:install a pure alias over spw:init?"
+}
+
+^["commits"]{
+ ~[1]: ".[spw-init-dx] — plan the root-bin and init DX slice"
+ ~[2]: "&[spw-init] — move bootstrap/install logic behind the package-owned init command"
+ ~[3]: "&[spw-bin] — rebind package bin and compatibility wrappers to the root spw CLI"
+ ~[4]: ".[spw-dx-docs] — update help and docs to prefer spw init while documenting compat aliases"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@7e419c7e66816d7f5fc04a340dae94707f53d5d5"
+ ~#rebased_at: "2026-03-20 16:20"
+ ~#hygiene_split: "none"
+ ~#files_hot: ".agents/plans/spw-init-dx/PLAN.md, .agents/plans/spw-init-dx/wip.spw"
+ ~#next_commit: "1"
+ ~#open_count: "2"
+ ~#last_stream: "2026-03-20 16:20 hygiene"
+ ~#taste_debt: "Published-bin runtime still depends on tsx script entrypoints; true publish hardening may later require compiled JS or a non-dev tsx dependency."
+}
+
+^["done"]{
+}
