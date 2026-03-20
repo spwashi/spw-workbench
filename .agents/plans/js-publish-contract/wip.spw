@@ -1,0 +1,42 @@
+# wip — js-publish-contract
+# Branch: feature/js-publish-contract
+# Started: 2026-03-20
+
+#:layer #!pragmatics
+
+^["intent"]{
+ ~#goal: "Harden the JS dist artifact into a declaration-aware publish contract without changing the source-TS development path."
+ ~#taste: "correctness, layering, TypeScript ergonomics"
+}
+
+^["stream"]{
+ >>[2026-03-20 14:59] observe — the new dist lane produces runnable JS and a versioned manifest, but it still has no declarations or type-aware export metadata.
+ >>[2026-03-20 15:00] observe — TypeScript can emit a coherent declaration tree for the public runtime/parser entrypoints when driven through a tsconfig-based compile, including the internal relative imports those entrypoints depend on.
+ >>[2026-03-20 15:00] decide — the first publish-hardening step should emit dist/types plus small top-level declaration facades rather than trying to flatten or bundle all declarations.
+ >>[2026-03-20 15:00] taste — declarations should expose the public contract cleanly while preserving the existing package seams, not invent a second type topology.
+}
+
+^["open"]{
+ ?[pack-verify]: "Should the verification lane include npm pack --dry-run dist immediately, or stay at build-time artifact inspection for one more slice?"
+}
+
+^["commits"]{
+ ~[1]: ".[js-publish] — plan declaration-aware dist packaging"
+ ~[2]: "&[js-publish] — emit declarations and type-aware dist exports"
+ ~[3]: ".[js-publish-docs] — document and verify the publish contract"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@1cd284f14e82224b684651e45477fe558373403f"
+ ~#rebased_at: "2026-03-20 15:00"
+ ~#hygiene_split: "none"
+ ~#files_hot: ".agents/plans/js-publish-contract/PLAN.md, .agents/plans/js-publish-contract/wip.spw"
+ ~#next_commit: "1"
+ ~#open_count: "1"
+ ~#last_stream: "2026-03-20 15:00 taste"
+ ~#taste_debt: "The root package still does not resolve through dist by default; this slice only hardens the artifact itself."
+}
+
+^["done"]{
+}
