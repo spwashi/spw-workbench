@@ -41,6 +41,12 @@
  >>[2026-03-20 01:58] revise — collapsed src/runtime/* implementation files to compatibility wrappers so existing tests and references keep pointing at the familiar surface while the package becomes the real owner.
  >>[2026-03-20 01:58] revise — widened the @spw/seed root export surface and added explicit Vitest alias wiring so package-path imports resolve consistently in both typecheck and test execution.
  >>[2026-03-20 01:58] observe — npm run build, npm run test:run, npm run lsp:smoke, and node --import tsx scripts/spw.ts help all pass with runtime execution now owned by packages/spw-runtime.
+ >>[2026-03-20 02:31] decide — the next truthful seam is @spw/seed itself; leaving the parser/kernel under src/seed while runtime imports package aliases would keep the workspace only half-real.
+ >>[2026-03-20 02:31] revise — copied the seed implementation tree into packages/spw-seed/src/* and collapsed src/seed implementation modules to compatibility wrappers while leaving tests in place.
+ >>[2026-03-20 02:31] observe — a direct seed-only vitest run exposed missing workspace alias resolution once moved runtime modules started importing @spw/seed from package-owned paths.
+ >>[2026-03-20 02:45] fix — factored shared Vitest workspace aliases into vitest.aliases.ts and added a dedicated vitest.seed.config.ts so seed, runtime, and dom suites resolve package boundaries consistently.
+ >>[2026-03-20 02:45] observe — npm run build, npm run test:run, npm run lsp:smoke, npm run test:seed, and node --import tsx scripts/spw.ts help all pass with parser/kernel ownership now living under packages/spw-seed.
+ >>[2026-03-20 02:45] taste — package ownership is now credible to a new reader because seed, runtime, cli, and lsp all have real implementation beneath their package roots rather than only facade barrels.
 }
 
 ^["open"]{
@@ -56,17 +62,18 @@
  ~[7]: "&[runtime-blockers] — restore branded register flows and substrate binding"
  ~[8]: "&[lsp-modules] — move lsp implementation modules behind the package boundary"
  ~[9]: "&[runtime-modules] — move runtime implementation modules behind the package boundary"
+ ~[10]: "&[seed-modules] — move seed implementation modules behind the package boundary"
 }
 
 ^["cache"]{
  ~#status: "ready_to_commit"
- ~#base_ref: "main@1994281"
+ ~#base_ref: "main@87624ba"
  ~#rebased_at: ""
  ~#hygiene_split: "none"
- ~#files_hot: ".agents/plans/monorepo-workspace-foundation/PLAN.md, .agents/plans/monorepo-workspace-foundation/wip.spw, src/seed/index.ts, src/runtime/**, packages/spw-runtime/src/**, vitest.runtime.config.ts, vitest.dom.config.ts"
- ~#next_commit: "9"
+ ~#files_hot: ".agents/plans/monorepo-workspace-foundation/PLAN.md, .agents/plans/monorepo-workspace-foundation/wip.spw, src/seed/**, packages/spw-seed/src/**, package.json, vitest.aliases.ts, vitest.seed.config.ts, vitest.runtime.config.ts, vitest.dom.config.ts"
+ ~#next_commit: "10"
  ~#open_count: "0"
- ~#last_stream: "2026-03-20 01:58"
+ ~#last_stream: "2026-03-20 02:45"
  ~#taste_debt: ""
 }
 

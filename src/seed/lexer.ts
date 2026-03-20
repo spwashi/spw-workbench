@@ -1,8 +1,1 @@
-/**
- * Spw Lexer
- *
- * Re-exports from modularized lexer/ directory.
- * This file is kept for backward compatibility.
- */
-
-export * from './lexer/index'
+export * from '../../packages/spw-seed/src/lexer'

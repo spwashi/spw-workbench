@@ -1,16 +1,16 @@
 # Plan: monorepo-workspace-foundation
 
-Establish the first visible `v0.3.0` workspace seams by turning the root into a workspace coordinator, adding package entrypoint scaffolds for the seed and runtime surfaces, making the CLI/LSP entrypoints package-owned, clearing the known runtime blockers, and then moving the LSP and runtime implementation modules behind the package boundary without breaking the current `src/` and `scripts/` flows.
+Establish the first visible `v0.3.0` workspace seams by turning the root into a workspace coordinator, adding package entrypoint scaffolds for the seed and runtime surfaces, making the CLI/LSP entrypoints package-owned, clearing the known runtime blockers, and then moving the LSP, runtime, and seed implementation modules behind the package boundary without breaking the current `src/` and `scripts/` flows.
 
 ## Goal
 
-The implementation plan for `v0.3.0` names monorepo structure as the release theme, but the repo still presents itself as one flat Node application with `src/` and `scripts/` acting as the only ownership boundaries. This pass introduces the workspace skeleton and package-level entrypoints so the repository can start speaking truthfully about package seams before the deeper extraction and relocation work lands. The end state is a root package that knows about `packages/*`, baseline package manifests for `@spw/seed`, `@spw/runtime`, `@spw/cli`, and `@spw/lsp`, package-owned CLI/LSP launch paths, package-owned runtime interpreter/pipeline/state modules, a clean runtime build/test baseline for the moved seams, and TypeScript path/build scaffolding that lets later extraction happen incrementally rather than as a single disruptive move.
+The implementation plan for `v0.3.0` names monorepo structure as the release theme, but the repo still presents itself as one flat Node application with `src/` and `scripts/` acting as the only ownership boundaries. This pass introduces the workspace skeleton and package-level entrypoints so the repository can start speaking truthfully about package seams before the deeper extraction and relocation work lands. The end state is a root package that knows about `packages/*`, baseline package manifests for `@spw/seed`, `@spw/runtime`, `@spw/cli`, and `@spw/lsp`, package-owned CLI/LSP launch paths, package-owned runtime interpreter/pipeline/state modules, package-owned seed parser/kernel modules, a clean build/test baseline for the moved seams, and TypeScript path/build scaffolding that lets later extraction happen incrementally rather than as a single disruptive move.
 Taste note: improve **layering**, **clarity**, and **containment** by making package ownership explicit without forcing a full physical move in one pass.
 
 ## Scope
 
-- **In scope**: add workspace declarations at the root, add `packages/spw-seed/`, `packages/spw-runtime/`, `packages/spw-cli/`, and `packages/spw-lsp/` package manifests, move CLI and LSP launch ownership into package source files, clear the known runtime build/test blockers that prevent truthful verification, add shared TypeScript base/build config as needed, and update root exports/scripts and editor defaults where the new package seams can be adopted without breaking current workflows.
-- **Out of scope**: physically moving all `src/seed` or all `src/runtime` into packages; extension build rewiring; agent-tool decoupling.
+- **In scope**: add workspace declarations at the root, add `packages/spw-seed/`, `packages/spw-runtime/`, `packages/spw-cli/`, and `packages/spw-lsp/` package manifests, move CLI and LSP launch ownership into package source files, clear the known runtime build/test blockers that prevent truthful verification, move the runtime and seed implementation trees behind their package boundaries while keeping legacy `src/` import surfaces stable, add shared TypeScript and Vitest alias/build config as needed, and update root exports/scripts and editor defaults where the new package seams can be adopted without breaking current workflows.
+- **Out of scope**: extension build rewiring; agent-tool decoupling; removing the compatibility wrappers in `src/seed` or `src/runtime`.
 
 ## Files
 
@@ -19,6 +19,19 @@ Taste note: improve **layering**, **clarity**, and **containment** by making pac
 [NEW] packages/spw-seed/package.json  
 [NEW] packages/spw-seed/src/index.ts  
 [NEW] packages/spw-seed/src/parser.ts  
+[NEW] packages/spw-seed/src/canonical/index.ts  
+[NEW] packages/spw-seed/src/combinators.ts  
+[NEW] packages/spw-seed/src/combinators/**  
+[NEW] packages/spw-seed/src/grammar.ts  
+[NEW] packages/spw-seed/src/grammar/**  
+[NEW] packages/spw-seed/src/instrumentation/**  
+[NEW] packages/spw-seed/src/lexer.ts  
+[NEW] packages/spw-seed/src/lexer/**  
+[NEW] packages/spw-seed/src/normalize.ts  
+[NEW] packages/spw-seed/src/parser/**  
+[NEW] packages/spw-seed/src/query/**  
+[NEW] packages/spw-seed/src/types.ts  
+[NEW] packages/spw-seed/src/types/**  
 [NEW] packages/spw-runtime/package.json  
 [NEW] packages/spw-runtime/src/index.ts  
 [NEW] packages/spw-runtime/src/interpreter/interpreter.ts  
@@ -62,8 +75,22 @@ Taste note: improve **layering**, **clarity**, and **containment** by making pac
 [MOD] extensions/vscode-spw/src/extension.ts  
 [MOD] package.json  
 [MOD] src/seed/index.ts  
+[MOD] src/seed/canonical/index.ts  
+[MOD] src/seed/combinators.ts  
+[MOD] src/seed/combinators/**  
+[MOD] src/seed/grammar.ts  
+[MOD] src/seed/grammar/**  
+[MOD] src/seed/instrumentation/**  
+[MOD] src/seed/lexer.ts  
+[MOD] src/seed/lexer/**  
+[MOD] src/seed/normalize.ts  
+[MOD] src/seed/parser.ts  
+[MOD] src/seed/parser/**  
+[MOD] src/seed/query/**  
+[MOD] src/seed/types.ts  
 [MOD] src/seed/types/ids.ts  
 [MOD] src/seed/types/index.ts  
+[MOD] src/seed/types/**  
 [MOD] src/runtime/index.ts  
 [MOD] src/runtime/interpreter/interpreter.ts  
 [MOD] src/runtime/interpreter/types.ts  
@@ -92,15 +119,18 @@ Taste note: improve **layering**, **clarity**, and **containment** by making pac
 [MOD] scripts/spw-cli/run.ts  
 [MOD] scripts/spw-cli/types.ts  
 [MOD] tsconfig.json  
+[NEW] vitest.aliases.ts  
+[NEW] vitest.seed.config.ts  
 [MOD] vitest.runtime.config.ts  
 [MOD] vitest.dom.config.ts  
 
 Craft guard:
-- Keep the package scaffolds minimal and truthful; they should expose ownership boundaries, not duplicate the whole tree.
+- Keep the package scaffolds minimal and truthful; they should expose ownership boundaries without leaving package barrels empty or misleading.
 - Do not leave root/package/editor launch surfaces contradicting each other.
 - Avoid introducing more than one compatibility indirection layer per package in this pass.
 - Keep `scripts/` launchers as compatibility wrappers only; new logic should land under `packages/`.
 - Keep `src/runtime/*` as a compatibility skin once the package runtime owns the implementation; do not leave a split-brain interpreter or pipeline.
+- Keep `src/seed/*` as a compatibility skin once `packages/spw-seed` owns the parser/kernel tree; do not strand grammar or lexer ownership across both roots.
 
 ## Commits
 
@@ -113,15 +143,16 @@ Craft guard:
 7. `&[runtime-blockers] — restore branded register flows and substrate binding`
 8. `&[lsp-modules] — move lsp implementation modules behind the package boundary`
 9. `&[runtime-modules] — move runtime implementation modules behind the package boundary`
+10. `&[seed-modules] — move seed implementation modules behind the package boundary`
 
 Fuzz strategy:
 - Explore: `node --import tsx packages/spw-cli/src/main.ts help` and `node --import tsx -e "import { resolveSpwLspServerTarget } from '@spw/lsp'; console.log(resolveSpwLspServerTarget(process.cwd()))"`
-- Stabilize: `npm run build && npm run test:runtime -- src/runtime/__tests__/substrate.test.ts`
-- Ship: `npm run build && npm run test:run && npm run lint:docs`
+- Stabilize: `npm run build && npm run test:runtime -- src/runtime/__tests__/substrate.test.ts && npm run test:seed`
+- Ship: `npm run build && npm run test:run && npm run test:seed && npm run lsp:smoke && npm run lint:docs`
 
 ## Agentic Hygiene
 
-- Rebase target: `main@a411cd6`
+- Rebase target: `main@87624ba`
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: none
 
