@@ -280,6 +280,35 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
         }
     }
 
+    // 6.5 Fact block hover
+    if (line.includes('.{')) {
+        const fStart = line.indexOf('.{')
+        if (pos.character >= fStart && pos.character < fStart + 2) {
+            let md = `**\`.{}\`** \u2014 *Fact Block*\n\n`
+            md += `Serialized into the register bus matrix for downstream script access.\n`
+            return {
+                contents: { kind: 'markdown', value: md },
+                range: { start: { line: pos.line, character: fStart }, end: { line: pos.line, character: fStart + 2 } },
+            }
+        }
+    }
+
+    // 6.6 Registry qualifier hover
+    const regRe = /\[reg=([a-zA-Z0-9_]+)\]/g
+    let regMatch: RegExpExecArray | null
+    while ((regMatch = regRe.exec(line)) !== null) {
+        const rStart = regMatch.index
+        const rEnd = rStart + regMatch[0].length
+        if (pos.character >= rStart && pos.character < rEnd) {
+            let md = `**\`[reg=${regMatch[1]}]\`** \u2014 *Facet Qualifier*\n\n`
+            md += `Flags this block for extraction by the layer-check and semantic validation hooks.\n`
+            return {
+                contents: { kind: 'markdown', value: md },
+                range: { start: { line: pos.line, character: rStart }, end: { line: pos.line, character: rEnd } },
+            }
+        }
+    }
+
     // 7. Sigil hover
     if (charAtPos && SIGIL_SEMANTICS[charAtPos]) {
         const sem = SIGIL_SEMANTICS[charAtPos]

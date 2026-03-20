@@ -24,7 +24,7 @@ import { ServerContext } from './context'
 // ── Handler Clusters ────────────────────────────────────────────
 import { publishDiagnostics as _publishDiagnostics, foldingRanges as _foldingRanges } from './handlers/analysis'
 import { hover as _hover, documentSymbols as _documentSymbols, workspaceSymbols as _workspaceSymbols, codeLens as _codeLens, inlayHints as _inlayHints } from './handlers/display'
-import { completion as _completion, formatting as _formatting } from './handlers/editing'
+import { completion as _completion, formatting as _formatting, codeAction as _codeAction } from './handlers/editing'
 import { definition as _definition, documentLinks as _documentLinks, references as _references, prepareRename as _prepareRename, rename as _rename } from './handlers/navigation'
 
 // ── Helpers (extracted) ─────────────────────────────────────────
@@ -180,6 +180,7 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
             hoverProvider: true,
             documentSymbolProvider: true,
             workspaceSymbolProvider: true,
+            codeActionProvider: true,
             completionProvider: { triggerCharacters: ['@', '~', '/', '#'] },
             codeLensProvider: { resolveProvider: false },
             documentFormattingProvider: true,
@@ -226,6 +227,10 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
 
       case 'textDocument/codeLens':
         sendResult(id, _codeLens(message.params, deps))
+        return
+
+      case 'textDocument/codeAction':
+        sendResult(id, await _codeAction(message.params, deps))
         return
 
       case 'textDocument/formatting':

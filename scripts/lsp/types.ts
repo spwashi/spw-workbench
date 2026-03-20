@@ -61,6 +61,15 @@ export interface LspHover {
     range?: LspRange
 }
 
+// ── Code Action ─────────────────────────────────────────────────
+
+export interface LspCodeAction {
+    title: string
+    kind?: string
+    edit?: LspWorkspaceEdit
+    command?: { title: string; command: string; arguments?: any[] }
+}
+
 // ── Text Edit ───────────────────────────────────────────────────
 
 export interface LspTextEdit {
@@ -192,6 +201,15 @@ export interface ReferencesParams extends TextDocumentPositionParams {
 }
 export interface RenameParams extends TextDocumentPositionParams {
     newName: string
+}
+
+export interface CodeActionParams {
+    textDocument: TextDocumentIdentifier
+    range: LspRange
+    context: {
+        diagnostics: LspDiagnostic[]
+        only?: string[]
+    }
 }
 
 export interface DocumentFormattingParams {

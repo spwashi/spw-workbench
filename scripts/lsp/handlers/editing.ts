@@ -10,7 +10,7 @@ import path from 'node:path'
 import { SIGIL_SEMANTICS } from '../server-index'
 import type {
     LspCompletionItem, LspTextEdit, LspPosition,
-    CompletionParams, DocumentFormattingParams,
+    CompletionParams, DocumentFormattingParams, CodeActionParams, LspCodeAction,
     HandlerDeps,
 } from '../types'
 import { CK } from '../types'
@@ -169,4 +169,70 @@ export function formatting(params: DocumentFormattingParams, deps: HandlerDeps):
         },
         newText: formatted,
     }]
+}
+
+// ── Code Actions ────────────────────────────────────────────────
+
+export async function codeAction(params: CodeActionParams, deps: HandlerDeps): Promise<LspCodeAction[]> {
+    const uri = params?.textDocument?.uri
+    const range = params?.range
+    if (!uri || !range) return []
+
+    const doc = deps.serverIndex.getDocument(uri)
+    if (!doc) return []
+
+    const lines = doc.text.split('\n')
+    const actions: LspCodeAction[] = []
+
+    for (let i = range.start.line; i <= range.end.line; i++) {
+        const line = lines[i]
+        if (line === undefined) continue
+
+        // Toggle Concise Trait -> Lexical Binding (~#key: value -> .{ key = value })
+        const traitMatch = line.match(/^(\s*)~#([a-zA-Z0-9_]+):\s*(.+)$/)
+        if (traitMatch) {
+            const indent = traitMatch[1]
+            const key = traitMatch[2]
+            const value = traitMatch[3]
+            actions.push({
+                title: `Expand to Lexical Binding (.{ ${key} = ... })`,
+                kind: 'refactor.rewrite',
+                edit: {
+                    changes: {
+                        [uri]: [{
+                            range: { start: { line: i, character: 0 }, end: { line: i, character: line.length } },
+                            newText: `${indent}.{ ${key} = ${value} }`
+                        }]
+                    }
+                }
+            })
+        }
+
+        // Toggle Lexical Binding -> Concise Trait (.{ key = value } -> ~#key: value)
+        const factMatch = line.match(/^(\s*)\.\{\s*([a-zA-Z0-9_]+)\s*=\s*(.+)\s*\}$/)
+        if (factMatch && !factMatch[3].includes(',')) {
+            const indent = factMatch[1]
+            const key = factMatch[2]
+            // trailing space in value should be stripped out for concise form
+            let value = factMatch[3].trim()
+            if (value.endsWith('}')) {
+                // Should already be handled by the factMatch regex since the } is consumed
+                value = value.replace(/\s*\}$/, '')
+            }
+            actions.push({
+                title: `Toggle Concise Trait (~#${key})`,
+                kind: 'refactor.rewrite',
+                edit: {
+                    changes: {
+                        [uri]: [{
+                            range: { start: { line: i, character: 0 }, end: { line: i, character: line.length } },
+                            newText: `${indent}~#${key}: ${value}`
+                        }]
+                    }
+                }
+            })
+        }
+    }
+
+    return actions
 }

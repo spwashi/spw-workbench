@@ -1,0 +1,78 @@
+# Precipitation Patterns
+#
+# How Spw semantic files bootstrap, constrain, and propagate through a repository.
+
+#:layer #!pragmatics
+
+meta: .{
+  domain = `architecture`
+  description = `Documents the lifecycle of an `.spw` file from metadata to infrastructure.`
+}[reg=facet]
+
+purpose: .{
+  audience = `Developers, Architects, and Naive AI Models mapping the repository`
+  goal = `Provide clear patterns for how semantics precipitate into actionable code and state.`
+}[reg=facet]
+
+#>crawlability
+naive_model_crawl_guide: .{
+  _intent = `Ensure the .spw semantic tree is readable and discoverable by LLMs lacking local LSP support.`
+  
+  entry_points: #[
+    `workspace.spw`  // The root map. Start here to understand boundaries.
+    `.spw/topology.spw` // Dictates subroots and caching boundaries.
+    `.agents/state/runtime/register-bus.state.spw` // The active memory of the system.
+  ]
+
+  heuristics: .{
+    1 = `If you see a fact block .{ ... }, it is likely queried by a script matching its [reg=] qualifier.`
+    2 = `If you see a query block ?[], it represents an active architectural uncertainty or ongoing probe.`
+    3 = `Do not attempt to parse .spw files with regex alone; they are designed to be resolved through the server index, but can be linearly read by following @root paths.`
+  }[reg=guideline]
+}[reg=facet]
+
+#>kernel_boot
+the_kernel_boot: .{
+  concept = `How Spw establishes context in a new or existing repository.`
+  trigger = `The presence of workspace.spw and .spw/shelves.spw`
+  
+  mechanism: #[
+    `1. The LSP (stdio-server) boots and reads shelves.spw to map @root aliases.`
+    `2. topology.spw dictates which directories are hot/warm/cold caches.`
+    `3. Every .spw file is parsed, extracting Semantic Annotations (e.g., #>anchor).`
+    `4. The ServerIndex holds this graph, serving as the central nervous system for all downstream scripts.`
+  ]
+}[reg=pattern]
+
+#>state_bus
+the_state_bus: .{
+  concept = `Fragmented facts become a centralized query matrix.`
+  trigger = `Scripts like '.agents/skills/spw-commit-review/scripts/poll-review.sh'`
+  
+  mechanism: #[
+    `1. Agents edit isolated .spw files containing intent (e.g., #!pragmatics).`
+    `2. A poll script reads the modified files and verifies their syntax.`
+    `3. The results (clean passes, syntax flags) are serialized into 'register-bus.state.spw'.`
+    `4. Other agents or systems read 'register-bus.state.spw' (acting as a ledger) to make deployment or commit decisions without re-parsing the entire tree.`
+  ]
+}[reg=pattern]
+
+#>tooling_integration
+tooling_integration: .{
+  concept = `Semantics becoming enforcement constraints.`
+  trigger = `Pre-commit hooks and explicit layer boundaries.`
+  
+  mechanism: #[
+    `1. Files like 'audit-guide.spw' define 'forbidden' import paths using Spw sets (#[]).`
+    `2. A shell script (e.g., 'layer-check.sh') parses the .spw AST using the CLI tools.`
+    `3. The script translates the Spw sets into a list of regex rules applied to Git staged files.`
+    `4. The commit is rejected if the topology is violated. The meta-document has become physical law.`
+  ]
+}[reg=pattern]
+
+#>wonder_src_seed_docs_precipitation_patterns_1
+?["How do we ensure naive models don't get lost in infinite loops of @root references?"]{
+  #:depth #!pragmatics // lens: crawl boundaries
+  $#crawlability@workspace => %[reference.depth, cycle_count]
+  ~#next_step: "Implement depth limiters in naive model prompts when reading the state bus."
+}
