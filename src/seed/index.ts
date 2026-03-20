@@ -11,6 +11,7 @@
 export type {
   Position,
   Span,
+  Brand,
   Token,
   TokenType,
   OperatorKind,
@@ -60,6 +61,7 @@ export type {
 } from './types'
 
 export { DEFAULT_OPTIONS } from './types'
+export { castToBrand, $register, $frame, $domain, $layer, RegisterId, FrameId, DomainId, LayerId } from './types'
 
 // Lexer
 export {
@@ -172,7 +174,7 @@ export {
 export { previewAST } from './instrumentation/preview'
 
 // Sugar/desugar helpers
-export { desugar, parseDesugared, type DesugarResult } from './normalize'
+export { desugar, parseDesugared, normalizeToONF, type DesugarResult, type ONFNode, type FrameMap } from './normalize'
 
 // Query (spw.q dialect)
 export type {

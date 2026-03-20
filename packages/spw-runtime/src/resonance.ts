@@ -1,1 +1,1 @@
-export * from '../../../src/runtime/pipeline/resonance'
+export * from './pipeline/resonance'

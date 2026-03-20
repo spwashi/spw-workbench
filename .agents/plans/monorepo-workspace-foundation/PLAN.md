@@ -1,10 +1,10 @@
 # Plan: monorepo-workspace-foundation
 
-Establish the first visible `v0.3.0` workspace seams by turning the root into a workspace coordinator, adding package entrypoint scaffolds for the seed and runtime surfaces, making the CLI/LSP entrypoints package-owned, clearing the known runtime blockers, and then moving the LSP implementation modules behind the package boundary without breaking the current `src/` and `scripts/` flows.
+Establish the first visible `v0.3.0` workspace seams by turning the root into a workspace coordinator, adding package entrypoint scaffolds for the seed and runtime surfaces, making the CLI/LSP entrypoints package-owned, clearing the known runtime blockers, and then moving the LSP and runtime implementation modules behind the package boundary without breaking the current `src/` and `scripts/` flows.
 
 ## Goal
 
-The implementation plan for `v0.3.0` names monorepo structure as the release theme, but the repo still presents itself as one flat Node application with `src/` and `scripts/` acting as the only ownership boundaries. This pass introduces the workspace skeleton and package-level entrypoints so the repository can start speaking truthfully about package seams before the deeper extraction and relocation work lands. The end state is a root package that knows about `packages/*`, baseline package manifests for `@spw/seed`, `@spw/runtime`, `@spw/cli`, and `@spw/lsp`, package-owned CLI/LSP launch paths, a clean runtime build/test baseline for the moved seams, and TypeScript path/build scaffolding that lets later extraction happen incrementally rather than as a single disruptive move.
+The implementation plan for `v0.3.0` names monorepo structure as the release theme, but the repo still presents itself as one flat Node application with `src/` and `scripts/` acting as the only ownership boundaries. This pass introduces the workspace skeleton and package-level entrypoints so the repository can start speaking truthfully about package seams before the deeper extraction and relocation work lands. The end state is a root package that knows about `packages/*`, baseline package manifests for `@spw/seed`, `@spw/runtime`, `@spw/cli`, and `@spw/lsp`, package-owned CLI/LSP launch paths, package-owned runtime interpreter/pipeline/state modules, a clean runtime build/test baseline for the moved seams, and TypeScript path/build scaffolding that lets later extraction happen incrementally rather than as a single disruptive move.
 Taste note: improve **layering**, **clarity**, and **containment** by making package ownership explicit without forcing a full physical move in one pass.
 
 ## Scope
@@ -21,9 +21,19 @@ Taste note: improve **layering**, **clarity**, and **containment** by making pac
 [NEW] packages/spw-seed/src/parser.ts  
 [NEW] packages/spw-runtime/package.json  
 [NEW] packages/spw-runtime/src/index.ts  
+[NEW] packages/spw-runtime/src/interpreter/interpreter.ts  
+[NEW] packages/spw-runtime/src/interpreter/types.ts  
 [NEW] packages/spw-runtime/src/pipeline.ts  
+[NEW] packages/spw-runtime/src/pipeline/resonance.ts  
+[NEW] packages/spw-runtime/src/pipeline/run-spw.ts  
+[NEW] packages/spw-runtime/src/pipeline/stages.ts  
+[NEW] packages/spw-runtime/src/pipeline/substrate.ts  
+[NEW] packages/spw-runtime/src/pipeline/types.ts  
 [NEW] packages/spw-runtime/src/substrate.ts  
 [NEW] packages/spw-runtime/src/resonance.ts  
+[NEW] packages/spw-runtime/src/state/register-bank.ts  
+[NEW] packages/spw-runtime/src/state/type-affinities.ts  
+[NEW] packages/spw-runtime/src/state/types.ts  
 [NEW] packages/spw-cli/package.json  
 [NEW] packages/spw-cli/src/args.ts  
 [NEW] packages/spw-cli/src/index.ts  
@@ -51,11 +61,20 @@ Taste note: improve **layering**, **clarity**, and **containment** by making pac
 [MOD] extensions/neovim-spw/lua/spw-lsp.lua  
 [MOD] extensions/vscode-spw/src/extension.ts  
 [MOD] package.json  
+[MOD] src/seed/index.ts  
 [MOD] src/seed/types/ids.ts  
 [MOD] src/seed/types/index.ts  
+[MOD] src/runtime/index.ts  
 [MOD] src/runtime/interpreter/interpreter.ts  
+[MOD] src/runtime/interpreter/types.ts  
+[MOD] src/runtime/pipeline/run-spw.ts  
+[MOD] src/runtime/pipeline/stages.ts  
 [MOD] src/runtime/pipeline/resonance.ts  
 [MOD] src/runtime/pipeline/substrate.ts  
+[MOD] src/runtime/pipeline/types.ts  
+[MOD] src/runtime/state/register-bank.ts  
+[MOD] src/runtime/state/type-affinities.ts  
+[MOD] src/runtime/state/types.ts  
 [MOD] src/runtime/__tests__/substrate.test.ts  
 [MOD] scripts/lsp/context.ts  
 [MOD] scripts/lsp/helpers.ts  
@@ -73,12 +92,15 @@ Taste note: improve **layering**, **clarity**, and **containment** by making pac
 [MOD] scripts/spw-cli/run.ts  
 [MOD] scripts/spw-cli/types.ts  
 [MOD] tsconfig.json  
+[MOD] vitest.runtime.config.ts  
+[MOD] vitest.dom.config.ts  
 
 Craft guard:
 - Keep the package scaffolds minimal and truthful; they should expose ownership boundaries, not duplicate the whole tree.
 - Do not leave root/package/editor launch surfaces contradicting each other.
 - Avoid introducing more than one compatibility indirection layer per package in this pass.
 - Keep `scripts/` launchers as compatibility wrappers only; new logic should land under `packages/`.
+- Keep `src/runtime/*` as a compatibility skin once the package runtime owns the implementation; do not leave a split-brain interpreter or pipeline.
 
 ## Commits
 
@@ -90,6 +112,7 @@ Craft guard:
 6. `&[cli-lsp] — extract package-owned cli and lsp entrypoints with compatibility wrappers`
 7. `&[runtime-blockers] — restore branded register flows and substrate binding`
 8. `&[lsp-modules] — move lsp implementation modules behind the package boundary`
+9. `&[runtime-modules] — move runtime implementation modules behind the package boundary`
 
 Fuzz strategy:
 - Explore: `node --import tsx packages/spw-cli/src/main.ts help` and `node --import tsx -e "import { resolveSpwLspServerTarget } from '@spw/lsp'; console.log(resolveSpwLspServerTarget(process.cwd()))"`

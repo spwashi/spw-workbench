@@ -37,6 +37,10 @@
  >>[2026-03-20 01:44] revise — copied the LSP implementation modules into packages/spw-lsp/src/*, rewired the package server to those local modules, and collapsed scripts/lsp/* back down to compatibility wrappers.
  >>[2026-03-20 01:44] revise — branded ID factories are now symmetric across register/frame/domain/layer, with template-tag support preserved while keeping direct constructor-style calls available.
  >>[2026-03-20 01:44] observe — npm run build, npm run test:run, npm run lsp:smoke, and node --import tsx scripts/spw.ts help all pass against the package-owned LSP module tree.
+ >>[2026-03-20 01:58] revise — copied the runtime interpreter/pipeline/state implementation tree into packages/spw-runtime/src/* and rewired those package modules to depend on @spw/seed plus local runtime internals.
+ >>[2026-03-20 01:58] revise — collapsed src/runtime/* implementation files to compatibility wrappers so existing tests and references keep pointing at the familiar surface while the package becomes the real owner.
+ >>[2026-03-20 01:58] revise — widened the @spw/seed root export surface and added explicit Vitest alias wiring so package-path imports resolve consistently in both typecheck and test execution.
+ >>[2026-03-20 01:58] observe — npm run build, npm run test:run, npm run lsp:smoke, and node --import tsx scripts/spw.ts help all pass with runtime execution now owned by packages/spw-runtime.
 }
 
 ^["open"]{
@@ -51,17 +55,18 @@
  ~[6]: "&[cli-lsp] — extract package-owned cli and lsp entrypoints with compatibility wrappers"
  ~[7]: "&[runtime-blockers] — restore branded register flows and substrate binding"
  ~[8]: "&[lsp-modules] — move lsp implementation modules behind the package boundary"
+ ~[9]: "&[runtime-modules] — move runtime implementation modules behind the package boundary"
 }
 
 ^["cache"]{
  ~#status: "ready_to_commit"
- ~#base_ref: "main@b457844"
+ ~#base_ref: "main@1994281"
  ~#rebased_at: ""
  ~#hygiene_split: "none"
- ~#files_hot: ".agents/plans/runtime-blockers/FIX.md, .agents/plans/monorepo-workspace-foundation/PLAN.md, .agents/plans/monorepo-workspace-foundation/wip.spw, src/seed/types/ids.ts, src/seed/types/index.ts, src/runtime/interpreter/interpreter.ts, src/runtime/pipeline/resonance.ts, src/runtime/pipeline/substrate.ts, src/runtime/__tests__/substrate.test.ts, packages/spw-lsp/src/**, scripts/lsp/**"
- ~#next_commit: "8"
+ ~#files_hot: ".agents/plans/monorepo-workspace-foundation/PLAN.md, .agents/plans/monorepo-workspace-foundation/wip.spw, src/seed/index.ts, src/runtime/**, packages/spw-runtime/src/**, vitest.runtime.config.ts, vitest.dom.config.ts"
+ ~#next_commit: "9"
  ~#open_count: "0"
- ~#last_stream: "2026-03-20 01:44"
+ ~#last_stream: "2026-03-20 01:58"
  ~#taste_debt: ""
 }
 

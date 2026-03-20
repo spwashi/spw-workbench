@@ -1,1 +1,1 @@
-export * from '../../../src/runtime/pipeline/stages'
+export * from './pipeline/stages'

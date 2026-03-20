@@ -1,1 +1,1 @@
-export * from '../../../src/runtime/pipeline/substrate'
+export * from './pipeline/substrate'
