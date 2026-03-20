@@ -4,12 +4,12 @@ Establish the first visible `v0.3.0` workspace seams by turning the root into a 
 
 ## Goal
 
-The implementation plan for `v0.3.0` names monorepo structure as the release theme, but the repo still presents itself as one flat Node application with `src/` and `scripts/` acting as the only ownership boundaries. This pass introduces the workspace skeleton and package-level entrypoints so the repository can start speaking truthfully about package seams before the deeper extraction and relocation work lands. The end state is a root package that knows about `packages/*`, baseline package manifests for `@spw/seed`, `@spw/runtime`, `@spw/cli`, and `@spw/lsp`, package-owned CLI/LSP launch paths, package-owned runtime interpreter/pipeline/state modules, package-owned seed parser/kernel modules, a clean build/test baseline for the moved seams, and TypeScript path/build scaffolding that lets later extraction happen incrementally rather than as a single disruptive move.
+The implementation plan for `v0.3.0` names monorepo structure as the release theme, but the repo still presents itself as one flat Node application with `src/` and `scripts/` acting as the only ownership boundaries. This pass introduces the workspace skeleton and package-level entrypoints so the repository can start speaking truthfully about package seams before the deeper extraction and relocation work lands. The end state is a root package that knows about `packages/*`, baseline package manifests for `@spw/seed`, `@spw/runtime`, `@spw/cli`, and `@spw/lsp`, package-owned CLI/LSP launch paths, package-owned runtime interpreter/pipeline/state modules, package-owned seed parser/kernel modules, package-owned CLI command implementations for the non-query tool surface, a clean build/test baseline for the moved seams, and TypeScript path/build scaffolding that lets later extraction happen incrementally rather than as a single disruptive move.
 Taste note: improve **layering**, **clarity**, and **containment** by making package ownership explicit without forcing a full physical move in one pass.
 
 ## Scope
 
-- **In scope**: add workspace declarations at the root, add `packages/spw-seed/`, `packages/spw-runtime/`, `packages/spw-cli/`, and `packages/spw-lsp/` package manifests, move CLI and LSP launch ownership into package source files, clear the known runtime build/test blockers that prevent truthful verification, move the runtime and seed implementation trees behind their package boundaries while keeping legacy `src/` import surfaces stable, add shared TypeScript and Vitest alias/build config as needed, and update root exports/scripts and editor defaults where the new package seams can be adopted without breaking current workflows.
+- **In scope**: add workspace declarations at the root, add `packages/spw-seed/`, `packages/spw-runtime/`, `packages/spw-cli/`, and `packages/spw-lsp/` package manifests, move CLI and LSP launch ownership into package source files, clear the known runtime build/test blockers that prevent truthful verification, move the runtime and seed implementation trees behind their package boundaries while keeping legacy `src/` import surfaces stable, move the remaining CLI command implementations behind `packages/spw-cli`, add shared TypeScript and Vitest alias/build config as needed, and update root exports/scripts and editor defaults where the new package seams can be adopted without breaking current workflows.
 - **Out of scope**: extension build rewiring; agent-tool decoupling; removing the compatibility wrappers in `src/seed` or `src/runtime`.
 
 ## Files
@@ -49,8 +49,14 @@ Taste note: improve **layering**, **clarity**, and **containment** by making pac
 [NEW] packages/spw-runtime/src/state/types.ts  
 [NEW] packages/spw-cli/package.json  
 [NEW] packages/spw-cli/src/args.ts  
+[NEW] packages/spw-cli/src/dev.ts  
+[NEW] packages/spw-cli/src/format.ts  
 [NEW] packages/spw-cli/src/index.ts  
+[NEW] packages/spw-cli/src/ls.ts  
+[NEW] packages/spw-cli/src/ls/**  
 [NEW] packages/spw-cli/src/main.ts  
+[NEW] packages/spw-cli/src/mem.ts  
+[NEW] packages/spw-cli/src/mount.ts  
 [NEW] packages/spw-cli/src/query.ts  
 [NEW] packages/spw-cli/src/run.ts  
 [NEW] packages/spw-cli/src/types.ts  
@@ -118,6 +124,18 @@ Taste note: improve **layering**, **clarity**, and **containment** by making pac
 [MOD] scripts/spw-cli/query.ts  
 [MOD] scripts/spw-cli/run.ts  
 [MOD] scripts/spw-cli/types.ts  
+[MOD] scripts/spw-dev.ts  
+[MOD] scripts/spw-format.ts  
+[MOD] scripts/spw-ls-core.ts  
+[MOD] scripts/spw-ls.ts  
+[MOD] scripts/spw-ls/args.ts  
+[MOD] scripts/spw-ls/constants.ts  
+[MOD] scripts/spw-ls/probe.ts  
+[MOD] scripts/spw-ls/run.ts  
+[MOD] scripts/spw-ls/scan.ts  
+[MOD] scripts/spw-ls/types.ts  
+[MOD] scripts/spw-mem.ts  
+[MOD] scripts/spw-mount.ts  
 [MOD] tsconfig.json  
 [NEW] vitest.aliases.ts  
 [NEW] vitest.seed.config.ts  
@@ -129,6 +147,7 @@ Craft guard:
 - Do not leave root/package/editor launch surfaces contradicting each other.
 - Avoid introducing more than one compatibility indirection layer per package in this pass.
 - Keep `scripts/` launchers as compatibility wrappers only; new logic should land under `packages/`.
+- Keep `scripts/spw-*.ts` command entrypoints as compatibility wrappers once `packages/spw-cli` owns the implementation; do not leave `@spw/cli` shelling out to legacy scripts for steady-state commands.
 - Keep `src/runtime/*` as a compatibility skin once the package runtime owns the implementation; do not leave a split-brain interpreter or pipeline.
 - Keep `src/seed/*` as a compatibility skin once `packages/spw-seed` owns the parser/kernel tree; do not strand grammar or lexer ownership across both roots.
 
@@ -144,10 +163,11 @@ Craft guard:
 8. `&[lsp-modules] — move lsp implementation modules behind the package boundary`
 9. `&[runtime-modules] — move runtime implementation modules behind the package boundary`
 10. `&[seed-modules] — move seed implementation modules behind the package boundary`
+11. `&[cli-commands] — move non-query cli command implementations behind the package boundary`
 
 Fuzz strategy:
 - Explore: `node --import tsx packages/spw-cli/src/main.ts help` and `node --import tsx -e "import { resolveSpwLspServerTarget } from '@spw/lsp'; console.log(resolveSpwLspServerTarget(process.cwd()))"`
-- Stabilize: `npm run build && npm run test:runtime -- src/runtime/__tests__/substrate.test.ts && npm run test:seed`
+- Stabilize: `npm run build && npm run test:runtime -- src/runtime/__tests__/substrate.test.ts && npm run test:seed && npm run spw -- format .spw --check && npm run spw -- mount check --json`
 - Ship: `npm run build && npm run test:run && npm run test:seed && npm run lsp:smoke && npm run lint:docs`
 
 ## Agentic Hygiene

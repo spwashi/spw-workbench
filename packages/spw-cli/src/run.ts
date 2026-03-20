@@ -1,7 +1,10 @@
-import { spawn } from 'node:child_process'
-import path from 'node:path'
 import process from 'node:process'
 import { parseCommand, parseQueryArgs } from './args'
+import { runSpwDevCli } from './dev'
+import { runSpwFormatCli } from './format'
+import { runSpwLsCli } from './ls'
+import { runSpwMemCli } from './mem'
+import { runSpwMountCli } from './mount'
 import { runQueryCli } from './query'
 
 export async function runSpwCli(argv: string[]): Promise<void> {
@@ -21,51 +24,36 @@ export async function runSpwCli(argv: string[]): Promise<void> {
     return
   }
 
-  const forwarded = resolveForward(command)
-  if (!forwarded) {
-    console.error(`spw: unknown command "${command}"`)
-    printHelp()
-    process.exitCode = 1
-    return
-  }
-
-  await forwardToScript(forwarded, args)
-}
-
-function resolveForward(command: string): string | null {
   switch (command) {
     case 'ls':
     case 'select':
-      return 'scripts/spw-ls.ts'
+      await runSpwLsCli({ argv: toCliArgv(command, args), entryName: 'spw:ls' })
+      return
     case 'seq':
-      return 'scripts/spw-ls.ts'
+      await runSpwLsCli({ argv: toCliArgv(command, args), entryName: 'spw:seq', compatNotice: true })
+      return
     case 'mount':
-      return 'scripts/spw-mount.ts'
+      await runSpwMountCli(toCliArgv(command, args))
+      return
     case 'mem':
-      return 'scripts/spw-mem.ts'
+      await runSpwMemCli(toCliArgv(command, args))
+      return
     case 'format':
-      return 'scripts/spw-format.ts'
+      await runSpwFormatCli(toCliArgv(command, args))
+      return
     case 'dev':
-      return 'scripts/spw-dev.ts'
+      await runSpwDevCli()
+      return
     default:
-      return null
+      console.error(`spw: unknown command "${command}"`)
+      printHelp()
+      process.exitCode = 1
+      return
   }
 }
 
-function forwardToScript(scriptPath: string, args: string[]): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const abs = path.resolve(scriptPath)
-    const child = spawn(process.execPath, ['--import', 'tsx', abs, ...args], {
-      stdio: 'inherit',
-    })
-    child.on('exit', (code) => {
-      if (code && code !== 0) {
-        process.exitCode = code
-      }
-      resolve()
-    })
-    child.on('error', reject)
-  })
+function toCliArgv(command: string, args: string[]): string[] {
+  return ['node', command, ...args]
 }
 
 function printHelp(): void {
@@ -79,10 +67,10 @@ Commands:
   query|q      Deep multi-file query (CSS/SQL-inspired from/select/where style)
   ls|select    Liminal sequence selector engine (operator/braces/probe)
   seq          Compatibility alias for ls
-  mount        Mount/check surfaces (forwards to scripts/spw-mount.ts)
-  mem          Memory surface tools (forwards to scripts/spw-mem.ts)
-  format       Spw formatter (forwards to scripts/spw-format.ts)
-  dev          Hot loop runner (forwards to scripts/spw-dev.ts)
+  mount        Mount/check surfaces
+  mem          Memory surface tools
+  format       Spw formatter
+  dev          Hot loop runner
   help         Print this help
 
 Try:

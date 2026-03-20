@@ -1,2 +1,2 @@
-export { runSpwLsCli } from './spw-ls/run'
-export type { RunOptions } from './spw-ls/run'
+export { runSpwLsCli } from '../packages/spw-cli/src/ls'
+export type { SpwLsRunOptions as RunOptions } from '../packages/spw-cli/src/ls'

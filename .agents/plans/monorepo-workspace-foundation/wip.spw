@@ -47,6 +47,12 @@
  >>[2026-03-20 02:45] fix — factored shared Vitest workspace aliases into vitest.aliases.ts and added a dedicated vitest.seed.config.ts so seed, runtime, and dom suites resolve package boundaries consistently.
  >>[2026-03-20 02:45] observe — npm run build, npm run test:run, npm run lsp:smoke, npm run test:seed, and node --import tsx scripts/spw.ts help all pass with parser/kernel ownership now living under packages/spw-seed.
  >>[2026-03-20 02:45] taste — package ownership is now credible to a new reader because seed, runtime, cli, and lsp all have real implementation beneath their package roots rather than only facade barrels.
+ >>[2026-03-20 02:54] observe — @spw/cli still forwards ls, mount, mem, format, and dev back into scripts/*, so the cli package remains only partially authoritative after the seed move.
+ >>[2026-03-20 02:54] decide — next, move the non-query cli commands into packages/spw-cli and collapse the root script entrypoints to compatibility wrappers instead of process-spawn detours.
+ >>[2026-03-20 09:31] revise — copied spw-ls plus the format, mount, mem, and dev command implementations into packages/spw-cli/src/* and rewired runSpwCli to dispatch them in-process.
+ >>[2026-03-20 09:31] revise — collapsed scripts/spw-{format,mount,mem,dev}.ts and scripts/spw-ls/* to compatibility wrappers so legacy command paths still resolve while package ownership becomes explicit.
+ >>[2026-03-20 09:31] observe — npm run build, npm run test:run, npm run test:seed, npm run lsp:smoke, node --import tsx scripts/spw.ts help, npm run spw -- format .spw --check, npm run spw -- mount check --json, npm run spw -- mem list --dump-root .agents/state/runtime/dumps, npm run spw -- ls --seq '?' --root .spw --top 1 --json, node --import tsx scripts/spw-format.ts .spw --check, node --import tsx scripts/spw-mount.ts check --json, and node --import tsx scripts/spw-ls.ts --seq '?' --root .spw --top 1 --json all pass.
+ >>[2026-03-20 09:31] taste — the CLI package is now operationally primary instead of merely acting as a shell that bounces back into scripts/*.
 }
 
 ^["open"]{
@@ -63,17 +69,18 @@
  ~[8]: "&[lsp-modules] — move lsp implementation modules behind the package boundary"
  ~[9]: "&[runtime-modules] — move runtime implementation modules behind the package boundary"
  ~[10]: "&[seed-modules] — move seed implementation modules behind the package boundary"
+ ~[11]: "&[cli-commands] — move non-query cli command implementations behind the package boundary"
 }
 
 ^["cache"]{
  ~#status: "ready_to_commit"
- ~#base_ref: "main@87624ba"
+ ~#base_ref: "main@d69329b"
  ~#rebased_at: ""
  ~#hygiene_split: "none"
- ~#files_hot: ".agents/plans/monorepo-workspace-foundation/PLAN.md, .agents/plans/monorepo-workspace-foundation/wip.spw, src/seed/**, packages/spw-seed/src/**, package.json, vitest.aliases.ts, vitest.seed.config.ts, vitest.runtime.config.ts, vitest.dom.config.ts"
- ~#next_commit: "10"
+ ~#files_hot: ".agents/plans/monorepo-workspace-foundation/PLAN.md, .agents/plans/monorepo-workspace-foundation/wip.spw, packages/spw-cli/src/**, scripts/spw-ls-core.ts, scripts/spw-ls.ts, scripts/spw-format.ts, scripts/spw-mount.ts, scripts/spw-mem.ts, scripts/spw-dev.ts"
+ ~#next_commit: "11"
  ~#open_count: "0"
- ~#last_stream: "2026-03-20 02:45"
+ ~#last_stream: "2026-03-20 09:31"
  ~#taste_debt: ""
 }
 

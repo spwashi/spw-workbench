@@ -1,5 +1,6 @@
 #!/usr/bin/env tsx
 
+import process from 'node:process'
 import { runSpwLsCli } from './spw-ls-core'
 
 const args = process.argv.slice(2)
@@ -7,7 +8,7 @@ const entryIdx = args.indexOf('--entry-name')
 const entryName = entryIdx >= 0 && args[entryIdx + 1] ? args[entryIdx + 1] : 'spw:ls'
 const compatNotice = args.includes('--compat')
 
-runSpwLsCli({ entryName, compatNotice }).catch((error) => {
+runSpwLsCli({ argv: process.argv, entryName, compatNotice }).catch((error) => {
   console.error(`${entryName}: ${error instanceof Error ? error.message : String(error)}`)
   process.exitCode = 1
 })
