@@ -66,7 +66,7 @@ Craft guard:
 6. `&[cli-lsp] — extract package-owned cli and lsp entrypoints with compatibility wrappers`
 
 Fuzz strategy:
-- Explore: `node --import tsx packages/spw-cli/src/main.ts help && node --import tsx packages/spw-lsp/src/upstream-bridge.ts`
+- Explore: `node --import tsx packages/spw-cli/src/main.ts help` and `node --import tsx -e "import { resolveSpwLspServerTarget } from '@spw/lsp'; console.log(resolveSpwLspServerTarget(process.cwd()))"`
 - Stabilize: `npm run spw -- help && npm run lsp:smoke`
 - Ship: `npm run build && npm run test:run && npm run lint:docs`
 

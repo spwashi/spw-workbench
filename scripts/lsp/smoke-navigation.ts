@@ -25,7 +25,7 @@ class LspClient {
   constructor(cwd: string) {
     this.child = spawn(
       process.execPath,
-      ['--import', 'tsx', 'scripts/lsp/stdio-server.ts'],
+      ['--import', 'tsx', 'packages/spw-lsp/src/stdio-server.ts'],
       { cwd, stdio: 'pipe' }
     )
 

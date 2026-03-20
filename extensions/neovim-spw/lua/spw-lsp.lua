@@ -10,7 +10,7 @@
 --   3. Override the command or root detection via vim.g.spw_lsp_*
 --
 -- Global overrides:
---   vim.g.spw_lsp_cmd      = { 'npx', 'tsx', 'scripts/lsp/stdio-server.ts' }
+--   vim.g.spw_lsp_cmd      = { 'npx', 'tsx', 'packages/spw-lsp/src/stdio-server.ts' }
 --   vim.g.spw_lsp_root     = '/path/to/workspace'
 --   vim.g.spw_lsp_disable  = true
 --   vim.g.spw_lsp_settings = { inlayHints = { paths = false } }
@@ -66,11 +66,11 @@ end
 
 --- Build the command to start the LSP server.
 --- Checks `vim.g.spw_lsp_cmd` first, then falls back to `npm run lsp`
---- (which invokes `npx tsx scripts/lsp/stdio-server.ts` via package.json).
+--- (which invokes `npx tsx packages/spw-lsp/src/upstream-bridge.ts` via package.json).
 ---@param root string  workspace root
 ---@return string[]
 local function build_cmd(root)
-  -- User override: vim.g.spw_lsp_cmd = { 'npx', 'tsx', 'scripts/lsp/stdio-server.ts' }
+  -- User override: vim.g.spw_lsp_cmd = { 'npx', 'tsx', 'packages/spw-lsp/src/stdio-server.ts' }
   if vim.g.spw_lsp_cmd then
     return vim.g.spw_lsp_cmd
   end
@@ -85,7 +85,7 @@ local function build_cmd(root)
   end
 
   -- Direct invocation fallback
-  local server = root .. '/scripts/lsp/stdio-server.ts'
+  local server = root .. '/packages/spw-lsp/src/stdio-server.ts'
   if vim.fn.filereadable(server) == 1 then
     return { 'npx', 'tsx', server }
   end

@@ -1,2 +1,4 @@
-export { runSpwCli } from '../../../scripts/spw-cli/run'
-export type { QueryArgs, QueryRow, SpwCliCommand } from '../../../scripts/spw-cli/types'
+export { parseCommand, parseQueryArgs } from './args'
+export { runQueryCli } from './query'
+export { runSpwCli } from './run'
+export type { QueryArgs, QueryRow, SpwCliCommand } from './types'

@@ -29,8 +29,8 @@ class SpwLspConfigurable(private val project: Project) : Configurable {
                 addActionListener { updateEnabledState(isSelected) }
             }
             commandField = JBTextField().apply {
-                toolTipText = "Override the LSP command (e.g. \"npx tsx scripts/lsp/stdio-server.ts\")."
-                emptyText.text = "Default: npx tsx scripts/lsp/stdio-server.ts"
+                toolTipText = "Override the LSP command (e.g. \"npx tsx packages/spw-lsp/src/stdio-server.ts\")."
+                emptyText.text = "Default: npm run lsp"
                 text = initialState.command
             }
             workDirField = TextFieldWithBrowseButton().apply {
@@ -38,7 +38,7 @@ class SpwLspConfigurable(private val project: Project) : Configurable {
                 val descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
                 addBrowseFolderListener(
                     "Select Spw LSP Working Directory",
-                    "Choose the folder that contains scripts/lsp/stdio-server.ts.",
+                    "Choose the repo root that contains packages/spw-lsp/src/stdio-server.ts.",
                     project,
                     descriptor
                 )
@@ -47,7 +47,7 @@ class SpwLspConfigurable(private val project: Project) : Configurable {
             }
 
             val helperLabel = JBLabel(
-                "Leave fields empty to use defaults. The working directory should contain scripts/lsp/stdio-server.ts."
+                "Leave fields empty to use defaults. The working directory should contain package.json and packages/spw-lsp/src/stdio-server.ts."
             ).apply {
                 foreground = UIUtil.getContextHelpForeground()
                 font = UIUtil.getLabelFont(UIUtil.FontSize.SMALL)

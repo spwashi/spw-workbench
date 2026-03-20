@@ -30,7 +30,7 @@ The LSP starts automatically when you open a `.spw` file. Override defaults:
 
 ```lua
 -- Custom LSP command (default: npm run lsp)
-vim.g.spw_lsp_cmd = { 'npx', 'tsx', 'scripts/lsp/stdio-server.ts' }
+vim.g.spw_lsp_cmd = { 'npx', 'tsx', 'packages/spw-lsp/src/stdio-server.ts' }
 
 -- Force a specific workspace root
 vim.g.spw_lsp_root = '/path/to/spw-workbench'

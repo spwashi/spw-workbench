@@ -89,11 +89,11 @@ export async function deactivate(): Promise<void> {
 
 function resolveServerPath(): string {
   // Resolve the LSP server relative to the workspace root.
-  // The server lives at <repo>/scripts/lsp/stdio-server.ts
+  // The server lives at <repo>/packages/spw-lsp/src/stdio-server.ts
   const workspaceFolder = vscode.workspace.workspaceFolders?.[0]
   if (workspaceFolder) {
-    return path.join(workspaceFolder.uri.fsPath, 'scripts', 'lsp', 'stdio-server.ts')
+    return path.join(workspaceFolder.uri.fsPath, 'packages', 'spw-lsp', 'src', 'stdio-server.ts')
   }
   // Fallback: assume extension is installed inside the repo
-  return path.resolve(__dirname, '..', '..', '..', 'scripts', 'lsp', 'stdio-server.ts')
+  return path.resolve(__dirname, '..', '..', '..', 'packages', 'spw-lsp', 'src', 'stdio-server.ts')
 }

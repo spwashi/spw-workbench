@@ -21,10 +21,14 @@
  >>[2026-03-20 00:15] observe — direct smoke imports for all new package facades succeed, so the new seams are loadable even though root build/test still carry unrelated pre-existing failures.
  >>[2026-03-20 00:21] revise — switched root script and analyzer imports from direct src/seed references to @spw/seed / @spw/cli where the facade already exists.
  >>[2026-03-20 00:21] observe — spw help, spwq, spw-format, spw-mount, and spw-syntax-validate all execute successfully through the package aliases.
- >>[2026-03-20 07:05] observe — @spw/cli still reaches back into scripts/spw-cli/* and @spw/lsp is only a constant, so the package seams are visible but not yet operationally primary.
- >>[2026-03-20 07:05] observe — editor integrations still default to scripts/lsp/stdio-server.ts, which means package ownership is not the default launch path anywhere outside npm aliases.
- >>[2026-03-20 07:05] decide — move CLI and LSP launch ownership into packages/* and leave scripts/* as compatibility wrappers until the deeper implementation move lands.
- >>[2026-03-20 07:05] taste — package seams should be truthful enough that a new contributor finds packages/* first and scripts/* second.
+ >>[2026-03-20 00:35] observe — @spw/cli still reaches back into scripts/spw-cli/* and @spw/lsp is only a constant, so the package seams are visible but not yet operationally primary.
+ >>[2026-03-20 00:35] observe — editor integrations still default to scripts/lsp/stdio-server.ts, which means package ownership is not the default launch path anywhere outside npm aliases.
+ >>[2026-03-20 00:35] decide — move CLI and LSP launch ownership into packages/* and leave scripts/* as compatibility wrappers until the deeper implementation move lands.
+ >>[2026-03-20 00:35] taste — package seams should be truthful enough that a new contributor finds packages/* first and scripts/* second.
+ >>[2026-03-20 00:53] revise — CLI command parsing, query execution, and package entry now live in packages/spw-cli/src/*, while scripts/spw-cli/* collapse to compatibility re-exports.
+ >>[2026-03-20 00:53] revise — the LSP bridge now prefers packages/spw-lsp/src/stdio-server.ts, preserves scripts/lsp/stdio-server.ts as a fallback, and updates editor defaults toward the package path.
+ >>[2026-03-20 00:53] observe — npm run spw, scripts/spw.ts, spwq, and direct @spw/lsp target resolution all work through the new package-owned entrypoints.
+ >>[2026-03-20 00:53] observe — lsp smoke ends at the same 20 passed / 2 failed references-timeout profile on both package and legacy server paths, so the remaining failures appear pre-existing rather than introduced by this extraction.
 }
 
 ^["open"]{
@@ -40,14 +44,14 @@
 }
 
 ^["cache"]{
- ~#status: "implementing"
- ~#base_ref: "main@5f9c83e"
+ ~#status: "ready_to_commit"
+ ~#base_ref: "main@b457844"
  ~#rebased_at: ""
  ~#hygiene_split: "none"
  ~#files_hot: ".agents/plans/monorepo-workspace-foundation/PLAN.md, .agents/plans/monorepo-workspace-foundation/wip.spw, package.json, packages/spw-cli/src/**, packages/spw-lsp/src/**, scripts/spw-cli/*.ts, scripts/lsp/stdio-upstream-bridge.ts, scripts/lsp/smoke-navigation.ts, extensions/vscode-spw/src/extension.ts, extensions/neovim-spw/lua/spw-lsp.lua, extensions/neovim-spw/README.md, extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/settings/SpwLspConfigurable.kt, extensions/intellij-spw/README.md"
- ~#next_commit: "5"
+ ~#next_commit: "6"
  ~#open_count: "0"
- ~#last_stream: "2026-03-20 07:05"
+ ~#last_stream: "2026-03-20 00:53"
  ~#taste_debt: ""
 }
 

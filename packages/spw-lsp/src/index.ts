@@ -1,2 +1,8 @@
-export const SPW_LSP_PACKAGE_PHASE = 'scaffold'
-export const SPW_LSP_ENTRYPOINT = 'scripts/lsp/stdio-server.ts'
+export {
+  SPW_LSP_BRIDGE_ENTRYPOINT,
+  SPW_LSP_ENTRYPOINT,
+  SPW_LSP_LEGACY_ENTRYPOINT,
+  SPW_LSP_PACKAGE_PHASE,
+  resolveSpwLspServerTarget,
+  runSpwLspUpstreamBridge,
+} from './upstream-bridge'

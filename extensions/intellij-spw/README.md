@@ -49,8 +49,8 @@ and/or working directory.
 Tips:
 - Leave fields empty to use defaults.
 - Set the working directory to the repo root containing `package.json` with an `lsp` script.
-- The default launcher checks, in order: `SPW_LSP_SERVER_PATH`, local `scripts/lsp/stdio-server.ts`,
-  then the `remote.lore.url` checkout path for `scripts/lsp/stdio-server.ts`.
+- The default launcher checks, in order: `SPW_LSP_SERVER_PATH`, local `packages/spw-lsp/src/stdio-server.ts`,
+  local `scripts/lsp/stdio-server.ts`, then the `remote.lore.url` checkout path for those same paths.
 
 ### Color Semantics
 
