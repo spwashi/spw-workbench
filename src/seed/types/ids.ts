@@ -1,6 +1,7 @@
 import { Brand, castToBrand } from './brand'
 
 type BrandTemplateValue = string | number | boolean
+type BrandInput = string | TemplateStringsArray
 
 /**
  * Branded Identifier Types
@@ -34,32 +35,44 @@ function joinTemplate(strings: TemplateStringsArray, values: readonly BrandTempl
   return out
 }
 
+function materializeBrandInput(input: BrandInput, values: readonly BrandTemplateValue[]): string {
+  return typeof input === 'string' ? input : joinTemplate(input, values)
+}
+
+function createBrandTag<T extends string>() {
+  return (strings: TemplateStringsArray, ...values: BrandTemplateValue[]): Brand<string, T> =>
+    castToBrand<string, T>(joinTemplate(strings, values))
+}
+
+function createBrandFactory<T extends string>() {
+  function brandFactory(key: string): Brand<string, T>
+  function brandFactory(strings: TemplateStringsArray, ...values: BrandTemplateValue[]): Brand<string, T>
+  function brandFactory(input: BrandInput, ...values: BrandTemplateValue[]): Brand<string, T> {
+    return castToBrand<string, T>(materializeBrandInput(input, values))
+  }
+  return brandFactory
+}
+
 /** Template literal tag for Register IDs: $register`key` */
-export const $register = (
-  strings: TemplateStringsArray,
-  ...values: BrandTemplateValue[]
-): RegisterId => castToBrand<string, 'SpwRegister'>(joinTemplate(strings, values))
+export const $register = createBrandTag<'SpwRegister'>()
 
 /** Template literal tag for Frame IDs: $frame`key` */
-export const $frame = (
-  strings: TemplateStringsArray,
-  ...values: BrandTemplateValue[]
-): FrameId => castToBrand<string, 'SpwFrame'>(joinTemplate(strings, values))
+export const $frame = createBrandTag<'SpwFrame'>()
 
 /** Template literal tag for Domain IDs: $domain`key` */
-export const $domain = (
-  strings: TemplateStringsArray,
-  ...values: BrandTemplateValue[]
-): DomainId => castToBrand<string, 'SpwDomain'>(joinTemplate(strings, values))
+export const $domain = createBrandTag<'SpwDomain'>()
 
 /** Template literal tag for Layer IDs: $layer`key` */
-export const $layer = (
-  strings: TemplateStringsArray,
-  ...values: BrandTemplateValue[]
-): LayerId => castToBrand<string, 'SpwLayer'>(joinTemplate(strings, values))
+export const $layer = createBrandTag<'SpwLayer'>()
 
 /** Identity factory for dynamic register IDs */
-export const RegisterId = (key: string): RegisterId => castToBrand<string, 'SpwRegister'>(key)
+export const RegisterId = createBrandFactory<'SpwRegister'>()
 
 /** Identity factory for dynamic frame IDs */
-export const FrameId = (key: string): FrameId => castToBrand<string, 'SpwFrame'>(key)
+export const FrameId = createBrandFactory<'SpwFrame'>()
+
+/** Identity factory for dynamic domain IDs */
+export const DomainId = createBrandFactory<'SpwDomain'>()
+
+/** Identity factory for dynamic layer IDs */
+export const LayerId = createBrandFactory<'SpwLayer'>()

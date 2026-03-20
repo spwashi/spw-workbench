@@ -6,3 +6,7 @@ export {
   resolveSpwLspServerTarget,
   runSpwLspUpstreamBridge,
 } from './upstream-bridge'
+export { ServerContext } from './context'
+export { ServerIndex, SIGIL_SEMANTICS } from './server-index'
+export { findPathRefAtPosition, selectPathRefs } from './spw-selector'
+export * from './types'

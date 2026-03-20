@@ -1,7 +1,6 @@
 export type { Brand } from './brand'
 export { castToBrand } from './brand'
-export { $register, $frame, $domain, $layer, RegisterId, FrameId } from './ids'
-export type { DomainId, LayerId } from './ids'
+export { $register, $frame, $domain, $layer, RegisterId, FrameId, DomainId, LayerId } from './ids'
 
 // Position tracking
 export type { Position, Span } from './position'
