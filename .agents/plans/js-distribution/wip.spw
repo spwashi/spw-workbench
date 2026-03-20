@@ -1,0 +1,44 @@
+# wip — js-distribution
+# Branch: feature/js-distribution
+# Started: 2026-03-20
+
+#:layer #!pragmatics
+
+^["intent"]{
+ ~#goal: "Bundle a versioned JS distribution for the root workbench package while keeping the repo's source-TS development flow intact."
+ ~#taste: "correctness, layering, release clarity"
+}
+
+^["stream"]{
+ >>[2026-03-20 14:42] observe — the root package still exports source .ts entrypoints and the current build only typechecks; there is no versioned JS dist artifact yet.
+ >>[2026-03-20 14:42] decide — the first slice should produce a dedicated dist/release artifact without flipping the workspace's live resolution over to dist.
+ >>[2026-03-20 14:42] observe — plain tsc emit is not enough because the current source graph depends on workspace-only aliases like @spw/cli and @spw/seed.
+ >>[2026-03-20 14:42] taste — version truth should stay anchored in the root package manifest, with dist manifests derived from that source of truth.
+}
+
+^["open"]{
+ ?[types-lane]: "Should the first JS dist artifact ship declarations, or is a runtime JS bundle with versioned manifest sufficient for this initial slice?"
+ ?[srcdist-overlap]: "Once bundle-jsdist exists, should bundle-srcdist continue embedding dist/ or become source-only again?"
+}
+
+^["commits"]{
+ ~[1]: ".[js-dist] — plan versioned JS distribution bundling"
+ ~[2]: "&[js-dist] — add versioned dist builder and manifest generation"
+ ~[3]: "&[js-release] — wire JS dist bundles into the release flow"
+ ~[4]: ".[js-dist-docs] — document the dist/versioning contract"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@25027ed37be84a537468a3b66d201247272d75c5"
+ ~#rebased_at: "2026-03-20 14:42"
+ ~#hygiene_split: "none"
+ ~#files_hot: ".agents/plans/js-distribution/PLAN.md, .agents/plans/js-distribution/wip.spw"
+ ~#next_commit: "1"
+ ~#open_count: "2"
+ ~#last_stream: "2026-03-20 14:42 taste"
+ ~#taste_debt: "The eventual publish contract still needs a deliberate types/declarations story once JS bundling exists."
+}
+
+^["done"]{
+}
