@@ -11,6 +11,7 @@
 
 import { Substrate } from './substrate'
 import type { RegisterEvent, Resonance } from './substrate'
+import type { RegisterId } from '../state/types'
 
 // ── Detection ───────────────────────────────────────────────────
 
@@ -42,7 +43,7 @@ function detectValueEchoes(events: readonly RegisterEvent[]): Resonance[] {
     const writes = events.filter(e => e.kind === 'write')
 
     // Group by stringified value
-    const valueMap = new Map<string, string[]>()
+    const valueMap = new Map<string, RegisterId[]>()
     for (const event of writes) {
         const valKey = stableStringify(event.value)
         const keys = valueMap.get(valKey) ?? []
@@ -78,7 +79,7 @@ function detectPhaseSyncs(events: readonly RegisterEvent[]): Resonance[] {
     const phaseEvents = events.filter(e => e.phase !== undefined)
 
     // Group by phase
-    const phaseMap = new Map<string, { key: string; at: string }[]>()
+    const phaseMap = new Map<string, { key: RegisterId; at: string }[]>()
     for (const event of phaseEvents) {
         const entries = phaseMap.get(event.phase!) ?? []
         // Only keep latest per key
@@ -122,7 +123,7 @@ function detectFrequencyLocks(events: readonly RegisterEvent[]): Resonance[] {
     const writes = events.filter(e => e.kind === 'write')
 
     // Count writes per key
-    const writeCounts = new Map<string, number>()
+    const writeCounts = new Map<RegisterId, number>()
     for (const event of writes) {
         writeCounts.set(event.key, (writeCounts.get(event.key) ?? 0) + 1)
     }

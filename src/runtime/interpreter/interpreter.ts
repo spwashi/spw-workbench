@@ -1,9 +1,10 @@
 import { normalizeToONF } from '../../seed/normalize'
+import { $register } from '../../seed/types'
 import type { OperatorKind, SeedNode } from '../../seed/types'
 import type { ONFNode } from '../../seed/types/ast/onf'
 import { RegisterBank } from '../state/register-bank'
 import { descriptorForKey } from '../state/type-affinities'
-import type { RegisterWriteOptions, RuntimeValence, RuntimeValue } from '../state/types'
+import type { RegisterId, RegisterWriteOptions, RuntimeValence, RuntimeValue } from '../state/types'
 import type {
   RuntimeInterpretation,
   RuntimeInterpreterOptions,
@@ -152,6 +153,10 @@ function reduceResonance(args: RuntimeValue[]): RuntimeValue {
   return args[args.length - 1]
 }
 
+function registerKey(raw: string | undefined, fallback: RegisterId): RegisterId {
+  return raw ? $register`${raw}` : fallback
+}
+
 function evaluate(node: ONFNode, context: EvalContext): RuntimeValue {
   const args = node.args.map(arg => evaluate(arg, context))
 
@@ -196,7 +201,10 @@ function evaluate(node: ONFNode, context: EvalContext): RuntimeValue {
     }
 
     case '#': {
-      const key = frameString(node) ?? `res-${context.registers.listKeys().length}`
+      const key = registerKey(
+        frameString(node),
+        $register`res-${context.registers.listKeys().length}`,
+      )
       const lens = frameString(node, 'reg') ?? 'runtime'
       const reduced = reduceResonance(args)
       context.registers.resonate(key, reduced, lens, {
@@ -216,7 +224,10 @@ function evaluate(node: ONFNode, context: EvalContext): RuntimeValue {
     }
 
     case '&': {
-      const key = frameString(node) ?? `merge-${context.registers.listKeys().length}`
+      const key = registerKey(
+        frameString(node),
+        $register`merge-${context.registers.listKeys().length}`,
+      )
       return context.registers.confluent(key, args, {
         ...writeSemantics(node),
         source: 'interpret:confluent',
@@ -224,7 +235,7 @@ function evaluate(node: ONFNode, context: EvalContext): RuntimeValue {
     }
 
     case '=': {
-      const key = frameString(node) ?? context.registers.getFocusKey()
+      const key = registerKey(frameString(node), context.registers.getFocusKey())
       const value = args[0] ?? null
       context.registers.set(key, value, {
         ...writeSemantics(node),
@@ -237,16 +248,16 @@ function evaluate(node: ONFNode, context: EvalContext): RuntimeValue {
     case '%': {
       if (typeof args[0] === 'string') {
         const scale = typeof args[1] === 'number' ? args[1] : 1
-        return context.registers.measure(args[0], scale)
+        return context.registers.measure($register`${args[0]}`, scale)
       }
-      const fallbackKey = frameString(node) ?? context.registers.getFocusKey()
+      const fallbackKey = registerKey(frameString(node), context.registers.getFocusKey())
       return context.registers.measure(fallbackKey)
     }
 
     case '$': {
       const key = typeof args[0] === 'string'
-        ? args[0]
-        : frameString(node) ?? context.registers.getFocusKey()
+        ? $register`${args[0]}`
+        : registerKey(frameString(node), context.registers.getFocusKey())
       const meta = context.registers.materialize(key)
       return meta ? coerceRuntimeValue(meta) : null
     }
@@ -280,7 +291,7 @@ function evaluate(node: ONFNode, context: EvalContext): RuntimeValue {
     case '*': {
       // Value/collapse: resolve to concrete value, write to active register
       const collapsed = args[0] ?? null
-      const key = frameString(node) ?? context.registers.getFocusKey()
+      const key = registerKey(frameString(node), context.registers.getFocusKey())
       context.registers.set(key, collapsed, {
         ...writeSemantics(node),
         source: 'interpret:collapse',
@@ -293,7 +304,7 @@ function evaluate(node: ONFNode, context: EvalContext): RuntimeValue {
     case '<>': {
       // Coupling: couple registers
       if (args.length >= 2 && typeof args[0] === 'string' && typeof args[1] === 'string') {
-        context.registers.couple(args[0], args[1])
+        context.registers.couple($register`${args[0]}`, $register`${args[1]}`)
       }
       return args
     }

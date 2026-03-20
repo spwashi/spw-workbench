@@ -5,6 +5,7 @@ import type {
   PhaseEnvelope,
   Liminality,
   RegisterEntry,
+  RegisterId,
   RegisterMeta,
   RegisterPhase,
   RegisterPhaseInput,
@@ -17,7 +18,7 @@ import type {
   ScopeFrame,
 } from './types'
 import { LIMINALITY_ORDER, PHASE_ORDER, normalizeRegisterPhase } from './types'
-import { RegisterId, castToBrand, $register } from '../../seed/types'
+import { $register } from '../../seed/types'
 
 const DEFAULT_FOCUS_KEY = '"'
 const HISTORY_KEYS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] as const
@@ -141,7 +142,7 @@ export class RegisterBank {
     if (substrate) this.substrate = substrate
     this.ensureEntry(this.focusKey)
     for (const [key, value] of Object.entries(initial)) {
-      this.set(RegisterId(key), value, { source: 'init', force: true })
+      this.set($register`${key}`, value, { source: 'init', force: true })
     }
   }
 
@@ -455,7 +456,7 @@ export class RegisterBank {
    * Stores the value at a mark-prefixed register key.
    */
   markPosition(name: string, value: RuntimeValue, options: RegisterWriteOptions = {}): void {
-    const markKey = RegisterId(`mark:${name}`)
+    const markKey = $register`mark:${name}`
     const eventAt = nowIso()
     this.set(markKey, value, {
       ...options,
@@ -479,7 +480,7 @@ export class RegisterBank {
   }
 
   getMark(name: string): RuntimeValue {
-    return this.get(RegisterId(`mark:${name}`))
+    return this.get($register`mark:${name}`)
   }
 
   // ── Coupling ───────────────────────────────────────────────
@@ -558,14 +559,14 @@ export class RegisterBank {
     for (let index = HISTORY_KEYS.length - 1; index > 0; index -= 1) {
       const currentKey = HISTORY_KEYS[index]
       const previousKey = HISTORY_KEYS[index - 1]
-      const previousValue = this.entries.get(castToBrand<string, 'SpwRegister'>(previousKey))?.value
-      this.set(castToBrand<string, 'SpwRegister'>(currentKey), previousValue, {
+      const previousValue = this.entries.get($register`${previousKey}`)?.value
+      this.set($register`${currentKey}`, previousValue, {
         source: `${source}:history`,
         force: true,
       })
     }
 
-    this.set(castToBrand<string, 'SpwRegister'>(HISTORY_KEYS[0]), value, {
+    this.set($register`${HISTORY_KEYS[0]}`, value, {
       source: `${source}:history`,
       force: true,
     })

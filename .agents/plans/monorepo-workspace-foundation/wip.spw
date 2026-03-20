@@ -29,6 +29,11 @@
  >>[2026-03-20 00:53] revise — the LSP bridge now prefers packages/spw-lsp/src/stdio-server.ts, preserves scripts/lsp/stdio-server.ts as a fallback, and updates editor defaults toward the package path.
  >>[2026-03-20 00:53] observe — npm run spw, scripts/spw.ts, spwq, and direct @spw/lsp target resolution all work through the new package-owned entrypoints.
  >>[2026-03-20 00:53] observe — lsp smoke ends at the same 20 passed / 2 failed references-timeout profile on both package and legacy server paths, so the remaining failures appear pre-existing rather than introduced by this extraction.
+ >>[2026-03-20 01:06] fix — build blockers are branded RegisterId drift in interpreter/resonance and a missing Substrate.bind implementation causing 4 runtime test failures.
+ >>[2026-03-20 01:06] decide — clear the runtime blockers first so module relocation can be verified against a truthful build/test baseline rather than against already-broken state.
+ >>[2026-03-20 01:06] decide — after the blocker fix, move the LSP implementation modules behind packages/spw-lsp instead of stopping at entrypoint wrappers.
+ >>[2026-03-20 01:11] revise — brand template tags now accept interpolations, so the runtime fix can keep using $register ergonomics even for synthesized or user-provided keys.
+ >>[2026-03-20 01:11] fix — npm run build and npm run test:run now pass after restoring Substrate.bind and tightening branded register flows in interpreter, resonance, and register-bank code.
 }
 
 ^["open"]{
@@ -41,6 +46,8 @@
  ~[4]: "&[workspace-imports] — route scripts through package facades"
  ~[5]: ".[plans] — extend monorepo workspace scope to package-owned cli/lsp entrypoints"
  ~[6]: "&[cli-lsp] — extract package-owned cli and lsp entrypoints with compatibility wrappers"
+ ~[7]: "&[runtime-blockers] — restore branded register flows and substrate binding"
+ ~[8]: "&[lsp-modules] — move lsp implementation modules behind the package boundary"
 }
 
 ^["cache"]{
@@ -48,10 +55,10 @@
  ~#base_ref: "main@b457844"
  ~#rebased_at: ""
  ~#hygiene_split: "none"
- ~#files_hot: ".agents/plans/monorepo-workspace-foundation/PLAN.md, .agents/plans/monorepo-workspace-foundation/wip.spw, package.json, packages/spw-cli/src/**, packages/spw-lsp/src/**, scripts/spw-cli/*.ts, scripts/lsp/stdio-upstream-bridge.ts, scripts/lsp/smoke-navigation.ts, extensions/vscode-spw/src/extension.ts, extensions/neovim-spw/lua/spw-lsp.lua, extensions/neovim-spw/README.md, extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/settings/SpwLspConfigurable.kt, extensions/intellij-spw/README.md"
- ~#next_commit: "6"
+ ~#files_hot: ".agents/plans/runtime-blockers/FIX.md, .agents/plans/monorepo-workspace-foundation/PLAN.md, .agents/plans/monorepo-workspace-foundation/wip.spw, src/runtime/interpreter/interpreter.ts, src/runtime/pipeline/resonance.ts, src/runtime/pipeline/substrate.ts, src/runtime/__tests__/substrate.test.ts, packages/spw-lsp/src/**, scripts/lsp/**"
+ ~#next_commit: "7"
  ~#open_count: "0"
- ~#last_stream: "2026-03-20 00:53"
+ ~#last_stream: "2026-03-20 01:11"
  ~#taste_debt: ""
 }
 

@@ -1,16 +1,16 @@
 # Plan: monorepo-workspace-foundation
 
-Establish the first visible `v0.3.0` workspace seams by turning the root into a workspace coordinator, adding package entrypoint scaffolds for the seed and runtime surfaces, and making the CLI/LSP entrypoints package-owned without breaking the current `src/` and `scripts/` flows.
+Establish the first visible `v0.3.0` workspace seams by turning the root into a workspace coordinator, adding package entrypoint scaffolds for the seed and runtime surfaces, making the CLI/LSP entrypoints package-owned, clearing the known runtime blockers, and then moving the LSP implementation modules behind the package boundary without breaking the current `src/` and `scripts/` flows.
 
 ## Goal
 
-The implementation plan for `v0.3.0` names monorepo structure as the release theme, but the repo still presents itself as one flat Node application with `src/` and `scripts/` acting as the only ownership boundaries. This pass introduces the workspace skeleton and package-level entrypoints so the repository can start speaking truthfully about package seams before the deeper extraction and relocation work lands. The end state is a root package that knows about `packages/*`, baseline package manifests for `@spw/seed`, `@spw/runtime`, `@spw/cli`, and `@spw/lsp`, package-owned CLI/LSP launch paths, and TypeScript path/build scaffolding that lets later extraction happen incrementally rather than as a single disruptive move.
+The implementation plan for `v0.3.0` names monorepo structure as the release theme, but the repo still presents itself as one flat Node application with `src/` and `scripts/` acting as the only ownership boundaries. This pass introduces the workspace skeleton and package-level entrypoints so the repository can start speaking truthfully about package seams before the deeper extraction and relocation work lands. The end state is a root package that knows about `packages/*`, baseline package manifests for `@spw/seed`, `@spw/runtime`, `@spw/cli`, and `@spw/lsp`, package-owned CLI/LSP launch paths, a clean runtime build/test baseline for the moved seams, and TypeScript path/build scaffolding that lets later extraction happen incrementally rather than as a single disruptive move.
 Taste note: improve **layering**, **clarity**, and **containment** by making package ownership explicit without forcing a full physical move in one pass.
 
 ## Scope
 
-- **In scope**: add workspace declarations at the root, add `packages/spw-seed/`, `packages/spw-runtime/`, `packages/spw-cli/`, and `packages/spw-lsp/` package manifests, move CLI and LSP launch ownership into package source files, add shared TypeScript base/build config as needed, and update root exports/scripts and editor defaults where the new package seams can be adopted without breaking current workflows.
-- **Out of scope**: physically moving all `src/seed`, `src/runtime`, or the full LSP handler tree into packages; updating every internal import to `@spw/*`; extension build rewiring; agent-tool decoupling.
+- **In scope**: add workspace declarations at the root, add `packages/spw-seed/`, `packages/spw-runtime/`, `packages/spw-cli/`, and `packages/spw-lsp/` package manifests, move CLI and LSP launch ownership into package source files, clear the known runtime build/test blockers that prevent truthful verification, add shared TypeScript base/build config as needed, and update root exports/scripts and editor defaults where the new package seams can be adopted without breaking current workflows.
+- **Out of scope**: physically moving all `src/seed` or all `src/runtime` into packages; extension build rewiring; agent-tool decoupling.
 
 ## Files
 
@@ -42,6 +42,10 @@ Taste note: improve **layering**, **clarity**, and **containment** by making pac
 [MOD] extensions/neovim-spw/lua/spw-lsp.lua  
 [MOD] extensions/vscode-spw/src/extension.ts  
 [MOD] package.json  
+[MOD] src/runtime/interpreter/interpreter.ts  
+[MOD] src/runtime/pipeline/resonance.ts  
+[MOD] src/runtime/pipeline/substrate.ts  
+[MOD] src/runtime/__tests__/substrate.test.ts  
 [MOD] scripts/lsp/smoke-navigation.ts  
 [MOD] scripts/lsp/stdio-upstream-bridge.ts  
 [MOD] scripts/spw-cli/args.ts  
@@ -64,10 +68,12 @@ Craft guard:
 4. `&[workspace-imports] — route scripts through package facades`
 5. `.[plans] — extend monorepo workspace scope to package-owned cli/lsp entrypoints`
 6. `&[cli-lsp] — extract package-owned cli and lsp entrypoints with compatibility wrappers`
+7. `&[runtime-blockers] — restore branded register flows and substrate binding`
+8. `&[lsp-modules] — move lsp implementation modules behind the package boundary`
 
 Fuzz strategy:
 - Explore: `node --import tsx packages/spw-cli/src/main.ts help` and `node --import tsx -e "import { resolveSpwLspServerTarget } from '@spw/lsp'; console.log(resolveSpwLspServerTarget(process.cwd()))"`
-- Stabilize: `npm run spw -- help && npm run lsp:smoke`
+- Stabilize: `npm run build && npm run test:runtime -- src/runtime/__tests__/substrate.test.ts`
 - Ship: `npm run build && npm run test:run && npm run lint:docs`
 
 ## Agentic Hygiene

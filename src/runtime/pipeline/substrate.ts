@@ -132,6 +132,8 @@ export class Substrate {
     /**
      * Bind a handler to a pattern.
      * @spw:axis[layer=pattern] - Structural coupling via handlers.
+     */
+    bind(pattern: string, handler: SubstrateHandler): void {
         const existing = this.bindings.get(pattern) ?? []
         existing.push(handler)
         this.bindings.set(pattern, existing)

@@ -1,5 +1,7 @@
 import { Brand, castToBrand } from './brand'
 
+type BrandTemplateValue = string | number | boolean
+
 /**
  * Branded Identifier Types
  *
@@ -24,17 +26,37 @@ export type LayerId = Brand<string, 'SpwLayer'>
 // Ergonomic Exhibits (Wonder Path)
 // ============================================================================
 
+function joinTemplate(strings: TemplateStringsArray, values: readonly BrandTemplateValue[]): string {
+  let out = strings[0] ?? ''
+  for (let i = 0; i < values.length; i += 1) {
+    out += String(values[i]) + (strings[i + 1] ?? '')
+  }
+  return out
+}
+
 /** Template literal tag for Register IDs: $register`key` */
-export const $register = (s: TemplateStringsArray): RegisterId => castToBrand<string, 'SpwRegister'>(s[0])
+export const $register = (
+  strings: TemplateStringsArray,
+  ...values: BrandTemplateValue[]
+): RegisterId => castToBrand<string, 'SpwRegister'>(joinTemplate(strings, values))
 
 /** Template literal tag for Frame IDs: $frame`key` */
-export const $frame = (s: TemplateStringsArray): FrameId => castToBrand<string, 'SpwFrame'>(s[0])
+export const $frame = (
+  strings: TemplateStringsArray,
+  ...values: BrandTemplateValue[]
+): FrameId => castToBrand<string, 'SpwFrame'>(joinTemplate(strings, values))
 
 /** Template literal tag for Domain IDs: $domain`key` */
-export const $domain = (s: TemplateStringsArray): DomainId => castToBrand<string, 'SpwDomain'>(s[0])
+export const $domain = (
+  strings: TemplateStringsArray,
+  ...values: BrandTemplateValue[]
+): DomainId => castToBrand<string, 'SpwDomain'>(joinTemplate(strings, values))
 
 /** Template literal tag for Layer IDs: $layer`key` */
-export const $layer = (s: TemplateStringsArray): LayerId => castToBrand<string, 'SpwLayer'>(s[0])
+export const $layer = (
+  strings: TemplateStringsArray,
+  ...values: BrandTemplateValue[]
+): LayerId => castToBrand<string, 'SpwLayer'>(joinTemplate(strings, values))
 
 /** Identity factory for dynamic register IDs */
 export const RegisterId = (key: string): RegisterId => castToBrand<string, 'SpwRegister'>(key)
