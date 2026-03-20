@@ -30,9 +30,12 @@
  }
 
  ^["presets"]{
- =count: 15
+ =count: 18
 
  ^["structural"]{
+ .. !"REFERENCES" # @_ — root/local references
+ .. !"PATH_REFS" # ~"_" — local path refs
+ .. !"ROOT_REFS" # @root/path references
  .. !"NAVIGABLE" # ~"_" | @_ — path refs or references
  .. !"DOMAIN_ROOTS" # ^[_] — domain roots with frames
  .. !"DOMAIN_ROOTS_FULL" # ^[_]{_} — with body
@@ -59,8 +62,9 @@
  }
 
  ^["cli"]{
- =command: "npm run spwq -- <file.spw> [--selector=<name>]"
- !["21 named selectors: navigable, refs, pathRefs, rootRefs, domains, domains+, scopes, hydrate, probes, configs, defers, taps, annotations, ops:frame, ops:body, boon, bone, all"]
+ =command: "npm run spw -- select <file.spw> [--selector=<name>]"
+ =compat: "npm run spwq -- <file.spw> [--selector=<name>]"
+ !["18 named selectors: navigable, refs, pathRefs, rootRefs, domains, domains+, scopes, hydrate, probes, configs, defers, taps, annotations, ops:frame, ops:body, boon, bone, all"]
  !["--summary flag adds depth distribution and node type breakdown"]
  }
 
@@ -68,10 +72,11 @@
  =integration: "spw-selector.ts adapter"
  !"spwq.at() powers definition-go-to"
  !"Presets wire into document link handlers"
- @scripts/lsp/spw-selector.ts
+ @packages/spw-lsp/src/spw-selector.ts
  }
 
  @src/seed/query
+ @packages/spw-cli/src/select.ts
  @scripts/spwq.ts
 }
 

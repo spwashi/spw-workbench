@@ -7,7 +7,7 @@ Status: Contract stub (upgraded from v0.1.0-alpha redirect)
 
 ## v0.2.0 Contract Stub
 
-`Query@` is the application-level surface for the `Spw.q` functional dialect. Where the dialect spec defines the algebra, this doc describes practical query patterns and integration with the `spwq` toolchain.
+`Query@` is the application-level surface for the `Spw.q` functional dialect. Where the dialect spec defines the algebra, this doc describes practical query patterns and integration with the selector toolchain.
 
 ### Pattern-Based Selection
 
@@ -39,9 +39,10 @@ $(_) / $![_]     # descent: scopes containing operations
 ### CLI Usage
 
 ```bash
-npm run spwq -- docs/index.spw --selector=navigable
-npm run spwq -- docs/index.spw --selector=domains --format=json
-npm run spwq -- docs/index.spw --selector=hydrate
+npm run spw -- select docs/index.spw --selector=navigable
+npm run spw -- select docs/index.spw --selector=domains --format=json
+npm run spw -- select docs/index.spw --selector=hydrate
+npm run spwq -- docs/index.spw --selector=navigable   # compatibility alias
 ```
 
 ### LSP Integration
@@ -54,17 +55,19 @@ The LSP server uses `spwq.at(ast, pos, NAVIGABLE)` for definition-go-to and docu
 
 | Hook | Location | Status |
 |------|----------|--------|
-| Pattern types | `src/seed/query/types.ts` | ✅ Shipped |
-| Pattern matcher | `src/seed/query/match.ts` | ✅ Shipped |
-| Presets | `src/seed/query/presets.ts` | ✅ Shipped |
-| Entry points | `src/seed/query/spwq.ts` | ✅ Shipped |
-| CLI | `scripts/spwq.ts` | ✅ Shipped |
-| LSP integration | `scripts/lsp/spw-selector.ts` | ✅ Shipped |
+| Pattern types | `packages/spw-seed/src/query/types.ts` | ✅ Shipped |
+| Pattern matcher | `packages/spw-seed/src/query/match.ts` | ✅ Shipped |
+| Presets | `packages/spw-seed/src/query/presets.ts` | ✅ Shipped |
+| Entry points | `packages/spw-seed/src/query/spwq.ts` | ✅ Shipped |
+| CLI | `packages/spw-cli/src/select.ts` | ✅ Shipped |
+| Compatibility CLI | `scripts/spwq.ts` | ✅ Shipped |
+| LSP integration | `packages/spw-lsp/src/spw-selector.ts` | ✅ Shipped |
 
 ---
 
 ## See Also
 
 - [../dialects/FUNCTIONS.md](../dialects/FUNCTIONS.md) — `Spw.q` dialect spec
-- `src/seed/query/` — Implementation
-- `scripts/spwq.ts` — CLI tool
+- `packages/spw-seed/src/query/` — Implementation
+- `packages/spw-cli/src/select.ts` — Canonical selector CLI
+- `scripts/spwq.ts` — Compatibility CLI wrapper

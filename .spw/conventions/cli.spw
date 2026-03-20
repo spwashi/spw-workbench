@@ -8,8 +8,10 @@
 
 ^"command_model"{
  entry: "npm run spw -- <command> [flags]"
- public_commands: [query, ls, seq, mount, mem, format, dev]
- internal_composition: "scripts/spw-cli/{args,query,run,types}.ts"
+ public_commands: [query, select, ls, seq, mount, mem, format, dev]
+ compatibility_aliases: ["npm run spwq -- <file.spw>", "npm run spw:seq -- ..."]
+ internal_composition: "packages/spw-cli/src/{args,query,select,selectors,run,types}.ts"
+ distribution_direction: "publish root spw as the eventual package binary; keep install as DX/bootstrap support"
 }
 
 ^"query_grammar"{
@@ -19,6 +21,7 @@
  limit: "--limit <n>"
  summary: "--summary"
  selector: "--selector <preset> or --expr <selector_expr>"
+ single_file_surface: "npm run spw -- select <file.spw>"
 }
 
 ^"ergonomics"{
@@ -30,6 +33,7 @@
 ^"invariant"{
  "Public command names stay stable as internals evolve.",
  "CLI output should remain scriptable and human-readable.",
+ "Compatibility aliases should point at one package-owned implementation rather than carrying independent behavior.",
 }
 
 #>wonder_spw_conventions_cli_1

@@ -7,11 +7,12 @@ Current local server capabilities:
 - `textDocument/definition` for Spw path refs (`~"..."`) and root refs (`@root/...`)
 - `textDocument/documentLink` for navigable path refs
 - Full-text sync (`textDocumentSync: Full`) for stable AST-based selection
-- AST selector (`spwq`) supports parser context modes (`--context=high|low`); high mode accepts local path sugar and desugars to canonical quoted payloads.
+- Single-file AST selection is exposed canonically as `npm run spw -- select <file.spw> ...`
+- `npm run spwq -- ...` remains as a compatibility alias over the same selector engine
 
 Validation:
 - `npm run lsp:smoke` runs a stdio smoke test for definition + documentLink navigation.
-- `npm run spwq -- docs/index.spw --selector=pathRefs --format=lines` prints AST-selected path refs (jq-style starter).
+- `npm run spw -- select docs/index.spw --selector=pathRefs --format=lines` prints AST-selected path refs (jq-style starter).
 
 Neovim (nvim-lspconfig):
 
