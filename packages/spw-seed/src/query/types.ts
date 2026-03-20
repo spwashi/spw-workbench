@@ -7,7 +7,7 @@
  * @spw:portable:seed - No DOM or app-specific imports allowed
  */
 
-import type { ASTNode, Span, OperatorKind, ModifierKind } from '../types'
+import type { ASTNode, ASTNodeType, Span, OperatorKind, ModifierKind } from '../types'
 
 // ── Sigil selector ────────────────────────────────────────────
 
@@ -34,6 +34,8 @@ export type BraceSelector = '[]' | '{}' | '()'
 export interface SpwPattern {
   /** Match by operator sigil (!, ~, @, ^, #, ., ?, =, &, *, $, %) */
   sigil?: SigilSelector
+  /** Match by concrete AST node type (PathRef, Reference, Operation, Scope, ...) */
+  nodeType?: ASTNodeType
   /** Match by primary container shape */
   brace?: BraceSelector
   /** Match by secondary container (e.g. ^[_]{_} has brace=[] brace2={}) */

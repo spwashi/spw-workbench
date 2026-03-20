@@ -33,8 +33,9 @@ describe('spwq pattern matching', () => {
         })
 
         it('matches ~ operations', () => {
-            const matches = querySource('~"./path"', DEFER_OPS)
+            const matches = querySource('~["path"]', DEFER_OPS)
             expect(matches.length).toBeGreaterThanOrEqual(1)
+            expect(matches.every((match) => match.node.type === 'Operation')).toBe(true)
         })
 
         it('matches @ references', () => {

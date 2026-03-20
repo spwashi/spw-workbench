@@ -242,6 +242,11 @@ function unquote(value: string): string {
 // ── Public API (backward-compatible) ─────────────────────────
 
 export function selectPathRefs(source: string): SpwSelectorHit[] {
+  const fallbackHits = fallbackPathRefs(source)
+  if (fallbackHits.length > 0) {
+    return withOperatorEnvelopeExpandedSpans(source, fallbackHits)
+  }
+
   const matches = spwq.fromSource(source, NAVIGABLE)
   const hits: SpwSelectorHit[] = []
 
@@ -250,12 +255,7 @@ export function selectPathRefs(source: string): SpwSelectorHit[] {
     if (hit) hits.push(hit)
   }
 
-  if (hits.length > 0) {
-    return withOperatorEnvelopeExpandedSpans(source, hits)
-  }
-
-  const fallbackHits = fallbackPathRefs(source)
-  return withOperatorEnvelopeExpandedSpans(source, fallbackHits)
+  return withOperatorEnvelopeExpandedSpans(source, hits)
 }
 
 export function findPathRefAtPosition(

@@ -52,34 +52,46 @@ export function walkAST(node: ASTNode, visitor: ASTVisitor, path: ASTNode[] = []
  */
 export function getNodeChildren(node: ASTNode): ASTNode[] {
   const children: ASTNode[] = []
+  const seen = new Set<ASTNode>()
 
-  if (node.children) {
-    children.push(...node.children)
+  const pushChild = (value: unknown): void => {
+    if (Array.isArray(value)) {
+      for (const item of value) pushChild(item)
+      return
+    }
+
+    if (!isAstNode(value) || value === node || seen.has(value)) return
+    seen.add(value)
+    children.push(value)
   }
 
-  // Handle specific node types with named children
-  const childProps = [
-    'expression', 'expressions', 'sequence', 'terms',
-    'frame', 'body', 'content', 'annotations', 'modifiers', 'value',
-    'sink', 'linePayload',
-  ]
-
-  for (const prop of childProps) {
-    const value = (node as unknown as Record<string, unknown>)[prop]
-    if (value) {
-      if (Array.isArray(value)) {
-        for (const child of value) {
-          if (child && typeof child === 'object' && 'type' in child && 'span' in child) {
-            children.push(child as ASTNode)
-          }
-        }
-      } else if (typeof value === 'object' && 'type' in value && 'span' in value) {
-        children.push(value as ASTNode)
-      }
-    }
+  for (const [key, value] of Object.entries(node as unknown as Record<string, unknown>)) {
+    if (key === 'type' || key === 'span') continue
+    pushChild(value)
   }
 
   return children
+}
+
+function isAstNode(value: unknown): value is ASTNode {
+  if (!value || typeof value !== 'object') return false
+
+  const candidate = value as {
+    type?: unknown
+    span?: {
+      start?: unknown
+      end?: unknown
+    }
+  }
+
+  return typeof candidate.type === 'string'
+    && candidate.type !== candidate.type.toUpperCase()
+    && !!candidate.span
+    && typeof candidate.span === 'object'
+    && !!candidate.span.start
+    && typeof candidate.span.start === 'object'
+    && !!candidate.span.end
+    && typeof candidate.span.end === 'object'
 }
 
 /**

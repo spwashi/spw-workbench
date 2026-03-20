@@ -127,6 +127,11 @@ function matchPattern(node: ASTNode, pattern: SpwPattern, depth: number): boolea
         }
     }
 
+    // Node-type filter
+    if (pattern.nodeType !== undefined && node.type !== pattern.nodeType) {
+        return false
+    }
+
     // Brace filter
     if (pattern.brace !== undefined) {
         const nodeBrace = getNodeBrace(node)

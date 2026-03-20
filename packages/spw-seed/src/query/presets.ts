@@ -13,10 +13,10 @@ import { or, and } from './types'
 // ── Navigation ───────────────────────────────────────────────
 
 /** $~"_" — all path references (~"./path") */
-export const PATH_REFS: SpwPattern = { sigil: '~' }
+export const PATH_REFS: SpwPattern = { sigil: '~', nodeType: 'PathRef' }
 
 /** $@_ — all @ references */
-export const REFERENCES: SpwPattern = { sigil: '@' }
+export const REFERENCES: SpwPattern = { sigil: '@', nodeType: 'Reference' }
 
 /** $~"_" | $@_ — all navigable references (path-refs or @-refs) */
 export const NAVIGABLE: SpwSelector = or(PATH_REFS, REFERENCES)
@@ -35,38 +35,38 @@ export const DOMAIN_ROOTS_FULL: SpwSelector = and(
 // ── Operations by sigil ──────────────────────────────────────
 
 /** $!_ — all hydrate operations */
-export const HYDRATE_OPS: SpwPattern = { sigil: '!' }
+export const HYDRATE_OPS: SpwPattern = { sigil: '!', nodeType: 'Operation' }
 
 /** $~_ — all defer/tilde operations */
-export const DEFER_OPS: SpwPattern = { sigil: '~' }
+export const DEFER_OPS: SpwPattern = { sigil: '~', nodeType: 'Operation' }
 
 /** $?_ — all query/stream operations */
-export const QUERY_OPS: SpwPattern = { sigil: '?' }
+export const QUERY_OPS: SpwPattern = { sigil: '?', nodeType: 'Operation' }
 
 /** $=_ — all config/binding operations */
-export const CONFIG_OPS: SpwPattern = { sigil: '=' }
+export const CONFIG_OPS: SpwPattern = { sigil: '=', nodeType: 'Operation' }
 
 /** $#_ — all annotation/set operations */
-export const ANNOTATION_OPS: SpwPattern = { sigil: '#' }
+export const ANNOTATION_OPS: SpwPattern = { sigil: '#', nodeType: 'Operation' }
 
 // ── Operations by shape ──────────────────────────────────────
 
 /** $![_] — operations with frames */
-export const OPS_WITH_FRAMES: SpwPattern = { brace: '[]' }
+export const OPS_WITH_FRAMES: SpwPattern = { nodeType: 'Operation', brace: '[]' }
 
 /** $!{_} — operations with bodies */
-export const OPS_WITH_BODIES: SpwPattern = { brace: '{}' }
+export const OPS_WITH_BODIES: SpwPattern = { nodeType: 'Operation', brace: '{}' }
 
 /** $(_) — scopes */
-export const SCOPES: SpwPattern = { brace: '()' }
+export const SCOPES: SpwPattern = { nodeType: 'Scope', brace: '()' }
 
 // ── Modified operations ──────────────────────────────────────
 
 /** $!boon — boon-labelled operations */
-export const BOON_OPS: SpwPattern = { sigil: '!', modifier: 'boon' }
+export const BOON_OPS: SpwPattern = { sigil: '!', nodeType: 'Operation', modifier: 'boon' }
 
 /** $!bone — bone-labelled operations */
-export const BONE_OPS: SpwPattern = { sigil: '!', modifier: 'bone' }
+export const BONE_OPS: SpwPattern = { sigil: '!', nodeType: 'Operation', modifier: 'bone' }
 
 // ── Wildcard ─────────────────────────────────────────────────
 
