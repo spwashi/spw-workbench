@@ -7,11 +7,12 @@
 #:layer #!pragmatics
 
 ^"command_model"{
- entry: "npm run spw -- <command> [flags]"
- public_commands: [query, select, ls, seq, mount, mem, format, dev]
- compatibility_aliases: ["npm run spwq -- <file.spw>", "npm run spw:seq -- ..."]
- internal_composition: "packages/spw-cli/src/{args,query,select,selectors,run,types}.ts"
- distribution_direction: "publish root spw as the eventual package binary; keep install as DX/bootstrap support"
+ entry: "spw <command> [flags]"
+ local_entry: "npm run spw -- <command> [flags]"
+ public_commands: [init, query, select, ls, mount, mem, format, dev]
+ compatibility_aliases: ["spw install <target>", "spwq <file.spw>", "spw seq ...", "spw-workbench <command> ..."]
+ internal_composition: "packages/spw-cli/src/{args,init,query,select,selectors,run,types}.ts"
+ distribution_direction: "publish root spw as the package binary; keep install/spw-workbench as compatibility and DX/bootstrap support"
 }
 
 ^"query_grammar"{
@@ -21,7 +22,8 @@
  limit: "--limit <n>"
  summary: "--summary"
  selector: "--selector <preset> or --expr <selector_expr>"
- single_file_surface: "npm run spw -- select <file.spw>"
+ single_file_surface: "spw select <file.spw>"
+ local_single_file_surface: "npm run spw -- select <file.spw>"
 }
 
 ^"ergonomics"{
@@ -31,9 +33,10 @@
 }
 
 ^"invariant"{
- "Public command names stay stable as internals evolve.",
- "CLI output should remain scriptable and human-readable.",
- "Compatibility aliases should point at one package-owned implementation rather than carrying independent behavior.",
+  "Public command names stay stable as internals evolve.",
+  "Canonical help prefers spw verbs; aliases exist only to preserve muscle memory or migration paths.",
+  "CLI output should remain scriptable and human-readable.",
+  "Compatibility aliases should point at one package-owned implementation rather than carrying independent behavior.",
 }
 
 #>wonder_spw_conventions_cli_1

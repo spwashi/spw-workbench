@@ -8,9 +8,19 @@ Install it in a project, point it at a `.spw/` directory, and it gives you a par
 
 ```bash
 npm install
+npm run spw -- help
 npm run spw:dev          # start .spw dev watcher
 npm run lsp              # start language server
 ```
+
+To scaffold a fresh workspace from this checkout:
+
+```bash
+npm run spw -- init ../my-site
+# compatibility alias: npm run spw:install -- ../my-site
+```
+
+The published command direction is `spw <verb>`, so the external form of that flow is `spw init my-site`.
 
 Each site creates its own `.spw/` directory:
 
@@ -43,6 +53,8 @@ The `_workbench` prefix signals infrastructure — the parser, runtime, substrat
 # inherit publish rules from the workbench
 ~"_workbench/.spw/surfaces/publish.spw"
 ```
+
+`spw init` seeds `.spw/workspace.spw`, `.spw/index.spw`, `.agents/skills/spw-commit-review`, `.agents/workflows/commit-review.md`, and arms `.git/hooks/pre-commit` when the target is already a git repository.
 
 ## Substrates
 
@@ -183,7 +195,10 @@ The [material model](.spw/biome/ocean/algos/material.spw) maps physical intuitio
 
 | Command | What |
 |:--|:--|
+| `npm run spw -- init <dir>` | Bootstrap a `.spw` workspace and local agent affordances |
+| `npm run spw:install -- <dir>` | Compatibility alias for `init` |
 | `npm run spw:dev` | Polling dev server with parse validation |
+| `npm run spw:select -- <file>` | Single-file AST selector surface |
 | `npm run spw:ls` | Operator/brace/label query with ranking |
 | `npm run spw:format` | Canonical formatting (Spw.m ONF) |
 | `npm run spw:mem:dump` | Snapshot runtime memory lattice |
@@ -191,7 +206,7 @@ The [material model](.spw/biome/ocean/algos/material.spw) maps physical intuitio
 
 ### LSP Server
 
-The [language server](scripts/lsp/stdio-server.ts) provides definition, hover (with runtime trial), completion, document symbols, CodeLens, diagnostics, and formatting — all via `@-root` path resolution.
+The [language server](packages/spw-lsp/src/stdio-server.ts) provides definition, hover (with runtime trial), completion, document symbols, CodeLens, diagnostics, and formatting — all via `@-root` path resolution.
 
 ## Dialects
 
