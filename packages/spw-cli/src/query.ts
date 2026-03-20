@@ -1,50 +1,9 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import {
-  ANY,
-  ANNOTATION_OPS,
-  BOON_OPS,
-  BONE_OPS,
-  CONFIG_OPS,
-  DEFER_OPS,
-  DOMAIN_ROOTS,
-  DOMAIN_ROOTS_FULL,
-  HYDRATE_OPS,
-  NAVIGABLE,
-  OPS_WITH_BODIES,
-  OPS_WITH_FRAMES,
-  PATH_REFS,
-  QUERY_OPS,
-  REFERENCES,
-  SCOPES,
-  type SpwMatch,
-  type SpwSelector,
-  spwq,
-  tryParseSelector,
-} from '@spw/seed'
+import { type SpwMatch, spwq } from '@spw/seed'
+import { extractReferenceRaw, filterRootRefs, resolveCliSelector } from './selectors'
 import type { QueryArgs, QueryRow } from './types'
-
-const SELECTOR_MAP: Record<string, SpwSelector> = {
-  navigable: NAVIGABLE,
-  refs: REFERENCES,
-  pathRefs: PATH_REFS,
-  rootRefs: REFERENCES,
-  domains: DOMAIN_ROOTS,
-  'domains+': DOMAIN_ROOTS_FULL,
-  scopes: SCOPES,
-  hydrate: HYDRATE_OPS,
-  probes: QUERY_OPS,
-  configs: CONFIG_OPS,
-  defers: DEFER_OPS,
-  taps: DOMAIN_ROOTS,
-  annotations: ANNOTATION_OPS,
-  'ops:frame': OPS_WITH_FRAMES,
-  'ops:body': OPS_WITH_BODIES,
-  boon: BOON_OPS,
-  bone: BONE_OPS,
-  all: ANY,
-}
 
 const SELECT_FIELDS = new Set<keyof QueryRow>([
   'file',
@@ -62,7 +21,7 @@ const SELECT_FIELDS = new Set<keyof QueryRow>([
 const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', 'release'])
 
 export async function runQueryCli(args: QueryArgs): Promise<void> {
-  const selector = resolveSelector(args)
+  const { selector } = resolveCliSelector(args.selector, args.expr)
   const files = await collectFiles(args.roots)
   const whereFilters = parseWhere(args.where)
   const selectFields = parseSelect(args.select)
@@ -73,8 +32,8 @@ export async function runQueryCli(args: QueryArgs): Promise<void> {
     if (source === null) continue
 
     let matches = spwq.fromSource(source, selector)
-    if (args.selector === 'rootRefs') {
-      matches = matches.filter((match) => match.node.type === 'Reference' && extractReferenceRaw(match).includes('/'))
+    if (!args.expr && args.selector === 'rootRefs') {
+      matches = filterRootRefs(matches)
     }
 
     for (const match of matches) {
@@ -120,24 +79,6 @@ export async function runQueryCli(args: QueryArgs): Promise<void> {
     console.error(`summary.kind: ${renderCountMap(byKind)}`)
     console.error(`summary.sigil: ${renderCountMap(bySigil)}`)
   }
-}
-
-function resolveSelector(args: QueryArgs): SpwSelector {
-  if (args.expr) {
-    const parsed = tryParseSelector(args.expr)
-    if (!parsed) {
-      throw new Error(`--expr parse failed: ${args.expr}`)
-    }
-    return parsed
-  }
-
-  const preset = SELECTOR_MAP[args.selector]
-  if (preset) return preset
-
-  const parsed = tryParseSelector(args.selector)
-  if (parsed) return parsed
-
-  throw new Error(`Unknown selector: ${args.selector}`)
 }
 
 async function collectFiles(roots: string[]): Promise<string[]> {
@@ -203,10 +144,6 @@ function detectBrace(snippet: string): string {
   if (snippet.includes('(') && snippet.includes(')')) return '()'
   if (snippet.includes('<') && snippet.includes('>')) return '<>'
   return ''
-}
-
-function extractReferenceRaw(match: SpwMatch): string {
-  return (match.node as { raw?: string }).raw ?? ''
 }
 
 function unquote(value: string): string {

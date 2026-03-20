@@ -14,6 +14,14 @@ export interface QueryArgs {
   summary: boolean
 }
 
+export interface SelectArgs {
+  file: string
+  selector: string
+  expr: string
+  format: 'lines' | 'json'
+  summary: boolean
+}
+
 export interface QueryRow {
   file: string
   kind: string

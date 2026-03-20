@@ -1,4 +1,4 @@
-import type { QueryArgs, SpwCliCommand } from './types'
+import type { QueryArgs, SelectArgs, SpwCliCommand } from './types'
 
 export function parseCommand(argv: string[]): SpwCliCommand {
   const args = argv.slice(2)
@@ -115,6 +115,64 @@ export function parseQueryArgs(args: string[]): QueryArgs {
   }
 
   if (parsed.roots.length === 0) parsed.roots = ['.spw']
+  return parsed
+}
+
+export function parseSelectArgs(args: string[]): SelectArgs {
+  const parsed: SelectArgs = {
+    file: '',
+    selector: 'navigable',
+    expr: '',
+    format: 'lines',
+    summary: false,
+  }
+
+  for (let i = 0; i < args.length; i += 1) {
+    const arg = args[i]
+
+    if (!arg.startsWith('--') && !parsed.file) {
+      parsed.file = arg
+      continue
+    }
+
+    if (arg === '--selector') {
+      parsed.selector = args[i + 1] ?? parsed.selector
+      i += 1
+      continue
+    }
+    if (arg.startsWith('--selector=')) {
+      parsed.selector = arg.slice('--selector='.length)
+      continue
+    }
+
+    if (arg === '--expr') {
+      parsed.expr = args[i + 1] ?? ''
+      i += 1
+      continue
+    }
+    if (arg.startsWith('--expr=')) {
+      parsed.expr = arg.slice('--expr='.length)
+      continue
+    }
+
+    if (arg === '--format') {
+      const value = (args[i + 1] ?? parsed.format).toLowerCase()
+      parsed.format = value === 'json' ? 'json' : 'lines'
+      i += 1
+      continue
+    }
+    if (arg.startsWith('--format=')) {
+      const value = arg.slice('--format='.length).toLowerCase()
+      parsed.format = value === 'json' ? 'json' : 'lines'
+      continue
+    }
+
+    if (arg === '--summary') {
+      parsed.summary = true
+      continue
+    }
+  }
+
   return parsed
 }
 

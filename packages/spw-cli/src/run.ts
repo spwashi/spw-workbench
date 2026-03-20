@@ -6,6 +6,7 @@ import { runSpwLsCli } from './ls'
 import { runSpwMemCli } from './mem'
 import { runSpwMountCli } from './mount'
 import { runQueryCli } from './query'
+import { printSelectUsage, runSpwSelectCli } from './select'
 
 export async function runSpwCli(argv: string[]): Promise<void> {
   const { command, args } = parseCommand(argv)
@@ -24,9 +25,17 @@ export async function runSpwCli(argv: string[]): Promise<void> {
     return
   }
 
+  if (command === 'select' || command === 'spwq') {
+    if (args.includes('--help') || args.includes('-h')) {
+      printSelectUsage()
+      return
+    }
+    await runSpwSelectCli(toCliArgv(command, args))
+    return
+  }
+
   switch (command) {
     case 'ls':
-    case 'select':
       await runSpwLsCli({ argv: toCliArgv(command, args), entryName: 'spw:ls' })
       return
     case 'seq':
@@ -65,7 +74,8 @@ Usage:
 
 Commands:
   query|q      Deep multi-file query (CSS/SQL-inspired from/select/where style)
-  ls|select    Liminal sequence selector engine (operator/braces/probe)
+  select       Single-file AST selector surface (absorbs spwq)
+  ls           Liminal sequence selector engine (operator/braces/probe)
   seq          Compatibility alias for ls
   mount        Mount/check surfaces
   mem          Memory surface tools
@@ -75,6 +85,7 @@ Commands:
 
 Try:
   npm run spw -- query --help
+  npm run spw -- select --help
 `)
 }
 
