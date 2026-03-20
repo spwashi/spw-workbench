@@ -22,6 +22,18 @@ npm run spw -- init ../my-site
 
 The published command direction is `spw <verb>`, so the external form of that flow is `spw init my-site`.
 
+### Packaging Contract
+
+This repo stays source-first. Checkouts, local installers, and development workflows should run the TypeScript entrypoints directly; `dist/` is a derived release artifact for packaging, bundling, and publish verification.
+
+Current packaging commands:
+
+```bash
+npm run build:jsdist      # derive JS + .d.ts package artifact into dist/
+npm run pack:jsdist:dry   # dry-run npm pack against dist/
+npm run bundle:release    # source/docs/extensions/jsdist release bundle
+```
+
 Each site creates its own `.spw/` directory:
 
 ```
