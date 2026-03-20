@@ -14,11 +14,14 @@
  >>[2026-03-20 14:42] decide — the first slice should produce a dedicated dist/release artifact without flipping the workspace's live resolution over to dist.
  >>[2026-03-20 14:42] observe — plain tsc emit is not enough because the current source graph depends on workspace-only aliases like @spw/cli and @spw/seed.
  >>[2026-03-20 14:42] taste — version truth should stay anchored in the root package manifest, with dist manifests derived from that source of truth.
+ >>[2026-03-20 14:48] implement — added a JS dist builder that bundles the root public runtime/CLI entrypoints into dist/, rewrites the CLI shebang to node, and stamps dist/package.json from the root version.
+ >>[2026-03-20 14:52] decide — the first dist artifact is runtime-JS only; declaration publishing remains a later hardening slice rather than a blocker for beginning JS release bundling.
+ >>[2026-03-20 14:54] implement — wired bundle:jsdist and release bundling so source, JS dist, docs, and extensions land under release/v<version>/.
+ >>[2026-03-20 14:55] surprise — bundle-release initially failed because the new shell script was invoked directly without an executable bit; switching the orchestrator to explicit bash invocation made the flow robust against file-mode drift.
+ >>[2026-03-20 14:56] verify — build:jsdist, bundle:jsdist, node dist/bin/spw.js help, tar inspection of spw-js-dist, and bundle:release -- --skip-build --best-effort all passed.
 }
 
 ^["open"]{
- ?[types-lane]: "Should the first JS dist artifact ship declarations, or is a runtime JS bundle with versioned manifest sufficient for this initial slice?"
- ?[srcdist-overlap]: "Once bundle-jsdist exists, should bundle-srcdist continue embedding dist/ or become source-only again?"
 }
 
 ^["commits"]{
@@ -29,15 +32,15 @@
 }
 
 ^["cache"]{
- ~#status: "planning"
+ ~#status: "implemented, verified, awaiting commit"
  ~#base_ref: "main@25027ed37be84a537468a3b66d201247272d75c5"
- ~#rebased_at: "2026-03-20 14:42"
+ ~#rebased_at: "2026-03-20 14:56"
  ~#hygiene_split: "none"
- ~#files_hot: ".agents/plans/js-distribution/PLAN.md, .agents/plans/js-distribution/wip.spw"
- ~#next_commit: "1"
- ~#open_count: "2"
- ~#last_stream: "2026-03-20 14:42 taste"
- ~#taste_debt: "The eventual publish contract still needs a deliberate types/declarations story once JS bundling exists."
+ ~#files_hot: "package.json, package-lock.json, scripts/release/{build-js-dist,bundle-jsdist,bundle-release,bundle-srcdist}.ts|sh, .agents/plans/js-distribution/wip.spw"
+ ~#next_commit: "2"
+ ~#open_count: "0"
+ ~#last_stream: "2026-03-20 14:56 verify"
+ ~#taste_debt: "The eventual publish contract still needs a deliberate types/declarations story and a decision about whether the root package should resolve through dist by default."
 }
 
 ^["done"]{

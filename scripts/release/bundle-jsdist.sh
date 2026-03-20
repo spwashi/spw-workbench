@@ -9,19 +9,13 @@ RELEASE_DIR="${RELEASE_DIR:-release/v${VERSION}}"
 OUT_DIR="$RELEASE_DIR/bundles"
 mkdir -p "$OUT_DIR"
 
-OUT_FILE="$OUT_DIR/spw-src-dist-${VERSION}.tar.gz"
+OUT_FILE="$OUT_DIR/spw-js-dist-${VERSION}.tar.gz"
 
-INCLUDE=(
-  "src"
-  "lib"
-  "scripts"
-  "package.json"
-  "package-lock.json"
-  "tsconfig.json"
-  "README.md"
-)
+if [ ! -f "dist/package.json" ]; then
+  npm run build:jsdist
+fi
 
-printf 'Bundling source into %s\n' "$OUT_FILE"
-tar -czf "$OUT_FILE" "${INCLUDE[@]}"
+printf 'Bundling JS dist into %s\n' "$OUT_FILE"
+tar -czf "$OUT_FILE" dist
 
 printf 'Created: %s\n' "$OUT_FILE"
