@@ -1,0 +1,44 @@
+# wip — absorb-spwq-cli
+# Branch: feature/absorb-spwq-cli
+# Started: 2026-03-20
+
+#:layer #!pragmatics
+
+^["intent"]{
+ ~#goal: "Repair selector truth on real corpus files, move spwq behind the package-owned CLI, and normalize overlapping command names without breaking compatibility."
+ ~#taste: "correctness, layering, naming"
+}
+
+^["stream"]{
+ >>[2026-03-20 15:17] observe — package-owned cli owns most commands, but spwq remains root-owned and selector traversal misses obvious references in .spw/workspace.spw.
+ >>[2026-03-20 15:17] decide — treat selector correctness as the dependency edge; absorb spwq only after the seed walker becomes truthful.
+ >>[2026-03-20 15:17] taste — the public command surface currently reveals internal migration seams; the goal is one canon CLI with deliberate compatibility aliases.
+ >>[2026-03-20 15:17] hygiene — branch is clean on main@d0c8d2d3ced241d3bdf565b4dd955b8141a176f2; no unrelated drift to split.
+}
+
+^["open"]{
+ ?[alias-fate]: "Should spwq remain a named compatibility alias after absorption, or become a hidden/internal wrapper only?"
+ ?[bin-dx]: "How much of the future published-binary shift to root spw should be documented now versus implemented later?"
+}
+
+^["commits"]{
+ ~[1]: ".[selector-dogfood] — plan the spwq absorption and selector normalization slice"
+ ~[2]: "&[selector-dogfood] — repair ast traversal and add corpus-level selector coverage"
+ ~[3]: "&[spwq-cli] — absorb spwq into the package-owned cli with compatibility wrappers"
+ ~[4]: ".[cli-conventions] — normalize alias/docs language and record future root-spw binary direction"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@d0c8d2d3ced241d3bdf565b4dd955b8141a176f2"
+ ~#rebased_at: "2026-03-20 15:17"
+ ~#hygiene_split: "none"
+ ~#files_hot: ".agents/plans/absorb-spwq-cli/PLAN.md, .agents/plans/absorb-spwq-cli/wip.spw"
+ ~#next_commit: "1"
+ ~#open_count: "2"
+ ~#last_stream: "2026-03-20 15:17 hygiene"
+ ~#taste_debt: "Published bin identity still favors install over spw; document now, defer actual package bin change."
+}
+
+^["done"]{
+}
