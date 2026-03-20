@@ -2,6 +2,7 @@ import process from 'node:process'
 import { parseCommand, parseQueryArgs } from './args'
 import { runSpwDevCli } from './dev'
 import { runSpwFormatCli } from './format'
+import { printInitUsage, runSpwInitCli } from './init'
 import { runSpwLsCli } from './ls'
 import { runSpwMemCli } from './mem'
 import { runSpwMountCli } from './mount'
@@ -31,6 +32,15 @@ export async function runSpwCli(argv: string[]): Promise<void> {
       return
     }
     await runSpwSelectCli(toCliArgv(command, args))
+    return
+  }
+
+  if (command === 'init' || command === 'install') {
+    if (args.includes('--help') || args.includes('-h')) {
+      printInitUsage()
+      return
+    }
+    await runSpwInitCli(toCliArgv(command, args))
     return
   }
 
@@ -70,20 +80,28 @@ function printHelp(): void {
 Spw CLI
 
 Usage:
+  spw <command> [args]
   npm run spw -- <command> [args]
 
 Commands:
+  init          Bootstrap a .spw workspace in a target directory
   query|q      Deep multi-file query (CSS/SQL-inspired from/select/where style)
   select       Single-file AST selector surface (absorbs spwq)
   ls           Liminal sequence selector engine (operator/braces/probe)
-  seq          Compatibility alias for ls
   mount        Mount/check surfaces
   mem          Memory surface tools
   format       Spw formatter
   dev          Hot loop runner
   help         Print this help
 
+Compatibility:
+  install      Alias for init
+  seq          Alias for ls
+  spwq         Alias for select
+
 Try:
+  spw init my-site
+  npm run spw -- init my-site
   npm run spw -- query --help
   npm run spw -- select --help
 `)

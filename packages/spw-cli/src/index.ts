@@ -1,6 +1,7 @@
 export { parseCommand, parseQueryArgs, parseSelectArgs } from './args'
 export { runSpwDevCli } from './dev'
 export { runSpwFormatCli } from './format'
+export { printInitUsage, runSpwInitCli } from './init'
 export { runSpwLsCli } from './ls'
 export { runSpwMemCli } from './mem'
 export { runSpwMountCli } from './mount'
