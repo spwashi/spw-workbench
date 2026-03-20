@@ -8,7 +8,7 @@
 
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
-import { parse, type Token } from '../../src/seed'
+import { parse, type Token } from '@spw/seed'
 
 type RootMap = Record<string, string>
 

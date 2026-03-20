@@ -20,8 +20,8 @@ import {
   type SpwMatch,
   type SpwSelector,
   spwq,
-} from '../../src/seed'
-import { tryParseSelector } from '../../src/seed/query/selector-expr'
+  tryParseSelector,
+} from '@spw/seed'
 import { collectSpwFiles } from '../spw-ls/scan'
 import type { QueryArgs, QueryRow } from './types'
 
@@ -316,4 +316,3 @@ const BunLikeFs = {
     }
   },
 }
-

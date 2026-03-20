@@ -3,7 +3,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { canonicalize, parse } from '../src/seed'
+import { canonicalize, parse } from '@spw/seed'
 
 type Command = 'check' | 'init' | 'help'
 

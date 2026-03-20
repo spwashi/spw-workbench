@@ -59,8 +59,8 @@ import {
   BOON_OPS,
   BONE_OPS,
   ANY,
-} from '../src/seed'
-import { tryParseSelector } from '../src/seed/query/selector-expr'
+  tryParseSelector,
+} from '@spw/seed'
 
 // ── Args ─────────────────────────────────────────────────────
 
@@ -235,4 +235,3 @@ if (showSummary) {
   console.error(`  node types: ${[...types].join(', ')}`)
   console.error(`  by depth:   ${[...byDepth.entries()].map(([d, n]) => `${d}:${n}`).join('  ')}`)
 }
-
