@@ -1,0 +1,72 @@
+# RELEASE TRACK — v0.3.0
+#
+# March 2026 recovery cadence for the end-of-month release push.
+# The intended alpha checkpoint was 2026-03-13, but it did not land.
+# This surface turns that miss into an explicit recovery track:
+# beta on 2026-03-26, release gate on 2026-03-31.
+
+#:layer #!pragmatics
+
+^["release identity"]{
+ version: "v0.3.0"
+ theme: "monorepo workspace + structural decoupling"
+ framing: "v0.3.0 is the release where the repo stops pretending one flat Node app is enough"
+}
+
+^["cadence"]{
+ 2026-03-13: ~"intended alpha checkpoint — missed"
+ 2026-03-26: ~"beta gate — package seams and release notes must be real"
+ 2026-03-31: ~"release gate — ship only if the structural claims are true in-repo"
+}
+
+^["why this release exists"]{
+ .[workspace]: "root package becomes a workspace coordinator instead of a single everything-app"
+ .[seed]: "parser kernel becomes exportable as its own package surface"
+ .[runtime]: "runtime gains clearer ownership seams for extensibility"
+ .[lsp-cli]: "language server and CLI stop living as incidental root scripts"
+ .[agent-tools]: "skill tooling moves toward package-owned, installable infrastructure"
+}
+
+^["beta gate — 2026-03-26"]{
+ ~#must_be_true: [
+   "the v0.3.0 scope is frozen and written down in-repo",
+   "workspace/package boundaries are named, even if not fully implemented",
+   "release notes explain what moved and what intentionally did not",
+   "verification commands for build, test, and bundle are named against the new target",
+ ]
+}
+
+^["release gate — 2026-03-31"]{
+ ~#must_be_true: [
+   "the monorepo direction is visible in repository structure rather than only in notes",
+   "LSP and CLI extraction have a truthful status surface",
+   "runtime extensibility work has a bounded ownership story",
+   "the changelog, waypoint index, and implementation plan no longer disagree about what v0.3.0 means",
+ ]
+}
+
+^["recovery note"]{
+ ~#truth: "a missed alpha checkpoint is not failure by itself; it becomes failure only if the repo keeps speaking as though the checkpoint happened"
+ ~#method: "compress the cycle without compressing the truth"
+}
+
+?["where next — spw/v030-release-track?"]{
+ ~"finish the March 2026 planning surfaces immediately"
+ ~"land workspace/package structure work before 2026-03-26"
+ ~"use 2026-03-26 to decide whether 2026-03-31 is a real v0.3.0 tag or only a release candidate checkpoint"
+}
+
+#>wonder_docs_waypoints_spw_v030releasetrack_1
+?["What changed between alpha-v020 and v030-release-track?"]{
+  #:depth #!educational // lens: curated collection
+  ~#contrast: "v0.2.0-alpha celebrated accumulated capability; v0.3.0 must justify structural reorganization"
+  !probe{ "compare the nouns in each waypoint. fewer features and more boundaries signals a different phase of project maturity." }
+  ~<docs/waypoints/spw/alpha-v020.spw>  // nearest neighbor
+}
+
+#>wonder_docs_waypoints_spw_v030releasetrack_2
+?["What becomes false if the release date stays fixed but the package boundaries do not move?"]{
+  #:depth #!computational // lens: formal structure
+  ~#focus: "calendar truth versus repository truth"
+  !probe{ "enumerate every sentence in this file that depends on actual workspace or extraction work landing. those are the assertions that must be defended by code." }
+}
