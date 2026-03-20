@@ -1,0 +1,58 @@
+# wip — monorepo-workspace-foundation
+# Branch: feature/monorepo-workspace-foundation
+# Started: 2026-03-20
+
+#:layer #!pragmatics
+
+^["intent"]{
+ ~#goal: "Introduce visible workspace/package seams for v0.3.0 by making the repo a workspace root and adding package-level entrypoint facades before any large-scale physical code moves."
+ ~#taste: "layering, clarity, containment"
+}
+
+^["stream"]{
+ >>[2026-03-20 00:07] observe — the repo currently has only src/{seed,runtime,testing} plus root scripts; package ownership is implied rather than encoded.
+ >>[2026-03-20 00:07] observe — scripts and extensions reference src/seed, src/runtime, and scripts/lsp directly, so a full move would create broad churn.
+ >>[2026-03-20 00:07] decide — first land workspace scaffolding and package facades so later relocation can happen incrementally.
+ >>[2026-03-20 00:07] taste — prefer one compatibility layer per package over a half-moved tree with unstable imports.
+}
+
+^["open"]{
+ ?[exports]: "Which root exports should point at package facades immediately, and which should remain on current paths until extraction is deeper?"
+ ?[scripts]: "Should root npm scripts keep calling scripts/* for now, or should safe ones switch to package entrypoints in this pass?"
+}
+
+^["commits"]{
+ ~[1]: ".[plans] — scaffold monorepo-workspace-foundation planning artifacts"
+ ~[2]: "#[workspace] — declare root workspaces and shared TypeScript base config"
+ ~[3]: "&[packages] — add seed/runtime/cli/lsp package manifests and entrypoint facades"
+ ~[4]: ".[release-track] — align root exports and scripts to the new package seams where safe"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@a411cd6"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "package.json, tsconfig.json, tsconfig.base.json, packages/**"
+ ~#next_commit: "1"
+ ~#open_count: "2"
+ ~#last_stream: "2026-03-20 00:07"
+ ~#taste_debt: ""
+}
+
+^["done"]{
+}
+
+#>wonder_agents_plans_monorepoworkspacefoundation_wip_1
+?["What breaks if package seams are named before files are moved?"]{
+  #:depth #!computational // lens: formal structure
+  ~#focus: "compatibility facade cost"
+  !probe{ "list every place where the new package surface would merely re-export old structure. which of those facades reduce churn, and which only postpone necessary cleanup?" }
+}
+
+#>wonder_agents_plans_monorepoworkspacefoundation_wip_2
+?["What is the minimum believable monorepo signal for v0.3.0 beta?"]{
+  #:depth #!educational // lens: curated collection
+  ~#focus: "truthfulness under schedule pressure"
+  !probe{ "if a reviewer cloned the repo after this pass, what concrete files would convince them that package extraction is underway rather than merely promised?" }
+}
