@@ -1,0 +1,44 @@
+# wip — init-runtime-bias
+# Branch: feature/init-runtime-bias
+# Started: 2026-03-20
+
+#:layer #!pragmatics
+
+^["intent"]{
+ ~#goal: "Make spw init runtime-aware so it provisions a portable base scaffold everywhere, augments from checkout-native assets when available, and stops assuming source-tree-relative paths."
+ ~#taste: "correctness, clarity, portability, layering"
+}
+
+^["stream"]{
+ >>[2026-03-20 18:34] observe — packages/spw-cli/src/init.ts still derives workbenchRoot from the source tree layout, which becomes incorrect once the CLI is bundled into dist/bin or published as a tarball.
+ >>[2026-03-20 18:35] observe — the copied commit-review skill is not universally portable; it expects repo-local support scripts, so packaged/bootstrap behavior must be explicit about what it can and cannot provision.
+ >>[2026-03-20 18:35] decide — this slice should make runtime context structural: detect package root, provision a portable base scaffold first, augment from checkout assets when present, and degrade truthfully instead of pretending every init target is a full workbench clone.
+ >>[2026-03-20 18:35] taste — the boutique-quality bar here is honest affordance signaling and portability; bootstrap flows should reveal their runtime posture instead of hiding it behind brittle relative paths.
+ >>[2026-03-20 18:39] revise — user raised portability and interoperability explicitly, so the plan now prefers portable templates over direct copying of repo-bound affordances wherever possible.
+ >>[2026-03-20 18:35] hygiene — worktree is clean on main@df7a32c6b10612f53b6cfbdb6aa6ff6a420aa6bf; no unrelated drift to split.
+}
+
+^["open"]{
+ ?[support-shape]: "Which affordances belong in the portable base scaffold versus the optional workbench-specific augmentation layer?"
+}
+
+^["commits"]{
+ ~[1]: ".[init-runtime-bias] — plan the source-vs-packaged init runtime split"
+ ~[2]: "&[init-runtime-bias] — make spw init resolve runtime context and provision a portable scaffold truthfully"
+ ~[3]: ".[init-runtime-bias] — document the source-first, portable installer/runtime contract"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@df7a32c6b10612f53b6cfbdb6aa6ff6a420aa6bf"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "packages/spw-cli/src/init.ts, packages/spw-cli/templates/init, scripts/release/build-js-dist.ts, README.md, .spw/conventions/packaging.spw"
+ ~#next_commit: "1"
+ ~#open_count: "1"
+ ~#last_stream: "2026-03-20 18:35 hygiene"
+ ~#taste_debt: "Commit-review portability remains larger than this slice; the portable base scaffold should avoid pretending to ship a full checkout-grade review loop."
+}
+
+^["done"]{
+}
