@@ -16,10 +16,12 @@
  >>[2026-03-20 18:35] taste — the boutique-quality bar here is honest affordance signaling and portability; bootstrap flows should reveal their runtime posture instead of hiding it behind brittle relative paths.
  >>[2026-03-20 18:39] revise — user raised portability and interoperability explicitly, so the plan now prefers portable templates over direct copying of repo-bound affordances wherever possible.
  >>[2026-03-20 18:35] hygiene — worktree is clean on main@df7a32c6b10612f53b6cfbdb6aa6ff6a420aa6bf; no unrelated drift to split.
+ >>[2026-03-20 19:20] implement — replaced inline init scaffolding with package-owned portable templates and generated a runtime-resolving pre-commit hook instead of copying repo-bound review skills into target repos.
+ >>[2026-03-20 19:23] implement — split tool-root and repo-root concerns in poll-review/spw-lib so workbench tooling can review another repo while still using workbench-owned parser/support assets.
+ >>[2026-03-20 19:28] verify — npm run build, npm run test:run, npm run build:jsdist, npm run pack:jsdist:dry, npm run lint:docs, syntax validation, and source/dist temp-repo hook smokes all passed.
 }
 
 ^["open"]{
- ?[support-shape]: "Which affordances belong in the portable base scaffold versus the optional workbench-specific augmentation layer?"
 }
 
 ^["commits"]{
@@ -29,16 +31,20 @@
 }
 
 ^["cache"]{
- ~#status: "planning"
+ ~#status: "implemented, verified, awaiting commit"
  ~#base_ref: "main@df7a32c6b10612f53b6cfbdb6aa6ff6a420aa6bf"
- ~#rebased_at: ""
+ ~#rebased_at: "2026-03-20 19:28"
  ~#hygiene_split: "none"
- ~#files_hot: "packages/spw-cli/src/init.ts, packages/spw-cli/templates/init, scripts/release/build-js-dist.ts, README.md, .spw/conventions/packaging.spw"
- ~#next_commit: "1"
- ~#open_count: "1"
- ~#last_stream: "2026-03-20 18:35 hygiene"
- ~#taste_debt: "Commit-review portability remains larger than this slice; the portable base scaffold should avoid pretending to ship a full checkout-grade review loop."
+ ~#files_hot: "packages/spw-cli/src/init.ts, packages/spw-cli/templates/init, scripts/release/build-js-dist.ts, scripts/spw-lib.sh, .agents/skills/spw-commit-review/scripts/poll-review.sh, README.md, .spw/conventions/packaging.spw, src/runtime/__tests__/spw-init-portability.test.ts"
+ ~#next_commit: "2"
+ ~#open_count: "0"
+ ~#last_stream: "2026-03-20 19:28 verify"
+ ~#taste_debt: "Portable review flows now interoperate with external tool roots, but the broader skill bundle is still source-centric and not yet packaged as a general-purpose standalone review SDK."
 }
 
 ^["done"]{
+ ~[portable-scaffold]: "spw init now installs package-owned portable templates instead of copying repo-bound skill directories into target repos"
+ ~[interop-hook]: "the generated pre-commit hook resolves tooling from .spw/_workbench, node_modules/spw-workbench, SPW_WORKBENCH_ROOT, or the current runtime"
+ ~[dist-support]: "jsdist now carries the init templates and review support assets needed for the packaged lane"
+ ~[verification]: "source and dist temp-repo smokes proved that staged .spw files can be reviewed through the portable hook path"
 }

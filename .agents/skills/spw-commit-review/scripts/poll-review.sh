@@ -13,12 +13,15 @@
 
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
+WORKBENCH_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
+ROOT_DIR="${SPW_REPO_ROOT_OVERRIDE:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
 SCRIPT_PATH=".agents/skills/spw-commit-review/scripts/poll-review.sh"
 
 SPW_SCRIPT_NAME="CommitReview.Poll"
 SPW_SCRIPT_USAGE="[options]"
-source "$ROOT_DIR/scripts/spw-lib.sh"
+export SPW_REPO_ROOT_OVERRIDE="$ROOT_DIR"
+export SPW_TOOL_ROOT_OVERRIDE="${SPW_TOOL_ROOT_OVERRIDE:-$WORKBENCH_ROOT}"
+source "${SPW_TOOL_ROOT_OVERRIDE}/scripts/spw-lib.sh"
 spw_parse_args "$@"
 
 cd "$ROOT_DIR"
@@ -549,7 +552,7 @@ run_once() {
       if [[ "$RUN_GEN_HINTS" -eq 1 ]]; then
         check_spw_generation "$file"
       fi
-      if ! npm run lint:spw -- "$file" >/dev/null; then
+      if ! SPW_STATE_VALIDATE_MODE=strict spw_validate_spw_file "$file"; then
         spw_status="fail"
         spw_bonk ".spw parse failed: $file"
         status=1

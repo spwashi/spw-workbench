@@ -24,7 +24,7 @@ The published command direction is `spw <verb>`, so the external form of that fl
 
 ### Packaging Contract
 
-This repo stays source-first. Checkouts, local installers, and development workflows should run the TypeScript entrypoints directly; `dist/` is a derived release artifact for packaging, bundling, and publish verification.
+This repo stays source-first. Checkouts, local installers, and development workflows should run the TypeScript entrypoints directly; `dist/` is a derived release artifact for packaging, bundling, and publish verification. `spw init` follows the same contract operationally: it installs a portable scaffold first, then resolves richer workbench tooling from a checkout, vendored `.spw/_workbench`, local npm install, or `SPW_WORKBENCH_ROOT`.
 
 Current packaging commands:
 
@@ -66,7 +66,7 @@ The `_workbench` prefix signals infrastructure — the parser, runtime, substrat
 ~"_workbench/.spw/surfaces/publish.spw"
 ```
 
-`spw init` seeds `.spw/workspace.spw`, `.spw/index.spw`, `.agents/skills/spw-commit-review`, `.agents/workflows/commit-review.md`, and arms `.git/hooks/pre-commit` when the target is already a git repository.
+`spw init` seeds `.spw/workspace.spw`, `.spw/index.spw`, `.agents/workflows/commit-review.md`, and arms `.git/hooks/pre-commit` when the target is already a git repository. The hook resolves review tooling from `.spw/_workbench`, `node_modules/spw-workbench`, `SPW_WORKBENCH_ROOT`, or the runtime that executed `spw init`.
 
 ## Substrates
 

@@ -7,7 +7,27 @@ const green = (str: string) => `\x1b[32m${str}\x1b[0m`
 const bold = (str: string) => `\x1b[1m${str}\x1b[0m`
 const dim = (str: string) => `\x1b[2m${str}\x1b[0m`
 
-const workbenchRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..')
+const INIT_TEMPLATE_ROOTS = {
+  source: 'packages/spw-cli/templates/init',
+  dist: 'templates/init',
+} as const
+
+const COMMIT_HOOK_MARKER = 'spw-hook-runtime-resolver-v1'
+const REVIEW_SCRIPT_REL = '.agents/skills/spw-commit-review/scripts/poll-review.sh'
+const REVIEW_LIB_REL = 'scripts/spw-lib.sh'
+
+export type InitRuntimeContext = {
+  mode: 'source' | 'dist'
+  packageRoot: string
+  templateRoot: string
+  toolRoot: string
+}
+
+type CopyDirOptions = {
+  overwrite?: boolean
+}
+
+type HookInstallStatus = 'installed' | 'updated' | 'skipped'
 
 export async function runSpwInitCli(argv: string[]): Promise<void> {
   const args = normalizeInitArgs(argv)
@@ -18,7 +38,8 @@ export async function runSpwInitCli(argv: string[]): Promise<void> {
   }
 
   const targetDir = args.find((arg) => !arg.startsWith('--')) ?? '.'
-  await installWorkbench(targetDir)
+  const runtime = await resolveInitRuntimeContext()
+  await installWorkbench(targetDir, runtime)
 }
 
 export function printInitUsage(): void {
@@ -38,9 +59,13 @@ Compatibility:
 Scaffolds:
   .spw/workspace.spw
   .spw/index.spw
-  .agents/skills/spw-commit-review
   .agents/workflows/commit-review.md
-  .git/hooks/pre-commit (when target is a git repo)
+  .git/hooks/pre-commit (portable resolver when target is a git repo)
+
+Interop review roots:
+  .spw/_workbench
+  node_modules/spw-workbench
+  $SPW_WORKBENCH_ROOT
 `)
 }
 
@@ -60,7 +85,7 @@ async function exists(targetPath: string): Promise<boolean> {
   }
 }
 
-async function copyDir(src: string, dest: string): Promise<void> {
+async function copyDir(src: string, dest: string, options: CopyDirOptions = {}): Promise<void> {
   if (!(await exists(src))) return
 
   await fs.mkdir(dest, { recursive: true })
@@ -71,7 +96,11 @@ async function copyDir(src: string, dest: string): Promise<void> {
     const destPath = path.join(dest, entry.name)
 
     if (entry.isDirectory()) {
-      await copyDir(srcPath, destPath)
+      await copyDir(srcPath, destPath, options)
+      continue
+    }
+
+    if (!options.overwrite && (await exists(destPath))) {
       continue
     }
 
@@ -79,75 +108,147 @@ async function copyDir(src: string, dest: string): Promise<void> {
   }
 }
 
-async function ensureHook(targetRepoPath: string): Promise<boolean> {
+export async function resolveInitRuntimeContext(fromUrl: string = import.meta.url): Promise<InitRuntimeContext> {
+  const startDir = path.dirname(fileURLToPath(fromUrl))
+
+  for (const candidate of ascendDirs(startDir)) {
+    const sourceTemplateRoot = path.join(candidate, INIT_TEMPLATE_ROOTS.source)
+    const sourceEntry = path.join(candidate, 'packages/spw-cli/src/init.ts')
+    if ((await exists(path.join(sourceTemplateRoot, 'base'))) && (await exists(sourceEntry))) {
+      return {
+        mode: 'source',
+        packageRoot: candidate,
+        templateRoot: sourceTemplateRoot,
+        toolRoot: candidate,
+      }
+    }
+
+    const distTemplateRoot = path.join(candidate, INIT_TEMPLATE_ROOTS.dist)
+    const distEntry = path.join(candidate, 'bin/spw.js')
+    if ((await exists(path.join(distTemplateRoot, 'base'))) && (await exists(distEntry))) {
+      return {
+        mode: 'dist',
+        packageRoot: candidate,
+        templateRoot: distTemplateRoot,
+        toolRoot: candidate,
+      }
+    }
+  }
+
+  throw new Error('unable to locate spw init templates from the current runtime')
+}
+
+function ascendDirs(startDir: string): string[] {
+  const dirs: string[] = []
+  let current = path.resolve(startDir)
+
+  while (true) {
+    dirs.push(current)
+    const parent = path.dirname(current)
+    if (parent === current) break
+    current = parent
+  }
+
+  return dirs
+}
+
+function escapeForBashDoubleQuotes(value: string): string {
+  return value.replace(/["\\`$]/g, '\\$&')
+}
+
+export function renderCommitHookContent(toolRoot: string): string {
+  const fallbackToolRoot = escapeForBashDoubleQuotes(toolRoot)
+
+  return `#!/bin/bash
+# Spw Commit Review Gate
+# ${COMMIT_HOOK_MARKER}
+set -euo pipefail
+
+HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$HOOK_DIR/../.." && pwd)"
+SCRIPT_REL="${REVIEW_SCRIPT_REL}"
+LIB_REL="${REVIEW_LIB_REL}"
+FALLBACK_TOOL_ROOT="${fallbackToolRoot}"
+
+candidates=()
+if [ -n "\${SPW_WORKBENCH_ROOT:-}" ]; then
+  candidates+=("\${SPW_WORKBENCH_ROOT}")
+fi
+candidates+=("$REPO_ROOT/.spw/_workbench" "$REPO_ROOT/node_modules/spw-workbench" "$FALLBACK_TOOL_ROOT")
+
+for tool_root in "\${candidates[@]}"; do
+  [ -n "$tool_root" ] || continue
+  if [ -f "$tool_root/$SCRIPT_REL" ] && [ -f "$tool_root/$LIB_REL" ]; then
+    SPW_REPO_ROOT_OVERRIDE="$REPO_ROOT" \\
+    SPW_TOOL_ROOT_OVERRIDE="$tool_root" \\
+    bash "$tool_root/$SCRIPT_REL" --scope=staged
+    exit $?
+  fi
+done
+
+cat >&2 <<'EOF'
+Spw commit-review hook is installed, but no compatible workbench root was found.
+Expected one of:
+  - .spw/_workbench
+  - node_modules/spw-workbench
+  - SPW_WORKBENCH_ROOT=<path>
+EOF
+exit 1
+`
+}
+
+async function ensureHook(targetRepoPath: string, toolRoot: string): Promise<HookInstallStatus> {
   const hookPath = path.join(targetRepoPath, '.git', 'hooks', 'pre-commit')
   const hookDir = path.dirname(hookPath)
 
   if (!(await exists(hookDir))) {
-    return false
+    return 'skipped'
   }
 
-  const hookContent = `#!/bin/bash
-# Spw Commit Review Gate
-# Redirects commit authorization to the local Spw agent skill.
-
-bash .agents/skills/spw-commit-review/scripts/poll-review.sh --scope=staged || exit 1
-`
+  const hookContent = renderCommitHookContent(toolRoot)
 
   if (await exists(hookPath)) {
     const existing = await fs.readFile(hookPath, 'utf8')
-    if (!existing.includes('spw-commit-review')) {
-      await fs.appendFile(hookPath, `\n${hookContent.replace('#!/bin/bash\n', '')}`)
+    if (existing.includes(COMMIT_HOOK_MARKER)) {
+      return 'installed'
     }
-  } else {
-    await fs.writeFile(hookPath, hookContent)
+    if (existing.includes('Spw Commit Review Gate') || existing.includes('spw-commit-review')) {
+      await fs.writeFile(hookPath, hookContent)
+      await fs.chmod(hookPath, 0o755)
+      return 'updated'
+    }
+    await fs.appendFile(hookPath, `\n${hookContent.replace('#!/bin/bash\n', '')}`)
+    await fs.chmod(hookPath, 0o755)
+    return 'installed'
   }
 
+  await fs.writeFile(hookPath, hookContent)
   await fs.chmod(hookPath, 0o755)
-  return true
+  return 'installed'
 }
 
-async function installWorkbench(targetDir: string): Promise<void> {
+async function installPortableScaffold(targetAbs: string, templateRoot: string): Promise<void> {
+  await copyDir(path.join(templateRoot, 'base'), targetAbs)
+}
+
+async function installWorkbench(targetDir: string, runtime: InitRuntimeContext): Promise<void> {
   const targetAbs = path.resolve(process.cwd(), targetDir)
   console.log(`\n${bold('Spw Init')}\nTarget: ${dim(targetAbs)}\n`)
 
   await fs.mkdir(targetAbs, { recursive: true })
+  await installPortableScaffold(targetAbs, runtime.templateRoot)
+  console.log(` ${green('✓')} Portable semantic scaffold seeded via .spw/workspace.spw`)
+  console.log(` ${green('✓')} Review workflow note installed (.agents/workflows/commit-review.md)`)
 
-  const spwDir = path.join(targetAbs, '.spw')
-  await fs.mkdir(spwDir, { recursive: true })
-
-  const workspaceDoc = `# Workspace Kernel\n#\n#>workspace_root\n#:kernel\n\n^"roots"{\n  @spw: ~"."\n}\n\n^"settings"{\n  ~#language: "spw"\n  ~#dialect: "v0.2.0-alpha"\n}\n`
-  const indexDoc = `# Index\n#\n#>spw_index\n#:index\n\n^"dispatch"{\n  workspace: @workspace\n}\n`
-
-  if (!(await exists(path.join(spwDir, 'workspace.spw')))) {
-    await fs.writeFile(path.join(spwDir, 'workspace.spw'), workspaceDoc)
-  }
-  if (!(await exists(path.join(spwDir, 'index.spw')))) {
-    await fs.writeFile(path.join(spwDir, 'index.spw'), indexDoc)
-  }
-  console.log(` ${green('✓')} Semantic Kernel seeded via .spw/workspace.spw`)
-
-  const agentsDir = path.join(targetAbs, '.agents')
-  const skillsDest = path.join(agentsDir, 'skills', 'spw-commit-review')
-  const workflowDest = path.join(agentsDir, 'workflows')
-
-  await fs.mkdir(skillsDest, { recursive: true })
-  await fs.mkdir(workflowDest, { recursive: true })
-
-  const sourceSkill = path.join(workbenchRoot, '.agents', 'skills', 'spw-commit-review')
-  const sourceWorkflow = path.join(workbenchRoot, '.agents', 'workflows', 'commit-review.md')
-
-  await copyDir(sourceSkill, skillsDest)
-  if (await exists(sourceWorkflow)) {
-    await fs.copyFile(sourceWorkflow, path.join(workflowDest, 'commit-review.md'))
-  }
-  console.log(` ${green('✓')} Agent affordances deployed (.agents)`)
-
-  const hooksArmed = await ensureHook(targetAbs)
-  if (hooksArmed) {
-    console.log(` ${green('✓')} Biometric Commit Gate armed via .git/hooks/pre-commit`)
-  } else {
+  const hookStatus = await ensureHook(targetAbs, runtime.toolRoot)
+  if (hookStatus === 'skipped') {
     console.log(` ${dim('-')} Skipped commit gate (target is not a git repository)`)
+  } else {
+    const action = hookStatus === 'updated' ? 'updated' : 'armed'
+    console.log(` ${green('✓')} Portable commit gate ${action} via .git/hooks/pre-commit`)
+    console.log(
+      ` ${dim('-')} Review tooling resolves from .spw/_workbench, node_modules/spw-workbench, $SPW_WORKBENCH_ROOT, or the current ${runtime.mode} runtime`,
+    )
   }
 
   console.log(`\n${bold(green('Init Complete.'))}\nThe semantic tree is ready to grow.\n`)

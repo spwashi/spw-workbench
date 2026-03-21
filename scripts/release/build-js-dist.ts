@@ -107,6 +107,9 @@ async function main(): Promise<void> {
   await writeDeclarationFacades(libraryEntrypoints)
   await writeDistPackage(rootPackage, libraryEntrypoints)
   await copyIfPresent('README.md')
+  await copyIfPresent('scripts/spw-lib.sh')
+  await copyIfPresent('.agents/skills/spw-commit-review/scripts/poll-review.sh')
+  await copyIfPresent('packages/spw-cli/templates/init', 'templates/init')
 
   console.log(`Built JS dist v${rootPackage.version} at ${path.relative(rootDir, distDir)}`)
 }
@@ -256,6 +259,7 @@ async function writeDistPackage(rootPackage: RootPackageManifest, entrypoints: D
       'spw-workbench': './bin/spw.js',
     },
     files: [
+      '.agents',
       'README.md',
       'bin',
       'index.js',
@@ -270,9 +274,11 @@ async function writeDistPackage(rootPackage: RootPackageManifest, entrypoints: D
       'resonance.js',
       'resonance.js.map',
       'resonance.d.ts',
+      'scripts',
       'substrate.js',
       'substrate.js.map',
       'substrate.d.ts',
+      'templates',
       'types',
     ],
   }
@@ -281,12 +287,13 @@ async function writeDistPackage(rootPackage: RootPackageManifest, entrypoints: D
   await fs.writeFile(distPackagePath, `${JSON.stringify(distPackage, null, 2)}\n`)
 }
 
-async function copyIfPresent(relativePath: string): Promise<void> {
+async function copyIfPresent(relativePath: string, targetRelativePath: string = relativePath): Promise<void> {
   const sourcePath = path.join(rootDir, relativePath)
-  const targetPath = path.join(distDir, path.basename(relativePath))
+  const targetPath = path.join(distDir, targetRelativePath)
 
   try {
-    await fs.copyFile(sourcePath, targetPath)
+    await fs.mkdir(path.dirname(targetPath), { recursive: true })
+    await fs.cp(sourcePath, targetPath, { recursive: true })
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
       throw error

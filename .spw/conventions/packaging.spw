@@ -10,7 +10,7 @@
 ^"workspace_contract"{
  repo_runtime: "source-first"
  checkout_entrypoints: ["scripts/*.ts", "packages/*/src/*.ts"]
- installer_bias: "prefer native TypeScript execution from a checkout or cloned workspace"
+ installer_bias: "prefer native TypeScript execution from a checkout or cloned workspace, but provision portable init scaffolds that can interoperate with vendored or installed workbench roots"
  dist_role: "derived release artifact, never the canonical authoring surface"
  version_truth: "root package.json is the single source of truth for versioning"
 }
@@ -19,7 +19,7 @@
  jsdist_build: "npm run build:jsdist"
  jsdist_pack_check: "npm run pack:jsdist:dry"
  release_bundle: "npm run bundle:release"
- dist_contents: ["runtime js", "cli js", "declaration facades", "dist/types tree", "derived package manifest"]
+ dist_contents: ["runtime js", "cli js", "declaration facades", "dist/types tree", "derived package manifest", "portable init templates", "interop review support assets"]
 }
 
 ^"invariant"{
@@ -27,6 +27,7 @@
   "dist/ is disposable and reproducible; deleting it must never delete authoring truth.",
   "Release artifacts derive metadata from the root manifest rather than inventing a second version ledger.",
   "Changing publish mechanics must not silently change the workspace's default execution model.",
+  "Installer scaffolds should remain portable across repos even when richer workbench-specific tooling is discovered later.",
 }
 
 #>wonder_spw_conventions_packaging_1

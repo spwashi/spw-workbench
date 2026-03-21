@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # spw-lib.sh — shared utility helpers for skill instrumentation scripts.
 
-SPW_REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SPW_TOOL_ROOT_DEFAULT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SPW_TOOL_ROOT="${SPW_TOOL_ROOT_OVERRIDE:-$SPW_TOOL_ROOT_DEFAULT}"
+SPW_REPO_ROOT="${SPW_REPO_ROOT_OVERRIDE:-$SPW_TOOL_ROOT}"
 SPW_HELP=0
 SPW_POSITIONAL=()
 SPW_MATCH=()
@@ -434,7 +436,14 @@ spw_state_warn_once() {
 spw_validate_spw_file() {
   local file="$1"
   local mode="${SPW_STATE_VALIDATE_MODE:-fast}"
+  local file_abs="$file"
+  local parser_entry=""
+  local node_args=()
   [ -s "$file" ] || return 1
+
+  if [[ "$file_abs" != /* ]]; then
+    file_abs="$SPW_REPO_ROOT/$file_abs"
+  fi
 
   case "$mode" in
     off)
@@ -461,9 +470,22 @@ spw_validate_spw_file() {
     return 0
   fi
 
+  if [ -d "$SPW_TOOL_ROOT/src/seed" ] || [ -f "$SPW_TOOL_ROOT/src/seed/index.ts" ]; then
+    parser_entry="./src/seed"
+    node_args=(--import tsx)
+  elif [ -f "$SPW_TOOL_ROOT/parser.js" ]; then
+    parser_entry="./parser.js"
+  else
+    return 1
+  fi
+
   if (
-    cd "$SPW_REPO_ROOT" &&
-    node --import tsx -e "import { readFileSync } from 'node:fs'; import { parse } from './src/seed'; const source = readFileSync(process.argv[1], 'utf8'); const out = parse(source); if (!out.success || out.errors.length) process.exit(1);" "$file" >/dev/null 2>&1
+    cd "$SPW_TOOL_ROOT" &&
+    if [ "${#node_args[@]}" -gt 0 ]; then
+      node "${node_args[@]}" -e "import { readFileSync } from 'node:fs'; import { parse } from '${parser_entry}'; const source = readFileSync(process.argv[1], 'utf8'); const out = parse(source); if (!out.success || out.errors.length) process.exit(1);" "$file_abs" >/dev/null 2>&1
+    else
+      node --input-type=module -e "import { readFileSync } from 'node:fs'; import { parse } from '${parser_entry}'; const source = readFileSync(process.argv[1], 'utf8'); const out = parse(source); if (!out.success || out.errors.length) process.exit(1);" "$file_abs" >/dev/null 2>&1
+    fi
   ); then
     return 0
   fi
