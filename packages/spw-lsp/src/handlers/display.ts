@@ -18,6 +18,49 @@ import type {
 } from '../types'
 import { SK } from '../types'
 
+type DisplayAnnotationKind = 'topic' | 'lens' | 'intent' | 'anchor'
+
+const ANNOTATION_RE = /(##>|#!|#:|#>|#)([a-zA-Z_][a-zA-Z0-9_]*)/g
+const ANCHOR_RE = /##?>([a-zA-Z_][a-zA-Z0-9_]*)/
+const PREFIX_BY_KIND: Record<DisplayAnnotationKind, string> = {
+    topic: '#',
+    lens: '#:',
+    intent: '#!',
+    anchor: '#>',
+}
+
+function annotationKindFromSigil(sigil: string | undefined): DisplayAnnotationKind {
+    switch (sigil) {
+        case '#:': return 'lens'
+        case '#!': return 'intent'
+        case '#>':
+        case '##>':
+            return 'anchor'
+        default:
+            return 'topic'
+    }
+}
+
+function summarizeReferenceSources(
+    entries: Array<{ file: string; line: number }>,
+    currentFile: string,
+    workspaceRoot: string,
+    limit: number = 2,
+): string {
+    const fileCounts = new Map<string, number>()
+    for (const entry of entries) {
+        if (entry.file === currentFile) continue
+        fileCounts.set(entry.file, (fileCounts.get(entry.file) ?? 0) + 1)
+    }
+
+    const ranked = [...fileCounts.entries()]
+        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+        .slice(0, limit)
+        .map(([file, count]) => `${path.relative(workspaceRoot, file)}×${count}`)
+
+    return ranked.join(', ')
+}
+
 // ── Hover ───────────────────────────────────────────────────────
 
 export async function hover(params: HoverParams, deps: HandlerDeps): Promise<LspHover | null> {
@@ -28,27 +71,32 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
     const source = await deps.getDocumentText(uri)
     if (source === null) return null
 
+    const docPath = deps.pathFromUri(uri)
     const line = source.split('\n')[pos.line] ?? ''
     const charAtPos = line[pos.character]
 
     // 1. Annotation hover
-    const annotRe = /#(!|:|>)?([a-zA-Z_][a-zA-Z0-9_]*)/g
+    const annotRe = new RegExp(ANNOTATION_RE)
     let annotMatch: RegExpExecArray | null
     while ((annotMatch = annotRe.exec(line)) !== null) {
         const start = annotMatch.index
         const end = start + annotMatch[0].length
         if (pos.character < start || pos.character >= end) continue
 
-        const prefix = annotMatch[1] || ''
+        const prefix = annotMatch[1] || '#'
         const name = annotMatch[2]
-        const kindLabel: Record<string, string> = { '': 'topic', ':': 'lens', '!': 'intent', '>': 'anchor' }
-        const kind = kindLabel[prefix] || 'topic'
+        const kind = annotationKindFromSigil(prefix)
         const entries = deps.serverIndex.lookupAnnotation(name)
         const fileCount = new Set(entries.map(e => e.file)).size
         const coOccurs = deps.serverIndex.topCoOccurrences(name, 5)
+        const externalRefs = docPath ? entries.filter(e => e.file !== docPath) : entries
+        const sourceSummary = docPath ? summarizeReferenceSources(entries, docPath, deps.workspaceRoot, 4) : ''
 
-        let md = `**#${prefix}${name}** \u2014 *${kind}*\n\n`
+        let md = `**${prefix}${name}** \u2014 *${kind}*\n\n`
         md += `**${fileCount}** file(s), **${entries.length}** occurrence(s)\n\n`
+        if (externalRefs.length > 0 && sourceSummary) {
+            md += `Top sources: ${sourceSummary}\n\n`
+        }
 
         if (coOccurs.length > 0) {
             md += `Co-occurs with: ${coOccurs.map(c => `\`#${c.name}\` (${c.count}\u00d7)`).join(', ')}\n\n`
@@ -77,7 +125,6 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
         const frameEnd = frameStart + frameMatch[0].length
         if (pos.character >= frameStart && pos.character < frameEnd) {
             const frameName = frameMatch[1] || frameMatch[2] || frameMatch[3]
-            const docPath = deps.pathFromUri(uri)
             const fileAnnotations = docPath ? deps.serverIndex.annotationsForFile(docPath) : []
             const inSection = fileAnnotations.filter(e => e.sectionLabel === frameName)
 
@@ -104,8 +151,7 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
 
             let md = `**^["${frameName}"]** \u2014 *frame*\n\n`
             if (inSection.length > 0) {
-                const prefixByKind: Record<string, string> = { topic: '#', lens: '#:', intent: '#!', anchor: '#>' }
-                md += 'Annotations: ' + inSection.map(e => `\`${prefixByKind[e.kind]}${e.name}\``).join(', ') + '\n\n'
+                md += 'Annotations: ' + inSection.map(e => `\`${PREFIX_BY_KIND[e.kind as DisplayAnnotationKind] ?? '#'}${e.name}\``).join(', ') + '\n\n'
             }
             if (opCounts) md += `Operators: ${opCounts}\n\n`
             md += `Cache tier: ${cacheTier}\n`
@@ -643,16 +689,17 @@ export function codeLens(params: DocumentParams, deps: HandlerDeps): LspCodeLens
         }
 
         // Anchor cross-file refs
-        const anchorMatch = line.match(/#>([a-zA-Z_]\w*)/)
+        const anchorMatch = line.match(ANCHOR_RE)
         if (anchorMatch) {
             const name = anchorMatch[1]
             const refs = deps.serverIndex.lookupAnnotation(name)
             const otherFiles = refs.filter(e => e.file !== docPath)
             const fileCount = new Set(otherFiles.map(e => e.file)).size
+            const sourceSummary = summarizeReferenceSources(refs, docPath, deps.workspaceRoot)
             if (fileCount > 0) {
                 lenses.push({
                     range: { start: { line: i, character: 0 }, end: { line: i, character: line.length } },
-                    command: { title: `\u2197 ${fileCount} file ref(s)`, command: '' },
+                    command: { title: `\u2197 ${fileCount} file ref(s)${sourceSummary ? ` \u00b7 ${sourceSummary}` : ''}`, command: '' },
                 })
             }
 
@@ -806,7 +853,7 @@ export async function inlayHints(params: InlayHintParams, deps: HandlerDeps): Pr
     }
 
     // 2) Annotation density hints
-    const annotRe = /#(!|:|>)?([a-zA-Z_][a-zA-Z0-9_]*)/g
+    const annotRe = new RegExp(ANNOTATION_RE)
     if (deps.config.inlayHints.annotations || deps.config.inlayHints.frames) {
         for (let lineNo = Math.max(0, range.start.line); lineNo <= Math.min(lines.length - 1, range.end.line); lineNo += 1) {
             const line = lines[lineNo] ?? ''
@@ -832,25 +879,29 @@ export async function inlayHints(params: InlayHintParams, deps: HandlerDeps): Pr
             if (!deps.config.inlayHints.annotations) continue
 
             annotRe.lastIndex = 0
-            const names: string[] = []
+            const annotations: Array<{ name: string; sigil: string }> = []
             let match: RegExpExecArray | null
             while ((match = annotRe.exec(line)) !== null) {
-                names.push(match[2])
+                annotations.push({ sigil: match[1], name: match[2] })
             }
 
-            if (names.length === 0) continue
+            if (annotations.length === 0) continue
 
-            const unique = [...new Set(names)]
+            const unique = [...new Map(annotations.map((entry) => [entry.name, entry])).values()]
             const summary = unique
                 .slice(0, 2)
-                .map((name) => `${name}:${deps.serverIndex.lookupAnnotation(name).length}`)
-                .join(', ')
+                .map(({ name, sigil }) => {
+                    const entries = deps.serverIndex.lookupAnnotation(name)
+                    const fileCount = new Set(entries.map((entry) => entry.file)).size
+                    return `${sigil}${name}:${fileCount}f`
+                })
+                .join(' \u00b7 ')
 
             hints.push({
                 position: { line: lineNo, character: line.length },
-                label: ` [anno ${summary}${unique.length > 2 ? ', ...' : ''}]`,
+                label: ` [ref ${summary}${unique.length > 2 ? ' \u00b7 \u2026' : ''}]`,
                 kind: 2,
-                tooltip: 'Workspace occurrence counts for annotation names on this line.',
+                tooltip: 'Workspace file counts for annotation names on this line.',
                 paddingLeft: true,
             })
         }
@@ -894,19 +945,24 @@ export async function inlayHints(params: InlayHintParams, deps: HandlerDeps): Pr
         }
     }
 
-    // 4) Operator census on #> anchor lines
+    // 4) Incoming reference hints on anchor lines
     for (let lineNo = Math.max(0, range.start.line); lineNo <= Math.min(lines.length - 1, range.end.line); lineNo++) {
         const line = lines[lineNo]
-        if (!/^\s*#>/.test(line)) continue
-        const opDist: Record<string, number> = {}
-        for (const l of lines) { for (const c of l) { if ('~?!^%&*='.includes(c)) opDist[c] = (opDist[c] || 0) + 1 } }
-        const census = Object.entries(opDist).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([op, n]) => `${op}:${n}`).join(' ')
-        if (census) {
+        const anchorMatch = line.match(ANCHOR_RE)
+        if (!anchorMatch) continue
+
+        const name = anchorMatch[1]
+        const refs = deps.serverIndex.lookupAnnotation(name)
+        const otherFiles = refs.filter((entry) => entry.file !== docPath)
+        const fileCount = new Set(otherFiles.map((entry) => entry.file)).size
+        const sourceSummary = summarizeReferenceSources(refs, docPath, deps.workspaceRoot, 2)
+
+        if (fileCount > 0) {
             hints.push({
                 position: { line: lineNo, character: line.length },
-                label: ` [${census}]`,
+                label: ` [incoming ${fileCount}f${sourceSummary ? ` \u00b7 ${sourceSummary}` : ''}]`,
                 kind: 2,
-                tooltip: 'File operator census: operator frequency distribution.',
+                tooltip: 'Files that reference this anchor.',
                 paddingLeft: true,
             })
         }
