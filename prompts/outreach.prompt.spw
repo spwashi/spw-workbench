@@ -1,0 +1,77 @@
+#>outreach_generation_prompt
+#:communications
+#:generation
+#:prompt
+#:layer #!creative
+
+^"outreach_generation" {
+  identity: .{
+    title = working_title
+    subtitle = none
+    version = v1
+    status = draft
+    intent = generate_strategic_outreach_sequence
+
+    variants: .{
+      v_visionary = "Bold, brand-forward, metaphorical"
+      v_technical = "Dense, rigorous, problem-oriented"
+      v_personal = "Intimate, narrative, 1-on-1 focus"
+    }
+
+    focus = *v_visionary
+    trace = ~[v_visionary:0.6, v_technical:0.3, v_personal:0.1]
+  }
+
+  format: .{
+    medium = !cadence_sequence
+    step_count = 3
+    channel = !email
+  }
+
+  concept: .{
+    core_thesis = main_communication_goal
+    emotional_core[*]: .{
+      v_visionary = #inspiring
+      v_technical = #authoritative
+      v_personal = #empathetic
+    }
+  }
+
+  messaging: .{
+    hook_strategy[*]: .{
+      v_visionary = !provocative_question
+      v_technical = !pain_point_statistic
+      v_personal = !shared_experience_anecdote
+    }
+    
+    value_prop = what_we_solve
+    call_to_action = !low_friction_reply
+  }
+
+  tone: .{
+    vocabulary[*]: .{
+      v_visionary = !evocative_and_future_facing
+      v_technical = !precise_and_industry_standard
+      v_personal = !conversational_and_warm
+    }
+    sentence_length = !varied_rhythmic
+  }
+
+  boonhonk: .{
+    definition = "The observable field of wonder; naming taste, posture, and quality."
+    combinatorics: .{
+      instruction = "Use the % operator to quantify the communication's resonance."
+      formulas: [
+        %[messaging.hook_strategy * 2.0] + %[concept.emotional_core] = narrative_hook_gravity
+        %[tone.vocabulary] * %[messaging.value_prop] = persuasion_valence
+        %[focus * trace] = variant_resonance
+      ]
+      execution = compute_%[narrative_hook_gravity * persuasion_valence * variant_resonance]
+    }
+  }
+
+  negatives: .{
+    writing: [ #corporate_jargon, #passive_voice, #overlong_paragraphs ]
+    strategy: [ #high_friction_ask, #unclear_value ]
+  }
+}

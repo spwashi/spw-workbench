@@ -1,0 +1,84 @@
+#>design_generation_prompt
+#:visual_design
+#:generation
+#:prompt
+#:layer #!creative
+
+^"design_generation" {
+  identity: .{
+    title = working_title
+    subtitle = none
+    version = v1
+    status = draft
+    intent = generate_complete_design_system_blueprint
+
+    variants: .{
+      v_brutalist = "Raw, systemic, unvarnished"
+      v_minimalist = "Breathable, typographically driven, reductive"
+      v_expressive = "Lush, motion-heavy, narrative"
+    }
+
+    focus = *v_minimalist
+    trace = ~[v_minimalist:0.7, v_brutalist:0.2, v_expressive:0.1]
+  }
+
+  format: .{
+    deliverable = !brand_guidelines
+    fidelity = !high_fidelity_comps
+  }
+
+  concept: .{
+    core_thesis = main_design_premise
+    emotional_core[*]: .{
+      v_brutalist = #authoritative
+      v_minimalist = #calm
+      v_expressive = #joyful
+    }
+  }
+
+  typography: .{
+    scale_ratio = !golden_ratio_1_618
+    heading_face[*]: .{
+      v_brutalist = !monospaced_heavy
+      v_minimalist = !neo_grotesque_light
+      v_expressive = !contrast_serif
+    }
+    body_face = !functional_sans
+  }
+
+  color_system: .{
+    palette[*]: .{
+      v_brutalist = [ #black, #white, #safety_orange ]
+      v_minimalist = [ #off_white, #stone, #charcoal ]
+      v_expressive = [ #ultramarine, #neon_pink, #deep_purple ]
+    }
+    contrast = !wcag_aaa
+  }
+
+  layout: .{
+    grid_system = !12_column_fluid
+    density[*]: .{
+      v_brutalist = !edge_to_edge_packed
+      v_minimalist = !generous_negative_space
+      v_expressive = !overlapping_card_stack
+    }
+  }
+
+  boonhonk: .{
+    definition = "The observable field of wonder; naming taste, posture, and quality."
+    combinatorics: .{
+      instruction = "Use the % operator to quantify the systemic resonance."
+      formulas: [
+        %[typography.scale_ratio * 1.5] + %[layout.density] = visual_authority
+        %[color_system.contrast] * %[concept.emotional_core] = aesthetic_valence
+        %[focus * trace] = variant_resonance
+      ]
+      execution = compute_%[visual_authority * aesthetic_valence * variant_resonance]
+    }
+  }
+
+  negatives: .{
+    ux: [ #poor_contrast, #tiny_click_targets ]
+    visual: [ #cluttered_hierarchy, #inconsistent_radii ]
+  }
+}

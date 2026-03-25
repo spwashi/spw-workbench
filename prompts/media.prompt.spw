@@ -1,0 +1,79 @@
+#>media_generation_prompt
+#:video
+#:generation
+#:prompt
+#:layer #!creative
+
+^"media_generation" {
+  identity: .{
+    title = working_title
+    subtitle = none
+    version = v1
+    status = draft
+    intent = generate_dynamic_media_blueprint
+
+    variants: .{
+      v_kinetic = "Fast-paced typography, rhythm-driven cuts"
+      v_documentary = "Slow pacing, b-roll heavy, ambient"
+      v_abstract = "3D motion design, fluid, surreal"
+    }
+
+    focus = *v_kinetic
+    trace = ~[v_kinetic:0.7, v_abstract:0.2, v_documentary:0.1]
+  }
+
+  format: .{
+    aspect_ratio = !9_16_vertical
+    duration = !15_seconds
+    framerate = 60fps
+  }
+
+  concept: .{
+    core_thesis = main_video_goal
+    emotional_core[*]: .{
+      v_kinetic = #urgent_energy
+      v_documentary = #grounded_truth
+      v_abstract = #hypnotic_wonder
+    }
+  }
+
+  visual_engine: .{
+    editing_rhythm[*]: .{
+      v_kinetic = !on_the_snare_whip_pans
+      v_documentary = !lingering_crossfades_and_holds
+      v_abstract = !continuous_camera_morphs
+    }
+    
+    typography: .{
+      kinetic_behavior = !scale_and_snap
+      safe_zones = !center_weighted
+    }
+  }
+
+  audio_bed: .{
+    sound_design[*]: .{
+      v_kinetic = !whooshes_and_impacts
+      v_documentary = !room_tone_and_foley
+      v_abstract = !granular_synth_swells
+    }
+    music_sync = !hard_sync_to_transients
+  }
+
+  boonhonk: .{
+    definition = "The observable field of wonder; naming taste, posture, and quality."
+    combinatorics: .{
+      instruction = "Use the % operator to quantify the kinetic resonance."
+      formulas: [
+        %[visual_engine.editing_rhythm * 1.5] + %[audio_bed.sound_design] = kinetic_gravity
+        %[visual_engine.typography.kinetic_behavior] * %[concept.emotional_core] = visual_valence
+        %[focus * trace] = variant_resonance
+      ]
+      execution = compute_%[kinetic_gravity * visual_valence * variant_resonance]
+    }
+  }
+
+  negatives: .{
+    visual: [ #jump_cuts, #unmotivated_camera_shake, #text_outside_safe_zone ]
+    audio: [ #clipping_levels, #dry_voiceover ]
+  }
+}
