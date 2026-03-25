@@ -45,9 +45,9 @@ export async function completion(params: CompletionParams, deps: HandlerDeps): P
     }
 
     // 2. Annotation name completion after #, #:, #!, #>
-    const annotPrefix = prefix.match(/#(!|:|>)?([a-zA-Z_]\w*)$/)
+    const annotPrefix = prefix.match(/(?:##>|#!|#:|#>|#)([a-zA-Z_]\w*)$/)
     if (annotPrefix) {
-        const partial = annotPrefix[2].toLowerCase()
+        const partial = annotPrefix[1].toLowerCase()
         const names = deps.serverIndex.allAnnotationNames()
         for (const name of names) {
             if (!name.toLowerCase().startsWith(partial)) continue
@@ -81,6 +81,7 @@ export async function completion(params: CompletionParams, deps: HandlerDeps): P
                     { label: '!bonk["label"]', insert: '!bonk["${1:label}"]' },
                 ],
                 '#': [
+                    { label: '##>prompt_root', insert: '##>${1:prompt_root}' },
                     { label: '#>anchor', insert: '#>${1:anchor}' },
                     { label: '#:lens', insert: '#:${1:lens}' },
                     { label: '#!intent', insert: '#!${1:intent}' },
@@ -91,12 +92,19 @@ export async function completion(params: CompletionParams, deps: HandlerDeps): P
                     { label: '?match', insert: '?match' },
                 ],
                 '~': [
+                    { label: '~#trait: value', insert: '~#${1:trait}: ${2:value}' },
                     { label: '~"path/to/file"', insert: '~"${1:path}"' },
                     { label: '~[N]', insert: '~[${1:N}]' },
                 ],
                 '&': [
                     { label: '&[label]', insert: '&[${1:label}]' },
                     { label: '&name', insert: '&${1:name}' },
+                ],
+                '%': [
+                    { label: '%[measure.path]', insert: '%[${1:measure.path}]' },
+                ],
+                '*': [
+                    { label: '*variant', insert: '*${1:variant}' },
                 ],
             }
             const snippets = sigilSnippets[sigil] ?? []

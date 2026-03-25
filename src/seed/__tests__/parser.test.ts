@@ -2,6 +2,7 @@
  * Parser Integration Tests
  */
 
+import { readFileSync } from 'node:fs'
 import { describe, it, expect } from 'vitest'
 import { parse, parseExpression } from '../parser'
 
@@ -218,6 +219,12 @@ describe('Parser', () => {
       expect(result.success).toBe(true)
     })
 
+    it('parses prompt-pack measure addition without lexer errors', () => {
+      const result = parse('%[brief.design_system.color.contrast * 2.0] + %[brief.lighting.fill_ratio] = sculptural_density')
+      expect(result.success).toBe(true)
+      expect(result.errors).toEqual([])
+    })
+
     it('parses multiple literals in frame', () => {
       const result = parse('![1, 2, 3]')
       expect(result.success).toBe(true)
@@ -254,6 +261,18 @@ describe('Parser', () => {
       }
       expect(ann.value.token.value).toBe('"./runtime/spw/register-bank.spw"')
     })
+
+    it('parses prompt fixtures without lexer errors', () => {
+      for (const filePath of [
+        'prompts/image.prompt.spw',
+        'prompts/website.prompt.spw',
+        'prompts/song.prompt.spw',
+      ]) {
+        const result = parse(readFileSync(filePath, 'utf8'), { contextMode: 'high' })
+        expect(result.success).toBe(true)
+        expect(result.errors).toEqual([])
+      }
+    }, 15000)
   })
 
   describe('Flow Connectors', () => {

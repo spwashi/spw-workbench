@@ -36,6 +36,10 @@ export const DEFAULT_LEX_PROFILE: LexProfile = {
   name: 'Default',
   operators: DEFAULT_OPERATOR_MAP,
   connectors: DEFAULT_CONNECTOR_MAP,
+  // Prompt-pack boonhonk formulas use infix `+` between measures.
+  // Treat it as a connector so canonical prompt files stop producing
+  // false lexer diagnostics while keeping the change surface narrow.
+  extraConnectors: ['+'],
   stringQuotes: ['"', "'"],
 }
 

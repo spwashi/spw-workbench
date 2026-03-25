@@ -10,6 +10,13 @@ export function registerCompletionProvider(spw: SpwContext): vscode.Disposable {
         const linePrefix = document.lineAt(position).text.slice(0, position.character)
         const items: vscode.CompletionItem[] = []
 
+        const makeSnippet = (label: string, snippet: string, detail: string): vscode.CompletionItem => {
+          const item = new vscode.CompletionItem(label, vscode.CompletionItemKind.Snippet)
+          item.insertText = new vscode.SnippetString(snippet)
+          item.detail = detail
+          return item
+        }
+
         // Complete @-roots
         if (linePrefix.endsWith('@')) {
           const roots = Object.keys(spw.ROOT_MAP).map((key) => ({
@@ -25,6 +32,40 @@ export function registerCompletionProvider(spw: SpwContext): vscode.Disposable {
           }
 
           return items
+        }
+
+        const sigilPrefix = /(?:^|\s)([\^!@&*?~#=%])$/.exec(linePrefix)
+        if (sigilPrefix) {
+          const sigil = sigilPrefix[1]
+          const snippets: Record<string, Array<[string, string, string]>> = {
+            '#': [
+              ['##>prompt_root', '##>${1:prompt_root}', 'Prompt root anchor'],
+              ['#>anchor', '#>${1:anchor}', 'Anchor annotation'],
+              ['#:lens', '#:${1:lens}', 'Lens annotation'],
+              ['#!intent', '#!${1:intent}', 'Intent annotation'],
+            ],
+            '~': [
+              ['~#trait: value', '~#${1:trait}: ${2:value}', 'Concise trait'],
+              ['~"path"', '~"${1:path}"', 'Quoted path reference'],
+            ],
+            '&': [
+              ['&[path.ref]', '&[${1:path.ref}]', 'Inline subject/path reference'],
+            ],
+            '%': [
+              ['%[measure.path]', '%[${1:measure.path}]', 'Measure expression'],
+            ],
+            '*': [
+              ['*variant', '*${1:variant}', 'Variant selector'],
+            ],
+          }
+
+          for (const [label, snippet, detail] of snippets[sigil] ?? []) {
+            items.push(makeSnippet(label, snippet, detail))
+          }
+
+          if (items.length > 0) {
+            return items
+          }
         }
 
         // File-system completion for ~"../" and @root/
@@ -71,6 +112,6 @@ export function registerCompletionProvider(spw: SpwContext): vscode.Disposable {
         return items
       },
     },
-    '@', '~', '/',
+    '@', '~', '/', '#', '%', '&', '*',
   )
 }

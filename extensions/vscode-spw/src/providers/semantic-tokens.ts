@@ -31,11 +31,61 @@ export function registerSemanticTokensProvider(spw: SpwContext): vscode.Disposab
               break
             }
 
-            const hashMatch = rest.match(/^#(!|:|>)?([a-zA-Z_][a-zA-Z0-9_]*)/)
+            const promptAnchorMatch = rest.match(/^##>[a-zA-Z_][a-zA-Z0-9_]*/)
+            if (promptAnchorMatch) {
+              builder.push(lineIndex, col, promptAnchorMatch[0].length, TOKEN_TYPES.indexOf('keyword'), 1 << TOKEN_MODIFIERS.indexOf('definition'))
+              col += promptAnchorMatch[0].length
+              continue
+            }
+
+            const traitMatch = rest.match(/^~#[a-zA-Z_][a-zA-Z0-9_-]*/)
+            if (traitMatch) {
+              builder.push(lineIndex, col, traitMatch[0].length, TOKEN_TYPES.indexOf('property'), 1 << TOKEN_MODIFIERS.indexOf('declaration'))
+              col += traitMatch[0].length
+              continue
+            }
+
+            const hashMatch = rest.match(/^#(?:!|:|>)?[a-zA-Z_][a-zA-Z0-9_]*/)
             if (hashMatch) {
-              const len = hashMatch[0].length
-              builder.push(lineIndex, col, len, TOKEN_TYPES.indexOf('type'), 0)
-              col += len
+              builder.push(lineIndex, col, hashMatch[0].length, TOKEN_TYPES.indexOf('type'), 0)
+              col += hashMatch[0].length
+              continue
+            }
+
+            const timeOrFractionMatch = rest.match(/^\d+(?::\d+|\/\d+|\.\d+)?/)
+            if (timeOrFractionMatch) {
+              builder.push(lineIndex, col, timeOrFractionMatch[0].length, TOKEN_TYPES.indexOf('string'), 0)
+              col += timeOrFractionMatch[0].length
+              continue
+            }
+
+            if (rest.startsWith('[*]')) {
+              builder.push(lineIndex, col, 3, TOKEN_TYPES.indexOf('operator'), 1 << TOKEN_MODIFIERS.indexOf('definition'))
+              col += 3
+              continue
+            }
+
+            if (ch === '+') {
+              builder.push(lineIndex, col, 1, TOKEN_TYPES.indexOf('operator'), 0)
+              col += 1
+              continue
+            }
+
+            if (ch === '%') {
+              builder.push(lineIndex, col, 1, TOKEN_TYPES.indexOf('keyword'), 0)
+              col += 1
+              continue
+            }
+
+            if (ch === '&' && rest.startsWith('&[')) {
+              builder.push(lineIndex, col, 2, TOKEN_TYPES.indexOf('operator'), 0)
+              col += 2
+              continue
+            }
+
+            if (ch === '*' && /[a-zA-Z_]/.test(rest[1] ?? '')) {
+              builder.push(lineIndex, col, 1, TOKEN_TYPES.indexOf('keyword'), 0)
+              col += 1
               continue
             }
 
@@ -61,11 +111,6 @@ export function registerSemanticTokensProvider(spw: SpwContext): vscode.Disposab
             }
             if (ch === '=') {
               builder.push(lineIndex, col, 1, TOKEN_TYPES.indexOf('property'), 1 << TOKEN_MODIFIERS.indexOf('readonly'))
-              col += 1
-              continue
-            }
-            if (ch === '%') {
-              builder.push(lineIndex, col, 1, TOKEN_TYPES.indexOf('operator'), 0)
               col += 1
               continue
             }

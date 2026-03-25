@@ -75,7 +75,7 @@ export interface SelectorDefinition {
 const WARM_TTL = 64
 const COLD_TTL = 256
 
-const ANNOTATION_RE = /#(!|:|>)?([a-zA-Z_][a-zA-Z0-9_]*)/g
+const ANNOTATION_RE = /(##>|#!|#:|#>|#)([a-zA-Z_][a-zA-Z0-9_]*)/g
 const FRAME_RE = /^\s*\^(?:\["([^"]+)"\]|"([^"]+)"|\[([A-Za-z_][A-Za-z0-9_]*)\])/
 const SELECTOR_DEF_RE = /^\^selector\[([A-Za-z_][A-Za-z0-9_]*)\]/
 
@@ -410,7 +410,7 @@ export class ServerIndex {
         entries.push({
           file: filePath,
           line: i,
-          kind: kindFromPrefix(match[1]),
+          kind: kindFromSigil(match[1]),
           name: match[2],
           sectionLabel: currentSection,
         })
@@ -738,11 +738,13 @@ export class ServerIndex {
 
 // ── Helpers ─────────────────────────────────────────────────────
 
-function kindFromPrefix(prefix: string | undefined): AnnotationKind {
-  switch (prefix) {
-    case ':': return 'lens'
-    case '!': return 'intent'
-    case '>': return 'anchor'
+function kindFromSigil(sigil: string | undefined): AnnotationKind {
+  switch (sigil) {
+    case '#:': return 'lens'
+    case '#!': return 'intent'
+    case '#>':
+    case '##>':
+      return 'anchor'
     default: return 'topic'
   }
 }

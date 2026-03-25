@@ -59,4 +59,11 @@ class SpwLineParsersTest {
         assertNotNull(anchor)
         assertEquals("spw_workspace", anchor.name)
     }
+
+    @Test
+    fun `parses prompt root anchor token`() {
+        val anchor = SpwLineParsers.parseAnchor("##>song_generation_prompt")
+        assertNotNull(anchor)
+        assertEquals("song_generation_prompt", anchor.name)
+    }
 }

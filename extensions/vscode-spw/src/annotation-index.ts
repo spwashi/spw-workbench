@@ -11,7 +11,7 @@ export interface AnnotationEntry {
     file: vscode.Uri;
     /** Zero-based line number */
     line: number;
-    /** Which flavour: #word, #:word, #!word, #>word */
+    /** Which flavour: #word, #:word, #!word, #>word, ##>word */
     kind: AnnotationKind;
     /** The identifier after the sigil prefix (e.g. "physics" from #:physics) */
     name: string;
@@ -23,16 +23,18 @@ export interface AnnotationEntry {
 // Regex
 // ---------------------------------------------------------------------------
 
-/** Matches #-annotations:  #word  #:word  #!word  #>word */
-const ANNOTATION_RE = /#(!|:|>)?([a-zA-Z_][a-zA-Z0-9_]*)/g;
+/** Matches #-annotations:  #word  #:word  #!word  #>word  ##>word */
+const ANNOTATION_RE = /(##>|#!|#:|#>|#)([a-zA-Z_][a-zA-Z0-9_]*)/g;
 /** Matches frame headers: ^["label"] or ^"label" */
 const FRAME_RE = /^\s*\^(?:\["([^"]+)"\]|"([^"]+)")/;
 
-function kindFromPrefix(prefix: string | undefined): AnnotationKind {
-    switch (prefix) {
-        case ':': return 'lens';
-        case '!': return 'intent';
-        case '>': return 'anchor';
+function kindFromSigil(sigil: string | undefined): AnnotationKind {
+    switch (sigil) {
+        case '#:': return 'lens';
+        case '#!': return 'intent';
+        case '#>':
+        case '##>':
+            return 'anchor';
         default: return 'topic';
     }
 }
@@ -154,7 +156,7 @@ export class AnnotationIndex {
                 const entry: AnnotationEntry = {
                     file: uri,
                     line: i,
-                    kind: kindFromPrefix(match[1]),
+                    kind: kindFromSigil(match[1]),
                     name: match[2],
                     sectionLabel: currentSection,
                 };

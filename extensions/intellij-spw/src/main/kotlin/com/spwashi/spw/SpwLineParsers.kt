@@ -85,7 +85,7 @@ internal object SpwLineParsers {
     }
 
     private val HEADING_PATTERN = Regex("""^\s*(#{1,3})\s+(.+)""")
-    private val ANCHOR_PATTERN = Regex("""#>([a-zA-Z_][a-zA-Z0-9_]*)""")
+    private val ANCHOR_PATTERN = Regex("""##?>([a-zA-Z_][a-zA-Z0-9_]*)""")
 
     // Supports:
     // - ^["frame"], ^['frame']
@@ -99,4 +99,3 @@ internal object SpwLineParsers {
     // Claim protocol: ^claim[c001-brace-symmetry]
     private val CLAIM_PATTERN = Regex("""^\s*\^claim\[([^\]]+)]""")
 }
-
