@@ -1,0 +1,225 @@
+# Image Generation Prompt
+#
+# Temporary root-level working file for structured image ideation and generation.
+
+##>image_generation_prompt
+#:image
+#:generation
+#:prompt
+#:layer #!creative
+
+^"image_generation" {
+  identity: .{
+    title = working_title
+    subtitle = none
+    version = v1
+    status = draft
+    intent = generate_complete_image_brief
+
+    variants: .{
+      v_noir = "Cinematic, high-contrast, moody"
+      v_bloom = "Ethereal, overexposed, soft"
+      v_documentary = "Raw, clinical, naturalistic"
+    }
+
+    focus = *v_noir
+    trace = ~[v_noir:0.6, v_bloom:0.3, v_documentary:0.1]
+  }
+
+  format: .{
+    medium = !digital_illustration
+    orientation = !landscape
+    aspect_ratio = 16:9
+    resolution_target = 4k
+    fidelity = !stylized
+    audience = #general
+    priority = !strong_focal_clarity
+  }
+
+  concept: .{
+    premise = one_sentence_visual_premise
+    thesis_image = central_image_summary
+    
+    emotional_core[*]: .{
+      v_noir = #somber_isolation
+      v_bloom = #ethereal_wonder
+      v_documentary = #raw_truth
+    }
+    
+    emotional_mix: [
+      #emotion_1
+      #emotion_2
+      #emotion_3
+    ]
+    transformation = user_state_before_and_after
+  }
+
+  subject: .{
+    primary_subject = !creature
+    subject_count = 1
+    
+    subject_state[*]: .{
+      v_noir = !shadowed_and_waiting
+      v_bloom = !glowing_and_reaching
+      v_documentary = !caught_in_motion
+    }
+    
+    details: .{
+      age_or_scale = large
+      silhouette = clear_and_sharp
+      expression = driven_by_&[concept.emotional_core]
+      gesture = !still
+      
+      wardrobe_or_surface[*]: .{
+        v_noir = !structured_wool_and_leather
+        v_bloom = !flowing_silk_and_light
+        v_documentary = !weathered_utilitarian
+      }
+    }
+    supporting: [
+      !flora
+      !atmosphere
+    ]
+  }
+
+  scene: .{
+    environment_type = !surreal
+    environmental_story = what_the_environment_implies
+    
+    location[*]: .{
+      v_noir = !wet_city_street
+      v_bloom = !overgrown_glasshouse
+      v_documentary = !active_transit_hub
+    }
+    
+    architecture_period[*]: .{
+      v_noir = !art_deco_industrial
+      v_bloom = !neo_classical_ruin
+      v_documentary = !brutalist_civic
+    }
+
+    time[*]: .{
+      v_noir = !midnight
+      v_bloom = !dawn
+      v_documentary = !harsh_midnoon
+    }
+    
+    weather[*]: .{
+      v_noir = !heavy_rain
+      v_bloom = !morning_fog
+      v_documentary = !overcast_flat
+    }
+  }
+
+  camera_and_composition: .{
+    framing = !wide
+    angle = !eye_level
+    focal_point = isolates_&[subject.primary_subject]
+    depth_strategy = !layered_depth
+    balance = !asymmetrical
+    movement_lines: [ #diagonal_up, #curved_flow ]
+
+    lens_feel[*]: .{
+      v_noir = !high_contrast_35mm
+      v_bloom = !dreamy_85mm_macro
+      v_documentary = !clinical_50mm
+    }
+    
+    aperture[*]: .{
+      v_noir = !f_8_deep_focus
+      v_bloom = !f_1_4_shallow_bokeh
+      v_documentary = !f_5_6_standard
+    }
+
+    shutter_speed[*]: .{
+      v_noir = !frozen_motion
+      v_bloom = !long_exposure_drag
+      v_documentary = !slight_motion_blur
+    }
+
+    film_stock[*]: .{
+      v_noir = !kodak_tri_x_400
+      v_bloom = !cinestill_800t
+      v_documentary = !fujifilm_provia_100f
+    }
+  }
+
+  design_system: .{
+    color: .{
+      saturation = !vivid
+      logic = structurally_encodes_&[concept.transformation]
+
+      palette[*]: .{
+        v_noir = [                      #monochrome_black, #silver, #charcoal ]
+        v_bloom = [                     #pastel_peach, #mint_green, #soft_gold ]
+        v_documentary = [               #desaturated_earth, #concrete, #steel ]
+      }
+
+      contrast[*]: .{
+        v_noir = !high_black_white
+        v_bloom = !soft_lifted_blacks
+        v_documentary = !true_to_life_linear
+      }
+    }
+  }
+
+  lighting: .{
+    primary_source = !sunlight
+    direction = !backlight
+    highlights = where_highlights_live
+
+    quality[*]: .{
+      v_noir = !hard_specular
+      v_bloom = !soft_diffused
+      v_documentary = !available_ambient
+    }
+
+    color_temperature[*]: .{
+      v_noir = !cool_tungsten_3200k
+      v_bloom = !warm_golden_5600k
+      v_documentary = !mixed_fluorescent
+    }
+
+    fill_ratio[*]: .{
+      v_noir = !high_contrast_8_to_1
+      v_bloom = !flat_ambient_2_to_1
+      v_documentary = !natural_bounce_4_to_1
+    }
+
+    atmosphere_effects: [               #fog_bloom, #dust_beams ]
+  }
+
+  materiality: .{
+    wear_and_age = !weathered
+    tactile_priority = anchors_&[subject.details.wardrobe_or_surface]
+
+    surface_language[*]: .{
+      v_noir = !wet_asphalt_and_glass
+      v_bloom = !translucent_petals_and_skin
+      v_documentary = !scuffed_plastic_and_denim
+    }
+
+    special_effects: [                  #smoke, #glass_refraction ]
+  }
+
+  boonhonk: .{
+    definition = "The observable field of wonder; naming taste, posture, and quality."
+    combinatorics: .{
+      instruction = "Use the % operator to quantify taste."
+      formulas: [
+      %[design_system.color.contrast * 2] + %[lighting.fill_ratio] = sculptural_density
+      %[subject.subject_state * scene.atmosphere] + %[materiality.surface_language] = tactile_yield
+      %[concept.emotional_core] / (1 + %[negatives.style_errors]) = wonder_ratio
+      %[focus * trace] = variant_resonance
+      ]
+      execution = compute_%[sculptural_density * tactile_yield * wonder_ratio * variant_resonance]
+    }
+  }
+
+  negatives: .{
+    anatomy: [                          #extra_fingers, #broken_hands, #warped_limbs ]
+    composition: [                      #cropped_focal_subject, #tangent_collisions ]
+    rendering: [                        #plastic_skin, #incoherent_reflections, #chromatic_aberration_abuse ]
+    style: [                            #default_ai_gloss, #empty_spectacle, #overuse_of_bloom ]
+  }
+}
