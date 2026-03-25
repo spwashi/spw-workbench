@@ -29,183 +29,187 @@
     styling = !utility_first_css_with_scoped_modules
   }
 
-  concept: .{
-    core_thesis = main_value_proposition
-    target_audience = who_this_is_for
-    emotional_core[*]: .{
-      v_editorial = #sophisticated_calm
-      v_spatial = #awe_and_discovery
-      v_system = #raw_capability
-    }
-  }
-
-  architecture: .{
-    routing: .{
-      strategy = !client_side_spa_with_ssr_hydration
-      view_transitions_api = !active_supported_browsers
-
-      prefetching[*]: .{
-        v_editorial = !on_hover_of_nav_links
-        v_spatial = !eager_in_background_for_webgl_assets
-        v_system = !on_intent_mouse_down
-      }
-
-      page_transition_style[*]: .{
-        v_editorial = !crossfade_routing_slow
-        v_spatial = !camera_flythrough_to_new_scene
-        v_system = !instant_snap_no_animation
+  brief: .{
+    concept: .{
+      core_thesis = main_value_proposition
+      target_audience = who_this_is_for
+      emotional_core[*]: .{
+        v_editorial = #sophisticated_calm
+        v_spatial = #awe_and_discovery
+        v_system = #raw_capability
       }
     }
-    
-    infrastructure[*]: .{
-      v_editorial = !static_site_generation_cdn_deployed
-      v_spatial = !webrtc_peer_mesh_for_multiplayer
-      v_system = !distributed_edge_compute_network
-    }
-    
-    state_management: .{
-      global_store = !atomic_unidirectional_store
-      server_state = !async_cache_stale_while_revalidate
-      url_state = !search_params_for_filters
-      local_storage = !persist_user_preferences
+
+    design_system: .{
+      typography: .{
+        scale_ratio = 1.250  # Major Third
+        heading_font: !sans_serif_grotesk
+        body_font: !serif_transitional
+        variable_axes: !weight_and_slant_enabled
+      }
+
+      color: .{
+        theme = !dark_mode_default
+        palette = !monochrome_with_single_neon_gradient
+        contrast_target = !wcag_aa_compliant
+      }
+
+      spacing = !8px_linear_grid
+      border_radius = !sharp_0px
     }
 
-    auth_flow = !magic_link_passwordless_managed_auth
-    error_handling = !graceful_skeleton_degradation_error_boundaries
-    
-    primary_navigation[*]: .{
-      v_editorial = !hidden_menu_trigger_full_screen_overlay
-      v_spatial = !sticky_glass_header_hides_on_scroll_down
-      v_system = !left_sidebar_always_visible_tree
+    layout: .{
+      container_width = !max_1440px
+      content_density[*]: .{
+        v_editorial = !generous_whitespace_overlapping_images
+        v_spatial = !edge_to_edge_canvas_no_margins
+        v_system = !dense_data_tables_compact_padding
+      }
+      
+      grid = !css_grid_12_column_fluid
+      vertical_rhythm = !vh_based_sections_for_scroll_snapping
+    }
+
+    motion: .{
+      scroll_behavior[*]: .{
+        v_editorial = !native_smooth_scroll_css
+        v_spatial = !lenis_virtual_scroll_hijack_with_inertia
+        v_system = !native_snapping_paginated
+      }
+
+      interaction_feel = !spring_physics_stiff
+      micro_interactions = !magnetic_buttons
+      parallax_intensity = !subtle_depth_planes
+    }
+
+    materiality: .{
+      surface_language[*]: .{
+        v_editorial = !noise_grain_and_crisp_borders
+        v_spatial = !glassmorphism_blur_and_refraction
+        v_system = !solid_blocks_and_terminal_green
+      }
     }
   }
 
-  design_system: .{
-    typography: .{
-      scale_ratio = 1.250  # Major Third
-      heading_font: !sans_serif_grotesk
-      body_font: !serif_transitional
-      variable_axes: !weight_and_slant_enabled
+  renderer_profile: .{
+    architecture: .{
+      routing: .{
+        strategy = !client_side_spa_with_ssr_hydration
+        view_transitions_api = !active_supported_browsers
+
+        prefetching[*]: .{
+          v_editorial = !on_hover_of_nav_links
+          v_spatial = !eager_in_background_for_webgl_assets
+          v_system = !on_intent_mouse_down
+        }
+
+        page_transition_style[*]: .{
+          v_editorial = !crossfade_routing_slow
+          v_spatial = !camera_flythrough_to_new_scene
+          v_system = !instant_snap_no_animation
+        }
+      }
+      
+      infrastructure[*]: .{
+        v_editorial = !static_site_generation_cdn_deployed
+        v_spatial = !webrtc_peer_mesh_for_multiplayer
+        v_system = !distributed_edge_compute_network
+      }
+      
+      state_management: .{
+        global_store = !atomic_unidirectional_store
+        server_state = !async_cache_stale_while_revalidate
+        url_state = !search_params_for_filters
+        local_storage = !persist_user_preferences
+      }
+
+      auth_flow = !magic_link_passwordless_managed_auth
+      error_handling = !graceful_skeleton_degradation_error_boundaries
+      
+      primary_navigation[*]: .{
+        v_editorial = !hidden_menu_trigger_full_screen_overlay
+        v_spatial = !sticky_glass_header_hides_on_scroll_down
+        v_system = !left_sidebar_always_visible_tree
+      }
     }
 
-    color: .{
-      theme = !dark_mode_default
-      palette = !monochrome_with_single_neon_gradient
-      contrast_target = !wcag_aa_compliant
+    web_capabilities: .{
+      apis: [
+        #intersection_observer
+        #web_audio_api
+        #device_orientation
+      ]
+      
+      storage = !indexed_db_for_offline_cache
+      web_workers = !offload_heavy_physics_calculations
     }
 
-    spacing = !8px_linear_grid
-    border_radius = !sharp_0px
-  }
-
-  layout: .{
-    container_width = !max_1440px
-    content_density[*]: .{
-      v_editorial = !generous_whitespace_overlapping_images
-      v_spatial = !edge_to_edge_canvas_no_margins
-      v_system = !dense_data_tables_compact_padding
-    }
-    
-    grid = !css_grid_12_column_fluid
-    vertical_rhythm = !vh_based_sections_for_scroll_snapping
-  }
-
-  web_capabilities: .{
-    apis: [
-      #intersection_observer
-      #web_audio_api
-      #device_orientation
-    ]
-    
-    storage = !indexed_db_for_offline_cache
-    web_workers = !offload_heavy_physics_calculations
-  }
-
-  motion: .{
-    scroll_behavior[*]: .{
-      v_editorial = !native_smooth_scroll_css
-      v_spatial = !lenis_virtual_scroll_hijack_with_inertia
-      v_system = !native_snapping_paginated
+    performance_budgets: .{
+      core_web_vitals: .{
+        lcp_target = !under_2_5_seconds
+        fid_target = !under_100_milliseconds
+        cls_target = !under_0_1_shift
+        inp_target = !under_200_milliseconds
+      }
+      
+      asset_optimization: .{
+        images = !avif_first_with_webp_fallback
+        video = !webm_vp9_with_mp4_h264_fallback
+        fonts = !woff2_subsetted_preload
+        three_js = !draco_compression_on_gltf
+      }
+      
+      caching_strategy = !immutable_cache_control_on_assets
+      lazy_loading = !aggressive_intersection_observer_boundaries
+      dom_recycling = !virtualized_lists_for_data_tables
     }
 
-    interaction_feel = !spring_physics_stiff
-    micro_interactions = !magnetic_buttons
-    parallax_intensity = !subtle_depth_planes
-  }
+    search_engine_optimization: .{
+      metadata: .{
+        title_template = !brand_name_pipe_page_title
+        description_length = !max_155_characters
+        open_graph_images = !dynamic_edge_generated_pngs
+        twitter_cards = !summary_large_image
+      }
+      
+      semantics: .{
+        heading_hierarchy = !strict_h1_to_h6_sequential
+        structured_data = !json_ld_schema_org_article
+        accessibility_aria = !landmarks_and_live_regions
+      }
+      
+      internationalization: .{
+        hreflang_tags = !implemented_for_en_and_es
+        routing = !subpath_based_locales
+      }
+    }
 
-  materiality: .{
-    surface_language[*]: .{
-      v_editorial = !noise_grain_and_crisp_borders
-      v_spatial = !glassmorphism_blur_and_refraction
-      v_system = !solid_blocks_and_terminal_green
+    analytics_and_observability: .{
+      event_tracking: .{
+        page_views = !history_state_change_listener
+        interactions = !data_attributes_for_clicks
+        scroll_depth = !quartile_milestones_25_50_75_100
+      }
+      
+      error_monitoring: .{
+        uncaught_exceptions = !distributed_stack_trace_monitoring
+        performance_metrics = !real_user_monitoring_web_vitals
+      }
     }
-  }
 
-  performance_budgets: .{
-    core_web_vitals: .{
-      lcp_target = !under_2_5_seconds
-      fid_target = !under_100_milliseconds
-      cls_target = !under_0_1_shift
-      inp_target = !under_200_milliseconds
-    }
-    
-    asset_optimization: .{
-      images = !avif_first_with_webp_fallback
-      video = !webm_vp9_with_mp4_h264_fallback
-      fonts = !woff2_subsetted_preload
-      three_js = !draco_compression_on_gltf
-    }
-    
-    caching_strategy = !immutable_cache_control_on_assets
-    lazy_loading = !aggressive_intersection_observer_boundaries
-    dom_recycling = !virtualized_lists_for_data_tables
-  }
-
-  search_engine_optimization: .{
-    metadata: .{
-      title_template = !brand_name_pipe_page_title
-      description_length = !max_155_characters
-      open_graph_images = !dynamic_edge_generated_pngs
-      twitter_cards = !summary_large_image
-    }
-    
-    semantics: .{
-      heading_hierarchy = !strict_h1_to_h6_sequential
-      structured_data = !json_ld_schema_org_article
-      accessibility_aria = !landmarks_and_live_regions
-    }
-    
-    internationalization: .{
-      hreflang_tags = !implemented_for_en_and_es
-      routing = !subpath_based_locales
-    }
-  }
-
-  analytics_and_observability: .{
-    event_tracking: .{
-      page_views = !history_state_change_listener
-      interactions = !data_attributes_for_clicks
-      scroll_depth = !quartile_milestones_25_50_75_100
-    }
-    
-    error_monitoring: .{
-      uncaught_exceptions = !distributed_stack_trace_monitoring
-      performance_metrics = !real_user_monitoring_web_vitals
-    }
-  }
-
-  ci_cd_pipeline: .{
-    testing: .{
-      unit = !fast_in_memory_runner
-      end_to_end = !cross_browser_automation
-      visual_regression = !cloud_dom_snapshotting
-      accessibility = !automated_a11y_ruleset_ci
-    }
-    
-    deployment: .{
-      provider = !managed_edge_hosting
-      branch_previews = !enabled_with_comments
-      production_gate = !require_passing_tests_and_human_review
+    ci_cd_pipeline: .{
+      testing: .{
+        unit = !fast_in_memory_runner
+        end_to_end = !cross_browser_automation
+        visual_regression = !cloud_dom_snapshotting
+        accessibility = !automated_a11y_ruleset_ci
+      }
+      
+      deployment: .{
+        provider = !managed_edge_hosting
+        branch_previews = !enabled_with_comments
+        production_gate = !require_passing_tests_and_human_review
+      }
     }
   }
 
@@ -214,14 +218,23 @@
     combinatorics: .{
       instruction = "Use the % operator to quantify the systemic resonance."
       formulas: [
-        %[design_system.typography.scale_ratio * 2.5] + %[materiality.surface_language] = visual_authority
-        %[motion.interaction_feel] * %[web_capabilities.apis] = kinetic_valence
-        %[architecture.routing.view_transitions_api] / (1 + %[negatives.performance]) = experiential_flow
-        %[ci_cd_pipeline.testing.visual_regression] * %[search_engine_optimization.structured_data] = technical_rigor
+        %[brief.design_system.typography.scale_ratio * 2.5] + %[brief.materiality.surface_language] = visual_authority
+        %[brief.motion.interaction_feel] * %[renderer_profile.web_capabilities.apis] = kinetic_valence
+        %[renderer_profile.architecture.routing.view_transitions_api] / (1 + %[negatives.performance]) = experiential_flow
+        %[renderer_profile.ci_cd_pipeline.testing.visual_regression] * %[renderer_profile.search_engine_optimization.semantics.structured_data] = technical_rigor
         %[focus * trace] = variant_resonance
       ]
       execution = compute_%[visual_authority * kinetic_valence * experiential_flow * technical_rigor * variant_resonance]
     }
+  }
+
+  emit: .{
+    output_contract = .{
+      semantic_source = brief
+      renderer_source = renderer_profile
+      primary_deliverable = !website_blueprint
+    }
+    handoff_notes = "Use the brief layer for user-facing experience and brand intent, the renderer_profile layer for stack, runtime, SEO, and delivery constraints, and negatives as non-goals."
   }
 
   negatives: .{

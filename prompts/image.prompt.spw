@@ -6,8 +6,8 @@
 
 ^"image_generation" {
   identity: .{
-    title = working_title
-    subtitle = none
+    title = midnight_threshold
+    subtitle = creature_on_the_last_platform
     version = v1
     status = draft
     intent = generate_complete_image_brief
@@ -32,226 +32,228 @@
     priority = !strong_focal_clarity
   }
 
-  generative_engine: .{
-    model_architecture = !latent_diffusion_foundation_model
-    sampler = !adaptive_step_stochastic_sampler
-    steps = 40
-    cfg_scale = 7.5
-    clip_skip = 2
-    seed = !randomized_unless_locked
-    
-    lora_stack: .{
-      primary_style: .{ name = "cinematic_lighting_v2", weight = 0.8 }
-      secondary_texture: .{ name = "analog_film_grain", weight = 0.4 }
-      tertiary_detail: .{ name = "add_detail_xl", weight = 0.2 }
-    }
-
-    controlnet_adapters: .{
-      depth_map = !monocular_depth_estimation_weight_0_5
-      canny_edge = !disabled
-      openpose = !active_for_human_subjects
-      ip_adapter: .{ image_prompt = "reference_image.jpg", weight = 0.6 }
-    }
-  }
-
-  concept: .{
-    premise = one_sentence_visual_premise
-    thesis_image = central_image_summary
-    
-    emotional_core[*]: .{
-      v_noir = #somber_isolation
-      v_bloom = #ethereal_wonder
-      v_documentary = #raw_truth
-    }
-    
-    emotional_mix: [
-      #emotion_1
-      #emotion_2
-      #emotion_3
-    ]
-    transformation = user_state_before_and_after
-  }
-
-  subject: .{
-    primary_subject = !creature
-    subject_count = 1
-    
-    subject_state[*]: .{
-      v_noir = !shadowed_and_waiting
-      v_bloom = !glowing_and_reaching
-      v_documentary = !caught_in_motion
-    }
-    
-    details: .{
-      age_or_scale = large
-      silhouette = clear_and_sharp
-      expression = driven_by_&[concept.emotional_core]
-      gesture = !still
+  brief: .{
+    concept: .{
+      premise = a solitary humanoid creature waits on a rain-soaked tram platform as if the city itself is deciding whether to let it cross into another life
+      thesis_image = lonely threshold figure held between neon weather and interior resolve
       
-      wardrobe_or_surface[*]: .{
-        v_noir = !structured_wool_and_leather
-        v_bloom = !flowing_silk_and_light
-        v_documentary = !weathered_utilitarian
-      }
-    }
-    
-    anatomy_and_posing: .{
-      eye_contact = !looking_off_camera
-      posture = !slumped_shoulders
-      hand_placement = !resting_on_knees
-      weight_distribution = !leaning_forward
-    }
-    
-    supporting: [
-      !flora
-      !atmosphere
-    ]
-  }
-
-  scene: .{
-    environment_type = !surreal
-    environmental_story = what_the_environment_implies
-    
-    location[*]: .{
-      v_noir = !wet_city_street_neon_reflections
-      v_bloom = !overgrown_glasshouse_sun_dappled
-      v_documentary = !active_transit_hub_fluorescent
-    }
-    
-    architecture_period[*]: .{
-      v_noir = !art_deco_industrial_rivets
-      v_bloom = !neo_classical_ruin_marble
-      v_documentary = !brutalist_civic_concrete
-    }
-
-    time[*]: .{
-      v_noir = !midnight_pitch_black_sky
-      v_bloom = !dawn_golden_hour_haze
-      v_documentary = !harsh_midnoon_directional
-    }
-    
-    weather[*]: .{
-      v_noir = !heavy_rain_droplets_on_lens
-      v_bloom = !morning_fog_volumetric
-      v_documentary = !overcast_flat_white_sky
-    }
-  }
-
-  camera_and_composition: .{
-    framing = !wide_establishing_shot
-    angle = !low_angle_heroic
-    focal_point = isolates_&[subject.primary_subject]
-    depth_strategy = !layered_foreground_elements
-    balance = !asymmetrical_rule_of_thirds
-    movement_lines: [ #diagonal_up, #curved_flow_fibonacci ]
-
-    lens_feel[*]: .{
-      v_noir = !high_contrast_35mm_anamorphic
-      v_bloom = !dreamy_85mm_macro_swirl_bokeh
-      v_documentary = !clinical_50mm_rectilinear
-    }
-    
-    aperture[*]: .{
-      v_noir = !f_8_deep_focus_everything_sharp
-      v_bloom = !f_1_4_shallow_bokeh_cream
-      v_documentary = !f_5_6_standard_documentary
-    }
-    
-    shutter_speed[*]: .{
-      v_noir = !frozen_motion_1_1000s
-      v_bloom = !long_exposure_drag_1_2s
-      v_documentary = !slight_motion_blur_1_60s
-    }
-
-    film_stock[*]: .{
-      v_noir = !classic_high_contrast_panchromatic_bnw_pushed
-      v_bloom = !tungsten_balanced_motion_picture_film_with_halation
-      v_documentary = !daylight_color_reversal_film
-    }
-  }
-
-  design_system: .{
-    color: .{
-      saturation = !vivid_but_natural
-      logic = structurally_encodes_&[concept.transformation]
-
-      palette[*]: .{
-        v_noir = [ #monochrome_black, #silver_metallic, #charcoal_matte ]
-        v_bloom = [ #pastel_peach, #mint_green, #soft_gold ]
-        v_documentary = [ #desaturated_earth, #concrete_gray, #steel_blue ]
+      emotional_core[*]: .{
+        v_noir = #somber_isolation
+        v_bloom = #ethereal_wonder
+        v_documentary = #raw_truth
       }
       
-      contrast[*]: .{
-        v_noir = !high_black_white_crushed
-        v_bloom = !soft_lifted_blacks_milky
-        v_documentary = !true_to_life_linear_curve
+      emotional_mix: [
+        #somber_isolation
+        #cautious_longing
+        #threshold_dread
+      ]
+      transformation = from hunted_and_hesitant to self_possessed_and_committed
+    }
+
+    subject: .{
+      primary_subject = !humanoid_creature
+      subject_count = 1
+      
+      subject_state[*]: .{
+        v_noir = !shadowed_and_waiting
+        v_bloom = !glowing_and_reaching
+        v_documentary = !caught_in_motion
+      }
+      
+      details: .{
+        age_or_scale = large
+        silhouette = clear_and_sharp
+        expression = driven_by_&[brief.concept.emotional_core]
+        gesture = !still
+        
+        wardrobe_or_surface[*]: .{
+          v_noir = !structured_wool_and_leather
+          v_bloom = !flowing_silk_and_light
+          v_documentary = !weathered_utilitarian
+        }
+      }
+      
+      anatomy_and_posing: .{
+        eye_contact = !looking_off_camera
+        posture = !slumped_shoulders
+        hand_placement = !resting_on_knees
+        weight_distribution = !leaning_forward
+      }
+      
+      supporting: [
+        !flora
+        !atmosphere
+      ]
+    }
+
+    scene: .{
+      environment_type = !surreal
+      environmental_story = the station feels like a border checkpoint between one identity and another, with the city reduced to wet signs, steel, and waiting light
+      
+      location[*]: .{
+        v_noir = !wet_city_street_neon_reflections
+        v_bloom = !overgrown_glasshouse_sun_dappled
+        v_documentary = !active_transit_hub_fluorescent
+      }
+      
+      architecture_period[*]: .{
+        v_noir = !art_deco_industrial_rivets
+        v_bloom = !neo_classical_ruin_marble
+        v_documentary = !brutalist_civic_concrete
+      }
+
+      time[*]: .{
+        v_noir = !midnight_pitch_black_sky
+        v_bloom = !dawn_golden_hour_haze
+        v_documentary = !harsh_midnoon_directional
+      }
+      
+      weather[*]: .{
+        v_noir = !heavy_rain_droplets_on_lens
+        v_bloom = !morning_fog_volumetric
+        v_documentary = !overcast_flat_white_sky
       }
     }
+
+    camera_and_composition: .{
+      framing = !medium_wide_environmental_portrait
+      angle = !low_angle_heroic
+      focal_point = isolates_&[brief.subject.primary_subject]
+      depth_strategy = !layered_foreground_elements
+      balance = !asymmetrical_rule_of_thirds
+      movement_lines: [ #diagonal_up, #curved_flow_fibonacci ]
+    }
+
+    design_system: .{
+      color: .{
+        saturation = !vivid_but_natural
+        logic = structurally_encodes_&[brief.concept.transformation]
+
+        palette[*]: .{
+          v_noir = [ #monochrome_black, #silver_metallic, #charcoal_matte ]
+          v_bloom = [ #pastel_peach, #mint_green, #soft_gold ]
+          v_documentary = [ #desaturated_earth, #concrete_gray, #steel_blue ]
+        }
+        
+        contrast[*]: .{
+          v_noir = !high_black_white_crushed
+          v_bloom = !soft_lifted_blacks_milky
+          v_documentary = !true_to_life_linear_curve
+        }
+      }
+    }
+
+    lighting_and_materiality: .{
+      primary_source = !neon_signage_and_wet_streetlamps
+      direction = !backlight_rim_wrap
+      highlights = specular_on_wet_pavement_horns_and_coat_edges
+
+      lighting_quality[*]: .{
+        v_noir = !hard_specular_bare_bulb
+        v_bloom = !soft_diffused_8x8_silk
+        v_documentary = !available_ambient_street_lamps
+      }
+
+      color_temperature[*]: .{
+        v_noir = !cool_tungsten_3200k_blue_cast
+        v_bloom = !warm_golden_5600k_orange_cast
+        v_documentary = !mixed_fluorescent_4000k_green_shift
+      }
+
+      fill_ratio[*]: .{
+        v_noir = !high_contrast_8_to_1_chiaroscuro
+        v_bloom = !flat_ambient_2_to_1_airy
+        v_documentary = !natural_bounce_4_to_1_realistic
+      }
+      
+      atmosphere_effects: [ 
+        #fog_bloom_diffusion
+        #dust_beams_volumetric
+        #lens_flare_anamorphic_blue
+      ]
+
+      wear_and_age = !weathered_and_used
+      tactile_priority = anchors_&[brief.subject.details.wardrobe_or_surface]
+
+      surface_language[*]: .{
+        v_noir = !wet_asphalt_and_shattered_glass
+        v_bloom = !translucent_petals_and_subsurface_skin
+        v_documentary = !scuffed_plastic_and_frayed_denim
+      }
+      
+      special_effects: [ 
+        #smoke_wisps
+        #glass_refraction_chromatic_split
+        #sweat_beads_macro
+      ]
+    }
   }
 
-  lighting_and_grip: .{
-    primary_source = !sunlight_through_blinds
-    direction = !backlight_rim_wrap
-    highlights = where_highlights_live_specular
+  renderer_profile: .{
+    generative_engine: .{
+      model_architecture = !latent_diffusion_foundation_model
+      sampler = !adaptive_step_stochastic_sampler
+      steps = 40
+      cfg_scale = 7.5
+      clip_skip = 2
+      seed = !randomized_unless_locked
+      
+      lens_feel[*]: .{
+        v_noir = !high_contrast_35mm_anamorphic
+        v_bloom = !dreamy_50mm_soft_focus
+        v_documentary = !clinical_50mm_rectilinear
+      }
+      
+      aperture[*]: .{
+        v_noir = !f_8_deep_focus_everything_sharp
+        v_bloom = !f_1_4_shallow_bokeh_cream
+        v_documentary = !f_5_6_standard_documentary
+      }
+      
+      shutter_speed[*]: .{
+        v_noir = !frozen_motion_1_1000s
+        v_bloom = !long_exposure_drag_1_2s
+        v_documentary = !slight_motion_blur_1_60s
+      }
 
-    quality[*]: .{
-      v_noir = !hard_specular_bare_bulb
-      v_bloom = !soft_diffused_8x8_silk
-      v_documentary = !available_ambient_street_lamps
+      film_stock[*]: .{
+        v_noir = !classic_high_contrast_panchromatic_bnw_pushed
+        v_bloom = !tungsten_balanced_motion_picture_film_with_halation
+        v_documentary = !daylight_color_reversal_film
+      }
+      
+      lora_stack: .{
+        primary_style: .{ name = "cinematic_lighting_v2", weight = 0.8 }
+        secondary_texture: .{ name = "analog_film_grain", weight = 0.4 }
+        tertiary_detail: .{ name = "add_detail_xl", weight = 0.2 }
+      }
+
+      controlnet_adapters: .{
+        depth_map = !monocular_depth_estimation_weight_0_5
+        canny_edge = !disabled
+        openpose = !active_for_human_subjects
+        ip_adapter: .{ image_prompt = "reference_image.jpg", weight = 0.6 }
+      }
     }
 
-    color_temperature[*]: .{
-      v_noir = !cool_tungsten_3200k_blue_cast
-      v_bloom = !warm_golden_5600k_orange_cast
-      v_documentary = !mixed_fluorescent_4000k_green_shift
-    }
-
-    fill_ratio[*]: .{
-      v_noir = !high_contrast_8_to_1_chiaroscuro
-      v_bloom = !flat_ambient_2_to_1_airy
-      v_documentary = !natural_bounce_4_to_1_realistic
-    }
-    
-    atmosphere_effects: [ 
-      #fog_bloom_diffusion
-      #dust_beams_volumetric
-      #lens_flare_anamorphic_blue
-    ]
-  }
-
-  materiality_and_texture: .{
-    wear_and_age = !weathered_and_used
-    tactile_priority = anchors_&[subject.details.wardrobe_or_surface]
-
-    surface_language[*]: .{
-      v_noir = !wet_asphalt_and_shattered_glass
-      v_bloom = !translucent_petals_and_subsurface_skin
-      v_documentary = !scuffed_plastic_and_frayed_denim
-    }
-    
-    special_effects: [ 
-      #smoke_wisps
-      #glass_refraction_chromatic_split
-      #sweat_beads_macro
-    ]
-  }
-
-  post_processing_instructions: .{
-    upscaling: .{
-      algorithm = !generative_adversarial_network_4x
-      denoising_strength = 0.35
-      high_res_fix = !enabled
-    }
-    
-    inpainting: .{
-      face_restoration = !blind_face_restoration_network_weight_0_5
-      hand_correction = !depth_aware_inpainting_mask
-    }
-    
-    color_grading: .{
-      lut = !teal_and_orange_blockbuster
-      vignette = !heavy_dark_corners
-      grain_overlay = !35mm_kodak_scan
+    post_processing: .{
+      upscaling: .{
+        algorithm = !generative_adversarial_network_4x
+        denoising_strength = 0.35
+        high_res_fix = !enabled
+      }
+      
+      inpainting: .{
+        face_restoration = !blind_face_restoration_network_weight_0_5
+        hand_correction = !depth_aware_inpainting_mask
+      }
+      
+      color_grading: .{
+        lut = !teal_and_orange_blockbuster
+        vignette = !heavy_dark_corners
+        grain_overlay = !35mm_kodak_scan
+      }
     }
   }
 
@@ -260,12 +262,52 @@
     combinatorics: .{
       instruction = "Use the % operator to quantify taste."
       formulas: [
-        %[design_system.color.contrast * 2.0] + %[lighting_and_grip.fill_ratio] = sculptural_density
-        %[subject.subject_state * camera_and_composition.lens_feel] + %[materiality_and_texture.surface_language] = tactile_yield
-        %[generative_engine.lora_stack] / (1 + %[negatives.style]) = prompt_adherence
-        %[concept.emotional_core] * %[focus * trace] = wonder_ratio
+        %[brief.design_system.color.contrast * 2.0] + %[brief.lighting_and_materiality.fill_ratio] = sculptural_density
+        %[brief.subject.subject_state * renderer_profile.generative_engine.lens_feel] + %[brief.lighting_and_materiality.surface_language] = tactile_yield
+        %[renderer_profile.generative_engine.lora_stack] / (1 + %[negatives.style]) = prompt_adherence
+        %[brief.concept.emotional_core] * %[focus * trace] = wonder_ratio
       ]
       execution = compute_%[sculptural_density * tactile_yield * prompt_adherence * wonder_ratio]
+    }
+  }
+
+  resolved_brief: .{
+    selected_variant = *v_noir
+    working_summary = a tall antlered humanoid creature in a dark wool coat sits forward on a rain-slick tram platform bench, looking off camera as neon reflections pool across black pavement and art deco steel
+    semantic_source = brief
+    renderer_source = renderer_profile
+    non_negotiables: [
+      #single_subject_only
+      #clear_silhouette
+      #humanoid_pose_with_hands_visible
+      #wet_city_platform_at_midnight
+      #somber_noir_mood
+    ]
+    composition_priorities: [
+      #subject_in_right_third
+      #foreground_rail_or_glass_occlusion
+      #deep_focus_environmental_story
+      #reflection_shapes_lead_eye_back_to_subject
+    ]
+    style_priorities: [
+      #cinematic_noir
+      #high_contrast_monochrome_with_silver_accents
+      #analog_film_grain
+      #restrained_surrealism
+    ]
+  }
+
+  emit: .{
+    short_prompt = "Tall antlered humanoid creature in a dark wool coat waiting alone on a rain-soaked tram platform at midnight, medium-wide environmental portrait, low angle, clear silhouette, looking off camera, leaning forward with hands resting on knees, wet black pavement with neon reflections, art deco steel and rivets, hard noir lighting, backlit rim light, deep focus, layered foreground glass and rails, high-contrast monochrome with silver accents, analog film grain, restrained surreal atmosphere, cinematic 35mm anamorphic."
+
+    final_prompt = "Create a stylized digital illustration in a cinematic noir mode. Show a single tall antlered humanoid creature seated on a tram platform bench at midnight. The subject wears a structured dark wool coat with leather detail, has slumped shoulders, leans forward, and rests both hands on its knees while looking off camera. Frame it as a medium-wide environmental portrait from a low angle so the figure feels isolated but monumental. The setting is a wet city platform with neon reflections, art deco industrial steel, rivets, rain in the air, and a pitch-black sky. Use layered foreground elements like out-of-focus glass, rails, or droplets to add depth without obscuring the subject. Keep the silhouette clean and readable. Light the scene with neon signage and streetlamps, using hard specular highlights, cool 3200k tones, strong rim light, and deep noir contrast. Prioritize wet asphalt, shattered-glass texture cues, subtle smoke wisps, and analog film grain. The image should feel somber, lonely, and on the edge of transformation rather than action-heavy or heroic."
+
+    negative_prompt = "extra fingers, broken hands, warped limbs, fused bodies, missing eyes, too many teeth, elongated neck, cropped subject at joints, tangent collisions with frame, floating objects, cluttered background mergers, incoherent reflections, chromatic aberration abuse, watermark text, jpeg artifacts, blurry foreground over subject, default AI gloss, empty blockbuster spectacle, glowing fantasy eyes, generic portfolio fantasy trends, glossy GPU render aesthetic"
+
+    model_notes = .{
+      preferred_aspect_ratio = 16:9
+      preferred_resolution = 4k
+      guidance = "Use the brief layer to understand image semantics, the renderer_profile layer to populate optional engine-specific controls, and the final_prompt as the main text prompt. Send negative_prompt as a separate negative field. Treat controlnet, LoRA, lens, and post-processing directives as renderer-specific overrides rather than required content semantics."
     }
   }
 
