@@ -23,251 +23,235 @@
   }
 
   format: .{
-    type = !interactive_experience
+    type = !marketing_landing_page
     target_device = !desktop_first_responsive
-    
-    content_density[*]: .{
-      v_editorial = !sparse_but_deep
-      v_spatial = !immersive_minimal
-      v_system = !data_dense
-    }
-
-    scroll_behavior[*]: .{
-      v_editorial = !native_smooth
-      v_spatial = !custom_lenis_physics
-      v_system = !hardware_instant
-    }
+    framework = !react_nextjs_app_router
+    styling = !tailwind_css_plus_css_modules
   }
 
   concept: .{
-    premise = one_sentence_product_premise
-    thesis_copy = central_hero_statement
-    
+    core_thesis = main_value_proposition
+    target_audience = who_this_is_for
     emotional_core[*]: .{
-      v_editorial = #measured_authority
-      v_spatial = #immersive_ambient
-      v_system = #unapologetic
-    }
-    
-    emotional_arc: [
-      #intrigue_on_load
-      #kinetic_discovery
-      #technical_awe
-      #conversion_clarity
-    ]
-    transformation = user_state_before_and_after
-  }
-
-  narrative: .{
-    perspective = !second_person
-    voice = !confident_guide
-    content_flow: [
-      !hero_claim_or_canvas_reveal
-      !social_proof_marquee
-      !feature_deep_dive_scroll_bound
-      !technical_spec_accordion
-      !final_call_to_action
-    ]
-    tension: .{
-      problem = what_is_broken
-      desire = what_user_wants
-      solution = what_we_provide
-      objection = what_they_fear
+      v_editorial = #sophisticated_calm
+      v_spatial = #awe_and_discovery
+      v_system = #raw_capability
     }
   }
 
   architecture: .{
     routing: .{
-      strategy = !client_side_spa
-      view_transitions_api = !active
+      strategy = !client_side_spa_with_ssr_hydration
+      view_transitions_api = !active_supported_browsers
 
       prefetching[*]: .{
-        v_editorial = !on_hover
-        v_spatial = !eager_in_background
-        v_system = !on_intent
+        v_editorial = !on_hover_of_nav_links
+        v_spatial = !eager_in_background_for_webgl_assets
+        v_system = !on_intent_mouse_down
       }
 
       page_transition_style[*]: .{
-        v_editorial = !crossfade_routing
-        v_spatial = !camera_flythrough
-        v_system = !instant_snap
+        v_editorial = !crossfade_routing_slow
+        v_spatial = !camera_flythrough_to_new_scene
+        v_system = !instant_snap_no_animation
       }
     }
     
     infrastructure[*]: .{
-      v_editorial = !static_site_generation_cdn
-      v_spatial = !webrtc_peer_mesh
-      v_system = !server_rendered_edge_compute
+      v_editorial = !static_site_generation_cdn_deployed
+      v_spatial = !webrtc_peer_mesh_for_multiplayer
+      v_system = !server_rendered_edge_compute_cloudflare
     }
     
-    auth_flow = !magic_link_passwordless
-    error_handling = !graceful_skeleton_degradation
+    state_management: .{
+      global_store = !zustand_slice_pattern
+      server_state = !react_query_stale_while_revalidate
+      url_state = !search_params_for_filters
+      local_storage = !persist_user_preferences
+    }
+
+    auth_flow = !magic_link_passwordless_via_supabase
+    error_handling = !graceful_skeleton_degradation_error_boundaries
     
     primary_navigation[*]: .{
-      v_editorial = !hidden_menu_trigger
-      v_spatial = !sticky_glass_header
-      v_system = !dense_top_bar
-    }
-    
-    footer_weight = !maximal_sitemap
-    
-    layout_strategy[*]: .{
-      v_editorial = !offset_masonry
-      v_spatial = !floating_z_index
-      v_system = !strict_table_rows
+      v_editorial = !hidden_menu_trigger_full_screen_overlay
+      v_spatial = !sticky_glass_header_hides_on_scroll_down
+      v_system = !left_sidebar_always_visible_tree
     }
   }
 
   design_system: .{
     typography: .{
-      secondary = !clean_sans_serif
-      variable_axes: [ #weight, #slant, #optical_size ]
-
-      primary[*]: .{
-        v_editorial = !variable_serif
-        v_spatial = !geometric_sans
-        v_system = !monospaced_code
-      }
-
-      scale_ratio[*]: .{
-        v_editorial = !fluid_rems
-        v_spatial = !fixed_optical
-        v_system = !modular_px_strict
-      }
-
-      tracking_behavior[*]: .{
-        v_editorial = !tight_display
-        v_spatial = !loose_airy
-        v_system = !tabular_nums
-      }
+      scale_ratio = 1.250  # Major Third
+      heading_font: !sans_serif_grotesk
+      body_font: !serif_transitional
+      variable_axes: !weight_and_slant_enabled
     }
-    
+
     color: .{
-      theme_handling = !system_preference_with_toggle
-      surface: [ #elevated_card, #inset_well ]
-      accent_logic = structurally_encodes_&[concept.transformation]
+      theme = !dark_mode_default
+      palette = !monochrome_with_single_neon_gradient
+      contrast_target = !wcag_aa_compliant
+    }
 
-      palette[*]: .{
-        v_editorial: [ #ink_black, #paper_white, #slate_gray ]
-        v_spatial: [ #obsidian, #deep_blur, #lucid_cyan, #laser ]
-        v_system: [ #terminal_black, #safety_orange, #ghost_white ]
-      }
+    spacing = !8px_linear_grid
+    border_radius = !sharp_0px
+  }
+
+  layout: .{
+    container_width = !max_1440px
+    content_density[*]: .{
+      v_editorial = !generous_whitespace_overlapping_images
+      v_spatial = !edge_to_edge_canvas_no_margins
+      v_system = !dense_data_tables_compact_padding
     }
     
-    space: .{
-      containment = ~[v_spatial:0.8, v_system:0.2]
-
-      density[*]: .{
-        v_editorial = !optical_margins
-        v_spatial = !continuous_scroll
-        v_system = !pixel_perfect_baseline
-      }
-
-      grid[*]: .{
-        v_editorial = !css_subgrid_asymmetric
-        v_spatial = !canvas_absolute
-        v_system = !css_grid_12_column
-      }
-    }
-  }
-
-  materiality: .{
-    surface_language = ~[v_spatial:0.9, v_editorial:0.1]
-    borders = ~[v_editorial:0.1, v_system:0.9]
-    tactile_priority = !hover_states_and_focus_rings
-    backdrop_filters: [ #blur, #saturate ]
-  }
-
-  motion: .{
-    physics: .{
-      spring_mass = 1
-      spring_stiffness = 170
-      spring_damping = 26
-    }
-    scroll_hijack: [ #horizontal_sections, #pinned_elements, #scrub_animations ]
-    micro_interactions: [ #magnetic_buttons, #cursor_followers, #skeleton_loaders ]
-    reduced_motion = !respect_os_prefs_strip_transforms
-
-    interaction_feel[*]: .{
-      v_editorial = !subtle_parallax
-      v_spatial = !spring_physics_cursor
-      v_system = !instant_snap
-    }
+    grid = !css_grid_12_column_fluid
+    vertical_rhythm = !vh_based_sections_for_scroll_snapping
   }
 
   web_capabilities: .{
     apis: [
-      #webgl_context
       #intersection_observer
       #web_audio_api
-      #css_custom_properties_houdini
+      #device_orientation
     ]
-    performance: .{
-      lazy_load = !aggressive_intersection_observer
-      dom_recycling = !virtualized_lists
-      asset_delivery = !avif_and_webp
-      caching_layer = !stale_while_revalidate
+    
+    storage = !indexed_db_for_offline_cache
+    web_workers = !offload_heavy_physics_calculations
+  }
+
+  motion: .{
+    scroll_behavior[*]: .{
+      v_editorial = !native_smooth_scroll_css
+      v_spatial = !lenis_virtual_scroll_hijack_with_inertia
+      v_system = !native_snapping_paginated
     }
 
-    rendering[*]: .{
-      v_editorial = !high_res_stills
-      v_spatial = !realtime_3d_webgl
-      v_system = !svg_vector_only
-    }
+    interaction_feel = !spring_physics_stiff
+    micro_interactions = !magnetic_buttons
+    parallax_intensity = !subtle_depth_planes
+  }
 
-    media_treatment[*]: .{
-      v_editorial = !duotone_bleed
-      v_spatial = !refractive_distortion
-      v_system = !one_pixel_stroke
+  materiality: .{
+    surface_language[*]: .{
+      v_editorial = !noise_grain_and_crisp_borders
+      v_spatial = !glassmorphism_blur_and_refraction
+      v_system = !solid_blocks_and_terminal_green
     }
   }
 
-  content: .{
-    copy_engine: .{
-      density = !concise
-      tone = !authoritative
-      preferred_devices: [ #active_verbs, #short_sentences, #scannable_lists ]
+  performance_budgets: .{
+    core_web_vitals: .{
+      lcp_target = !under_2_5_seconds
+      fid_target = !under_100_milliseconds
+      cls_target = !under_0_1_shift
+      inp_target = !under_200_milliseconds
     }
-    seo_and_a11y: .{
-      semantic_html = !strict
-      aria_labels = !comprehensive
-      meta_graph = !open_graph_and_twitter_cards
+    
+    asset_optimization: .{
+      images = !avif_first_with_webp_fallback
+      video = !webm_vp9_with_mp4_h264_fallback
+      fonts = !woff2_subsetted_preload
+      three_js = !draco_compression_on_gltf
+    }
+    
+    caching_strategy = !immutable_cache_control_on_assets
+    lazy_loading = !aggressive_intersection_observer_boundaries
+    dom_recycling = !virtualized_lists_for_data_tables
+  }
+
+  search_engine_optimization: .{
+    metadata: .{
+      title_template = !brand_name_pipe_page_title
+      description_length = !max_155_characters
+      open_graph_images = !dynamic_edge_generated_pngs
+      twitter_cards = !summary_large_image
+    }
+    
+    semantics: .{
+      heading_hierarchy = !strict_h1_to_h6_sequential
+      structured_data = !json_ld_schema_org_article
+      accessibility_aria = !landmarks_and_live_regions
+    }
+    
+    internationalization: .{
+      hreflang_tags = !implemented_for_en_and_es
+      routing = !subpath_based_locales
+    }
+  }
+
+  analytics_and_observability: .{
+    event_tracking: .{
+      page_views = !history_state_change_listener
+      interactions = !data_attributes_for_clicks
+      scroll_depth = !quartile_milestones_25_50_75_100
+    }
+    
+    error_monitoring: .{
+      uncaught_exceptions = !sentry_integration
+      performance_metrics = !vercel_analytics_web_vitals
+    }
+  }
+
+  ci_cd_pipeline: .{
+    testing: .{
+      unit = !vitest
+      end_to_end = !playwright
+      visual_regression = !percy
+      accessibility = !axe_core_ci
+    }
+    
+    deployment: .{
+      provider = !vercel
+      branch_previews = !enabled_with_comments
+      production_gate = !require_passing_tests_and_human_review
     }
   }
 
   boonhonk: .{
     definition = "The observable field of wonder; naming taste, posture, and quality."
     combinatorics: .{
-      instruction = "Use the % operator to quantify the site's interactive and aesthetic gravity."
+      instruction = "Use the % operator to quantify the systemic resonance."
       formulas: [
         %[design_system.typography.scale_ratio * 2.5] + %[materiality.surface_language] = visual_authority
         %[motion.interaction_feel] * %[web_capabilities.apis] = kinetic_valence
         %[architecture.routing.view_transitions_api] / (1 + %[negatives.performance]) = experiential_flow
+        %[ci_cd_pipeline.testing.visual_regression] * %[search_engine_optimization.structured_data] = technical_rigor
         %[focus * trace] = variant_resonance
       ]
-      execution = compute_%[visual_authority * kinetic_valence * experiential_flow * variant_resonance]
+      execution = compute_%[visual_authority * kinetic_valence * experiential_flow * technical_rigor * variant_resonance]
     }
   }
 
   negatives: .{
     design: [
-      #bootstrap_default
-      #low_contrast_text
-      #misaligned_baselines
-      #unmotivated_animations
-      #generic_border_radii
+      #illegible_contrast_ratios
+      #inconsistent_padding_scales
+      #competing_call_to_actions
+      #overused_hamburger_menus_on_desktop
+      #meaningless_stock_photography
     ]
     ux: [
-      #scroll_hijacking_without_escape
-      #unclear_buttons
-      #hidden_navigation
-      #layout_shift_on_load
-      #broken_back_button
+      #scroll_jacking_without_escape
+      #tiny_touch_targets_on_mobile
+      #auto_playing_audio
+      #layout_shifts_during_load
+      #trapped_keyboard_focus_in_modals
+      #invisible_focus_rings
     ]
     performance: [
-      #main_thread_blocking
-      #unoptimized_images
-      #render_blocking_fonts
+      #unoptimized_hero_images
+      #render_blocking_synchronous_scripts
+      #excessive_dom_depth_nodes_over_1500
+      #memory_leaks_in_webgl_canvas
+      #main_thread_blocking_react_renders
+    ]
+    seo: [
+      #missing_alt_tags
+      #duplicate_h1_tags
+      #client_rendered_important_content
+      #broken_canonical_links
     ]
   }
 }

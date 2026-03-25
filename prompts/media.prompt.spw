@@ -26,6 +26,9 @@
     aspect_ratio = !9_16_vertical
     duration = !15_seconds
     framerate = 60fps
+    resolution = 4k_uhd
+    color_space = !rec_709_gamma_2_4
+    bitrate_target = !high_40mbps
   }
 
   concept: .{
@@ -35,28 +38,135 @@
       v_documentary = #grounded_truth
       v_abstract = #hypnotic_wonder
     }
+    
+    narrative_arc: .{
+      hook_0_to_3s = !pattern_interrupt
+      build_3_to_10s = !rapid_escalation
+      payoff_10_to_15s = !logo_reveal_and_cta
+    }
   }
 
-  visual_engine: .{
-    editing_rhythm[*]: .{
-      v_kinetic = !on_the_snare_whip_pans
-      v_documentary = !lingering_crossfades_and_holds
-      v_abstract = !continuous_camera_morphs
+  camera_and_rigging: .{
+    motion_logic[*]: .{
+      v_kinetic = !whip_pans_and_crash_zooms
+      v_documentary = !handheld_organic_breathing
+      v_abstract = !smooth_spline_paths_infinite
     }
     
+    camera_type = !arri_alexa_mini_lf
+    
+    lens_choice[*]: .{
+      v_kinetic = !laowa_24mm_probe_macro
+      v_documentary = !cooke_panchro_s4_35mm
+      v_abstract = !virtual_orthographic_camera
+    }
+    
+    stabilization = !gimbal_smooth_ronin
+    height = !chest_level
+    focal_distance = !dynamic_pull
+  }
+
+  lighting_and_grip: .{
+    key_light = !aputure_600d_through_silk
+    fill_light = !negative_fill_flagged
+    backlight = !rgb_tube_colored_rim
+    
+    lighting_rhythm[*]: .{
+      v_kinetic = !strobing_synced_to_kick_drum_120bpm
+      v_documentary = !available_window_light_motivatd
+      v_abstract = !moving_gobos_and_caustics
+    }
+  }
+
+  art_direction: .{
+    set_design: .{
+      location = !cyclorama_infinity_wall
+      props = !minimal_hero_objects_only
+      texture_palette = !glossy_acrylic_and_matte_rubber
+    }
+    
+    wardrobe: .{
+      style = !techwear_monochrome
+      movement = !flowing_fabric_wind_machine
+    }
+    
+    color_grading: .{
+      lut_profile = !kodak_vision3_250d
+      contrast[*]: .{
+        v_kinetic = !crushed_blacks_high_saturation
+        v_documentary = !lifted_shadows_desaturated_greens
+        v_abstract = !neon_false_color_mapping
+      }
+      grain = !35mm_overlay_40_opacity
+      halation = !red_fringe_on_highlights
+    }
+  }
+
+  visual_engine_and_editing: .{
+    editing_rhythm[*]: .{
+      v_kinetic = !on_the_snare_whip_pans
+      v_documentary = !lingering_crossfades_and_holds_J_cuts
+      v_abstract = !continuous_camera_morphs_match_cuts
+    }
+    
+    transition_library: [
+      #luma_fade
+      #hyper_zoom
+      #film_burn_overlay
+      #data_moshing
+    ]
+    
     typography: .{
-      kinetic_behavior = !scale_and_snap
-      safe_zones = !center_weighted
+      kinetic_behavior = !scale_and_snap_overshoot
+      safe_zones = !center_weighted_1080x1080_square
+      typeface = !heavy_extended_grotesk
+      blend_mode = !difference_or_exclusion
+    }
+
+    vfx_and_compositing: .{
+      tracking = !planar_mocha_pro
+      particle_systems = !dust_motes_floating
+      chromatic_aberration = !edges_only_2px
+      lens_distortion = !barrel_distortion_anamorphic
     }
   }
 
   audio_bed: .{
     sound_design[*]: .{
-      v_kinetic = !whooshes_and_impacts
-      v_documentary = !room_tone_and_foley
-      v_abstract = !granular_synth_swells
+      v_kinetic = !heavy_sub_impacts_and_risers
+      v_documentary = !authentic_room_tone_and_cloth_movement
+      v_abstract = !granular_synth_swells_and_chimes
     }
-    music_sync = !hard_sync_to_transients
+    
+    music_sync = !hard_sync_to_transients_and_kicks
+    
+    foley_layers: [
+      #whoosh_pans
+      #fabric_rustle
+      #sub_booms
+      #glitch_stutters
+    ]
+    
+    voiceover: .{
+      presence = !dry_center_compression_heavy
+      pacing = !rapid_fire_no_breaths
+      eq_profile = !radio_broadcast_proximity_effect
+    }
+
+    spatial_mixing = !stereo_width_widened_on_chorus
+  }
+
+  platform_optimizations: .{
+    tiktok: .{
+      safe_zones = !account_for_right_side_icons_and_bottom_caption
+      hook = !start_mid_sentence
+      looping_logic = !seamless_visual_match_cut_end_to_start
+    }
+    
+    instagram_reels: .{
+      cover_image = !high_contrast_frame_with_bold_text
+      compression_handling = !sharpen_in_post_to_survive_ig_algorithm
+    }
   }
 
   boonhonk: .{
@@ -64,16 +174,37 @@
     combinatorics: .{
       instruction = "Use the % operator to quantify the kinetic resonance."
       formulas: [
-        %[visual_engine.editing_rhythm * 1.5] + %[audio_bed.sound_design] = kinetic_gravity
-        %[visual_engine.typography.kinetic_behavior] * %[concept.emotional_core] = visual_valence
+        %[visual_engine_and_editing.editing_rhythm * 1.5] + %[audio_bed.sound_design] = kinetic_gravity
+        %[camera_and_rigging.lens_choice] * %[camera_and_rigging.motion_logic] = optical_valence
+        %[visual_engine_and_editing.typography.kinetic_behavior] * %[concept.emotional_core] = typographical_impact
+        %[platform_optimizations.tiktok.looping_logic] / (1 + %[negatives.visual]) = retention_coefficient
         %[focus * trace] = variant_resonance
       ]
-      execution = compute_%[kinetic_gravity * visual_valence * variant_resonance]
+      execution = compute_%[kinetic_gravity * optical_valence * typographical_impact * retention_coefficient * variant_resonance]
     }
   }
 
   negatives: .{
-    visual: [ #jump_cuts, #unmotivated_camera_shake, #text_outside_safe_zone ]
-    audio: [ #clipping_levels, #dry_voiceover ]
+    visual: [ 
+      #jump_cuts_without_punches
+      #unmotivated_camera_shake
+      #text_outside_safe_zone
+      #muddy_log_footage
+      #default_premiere_transitions
+      #overused_light_leaks
+      #bad_green_screen_spill
+    ]
+    audio: [ 
+      #clipping_levels
+      #dry_voiceover
+      #unmixed_stock_music_volume
+      #missing_room_tone
+      #harsh_ess_sounds
+    ]
+    pacing: [
+      #slow_intro_logo_reveal
+      #dead_air
+      #unearned_dramatic_pauses
+    ]
   }
 }

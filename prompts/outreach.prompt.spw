@@ -24,37 +24,238 @@
 
   format: .{
     medium = !cadence_sequence
-    step_count = 3
-    channel = !email
+    step_count = 7
+    primary_channel = !email
+    secondary_channel = !linkedin_dm
+    tertiary_channel = !sms_or_whatsapp
+    format_type = !plain_text_no_html_overrides
+    attachment_strategy = !link_to_gated_asset
   }
 
   concept: .{
     core_thesis = main_communication_goal
+    campaign_name = the_internal_working_title
+    
     emotional_core[*]: .{
-      v_visionary = #inspiring
-      v_technical = #authoritative
-      v_personal = #empathetic
-    }
-  }
-
-  messaging: .{
-    hook_strategy[*]: .{
-      v_visionary = !provocative_question
-      v_technical = !pain_point_statistic
-      v_personal = !shared_experience_anecdote
+      v_visionary = #inspiring_and_urgent
+      v_technical = #authoritative_and_precise
+      v_personal = #empathetic_and_warm
     }
     
-    value_prop = what_we_solve
-    call_to_action = !low_friction_reply
+    desired_outcome = !booked_discovery_call
+    secondary_outcome = !resource_download_capture
+    tertiary_outcome = !brand_awareness_impression
   }
 
-  tone: .{
-    vocabulary[*]: .{
-      v_visionary = !evocative_and_future_facing
-      v_technical = !precise_and_industry_standard
-      v_personal = !conversational_and_warm
+  audience_psychographics: .{
+    persona_title = !vp_of_engineering
+    industry_vertical = !b2b_saas
+    company_size = !mid_market_500_to_1000
+    
+    pain_points: [
+      #high_turnover_in_dev
+      #technical_debt_accumulation
+      #slow_ship_velocity
+      #cloud_cost_sprawl
+      #security_compliance_audit_failure
+    ]
+    
+    desires: [
+      #peace_of_mind
+      #predictable_delivery
+      #industry_authority
+      #board_level_praise
+      #weekend_relaxation
+    ]
+    
+    skepticism_level = !extremely_high
+    jargon_fluency = !expert
+    attention_span = !three_seconds_skimming
+    buying_authority = !final_decision_maker_with_cfos_blessing
+  }
+
+  sequence_cadence: .{
+    timing_logic = !business_days_only
+    timezone_optimization = !recipient_local_time
+    sending_window = !tuesday_to_thursday_10am_to_2pm
+    
+    step_1_day_0: .{
+      purpose = !the_hook
+      channel = !email
+      word_count_limit = 100
+      attachment = none
+      trigger = !new_lead_capture
     }
-    sentence_length = !varied_rhythmic
+    
+    step_2_day_3: .{
+      purpose = !the_value_add
+      channel = !linkedin_connection
+      word_count_limit = 50
+      note_strategy = !reference_recent_post
+    }
+    
+    step_3_day_5: .{
+      purpose = !the_bump
+      channel = !email
+      word_count_limit = 30
+      subject_line = !reply_to_step_1
+      format = !mobile_optimized_one_liner
+    }
+
+    step_4_day_8: .{
+      purpose = !the_video_audit
+      channel = !linkedin_voice_note_or_loom
+      duration_limit = 90s
+      hook = !custom_website_teardown
+    }
+    
+    step_5_day_14: .{
+      purpose = !the_case_study
+      channel = !email
+      word_count_limit = 150
+      attachment = !pdf_link
+      social_proof = !competitor_namedrop
+    }
+
+    step_6_day_21: .{
+      purpose = !the_objection_squash
+      channel = !email
+      word_count_limit = 80
+      angle = !address_pricing_elephant
+    }
+    
+    step_7_day_30: .{
+      purpose = !the_breakup
+      channel = !email
+      word_count_limit = 75
+      tone = !polite_withdrawal_open_door
+      closing = !permission_to_stay_in_touch
+    }
+  }
+
+  messaging_architecture: .{
+    hook_strategy[*]: .{
+      v_visionary = !provocative_paradigm_shift_question
+      v_technical = !pain_point_statistic_and_audit
+      v_personal = !shared_experience_or_common_connection
+    }
+    
+    value_prop: .{
+      feature = what_it_does
+      benefit = how_it_helps
+      impact = why_it_matters_financially
+      time_to_value = !shipped_in_under_two_weeks
+    }
+    
+    call_to_action[*]: .{
+      v_visionary = !soft_interest_check
+      v_technical = !hard_meeting_link
+      v_personal = !open_ended_question
+    }
+
+    social_proof: .{
+      type = !peer_company_mention
+      metric = !percentage_increase
+      timeframe = !within_ninety_days
+      quote = !authentic_customer_voice
+    }
+  }
+
+  psychological_triggers: .{
+    scarcity = !limited_audit_slots_this_month
+    urgency = !upcoming_compliance_deadline_changes
+    reciprocity = !free_unconditonal_resource_attached
+    authority = !featured_in_gartner_magic_quadrant
+    consistency = !agreeing_to_small_initial_truth
+  }
+
+  objection_handling: .{
+    primary_objection = !no_budget
+    mitigation_strategy = !highlight_roi_and_cost_of_inaction
+    
+    secondary_objection = !bad_timing
+    mitigation_strategy_2 = !offer_asynchronous_resource
+    
+    tertiary_objection = !building_in_house
+    mitigation_strategy_3 = !compare_opportunity_cost_of_engineering_hours
+    
+    competitor_mention = !pivot_to_unique_differentiator_not_price
+  }
+
+  personalization_matrix: .{
+    dynamic_variables: [
+      {{first_name}}
+      {{company_name}}
+      {{recent_company_news}}
+      {{alma_mater}}
+      {{competitor_name}}
+      {{city_location}}
+    ]
+    
+    fallback_logic: .{
+      {{first_name}} = "there"
+      {{company_name}} = "your team"
+      {{recent_company_news}} = "your recent growth"
+      {{alma_mater}} = "your past experience"
+      {{competitor_name}} = "the market"
+      {{city_location}} = "your area"
+    }
+
+    research_depth[*]: .{
+      v_visionary = !industry_level_macro_trends
+      v_technical = !tech_stack_sniffing_via_builtwith
+      v_personal = !individual_linkedin_history_and_podcasts
+    }
+
+    icebreaker_generator = !first_sentence_compliment
+  }
+
+  tone_and_voice: .{
+    vocabulary[*]: .{
+      v_visionary = !evocative_future_facing_verbs
+      v_technical = !precise_industry_standard_nouns
+      v_personal = !conversational_warm_adjectives
+    }
+    
+    sentence_length = !varied_highly_rhythmic_fast_paced
+    paragraph_density = !one_to_two_sentences_max_whitespace_heavy
+    formality_level = !business_casual_peer_to_peer
+    emoji_usage = !zero_strict_except_in_slack
+    punctuation = !em_dashes_over_parentheses
+    reading_level = !eighth_grade_hemingway_app
+  }
+
+  ab_testing: .{
+    test_variable = !subject_line
+    variant_a = !curiosity_gap_lowercase
+    variant_b = !direct_benefit_title_case
+    variant_c = !question_with_first_name
+    success_metric = !reply_rate_not_open_rate
+    sample_size = !first_five_hundred
+  }
+
+  deliverability: .{
+    spam_word_avoidance = !strict_no_free_no_guarantee
+    link_tracking = !disabled_for_first_email_to_protect_reputation
+    plain_text_ratio = !high_text_to_html_mimic_human
+    authentication_assumed: [ #dkim, #spf, #dmarc, #bimi ]
+    warmup_status = !active_pool
+    bounce_threshold = !under_two_percent
+  }
+
+  legal_and_compliance: .{
+    framework = !can_spam_and_gdpr_ccpa
+    opt_out_mechanism = !conversational_footer_no_unsubscribe_link
+    physical_address_inclusion = !required_in_footer
+    data_processing_agreement = !linked_in_privacy_policy
+  }
+
+  crm_integration: .{
+    lead_status_update = !sequence_enrolled
+    bounce_handling = !pause_sequence_mark_invalid
+    reply_handling = !mark_as_engaged_and_alert_rep_via_slack
+    meeting_booked = !auto_remove_from_all_campaigns
+    link_clicked = !add_lead_score_points
   }
 
   boonhonk: .{
@@ -62,16 +263,40 @@
     combinatorics: .{
       instruction = "Use the % operator to quantify the communication's resonance."
       formulas: [
-        %[messaging.hook_strategy * 2.0] + %[concept.emotional_core] = narrative_hook_gravity
-        %[tone.vocabulary] * %[messaging.value_prop] = persuasion_valence
+        %[messaging_architecture.hook_strategy * 2.0] + %[concept.emotional_core] = narrative_hook_gravity
+        %[tone_and_voice.vocabulary] * %[messaging_architecture.value_prop.impact] = persuasion_valence
+        %[sequence_cadence.timing_logic] / (1 + %[negatives.strategy]) = cadence_flow
+        %[psychological_triggers.scarcity] * %[personalization_matrix.research_depth] = authentic_urgency
         %[focus * trace] = variant_resonance
       ]
-      execution = compute_%[narrative_hook_gravity * persuasion_valence * variant_resonance]
+      execution = compute_%[narrative_hook_gravity * persuasion_valence * cadence_flow * authentic_urgency * variant_resonance]
     }
   }
 
   negatives: .{
-    writing: [ #corporate_jargon, #passive_voice, #overlong_paragraphs ]
-    strategy: [ #high_friction_ask, #unclear_value ]
+    writing: [
+      #corporate_jargon
+      #passive_voice
+      #overlong_paragraphs
+      #we_centric_language
+      #fake_familiarity
+      #apologetic_openers
+      #bland_signoffs
+    ]
+    strategy: [
+      #high_friction_ask
+      #unclear_value
+      #burying_the_lead
+      #too_many_links
+      #pitching_features_not_outcomes
+      #assuming_budget
+    ]
+    deliverability: [
+      #image_heavy_layouts
+      #suspicious_redirects
+      #all_caps_subject_lines
+      #multiple_attachments
+      #spam_trigger_words
+    ]
   }
 }

@@ -1,8 +1,4 @@
-# Image Generation Prompt
-#
-# Temporary root-level working file for structured image ideation and generation.
-
-##>image_generation_prompt
+#>image_generation_prompt
 #:image
 #:generation
 #:prompt
@@ -34,6 +30,28 @@
     fidelity = !stylized
     audience = #general
     priority = !strong_focal_clarity
+  }
+
+  generative_engine: .{
+    model_architecture = !sdxl_1_0_base
+    sampler = !dpm_plus_plus_2m_karras
+    steps = 40
+    cfg_scale = 7.5
+    clip_skip = 2
+    seed = !randomized_unless_locked
+    
+    lora_stack: .{
+      primary_style: .{ name = "cinematic_lighting_v2", weight = 0.8 }
+      secondary_texture: .{ name = "analog_film_grain", weight = 0.4 }
+      tertiary_detail: .{ name = "add_detail_xl", weight = 0.2 }
+    }
+
+    controlnet_adapters: .{
+      depth_map = !midas_v3_weight_0_5
+      canny_edge = !disabled
+      openpose = !active_for_human_subjects
+      ip_adapter: .{ image_prompt = "reference_image.jpg", weight = 0.6 }
+    }
   }
 
   concept: .{
@@ -76,6 +94,14 @@
         v_documentary = !weathered_utilitarian
       }
     }
+    
+    anatomy_and_posing: .{
+      eye_contact = !looking_off_camera
+      posture = !slumped_shoulders
+      hand_placement = !resting_on_knees
+      weight_distribution = !leaning_forward
+    }
+    
     supporting: [
       !flora
       !atmosphere
@@ -87,119 +113,146 @@
     environmental_story = what_the_environment_implies
     
     location[*]: .{
-      v_noir = !wet_city_street
-      v_bloom = !overgrown_glasshouse
-      v_documentary = !active_transit_hub
+      v_noir = !wet_city_street_neon_reflections
+      v_bloom = !overgrown_glasshouse_sun_dappled
+      v_documentary = !active_transit_hub_fluorescent
     }
     
     architecture_period[*]: .{
-      v_noir = !art_deco_industrial
-      v_bloom = !neo_classical_ruin
-      v_documentary = !brutalist_civic
+      v_noir = !art_deco_industrial_rivets
+      v_bloom = !neo_classical_ruin_marble
+      v_documentary = !brutalist_civic_concrete
     }
 
     time[*]: .{
-      v_noir = !midnight
-      v_bloom = !dawn
-      v_documentary = !harsh_midnoon
+      v_noir = !midnight_pitch_black_sky
+      v_bloom = !dawn_golden_hour_haze
+      v_documentary = !harsh_midnoon_directional
     }
     
     weather[*]: .{
-      v_noir = !heavy_rain
-      v_bloom = !morning_fog
-      v_documentary = !overcast_flat
+      v_noir = !heavy_rain_droplets_on_lens
+      v_bloom = !morning_fog_volumetric
+      v_documentary = !overcast_flat_white_sky
     }
   }
 
   camera_and_composition: .{
-    framing = !wide
-    angle = !eye_level
+    framing = !wide_establishing_shot
+    angle = !low_angle_heroic
     focal_point = isolates_&[subject.primary_subject]
-    depth_strategy = !layered_depth
-    balance = !asymmetrical
-    movement_lines: [ #diagonal_up, #curved_flow ]
+    depth_strategy = !layered_foreground_elements
+    balance = !asymmetrical_rule_of_thirds
+    movement_lines: [ #diagonal_up, #curved_flow_fibonacci ]
 
     lens_feel[*]: .{
-      v_noir = !high_contrast_35mm
-      v_bloom = !dreamy_85mm_macro
-      v_documentary = !clinical_50mm
+      v_noir = !high_contrast_35mm_anamorphic
+      v_bloom = !dreamy_85mm_macro_swirl_bokeh
+      v_documentary = !clinical_50mm_rectilinear
     }
     
     aperture[*]: .{
-      v_noir = !f_8_deep_focus
-      v_bloom = !f_1_4_shallow_bokeh
-      v_documentary = !f_5_6_standard
+      v_noir = !f_8_deep_focus_everything_sharp
+      v_bloom = !f_1_4_shallow_bokeh_cream
+      v_documentary = !f_5_6_standard_documentary
     }
-
+    
     shutter_speed[*]: .{
-      v_noir = !frozen_motion
-      v_bloom = !long_exposure_drag
-      v_documentary = !slight_motion_blur
+      v_noir = !frozen_motion_1_1000s
+      v_bloom = !long_exposure_drag_1_2s
+      v_documentary = !slight_motion_blur_1_60s
     }
 
     film_stock[*]: .{
-      v_noir = !kodak_tri_x_400
-      v_bloom = !cinestill_800t
-      v_documentary = !fujifilm_provia_100f
+      v_noir = !kodak_tri_x_400_pushed_plus_1
+      v_bloom = !cinestill_800t_halations
+      v_documentary = !fujifilm_provia_100f_slide
     }
   }
 
   design_system: .{
     color: .{
-      saturation = !vivid
+      saturation = !vivid_but_natural
       logic = structurally_encodes_&[concept.transformation]
 
       palette[*]: .{
-        v_noir = [                      #monochrome_black, #silver, #charcoal ]
-        v_bloom = [                     #pastel_peach, #mint_green, #soft_gold ]
-        v_documentary = [               #desaturated_earth, #concrete, #steel ]
+        v_noir = [ #monochrome_black, #silver_metallic, #charcoal_matte ]
+        v_bloom = [ #pastel_peach, #mint_green, #soft_gold ]
+        v_documentary = [ #desaturated_earth, #concrete_gray, #steel_blue ]
       }
-
+      
       contrast[*]: .{
-        v_noir = !high_black_white
-        v_bloom = !soft_lifted_blacks
-        v_documentary = !true_to_life_linear
+        v_noir = !high_black_white_crushed
+        v_bloom = !soft_lifted_blacks_milky
+        v_documentary = !true_to_life_linear_curve
       }
     }
   }
 
-  lighting: .{
-    primary_source = !sunlight
-    direction = !backlight
-    highlights = where_highlights_live
+  lighting_and_grip: .{
+    primary_source = !sunlight_through_blinds
+    direction = !backlight_rim_wrap
+    highlights = where_highlights_live_specular
 
     quality[*]: .{
-      v_noir = !hard_specular
-      v_bloom = !soft_diffused
-      v_documentary = !available_ambient
+      v_noir = !hard_specular_bare_bulb
+      v_bloom = !soft_diffused_8x8_silk
+      v_documentary = !available_ambient_street_lamps
     }
 
     color_temperature[*]: .{
-      v_noir = !cool_tungsten_3200k
-      v_bloom = !warm_golden_5600k
-      v_documentary = !mixed_fluorescent
+      v_noir = !cool_tungsten_3200k_blue_cast
+      v_bloom = !warm_golden_5600k_orange_cast
+      v_documentary = !mixed_fluorescent_4000k_green_shift
     }
 
     fill_ratio[*]: .{
-      v_noir = !high_contrast_8_to_1
-      v_bloom = !flat_ambient_2_to_1
-      v_documentary = !natural_bounce_4_to_1
+      v_noir = !high_contrast_8_to_1_chiaroscuro
+      v_bloom = !flat_ambient_2_to_1_airy
+      v_documentary = !natural_bounce_4_to_1_realistic
     }
-
-    atmosphere_effects: [               #fog_bloom, #dust_beams ]
+    
+    atmosphere_effects: [ 
+      #fog_bloom_diffusion
+      #dust_beams_volumetric
+      #lens_flare_anamorphic_blue
+    ]
   }
 
-  materiality: .{
-    wear_and_age = !weathered
+  materiality_and_texture: .{
+    wear_and_age = !weathered_and_used
     tactile_priority = anchors_&[subject.details.wardrobe_or_surface]
 
     surface_language[*]: .{
-      v_noir = !wet_asphalt_and_glass
-      v_bloom = !translucent_petals_and_skin
-      v_documentary = !scuffed_plastic_and_denim
+      v_noir = !wet_asphalt_and_shattered_glass
+      v_bloom = !translucent_petals_and_subsurface_skin
+      v_documentary = !scuffed_plastic_and_frayed_denim
     }
+    
+    special_effects: [ 
+      #smoke_wisps
+      #glass_refraction_chromatic_split
+      #sweat_beads_macro
+    ]
+  }
 
-    special_effects: [                  #smoke, #glass_refraction ]
+  post_processing_instructions: .{
+    upscaling: .{
+      algorithm = !esrgan_4x
+      denoising_strength = 0.35
+      high_res_fix = !enabled
+    }
+    
+    inpainting: .{
+      face_restoration = !codeformer_weight_0_5
+      hand_correction = !depth_aware_inpainting_mask
+    }
+    
+    color_grading: .{
+      lut = !teal_and_orange_blockbuster
+      vignette = !heavy_dark_corners
+      grain_overlay = !35mm_kodak_scan
+    }
   }
 
   boonhonk: .{
@@ -207,19 +260,46 @@
     combinatorics: .{
       instruction = "Use the % operator to quantify taste."
       formulas: [
-      %[design_system.color.contrast * 2] + %[lighting.fill_ratio] = sculptural_density
-      %[subject.subject_state * scene.atmosphere] + %[materiality.surface_language] = tactile_yield
-      %[concept.emotional_core] / (1 + %[negatives.style_errors]) = wonder_ratio
-      %[focus * trace] = variant_resonance
+        %[design_system.color.contrast * 2.0] + %[lighting_and_grip.fill_ratio] = sculptural_density
+        %[subject.subject_state * camera_and_composition.lens_feel] + %[materiality_and_texture.surface_language] = tactile_yield
+        %[generative_engine.lora_stack] / (1 + %[negatives.style]) = prompt_adherence
+        %[concept.emotional_core] * %[focus * trace] = wonder_ratio
       ]
-      execution = compute_%[sculptural_density * tactile_yield * wonder_ratio * variant_resonance]
+      execution = compute_%[sculptural_density * tactile_yield * prompt_adherence * wonder_ratio]
     }
   }
 
   negatives: .{
-    anatomy: [                          #extra_fingers, #broken_hands, #warped_limbs ]
-    composition: [                      #cropped_focal_subject, #tangent_collisions ]
-    rendering: [                        #plastic_skin, #incoherent_reflections, #chromatic_aberration_abuse ]
-    style: [                            #default_ai_gloss, #empty_spectacle, #overuse_of_bloom ]
+    anatomy: [ 
+      #extra_fingers, 
+      #broken_hands, 
+      #warped_limbs,
+      #fused_bodies,
+      #missing_eyes,
+      #too_many_teeth,
+      #elongated_necks
+    ]
+    composition: [ 
+      #cropped_focal_subject_at_joints, 
+      #tangent_collisions_with_frame,
+      #floating_objects,
+      #horizon_line_askew,
+      #cluttered_background_mergers
+    ]
+    rendering: [ 
+      #plastic_skin_pores, 
+      #incoherent_reflections_in_mirrors, 
+      #chromatic_aberration_abuse,
+      #watermark_text,
+      #jpeg_artifacts,
+      #blurry_foreground
+    ]
+    style: [ 
+      #default_ai_gloss_smooth, 
+      #empty_marvel_spectacle, 
+      #overuse_of_bloom_glowing_eyes,
+      #generic_fantasy_artstation_trends,
+      #3d_render_octane_tag
+    ]
   }
 }
