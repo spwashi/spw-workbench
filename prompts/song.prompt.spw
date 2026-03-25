@@ -163,14 +163,18 @@
     }
 
     rhythm_section: .{
-      drums = &[focus.drum_kit]
+      drums[*]: .{
+        v_acoustic = !vintage_acoustic_kit_brushed
+        v_industrial = !analog_drum_machine_and_foley
+        v_cinematic = !taikos_and_sub_booms
+      }
       bass = !sub_heavy
       percussion = ~[v_acoustic:0.7, v_industrial:0.3]
     }
 
     harmonic_bed: .{
       pads = !analog_wash
-      keys = ! Rhodes
+      keys = !Rhodes
       strings_or_guitars = !muted_electric
     }
 
@@ -291,16 +295,26 @@
         #chorus_width
       ]
       vocal_space = !dry_to_wide
-      saturation = !tape_grit
+      color: .{
+        saturation = !tape_warmth
+        transients = !softened
+        reverb_algorithm[*]: .{
+          v_acoustic = !small_plate
+          v_industrial = !gated_nonlinear
+          v_cinematic = !pitch_shifted_granular_reverb
+        }
+      }
       loudness = !dynamic_master
     }
 
     motion: .{
-      transitions: [
-        #riser
-        #drop
-      ]
-      automation = ~[v_acoustic:0.2, v_industrial:0.8]
+      transitions: [ #riser, #reverse_cymbal ]
+      automation = ~[v_acoustic:0.4, v_industrial:0.3, v_cinematic:0.3]
+      bus_compression[*]: .{
+        v_acoustic = !vca_master_bus_compression_light
+        v_industrial = !multiband_pumping
+        v_cinematic = !parallel_orchestral_lift
+      }
     }
   }
 
@@ -310,7 +324,7 @@
       instruction = "Use the % operator to quantify the song's musical and lyrical gravity."
       formulas: [
         %[music.rhythm.groove * 1.5] + %[lyrics.engine.density] = rhythmic_tension
-        %[voice.lead.profile] * %[production.color.reverb_algorithm] = vocal_valence
+        %[voice.lead.profile] * %[production.mix.color.reverb_algorithm] = vocal_valence
         %[lyrics.engine.density] / (1 + %[negatives.mix]) = narrative_friction
         %[focus * trace] = variant_resonance
       ]

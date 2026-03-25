@@ -33,8 +33,8 @@
   }
 
   generative_engine: .{
-    model_architecture = !sdxl_1_0_base
-    sampler = !dpm_plus_plus_2m_karras
+    model_architecture = !latent_diffusion_foundation_model
+    sampler = !adaptive_step_stochastic_sampler
     steps = 40
     cfg_scale = 7.5
     clip_skip = 2
@@ -47,7 +47,7 @@
     }
 
     controlnet_adapters: .{
-      depth_map = !midas_v3_weight_0_5
+      depth_map = !monocular_depth_estimation_weight_0_5
       canny_edge = !disabled
       openpose = !active_for_human_subjects
       ip_adapter: .{ image_prompt = "reference_image.jpg", weight = 0.6 }
@@ -164,9 +164,9 @@
     }
 
     film_stock[*]: .{
-      v_noir = !kodak_tri_x_400_pushed_plus_1
-      v_bloom = !cinestill_800t_halations
-      v_documentary = !fujifilm_provia_100f_slide
+      v_noir = !classic_high_contrast_panchromatic_bnw_pushed
+      v_bloom = !tungsten_balanced_motion_picture_film_with_halation
+      v_documentary = !daylight_color_reversal_film
     }
   }
 
@@ -238,13 +238,13 @@
 
   post_processing_instructions: .{
     upscaling: .{
-      algorithm = !esrgan_4x
+      algorithm = !generative_adversarial_network_4x
       denoising_strength = 0.35
       high_res_fix = !enabled
     }
     
     inpainting: .{
-      face_restoration = !codeformer_weight_0_5
+      face_restoration = !blind_face_restoration_network_weight_0_5
       hand_correction = !depth_aware_inpainting_mask
     }
     
@@ -298,8 +298,8 @@
       #default_ai_gloss_smooth, 
       #empty_marvel_spectacle, 
       #overuse_of_bloom_glowing_eyes,
-      #generic_fantasy_artstation_trends,
-      #3d_render_octane_tag
+      #generic_fantasy_portfolio_trends,
+      #unbiased_gpu_render_engine_aesthetic
     ]
   }
 }
