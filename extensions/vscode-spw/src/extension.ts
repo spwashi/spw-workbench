@@ -59,6 +59,7 @@ export function activate(context: vscode.ExtensionContext): void {
   // - Concepts tree: VS Code-specific TreeDataProvider UI
 
   const annotationIndex = new AnnotationIndex()
+  annotationIndex.setClient(client)
   void annotationIndex.activate()
   context.subscriptions.push({ dispose: () => annotationIndex.dispose() })
 

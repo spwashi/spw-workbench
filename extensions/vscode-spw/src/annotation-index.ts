@@ -47,27 +47,26 @@ export class AnnotationIndex {
     private entries: AnnotationEntry[] = [];
     private byName = new Map<string, AnnotationEntry[]>();
     private byFile = new Map<string, AnnotationEntry[]>();
-    private watcher: vscode.FileSystemWatcher | undefined;
+    private client: any; // Type-erased LanguageClient
     private disposables: vscode.Disposable[] = [];
     private updatedEmitter = new vscode.EventEmitter<void>();
     readonly onDidUpdate = this.updatedEmitter.event;
 
     // -- lifecycle -----------------------------------------------------------
 
+    setClient(client: any): void {
+        this.client = client;
+    }
+
     async activate(): Promise<void> {
         await this.rebuild();
-
-        this.watcher = vscode.workspace.createFileSystemWatcher('**/*.spw');
-        this.watcher.onDidChange(uri => void this.reindexFile(uri));
-        this.watcher.onDidCreate(uri => void this.reindexFile(uri));
-        this.watcher.onDidDelete(uri => this.removeFile(uri));
-        this.disposables.push(this.watcher);
-
-        // Also reindex on save (covers renames that watcher misses)
+        
+        // When a document is saved, we don't know immediately if the LSP has
+        // finished processing it. A short delay ensures the LSP index is fresh.
         this.disposables.push(
             vscode.workspace.onDidSaveTextDocument(doc => {
                 if (doc.languageId === 'spw') {
-                    void this.reindexFile(doc.uri);
+                    setTimeout(() => void this.rebuild(), 100);
                 }
             })
         );
@@ -81,98 +80,42 @@ export class AnnotationIndex {
     // -- build ---------------------------------------------------------------
 
     async rebuild(): Promise<void> {
-        this.entries = [];
-        this.byName.clear();
-        this.byFile.clear();
-
-        const files = await vscode.workspace.findFiles('**/*.spw', '**/node_modules/**');
-        for (const file of files) {
-            await this.indexFile(file);
-        }
-        this.updatedEmitter.fire();
-    }
-
-    private async indexFile(uri: vscode.Uri): Promise<void> {
+        if (!this.client) return;
+        
         try {
-            const raw = await vscode.workspace.fs.readFile(uri);
-            const text = new TextDecoder('utf-8').decode(raw);
-            this.parseText(uri, text);
-        } catch {
-            // file unreadable — skip
-        }
-    }
+            // Request full annotation index from the LSP server
+            const rawEntries = await this.client.sendRequest('spw/annotations', {});
+            
+            this.entries = [];
+            this.byName.clear();
+            this.byFile.clear();
 
-    private async reindexFile(uri: vscode.Uri): Promise<void> {
-        this.removeFile(uri);
-        await this.indexFile(uri);
-        this.updatedEmitter.fire();
-    }
-
-    private removeFile(uri: vscode.Uri): void {
-        const key = uri.toString();
-        const old = this.byFile.get(key) || [];
-        for (const entry of old) {
-            const arr = this.byName.get(entry.name);
-            if (arr) {
-                const idx = arr.indexOf(entry);
-                if (idx >= 0) arr.splice(idx, 1);
-                if (arr.length === 0) this.byName.delete(entry.name);
-            }
-        }
-        this.entries = this.entries.filter(e => e.file.toString() !== key);
-        this.byFile.delete(key);
-        this.updatedEmitter.fire();
-    }
-
-    private parseText(uri: vscode.Uri, text: string): void {
-        const lines = text.split('\n');
-        let currentSection: string | undefined;
-        const fileKey = uri.toString();
-        const fileEntries: AnnotationEntry[] = [];
-
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i];
-
-            // Track enclosing section
-            const frameMatch = line.match(FRAME_RE);
-            if (frameMatch) {
-                currentSection = frameMatch[1] || frameMatch[2];
-            }
-
-            // Find annotations on this line
-            ANNOTATION_RE.lastIndex = 0;
-            let match: RegExpExecArray | null;
-            while ((match = ANNOTATION_RE.exec(line)) !== null) {
-                // Skip annotations inside comments (lines starting with # followed by space)
-                const trimmed = line.trimStart();
-                if (trimmed.startsWith('# ') || trimmed.startsWith('//')) {
-                    // But still match if the annotation IS the comment content
-                    // e.g., "  #:physics" is valid, "  # this is a comment #physics" is not
-                    if (match.index > line.indexOf('#') + 1 && trimmed.startsWith('#')) {
-                        continue;
-                    }
+            if (Array.isArray(rawEntries)) {
+                for (const raw of rawEntries) {
+                    const entry: AnnotationEntry = {
+                        file: vscode.Uri.parse(raw.uri),
+                        line: raw.line,
+                        kind: raw.kind,
+                        name: raw.name,
+                        sectionLabel: raw.sectionLabel,
+                    };
+                    
+                    this.entries.push(entry);
+                    
+                    const nameArr = this.byName.get(entry.name) || [];
+                    nameArr.push(entry);
+                    this.byName.set(entry.name, nameArr);
+                    
+                    const fileKey = entry.file.toString();
+                    const fileArr = this.byFile.get(fileKey) || [];
+                    fileArr.push(entry);
+                    this.byFile.set(fileKey, fileArr);
                 }
-
-                const entry: AnnotationEntry = {
-                    file: uri,
-                    line: i,
-                    kind: kindFromSigil(match[1]),
-                    name: match[2],
-                    sectionLabel: currentSection,
-                };
-
-                this.entries.push(entry);
-                fileEntries.push(entry);
-
-                // Index by name
-                const nameArr = this.byName.get(entry.name) || [];
-                nameArr.push(entry);
-                this.byName.set(entry.name, nameArr);
             }
-        }
-
-        if (fileEntries.length > 0) {
-            this.byFile.set(fileKey, fileEntries);
+            
+            this.updatedEmitter.fire();
+        } catch (e) {
+            // LSP not ready or request failed
         }
     }
 

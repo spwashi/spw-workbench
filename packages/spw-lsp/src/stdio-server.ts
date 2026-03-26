@@ -279,6 +279,16 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
         return
       }
 
+      case 'spw/annotations': {
+        const entries = serverIndex.allAnnotations().map(e => ({
+          ...e,
+          // Client expects a string URI; we store raw file paths
+          uri: uriFromPath(e.file)
+        }))
+        sendResult(id, entries)
+        return
+      }
+
       default:
         if (typeof id === 'number' || typeof id === 'string') {
           sendError(id, -32601, `Method not found: ${message.method}`)
