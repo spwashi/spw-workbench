@@ -111,5 +111,64 @@
             ""
         ],
         "description": "Standard .spw file header with title, anchor, and annotations"
+    },
+    "Valence Injector": {
+        "prefix": "valence",
+        "body": [
+            "!${1|boon,bone,bane,bonk,honk|}[\"${2:label}\"] {",
+            "  $0",
+            "}"
+        ],
+        "description": "Valence injector block (!boon/bone/bane/bonk/honk)"
+    },
+    "Config Entry": {
+        "prefix": "config",
+        "body": [
+            "=${1:key}: ${2:\"value\"}"
+        ],
+        "description": "Config/constraint entry (=key: value)"
+    },
+    "Commit Entry": {
+        "prefix": "commit",
+        "body": [
+            "~[${1:N}]: \"${2:description}\""
+        ],
+        "description": "Commit entry (~[N]: \"description\")"
+    },
+    "Stream Entry": {
+        "prefix": "stream",
+        "body": [
+            ">>[${1:timestamp}] ${2:action} \u2014 ${3:description}"
+        ],
+        "description": "Stream entry (>>[timestamp] action \u2014 description)"
+    },
+    "Episode Block": {
+        "prefix": "episode",
+        "body": [
+            "#[episode] {",
+            "  ~#scope: \"${1:scope}\"",
+            "  ~#goal: \"${2:goal}\"",
+            "  $0",
+            "}"
+        ],
+        "description": "Episode block for commit bodies"
+    },
+    "Probe Block": {
+        "prefix": "probeblock",
+        "body": [
+            "?[\"${1:question}\"] {",
+            "  #:depth #!${2|computational,educational,experiential,stylistic,mathematical|}",
+            "  ~#hypothesis: \"${3:claim}\"",
+            "  $0",
+            "}"
+        ],
+        "description": "Standalone probe block with depth and hypothesis"
+    },
+    "Subject Reference": {
+        "prefix": "subject",
+        "body": [
+            "&[${1:path.ref}]"
+        ],
+        "description": "Subject/path inline reference (&[path.ref])"
     }
 }

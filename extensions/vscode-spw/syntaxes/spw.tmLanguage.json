@@ -338,24 +338,19 @@
                     "match": "#:[a-zA-Z_][a-zA-Z0-9_]*"
                 },
                 {
-                    "comment": "#word — topic annotation (inline, not at line start)",
+                    "comment": "#word — topic annotation (after whitespace, opening containers, or at BOL)",
                     "name": "entity.name.tag.annotation.topic.spw",
-                    "match": "(?<=\\s)#[a-zA-Z_][a-zA-Z0-9_]*"
+                    "match": "(?<=\\s|[\\[({])#[a-zA-Z_][a-zA-Z0-9_]*|^#[a-zA-Z_][a-zA-Z0-9_]*"
+                },
+                {
+                    "comment": "=key: value — config/constraint line",
+                    "name": "variable.other.config.spw",
+                    "match": "=[a-zA-Z_][a-zA-Z0-9_]*:"
                 }
             ]
         },
         "wip-constructs": {
             "patterns": [
-                {
-                    "comment": "File header: # wip — slug",
-                    "name": "markup.heading.file-header.spw",
-                    "match": "^#\\s+wip\\s+—.*$"
-                },
-                {
-                    "comment": "File metadata: # Branch: / # Started:",
-                    "name": "comment.line.metadata.spw",
-                    "match": "^#\\s+(Branch|Started|Status|Author):.*$"
-                },
                 {
                     "comment": "Section headers: ^[\"commits\"]",
                     "name": "markup.heading.section.spw",
