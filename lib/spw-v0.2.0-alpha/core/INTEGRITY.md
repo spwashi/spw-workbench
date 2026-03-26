@@ -4,6 +4,14 @@
 
 Contract stub for v0.2.0-alpha integrity and provenance guarantees — expanded with worked examples.
 
+## v0.2.0 Contract Stub
+
+Integrity ensures outputs are trustworthy, reproducible, and attributable:
+- Equal input and profile pairs must yield identical token and AST structures.
+- Canonicalization must not drop semantic information; only presentation differences are erased.
+- Golden snapshots anchor known-good parse output and regressions are immediately visible via diff.
+- Every transformation in the pipeline is attributable to source file, profile, and parser version.
+
 ## What Is Integrity?
 
 Integrity ensures outputs are **trustworthy, reproducible, and attributable** to source inputs and configuration. It is the bridge between the grammar layer (parsing) and the measurement harness (verification).

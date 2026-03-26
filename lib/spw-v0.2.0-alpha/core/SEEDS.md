@@ -4,6 +4,14 @@
 
 Contract stub for v0.2.0-alpha seed lifecycle — expanded with worked examples.
 
+## v0.2.0 Contract Stub
+
+Seeds are the minimal reproducible Spw units carrying intent, structure, and provenance:
+- Seed identity is stable after normalization; equivalent source forms collapse to equal hashes.
+- Presentation-only differences (whitespace, indentation, trailing commas) never affect the semantic hash.
+- Every seed must carry provenance metadata including at minimum source file and spec version.
+- Seed metadata fields are explicit rather than inferred by side effects.
+
 ## What Is a Seed?
 
 A seed is the **minimal reproducible Spw unit** carrying intent, structure, and provenance. It is what the parser produces from source text and what canonicalization normalizes.

@@ -4,6 +4,13 @@
 
 Contract stub for v0.2.0-alpha capsule semantics — expanded with worked examples.
 
+## v0.2.0 Contract Stub
+
+Capsules are bounded semantic packets with directed, named channel coupling:
+- Every capsule must have an explicit channel name; anonymous `<>` is an error in strict mode.
+- Capsule extraction must not mutate source semantics or leak cross-capsule state.
+- Cross-capsule dependencies must be declared through shared references, never implicit coupling.
+
 ## What Is a Capsule?
 
 A capsule is a **bounded semantic packet** that can be composed without leaking unrelated concerns. Capsules use `< >` delimiters and always imply a named, directed coupling.

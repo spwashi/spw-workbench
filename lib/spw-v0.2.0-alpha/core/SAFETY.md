@@ -4,6 +4,13 @@
 
 Contract stub for v0.2.0-alpha safety posture — expanded with worked examples.
 
+## v0.2.0 Contract Stub
+
+Safety defines how the kernel handles malformed input and uncertain states:
+- Invalid or unsafe states must never silently pass as success; all errors are surfaced.
+- Errors include position context and repair hints sufficient for the developer to fix the issue.
+- Safety behavior is environment-independent; the seed kernel produces identical errors regardless of editor or runtime UI.
+
 ## What Is Safety?
 
 Safety defines how the kernel handles **malformed input, uncertain states, and potentially unsafe execution assumptions**. It is the grammar layer's self-defense.

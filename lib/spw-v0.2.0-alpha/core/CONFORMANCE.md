@@ -4,6 +4,14 @@
 
 Contract stub for v0.2.0-alpha conformance checks — expanded with worked examples.
 
+## v0.2.0 Contract Stub
+
+Conformance defines the verifiable surface that gates releases across five levels:
+- L0 (Lex): All 12 operator sigils tokenize correctly and produce stable token types.
+- L1-L2 (Parse/Normalize): Container nesting and canonical form are golden-snapshot stable.
+- L3-L4 (Query/Integrity): Selector algebra resolves across roots and snapshot diffs are CI-gated.
+- Core conformance tests use only grammar-layer concepts; profile-specific tests are separated.
+
 ## What Is Conformance?
 
 Conformance defines **what it means for an implementation to satisfy core Spw behavior**. It is the verifiable surface that gates releases.

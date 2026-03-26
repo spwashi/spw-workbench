@@ -4,6 +4,14 @@
 
 Core index contract for v0.2.0-alpha — expanded with determinism contract and worked examples.
 
+## v0.2.0 Contract Stub
+
+SPEC is the root contract defining stable behavior any Spw parser/kernel must expose:
+- Determinism: identical input and profile always produce identical output.
+- Portability: the seed kernel has zero workbench or external dependencies.
+- Serializability: all public kernel outputs can be JSON-serialized and tested.
+- Diagnostics: invalid input produces actionable errors with position context and repair hints.
+
 ## What Is SPEC?
 
 SPEC is the **root contract** for core semantics. It defines what any Spw parser/kernel must expose as stable behavior.

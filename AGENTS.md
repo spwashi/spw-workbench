@@ -10,7 +10,7 @@ Principles:
 
 ## Structure (seed)
 - `src/seed/` is the .spw kernel (lexer/parser/types). Keep it portable.
-- `lib/spw-v0.2.0-alpha/` is the spec library path.
+- `lib/spw-v0.3.0/` is the spec library path (v0.2.0-alpha retained as archival reference).
 - `docs/` is the canon narrative surface.
 
 ## Commit Protocol

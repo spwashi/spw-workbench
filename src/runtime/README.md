@@ -1,4 +1,4 @@
-# Runtime Foundation (v0.2.0-alpha)
+# Runtime Foundation (v0.3.0)
 
 This folder contains the runtime foundation for the canon rewrite.
 

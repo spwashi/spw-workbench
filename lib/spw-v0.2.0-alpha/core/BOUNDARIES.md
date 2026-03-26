@@ -4,6 +4,14 @@
 
 Contract stub for v0.2.0-alpha boundary semantics — expanded with worked examples.
 
+## v0.2.0 Contract Stub
+
+Boundaries govern what may cross between layers and enforce directional dependency:
+- Import and dependency direction flows inward: grammar <- semantics <- pragmatics.
+- Grammar-layer token output must never be altered by semantic context or pragmatic conventions.
+- Profile-specific extensions must declare boundary-safe integration explicitly at the crossing point.
+- Boundary violations are detectable by lint and audit tooling at both CI and local scope.
+
 ## What Are Boundaries?
 
 Boundaries specify what may cross between layers. They are the guardrails that prevent layer violations and keep the grammar portable.

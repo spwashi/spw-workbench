@@ -23,7 +23,7 @@ Contract stub for v0.2.0-alpha operator semantics — expanded with worked examp
 | `.` | ground | access, intrinsic state | ground state | access | grammar |
 | `$` | substrate | introspection, meta-access | substrate | meta | grammar |
 
-## v0.2.0 Contract
+## v0.2.0 Contract Stub
 
 Operators encode transformation intent and must preserve parseability and traceability:
 - Operator sigil identity and token stability

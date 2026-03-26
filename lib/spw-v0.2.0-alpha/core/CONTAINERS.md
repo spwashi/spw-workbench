@@ -17,7 +17,7 @@ Braces are primordial semantic constructs, not mere punctuation:
 | `(( ))` | N-range | numeric range bounds | depth expression | `nrangeNode` |
 | `<< >>` | Stream | streaming boundary | arrival-order flow | `streamNode` |
 
-## v0.2.0 Contract
+## v0.2.0 Contract Stub
 
 Containers encode grouping, scope, and attachment context:
 - Legal container forms and nesting rules

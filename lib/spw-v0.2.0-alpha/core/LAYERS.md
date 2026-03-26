@@ -4,6 +4,14 @@
 
 Contract stub for v0.2.0-alpha layer model — expanded with 3-layer kernel alignment.
 
+## v0.2.0 Contract Stub
+
+The 3-layer kernel organizes Spw into grammar, semantics, and pragmatics:
+- Dependency direction is strictly grammar <- semantics <- pragmatics; reversals are violations.
+- Each layer has a clear, independent reason to change and owns distinct surfaces.
+- Grammar-layer code (operators, containers, seeds) must never import semantic or pragmatic concepts.
+- Shared contracts between layers move inward rather than being duplicated outward.
+
 ## The 3-Layer Kernel
 
 Spw's ontology is organized into three layers that flow inward:
