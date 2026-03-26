@@ -1,16 +1,22 @@
 import process from 'node:process'
-import { parseCommand, parseQueryArgs } from './args'
+import { parseCommand, parseCommonFlags, parseQueryArgs } from './args'
 import { runSpwDevCli } from './dev'
-import { runSpwFormatCli } from './format'
+import { printSpwFormatHelp, runSpwFormatCli } from './format'
+import { printHelpPage } from './help'
 import { printInitUsage, runSpwInitCli } from './init'
 import { runSpwLsCli } from './ls'
+import { printHelp as printLsHelp } from './ls/args'
 import { runSpwMemCli } from './mem'
+import { printMemHelp } from './mem'
 import { runSpwMountCli } from './mount'
+import { printMountHelp } from './mount'
 import { runQueryCli } from './query'
 import { printSelectUsage, runSpwSelectCli } from './select'
 
 export async function runSpwCli(argv: string[]): Promise<void> {
-  const { command, args } = parseCommand(argv)
+  const { command, args: rawArgs } = parseCommand(argv)
+  const common = parseCommonFlags(rawArgs)
+  const args = common.args
 
   if (command === 'help' || command === '--help' || command === '-h') {
     printHelp()
@@ -18,7 +24,7 @@ export async function runSpwCli(argv: string[]): Promise<void> {
   }
 
   if (command === 'query' || command === 'q') {
-    if (args.includes('--help') || args.includes('-h')) {
+    if (common.flags.help) {
       printQueryHelp()
       return
     }
@@ -27,7 +33,7 @@ export async function runSpwCli(argv: string[]): Promise<void> {
   }
 
   if (command === 'select' || command === 'spwq') {
-    if (args.includes('--help') || args.includes('-h')) {
+    if (common.flags.help) {
       printSelectUsage()
       return
     }
@@ -36,7 +42,7 @@ export async function runSpwCli(argv: string[]): Promise<void> {
   }
 
   if (command === 'init' || command === 'install') {
-    if (args.includes('--help') || args.includes('-h')) {
+    if (common.flags.help) {
       printInitUsage()
       return
     }
@@ -46,18 +52,38 @@ export async function runSpwCli(argv: string[]): Promise<void> {
 
   switch (command) {
     case 'ls':
+      if (common.flags.help) {
+        printLsHelp('spw:ls')
+        return
+      }
       await runSpwLsCli({ argv: toCliArgv(command, args), entryName: 'spw:ls' })
       return
     case 'seq':
+      if (common.flags.help) {
+        printLsHelp('spw:seq')
+        return
+      }
       await runSpwLsCli({ argv: toCliArgv(command, args), entryName: 'spw:seq', compatNotice: true })
       return
     case 'mount':
+      if (common.flags.help) {
+        printMountHelp()
+        return
+      }
       await runSpwMountCli(toCliArgv(command, args))
       return
     case 'mem':
+      if (common.flags.help) {
+        printMemHelp()
+        return
+      }
       await runSpwMemCli(toCliArgv(command, args))
       return
     case 'format':
+      if (common.flags.help) {
+        printSpwFormatHelp()
+        return
+      }
       await runSpwFormatCli(toCliArgv(command, args))
       return
     case 'dev':
@@ -76,49 +102,63 @@ function toCliArgv(command: string, args: string[]): string[] {
 }
 
 function printHelp(): void {
-  console.log(`
-Spw CLI
-
-Usage:
-  spw <command> [args]
-  npm run spw -- <command> [args]
-
-Commands:
-  init          Bootstrap a .spw workspace in a target directory
-  query|q      Deep multi-file query (CSS/SQL-inspired from/select/where style)
-  select       Single-file AST selector surface (absorbs spwq)
-  ls           Liminal sequence selector engine (operator/braces/probe)
-  mount        Mount/check surfaces
-  mem          Memory surface tools
-  format       Spw formatter
-  dev          Hot loop runner
-  help         Print this help
-
-Compatibility:
-  install      Alias for init
-  seq          Alias for ls
-  spwq         Alias for select
-
-Try:
-  spw init my-site
-  npm run spw -- init my-site
-  npm run spw -- query --help
-  npm run spw -- select --help
-`)
+  printHelpPage({
+    title: 'Spw CLI',
+    usage: [
+      'spw <command> [args]',
+      'npm run spw -- <command> [args]',
+    ],
+    sections: [
+      {
+        title: 'Commands',
+        lines: [
+          'init         Bootstrap a .spw workspace in a target directory',
+          'query | q    Deep multi-file query (from/select/where style)',
+          'select       Single-file AST selector surface (absorbs spwq)',
+          'ls           Liminal sequence selector engine (operator/braces/probe)',
+          'mount        Mount/check surfaces',
+          'mem          Memory surface tools',
+          'format       Spw formatter',
+          'dev          Hot loop runner',
+          'help         Print this help',
+        ],
+      },
+      {
+        title: 'Compatibility',
+        lines: [
+          'install      Alias for init',
+          'seq          Alias for ls',
+          'spwq         Alias for select',
+        ],
+      },
+      {
+        title: 'Try',
+        lines: [
+          'spw init my-site',
+          'npm run spw -- init my-site',
+          'npm run spw -- query --help',
+          'npm run spw -- format --help',
+        ],
+      },
+    ],
+  })
 }
 
 function printQueryHelp(): void {
-  console.log(`
-Spw Query
-
-Usage:
-  npm run spw -- query [--from .spw,docs] [--selector navigable | --expr "$@_"]
-                         [--where "kind=Reference,root=src"] [--select file,kind,target,line,column]
-                         [--limit 100] [--format lines|json] [--summary]
-
-Examples:
-  npm run spw -- query --from .spw,docs --selector navigable --where "kind in PathRef|Reference"
-  npm run spw -- query --from .spw --expr "$~\"_\" | $@_" --where "root=spw" --select file,kind,root,target,line
-  npm run spw -- query --from docs --where "file~onboarding,sigil=@"
-`)
+  printHelpPage({
+    title: 'Spw Query',
+    usage: [
+      'npm run spw -- query [--from .spw,docs] [--selector navigable | --expr "$@_"] [--where "kind=Reference,root=src"] [--select file,kind,target,line,column] [--limit 100] [--format lines|json] [--summary]',
+    ],
+    sections: [
+      {
+        title: 'Examples',
+        lines: [
+          'npm run spw -- query --from .spw,docs --selector navigable --where "kind in PathRef|Reference"',
+          'npm run spw -- query --from .spw --expr "$~\\"_\\" | $@_" --where "root=spw" --select file,kind,root,target,line',
+          'npm run spw -- query --from docs --where "file~onboarding,sigil=@"',
+        ],
+      },
+    ],
+  })
 }

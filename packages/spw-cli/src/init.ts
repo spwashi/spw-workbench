@@ -2,6 +2,8 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
+import { parseCommonFlags } from './args'
+import { printHelpPage } from './help'
 
 const green = (str: string) => `\x1b[32m${str}\x1b[0m`
 const bold = (str: string) => `\x1b[1m${str}\x1b[0m`
@@ -30,9 +32,10 @@ type CopyDirOptions = {
 type HookInstallStatus = 'installed' | 'updated' | 'skipped'
 
 export async function runSpwInitCli(argv: string[]): Promise<void> {
-  const args = normalizeInitArgs(argv)
+  const common = parseCommonFlags(normalizeInitArgs(argv))
+  const args = common.args
 
-  if (args.includes('--help') || args.includes('-h')) {
+  if (common.flags.help) {
     printInitUsage()
     return
   }
@@ -43,30 +46,41 @@ export async function runSpwInitCli(argv: string[]): Promise<void> {
 }
 
 export function printInitUsage(): void {
-  console.log(`
-Spw Init
-
-Usage:
-  spw init [target-directory]
-  npm run spw -- init [target-directory]
-  npm run spw:init -- [target-directory]
-
-Compatibility:
-  spw install [target-directory]
-  npm run spw -- install [target-directory]
-  npm run spw:install -- [target-directory]
-
-Scaffolds:
-  .spw/workspace.spw
-  .spw/index.spw
-  .agents/workflows/commit-review.md
-  .git/hooks/pre-commit (portable resolver when target is a git repo)
-
-Interop review roots:
-  .spw/_workbench
-  node_modules/spw-workbench
-  $SPW_WORKBENCH_ROOT
-`)
+  printHelpPage({
+    title: 'Spw Init',
+    usage: [
+      'spw init [target-directory]',
+      'npm run spw -- init [target-directory]',
+      'npm run spw:init -- [target-directory]',
+    ],
+    sections: [
+      {
+        title: 'Compatibility',
+        lines: [
+          'spw install [target-directory]',
+          'npm run spw -- install [target-directory]',
+          'npm run spw:install -- [target-directory]',
+        ],
+      },
+      {
+        title: 'Scaffolds',
+        lines: [
+          '.spw/workspace.spw',
+          '.spw/index.spw',
+          '.agents/workflows/commit-review.md',
+          '.git/hooks/pre-commit (portable resolver when target is a git repo)',
+        ],
+      },
+      {
+        title: 'Interop review roots',
+        lines: [
+          '.spw/_workbench',
+          'node_modules/spw-workbench',
+          '$SPW_WORKBENCH_ROOT',
+        ],
+      },
+    ],
+  })
 }
 
 function normalizeInitArgs(argv: string[]): string[] {

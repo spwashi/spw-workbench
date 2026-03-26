@@ -10,7 +10,8 @@ import path from 'node:path'
 import { SIGIL_SEMANTICS } from '../server-index'
 import type {
     LspCompletionItem, LspTextEdit, LspPosition,
-    CompletionParams, DocumentFormattingParams, CodeActionParams, LspCodeAction,
+    CompletionParams, DocumentFormattingParams, DocumentRangeFormattingParams,
+    CodeActionParams, LspCodeAction,
     HandlerDeps,
 } from '../types'
 import { CK } from '../types'
@@ -189,6 +190,40 @@ export function formatting(params: DocumentFormattingParams, deps: HandlerDeps):
     }]
 }
 
+export function rangeFormatting(params: DocumentRangeFormattingParams, deps: HandlerDeps): LspTextEdit[] {
+    const uri = params?.textDocument?.uri
+    const range = params?.range
+    if (!uri || !range) return []
+
+    const doc = deps.serverIndex.getDocument(uri)
+    if (!doc) return []
+
+    const lines = doc.text.split('\n')
+    const lastLine = Math.max(0, lines.length - 1)
+    const startLine = clampLine(Math.min(range.start.line, range.end.line), lastLine)
+    const endLine = clampLine(Math.max(range.start.line, range.end.line), lastLine)
+    const editRange = {
+        start: { line: startLine, character: 0 },
+        end: { line: endLine, character: lines[endLine]?.length ?? 0 },
+    }
+
+    const selected = doc.text.slice(
+        lineOffset(doc.text, startLine),
+        lineOffset(doc.text, endLine) + (lines[endLine]?.length ?? 0),
+    )
+    if (selected.length === 0) return []
+
+    const formatted = deps.serverIndex.formatRange(selected, {
+        ensureFinalNewline: endLine === lastLine,
+    })
+    if (formatted === selected) return []
+
+    return [{
+        range: editRange,
+        newText: formatted,
+    }]
+}
+
 // ── Code Actions ────────────────────────────────────────────────
 
 export async function codeAction(params: CodeActionParams, deps: HandlerDeps): Promise<LspCodeAction[]> {
@@ -280,4 +315,21 @@ export async function codeAction(params: CodeActionParams, deps: HandlerDeps): P
     }
 
     return actions
+}
+
+function clampLine(line: number, lastLine: number): number {
+    return Math.max(0, Math.min(line, lastLine))
+}
+
+function lineOffset(text: string, targetLine: number): number {
+    if (targetLine <= 0) return 0
+
+    let line = 0
+    for (let i = 0; i < text.length; i += 1) {
+        if (text[i] !== '\n') continue
+        line += 1
+        if (line === targetLine) return i + 1
+    }
+
+    return text.length
 }

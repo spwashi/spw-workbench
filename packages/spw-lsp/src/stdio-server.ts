@@ -24,7 +24,7 @@ import { ServerContext } from './context'
 // ── Handler Clusters ────────────────────────────────────────────
 import { publishDiagnostics as _publishDiagnostics, foldingRanges as _foldingRanges } from './handlers/analysis'
 import { hover as _hover, documentSymbols as _documentSymbols, workspaceSymbols as _workspaceSymbols, codeLens as _codeLens, inlayHints as _inlayHints } from './handlers/display'
-import { completion as _completion, formatting as _formatting, codeAction as _codeAction } from './handlers/editing'
+import { completion as _completion, formatting as _formatting, rangeFormatting as _rangeFormatting, codeAction as _codeAction } from './handlers/editing'
 import { definition as _definition, documentLinks as _documentLinks, references as _references, prepareRename as _prepareRename, rename as _rename } from './handlers/navigation'
 
 // ── Helpers (extracted) ─────────────────────────────────────────
@@ -169,7 +169,7 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
         log(`initialize workspace=${WORKSPACE_ROOT} config=${JSON.stringify(CONFIG)}`)
 
         sendResult(id, {
-          serverInfo: { name: 'spw-lsp', version: '0.3.1' },
+          serverInfo: { name: 'spw-lsp', version: '0.3.2' },
           capabilities: {
             textDocumentSync: 1,
             definitionProvider: true,
@@ -184,6 +184,7 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
             completionProvider: { triggerCharacters: ['@', '~', '/', '#', '$'] },
             codeLensProvider: { resolveProvider: false },
             documentFormattingProvider: true,
+            documentRangeFormattingProvider: true,
             inlayHintProvider: true,
             foldingRangeProvider: true,
           },
@@ -235,6 +236,10 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
 
       case 'textDocument/formatting':
         sendResult(id, _formatting(message.params, deps))
+        return
+
+      case 'textDocument/rangeFormatting':
+        sendResult(id, _rangeFormatting(message.params, deps))
         return
 
       case 'textDocument/inlayHint':

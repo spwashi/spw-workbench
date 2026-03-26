@@ -2,6 +2,8 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { canonicalize, parse } from '@spw/seed'
+import { parseCommonFlags } from './args'
+import { printHelpPage } from './help'
 
 type Command = 'check' | 'init' | 'help'
 
@@ -130,27 +132,45 @@ const WORKSPACE_RESTRUCTURE_REFS = [
   '~#tooling_intellij_registry: ~"./tooling/intellij-plugin.spw"',
 ]
 
-function printHelp(): void {
-  console.log(`
-Spw Mount Utility
-
-Usage:
-  node --import tsx scripts/spw-mount.ts [check|init] [--json] [--strict]
-
-Commands:
-  check   Validate mount v0.1 invariants for .spw root surfaces (default).
-  init    Create missing .spw/index.spw and .spw/mount.spw templates.
-
-Flags:
-  --json   Emit JSON output.
-  --strict Fail on parser diagnostics in ONF-critical required files.
-`)
+export function printMountHelp(): void {
+  printHelpPage({
+    title: 'Spw Mount Utility',
+    usage: [
+      'node --import tsx scripts/spw-mount.ts [check|init] [--json] [--strict]',
+    ],
+    sections: [
+      {
+        title: 'Commands',
+        lines: [
+          'check   Validate mount v0.1 invariants for .spw root surfaces (default).',
+          'init    Create missing .spw/index.spw and .spw/mount.spw templates.',
+        ],
+      },
+      {
+        title: 'Flags',
+        lines: [
+          '--json   Emit JSON output.',
+          '--strict Fail on parser diagnostics in ONF-critical required files.',
+        ],
+      },
+    ],
+  })
 }
 
 function parseArgs(argv: string[]): CliArgs {
-  const args = argv.slice(2)
+  const common = parseCommonFlags(argv.slice(2))
+  const args = common.args
   const first = args.find((arg) => !arg.startsWith('--'))
   const command = (first === 'init' || first === 'help' || first === 'check' ? first : 'check') as Command
+
+  if (common.flags.help) {
+    return {
+      command: 'help',
+      json: false,
+      strict: false,
+    }
+  }
+
   return {
     command,
     json: args.includes('--json'),
@@ -486,7 +506,7 @@ export async function runSpwMountCli(argv: string[] = process.argv): Promise<voi
   const args = parseArgs(argv)
 
   if (args.command === 'help') {
-    printHelp()
+    printMountHelp()
     return
   }
 

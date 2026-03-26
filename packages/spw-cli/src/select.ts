@@ -9,6 +9,7 @@ import {
   listCliSelectorPresetNames,
   resolveCliSelector,
 } from './selectors'
+import { printHelpPage } from './help'
 import type { SelectArgs } from './types'
 
 export async function runSpwSelectCli(argv: string[]): Promise<void> {
@@ -37,16 +38,19 @@ export async function runSpwSelectCli(argv: string[]): Promise<void> {
 }
 
 export function printSelectUsage(): void {
-  console.log('Spw Select')
-  console.log('')
-  console.log('Usage:')
-  console.log('  npm run spw -- select <file.spw> [--selector=navigable] [--expr="$@_"] [--format=lines|json] [--summary]')
-  console.log('  npm run spwq -- <file.spw> ...   # compatibility alias')
-  console.log('')
-  console.log('Selectors:')
-  for (const name of listCliSelectorPresetNames()) {
-    console.log(`  ${name}`)
-  }
+  printHelpPage({
+    title: 'Spw Select',
+    usage: [
+      'npm run spw -- select <file.spw> [--selector=navigable] [--expr="$@_"] [--format=lines|json] [--summary]',
+      'npm run spwq -- <file.spw> ...',
+    ],
+    sections: [
+      {
+        title: 'Selectors',
+        lines: listCliSelectorPresetNames(),
+      },
+    ],
+  })
 }
 
 function renderSelectMatches(source: string, matches: SpwMatch[], args: SelectArgs, selectorLabel: string): void {

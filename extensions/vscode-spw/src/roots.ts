@@ -5,7 +5,7 @@ export const ROOT_MAP: Record<string, string[]> = {
   '@docs': ['docs'],
   '@src': ['src'],
   '@lib': ['lib'],
-  '@spec': ['lib', 'spw-v0.2.0-alpha'],
+  '@spec': ['lib', 'spw-v0.3.0'],
   '@theory': ['docs', 'theory'],
   '@scripts': ['scripts'],
   '@core': ['src', 'core'],

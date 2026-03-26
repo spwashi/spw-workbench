@@ -2,6 +2,8 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { createHash } from 'node:crypto'
+import { parseCommonFlags } from './args'
+import { printHelpPage } from './help'
 
 interface DumpFileEntry {
   rel: string
@@ -42,34 +44,43 @@ const EXTRA_MEMORY_FILES = [
   '.spw/harness/runs/runs-index.spw',
 ]
 
-function printHelp(): void {
-  console.log(`
-Spw Runtime Memory Utility
-
-Usage:
-  node --import tsx scripts/spw-mem.ts dump [--label <name>] [--out <dir>] [--include-extra] [--runtime-dir <dir>] [--dump-root <dir>]
-  node --import tsx scripts/spw-mem.ts load [--from <dir>] [--wipe] [--restore-extra] [--runtime-dir <dir>] [--dump-root <dir>]
-  node --import tsx scripts/spw-mem.ts list [--dump-root <dir>]
-
-Commands:
-  dump           Snapshot .agents/state/runtime into a dump folder.
-  load           Restore runtime memory from a dump folder.
-  list           Show available dump snapshots.
-
-Flags:
-  --from <dir>       Dump directory to load. If omitted, uses latest dump.
-  --out <dir>        Output directory for dump. If omitted, uses runtime/dumps/<timestamp>.
-  --runtime-dir <d>  Runtime memory root (default: .agents/state/runtime).
-  --dump-root <dir>  Dump storage root (default: <runtime-dir>/dumps).
-  --label <name>     Optional label appended to dump directory name.
-  --wipe             Remove existing runtime files before restoring.
-  --include-extra    Include trace/probe ledger files in dump payload.
-  --restore-extra    Restore extra files recorded in dump payload.
-`)
+export function printMemHelp(): void {
+  printHelpPage({
+    title: 'Spw Runtime Memory Utility',
+    usage: [
+      'node --import tsx scripts/spw-mem.ts dump [--label <name>] [--out <dir>] [--include-extra] [--runtime-dir <dir>] [--dump-root <dir>]',
+      'node --import tsx scripts/spw-mem.ts load [--from <dir>] [--wipe] [--restore-extra] [--runtime-dir <dir>] [--dump-root <dir>]',
+      'node --import tsx scripts/spw-mem.ts list [--dump-root <dir>]',
+    ],
+    sections: [
+      {
+        title: 'Commands',
+        lines: [
+          'dump           Snapshot .agents/state/runtime into a dump folder.',
+          'load           Restore runtime memory from a dump folder.',
+          'list           Show available dump snapshots.',
+        ],
+      },
+      {
+        title: 'Flags',
+        lines: [
+          '--from <dir>       Dump directory to load. If omitted, uses latest dump.',
+          '--out <dir>        Output directory for dump. If omitted, uses runtime/dumps/<timestamp>.',
+          '--runtime-dir <d>  Runtime memory root (default: .agents/state/runtime).',
+          '--dump-root <dir>  Dump storage root (default: <runtime-dir>/dumps).',
+          '--label <name>     Optional label appended to dump directory name.',
+          '--wipe             Remove existing runtime files before restoring.',
+          '--include-extra    Include trace/probe ledger files in dump payload.',
+          '--restore-extra    Restore extra files recorded in dump payload.',
+        ],
+      },
+    ],
+  })
 }
 
 function parseArgs(argv: string[]): CliArgs {
-  const args = argv.slice(2)
+  const common = parseCommonFlags(argv.slice(2))
+  const args = common.args
   const commandRaw = args[0] ?? 'help'
   const command = (['dump', 'load', 'list', 'help'].includes(commandRaw)
     ? commandRaw
@@ -80,6 +91,11 @@ function parseArgs(argv: string[]): CliArgs {
     wipe: false,
     includeExtra: false,
     restoreExtra: false,
+  }
+
+  if (common.flags.help) {
+    parsed.command = 'help'
+    return parsed
   }
 
   for (let i = 1; i < args.length; i += 1) {
@@ -436,7 +452,7 @@ export async function runSpwMemCli(argv: string[] = process.argv): Promise<void>
       return
     case 'help':
     default:
-      printHelp()
+      printMemHelp()
       return
   }
 }

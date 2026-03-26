@@ -1,5 +1,9 @@
 import type { QueryArgs, SelectArgs, SpwCliCommand } from './types'
 
+export interface CommonFlags {
+  help: boolean
+}
+
 export function parseCommand(argv: string[]): SpwCliCommand {
   const args = argv.slice(2)
   const command = (args[0] ?? 'help').toLowerCase()
@@ -7,6 +11,22 @@ export function parseCommand(argv: string[]): SpwCliCommand {
     command,
     args: args.slice(1),
   }
+}
+
+export function parseCommonFlags(args: string[]): { args: string[]; flags: CommonFlags } {
+  const nextArgs: string[] = []
+  const flags: CommonFlags = { help: false }
+
+  for (const arg of args) {
+    if (arg === '--help' || arg === '-h') {
+      flags.help = true
+      continue
+    }
+
+    nextArgs.push(arg)
+  }
+
+  return { args: nextArgs, flags }
 }
 
 export function parseQueryArgs(args: string[]): QueryArgs {

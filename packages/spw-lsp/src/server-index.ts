@@ -74,6 +74,17 @@ export interface SelectorDefinition {
 
 const WARM_TTL = 64
 const COLD_TTL = 256
+const DEFAULT_FORMAT_OPTIONS = {
+  normalizeNewlines: true,
+  trimTrailingWhitespace: true,
+  ensureFinalNewline: true,
+  collapseBlankLines: false,
+  indentBraces: true,
+  indentSize: 2,
+  alignComments: true,
+  commentColumn: 40,
+  blankLineBetweenFrames: true,
+} as const
 
 const ANNOTATION_RE = /(##>|#!|#:|#>|#)([a-zA-Z_][a-zA-Z0-9_]*)/g
 const FRAME_RE = /^\s*\^(?:\["([^"]+)"\]|"([^"]+)"|\[([A-Za-z_][A-Za-z0-9_]*)\])/
@@ -689,16 +700,13 @@ export class ServerIndex {
   // ── Formatting ────────────────────────────────────────────────
 
   formatDocument(text: string): string {
+    return this.formatRange(text, { ensureFinalNewline: true })
+  }
+
+  formatRange(text: string, options: { ensureFinalNewline?: boolean } = {}): string {
     return canonicalize(text, {
-      normalizeNewlines: true,
-      trimTrailingWhitespace: true,
-      ensureFinalNewline: true,
-      collapseBlankLines: false,
-      indentBraces: true,
-      indentSize: 2,
-      alignComments: true,
-      commentColumn: 40,
-      blankLineBetweenFrames: true,
+      ...DEFAULT_FORMAT_OPTIONS,
+      ...options,
     }).source
   }
 

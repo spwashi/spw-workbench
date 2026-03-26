@@ -2,10 +2,13 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { canonicalize } from '@spw/seed'
+import { parseCommonFlags } from './args'
+import { printHelpPage } from './help'
 
 interface CliArgs {
   targets: string[]
   check: boolean
+  full: boolean
   help: boolean
   mode: 'canonical' | 'equiv'
 }
@@ -17,10 +20,19 @@ interface MutationCounts {
 }
 
 const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', '.agents'])
+const DEFAULT_TARGETS = ['.spw']
+const FULL_REPO_TARGETS = ['index.spw', '.spw', 'docs', 'lib', 'packages', 'prompts', 'src']
 
 function parseArgs(argv: string[]): CliArgs {
-  const args = argv.slice(2)
-  const parsed: CliArgs = { targets: [], check: false, help: false, mode: 'canonical' }
+  const common = parseCommonFlags(argv.slice(2))
+  const args = common.args
+  const parsed: CliArgs = {
+    targets: [],
+    check: false,
+    full: false,
+    help: common.flags.help,
+    mode: 'canonical',
+  }
 
   for (let i = 0; i < args.length; i += 1) {
     const arg = args[i]
@@ -28,8 +40,8 @@ function parseArgs(argv: string[]): CliArgs {
       parsed.check = true
       continue
     }
-    if (arg === '--help' || arg === '-h') {
-      parsed.help = true
+    if (arg === '--full') {
+      parsed.full = true
       continue
     }
     if (arg === '--mode') {
@@ -56,26 +68,53 @@ function parseArgs(argv: string[]): CliArgs {
   return parsed
 }
 
-function printHelp(): void {
-  console.log(`
-Spw Formatter (canonical mode)
+export function printSpwFormatHelp(): void {
+  printHelpPage({
+    title: 'Spw Format',
+    usage: [
+      'npm run spw:format -- [targets...] [--check] [--mode canonical|equiv] [--full]',
+      'npm run spw -- format [targets...] [--check] [--mode canonical|equiv] [--full]',
+    ],
+    sections: [
+      {
+        title: 'Flags',
+        lines: [
+          '--check                   Report files that would change without writing',
+          '--mode <canonical|equiv>  Canonical formatting or canonical+equivalence rewrites',
+          '--full                    Expand default targets from .spw to repo semantic surfaces',
+        ],
+      },
+      {
+        title: 'Defaults',
+        lines: [
+          'Without targets, the formatter scans .spw only.',
+          'With --full, the formatter scans index.spw, .spw, docs, lib, packages, prompts, and src.',
+          'Directories are walked recursively; .git, node_modules, dist, and .agents are skipped.',
+        ],
+      },
+      {
+        title: 'Examples',
+        lines: [
+          'npm run spw:format',
+          'npm run spw:format -- --full',
+          'npm run spw:format:check -- --full',
+          'npm run spw -- format docs/design/spw --mode equiv',
+        ],
+      },
+    ],
+  })
+}
 
-Usage:
-  node --import tsx scripts/spw-format.ts [targets...] [--check] [--mode canonical|equiv]
+function resolveTargets(cli: CliArgs): string[] {
+  if (cli.targets.length === 0) {
+    return cli.full ? FULL_REPO_TARGETS : DEFAULT_TARGETS
+  }
 
-Behavior:
-  - Formats .spw files by applying canonicalize():
-    normalize newlines + trim trailing whitespace + ensure final newline.
-  - equiv mode additionally normalizes script/operator equivalence shorthands
-    and prints mutation contours per file.
-  - Directories are walked recursively.
+  if (!cli.full) {
+    return cli.targets
+  }
 
-Examples:
-  npm run spw:format
-  npm run spw:format:check
-  node --import tsx scripts/spw-format.ts .spw --mode equiv
-  node --import tsx scripts/spw-format.ts docs/design/spw
-`)
+  return [...FULL_REPO_TARGETS, ...cli.targets]
 }
 
 async function collectSpwFiles(target: string): Promise<string[]> {
@@ -184,14 +223,14 @@ async function formatFile(filePath: string, check: boolean, mode: 'canonical' | 
 export async function runSpwFormatCli(argv: string[] = process.argv): Promise<void> {
   const cli = parseArgs(argv)
   if (cli.help) {
-    printHelp()
+    printSpwFormatHelp()
     return
   }
 
   const repoRoot = process.cwd()
   const fileSet = new Set<string>()
 
-  for (const target of cli.targets) {
+  for (const target of resolveTargets(cli)) {
     const files = await collectSpwFiles(target)
     for (const file of files) fileSet.add(file)
   }

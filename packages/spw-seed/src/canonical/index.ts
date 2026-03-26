@@ -50,14 +50,25 @@ const DEFAULT_OPTIONS: CanonicalOptions = {
 
 // ── String-safe brace tracking ─────────────────────────────────
 
+interface BraceStatsResult {
+  delta: number
+  opensOnLine: boolean
+  closesOnLine: boolean
+  bracketDelta: number
+  bracketOpens: boolean
+  bracketCloses: boolean
+}
+
 /**
- * Count net brace delta on a line, ignoring braces inside strings.
- * Returns { delta, opensOnLine, closesOnLine }.
+ * Count net brace/bracket delta on a line, ignoring those inside strings.
  */
-function braceStats(line: string): { delta: number; opensOnLine: boolean; closesOnLine: boolean } {
+function braceStats(line: string): BraceStatsResult {
   let delta = 0
   let opensOnLine = false
   let closesOnLine = false
+  let bracketDelta = 0
+  let bracketOpens = false
+  let bracketCloses = false
   let inString: string | false = false
 
   for (let i = 0; i < line.length; i++) {
@@ -79,9 +90,11 @@ function braceStats(line: string): { delta: number; opensOnLine: boolean; closes
 
     if (ch === '{') { delta++; opensOnLine = true }
     if (ch === '}') { delta--; closesOnLine = true }
+    if (ch === '[') { bracketDelta++; bracketOpens = true }
+    if (ch === ']') { bracketDelta--; bracketCloses = true }
   }
 
-  return { delta, opensOnLine, closesOnLine }
+  return { delta, opensOnLine, closesOnLine, bracketDelta, bracketOpens, bracketCloses }
 }
 
 /**
@@ -192,12 +205,13 @@ export function canonicalize(
       .join('\n')
   }
 
-  // 3. Brace-depth indentation
+  // 3. Brace-depth indentation (with bracket continuation)
   if (opts.indentBraces) {
     const indent = ' '.repeat(opts.indentSize)
     const lines = normalized.split('\n')
     const out: string[] = []
     let depth = 0
+    let bracketDepth = 0
 
     for (const rawLine of lines) {
       const stripped = rawLine.replace(/^\s+/, '')
@@ -206,20 +220,24 @@ export function canonicalize(
       if (stripped === '') { out.push(''); continue }
 
       // Lines starting with # (headings/comments at depth 0) — keep as-is
-      if (depth === 0 && stripped.startsWith('#')) { out.push(stripped); continue }
+      if (depth === 0 && bracketDepth === 0 && stripped.startsWith('#')) { out.push(stripped); continue }
 
       const stats = braceStats(stripped)
+      const totalDepth = depth + bracketDepth
 
-      // If line starts with }, it belongs at the parent depth
-      if (stripped.startsWith('}')) {
+      // If line starts with } or ], it belongs at the parent depth
+      if (stripped.startsWith('}') || stripped.startsWith(']')) {
         depth = Math.max(0, depth + stats.delta)
-        out.push(indent.repeat(Math.max(0, depth)) + stripped)
+        bracketDepth = Math.max(0, bracketDepth + stats.bracketDelta)
+        const newTotal = depth + bracketDepth
+        out.push(indent.repeat(Math.max(0, newTotal)) + stripped)
         continue
       }
 
       // Normal line: indent at current depth, then update depth
-      out.push(indent.repeat(Math.max(0, depth)) + stripped)
+      out.push(indent.repeat(Math.max(0, totalDepth)) + stripped)
       depth = Math.max(0, depth + stats.delta)
+      bracketDepth = Math.max(0, bracketDepth + stats.bracketDelta)
     }
 
     normalized = out.join('\n')
@@ -234,7 +252,8 @@ export function canonicalize(
   if (opts.blankLineBetweenFrames) {
     const lines = normalized.split('\n')
     const out: string[] = []
-    let prevWasFrame = false
+    let braceDepth = 0
+    let closedTopLevelFrame = false
     let prevBlankCount = 0
 
     for (const line of lines) {
@@ -246,23 +265,27 @@ export function canonicalize(
         continue
       }
 
-      // Insert exactly one blank line before a frame header (unless at file start)
-      if (isFrame && out.length > 0) {
+      // Insert exactly one blank line before a frame header or after a top-level frame close
+      if (out.length > 0 && (isFrame || closedTopLevelFrame)) {
         out.push('')
         prevBlankCount = 0
+        closedTopLevelFrame = false
       } else if (prevBlankCount > 0 && out.length > 0) {
         // Preserve blank lines elsewhere, but collapse to max 1
         out.push('')
         prevBlankCount = 0
       }
 
-      // After a closing brace that ends a top-level block, insert blank before next content
-      if (prevWasFrame && line.trim() === '}' && out.length > 0) {
-        // The } itself
+      // Track brace depth to detect top-level frame close
+      const stats = braceStats(line)
+      if (isFrame) braceDepth = 1
+      else braceDepth = Math.max(0, braceDepth + stats.delta)
+
+      if (line.trim().startsWith('}') && braceDepth === 0) {
+        closedTopLevelFrame = true
       }
 
       out.push(line)
-      prevWasFrame = isFrame
       prevBlankCount = 0
     }
 

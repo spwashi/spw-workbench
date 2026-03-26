@@ -1,29 +1,35 @@
 import process from 'node:process'
+import { printHelpPage } from '../help'
 import type { CliArgs, MatchMode, SurfaceMode } from './types'
 
 export function printHelp(entryName: string): void {
-  console.log(`
-Spw Liminal Selection and Probe Query
-
-Usage:
-  npm run ${entryName} -- --seq '?~@&*^' --probe '?(subject).[' [--probe-window 16] [--braces '<>{}'] [--label query] [--surface hybrid] [--mode hybrid] [--equiv soft] [--root .spw] [--top 20] [--strict] [--model lattice] [--json]
-
-Flags:
-  --seq <sequence>      Operator sequence (selector charge). Example: '?~@&*^' or '?_query'
-  --braces <sequence>   Brace sequence filter. Example: '<>{}'
-  --label <name>        Label filter (in addition to inline labels from --seq)
-  --probe <expr>        Probe expression (operator or sequence). Example: '?(subject).['
-  --probe-op <op>       Compatibility alias for --probe with one operator token
-  --probe-window <n>    Lookahead window for downstream probe scoring (default: 12)
-  --surface <mode>      Operator stream source: ast|raw|hybrid (default: hybrid)
-  --mode <mode>         Match mode: ordered|set|hybrid (default: hybrid)
-  --equiv <mode>        Token equivalence: strict|soft (default: strict)
-  --root <path>         Root(s) to scan for .spw files (comma-separated)
-  --top <n>             Max results to print (default: 20)
-  --strict              Require strict hits across active query dimensions
-  --model <name>        Optimization lens: fluid|lattice|thermal|quantum
-  --json                Emit JSON output
-`)
+  printHelpPage({
+    title: 'Spw Liminal Selection and Probe Query',
+    usage: [
+      `npm run ${entryName} -- --seq '?~@&*^' --probe '?(subject).[' [--probe-window 16] [--braces '<>{}'] [--label query] [--surface hybrid] [--mode hybrid] [--equiv soft] [--root .spw] [--top 20] [--strict] [--model lattice] [--json]`,
+    ],
+    sections: [
+      {
+        title: 'Flags',
+        lines: [
+          "--seq <sequence>      Operator sequence (selector charge). Example: '?~@&*^' or '?_query'",
+          "--braces <sequence>   Brace sequence filter. Example: '<>{}'",
+          '--label <name>        Label filter (in addition to inline labels from --seq)',
+          "--probe <expr>        Probe expression (operator or sequence). Example: '?(subject).['",
+          '--probe-op <op>       Compatibility alias for --probe with one operator token',
+          '--probe-window <n>    Lookahead window for downstream probe scoring (default: 12)',
+          '--surface <mode>      Operator stream source: ast|raw|hybrid (default: hybrid)',
+          '--mode <mode>         Match mode: ordered|set|hybrid (default: hybrid)',
+          '--equiv <mode>        Token equivalence: strict|soft (default: strict)',
+          '--root <path>         Root(s) to scan for .spw files (comma-separated)',
+          '--top <n>             Max results to print (default: 20)',
+          '--strict              Require strict hits across active query dimensions',
+          '--model <name>        Optimization lens: fluid|lattice|thermal|quantum',
+          '--json                Emit JSON output',
+        ],
+      },
+    ],
+  })
 }
 
 function asSurfaceMode(value: string): SurfaceMode {

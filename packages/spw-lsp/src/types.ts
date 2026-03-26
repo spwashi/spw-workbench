@@ -218,6 +218,10 @@ export interface DocumentFormattingParams {
     options: { tabSize: number; insertSpaces: boolean }
 }
 
+export interface DocumentRangeFormattingParams extends DocumentFormattingParams {
+    range: LspRange
+}
+
 export interface InlayHintParams {
     textDocument: TextDocumentIdentifier
     range: LspRange

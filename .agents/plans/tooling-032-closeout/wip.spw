@@ -1,0 +1,53 @@
+# wip — tooling-032-closeout
+# Branch: feature/tooling-032-closeout
+# Started: 2026-03-26
+
+#:layer #!pragmatics
+
+^["intent"]{
+ ~#goal: "Close out the remaining 0.3.2 tooling slice: formatter coverage, LSP range formatting, CLI help/flags, VS Code concepts tree work, plugin surface stub, and version bumps without disturbing Claude's parallel plan."
+ ~#taste: "clarity + correctness with contained editor UX improvements"
+}
+
+^["stream"]{
+ >>[2026-03-26 21:00] observe — formatter implementation and canonical tests already have local in-progress edits; treat them as in-scope carry-forward work
+ >>[2026-03-26 21:03] observe — LSP supports whole-document formatting only; range formatting needs types, capability wiring, and handler logic
+ >>[2026-03-26 21:05] observe — CLI help/flag parsing is duplicated between router and format command; `spw:format` currently defaults to `.spw` only
+ >>[2026-03-26 21:07] observe — VS Code client still points `@spec` to `lib/spw-v0.2.0-alpha`; concepts tree lacks grouping/search controls
+ >>[2026-03-26 21:09] hygiene — base `main@41943d222d88ffec897f70edab8becc37d44cec6`; `main...HEAD` shows no unrelated committed drift
+ >>[2026-03-26 21:10] taste — keep routing/help code small and explicit; do not let concepts tree UI state sprawl across the extension
+ >>[2026-03-26 21:24] decide — keep the plugin surface stub as `.spw/surfaces/plugins/index.spw` so discovery glue exists without registering a fake plugin
+ >>[2026-03-26 21:27] observe — formatter coverage, LSP range formatting, CLI help consolidation, VS Code concepts grouping/filtering, and 0.3.2 version surfaces are implemented
+ >>[2026-03-26 21:31] observe — verification passed via `npm run test:seed -- src/seed/__tests__/canonical.test.ts`, `npm run build`, and `npm --prefix extensions/vscode-spw run compile`
+}
+
+^["open"]{
+}
+
+^["commits"]{
+ ~[1]: "![seed] — finish canonical formatting behavior and regression coverage"
+ ~[2]: "&[lsp-cli] — add range formatting and shared format/help flag plumbing"
+ ~[3]: "&[vscode] — fix @spec root and add concepts tree grouping/filter controls"
+ ~[4]: "#[release] — add plugin surface stub and bump 0.3.2 versions"
+}
+
+^["cache"]{
+ ~#status: "ready_to_commit"
+ ~#base_ref: "main@41943d222d88ffec897f70edab8becc37d44cec6"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "packages/spw-seed/src/canonical/index.ts, src/seed/__tests__/canonical.test.ts, packages/spw-lsp/src/handlers/editing.ts, packages/spw-cli/src/format.ts, extensions/vscode-spw/src/views/concepts-tree.ts"
+ ~#next_commit: "done"
+ ~#open_count: "0"
+ ~#last_stream: "2026-03-26 21:31"
+ ~#taste_debt: "Avoid mixing concepts tree data shaping, view state, and command wiring into one opaque block."
+}
+
+^["done"]{
+ # Written at merge time.
+ # ~#shipped: []
+ # ~#dropped: []
+ # ~#surprised: ""
+ # ~#duration: ""
+ # ~#taste: ""
+}

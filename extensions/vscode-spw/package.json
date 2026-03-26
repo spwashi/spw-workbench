@@ -2,7 +2,7 @@
     "name": "spw-language",
     "displayName": "Spw Language Support",
     "description": "Syntax highlighting for the Spw (Symbolic Processing Workbench) language — operator physics, valence semantics, and structural containers.",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "publisher": "spwashi",
     "main": "./dist/extension.js",
     "activationEvents": [],
@@ -16,6 +16,28 @@
     },
     "categories": [
         "Programming Languages"
+    ],
+    "commands": [
+        {
+            "command": "spwConcepts.refresh",
+            "title": "Spw: Refresh Concepts Tree"
+        },
+        {
+            "command": "spwConcepts.setGrouping",
+            "title": "Spw: Set Concepts Grouping"
+        },
+        {
+            "command": "spwConcepts.setFilter",
+            "title": "Spw: Filter Concepts Tree"
+        },
+        {
+            "command": "spwConcepts.clearFilter",
+            "title": "Spw: Clear Concepts Filter"
+        },
+        {
+            "command": "spwConcepts.openEntry",
+            "title": "Spw: Open Concept Entry"
+        }
     ],
     "dependencies": {
         "vscode-languageclient": "^9.0.1"
@@ -66,6 +88,30 @@
                 {
                     "id": "spwConcepts",
                     "name": "Concepts"
+                }
+            ]
+        },
+        "menus": {
+            "view/title": [
+                {
+                    "command": "spwConcepts.refresh",
+                    "when": "view == spwConcepts",
+                    "group": "navigation@1"
+                },
+                {
+                    "command": "spwConcepts.setGrouping",
+                    "when": "view == spwConcepts",
+                    "group": "navigation@2"
+                },
+                {
+                    "command": "spwConcepts.setFilter",
+                    "when": "view == spwConcepts",
+                    "group": "navigation@3"
+                },
+                {
+                    "command": "spwConcepts.clearFilter",
+                    "when": "view == spwConcepts",
+                    "group": "navigation@4"
                 }
             ]
         },
