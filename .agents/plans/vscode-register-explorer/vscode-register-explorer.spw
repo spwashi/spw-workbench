@@ -1,0 +1,165 @@
+# interaction spec — vscode-register-explorer
+
+#:layer #!pragmatics
+
+^["surface"]{
+ ~#view_id: "spwRegisters"
+ ~#container: "spw-explorer"
+ ~#purpose: "Inspect active register state, provenance, and runtime phase without leaving VS Code."
+ ~#selection_model: "single-select tree with sticky reveal behavior from commands and code lens"
+ ~#refresh_policy: "manual refresh command, active-editor change refresh, document-save refresh, 2s runtime snapshot reuse"
+ ~#rotation_model: "selected register can rotate between phase, provenance, resonance, and file-tree perspectives without losing selection identity"
+}
+
+^["tree_model"]{
+ root_nodes: [
+  "Active File",
+  "Pinned Snapshot",
+  "Related Registers",
+ ]
+ primary_grouping: "phase"
+ secondary_grouping: "register key"
+ leaf_preview: "value excerpt + write count + current phase"
+ badges: [
+  "phase label",
+  "write count",
+  "resonance count when non-zero",
+  "stale flag when snapshot age exceeds ttl",
+ ]
+ view_rotations: [
+  "phase",
+  "provenance",
+  "resonance",
+  "source tree",
+ ]
+}
+
+^["states"]{
+ empty: {
+  copy: "No register snapshot yet."
+  primary_action: "Run trial on active file"
+  secondary_action: "Open register-bank registry"
+ }
+ loading: {
+  copy: "Collecting runtime snapshot..."
+  affordance: "tree remains mounted with spinner row"
+ }
+ ready: {
+  copy: "Registers grouped by phase and source role."
+  affordance: "selection opens detail pane and supports reveal source"
+ }
+ stale: {
+  copy: "Snapshot may be out of date with the active editor."
+  affordance: "refresh button promoted in view title"
+ }
+ error: {
+  copy: "Runtime snapshot failed."
+  affordance: "show issue summary plus open diagnostics command"
+ }
+}
+
+^["details"]{
+ header: "register key + phase + source file"
+ sections: [
+  "current value preview",
+  "writes and mergedFrom/provenance",
+  "phase history if present",
+  "related anchors or concept names",
+  "resonance edges across files or register groups",
+  "graph query shortcuts rooted at the selected register",
+  "open source / reveal frame / copy register path commands",
+ ]
+ collapsed_defaults: [
+  "phase history",
+  "provenance list beyond first 3 entries",
+ ]
+}
+
+^["commands"]{
+ view_title: [
+  "Refresh Registers",
+  "Reveal Active Register Set",
+  "Pin Snapshot",
+  "Rotate Register View",
+ ]
+ item_context: [
+  "Open Source",
+  "Reveal Register in Active File",
+  "Copy Register Path",
+  "Compare With Previous Snapshot",
+  "Show Resonance Neighbors",
+  "Query Register Graph",
+ ]
+ command_palette: [
+  "Spw: Show Registers For Active File",
+  "Spw: Reveal Register Explorer",
+  "Spw: Pin Current Register Snapshot",
+  "Spw: Rotate Register Perspective",
+  "Spw: Query Register Resonance",
+ ]
+}
+
+^["flows"]{
+ active_file_flow: [
+  "user focuses a .spw editor",
+  "extension requests register snapshot for active document",
+  "view opens on Active File group",
+  "user expands a phase group and selects a register",
+  "detail surface shows value, writes, provenance, and reveal-source action",
+ ]
+ stale_refresh_flow: [
+  "snapshot ttl expires or document version changes",
+  "view marks rows stale instead of clearing selection",
+  "refresh command replaces data in place and preserves expanded nodes when keys still exist",
+ ]
+ compare_flow: [
+  "user pins snapshot A",
+  "user edits file and refreshes into snapshot B",
+  "compare command reports added, removed, and changed register keys",
+ ]
+ resonance_flow: [
+  "user selects a register with resonance count",
+  "detail surface expands resonance edges grouped by file or subtree",
+  "Show Resonance Neighbors opens a focused result set rooted at that register",
+ ]
+ rotation_flow: [
+  "user invokes Rotate Register View",
+  "tree regrouping rotates phase -> provenance -> resonance -> source tree",
+  "current register remains selected if present in the rotated view",
+ ]
+}
+
+^["data_contract"]{
+ required_fields: [
+  "register key",
+  "serialized value preview",
+  "phase current",
+  "writes",
+  "provenance",
+ ]
+ optional_fields: [
+  "mergedFrom",
+  "resonances touching key",
+  "resonance edges with source and target file paths",
+  "source frame label",
+  "source line",
+ ]
+ failure_mode: "partial snapshots are renderable; missing optional fields degrade quietly"
+}
+
+^["theming"]{
+ primary_cues: [
+  "phase tint for group headers",
+  "subtle resonance accent only when count is non-zero",
+  "stale snapshots reduce contrast instead of introducing alarm red",
+ ]
+ caution: "value kinds and state should be legible in both quiet and dense workspaces; color is secondary to label text"
+}
+
+^["non_goals"]{
+ ~#not_now: [
+  "editable register values",
+  "persistent time-travel history",
+  "custom webview rendering",
+ ]
+}

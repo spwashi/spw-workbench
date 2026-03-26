@@ -26,6 +26,16 @@ The user is exploring symmetry applications in `.spw` files (e.g., `symmetry-app
 2. `styles[ui] — add CSS transformation layer for D4 symmetry group`
 3. `exhibit[docs] — embed symmetry-explorer instrument in documentation context`
 
+## Agentic Hygiene
+
+- Rebase target: historical baseline not recorded in the original branch memory; rebase onto current `main` before commit 1.
+- Rebase cadence: before commit 1, before merge
+- Hygiene split: none recorded in the original branch memory; verify worktree drift before implementation.
+
+## Dependencies
+
+none
+
 ## Spw Artifact
 
-`.agents/plans/symmetry-explorer-instrument/wip.spw` — tracking the D4/Z4 action mapping and CSS token bindings.
+None beyond `wip.spw`; the branch memory is the retained operational surface for this plan.

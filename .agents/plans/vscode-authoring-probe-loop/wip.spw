@@ -1,0 +1,49 @@
+# wip — vscode-authoring-probe-loop
+# Branch: feature/vscode-authoring-probe-loop
+# Started: 2026-03-26
+
+#:layer #!pragmatics
+
+^["intent"]{
+ ~#goal: "Make the VS Code authoring loop register-aware through better completion, actionable code lens, probe commands, and lightweight status surfaces."
+ ~#taste: "correctness, expressiveness, performance"
+}
+
+^["stream"]{
+ >>[2026-03-26 00:00] observe — completion is still dominated by static sigil snippets, root paths, and annotation names while register and workspace signals remain mostly passive.
+ >>[2026-03-26 00:01] observe — code-lens already computes useful runtime and projection summaries, but none of those surfaces are currently actionable.
+ >>[2026-03-26 00:02] decide — the first authoring-loop slice should keep the terminal harness intact and concentrate on command routing plus richer editor affordances.
+ >>[2026-03-26 00:03] hygiene — base reference recorded at `main@f42a80fa8eefb813992e21f7461c96926f033416`; `main...HEAD` shows no unrelated committed drift.
+ >>[2026-03-26 00:04] hygiene — local drift is present in `extensions/vscode-spw/src/annotation-index.ts`, `extensions/vscode-spw/src/extension.ts`, and `packages/spw-lsp/src/stdio-server.ts`; feature implementation should isolate that work before commit 1.
+ >>[2026-03-26 00:05] taste — status surfaces should accelerate attention, not become a second dashboard inside the editor chrome.
+ >>[2026-03-26 00:06] revise — broaden the authoring loop to account for theming nuance, formatting/refactor flows, graph-query probes, and perspective rotations during inspection.
+ >>[2026-03-26 00:07] revise — relax the plan from atlas/register-last sequencing to additive composition. The authoring loop now needs a solo-ship path from local parse/runtime context, with atlas/register data treated as optional enrichments.
+}
+
+^["open"]{
+ ?[command_budget]: "Which run/probe commands deserve first-class status-bar presence versus command-palette-only exposure?"
+}
+
+^["commits"]{
+ ~[1]: ".[plans] — stage vscode-authoring-probe-loop planning artifacts"
+ ~[2]: "&[vscode-authoring] — add phase-aware completion and spirit-sequence hover"
+ ~[3]: "&[vscode-authoring] — add actionable code-lens commands and materialization breadcrumb"
+ ~[4]: "&[vscode-authoring] — add probe/run commands, operator-frequency heat, and editor status surfaces"
+ ~[5]: "&[vscode-authoring] — wire cross-surface events and SpwContext fields"
+ ~[6]: "![vscode-authoring] — verify compile and authoring-loop interaction paths"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@f42a80fa8eefb813992e21f7461c96926f033416"
+ ~#rebased_at: ""
+ ~#hygiene_split: "isolate local drift in extensions/vscode-spw/src/annotation-index.ts, extensions/vscode-spw/src/extension.ts, and packages/spw-lsp/src/stdio-server.ts before implementation"
+ ~#files_hot: ".agents/plans/vscode-authoring-probe-loop/PLAN.md, .agents/plans/vscode-authoring-probe-loop/wip.spw, .agents/plans/vscode-authoring-probe-loop/vscode-authoring-probe-loop.spw"
+ ~#next_commit: "1"
+ ~#open_count: "1"
+ ~#last_stream: "2026-03-26 00:07"
+ ~#taste_debt: "Do not ship completion noise that outruns semantic relevance. Atlas/register context is additive, not a gate for ordinary editing."
+}
+
+^["done"]{
+}

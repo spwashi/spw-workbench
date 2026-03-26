@@ -1,0 +1,322 @@
+# interaction contract — vscode surfaces
+#
+# Shared event vocabulary and context shape for the three VS Code
+# experience plans: workspace-atlas, register-explorer, authoring-probe-loop.
+# Each plan contributes fields to SpwContext and emits/consumes events
+# defined here. The contract ensures the three surfaces compose into
+# one continuous editing experience rather than three independent tabs.
+
+#:layer #!pragmatics
+#>vscode_interaction_contract
+
+^["principle"]{
+ ~#river: "where am I (atlas) → what is alive here (registers) → what can I do next (authoring)"
+ ~#taste: "the three surfaces are one river, not three islands"
+ ~#invariant: "every cross-surface navigation preserves the user's selection context and narrows rather than resets"
+ ~#composition_rule: "each surface must solo-ship first; shared context, events, and pairwise integrations are additive"
+}
+
+^["shared_capabilities"]{
+ #:contract #!capabilities
+
+ ~#rule: "cross-surface integrations key off capabilities rather than fixed merge order"
+
+ atlas: [
+  "manifestState",
+  "workspaceTemperature",
+  "activeRoot",
+ ]
+
+ registers: [
+  "registerSnapshot",
+  "focusedRegister",
+ ]
+
+ authoring: [
+  "activePhase",
+  "materializationState",
+  "probeHistory",
+ ]
+}
+
+^["shared_context"]{
+ #:contract #!SpwContext
+
+ ~#existing: [
+  "documentSelector",
+  "annotationIndex",
+  "resolveRoot",
+  "ROOT_MAP",
+  "SIGIL_SEMANTICS",
+ ]
+
+ ~#atlas_contributes: [
+  "manifestState — parsed workspace.spw manifest or null",
+  "workspaceTemperature — live cache tier snapshots from LSP index",
+  "activeRoot — currently selected root in the atlas",
+ ]
+
+ ~#registers_contributes: [
+  "registerSnapshot — latest runtime trial register state or null",
+  "focusedRegister — currently inspected register identity",
+ ]
+
+ ~#authoring_contributes: [
+  "activePhase — spirit-sequence phase at cursor position",
+  "materializationState — priming|concept|frame|body for cursor context",
+  "probeHistory — recent probe results for the active document",
+ ]
+
+ ~#evolution_rule: "each plan adds its fields without overwriting; shared interface grows additively across the three commit arcs"
+}
+
+^["event_vocabulary"]{
+ #:contract #!events
+
+ atlas_root_selected: {
+  ~#emit_as: "atlas.rootSelected"
+  payload: "{ sigil: string, resolvedPath: string, manifestFrame: string | null }"
+  consumers: ["register-explorer (filter to root)", "authoring-loop (scope completions)"]
+ }
+
+ atlas_perspective_rotated: {
+  ~#emit_as: "atlas.perspectiveRotated"
+  payload: "{ perspective: 'topology' | 'contract' | 'resonance' | 'phase' | 'query' }"
+  consumers: ["register-explorer (match perspective)", "status-bar (show active lens)"]
+ }
+
+ register_focused: {
+  ~#emit_as: "register.focused"
+  payload: "{ name: string, phase: number, provenance: string[], file: string }"
+  consumers: ["atlas (highlight resonance neighbors)", "authoring-loop (show in code lens)"]
+ }
+
+ register_phase_changed: {
+  ~#emit_as: "register.phaseChanged"
+  payload: "{ name: string, previousPhase: number, currentPhase: number }"
+  consumers: ["atlas (update phase view)", "authoring-loop (update status)"]
+ }
+
+ probe_completed: {
+  ~#emit_as: "probe.completed"
+  payload: "{ probeId: string, target: string, result: object, resonances: string[] }"
+  consumers: ["atlas (update resonance counts)", "register-explorer (refresh snapshot)"]
+ }
+
+ authoring_phase_entered: {
+  ~#emit_as: "authoring.phaseEntered"
+  payload: "{ phase: number, sigil: string, cursorUri: string, line: number }"
+  consumers: ["register-explorer (highlight phase group)", "status-bar (show phase)"]
+ }
+
+ materialization_advanced: {
+  ~#emit_as: "materialization.advanced"
+  payload: "{ uri: string, previousStage: string, currentStage: string }"
+  consumers: ["atlas (update materialization badge)", "register-explorer (refresh)"]
+ }
+}
+
+^["spirit_sequence_integration"]{
+ #:semantics #!phase_axis
+
+ ~#sequence: "? ~ @ & * ^"
+ ~#phases: ["wonder/probe", "potential/name", "perspective/scope", "confluence/merge", "value/collapse", "integration/frame"]
+ ~#binding_phases: ["! (action/injection)", "= (config/constraint)", "% (measure)", "# (annotation/resonance)"]
+
+ atlas_axis: {
+  ~#role: "phase is a rotation lens alongside topology, contract, resonance, query"
+  ~#presentation: "group workspace nodes by the dominant phase of their content"
+  ~#computation: "operator frequency analysis per file or root — dominant phase = highest-frequency spirit operator"
+ }
+
+ register_axis: {
+  ~#role: "registers carry phase state; tree groups or filters by current phase"
+  ~#presentation: "phase trajectory shown in detail view: what charged, what collapsed"
+  ~#computation: "register.writes history mapped to spirit-sequence positions"
+ }
+
+ authoring_axis: {
+  ~#role: "completions and code lenses are phase-aware"
+  ~#presentation: "after ? suggest ~; after & suggest *; cursor-local phase shown in status"
+  ~#computation: "look-back from cursor position to nearest unmatched spirit operator"
+ }
+}
+
+^["materialization_integration"]{
+ #:semantics #!materialization_cycle
+
+ ~#stages: ["priming", "concept", "frame", "body"]
+ ~#transition: "priming → concept → frame → body (reversible via probe/archive replay)"
+
+ stage_heuristics: {
+  priming: "operator sequence without a named binding — register disposition charging"
+  concept: "named potential with ~ binding but no containing frame (^) — unbound reference"
+  frame: "^-declared container with structure but no generated projection — structural spec"
+  body: "materialized artifact in gen/* or resolved output — generated from a frame"
+ }
+
+ atlas_use: {
+  ~#role: "each root or surface shows its materialization state"
+  ~#badge: "priming=charging, concept=potential, frame=structured, body=materialized"
+  ~#stale_detection: "body whose spec-owner frame has changed since generation"
+ }
+
+ register_use: {
+  ~#role: "registers at different stages have different inspection affordances"
+  ~#priming: "show charging operators and disposition"
+  ~#concept: "show named potential and references"
+  ~#frame: "show container structure and relations"
+  ~#body: "show materialized value and projection lineage"
+ }
+
+ authoring_use: {
+  ~#role: "code lens and status indicate materialization state for current context"
+  ~#frame_without_body: "offer 'Generate body' lens"
+  ~#body_with_stale_frame: "show 'Stale projection' warning"
+  ~#breadcrumb: "status bar shows priming|concept|frame|body for cursor expression"
+ }
+}
+
+^["resonance_definition"]{
+ #:semantics #!resonance_computation
+
+ ~#principle: "resonance is observable coupling between workspace nodes across tree boundaries"
+
+ channels: {
+  annotation_cooccurrence: {
+   ~#source: "ConceptCluster.coOccurs in server-index"
+   ~#signal: "concepts that appear in the same files or frames"
+   ~#strength: "count of shared annotation names normalized by total annotations"
+  }
+  root_cross_reference: {
+   ~#source: "SpwSelectorHit paths that resolve across root boundaries"
+   ~#signal: "files under one root that reference paths under another root"
+   ~#strength: "count of cross-root references"
+  }
+  projection_lineage: {
+   ~#source: "ProjectionEntry in server-index"
+   ~#signal: "spec owner → generated body links"
+   ~#strength: "binary — linked or not, plus stale/fresh status"
+  }
+  register_coupling: {
+   ~#source: "register snapshot from runtime trial"
+   ~#signal: "registers that share bindings or provenance across files"
+   ~#strength: "count of shared provenance entries"
+  }
+ }
+
+ ~#lsp_endpoint: "spw/resonance — returns typed resonance edges for a given node"
+ ~#atlas_command: "Show Resonance Neighbors queries all four channels"
+ ~#collapse_rule: "present strongest channel first; let user expand weaker channels on demand"
+}
+
+^["perspective_visual_language"]{
+ #:pragmatics #!rotation_design
+
+ topology: {
+  ~#icon_suffix: "$(list-tree)"
+  ~#description_suffix: "structure"
+  ~#content: "children are files and subdirectories, depth-first"
+  ~#node_emphasis: "path depth and containment"
+ }
+ contract: {
+  ~#icon_suffix: "$(law)"
+  ~#description_suffix: "contract"
+  ~#content: "declared invariants, surfaces, layer, relationship to other roots"
+  ~#node_emphasis: "ownership and invariant text"
+ }
+ resonance: {
+  ~#icon_suffix: "$(pulse)"
+  ~#description_suffix: "resonance"
+  ~#content: "which other roots reference this node, annotation overlap, projection dependencies"
+  ~#node_emphasis: "coupling count and channel breakdown"
+ }
+ phase: {
+  ~#icon_suffix: "$(symbol-event)"
+  ~#description_suffix: "phase"
+  ~#content: "dominant spirit-sequence phase, operator frequency, phase trajectory"
+  ~#node_emphasis: "phase index and operator distribution"
+ }
+ query: {
+  ~#icon_suffix: "$(search)"
+  ~#description_suffix: "query"
+  ~#content: "graph-query results: neighbors, lineage, subtree focus — scoped to selected node"
+  ~#node_emphasis: "result count and query type"
+ }
+}
+
+^["vocabulary_guidance"]{
+ #:pragmatics #!naming
+
+ ~#principle: "command names use Spw vocabulary, not generic VS Code vocabulary"
+
+ prefer: {
+  "Re-ground": "over Refresh — matches . ground operator"
+  "Probe": "over Search/Find — matches ? operator"
+  "Collapse": "over Resolve — matches * operator when scope narrows to concrete"
+  "Rotate lens": "over Switch view — matches perspective/observer @ semantics"
+  "Charge": "over Load/Initialize — matches priming semantics"
+  "Unprimed": "over Not initialized — workspace without manifest"
+  "Ungrounded": "over Stale/Invalid — projection disconnected from spec owner"
+ }
+
+ status_messages: {
+  probe_result: "? → 3 resonances found"
+  manifest_missing: "workspace unprimed — no manifest at .spw/workspace.spw"
+  stale_projection: "body ungrounded — spec owner changed since generation"
+  phase_indicator: "cursor phase: ~ potential"
+ }
+}
+
+^["manifest_authority"]{
+ #:contract #!authority_table
+
+ ~#rule: "structural claims come from the manifest; behavioral observations come from the index"
+ ~#taste_debt: "do not let inferred index data silently override manifest truth"
+
+ roots: {
+  authority: "manifest-strict"
+  fallback: "degrade to ROOT_MAP hardcoded roots, labeled 'inferred'"
+ }
+ memory: {
+  authority: "manifest for placement, index for temperature"
+  fallback: "show only index-derived temperature; omit placement labels"
+ }
+ generated: {
+  authority: "manifest for spec owners, index for stale detection"
+  fallback: "hide section entirely — no manifest means no projection contract"
+ }
+ harness: {
+  authority: "manifest-strict"
+  fallback: "hide section — harness paths are explicitly declared"
+ }
+ contracts: {
+  authority: "manifest-strict"
+  fallback: "hide section — contracts are named references, not discoverable"
+ }
+ queries: {
+  authority: "index-derived, manifest-scoped"
+  fallback: "available but scoped to discovered files only"
+ }
+}
+
+^["composition"]{
+ #:pragmatics #!parallel_synergy
+
+ ~#recommended: [
+  "1. shared interaction contract and any shared helper/types extraction land as a substrate commit when possible",
+  "2. each surface maintains a solo-ship path that does not require the other two surfaces to render usefully",
+  "3. pairwise integration commits land opportunistically (atlas x registers, atlas x authoring, registers x authoring)",
+  "4. all-up rotation polish is a final integration slice, not a prerequisite for any one surface",
+ ]
+
+ ~#shared_hot_files: [
+  "extensions/vscode-spw/src/extension.ts",
+  "extensions/vscode-spw/src/context.ts",
+  "extensions/vscode-spw/package.json",
+  "packages/spw-lsp/src/stdio-server.ts",
+ ]
+
+ ~#context_growth: "each plan adds to SpwContext additively; no plan removes fields another introduced"
+ ~#integration_rule: "capability checks gate cross-surface affordances; missing peers degrade to local scope rather than disabling the surface"
+}

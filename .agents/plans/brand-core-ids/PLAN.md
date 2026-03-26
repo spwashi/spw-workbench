@@ -28,6 +28,16 @@ The current runtime passes `FrameId`, `RegisterId`, and `DomainId` as simple str
 2. `types[runtime] — apply branded IDs to RegisterBank and Substrate`
 3. `test[runtime] — align tests to branded identifier types`
 
+## Agentic Hygiene
+
+- Rebase target: historical baseline not recorded in the original branch memory; rebase onto current `main` before commit 1.
+- Rebase cadence: before commit 1, before merge
+- Hygiene split: none recorded in the original branch memory; verify worktree drift before implementation.
+
+## Dependencies
+
+none
+
 ## Spw Artifact
 
-`.agents/plans/brand-core-ids/wip.spw` — tracking progress and open questions for ID branding.
+None beyond `wip.spw`; the branch memory is the retained operational surface for this plan.

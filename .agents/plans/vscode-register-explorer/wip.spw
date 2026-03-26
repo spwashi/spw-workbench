@@ -1,0 +1,48 @@
+# wip — vscode-register-explorer
+# Branch: feature/vscode-register-explorer
+# Started: 2026-03-26
+
+#:layer #!pragmatics
+
+^["intent"]{
+ ~#goal: "Add a dedicated VS Code register explorer so runtime state, phases, provenance, and register counts are inspectable as stable workspace surfaces."
+ ~#taste: "clarity, expressiveness, containment"
+}
+
+^["stream"]{
+ >>[2026-03-26 00:00] observe — the current extension exposes concepts as the only custom tree view while register information remains fragmented across hover and code-lens text.
+ >>[2026-03-26 00:01] observe — runtime trial data already exists in the LSP context, which makes register exploration feasible without inventing a second runtime path.
+ >>[2026-03-26 00:02] decide — keep the first slice tree-based and command-driven; avoid webviews until the workspace proves a tree surface is insufficient.
+ >>[2026-03-26 00:03] hygiene — base reference recorded at `main@f42a80fa8eefb813992e21f7461c96926f033416`; `main...HEAD` shows no unrelated committed drift.
+ >>[2026-03-26 00:04] hygiene — local drift is present in `extensions/vscode-spw/src/annotation-index.ts`, `extensions/vscode-spw/src/extension.ts`, and `packages/spw-lsp/src/stdio-server.ts`; feature implementation should isolate that work before commit 1.
+ >>[2026-03-26 00:05] taste — register state should read like a workspace object model, not a debug dump.
+ >>[2026-03-26 00:06] revise — extend the interaction slice to cover resonance across files, focused graph queries around selected registers, and rotation between phase/provenance/resonance perspectives.
+ >>[2026-03-26 00:07] revise — relax the plan from atlas-first sequencing to additive composition. The explorer now needs a solo-ship path from active-file snapshots, with atlas/authoring integrations layered on when those capabilities exist.
+}
+
+^["open"]{
+ ?[transport_shape]: "Should the explorer fetch one file-scoped snapshot at a time or a workspace-aware register summary with lazy detail expansion?"
+}
+
+^["commits"]{
+ ~[1]: ".[plans] — stage vscode-register-explorer planning artifacts"
+ ~[2]: "&[vscode-registers] — add typed register snapshot transport to the LSP shell"
+ ~[3]: "&[vscode-registers] — add register explorer tree and reveal/refresh commands"
+ ~[4]: "&[vscode-registers] — add materialization-aware detail view and cross-surface event wiring"
+ ~[5]: "![vscode-registers] — verify extension compile and register snapshot flows"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@f42a80fa8eefb813992e21f7461c96926f033416"
+ ~#rebased_at: ""
+ ~#hygiene_split: "isolate local drift in extensions/vscode-spw/src/annotation-index.ts, extensions/vscode-spw/src/extension.ts, and packages/spw-lsp/src/stdio-server.ts before implementation"
+ ~#files_hot: ".agents/plans/vscode-register-explorer/PLAN.md, .agents/plans/vscode-register-explorer/wip.spw, .agents/plans/vscode-register-explorer/vscode-register-explorer.spw"
+ ~#next_commit: "1"
+ ~#open_count: "1"
+ ~#last_stream: "2026-03-26 00:07"
+ ~#taste_debt: "Do not let the first explorer slice become a dump of every runtime field. Atlas context is an enrichment, not a prerequisite."
+}
+
+^["done"]{
+}

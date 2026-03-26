@@ -1,6 +1,10 @@
 # Plan: js-distribution
 
-Begin bundling a versioned JavaScript distribution for the workbench without breaking the current source-TypeScript workspace contract. The desired end state is a reproducible `dist/` artifact and release bundle that mirrors the root package version, keeps `spw` as the canonical CLI identity, and preserves the existing TS-first dev loop. Taste note: this work prioritizes correctness, layering, and release clarity.
+Begin bundling a versioned JavaScript distribution for the workbench without breaking the current source-TypeScript workspace contract.
+
+## Goal
+
+The desired end state is a reproducible `dist/` artifact and release bundle that mirrors the root package version, keeps `spw` as the canonical CLI identity, and preserves the existing TS-first dev loop. Taste note: this work prioritizes correctness, layering, and release clarity.
 
 ## Scope
 

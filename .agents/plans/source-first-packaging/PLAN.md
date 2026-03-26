@@ -1,6 +1,10 @@
 # Plan: source-first-packaging
 
-Codify the packaging contract so the repo stays source-first while `dist/` remains a derived release artifact. The goal is to make that decision obvious in both the canon and the README, especially for future installer and publishing work. Taste note: this slice prioritizes clarity, naming, and release correctness.
+Codify the packaging contract so the repo stays source-first while `dist/` remains a derived release artifact.
+
+## Goal
+
+The goal is to make that decision obvious in both the canon and the README, especially for future installer and publishing work. Taste note: this slice prioritizes clarity, naming, and release correctness.
 
 ## Scope
 

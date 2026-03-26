@@ -3,7 +3,7 @@
 Every agent feature branch has two artifacts at `.agents/plans/<slug>/`:
 
 - **PLAN.md** — pre-flight scope; filed before any code is written
-- **wip.spw** — running development stream; updated throughout
+- **wip.spw** — running development stream; updated throughout and may remain as retained operational memory after merge
 
 See `_schema/wip.spw` for the wip.spw convention and memory model.
 
@@ -109,9 +109,16 @@ Write `none` if standalone.
 ### `## Spw Artifact` *(optional)*
 
 If this work warrants a distilled `.spw` commentary (novel abstraction, design
-decision worth recording), describe it here. `wip.spw` is always present and is
-**not** this artifact — it is a working stream. The optional artifact here is a
-clean, distilled record intended to endure beyond the branch.
+decision worth recording), describe it here. `wip.spw` is always present and may
+remain as durable operational memory, but it is still the working stream. The
+optional artifact here is a clean, distilled record intended to endure beyond
+branch procedure.
+
+If no separate distilled artifact is warranted, say so explicitly:
+
+```
+None beyond `wip.spw`; the branch memory is the retained operational surface.
+```
 
 ```
 .agents/plans/<slug>/<slug>.spw

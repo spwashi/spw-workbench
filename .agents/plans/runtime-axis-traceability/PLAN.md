@@ -26,6 +26,16 @@ The `spw-workbench` uses an "instrumentation-first" philosophy where design deci
 2. `docs[runtime] — trace Substrate events to disclosure and noise axes`
 3. `audit[infra] — enhance marker audit to recognize @spw:axis traces`
 
+## Agentic Hygiene
+
+- Rebase target: historical baseline not recorded in the original branch memory; rebase onto current `main` before commit 1.
+- Rebase cadence: before commit 1, before merge
+- Hygiene split: none recorded in the original branch memory; verify worktree drift before implementation.
+
+## Dependencies
+
+none
+
 ## Spw Artifact
 
-`.agents/plans/runtime-axis-traceability/wip.spw` — tracking the traceability mapping for each core module.
+None beyond `wip.spw`; the branch memory is the retained operational surface for this plan.

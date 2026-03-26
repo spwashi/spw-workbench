@@ -1,0 +1,72 @@
+# wip — vscode-workspace-atlas
+# Branch: feature/vscode-workspace-atlas
+# Started: 2026-03-26
+
+#:layer #!pragmatics
+
+^["intent"]{
+ ~#goal: "Add a workspace atlas view that renders roots, memory tiers, generated surfaces, and harness locations from the workspace contract."
+ ~#taste: "clarity, layering, naming"
+}
+
+^["stream"]{
+ >>[2026-03-26 00:00] observe — the extension currently exposes one Concepts tree and a hardcoded root map while `.spw/workspace.spw` already defines a richer discovery contract.
+ >>[2026-03-26 00:01] decide — the atlas should read as a workspace map first and a file browser second; roots, planes, and memory ownership should be explicit.
+ >>[2026-03-26 00:02] observe — the workspace manifest already names future LSP/editor capabilities, which makes it a natural source for view vocabulary and command naming.
+ >>[2026-03-26 00:03] hygiene — base reference recorded at `main@f42a80fa8eefb813992e21f7461c96926f033416`; `main...HEAD` shows no unrelated committed drift.
+ >>[2026-03-26 00:04] hygiene — local drift is present in `extensions/vscode-spw/src/annotation-index.ts`, `extensions/vscode-spw/src/extension.ts`, and `packages/spw-lsp/src/stdio-server.ts`; feature implementation should isolate that work before commit 1.
+ >>[2026-03-26 00:05] taste — the atlas should reinforce the workspace's own nouns instead of adding editor-only taxonomy.
+ >>[2026-03-26 00:06] revise — expand the atlas spec to include cross-tree resonance, graph-query affordances, and rotation between topology, contract, and query perspectives.
+ >>[2026-03-26 00:07] observe — the three vscode plans (atlas, register-explorer, authoring-probe-loop) form one river (where am I → what is alive → what can I do) but lack a shared interaction model; each plan wires into extension.ts and context.ts independently.
+ >>[2026-03-26 00:08] decide — create vscode-interaction-contract.spw as a cross-plan artifact defining shared event vocabulary, SpwContext evolution, and merge sequencing. Atlas lands first, establishes manifestState + workspaceTemperature + activeRoot.
+ >>[2026-03-26 00:09] observe — spirit sequence (?~@&*^) is declared in SIGIL_SEMANTICS and manifest but not experientially present in any plan. The atlas should make phase a navigable axis, not just metadata.
+ >>[2026-03-26 00:10] decide — add phase as a fifth rotation perspective alongside topology, contract, resonance, query. Compute dominant phase per node via operator frequency analysis. This mirrors the manifest's own `$%[op.distribution]` probe.
+ >>[2026-03-26 00:11] observe — materialization cycle (priming → concept → frame → body) is declared in manifest ^"priming_concepts_frames_bodies" but absent from all three plans. Each stage has different inspection affordances.
+ >>[2026-03-26 00:12] decide — atlas nodes carry materialization badges. Heuristic: scan for ~bindings, ^frames, and ProjectionEntry presence. Stale bodies are "ungrounded."
+ >>[2026-03-26 00:13] observe — Memory section was planned as static labels (hot/warm/cold/generated). But ServerIndex already tracks live cache tiers with beat age and mutation.
+ >>[2026-03-26 00:14] decide — Memory shows two layers: declared placement (manifest) and observed temperature (index). LSP exposes spw/workspaceTemperature request.
+ >>[2026-03-26 00:15] observe — resonance is mentioned throughout the plans but never computationally defined. Four channels exist in the LSP: annotation co-occurrence, root cross-reference, projection lineage, register coupling.
+ >>[2026-03-26 00:16] decide — define resonance as the union of four channels. LSP exposes spw/resonance endpoint. Atlas "Show Resonance Neighbors" queries all four, strongest channel first.
+ >>[2026-03-26 00:17] resolve — answer ?[manifest_authority] with authority table: structural claims from manifest, behavioral observations from index. When manifest absent, inferred data is labeled clearly.
+ >>[2026-03-26 00:18] taste — command names should use Spw vocabulary: Re-ground over Refresh, Unprimed over Not initialized, Ungrounded over Stale. The extension teaches the language by speaking it.
+ >>[2026-03-26 00:19] revise — relax the three-plan contract from fixed merge order to additive capability composition. Atlas still provides the shared substrate, but all three surfaces now need solo-ship and pairwise-integration stories.
+}
+
+^["open"]{
+ ?[cross_surface_temperature]: "Should the atlas's live temperature view include documents from roots the manifest doesn't declare, or only manifest-scoped files?"
+ ?[phase_computation_cost]: "Operator frequency analysis per root on every refresh may be expensive for large workspaces. Should phase badges be computed lazily (on expand) or cached with beat-based invalidation?"
+}
+
+^["resolved"]{
+ ![manifest_authority]: {
+  ~#answer: "Structural claims come from the manifest; behavioral observations come from the index."
+  ~#rule: "When manifest is absent, inferred data is labeled 'inferred' and never presented as canonical."
+  ~#table: "Roots=manifest-strict (fallback: ROOT_MAP labeled inferred), Memory=manifest placement + index temperature (fallback: index only), Generated=manifest spec owners + index stale (fallback: hide), Harness=manifest-strict (fallback: hide), Contracts=manifest-strict (fallback: hide), Queries=index-derived manifest-scoped (fallback: discovered files only)"
+  ~#resolved_at: "2026-03-26 00:17"
+ }
+}
+
+^["commits"]{
+ ~[1]: ".[plans] — stage vscode-workspace-atlas planning artifacts"
+ ~[2]: "&[vscode-workspace] — derive atlas metadata from workspace manifest and index helpers"
+ ~[3]: "&[vscode-workspace] — add workspace atlas tree and root/memory navigation commands"
+ ~[4]: "&[vscode-workspace] — add phase perspective, materialization badges, and resonance endpoint"
+ ~[5]: "&[vscode-workspace] — define additive interaction contract and solo-ship composition rules"
+ ~[6]: "![vscode-workspace] — verify extension compile and manifest fallback behavior"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@f42a80fa8eefb813992e21f7461c96926f033416"
+ ~#rebased_at: ""
+ ~#hygiene_split: "isolate local drift in extensions/vscode-spw/src/annotation-index.ts, extensions/vscode-spw/src/extension.ts, and packages/spw-lsp/src/stdio-server.ts before implementation"
+ ~#files_hot: ".agents/plans/vscode-workspace-atlas/PLAN.md, .agents/plans/vscode-workspace-atlas/wip.spw, .agents/plans/vscode-workspace-atlas/vscode-workspace-atlas.spw, .agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw"
+ ~#next_commit: "1"
+ ~#open_count: "2"
+ ~#resolved_count: "1"
+ ~#last_stream: "2026-03-26 00:19"
+ ~#taste_debt: "Do not let inferred index data silently override manifest truth. Command names must use Spw vocabulary. The extension teaches the language by speaking it. Shared context/event growth must stay additive."
+}
+
+^["done"]{
+}

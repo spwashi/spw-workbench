@@ -1,6 +1,10 @@
 # Plan: js-publish-contract
 
-Harden the JS distribution into a publishable contract by adding declaration output and explicit type-aware export metadata without disturbing the repo's source-TypeScript workspace flow. The end state should let `dist/` behave like a package artifact with runtime JS, entrypoint declarations, and version metadata derived from the root manifest. Taste note: this slice prioritizes correctness, layering, and TypeScript ergonomics.
+Harden the JS distribution into a publishable contract by adding declaration output and explicit type-aware export metadata without disturbing the repo's source-TypeScript workspace flow.
+
+## Goal
+
+The end state should let `dist/` behave like a package artifact with runtime JS, entrypoint declarations, and version metadata derived from the root manifest. Taste note: this slice prioritizes correctness, layering, and TypeScript ergonomics.
 
 ## Scope
 

@@ -1,0 +1,156 @@
+# interaction spec — vscode-authoring-probe-loop
+
+#:layer #!pragmatics
+
+^["completion"]{
+ contexts: {
+  metric: {
+   trigger: "$%["
+   source: "observable state + known runtime telemetry names"
+   ranking: "live metrics first, known dormant metrics second"
+  }
+  root: {
+   trigger: "@"
+   source: "workspace atlas roots + manifest-derived roots + fallback static roots"
+   ranking: "manifest roots before fallback roots"
+  }
+  selector: {
+   trigger: "$"
+   source: "indexed selectors, frames, and navigable workspace selectors"
+   ranking: "same-file definitions before workspace definitions"
+  }
+  register_facet: {
+   trigger: "[reg="
+   source: "known facet qualifiers and registry-derived values"
+   ranking: "current-file usage before global usage"
+  }
+ }
+ reject_rules: [
+  "do not show register-path suggestions when parse context is plain string content",
+  "hide noisy workspace-wide suggestions when same-file candidates exist",
+ ]
+ formatting_awareness: "completion items that introduce structural forms should respect formatter expectations and avoid spellings the refactor actions would immediately rewrite"
+}
+
+^["code_lens"]{
+ promote_actions: [
+  "show registers",
+  "show anchor backlinks",
+  "open generated target",
+  "open source spec",
+  "run trial",
+  "rotate perspective",
+  "query graph neighborhood",
+ ]
+ action_model: "lens title is summary; click opens command scoped to line/file context"
+ fallback: "if command data is unavailable, keep summary-only lens instead of broken click target"
+}
+
+^["formatting_refactors"]{
+ formatting_actions: [
+  "format current file",
+  "format selected range",
+  "normalize concise trait to structural binding",
+  "normalize structural binding to concise trait when semantically safe",
+ ]
+ refactor_actions: [
+  "reveal anchor backlinks before rename",
+  "rename selector or root with preview",
+  "rotate between equivalent surface spellings when semantics are preserved",
+  "extract frame from deep nested block",
+ ]
+ inspection_before_refactor: "every non-trivial refactor command should preview affected files or graph edges before edit confirmation"
+}
+
+^["commands"]{
+ command_palette: [
+  "Spw: Trial Run Current File",
+  "Spw: Show Registers For Active File",
+  "Spw: Trace Selector At Cursor",
+  "Spw: Open Harness Memory Surface",
+  "Spw: Reveal Workspace Atlas",
+  "Spw: Rotate Inspection Perspective",
+  "Spw: Query Workspace Graph At Cursor",
+  "Spw: Preview Semantic Refactor",
+  ]
+ editor_title: [
+  "Run Trial",
+  "Trace Selector",
+ ]
+ keybinding_candidates: [
+  "cmd/ctrl+alt+r for trial run",
+  "cmd/ctrl+alt+shift+r for register reveal",
+  "cmd/ctrl+alt+g for graph query",
+  "cmd/ctrl+alt+o for rotate perspective",
+ ]
+}
+
+^["status"]{
+ slots: [
+  "active runtime phase",
+  "register count",
+  "observable state freshness",
+  "last trial status",
+ ]
+ quiet_mode: "when no .spw editor is active, collapse to one dormant status item"
+ warning_mode: "runtime failure or stale observable state swaps phase slot for warning label"
+}
+
+^["theming"]{
+ states: [
+  "quiet editing uses low-contrast semantic tinting",
+  "stale probe or runtime warning promotes contrast but does not flash",
+  "active inspection mode highlights selected lens or rotation context",
+ ]
+ formatting_feedback: "refactor/format previews use success, caution, and semantic-drift colors distinct from syntax highlighting"
+}
+
+^["flows"]{
+ edit_to_trial: [
+  "user edits .spw file",
+  "status surface marks trial stale",
+  "Run Trial command executes",
+  "status updates with phase and register count",
+  "user opens register explorer or diagnostics from result",
+ ]
+ selector_trace: [
+  "cursor sits on selector or path reference",
+  "Trace Selector command resolves source and target",
+  "quick pick offers open target, copy path, or reveal atlas node",
+ ]
+ completion_accept: [
+  "user types metric or root prefix",
+  "completion list shows live-first ranked items",
+  "accept inserts minimal surface spelling and preserves cursor in next editable segment",
+ ]
+ refactor_preview: [
+  "user invokes Preview Semantic Refactor",
+  "editor shows affected files, backlinks, and graph edges before applying edits",
+  "user confirms or narrows scope before write",
+ ]
+ rotate_inspection: [
+  "user invokes Rotate Inspection Perspective",
+  "status bar, code lens, and quick pick rotate together between local, cross-file, tree, and graph views",
+  "cursor stays anchored to the same semantic target when possible",
+ ]
+ graph_query_flow: [
+  "cursor sits on selector, anchor, frame, or root",
+  "Query Workspace Graph At Cursor opens focused neighborhood query",
+  "results allow open target, reveal atlas node, or launch rename/refactor preview",
+ ]
+}
+
+^["diagnostic_affordances"]{
+ inline_actions: [
+  "rerun trial from runtime warning",
+  "open target from unresolved root/path warning when a near match exists",
+ ]
+}
+
+^["non_goals"]{
+ ~#not_now: [
+  "embedded terminal replacement",
+  "persistent run history UI",
+  "full command choreography for every harness tool",
+ ]
+}

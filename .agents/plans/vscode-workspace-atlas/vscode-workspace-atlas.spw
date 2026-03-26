@@ -1,0 +1,274 @@
+# interaction spec — vscode-workspace-atlas
+
+#:layer #!pragmatics
+
+^["surface"]{
+ ~#view_id: "spwWorkspace"
+ ~#container: "spw-explorer"
+ ~#purpose: "Render the workspace contract as a navigable atlas of roots, memory, generated surfaces, and harness locations."
+ ~#empty_state_trigger: "no workspace folder or no readable manifest"
+ ~#fallback_policy: "degrade to static roots plus indexed guesses when manifest data is absent"
+ ~#rotation_model: "selected node can rotate between topology, contract, resonance, phase, and query lenses"
+ ~#cross_plan_contract: ".agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw"
+ ~#context_contributes: ["manifestState", "workspaceTemperature", "activeRoot"]
+}
+
+^["sections"]{
+ root_manifest: {
+  label: "Roots"
+  child_nodes: ["workspace", "docs", "lib", "src/seed", ".agents"]
+  item_copy: "open root, reveal path, show contract excerpt"
+ }
+ memory_map: {
+  label: "Memory"
+  child_nodes: ["hot", "warm", "cold", "generated"]
+  item_copy: "open surface, explain ownership and mutation policy"
+  declared_layer: "manifest placement — fixed paths from ^memory_locations with ownership descriptions"
+  observed_layer: "index temperature — live cache tier, beat age since last access, write count"
+  dual_presentation: "declared placement as section label, observed temperature as per-file detail"
+ }
+ projections: {
+  label: "Generated"
+  child_nodes: ["generated root", "spec owners", "projection targets"]
+  item_copy: "open source spec, open generated target, show stale state"
+ }
+ harness: {
+  label: "Harness"
+  child_nodes: ["runs", "evals", "memory surface", "probe archive"]
+  item_copy: "open root and summarize contract"
+ }
+ contracts: {
+  label: "Contracts"
+  child_nodes: ["cache", "ux", "dense dialect", "operator envelope"]
+  item_copy: "open referenced contract surface"
+ }
+ graph_queries: {
+  label: "Queries"
+  child_nodes: ["neighbors", "cross-tree resonance", "projection lineage", "subtree focus"]
+  item_copy: "run focused graph query from selected atlas node"
+ }
+}
+
+^["materialization"]{
+ #:semantics #!materialization_badges
+
+ ~#cycle: "priming → concept → frame → body"
+ ~#reversible: "body → frame via probe/archive replay"
+
+ priming: {
+  badge: "charging"
+  icon: "$(loading~spin)"
+  heuristic: "operator sequences without named ~ bindings"
+  description: "register disposition being set"
+ }
+ concept: {
+  badge: "potential"
+  icon: "$(lightbulb)"
+  heuristic: "named ~ bindings without containing ^ frames"
+  description: "named potential, may remain unbound"
+ }
+ frame: {
+  badge: "structured"
+  icon: "$(symbol-structure)"
+  heuristic: "^-declared container without corresponding ProjectionEntry"
+  description: "structural spec, orients relations and probes"
+ }
+ body: {
+  badge: "materialized"
+  icon: "$(package)"
+  heuristic: "file tracked in projections with valid generated target"
+  description: "resolved artifact generated from a frame"
+ }
+ ungrounded: {
+  badge: "ungrounded"
+  icon: "$(warning)"
+  heuristic: "body whose spec-owner frame has newer content hash"
+  description: "projection disconnected from its spec owner"
+ }
+}
+
+^["phase_perspective"]{
+ #:semantics #!spirit_sequence_axis
+
+ ~#sequence: "? ~ @ & * ^"
+ ~#computation: "operator frequency analysis per file or root — dominant phase = highest-frequency spirit operator"
+ ~#manifest_echo: "$%[op.distribution]@here — mirrors the workspace manifest's own probe"
+
+ phase_nodes: {
+  wonder: { sigil: "?", label: "? wonder/probe", description: "files dominated by probes and measurement" }
+  potential: { sigil: "~", label: "~ potential/name", description: "files dominated by naming and deferred reference" }
+  perspective: { sigil: "@", label: "@ perspective/scope", description: "files dominated by scope-pushing and observation" }
+  confluence: { sigil: "&", label: "& confluence/merge", description: "files dominated by frame combination and entanglement" }
+  value: { sigil: "*", label: "* value/collapse", description: "files dominated by concrete resolution and materialization" }
+  integration: { sigil: "^", label: "^ integration/framing", description: "files dominated by upward binding and emission" }
+ }
+
+ binding_phases: {
+  action: { sigil: "!", label: "! action", description: "files with high kinetic effect density" }
+  config: { sigil: "=", label: "= config", description: "files dominated by constraint and bias" }
+  measure: { sigil: "%", label: "% measure", description: "files dominated by quantification" }
+  annotation: { sigil: "#", label: "# annotation", description: "files dominated by self-reference and meta" }
+ }
+
+ ~#grouping_rule: "phase perspective groups roots and files by dominant operator; binding phases appear as secondary group below spirit phases"
+ ~#emission: "atlas.perspectiveRotated({ perspective: 'phase' }) — register explorer can match grouping"
+}
+
+^["resonance_presentation"]{
+ #:semantics #!resonance_channels
+
+ channels: {
+  annotation_cooccurrence: {
+   label: "Shared concepts"
+   icon: "$(symbol-key)"
+   source: "ConceptCluster.coOccurs"
+  }
+  root_cross_reference: {
+   label: "Cross-root references"
+   icon: "$(references)"
+   source: "SpwSelectorHit cross-boundary paths"
+  }
+  projection_lineage: {
+   label: "Projection links"
+   icon: "$(git-compare)"
+   source: "ProjectionEntry source → target"
+  }
+  register_coupling: {
+   label: "Register coupling"
+   icon: "$(link)"
+   source: "shared bindings or provenance across files"
+   availability: "requires register-explorer data"
+  }
+ }
+
+ ~#query_endpoint: "spw/resonance — returns typed edges with channel, strength, and target URI"
+ ~#presentation_rule: "strongest channel first; weaker channels expandable on demand"
+ ~#inline_badge: "resonance count shown as description suffix on atlas nodes in resonance perspective"
+}
+
+^["states"]{
+ no_workspace: {
+  copy: "Open a folder to ground the workspace atlas."
+  primary_action: "Open workspace manifest when available"
+ }
+ unprimed: {
+  copy: "Workspace unprimed — no manifest at .spw/workspace.spw. Showing inferred roots."
+  primary_action: "Create or open `.spw/workspace.spw`"
+  note: "all manifest-strict sections (harness, contracts, generated) are hidden"
+ }
+ ready: {
+  copy: "Atlas grounded — manifest roots and indexed surfaces resolved."
+  affordance: "expand sections independently; preserve expansion across re-ground"
+ }
+ ungrounded: {
+  copy: "Manifest changed since last atlas ground. Some surfaces may be stale."
+  affordance: "title action promotes re-ground"
+ }
+}
+
+^["commands"]{
+ view_title: [
+  "Re-ground Workspace Atlas",
+  "Open Workspace Manifest",
+  "Collapse Atlas Sections",
+  "Rotate Atlas Lens",
+ ]
+ item_context: [
+  "Open Surface",
+  "Reveal In Finder",
+  "Copy Root Sigil",
+  "Open Contract Source",
+  "Show Resonance Neighbors",
+  "Probe Graph",
+  "Show Phase Distribution",
+  "Show Materialization State",
+ ]
+ command_palette: [
+  "Spw: Reveal Workspace Atlas",
+  "Spw: Open Workspace Manifest",
+  "Spw: Re-ground Workspace Atlas",
+  "Spw: Rotate Atlas Lens",
+  "Spw: Probe Workspace Graph",
+  "Spw: Show Phase Distribution",
+ ]
+}
+
+^["flows"]{
+ onboarding_flow: [
+  "user opens workspace",
+  "atlas resolves manifest and fallback roots",
+  "Roots section is expanded by default",
+  "selecting a root shows path, contract snippet, and related surfaces",
+ ]
+ memory_flow: [
+  "user expands Memory",
+  "each tier node shows ownership summary and target path",
+  "open command jumps directly to the declared memory surface",
+ ]
+ generated_flow: [
+  "user expands Generated",
+  "spec owner and generated target are shown as siblings",
+  "stale projections carry warning badge and open-source command",
+ ]
+ resonance_flow: [
+  "user selects a root or contract node",
+  "atlas reveals cross-tree resonances such as shared annotations, projection links, or harness references",
+  "Run Graph Query narrows to a focused neighborhood instead of leaving the atlas context",
+ ]
+ rotation_flow: [
+  "user invokes Rotate Atlas Perspective",
+  "same selected node rotates between topology, contract, resonance, phase, and query views",
+  "expansion state is preserved where node identity still exists",
+  "atlas emits atlas.perspectiveRotated event for cross-surface coordination",
+ ]
+ phase_flow: [
+  "user rotates to phase perspective",
+  "roots and files regroup by dominant spirit-sequence operator",
+  "each group shows operator frequency and phase description",
+  "selecting a phase group reveals files dominated by that operator",
+  "register-explorer can synchronize to show registers in the same phase",
+ ]
+ cross_surface_flow: [
+  "user selects a root in the atlas",
+  "atlas emits atlas.rootSelected event",
+  "register-explorer filters to registers touched by files under that root",
+  "authoring-loop scopes completions to the selected root's vocabulary",
+  "selection context narrows; user drills deeper without losing place",
+ ]
+}
+
+^["selection_details"]{
+ title: "selected atlas node"
+ fields: [
+  "resolved path",
+  "source contract field",
+  "workspace plane or category if known",
+  "materialization state (priming | concept | frame | body | ungrounded)",
+  "dominant spirit-sequence phase and operator frequency",
+  "related annotations or projections count",
+  "cross-tree resonance count with channel breakdown",
+  "live cache tier and beat age",
+  "available query pivots",
+ ]
+}
+
+^["theming"]{
+ section_tone: [
+  "roots use neutral structural emphasis",
+  "memory tiers use subdued temperature cues",
+  "generated and stale nodes use caution accents",
+  "query and resonance surfaces use accent only on active selection",
+ ]
+ caution: "the atlas should remain printable and terminal-legible in spirit; chroma cannot be the only carrier of state"
+}
+
+^["non_goals"]{
+ ~#not_now: [
+  "full file browser replacement",
+  "editing manifest values from the atlas",
+  "automatic root creation",
+  "register snapshot transport (register-explorer scope)",
+  "phase-aware completion (authoring-probe-loop scope)",
+  "persistent resonance history (future slice)",
+ ]
+}
