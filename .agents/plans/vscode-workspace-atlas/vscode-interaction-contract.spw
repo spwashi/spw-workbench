@@ -300,14 +300,172 @@
  }
 }
 
+^["transport"]{
+ #:pragmatics #!event_transport
+
+ ~#principle: "extension-internal events are synchronous and free; LSP requests cross a process boundary and carry serialization cost"
+
+ extension_internal: {
+  ~#transport: "vscode.EventEmitter<T> on SpwContext"
+  ~#cost: "synchronous, no serialization"
+  events: [
+   "atlas.rootSelected — UI selection state, no server data needed",
+   "atlas.perspectiveRotated — UI lens state",
+   "register.focused — UI selection state",
+   "register.phaseChanged — derived from LSP snapshot diff, fired client-side",
+   "authoring.phaseEntered — computed from cached AST client-side",
+   "materialization.advanced — computed from cached AST client-side",
+   "probe.completed — fired after LSP request returns, consumed client-side",
+  ]
+ }
+
+ lsp_requests: {
+  ~#transport: "custom LSP request via LanguageClient.sendRequest()"
+  ~#cost: "crosses process boundary, async, serialized JSON"
+  requests: [
+   "spw/resonance — server computes resonance edges from index + projection graph",
+   "spw/workspaceTemperature — server returns cache tier snapshots from ServerIndex",
+   "spw/registerSnapshot — server executes runtime trial and returns register state",
+   "spw/operatorFrequency — server computes operator distribution for a file or root",
+   "spw/phaseContext — server returns spirit-sequence context at cursor offset",
+  ]
+ }
+
+ ~#bus_pattern: "SpwContext carries a typed EventBus with per-event emitters; each surface registers listeners during activation and disposes them on deactivation"
+}
+
+^["capability_pattern"]{
+ #:pragmatics #!type_design
+
+ ~#principle: "SpwContext fields are T | null; each surface checks before using; type narrowing happens at consumption site"
+
+ pattern: {
+  ~#context_fields: "all contributed fields use union-with-null — manifestState: ManifestState | null, registerSnapshot: RegisterSnapshot | null, etc."
+  ~#check_site: "consuming code does `if (spw.manifestState) { ... }` before accessing manifest-dependent affordances"
+  ~#rationale: "optional fields is the simplest pattern that preserves additive growth; branded capability interfaces can be added later if type narrowing becomes noisy"
+  ~#degradation: "when a field is null, the surface degrades to local scope (file-only, index-only, or cached-AST-only) rather than hiding the affordance"
+ }
+
+ example: {
+  ~#atlas_consuming_registers: "if (spw.registerSnapshot) { showRegisterCouplingResonance() } else { labelChannelUnavailable('register coupling') }"
+  ~#authoring_consuming_atlas: "if (spw.activeRoot) { scopeCompletionsToRoot(spw.activeRoot) } else { useWorkspaceWideCompletions() }"
+ }
+}
+
+^["handler_registration"]{
+ #:pragmatics #!lsp_architecture
+
+ ~#problem: "stdio-server.ts is already 900+ lines; three plans each add new LSP handlers (workspace.ts, runtime.ts, editing.ts mods) — piling dispatch into one file creates a merge bottleneck and readability problem"
+
+ ~#pattern: "extract a handler registration infrastructure as a substrate commit"
+ ~#shape: "each handler cluster exports a register(server, index, context) function; stdio-server.ts calls registerWorkspaceHandlers(), registerRuntimeHandlers(), etc. instead of inlining dispatch"
+ ~#existing_precedent: "handler clusters already exist in packages/spw-lsp/src/handlers/ (analysis.ts, display.ts, editing.ts, navigation.ts, semantic-tokens.ts) but are wired manually in stdio-server.ts"
+
+ substrate_commit: {
+  ~#description: "extract handler registration pattern from stdio-server.ts so new handlers plug in without growing the main dispatch file"
+  ~#files: ["packages/spw-lsp/src/stdio-server.ts (MOD — extract dispatch)", "packages/spw-lsp/src/handlers/index.ts (NEW — registration entrypoint)"]
+  ~#timing: "should land before or alongside the first VS Code surface plan that adds a new handler"
+ }
+}
+
+^["phase_vocabularies"]{
+ #:semantics #!vocabulary_reconciliation
+
+ ~#problem: "two things are called 'phase' across the plans — spirit-sequence phase and register pipeline phase — they are orthogonal axes, not synonyms"
+
+ spirit_sequence_phase: {
+  ~#axis: "operator semantics — what the sigil means in the language model"
+  ~#vocabulary: ["? wonder/probe", "~ potential/name", "@ perspective/scope", "& confluence/merge", "* value/collapse", "^ integration/frame"]
+  ~#binding_operators: ["! action", "= config", "% measure", "# annotation"]
+  ~#source: "SIGIL_SEMANTICS, workspace manifest ^spirit_sequence"
+  ~#used_by: ["atlas phase perspective", "authoring phase-aware completion", "authoring phase indicator"]
+ }
+
+ register_pipeline_phase: {
+  ~#axis: "pipeline position — when the register was enriched during runtime execution"
+  ~#vocabulary: ["lex", "parse", "semantic", "optimize", "pragmatic"]
+  ~#source: "register-phase-evolution plan, src/runtime/state/types.ts"
+  ~#used_by: ["register explorer phase grouping", "register detail phase trajectory"]
+ }
+
+ ~#relationship: "orthogonal — a register at pipeline phase 'semantic' may have been charged by spirit operator '~' (potential). The spirit-sequence describes what the author wrote; the pipeline phase describes when the runtime processed it."
+ ~#naming_rule: "when context is ambiguous, prefix: 'spirit phase' vs 'pipeline phase'. In the atlas and authoring surfaces, unqualified 'phase' means spirit-sequence. In the register explorer, unqualified 'phase' means pipeline phase. The detail view shows both when both are available."
+ ~#cross_reference: "register-phase-evolution plan aligns pipeline phase vocabulary; spirit-sequence phase is defined in this contract's ^spirit_sequence_integration frame"
+}
+
+^["cross_theme_enrichments"]{
+ #:pragmatics #!runtime_parser_dependencies
+
+ ~#principle: "the VS Code surfaces solo-ship from local parse/index context; runtime and parser plans provide data that unlocks richer affordances when available"
+
+ runtime_telemetry_canon: {
+  ~#plan: ".agents/plans/runtime-telemetry-canon"
+  ~#provides: "immutable substrate events, detected resonances, and register metadata from runSpw() and collectPrecipitates()"
+  ~#enriches: [
+   "register-explorer: richer register snapshots with provenance, events, resonances instead of shallow value dumps",
+   "atlas resonance channel 4 (register coupling): needs resonances from pipeline results to detect cross-file register coupling",
+   "authoring probe.completed: richer probe results when runtime returns full telemetry",
+  ]
+  ~#status: "ready-for-commit"
+  ~#solo_ship_fallback: "register explorer shows value + phase from basic runtime trial; resonance channel 4 labeled unavailable; probe results are shallow"
+ }
+
+ register_phase_evolution: {
+  ~#plan: ".agents/plans/register-phase-evolution"
+  ~#provides: "canonical phase vocabulary (lex, parse, semantic, optimize, pragmatic) aligned across runtime, query, and docs; Spw-native selector grammar"
+  ~#enriches: [
+   "register-explorer: phase grouping uses canonical names instead of ad-hoc labels",
+   "authoring phase-aware completion: can map between spirit-sequence operators and register pipeline phases for richer hover and suggestions",
+   "atlas phase perspective: can show pipeline phase alongside spirit-sequence phase when both are available",
+  ]
+  ~#status: "planning"
+  ~#solo_ship_fallback: "register explorer groups by spirit-sequence phase from SIGIL_SEMANTICS; pipeline phase shown only when runtime trial returns it"
+ }
+
+ absorb_spwq_cli: {
+  ~#plan: ".agents/plans/absorb-spwq-cli"
+  ~#provides: "normalized selector traversal, corpus-level coverage, package-owned CLI surface"
+  ~#enriches: [
+   "atlas graph queries: reliable selector resolution for cross-root and subtree-focus queries",
+   "authoring selector trace: Trace Selector command uses the same repaired traversal",
+  ]
+  ~#status: "verifying"
+  ~#solo_ship_fallback: "graph queries use current selector implementation; results may be incomplete for complex selectors"
+ }
+
+ monorepo_workspace_foundation: {
+  ~#plan: ".agents/plans/monorepo-workspace-foundation"
+  ~#provides: "package-boundary restructuring for @spw/seed, @spw/runtime, @spw/cli, @spw/lsp"
+  ~#enriches: [
+   "all VS Code plans: import paths for packages/spw-lsp/* and packages/spw-seed/* may shift when monorepo lands",
+  ]
+  ~#status: "ready_to_commit"
+  ~#coordination: "if monorepo lands before VS Code surfaces, extension resolveServerPath() and LSP import references need updating; if after, compatibility wrappers in src/ handle the transition"
+ }
+
+ seed_phase_context: {
+  ~#plan: "not yet scoped — targeted addition to @spw/seed"
+  ~#provides: "cursor-offset-to-phase-context query: given an offset in a parsed document, return the nearest enclosing spirit operator, its phase index, and the materialization stage of the enclosing expression"
+  ~#enriches: [
+   "authoring look-back rule: phase-aware completion needs to know the spirit-sequence context at cursor position",
+   "authoring materialization breadcrumb: needs to know priming|concept|frame|body for cursor context",
+   "authoring phase-aware hover: needs spirit-sequence position for the hovered operator",
+  ]
+  ~#status: "unscoped — should be added to absorb-spwq-cli or register-phase-evolution as a targeted scope extension, or scoped as a standalone micro-plan"
+  ~#solo_ship_fallback: "LSP completion handler uses regex look-back from cursor position; less precise but functional for common patterns"
+ }
+}
+
 ^["composition"]{
  #:pragmatics #!parallel_synergy
 
  ~#recommended: [
+  "0. handler-registration substrate commit extracts dispatch from stdio-server.ts so new handlers plug in cleanly",
   "1. shared interaction contract and any shared helper/types extraction land as a substrate commit when possible",
   "2. each surface maintains a solo-ship path that does not require the other two surfaces to render usefully",
   "3. pairwise integration commits land opportunistically (atlas x registers, atlas x authoring, registers x authoring)",
-  "4. all-up rotation polish is a final integration slice, not a prerequisite for any one surface",
+  "4. runtime/parser enrichments (runtime-telemetry-canon, register-phase-evolution, absorb-spwq-cli) land independently and are consumed opportunistically via capability checks",
+  "5. all-up rotation polish is a final integration slice, not a prerequisite for any one surface",
  ]
 
  ~#shared_hot_files: [
@@ -319,4 +477,5 @@
 
  ~#context_growth: "each plan adds to SpwContext additively; no plan removes fields another introduced"
  ~#integration_rule: "capability checks gate cross-surface affordances; missing peers degrade to local scope rather than disabling the surface"
+ ~#cross_theme_rule: "runtime and parser plans are enrichment providers, not blockers; VS Code surfaces degrade gracefully when runtime telemetry or parser phase-context is unavailable"
 }

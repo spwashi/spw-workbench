@@ -123,9 +123,20 @@ These fields are additive on top of the atlas plan's contributions.
 
 ## Dependencies
 
-- Shared interaction substrate: `.agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw` defines additive event vocabulary, capability names, and context growth rules.
+- Shared interaction substrate: `.agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw` defines additive event vocabulary, capability names, context growth rules, transport tiers, and cross-theme enrichment paths.
 - Multi-agent coordination risk: `extensions/vscode-spw/src/extension.ts`, `extensions/vscode-spw/src/context.ts`, `extensions/vscode-spw/package.json`, and `packages/spw-lsp/src/stdio-server.ts` are shared hot files with the atlas and authoring plans; integration commits should be split from the register explorer's solo-ship path when work proceeds in parallel.
 - `manifestState`, `activeRoot`, and `probe.completed` are optional enrichments, not blockers. This plan should be reviewable and shippable before the atlas or authoring surfaces land, provided fallback scope behavior is in place.
+- Handler-registration substrate: `stdio-server.ts` should gain an extracted handler registration pattern before this plan adds `handlers/runtime.ts`. See `vscode-interaction-contract.spw ^["handler_registration"]`.
+
+### Cross-theme enrichments (not blockers)
+
+- **runtime-telemetry-canon** (ready-for-commit): provides immutable substrate events, detected resonances, and register metadata from `runSpw()`. This is the primary data source for register snapshots — without it, snapshots contain values and basic phase but lack provenance, substrate events, and resonance edges. With it, the explorer can show full phase trajectory, register coupling, and provenance chains.
+- **register-phase-evolution** (planning): provides canonical pipeline-phase vocabulary (`lex`, `parse`, `semantic`, `optimize`, `pragmatic`) aligned across runtime, query, and docs. Without it, the explorer uses spirit-sequence phase from `SIGIL_SEMANTICS` for grouping. With it, the explorer can show pipeline phase alongside spirit-sequence phase in the detail view.
+- **monorepo-workspace-foundation** (ready_to_commit): restructures `packages/spw-lsp/` paths. Same coordination note as the atlas plan.
+
+### Phase vocabulary note
+
+This plan uses two "phase" axes (see `vscode-interaction-contract.spw ^["phase_vocabularies"]`): **spirit-sequence phase** (what operator semantics the register was charged by — `?~@&*^`) and **pipeline phase** (when the runtime enriched the register — `lex`, `parse`, `semantic`, etc.). In the explorer tree, unqualified "phase" means pipeline phase. The detail view shows both when both are available.
 
 ## Fuzz Strategy
 

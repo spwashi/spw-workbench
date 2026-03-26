@@ -151,9 +151,20 @@ These fields complete the `SpwContext` shape defined in `vscode-interaction-cont
 
 ## Dependencies
 
-- Shared interaction substrate: `.agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw` defines additive event vocabulary, capability names, and context growth rules.
+- Shared interaction substrate: `.agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw` defines additive event vocabulary, capability names, context growth rules, transport tiers, and cross-theme enrichment paths.
 - Multi-agent coordination risk: `extensions/vscode-spw/src/extension.ts`, `extensions/vscode-spw/src/context.ts`, `extensions/vscode-spw/package.json`, and `packages/spw-lsp/src/stdio-server.ts` are shared hot files with atlas/register work; pairwise integration commits should be split from the authoring loop's solo-ship path when work proceeds in parallel.
 - `manifestState`, `activeRoot`, `registerSnapshot`, and `focusedRegister` are optional enrichments, not blockers. This plan should remain reviewable and shippable from local parse/runtime context before the atlas or register explorer land.
+
+### Cross-theme enrichments (not blockers)
+
+- **runtime-telemetry-canon** (ready-for-commit): provides immutable substrate events and resonances from runtime pipeline, which makes `probe.completed` results richer. Without it, probe results are shallow value snapshots. With it, probes return full telemetry including resonance edges.
+- **register-phase-evolution** (planning): provides canonical pipeline-phase vocabulary. Without it, phase-aware completion maps only spirit-sequence operators. With it, hover and completion can bridge between spirit-sequence operators and the register pipeline phases they correspond to.
+- **absorb-spwq-cli** (verifying): provides repaired selector traversal. Without it, "Trace Selector At Cursor" and graph-query probes use the current implementation with possible gaps. With it, selector resolution is reliable across the full corpus.
+- **seed phase-context extraction** (unscoped): a targeted addition to the seed parser that returns the spirit-sequence context at a given cursor offset — the nearest enclosing spirit operator, its phase index, and the materialization stage. Without it, the authoring loop's look-back rule uses regex heuristics from the raw text. With it, phase detection is AST-precise. See `vscode-interaction-contract.spw ^["cross_theme_enrichments"].seed_phase_context`.
+
+### Phase vocabulary note
+
+This plan uses "phase" to mean spirit-sequence phase (`?~@&*^`) in completions, hover, and status bar. When register data is available and pipeline phase differs from spirit-sequence phase, the hover and detail views show both axes. See `vscode-interaction-contract.spw ^["phase_vocabularies"]`.
 
 ## Fuzz Strategy
 

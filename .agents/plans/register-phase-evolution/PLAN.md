@@ -67,6 +67,16 @@ The desired end state is a register model whose phase vocabulary is shared by ru
 
 none
 
+### Downstream consumers
+
+- **vscode-register-explorer**: consumes canonical pipeline-phase vocabulary (`lex`, `parse`, `semantic`, `optimize`, `pragmatic`) for tree grouping and detail view. Without this plan, the explorer falls back to spirit-sequence phase from `SIGIL_SEMANTICS`.
+- **vscode-authoring-probe-loop**: consumes the phase vocabulary to bridge between spirit-sequence operators and register pipeline phases in hover and completion. Without this plan, the authoring loop maps only spirit-sequence operators.
+- **vscode-interaction-contract**: references this plan in `^["phase_vocabularies"]` and `^["cross_theme_enrichments"]`. The two phase axes (spirit-sequence and pipeline) are declared orthogonal there.
+
+### Adjacent scope opportunity
+
+The VS Code authoring loop's phase-aware completion needs a **cursor-offset-to-phase-context query** from the seed parser: given an offset in a parsed document, return the nearest enclosing spirit operator, its phase index, and the materialization stage. This could be scoped as a targeted addition to `src/seed/query/` alongside the selector-expression grammar work in this plan, or as a standalone micro-plan. See `vscode-interaction-contract.spw ^["cross_theme_enrichments"].seed_phase_context`.
+
 ## Spw Artifact
 
 A distilled artifact remains warranted to preserve the selector/phase semantics decisions:

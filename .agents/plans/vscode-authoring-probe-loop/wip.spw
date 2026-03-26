@@ -18,10 +18,16 @@
  >>[2026-03-26 00:05] taste — status surfaces should accelerate attention, not become a second dashboard inside the editor chrome.
  >>[2026-03-26 00:06] revise — broaden the authoring loop to account for theming nuance, formatting/refactor flows, graph-query probes, and perspective rotations during inspection.
  >>[2026-03-26 00:07] revise — relax the plan from atlas/register-last sequencing to additive composition. The authoring loop now needs a solo-ship path from local parse/runtime context, with atlas/register data treated as optional enrichments.
+ >>[2026-03-26 00:08] observe — phase-aware completion's look-back rule needs AST-precise spirit-sequence context at cursor offset. The seed parser doesn't currently expose this. Regex heuristics work for common patterns but miss nested or multi-operator contexts.
+ >>[2026-03-26 00:09] decide — note seed_phase_context as an unscoped enrichment. Solo-ship uses regex look-back; AST-precise phase detection is an enrichment from a targeted seed parser addition (natural home: register-phase-evolution's selector-expression work).
+ >>[2026-03-26 00:10] observe — runtime-telemetry-canon (ready-for-commit) enriches probe results with full telemetry (substrate events, resonances). Without it, probe.completed carries shallow results.
+ >>[2026-03-26 00:11] decide — acknowledge runtime-telemetry-canon as a cross-theme enrichment. Solo-ship probes return basic results; enriched probes when telemetry-canon is available.
+ >>[2026-03-26 00:12] observe — the two "phase" axes (spirit-sequence vs pipeline) need explicit disambiguation in authoring surfaces. In completions and status bar, "phase" means spirit-sequence. When register data is available, hover shows both axes.
 }
 
 ^["open"]{
  ?[command_budget]: "Which run/probe commands deserve first-class status-bar presence versus command-palette-only exposure?"
+ ?[regex_fallback_fidelity]: "How reliable is regex look-back for spirit-sequence phase detection in practice? Should the authoring loop block on seed phase-context extraction or ship with regex and upgrade later?"
 }
 
 ^["commits"]{
@@ -41,8 +47,9 @@
  ~#files_hot: ".agents/plans/vscode-authoring-probe-loop/PLAN.md, .agents/plans/vscode-authoring-probe-loop/wip.spw, .agents/plans/vscode-authoring-probe-loop/vscode-authoring-probe-loop.spw"
  ~#next_commit: "1"
  ~#open_count: "1"
- ~#last_stream: "2026-03-26 00:07"
- ~#taste_debt: "Do not ship completion noise that outruns semantic relevance. Atlas/register context is additive, not a gate for ordinary editing."
+ ~#open_count: "2"
+ ~#last_stream: "2026-03-26 00:12"
+ ~#taste_debt: "Do not ship completion noise that outruns semantic relevance. Atlas/register context is additive, not a gate for ordinary editing. Spirit-sequence phase is primary in authoring surfaces; pipeline phase is secondary, shown when register data is available."
 }
 
 ^["done"]{

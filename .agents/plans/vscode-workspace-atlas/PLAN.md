@@ -155,9 +155,16 @@ These fields are additive. The register-explorer and authoring-probe-loop plans 
 
 ## Dependencies
 
-- Shared interaction substrate: `vscode-interaction-contract.spw` defines the additive event vocabulary, capability model, and context growth rules. It can land before or with any one of the three VS Code surface slices.
+- Shared interaction substrate: `vscode-interaction-contract.spw` defines the additive event vocabulary, capability model, context growth rules, transport tiers, and cross-theme enrichment paths. It can land before or with any one of the three VS Code surface slices.
 - Multi-agent coordination risk: `extensions/vscode-spw/src/extension.ts`, `extensions/vscode-spw/package.json`, `extensions/vscode-spw/src/context.ts`, and `packages/spw-lsp/src/stdio-server.ts` are shared hot files with `vscode-register-explorer` and `vscode-authoring-probe-loop`; pairwise integration commits should be split from the atlas's solo-ship path when work proceeds in parallel.
 - `vscode-register-explorer` and `vscode-authoring-probe-loop` may consume `manifestState`, `workspaceTemperature`, and `activeRoot` opportunistically, but the atlas itself must not depend on either plan for a coherent first ship.
+- Handler-registration substrate: `stdio-server.ts` should gain an extracted handler registration pattern before this plan adds `handlers/workspace.ts`. See `vscode-interaction-contract.spw ^["handler_registration"]`.
+
+### Cross-theme enrichments (not blockers)
+
+- **runtime-telemetry-canon** (ready-for-commit): provides immutable `resonances` from pipeline results, which unlocks resonance channel 4 (register coupling). Without it, the atlas renders three resonance channels and labels register coupling as unavailable.
+- **absorb-spwq-cli** (verifying): provides repaired selector traversal, which makes graph queries (cross-root, subtree-focus) more reliable. Without it, queries use the current selector implementation with possible gaps on complex selectors.
+- **monorepo-workspace-foundation** (ready_to_commit): restructures `packages/spw-lsp/` paths. If it lands first, `resolveServerPath()` and handler imports need updating. If it lands after, compatibility wrappers in `src/` handle the transition.
 
 ## Fuzz Strategy
 
