@@ -4,10 +4,12 @@ import type { AnnotationEntry } from '../annotation-index'
 
 type ConceptNode = ConceptGroupNode | ConceptEntryNode
 type GroupingMode = 'concept' | 'kind' | 'file'
+type GroupNodeKind = GroupingMode | 'concept-kind'
+type AnnotationKind = AnnotationEntry['kind']
 
 interface ConceptGroupNode {
   kind: 'group'
-  grouping: GroupingMode
+  groupKind: GroupNodeKind
   key: string
   label: string
   entries: AnnotationEntry[]
@@ -36,6 +38,13 @@ const KIND_ICONS: Record<AnnotationEntry['kind'], string> = {
   lens: 'eye',
   intent: 'zap',
   anchor: 'link',
+}
+
+const KIND_NOUNS: Record<AnnotationKind, { singular: string, plural: string }> = {
+  topic: { singular: 'topic', plural: 'topics' },
+  lens: { singular: 'lens', plural: 'lenses' },
+  intent: { singular: 'intent', plural: 'intents' },
+  anchor: { singular: 'anchor', plural: 'anchors' },
 }
 
 class ConceptsTreeDataProvider implements vscode.TreeDataProvider<ConceptNode> {
@@ -93,24 +102,18 @@ class ConceptsTreeDataProvider implements vscode.TreeDataProvider<ConceptNode> {
       const kindSet = new Set(element.entries.map((entry) => entry.kind))
       const fileSet = new Set(element.entries.map((entry) => entry.file.fsPath))
       const item = new vscode.TreeItem(element.label, vscode.TreeItemCollapsibleState.Collapsed)
-      item.description = `${element.entries.length} · ${fileSet.size} file${fileSet.size > 1 ? 's' : ''}`
-
-      // Kind distribution for tooltip
-      const kindCounts = new Map<string, number>()
-      for (const entry of element.entries) {
-        kindCounts.set(entry.kind, (kindCounts.get(entry.kind) || 0) + 1)
-      }
-      const kindSummary = [...kindCounts.entries()].map(([k, c]) => `${c} ${k}`).join(', ')
-      item.tooltip = `${element.entries.length} occurrence(s) across ${fileSet.size} file(s): ${kindSummary}`
+      const kindCounts = countKinds(element.entries)
+      item.description = describeGroup(element.groupKind, element.entries, kindSet.size, fileSet.size)
+      item.tooltip = buildGroupTooltip(element.groupKind, element.entries.length, fileSet.size, kindCounts)
       item.contextValue = 'spwConceptGroup'
 
-      if (element.grouping === 'kind' && isAnnotationKind(element.key)) {
+      if ((element.groupKind === 'kind' || element.groupKind === 'concept-kind') && isAnnotationKind(element.key)) {
         item.iconPath = new vscode.ThemeIcon(KIND_ICONS[element.key])
-      } else if (element.grouping === 'file') {
+      } else if (element.groupKind === 'file') {
         item.iconPath = new vscode.ThemeIcon('file')
       } else {
-        const dominantKind = [...kindCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'topic'
-        item.iconPath = new vscode.ThemeIcon(KIND_ICONS[dominantKind as AnnotationEntry['kind']] || 'symbol-key')
+        const dominantKind = dominantAnnotationKind(kindCounts)
+        item.iconPath = new vscode.ThemeIcon(KIND_ICONS[dominantKind] || 'symbol-key')
       }
 
       return item
@@ -148,13 +151,11 @@ class ConceptsTreeDataProvider implements vscode.TreeDataProvider<ConceptNode> {
     }
 
     if (element.kind === 'group') {
-      return [...element.entries]
-        .sort((a, b) => {
-          const fileA = a.file.fsPath.localeCompare(b.file.fsPath)
-          if (fileA !== 0) return fileA
-          return a.line - b.line
-        })
-        .map((entry) => ({ kind: 'entry', entry }))
+      if (element.groupKind === 'concept') {
+        return this.childrenForConceptGroup(element.entries)
+      }
+
+      return entryNodes(element.entries)
     }
 
     return []
@@ -197,7 +198,7 @@ class ConceptsTreeDataProvider implements vscode.TreeDataProvider<ConceptNode> {
     return [...groups.entries()]
       .map(([key, groupEntries]) => ({
         kind: 'group' as const,
-        grouping: 'concept' as const,
+        groupKind: 'concept' as const,
         key,
         label: key,
         entries: groupEntries,
@@ -210,16 +211,7 @@ class ConceptsTreeDataProvider implements vscode.TreeDataProvider<ConceptNode> {
   }
 
   private groupByKind(entries: AnnotationEntry[]): ConceptGroupNode[] {
-    const order: AnnotationEntry['kind'][] = ['topic', 'lens', 'intent', 'anchor']
-    return order
-      .map((kind) => ({
-        kind: 'group' as const,
-        grouping: 'kind' as const,
-        key: kind,
-        label: KIND_GROUP_LABELS[kind],
-        entries: entries.filter((entry) => entry.kind === kind),
-      }))
-      .filter((group) => group.entries.length > 0)
+    return this.kindGroups(entries, 'kind')
   }
 
   private groupByFile(entries: AnnotationEntry[]): ConceptGroupNode[] {
@@ -234,12 +226,33 @@ class ConceptsTreeDataProvider implements vscode.TreeDataProvider<ConceptNode> {
     return [...groups.entries()]
       .map(([key, groupEntries]) => ({
         kind: 'group' as const,
-        grouping: 'file' as const,
+        groupKind: 'file' as const,
         key,
         label: key,
         entries: groupEntries,
       }))
       .sort((a, b) => a.label.localeCompare(b.label))
+  }
+
+  private childrenForConceptGroup(entries: AnnotationEntry[]): ConceptNode[] {
+    const kindGroups = this.kindGroups(entries, 'concept-kind')
+    if (kindGroups.length <= 1) {
+      return entryNodes(entries)
+    }
+
+    return kindGroups
+  }
+
+  private kindGroups(entries: AnnotationEntry[], groupKind: Extract<GroupNodeKind, 'kind' | 'concept-kind'>): ConceptGroupNode[] {
+    return ANNOTATION_KIND_ORDER
+      .map((kind) => ({
+        kind: 'group' as const,
+        groupKind,
+        key: kind,
+        label: KIND_GROUP_LABELS[kind],
+        entries: entries.filter((entry) => entry.kind === kind),
+      }))
+      .filter((group) => group.entries.length > 0)
   }
 }
 
@@ -303,4 +316,75 @@ export function registerConceptsTreeView(spw: SpwContext): vscode.Disposable[] {
 
 function isAnnotationKind(value: string): value is AnnotationEntry['kind'] {
   return value === 'topic' || value === 'lens' || value === 'intent' || value === 'anchor'
+}
+
+const ANNOTATION_KIND_ORDER: AnnotationKind[] = ['topic', 'lens', 'intent', 'anchor']
+
+function entryNodes(entries: AnnotationEntry[]): ConceptEntryNode[] {
+  return [...entries]
+    .sort((a, b) => {
+      const fileA = a.file.fsPath.localeCompare(b.file.fsPath)
+      if (fileA !== 0) return fileA
+      return a.line - b.line
+    })
+    .map((entry) => ({ kind: 'entry', entry }))
+}
+
+function countKinds(entries: AnnotationEntry[]): Map<AnnotationKind, number> {
+  const counts = new Map<AnnotationKind, number>()
+  for (const entry of entries) {
+    counts.set(entry.kind, (counts.get(entry.kind) || 0) + 1)
+  }
+
+  return counts
+}
+
+function dominantAnnotationKind(kindCounts: Map<AnnotationKind, number>): AnnotationKind {
+  return [...kindCounts.entries()]
+    .sort((a, b) => b[1] - a[1] || ANNOTATION_KIND_ORDER.indexOf(a[0]) - ANNOTATION_KIND_ORDER.indexOf(b[0]))[0]?.[0] ?? 'topic'
+}
+
+function describeGroup(groupKind: GroupNodeKind, entries: AnnotationEntry[], kindCount: number, fileCount: number): string {
+  if (groupKind === 'concept') {
+    if (kindCount === 1) {
+      const kind = entries[0]?.kind ?? 'topic'
+      return `${entries.length} ${kindLabel(kind, entries.length)} · ${fileCount} file${fileCount === 1 ? '' : 's'}`
+    }
+
+    return `${entries.length} · ${kindCount} kinds · ${fileCount} file${fileCount === 1 ? '' : 's'}`
+  }
+
+  return `${entries.length} · ${fileCount} file${fileCount === 1 ? '' : 's'}`
+}
+
+function buildGroupTooltip(
+  groupKind: GroupNodeKind,
+  entryCount: number,
+  fileCount: number,
+  kindCounts: Map<AnnotationKind, number>,
+): string {
+  if (groupKind === 'concept') {
+    return `${entryCount} occurrence(s) across ${fileCount} file(s): ${kindSummary(kindCounts)}`
+  }
+
+  if (groupKind === 'concept-kind') {
+    const kind = dominantAnnotationKind(kindCounts)
+    return `${entryCount} ${kindLabel(kind, entryCount)} across ${fileCount} file(s)`
+  }
+
+  return `${entryCount} occurrence(s) across ${fileCount} file(s): ${kindSummary(kindCounts)}`
+}
+
+function kindSummary(kindCounts: Map<AnnotationKind, number>): string {
+  return ANNOTATION_KIND_ORDER
+    .map((kind) => {
+      const count = kindCounts.get(kind)
+      return count ? `${count} ${kindLabel(kind, count)}` : null
+    })
+    .filter((part): part is string => part !== null)
+    .join(', ')
+}
+
+function kindLabel(kind: AnnotationKind, count: number): string {
+  return count === 1 ? KIND_NOUNS[kind].singular : KIND_NOUNS[kind].plural
 }
