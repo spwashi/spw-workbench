@@ -1,0 +1,50 @@
+# wip — syntax-review-profiles
+# Branch: feature/syntax-review-profiles
+# Started: 2026-03-26
+
+#:layer #!pragmatics
+
+^["intent"]{
+ ~#goal: "Replace generation-based .spw warnings with profile-based syntax review in the commit-review tooling."
+ ~#taste: "clear review language that matches actual surface contracts"
+}
+
+^["stream"]{
+ >>[2026-03-26 21:42] observe — pre-commit still hardcodes Gen 1 / Gen 2 counts directly in the hook; poll-review carries the same framing behind --gen-hints
+ >>[2026-03-26 21:44] observe — the TypeScript audit script is the canonical place to move policy, but it currently only emits generation labels and migration candidates
+ >>[2026-03-26 21:46] hygiene — base `main@a069f0fc6aefe285a8e0e34a2df9315a59be7dc2`; `main...HEAD` shows no unrelated committed drift
+ >>[2026-03-26 21:47] taste — review should describe profile fit and introduced discouraged forms, not age buckets that no longer map to repo semantics
+ >>[2026-03-26 21:48] revise — restored the missing `spw-syntax-review.ts` engine plus the stash plan artifacts onto rewritten main.
+ >>[2026-03-26 21:49] revise — poll-review now mirrors the pre-commit hook for `.agents` plan surfaces: summarize them, then run syntax review without forcing strict parser validation.
+ >>[2026-03-26 21:50] verify — `node --import tsx .agents/skills/spw-commit-review/scripts/spw-syntax-review.ts --scope=working --format=text -- .agents/plans/syntax-review-profiles/wip.spw .spw/agent-surface.spw`, `node --import tsx .agents/skills/spw-commit-review/scripts/spw-syntax-audit.ts --help`, `bash .agents/skills/spw-commit-review/scripts/poll-review.sh --scope=changed --no-state`, and `git diff --check` all pass.
+}
+
+^["open"]{
+ ?[strict_profile]: "Which live surfaces should remain strict enough to produce warnings beyond the domain-meta form?"
+}
+
+^["commits"]{
+ ~[1]: "&[commit-review] — add shared syntax review profiles and wire hook/poll output"
+ ~[2]: ".[commit-review] — rewrite audit and skill/docs around profile-based review"
+}
+
+^["cache"]{
+ ~#status: "validated"
+ ~#base_ref: "main@a069f0fc6aefe285a8e0e34a2df9315a59be7dc2"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: ".git/hooks/pre-commit, .agents/skills/spw-commit-review/scripts/spw-syntax-review.ts, .agents/skills/spw-commit-review/scripts/poll-review.sh, .agents/skills/spw-commit-review/scripts/spw-syntax-audit.ts, .agents/skills/spw-commit-review/SKILL.md"
+ ~#next_commit: "1"
+ ~#open_count: "1"
+ ~#last_stream: "2026-03-26 21:50"
+ ~#taste_debt: "Keep the policy model simple enough to explain at hook-time."
+}
+
+^["done"]{
+ # Written at merge time.
+ # ~#shipped: []
+ # ~#dropped: []
+ # ~#surprised: ""
+ # ~#duration: ""
+ # ~#taste: ""
+}

@@ -39,6 +39,8 @@ Be explicit about boundaries. Sustainable development means saying no to scope c
 ### `## Files`
 
 Predicted files — `[NEW]`, `[MOD]`, `[DEL]`, or `[MOD?]` (uncertain).
+Use repo-relative paths only. Do not record machine-local absolute paths such as
+`/Users/...` or drive-specific home directories.
 
 ```
 [MOD] src/app/components/prism-view/prism-view.ts

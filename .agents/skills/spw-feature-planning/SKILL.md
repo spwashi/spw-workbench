@@ -86,6 +86,10 @@ For each file, list whether it will be:
 - `[DEL]` — removed
 - `[MOD?]` — uncertain
 
+List files with repo-relative paths only.
+Never include machine-local absolute paths such as `/Users/...`, `file:///Users/...`,
+or drive-qualified home-directory paths.
+
 **Craft guard**: flag any file that would exceed 600 lines or 12 imports after changes.
 Note files with multiple responsibilities (high concept count).
 

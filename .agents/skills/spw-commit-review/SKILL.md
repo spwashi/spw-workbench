@@ -1,6 +1,6 @@
 ---
 name: spw-commit-review
-description: Human-in-the-loop commit gate. Blocks agent-initiated commits until human authorizes. Surfaces layer violations, Spw syntax generation gaps, golden snapshot risks. Use for all commit workflows.
+description: Human-in-the-loop commit gate. Blocks agent-initiated commits until human authorizes. Surfaces layer violations, profile-based Spw syntax review, and golden snapshot risks. Use for all commit workflows.
 ---
 
 # Spw Commit Review
@@ -20,10 +20,10 @@ Every commit requires human authorization. Agents prepare changes and stage file
 5. The hook displays a report and then prompts for Touch ID authorization.
    - If Touch ID is unavailable, it falls back to: `Authorize this commit? [y/N]`
 6. Review the report:
-   - `⛔` = errors (layer violations) — should fix before authorizing
-   - `⚠` = warnings (golden snapshots modified, Gen 1 syntax) — acknowledge
-   - `○` = advisories (Gen 2 patterns) — optional modernization opportunity
-   - `✓` = clean files (with Gen 3 feature counts)
+   - `⛔` = errors (layer violations, parser failures) — should fix before authorizing
+   - `⚠` = warnings (golden snapshots, newly introduced discouraged syntax for a file profile) — acknowledge or fix
+   - `○` = advisories/waivers (historical forms allowed by profile) — informational
+   - `✓` = reviewed files with no active syntax mismatch
 7. Type `y` to authorize or `n` to abort
 
 ## Authorization Model
@@ -51,7 +51,7 @@ Agents must either ask the human to run the commit, or the human pre-authorizes 
 ## Built-in Checks
 
 1. **Layer boundaries**: `lib/spw/` must not import `@/` paths
-2. **Spw syntax gen**: flags Gen 1 (`^"key"{}`) and Gen 2 (`@domain:`, `~#`, `~key:`) patterns
+2. **Spw syntax review**: evaluates `.spw` files by profile and warns on newly introduced discouraged forms rather than generation buckets
 3. **Golden snapshots**: warns when `__tests__/snapshots/` files change
 4. **Axis-scoped constants**: warns when genre/axis-scoped files (e.g., `src/styles/genres/`) contain raw `cubic-bezier` or round-number `setTimeout` delays instead of named axis tokens
 5. **Pluggable**: add scripts to `.git/hooks/checks.d/*.sh`
@@ -73,8 +73,8 @@ bash .agents/skills/spw-commit-review/scripts/poll-review.sh --scope=changed --w
 # Tight pre-merge poll using strict fuzz profile
 bash .agents/skills/spw-commit-review/scripts/poll-review.sh --scope=staged --fuzz=ship --fuzz-level=error
 
-# Optional: include Gen1/Gen2 syntax hints for .spw files
-bash .agents/skills/spw-commit-review/scripts/poll-review.sh --scope=changed --gen-hints
+# Optional: explicitly force syntax review (default is already on)
+bash .agents/skills/spw-commit-review/scripts/poll-review.sh --scope=changed --syntax-review
 
 # Optional: skip writing runtime register snapshots for one-off probes
 bash .agents/skills/spw-commit-review/scripts/poll-review.sh --scope=changed --no-state
@@ -92,7 +92,7 @@ This polls:
 - aggregated register bus updates at `.agents/state/runtime/register-bus.state.spw`
 - snapshot `nearby_spw` refs are dynamic (scope + changed-file adjacency) and extension/LSP navigable via local tilde refs (`~"relative/path"` from the runtime state file)
 
-Generation syntax hints are intentionally optional in polling (`--gen-hints`), so the default loop stays focused on fast correctness feedback.
+Syntax review now uses file/surface profiles instead of generation buckets. The default poll loop includes syntax review; use `--no-syntax-review` only when you need a parser-only pass.
 
 ## Commit Message Conventions
 
@@ -107,13 +107,23 @@ vocab[types] =satisfies[contracts] — description     # type refactors
 #[file list] ~spec[specs] — description              # new specs
 ```
 
-## Spw Syntax Generations
+## Spw Syntax Review Profiles
 
-| Gen | Pattern | Modern Equivalent | Status |
-|---|---|---|---|
-| 1 | `^"key"{}` | `^seed[...]` | Legacy |
-| 2 | `@domain:`, `~#quality`, `~key:` | `.{ domain = X }[reg=facet]` | Legacy |
-| 3 | `.{}`, `#[]`, `?<>`, `=`, `[reg=]` | ✓ Current | All strata files migrated |
+The hook no longer treats the repo as a one-way syntax migration ladder.
+Instead it asks whether a form fits the current file profile.
+
+| Profile | Typical paths | Review stance |
+|---|---|---|
+| `historical` | `docs/archive/`, `lib/spw-v0.1.0-alpha/`, `lib/spw-v0.2.0-alpha/`, `_archive/` | Historical forms are waived |
+| `agent_surface` | `.agents/**` | Planning/coordination idioms are allowed |
+| `runtime_state` | `*.state.spw`, `.spw/state/**`, `.agents/state/**` | Snapshot-oriented concise forms are allowed |
+| `canon_surface` | `.spw/**`, repo `index.spw` | Quoted frames and concise traits are allowed |
+| `narrative_surface` | `docs/**/*.spw`, `lib/**/*.spw`, `src/**/docs/**/*.spw` | Narrative idioms are allowed |
+| `strict_surface` | Other `.spw` machine surfaces | Discouraged forms trigger warnings when newly introduced |
+
+Current discouraged forms:
+- `@domain:` outside historical profiles
+- `^"..."`, `~#...`, and `~name:` on `strict_surface` files
 
 ## Codebase Tooling
 
@@ -122,7 +132,7 @@ npm run lint                # ESLint passes (incl. layer boundary enforcement vi
 npm run lint:docs           # Verify .spw path references are valid
 npm run lint:spw            # Parse-validate all .spw files through the real parser
 bash .agents/skills/spw-commit-review/scripts/poll-review.sh --scope=changed  # fast local polling loop
-bash .agents/skills/spw-commit-review/scripts/spw-syntax-audit.sh [path]   # .spw gen distribution
+bash .agents/skills/spw-commit-review/scripts/spw-syntax-audit.sh [path]   # .spw profile distribution
 bash .agents/skills/spw-commit-review/scripts/layer-check.sh               # Import boundary check
 FUZZ=boonhonk npx eslint <file>                                             # Groove detector on specific file
 ```
@@ -134,7 +144,7 @@ Update this skill when:
 - A new agent harness is added (new env var for detection) → update Agent Identification table
 - A new built-in check is added to `.git/hooks/pre-commit` → update Built-in Checks section
 - Polling behavior changes (`poll-review.sh` flags/output) → update Polling Loop section
-- Gen 4 syntax emerges → update Spw Syntax Generations table and Self-Correction Patterns
+- Syntax review profiles or discouraged-form policy changes → update the profile table and self-correction guidance
 
 ## Self-Correction Patterns
 
@@ -142,14 +152,15 @@ When the hook flags issues, fix them:
 
 | Flag | Fix |
 |---|---|
-| Gen 1 `^"key"{}` | Rewrite to `^seed[name v:N @profile:Spw.b]` |
-| Gen 2 `@domain:` | Move into `.{ domain = X }[reg=facet]` |
-| Gen 2 `~#quality` | Use valence pentad: `quality = boon \| bane \| bone \| bonk \| honk` |
-| Gen 2 `~key:` | Use `= bias` pattern: `key = value` |
+| `@domain:` on active/non-historical surfaces | Move into `.{ domain = X }[reg=facet]` or another explicit structural binding |
+| `^"key"{}` on strict surfaces | Rewrite to `^seed[name v:N @profile:Spw.b]` or another explicit strict-surface form |
+| `~#quality` on strict surfaces | Use an explicit structural or valence form suited to the file contract |
+| `~key:` on strict surfaces | Use `= bias` or another clearer structural binding |
 | Layer violation | Move import to correct layer or extract shared types to `core/` |
 
 ## Scripts
 
 - `bash .agents/skills/spw-commit-review/scripts/poll-review.sh [options]` — poll changed/staged files for lint, fuzz, and .spw checks; writes per-skill state + register bus under `.agents/state/runtime/` unless `--no-state`
-- `bash .agents/skills/spw-commit-review/scripts/spw-syntax-audit.sh [path]` — full .spw syntax generation report
+- `node --import tsx .agents/skills/spw-commit-review/scripts/spw-syntax-review.ts [options] -- <files>` — profile-based syntax review engine
+- `bash .agents/skills/spw-commit-review/scripts/spw-syntax-audit.sh [path]` — full .spw profile landscape report
 - `bash .agents/skills/spw-commit-review/scripts/layer-check.sh` — import boundary verification

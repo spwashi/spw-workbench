@@ -1,5 +1,6 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { reviewFiles } from "./spw-syntax-review";
 
 type Options = {
   lenses: string[];
@@ -24,14 +25,12 @@ async function main(opts: Options) {
   const spwFiles = await collectFiles(opts.target, (file) => file.endsWith(".spw"));
   const filteredSpw = spwFiles.filter((file) => shouldInclude(file, opts));
   const indexFiles = filteredSpw.filter((file) => file.endsWith(`${path.sep}index.spw`) || file === "index.spw");
+  const review = await reviewFiles(filteredSpw, "working");
 
   const entries: string[] = [];
-  for (const file of filteredSpw.sort()) {
-    const content = await readFileSafe(file, opts.failFast);
-    if (!content) continue;
-
-    const gen = classifyGeneration(content);
-    entries.push(`    .{ gen = \`${gen}\`, path = \`${normalizePath(file)}\` },`);
+  for (const result of review) {
+    const forms = result.patterns.map((pattern) => `\`${pattern.id}\``).join(", ");
+    entries.push(`    .{ profile = \`${result.profile.label}\`, path = \`${result.normalizedPath}\`, forms = #[${forms}] },`);
   }
 
   if (opts.bone) return;
@@ -51,12 +50,19 @@ async function main(opts: Options) {
   }
   output.push("  ][reg=set]");
   output.push("");
-  output.push("  migration_candidates_gen2_gen3: .{");
-  output.push("    patterns = #[");
-  output.push("      `@domain: X        →  .{ domain = X }[reg=facet]`,");
-  output.push("      `~#boon: \"...\"      →  .{ boon = `...` }[reg=quality]`,");
-  output.push("      `~element: \"...\"    →  .{ element = `...` }[reg=facet]`,");
-  output.push("      `^\"key\"{}           →  ^seed[name v:N @profile:Spw.b]`,");
+  output.push("  review_policy: .{");
+  output.push("    discouraged_when_introduced = #[");
+  output.push("      `@domain: outside historical profiles`,");
+  output.push("      `^\"...\" frames on strict machine surfaces`,");
+  output.push("      `~#... traits on strict machine surfaces`,");
+  output.push("      `~name: traits on strict machine surfaces`,");
+  output.push("    ][reg=set]");
+  output.push("    waived_profiles = #[");
+  output.push("      `historical`,");
+  output.push("      `agent_surface`,");
+  output.push("      `runtime_state`,");
+  output.push("      `canon_surface`,");
+  output.push("      `narrative_surface`,");
   output.push("    ][reg=set]");
   output.push("  }[reg=facet]");
   output.push("}[reg=facet]");
@@ -209,39 +215,6 @@ async function walk(
       }
     }
   }
-}
-
-async function readFileSafe(filePath: string, failFast: boolean): Promise<string | null> {
-  try {
-    return await fs.readFile(filePath, "utf-8");
-  } catch (error) {
-    if (failFast) {
-      throw error;
-    }
-    return null;
-  }
-}
-
-function classifyGeneration(content: string): string {
-  const g1 = count(content, /^\^"/gm);
-  const gm = count(content, /@domain:/g);
-  const gv = count(content, /~#/g);
-  const g2 = gm + gv;
-  const hf = count(content, /\. *\{/g);
-  const hs = count(content, /#\[/g);
-  const hr = count(content, /\[reg=/g);
-  const g3 = hf + hs + hr;
-
-  if (g1 > 0) return "Gen1";
-  if (g2 > 0 && g3 === 0) return "Gen2";
-  if (g2 > 0 && g3 > 0) return "Gen2+3";
-  if (g3 > 0) return "Gen3";
-  return "minimal";
-}
-
-function count(content: string, regex: RegExp): number {
-  const matches = content.match(regex);
-  return matches ? matches.length : 0;
 }
 
 function normalizePath(filePath: string): string {

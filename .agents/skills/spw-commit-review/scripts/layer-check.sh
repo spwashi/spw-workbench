@@ -90,7 +90,7 @@ spw_facet_close
 spw_section_close "domain_architecture_map"
 
 spw_affordances_open
-spw_affordance "bash .agents/skills/spw-commit-review/scripts/spw-syntax-audit.sh" "audit .spw file landscape"
+spw_affordance "bash .agents/skills/spw-commit-review/scripts/spw-syntax-audit.sh" "audit .spw syntax review profiles"
 spw_affordance "npm run audit:ui-selectors" "verify UI separation"
 spw_affordances_close
 

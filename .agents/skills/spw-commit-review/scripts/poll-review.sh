@@ -34,7 +34,7 @@ FUZZ_LEVEL=""
 RUN_FUZZ=1
 RUN_SPW=1
 RUN_LINT=1
-RUN_GEN_HINTS=0
+RUN_SYNTAX_REVIEW=1
 SHOW_AFFORDANCES=1
 WRITE_STATE="${SPW_STATE_ENABLED:-1}"
 STATE_DIR=".agents/state/runtime"
@@ -55,7 +55,8 @@ Poll-review options:
   --no-fuzz                  Skip fuzz pass
   --no-lint                  Skip base ESLint pass
   --no-spw                   Skip .spw parser/gen checks
-  --gen-hints                Show Gen 1/2 syntax hints for .spw files
+  --syntax-review            Force syntax review on .spw files (default: on)
+  --no-syntax-review         Skip profile-based syntax review for .spw files
   --no-affordances           Skip affordance command hints
   --no-state                 Skip writing runtime register snapshots
 EOF
@@ -73,7 +74,8 @@ for arg in "${SPW_POSITIONAL[@]-}"; do
     --no-fuzz) RUN_FUZZ=0 ;;
     --no-lint) RUN_LINT=0 ;;
     --no-spw) RUN_SPW=0 ;;
-    --gen-hints) RUN_GEN_HINTS=1 ;;
+    --syntax-review|--gen-hints) RUN_SYNTAX_REVIEW=1 ;;
+    --no-syntax-review) RUN_SYNTAX_REVIEW=0 ;;
     --no-affordances) SHOW_AFFORDANCES=0 ;;
     --no-state) WRITE_STATE=0 ;;
     -h|--help) SPW_HELP=1 ;;
@@ -133,22 +135,31 @@ collect_matching() {
   printf '%s\n' "${files[@]-}"
 }
 
-check_spw_generation() {
+summarize_agent_spw_file() {
   local file="$1"
-  local g1_count g2_meta_count g2_valence_count
-  g1_count=$(grep -c '^\^"' "$file" 2>/dev/null || true)
-  g2_meta_count=$(grep -c '@domain:' "$file" 2>/dev/null || true)
-  g2_valence_count=0
+  local sections stream open
+  sections=$(grep -c '^\^' "$file" 2>/dev/null || true)
+  stream=$(grep -c '^>>' "$file" 2>/dev/null || true)
+  open=$(grep -c '^?' "$file" 2>/dev/null || true)
+  spw_boon ".agents plan surface: $file (sections:${sections:-0} stream:${stream:-0} open:${open:-0})"
+}
 
-  if [[ "$file" != .agents/* ]]; then
-    g2_valence_count=$(grep -c '~#' "$file" 2>/dev/null || true)
+run_syntax_review() {
+  local review_scope="$1"
+  shift
+
+  [[ "$RUN_SYNTAX_REVIEW" -eq 1 ]] || return 0
+  [[ "$#" -gt 0 ]] || return 0
+
+  local output
+  if ! output="$(node --import tsx ".agents/skills/spw-commit-review/scripts/spw-syntax-review.ts" --scope="$review_scope" --format=text -- "$@" 2>&1)"; then
+    spw_bonk "syntax review failed"
+    printf '%s\n' "$output"
+    return 1
   fi
 
-  if [[ "$g1_count" -gt 0 || "$g2_meta_count" -gt 0 || "$g2_valence_count" -gt 0 ]]; then
-    spw_bone "syntax-generation hints in $file"
-    [[ "$g1_count" -gt 0 ]] && spw_dim "Gen 1 (^\"...\"): $g1_count"
-    [[ "$g2_meta_count" -gt 0 ]] && spw_dim "Gen 2 meta (@domain:): $g2_meta_count"
-    [[ "$g2_valence_count" -gt 0 ]] && spw_dim "Gen 2 valence (~#): $g2_valence_count"
+  if [[ -n "$output" ]]; then
+    printf '%s\n' "$output"
   fi
 }
 
@@ -488,6 +499,8 @@ run_once() {
 
   local ts_files=()
   local spw_files=()
+  local agent_spw_files=()
+  local strata_spw_files=()
   local golden_files=()
   local lint_status="disabled"
   local fuzz_status="disabled"
@@ -506,6 +519,11 @@ run_once() {
   while IFS= read -r line; do
     [[ -n "$line" ]] || continue
     spw_files+=("$line")
+    if [[ "$line" == .agents/* ]]; then
+      agent_spw_files+=("$line")
+    else
+      strata_spw_files+=("$line")
+    fi
   done < <(printf '%s\n' "${files[@]}" | collect_matching '\.spw$' | sed '/^$/d')
 
   while IFS= read -r line; do
@@ -547,19 +565,38 @@ run_once() {
   fi
 
   if [[ "${#spw_files[@]}" -gt 0 && "$RUN_SPW" -eq 1 ]]; then
-    spw_honk ".spw parser checks (${#spw_files[@]} files)"
-    for file in "${spw_files[@]}"; do
-      if [[ "$RUN_GEN_HINTS" -eq 1 ]]; then
-        check_spw_generation "$file"
-      fi
-      if ! SPW_STATE_VALIDATE_MODE=strict spw_validate_spw_file "$file"; then
-        spw_status="fail"
-        spw_bonk ".spw parse failed: $file"
-        status=1
-      elif [[ "$spw_status" != "fail" ]]; then
+    if [[ "${#agent_spw_files[@]}" -gt 0 ]]; then
+      spw_honk ".agents plan surfaces (${#agent_spw_files[@]} files)"
+      for file in "${agent_spw_files[@]}"; do
+        summarize_agent_spw_file "$file"
+      done
+      if [[ "$spw_status" != "fail" ]]; then
         spw_status="pass"
       fi
-    done
+    fi
+
+    if [[ "${#strata_spw_files[@]}" -gt 0 ]]; then
+      spw_honk ".spw parser checks (${#strata_spw_files[@]} files)"
+      for file in "${strata_spw_files[@]}"; do
+        if ! SPW_STATE_VALIDATE_MODE=strict spw_validate_spw_file "$file"; then
+          spw_status="fail"
+          spw_bonk ".spw parse failed: $file"
+          status=1
+        elif [[ "$spw_status" != "fail" ]]; then
+          spw_status="pass"
+        fi
+      done
+    fi
+
+    if [[ "$spw_status" != "fail" && "$RUN_SYNTAX_REVIEW" -eq 1 ]]; then
+      spw_honk ".spw syntax review (${#spw_files[@]} files)"
+      if ! run_syntax_review "$SCOPE" "${spw_files[@]}"; then
+        spw_status="fail"
+        status=1
+      elif [[ "$spw_status" == "none" ]]; then
+        spw_status="pass"
+      fi
+    fi
   fi
 
   if [[ "${#golden_files[@]}" -gt 0 ]]; then
@@ -593,7 +630,7 @@ echo "    interval_seconds = $INTERVAL"
 echo "    run_lint = $RUN_LINT"
 echo "    run_fuzz = $RUN_FUZZ"
 echo "    run_spw = $RUN_SPW"
-echo "    gen_hints = $RUN_GEN_HINTS"
+echo "    syntax_review = $RUN_SYNTAX_REVIEW"
 echo "    write_state = $WRITE_STATE"
 if [[ "$WRITE_STATE" -eq 1 ]]; then
   echo "    state_file = \`$STATE_FILE\`"
