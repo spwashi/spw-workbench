@@ -1,0 +1,40 @@
+# wip — rewrite-hash-references
+# Branch: feature/rewrite-hash-references
+# Started: 2026-03-26
+
+#:layer #!pragmatics
+
+^["intent"]{
+ ~#goal: "Refresh plan-artifact commit hashes that were meant to track main so they still resolve after the published history rewrite."
+ ~#taste: "clarity and correctness"
+}
+
+^["stream"]{
+ >>[2026-03-26 22:18] observe — rewritten main is clean, but several plan artifacts still cite pre-rewrite main hashes that now resolve only through the backup branch.
+ >>[2026-03-26 22:19] decide — update only plan-surface references explicitly framed as main lineage; leave provenance hashes that point at other histories untouched.
+ >>[2026-03-26 22:35] implement — translated the stale rewrite-era hash set against backup/history-rewrite-pre-20260326 and refreshed 41 plan files whose main references were left dangling by the published rewrite.
+ >>[2026-03-26 22:38] verify — the rewritten-hash set no longer appears anywhere under .agents/plans.
+ >>[2026-03-26 22:39] revise — found older pre-existing main@ references that point into lore-only or missing history; left them untouched because they need semantic review rather than mechanical remapping.
+}
+
+^["open"]{
+}
+
+^["commits"]{
+ ~[1]: ".[history-rewrite] — refresh plan-artifact main hash references after rewrite"
+}
+
+^["cache"]{
+ ~#status: "done"
+ ~#base_ref: "main@a2e49bd0527d"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: ".agents/plans/**/PLAN.md, .agents/plans/**/wip.spw"
+ ~#next_commit: "1"
+ ~#open_count: "0"
+ ~#last_stream: "2026-03-26 22:39"
+ ~#taste_debt: "Several older plan surfaces still label lore-only or missing commits as main lineage; resolve in a separate semantic cleanup pass."
+}
+
+^["done"]{
+}

@@ -37,7 +37,7 @@ Fuzz strategy:
 
 ## Agentic Hygiene
 
-- Rebase target: `main@375bc1910b82024cf7e7fa35e29614206aa1ce1f`
+- Rebase target: `main@605a2f0d24b5110c5dedeec8a9f181a026fc2f2a`
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: none; only in-scope drift is `prompts/image.prompt.spw`
 

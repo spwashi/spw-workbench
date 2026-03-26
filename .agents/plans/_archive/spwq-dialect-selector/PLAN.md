@@ -47,7 +47,7 @@ All new files target <200 lines. `stdio-server.ts` (463 lines) stays within budg
 
 ## Agentic Hygiene
 
-- Rebase target: `origin/main@fd98d97`
+- Rebase target: `origin/main@7ef3045`
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: none — the existing `spw-selector.ts` and `stdio-server.ts` changes from the other agent are already on main
 

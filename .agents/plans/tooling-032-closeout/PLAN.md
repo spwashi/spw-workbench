@@ -47,7 +47,7 @@ No predicted file should cross 600 lines or 12 imports from this slice. The main
 
 ## Agentic Hygiene
 
-- Rebase target: `main@41943d222d88ffec897f70edab8becc37d44cec6`
+- Rebase target: `main@54d6764fdc350596e4c75b76026c4182ed25021b`
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: none in `main...HEAD`; current uncommitted edits in `packages/spw-seed/src/canonical/index.ts` and `src/seed/__tests__/canonical.test.ts` are treated as in-scope carry-forward work, not unrelated drift
 

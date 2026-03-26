@@ -4,7 +4,7 @@ Amend the upstream runtime metadata work and make substrate events plus resonanc
 
 ## Goal
 
-The desired end state is a runtime pipeline where `runSpw()` and `collectPrecipitates()` return the runtime telemetry that host apps actually need: immutable substrate events, detected resonances, and register metadata that reflects the current write rather than accumulating stale semantic drift. This folds the useful parts of upstream commit `125a4cb` into a tighter canonical contract so hosts do not need to reconstruct substrate ownership outside the runtime. The quality bar is correctness and clarity in the runtime API rather than more app-side inference.
+The desired end state is a runtime pipeline where `runSpw()` and `collectPrecipitates()` return the runtime telemetry that host apps actually need: immutable substrate events, detected resonances, and register metadata that reflects the current write rather than accumulating stale semantic drift. This folds the useful parts of upstream commit `ea709ac` into a tighter canonical contract so hosts do not need to reconstruct substrate ownership outside the runtime. The quality bar is correctness and clarity in the runtime API rather than more app-side inference.
 
 **Taste note**: correctness, clarity, layering.
 
@@ -57,7 +57,7 @@ The desired end state is a runtime pipeline where `runSpw()` and `collectPrecipi
 
 ## Dependencies
 
-- upstream commit `125a4cb54b9a98491df959ac4685ff71d23d17b1` is the design precursor and should be cherry-picked or recreated in amended form inside this branch.
+- upstream commit `ea709acf51f0d61db6f8ef58a86ea67c9bd373bb` is the design precursor and should be cherry-picked or recreated in amended form inside this branch.
 
 ## Fuzz Strategy
 

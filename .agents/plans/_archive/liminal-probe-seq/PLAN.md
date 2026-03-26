@@ -36,7 +36,7 @@ No file should exceed 600 lines or 12 imports. The new CLI will keep one respons
 
 ## Agentic Hygiene
 
-- Rebase target: `main@dd2669d`
+- Rebase target: `main@2b2de77`
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: none
 

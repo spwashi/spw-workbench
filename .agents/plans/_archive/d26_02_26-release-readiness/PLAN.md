@@ -41,7 +41,7 @@ Keep release docs concise and decision-oriented. Do not expand extension source 
 
 ## Agentic Hygiene
 
-- Rebase target: `main@135364a`
+- Rebase target: `main@a69e6d5`
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: uncommitted DOM harness drift is present (`package.json`, `src/testing/**`, `vitest.dom.config.ts`, `.agents/plans/dom-css-test-harness/**`); release work should proceed on a dedicated branch and exclude these files
 

@@ -47,7 +47,7 @@ Fuzz strategy:
 
 ## Agentic Hygiene
 
-- Rebase target: `main@deccc0d`
+- Rebase target: `main@5866dd3`
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: none
 

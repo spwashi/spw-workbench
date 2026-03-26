@@ -34,7 +34,7 @@ No file is expected to exceed 600 lines or 12 imports. Responsibility split rema
 
 ## Agentic Hygiene
 
-- Rebase target: `main@3093487`
+- Rebase target: `main@5dc14d6`
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: none
 

@@ -50,7 +50,7 @@ Fuzz strategy:
 
 ## Agentic Hygiene
 
-- Rebase target: `main@1ddeba973442da8bdd4ea99c549bd33a15049d18`
+- Rebase target: `main@737751435d515b93c4e39963b58fe2373070fa8b`
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: none; `main...HEAD` shows no unrelated drift outside `.agents/plans/`
 

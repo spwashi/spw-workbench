@@ -4,7 +4,7 @@ Refine the phased register model from the shipped runtime baseline into a querya
 
 ## Goal
 
-The desired end state is a register model whose phase vocabulary is shared by runtime, query tooling, tests, and docs: `lex`, `parse`, `semantic`, `optimize`, `pragmatic`. The additive enrichment mechanics and P0 runtime stabilization already landed on `main@8dd4e41`, so this plan now narrows to selector/query alignment and documentation rather than reopening the build-fix work. Keep enrichment incremental, queryable, and cheap at early stages without another schema reset.
+The desired end state is a register model whose phase vocabulary is shared by runtime, query tooling, tests, and docs: `lex`, `parse`, `semantic`, `optimize`, `pragmatic`. The additive enrichment mechanics and P0 runtime stabilization already landed on `main@181071e`, so this plan now narrows to selector/query alignment and documentation rather than reopening the build-fix work. Keep enrichment incremental, queryable, and cheap at early stages without another schema reset.
 
 **Taste note**: clarity, naming, layering.
 
@@ -59,7 +59,7 @@ The desired end state is a register model whose phase vocabulary is shared by ru
 
 ## Agentic Hygiene
 
-- Rebase target: `main@8dd4e4129acca3f9566cfe4d2913dae15e27fd28`
+- Rebase target: `main@181071ef85bc2e505dfc99925fe55ebc5adcf3c9`
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: keep unrelated untracked drift in `src/runtime/state/register-helpers.ts` out of this branch; do not adopt or delete it implicitly from this plan.
 

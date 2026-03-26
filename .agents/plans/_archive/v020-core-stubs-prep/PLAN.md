@@ -43,7 +43,7 @@ Craft guard:
 
 ## Agentic Hygiene
 
-- Rebase target: `main@34be960`
+- Rebase target: `main@09be6d4`
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: none
 
