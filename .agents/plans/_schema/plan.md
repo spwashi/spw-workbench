@@ -77,12 +77,17 @@ Document:
 - **Rebase cadence**: before commit 1 and before merge
 - **Hygiene split**: whether unrelated branch drift exists and how it will be isolated
 
+Use `main@<sha>` or `origin/main@<sha>` only when the commit is still reachable
+on the current rewritten mainline. If the plan needs to preserve a lore-era or
+otherwise historical basis that is not on current `main`, record it explicitly
+as a historical baseline instead of labeling it as `main`.
+
 Example:
 
 ```
 ## Agentic Hygiene
 
-- Rebase target: `origin/main@abc1234`
+- Rebase target: `origin/main@<sha>`
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: none
 ```

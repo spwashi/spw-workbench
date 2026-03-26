@@ -53,7 +53,7 @@ The desired end state is an audit surface whose command names, coverage, and out
 
 ## Agentic Hygiene
 
-- Rebase target: `main@07ffc5a17a55340c3f7000313df68cf0453a7b10`
+- Rebase target: historical baseline `07ffc5a17a55340c3f7000313df68cf0453a7b10` (not on rewritten main)
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: keep unrelated untracked drift in `src/runtime/state/register-helpers.ts` out of this branch.
 

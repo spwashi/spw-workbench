@@ -15,7 +15,7 @@ The current VS Code extension relies on declarative TextMate grammars and simple
 
 ## Agentic Hygiene
 
-- **Rebase target**: `origin/main@f53934f`
+- **Rebase target**: historical baseline `f53934f` (lore-era; not on rewritten main)
 - **Rebase cadence**: rebase before commit 1 and again before merge
 - **Hygiene split**: isolate unrelated non-LSP drift into `feature/vscode-lsp-integration-agentic-hygiene` before implementation commits
 

@@ -42,7 +42,7 @@ The desired end state is a theory/runtime corpus that tells implementors what is
 
 ## Agentic Hygiene
 
-- Rebase target: `main@2ab173d627141d10706e5851d57442ce5023a364`
+- Rebase target: historical baseline `2ab173d627141d10706e5851d57442ce5023a364` (not on rewritten main)
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: none
 

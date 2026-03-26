@@ -34,7 +34,7 @@ Changes stay localized to lint profile definitions and docs. No file is expected
 
 ## Agentic Hygiene
 
-- Rebase target: `main@e7f84b0bb3b0024a238dda1bf2f471045361d22f`
+- Rebase target: historical baseline `e7f84b0bb3b0024a238dda1bf2f471045361d22f` (lore-era; not on rewritten main)
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: pre-existing local drift in `Writerside/*` and `package.json`; keep fuzz edits scoped to relevant sections only
 

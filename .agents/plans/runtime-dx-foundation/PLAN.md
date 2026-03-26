@@ -39,7 +39,7 @@ Keep new runtime/infra modules under 400 lines and avoid >12 imports per file. I
 
 ## Agentic Hygiene
 
-- Rebase target: `main@591a86c631671ddced9716eb8f32380af0db8a0b`
+- Rebase target: historical baseline `591a86c631671ddced9716eb8f32380af0db8a0b` (lore-era; not on rewritten main)
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: local changes in `package.json` and `.agents/skills/spw-commit-review/scripts/spw-syntax-audit.sh` are unrelated; keep out of DX commits
 

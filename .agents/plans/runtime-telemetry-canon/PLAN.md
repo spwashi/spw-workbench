@@ -51,7 +51,7 @@ The desired end state is a runtime pipeline where `runSpw()` and `collectPrecipi
 
 ## Agentic Hygiene
 
-- Rebase target: `main@24865b70d6a8b44d1d4b386915e5c24333c6a0b9`
+- Rebase target: historical-missing baseline `24865b70d6a8b44d1d4b386915e5c24333c6a0b9` (recorded basis no longer resolves locally)
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: none
 

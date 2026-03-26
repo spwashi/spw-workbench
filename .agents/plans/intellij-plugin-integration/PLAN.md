@@ -40,7 +40,7 @@ No files expected to exceed 600 lines or 12 imports. Keep settings/UI classes sm
 
 ## Agentic Hygiene
 
-- Rebase target: `main@58cd708a6b1e2ee40e972ffde90bbd1cbecbc154`
+- Rebase target: historical baseline `58cd708a6b1e2ee40e972ffde90bbd1cbecbc154` (lore-era; not on rewritten main)
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: unrelated local build artifacts and untracked files exist; avoid touching and keep out of commits
 

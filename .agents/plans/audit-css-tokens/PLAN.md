@@ -13,7 +13,7 @@ Audit the distribution and usage of CSS custom properties (tokens) across the UI
 
 ## Agentic Hygiene
 
-- **Rebase target**: `origin/main@8a290a6`
+- **Rebase target**: historical baseline `8a290a6` (lore-era; not on rewritten main)
 - **Rebase cadence**: rebase before commit 1 and again before merge
 - **Hygiene split**: isolate unrelated out-of-scope drift into `feature/audit-css-tokens-agentic-hygiene` before implementation commits
 

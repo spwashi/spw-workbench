@@ -1,0 +1,40 @@
+# wip — referential-integrity-cleanup
+# Branch: feature/referential-integrity-cleanup
+# Started: 2026-03-26
+
+#:layer #!pragmatics
+
+^["intent"]{
+ ~#goal: "Clarify lingering plan references that still claim main lineage even though they now point to lore-era or missing history after the rewrite."
+ ~#taste: "clarity and correctness"
+}
+
+^["stream"]{
+ >>[2026-03-26 23:04] observe — the rewrite-hash pass fixed hashes that should still track rewritten main, but a smaller set of plan references still labels lore-only or missing commits as main baselines.
+ >>[2026-03-26 23:05] decide — preserve the historical hashes, but relabel them honestly as historical or historical-missing so referential integrity becomes machine-checkable again.
+ >>[2026-03-26 23:12] implement — updated schema and planning-skill guidance so `main@<sha>` is reserved for rewritten-main lineage, while historical or missing bases are recorded as `historical@<sha>` or `historical-missing@<sha>`.
+ >>[2026-03-26 23:14] implement — normalized the remaining misleading plan references across active and historical plan surfaces without rewriting the underlying historical hashes.
+ >>[2026-03-26 23:16] verify — referential-integrity scan now reports `checked=51 ok`; every remaining `main@...` under .agents/plans resolves on rewritten main.
+}
+
+^["open"]{
+}
+
+^["commits"]{
+ ~[1]: ".[plans] — clarify referential integrity for historical plan baselines"
+}
+
+^["cache"]{
+ ~#status: "done"
+ ~#base_ref: "main@8437947a2c08"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: ".agents/plans/_schema/plan.md, .agents/plans/_schema/wip-template.spw, .agents/skills/spw-feature-planning/SKILL.md, .agents/plans/runtime-telemetry-canon/wip.spw"
+ ~#next_commit: "done"
+ ~#open_count: "0"
+ ~#last_stream: "2026-03-26 23:16"
+ ~#taste_debt: ""
+}
+
+^["done"]{
+}

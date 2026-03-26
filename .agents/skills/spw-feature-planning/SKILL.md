@@ -45,6 +45,10 @@ Examples:
 Before creating plan artifacts, verify branch hygiene and rebase state.
 
 - Record base reference SHA from `main` (or `origin/main`)
+- Use `main@<sha>` only if that commit is actually on the current mainline
+  history. If you are preserving an older lore-era or otherwise detached basis,
+  label it explicitly as `historical@<sha>` or `historical-missing@<sha>`
+  instead of pretending it is still `main`.
 - Rebase before planning if the branch already exists:
   - `git fetch origin`
   - `git rebase origin/main`
@@ -146,6 +150,8 @@ Reference `docs/design/spw/` and `docs/research/spw/` for idiom examples.
 Follow the schema at `.agents/plans/_schema/plan.md` exactly.
 Include a **taste note** in `## Goal` — which design quality is being improved.
 Include `## Agentic Hygiene` with rebase target, cadence, and hygiene split.
+When a preserved basis is not on rewritten `main`, say so explicitly in prose;
+do not label detached history as `main@...`.
 Commit PLAN.md and `wip.spw` to the feature branch **before touching any source files**.
 
 ---
