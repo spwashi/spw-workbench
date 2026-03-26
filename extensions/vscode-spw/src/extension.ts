@@ -9,7 +9,6 @@ import { AnnotationIndex } from './annotation-index'
 import type { SpwContext } from './context'
 import { ROOT_MAP, resolveRoot } from './roots'
 import { SIGIL_SEMANTICS } from './semantics'
-import { registerSemanticTokensProvider } from './providers/semantic-tokens'
 import { registerConceptsTreeView } from './views/concepts-tree'
 
 let client: LanguageClient | undefined
@@ -72,7 +71,6 @@ export function activate(context: vscode.ExtensionContext): void {
   }
 
   const disposables: vscode.Disposable[] = [
-    registerSemanticTokensProvider(spw),
     ...registerConceptsTreeView(spw),
   ]
 

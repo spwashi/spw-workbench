@@ -26,6 +26,7 @@ import { publishDiagnostics as _publishDiagnostics, foldingRanges as _foldingRan
 import { hover as _hover, documentSymbols as _documentSymbols, workspaceSymbols as _workspaceSymbols, codeLens as _codeLens, inlayHints as _inlayHints } from './handlers/display'
 import { completion as _completion, formatting as _formatting, rangeFormatting as _rangeFormatting, codeAction as _codeAction } from './handlers/editing'
 import { definition as _definition, documentLinks as _documentLinks, references as _references, prepareRename as _prepareRename, rename as _rename } from './handlers/navigation'
+import { semanticTokens as _semanticTokens, SEMANTIC_TOKENS_LEGEND } from './handlers/semantic-tokens'
 
 // ── Helpers (extracted) ─────────────────────────────────────────
 import {
@@ -187,6 +188,11 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
             documentRangeFormattingProvider: true,
             inlayHintProvider: true,
             foldingRangeProvider: true,
+            semanticTokensProvider: {
+              legend: SEMANTIC_TOKENS_LEGEND,
+              full: true,
+              range: false,
+            },
           },
         })
 
@@ -260,6 +266,10 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
 
       case 'textDocument/foldingRange':
         sendResult(id, _foldingRanges(message.params, deps))
+        return
+
+      case 'textDocument/semanticTokens/full':
+        sendResult(id, _semanticTokens(message.params, deps))
         return
 
       case 'spw/select': {
