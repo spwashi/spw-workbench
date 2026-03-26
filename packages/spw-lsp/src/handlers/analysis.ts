@@ -221,5 +221,22 @@ export function foldingRanges(params: DocumentParams, deps: HandlerDeps): LspFol
         }
     }
 
+    // Consecutive hash-comment blocks (# ...)
+    {
+        let blockStart = -1
+        for (let i = 0; i <= lines.length; i += 1) {
+            const isHash = i < lines.length && /^\s*#(\s|$)/.test(lines[i])
+            if (isHash && blockStart < 0) {
+                blockStart = i
+            } else if (!isHash && blockStart >= 0) {
+                const blockEnd = i - 1
+                if (blockEnd > blockStart) {
+                    ranges.push({ startLine: blockStart, endLine: blockEnd, kind: 'comment' })
+                }
+                blockStart = -1
+            }
+        }
+    }
+
     return ranges
 }

@@ -169,7 +169,7 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
         log(`initialize workspace=${WORKSPACE_ROOT} config=${JSON.stringify(CONFIG)}`)
 
         sendResult(id, {
-          serverInfo: { name: 'spw-lsp', version: '0.2.0-alpha.3' },
+          serverInfo: { name: 'spw-lsp', version: '0.3.1' },
           capabilities: {
             textDocumentSync: 1,
             definitionProvider: true,
@@ -181,7 +181,7 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
             documentSymbolProvider: true,
             workspaceSymbolProvider: true,
             codeActionProvider: true,
-            completionProvider: { triggerCharacters: ['@', '~', '/', '#'] },
+            completionProvider: { triggerCharacters: ['@', '~', '/', '#', '$'] },
             codeLensProvider: { resolveProvider: false },
             documentFormattingProvider: true,
             inlayHintProvider: true,

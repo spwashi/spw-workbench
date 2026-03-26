@@ -1,0 +1,115 @@
+{
+    "Frame": {
+        "prefix": "frame",
+        "body": [
+            "^[\"${1:label}\"] {",
+            "  $0",
+            "}"
+        ],
+        "description": "Named frame container"
+    },
+    "Seed": {
+        "prefix": "seed",
+        "body": [
+            "^seed[${1:Name}]"
+        ],
+        "description": "Seed declaration"
+    },
+    "Wonder Block": {
+        "prefix": "wonder",
+        "body": [
+            "#>${1:wonder_id}",
+            "?[\"${2:question}\"] {",
+            "  #:depth #!${3|computational,educational,experiential,stylistic,mathematical|}",
+            "  ~#hypothesis: \"${4:claim}\"",
+            "  !probe{ \"${5:instruction}\" }",
+            "  \\$%[${6:register.path}]",
+            "}"
+        ],
+        "description": "Wonder/probe block with annotation, hypothesis, and measurement"
+    },
+    "Anchor": {
+        "prefix": "anchor",
+        "body": [
+            "#>${1:anchor_name}"
+        ],
+        "description": "Anchor annotation (#>name)"
+    },
+    "Lens + Intent": {
+        "prefix": "lens",
+        "body": [
+            "#:${1:lens} #!${2:intent}"
+        ],
+        "description": "Lens and intent annotations"
+    },
+    "Tilde Reference": {
+        "prefix": "tref",
+        "body": [
+            "~\"${1:./path/to/file.spw}\""
+        ],
+        "description": "Tilde reference to a file"
+    },
+    "Root Reference": {
+        "prefix": "rref",
+        "body": [
+            "@${1:root}/${2:path}"
+        ],
+        "description": "Root-scoped reference (@root/path)"
+    },
+    "Trait": {
+        "prefix": "trait",
+        "body": [
+            "~#${1:key}: ${2:value}"
+        ],
+        "description": "Concise trait annotation"
+    },
+    "Measurement Point": {
+        "prefix": "measure",
+        "body": [
+            "\\$%[${1:register.path}]"
+        ],
+        "description": "Measurement point ($%[path])"
+    },
+    "Invariant Frame": {
+        "prefix": "invariant",
+        "body": [
+            "^\"invariant\" {",
+            "  \"${1:claim}\",",
+            "  $0",
+            "}"
+        ],
+        "description": "Invariant frame with falsifiable claims"
+    },
+    "Roots Frame": {
+        "prefix": "roots",
+        "body": [
+            "^\"roots\" {",
+            "  @${1:name}: ~\"${2:./path}\"",
+            "  $0",
+            "}"
+        ],
+        "description": "Roots frame for path mappings"
+    },
+    "Intent Frame": {
+        "prefix": "intent",
+        "body": [
+            "^\"intent\" {",
+            "  ~#goal: \"${1:description}\"",
+            "}"
+        ],
+        "description": "Intent frame with goal trait"
+    },
+    "File Header": {
+        "prefix": "header",
+        "body": [
+            "# ${1:Title}",
+            "#",
+            "# ${2:Description}",
+            "",
+            "#>${3:anchor_id}",
+            "#:${4:layer} #!${5:intent}",
+            ""
+        ],
+        "description": "Standard .spw file header with title, anchor, and annotations"
+    }
+}

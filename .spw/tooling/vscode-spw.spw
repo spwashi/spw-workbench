@@ -6,40 +6,40 @@
 #:tooling #!editor
 #:layer #!pragmatics
 
-^seed[Tooling.VSCode.Extension v:0.1 @profile:Spw.b @intent:native-vscode-parallel-to-intellij]
+^seed[Tooling.VSCode v:0.3.1 @profile:Spw.b @intent:editor-support]
 .tooling.vscode {
  extension.name: "spw-language"
- contributes: {
- folding: "FoldingRangeProvider.ts — regex ^[\"frame\"]{…} + ^subroot[…] + ^property[…] (brace-depth counting)"
- outline: "DocumentSymbolProvider.ts — ^\"name\", #>anchor, # Heading, ^subroot[…] → navigable Structure view"
- snippets: "spw.code-snippets — frame/intent/anno/subroot/prop + symmetry.{sym:D4} + brace.left/right"
- semantic.tokens: "SemanticTokensProvider.ts — lightweight operator/glyph/brace-side highlighting (no parser)"
- code.lens: "CodeLensProvider.ts — gutter lenses on #>anchor + symmetry applications"
- color.custom: "package.json contributes.colors + themes/spw-dark.json — full TextMate scope overrides"
- }
- files: {
- src/providers/FoldingRangeProvider.ts
- src/providers/DocumentSymbolProvider.ts
- src/providers/SemanticTokensProvider.ts
- src/providers/CodeLensProvider.ts
- snippets/spw.code-snippets
- themes/spw-dark.json
- }
+ lsp.server: "packages/spw-lsp/src/stdio-server.ts"
+ lsp.transport: "stdio"
+ lsp.version: "0.3.1"
 }
 
-#>wonder_spw_tooling_vscodespw_1
-?["How would a biology portfolio express Tooling.VSCode.Extension v:0.1 @profile:Spw.b @intent:native-vscode-parallel-to-intellij?"]{
-  #:depth #!stylistic // lens: living system
-  ~#translation_target: "biology"
-  ~#source_concept: "Tooling.VSCode.Extension v:0.1 @profile:Spw.b @intent:native-vscode-parallel-to-intellij"
-  !probe{ "rewrite the root frame in biology vocabulary; where the translation breaks reveals Spw's untranslatable concepts." }
-  $%[tool.invocation_count, tool.response_p95_ms]
+^"capabilities" {
+ completion: "4-stage: @-root, annotation, sigil snippets ($=^!?~&#%*.), file-system paths"
+ hover: "annotation metadata, @-root resolution, path peek, sigil semantics"
+ definition: "go-to-definition for ~\"path\" and @root/path references"
+ references: "workspace-wide annotation and path reference search"
+ rename: "workspace-wide rename for annotations, @roots, and frame names"
+ document_links: "clickable navigation for all path references"
+ symbols: "document symbols (frames, anchors, headings) + workspace symbols"
+ code_lens: "metrics on anchors (reference count, usage)"
+ inlay_hints: "path resolution, brace depth, operator census"
+ diagnostics: "parse errors, broken refs, stale projections, brace physics, runtime"
+ folding: "brace-depth, block comments, consecutive hash comments"
+ formatting: "full-document formatting"
+ code_actions: "trait/binding toggle, wrap-in-frame"
+ snippets: "14 VS Code snippets (frame, seed, wonder, anchor, lens, trait, etc.)"
 }
 
-#>wonder_spw_tooling_vscodespw_2
-?["How does this file's voice differ from @profile?"]{
-  #:depth #!educational // lens: curated collection
-  ~<@profile> // nearest neighbor
-  $%[op.distribution]@here vs $%[op.distribution]@profile
-  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
+^"client_features" {
+ semantic_tokens: "sigil + operator highlighting via SemanticTokensProvider"
+ concepts_tree: "annotation-based sidebar panel (Spw Explorer)"
+ color_scheme: "gruvbox-aligned palette (70+ TextMate scope rules)"
+ on_enter_rules: "# and // comment continuation"
+}
+
+^"invariant" {
+ "LSP server spawned per workspace via stdio, not shared across workspaces",
+ "VS Code extension activates on .spw file open (auto-detected from contributions)",
+ "Snippet contributions complement LSP completions; both available simultaneously",
 }

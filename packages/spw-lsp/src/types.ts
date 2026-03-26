@@ -44,6 +44,7 @@ export interface LspCompletionItem {
     kind: number
     detail?: string
     insertText?: string
+    insertTextFormat?: number // 1=PlainText 2=Snippet
     sortText?: string
 }
 

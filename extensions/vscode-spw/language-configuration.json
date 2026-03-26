@@ -95,7 +95,7 @@
     ],
     "folding": {
         "markers": {
-            "start": "^\\s*\\^\\[\"\\w+\"\\]\\{",
+            "start": "^\\s*\\^(?:\\[\"[^\"]+\"\\]|\"[^\"]+\"|seed\\[)\\s*\\{",
             "end": "^\\s*\\}"
         }
     },
@@ -103,5 +103,21 @@
     "indentationRules": {
         "increaseIndentPattern": ".*\\{\\s*$",
         "decreaseIndentPattern": "^\\s*\\}"
-    }
+    },
+    "onEnterRules": [
+        {
+            "beforeText": "^\\s*#\\s.*$",
+            "action": {
+                "indent": "none",
+                "appendText": "# "
+            }
+        },
+        {
+            "beforeText": "^\\s*//\\s.*$",
+            "action": {
+                "indent": "none",
+                "appendText": "// "
+            }
+        }
+    ]
 }

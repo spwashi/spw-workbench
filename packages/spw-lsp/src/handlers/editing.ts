@@ -64,7 +64,7 @@ export async function completion(params: CompletionParams, deps: HandlerDeps): P
     }
 
     // 3. Sigil keyword completions
-    const sigilPrefixMatch = /(?:^|\s)([\^!@&*?~#=%.])$/.exec(prefix)
+    const sigilPrefixMatch = /(?:^|\s)([\^!@&*?~#=%.$])$/.exec(prefix)
     if (sigilPrefixMatch) {
         const sigil = sigilPrefixMatch[1]
         const sem = SIGIL_SEMANTICS[sigil]
@@ -106,6 +106,15 @@ export async function completion(params: CompletionParams, deps: HandlerDeps): P
                 '*': [
                     { label: '*variant', insert: '*${1:variant}' },
                 ],
+                '$': [
+                    { label: '$["selector"]', insert: '$["${1:selector}"]' },
+                    { label: '$^["frame"]', insert: '$^["${1:frame}"]' },
+                    { label: '$%[register.path]', insert: '$%[${1:register.path}]' },
+                ],
+                '=': [
+                    { label: '=raw: "value"', insert: '=raw: "${1:value}"' },
+                    { label: '=config', insert: '=${1:key}: ${2:value}' },
+                ],
             }
             const snippets = sigilSnippets[sigil] ?? []
             for (const s of snippets) {
@@ -114,6 +123,7 @@ export async function completion(params: CompletionParams, deps: HandlerDeps): P
                     kind: CK.Keyword,
                     detail: `${sem.role} — ${sem.physics}`,
                     insertText: s.insert,
+                    insertTextFormat: 2, // Snippet
                     sortText: `0-${s.label}`,
                 })
             }
@@ -240,6 +250,33 @@ export async function codeAction(params: CodeActionParams, deps: HandlerDeps): P
                 }
             })
         }
+    }
+
+    // Wrap selection in frame (^["name"] { ... })
+    if (range.start.line !== range.end.line || range.start.character !== range.end.character) {
+        const startLine = lines[range.start.line]
+        const indent = startLine?.match(/^(\s*)/)?.[1] ?? ''
+        const innerIndent = indent + '  '
+        const selectedLines = lines.slice(range.start.line, range.end.line + 1)
+        const reindented = selectedLines
+            .map(l => `${innerIndent}${l.replace(/^\s*/, '')}`)
+            .join('\n')
+
+        actions.push({
+            title: 'Wrap in Frame (^["..."] { })',
+            kind: 'refactor.extract',
+            edit: {
+                changes: {
+                    [uri]: [{
+                        range: {
+                            start: { line: range.start.line, character: 0 },
+                            end: { line: range.end.line, character: (lines[range.end.line] ?? '').length },
+                        },
+                        newText: `${indent}^["frame"] {\n${reindented}\n${indent}}`
+                    }]
+                }
+            }
+        })
     }
 
     return actions
