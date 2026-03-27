@@ -1,42 +1,27 @@
 # Spw Language Support for VS Code / Antigravity
 
-Syntax highlighting for the **Spw** (Symbolic Processing Workbench) language.
+Language support for the **Spw** (Symbolic Processing Workbench) language.
+
+## Modern Architecture
+
+This extension is a **thin client** that delegates most language intelligence to the `spw-lsp` server, including parsing, semantic tokens, hover, diagnostics, completion, and code lens. This keeps the editor surface aligned with the current Spw language implementation.
 
 ## Features
 
-- **Operator physics semantics** — each sigil (`!`, `@`, `^`, `?`, `~`, `*`, `.`, `#`, `&`, `=`) has its own color mapping to Spw's cognitive register system
-- **3-layer visual hierarchy** — bright sigils/content, dimmed containers, neutral operators
-- **Contained string highlighting** — `^seed[curriculum]`, `Lab 1.01`, `scaffold`, and `—` are highlighted even inside quoted strings
-- **WIP constructs** — `^["section"]{}` headers, `>>[timestamp] action —` stream entries, `~[N]` commit entries, `~[N..M]` ranges
-- **Annotation tags** — `~#focus`, `~#taste`, `~#goal`, `~#status` each with distinct styling
-- **Valence pentad** — `!boon`, `!bane`, `!bone`, `!bonk`, `!honk` with semantic colors
+- **LSP-Powered Semantic Tokens** — each sigil (`!`, `@`, `^`, `?`, `~`, `*`, `.`, `#`, `&`, `=`) is semantically tokenized by the server and mapped to your active theme's colors.
+- **Cognitive Register System** — 3-layer visual hierarchy (bright sigils, dimmed containers, neutral operators) derived from the language's core semantics.
+- **Annotation & Metadata** — rich styling for `~#focus`, `~#taste`, `~#goal`, and more, using standard theme scopes.
+- **Valence Awareness** — `!boon`, `!bane`, `!bone`, `!bonk`, `!honk` with semantic meanings recognized by the engine.
 
 ## Installation
 
-### VS Code
-```bash
-# Symlink into VS Code extensions directory
-ln -s /path/to/extensions/vscode-spw ~/.vscode/extensions/spw-language-0.1.0
-```
+The extension is part of the `spw-workbench` repository. It is bundled via `esbuild`.
 
-### Antigravity / Cursor
-```bash
-# Symlink into extensions directory
-ln -s /path/to/extensions/vscode-spw ~/.cursor/extensions/spw-language-0.1.0
-```
+To install locally:
+1. `npm run compile` in the extension directory.
+2. Symlink `extensions/vscode-spw` to your VS Code/Cursor extensions folder:
+   `ln -s $(pwd)/extensions/vscode-spw ~/.vscode/extensions/spw-language-0.3.2`
 
-Then reload the editor window.
+## Documentation & Specs
 
-## Color Palette (Gruvbox-aligned)
-
-| Semantic | Color | Hex |
-|---|---|---|
-| Boon (!) action | Green | `#b8bb26` |
-| Bone (@) observer | Teal | `#83a598` |
-| Honk (^) integration | Gold | `#fabd2f` |
-| Bonk (?) wonder | Orange | `#fe8019` |
-| Bane (!) danger | Red | `#fb4934` |
-| Potential (~) | Purple | `#b16286` |
-| Containers | Dimmed echoes | varies |
-| Operators | Warm grey | `#a89984` |
-| Punctuation | Dim grey | `#665c54` |
+For more information on the Spw language and its cognitive model, see the `docs/` folder in the root of the repository.
