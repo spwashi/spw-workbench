@@ -4,7 +4,7 @@ Amend the upstream runtime metadata work and make substrate events plus resonanc
 
 ## Goal
 
-The desired end state is a runtime pipeline where `runSpw()` and `collectPrecipitates()` return the runtime telemetry that host apps actually need: immutable substrate events, detected resonances, and register metadata that reflects the current write rather than accumulating stale semantic drift. This folds the useful parts of upstream commit `ea709ac` into a tighter canonical contract so hosts do not need to reconstruct substrate ownership outside the runtime. The quality bar is correctness and clarity in the runtime API rather than more app-side inference. That telemetry should also be publish-meaningful enough to support ecosystem QA: a host should be able to tell whether a surface is fresh, grounded, and semantically coherent without reconstructing those judgments from scratch.
+The desired end state is a runtime pipeline where `runSpw()` and `collectPrecipitates()` return the telemetry that host apps and ecosystem stewards actually need: immutable substrate events, detected resonances, and register metadata that reflects the current write rather than accumulating stale semantic drift. This folds the useful parts of upstream commit `ea709ac` into a tighter canonical contract so hosts do not need to reconstruct substrate ownership outside the runtime. The quality bar is correctness and clarity in the runtime API rather than more app-side inference. That telemetry should also be publish-meaningful enough to support governance and diagnostics: a host or site steward should be able to tell whether a surface is fresh, grounded, and semantically coherent without reconstructing those judgments from scratch.
 
 **Taste note**: correctness, clarity, layering.
 
@@ -17,33 +17,36 @@ The desired end state is a runtime pipeline where `runSpw()` and `collectPrecipi
 
 ```text
 [NEW] .agents/plans/runtime-telemetry-canon/wip.spw
-[MOD] src/runtime/pipeline/types.ts
-[MOD] src/runtime/pipeline/run-spw.ts
-[MOD] src/runtime/pipeline/stages.ts
-[MOD] src/runtime/pipeline/substrate.ts
-[MOD] src/runtime/pipeline/resonance.ts
-[MOD] src/runtime/interpreter/interpreter.ts
-[MOD] src/runtime/state/types.ts
-[MOD] src/runtime/state/register-bank.ts
-[MOD] src/runtime/index.ts
-[MOD] src/seed/normalize.ts
-[MOD] src/seed/types/ast/onf.ts
-[MOD] scripts/lsp/context.ts
-[MOD] src/runtime/__tests__/run-spw.test.ts
-[MOD] src/runtime/__tests__/register-bank.test.ts
-[MOD] src/runtime/__tests__/substrate.test.ts
+[MOD] packages/spw-runtime/src/pipeline/types.ts
+[MOD] packages/spw-runtime/src/pipeline/run-spw.ts
+[MOD] packages/spw-runtime/src/pipeline/stages.ts
+[MOD] packages/spw-runtime/src/pipeline/substrate.ts
+[MOD] packages/spw-runtime/src/pipeline/resonance.ts
+[MOD] packages/spw-runtime/src/interpreter/interpreter.ts
+[MOD] packages/spw-runtime/src/state/types.ts
+[MOD] packages/spw-runtime/src/state/register-bank.ts
+[MOD] packages/spw-runtime/src/index.ts
+[MOD] packages/spw-seed/src/normalize.ts
+[MOD] packages/spw-seed/src/types/ast/onf.ts
+[MOD?] packages/spw-lsp/src/context.ts
+[MOD?] src/runtime/__tests__/run-spw.test.ts
+[MOD?] src/runtime/__tests__/register-bank.test.ts
+[MOD?] src/runtime/__tests__/substrate.test.ts
 [MOD?] docs/runtime/spw/runtime-foundation.spw
 [DEL] (none)
 ```
 
 ### Craft guard
 
-- `src/runtime/state/register-bank.ts` and `src/runtime/interpreter/interpreter.ts` are already concept-dense; keep the amendment narrow and avoid opportunistic refactors.
+- `packages/spw-runtime/src/state/register-bank.ts` and `packages/spw-runtime/src/interpreter/interpreter.ts` are already concept-dense; keep the amendment narrow and avoid opportunistic refactors.
 - Preserve the dependency direction: seed normalization feeds runtime metadata, but runtime telemetry should not leak live mutable substrate instances back to callers.
 - Returned telemetry must be immutable snapshots; hosts should consume facts, not own runtime internals.
 - The added telemetry should make readiness judgments easier without turning the runtime contract into a vague product-policy layer.
+- Telemetry vocabulary should stay compatible with the DX station model so runtime facts do not fork into a second diagnostic language.
 
 ## Commits
+
+Commit 2 hardens the runtime facts. Commit 3 makes those facts consumable by downstream DX/governance surfaces. Commit 4 locks the contract with tests.
 
 1. `.[plans] — stage runtime telemetry canon plan artifacts`
 2. `&[runtime] =amend[upstream-valence-metadata] — carry valence and frames as current-write semantics`
@@ -52,7 +55,7 @@ The desired end state is a runtime pipeline where `runSpw()` and `collectPrecipi
 
 ## Agentic Hygiene
 
-- Rebase target: historical-missing baseline `24865b70d6a8b44d1d4b386915e5c24333c6a0b9` (recorded basis no longer resolves locally)
+- Rebase target: `main@3b1747c4` (packages-era baseline; upstream commit remains design lore, not branch base)
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: none
 
@@ -60,6 +63,7 @@ The desired end state is a runtime pipeline where `runSpw()` and `collectPrecipi
 
 - upstream commit `ea709acf51f0d61db6f8ef58a86ea67c9bd373bb` is the design precursor and should be cherry-picked or recreated in amended form inside this branch.
 - `ecosystem-surface-governance` is a downstream consumer; its launch/QA gates should be able to reference runtime freshness and coherence facts rather than inventing a parallel vocabulary.
+- `runtime-dx-foundation` should consume the same freshness/coherence facts when it turns runtime conditions into station diagnostics.
 
 ## Fuzz Strategy
 

@@ -19,11 +19,16 @@
  >>[2026-03-20 16:06] decide — normalize names around three query surfaces: query for corpus rows, select for single-file AST selection, ls for liminal sequence scanning; keep spwq and spw:seq as compatibility wrappers.
  >>[2026-03-20 16:06] surprise — LSP references regressed on performance once selector traversal became truthful; switching the adapter back to regex-first ref scanning restored 22/0 smoke without undoing CLI selector dogfooding.
  >>[2026-03-20 16:06] taste — the canonical docs were also stale on command ownership and selector count; updating them is part of the rename, not optional polish.
+ >>[2026-03-27 00:35] observe — site codebases will interact with spw primarily through CLI: `spw init` to bootstrap .spw surfaces, `spw select` to query, `spw ls` to scan. The command taxonomy must be stable enough for site-local CLAUDE.md and package.json scripts to reference without breakage.
+ >>[2026-03-27 00:36] decide — resolve alias-fate: spwq should become a hidden internal wrapper (not public). External codebases should learn `spw query` and `spw select` from the start. Compatibility alias remains in workbench for migration but is not exported to site installs.
+ >>[2026-03-27 00:37] decide — resolve bin-dx: document the root `spw` binary direction now in .spw/conventions/cli.spw, but defer the actual package.json bin change to the spw-site-install plan. Site codebases will use `npx spw` or a workspace-local `spw` bin.
+ >>[2026-03-27 09:13] revise — site codebases will resolve spw CLI from .spw/_workbench/packages/spw-cli/ via submodule, not npx or global install. The bin entry should support being invoked as `node .spw/_workbench/packages/spw-cli/src/main.ts` or through a site-local wrapper script.
+ >>[2026-03-27 13:17] decide — this branch owns verb truth, not install plumbing. Treat CLI taxonomy as a parallel substrate for site-install and release docs: this branch stabilizes names, the ecology branches teach sites how to invoke them.
 }
 
 ^["open"]{
- ?[alias-fate]: "Should spwq remain a named compatibility alias after absorption, or become a hidden/internal wrapper only?"
- ?[bin-dx]: "How much of the future published-binary shift to root spw should be documented now versus implemented later?"
+ # resolved: alias-fate — spwq becomes hidden internal wrapper; see stream 2026-03-27 00:36
+ # resolved: bin-dx — document direction now, defer bin change to spw-site-install plan; see stream 2026-03-27 00:37
 }
 
 ^["commits"]{
@@ -40,9 +45,9 @@
  ~#hygiene_split: "none"
  ~#files_hot: "packages/spw-seed/src/instrumentation/audit.ts, packages/spw-cli/src/select.ts, packages/spw-lsp/src/spw-selector.ts, .spw/conventions/cli.spw"
  ~#next_commit: "2"
- ~#open_count: "2"
- ~#last_stream: "2026-03-20 16:06 taste"
- ~#taste_debt: "Published bin identity still favors install over spw; documented the direction but left the actual package bin change for a later DX slice."
+ ~#open_count: "0"
+ ~#last_stream: "2026-03-27 13:17"
+ ~#taste_debt: "Published/bin identity still favors install over spw in some wording; this branch should stabilize verb names without absorbing the submodule-install mechanics"
 }
 
 ^["done"]{

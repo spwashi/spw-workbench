@@ -1,0 +1,72 @@
+# wip — spw-site-install
+# Branch: feature/spw-site-install
+# Started: 2026-03-27
+
+#:layer #!pragmatics
+
+^["intent"]{
+ ~#goal: "Define and implement the submodule-based installation model: site codebases own .spw/ as their canon surface, with the workbench living at .spw/_workbench as infrastructure. Each repo is independently considered through a system of engagement and exchange."
+ ~#taste: "clarity, layering — the site owns its surfaces, the workbench provides the engine, the boundary is the _ prefix"
+}
+
+^["stream"]{
+ >>[2026-03-27 09:00] observe — prior approach assumed npm packages as primary distribution. User decided overnight that submodule model better preserves repository independence and engagement/exchange semantics.
+ >>[2026-03-27 09:01] decide — workbench mounts at .spw/_workbench. The _ prefix signals infrastructure-not-content. Site's .spw/ surfaces are its own canon; workbench provides parser, runtime, LSP, CLI, and spec library underneath.
+ >>[2026-03-27 09:02] decide — mount.spw is the engagement contract: it declares which workbench version the site tracks, which spec subsystems it engages with, and how resolution paths flow from site content through the engine.
+ >>[2026-03-27 09:03] taste — this model is more honest than npm publish for early ecosystem: the relationship between repos is visible (git submodule), versionable (pin to commit), and reversible (remove submodule). npm can come later as a convenience layer once the protocol stabilizes.
+ >>[2026-03-27 09:04] observe — existing sites already have codebases: factshift.com has a codebase, boon.land/bane.land/bone.land/bonk.land/honk.land extend factshift, lore.land can restart as installable book PWA. Each needs its own .spw/ identity.
+ >>[2026-03-27 09:05] decide — engagement is selective: a site doesn't adopt all 11 spec subsystems at once. mount.spw lists which subsystems are active. Exchange is contributory: a site can register new dialects or conventions that flow back through the submodule relationship.
+ >>[2026-03-27 13:20] decide — treat this branch as the ecological anchor. Once commits 1-3 land, CLI init, CLI resolution, editor detection, health checks, docs, and governance mapping can proceed in parallel because they all share the same `_workbench` boundary.
+ >>[2026-03-27 13:21] taste — ecological invigoration is not "more packages"; it is more independent sites entering the field with a clear mount contract, selective engagement, and a reversible relationship to the workbench.
+}
+
+^["open"]{
+ ?[node-resolution]: "How do site-local node scripts resolve @spwashi/* imports — via package.json workspace paths pointing into .spw/_workbench/packages/, or via tsconfig paths?"
+ ?[submodule-update]: "What is the cadence for submodule updates — pin to tagged releases, track main, or manual advance?"
+ ?[multi-site]: "For sites that share a codebase (boon.land extending factshift.com), do they share one .spw/ or each get their own?"
+}
+
+^["commits"]{
+ ~[1]: "#[submodule] — define .spw/_workbench submodule convention and _-prefix semantics"
+ ~[2]: ".[conventions] — add .spw/conventions/submodule.spw documenting the engagement model"
+ ~[3]: "#[mount] — formalize mount.spw protocol: version tracking, surface engagement, resolution paths"
+ ~[4]: "&[mount] — implement mount resolution in spw-runtime: read mount.spw, resolve spec paths through _workbench"
+ ~[5]: "![mount] — verify mount resolution finds spec library, parser, and runtime from submodule path"
+ ~[6]: "&[cli-init] — implement spw init: scaffold .spw/ with mount, index, workspace"
+ ~[7]: "&[templates] — create mount.spw template with submodule connection and version pin"
+ ~[8]: "&[templates] — create index.spw and workspace.spw templates for site-local canon"
+ ~[9]: "&[templates] — create CLAUDE.md fragment for .spw-enabled site codebases"
+ ~[10]: "![cli-init] — verify spw init creates correct .spw/ structure alongside existing _workbench submodule"
+ ~[11]: "&[cli] — add submodule-aware path resolution: spw commands find packages via .spw/_workbench/"
+ ~[12]: "![cli] — verify spw commands work when invoked from a site repo with _workbench submodule"
+ ~[13]: "&[vscode] — add .spw/_workbench detection for LSP server resolution"
+ ~[14]: "![vscode] — verify extension activates correctly in a site repo with only .spw/_workbench"
+ ~[15]: "&[cli-doctor] — implement spw doctor: verify submodule present, parser loadable, LSP reachable"
+ ~[16]: "![cli-doctor] — verify spw doctor output is actionable for each failure mode"
+ ~[17]: "#[engagement] — define engagement protocol: how a site selects spec subsystems and conventions"
+ ~[18]: "#[exchange] — define exchange protocol: how a site contributes surfaces back to the ecosystem"
+ ~[19]: ".[docs] — write site-install guide: submodule setup, init, mount, editor, health check"
+ ~[20]: ".[docs] — write mount protocol reference"
+ ~[21]: ".[plans] — write spw-site-install.spw artifact formalizing the submodule integration model"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@3b1747c4"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "packages/spw-cli/src/init.ts, packages/spw-cli/src/doctor.ts, .spw/conventions/submodule.spw"
+ ~#next_commit: "1"
+ ~#open_count: "3"
+ ~#last_stream: "2026-03-27 13:21"
+ ~#taste_debt: "npm publish may still be valuable as a convenience layer once the submodule protocol stabilizes — do not let convenience language replace the site-owned ecology model"
+}
+
+^["done"]{
+ # Written at merge time.
+ # ~#shipped: []
+ # ~#dropped: []
+ # ~#surprised: ""
+ # ~#duration: ""
+ # ~#taste: ""
+}

@@ -14,34 +14,53 @@
  # >>[YYYY-MM-DD HH:MM] <type> — <content>
  >>[2026-02-23 11:15] observe — DX roadmap request includes plugin development, LSP/worker flow, and runtime instrumentation.
  >>[2026-02-23 11:18] decide — Start with a foundation plan: diagnostics contracts, instrumentation hooks, and editor UX affordances.
- # Types: observe, decide, surprise, revise, blocked, taste, rebase, hygiene
+ >>[2026-03-27 00:55] observe — codebase restructured into packages/ since plan was filed. LSP in packages/spw-lsp/src/, seed in packages/spw-seed/src/, runtime in packages/spw-runtime/src/. Lore-era baseline no longer reachable.
+ >>[2026-03-27 00:56] revise — rebase target updated to main@3b1747c4. File paths updated to packages/ layout. Expanded from 5 to 12 commits to create surface area for each DX station: diagnostic registry, seed hooks, runtime hooks, LSP propagation, CLI diagnostics, editor integration, and documentation.
+ >>[2026-03-27 00:57] decide — resolve dx-scope: priority order is (1) parser/seed diagnostics (most visible to new users), (2) LSP server (editor experience), (3) CLI (installation troubleshooting), (4) runtime interpreter (deeper debugging). This matches the spiritual testing path: author → seed → runtime → editor → publish.
+ >>[2026-03-27 00:58] decide — site codebases need a diagnostic mode that answers: is .spw installed correctly? can the parser load? can the LSP start? does the extension connect? Each station should emit a structured health check.
+ >>[2026-03-27 00:59] taste — each commit in this plan should produce a concrete artifact that external developers can encounter: an error code they can search for, a status bar indicator they can read, a CLI flag they can use. More commits = more contact surfaces.
+ >>[2026-03-27 13:18] revise — reposition this branch as the DX contract lane inside a broader ecology effort. Commit 1 serializes station names; after that, seed, LSP, CLI, and editor work can proceed in parallel without inventing their own diagnostic vocabulary.
+ >>[2026-03-27 13:19] taste — ecological invigoration here means a site codebase encounters one coherent station model across install, editor, CLI, and docs rather than four unrelated troubleshooting dialects.
 }
 
 ^["open"]{
- # Unresolved questions. Remove when resolved (log resolution in stream first).
- ?[dx-scope]: "Which runtime surfaces are highest priority for diagnostic IDs: parser, interpreter, worker bridge, or LSP server?"
+ # resolved: dx-scope — priority order: seed → LSP → CLI → runtime; see stream 2026-03-27 00:57
 }
 
 ^["commits"]{
- # Planned commits in order. Use project sigil conventions.
- # ~[N]: "sigil[scope] — description"
- ~[1]: "#[dx-runtime] — define DX instrumentation contract + diagnostic identifiers"
- ~[2]: "&[runtime] — wire structured diagnostics + logging hooks through runtime/infra"
- ~[3]: "&[lsp] — propagate diagnostics + performance telemetry via workers/LSP server"
- ~[4]: "&[editors] — refine plugin settings UX + add troubleshooting affordances"
- ~[5]: ".[docs] — add DX playbook, onboarding checkpoints, and instrumentation guide"
+ # Expanded commit sequence — more granular to create surface area per DX station
+ ~[1]: "#[dx-diagnostics] — define diagnostic ID registry and station attribution contract (SPW-SEED-*, SPW-RT-*, SPW-LSP-*, SPW-CLI-*)"
+ ~[2]: "&[seed] — add parse timing hooks to spw-seed parser entry points"
+ ~[3]: "&[seed] — add structured error codes to lexer and grammar failures"
+ ~[4]: "![seed] — verify diagnostic codes appear in parse error output for malformed .spw files"
+ ~[5]: "&[runtime] — wire diagnostic station hooks through pipeline and substrate"
+ ~[6]: "&[runtime] — add resonance cycle instrumentation with opt-in timing"
+ ~[7]: "![runtime] — verify diagnostic propagation through substrate event chain"
+ ~[8]: "&[lsp] — propagate structured diagnostics from seed/runtime to LSP responses"
+ ~[9]: "&[lsp] — add performance telemetry to LSP context (parse duration, response latency)"
+ ~[10]: "![lsp] — smoke test: LSP diagnostic payloads carry station codes and timing"
+ ~[11]: "&[cli] — add `spw doctor` subcommand for installation health check"
+ ~[12]: "&[cli] — add --diagnostics flag to existing commands for verbose station output"
+ ~[13]: "![cli] — verify spw doctor reports: parser loaded, LSP reachable, extension connectable"
+ ~[14]: "&[vscode] — add Spw output channel with structured diagnostic log"
+ ~[15]: "&[vscode] — add status bar indicator for LSP connection health and parse performance"
+ ~[16]: "&[vscode] — add settings validation with actionable error messages"
+ ~[17]: "![vscode] — verify output channel shows station-attributed diagnostics during editing"
+ ~[18]: ".[docs] — write DX playbook: installation, health check, troubleshooting flowchart"
+ ~[19]: ".[docs] — write instrumentation guide: how to read diagnostic codes, where each station lives"
+ ~[20]: ".[plans] — write runtime-dx-foundation.spw artifact formalizing the station model"
 }
 
 ^["cache"]{
  ~#status: "planning"
- ~#base_ref: "main@here"
- ~#rebased_at: "n/a (origin/main unavailable)"
- ~#hygiene_split: "unrelated local changes in package.json and spw-syntax-audit.sh; keep out of DX commits"
- ~#files_hot: ""
+ ~#base_ref: "main@3b1747c4"
+ ~#rebased_at: "2026-03-27"
+ ~#hygiene_split: "none; prior drift landed on main"
+ ~#files_hot: "packages/spw-runtime/src/diagnostics/, packages/spw-seed/src/parser.ts, packages/spw-lsp/src/context.ts, packages/spw-cli/src/main.ts"
  ~#next_commit: "1"
- ~#open_count: "1"
- ~#last_stream: "2026-02-23 11:18"
- ~#taste_debt: ""
+ ~#open_count: "0"
+ ~#last_stream: "2026-03-27 13:19"
+ ~#taste_debt: "each commit should produce a greppable artifact (error code, CLI flag, status indicator) and preserve a shared station vocabulary across the parallel install/editor/cli lanes"
 }
 
 ^["done"]{

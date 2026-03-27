@@ -1,43 +1,54 @@
 # Plan: vscode-lsp-integration
 
-Integrate the Spw Language Server Protocol (LSP) into the VS Code extension, enabling rich semantic features, renaming, advanced completions, and paving the way for experimental syntax development.
+Integrate the Spw Language Server Protocol (LSP) into the VS Code extension as a thin, dependable editor lane for site codebases adopting Spw.
 
 ## Goal
 
-The current VS Code extension relies on declarative TextMate grammars and simple regex-based providers for navigation. This plan transitions the extension to use the native `SpwLspHandler` via `stdio`, replacing fragile regex heuristics with precise AST and semantic analysis. This establishes a robust foundation for ecosystem enhancement and makes it possible to rapidly iterate on experimental syntax without duplicating parser logic in the editor.
+The current VS Code extension relies on declarative TextMate grammars and simple regex-based providers for navigation. This plan transitions the extension to use the native `SpwLspHandler` via `stdio`, replacing fragile regex heuristics with precise AST and semantic analysis. The immediate outcome is editor trust for external site codebases: hover, completions, rename, links, and semantic tokens should reflect the same truth the parser and runtime use.
 
-**Taste note:** we are improving **correctness** and **expressiveness** by moving from regex approximations to a unified, rigorous semantic model that serves both the compiler and the editor ecosystem.
+**Taste note:** we are improving **correctness** and **expressiveness** by moving from regex approximations to a unified semantic model while keeping the extension thin enough to ride alongside the install and DX lanes.
 
 ## Scope
 
-- **In scope**: Integrating `vscode-languageclient`, replacing regex hover/outline providers with LSP responses, enhancing the LSP to support rename, native document links, and context-aware file completions. Introducing an experimental syntax parsing hook as a proof of concept for ecosystem evolution.
-- **Out of scope**: Writing full Language Server features for external editors (e.g., Vim configuration) beyond ensuring the `stdio-server.ts` remains decoupled.
+- **In scope**: integrating `vscode-languageclient`, replacing regex hover/outline providers with LSP responses, and finishing the remaining LSP/editor capabilities needed for site adoption: semantic token verification, rename, native document links, hover polish, and context-aware file completions.
+- **Out of scope**: writing full Language Server features for external editors (e.g., Vim configuration) beyond ensuring the `stdio-server.ts` remains decoupled, and experimental syntax work that should live on a separate branch once the install ecology settles.
 
 ## Agentic Hygiene
 
-- **Rebase target**: historical baseline `f53934f` (lore-era; not on rewritten main)
-- **Rebase cadence**: rebase before commit 1 and again before merge
-- **Hygiene split**: isolate unrelated non-LSP drift into `feature/vscode-lsp-integration-agentic-hygiene` before implementation commits
+- **Rebase target**: `main@3b1747c4` (updated 2026-03-27; lore-era f53934f no longer reachable)
+- **Rebase cadence**: before next commit and before merge
+- **Hygiene split**: none; monorepo restructure already landed on main
 
 ## Files
 
-[MOD] `extensions/vscode-spw/package.json`
-[MOD] `extensions/vscode-spw/src/extension.ts`
-[MOD] `scripts/lsp/stdio-server.ts`
-[MOD] `src/lang/semantic/lsp.ts`
-[MOD] `src/lang/semantic/analyzer.ts`
-[MOD] `src/lang/semantic/types.ts`
-[MOD] `src/platform/lsp/lsp-handler.ts`
-[MOD] `src/platform/workers/symbol-navigation.ts`
-[MOD] `src/lib/spw/lexer/index.ts`
-[MOD] `src/lib/spw/grammar/seed.ts`
-[NEW] `src/lang/semantic/__tests__/lsp.test.ts`
-[NEW] `scripts/lsp/__tests__/stdio-server.test.ts`
+```text
+[MOD] extensions/vscode-spw/package.json
+[MOD] extensions/vscode-spw/src/extension.ts
+[MOD] packages/spw-lsp/src/stdio-server.ts
+[MOD] packages/spw-lsp/src/handlers/navigation.ts
+[MOD] packages/spw-lsp/src/handlers/analysis.ts
+[MOD] packages/spw-lsp/src/handlers/display.ts
+[MOD] packages/spw-lsp/src/handlers/editing.ts
+[MOD] packages/spw-lsp/src/handlers/semantic-tokens.ts
+[MOD] packages/spw-lsp/src/context.ts
+[MOD] packages/spw-lsp/src/types.ts
+[MOD] packages/spw-seed/src/lexer/index.ts
+[MOD] packages/spw-seed/src/grammar/seed.ts
+[NEW] packages/spw-lsp/src/__tests__/lsp.test.ts
+[NEW] packages/spw-lsp/src/__tests__/stdio-server.test.ts
+```
 
 ### Craft guard
-- `src/lang/semantic/lsp.ts` may risk exceeding 400 lines (currently 220). If the rename and document link logic becomes heavy, extract finding/resolution utilities into `src/platform/workers/symbol-navigation.ts` to maintain conceptual separation.
+- LSP handler modules are already split (navigation, analysis, display, editing, semantic-tokens). If any grows past 400 lines, extract further.
+- Extension should remain thin — delegate all intelligence to LSP.
+
+### Status of original commits
+- Commits ~[1]-~[9] are substantially complete (extension has vscode-languageclient ^9.0.1, LanguageClient initialized, monorepo restructure done, path literals highlighted, and architecture documented).
+- Remaining work begins at ~[10] (verify semantic tokens for all path variants).
 
 ## Commits
+
+Commits ~[10]-~[16] form the language-service correctness lane. Commits ~[17]-~[21] form the editor cleanup/documentation lane and can proceed in parallel once semantic-token verification stops moving underneath them.
 
 1. `&[hygiene]` — rebase feature branch onto `origin/main` and isolate unrelated drift in a hygiene split branch
 2. `&[lsp]` — harden stdio-server with robust message partitioning and error boundaries
@@ -60,11 +71,6 @@ The current VS Code extension relies on declarative TextMate grammars and simple
 19. `&[lsp]` — enhance HoverProvider to perform cross-file peeking via analyzer graph
 20. `![lsp]` — verify safe cross-file reading for hover peeks
 21. `.[docs]` — update spw-feature-planning and editor ecosystem guide with new LSP capabilities
-22. `^seed[syntax]` — introduce experimental syntax node for 'operator injection' (`$<op>`)
-23. `&[lang]` — parse operator injection syntax in lexer and AST builder
-24. `&[analyzer]` — add semantic analysis rules for operator injection nodes
-25. `&[lsp]` — provide semantic tokens and hover intelligence for operator injections
-26. `&[viz]` — add differential syntax highlighting for operator injections in editor UI
 27. `.[release]` — declare v0.2.0-alpha for VS Code extension and LSP
 
 ## Dependencies

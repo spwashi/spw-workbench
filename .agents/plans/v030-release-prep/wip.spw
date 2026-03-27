@@ -5,7 +5,7 @@
 #:layer #!pragmatics
 
 ^["intent"]{
- ~#goal: "Convert the intended March 2026 alpha/beta/release cadence into repo-native planning and waypoint artifacts, with v0.3.0 framed as the monorepo and structural decoupling milestone."
+ ~#goal: "Convert the intended March 2026 alpha/beta/release cadence into a truthful release story for the packages-era rewrite, with v0.3.0 framed as the monorepo and structural decoupling milestone plus the first site-installable public shape."
  ~#taste: "clarity, layering, naming"
 }
 
@@ -15,6 +15,14 @@
  >>[2026-03-19 23:50] decide — treat 2026-03-13 as a missed alpha checkpoint, recover toward a 2026-03-26 beta gate and a 2026-03-31 release gate.
  >>[2026-03-19 23:50] decide — align the release theme with the implementation plan: monorepo workspace, LSP/CLI extraction, runtime extensibility, and agent-tool decoupling.
  >>[2026-03-19 23:50] hygiene — branch is main at 7b08fda81cc24353cd8650a57299eb1effdd6bbf with no unrelated drift outside .agents/plans.
+ >>[2026-03-27 01:05] observe — 2026-03-26 beta gate passed without a formal checkpoint. Package.json is now 0.3.2. Monorepo structure is live (packages/ layout, @spwashi namespace). VS Code extension has LSP integration. The release narrative needs to catch up with reality.
+ >>[2026-03-27 01:06] revise — reframe: v0.3.0 has effectively shipped structurally. The remaining work is formalizing it: changelog, waypoint, npm publish readiness, VS Code Marketplace readiness, and the site-install story.
+ >>[2026-03-27 01:07] decide — expand commits to cover the external-facing release gates: npm package publishability, extension marketplace metadata, CLI binary distribution, and a quick-start guide for site codebases. These are the surfaces that make v0.3.x real for external consumers.
+ >>[2026-03-27 01:08] taste — the release isn't just a version bump; it's the moment external codebases can depend on @spwashi/spw-seed, @spwashi/spw-runtime, @spwashi/spw-cli, and @spwashi/spw-lsp as real packages. Every commit should move toward that being true.
+ >>[2026-03-27 09:10] revise — primary distribution model changed to git submodule at .spw/_workbench, not npm packages. npm publish remains a future convenience layer but is no longer the release gate. The v0.3.0 release is real when a site codebase can git submodule add the workbench and have parser/runtime/LSP/CLI resolve from the submodule path.
+ >>[2026-03-27 13:24] revise — reposition this plan as the coordination braid across install, governance, CLI taxonomy, diagnostics, and editor readiness. The release track should describe those lanes truthfully, not replace them with a packaging fantasy.
+ >>[2026-03-27 13:25] decide — parallelize the remaining release work into three lanes: ecology/governance (surface readiness + waypoint), adoption story (quick-start + migration + install narrative), and discoverability (extension metadata + release verification). The release tag waits on all three.
+ >>[2026-03-27 13:26] taste — ecological invigoration means external repos can engage the workbench without surrendering their identity to a package-consumer relationship. The release story should sound like that.
 }
 
 ^["open"]{
@@ -22,20 +30,27 @@
 
 ^["commits"]{
  ~[1]: ".[plans] — scaffold v030-release-prep planning artifacts"
- ~[2]: ".[waypoints] — add March 2026 v0.3.0 release-track waypoint and index link"
- ~[3]: ".[release-notes] — align v0.2.0-alpha changelog with the v0.3.0 end-of-March track"
+ ~[2]: ".[waypoints] — add v0.3.0 release-track waypoint and index link"
+ ~[3]: ".[release-notes] — write v0.3.0 changelog: monorepo, package boundary, namespace, LSP integration, and submodule-era install truth"
+ ~[4]: ".[docs] — write quick-start guide: install the workbench into a site codebase via .spw/_workbench"
+ ~[5]: ".[docs] — write migration notes: v0.2.x / lore-era → v0.3.x packages-era"
+ ~[6]: ".[docs] — write site-install release story: why submodule engagement is the current public shape"
+ ~[7]: "#[surfaces] — update .spw/surfaces/domains.spw with installable/readiness metadata for active surfaces"
+ ~[8]: "#[vscode] — verify VS Code extension marketplace metadata where it affects external discovery"
+ ~[9]: "![release] — verify the release story matches site-install reality, CLI taxonomy, and extension startup truth"
+ ~[10]: "^[v0.3.0] — tag release after the ecology, governance, and discoverability gates agree"
 }
 
 ^["cache"]{
  ~#status: "planning"
- ~#base_ref: "main@7b08fda81cc24353cd8650a57299eb1effdd6bbf"
- ~#rebased_at: ""
+ ~#base_ref: "main@3b1747c4"
+ ~#rebased_at: "2026-03-27"
  ~#hygiene_split: "none"
- ~#files_hot: ".agents/plans/v030-release-prep/*, docs/waypoints/index.spw, docs/waypoints/spw/v030-release-track.spw, lib/spw-v0.2.0-alpha/CHANGELOG.md"
+ ~#files_hot: "docs/waypoints/, lib/spw-v0.3.0/CHANGELOG.md, docs/runtime/md/, .spw/surfaces/domains.spw, extensions/vscode-spw/package.json"
  ~#next_commit: "1"
  ~#open_count: "0"
- ~#last_stream: "2026-03-19 23:50"
- ~#taste_debt: ""
+ ~#last_stream: "2026-03-27 13:26"
+ ~#taste_debt: "release narrative should acknowledge that v0.3.0 shipped structurally before the formal waypoint was written; do not let marketplace/npm convenience claims outrun the submodule install truth"
 }
 
 ^["done"]{

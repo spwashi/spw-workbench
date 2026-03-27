@@ -5,7 +5,7 @@
 #:layer #!pragmatics
 
 ^["intent"]{
- ~#goal: "Integrate the native node-based Spw language server into the VS Code extension, replacing flaky regex heuristics with rigorous AST/semantic knowledge. Lay ground for experimental syntax support."
+ ~#goal: "Integrate the native node-based Spw language server into the VS Code extension, replacing flaky regex heuristics with rigorous AST/semantic knowledge for site-codebase adoption."
  ~#taste: "correctness and expressiveness by centralizing language intelligence in the semantic core, preventing divergence between the editor and compiler."
 }
 
@@ -16,6 +16,13 @@
  >>[2026-02-20 05:15] observe — SpwLspHandler existing implementation supports hover, outline, and definition, but VSCode extension currently uses regex.
  >>[2026-02-20 05:15] decide — Transition the extension to use vscode-languageclient, connecting via stdio to scripts/lsp/stdio-server.ts.
  >>[2026-02-22 10:10] revise — Added agentic hygiene preflight: mandatory rebase against origin/main and hygiene split for unrelated drift before commit 1.
+ >>[2026-03-27 00:45] observe — codebase restructured since plan was filed: LSP now lives in packages/spw-lsp/src/ (handlers/, stdio-server.ts, context.ts, types.ts); seed/parser in packages/spw-seed/src/; extension already has vscode-languageclient ^9.0.1 installed and LanguageClient initialized. Prior commits ~[1]-~[6] are substantially complete.
+ >>[2026-03-27 00:46] revise — rebase target updated from lore-era f53934f to current main@3b1747c4. File paths updated throughout. Commits ~[1]-~[6] marked as landed; remaining work starts at ~[7].
+ >>[2026-03-27 00:47] decide — for site codebase installation: the LSP must work standalone via `npm run lsp` (already resolved by lsp-lore-upstream-bridge) and the extension must be publishable to VS Code Marketplace. Commit ~[27] (release declaration) should include marketplace metadata.
+ >>[2026-03-27 00:48] taste — site codebases will experience spw through the extension first. The quality of hover, completions, and document links directly shapes first impressions. Prioritize correctness over breadth: completions and rename are more valuable than experimental operator injection for initial external adoption.
+ >>[2026-03-27 12:55] observe — Commit 7 (maintain regex DocumentLinkProvider) skipped as extension already moved fully to LSP links. Commit 8 (LSP architecture docs) and Commit 9 (path literal highlighting) completed.
+ >>[2026-03-27 13:28] revise — narrow this plan to the editor-reliability lane for site installation. Experimental operator injection is deferred to a separate syntax branch once install/docs/dx surfaces stop moving.
+ >>[2026-03-27 13:29] decide — parallelize the remaining work into two tracks after commit 10: language-service correctness (completions, rename, hover) and editor cleanup/docs (document links, extension cleanup, capability docs, release truth).
 }
 
 ^["open"]{
@@ -47,24 +54,19 @@
  ~[19]: "&[lsp] — enhance HoverProvider to perform cross-file peeking via analyzer graph"
  ~[20]: "![lsp] — verify safe cross-file reading for hover peeks"
  ~[21]: ".[docs] — update spw-feature-planning and editor ecosystem guide with new LSP capabilities"
- ~[22]: "^seed[syntax] — introduce experimental syntax node for 'operator injection' ($<op>)"
- ~[23]: "&[lang] — parse operator injection syntax in lexer and AST builder"
- ~[24]: "&[analyzer] — add semantic analysis rules for operator injection nodes"
- ~[25]: "&[lsp] — provide semantic tokens and hover intelligence for operator injections"
- ~[26]: "&[viz] — add differential syntax highlighting for operator injections in editor UI"
  ~[27]: ".[release] — declare v0.2.0-alpha for VS Code extension and LSP"
 }
 
 ^["cache"]{
- ~#status: "planning"
- ~#base_ref: "origin/main@here"
- ~#rebased_at: ""
- ~#hygiene_split: "feature/vscode-lsp-integration-agentic-hygiene (if needed)"
- ~#files_hot: ""
- ~#next_commit: "1"
+ ~#status: "active"
+ ~#base_ref: "main@3b1747c4"
+ ~#rebased_at: "2026-03-27"
+ ~#hygiene_split: "none; codebase restructure already landed on main"
+ ~#files_hot: "packages/spw-lsp/src/handlers/, extensions/vscode-spw/src/extension.ts"
+ ~#next_commit: "10"
  ~#open_count: "0"
- ~#last_stream: "2026-02-22 10:10"
- ~#taste_debt: ""
+ ~#last_stream: "2026-03-27 13:29"
+ ~#taste_debt: "keep the extension thin and the claims truthful; do not let syntax experiments piggyback on the install/adoption lane"
 }
 
 ^["done"]{
