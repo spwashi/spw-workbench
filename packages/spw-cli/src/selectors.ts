@@ -18,7 +18,7 @@ import {
   type SpwMatch,
   type SpwSelector,
   tryParseSelector,
-} from '@spw/seed'
+} from '@spwashi/spw-seed'
 
 export const CLI_SELECTOR_PRESETS: Record<string, SpwSelector> = {
   navigable: NAVIGABLE,

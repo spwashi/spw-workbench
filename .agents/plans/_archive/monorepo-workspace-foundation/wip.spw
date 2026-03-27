@@ -19,15 +19,15 @@
  >>[2026-03-20 00:11] decide — CLI gets a real facade over scripts/spw-cli, while LSP stays a truthful scaffold constant until executable extraction is ready.
  >>[2026-03-20 00:14] observe — root runtime tests still fail on Substrate.bind expectations, which appears pre-existing and outside this workspace scaffold slice.
  >>[2026-03-20 00:15] observe — direct smoke imports for all new package facades succeed, so the new seams are loadable even though root build/test still carry unrelated pre-existing failures.
- >>[2026-03-20 00:21] revise — switched root script and analyzer imports from direct src/seed references to @spw/seed / @spw/cli where the facade already exists.
+ >>[2026-03-20 00:21] revise — switched root script and analyzer imports from direct src/seed references to @spwashi/spw-seed / @spwashi/spw-cli where the facade already exists.
  >>[2026-03-20 00:21] observe — spw help, spwq, spw-format, spw-mount, and spw-syntax-validate all execute successfully through the package aliases.
- >>[2026-03-20 00:35] observe — @spw/cli still reaches back into scripts/spw-cli/* and @spw/lsp is only a constant, so the package seams are visible but not yet operationally primary.
+ >>[2026-03-20 00:35] observe — @spwashi/spw-cli still reaches back into scripts/spw-cli/* and @spwashi/spw-lsp is only a constant, so the package seams are visible but not yet operationally primary.
  >>[2026-03-20 00:35] observe — editor integrations still default to scripts/lsp/stdio-server.ts, which means package ownership is not the default launch path anywhere outside npm aliases.
  >>[2026-03-20 00:35] decide — move CLI and LSP launch ownership into packages/* and leave scripts/* as compatibility wrappers until the deeper implementation move lands.
  >>[2026-03-20 00:35] taste — package seams should be truthful enough that a new contributor finds packages/* first and scripts/* second.
  >>[2026-03-20 00:53] revise — CLI command parsing, query execution, and package entry now live in packages/spw-cli/src/*, while scripts/spw-cli/* collapse to compatibility re-exports.
  >>[2026-03-20 00:53] revise — the LSP bridge now prefers packages/spw-lsp/src/stdio-server.ts, preserves scripts/lsp/stdio-server.ts as a fallback, and updates editor defaults toward the package path.
- >>[2026-03-20 00:53] observe — npm run spw, scripts/spw.ts, spwq, and direct @spw/lsp target resolution all work through the new package-owned entrypoints.
+ >>[2026-03-20 00:53] observe — npm run spw, scripts/spw.ts, spwq, and direct @spwashi/spw-lsp target resolution all work through the new package-owned entrypoints.
  >>[2026-03-20 00:53] observe — lsp smoke ends at the same 20 passed / 2 failed references-timeout profile on both package and legacy server paths, so the remaining failures appear pre-existing rather than introduced by this extraction.
  >>[2026-03-20 01:06] fix — build blockers are branded RegisterId drift in interpreter/resonance and a missing Substrate.bind implementation causing 4 runtime test failures.
  >>[2026-03-20 01:06] decide — clear the runtime blockers first so module relocation can be verified against a truthful build/test baseline rather than against already-broken state.
@@ -37,17 +37,17 @@
  >>[2026-03-20 01:44] revise — copied the LSP implementation modules into packages/spw-lsp/src/*, rewired the package server to those local modules, and collapsed scripts/lsp/* back down to compatibility wrappers.
  >>[2026-03-20 01:44] revise — branded ID factories are now symmetric across register/frame/domain/layer, with template-tag support preserved while keeping direct constructor-style calls available.
  >>[2026-03-20 01:44] observe — npm run build, npm run test:run, npm run lsp:smoke, and node --import tsx scripts/spw.ts help all pass against the package-owned LSP module tree.
- >>[2026-03-20 01:58] revise — copied the runtime interpreter/pipeline/state implementation tree into packages/spw-runtime/src/* and rewired those package modules to depend on @spw/seed plus local runtime internals.
+ >>[2026-03-20 01:58] revise — copied the runtime interpreter/pipeline/state implementation tree into packages/spw-runtime/src/* and rewired those package modules to depend on @spwashi/spw-seed plus local runtime internals.
  >>[2026-03-20 01:58] revise — collapsed src/runtime/* implementation files to compatibility wrappers so existing tests and references keep pointing at the familiar surface while the package becomes the real owner.
- >>[2026-03-20 01:58] revise — widened the @spw/seed root export surface and added explicit Vitest alias wiring so package-path imports resolve consistently in both typecheck and test execution.
+ >>[2026-03-20 01:58] revise — widened the @spwashi/spw-seed root export surface and added explicit Vitest alias wiring so package-path imports resolve consistently in both typecheck and test execution.
  >>[2026-03-20 01:58] observe — npm run build, npm run test:run, npm run lsp:smoke, and node --import tsx scripts/spw.ts help all pass with runtime execution now owned by packages/spw-runtime.
- >>[2026-03-20 02:31] decide — the next truthful seam is @spw/seed itself; leaving the parser/kernel under src/seed while runtime imports package aliases would keep the workspace only half-real.
+ >>[2026-03-20 02:31] decide — the next truthful seam is @spwashi/spw-seed itself; leaving the parser/kernel under src/seed while runtime imports package aliases would keep the workspace only half-real.
  >>[2026-03-20 02:31] revise — copied the seed implementation tree into packages/spw-seed/src/* and collapsed src/seed implementation modules to compatibility wrappers while leaving tests in place.
- >>[2026-03-20 02:31] observe — a direct seed-only vitest run exposed missing workspace alias resolution once moved runtime modules started importing @spw/seed from package-owned paths.
+ >>[2026-03-20 02:31] observe — a direct seed-only vitest run exposed missing workspace alias resolution once moved runtime modules started importing @spwashi/spw-seed from package-owned paths.
  >>[2026-03-20 02:45] fix — factored shared Vitest workspace aliases into vitest.aliases.ts and added a dedicated vitest.seed.config.ts so seed, runtime, and dom suites resolve package boundaries consistently.
  >>[2026-03-20 02:45] observe — npm run build, npm run test:run, npm run lsp:smoke, npm run test:seed, and node --import tsx scripts/spw.ts help all pass with parser/kernel ownership now living under packages/spw-seed.
  >>[2026-03-20 02:45] taste — package ownership is now credible to a new reader because seed, runtime, cli, and lsp all have real implementation beneath their package roots rather than only facade barrels.
- >>[2026-03-20 02:54] observe — @spw/cli still forwards ls, mount, mem, format, and dev back into scripts/*, so the cli package remains only partially authoritative after the seed move.
+ >>[2026-03-20 02:54] observe — @spwashi/spw-cli still forwards ls, mount, mem, format, and dev back into scripts/*, so the cli package remains only partially authoritative after the seed move.
  >>[2026-03-20 02:54] decide — next, move the non-query cli commands into packages/spw-cli and collapse the root script entrypoints to compatibility wrappers instead of process-spawn detours.
  >>[2026-03-20 09:31] revise — copied spw-ls plus the format, mount, mem, and dev command implementations into packages/spw-cli/src/* and rewired runSpwCli to dispatch them in-process.
  >>[2026-03-20 09:31] revise — collapsed scripts/spw-{format,mount,mem,dev}.ts and scripts/spw-ls/* to compatibility wrappers so legacy command paths still resolve while package ownership becomes explicit.

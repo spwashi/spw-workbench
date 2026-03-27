@@ -8,7 +8,7 @@ The desired end state is one truthful CLI identity: `spw` is both the operationa
 
 ## Scope
 
-- **In scope**: add package-owned `init`/`install` command handling, move installer logic into `@spw/cli`, change the root package `bin` contract to publish `spw` as primary, keep `spw-workbench` as a compatibility alias to the same umbrella CLI, update local npm scripts/help/docs to prefer `spw init`, and document the compatibility behavior.
+- **In scope**: add package-owned `init`/`install` command handling, move installer logic into `@spwashi/spw-cli`, change the root package `bin` contract to publish `spw` as primary, keep `spw-workbench` as a compatibility alias to the same umbrella CLI, update local npm scripts/help/docs to prefer `spw init`, and document the compatibility behavior.
 - **Out of scope**: publishing compiled JS bins, removing `spw-workbench` entirely, redesigning the scaffolded `.spw` payload, or refactoring unrelated analyzer/release scripts into packages.
 
 ## Files

@@ -38,6 +38,6 @@ In v0.2.0, CLI commands were wired through root `package.json` scripts. v0.3.0 d
 
 ## v0.4.0 Candidates
 
-- CLI published as `@spw/cli` to npm.
+- CLI published as `@spwashi/spw-cli` to npm.
 - `spw init` wizard with interactive workspace configuration.
 - CLI-driven plugin discovery and installation.

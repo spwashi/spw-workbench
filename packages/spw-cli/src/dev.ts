@@ -1,7 +1,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { canonicalize, parse } from '@spw/seed'
+import { canonicalize, parse } from '@spwashi/spw-seed'
 
 const ROOT = path.resolve('.spw')
 const POLL_MS = 1000

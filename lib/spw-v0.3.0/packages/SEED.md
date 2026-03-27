@@ -38,5 +38,5 @@ In v0.2.0, parser code lived under `src/seed/` without formal package boundaries
 ## v0.4.0 Candidates
 
 - Extract `src/seed/` into `packages/spw-seed/src/` with own tsconfig.
-- Publish `@spw/seed` as an independent npm package.
+- Publish `@spwashi/spw-seed` as an independent npm package.
 - Seed-specific test suite isolated from workspace tests.

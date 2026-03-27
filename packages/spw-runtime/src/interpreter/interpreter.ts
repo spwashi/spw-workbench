@@ -1,4 +1,4 @@
-import { normalizeToONF, $register, type OperatorKind, type SeedNode, type ONFNode } from '@spw/seed'
+import { normalizeToONF, $register, type OperatorKind, type SeedNode, type ONFNode } from '@spwashi/spw-seed'
 import { RegisterBank } from '../state/register-bank'
 import { descriptorForKey } from '../state/type-affinities'
 import type { RegisterId, RegisterWriteOptions, RuntimeValence, RuntimeValue } from '../state/types'

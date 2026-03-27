@@ -1,7 +1,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { canonicalize, parse } from '@spw/seed'
+import { canonicalize, parse } from '@spwashi/spw-seed'
 import { parseCommonFlags } from './args'
 import { printHelpPage } from './help'
 

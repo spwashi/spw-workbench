@@ -18,7 +18,7 @@ import {
   PATH_REFS,
   REFERENCES,
   NAVIGABLE,
-} from '@spw/seed'
+} from '@spwashi/spw-seed'
 
 // ── Legacy interface (preserved for stdio-server.ts) ─────────
 

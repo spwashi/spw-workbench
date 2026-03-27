@@ -1,4 +1,4 @@
-import type { ParseOutput, SeedNode } from '@spw/seed'
+import type { ParseOutput, SeedNode } from '@spwashi/spw-seed'
 import type { RuntimeInterpretation } from '../interpreter/types'
 import type { RegisterBank } from '../state/register-bank'
 import type { AnyPrecipitate } from './stages'

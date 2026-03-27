@@ -1,4 +1,4 @@
-import type { ONFNode, SeedNode } from '@spw/seed'
+import type { ONFNode, SeedNode } from '@spwashi/spw-seed'
 import type { RegisterSnapshot, RuntimeValue } from '../state/types'
 
 export type RuntimeStage = 'normalize' | 'interpret'

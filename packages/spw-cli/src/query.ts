@@ -1,7 +1,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { type SpwMatch, spwq } from '@spw/seed'
+import { type SpwMatch, spwq } from '@spwashi/spw-seed'
 import { extractReferenceRaw, filterRootRefs, resolveCliSelector } from './selectors'
 import type { QueryArgs, QueryRow } from './types'
 

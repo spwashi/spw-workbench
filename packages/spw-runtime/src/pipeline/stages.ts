@@ -20,10 +20,10 @@
  * @spw:extract:blocked[system=stage-pipeline,blocker=register-coupling,basis=register-snapshot] - RegisterBank coupling still blocks clean extraction
  */
 
-import type { SeedNode, ONFNode, ParseOutput } from '@spw/seed'
+import type { SeedNode, ONFNode, ParseOutput } from '@spwashi/spw-seed'
 import type { RegisterSnapshot, RuntimeValue } from '../state/types'
 import type { RuntimeInterpretation, RuntimeInterpreterOptions } from '../interpreter/types'
-import { parse, desugar, normalizeToONF } from '@spw/seed'
+import { parse, desugar, normalizeToONF } from '@spwashi/spw-seed'
 import { interpretSeed } from '../interpreter/interpreter'
 import { RegisterBank } from '../state/register-bank'
 import { detectResonances } from './resonance'

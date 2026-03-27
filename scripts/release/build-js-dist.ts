@@ -29,12 +29,12 @@ type DistLibraryEntrypoint = DistEntrypoint & {
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const distDir = path.join(rootDir, 'dist')
 const declarationAliasTargets = {
-  '@spw/seed': 'types/spw-seed/src/index.d.ts',
-  '@spw/seed/parser': 'types/spw-seed/src/parser.d.ts',
-  '@spw/runtime': 'types/spw-runtime/src/index.d.ts',
-  '@spw/runtime/pipeline': 'types/spw-runtime/src/pipeline.d.ts',
-  '@spw/runtime/substrate': 'types/spw-runtime/src/substrate.d.ts',
-  '@spw/runtime/resonance': 'types/spw-runtime/src/resonance.d.ts',
+  '@spwashi/spw-seed': 'types/spw-seed/src/index.d.ts',
+  '@spwashi/spw-seed/parser': 'types/spw-seed/src/parser.d.ts',
+  '@spwashi/spw-runtime': 'types/spw-runtime/src/index.d.ts',
+  '@spwashi/spw-runtime/pipeline': 'types/spw-runtime/src/pipeline.d.ts',
+  '@spwashi/spw-runtime/substrate': 'types/spw-runtime/src/substrate.d.ts',
+  '@spwashi/spw-runtime/resonance': 'types/spw-runtime/src/resonance.d.ts',
 } as const
 
 const cliEntrypoints: DistEntrypoint[] = [

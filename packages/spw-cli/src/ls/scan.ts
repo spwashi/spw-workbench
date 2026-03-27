@@ -1,6 +1,6 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
-import { parse, spwq, ANY } from '@spw/seed'
+import { parse, spwq, ANY } from '@spwashi/spw-seed'
 import { BRACE_SET, IGNORED_DIRS, OPERATOR_SET, REGISTER_GATE_SET, tokenMatches, tokenVariants } from './constants'
 import type { EquivMode, MatchMode, MatchStats, RegisterState, SequenceCell, SurfaceMode } from './types'
 

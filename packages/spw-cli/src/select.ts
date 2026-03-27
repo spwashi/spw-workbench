@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import process from 'node:process'
-import { parse, spwq, type SpwMatch } from '@spw/seed'
+import { parse, spwq, type SpwMatch } from '@spwashi/spw-seed'
 import { parseSelectArgs } from './args'
 import {
   extractReferenceRaw,

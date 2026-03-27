@@ -4,7 +4,7 @@ Establish the first visible `v0.3.0` workspace seams by turning the root into a 
 
 ## Goal
 
-The implementation plan for `v0.3.0` names monorepo structure as the release theme, but the repo still presents itself as one flat Node application with `src/` and `scripts/` acting as the only ownership boundaries. This pass introduces the workspace skeleton and package-level entrypoints so the repository can start speaking truthfully about package seams before the deeper extraction and relocation work lands. The end state is a root package that knows about `packages/*`, baseline package manifests for `@spw/seed`, `@spw/runtime`, `@spw/cli`, and `@spw/lsp`, package-owned CLI/LSP launch paths, package-owned runtime interpreter/pipeline/state modules, package-owned seed parser/kernel modules, package-owned CLI command implementations for the non-query tool surface, a clean build/test baseline for the moved seams, and TypeScript path/build scaffolding that lets later extraction happen incrementally rather than as a single disruptive move.
+The implementation plan for `v0.3.0` names monorepo structure as the release theme, but the repo still presents itself as one flat Node application with `src/` and `scripts/` acting as the only ownership boundaries. This pass introduces the workspace skeleton and package-level entrypoints so the repository can start speaking truthfully about package seams before the deeper extraction and relocation work lands. The end state is a root package that knows about `packages/*`, baseline package manifests for `@spwashi/spw-seed`, `@spwashi/spw-runtime`, `@spwashi/spw-cli`, and `@spwashi/spw-lsp`, package-owned CLI/LSP launch paths, package-owned runtime interpreter/pipeline/state modules, package-owned seed parser/kernel modules, package-owned CLI command implementations for the non-query tool surface, a clean build/test baseline for the moved seams, and TypeScript path/build scaffolding that lets later extraction happen incrementally rather than as a single disruptive move.
 Taste note: improve **layering**, **clarity**, and **containment** by making package ownership explicit without forcing a full physical move in one pass.
 
 ## Scope
@@ -147,7 +147,7 @@ Craft guard:
 - Do not leave root/package/editor launch surfaces contradicting each other.
 - Avoid introducing more than one compatibility indirection layer per package in this pass.
 - Keep `scripts/` launchers as compatibility wrappers only; new logic should land under `packages/`.
-- Keep `scripts/spw-*.ts` command entrypoints as compatibility wrappers once `packages/spw-cli` owns the implementation; do not leave `@spw/cli` shelling out to legacy scripts for steady-state commands.
+- Keep `scripts/spw-*.ts` command entrypoints as compatibility wrappers once `packages/spw-cli` owns the implementation; do not leave `@spwashi/spw-cli` shelling out to legacy scripts for steady-state commands.
 - Keep `src/runtime/*` as a compatibility skin once the package runtime owns the implementation; do not leave a split-brain interpreter or pipeline.
 - Keep `src/seed/*` as a compatibility skin once `packages/spw-seed` owns the parser/kernel tree; do not strand grammar or lexer ownership across both roots.
 
@@ -166,7 +166,7 @@ Craft guard:
 11. `&[cli-commands] — move non-query cli command implementations behind the package boundary`
 
 Fuzz strategy:
-- Explore: `node --import tsx packages/spw-cli/src/main.ts help` and `node --import tsx -e "import { resolveSpwLspServerTarget } from '@spw/lsp'; console.log(resolveSpwLspServerTarget(process.cwd()))"`
+- Explore: `node --import tsx packages/spw-cli/src/main.ts help` and `node --import tsx -e "import { resolveSpwLspServerTarget } from '@spwashi/spw-lsp'; console.log(resolveSpwLspServerTarget(process.cwd()))"`
 - Stabilize: `npm run build && npm run test:runtime -- src/runtime/__tests__/substrate.test.ts && npm run test:seed && npm run spw -- format .spw --check && npm run spw -- mount check --json`
 - Ship: `npm run build && npm run test:run && npm run test:seed && npm run lsp:smoke && npm run lint:docs`
 

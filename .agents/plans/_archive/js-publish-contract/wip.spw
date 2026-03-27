@@ -16,7 +16,7 @@
  >>[2026-03-20 15:00] taste — declarations should expose the public contract cleanly while preserving the existing package seams, not invent a second type topology.
  >>[2026-03-20 15:06] implement — extended the JS dist builder to emit declarations into dist/types, generate top-level .d.ts facades, and add type-aware exports plus a root types field to dist/package.json.
  >>[2026-03-20 15:08] surprise — the first facade pass missed the leading ./ on generated import specifiers, so TypeScript treated them as bare package names.
- >>[2026-03-20 15:11] surprise — after fixing the facades, temp consumer compilation still failed because emitted runtime declarations preserved @spw/seed workspace aliases; the dist package was not yet self-contained from TypeScript's perspective.
+ >>[2026-03-20 15:11] surprise — after fixing the facades, temp consumer compilation still failed because emitted runtime declarations preserved @spwashi/spw-seed workspace aliases; the dist package was not yet self-contained from TypeScript's perspective.
  >>[2026-03-20 15:13] implement — added a declaration alias rewrite pass so emitted .d.ts files point at relative dist/types paths rather than workspace-only specifiers.
  >>[2026-03-20 15:15] verify — build:jsdist, pack:jsdist:dry, node dist/bin/spw.js help, and a temp TypeScript consumer compile against dist and dist/parser all passed; a prior consumer failure on RegisterId proved branded types are flowing through the publish artifact.
 }

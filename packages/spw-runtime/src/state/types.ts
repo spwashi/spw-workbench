@@ -1,4 +1,4 @@
-import type { ModifierKind, OperatorKind, RegisterId } from '@spw/seed'
+import type { ModifierKind, OperatorKind, RegisterId } from '@spwashi/spw-seed'
 export type { RegisterId }
 
 export type RegisterAccessMode =

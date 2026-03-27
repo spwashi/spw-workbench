@@ -6,7 +6,7 @@ Welcome! This guide is for **feature developers, platform engineers, library ven
 
 This project gives you:
 
-- **Modular Components** — Extract reusable libraries (`@spw/lang`, `@spw/ui`, `@spw/design`, `@spw/runtime`)
+- **Modular Components** — Extract reusable libraries (`@spw/lang`, `@spw/ui`, `@spw/design`, `@spwashi/spw-runtime`)
 - **Clean Architecture** — 12-domain layered system with ESLint-enforced boundaries
 - **Composable Patterns** — See Phase 2 event consolidation as a model for refactoring
 - **Reduced Technical Debt** — Architecture prevents layering violations before they exist
@@ -170,7 +170,7 @@ import { theme, tokens } from '@spw/design';
 const color = tokens.emphasis.primary; // #0066cc (light theme)
 ```
 
-### 4. **@spw/runtime** — State Management & REPL
+### 4. **@spwashi/spw-runtime** — State Management & REPL
 - **Location:** `src/runtime/`
 - **Includes:** Interpreter, session management, REPL interface
 - **Size:** ~4,000 lines
@@ -179,7 +179,7 @@ const color = tokens.emphasis.primary; // #0066cc (light theme)
 
 **Example:**
 ```typescript
-import { createSession } from '@spw/runtime';
+import { createSession } from '@spwashi/spw-runtime';
 const session = createSession();
 const result = session.evaluate(seed);
 ```

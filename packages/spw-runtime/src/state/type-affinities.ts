@@ -1,4 +1,4 @@
-import type { OperatorKind } from '@spw/seed'
+import type { OperatorKind } from '@spwashi/spw-seed'
 import type { RegisterDescriptor } from './types'
 
 export const DEFAULT_REGISTER_DESCRIPTOR: RegisterDescriptor = {

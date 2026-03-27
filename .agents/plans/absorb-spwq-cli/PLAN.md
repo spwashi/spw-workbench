@@ -1,6 +1,6 @@
 # Plan: absorb-spwq-cli
 
-Normalize the selector CLI surface by moving `spwq` behind `@spw/cli`, repairing selector traversal so the command is behaviorally truthful on real corpus files, and trimming alias drift where names no longer reflect distinct behaviors.
+Normalize the selector CLI surface by moving `spwq` behind `@spwashi/spw-cli`, repairing selector traversal so the command is behaviorally truthful on real corpus files, and trimming alias drift where names no longer reflect distinct behaviors.
 
 ## Goal
 
@@ -8,7 +8,7 @@ The desired end state is a single package-owned CLI surface where selector behav
 
 ## Scope
 
-- **In scope**: repair selector traversal, add selector dogfood coverage on real `.spw` corpus files, absorb `spwq` into `@spw/cli`, normalize overlapping command names and help text, update CLI conventions/docs to describe the canonical surface, and record the later DX direction that the published binary should become `spw` while install remains a supporting workflow.
+- **In scope**: repair selector traversal, add selector dogfood coverage on real `.spw` corpus files, absorb `spwq` into `@spwashi/spw-cli`, normalize overlapping command names and help text, update CLI conventions/docs to describe the canonical surface, and record the later DX direction that the published binary should become `spw` while install remains a supporting workflow.
 - **Out of scope**: changing the published npm `bin` contract in this slice, redesigning `spw-ls`, reorganizing analyzer scripts into packages, or removing compatibility aliases that may still be used externally.
 
 ## Files

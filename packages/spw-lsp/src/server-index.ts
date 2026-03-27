@@ -19,7 +19,7 @@ import {
   canonicalize,
   hashString,
   type ParseOutput,
-} from '@spw/seed'
+} from '@spwashi/spw-seed'
 import { selectPathRefs, type SpwSelectorHit } from './spw-selector'
 
 // ── Types ───────────────────────────────────────────────────────

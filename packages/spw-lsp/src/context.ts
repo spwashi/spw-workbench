@@ -7,8 +7,8 @@
 
 import type { ServerIndex } from './server-index'
 import type { SpwConfig, RootMap, JsonRpcResponse, JsonRpcRequest } from './types'
-import type { RunSpwResult } from '@spw/runtime'
-import { runSpw } from '@spw/runtime'
+import type { RunSpwResult } from '@spwashi/spw-runtime'
+import { runSpw } from '@spwashi/spw-runtime'
 import { DEFAULT_CONFIG } from './types'
 import path from 'node:path'
 import { promises as fs } from 'node:fs'
