@@ -17,7 +17,7 @@
 ^"editorial_position"{
   ~#producer: "Spwashi"
   ~#medium: "books, tools, exhibits, learning systems, and collaborative publishing surfaces"
-  ~#tone: "fearless, precise, warm without being soft — every sentence should sound like something you'd say aloud to someone you respect"
+  ~#tone: "fearless, precise, warm without being soft -- every sentence should sound like something you'd say aloud to someone you respect"
   ~#commitments: [
     "human creative agency is the point, not a constraint to route around",
     "grammatical structure is a genuine source of pleasure and should feel like one",
@@ -29,10 +29,13 @@
 }
 
 ^"portfolio_invariants"{
-  ~#count: 45
+  ~#count: 44
   ~#scope: "all listed domains are intended as full surfaces, regardless of current implementation maturity"
   ~#shared_stack: "select -> transform -> validate -> emit, with domain-specific framing layered on top"
-  ~#shared_question: "does this surface want to be read, used, joined, or navigated — and when does it want to be more than one of those?"
+  ~#shared_question: "does this surface want to be read, used, joined, or navigated -- and when does it want to be more than one of those?"
+  ~#status_vocabulary: ["active", "dormant", "sensitive-pending"]
+  ~#launch_ladder: ["idea", "internal-literature", "internal-tool", "public-beta", "governed-surface", "sensitive-surface"]
+  ~#routing_rule: "active surfaces need a route or an explicit blocked-by note; dormant surfaces can remain listed but intentionally unrouted"
 }
 
 ^"platform_constraints"{
@@ -43,303 +46,369 @@
     "lore.land has precedent but can restart as an installable book PWA",
   ]
   ~#sensitive_surface_policy: [
-    "privacy-preserving analytics by default — no opt-in required",
+    "privacy-preserving analytics by default -- no opt-in required",
     "discretion-first architecture: identity, preferences, and participation trails stay invisible unless a person chooses otherwise",
     "decentralized publishing and storage remain viable paths, especially where trust is personal",
   ]
 }
 
-# ── Spwashi Network ──────────────────────────────────────────────
+^"launch_governance"{
+  ~#active_rule: "active surfaces require audience, launch phase, QA gate, and a routing entry."
+  ~#dormant_rule: "dormant surfaces remain in portfolio memory but do not consume routing or launch attention."
+  ~#sensitive_pending_rule: "sensitive-pending surfaces require dedicated pipeline + discretion review before activation."
+  ~#spiritual_testing_path: [
+    "literature claim",
+    "seed or selector expression",
+    "runtime or telemetry behavior",
+    "editor/workbench legibility",
+    "publish projection",
+    "public surface fit",
+  ]
+}
+
+# Spwashi Network
 
 ^"network.spwashi"{
   #:cluster #!identity
 
   "spwashi.com": {
     role: "hub"
+    ~#status: "active"
     ~#brief: "Primary branded anchor for the whole network"
-    ~#marketing: "the starting room — portfolio, orientation, and a clear path into whatever you came here looking for"
-    ~#status: "existing branding"
+    ~#marketing: "the starting room -- portfolio, orientation, and a clear path into whatever you came here looking for"
   }
   "spwashi.dev": {
     role: "workshop"
+    ~#status: "active"
     ~#brief: "Developer-facing home for the workbench, parser, LSP, and publishing infrastructure"
-    ~#marketing: "language tools you can read all the way through — parser, runtime, and editor in the open"
+    ~#marketing: "language tools you can read all the way through -- parser, runtime, and editor in the open"
   }
   "spwashi.ai": {
     role: "lab"
+    ~#status: "active"
     ~#brief: "Research and instrument design for AI-assisted generative systems"
-    ~#marketing: "structured co-creation with machines — prompting, assistance, and generative instruments"
+    ~#marketing: "structured co-creation with machines -- prompting, assistance, and generative instruments"
   }
   "spwashi.design": {
     role: "studio"
+    ~#status: "active"
     ~#brief: "Design systems, interaction craft, and visual language development"
-    ~#marketing: "typography, interface semantics, and aesthetic rigor — practiced in public and published as work"
+    ~#marketing: "typography, interface semantics, and aesthetic rigor -- practiced in public and published as work"
   }
   "spwashi.art": {
     role: "gallery"
+    ~#status: "dormant"
     ~#brief: "Visual, interactive, and exhibit-oriented work"
-    ~#marketing: "curated pieces that live between code, image, and narrative — exhibited, not just hosted"
+    ~#marketing: "curated pieces that live between code, image, and narrative -- exhibited, not just hosted"
   }
   "spwashi.media": {
     role: "broadcast"
+    ~#status: "dormant"
     ~#brief: "Audio, video, and long-form media production"
     ~#marketing: "serialized releases and signal-bearing media across the network"
   }
   "spwashi.ink": {
     role: "press"
+    ~#status: "active"
     ~#brief: "Publishing imprint for ebooks, manuscripts, and durable editions"
-    ~#marketing: "the press house — written works that keep evolving after they ship"
+    ~#marketing: "the press house -- written works that keep evolving after they ship"
     ~#kinship: "what ink makes, store makes ownable"
   }
   "spwashi.college": {
     role: "academy"
+    ~#status: "dormant"
     ~#brief: "Structured curricula and self-directed learning paths"
-    ~#marketing: "follow your curiosity long enough and it becomes a discipline — this is where that happens"
+    ~#marketing: "follow your curiosity long enough and it becomes a discipline -- this is where that happens"
   }
   "spwashi.org": {
     role: "commons"
+    ~#status: "dormant"
     ~#brief: "Open governance, contributor onboarding, and shared standards"
-    ~#marketing: "the stewardship face — shared standards, open governance, and a way in for contributors"
+    ~#marketing: "the stewardship face -- shared standards, open governance, and a way in for contributors"
   }
   "spwashi.network": {
     role: "consortium"
+    ~#status: "dormant"
     ~#brief: "Collaborator directory and cross-project coordination"
-    ~#marketing: "the connective tissue — people, projects, and constellations of shared work"
+    ~#marketing: "the connective tissue -- people, projects, and constellations of shared work"
   }
   "spwashi.pro": {
     role: "services"
+    ~#status: "dormant"
     ~#brief: "Consulting, commissioned work, and production partnerships"
-    ~#marketing: "serious client work, clearly scoped — the business-facing translation layer"
+    ~#marketing: "serious client work, clearly scoped -- the business-facing translation layer"
   }
   "spwashi.biz": {
     role: "operations"
+    ~#status: "dormant"
     ~#brief: "Licensing, administration, contracts, and distribution operations"
-    ~#marketing: "the back office that keeps forty-five surfaces commercially coherent"
+    ~#marketing: "the back office that keeps forty-four surfaces commercially coherent"
   }
   "spwashi.store": {
     role: "retail"
+    ~#status: "dormant"
     ~#brief: "Printed editions, merchandise, bundles, and collectible artifacts"
-    ~#marketing: "things worth owning, gifting, and displaying — commerce for what ink publishes and art exhibits"
+    ~#marketing: "things worth owning, gifting, and displaying -- commerce for what ink publishes and art exhibits"
     ~#kinship: "what ink makes, store makes ownable"
   }
   "spwashi.work": {
     role: "folio"
+    ~#status: "dormant"
     ~#brief: "Selected works, case studies, and project documentation"
-    ~#marketing: "proof of craft, process, and range — the portfolio that shows how things got built"
+    ~#marketing: "proof of craft, process, and range -- the portfolio that shows how things got built"
   }
   "spwashi.space": {
     role: "sandbox"
+    ~#status: "dormant"
     ~#brief: "Public drafts, experiments, and unfinished work"
-    ~#marketing: "the visible workshop floor — half-built things, live experiments, emergence in progress"
+    ~#marketing: "the visible workshop floor -- half-built things, live experiments, emergence in progress"
   }
   "spwashi.click": {
     role: "portal"
+    ~#status: "dormant"
     ~#brief: "Single-interaction entry points and sharply curated first impressions"
-    ~#marketing: "one door, well-lit — the fastest way into the wider ecosystem"
+    ~#marketing: "one door, well-lit -- the fastest way into the wider ecosystem"
   }
   "spw.rest": {
     role: "retreat"
+    ~#status: "dormant"
     ~#brief: "Quiet, reflective, low-stimulation surface for restoration and paced attention"
     ~#marketing: "rest as an active design value, not merely the absence of work"
   }
 }
 
-# ── Boonhonk Realms ──────────────────────────────────────────────
+# Boonhonk Realms
 
 ^"realm.boonhonk"{
   #:cluster #!combinatorics
 
   "boonhonk.ing": {
     role: "engine"
-    ~#brief: "The genre engine and public conceptual center for boonhonk"
-    ~#marketing: "grammar as live substance — combine, collide, see what holds"
+    ~#status: "active"
+    ~#brief: "The genre engine and public conceptual center for multidimensional production wonder"
+    ~#marketing: "recursively developmental linguistics, performative reflection, physical chemistry models, and genre hybridization as live biome construction"
+    ~#guiding_principles: ["recursively developmental linguistics", "performative reflection", "physical chemistry models", "genre hybridization targets", "long-term expansion capacity"]
+    ~#biome_model: "developmental physics for culture, where concepts accrete, react, condense, and phase-shift across narrative and operational surfaces"
+    ~#reality_posture: "supports narrative realities, quantum-like interpretive branching, and transreal crossings when the governing metaphor stays legible"
   }
   "boon.land": {
     role: "realm"
+    ~#status: "active"
     ~#brief: "Realm of advantage, gift, uplift, and positive charge"
-    ~#marketing: "where benefit has weight, cost, and story — the gift that knows what it costs"
+    ~#marketing: "where benefit has weight, cost, and story -- the gift that knows what it costs"
     ~#inheritance: "extends factshift.com codebase"
   }
   "bane.land": {
     role: "realm"
+    ~#status: "active"
     ~#brief: "Realm of drag, friction, obstacle, and cost"
-    ~#marketing: "the weight that makes choices real — friction, drag, and the price of moving"
+    ~#marketing: "the weight that makes choices real -- friction, drag, and the price of moving"
     ~#inheritance: "extends factshift.com codebase"
   }
   "bone.land": {
     role: "realm"
+    ~#status: "active"
     ~#brief: "Realm of structure, scaffold, and invariance"
-    ~#marketing: "what remains after you strip everything else away — scaffold, load, invariance"
+    ~#marketing: "what remains after you strip everything else away -- scaffold, load, invariance"
     ~#inheritance: "extends factshift.com codebase"
   }
   "bonk.land": {
     role: "realm"
+    ~#status: "active"
     ~#brief: "Realm of collision, event, consequence, and abrupt phase transition"
-    ~#marketing: "impact — what happens when systems and stories actually hit something"
+    ~#marketing: "impact -- what happens when systems and stories actually hit something"
     ~#inheritance: "extends factshift.com codebase"
+    ~#coincidence_blessing: "blessed by coincidence; a realm where slapstick timing, phase transition, and improbable contact can reveal hidden structure"
   }
   "honk.land": {
     role: "realm"
+    ~#status: "active"
     ~#brief: "Realm of signal, interruption, pattern break, and announcement"
     ~#marketing: "alarm. invitation. noise on purpose. attention as event."
     ~#inheritance: "extends factshift.com codebase"
   }
   "boof.land": {
     role: "character-realm"
+    ~#status: "active"
     ~#brief: "A realm organized around Boof, a dog and protagonist who carries lore wherever he goes"
-    ~#marketing: "a dog, a world, and a way in — character-driven entry through affection and motion"
+    ~#marketing: "a dog, a world, and a way in -- character-driven entry through affection and motion"
     ~#connection: "Boof is a protagonist of lore.land"
   }
   "boonbanebone.com": {
     role: "triad"
+    ~#status: "dormant"
     ~#brief: "Composite surface for benefit, cost, and structure held in dynamic relation"
-    ~#marketing: "gift, drag, scaffold — the three forces explained together for newcomers"
+    ~#marketing: "gift, drag, scaffold -- the three forces explained together for newcomers"
   }
 }
 
-# ── Factshift Engine ─────────────────────────────────────────────
+# Factshift Engine
 
 ^"engine.factshift"{
   #:cluster #!dynamics
 
   "factshift.com": {
     role: "engine"
+    ~#status: "active"
     ~#brief: "Physics engine for narrative and rhetoric under transformation"
-    ~#marketing: "fact dynamics — how frames rotate, interpretations drift, and valence moves"
-    ~#status: "existing codebase"
+    ~#marketing: "fact dynamics -- how frames rotate, interpretations drift, and valence moves"
     ~#relationship: "base code lineage for the boon/bane/bone/bonk/honk realm family"
   }
   "factshift.center": {
     role: "observatory"
+    ~#status: "active"
     ~#brief: "Analytical center for observing fact dynamics in aggregate"
-    ~#marketing: "the field station — dashboard and atlas for watching changes propagate"
+    ~#marketing: "the field station -- dashboard and atlas for watching changes propagate"
   }
 }
 
-# ── Wonder And Math Culture ─────────────────────────────────────
+# Wonder And Math Culture
 
 ^"wonder.mathematics"{
   #:cluster #!pedagogy
 
   "spw.quest": {
     role: "guided"
-    ~#brief: "Structured explorations through Spw concepts and related curiosities"
-    ~#marketing: "learning paths paced by invitation, not intimidation — rigor you walk into willingly"
+    ~#status: "active"
+    ~#brief: "Progression surface through abstract linguistics, the metaphysics of Spw, and the typography of the language itself"
+    ~#marketing: "learning paths paced by invitation, not intimidation -- from abstract linguistic structure to typographic force and animation-universe physics novelty"
+    ~#curriculum_arc: "abstract linguistics -> metaphysics of language -> typography as semantic physics -> animation-universe novelty -> biome entry through the boonhonk realms"
+    ~#capstone_realm: "bonk.land"
+    ~#capstone_reading: "bonk.land is the realm blessed by coincidence, where impact, comic timing, and abrupt phase change make animation-universe physics feel native rather than ornamental"
   }
   "sexymath4adults.com": {
     role: "reclamation"
+    ~#status: "sensitive-pending"
     ~#brief: "Adult mathematical confidence-building without shame"
-    ~#marketing: "you wanted math once, or you want it now — this is the surface that wants you back"
+    ~#marketing: "you wanted math once, or you want it now -- this is the surface that wants you back"
+    ~#sensitivity_tier: "sensitive"
   }
   "wap.christmas": {
     role: "seasonal"
+    ~#status: "active"
     ~#brief: "Wondering About Pi with a holiday-facing, absurdly earnest outer shell"
-    ~#marketing: "the name gets you in the door; the wonder keeps you — pi, pie, and seasonal generosity"
+    ~#marketing: "the name gets you in the door; the wonder keeps you -- pi, pie, and seasonal generosity"
     ~#arc: "familiarity shock -> curiosity -> sincere engagement with pi, e, and neighboring wonders"
   }
   "wap.mom": {
     role: "nurture"
+    ~#status: "active"
     ~#brief: "Wondering About Pi through care, patience, and domestic encouragement"
-    ~#marketing: "the warmer sibling — wonder, recipes, patience, and practical paths into the math underneath"
+    ~#marketing: "the warmer sibling -- wonder, recipes, patience, and practical paths into the math underneath"
     ~#arc: "gentle entry -> sustained encouragement -> recipes, puzzles, and fulfillment that makes the abstract tangible"
   }
   "brainstorm.monster": {
     role: "collective-ideation"
+    ~#status: "active"
     ~#brief: "Collective and local development of concepts with strong return-to-ground-state behavior"
-    ~#marketing: "think loud, think together, then let it rest — an ideation lab that knows when to hibernate"
+    ~#marketing: "think loud, think together, then let it rest -- an ideation lab that knows when to hibernate"
     ~#interaction_model: "supports active divergence, local incubation, and hibernating storage without losing conceptual continuity"
   }
 }
 
-# ── Narrative And World-Building ────────────────────────────────
+# Narrative And World-Building
 
 ^"narrative.worldbuilding"{
   #:cluster #!fiction
 
   "lore.land": {
     role: "installable-book"
+    ~#status: "active"
     ~#brief: "Collaborative world-building and lore management for shared fictional universes"
-    ~#marketing: "a living book you can install, carry, annotate, and resume — world-building as portable practice"
-    ~#status: "has precedent, suitable for restart"
+    ~#marketing: "a living book you can install, carry, annotate, and resume -- world-building as portable practice"
     ~#platform: "installable book PWA"
     ~#connection: "home terrain for Boof as protagonist"
   }
   "trope.wiki": {
     role: "taxonomy"
-    ~#brief: "Narrative structure reference that feeds interface and creative design"
-    ~#marketing: "a living index of story patterns — used to seed, tag, and inspire creative work across the network"
+    ~#status: "active"
+    ~#brief: "Narrative structure reference and long-term probe into funky transrealism"
+    ~#marketing: "a living index of story patterns and reality moves -- used to seed, tag, and stress-test creative work across the network"
     ~#practice: "treat trope structure as an ongoing design instrument, not a dead encyclopedia"
+    ~#probe_function: "tests how trope language, physics metaphors, and transreal narrative mechanics can inform biome construction without collapsing into empty jargon"
   }
   "clit.video": {
     role: "ugc-hub"
+    ~#status: "active"
     ~#brief: "User-generated content hub built around provocative conceptual prompts"
-    ~#marketing: "the title does the provoking; the platform does the thinking — participatory publishing, user-generated ecology"
+    ~#marketing: "the title does the provoking; the platform does the thinking -- participatory publishing, user-generated ecology"
     ~#policy: "adult-adjacent participation requires privacy, discretion, and decentralized publication options"
+    ~#sensitivity_tier: "sensitive"
   }
 }
 
-# ── Culture, Community, And Social Practice ─────────────────────
+# Culture, Community, And Social Practice
 
 ^"culture.social"{
   #:cluster #!practice
 
   "smut.today": {
     role: "commentary"
+    ~#status: "active"
     ~#brief: "Cultural criticism through provocative framing"
     ~#marketing: "tabloid heat on the surface; you stay for the thinking underneath"
     ~#policy: "should default to discretion-first audience and publishing patterns"
+    ~#sensitivity_tier: "sensitive"
   }
   "newyear.life": {
     role: "ritual"
+    ~#status: "dormant"
     ~#brief: "Annual renewal practice for intention, reflection, and generative resolution-making"
-    ~#marketing: "renewal you author yourself — ritual architecture for intention, reflection, and honest starting-over"
+    ~#marketing: "renewal you author yourself -- ritual architecture for intention, reflection, and honest starting-over"
   }
   "tealstripesvibes.com": {
     role: "aesthetic"
+    ~#status: "dormant"
     ~#brief: "Visual identity and mood system organized around teal stripes"
-    ~#marketing: "palette, motif, and vibe as a coherent design language — the aesthetic surface"
+    ~#marketing: "palette, motif, and vibe as a coherent design language -- the aesthetic surface"
   }
   "tealstripesvibes.org": {
     role: "collective"
+    ~#status: "dormant"
     ~#brief: "Community and public-interest dimension of the teal stripes aesthetic"
-    ~#marketing: "shared meaning-making around a visual culture — the collective, not a brand"
+    ~#marketing: "shared meaning-making around a visual culture -- the collective, not a brand"
   }
   "texture.website": {
     role: "material-lab"
+    ~#status: "dormant"
     ~#brief: "Surface for texture, tactility, grain, and material imagination on the web"
-    ~#marketing: "interface as felt material — grain, weight, and tactility instead of flat decoration"
+    ~#marketing: "interface as felt material -- grain, weight, and tactility instead of flat decoration"
   }
   "autonomous.feedback": {
     role: "reflection-system"
+    ~#status: "active"
     ~#brief: "Feedback architecture for systems that grow more self-aware without growing extractive"
-    ~#marketing: "response loops, critique channels, and adaptive reflection — built for agency, not extraction"
+    ~#marketing: "response loops, critique channels, and adaptive reflection -- built for agency, not extraction"
   }
 }
 
-# ── Operations, Coordination, And Commerce ──────────────────────
+# Operations, Coordination, And Commerce
 
 ^"infrastructure.production"{
   #:cluster #!operations
 
   "attention.productions": {
     role: "studio"
+    ~#status: "active"
     ~#brief: "Production company surface where attention is both medium and constraint"
-    ~#marketing: "we stage focus — project orchestration for works that depend on when and how audiences look"
+    ~#marketing: "we stage focus -- project orchestration for works that depend on when and how audiences look"
   }
   "mutex.buzz": {
     role: "coordination"
+    ~#status: "active"
     ~#brief: "Collaborative locking and turn-taking for creative and technical work"
     ~#marketing: "mutual exclusion as social protocol, not just systems primitive"
   }
   "rpgwednesday.shop": {
     role: "collectibles"
+    ~#status: "active"
     ~#brief: "Shop for indie NFT-esque collectibles, achievements, and commemorative artifacts"
-    ~#marketing: "small-batch digital scarcity and achievement culture — indie authorship kept intact"
+    ~#marketing: "small-batch digital scarcity and achievement culture -- indie authorship kept intact"
     ~#note: "should support collectible semantics without requiring maximalist speculation patterns"
   }
 }
 
-# ── Portfolio Index ─────────────────────────────────────────────
+# Portfolio Index
 
 ^"domain_index"{
   #:index #!inventory
@@ -392,7 +461,7 @@
   ]
 }
 
-# ── Topology ────────────────────────────────────────────────────
+# Topology
 
 ^"topology"{
   #:architecture #!connections
@@ -402,12 +471,35 @@
     ~#principle: "every spwashi.* domain links back to the starting room; the hub routes by role, audience, and current phase"
   }
 
+  hub_segmentation: {
+    newcomers: {
+      ~#entry: "spwashi.com"
+      ~#phase: "governed-surface"
+      ~#surfaces: ["spwashi.com", "spw.quest", "wap.christmas", "wap.mom"]
+    }
+    builders: {
+      ~#entry: "spwashi.dev"
+      ~#phase: "public-beta"
+      ~#surfaces: ["spwashi.dev", "factshift.com", "mutex.buzz"]
+    }
+    readers: {
+      ~#entry: "spwashi.ink"
+      ~#phase: "public-beta"
+      ~#surfaces: ["spwashi.ink", "lore.land", "trope.wiki", "rpgwednesday.shop"]
+    }
+    researchers_and_designers: {
+      ~#entry: "spwashi.ai"
+      ~#phase: "public-beta"
+      ~#surfaces: ["spwashi.ai", "spwashi.design", "autonomous.feedback", "brainstorm.monster"]
+    }
+  }
+
   factshift_family: {
     ~#engine: "factshift.com"
     ~#realms: ["boon.land", "bane.land", "bone.land", "bonk.land", "honk.land"]
     ~#companion: "boonhonk.ing"
     ~#composite: "boonbanebone.com"
-    ~#reading: "factshift explains the physics; the realms make it habitable — gift, drag, scaffold, impact, signal"
+    ~#reading: "factshift explains the physics; the realms make it habitable -- gift, drag, scaffold, impact, signal"
   }
 
   wonder_spiral: {
@@ -419,12 +511,13 @@
   lore_constellation: {
     ~#center: "lore.land"
     ~#companions: ["trope.wiki", "boof.land", "clit.video"]
-    ~#reading: "world-building, story patterns, a protagonist you follow, and a place to participate — one ecology"
+    ~#reading: "world-building, story patterns, a protagonist you follow, and a place to participate -- one ecology"
   }
 
   sensitive_surfaces: {
     ~#domains: ["clit.video", "smut.today", "sexymath4adults.com"]
     ~#requirement: "privacy by default, discretion by design, decentralization as a viable path"
+    ~#pipeline: "sensitive -- requires dedicated pipeline in publish.spw before these surfaces go live"
   }
 
   publishing_chain: {
@@ -434,7 +527,7 @@
   }
 }
 
-# ── Capability Families ─────────────────────────────────────────
+# Capability Families
 
 ^"capability_families"{
   #:architecture #!platform
@@ -446,11 +539,40 @@
   "commerce_or_collectibles": ["spwashi.store", "rpgwednesday.shop"]
 }
 
-# ── Pipeline Routing ────────────────────────────────────────────
+^"launch_backlog"{
+  dormant_unrouted: [
+    "boonbanebone.com",
+    "newyear.life",
+    "spw.rest",
+    "spwashi.art",
+    "spwashi.biz",
+    "spwashi.click",
+    "spwashi.college",
+    "spwashi.media",
+    "spwashi.network",
+    "spwashi.org",
+    "spwashi.pro",
+    "spwashi.space",
+    "spwashi.store",
+    "spwashi.work",
+    "tealstripesvibes.com",
+    "tealstripesvibes.org",
+    "texture.website",
+  ]
+  blocked_sensitive: {
+    "sexymath4adults.com": "waiting on a dedicated sensitive pipeline and discretion review gate"
+  }
+}
+
+# Pipeline Routing
 
 ^"routing"{
   #:pipeline #!dispatch
   ~#convention: "each domain maps to a named pipeline defined in publish.spw"
+  ~#dormant_policy: "dormant surfaces remain intentionally unrouted until promoted."
+  ~#blocked_by: {
+    "sexymath4adults.com": "sensitive pipeline and review gate not yet in place"
+  }
 
   "spwashi.com":           { pipeline: "default",  format: "html", ~#selector: "$^[\"_\"]@docs" }
   "spwashi.dev":           { pipeline: "default",  format: "html", ~#selector: "$^[\"_\"]@docs" }

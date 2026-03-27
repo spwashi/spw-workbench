@@ -4,13 +4,13 @@ Refine the phased register model from the shipped runtime baseline into a querya
 
 ## Goal
 
-The desired end state is a register model whose phase vocabulary is shared by runtime, query tooling, tests, and docs: `lex`, `parse`, `semantic`, `optimize`, `pragmatic`. The additive enrichment mechanics and P0 runtime stabilization already landed on `main@181071e`, so this plan now narrows to selector/query alignment and documentation rather than reopening the build-fix work. Keep enrichment incremental, queryable, and cheap at early stages without another schema reset.
+The desired end state is a register model whose phase vocabulary is shared by runtime, query tooling, tests, and docs: `lex`, `parse`, `semantic`, `optimize`, `pragmatic`. The additive enrichment mechanics and P0 runtime stabilization already landed on `main@181071e`, so this plan now narrows to selector/query alignment and documentation rather than reopening the build-fix work. Keep enrichment incremental, queryable, and cheap at early stages without another schema reset. Stable phase vocabulary is also what lets public literature, editor UX, and ecosystem governance speak about Spw without semantic drift.
 
 **Taste note**: clarity, naming, layering.
 
 ## Scope
 
-- **In scope**: selector expression grammar (`Spw.q`), `spwq` integration, canonical phase-name alignment across runtime/query/docs, targeted tests, and narrow runtime touch-ups needed to support the shipped baseline.
+- **In scope**: selector expression grammar (`Spw.q`), `spwq` integration, canonical phase-name alignment across runtime/query/docs, targeted tests, narrow runtime touch-ups needed to support the shipped baseline, and enough documentation alignment that surface/release plans can reuse the same vocabulary.
 - **Out of scope**: revisiting the P0 phase/liminality repair, renaming `RegisterBank`, the broader chemistry/metaphysics redesign, full optimizer semantics, and UI autocomplete / brace-capture workflows.
 
 ## Decisions Locked
@@ -72,6 +72,7 @@ none
 - **vscode-register-explorer**: consumes canonical pipeline-phase vocabulary (`lex`, `parse`, `semantic`, `optimize`, `pragmatic`) for tree grouping and detail view. Without this plan, the explorer falls back to spirit-sequence phase from `SIGIL_SEMANTICS`.
 - **vscode-authoring-probe-loop**: consumes the phase vocabulary to bridge between spirit-sequence operators and register pipeline phases in hover and completion. Without this plan, the authoring loop maps only spirit-sequence operators.
 - **vscode-interaction-contract**: references this plan in `^["phase_vocabularies"]` and `^["cross_theme_enrichments"]`. The two phase axes (spirit-sequence and pipeline) are declared orthogonal there.
+- **ecosystem-surface-governance**: uses canonical phase vocabulary when describing how ideas mature into launchable surfaces, so public-facing language does not diverge from runtime/query language.
 
 ### Adjacent scope opportunity
 

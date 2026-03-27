@@ -4,12 +4,12 @@ Turn the missed March cadence into a repo-native `v0.3.0` release track by docum
 
 ## Goal
 
-The repo has a release instinct, bundle scripts, and waypoint surfaces, but it does not yet carry a concrete `v0.3.0` track that reflects the current March 2026 reality. This pass creates planning artifacts, a public waypoint, and changelog notes that make the end-of-month push legible inside the canon surfaces. The intended end state is a release story that names the recovery from the missed `2026-03-13` alpha checkpoint and frames `v0.3.0` as the monorepo, package-boundary, and decoupling milestone rather than a vague version bump.
+The repo has a release instinct, bundle scripts, and waypoint surfaces, but it does not yet carry a concrete `v0.3.0` track that reflects the current March 2026 reality. This pass creates planning artifacts, a public waypoint, and changelog notes that make the end-of-month push legible inside the canon surfaces. The intended end state is a release story that names the recovery from the missed `2026-03-13` alpha checkpoint and frames `v0.3.0` as the monorepo, package-boundary, and decoupling milestone rather than a vague version bump. The release gate should also stay honest about ecosystem scope: which public surfaces are actually launchable in this cadence, which remain dormant, and which sensitive surfaces are explicitly out of band until their governance contract exists.
 Taste note: improve **clarity**, **layering**, and **naming** by giving the release a stable narrative and a bounded set of gates.
 
 ## Scope
 
-- **In scope**: create planning artifacts under `.agents/plans/v030-release-prep/`, add a `v0.3.0` release-track waypoint under `docs/waypoints/spw/`, update the waypoint index, and record the March 2026 cadence plus monorepo theme in the active changelog.
+- **In scope**: create planning artifacts under `.agents/plans/v030-release-prep/`, add a `v0.3.0` release-track waypoint under `docs/waypoints/spw/`, update the waypoint index, record the March 2026 cadence plus monorepo theme in the active changelog, and define a lightweight surface-admission ladder for what counts as release-ready in the public ecosystem.
 - **Out of scope**: performing the monorepo migration itself, bumping `package.json` to `0.3.0`, tagging a release, or changing build/package topology in this pass.
 
 ## Files
@@ -25,6 +25,7 @@ Craft guard:
 - Keep planning artifacts and waypoint surfaces under 220 lines each.
 - Keep the release track focused on dates, gates, and scope; do not duplicate the full implementation plan.
 - Avoid changing source/package structure in this planning pass so the release narrative stays separable from implementation churn.
+- Do not imply a domain launch merely because a name exists in the portfolio; only routed and governed surfaces can ride the release story.
 
 ## Commits
 
@@ -45,7 +46,7 @@ Fuzz strategy:
 
 ## Dependencies
 
-none
+- `ecosystem-surface-governance` should define the surface-admission ladder and dormant/sensitive exclusions that this release track references.
 
 ## Spw Artifact
 

@@ -4,13 +4,13 @@ Amend the upstream runtime metadata work and make substrate events plus resonanc
 
 ## Goal
 
-The desired end state is a runtime pipeline where `runSpw()` and `collectPrecipitates()` return the runtime telemetry that host apps actually need: immutable substrate events, detected resonances, and register metadata that reflects the current write rather than accumulating stale semantic drift. This folds the useful parts of upstream commit `ea709ac` into a tighter canonical contract so hosts do not need to reconstruct substrate ownership outside the runtime. The quality bar is correctness and clarity in the runtime API rather than more app-side inference.
+The desired end state is a runtime pipeline where `runSpw()` and `collectPrecipitates()` return the runtime telemetry that host apps actually need: immutable substrate events, detected resonances, and register metadata that reflects the current write rather than accumulating stale semantic drift. This folds the useful parts of upstream commit `ea709ac` into a tighter canonical contract so hosts do not need to reconstruct substrate ownership outside the runtime. The quality bar is correctness and clarity in the runtime API rather than more app-side inference. That telemetry should also be publish-meaningful enough to support ecosystem QA: a host should be able to tell whether a surface is fresh, grounded, and semantically coherent without reconstructing those judgments from scratch.
 
 **Taste note**: correctness, clarity, layering.
 
 ## Scope
 
-- **In scope**: amend upstream valence/register metadata flow, normalize `RegisterMeta` write semantics, thread substrate ownership through the runtime pipeline, return immutable `events` and `resonances` from public runtime results, and add/update focused tests.
+- **In scope**: amend upstream valence/register metadata flow, normalize `RegisterMeta` write semantics, thread substrate ownership through the runtime pipeline, return immutable `events` and `resonances` from public runtime results, surface enough freshness/coherence facts to support host-side QA decisions, and add/update focused tests.
  - **Out of scope**: host-app adapter refactors, broader `RegisterBank` metaphysics redesign, new resonance algorithms, semicolon syntax support, and large docs sweeps beyond narrow API notes if needed.
 
 ## Files
@@ -41,6 +41,7 @@ The desired end state is a runtime pipeline where `runSpw()` and `collectPrecipi
 - `src/runtime/state/register-bank.ts` and `src/runtime/interpreter/interpreter.ts` are already concept-dense; keep the amendment narrow and avoid opportunistic refactors.
 - Preserve the dependency direction: seed normalization feeds runtime metadata, but runtime telemetry should not leak live mutable substrate instances back to callers.
 - Returned telemetry must be immutable snapshots; hosts should consume facts, not own runtime internals.
+- The added telemetry should make readiness judgments easier without turning the runtime contract into a vague product-policy layer.
 
 ## Commits
 
@@ -58,6 +59,7 @@ The desired end state is a runtime pipeline where `runSpw()` and `collectPrecipi
 ## Dependencies
 
 - upstream commit `ea709acf51f0d61db6f8ef58a86ea67c9bd373bb` is the design precursor and should be cherry-picked or recreated in amended form inside this branch.
+- `ecosystem-surface-governance` is a downstream consumer; its launch/QA gates should be able to reference runtime freshness and coherence facts rather than inventing a parallel vocabulary.
 
 ## Fuzz Strategy
 

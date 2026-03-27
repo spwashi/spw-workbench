@@ -2,13 +2,13 @@
 
 ## Goal
 
-Create a sequence of incremental deep-dive "Labs" dedicated to mastering HTML and CSS language specifications. The curriculum is designed to exercise deep web-platform muscles (learning exactly how the browser parses and renders standards) and immediately extrapolate those precedents into **Spw-inspired design relationships**. This bridges the gap between traditional frontend craft and Spw's linguistic/semantic architecture.
+Create a sequence of incremental deep-dive "Labs" dedicated to mastering HTML and CSS language specifications. The curriculum is designed to exercise deep web-platform muscles (learning exactly how the browser parses and renders standards) and immediately extrapolate those precedents into **Spw-inspired design relationships**. This bridges the gap between traditional frontend craft and Spw's linguistic/semantic architecture. It should also become a contributor-formation track for people who will steward public Spw web surfaces, not just an isolated self-study exercise.
 
 **Taste Note:** Improves **expressiveness** (unlocking native browser power instead of javascript emulations) and **rigor** (tying Spw paradigms directly to W3C specifications).
 
 ## Scope
 
-- **In scope**: Designing a 5-part curriculum of markdown/spw artifacts and companion HTML/CSS sandbox files (`.agent/skills/spw-css-dom-lab/labs/`). Each lab will require reading specific W3C/MDN specs, writing raw HTML/CSS, and then writing a Spw reflection.
+- **In scope**: Designing a 5-part curriculum of markdown/spw artifacts and companion HTML/CSS sandbox files (`.agent/skills/spw-css-dom-lab/labs/`). Each lab will require reading specific W3C/MDN specs, writing raw HTML/CSS, writing a Spw reflection, and extracting at least one reusable QA or stewardship heuristic for future public surfaces.
 - **Out of scope**: Building production features. These are isolated, rigorous exercises for physiological skill building and conceptual mapping.
 
 ## The Curriculum Sequence
@@ -135,4 +135,4 @@ Preflight: `&[hygiene] — rebase onto origin/main and isolate unrelated drift b
 
 ## Dependencies
 
-- None. This is an independent research, learning, and curriculum generation track.
+- `ecosystem-surface-governance` is an adjacent consumer; the labs should produce reusable stewardship heuristics for active and public-beta web surfaces.

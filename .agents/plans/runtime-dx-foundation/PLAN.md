@@ -5,12 +5,12 @@ Establish a senior-grade DX foundation for the runtime and editor integrations.
 ## Goal
 
 Create a coherent DX layer that spans runtime diagnostics, instrumentation, and editor/LSP UX.
-The outcome should make failures actionable, performance visible, and onboarding friction lower for new contributors.
+The outcome should make failures actionable, performance visible, and onboarding friction lower for new contributors. The stronger version of this goal is a traceable codebase flow from literature and selectors through parser/runtime/editor/publish surfaces, so a failure reads like a path through the system rather than an isolated red light.
 Taste note: improve clarity and correctness with explicit contracts, structured logging, and predictable configuration.
 
 ## Scope
 
-- **In scope**: runtime diagnostics contracts, structured error identifiers, instrumentation hooks, LSP/worker diagnostic flow, editor plugin troubleshooting UX, and DX documentation/playbooks.
+- **In scope**: runtime diagnostics contracts, structured error identifiers, instrumentation hooks, LSP/worker diagnostic flow, editor plugin troubleshooting UX, DX documentation/playbooks, and path-oriented troubleshooting guidance that traces a concept from authoring through parser/runtime/publish surfaces.
 - **Out of scope**: new language features, parser/AST behavior changes, UI feature redesigns, or large refactors not directly tied to DX.
 
 ## Files
@@ -28,6 +28,7 @@ Taste note: improve clarity and correctness with explicit contracts, structured 
 ### Craft guard
 
 Keep new runtime/infra modules under 400 lines and avoid >12 imports per file. If a file crosses 600 lines, split by responsibility (diagnostics vs transport vs logging).
+DX should localize a failure to a station in the flow, not just emit another opaque error class.
 
 ## Commits
 
@@ -45,7 +46,7 @@ Keep new runtime/infra modules under 400 lines and avoid >12 imports per file. I
 
 ## Dependencies
 
-none
+- `ecosystem-surface-governance` provides the launch ladder and "spiritual testing path" that this plan should make observable in diagnostics and playbooks.
 
 ## Spw Artifact
 

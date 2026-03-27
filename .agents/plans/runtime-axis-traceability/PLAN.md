@@ -4,11 +4,11 @@ Add axis-traceability markers to the runtime to explicitly link implementation d
 
 ## Goal
 
-The `spw-workbench` uses an "instrumentation-first" philosophy where design decisions are shaped by specific "deformation axes". Currently, these axes are documented in `.spw` files but are often implicit in the TypeScript implementation. This plan adds `@spw:axis` markers and comments to core runtime components (e.g., `RegisterBank`, `Substrate`, `ResonancePipeline`) to make these design traces explicit, improving 'literature quality' and guiding future refactors.
+The `spw-workbench` uses an "instrumentation-first" philosophy where design decisions are shaped by specific "deformation axes". Currently, these axes are documented in `.spw` files but are often implicit in the TypeScript implementation. This plan adds `@spw:axis` markers and comments to core runtime components (e.g., `RegisterBank`, `Substrate`, `ResonancePipeline`) to make these design traces explicit, improving 'literature quality' and guiding future refactors. Those traces should also be legible enough that release reviewers and surface stewards can follow how a public behavior inherits from a runtime choice.
 
 ## Scope
 
-- **In scope**: Audit `src/runtime` for magic numbers or logic blocks tied to performance/disclosure/stability; add `@spw:axis` doc markers to `RegisterBank.ts`, `Substrate.ts`, and `stages.ts`; update `spw-marker-audit.ts` if needed to better surface these markers.
+- **In scope**: Audit `src/runtime` for magic numbers or logic blocks tied to performance/disclosure/stability; add `@spw:axis` doc markers to `RegisterBank.ts`, `Substrate.ts`, and `stages.ts`; update `spw-marker-audit.ts` if needed to better surface these markers; and ensure the traces are readable from the perspective of publish/release governance rather than only runtime maintainers.
 - **Out of scope**: Changing runtime logic, refactoring the deformation model itself, or adding runtime overhead for tracking. This is a "literature" and "traceability" pass.
 
 ## Files
@@ -34,7 +34,7 @@ The `spw-workbench` uses an "instrumentation-first" philosophy where design deci
 
 ## Dependencies
 
-none
+- `ecosystem-surface-governance` should consume these traces as literature-grade justification for public-surface behavior and QA gates.
 
 ## Spw Artifact
 
