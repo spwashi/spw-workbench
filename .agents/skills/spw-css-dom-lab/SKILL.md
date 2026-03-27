@@ -72,4 +72,4 @@ Update this skill when:
 
 ## Resources
 
-- Read `.agents/skills/spw-css-dom-lab/references/experiment-template.md` for a consistent experiment structure.
+- Read `.agents/skills/spw-css-dom-lab/references/experiment-protocol.md` for a consistent experiment structure.

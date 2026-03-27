@@ -66,7 +66,7 @@ Ontologies can be read through multiple perspectives (computation, cognition, il
 ## Codebase Tooling
 
 ```bash
-npm run generate:domain     # Scaffold a new domain (use when ontology maps to a new src/ domain)
+npm run spw:init            # Initialize Spw surfaces (use when ontology maps to a new scope)
 npm run audit:spw-garden    # Structural health of .spw doc files
 npm run lint:docs           # Verify .spw path references are valid
 ```
@@ -77,7 +77,7 @@ Update this skill when:
 - New register frame types are added (beyond facet/set/stream/perspective) → update Spw Ontology Primitives table
 - The ontology skeleton format changes → update `assets/ontology-skeleton.spw`
 - New operant perspectives are documented → update Modeling Patterns section
-- A new domain is generated via `generate:domain` → consider whether it needs an ontology entry
+- A new scope is initialized via `spw:init` → consider whether it needs an ontology entry
 
 ## Resources
 
