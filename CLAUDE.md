@@ -81,6 +81,19 @@ npm run spw:format .spw          # Format .spw files
 npm run spw:ls                   # List .spw surfaces
 ```
 
+### Agentic Engineering
+```bash
+npm run spw:plan:init -- <slug>  # Initialize local feature plan surfaces
+npm run spw:plan:stream -- --type decide --message "..." [--slug <slug>]  # Append one stream entry
+npm run spw:plan:status -- [--slug <slug>]  # Read plan cache/status for the active or named plan
+npm run spw:plan:check -- [--slug <slug>]   # Detect cache drift and stale plan surfaces
+npm run spw:agent:kb             # List local agent reference surfaces
+npm run spw:agent:kb -- --json   # Emit KB topics as JSON
+npm run spw:agent:vibe -- --json # Emit branch/plan context as JSON
+npm run spw:agent:test           # Run shell smoke tests for local agent tooling
+npm run spw:agent:vibe           # Cheap branch/plan context summary
+```
+
 ### Release
 ```bash
 npm run bundle:release           # Full release bundle

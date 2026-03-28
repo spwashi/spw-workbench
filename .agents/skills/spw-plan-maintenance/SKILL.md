@@ -31,6 +31,12 @@ Triggers:
 Scan the active plan directory for drift signals.
 
 ```bash
+# Active-branch summary
+npm run spw:plan:status
+
+# Active-branch check
+npm run spw:plan:check
+
 # List all active plans (exclude _archive, _schema)
 ls -d .agents/plans/*/PLAN.md | grep -v _archive | grep -v _schema
 ```
@@ -42,6 +48,8 @@ For each plan, check:
 | **Stale rebase target** | `~#base_ref` SHA not on current `main` ancestry | High — plan may reference vanished code |
 | **Stale file paths** | Files listed in `## Files` that no longer exist | High — plan is directing work at ghosts |
 | **Status mismatch** | `~#status: "planning"` but commits have landed | Medium — misleading |
+| **Stream silence** | No `>>` entry in the last 3 scenes or 48h | Medium — memory loss risk |
+| **Cache drift** | `next_commit` or `open_count` out of sync with history | Low — metadata error |
 | **Open questions resolved** | `^["open"]` has entries whose decisions are in the stream | Low — cleanup |
 | **Missing cross-references** | New artifacts not referenced in dependent plans | Medium — plans diverge from ecosystem |
 | **Stale dependencies** | `## Dependencies` names archived or completed plans | Low — cleanup |
@@ -189,4 +197,10 @@ npm run lint:spw
 
 # Path reference check
 npm run lint:docs
+
+# Check a named plan directly
+npm run spw:plan:check -- --slug <slug>
+
+# Agentic hygiene: cheap branch/plan context summary
+npm run spw:agent:vibe
 ```

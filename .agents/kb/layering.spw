@@ -1,0 +1,15 @@
+# Spw Layering & Boundaries
+# version: 0.1.0
+
+^["architectural_layers"]{
+  #infra: "Kernel, parser, lexer, basic types."
+  #platform: "Runtime, substrate, event system, LSP server."
+  #app: "CLI, business logic, domain services."
+  #ui: "VS Code extension, IntelliJ plugin, web surfaces."
+}
+
+^["boundary_rules"]{
+  1: "Inner layers must not import outer layers."
+  2: "Circular dependencies are bans (must be broken)."
+  3: "Shared types should live in the innermost common ancestor."
+}

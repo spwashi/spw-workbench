@@ -8,8 +8,9 @@
  # Keep this frame small and queryable.
  # Use it to name the pattern, spec, code, and artifact surfaces that this branch should reread.
  @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
- @artifact: ~".agents/plans/<slug>/<slug>.spw"
+ @plan: ~".agents/plans/<slug>/PLAN.md"
  @pattern: ~".spw/patterns/literate-ui.spw"
+ # Add @artifact only once a distilled branch artifact exists.
 }
 
 ^["intent"]{
@@ -22,7 +23,7 @@
  lane: #execution_truth
  ladder: #service
  develops: [#taste, #linguistics, #design_transfer]
- review_surfaces: [@cluster, @artifact, @pattern]
+ review_surfaces: [@cluster, @plan, @pattern]
  snippet_routes: [#example, #query, #snippet]
 }
 
@@ -52,12 +53,12 @@
  parallelizable: [#lane_a, #lane_b]
  shared_hot_files: ["path/to/file.ts"]
  merge_risks: [#hot_file, #naming_drift]
- handoff_artifacts: [@artifact, @pattern]
+ handoff_artifacts: [@plan, @pattern]
 }
 
 ^["supporting_documents"]{
  # Supporting surfaces that should evolve with the branch.
- must_ship: [@artifact]
+ must_ship: [@plan]
  helpful: [@pattern]
  carries: [#examples, #glossary, #review_notes]
 }

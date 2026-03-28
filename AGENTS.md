@@ -31,8 +31,10 @@ Principles:
 - `extensions/intellij-spw/` — IntelliJ plugin (Gradle).
 
 ### Agent infrastructure
-- `.agents/` — skills, plans, workflows, runtime state. See `.agents/README.md`.
+- `.agents/` — skills, plans, workflows, runtime state, and local helper scripts. See `.agents/README.md`.
+- `.agents/kb/` — local agent reference surfaces for layering, taxonomy, and valence.
 - `.claude/` — Claude Code harness: settings, slash commands. See `CLAUDE.md`.
+- `scripts/agent-tools.sh` — local wrappers for plan init/status/check, stream append, KB lookup, and branch-context summaries.
 
 ## Commit Protocol
 
