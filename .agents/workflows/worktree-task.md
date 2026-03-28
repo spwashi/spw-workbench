@@ -111,3 +111,13 @@ Multiple agents can work simultaneously — each needs:
 - Its own branch, worktree, and plan dir
 - Unique slug
 - Dependencies documented in PLAN.md `## Dependencies` and wip.spw `^["open"]`
+
+For full coordination protocol, see `.agents/workflows/multi-agent.spw`:
+- **Dispatch**: scoped prompt template for spawning plan-scoped agents
+- **Lanes**: which plans can run in parallel vs. which require sequencing
+- **Sync**: hot file claiming to prevent merge conflicts
+- **River**: orientation cycle (where am I → what is alive → what can I do)
+- **Background agents**: fuzz-watcher, spw-lint, plan-sweep, cross-plan-verify
+- **State**: runtime tracking of active and completed agent runs
+
+The `.spw` surface is the shared coordination medium — agents read it before starting and update it as they claim/release work.

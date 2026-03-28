@@ -1,0 +1,144 @@
+# Multi-Agent Coordination Protocol
+# Synchronization surface for parallel agent work in spw-workbench
+
+#:layer #!pragmatics
+
+^["protocol"]{
+ ~#model: "river — each agent is a current in a shared ecology; the .spw surface is the riverbed they all read"
+ ~#principle: "agents work in isolated worktrees; this file is the shared truth they synchronize against"
+ ~#gate: "Touch ID — agents prepare; humans authorize"
+
+ rules: [
+  "one agent per plan — an agent's scope is exactly one plan's PLAN.md + wip.spw + commit sequence",
+  "worktree isolation — each agent gets `isolation: worktree` so it cannot corrupt the main working tree",
+  "stream-first reporting — agents append to wip.spw ^[stream] as they work, not just at the end",
+  "hot file awareness — before editing a shared hot file, check ^[sync].hot_files for concurrent claims",
+  "handoff via branch — agent produces a branch; human reviews diff; Touch ID authorizes merge",
+  "no silent cross-plan edits — if an agent discovers a needed change in another plan's scope, log it in ^[open] and let the other agent handle it",
+ ]
+}
+
+^["dispatch"]{
+ ~#how: "the human or lead agent reads this file, picks a plan, and spawns an agent with a scoped prompt"
+
+ prompt_template: {
+  role: "You are working on plan `<slug>`. Read .agents/plans/<slug>/PLAN.md and wip.spw for full context."
+  task: "Implement commit ~[N]: <description>. Follow the commit conventions in AGENTS.md."
+  stream: "Append >>[timestamp] entries to wip.spw ^[stream] as you work."
+  cache: "Update wip.spw ^[cache] (~#status, ~#next_commit, ~#last_stream) when done."
+  gate: "Stage your changes but do not force-commit. The human will authorize via Touch ID."
+ }
+
+ example: {
+  slug: "vscode-lsp-integration"
+  commit: "~[10]"
+  prompt: "You are working on plan `vscode-lsp-integration`. Read .agents/plans/vscode-lsp-integration/PLAN.md and wip.spw. Implement commit ~[10]: verify semantic token generation for all path variants. Write tests in packages/spw-lsp/src/__tests__/. Append stream entries to wip.spw. Update cache when done."
+ }
+}
+
+^["lanes"]{
+ ~#model: "from plan-ecology-clustering — lanes run in parallel when they don't share hot files"
+
+ parallel_safe: [
+  ["vscode-lsp-integration", "spw-site-install"],      // disjoint file sets
+  ["vscode-lsp-integration", "v030-release-prep"],      // LSP is code, release is docs
+  ["absorb-spwq-cli", "ecosystem-surface-governance"],  // CLI is code, governance is surfaces
+ ]
+
+ sequential_required: [
+  ["vscode-lsp-integration", "vscode-workspace-atlas"],       // atlas depends on LSP handlers
+  ["vscode-lsp-integration", "vscode-authoring-probe-loop"],  // authoring depends on editing handler
+  ["vscode-lsp-integration", "vscode-register-explorer"],     // explorer depends on runtime handler
+  ["spw-site-install", "v030-release-prep"],                  // release story depends on install truth
+  ["absorb-spwq-cli", "spw-site-install"],                    // install needs stable CLI verbs
+ ]
+}
+
+^["sync"]{
+ ~#purpose: "prevent merge conflicts by tracking which files are claimed by in-flight agents"
+
+ hot_files: {
+  // format: "file_path": "claiming_agent or 'unclaimed'"
+  "extensions/vscode-spw/src/extension.ts": "unclaimed"
+  "extensions/vscode-spw/src/context.ts": "unclaimed"
+  "packages/spw-lsp/src/stdio-server.ts": "unclaimed"
+  "packages/spw-lsp/src/handlers/editing.ts": "unclaimed"
+  ".spw/tooling/vscode-spw.spw": "unclaimed"
+ }
+
+ conflict_rule: "if two agents need the same hot file, the one closer to execution-truth lane wins; the other waits or works around it"
+}
+
+^["river"]{
+ ~#model: "the three questions every agent session answers"
+
+ questions: [
+  "? where am I — which plan, which commit, which files are in scope",
+  "~ what is alive — what's in the stream, what's in cache, what open questions remain",
+  "! what can I do — which commit is next, which files to touch, which tests to run",
+ ]
+
+ cycle: [
+  "read PLAN.md + wip.spw to orient (? where am I)",
+  "check ^[sync].hot_files for conflicts (~ what is alive)",
+  "claim hot files by updating this surface (! what can I do)",
+  "implement the scoped commit",
+  "append to wip.spw ^[stream]",
+  "update wip.spw ^[cache]",
+  "release hot file claims",
+  "report branch name for human review",
+ ]
+}
+
+^["background_agents"]{
+ ~#purpose: "agents that run alongside implementation agents without claiming hot files"
+
+ types: [
+  {
+   name: "fuzz-watcher"
+   trigger: "after any implementation agent completes"
+   prompt: "Run `npm run fuzz:stabilize` and report pass/fail. If fail, identify which test broke and which agent's changes caused it."
+  },
+  {
+   name: "spw-lint"
+   trigger: "after any .spw file changes"
+   prompt: "Run `npm run lint:spw` on changed .spw files. Report parse errors."
+  },
+  {
+   name: "plan-sweep"
+   trigger: "after implementation agents merge"
+   prompt: "Run the spw-plan-maintenance skill. Check whether merged changes satisfy or invalidate assumptions in dependent plans. Update wip.spw caches."
+  },
+  {
+   name: "cross-plan-verify"
+   trigger: "on demand"
+   prompt: "Read all plans that depend on <slug>. Check whether the latest commit's changes satisfy or break any documented dependency edges, open questions, or hot file assumptions."
+  },
+ ]
+}
+
+^["state"]{
+ ~#purpose: "runtime coordination state — updated by agents as they claim and release work"
+
+ active_agents: {
+  // format: { slug, commit, worktree_branch, claimed_files, started_at }
+  // empty when no agents are running
+ }
+
+ completed: {
+  // format: { slug, commit, worktree_branch, result, completed_at }
+  // append-only log of completed agent runs
+ }
+}
+
+^["invariants"]{
+ rules: [
+  "this file is the single source of truth for agent coordination",
+  "agents read this file before starting work",
+  "agents update ^[sync].hot_files and ^[state].active_agents when they claim work",
+  "agents release claims when they finish, regardless of success or failure",
+  "the human can override any claim by editing this file directly",
+  "Touch ID gate is non-negotiable — agents never bypass the pre-commit hook",
+  "wip.spw is the agent's local memory; this file is the shared memory",
+ ]
+}

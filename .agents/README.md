@@ -46,6 +46,7 @@ Each skill has a `SKILL.md` manifest and optional `scripts/` and `references/` s
 | Commit Review | `workflows/commit-review.md` | Touch ID authorization flow for all commits |
 | Spw Validation | `workflows/validate-spw-syntax.md` | .spw file validation pipeline |
 | Worktree Task | `workflows/worktree-task.md` | Feature branch + worktree lifecycle |
+| Multi-Agent | `workflows/multi-agent.spw` | Parallel agent coordination: dispatch, lanes, sync, river cycle |
 
 ## Plans
 
