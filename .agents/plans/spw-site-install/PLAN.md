@@ -35,19 +35,20 @@ Taste note: improve **clarity** and **layering**. The site owns its surfaces. Th
 ## Files
 
 ```text
-[MOD] packages/spw-cli/src/main.ts
-[NEW] packages/spw-cli/src/init.ts
-[NEW] packages/spw-cli/src/doctor.ts
-[NEW] packages/spw-cli/src/templates/mount.spw.template
-[NEW] packages/spw-cli/src/templates/index.spw.template
-[NEW] packages/spw-cli/src/templates/workspace.spw.template
-[NEW] packages/spw-cli/src/templates/claude-md.fragment.md
-[MOD] packages/spw-lsp/src/context.ts
-[MOD] extensions/vscode-spw/src/extension.ts
+[MOD] packages/spw-cli/src/init.ts
+[MOD] packages/spw-cli/src/doctor.ts
+[MOD] packages/spw-cli/templates/init/base/.spw/mount.spw
+[NEW] packages/spw-runtime/src/site-install.ts
+[MOD] packages/spw-runtime/src/index.ts
+[MOD] packages/spw-lsp/src/helpers.ts
+[MOD] packages/spw-lsp/src/server-index.ts
 [NEW] docs/runtime/md/site-install-guide.md
 [NEW] docs/runtime/md/mount-protocol.md
 [NEW] .spw/conventions/submodule.spw
 [NEW] .agents/plans/spw-site-install/spw-site-install.spw
+[MOD] src/runtime/__tests__/spw-init-portability.test.ts
+[MOD] src/runtime/__tests__/spw-site-doctor.test.ts
+[NEW] src/runtime/__tests__/spw-site-install.test.ts
 ```
 
 ### Craft guard
@@ -62,6 +63,8 @@ Taste note: improve **clarity** and **layering**. The site owns its surfaces. Th
 ## Commits
 
 Commits 1-3 establish the shared boundary and mount contract. After that, CLI init, CLI resolution, editor detection, health checks, and documentation can run as parallel lanes against the same submodule model.
+
+Commits 1-2 and 21 are already landed on `main`. The next serialized implementation slice is the mount arc: formalize the site-facing `mount.spw` protocol, then make runtime/LSP consumers resolve through it rather than assuming the workbench repo is always the workspace root.
 
 ### Submodule Convention
 1. `#[submodule] — define .spw/_workbench submodule convention and _-prefix semantics`
@@ -107,7 +110,7 @@ Fuzz strategy:
 
 ## Agentic Hygiene
 
-- Rebase target: `main@3b1747c4` (2026-03-27)
+- Rebase target: `main@5ed7abce` (2026-03-28)
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: none
 

@@ -35,7 +35,20 @@ describe('spw doctor', () => {
     await mkdir(path.join(root, '.spw', '_workbench', 'node_modules'), { recursive: true })
     await writeFile(path.join(root, '.spw', 'index.spw'), '# Index\n')
     await writeFile(path.join(root, '.spw', 'workspace.spw'), '# Workspace\n')
-    await writeFile(path.join(root, '.spw', 'mount.spw'), '# Mount\n')
+    await writeFile(
+      path.join(root, '.spw', 'mount.spw'),
+      [
+        '# Mount',
+        '',
+        '^[workbench]{',
+        '  @root: ~"./_workbench"',
+        '  version: "0.3.0"',
+        '  @spec: ~"./_workbench/lib/spw-v0.3.0/"',
+        '  @cli: ~"./_workbench/packages/spw-cli/"',
+        '  @lsp: ~"./_workbench/packages/spw-lsp/"',
+        '}',
+      ].join('\n'),
+    )
     await writeFile(path.join(root, '.spw', '_workbench', 'package.json'), '{"name":"spw-workbench"}\n')
 
     const report = await inspectDoctorTarget(root)

@@ -90,7 +90,7 @@ const ANNOTATION_RE = /(##>|#!|#:|#>|#)([a-zA-Z_][a-zA-Z0-9_]*)/g
 const FRAME_RE = /^\s*\^(?:\["([^"]+)"\]|"([^"]+)"|\[([A-Za-z_][A-Za-z0-9_]*)\])/
 const SELECTOR_DEF_RE = /^\^selector\[([A-Za-z_][A-Za-z0-9_]*)\]/
 
-const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', 'release', '.claude'])
+const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', 'release', '.claude', '_workbench'])
 
 // ── Sigil semantics ─────────────────────────────────────────────
 

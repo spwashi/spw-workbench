@@ -1,6 +1,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
+import { loadSpwMountResolution } from '@spwashi/spw-runtime'
 import { parseCommonFlags } from './args'
 import { printHelpPage } from './help'
 
@@ -70,7 +71,6 @@ function unique(items: string[]): string[] {
 export async function inspectDoctorTarget(targetDir: string): Promise<DoctorReport> {
   const root = path.resolve(process.cwd(), targetDir)
   const spwRoot = path.join(root, '.spw')
-  const workbenchRoot = path.join(spwRoot, '_workbench')
   const checks: DoctorCheck[] = []
 
   const hasGit = await exists(path.join(root, '.git'))
@@ -88,11 +88,16 @@ export async function inspectDoctorTarget(targetDir: string): Promise<DoctorRepo
     summary: hasSpwRoot ? '.spw directory present' : 'missing .spw directory',
   })
 
+  const mountResolution = hasSpwRoot ? await loadSpwMountResolution(root) : null
+  const workbenchRoot = mountResolution?.workbenchRoot ?? path.join(spwRoot, '_workbench')
+
   const hasWorkbench = await exists(workbenchRoot)
   checks.push({
     id: 'workbench-root',
     status: hasWorkbench ? 'ok' : 'fail',
-    summary: hasWorkbench ? '.spw/_workbench present' : 'missing .spw/_workbench workbench checkout',
+    summary: hasWorkbench
+      ? `${path.relative(root, workbenchRoot) || '.spw/_workbench'} present`
+      : `missing ${path.relative(root, workbenchRoot) || '.spw/_workbench'} workbench checkout`,
     fix: hasWorkbench ? undefined : WORKBENCH_ADD_COMMAND,
   })
 

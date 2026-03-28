@@ -7,6 +7,7 @@
 ^["roots"]{
  @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
  @plan: ~".agents/plans/spw-site-install/PLAN.md"
+ @artifact: ~".agents/plans/spw-site-install/spw-site-install.spw"
  @workspace: ~".spw/workspace.spw"
  @release: ~".agents/plans/v030-release-prep/v030-release-prep.spw"
 }
@@ -20,7 +21,7 @@
  lane: #execution_truth
  ladder: #service
  develops: [#mount_protocol, #site_independence, #install_truth, #exchange_model]
- review_surfaces: [@cluster, @plan, @workspace, @release]
+ review_surfaces: [@cluster, @plan, @artifact, @workspace, @release]
  snippet_routes: [#mount_example, #doctor_output, #submodule_note, #site_install_copy]
 }
 
@@ -46,12 +47,12 @@
  #absorb_spwq_cli: "CLI verb taxonomy must stabilize before site init can teach command names"
  #v030_release_prep: "release tag waits on site-install mounting being real"
  #ecosystem_surface_governance: "installable gate definition flows from governance registry into mount.spw"
- shared_hot_files: ["packages/spw-cli/src/init.ts", ".spw/conventions/cli.spw", ".spw/conventions/submodule.spw"]
+ shared_hot_files: ["packages/spw-runtime/src/site-install.ts", "packages/spw-runtime/src/index.ts", "packages/spw-lsp/src/helpers.ts", "packages/spw-lsp/src/server-index.ts", "packages/spw-cli/src/init.ts", "packages/spw-cli/src/doctor.ts", "packages/spw-cli/templates/init/base/.spw/mount.spw", ".spw/conventions/submodule.spw"]
 }
 
 ^["supporting_documents"]{
  @git_submodule_docs: "https://git-scm.com/book/en/v2/Git-Tools-Submodules"
- @mount_protocol: ~".spw/conventions/submodule.spw"  // will be created by commit 2
+ @mount_protocol: ~".spw/conventions/submodule.spw"
  @cli_conventions: ~".spw/conventions/cli.spw"
  @engagement_model: ~".agents/plans/ecosystem-surface-governance/ecosystem-surface-governance.spw"
 }
@@ -73,6 +74,9 @@
  >>[2026-03-27 09:05] decide — engagement is selective: a site doesn't adopt all 11 spec subsystems at once. mount.spw lists which subsystems are active. Exchange is contributory: a site can register new dialects or conventions that flow back through the submodule relationship.
  >>[2026-03-27 13:20] decide — treat this branch as the ecological anchor. Once commits 1-3 land, CLI init, CLI resolution, editor detection, health checks, docs, and governance mapping can proceed in parallel because they all share the same `_workbench` boundary.
  >>[2026-03-27 13:21] taste — ecological invigoration is not "more packages"; it is more independent sites entering the field with a clear mount contract, selective engagement, and a reversible relationship to the workbench.
+ >>[2026-03-28 17:29] revise — the plan cache was stale after the site-install artifact, submodule convention, release-track truth, and portable site-init/doctor surfaces landed on main. The branch is no longer at commit 1, and install tooling already exists in CLI surfaces.
+ >>[2026-03-28 17:29] observe — the remaining gap is shared mount resolution. `.spw/mount.spw` exists as seeded site metadata, but runtime and LSP still assume workbench-root defaults rather than deriving spec/CLI/LSP paths from the mounted `_workbench` contract.
+ >>[2026-03-28 17:29] decide — treat commits 3 and 4 as one working arc: formalize mount.spw with tracked version + resolution paths, then export a runtime resolver that LSP and doctor can consume while keeping `.spw/_workbench` out of site-authored workspace scans.
 }
 
 ^["open"]{
@@ -106,15 +110,15 @@
 }
 
 ^["cache"]{
- ~#status: "planning"
- ~#base_ref: "main@3b1747c4"
- ~#rebased_at: ""
+ ~#status: "active"
+ ~#base_ref: "main@5ed7abce"
+ ~#rebased_at: "2026-03-28"
  ~#hygiene_split: "none"
- ~#files_hot: "packages/spw-cli/src/init.ts, packages/spw-cli/src/doctor.ts, .spw/conventions/submodule.spw"
- ~#next_commit: "1"
+ ~#files_hot: "packages/spw-runtime/src/site-install.ts, packages/spw-runtime/src/index.ts, packages/spw-lsp/src/helpers.ts, packages/spw-lsp/src/server-index.ts, packages/spw-cli/src/init.ts, packages/spw-cli/src/doctor.ts, packages/spw-cli/templates/init/base/.spw/mount.spw, .agents/plans/spw-site-install/PLAN.md, .agents/plans/spw-site-install/wip.spw"
+ ~#next_commit: "3"
  ~#open_count: "3"
- ~#last_stream: "2026-03-27 13:21"
- ~#taste_debt: "npm publish may still be valuable as a convenience layer once the submodule protocol stabilizes — do not let convenience language replace the site-owned ecology model"
+ ~#last_stream: "2026-03-28 17:29"
+ ~#taste_debt: "the mount protocol should stay explicit enough that runtime, LSP, CLI, and release copy all repeat the same boundary without hidden fallback folklore. Convenience layers can arrive later, but `_workbench` still must read as infrastructure rather than site content."
 }
 
 ^["done"]{

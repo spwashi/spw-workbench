@@ -9,6 +9,7 @@ import { promises as fs } from 'node:fs'
 import type { Dirent } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { deriveMountRoots, discoverSpwMountResolution } from '@spwashi/spw-runtime'
 import type { SpwSelectorHit } from './spw-selector'
 import type { ServerIndex } from './server-index'
 import type { ServerContext } from './context'
@@ -55,7 +56,13 @@ export function parseWorkspaceRoot(params: any, fallback: string): string {
 // ── Config loading ──────────────────────────────────────────────
 
 export async function loadConfig(root: string, initOptions?: any, ctx?: ServerContext): Promise<Required<SpwConfig>> {
-    const base = { ...DEFAULT_CONFIG }
+    const base: Required<SpwConfig> = {
+        ...DEFAULT_CONFIG,
+        inlayHints: { ...DEFAULT_CONFIG.inlayHints },
+        diagnostics: { ...DEFAULT_CONFIG.diagnostics },
+        roots: { ...DEFAULT_CONFIG.roots },
+        workspace: { exclude: [...(DEFAULT_CONFIG.workspace.exclude ?? [])] },
+    }
 
     const configPath = path.join(root, '.spw', 'config.json')
     try {
@@ -69,6 +76,14 @@ export async function loadConfig(root: string, initOptions?: any, ctx?: ServerCo
 
     if (initOptions && typeof initOptions === 'object') {
         mergeConfig(base, initOptions as Partial<SpwConfig>)
+    }
+
+    const mountResolution = await discoverSpwMountResolution(root)
+    if (mountResolution) {
+        base.roots = { ...deriveMountRoots(mountResolution), ...base.roots }
+        const existingExclude = base.workspace.exclude ?? []
+        base.workspace.exclude = [...new Set([...existingExclude, '_workbench'])]
+        ctx?.log(`loaded site mount from ${mountResolution.mountFile}`)
     }
 
     return base
@@ -98,10 +113,13 @@ export function defaultRoots(fileDir: string, workspaceRoot: string, serverIndex
     const hardcoded: RootMap = {
         docs: path.join(workspaceRoot, 'docs'),
         src: path.join(workspaceRoot, 'src'),
-        spec: path.join(workspaceRoot, 'lib', 'spw-v0.2.0-alpha'),
+        spec: path.join(workspaceRoot, 'lib', 'spw-v0.3.0'),
         lib: path.join(workspaceRoot, 'lib'),
         scripts: path.join(workspaceRoot, 'scripts'),
         spw: path.join(workspaceRoot, '.spw'),
+        workbench: path.join(workspaceRoot, '.spw', '_workbench'),
+        cli: path.join(workspaceRoot, '.spw', '_workbench', 'packages', 'spw-cli'),
+        lsp: path.join(workspaceRoot, '.spw', '_workbench', 'packages', 'spw-lsp'),
         biome: path.join(workspaceRoot, '.spw', 'biome', 'ocean'),
         harness: path.join(workspaceRoot, '.spw', 'harness'),
         gen: path.join(workspaceRoot, '.spw', 'gen'),
