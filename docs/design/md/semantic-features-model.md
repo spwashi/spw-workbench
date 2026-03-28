@@ -2,7 +2,7 @@
 
 **Date**: 2026-01-18
 **Status**: Design specification (pre-implementation)
-**Related**: `docs/design/research-episodes-plan.md`, `docs/audits/ontological-geometry-audit.md`, Phase 1-3 implementation
+**Related**: `docs/design/research-episodes-plan.md`, `docs/audits/ontological-geometry-audit.md`, Phase 1-3 implementation, [Literate UI Pattern](../../../.spw/patterns/literate-ui.spw) — operator gestures map to image schemas (? = FOCUS/probe, ! = FORCE/action, ~ = NEAR-FAR/defer)
 
 ---
 

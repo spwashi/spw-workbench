@@ -632,3 +632,14 @@ How all four concerns connect:
 | B | Region-scoped verbs with cross-region representation switching | **Paste to context** — the same data means different things in different regions |
 | C | CSS `::before`/`::after` inject brackets into text selection flow | **Copy is syntax** — what you select is what you'd write in Spw |
 | D | Copy event intercept writes TSV + HTML table to clipboard | **Paste to spreadsheet** — structured data stays structured across applications |
+
+---
+
+## Integration with Literate UI Pattern
+
+The interaction vocabulary defined in sections A–D is operationalized by the **literate UI pattern** (`.spw/patterns/literate-ui.spw`), which maps each Spw operator to a navigation gesture and each container type to a component category:
+
+- **Operators as navigation**: the gesture map in literate-ui assigns a UI affordance to each operator (`?` → probe/search, `~` → defer/bookmark, `@` → rotate/lens picker, `*` → collapse/resolve, `^` → integrate/frame). These gestures extend the yank/paste/transform verbs defined in §A–§B into a full navigation vocabulary.
+- **Snippet economy**: the bracket pseudo-elements (§C) and structured copy (§D) form the clipboard side of literate-ui's exchange protocol — copy from the UI produces a snippet seed, paste instantiates an operator-typed component.
+- **Spirit sequence as navigation spine**: the phase progression `?~@&*^` defined in literate-ui provides the completion ranking and phase-aware breadcrumbs that the authoring loop uses to guide editing.
+- **Register bank as shared state bus**: the register bank (§A phase transitions) maps 1:1 to literate-ui's operator-component model, where each operator-component reads from and writes to its operator register.

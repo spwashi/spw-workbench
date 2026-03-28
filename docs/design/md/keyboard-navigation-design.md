@@ -2,6 +2,7 @@
 **Date:** 2026-02-15  
 **Status:** Design Proposal  
 **Depends on:** `infra/state/state.ts`, `infra/accessibility/focus.ts`, `features/keyboard/keyboard-manager.ts`, `features/keyboard/navigation/scoped-navigation.ts`, `core/layers/layers.ts`
+**See also:** [Literate UI Pattern](../../../.spw/patterns/literate-ui.spw) — maps operators to navigation gestures within the topographic model defined here
 
 ---
 

@@ -1,7 +1,7 @@
 # UX Dimensions — Spw Workbench Design Principles
 **Date:** 2026-02-15  
 **Status:** Active  
-**Related:** [`ATTENTIONAL_SEMANTICS.md`](/src/design/ATTENTIONAL_SEMANTICS.md), [`keyboard-navigation-design.md`](/docs/design/keyboard-navigation-design.md), [`interaction-semantics-design.md`](/docs/design/interaction-semantics-design.md)
+**Related:** [`ATTENTIONAL_SEMANTICS.md`](/src/design/ATTENTIONAL_SEMANTICS.md), [`keyboard-navigation-design.md`](/docs/design/keyboard-navigation-design.md), [`interaction-semantics-design.md`](/docs/design/interaction-semantics-design.md), [Literate UI Pattern](../../../.spw/patterns/literate-ui.spw)
 
 ---
 

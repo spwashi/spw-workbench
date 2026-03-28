@@ -44,6 +44,7 @@ docs/
 - **Complete navigation?** Open `toc.spw` (table of contents)
 - **New to Spw?** Start with `lang/few-shot.spw.md`
 - **Understanding the architecture?** See `design/goals.md`
+- **UI design principles?** See `.spw/patterns/literate-ui.spw` (operator navigation, snippet economy, component physics)
 - **Need a top-down map?** Read `architecture-map.md`
 - **Curious about origins?** Read `design/history.md`
 - **Roadmap view?** Read `directions.spw` (1–3–6 month priorities)

@@ -1,0 +1,331 @@
+# Literate UI Pattern
+#
+# Operators as navigation. Snippets as expandable text.
+# Syntax physics as component design guidance.
+
+#>spw_pattern_literate_ui
+#:pattern #!literate_ui
+#:layer #!pragmatics
+
+^"principle"{
+ ~#thesis: "A literate UI treats Spw operators as first-class navigation primitives and Spw snippets as expandable, completable units of meaning — so that the interface reads like authored syntax and the syntax reads like a navigable interface."
+ ~#physics: "the spirit sequence (?~@&*^) is a rotation through attention states; each state implies a different UI affordance"
+ ~#exchange: "syntax teaches components how to behave; components teach syntax where it is legible"
+}
+
+# ── I. Operator Navigation ──────────────────────────────────────
+
+^"operator_navigation"{
+ #:semantics #!nav_primitives
+
+ ~#claim: "each operator implies a navigation gesture; a literate UI maps these gestures to swappable affordances rather than hardcoded widgets"
+
+ gesture_map: {
+  '?': .{gesture:"probe", ui:"search field, filter, faceted exploration", transition:"opens a wonder — the interface asks a question"}
+  '~': .{gesture:"defer", ui:"bookmark, save-for-later, potential drawer", transition:"names without resolving — the interface holds a reference"}
+  '<': .{gesture:"receive", ui:"input slot, drop target, intake surface", transition:"opens a channel — the interface accepts content"}
+  '#': .{gesture:"resonate", ui:"tag, annotation badge, concept chip", transition:"marks membership — the interface classifies"}
+  '.': .{gesture:"ground", ui:"breadcrumb, subject line, current-context indicator", transition:"names the subject — the interface declares position"}
+  '>': .{gesture:"emit", ui:"output panel, projection surface, publication slot", transition:"closes a channel — the interface publishes"}
+  '@': .{gesture:"rotate", ui:"perspective picker, lens toggle, viewpoint selector", transition:"changes the observer — the interface reframes"}
+  '(': .{gesture:"scope_open", ui:"detail expansion, inline popover, context push", transition:"opens parenthetical — the interface deepens"}
+  '#.': .{gesture:"anchor", ui:"section heading, stable reference point, permalink", transition:"announces a waypoint — the interface settles"}
+  ')': .{gesture:"scope_close", ui:"collapse, summary return, context pop", transition:"closes parenthetical — the interface lifts"}
+  '&': .{gesture:"merge", ui:"diff view, comparison panel, join operation", transition:"combines streams — the interface reconciles"}
+  '[': .{gesture:"select", ui:"list item, option chip, selectable region", transition:"opens a set — the interface enumerates"}
+  '#.': .{gesture:"qualify", ui:"type badge, kind indicator, classification label", transition:"narrows identity — the interface specifies"}
+  ']': .{gesture:"commit", ui:"confirm button, selection close, choice seal", transition:"closes a set — the interface decides"}
+  '*': .{gesture:"collapse", ui:"resolve indicator, computed value, evaluation result", transition:"produces a value — the interface delivers"}
+  '{': .{gesture:"define", ui:"editor surface, definition panel, body container", transition:"opens a definition — the interface materializes"}
+  '=': .{gesture:"bind", ui:"assignment field, property setter, config toggle", transition:"establishes a constraint — the interface configures"}
+  '}': .{gesture:"seal", ui:"save action, definition close, body seal", transition:"closes a definition — the interface completes"}
+  '$': .{gesture:"materialize", ui:"substrate inspector, meta panel, system view", transition:"inspects the material — the interface introspects"}
+  '%': .{gesture:"measure", ui:"progress bar, metric badge, ratio display", transition:"takes a measurement — the interface quantifies"}
+  '^': .{gesture:"integrate", ui:"promote action, frame creation, structural commit", transition:"elevates — the interface frames"}
+  '!': .{gesture:"act", ui:"execute button, action trigger, command palette", transition:"fires — the interface performs"}
+ }
+
+ ~#swappable_rule: "the gesture→ui mapping is a default, not a mandate; any component that fulfills the gesture contract can substitute"
+ ~#composition: "a navigation path through operators produces a sentence: ?probe → .ground → @rotate → *collapse reads as 'search, anchor, reframe, resolve'"
+}
+
+# ── II. Spirit Sequence as Navigation Spine ─────────────────────
+
+^"spirit_navigation"{
+ #:semantics #!phase_spine
+
+ ~#sequence: "? ~ < # . > @ ( #. ) & [ #. ] * { = } $ % ^ !"
+ ~#claim: "the spirit sequence is not just a parse order — it is a navigation spine that guides the user through phases of attention"
+
+ phase_affordances: {
+  wonder: .{
+   sigil:"?",
+   nav:"opens exploration — the UI presents possibilities",
+   component:"search overlay, question prompt, facet browser",
+   breadcrumb:"? ...",
+   completion:"suggest ~potential after ? to name what was found"
+  }
+  potential: .{
+   sigil:"~",
+   nav:"defers resolution — the UI holds without collapsing",
+   component:"draft drawer, bookmark shelf, pending list",
+   breadcrumb:"? ~ ...",
+   completion:"suggest <receive or #resonate to begin classifying"
+  }
+  receive: .{
+   sigil:"<",
+   nav:"opens intake — the UI accepts external content",
+   component:"import dialog, drop zone, paste receptor",
+   breadcrumb:"? ~ < ...",
+   completion:"suggest # to tag or . to ground the received content"
+  }
+  resonate: .{
+   sigil:"#",
+   nav:"classifies — the UI annotates and groups",
+   component:"tag picker, concept chip palette, category tree",
+   breadcrumb:"? ~ < # ...",
+   completion:"suggest . to ground the resonance as a subject"
+  }
+  ground: .{
+   sigil:".",
+   nav:"declares subject — the UI anchors context",
+   component:"subject line, breadcrumb root, title field",
+   breadcrumb:"? ~ < # . ...",
+   completion:"suggest > to emit or @ to rotate perspective"
+  }
+  emit: .{
+   sigil:">",
+   nav:"publishes — the UI surfaces output",
+   component:"output panel, preview pane, render surface",
+   breadcrumb:"? ~ < # . > ...",
+   completion:"suggest @ to reframe the emission"
+  }
+  perspective: .{
+   sigil:"@",
+   nav:"reframes — the UI changes the viewing angle",
+   component:"lens picker, rotation dial, observer toggle",
+   breadcrumb:"? ~ < # . > @ ...",
+   completion:"suggest & to merge perspectives or * to collapse"
+  }
+  confluence: .{
+   sigil:"&",
+   nav:"merges — the UI reconciles parallel streams",
+   component:"diff view, merge panel, comparison grid",
+   breadcrumb:"? ~ ... & ...",
+   completion:"suggest * to collapse the merge into a value"
+  }
+  value: .{
+   sigil:"*",
+   nav:"resolves — the UI delivers a concrete result",
+   component:"result card, evaluation display, resolved badge",
+   breadcrumb:"? ~ ... * ...",
+   completion:"suggest ^ to integrate or ! to act on the value"
+  }
+  integration: .{
+   sigil:"^",
+   nav:"frames — the UI elevates into durable structure",
+   component:"frame creator, section promotion, structural commit",
+   breadcrumb:"? ~ ... ^ ...",
+   completion:"suggest ! to execute or ? to begin a new cycle"
+  }
+ }
+
+ ~#cycle: "the sequence is a wheel, not a line — ^ returns to ? when the framed structure raises new questions"
+}
+
+# ── III. Snippet Economy ────────────────────────────────────────
+
+^"snippet_economy"{
+ #:semantics #!expandable_text
+
+ ~#claim: "a snippet is the atomic unit of literate exchange — taggable, instantiable, expandable, completable, and referenceable across surfaces"
+
+ anatomy: {
+  seed: "the minimal expression — an operator, a label, and enough structure to parse"
+  title: "the snippet as a readable heading — operator sigil becomes typographic emphasis"
+  body: "the snippet expanded — brace contents become visible, nested structure navigable"
+  projection: "the snippet rendered for a specific audience — dialect determines which representation"
+ }
+
+ lifecycle: {
+  author: .{
+   dialect:"Spw.b",
+   surface:"editor, .spw file, commit message",
+   affordance:"write and expand — braces open and close, operators prefix",
+   completion:"suggest operators after whitespace, suggest labels after operators, suggest braces after labels"
+  }
+  search: .{
+   dialect:"Spw.l",
+   surface:"command palette, search field, filter bar",
+   affordance:"compact reference — one-line snippet with operator prefix",
+   completion:"suggest from selector registry, fuzzy match on label"
+  }
+  exchange: .{
+   dialect:"Spw.m",
+   surface:"clipboard, API response, serialized state",
+   affordance:"canonical form — operator normal form for identity comparison",
+   completion:"none — machine dialect is for transport, not authoring"
+  }
+  execute: .{
+   dialect:"Spw.x",
+   surface:"runtime trial, live evaluation, hot reload",
+   affordance:"executable expansion — the snippet runs and produces a value",
+   completion:"suggest based on register state and phase context"
+  }
+ }
+
+ ~#as_title: "a snippet title is its seed rendered as heading text — the operator becomes a typographic sigil and the label becomes the heading content; clicking expands the body"
+ ~#as_nav: "a snippet in a navigation context is a link whose operator determines the link behavior (? opens search, @ rotates view, . anchors breadcrumb)"
+ ~#as_completion: "a snippet in an editor is a completable template — type the operator, the system suggests labels from the selector registry, tab expands the brace structure"
+}
+
+# ── IV. Component Design from Syntax Physics ────────────────────
+
+^"component_physics"{
+ #:semantics #!design_guidance
+
+ ~#claim: "every UI component should be traceable to a syntactic primitive — an operator, a container, or a phase transition — and its behavior should be derivable from that primitive's physics"
+
+ container_components: {
+  angle: .{
+   syntax:"<>",
+   physics:"directional channel — content flows in (<) or out (>)",
+   component:"I/O surfaces: input fields accept (<), output panels emit (>)",
+   design_rule:"angle components have a direction; reversing the angle reverses the flow"
+  }
+  paren: .{
+   syntax:"()",
+   physics:"scope boundary — creates depth without commitment",
+   component:"inline expansion: popovers, tooltips, detail views push context without leaving the page",
+   design_rule:"paren components are collapsible; closing them loses no data, only hides depth"
+  }
+  bracket: .{
+   syntax:"[]",
+   physics:"selection set — enumerates options within a bounded space",
+   component:"selection surfaces: lists, menus, chip groups offer discrete choices within a frame",
+   design_rule:"bracket components are countable; the user can see how many items exist"
+  }
+  brace: .{
+   syntax:"{}",
+   physics:"definition body — materializes content with full structural commitment",
+   component:"definition surfaces: editors, forms, config panels contain the full body of a thing",
+   design_rule:"brace components are persistent; their content survives navigation"
+  }
+ }
+
+ operator_components: {
+  ~#pattern: "an operator-component is a widget that embodies one operator's gesture"
+  probe_bar: .{op:"?", widget:"search input with faceted suggestions", state:"register ? holds the active query"}
+  potential_shelf: .{op:"~", widget:"deferred items sidebar", state:"register ~ holds bookmarked references"}
+  perspective_dial: .{op:"@", widget:"lens rotation control", state:"register @ holds the active viewpoint"}
+  merge_panel: .{op:"&", widget:"side-by-side comparison view", state:"register & holds merge candidates"}
+  value_card: .{op:"*", widget:"resolved result display", state:"register * holds the collapsed value"}
+  frame_maker: .{op:"^", widget:"structural promotion action", state:"register ^ holds the integration target"}
+  action_button: .{op:"!", widget:"execute trigger", state:"register ! holds the pending action"}
+  ground_anchor: .{op:".", widget:"breadcrumb or subject indicator", state:"register . holds the current subject"}
+  resonance_tag: .{op:"#", widget:"concept chip or annotation badge", state:"register # holds active annotations"}
+  bind_field: .{op:"=", widget:"property assignment or config input", state:"register = holds bound constraints"}
+  substrate_view: .{op:"$", widget:"meta inspector or system state panel", state:"register $ holds material snapshots"}
+  measure_gauge: .{op:"%", widget:"progress indicator or ratio display", state:"register % holds measured values"}
+ }
+
+ ~#register_as_state: "the register bank is the shared state bus — each operator-component reads from and writes to its operator register; cross-component communication flows through the bank"
+ ~#phase_as_lifecycle: "a component's lifecycle mirrors the spirit sequence — it is wondered into existence (?), named (~), scoped (@), merged (&), resolved (*), and framed (^)"
+}
+
+# ── V. Queryable Interface ──────────────────────────────────────
+
+^"queryable_interface"{
+ #:semantics #!interpretability
+
+ ~#claim: "every component in a literate UI is queryable — its operator type, phase state, container kind, and register binding are selector dimensions, not implementation details"
+
+ selector_dimensions: {
+  by_operator: "?component — select all components whose primary operator is ?"
+  by_container: "(component) — select all components that are paren-scoped (inline expansions)"
+  by_phase: "component:phase(wonder) — select components currently in the wonder phase"
+  by_register: "component:register(active) — select components with non-empty operator registers"
+  by_materialization: "component:stage(frame) — select components at the frame stage (structured but not yet materialized)"
+  by_resonance: "component:resonates(#tag) — select components annotated with a specific concept"
+ }
+
+ query_surfaces: {
+  inspector: .{
+   purpose:"structural query — what components exist, what are their types and states",
+   dialect:"Spw.l",
+   example:"?[op=@] .breadcrumb — find all perspective-type components under breadcrumb"
+  }
+  search: .{
+   purpose:"content query — find snippets by label, body text, or annotation",
+   dialect:"Spw.l",
+   example:"~potential #[tag=draft] — find all deferred items tagged as drafts"
+  }
+  automation: .{
+   purpose:"programmatic query — select and transform components by selector",
+   dialect:"Spw.x",
+   example:"*{?[phase=wonder]} => ^promote — resolve all wondering components into frames"
+  }
+ }
+
+ ~#interpretability: "a queryable interface is interpretable because every component answers the question 'what are you?' with its operator, container, phase, and register state — no hidden widget identity"
+}
+
+# ── VI. Exchange Protocol ───────────────────────────────────────
+
+^"exchange_protocol"{
+ #:semantics #!syntax_exchange
+
+ ~#claim: "the .spw file and the UI surface are two representations of the same structure — editing one should be expressible as a patch to the other"
+
+ direction: {
+  spw_to_ui: .{
+   trigger:"file parse or edit",
+   flow:"operator → gesture → component instantiation; brace → container → layout; label → title → heading text",
+   fidelity:"lossless — every syntactic element has a UI counterpart"
+  }
+  ui_to_spw: .{
+   trigger:"user interaction or component state change",
+   flow:"gesture → operator emission; layout change → brace restructure; heading edit → label rename",
+   fidelity:"lossy — some UI states (hover, focus, scroll) have no syntactic equivalent and are ephemeral"
+  }
+ }
+
+ snippet_exchange: {
+  copy_from_ui: "bracket pseudo-elements (::before/::after) inject operator delimiters into the selection stream; copying a component produces a snippet seed"
+  paste_to_ui: "a pasted snippet is parsed by dialect; if valid Spw, the operator determines which component type to instantiate; if plain text, it becomes a .ground subject"
+  complete_in_ui: "typing an operator in a text field triggers snippet completion — the system offers labels from the selector registry as completions; tab expands the full brace structure"
+ }
+
+ ~#taste: "the exchange is bidirectional but not symmetric — syntax is precise and the UI is approximate; the file is the source of truth, the interface is the source of interaction"
+}
+
+# ── VII. Invariants ─────────────────────────────────────────────
+
+^"invariants"{
+ rules: #[
+  "every component traces to exactly one operator or container primitive"
+  "operator registers are the shared state bus; no component stores hidden state"
+  "the spirit sequence is the navigation spine; phase transitions drive completion suggestions"
+  "snippets are the unit of exchange; copy produces a seed, paste instantiates a component"
+  "dialects govern representation, not identity — the same snippet has four faces (author, search, machine, executable)"
+  "queryability is a property of every component, not a feature added to some"
+  "the file is truth, the interface is interaction — when they disagree, the file wins"
+ ]
+}
+
+#>wonder_spw_patterns_literateui_1
+?["What would it feel like to navigate a UI built from this pattern?"]{
+  #:depth #!experiential // lens: pilgrimage
+  ~#hypothesis: "the user would experience navigation as authoring — moving through the interface writes a sentence in the spirit sequence"
+  !probe{ "walk the spirit sequence as a UI journey: ? opens search, ~ bookmarks a result, @ reframes the view, & merges two findings, * resolves to a value, ^ frames it as a section. Did the journey produce a readable document?" }
+  $%[operator.gesture_coverage, container.component_coverage]
+}
+
+#>wonder_spw_patterns_literateui_2
+?["Where does this pattern break — where does syntax physics stop guiding component design?"]{
+  #:depth #!computational // lens: formal structure
+  ~#warning: "operator-to-component mappings are metaphors, not proofs — the risk is that the map becomes more interesting than the territory"
+  !probe{ "name three UI interactions that have no natural operator equivalent. These are the boundary of literate UI — where the interface must invent rather than derive." }
+  $%[operator.unmapped_interactions, container.orphan_components]
+  ~<.spw/patterns/literate-architecture.spw>  // nearest neighbor
+}
