@@ -7,6 +7,7 @@
 ^["roots"]{
  @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
  @artifact: ~".agents/plans/vscode-lsp-integration/vscode-lsp-integration.spw"
+ @references: ~".agents/plans/vscode-lsp-integration/references/index.spw"
  @tooling: ~".spw/tooling/vscode-spw.spw"
  @register_bank: ~".spw/registries/register-bank.spw"
  @dialect_spec: ~".spw/registries/dialect-spec.spw"
@@ -27,7 +28,7 @@
  lane: #execution_truth
  ladder: #service
  develops: [#editor_trust, #semantic_truth, #thin_client, #preview_truth]
- review_surfaces: [@cluster, @artifact, @tooling, @editing, @navigation, @server, @extension]
+ review_surfaces: [@cluster, @artifact, @references, @tooling, @editing, @navigation, @server, @extension]
  snippet_routes: [#rename_preview, #path_completion, #document_link, #hover_peek, #workspace_edit]
 }
 
@@ -54,13 +55,13 @@
  parallelizable: [#completion, #rename, #document_link, #hover, #docs_copy]
  shared_hot_files: ["packages/spw-lsp/src/handlers/editing.ts", "packages/spw-lsp/src/handlers/navigation.ts", "packages/spw-lsp/src/stdio-server.ts", "extensions/vscode-spw/src/extension.ts"]
  merge_risks: [#hot_file, #capability_drift, #copy_drift]
- handoff_artifacts: [@artifact, @tooling]
+ handoff_artifacts: [@artifact, @references, @tooling]
 }
 
 ^["supporting_documents"]{
  must_ship: [@artifact, @tooling]
- helpful: [@extension]
- carries: [#capability_matrix, #preview_notes, #fallback_note, #release_copy]
+ helpful: [@extension, @references]
+ carries: [#capability_matrix, #preview_notes, #fallback_note, #release_copy, #source_map]
 }
 
 ^["interaction_depth"]{
@@ -108,6 +109,7 @@
  >>[2026-03-27 14:22] implement — rewrote branch memory around roots, concept indexing, and recursive improvement; added a branch-local Spw artifact so plan language, capability language, and release claims can share one indexed surface.
  >>[2026-03-27 14:23] taste — recursive improvement here means every new capability should be nameable three ways without drift: code action title, docs snippet, and review vocabulary.
  >>[2026-03-27 18:00] revise — rooted into register-bank.spw, dialect-spec.spw, literate-architecture.spw, and literate-ui.spw as canon surfaces. Added cognitive_surface_stack mapping each LSP handler to the Spw layers it reads: semantic tokens from lexer + register-bank phase defs, hover from AST + operator roles + dialect context, completion from scope frames + register access patterns, etc. The semantic layer this plan builds is the bridge between syntactic parsing and the cognitive surfaces the other three VS Code plans render.
+ >>[2026-03-28 09:47] rebase — refreshed baseline to main@b41caa6b and added references/index.spw so LSP protocol, VS Code extension guides, semantic tokens, and TextMate layering stay in the normal reread path.
 }
 
 ^["open"]{
@@ -142,13 +144,13 @@
 
 ^["cache"]{
  ~#status: "active"
- ~#base_ref: "main@3b1747c4"
- ~#rebased_at: "2026-03-27"
+ ~#base_ref: "main@b41caa6b"
+ ~#rebased_at: "2026-03-28"
  ~#hygiene_split: "none; codebase restructure already landed on main"
- ~#files_hot: "packages/spw-lsp/src/handlers/, packages/spw-lsp/src/stdio-server.ts, extensions/vscode-spw/src/extension.ts, .agents/plans/vscode-lsp-integration/"
+ ~#files_hot: "packages/spw-lsp/src/handlers/, packages/spw-lsp/src/stdio-server.ts, extensions/vscode-spw/src/extension.ts, .agents/plans/vscode-lsp-integration/, .agents/plans/vscode-lsp-integration/references/"
  ~#next_commit: "10"
  ~#open_count: "2"
- ~#last_stream: "2026-03-27 14:23"
+ ~#last_stream: "2026-03-28 09:47"
  ~#taste_debt: "keep capability claims narrower than the code-action surface until preview and smoke coverage catch up"
 }
 

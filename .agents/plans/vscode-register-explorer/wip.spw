@@ -8,6 +8,7 @@
  @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
  @plan: ~".agents/plans/vscode-register-explorer/PLAN.md"
  @artifact: ~".agents/plans/vscode-register-explorer/vscode-register-explorer.spw"
+ @references: ~".agents/plans/vscode-register-explorer/references/index.spw"
  @tooling: ~".spw/tooling/vscode-spw.spw"
  @register_bank: ~".spw/registries/register-bank.spw"
  @literate_ui: ~".spw/patterns/literate-ui.spw"
@@ -26,7 +27,7 @@
  lane: #speculative_editor_future
  ladder: #component
  develops: [#inspection_taste, #register_literacy, #phase_readability, #solo_ship]
- review_surfaces: [@cluster, @plan, @artifact, @tooling]
+ review_surfaces: [@cluster, @plan, @artifact, @references, @tooling]
  snippet_routes: [#register_path, #phase_label, #detail_copy, #resonance_note]
 }
 
@@ -63,6 +64,7 @@
  @literate_ui_components: ~".spw/patterns/literate-ui.spw"  // register→component mapping (each operator register backs a navigation-primitive component)
  @type_affinities_impl: ~"packages/spw-runtime/src/state/type-affinities.ts"  // operator→container affinity rules
  @substrate_impl: ~"packages/spw-runtime/src/pipeline/substrate.ts"  // event stream powering resonance
+ @references: ~".agents/plans/vscode-register-explorer/references/index.spw"
 }
 
 ^["interaction_depth"]{
@@ -108,6 +110,7 @@
  >>[2026-03-26 00:11] decide — in the explorer tree, unqualified "phase" means pipeline phase. Detail view shows both axes when both are available. Solo-ship uses spirit-sequence phase from SIGIL_SEMANTICS; pipeline phase added when register-phase-evolution lands.
  >>[2026-03-26 00:12] observe — stdio-server.ts is 900+ lines. Adding handlers/runtime.ts needs a handler registration substrate to avoid merge bottleneck. Interaction contract now specifies this.
  >>[2026-03-27 18:00] revise — rooted into register-bank.spw, literate-ui.spw, runtime RegisterBank, type-affinities, Substrate, and interaction contract. Added parallel_work (LSP hosts transport, atlas provides manifest scope, authoring provides phase context, telemetry enriches snapshots), supporting_documents, interaction_depth, and cognitive_surface_stack. This plan operates at the substrate layer: the register tree reads register-bank SIGIL_SEMANTICS for phase grouping, acoustic properties (liminality/frequency/coupling) from register-bank spec, materialization detail from literate-architecture stages, and resonance from Substrate event channels. Each operator register backs a literate-ui navigation-primitive component — the explorer is where that mapping becomes inspectable.
+ >>[2026-03-28 09:47] rebase — refreshed baseline to main@b41caa6b and added references/index.spw so tree-view, command, quick-pick, status-bar, and programmatic inspection guidance shape the explorer's grouping and density decisions.
 }
 
 ^["open"]{
@@ -125,13 +128,13 @@
 
 ^["cache"]{
  ~#status: "planning"
- ~#base_ref: "main@96815893"
- ~#rebased_at: "2026-03-27"
+ ~#base_ref: "main@b41caa6b"
+ ~#rebased_at: "2026-03-28"
  ~#hygiene_split: "isolate local drift in extensions/vscode-spw/src/annotation-index.ts, extensions/vscode-spw/src/extension.ts, and packages/spw-lsp/src/stdio-server.ts before implementation"
- ~#files_hot: ".agents/plans/vscode-register-explorer/PLAN.md, .agents/plans/vscode-register-explorer/wip.spw, .agents/plans/vscode-register-explorer/vscode-register-explorer.spw"
+ ~#files_hot: ".agents/plans/vscode-register-explorer/PLAN.md, .agents/plans/vscode-register-explorer/wip.spw, .agents/plans/vscode-register-explorer/vscode-register-explorer.spw, .agents/plans/vscode-register-explorer/references/"
  ~#next_commit: "1"
  ~#open_count: "2"
- ~#last_stream: "2026-03-26 00:12"
+ ~#last_stream: "2026-03-28 09:47"
  ~#taste_debt: "Do not let the first explorer slice become a dump of every runtime field. Atlas context is an enrichment, not a prerequisite. Pipeline phase and spirit-sequence phase are orthogonal; show both when available, default to spirit-sequence for solo-ship."
 }
 

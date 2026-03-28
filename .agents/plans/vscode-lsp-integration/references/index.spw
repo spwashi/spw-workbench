@@ -1,0 +1,45 @@
+# references — vscode-lsp-integration
+
+#:layer #!reference
+
+^["source_index"]{
+ @lsp_root: "https://microsoft.github.io/language-server-protocol/"
+ @lsp_317: "https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/"
+ @vscode_lsp_guide: "https://code.visualstudio.com/api/language-extensions/language-server-extension-guide"
+ @vscode_programmatic: "https://code.visualstudio.com/api/language-extensions/programmatic-language-features"
+ @vscode_semantic_tokens: "https://code.visualstudio.com/api/language-extensions/semantic-highlight-guide"
+ @vscode_textmate: "https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide"
+}
+
+^["signature"]{
+ ~#profile: "protocol braid"
+ ~#recognition: "server semantics, editor affordance, and release copy should all collapse to the same named capability"
+}
+
+^["topic_anchors"]{
+ protocol_core: [@lsp_root, @lsp_317, #capabilities, #hover, #rename, #document_link, #workspace_edit]
+ thin_client_boundary: [@vscode_lsp_guide, @vscode_programmatic, #client_server_split, #activation, #transport, #preview_truth]
+ token_surface: [@vscode_semantic_tokens, @vscode_textmate, #semantic_tokens, #scope_map, #fallback, #theme_mapping]
+}
+
+^["operational_density"]{
+ checks: [#client_thinness, #capability_truth, #rename_preview, #hover_copy, #document_link_scope]
+ drift_risks: [#regex_fallback, #client_semantics, #marketplace_overclaim, #token_fork]
+ release_implications: [#marketplace_copy, #docs_copy, #support_copy]
+}
+
+#>wonder_agents_plans_vscodelspintegration_references_1
+?["Which protocol clauses deserve release-copy discipline first?"]{
+  #:depth #!computational // lens: protocol braid
+  &[@lsp_317, @vscode_lsp_guide] => $[#rename, #hover, #document_link, #workspace_edit]
+  !probe{ "ask which capabilities have both server semantics and editor affordance constraints, then narrow copy to those." }
+  ~<.agents/plans/vscode-lsp-integration/wip.spw>
+}
+
+#>wonder_agents_plans_vscodelspintegration_references_2
+?["Where should semantic tokens stop and TextMate scopes take over?"]{
+  #:depth #!educational // lens: layered color truth
+  &[@vscode_semantic_tokens, @vscode_textmate] => $[#semantic_tokens, #scope_map, #fallback]
+  !probe{ "name what the server can prove semantically and what the client should still inherit from syntax grammar layers." }
+  ~<.agents/plans/vscode-lsp-integration/vscode-lsp-integration.spw>
+}

@@ -1,0 +1,41 @@
+# references — <slug>
+
+#:layer #!reference
+
+^["source_index"]{
+ # Official or primary sources only.
+ @primary: "https://example.invalid/primary"
+ @secondary: "https://example.invalid/secondary"
+}
+
+^["signature"]{
+ ~#profile: "<field signature>"
+ ~#recognition: "<what makes this reference field legible and reusable>"
+}
+
+^["topic_anchors"]{
+ topic_a: [@primary, #core_concept, #constraint, #transfer]
+ topic_b: [@secondary, #surface, #behavior, #review]
+}
+
+^["operational_density"]{
+ checks: [#truth_surface, #claim_discipline, #transfer]
+ drift_risks: [#stale_copy, #folk_knowledge, #naming_drift]
+ release_implications: [#docs_copy, #marketplace_copy, #teaching_surface]
+}
+
+#>wonder_agents_plans__schema_referencestemplate_1
+?["Which anchor in references — <slug> should constrain release claims first?"]{
+  #:depth #!computational // lens: source discipline
+  &[@primary, @secondary] => $[#truth_surface, #claim_discipline]
+  !probe{ "pick the source whose contract most directly limits what the plan may promise." }
+  ~<.agents/plans/<slug>/wip.spw>
+}
+
+#>wonder_agents_plans__schema_referencestemplate_2
+?["How does this reference field teach rather than merely cite?"]{
+  #:depth #!educational // lens: transfer
+  $^["topic_anchors"]@here => $^["operational_density"]@here
+  !probe{ "ask which anchor becomes a reusable review question, snippet route, or design heuristic." }
+  ~<.agents/plans/_schema/wip.spw>
+}
