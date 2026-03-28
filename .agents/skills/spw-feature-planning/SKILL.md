@@ -186,3 +186,4 @@ Commit PLAN.md and `wip.spw` to the feature branch **before touching any source 
 | Plan involves naming / layering cleanup | `spw-craft-quality` |
 | Ready to commit | `spw-commit-review` |
 | Plan requires algorithmic design | `spw-math-algorithm-radar` |
+| New plan affects adjacent plans or adds artifacts | `spw-plan-maintenance` |

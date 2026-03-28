@@ -138,6 +138,7 @@ Agent operational knowledge lives in `.agents/`:
 ### Skills (`.agents/skills/`)
 - **spw-commit-review** — Human-in-the-loop commit gate, polling, syntax review
 - **spw-feature-planning** — Plan features before coding (PLAN.md + wip.spw)
+- **spw-plan-maintenance** — Maintain plan ecology: staleness detection, cache refresh, cross-reference propagation
 - **spw-fix-planning** — Triage and plan fixes for test failures / regressions
 - **spw-craft-quality** — Craft passes: naming, layering, types, containment
 - **spw-typescript-affordances** — Type audits, branded types, contracts

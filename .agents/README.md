@@ -8,7 +8,7 @@ This directory is the agent-facing counterpart to `.spw/` (canon surfaces) and `
 
 ```
 .agents/
-├── skills/           # 13 operational skills with SKILL.md, scripts, references
+├── skills/           # 14 operational skills with SKILL.md, scripts, references
 ├── plans/            # Feature branch plans (29 active, 25 archived)
 │   ├── _schema/      # Plan templates: plan.md, wip.spw, wip-template.spw
 │   ├── _archive/     # Merged/completed plans
@@ -26,6 +26,7 @@ Each skill has a `SKILL.md` manifest and optional `scripts/` and `references/` s
 |-------|---------|
 | **spw-commit-review** | Human-in-the-loop commit gate — Touch ID authorization, syntax review, layer checks |
 | **spw-feature-planning** | Plan features before coding — PLAN.md + wip.spw artifacts |
+| **spw-plan-maintenance** | Maintain the plan ecology — detect staleness, refresh caches, propagate cross-references |
 | **spw-fix-planning** | Triage and plan fixes for test failures / regressions |
 | **spw-craft-quality** | Craft passes: naming, layering, types, containment, axis attribution |
 | **spw-typescript-affordances** | Type audits, branded types, contracts |
