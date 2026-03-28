@@ -16,6 +16,23 @@
  ~#composition_rule: "each surface must solo-ship first; shared context, events, and pairwise integrations are additive"
 }
 
+^["shipped_baseline_2026_03_26"]{
+ #:contract #!baseline
+
+ ~#source_commits: [
+  "10fd2f6c — vscode-spw phase 1: dead code, grammar + config + snippets",
+  "f42a80fa — vscode-spw phase 2: semantic tokens → LSP",
+  "6e3c009c — vscode-spw phase 3: consolidate annotation index via LSP",
+  "0ff461ee — align extension metadata to semantic-token theming",
+ ]
+
+ ~#truth: "the plugin is already a thin LSP client"
+ ~#extension_surface: "client-owned surface is currently one activity-bar container, one Concepts tree, five Concepts commands, and an annotation mirror backed by `spw/annotations`"
+ ~#context_truth: "SpwContext is still minimal — documentSelector, annotationIndex, resolveRoot, ROOT_MAP, SIGIL_SEMANTICS"
+ ~#lsp_surface: "standard editor features already route through stdio-server.ts: definition, declaration, references, rename, document links, hover, symbols, completion, code lens, formatting, inlay hints, folding, semantic tokens"
+ ~#planning_implication: "future work should optimize for client-side composition (typed custom `spw/*` requests, additive SpwContext growth, event bus, new views/status surfaces) rather than another provider-migration pass"
+}
+
 ^["shared_capabilities"]{
  #:contract #!capabilities
 
@@ -368,6 +385,27 @@
  }
 }
 
+^["client_composition_substrate"]{
+ #:pragmatics #!extension_architecture
+
+ ~#problem: "after phases 1-3 moved most language features into the LSP, the main merge pressure shifted to extensions/vscode-spw/src/extension.ts, extensions/vscode-spw/src/context.ts, and extensions/vscode-spw/package.json. All three future surface plans widen the same client shell."
+
+ ~#pattern: "extract a small client-composition substrate before the first multi-surface implementation widens the shell again"
+ ~#shape: "SpwContext owns additive nullable fields plus a typed EventBus; custom `spw/*` requests live behind typed helpers; extension.ts stays a composition root that wires views, status items, and listeners"
+ ~#existing_precedent: "the server already wants the same treatment via ^[\"handler_registration\"]; the client needs the parallel move so view work does not re-monolith extension.ts"
+
+ substrate_commit: {
+  ~#description: "extract a client substrate for additive SpwContext growth, typed event emission, and custom `spw/*` request helpers"
+  ~#files: [
+   "extensions/vscode-spw/src/context.ts (MOD — additive context + event bus types)",
+   "extensions/vscode-spw/src/lsp/custom-requests.ts (NEW — typed LanguageClient.sendRequest wrappers)",
+   "extensions/vscode-spw/src/extension.ts (MOD — composition root only)",
+   "extensions/vscode-spw/package.json (MOD — contributed views/commands stay declarative and shallow)"
+  ]
+  ~#timing: "should land before or alongside the first VS Code surface plan that adds new views, status items, or cross-surface listeners"
+ }
+}
+
 ^["phase_vocabularies"]{
  #:semantics #!vocabulary_reconciliation
 
@@ -461,11 +499,12 @@
 
  ~#recommended: [
   "0. handler-registration substrate commit extracts dispatch from stdio-server.ts so new handlers plug in cleanly",
-  "1. shared interaction contract and any shared helper/types extraction land as a substrate commit when possible",
-  "2. each surface maintains a solo-ship path that does not require the other two surfaces to render usefully",
-  "3. pairwise integration commits land opportunistically (atlas x registers, atlas x authoring, registers x authoring)",
-  "4. runtime/parser enrichments (runtime-telemetry-canon, register-phase-evolution, absorb-spwq-cli) land independently and are consumed opportunistically via capability checks",
-  "5. all-up rotation polish is a final integration slice, not a prerequisite for any one surface",
+  "1. client-composition substrate commit extracts additive SpwContext growth, event bus wiring, and typed custom `spw/*` request helpers from extension.ts",
+  "2. shared interaction contract and any shared helper/types extraction land as a substrate commit when possible",
+  "3. each surface maintains a solo-ship path that does not require the other two surfaces to render usefully",
+  "4. pairwise integration commits land opportunistically (atlas x registers, atlas x authoring, registers x authoring)",
+  "5. runtime/parser enrichments (runtime-telemetry-canon, register-phase-evolution, absorb-spwq-cli) land independently and are consumed opportunistically via capability checks",
+  "6. all-up rotation polish is a final integration slice, not a prerequisite for any one surface",
  ]
 
  ~#shared_hot_files: [

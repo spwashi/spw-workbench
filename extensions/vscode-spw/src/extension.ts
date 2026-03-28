@@ -6,7 +6,8 @@ import {
   type ServerOptions,
 } from 'vscode-languageclient/node'
 import { AnnotationIndex } from './annotation-index'
-import type { SpwContext } from './context'
+import { createSpwContext } from './context'
+import { createSpwCustomRequestClient } from './lsp/custom-requests'
 import { ROOT_MAP, resolveRoot } from './roots'
 import { SIGIL_SEMANTICS } from './semantics'
 import { registerConceptsTreeView } from './views/concepts-tree'
@@ -15,61 +16,27 @@ let client: LanguageClient | undefined
 
 export function activate(context: vscode.ExtensionContext): void {
   const documentSelector: vscode.DocumentSelector = { language: 'spw' }
-
-  // ── LSP Client ──────────────────────────────────────────────────
-  // The stdio-server.ts handles: definition, documentLink, hover,
-  // documentSymbol, workspaceSymbol, completion, codeLens,
-  // formatting, diagnostics.
-
-  const serverScript = resolveServerPath()
-
-  // Use node --import tsx to run the TypeScript server directly.
-  // This mirrors the approach used in smoke-navigation.ts.
-  const serverOptions: ServerOptions = {
-    run: {
-      command: process.execPath,
-      args: ['--import', 'tsx', serverScript],
-    },
-    debug: {
-      command: process.execPath,
-      args: ['--import', 'tsx', serverScript],
-    },
-  }
-
-  const clientOptions: LanguageClientOptions = {
-    documentSelector: [{ scheme: 'file', language: 'spw' }],
-    synchronize: {
-      fileEvents: vscode.workspace.createFileSystemWatcher('**/*.spw'),
-    },
-  }
-
-  client = new LanguageClient(
-    'spwLanguageServer',
-    'Spw Language Server',
-    serverOptions,
-    clientOptions,
-  )
-
+  client = createLanguageClient()
   client.start()
-  context.subscriptions.push({ dispose: () => { void client?.stop() } })
 
-  // ── Extension-only features ─────────────────────────────────────
-  // These remain client-side because:
-  // - Semantic tokens: uses VS Code SemanticTokensBuilder API
-  // - Concepts tree: VS Code-specific TreeDataProvider UI
-
-  const annotationIndex = new AnnotationIndex()
-  annotationIndex.setClient(client)
-  void annotationIndex.activate()
-  context.subscriptions.push({ dispose: () => annotationIndex.dispose() })
-
-  const spw: SpwContext = {
+  const requests = createSpwCustomRequestClient(client)
+  const annotationIndex = new AnnotationIndex(requests)
+  const spw = createSpwContext({
     documentSelector,
     annotationIndex,
+    requests,
     resolveRoot,
     ROOT_MAP,
     SIGIL_SEMANTICS,
-  }
+  })
+
+  void annotationIndex.activate()
+
+  context.subscriptions.push(
+    { dispose: () => { void client?.stop() } },
+    annotationIndex,
+    spw.events,
+  )
 
   const disposables: vscode.Disposable[] = [
     ...registerConceptsTreeView(spw),
@@ -85,6 +52,42 @@ export async function deactivate(): Promise<void> {
 }
 
 // ── Helpers ─────────────────────────────────────────────────────
+
+function createLanguageClient(): LanguageClient {
+  // The stdio-server.ts handles: definition, documentLink, hover,
+  // documentSymbol, workspaceSymbol, completion, codeLens,
+  // formatting, diagnostics, and the custom `spw/*` request lane.
+  return new LanguageClient(
+    'spwLanguageServer',
+    'Spw Language Server',
+    createServerOptions(resolveServerPath()),
+    createClientOptions(),
+  )
+}
+
+function createServerOptions(serverScript: string): ServerOptions {
+  // Use node --import tsx to run the TypeScript server directly.
+  // This mirrors the approach used in smoke-navigation.ts.
+  return {
+    run: {
+      command: process.execPath,
+      args: ['--import', 'tsx', serverScript],
+    },
+    debug: {
+      command: process.execPath,
+      args: ['--import', 'tsx', serverScript],
+    },
+  }
+}
+
+function createClientOptions(): LanguageClientOptions {
+  return {
+    documentSelector: [{ scheme: 'file', language: 'spw' }],
+    synchronize: {
+      fileEvents: vscode.workspace.createFileSystemWatcher('**/*.spw'),
+    },
+  }
+}
 
 function resolveServerPath(): string {
   // Resolve the LSP server relative to the workspace root.

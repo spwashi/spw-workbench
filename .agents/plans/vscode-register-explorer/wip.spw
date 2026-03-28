@@ -12,6 +12,7 @@
  @tooling: ~".spw/tooling/vscode-spw.spw"
  @register_bank: ~".spw/registries/register-bank.spw"
  @literate_ui: ~".spw/patterns/literate-ui.spw"
+ @literate_arch: ~".spw/patterns/literate-architecture.spw"
  @runtime_register: ~"packages/spw-runtime/src/state/register-bank.ts"
  @type_affinities: ~"packages/spw-runtime/src/state/type-affinities.ts"
  @substrate: ~"packages/spw-runtime/src/pipeline/substrate.ts"
@@ -55,7 +56,7 @@
  #vscode_authoring_probe_loop: "authoring provides activePhase; explorer highlights phase group matching cursor position"
  #runtime_dx_foundation: "DX diagnostic stations contextualize register faults and substrate events"
  #runtime_telemetry_canon: "telemetry enriches register snapshots with immutable substrate events and resonances — primary data quality provider"
- shared_hot_files: ["extensions/vscode-spw/src/extension.ts", "extensions/vscode-spw/src/context.ts", "packages/spw-lsp/src/stdio-server.ts"]
+ shared_hot_files: ["extensions/vscode-spw/src/extension.ts", "extensions/vscode-spw/src/context.ts", "extensions/vscode-spw/package.json", "packages/spw-lsp/src/stdio-server.ts"]
 }
 
 ^["supporting_documents"]{
@@ -111,6 +112,8 @@
  >>[2026-03-26 00:12] observe — stdio-server.ts is 900+ lines. Adding handlers/runtime.ts needs a handler registration substrate to avoid merge bottleneck. Interaction contract now specifies this.
  >>[2026-03-27 18:00] revise — rooted into register-bank.spw, literate-ui.spw, runtime RegisterBank, type-affinities, Substrate, and interaction contract. Added parallel_work (LSP hosts transport, atlas provides manifest scope, authoring provides phase context, telemetry enriches snapshots), supporting_documents, interaction_depth, and cognitive_surface_stack. This plan operates at the substrate layer: the register tree reads register-bank SIGIL_SEMANTICS for phase grouping, acoustic properties (liminality/frequency/coupling) from register-bank spec, materialization detail from literate-architecture stages, and resonance from Substrate event channels. Each operator register backs a literate-ui navigation-primitive component — the explorer is where that mapping becomes inspectable.
  >>[2026-03-28 09:47] rebase — refreshed baseline to main@b41caa6b and added references/index.spw so tree-view, command, quick-pick, status-bar, and programmatic inspection guidance shape the explorer's grouping and density decisions.
+ >>[2026-03-28 10:18] observe — the March 26, 2026 VS Code implementation log establishes a thin-client baseline: standard language features moved into the LSP, the extension shell stayed small, and the only custom surface still in the client is the Concepts tree plus the LSP-backed annotation mirror. The register plan should spend budget on transport, tree composition, and inspection taste, not on reviving provider-era client logic.
+ >>[2026-03-28 10:19] revise — local drift noted on 2026-03-26 is absent in the current clean worktree. Keep extension.ts, context.ts, package.json, and stdio-server.ts treated as shared hot files, but drop the mandatory hygiene split until fresh drift appears.
 }
 
 ^["open"]{
@@ -130,11 +133,11 @@
  ~#status: "planning"
  ~#base_ref: "main@b41caa6b"
  ~#rebased_at: "2026-03-28"
- ~#hygiene_split: "isolate local drift in extensions/vscode-spw/src/annotation-index.ts, extensions/vscode-spw/src/extension.ts, and packages/spw-lsp/src/stdio-server.ts before implementation"
- ~#files_hot: ".agents/plans/vscode-register-explorer/PLAN.md, .agents/plans/vscode-register-explorer/wip.spw, .agents/plans/vscode-register-explorer/vscode-register-explorer.spw, .agents/plans/vscode-register-explorer/references/"
+ ~#hygiene_split: "none currently; re-check extensions/vscode-spw/src/extension.ts, extensions/vscode-spw/src/context.ts, extensions/vscode-spw/package.json, and packages/spw-lsp/src/stdio-server.ts before implementation because they remain shared hot files"
+ ~#files_hot: ".agents/plans/vscode-register-explorer/PLAN.md, .agents/plans/vscode-register-explorer/wip.spw, .agents/plans/vscode-register-explorer/vscode-register-explorer.spw, .agents/plans/vscode-register-explorer/references/, extensions/vscode-spw/src/extension.ts, extensions/vscode-spw/src/context.ts, extensions/vscode-spw/package.json, packages/spw-lsp/src/stdio-server.ts"
  ~#next_commit: "1"
  ~#open_count: "2"
- ~#last_stream: "2026-03-28 09:47"
+ ~#last_stream: "2026-03-28 10:19"
  ~#taste_debt: "Do not let the first explorer slice become a dump of every runtime field. Atlas context is an enrichment, not a prerequisite. Pipeline phase and spirit-sequence phase are orthogonal; show both when available, default to spirit-sequence for solo-ship."
 }
 

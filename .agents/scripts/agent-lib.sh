@@ -171,6 +171,45 @@ agent_plan_cache_value() {
   sed -n "s/^[[:space:]]*~#${key}: \"\\(.*\\)\"/\\1/p" "$file" | head -n 1
 }
 
+agent_plan_cache_set() {
+  local file="$1"
+  local key="$2"
+  local value="$3"
+  local tmp_file
+
+  tmp_file="$(mktemp "${TMPDIR:-/tmp}/agent-cache.XXXXXX")"
+  if ! awk -v key="$key" -v value="$value" '
+    BEGIN { in_cache = 0; updated = 0 }
+    /^\^\["cache"\]\{/ {
+      in_cache = 1
+      print
+      next
+    }
+    in_cache && /^}/ {
+      if (!updated) {
+        print " ~#" key ": \"" value "\""
+      }
+      in_cache = 0
+      print
+      next
+    }
+    in_cache && $0 ~ "^[[:space:]]*~#" key ": " {
+      match($0, /^[[:space:]]*/)
+      indent = substr($0, RSTART, RLENGTH)
+      print indent "~#" key ": \"" value "\""
+      updated = 1
+      next
+    }
+    { print }
+  ' "$file" > "$tmp_file"; then
+    rm -f "$tmp_file"
+    agent_fail "failed to update ^[\"cache\"].~#${key} in $file"
+    return 1
+  fi
+
+  mv "$tmp_file" "$file"
+}
+
 agent_plan_root_path() {
   local name="$1"
   local file="$2"
@@ -179,12 +218,12 @@ agent_plan_root_path() {
 
 agent_plan_last_stream_line() {
   local file="$1"
-  agent_block_lines stream "$file" | grep -E '^[[:space:]]*>> \[' | tail -n 1 || true
+  agent_block_lines stream "$file" | grep -E '^[[:space:]]*>>[[:space:]]*\[' | tail -n 1 || true
 }
 
 agent_plan_last_stream_timestamp() {
   local line="$1"
-  sed -n 's/^[[:space:]]*>> \[\([^]]*\)\].*/\1/p' <<<"$line"
+  sed -n 's/^[[:space:]]*>>[[:space:]]*\[\([^]]*\)\].*/\1/p' <<<"$line"
 }
 
 agent_plan_count_open_questions() {
@@ -295,7 +334,7 @@ agent_plan_stream_build_line() {
   local type="$1"
   local msg="$2"
   local timestamp="$3"
-  printf ' >> [%s] %s — %s' "$timestamp" "$type" "$msg"
+  printf ' >>[%s] %s — %s' "$timestamp" "$type" "$msg"
 }
 
 agent_plan_stream_write() {
@@ -436,6 +475,7 @@ agent_plan_stream() {
   fi
 
   agent_plan_stream_write "$AGENT_PLAN_CTX_WIP_FILE" "$stream_line" || return 1
+  agent_plan_cache_set "$AGENT_PLAN_CTX_WIP_FILE" "last_stream" "$timestamp" || return 1
   if [ "$format" = "json" ]; then
     agent_plan_stream_result_json "$stream_line"
   else

@@ -154,7 +154,7 @@ These fields complete the `SpwContext` shape defined in `vscode-interaction-cont
 
 - Rebase target: `main@3b1747c4` (regrounded 2026-03-27 to match the packages-era plan ecology)
 - Rebase cadence: before commit 1, before merge
-- Hygiene split: current local drift exists in `extensions/vscode-spw/src/annotation-index.ts`, `extensions/vscode-spw/src/extension.ts`, and `packages/spw-lsp/src/stdio-server.ts`; implementation work should isolate or reconcile that drift before feature commits begin.
+- Hygiene split: none currently. The March 26, 2026 drift note is stale in the current clean worktree, but `extensions/vscode-spw/src/extension.ts`, `extensions/vscode-spw/src/context.ts`, `extensions/vscode-spw/package.json`, and `packages/spw-lsp/src/stdio-server.ts` remain shared hot files and should be checked again before implementation starts.
 
 ## Cognitive Surface Stack
 
@@ -176,7 +176,9 @@ The authoring loop operates at the **register layer** — it makes spirit-sequen
 
 ## Dependencies
 
+- Thin-client baseline (March 26, 2026): VS Code phases 1-3 and the metadata pass already moved standard editor features into the LSP and narrowed the extension to a small client shell. This plan should spend budget on authoring-specific semantics, cheap status surfaces, and probe flow, not on reviving client-side language providers.
 - Shared interaction substrate: `.agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw` defines additive event vocabulary, capability names, context growth rules, transport tiers, and cross-theme enrichment paths.
+- Client-composition substrate: whichever VS Code surface lands first should extract additive `SpwContext` growth, typed client events, and typed `spw/*` request helpers from `extensions/vscode-spw/src/extension.ts` and `extensions/vscode-spw/src/context.ts` before multiple surfaces widen the same shell in parallel.
 - Multi-agent coordination risk: `extensions/vscode-spw/src/extension.ts`, `extensions/vscode-spw/src/context.ts`, `extensions/vscode-spw/package.json`, and `packages/spw-lsp/src/stdio-server.ts` are shared hot files with atlas/register work; pairwise integration commits should be split from the authoring loop's solo-ship path when work proceeds in parallel.
 - `manifestState`, `activeRoot`, `registerSnapshot`, and `focusedRegister` are optional enrichments, not blockers. This plan should remain reviewable and shippable from local parse/runtime context before the atlas or register explorer land.
 

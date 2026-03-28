@@ -151,7 +151,7 @@ These fields are additive. The register-explorer and authoring-probe-loop plans 
 
 - Rebase target: `main@96815893` (updated 2026-03-27)
 - Rebase cadence: before commit 1, before merge
-- Hygiene split: current local drift exists in `extensions/vscode-spw/src/annotation-index.ts`, `extensions/vscode-spw/src/extension.ts`, and `packages/spw-lsp/src/stdio-server.ts`; implementation work should isolate or reconcile that drift before feature commits begin.
+- Hygiene split: none currently. The March 26, 2026 drift note is stale in the current clean worktree, but `extensions/vscode-spw/src/extension.ts`, `extensions/vscode-spw/src/context.ts`, `extensions/vscode-spw/package.json`, and `packages/spw-lsp/src/stdio-server.ts` remain shared hot files and should be checked again before implementation starts.
 
 ## Cognitive Surface Stack
 
@@ -172,7 +172,9 @@ The workspace atlas operates at the **cognitive layer** — it reads semantic an
 
 ## Dependencies
 
+- Thin-client baseline (March 26, 2026): VS Code phases 1-3 and the metadata pass already collapsed the plugin to a thin LSP client. Standard language features now live in `packages/spw-lsp/src/stdio-server.ts`; the client shell is mostly one Concepts tree, one annotation mirror, and declarative package contributions. The next planning risk is client-side composition pressure, not more provider migration.
 - Shared interaction substrate: `vscode-interaction-contract.spw` defines the additive event vocabulary, capability model, context growth rules, transport tiers, and cross-theme enrichment paths. It can land before or with any one of the three VS Code surface slices.
+- Client-composition substrate: whichever VS Code surface lands first should extract additive `SpwContext` growth, a typed event bus, and typed `spw/*` request helpers from `extensions/vscode-spw/src/extension.ts` and `extensions/vscode-spw/src/context.ts` before widening the client shell with more views or status items.
 - Multi-agent coordination risk: `extensions/vscode-spw/src/extension.ts`, `extensions/vscode-spw/package.json`, `extensions/vscode-spw/src/context.ts`, and `packages/spw-lsp/src/stdio-server.ts` are shared hot files with `vscode-register-explorer` and `vscode-authoring-probe-loop`; pairwise integration commits should be split from the atlas's solo-ship path when work proceeds in parallel.
 - `vscode-register-explorer` and `vscode-authoring-probe-loop` may consume `manifestState`, `workspaceTemperature`, and `activeRoot` opportunistically, but the atlas itself must not depend on either plan for a coherent first ship.
 - Handler-registration substrate: `stdio-server.ts` should gain an extracted handler registration pattern before this plan adds `handlers/workspace.ts`. See `vscode-interaction-contract.spw ^["handler_registration"]`.

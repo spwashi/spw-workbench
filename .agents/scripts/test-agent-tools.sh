@@ -77,6 +77,19 @@ test_plan_stream_dry_run_and_append() {
   assert_file_contains "$tmpdir/.agents/plans/demo-plan/wip.spw" 'path /tmp/demo & keep / stable'
 }
 
+test_plan_stream_recognized_by_check() {
+  local tmpdir check_json status_json
+  tmpdir="$(setup_temp_repo)"
+  with_temp_env "$tmpdir" "agent_plan_init demo-plan" >/dev/null
+  with_temp_env "$tmpdir" "agent_plan_stream --type observe --message 'fresh stream entry' --slug demo-plan" >/dev/null
+  if ! check_json="$(with_temp_env "$tmpdir" "agent_plan_check --slug demo-plan --json")"; then
+    fail "expected plan check to pass after writing a fresh stream entry"
+  fi
+  assert_contains "$check_json" '"ok":true'
+  status_json="$(with_temp_env "$tmpdir" "agent_plan_status --slug demo-plan --json")"
+  assert_contains "$status_json" '"actual_last_stream":"'
+}
+
 test_plan_status_and_check() {
   local tmpdir status_json check_json
   tmpdir="$(setup_temp_repo)"
@@ -106,6 +119,7 @@ main() {
   bash -n "$REPO_ROOT/scripts/agent-tools.sh" "$REPO_ROOT/.agents/scripts/agent-lib.sh"
   test_plan_init
   test_plan_stream_dry_run_and_append
+  test_plan_stream_recognized_by_check
   test_plan_status_and_check
   test_kb_and_vibe_json
   echo "agent-tools tests passed"

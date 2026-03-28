@@ -121,7 +121,7 @@ These fields are additive on top of the atlas plan's contributions.
 
 - Rebase target: `main@3b1747c4` (updated 2026-03-27)
 - Rebase cadence: before commit 1, before merge
-- Hygiene split: current local drift exists in `extensions/vscode-spw/src/annotation-index.ts`, `extensions/vscode-spw/src/extension.ts`, and `packages/spw-lsp/src/stdio-server.ts`; implementation work should isolate or reconcile that drift before feature commits begin.
+- Hygiene split: none currently. The March 26, 2026 drift note is stale in the current clean worktree, but `extensions/vscode-spw/src/extension.ts`, `extensions/vscode-spw/src/context.ts`, `extensions/vscode-spw/package.json`, and `packages/spw-lsp/src/stdio-server.ts` remain shared hot files and should be checked again before implementation starts.
 
 ## Cognitive Surface Stack
 
@@ -144,7 +144,9 @@ The register explorer operates at the **substrate layer** — it exposes runtime
 ## Dependencies
 
 - `plan-ecology-clustering` — this plan currently occupies a `component` rung and should turn runtime/query study into a discussable editor component rather than a disconnected panel.
+- Thin-client baseline (March 26, 2026): VS Code phases 1-3 and the metadata pass already moved standard editor features into the LSP and narrowed the extension to a small client shell. This plan should spend budget on register-specific transport, tree composition, and inspection idioms, not on reintroducing client-side providers.
 - Shared interaction substrate: `.agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw` defines additive event vocabulary, capability names, context growth rules, transport tiers, and cross-theme enrichment paths.
+- Client-composition substrate: whichever VS Code surface lands first should extract additive `SpwContext` growth, typed client events, and typed `spw/*` request helpers from `extensions/vscode-spw/src/extension.ts` and `extensions/vscode-spw/src/context.ts` before multiple surfaces widen the same shell in parallel.
 - Multi-agent coordination risk: `extensions/vscode-spw/src/extension.ts`, `extensions/vscode-spw/src/context.ts`, `extensions/vscode-spw/package.json`, and `packages/spw-lsp/src/stdio-server.ts` are shared hot files with the atlas and authoring plans; integration commits should be split from the register explorer's solo-ship path when work proceeds in parallel.
 - `manifestState`, `activeRoot`, and `probe.completed` are optional enrichments, not blockers. This plan should be reviewable and shippable before the atlas or authoring surfaces land, provided fallback scope behavior is in place.
 - Handler-registration substrate: `stdio-server.ts` should gain an extracted handler registration pattern before this plan adds `handlers/runtime.ts`. See `vscode-interaction-contract.spw ^["handler_registration"]`.
