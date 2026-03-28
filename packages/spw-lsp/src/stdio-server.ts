@@ -170,7 +170,7 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
         log(`initialize workspace=${WORKSPACE_ROOT} config=${JSON.stringify(CONFIG)}`)
 
         sendResult(id, {
-          serverInfo: { name: 'spw-lsp', version: '0.3.2' },
+          serverInfo: { name: 'spw-lsp', version: '0.3.0' },
           capabilities: {
             textDocumentSync: 1,
             definitionProvider: true,

@@ -6,7 +6,7 @@ This is the Claude Code harness for **spw-workbench** — parser, runtime, and s
 
 Spw is a brace-first language where operators are semantic actors. This monorepo contains the parser kernel, runtime interpreter, LSP server, CLI, VS Code and IntelliJ extensions, versioned specification libraries, and canonicalized `.spw` surfaces.
 
-- **Version**: 0.3.2
+- **Version**: 0.3.0
 - **License**: MIT
 - **Node**: `^20.19.0 || >=22.12.0`
 - **History model**: episodes-only canon rewrite — every commit body contains an `#[episode]{}` block

@@ -16,7 +16,19 @@ Taste note: improve **clarity**, **layering**, and **naming** by giving the rele
 ## Files
 
 ```text
+[MOD] package.json
+[MOD] package-lock.json
+[MOD?] CLAUDE.md
+[MOD] packages/spw-seed/package.json
+[MOD] packages/spw-runtime/package.json
+[MOD] packages/spw-cli/package.json
+[MOD] packages/spw-lsp/package.json
+[MOD] packages/spw-lsp/src/stdio-server.ts
 [MOD?] extensions/vscode-spw/package.json
+[MOD?] extensions/vscode-spw/package-lock.json
+[MOD?] extensions/vscode-spw/README.md
+[MOD?] extensions/intellij-spw/build.gradle.kts
+[MOD?] extensions/intellij-spw/src/main/resources/META-INF/plugin.xml
 [NEW] docs/waypoints/spw/v030-release-track.spw
 [MOD] docs/waypoints/index.spw
 [NEW] lib/spw-v0.3.0/CHANGELOG.md
@@ -29,6 +41,7 @@ Taste note: improve **clarity**, **layering**, and **naming** by giving the rele
 
 ### Craft guard
 - Any package.json change is metadata only — no source modifications.
+- Version metadata should stay on `0.3.0` until the March 31, 2026 release gate is actually cleared.
 - Quick-start guide should be runnable by an external developer in under 5 minutes.
 - Changelog should be honest about what shipped versus what's planned.
 - Do not imply a domain launch merely because a name exists in the portfolio.
@@ -60,7 +73,7 @@ Fuzz strategy:
 
 ## Agentic Hygiene
 
-- Rebase target: `main@3b1747c4` (updated 2026-03-27)
+- Rebase target: `main@45c6b7f3` (updated 2026-03-28)
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: none
 

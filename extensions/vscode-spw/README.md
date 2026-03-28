@@ -20,7 +20,7 @@ The extension is part of the `spw-workbench` repository. It is bundled via `esbu
 To install locally:
 1. `npm run compile` in the extension directory.
 2. Symlink `extensions/vscode-spw` to your VS Code/Cursor extensions folder:
-   `ln -s $(pwd)/extensions/vscode-spw ~/.vscode/extensions/spw-language-0.3.2`
+   `ln -s $(pwd)/extensions/vscode-spw ~/.vscode/extensions/spw-language-0.3.0`
 
 ## Documentation & Specs
 
