@@ -1,0 +1,114 @@
+# wip — typescript-toolchain-observatory
+# Branch: feature/typescript-toolchain-observatory
+# Started: 2026-03-28
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @plan: ~".agents/plans/typescript-toolchain-observatory/PLAN.md"
+ @artifact: ~".agents/plans/typescript-toolchain-observatory/typescript-toolchain-observatory.spw"
+ @research_index: ~"docs/research/index.spw"
+ @runtime_index: ~"docs/runtime/index.spw"
+ @package: ~"package.json"
+ @solution: ~"tsconfig.json"
+ @typecheck: ~"tsconfig.typecheck.json"
+ @release_build: ~"scripts/release/build-js-dist.ts"
+ @ts_extended_diagnostics: "https://www.typescriptlang.org/tsconfig/extendedDiagnostics.html"
+ @ts_generate_trace: "https://www.typescriptlang.org/tsconfig/generateTrace.html"
+ @ts_native_preview: "https://devblogs.microsoft.com/typescript/announcing-typescript-native-previews/"
+ @ts7_progress: "https://devblogs.microsoft.com/typescript/progress-on-typescript-7-december-2025/"
+}
+
+^["intent"]{
+ ~#goal: "Create a local-first observatory for TypeScript indexing, configuration, version, output-form, and release-surface experiments. The branch should make it easy to vary settings, compare stable TypeScript with optional preview/native surfaces, inspect bundle implications, and project the results into docs and .spw instead of leaving them as terminal residue."
+ ~#taste: "clarity, measurement, release truth, communicability"
+}
+
+^["development"]{
+ lane: #public_interest_research
+ ladder: #service
+ develops: [#measurement_literacy, #toolchain_judgment, #projection_design, #release_truth]
+ review_surfaces: [@cluster, @plan, @artifact, @research_index, @runtime_index, @package, @solution, @release_build]
+ snippet_routes: [#diagnostics_command, #trace_command, #version_matrix, #bundle_summary, #release_note]
+}
+
+^["concept_index"]{
+ primary: [#typescript, #indexing, #profiling, #tsconfig, #versions, #bundle, #release, #projection]
+ surfaces: [#editor, #compiler, #scripts, #docs, #packages, #release]
+ tensions: [#signal_noise, #novelty_bias, #configuration_sprawl, #network_drift, #communication_gap]
+ transfers: [#language, #component, #page, #service]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread current configs, scripts, and release surfaces before adding more measurements",
+  "< ship one repeatable experiment or output form at a time",
+  "$ record what became faster, clearer, or more discussable",
+  "^ project surviving results into docs, .spw, or release QA rather than leaving them in logs",
+  "% keep one stable baseline while experimenting with versions or settings",
+ ]
+ gates: [#baseline_stability, #output_legibility, #release_truth, #claim_discipline]
+}
+
+^["parallel_work"]{
+ critical_path: [#measurement_protocol, #stable_baseline]
+ parallelizable: [#compiler_profiles, #version_matrix, #projection_outputs, #bundle_qa]
+ shared_hot_files: ["package.json", "tsconfig.json", "tsconfig.typecheck.json", "scripts/release/build-js-dist.ts", "docs/research/index.spw"]
+ merge_risks: [#script_name_drift, #output_schema_drift, #release_claim_drift]
+ handoff_artifacts: [@plan, @artifact, @package, @solution]
+}
+
+^["supporting_documents"]{
+ must_ship: [@plan, @artifact, @research_index]
+ helpful: [@runtime_index, @ts_extended_diagnostics, @ts_generate_trace, @ts_native_preview, @ts7_progress]
+ carries: [#benchmark_table, #trace_notes, #version_matrix, #bundle_notes, #release_qa, #interpretation_guide]
+}
+
+^["interaction_depth"]{
+ subjects: [#comparison, #legibility, #reversibility, #latency, #trust, #surprise]
+ questions: [#what_counts_as_faster, #what_changes_editor_feel, #what_impacts_release, #what_is_projection_worthy]
+ qualities: [#clarity, #containment, #traceability]
+}
+
+^["stream"]{
+ >> [2026-03-28 14:34] observe — the repo now has a referenced tsconfig graph, but there is no local observatory that can explain whether those changes improved indexing, editor feel, or release surfaces.
+ >> [2026-03-28 14:35] observe — current scripts cover build, jsdist, pack dry-run, and several audits, but there is no explicit TypeScript profile/version matrix or projection-friendly reporting path.
+ >> [2026-03-28 14:36] observe — the user wants curiosity-friendly testing, not just a one-time optimization: configuration settings, TypeScript 7 comparison, output forms, bundle inspection, and release implication QA should be inspectable and communicable.
+ >> [2026-03-28 14:37] decide — this lane should remain local-first and optional: TS7/native preview can be tested, but it should not silently become a default or release gate.
+ >> [2026-03-28 14:38] decide — the value surface is not only "faster compile"; it is also explainability. Measurements should be serializable into JSON, Markdown, and .spw so they can feed docs, research notes, and release claims.
+ >> [2026-03-28 14:39] taste — the strongest version of this work turns toolchain folklore into reusable engineering taste: what changed, what stayed invariant, and which surfaces were actually affected.
+}
+
+^["open"]{
+ ?[editor_protocol]: "How much of the editor-indexing profile can be automated locally versus documented as a manual VS Code protocol?"
+ ?[preview_install]: "Should TS7/native preview be an opt-in dependency lane inside package.json, a separate script that shells through npx, or a documented external precondition?"
+ ?[projection_schema]: "What is the smallest shared schema that can feed JSON, Markdown, and .spw outputs without duplicating interpretation logic?"
+ ?[release_gate]: "Which observatory outputs should become release QA signals versus remain research-only?"
+}
+
+^["commits"]{
+ ~[1]: ".[plans] — stage typescript-toolchain-observatory planning artifacts"
+ ~[2]: "#[toolchain] — add local TypeScript profile and configuration-matrix runners"
+ ~[3]: "#[versions] — add stable vs preview/native TypeScript version-matrix support and result capture"
+ ~[4]: "#[projection] — emit JSON, Markdown, and .spw projections from toolchain experiments"
+ ~[5]: "&[release] — inspect jsdist, declaration outputs, and pack surfaces across toolchain variants"
+ ~[6]: ".[docs] — publish observatory protocol, interpretation guide, and release-implication notes"
+ ~[7]: "![toolchain] — verify profile loops, version matrix, projection outputs, and bundle QA stay truthful"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@e19267b9"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "package.json, tsconfig.json, tsconfig.typecheck.json, scripts/release/build-js-dist.ts, docs/research/index.spw"
+ ~#next_commit: "1"
+ ~#open_count: "4"
+ ~#last_stream: "2026-03-28 14:39"
+ ~#taste_debt: "avoid making the observatory a vanity benchmark surface; keep measurement tied to decisions and release implications"
+}
+
+^["done"]{
+ # Written at merge time.
+}

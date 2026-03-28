@@ -1,0 +1,58 @@
+# typescript-toolchain-observatory
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @plan: ~".agents/plans/typescript-toolchain-observatory/PLAN.md"
+ @research_index: ~"docs/research/index.spw"
+ @runtime_index: ~"docs/runtime/index.spw"
+ @release_build: ~"scripts/release/build-js-dist.ts"
+ @solution: ~"tsconfig.json"
+ @typecheck: ~"tsconfig.typecheck.json"
+}
+
+^["orientation"]{
+ lane: #public_interest_research
+ ladder: #service
+ braid: [#indexing_truth, #version_comparison, #projection_design, #release_confidence]
+ rule: "measure toolchain changes in ways that are locally repeatable, interpretable, and easy to quote in docs or release language"
+}
+
+^["comparison_axes"]{
+ baseline: [#current_typescript, #current_tsconfig_graph, #current_jsdist]
+ variants: [#config_matrix, #version_matrix, #output_forms, #bundle_surface]
+ questions: [#speed, #memory, #editor_feel, #declaration_shape, #release_implication]
+}
+
+^["protocol"]{
+ capture: [
+  "record exact command, version, config variant, and environment note",
+  "capture at least one stable baseline before adding experimental variants",
+  "store raw machine output before interpretation",
+  "compare JSON, Markdown, and .spw forms from the same measurement identity",
+ ]
+ gates: [#local_first, #repeatable, #diffable, #release_relevant]
+}
+
+^["outputs"]{
+ raw: [#json, #trace, #diagnostics]
+ interpreted: [#markdown, #spw_projection, #release_qa_note]
+ carries: [#timing_table, #memory_table, #config_diff, #version_diff, #bundle_summary]
+}
+
+^["release_implications"]{
+ surfaces: [#build_jsdist, #pack_dry_run, #declaration_exports, #cli_shape, #bundle_size]
+ prompt: "when a toolchain shift changes output, say what changed in the release surface rather than only reporting compiler timings"
+}
+
+^["connections"]{
+ #audit_fuzz_truthfulness: "truthful command names and structured outputs should shape the observatory surface"
+ #runtime_dx_foundation: "diagnostic and timing language should remain compatible with broader DX/support surfaces"
+ #v030_release_prep: "observatory outputs can feed public release claims about packages, installability, and tooling readiness"
+ #plan_ecology_clustering: "this is research that should feed execution truth without masquerading as an always-on blocker"
+}
+
+^["projection_examples"]{
+ !probe{ "can one measurement row be rendered as terminal text, markdown table row, and .spw frame without losing identity?" }
+ !probe{ "can bundle inspection and tsconfig comparison be summarized in one release-facing note?" }
+}
