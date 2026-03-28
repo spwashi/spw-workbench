@@ -184,7 +184,7 @@ The authoring loop operates at the **register layer** — it makes spirit-sequen
 
 ### Cross-theme enrichments (not blockers)
 
-- **runtime-telemetry-canon** (ready-for-commit): provides immutable substrate events and resonances from runtime pipeline, which makes `probe.completed` results richer. Without it, probe results are shallow value snapshots. With it, probes return full telemetry including resonance edges.
+- **runtime-telemetry-canon** (landed): provides immutable substrate events and resonances from runtime pipeline, which makes `probe.completed` results richer. Without it, probe results are shallow value snapshots. With it, probes return full telemetry including resonance edges.
 - **register-phase-evolution** (planning): provides canonical pipeline-phase vocabulary. Without it, phase-aware completion maps only spirit-sequence operators. With it, hover and completion can bridge between spirit-sequence operators and the register pipeline phases they correspond to.
 - **absorb-spwq-cli** (verifying): provides repaired selector traversal. Without it, "Trace Selector At Cursor" and graph-query probes use the current implementation with possible gaps. With it, selector resolution is reliable across the full corpus.
 - **seed phase-context extraction** (unscoped): a targeted addition to the seed parser that returns the spirit-sequence context at a given cursor offset — the nearest enclosing spirit operator, its phase index, and the materialization stage. Without it, the authoring loop's look-back rule uses regex heuristics from the raw text. With it, phase detection is AST-precise. See `vscode-interaction-contract.spw ^["cross_theme_enrichments"].seed_phase_context`.

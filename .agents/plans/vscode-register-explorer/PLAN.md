@@ -153,7 +153,7 @@ The register explorer operates at the **substrate layer** — it exposes runtime
 
 ### Cross-theme enrichments (not blockers)
 
-- **runtime-telemetry-canon** (ready-for-commit): provides immutable substrate events, detected resonances, and register metadata from `runSpw()`. This is the primary data source for register snapshots — without it, snapshots contain values and basic phase but lack provenance, substrate events, and resonance edges. With it, the explorer can show full phase trajectory, register coupling, and provenance chains.
+- **runtime-telemetry-canon** (landed): provides immutable substrate events, detected resonances, and register metadata from `runSpw()`. This is the primary data source for register snapshots — without it, snapshots contain values and basic phase but lack provenance, substrate events, and resonance edges. With it, the explorer can show full phase trajectory, register coupling, and provenance chains.
 - **register-phase-evolution** (planning): provides canonical pipeline-phase vocabulary (`lex`, `parse`, `semantic`, `optimize`, `pragmatic`) aligned across runtime, query, and docs. Without it, the explorer uses spirit-sequence phase from `SIGIL_SEMANTICS` for grouping. With it, the explorer can show pipeline phase alongside spirit-sequence phase in the detail view.
 - **monorepo-workspace-foundation** (ready_to_commit): restructures `packages/spw-lsp/` paths. Same coordination note as the atlas plan.
 

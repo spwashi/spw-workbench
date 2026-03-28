@@ -181,7 +181,7 @@ The workspace atlas operates at the **cognitive layer** — it reads semantic an
 
 ### Cross-theme enrichments (not blockers)
 
-- **runtime-telemetry-canon** (ready-for-commit): provides immutable `resonances` from pipeline results, which unlocks resonance channel 4 (register coupling). Without it, the atlas renders three resonance channels and labels register coupling as unavailable.
+- **runtime-telemetry-canon** (landed): provides immutable `resonances` from pipeline results, which unlocks resonance channel 4 (register coupling). Without it, the atlas renders three resonance channels and labels register coupling as unavailable.
 - **absorb-spwq-cli** (verifying): provides repaired selector traversal, which makes graph queries (cross-root, subtree-focus) more reliable. Without it, queries use the current selector implementation with possible gaps on complex selectors.
 - **monorepo-workspace-foundation** (ready_to_commit): restructures `packages/spw-lsp/` paths. If it lands first, `resolveServerPath()` and handler imports need updating. If it lands after, compatibility wrappers in `src/` handle the transition.
 

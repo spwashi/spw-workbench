@@ -1,0 +1,54 @@
+# Submodule Conventions
+#
+# Canon contract for mounting the workbench into site-local .spw surfaces.
+
+#>spw_submodule_conventions
+#:convention #!installation
+#:layer #!pragmatics
+
+^"boundary_contract"{
+ site_root: ".spw/"
+ site_owns: [".spw/index.spw", ".spw/workspace.spw", ".spw/mount.spw", ".spw/conventions/*"]
+ workbench_root: ".spw/_workbench"
+ workbench_provides: ["parser", "runtime", "LSP", "CLI", "spec library", "agent tooling"]
+ prefix_rule: "\"_\" marks infrastructure roots; they are mounted, versioned, and queryable without masquerading as site-authored canon content"
+}
+
+^"mount_protocol"{
+ location: ".spw/mount.spw"
+ tracks: ["workbench commit or release tag", "engaged surfaces", "resolution paths"]
+ engages: ["spec subsystems", "conventions", "patterns", "tooling entrypoints"]
+ resolves: [
+  "~\"_workbench/lib/spw-v0.3.0/\"",
+  "~\"_workbench/packages/spw-cli/\"",
+  "~\"_workbench/packages/spw-lsp/\"",
+ ]
+ rule: "site-local mount.spw declares how site canon engages workbench infrastructure; it does not turn _workbench into site content"
+}
+
+^"resolution_contract"{
+ install: "git submodule add https://github.com/spwashi/spw-workbench .spw/_workbench"
+ cli: "site wrappers resolve through .spw/_workbench/packages/spw-cli/"
+ lsp: "editor startup resolves through .spw/_workbench/packages/spw-lsp/ or a shared launcher rooted there"
+ review: "commit-review tooling may resolve from .spw/_workbench, node_modules/spw-workbench, or SPW_WORKBENCH_ROOT"
+}
+
+^"engagement_exchange"{
+ engagement: "sites selectively engage workbench surfaces through mount.spw rather than inheriting the entire repo canon"
+ exchange: "sites may contribute dialects, conventions, and canon extensions back across the submodule boundary"
+ independence: "removing _workbench leaves the site's own .spw canon legible, versionable, and portable"
+}
+
+^"invariant"{
+  "The site owns its .spw canon; the workbench owns .spw/_workbench.",
+  "mount.spw records version, engagement, and resolution explicitly rather than relying on undocumented path folklore.",
+  "_workbench is infrastructure and should not be enumerated as site content in indexes, shelves, or publish surfaces.",
+}
+
+#>wonder_spw_conventions_submodule_1
+?["What asymmetry does the submodule convention preserve on purpose?"]{
+  #:depth #!educational // lens: ecological zone
+  ~#hint: "site canon vs mounted engine"
+  !probe{ "list which surfaces remain site-authored and which ones stay mounted infrastructure. the asymmetry is the point." }
+  $%[convention.adherence_score, convention.violation_sites]
+}

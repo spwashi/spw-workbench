@@ -1,0 +1,77 @@
+# service spec — spw-site-install
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @governance: ~".agents/plans/ecosystem-surface-governance/ecosystem-surface-governance.spw"
+ @workspace: ~".spw/workspace.spw"
+ @mount: ~".spw/mount.spw"
+ @submodule: ~".spw/conventions/submodule.spw"
+ @cli: ~".spw/conventions/cli.spw"
+}
+
+^["cluster_role"]{
+ lane: #execution_truth
+ ladder: #service
+ braid: [#install, #mount, #site_identity, #exchange]
+ rule: "site installation should make the workbench mount explicit enough that CLI, editor, DX, and release surfaces can quote one boundary contract without improvising"
+}
+
+^["boundary_contract"]{
+ site_root: ".spw/"
+ site_owns: [".spw/index.spw", ".spw/workspace.spw", ".spw/mount.spw", ".spw/conventions/*"]
+ workbench_root: ".spw/_workbench"
+ workbench_owns: ["parser", "runtime", "LSP", "CLI", "spec library", "agent tooling"]
+ install_shape: "git submodule add <workbench-url> .spw/_workbench"
+ prefix_rule: "underscore means infrastructure, not site-authored canon content"
+}
+
+^["mount_protocol"]{
+ surface: ".spw/mount.spw"
+ must_record: ["tracked workbench version", "engaged surfaces", "resolution paths"]
+ examples: [
+  "~\"_workbench/lib/spw-v0.3.0/\"",
+  "~\"_workbench/packages/spw-cli/\"",
+  "~\"_workbench/packages/spw-lsp/\"",
+ ]
+ rule: "mount.spw describes how site canon engages the engine; it does not flatten engine internals into site identity"
+}
+
+^["engagement_model"]{
+ selective: "sites engage only the spec subsystems, conventions, patterns, and tooling entrypoints they actually use"
+ local_identity: "site-local .spw files remain the canon root for content, naming, and domain decisions"
+ downstream_effect: "CLI init, editor detection, doctor output, and release docs should all reuse the same mount vocabulary"
+}
+
+^["exchange_model"]{
+ contributes: ["dialects", "conventions", "canon extensions", "evidence from real site usage"]
+ rule: "exchange flows across the submodule boundary by contribution, not by turning site repos into copies of the workbench"
+}
+
+^["parallel_work"]{
+ critical_path: [#submodule_boundary, #mount_protocol]
+ parallelizable: [#cli_init, #cli_resolution, #editor_detection, #doctor, #docs]
+ shared_hot_files: [@workspace, @submodule, @cli]
+ merge_risks: [#boundary_drift, #resolution_drift, #release_copy_drift]
+ handoff_artifacts: [@governance]
+}
+
+^["review_contract"]{
+ sources: [@cluster, @governance, @workspace, @mount, @submodule, @cli]
+ asks: [#site_ownership, #install_truth, #mount_legibility, #cross_surface_reuse]
+}
+
+^["invariant"]{
+ "The site owns .spw/; the workbench owns .spw/_workbench.",
+ "Mount truth should be explicit enough that CLI, editor, DX, and release surfaces can repeat it without drift.",
+ "Convenience layers may evolve later, but they must not replace the submodule-era boundary contract before it is stable.",
+}
+
+#>wonder_agents_plans_spwsiteinstall_artifact_1
+?["Which fact makes the install model feel reversible rather than possessive?"]{
+  #:depth #!educational // lens: ecological zone
+  $^["boundary_contract"]@here => $^["exchange_model"]@here
+  !probe{ "name the mounted path, the site-owned surfaces, and the contribution route back. if any of those blur, the ecology is no longer reversible." }
+  ~<.agents/plans/spw-site-install/wip.spw>
+}
