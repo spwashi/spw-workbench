@@ -4,30 +4,101 @@
 
 #:layer #!pragmatics
 
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @artifact: ~".agents/plans/runtime-axis-traceability/runtime-axis-traceability.spw"
+ @dx: ~".agents/plans/runtime-dx-foundation/runtime-dx-foundation.spw"
+ @runtime_foundation: ~"docs/runtime/spw/runtime-foundation.spw"
+ @register_bank: ~"packages/spw-runtime/src/state/register-bank.ts"
+ @substrate: ~"packages/spw-runtime/src/pipeline/substrate.ts"
+}
+
 ^["intent"]{
- ~#goal: "Make runtime design traces (axes) explicit in the implementation layer."
- ~#taste: "literature quality — a reader should know *why* a constant is 500ms or *why* an event is buffered."
+ ~#goal: "Make runtime design traces explicit so implementation choices can be read back through timing, stability, disclosure, affect, resolution, and noise axes."
+ ~#taste: "literature quality, justification density, reader trust"
 }
 
-^["stream"] {
- >>[2026-03-19 00:00] observe — current `RegisterBank` has several 0-100 scales and timing guards that are 'naked' logic.
- >>[2026-03-19 00:01] decide — map these to the 'stability' and 'timing' axes documented in `docs/design/axes.spw`.
+^["development"]{
+ lane: #execution_truth
+ ladder: #bridge
+ develops: [#runtime_literature, #traceability, #review_judgment, #public_explanation]
+ review_surfaces: [@cluster, @artifact, @dx, @runtime_foundation, @register_bank, @substrate]
+ snippet_routes: [#axis_marker, #justification_comment, #review_excerpt, #traceability_note]
 }
 
-^["open"] {
- ?[marker_format]: "Should we use `@spw:axis(stability)` or a more descriptive `@spw:axis:stability` tag?"
- ?[granularity]: "Do we mark individual constants or the entire function/block that manages the axis?"
+^["concept_index"]{
+ primary: [#timing, #stability, #disclosure, #affect, #resolution, #noise]
+ surfaces: [#register_bank, #substrate, #stages, #marker_audit, #release_review]
+ tensions: [#ornamental_comments, #overmarking, #reader_burden, #trace_drift]
+ transfers: [#language, #service, #governance]
 }
 
-^["commits"] {
- ~[1]: "docs[runtime] — trace RegisterBank logic to stability and timing axes"
- ~[2]: "docs[runtime] — trace Substrate events to disclosure and noise axes"
- ~[3]: "audit[infra] — enhance marker audit to recognize @spw:axis traces"
+^["recursive_improvement"]{
+ loop: [
+  "? reread runtime code and design literature before inserting markers",
+  "< add one trace that explains a real constant, threshold, or behavior",
+  "$ record whether the trace changed review speed or explanation quality",
+  "^ reuse the surviving phrasing in DX, governance, and release review surfaces",
+  "% keep markers explanatory, not decorative",
+ ]
+ gates: [#adjacent_truth, #review_value, #marker_auditability, #non_ornamental]
 }
 
-^["cache"] {
+^["stream"]{
+ # Append entries chronologically. Never edit prior entries.
+ # >>[YYYY-MM-DD HH:MM] <type> — <content>
+ # Types: observe, decide, surprise, revise, blocked, taste, rebase, hygiene, implement, verify, note
+ >>[2026-03-19 00:00] observe — current RegisterBank has several 0-100 scales and timing guards that are naked logic from a reviewer perspective.
+ >>[2026-03-19 00:01] decide — map those behaviors to timing and stability axes so a reader can recover why the constants exist.
+ >>[2026-03-27 14:34] revise — broaden the branch from simple marker insertion to traceability as a review surface: runtime choices should be readable by DX and governance work, not only runtime maintainers.
+ >>[2026-03-27 14:35] implement — rewrote branch memory around roots, concept indexing, and recursive improvement; added a branch-local artifact so axis language can be reviewed as a system rather than scattered comments.
+ >>[2026-03-27 14:36] taste — a good axis trace should help a future reviewer ask a better question, not merely reassure them that the author had one.
+}
+
+^["open"]{
+ ?[marker_format]: "Should axis traces prefer inline `@spw:axis(...)` markers, adjacent prose comments, or a paired form with both machine and human readability?"
+ ?[granularity]: "Do we trace the individual constant, the surrounding block, or the public behavior that the block protects?"
+}
+
+^["commits"]{
+ ~[1]: ".[runtime] — trace RegisterBank logic to stability and timing axes"
+ ~[2]: ".[runtime] — trace Substrate and stages to disclosure, noise, and resolution axes"
+ ~[3]: "![infra] — enhance marker audit to recognize axis traces and review drift"
+}
+
+^["cache"]{
  ~#status: "planning"
- ~#files_hot: "src/runtime/state/register-bank.ts, src/runtime/pipeline/substrate.ts"
+ ~#base_ref: "main@3b1747c4"
+ ~#rebased_at: "2026-03-27"
+ ~#hygiene_split: "none"
+ ~#files_hot: "packages/spw-runtime/src/state/register-bank.ts, packages/spw-runtime/src/pipeline/substrate.ts, packages/spw-runtime/src/pipeline/stages.ts, scripts/analyzers/spw-marker-audit.ts"
  ~#next_commit: "1"
  ~#open_count: "2"
+ ~#last_stream: "2026-03-27 14:36"
+ ~#taste_debt: "axis markers should earn their keep by reducing explanation effort during review"
+}
+
+^["done"]{
+ # Written at merge time.
+ # ~#shipped: []
+ # ~#dropped: []
+ # ~#surprised: ""
+ # ~#duration: ""
+ # ~#taste: ""
+}
+
+#>wonder_agents_plans_runtimeaxistraceability_wip_1
+?["Which runtime behavior becomes most discussable once its axis is named?"]{
+  #:depth #!educational // lens: literature transfer
+  $^["concept_index"]@here => $^["recursive_improvement"]@here
+  !probe{ "pick one constant or guard and ask what question a reviewer can finally ask once the axis is visible." }
+  $%[runtime.stage, runtime.queue_depth]
+}
+
+#>wonder_agents_plans_runtimeaxistraceability_wip_2
+?["How do markers avoid becoming decorative in this branch?"]{
+  #:depth #!computational // lens: audit discipline
+  $^["development"]@here => $^["commits"]@here
+  !probe{ "if a marker disappeared, what explanation burden would return? if none, the marker was ornamental." }
+  ~<.agents/plans/runtime-axis-traceability/runtime-axis-traceability.spw>
 }

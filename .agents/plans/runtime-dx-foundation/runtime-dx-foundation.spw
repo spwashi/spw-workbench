@@ -1,0 +1,129 @@
+# service spec — runtime-dx-foundation
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @governance: ~".agents/plans/ecosystem-surface-governance/ecosystem-surface-governance.spw"
+ @tooling: ~".spw/tooling/vscode-spw.spw"
+ @hot_reload: ~".spw/process/hot-reload-loop.spw"
+ @runtime_foundation: ~"docs/runtime/spw/runtime-foundation.spw"
+ @telemetry: ~".agents/plans/runtime-telemetry-canon/runtime-telemetry-canon.spw"
+ @axes: ~".agents/plans/runtime-axis-traceability/runtime-axis-traceability.spw"
+}
+
+^["cluster_role"]{
+ lane: #execution_truth
+ ladder: #service
+ braid: [#diagnostics, #install, #editor, #cli, #support]
+ rule: "DX should turn runtime truth into searchable, localizable, and supportable stations without inventing a second language for failure"
+}
+
+^["concept_index"]{
+ primary: [#diagnostics, #station, #health_check, #doctor, #output_channel, #status_bar, #troubleshooting]
+ surfaces: [#seed, #runtime, #lsp, #cli, #editor, #docs, #release]
+ tensions: [#signal_to_noise, #opt_in_telemetry, #support_debt, #cross_surface_drift]
+ transfers: [#service, #release, #governance]
+}
+
+^["station_model"]{
+ seed: .{
+  emits: [#parse_error, #timing, #load_failure]
+  answers: [#syntax_ok, #parser_loaded]
+  next: [#runtime, #lsp, #cli]
+ }
+ runtime: .{
+  emits: [#event, #resonance, #phase, #fault]
+  answers: [#runtime_ok, #telemetry_live]
+  next: [#lsp, #docs]
+ }
+ lsp: .{
+  emits: [#diagnostic, #latency, #request_failure]
+  answers: [#server_started, #client_connected]
+  next: [#editor, #support]
+ }
+ cli: .{
+  emits: [#doctor_output, #verbose_station_report]
+  answers: [#install_ok, #dependency_ok]
+  next: [#support, #release]
+ }
+ editor: .{
+  emits: [#status_copy, #output_log, #settings_warning]
+  answers: [#extension_ok, #active_connection]
+  next: [#support, #release]
+ }
+}
+
+^["health_check_contract"]{
+ must_answer: [
+  "is Spw installed?",
+  "can the parser load?",
+  "can the runtime execute?",
+  "can the LSP start and answer?",
+  "is the editor connected?",
+ ]
+ must_emit: [#station_code, #human_summary, #next_action]
+ rule: "every station should make the next debugging move easier than rereading a stack trace"
+}
+
+^["parallel_work"]{
+ critical_path: [#station_model, #diagnostic_codes]
+ parallelizable: [#seed, #runtime, #lsp, #cli, #editor, #docs]
+ shared_hot_files: [@tooling, @runtime_foundation]
+ merge_risks: [#station_drift, #code_drift, #support_copy_drift]
+ handoff_artifacts: [@governance, @telemetry, @axes]
+}
+
+^["supporting_documents"]{
+ must_ship: [@runtime_foundation, @governance]
+ helpful: [@telemetry, @axes]
+ carries: [#health_check_examples, #station_glossary, #support_flow, #troubleshooting_matrix]
+}
+
+^["interaction_depth"]{
+ subjects: [#failure_locality, #next_action, #verbosity, #visibility, #discoverability, #trust]
+ questions: [#what_failed, #what_worked, #what_should_user_do_next]
+ qualities: [#clarity, #actionability, #calm_feedback]
+}
+
+^["review_contract"]{
+ sources: [@cluster, @governance, @tooling, @hot_reload, @runtime_foundation, @telemetry, @axes]
+ asks: [#station_alignment, #support_truth, #signal_quality, #cross_surface_reuse]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread install, runtime, editor, and governance surfaces before adding new diagnostics",
+  "< ship one new code, health check, or status artifact with a clear next action",
+  "$ record which failure became searchable and easier to explain",
+  "^ propagate the stable wording into CLI, editor, docs, and release review",
+  "% keep diagnostics cheaper than the confusion they remove",
+ ]
+ gates: [#greppable_code, #human_summary, #next_action, #cross_surface_alignment]
+}
+
+^["snippet_routes"]{
+ stable: [
+  "doctor command output",
+  "station code examples",
+  "status-bar summaries",
+  "troubleshooting excerpts",
+ ]
+ rule: "DX snippets should be short enough to quote and stable enough to survive docs, tests, editor UI, and support chat unchanged"
+}
+
+#>wonder_agents_plans_runtimedxfoundation_artifact_1
+?["Which station reduces support burden the most when it becomes precise?"]{
+  #:depth #!educational // lens: service compression
+  $^["station_model"]@here => $^["health_check_contract"]@here
+  !probe{ "pick seed, runtime, LSP, CLI, or editor. which one collapses the most user confusion once it emits a better next action?" }
+  ~<.agents/plans/runtime-dx-foundation/wip.spw>
+}
+
+#>wonder_agents_plans_runtimedxfoundation_artifact_2
+?["How should telemetry and axis traces feed DX without duplicating vocabulary?"]{
+  #:depth #!computational // lens: contract braid
+  $^["review_contract"]@here => $^["recursive_improvement"]@here
+  !probe{ "trace one runtime event through telemetry, axis explanation, diagnostic station, and docs copy. where does the naming stay the same?" }
+  ~<.agents/plans/runtime-telemetry-canon/runtime-telemetry-canon.spw>
+}

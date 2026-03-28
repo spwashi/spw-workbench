@@ -6,13 +6,15 @@ Add a register-first VS Code surface so runtime state is inspectable as a worksp
 
 The extension already computes runtime trial results and exposes fragments of register information in hover and code-lens output, but the user still has no stable place to inspect register state, provenance, phase, write history, or resonance while editing. The desired end state is a dedicated Register Explorer surface in the Spw activity bar with predictable states, explicit commands, graph-aware detail flows, and perspective rotations that make registers feel like first-class workspace objects rather than debug residue. This improves clarity and expressiveness by making register behavior legible without forcing the user to leave the editor or infer state from scattered hints.
 
+This is a component-design rung in the current ecology. The explorer should not only expose runtime state; it should teach how an editor-side component can embody language design, graph thinking, and inspection taste. The plan becomes stronger when each UI decision can be reviewed against existing runtime/code patterns and when the surface leaves behind reusable snippets, event names, and inspection idioms rather than one-off panel behavior.
+
 The register explorer is one of three coordinated VS Code surfaces. It contributes `SpwContext.registerSnapshot` and `SpwContext.focusedRegister`, can consume atlas context when it exists, and must still ship coherently from active-file runtime snapshots when the atlas or authoring loop have not landed. See `vscode-interaction-contract.spw` in the workspace-atlas plan directory for the shared event vocabulary, capability model, and additive composition contract.
 
 **Taste note**: clarity, expressiveness, containment.
 
 ## Scope
 
-- **In scope**: define a register explorer view, register tree hierarchy, detail interactions, refresh/reveal commands, runtime-trial-backed data flow, resonance presentation across files or register groups, graph-query entry points for selected registers, rotation rules between phase/provenance/resonance views, materialization-stage-aware inspection affordances (priming registers show charging operators; body-stage registers show materialized values and projection lineage), spirit-sequence phase trajectory in detail views, optional cross-surface filtering when atlas emits `atlas.rootSelected`, shared `SpwContext` fields (`registerSnapshot`, `focusedRegister`), cross-plan event emission (`register.focused`, `register.phaseChanged`), and the minimum LSP transport needed to expose register snapshots to the VS Code extension without making atlas state mandatory.
+- **In scope**: define a register explorer view, register tree hierarchy, detail interactions, refresh/reveal commands, runtime-trial-backed data flow, resonance presentation across files or register groups, graph-query entry points for selected registers, rotation rules between phase/provenance/resonance views, materialization-stage-aware inspection affordances (priming registers show charging operators; body-stage registers show materialized values and projection lineage), spirit-sequence phase trajectory in detail views, optional cross-surface filtering when atlas emits `atlas.rootSelected`, shared `SpwContext` fields (`registerSnapshot`, `focusedRegister`), cross-plan event emission (`register.focused`, `register.phaseChanged`), the minimum LSP transport needed to expose register snapshots to the VS Code extension without making atlas state mandatory, and explicit review of existing runtime/query/editor patterns so the explorer grows from organic repo idioms rather than generic tree-view defaults.
 - **Out of scope**: redesigning runtime register semantics, adding persistent register history storage, changing `RegisterBank` contracts, building a custom webview inspector, or implementing manifest parsing (workspace-atlas scope).
 
 ## Files
@@ -117,12 +119,13 @@ These fields are additive on top of the atlas plan's contributions.
 
 ## Agentic Hygiene
 
-- Rebase target: `main@f42a80fa8eefb813992e21f7461c96926f033416`
+- Rebase target: `main@3b1747c4` (updated 2026-03-27)
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: current local drift exists in `extensions/vscode-spw/src/annotation-index.ts`, `extensions/vscode-spw/src/extension.ts`, and `packages/spw-lsp/src/stdio-server.ts`; implementation work should isolate or reconcile that drift before feature commits begin.
 
 ## Dependencies
 
+- `plan-ecology-clustering` — this plan currently occupies a `component` rung and should turn runtime/query study into a discussable editor component rather than a disconnected panel.
 - Shared interaction substrate: `.agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw` defines additive event vocabulary, capability names, context growth rules, transport tiers, and cross-theme enrichment paths.
 - Multi-agent coordination risk: `extensions/vscode-spw/src/extension.ts`, `extensions/vscode-spw/src/context.ts`, `extensions/vscode-spw/package.json`, and `packages/spw-lsp/src/stdio-server.ts` are shared hot files with the atlas and authoring plans; integration commits should be split from the register explorer's solo-ship path when work proceeds in parallel.
 - `manifestState`, `activeRoot`, and `probe.completed` are optional enrichments, not blockers. This plan should be reviewable and shippable before the atlas or authoring surfaces land, provided fallback scope behavior is in place.
@@ -137,6 +140,30 @@ These fields are additive on top of the atlas plan's contributions.
 ### Phase vocabulary note
 
 This plan uses two "phase" axes (see `vscode-interaction-contract.spw ^["phase_vocabularies"]`): **spirit-sequence phase** (what operator semantics the register was charged by — `?~@&*^`) and **pipeline phase** (when the runtime enriched the register — `lex`, `parse`, `semantic`, etc.). In the explorer tree, unqualified "phase" means pipeline phase. The detail view shows both when both are available.
+
+## Principal Engineering Orientation
+
+- Ladder position: `component`
+- Judgment target: use one editor component to sharpen inspection taste, state naming, and the relationship between runtime truth and editor affordance
+- Commit bar: every slice should leave behind one reusable context/event idiom, one reviewable detail-view concept, and one clearer way to discuss register behavior across plans
+
+## Review Surfaces
+
+- Extension surfaces: `extensions/vscode-spw/src/extension.ts`, `extensions/vscode-spw/src/context.ts`, `extensions/vscode-spw/package.json`
+- Transport/runtime surfaces: `packages/spw-lsp/src/stdio-server.ts`, `packages/spw-lsp/src/context.ts`, `packages/spw-lsp/src/types.ts`, `packages/spw-lsp/src/handlers/runtime.ts`
+- Semantic precedents: `extensions/vscode-spw/src/semantics.ts`, `packages/spw-runtime/src/state/register-bank.ts`, `.agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw`
+
+## Capability Transfer
+
+- Interaction capability: tree navigation, detail panes, event emission, and perspective rotation
+- Runtime capability: register snapshot truth, phase history, provenance, and resonance need to stay close to runtime terminology
+- Discussion capability: the explorer should create better conversations about what a register is, how it changes, and which phase axis the user is actually looking at
+
+## Syntax and Snippet Discipline
+
+- Stable inspection syntax: labels, commands, and detail headings should reuse canonical register/phase terms from runtime and query plans
+- Event snippets: preserve a small corpus of event payload examples (`register.focused`, `register.phaseChanged`, `atlas.rootSelected`) so cross-surface wiring stays inspectable
+- Solo-ship snippets: the first useful active-file snapshot and reveal/refresh commands should be demonstrable without the atlas plan present
 
 ## Fuzz Strategy
 

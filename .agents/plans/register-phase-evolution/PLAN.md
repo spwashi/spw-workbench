@@ -6,11 +6,13 @@ Refine the phased register model from the shipped runtime baseline into a querya
 
 The desired end state is a register model whose phase vocabulary is shared by runtime, query tooling, tests, CLI help, and docs: `lex`, `parse`, `semantic`, `optimize`, `pragmatic`. The additive enrichment mechanics and P0 runtime stabilization already landed, so this plan narrows to selector/query alignment and documentation rather than reopening build-fix work. Keep enrichment incremental, queryable, and cheap at early stages without another schema reset. Stable phase vocabulary is also what lets public literature, editor UX, CLI naming, and ecosystem governance speak about Spw without semantic drift.
 
+This is the language-design rung in the current ecology. Its real value is not just that the runtime gets cleaner names; it is that selector grammar, phase naming, and query examples become a study surface for Spw web linguistics. The branch should leave behind reviewable syntax, small reusable selector snippets, and a tighter bridge between how the language is implemented, taught, and discussed.
+
 **Taste note**: clarity, naming, layering.
 
 ## Scope
 
-- **In scope**: selector expression grammar (`Spw.q`), `spwq` and package-owned CLI integration, canonical phase-name alignment across runtime/query/docs, targeted tests, narrow runtime touch-ups needed to support the shipped baseline, and enough documentation alignment that surface/release/install plans can reuse the same vocabulary.
+- **In scope**: selector expression grammar (`Spw.q`), `spwq` and package-owned CLI integration, canonical phase-name alignment across runtime/query/docs, targeted tests, narrow runtime touch-ups needed to support the shipped baseline, enough documentation alignment that surface/release/install plans can reuse the same vocabulary, review of selector/code-pattern precedents in `.spw/workspace.spw` and `.spw/patterns/query-composition.spw`, and extraction of a small reusable selector-snippet corpus for docs/help/tests.
 - **Out of scope**: revisiting the P0 phase/liminality repair, renaming `RegisterBank`, the broader chemistry/metaphysics redesign, full optimizer semantics, and UI autocomplete / brace-capture workflows.
 
 ## Decisions Locked
@@ -66,7 +68,31 @@ The desired end state is a register model whose phase vocabulary is shared by ru
 
 ## Dependencies
 
-none
+- `plan-ecology-clustering` — this plan is the `language` rung in the current design ladder and should convert linguistic study into reusable query/doc/editor vocabulary.
+
+## Principal Engineering Orientation
+
+- Ladder position: `language`
+- Judgment target: make selector grammar and phase naming reviewable enough that the team can discuss Spw query language with the same rigor it would apply to HTML, CSS, or SQL surface design.
+- Commit bar: each commit should make one user-facing phrase clearer, one selector example truer, and one downstream teaching surface easier to reuse.
+
+## Review Surfaces
+
+- Code: `packages/spw-seed/src/query/selector-expr.ts`, `packages/spw-seed/src/query/spwq.ts`, `packages/spw-seed/src/query/presets.ts`, `packages/spw-seed/src/query/match.ts`
+- Pattern/literature: `.spw/patterns/query-composition.spw`, `.spw/workspace.spw`, `docs/runtime/spw/register-bank.spw`, `docs/runtime/spw/brace-registers.spw`
+- Tooling consumers: `packages/spw-cli/src/query.ts`, downstream VS Code plans that need stable phase/query language
+
+## Capability Transfer
+
+- Runtime capability: selector traversal, phase predicates, provenance reading, and cheap early-stage register inspection
+- Interaction capability: CLI help text, LSP explanation, and editor UI can all reuse the same selector and phase vocabulary instead of inventing adjacent dialects
+- Literature capability: query examples should become a small, durable corpus that can appear in docs, tests, tutorials, and release notes without translation
+
+## Syntax and Snippet Discipline
+
+- Stable syntax: canonical phase predicates and selector forms should appear together in tests, docs, and CLI help so drift is visible immediately
+- Experimental syntax: any new selector affordance needs an explicit rollback path and should not silently replace the stable surface
+- Snippet corpus: maintain a compact set of selector examples that can be lifted into tests, docs, hover text, and `spwq` examples with minimal editing
 
 ### Downstream consumers
 

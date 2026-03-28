@@ -4,16 +4,18 @@
 
 Conduct a comprehensive, curricular audit of how `data-*` attributes and ARIA states are used to synchronize application state with the DOM. The goal is to elevate DOM sync from an imperative chore into a masterclass on robust, declarative state machines. We will actively **develop taste** by migrating scattered `setAttribute` calls into highly rigorous, unidirectional Lit properties and centralized global orchestrators.
 
+This is a component-design rung in the current ecology. The main value is not raw attribute cleanup; it is to learn how DOM reflection, accessibility semantics, and queryable state can become a coherent interface contract. Until a concrete packages-era UI surface is nominated, the first slice should stay convention, harness, and snippet first.
+
 **Taste Note:** Improves **correctness** (ensuring the DOM state always precisely reflects the internal Spw state machines without race conditions), **performance** (minimizing raw DOM thrashing), and **clarity** through a standardized, curricular approach to attribute reflection and ARIA semantics.
 
 ## Scope
 
-- **In scope**: A deep 5-phase curricular audit: Global State Orchestration, Primitive Component State, Advanced State Machines, Semantic ARIA Sync, and Render Optimization. Scanning for `setAttribute('data-' ...)` and `dataset` manipulations across `src/platform`, `src/features`, and `src/ui`. Converting component-level attributes to Lit `@property({reflect: true})` and centralizing global mutations.
+- **In scope**: A deep 5-phase curricular audit: Global State Orchestration, Primitive Component State, Advanced State Machines, Semantic ARIA Sync, and Render Optimization. Reviewing selection/query conventions, current tooling surfaces, DOM/CSS harness notes, and any nominated UI targets; extracting reflection heuristics and ARIA rules that future components can reuse. Legacy `src/platform`, `src/features`, and `src/ui` paths in this plan are historical placeholders until a concrete packages-era target is nominated.
 - **Out of scope**: Changing the visual manifestation (CSS rules) of these attributes; we are refactoring the *engine* that drives them.
 
 ## Agentic Hygiene
 
-- **Rebase target**: `origin/maina290a6`
+- **Rebase target**: `main@3b1747c4` (updated 2026-03-27)
 - **Rebase cadence**: rebase before commit 1 and again before merge
 - **Hygiene split**: isolate unrelated out-of-scope drift into `feature/audit-data-attributes-agentic-hygiene` before implementation commits
 
@@ -21,6 +23,10 @@ Conduct a comprehensive, curricular audit of how `data-*` attributes and ARIA st
 
 Predicted file changes:
 ```
+[MOD] .spw/conventions/selection.spw
+[MOD] .spw/tooling/vscode-spw.spw
+[MOD] .spw/workspace.spw
+[MOD] docs/design/md/dom-css-testing-harness.md
 [MOD] src/ui/elements/**/*.ts    (refactoring manual sets to reactive properties)
 [MOD] src/platform/**/*.ts       (centralizing global writes)
 [NEW] src/app/dom-sync/theme-orchestrator.ts
@@ -67,10 +73,37 @@ Preflight: `&[hygiene] — rebase onto origin/main and isolate unrelated drift b
 ## Dependencies
 
 - **`refactor-import-sprawl`**: We should let the import refactoring settle before moving the global data attribute managers, or ensure they align with the new `app/` and `features/` structure.
+- `plan-ecology-clustering` — this plan currently serves the `component` rung and should turn reflection/ARIA study into reusable component judgment.
+- `curriculum-html-css-mastery` — provides standards-first precedents for semantics, containment, and selector-native state reading.
+- `audit-ui-data-models` — state machines and model vocabulary should remain aligned with DOM reflection semantics.
+
+## Principal Engineering Orientation
+
+- Ladder position: `component`
+- Judgment target: make state reflection and accessibility semantics explicit enough that future components can be inspected, queried, and discussed with less hidden DOM folklore
+- Commit bar: each slice should make one attribute contract truer, one ARIA/reflection rule clearer, and one future debugging path shorter
+
+## Review Surfaces
+
+- Repo precedents: `.spw/conventions/selection.spw`, `.spw/tooling/vscode-spw.spw`, `.spw/workspace.spw`, `docs/design/md/dom-css-testing-harness.md`
+- External precedents: ARIA, HTML semantics, attribute reflection patterns, and selector-driven state techniques
+- Future consumers: command/authoring/editor plans that need stable selection, focus, mode, and attribute semantics
+
+## Capability Transfer
+
+- Component capability: explicit state reflection, predictable focus/selection semantics, and ARIA discipline
+- Query capability: selectors and diagnostics can talk about DOM state because the state surface is named and stable
+- Debugging capability: reflection snippets and harnesses make it easier to reproduce attribute-state bugs without recreating the whole interface
+
+## Syntax and Snippet Discipline
+
+- Stable snippets: preserve compact examples of reflection, selection, and ARIA mappings that can be reused in docs and future components
+- Experimental snippets: new attribute idioms should be marked as experimental until they prove they do not create selector or a11y drift
+- Route discipline: every attribute contract should say whether it belongs in a local component, a shared convention, or a tooling/debug harness
 
 ## Spw Artifact
 
 ```
-.agent/plans/audit-data-attributes/audit-data-attributes.spw
+.agents/plans/audit-data-attributes/audit-data-attributes.spw
 ```
 A formal Spw record defining the exact interaction between the application's semantic memory ("valence" and "strata") and the physical DOM's `dataset` reflection.

@@ -4,6 +4,20 @@
 
 #:layer #!pragmatics
 
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @governance: ~".agents/plans/ecosystem-surface-governance/ecosystem-surface-governance.spw"
+ @workspace: ~".spw/workspace.spw"
+ @tooling: ~".spw/tooling/vscode-spw.spw"
+}
+
+^["cluster_role"]{
+ lane: #execution_truth
+ ladder: #service
+ braid: [#install, #governance, #release, #discoverability]
+ rule: "release gates block on execution truth and selected public-interest evidence; curriculum and research remain valued inputs, not hidden blockers"
+}
+
 ^["release_theme"]{
  version: "v0.3.0"
  window: "2026-03-31"
@@ -28,6 +42,43 @@
  principle: "do not let the calendar outrun the repository"
  beta_requires: "visible package seams, updated build/test story, and explicit release notes"
  release_requires: "coherent workspace topology, green core verification, and docs/changelog alignment"
+}
+
+^["parallel_work"]{
+ critical_path: [#release_theme, #phase_focus, #truth_gate]
+ parallelizable: [#release_notes, #migration_notes, #install_copy, #support_docs]
+ shared_hot_files: [@workspace, @tooling, @governance]
+ merge_risks: [#calendar_drift, #claim_drift, #install_story_drift]
+ handoff_artifacts: [@cluster, @governance, @tooling]
+}
+
+^["supporting_documents"]{
+ must_ship: [@workspace, @tooling, @governance]
+ helpful: [@cluster]
+ carries: [#release_notes, #migration_guide, #install_story, #support_path]
+}
+
+^["interaction_depth"]{
+ subjects: [#discoverability, #trust, #upgrade_friction, #support_burden, #narrative_coherence]
+ questions: [#what_is_new, #what_changed_for_users, #what_is_safe_to_claim]
+ qualities: [#truthfulness, #compression, #coherence]
+}
+
+^["review_surfaces"]{
+ docs: [@workspace, @tooling]
+ governance: [@governance]
+ cluster: [@cluster]
+ asks: [#release_truth, #install_story, #discoverability, #support_path]
+}
+
+^["snippet_routes"]{
+ exports: [
+  "quick-start snippets",
+  "migration note deltas",
+  "release-note claims",
+  "install and troubleshooting excerpts",
+ ]
+ rule: "release snippets should be short enough to quote, truthful enough to survive docs, editor, and support contexts unchanged"
 }
 
 #>wonder_agents_plans_v030releaseprep_artifact_1

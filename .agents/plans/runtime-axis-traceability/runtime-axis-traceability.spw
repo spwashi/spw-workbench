@@ -1,0 +1,102 @@
+# bridge spec — runtime-axis-traceability
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @dx: ~".agents/plans/runtime-dx-foundation/runtime-dx-foundation.spw"
+ @runtime_foundation: ~"docs/runtime/spw/runtime-foundation.spw"
+ @register_bank: ~"packages/spw-runtime/src/state/register-bank.ts"
+ @substrate: ~"packages/spw-runtime/src/pipeline/substrate.ts"
+ @stages: ~"packages/spw-runtime/src/pipeline/stages.ts"
+}
+
+^["cluster_role"]{
+ lane: #execution_truth
+ ladder: #bridge
+ braid: [#runtime_literature, #traceability, #review, #governance]
+ rule: "axis traces should explain why runtime behavior feels the way it does without bloating the implementation or becoming ornamental commentary"
+}
+
+^["concept_index"]{
+ primary: [#timing, #stability, #disclosure, #affect, #resolution, #noise]
+ surfaces: [#register_bank, #substrate, #stages, #marker_audit, #release_review]
+ tensions: [#ornamental_comments, #overmarking, #trace_drift, #reader_burden]
+ transfers: [#language, #service, #governance]
+}
+
+^["axis_model"]{
+ timing: .{targets:[#timeout, #cooldown, #cadence, #buffer], asks:[#responsiveness, #recovery]}
+ stability: .{targets:[#threshold, #hysteresis, #decay], asks:[#confidence, #stickiness]}
+ disclosure: .{targets:[#exposure, #logging, #visibility], asks:[#privacy, #debuggability]}
+ affect: .{targets:[#charge, #valence, #tone], asks:[#salience, #attention]}
+ resolution: .{targets:[#merge, #collapse, #settling], asks:[#precision, #finality]}
+ noise: .{targets:[#jitter, #filter, #suppression], asks:[#signal_quality, #false_alarm]}
+}
+
+^["marker_contract"]{
+ forms: [#axis_marker, #adjacent_comment, #review_excerpt]
+ rule: "a trace is good only if removing it would make the code harder to justify during review"
+ audit_needs: [#detectable, #searchable, #localized]
+}
+
+^["review_contract"]{
+ sources: [@cluster, @dx, @runtime_foundation, @register_bank, @substrate, @stages]
+ asks: [#justification_density, #trace_value, #reader_legibility, #governance_reuse]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread runtime code and design literature before inserting a marker",
+  "< trace one real constant, threshold, or buffering rule",
+  "$ record whether the trace changed review speed or explanation quality",
+  "^ reuse the stable phrasing in DX, governance, and release review surfaces",
+  "% keep markers explanatory and auditable rather than decorative",
+ ]
+ gates: [#adjacent_truth, #review_value, #marker_auditability, #non_ornamental]
+}
+
+^["parallel_work"]{
+ critical_path: [#axis_model, #marker_contract]
+ parallelizable: [#review_contract, #marker_audit, #release_review]
+ shared_hot_files: [@dx, @runtime_foundation, @register_bank, @substrate, @stages]
+ merge_risks: [#marker_drift, #comment_ornament, #review_copy_drift]
+ handoff_artifacts: [@dx, @runtime_foundation]
+}
+
+^["supporting_documents"]{
+ must_ship: [@dx, @runtime_foundation]
+ helpful: [#marker_audit, #release_review, #code_review_examples]
+ carries: [#axis_glossary, #review_excerpt, #marker_examples, #audit_rules]
+}
+
+^["interaction_depth"]{
+ subjects: [#legibility, #adjacency, #auditability, #tone, #explanatory_power]
+ questions: [#what_needs_a_marker, #what_is_searchable, #what_is_review_relevant]
+ qualities: [#precision, #locality, #restraint]
+}
+
+^["snippet_routes"]{
+ stable: [
+  "axis-marker examples",
+  "adjacent justification comments",
+  "review excerpts linking code to axis",
+ ]
+ rule: "axis snippets should be short enough for code review and clear enough to quote in docs or governance notes"
+}
+
+#>wonder_agents_plans_runtimeaxistraceability_artifact_1
+?["Which axis most improves reviewer understanding when it becomes explicit?"]{
+  #:depth #!educational // lens: literature transfer
+  $^["axis_model"]@here => $^["marker_contract"]@here
+  !probe{ "pick one runtime behavior and ask which axis gives the reviewer the strongest explanatory foothold." }
+  ~<packages/spw-runtime/src/state/register-bank.ts>
+}
+
+#>wonder_agents_plans_runtimeaxistraceability_artifact_2
+?["How can a marker stay machine-auditable and still read like literature?"]{
+  #:depth #!computational // lens: dual-surface syntax
+  $^["review_contract"]@here => $^["recursive_improvement"]@here
+  !probe{ "what is the smallest paired form that a script can find and a human can still learn from?" }
+  ~<scripts/analyzers/spw-marker-audit.ts>
+}

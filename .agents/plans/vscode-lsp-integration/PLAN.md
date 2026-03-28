@@ -22,6 +22,7 @@ The current VS Code extension relies on declarative TextMate grammars and simple
 ## Files
 
 ```text
+[NEW] .agents/plans/vscode-lsp-integration/vscode-lsp-integration.spw
 [MOD] extensions/vscode-spw/package.json
 [MOD] extensions/vscode-spw/src/extension.ts
 [MOD] packages/spw-lsp/src/stdio-server.ts
@@ -76,3 +77,28 @@ Commits ~[10]-~[16] form the language-service correctness lane. Commits ~[17]-~[
 ## Dependencies
 
 none
+
+## Principal Engineering Orientation
+
+- Ladder position: `service`
+- Judgment target: make editor trust, preview discipline, and thin-client boundaries legible enough that the extension can teach Spw without owning a second semantics stack
+- Commit bar: each slice should leave behind one testable capability, one stable user-facing phrase, and one clearer boundary between server truth and client packaging
+
+## Review Surfaces
+
+- Tooling/spec: `.spw/tooling/vscode-spw.spw`, `.spw/conventions/selection.spw`
+- Code: `packages/spw-lsp/src/handlers/editing.ts`, `packages/spw-lsp/src/handlers/navigation.ts`, `packages/spw-lsp/src/stdio-server.ts`, `extensions/vscode-spw/src/extension.ts`
+- Planning artifact: `.agents/plans/vscode-lsp-integration/vscode-lsp-integration.spw`
+
+## Recursive Improvement
+
+- Start from the current handlers and capability claims, not wishful roadmap language.
+- Ship one semantic capability at a time with smoke/tests or preview evidence.
+- Preserve the same wording across code action copy, docs, and release notes.
+- Keep the extension thinner than the LSP even as authoring/refactor ambitions grow.
+
+## Spw Artifact
+
+```text
+.agents/plans/vscode-lsp-integration/vscode-lsp-integration.spw
+```

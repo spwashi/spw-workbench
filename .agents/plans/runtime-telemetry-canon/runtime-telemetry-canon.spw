@@ -1,0 +1,112 @@
+# service spec — runtime-telemetry-canon
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @dx: ~".agents/plans/runtime-dx-foundation/runtime-dx-foundation.spw"
+ @runtime_foundation: ~"docs/runtime/spw/runtime-foundation.spw"
+ @run_spw: ~"packages/spw-runtime/src/pipeline/run-spw.ts"
+ @types: ~"packages/spw-runtime/src/pipeline/types.ts"
+ @substrate: ~"packages/spw-runtime/src/pipeline/substrate.ts"
+}
+
+^["cluster_role"]{
+ lane: #execution_truth
+ ladder: #service
+ braid: [#telemetry, #runtime_truth, #host_qa, #diagnostics]
+ rule: "runtime results should return immutable facts that downstream surfaces can quote without reconstructing substrate internals"
+}
+
+^["concept_index"]{
+ primary: [#events, #resonances, #register_meta, #freshness, #coherence, #phase]
+ surfaces: [#runtime_api, #host_app, #dx, #governance, #editor]
+ tensions: [#immutability, #semantic_drift, #overexposure, #policy_leakage]
+ transfers: [#service, #support, #release]
+}
+
+^["telemetry_contract"]{
+ returns: [
+  #events,
+  #resonances,
+  #register_meta,
+  #phase,
+  #freshness,
+  #coherence,
+ ]
+ never_returns: [
+  #live_substrate,
+  #mutable_handles,
+  #host_side_reconstruction,
+ ]
+ rule: "public telemetry should be factual enough for QA and governance while staying narrower than product-policy interpretation"
+}
+
+^["downstream_consumers"]{
+ dx: [#station_code, #health_check, #support_language]
+ governance: [#publish_readiness, #surface_truth, #freshness_review]
+ editor: [#status_summary, #probe_result, #preview_context]
+ host: [#qa_gate, #integration_debug, #telemetry_export]
+}
+
+^["review_contract"]{
+ sources: [@cluster, @dx, @runtime_foundation, @run_spw, @types, @substrate]
+ asks: [#immutability, #fact_density, #downstream_reuse, #vocabulary_alignment]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread return types and downstream consumers before widening telemetry",
+  "< ship one new immutable fact that removes host-side guessing",
+  "$ record whether freshness, coherence, or readiness became cheaper to judge",
+  "^ feed the stable fact into DX, governance, and editor surfaces without renaming it",
+  "% keep runtime contracts factual and avoid leaking live ownership or product-policy conclusions",
+ ]
+ gates: [#immutability, #downstream_reuse, #diagnostic_alignment, #narrow_contract]
+}
+
+^["parallel_work"]{
+ critical_path: [#telemetry_contract, #downstream_consumers]
+ parallelizable: [#dx, #governance, #editor, #host]
+ shared_hot_files: [@dx, @runtime_foundation, @run_spw, @types, @substrate]
+ merge_risks: [#payload_drift, #vocabulary_drift, #policy_leakage]
+ handoff_artifacts: [@dx, @runtime_foundation]
+}
+
+^["supporting_documents"]{
+ must_ship: [@dx, @runtime_foundation]
+ helpful: [#host_integration_note, #editor_snapshot_examples, #governance_review]
+ carries: [#payload_examples, #field_glossary, #immutability_note, #consumer_matrix]
+}
+
+^["interaction_depth"]{
+ subjects: [#fact_density, #freshness, #coherence, #host_legibility, #boundary_hygiene]
+ questions: [#what_is_returned, #what_is_derived_elsewhere, #what_stays_immutable]
+ qualities: [#precision, #reusability, #non_leakage]
+}
+
+^["snippet_routes"]{
+ stable: [
+  "telemetry payload excerpts",
+  "event and resonance examples",
+  "freshness/coherence summaries",
+  "probe-result snapshots",
+ ]
+ rule: "telemetry snippets should be reusable in runtime docs, editor inspection, and DX artifacts without translation"
+}
+
+#>wonder_agents_plans_runtimetelemetrycanon_artifact_1
+?["Which runtime fact most improves downstream judgment when it becomes canonical?"]{
+  #:depth #!educational // lens: service transfer
+  $^["telemetry_contract"]@here => $^["downstream_consumers"]@here
+  !probe{ "pick events, resonances, freshness, or coherence. which consumer changes behavior the most once the fact is available directly?" }
+  ~<packages/spw-runtime/src/pipeline/run-spw.ts>
+}
+
+#>wonder_agents_plans_runtimetelemetrycanon_artifact_2
+?["How does this contract stay factual without turning into policy?"]{
+  #:depth #!computational // lens: boundary hygiene
+  $^["concept_index"]@here => $^["recursive_improvement"]@here
+  !probe{ "where should the runtime stop speaking so governance, docs, or hosts can make their own judgments?" }
+  ~<.agents/plans/runtime-dx-foundation/runtime-dx-foundation.spw>
+}

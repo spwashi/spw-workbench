@@ -4,9 +4,42 @@
 
 #:layer #!pragmatics
 
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @plan: ~".agents/plans/absorb-spwq-cli/PLAN.md"
+ @cli: ~".spw/conventions/cli.spw"
+ @seed: ~"packages/spw-seed/src/query/selector-expr.ts"
+}
+
 ^["intent"]{
  ~#goal: "Repair selector truth on real corpus files, move spwq behind the package-owned CLI, and normalize overlapping command names without breaking compatibility."
  ~#taste: "correctness, layering, naming"
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#verb_truth, #selector_correctness, #compat_judgment, #cli_taste]
+ review_surfaces: [@cluster, @plan, @cli, @seed]
+ snippet_routes: [#query_example, #selector_example, #command_help, #compat_alias]
+}
+
+^["concept_index"]{
+ primary: [#cli, #query, #select, #ls, #selector, #alias, #compat]
+ surfaces: [#terminal, #docs, #site_install, #lsp_adapter]
+ tensions: [#verb_overlap, #compat, #corpus_truth, #install_boundary]
+ transfers: [#language, #service]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread selector behavior and CLI surface claims before renaming verbs",
+  "< ship one traversal or command-surface fix that removes user-facing ambiguity",
+  "$ record which corpus query became more truthful or teachable",
+  "^ feed the stable verb language into docs, site-install, and release surfaces",
+  "% keep compatibility wrappers thinner than the canonical command surface",
+ ]
+ gates: [#selector_truth, #verb_clarity, #compat_discipline]
 }
 
 ^["stream"]{

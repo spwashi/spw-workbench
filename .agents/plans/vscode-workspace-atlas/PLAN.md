@@ -48,7 +48,7 @@ The atlas is one of three coordinated VS Code surfaces. It contributes manifest 
 
 ## Spirit-Sequence Axis
 
-The spirit sequence (`?~@&*^`) is the heart of Spw dynamics. The atlas should make it navigable, not just decorative.
+The spirit sequence (`?~@&*^`) is the heart of Spw dynamics. The atlas should make it navigable, not just decorative. The **literate-ui pattern** (`.spw/patterns/literate-ui.spw`) defines how each operator maps to a navigation gesture and how the spirit sequence forms a navigation spine — the atlas's phase perspective is a direct application of this pattern.
 
 - **Phase as a rotation lens**: alongside topology, contract, resonance, and query perspectives, the atlas offers a **phase** perspective that groups workspace nodes by the dominant spirit-sequence operator in their content.
 - **Computation**: operator frequency analysis per file or root. The dominant phase is the highest-frequency spirit operator. This reuses the operator-distribution probe already described in the workspace manifest (`$%[op.distribution]@here`).

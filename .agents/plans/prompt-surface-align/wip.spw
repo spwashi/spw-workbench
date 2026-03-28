@@ -4,9 +4,42 @@
 
 #:layer #!pragmatics
 
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @plan: ~".agents/plans/prompt-surface-align/PLAN.md"
+ @seed: ~"packages/spw-seed/src/lexer/profiles.ts"
+ @tooling: ~".spw/tooling/vscode-spw.spw"
+}
+
 ^["intent"]{
  ~#goal: "Align the parser, LSP, and editor plugins with the prompt-pack dialect already present in prompts/*.prompt.spw so authors stop hitting false syntax gaps."
  ~#taste: "Improve correctness and expressiveness across the prompt authoring surface."
+}
+
+^["development"]{
+ lane: #public_interest_research
+ ladder: #language
+ develops: [#prompt_dialect, #tooling_alignment, #authoring_truth, #portable_syntax]
+ review_surfaces: [@cluster, @plan, @seed, @tooling]
+ snippet_routes: [#prompt_header, #formula_surface, #anchor_example, #plugin_copy]
+}
+
+^["concept_index"]{
+ primary: [#prompt, #dialect, #headers, #lexer, #anchors, #plugins]
+ surfaces: [#parser, #lsp, #vscode, #intellij, #prompt_packs]
+ tensions: [#social_contract, #false_errors, #dialect_scope, #plugin_drift]
+ transfers: [#language, #component]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread prompt-pack examples and current tool behavior before widening syntax support",
+  "< ship one parser or plugin alignment that removes a false gap",
+  "$ record which prompt form became writable without explanation debt",
+  "^ propagate the stable prompt wording into parser, LSP, and plugins",
+  "% keep prompt support narrow enough to stay truthful and maintainable",
+ ]
+ gates: [#authoring_truth, #dialect_discipline, #cross_tool_alignment]
 }
 
 ^["stream"]{

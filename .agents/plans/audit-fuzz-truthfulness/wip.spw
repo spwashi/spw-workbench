@@ -4,9 +4,42 @@
 
 #:layer #!pragmatics
 
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @plan: ~".agents/plans/audit-fuzz-truthfulness/PLAN.md"
+ @workspace: ~".spw/workspace.spw"
+ @pattern: ~".spw/patterns/literate-ui.spw"
+}
+
 ^["intent"]{
  ~#goal: "Make `audit:*` and `fuzz:*` truthful: local-only, coverage-aware, severity-ranked, and explicit about what they actually check. Replace placeholder aliases with runner profiles whose names match their guarantees."
  ~#taste: "clarity, correctness, expressiveness"
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#truth_judgment, #fuzz_signal, #failure_locality, #release_confidence]
+ review_surfaces: [@cluster, @plan, @workspace, @pattern]
+ snippet_routes: [#audit_output, #fuzz_case, #truth_note, #failure_excerpt]
+}
+
+^["concept_index"]{
+ primary: [#audit, #fuzz, #truth, #signal, #failure_locality, #release]
+ surfaces: [#tests, #cli, #docs, #review]
+ tensions: [#ritualization, #false_signal, #verbosity, #support_gap]
+ transfers: [#service, #release]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread audit and fuzz output before widening check coverage",
+  "< ship one clearer truth signal or failure localization improvement",
+  "$ record which result became easier to trust or act on",
+  "^ feed the stable phrasing into DX, release, and support surfaces",
+  "% keep truth checks more actionable than ceremonial",
+ ]
+ gates: [#signal_quality, #actionability, #truthfulness]
 }
 
 ^["stream"]{
@@ -70,7 +103,7 @@
 ?["What is the felt rhythm of reading wip — audit-fuzz-truthfulness?"]{
   #:depth #!mathematical // lens: material grain
   $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
-  ~#structure: "intent → stream → open"
+  ~#structure: "roots → intent → development → concept_index → recursive_improvement → stream → open"
   !probe{ "read aloud for 30 seconds; where do you pause? pauses mark grain boundaries." }
   ~<.agents/plans/_schema/wip.spw>  // nearest neighbor
 }

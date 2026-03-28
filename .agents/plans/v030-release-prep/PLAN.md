@@ -4,13 +4,13 @@ Formalize the v0.3.0 release track around the rewrite's real public shape: the m
 
 ## Goal
 
-The monorepo restructure has landed — packages are namespaced under `@spwashi/*`, LSP is integrated, and the extension uses `vscode-languageclient`. What is still missing is a truthful release story: how v0.3.x should be understood, how a site codebase engages the workbench through `.spw/_workbench`, and which ecosystem surfaces are genuinely ready for others to depend on. This plan is the coordination braid across the already-running install, governance, CLI, DX, and editor lanes.
+The monorepo restructure has landed — packages are namespaced under `@spwashi/*`, LSP is integrated, and the extension uses `vscode-languageclient`. What is still missing is a truthful release story: how v0.3.x should be understood, how a site codebase engages the workbench through `.spw/_workbench`, and which ecosystem surfaces are genuinely ready for others to depend on. This plan is the coordination braid across the already-running install, governance, CLI, DX, and editor lanes. It should now read the clustered ecology explicitly: release gates belong to execution truth and public-interest lanes, while curricula and research experiments contribute heuristics, probes, and discussion subjects without silently becoming tag blockers.
 
 Taste note: improve **clarity**, **layering**, and **naming** by giving the release a stable narrative and bounded gates. Honesty over ceremony — acknowledge that v0.3.0 shipped structurally before the formal waypoint was written, and do not let npm-publish language outrun the install ecology that actually exists.
 
 ## Scope
 
-- **In scope**: write the v0.3.0 changelog and waypoint, document the submodule/site-install quick-start for external codebases, write migration notes (v0.2.x → v0.3.x / lore-era → packages-era), update ecosystem surface readiness metadata, and verify VS Code extension discoverability metadata where it affects adoption.
+- **In scope**: write the v0.3.0 changelog and waypoint, document the submodule/site-install quick-start for external codebases, write migration notes (v0.2.x → v0.3.x / lore-era → packages-era), update ecosystem surface readiness metadata, verify VS Code extension discoverability metadata where it affects adoption, and make explicit which plan clusters actually gate a truthful release.
 - **Out of scope**: new language features, parser changes, or treating npm publish as the release gate for this slice.
 
 ## Files
@@ -71,6 +71,7 @@ Fuzz strategy:
 - `absorb-spwq-cli` — CLI command taxonomy must be settled before quick-start and migration notes harden
 - `runtime-dx-foundation` — diagnostic station language should match the release troubleshooting story
 - `vscode-lsp-integration` — extension capability/discoverability claims must stay truthful
+- `plan-ecology-clustering` — release gates should depend on execution truth and public-interest lanes, while curriculum and research lanes remain valued inputs rather than hidden blockers
 
 ## Spw Artifact
 

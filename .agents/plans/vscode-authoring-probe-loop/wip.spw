@@ -4,25 +4,65 @@
 
 #:layer #!pragmatics
 
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @artifact: ~".agents/plans/vscode-authoring-probe-loop/vscode-authoring-probe-loop.spw"
+ @selection: ~".spw/conventions/selection.spw"
+ @tooling: ~".spw/tooling/vscode-spw.spw"
+ @literate_ui: ~".spw/patterns/literate-ui.spw"
+ @extension: ~"extensions/vscode-spw/src/extension.ts"
+}
+
 ^["intent"]{
  ~#goal: "Make the VS Code authoring loop register-aware through better completion, actionable code lens, probe commands, and lightweight status surfaces."
  ~#taste: "correctness, expressiveness, performance"
 }
 
+^["development"]{
+ lane: #speculative_editor_future
+ ladder: #component
+ develops: [#authoring_pleasure, #selection_language, #preview_truth, #editor_teaching]
+ review_surfaces: [@cluster, @artifact, @selection, @tooling, @literate_ui, @extension]
+ snippet_routes: [#completion_copy, #phase_hint, #status_copy, #preview_refactor, #graph_query]
+}
+
+^["concept_index"]{
+ primary: [#completion, #code_lens, #status, #phase, #materialization, #probe, #graph_query]
+ surfaces: [#editor, #command_palette, #status_bar, #hover, #quick_pick]
+ tensions: [#noise, #semantic_drift, #cheap_computation, #solo_ship]
+ transfers: [#component, #page, #service]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread selection, tooling, and literate-ui before widening authoring affordances",
+  "< ship one editor affordance that teaches a real Spw behavior",
+  "$ record whether the same language survives completion, status, hover, and docs",
+  "^ promote the surviving pattern into shared tooling or cross-surface event vocabulary",
+  "% keep local authoring value available even without atlas or register enrichments",
+ ]
+ gates: [#solo_ship, #cheap_status, #snippet_legibility, #preview_truth]
+}
+
 ^["stream"]{
+ # Append entries chronologically. Never edit prior entries.
+ # >>[YYYY-MM-DD HH:MM] <type> — <content>
+ # Types: observe, decide, surprise, revise, blocked, taste, rebase, hygiene, implement, verify, note
  >>[2026-03-26 00:00] observe — completion is still dominated by static sigil snippets, root paths, and annotation names while register and workspace signals remain mostly passive.
- >>[2026-03-26 00:01] observe — code-lens already computes useful runtime and projection summaries, but none of those surfaces are currently actionable.
+ >>[2026-03-26 00:01] observe — code lens already computes useful runtime and projection summaries, but none of those surfaces are currently actionable.
  >>[2026-03-26 00:02] decide — the first authoring-loop slice should keep the terminal harness intact and concentrate on command routing plus richer editor affordances.
- >>[2026-03-26 00:03] hygiene — base reference recorded at `main@f42a80fa8eefb813992e21f7461c96926f033416`; `main...HEAD` shows no unrelated committed drift.
- >>[2026-03-26 00:04] hygiene — local drift is present in `extensions/vscode-spw/src/annotation-index.ts`, `extensions/vscode-spw/src/extension.ts`, and `packages/spw-lsp/src/stdio-server.ts`; feature implementation should isolate that work before commit 1.
+ >>[2026-03-26 00:03] hygiene — original branch memory recorded main@f42a80fa8eefb813992e21f7461c96926f033416 at plan time.
+ >>[2026-03-26 00:04] hygiene — local drift is present in annotation-index.ts, extension.ts, and stdio-server.ts; implementation should isolate that work before commit 1.
  >>[2026-03-26 00:05] taste — status surfaces should accelerate attention, not become a second dashboard inside the editor chrome.
  >>[2026-03-26 00:06] revise — broaden the authoring loop to account for theming nuance, formatting/refactor flows, graph-query probes, and perspective rotations during inspection.
  >>[2026-03-26 00:07] revise — relax the plan from atlas/register-last sequencing to additive composition. The authoring loop now needs a solo-ship path from local parse/runtime context, with atlas/register data treated as optional enrichments.
- >>[2026-03-26 00:08] observe — phase-aware completion's look-back rule needs AST-precise spirit-sequence context at cursor offset. The seed parser doesn't currently expose this. Regex heuristics work for common patterns but miss nested or multi-operator contexts.
- >>[2026-03-26 00:09] decide — note seed_phase_context as an unscoped enrichment. Solo-ship uses regex look-back; AST-precise phase detection is an enrichment from a targeted seed parser addition (natural home: register-phase-evolution's selector-expression work).
- >>[2026-03-26 00:10] observe — runtime-telemetry-canon (ready-for-commit) enriches probe results with full telemetry (substrate events, resonances). Without it, probe.completed carries shallow results.
- >>[2026-03-26 00:11] decide — acknowledge runtime-telemetry-canon as a cross-theme enrichment. Solo-ship probes return basic results; enriched probes when telemetry-canon is available.
- >>[2026-03-26 00:12] observe — the two "phase" axes (spirit-sequence vs pipeline) need explicit disambiguation in authoring surfaces. In completions and status bar, "phase" means spirit-sequence. When register data is available, hover shows both axes.
+ >>[2026-03-26 00:08] observe — phase-aware completion's look-back rule needs AST-precise spirit-sequence context at cursor offset. The seed parser does not currently expose this.
+ >>[2026-03-26 00:09] decide — note seed_phase_context as an unscoped enrichment. Solo ship uses regex look-back; AST-precise phase detection is a later seed parser addition.
+ >>[2026-03-26 00:10] observe — runtime-telemetry-canon enriches probe results with substrate events and resonances. Without it, probe.completed carries shallow results.
+ >>[2026-03-26 00:11] decide — acknowledge runtime-telemetry-canon as a cross-theme enrichment, not a blocker. Solo ship probes return basic results; enriched probes arrive when telemetry-canon is present.
+ >>[2026-03-26 00:12] observe — the two phase axes (spirit-sequence vs pipeline) need explicit disambiguation in authoring surfaces. In completions and status bar, phase means spirit-sequence.
+ >>[2026-03-27 14:38] revise — regrounded branch baseline to current planning canon main@3b1747c4 so the authoring lane speaks the same packages-era lineage as the other active editor/runtime plans.
+ >>[2026-03-27 14:39] implement — rewrote branch memory with roots, concept indexing, and recursive improvement so authoring work can be queried as a learning surface instead of a raw feature list.
 }
 
 ^["open"]{
@@ -41,16 +81,37 @@
 
 ^["cache"]{
  ~#status: "planning"
- ~#base_ref: "main@f42a80fa8eefb813992e21f7461c96926f033416"
- ~#rebased_at: ""
- ~#hygiene_split: "isolate local drift in extensions/vscode-spw/src/annotation-index.ts, extensions/vscode-spw/src/extension.ts, and packages/spw-lsp/src/stdio-server.ts before implementation"
- ~#files_hot: ".agents/plans/vscode-authoring-probe-loop/PLAN.md, .agents/plans/vscode-authoring-probe-loop/wip.spw, .agents/plans/vscode-authoring-probe-loop/vscode-authoring-probe-loop.spw"
+ ~#base_ref: "main@3b1747c4"
+ ~#rebased_at: "2026-03-27"
+ ~#hygiene_split: "isolate local drift in annotation-index.ts, extension.ts, and stdio-server.ts before implementation"
+ ~#files_hot: ".agents/plans/vscode-authoring-probe-loop/, extensions/vscode-spw/src/extension.ts, extensions/vscode-spw/src/context.ts, packages/spw-lsp/src/handlers/"
  ~#next_commit: "1"
- ~#open_count: "1"
  ~#open_count: "2"
- ~#last_stream: "2026-03-26 00:12"
- ~#taste_debt: "Do not ship completion noise that outruns semantic relevance. Atlas/register context is additive, not a gate for ordinary editing. Spirit-sequence phase is primary in authoring surfaces; pipeline phase is secondary, shown when register data is available."
+ ~#last_stream: "2026-03-27 14:39"
+ ~#taste_debt: "do not let helpful authoring copy drift away from the actual semantics model or runtime truth"
 }
 
 ^["done"]{
+ # Written at merge time.
+ # ~#shipped: []
+ # ~#dropped: []
+ # ~#surprised: ""
+ # ~#duration: ""
+ # ~#taste: ""
+}
+
+#>wonder_agents_plans_vscodeauthoringprobeloop_wip_1
+?["When does an editor affordance actually teach Spw rather than decorate it?"]{
+  #:depth #!educational // lens: component pedagogy
+  $^["development"]@here => $^["recursive_improvement"]@here
+  !probe{ "pick one completion, hover, or status phrase and ask whether it reveals a real operator or runtime relation." }
+  $%[lsp.request_count, lsp.avg_response_ms]
+}
+
+#>wonder_agents_plans_vscodeauthoringprobeloop_wip_2
+?["How should solo-ship value constrain recursive improvement in this branch?"]{
+  #:depth #!computational // lens: interaction economics
+  $^["concept_index"]@here => $^["commits"]@here
+  !probe{ "if atlas and register surfaces disappeared tomorrow, which affordances would still justify the branch?" }
+  ~<.agents/plans/vscode-authoring-probe-loop/vscode-authoring-probe-loop.spw>
 }

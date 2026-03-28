@@ -4,9 +4,42 @@
 
 #:layer #!pragmatics
 
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @plan: ~".agents/plans/skills-instrumentation-utility/PLAN.md"
+ @artifact: ~".agents/plans/skills-instrumentation-utility/skills-instrumentation-utility.spw"
+ @state: ~".agents/state/register-conventions.spw"
+}
+
 ^["intent"]{
  ~#goal: "Restore and align shared Spw skill instrumentation utilities/scripts so skill execution works in the current repo architecture."
  ~#taste: "correctness + layering"
+}
+
+^["development"]{
+ lane: #rewrite_recovery
+ ladder: #service
+ develops: [#tooling_alignment, #shared_utilities, #state_contracts, #maintenance_judgment]
+ review_surfaces: [@cluster, @plan, @artifact, @state]
+ snippet_routes: [#skill_output, #state_ref, #utility_contract, #review_affordance]
+}
+
+^["concept_index"]{
+ primary: [#skills, #instrumentation, #utility, #state, #register_bus, #scripts]
+ surfaces: [#skills, #scripts, #state_files, #review]
+ tensions: [#compat_shims, #script_drift, #state_portability, #doc_lag]
+ transfers: [#service, #support]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread utility scripts, skill docs, and state contracts before adding more helpers",
+  "< ship one shared instrumentation behavior that removes per-skill divergence",
+  "$ record which skill or review loop became simpler or more portable",
+  "^ promote the stable contract into shared utilities, docs, and state surfaces",
+  "% keep compatibility layers thinner than the shared utility they protect",
+ ]
+ gates: [#shared_contract, #state_portability, #maintenance_value]
 }
 
 ^["stream"]{

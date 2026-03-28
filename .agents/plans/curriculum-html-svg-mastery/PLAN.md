@@ -2,14 +2,16 @@
 
 ## Goal
 
-Create a rigorous 50-commit sequence of incremental deep-dive "Labs" dedicated to mastering the HTML and SVG language specifications. The curriculum exercises deep web-platform muscles—moving away from treating SVG as a black-box exported asset, and toward raw, hand-authored mastery of coordinate math, declarative drawing, and filter compositions. These web precedents will be immediately extrapolated into **Spw-inspired design relationships**, connecting native vector operations strictly to Spw's visual, spatial, and generative architecture.
+Create a rigorous 50-commit sequence of incremental deep-dive "Labs" dedicated to mastering the HTML and SVG language specifications. The curriculum exercises deep web-platform muscles—moving away from treating SVG as a black-box exported asset, and toward raw, hand-authored mastery of coordinate math, declarative drawing, and filter compositions. These web precedents will be immediately extrapolated into **Spw-inspired design relationships**, connecting native vector operations strictly to Spw's visual, spatial, and generative architecture. This lane is contributor formation and research fuel: its value is in producing discussable visual precedents and experiments that can inform future exhibits and interfaces without masquerading as a release blocker.
+
+This is a page-design rung in the current ecology. The labs should leave behind vector/page archetypes, animation heuristics, and reusable visual snippets that later exhibit, editor, and public-surface plans can borrow without losing the standards-first reasoning that produced them.
 
 **Taste Note:** Improves **expressiveness** (unlocking native, scalable browser drawing algorithms without canvas/WebGL overhead) and **depth** (tying Spw's spatial concepts directly to SVG coordinate spaces). Actively develops the **taste for mathematics in design**.
 
 ## Scope
 
-- **In scope**: Designing a 50-commit curriculum grouped into 5 distinct phases of 10 commits each (`.agent/skills/spw-css-dom-lab/labs-svg/`). Each phase requires reading specific W3C/MDN specs (SVG2, Paths, Filter Effects, SMIL), writing raw SVG directly in the DOM tree, and establishing Spw reflections.
-- **Out of scope**: Building production Spw application features or writing Canvas/WebGL wrappers. These exercises remain purely declarative DOM/SVG.
+- **In scope**: Designing a 50-commit curriculum grouped into 5 distinct phases of 10 commits each (`.agents/skills/spw-css-dom-lab/labs-svg/`). Each phase requires reading specific W3C/MDN specs (SVG2, Paths, Filter Effects, SMIL), writing raw SVG directly in the DOM tree, establishing Spw reflections, reviewing at least one current repo pattern or visual surface alongside the external spec, and naming at least one experiment or heuristic worth carrying into a future exhibit or editor surface.
+- **Out of scope**: Building production Spw application features, writing Canvas/WebGL wrappers, or acting as a hidden launch dependency. These exercises remain declarative DOM/SVG research and formation work.
 
 ## The Curriculum Sequence
 
@@ -30,7 +32,7 @@ Deep dive into the `<foreignObject>` spec, nesting the HTML renderer back inside
 
 ## Agentic Hygiene
 
-- **Rebase target**: `origin/maina290a6`
+- **Rebase target**: `main@3b1747c4` (updated 2026-03-27)
 - **Rebase cadence**: rebase before commit 1 and again before merge
 - **Hygiene split**: isolate unrelated out-of-scope drift into `feature/curriculum-html-svg-mastery-agentic-hygiene` before implementation commits
 
@@ -38,11 +40,13 @@ Deep dive into the `<foreignObject>` spec, nesting the HTML renderer back inside
 
 Predicted file scaffolding:
 ```
-[NEW] .agent/skills/spw-css-dom-lab/labs-svg/01-coordinates-strata.md
-[NEW] .agent/skills/spw-css-dom-lab/labs-svg/02-paths-geometry.md
-[NEW] .agent/skills/spw-css-dom-lab/labs-svg/03-filters-valence.md
-[NEW] .agent/skills/spw-css-dom-lab/labs-svg/04-smil-temporal.md
-[NEW] .agent/skills/spw-css-dom-lab/labs-svg/05-foreignobject-containment.md
+[NEW] .agents/skills/spw-css-dom-lab/labs-svg/01-coordinates-strata.md
+[NEW] .agents/skills/spw-css-dom-lab/labs-svg/02-paths-geometry.md
+[NEW] .agents/skills/spw-css-dom-lab/labs-svg/03-filters-valence.md
+[NEW] .agents/skills/spw-css-dom-lab/labs-svg/04-smil-temporal.md
+[NEW] .agents/skills/spw-css-dom-lab/labs-svg/05-foreignobject-containment.md
+[MOD] docs/design/spw/theme-stage-0-snapshots.spw
+[MOD] .spw/patterns/literate-ui.spw
 ```
 
 ## Commits
@@ -59,6 +63,31 @@ Preflight: `&[hygiene] — rebase onto origin/main and isolate unrelated drift b
 ## Dependencies
 
 - Culturally succeeds `curriculum-html-css-mastery` and compliments `audit-css-tokens`.
+- `plan-ecology-clustering` classifies this as a `page` rung that should feed public-interest and governed-surface work with real vector/animation taste.
+
+## Principal Engineering Orientation
+
+- Ladder position: `page`
+- Judgment target: build page and exhibit taste from direct contact with SVG geometry, filters, motion, and interop instead of imported black-box assets
+- Commit bar: each lab should leave one standards lesson, one Spw translation, and one reusable vector/page question worth carrying forward
+
+## Review Surfaces
+
+- External precedents: SVG2, Path Data, Filter Effects, SMIL, and `foreignObject` specs
+- Repo precedents: `.spw/patterns/literate-ui.spw`, `docs/design/spw/theme-stage-0-snapshots.spw`, symmetry/exhibit plans, and other visual surface notes
+- Future consumers: exhibit, instrument, and editor plans that need explicit vector and motion language
+
+## Capability Transfer
+
+- Vector capability: coordinate systems, path grammar, filter composition, and declarative motion
+- Page capability: layered visual atmosphere, embedded text/graphic hybrids, and structured visual navigation
+- Research capability: screenshot-worthy exemplars and snippet seeds for future exhibits
+
+## Syntax and Snippet Discipline
+
+- Stable snippets: every lab should preserve at least one hand-authored SVG fragment that remains useful outside the lesson writeup
+- Experimental snippets: new filter or motion idioms should be marked experimental when support or semantic fit is still uncertain
+- Route discipline: each visual result should name whether it belongs in a lab notebook, a component pattern, a page exhibit, or a future service/public surface
 
 ## Spw Artifact
 

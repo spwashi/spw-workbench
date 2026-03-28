@@ -52,7 +52,7 @@ The authoring loop is also where new users *learn* Spw dynamics. The completion 
 
 ## Phase-Aware Completion
 
-The spirit sequence defines a natural progression. The completion system should make this felt:
+The spirit sequence defines a natural progression. The completion system should make this felt. The **literate-ui pattern** (`.spw/patterns/literate-ui.spw`) formalizes each operator as a navigation gesture and each phase as a completion context — the look-back rule and suggestion ranking below are direct applications of literate-ui's spirit navigation spine.
 
 - **Look-back rule**: from the cursor position, scan backward for the nearest unmatched spirit operator. This determines the current phase context.
 - **Phase-appropriate suggestions**: after `?` (probe), rank `~` operators and naming patterns higher. After `&` (merge), rank `*` collapse and concrete binding patterns higher. After `^` (framing), suggest closing the frame and naming the integration.
@@ -128,6 +128,13 @@ These fields complete the `SpwContext` shape defined in `vscode-interaction-cont
 - The authoring loop must provide useful completion, hover, code-lens, probe commands, and status surfaces from cached parse/runtime context even when atlas and register surfaces are absent.
 - Root scoping, register pivots, and cross-surface status mirroring are additive integrations rather than prerequisites for editor affordances.
 
+## Recursive Improvement
+
+- Re-read selection, tooling, and literate-ui patterns before widening authoring affordances.
+- Ship one editor affordance at a time and test whether the same wording survives completion, hover, status, and docs.
+- Promote only the patterns that still teach Spw when atlas/register enrichments are absent.
+- Keep authoring value cheap enough to run continuously; no feature should require an expensive reparse or a second dashboard mentality.
+
 ## Synergy Paths
 
 - `authoring-probe-loop x atlas`: root selection scopes completion/query affordances and authoring status can mirror atlas lens rotation.
@@ -145,7 +152,7 @@ These fields complete the `SpwContext` shape defined in `vscode-interaction-cont
 
 ## Agentic Hygiene
 
-- Rebase target: `main@f42a80fa8eefb813992e21f7461c96926f033416`
+- Rebase target: `main@3b1747c4` (regrounded 2026-03-27 to match the packages-era plan ecology)
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: current local drift exists in `extensions/vscode-spw/src/annotation-index.ts`, `extensions/vscode-spw/src/extension.ts`, and `packages/spw-lsp/src/stdio-server.ts`; implementation work should isolate or reconcile that drift before feature commits begin.
 

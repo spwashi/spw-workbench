@@ -17,6 +17,7 @@ The desired end state is a runtime pipeline where `runSpw()` and `collectPrecipi
 
 ```text
 [NEW] .agents/plans/runtime-telemetry-canon/wip.spw
+[NEW] .agents/plans/runtime-telemetry-canon/runtime-telemetry-canon.spw
 [MOD] packages/spw-runtime/src/pipeline/types.ts
 [MOD] packages/spw-runtime/src/pipeline/run-spw.ts
 [MOD] packages/spw-runtime/src/pipeline/stages.ts
@@ -70,3 +71,27 @@ Commit 2 hardens the runtime facts. Commit 3 makes those facts consumable by dow
 - Explore: `npm run test:runtime -- src/runtime/__tests__/run-spw.test.ts src/runtime/__tests__/register-bank.test.ts src/runtime/__tests__/substrate.test.ts`
 - Stabilize: `npm run test:runtime && npm run build`
 - Ship gate: `npm run test:run && npm run audit:full && git diff --check`
+
+## Principal Engineering Orientation
+
+- Ladder position: `service`
+- Judgment target: sharpen the difference between runtime facts and downstream interpretation so hosts, DX, and governance can quote the runtime without re-inventing it
+- Commit bar: each slice should remove one host-side guess and leave one new immutable fact that other surfaces can reuse unchanged
+
+## Review Surfaces
+
+- Runtime code: `packages/spw-runtime/src/pipeline/run-spw.ts`, `packages/spw-runtime/src/pipeline/types.ts`, `packages/spw-runtime/src/pipeline/substrate.ts`
+- Downstream plan surfaces: `runtime-dx-foundation`, `ecosystem-surface-governance`
+- Planning artifact: `.agents/plans/runtime-telemetry-canon/runtime-telemetry-canon.spw`
+
+## Recursive Improvement
+
+- Add telemetry only when a downstream consumer can name the judgment it simplifies.
+- Preserve the same telemetry terms across runtime return types, editor inspection, DX codes, and governance review.
+- Keep public runtime facts factual; let support and policy layers derive their own conclusions on top.
+
+## Spw Artifact
+
+```text
+.agents/plans/runtime-telemetry-canon/runtime-telemetry-canon.spw
+```

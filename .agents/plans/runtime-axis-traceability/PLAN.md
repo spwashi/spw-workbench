@@ -18,7 +18,7 @@ The `spw-workbench` uses an instrumentation-first philosophy where design decisi
 [MOD] packages/spw-runtime/src/pipeline/substrate.ts
 [MOD] packages/spw-runtime/src/pipeline/stages.ts
 [MOD] scripts/analyzers/spw-marker-audit.ts
-[NEW] .agents/plans/runtime-axis-traceability/PLAN.md
+[NEW] .agents/plans/runtime-axis-traceability/runtime-axis-traceability.spw
 [NEW] .agents/plans/runtime-axis-traceability/wip.spw
 ```
 
@@ -41,4 +41,24 @@ The `spw-workbench` uses an instrumentation-first philosophy where design decisi
 
 ## Spw Artifact
 
-None beyond `wip.spw`; the branch memory is the retained operational surface for this plan.
+```text
+.agents/plans/runtime-axis-traceability/runtime-axis-traceability.spw
+```
+
+## Principal Engineering Orientation
+
+- Ladder position: `bridge`
+- Judgment target: make runtime explanations precise enough that code review, DX writing, and release/governance review can all point to the same named axes
+- Commit bar: each slice should make one runtime choice more discussable and one future review question easier to ask
+
+## Review Surfaces
+
+- Runtime code: `packages/spw-runtime/src/state/register-bank.ts`, `packages/spw-runtime/src/pipeline/substrate.ts`, `packages/spw-runtime/src/pipeline/stages.ts`
+- Audit surface: `scripts/analyzers/spw-marker-audit.ts`
+- Planning artifact: `.agents/plans/runtime-axis-traceability/runtime-axis-traceability.spw`
+
+## Recursive Improvement
+
+- Add traces only where they help a reviewer recover why a behavior exists.
+- Reuse the same axis phrases across markers, review comments, DX surfaces, and governance notes.
+- Audit for ornamental traces; if removing a marker changes nothing about review quality, it should probably not exist.

@@ -4,57 +4,113 @@
 
 #:layer #!pragmatics
 
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @artifact: ~".agents/plans/vscode-lsp-integration/vscode-lsp-integration.spw"
+ @tooling: ~".spw/tooling/vscode-spw.spw"
+ @editing: ~"packages/spw-lsp/src/handlers/editing.ts"
+ @navigation: ~"packages/spw-lsp/src/handlers/navigation.ts"
+ @server: ~"packages/spw-lsp/src/stdio-server.ts"
+ @extension: ~"extensions/vscode-spw/src/extension.ts"
+}
+
 ^["intent"]{
- ~#goal: "Integrate the native node-based Spw language server into the VS Code extension, replacing flaky regex heuristics with rigorous AST/semantic knowledge for site-codebase adoption."
- ~#taste: "correctness and expressiveness by centralizing language intelligence in the semantic core, preventing divergence between the editor and compiler."
+ ~#goal: "Integrate the native node-based Spw language server into the VS Code extension so editor truth comes from the same semantic core as parser and runtime."
+ ~#taste: "correctness, expressiveness, thin-client discipline"
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#editor_trust, #semantic_truth, #thin_client, #preview_truth]
+ review_surfaces: [@cluster, @artifact, @tooling, @editing, @navigation, @server, @extension]
+ snippet_routes: [#rename_preview, #path_completion, #document_link, #hover_peek, #workspace_edit]
+}
+
+^["concept_index"]{
+ primary: [#lsp, #vscode, #completion, #rename, #hover, #document_link, #semantic_tokens]
+ surfaces: [#editor, #server, #client, #workspace_edit, #marketplace]
+ tensions: [#thin_client, #truthful_claims, #fallback, #latency]
+ transfers: [#language, #component, #service]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread tooling and live handlers before widening capability claims",
+  "< ship one semantic editor behavior with preview, smoke, or tests",
+  "$ record the surviving copy in artifact, docs, or snippet form",
+  "^ feed the new contract into extension UX, install truth, and release copy",
+  "% keep the extension thinner than the server",
+ ]
+ gates: [#preview_truth, #smoke_coverage, #client_thinness, #claim_discipline]
+}
+
+^["parallel_work"]{
+ critical_path: [#server_truth, #preview_truth]
+ parallelizable: [#completion, #rename, #document_link, #hover, #docs_copy]
+ shared_hot_files: ["packages/spw-lsp/src/handlers/editing.ts", "packages/spw-lsp/src/handlers/navigation.ts", "packages/spw-lsp/src/stdio-server.ts", "extensions/vscode-spw/src/extension.ts"]
+ merge_risks: [#hot_file, #capability_drift, #copy_drift]
+ handoff_artifacts: [@artifact, @tooling]
+}
+
+^["supporting_documents"]{
+ must_ship: [@artifact, @tooling]
+ helpful: [@extension]
+ carries: [#capability_matrix, #preview_notes, #fallback_note, #release_copy]
+}
+
+^["interaction_depth"]{
+ subjects: [#preview, #reversibility, #latency, #legibility, #trust, #discoverability]
+ questions: [#what_is_primary_action, #what_is_safe_to_apply, #what_stays_visible_under_failure]
+ qualities: [#clarity, #quiet_feedback, #thin_client]
 }
 
 ^["stream"]{
  # Append entries chronologically. Never edit prior entries.
  # >>[YYYY-MM-DD HH:MM] <type> — <content>
- # Types: observe, decide, surprise, revise, blocked, taste, rebase, hygiene
+ # Types: observe, decide, surprise, revise, blocked, taste, rebase, hygiene, implement, verify, note
  >>[2026-02-20 05:15] observe — SpwLspHandler existing implementation supports hover, outline, and definition, but VSCode extension currently uses regex.
  >>[2026-02-20 05:15] decide — Transition the extension to use vscode-languageclient, connecting via stdio to scripts/lsp/stdio-server.ts.
  >>[2026-02-22 10:10] revise — Added agentic hygiene preflight: mandatory rebase against origin/main and hygiene split for unrelated drift before commit 1.
  >>[2026-03-27 00:45] observe — codebase restructured since plan was filed: LSP now lives in packages/spw-lsp/src/ (handlers/, stdio-server.ts, context.ts, types.ts); seed/parser in packages/spw-seed/src/; extension already has vscode-languageclient ^9.0.1 installed and LanguageClient initialized. Prior commits ~[1]-~[6] are substantially complete.
  >>[2026-03-27 00:46] revise — rebase target updated from lore-era f53934f to current main@3b1747c4. File paths updated throughout. Commits ~[1]-~[6] marked as landed; remaining work starts at ~[7].
- >>[2026-03-27 00:47] decide — for site codebase installation: the LSP must work standalone via `npm run lsp` (already resolved by lsp-lore-upstream-bridge) and the extension must be publishable to VS Code Marketplace. Commit ~[27] (release declaration) should include marketplace metadata.
- >>[2026-03-27 00:48] taste — site codebases will experience spw through the extension first. The quality of hover, completions, and document links directly shapes first impressions. Prioritize correctness over breadth: completions and rename are more valuable than experimental operator injection for initial external adoption.
- >>[2026-03-27 12:55] observe — Commit 7 (maintain regex DocumentLinkProvider) skipped as extension already moved fully to LSP links. Commit 8 (LSP architecture docs) and Commit 9 (path literal highlighting) completed.
+ >>[2026-03-27 00:47] decide — for site codebase installation: the LSP must work standalone via `npm run lsp` (already resolved by lsp-lore-upstream-bridge) and the extension must be publishable to VS Code Marketplace. Commit ~[27] should include marketplace metadata.
+ >>[2026-03-27 00:48] taste — site codebases will experience spw through the extension first. The quality of hover, completions, and document links directly shapes first impressions. Prioritize correctness over breadth.
+ >>[2026-03-27 12:55] observe — Commit 7 (maintain regex DocumentLinkProvider) is obsolete because extension links already moved to LSP ownership. Commits 8 and 9 are effectively landed.
  >>[2026-03-27 13:28] revise — narrow this plan to the editor-reliability lane for site installation. Experimental operator injection is deferred to a separate syntax branch once install/docs/dx surfaces stop moving.
- >>[2026-03-27 13:29] decide — parallelize the remaining work into two tracks after commit 10: language-service correctness (completions, rename, hover) and editor cleanup/docs (document links, extension cleanup, capability docs, release truth).
+ >>[2026-03-27 13:29] decide — parallelize remaining work into language-service correctness (completion, rename, hover, code action) and editor cleanup/docs (client cleanup, capability docs, release truth).
+ >>[2026-03-27 14:22] implement — rewrote branch memory around roots, concept indexing, and recursive improvement; added a branch-local Spw artifact so plan language, capability language, and release claims can share one indexed surface.
+ >>[2026-03-27 14:23] taste — recursive improvement here means every new capability should be nameable three ways without drift: code action title, docs snippet, and review vocabulary.
 }
 
 ^["open"]{
- # Unresolved questions. Remove when resolved (log resolution in stream first).
- # ?[label]: "question"
+ ?[semantic_patch_surface]: "Should semantic refactors stay inside built-in LSP codeAction/WorkspaceEdit first, or do we want a custom request for preview-rich patch planning?"
+ ?[marketplace_truth]: "Which capabilities are stable enough to mention in marketplace copy without creating support debt?"
 }
 
 ^["commits"]{
- # Planned commits in order. Use project sigil conventions.
- # ~[N]: "sigil[scope] — description"
  ~[1]: "&[hygiene] — rebase feature branch onto origin/main and isolate unrelated drift in a hygiene split branch"
  ~[2]: "&[lsp] — harden stdio-server with robust message partitioning and error boundaries"
  ~[3]: "![lsp] — add unit tests for stdio-server message parsing edge cases"
  ~[4]: "vocab[lsp] — strict types for LSP request/response envelopes"
  ~[5]: ".[extension] — add vscode-languageclient dependency and update npm scripts"
  ~[6]: "&[extension] — replace regex-based outline/hover with native LSP client initialization"
- ~[7]: "&[extension] — maintain regex DocumentLinkProvider while delegating other features to LSP"
- ~[8]: ".[docs] — document LSP client architecture and fallback behaviors"
+ ~[7]: "&[extension] — remove obsolete regex document-link fallback and keep client transport thin"
+ ~[8]: ".[docs] — document LSP client architecture, fallback boundaries, and preview truth"
  ~[9]: "&[analyzer] — parse path literals (tilde-strings, sigil-paths) into semantic tokens"
  ~[10]: "![analyzer] — verify semantic token generation for all path variants"
- ~[11]: "vocab[analyzer] — expand Symbol kind union to include file and directory types"
+ ~[11]: "vocab[analyzer] — expand symbol kind union to include file and directory types"
  ~[12]: "&[lsp] — implement context-aware completions API reading from analyzer scope"
  ~[13]: "&[lsp] — add file-system resolution to path completions within SpwLanguageService"
  ~[14]: "![lsp] — end-to-end tests for file-system auto-completions via LanguageService"
  ~[15]: "&[lsp] — implement textDocument/rename routing in SpwLspHandler"
  ~[16]: "&[analyzer] — refactor symbol resolution graph to support cascading rename edits"
- ~[17]: "&[lsp] — implement textDocument/documentLink in LSP to replace extension regex regex"
- ~[18]: "&[extension] — remove legacy regex DocumentLinkProvider now that LSP supplies links"
- ~[19]: "&[lsp] — enhance HoverProvider to perform cross-file peeking via analyzer graph"
- ~[20]: "![lsp] — verify safe cross-file reading for hover peeks"
- ~[21]: ".[docs] — update spw-feature-planning and editor ecosystem guide with new LSP capabilities"
- ~[27]: ".[release] — declare v0.2.0-alpha for VS Code extension and LSP"
+ ~[17]: "&[lsp] — extend codeAction and WorkspaceEdit surfaces toward previewable semantic refactors"
+ ~[18]: "&[lsp] — implement textDocument/documentLink in LSP and keep extension ownership thin"
+ ~[19]: "&[lsp] — enhance hover with cross-file peeking and phase-aware context"
+ ~[20]: "![lsp] — verify safe cross-file reading and previewable refactor behavior"
+ ~[21]: ".[docs] — update planning and editor ecosystem guides with current LSP capabilities"
+ ~[27]: ".[release] — declare truthful VS Code extension and LSP capability surface"
 }
 
 ^["cache"]{
@@ -62,11 +118,11 @@
  ~#base_ref: "main@3b1747c4"
  ~#rebased_at: "2026-03-27"
  ~#hygiene_split: "none; codebase restructure already landed on main"
- ~#files_hot: "packages/spw-lsp/src/handlers/, extensions/vscode-spw/src/extension.ts"
+ ~#files_hot: "packages/spw-lsp/src/handlers/, packages/spw-lsp/src/stdio-server.ts, extensions/vscode-spw/src/extension.ts, .agents/plans/vscode-lsp-integration/"
  ~#next_commit: "10"
- ~#open_count: "0"
- ~#last_stream: "2026-03-27 13:29"
- ~#taste_debt: "keep the extension thin and the claims truthful; do not let syntax experiments piggyback on the install/adoption lane"
+ ~#open_count: "2"
+ ~#last_stream: "2026-03-27 14:23"
+ ~#taste_debt: "keep capability claims narrower than the code-action surface until preview and smoke coverage catch up"
 }
 
 ^["done"]{
@@ -79,18 +135,17 @@
 }
 
 #>wonder_agents_plans_vscodelspintegration_wip_1
-?["How does this file's voice differ from @here?"]{
-  #:depth #!educational // lens: curated collection
-  ~<@here> // nearest neighbor
-  $%[op.distribution]@here vs $%[op.distribution]@here
-  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
+?["What makes an editor promise feel trustworthy in this branch?"]{
+  #:depth #!educational // lens: service contract
+  $^["development"]@here => $^["recursive_improvement"]@here
+  !probe{ "pick one capability and ask whether code, docs, and release copy describe the same thing." }
+  $%[lsp.request_count, lsp.avg_response_ms]
 }
 
 #>wonder_agents_plans_vscodelspintegration_wip_2
-?["What invariant holds across every frame in wip — vscode-lsp-integration?"]{
-  #:depth #!experiential // lens: living system
-  $^["_"]@here => %[shared.property]
-  ~#hypothesis: "all frames in this file share ____"
-  !probe{ "extract the property common to every frame in this file; if none exists, the file may lack cohesion or may be a deliberate collection." }
-  $%[lsp.request_count, lsp.avg_response_ms]
+?["Where should semantic patching enter this lane without bloating the client?"]{
+  #:depth #!computational // lens: transport boundary
+  $^["concept_index"]@here => $^["commits"]@here
+  !probe{ "trace rename, codeAction, and WorkspaceEdit. which surface already carries the right trust model?" }
+  ~<.agents/plans/vscode-lsp-integration/vscode-lsp-integration.spw>
 }

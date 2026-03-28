@@ -12,6 +12,8 @@ Three concrete outcomes:
 2. **Installation is debuggable**: when an external codebase runs `spw init` or starts the LSP, diagnostic output confirms what worked, what didn't, and what to try next.
 3. **Performance is visible**: LSP response times, parse durations, and selector traversal counts surface in both editor status bars and CLI output.
 
+This is the service-design rung in the current ecology. The plan should teach the team how installability, diagnostics, and instrumentation become part of the product's language rather than hidden implementation residue. The strongest commits here will leave behind greppable codes, stable health-check snippets, and troubleshooting loops that another developer can actually follow.
+
 Taste note: improve **clarity** and **correctness** with explicit contracts, structured logging, and predictable configuration. DX localizes a failure to a station, not a stack trace.
 
 ## Scope
@@ -24,6 +26,7 @@ Taste note: improve **clarity** and **correctness** with explicit contracts, str
   - Editor plugin troubleshooting UX (status bar, output channel, settings validation)
   - DX playbook for external developers installing .spw in their projects
   - Path-oriented troubleshooting: concept → parser → runtime → LSP → editor → publish
+  - Review of station language against governance, hot-reload, and install surfaces so install, runtime, editor, and release literature share one troubleshooting vocabulary
 
 - **Out of scope**: new language features, parser/AST behavior changes, UI feature redesigns, large refactors not directly tied to DX.
 
@@ -111,6 +114,38 @@ Fuzz strategy:
 - `ecosystem-surface-governance` — provides the spiritual testing path (station vocabulary) that diagnostic IDs should mirror.
 - `lsp-lore-upstream-bridge` — LSP entry point must be stable before diagnostic propagation is wired.
 - `absorb-spwq-cli` — CLI command taxonomy must be settled before `--diagnostics` flag placement.
+- `plan-ecology-clustering` — this plan occupies the `service` rung and should turn runtime truth into reusable install, support, and release knowledge.
+
+## Principal Engineering Orientation
+
+- Ladder position: `service`
+- Judgment target: make operational understanding part of the design surface so install, failure, and recovery are discussable with the same precision as syntax or runtime semantics
+- Commit bar: each slice should yield one concrete user-facing artifact, one searchable phrase or code, and one clearer next action for whoever encounters the failure
+
+## Review Surfaces
+
+- Runtime/service code: `packages/spw-runtime/src/pipeline.ts`, `packages/spw-runtime/src/substrate.ts`, `packages/spw-runtime/src/diagnostics/`
+- Tooling code: `packages/spw-seed/src/parser.ts`, `packages/spw-lsp/src/context.ts`, `packages/spw-cli/src/main.ts`, `extensions/vscode-spw/src/extension.ts`
+- Process/literature: `.spw/process/hot-reload-loop.spw`, `.agents/plans/ecosystem-surface-governance/ecosystem-surface-governance.spw`, release/install docs and plans that will quote the station model
+
+## Capability Transfer
+
+- Runtime capability: parse timing, substrate events, resonance cycles, and station attribution
+- Interaction capability: output channels, status bars, CLI doctor flows, and installation guidance
+- Service capability: reproducible health checks, searchable failure codes, and truthful public support language
+
+## Syntax and Snippet Discipline
+
+- Stable snippets: preserve minimal examples of diagnostic output, `spw doctor` health reports, and installation troubleshooting steps so docs and tests talk about the same thing
+- Experimental diagnostics: new telemetry or verbose output should stay opt-in until its signal quality is proven
+- Review loop: every new station code or diagnostic route should be easy to trace from docs to CLI/editor output and back into the implementation
+
+## Recursive Improvement
+
+- Re-read install, runtime, editor, and governance surfaces before naming a new station or code.
+- Land one user-visible diagnostic artifact at a time and verify that it suggests a real next action.
+- Promote only the wording that survives code, CLI, editor UI, docs, and support conversation without drift.
+- Treat support compression as a success metric: fewer words needed to explain what failed and what to try next.
 
 ## Spw Artifact
 

@@ -4,9 +4,42 @@
 
 #:layer #!pragmatics
 
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @plan: ~".agents/plans/intellij-plugin-integration/PLAN.md"
+ @plugin: ~"extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwLspServerSupportProvider.kt"
+ @workspace: ~".spw/workspace.spw"
+}
+
 ^["intent"]{
  ~#goal: "Harden the IntelliJ Spw plugin integration: ensure TextMate bundles load reliably, guard LSP startup failures, and add basic configuration hooks for editors that are not the repo root."
  ~#taste: "correctness + clarity"
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#editor_portability, #plugin_truth, #startup_diagnostics, #adoption]
+ review_surfaces: [@cluster, @plan, @plugin, @workspace]
+ snippet_routes: [#startup_copy, #settings_hint, #preflight_warning, #plugin_note]
+}
+
+^["concept_index"]{
+ primary: [#intellij, #plugin, #textmate, #lsp, #startup, #settings]
+ surfaces: [#editor, #plugin, #docs, #diagnostics]
+ tensions: [#portability, #startup_failures, #config_scope, #adoption_cost]
+ transfers: [#component, #service]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread plugin startup and settings paths before widening the integration",
+  "< ship one clearer startup, validation, or diagnostics improvement",
+  "$ record which editor failure mode became easier to recover from",
+  "^ feed the stable wording into docs, settings UI, and editor support language",
+  "% keep plugin glue thinner than the LSP contract it depends on",
+ ]
+ gates: [#startup_truth, #editor_portability, #actionable_diagnostics]
 }
 
 ^["stream"]{

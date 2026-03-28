@@ -4,9 +4,42 @@
 
 #:layer #!pragmatics
 
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @plan: ~".agents/plans/v030-release-prep/PLAN.md"
+ @artifact: ~".agents/plans/v030-release-prep/v030-release-prep.spw"
+ @governance: ~".agents/plans/ecosystem-surface-governance/ecosystem-surface-governance.spw"
+}
+
 ^["intent"]{
  ~#goal: "Convert the intended March 2026 alpha/beta/release cadence into a truthful release story for the packages-era rewrite, with v0.3.0 framed as the monorepo and structural decoupling milestone plus the first site-installable public shape."
  ~#taste: "clarity, layering, naming"
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#release_truth, #adoption_story, #discoverability, #public_discussion]
+ review_surfaces: [@cluster, @plan, @artifact, @governance]
+ snippet_routes: [#release_note, #quick_start, #waypoint_copy, #discoverability_claim]
+}
+
+^["concept_index"]{
+ primary: [#release, #waypoint, #install, #discoverability, #migration, #truth_gate]
+ surfaces: [#docs, #waypoints, #editor, #cli, #public_story]
+ tensions: [#calendar_drift, #discoverability, #submodule_truth, #gate_sprawl]
+ transfers: [#service, #governance]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread install, governance, and discoverability surfaces before widening release claims",
+  "< ship one externally visible release surface that becomes truer",
+  "$ record what adopters can now understand or discuss more clearly",
+  "^ propagate the stable wording into waypoints, quick-starts, and release notes",
+  "% keep the release story narrower than the public behavior it names",
+ ]
+ gates: [#truth_gate, #discoverability_honesty, #install_alignment]
 }
 
 ^["stream"]{
@@ -23,6 +56,8 @@
  >>[2026-03-27 13:24] revise — reposition this plan as the coordination braid across install, governance, CLI taxonomy, diagnostics, and editor readiness. The release track should describe those lanes truthfully, not replace them with a packaging fantasy.
  >>[2026-03-27 13:25] decide — parallelize the remaining release work into three lanes: ecology/governance (surface readiness + waypoint), adoption story (quick-start + migration + install narrative), and discoverability (extension metadata + release verification). The release tag waits on all three.
  >>[2026-03-27 13:26] taste — ecological invigoration means external repos can engage the workbench without surrendering their identity to a package-consumer relationship. The release story should sound like that.
+ >>[2026-03-27 15:18] decide — the release tag should only wait on execution-truth and public-interest lanes. Curricula and research experiments stay valuable, but they feed heuristics and discussion into release work instead of silently expanding the gate.
+ >>[2026-03-27 15:19] revise — every release-adjacent commit should now answer three questions: what becomes truer for external adopters, what does the team learn, and what subject becomes easier to discuss publicly.
 }
 
 ^["open"]{
@@ -49,8 +84,8 @@
  ~#files_hot: "docs/waypoints/, lib/spw-v0.3.0/CHANGELOG.md, docs/runtime/md/, .spw/surfaces/domains.spw, extensions/vscode-spw/package.json"
  ~#next_commit: "1"
  ~#open_count: "0"
- ~#last_stream: "2026-03-27 13:26"
- ~#taste_debt: "release narrative should acknowledge that v0.3.0 shipped structurally before the formal waypoint was written; do not let marketplace/npm convenience claims outrun the submodule install truth"
+ ~#last_stream: "2026-03-27 15:19"
+ ~#taste_debt: "release narrative should acknowledge that v0.3.0 shipped structurally before the formal waypoint was written; do not let marketplace/npm convenience claims outrun the submodule install truth. The gate should stay narrow enough that curricula and research feeds do not become unspoken blockers."
 }
 
 ^["done"]{

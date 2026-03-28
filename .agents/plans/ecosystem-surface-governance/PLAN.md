@@ -4,11 +4,11 @@ Turn the web-domain portfolio into an operable ecosystem contract by tightening 
 
 ## Goal
 
-The current domain portfolio is rich in voice but thin in execution metadata: it names many surfaces, yet it does not cleanly encode which ones are live, which ones are installable, which require special governance, or which plans own the work needed to make them sustainable. This pass makes the surface registry more truthful, updates the most relevant adjacent plans, and adds a governance artifact that ties branding, literature, interaction design, QA, installability, and team scaling into one readable contract. Governance is the canopy for the current planning wave: site-install, DX, CLI naming, editor startup, and release narrative should be able to run in parallel as long as their readiness claims route back through this registry. Taste note: improve clarity, layering, naming, and correctness by making ecosystem growth legible enough to maintain.
+The current domain portfolio is rich in voice but thin in execution metadata: it names many surfaces, yet it does not cleanly encode which ones are live, which ones are installable, which require special governance, or which plans own the work needed to make them sustainable. This pass makes the surface registry more truthful, updates the most relevant adjacent plans, and adds a governance artifact that ties branding, literature, interaction design, QA, installability, and team scaling into one readable contract. Governance is the canopy for the current planning wave: site-install, DX, CLI naming, editor startup, release narrative, contributor formation, and public-interest research should be able to run in parallel as long as their readiness claims route back through this registry. Governance also needs cluster semantics: execution truth lanes, contributor-formation lanes, discussion/exhibit lanes, and speculative futures should not compete for one undifferentiated urgency. Taste note: improve clarity, layering, naming, and correctness by making ecosystem growth legible enough to maintain.
 
 ## Scope
 
-- **In scope**: tighten `.spw/surfaces/domains.spw` and `.spw/surfaces/index.spw`, add an explicit installable gate to the launch ladder, improve discoverability from `docs/toc.spw`, update the active plans that should absorb ecosystem-governance concerns, and add a dedicated governance plan artifact under `.agents/plans/ecosystem-surface-governance/`.
+- **In scope**: tighten `.spw/surfaces/domains.spw` and `.spw/surfaces/index.spw`, add an explicit installable gate to the launch ladder, improve discoverability from `docs/toc.spw`, update the active plans that should absorb ecosystem-governance concerns, define which plan clusters are release-blocking versus contributor-forming or research-oriented, and add a dedicated governance plan artifact under `.agents/plans/ecosystem-surface-governance/`.
 - **Out of scope**: registering DNS, launching domains, building publishing pipelines, changing runtime semantics, or implementing new editor/runtime features beyond plan/spec changes.
 
 ## Files
@@ -57,7 +57,7 @@ Commit 2 establishes the launch ladder and installable gate. Commits 3-4 then fa
 
 ## Dependencies
 
-none
+- `plan-ecology-clustering` — cluster semantics determine which adjacent plans are execution blockers versus curriculum, discussion, or speculative lanes
 
 ## Spw Artifact
 

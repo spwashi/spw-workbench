@@ -1,0 +1,140 @@
+# interaction spec — vscode-lsp-integration
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @tooling: ~".spw/tooling/vscode-spw.spw"
+ @selection: ~".spw/conventions/selection.spw"
+ @authoring: ~".agents/plans/vscode-authoring-probe-loop/vscode-authoring-probe-loop.spw"
+ @editing: ~"packages/spw-lsp/src/handlers/editing.ts"
+ @navigation: ~"packages/spw-lsp/src/handlers/navigation.ts"
+ @server: ~"packages/spw-lsp/src/stdio-server.ts"
+ @extension: ~"extensions/vscode-spw/src/extension.ts"
+}
+
+^["cluster_role"]{
+ lane: #execution_truth
+ ladder: #service
+ braid: [#editor_trust, #semantic_truth, #thin_client, #install_adoption]
+ rule: "the LSP owns language truth; the VS Code client packages transport, previews, and extension-specific surfaces without growing a second semantics stack"
+}
+
+^["concept_index"]{
+ primary: [#completion, #rename, #hover, #document_link, #semantic_tokens, #code_action, #workspace_edit]
+ surfaces: [#server, #client, #editor, #tests, #docs, #marketplace]
+ tensions: [#thin_client, #preview_truth, #fallback, #latency, #truthful_claims]
+ transfers: [#language, #component, #service]
+}
+
+^["capability_model"]{
+ server_owned: [
+  #completion,
+  #rename,
+  #hover,
+  #document_link,
+  #code_action,
+  #workspace_edit,
+  #semantic_truth,
+ ]
+ client_owned: [
+  #transport,
+  #activation,
+  #tree_views,
+  #output_surface,
+  #marketplace_copy,
+ ]
+ shared: [
+  #semantic_tokens,
+  #status_copy,
+  #preview_truth,
+  #smoke_coverage,
+ ]
+}
+
+^["trust_loop"]{
+ source: [
+  "parser truth",
+  "runtime truth when needed",
+  "LSP response",
+  "editor affordance",
+  "docs/release claim",
+ ]
+ rule: "a capability is trustworthy only when the same behavior survives every hop without renaming or quiet degradation"
+}
+
+^["semantic_refactor"]{
+ current: [
+  "trait ↔ binding toggle",
+  "wrap in frame",
+  "workspace rename",
+ ]
+ next: [
+  "preview-rich rename",
+  "selector/path rewrite",
+  "semantic patch intent compiled into WorkspaceEdit",
+ ]
+ rule: "new refactors land inside the LSP's normal codeAction/WorkspaceEdit trust model before any custom client choreography is added"
+}
+
+^["parallel_work"]{
+ critical_path: [#server_truth, #preview_truth]
+ parallelizable: [#completion, #rename, #document_link, #hover, #docs_copy]
+ shared_hot_files: [@editing, @navigation, @server, @extension]
+ merge_risks: [#hot_file, #capability_drift, #copy_drift]
+ handoff_artifacts: [@tooling, @authoring]
+}
+
+^["supporting_documents"]{
+ must_ship: [@tooling]
+ helpful: [@authoring]
+ carries: [#capability_matrix, #preview_notes, #fallback_note, #release_copy]
+}
+
+^["interaction_depth"]{
+ subjects: [#preview, #reversibility, #latency, #legibility, #trust, #discoverability]
+ questions: [#what_is_primary_action, #what_is_safe_to_apply, #what_stays_visible_under_failure]
+ qualities: [#clarity, #quiet_feedback, #thin_client]
+}
+
+^["review_contract"]{
+ sources: [@cluster, @tooling, @selection, @authoring, @editing, @navigation, @server, @extension]
+ asks: [#client_thinness, #preview_truth, #capability_copy, #fallback_boundary, #claim_discipline]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread tooling, handlers, and extension transport before widening claims",
+  "< ship one semantic editor behavior with tests, smoke coverage, or preview evidence",
+  "$ record the wording that survives code action, hover, docs, and release copy",
+  "^ promote the surviving capability contract into tooling and installation surfaces",
+  "% keep the client thinner than the server and the release copy narrower than the implementation",
+ ]
+ gates: [#preview_truth, #smoke_coverage, #client_thinness, #claim_discipline]
+}
+
+^["snippet_routes"]{
+ stable: [
+  "code action titles",
+  "hover guidance copy",
+  "rename/preview summaries",
+  "release-note capability bullets",
+ ]
+ rule: "LSP snippets should be quotable across editor UI, docs, and support contexts without semantic drift"
+}
+
+#>wonder_agents_plans_vscodelspintegration_artifact_1
+?["Which capability is closest to becoming a semantic patch surface?"]{
+  #:depth #!computational // lens: transport braid
+  $^["semantic_refactor"]@here => $^["capability_model"]@here
+  !probe{ "trace rename, codeAction, and WorkspaceEdit. which existing surface already carries preview, scope, and trust?" }
+  ~<packages/spw-lsp/src/handlers/editing.ts>
+}
+
+#>wonder_agents_plans_vscodelspintegration_artifact_2
+?["Where does editor trust fail first if client thinness slips?"]{
+  #:depth #!educational // lens: service hygiene
+  $^["trust_loop"]@here => $^["recursive_improvement"]@here
+  !probe{ "name the first capability that would fork into contradictory meanings if the extension started owning semantic logic." }
+  ~<extensions/vscode-spw/src/extension.ts>
+}

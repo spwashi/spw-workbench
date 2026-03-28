@@ -4,24 +4,66 @@
 
 #:layer #!pragmatics
 
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @artifact: ~".agents/plans/runtime-telemetry-canon/runtime-telemetry-canon.spw"
+ @dx: ~".agents/plans/runtime-dx-foundation/runtime-dx-foundation.spw"
+ @runtime_foundation: ~"docs/runtime/spw/runtime-foundation.spw"
+ @run_spw: ~"packages/spw-runtime/src/pipeline/run-spw.ts"
+ @substrate: ~"packages/spw-runtime/src/pipeline/substrate.ts"
+}
+
 ^["intent"]{
- ~#goal: "Amend the upstream valence metadata work and make substrate events plus resonances first-class in runSpw() and collectPrecipitates()."
+ ~#goal: "Amend the runtime metadata path so public results expose immutable telemetry facts: events, resonances, and current-write register metadata."
  ~#taste: "correctness, clarity, layering"
 }
 
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#runtime_truth, #telemetry_language, #host_judgment, #immutable_contracts]
+ review_surfaces: [@cluster, @artifact, @dx, @runtime_foundation, @run_spw, @substrate]
+ snippet_routes: [#telemetry_payload, #event_fact, #resonance_fact, #freshness_signal]
+}
+
+^["concept_index"]{
+ primary: [#telemetry, #events, #resonances, #register_meta, #freshness, #coherence]
+ surfaces: [#runtime_api, #host_qa, #diagnostics, #governance]
+ tensions: [#immutability, #semantic_drift, #overexposure, #runtime_policy]
+ transfers: [#service, #support, #release]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread runtime return types and downstream consumers before widening telemetry",
+  "< ship one immutable fact that removes host-side reconstruction work",
+  "$ record which downstream judgment becomes cheaper: freshness, coherence, or readiness",
+  "^ feed the fact into DX, governance, and docs surfaces without renaming it",
+  "% never leak live mutable substrate ownership to callers",
+ ]
+ gates: [#immutability, #downstream_reuse, #diagnostic_alignment, #narrow_contract]
+}
+
 ^["stream"]{
+ # Append entries chronologically. Never edit prior entries.
+ # >>[YYYY-MM-DD HH:MM] <type> — <content>
+ # Types: observe, decide, surprise, revise, blocked, taste, rebase, hygiene, implement, verify, note
  >>[2026-03-12 00:00] observe — upstream/main advanced with ea709ac, which carries valence into register metadata but does not address runtime telemetry returns.
- >>[2026-03-12 00:01] decide — keep the normalize→interpreter→register metadata path, but amend sticky valence and merged semanticFrames before building telemetry on top.
+ >>[2026-03-12 00:01] decide — keep the normalize → interpreter → register metadata path, but amend sticky valence and merged semanticFrames before building telemetry on top.
  >>[2026-03-12 00:02] decide — public runtime results should return immutable facts: events and resonances, not a live Substrate instance.
- >>[2026-03-12 00:03] hygiene — base reference recorded at historical-missing `24865b70d6a8b44d1d4b386915e5c24333c6a0b9`; the recorded basis no longer resolves in the current object store.
+ >>[2026-03-12 00:03] hygiene — original branch memory pointed at a historical-missing base. Treat upstream commit ea709ac as design lore, not current branch baseline.
  >>[2026-03-12 00:04] taste — host apps should not reconstruct runtime telemetry outside the runtime; the API should expose canonical runtime facts directly.
  >>[2026-03-12 00:05] decide — semicolon support is desirable, but it belongs to a later seed-syntax slice rather than this runtime telemetry amendment.
  >>[2026-03-12 00:06] implement — cherry-picked upstream ea709ac in amended form, replaced sticky write semantics, and threaded immutable telemetry through runSpw() plus collectPrecipitates().
- >>[2026-03-12 00:07] verify — npm run test:runtime, npx vitest run src/seed/__tests__/normalize.test.ts, npm run build, npm run test:run, npm run audit:full, and git diff --check passed.
- >>[2026-03-12 00:08] note — npm run lsp:smoke still times out on textDocument/references path-ref cases; that surface was already outside the telemetry slice and needs a separate follow-up.
+ >>[2026-03-12 00:07] verify — runtime tests, build, audit, and diff checks passed for the original telemetry amendment slice.
+ >>[2026-03-12 00:08] note — `npm run lsp:smoke` still timed out on textDocument/references path-ref cases; that surface sits outside this telemetry slice.
+ >>[2026-03-27 14:30] revise — regrounded branch memory to packages-era main@3b1747c4, packages/ file paths, and a branch-local artifact. Preserve upstream commit as precedent, not baseline.
+ >>[2026-03-27 14:31] taste — recursive improvement here means each new runtime fact should remove a downstream guess. If a host still has to infer freshness or coherence, the contract is underpowered.
 }
 
 ^["open"]{
+ ?[freshness_shape]: "Should freshness/coherence stay as raw telemetry fields, or do we want a compact readiness summary derived from them?"
+ ?[lsp_projection]: "Which telemetry facts should LSP and editor surfaces quote directly versus summarize into station diagnostics?"
 }
 
 ^["commits"]{
@@ -33,15 +75,37 @@
 
 ^["cache"]{
  ~#status: "ready-for-commit"
- ~#base_ref: "historical-missing@24865b70d6a8b44d1d4b386915e5c24333c6a0b9"
- ~#rebased_at: ""
+ ~#base_ref: "main@3b1747c4"
+ ~#rebased_at: "2026-03-27"
  ~#hygiene_split: "none"
- ~#files_hot: "src/runtime/pipeline/types.ts, src/runtime/pipeline/stages.ts, src/runtime/pipeline/substrate.ts, src/runtime/pipeline/resonance.ts, src/runtime/interpreter/interpreter.ts, src/runtime/state/register-bank.ts, src/seed/normalize.ts, scripts/lsp/context.ts, src/runtime/__tests__/run-spw.test.ts, src/runtime/__tests__/register-bank.test.ts, src/runtime/__tests__/substrate.test.ts, src/seed/__tests__/normalize.test.ts"
+ ~#files_hot: "packages/spw-runtime/src/pipeline/types.ts, packages/spw-runtime/src/pipeline/run-spw.ts, packages/spw-runtime/src/pipeline/stages.ts, packages/spw-runtime/src/pipeline/substrate.ts, packages/spw-runtime/src/pipeline/resonance.ts, packages/spw-runtime/src/interpreter/interpreter.ts, packages/spw-runtime/src/state/register-bank.ts, packages/spw-seed/src/normalize.ts, packages/spw-lsp/src/context.ts, packages/spw-runtime/src/__tests__/"
  ~#next_commit: "2"
- ~#open_count: "0"
- ~#last_stream: "2026-03-12 00:08"
- ~#taste_debt: ""
+ ~#open_count: "2"
+ ~#last_stream: "2026-03-27 14:31"
+ ~#taste_debt: "runtime facts should stay named the same way when quoted by DX, governance, and editor surfaces"
 }
 
 ^["done"]{
+ # Written at merge time.
+ # ~#shipped: []
+ # ~#dropped: []
+ # ~#surprised: ""
+ # ~#duration: ""
+ # ~#taste: ""
+}
+
+#>wonder_agents_plans_runtimetelemetrycanon_wip_1
+?["Which downstream judgment becomes cheaper when telemetry is canonical?"]{
+  #:depth #!educational // lens: service economics
+  $^["concept_index"]@here => $^["recursive_improvement"]@here
+  !probe{ "pick freshness, coherence, or readiness and name the host-side inference that disappears." }
+  $%[runtime.stage, runtime.queue_depth]
+}
+
+#>wonder_agents_plans_runtimetelemetrycanon_wip_2
+?["What fact should remain immutable even as runtime interpretation grows richer?"]{
+  #:depth #!computational // lens: contract boundary
+  $^["development"]@here => $^["commits"]@here
+  !probe{ "trace one event or resonance from interpreter to public API. where would mutability leak if the contract were sloppy?" }
+  ~<.agents/plans/runtime-telemetry-canon/runtime-telemetry-canon.spw>
 }

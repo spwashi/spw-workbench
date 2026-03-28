@@ -15,7 +15,7 @@
 #
 # Each section maps to a memory region:
 #
-# working set ^["intent"] ^["open"] ^["commits"]
+# working set ^["roots"] ^["intent"] ^["development"] ^["concept_index"] ^["recursive_improvement"] ^["parallel_work"] ^["supporting_documents"] ^["interaction_depth"] ^["open"] ^["commits"]
 # Hot. Actively consulted. Mutable.
 #
 # stream ^["stream"]
@@ -34,6 +34,102 @@
 # - Cache is recomputed — never hand-edited.
 
 # ──────────────────────────────────────────────
+# DEVELOPMENT FRAME
+# ──────────────────────────────────────────────
+#
+# ^["development"] captures how a branch grows judgment, not just what files it edits.
+#
+# Standard keys:
+# lane: #execution_truth | #public_interest_research | #curriculum_formation | #speculative_editor_future | #rewrite_recovery
+# ladder: #language | #component | #page | #service | #bridge
+# develops: [#taste, #linguistics, #design_transfer, ...]
+# review_surfaces: [@root_ref, @artifact_ref, ...]
+# snippet_routes: [#query, #example, #status_copy, ...]
+#
+# Keep this frame compact. It should read like a developmental contract, not a second plan file.
+
+# ──────────────────────────────────────────────
+# ROOTS
+# ──────────────────────────────────────────────
+#
+# ^["roots"] names the files and artifacts that should be reread while the branch evolves.
+#
+# Standard roots:
+# @cluster — the ecology map
+# @artifact — the branch-local Spw artifact, if one exists
+# @pattern — syntax/pattern source such as literate-ui
+# @tooling / @selection / @runtime / @code — task-specific surfaces
+#
+# Prefer a small set of high-value references over a long inventory.
+
+# ──────────────────────────────────────────────
+# CONCEPT INDEX
+# ──────────────────────────────────────────────
+#
+# ^["concept_index"] makes the branch queryable by stable tags rather than only prose.
+#
+# Standard keys:
+# primary: [#main_concepts]
+# surfaces: [#editor, #runtime, #docs, #cli, ...]
+# tensions: [#risk, #tradeoff, #constraint]
+# transfers: [#language, #component, #page, #service]
+#
+# This frame is where plans become indexable and comparable.
+
+# ──────────────────────────────────────────────
+# RECURSIVE IMPROVEMENT
+# ──────────────────────────────────────────────
+#
+# ^["recursive_improvement"] makes the plan self-improving.
+#
+# Standard keys:
+# loop: ["? ...", "< ...", "$ ...", "^ ...", "% ..."]
+# gates: [#preview_truth, #snippet_reuse, #claim_discipline, ...]
+#
+# The loop should tell a contributor how this branch learns from its own changes.
+
+# ──────────────────────────────────────────────
+# PARALLEL WORK
+# ──────────────────────────────────────────────
+#
+# ^["parallel_work"] exposes safe concurrency and known merge pressure.
+#
+# Standard keys:
+# critical_path: [#shared_truth, #blocked_surface, ...]
+# parallelizable: [#lane_a, #lane_b, ...]
+# shared_hot_files: ["path/to/file.ts", ...]
+# merge_risks: [#hot_file, #copy_drift, #naming_drift, ...]
+# handoff_artifacts: [@artifact_ref, @doc_ref, ...]
+#
+# This frame should help contributors split work without inventing coordination from scratch.
+
+# ──────────────────────────────────────────────
+# SUPPORTING DOCUMENTS
+# ──────────────────────────────────────────────
+#
+# ^["supporting_documents"] names the prose/spec/example surfaces that should evolve with implementation.
+#
+# Standard keys:
+# must_ship: [@artifact, @doc, ...]
+# helpful: [@guide, @pattern, ...]
+# carries: [#examples, #glossary, #review_notes, #screenshots, ...]
+#
+# This frame keeps companion literature and supporting surfaces explicit.
+
+# ──────────────────────────────────────────────
+# INTERACTION DEPTH
+# ──────────────────────────────────────────────
+#
+# ^["interaction_depth"] forces the branch to name the design subjects worth real attention.
+#
+# Standard keys:
+# subjects: [#navigation, #feedback, #preview, #latency, #trust, ...]
+# questions: [#what_is_primary, #what_is_reversible, #what_is_visible, ...]
+# qualities: [#clarity, #containment, #rhythm, ...]
+#
+# This frame is especially useful for editor, UI, CLI, and support surfaces, but can also sharpen language-design work.
+
+# ──────────────────────────────────────────────
 # STREAM SYNTAX
 # ──────────────────────────────────────────────
 #
@@ -50,6 +146,9 @@
 # taste — a craft quality observation (naming, layering, containment)
 # rebase — branch rebase checkpoint and base-sha updates
 # hygiene — isolation of unrelated drift or tooling-only cleanup
+# implement — a concrete change or artifact was added
+# verify — a claim was checked by tests, review, or direct inspection
+# note — preserved context that should remain queryable but is not a decision
 #
 # The >> evokes shell append-redirect. Each entry is uniquely keyed
 # by timestamp + type, producing clean single-line diffs.
@@ -123,12 +222,12 @@
 # The same wip.spw supports multiple read patterns:
 #
 # $["agent prompt"]
-# reads: ^["intent"] + ^["cache"] + ^["open"] + ^["commits"]
+# reads: ^["roots"] + ^["intent"] + ^["development"] + ^["concept_index"] + ^["recursive_improvement"] + ^["parallel_work"] + ^["supporting_documents"] + ^["interaction_depth"] + ^["cache"] + ^["open"] + ^["commits"]
 # skips: ^["stream"] (too verbose for context windows)
-# purpose: agent enters mid-task, orients in ~20 lines
+# purpose: agent enters mid-task, orients in ~40 lines
 #
 # $["human review"]
-# reads: ^["intent"] + ^["commits"] + ^["stream"] (filtered: decide + surprise + taste)
+# reads: ^["roots"] + ^["intent"] + ^["development"] + ^["concept_index"] + ^["recursive_improvement"] + ^["parallel_work"] + ^["supporting_documents"] + ^["interaction_depth"] + ^["commits"] + ^["stream"] (filtered: decide + surprise + taste + verify)
 # skips: ^["cache"]
 # purpose: reviewer sees decisions, surprises, and craft observations
 #

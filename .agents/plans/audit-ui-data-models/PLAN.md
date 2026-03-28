@@ -9,16 +9,18 @@ This acts as the "brains" complementing the "brawn" of two parallel plans:
 - **`audit-data-attributes`**: Ensures the DOM state synchronization is predictable.
 - **This Plan**: Ensures the *internal* algebraic memory model driving those tokens and attributes is linguistically pristine.
 
-**Taste Note:** Actively develops **taste in data modeling** by moving from primitive obsessions (`boolean`, `string`) to rigorous type algebras (`Valence`, `GeologyIntent`). Improves **correctness** (making illegal UI states unrepresentable) and **expressiveness** by creating a vocabulary the entire app can share.
+**Taste Note:** Actively develops **taste in data modeling** by moving from primitive obsessions (`boolean`, `string`) to rigorous type algebras (`Valence`, `GeologyIntent`). Improves **correctness** (making illegal UI states unrepresentable) and **expressiveness** by creating a vocabulary the entire app can share. The **literate-ui pattern** (`.spw/patterns/literate-ui.spw`) defines operator-to-gesture and container-to-component mappings that should inform the shape of these algebras — each operator-component reads from its operator register, and the spirit sequence governs component lifecycle.
+
+This is the component-model rung in the current ecology. The near-term value is not to prematurely refactor a vanished app shell; it is to build model vocabularies, invariants, and examples that future editor/component/page plans can reuse without restating their algebra from scratch.
 
 ## Scope
 
-- **In scope**: A deep 5-phase curricular audit: Foundational Algebras, Settings/Atmosphere Formalization, Topological Keyboard Domains, Visual Calculus Parameters, and Workspace Integrations. Scanning `src/ui/elements/` for primitive obsessions and replacing them.
+- **In scope**: A deep 5-phase curricular audit: Foundational Algebras, Settings/Atmosphere Formalization, Topological Keyboard Domains, Visual Calculus Parameters, and Workspace Integrations. Reviewing current query/runtime/editor semantics, design docs, and future-facing UI plans to extract reusable algebras and state machines. Legacy `src/ui/elements/...` paths in this plan are historical placeholders until a concrete packages-era component surface is nominated.
 - **Out of scope**: Changing the visual layout or behavior of the application. The user should not notice a difference; the compiler and the architects will.
 
 ## Agentic Hygiene
 
-- **Rebase target**: `origin/maina290a6`
+- **Rebase target**: `main@3b1747c4` (updated 2026-03-27)
 - **Rebase cadence**: rebase before commit 1 and again before merge
 - **Hygiene split**: isolate unrelated out-of-scope drift into `feature/audit-ui-data-models-agentic-hygiene` before implementation commits
 
@@ -26,6 +28,11 @@ This acts as the "brains" complementing the "brawn" of two parallel plans:
 
 Predicted file changes:
 ```
+[MOD] packages/spw-seed/src/query/types.ts
+[MOD] extensions/vscode-spw/src/semantics.ts
+[MOD] .spw/tooling/vscode-spw.spw
+[MOD] .spw/conventions/selection.spw
+[MOD] docs/theory/spw/register-geometry.spw
 [NEW] src/core/models/valence-algebra.ts
 [NEW] src/core/models/topology-intents.ts
 [NEW] src/core/models/visual-calculus.ts
@@ -76,10 +83,35 @@ Preflight: `&[hygiene] — rebase onto origin/main and isolate unrelated drift b
 
 - **`audit-css-tokens`**: Best executed in parallel or slightly overlapping.
 - **`audit-data-attributes`**: The formalized state machines from this branch will directly drive the DOM attributes updated in that branch.
+- `plan-ecology-clustering` — this plan currently serves the `component` rung and should turn implicit UI/tooling memory into reusable algebraic language.
+
+## Principal Engineering Orientation
+
+- Ladder position: `component`
+- Judgment target: make model vocabulary strong enough that later components, pages, and services can inherit shared algebra instead of reinventing hidden booleans and strings
+- Commit bar: each slice should remove one primitive obsession, define one reusable algebra, and make one future interface discussion more precise
+
+## Review Surfaces
+
+- Repo precedents: `packages/spw-seed/src/query/types.ts`, `extensions/vscode-spw/src/semantics.ts`, `.spw/tooling/vscode-spw.spw`, `.spw/conventions/selection.spw`, `docs/theory/spw/register-geometry.spw`
+- Semantic precedents: register geometry, selection conventions, spirit-sequence semantics, and valence language
+- Future consumers: data-attribute, token, editor, and command-surface plans that need stable model names
+
+## Capability Transfer
+
+- Component capability: explicit state machines, named transitions, and typed model contracts
+- Language capability: better names for selection, movement, atmosphere, and mode
+- Service capability: future diagnostics and telemetry can speak in model names instead of implementation residue
+
+## Syntax and Snippet Discipline
+
+- Stable snippets: preserve compact algebra examples and state-machine sketches that can be lifted into docs, tests, and implementation plans
+- Experimental algebras: mark speculative metaphors and model families before promoting them into shared canon
+- Route discipline: each model should name whether it primarily feeds components, pages, services, or cross-cutting semantics
 
 ## Spw Artifact
 
 ```
-.agent/plans/audit-ui-data-models/audit-ui-data-models.spw
+.agents/plans/audit-ui-data-models/audit-ui-data-models.spw
 ```
 A formal Spw record defining the exact mapping between component visual clusters and their abstract algebraic representations.
