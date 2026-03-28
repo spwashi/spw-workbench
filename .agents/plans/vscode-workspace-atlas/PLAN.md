@@ -149,9 +149,26 @@ These fields are additive. The register-explorer and authoring-probe-loop plans 
 
 ## Agentic Hygiene
 
-- Rebase target: `main@f42a80fa8eefb813992e21f7461c96926f033416`
+- Rebase target: `main@96815893` (updated 2026-03-27)
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: current local drift exists in `extensions/vscode-spw/src/annotation-index.ts`, `extensions/vscode-spw/src/extension.ts`, and `packages/spw-lsp/src/stdio-server.ts`; implementation work should isolate or reconcile that drift before feature commits begin.
+
+## Cognitive Surface Stack
+
+The workspace atlas operates at the **cognitive layer** — it reads semantic and register data to present the workspace's own self-description as a navigable model.
+
+| Atlas View | Spw Layer | Reads From |
+|---|---|---|
+| Roots | cognitive | `workspace.spw` manifest, `literate-architecture.spw` module shapes — each root is a navigable entry point per literate-ui operator gesture map |
+| Memory | cognitive+register | manifest placement + ServerIndex cache tiers; `register-bank.spw` acoustic properties (liminality, frequency, coupling) inform heat badges |
+| Phase perspective | register | operator frequency analysis per root yields dominant spirit-sequence phase from `register-bank.spw` phase definitions; navigable axis per `literate-ui.spw` spirit navigation |
+| Materialization badges | cognitive | `literate-architecture.spw` priming→concept→frame→body cycle; heuristic reads ~bindings, ^frames, ProjectionEntry from ServerIndex |
+| Resonance | substrate | four channels computed from Substrate events and RegisterBank coupling — annotation co-occurrence, root cross-reference, projection lineage, register coupling |
+| Perspective rotation | cognitive | topology/contract/resonance/phase/query views are rotation lenses per `literate-ui.spw` @-operator gesture (reframe/rotate) |
+
+**Spw internals used**: spw-seed (parser, query), spw-runtime (RegisterBank, Substrate, resonance detection), spw-lsp (ServerIndex, ServerContext, workspace handler).
+
+**Canon surfaces**: `.spw/workspace.spw` (manifest source of truth), `.spw/registries/register-bank.spw` (acoustic properties, phase definitions), `.spw/patterns/literate-ui.spw` (operator→navigation gesture map, spirit navigation spine), `.spw/patterns/literate-architecture.spw` (module shape → materialization cycle).
 
 ## Dependencies
 

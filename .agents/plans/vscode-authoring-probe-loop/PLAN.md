@@ -156,6 +156,24 @@ These fields complete the `SpwContext` shape defined in `vscode-interaction-cont
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: current local drift exists in `extensions/vscode-spw/src/annotation-index.ts`, `extensions/vscode-spw/src/extension.ts`, and `packages/spw-lsp/src/stdio-server.ts`; implementation work should isolate or reconcile that drift before feature commits begin.
 
+## Cognitive Surface Stack
+
+The authoring loop operates at the **register layer** — it makes spirit-sequence phase, materialization state, and operator coupling visible during editing. This is where syntax-as-navigation from literate-ui becomes cursor-local editorial experience.
+
+| Authoring Surface | Spw Layer | Reads From |
+|---|---|---|
+| Phase-aware completion | register | cursor-local operator determines spirit-sequence phase from `register-bank.spw`; ranking follows `literate-ui.spw` spirit navigation: after ? suggest ~, after & suggest * |
+| Materialization breadcrumb | cognitive | `literate-architecture.spw` priming→concept→frame→body; heuristic from cached AST depth and ProjectionEntry presence |
+| Spirit indicator | register | spirit-sequence position from `literate-ui.spw` phase affordances; clicking rotates per @-operator gesture |
+| Code lens actions | semantic+register | "Generate body" reads `literate-architecture.spw` materialization cycle; "Stale projection" reads ServerIndex freshness |
+| Operator heat | register | `register-bank.spw` acoustic properties (frequency, coupling) via $%[op.distribution] probe |
+| Phase hover | register | spirit-sequence position + register effect from `register-bank.spw` phase_mutations; connects to `literate-ui.spw` navigation gesture |
+| Probe commands | substrate | Substrate event stream; results carry resonance + register snapshots when runtime-telemetry-canon available |
+
+**Spw internals used**: spw-seed (parser, types, query), spw-runtime (RegisterBank, interpretSeed, Substrate), spw-lsp (editing handler, display handler, analysis handler).
+
+**Canon surfaces**: `.spw/registries/register-bank.spw` (operator→register→phase→acoustic semantics), `.spw/registries/dialect-spec.spw` (dialect markers for context), `.spw/patterns/literate-ui.spw` (spirit navigation spine, operator gesture map), `.spw/patterns/literate-architecture.spw` (materialization cycle), `.spw/conventions/selection.spw` (query axes for probe affordances).
+
 ## Dependencies
 
 - Shared interaction substrate: `.agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw` defines additive event vocabulary, capability names, context growth rules, transport tiers, and cross-theme enrichment paths.

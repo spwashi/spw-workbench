@@ -123,6 +123,24 @@ These fields are additive on top of the atlas plan's contributions.
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: current local drift exists in `extensions/vscode-spw/src/annotation-index.ts`, `extensions/vscode-spw/src/extension.ts`, and `packages/spw-lsp/src/stdio-server.ts`; implementation work should isolate or reconcile that drift before feature commits begin.
 
+## Cognitive Surface Stack
+
+The register explorer operates at the **substrate layer** — it exposes runtime register state, provenance, acoustic properties, and resonance as inspectable workspace objects. This is where the `register-bank.spw` specification becomes a lived experience.
+
+| Explorer View | Spw Layer | Reads From |
+|---|---|---|
+| Register tree | register | primary grouping by spirit-sequence phase using `register-bank.spw` SIGIL_SEMANTICS role names; each node is an operator register per `literate-ui.spw` component mapping |
+| Phase trajectory | register | write history from spw-runtime RegisterBank provenance chains; pipeline phase from register-phase-evolution when available, spirit-sequence phase always |
+| Materialization detail | cognitive | `literate-architecture.spw` priming/concept/frame/body stages determine different inspection affordances per stage |
+| Acoustic properties | substrate | liminality (mutation openness 0–3), frequency (writes/sec), coupling (entanglement 0–1) — all from `register-bank.spw` acoustic model, computed by spw-runtime RegisterBank |
+| Resonance | substrate | four channels from Substrate event stream; `register-bank.spw` defines bidirectional coupling invariant for & edges |
+| Graph query | register+substrate | SPWQ selector traversal over selected register; results show co-occurring registers and resonance neighbors |
+| Perspective rotation | register | phase/provenance/resonance views as rotation lenses per `literate-ui.spw` @-operator gesture |
+
+**Spw internals used**: spw-seed (types, query), spw-runtime (RegisterBank, Substrate, resonance detection, type-affinities, interpretSeed), spw-lsp (runtime handler, ServerIndex).
+
+**Canon surfaces**: `.spw/registries/register-bank.spw` (THE canonical source — operator→register→phase→acoustic semantics, storage model, invariants), `.spw/patterns/literate-ui.spw` (register→component mapping, operator gesture categories), `.spw/tooling/vscode-spw.spw` (capability registry).
+
 ## Dependencies
 
 - `plan-ecology-clustering` — this plan currently occupies a `component` rung and should turn runtime/query study into a discussable editor component rather than a disconnected panel.
@@ -151,7 +169,8 @@ This plan uses two "phase" axes (see `vscode-interaction-contract.spw ^["phase_v
 
 - Extension surfaces: `extensions/vscode-spw/src/extension.ts`, `extensions/vscode-spw/src/context.ts`, `extensions/vscode-spw/package.json`
 - Transport/runtime surfaces: `packages/spw-lsp/src/stdio-server.ts`, `packages/spw-lsp/src/context.ts`, `packages/spw-lsp/src/types.ts`, `packages/spw-lsp/src/handlers/runtime.ts`
-- Semantic precedents: `extensions/vscode-spw/src/semantics.ts`, `packages/spw-runtime/src/state/register-bank.ts`, `.agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw`
+- Semantic precedents: `extensions/vscode-spw/src/semantics.ts`, `packages/spw-runtime/src/state/register-bank.ts`, `packages/spw-runtime/src/state/type-affinities.ts`, `packages/spw-runtime/src/pipeline/substrate.ts`
+- Canon surfaces: `.spw/registries/register-bank.spw`, `.spw/patterns/literate-ui.spw`, `.agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw`
 
 ## Capability Transfer
 

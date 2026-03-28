@@ -9,6 +9,12 @@
  @plan: ~".agents/plans/vscode-register-explorer/PLAN.md"
  @artifact: ~".agents/plans/vscode-register-explorer/vscode-register-explorer.spw"
  @tooling: ~".spw/tooling/vscode-spw.spw"
+ @register_bank: ~".spw/registries/register-bank.spw"
+ @literate_ui: ~".spw/patterns/literate-ui.spw"
+ @runtime_register: ~"packages/spw-runtime/src/state/register-bank.ts"
+ @type_affinities: ~"packages/spw-runtime/src/state/type-affinities.ts"
+ @substrate: ~"packages/spw-runtime/src/pipeline/substrate.ts"
+ @interaction_contract: ~".agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw"
 }
 
 ^["intent"]{
@@ -42,6 +48,51 @@
  gates: [#inspection_legibility, #solo_ship, #phase_clarity]
 }
 
+^["parallel_work"]{
+ #vscode_lsp_integration: "LSP server hosts the register snapshot transport; handler registration substrate prevents stdio-server merge bottleneck"
+ #vscode_workspace_atlas: "atlas provides manifestState and activeRoot; explorer enriches tree with workspace scope when available"
+ #vscode_authoring_probe_loop: "authoring provides activePhase; explorer highlights phase group matching cursor position"
+ #runtime_dx_foundation: "DX diagnostic stations contextualize register faults and substrate events"
+ #runtime_telemetry_canon: "telemetry enriches register snapshots with immutable substrate events and resonances — primary data quality provider"
+ shared_hot_files: ["extensions/vscode-spw/src/extension.ts", "extensions/vscode-spw/src/context.ts", "packages/spw-lsp/src/stdio-server.ts"]
+}
+
+^["supporting_documents"]{
+ @interaction_contract: ~".agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw"
+ @register_spec: ~".spw/registries/register-bank.spw"  // THE canonical source for operator→register→phase→acoustic semantics
+ @literate_ui_components: ~".spw/patterns/literate-ui.spw"  // register→component mapping (each operator register backs a navigation-primitive component)
+ @type_affinities_impl: ~"packages/spw-runtime/src/state/type-affinities.ts"  // operator→container affinity rules
+ @substrate_impl: ~"packages/spw-runtime/src/pipeline/substrate.ts"  // event stream powering resonance
+}
+
+^["interaction_depth"]{
+ question_surfaces: [#open]
+ decision_log: [#stream]
+ taste_checkpoints: ["2026-03-26 00:05", "2026-03-26 00:11"]
+ surprise_budget: "without runtime-telemetry-canon, register snapshots are shallow value dumps — the explorer must remain legible even with minimal data, treating enrichment as additive not essential"
+ resolution_pattern: "each explorer affordance should answer: can the user identify which operator wrote this register entry, when, and why — without leaving the tree view?"
+}
+
+^["cognitive_surface_stack"]{
+ layer: #substrate
+ reads_from: [#register, #semantic]
+ writes_to: [#substrate, #register]
+ teaches: [#register_as_workspace_object, #operator_provenance, #phase_trajectory, #acoustic_properties, #resonance_as_coupling]
+ seed_subsystems: [#types, #query]
+ runtime_subsystems: [#register_bank, #substrate, #resonance_detection, #type_affinities, #interpret_seed]
+ lsp_subsystems: [#runtime_handler, #server_index]
+ canon_surfaces: [@register_bank, @literate_ui, @tooling, @interaction_contract]
+ depth_map: {
+   register_tree: "register — primary grouping by spirit-sequence phase using @register_bank SIGIL_SEMANTICS role names; each node is an operator register per @literate_ui component mapping"
+   phase_trajectory: "register — shows write history from @runtime_register provenance chains; pipeline phase (lex→parse→semantic→optimize→pragmatic) from register-phase-evolution when available, spirit-sequence phase always"
+   materialization_detail: "cognitive — priming/concept/frame/body from @literate_arch have different inspection affordances: priming shows potential, concept shows bindings, frame shows structure, body shows resolved value"
+   acoustic_properties: "substrate — liminality (mutation openness 0–3, ?=up ^=down), frequency (writes/sec from ~ timestamps), coupling (entanglement 0–1 from & edges) — all defined in @register_bank acoustic model"
+   resonance_view: "substrate — cross-file register coupling computed via four channels from Substrate event stream; strongest channel first per @interaction_contract resonance presentation rules"
+   graph_query: "register+substrate — selected register as entry point for SPWQ selector traversal; query results show co-occurring registers and resonance neighbors"
+   perspective_rotation: "register — phase/provenance/resonance views are rotation lenses per @literate_ui @-operator gesture; default=phase, rotate=provenance, drill=resonance"
+ }
+}
+
 ^["stream"]{
  >>[2026-03-26 00:00] observe — the current extension exposes concepts as the only custom tree view while register information remains fragmented across hover and code-lens text.
  >>[2026-03-26 00:01] observe — runtime trial data already exists in the LSP context, which makes register exploration feasible without inventing a second runtime path.
@@ -56,6 +107,7 @@
  >>[2026-03-26 00:10] observe — two "phase" axes exist: spirit-sequence (?~@&*^) describes operator semantics; pipeline (lex, parse, semantic, optimize, pragmatic) describes runtime enrichment timing. register-phase-evolution plan aligns the pipeline vocabulary.
  >>[2026-03-26 00:11] decide — in the explorer tree, unqualified "phase" means pipeline phase. Detail view shows both axes when both are available. Solo-ship uses spirit-sequence phase from SIGIL_SEMANTICS; pipeline phase added when register-phase-evolution lands.
  >>[2026-03-26 00:12] observe — stdio-server.ts is 900+ lines. Adding handlers/runtime.ts needs a handler registration substrate to avoid merge bottleneck. Interaction contract now specifies this.
+ >>[2026-03-27 18:00] revise — rooted into register-bank.spw, literate-ui.spw, runtime RegisterBank, type-affinities, Substrate, and interaction contract. Added parallel_work (LSP hosts transport, atlas provides manifest scope, authoring provides phase context, telemetry enriches snapshots), supporting_documents, interaction_depth, and cognitive_surface_stack. This plan operates at the substrate layer: the register tree reads register-bank SIGIL_SEMANTICS for phase grouping, acoustic properties (liminality/frequency/coupling) from register-bank spec, materialization detail from literate-architecture stages, and resonance from Substrate event channels. Each operator register backs a literate-ui navigation-primitive component — the explorer is where that mapping becomes inspectable.
 }
 
 ^["open"]{
@@ -73,12 +125,11 @@
 
 ^["cache"]{
  ~#status: "planning"
- ~#base_ref: "main@f42a80fa8eefb813992e21f7461c96926f033416"
- ~#rebased_at: ""
+ ~#base_ref: "main@96815893"
+ ~#rebased_at: "2026-03-27"
  ~#hygiene_split: "isolate local drift in extensions/vscode-spw/src/annotation-index.ts, extensions/vscode-spw/src/extension.ts, and packages/spw-lsp/src/stdio-server.ts before implementation"
  ~#files_hot: ".agents/plans/vscode-register-explorer/PLAN.md, .agents/plans/vscode-register-explorer/wip.spw, .agents/plans/vscode-register-explorer/vscode-register-explorer.spw"
  ~#next_commit: "1"
- ~#open_count: "1"
  ~#open_count: "2"
  ~#last_stream: "2026-03-26 00:12"
  ~#taste_debt: "Do not let the first explorer slice become a dump of every runtime field. Atlas context is an enrichment, not a prerequisite. Pipeline phase and spirit-sequence phase are orthogonal; show both when available, default to spirit-sequence for solo-ship."

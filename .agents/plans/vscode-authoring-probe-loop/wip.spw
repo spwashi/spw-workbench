@@ -10,7 +10,12 @@
  @selection: ~".spw/conventions/selection.spw"
  @tooling: ~".spw/tooling/vscode-spw.spw"
  @literate_ui: ~".spw/patterns/literate-ui.spw"
+ @literate_arch: ~".spw/patterns/literate-architecture.spw"
+ @register_bank: ~".spw/registries/register-bank.spw"
+ @dialect_spec: ~".spw/registries/dialect-spec.spw"
  @extension: ~"extensions/vscode-spw/src/extension.ts"
+ @editing_handler: ~"packages/spw-lsp/src/handlers/editing.ts"
+ @runtime_register: ~"packages/spw-runtime/src/state/register-bank.ts"
 }
 
 ^["intent"]{
@@ -44,6 +49,51 @@
  gates: [#solo_ship, #cheap_status, #snippet_legibility, #preview_truth]
 }
 
+^["parallel_work"]{
+ #vscode_lsp_integration: "LSP handlers provide the semantic surface that completions, hover, and code lens read from"
+ #vscode_workspace_atlas: "atlas provides manifestState and activeRoot; authoring enriches completions with workspace context when available"
+ #vscode_register_explorer: "register explorer provides focusedRegister; authoring's phase indicator and probe results reflect the same register state"
+ #runtime_dx_foundation: "DX diagnostics give probe results meaningful station context"
+ shared_hot_files: ["extensions/vscode-spw/src/extension.ts", "extensions/vscode-spw/src/context.ts", "packages/spw-lsp/src/handlers/editing.ts"]
+}
+
+^["supporting_documents"]{
+ @interaction_contract: ~".agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw"
+ @register_spec: ~".spw/registries/register-bank.spw"
+ @spirit_sequence: ~".spw/patterns/literate-ui.spw"  // spirit navigation defines phase-aware completion ranking
+ @module_shape: ~".spw/patterns/literate-architecture.spw"  // materialization breadcrumb reads module-shape stages
+ @keyboard_nav: ~"docs/design/md/keyboard-navigation-design.md"
+ @interaction_design: ~"docs/design/md/interaction-semantics-design.md"
+}
+
+^["interaction_depth"]{
+ question_surfaces: [#open]
+ decision_log: [#stream]
+ taste_checkpoints: ["2026-03-26 00:05", "2026-03-27 14:39"]
+ surprise_budget: "regex look-back for spirit-sequence phase may be unreliable in nested containers — the gap between regex heuristic and AST-precise phase context is a known fidelity boundary"
+ resolution_pattern: "each authoring affordance should be testable by asking: does this completion/hover/lens reveal a real operator role or register relation, or does it merely decorate?"
+}
+
+^["cognitive_surface_stack"]{
+ layer: #register
+ reads_from: [#syntactic, #semantic]
+ writes_to: [#register, #cognitive]
+ teaches: [#spirit_sequence_as_attention, #phase_aware_editing, #materialization_as_progress, #operator_register_coupling]
+ seed_subsystems: [#parser, #types, #query]
+ runtime_subsystems: [#register_bank, #interpret_seed, #substrate]
+ lsp_subsystems: [#editing, #display, #analysis]
+ canon_surfaces: [@register_bank, @literate_ui, @literate_arch, @dialect_spec, @selection]
+ depth_map: {
+   phase_completion: "register — cursor-local operator determines spirit-sequence phase from @register_bank; ranking follows @literate_ui spirit navigation: after ? suggest ~, after & suggest *; regex look-back (solo ship) or seed phase-context extraction (enriched)"
+   materialization_breadcrumb: "cognitive — status bar shows priming|concept|frame|body from @literate_arch module shape; heuristic reads AST depth and projection presence via ServerIndex"
+   spirit_indicator: "register — status bar shows current spirit-sequence position from @literate_ui phase affordances; clicking rotates to next phase per @-operator gesture"
+   code_lens_actions: "semantic+register — 'Generate body' on frames reads @literate_arch materialization cycle; 'Stale projection' reads ServerIndex projection freshness"
+   operator_heat: "register — echoes @register_bank acoustic properties (frequency, coupling) through $%[op.distribution] probe; histogram per @literate_ui operator gesture categories"
+   phase_hover: "register — shows spirit-sequence position, what follows, and register effect from @register_bank phase_mutations; connects operator role to @literate_ui navigation gesture"
+   probe_commands: "substrate — run/probe surface reads Substrate event stream; results carry resonance + register snapshots when runtime-telemetry-canon is available"
+ }
+}
+
 ^["stream"]{
  # Append entries chronologically. Never edit prior entries.
  # >>[YYYY-MM-DD HH:MM] <type> — <content>
@@ -63,6 +113,7 @@
  >>[2026-03-26 00:12] observe — the two phase axes (spirit-sequence vs pipeline) need explicit disambiguation in authoring surfaces. In completions and status bar, phase means spirit-sequence.
  >>[2026-03-27 14:38] revise — regrounded branch baseline to current planning canon main@3b1747c4 so the authoring lane speaks the same packages-era lineage as the other active editor/runtime plans.
  >>[2026-03-27 14:39] implement — rewrote branch memory with roots, concept indexing, and recursive improvement so authoring work can be queried as a learning surface instead of a raw feature list.
+ >>[2026-03-27 18:00] revise — rooted into register-bank.spw, literate-architecture.spw, dialect-spec.spw, editing handler, and runtime RegisterBank. Added parallel_work (LSP integration provides semantic surface, atlas provides workspace context, register explorer provides focused register), supporting_documents (interaction contract, register spec, spirit sequence, module shape, keyboard nav, interaction design), interaction_depth, and cognitive_surface_stack. This plan operates at the register layer: phase-aware completion reads spirit-sequence from register-bank, materialization breadcrumb reads literate-architecture stages, operator heat echoes register-bank acoustic properties, probes read Substrate events. The authoring loop is where syntax-as-navigation from literate-ui becomes cursor-local editorial experience.
 }
 
 ^["open"]{

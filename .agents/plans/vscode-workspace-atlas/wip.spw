@@ -9,6 +9,10 @@
  @plan: ~".agents/plans/vscode-workspace-atlas/PLAN.md"
  @artifact: ~".agents/plans/vscode-workspace-atlas/vscode-workspace-atlas.spw"
  @workspace: ~".spw/workspace.spw"
+ @register_bank: ~".spw/registries/register-bank.spw"
+ @literate_ui: ~".spw/patterns/literate-ui.spw"
+ @literate_arch: ~".spw/patterns/literate-architecture.spw"
+ @server_index: ~"packages/spw-lsp/src/server-index.ts"
 }
 
 ^["intent"]{
@@ -62,6 +66,25 @@
  qualities: [#clarity, #containment, #low_noise]
 }
 
+^["cognitive_surface_stack"]{
+ layer: #cognitive
+ reads_from: [#semantic, #register, #substrate]
+ writes_to: [#cognitive]
+ teaches: [#workspace_topology, #manifest_vocabulary, #materialization_cycle, #memory_tiers, #resonance_channels]
+ seed_subsystems: [#parser, #query]
+ runtime_subsystems: [#register_bank, #substrate, #resonance_detection]
+ lsp_subsystems: [#server_index, #context, #workspace_handler]
+ canon_surfaces: [@workspace, @register_bank, @literate_ui, @literate_arch]
+ depth_map: {
+   roots_view: "cognitive — reads @workspace manifest roots + @literate_arch module shapes; each root is a navigable entry point per literate-ui operator gesture map"
+   memory_view: "cognitive+register — declared placement from manifest + observed temperature from ServerIndex cache tiers; @register_bank acoustic properties (liminality, frequency, coupling) inform heat badges"
+   phase_perspective: "register — operator frequency analysis per root yields dominant spirit-sequence phase from @register_bank phase definitions; phase is a navigable axis per @literate_ui spirit navigation"
+   materialization_badges: "cognitive — priming→concept→frame→body cycle from @literate_arch; heuristic reads ~bindings, ^frames, ProjectionEntry presence from ServerIndex"
+   resonance_view: "substrate — four channels (annotation co-occurrence, root cross-reference, projection lineage, register coupling) computed from Substrate event stream and RegisterBank coupling edges"
+   perspective_rotation: "cognitive — topology/contract/resonance/phase/query views are rotation lenses per @literate_ui @-operator gesture (reframe/rotate)"
+ }
+}
+
 ^["stream"]{
  >>[2026-03-26 00:00] observe — the extension currently exposes one Concepts tree and a hardcoded root map while `.spw/workspace.spw` already defines a richer discovery contract.
  >>[2026-03-26 00:01] decide — the atlas should read as a workspace map first and a file browser second; roots, planes, and memory ownership should be explicit.
@@ -95,6 +118,7 @@
  >>[2026-03-26 00:29] decide — add ^["cross_theme_enrichments"] frame listing runtime/parser plans as enrichment providers with solo-ship fallbacks. Add cross-theme enrichment subsections to all three VS Code plan Dependencies.
  >>[2026-03-26 00:30] observe — authoring loop's look-back rule needs a cursor-offset-to-phase-context query from the seed parser. Not currently scoped in any plan.
  >>[2026-03-26 00:31] decide — note seed_phase_context as an unscoped enrichment in the interaction contract. Flag register-phase-evolution as the natural home for this addition (adjacent to selector-expression grammar work).
+ >>[2026-03-27 18:00] revise — rooted into register-bank.spw, literate-ui.spw, literate-architecture.spw, and ServerIndex as canon/internal surfaces. Added cognitive_surface_stack: the atlas operates at the cognitive layer, reading semantic and register data to teach workspace topology, materialization cycles, memory tiers, and resonance channels. Each atlas view maps to a specific depth: roots from manifest + literate-arch module shapes, memory from register-bank acoustic properties, phase from spirit-sequence frequency analysis, materialization from literate-arch stages, resonance from Substrate event channels.
 }
 
 ^["open"]{
@@ -122,8 +146,8 @@
 
 ^["cache"]{
  ~#status: "planning"
- ~#base_ref: "main@f42a80fa8eefb813992e21f7461c96926f033416"
- ~#rebased_at: ""
+ ~#base_ref: "main@96815893"
+ ~#rebased_at: "2026-03-27"
  ~#hygiene_split: "isolate local drift in extensions/vscode-spw/src/annotation-index.ts, extensions/vscode-spw/src/extension.ts, and packages/spw-lsp/src/stdio-server.ts before implementation"
  ~#files_hot: ".agents/plans/vscode-workspace-atlas/PLAN.md, .agents/plans/vscode-workspace-atlas/wip.spw, .agents/plans/vscode-workspace-atlas/vscode-workspace-atlas.spw, .agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw"
  ~#next_commit: "1"

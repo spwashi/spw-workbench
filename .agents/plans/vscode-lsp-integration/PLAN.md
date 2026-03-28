@@ -74,6 +74,26 @@ Commits ~[10]-~[16] form the language-service correctness lane. Commits ~[17]-~[
 21. `.[docs]` — update spw-feature-planning and editor ecosystem guide with new LSP capabilities
 27. `.[release]` — declare v0.2.0-alpha for VS Code extension and LSP
 
+## Cognitive Surface Stack
+
+The LSP integration is the **semantic layer** — it bridges the syntactic surface (spw-seed parser) and the cognitive surfaces (workspace manifests, patterns, registries) that the other three VS Code plans render.
+
+| Handler | Spw Layer | Reads From |
+|---|---|---|
+| Semantic tokens | syntactic | spw-seed lexer token types, `register-bank.spw` operator classification |
+| Hover | semantic | AST node type, `register-bank.spw` operator roles, `dialect-spec.spw` dialect context |
+| Completion | semantic | scope frames, `register-bank.spw` type affinities, file-system paths |
+| Definition | semantic | path literals, workspace manifest root resolution |
+| Rename | semantic | symbol graph, cascading workspace edits across `.spw` surfaces |
+| Diagnostics | syntactic+semantic | parse errors, broken refs, `register-bank.spw` brace physics (container affinity rules) |
+| Document links | semantic | path references, manifest root resolution, tilde-relative form |
+| Code lens | semantic | annotation metrics, `literate-architecture.spw` projection state |
+| Code actions | semantic | AST patterns, trait/binding toggle, wrap-in-frame |
+
+**Spw internals used**: spw-seed (lexer, parser, types, query, instrumentation), spw-runtime (RegisterBank, interpretSeed, runSpw), spw-lsp (all 5 handler clusters, ServerIndex, ServerContext).
+
+**Canon surfaces**: `.spw/registries/register-bank.spw` (operator→register→phase definitions), `.spw/registries/dialect-spec.spw` (dialect markers for hover context), `.spw/patterns/literate-architecture.spw` (module shape for code lens projection state), `.spw/tooling/vscode-spw.spw` (capability registry).
+
 ## Dependencies
 
 none
@@ -87,6 +107,8 @@ none
 ## Review Surfaces
 
 - Tooling/spec: `.spw/tooling/vscode-spw.spw`, `.spw/conventions/selection.spw`
+- Canon registries: `.spw/registries/register-bank.spw`, `.spw/registries/dialect-spec.spw`
+- Canon patterns: `.spw/patterns/literate-architecture.spw`, `.spw/patterns/literate-ui.spw`
 - Code: `packages/spw-lsp/src/handlers/editing.ts`, `packages/spw-lsp/src/handlers/navigation.ts`, `packages/spw-lsp/src/stdio-server.ts`, `extensions/vscode-spw/src/extension.ts`
 - Planning artifact: `.agents/plans/vscode-lsp-integration/vscode-lsp-integration.spw`
 

@@ -8,6 +8,10 @@
  @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
  @artifact: ~".agents/plans/vscode-lsp-integration/vscode-lsp-integration.spw"
  @tooling: ~".spw/tooling/vscode-spw.spw"
+ @register_bank: ~".spw/registries/register-bank.spw"
+ @dialect_spec: ~".spw/registries/dialect-spec.spw"
+ @literate_arch: ~".spw/patterns/literate-architecture.spw"
+ @literate_ui: ~".spw/patterns/literate-ui.spw"
  @editing: ~"packages/spw-lsp/src/handlers/editing.ts"
  @navigation: ~"packages/spw-lsp/src/handlers/navigation.ts"
  @server: ~"packages/spw-lsp/src/stdio-server.ts"
@@ -65,6 +69,28 @@
  qualities: [#clarity, #quiet_feedback, #thin_client]
 }
 
+^["cognitive_surface_stack"]{
+ layer: #semantic
+ reads_from: [#syntactic]
+ writes_to: [#semantic]
+ teaches: [#operator_roles, #path_topology, #cross_file_navigation, #rename_safety, #brace_physics]
+ seed_subsystems: [#lexer, #parser, #types, #query, #instrumentation]
+ runtime_subsystems: [#register_bank, #interpret_seed, #run_spw]
+ lsp_subsystems: [#analysis, #display, #editing, #navigation, #semantic_tokens, #server_index]
+ canon_surfaces: [@register_bank, @dialect_spec, @literate_arch, @tooling]
+ depth_map: {
+   semantic_tokens: "syntactic — lexer token classification + operator sigil coloring from @register_bank phase definitions"
+   hover: "semantic — AST node type + register-bank operator roles + dialect context from @dialect_spec"
+   completion: "semantic — scope frame analysis + file-system paths + register access patterns from @register_bank type affinities"
+   definition: "semantic — path literal resolution + root graph from workspace manifest"
+   rename: "semantic — symbol graph traversal + cascading workspace edits across .spw surfaces"
+   diagnostics: "syntactic+semantic — parse errors + broken refs + brace physics (container affinity rules from @register_bank)"
+   document_links: "semantic — path references resolved through manifest root + tilde-relative form"
+   code_lens: "semantic — annotation metrics + projection state from literate-architecture module shape"
+   code_actions: "semantic — AST pattern recognition for trait/binding toggle, wrap-in-frame"
+ }
+}
+
 ^["stream"]{
  # Append entries chronologically. Never edit prior entries.
  # >>[YYYY-MM-DD HH:MM] <type> — <content>
@@ -81,6 +107,7 @@
  >>[2026-03-27 13:29] decide — parallelize remaining work into language-service correctness (completion, rename, hover, code action) and editor cleanup/docs (client cleanup, capability docs, release truth).
  >>[2026-03-27 14:22] implement — rewrote branch memory around roots, concept indexing, and recursive improvement; added a branch-local Spw artifact so plan language, capability language, and release claims can share one indexed surface.
  >>[2026-03-27 14:23] taste — recursive improvement here means every new capability should be nameable three ways without drift: code action title, docs snippet, and review vocabulary.
+ >>[2026-03-27 18:00] revise — rooted into register-bank.spw, dialect-spec.spw, literate-architecture.spw, and literate-ui.spw as canon surfaces. Added cognitive_surface_stack mapping each LSP handler to the Spw layers it reads: semantic tokens from lexer + register-bank phase defs, hover from AST + operator roles + dialect context, completion from scope frames + register access patterns, etc. The semantic layer this plan builds is the bridge between syntactic parsing and the cognitive surfaces the other three VS Code plans render.
 }
 
 ^["open"]{
