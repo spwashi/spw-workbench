@@ -21,6 +21,7 @@ npm run spw -- init ../my-site
 ```
 
 The published command direction is `spw <verb>`, so the external form of that flow is `spw init my-site`.
+The companion readiness check is `spw doctor my-site`.
 
 ### Packaging Contract
 
@@ -41,12 +42,8 @@ your-site/
 ├── .spw/
 │   ├── _workbench/            # git submodule → spwashi/spw-workbench
 │   ├── index.spw              # workspace manifest
-│   ├── state/
-│   │   └── observable.spw     # runtime metrics (%[key] measurement points)
-│   ├── surfaces/
-│   │   └── publish.spw        # projection rules (frames → HTML/RSS/JSON)
-│   └── substrates/
-│       └── structural.spw     # substrate bindings (event-driven processing)
+│   ├── mount.spw              # workbench connection + engagement surface
+│   └── workspace.spw          # local roots and editor settings
 ├── content/
 └── package.json
 ```
@@ -59,6 +56,15 @@ Add the workbench as a git submodule:
 git submodule add https://github.com/spwashi/spw-workbench .spw/_workbench
 ```
 
+Current first-run bootstrap from the site root:
+
+```bash
+cd .spw/_workbench
+npm install
+npm run spw:init -- ../..
+npm run spw:doctor -- ../..
+```
+
 The `_workbench` prefix signals infrastructure — the parser, runtime, substrate engine, and LSP live here. Site-specific `.spw` files reference base configurations via relative paths:
 
 ```spw
@@ -66,7 +72,7 @@ The `_workbench` prefix signals infrastructure — the parser, runtime, substrat
 ~"_workbench/.spw/surfaces/publish.spw"
 ```
 
-`spw init` seeds `.spw/workspace.spw`, `.spw/index.spw`, `.agents/workflows/commit-review.md`, and arms `.git/hooks/pre-commit` when the target is already a git repository. The hook resolves review tooling from `.spw/_workbench`, `node_modules/spw-workbench`, `SPW_WORKBENCH_ROOT`, or the runtime that executed `spw init`.
+`spw init` now seeds `.spw/mount.spw`, `.spw/workspace.spw`, `.spw/index.spw`, `.agents/workflows/commit-review.md`, and arms `.git/hooks/pre-commit` when the target is already a git repository. `spw doctor` checks whether the site has the expected scaffold, the embedded workbench checkout, and installed workbench dependencies. The hook resolves review tooling from `.spw/_workbench`, `node_modules/spw-workbench`, `SPW_WORKBENCH_ROOT`, or the runtime that executed `spw init`.
 
 ## Substrates
 

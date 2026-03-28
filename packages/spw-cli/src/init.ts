@@ -65,6 +65,7 @@ export function printInitUsage(): void {
       {
         title: 'Scaffolds',
         lines: [
+          '.spw/mount.spw',
           '.spw/workspace.spw',
           '.spw/index.spw',
           '.agents/workflows/commit-review.md',
@@ -247,11 +248,14 @@ async function installPortableScaffold(targetAbs: string, templateRoot: string):
 
 async function installWorkbench(targetDir: string, runtime: InitRuntimeContext): Promise<void> {
   const targetAbs = path.resolve(process.cwd(), targetDir)
+  const workbenchRoot = path.join(targetAbs, '.spw', '_workbench')
+  const hasWorkbench = await exists(workbenchRoot)
+  const hasWorkbenchDependencies = hasWorkbench && await exists(path.join(workbenchRoot, 'node_modules'))
   console.log(`\n${bold('Spw Init')}\nTarget: ${dim(targetAbs)}\n`)
 
   await fs.mkdir(targetAbs, { recursive: true })
   await installPortableScaffold(targetAbs, runtime.templateRoot)
-  console.log(` ${green('✓')} Portable semantic scaffold seeded via .spw/workspace.spw`)
+  console.log(` ${green('✓')} Portable site scaffold seeded (.spw/index.spw, .spw/workspace.spw, .spw/mount.spw)`)
   console.log(` ${green('✓')} Review workflow note installed (.agents/workflows/commit-review.md)`)
 
   const hookStatus = await ensureHook(targetAbs, runtime.toolRoot)
@@ -265,5 +269,28 @@ async function installWorkbench(targetDir: string, runtime: InitRuntimeContext):
     )
   }
 
-  console.log(`\n${bold(green('Init Complete.'))}\nThe semantic tree is ready to grow.\n`)
+  if (hasWorkbench) {
+    console.log(` ${green('✓')} Found .spw/_workbench`)
+  } else {
+    console.log(` ${dim('-')} No .spw/_workbench detected yet`)
+    console.log(` ${dim('-')} Add it with: git submodule add https://github.com/spwashi/spw-workbench .spw/_workbench`)
+  }
+
+  if (hasWorkbench && !hasWorkbenchDependencies) {
+    console.log(` ${dim('-')} Install workbench dependencies: cd .spw/_workbench && npm install`)
+  }
+
+  console.log(`\n${bold(green('Init Complete.'))}`)
+  console.log('Suggested next steps:')
+  if (!hasWorkbench) {
+    console.log('  1. git submodule add https://github.com/spwashi/spw-workbench .spw/_workbench')
+    console.log('  2. cd .spw/_workbench && npm install')
+    console.log('  3. cd .spw/_workbench && npm run spw:doctor -- ../..')
+  } else if (!hasWorkbenchDependencies) {
+    console.log('  1. cd .spw/_workbench && npm install')
+    console.log('  2. cd .spw/_workbench && npm run spw:doctor -- ../..')
+  } else {
+    console.log('  1. cd .spw/_workbench && npm run spw:doctor -- ../..')
+  }
+  console.log('')
 }

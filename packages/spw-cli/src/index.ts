@@ -1,5 +1,6 @@
 export { parseCommand, parseQueryArgs, parseSelectArgs } from './args'
 export { runSpwDevCli } from './dev'
+export { inspectDoctorTarget, printDoctorHelp, runSpwDoctorCli } from './doctor'
 export { runSpwFormatCli } from './format'
 export { printInitUsage, runSpwInitCli } from './init'
 export { runSpwLsCli } from './ls'

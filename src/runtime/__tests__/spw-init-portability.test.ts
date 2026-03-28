@@ -1,3 +1,4 @@
+import { access } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { describe, expect, it } from 'vitest'
@@ -14,6 +15,15 @@ describe('spw init portability', () => {
     expect(runtime.packageRoot).toBe(path.resolve(testDir, '../../..'))
     expect(runtime.templateRoot).toBe(path.resolve(testDir, '../../../packages/spw-cli/templates/init'))
     expect(runtime.toolRoot).toBe(runtime.packageRoot)
+  })
+
+  it('ships a minimal site scaffold that includes mount metadata', async () => {
+    const sourceInitUrl = pathToFileURL(path.resolve(testDir, '../../../packages/spw-cli/src/init.ts')).href
+    const runtime = await resolveInitRuntimeContext(sourceInitUrl)
+
+    await expect(access(path.join(runtime.templateRoot, 'base/.spw/index.spw'))).resolves.toBeUndefined()
+    await expect(access(path.join(runtime.templateRoot, 'base/.spw/workspace.spw'))).resolves.toBeUndefined()
+    await expect(access(path.join(runtime.templateRoot, 'base/.spw/mount.spw'))).resolves.toBeUndefined()
   })
 
   it('renders a pre-commit hook that can delegate to interoperable workbench roots', () => {

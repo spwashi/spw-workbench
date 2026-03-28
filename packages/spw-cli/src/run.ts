@@ -1,6 +1,7 @@
 import process from 'node:process'
 import { parseCommand, parseCommonFlags, parseQueryArgs } from './args'
 import { runSpwDevCli } from './dev'
+import { printDoctorHelp, runSpwDoctorCli } from './doctor'
 import { printSpwFormatHelp, runSpwFormatCli } from './format'
 import { printHelpPage } from './help'
 import { printInitUsage, runSpwInitCli } from './init'
@@ -47,6 +48,15 @@ export async function runSpwCli(argv: string[]): Promise<void> {
       return
     }
     await runSpwInitCli(toCliArgv(command, args))
+    return
+  }
+
+  if (command === 'doctor') {
+    if (common.flags.help) {
+      printDoctorHelp()
+      return
+    }
+    await runSpwDoctorCli(toCliArgv(command, args))
     return
   }
 
@@ -113,10 +123,11 @@ function printHelp(): void {
         title: 'Commands',
         lines: [
           'init         Bootstrap a .spw workspace in a target directory',
+          'doctor       Diagnose site-install readiness in a target directory',
           'query | q    Deep multi-file query (from/select/where style)',
           'select       Single-file AST selector surface (absorbs spwq)',
           'ls           Liminal sequence selector engine (operator/braces/probe)',
-          'mount        Mount/check surfaces',
+          'mount        Mount/check surfaces for workbench-shaped roots',
           'mem          Memory surface tools',
           'format       Spw formatter',
           'dev          Hot loop runner',
@@ -135,6 +146,7 @@ function printHelp(): void {
         title: 'Try',
         lines: [
           'spw init my-site',
+          'spw doctor my-site',
           'npm run spw -- init my-site',
           'npm run spw -- query --help',
           'npm run spw -- format --help',
