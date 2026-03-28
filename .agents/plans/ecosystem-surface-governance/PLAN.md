@@ -25,7 +25,7 @@ The current domain portfolio is rich in voice but thin in execution metadata: it
 [MOD] .agents/plans/vscode-lsp-integration/PLAN.md
 [MOD] .agents/plans/v030-release-prep/PLAN.md
 [MOD] .agents/plans/runtime-dx-foundation/PLAN.md
-[MOD] .agents/plans/runtime-telemetry-canon/PLAN.md
+[MOD] .agents/plans/_archive/runtime-telemetry-canon/PLAN.md
 [MOD] .agents/plans/runtime-axis-traceability/PLAN.md
 [MOD] .agents/plans/register-phase-evolution/PLAN.md
 [MOD] .agents/plans/curriculum-html-css-mastery/PLAN.md

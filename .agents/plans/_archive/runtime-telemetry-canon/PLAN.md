@@ -16,8 +16,8 @@ The desired end state is a runtime pipeline where `runSpw()` and `collectPrecipi
 ## Files
 
 ```text
-[NEW] .agents/plans/runtime-telemetry-canon/wip.spw
-[NEW] .agents/plans/runtime-telemetry-canon/runtime-telemetry-canon.spw
+[NEW] .agents/plans/_archive/runtime-telemetry-canon/wip.spw
+[NEW] .agents/plans/_archive/runtime-telemetry-canon/runtime-telemetry-canon.spw
 [MOD] packages/spw-runtime/src/pipeline/types.ts
 [MOD] packages/spw-runtime/src/pipeline/run-spw.ts
 [MOD] packages/spw-runtime/src/pipeline/stages.ts
@@ -82,7 +82,7 @@ Commit 2 hardens the runtime facts. Commit 3 makes those facts consumable by dow
 
 - Runtime code: `packages/spw-runtime/src/pipeline/run-spw.ts`, `packages/spw-runtime/src/pipeline/types.ts`, `packages/spw-runtime/src/pipeline/substrate.ts`
 - Downstream plan surfaces: `runtime-dx-foundation`, `ecosystem-surface-governance`
-- Planning artifact: `.agents/plans/runtime-telemetry-canon/runtime-telemetry-canon.spw`
+- Planning artifact: `.agents/plans/_archive/runtime-telemetry-canon/runtime-telemetry-canon.spw`
 
 ## Recursive Improvement
 
@@ -93,5 +93,5 @@ Commit 2 hardens the runtime facts. Commit 3 makes those facts consumable by dow
 ## Spw Artifact
 
 ```text
-.agents/plans/runtime-telemetry-canon/runtime-telemetry-canon.spw
+.agents/plans/_archive/runtime-telemetry-canon/runtime-telemetry-canon.spw
 ```
