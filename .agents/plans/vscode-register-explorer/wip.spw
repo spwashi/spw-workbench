@@ -114,11 +114,19 @@
  >>[2026-03-28 09:47] rebase — refreshed baseline to main@b41caa6b and added references/index.spw so tree-view, command, quick-pick, status-bar, and programmatic inspection guidance shape the explorer's grouping and density decisions.
  >>[2026-03-28 10:18] observe — the March 26, 2026 VS Code implementation log establishes a thin-client baseline: standard language features moved into the LSP, the extension shell stayed small, and the only custom surface still in the client is the Concepts tree plus the LSP-backed annotation mirror. The register plan should spend budget on transport, tree composition, and inspection taste, not on reviving provider-era client logic.
  >>[2026-03-28 10:19] revise — local drift noted on 2026-03-26 is absent in the current clean worktree. Keep extension.ts, context.ts, package.json, and stdio-server.ts treated as shared hot files, but drop the mandatory hygiene split until fresh drift appears.
+ >>[2026-03-29 01:00] observe — vscode-lsp-integration archived. trialRunSpw() confirmed in HandlerDeps. SIGIL_SEMANTICS provides phase labels. SpwContext fields and EventBus for register.focused and register.phaseChanged already wired.
+ >>[2026-03-29 01:01] decide — added Performance Considerations and Implementation Notes to PLAN.md: snapshots fetched on open/save not keystroke, 200ms timeout on trialRunSpw, stale badge after edits, phase trajectory lazy on expand, acoustic properties O(12²) negligible, resonance from telemetry payload not recomputed. Answered open ?[transport_shape]: file-scoped snapshot with lazy detail. Solo-ship shows 7 phase groups with values and write counts, placeholders for provenance and resonance.
 }
 
 ^["open"]{
- ?[transport_shape]: "Should the explorer fetch one file-scoped snapshot at a time or a workspace-aware register summary with lazy detail expansion?"
  ?[telemetry_depth]: "When runtime-telemetry-canon is available, how much of the substrate event stream should the snapshot transport send? Full events or just register-scoped summaries?"
+}
+
+^["resolved"]{
+ ![transport_shape]: {
+  ~#answer: "File-scoped snapshot with lazy detail expansion. Fetch register state for the active file on open/save. Detail (provenance, trajectory, resonance) loads on tree node expand, not eagerly."
+  ~#resolved_at: "2026-03-29 01:01"
+ }
 }
 
 ^["commits"]{
@@ -137,7 +145,7 @@
  ~#files_hot: ".agents/plans/vscode-register-explorer/PLAN.md, .agents/plans/vscode-register-explorer/wip.spw, .agents/plans/vscode-register-explorer/vscode-register-explorer.spw, .agents/plans/vscode-register-explorer/references/, extensions/vscode-spw/src/extension.ts, extensions/vscode-spw/src/context.ts, extensions/vscode-spw/package.json, packages/spw-lsp/src/stdio-server.ts"
  ~#next_commit: "1"
  ~#open_count: "2"
- ~#last_stream: "2026-03-28 10:19"
+ ~#last_stream: "2026-03-29 01:01"
  ~#taste_debt: "Do not let the first explorer slice become a dump of every runtime field. Atlas context is an enrichment, not a prerequisite. Pipeline phase and spirit-sequence phase are orthogonal; show both when available, default to spirit-sequence for solo-ship."
 }
 

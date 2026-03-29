@@ -109,6 +109,103 @@ These fields are additive on top of the atlas plan's contributions.
 - `register-explorer x authoring-probe-loop`: focused registers become code-lens/status pivots and completed probes refresh snapshots.
 - `atlas x register-explorer x authoring-probe-loop`: one semantic target can rotate between root context, register state, and editor action while preserving selection identity.
 
+## Performance Considerations
+
+### Register snapshot transport
+The `spw/registerSnapshot` custom request crosses the stdio process boundary. Register snapshots for a single file include 12 operator registers × (value + phase + writes + provenance). Typical payload: ~2KB JSON.
+- Fetch **on file open/save and on explicit refresh**, not on every keystroke
+- Cache in `SpwContext.registerSnapshot` with a `fileUri + contentHash` key
+- The LSP runs `trialRunSpw()` to produce snapshots — this is synchronous and typically <50ms for a single file, but can spike for files with deep runtime evaluation. Add a **200ms timeout** and return stale cache on timeout.
+
+### Tree view refresh
+Same principle as atlas: fire `onDidChangeTreeData` only when the snapshot actually changes (compare content hash). Group all register entries by phase — 7 phase groups × N registers per phase. Keep the tree flat (2 levels: phase group → register) to avoid deep nesting re-renders.
+
+### Phase trajectory computation
+Phase trajectory (write history) requires walking the register's provenance chain. This data comes from `runtime-telemetry-canon` when available. Without it, the detail view shows only the current phase (cheap — already in the snapshot). Do NOT compute trajectory eagerly for all registers in the tree; compute **on detail expand** only.
+
+### Acoustic properties
+Liminality, frequency, and coupling are computed from register write patterns. These are derived values, not stored — compute them from the snapshot's write count, beat age, and cross-register reference patterns. Cost: O(registers²) for coupling, but with only 12 registers this is <1ms.
+
+### Resonance from substrate events
+Substrate events (if `runtime-telemetry-canon` is available) provide resonance edges. These are already computed during `runSpw()` and included in the telemetry payload. The register explorer just reads them from the snapshot — no additional computation needed. Without telemetry, resonance section shows "unavailable" (not empty, not error).
+
+### Memory: snapshot lifecycle
+Register snapshots become stale immediately after any edit. Strategy:
+- Show the snapshot with a "stale" badge after edits (do NOT discard it)
+- Auto-refresh on save (same as diagnostics)
+- Manual refresh via "Re-ground Registers" command
+- Never hold more than 1 snapshot per file in memory
+
+## Design Considerations
+
+### Cognitive
+- **Registers as workspace objects, not debug dumps**: the explorer presents 12 operator registers as named, phase-grouped entities — not a raw variable watch list. Each register has a role (`? wonder/probe`, `~ potential/name`), a phase position in the spirit sequence, and observable state. The user encounters registers as first-class language concepts.
+- **Phase grouping as primary axis**: the tree's top-level grouping by spirit-sequence phase teaches the operator progression. A user scanning the tree reads: wonder → potential → perspective → confluence → value → integration. The register explorer *is* a spirit-sequence teaching tool.
+- **Materialization-aware detail**: different lifecycle stages surface different information. A priming register shows "charging operators" — what's flowing in. A body-stage register shows "materialized value" and "projection lineage" — what came out and where it went. This teaches that registers evolve, not just store.
+- **Two phase axes, clearly labeled**: spirit-sequence phase (`?~@&*^`) answers "what operator charged this register?" Pipeline phase (`lex→parse→semantic`) answers "when did the runtime see it?" When both are available, the detail view shows both with clear headings. When only spirit-sequence is available (solo ship), it's the only axis — no empty "pipeline phase: unavailable" noise.
+- **Resonance as entanglement**: when register coupling data is available, the resonance section shows which other registers share state or provenance. This makes the `&` operator's entanglement physics tangible — the user can see how `& confluence/merge` creates observable coupling between registers.
+
+### Ergonomic
+- **Activity bar placement**: the register explorer lives in the same "Spw" activity bar as the atlas, as a separate view. This gives both views dedicated real estate while keeping them visually grouped.
+- **Focus-to-inspect**: clicking a register emits `register.focused` and opens a detail section (child nodes expand) showing value, phase, writes, and available metadata. No modal panels, no separate detail views, no context switches.
+- **Stale-but-visible snapshots**: after an edit, the snapshot shows a "(stale)" suffix on the tree view title. The stale data is still visible and useful — the user can compare stale state with their edit to understand what changed. Auto-refresh on save restores freshness.
+- **Reveal from editor**: "Spw: Reveal Register at Cursor" command focuses the register that the cursor's current operator maps to. This bridges the editor and the explorer without requiring the user to manually find registers in the tree.
+- **Refresh on demand**: the tree does NOT auto-refresh on every keystroke. Manual refresh ("Re-ground Registers" command), auto-refresh on save, and auto-refresh on `probe.completed` events. The user controls the snapshot rhythm.
+
+### Aesthetic
+- **Spw vocabulary**: phase groups use `SIGIL_SEMANTICS` role names: "? wonder/probe", "~ potential/name", "^ integration/framing". Register detail labels use runtime field names: "writes", "phase", "provenance". The explorer speaks the same language as the runtime.
+- **Phase sigil as icon**: each phase group node uses the sigil character itself as a label prefix: `? wonder/probe (2)` where `(2)` is the register count in that phase. The sigil IS the icon — no need for custom images.
+- **Value display**: register values are displayed as compact one-line summaries, not pretty-printed JSON. For strings: quoted. For objects: `{...}` with key count. For arrays: `[...]` with length. Detail expansion shows full value if needed.
+- **Consistent with atlas rhythm**: tree item shape mirrors the atlas: `[sigil] label — detail`. Phase groups: `? wonder/probe — 2 registers`. Individual registers: `~ potential — "my_value" (3 writes)`. Uniform scanning rhythm across both tree views.
+
+## Implementation Notes
+
+### What already exists
+- `SpwContext` fields: `registerSnapshot` and `focusedRegister` — already typed and initialized in `context.ts:147-148`
+- `SpwEventBus`: `register.focused` and `register.phaseChanged` already wired in `context.ts:50-60`
+- `SIGIL_SEMANTICS` in `server-index.ts:105-119` — phase names and role descriptions for tree labels
+- `trialRunSpw()` in `HandlerDeps` — already available for snapshot generation
+- `RegisterBank` in `packages/spw-runtime/src/state/register-bank.ts` — the runtime source of register state
+- `type-affinities.ts` in `packages/spw-runtime/src/state/` — register access mode types
+- Custom request infrastructure in `lsp/custom-requests.ts` — already handles `spw/annotations` and `spw/select`
+
+### Data availability assessment
+**Without runtime-telemetry-canon** (solo ship):
+- Register names, current phase, current value: available from `trialRunSpw()` return value
+- Write count: available if RegisterBank exposes it (check `register-bank.ts`)
+- Provenance chain: NOT available — show "provenance requires runtime telemetry"
+- Substrate events: NOT available — hide resonance section
+- Acoustic properties: can compute liminality and frequency from write count; coupling requires cross-register data
+
+**With runtime-telemetry-canon** (enriched):
+- Full provenance chains, substrate events, detected resonances, register metadata all available
+- Phase trajectory becomes meaningful (shows operator sequence that charged the register)
+
+### New files needed
+1. **`extensions/vscode-spw/src/views/registers-tree.ts`** — `TreeDataProvider<RegisterNode>` with phase-grouped tree. Receives `SpwContext`, emits `register.focused` on selection. ~200 lines estimated.
+2. **`packages/spw-lsp/src/handlers/runtime.ts`** — handles `spw/registerSnapshot` and optionally `spw/registerDetail` custom requests. Runs `trialRunSpw()`, extracts register state, returns typed snapshot. ~100 lines estimated.
+
+### Files to modify
+- **`extension.ts`**: register the tree view and refresh command. ~8 lines.
+- **`package.json`**: add `views` contribution for "Spw Registers" in activity bar, 3 commands (refresh, reveal, focus). ~25 lines of JSON.
+- **`stdio-server.ts`**: add case blocks for `spw/registerSnapshot` and `spw/registerDetail`. ~10 lines.
+- **`types.ts`**: add `RegisterSnapshotResult` and `RegisterDetailResult` response types. ~15 lines.
+
+### Hot file coordination
+Same as atlas — the tree view is a self-contained module, `extension.ts` gets a registration call, `stdio-server.ts` gets dispatch cases. The register handler (`runtime.ts`) is a new file with no overlap. Merge risk is low.
+
+### Solo-ship truth
+The explorer MUST render useful state from `trialRunSpw()` alone. The solo-ship tree shows:
+- 7 phase groups (from `SIGIL_SEMANTICS`)
+- Current register values and write counts
+- "Provenance: requires runtime telemetry" placeholder
+- "Resonance: unavailable" placeholder
+
+This is still valuable — it makes the 12 operator registers visible as workspace objects. The enriched version adds depth, not the initial shape.
+
+### Rebase target update
+Current target (`main@3b1747c4`) is stale. Rebase to current main before implementation.
+
 ## Commits
 
 1. `.[plans] — stage vscode-register-explorer planning artifacts`

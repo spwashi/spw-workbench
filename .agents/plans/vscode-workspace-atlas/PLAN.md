@@ -139,6 +139,92 @@ These fields are additive. The register-explorer and authoring-probe-loop plans 
 - `atlas x authoring-probe-loop`: selected roots scope completion/query surfaces, and authoring status can mirror atlas perspective rotation.
 - `atlas x register-explorer x authoring-probe-loop`: one semantic target can rotate between workspace node, register state, and authoring action without losing identity.
 
+## Performance Considerations
+
+### Manifest parsing
+Parse `.spw/workspace.spw` **once** at activation and cache in `SpwContext.manifestState`. Re-parse only on `workspace/didChangeWatchedFiles` for that specific file. Use `ServerIndex.getDocument()` if the file is open, otherwise `fs.readFile()`. The manifest is typically <200 lines — parsing cost is negligible.
+
+### Tree view refresh
+`TreeDataProvider.onDidChangeTreeData` should fire only when data actually changes, not on every LSP response. Use a content-hash comparison on the manifest + index snapshot to skip no-op refreshes. VS Code tree views re-render the entire visible range on each event.
+
+### Workspace temperature polling
+`spw/workspaceTemperature` returns `ServerIndex` document state for all tracked files. For a workspace with 200 `.spw` files, this is ~200 entries × ~50 bytes = ~10KB. Poll on a **30-second interval** or on `textDocument/didSave`, not on every request tick. Store results in `SpwContext.workspaceTemperature` (already a `Map`).
+
+### Operator-frequency computation for phase perspective
+Computing dominant phase per file requires scanning each file for spirit operators. This is the same computation as authoring's "Show Operator Distribution" command. For the tree view:
+- Compute **lazily on tree node expand**, not eagerly for all workspace files
+- Cache per content hash in `ServerIndex.getDocument()` metadata
+- Typical cost: ~1ms per file (regex scan of all lines)
+
+### Resonance computation
+The `spw/resonance` endpoint must query all 4 channels. Annotation co-occurrence and root cross-reference are cheap (map lookups). Projection lineage is cheap (array scan). Register coupling requires runtime data (optional). Total resonance computation should be **on-demand per node** (triggered by "Show Resonance Neighbors" command or tree expand), never on initial tree load.
+
+### Materialization badge heuristic
+Same heuristic as authoring's breadcrumb but applied per file, not per cursor. Compute during workspace scan (`ServerIndex.scanWorkspace()`) and cache on `DocumentState`. Cost is trivial — check for presence of `~`, `^`, and `ProjectionEntry` per file.
+
+### Memory: avoid holding duplicate document text
+The tree view only needs metadata (root name, tier, phase badge, materialization stage). Do NOT copy full document text into tree nodes. Reference `ServerIndex.getDocument()` by URI for any detail lookups.
+
+## Design Considerations
+
+### Cognitive
+- **Map, not file browser**: the atlas is a workspace map organized by roots, memory tiers, and contracts — not a flat file listing. Each tree node answers "what role does this play in the workspace?" rather than "what files are here?". The user builds a mental model of workspace topology, not directory structure.
+- **Manifest as authority**: when the manifest is present, it names what exists. The index observes what's active. This distinction should be visible — manifest-derived labels are definitive, index-derived badges are observational. The user learns to trust the manifest as the workspace's self-description.
+- **Perspective rotation as reframing**: switching between topology/contract/resonance/phase/query views should feel like rotating a crystal — same data, different light. Each perspective answers a different question about the same workspace. The rotation gesture teaches that workspace structure has multiple legible axes.
+- **Materialization badges as lifecycle**: `priming → concept → frame → body` badges show where each surface sits in its development lifecycle. The user sees the workspace as a living system with surfaces at different stages of maturity, not a static collection of finished files.
+- **Resonance as coupling made visible**: "Show Resonance Neighbors" reveals structural relationships that aren't obvious from the file tree — annotation co-occurrence, cross-root references, projection lineage. This teaches graph thinking about the workspace.
+
+### Ergonomic
+- **Activity bar placement**: the atlas lives in its own activity bar container ("Spw Atlas"), not as a sub-panel of the existing Explorer. This gives it dedicated real estate and avoids competing with VS Code's native file tree.
+- **Click-to-navigate**: every tree node is navigable. Clicking a root node opens the root directory. Clicking a file node opens the file. Clicking a resonance neighbor navigates to that file. No dead-end nodes.
+- **Expand-to-learn**: detail data (phase badges, temperature, materialization stage) loads lazily on node expand. The collapsed tree is fast and scannable. Expanding reveals depth without slowing the initial view.
+- **Perspective rotation via command**: rotation between the 5 perspectives uses a command palette entry or a toolbar button in the tree view header. The user shouldn't need to remember which perspective they're in — the tree view title shows it (e.g., "Spw Atlas — Phase").
+- **Manifest-absent graceful mode**: when no `workspace.spw` exists, the atlas still renders using `ROOT_MAP` and index data. All sections labeled "inferred" rather than showing error states. The user can still navigate — they just see less authority.
+
+### Aesthetic
+- **Spw vocabulary in labels**: use "Re-ground" not "Refresh". Use "Rotate lens" not "Switch view". Tree nodes show root sigils (`@cluster`, `@artifact`) as their primary labels. Phase badges use role names (`~ potential`, `^ integration`).
+- **Temperature as warmth metaphor**: hot/warm/cold tier badges use subtle color coding if the VS Code theme supports it (via `ThemeColor`), but always include text labels. The metaphor is workspace "activity temperature" — recently touched files are warm, forgotten files are cold.
+- **Minimal tree icons**: use VS Code's built-in `ThemeIcon` set (`folder`, `file`, `symbol-variable`, `symbol-namespace`). Do NOT add custom icons unless they convey meaning that text labels cannot. Each icon should map to a concept from the workspace vocabulary.
+- **Consistent node shape**: every tree item follows the pattern: `[icon] label — detail`. Label is the Spw name. Detail is the observational badge (phase, tier, materialization stage). This creates a scannable, uniform rhythm in the tree.
+
+## Implementation Notes
+
+### What already exists
+- `SpwContext` fields: `manifestState`, `workspaceTemperature`, `activeRoot` — already typed and initialized to null/empty in `context.ts:144-146`
+- `SpwEventBus`: `atlas.rootSelected` and `atlas.perspectiveRotated` already wired in `context.ts:42-49`
+- `ROOT_MAP` in `roots.ts` — current hardcoded root definitions, fallback when manifest absent
+- `ServerIndex` tracks documents with tier/beat metadata, has `scanWorkspace()`, `allAnnotations()`, annotation lookups
+- `ConceptCluster.coOccurs` in `server-index.ts` — annotation co-occurrence is already computed (resonance channel 1)
+- `ProjectionEntry` in `server-index.ts:50-57` — projection graph exists (resonance channel 3)
+- Custom request infrastructure: `createSpwCustomRequestClient()` in `lsp/custom-requests.ts` handles typed `spw/*` requests
+
+### New files needed
+1. **`extensions/vscode-spw/src/views/workspace-tree.ts`** — `TreeDataProvider<AtlasNode>` with root/memory/generated/contracts sections. Implements 5 perspective rotations. Receives `SpwContext`, emits `atlas.rootSelected` and `atlas.perspectiveRotated` on interaction.
+2. **`packages/spw-lsp/src/handlers/workspace.ts`** — handles `spw/workspaceTemperature`, `spw/resonance`, and `spw/manifestState` custom requests. Reads from `ServerIndex` and manifest parser.
+
+### Files to modify
+- **`extension.ts`**: import and register `WorkspaceAtlasTreeView`. Add to `disposables`. ~8 lines.
+- **`package.json`**: add `views` contribution for "Spw Atlas" in activity bar, 5 `commands` for perspective rotation and navigation, `menus` for tree item context. ~40 lines of JSON.
+- **`stdio-server.ts`**: add 3 case blocks in `handleRequest` for the new `spw/*` methods, delegating to `workspace.ts` handler. ~15 lines.
+- **`server-index.ts`**: expose `getDocumentTiers()` method returning tier/beat data for all documents. ~10 lines.
+
+### Hot file coordination
+The atlas tree view is a self-contained module (`workspace-tree.ts`) receiving `SpwContext`. The only `extension.ts` change is a registration call. `stdio-server.ts` gets new dispatch cases but no handler logic inline — workspace handler is extracted. Merge risk with authoring is low if both plans keep handler logic in separate files.
+
+### Manifest parsing approach
+Parse `.spw/workspace.spw` using `@spwashi/spw-seed` parser (same parser the LSP already uses for all `.spw` files). Extract root entries, memory locations, layer declarations by walking the AST for `^["roots"]`, `^["memory_locations"]`, etc. The manifest is already a standard `.spw` file — no special parser needed.
+
+### Fallback strategy (no manifest)
+When `.spw/workspace.spw` is missing:
+- Roots: use `ROOT_MAP` from `roots.ts`, label as "inferred"
+- Memory: show only index-derived temperature (from `ServerIndex` tiers)
+- Generated/Harness/Contracts: hide sections entirely
+- Queries: available but scoped to discovered files
+The tree should degrade gracefully, not error.
+
+### Rebase target update
+Current target (`main@96815893`) is stale. Rebase to current main before implementation.
+
 ## Commits
 
 1. `.[plans] — stage vscode-workspace-atlas planning artifacts`

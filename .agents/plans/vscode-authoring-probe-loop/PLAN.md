@@ -141,6 +141,75 @@ These fields complete the `SpwContext` shape defined in `vscode-interaction-cont
 - `authoring-probe-loop x register-explorer`: focused registers and probe completions deepen code-lens, hover, and refactor previews.
 - `atlas x register-explorer x authoring-probe-loop`: cursor target, register target, and atlas node can rotate as one interaction river rather than three isolated workflows.
 
+## Performance Considerations
+
+### Cursor-movement costs
+Phase detection and materialization breadcrumb update on every `onDidChangeTextEditorSelection`. These must be **sub-millisecond** or the editor will feel sluggish.
+
+- **Phase look-back**: scan backward from cursor through the current line's raw text for the nearest spirit operator. Do NOT re-parse the full document. The regex `[?~@&*^!=%#.$]` on `lineText.slice(0, cursorChar)` is O(line-length) and sufficient for solo-ship. AST-precise phase detection is a future enrichment (seed phase-context extraction).
+- **Materialization heuristic**: read the enclosing frame from `ServerIndex.getDocument(uri).parseResult` (already cached). Check for `~` bindings, `^` frames, and `ProjectionEntry` presence. Do NOT walk the full AST — read only the node at cursor depth.
+- **Debounce**: batch cursor-movement updates with a 50ms trailing debounce. VS Code fires many selection events during a single arrow-key hold.
+- **Status bar updates**: use `StatusBarItem.text` assignment (cheap) rather than re-creating the item. Create both status items once in `activate()`.
+
+### Completion performance
+The existing completion handler (`editing.ts:21-169`) already splits the document with `source.split('\n')[pos.line]` per request. Phase-aware ranking adds a look-back scan on the same line — negligible cost. Do NOT add a full-document scan for operator frequency during completion; that belongs only in the explicit "Show Operator Distribution" command.
+
+### Operator-frequency heat command
+This is an **on-demand command**, not a continuous computation. Iterate all lines once, count sigils with a character-class regex, display via `vscode.window.showQuickPick`. For a 1000-line file this is <5ms. Cache the result on `ServerIndex.getDocument()` content hash if needed for repeated invocations.
+
+### Event bus overhead
+All 7 cross-plan events are `vscode.EventEmitter` — synchronous, in-process, zero serialization. Emitting on cursor movement (after debounce) adds no measurable cost. Do NOT emit events before the debounce settles.
+
+### probe.completed and trial run
+`trialRunSpw()` already exists in `HandlerDeps` and runs synchronously in the LSP process. The probe command should run it via an LSP custom request (`spw/probe`) to avoid blocking the extension host. Display results via `OutputChannel` or quick pick, not inline editor decorations (those require per-line layout and are expensive for large results).
+
+## Design Considerations
+
+### Cognitive
+- **Phase as orientation, not decoration**: the status bar phase indicator (`~ potential`, `^ integration`) should answer "where am I in the spirit sequence?" at a glance. It's a compass, not a label. The user should be able to look at it and know what kind of operator typically comes next.
+- **Materialization breadcrumb as progress**: showing `priming | concept | frame | body` teaches the materialization cycle passively. The user sees their cursor move through stages as they build structure. This is how the extension teaches the language by speaking it.
+- **Completion as affordance, not suggestion dump**: phase-aware ranking means after typing `?` the completions favor `~` patterns (naming/potential). The user experiences the spirit sequence as a natural editing rhythm rather than memorizing a progression chart. Wrong-phase suggestions still appear — they're ranked lower, not hidden.
+- **Code lens as invitation**: "Generate body" and "Body ungrounded" lenses are questions, not commands. They make the materialization cycle's expectations visible without forcing action. The user discovers what the language expects by seeing where expectations are unmet.
+- **Information density budget**: each status surface competes for attention with the code itself. Two status bar items + enriched hover + code lenses is the ceiling for this plan. Do NOT add inline decorations, notification popups, or webview panels. Every new pixel must earn its interruption cost.
+
+### Ergonomic
+- **Cursor-local, not global**: all authoring surfaces read from cursor context, not workspace-wide state. The user never needs to "select a file" or "choose a register" — phase, materialization, and operator heat flow from wherever the cursor is.
+- **No mode switching**: phase-aware completion and hover enrich the existing editing flow. The user doesn't need to "enter authoring mode" — the authoring loop is always active during `.spw` editing.
+- **Debounce everything cursor-driven**: 50ms trailing debounce on selection changes. This prevents status bar flicker during fast navigation (arrow-key hold, Ctrl+G line jump, search results cycling).
+- **Command palette for depth**: operator-frequency heat and probe commands live in the command palette, not status bar buttons. These are intentional inspections, not ambient feedback.
+- **Graceful degradation**: when atlas/register data is absent, the authoring surfaces show local-file results without error states, "unavailable" labels, or degraded badges. The absence is invisible — the surface just has less to say.
+
+### Aesthetic
+- **Spw vocabulary in copy**: status bar shows `~ potential` not `Phase 2`. Code lens shows `Body ungrounded` not `Stale projection`. Hover shows `? wonder/probe — measurement — is there something?` not `Operator: question mark`. The extension speaks Spw.
+- **Spirit-sequence visual**: the hover for any spirit operator should include a subtle visual showing the full sequence (`?~@&*^`) with the current operator highlighted. This creates a consistent visual anchor across all operator hovers.
+- **Minimal chrome**: status bar items use text only (no icons). Code lenses use sentence fragments, not imperative verbs. The authoring surface should feel like annotations in the margin, not toolbar buttons.
+- **Consistent semantic coloring**: if the status bar phase indicator says `~ potential`, the semantic token for `~` in the editor should use the same token type (`variable`). The connection between status bar text and editor coloring reinforces the language model.
+
+## Implementation Notes
+
+### What already exists
+- `SpwContext` in `context.ts:136-152` already declares all 8 fields (3 atlas, 2 register, 3 authoring) — no type changes needed
+- `SpwEventBus` in `context.ts:72-125` already wires all 7 events with typed emitters — no event infrastructure needed
+- `SIGIL_SEMANTICS` exists in both `server-index.ts:105-119` (LSP) and `semantics.ts` (extension) — use the extension copy for status bar, the LSP copy for completion ranking
+- `createSpwContext()` in `context.ts:158-171` initializes all fields to null/empty — authoring just writes to them
+
+### New files needed
+1. **`extensions/vscode-spw/src/status/runtime-status.ts`** — two `StatusBarItem`s: phase indicator and materialization breadcrumb. Listen to `onDidChangeTextEditorSelection` (debounced). Read cursor line, scan for phase, update text.
+2. **`extensions/vscode-spw/src/commands/probe-commands.ts`** — register 3 commands: `spw.showOperatorDistribution`, `spw.runProbe`, `spw.traceSelector`. Wire through `vscode.commands.registerCommand` in `activate()`.
+
+### Files to modify
+- **`extension.ts`**: import and call `registerRuntimeStatus(spw, context)` and `registerProbeCommands(spw, context)` from `activate()`. Add to `disposables` array. ~10 lines of changes.
+- **`editing.ts`**: add a phase-ranking stage to the sigil snippet completion. After the existing `sigilPrefixMatch` block (line 68), check look-back context and re-sort items by phase affinity. ~30 lines.
+- **`display.ts`**: enhance sigil hover to include spirit-sequence position visualization and "what follows" guidance. The existing sigil hover block already reads `SIGIL_SEMANTICS` — extend the markdown output. ~20 lines.
+- **`analysis.ts`**: add materialization-state code lens. After existing code-lens logic, check for frames missing projection entries ("Generate body") and stale projections ("Body ungrounded"). ~40 lines.
+- **`package.json`**: add command contributions for the 3 new commands, 2 status bar items. No new views.
+
+### Hot file coordination
+`extension.ts` and `context.ts` are shared with atlas and register plans. The authoring changes to `extension.ts` are isolated (just registration calls in `activate()`). Status and command files are self-contained modules that receive `SpwContext` — no merge conflicts expected if atlas lands concurrently.
+
+### Rebase target update
+Current rebase targets in the plan are stale (`main@3b1747c4`). Before implementation, rebase to current main (`9fa93460` or later — includes the 80-test LSP verification commit and `test:lsp` script).
+
 ## Commits
 
 1. `.[plans] — stage vscode-authoring-probe-loop planning artifacts`

@@ -124,12 +124,19 @@
  >>[2026-03-28 10:18] observe — the March 26, 2026 VS Code implementation log (phase 1 dead-provider removal, phase 2 semantic-tokens-to-LSP, phase 3 annotation-index via LSP, then metadata/branding cleanup) establishes a thin-client baseline. The real editor shell is now one Concepts tree, one annotation mirror, and declarative package contributions; the next risk is client-side composition pressure rather than more provider migration.
  >>[2026-03-28 10:19] revise — local drift noted on 2026-03-26 is absent in the current clean worktree. Keep extension.ts, context.ts, package.json, and stdio-server.ts treated as shared hot files, but drop the mandatory hygiene split until fresh drift appears.
  >>[2026-03-28 19:18] revise — added local editor/LSP doctrine surfaces to atlas references so design review can talk about quiet feedback, startup truth, thin-client posture, and mindful growth in the same breath as tree-view APIs. The atlas should now inherit the editor quality bar instead of inventing one ad hoc.
+ >>[2026-03-29 01:00] observe — vscode-lsp-integration archived. SpwContext, EventBus, custom requests, ConceptCluster.coOccurs, ProjectionEntry, and ServerIndex tier metadata all confirmed working.
+ >>[2026-03-29 01:01] decide — added Performance Considerations and Implementation Notes to PLAN.md: manifest parsed once and cached, tree refreshes gated on content-hash diff, temperature polled on 30s interval or didSave, phase badges computed lazily on expand, resonance on-demand per node, materialization badges cached on DocumentState during scanWorkspace. New files: workspace-tree.ts (TreeDataProvider), handlers/workspace.ts (3 custom requests). Answered open ?[phase_computation_cost]: lazy on expand with content-hash cache.
 }
 
 ^["open"]{
  ?[cross_surface_temperature]: "Should the atlas's live temperature view include documents from roots the manifest doesn't declare, or only manifest-scoped files?"
- ?[phase_computation_cost]: "Operator frequency analysis per root on every refresh may be expensive for large workspaces. Should phase badges be computed lazily (on expand) or cached with beat-based invalidation?"
 }
+
+^["resolved"]{
+ ![phase_computation_cost]: {
+  ~#answer: "Lazy on expand with content-hash cache. Compute operator frequency per file only when the tree node is expanded, cache the result keyed by document content hash."
+  ~#resolved_at: "2026-03-29 01:01"
+ }
 
 ^["resolved"]{
  ![manifest_authority]: {
@@ -158,7 +165,7 @@
  ~#next_commit: "1"
  ~#open_count: "2"
  ~#resolved_count: "1"
- ~#last_stream: "2026-03-28 19:18"
+ ~#last_stream: "2026-03-29 01:01"
  ~#taste_debt: "Do not let inferred index data silently override manifest truth. Command names must use Spw vocabulary. The extension teaches the language by speaking it. Shared context/event growth must stay additive."
 }
 

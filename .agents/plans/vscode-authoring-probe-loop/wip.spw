@@ -119,6 +119,8 @@
  >>[2026-03-28 09:47] rebase — refreshed baseline to main@b41caa6b and added references/index.spw so programmatic-language features, commands, quick-picks, status-bar, and tree-view guidance are attached to authoring-surface judgments instead of carried as lore.
  >>[2026-03-28 10:18] observe — the March 26, 2026 VS Code implementation log establishes a thin-client baseline: standard language features moved into the LSP, the extension shell stayed small, and the only custom surface still in the client is the Concepts tree plus the LSP-backed annotation mirror. The authoring plan should spend budget on semantics, cheap continuous feedback, and probe flow, not on reviving provider-era client logic.
  >>[2026-03-28 10:19] revise — local drift noted on 2026-03-26 is absent in the current clean worktree. Keep extension.ts, context.ts, package.json, and stdio-server.ts treated as shared hot files, but drop the mandatory hygiene split until fresh drift appears.
+ >>[2026-03-29 01:00] observe — vscode-lsp-integration archived with 80 handler tests. SpwContext, EventBus, and custom request infrastructure confirmed working. All shared substrate for authoring is in place.
+ >>[2026-03-29 01:01] decide — added Performance Considerations and Implementation Notes to PLAN.md: cursor-movement debounce (50ms), phase look-back via regex O(line-length), no full-reparse on keystroke, status bar items created once in activate(), operator-frequency heat as on-demand command only, probe via spw/probe custom request. New files: runtime-status.ts (~2 StatusBarItems), probe-commands.ts (~3 commands). Existing handler modifications: editing.ts (~30 lines for phase ranking), display.ts (~20 lines for hover), analysis.ts (~40 lines for materialization lens).
 }
 
 ^["open"]{
@@ -143,7 +145,7 @@
  ~#files_hot: ".agents/plans/vscode-authoring-probe-loop/, .agents/plans/vscode-authoring-probe-loop/references/, extensions/vscode-spw/src/extension.ts, extensions/vscode-spw/src/context.ts, extensions/vscode-spw/package.json, packages/spw-lsp/src/handlers/, packages/spw-lsp/src/stdio-server.ts"
  ~#next_commit: "1"
  ~#open_count: "2"
- ~#last_stream: "2026-03-28 10:19"
+ ~#last_stream: "2026-03-29 01:01"
  ~#taste_debt: "do not let helpful authoring copy drift away from the actual semantics model or runtime truth"
 }
 
