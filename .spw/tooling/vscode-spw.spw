@@ -6,40 +6,75 @@
 #:tooling #!editor
 #:layer #!pragmatics
 
-^seed[Tooling.VSCode v:0.3.2 @profile:Spw.b @intent:editor-support]
+^seed[Tooling.VSCode v:0.3.0 @profile:Spw.b @intent:editor-support]
 .tooling.vscode {
  extension.name: "spw-language"
+ extension.version: "0.3.0"
+ extension.posture: "preview thin-client"
  lsp.server: "packages/spw-lsp/src/stdio-server.ts"
  lsp.transport: "stdio"
- lsp.version: "0.3.2"
+ lsp.version: "0.3.0"
+}
+
+^"release_posture" {
+ preview_truth: "The VS Code extension is the current preview editor surface for v0.3.0. Its metadata and README should stay narrower than the mounted-site startup story."
+ thin_client_boundary: "Client owns packaging, snippets, tree views, annotation mirroring, and typed spw/* requests. Semantic/editor truth belongs to packages/spw-lsp/src/stdio-server.ts and handler clusters."
+ startup_truth: "Current extension startup still expects a workbench checkout layout so it can resolve packages/spw-lsp/src/stdio-server.ts. Mounted .spw/_workbench startup is an active quality/design lane, not current release truth."
+ standalone_server: "External editors can run npm run lsp from a workbench root; upstream-bridge keeps server discovery outside the VS Code extension."
 }
 
 ^"capabilities" {
- completion: "4-stage: @-root, annotation, sigil snippets ($=^!?~&#%*.), file-system paths; phase-aware ranking follows spirit sequence (see literate-ui pattern)"
- hover: "annotation metadata, @-root resolution, path peek, sigil semantics, materialization state"
- definition: "go-to-definition for ~\"path\" and @root/path references"
+ definition: "go-to-definition and declaration for ~\"path\" and @root/path references"
  references: "workspace-wide annotation and path reference search"
- rename: "workspace-wide rename for annotations, @roots, and frame names"
- document_links: "clickable navigation for all path references"
- symbols: "document symbols (frames, anchors, headings) + workspace symbols"
- code_lens: "metrics on anchors (reference count, usage)"
- inlay_hints: "path resolution, brace depth, operator census"
- diagnostics: "parse errors, broken refs, stale projections, brace physics, runtime"
- folding: "brace-depth, block comments, consecutive hash comments"
- formatting: "full-document formatting"
- code_actions: "trait/binding toggle, wrap-in-frame"
- snippets: "14 VS Code snippets (frame, seed, wonder, anchor, lens, trait, etc.); snippet economy governed by literate-ui pattern"
+ rename: "prepareRename + workspace rename for annotations, @roots, and frame names"
+ document_links: "clickable navigation for path references"
+ hover: "annotation metadata, path context, sigil semantics, and cross-file context where available"
+ symbols: "document symbols (frames, anchors, headings) plus workspace symbols"
+ completion: "scope-aware completion for @-roots, annotations, sigil snippets, and file-system paths"
+ code_lens: "anchor and annotation lenses exposed through the language server"
+ code_actions: "language-server code actions; keep claims narrower than preview coverage"
+ formatting: "full-document and range formatting"
+ inlay_hints: "path, brace-depth, and related structural hints"
+ folding: "brace-depth and comment-group folding"
+ semantic_tokens: "server-owned semantic tokens layered over TextMate fallback scopes"
+ diagnostics: "parse errors, broken refs, stale projections, brace physics, and runtime-informed diagnostics"
+ snippets: "VS Code snippets remain a client-side companion to LSP completion, not a second semantics stack"
 }
 
 ^"client_features" {
- semantic_tokens: "sigil + operator highlighting via SemanticTokensProvider"
  concepts_tree: "annotation-based sidebar panel (Spw Explorer)"
- color_scheme: "gruvbox-aligned palette (70+ TextMate scope rules)"
+ annotation_index: "annotation mirror fed through typed spw/annotations requests"
+ semantic_layering: "TextMate grammar, snippets, and language configuration stay client-side; semantic/editor behavior comes from the LSP"
  on_enter_rules: "# and // comment continuation"
 }
 
+^"quality_bar" {
+ capability_truth: "initialize capabilities, README copy, marketplace metadata, and tooling spec should all describe the same capability surface"
+ useful_affordance: "every hover, completion, rename, lens, or tree action should answer a real author question rather than merely exposing engine internals"
+ quiet_feedback: "tree views, hovers, status copy, and quick picks should each earn their interruption cost"
+ reversible_editing: "rename and preview-rich edits should remain bounded, inspectable, and calmer than blind workspace churn"
+ semantic_layering: "semantic tokens prove meaning; TextMate owns syntactic fallback and atmosphere"
+ startup_honesty: "do not imply mounted-site or marketplace readiness beyond what the current startup path can actually support"
+ verification: "extension compile, lsp smoke, and preview-truth docs should move together"
+}
+
+^"supporting_surfaces" {
+ integration_note: ~"docs/runtime/md/lsp-editor-integration.md"
+ release_story: ~"docs/runtime/md/site-install-release-story.md"
+ extension_readme: ~"extensions/vscode-spw/README.md"
+}
+
+^"mindful_development" {
+ questions: [
+  "Which editor surface teaches the most real Spw structure per unit of interruption?",
+  "What belongs in the LSP because it is semantic truth, and what belongs in the client because it is packaging or navigation taste?",
+  "How do we keep mounted-site startup truth ahead of marketplace ambition?",
+  "Which refactors deserve preview-first ceremony before they become ordinary code actions?",
+ ]
+}
+
 ^"invariant" {
- "LSP server spawned per workspace via stdio, not shared across workspaces",
- "VS Code extension activates on .spw file open (auto-detected from contributions)",
- "Snippet contributions complement LSP completions; both available simultaneously",
+ "LSP server is spawned per workspace via stdio, not shared across workspaces",
+ "VS Code contributions complement LSP behavior; they should not fork semantic meaning into a second editor-only semantics stack",
+ "Preview language stays narrower than mounted-site startup truth until the extension can resolve .spw/_workbench directly",
 }

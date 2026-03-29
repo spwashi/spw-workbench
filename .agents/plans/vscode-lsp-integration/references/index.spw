@@ -9,6 +9,9 @@
  @vscode_programmatic: "https://code.visualstudio.com/api/language-extensions/programmatic-language-features"
  @vscode_semantic_tokens: "https://code.visualstudio.com/api/language-extensions/semantic-highlight-guide"
  @vscode_textmate: "https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide"
+ @tooling_surface: ~".spw/tooling/vscode-spw.spw"
+ @integration_note: ~"docs/runtime/md/lsp-editor-integration.md"
+ @extension_readme: ~"extensions/vscode-spw/README.md"
 }
 
 ^["signature"]{
@@ -17,15 +20,16 @@
 }
 
 ^["topic_anchors"]{
- protocol_core: [@lsp_root, @lsp_317, #capabilities, #hover, #rename, #document_link, #workspace_edit]
- thin_client_boundary: [@vscode_lsp_guide, @vscode_programmatic, #client_server_split, #activation, #transport, #preview_truth]
- token_surface: [@vscode_semantic_tokens, @vscode_textmate, #semantic_tokens, #scope_map, #fallback, #theme_mapping]
+ protocol_core: [@lsp_root, @lsp_317, @integration_note, #capabilities, #hover, #rename, #document_link, #workspace_edit]
+ thin_client_boundary: [@vscode_lsp_guide, @vscode_programmatic, @tooling_surface, @extension_readme, #client_server_split, #activation, #transport, #preview_truth, #startup_truth]
+ token_surface: [@vscode_semantic_tokens, @vscode_textmate, @tooling_surface, #semantic_tokens, #scope_map, #fallback, #theme_mapping]
+ quality_bar: [@tooling_surface, @integration_note, #capability_truth, #quiet_feedback, #reversible_editing, #mindful_growth]
 }
 
 ^["operational_density"]{
- checks: [#client_thinness, #capability_truth, #rename_preview, #hover_copy, #document_link_scope]
- drift_risks: [#regex_fallback, #client_semantics, #marketplace_overclaim, #token_fork]
- release_implications: [#marketplace_copy, #docs_copy, #support_copy]
+ checks: [#client_thinness, #capability_truth, #rename_preview, #hover_copy, #document_link_scope, #startup_truth]
+ drift_risks: [#regex_fallback, #client_semantics, #marketplace_overclaim, #token_fork, #checkout_assumption]
+ release_implications: [#marketplace_copy, #docs_copy, #support_copy, #preview_boundary]
 }
 
 #>wonder_agents_plans_vscodelspintegration_references_1

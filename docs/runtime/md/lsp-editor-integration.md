@@ -1,47 +1,124 @@
-Connecting External Editors to the Spw Language Server
+# Spw Editor + LSP Integration
 
-Requirements: Node 22+ with TSX installed. The language server entry point is `npm run lsp`
-from the root of the spw-workbench repo.
+This note is the current integration and design reference for the Spw language server and its editor surfaces.
 
-Current local server capabilities:
-- `textDocument/definition` for Spw path refs (`~"..."`) and root refs (`@root/...`)
-- `textDocument/documentLink` for navigable path refs
-- Full-text sync (`textDocumentSync: Full`) for stable AST-based selection
-- Single-file AST selection is exposed canonically as `npm run spw -- select <file.spw> ...`
-- `npm run spwq -- ...` remains as a compatibility alias over the same selector engine
+## Current Posture
 
-Validation:
-- `npm run lsp:smoke` runs a stdio smoke test for definition + documentLink navigation.
-- `npm run spw -- select docs/index.spw --selector=pathRefs --format=lines` prints AST-selected path refs (jq-style starter).
+- The VS Code extension is a **preview thin client** for `v0.3.0`.
+- The language server is the **semantic truth surface** for editor behavior.
+- The extension currently expects a **workbench checkout layout** so it can launch `packages/spw-lsp/src/stdio-server.ts`.
+- Mounted `.spw/_workbench` startup is an active quality/design lane, not a capability the extension should currently overclaim.
 
-Neovim (nvim-lspconfig):
+## Current Capability Surface
 
-  local lspconfig = require('lspconfig')
-  local configs = require('lspconfig.configs')
+The current stdio server advertises:
 
-  if not configs.spw then
-    configs.spw = {
-      default_config = {
-        cmd = { 'npm', '--prefix', vim.fn.getcwd(), 'run', 'lsp' },
-        filetypes = { 'spw' },
-        root_dir = lspconfig.util.root_pattern('.git', 'package.json'),
-        settings = {},
-      },
-    }
-  end
+- `textDocument/definition`
+- `textDocument/declaration`
+- `textDocument/references`
+- `textDocument/prepareRename`
+- `textDocument/rename`
+- `textDocument/documentLink`
+- `textDocument/hover`
+- `textDocument/documentSymbol`
+- `workspace/symbol`
+- `textDocument/codeAction`
+- `textDocument/completion`
+- `textDocument/codeLens`
+- `textDocument/formatting`
+- `textDocument/rangeFormatting`
+- `textDocument/inlayHint`
+- `textDocument/foldingRange`
+- `textDocument/semanticTokens/full`
+- `textDocument/publishDiagnostics`
 
-  lspconfig.spw.setup({})
+In practical Spw terms, that currently covers:
 
-Vim (vim-lsp):
+- path navigation for `~"..."` and `@root/...`
+- annotation and path reference lookup
+- scope-aware completion for roots, annotations, sigil snippets, and file-system paths
+- semantic tokens layered over the grammar
+- formatting and range formatting
+- diagnostics for parse errors, broken refs, stale projections, brace physics, and runtime-informed checks
 
-  if executable('npm')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'spw-lsp',
-        \ 'cmd': {server_info->['npm', '--prefix', getcwd(), 'run', 'lsp']},
-        \ 'allowlist': ['spw'],
-        \ 'workspace_config': {},
-        \ })
-  endif
+## Quality Bar
 
-Both configs resolve the workbench root at runtime via getcwd() / vim.fn.getcwd().
-Launch (Neo)vim from the spw-workbench root, or replace getcwd() with an explicit path.
+The extension and LSP should be judged by these rules:
+
+- **Capability truth**: initialize results, README copy, marketplace metadata, and tooling specs should all describe the same surface.
+- **Thin-client discipline**: the client owns packaging, tree views, snippets, and typed `spw/*` requests; the server owns semantic behavior.
+- **Useful affordances**: each hover, completion, link, lens, or rename should answer a real author question, not just expose engine internals.
+- **Quiet feedback**: trees, status copy, hovers, and quick picks should each earn their interruption cost.
+- **Reversible editing**: rename and semantic refactors should stay bounded, previewable, and calmer than blind workspace churn.
+- **Startup honesty**: do not imply mounted-site readiness until the extension can resolve the server from site-owned `.spw/_workbench` without checkout assumptions.
+
+## Startup Modes
+
+### VS Code Preview Path
+
+The extension currently resolves the server from a workbench checkout:
+
+- `packages/spw-lsp/src/stdio-server.ts`
+- `packages/spw-lsp/src/upstream-bridge.ts`
+
+That is the truthful preview path today.
+
+### Standalone Editor Path
+
+External editors can run the language server from a workbench root with:
+
+```bash
+npm run lsp
+```
+
+`npm run lsp` resolves through the upstream bridge, which keeps server discovery outside the VS Code extension itself.
+
+## Validation
+
+- `npm run lsp:smoke` checks definition and document-link navigation over stdio.
+- `npm --prefix extensions/vscode-spw run compile` verifies the VS Code client bundle.
+- `npm run spw -- select docs/index.spw --selector=pathRefs --format=lines` is still a useful selector-side sanity check for path references.
+
+## External Editors
+
+### Neovim (`nvim-lspconfig`)
+
+```lua
+local lspconfig = require('lspconfig')
+local configs = require('lspconfig.configs')
+
+if not configs.spw then
+  configs.spw = {
+    default_config = {
+      cmd = { 'npm', '--prefix', vim.fn.getcwd(), 'run', 'lsp' },
+      filetypes = { 'spw' },
+      root_dir = lspconfig.util.root_pattern('.git', 'package.json'),
+      settings = {},
+    },
+  }
+end
+
+lspconfig.spw.setup({})
+```
+
+### Vim (`vim-lsp`)
+
+```vim
+if executable('npm')
+  au User lsp_setup call lsp#register_server({
+      \ 'name': 'spw-lsp',
+      \ 'cmd': {server_info->['npm', '--prefix', getcwd(), 'run', 'lsp']},
+      \ 'allowlist': ['spw'],
+      \ 'workspace_config': {},
+      \ })
+endif
+```
+
+Both examples resolve the workbench root via `getcwd()` / `vim.fn.getcwd()`. Launch the editor from a workbench root, or replace that with an explicit path.
+
+## Mindful Development Questions
+
+- Which editor surface teaches the most real Spw structure per unit of interruption?
+- What belongs in the LSP because it is semantic truth, and what belongs in the client because it is navigation or packaging taste?
+- Which multi-file edits deserve preview-first ceremony before they become ordinary code actions?
+- What must change before mounted `.spw/_workbench` startup becomes truthful extension copy instead of future work?
