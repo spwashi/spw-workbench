@@ -7,6 +7,7 @@ import {
 } from 'vscode-languageclient/node'
 import { AnnotationIndex } from './annotation-index'
 import { createSpwContext } from './context'
+import { registerContextStrip } from './context-strip'
 import { createSpwCustomRequestClient } from './lsp/custom-requests'
 import { ROOT_MAP, resolveRoot } from './roots'
 import { SIGIL_SEMANTICS } from './semantics'
@@ -39,6 +40,7 @@ export function activate(context: vscode.ExtensionContext): void {
   )
 
   const disposables: vscode.Disposable[] = [
+    ...registerContextStrip(spw),
     ...registerConceptsTreeView(spw),
   ]
 

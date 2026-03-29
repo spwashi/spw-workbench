@@ -9,6 +9,7 @@ export interface SpwAnnotationRecord {
   kind: SpwAnnotationKind
   name: string
   sectionLabel?: string
+  framePath: string[]
 }
 
 export interface SpwResonanceEdge {
@@ -61,6 +62,14 @@ export interface SpwPhaseContextResult {
   materializationState: SpwMaterializationState | null
 }
 
+export interface SpwContextAtPositionResult {
+  framePath: string[]
+  ambientBraids: string[]
+  localBraids: string[]
+  enteredFrame: string | null
+  deltaBraids: string[]
+}
+
 export interface SpwCustomRequestMap {
   'spw/annotations': {
     params: Record<string, never>
@@ -86,6 +95,10 @@ export interface SpwCustomRequestMap {
     params: { uri: string, position: SpwPosition }
     result: SpwPhaseContextResult
   }
+  'spw/contextAtPosition': {
+    params: { uri: string, position: SpwPosition }
+    result: SpwContextAtPositionResult | null
+  }
 }
 
 export type SpwCustomRequestMethod = keyof SpwCustomRequestMap
@@ -96,6 +109,7 @@ export interface SpwCustomRequestClient {
     params: SpwCustomRequestMap[K]['params'],
   ): Promise<SpwCustomRequestMap[K]['result']>
   annotations(): Promise<SpwAnnotationRecord[]>
+  contextAtPosition(uri: string, position: SpwPosition): Promise<SpwContextAtPositionResult | null>
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -113,6 +127,8 @@ function isAnnotationRecord(value: unknown): value is SpwAnnotationRecord {
     && isAnnotationKind(value.kind)
     && typeof value.name === 'string'
     && (typeof value.sectionLabel === 'undefined' || typeof value.sectionLabel === 'string')
+    && Array.isArray(value.framePath)
+    && value.framePath.every((segment) => typeof segment === 'string')
 }
 
 function parseAnnotationRecords(value: unknown): SpwAnnotationRecord[] {
@@ -144,6 +160,10 @@ class SpwLanguageServerRequests implements SpwCustomRequestClient {
   async annotations(): Promise<SpwAnnotationRecord[]> {
     const payload = await this.request('spw/annotations', {})
     return parseAnnotationRecords(payload)
+  }
+
+  async contextAtPosition(uri: string, position: SpwPosition): Promise<SpwContextAtPositionResult | null> {
+    return this.request('spw/contextAtPosition', { uri, position })
   }
 }
 

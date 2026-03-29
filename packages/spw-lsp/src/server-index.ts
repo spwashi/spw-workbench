@@ -32,6 +32,15 @@ export interface AnnotationEntry {
   kind: AnnotationKind
   name: string
   sectionLabel?: string
+  framePath: string[]
+}
+
+export interface DocumentLineContext {
+  framePath: string[]
+  ambientBraids: string[]
+  localBraids: string[]
+  enteredFrame: string | null
+  deltaBraids: string[]
 }
 
 export interface DocumentState {
@@ -43,6 +52,7 @@ export interface DocumentState {
   parseResult: ParseOutput | null
   selectorHits: SpwSelectorHit[]
   annotations: AnnotationEntry[]
+  lineContexts: DocumentLineContext[]
   lastAccessBeat: number
   tier: 'hot' | 'warm' | 'cold'
 }
@@ -259,6 +269,7 @@ export class ServerIndex {
       parseResult: null,
       selectorHits: [],
       annotations: [],
+      lineContexts: [],
       lastAccessBeat: this.beat,
       tier: 'warm',
     }
@@ -274,7 +285,9 @@ export class ServerIndex {
       doc.parseResult = null
     }
     doc.selectorHits = selectPathRefs(doc.text)
-    doc.annotations = this.extractAnnotations(doc.filePath, doc.text)
+    const structure = analyzeDocumentContext(doc.filePath, doc.text)
+    doc.annotations = structure.annotations
+    doc.lineContexts = structure.lineContexts
   }
 
   // ── Workspace config loading ──────────────────────────────────
@@ -358,7 +371,7 @@ export class ServerIndex {
     for (const filePath of spwFiles) {
       try {
         const text = await fs.readFile(filePath, 'utf8')
-        const annotations = this.extractAnnotations(filePath, text)
+        const annotations = analyzeDocumentContext(filePath, text).annotations
         for (const entry of annotations) {
           this.addAnnotation(entry)
         }
@@ -395,42 +408,6 @@ export class ServerIndex {
 
   // ── Annotation extraction ─────────────────────────────────────
 
-  private extractAnnotations(filePath: string, text: string): AnnotationEntry[] {
-    const entries: AnnotationEntry[] = []
-    const lines = text.split('\n')
-    let currentSection: string | undefined
-
-    for (let i = 0; i < lines.length; i += 1) {
-      const line = lines[i]
-
-      const frameMatch = line.match(FRAME_RE)
-      if (frameMatch) {
-        currentSection = frameMatch[1] || frameMatch[2] || frameMatch[3]
-      }
-
-      ANNOTATION_RE.lastIndex = 0
-      let match: RegExpExecArray | null
-      while ((match = ANNOTATION_RE.exec(line)) !== null) {
-        const trimmed = line.trimStart()
-        if (trimmed.startsWith('# ') || trimmed.startsWith('//')) {
-          if (match.index > line.indexOf('#') + 1 && trimmed.startsWith('#')) {
-            continue
-          }
-        }
-
-        entries.push({
-          file: filePath,
-          line: i,
-          kind: kindFromSigil(match[1]),
-          name: match[2],
-          sectionLabel: currentSection,
-        })
-      }
-    }
-
-    return entries
-  }
-
   private addAnnotation(entry: AnnotationEntry): void {
     this.workspaceAnnotations.push(entry)
 
@@ -454,7 +431,7 @@ export class ServerIndex {
     try {
       const text = await fs.readFile(filePath, 'utf8')
       this.removeAnnotationsForFile(filePath)
-      const annotations = this.extractAnnotations(filePath, text)
+      const annotations = analyzeDocumentContext(filePath, text).annotations
       for (const entry of annotations) {
         this.addAnnotation(entry)
       }
@@ -500,6 +477,16 @@ export class ServerIndex {
 
   allAnnotations(): AnnotationEntry[] {
     return this.workspaceAnnotations
+  }
+
+  getContextAtPosition(
+    uri: string,
+    position: { line: number, character: number },
+  ): DocumentLineContext | null {
+    const doc = this.documents.get(uri)
+    if (!doc) return null
+    const line = Math.max(0, Math.min(position.line, doc.lineContexts.length - 1))
+    return doc.lineContexts[line] ?? null
   }
 
   /** Compute co-occurrence: annotations that appear in the same file */
@@ -755,4 +742,152 @@ function kindFromSigil(sigil: string | undefined): AnnotationKind {
       return 'anchor'
     default: return 'topic'
   }
+}
+
+type StringDelimiter = '"' | "'" | '`' | null
+
+interface ScopeContext {
+  braids: string[]
+  frameName: string | null
+}
+
+function analyzeDocumentContext(
+  filePath: string,
+  text: string,
+): { annotations: AnnotationEntry[]; lineContexts: DocumentLineContext[] } {
+  const lines = text.split('\n')
+  const annotations: AnnotationEntry[] = []
+  const lineContexts: DocumentLineContext[] = []
+  const scopes: ScopeContext[] = [{ braids: [], frameName: null }]
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i] ?? ''
+    const frameName = frameNameFromLine(line)
+    const localBraids = extractAnnotationBraids(line)
+    const activeFramePath = scopes.flatMap((scope) => scope.frameName ? [scope.frameName] : [])
+    const framePath = frameName ? [...activeFramePath, frameName] : activeFramePath
+    const ambientBraids = scopes.flatMap((scope) => scope.braids)
+    const braceDelta = countBraceDelta(line)
+    const opens = Math.max(0, braceDelta)
+    const closes = Math.max(0, -braceDelta)
+
+    lineContexts.push({
+      framePath,
+      ambientBraids,
+      localBraids,
+      enteredFrame: frameName,
+      deltaBraids: localBraids,
+    })
+
+    ANNOTATION_RE.lastIndex = 0
+    let match: RegExpExecArray | null
+    while ((match = ANNOTATION_RE.exec(line)) !== null) {
+      const trimmed = line.trimStart()
+      if (trimmed.startsWith('# ') || trimmed.startsWith('//')) {
+        if (match.index > line.indexOf('#') + 1 && trimmed.startsWith('#')) {
+          continue
+        }
+      }
+
+      annotations.push({
+        file: filePath,
+        line: i,
+        kind: kindFromSigil(match[1]),
+        name: match[2],
+        sectionLabel: framePath[framePath.length - 1],
+        framePath,
+      })
+    }
+
+    if (opens > 0) {
+      for (let j = 0; j < opens; j += 1) {
+        scopes.push({
+          braids: j === 0 ? localBraids : [],
+          frameName: j === 0 ? frameName : null,
+        })
+      }
+    } else if (localBraids.length > 0) {
+      const top = scopes[scopes.length - 1]
+      top.braids = [...top.braids, ...localBraids]
+    }
+
+    for (let j = 0; j < closes; j += 1) {
+      if (scopes.length > 1) scopes.pop()
+    }
+  }
+
+  return { annotations, lineContexts }
+}
+
+function frameNameFromLine(line: string): string | null {
+  const match = line.match(FRAME_RE)
+  return match ? match[1] || match[2] || match[3] || null : null
+}
+
+function extractAnnotationBraids(line: string): string[] {
+  const matches: Array<{ start: number; end: number; raw: string }> = []
+  ANNOTATION_RE.lastIndex = 0
+  let match: RegExpExecArray | null
+  while ((match = ANNOTATION_RE.exec(line)) !== null) {
+    matches.push({
+      start: match.index,
+      end: match.index + match[0].length,
+      raw: match[0],
+    })
+  }
+  if (matches.length === 0) return []
+
+  const braids: string[] = []
+  let current = [matches[0].raw]
+  for (let i = 1; i < matches.length; i += 1) {
+    const previous = matches[i - 1]
+    const next = matches[i]
+    const between = line.slice(previous.end, next.start)
+    if (/^\s+$/.test(between)) {
+      current.push(next.raw)
+      continue
+    }
+    braids.push(current.join(' '))
+    current = [next.raw]
+  }
+  braids.push(current.join(' '))
+  return braids
+}
+
+function countBraceDelta(line: string): number {
+  let depth = 0
+  let stringDelimiter: StringDelimiter = null
+  for (let i = 0; i < line.length; i += 1) {
+    const ch = line[i]
+    const nextDelimiter = nextStringDelimiter(line, i, stringDelimiter)
+    if (nextDelimiter !== stringDelimiter) {
+      stringDelimiter = nextDelimiter
+      continue
+    }
+    if (stringDelimiter) continue
+    if (ch === '/' && line[i + 1] === '/') break
+    if (ch === '{') depth += 1
+    else if (ch === '}') depth -= 1
+  }
+  return depth
+}
+
+function nextStringDelimiter(
+  text: string,
+  index: number,
+  current: StringDelimiter,
+): StringDelimiter {
+  const ch = text[index]
+  if (current) {
+    return ch === current && !isEscaped(text, index) ? null : current
+  }
+  return ch === '"' || ch === "'" || ch === '`' ? ch : null
+}
+
+function isEscaped(text: string, index: number): boolean {
+  let slashCount = 0
+  for (let i = index - 1; i >= 0 && text[i] === '\\'; i -= 1) {
+    slashCount += 1
+  }
+  return slashCount % 2 === 1
 }

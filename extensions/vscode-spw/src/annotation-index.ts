@@ -18,6 +18,8 @@ export interface AnnotationEntry {
     name: string
     /** Enclosing ^["section"] label, if any */
     sectionLabel?: string
+    /** Full nested frame path active at this line */
+    framePath: string[]
 }
 
 // ---------------------------------------------------------------------------
@@ -72,6 +74,7 @@ export class AnnotationIndex {
                     kind: raw.kind,
                     name: raw.name,
                     sectionLabel: raw.sectionLabel,
+                    framePath: raw.framePath,
                 }
                 
                 this.entries.push(entry)

@@ -294,6 +294,18 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
         return
       }
 
+      case 'spw/contextAtPosition': {
+        const uri = message.params?.uri
+        const position = message.params?.position
+        if (typeof uri !== 'string' || typeof position?.line !== 'number' || typeof position?.character !== 'number') {
+          sendResult(id, null)
+          return
+        }
+
+        sendResult(id, serverIndex.getContextAtPosition(uri, position))
+        return
+      }
+
       default:
         if (typeof id === 'number' || typeof id === 'string') {
           sendError(id, -32601, `Method not found: ${message.method}`)

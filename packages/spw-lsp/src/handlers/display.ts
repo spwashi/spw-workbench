@@ -30,6 +30,34 @@ const PREFIX_BY_KIND: Record<DisplayAnnotationKind, string> = {
     anchor: '#>',
 }
 
+type VisibleStringDelimiter = '"' | "'" | '`' | null
+
+interface DisplayLineContext {
+    framePath: string[]
+    ambientBraids: string[]
+    localBraids: string[]
+    enteredFrame: string | null
+    deltaBraids: string[]
+}
+
+interface ParsedAnnotationMatch {
+    raw: string
+    sigil: string
+    name: string
+    start: number
+    end: number
+    braid: string
+}
+
+interface WonderBlockSummary {
+    question: string
+    depth: string | null
+    lens: string | null
+    probe: string | null
+    metrics: string[]
+    neighbor: string | null
+}
+
 function annotationKindFromSigil(sigil: string | undefined): DisplayAnnotationKind {
     switch (sigil) {
         case '#:': return 'lens'
@@ -62,6 +90,211 @@ function summarizeReferenceSources(
     return ranked.join(', ')
 }
 
+function collectAnnotationMatches(line: string): ParsedAnnotationMatch[] {
+    const matches: Array<Omit<ParsedAnnotationMatch, 'braid'>> = []
+    ANNOTATION_RE.lastIndex = 0
+    let match: RegExpExecArray | null
+    while ((match = ANNOTATION_RE.exec(line)) !== null) {
+        matches.push({
+            raw: match[0],
+            sigil: match[1] || '#',
+            name: match[2],
+            start: match.index,
+            end: match.index + match[0].length,
+        })
+    }
+    if (matches.length === 0) return []
+
+    const grouped: ParsedAnnotationMatch[] = []
+    let current = [matches[0]]
+
+    const flush = () => {
+        const braid = current.map((entry) => entry.raw).join(' ')
+        for (const entry of current) {
+            grouped.push({ ...entry, braid })
+        }
+    }
+
+    for (let i = 1; i < matches.length; i += 1) {
+        const previous = matches[i - 1]
+        const next = matches[i]
+        const between = line.slice(previous.end, next.start)
+        if (/^\s+$/.test(between)) {
+            current.push(next)
+            continue
+        }
+        flush()
+        current = [next]
+    }
+
+    flush()
+    return grouped
+}
+
+function buildContextMarkdown(
+    context: DisplayLineContext | null | undefined,
+    activeBraid?: string,
+): string {
+    if (!context) return ''
+
+    const lines: string[] = []
+    if (context.framePath.length > 0) {
+        lines.push(`Frame path: \`${context.framePath.join(' > ')}\``)
+    }
+    if (activeBraid) {
+        lines.push(`Braid: \`${activeBraid}\``)
+    } else if (context.localBraids.length === 1) {
+        lines.push(`Braid: \`${context.localBraids[0]}\``)
+    }
+    if (context.ambientBraids.length > 0) {
+        const ambient = context.ambientBraids.slice(-2).map((value) => `\`${value}\``).join(' · ')
+        lines.push(`Ambient: ${ambient}`)
+    }
+
+    return lines.length > 0 ? lines.join('  \n') + '\n\n' : ''
+}
+
+function buildBoundaryHint(
+    context: DisplayLineContext | null | undefined,
+): { label: string; tooltip: string } | null {
+    if (!context) return null
+
+    const parts: string[] = []
+    if (context.enteredFrame) {
+        parts.push(`enter ${context.enteredFrame}`)
+    }
+    if (context.deltaBraids.length > 0) {
+        const delta = context.deltaBraids.map((braid) => `+${braid}`).join(' · ')
+        parts.push(context.enteredFrame ? delta : `ambient ${delta}`)
+    }
+    if (parts.length === 0) return null
+
+    const tooltip: string[] = []
+    if (context.enteredFrame) {
+        tooltip.push(`Entering frame "${context.enteredFrame}".`)
+    }
+    if (context.framePath.length > 0) {
+        tooltip.push(`Path: ${context.framePath.join(' > ')}.`)
+    }
+    if (context.ambientBraids.length > 0) {
+        tooltip.push(`Inherited: ${context.ambientBraids.join(' · ')}.`)
+    }
+    if (context.deltaBraids.length > 0) {
+        tooltip.push(`Context shift: ${context.deltaBraids.join(' · ')}.`)
+    }
+
+    return {
+        label: ` [${parts.join(' · ')}]`,
+        tooltip: tooltip.join(' '),
+    }
+}
+
+function truncateText(value: string, maxLength: number): string {
+    return value.length <= maxLength ? value : `${value.slice(0, Math.max(0, maxLength - 1)).trimEnd()}…`
+}
+
+function buildWonderHint(summary: WonderBlockSummary): { label: string; tooltip: string } {
+    const parts: string[] = []
+    if (summary.depth) parts.push(summary.depth)
+    if (summary.lens) parts.push(`lens: ${summary.lens}`)
+    if (summary.metrics.length > 0) parts.push(`${summary.metrics.length} metric${summary.metrics.length === 1 ? '' : 's'}`)
+    if (summary.neighbor) parts.push('neighbor')
+    if (parts.length === 0) parts.push(truncateText(summary.question, 36))
+
+    const tooltip: string[] = [summary.question]
+    if (summary.probe) tooltip.push(`Probe: ${summary.probe}`)
+    if (summary.metrics.length > 0) tooltip.push(`Metrics: ${summary.metrics.join(', ')}`)
+    if (summary.neighbor) tooltip.push(`Neighbor: ${summary.neighbor}`)
+
+    return {
+        label: ` [? ${parts.join(' · ')}]`,
+        tooltip: tooltip.join('\n'),
+    }
+}
+
+function parseWonderBlock(lines: string[], startLine: number): WonderBlockSummary | null {
+    const line = lines[startLine] ?? ''
+    const wonderMatch = line.match(/\?\["([^"]+)"\]/)
+    if (!wonderMatch) return null
+
+    const bodyLines: string[] = []
+    let braceDepth = line.includes('{') ? 1 : 0
+
+    if (braceDepth > 0) {
+        for (let i = startLine + 1; i < lines.length && i < startLine + 12; i += 1) {
+            const bodyLine = lines[i] ?? ''
+            bodyLines.push(bodyLine)
+            braceDepth += countVisibleBraceDelta(bodyLine)
+            if (braceDepth <= 0) break
+        }
+    } else {
+        for (let i = startLine + 1; i < lines.length && i < startLine + 6; i += 1) {
+            const bodyLine = lines[i] ?? ''
+            if (bodyLine.startsWith('  ') || bodyLine.trim() === '') {
+                bodyLines.push(bodyLine)
+                continue
+            }
+            break
+        }
+    }
+
+    const bodyText = bodyLines.join('\n')
+    const depthLine = bodyLines.find((entry) => entry.includes('#:depth'))
+    const depth = depthLine?.match(/#!([a-z][a-z0-9_]*)/)?.[1] ?? null
+    const lens = depthLine?.match(/\/\/\s*lens:\s*(.+)/)?.[1]?.trim() ?? null
+    const probe = bodyText.match(/!probe\{\s*"([^"]+)"/s)?.[1] ?? null
+    const metrics = [...bodyText.matchAll(/\$%\[([^\]]+)\]/g)]
+        .flatMap((match) => match[1].split(',').map((value) => value.trim()).filter(Boolean))
+    const neighbor = bodyText.match(/~<([^>]+)>/)?.[1]?.trim() ?? null
+
+    return {
+        question: wonderMatch[1],
+        depth,
+        lens,
+        probe,
+        metrics,
+        neighbor,
+    }
+}
+
+function countVisibleBraceDelta(line: string): number {
+    let depth = 0
+    let delimiter: VisibleStringDelimiter = null
+    for (let i = 0; i < line.length; i += 1) {
+        const ch = line[i]
+        const nextDelimiter = nextVisibleStringDelimiter(line, i, delimiter)
+        if (nextDelimiter !== delimiter) {
+            delimiter = nextDelimiter
+            continue
+        }
+        if (delimiter) continue
+        if (ch === '/' && line[i + 1] === '/') break
+        if (ch === '{') depth += 1
+        else if (ch === '}') depth -= 1
+    }
+    return depth
+}
+
+function nextVisibleStringDelimiter(
+    text: string,
+    index: number,
+    current: VisibleStringDelimiter,
+): VisibleStringDelimiter {
+    const ch = text[index]
+    if (current) {
+        return ch === current && !isEscapedCharacter(text, index) ? null : current
+    }
+    return ch === '"' || ch === "'" || ch === '`' ? ch : null
+}
+
+function isEscapedCharacter(text: string, index: number): boolean {
+    let slashCount = 0
+    for (let i = index - 1; i >= 0 && text[i] === '\\'; i -= 1) {
+        slashCount += 1
+    }
+    return slashCount % 2 === 1
+}
+
 // ── Hover ───────────────────────────────────────────────────────
 
 export async function hover(params: HoverParams, deps: HandlerDeps): Promise<LspHover | null> {
@@ -77,23 +310,25 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
     const charAtPos = line[pos.character]
 
     // 1. Annotation hover
-    const annotRe = new RegExp(ANNOTATION_RE)
-    let annotMatch: RegExpExecArray | null
-    while ((annotMatch = annotRe.exec(line)) !== null) {
-        const start = annotMatch.index
-        const end = start + annotMatch[0].length
+    const annotationMatches = collectAnnotationMatches(line)
+    for (const annotation of annotationMatches) {
+        const start = annotation.start
+        const end = annotation.end
         if (pos.character < start || pos.character >= end) continue
 
-        const prefix = annotMatch[1] || '#'
-        const name = annotMatch[2]
+        const prefix = annotation.sigil
+        const name = annotation.name
         const kind = annotationKindFromSigil(prefix)
         const entries = deps.serverIndex.lookupAnnotation(name)
         const fileCount = new Set(entries.map(e => e.file)).size
         const coOccurs = deps.serverIndex.topCoOccurrences(name, 5)
         const externalRefs = docPath ? entries.filter(e => e.file !== docPath) : entries
         const sourceSummary = docPath ? summarizeReferenceSources(entries, docPath, deps.workspaceRoot, 4) : ''
+        const context = deps.serverIndex.getContextAtPosition(uri, { line: pos.line, character: start }) as DisplayLineContext | null
+        const activeBraid = annotation.braid.includes(' ') ? annotation.braid : undefined
 
         let md = `**${prefix}${name}** \u2014 *${kind}*\n\n`
+        md += buildContextMarkdown(context, activeBraid)
         md += `**${fileCount}** file(s), **${entries.length}** occurrence(s)\n\n`
         if (externalRefs.length > 0 && sourceSummary) {
             md += `Top sources: ${sourceSummary}\n\n`
@@ -128,6 +363,7 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
             const frameName = frameMatch[1] || frameMatch[2] || frameMatch[3]
             const fileAnnotations = docPath ? deps.serverIndex.annotationsForFile(docPath) : []
             const inSection = fileAnnotations.filter(e => e.sectionLabel === frameName)
+            const context = deps.serverIndex.getContextAtPosition(uri, { line: pos.line, character: frameStart }) as DisplayLineContext | null
 
             let opCounts = ''
             const blockStart = source.indexOf('{', source.indexOf(frameMatch[0]))
@@ -151,6 +387,7 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
             const projections = docPath ? deps.serverIndex.getProjectionsFromSpecOwner(docPath) : []
 
             let md = `**^["${frameName}"]** \u2014 *frame*\n\n`
+            md += buildContextMarkdown(context)
             if (inSection.length > 0) {
                 md += 'Annotations: ' + inSection.map(e => `\`${PREFIX_BY_KIND[e.kind as DisplayAnnotationKind] ?? '#'}${e.name}\``).join(', ') + '\n\n'
             }
@@ -192,48 +429,26 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
     }
 
     // 4. Wonder block hover
+    const wonderSummary = parseWonderBlock(source.split('\n'), pos.line)
     const wonderRe = /\?\["([^"]+)"\]/
     const wonderMatch = line.match(wonderRe)
-    if (wonderMatch) {
+    if (wonderMatch && wonderSummary) {
         const wStart = line.indexOf(wonderMatch[0])
         const wEnd = wStart + wonderMatch[0].length
         if (pos.character >= wStart && pos.character < wEnd) {
-            const questionText = wonderMatch[1]
-            const allLines = source.split('\n')
-            const bodyLines: string[] = []
-            let braceDepth = 0
-            const openBrace = line.includes('{')
-            if (openBrace) braceDepth = 1
-            for (let j = pos.line + 1; j < allLines.length && j < pos.line + 12; j++) {
-                const bl = allLines[j]
-                if (openBrace) {
-                    for (const ch of bl) {
-                        if (ch === '{') braceDepth++
-                        else if (ch === '}') braceDepth--
-                    }
-                    bodyLines.push(bl)
-                    if (braceDepth <= 0) break
-                } else {
-                    if (bl.startsWith('  ') || bl.trim() === '') bodyLines.push(bl)
-                    else break
-                }
-            }
-
-            const depthLine = bodyLines.find(l => l.includes('#:depth'))
-            const depthMatch = depthLine?.match(/#!([a-z]+)/)
-            const lensMatch = depthLine?.match(/\/\/\s*lens:\s*(.+)/)
-            const probeLine = bodyLines.find(l => l.includes('!probe{'))
-            const probeMatch = probeLine?.match(/!probe\{\s*"([^"]+)"\s*\}/)
-            const metricLine = bodyLines.find(l => l.includes('$%['))
-            const metricMatch = metricLine?.match(/\$%\[([^\]]+)\]/)
+            const context = deps.serverIndex.getContextAtPosition(uri, { line: pos.line, character: wStart }) as DisplayLineContext | null
 
             let md = `**\u2753 Wonder**\n\n`
-            md += `> ${questionText}\n\n`
-            if (depthMatch) md += `**Depth axis:** ${depthMatch[1]}`
-            if (lensMatch) md += ` \u00b7 **Lens:** ${lensMatch[1].trim()}`
-            if (depthMatch || lensMatch) md += '\n\n'
-            if (metricMatch) md += `**Metrics:** \`$%[${metricMatch[1]}]\`\n\n`
-            if (probeMatch) md += `**Probe:** ${probeMatch[1]}\n`
+            md += buildContextMarkdown(context)
+            md += `> ${wonderSummary.question}\n\n`
+            if (wonderSummary.depth) md += `**Depth axis:** ${wonderSummary.depth}`
+            if (wonderSummary.lens) md += ` \u00b7 **Lens:** ${wonderSummary.lens}`
+            if (wonderSummary.depth || wonderSummary.lens) md += '\n\n'
+            if (wonderSummary.metrics.length > 0) {
+                md += `**Metrics:** \`${wonderSummary.metrics.join(', ')}\`\n\n`
+            }
+            if (wonderSummary.neighbor) md += `**Neighbor:** \`${wonderSummary.neighbor}\`\n\n`
+            if (wonderSummary.probe) md += `**Probe:** ${wonderSummary.probe}\n`
 
             return {
                 contents: { kind: 'markdown', value: md },
@@ -817,14 +1032,6 @@ export async function inlayHints(params: InlayHintParams, deps: HandlerDeps): Pr
     const hints: LspInlayHint[] = []
     const fileAnnotations = deps.serverIndex.annotationsForFile(docPath)
 
-    const frameKindsBySection = new Map<string, Map<string, number>>()
-    for (const entry of fileAnnotations) {
-        if (!entry.sectionLabel) continue
-        const byKind = frameKindsBySection.get(entry.sectionLabel) ?? new Map<string, number>()
-        byKind.set(entry.kind, (byKind.get(entry.kind) ?? 0) + 1)
-        frameKindsBySection.set(entry.sectionLabel, byKind)
-    }
-
     // 1) Path status hints
     if (deps.config.inlayHints.paths) {
         for (const hit of doc.selectorHits) {
@@ -853,58 +1060,38 @@ export async function inlayHints(params: InlayHintParams, deps: HandlerDeps): Pr
         }
     }
 
-    // 2) Annotation density hints
-    const annotRe = new RegExp(ANNOTATION_RE)
+    // 2) Boundary delta + wonder synopsis hints
     if (deps.config.inlayHints.annotations || deps.config.inlayHints.frames) {
         for (let lineNo = Math.max(0, range.start.line); lineNo <= Math.min(lines.length - 1, range.end.line); lineNo += 1) {
             const line = lines[lineNo] ?? ''
+            const context = doc.lineContexts[lineNo] as DisplayLineContext | undefined
 
-            if (deps.config.inlayHints.frames) {
-                const frameMatch = line.match(/^\s*\^(?:\["([^"]+)"\]|"([^"]+)"|\[([A-Za-z_]\w*)\])/)
-                if (frameMatch) {
-                    const frameName = frameMatch[1] || frameMatch[2] || frameMatch[3] || ''
-                    const byKind = frameKindsBySection.get(frameName) ?? new Map<string, number>()
-                    const summary = [...byKind.entries()].map(([kind, count]) => `${count} ${kind}`).join(', ')
-                    if (summary) {
-                        hints.push({
-                            position: { line: lineNo, character: line.length },
-                            label: ` [${summary}]`,
-                            kind: 2,
-                            tooltip: 'Frame-local annotation summary.',
-                            paddingLeft: true,
-                        })
-                    }
+            if (deps.config.inlayHints.frames || deps.config.inlayHints.annotations) {
+                const boundaryHint = buildBoundaryHint(context)
+                if (boundaryHint) {
+                    hints.push({
+                        position: { line: lineNo, character: line.length },
+                        label: boundaryHint.label,
+                        kind: 2,
+                        tooltip: boundaryHint.tooltip,
+                        paddingLeft: true,
+                    })
                 }
             }
 
-            if (!deps.config.inlayHints.annotations) continue
-
-            annotRe.lastIndex = 0
-            const annotations: Array<{ name: string; sigil: string }> = []
-            let match: RegExpExecArray | null
-            while ((match = annotRe.exec(line)) !== null) {
-                annotations.push({ sigil: match[1], name: match[2] })
+            if (deps.config.inlayHints.annotations) {
+                const wonder = parseWonderBlock(lines, lineNo)
+                if (wonder) {
+                    const hint = buildWonderHint(wonder)
+                    hints.push({
+                        position: { line: lineNo, character: line.length },
+                        label: hint.label,
+                        kind: 2,
+                        tooltip: hint.tooltip,
+                        paddingLeft: true,
+                    })
+                }
             }
-
-            if (annotations.length === 0) continue
-
-            const unique = [...new Map(annotations.map((entry) => [entry.name, entry])).values()]
-            const summary = unique
-                .slice(0, 2)
-                .map(({ name, sigil }) => {
-                    const entries = deps.serverIndex.lookupAnnotation(name)
-                    const fileCount = new Set(entries.map((entry) => entry.file)).size
-                    return `${sigil}${name}:${fileCount}f`
-                })
-                .join(' \u00b7 ')
-
-            hints.push({
-                position: { line: lineNo, character: line.length },
-                label: ` [ref ${summary}${unique.length > 2 ? ' \u00b7 \u2026' : ''}]`,
-                kind: 2,
-                tooltip: 'Workspace file counts for annotation names on this line.',
-                paddingLeft: true,
-            })
         }
     }
 
@@ -988,29 +1175,38 @@ export function documentHighlight(params: TextDocumentPositionParams, deps: Hand
     const results: LspDocumentHighlight[] = []
 
     // 1. Annotation name highlight — all occurrences of the same #name in the document
-    const annotAtCursor = /(?:##>|#!|#:|#>|#)([a-zA-Z_]\w*)/g
-    let annotMatch: RegExpExecArray | null
-    while ((annotMatch = annotAtCursor.exec(line)) !== null) {
-        const start = annotMatch.index
-        const end = start + annotMatch[0].length
-        if (pos.character >= start && pos.character <= end) {
-            const name = annotMatch[1]
-            const searchRe = new RegExp(`(?:##>|#!|#:|#>|#)(${name})(?!\\w)`, 'g')
-            for (let i = 0; i < lines.length; i++) {
-                let m: RegExpExecArray | null
-                searchRe.lastIndex = 0
-                while ((m = searchRe.exec(lines[i])) !== null) {
-                    results.push({
-                        range: {
-                            start: { line: i, character: m.index },
-                            end: { line: i, character: m.index + m[0].length },
-                        },
-                        kind: i === pos.line && m.index === start ? 3 : 1,
-                    })
-                }
+    const annotationsAtCursor = collectAnnotationMatches(line)
+    const activeAnnotation = annotationsAtCursor.find((match) =>
+        pos.character >= match.start && pos.character <= match.end,
+    )
+    if (activeAnnotation) {
+        const seen = new Set<string>()
+        for (let i = 0; i < lines.length; i += 1) {
+            const matches = collectAnnotationMatches(lines[i] ?? '')
+            for (const match of matches) {
+                const sameSigilAndName = match.sigil === activeAnnotation.sigil && match.name === activeAnnotation.name
+                const sameName = match.name === activeAnnotation.name
+                const sameBraid = match.braid === activeAnnotation.braid
+                if (!sameSigilAndName && !sameName && !sameBraid) continue
+
+                const key = `${i}:${match.start}:${match.end}`
+                if (seen.has(key)) continue
+                seen.add(key)
+
+                results.push({
+                    range: {
+                        start: { line: i, character: match.start },
+                        end: { line: i, character: match.end },
+                    },
+                    kind: i === pos.line && match.start === activeAnnotation.start
+                        ? 3
+                        : sameSigilAndName
+                            ? 1
+                            : 2,
+                })
             }
-            return results
         }
+        return results
     }
 
     // 2. @root highlight — all occurrences of the same @name
