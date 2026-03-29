@@ -34,8 +34,8 @@
   ~#shared_stack: "select -> transform -> validate -> emit, with domain-specific framing layered on top"
   ~#shared_question: "does this surface want to be read, used, joined, or navigated -- and when does it want to be more than one of those?"
   ~#status_vocabulary: ["active", "dormant", "sensitive-pending"]
-  ~#launch_ladder: ["idea", "internal-literature", "internal-tool", "public-beta", "governed-surface", "sensitive-surface"]
-  ~#routing_rule: "active surfaces need a route or an explicit blocked-by note; dormant surfaces can remain listed but intentionally unrouted"
+  ~#launch_ladder: ["idea", "internal-literature", "internal-tool", "installable", "public-beta", "governed-surface", "sensitive-surface"]
+  ~#routing_rule: "active surfaces need a route or an explicit blocked-by note plus a readiness cohort that names audience, phase, QA gate, and team shape; dormant surfaces can remain listed but intentionally unrouted"
 }
 
 ^"platform_constraints"{
@@ -56,6 +56,7 @@
   ~#active_rule: "active surfaces require audience, launch phase, QA gate, and a routing entry."
   ~#dormant_rule: "dormant surfaces remain in portfolio memory but do not consume routing or launch attention."
   ~#sensitive_pending_rule: "sensitive-pending surfaces require dedicated pipeline + discretion review before activation."
+  ~#installable_rule: "installable surfaces must be mountable through .spw/_workbench, declared through .spw/mount.spw, and verifiable through the current init/doctor/editor path."
   ~#spiritual_testing_path: [
     "literature claim",
     "seed or selector expression",
@@ -64,6 +65,17 @@
     "publish projection",
     "public surface fit",
   ]
+}
+
+^"installable_gate"{
+  ~#meaning: "installable means an external site can engage the surface through the submodule-era mount contract without inheriting the entire workbench identity"
+  ~#requires: [
+    ".spw/_workbench mount path is the primary install surface",
+    ".spw/mount.spw records version, engaged surfaces, and resolution paths",
+    "spw:init and spw:doctor can seed and verify the boundary",
+    "editor/workbench legibility exists for the mounted path",
+  ]
+  ~#reading: "installable is the truthful gate between internal tooling and ordinary public-beta claims in the current v0.3.0 release story"
 }
 
 ^"conceptual_reference"{
@@ -699,10 +711,76 @@
   #:architecture #!platform
 
   "installable_books": ["lore.land", "spw.quest", "wap.christmas", "wap.mom"]
+  "installable_release_set": ["spwashi.dev", "spw.quest", "wap.christmas", "wap.mom", "lore.land"]
   "shared_factshift_lineage": ["factshift.com", "boon.land", "bane.land", "bone.land", "bonk.land", "honk.land"]
   "sensitive_private_surfaces": ["clit.video", "smut.today", "sexymath4adults.com"]
   "ugc_or_collective_surfaces": ["clit.video", "brainstorm.monster", "trope.wiki", "autonomous.feedback"]
   "commerce_or_collectibles": ["spwashi.store", "rpgwednesday.shop"]
+}
+
+^"readiness_cohorts"{
+  ~#rule: "every active surface should appear in a cohort that names audience, phase, literature mode, interaction mode, QA gate, and team shape"
+
+  hub_orientation: {
+    ~#surfaces: ["spwashi.com"]
+    ~#audience: "newcomers and cross-portfolio visitors"
+    ~#phase: "governed-surface"
+    ~#literature_mode: "orientation, waypoint, and portfolio handoff"
+    ~#interaction_mode: "route selection and confidence-building handoff"
+    ~#qa_gate: "routing clarity, release-copy truth, and portfolio coherence"
+    ~#team_shape: "pair"
+  }
+
+  installable_surfaces: {
+    ~#surfaces: ["spwashi.dev", "spw.quest", "wap.christmas", "wap.mom", "lore.land"]
+    ~#audience: "builders, readers, and install-curious adopters"
+    ~#phase: "installable"
+    ~#literature_mode: "quick-start, migration, guided reading, and install narrative"
+    ~#interaction_mode: "mount, initialize, read, resume"
+    ~#qa_gate: "site-install truth, mount contract, doctor path, and editor/workbench legibility"
+    ~#team_shape: "guild"
+  }
+
+  builder_beta: {
+    ~#surfaces: ["factshift.com", "factshift.center", "mutex.buzz", "autonomous.feedback", "brainstorm.monster", "spwashi.ai", "spwashi.design"]
+    ~#audience: "builders, researchers, and collaborators"
+    ~#phase: "public-beta"
+    ~#literature_mode: "runtime docs, probes, instrument notes, and design references"
+    ~#interaction_mode: "inspect, compare, collaborate, iterate"
+    ~#qa_gate: "runtime behavior, selector clarity, telemetry legibility, and workflow coherence"
+    ~#team_shape: "guild"
+  }
+
+  publication_beta: {
+    ~#surfaces: ["spwashi.ink", "trope.wiki", "attention.productions", "rpgwednesday.shop"]
+    ~#audience: "readers, collectors, and production partners"
+    ~#phase: "public-beta"
+    ~#literature_mode: "editions, trope index, production notes, and collectible copy"
+    ~#interaction_mode: "read, browse, collect, revisit"
+    ~#qa_gate: "artifact legibility, publish projection coherence, and route clarity"
+    ~#team_shape: "pair"
+  }
+
+  biome_beta: {
+    ~#surfaces: ["boonhonk.ing", "boon.land", "bane.land", "bone.land", "bonk.land", "honk.land", "boof.land"]
+    ~#audience: "wonder-seeking readers and biome-facing builders"
+    ~#phase: "public-beta"
+    ~#literature_mode: "realm claims, biome probes, and concept exhibits"
+    ~#interaction_mode: "wander, compare, interpret, return"
+    ~#qa_gate: "fingerprint distinctness, selector coherence, and conceptual legibility"
+    ~#team_shape: "pair"
+  }
+
+  sensitive_blocked: {
+    ~#surfaces: ["clit.video", "smut.today", "sexymath4adults.com"]
+    ~#audience: "adult or discretion-sensitive participants"
+    ~#phase: "sensitive-surface"
+    ~#literature_mode: "policy and invitation must move together"
+    ~#interaction_mode: "consent, pacing, and private participation"
+    ~#qa_gate: "dedicated sensitive pipeline, discretion review, and privacy-default behavior"
+    ~#team_shape: "guild"
+    ~#blocked_by: "ordinary public routing is not sufficient for these surfaces"
+  }
 }
 
 ^"launch_backlog"{
