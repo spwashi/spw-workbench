@@ -23,7 +23,7 @@ import { ServerContext } from './context'
 
 // ── Handler Clusters ────────────────────────────────────────────
 import { publishDiagnostics as _publishDiagnostics, foldingRanges as _foldingRanges } from './handlers/analysis'
-import { hover as _hover, documentSymbols as _documentSymbols, workspaceSymbols as _workspaceSymbols, codeLens as _codeLens, inlayHints as _inlayHints } from './handlers/display'
+import { hover as _hover, documentSymbols as _documentSymbols, workspaceSymbols as _workspaceSymbols, codeLens as _codeLens, inlayHints as _inlayHints, documentHighlight as _documentHighlight } from './handlers/display'
 import { completion as _completion, formatting as _formatting, rangeFormatting as _rangeFormatting, codeAction as _codeAction } from './handlers/editing'
 import { definition as _definition, documentLinks as _documentLinks, references as _references, prepareRename as _prepareRename, rename as _rename } from './handlers/navigation'
 import { semanticTokens as _semanticTokens, SEMANTIC_TOKENS_LEGEND } from './handlers/semantic-tokens'
@@ -186,6 +186,7 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
             codeLensProvider: { resolveProvider: false },
             documentFormattingProvider: true,
             documentRangeFormattingProvider: true,
+            documentHighlightProvider: true,
             inlayHintProvider: true,
             foldingRangeProvider: true,
             semanticTokensProvider: {
@@ -246,6 +247,10 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
 
       case 'textDocument/rangeFormatting':
         sendResult(id, _rangeFormatting(message.params, deps))
+        return
+
+      case 'textDocument/documentHighlight':
+        sendResult(id, _documentHighlight(message.params, deps))
         return
 
       case 'textDocument/inlayHint':

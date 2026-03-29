@@ -288,6 +288,42 @@ export async function codeAction(params: CodeActionParams, deps: HandlerDeps): P
         }
     }
 
+    // Quick-fix for unresolved references
+    const unresolvedDiags = (params.context?.diagnostics ?? []).filter(
+        d => d.source === 'spw' && d.message.startsWith('unresolved reference:')
+    )
+    for (const diag of unresolvedDiags) {
+        // Extract the selector hits from the document for this range
+        const docHits = doc.selectorHits?.filter(
+            h => h.span.startLine === diag.range.start.line
+              && h.span.startCharacter === diag.range.start.character
+        ) ?? []
+
+        for (const hit of docHits) {
+            const suggestion = await deps.suggestNearbyReference(hit, doc.text, doc.filePath)
+            if (!suggestion) continue
+            const original = hit.kind === 'pathRef' ? hit.target : `@${hit.root}/${hit.target}`
+            const hitText = doc.text.slice(hit.span.startOffset, hit.span.endOffset)
+            const replacement = hitText.replace(original, suggestion)
+            if (replacement === hitText) continue
+            actions.push({
+                title: `Did you mean "${suggestion}"?`,
+                kind: 'quickfix',
+                edit: {
+                    changes: {
+                        [uri]: [{
+                            range: {
+                                start: { line: hit.span.startLine, character: hit.span.startCharacter },
+                                end: { line: hit.span.endLine, character: hit.span.endCharacter + 1 },
+                            },
+                            newText: replacement,
+                        }],
+                    },
+                },
+            })
+        }
+    }
+
     // Wrap selection in frame (^["name"] { ... })
     if (range.start.line !== range.end.line || range.start.character !== range.end.character) {
         const startLine = lines[range.start.line]

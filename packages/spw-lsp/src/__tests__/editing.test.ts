@@ -16,7 +16,7 @@ function makeDeps(overrides: Partial<HandlerDeps> & { text?: string } = {}): Han
   const text = overrides.text ?? ''
   return {
     serverIndex: {
-      getDocument: () => ({ text }),
+      getDocument: () => ({ text, filePath: '/workspace/test.spw', selectorHits: [] }),
       allAnnotationNames: () => [],
       lookupAnnotation: () => [],
       formatDocument: (t: string) => t,
@@ -174,6 +174,104 @@ describe('code actions', () => {
     expect(result.some(a => a.title.includes('Wrap in Frame'))).toBe(true)
     const wrap = result.find(a => a.title.includes('Wrap in Frame'))!
     expect(wrap.edit?.changes['file:///test.spw']?.[0].newText).toContain('^["frame"]')
+  })
+
+  it('offers unresolved root-reference quick-fixes with a full replacement span', async () => {
+    const text = '@cluster/planz'
+    const deps = makeDeps({
+      text,
+      suggestNearbyReference: async () => '@cluster/plans',
+    } as any)
+    deps.serverIndex = {
+      ...deps.serverIndex,
+      getDocument: () => ({
+        text,
+        filePath: '/workspace/test.spw',
+        selectorHits: [{
+          kind: 'rootRef',
+          raw: '@cluster/planz',
+          root: 'cluster',
+          target: 'planz',
+          span: {
+            startOffset: 0,
+            endOffset: text.length,
+            startLine: 0,
+            startCharacter: 0,
+            endLine: 0,
+            endCharacter: text.length - 1,
+          },
+        }],
+      }),
+    } as any
+    const result = await codeAction({
+      textDocument: { uri: 'file:///test.spw' },
+      range: { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } },
+      context: {
+        diagnostics: [{
+          range: { start: { line: 0, character: 0 }, end: { line: 0, character: text.length - 1 } },
+          severity: 2,
+          source: 'spw',
+          message: 'unresolved reference: @cluster/planz',
+        }],
+      },
+    }, deps)
+    const quickfix = result.find(a => a.title.includes('@cluster/plans'))
+    expect(quickfix).toBeDefined()
+    expect(quickfix?.edit?.changes['file:///test.spw']?.[0]).toEqual({
+      range: {
+        start: { line: 0, character: 0 },
+        end: { line: 0, character: text.length },
+      },
+      newText: '@cluster/plans',
+    })
+  })
+
+  it('preserves path quoting when fixing unresolved path references', async () => {
+    const text = '~"planz"'
+    const deps = makeDeps({
+      text,
+      suggestNearbyReference: async () => 'plans',
+    } as any)
+    deps.serverIndex = {
+      ...deps.serverIndex,
+      getDocument: () => ({
+        text,
+        filePath: '/workspace/test.spw',
+        selectorHits: [{
+          kind: 'pathRef',
+          raw: '~"planz"',
+          target: 'planz',
+          span: {
+            startOffset: 0,
+            endOffset: text.length,
+            startLine: 0,
+            startCharacter: 0,
+            endLine: 0,
+            endCharacter: text.length - 1,
+          },
+        }],
+      }),
+    } as any
+    const result = await codeAction({
+      textDocument: { uri: 'file:///test.spw' },
+      range: { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } },
+      context: {
+        diagnostics: [{
+          range: { start: { line: 0, character: 0 }, end: { line: 0, character: text.length - 1 } },
+          severity: 2,
+          source: 'spw',
+          message: 'unresolved reference: planz',
+        }],
+      },
+    }, deps)
+    const quickfix = result.find(a => a.title.includes('plans'))
+    expect(quickfix?.edit?.changes['file:///test.spw']?.[0]).toEqual({
+      range: {
+        start: { line: 0, character: 0 },
+        end: { line: 0, character: text.length },
+      },
+      newText: '~"plans"',
+    })
   })
 
   it('returns empty for no applicable patterns', async () => {

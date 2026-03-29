@@ -12,8 +12,9 @@ import { findPathRefAtPosition } from '../spw-selector'
 import { statKind } from '../helpers'
 import type {
     LspHover, LspDocumentSymbol, LspSymbolInfo, LspCodeLens, LspInlayHint,
+    LspDocumentHighlight,
     LspPosition, LspRange,
-    HoverParams, DocumentParams, InlayHintParams,
+    HoverParams, DocumentParams, InlayHintParams, TextDocumentPositionParams,
     HandlerDeps,
 } from '../types'
 import { SK } from '../types'
@@ -970,4 +971,103 @@ export async function inlayHints(params: InlayHintParams, deps: HandlerDeps): Pr
     }
 
     return hints
+}
+
+// ── Document Highlights ──────────────────────────────────────────
+
+export function documentHighlight(params: TextDocumentPositionParams, deps: HandlerDeps): LspDocumentHighlight[] {
+    const uri = params?.textDocument?.uri
+    const pos = params?.position as LspPosition | undefined
+    if (!uri || !pos) return []
+
+    const doc = deps.serverIndex.getDocument(uri)
+    if (!doc) return []
+
+    const lines = doc.text.split('\n')
+    const line = lines[pos.line] ?? ''
+    const results: LspDocumentHighlight[] = []
+
+    // 1. Annotation name highlight — all occurrences of the same #name in the document
+    const annotAtCursor = /(?:##>|#!|#:|#>|#)([a-zA-Z_]\w*)/g
+    let annotMatch: RegExpExecArray | null
+    while ((annotMatch = annotAtCursor.exec(line)) !== null) {
+        const start = annotMatch.index
+        const end = start + annotMatch[0].length
+        if (pos.character >= start && pos.character <= end) {
+            const name = annotMatch[1]
+            const searchRe = new RegExp(`(?:##>|#!|#:|#>|#)(${name})(?!\\w)`, 'g')
+            for (let i = 0; i < lines.length; i++) {
+                let m: RegExpExecArray | null
+                searchRe.lastIndex = 0
+                while ((m = searchRe.exec(lines[i])) !== null) {
+                    results.push({
+                        range: {
+                            start: { line: i, character: m.index },
+                            end: { line: i, character: m.index + m[0].length },
+                        },
+                        kind: i === pos.line && m.index === start ? 3 : 1,
+                    })
+                }
+            }
+            return results
+        }
+    }
+
+    // 2. @root highlight — all occurrences of the same @name
+    const rootAtCursor = /@([A-Za-z_]\w*)/g
+    let rootMatch: RegExpExecArray | null
+    while ((rootMatch = rootAtCursor.exec(line)) !== null) {
+        const start = rootMatch.index
+        const end = start + rootMatch[0].length
+        if (pos.character >= start && pos.character <= end) {
+            const name = rootMatch[1]
+            const searchRe = new RegExp(`@(${name})(?!\\w)`, 'g')
+            for (let i = 0; i < lines.length; i++) {
+                let m: RegExpExecArray | null
+                searchRe.lastIndex = 0
+                while ((m = searchRe.exec(lines[i])) !== null) {
+                    // Declaration: @name: ~"..." pattern
+                    const isDecl = lines[i].slice(m.index).match(/^@\w+:\s*~"/)
+                    results.push({
+                        range: {
+                            start: { line: i, character: m.index },
+                            end: { line: i, character: m.index + m[0].length },
+                        },
+                        kind: isDecl ? 3 : 1,
+                    })
+                }
+            }
+            return results
+        }
+    }
+
+    // 3. Frame name highlight — ^["name"] occurrences
+    const frameAtCursor = /\^(?:\["([^"]+)"\]|"([^"]+)"|\[([A-Za-z_]\w*)\])/g
+    let frameMatch: RegExpExecArray | null
+    while ((frameMatch = frameAtCursor.exec(line)) !== null) {
+        const start = frameMatch.index
+        const end = start + frameMatch[0].length
+        if (pos.character >= start && pos.character <= end) {
+            const name = frameMatch[1] || frameMatch[2] || frameMatch[3]
+            for (let i = 0; i < lines.length; i++) {
+                const fRe = /\^(?:\["([^"]+)"\]|"([^"]+)"|\[([A-Za-z_]\w*)\])/g
+                let fm: RegExpExecArray | null
+                while ((fm = fRe.exec(lines[i])) !== null) {
+                    const fName = fm[1] || fm[2] || fm[3]
+                    if (fName === name) {
+                        results.push({
+                            range: {
+                                start: { line: i, character: fm.index },
+                                end: { line: i, character: fm.index + fm[0].length },
+                            },
+                            kind: 1,
+                        })
+                    }
+                }
+            }
+            return results
+        }
+    }
+
+    return results
 }

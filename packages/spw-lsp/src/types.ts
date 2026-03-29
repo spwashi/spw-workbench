@@ -89,6 +89,13 @@ export interface LspInlayHint {
     paddingRight?: boolean
 }
 
+// ── Document Highlight ──────────────────────────────────────────
+
+export interface LspDocumentHighlight {
+    range: LspRange
+    kind?: 1 | 2 | 3 // 1=Text 2=Read 3=Write
+}
+
 // ── Folding Ranges ──────────────────────────────────────────────
 
 export interface LspFoldingRange {

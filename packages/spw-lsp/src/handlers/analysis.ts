@@ -12,6 +12,28 @@ import type {
     HandlerDeps,
 } from '../types'
 
+type StringDelimiter = '"' | "'" | null
+
+function isEscaped(text: string, index: number): boolean {
+    let slashCount = 0
+    for (let i = index - 1; i >= 0 && text[i] === '\\'; i -= 1) {
+        slashCount += 1
+    }
+    return slashCount % 2 === 1
+}
+
+function nextStringDelimiter(
+    text: string,
+    index: number,
+    current: StringDelimiter,
+): StringDelimiter {
+    const ch = text[index]
+    if (current) {
+        return ch === current && !isEscaped(text, index) ? null : current
+    }
+    return ch === '"' || ch === "'" ? ch : null
+}
+
 // ── Diagnostics ─────────────────────────────────────────────────
 
 export async function publishDiagnostics(uri: string, deps: HandlerDeps): Promise<void> {
@@ -95,22 +117,56 @@ export async function publishDiagnostics(uri: string, deps: HandlerDeps): Promis
         }
     }
 
-    // 4. Brace physics — depth budget
+    // 4. Brace physics — unmatched braces + depth budget
     {
         const lines = doc.text.split('\n')
-        let depth = 0
-        let maxDepthLine = -1
+        const braceStack: Array<{ line: number; character: number }> = []
         let maxDepth = 0
+        let maxDepthLine = -1
+
         for (let i = 0; i < lines.length; i++) {
-            for (const ch of lines[i]) {
-                if (ch === '{') depth++
-                else if (ch === '}') depth = Math.max(0, depth - 1)
-            }
-            if (depth > maxDepth) {
-                maxDepth = depth
-                maxDepthLine = i
+            const line = lines[i]
+            let stringDelimiter: StringDelimiter = null
+            for (let j = 0; j < line.length; j++) {
+                const ch = line[j]
+                const nextDelimiter = nextStringDelimiter(line, j, stringDelimiter)
+                if (nextDelimiter !== stringDelimiter) {
+                    stringDelimiter = nextDelimiter
+                    continue
+                }
+                if (stringDelimiter) continue
+                if (ch === '/' && line[j + 1] === '/') break // line comment
+                if (ch === '{') {
+                    braceStack.push({ line: i, character: j })
+                    if (braceStack.length > maxDepth) {
+                        maxDepth = braceStack.length
+                        maxDepthLine = i
+                    }
+                } else if (ch === '}') {
+                    if (braceStack.length === 0) {
+                        diagnostics.push({
+                            range: { start: { line: i, character: j }, end: { line: i, character: j + 1 } },
+                            severity: 2,
+                            source: 'spw-physics',
+                            message: 'Unmatched closing brace — no corresponding opening brace.',
+                        })
+                    } else {
+                        braceStack.pop()
+                    }
+                }
             }
         }
+
+        // Report unclosed braces (innermost first)
+        for (const open of braceStack.reverse()) {
+            diagnostics.push({
+                range: { start: { line: open.line, character: open.character }, end: { line: open.line, character: open.character + 1 } },
+                severity: 2,
+                source: 'spw-physics',
+                message: 'Unclosed brace — no matching closing brace found.',
+            })
+        }
+
         if (maxDepth >= 5 && maxDepthLine >= 0) {
             diagnostics.push({
                 range: { start: { line: maxDepthLine, character: 0 }, end: { line: maxDepthLine, character: 1 } },
@@ -133,9 +189,27 @@ export async function publishDiagnostics(uri: string, deps: HandlerDeps): Promis
 
             let depth = 1
             let blockEnd = braceStart + 1
+            let stringDelimiter: StringDelimiter = null
+            let inLineComment = false
             for (; blockEnd < text.length && depth > 0; blockEnd++) {
-                if (text[blockEnd] === '{') depth++
-                else if (text[blockEnd] === '}') depth--
+                const ch = text[blockEnd]
+                if (inLineComment) {
+                    if (ch === '\n') inLineComment = false
+                    continue
+                }
+                const nextDelimiter = nextStringDelimiter(text, blockEnd, stringDelimiter)
+                if (nextDelimiter !== stringDelimiter) {
+                    stringDelimiter = nextDelimiter
+                    continue
+                }
+                if (stringDelimiter) continue
+                if (ch === '/' && text[blockEnd + 1] === '/') {
+                    inLineComment = true
+                    blockEnd += 1
+                    continue
+                }
+                if (ch === '{') depth++
+                else if (ch === '}') depth--
             }
 
             const block = text.slice(braceStart, blockEnd)
