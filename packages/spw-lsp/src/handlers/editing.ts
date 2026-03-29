@@ -135,11 +135,12 @@ export async function completion(params: CompletionParams, deps: HandlerDeps): P
     // 4. File-system completion for ~"../" and @root/
     const fsMatch = /(?:~"((?:\.\.?\/)+)|@([A-Za-z_]\w*)\/)([^"]*)$/.exec(prefix)
     if (fsMatch) {
+        const docDir = path.dirname(deps.pathFromUri(uri) || deps.workspaceRoot)
         let searchDir: string | undefined
         if (fsMatch[1]) {
-            searchDir = path.resolve(path.dirname(deps.pathFromUri(uri) || ''), fsMatch[1])
+            searchDir = path.resolve(docDir, fsMatch[1])
         } else if (fsMatch[2]) {
-            const roots = deps.mergeRoots(source, path.dirname(deps.pathFromUri(uri) || deps.workspaceRoot))
+            const roots = deps.mergeRoots(source, docDir)
             searchDir = roots[fsMatch[2]]
         }
 

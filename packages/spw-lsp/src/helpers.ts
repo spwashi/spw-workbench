@@ -5,7 +5,7 @@
  * They receive a ServerContext for access to config and workspace root.
  */
 
-import { promises as fs } from 'node:fs'
+import { existsSync, promises as fs } from 'node:fs'
 import type { Dirent } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -138,11 +138,23 @@ export function defaultRoots(fileDir: string, workspaceRoot: string, serverIndex
     return hardcoded
 }
 
-export function parseRoots(source: string, fileDir: string): RootMap {
+export function parseRoots(source: string, fileDir: string, workspaceRoot?: string): RootMap {
     const roots: RootMap = {}
     const re = /@([A-Za-z0-9_-]+):\s*~"([^"]+)"/g
     let m: RegExpExecArray | null
-    while ((m = re.exec(source))) { roots[m[1]] = path.resolve(fileDir, m[2]) }
+    while ((m = re.exec(source))) {
+        const rel = m[2]
+        const fromFile = path.resolve(fileDir, rel)
+        // When the file-relative resolution doesn't exist, try workspace root
+        if (workspaceRoot && workspaceRoot !== fileDir && !existsSync(fromFile)) {
+            const fromRoot = path.resolve(workspaceRoot, rel)
+            if (existsSync(fromRoot)) {
+                roots[m[1]] = fromRoot
+                continue
+            }
+        }
+        roots[m[1]] = fromFile
+    }
     return roots
 }
 
@@ -153,7 +165,7 @@ export function mergeRoots(
     config: Required<SpwConfig>,
     serverIndex: ServerIndex,
 ): RootMap {
-    return { ...defaultRoots(fileDir, workspaceRoot, serverIndex), ...config.roots, ...parseRoots(source, fileDir) }
+    return { ...defaultRoots(fileDir, workspaceRoot, serverIndex), ...config.roots, ...parseRoots(source, fileDir, workspaceRoot) }
 }
 
 export async function resolveCandidate(target: string): Promise<string | null> {
@@ -198,7 +210,7 @@ export async function resolveReferencePath(
         const target = cleanTarget ? path.resolve(docDir, cleanTarget) : docPath
         const resolved = await resolveCandidate(target)
         if (resolved) return resolved + hash
-        if (allowDirectory && await statKind(target) === 'dir') return target + hash
+        if (allowDirectory && await statKind(target) === 'dir') return target
         return null
     }
 
@@ -229,7 +241,7 @@ export async function resolveReferencePath(
     const target = cleanTarget ? path.resolve(rootBase, cleanTarget) : docPath
     const resolved = await resolveCandidate(target)
     if (resolved) return resolved + hash
-    if (allowDirectory && await statKind(target) === 'dir') return target + hash
+    if (allowDirectory && await statKind(target) === 'dir') return target
     return null
 }
 
