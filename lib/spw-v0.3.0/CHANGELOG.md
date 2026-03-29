@@ -15,12 +15,13 @@ This entry records the structural milestone that already landed in the repo. It 
 
 ### Still pending as public gates
 
-- Install truth: the external site mount story still needs to be made explicit before the release can be treated as externally complete.
-- Governance truth: surface admission and launch readiness still need an explicit registry-backed gate.
-- Discoverability truth: release-facing copy and extension-facing claims still need to stay narrower than the shipped structure.
+- Install truth: the external site mount story is now explicit in quick-start, migration, and release-story docs; the remaining gate is final agreement with runtime, CLI, and editor behavior.
+- Governance truth: surface admission and launch readiness now route through registry-backed installable and readiness metadata; the remaining gate is release-copy agreement with that registry.
+- Discoverability truth: release-facing copy and extension-facing claims are now explicitly preview-scoped where needed; the remaining gate is keeping startup truth narrower than marketplace ambition.
 
 ### Release posture
 
 - The repository is structurally ahead of the written release story.
 - The changelog should stay honest about what is already true in-repo versus what is still gated.
+- The last pre-tag question is no longer "did we write the gates down?" but "do those gates agree across docs, registry, CLI, and editor surfaces?"
 - v0.4.0 remains the forward-staged roadmap, not the current public claim.
