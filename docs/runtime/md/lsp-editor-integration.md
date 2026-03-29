@@ -75,9 +75,18 @@ npm run lsp
 
 ## Validation
 
+- `npm run test:lsp` runs the handler unit test suite (80 tests across semantic tokens, editing, and navigation).
 - `npm run lsp:smoke` checks definition and document-link navigation over stdio.
 - `npm --prefix extensions/vscode-spw run compile` verifies the VS Code client bundle.
 - `npm run spw -- select docs/index.spw --selector=pathRefs --format=lines` is still a useful selector-side sanity check for path references.
+
+### Handler Test Coverage
+
+| Handler cluster | Tests | Covers |
+|---|---|---|
+| semantic-tokens | 43 | 12 operators, 4 containers, 3 string types, comments, delta encoding, compound patterns, realistic fragments |
+| editing | 21 | @-root completion, annotation prefix, sigil snippets, file-system paths, code actions (trait↔binding, wrap-in-frame), formatting |
+| navigation | 16 | definition, document links, prepareRename (4 targets), cascading rename across files, annotation references |
 
 ## External Editors
 

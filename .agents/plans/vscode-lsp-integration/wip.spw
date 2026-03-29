@@ -111,6 +111,10 @@
  >>[2026-03-27 18:00] revise — rooted into register-bank.spw, dialect-spec.spw, literate-architecture.spw, and literate-ui.spw as canon surfaces. Added cognitive_surface_stack mapping each LSP handler to the Spw layers it reads: semantic tokens from lexer + register-bank phase defs, hover from AST + operator roles + dialect context, completion from scope frames + register access patterns, etc. The semantic layer this plan builds is the bridge between syntactic parsing and the cognitive surfaces the other three VS Code plans render.
  >>[2026-03-28 09:47] rebase — refreshed baseline to main@b41caa6b and added references/index.spw so LSP protocol, VS Code extension guides, semantic tokens, and TextMate layering stay in the normal reread path.
  >>[2026-03-28 19:18] revise — updated the tooling surface and integration note so editor/LSP quality now has a local doctrine: preview thin-client posture, startup truth, capability truth, quiet feedback, reversible editing, and mindful-growth questions. References now include both web APIs and repo-local quality surfaces.
+ >>[2026-03-29 00:20] observe — audit of handler clusters confirms commits ~[11]-~[20] are substantially implemented: SK includes File/Folder, completion has 4 stages (root, annotation, sigil, file-system), rename cascades across workspace, hover does cross-file peeking with phase context, code actions support trait↔binding toggle and wrap-in-frame, document links resolve through path refs.
+ >>[2026-03-29 00:21] implement — added vitest.lsp.config.ts and test:lsp npm script. Wrote 80 tests across semantic-tokens (43), editing (21), navigation (16) covering token classification, delta encoding, completion stages, code actions, rename cascading, and prepareRename. All passing.
+ >>[2026-03-29 00:22] revise — collapse commits ~[10]-~[20] into one verification commit since the capabilities were already implemented. Remaining work: ~[21] (docs update) and ~[27] (release declaration). Update next_commit to 21.
+ >>[2026-03-29 00:30] implement — updated lsp-editor-integration.md with handler test coverage table, tooling spec with test:lsp verification note, and interaction artifact with verified_surface frame documenting all 80 tests by handler cluster. Commit ~[21] complete.
 }
 
 ^["open"]{
@@ -149,10 +153,10 @@
  ~#rebased_at: "2026-03-28"
  ~#hygiene_split: "none; codebase restructure already landed on main"
  ~#files_hot: "packages/spw-lsp/src/handlers/, packages/spw-lsp/src/stdio-server.ts, extensions/vscode-spw/src/extension.ts, .agents/plans/vscode-lsp-integration/, .agents/plans/vscode-lsp-integration/references/"
- ~#next_commit: "10"
+ ~#next_commit: "27"
  ~#open_count: "2"
- ~#last_stream: "2026-03-28 19:18"
- ~#taste_debt: "keep capability claims narrower than the code-action surface until preview and smoke coverage catch up"
+ ~#last_stream: "2026-03-29 00:22"
+ ~#taste_debt: "80 tests now cover the handler surface. Remaining taste debt: docs and release copy should name exactly what the tests verify, not more."
 }
 
 ^["done"]{

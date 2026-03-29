@@ -35,8 +35,10 @@ The current VS Code extension relies on declarative TextMate grammars and simple
 [MOD] packages/spw-lsp/src/types.ts
 [MOD] packages/spw-seed/src/lexer/index.ts
 [MOD] packages/spw-seed/src/grammar/seed.ts
-[NEW] packages/spw-lsp/src/__tests__/lsp.test.ts
-[NEW] packages/spw-lsp/src/__tests__/stdio-server.test.ts
+[NEW] packages/spw-lsp/src/__tests__/semantic-tokens.test.ts
+[NEW] packages/spw-lsp/src/__tests__/editing.test.ts
+[NEW] packages/spw-lsp/src/__tests__/navigation.test.ts
+[NEW] vitest.lsp.config.ts
 ```
 
 ### Craft guard
@@ -45,11 +47,12 @@ The current VS Code extension relies on declarative TextMate grammars and simple
 
 ### Status of original commits
 - Commits ~[1]-~[9] are substantially complete (extension has vscode-languageclient ^9.0.1, LanguageClient initialized, monorepo restructure done, path literals highlighted, and architecture documented).
-- Remaining work begins at ~[10] (verify semantic tokens for all path variants).
+- Commits ~[10]-~[20] collapsed into a verification pass: all handler capabilities (completion, rename, hover, document links, code actions, semantic tokens) were already implemented. Added 80 unit tests across 3 test files, `vitest.lsp.config.ts`, and `test:lsp` npm script.
+- Remaining work: ~[21] (docs update) and ~[27] (release declaration).
 
 ## Commits
 
-Commits ~[10]-~[16] form the language-service correctness lane. Commits ~[17]-~[21] form the editor cleanup/documentation lane and can proceed in parallel once semantic-token verification stops moving underneath them.
+Commits ~[1]-~[20] have landed (capabilities implemented, 80 unit tests added). Remaining commits ~[21] and ~[27] form the documentation and release lane.
 
 1. `&[hygiene]` — rebase feature branch onto `origin/main` and isolate unrelated drift in a hygiene split branch
 2. `&[lsp]` — harden stdio-server with robust message partitioning and error boundaries

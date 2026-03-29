@@ -53,6 +53,41 @@
  ]
 }
 
+^["verified_surface"]{
+ // Updated 2026-03-29 after 80-test verification pass
+ semantic_tokens: {
+  ~#status: "verified"
+  ~#tests: "43"
+  ~#covers: "12 operators, 4 containers, 3 string types, comments, delta encoding, compound patterns (##>anchor, ~#trait, #!intent, @root), realistic .spw fragments"
+  ~#gap: "regex-based, no spw-seed parser integration; tilde-string paths tokenized as ~ + string, not as path unit"
+ }
+ completion: {
+  ~#status: "verified"
+  ~#tests: "8"
+  ~#covers: "@-root completion, annotation prefix matching, sigil snippet insertion (10 sigils), file-system path resolution (tilde and @root)"
+ }
+ code_actions: {
+  ~#status: "verified"
+  ~#tests: "4"
+  ~#covers: "trait→binding toggle (~#key: value → .{ key = value }), binding→trait toggle, wrap-in-frame for multi-line selection"
+ }
+ rename: {
+  ~#status: "verified"
+  ~#tests: "7"
+  ~#covers: "prepareRename for annotations, traits, @roots, frame names; cascading workspace rename across files for all three rename targets"
+ }
+ navigation: {
+  ~#status: "verified"
+  ~#tests: "5"
+  ~#covers: "definition via path ref resolution, documentLinks for resolvable paths, annotation references across files"
+ }
+ formatting: {
+  ~#status: "verified"
+  ~#tests: "2"
+  ~#covers: "no-change passthrough, full-document edit generation"
+ }
+}
+
 ^["trust_loop"]{
  source: [
   "parser truth",
