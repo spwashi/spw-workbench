@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Offline</title>
+  <meta name="theme-color" content="#8f4e22">
+  <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/assets/reset.css">
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+  <div class="page">
+    <div data-include="/fragments/site-nav.html">
+      <div class="shell">
+        <div class="eyebrow">Installable Book Preset</div>
+        <nav aria-label="Primary">
+          <a href="/">Home</a>
+          <a href="/chapters/">Chapters</a>
+          <a href="/places/">Places</a>
+          <a href="/items/">Items</a>
+          <a href="/artifacts/">Artifacts</a>
+          <a href="/http/get/routes.json">HTTP GET</a>
+        </nav>
+      </div>
+    </div>
+    <main class="shell" data-edit-surface="offline-page">
+      <div class="eyebrow">Offline mode</div>
+      <h1>The shell is cached. Content can keep loading from the last successful visit.</h1>
+      <p>
+        This starter registers a conservative service worker: navigation prefers the network, falls back to cached pages,
+        and preserves an explicit offline destination instead of hiding what happened.
+      </p>
+      <div class="callout">
+        <strong>Update model</strong>
+        The service worker keeps cached shell files available, then surfaces a refresh notice when a new version is ready.
+      </div>
+      <div class="grid">
+        <section class="panel">
+          <h2>Cached shell</h2>
+          <p><code>/</code>, chapter index, first chapter, shared assets, and route manifests are cached to make the first install feel real.</p>
+        </section>
+        <section class="panel">
+          <h2>Next step</h2>
+          <p>If you need richer offline behavior later, expand the cache list or move the content fetch policy closer to your publishing pipeline.</p>
+        </section>
+      </div>
+    </main>
+    <div data-include="/fragments/site-footer.html">
+      <div class="footer">
+        <div>Static-first by default. Replace fragments with a template engine or backend when needed.</div>
+        <div>Bookmarkable routes, offline rails, and public JSON keep the upgrade path explicit.</div>
+      </div>
+    </div>
+  </div>
+  <script src="/assets/enhancements.js"></script>
+</body>
+</html>

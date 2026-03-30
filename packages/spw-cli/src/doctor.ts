@@ -24,6 +24,7 @@ export interface DoctorReport {
 interface DoctorArgs {
   targetDir: string
   json: boolean
+  fix: boolean
   help: boolean
 }
 
@@ -54,6 +55,7 @@ function parseDoctorArgs(argv: string[]): DoctorArgs {
   return {
     targetDir: args.find((arg) => !arg.startsWith('--')) ?? '.',
     json: args.includes('--json'),
+    fix: args.includes('--fix'),
     help: common.flags.help,
   }
 }
@@ -177,8 +179,30 @@ export function printDoctorHelp(): void {
           'cd .spw/_workbench && npm run spw:init -- ../..',
         ],
       },
+      {
+        title: 'Options',
+        lines: [
+          '--fix   seed missing scaffold files and refresh the local commit gate',
+        ],
+      },
     ],
   })
+}
+
+export function printDoctorReport(report: DoctorReport): void {
+  console.log(`spw-doctor: root=${report.root} status=${report.status}`)
+  for (const check of report.checks) {
+    console.log(`${check.status}: ${check.id} ${check.summary}`)
+    if (check.fix) {
+      console.log(`fix: ${check.fix}`)
+    }
+  }
+  if (report.next.length > 0) {
+    console.log('next:')
+    for (const step of report.next) {
+      console.log(`- ${step}`)
+    }
+  }
 }
 
 export async function runSpwDoctorCli(argv: string[] = process.argv): Promise<void> {
@@ -188,23 +212,16 @@ export async function runSpwDoctorCli(argv: string[] = process.argv): Promise<vo
     return
   }
 
+  if (args.fix) {
+    const { applyDoctorFixes } = await import('./init')
+    await applyDoctorFixes(args.targetDir)
+  }
+
   const report = await inspectDoctorTarget(args.targetDir)
   if (args.json) {
     console.log(JSON.stringify(report, null, 2))
   } else {
-    console.log(`spw-doctor: root=${report.root} status=${report.status}`)
-    for (const check of report.checks) {
-      console.log(`${check.status}: ${check.id} ${check.summary}`)
-      if (check.fix) {
-        console.log(`fix: ${check.fix}`)
-      }
-    }
-    if (report.next.length > 0) {
-      console.log('next:')
-      for (const step of report.next) {
-        console.log(`- ${step}`)
-      }
-    }
+    printDoctorReport(report)
   }
 
   if (report.status === 'fail') {

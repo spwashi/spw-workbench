@@ -1,57 +1,62 @@
 # Spw Language Support for VS Code
 
-Language support for the **Spw** (Symbolic Processing Workbench) language.
+This extension is the VS Code client for the Spw workbench.
 
-## Release Posture
-
-This extension is the current **preview** editor surface for `v0.3.0`.
-
-It is intentionally a **thin client**: syntax highlighting, snippets, and the Concepts view live in the extension, while parsing, semantic tokens, hover, diagnostics, completion, and code lens come from `spw-lsp`.
-
-The current startup path still expects a **workbench checkout layout** so the extension can launch `packages/spw-lsp/src/stdio-server.ts`. That means the marketplace/discoverability story should stay narrower than the future site-install editor story for mounted `.spw/_workbench` repos.
-
-## Modern Architecture
-
-This extension is a **thin client** that delegates most language intelligence to the `spw-lsp` server, including parsing, semantic tokens, hover, diagnostics, completion, and code lens. This keeps the editor surface aligned with the current Spw language implementation.
+It stays thin by delegating language behavior to `spw-lsp`.
 
 ## Features
 
-- **Syntax Highlighting & Snippets** — TextMate grammar, snippets, and language configuration for `.spw` files.
-- **LSP-Powered Semantic Tokens** — each sigil (`!`, `@`, `^`, `?`, `~`, `*`, `.`, `#`, `&`, `=`) is semantically tokenized by the server and mapped to your active theme's colors.
-- **Language Intelligence** — hover, diagnostics, completion, document links, code lens, and formatting are delegated to `spw-lsp`.
-- **Concepts View** — activity-bar explorer for navigating the current concepts tree.
-- **Annotation & Metadata Styling** — rich styling for `~#focus`, `~#taste`, `~#goal`, and related metadata.
+- syntax highlighting and snippets for `.spw`
+- LSP-backed hover, diagnostics, completion, formatting, and links
+- Concepts and Workspace Atlas views
+- semantic-token and display surfaces driven by the server
+
+## Architecture
+
+The split is straightforward:
+
+- the extension owns editor wiring and view composition
+- `spw-lsp` owns parsing, index state, and language semantics
+
+That keeps editor behavior aligned with the server.
+
+## Server Resolution
+
+The extension looks for the language server in this order:
+
+1. `SPW_WORKBENCH_ROOT`
+2. the open workspace root as a canonical checkout
+3. `.spw/_workbench` inside the open workspace
+4. `node_modules/spw-workbench`
+5. the extension's repo-relative fallback
 
 ## Local Use
 
-The extension is part of the `spw-workbench` repository and is bundled via `esbuild`.
-
-For the current preview path:
-
-1. Build the extension from the repo root or the extension directory.
+Build:
 
 ```bash
 npm --prefix extensions/vscode-spw run compile
 ```
 
-2. Symlink the extension into your VS Code or Cursor extensions directory.
+Symlink into the editor extensions directory:
 
 ```bash
 ln -s "$(pwd)/extensions/vscode-spw" ~/.vscode/extensions/spw-language-0.3.0
 ```
 
-3. Open a checkout that contains the workbench package layout so the extension can resolve:
+## Main Surfaces
 
-- `packages/spw-lsp/src/stdio-server.ts`
-- `packages/spw-lsp/src/upstream-bridge.ts`
+Start with:
 
-The mounted-site editor startup path is still part of the active install/editor work, so this README stays explicit about the current preview boundary.
+- [`src/extension.ts`](src/extension.ts)
+- [`src/lsp/custom-requests.ts`](src/lsp/custom-requests.ts)
+- [`src/views/concepts-tree.ts`](src/views/concepts-tree.ts)
+- [`src/views/workspace-tree.ts`](src/views/workspace-tree.ts)
+- [`../../packages/spw-lsp/src/stdio-server.ts`](../../packages/spw-lsp/src/stdio-server.ts)
+- [`../../packages/spw-lsp/src/server-index.ts`](../../packages/spw-lsp/src/server-index.ts)
 
-## Documentation & Specs
+## Related Docs
 
-For more information on the Spw language and the current `v0.3.0` release story, start with:
-
-- `README.md`
-- `docs/runtime/md/quick-start.md`
-- `docs/runtime/md/migration-v02-v03.md`
-- `docs/runtime/md/site-install-release-story.md`
+- [`../../README.md`](../../README.md)
+- [`../../docs/runtime/md/github-reading-map.md`](../../docs/runtime/md/github-reading-map.md)
+- [`../../docs/runtime/md/quick-start.md`](../../docs/runtime/md/quick-start.md)

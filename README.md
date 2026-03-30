@@ -1,257 +1,219 @@
 # Spw Workbench
 
-Spw is a brace-first language where **operators are semantic actors** and **containers are structural facts**. The workbench ships that vision as working runtime, inspectable exhibits, and durable specification surfaces.
+Spw Workbench is a source-first language, runtime, and tooling stack for `.spw` workspaces.
 
-Install it in a project, point it at a `.spw/` directory, and it gives you a parser, interpreter, LSP, and a substrate-driven event system for layered UI generativity.
+It combines:
 
-## Quick Start
+- a parser and type model
+- a runtime and substrate/event system
+- a language server and editor surfaces
+- workspace contracts, specs, and research notes
+
+The repo currently ships:
+
+- a parser kernel in [`packages/spw-seed/`](packages/spw-seed)
+- a runtime and substrate/event model in [`packages/spw-runtime/`](packages/spw-runtime)
+- a language server in [`packages/spw-lsp/`](packages/spw-lsp)
+- a CLI in [`packages/spw-cli/`](packages/spw-cli)
+- a VS Code extension in [`extensions/vscode-spw/`](extensions/vscode-spw)
+- canon/spec/research surfaces under [`.spw/`](.spw) and [`docs/`](docs)
+
+## What This Project Is
+
+Spw itself is a brace-first language where operators carry semantic roles and containers carry structural facts.
+
+This repository is the working bench where:
+
+- language semantics are specified
+- parser and runtime behavior are implemented
+- editor affordances are tested against real corpus files
+- install, publishing, and research workflows are made explicit
+
+For a first read from GitHub, this README is the top-level orientation surface: what the repo contains, what is currently true, and where the main contracts live.
+
+## Current Truth
+
+- **Source-first**: checkouts are the primary development surface.
+- **Site-first install**: external sites currently mount the workbench at `.spw/_workbench`.
+- **Thin client editor**: the VS Code extension delegates language behavior to `spw-lsp`.
+- **Narrow public claim**: the install story is intentionally smaller than the long-term packaging story.
+
+For the current install boundary, start with [docs/runtime/md/quick-start.md](docs/runtime/md/quick-start.md).
+
+## Start Reading
+
+If you want the shortest useful route through the repo:
+
+1. Read [docs/runtime/md/github-reading-map.md](docs/runtime/md/github-reading-map.md).
+2. Read [docs/runtime/md/quick-start.md](docs/runtime/md/quick-start.md) for the current install truth.
+3. Read [`.spw/workspace.spw`](.spw/workspace.spw) for the workspace contract.
+4. Read [`packages/spw-seed/src/parser.ts`](packages/spw-seed/src/parser.ts) if you care about syntax/parsing.
+5. Read [`packages/spw-lsp/src/stdio-server.ts`](packages/spw-lsp/src/stdio-server.ts) and [`packages/spw-lsp/src/server-index.ts`](packages/spw-lsp/src/server-index.ts) if you care about editor behavior.
+6. Read [`packages/spw-runtime/src/`](packages/spw-runtime/src) if you care about runtime/substrate behavior.
+
+## Quick Start For This Checkout
 
 ```bash
 npm install
 npm run spw -- help
-npm run spw:dev          # start .spw dev watcher
-npm run lsp              # start language server
+npm run test:lsp
+npm run build
 ```
 
-To scaffold a fresh workspace from this checkout:
+Useful local commands:
 
-```bash
-npm run spw -- init ../my-site
-# compatibility alias: npm run spw:install -- ../my-site
-```
+| Command | Purpose |
+|:--|:--|
+| `npm run spw -- help` | CLI entrypoint |
+| `npm run spw:dev` | dev watcher |
+| `npm run lsp` | stdio language server |
+| `npm run test:lsp` | LSP test suite |
+| `npm run test:runtime` | runtime test suite |
+| `npm run build` | TypeScript typecheck |
+| `npm --prefix extensions/vscode-spw run compile` | build VS Code extension |
 
-The published command direction is `spw <verb>`, so the external form of that flow is `spw init my-site`.
-The companion readiness check is `spw doctor my-site`.
+## Site Install Shape
 
-### Packaging Contract
+The current public install model is site-first:
 
-This repo stays source-first. Checkouts, local installers, and development workflows should run the TypeScript entrypoints directly; `dist/` is a derived release artifact for packaging, bundling, and publish verification. `spw init` follows the same contract operationally: it installs a portable scaffold first, then resolves richer workbench tooling from a checkout, vendored `.spw/_workbench`, local npm install, or `SPW_WORKBENCH_ROOT`.
-
-Current packaging commands:
-
-```bash
-npm run build:jsdist      # derive JS + .d.ts package artifact into dist/
-npm run pack:jsdist:dry   # dry-run npm pack against dist/
-npm run bundle:release    # source/docs/extensions/jsdist release bundle
-```
-
-Each site creates its own `.spw/` directory:
-
-```
+```text
 your-site/
 ├── .spw/
-│   ├── _workbench/            # git submodule → spwashi/spw-workbench
-│   ├── index.spw              # workspace manifest
-│   ├── mount.spw              # workbench connection + engagement surface
-│   └── workspace.spw          # local roots and editor settings
-├── content/
-└── package.json
+│   ├── _workbench/      # mounted spw-workbench
+│   ├── index.spw
+│   ├── mount.spw
+│   └── workspace.spw
+└── .agents/
 ```
 
-### Site Integration
+The boundary is deliberate:
 
-Add the workbench as a git submodule:
+- the site owns `.spw/index.spw`, `.spw/workspace.spw`, and `.spw/mount.spw`
+- the workbench owns `.spw/_workbench`
 
-```bash
-git submodule add https://github.com/spwashi/spw-workbench .spw/_workbench
-```
+That keeps site canon and workbench infrastructure distinct.
 
-Current first-run bootstrap from the site root:
+Bootstrap details are in [docs/runtime/md/quick-start.md](docs/runtime/md/quick-start.md) and [docs/runtime/md/site-install-release-story.md](docs/runtime/md/site-install-release-story.md).
 
-```bash
-cd .spw/_workbench
-npm install
-npm run spw:init -- ../..
-npm run spw:doctor -- ../..
-```
+## Repo Map
 
-The `_workbench` prefix signals infrastructure — the parser, runtime, substrate engine, and LSP live here. Site-specific `.spw` files reference base configurations via relative paths:
+| Area | Why read it |
+|:--|:--|
+| [`packages/spw-seed/`](packages/spw-seed) | lexer/parser/types |
+| [`packages/spw-runtime/`](packages/spw-runtime) | interpreter and substrate-driven events |
+| [`packages/spw-lsp/`](packages/spw-lsp) | hover, diagnostics, completion, symbols, display logic |
+| [`packages/spw-cli/`](packages/spw-cli) | CLI verbs and workspace tooling |
+| [`extensions/vscode-spw/`](extensions/vscode-spw) | thin client over the LSP |
+| [`.spw/`](.spw) | canon specs, conventions, install surfaces, probes |
+| [`docs/`](docs) | public-facing runtime/design docs |
+| [`.agents/`](.agents) | agent workflows, plans, and local automation |
 
-```spw
-# inherit publish rules from the workbench
-~"_workbench/.spw/surfaces/publish.spw"
-```
+## Language Sketch
 
-`spw init` now seeds `.spw/mount.spw`, `.spw/workspace.spw`, `.spw/index.spw`, `.agents/workflows/commit-review.md`, and arms `.git/hooks/pre-commit` when the target is already a git repository. `spw doctor` checks whether the site has the expected scaffold, the embedded workbench checkout, and installed workbench dependencies. The hook resolves review tooling from `.spw/_workbench`, `node_modules/spw-workbench`, `SPW_WORKBENCH_ROOT`, or the runtime that executed `spw init`.
+This is enough to orient quickly without reading the whole corpus first.
 
-## Substrates
+### Core operators
 
-A **substrate** is a processing context where register events react. Expressions *bind to* a substrate; `~` deferral is a substrate binding — it waits for the right catalyst.
+| Sigil | Role |
+|:---:|:--|
+| `?` | probe / question |
+| `~` | potential / deferral / reference |
+| `@` | perspective / root |
+| `&` | merge / confluence |
+| `*` | value / collapse |
+| `^` | frame / integration |
+| `!` | action / injection |
+| `=` | config / constraint |
+| `%` | measure |
+| `#` | annotation / metadata |
+| `.` | ground / access |
 
-```typescript
-import { Substrate, RegisterBank, detectResonances } from 'spw-workbench'
-
-// Create a substrate and attach it to a register bank
-const substrate = new Substrate('reactive')
-const registers = new RegisterBank({}, substrate)
-
-// Bind a handler — like ~ deferral in Spw
-substrate.bind('write:*', event => {
-  console.log(`${event.key} wrote ${event.value}`)
-})
-
-// Writes emit events to the substrate
-registers.set('greeting', 'hello', { source: 'user' })
-
-// After processing, scan for emergent coupling
-const resonances = detectResonances(substrate)
-// → value-echo, phase-sync, frequency-lock, implicit-couple
-```
-
-### Resonance Detection
-
-The resonance detector scans a substrate's event log for implicit coupling:
-
-| Resonance | What It Finds | Chemistry Analogy |
-|:--|:--|:--|
-| **value-echo** | Two registers with identical values | Same precipitate in two vessels |
-| **phase-sync** | Registers reaching the same phase simultaneously | Synchronized crystallization |
-| **frequency-lock** | Similar write frequency | Harmonic vibration |
-| **implicit-couple** | Value of A references key of B | Covalent bond discovered |
-
-### Pipeline Precipitates
-
-Each stage of the pipeline produces a **precipitate** — the product that crystallizes out:
-
-```typescript
-import { collectPrecipitates, precipitateToSpw, projectionToSpw } from 'spw-workbench'
-
-const { precipitates, result } = collectPrecipitates('!["hello"]')
-// precipitates: [desugar, parse, normalize, interpret]
-
-// Render any stage's state as operable Spw text
-const spw = precipitateToSpw(precipitates[3])  // interpret → register expressions
-
-// Coagulate all stages into a single aggregate Spw frame
-const projection = projectionToSpw(precipitates)
-```
-
-## Operators
-
-Every operator has a role, a physics, and a phase in the [six-phase interpreter cycle](docs/design/spw/spirit-sequence.spw).
-
-| Sigil | Role | Physics | Phase |
-|:---:|:--|:--|:--|
-| `?` | probe / wonder | measurement onset | 1 |
-| `~` | potential / superposition | wavefunction — defer, name | 2 |
-| `@` | perspective / observer | observation — push scope | 3 |
-| `&` | confluence / merge | entanglement — combine frames | 4 |
-| `*` | value / collapse | collapse — scope to concrete | 5 |
-| `^` | integration / framing | emission — bind upward | 6 |
-| `!` | action / injection | kinetic — fires effect | 0 |
-| `=` | config / constraint | bias — forcing state | binding |
-| `%` | measure / observation | scalar — quantify | observe |
-| `#` | annotation / resonance | vibration — self-reference | meta |
-| `.` | ground / access | ground state — context | access |
-
-Operator combinatorics are queryable via [`spw:ls`](scripts/spw-ls.ts). See the [operator-lattice skill](.agents/skills/spw-operator-lattice/SKILL.md) for probe recipes.
-
-## Containers
+### Containers
 
 | Brace | Meaning |
 |:---:|:--|
-| `< >` | channel — directed, typed |
-| `( )` | grouping — parenthetical |
-| `[ ]` | selection — ordered, indexable |
-| `{ }` | scope — the fundamental container |
+| `< >` | channel |
+| `( )` | grouping |
+| `[ ]` | selection |
+| `{ }` | scope |
 
-## Annotations
+### Annotation forms
 
-```
-#topic        — plain annotation (topic tag)
-#:lens        — lens (viewing perspective)
-#!intent      — intent (action/purpose marker)
-#>anchor      — anchor (cross-file reference point)
-```
-
-## The `.spw/` Directory
-
-The `.spw/` directory is the workspace root. Each site creates one:
-
-```
-.spw/
-├── index.spw              # workspace manifest
-├── state/
-│   ├── observable.spw     # runtime metrics (bound to $%[metric] hover)
-│   └── locks.spw          # agent claim locks
-├── surfaces/
-│   ├── index.spw          # output format definitions
-│   ├── publish.spw        # projection rules
-│   ├── domains.spw        # domain registry
-│   └── plugin-protocol.spw # plugin framework
-├── substrates/
-│   └── structural.spw     # default batch substrate
-├── runtime/
-│   └── precipitates.spw   # pipeline concept definition
-├── registries/            # operator/brace registries
-├── harness/               # evals and probes
-└── conventions/           # naming and selection rules
+```text
+#topic
+#:lens
+#!intent
+#>anchor
 ```
 
-### Material Properties
+For the actual semantic model, read:
 
-The [material model](.spw/biome/ocean/algos/material.spw) maps physical intuition to processing:
+- [docs/design/spw/spirit-sequence.spw](docs/design/spw/spirit-sequence.spw)
+- [`.spw/workspace.spw`](.spw/workspace.spw)
+- [`.spw/tooling/vscode-spw.spw`](.spw/tooling/vscode-spw.spw)
 
-| Property | Meaning |
-|:--|:--|
-| **density** | concept packing / coupling pressure |
-| **viscosity** | resistance to change under hot iteration |
-| **elasticity** | recovery from projection perturbation |
-| **porosity** | cross-boundary permeability |
-| **anisotropy** | directional bias in traversal |
+## What Looks Stable vs Exploratory
 
-## Tooling
+Relatively stable:
 
-### Editor Extensions
+- package boundaries
+- source-first repo posture
+- mounted site install model
+- LSP thin-client direction
+- `.spw/workspace.spw` as workspace contract surface
 
-| Editor | Source |
-|:--|:--|
-| **VS Code** | [extension.ts](extensions/vscode-spw/src/extension.ts) — LSP, semantic tokens, concepts tree |
-| **IntelliJ** | [plugin.xml](extensions/intellij-spw/src/main/resources/META-INF/plugin.xml) — LSP, folding, structure view |
+Still actively evolving:
 
-### CLI
+- mounted-site editor startup polish
+- public packaging/distribution convenience
+- some display vocabulary and atlas surfaces in the VS Code extension
+- publishing flows derived directly from Spw sources
 
-| Command | What |
-|:--|:--|
-| `npm run spw -- init <dir>` | Bootstrap a `.spw` workspace and local agent affordances |
-| `npm run spw:install -- <dir>` | Compatibility alias for `init` |
-| `npm run spw:dev` | Polling dev server with parse validation |
-| `npm run spw:select -- <file>` | Single-file AST selector surface |
-| `npm run spw:ls` | Operator/brace/label query with ranking |
-| `npm run spw:format` | Canonical formatting (Spw.m ONF) |
-| `npm run spw:mem:dump` | Snapshot runtime memory lattice |
-| `npm run lsp` | Start language server (stdio) |
+## Why This Repo Exists
 
-### LSP Server
+The project keeps the main layers close together:
 
-The [language server](packages/spw-lsp/src/stdio-server.ts) provides definition, hover (with runtime trial), completion, document symbols, CodeLens, diagnostics, and formatting — all via `@-root` path resolution.
+- language tooling that stays inspectable end to end
+- editor affordances grounded in actual corpus structure
+- a parser/runtime/LSP stack that keeps its research surfaces close to the code
+- explicit install and authorship boundaries for multi-repo systems
 
-## Dialects
+The goal is direct extension, not a flattened generated scaffold.
 
-| Dialect | Rule | Use |
-|:--|:--|:--|
-| **Spw.b** | newline = statement boundary | exhibits, specs |
-| **Spw.l** | single-line expression | search bar, probes |
-| **Spw.m** | pure ONF (idempotent) | canonicalization |
-| **Spw.x** | live + advisory `@lock` | hot replacement |
+## VS Code Extension
 
-## Commits
+The VS Code extension lives in [`extensions/vscode-spw/`](extensions/vscode-spw).
 
-Subject as title card, body as `#[episode]{...}` block:
+It currently provides:
 
-```
-&[refactor] ^[hover] — extract HoverProvider
+- syntax highlighting and snippets
+- LSP-powered hover, diagnostics, completion, links, and formatting
+- Concepts and Workspace Atlas views
 
-#[episode]{
-  ~[scene]{ "hover module — sigil, annotation, @-root, path peek" }
-  ![change]{ intent: "141 lines, 4 hover strategies" }
-}
-```
+The extension README is here:
 
-## Design Documents
+- [extensions/vscode-spw/README.md](extensions/vscode-spw/README.md)
 
-| Doc | What |
-|:--|:--|
-| [spirit-sequence.spw](docs/design/spw/spirit-sequence.spw) | Six-phase interpreter cycle |
-| [affordance-ladder.spw](docs/design/spw/affordance-ladder.spw) | Progressive disclosure |
-| [stage-scaling-architecture.spw](docs/design/spw/stage-scaling-architecture.spw) | Stage scaling model |
+## Design And Runtime Docs
+
+Useful documentation surfaces:
+
+- [docs/runtime/md/github-reading-map.md](docs/runtime/md/github-reading-map.md)
+- [docs/runtime/md/quick-start.md](docs/runtime/md/quick-start.md)
+- [docs/runtime/md/migration-v02-v03.md](docs/runtime/md/migration-v02-v03.md)
+- [docs/runtime/md/site-install-release-story.md](docs/runtime/md/site-install-release-story.md)
+
+## Contributing
+
+Before changing behavior, read the local workflow rules in:
+
+- [AGENTS.md](AGENTS.md)
+- [CLAUDE.md](CLAUDE.md)
+- [.agents/README.md](.agents/README.md)
+
+If you want to extend the system rigorously, the best first move is to follow an actual request path end to end:
+
+1. pick a `.spw` source
+2. inspect parser/runtime/LSP handling
+3. run the targeted tests
+4. tighten the docs and contracts alongside the code

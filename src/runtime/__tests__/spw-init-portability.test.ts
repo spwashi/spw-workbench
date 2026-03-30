@@ -1,12 +1,26 @@
-import { access, readFile } from 'node:fs/promises'
+import { access, mkdtemp, readFile, rm } from 'node:fs/promises'
+import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { afterEach } from 'vitest'
 import { describe, expect, it } from 'vitest'
-import { renderCommitHookContent, resolveInitRuntimeContext } from '../../../packages/spw-cli/src/init'
+import { renderCommitHookContent, resolveInitRuntimeContext, seedSiteScaffold } from '../../../packages/spw-cli/src/init'
+import { inferSitePreset } from '../../../packages/spw-cli/src/init-presets'
 
 const testDir = path.dirname(fileURLToPath(import.meta.url))
+const tempRoots: string[] = []
+
+async function makeTempDir(name = 'spw-init-portability-'): Promise<string> {
+  const root = await mkdtemp(path.join(os.tmpdir(), name))
+  tempRoots.push(root)
+  return root
+}
 
 describe('spw init portability', () => {
+  afterEach(async () => {
+    await Promise.all(tempRoots.splice(0).map((root) => rm(root, { recursive: true, force: true })))
+  })
+
   it('detects the source runtime context from this checkout', async () => {
     const sourceInitUrl = pathToFileURL(path.resolve(testDir, '../../../packages/spw-cli/src/init.ts')).href
     const runtime = await resolveInitRuntimeContext(sourceInitUrl)
@@ -42,5 +56,41 @@ describe('spw init portability', () => {
     expect(hook).toContain('SPW_REPO_ROOT_OVERRIDE="$REPO_ROOT"')
     expect(hook).toContain('SPW_TOOL_ROOT_OVERRIDE="$tool_root"')
     expect(hook).toContain('/tmp/spw dist root')
+  })
+
+  it('infers the lore-land preset from the target directory name', () => {
+    expect(inferSitePreset('/tmp/lore.land')).toBe('lore-land')
+    expect(inferSitePreset('/tmp/ordinary-site')).toBe('default')
+  })
+
+  it('applies lore-land workspace defaults and site directories', async () => {
+    const sourceInitUrl = pathToFileURL(path.resolve(testDir, '../../../packages/spw-cli/src/init.ts')).href
+    const runtime = await resolveInitRuntimeContext(sourceInitUrl)
+    const parent = await makeTempDir()
+    const target = path.join(parent, 'lore.land')
+
+    const result = await seedSiteScaffold(target, runtime)
+    const workspace = await readFile(path.join(target, '.spw', 'workspace.spw'), 'utf8')
+
+    expect(result.preset).toBe('lore-land')
+    expect(workspace).toContain('@content: ~"../content"')
+    expect(workspace).toContain('@public: ~"../public"')
+    expect(workspace).toContain('@assets: ~"../public/assets"')
+    expect(workspace).toContain('@chapters: ~"../public/chapters"')
+    expect(workspace).toContain('@http: ~"../public/http"')
+    expect(workspace).toContain('@manifest: ~"../public/manifest.webmanifest"')
+    expect(workspace).toContain('@llms: ~"../public/llms.txt"')
+    expect(workspace).toContain('~#site_kind: "installable-book"')
+    expect(workspace).toContain('~#preset: "installable-book"')
+    await expect(access(path.join(target, 'content'))).resolves.toBeUndefined()
+    await expect(access(path.join(target, 'public', 'index.html'))).resolves.toBeUndefined()
+    await expect(access(path.join(target, 'public', 'chapters', 'index.html'))).resolves.toBeUndefined()
+    await expect(access(path.join(target, 'public', 'offline.html'))).resolves.toBeUndefined()
+    await expect(access(path.join(target, 'public', 'manifest.webmanifest'))).resolves.toBeUndefined()
+    await expect(access(path.join(target, 'public', 'sw.js'))).resolves.toBeUndefined()
+    await expect(access(path.join(target, 'public', 'llms.txt'))).resolves.toBeUndefined()
+    await expect(access(path.join(target, 'public', 'http', 'get', 'chapters.json'))).resolves.toBeUndefined()
+    await expect(access(path.join(target, 'public', 'http', 'get', 'site.json'))).resolves.toBeUndefined()
+    await expect(access(path.join(target, 'public', 'http', 'get', 'book.json'))).resolves.toBeUndefined()
   })
 })

@@ -1,8 +1,9 @@
-import { mkdtemp, mkdir, writeFile } from 'node:fs/promises'
+import { access, mkdtemp, mkdir, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
 import { inspectDoctorTarget } from '../../../packages/spw-cli/src/doctor'
+import { applyDoctorFixes } from '../../../packages/spw-cli/src/init'
 
 const tempRoots: string[] = []
 
@@ -55,5 +56,22 @@ describe('spw doctor', () => {
 
     expect(report.status).toBe('ok')
     expect(report.next).toEqual([])
+  })
+
+  it('doctor --fix seeds the portable scaffold and refreshes the commit gate', async () => {
+    const root = await makeTempDir()
+    await mkdir(path.join(root, '.git', 'hooks'), { recursive: true })
+    await mkdir(path.join(root, '.spw', '_workbench', 'node_modules'), { recursive: true })
+    await writeFile(path.join(root, '.spw', '_workbench', 'package.json'), '{"name":"spw-workbench"}\n')
+
+    await applyDoctorFixes(root)
+
+    await expect(access(path.join(root, '.spw', 'index.spw'))).resolves.toBeUndefined()
+    await expect(access(path.join(root, '.spw', 'workspace.spw'))).resolves.toBeUndefined()
+    await expect(access(path.join(root, '.spw', 'mount.spw'))).resolves.toBeUndefined()
+    await expect(access(path.join(root, '.git', 'hooks', 'pre-commit'))).resolves.toBeUndefined()
+
+    const report = await inspectDoctorTarget(root)
+    expect(report.status).toBe('ok')
   })
 })

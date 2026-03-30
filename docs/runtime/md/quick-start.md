@@ -1,16 +1,20 @@
 # Spw Quick Start
 
-This is the current public install shape for Spw `v0.3.0`.
+This is the current setup path for `v0.3.0`.
 
-The goal is not npm-first package consumption. The goal is to let a site codebase keep its own `.spw/` identity while mounting the workbench at `.spw/_workbench` as infrastructure.
+The install model is:
+
+- the site owns `.spw/`
+- the workbench is mounted at `.spw/_workbench`
+- parser, runtime, CLI, and LSP resolve through that mounted workbench
 
 ## Prerequisites
 
 - Git
 - Node `^20.19.0 || >=22.12.0`
-- An existing site repository or an empty directory you are willing to `git init`
+- a site repo or an empty directory
 
-## 5-Minute Setup
+## Setup
 
 From the future site root:
 
@@ -24,32 +28,25 @@ npm run spw:init -- ../..
 npm run spw:doctor -- ../..
 ```
 
-## What Those Commands Do
+## Result
 
-`git submodule add ... .spw/_workbench`
+`spw:init` seeds:
 
-- mounts the workbench as infrastructure instead of copying its canon into your site
+- `.spw/index.spw`
+- `.spw/workspace.spw`
+- `.spw/mount.spw`
+- `.agents/workflows/commit-review.md`
 
-`npm run spw:init -- ../..`
+If the site is already a Git repo, it also installs the pre-commit review hook.
 
-- seeds a portable site scaffold:
-  - `.spw/index.spw`
-  - `.spw/workspace.spw`
-  - `.spw/mount.spw`
-  - `.agents/workflows/commit-review.md`
-- arms `.git/hooks/pre-commit` when the site is already a git repo
+`spw:doctor` verifies:
 
-`npm run spw:doctor -- ../..`
+- the mounted workbench exists
+- workbench dependencies are installed
+- the site scaffold is present
+- the current resolution contract works
 
-- checks:
-  - `.spw/` exists
-  - `.spw/_workbench` exists
-  - workbench dependencies are installed
-  - the seeded site scaffold is present
-
-## What “Ready” Looks Like
-
-After `spw:init` and `spw:doctor`, your site should look like this:
+## Expected Layout
 
 ```text
 your-site/
@@ -63,54 +60,44 @@ your-site/
         └── commit-review.md
 ```
 
-Your seeded `.spw/mount.spw` should declare:
+## Running Commands
 
-- the mounted workbench root
-- the tracked `0.3.0` spec version
-- engaged surfaces such as `seed`, `runtime`, `cli`, and `lsp`
-- resolution paths for spec, CLI, and LSP roots
-
-## Running Commands From The Site
-
-Until a site-local wrapper is standardized, invoke Spw through the mounted workbench:
+Run through the mounted workbench:
 
 ```bash
 npm --prefix .spw/_workbench run spw -- help
 npm --prefix .spw/_workbench run spw -- doctor .
 ```
 
-That keeps the current release story truthful: the workbench is mounted infrastructure, and the site stays the author of its own `.spw/` surfaces.
+## Common Fixes
 
-## Common First Errors
-
-Missing `.spw/_workbench`
+Missing workbench mount:
 
 ```bash
 git submodule add https://github.com/spwashi/spw-workbench .spw/_workbench
 ```
 
-Workbench dependencies not installed
+Missing workbench dependencies:
 
 ```bash
 cd .spw/_workbench && npm install
 ```
 
-Missing site scaffold
+Missing site scaffold:
 
 ```bash
 cd .spw/_workbench && npm run spw:init -- ../..
 ```
 
-Re-check readiness
+Re-run verification:
 
 ```bash
 cd .spw/_workbench && npm run spw:doctor -- ../..
 ```
 
-## Boundary Rule
+## Boundary
 
-The site owns `.spw/`.
+- the site owns `.spw/index.spw`, `.spw/workspace.spw`, and `.spw/mount.spw`
+- the workbench owns `.spw/_workbench`
 
-The workbench owns `.spw/_workbench`.
-
-That asymmetry is the point of the current `v0.3.0` install model.
+That is the install contract for the current release.
