@@ -19,12 +19,14 @@ import {
   canonicalize,
   hashString,
   type ParseOutput,
+  type Token,
+  type OperatorKind,
 } from '@spwashi/spw-seed'
 import { selectPathRefs, type SpwSelectorHit } from './spw-selector'
 
 // ── Types ───────────────────────────────────────────────────────
 
-export type AnnotationKind = 'topic' | 'lens' | 'intent' | 'anchor'
+export type AnnotationKind = 'topic' | 'lens' | 'intent' | 'anchor' | 'prompt_root'
 
 export interface AnnotationEntry {
   file: string
@@ -52,9 +54,11 @@ export interface DocumentState {
   parseResult: ParseOutput | null
   selectorHits: SpwSelectorHit[]
   annotations: AnnotationEntry[]
+  frames: FrameEntry[]
   lineContexts: DocumentLineContext[]
   lastAccessBeat: number
   tier: 'hot' | 'warm' | 'cold'
+  writeCount: number
 }
 
 export interface ProjectionEntry {
@@ -64,6 +68,13 @@ export interface ProjectionEntry {
   specOwner: string
   generatorOwner: string
   status: string
+}
+
+export interface FrameEntry {
+  file: string
+  line: number       // 0-indexed
+  name: string
+  framePath: string[]  // full path including this frame
 }
 
 export interface ConceptCluster {
@@ -96,9 +107,6 @@ const DEFAULT_FORMAT_OPTIONS = {
   blankLineBetweenFrames: true,
 } as const
 
-const ANNOTATION_RE = /(##>|#!|#:|#>|#)([a-zA-Z_][a-zA-Z0-9_]*)/g
-const FRAME_RE = /^\s*\^(?:\["([^"]+)"\]|"([^"]+)"|\[([A-Za-z_][A-Za-z0-9_]*)\])/
-const SELECTOR_DEF_RE = /^\^selector\[([A-Za-z_][A-Za-z0-9_]*)\]/
 
 const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', 'release', '.claude', '_workbench'])
 
@@ -112,6 +120,8 @@ export interface SigilSemantic {
   tuning: string
 }
 
+// Validated against OperatorKind from @spwashi/spw-seed — satisfies ensures full coverage.
+// Declared as Record<string, ...> so runtime string-key lookups stay type-safe.
 export const SIGIL_SEMANTICS: Record<string, SigilSemantic> = {
   '!': { role: 'action / injection', physics: 'kinetic — fires effect on world', phase: 'phase 0', phaseIndex: 0, tuning: 'gate effects behind deterministic spell macros' },
   '?': { role: 'wonder / probe', physics: 'measurement — is there something?', phase: 'phase 1', phaseIndex: 1, tuning: 'increase sampling density around high-drift zones' },
@@ -125,6 +135,7 @@ export const SIGIL_SEMANTICS: Record<string, SigilSemantic> = {
   '#': { role: 'annotation / resonance', physics: 'vibration — self-reference, meta', phase: 'meta', phaseIndex: -1, tuning: 'use anchors/lenses to reduce lookup entropy' },
   '.': { role: 'ground / access', physics: 'ground state — context, separator', phase: 'access', phaseIndex: -1, tuning: 'ground refs early for replayability' },
   '$': { role: 'selector / addressing', physics: 'addressing potential', phase: 'query', phaseIndex: -1, tuning: 'normalize selector forms to improve cache hit rate' },
+  '<>': { role: 'capsule / shell', physics: 'enclosure — wrap and transport', phase: 'access', phaseIndex: -1, tuning: 'use for short-lived transport envelopes' },
   '_': { role: 'intrinsic / identity', physics: 'identity — core register', phase: 'identity', phaseIndex: -1, tuning: 'carry stable label identity across transforms' },
 }
 
@@ -142,6 +153,9 @@ export class ServerIndex {
   private workspaceAnnotations: AnnotationEntry[] = []
   private annotationsByName = new Map<string, AnnotationEntry[]>()
   private annotationsByFile = new Map<string, AnnotationEntry[]>()
+  private workspaceFrames: FrameEntry[] = []
+  private framesByName = new Map<string, FrameEntry[]>()
+  private framesByFile = new Map<string, FrameEntry[]>()
   private projections: ProjectionEntry[] = []
   private selectorDefs = new Map<string, SelectorDefinition>()
   private beat = 0
@@ -203,6 +217,7 @@ export class ServerIndex {
     doc.version = version
     doc.contentHash = newHash
     doc.lastAccessBeat = this.beat
+    doc.writeCount++
 
     // Reparse
     this.parseDocument(doc)
@@ -220,11 +235,23 @@ export class ServerIndex {
     const doc = this.documents.get(uri)
     if (!doc) return
 
-    // Reindex annotations for this file in the workspace index
+    // Reindex annotations and frames for this file in the workspace index
     this.removeAnnotationsForFile(doc.filePath)
     for (const entry of doc.annotations) {
       this.addAnnotation(entry)
     }
+    this.removeFramesForFile(doc.filePath)
+    for (const entry of doc.frames) {
+      this.addFrame(entry)
+    }
+  }
+
+  allDocuments(): Map<string, DocumentState> {
+    return this.documents
+  }
+
+  getCurrentBeat(): number {
+    return this.beat
   }
 
   getDocument(uri: string): DocumentState | null {
@@ -269,9 +296,11 @@ export class ServerIndex {
       parseResult: null,
       selectorHits: [],
       annotations: [],
+      frames: [],
       lineContexts: [],
       lastAccessBeat: this.beat,
       tier: 'warm',
+      writeCount: 0,
     }
     this.documents.set(uri, doc)
     this.parseDocument(doc)
@@ -285,67 +314,163 @@ export class ServerIndex {
       doc.parseResult = null
     }
     doc.selectorHits = selectPathRefs(doc.text)
-    const structure = analyzeDocumentContext(doc.filePath, doc.text)
+    // Pass parse result so analyzeDocumentContext reuses tokens already produced
+    const structure = analyzeDocumentContext(doc.filePath, doc.text, doc.parseResult)
     doc.annotations = structure.annotations
+    doc.frames = structure.frames
     doc.lineContexts = structure.lineContexts
   }
 
   // ── Workspace config loading ──────────────────────────────────
 
-  /** Parse @name: ~"./path" entries from .spw/shelves.spw */
+  /** Parse @name: ~"./path" entries from .spw/shelves.spw using token stream */
   private async loadShelves(): Promise<void> {
     const shelvesPath = path.join(this.workspaceRoot, '.spw', 'shelves.spw')
     try {
       const text = await fs.readFile(shelvesPath, 'utf8')
       const shelvesDir = path.dirname(shelvesPath)
-      const re = /^\s*@([A-Za-z0-9_-]+):\s*~"([^"]+)"/gm
-      let m: RegExpExecArray | null
-      while ((m = re.exec(text)) !== null) {
-        this.shelfRoots.set(m[1], path.resolve(shelvesDir, m[2]))
+      const { tokens } = parse(text)
+      const sig = tokens.filter(t => t.type !== 'WHITESPACE' && t.type !== 'EOF')
+
+      for (let i = 0; i < sig.length; i++) {
+        const tok = sig[i]
+        // @name : ~"./path"
+        if (tok.type !== 'OPERATOR' || tok.kind !== '@') continue
+        const name = sig[i + 1]
+        const colon = sig[i + 2]
+        const tilde = sig[i + 3]
+        const pathTok = sig[i + 4]
+        if (
+          name?.type === 'IDENTIFIER' &&
+          colon?.type === 'COLON' &&
+          tilde?.type === 'OPERATOR' && tilde.kind === '~' &&
+          pathTok?.type === 'STRING'
+        ) {
+          const rel = pathTok.value.replace(/^["'`]|["'`]$/g, '')
+          this.shelfRoots.set(name.value, path.resolve(shelvesDir, rel))
+          i += 4
+        }
       }
     } catch {
       // shelves.spw not found — fall back to defaults later
     }
   }
 
-  /** Parse ^subroot[name]{ path: @shelf ... cache_key_prefix: ... } from topology.spw */
+  /** Parse ^subroot[name]{ ... } from topology.spw using token stream */
   private async loadTopology(): Promise<void> {
     const topologyPath = path.join(this.workspaceRoot, '.spw', 'topology.spw')
     try {
       const text = await fs.readFile(topologyPath, 'utf8')
-      const blockRe = /\^subroot\[([A-Za-z0-9_-]+)\]([\s\S]*?)(?=\^subroot\[|\^"|$)/g
-      let m: RegExpExecArray | null
-      while ((m = blockRe.exec(text)) !== null) {
-        const name = m[1]
-        const body = m[2]
-        const prefixMatch = body.match(/cache_key_prefix:\s*([A-Za-z0-9_-]+)/)
-        const cachePrefix = prefixMatch?.[1] ?? name
-        const pathMatch = body.match(/path:\s*@([A-Za-z0-9_-]+)/)
-        const shelfName = pathMatch?.[1] ?? name
-        const resolvedPath = this.shelfRoots.get(shelfName) ??
-          path.join(this.workspaceRoot, '.spw', name)
-        this.topologySubroots.set(name, { resolvedPath, cachePrefix })
+      const { tokens } = parse(text)
+      const sig = tokens.filter(t => t.type !== 'WHITESPACE' && t.type !== 'EOF')
+
+      for (let i = 0; i < sig.length; i++) {
+        // ^subroot[name]{
+        const tok = sig[i]
+        if (tok.type !== 'OPERATOR' || tok.kind !== '^') continue
+        const label = sig[i + 1]
+        if (label?.type !== 'IDENTIFIER' || label.value !== 'subroot') continue
+        const open = sig[i + 2]
+        const nameTok = sig[i + 3]
+        const close = sig[i + 4]
+        const brace = sig[i + 5]
+        if (
+          open?.type === 'CONTAINER_OPEN' && open.kind === '[' &&
+          nameTok?.type === 'IDENTIFIER' &&
+          close?.type === 'CONTAINER_CLOSE' && close.kind === ']' &&
+          brace?.type === 'CONTAINER_OPEN' && brace.kind === '{'
+        ) {
+          const name = nameTok.value
+          i += 5
+          // Scan body until matching }
+          let depth = 1
+          const bodyTokens: Token[] = []
+          while (++i < sig.length && depth > 0) {
+            const bt = sig[i]
+            if (bt.type === 'CONTAINER_OPEN' && bt.kind === '{') depth++
+            else if (bt.type === 'CONTAINER_CLOSE' && bt.kind === '}') { depth--; if (depth === 0) break }
+            bodyTokens.push(bt)
+          }
+          // Extract path: @shelf and cache_key_prefix: key from bodyTokens
+          let shelfName = name
+          let cachePrefix = name
+          for (let j = 0; j < bodyTokens.length; j++) {
+            const key = bodyTokens[j]
+            if (key?.type !== 'IDENTIFIER') continue
+            const colon = bodyTokens[j + 1]
+            if (colon?.type !== 'COLON') continue
+            const val = bodyTokens[j + 2]
+            if (key.value === 'path' && val?.type === 'OPERATOR' && val.kind === '@') {
+              const rootName = bodyTokens[j + 3]
+              if (rootName?.type === 'IDENTIFIER') shelfName = rootName.value
+            } else if (key.value === 'cache_key_prefix' && val?.type === 'IDENTIFIER') {
+              cachePrefix = val.value
+            }
+          }
+          const resolvedPath = this.shelfRoots.get(shelfName) ??
+            path.join(this.workspaceRoot, '.spw', name)
+          this.topologySubroots.set(name, { resolvedPath, cachePrefix })
+        }
       }
     } catch {
       // topology.spw not found
     }
   }
 
-  /** Parse ^category[name]{ subroots: [@root/sub, ...] } from editing.spw */
+  /** Parse ^category[name]{ subroots: [...] } from editing.spw using token stream */
   private async loadEditing(): Promise<void> {
     const editingPath = path.join(this.workspaceRoot, '.spw', 'editing.spw')
     try {
       const text = await fs.readFile(editingPath, 'utf8')
-      const blockRe = /\^category\[([A-Za-z0-9_-]+)\]([\s\S]*?)(?=\^category\[|\^"|$)/g
-      let m: RegExpExecArray | null
-      while ((m = blockRe.exec(text)) !== null) {
-        const name = m[1]
-        const body = m[2]
-        const subrootsMatch = body.match(/subroots:\s*\[([^\]]+)\]/)
-        const keys = subrootsMatch
-          ? (subrootsMatch[1].match(/@([A-Za-z0-9_/-]+)/g) ?? []).map(s => s.slice(1))
-          : []
-        this.editingCategories.set(name, keys)
+      const { tokens } = parse(text)
+      const sig = tokens.filter(t => t.type !== 'WHITESPACE' && t.type !== 'EOF')
+
+      for (let i = 0; i < sig.length; i++) {
+        // ^category[name]{
+        const tok = sig[i]
+        if (tok.type !== 'OPERATOR' || tok.kind !== '^') continue
+        const label = sig[i + 1]
+        if (label?.type !== 'IDENTIFIER' || label.value !== 'category') continue
+        const open = sig[i + 2]
+        const nameTok = sig[i + 3]
+        const close = sig[i + 4]
+        const brace = sig[i + 5]
+        if (
+          open?.type === 'CONTAINER_OPEN' && open.kind === '[' &&
+          nameTok?.type === 'IDENTIFIER' &&
+          close?.type === 'CONTAINER_CLOSE' && close.kind === ']' &&
+          brace?.type === 'CONTAINER_OPEN' && brace.kind === '{'
+        ) {
+          const name = nameTok.value
+          i += 5
+          let depth = 1
+          const bodyTokens: Token[] = []
+          while (++i < sig.length && depth > 0) {
+            const bt = sig[i]
+            if (bt.type === 'CONTAINER_OPEN' && bt.kind === '{') depth++
+            else if (bt.type === 'CONTAINER_CLOSE' && bt.kind === '}') { depth--; if (depth === 0) break }
+            bodyTokens.push(bt)
+          }
+          // Find subroots: [ @root/sub, ... ]
+          const keys: string[] = []
+          for (let j = 0; j < bodyTokens.length; j++) {
+            const bt = bodyTokens[j]
+            if (bt?.type === 'OPERATOR' && bt.kind === '@') {
+              // Collect @root/path/sub segments: @IDENT (/ IDENT)*
+              let key = bodyTokens[j + 1]?.value ?? ''
+              let k = j + 2
+              while (
+                bodyTokens[k]?.type === 'CONNECTOR' && bodyTokens[k]?.kind === '/' &&
+                bodyTokens[k + 1]?.type === 'IDENTIFIER'
+              ) {
+                key += '/' + bodyTokens[k + 1].value
+                k += 2
+              }
+              if (key) keys.push(key)
+            }
+          }
+          this.editingCategories.set(name, keys)
+        }
       }
     } catch {
       // editing.spw not found
@@ -358,6 +483,9 @@ export class ServerIndex {
     this.workspaceAnnotations = []
     this.annotationsByName.clear()
     this.annotationsByFile.clear()
+    this.workspaceFrames = []
+    this.framesByName.clear()
+    this.framesByFile.clear()
     this.projections = []
     this.selectorDefs.clear()
 
@@ -371,9 +499,12 @@ export class ServerIndex {
     for (const filePath of spwFiles) {
       try {
         const text = await fs.readFile(filePath, 'utf8')
-        const annotations = analyzeDocumentContext(filePath, text).annotations
-        for (const entry of annotations) {
+        const structure = analyzeDocumentContext(filePath, text)
+        for (const entry of structure.annotations) {
           this.addAnnotation(entry)
+        }
+        for (const entry of structure.frames) {
+          this.addFrame(entry)
         }
 
         // Extract selector definitions from sel.spw-like files
@@ -426,19 +557,24 @@ export class ServerIndex {
     }
   }
 
-  /** Re-read a file from disk and refresh its annotation index entry. */
+  /** Re-read a file from disk and refresh its annotation and frame index entries. */
   async refreshFileAnnotations(filePath: string): Promise<void> {
     try {
       const text = await fs.readFile(filePath, 'utf8')
       this.removeAnnotationsForFile(filePath)
-      const annotations = analyzeDocumentContext(filePath, text).annotations
-      for (const entry of annotations) {
+      this.removeFramesForFile(filePath)
+      const structure = analyzeDocumentContext(filePath, text)
+      for (const entry of structure.annotations) {
         this.addAnnotation(entry)
+      }
+      for (const entry of structure.frames) {
+        this.addFrame(entry)
       }
       this.extractSelectorDefs(filePath, text)
     } catch {
       // file deleted or unreadable — clear its entries
       this.removeAnnotationsForFile(filePath)
+      this.removeFramesForFile(filePath)
     }
   }
 
@@ -454,6 +590,28 @@ export class ServerIndex {
     }
     this.workspaceAnnotations = this.workspaceAnnotations.filter(e => e.file !== filePath)
     this.annotationsByFile.delete(filePath)
+  }
+
+  private addFrame(entry: FrameEntry): void {
+    this.workspaceFrames.push(entry)
+    const byName = this.framesByName.get(entry.name)
+    if (byName) { byName.push(entry) } else { this.framesByName.set(entry.name, [entry]) }
+    const byFile = this.framesByFile.get(entry.file)
+    if (byFile) { byFile.push(entry) } else { this.framesByFile.set(entry.file, [entry]) }
+  }
+
+  private removeFramesForFile(filePath: string): void {
+    const old = this.framesByFile.get(filePath) || []
+    for (const entry of old) {
+      const arr = this.framesByName.get(entry.name)
+      if (arr) {
+        const idx = arr.indexOf(entry)
+        if (idx >= 0) arr.splice(idx, 1)
+        if (arr.length === 0) this.framesByName.delete(entry.name)
+      }
+    }
+    this.workspaceFrames = this.workspaceFrames.filter(e => e.file !== filePath)
+    this.framesByFile.delete(filePath)
   }
 
   // ── Annotation queries ────────────────────────────────────────
@@ -477,6 +635,15 @@ export class ServerIndex {
 
   allAnnotations(): AnnotationEntry[] {
     return this.workspaceAnnotations
+  }
+
+  searchFrames(query: string): FrameEntry[] {
+    const q = query.toLowerCase()
+    return this.workspaceFrames.filter(e => e.name.toLowerCase().includes(q))
+  }
+
+  framesForFile(filePath: string): FrameEntry[] {
+    return this.framesByFile.get(filePath) || []
   }
 
   getContextAtPosition(
@@ -517,33 +684,62 @@ export class ServerIndex {
   // ── Selector definitions ──────────────────────────────────────
 
   private extractSelectorDefs(filePath: string, text: string): void {
-    const lines = text.split('\n')
-    for (let i = 0; i < lines.length; i += 1) {
-      const match = lines[i].match(SELECTOR_DEF_RE)
-      if (!match) continue
+    const { tokens } = parse(text)
+    const sig = tokens.filter(t => t.type !== 'WHITESPACE' && t.type !== 'EOF')
 
-      const name = match[1]
-      // Parse the block that follows
-      const include: string[] = []
-      let combine = ''
-      let grounding = ''
-
-      for (let j = i + 1; j < lines.length && j < i + 10; j += 1) {
-        const line = lines[j].trim()
-        if (line.startsWith('include:')) {
-          const content = line.slice('include:'.length).trim()
-          const items = content.replace(/[\[\]]/g, '').split(',').map(s => s.trim()).filter(Boolean)
-          include.push(...items)
-        } else if (line.startsWith('combine:')) {
-          combine = line.slice('combine:'.length).trim()
-        } else if (line.startsWith('grounding:')) {
-          grounding = line.slice('grounding:'.length).trim()
-        } else if (line === '}') {
-          break
+    for (let i = 0; i < sig.length; i++) {
+      // ^selector[name]{
+      const tok = sig[i]
+      if (tok.type !== 'OPERATOR' || tok.kind !== '^') continue
+      const label = sig[i + 1]
+      if (label?.type !== 'IDENTIFIER' || label.value !== 'selector') continue
+      const open = sig[i + 2]
+      const nameTok = sig[i + 3]
+      const close = sig[i + 4]
+      const brace = sig[i + 5]
+      if (
+        open?.type === 'CONTAINER_OPEN' && open.kind === '[' &&
+        nameTok?.type === 'IDENTIFIER' &&
+        close?.type === 'CONTAINER_CLOSE' && close.kind === ']' &&
+        brace?.type === 'CONTAINER_OPEN' && brace.kind === '{'
+      ) {
+        const name = nameTok.value
+        i += 5
+        let depth = 1
+        const bodyTokens: Token[] = []
+        while (++i < sig.length && depth > 0) {
+          const bt = sig[i]
+          if (bt.type === 'CONTAINER_OPEN' && bt.kind === '{') depth++
+          else if (bt.type === 'CONTAINER_CLOSE' && bt.kind === '}') { depth--; if (depth === 0) break }
+          bodyTokens.push(bt)
         }
+        const include: string[] = []
+        let combine = ''
+        let grounding = ''
+        for (let j = 0; j < bodyTokens.length; j++) {
+          const key = bodyTokens[j]
+          if (key?.type !== 'IDENTIFIER') continue
+          const colon = bodyTokens[j + 1]
+          if (colon?.type !== 'COLON') continue
+          const val = bodyTokens[j + 2]
+          if (!val) continue
+          if (key.value === 'include' && val.type === 'CONTAINER_OPEN' && val.kind === '[') {
+            let k = j + 3
+            while (k < bodyTokens.length && !(bodyTokens[k]?.type === 'CONTAINER_CLOSE' && bodyTokens[k]?.kind === ']')) {
+              const item = bodyTokens[k]
+              if (item?.type === 'IDENTIFIER' || item?.type === 'STRING') {
+                include.push(item.value.replace(/^["'`]|["'`]$/g, ''))
+              }
+              k++
+            }
+          } else if (key.value === 'combine' && (val.type === 'IDENTIFIER' || val.type === 'STRING')) {
+            combine = val.value.replace(/^["'`]|["'`]$/g, '')
+          } else if (key.value === 'grounding' && (val.type === 'IDENTIFIER' || val.type === 'STRING')) {
+            grounding = val.value.replace(/^["'`]|["'`]$/g, '')
+          }
+        }
+        this.selectorDefs.set(name, { name, include, combine, grounding, file: filePath })
       }
-
-      this.selectorDefs.set(name, { name, include, combine, grounding, file: filePath })
     }
   }
 
@@ -557,24 +753,59 @@ export class ServerIndex {
     const genIndexPath = path.join(this.workspaceRoot, '.spw', 'gen', 'index.spw')
     try {
       const text = await fs.readFile(genIndexPath, 'utf8')
-      const projRe = /\^projection\[(\w+)\]\s*\{([^}]+)\}/g
-      let match: RegExpExecArray | null
-      while ((match = projRe.exec(text)) !== null) {
-        const name = match[1]
-        const body = match[2]
-        const fields: Record<string, string> = {}
-        for (const line of body.split('\n')) {
-          const kv = line.match(/(\w+):\s*"?([^"\n]+)"?/)
-          if (kv) fields[kv[1]] = kv[2].trim()
+      const { tokens } = parse(text)
+      const sig = tokens.filter(t => t.type !== 'WHITESPACE' && t.type !== 'EOF')
+
+      for (let i = 0; i < sig.length; i++) {
+        // ^projection[name]{
+        const tok = sig[i]
+        if (tok.type !== 'OPERATOR' || tok.kind !== '^') continue
+        const label = sig[i + 1]
+        if (label?.type !== 'IDENTIFIER' || label.value !== 'projection') continue
+        const open = sig[i + 2]
+        const nameTok = sig[i + 3]
+        const close = sig[i + 4]
+        const brace = sig[i + 5]
+        if (
+          open?.type === 'CONTAINER_OPEN' && open.kind === '[' &&
+          (nameTok?.type === 'IDENTIFIER' || nameTok?.type === 'STRING') &&
+          close?.type === 'CONTAINER_CLOSE' && close.kind === ']' &&
+          brace?.type === 'CONTAINER_OPEN' && brace.kind === '{'
+        ) {
+          const name = nameTok.value.replace(/^["'`]|["'`]$/g, '')
+          i += 5
+          let depth = 1
+          const bodyTokens: Token[] = []
+          while (++i < sig.length && depth > 0) {
+            const bt = sig[i]
+            if (bt.type === 'CONTAINER_OPEN' && bt.kind === '{') depth++
+            else if (bt.type === 'CONTAINER_CLOSE' && bt.kind === '}') { depth--; if (depth === 0) break }
+            bodyTokens.push(bt)
+          }
+          // Extract key: "value" or key: value fields
+          const fields: Record<string, string> = {}
+          for (let j = 0; j < bodyTokens.length; j++) {
+            const key = bodyTokens[j]
+            if (key?.type !== 'IDENTIFIER') continue
+            const colon = bodyTokens[j + 1]
+            if (colon?.type !== 'COLON') continue
+            const val = bodyTokens[j + 2]
+            if (!val) continue
+            if (val.type === 'STRING') {
+              fields[key.value] = val.value.replace(/^["'`]|["'`]$/g, '')
+            } else if (val.type === 'IDENTIFIER') {
+              fields[key.value] = val.value
+            }
+          }
+          this.projections.push({
+            name,
+            root: fields.root ?? '',
+            source: fields.source ?? '',
+            specOwner: fields.spec_owner ?? '',
+            generatorOwner: fields.generator_owner ?? '',
+            status: fields.status ?? '',
+          })
         }
-        this.projections.push({
-          name,
-          root: fields.root || '',
-          source: fields.source || '',
-          specOwner: fields.spec_owner || '',
-          generatorOwner: fields.generator_owner || '',
-          status: fields.status || '',
-        })
       }
     } catch {
       // gen/index.spw not found — no projections
@@ -731,163 +962,199 @@ export class ServerIndex {
   }
 }
 
-// ── Helpers ─────────────────────────────────────────────────────
-
-function kindFromSigil(sigil: string | undefined): AnnotationKind {
-  switch (sigil) {
-    case '#:': return 'lens'
-    case '#!': return 'intent'
-    case '#>':
-    case '##>':
-      return 'anchor'
-    default: return 'topic'
-  }
-}
-
-type StringDelimiter = '"' | "'" | '`' | null
+// ── Token-stream analysis ────────────────────────────────────────
+//
+// Replaces regex-based extraction. Token stream from seed parser is already
+// string-aware, comment-aware, and position-precise (1-indexed → 0-indexed).
 
 interface ScopeContext {
   braids: string[]
   frameName: string | null
 }
 
+function annotationKindFromTokens(
+  tokens: Token[],
+  hashIdx: number,
+): { kind: AnnotationKind; name: string; advance: number } | null {
+  // tokens is the non-whitespace subsequence; hashIdx points to OPERATOR('#')
+  const next = tokens[hashIdx + 1]
+  if (!next) return null
+
+  // ##>name — prompt root anchor
+  if (next.type === 'OPERATOR' && next.kind === '#') {
+    const after = tokens[hashIdx + 2]
+    const name = tokens[hashIdx + 3]
+    if (after?.type === 'CAPSULE_CLOSE' && name?.type === 'IDENTIFIER') {
+      return { kind: 'prompt_root', name: name.value, advance: 3 }
+    }
+  }
+
+  // #>anchor
+  if (next.type === 'CAPSULE_CLOSE' && next.kind === '>') {
+    const name = tokens[hashIdx + 2]
+    if (name?.type === 'IDENTIFIER') {
+      return { kind: 'anchor', name: name.value, advance: 2 }
+    }
+  }
+
+  // #!intent
+  if (next.type === 'OPERATOR' && next.kind === '!') {
+    const name = tokens[hashIdx + 2]
+    if (name?.type === 'IDENTIFIER') {
+      return { kind: 'intent', name: name.value, advance: 2 }
+    }
+  }
+
+  // #:lens
+  if (next.type === 'COLON') {
+    const name = tokens[hashIdx + 2]
+    if (name?.type === 'IDENTIFIER') {
+      return { kind: 'lens', name: name.value, advance: 2 }
+    }
+  }
+
+  // #topic
+  if (next.type === 'IDENTIFIER') {
+    return { kind: 'topic', name: next.value, advance: 1 }
+  }
+
+  return null
+}
+
+function frameNameFromTokens(tokens: Token[]): string | null {
+  // tokens is non-whitespace; look for ^["name"] or ^"name" or ^[name]
+  for (let i = 0; i < tokens.length; i++) {
+    const tok = tokens[i]
+    if (tok.type !== 'OPERATOR' || tok.kind !== '^') continue
+
+    const next = tokens[i + 1]
+    if (!next) continue
+
+    if (next.type === 'CONTAINER_OPEN' && next.kind === '[') {
+      const label = tokens[i + 2]
+      if (label?.type === 'STRING') {
+        return label.value.replace(/^["'`]|["'`]$/g, '')
+      }
+      if (label?.type === 'IDENTIFIER') {
+        return label.value
+      }
+    }
+
+    if (next.type === 'STRING') {
+      return next.value.replace(/^["'`]|["'`]$/g, '')
+    }
+  }
+  return null
+}
+
 function analyzeDocumentContext(
   filePath: string,
   text: string,
-): { annotations: AnnotationEntry[]; lineContexts: DocumentLineContext[] } {
-  const lines = text.split('\n')
+  parseOutput?: ParseOutput | null,
+): { annotations: AnnotationEntry[]; frames: FrameEntry[]; lineContexts: DocumentLineContext[] } {
+  const output = parseOutput ?? parse(text)
+  return analyzeFromTokens(filePath, text, output.tokens)
+}
+
+function analyzeFromTokens(
+  filePath: string,
+  text: string,
+  tokens: Token[],
+): { annotations: AnnotationEntry[]; frames: FrameEntry[]; lineContexts: DocumentLineContext[] } {
+  const lineCount = text.split('\n').length
   const annotations: AnnotationEntry[] = []
-  const lineContexts: DocumentLineContext[] = []
+  const frames: FrameEntry[] = []
+  const lineContexts: DocumentLineContext[] = new Array(lineCount)
+
+  // Group significant tokens by 0-indexed line
+  type LineTokens = { sig: Token[]; opens: number; closes: number }
+  const byLine = new Map<number, LineTokens>()
+
+  for (const tok of tokens) {
+    if (tok.type === 'WHITESPACE' || tok.type === 'EOF') continue
+    const line = tok.span.start.line - 1 // 1-indexed → 0-indexed
+    if (line < 0) continue
+    let entry = byLine.get(line)
+    if (!entry) {
+      entry = { sig: [], opens: 0, closes: 0 }
+      byLine.set(line, entry)
+    }
+    entry.sig.push(tok)
+    if (tok.type === 'CONTAINER_OPEN' && tok.kind === '{') entry.opens++
+    else if (tok.type === 'CONTAINER_CLOSE' && tok.kind === '}') entry.closes++
+  }
+
   const scopes: ScopeContext[] = [{ braids: [], frameName: null }]
 
-  for (let i = 0; i < lines.length; i += 1) {
-    const line = lines[i] ?? ''
-    const frameName = frameNameFromLine(line)
-    const localBraids = extractAnnotationBraids(line)
-    const activeFramePath = scopes.flatMap((scope) => scope.frameName ? [scope.frameName] : [])
+  for (let i = 0; i < lineCount; i++) {
+    const entry = byLine.get(i)
+    const sig = entry?.sig ?? []
+
+    const frameName = frameNameFromTokens(sig)
+    const activeFramePath = scopes.flatMap(s => s.frameName ? [s.frameName] : [])
     const framePath = frameName ? [...activeFramePath, frameName] : activeFramePath
-    const ambientBraids = scopes.flatMap((scope) => scope.braids)
-    const braceDelta = countBraceDelta(line)
-    const opens = Math.max(0, braceDelta)
-    const closes = Math.max(0, -braceDelta)
+    const ambientBraids = scopes.flatMap(s => s.braids)
+    const localBraids: string[] = []
 
-    lineContexts.push({
-      framePath,
-      ambientBraids,
-      localBraids,
-      enteredFrame: frameName,
-      deltaBraids: localBraids,
-    })
+    if (frameName) {
+      frames.push({ file: filePath, line: i, name: frameName, framePath })
+    }
 
-    ANNOTATION_RE.lastIndex = 0
-    let match: RegExpExecArray | null
-    while ((match = ANNOTATION_RE.exec(line)) !== null) {
-      const trimmed = line.trimStart()
-      if (trimmed.startsWith('# ') || trimmed.startsWith('//')) {
-        if (match.index > line.indexOf('#') + 1 && trimmed.startsWith('#')) {
-          continue
-        }
+    // Extract annotations from this line's tokens
+    for (let j = 0; j < sig.length; j++) {
+      const tok = sig[j]
+      // ~#name — produced as ANNOTATION token (value = '~#identifier')
+      if (tok.type === 'ANNOTATION') {
+        const name = tok.value.startsWith('~#') ? tok.value.slice(2) : tok.value
+        localBraids.push(`#${name}`)
+        annotations.push({
+          file: filePath,
+          line: i,
+          kind: 'topic',
+          name,
+          sectionLabel: framePath[framePath.length - 1],
+          framePath,
+        })
+        continue
       }
-
+      if (tok.type !== 'OPERATOR' || tok.kind !== '#') continue
+      const result = annotationKindFromTokens(sig, j)
+      if (!result) continue
+      const prefix = { topic: '#', lens: '#:', intent: '#!', anchor: '#>', prompt_root: '##>' }[result.kind]
+      localBraids.push(`${prefix}${result.name}`)
       annotations.push({
         file: filePath,
         line: i,
-        kind: kindFromSigil(match[1]),
-        name: match[2],
+        kind: result.kind,
+        name: result.name,
         sectionLabel: framePath[framePath.length - 1],
         framePath,
       })
+      j += result.advance
     }
+
+    lineContexts[i] = {
+      framePath,
+      ambientBraids,
+      localBraids: [...localBraids],
+      enteredFrame: frameName,
+      deltaBraids: [...localBraids],
+    }
+
+    const opens = entry?.opens ?? 0
+    const closes = entry?.closes ?? 0
 
     if (opens > 0) {
-      for (let j = 0; j < opens; j += 1) {
-        scopes.push({
-          braids: j === 0 ? localBraids : [],
-          frameName: j === 0 ? frameName : null,
-        })
+      for (let j = 0; j < opens; j++) {
+        scopes.push({ braids: j === 0 ? [...localBraids] : [], frameName: j === 0 ? frameName : null })
       }
     } else if (localBraids.length > 0) {
-      const top = scopes[scopes.length - 1]
-      top.braids = [...top.braids, ...localBraids]
+      scopes[scopes.length - 1].braids.push(...localBraids)
     }
-
-    for (let j = 0; j < closes; j += 1) {
+    for (let j = 0; j < closes; j++) {
       if (scopes.length > 1) scopes.pop()
     }
   }
 
-  return { annotations, lineContexts }
-}
-
-function frameNameFromLine(line: string): string | null {
-  const match = line.match(FRAME_RE)
-  return match ? match[1] || match[2] || match[3] || null : null
-}
-
-function extractAnnotationBraids(line: string): string[] {
-  const matches: Array<{ start: number; end: number; raw: string }> = []
-  ANNOTATION_RE.lastIndex = 0
-  let match: RegExpExecArray | null
-  while ((match = ANNOTATION_RE.exec(line)) !== null) {
-    matches.push({
-      start: match.index,
-      end: match.index + match[0].length,
-      raw: match[0],
-    })
-  }
-  if (matches.length === 0) return []
-
-  const braids: string[] = []
-  let current = [matches[0].raw]
-  for (let i = 1; i < matches.length; i += 1) {
-    const previous = matches[i - 1]
-    const next = matches[i]
-    const between = line.slice(previous.end, next.start)
-    if (/^\s+$/.test(between)) {
-      current.push(next.raw)
-      continue
-    }
-    braids.push(current.join(' '))
-    current = [next.raw]
-  }
-  braids.push(current.join(' '))
-  return braids
-}
-
-function countBraceDelta(line: string): number {
-  let depth = 0
-  let stringDelimiter: StringDelimiter = null
-  for (let i = 0; i < line.length; i += 1) {
-    const ch = line[i]
-    const nextDelimiter = nextStringDelimiter(line, i, stringDelimiter)
-    if (nextDelimiter !== stringDelimiter) {
-      stringDelimiter = nextDelimiter
-      continue
-    }
-    if (stringDelimiter) continue
-    if (ch === '/' && line[i + 1] === '/') break
-    if (ch === '{') depth += 1
-    else if (ch === '}') depth -= 1
-  }
-  return depth
-}
-
-function nextStringDelimiter(
-  text: string,
-  index: number,
-  current: StringDelimiter,
-): StringDelimiter {
-  const ch = text[index]
-  if (current) {
-    return ch === current && !isEscaped(text, index) ? null : current
-  }
-  return ch === '"' || ch === "'" || ch === '`' ? ch : null
-}
-
-function isEscaped(text: string, index: number): boolean {
-  let slashCount = 0
-  for (let i = index - 1; i >= 0 && text[i] === '\\'; i -= 1) {
-    slashCount += 1
-  }
-  return slashCount % 2 === 1
+  return { annotations, frames, lineContexts }
 }

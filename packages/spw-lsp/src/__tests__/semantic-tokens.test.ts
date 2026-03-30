@@ -186,22 +186,22 @@ describe('compound patterns', () => {
     expect(tokens[0]).toMatchObject({ type: TT.type, modifiers: 0 })
   })
 
-  it('#!intent → type (intent sigil)', () => {
+  it('#!intent → function + modification (action orientation)', () => {
     const tokens = tokenize('#!pragmatics')
     expect(tokens).toHaveLength(1)
-    expect(tokens[0]).toMatchObject({ type: TT.type })
+    expect(tokens[0]).toMatchObject({ type: TT.function, modifiers: TM.modification })
   })
 
-  it('#:lens → type (lens sigil)', () => {
+  it('#:lens → type + definition (conceptual axis)', () => {
     const tokens = tokenize('#:depth')
     expect(tokens).toHaveLength(1)
-    expect(tokens[0]).toMatchObject({ type: TT.type })
+    expect(tokens[0]).toMatchObject({ type: TT.type, modifiers: TM.definition })
   })
 
-  it('#>anchor → type (anchor sigil)', () => {
+  it('#>anchor → keyword + declaration (navigation landmark)', () => {
     const tokens = tokenize('#>section')
     expect(tokens).toHaveLength(1)
-    expect(tokens[0]).toMatchObject({ type: TT.type })
+    expect(tokens[0]).toMatchObject({ type: TT.keyword, modifiers: TM.declaration })
   })
 
   it('@root_name → variable (full name)', () => {

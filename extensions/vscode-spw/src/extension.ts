@@ -1,4 +1,5 @@
 import * as vscode from 'vscode'
+import * as fs from 'node:fs'
 import * as path from 'path'
 import {
   LanguageClient,
@@ -12,6 +13,7 @@ import { createSpwCustomRequestClient } from './lsp/custom-requests'
 import { ROOT_MAP, resolveRoot } from './roots'
 import { SIGIL_SEMANTICS } from './semantics'
 import { registerConceptsTreeView } from './views/concepts-tree'
+import { registerWorkspaceAtlasView } from './views/workspace-tree'
 
 let client: LanguageClient | undefined
 
@@ -42,6 +44,7 @@ export function activate(context: vscode.ExtensionContext): void {
   const disposables: vscode.Disposable[] = [
     ...registerContextStrip(spw),
     ...registerConceptsTreeView(spw),
+    ...registerWorkspaceAtlasView(spw),
   ]
 
   context.subscriptions.push(...disposables)
@@ -92,12 +95,31 @@ function createClientOptions(): LanguageClientOptions {
 }
 
 function resolveServerPath(): string {
-  // Resolve the LSP server relative to the workspace root.
-  // The server lives at <repo>/packages/spw-lsp/src/stdio-server.ts
-  const workspaceFolder = vscode.workspace.workspaceFolders?.[0]
-  if (workspaceFolder) {
-    return path.join(workspaceFolder.uri.fsPath, 'packages', 'spw-lsp', 'src', 'stdio-server.ts')
+  const candidateRoots = new Set<string>()
+  const workspaceRoots = vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath) ?? []
+
+  if (process.env.SPW_WORKBENCH_ROOT) {
+    candidateRoots.add(process.env.SPW_WORKBENCH_ROOT)
   }
-  // Fallback: assume extension is installed inside the repo
+
+  for (const workspaceRoot of workspaceRoots) {
+    candidateRoots.add(workspaceRoot)
+    candidateRoots.add(path.join(workspaceRoot, '.spw', '_workbench'))
+    candidateRoots.add(path.join(workspaceRoot, 'node_modules', 'spw-workbench'))
+  }
+
+  candidateRoots.add(path.resolve(__dirname, '..', '..', '..'))
+
+  for (const root of candidateRoots) {
+    const candidate = path.join(root, 'packages', 'spw-lsp', 'src', 'stdio-server.ts')
+    if (fs.existsSync(candidate)) {
+      return candidate
+    }
+  }
+
+  if (workspaceRoots[0]) {
+    return path.join(workspaceRoots[0], 'packages', 'spw-lsp', 'src', 'stdio-server.ts')
+  }
+
   return path.resolve(__dirname, '..', '..', '..', 'packages', 'spw-lsp', 'src', 'stdio-server.ts')
 }

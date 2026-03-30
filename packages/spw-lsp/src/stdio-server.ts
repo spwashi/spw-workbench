@@ -27,6 +27,7 @@ import { hover as _hover, documentSymbols as _documentSymbols, workspaceSymbols 
 import { completion as _completion, formatting as _formatting, rangeFormatting as _rangeFormatting, codeAction as _codeAction } from './handlers/editing'
 import { definition as _definition, documentLinks as _documentLinks, references as _references, prepareRename as _prepareRename, rename as _rename } from './handlers/navigation'
 import { semanticTokens as _semanticTokens, SEMANTIC_TOKENS_LEGEND } from './handlers/semantic-tokens'
+import { workspaceManifest as _workspaceManifest, workspaceTemperature as _workspaceTemperature } from './handlers/workspace'
 
 // ── Helpers (extracted) ─────────────────────────────────────────
 import {
@@ -303,6 +304,16 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
         }
 
         sendResult(id, serverIndex.getContextAtPosition(uri, position))
+        return
+      }
+
+      case 'spw/workspaceManifest': {
+        sendResult(id, await _workspaceManifest(deps))
+        return
+      }
+
+      case 'spw/workspaceTemperature': {
+        sendResult(id, _workspaceTemperature(deps))
         return
       }
 

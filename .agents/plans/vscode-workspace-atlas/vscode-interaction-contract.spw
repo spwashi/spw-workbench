@@ -369,6 +369,106 @@
  }
 }
 
+^["cursor_context_contract"]{
+ #:pragmatics #!display_substrate
+
+ ~#principle: "cursor-local context is a semantic transport first and a surface vocabulary second"
+ ~#current_transport: "`spw/contextAtPosition` returns framePath, ambientBraids, localBraids, enteredFrame, deltaBraids from the LSP/server index"
+ ~#current_direction: "the transport is currently more atomic than braided; display surfaces should speak in active facets, ambient field, and field shift unless the server grows stronger grouping semantics"
+
+ transport_truth: {
+  ~#owner: "packages/spw-lsp/src/server-index.ts and typed `spw/*` request contracts"
+  ~#job: "answer semantic questions about cursor-local context with stable positions and low-level semantic atoms"
+  ~#warning: "legacy field names may persist temporarily, but they should be treated as transport details rather than user-facing ontology"
+ }
+
+ surface_truth: {
+  ~#owner: "VS Code views/status surfaces and LSP markdown renderers"
+  ~#job: "compose the transport into quiet, coherent copy for hovers, strips, tree details, and quick picks"
+  ~#warning: "surface copy must not imply stronger semantic grouping than the transport actually encodes"
+ }
+
+ layering_rule: {
+  ~#server: "semantic extraction, grouping truth, phase/materialization context, and typed request payloads"
+  ~#client: "formatting, truncation, presentation rhythm, and cross-surface composition"
+  ~#anti_pattern: "duplicating regex-local semantic reconstruction in client or display renderers when server-owned semantic extraction already exists"
+ }
+
+ formatter_rule: {
+  ~#principle: "one shared formatter layer beats multiple surface dialects"
+  ~#targets: ["status strip", "hover preambles", "atlas detail panels", "quick picks", "future authoring breadcrumbs"]
+  ~#reason: "shared formatting keeps the thin-client posture honest and prevents drift between status, hover, and tree vocabulary"
+ }
+}
+
+^["nesting_indicator_contract"]{
+ #:pragmatics #!display_comparison
+
+ ~#principle: "nesting indicators should explain semantic threshold crossings before they explain brace geometry"
+
+ variants: {
+  structural_first: {
+   ~#shape: "inline depth/brace indicators remain primary; semantic labels are secondary"
+   ~#good_for: "debugging malformed structure, parser-facing orientation"
+   ~#risk: "high syntactic noise, weak explanation of why nesting matters"
+  }
+
+  boundary_first: {
+   ~#shape: "inline hints emphasize entering a frame, inherited field state, and active facets"
+   ~#good_for: "semantic reading and author orientation"
+   ~#risk: "can overstate semantic certainty if transport is weak"
+  }
+
+  split_surface: {
+   ~#shape: "inline = boundary delta, status strip = current field state, hover = expanded inheritance story"
+   ~#good_for: "quiet feedback and cross-surface coherence"
+   ~#risk: "needs strict formatter consistency or the surfaces drift into different dialects"
+  }
+
+  adaptive: {
+   ~#shape: "show structural telemetry only in dense or suspicious regions, semantic cues elsewhere"
+   ~#good_for: "high signal if heuristics are good"
+   ~#risk: "heuristic complexity and inconsistent user expectations"
+  }
+ }
+
+ evaluation: {
+  ~#questions: [
+   "Where am I now?",
+   "What changed when I crossed this boundary?",
+   "What is inherited here?",
+   "Which hints are merely present versus actually useful?",
+  ]
+  ~#criteria: ["orientation speed", "boundary clarity", "noise budget", "inheritance accuracy", "cross-surface coherence", "debug fallback"]
+  ~#method: "compare variants on the same files using corpus review, side-by-side captures, and reader-question probes rather than taste alone"
+ }
+
+ ~#current_bias: "favor boundary-first or split-surface over structural-first"
+}
+
+^["site_install_editor_truth"]{
+ #:pragmatics #!mounted_boundary
+
+ ~#principle: "editor display and interaction contracts must stay truthful for both canonical checkouts and sites that mount `.spw/_workbench` as infrastructure"
+
+ current_preview_truth: {
+  ~#status: "the VS Code extension currently starts from a workbench checkout layout"
+  ~#rule: "do not let new display/context infrastructure deepen that assumption into a hidden semantic dependency"
+ }
+
+ mounted_site_truth: {
+  ~#status: "the public install model says a site owns `.spw/index.spw`, `.spw/workspace.spw`, and `.spw/mount.spw`, while the workbench is mounted at `.spw/_workbench`"
+  ~#rule: "display surfaces should preserve that asymmetry: site manifest/context is authoritative, mounted workbench surfaces are infrastructure unless the site explicitly points at them"
+ }
+
+ implications: {
+  request_wrappers: "typed `spw/*` request helpers should not assume checkout-local server paths as part of their semantic contract"
+  path_copy: "hover, atlas detail, and status copy should distinguish site-owned roots from mounted infrastructure when that difference matters"
+  startup_honesty: "plan language and implementation notes should keep mounted-site startup as future or current truth according to what the extension can actually resolve"
+  formatter_portability: "shared client-side formatters should be path-agnostic so the same context payload reads correctly in canonical and mounted-site installs"
+ }
+}
+
 ^["handler_registration"]{
  #:pragmatics #!lsp_architecture
 

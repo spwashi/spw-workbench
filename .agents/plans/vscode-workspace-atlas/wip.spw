@@ -67,6 +67,24 @@
  qualities: [#clarity, #containment, #low_noise]
 }
 
+^["display_direction"]{
+ subjects: [#cursor_context, #status_strip, #hover, #highlights, #inlay_hints]
+ principles: [
+  "semantic truth stays in the LSP; the client composes and formats",
+  "cursor-local context is observational and must not masquerade as manifest authority",
+  "the current transport is more atomic than braided; display copy should speak in facets and field state rather than implying stronger bonds than the model actually provides",
+  "one shared formatter layer is better than five separate surface dialects",
+  "display.ts should not become the ontology owner for context; server-index remains substrate truth",
+ ]
+ tensions: [#transport_naming, #split_brain_parsing, #copy_drift, #renderer_scope]
+}
+
+^["variant_evaluation"]{
+ questions: [#where_am_i_now, #what_changed_here, #what_is_inherited, #which_hints_are_noise]
+ criteria: [#orientation_speed, #boundary_clarity, #noise_budget, #inheritance_accuracy, #cross_surface_coherence, #debug_fallback]
+ methods: [#corpus_review, #side_by_side_capture, #reader_question_probe, #interruption_audit]
+}
+
 ^["cognitive_surface_stack"]{
  layer: #cognitive
  reads_from: [#semantic, #register, #substrate]
@@ -126,10 +144,19 @@
  >>[2026-03-28 19:18] revise — added local editor/LSP doctrine surfaces to atlas references so design review can talk about quiet feedback, startup truth, thin-client posture, and mindful growth in the same breath as tree-view APIs. The atlas should now inherit the editor quality bar instead of inventing one ad hoc.
  >>[2026-03-29 01:00] observe — vscode-lsp-integration archived. SpwContext, EventBus, custom requests, ConceptCluster.coOccurs, ProjectionEntry, and ServerIndex tier metadata all confirmed working.
  >>[2026-03-29 01:01] decide — added Performance Considerations and Implementation Notes to PLAN.md: manifest parsed once and cached, tree refreshes gated on content-hash diff, temperature polled on 30s interval or didSave, phase badges computed lazily on expand, resonance on-demand per node, materialization badges cached on DocumentState during scanWorkspace. New files: workspace-tree.ts (TreeDataProvider), handlers/workspace.ts (3 custom requests). Answered open ?[phase_computation_cost]: lazy on expand with content-hash cache.
+ >>[2026-03-29 12:55] observe — recent LSP/editor work landed `spw/contextAtPosition`, a status-strip surface, boundary-entry hints, wonder synopsis hints, richer hover, and role-aware highlights. The display layer is now carrying real semantic policy, not just UI garnish.
+ >>[2026-03-29 12:56] observe — the current context transport still says ambientBraids/localBraids/deltaBraids while the display copy is shifting toward field/facet language. That mismatch is acceptable as a temporary low-level transport, but not as a long-term shared contract for atlas, authoring, and status surfaces.
+ >>[2026-03-29 12:57] decide — record the current direction: keep semantic extraction in server-index/LSP, keep the client thin, and treat context wording as a formatter concern until the transport contract stabilizes. Avoid letting display.ts become the de facto ontology owner.
+ >>[2026-03-29 12:58] revise — add #transport_naming, #split_brain_parsing, #copy_drift, and #renderer_scope as active tensions. The next design work is less about “more hints” and more about aligning transport, semantic substrate, and surface vocabulary.
+ >>[2026-03-29 13:10] decide — expand the plans to treat nesting indicators as a variant-comparison problem. Structural-first, boundary-first, split-surface, and adaptive are now explicit options; evaluation should use corpus review and reader questions rather than taste alone.
+ >>[2026-03-29 13:11] observe — site-install truth changes the review frame. A mounted site owns `.spw/workspace.spw` and `.spw/mount.spw`; the workbench is infrastructure at `.spw/_workbench`. Display and context work must not accidentally narrate canonical checkout assumptions as universal editor truth.
+ >>[2026-03-29 13:12] revise — added site-install/editor-truth considerations to the atlas and interaction plans so future formatter, wrapper, and hover work is reviewed for both canonical and mounted-site installs.
 }
 
 ^["open"]{
  ?[cross_surface_temperature]: "Should the atlas's live temperature view include documents from roots the manifest doesn't declare, or only manifest-scoped files?"
+ ?[context_contract]: "Should `spw/contextAtPosition` remain a low-level transport with legacy field names, or graduate into a stable editor contract with vocabulary aligned to the atomic field/facet model?"
+ ?[nesting_variant]: "Which nesting-indicator variant actually teaches the most useful structure on canon files and mounted-site manifests: boundary-first, split-surface, or adaptive?"
 }
 
 ^["resolved"]{
@@ -163,10 +190,10 @@
  ~#hygiene_split: "none currently; re-check extensions/vscode-spw/src/extension.ts, extensions/vscode-spw/src/context.ts, extensions/vscode-spw/package.json, and packages/spw-lsp/src/stdio-server.ts before implementation because they remain shared hot files"
  ~#files_hot: ".agents/plans/vscode-workspace-atlas/PLAN.md, .agents/plans/vscode-workspace-atlas/wip.spw, .agents/plans/vscode-workspace-atlas/vscode-workspace-atlas.spw, .agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw, .agents/plans/vscode-workspace-atlas/references/, extensions/vscode-spw/src/extension.ts, extensions/vscode-spw/src/context.ts, extensions/vscode-spw/package.json, packages/spw-lsp/src/stdio-server.ts, packages/spw-lsp/src/server-index.ts"
  ~#next_commit: "1"
- ~#open_count: "2"
+ ~#open_count: "4"
  ~#resolved_count: "1"
- ~#last_stream: "2026-03-29 01:01"
- ~#taste_debt: "Do not let inferred index data silently override manifest truth. Command names must use Spw vocabulary. The extension teaches the language by speaking it. Shared context/event growth must stay additive."
+ ~#last_stream: "2026-03-29 13:12"
+ ~#taste_debt: "Do not let inferred index data silently override manifest truth. Command names must use Spw vocabulary. The extension teaches the language by speaking it. Shared context/event growth must stay additive. Display vocabulary must not overstate semantic bonding that the current transport does not actually encode. Canonical-checkout assumptions must not quietly become universal editor truth for mounted sites."
 }
 
 ^["done"]{

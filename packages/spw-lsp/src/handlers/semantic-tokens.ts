@@ -119,11 +119,35 @@ export function semanticTokens(params: DocumentParams, deps: HandlerDeps): LspSe
                 continue
             }
 
-            // #!intent / #:lens / #>anchor / #word — annotation
-            const hashMatch = rest.match(/^#(?:!|:|>)?[a-zA-Z_][a-zA-Z0-9_]*/)
-            if (hashMatch) {
-                push(lineIndex, col, hashMatch[0].length, TT.type, 0)
-                col += hashMatch[0].length
+            // #:lens — conceptual axis (type + definition)
+            const lensMatch = rest.match(/^#:[a-zA-Z_][a-zA-Z0-9_]*/)
+            if (lensMatch) {
+                push(lineIndex, col, lensMatch[0].length, TT.type, TM.definition)
+                col += lensMatch[0].length
+                continue
+            }
+
+            // #!intent — action orientation (function + modification)
+            const intentMatch = rest.match(/^#![a-zA-Z_][a-zA-Z0-9_]*/)
+            if (intentMatch) {
+                push(lineIndex, col, intentMatch[0].length, TT.function, TM.modification)
+                col += intentMatch[0].length
+                continue
+            }
+
+            // #>anchor — navigation landmark (keyword + declaration)
+            const singleAnchorMatch = rest.match(/^#>[a-zA-Z_][a-zA-Z0-9_]*/)
+            if (singleAnchorMatch) {
+                push(lineIndex, col, singleAnchorMatch[0].length, TT.keyword, TM.declaration)
+                col += singleAnchorMatch[0].length
+                continue
+            }
+
+            // #topic — concept label (type)
+            const topicMatch = rest.match(/^#[a-zA-Z_][a-zA-Z0-9_]*/)
+            if (topicMatch) {
+                push(lineIndex, col, topicMatch[0].length, TT.type, 0)
+                col += topicMatch[0].length
                 continue
             }
 

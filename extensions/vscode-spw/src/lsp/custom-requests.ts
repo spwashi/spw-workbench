@@ -1,6 +1,6 @@
 import type { LanguageClient } from 'vscode-languageclient/node'
 
-export type SpwAnnotationKind = 'topic' | 'lens' | 'intent' | 'anchor'
+export type SpwAnnotationKind = 'topic' | 'lens' | 'intent' | 'anchor' | 'prompt_root'
 export type SpwMaterializationState = 'priming' | 'concept' | 'frame' | 'body'
 
 export interface SpwAnnotationRecord {
@@ -70,6 +70,27 @@ export interface SpwContextAtPositionResult {
   deltaBraids: string[]
 }
 
+export interface SpwWorkspaceRootEntry {
+  sigil: string
+  resolvedPath: string
+  uri: string
+}
+
+export interface SpwWorkspaceProjectionEntry {
+  name: string
+  root: string
+  source: string
+  specOwner: string
+  status: string
+}
+
+export interface SpwWorkspaceManifest {
+  rootSource: 'manifest' | 'inferred'
+  manifestUri: string | null
+  roots: SpwWorkspaceRootEntry[]
+  projections: SpwWorkspaceProjectionEntry[]
+}
+
 export interface SpwCustomRequestMap {
   'spw/annotations': {
     params: Record<string, never>
@@ -99,6 +120,10 @@ export interface SpwCustomRequestMap {
     params: { uri: string, position: SpwPosition }
     result: SpwContextAtPositionResult | null
   }
+  'spw/workspaceManifest': {
+    params: Record<string, never>
+    result: SpwWorkspaceManifest
+  }
 }
 
 export type SpwCustomRequestMethod = keyof SpwCustomRequestMap
@@ -110,6 +135,8 @@ export interface SpwCustomRequestClient {
   ): Promise<SpwCustomRequestMap[K]['result']>
   annotations(): Promise<SpwAnnotationRecord[]>
   contextAtPosition(uri: string, position: SpwPosition): Promise<SpwContextAtPositionResult | null>
+  workspaceManifest(): Promise<SpwWorkspaceManifest>
+  workspaceTemperature(): Promise<SpwWorkspaceTemperatureEntry[]>
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -117,7 +144,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function isAnnotationKind(value: unknown): value is SpwAnnotationKind {
-  return value === 'topic' || value === 'lens' || value === 'intent' || value === 'anchor'
+  return value === 'topic' || value === 'lens' || value === 'intent' || value === 'anchor' || value === 'prompt_root'
 }
 
 function isAnnotationRecord(value: unknown): value is SpwAnnotationRecord {
@@ -147,6 +174,63 @@ function parseAnnotationRecords(value: unknown): SpwAnnotationRecord[] {
   return records
 }
 
+function isWorkspaceRootEntry(value: unknown): value is SpwWorkspaceRootEntry {
+  if (!isRecord(value)) return false
+  return typeof value.sigil === 'string'
+    && typeof value.resolvedPath === 'string'
+    && typeof value.uri === 'string'
+}
+
+function isWorkspaceProjectionEntry(value: unknown): value is SpwWorkspaceProjectionEntry {
+  if (!isRecord(value)) return false
+  return typeof value.name === 'string'
+    && typeof value.root === 'string'
+    && typeof value.source === 'string'
+    && typeof value.specOwner === 'string'
+    && typeof value.status === 'string'
+}
+
+function isWorkspaceManifest(value: unknown): value is SpwWorkspaceManifest {
+  if (!isRecord(value)) return false
+  return (value.rootSource === 'manifest' || value.rootSource === 'inferred')
+    && (value.manifestUri === null || typeof value.manifestUri === 'string')
+    && Array.isArray(value.roots)
+    && value.roots.every(isWorkspaceRootEntry)
+    && Array.isArray(value.projections)
+    && value.projections.every(isWorkspaceProjectionEntry)
+}
+
+function parseWorkspaceManifest(value: unknown): SpwWorkspaceManifest {
+  if (!isWorkspaceManifest(value)) {
+    throw new Error('spw/workspaceManifest returned an invalid payload')
+  }
+  return value
+}
+
+function isWorkspaceTemperatureEntry(value: unknown): value is SpwWorkspaceTemperatureEntry {
+  if (!isRecord(value)) return false
+  return typeof value.uri === 'string'
+    && typeof value.tier === 'string'
+    && typeof value.beatAge === 'number'
+    && typeof value.writeCount === 'number'
+}
+
+function parseWorkspaceTemperatureEntries(value: unknown): SpwWorkspaceTemperatureEntry[] {
+  if (!Array.isArray(value)) {
+    throw new Error('spw/workspaceTemperature returned a non-array payload')
+  }
+
+  const entries: SpwWorkspaceTemperatureEntry[] = []
+  for (const entry of value) {
+    if (!isWorkspaceTemperatureEntry(entry)) {
+      throw new Error('spw/workspaceTemperature returned an invalid entry')
+    }
+    entries.push(entry)
+  }
+
+  return entries
+}
+
 class SpwLanguageServerRequests implements SpwCustomRequestClient {
   constructor(private readonly client: LanguageClient) {}
 
@@ -164,6 +248,16 @@ class SpwLanguageServerRequests implements SpwCustomRequestClient {
 
   async contextAtPosition(uri: string, position: SpwPosition): Promise<SpwContextAtPositionResult | null> {
     return this.request('spw/contextAtPosition', { uri, position })
+  }
+
+  async workspaceManifest(): Promise<SpwWorkspaceManifest> {
+    const payload = await this.request('spw/workspaceManifest', {})
+    return parseWorkspaceManifest(payload)
+  }
+
+  async workspaceTemperature(): Promise<SpwWorkspaceTemperatureEntry[]> {
+    const payload = await this.request('spw/workspaceTemperature', {})
+    return parseWorkspaceTemperatureEntries(payload)
   }
 }
 

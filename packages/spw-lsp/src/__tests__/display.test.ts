@@ -62,9 +62,9 @@ describe('display handlers', () => {
     }, deps)
 
     const byLine = result.map((hint) => `${hint.position.line}:${hint.label}`)
-    expect(byLine).toContain('1: [ambient +#:layer #!pragmatics]')
+    expect(byLine).toContain('1: [field +#:layer · +#!pragmatics]')
     expect(byLine).toContain('2: [enter outer]')
-    expect(byLine).toContain('3: [ambient +#:semantics #!materialization]')
+    expect(byLine).toContain('3: [field +#:semantics · +#!materialization]')
     expect(byLine).toContain('4: [? computational · lens: living system · 2 metrics · neighbor]')
   })
 
@@ -84,8 +84,8 @@ describe('display handlers', () => {
     }, deps)
 
     expect(result?.contents.value).toContain('Frame path: `outer`')
-    expect(result?.contents.value).toContain('Braid: `#:depth #!computational`')
-    expect(result?.contents.value).toContain('Ambient: `#>workspace` · `#:layer #!pragmatics`')
+    expect(result?.contents.value).toContain('Active facets: `#:depth` · `#!computational`')
+    expect(result?.contents.value).toContain('Ambient field: `#>workspace` · `#:layer` · `#!pragmatics`')
   })
 
   it('highlights braid partners separately from exact annotation echoes', () => {

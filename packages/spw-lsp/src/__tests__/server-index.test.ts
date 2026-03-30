@@ -43,7 +43,7 @@ describe('ServerIndex semantic context', () => {
 
     expect(index.getContextAtPosition('file:///workspace/test.spw', { line: 2, character: 2 })).toEqual({
       framePath: ['outer'],
-      ambientBraids: ['#>spw_workspace', '#:layer #!pragmatics'],
+      ambientBraids: ['#>spw_workspace', '#:layer', '#!pragmatics'],
       localBraids: [],
       enteredFrame: 'outer',
       deltaBraids: [],
@@ -51,7 +51,7 @@ describe('ServerIndex semantic context', () => {
 
     expect(index.getContextAtPosition('file:///workspace/test.spw', { line: 5, character: 4 })).toEqual({
       framePath: ['outer', 'inner'],
-      ambientBraids: ['#>spw_workspace', '#:layer #!pragmatics', '#:semantics #!materialization'],
+      ambientBraids: ['#>spw_workspace', '#:layer', '#!pragmatics', '#:semantics', '#!materialization'],
       localBraids: ['#note'],
       enteredFrame: null,
       deltaBraids: ['#note'],

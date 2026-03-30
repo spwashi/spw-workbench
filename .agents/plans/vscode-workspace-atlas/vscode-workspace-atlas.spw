@@ -301,6 +301,89 @@
  ]
 }
 
+^["cursor_context_surfaces"]{
+ #:pragmatics #!display_language
+
+ ~#principle: "atlas display language should harmonize with the new cursor-context surfaces without confusing manifest truth with observed state"
+ ~#sources: ["spw/contextAtPosition", "boundary-entry inlay hints", "wonder synopsis hints", "status strip"]
+
+ strip: {
+  label: "Spw"
+  role: "quiet, cursor-local atmosphere readout"
+  copy_rule: "show frame path plus active facets or the strongest ambient field fragment"
+ }
+
+ hover: {
+  role: "cursor-local context preamble before long-form semantic detail"
+  copy_rule: "frame path first, then active facets, then ambient field"
+ }
+
+ atlas_detail: {
+  role: "node-level orientation, not cursor-level atmosphere"
+  copy_rule: "reuse context vocabulary only when the data is observational and scoped clearly as live/editor state"
+  warning: "do not project cursor-local field state onto manifest-declared structure"
+ }
+
+ wording: {
+  prefer: ["active facet", "ambient field", "field shift"]
+  avoid: ["braid" as user-facing default when the substrate only carries atomic facets"]
+ }
+}
+
+^["nesting_indicator_variants"]{
+ #:pragmatics #!reading_rhythm
+
+ ~#principle: "nesting indicators should help the reader feel semantic thresholds, not just count braces"
+
+ variants: {
+  structural_first: {
+   inline: "show depth markers prominently; semantic hints are secondary"
+   use: "debugging and malformed-structure orientation"
+  }
+  boundary_first: {
+   inline: "show enter/inherit/activate or field-shift hints at boundaries"
+   use: "semantic reading flow"
+  }
+  split_surface: {
+   inline: "meaningful boundary deltas only"
+   strip: "current field state"
+   hover: "expanded inheritance story"
+   use: "quiet feedback across multiple editor surfaces"
+  }
+ }
+
+ evaluation_questions: [
+  "How quickly does the reader answer where am I now?",
+  "Does the indicator explain what changed here or only that nesting exists?",
+  "How many hints appear versus how many are actually useful?",
+  "Does the surface preserve manifest-vs-observed distinction even inside dense nesting?",
+ ]
+
+ ~#current_bias: "favor boundary-first or split-surface over structural-first"
+}
+
+^["site_install_considerations"]{
+ #:pragmatics #!mounted_editor_future
+
+ ~#principle: "atlas and context surfaces must remain truthful for sites that mount `.spw/_workbench` as infrastructure"
+
+ current_truth: {
+  ~#editor: "the current preview extension still assumes a workbench checkout for startup"
+  ~#rule: "do not let display-layer work deepen that assumption into the semantic contract"
+ }
+
+ mounted_truth: {
+  ~#site_authority: "the site owns `.spw/workspace.spw` and `.spw/mount.spw`"
+  ~#workbench_role: "mounted `_workbench` is infrastructure and should read that way in atlas/status/hover surfaces"
+ }
+
+ review_prompts: [
+  "Would this copy still make sense if the active repo were a site with mounted infrastructure?",
+  "Does this status or hover accidentally narrate mounted workbench paths as site-owned structure?",
+  "Could the same formatter survive a future resolveServerPath implementation that starts from `.spw/_workbench`?"
+ ]
+}
+
 ^["theming"]{
  section_tone: [
   "roots use neutral structural emphasis",

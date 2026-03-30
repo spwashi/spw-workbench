@@ -141,17 +141,29 @@ function buildContextMarkdown(
     if (context.framePath.length > 0) {
         lines.push(`Frame path: \`${context.framePath.join(' > ')}\``)
     }
-    if (activeBraid) {
-        lines.push(`Braid: \`${activeBraid}\``)
-    } else if (context.localBraids.length === 1) {
-        lines.push(`Braid: \`${context.localBraids[0]}\``)
-    }
+    const activeFacets = activeBraid ? splitFacetAtoms(activeBraid) : context.localBraids
+    const localLine = formatMarkdownFacetList('Active facet', 'Active facets', activeFacets)
+    if (localLine) lines.push(localLine)
     if (context.ambientBraids.length > 0) {
-        const ambient = context.ambientBraids.slice(-2).map((value) => `\`${value}\``).join(' · ')
-        lines.push(`Ambient: ${ambient}`)
+        const ambient = context.ambientBraids.slice(-4).map((value) => `\`${value}\``).join(' · ')
+        lines.push(`Ambient field: ${ambient}`)
     }
 
     return lines.length > 0 ? lines.join('  \n') + '\n\n' : ''
+}
+
+function splitFacetAtoms(value: string): string[] {
+    return value.split(/\s+/).map((entry) => entry.trim()).filter(Boolean)
+}
+
+function formatMarkdownFacetList(
+    singularLabel: string,
+    pluralLabel: string,
+    facets: string[],
+): string | null {
+    if (facets.length === 0) return null
+    const label = facets.length === 1 ? singularLabel : pluralLabel
+    return `${label}: ${facets.map((value) => `\`${value}\``).join(' · ')}`
 }
 
 function buildBoundaryHint(
@@ -163,9 +175,12 @@ function buildBoundaryHint(
     if (context.enteredFrame) {
         parts.push(`enter ${context.enteredFrame}`)
     }
-    if (context.deltaBraids.length > 0) {
+    // Suppress single-facet field hints — low signal, high noise.
+    // Show field shifts only when 2+ facets move at once.
+    const showFieldShift = context.deltaBraids.length >= 2
+    if (showFieldShift) {
         const delta = context.deltaBraids.map((braid) => `+${braid}`).join(' · ')
-        parts.push(context.enteredFrame ? delta : `ambient ${delta}`)
+        parts.push(`field ${delta}`)
     }
     if (parts.length === 0) return null
 
@@ -177,10 +192,10 @@ function buildBoundaryHint(
         tooltip.push(`Path: ${context.framePath.join(' > ')}.`)
     }
     if (context.ambientBraids.length > 0) {
-        tooltip.push(`Inherited: ${context.ambientBraids.join(' · ')}.`)
+        tooltip.push(`Ambient field: ${context.ambientBraids.join(' · ')}.`)
     }
     if (context.deltaBraids.length > 0) {
-        tooltip.push(`Context shift: ${context.deltaBraids.join(' · ')}.`)
+        tooltip.push(`Field shift: ${context.deltaBraids.join(' · ')}.`)
     }
 
     return {
@@ -191,6 +206,32 @@ function buildBoundaryHint(
 
 function truncateText(value: string, maxLength: number): string {
     return value.length <= maxLength ? value : `${value.slice(0, Math.max(0, maxLength - 1)).trimEnd()}…`
+}
+
+/** Count { and } in a line, skipping quoted string content and line comments. */
+function countBracesOutsideStrings(line: string, startDepth: number): number {
+    let depth = startDepth
+    let i = 0
+    while (i < line.length) {
+        const c = line[i]
+        // Skip // comment to end of line
+        if (c === '/' && line[i + 1] === '/') break
+        // Skip quoted strings (", ', `)
+        if (c === '"' || c === "'" || c === '`') {
+            const q = c
+            i++
+            while (i < line.length) {
+                if (line[i] === '\\') { i += 2; continue }
+                if (line[i] === q) { i++; break }
+                i++
+            }
+            continue
+        }
+        if (c === '{') depth++
+        else if (c === '}') depth = Math.max(0, depth - 1)
+        i++
+    }
+    return depth
 }
 
 function buildWonderHint(summary: WonderBlockSummary): { label: string; tooltip: string } {
@@ -335,7 +376,31 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
         }
 
         if (coOccurs.length > 0) {
-            md += `Co-occurs with: ${coOccurs.map(c => `\`#${c.name}\` (${c.count}\u00d7)`).join(', ')}\n\n`
+            const partner = coOccurs[0]
+            const rest = coOccurs.slice(1)
+            md += `Co-occurs with: \`#${partner.name}\` (${partner.count}\u00d7)`
+            if (rest.length > 0) md += `, ${rest.map(c => `\`#${c.name}\`\u00a0(${c.count}\u00d7)`).join(', ')}`
+            md += '\n\n'
+        }
+
+        // Layer distribution across the workspace
+        {
+            const layerDist = new Map<string, number>()
+            for (const entry of entries) {
+                const fileAnnots = deps.serverIndex.annotationsForFile(entry.file)
+                const layerAnnot = fileAnnots.find(a => a.kind === 'lens' && a.name === 'layer')
+                if (!layerAnnot) continue
+                const intentAnnot = fileAnnots.find(a => a.kind === 'intent' && a.line === layerAnnot.line)
+                if (intentAnnot) layerDist.set(intentAnnot.name, (layerDist.get(intentAnnot.name) ?? 0) + 1)
+            }
+            if (layerDist.size > 0) {
+                const LAYER_ORDER = ['grammar', 'semantics', 'pragmatics']
+                const layerSummary = [...layerDist.entries()]
+                    .sort((a, b) => (LAYER_ORDER.indexOf(a[0]) + 1 || 99) - (LAYER_ORDER.indexOf(b[0]) + 1 || 99) || b[1] - a[1])
+                    .map(([l, n]) => `${l}\u00a0(${n})`)
+                    .join(' · ')
+                md += `Layers: ${layerSummary}\n\n`
+            }
         }
 
         const seen = new Set<string>()
@@ -687,15 +752,70 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
                         if (resolvedKind === 'dir') {
                             const entries = await fs.readdir(resolved, { withFileTypes: true })
                             const visible = entries.filter((entry) => !entry.name.startsWith('.'))
-                            const preview = visible.slice(0, 8)
+                            const spwFiles = visible.filter((entry) => entry.isFile() && entry.name.endsWith('.spw'))
+                            const subdirs = visible.filter((entry) => entry.isDirectory())
+
+                            // Semantic fingerprint from workspace annotation index
+                            const dirAnnotations = deps.serverIndex.allAnnotations().filter(a =>
+                                a.file.startsWith(resolved + path.sep) || a.file.startsWith(resolved + '/')
+                            )
+                            const annotFreq = new Map<string, number>()
+                            const layerDist = new Map<string, number>()
+                            const seenFiles = new Set<string>()
+                            for (const a of dirAnnotations) {
+                                annotFreq.set(a.name, (annotFreq.get(a.name) ?? 0) + 1)
+                                if (!seenFiles.has(a.file)) {
+                                    seenFiles.add(a.file)
+                                    const fileAnnots = deps.serverIndex.annotationsForFile(a.file)
+                                    const layerAnnot = fileAnnots.find(fa => fa.kind === 'lens' && fa.name === 'layer')
+                                    if (layerAnnot) {
+                                        const intentAnnot = fileAnnots.find(fa => fa.kind === 'intent' && fa.line === layerAnnot.line)
+                                        if (intentAnnot) layerDist.set(intentAnnot.name, (layerDist.get(intentAnnot.name) ?? 0) + 1)
+                                    }
+                                }
+                            }
+
+                            const subroot = deps.serverIndex.getSubrootForFile(resolved + '/index.spw')
+                                ?? deps.serverIndex.getSubrootForFile(resolved)
+                            const plane = deps.serverIndex.getWorkspacePlaneForFile(resolved + '/index.spw')
+
+                            let md = `\u2192 \`${rel}/\`\n\n`
+
+                            // Topology placement
+                            const metaParts: string[] = []
+                            if (subroot) metaParts.push(`Subroot: ${subroot}`)
+                            if (plane) metaParts.push(`Plane: ${plane}`)
+                            metaParts.push(`${spwFiles.length} .spw`)
+                            if (subdirs.length > 0) metaParts.push(`${subdirs.length} dir${subdirs.length > 1 ? 's' : ''}`)
+                            md += metaParts.join(' · ') + '\n\n'
+
+                            // Layer distribution
+                            if (layerDist.size > 0) {
+                                const LAYER_ORDER = ['grammar', 'semantics', 'pragmatics']
+                                const layerSummary = [...layerDist.entries()]
+                                    .sort((a, b) => (LAYER_ORDER.indexOf(a[0]) + 1 || 99) - (LAYER_ORDER.indexOf(b[0]) + 1 || 99))
+                                    .map(([l, n]) => `${l}\u00a0(${n})`)
+                                    .join(' · ')
+                                md += `Layers: ${layerSummary}\n\n`
+                            }
+
+                            // Semantic fingerprint: top annotations by frequency
+                            if (annotFreq.size > 0) {
+                                const topAnnots = [...annotFreq.entries()]
+                                    .sort((a, b) => b[1] - a[1])
+                                    .slice(0, 6)
+                                    .map(([n]) => `\`#${n}\``)
+                                    .join(', ')
+                                md += `Concepts: ${topAnnots}\n\n`
+                            }
+
+                            // File listing (abbreviated)
+                            const preview = visible.slice(0, 6)
                             const rendered = preview
                                 .map((entry) => `- ${entry.isDirectory() ? '[dir]' : '[file]'} \`${entry.name}${entry.isDirectory() ? '/' : ''}\``)
                                 .join('\n')
-
-                            let md = `\u2192 \`${rel}/\`\n\n`
-                            md += `Directory reference (${visible.length} entry${visible.length === 1 ? '' : 'ies'})`
-                            if (rendered) md += `\n\n${rendered}`
-                            if (visible.length > preview.length) md += `\n- ...and ${visible.length - preview.length} more`
+                            if (rendered) md += rendered
+                            if (visible.length > preview.length) md += `\n- *...and ${visible.length - preview.length} more*`
 
                             return {
                                 contents: { kind: 'markdown', value: md },
@@ -848,21 +968,34 @@ export function workspaceSymbols(params: { query?: string }, deps: HandlerDeps):
     const query = (params?.query as string) ?? ''
     if (!query) return []
 
-    const entries = deps.serverIndex.searchAnnotations(query)
     const results: LspSymbolInfo[] = []
 
-    for (const entry of entries.slice(0, 50)) {
-        const kindMap: Record<string, number> = { topic: SK.Key, lens: SK.Enum, intent: SK.Event, anchor: SK.Interface }
-        const prefixMap: Record<string, string> = { topic: '#', lens: '#:', intent: '#!', anchor: '#>' }
+    // Frames first — structural containers are highest navigation value
+    const frameEntries = deps.serverIndex.searchFrames(query)
+    for (const entry of frameEntries.slice(0, 20)) {
+        const parentPath = entry.framePath.slice(0, -1).join(' > ')
         results.push({
-            name: `${prefixMap[entry.kind]}${entry.name}`,
-            kind: kindMap[entry.kind] || SK.Key,
+            name: `^["${entry.name}"]`,
+            kind: SK.Module,
             location: {
                 uri: deps.uriFromPath(entry.file),
-                range: {
-                    start: { line: entry.line, character: 0 },
-                    end: { line: entry.line, character: 0 },
-                },
+                range: { start: { line: entry.line, character: 0 }, end: { line: entry.line, character: 0 } },
+            },
+            containerName: parentPath || undefined,
+        })
+    }
+
+    // Annotations
+    const annotEntries = deps.serverIndex.searchAnnotations(query)
+    const kindMap: Record<string, number> = { topic: SK.Key, lens: SK.Enum, intent: SK.Event, anchor: SK.Interface, prompt_root: SK.Interface }
+    const prefixMap: Record<string, string> = { topic: '#', lens: '#:', intent: '#!', anchor: '#>', prompt_root: '##>' }
+    for (const entry of annotEntries.slice(0, 40)) {
+        results.push({
+            name: `${prefixMap[entry.kind] ?? '#'}${entry.name}`,
+            kind: kindMap[entry.kind] ?? SK.Key,
+            location: {
+                uri: deps.uriFromPath(entry.file),
+                range: { start: { line: entry.line, character: 0 }, end: { line: entry.line, character: 0 } },
             },
             containerName: entry.sectionLabel,
         })
@@ -916,6 +1049,11 @@ export function codeLens(params: DocumentParams, deps: HandlerDeps): LspCodeLens
                 lenses.push({
                     range: { start: { line: i, character: 0 }, end: { line: i, character: line.length } },
                     command: { title: `\u2197 ${fileCount} file ref(s)${sourceSummary ? ` \u00b7 ${sourceSummary}` : ''}`, command: '' },
+                })
+            } else {
+                lenses.push({
+                    range: { start: { line: i, character: 0 }, end: { line: i, character: line.length } },
+                    command: { title: '\u25c7 anchor \u2014 no cross-file refs', command: '' },
                 })
             }
 
@@ -975,9 +1113,11 @@ export function codeLens(params: DocumentParams, deps: HandlerDeps): LspCodeLens
     let maxBraceDepth = 0
     { let d = 0; for (const l of lines) { for (const c of l) { if (c === '{') d++; else if (c === '}') d = Math.max(0, d - 1); } if (d > maxBraceDepth) maxBraceDepth = d; } }
     const wonderCount = lines.filter(l => /^\s*#>wonder_/.test(l)).length
+    // Dominant spirit phase: highest-indexed operator with meaningful presence
+    const SPIRIT_PHASE_ORDER = ['!', '?', '~', '@', '&', '*', '^'] as const
     const opDist: Record<string, number> = {}
-    for (const l of lines) { for (const c of l) { if ('~?!^%&*='.includes(c)) opDist[c] = (opDist[c] || 0) + 1 } }
-    const opSummary = Object.entries(opDist).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([op, n]) => `${op}:${n}`).join(' ')
+    for (const l of lines) { for (const c of l) { if ('~?!^%&*=@'.includes(c)) opDist[c] = (opDist[c] || 0) + 1 } }
+    const topPhase = [...SPIRIT_PHASE_ORDER].reverse().find(op => (opDist[op] ?? 0) >= 3)
 
     const layerLine = lines.find(l => l.includes('#:layer'))
     const layerNameMatch = layerLine?.match(/#!([a-z]+)/)
@@ -997,16 +1137,12 @@ export function codeLens(params: DocumentParams, deps: HandlerDeps): LspCodeLens
         parts.push(`${annotCount}#`)
         parts.push(`d${maxBraceDepth}`)
         if (wonderCount > 0) parts.push(`${wonderCount}\u2753`)
+        // Spirit phase indicator — only when file is clearly in an advanced phase (@, &, *, ^)
+        if (topPhase && SPIRIT_PHASE_ORDER.indexOf(topPhase) >= 3) parts.push(`${topPhase}\u2191`)
         lenses.unshift({
             range: { start: { line: 0, character: 0 }, end: { line: 0, character: 1 } },
             command: { title: `\u25c8 ${parts.join(' \u00b7 ')}`, command: '' },
         })
-        if (opSummary) {
-            lenses.push({
-                range: { start: { line: 0, character: 0 }, end: { line: 0, character: 1 } },
-                command: { title: `\u2261 ${opSummary}`, command: '' },
-            })
-        }
     }
 
     return lenses
@@ -1096,37 +1232,42 @@ export async function inlayHints(params: InlayHintParams, deps: HandlerDeps): Pr
     }
 
     // 3) Brace depth + charge hints
+    // Uses a string-aware brace counter so quoted content doesn't skew depth.
     {
         let depth = 0
         for (let i = 0; i < range.start.line && i < lines.length; i++) {
-            for (const c of lines[i]) {
-                if (c === '{') depth++
-                else if (c === '}') depth = Math.max(0, depth - 1)
-            }
+            depth = countBracesOutsideStrings(lines[i], depth)
         }
         for (let lineNo = Math.max(0, range.start.line); lineNo <= Math.min(lines.length - 1, range.end.line); lineNo++) {
             const line = lines[lineNo]
-            const openCount = (line.match(/\{/g) || []).length
-            const closeCount = (line.match(/\}/g) || []).length
             const prevDepth = depth
-            for (const c of line) {
-                if (c === '{') depth++
-                else if (c === '}') depth = Math.max(0, depth - 1)
-            }
-            if (openCount > 0 && depth >= 2) {
+            depth = countBracesOutsideStrings(line, depth)
+            const openCount = depth - prevDepth > 0 ? depth - prevDepth : 0
+            const closeCount = prevDepth - depth > 0 ? prevDepth - depth : 0
+            const lineCtx = doc.lineContexts[lineNo]
+            const frameLabel = lineCtx?.framePath.at(-1) ?? null
+            const localBraidLabel = lineCtx?.localBraids.slice(0, 2).join(' · ') || null
+            if (openCount > 0 && depth >= 3) {
+                const contextLabel = frameLabel
+                    ? ` ${frameLabel}`
+                    : localBraidLabel
+                        ? ` ${localBraidLabel}`
+                        : ` d${depth}`
+                const tension = openCount > closeCount ? '+tension' : openCount < closeCount ? '−discharge' : 'balanced'
                 hints.push({
                     position: { line: lineNo, character: line.length },
-                    label: ` \u2502d${depth}`,
+                    label: ` \u2502${contextLabel.trimStart()}`,
                     kind: 2,
-                    tooltip: `Brace depth: ${depth} (${openCount > closeCount ? '+tension' : openCount < closeCount ? '\u2212discharge' : 'balanced'})`,
+                    tooltip: `Depth ${depth} · ${tension}${frameLabel ? ` · frame: ${lineCtx?.framePath.join(' › ')}` : ''}`,
                     paddingLeft: true,
                 })
             } else if (closeCount > 0 && prevDepth >= 3 && depth < prevDepth) {
+                const exitLabel = lineCtx?.framePath.at(-1) ?? `d${depth}`
                 hints.push({
                     position: { line: lineNo, character: line.length },
-                    label: ` \u2502d${depth}\u2212`,
+                    label: ` \u2502\u2514${exitLabel}`,
                     kind: 2,
-                    tooltip: `Discharge: depth ${prevDepth} \u2192 ${depth}`,
+                    tooltip: `Exit depth ${prevDepth} → ${depth}${lineCtx?.framePath.length ? ` · in: ${lineCtx.framePath.join(' › ')}` : ''}`,
                     paddingLeft: true,
                 })
             }

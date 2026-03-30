@@ -113,6 +113,91 @@ This plan adds three fields to `SpwContext`:
 
 These fields are additive. The register-explorer and authoring-probe-loop plans will contribute their own fields to `SpwContext` in subsequent commit arcs.
 
+## Current Direction (2026-03-29)
+
+Recent LSP/editor work already landed one concrete slice of this direction:
+
+- `spw/contextAtPosition` now exposes cursor-local semantic context from the server index.
+- the VS Code extension has a minimal context strip fed by that request.
+- display surfaces in the LSP now use the same context for boundary-entry hints, wonder synopsis, richer hovers, and document highlights.
+
+That work is useful, but it also clarified the architectural direction for the atlas and the wider editor shell:
+
+1. **Thin-client direction is correct**
+   - Semantic truth should continue to move into `packages/spw-lsp/`.
+   - The VS Code extension should stay a renderer/composer of typed `spw/*` requests, not grow a second semantics stack.
+
+2. **Display is no longer “just copy”**
+   - `packages/spw-lsp/src/handlers/display.ts` is now doing extraction, ranking, rendering, and vocabulary choices.
+   - Before more atlas/status/authoring surfaces build on it, these responsibilities should be separated conceptually: semantic projection helpers, ranking heuristics, markdown/string renderers, and handler entrypoints.
+
+3. **Atomic context model is the current direction**
+   - The active context payload still uses field names like `ambientBraids`, `localBraids`, and `deltaBraids`.
+   - Current display language is moving toward `field`, `facet`, and `field shift`.
+   - Treat the current payload as a low-level semantic transport until the naming stabilizes; the client should prefer shared formatting helpers rather than hard-coding multiple dialects of the same payload.
+
+4. **Avoid split-brain parsing**
+   - `server-index.ts` is moving toward token-stream analysis.
+   - `display.ts` still contains regex-local reconstruction for several display affordances.
+   - Atlas and authoring work should prefer server-owned semantic extraction so renderer behavior does not silently diverge from index truth.
+
+5. **Manifest truth vs observed context remains the north star**
+   - Cursor-local context, phase feel, temperature, and resonance are observational.
+   - The atlas still needs to distinguish those from manifest-declared structure and ownership.
+   - Any future display/status surface should preserve this separation explicitly.
+
+## Nesting Indicator Variants
+
+Recent display exploration makes nesting indicators a first-class design question rather than a minor inlay-hint tweak. The useful distinction is:
+
+- **structural nesting**: brace depth, frame containment, unmatched geometry
+- **semantic nesting**: inherited field state, newly active facets, boundary crossings, wonder density
+
+The plan should evaluate at least these variants:
+
+1. **Structural-first**
+   - Inline depth indicators such as `│d3` stay visible.
+   - Boundary labels are secondary.
+   - Best for parser/debugging orientation, weaker for semantic reading.
+
+2. **Boundary-first**
+   - Inline hints emphasize `enter frame`, `activates`, `inherits`, or `field shift`.
+   - Raw depth becomes fallback/debug telemetry only.
+   - Best for author comprehension and semantic reading flow.
+
+3. **Split-surface**
+   - Inline hints show only meaningful boundary deltas.
+   - Status strip carries full current path/field state.
+   - Hover expands to inheritance story plus local context.
+   - Best match for quiet-feedback goals if the surfaces stay coordinated.
+
+4. **Adaptive**
+   - Structural hints appear only in dense or malformed regions.
+   - Semantic hints dominate in ordinary reading.
+   - Highest upside, but also highest heuristic complexity and drift risk.
+
+Current direction favors **boundary-first** or **split-surface** over structural-first.
+
+## Variant Evaluation
+
+Choosing among display variants should not rely on taste alone. The following checks matter:
+
+- **Orientation speed**: how quickly can a reader answer “where am I now?”
+- **Boundary clarity**: does a boundary indicator explain what changed, or only that nesting exists?
+- **Noise budget**: how many lines gain hints, and how many of those hints are actually read?
+- **Inheritance accuracy**: does the surface describe the current semantic field truthfully, without implying stronger grouping than the transport encodes?
+- **Cross-surface coherence**: do inline hints, status strip, hover, and atlas detail all speak one dialect?
+- **Debug fallback**: if semantic inference is wrong or absent, does a structural signal still help?
+
+Recommended evaluation methods for this lane:
+
+- corpus review across canon `.spw/` files, plan surfaces, and dense local specs
+- side-by-side screenshots or short recordings of two variants on the same files
+- “reader question” probes: test which variant better answers `where am I`, `what changed here`, and `what is inherited`
+- interruption audit: count how many hints appear versus how many represent meaningful semantic thresholds
+
+The plans should treat this as a design comparison problem, not just a feature toggle problem.
+
 ## Provides
 
 - `SpwContext.manifestState`
@@ -207,6 +292,18 @@ The tree view only needs metadata (root name, tier, phase badge, materialization
 - **`package.json`**: add `views` contribution for "Spw Atlas" in activity bar, 5 `commands` for perspective rotation and navigation, `menus` for tree item context. ~40 lines of JSON.
 - **`stdio-server.ts`**: add 3 case blocks in `handleRequest` for the new `spw/*` methods, delegating to `workspace.ts` handler. ~15 lines.
 - **`server-index.ts`**: expose `getDocumentTiers()` method returning tier/beat data for all documents. ~10 lines.
+
+### Display/Context design implications
+- `spw/contextAtPosition` is now a real shared substrate for status surfaces and editor display.
+- If atlas, authoring, and status surfaces all consume cursor-local context, add one shared client-side formatter layer rather than letting `context-strip.ts`, tree views, hover copy, and quick picks each invent their own naming.
+- If the context transport is promoted from “useful internal shape” to “stable editor contract”, rename or wrap the raw `*Braids` fields so the transport and the displayed vocabulary describe the same model.
+- `display.ts` should not become the de facto ontology owner for context. It can render the semantic model, but `server-index.ts` should stay the source of truth.
+
+### Site-install considerations
+- The current extension startup path still assumes a workbench checkout layout. That is acceptable preview truth, but atlas/status/context work must not accidentally hard-code that assumption deeper into the client contract.
+- External sites own `.spw/index.spw`, `.spw/workspace.spw`, and `.spw/mount.spw`; the mounted workbench at `.spw/_workbench` is infrastructure. Display surfaces should preserve that asymmetry rather than narrating a mounted site as “just another workbench checkout.”
+- Cursor-local context and atlas detail should resolve against site-owned manifest truth when present, and mounted workbench infrastructure only when the site’s contract points there explicitly.
+- Any formatter, request wrapper, or path-resolution helper added for display work should be reviewed for mounted-site startup truth: can it still work when the editor eventually resolves the server from `.spw/_workbench` rather than from `packages/spw-lsp/src/stdio-server.ts` in a canonical checkout?
 
 ### Hot file coordination
 The atlas tree view is a self-contained module (`workspace-tree.ts`) receiving `SpwContext`. The only `extension.ts` change is a registration call. `stdio-server.ts` gets new dispatch cases but no handler logic inline — workspace handler is extracted. Merge risk with authoring is low if both plans keep handler logic in separate files.
