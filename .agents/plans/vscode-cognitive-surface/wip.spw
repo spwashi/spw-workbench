@@ -1,0 +1,179 @@
+# wip — vscode-cognitive-surface
+# Branch: feature/vscode-cognitive-surface
+# Started: 2026-04-01
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @plan: ~".agents/plans/vscode-cognitive-surface/PLAN.md"
+ @artifact: ~".agents/plans/vscode-cognitive-surface/vscode-cognitive-surface.spw"
+ @editor_contract: ~".agents/plans/vscode-editor-contract/wip.spw"
+ @performance: ~".agents/plans/vscode-plugin-performance/wip.spw"
+ @atlas: ~".agents/plans/vscode-workspace-atlas/wip.spw"
+ @registers: ~".agents/plans/vscode-register-explorer/wip.spw"
+ @context: ~"extensions/vscode-spw/src/context.ts"
+ @strip: ~"extensions/vscode-spw/src/context-strip.ts"
+ @atlas_view: ~"extensions/vscode-spw/src/views/workspace-tree.ts"
+ @concepts_view: ~"extensions/vscode-spw/src/views/concepts-tree.ts"
+ @custom_requests: ~"extensions/vscode-spw/src/lsp/custom-requests.ts"
+ @server_index: ~"packages/spw-lsp/src/server-index.ts"
+ @workspace: ~".spw/workspace.spw"
+ @register_bank: ~".spw/registries/register-bank.spw"
+}
+
+^["intent"]{
+ ~#goal: "Define the VS Code cognitive surface for Spw: what experienced engineers should notice, learn, infer, and enjoy when the editor reveals workspace structure, field state, phase, and change over time. Use this surface to turn semantic truth into legible orientation rather than noise."
+ ~#taste: "legibility, delight, containment, cross-surface coherence"
+}
+
+^["development"]{
+ lane: #speculative_editor_future
+ ladder: #page
+ develops: [#cognitive_surface, #orientation, #teaching, #joy, #comparative_reading]
+ review_surfaces: [@cluster, @plan, @editor_contract, @atlas, @registers]
+ snippet_routes: [#where_am_i, #what_changed, #what_is_inherited, #what_can_i_ignore]
+}
+
+^["concept_index"]{
+ primary: [#cognitive_surface, #orientation, #field_state, #phase, #inheritance, #diff, #joy]
+ surfaces: [#status_strip, #atlas, #concept_tree, #hover, #highlight, #breadcrumb, #diff]
+ tensions: [#noise_budget, #expert_density, #surface_drift, #metaphor_drift, #tutorial_vs_tool]
+ transfers: [#language, #component, #page]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread existing editor surfaces before inventing new ones",
+  "< make one user question easier to answer with less noise",
+  "$ record what an expert can now perceive or compare more fluently",
+  "^ reuse the same surface vocabulary across strip, tree, hover, and diff",
+  "% keep delight subordinate to orientation and truth",
+ ]
+ gates: [#orientation_value, #noise_discipline, #cross_surface_coherence, #experienced_engineer_joy]
+}
+
+^["parallel_work"]{
+ critical_path: [#user_questions, #surface_taxonomy, #comparison_language]
+ parallelizable: [#copy_trials, #variant_review, #expert_personas, #diff_experiments]
+ shared_hot_files: ["extensions/vscode-spw/src/context-strip.ts", "extensions/vscode-spw/src/views/workspace-tree.ts", "extensions/vscode-spw/src/views/concepts-tree.ts", ".agents/plans/vscode-editor-contract/wip.spw"]
+ merge_risks: [#copy_drift, #renderer_ontology, #too_many_surfaces, #premature_polish]
+ handoff_artifacts: [@plan, @artifact, @editor_contract, @atlas, @registers]
+}
+
+^["supporting_documents"]{
+ must_ship: [@plan, @artifact, @editor_contract]
+ helpful: [@atlas, @registers, @workspace, @register_bank]
+ carries: [#surface_taxonomy, #user_questions, #copy_direction, #variant_comparisons, #capture_notes]
+}
+
+^["interaction_depth"]{
+ subjects: [#orientation, #comparison, #inheritance, #noise, #memory, #surprise, #craft]
+ questions: [#where_am_i, #what_is_this, #what_changed_here, #what_is_inherited, #what_can_i_ignore]
+ qualities: [#clarity, #containment, #warmth]
+}
+
+^["surface_stack"]{
+ foundational_rule: "The cognitive surface may be expressive, but it must not invent semantic truth that the contract cannot justify."
+ layers: [#substrate_truth, #editor_contract, #surface_composition, #copy, #motion, #comparison]
+ active_surfaces: [#status_strip, #workspace_atlas, #concepts_tree]
+ candidate_surfaces: [#diff_view, #hover_contract, #breadcrumbs, #comparison_panel, #phase_badges]
+ expert_aim: "A programmer fluent in C-style languages should feel that Spw's primitive lexing and structural operators expose a different but coherent reading discipline, not arbitrary novelty."
+}
+
+^["alignment_prompts"]{
+ ~#how_i_want_spw_to_feel_in_an_editor: "<fill: describe the feeling of editing Spw when the UX is working well>"
+ ~#what_should_be_joyful: "<fill: what moments should feel unexpectedly good or clarifying for experienced engineers?>"
+ ~#what_should_stay_quiet: "<fill: which kinds of information should rarely surface unless explicitly requested?>"
+ ~#what_i_think_the_current_surfaces_teach_well: "<fill: which existing surfaces already point in the right direction?>"
+ ~#what_i_think_the_current_surfaces_mis-teach: "<fill: where do the strip/tree/atlas currently imply the wrong ontology or wrong priority?>"
+ ~#how_experts_should_read_diffs: "<fill: what should a seasoned engineer learn from a Spw-aware diff beyond inserted/deleted lines?>"
+}
+
+^["prompted_review"]{
+ ?["What are the primary user questions of the cognitive surface?"]{
+  #:depth #!experiential // lens: lived editor use
+  !probe{ "Write the smallest set of recurring questions the editor should answer for you without making you context-switch into docs or source code spelunking." }
+  ~#your_answer: "<fill>"
+ }
+
+ ?["Which current surfaces answer those questions well, poorly, or not at all?"]{
+  #:depth #!comparative // lens: present-state audit
+  ~#focus_files: "extensions/vscode-spw/src/context-strip.ts, extensions/vscode-spw/src/views/workspace-tree.ts, extensions/vscode-spw/src/views/concepts-tree.ts"
+  !probe{ "For each surface: what does it teach, what does it overstate, what does it omit, and what noise does it introduce?" }
+  ~#your_answer: "<fill>"
+ }
+
+ ?["How should the same truth appear differently across surfaces?"]{
+  #:depth #!linguistic // lens: cross-surface composition
+  !probe{ "Choose one truth such as cursor context or phase. Then describe the strip version, hover version, tree version, and diff version without changing the underlying ontology." }
+  ~#your_answer: "<fill>"
+ }
+
+ ?["What should a Spw-aware diff emphasize?"]{
+  #:depth #!temporal // lens: change over time
+  !probe{ "List structural, semantic, or field-state changes that should read as more important than raw line churn." }
+  ~#your_answer: "<fill>"
+ }
+}
+
+^["review_tables"]{
+ ~#surface_taxonomy: "<fill: surface -> primary question -> secondary question -> tolerated noise -> ownership>"
+ ~#copy_direction: "<fill: preferred words/phrases, awkward words to avoid, and any provisional vocabulary>"
+ ~#variant_comparisons: "<fill: compare alternative representations for strip, atlas, hover, breadcrumb, and diff>"
+ ~#expert_personas: "<fill: note at least 2-3 reader types such as C-style systems engineer, language-tooling engineer, and design-language builder>"
+ ~#capture_notes: "<fill: describe screenshots or recordings you want to capture later to compare variants>"
+}
+
+^["stream"]{
+ >>[2026-04-01 00:00] observe — created this wip as a file-as-prompt surface so VS Code UX thinking can accumulate in-repo and be revised against code rather than disappearing into chat memory.
+ >>[2026-04-01 00:00] observe — the existing strip, concepts tree, and atlas already expose distinct pieces of a cognitive surface, but they do not yet read as one taught experience.
+ >>[2026-04-01 00:00] decide — use this branch to define the user questions, comparison language, and expert-facing delight criteria before broadening the editor surface area.
+ >>[2026-04-01 00:00] taste — delight should come from sharper orientation and richer structural reading, not from decorative surface novelty.
+}
+
+^["open"]{
+ ?[primary_questions]: "What are the smallest recurring editor questions that should govern the cognitive surface?"
+ ?[surface_taxonomy]: "Which surfaces should remain lightweight glimpses and which deserve deeper structured inspection?"
+ ?[cross_surface_copy]: "Which words should stay stable across strip, atlas, hover, and diff so the editor teaches one language?"
+ ?[expert_joy]: "What exactly should feel joyful to an experienced engineer reading or editing Spw?"
+ ?[diff_semantics]: "Which structural or semantic changes deserve stronger emphasis than raw line insertion/deletion in a Spw-aware diff?"
+ ?[your_surface_corrections]: "Where do you think this file is misframing the UX problem? Correct it inline."
+}
+
+^["commits"]{
+ ~[1]: ".[plans] — stage vscode-cognitive-surface prompting surfaces"
+ ~[2]: ".[vscode] — write cognitive-surface artifact: user questions, surface taxonomy, and cross-surface vocabulary"
+ ~[3]: "&[vscode-copy] — align strip/tree/atlas wording and emphasis around shared cognitive questions"
+ ~[4]: "#[vscode-diff] — define comparison language and UX priorities for Spw-aware diffs"
+ ~[5]: "![vscode-ux] — verify that active surfaces teach one experience without inflating noise"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@e6a0e877fc485fd7892b2d1537a36baeb5d9b6cf"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: ".agents/plans/vscode-cognitive-surface/wip.spw, extensions/vscode-spw/src/context-strip.ts, extensions/vscode-spw/src/views/workspace-tree.ts, extensions/vscode-spw/src/views/concepts-tree.ts, .agents/plans/vscode-editor-contract/wip.spw"
+ ~#next_commit: "1"
+ ~#open_count: "6"
+ ~#last_stream: "2026-04-01 00:00"
+ ~#taste_debt: "Do not confuse poetic vocabulary with good UX. The cognitive surface should reward expertise, but it still has to orient quickly and compose coherently across views."
+}
+
+^["done"]{
+}
+
+#>wonder_agents_plans_vscodecognitivesurface_wip_1
+?["What should an expert feel within 10 seconds of opening a Spw file?"]{
+  #:depth #!experiential // lens: first contact
+  $^["surface_stack"]@here => ~#initial_read
+  !probe{ "Write the first useful orientation the editor should provide before any sidebar interaction." }
+}
+
+#>wonder_agents_plans_vscodecognitivesurface_wip_2
+?["Which comparison makes Spw-aware diffs worth building?"]{
+  #:depth #!comparative // lens: change as meaning
+  ~#focus: "diff UX should reveal changed structure, changed field state, or changed inheritance that a plain line diff obscures"
+  !probe{ "Name the smallest before/after pair where Spw-aware comparison would materially outperform a standard diff." }
+}

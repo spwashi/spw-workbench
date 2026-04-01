@@ -1,0 +1,180 @@
+# wip — vscode-editor-contract
+# Branch: feature/vscode-editor-contract
+# Started: 2026-04-01
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @plan: ~".agents/plans/vscode-editor-contract/PLAN.md"
+ @artifact: ~".agents/plans/vscode-editor-contract/vscode-editor-contract.spw"
+ @performance: ~".agents/plans/vscode-plugin-performance/wip.spw"
+ @atlas: ~".agents/plans/vscode-workspace-atlas/wip.spw"
+ @extension: ~"extensions/vscode-spw/src/extension.ts"
+ @context: ~"extensions/vscode-spw/src/context.ts"
+ @strip: ~"extensions/vscode-spw/src/context-strip.ts"
+ @atlas_view: ~"extensions/vscode-spw/src/views/workspace-tree.ts"
+ @concepts_view: ~"extensions/vscode-spw/src/views/concepts-tree.ts"
+ @custom_requests: ~"extensions/vscode-spw/src/lsp/custom-requests.ts"
+ @server_index: ~"packages/spw-lsp/src/server-index.ts"
+ @stdio_server: ~"packages/spw-lsp/src/stdio-server.ts"
+ @workspace_handler: ~"packages/spw-lsp/src/handlers/workspace.ts"
+}
+
+^["intent"]{
+ ~#goal: "Define the VS Code editor contract as the boundary between semantic substrate truth and client surface composition. Name what the editor may ask, what the LSP must own, which payloads are authoritative vs inferred, and how invalidation/refresh should work before more UX surfaces or syntax are added."
+ ~#taste: "clarity, layering, naming, claim discipline"
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#editor_contract, #transport_vocabulary, #observation_model, #refresh_ownership]
+ review_surfaces: [@cluster, @plan, @performance, @atlas]
+ snippet_routes: [#payload, #authority_rule, #invalidation_rule, #surface_claim]
+}
+
+^["concept_index"]{
+ primary: [#editor_contract, #observation, #authority, #transport, #invalidation, #snapshot, #stream]
+ surfaces: [#lsp, #extension, #status_strip, #tree_view, #hover, #diff]
+ tensions: [#split_brain, #payload_drift, #refresh_fanout, #surface_overreach, #naming_drift]
+ transfers: [#language, #service, #component]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread the shared VS Code surfaces before widening the contract",
+  "< stabilize one observation or invalidation rule at a time",
+  "$ record which noun, payload, or ownership rule became more explicit",
+  "^ fold the stable contract language back into sidecars and client code",
+  "% keep semantic truth in the LSP while making client composition easier",
+ ]
+ gates: [#authority_honesty, #payload_coherence, #refresh_discipline, #surface_separation]
+}
+
+^["parallel_work"]{
+ critical_path: [#observation_catalog, #authority_model, #invalidation_matrix]
+ parallelizable: [#payload_examples, #naming_review, #diff_contract]
+ shared_hot_files: ["extensions/vscode-spw/src/context.ts", "extensions/vscode-spw/src/lsp/custom-requests.ts", "packages/spw-lsp/src/server-index.ts", "packages/spw-lsp/src/stdio-server.ts"]
+ merge_risks: [#hot_contract_files, #semantic_premature_lockin, #client_lsp_mismatch]
+ handoff_artifacts: [@plan, @artifact, @performance, @atlas]
+}
+
+^["supporting_documents"]{
+ must_ship: [@plan, @artifact]
+ helpful: [@performance, @atlas]
+ carries: [#observation_catalog, #authority_table, #payload_examples, #event_model, #review_questions]
+}
+
+^["interaction_depth"]{
+ subjects: [#truth, #latency, #inference, #refresh, #stability, #debuggability, #teaching]
+ questions: [#what_is_first_class, #what_is_authoritative, #what_invalidates, #what_can_stream, #what_is_provisional]
+ qualities: [#clarity, #containment, #trust]
+}
+
+^["contract_axes"]{
+ observations: [#cursor_context, #workspace_manifest, #workspace_temperature, #annotation_index, #register_snapshot, #phase_context, #diff_context]
+ authority_classes: [#authoritative, #inferred, #derived, #heuristic]
+ transport_shapes: [#request_response, #snapshot, #delta, #subscription]
+ invalidators: [#cursor_move, #text_change, #save, #open_close, #workspace_scan, #visibility_change]
+ review_rule: "Every editor-facing payload should answer: who owns this truth, when does it go stale, and which surfaces may render it without inventing ontology."
+}
+
+^["alignment_prompts"]{
+ ~#how_i_think_it_works: "<fill: describe, in plain engineering prose, how the extension currently gets semantic truth from the LSP and where you suspect the model is wrong or incomplete>"
+ ~#how_i_want_it_to_work: "<fill: describe the desired steady-state contract between parser/runtime/LSP/client in 5-10 sentences>"
+ ~#where_i_distrust_the_current_architecture: "<fill: name the files, request paths, or ownership seams that feel most suspicious>"
+ ~#where_i_think_the_thin_client_idea_breaks_down: "<fill: note whether the client is too thin, unevenly thin, or merely missing a stronger contract>"
+ ~#what_i_want_from_diffs: "<fill: what should a Spw-aware diff know that a text diff does not?>"
+}
+
+^["prompted_review"]{
+ ?["What observations deserve first-class contract status?"]{
+   #:depth #!experiential // lens: service boundary
+   !probe{ "List each observation the editor wants: who computes it, who caches it, who may rename it, and what event makes it stale?" }
+   ~#your_answer: {
+   }
+ }
+
+ ?["Where is the current contract split across too many surfaces?"]{
+  #:depth #!computational // lens: architecture
+  ~#focus_files: "extensions/vscode-spw/src/context.ts, extensions/vscode-spw/src/context-strip.ts, extensions/vscode-spw/src/views/workspace-tree.ts, extensions/vscode-spw/src/lsp/custom-requests.ts"
+  !probe{ "Name duplicate schedulers, duplicate requests, duplicate formatting vocabularies, or duplicate caches." }
+  ~#your_answer: "<fill>"
+ }
+
+ ?["Which nouns should become canonical contract vocabulary?"]{
+  #:depth #!linguistic // lens: naming
+  !probe{ "Pick words that the LSP may expose and every client surface should reuse. Also list words that should be demoted, renamed, or marked provisional." }
+  ~#keep: "<fill>"
+  ~#rename: "<fill>"
+  ~#provisional: "<fill>"
+ }
+
+ ?["How should invalidation actually work?"]{
+  #:depth #!temporal // lens: change over time
+  !probe{ "For cursor move, text change, save, open/close, and visibility toggles, say whether each observation should recompute, reuse snapshot, refresh lazily, or go cold." }
+  ~#your_answer: "<fill>"
+ }
+}
+
+^["review_tables"]{
+ ~#observation_catalog: "<fill: table or prose list of observation -> owner -> payload -> invalidators -> surfaces>"
+ ~#authority_table: "<fill: authoritative vs inferred vs heuristic payloads and the display obligations for each>"
+ ~#event_model: "<fill: which observations should remain pull-only and which might become push/subscription later>"
+ ~#counterexamples: "<fill: examples where a tempting client-side shortcut would violate the intended contract>"
+}
+
+^["stream"]{
+ >>[2026-04-01 00:00] observe — created this wip as a file-as-prompt surface so editor-contract thinking can happen inside the repo instead of staying ephemeral in chat.
+ >>[2026-04-01 00:00] observe — the current architecture already has a strong semantic server center, but the request layer, invalidation rules, and surface vocabulary still feel provisional and spread across multiple client surfaces.
+ >>[2026-04-01 00:00] decide — use this branch to formalize observation ownership before adding more UX-specific behavior or syntax pressure.
+ >>[2026-04-01 00:00] taste — the contract should make richer UX easier without encouraging a second semantics stack in the client.
+}
+
+^["open"]{
+ ?[first_class_observations]: "Which editor observations are important enough to deserve named, stable contract surfaces rather than ad hoc custom requests?"
+ ?[authority_vocabulary]: "Which nouns should the contract expose so every VS Code surface can speak one language without display.ts or individual views becoming ontology owners?"
+ ?[diff_contract]: "Should Spw-aware diffs be framed as one new observation type, a family of comparison payloads, or a separate editor lane entirely?"
+ ?[push_vs_pull]: "Which contract surfaces should remain pull-based requests and which are likely to want delta or subscription semantics later?"
+ ?[invalidation_matrix]: "What is the right invalidation model for cursor movement, text edits, saves, and visibility changes across the existing surfaces?"
+ ?[your_architecture_corrections]: "Where do you think this file's assumptions are wrong? Write corrections inline rather than preserving polite ambiguity."
+}
+
+^["commits"]{
+ ~[1]: ".[plans] — stage vscode-editor-contract prompting surfaces"
+ ~[2]: ".[vscode] — write editor contract artifact: observations, authority classes, invalidation, and payload vocabulary"
+ ~[3]: "&[vscode-context] — consolidate shared observation ownership for cursor/context and related surface state"
+ ~[4]: "#[vscode-diff] — define Spw-aware diff observation contract and comparison vocabulary"
+ ~[5]: "![vscode-contract] — verify client/LSP contract coherence against active editor surfaces"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@e6a0e877fc485fd7892b2d1537a36baeb5d9b6cf"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: ".agents/plans/vscode-editor-contract/wip.spw, extensions/vscode-spw/src/context.ts, extensions/vscode-spw/src/lsp/custom-requests.ts, extensions/vscode-spw/src/context-strip.ts, extensions/vscode-spw/src/views/workspace-tree.ts, packages/spw-lsp/src/server-index.ts, packages/spw-lsp/src/stdio-server.ts"
+ ~#next_commit: "1"
+ ~#open_count: "6"
+ ~#last_stream: "2026-04-01 00:00"
+ ~#taste_debt: "Do not let 'editor contract' become an excuse to freeze immature vocabulary too early. Formalize only the nouns and invalidation rules that genuinely improve cross-surface coherence."
+}
+
+^["done"]{
+}
+
+#>wonder_agents_plans_vscodeeditorcontract_wip_1
+?["What boundary should never be crossed in wip — vscode-editor-contract?"]{
+  #:depth #!computational // lens: formal structure
+  $^["contract_axes"]@here => %[shared.property]
+  ~#hypothesis: "semantic truth remains server-owned even when the client grows more capable and expressive"
+  !probe{ "Identify the convenience shortcuts that would quietly move ontology or parsing into client surfaces." }
+}
+
+#>wonder_agents_plans_vscodeeditorcontract_wip_2
+?["How would a Spw-aware diff falsify the current contract?"]{
+  #:depth #!experiential // lens: comparative reading
+  ~#focus: "diffs force the contract to state what counts as preserved structure vs changed structure"
+  !probe{ "List the smallest comparisons that plain text diff misses but a Spw editor should care about." }
+}
