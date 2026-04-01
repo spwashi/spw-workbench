@@ -1,0 +1,310 @@
+# performance doctrine — vscode-plugin-performance
+
+#:layer #!pragmatics
+#:performance #!editor
+
+^["roots"]{
+ @plan: ~".agents/plans/vscode-plugin-performance/PLAN.md"
+ @tooling: ~".spw/tooling/vscode-spw.spw"
+ @pattern: ~".spw/patterns/literate-ui.spw"
+ @extension: ~"extensions/vscode-spw/src/extension.ts"
+ @annotation_index: ~"extensions/vscode-spw/src/annotation-index.ts"
+ @context_strip: ~"extensions/vscode-spw/src/context-strip.ts"
+ @concepts: ~"extensions/vscode-spw/src/views/concepts-tree.ts"
+ @atlas: ~"extensions/vscode-spw/src/views/workspace-tree.ts"
+ @server_index: ~"packages/spw-lsp/src/server-index.ts"
+ @semantic_tokens: ~"packages/spw-lsp/src/handlers/semantic-tokens.ts"
+ @stdio_server: ~"packages/spw-lsp/src/stdio-server.ts"
+}
+
+^["orientation"]{
+ lane: #execution_truth
+ ladder: #service
+ braid: [#startup_truth, #steady_state_truth, #visible_surface_truth]
+ rule: "move work to the right owner; delete duplicate paths before tuning cadence"
+}
+
+^["thesis"]{
+ primary: [#single_owner_truth, #incremental_invalidation, #visibility_budget]
+ preserves: [#thin_client_boundary, #startup_honesty, #manifest_index_truth]
+ teaches: [#startup_cost, #save_cost, #cursor_cost, #render_cost, #index_cost]
+}
+
+^["reference_map"]{
+ startup_path: [@extension, @stdio_server]
+ save_path: [@annotation_index, @server_index]
+ cursor_path: [@context_strip, @atlas, @server_index]
+ render_path: [@concepts, @atlas]
+ index_path: [@server_index, @semantic_tokens, @stdio_server]
+}
+
+^["performance_axes"]{
+ startup: .{
+  owners: [#packaging, #bootstrap, #lsp_launch]
+  smells: [#tsx_hot_path, #eager_sidebar]
+  outcomes: [#fast_boot, #truthful_ready]
+  files: [@extension, @stdio_server]
+ }
+
+ save_path: .{
+  owners: [#annotation_sync, #workspace_refresh]
+  smells: [#global_rebuild, #overlapping_invalidation]
+  outcomes: [#file_local_freshness, #stable_sidebar_truth]
+  files: [@annotation_index, @server_index]
+ }
+
+ cursor_path: .{
+  owners: [#context_transport, #surface_composition]
+  smells: [#duplicate_queries, #timer_split]
+  outcomes: [#shared_cursor_truth, #aligned_surfaces]
+  files: [@context_strip, @atlas, @server_index]
+ }
+
+ render_path: .{
+  owners: [#tree_visibility, #status_visibility]
+  smells: [#hidden_refresh, #invisible_polling]
+  outcomes: [#visibility_gating, #quiet_feedback]
+  files: [@concepts, @atlas, @context_strip]
+ }
+
+ index_path: .{
+  owners: [#parse_cache, #handler_reuse, #scan_cost]
+  smells: [#regex_after_parse, #double_parse, #serial_scan]
+  outcomes: [#shared_parse_truth, #bounded_concurrency]
+  files: [@server_index, @semantic_tokens, @stdio_server]
+ }
+}
+
+^["principles"]{
+ thin_client_truth: .{
+  keeps: [#semantic_truth_in_lsp, #client_as_renderer]
+  rejects: [#client_semantics_fork, #parallel_invalidation_models]
+  files: [@extension, @server_index, @stdio_server]
+ }
+
+ visible_work_only: .{
+  keeps: [#visible_surface_budget, #first_open_trust]
+  rejects: [#background_refresh_by_default, #hidden_query_loops]
+  files: [@concepts, @atlas, @context_strip]
+ }
+
+ incremental_over_global: .{
+  keeps: [#single_file_update, #local_invalidation]
+  rejects: [#full_snapshot_after_save, #global_refresh_as_default]
+  files: [@annotation_index, @server_index]
+ }
+
+ reuse_parsed_truth: .{
+  keeps: [#parse_once, #token_reuse, #shared_handler_inputs]
+  rejects: [#regex_shadow_logic, #semantic_split_brain]
+  files: [@server_index, @semantic_tokens]
+ }
+
+ remove_classes_of_work: .{
+  keeps: [#request_dedupe, #owner_clarity, #cost_deletion]
+  rejects: [#debounce_only_fixes, #ttl_patchwork]
+  files: [@annotation_index, @context_strip, @atlas]
+ }
+
+ honest_packaging: .{
+  keeps: [#compiled_runtime_path, #explicit_dev_mode]
+  rejects: [#source_loader_in_hot_path, #accidental_dev_assumptions]
+  files: [@extension, @stdio_server]
+ }
+}
+
+^["tradeoffs"]{
+ compiled_server_launch: .{
+  boon: [#faster_activation, #leaner_runtime_path, #clearer_ship_story]
+  bane: [#build_discipline, #dual_mode_selection]
+  risks: [#packaging_drift, #source_only_regression]
+  choose_when: [#preview_runtime, #distributed_editor_use]
+  avoid_when: [#implicit_dev_boot]
+  touches: [@extension, @stdio_server]
+ }
+
+ incremental_annotation_sync: .{
+  boon: [#save_latency_drop, #narrower_refresh_scope]
+  bane: [#stateful_transport, #delta_accounting]
+  risks: [#freshness_split, #dual_owner_confusion]
+  choose_when: [#single_file_save_dominates, #sidebar_freshness_matters]
+  avoid_when: [#client_and_server_both_own_truth]
+  touches: [@annotation_index, @server_index]
+ }
+
+ shared_cursor_context: .{
+  boon: [#request_dedupe, #surface_alignment]
+  bane: [#cache_versioning, #shared_transport_pressure]
+  risks: [#stale_context, #formatter_leakage]
+  choose_when: [#multiple_surfaces_follow_cursor]
+  avoid_when: [#surface_copy_mutates_transport]
+  touches: [@context_strip, @atlas, @server_index]
+ }
+
+ semantic_token_reuse: .{
+  boon: [#token_latency_drop, #semantic_alignment]
+  bane: [#parser_coupling, #helper_design_work]
+  risks: [#token_shape_lock_in, #low_level_handler_sprawl]
+  choose_when: [#server_already_parsed_document]
+  avoid_when: [#handlers_read_raw_parser_shapes_directly]
+  touches: [@semantic_tokens, @server_index]
+ }
+
+ concurrent_workspace_scan: .{
+  boon: [#faster_initialize_to_ready, #better_large_workspace_behavior]
+  bane: [#memory_pressure, #ordering_complexity]
+  risks: [#half_win_if_double_parse, #opaque_failure_order]
+  choose_when: [#scan_is_cold_start_bottleneck]
+  avoid_when: [#parallelism_without_parse_dedup]
+  touches: [@server_index]
+ }
+
+ visibility_gated_views: .{
+  boon: [#hidden_panels_go_cold, #lower_lsp_chatter]
+  bane: [#first_open_cost, #prefetch_decisions]
+  risks: [#stale_first_impression, #over_lazy_surfaces]
+  choose_when: [#tree_view_refresh_is_heavy]
+  avoid_when: [#correctness_needs_live_background_state]
+  touches: [@concepts, @atlas, @context_strip]
+ }
+}
+
+^["anti_patterns"]{
+ debounce_everything: .{
+  signals: [#duplicate_work_still_present, #symptom_hiding]
+  replace_with: [#delete_duplicate_trigger, #then_tune_cadence]
+ }
+
+ cache_in_two_layers: .{
+  signals: [#freshness_arguments, #parallel_semantic_models]
+  replace_with: [#semantic_cache_in_server, #render_cache_in_client]
+ }
+
+ eager_sidebar_dogma: .{
+  signals: [#all_users_pay_for_few_workflows, #activation_sprawl]
+  replace_with: [#visibility_gated_init, #cheap_identity_setup_only]
+ }
+
+ regex_after_parse: .{
+  signals: [#token_drift, #extra_scan_cost]
+  replace_with: [#shared_parse_helpers, #single_owner_semantics]
+ }
+
+ invisible_polling: .{
+  signals: [#background_lsp_budget, #quiet_feedback_loss]
+  replace_with: [#visible_refresh, #correctness_scoped_background_work]
+ }
+}
+
+^["implementation_order"]{
+ wave_1: .{
+  focus: [#startup_truth]
+  moves: [#compiled_lsp_launch, #lean_activate_path, #optional_sidebar_init]
+  proves: [#fast_boot, #truthful_ready]
+  files: [@extension, @stdio_server]
+ }
+
+ wave_2: .{
+  focus: [#save_freshness]
+  moves: [#incremental_annotation_sync, #remove_full_rebuild_after_save, #collapse_overlapping_refresh]
+  proves: [#file_local_freshness, #boring_save_loop]
+  files: [@annotation_index, @server_index]
+ }
+
+ wave_3: .{
+  focus: [#cursor_and_view_coherence]
+  moves: [#shared_cursor_cache, #visibility_gated_atlas, #status_atlas_dedupe]
+  proves: [#cheap_cursor_motion, #aligned_surfaces]
+  files: [@context_strip, @atlas, @extension]
+ }
+
+ wave_4: .{
+  focus: [#server_reuse]
+  moves: [#semantic_token_reuse, #single_parse_selector_path, #bounded_concurrency_scan]
+  proves: [#shared_parse_truth, #leaner_initialize_path]
+  files: [@semantic_tokens, @server_index, @stdio_server]
+ }
+}
+
+^["measurement_doctrine"]{
+ baselines: [#same_repo, #same_extension_build, #same_startup_mode, #same_document_corpus]
+ compare_rule: "measure before and after each wave; do not merge unrelated wins into one opaque delta"
+ prefer: [#relative_delta, #request_count_drop, #same_path_comparison]
+ avoid: [#invented_budget, #cross_corpus_claims]
+
+ startup: .{
+  path: [#window_open, #first_lsp_backed_response]
+  axis: [#latency, #readiness]
+ }
+
+ save_path: .{
+  path: [#didSave, #concepts_fresh, #atlas_fresh]
+  axis: [#latency, #freshness]
+ }
+
+ cursor_path: .{
+  path: [#selection_move, #context_response_count, #visible_surface_update]
+  axis: [#request_rate, #surface_alignment]
+ }
+
+ semantic_tokens: .{
+  path: [#semanticTokens_full]
+  axis: [#handler_latency, #token_alignment]
+ }
+
+ scan_path: .{
+  path: [#initialize, #workspace_scan_complete]
+  axis: [#cold_start, #workspace_size_response]
+ }
+}
+
+^["review_questions"]{
+ architecture: [
+  "did this remove work or only postpone it?",
+  "does semantic truth still have one owner?",
+  "did a hidden surface stop spending budget?"
+ ]
+
+ ux: [
+  "does the extension feel quieter?",
+  "does first-open preserve trust?",
+  "did faster paths stay truthful?"
+ ]
+
+ maintenance: [
+  "can the next editor feature reuse this rule set?",
+  "where could duplicate invalidation re-enter?",
+  "which hot file grew in concept count?"
+ ]
+}
+
+^["query_routes"]{
+ startup_questions: [#compiled_server_launch, #honest_packaging, #wave_1]
+ save_questions: [#incremental_annotation_sync, #incremental_over_global, #wave_2]
+ cursor_questions: [#shared_cursor_context, #visible_work_only, #wave_3]
+ server_questions: [#semantic_token_reuse, #concurrent_workspace_scan, #wave_4]
+ smell_questions: [#debounce_everything, #cache_in_two_layers, #regex_after_parse, #invisible_polling]
+}
+
+^["tradeoff_summary"]{
+ north_star: [#single_owner_truth, #incremental_invalidation, #visibility_budget]
+ do_first: [#compiled_server_launch, #incremental_annotation_sync, #shared_cursor_context]
+ watch_closely: [#stdio_server_growth, #first_open_latency, #cache_owner_ambiguity]
+ never_trade_away: [#startup_honesty, #thin_client_boundary, #manifest_index_truth]
+}
+
+#>wonder_agents_plans_vscodepluginperformance_artifact_1
+?["Which optimization deletes the most duplicate work with the least semantic risk?"]{
+  #:depth #!computational
+  $^["tradeoffs"]@here => $^["tradeoff_summary"]@here
+  !probe{ "rank compiled launch, incremental annotation sync, shared cursor context, semantic-token reuse, and visibility gating by deleted work-path count versus truth-owner risk." }
+  ~<.agents/plans/vscode-plugin-performance/wip.spw>
+}
+
+#>wonder_agents_plans_vscodepluginperformance_artifact_2
+?["Where does performance pressure try to break the thin-client boundary?"]{
+  #:depth #!educational
+  $^["principles"]@here => $^["anti_patterns"]@here
+  !probe{ "trace startup, save, cursor, render, and index paths. at which point does convenience tempt the client to own semantic truth?" }
+  ~<.spw/tooling/vscode-spw.spw>
+}
