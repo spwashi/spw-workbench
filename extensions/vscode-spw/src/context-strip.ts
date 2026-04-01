@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import type { SpwContext } from './context'
+import { getCursorContextAtEditor, type SpwContext } from './context'
 import type { SpwContextAtPositionResult } from './lsp/custom-requests'
 
 const STRIP_LABEL = 'Spw'
@@ -25,11 +25,7 @@ export function registerContextStrip(spw: SpwContext): vscode.Disposable[] {
     }
 
     const version = ++requestVersion
-    const position = editor.selection.active
-    const context = await spw.requests.contextAtPosition(editor.document.uri.toString(), {
-      line: position.line,
-      character: position.character,
-    })
+    const context = await getCursorContextAtEditor(spw, editor)
 
     if (version !== requestVersion) return
     if (!context || isContextEmpty(context)) {

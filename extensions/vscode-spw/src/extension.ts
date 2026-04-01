@@ -71,8 +71,20 @@ function createLanguageClient(): LanguageClient {
 }
 
 function createServerOptions(serverScript: string): ServerOptions {
-  // Use node --import tsx to run the TypeScript server directly.
-  // This mirrors the approach used in smoke-navigation.ts.
+  if (serverScript.endsWith('.js')) {
+    return {
+      run: {
+        command: process.execPath,
+        args: [serverScript],
+      },
+      debug: {
+        command: process.execPath,
+        args: [serverScript],
+      },
+    }
+  }
+
+  // Fall back to tsx only when the built server is unavailable.
   return {
     run: {
       command: process.execPath,
@@ -111,9 +123,14 @@ function resolveServerPath(): string {
   candidateRoots.add(path.resolve(__dirname, '..', '..', '..'))
 
   for (const root of candidateRoots) {
-    const candidate = path.join(root, 'packages', 'spw-lsp', 'src', 'stdio-server.ts')
-    if (fs.existsSync(candidate)) {
-      return candidate
+    const builtCandidate = path.join(root, 'packages', 'spw-lsp', 'dist', 'stdio-server.js')
+    if (fs.existsSync(builtCandidate)) {
+      return builtCandidate
+    }
+
+    const sourceCandidate = path.join(root, 'packages', 'spw-lsp', 'src', 'stdio-server.ts')
+    if (fs.existsSync(sourceCandidate)) {
+      return sourceCandidate
     }
   }
 

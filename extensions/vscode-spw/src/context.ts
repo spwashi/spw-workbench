@@ -2,6 +2,7 @@ import * as vscode from 'vscode'
 import { AnnotationIndex } from './annotation-index'
 import type {
   SpwCustomRequestClient,
+  SpwContextAtPositionResult,
   SpwMaterializationState,
   SpwRegisterSnapshot,
   SpwWorkspaceTemperatureEntry,
@@ -36,6 +37,14 @@ export interface SpwProbeResult {
   target: string
   result: unknown
   resonances: string[]
+}
+
+export interface SpwCursorContextSnapshot {
+  uri: string
+  version: number
+  line: number
+  character: number
+  value: SpwContextAtPositionResult | null
 }
 
 export interface SpwEventMap {
@@ -149,6 +158,7 @@ export interface SpwContext {
   activePhase: SpwActivePhase | null
   materializationState: SpwMaterializationState | null
   probeHistory: SpwProbeResult[]
+  cursorContextSnapshot: SpwCursorContextSnapshot | null
 }
 
 export function createSpwEventBus(): SpwEventBus {
@@ -167,5 +177,41 @@ export function createSpwContext(options: CreateSpwContextOptions): SpwContext {
     activePhase: null,
     materializationState: null,
     probeHistory: [],
+    cursorContextSnapshot: null,
   }
+}
+
+export async function getCursorContextAtEditor(
+  spw: SpwContext,
+  editor: vscode.TextEditor,
+): Promise<SpwContextAtPositionResult | null> {
+  const uri = editor.document.uri.toString()
+  const version = editor.document.version
+  const position = editor.selection.active
+  const snapshot = spw.cursorContextSnapshot
+
+  if (
+    snapshot
+    && snapshot.uri === uri
+    && snapshot.version === version
+    && snapshot.line === position.line
+    && snapshot.character === position.character
+  ) {
+    return snapshot.value
+  }
+
+  const value = await spw.requests.contextAtPosition(uri, {
+    line: position.line,
+    character: position.character,
+  })
+
+  spw.cursorContextSnapshot = {
+    uri,
+    version,
+    line: position.line,
+    character: position.character,
+    value,
+  }
+
+  return value
 }

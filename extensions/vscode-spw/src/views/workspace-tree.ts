@@ -17,7 +17,7 @@
  */
 
 import * as vscode from 'vscode'
-import type { SpwContext } from '../context'
+import { getCursorContextAtEditor, type SpwContext } from '../context'
 import type {
   SpwWorkspaceRootEntry,
   SpwWorkspaceProjectionEntry,
@@ -144,10 +144,17 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
   private readonly subscriptions: vscode.Disposable[]
   private refreshTimer: ReturnType<typeof setTimeout> | null = null
   private cursorTimer: ReturnType<typeof setTimeout> | null = null
+  private isVisible = false
+  private pendingRefresh = false
 
   constructor(private readonly spw: SpwContext) {
     // Debounced refresh on annotation index updates
     const indexSub = spw.annotationIndex.onDidUpdate(() => {
+      if (!this.isVisible) {
+        this.pendingRefresh = true
+        return
+      }
+
       if (this.refreshTimer) clearTimeout(this.refreshTimer)
       this.refreshTimer = setTimeout(() => {
         this.refreshTimer = null
@@ -165,6 +172,7 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
         }
         return
       }
+      if (!this.isVisible) return
       // Debounce cursor context requests — high velocity
       if (this.cursorTimer) clearTimeout(this.cursorTimer)
       this.cursorTimer = setTimeout(() => {
@@ -194,8 +202,41 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
   }
 
   async refresh(): Promise<void> {
+    if (!this.isVisible) {
+      this.pendingRefresh = true
+      return
+    }
+
+    this.pendingRefresh = false
     await this.loadData()
     this.changed.fire()
+  }
+
+  setVisible(visible: boolean): void {
+    if (this.isVisible === visible) return
+    this.isVisible = visible
+
+    if (!visible) {
+      if (this.refreshTimer) clearTimeout(this.refreshTimer)
+      if (this.cursorTimer) clearTimeout(this.cursorTimer)
+      return
+    }
+
+    const activeEditor = vscode.window.activeTextEditor
+    const shouldRefresh = this.pendingRefresh || this.manifest === null && this.temperature.length === 0
+    if (shouldRefresh) {
+      void this.refresh()
+    } else {
+      this.changed.fire()
+    }
+
+    if (activeEditor?.document.languageId === 'spw') {
+      void this.refreshCursorContext(activeEditor)
+    } else if (this.cursorContext !== null) {
+      this.cursorContext = null
+      this.cursorFileLabel = null
+      this.changed.fire()
+    }
   }
 
   private async loadData(): Promise<void> {
@@ -228,13 +269,11 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
   }
 
   private async refreshCursorContext(editor: vscode.TextEditor): Promise<void> {
+    if (!this.isVisible) return
+
     const uri = editor.document.uri.toString()
-    const position = editor.selection.active
     try {
-      this.cursorContext = await this.spw.requests.contextAtPosition(uri, {
-        line: position.line,
-        character: position.character,
-      })
+      this.cursorContext = await getCursorContextAtEditor(this.spw, editor)
       this.cursorFileLabel = vscode.workspace.asRelativePath(editor.document.uri)
       this.changed.fire()
     } catch {
@@ -657,6 +696,10 @@ export function registerWorkspaceAtlasView(spw: SpwContext): vscode.Disposable[]
     showCollapseAll: true,
   })
 
+  const visibilitySub = treeView.onDidChangeVisibility((event) => {
+    provider.setVisible(event.visible)
+  })
+
   const refreshCommand = vscode.commands.registerCommand('spwWorkspace.refresh', () => {
     void provider.refresh()
   })
@@ -675,10 +718,9 @@ export function registerWorkspaceAtlasView(spw: SpwContext): vscode.Disposable[]
     },
   )
 
-  // Initial load
-  void provider.refresh()
+  provider.setVisible(treeView.visible)
 
-  return [provider, treeView, refreshCommand, rootSelectedCommand]
+  return [provider, treeView, visibilitySub, refreshCommand, rootSelectedCommand]
 }
 
 async function openWorkspaceRoot(resolvedPath: string): Promise<void> {

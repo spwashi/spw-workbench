@@ -29,7 +29,8 @@
         "vscode": "^1.80.0"
     },
     "scripts": {
-        "vscode:prepublish": "npm run compile",
+        "vscode:prepublish": "npm run compile:lsp && npm run compile",
+        "compile:lsp": "npm --prefix ../.. run build:lsp",
         "compile": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node",
         "watch": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --watch"
     },
