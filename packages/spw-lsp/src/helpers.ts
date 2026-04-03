@@ -211,6 +211,17 @@ export async function resolveReferencePath(
         const resolved = await resolveCandidate(target)
         if (resolved) return resolved + hash
         if (allowDirectory && await statKind(target) === 'dir') return target
+
+        // Fallback: workspace-root-relative resolution (tilde-relative paths like ~"…")
+        if (cleanTarget && workspaceRoot !== docDir) {
+            const wsTarget = path.resolve(workspaceRoot, cleanTarget)
+            if (wsTarget !== target) {
+                const wsResolved = await resolveCandidate(wsTarget)
+                if (wsResolved) return wsResolved + hash
+                if (allowDirectory && await statKind(wsTarget) === 'dir') return wsTarget
+            }
+        }
+
         return null
     }
 
