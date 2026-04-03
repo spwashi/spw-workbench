@@ -1,0 +1,104 @@
+# wip — neovim-spw-surfaces
+# Branch: feature/neovim-spw-surfaces
+# Started: 2026-04-02
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @plan: ~".agents/plans/neovim-spw-surfaces/PLAN.md"
+ @lsp_plan: ~".agents/plans/lsp-custom-request-completions/PLAN.md"
+ @nvim_plugin: ~"extensions/neovim-spw/lua/spw-lsp.lua"
+ @nvim_ftplugin: ~"extensions/neovim-spw/ftplugin/spw.vim"
+ @nvim_readme: ~"extensions/neovim-spw/README.md"
+ @custom_requests: ~"extensions/vscode-spw/src/lsp/custom-requests.ts"
+}
+
+^["intent"]{
+ ~#goal: "Extend the existing Neovim plugin to consume the 4 active custom LSP requests and expose them as native UI surfaces — annotation float, workspace manifest float, statusline component — using only Neovim built-ins (no Telescope dependency)."
+ ~#taste: "clarity, containment — focused modules, no external deps, degrades gracefully when LSP is down"
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #component
+ develops: [#neovim_custom_request_layer, #native_float_ui, #statusline_integration]
+ review_surfaces: [@cluster, @plan, @lsp_plan, @nvim_plugin]
+ snippet_routes: [#lua_request_wrapper, #nvim_float, #statusline_component]
+}
+
+^["concept_index"]{
+ primary: [#custom_module, #annotation_float, #manifest_float, #statusline_component]
+ surfaces: [#spw_annotations, #spw_manifest, #spw_phase, #spw_temperature]
+ tensions: [#graceful_degradation, #cursor_hold_cost, #float_lifecycle]
+ transfers: [#component, #language]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread extensions/neovim-spw/lua/spw-lsp.lua before adding new modules",
+  "< implement custom.lua first — surfaces depend on it",
+  "$ record which Neovim APIs are needed (nvim_open_win, vim.ui.select, etc.)",
+  "^ fold the stable request pattern back into custom.lua before building surfaces",
+  "% keep each UI module to one surface — no multi-surface files",
+ ]
+ gates: [#lsp_server_reachable, #request_returns_data, #float_opens, #statusline_renders]
+}
+
+^["parallel_work"]{
+ critical_path: [#custom_module, #annotation_float]
+ parallelizable: [#manifest_float, #statusline_component]
+ shared_hot_files: ["extensions/neovim-spw/lua/spw-lsp.lua"]
+ merge_risks: [#command_name_collision, #autocmd_duplication]
+ handoff_artifacts: [@plan, @nvim_readme]
+}
+
+^["supporting_documents"]{
+ must_ship: [@plan, @nvim_readme]
+ helpful: [@lsp_plan, @custom_requests]
+ carries: [#lua_module_structure, #vim_command_list, #statusline_integration_notes]
+}
+
+^["api_surface"]{
+ new_commands: [":SpwAnnotations", ":SpwManifest", ":SpwTemperature", ":SpwPhase"]
+ new_modules: ["lua/spw/custom.lua", "lua/spw/ui/annotations.lua", "lua/spw/ui/manifest.lua", "lua/spw/ui/statusline.lua"]
+ statusline_api: "require('spw.ui.statusline').context_component()"
+ lualine_component: "{ 'spw_context', ... }"
+ request_pattern: "vim.lsp.buf_request(0, 'spw/method', params, callback)"
+}
+
+^["stream"]{
+ >>[2026-04-02 00:00] observe — existing plugin has zero custom request calls; it only uses standard LSP methods and exposes SpwRestart/SpwStop/SpwOpenRef/SpwPeekRef/SpwRefsQuickfix/SpwCodeAction commands.
+ >>[2026-04-02 00:00] decide — native Neovim only strategy; float windows + vim.ui.select; no Telescope dependency; this keeps the plugin universally compatible.
+ >>[2026-04-02 00:00] note — this plan depends on Plan A (lsp-custom-request-completions) landing first; spw/resonance and spw/phaseContext handlers must exist before :SpwPhase can work.
+ >>[2026-04-02 00:00] note — statusline component should be a pure function returning a string; cursor context is fetched via CursorHold autocmd and cached in a module-level variable.
+}
+
+^["open"]{
+ ?[float_border_style]: "Which nvim_open_win border style matches the Spw aesthetic? 'rounded', 'single', or a custom char set?"
+ ?[cursor_hold_interval]: "What CursorHold updatetime is appropriate for context fetches? Too low = spam, too high = stale. 500ms default?"
+ ?[vim_ui_select_fallback]: "vim.ui.select is overrideable by plugins like dressing.nvim — is that a feature or a concern? Document the override behavior."
+ ?[temperature_display]: ":SpwTemperature could go to quickfix (structured, navigable) or a float (ephemeral). Which fits better with the plan's native-only aesthetic?"
+}
+
+^["commits"]{
+ ~[1]: "^seed[neovim] — add spw.custom module with LSP request wrappers"
+ ~[2]: "&[neovim] =surface[annotations] — annotation float and :SpwAnnotations command"
+ ~[3]: "&[neovim] =surface[manifest] — workspace manifest float and :SpwManifest command"
+ ~[4]: "&[neovim] =surface[statusline] — context statusline component, :SpwPhase, and cursor autocmds"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@a54f8671"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "extensions/neovim-spw/lua/spw-lsp.lua"
+ ~#next_commit: "1"
+ ~#open_count: "4"
+ ~#last_stream: "2026-04-02 00:00"
+ ~#taste_debt: "Do not let custom.lua grow into a general utility library. It has one job: wrap spw/* LSP requests. UI logic belongs in the ui/ modules."
+}
+
+^["done"]{
+}

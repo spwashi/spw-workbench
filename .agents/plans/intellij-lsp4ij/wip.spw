@@ -1,0 +1,118 @@
+# wip — intellij-lsp4ij
+# Branch: feature/intellij-lsp4ij
+# Started: 2026-04-02
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @plan: ~".agents/plans/intellij-lsp4ij/PLAN.md"
+ @lsp_plan: ~".agents/plans/lsp-custom-request-completions/PLAN.md"
+ @build: ~"extensions/intellij-spw/build.gradle.kts"
+ @plugin_xml: ~"extensions/intellij-spw/src/main/resources/META-INF/plugin.xml"
+ @server_support: ~"extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwLspServerSupportProvider.kt"
+ @configurable: ~"extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/settings/SpwLspConfigurable.kt"
+ @settings: ~"extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/settings/SpwLspSettings.kt"
+ @custom_requests: ~"extensions/vscode-spw/src/lsp/custom-requests.ts"
+}
+
+^["intent"]{
+ ~#goal: "Migrate the IntelliJ plugin from the native JetBrains LSP API to LSP4IJ (Red Hat), enabling typed custom request support via @JsonRequest annotations. Then add three surfaces — Concepts panel, Workspace Atlas panel, Context Strip status bar widget — to bring IntelliJ to feature parity with the VSCode custom request lane."
+ ~#taste: "clarity, layering, expressiveness — no more native LSP API lock-in; surfaces that speak the same vocabulary as VSCode"
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #component
+ develops: [#lsp4ij_migration, #custom_request_bridge, #editor_surface_parity]
+ review_surfaces: [@cluster, @plan, @lsp_plan, @build]
+ snippet_routes: [#kotlin_interface, #lsp4ij_factory, #tool_window]
+}
+
+^["concept_index"]{
+ primary: [#lsp4ij, #language_server_factory, #custom_server_interface, #workspace_service]
+ surfaces: [#annotations_panel, #workspace_atlas_panel, #context_strip]
+ tensions: [#native_api_vs_lsp4ij, #kotlin_java_interop, #build_toolchain_age]
+ transfers: [#component, #service]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread LSP4IJ DeveloperGuide before writing the factory class",
+  "< fix the build first — nothing else moves without a clean ./gradlew buildPlugin",
+  "$ record which LSP4IJ extension points map to the native API equivalents",
+  "^ fold the stable migration pattern back into the factory and plugin.xml",
+  "% keep surfaces thin — panels render, services own state",
+ ]
+ gates: [#build_clean, #lsp_starts, #custom_requests_callable, #surfaces_render]
+}
+
+^["parallel_work"]{
+ critical_path: [#build_fix, #lsp4ij_migration, #custom_request_bridge]
+ parallelizable: [#annotations_panel, #workspace_atlas_panel, #context_strip]
+ shared_hot_files: [
+  "extensions/intellij-spw/build.gradle.kts",
+  "extensions/intellij-spw/src/main/resources/META-INF/plugin.xml",
+  "extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwLspServerSupportProvider.kt",
+ ]
+ merge_risks: [#plugin_xml_conflict, #gradle_version_jump]
+ handoff_artifacts: [@plan]
+}
+
+^["supporting_documents"]{
+ must_ship: [@plan]
+ helpful: [@lsp_plan, @custom_requests]
+ carries: [#lsp4ij_migration_notes, #kotlin_data_classes, #tool_window_registration]
+}
+
+^["contract_axes"]{
+ migration_from: #native_jetbrains_lsp_api
+ migration_to: #lsp4ij
+ bridge_method: #language_server_factory_get_server_interface
+ surfaces: [#annotations_panel, #workspace_atlas_panel, #context_strip_widget]
+ state_owner: #spw_workspace_service
+ invalidators: [#file_save, #lsp_restart, #manifest_change]
+}
+
+^["phase_sequence"]{
+ ~[1]: "fix build — SpwLspConfigurable + Gradle IntelliJ Plugin 2.13.1"
+ ~[2]: "migrate — swap native LSP API for LSP4IJ LanguageServerFactory"
+ ~[3]: "bridge — SpwCustomServer @JsonRequest interface + SpwWorkspaceService"
+ ~[4]: "surfaces — annotation panel, workspace atlas panel, context strip"
+}
+
+^["stream"]{
+ >>[2026-04-02 00:00] observe — build currently fails on SpwLspConfigurable.kt due to unresolved TextFieldWithBrowseButton; must be fixed before any Gradle tasks run.
+ >>[2026-04-02 00:00] observe — Gradle IntelliJ Plugin is at 2.1.0; minimum for 2026 targets is 2.13.1; upgrading is a prerequisite.
+ >>[2026-04-02 00:00] decide — use LSP4IJ LanguageServerFactory.getServerInterface() with @JsonRequest annotations for the custom request bridge; this is the LSP4IJ-idiomatic approach.
+ >>[2026-04-02 00:00] note — phases 3 and 4 depend on Plan A (lsp-custom-request-completions) landing first; bridge is useless until the server handlers exist.
+}
+
+^["open"]{
+ ?[lsp4ij_version]: "Which LSP4IJ version to target? 0.14.0 was the last stable as of research; confirm latest before writing build.gradle.kts."
+ ?[community_vs_ultimate]: "Should the plugin target IntelliJ Community instead of Ultimate to broaden distribution? LSP4IJ supports community editions."
+ ?[configurable_replacement]: "Can LSP4IJ's built-in server settings UI cover work-dir + command fields, or do we need to keep SpwLspConfigurable with a fixed JBTextField approach?"
+ ?[tool_window_api]: "Which IntelliJ Platform tool window registration API should the panels use — plugin.xml toolWindow extension point vs runtime registration?"
+}
+
+^["commits"]{
+ ~[1]: "&[intellij] =fix[build] — fix SpwLspConfigurable and bump Gradle IntelliJ Plugin to 2.13.1"
+ ~[2]: "&[intellij] =migration[lsp4ij] — replace native LSP API with LSP4IJ LanguageServerFactory"
+ ~[3]: "^seed[intellij] — add SpwCustomServer interface and WorkspaceService state caching"
+ ~[4]: "&[intellij] =surface[panels] — add annotation panel, workspace atlas panel, context strip widget"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@a54f8671"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "extensions/intellij-spw/build.gradle.kts, extensions/intellij-spw/src/main/resources/META-INF/plugin.xml, extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwLspServerSupportProvider.kt, extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/settings/SpwLspConfigurable.kt"
+ ~#next_commit: "1"
+ ~#open_count: "4"
+ ~#last_stream: "2026-04-02 00:00"
+ ~#taste_debt: "Panels must not own business logic. SpwWorkspaceService owns state; panels render it. Do not let the annotations panel become a second annotation index."
+}
+
+^["done"]{
+}

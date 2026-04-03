@@ -1,0 +1,103 @@
+# wip — lsp-custom-request-completions
+# Branch: feature/lsp-custom-request-completions
+# Started: 2026-04-02
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @plan: ~".agents/plans/lsp-custom-request-completions/PLAN.md"
+ @server: ~"packages/spw-lsp/src/stdio-server.ts"
+ @analysis: ~"packages/spw-lsp/src/handlers/analysis.ts"
+ @server_index: ~"packages/spw-lsp/src/server-index.ts"
+ @types: ~"packages/spw-lsp/src/types.ts"
+ @custom_requests: ~"extensions/vscode-spw/src/lsp/custom-requests.ts"
+ @intellij_plan: ~".agents/plans/intellij-lsp4ij/PLAN.md"
+ @neovim_plan: ~".agents/plans/neovim-spw-surfaces/PLAN.md"
+}
+
+^["intent"]{
+ ~#goal: "Implement the 4 declared-but-empty custom LSP request handlers (resonance, registerSnapshot, operatorFrequency, phaseContext) so all editors can consume semantic workspace metadata without reimplementing the logic client-side."
+ ~#taste: "correctness, layering — semantic truth stays in the LSP server"
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#custom_request_completeness, #semantic_authority, #cross_editor_parity]
+ review_surfaces: [@cluster, @plan, @server, @server_index]
+ snippet_routes: [#handler_pattern, #resonance_edge, #register_snapshot]
+}
+
+^["concept_index"]{
+ primary: [#resonance, #register_snapshot, #operator_frequency, #phase_context]
+ surfaces: [#lsp, #server_index, #analysis_handler, #runtime_handler]
+ tensions: [#authority_drift, #trial_run_cost, #annotation_staleness]
+ transfers: [#service, #language]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread server-index APIs before writing a new handler",
+  "< implement one handler at a time, verify via test client",
+  "$ record which annotation or token structures were reused",
+  "^ fold the stable handler signature back into the HandlerDeps type",
+  "% keep semantic truth in the LSP; no client-side reimplementation",
+ ]
+ gates: [#authority_honesty, #handler_isolation, #test_coverage]
+}
+
+^["parallel_work"]{
+ critical_path: [#resonance_handler, #register_snapshot_handler]
+ parallelizable: [#operator_frequency_handler, #phase_context_handler]
+ shared_hot_files: ["packages/spw-lsp/src/stdio-server.ts", "packages/spw-lsp/src/server-index.ts"]
+ merge_risks: [#server_index_api_extension, #types_ts_growth]
+ handoff_artifacts: [@intellij_plan, @neovim_plan]
+}
+
+^["supporting_documents"]{
+ must_ship: [@plan]
+ helpful: [@server_index, @analysis]
+ carries: [#handler_specs, #type_definitions, #test_cases]
+}
+
+^["contract_axes"]{
+ handlers: [#resonance, #registerSnapshot, #operatorFrequency, #phaseContext]
+ owner: #lsp_server
+ consumers: [#vscode, #intellij_lsp4ij, #neovim]
+ authority_class: #authoritative
+ invalidators: [#annotation_index_update, #document_change, #workspace_scan]
+}
+
+^["stream"]{
+ >>[2026-04-02 00:00] observe — plan initialized; 4 handlers are declared in custom-requests.ts type map but have no server implementation.
+ >>[2026-04-02 00:00] decide — implement resonance and registerSnapshot first (used by future register-explorer); then operatorFrequency and phaseContext (used by authoring-loop).
+ >>[2026-04-02 00:00] note — handlers/runtime.ts is a new file; keep it focused on runtime-trial-backed requests only.
+}
+
+^["open"]{
+ ?[resonance_cost]: "Is walking all annotations for co-occurrence too expensive on large workspaces? Should resonance be cached or gated behind a threshold?"
+ ?[trial_run_safety]: "What does trialRunSpw return when the source has parse errors? Does registerSnapshot need a guard?"
+ ?[phase_inference_table]: "The phase→sigil mapping (?=wonder, ~=potential, @=observer, !=action, ^=integration) — is this already codified somewhere in spw-lsp, or does it need to be derived fresh?"
+}
+
+^["commits"]{
+ ~[1]: "^seed[lsp] — add resonance and register-snapshot handlers"
+ ~[2]: "^seed[lsp] — add operator-frequency and phase-context handlers"
+ ~[3]: "![lsp] — verify custom request completions against server smoke tests"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@a54f8671"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "packages/spw-lsp/src/stdio-server.ts, packages/spw-lsp/src/handlers/analysis.ts, packages/spw-lsp/src/server-index.ts"
+ ~#next_commit: "1"
+ ~#open_count: "3"
+ ~#last_stream: "2026-04-02 00:00"
+ ~#taste_debt: "Do not implement resonance as a client-side calculation in any editor. If resonance is expensive, the right fix is caching in the server index, not delegation to clients."
+}
+
+^["done"]{
+}
