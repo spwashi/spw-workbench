@@ -12,127 +12,26 @@
 # Install: cp scripts/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
 # Remove:  rm .git/hooks/pre-commit
 
-# ── Config ───────────────────────────────────────────────────────────────────
+HOOK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ "$(basename "$HOOK_DIR")" = "hooks" ]; then
+  REPO_ROOT="$(cd "$HOOK_DIR/../.." && pwd)"
+else
+  REPO_ROOT="$(cd "$HOOK_DIR/.." && pwd)"
+fi
 
-# ── Agent Identification ─────────────────────────────────────────────────────
+# shellcheck source=/dev/null
+source "$REPO_ROOT/scripts/commit-review/run-review.sh"
 
-detect_agent() {
-  if [ -n "${SPW_AGENT:-}" ]; then
-    echo "$SPW_AGENT"
-  elif [ -n "${CLAUDE_SESSION_ID:-}" ] || [ -n "${ANTHROPIC_API_KEY:-}" ]; then
-    echo "claude"
-  elif [ -n "${GEMINI_SESSION_ID:-}" ] || [ -n "${GOOGLE_API_KEY:-}" ]; then
-    echo "gemini"
-  elif [ -n "${GITHUB_COPILOT:-}" ]; then
-    echo "copilot"
-  elif [ -n "${ANTIGRAVITY_SESSION:-}" ]; then
-    echo "antigravity"
-  else
-    echo "human"
-  fi
-}
+spw_commit_review_run
 
-AGENT=$(detect_agent)
+AGENT="$REVIEW_AGENT"
+TOTAL="$REVIEW_TOTAL"
+WARNINGS="$REVIEW_WARNINGS"
+ERRORS="$REVIEW_ERRORS"
+REPORT="$REVIEW_REPORT"
 
-# ── Staged File Collection ───────────────────────────────────────────────────
-
-STAGED_ALL=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null || true)
-
-if [ -z "$STAGED_ALL" ]; then
+if [ "$TOTAL" -eq 0 ]; then
   exit 0
-fi
-
-TOTAL=$(echo "$STAGED_ALL" | wc -l | tr -d ' ')
-
-# ── Helper ───────────────────────────────────────────────────────────────────
-
-cgrep() {
-  local content="$1" pattern="$2" n
-  n=$(printf '%s\n' "$content" | grep -c "$pattern" 2>/dev/null) || n=0
-  echo "$n"
-}
-
-# ── Run Checks ───────────────────────────────────────────────────────────────
-
-WARNINGS=0
-ERRORS=0
-REPORT=""
-
-# --- Layer boundary violations (TS/JS) ---
-ts_files=$(echo "$STAGED_ALL" | grep -E '\.(ts|tsx|js|jsx)$' || true)
-if [ -n "$ts_files" ]; then
-  for f in $ts_files; do
-    content=$(git show ":$f" 2>/dev/null || true)
-    [ -z "$content" ] && continue
-    if echo "$f" | grep -q 'lib/spw/'; then
-      bad=$(cgrep "$content" "from '@/")
-      if [ "$bad" -gt 0 ]; then
-        REPORT="${REPORT}  ⛔ ${f} — lib/spw imports from @/ (${bad}×)\n"
-        ERRORS=$((ERRORS + bad))
-      fi
-    fi
-  done
-fi
-
-# --- Spw syntax generation (*.spw) ---
-# .agents/ files (plans, schemas, wip) use ~# deliberately — exempt from Gen 2 checks
-spw_files=$(echo "$STAGED_ALL" | grep '\.spw$' | grep -v '__tests__/snapshots/' || true)
-agent_spw=$(echo "$spw_files" | grep '\.agents/' || true)
-strata_spw=$(echo "$spw_files" | grep -v '\.agents/' || true)
-
-# Agent planning files — report without syntax generation warnings
-if [ -n "$agent_spw" ]; then
-  ac=$(echo "$agent_spw" | sed '/^$/d' | wc -l | tr -d ' ')
-  REPORT="${REPORT}  ── .agents plans ($ac) ──\n"
-  for f in $agent_spw; do
-    content=$(git show ":$f" 2>/dev/null || true)
-    [ -z "$content" ] && continue
-    hs=$(cgrep "$content" '^\^');   hc=$(cgrep "$content" '^#')
-    hw=$(cgrep "$content" '^>>');   ho=$(cgrep "$content" '^?')
-    REPORT="${REPORT}  ✓  ${f} (sections:${hs} stream:${hw} open:${ho})\n"
-  done
-fi
-
-# Strata .spw files — full syntax generation audit
-if [ -n "$strata_spw" ]; then
-  sc=$(echo "$strata_spw" | sed '/^$/d' | wc -l | tr -d ' ')
-  REPORT="${REPORT}  ── .spw ($sc) ──\n"
-  for f in $strata_spw; do
-    content=$(git show ":$f" 2>/dev/null || true)
-    [ -z "$content" ] && continue
-    fw=""
-    g1=$(cgrep "$content" '^\^"');        [ "$g1" -gt 0 ] && fw="${fw}    ⚠  Gen 1: ${g1}× ^\"\n" && WARNINGS=$((WARNINGS+g1))
-    gm=$(cgrep "$content" '@domain:');    [ "$gm" -gt 0 ] && fw="${fw}    ○  Gen 2 meta: ${gm}× @domain:\n" && WARNINGS=$((WARNINGS+gm))
-    gv=$(cgrep "$content" '~#');          [ "$gv" -gt 0 ] && fw="${fw}    ○  Gen 2 valence: ${gv}× ~#\n" && WARNINGS=$((WARNINGS+gv))
-    if [ -n "$fw" ]; then
-      REPORT="${REPORT}  📄 ${f}\n${fw}"
-    else
-      hf=$(cgrep "$content" '\. *{'); hs=$(cgrep "$content" '#\[')
-      hb=$(cgrep "$content" ' = ');  hr=$(cgrep "$content" '\[reg=')
-      g3=""
-      [ "$hf" -gt 0 ] || [ "$hs" -gt 0 ] && g3=" (.{}×${hf} #[]×${hs} =×${hb} [reg=]×${hr})"
-      REPORT="${REPORT}  ✓  ${f}${g3}\n"
-    fi
-  done
-fi
-
-# --- Golden snapshot protection ---
-golden=$(echo "$STAGED_ALL" | grep '__tests__/snapshots/' || true)
-if [ -n "$golden" ]; then
-  gc=$(echo "$golden" | wc -l | tr -d ' ')
-  REPORT="${REPORT}  ⚠  Golden snapshots modified: ${gc} file(s)\n"
-  WARNINGS=$((WARNINGS + gc))
-fi
-
-# --- Pluggable checks ---
-CHECKS_DIR="$(git rev-parse --git-dir)/hooks/checks.d"
-if [ -d "$CHECKS_DIR" ]; then
-  for cs in "$CHECKS_DIR"/*.sh; do
-    [ -f "$cs" ] || continue
-    mn=$(basename "$cs" .sh)
-    mo=$(STAGED_ALL="$STAGED_ALL" AGENT="$AGENT" bash "$cs" 2>&1) || true
-    [ -n "$mo" ] && REPORT="${REPORT}  ── ${mn} ──\n${mo}\n"
-  done
 fi
 
 # ── Display Report ───────────────────────────────────────────────────────────
@@ -155,8 +54,7 @@ echo ""
 
 # ── Authorization Gate (Touch ID) ────────────────────────────────────────────
 
-SCRIPT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
-TOUCHID_HELPER="$SCRIPT_DIR/scripts/touchid-authorize.swift"
+TOUCHID_HELPER="$REPO_ROOT/scripts/touchid-authorize.swift"
 
 if [ -f "$TOUCHID_HELPER" ]; then
   echo "  🔐 Touch ID authorization required..."

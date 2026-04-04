@@ -1,55 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-MSG_FILE="${1:-}"
-if [[ -z "$MSG_FILE" ]] || [[ ! -f "$MSG_FILE" ]]; then
-  echo "commit-msg: missing commit message file path" >&2
-  exit 2
-fi
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-MSG="$(cat "$MSG_FILE")"
-SUBJECT="$(printf '%s\n' "$MSG" | head -n 1)"
+# shellcheck source=/dev/null
+source "$SCRIPT_DIR/commit-review/validate-commit-message.sh"
 
-# Skip merge commits (git supplies the body; episode format doesn't apply).
-if [[ "$SUBJECT" == Merge\ * ]]; then
-  exit 0
-fi
-
-# Privacy: block absolute paths that should never ship.
-if printf '%s\n' "$MSG" | grep -qE '(^|[^a-zA-Z])(/Users/|file:///Users/|[A-Za-z]:\\\\Users\\\\)'; then
-  echo "commit-msg: found absolute user path reference; use repo-relative paths" >&2
-  exit 1
-fi
-
-# Archaeology escape hatch:
-# - Keep privacy enforcement on (always).
-# - Allow non-episode bodies when rewriting older history or importing foreign commits.
-#
-# Usage:
-#   SPW_EPISODE_SKIP=1 git commit ...
-if [[ "${SPW_EPISODE_SKIP:-0}" == "1" ]]; then
-  exit 0
-fi
-
-# Require an episode block in the body for normal commits.
-# Keep this check simple and resilient to minor formatting variance.
-if ! printf '%s\n' "$MSG" | grep -qE '^#\[episode\]\{' ; then
-  cat >&2 <<'EOF'
-commit-msg: missing required Spw episode block.
-
-Add a body like:
-
-#[episode]{
-  ~[scene]{ "..." }
-  ![change]{ intent: "..." invariant: "..." }
-  *[verify]{ local: ["..."] }
-}
-
-If you're rewriting older history and need to temporarily skip this requirement:
-
-  SPW_EPISODE_SKIP=1 git commit ...
-EOF
-  exit 1
-fi
-
-exit 0
+spw_validate_commit_message "${1:-}"
