@@ -22,9 +22,15 @@ SPW_SCRIPT_USAGE="[options]"
 export SPW_REPO_ROOT_OVERRIDE="$ROOT_DIR"
 export SPW_TOOL_ROOT_OVERRIDE="${SPW_TOOL_ROOT_OVERRIDE:-$WORKBENCH_ROOT}"
 source "${SPW_TOOL_ROOT_OVERRIDE}/scripts/spw-lib.sh"
+# shellcheck source=/dev/null
+source "${SPW_TOOL_ROOT_OVERRIDE}/scripts/commit-review/lib/agent-context.sh"
 spw_parse_args "$@"
 
 cd "$ROOT_DIR"
+spw_resolve_agent_context "$ROOT_DIR"
+AGENT_CONTEXT_LABEL="${AGENT_CONTEXT_ACTOR:-human}"
+AGENT_CONTEXT_SOURCE_LABEL="${AGENT_CONTEXT_SOURCE:-heuristic}"
+AGENT_CONTEXT_CONFIDENCE_LABEL="${AGENT_CONTEXT_CONFIDENCE:-low}"
 
 SCOPE="staged"         # staged | changed
 WATCH=0                # 0 | 1
@@ -487,6 +493,9 @@ run_once() {
   echo "    at = \`$run_stamp_iso\`"
   echo "    scope = \`$SCOPE\`"
   echo "    watch = $WATCH"
+  echo "    actor = \`$AGENT_CONTEXT_LABEL\`"
+  echo "    actor_source = \`$AGENT_CONTEXT_SOURCE_LABEL\`"
+  echo "    actor_confidence = \`$AGENT_CONTEXT_CONFIDENCE_LABEL\`"
   echo "    fuzz_profile = \`$FUZZ_PROFILE${FUZZ_LEVEL:+:$FUZZ_LEVEL}\`"
   spw_facet_close
 

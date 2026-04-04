@@ -48,6 +48,17 @@ Agents must either ask the human to run the commit, or the human pre-authorizes 
 | Manual | `SPW_AGENT=<name>` |
 | `human` | Default (no agent env) |
 
+Preferred provenance model:
+- Explicit local context file when available
+- Explicit env (`SPW_AGENT=...`) next
+- Heuristic harness detection as fallback
+
+Helpers:
+```bash
+scripts/commit-review/set-agent-context.sh codex-air wrapper high
+scripts/commit-review/clear-agent-context.sh
+```
+
 ## Built-in Checks
 
 1. **Layer boundaries**: `lib/spw/` must not import `@/` paths

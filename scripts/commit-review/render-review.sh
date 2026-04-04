@@ -14,6 +14,8 @@ spw_render_commit_review() {
   local staged_all="${REVIEW_STAGED_ALL:-}"
   local total="${REVIEW_TOTAL:-0}"
   local agent="${REVIEW_AGENT:-human}"
+  local agent_source="${REVIEW_AGENT_SOURCE:-heuristic}"
+  local agent_confidence="${REVIEW_AGENT_CONFIDENCE:-low}"
   local report="${REVIEW_REPORT:-}"
   local warnings="${REVIEW_WARNINGS:-0}"
   local errors="${REVIEW_ERRORS:-0}"
@@ -38,6 +40,8 @@ spw_render_commit_review() {
   echo ""
   printf '  Summary: source=%s spw=%s docs=%s config=%s snapshot=%s other=%s\n' \
     "$source_count" "$spw_count" "$docs_count" "$config_count" "$snapshot_count" "$other_count"
+  printf '  Provenance: actor=%s source=%s confidence=%s\n' \
+    "$agent" "$agent_source" "$agent_confidence"
   if [ -n "$diffstat" ]; then
     echo ""
     echo "  Diffstat:"

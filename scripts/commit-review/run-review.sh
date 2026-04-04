@@ -18,7 +18,10 @@ spw_commit_review_run() {
   local ts_files spw_files agent_spw strata_spw golden
   local f content bad ac hs hw ho sc fw g1 gm gv hf hs2 hb hr gc
 
-  REVIEW_AGENT="${SPW_COMMIT_REVIEW_AGENT:-$(spw_detect_agent)}"
+  spw_resolve_agent_context "$REPO_ROOT"
+  REVIEW_AGENT="${SPW_COMMIT_REVIEW_AGENT:-$AGENT_CONTEXT_ACTOR}"
+  REVIEW_AGENT_SOURCE="${AGENT_CONTEXT_SOURCE:-heuristic}"
+  REVIEW_AGENT_CONFIDENCE="${AGENT_CONTEXT_CONFIDENCE:-low}"
   REVIEW_STAGED_ALL="$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null || true)"
 
   if [ -z "$REVIEW_STAGED_ALL" ]; then

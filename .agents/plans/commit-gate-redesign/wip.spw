@@ -79,6 +79,9 @@
  >>[2026-04-04 12:03] implement — added `render-review.sh` and `authorize-commit.sh` so summary rendering and authorization become separate commit-review surfaces.
  >>[2026-04-04 12:04] implement — updated `scripts/pre-commit` to render file-category summary + diffstat before auth and to block immediately on review errors.
  >>[2026-04-04 12:05] verify — `bash -n` passed for the new renderer/authorizer, and sourced `spw_commit_review_run` + `spw_render_commit_review` rendered the empty staged-state summary without auth side effects.
+ >>[2026-04-04 12:10] implement — added local-context provenance resolution with heuristic fallback and surfaced actor/source/confidence in both commit-gate and poll-review outputs.
+ >>[2026-04-04 12:12] implement — added explicit `set-agent-context.sh` and `clear-agent-context.sh` helpers so wrappers and humans can author provenance directly instead of relying on env guesses.
+ >>[2026-04-04 12:13] verify — shell parse checks passed for the new context helpers; in this sandbox the writer cannot persist hidden-path state, but resolver output stays clean and falls back to heuristic provenance as designed.
 }
 
 ^["open"]{
@@ -101,10 +104,10 @@
  ~#rebased_at: ""
  ~#hygiene_split: "none"
  ~#files_hot: "scripts/pre-commit, scripts/commit-msg, scripts/commit-review/run-review.sh, scripts/commit-review/validate-commit-message.sh, scripts/commit-review/lib/agent-context.sh"
- ~#next_commit: "4"
+ ~#next_commit: "5"
  ~#open_count: "3"
- ~#last_stream: "2026-04-04 12:05"
- ~#taste_debt: "inspect-before-authorize branching and stronger agent provenance remain for the next slice"
+ ~#last_stream: "2026-04-04 12:13"
+ ~#taste_debt: "poll-review still has duplicated staged review logic, and inspect-before-authorize branching remains unimplemented"
 }
 
 ^["done"]{
