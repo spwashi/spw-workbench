@@ -63,7 +63,7 @@ class SpwLspServerSupportProvider : LspServerSupportProvider {
             notifyOnce(
                 project,
                 LspStartupIssue.MissingPackageJson,
-                "Spw LSP requires a package.json in the configured working directory: $workDir."
+                "Spw LSP requires a package.json in the configured working directory so the default launcher can run `npm run lsp`: $workDir."
             )
             return
         }
@@ -72,7 +72,7 @@ class SpwLspServerSupportProvider : LspServerSupportProvider {
             notifyOnce(
                 project,
                 LspStartupIssue.MissingLspScript,
-                "Spw LSP requires an \"lsp\" script in package.json (expected command: npm run lsp)."
+                "Spw LSP requires an \"lsp\" script in package.json. The default launcher contract is `npm run lsp`."
             )
             return
         }
