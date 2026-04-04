@@ -1,0 +1,81 @@
+/*
+ * Substrate — the token vocabulary
+ *
+ * This layer defines the semantic custom properties
+ * that every other layer reads from. Components never
+ * hardcode values; they reference substrate tokens.
+ *
+ * A lower-powered model writes `padding: var(--spw-beat)`,
+ * never `padding: 1rem`. The vocabulary is small enough
+ * to fit in a system prompt.
+ *
+ * Token values here derive from .spw/origin.spw palette.
+ * The season layer can override any of these.
+ */
+
+@layer substrate {
+
+  :root {
+    /* ---- deformation axes ----
+     * Every constant traces to one of these axes.
+     * See .spw/containers.spw ^"vocabulary" #[axes].
+     */
+    --spw-timing:      500ms;
+    --spw-disclosure:   0;       /* 0 collapsed, 1 open          */
+    --spw-stability:    1;       /* 0 volatile, 1 settled         */
+    --spw-resolution:   1;       /* 0 summary, 1 full             */
+    --spw-noise:        0;       /* 0 clean, 1 interference       */
+
+    /* ---- surface palette ----
+     * Derived from origin.spw ^"palette".
+     * Named for what they do, not what they look like.
+     */
+    --spw-ground:       oklch(95% 0.02 80);
+    --spw-figure:       oklch(99% 0.01 80);
+    --spw-accent:       oklch(55% 0.15 45);
+    --spw-ink:          oklch(25% 0.02 80);
+    --spw-muted:        oklch(55% 0.02 80);
+    --spw-line:         oklch(85% 0.02 80);
+
+    /* ---- spatial rhythm ----
+     * Unit is the atomic spacing value.
+     * Beat, measure, page-inline derive from it.
+     */
+    --spw-unit:         0.5rem;
+    --spw-beat:         calc(var(--spw-unit) * 2);
+    --spw-measure:      calc(var(--spw-unit) * 8);
+    --spw-page-inline:  min(68ch, 100% - var(--spw-measure));
+
+    /* ---- typography ---- */
+    --spw-font-body:    Georgia, "Iowan Old Style", "Times New Roman", serif;
+    --spw-font-mono:    "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    --spw-leading:      1.6;
+    --spw-leading-tight: 1.15;
+
+    /* ---- surface treatment ---- */
+    --spw-shadow:       0 18px 50px oklch(25% 0.02 80 / 0.08);
+    --spw-radius:       calc(var(--spw-unit) * 4.5);
+    --spw-radius-sm:    calc(var(--spw-unit) * 3);
+  }
+
+  /* ---- valence pentad ----
+   * Branding tradition, not functional constraint.
+   * data-spw-affect on any element shifts its accent
+   * toward that pentad position.
+   * See .spw/origin.spw =[affect] for history.
+   */
+  [data-spw-affect="boon"]  { --spw-accent: oklch(55% 0.15 145); }
+  [data-spw-affect="bane"]  { --spw-accent: oklch(55% 0.18 25);  }
+  [data-spw-affect="bone"]  { --spw-accent: oklch(55% 0.02 80);  }
+  [data-spw-affect="bonk"]  { --spw-accent: oklch(65% 0.20 55);  }
+  [data-spw-affect="honk"]  { --spw-accent: oklch(70% 0.25 320); }
+
+  /* ---- container contexts ----
+   * Map narrative containers to CSS container-query
+   * boundaries. See .spw/containers.spw ^"css".
+   */
+  [data-spw-container="show"]    { container-type: normal;      container-name: show;    }
+  [data-spw-container="season"]  { container-type: inline-size; container-name: season;  }
+  [data-spw-container="episode"] { container-type: inline-size; container-name: episode; }
+  [data-spw-container="scene"]   { container-type: inline-size; container-name: scene;   }
+}

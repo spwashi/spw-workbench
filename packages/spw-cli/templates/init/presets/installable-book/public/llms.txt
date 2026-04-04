@@ -1,28 +1,74 @@
 # Installable Book
 
-This site starts as direct HTML, CSS, and small JavaScript enhancements.
+This site is an installable book powered by Spw. It starts as plain HTML with
+progressive enhancement and a CSS cascade architecture built on substrate tokens.
+The book concept is the default frame — accessible to writers, ebook authors, and
+anyone building a deep media presence. Production seasons, studio binding, and
+broadcast-style cycles are available as vocabulary when you need them.
 
-Preferred editing model:
-- Edit the public HTML pages directly.
+## Architecture
+
+The `.spw/` directory declares what the show is:
+- `.spw/index.spw` — routing table and surface registry
+- `.spw/mount.spw` — studio binding, deployment targets, writers room permissions
+- `.spw/origin.spw` — the generative seed (concept, painting, NFT) and chromatic palette
+- `.spw/containers.spw` — chunking scheme, narrative containers, CSS container mapping
+- `.spw/anchors.spw` — cultural precipitation tracking and merchandise readiness
+- `.spw/workspace.spw` — workspace roots and LSP configuration
+
+## CSS Cascade Layers (in order)
+
+1. `reset` — browser normalization
+2. `substrate` — semantic token vocabulary (--spw-ground, --spw-accent, --spw-beat, etc.)
+3. `structure` — page grid, shell, type baseline
+4. `region` — named zones (nav, hero, main, footer)
+5. `component` — panels, buttons, badges, callouts
+6. `season` — swappable per production cycle, overrides substrate tokens
+7. `override` — ephemeral one-offs
+
+All CSS values trace to substrate tokens. No magic numbers.
+Swap `/assets/season.css` to change the show's visual identity without touching structure.
+
+## Editing Model
+
+- Edit public HTML pages directly.
 - Keep pages legible without JavaScript.
-- Use `public/fragments/` for shared navigation and footer content.
-- Use `public/http/get/*.json` for route and book metadata that can later move behind a backend.
+- Use `public/fragments/` for shared navigation and footer.
+- Use `public/http/get/*.json` for route and show metadata.
+- Use `data-spw-region` attributes to identify named layout zones.
+- Use `data-spw-container` attributes for narrative chunking boundaries.
+- Use `data-spw-affect` for valence pentad branding (boon/bane/bone/bonk/honk).
 
-High-value editable surfaces:
-- `/index.html` landing page, install prompt, public positioning
-- `/chapters/index.html` table of contents
-- `/chapters/01-opening/index.html` first live chapter
-- `/places/index.html`, `/items/index.html`, `/artifacts/index.html` bookmarkable route families
-- `/fragments/site-nav.html`, `/fragments/site-footer.html` shared shell
-- `/http/get/site.json`, `/http/get/book.json`, `/http/get/chapters.json` public metadata
+## High-Value Editable Surfaces
 
-PWA surfaces:
+- `/index.html` — landing page, install prompt, show positioning
+- `/chapters/index.html` — table of contents / episode listing
+- `/chapters/01-opening/index.html` — first live episode
+- `/places/index.html`, `/items/index.html`, `/artifacts/index.html` — route family indexes
+- `/fragments/site-nav.html`, `/fragments/site-footer.html` — shared shell
+- `/assets/substrate.css` — token vocabulary (showrunner-controlled)
+- `/assets/season.css` — season aesthetic (swappable)
+- `/http/get/show.json` — show metadata, studio, season, origin
+- `/http/get/site.json` — site contract, CSS architecture, editing model
+- `/http/get/chapters.json` — episode manifest
+
+## Route Families and Lifecycle
+
+- `/chapters/:slug/` — permanent (persists across seasons)
+- `/places/:slug/` — permanent
+- `/items/:slug/` — seasonal (archives when production cycle ends)
+- `/artifacts/:slug.html` — ephemeral (dissolves, content may re-precipitate)
+- `/seasons/:number/` — archivable (moves from live to collected)
+
+## PWA Surfaces
+
 - `/manifest.webmanifest`
 - `/sw.js`
 - `/offline.html`
 
-Conventions:
+## Conventions
+
 - Prefer `chapters/01-slug/` over `chapter/01`.
-- Preserve route families even when pages are not materialized yet.
 - Treat `enhancements.js` as progressive enhancement only.
-- If adding a framework or backend later, preserve the public route contract first.
+- If adding a framework or backend, preserve the route contract first.
+- Season swap = drop a new season.css. Structure and components stay.

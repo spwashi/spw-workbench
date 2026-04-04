@@ -1,0 +1,64 @@
+# Show Mount
+#
+#>spw_show_mount
+#:mount
+
+# ---- studio binding ----
+# Optional. A book can mount into a studio — a named
+# production context with shared substrate tokens,
+# deployment targets, and a showrunner's vocabulary.
+# Without a studio binding the book runs standalone;
+# the substrate defaults to the origin palette.
+#
+# Uncomment and fill when mounting into a studio:
+#
+# ^"studio"{
+#  @name: "your-studio-name"
+#  @showrunner: "your-handle"
+#  @workbench: "./_workbench"
+#  =[substrate]: "./_workbench/templates/substrate.css"
+# }
+
+# ---- deployment ----
+# target declares the primary host.
+# fallback is the secondary.
+# domain is the show's public address —
+# either a subdomain of the studio or a custom domain.
+
+^"deploy"{
+ =[target]: "cloudflare-pages"
+ =[fallback]: "github-pages"
+ @public_root: ~"../public"
+ @domain: "show-name.spw.quest"
+}
+
+# ---- layer contract ----
+# The show expects these CSS cascade layers to exist.
+# The studio substrate provides reset + substrate.
+# The show provides structure, region, component.
+# The season layer is swappable per production cycle.
+
+^"layers"{
+ #[required]{ "reset", "substrate", "structure", "region", "component", "season", "override" }
+ =[season_source]: ~"../public/assets/season.css"
+}
+
+# ---- writers room ----
+# Surfaces the writers room can edit.
+# The showrunner controls vocabulary and substrate;
+# the room controls content within those constraints.
+
+^"writers_room"{
+ #[editable]{
+  ~"../content/"
+  ~"../public/chapters/"
+  ~"../public/places/"
+  ~"../public/items/"
+  ~"../public/artifacts/"
+ }
+ #[read_only]{
+  ~"./"
+  ~"../public/assets/substrate.css"
+  ~"../public/assets/reset.css"
+ }
+}

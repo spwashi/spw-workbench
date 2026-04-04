@@ -3,33 +3,59 @@
 #>spw_workspace
 #:workspace
 
+# ---- roots ----
+# Symbolic names for directories that tools,
+# agents, and the LSP use to navigate the show.
+
 ^"roots"{
-  @index: ~"./index.spw"
-  @mount: ~"./mount.spw"
-  @spw: ~"."
-  @site: ~".."
-  @content: ~"../content"
-  @public: ~"../public"
-  @assets: ~"../public/assets"
-  @chapters: ~"../public/chapters"
-  @places: ~"../public/places"
-  @items: ~"../public/items"
-  @artifacts: ~"../public/artifacts"
-  @http: ~"../public/http"
-  @http_get: ~"../public/http/get"
-  @manifest: ~"../public/manifest.webmanifest"
-  @offline: ~"../public/offline.html"
-  @llms: ~"../public/llms.txt"
-  @templates: ~"../public/fragments"
+ @index: ~"./index.spw"
+ @mount: ~"./mount.spw"
+ @origin: ~"./origin.spw"
+ @containers: ~"./containers.spw"
+ @anchors: ~"./anchors.spw"
+ @spw: ~"."
+ @site: ~".."
+ @content: ~"../content"
+ @public: ~"../public"
+ @assets: ~"../public/assets"
+ @chapters: ~"../public/chapters"
+ @places: ~"../public/places"
+ @items: ~"../public/items"
+ @artifacts: ~"../public/artifacts"
+ @http: ~"../public/http"
+ @http_get: ~"../public/http/get"
+ @manifest: ~"../public/manifest.webmanifest"
+ @offline: ~"../public/offline.html"
+ @llms: ~"../public/llms.txt"
+ @templates: ~"../public/fragments"
 }
 
+# ---- settings ----
 ^"settings"{
   ~#language: "spw"
-  ~#dialect: "v0.3.0"
+  ~#dialect:  "v0.3.0"
   ~#site_kind: "installable-book"
-  ~#preset: "installable-book"
+  ~#preset:   "installable-book"
 }
 
+# ---- css architecture ----
+^"css"{
+  @substrate: ~"../public/assets/substrate.css"
+  @season:    ~"../public/assets/season.css"
+  #[layers]{ "reset", "substrate", "structure", "region", "component", "season", "override" }
+}
+
+# ---- lsp ----
 ^"lsp"{
-  ~#roots: [~"./", ~"./index.spw", ~"./mount.spw", ~"../content", ~"../public", ~"../public/http/get"]
+  ~#roots: [
+    ~"./",
+    ~"./index.spw",
+    ~"./mount.spw",
+    ~"./origin.spw",
+    ~"./containers.spw",
+    ~"./anchors.spw",
+    ~"../content",
+    ~"../public",
+    ~"../public/http/get"
+  ]
 }

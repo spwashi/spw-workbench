@@ -3,89 +3,91 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Installable Book</title>
+  <title>Show</title>
   <meta name="theme-color" content="#8f4e22">
-  <meta name="description" content="An installable book scaffold with bookmarkable routes, offline rails, and plain files that stay easy to edit.">
+  <meta name="description" content="A static-first installable show scaffold with bookmarkable routes, offline rails, and plain files that stay easy to edit.">
   <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="stylesheet" href="/assets/reset.css">
+  <link rel="stylesheet" href="/assets/substrate.css">
   <link rel="stylesheet" href="/assets/style.css">
+  <link rel="stylesheet" href="/assets/season.css">
 </head>
-<body>
-  <div class="page">
+<body data-spw-affect="bone">
+  <div class="spw-page" data-spw-container="show">
     <div data-include="/fragments/site-nav.html">
-      <div class="shell">
-        <div class="eyebrow">Installable Book Preset</div>
-        <nav aria-label="Primary">
+      <div class="spw-shell" data-spw-region="nav">
+        <div class="spw-eyebrow" data-edit-surface="site-eyebrow">Installable Book</div>
+        <nav class="spw-nav" aria-label="Primary">
           <a href="/">Home</a>
           <a href="/chapters/">Chapters</a>
           <a href="/places/">Places</a>
           <a href="/items/">Items</a>
           <a href="/artifacts/">Artifacts</a>
-          <a href="/http/get/routes.json">HTTP GET</a>
+          <a href="/http/get/routes.json">Routes</a>
         </nav>
       </div>
     </div>
 
-    <main class="hero shell" data-edit-surface="home-hero">
-      <div class="eyebrow">Static site scaffold</div>
-      <h1>Bookmarkable routes, readable pages, and an upgrade path to richer publishing.</h1>
+    <main class="spw-shell" data-spw-region="hero" data-spw-container="season" data-edit-surface="home-hero">
+      <div class="spw-eyebrow">Installable Book</div>
+      <h1>Bookmarkable chapters, offline rails, and an upgrade path from plain file to rich publication.</h1>
       <p>
-        This preset starts with plain HTML, a public directory, a service worker, and static GET-shaped JSON.
-        It stays easy to edit with direct file changes, works offline after first visit, and leaves room for templates,
-        a richer frontend library, or a backend without changing the route contract.
+        This scaffold starts with plain HTML, a public directory, a service worker, and static JSON shaped like GET endpoints.
+        It stays easy to edit, works offline after first visit, and leaves room for templates, a richer frontend, or a backend
+        without changing the route contract. The <code>.spw/</code> surface declares what the book is; the season layer controls how it looks.
       </p>
-      <div class="action-row">
-        <button class="button js-only" type="button" data-install-app hidden>Install app</button>
-        <a class="button button-secondary" href="/offline.html">Offline behavior</a>
-        <a class="button button-secondary" href="/llms.txt">LLM edit map</a>
+      <div class="spw-actions">
+        <button class="spw-button js-only" type="button" data-install-app hidden>Install app</button>
+        <a class="spw-button spw-button--secondary" href="/offline.html">Offline</a>
+        <a class="spw-button spw-button--secondary" href="/llms.txt">LLM surface</a>
       </div>
-      <div class="grid">
-        <section class="panel">
+      <div class="spw-grid">
+        <section class="spw-panel" data-spw-container="episode">
           <h2>Chapters</h2>
-          <p>Thirteen chapter routes under <code>/chapters/</code>. The first chapter is live. The rest can resolve through the 404 page until they exist.</p>
+          <p>Thirteen chapter routes under <code>/chapters/</code>. The first is live. The rest resolve through the 404 page until they precipitate.</p>
           <a href="/chapters/">Open chapter index</a>
         </section>
-        <section class="panel">
+        <section class="spw-panel" data-spw-container="episode">
           <h2>World Routes</h2>
-          <p>Separate top-level paths for places, items, and artifacts keep narrative objects bookmarkable.</p>
-          <ul class="route-list">
+          <p>Separate top-level paths for places, items, and artifacts keep narrative objects bookmarkable across seasons.</p>
+          <ul class="spw-routes">
             <li><a href="/places/">/places/</a></li>
             <li><a href="/items/">/items/</a></li>
             <li><a href="/artifacts/">/artifacts/</a></li>
           </ul>
         </section>
-        <section class="panel">
+        <section class="spw-panel" data-spw-container="episode">
           <h2>HTTP Shape</h2>
-          <p>Static JSON lives under <code>/http/get/</code> to leave room for other HTTP method surfaces later and to seed publishable book metadata now.</p>
-          <a href="/http/get/routes.json">Open routes manifest</a>
+          <p>Static JSON under <code>/http/get/</code> seeds publishable metadata now and leaves room for a service layer later.</p>
+          <a href="/http/get/routes.json">Routes manifest</a>
         </section>
       </div>
     </main>
 
-    <section class="grid">
-      <article class="panel">
-        <div class="badge">Classic page shell</div>
+    <section class="spw-grid">
+      <article class="spw-panel">
+        <div class="spw-badge">Classic page shell</div>
         <p>Header, navigation, main content, side routes, footer, and printable HTML remain the baseline.</p>
       </article>
-      <article class="panel">
-        <div class="badge">Progressive enhancement</div>
-        <p>Shared fragments load through a tiny local enhancement layer. Replace that with HTMX, server templates, or a framework when you need more.</p>
+      <article class="spw-panel">
+        <div class="spw-badge">Progressive enhancement</div>
+        <p>Shared fragments load through a local enhancement layer. Replace that with HTMX, server templates, or a framework when you need more.</p>
       </article>
-      <article class="panel">
-        <div class="badge">Offline and installable</div>
+      <article class="spw-panel">
+        <div class="spw-badge">Offline &amp; installable</div>
         <p>Manifest, service worker, and an explicit offline page are scaffolded from the start, with update behavior designed to stay understandable.</p>
       </article>
-      <article class="panel">
-        <div class="badge">Agent-readable</div>
-        <p><code>/llms.txt</code> and <code>/http/get/site.json</code> describe the editable surfaces, shared fragments, and PWA contract for tools that can edit HTML.</p>
+      <article class="spw-panel">
+        <div class="spw-badge">Agent-readable</div>
+        <p><code>/llms.txt</code> and <code>/http/get/site.json</code> describe editable surfaces and the show contract for tools that edit HTML.</p>
       </article>
     </section>
 
     <div data-include="/fragments/site-footer.html">
-      <div class="footer">
-        <div>Static-first by default. Replace fragments with a template engine or backend when needed.</div>
-        <div>Bookmarkable routes, offline rails, and public JSON keep the upgrade path explicit.</div>
+      <div data-spw-region="footer">
+        <div>Static-first by default. Swap the season layer for a new aesthetic. Replace fragments with a template engine when needed.</div>
+        <div>Bookmarkable routes and public JSON keep the upgrade path from scaffold to studio explicit.</div>
       </div>
     </div>
   </div>

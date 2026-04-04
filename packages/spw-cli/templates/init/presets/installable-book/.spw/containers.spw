@@ -1,0 +1,87 @@
+# Containers & Chunking
+#
+#>spw_containers
+#:containers
+
+# ---- precipitation lifecycle ----
+# Every container passes through phases.
+# Content exists before its route does (vapor),
+# crystallizes into draft (condensing),
+# publishes to audience (precipitated),
+# pools into indexes (collected),
+# and may dissolve when its season ends (evaporated).
+
+^"lifecycle"{
+ #[phases]{ "vapor", "condensing", "precipitated", "collected", "evaporated" }
+ =[default]: "vapor"
+}
+
+# ---- narrative containers ----
+# Containers declare how content is chunked
+# for cognitive rhythm and layout boundaries.
+# Each container is both a narrative unit and
+# a CSS container-query context.
+#
+# scope  — what arc the container spans
+# rhythm — how frequently new content arrives
+# count  — how many sub-containers per parent
+
+^"show"{
+ =[scope]: "arc"
+ =[rhythm]: "seasonal"
+ .[seasons]{ count: 1, status: "active" }
+}
+
+^"season"{
+ =[scope]: "arc"
+ =[rhythm]: "weekly"
+ .[episodes]{ count: 13, status: "scaffolded" }
+}
+
+^"episode"{
+ =[scope]: "chapter"
+ =[rhythm]: "continuous"
+ .[scenes]{ count: 4, status: "template" }
+}
+
+^"scene"{
+ =[scope]: "beat"
+ =[rhythm]: "continuous"
+ .[beats]{ count: 4, status: "template" }
+}
+
+# ---- CSS container mapping ----
+# Each narrative container maps to a CSS
+# container-query boundary. Lower-powered
+# models reference these names rather than
+# inventing layout structure.
+
+^"css"{
+ .[show]{ name: "show", type: "normal" }
+ .[season]{ name: "season", type: "inline-size" }
+ .[episode]{ name: "episode", type: "inline-size" }
+ .[scene]{ name: "scene", type: "inline-size" }
+}
+
+# ---- design constraints ----
+# These constraints guide writers room agents
+# and lower-powered models toward effective
+# decisions without requiring design expertise.
+#
+# 1. Naming is closed-vocabulary — pick from
+#    declared tokens, don't invent.
+# 2. Composition is slot-based — fill named
+#    regions, don't architect layout.
+# 3. Every CSS value traces to a substrate
+#    token — no magic numbers.
+# 4. Affect (valence pentad) is advisory
+#    branding, not a hard constraint.
+# 5. Cascade layers prevent specificity wars —
+#    write within your assigned layer.
+
+^"vocabulary"{
+ #[regions]{ "nav", "main", "aside", "footer", "hero" }
+ #[affects]{ "boon", "bane", "bone", "bonk", "honk" }
+ #[axes]{ "timing", "disclosure", "stability", "affect", "resolution", "noise" }
+ #[route_families]{ "chapters", "places", "items", "artifacts", "seasons" }
+}

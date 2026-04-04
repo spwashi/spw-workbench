@@ -2,7 +2,7 @@ document.documentElement.classList.add('js-enhanced')
 document.body.dataset.js = 'ready'
 document.body.dataset.online = navigator.onLine ? 'online' : 'offline'
 
-const STATUS_NOTICE_ID = 'site-status-notice'
+const STATUS_NOTICE_ID = 'spw-status-notice'
 let installPromptEvent = null
 
 void hydrateFragments()
@@ -87,17 +87,17 @@ function showUpdateNotice(registration) {
 
   const notice = document.createElement('div')
   notice.id = STATUS_NOTICE_ID
-  notice.className = 'status-notice is-visible'
+  notice.className = 'spw-notice is-visible'
   notice.innerHTML = [
     '<strong>Update ready</strong>',
-    '<span>A fresh version of the site is available. Refresh when you want the latest cached shell.</span>',
-    '<div class="action-row">',
-    '<button class="button" type="button" data-refresh-site>Refresh now</button>',
-    '<button class="button button-secondary" type="button" data-dismiss-notice>Later</button>',
+    '<span>A fresh version of the show is available. Refresh when you want the latest cached shell.</span>',
+    '<div class="spw-actions">',
+    '<button class="spw-button" type="button" data-refresh-site>Refresh now</button>',
+    '<button class="spw-button spw-button--secondary" type="button" data-dismiss-notice>Later</button>',
     '</div>',
   ].join('')
 
-  document.querySelector('.page')?.prepend(notice)
+  document.querySelector('.spw-page')?.prepend(notice)
 
   notice.querySelector('[data-refresh-site]')?.addEventListener('click', () => {
     registration.waiting?.postMessage({ type: 'SKIP_WAITING' })

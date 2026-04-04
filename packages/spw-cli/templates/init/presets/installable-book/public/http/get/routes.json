@@ -6,14 +6,15 @@
     "offline_fallback": "/offline.html"
   },
   "route_families": {
-    "chapters": "/chapters/:chapter-slug/",
-    "places": "/places/:place-slug/",
-    "items": "/items/:item-slug/",
-    "artifacts": "/artifacts/:artifact-slug.html"
+    "chapters":  { "pattern": "/chapters/:slug/",     "lifecycle": "permanent"  },
+    "places":    { "pattern": "/places/:slug/",        "lifecycle": "permanent"  },
+    "items":     { "pattern": "/items/:slug/",         "lifecycle": "seasonal"   },
+    "artifacts": { "pattern": "/artifacts/:slug.html", "lifecycle": "ephemeral"  },
+    "seasons":   { "pattern": "/seasons/:number/",     "lifecycle": "archivable" }
   },
   "http_get": [
     "/http/get/site.json",
-    "/http/get/book.json",
+    "/http/get/show.json",
     "/http/get/routes.json",
     "/http/get/chapters.json",
     "/http/get/chapters/01-opening.json",
@@ -23,6 +24,7 @@
   ],
   "agent_surfaces": [
     "/llms.txt",
-    "/http/get/site.json"
+    "/http/get/site.json",
+    "/http/get/show.json"
   ]
 }

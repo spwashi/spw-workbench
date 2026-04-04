@@ -1,7 +1,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 
-export type SitePreset = 'default' | 'installable-book' | 'lore-land'
+export type SitePreset = 'default' | 'show' | 'installable-book' | 'lore-land'
 
 type CopyDirOptions = {
   overwrite?: boolean
@@ -11,6 +11,8 @@ export function parseSitePreset(value: string): SitePreset {
   switch (value) {
     case 'default':
       return 'default'
+    case 'show':
+      return 'show'
     case 'installable-book':
       return 'installable-book'
     case 'lore-land':
@@ -30,6 +32,27 @@ export function inferSitePreset(targetAbs: string, explicitPreset?: SitePreset):
   return 'default'
 }
 
+/**
+ * Resolves a preset name to the template directory name.
+ *
+ * Multiple presets can share the same template directory.
+ * `show`, `installable-book`, and `lore-land` all resolve
+ * to the `installable-book` template — the show scaffold
+ * with studio awareness, cascade layers, and precipitation
+ * lifecycle. The preset name carries intent (what the
+ * producer is making); the template carries structure.
+ */
+function resolveTemplateName(preset: SitePreset): string {
+  switch (preset) {
+    case 'show':
+    case 'installable-book':
+    case 'lore-land':
+      return 'installable-book'
+    default:
+      return preset
+  }
+}
+
 export async function applyPresetDefaults(
   targetAbs: string,
   templateRoot: string,
@@ -37,10 +60,7 @@ export async function applyPresetDefaults(
 ): Promise<void> {
   if (preset === 'default') return
 
-  const templateName = preset === 'installable-book' || preset === 'lore-land'
-    ? 'installable-book'
-    : preset
-
+  const templateName = resolveTemplateName(preset)
   const overlayRoot = path.join(templateRoot, 'presets', templateName)
   await copyDir(overlayRoot, targetAbs, { overwrite: true })
 }

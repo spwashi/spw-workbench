@@ -76,9 +76,12 @@ export function printInitUsage(): void {
       {
         title: 'Scaffolds',
         lines: [
-          '.spw/mount.spw',
-          '.spw/workspace.spw',
-          '.spw/index.spw',
+          '.spw/index.spw              routing table and surface registry',
+          '.spw/mount.spw              studio binding and deployment targets',
+          '.spw/workspace.spw          workspace roots and LSP configuration',
+          '.spw/origin.spw             generative seed and chromatic palette',
+          '.spw/containers.spw         chunking scheme and CSS container mapping',
+          '.spw/anchors.spw            cultural precipitation and merchandise readiness',
           '.agents/workflows/commit-review.md',
           '.git/hooks/pre-commit (portable resolver when target is a git repo)',
         ],
@@ -87,8 +90,9 @@ export function printInitUsage(): void {
         title: 'Options',
         lines: [
           '--bootstrap          initialize git, add .spw/_workbench, and install dependencies when possible',
-          '--preset installable-book   seed public/book/http scaffolding for an installable book',
-          '--preset lore-land         alias for installable-book',
+          '--preset show               show scaffold with studio awareness and season layers',
+          '--preset installable-book   alias for show',
+          '--preset lore-land          alias for show',
         ],
       },
       {

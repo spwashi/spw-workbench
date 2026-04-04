@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'spw-installable-book-v1'
+const CACHE_VERSION = 'spw-show-v1'
 const SHELL_CACHE = `${CACHE_VERSION}-shell`
 
 const APP_SHELL = [
@@ -7,7 +7,9 @@ const APP_SHELL = [
   '/offline.html',
   '/manifest.webmanifest',
   '/assets/reset.css',
+  '/assets/substrate.css',
   '/assets/style.css',
+  '/assets/season.css',
   '/assets/enhancements.js',
   '/assets/icon.svg',
   '/fragments/site-nav.html',
@@ -18,7 +20,7 @@ const APP_SHELL = [
   '/chapters/01-opening/index.html',
   '/http/get/routes.json',
   '/http/get/site.json',
-  '/http/get/book.json',
+  '/http/get/show.json',
   '/http/get/chapters.json',
   '/http/get/chapters/01-opening.json',
   '/llms.txt',

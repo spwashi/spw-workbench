@@ -1,0 +1,40 @@
+# Show Index
+#
+#>spw_show_index
+#:index
+
+# ---- routing table ----
+# Each entry maps a symbolic name to the .spw surface
+# that governs that domain of the show.
+# A tool reading index.spw discovers the full contract
+# without traversing the public directory.
+
+^"surfaces"{
+ @workspace:  ~"./workspace.spw"
+ @mount:      ~"./mount.spw"
+ @origin:     ~"./origin.spw"
+ @containers: ~"./containers.spw"
+ @anchors:    ~"./anchors.spw"
+}
+
+# ---- route families ----
+# lifecycle values follow the precipitation model:
+#   permanent  — route persists across seasons
+#   seasonal   — route lives for a production cycle, then archives
+#   ephemeral  — route dissolves after its moment, content may re-precipitate
+#   archivable — route moves from live to collected when its season ends
+
+^"routes"{
+ .[chapters]{ pattern: "/chapters/:slug/", lifecycle: "permanent" }
+ .[places]{ pattern: "/places/:slug/", lifecycle: "permanent" }
+ .[items]{ pattern: "/items/:slug/", lifecycle: "seasonal" }
+ .[artifacts]{ pattern: "/artifacts/:slug.html", lifecycle: "ephemeral" }
+ .[seasons]{ pattern: "/seasons/:number/", lifecycle: "archivable" }
+}
+
+# ---- agent surfaces ----
+^"agents"{
+ @llms: ~"../public/llms.txt"
+ @site_api: ~"../public/http/get/site.json"
+ @show_api: ~"../public/http/get/show.json"
+}
