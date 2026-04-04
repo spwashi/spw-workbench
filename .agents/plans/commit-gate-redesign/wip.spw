@@ -1,0 +1,103 @@
+# wip — commit-gate-redesign
+# Branch: feature/commit-gate-redesign
+# Started: 2026-04-04
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @plan: ~".agents/plans/commit-gate-redesign/PLAN.md"
+ @hook: ~".git/hooks/pre-commit"
+ @poll: ~".agents/skills/spw-commit-review/scripts/poll-review.sh"
+ @workflow: ~".agents/workflows/commit-review.md"
+ @skill: ~".agents/skills/spw-commit-review/SKILL.md"
+ @touchid: ~"scripts/touchid-authorize.swift"
+}
+
+^["intent"]{
+ ~#goal: "Redesign the commit gate so humans authorize a clearly summarized commit artifact, while hook-time review logic becomes shared, inspectable, and reusable by both the hook and poll-review surfaces."
+ ~#taste: "clarity, layering, and trust — shrink the hook, centralize review truth, and make authorization feel like informed consent instead of a late interrupt."
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#commit_review_engine, #authorization_ceremony, #agent_attribution]
+ review_surfaces: [@cluster, @plan, @hook, @poll]
+ snippet_routes: [#shell_flow, #summary_shape, #authorization_prompt]
+}
+
+^["concept_index"]{
+ primary: [#informed_authorization, #shared_review_logic, #commit_message_policy, #agent_context]
+ surfaces: [#hook, #poll_review, #touch_id, #workflow_docs]
+ tensions: [#trust_vs_friction, #shared_logic_vs_shell_sprawl, #agent_detection_drift]
+ transfers: [#service, #workflow, #policy]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread the hook, poller, and workflow docs before changing the ceremony",
+  "< ship one shared review primitive at a time so behavior stays explainable",
+  "$ record what the human is actually authorizing, not just what the script computed",
+  "^ fold stable summary/report logic back into both hook and polling surfaces",
+  "% keep commit policy stable while improving how it is surfaced",
+ ]
+ gates: [#review_truth_shared, #authorization_context_clear, #agent_identity_visible, #failure_modes_actionable]
+}
+
+^["parallel_work"]{
+ critical_path: [#shared_review_engine, #authorization_boundary]
+ parallelizable: [#docs_refresh, #prompt_copy, #agent_detection_hardening]
+ shared_hot_files: [".git/hooks/pre-commit", ".agents/skills/spw-commit-review/scripts/poll-review.sh", ".agents/workflows/commit-review.md"]
+ merge_risks: [#hook_drift, #policy_copy_divergence]
+ handoff_artifacts: [@plan]
+}
+
+^["supporting_documents"]{
+ must_ship: [@plan]
+ helpful: [@workflow, @skill]
+ carries: [#review_summary_schema, #commit_message_examples, #authorization_copy, #failure_playbook]
+}
+
+^["interaction_depth"]{
+ subjects: [#feedback, #trust, #legibility, #reversibility]
+ questions: [#what_is_authorized, #what_is_blocking, #what_is_risky, #what_is_machine_readable]
+ qualities: [#clarity, #rhythm, #containment]
+}
+
+^["stream"]{
+ >>[2026-04-04 11:24] observe — the current hook performs staged file collection, check execution, report rendering, and Touch ID authorization in one shell surface.
+ >>[2026-04-04 11:24] observe — poll-review and the hook overlap semantically but do not yet read like two surfaces of one shared review engine.
+ >>[2026-04-04 11:25] decide — redesign around informed authorization: checks first, summary second, authorization last.
+ >>[2026-04-04 11:25] decide — plan a shared review runner plus narrower renderer and authorization boundary so the hook becomes orchestration instead of policy ballast.
+ >>[2026-04-04 11:25] taste — the highest-value improvement is making the human authorize a concrete commit summary, not just a generic biometric prompt.
+}
+
+^["open"]{
+ ?[json_surface]: "Should the shared review runner emit JSON as a first-class artifact now, or only after the shell refactor lands?"
+ ?[inspect_mode]: "Should inspect-before-authorize open `git diff --cached --stat`, full diff, or a focused risk summary first?"
+ ?[agent_source]: "Is explicit `SPW_AGENT` enough for agent attribution, or should the wrapper persist a small context file for stronger provenance?"
+}
+
+^["commits"]{
+ ~[1]: ".[plans] — add commit-gate redesign plan surfaces"
+ ~[2]: "&[commit-review] — extract shared review runner and commit-message validation"
+ ~[3]: "&[commit-review] — add summary renderer and informed authorization flow"
+ ~[4]: "&[commit-review] — unify poll-review with shared engine and harden agent attribution"
+ ~[5]: ".[docs] — update commit-review skill and workflow documentation"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@f04cad6826118457ec72474a59a240125b3750a6"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: ".git/hooks/pre-commit, .agents/skills/spw-commit-review/scripts/poll-review.sh, .agents/workflows/commit-review.md, .agents/skills/spw-commit-review/SKILL.md, scripts/touchid-authorize.swift"
+ ~#next_commit: "1"
+ ~#open_count: "3"
+ ~#last_stream: "2026-04-04 11:25"
+ ~#taste_debt: "agent attribution provenance and inspect-before-authorize UX need explicit design choices before implementation"
+}
+
+^["done"]{
+}
