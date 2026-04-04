@@ -21,6 +21,10 @@ fi
 
 # shellcheck source=/dev/null
 source "$REPO_ROOT/scripts/commit-review/run-review.sh"
+# shellcheck source=/dev/null
+source "$REPO_ROOT/scripts/commit-review/render-review.sh"
+# shellcheck source=/dev/null
+source "$REPO_ROOT/scripts/commit-review/authorize-commit.sh"
 
 spw_commit_review_run
 
@@ -34,72 +38,12 @@ if [ "$TOTAL" -eq 0 ]; then
   exit 0
 fi
 
-# ── Display Report ───────────────────────────────────────────────────────────
-
-echo ""
-echo "┌──────────────────────────────────────────────────────┐"
-echo "│  Pre-Commit Gate  [$TOTAL file(s)]  agent=$AGENT     │"
-echo "└──────────────────────────────────────────────────────┘"
-echo ""
-printf '%b' "$REPORT"
+spw_render_commit_review
 
 if [ "$ERRORS" -gt 0 ]; then
-  echo ""
-  echo "  ⛔ $ERRORS error(s) found."
-fi
-if [ "$WARNINGS" -gt 0 ]; then
-  echo "  ⚠  $WARNINGS warning(s) found."
-fi
-echo ""
-
-# ── Authorization Gate (Touch ID) ────────────────────────────────────────────
-
-TOUCHID_HELPER="$REPO_ROOT/scripts/touchid-authorize.swift"
-
-if [ -f "$TOUCHID_HELPER" ]; then
-  echo "  🔐 Touch ID authorization required..."
-  swift "$TOUCHID_HELPER" "Authorize git commit ($TOTAL files, agent=$AGENT)"
-  AUTH_RESULT=$?
-
-  if [ "$AUTH_RESULT" -eq 0 ]; then
-    echo "  ✓ Authorized via Touch ID."
-    echo ""
-    exit 0
-  elif [ "$AUTH_RESULT" -eq 2 ]; then
-    echo "  ⚠  Touch ID unavailable, falling back to interactive prompt."
-    # Fall through to interactive prompt below
-  else
-    echo ""
-    echo "  ✗ Commit denied."
-    echo ""
-    exit 1
-  fi
-fi
-
-# Fallback: interactive y/N prompt (only reached if Touch ID is unavailable)
-if [ ! -t 0 ]; then
-  echo "  ⛔ Non-interactive terminal and Touch ID unavailable."
-  echo "     Cannot authorize this commit."
-  echo ""
-  echo "     Options:"
-  echo "       git commit --no-verify                # Skip all hooks"
+  echo "  Commit blocked until the reported errors are fixed."
   echo ""
   exit 1
 fi
 
-echo "  Authorize this commit? [y/N] "
-read -r REPLY < /dev/tty
-case "$REPLY" in
-  y|Y|yes|YES)
-    echo ""
-    echo "  ✓ Authorized."
-    echo ""
-    exit 0
-    ;;
-  *)
-    echo ""
-    echo "  ✗ Commit aborted by user."
-    echo ""
-    exit 1
-    ;;
-esac
+spw_authorize_commit "$REPO_ROOT" "Authorize git commit ($TOTAL files, $WARNINGS warnings, agent=$AGENT)"

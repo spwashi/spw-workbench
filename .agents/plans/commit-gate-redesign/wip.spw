@@ -76,6 +76,9 @@
  >>[2026-04-04 11:53] implement — rewired `scripts/pre-commit` and `scripts/commit-msg` to delegate to the new shared helpers instead of owning the logic inline.
  >>[2026-04-04 11:54] verify — `bash -n scripts/pre-commit scripts/commit-msg scripts/commit-review/run-review.sh scripts/commit-review/validate-commit-message.sh scripts/commit-review/lib/agent-context.sh` passed.
  >>[2026-04-04 11:55] verify — `scripts/commit-review/run-review.sh` and `scripts/commit-msg` sample good/bad message checks behaved as expected.
+ >>[2026-04-04 12:03] implement — added `render-review.sh` and `authorize-commit.sh` so summary rendering and authorization become separate commit-review surfaces.
+ >>[2026-04-04 12:04] implement — updated `scripts/pre-commit` to render file-category summary + diffstat before auth and to block immediately on review errors.
+ >>[2026-04-04 12:05] verify — `bash -n` passed for the new renderer/authorizer, and sourced `spw_commit_review_run` + `spw_render_commit_review` rendered the empty staged-state summary without auth side effects.
 }
 
 ^["open"]{
@@ -98,10 +101,10 @@
  ~#rebased_at: ""
  ~#hygiene_split: "none"
  ~#files_hot: "scripts/pre-commit, scripts/commit-msg, scripts/commit-review/run-review.sh, scripts/commit-review/validate-commit-message.sh, scripts/commit-review/lib/agent-context.sh"
- ~#next_commit: "3"
+ ~#next_commit: "4"
  ~#open_count: "3"
- ~#last_stream: "2026-04-04 11:55"
- ~#taste_debt: "summary rendering, inspect-before-authorize UX, and stronger agent provenance remain for the next slice"
+ ~#last_stream: "2026-04-04 12:05"
+ ~#taste_debt: "inspect-before-authorize branching and stronger agent provenance remain for the next slice"
 }
 
 ^["done"]{
