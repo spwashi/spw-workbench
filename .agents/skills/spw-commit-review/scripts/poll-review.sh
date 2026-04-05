@@ -24,6 +24,8 @@ export SPW_TOOL_ROOT_OVERRIDE="${SPW_TOOL_ROOT_OVERRIDE:-$WORKBENCH_ROOT}"
 source "${SPW_TOOL_ROOT_OVERRIDE}/scripts/spw-lib.sh"
 # shellcheck source=/dev/null
 source "${SPW_TOOL_ROOT_OVERRIDE}/scripts/commit-review/lib/agent-context.sh"
+# shellcheck source=/dev/null
+source "${SPW_TOOL_ROOT_OVERRIDE}/scripts/commit-review/run-review.sh"
 spw_parse_args "$@"
 
 cd "$ROOT_DIR"
@@ -475,6 +477,7 @@ persist_poll_state() {
 run_once() {
   local status=0
   local run_stamp_iso
+  local shared_review_status="skipped"
   run_stamp_iso="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
   local files=()
   while IFS= read -r line; do
@@ -544,6 +547,24 @@ run_once() {
   echo "    .{ total = ${#files[@]}, source = ${#ts_files[@]}, spw = ${#spw_files[@]}, golden = ${#golden_files[@]} }"
   spw_set_close
 
+  if [[ "$SCOPE" == "staged" ]]; then
+    SPW_COMMIT_REVIEW_AGENT="$AGENT_CONTEXT_LABEL" spw_commit_review_run
+    if [[ "${REVIEW_TOTAL:-0}" -gt 0 ]]; then
+      spw_honk "shared commit gate review (${REVIEW_TOTAL} files)"
+      printf '%b' "${REVIEW_REPORT:-}"
+      if [[ "${REVIEW_ERRORS:-0}" -gt 0 ]]; then
+        shared_review_status="fail"
+        status=1
+      elif [[ "${REVIEW_WARNINGS:-0}" -gt 0 ]]; then
+        shared_review_status="warn"
+      else
+        shared_review_status="pass"
+      fi
+    else
+      shared_review_status="idle"
+    fi
+  fi
+
   if [[ "${#ts_files[@]}" -gt 0 && "$RUN_LINT" -eq 1 ]]; then
     spw_honk "eslint source pass (${#ts_files[@]} files)"
     if ! npx eslint "${ts_files[@]}"; then
@@ -574,7 +595,7 @@ run_once() {
   fi
 
   if [[ "${#spw_files[@]}" -gt 0 && "$RUN_SPW" -eq 1 ]]; then
-    if [[ "${#agent_spw_files[@]}" -gt 0 ]]; then
+    if [[ "${#agent_spw_files[@]}" -gt 0 && "$SCOPE" != "staged" ]]; then
       spw_honk ".agents plan surfaces (${#agent_spw_files[@]} files)"
       for file in "${agent_spw_files[@]}"; do
         summarize_agent_spw_file "$file"
@@ -608,7 +629,7 @@ run_once() {
     fi
   fi
 
-  if [[ "${#golden_files[@]}" -gt 0 ]]; then
+  if [[ "${#golden_files[@]}" -gt 0 && "$SCOPE" != "staged" ]]; then
     golden_status="warn"
     spw_bone "golden snapshots modified: ${#golden_files[@]} file(s)"
     printf '  - %s\n' "${golden_files[@]}"

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="${SPW_REPO_ROOT_OVERRIDE:-$(git rev-parse --show-toplevel 2>/dev/null || cd "$SCRIPT_DIR/../.." && pwd)}"
+REPO_ROOT="${SPW_REPO_ROOT_OVERRIDE:-$(git rev-parse --show-toplevel 2>/dev/null || { cd "$SCRIPT_DIR/../.." && pwd; })}"
 
 # shellcheck source=/dev/null
 source "$SCRIPT_DIR/lib/agent-context.sh"

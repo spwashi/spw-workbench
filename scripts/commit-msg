@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+HOOK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ "$(basename "$HOOK_DIR")" = "hooks" ]; then
+  REPO_ROOT="$(cd "$HOOK_DIR/../.." && pwd)"
+else
+  REPO_ROOT="$(cd "$HOOK_DIR/.." && pwd)"
+fi
 
 # shellcheck source=/dev/null
-source "$SCRIPT_DIR/commit-review/validate-commit-message.sh"
+source "$REPO_ROOT/scripts/commit-review/validate-commit-message.sh"
 
 spw_validate_commit_message "${1:-}"

@@ -7,7 +7,9 @@ spw_count_matching_lines() {
     printf '0\n'
     return
   fi
-  printf '%s\n' "$content" | grep -E "$pattern" | sed '/^$/d' | wc -l | tr -d ' '
+  local count
+  count=$(printf '%s\n' "$content" | grep -E "$pattern" | sed '/^$/d' | wc -l | tr -d ' ' || true)
+  printf '%s\n' "${count:-0}"
 }
 
 spw_render_commit_review() {
