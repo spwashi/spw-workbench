@@ -1,0 +1,286 @@
+# Interaction Target Taxonomy — Spw across four editors
+# What transfers, what adapts, what is new per target
+
+#:layer #!reference
+@region:interaction_targets
+
+# --- the abstraction ---
+
+^["interaction_target"]{
+ // An interaction target is an editor environment that renders Spw.
+ // Each target implements a common surface (syntax, LSP, views)
+ // through its native extension API.
+ //
+ // The interaction-target pattern has five layers:
+ //   1. syntax — tokenization and highlighting
+ //   2. intelligence — LSP client for definition, hover, completion, diagnostics
+ //   3. custom requests — spw/* protocol lane for annotation index, context, manifest
+ //   4. views — structured panels for concepts, workspace topology, context
+ //   5. substrate — the target-specific thing that makes the integration native
+ //
+ // layer 1-3 transfer across targets with adaptation
+ // layer 4 transfers in data model, adapts in rendering
+ // layer 5 is unique per target — the reason the integration exists
+
+ ~#substrate_by_target: {
+  vscode: "workspace folders, extension host process, webview panels",
+  intellij: "project model, PSI tree, tool windows",
+  neovim: "buffers, quickfix list, lua runtime, treesitter",
+  obsidian: "vault topology, markdown co-presence, knowledge graph, local-first privacy",
+ }
+}
+
+# --- layer 1: syntax ---
+
+^["syntax"]{
+ // The single source of truth is spw-seed's tokenizer.
+ // Each target wraps it differently.
+
+ !vscode{
+  mechanism: "TextMate grammar (spw.tmLanguage.json)",
+  format: "JSON regex patterns with TextMate scopes",
+  relationship_to_seed: "independent — hand-maintained regex, parallel to seed",
+  token_granularity: "fine — 14 top-level pattern groups, nested scopes",
+ }
+
+ !intellij{
+  mechanism: "TextMate bundle via SpwTextMateBundleProvider",
+  format: "same tmLanguage.json as VS Code, loaded via textmate-bundles extension point",
+  relationship_to_seed: "same grammar, different loader",
+  token_granularity: "identical to VS Code",
+ }
+
+ !neovim{
+  mechanism: "Vim syntax file (spw.vim)",
+  format: "Vim syntax match/region/keyword commands with highlight links",
+  relationship_to_seed: "independent — hand-maintained Vim regex, parallel to seed",
+  token_granularity: "very fine — 80+ syntax groups, valence pentad palette, 3-layer visual hierarchy (content/container/operator)",
+ }
+
+ !obsidian{
+  mechanism: "CM6 StreamLanguage wrapping spw-seed lex()",
+  format: "StreamParser<State> adapter: pre-tokenize → line-indexed map → position lookup",
+  relationship_to_seed: "direct dependency — imports lex() from spw-seed",
+  token_granularity: "matches seed's 24 token types, mapped to CM6 token type strings",
+  ~#novelty: "first target to directly consume spw-seed rather than maintaining a parallel grammar",
+ }
+
+ ?[convergence]: "Should all targets eventually consume spw-seed directly? A Lezer grammar compiled from spw-seed's rules would give CM6 incremental parsing AND could generate TextMate/Vim grammars. This is the long-term convergence point."
+}
+
+# --- layer 2: intelligence (LSP) ---
+
+^["lsp"]{
+ // All targets connect to packages/spw-lsp/src/stdio-server.ts
+ // Protocol: JSON-RPC 2.0 over stdio
+ // Standard capabilities: definition, hover, completion, diagnostics, formatting, documentSymbol, codeLens
+
+ !vscode{
+  client: "vscode-languageclient (npm package)",
+  transport: "stdio — spawn server as child process via ServerOptions",
+  lifecycle: "extension activates → start client → client manages process",
+  ~#effort: "minimal — vscode-languageclient handles everything",
+ }
+
+ !intellij{
+  client: "IntelliJ Platform LSP API (LspServerSupportProvider)",
+  transport: "stdio — platform manages process via LspServerDescriptor",
+  lifecycle: "IDE manages LSP lifecycle per-project",
+  ~#effort: "minimal — platform handles protocol, discovery, restart",
+ }
+
+ !neovim{
+  client: "vim.lsp.start() (built-in Neovim 0.8+ LSP client)",
+  transport: "stdio — spawn via cmd = { 'npm', 'run', 'lsp' }",
+  lifecycle: "buffer-scoped — starts on FileType spw, stops when buffer closes",
+  ~#effort: "minimal — built-in client handles protocol",
+ }
+
+ !obsidian{
+  client: "custom — no built-in LSP support in Obsidian",
+  transport: "stdio via require('child_process').spawn()",
+  lifecycle: "plugin manages everything: spawn, initialize handshake, document sync, shutdown",
+  ~#effort: "significant — must implement JSON-RPC 2.0 framing, Content-Length header parsing, request/response correlation, notification dispatch, restart logic",
+  ~#novelty: "only target that requires building an LSP client from scratch",
+
+  !json_rpc_framing{
+   // incoming (stdout): Content-Length: N\r\n\r\n{json}
+   // outgoing (stdin): same framing
+   // must handle partial reads, buffered messages, message boundaries
+   // request: { jsonrpc: "2.0", id: number, method: string, params: object }
+   // response: { jsonrpc: "2.0", id: number, result: object } | { jsonrpc: "2.0", id: number, error: { code, message } }
+   // notification: { jsonrpc: "2.0", method: string, params: object } — no id, no response expected
+  }
+
+  !initialize_handshake{
+   // 1. send: initialize { processId, capabilities, rootUri, workspaceFolders }
+   // 2. receive: initialize result { capabilities }
+   // 3. send: initialized notification {}
+   // 4. send: textDocument/didOpen for each .spw file in vault
+  }
+
+  !document_sync{
+   // on vault.on('modify', file) where file.extension === 'spw':
+   //   send textDocument/didChange with full document content (TextDocumentSyncKind.Full)
+   // on vault.on('create', file): textDocument/didOpen
+   // on vault.on('delete', file): textDocument/didClose
+   // on vault.on('rename', file, oldPath): didClose(old) + didOpen(new)
+  }
+ }
+}
+
+# --- layer 3: custom requests ---
+
+^["custom_requests"]{
+ // The spw/* request lane extends the LSP with domain-specific queries.
+ // Protocol types defined in vscode-spw/src/lsp/custom-requests.ts.
+ // These are editor-agnostic — the interfaces transfer to any target.
+
+ !request_map{
+  "spw/annotations": "() => SpwAnnotationRecord[] — all #-annotations across workspace",
+  "spw/contextAtPosition": "(uri, position) => SpwContextAtPositionResult | null — frame path, braids at cursor",
+  "spw/workspaceManifest": "() => SpwWorkspaceManifest — roots, projections, manifest source",
+  "spw/workspaceTemperature": "() => SpwWorkspaceTemperatureEntry[] — file tiers with beat age, write count",
+  "spw/resonance": "(uri) => SpwResonanceEdge[] — cross-file resonance channels",
+  "spw/registerSnapshot": "(uri) => SpwRegisterSnapshot — register state at file",
+  "spw/operatorFrequency": "(uri?, root?) => SpwOperatorFrequencyResult — operator distribution",
+  "spw/phaseContext": "(uri, position) => SpwPhaseContextResult — phase, sigil, materialization state at cursor",
+ }
+
+ !type_portability{
+  // SpwAnnotationRecord, SpwContextAtPositionResult, SpwWorkspaceManifest,
+  // SpwWorkspaceTemperatureEntry — all plain interfaces, no editor imports.
+  // SpwCustomRequestClient — wraps LanguageClient in vscode; wraps the stdio bridge in obsidian.
+  // Obsidian: duplicate the interfaces (~90 lines), reimplement the client class.
+ }
+}
+
+# --- layer 4: views ---
+
+^["views"]{
+
+ !concepts_view{
+  data: "SpwAnnotationRecord[] → grouped by name, kind, file, or phase",
+  features: [
+   "4 grouping modes (concept, kind, file, phase)",
+   "density bars (unicode block frequency encoding)",
+   "co-occurrence graph (concepts appearing in same files)",
+   "braid pairing (lens/intent partners on same line)",
+   "kind-specific icons (#=topic, #:=lens, #!=intent, #>=anchor, ##>=prompt_root)",
+  ],
+  vscode: "TreeDataProvider → TreeView (751 lines)",
+  obsidian: "ItemView subclass → DOM tree built in contentEl (~250 lines target, decompose grouping logic)",
+  transfer: "data model + algorithms transfer directly; rendering adapts from TreeItem to HTMLElement",
+ }
+
+ !atlas_view{
+  data: "SpwWorkspaceManifest + SpwWorkspaceTemperatureEntry[] + SpwContextAtPositionResult",
+  features: [
+   "roots section (27 sigil→path mappings)",
+   "memory tiers (hot/warm/cold based on beatAge and writeCount)",
+   "projections (generated surfaces with spec owner + status)",
+   "live cursor context ('You Are Here' — frame path, braids, entered frame)",
+   "spirit phase distribution (6 phases, density bar per phase)",
+  ],
+  vscode: "TreeDataProvider → TreeView (741 lines)",
+  obsidian: "ItemView subclass → DOM sections in contentEl (~300 lines target)",
+  transfer: "root mapping adapts to vault-relative paths; temperature maps to Obsidian file metadata; cursor context needs CM6 EditorView position tracking",
+  ~#vault_native: "Obsidian's vault structure is itself a topology — the atlas can show .spw surfaces alongside their vault neighbors, linking them to associated markdown notes. This is unique to the Obsidian target.",
+ }
+
+ !context_strip{
+  data: "SpwContextAtPositionResult",
+  format: "framePath > facets X | field A · B",
+  vscode: "StatusBarItem with tooltip (119 lines)",
+  obsidian: "addStatusBarItem() → HTMLElement with setText() (~80 lines)",
+  transfer: "format string logic transfers directly; debounce strategy (80ms) transfers directly",
+ }
+}
+
+# --- layer 5: substrate (target-specific) ---
+
+^["substrate"]{
+
+ !vscode_substrate{
+  unique: [
+   "extension host process isolation",
+   "webview panels for rich rendering",
+   "workspace trust model",
+   "multi-root workspaces",
+  ]
+ }
+
+ !intellij_substrate{
+  unique: [
+   "PSI (Program Structure Interface) tree",
+   "project model with modules/libraries",
+   "run configurations",
+   "inspection framework",
+  ]
+ }
+
+ !neovim_substrate{
+  unique: [
+   "buffer-local keymaps (gf/gF for spw references)",
+   "quickfix list for unresolved refs",
+   "auto-mkdir on BufWritePre",
+   "treesitter integration path",
+  ]
+ }
+
+ !obsidian_substrate{
+  unique: [
+   "vault topology — .spw files as vault citizens alongside markdown notes",
+   "markdown co-presence — ```spw fences in notes, rendered in reading view",
+   "knowledge graph — .spw surfaces could appear in Obsidian's graph view",
+   "local-first privacy — no cloud, no telemetry, data stays on device",
+   "TextFileView — .spw files open with dedicated syntax-colored viewer",
+   "three rendering pipelines (CM6 editing, reading view post-processor, file view)",
+  ]
+  ~#manifesto_alignment: {
+   yours: "free plugin, open-source, no paywall",
+   durable: ".spw files are plain text — future-proof, no lock-in, format survives if plugin vanishes",
+   private: "everything local — LSP subprocess on-device, no network calls, no analytics",
+   malleable: "configurable LSP path, custom sigil colors, togglable views, extensible via Obsidian's plugin model",
+   independent: "no investor-driven feature pressure, no cloud dependency",
+  }
+ }
+}
+
+# --- cross-target transfer matrix ---
+
+^["transfer_matrix"]{
+ // what transfers with zero adaptation
+ !direct_transfer: [
+  "sigil semantics table (23 entries with role/physics/phase)",
+  "annotation kind taxonomy (topic, lens, intent, anchor, prompt_root)",
+  "density bar rendering algorithm",
+  "co-occurrence computation",
+  "braid triple structure (framePath, local, ambient, delta)",
+  "spirit phase distribution (6 phases)",
+  "context summary format (frame > facets | field)",
+  "spw/* request/response types (plain interfaces)",
+  "root sigil map (27 entries)",
+ ]
+
+ // what transfers with adaptation
+ !adapted_transfer: [
+  "syntax highlighting — TextMate/Vim regex → CM6 StreamParser via spw-seed bridge",
+  "LSP client — built-in client → custom JSON-RPC over stdio",
+  "tree views — TreeDataProvider → ItemView DOM construction",
+  "status bar — StatusBarItem → addStatusBarItem() HTMLElement",
+  "file watcher — workspace.createFileSystemWatcher → vault.on('modify'/'create'/'delete')",
+  "root resolution — workspace folders → vault.adapter.getBasePath()",
+  "cursor tracking — TextEditor.selection → CM6 EditorView.state.selection",
+ ]
+
+ // what is genuinely new
+ !novel: [
+  "JSON-RPC 2.0 LSP client from scratch (no library — ~200 lines)",
+  "token-map adapter (pre-tokenize → line-indexed map → StreamParser — ~150 lines)",
+  "TextFileView for .spw files (dedicated file viewer — ~120 lines)",
+  "vault topology awareness (vault-relative paths, file neighbors, note associations)",
+  "three rendering pipelines sharing one tokenizer (editing, reading, file view)",
+  "markdown co-presence (.spw in fences, .spw as files — two affordances for one language)",
+ ]
+}

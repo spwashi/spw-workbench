@@ -1,0 +1,76 @@
+# CM6 Substrate — obsidian-spw
+
+#:layer #!reference
+@region:cm6_substrate
+
+^["editor_topology"]{
+ live_editing: [#markdown_view, #editor, #editor_view, #register_editor_extension, #state_field, #decoration_set]
+ rendered_reading: [#markdown_post_processor, #code_fence_handler, #tokenized_dom]
+ direct_file_open: [#text_file_view, #register_extensions, #workspace_leaf]
+ suggestion_plane: [#editor_suggest, #cm6_autocomplete, #trigger_context, #language_semantics]
+}
+
+^["thesis"]{
+ ~#claim: "Obsidian exposes multiple editor-adjacent planes, and each has a different semantic job. The plugin stands out when it uses the right plane for the right kind of meaning."
+ ~#constraint: "do not treat EditorSuggest, CM6 syntax, markdown post-processing, and file views as interchangeable; they are parallel substrates with different lifecycles"
+}
+
+^["surface_map"]{
+ syntax: "CM6 extension surface via registerEditorExtension()"
+ preview: "registerMarkdownCodeBlockProcessor('spw', ...)"
+ file_open: "registerExtensions(['spw'], viewType) + TextFileView"
+ note_suggestions: "EditorSuggest for cursor-triggered note authoring interactions"
+ language_completions: "CM6 autocomplete or LSP completion for language-semantic proposals"
+}
+
+^["design_moves"]{
+ move_1: "treat the token-map adapter as infrastructure, not as a one-off syntax hack"
+ move_2: "keep one lexer truth across file view, reading view, and editor view"
+ move_3: "reserve EditorSuggest for note-authoring style interactions, not syntax highlighting"
+ move_4: "delay completion architecture until the fence/file editing surface is empirically verified"
+ move_5: "keep dedicated .spw file handling honest about editability; do not imply a full editor if iteration one is read-focused"
+}
+
+^["alternative_paths"]{
+ lezer: "best long-term parser fit for incremental syntax trees, but should be introduced as a portable package and staged separately from the first truthful port"
+ regex_mode: "faster to fake, but violates single-source syntax truth"
+ preview_only: "too shallow; fails the durable file-open story"
+ editor_only: "misses markdown co-presence, which is the native Obsidian affordance"
+}
+
+^["lezer_boundary"]{
+ first_job: "syntax tree, highlighting, folding, selection, and incremental reparsing"
+ not_first_job: "replace spw-seed's semantic AST, LSP behavior, or prose-fallback dialect"
+ placement: "packages/spw-lezer/ consumed by obsidian-spw"
+ host_risk: "markdown fence activation inside Obsidian remains a host-integration question even if the grammar is excellent"
+}
+
+^["open_experiments"]{
+ fence_scope: "verify whether the CM6 extension reaches the exact `spw` fenced code surface inside markdown without extra language injection"
+ editable_file_view: "decide whether TextFileView is enough for the first cut or whether a dedicated editable surface is necessary"
+ completion_split: "decide how future Spw suggestions divide between EditorSuggest and CM6 autocomplete"
+ cursor_bridge: "verify the cleanest path from Obsidian editor abstractions to CM6 state for context-strip refresh"
+}
+
+^["proof_points"]{
+ right_layering: [#syntax_uses_cm6, #preview_uses_post_processor, #files_use_text_view]
+ non_overlap: [#edit_plane, #render_plane, #suggest_plane]
+ future_malleability: [#lezer_swap, #completion_swap, #file_view_upgrade]
+}
+
+^["interview_handles"]{
+ question_1: "Why not just use EditorSuggest for everything?"
+ answer_1: "Because trigger-driven suggestions and language-semantic rendering are different jobs. The branch is stronger when it keeps authoring assists separate from parser-driven language behavior."
+ question_2: "Why not wait for Lezer?"
+ answer_2: "Because the token-map bridge lets the extension ship now, while the Lezer follow-on can be scoped as portable syntax infrastructure instead of being rushed as an editor-local rewrite."
+ question_3: "Why three render pipelines?"
+ answer_3: "Because Obsidian exposes three user truths: direct files, fenced markdown, and live editing. A plugin that ignores one is not vault-native."
+}
+
+#>wonder_agents_plans_obsidianspw_cm6substrate_1
+?["Which editor plane actually owns Spw meaning at a given moment?"]{
+  #:depth #!computational // lens: substrate fit
+  &[#register_editor_extension, #code_fence_handler, #text_file_view, #editor_suggest] => $[#semantic_job, #lifecycle, #user_expectation]
+  !probe{ "force each surface to justify itself by a distinct semantic job rather than convenience." }
+  ~<.agents/plans/obsidian-spw/obsidian-spw.spw>
+}

@@ -1,0 +1,61 @@
+# Runtime Resilience — obsidian-spw
+
+#:layer #!reference
+@region:runtime_resilience
+
+^["failure_taxonomy"]{
+ boot: [#cm6_bundle_mismatch, #bad_server_path, #desktop_only_gate, #manifest_miswire]
+ steady_state: [#child_exit, #json_rpc_desync, #stale_promises, #double_registration, #refresh_race]
+ restore: [#leaf_before_server_ready, #stale_uri, #missing_file_state, #rename_during_boot]
+ interaction: [#notice_spam, #view_stall, #status_stale, #partial_truth]
+}
+
+^["recovery_contract"]{
+ hard_failures: [#show_notice, #set_health_badge, #offer_restart_command, #preserve_syntax_only_mode]
+ soft_failures: [#debounced_retry, #last_known_good_view, #quiet_status_surface]
+ never: [#file_corruption, #network_fallback, #silent_process_duplication, #blocking_open]
+}
+
+^["state_partition"]{
+ durable: [#settings_json, #workspace_leaf_state, #vault_files]
+ ephemeral: [#child_pid, #pending_requests, #token_map_cache, #last_context_snapshot]
+ boundary_rule: "ephemeral state may be lost at any time; durable state must remain truthful after crash, reload, or uninstall"
+}
+
+^["operator_surfaces"]{
+ commands: [#restart_server, #show_health, #reopen_concepts, #reopen_atlas]
+ passive: [#status_bar_health, #leaf_empty_state, #view_badge]
+ active: [#notice_for_actionable_failure]
+}
+
+^["workspace_truth"]{
+ leaf_lifecycle: "custom views should tolerate open-before-ready and restore-after-reload"
+ restore_contract: "serialized view state must be minimal, defensive, and revalidated on open"
+ unload_posture: "treat unload as helpful but not crash-proof; the plugin must not require graceful shutdown to remain safe"
+}
+
+^["failure_drills"]{
+ drill_1: "boot with invalid LSP path"
+ drill_2: "kill the child process mid-session"
+ drill_3: "reload the plugin repeatedly during view use"
+ drill_4: "restore a workspace containing Spw leaves before LSP readiness"
+ drill_5: "rename or delete an open .spw file"
+}
+
+^["ship_bar"]{
+ must_prove: [#no_duplicate_processes, #syntax_survives_lsp_loss, #views_recover_or_explain, #commands_have_next_actions]
+ must_avoid: [#panic_copy, #opaque_failure, #stale_badges, #state_leak]
+}
+
+^["interview_handles"]{
+ claim: "operability is part of architecture"
+ example: "a custom LSP bridge is only staff-level if it comes with restart policy, stale-state posture, and user-visible health semantics"
+}
+
+#>wonder_agents_plans_obsidianspw_runtimeresilience_1
+?["What survives when the happy path disappears?"]{
+  #:depth #!computational // lens: recovery posture
+  &[#failure_taxonomy, #recovery_contract, #state_partition] => $[#graceful_degradation, #operator_surface]
+  !probe{ "check whether every hard dependency has a truthful degraded mode or an explicit next action." }
+  ~<.agents/plans/obsidian-spw/wip.spw>
+}

@@ -1,0 +1,275 @@
+# wip — obsidian-spw
+# Branch: feature/obsidian-spw
+# Started: 2026-04-05
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @plan: ~".agents/plans/obsidian-spw/PLAN.md"
+ @references: ~".agents/plans/obsidian-spw/references/index.spw"
+ @artifact: ~".agents/plans/obsidian-spw/obsidian-spw.spw"
+ @vscode: ~"extensions/vscode-spw/src/extension.ts"
+ @neovim: ~"extensions/neovim-spw/syntax/spw.vim"
+ @intellij: ~"extensions/intellij-spw/src/main/kotlin/com/spwashi/spw"
+ @seed: ~"packages/spw-seed/src/index.ts"
+ @seed_lex: ~"packages/spw-seed/src/lexer/tokenize.ts"
+ @seed_types: ~"packages/spw-seed/src/types/token.ts"
+ @lsp: ~"packages/spw-lsp/src/stdio-server.ts"
+ @protocol: ~"extensions/vscode-spw/src/lsp/custom-requests.ts"
+ @concepts: ~"extensions/vscode-spw/src/views/concepts-tree.ts"
+ @atlas: ~"extensions/vscode-spw/src/views/workspace-tree.ts"
+ @context: ~"extensions/vscode-spw/src/context.ts"
+ @strip: ~"extensions/vscode-spw/src/context-strip.ts"
+ @semantics: ~"extensions/vscode-spw/src/semantics.ts"
+ @roots_map: ~"extensions/vscode-spw/src/roots.ts"
+ @annotation_idx: ~"extensions/vscode-spw/src/annotation-index.ts"
+ @obsidian_api: ~"https://github.com/obsidianmd/obsidian-api/blob/master/obsidian.d.ts"
+ @ref_index: ~".agents/plans/obsidian-spw/references/index.spw"
+ @ref_api: ~".agents/plans/obsidian-spw/references/obsidian-api.spw"
+ @ref_targets: ~".agents/plans/obsidian-spw/references/interaction-targets.spw"
+ @ref_cm6: ~".agents/plans/obsidian-spw/references/cm6-substrate.spw"
+ @ref_lezer: ~".agents/plans/obsidian-spw/references/lezer-parser-scope.spw"
+ @ref_resilience: ~".agents/plans/obsidian-spw/references/runtime-resilience.spw"
+ @ref_validation: ~".agents/plans/obsidian-spw/references/validation-evidence.spw"
+}
+
+^["intent"]{
+ ~#goal: "Establish Obsidian as the fourth interaction target for Spw, alongside VS Code, IntelliJ, and Neovim. The plugin renders .spw syntax via a CM6 token-map adapter wrapping spw-seed's lexer, spawns the spw-lsp subprocess for editor intelligence, and surfaces Concepts + Workspace Atlas as ItemView leaf panels. Obsidian adds a dimension the other targets lack: vault-native file topology, where .spw surfaces cohabit with markdown notes in a user-owned, local-first knowledge graph. This also functions as a portfolio piece for a staff engineer application at Obsidian — demonstrating deep engagement with their plugin API, CM6 extension model, and manifesto alignment."
+ ~#taste: "layering — clean interaction-target abstraction where syntax, LSP, and views are independently useful; containment — each subsystem owns its own lifecycle and DOM; naming — operator-physics vocabulary (valence pentad, sigil semantics) carries into Obsidian's rendering; portability — spw-seed as single source of syntax truth across all four targets"
+ ~#manifesto_alignment: "yours (free plugin, open-source), durable (plain-text .spw files, no proprietary format), private (everything local, LSP subprocess on-device, no network calls), malleable (configurable LSP path, custom sigil colors, extensible views), independent (no cloud dependency, no telemetry)"
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#interaction_target, #cm6_integration, #lsp_bridge, #design_transfer, #vault_topology, #failure_ownership, #proof_culture, #parser_portability]
+ review_surfaces: [@plan, @references, @artifact, @vscode, @protocol, @ref_api, @ref_targets, @ref_cm6, @ref_lezer, @ref_resilience, @ref_validation]
+ snippet_routes: [#token_map_adapter, #stdio_bridge, #leaf_view, #code_block_renderer, #failure_drill, #demo_path, #lezer_scope]
+}
+
+^["concept_index"]{
+ primary: [#interaction_target, #obsidian_plugin, #cm6_extension]
+ surfaces: [#editor, #renderer, #views, #lsp, #settings, #status_bar, #resilience, #validation]
+ tensions: [
+  #cm6_version_coupling,     // must use Obsidian's bundled CM6, not a bundled copy
+  #token_array_vs_stream,    // spw-seed lexer produces token array, CM6 expects character stream
+  #vault_vs_filesystem,      // Vault API is vault-scoped; LSP uses file:// URIs
+  #reading_vs_editing,       // two distinct rendering pipelines in Obsidian
+  #desktop_only,             // child_process requires isDesktopOnly: true
+  #recoverability,           // custom LSP client must fail honestly and restart cleanly
+  #proof_burden,             // staff-level claims need drills, metrics, and negative controls
+  #grammar_scope_boundary,   // Lezer syntax tree scope must not silently turn into a semantic parser rewrite
+ ]
+ transfers: [
+  #protocol_types,           // SpwCustomRequestMap interfaces — portable, duplicate for now
+  #annotation_index,         // AnnotationEntry schema, byName/byFile lookup — transfers directly
+  #sigil_semantics,          // 23-sigil table with role/physics/phase — pure data, no adaptation
+  #root_map,                 // 27 sigil→path mappings — adapt to vault-relative paths
+  #context_snapshot,         // SpwCursorContextSnapshot cache logic — adapt to CM6 EditorView
+  #density_bars,             // unicode block frequency encoding — transfers directly
+  #co_occurrence,            // concept co-occurrence algorithm — transfers directly
+  #braid_triples,            // framePath/local/ambient/delta structure — transfers directly
+  #spirit_phases,            // 6-phase distribution with 6-char density bars — transfers directly
+  #failure_drills,           // restart / restore / degraded-state discipline transfers as method
+  #evidence_packet,          // screenshots + diagrams + logs transfers as interview proof method
+  #portable_parser_package,  // syntax infrastructure belongs in packages/, not inside an editor target
+ ]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread @seed_lex and @seed_types before assuming tokenizer shape",
+  "? reread @ref_api before assuming Obsidian API shape",
+  "? reread @ref_cm6 and @ref_resilience before pretending the host substrate is simple",
+  "? reread @ref_lezer before claiming a parser swap is straightforward",
+  "< ship one self-contained subsystem per commit — each independently useful",
+  "$ record which patterns transferred cleanly, which needed adaptation, which were new",
+  "^ fold transfer observations into @ref_targets abstraction",
+  "^ fold failure and proof lessons into @artifact so the branch teaches more than implementation steps",
+  "% keep spw-seed tokenizer as the single source of syntax truth — no Obsidian-specific regex",
+ ]
+ gates: [#builds_standalone, #syntax_parity, #lsp_connects, #views_render, #degraded_mode_truth, #evidence_capture]
+}
+
+^["parallel_work"]{
+ critical_path: [#token_map_adapter]
+ parallelizable: [
+  #code_block_renderer,  // independent — uses same tokenizer, different output (DOM vs CM6 decoration)
+  #leaf_views,           // independent — consume LSP data, don't touch editor
+  #settings,             // independent — configuration plumbing
+  #status_bar,           // independent — consumes contextAtPosition from LSP
+  #evidence_dossier,     // independent — architecture, failure, validation sidecars
+ ]
+ shared_hot_files: ["extensions/obsidian-spw/src/main.ts"]
+ merge_risks: [#protocol_type_extraction]
+ handoff_artifacts: [@plan, @references, @artifact, @ref_api, @ref_targets, @ref_cm6, @ref_lezer, @ref_resilience, @ref_validation]
+}
+
+^["supporting_documents"]{
+ must_ship: [@plan]
+ helpful: [@references, @artifact, @ref_api, @ref_targets, @ref_cm6, @ref_lezer, @ref_resilience, @ref_validation]
+ carries: [#obsidian_api_mapping, #cm6_bridge_architecture, #interaction_target_taxonomy, #risk_taxonomy, #validation_protocol, #staff_signals, #lezer_follow_on]
+}
+
+^["interaction_depth"]{
+ subjects: [
+  #syntax_fidelity,       // does the token-map adapter produce the same highlighting as Vim/TextMate?
+  #lsp_latency,           // subprocess spawn time, JSON-RPC round-trip in Electron renderer
+  #vault_awareness,       // .spw files as first-class vault citizens, not foreign objects
+  #reading_vs_editing,    // two code paths for the same content — consistency matters
+  #file_view_lifecycle,   // TextFileView subclass for .spw files — setViewData/getViewData/clear
+ ]
+ questions: [
+  #what_is_primary,       // the .spw file experience? or the ```spw fence experience?
+  #what_is_reversible,    // every view can be closed; LSP can be toggled; syntax is always on
+  #what_is_visible,       // status bar context, leaf views, inline decorations — layered disclosure
+ ]
+ qualities: [#clarity, #rhythm, #containment, #privacy, #durability, #malleability]
+}
+
+^["risk_model"]{
+ hard_failures: [#cm6_bundle_mismatch, #bad_server_path, #child_exit, #json_rpc_desync, #leaf_before_server_ready]
+ soft_failures: [#stale_context, #view_stall, #notice_spam, #double_registration]
+ recoveries: [#syntax_only_mode, #restart_command, #health_badge, #last_known_good_view, #defensive_restore]
+ non_negotiables: [#no_file_corruption, #no_network_fallback, #no_silent_failure, #no_orphan_process]
+}
+
+^["evidence"]{
+ hypotheses: [#single_token_truth, #recoverable_bridge, #vault_native_views, #manifesto_trace]
+ negative_controls: [#no_non_spw_editor_churn, #no_reload_residue, #syntax_without_lsp]
+ demo_path: [#direct_file_open, #markdown_fence_parity, #concepts_leaf, #atlas_leaf, #degraded_recovery]
+ artifacts: [@artifact, @references, @ref_cm6, @ref_lezer, @ref_resilience, @ref_validation]
+}
+
+^["architecture"]{
+ # --- tokenizer bridge ---
+ // spw-seed's lex() produces Token[] with {type, value, span: {start: {line, column, offset}, end}}
+ // CM6 StreamLanguage expects token(stream, state) → string|null, character-by-character per line
+ // bridge strategy: pre-tokenize → build line-indexed token map → wrap in StreamParser<State>
+ // State = { lineTokens: Token[], tokenIndex: number }
+ // token(stream, state): look up current position in lineTokens, advance stream, return token type string
+ // re-tokenize on document change (full lex is fast for single-file sizes)
+
+ #token_type_map: {
+  // spw-seed Token.type → CM6 token type string (for StreamLanguage)
+  OPERATOR: "operator",
+  MODIFIER: "operator",
+  CONNECTOR: "operator",
+  CONTAINER_OPEN: "bracket",
+  CONTAINER_CLOSE: "bracket",
+  IDENTIFIER: "variableName",
+  STRING: "string",
+  NUMBER: "number",
+  BOOLEAN: "bool",
+  REFERENCE: "variableName.special",
+  ANNOTATION: "meta",
+  WHITESPACE: "",     // null — skip
+  COMMENT: "comment",
+  EOF: "",
+  ERROR: "invalid",
+ }
+
+ # --- LSP bridge ---
+ // child_process.spawn('node', ['path/to/stdio-server.js'])
+ // JSON-RPC 2.0: { jsonrpc: "2.0", id, method, params } → { jsonrpc: "2.0", id, result }
+ // notification (no id): initialize, textDocument/didOpen, textDocument/didChange
+ // request (with id): spw/annotations, spw/contextAtPosition, spw/workspaceManifest, spw/workspaceTemperature
+ // lifecycle: spawn on plugin load → initialize handshake → didOpen for vault .spw files → request/response loop → shutdown on unload
+
+ # --- view architecture ---
+ // ItemView subclass per view (ConceptsLeafView, AtlasLeafView)
+ // registered via this.registerView(VIEW_TYPE, leaf => new View(leaf))
+ // opened via app.workspace.getRightLeaf(false).setViewState({ type, active: true })
+ // contentEl is a plain HTMLElement — build DOM with createElement, not React/Svelte
+ // data flows: LSP request → parse response → build DOM tree → mount to contentEl
+ // refresh: listen to vault events (modify, create, delete) → debounce → re-fetch → re-render
+
+ # --- file view ---
+ // TextFileView subclass for .spw extension
+ // registerExtensions(['spw'], 'spw-file-view') in onload()
+ // setViewData(data, clear): tokenize → render with syntax coloring → mount
+ // getViewData(): return raw text (no round-trip corruption)
+ // clear(): remove DOM children
+ // this gives .spw files a dedicated viewer in Obsidian — click a .spw file, it opens with syntax highlighting
+
+ # --- two rendering pipelines ---
+ // 1. editing: CM6 registerEditorExtension → StreamLanguage adapter → live syntax in editor
+ //    (only fires for .md files containing ```spw fences, since Obsidian editor is markdown-first)
+ // 2. reading: registerMarkdownCodeBlockProcessor('spw', handler) → DOM nodes with token classes
+ //    (fires in reading view / preview mode for ```spw fences)
+ // 3. file: TextFileView subclass → .spw files opened directly
+ //    (fires when user clicks a .spw file in the vault file explorer)
+ // all three share spw-seed tokenizer; differ in output format (CM6 decoration / DOM / DOM)
+}
+
+^["stream"]{
+ >>[2026-04-05 00:00] observe — four interaction targets share a common surface: TextMate/Vim syntax, LSP client, custom request lane, views. Obsidian adds a fifth dimension: vault-native file topology
+ >>[2026-04-05 00:01] observe — spw-seed has zero dependencies; bundles cleanly into any target
+ >>[2026-04-05 00:02] observe — protocol types in vscode-spw/src/lsp/custom-requests.ts are portable interfaces wrapped in a vscode-specific client class. The interfaces can be extracted or duplicated
+ >>[2026-04-05 00:03] decide — CM6 StreamLanguage wrapping spw-seed is the pragmatic path; defer Lezer grammar to a future branch
+ >>[2026-04-05 00:04] decide — isDesktopOnly: true unlocks Node child_process for LSP subprocess; acceptable since Obsidian mobile has no .spw editing use case yet
+ >>[2026-04-05 00:05] observe — Obsidian has two rendering modes: live editor (CM6) and reading view (post-processor). Plus a third: TextFileView for opening .spw files directly
+ >>[2026-04-05 00:06] taste — the interaction-target pattern itself is a transferable abstraction worth distilling
+ >>[2026-04-05 01:00] surprise — spw-seed tokenizer is token-array-based (full lex upfront), NOT character-streaming. CM6 StreamLanguage expects character-by-character token(stream, state). Need a bridge adapter: pre-tokenize → line-indexed map → position lookup. This is architecturally significant
+ >>[2026-04-05 01:01] observe — spw-seed exposes lex() → Token[] where each Token has {type, value, span: {start: {line, column, offset}, end: {line, column, offset}}}. 24 token types. The span data is sufficient for line-indexed mapping
+ >>[2026-04-05 01:02] observe — Obsidian overloads require() for @codemirror/* packages. Plugins MUST mark these as external in esbuild. Bundling a separate CM6 copy causes class identity mismatch and silent failures
+ >>[2026-04-05 01:03] observe — Obsidian's Plugin class provides: addCommand, addRibbonIcon, addStatusBarItem, addSettingTab, registerView, registerExtensions, registerMarkdownCodeBlockProcessor, registerEditorExtension, registerEvent, registerDomEvent. All auto-cleanup on unload
+ >>[2026-04-05 01:04] observe — VS Code concepts-tree.ts is 751 lines with co-occurrence graph, braid pairing, density bars, 4 grouping modes. The data model transfers; the tree node rendering needs Obsidian DOM adaptation
+ >>[2026-04-05 01:05] observe — VS Code workspace-tree.ts is 741 lines with 9 node types, live cursor tracking (300ms debounce), spirit phase distribution, memory temperature tiers. Heavy LSP dependency: workspaceManifest, workspaceTemperature, contextAtPosition
+ >>[2026-04-05 01:06] observe — annotation-index.ts maintains byName/byFile maps, rebuilds on file save (100ms debounce). Core schema: AnnotationEntry {uri, line, kind, name, sectionLabel?, framePath[]}. Transfers directly — the data shape is editor-agnostic
+ >>[2026-04-05 01:07] observe — context-strip.ts renders "Spw: framePath > facets X | field A · B" in status bar with 80ms debounce. Direct analog: Obsidian addStatusBarItem() returns HTMLElement with setText()
+ >>[2026-04-05 01:08] observe — semantics.ts is pure data: 23 sigils mapped to {role, physics, phase}. roots.ts: 27 sigil→path mappings with @here special case. Both transfer with zero adaptation
+ >>[2026-04-05 01:09] decide — three rendering pipelines, not two: CM6 (editing fences), MarkdownCodeBlockProcessor (reading fences), TextFileView (direct .spw files). All share spw-seed tokenizer
+ >>[2026-04-05 01:10] observe — Obsidian Vault API: read/cachedRead/modify/create/delete/rename/copy + getFileByPath/getAbstractFileByPath. All paths vault-relative. LSP uses file:// URIs. Bridge needs vault.adapter.getBasePath() to construct absolute paths for LSP
+ >>[2026-04-05 01:11] observe — Obsidian events: vault.on('modify'/'create'/'delete'/'rename'), workspace.on('file-open'/'active-leaf-change'/'layout-change'). registerEvent() for auto-cleanup. MetadataCache.on('changed') for metadata-aware refresh
+ >>[2026-04-05 01:12] observe — Obsidian CSS: plugin styles.css auto-loaded. CSS variables: --color-base-00 through -100, --accent-h/s/l, --font-text-size, --radius-s/m/l/xl. Valence pentad colors should use CSS custom properties layered on Obsidian's base theme
+ >>[2026-04-05 01:13] taste — the token-map bridge pattern (pre-tokenize → line-index → position lookup) is reusable infrastructure. If spw-seed ever gets a Lezer grammar, the bridge can be swapped without changing the plugin's public surface
+ >>[2026-04-05 01:14] decide — TextFileView for .spw files is the right first impression. A user with .spw files in their vault should be able to click one and see it rendered with full syntax coloring. This is the "durable" manifesto principle in action — the file format is future-proof and the tool adapts to it
+ >>[2026-04-05 01:15] observe — the staff-level delta is no longer feature count; it is ownership of failure, restore, and proof surfaces. The branch needs explicit sidecars for CM6 substrate, runtime resilience, and validation evidence
+ >>[2026-04-05 01:16] decide — create a distilled artifact (@artifact) rather than leaving all architectural truth trapped in PLAN.md and wip.spw. The branch introduces a real abstraction: vault-native interaction target
+ >>[2026-04-05 01:17] observe — EditorSuggest and CM6 autocomplete are different planes. Future authoring assists may use both, but syntax and semantic rendering should not be routed through trigger-based suggestion APIs
+ >>[2026-04-05 01:18] observe — a custom LSP bridge is only credible if the plan names restart policy, stale-state posture, workspace restore behavior, and user-visible health semantics before implementation
+ >>[2026-04-05 01:19] decide — collect an evidence packet, not just build output: diagrams, timings, screenshots, failure drills, and manifesto traceability. This is application material as much as implementation guidance
+ >>[2026-04-05 01:20] decide — scope Lezer as a separate portable parser package, not as code that lives inside obsidian-spw. The parser belongs to the language layer; the extension should consume it
+ >>[2026-04-05 01:21] observe — the current seed parser's prose fallback, context-sensitive path sugar, and commit-style branches (?match, @_label) are the main reasons a direct seed→Lezer translation would sprawl or conflict
+ >>[2026-04-05 01:22] decide — the first honest Lezer target is the strict symbolic Spw core for syntax trees, highlighting, and incremental reparsing. Replacing spw-seed semantics is a later equivalence project
+}
+
+^["open"]{
+ ?[vault_uri]: "partially resolved — Vault API uses vault-relative paths; LSP uses file:// URIs. Bridge via vault.adapter.getBasePath() + path.join for absolute paths. Need to verify adapter.getBasePath() is stable API"
+ ?[cm6_fence_scope]: "Does registerEditorExtension apply to .spw fences inside .md files? Or only to files whose language mode is set? Need to verify CM6 language scoping in Obsidian's markdown editor"
+ ?[textfileview_editing]: "TextFileView gives read-only rendering. For editable .spw files, need EditableFileView — does Obsidian expose this? Or use a CM6 EditorView embedded in an ItemView?"
+ ?[workspace_restore]: "What minimum state should custom leaves persist via getState()/setState() so restore stays helpful but never stale-authoritative?"
+ ?[completion_layer]: "If Spw completions ship later, which belong to EditorSuggest and which belong to CM6/LSP completion so authoring aids stay distinct from language semantics?"
+ ?[lezer_boundary]: "Should the first Lezer grammar intentionally exclude prose fallback and some path sugar so the parser stays structurally honest?"
+ ?[lezer_markdown_activation]: "Even with a working Lezer package, what exact Obsidian/CM6 hook activates it for fenced `spw` blocks inside markdown editing?"
+}
+
+^["commits"]{
+ ~[1]: "#[obsidian-spw] — scaffold plugin: manifest.json, package.json, tsconfig, esbuild config, empty main.ts, styles.css"
+ ~[2]: "^seed[obsidian-spw] — token-map adapter: spw-seed lex → line-indexed token map → CM6 StreamParser bridge"
+ ~[3]: "&[obsidian-spw] — TextFileView for .spw files: registerExtensions, tokenize-and-render, vault file association"
+ ~[4]: "&[obsidian-spw] — markdown code block renderer for ```spw fences in reading view"
+ ~[5]: "&[obsidian-spw] — LSP subprocess manager: spawn spw-lsp, JSON-RPC 2.0 stdio bridge, lifecycle management"
+ ~[6]: "&[obsidian-spw] — Concepts leaf view: annotation index, grouping, density bars, co-occurrence"
+ ~[7]: "&[obsidian-spw] — Workspace Atlas leaf view: vault-native topology, memory tiers, spirit phases"
+ ~[8]: "&[obsidian-spw] — context-strip status bar: frame path, braids, debounced cursor tracking"
+ ~[9]: "&[obsidian-spw] — settings tab: LSP server path, valence colors, view toggles"
+ ~[10]: ".[obsidian-spw] — workspace entry, CSS custom properties for valence palette, README"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@37b6f42b"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "extensions/obsidian-spw/src/main.ts, extensions/obsidian-spw/src/editor/token-map.ts, .agents/plans/obsidian-spw/obsidian-spw.spw"
+ ~#next_commit: "1"
+ ~#open_count: "7"
+ ~#last_stream: "2026-04-05 01:22"
+ ~#taste_debt: "protocol type duplication vs extraction — decide before commit 5; concepts-tree.ts is 751 lines in vscode — Obsidian version must decompose differently; keep the planning dossier deep without letting implementation files inherit that sprawl; keep Lezer scoped as syntax infrastructure rather than letting it absorb seed semantics by accident"
+}
+
+^["done"]{
+ # Written at merge time.
+}

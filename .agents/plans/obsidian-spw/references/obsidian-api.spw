@@ -1,0 +1,246 @@
+# Obsidian Plugin API — surface map for obsidian-spw
+# Source: obsidian.d.ts @ github.com/obsidianmd/obsidian-api
+
+#:layer #!reference
+@region:obsidian_api
+
+# --- Plugin lifecycle ---
+
+^["plugin_lifecycle"]{
+ // Plugin extends Component. onload() is the entry point.
+ // All register* methods auto-deregister on unload().
+
+ !surface{
+  onload: "entry point — register everything here",
+  onunload: "cleanup — detach leaves, kill subprocesses",
+  addCommand: "(cmd: Command) => Command — palette commands with id, name, callback, optional hotkeys",
+  addRibbonIcon: "(icon, title, cb) => HTMLElement — left sidebar icon",
+  addStatusBarItem: "() => HTMLElement — bottom bar, supports setText() and arbitrary DOM",
+  addSettingTab: "(tab: PluginSettingTab) => void — settings UI",
+  registerView: "(type: string, creator: (leaf) => View) => void — custom panels",
+  registerExtensions: "(exts: string[], viewType: string) => void — map file extensions to view types",
+  registerMarkdownCodeBlockProcessor: "(lang, handler, sortOrder?) => void — fenced code block renderer",
+  registerMarkdownPostProcessor: "(handler, sortOrder?) => void — all rendered elements",
+  registerEditorExtension: "(ext: Extension) => void — CM6 extension injection",
+  registerEvent: "(ref: EventRef) => void — auto-cleanup event subscription",
+  registerDomEvent: "(el, event, cb) => void — auto-cleanup DOM listener",
+  registerInterval: "(id: number) => number — auto-cleanup setInterval",
+  loadData: "() => Promise<any> — read data.json",
+  saveData: "(data: any) => Promise<void> — write data.json",
+ }
+}
+
+# --- CodeMirror 6 integration ---
+
+^["cm6"]{
+ // Obsidian IS CodeMirror 6. The editor is a CM6 EditorView.
+ // Obsidian overloads require() for @codemirror/* packages.
+ // Plugins MUST mark @codemirror/* as external in their bundler.
+ // Bundling a separate CM6 copy causes class identity mismatch — silent failures.
+
+ !available_packages{
+  "@codemirror/state": [Extension, StateField, StateEffect, Transaction, EditorState],
+  "@codemirror/view": [EditorView, ViewPlugin, ViewUpdate, Decoration, DecorationSet, WidgetType],
+  "@codemirror/language": [StreamLanguage, LanguageSupport, syntaxHighlighting, HighlightStyle],
+ }
+
+ !registration_pattern{
+  // in onload():
+  // this.registerEditorExtension(myExtension)
+  // accepts Extension | Extension[]
+  // extension is literally a CM6 Extension — ViewPlugin, StateField, etc.
+ }
+
+ !stream_language_contract{
+  // StreamLanguage.define<State>({ startState, token, blankLine?, copyState?, indent?, ... })
+  // token(stream: StringStream, state: State) => string | null
+  // stream.next() advances one character, returns it
+  // stream.match(pattern) tests and optionally advances
+  // stream.pos, stream.start — current positions
+  // return value is token type string or null for whitespace
+  // state is per-line, carried forward — must be copyable
+ }
+
+ ?[scope_in_markdown]: "Does registerEditorExtension fire for ```spw fences inside .md files? CM6 language nesting is complex — Obsidian may or may not scope extensions to fenced blocks. Needs empirical testing."
+}
+
+# --- Views ---
+
+^["views"]{
+ // View hierarchy: View → ItemView → FileView → EditableFileView → TextFileView → MarkdownView
+
+ !item_view_contract{
+  // extends ItemView
+  getViewType: "() => string — unique view type identifier",
+  getDisplayText: "() => string — tab/leaf title",
+  getIcon: "() => string — icon name from Lucide icon set",
+  onOpen: "() => Promise<void> — build DOM, called when leaf opens",
+  onClose: "() => Promise<void> — cleanup, called when leaf closes",
+  // this.containerEl — outer container
+  // this.contentEl — inner content area (build DOM here)
+  // this.addAction(icon, title, cb) — header action buttons
+ }
+
+ !text_file_view_contract{
+  // extends TextFileView — for custom file type rendering
+  // paired with registerExtensions(['spw'], 'spw-file-view')
+  setViewData: "(data: string, clear: boolean) => void — called when file opens; data is raw file content",
+  getViewData: "() => string — called when file saves; return raw text, no corruption",
+  clear: "() => void — reset view state, remove DOM children",
+  // this.data — the raw file content string
+  // this.requestSave() — trigger save
+ }
+
+ !leaf_management{
+  // open a view:
+  // const leaf = this.app.workspace.getRightLeaf(false)
+  // await leaf.setViewState({ type: VIEW_TYPE, active: true })
+  //
+  // cleanup in onunload():
+  // this.app.workspace.detachLeavesOfType(VIEW_TYPE)
+ }
+}
+
+# --- Vault API ---
+
+^["vault"]{
+ // Vault API operates on vault-relative paths. No access outside vault.
+ // TFile = file, TFolder = folder, TAbstractFile = either
+
+ !read_surface{
+  read: "(file: TFile) => Promise<string> — full file content",
+  cachedRead: "(file: TFile) => Promise<string> — faster, may be stale",
+  getFileByPath: "(path: string) => TFile | null — vault-relative lookup",
+  getFolderByPath: "(path: string) => TFolder | null",
+  getAbstractFileByPath: "(path: string) => TAbstractFile | null",
+  getName: "() => string — vault name",
+ }
+
+ !write_surface{
+  create: "(path: string, data: string) => Promise<TFile>",
+  createFolder: "(path: string) => Promise<TFolder>",
+  modify: "(file: TFile, data: string) => Promise<void>",
+  delete: "(file: TAbstractFile, force?: boolean) => Promise<void>",
+  trash: "(file: TAbstractFile, system: boolean) => Promise<void>",
+  rename: "(file: TAbstractFile, newPath: string) => Promise<void>",
+  copy: "(file: TFile, newPath: string) => Promise<TFile>",
+ }
+
+ !path_bridge{
+  // Vault paths are vault-relative: "folder/note.md"
+  // LSP uses file:// URIs: "file:///Users/x/vault/folder/note.md"
+  // Bridge: vault.adapter.getBasePath() → absolute vault root path
+  // Construct: `file://${path.join(basePath, vaultRelativePath)}`
+  // Inverse: strip basePath prefix from absolute path → vault-relative
+ }
+}
+
+# --- Events ---
+
+^["events"]{
+ !vault_events{
+  create: "(file: TAbstractFile) => void",
+  modify: "(file: TAbstractFile) => void",
+  delete: "(file: TAbstractFile) => void",
+  rename: "(file: TAbstractFile, oldPath: string) => void",
+ }
+
+ !workspace_events{
+  "file-open": "(file: TFile | null) => void",
+  "active-leaf-change": "(leaf: WorkspaceLeaf | null) => void",
+  "layout-change": "() => void",
+  "quit": "() => void",
+ }
+
+ !metadata_events{
+  changed: "(file: TFile, data: string, cache: CachedMetadata) => void",
+  resolved: "() => void — all metadata caches resolved after startup",
+ }
+
+ // registration: this.registerEvent(this.app.vault.on('modify', cb))
+ // auto-cleanup on plugin unload
+}
+
+# --- Node.js / Electron access ---
+
+^["node_access"]{
+ // Desktop only. manifest.json must set "isDesktopOnly": true
+ // require('child_process') — available in Electron renderer process
+ // require('fs'), require('path'), require('os') — available
+ // require('electron') — for shell.openExternal, dialog, etc.
+
+ !child_process_for_lsp{
+  // const { spawn } = require('child_process')
+  // const proc = spawn('node', [serverPath], { stdio: ['pipe', 'pipe', 'pipe'] })
+  // proc.stdin — write JSON-RPC requests
+  // proc.stdout — read JSON-RPC responses
+  // proc.stderr — diagnostic output
+  // proc.on('exit', code => { /* restart or notify */ })
+  // proc.kill() in onunload()
+ }
+}
+
+# --- Settings ---
+
+^["settings"]{
+ // extend PluginSettingTab, implement display()
+ // Setting class provides chainable builders
+
+ !setting_builders{
+  addText: "(cb: (text: TextComponent) => void) — text input",
+  addToggle: "(cb: (toggle: ToggleComponent) => void) — boolean switch",
+  addSlider: "(cb: (slider: SliderComponent) => void) — numeric range",
+  addDropdown: "(cb: (dropdown: DropdownComponent) => void) — select menu",
+  addTextArea: "(cb: (area: TextAreaComponent) => void) — multiline input",
+  addColorPicker: "(cb: (picker: ColorComponent) => void) — color chooser",
+  addExtraButton: "(cb: (button: ExtraButtonComponent) => void) — icon button",
+ }
+
+ // persistence: this.loadData() / this.saveData(this.settings)
+ // stored in .obsidian/plugins/<plugin-id>/data.json
+ // external change detection: onExternalSettingsChange() (v1.7.2+)
+}
+
+# --- CSS theming ---
+
+^["css"]{
+ // Plugin styles.css is auto-loaded when plugin is enabled.
+ // Use Obsidian CSS variables for theme compatibility.
+
+ !foundation_vars{
+  "--color-base-00": "darkest background",
+  "--color-base-05..100": "gradient light → dark (or dark → light)",
+  "--accent-h": "accent hue (0-360)",
+  "--accent-s": "accent saturation (%)",
+  "--accent-l": "accent lightness (%)",
+  "--font-text-size": "base text size",
+  "--radius-s": "small border radius",
+  "--radius-m": "medium border radius",
+ }
+
+ !valence_strategy{
+  // Define --spw-boon, --spw-bane, --spw-bone, --spw-bonk, --spw-honk
+  // as CSS custom properties in styles.css
+  // Use Obsidian's --color-base-* for container dims
+  // Override in .theme-dark / .theme-light for theme compat
+ }
+}
+
+# --- manifest.json ---
+
+^["manifest"]{
+ !required_fields{
+  id: "obsidian-spw",
+  name: "Spw Language Support",
+  author: "spwashi",
+  version: "0.1.0",
+  minAppVersion: "1.5.0",
+  description: "Syntax highlighting, LSP integration, and concept views for the Spw language",
+  isDesktopOnly: true,
+ }
+
+ !optional_fields{
+  authorUrl: "https://github.com/spwashi",
+  fundingUrl: "",
+ }
+}

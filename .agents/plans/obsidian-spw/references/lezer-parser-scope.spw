@@ -1,0 +1,154 @@
+# Lezer Parser Scope — obsidian-spw
+
+#:layer #!reference
+@region:lezer_parser_scope
+
+^["thesis"]{
+ ~#claim: "A Lezer parser for Spw should be scoped as portable syntax infrastructure, not as an Obsidian-only optimization."
+ ~#constraint: "phase one should deliver an incremental syntax tree for editor use without trying to replace the full semantic and prose-fallback behavior of spw-seed"
+}
+
+^["placement"]{
+ preferred_home: "packages/spw-lezer/"
+ why_not_extension_local: [
+  #syntax_should_transfer,
+  #obsidian_should_consume_not_own,
+  #future_vscode_reuse,
+  #clear_boundary_between_host_and_language,
+ ]
+ package_exports: [#language_support, #parser, #highlight_support, #terms]
+}
+
+^["phase_split"]{
+ phase_0_probe: [
+  #inventory_seed_grammar,
+  #inventory_token_taxonomy,
+  #identify_conflict_hotspots,
+  #decide_strict_vs_prose_boundary,
+ ]
+ phase_1_core_grammar: [
+  #operators,
+  #modifier_chain,
+  #references,
+  #annotations,
+  #containers,
+  #match_forms,
+  #bullets,
+  #bindings_and_connectors,
+ ]
+ phase_2_editor_surface: [
+  #lr_language_wrapper,
+  #highlight_tags,
+  #folding,
+  #indentation,
+  #node_props,
+ ]
+ phase_3_host_integration: [
+  #obsidian_editor_wiring,
+  #direct_spw_file_use,
+  #markdown_fence_activation,
+ ]
+ phase_4_equivalence: [
+  #seed_vs_lezer_corpus_diff,
+  #ast_bridge_if_warranted,
+  #query_surface_alignment,
+ ]
+}
+
+^["non_goals"]{
+ not_phase_one: [
+  #replace_spw_seed,
+  #rewrite_lsp_parser_stack,
+  #support_every_prose_edge_case,
+  #hide_markdown_integration_risk,
+ ]
+}
+
+^["grammar_pressure_points"]{
+ prose_fallback: "seedNode falls back from sequence parsing into prose parsing; this is valuable for seed, but dangerous as a first Lezer target because it mixes arbitrary text with syntax triggers"
+ context_modes: "low/high context path sugar currently shapes what `~` plus bare path means; Lezer phase one should prefer explicit quoted path forms and defer the full sugar story"
+ commit_checks: "special commits like `?match` and `@_label` are implemented procedurally today; in Lezer they need explicit productions, precedence, or tokenizer separation"
+ overlapping_sigils: "operators, connectors, stream markers, capsules, n-ranges, and comparison tokens overlap lexically; the grammar likely needs external tokenizers or careful token precedence"
+ inline_payload: "line-scoped payload behavior for `#` and `?` is partly syntactic, partly line-structured; this may need to be simplified or isolated in phase one"
+}
+
+^["recommended_structure"]{
+ files: [
+  "packages/spw-lezer/package.json",
+  "packages/spw-lezer/tsconfig.json",
+  "packages/spw-lezer/src/spw.grammar",
+  "packages/spw-lezer/src/external-tokens.ts",
+  "packages/spw-lezer/src/highlight.ts",
+  "packages/spw-lezer/src/language.ts",
+  "packages/spw-lezer/src/index.ts",
+  "packages/spw-lezer/test/corpus/*.txt",
+ ]
+ generated: [
+  "packages/spw-lezer/src/parser.terms.ts",
+  "packages/spw-lezer/src/parser.ts",
+ ]
+ integration: [
+  "extensions/obsidian-spw/src/editor/spw-language.ts",
+  "extensions/obsidian-spw/src/main.ts",
+ ]
+}
+
+^["implementation_decisions"]{
+ decision_1: "Lezer should own syntax tree structure; spw-seed keeps owning semantic AST and LSP semantics in the first pass"
+ decision_2: "build a strict symbolic grammar first, then decide whether prose becomes a second grammar, mixed grammar, or fallback surface"
+ decision_3: "treat external tokenizers as normal engineering here, not as failure; the token set is multi-character and overlap-heavy"
+ decision_4: "corpus tests matter more than unit tests for the first parser pass"
+ decision_5: "syntax highlighting should come from node types and highlight tags, not a second handwritten regex layer"
+}
+
+^["commit_shape"]{
+ ~[1]: "#[spw-lezer] — scaffold package and build pipeline for Lezer grammar generation"
+ ~[2]: "^seed[spw-lezer] — encode core tokenization and strict symbolic grammar"
+ ~[3]: "&[spw-lezer] — add LRLanguage wrapper, highlight tags, and corpus fixtures"
+ ~[4]: "![spw-lezer] — compare corpus coverage and structural output against seed expectations"
+ ~[5]: "&[obsidian-spw] — wire Lezer language support into the extension behind a feature switch or branch-local replacement"
+ ~[6]: ".[spw-lezer] — document grammar boundary, deferred prose features, and migration posture"
+}
+
+^["validation"]{
+ corpus_checks: [
+  #all_operator_sigils_parse,
+  #container_pairs_parse,
+  #references_and_path_refs_parse,
+  #match_forms_parse,
+  #annotations_and_bullets_parse,
+ ]
+ negative_controls: [
+  #no_parallel_regex_grammar,
+  #no_hidden_seed_replacement,
+  #no_markdown_activation_claim_without_proof,
+ ]
+ performance_questions: [
+  #incremental_reparse_cost,
+  #tree_stability_on_small_edits,
+  #node_granularity_for_highlighting,
+ ]
+}
+
+^["risks"]{
+ high: [#prose_ambiguity, #markdown_fence_activation, #context_sensitive_path_sugar]
+ medium: [#external_tokenizer_complexity, #tree_to_ast_bridge_pressure, #package_build_friction]
+ low: [#highlight_tag_mapping, #workspace_wiring]
+}
+
+^["interview_handles"]{
+ question_1: "Why not replace spw-seed outright?"
+ answer_1: "Because that couples editor-structure work to semantic equivalence and LSP risk. The staff move is to narrow the first parser's job and preserve a clean migration seam."
+ question_2: "Why a new package?"
+ answer_2: "Because syntax infrastructure is a language concern, not an Obsidian concern. Obsidian should consume the parser, not become the home of it."
+ question_3: "What is the biggest technical risk?"
+ answer_3: "Not Lezer itself. The real risks are prose fallback, context-sensitive sugar, and host-specific fenced-code activation being mistaken for grammar problems."
+}
+
+#>wonder_agents_plans_obsidianspw_lezerparserscope_1
+?["What is the smallest honest Lezer parser that still changes the extension architecture?"]{
+  #:depth #!computational // lens: scope discipline
+  &[#phase_1_core_grammar, #phase_2_editor_surface, #non_goals] => $[#strict_symbolic_core, #incremental_tree, #portable_package]
+  !probe{ "exclude prose fallback replacement, LSP migration, and markdown host magic from the first claim." }
+  ~<.agents/plans/obsidian-spw/PLAN.md>
+}
