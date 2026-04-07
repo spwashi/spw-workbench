@@ -93,7 +93,9 @@
  component: .{op:"*", plans:["audit-css-tokens", "audit-data-attributes", "audit-ui-data-models", "vscode-authoring-probe-loop", "vscode-register-explorer"], asks:[#state, #style, #operator_widget, #register], into:"."}
  page: .{op:".", plans:["curriculum-html-css-mastery", "curriculum-html-svg-mastery", "ecosystem-surface-governance", "symmetry-explorer-instrument"], asks:[#navigation, #layout, #atmosphere, #exhibit], into:"!"}
  service: .{op:"!", plans:["spw-site-install", "runtime-dx-foundation", "lsp-lore-upstream-bridge", "v030-release-prep"], asks:[#install, #diagnostics, #governance, #preview], into:"?"}
+ bridge: .{op:"@", plans:["obsidian-spw", "intellij-lsp4ij", "neovim-spw-surfaces", "lsp-custom-request-completions"], asks:[#substrate, #transfer, #protocol, #failure_locality], into:"!"}
  ~#cycle: "? -> * -> . -> ! -> ?"
+ ~#cross: "@ bridge plans straddle ! and ~ — they execute a port but learn the target substrate"
  ~#principal: "^ keeps the ladder permeable — local learning should rise into durable design judgment"
 }
 
@@ -167,9 +169,11 @@
  '!': {
   absorb_spwq_cli: .{learn:[#truth, #query, #naming], discuss:[#compat, #verbs], probe:[#selector_success, #corpus]}
   audit_fuzz_truthfulness: .{learn:[#truth, #dx, #governance], discuss:[#launch, #ownership], probe:[#coherence, #readability]}
+  commit_gate_redesign: .{learn:[#dx, #governance, #truth], discuss:[#ownership, #launch], probe:[#failure_locality, #coherence]}
   ecosystem_surface_governance: .{learn:[#governance, #page, #service], discuss:[#launch, #surface_fit], probe:[#coherence, #interest]}
   intellij_plugin_integration: .{learn:[#dx, #editor_scope], discuss:[#surface_fit, #ownership], probe:[#fallback, #latency]}
   lsp_lore_upstream_bridge: .{learn:[#dx, #service, #ownership], discuss:[#compat, #surface_fit], probe:[#fallback, #failure_locality]}
+  lsp_custom_request_completions: .{learn:[#service, #query, #telemetry], discuss:[#surface_fit, #phase_vocab], probe:[#truth, #latency]}
   register_phase_evolution: .{learn:[#linguistics, #query, #naming], discuss:[#phase_vocab, #verbs], probe:[#truth, #coherence]}
   runtime_axis_traceability: .{learn:[#linguistics, #telemetry, #theory], discuss:[#ownership, #surface_fit], probe:[#readability, #coherence]}
   runtime_dx_foundation: .{learn:[#dx, #service, #telemetry], discuss:[#launch, #surface_fit], probe:[#latency, #failure_locality]}
@@ -177,6 +181,7 @@
   spw_site_install: .{learn:[#service, #governance, #dx], discuss:[#ownership, #launch], probe:[#failure_locality, #interest]}
   v030_release_prep: .{learn:[#service, #governance, #truth], discuss:[#launch, #surface_fit], probe:[#readability, #interest]}
   vscode_lsp_integration: .{learn:[#dx, #editor_scope, #query], discuss:[#surface_fit, #ownership], probe:[#truth, #latency]}
+  vscode_plugin_performance: .{learn:[#dx, #latency, #service], discuss:[#launch, #surface_fit], probe:[#latency, #truth]}
  }
  '?': {
   image_prompt_split: .{learn:[#prompt, #linguistics, #taste], discuss:[#surface_fit, #interaction], probe:[#readability, #interest]}
@@ -195,7 +200,12 @@
  }
  '@': {
   command_experience_tools: .{learn:[#interaction, #component, #state], discuss:[#editor_scope, #surface_fit], probe:[#interest, #transfer]}
+  intellij_lsp4ij: .{learn:[#dx, #editor_scope, #service], discuss:[#surface_fit, #compat], probe:[#fallback, #transfer]}
+  neovim_spw_surfaces: .{learn:[#editor_scope, #interaction, #dx], discuss:[#surface_fit, #atmosphere], probe:[#transfer, #latency]}
+  obsidian_spw: .{learn:[#editor_scope, #interaction, #service, #failure_locality], discuss:[#surface_fit, #atmosphere, #ownership], probe:[#transfer, #latency, #interest, #fallback]}
   vscode_authoring_probe_loop: .{learn:[#editor_scope, #interaction, #linguistics], discuss:[#atmosphere, #phase_vocab], probe:[#latency, #interest]}
+  vscode_cognitive_surface: .{learn:[#editor_scope, #interaction, #taste], discuss:[#surface_fit, #atmosphere], probe:[#interest, #transfer]}
+  vscode_editor_contract: .{learn:[#editor_scope, #ownership, #linguistics], discuss:[#surface_fit, #ownership], probe:[#truth, #coherence]}
   vscode_register_explorer: .{learn:[#editor_scope, #state, #telemetry], discuss:[#interaction, #phase_vocab], probe:[#latency, #transfer]}
   vscode_workspace_atlas: .{learn:[#editor_scope, #page, #layout], discuss:[#interaction, #surface_fit], probe:[#transfer, #interest]}
  }
@@ -204,6 +214,38 @@
   refactor_import_sprawl: .{learn:[#service, #ownership, #layout], discuss:[#ownership, #surface_fit], probe:[#coherence, #transfer]}
   skills_instrumentation_utility: .{learn:[#service, #dx, #ownership], discuss:[#compat, #verbs], probe:[#truth, #coherence]}
  }
+}
+
+^"interaction_target_cluster"{
+ // Plans that share the "interaction target" abstraction — editor integrations that
+ // transfer syntax, LSP, custom requests, and views across host substrates.
+ // These plans should converge on shared vocabulary even though they ship independently.
+ targets: {
+  vscode: .{plans:["vscode-workspace-atlas", "vscode-register-explorer", "vscode-authoring-probe-loop", "vscode-plugin-performance", "vscode-editor-contract", "vscode-cognitive-surface"], contract:~"extensions/vscode-spw/src/context.ts"}
+  intellij: .{plans:["intellij-lsp4ij", "intellij-plugin-integration"], contract:~"extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwLanguage.kt"}
+  neovim: .{plans:["neovim-spw-surfaces"], contract:~"extensions/neovim-spw/syntax/spw.vim"}
+  obsidian: .{plans:["obsidian-spw"], contract:~".agents/plans/obsidian-spw/references/interaction-targets.spw"}
+ }
+ shared_truth: [#sigil_semantics, #annotation_taxonomy, #custom_request_protocol, #root_map, #spirit_phases]
+ adapts_per_target: [#syntax_mechanism, #lsp_client, #view_rendering, #file_watcher, #path_resolution]
+ novel_per_target: {
+  vscode: [#interaction_contract, #webview_panels, #multi_root_workspaces]
+  intellij: [#psi_tree, #lsp4ij_migration, #tool_windows]
+  neovim: [#buffer_keymaps, #quickfix_list, #treesitter_path]
+  obsidian: [#vault_topology, #three_render_pipelines, #custom_lsp_client, #markdown_co_presence]
+ }
+}
+
+^"ecology_temperature"{
+ // Which plans are active, which are warm, which are cold.
+ // Derived from cache status and last stream timestamps.
+ // Useful for prioritization and staleness detection.
+ hot: ["commit-gate-redesign", "audit-fuzz-truthfulness", "obsidian-spw"]
+ warm: ["spw-site-install", "skills-instrumentation-utility", "lsp-lore-upstream-bridge", "lib-arch-spw-theory", "prompt-surface-align", "absorb-spwq-cli"]
+ cold: ["symmetry-explorer-instrument", "image-prompt-split", "brand-core-ids", "command-experience-tools", "refactor-import-sprawl"]
+ closed: ["v030-release-prep"]
+ // Review: plans in cold that declare dependencies on warm/hot plans may be ready to activate.
+ // Plans in warm that haven't streamed in >14 days may be cooling.
 }
 
 #>wonder_agents_plans_planecologyclustering_artifact_1

@@ -15,8 +15,8 @@
 #
 # Each section maps to a memory region:
 #
-# working set ^["roots"] ^["intent"] ^["development"] ^["concept_index"] ^["recursive_improvement"] ^["parallel_work"] ^["supporting_documents"] ^["interaction_depth"] ^["open"] ^["commits"]
-# Hot. Actively consulted. Mutable.
+# working set ^["roots"] ^["intent"] ^["development"] ^["concept_index"] ^["recursive_improvement"] ^["parallel_work"] ^["supporting_documents"] ^["interaction_depth"] ^["risk_model"] ^["validation"] ^["open"] ^["commits"]
+# Hot. Actively consulted. Mutable. Risk and validation frames are optional.
 #
 # stream ^["stream"]
 # Append-only log. Warm. Grows monotonically.
@@ -129,6 +129,35 @@
 # qualities: [#clarity, #containment, #rhythm, ...]
 #
 # This frame is especially useful for editor, UI, CLI, and support surfaces, but can also sharpen language-design work.
+
+# ──────────────────────────────────────────────
+# RISK MODEL (optional)
+# ──────────────────────────────────────────────
+#
+# ^["risk_model"] names failure modes before implementation encounters them.
+#
+# Standard keys:
+# hard_failures: []     — prevents the feature from working
+# soft_failures: []     — degraded states that need graceful handling
+# recoveries: []        — what the system does in response
+# non_negotiables: []   — invariants that must hold regardless
+#
+# This frame is optional but encouraged. Plans that own their failure surface
+# before implementation tend to produce better recovery behavior.
+
+# ──────────────────────────────────────────────
+# VALIDATION (optional)
+# ──────────────────────────────────────────────
+#
+# ^["validation"] names what the branch must prove, not just what it must build.
+#
+# Standard keys:
+# hypotheses: []        — claims that need empirical verification
+# negative_controls: [] — things that must remain unchanged
+# demo_path: []         — sequence exercising the feature end-to-end
+#
+# This frame is especially useful for plans that affect multiple subsystems
+# or that make non-obvious correctness claims.
 
 # ──────────────────────────────────────────────
 # STREAM SYNTAX

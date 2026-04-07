@@ -195,19 +195,6 @@ The plugin needs an evidence plan, not just a feature list.
 - Plugin disable/unload should leave no duplicate view or process residue.
 - LSP unavailability should not break syntax or file opening.
 
-This is the material that makes the work discussable in a staff interview.
-
-## Staff Signals
-
-The branch should stand out on five axes:
-
-- **Substrate awareness**: the design treats vault, markdown, and `.spw` files as one system.
-- **Boundary ownership**: the plan explicitly owns protocol, process, and lifecycle seams instead of assuming the host will save it.
-- **Graceful degradation**: syntax-first fallback, explicit health surfaces, and reversible decisions.
-- **Transfer discipline**: portable semantics and request types move across targets while target-specific surfaces stay honest.
-- **Parser discipline**: Lezer is scoped as portable syntax infrastructure rather than an Obsidian-local experiment.
-- **Proof culture**: claims are paired with drills, controls, and evidence surfaces.
-
 ## Commits
 
 1. `#[obsidian-spw]` — scaffold plugin, build config, styles, and entry point
@@ -265,7 +252,7 @@ The artifact carries the branch thesis. The sidecars carry the contracts, risks,
 ## Open Questions
 
 - Does `registerEditorExtension()` alone reach the exact fence-scoped editing surface needed for `spw` inside markdown, or does the plugin need markdown language injection work beyond that registration?
-- Is `TextFileView` sufficient for the first iteration, or does staff-level quality require an editable dedicated `.spw` view from day one?
+- Is `TextFileView` sufficient for the first iteration, or does a usable `.spw` experience require an editable view from day one?
 - Is `vault.adapter.getBasePath()` a stable enough bridge for URI construction, or should the plugin isolate that dependency behind its own path service immediately?
 - Which suggestion layer belongs to future Spw authoring in Obsidian: `EditorSuggest`, CM6 autocomplete, or both with sharply separated roles?
 - Where should Lezer stop in phase one: strict symbolic Spw only, or the full prose-fallback dialect currently accepted by `spw-seed`?

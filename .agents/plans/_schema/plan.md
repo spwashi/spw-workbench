@@ -106,6 +106,30 @@ Write `none` if standalone.
 
 ---
 
+### `## Failure Modes` *(optional but encouraged)*
+
+Name what can go wrong. Plans that own their failure surface before implementation
+tend to produce better recovery behavior. Three classes:
+
+- **Hard**: prevents the feature from working at all
+- **Soft**: degraded states the system should handle without user intervention
+- **Non-negotiable**: invariants that must hold regardless (no data loss, no silent failure, etc.)
+
+Even a short section is valuable. Skip only for trivially-scoped plans.
+
+---
+
+### `## Validation` *(optional)*
+
+What must the plan prove before it ships? Useful for plans with non-obvious
+correctness criteria or plans that affect multiple subsystems.
+
+- **Hypotheses**: claims that need empirical verification
+- **Negative controls**: things that must remain unchanged as a side effect
+- **Demo sequence**: the path that exercises the feature end-to-end
+
+---
+
 ### `## Spw Artifact` *(optional)*
 
 If this work warrants a distilled `.spw` commentary (novel abstraction, design

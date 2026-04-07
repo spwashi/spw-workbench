@@ -38,6 +38,22 @@ Craft guard:
 
 none
 
+## Failure Modes
+
+(optional — remove this section for trivially-scoped plans)
+
+- Hard: (none identified yet)
+- Soft: (none identified yet)
+- Non-negotiable: (none identified yet)
+
+## Validation
+
+(optional — remove this section if correctness criteria are obvious)
+
+- Hypotheses: (none yet)
+- Negative controls: (none yet)
+- Demo sequence: (none yet)
+
 ## Spw Artifact
 
 None beyond `wip.spw` yet; create `.agents/plans/<slug>/<slug>.spw` only if the branch earns a distilled artifact.
