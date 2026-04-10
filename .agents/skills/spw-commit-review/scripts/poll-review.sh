@@ -160,7 +160,9 @@ run_syntax_review() {
   [[ "$#" -gt 0 ]] || return 0
 
   local output
-  if ! output="$(node --import tsx ".agents/skills/spw-commit-review/scripts/spw-syntax-review.ts" --scope="$review_scope" --format=text -- "$@" 2>&1)"; then
+  local syntax_loader="${SPW_TOOL_ROOT_OVERRIDE}/node_modules/tsx/dist/loader.mjs"
+  local syntax_entry="${SPW_TOOL_ROOT_OVERRIDE}/.agents/skills/spw-commit-review/scripts/spw-syntax-review.ts"
+  if ! output="$(node --import "$syntax_loader" "$syntax_entry" --scope="$review_scope" --format=text -- "$@" 2>&1)"; then
     spw_bonk "syntax review failed"
     printf '%s\n' "$output"
     return 1
