@@ -6,7 +6,7 @@ Make the mounted-workbench contract portable enough that any consumer repository
 
 Replace adopter-specific planning language with an abstract consumer-repository contract, then define evidence-driven audits for CLI, LSP, VS Code, IntelliJ, and NeoVim surfaces. The workbench should describe capabilities by protocol, root ownership, and observable behavior rather than by machine-local paths, named repositories, or feature-parity aspiration.
 
-Taste note: improve **clarity**, **layering**, **portability**, and **truthfulness**. Site-owned `.spw/` remains authoritative; `.spw/_workbench` remains versioned infrastructure; audit output remains owned by the consumer repository.
+Taste note: improve **clarity**, **layering**, **portability**, and **truthfulness**. Consumer-owned `.spw/` remains authoritative; `.spw/_workbench` remains versioned infrastructure; audit output remains owned by the consumer repository.
 
 ## Scope
 
@@ -33,11 +33,12 @@ Taste note: improve **clarity**, **layering**, **portability**, and **truthfulne
 [MOD] .spw/index.spw
 [MOD] .spw/workspace.spw
 [MOD] .spw/harness/evals/baseline-evals.spw
-[DEL] .spw/surfaces/domains.spw
+[DEL] retired named-surface registry
 [NEW] .spw/surfaces/surface-archetypes.spw
 [MOD] .spw/surfaces/index.spw
 [MOD] docs/toc.spw
 [MOD] packages/spw-cli/src/init-presets.ts
+[MOD] packages/spw-cli/src/init.ts
 [MOD] packages/spw-cli/templates/init/presets/installable-book/.spw/mount.spw
 [MOD] src/runtime/__tests__/spw-init-portability.test.ts
 [MOD] extensions/intellij-spw/src/main/resources/META-INF/plugin.xml

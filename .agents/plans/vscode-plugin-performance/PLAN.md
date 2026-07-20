@@ -12,8 +12,8 @@ The plan should teach which costs belong to startup, which belong to steady-stat
 
 ## Scope
 
-- **In scope**: compiled LSP launch strategy for shipped/editor-preview use, activation gating for tree views and sidecars, incremental annotation sync instead of full client rebuilds, deduplicated cursor-context transport, selective atlas/concepts refresh rules, semantic-token reuse from server-owned parse state, bounded-concurrency workspace scanning, and explicit measurement guidance for startup/save/cursor/update paths.
-- **Out of scope**: adding new editor capabilities, changing Spw language semantics, redesigning atlas or concepts UX beyond refresh policy, broad mounted-site startup redesign, or building a full telemetry pipeline before performance fixes land.
+- **In scope**: audit advertised/configured/invoked/observed/tested behavior; compiled LSP launch strategy for shipped/editor-preview use; activation gating for tree views and sidecars; incremental annotation sync; deduplicated cursor-context transport; selective refresh rules; semantic-token reuse; bounded-concurrency scanning; mounted-consumer measurements.
+- **Out of scope**: adding new editor capabilities, changing Spw language semantics, redesigning atlas or concepts UX beyond refresh policy, broad mount-protocol redesign, or building a full telemetry pipeline before performance fixes land.
 
 ## Files
 
@@ -21,6 +21,7 @@ The plan should teach which costs belong to startup, which belong to steady-stat
 [NEW] .agents/plans/vscode-plugin-performance/PLAN.md
 [NEW] .agents/plans/vscode-plugin-performance/wip.spw
 [NEW] .agents/plans/vscode-plugin-performance/vscode-plugin-performance.spw
+[REF] .spw/tooling/editor-surface-audit.spw
 [MOD] extensions/vscode-spw/package.json
 [MOD] extensions/vscode-spw/src/extension.ts
 [MOD] extensions/vscode-spw/src/annotation-index.ts
@@ -52,7 +53,7 @@ The plan should teach which costs belong to startup, which belong to steady-stat
 3. `&[vscode-index] — replace full annotation rebuilds with incremental workspace sync`
 4. `&[vscode-context] — share cursor context and gate view refreshes by visibility`
 5. `&[spw-lsp] — reuse parse output for semantic tokens and tighten workspace scan cost`
-6. `![vscode-performance] — verify startup, save, cursor, and sidebar refresh behavior`
+6. `![vscode-performance] *audit[mounted-consumer] — verify startup, save, cursor, and sidebar behavior`
 
 ## Fuzz Strategy
 
@@ -70,9 +71,9 @@ The branch should pair these loops with concrete manual probes: activation time 
 
 ## Dependencies
 
-none
+- `mounted-consumer-tooling` — shared identity-free fixture and evidence states
 
-Adjacent VS Code plans share hot files such as `extensions/vscode-spw/src/extension.ts`, `extensions/vscode-spw/src/context.ts`, and `packages/spw-lsp/src/stdio-server.ts`, but they are coordination risks rather than merge prerequisites.
+Adjacent VS Code plans share hot files such as `extensions/vscode-spw/src/extension.ts`, `extensions/vscode-spw/src/context.ts`, and `packages/spw-lsp/src/stdio-server.ts`; treat them as coordination risks rather than reasons to skip the shared audit contract.
 
 ## Spw Artifact
 

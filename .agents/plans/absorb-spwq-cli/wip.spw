@@ -25,9 +25,9 @@
 }
 
 ^["concept_index"]{
- primary: [#cli, #query, #select, #ls, #selector, #alias, #compat]
- surfaces: [#terminal, #docs, #site_install, #lsp_adapter]
- tensions: [#verb_overlap, #compat, #corpus_truth, #install_boundary]
+ primary: [#cli, #query, #select, #ls, #roots, #doctor, #capabilities, #review, #selector, #compat]
+ surfaces: [#terminal, #docs, #consumer_install, #lsp_adapter, #audit_evidence]
+ tensions: [#verb_overlap, #compat, #corpus_truth, #mount_boundary, #path_leakage]
  transfers: [#language, #service]
 }
 
@@ -52,11 +52,12 @@
  >>[2026-03-20 16:06] decide — normalize names around three query surfaces: query for corpus rows, select for single-file AST selection, ls for liminal sequence scanning; keep spwq and spw:seq as compatibility wrappers.
  >>[2026-03-20 16:06] surprise — LSP references regressed on performance once selector traversal became truthful; switching the adapter back to regex-first ref scanning restored 22/0 smoke without undoing CLI selector dogfooding.
  >>[2026-03-20 16:06] taste — the canonical docs were also stale on command ownership and selector count; updating them is part of the rename, not optional polish.
- >>[2026-03-27 00:35] observe — site codebases will interact with spw primarily through CLI: `spw init` to bootstrap .spw surfaces, `spw select` to query, `spw ls` to scan. The command taxonomy must be stable enough for site-local CLAUDE.md and package.json scripts to reference without breakage.
+ >>[2026-03-27 00:35] observe — consumer repositories interact with Spw primarily through CLI. The command taxonomy must be stable enough for repo-local agent instructions and package scripts to reference without breakage.
  >>[2026-03-27 00:36] decide — resolve alias-fate: spwq should become a hidden internal wrapper (not public). External codebases should learn `spw query` and `spw select` from the start. Compatibility alias remains in workbench for migration but is not exported to site installs.
- >>[2026-03-27 00:37] decide — resolve bin-dx: document the root `spw` binary direction now in .spw/conventions/cli.spw, but defer the actual package.json bin change to the spw-site-install plan. Site codebases will use `npx spw` or a workspace-local `spw` bin.
- >>[2026-03-27 09:13] revise — site codebases will resolve spw CLI from .spw/_workbench/packages/spw-cli/ via submodule, not npx or global install. The bin entry should support being invoked as `node .spw/_workbench/packages/spw-cli/src/main.ts` or through a site-local wrapper script.
+ >>[2026-03-27 00:37] decide — resolve bin-dx: document the root `spw` binary direction now in .spw/conventions/cli.spw, but defer package wiring to spw-site-install.
+ >>[2026-03-27 09:13] revise — mounted consumers resolve the CLI from .spw/_workbench/packages/spw-cli/ or through a consumer-owned wrapper.
  >>[2026-03-27 13:17] decide — this branch owns verb truth, not install plumbing. Treat CLI taxonomy as a parallel substrate for site-install and release docs: this branch stabilizes names, the ecology branches teach sites how to invoke them.
+ >>[2026-07-20 15:18] revise — extend verb truth into observability: roots, doctor, capabilities, and review must expose normalized evidence before LSP/editor audits can be repeatable.
 }
 
 ^["open"]{
@@ -69,6 +70,9 @@
  ~[2]: "&[selector-dogfood] — repair ast traversal and add corpus-level selector coverage"
  ~[3]: "&[spwq-cli] — absorb spwq into the package-owned cli with compatibility wrappers"
  ~[4]: ".[cli-conventions] — normalize alias/docs language and record future root-spw binary direction"
+ ~[5]: "![cli] *audit[mounted-consumer] — inventory root, health, capability, and review gaps"
+ ~[6]: "&[cli] =observe[mounted-consumer] — implement roots, doctor, capabilities, and review contracts"
+ ~[7]: "![cli] *verify[portable-evidence] — exercise JSON/Spw output against identity-free fixtures"
 }
 
 ^["cache"]{
@@ -79,8 +83,8 @@
  ~#files_hot: "packages/spw-seed/src/instrumentation/audit.ts, packages/spw-cli/src/select.ts, packages/spw-lsp/src/spw-selector.ts, .spw/conventions/cli.spw"
  ~#next_commit: "2"
  ~#open_count: "0"
- ~#last_stream: "2026-03-27 13:17"
- ~#taste_debt: "Published/bin identity still favors install over spw in some wording; this branch should stabilize verb names without absorbing the submodule-install mechanics"
+ ~#last_stream: "2026-07-20 15:18"
+ ~#taste_debt: "Keep observability output relative, scriptable, and layered. Do not let `spw review` become an opaque model runner; deterministic probes and provenance remain explicit."
 }
 
 ^["done"]{

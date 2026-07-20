@@ -1,6 +1,6 @@
 # Plan: runtime-dx-foundation
 
-Establish a senior-grade DX foundation for the runtime and editor integrations, with a primary focus on making `.spw` installable and debuggable in external site codebases.
+Establish a senior-grade DX foundation for the runtime and editor integrations, with a primary focus on making `.spw` installable and debuggable in independent consumer repositories.
 
 ## Goal
 

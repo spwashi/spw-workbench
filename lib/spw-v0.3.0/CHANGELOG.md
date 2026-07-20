@@ -15,7 +15,7 @@ This entry records the structural milestone that already landed in the repo. It 
 
 ### Still pending as public gates
 
-- Install truth: the external site mount story is now explicit in quick-start, migration, and release-story docs; the remaining gate is final agreement with runtime, CLI, and editor behavior.
+- Install truth: the independent-consumer mount story is now explicit in quick-start, migration, and release-story docs; the remaining gate is final agreement with runtime, CLI, and editor behavior.
 - Governance truth: surface admission and launch readiness now route through registry-backed installable and readiness metadata; the remaining gate is release-copy agreement with that registry.
 - Discoverability truth: release-facing copy and extension-facing claims are now explicitly preview-scoped where needed; the remaining gate is keeping startup truth narrower than marketplace ambition.
 

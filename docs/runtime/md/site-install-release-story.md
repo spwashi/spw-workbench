@@ -2,7 +2,7 @@
 
 This is the current public install claim for `v0.3.0`.
 
-Spw installs into an external site by mounting the workbench at `.spw/_workbench`.
+Spw installs into an independent consumer repository by mounting the workbench at `.spw/_workbench`.
 
 The model is simple:
 
@@ -42,6 +42,6 @@ It is the installation contract in repo form.
 
 `v0.3.0` supports this sentence:
 
-> An external site can mount the Spw workbench at `.spw/_workbench`, initialize a site-owned `.spw/` surface, and resolve parser, runtime, CLI, and LSP behavior through an explicit mount contract.
+> An independent consumer can mount the Spw workbench at `.spw/_workbench`, initialize a consumer-owned `.spw/` surface, and resolve parser, runtime, CLI, and LSP behavior through an explicit mount contract.
 
 That is the release surface. Anything broader belongs to a later convenience layer.

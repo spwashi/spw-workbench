@@ -47,7 +47,7 @@ Read:
 3. [`.spw/conventions/submodule.spw`](../../../.spw/conventions/submodule.spw)
 4. [quick-start.md](./quick-start.md)
 
-This is the shortest route to the site/workbench boundary.
+This is the shortest route to the consumer/workbench boundary.
 
 ## Editor Surfaces
 

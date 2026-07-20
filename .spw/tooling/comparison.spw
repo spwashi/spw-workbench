@@ -1,40 +1,43 @@
 # Tooling Comparison
 #
-# Feature parity matrix and recommendations for Spw IDE tooling.
+# Evidence-oriented comparison of Spw editor projections.
 
 #>spw_tooling_comparison
 #:tooling #!editor
 #:layer #!pragmatics
 
-^seed[Tooling.Comparison v:0.1 @profile:Spw.b @intent:feature-parity-matrix]
-.tooling.comparison {
- feature.matrix: {
- folding: {intellij:"SpwFoldingBuilder.kt (regex+brace-depth+frame-name placeholder)",vscode:"FoldingRangeProvider.ts (regex+brace-depth)"}
- structure.outline: {intellij:"SpwStructureViewFactory.kt (dedicated Structure tool window)",vscode:"DocumentSymbolProvider.ts (Outline panel)"}
- snippets.templates: {intellij:"Live Templates (spwTemplates.xml)",vscode:"spw.code-snippets (JSON + symmetry + brace.left)"}
- coloring: {intellij:"SpwColorSettingsPage.kt (dedicated page + demo text)",vscode:"SemanticTokensProvider.ts + themes/spw-dark.json"}
- gutter.markers: {intellij:"SpwAnnotationLineMarkerProvider.kt (icons on #>anchor)",vscode:"CodeLensProvider.ts (lenses on #> + symmetry)"}
+^["comparison_rule"]{
+ compare: [#author_task, #owning_layer, #advertised, #observed, #failure_behavior, #interruption_cost]
+ avoid: [#feature_parity_score, #editor_rank, #implementation_folklore]
+ source: ~"./editor-surface-audit.spw"
+}
+
+^["shared_semantic_surface"]{
+ owner: #lsp
+ tasks: [#diagnose, #hover, #navigate, #reference, #rename, #complete, #format, #fold, #symbol, #code_action, #inlay_hint]
+ rule: "A client may project shared semantics differently but does not redefine them."
+}
+
+^["client_projection"]{
+ vscode: .{
+  native: [#textmate, #snippets, #tree_views, #status, #quick_pick]
+  custom_protocol: #typed_spw_requests
+  audit_focus: [#mounted_startup, #view_utility, #refresh_cost, #accessible_feedback]
  }
- intellij.advantages: "Deeper native integration, dedicated settings pages, stronger structure view, custom ColorSettingsPage"
- vscode.advantages: "Lightweight (faster startup), semantic tokens for operators/glyphs, easier cross-platform, JSON snippets"
- parity.level: "High — both 100% regex-based (zero full parser), brace-depth counting, symmetry + brace.sides support"
- recommendation: "Use IntelliJ for heavy canon work, VS Code for quick edits + multi-platform"
+ intellij: .{
+  native: [#textmate, #structure_view, #folding, #gutter, #settings]
+  custom_protocol: #not_yet_exposed
+  audit_focus: [#mounted_startup, #claim_dialect, #navigation, #compatibility_evidence]
+ }
+ neovim: .{
+  native: [#syntax, #commands, #keymaps, #quickfix, #foldexpr, #inlay_hints]
+  custom_protocol: #not_yet_exposed
+  audit_focus: [#mounted_startup, #root_discovery, #graceful_degradation, #request_cost]
+ }
 }
 
-#>wonder_spw_tooling_comparison_1
-?["What is the felt rhythm of reading Tooling Comparison?"]{
-  #:depth #!experiential // lens: material grain
-  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
-  ~#shape: "pragmatics layer, 2 frames, 4 annotations"
-  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark grain boundaries." }
-}
-
-#>wonder_spw_tooling_comparison_2
-?["What concept is conspicuously absent from Tooling Comparison?"]{
-  #:depth #!computational // lens: formal structure
-  ~#present: [#tooling, #editor, #mathematical]
-  ~#expected_but_missing: "?" // the reader fills this gap
-  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
-  $%[tool.invocation_count, tool.response_p95_ms]
-  ~<.spw/tooling/intellij-plugin.spw>  // nearest neighbor
+^["invariants"]{
+ "Differences are evidence, not deficits to erase.",
+ "A capability is current only when configured, invoked, and observed in an identity-free mounted fixture.",
+ "Shared semantic truth stays in seed/LSP layers; client-native affordances remain client-owned.",
 }

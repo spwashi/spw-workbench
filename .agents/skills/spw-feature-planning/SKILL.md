@@ -87,7 +87,7 @@ For each file, list whether it will be:
 - `[MOD?]` — uncertain
 
 List files with repo-relative paths only.
-Never include machine-local absolute paths such as `/Users/...`, `file:///Users/...`,
+Never include machine-local absolute paths such as `<workspace-root>/...` expanded for one machine,
 or drive-qualified home-directory paths.
 
 **Craft guard**: flag any file that would exceed 600 lines or 12 imports after changes.

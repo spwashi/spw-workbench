@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { parseCommonFlags } from './args'
 import { printHelpPage } from './help'
 import { inspectDoctorTarget, printDoctorReport } from './doctor'
-import { applyPresetDefaults, inferSitePreset, parseSitePreset, type SitePreset } from './init-presets'
+import { applyPresetDefaults, parseInitPreset, resolveInitPreset, type InitPreset } from './init-presets'
 
 const green = (str: string) => `\x1b[32m${str}\x1b[0m`
 const bold = (str: string) => `\x1b[1m${str}\x1b[0m`
@@ -39,7 +39,7 @@ type HookInstallStatus = 'installed' | 'updated' | 'skipped'
 
 type InitCliOptions = {
   targetDir: string
-  preset?: SitePreset
+  preset?: InitPreset
   bootstrap: boolean
 }
 
@@ -92,7 +92,6 @@ export function printInitUsage(): void {
           '--bootstrap          initialize git, add .spw/_workbench, and install dependencies when possible',
           '--preset show               show scaffold with studio awareness and season layers',
           '--preset installable-book   alias for show',
-          '--preset lore-land          alias for show',
         ],
       },
       {
@@ -116,7 +115,7 @@ function normalizeInitArgs(argv: string[]): string[] {
 
 function parseInitOptions(args: string[]): InitCliOptions {
   let targetDir = '.'
-  let preset: SitePreset | undefined
+  let preset: InitPreset | undefined
   let bootstrap = false
 
   for (let i = 0; i < args.length; i++) {
@@ -128,12 +127,12 @@ function parseInitOptions(args: string[]): InitCliOptions {
     if (arg === '--preset') {
       const value = args[i + 1]
       if (!value) throw new Error('missing value for --preset')
-      preset = parseSitePreset(value)
+      preset = parseInitPreset(value)
       i++
       continue
     }
     if (arg.startsWith('--preset=')) {
-      preset = parseSitePreset(arg.slice('--preset='.length))
+      preset = parseInitPreset(arg.slice('--preset='.length))
       continue
     }
     if (!arg.startsWith('--')) {
@@ -299,14 +298,14 @@ async function installPortableScaffold(targetAbs: string, templateRoot: string):
   await copyDir(path.join(templateRoot, 'base'), targetAbs)
 }
 
-export async function seedSiteScaffold(
+export async function seedConsumerScaffold(
   targetAbs: string,
   runtime: InitRuntimeContext,
-  options: { preset?: SitePreset } = {},
-): Promise<{ preset: SitePreset }> {
+  options: { preset?: InitPreset } = {},
+): Promise<{ preset: InitPreset }> {
   await fs.mkdir(targetAbs, { recursive: true })
   await installPortableScaffold(targetAbs, runtime.templateRoot)
-  const preset = inferSitePreset(targetAbs, options.preset)
+  const preset = resolveInitPreset(options.preset)
   await applyPresetDefaults(targetAbs, runtime.templateRoot, preset)
   return { preset }
 }
@@ -314,7 +313,7 @@ export async function seedSiteScaffold(
 export async function applyDoctorFixes(targetDir: string): Promise<void> {
   const runtime = await resolveInitRuntimeContext()
   const targetAbs = path.resolve(process.cwd(), targetDir)
-  await seedSiteScaffold(targetAbs, runtime)
+  await seedConsumerScaffold(targetAbs, runtime)
   await ensureHook(targetAbs, runtime.toolRoot)
 }
 
@@ -329,8 +328,8 @@ async function installWorkbench(options: InitCliOptions, runtime: InitRuntimeCon
   const hasWorkbenchDependencies = hasWorkbench && await exists(path.join(workbenchRoot, 'node_modules'))
   console.log(`\n${bold('Spw Init')}\nTarget: ${dim(targetAbs)}\n`)
 
-  const seeded = await seedSiteScaffold(targetAbs, runtime, { preset: options.preset })
-  console.log(` ${green('✓')} Portable site scaffold seeded (.spw/index.spw, .spw/workspace.spw, .spw/mount.spw)`)
+  const seeded = await seedConsumerScaffold(targetAbs, runtime, { preset: options.preset })
+  console.log(` ${green('✓')} Portable consumer scaffold seeded (.spw/index.spw, .spw/workspace.spw, .spw/mount.spw)`)
   if (seeded.preset !== 'default') {
     console.log(` ${green('✓')} Applied ${seeded.preset} preset scaffold`)
   }
@@ -364,7 +363,7 @@ async function installWorkbench(options: InitCliOptions, runtime: InitRuntimeCon
   printDoctorReport(report)
   console.log('Suggested next steps:')
   if (report.status === 'ok') {
-    console.log('  1. Open the site root in your editor')
+    console.log('  1. Open the consumer root in your editor')
     console.log('  2. Run: npm --prefix .spw/_workbench run spw -- help')
   } else if (!hasWorkbench) {
     console.log('  1. git submodule add https://github.com/spwashi/spw-workbench .spw/_workbench')

@@ -301,9 +301,9 @@ The tree view only needs metadata (root name, tier, phase badge, materialization
 
 ### Site-install considerations
 - The current extension startup path still assumes a workbench checkout layout. That is acceptable preview truth, but atlas/status/context work must not accidentally hard-code that assumption deeper into the client contract.
-- External sites own `.spw/index.spw`, `.spw/workspace.spw`, and `.spw/mount.spw`; the mounted workbench at `.spw/_workbench` is infrastructure. Display surfaces should preserve that asymmetry rather than narrating a mounted site as “just another workbench checkout.”
-- Cursor-local context and atlas detail should resolve against site-owned manifest truth when present, and mounted workbench infrastructure only when the site’s contract points there explicitly.
-- Any formatter, request wrapper, or path-resolution helper added for display work should be reviewed for mounted-site startup truth: can it still work when the editor eventually resolves the server from `.spw/_workbench` rather than from `packages/spw-lsp/src/stdio-server.ts` in a canonical checkout?
+- Independent consumers own `.spw/index.spw`, `.spw/workspace.spw`, and `.spw/mount.spw`; the mounted workbench at `.spw/_workbench` is infrastructure. Display surfaces should preserve that asymmetry rather than narrating a mounted consumer as “just another workbench checkout.”
+- Cursor-local context and atlas detail should resolve against consumer-owned manifest truth when present, and mounted workbench infrastructure only when the consumer contract points there explicitly.
+- Any formatter, request wrapper, or path-resolution helper added for display work should be reviewed for mounted-consumer startup truth: can it still work when the editor resolves the server from `.spw/_workbench` rather than from a canonical checkout?
 
 ### Hot file coordination
 The atlas tree view is a self-contained module (`workspace-tree.ts`) receiving `SpwContext`. The only `extension.ts` change is a registration call. `stdio-server.ts` gets new dispatch cases but no handler logic inline — workspace handler is extracted. Merge risk with authoring is low if both plans keep handler logic in separate files.

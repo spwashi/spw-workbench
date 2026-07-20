@@ -1,0 +1,51 @@
+# Editor Surface Audit
+
+#>spw_editor_surface_audit
+#:tooling #!audit
+#:layer #!pragmatics
+
+^["fixture"]{
+ shape: #identity_free_consumer_repository
+ required: [".spw/index.spw", ".spw/workspace.spw", ".spw/mount.spw", ".spw/_workbench"]
+ excludes: [".spw/_workbench/** from consumer content scans"]
+ provenance: [#consumer_revision, #workbench_revision, #editor_version, #lsp_version, #review_profile]
+ path_policy: #relative_only
+}
+
+^["evidence_states"]{
+ advertised: "declared in documentation or initialization capabilities"
+ configured: "registered and enabled in the client"
+ invoked: "request or action reaches its owning layer"
+ observed: "result is visible and correct in the fixture"
+ tested: "repeatable automated or scripted probe protects the behavior"
+ rule: "Never collapse these states into a single supported boolean."
+}
+
+^["lsp_axes"]{
+ lifecycle: [#initialize, #shutdown, #restart, #configuration, #watched_files]
+ standard: [#diagnostics, #hover, #definition, #declaration, #references, #rename, #symbols, #completion, #links, #lenses, #actions, #formatting, #folding, #inlay_hints, #semantic_tokens]
+ custom: [#annotations, #workspace, #context, #resonance, #register_snapshot, #operator_frequency, #phase_context]
+ failure: [#missing_mount, #server_unavailable, #unsupported_request, #stale_index, #partial_document]
+ cost: [#startup, #workspace_scan, #save_refresh, #cursor_request, #hidden_view]
+}
+
+^["editor_axes"]{
+ common: [#activation, #root_discovery, #server_command, #capability_projection, #navigation, #diagnostic_recovery]
+ vscode: [#thin_client, #tree_views, #status_strip, #typed_custom_requests, #refresh_policy]
+ intellij: [#textmate, #structure_view, #folding, #gutter, #settings, #native_lsp_boundary]
+ neovim: [#runtimepath, #syntax, #commands, #keymaps, #quickfix, #foldexpr, #inlay_hints]
+}
+
+^["verdict"]{
+ useful: "answers a repeated author or reviewer question at acceptable interruption cost"
+ redundant: "duplicates another layer without improving recovery or comprehension"
+ speculative: "plausible but lacks repeated mounted-consumer evidence"
+ misleading: "advertised behavior exceeds observed behavior or assigns ownership to the wrong layer"
+}
+
+^["output"]{
+ owner: #consumer_repository
+ formats: [#spw, #json, #human]
+ required: [#task, #capability, #owner, #evidence_state, #probe, #result, #failure_behavior, #utility_verdict]
+ forbidden: [#specific_domain, #consumer_identifier, #machine_local_absolute_path]
+}

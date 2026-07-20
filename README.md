@@ -34,7 +34,7 @@ For a first read from GitHub, this README is the top-level orientation surface: 
 ## Current Truth
 
 - **Source-first**: checkouts are the primary development surface.
-- **Site-first install**: external sites currently mount the workbench at `.spw/_workbench`.
+- **Consumer-first install**: independent repositories currently mount the workbench at `.spw/_workbench`.
 - **Thin client editor**: the VS Code extension delegates language behavior to `spw-lsp`.
 - **Narrow public claim**: the install story is intentionally smaller than the long-term packaging story.
 
@@ -158,13 +158,13 @@ Relatively stable:
 
 - package boundaries
 - source-first repo posture
-- mounted site install model
+- mounted-consumer install model
 - LSP thin-client direction
 - `.spw/workspace.spw` as workspace contract surface
 
 Still actively evolving:
 
-- mounted-site editor startup polish
+- mounted-consumer editor startup polish
 - public packaging/distribution convenience
 - some display vocabulary and atlas surfaces in the VS Code extension
 - publishing flows derived directly from Spw sources

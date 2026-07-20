@@ -1,18 +1,19 @@
 # Plan: spw-site-install
 
-Define and implement the submodule-based installation model for `.spw` in external site codebases. Each site repo owns its `.spw/` surface; the workbench lives at `.spw/_workbench` as infrastructure, providing parser, runtime, LSP, CLI, and spec library.
+Define and implement the submodule-based installation model for `.spw` in consumer repositories. Each consumer owns its `.spw/` surface; the workbench lives at `.spw/_workbench` as infrastructure, providing parser, runtime, LSP, CLI, spec library, and review instruments.
 
 ## Goal
 
-External codebases (factshift.com, boon.land, lore.land) need a clear path to integrate Spw without becoming consumers of an npm registry. The model is engagement and exchange between independent repositories — each site has its own identity, its own `.spw/` canon surface, and a submodule relationship to the workbench that provides the language engine.
-This is the ecological anchor for the current planning wave: once the boundary at `.spw/_workbench` is real, governance, diagnostics, CLI naming, editor startup, and release narrative can each mature in parallel without collapsing site identity into the workbench.
+Independent repositories need a clear path to integrate Spw without becoming consumers of an npm registry or disclosing their identity to workbench canon. Each consumer has its own `.spw/` canon surface and mounts the workbench only as language and review infrastructure.
+This is the ecological anchor for the current planning wave: once the boundary at `.spw/_workbench` is real, governance, CLI observability, LSP diagnostics, and editor startup can mature without collapsing consumer identity into the workbench.
 
-Three concrete outcomes:
+Five concrete outcomes:
 
-1. **`git submodule add` at `.spw/_workbench`**: a site repo gains parser, runtime, LSP, CLI, and spec library access through a single submodule. The `_` prefix signals infrastructure, not content.
-2. **Mount protocol**: each site's `.spw/mount.spw` declares which workbench surfaces it engages with, what spec version it tracks, and how resolution paths flow from site content through the workbench engine.
-3. **Independent identity**: a site's `.spw/index.spw`, `.spw/workspace.spw`, and `.spw/conventions/` are its own — not copies of the workbench's canon. The workbench is the engine; the site is the author.
-4. **Repo-local review loop**: a model working from the site root reads site-owned `.spw/` as authority and mounted `_workbench` surfaces as instruments. Its findings remain site-owned, record the pinned workbench revision, and cross the boundary upstream only through explicit human-selected exchange.
+1. **`git submodule add` at `.spw/_workbench`**: a consumer gains parser, runtime, LSP, CLI, and spec access through one mount. The `_` prefix signals infrastructure, not content.
+2. **Mount protocol**: `.spw/mount.spw` declares engaged workbench surfaces, tracked version, and resolution paths.
+3. **Independent authority**: consumer-owned `.spw/index.spw`, `.spw/workspace.spw`, and conventions are not copies of workbench canon.
+4. **Repo-local review loop**: a model reads consumer-owned `.spw/` as authority and mounted surfaces as instruments; evidence stays consumer-owned and records both revisions.
+5. **Observable tooling**: roots, doctor, capabilities, and review commands make CLI, LSP, and editor audits reproducible.
 
 Taste note: improve **clarity** and **layering**. The site owns its surfaces. The workbench provides the tools. The boundary is the `_` prefix.
 
@@ -28,10 +29,11 @@ Taste note: improve **clarity** and **layering**. The site owns its surfaces. Th
   - LSP resolution: editor finds LSP server at `.spw/_workbench/packages/spw-lsp/`
   - Editor auto-detection: extension discovers `.spw/_workbench` and starts LSP from that path
   - Health check: `spw doctor` verifies submodule present, parser loadable, LSP reachable
-  - Init templates: minimal site-local surfaces (not workbench copies)
+  - Init templates: minimal consumer-local surfaces (not workbench copies)
   - CLAUDE.md fragment: what a site's harness should say about .spw
   - Repo-local model review contract: discovery order, authority boundary, evidence/provenance fields, output location, and upstream exchange gate
-  - Review fixture: exercise the contract against `spwashi.com` and `lore.land` without copying their canon into the workbench
+  - Review fixture: exercise the contract against generated identity-free consumer repositories without copying external canon into the workbench
+  - CLI observability: plan relative root discovery, machine-readable health/capability snapshots, and review orchestration
 
 - **Out of scope**: npm package publishing (npm remains an option but not the primary path), workbench internal architecture, LSP server implementation, diagnostic station codes (runtime-dx-foundation), automatic upstream publication of site findings, or treating private site material as workbench fixtures.
 
@@ -81,17 +83,17 @@ The submodule convention, mount resolver, portable init/doctor surfaces, and pla
 ### CLI Init
 6. `&[cli-init] — implement spw init: scaffold .spw/ with mount, index, workspace (resolve CLI from _workbench)`
 7. `&[templates] — create mount.spw template with submodule connection and version pin`
-8. `&[templates] — create index.spw and workspace.spw templates for site-local canon`
-9. `&[templates] — create CLAUDE.md fragment for .spw-enabled site codebases`
+8. `&[templates] — create index.spw and workspace.spw templates for consumer-local canon`
+9. `&[templates] — create CLAUDE.md fragment for .spw-enabled consumer repositories`
 10. `![cli-init] — verify spw init creates correct .spw/ structure alongside existing _workbench submodule`
 
 ### CLI Resolution
 11. `&[cli] — add submodule-aware path resolution: spw commands find packages via .spw/_workbench/`
-12. `![cli] — verify spw commands work when invoked from a site repo with _workbench submodule`
+12. `![cli] — verify spw commands work when invoked from a consumer repository with _workbench mounted`
 
 ### Editor Integration
 13. `&[vscode] — add .spw/_workbench detection: extension finds LSP server from submodule path`
-14. `![vscode] — verify extension activates correctly in a site repo with only .spw/_workbench`
+14. `![vscode] — verify extension activates correctly in a consumer repository with only .spw/_workbench`
 
 ### Health Check
 15. `&[cli-doctor] — implement spw doctor: verify submodule present, parser loadable, LSP reachable`
@@ -109,7 +111,9 @@ The submodule convention, mount resolver, portable init/doctor surfaces, and pla
 ### Repo-local Review
 22. `#[site-review] — define mounted-workbench discovery, authority, provenance, and output contract`
 23. `&[site-review] — expose a portable review entrypoint to repo-local models`
-24. `![site-review] — verify spwashi.com and lore.land reviews remain site-owned and revision-aware`
+24. `![consumer-review] — verify identity-free reviews remain consumer-owned and revision-aware`
+25. `&[cli,consumer] — expose roots, doctor, capabilities, and review orchestration contracts`
+26. `![cli,consumer] — verify relative-path output and distinct failure states in generated fixtures`
 
 Fuzz strategy:
 - Explore: `npm run test:seed` (ensure templates parse)
@@ -136,4 +140,4 @@ Fuzz strategy:
 
 `.agents/plans/spw-site-install/spw-site-install.spw`
 
-The artifact should formalize: the submodule convention (`_` prefix = infrastructure), the mount protocol (version, engagement, resolution), the engagement model (which surfaces a site selects), the exchange model (how sites contribute back), and the boundary invariant (site owns .spw/; workbench owns .spw/_workbench/).
+The artifact should formalize the submodule convention, mount protocol, selective engagement, explicit exchange gate, observable CLI contract, and boundary invariant: the consumer owns `.spw/`; the workbench owns `.spw/_workbench/`.

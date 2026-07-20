@@ -1,16 +1,16 @@
 # Plan: v030-release-prep
 
-Formalize the v0.3.0 release track around the rewrite's real public shape: the monorepo and structural decoupling milestone is structurally shipped, and the remaining work is to tell the truth about how external site codebases engage the workbench.
+Formalize the v0.3.0 release track around the rewrite's real public shape: the monorepo and structural decoupling milestone is structurally shipped, and the remaining work is to tell the truth about how independent consumer repositories engage the workbench.
 
 ## Goal
 
-The monorepo restructure has landed — packages are namespaced under `@spwashi/*`, LSP is integrated, and the extension uses `vscode-languageclient`. What is still missing is a truthful release story: how v0.3.x should be understood, how a site codebase engages the workbench through `.spw/_workbench`, and which ecosystem surfaces are genuinely ready for others to depend on. This plan is the coordination braid across the already-running install, governance, CLI, DX, and editor lanes. It should now read the clustered ecology explicitly: release gates belong to execution truth and public-interest lanes, while curricula and research experiments contribute heuristics, probes, and discussion subjects without silently becoming tag blockers.
+The monorepo restructure has landed — packages are namespaced under `@spwashi/*`, LSP is integrated, and the extension uses `vscode-languageclient`. What is still missing is a truthful release story: how v0.3.x should be understood, how a consumer repository engages the workbench through `.spw/_workbench`, and which ecosystem surfaces are genuinely ready for others to depend on. This plan is the coordination braid across the already-running install, governance, CLI, DX, and editor lanes. It should now read the clustered ecology explicitly: release gates belong to execution truth and public-interest lanes, while curricula and research experiments contribute heuristics, probes, and discussion subjects without silently becoming tag blockers.
 
 Taste note: improve **clarity**, **layering**, and **naming** by giving the release a stable narrative and bounded gates. Honesty over ceremony — acknowledge that v0.3.0 shipped structurally before the formal waypoint was written, and do not let npm-publish language outrun the install ecology that actually exists.
 
 ## Scope
 
-- **In scope**: write the v0.3.0 changelog and waypoint, document the submodule/site-install quick-start for external codebases, write migration notes (v0.2.x → v0.3.x / lore-era → packages-era), update ecosystem surface readiness metadata, verify VS Code extension discoverability metadata where it affects adoption, and make explicit which plan clusters actually gate a truthful release.
+- **In scope**: write the v0.3.0 changelog and waypoint, document the mounted-consumer quick-start for independent codebases, write migration notes (v0.2.x → v0.3.x / legacy → packages-era), update ecosystem surface readiness metadata, verify VS Code extension discoverability metadata where it affects adoption, and make explicit which plan clusters actually gate a truthful release.
 - **Out of scope**: new language features, parser changes, or treating npm publish as the release gate for this slice.
 
 ## Files
@@ -35,7 +35,7 @@ Taste note: improve **clarity**, **layering**, and **naming** by giving the rele
 [NEW] docs/runtime/md/quick-start.md
 [NEW] docs/runtime/md/migration-v02-v03.md
 [NEW] docs/runtime/md/site-install-release-story.md
-[MOD] .spw/surfaces/domains.spw
+[MOD] .spw/surfaces/surface-archetypes.spw
 [NEW] .agents/plans/v030-release-prep/v030-release-prep.spw
 ```
 
@@ -44,7 +44,7 @@ Taste note: improve **clarity**, **layering**, and **naming** by giving the rele
 - Version metadata should stay on `0.3.0` until the March 31, 2026 release gate is actually cleared.
 - Quick-start guide should be runnable by an external developer in under 5 minutes.
 - Changelog should be honest about what shipped versus what's planned.
-- Do not imply a domain launch merely because a name exists in the portfolio.
+- Do not imply a launch, owner, or deployment form merely because an archetype exists.
 
 ## Commits
 
@@ -54,14 +54,14 @@ Taste note: improve **clarity**, **layering**, and **naming** by giving the rele
 3. `.[release-notes] — write v0.3.0 changelog: monorepo, package boundary, namespace, LSP integration, and submodule-era install truth`
 
 ### Ecology & Adoption
-4. `.[docs] — write quick-start guide: install the workbench into a site codebase via .spw/_workbench`
-5. `.[docs] — write migration notes: v0.2.x / lore-era → v0.3.x packages-era`
-6. `.[docs] — write site-install release story: why submodule engagement is the current public shape`
-7. `#[surfaces] — update .spw/surfaces/domains.spw with installable/readiness metadata for active surfaces`
+4. `.[docs] — write quick-start guide: mount the workbench in a consumer repository via .spw/_workbench`
+5. `.[docs] — write migration notes: v0.2.x / legacy → v0.3.x packages-era`
+6. `.[docs] — write mounted-consumer release story: why explicit engagement is the current public shape`
+7. `#[surfaces] — update surface archetypes with installable/readiness evidence`
 
 ### Discoverability
 8. `#[vscode] — verify VS Code extension marketplace metadata where it affects external discovery`
-9. `![release] — verify the release story matches site-install reality, CLI taxonomy, and extension startup truth`
+9. `![release] — verify the release story matches mounted-consumer reality, CLI taxonomy, and extension startup truth`
 
 ### Release Tag
 10. `^[v0.3.0] — tag release after the ecology, governance, and discoverability gates agree`

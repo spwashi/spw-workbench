@@ -67,6 +67,19 @@ scripts/commit-review/clear-agent-context.sh
 4. **Axis-scoped constants**: warns when genre/axis-scoped files (e.g., `src/styles/genres/`) contain raw `cubic-bezier` or round-number `setTimeout` delays instead of named axis tokens
 5. **Pluggable**: add scripts to `.git/hooks/checks.d/*.sh`
 
+## Mounted Consumer Mode
+
+When this workbench is mounted at `.spw/_workbench` inside an independent consumer repository:
+
+1. Treat the consumer root as the caller and authority root.
+2. Read consumer-owned `.spw/index.spw`, `.spw/workspace.spw`, and `.spw/mount.spw` before workbench guidance.
+3. Exclude `.spw/_workbench/**` from the consumer-authored review corpus unless the task explicitly audits the tooling mount.
+4. Record both the consumer revision and mounted-workbench revision in review evidence.
+5. Emit repository-relative paths. Never copy consumer identifiers, private content, or machine-local absolute paths into workbench artifacts.
+6. Keep findings consumer-owned until a human explicitly selects a distilled, identity-free improvement for upstream contribution.
+
+The commit authorization model does not change in mounted mode: a local human still authorizes every commit.
+
 ## Polling Loop (High-Leverage)
 
 Use polling to get feedback before hook-time:

@@ -1,0 +1,35 @@
+# Tooling NeoVim
+
+#>spw_tooling_neovim
+#:tooling #!editor
+#:layer #!pragmatics
+
+^["posture"]{
+ client: #native_neovim_lsp
+ syntax_fallback: #vim_syntax
+ semantic_owner: #lsp
+ dependency_posture: #builtins_first
+ startup: "workspace-root command discovery exists; mounted-workbench resolution requires explicit audit"
+}
+
+^["current_features"]{
+ filetype: [#detection, #comment_string, #folding, #suffix_resolution]
+ lsp: [#diagnostics, #hover, #definition, #references, #rename, #formatting, #folding, #inlay_hints]
+ navigation: [#open_reference, #peek_reference, #anchor_jump, #unresolved_quickfix]
+ control: [#restart, #stop, #toggle_inlay_hints, #code_action]
+}
+
+^["audit_focus"]{
+ root_discovery: [#consumer_root, #mount_manifest, #workbench_root]
+ command_resolution: [#configured, #workspace_script, #mounted_server, #failure]
+ interaction: [#keymap_collision, #quickfix_quality, #preview_lifecycle, #directory_creation]
+ cost: [#cursor_hold, #request_rate, #fold_refresh]
+ custom_requests: "speculative until shared LSP audit identifies a repeated author task"
+ evidence_contract: ~"./editor-surface-audit.spw"
+}
+
+^["invariants"]{
+ "Built-in Neovim affordances remain sufficient for the baseline client.",
+ "Custom requests are added per demonstrated task, not as a panel-parity program.",
+ "Configuration examples use placeholders or relative paths rather than machine-local locations.",
+}

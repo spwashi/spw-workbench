@@ -12,7 +12,7 @@ The install model is:
 
 - Git
 - Node `^20.19.0 || >=22.12.0`
-- a site repo or an empty directory
+- a consumer repository or an empty directory
 
 ## Setup
 

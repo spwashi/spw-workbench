@@ -30,7 +30,7 @@ describe('spw doctor', () => {
     expect(report.next).toContain('git submodule add https://github.com/spwashi/spw-workbench .spw/_workbench')
   })
 
-  it('accepts a minimal site scaffold with an installed embedded workbench', async () => {
+  it('accepts a minimal consumer scaffold with an installed embedded workbench', async () => {
     const root = await makeTempDir()
     await mkdir(path.join(root, '.git'))
     await mkdir(path.join(root, '.spw', '_workbench', 'node_modules'), { recursive: true })

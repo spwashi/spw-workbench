@@ -9,6 +9,7 @@
  @plan: ~".agents/plans/vscode-plugin-performance/PLAN.md"
  @artifact: ~".agents/plans/vscode-plugin-performance/vscode-plugin-performance.spw"
  @tooling: ~".spw/tooling/vscode-spw.spw"
+ @audit: ~".spw/tooling/editor-surface-audit.spw"
  @pattern: ~".spw/patterns/literate-ui.spw"
  @extension: ~"extensions/vscode-spw/src/extension.ts"
  @annotation_index: ~"extensions/vscode-spw/src/annotation-index.ts"
@@ -80,6 +81,7 @@
  >>[2026-03-31 23:44] hygiene — base reference recorded at `main@d503198758b88f5894102609473997e02ca196ce`; `main...HEAD` shows no committed drift outside `.agents/plans/`.
  >>[2026-03-31 23:45] hygiene — unrelated local drift exists in `.agents/plans/v030-release-prep/wip.spw`; leave it untouched and out of scope for this plan.
  >>[2026-03-31 23:46] taste — a faster preview extension should feel quieter, not merely more deferred. Invisible surfaces should stop asking the LSP for truth they are not currently rendering.
+ >>[2026-07-20 15:30] revise — measure the same paths from an identity-free mounted consumer and classify every performance claim by advertised, configured, invoked, observed, and tested evidence.
 }
 
 ^["open"]{
@@ -94,18 +96,18 @@
  ~[3]: "&[vscode-index] — replace full annotation rebuilds with incremental workspace sync"
  ~[4]: "&[vscode-context] — share cursor context and gate view refreshes by visibility"
  ~[5]: "&[spw-lsp] — reuse parse output for semantic tokens and tighten workspace scan cost"
- ~[6]: "![vscode-performance] — verify startup, save, cursor, and sidebar refresh behavior"
+ ~[6]: "![vscode-performance] *audit[mounted-consumer] — verify startup, save, cursor, and sidebar behavior"
 }
 
 ^["cache"]{
  ~#status: "planning"
- ~#base_ref: "main@d503198758b88f5894102609473997e02ca196ce"
- ~#rebased_at: ""
+ ~#base_ref: "main@a89010ae"
+ ~#rebased_at: "2026-07-20"
  ~#hygiene_split: "none for committed branch drift; preserve unrelated local edit in .agents/plans/v030-release-prep/wip.spw"
  ~#files_hot: ".agents/plans/vscode-plugin-performance/PLAN.md, .agents/plans/vscode-plugin-performance/wip.spw, .agents/plans/vscode-plugin-performance/vscode-plugin-performance.spw, extensions/vscode-spw/src/extension.ts, extensions/vscode-spw/src/annotation-index.ts, extensions/vscode-spw/src/context.ts, extensions/vscode-spw/src/context-strip.ts, extensions/vscode-spw/src/views/workspace-tree.ts, packages/spw-lsp/src/stdio-server.ts, packages/spw-lsp/src/server-index.ts, packages/spw-lsp/src/handlers/semantic-tokens.ts"
  ~#next_commit: "1"
  ~#open_count: "3"
- ~#last_stream: "2026-03-31 23:46"
+ ~#last_stream: "2026-07-20 15:30"
  ~#taste_debt: "Do not let performance work create a second semantics stack in the client. Prefer removing duplicate work to stretching debounce values. Hidden surfaces should not keep spending LSP budget unless they own correctness."
 }
 

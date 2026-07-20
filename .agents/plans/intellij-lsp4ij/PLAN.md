@@ -1,16 +1,16 @@
 # Plan: intellij-lsp4ij
 
-Evaluate whether migrating the IntelliJ plugin from the native JetBrains LSP API to LSP4IJ earns its added dependency and migration cost through repeated mounted-site review needs.
+Evaluate whether migrating the IntelliJ plugin from the native JetBrains LSP API to LSP4IJ earns its added dependency and migration cost through repeated mounted-consumer review needs.
 
 ## Goal
 
-The native JetBrains LSP API cannot invoke custom `spw/*` requests, while LSP4IJ can expose a typed custom-request interface. That difference is real, but VS Code feature parity is not by itself a migration reason. This plan stays speculative until reviews in mounted `spwashi.com` and `lore.land` show that one or more custom-request interactions materially improve claim/evidence navigation, site orientation, or review provenance beyond standard LSP and IntelliJ-native affordances.
+The native JetBrains LSP API cannot invoke custom `spw/*` requests, while LSP4IJ can expose a typed custom-request interface. That difference is real, but VS Code feature parity is not by itself a migration reason. This plan stays speculative until identity-free mounted-consumer audits show that a custom request materially improves claim/evidence navigation, repository orientation, or review provenance beyond standard LSP and IntelliJ-native affordances.
 
 Taste note: clarity (cleaner LSP4IJ API), layering (no more native LSP API lock-in), expressiveness (three new views).
 
 ## Scope
 
-- **In scope:** Record the migration decision against mounted-site evidence; if activated, migrate to LSP4IJ, implement the narrow typed custom-request bridge that evidence requires, and add only the surfaces justified by that review loop.
+- **In scope:** Record the migration decision against mounted-consumer evidence; if activated, migrate to LSP4IJ, implement the narrow typed custom-request bridge that evidence requires, and add only the surfaces justified by that review loop.
 - **Out of scope:** Restyling the plugin; implementing LSP4IJ Debug Adapter Protocol (DAP) support; Semantic Tokens or other future enhancements; adding more than the three declared surfaces.
 
 ## Files
@@ -55,8 +55,9 @@ Craft guard: Watch `SpwWorkspaceService` for state management scope creep. Panel
 
 ## Dependencies
 
-- `spw-site-install` — mounted-site startup and the repo-local review contract must work before custom-request UI is evaluated
+- `spw-site-install` — mounted-consumer startup and the repo-local review contract must work before custom-request UI is evaluated
 - `lsp-custom-request-completions` — server handlers must be stable and useful outside the VS Code client
+- `mounted-consumer-tooling` — supplies the capability evidence matrix and activation criterion
 
 ## Spw Artifact
 

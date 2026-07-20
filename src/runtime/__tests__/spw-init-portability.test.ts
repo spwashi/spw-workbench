@@ -4,8 +4,7 @@ import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { afterEach } from 'vitest'
 import { describe, expect, it } from 'vitest'
-import { renderCommitHookContent, resolveInitRuntimeContext, seedSiteScaffold } from '../../../packages/spw-cli/src/init'
-import { inferSitePreset } from '../../../packages/spw-cli/src/init-presets'
+import { renderCommitHookContent, resolveInitRuntimeContext, seedConsumerScaffold } from '../../../packages/spw-cli/src/init'
 
 const testDir = path.dirname(fileURLToPath(import.meta.url))
 const tempRoots: string[] = []
@@ -31,7 +30,7 @@ describe('spw init portability', () => {
     expect(runtime.toolRoot).toBe(runtime.packageRoot)
   })
 
-  it('ships a minimal site scaffold that includes mount metadata', async () => {
+  it('ships a minimal consumer scaffold that includes mount metadata', async () => {
     const sourceInitUrl = pathToFileURL(path.resolve(testDir, '../../../packages/spw-cli/src/init.ts')).href
     const runtime = await resolveInitRuntimeContext(sourceInitUrl)
     const mountPath = path.join(runtime.templateRoot, 'base/.spw/mount.spw')
@@ -58,21 +57,16 @@ describe('spw init portability', () => {
     expect(hook).toContain('/tmp/spw dist root')
   })
 
-  it('infers the lore-land preset from the target directory name', () => {
-    expect(inferSitePreset('/tmp/lore.land')).toBe('lore-land')
-    expect(inferSitePreset('/tmp/ordinary-site')).toBe('default')
-  })
-
-  it('applies lore-land workspace defaults and site directories', async () => {
+  it('applies installable-book workspace defaults and consumer directories', async () => {
     const sourceInitUrl = pathToFileURL(path.resolve(testDir, '../../../packages/spw-cli/src/init.ts')).href
     const runtime = await resolveInitRuntimeContext(sourceInitUrl)
     const parent = await makeTempDir()
-    const target = path.join(parent, 'lore.land')
+    const target = path.join(parent, 'book-project')
 
-    const result = await seedSiteScaffold(target, runtime)
+    const result = await seedConsumerScaffold(target, runtime, { preset: 'installable-book' })
     const workspace = await readFile(path.join(target, '.spw', 'workspace.spw'), 'utf8')
 
-    expect(result.preset).toBe('lore-land')
+    expect(result.preset).toBe('installable-book')
     expect(workspace).toContain('@content: ~"../content"')
     expect(workspace).toContain('@public: ~"../public"')
     expect(workspace).toContain('@assets: ~"../public/assets"')
@@ -81,7 +75,7 @@ describe('spw init portability', () => {
     expect(workspace).toContain('@manifest: ~"../public/manifest.webmanifest"')
     expect(workspace).toContain('@llms: ~"../public/llms.txt"')
     expect(workspace).toContain('~#site_kind: "installable-book"')
-    expect(workspace).toContain('~#preset: "installable-book"')
+    expect(workspace).toMatch(/~#preset:\s+"installable-book"/)
     await expect(access(path.join(target, 'content'))).resolves.toBeUndefined()
     await expect(access(path.join(target, 'public', 'index.html'))).resolves.toBeUndefined()
     await expect(access(path.join(target, 'public', 'chapters', 'index.html'))).resolves.toBeUndefined()

@@ -50,7 +50,7 @@ The extension and LSP should be judged by these rules:
 - **Useful affordances**: each hover, completion, link, lens, or rename should answer a real author question, not just expose engine internals.
 - **Quiet feedback**: trees, status copy, hovers, and quick picks should each earn their interruption cost.
 - **Reversible editing**: rename and semantic refactors should stay bounded, previewable, and calmer than blind workspace churn.
-- **Startup honesty**: do not imply mounted-site readiness until the extension can resolve the server from site-owned `.spw/_workbench` without checkout assumptions.
+- **Startup honesty**: do not imply mounted-consumer readiness until the extension can resolve the server from consumer-owned `.spw/_workbench` without checkout assumptions.
 
 ## Startup Modes
 

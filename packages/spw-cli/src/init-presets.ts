@@ -1,13 +1,13 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 
-export type SitePreset = 'default' | 'show' | 'installable-book' | 'lore-land'
+export type InitPreset = 'default' | 'show' | 'installable-book'
 
 type CopyDirOptions = {
   overwrite?: boolean
 }
 
-export function parseSitePreset(value: string): SitePreset {
+export function parseInitPreset(value: string): InitPreset {
   switch (value) {
     case 'default':
       return 'default'
@@ -15,38 +15,29 @@ export function parseSitePreset(value: string): SitePreset {
       return 'show'
     case 'installable-book':
       return 'installable-book'
-    case 'lore-land':
-    case 'lore.land':
-      return 'lore-land'
     default:
       throw new Error(`unknown init preset "${value}"`)
   }
 }
 
-export function inferSitePreset(targetAbs: string, explicitPreset?: SitePreset): SitePreset {
-  if (explicitPreset) return explicitPreset
-  const base = path.basename(path.resolve(targetAbs)).toLowerCase()
-  if (base === 'lore.land' || base === 'lore-land') {
-    return 'lore-land'
-  }
-  return 'default'
+export function resolveInitPreset(explicitPreset?: InitPreset): InitPreset {
+  return explicitPreset ?? 'default'
 }
 
 /**
  * Resolves a preset name to the template directory name.
  *
  * Multiple presets can share the same template directory.
- * `show`, `installable-book`, and `lore-land` all resolve
+ * `show` and `installable-book` both resolve
  * to the `installable-book` template — the show scaffold
  * with studio awareness, cascade layers, and precipitation
  * lifecycle. The preset name carries intent (what the
  * producer is making); the template carries structure.
  */
-function resolveTemplateName(preset: SitePreset): string {
+function resolveTemplateName(preset: InitPreset): string {
   switch (preset) {
     case 'show':
     case 'installable-book':
-    case 'lore-land':
       return 'installable-book'
     default:
       return preset
@@ -56,7 +47,7 @@ function resolveTemplateName(preset: SitePreset): string {
 export async function applyPresetDefaults(
   targetAbs: string,
   templateRoot: string,
-  preset: SitePreset,
+  preset: InitPreset,
 ): Promise<void> {
   if (preset === 'default') return
 

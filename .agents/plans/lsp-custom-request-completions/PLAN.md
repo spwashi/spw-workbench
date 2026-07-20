@@ -1,74 +1,61 @@
 # Plan: lsp-custom-request-completions
 
-Implement the 4 declared-but-unimplemented custom LSP request handlers so all editors (VSCode, IntelliJ/LSP4IJ, Neovim) can consume semantic workspace metadata.
+Audit the complete LSP capability surface before deciding which custom requests deserve implementation.
 
 ## Goal
 
-The LSP server exposes a type-safe interface for 4 custom requests (`spw/resonance`, `spw/registerSnapshot`, `spw/operatorFrequency`, `spw/phaseContext`), but their handlers are missing or stubbed. This plan implements them fully. Once complete, IntelliJ (via LSP4IJ) and Neovim plugins can build workspace atlases, register explorers, and authoring-loop surfaces that depend on this metadata.
+Produce an evidence matrix for standard and custom LSP capabilities across the server and editor clients. Exercise the server from an identity-free mounted-consumer fixture, distinguish declared capabilities from observed behavior, and implement only the custom requests whose semantics and cost are justified by a concrete authoring surface.
 
-Taste note: correctness, layering (ownership stays in the LSP server).
+Taste note: authority honesty, portability, and evidence before parity.
 
 ## Scope
 
-- **In scope:** Implement 4 custom request handlers; expose new server-side APIs via `ServerIndex` and analysis handlers; add named convenience methods to the VSCode client wrapper; verify existing tests still pass.
-- **Out of scope:** Editor client surfaces (those happen in Plans B and C); runtime/probe/harness changes (register semantics stay the same).
+- **In scope:** Inventory advertised capabilities, handlers, client calls, tests, mounted-consumer behavior, failure modes, and performance costs; identify duplicate client-side semantics; implement only earned custom requests.
+- **Out of scope:** Assuming every declared request must exist; requiring identical editor UI; inventing consumer-specific fixtures; broad runtime or parser changes.
 
-## Files
+## Evidence contract
+
+For each capability, record whether it is:
+
+1. advertised by the server,
+2. configured by a client,
+3. invoked by a client,
+4. observed to return useful behavior, and
+5. covered by a repeatable test.
+
+The audit fixture must use only relative paths and generic consumer content. Results must record both consumer and mounted-workbench revisions without embedding repository identities.
+
+## Candidate files
 
 ```
-[MOD] packages/spw-lsp/src/stdio-server.ts          — wire 4 new request handlers
-[MOD] packages/spw-lsp/src/handlers/analysis.ts     — add operatorFrequency, phaseContext handlers
-[NEW] packages/spw-lsp/src/handlers/runtime.ts      — add registerSnapshot, resonance handlers
-[MOD] packages/spw-lsp/src/server-index.ts          — expose APIs: getResonanceEdges(), getPhaseAtPosition()
-[MOD] extensions/vscode-spw/src/lsp/custom-requests.ts — add named convenience methods
+[MOD] packages/spw-lsp/src/stdio-server.ts
+[MOD] packages/spw-lsp/src/handlers/analysis.ts
+[MOD] packages/spw-lsp/src/server-index.ts
+[MOD] packages/spw-lsp/src/types.ts
+[MOD] extensions/vscode-spw/src/lsp/custom-requests.ts
+[NEW] packages/spw-lsp/src/__tests__/capability-audit.test.ts
 ```
 
-Craft guard: `handlers/runtime.ts` is new; keep it focused on custom request logic. No file should exceed 600 lines.
-
-## Implementations
-
-### `spw/resonance` `{ uri: string }` → `SpwResonanceEdge[]`
-
-Walk the annotation index for the given file. Find all names that co-occur across other files (same logic as VSCode `AnnotationIndex` co-occurrence matrix). Return `{ channel: name, strength: sharedFileCount, targetUri }[]`.
-
-**Implementation location:** `handlers/runtime.ts`
-
-### `spw/registerSnapshot` `{ uri: string }` → `SpwRegisterSnapshot`
-
-Call `deps.trialRunSpw(source, uri)` on the document text. Extract the register bank snapshot from the result. Return `{ registers: SpwRegisterEntry[], timestamp: number, fileUri: string }`.
-
-**Implementation location:** `handlers/runtime.ts`
-
-### `spw/operatorFrequency` `{ uri?: string, root?: string }` → `SpwOperatorFrequencyResult`
-
-If `uri`: parse and tokenize that file, count operators, compute percentages, identify dominant.
-If `root`: scan all files under the named root path (via `serverIndex.getShelfRoots()`), aggregate counts.
-Return `{ target: string, dominantOperator: string | null, entries: SpwOperatorFrequencyEntry[] }`.
-
-**Implementation location:** `handlers/analysis.ts`
-
-### `spw/phaseContext` `{ uri, position }` → `SpwPhaseContextResult`
-
-Use `serverIndex.getContextAtPosition(uri, position)` to find the frame at the cursor. Infer phase from the leading operator: `?` = wonder, `~` = potential, `@` = observer, `!` = action, `^` = integration. Return `{ phase: number | null, sigil: string | null, materializationState: SpwMaterializationState | null }`.
-
-**Implementation location:** `handlers/analysis.ts`
+The audit decides the final implementation file set. New handler modules are not assumed in advance.
 
 ## Commits
 
-1. `^seed[lsp] — add resonance and register-snapshot handlers`
-2. `^seed[lsp] — add operator-frequency and phase-context handlers`
-3. `![lsp] — verify custom request completions against server smoke tests`
+1. `![lsp] *audit[capabilities] — map advertised, invoked, observed, and tested behavior`
+2. `![lsp] *audit[mounted-consumer] — exercise root discovery and failure modes`
+3. `^seed[lsp] =request[earned] — implement justified semantic requests`
+4. `![lsp] =evidence[snapshots] — verify server and editor capability claims`
 
 ## Agentic Hygiene
 
 - Rebase target: `main`
-- Rebase cadence: before commit 1, before merge
-- Hygiene split: none
+- Rebase cadence: before commit 1, before implementation, before merge
+- Hygiene split: keep audit evidence separate from any implementation
 
 ## Dependencies
 
-none
+- `.agents/plans/mounted-consumer-tooling/PLAN.md`
+- `.spw/tooling/editor-surface-audit.spw`
 
 ## Spw Artifact
 
-None beyond `wip.spw` yet; create `.agents/plans/lsp-custom-request-completions/lsp-custom-request-completions.spw` only if the branch earns a distilled artifact.
+Create a distilled artifact only after the audit establishes stable capability and evidence categories.

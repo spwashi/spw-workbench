@@ -4,12 +4,12 @@ Normalize the selector CLI surface for the packages-era, submodule-era workbench
 
 ## Goal
 
-The desired end state is a single package-owned CLI surface where selector behavior is real rather than nostalgic, and where compatibility aliases exist for migration rather than because ownership is unclear. For site codebases mounting the workbench at `.spw/_workbench`, the public verbs should be `spw query`, `spw select`, and `spw ls`; `spwq` should survive only as a compatibility face over the same selector engine. This slice improves correctness first, then layering and naming clarity, while explicitly leaving install plumbing to the site-install branch. Taste note: improve correctness, layering, and naming.
+The desired end state is a single package-owned CLI surface where selector behavior is real rather than nostalgic and mounted consumers can inspect how tooling resolved their repository. The canonical query verbs remain `spw query`, `spw select`, and `spw ls`; observability verbs add `spw roots`, `spw doctor`, `spw capabilities`, and `spw review`. Compatibility aliases survive only as migration faces over package-owned behavior. Taste note: improve correctness, layering, naming, and inspectability.
 
 ## Scope
 
-- **In scope**: repair selector traversal, add selector dogfood coverage on real `.spw` corpus files, absorb `spwq` into `@spwashi/spw-cli`, normalize overlapping command names and help text, update CLI conventions/docs to describe the canonical surface, and record that site codebases invoke these verbs through `.spw/_workbench/packages/spw-cli/` or a thin local wrapper.
-- **Out of scope**: changing `.spw/_workbench` resolution mechanics, implementing `spw init` or `spw doctor`, redesigning `spw-ls`, or removing compatibility aliases that may still be used externally.
+- **In scope**: retain selector normalization work; plan relative root discovery, machine-readable doctor output, capability snapshots, review-profile orchestration, normalized evidence paths, distinct unsupported/degraded/failure states, and identity-free fixture coverage.
+- **Out of scope**: implementing the new observability commands in this planning pass, editor UI, or retaining compatibility aliases as independent implementations.
 
 ## Files
 
@@ -43,6 +43,9 @@ Commits 2-3 establish selector truth and package ownership. Commit 4 hardens the
 2. &[selector-dogfood] — repair AST traversal and add corpus-level selector coverage
 3. &[spwq-cli] — absorb spwq into the package-owned CLI with compatibility wrappers
 4. .[cli-conventions] — normalize alias/docs language and record future bin DX direction
+5. ![cli] *audit[mounted-consumer] — inventory root, health, capability, and review gaps
+6. &[cli] =observe[mounted-consumer] — implement roots, doctor, capabilities, and review contracts
+7. ![cli] *verify[portable-evidence] — exercise JSON/Spw output against identity-free fixtures
 
 Fuzz strategy:
 - Explore loop: `npm run test:seed -- spwq-corpus`
@@ -58,6 +61,7 @@ Fuzz strategy:
 ## Dependencies
 
 - `register-phase-evolution` — selector/phase terminology should stay aligned with the canonical runtime-query vocabulary when help text and docs harden.
+- `mounted-consumer-tooling` — owns path normalization, audit evidence states, and identity-free fixtures.
 
 ## Spw Artifact
 

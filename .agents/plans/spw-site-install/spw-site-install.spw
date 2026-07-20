@@ -19,8 +19,8 @@
 }
 
 ^["boundary_contract"]{
- site_root: ".spw/"
- site_owns: [".spw/index.spw", ".spw/workspace.spw", ".spw/mount.spw", ".spw/conventions/*"]
+ consumer_root: ".spw/"
+ consumer_owns: [".spw/index.spw", ".spw/workspace.spw", ".spw/mount.spw", ".spw/conventions/*", ".spw/audits/*"]
  workbench_root: ".spw/_workbench"
  workbench_owns: ["parser", "runtime", "LSP", "CLI", "spec library", "agent tooling"]
  install_shape: "git submodule add <workbench-url> .spw/_workbench"
@@ -40,21 +40,21 @@
 
 ^["engagement_model"]{
  selective: "sites engage only the spec subsystems, conventions, patterns, and tooling entrypoints they actually use"
- local_identity: "site-local .spw files remain the canon root for content, naming, and domain decisions"
+ local_authority: "consumer-owned .spw files remain the canon root for content, naming, and deployment decisions"
  downstream_effect: "CLI init, editor detection, doctor output, and release docs should all reuse the same mount vocabulary"
 }
 
 ^["exchange_model"]{
  contributes: ["dialects", "conventions", "canon extensions", "distilled evidence from real site usage"]
- rule: "exchange flows across the submodule boundary by contribution, not by turning site repos into copies of the workbench"
+ rule: "exchange flows across the mount boundary by contribution, not by turning consumer repositories into copies of the workbench"
  gate: "a human selects what crosses upstream; review output and site canon do not flow automatically"
 }
 
 ^["repo_local_review"]{
- caller_root: "site repository root"
- authority_order: ["site-owned .spw/index.spw and workspace.spw", "site-local conventions, claims, audits, and caches", "mounted _workbench protocols and instruments"]
+ caller_root: "consumer repository root"
+ authority_order: ["consumer-owned .spw/index.spw and workspace.spw", "consumer-local conventions, claims, audits, and caches", "mounted _workbench protocols and instruments"]
  workbench_role: ["parser", "query engine", "review skills", "claim/probe conventions", "portable diagnostics"]
- output_owner: "the site"
+ output_owner: "the consumer repository"
  output_examples: [".spw/audits/*", ".spw/caches/*", ".spw/claims/*"]
  provenance: ["site revision", "mounted workbench revision", "review profile", "commands or probes run"]
  invariant: "mounted guidance may question site canon but cannot silently become site authority"
@@ -74,7 +74,7 @@
 }
 
 ^["invariant"]{
- "The site owns .spw/; the workbench owns .spw/_workbench.",
+ "The consumer owns .spw/; the workbench owns .spw/_workbench.",
  "Mount truth should be explicit enough that CLI, editor, DX, and release surfaces can repeat it without drift.",
  "Convenience layers may evolve later, but they must not replace the submodule-era boundary contract before it is stable.",
  "A repo-local review belongs to the site; only a deliberate contribution crosses back into the workbench.",
@@ -84,6 +84,6 @@
 ?["Which fact makes the install model feel reversible rather than possessive?"]{
   #:depth #!educational // lens: ecological zone
   $^["boundary_contract"]@here => $^["exchange_model"]@here
-  !probe{ "name the mounted path, the site-owned surfaces, and the contribution route back. if any of those blur, the ecology is no longer reversible." }
+  !probe{ "name the mounted path, the consumer-owned surfaces, and the contribution route back. if any of those blur, the ecology is no longer reversible." }
   ~<.agents/plans/spw-site-install/wip.spw>
 }

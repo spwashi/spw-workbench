@@ -10,7 +10,7 @@ Taste note: improve **clarity**, **layering**, **naming**, and **meaningfulness*
 
 ## Scope
 
-- **In scope**: define the cluster taxonomy, define a commit-selection bar, assign every active plan a learning/discussion/research value, align canopy/release/curriculum plans to that map, make explicit the learning-science ladder from language-design study into component, page, and service design, deepen the artifact with concrete pattern-review, web-capability, syntax-testing, and snippet-discovery surfaces, and treat mounted-site review as the primary transfer test between workbench doctrine and developing repositories.
+- **In scope**: define the cluster taxonomy, define a commit-selection bar, assign every active plan a learning/discussion/research value, align canopy/release/curriculum plans to that map, make explicit the learning-science ladder from language-design study into component, page, and service design, deepen the artifact with concrete pattern-review, web-capability, syntax-testing, and snippet-discovery surfaces, and treat mounted-consumer review as the primary transfer test between workbench doctrine and developing repositories.
 - **Out of scope**: archiving large numbers of plans, rewriting every stale plan to packages-era paths, or changing implementation scope for runtime/editor features.
 
 ## Files
