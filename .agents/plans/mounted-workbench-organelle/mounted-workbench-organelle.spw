@@ -1,0 +1,41 @@
+# Mounted Workbench Organelle
+
+#>spw_mounted_workbench_organelle
+#:layer #!pragmatics
+
+^["organelle"]{
+ receives: [#consumer_intent, #bounded_question, #local_authority]
+ keeps: [#orientation, #revision_provenance, #working_references]
+ emits: [#root_selection, #tree_selection, #review_evidence, #portable_question]
+}
+
+^["machinery"]{
+ seed: [#parse_workspace_roots, #parse_spw_nodes]
+ cli: [#discover_consumer, #list_roots, #render_tree, #select_nodes, #query_corpus]
+ lsp: [#index_documents, #resolve_symbols, #project_manifest]
+ editor: [#choose_root, #choose_landmark, #open_location]
+ rule: "Each projection reuses shared truth and remains replaceable."
+}
+
+^["prompt_surface"]{
+ reads_first: [".spw/index.spw", ".spw/workspace.spw", ".spw/mount.spw"]
+ excludes: [".spw/_workbench/** from consumer corpus"]
+ commands: ["spw doctor", "spw roots", "spw tree", "spw select", "spw query"]
+ output_owner: #consumer_repository
+}
+
+^["navigation_ladder"]{
+ orient: #roots
+ browse: #tree
+ inspect: #select
+ compare: #query
+ edit: #editor_navigation
+}
+
+^["invariants"]{
+ "The consumer remains the source of intent and authority.",
+ "The workbench supplies bounded machinery, references, and repeatable evidence.",
+ "The mount remains replaceable and subordinate to the containing repository.",
+ "A prompt points to working commands instead of restating the entire architecture.",
+ "Navigation output is relative, deterministic, bounded, and mount-safe.",
+}
