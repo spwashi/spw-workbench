@@ -55,6 +55,24 @@ class SpwAnnotationLineMarkerProvider : LineMarkerProvider {
             }
         }
 
+        // Claim marker: ^claim[id]
+        val claim = SpwLineParsers.parseClaimId(lineText)
+        if (claim != null) {
+            val claimStart = context.startOffset + claim.range.first
+            val claimEndExclusive = context.startOffset + claim.range.last + 1
+            if (offset in claimStart until claimEndExclusive && text.contains("^")) {
+                return LineMarkerInfo(
+                    element,
+                    element.textRange,
+                    AllIcons.Nodes.Favorite,
+                    { "Claim: ${claim.id}" },
+                    null,
+                    GutterIconRenderer.Alignment.LEFT,
+                    { claim.id }
+                )
+            }
+        }
+
         return null
     }
 

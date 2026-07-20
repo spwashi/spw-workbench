@@ -66,4 +66,11 @@ class SpwLineParsersTest {
         assertNotNull(anchor)
         assertEquals("song_generation_prompt", anchor.name)
     }
+
+    @Test
+    fun `parses claim id`() {
+        val claim = SpwLineParsers.parseClaimId("^claim[c001-brace-symmetry]")
+        assertNotNull(claim)
+        assertEquals("c001-brace-symmetry", claim.id)
+    }
 }
