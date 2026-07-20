@@ -45,8 +45,19 @@
 }
 
 ^["exchange_model"]{
- contributes: ["dialects", "conventions", "canon extensions", "evidence from real site usage"]
+ contributes: ["dialects", "conventions", "canon extensions", "distilled evidence from real site usage"]
  rule: "exchange flows across the submodule boundary by contribution, not by turning site repos into copies of the workbench"
+ gate: "a human selects what crosses upstream; review output and site canon do not flow automatically"
+}
+
+^["repo_local_review"]{
+ caller_root: "site repository root"
+ authority_order: ["site-owned .spw/index.spw and workspace.spw", "site-local conventions, claims, audits, and caches", "mounted _workbench protocols and instruments"]
+ workbench_role: ["parser", "query engine", "review skills", "claim/probe conventions", "portable diagnostics"]
+ output_owner: "the site"
+ output_examples: [".spw/audits/*", ".spw/caches/*", ".spw/claims/*"]
+ provenance: ["site revision", "mounted workbench revision", "review profile", "commands or probes run"]
+ invariant: "mounted guidance may question site canon but cannot silently become site authority"
 }
 
 ^["parallel_work"]{
@@ -59,13 +70,14 @@
 
 ^["review_contract"]{
  sources: [@cluster, @governance, @workspace, @mount, @submodule, @cli]
- asks: [#site_ownership, #install_truth, #mount_legibility, #cross_surface_reuse]
+ asks: [#site_ownership, #install_truth, #mount_legibility, #cross_surface_reuse, #review_provenance, #exchange_consent]
 }
 
 ^["invariant"]{
  "The site owns .spw/; the workbench owns .spw/_workbench.",
  "Mount truth should be explicit enough that CLI, editor, DX, and release surfaces can repeat it without drift.",
  "Convenience layers may evolve later, but they must not replace the submodule-era boundary contract before it is stable.",
+ "A repo-local review belongs to the site; only a deliberate contribution crosses back into the workbench.",
 }
 
 #>wonder_agents_plans_spwsiteinstall_artifact_1

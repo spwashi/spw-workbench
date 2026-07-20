@@ -12,6 +12,7 @@ Three concrete outcomes:
 1. **`git submodule add` at `.spw/_workbench`**: a site repo gains parser, runtime, LSP, CLI, and spec library access through a single submodule. The `_` prefix signals infrastructure, not content.
 2. **Mount protocol**: each site's `.spw/mount.spw` declares which workbench surfaces it engages with, what spec version it tracks, and how resolution paths flow from site content through the workbench engine.
 3. **Independent identity**: a site's `.spw/index.spw`, `.spw/workspace.spw`, and `.spw/conventions/` are its own — not copies of the workbench's canon. The workbench is the engine; the site is the author.
+4. **Repo-local review loop**: a model working from the site root reads site-owned `.spw/` as authority and mounted `_workbench` surfaces as instruments. Its findings remain site-owned, record the pinned workbench revision, and cross the boundary upstream only through explicit human-selected exchange.
 
 Taste note: improve **clarity** and **layering**. The site owns its surfaces. The workbench provides the tools. The boundary is the `_` prefix.
 
@@ -29,8 +30,10 @@ Taste note: improve **clarity** and **layering**. The site owns its surfaces. Th
   - Health check: `spw doctor` verifies submodule present, parser loadable, LSP reachable
   - Init templates: minimal site-local surfaces (not workbench copies)
   - CLAUDE.md fragment: what a site's harness should say about .spw
+  - Repo-local model review contract: discovery order, authority boundary, evidence/provenance fields, output location, and upstream exchange gate
+  - Review fixture: exercise the contract against `spwashi.com` and `lore.land` without copying their canon into the workbench
 
-- **Out of scope**: npm package publishing (npm remains an option but not the primary path), workbench internal architecture, LSP server implementation, diagnostic station codes (runtime-dx-foundation).
+- **Out of scope**: npm package publishing (npm remains an option but not the primary path), workbench internal architecture, LSP server implementation, diagnostic station codes (runtime-dx-foundation), automatic upstream publication of site findings, or treating private site material as workbench fixtures.
 
 ## Files
 
@@ -64,7 +67,7 @@ Taste note: improve **clarity** and **layering**. The site owns its surfaces. Th
 
 Commits 1-3 establish the shared boundary and mount contract. After that, CLI init, CLI resolution, editor detection, health checks, and documentation can run as parallel lanes against the same submodule model.
 
-Commits 1-2 and 21 are already landed on `main`. The next serialized implementation slice is the mount arc: formalize the site-facing `mount.spw` protocol, then make runtime/LSP consumers resolve through it rather than assuming the workbench repo is always the workspace root.
+The submodule convention, mount resolver, portable init/doctor surfaces, and plan artifact have landed on `main`, though not always under the original commit numbering. The next coherent implementation slice is the repo-local review contract; remaining CLI/editor/docs items should be reconciled against that contract rather than replayed mechanically.
 
 ### Submodule Convention
 1. `#[submodule] — define .spw/_workbench submodule convention and _-prefix semantics`
@@ -103,6 +106,11 @@ Commits 1-2 and 21 are already landed on `main`. The next serialized implementat
 20. `.[docs] — write mount protocol reference`
 21. `.[plans] — write spw-site-install.spw artifact formalizing the submodule integration model`
 
+### Repo-local Review
+22. `#[site-review] — define mounted-workbench discovery, authority, provenance, and output contract`
+23. `&[site-review] — expose a portable review entrypoint to repo-local models`
+24. `![site-review] — verify spwashi.com and lore.land reviews remain site-owned and revision-aware`
+
 Fuzz strategy:
 - Explore: `npm run test:seed` (ensure templates parse)
 - Stabilize: `npm run fuzz:types && npm run test:run`
@@ -122,6 +130,7 @@ Fuzz strategy:
 - `lsp-lore-upstream-bridge` — LSP entry point must support submodule-relative resolution
 - `vscode-lsp-integration` — extension startup and thin-client expectations should align with submodule-relative LSP discovery
 - `v030-release-prep` — release narrative should describe this install model truthfully rather than defaulting to npm-publish language
+- `ecosystem-surface-governance` — installability should require one successful repo-local review without authority leakage across the mount boundary
 
 ## Spw Artifact
 

@@ -165,6 +165,16 @@
  '! -> ?': .{requires:[#failure, #curiosity, #next_cycle]}
 }
 
+^"mounted_review_flow"{
+ site_authority: [".spw/index.spw", ".spw/workspace.spw", ".spw/conventions/*", ".spw/claims/*", ".spw/audits/*"]
+ mounted_instruments: ["parser", "spwq", "claim/probe protocols", "review skills", "diagnostics"]
+ sequence: [#discover_site, #read_mount, #select_review_profile, #run_probes, #write_site_evidence, #offer_upstream_distillation]
+ provenance: [#site_revision, #workbench_revision, #review_profile, #probe_commands]
+ negative_controls: [#no_automatic_upstream_write, #no_mounted_root_as_site_authority, #no_private_site_fixture_copy]
+ primary_plan: "spw-site-install"
+ consumers: ["ecosystem-surface-governance", "lsp-lore-upstream-bridge", "intellij-plugin-integration", "vscode-workspace-atlas"]
+}
+
 ^"plan_map"{
  '!': {
   absorb_spwq_cli: .{learn:[#truth, #query, #naming], discuss:[#compat, #verbs], probe:[#selector_success, #corpus]}
@@ -240,10 +250,10 @@
  // Which plans are active, which are warm, which are cold.
  // Derived from cache status and last stream timestamps.
  // Useful for prioritization and staleness detection.
- hot: ["commit-gate-redesign", "audit-fuzz-truthfulness", "obsidian-spw"]
- warm: ["spw-site-install", "skills-instrumentation-utility", "lsp-lore-upstream-bridge", "lib-arch-spw-theory", "prompt-surface-align", "absorb-spwq-cli"]
- cold: ["symmetry-explorer-instrument", "image-prompt-split", "brand-core-ids", "command-experience-tools", "refactor-import-sprawl"]
- closed: ["v030-release-prep"]
+ hot: ["spw-site-install", "ecosystem-surface-governance", "audit-fuzz-truthfulness"]
+ warm: ["commit-gate-redesign", "lib-arch-spw-theory", "prompt-surface-align", "absorb-spwq-cli", "intellij-plugin-integration", "vscode-workspace-atlas"]
+ cold: ["intellij-lsp4ij", "obsidian-spw", "neovim-spw-surfaces", "symmetry-explorer-instrument", "image-prompt-split", "brand-core-ids", "command-experience-tools", "refactor-import-sprawl"]
+ closed: ["v030-release-prep", "skills-instrumentation-utility", "lsp-lore-upstream-bridge"]
  // Review: plans in cold that declare dependencies on warm/hot plans may be ready to activate.
  // Plans in warm that haven't streamed in >14 days may be cooling.
 }

@@ -37,6 +37,8 @@ No files expected to exceed 600 lines or 12 imports. Keep settings/UI classes sm
 3. .[intellij-spw] — add file icon and align docs/build metadata
 4. &[intellij-spw] — tighten LSP settings + TextMate diagnostics
 5. #[repo] — ignore build artifacts and remove local Gradle props
+6. &[intellij,mount] — resolve LSP startup from a site's mounted .spw/_workbench
+7. ![intellij,mount] — verify startup and diagnostics from a site-root fixture
 
 ## Agentic Hygiene
 
@@ -46,4 +48,4 @@ No files expected to exceed 600 lines or 12 imports. Keep settings/UI classes sm
 
 ## Dependencies
 
-none
+- `spw-site-install` — mounted root discovery and site/workbench authority must be shared infrastructure rather than IntelliJ-specific path folklore

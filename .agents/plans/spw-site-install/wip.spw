@@ -20,15 +20,15 @@
 ^["development"]{
  lane: #execution_truth
  ladder: #service
- develops: [#mount_protocol, #site_independence, #install_truth, #exchange_model]
+ develops: [#mount_protocol, #site_independence, #install_truth, #exchange_model, #repo_local_review]
  review_surfaces: [@cluster, @plan, @artifact, @workspace, @release]
  snippet_routes: [#mount_example, #doctor_output, #submodule_note, #site_install_copy]
 }
 
 ^["concept_index"]{
- primary: [#submodule, #mount, #install, #site, #engagement, #exchange]
- surfaces: [#cli, #runtime, #editor, #docs, #sites]
- tensions: [#independence, #convenience, #resolution, #public_shape]
+ primary: [#submodule, #mount, #install, #site, #engagement, #exchange, #review]
+ surfaces: [#cli, #runtime, #editor, #docs, #sites, #agents]
+ tensions: [#independence, #convenience, #resolution, #public_shape, #authority_leakage]
  transfers: [#service, #release]
 }
 
@@ -77,12 +77,18 @@
  >>[2026-03-28 17:29] revise — the plan cache was stale after the site-install artifact, submodule convention, release-track truth, and portable site-init/doctor surfaces landed on main. The branch is no longer at commit 1, and install tooling already exists in CLI surfaces.
  >>[2026-03-28 17:29] observe — the remaining gap is shared mount resolution. `.spw/mount.spw` exists as seeded site metadata, but runtime and LSP still assume workbench-root defaults rather than deriving spec/CLI/LSP paths from the mounted `_workbench` contract.
  >>[2026-03-28 17:29] decide — treat commits 3 and 4 as one working arc: formalize mount.spw with tracked version + resolution paths, then export a runtime resolver that LSP and doctor can consume while keeping `.spw/_workbench` out of site-authored workspace scans.
+ >>[2026-07-20 14:31] observe — mounted resolution landed in 45c6b7f3, but the plan still reported commit 3 as next and did not describe the repo-local model review that motivates mounting the workbench in developing sites.
+ >>[2026-07-20 14:32] decide — a site-local model reads site-owned `.spw/` as authority, consults `.spw/_workbench` for protocols and instruments, and writes review artifacts back to the site's own `.spw/` with the mounted workbench revision recorded.
+ >>[2026-07-20 14:33] decide — exchange is human-gated: sites may contribute distilled claims, fixtures, or protocol improvements upstream, but the workbench does not automatically ingest site canon or review output.
+ >>[2026-07-20 14:34] revise — make `spwashi.com` and `lore.land` the first portability fixtures; `factshift.com` remains an adoption target once it has a site-owned `.spw/` surface.
 }
 
 ^["open"]{
  ?[node-resolution]: "How do site-local node scripts resolve @spwashi/* imports — via package.json workspace paths pointing into .spw/_workbench/packages/, or via tsconfig paths?"
  ?[submodule-update]: "What is the cadence for submodule updates — pin to tagged releases, track main, or manual advance?"
  ?[multi-site]: "For sites that share a codebase (boon.land extending factshift.com), do they share one .spw/ or each get their own?"
+ ?[review-entrypoint]: "Should the portable review entrypoint be a CLI command, a mounted skill, or a small command that delegates to a mounted skill?"
+ ?[review-retention]: "Which site-owned review outputs are ephemeral caches, durable claims, or candidates for explicit upstream exchange?"
 }
 
 ^["commits"]{
@@ -107,18 +113,21 @@
  ~[19]: ".[docs] — write site-install guide: submodule setup, init, mount, editor, health check"
  ~[20]: ".[docs] — write mount protocol reference"
  ~[21]: ".[plans] — write spw-site-install.spw artifact formalizing the submodule integration model"
+ ~[22]: "#[site-review] — define mounted-workbench discovery, authority, provenance, and output contract"
+ ~[23]: "&[site-review] — expose a portable review entrypoint to repo-local models"
+ ~[24]: "![site-review] — verify spwashi.com and lore.land reviews remain site-owned and revision-aware"
 }
 
 ^["cache"]{
  ~#status: "active"
- ~#base_ref: "main@5ed7abce"
- ~#rebased_at: "2026-03-28"
+ ~#base_ref: "main@4ba97b23"
+ ~#rebased_at: "2026-07-20"
  ~#hygiene_split: "none"
  ~#files_hot: "packages/spw-runtime/src/site-install.ts, packages/spw-runtime/src/index.ts, packages/spw-lsp/src/helpers.ts, packages/spw-lsp/src/server-index.ts, packages/spw-cli/src/init.ts, packages/spw-cli/src/doctor.ts, packages/spw-cli/templates/init/base/.spw/mount.spw, .agents/plans/spw-site-install/PLAN.md, .agents/plans/spw-site-install/wip.spw"
- ~#next_commit: "3"
- ~#open_count: "3"
- ~#last_stream: "2026-03-28 17:29"
- ~#taste_debt: "the mount protocol should stay explicit enough that runtime, LSP, CLI, and release copy all repeat the same boundary without hidden fallback folklore. Convenience layers can arrive later, but `_workbench` still must read as infrastructure rather than site content."
+ ~#next_commit: "22"
+ ~#open_count: "5"
+ ~#last_stream: "2026-07-20 14:34"
+ ~#taste_debt: "the mount protocol should stay explicit enough that runtime, LSP, CLI, model review, and release copy all repeat the same boundary without hidden fallback folklore. Review output must remain site-owned, revision-aware, and human-gated before exchange; `_workbench` must never become an excuse to absorb a site's canon."
 }
 
 ^["done"]{

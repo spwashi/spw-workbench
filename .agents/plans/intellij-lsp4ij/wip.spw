@@ -17,12 +17,12 @@
 }
 
 ^["intent"]{
- ~#goal: "Migrate the IntelliJ plugin from the native JetBrains LSP API to LSP4IJ (Red Hat), enabling typed custom request support via @JsonRequest annotations. Then add three surfaces — Concepts panel, Workspace Atlas panel, Context Strip status bar widget — to bring IntelliJ to feature parity with the VSCode custom request lane."
- ~#taste: "clarity, layering, expressiveness — no more native LSP API lock-in; surfaces that speak the same vocabulary as VSCode"
+ ~#goal: "Decide whether LSP4IJ is justified by repeated mounted-site review needs; if so, migrate only far enough to expose the narrow custom-request interactions that earn their utility."
+ ~#taste: "clarity, layering, evidence — substrate migration follows demonstrated review value, not editor parity"
 }
 
 ^["development"]{
- lane: #execution_truth
+ lane: #speculative_editor_future
  ladder: #component
  develops: [#lsp4ij_migration, #custom_request_bridge, #editor_surface_parity]
  review_surfaces: [@cluster, @plan, @lsp_plan, @build]
@@ -86,6 +86,8 @@
  >>[2026-04-02 00:00] observe — Gradle IntelliJ Plugin is at 2.1.0; minimum for 2026 targets is 2.13.1; upgrading is a prerequisite.
  >>[2026-04-02 00:00] decide — use LSP4IJ LanguageServerFactory.getServerInterface() with @JsonRequest annotations for the custom request bridge; this is the LSP4IJ-idiomatic approach.
  >>[2026-04-02 00:00] note — phases 3 and 4 depend on Plan A (lsp-custom-request-completions) landing first; bridge is useless until the server handlers exist.
+ >>[2026-07-20 14:48] observe — the IntelliJ build now succeeds on the native JetBrains LSP API, while mounted-site startup and corpus-aligned claim navigation remain more immediate gaps than custom-request panel parity.
+ >>[2026-07-20 14:49] revise — demote migration from decided execution to a speculative adapter choice. Activate only when mounted reviews demonstrate a repeated interaction that standard LSP/native IntelliJ surfaces cannot describe well.
 }
 
 ^["open"]{
@@ -104,14 +106,14 @@
 
 ^["cache"]{
  ~#status: "planning"
- ~#base_ref: "main@a54f8671"
- ~#rebased_at: ""
+ ~#base_ref: "main@4ba97b23"
+ ~#rebased_at: "2026-07-20"
  ~#hygiene_split: "none"
  ~#files_hot: "extensions/intellij-spw/build.gradle.kts, extensions/intellij-spw/src/main/resources/META-INF/plugin.xml, extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwLspServerSupportProvider.kt, extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/settings/SpwLspConfigurable.kt"
  ~#next_commit: "1"
  ~#open_count: "4"
- ~#last_stream: "2026-04-02 00:00"
- ~#taste_debt: "Panels must not own business logic. SpwWorkspaceService owns state; panels render it. Do not let the annotations panel become a second annotation index."
+ ~#last_stream: "2026-07-20 14:49"
+ ~#taste_debt: "Do not migrate for parity. Require mounted-site evidence, keep semantic ownership in the LSP, and avoid making any panel a second annotation or claim index."
 }
 
 ^["done"]{

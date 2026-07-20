@@ -66,4 +66,4 @@ Add a distilled governance record at:
 `.agents/plans/ecosystem-surface-governance/ecosystem-surface-governance.spw`
 
 It will define the launch ladder, status semantics, team/QA expectations, and the codebase-to-surface "spiritual testing path" that connects concepts to shipped domains.
-It should explicitly define what "installable" means in the submodule era: a site codebase can mount the surface through `.spw/_workbench` and engage it without inheriting the entire workbench identity.
+It should explicitly define what "installable" means in the submodule era: a site codebase can mount the surface through `.spw/_workbench`, engage it without inheriting the entire workbench identity, and complete a repo-local review whose findings remain site-owned and identify the pinned workbench revision.
