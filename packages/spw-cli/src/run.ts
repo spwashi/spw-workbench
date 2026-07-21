@@ -3,6 +3,7 @@ import { parseCommand, parseCommonFlags, parseQueryArgs } from './args'
 import { runSpwDevCli } from './dev'
 import { printDoctorHelp, runSpwDoctorCli } from './doctor'
 import { printSpwFormatHelp, runSpwFormatCli } from './format'
+import { printSpwPulseHelp, runSpwPulseCli } from './pulse'
 import { printHelpPage } from './help'
 import { printInitUsage, runSpwInitCli } from './init'
 import { runSpwLsCli } from './ls'
@@ -116,6 +117,15 @@ export async function runSpwCli(argv: string[]): Promise<void> {
       }
       await runSpwFormatCli(toCliArgv(command, args))
       return
+    case 'pulse':
+    case 'mutate':
+    case 'beat':
+      if (common.flags.help) {
+        printSpwPulseHelp()
+        return
+      }
+      await runSpwPulseCli(toCliArgv(command, args))
+      return
     case 'dev':
       await runSpwDevCli()
       return
@@ -152,6 +162,7 @@ function printHelp(): void {
           'mount        Mount/check surfaces for workbench-shaped roots',
           'mem          Memory surface tools',
           'format       Spw formatter',
+          'pulse        Topographical mutation probes (plan/diff/check)',
           'dev          Hot loop runner',
           'help         Print this help',
         ],
@@ -162,6 +173,7 @@ function printHelp(): void {
           'install      Alias for init',
           'seq          Alias for ls',
           'spwq         Alias for select',
+          'mutate|beat  Aliases for pulse',
         ],
       },
       {
@@ -172,6 +184,7 @@ function printHelp(): void {
           'spw tree @spw',
           'npm run spw -- query --help',
           'npm run spw -- format --help',
+          'npm run spw -- pulse --help',
         ],
       },
     ],

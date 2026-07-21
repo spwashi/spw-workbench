@@ -18,6 +18,7 @@ Semantic invariants:
 3. The explicit `<>` couple operator is not conflated with an empty Capsule boundary.
 4. No transform may discard source payload while claiming reversibility or semantic equivalence.
 5. The reconstructed final tree must disclose every intentional difference from `a333db8d` and from the reviewed dirty-tree delta.
+6. Public plans and transports use compact, ordered effect slugs: `effect.l0.measure`, `effect.l1.memory`, `effect.l2.workspace`, and `effect.l3.external`.
 
 Counterexamples include a Seed import from runtime, a build-only verification claim for behavioral code, `^['label']{payload} -> $(label)` without payload storage, or a reduction that cannot identify its omitted evidence.
 
@@ -47,6 +48,7 @@ The authoritative initial manifest is `git show --name-status a333db8d`. Partiti
 ### Craft guard
 
 - `packages/spw-seed/src/canonical/form-geometry.ts`, `form-ladders.ts`, and `mutation-automata.ts`, plus `packages/spw-cli/src/pulse.ts`, exceed 600 lines in the checkpoint or reviewed delta. Treat these as explicit decomposition candidates; do not grow their concept count during reconciliation.
+- Before editor reuse, split pulse argument parsing, observation probes, mutation planning, guarded replacement, transport, and rendering behind a pure request/result service. The reconciliation partition may expose a versioned CLI envelope, but it does not claim that console and process-global execution is the final plugin API.
 - `packages/spw-seed/src/canonical/index.ts` and package root exports are shared hot files. Change them only with the partition that owns the exported implementation.
 - The large garden plan is a separate conceptual surface from executable kernel work and must not share a source commit merely because it was present in the safety checkpoint.
 - Stability, disclosure, and resolution are the governing deformation axes; this task introduces no affect or timing constants.
@@ -60,12 +62,13 @@ The authoritative initial manifest is `git show --name-status a333db8d`. Partiti
 5. `^seed[workspace] =define[manifest-evidence] — make root authority diagnosable`
 6. `&[analyzers] =measure[topography] — delegate parse health to Seed evidence`
 7. `&[cli,workspace] =orient[mounted-consumers] — anchor navigation in consumer authority`
-8. `&[cli,pulse] =preview[mutations] — restore atomic probe and write gates`
-9. `&[lsp,vscode] =project[workspace-observations] — restore thin editor transports`
-10. `.[canon,skills] =align[operational-theory] — restore exhibits after executable behavior exists`
-11. `.[plans] =rebase[checkpoint-ecology] — restore plan surfaces and refresh dependency truth`
-12. `^seed[form-contours] =project[density] — replay reviewed contour and mobility receipts`
-13. `&[runtime,plans] =integrate[liminality-bridge] — replay explicit effects and aligned theory`
+8. `^seed[mutation] =converge[plans] — reach virtual fixed points`
+9. `&[cli,pulse] =preview[mutations] — restore guarded probe and write gates`
+10. `&[lsp,vscode] =project[workspace-observations] — restore thin editor transports`
+11. `.[canon,skills] =align[operational-theory] — restore exhibits after executable behavior exists`
+12. `.[plans] =rebase[checkpoint-ecology] — restore plan surfaces and refresh dependency truth`
+13. `^seed[form-contours] =project[density] — replay reviewed contour and mobility receipts`
+14. `&[runtime,plans] =integrate[liminality-bridge] — replay explicit effects and aligned theory`
 
 Each commit must pass the smallest relevant build/test/lint gate and contain exactly one `#[episode]{ ... }` block.
 
@@ -86,6 +89,31 @@ Fuzz strategy:
 - `operational-topography` supplies the semantic kernel being reconciled.
 - `form-geometry-editor`, `vscode-lsp-roadmap`, and adjacent plans consume the final contracts but do not own Seed truth.
 - Human commit authorization is required before every commit and before replacing any mainline history.
+
+## Workspace-configurable pulse trajectory
+
+This is a planned extension, not behavior shipped by the reconciliation commit.
+
+- A workspace may reference versioned, declarative mutation templates from its `.spw` authority tree. A template names selectors, allowed roots, rules, budgets, accepted terminal states, parse requirements, evidence fields, and one maximum `effect.*` value.
+- Workspace configuration may narrow a built-in effect ceiling but never raise it. Templates cannot turn preview-only rules, cross-authority roots, or macro sequences into writes merely by naming them.
+- Sequences compose template IDs as an inspectable fold or graph. Arbitrary executable callbacks are not workspace data; executable extensions require a separately reviewed capability boundary.
+- Every template and sequence emits a revision/hash receipt so an editor or agent can say which policy produced a tree diff and detect configuration drift before application.
+- Approximate matching is a named dimension with threshold, confidence, and ambiguity evidence. Fuzzy selection cannot silently become exact identity.
+
+Macro pulses use explicit scoring policies over tree diffs:
+
+- `pulse_disposition.survey`: no mutation; maximize coverage, topology knowledge, and uncertainty disclosure.
+- `pulse_disposition.repair`: reduce parse, reference, diagnostic, and invariant failures while bounding topographic distance.
+- `pulse_disposition.explore`: maximize reversible novelty and candidate diversity in preview or a disposable worktree.
+- `pulse_disposition.compress`: reduce repetition or surface area while preserving references, structure, and measured behavior.
+- `pulse_disposition.elaborate`: add examples, evidence, or scaffolding with provenance and an explicit growth budget.
+- `pulse_disposition.rotate`: produce alternate readable projections and compare them without presuming semantic equivalence.
+- `pulse_disposition.stress`: generate bounded perturbations and counterexamples; never write the consumer tree directly.
+- `pulse_disposition.reconcile`: reduce dialect, schema, or branch disagreement while retaining conflict receipts.
+- `pulse_disposition.teach`: stage novice-readable idiom changes and expose downstream consequences rather than silently normalizing them.
+- `pulse_disposition.publish`: extract only well-formed, sourced, dimensioned material into a reviewable publication candidate.
+
+The shared instrument is a revision-aware tree diff: stable node identity where available, approximate correspondence with confidence where not, parse/reference health, mutation-vector strata, topographic distance, reversibility, affected roots, and downstream probes. Healing and babbling are therefore readable policies (`pulse_disposition.repair` and `pulse_disposition.explore`), not model moods. Macro application remains preview/patch-bundle only until a recoverable multi-file transaction or disposable-worktree protocol exists.
 
 ## Failure Modes
 

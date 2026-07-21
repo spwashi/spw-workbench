@@ -16,7 +16,7 @@ Checkpoint size: 147 files, 17,539 insertions, 1,245 deletions. The original epi
 | 2 | runtime | `packages/spw-runtime/**`, runtime-owned tests | Do not absorb CLI integration tests merely because they live under `src/runtime/__tests__`. |
 | 3 | analyzers | `scripts/analyzers/**`, analyzer-only tests/config/scripts | Delegate parse health and topography to Seed; do not classify syntax independently. |
 | 4 | workspace navigation | CLI workspace/roots/tree, mounted-aware query/select/orientation, CLI-owned tests/templates | Consumer authority, manifest validity, and external/infrastructure traversal policy must agree before mutation tooling consumes them. |
-| 5 | pulse | CLI pulse module/entrypoint/tests and pulse-only command wiring | Plan every file before any S2 write; reject incompatible or unknown authority inputs. Contours remain deferred. |
+| 5 | pulse | CLI pulse module/entrypoint/tests and pulse-only command wiring | Plan every file before any `effect.l2.workspace`; reject incompatible or unknown authority inputs. Contours remain deferred. |
 | 6 | LSP and editor | `packages/spw-lsp/**`, `extensions/vscode-spw/**` | LSP transports Seed observations and manifest diagnostics; extension remains a thin client. |
 | 7 | canon and skills | `.agents/skills/**`, `.spw/**`, `docs/**`, `lib/spw-v0.3.0/**` | Restore semantic exhibits only after their executable references exist; keep plan caches out. |
 | 8 | plan ecology | `.agents/plans/**` | Restore and refresh plans against stable implementation commits; split garden/editor plans when their dependencies differ. |
@@ -36,6 +36,8 @@ Resolution status after Seed partition:
 Portable Seed reconstruction landed as `86d433b4`; later partitions may consume it but must not silently redefine these invariants.
 
 Parse-health follow-up `55190299` makes Seed's topography snapshot the shared lexeme-closure authority; analyzers should delegate to it instead of copying escape logic.
+
+Mutation-plan follow-up `86e0469e` advances a virtual source to convergence during plan-only runs, so fixed-point source, hash, vector, and terminal evidence agree with in-memory execution while returned source bytes remain unapplied.
 
 Workspace contract `51d36684` distinguishes valid from invalid present manifests and reports duplicate, malformed, empty, missing-frame, unterminated, and parse diagnostics. File absence remains an I/O-layer fact.
 
@@ -57,15 +59,15 @@ Runtime integration status:
 Tooling integration status:
 
 - landed `f96015fc`: analyzers consume Seed topography evidence, crossed boundaries do not manufacture pairs, and incomplete inputs cannot receive refactor-equivalence receipts;
-- ready: navigation distinguishes consumer, infrastructure, canonical, and explicitly declared external authority while rejecting invalid manifests and unknown sigils;
-- in progress: pulse planning/write phases are being separated so one late refusal cannot follow earlier workspace writes.
+- landed `eb45f240`: navigation distinguishes consumer, infrastructure, canonical, and explicitly declared external authority while rejecting invalid manifests, unknown sigils, and realpath aliases into mounted infrastructure;
+- ready for human gate: pulse plans all requested files before one guarded `effect.l2.workspace`, refuses macro/cross-authority writes, rejects non-round-tripping UTF-8, and reports semantic equivalence as unclaimed.
 
 ## Reviewed post-checkpoint candidates
 
 Replay only after the checkpoint partitions build:
 
 - retain the corrected runtime-test import;
-- retain canonical S0 read / S1 in-memory / S2 workspace / S3 external wording;
+- retain compact `effect.l0.measure`, `effect.l1.memory`, `effect.l2.workspace`, and `effect.l3.external` identifiers in human-facing plans and transports;
 - retain payload-safe `@(L) <-> $(L)` mobility and explicit non-equivalence receipts;
 - repair contour identity, immutability, and actual lost-axis accounting before landing contours;
 - validate liminality options before any RegisterBank mutation and define target-order behavior;
@@ -79,7 +81,7 @@ Replay only after the checkpoint partitions build:
 - Nine current-main plan references name `main@a333db8d`; refresh them only after the replacement series has stable SHAs.
 - Existing plans that call untracked contour/liminality files “landed” remain conditional until the implementation partition commits.
 - Editor order is `form-geometry P0 -> protocol registry -> formContext P1+`; do not encode a dependency cycle.
-- Human authority and effect grade are orthogonal: confirming an in-memory mutation does not make it S2.
+- Human authority and effect ceiling are orthogonal: confirming an `effect.l1.memory` plan does not grant `effect.l2.workspace`.
 
 ## Completion comparison
 
