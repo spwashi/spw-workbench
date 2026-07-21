@@ -1,0 +1,38 @@
+/**
+ * Re-export form ladders under the historical operator-ladders path.
+ * Prefer importing from `./form-ladders` or package root.
+ */
+export {
+  BOUNDARY_LADDERS,
+  OPERATOR_LADDERS,
+  BOUNDARY_AXIS_IMPLICATIONS,
+  FORM_LADDER_PROFILE,
+  boundaryLadder,
+  operatorLadder,
+  listBoundaryLadders,
+  listOperatorLadders,
+  listFormLadders,
+  implicationsForBoundary,
+  implicationsForAxis,
+  probeFormLadder,
+  probeBoundaryLadder,
+  probeOperatorLadder,
+  resolveLadderQuery,
+  formatBoundaryAxisTable,
+  formatAllLadderNotations,
+  operatorLadderTable,
+  boundaryLadderTable,
+  type EnrichmentRole,
+  type LadderStep,
+  type FormLadder,
+  type BoundaryLadder,
+  type OperatorLadder,
+  type ResolvedFormLadder,
+  type FormAxis,
+  type BoundaryLadderId,
+  type LadderArrow,
+  type FormLadderProbe,
+  type OperatorLadderProbe,
+  type LadderStepProbe,
+  type BoundaryAxisImplication,
+} from './form-ladders'

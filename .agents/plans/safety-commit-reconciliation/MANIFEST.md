@@ -29,6 +29,16 @@ Checkpoint size: 147 files, 17,539 insertions, 1,245 deletions. The original epi
 6. CLI and LSP use different manifest fallback and duplicate-root policies.
 7. Matrix transpose discards row-label meaning through an incompatible axis cast.
 
+Resolution status after Seed partition:
+
+- resolved: `<>` Frame operands now determine ONF arguments and arity;
+- resolved: mutation runs expose one input-coordinate `plannedDifferential` and distinguish planned/applied work;
+- resolved: parallel composition replaces, rather than appends, the cumulative base transform;
+- resolved: mixed-authority profiles fail atomically with explicit blocked-rule receipts;
+- resolved: coupling construction/reading validates arity, own keys, surfaces, placement, and occupancy/payload compatibility;
+- pending LSP partition: shared manifest fallback and duplicate-root policy;
+- resolved: transpose returns a separately labeled, non-vector-multipliable matrix type.
+
 ## Reviewed post-checkpoint candidates
 
 Replay only after the checkpoint partitions build:
