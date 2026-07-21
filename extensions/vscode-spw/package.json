@@ -1,7 +1,7 @@
 {
     "name": "spw-language",
     "displayName": "Spw Language Support",
-    "description": "Preview thin-client VS Code support for Spw — syntax highlighting, LSP-backed semantics, and the Concepts view.",
+    "description": "Preview thin-client VS Code support for Spw — LSP-backed semantics, workspace evidence, and URI-native navigation.",
     "version": "0.3.0",
     "publisher": "spwashi",
     "license": "MIT",
@@ -28,49 +28,21 @@
     "engines": {
         "vscode": "^1.80.0"
     },
+    "spw": {
+        "server": "./dist/server/spw-lsp.cjs",
+        "workspaceManifestMethod": "spw/workspaceManifest/v1"
+    },
     "scripts": {
-        "vscode:prepublish": "npm run compile:lsp && npm run compile",
-        "compile:lsp": "npm --prefix ../.. run build:lsp",
-        "compile": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node",
-        "watch": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --watch"
+        "vscode:prepublish": "npm run build",
+        "typecheck": "tsc --noEmit",
+        "compile:server": "esbuild ../../packages/spw-lsp/src/stdio-server.ts --bundle --platform=node --format=cjs --outfile=dist/server/spw-lsp.cjs",
+        "compile:client": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --alias:@spwashi/spw-lsp/workspace-protocol=../../packages/spw-lsp/src/workspace-protocol.ts --format=cjs --platform=node",
+        "compile": "npm run compile:server && npm run compile:client",
+        "build": "npm run typecheck && npm run compile",
+        "watch": "npm run compile:server && esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --alias:@spwashi/spw-lsp/workspace-protocol=../../packages/spw-lsp/src/workspace-protocol.ts --format=cjs --platform=node --watch"
     },
     "categories": [
         "Programming Languages"
-    ],
-    "commands": [
-        {
-            "command": "spwConcepts.refresh",
-            "title": "Spw: Refresh Concepts Tree"
-        },
-        {
-            "command": "spwConcepts.setGrouping",
-            "title": "Spw: Set Concepts Grouping"
-        },
-        {
-            "command": "spwConcepts.setFilter",
-            "title": "Spw: Filter Concepts Tree"
-        },
-        {
-            "command": "spwConcepts.clearFilter",
-            "title": "Spw: Clear Concepts Filter"
-        },
-        {
-            "command": "spwConcepts.openEntry",
-            "title": "Spw: Open Concept Entry"
-        },
-        {
-            "command": "spwConcepts.filterToName",
-            "title": "Spw: Filter Concepts to Name"
-        },
-        {
-            "command": "spwWorkspace.refresh",
-            "title": "Spw: Re-ground Workspace Atlas",
-            "icon": "$(refresh)"
-        },
-        {
-            "command": "spwWorkspace.selectRoot",
-            "title": "Spw: Select Workspace Root"
-        }
     ],
     "dependencies": {
         "vscode-languageclient": "^9.0.1"
@@ -81,6 +53,33 @@
         "typescript": "^5.2.0"
     },
     "contributes": {
+        "commands": [
+            {
+                "command": "spw.navigate",
+                "title": "Spw: Navigate Roots and Landmarks"
+            },
+            {
+                "command": "spwConcepts.refresh",
+                "title": "Spw: Refresh Concepts Tree"
+            },
+            {
+                "command": "spwConcepts.setGrouping",
+                "title": "Spw: Set Concepts Grouping"
+            },
+            {
+                "command": "spwConcepts.setFilter",
+                "title": "Spw: Filter Concepts Tree"
+            },
+            {
+                "command": "spwConcepts.clearFilter",
+                "title": "Spw: Clear Concepts Filter"
+            },
+            {
+                "command": "spwWorkspace.refresh",
+                "title": "Spw: Re-ground Workspace Atlas",
+                "icon": "$(refresh)"
+            }
+        ],
         "colors": [
             { "id": "spw.lens", "description": "Lens annotations (#:) — probing, measurement", "defaults": { "dark": "#4EC9B0", "light": "#267F7F", "highContrast": "#4EC9B0", "highContrastLight": "#267F7F" } },
             { "id": "spw.intent", "description": "Intent annotations (#!) — action, injection", "defaults": { "dark": "#CE9178", "light": "#A31515", "highContrast": "#CE9178", "highContrastLight": "#A31515" } },

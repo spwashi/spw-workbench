@@ -47,7 +47,7 @@ Workspace contract `51d36684` distinguishes valid from invalid present manifests
 - resolved: parallel composition replaces, rather than appends, the cumulative base transform;
 - resolved: mixed-authority profiles fail atomically with explicit blocked-rule receipts;
 - resolved: coupling construction/reading validates arity, own keys, surfaces, placement, and occupancy/payload compatibility;
-- ready for human gate: LSP v1 delegates manifest validity to Seed, distinguishes absent/invalid/unreadable authority, and blocks unusable roots without inferred fallback;
+- resolved by `0a8adfe2`: LSP v1 delegates manifest validity to Seed, distinguishes absent/invalid/unreadable authority, and blocks unusable roots without inferred fallback;
 - resolved: transpose returns a separately labeled, non-vector-multipliable matrix type.
 
 Runtime integration status:
@@ -63,7 +63,8 @@ Tooling integration status:
 - landed `eb45f240`: navigation distinguishes consumer, infrastructure, canonical, and explicitly declared external authority while rejecting invalid manifests, unknown sigils, and realpath aliases into mounted infrastructure;
 - landed `5f1dff99`: pulse plans all requested files before one guarded `effect.l2.workspace`, refuses macro/cross-authority writes, rejects non-round-tripping UTF-8, and reports semantic equivalence as unclaimed.
 - landed `28906c5d`: designated mounted-workbench identity takes precedence over generic external classification when the mount resolves through a symlink;
-- ready for human gate: LSP initialization inside a designated mount resolves outer consumer authority before config, observable state, indexing, and scanning while ordinary nested folders remain explicit; v1 is a closed URI-only shape and the legacy method is explicitly quarantined.
+- landed `0a8adfe2`: LSP initialization inside a designated mount resolves outer consumer authority before config, observable state, indexing, and scanning while ordinary nested folders remain explicit; v1 is a closed URI-only shape and the legacy method is explicitly quarantined;
+- ready for human gate: VS Code consumes the shared v1 decoder, carries URI/role/kind evidence through navigation and atlas state, removes local root inference and legacy projections, bundles the matching server, and passes an extracted-archive smoke.
 
 ## Reviewed post-checkpoint candidates
 
@@ -79,6 +80,7 @@ Replay only after the checkpoint partitions build:
 - retain the LSP split from editor packaging: v1 protocol/authority first, then a URI-native client with an extracted-archive server smoke;
 - repair selector truth before plugin exposure: require full-token consumption, separate `any` from `*`, project all boundary-coupling discriminants, and define ordered-group semantics before choosing collision-free surface syntax;
 - keep projections out of workspace-manifest v1 until base/target URI, readiness, provenance, revision, and hypothetical status are explicit;
+- keep Neovim workspace evidence in its own partition: negotiate the advertised method and retire local regex/path/write authority before adding root navigation;
 - reconcile mobility catalogs with their executable `apply` domains;
 - keep `swap-grace.spw` out until its boundary kinds, Frame/Body spelling, surface/runtime liminality, and alternate-form witness are corrected.
 

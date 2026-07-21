@@ -1,8 +1,7 @@
 import * as vscode from 'vscode'
-import * as fs from 'node:fs'
-import * as path from 'path'
 import {
   LanguageClient,
+  TransportKind,
   type LanguageClientOptions,
   type ServerOptions,
 } from 'vscode-languageclient/node'
@@ -10,7 +9,7 @@ import { AnnotationIndex } from './annotation-index'
 import { createSpwContext } from './context'
 import { registerContextStrip } from './context-strip'
 import { createSpwCustomRequestClient } from './lsp/custom-requests'
-import { ROOT_MAP, resolveRoot } from './roots'
+import { registerSpwNavigation } from './navigation'
 import { SIGIL_SEMANTICS } from './semantics'
 import { registerConceptsTreeView } from './views/concepts-tree'
 import { registerWorkspaceAtlasView } from './views/workspace-tree'
@@ -18,8 +17,8 @@ import { registerWorkspaceAtlasView } from './views/workspace-tree'
 let client: LanguageClient | undefined
 
 export function activate(context: vscode.ExtensionContext): void {
-  const documentSelector: vscode.DocumentSelector = { language: 'spw' }
-  client = createLanguageClient()
+  const documentSelector: vscode.DocumentSelector = { scheme: 'file', language: 'spw' }
+  client = createLanguageClient(context)
   client.start()
 
   const requests = createSpwCustomRequestClient(client)
@@ -28,8 +27,6 @@ export function activate(context: vscode.ExtensionContext): void {
     documentSelector,
     annotationIndex,
     requests,
-    resolveRoot,
-    ROOT_MAP,
     SIGIL_SEMANTICS,
   })
 
@@ -43,6 +40,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
   const disposables: vscode.Disposable[] = [
     ...registerContextStrip(spw),
+    ...registerSpwNavigation(spw),
     ...registerConceptsTreeView(spw),
     ...registerWorkspaceAtlasView(spw),
   ]
@@ -58,42 +56,25 @@ export async function deactivate(): Promise<void> {
 
 // ── Helpers ─────────────────────────────────────────────────────
 
-function createLanguageClient(): LanguageClient {
+function createLanguageClient(
+  context: vscode.ExtensionContext,
+): LanguageClient {
   // The stdio-server.ts handles: definition, documentLink, hover,
   // documentSymbol, workspaceSymbol, completion, codeLens,
   // formatting, diagnostics, and the custom `spw/*` request lane.
   return new LanguageClient(
     'spwLanguageServer',
     'Spw Language Server',
-    createServerOptions(resolveServerPath()),
+    createServerOptions(context),
     createClientOptions(),
   )
 }
 
-function createServerOptions(serverScript: string): ServerOptions {
-  if (serverScript.endsWith('.js')) {
-    return {
-      run: {
-        command: process.execPath,
-        args: [serverScript],
-      },
-      debug: {
-        command: process.execPath,
-        args: [serverScript],
-      },
-    }
-  }
-
-  // Fall back to tsx only when the built server is unavailable.
+function createServerOptions(context: vscode.ExtensionContext): ServerOptions {
+  const module = configuredServerPath(context)
   return {
-    run: {
-      command: process.execPath,
-      args: ['--import', 'tsx', serverScript],
-    },
-    debug: {
-      command: process.execPath,
-      args: ['--import', 'tsx', serverScript],
-    },
+    run: { module, transport: TransportKind.stdio },
+    debug: { module, transport: TransportKind.stdio },
   }
 }
 
@@ -106,37 +87,15 @@ function createClientOptions(): LanguageClientOptions {
   }
 }
 
-function resolveServerPath(): string {
-  const candidateRoots = new Set<string>()
-  const workspaceRoots = vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath) ?? []
-
-  if (process.env.SPW_WORKBENCH_ROOT) {
-    candidateRoots.add(process.env.SPW_WORKBENCH_ROOT)
+function configuredServerPath(context: vscode.ExtensionContext): string {
+  const manifest = context.extension.packageJSON as { spw?: { server?: unknown } }
+  const configured = manifest.spw?.server
+  if (
+    typeof configured !== 'string' ||
+    !configured.startsWith('./') ||
+    configured.split('/').includes('..')
+  ) {
+    throw new Error('The extension manifest does not declare a safe bundled Spw server path.')
   }
-
-  for (const workspaceRoot of workspaceRoots) {
-    candidateRoots.add(workspaceRoot)
-    candidateRoots.add(path.join(workspaceRoot, '.spw', '_workbench'))
-    candidateRoots.add(path.join(workspaceRoot, 'node_modules', 'spw-workbench'))
-  }
-
-  candidateRoots.add(path.resolve(__dirname, '..', '..', '..'))
-
-  for (const root of candidateRoots) {
-    const builtCandidate = path.join(root, 'packages', 'spw-lsp', 'dist', 'stdio-server.js')
-    if (fs.existsSync(builtCandidate)) {
-      return builtCandidate
-    }
-
-    const sourceCandidate = path.join(root, 'packages', 'spw-lsp', 'src', 'stdio-server.ts')
-    if (fs.existsSync(sourceCandidate)) {
-      return sourceCandidate
-    }
-  }
-
-  if (workspaceRoots[0]) {
-    return path.join(workspaceRoots[0], 'packages', 'spw-lsp', 'src', 'stdio-server.ts')
-  }
-
-  return path.resolve(__dirname, '..', '..', '..', 'packages', 'spw-lsp', 'src', 'stdio-server.ts')
+  return context.asAbsolutePath(configured.slice(2))
 }

@@ -8,5 +8,6 @@ export const vitestWorkspaceAlias = {
   '@spwashi/spw-runtime/substrate': path.resolve(__dirname, 'packages/spw-runtime/src/substrate.ts'),
   '@spwashi/spw-runtime/resonance': path.resolve(__dirname, 'packages/spw-runtime/src/resonance.ts'),
   '@spwashi/spw-cli': path.resolve(__dirname, 'packages/spw-cli/src/index.ts'),
+  '@spwashi/spw-lsp/workspace-protocol': path.resolve(__dirname, 'packages/spw-lsp/src/workspace-protocol.ts'),
   '@spwashi/spw-lsp': path.resolve(__dirname, 'packages/spw-lsp/src/index.ts'),
 } as const

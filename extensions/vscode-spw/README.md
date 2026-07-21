@@ -1,62 +1,32 @@
 # Spw Language Support for VS Code
 
-This extension is the VS Code client for the Spw workbench.
+This preview extension is a thin client over the bundled `spw-lsp` server. It provides syntax highlighting, snippets, standard language-server editing features, Concepts and Workspace views, and `Spw: Navigate Roots and Landmarks`.
 
-It stays thin by delegating language behavior to `spw-lsp`.
+Workspace roots come from the closed, URI-first `spw/workspaceManifest/v1` response. The client preserves each root's URI, role, kind, and evidence source; it does not parse manifests, infer fallback paths, or reconstruct local filesystem authority. Invalid or unreadable authority appears as blocked diagnostics in the Workspace view.
 
-## Features
+## Build and package
 
-- syntax highlighting and snippets for `.spw`
-- LSP-backed hover, diagnostics, completion, formatting, and links
-- Concepts and Workspace Atlas views
-- semantic-token and display surfaces driven by the server
-
-## Architecture
-
-The split is straightforward:
-
-- the extension owns editor wiring and view composition
-- `spw-lsp` owns parsing, index state, and language semantics
-
-That keeps editor behavior aligned with the server.
-
-## Server Resolution
-
-The extension looks for the language server in this order:
-
-1. `SPW_WORKBENCH_ROOT`
-2. the open workspace root as a canonical checkout
-3. `.spw/_workbench` inside the open workspace
-4. `node_modules/spw-workbench`
-5. the extension's repo-relative fallback
-
-## Local Use
-
-Build:
+From the repository root:
 
 ```bash
-npm --prefix extensions/vscode-spw run compile
+npm run build:vscode
+npm run test:vscode
 ```
 
-Symlink into the editor extensions directory:
+The build emits both `dist/extension.js` and the matching `dist/server/spw-lsp.cjs`. Runtime startup uses only that bundled server—there is no workspace checkout search or `tsx` source fallback.
+
+The release bundler packages the extension runtime files and runs an extracted-archive smoke in an arbitrary temporary directory:
 
 ```bash
-ln -s "$(pwd)/extensions/vscode-spw" ~/.vscode/extensions/spw-language-0.3.0
+bash scripts/release/bundle-extensions.sh --skip-build
 ```
 
-## Main Surfaces
+## Ownership
 
-Start with:
+- `src/extension.ts` owns editor activation and the bundled-server transport.
+- `src/lsp/custom-requests.ts` validates custom response payloads.
+- `src/navigation.ts` opens server-provided URIs without path reconstruction.
+- `src/views/workspace-tree.ts` presents workspace evidence.
+- `spw-lsp` owns parsing, indexing, diagnostics, workspace authority, and language meaning.
 
-- [`src/extension.ts`](src/extension.ts)
-- [`src/lsp/custom-requests.ts`](src/lsp/custom-requests.ts)
-- [`src/views/concepts-tree.ts`](src/views/concepts-tree.ts)
-- [`src/views/workspace-tree.ts`](src/views/workspace-tree.ts)
-- [`../../packages/spw-lsp/src/stdio-server.ts`](../../packages/spw-lsp/src/stdio-server.ts)
-- [`../../packages/spw-lsp/src/server-index.ts`](../../packages/spw-lsp/src/server-index.ts)
-
-## Related Docs
-
-- [`../../README.md`](../../README.md)
-- [`../../docs/runtime/md/github-reading-map.md`](../../docs/runtime/md/github-reading-map.md)
-- [`../../docs/runtime/md/quick-start.md`](../../docs/runtime/md/quick-start.md)
+Other editors should negotiate the same advertised v1 method and keep URI identity opaque until their final navigation boundary.
