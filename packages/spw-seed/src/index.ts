@@ -302,8 +302,12 @@ export { previewAST } from './instrumentation/preview'
 
 // Workspace contracts
 export {
+  analyzeWorkspaceRootManifest,
   parseWorkspaceRootDeclarations,
   type WorkspaceRootDeclaration,
+  type WorkspaceRootManifestAnalysis,
+  type WorkspaceRootManifestDiagnostic,
+  type WorkspaceRootManifestDiagnosticCode,
 } from './workspace-roots'
 
 // Sugar/desugar helpers
