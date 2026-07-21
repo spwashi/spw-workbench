@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import process from 'node:process'
 import { parse, spwq, type SpwMatch } from '@spwashi/spw-seed'
@@ -11,6 +11,7 @@ import {
 } from './selectors'
 import { printHelpPage } from './help'
 import type { SelectArgs } from './types'
+import { resolveWorkspacePath, tryDiscoverSpwWorkspace } from './workspace'
 
 export async function runSpwSelectCli(argv: string[]): Promise<void> {
   const args = parseSelectArgs(argv.slice(2))
@@ -21,8 +22,9 @@ export async function runSpwSelectCli(argv: string[]): Promise<void> {
   }
 
   const { selector, label } = resolveCliSelector(args.selector, args.expr)
-  const filePath = resolve(args.file)
-  const source = readFileSync(filePath, 'utf8')
+  const workspace = await tryDiscoverSpwWorkspace()
+  const filePath = workspace ? await resolveWorkspacePath(workspace, args.file) : resolve(args.file)
+  const source = await readFile(filePath, 'utf8')
   const output = parse(source)
 
   if (!output.ast) {

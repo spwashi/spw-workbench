@@ -76,6 +76,7 @@ export function printInitUsage(): void {
       {
         title: 'Scaffolds',
         lines: [
+          '.spw/README.md              prompt and navigation entrypoint',
           '.spw/index.spw              routing table and surface registry',
           '.spw/mount.spw              studio binding and deployment targets',
           '.spw/workspace.spw          workspace roots and LSP configuration',
@@ -329,7 +330,7 @@ async function installWorkbench(options: InitCliOptions, runtime: InitRuntimeCon
   console.log(`\n${bold('Spw Init')}\nTarget: ${dim(targetAbs)}\n`)
 
   const seeded = await seedConsumerScaffold(targetAbs, runtime, { preset: options.preset })
-  console.log(` ${green('✓')} Portable consumer scaffold seeded (.spw/index.spw, .spw/workspace.spw, .spw/mount.spw)`)
+  console.log(` ${green('✓')} Portable consumer scaffold seeded (.spw/README.md, .spw/index.spw, .spw/workspace.spw, .spw/mount.spw)`)
   if (seeded.preset !== 'default') {
     console.log(` ${green('✓')} Applied ${seeded.preset} preset scaffold`)
   }

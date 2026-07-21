@@ -3,7 +3,7 @@ import type { OperatorPayload } from './types'
 export const OPERATOR_SET = new Set(['^', '!', '?', '~', '@', '&', '*', '=', '%', '#', '.', '$', '_'])
 export const BRACE_SET = new Set(['(', ')', '[', ']', '{', '}', '<', '>'])
 export const REGISTER_GATE_SET = new Set(['.[', '.]', '.(', '.)', '.{', '.}', '.<', '.>'])
-export const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', 'release'])
+export const IGNORED_DIRS = new Set(['.git', '_workbench', 'node_modules', 'dist', 'release'])
 
 export const OPERATOR_PAYLOADS: Record<string, OperatorPayload> = {
   '?': { role: 'probe', physics: 'measurement onset', tuning: 'increase sampling density around high-drift zones' },

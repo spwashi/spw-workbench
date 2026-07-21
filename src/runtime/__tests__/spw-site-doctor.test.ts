@@ -34,6 +34,7 @@ describe('spw doctor', () => {
     const root = await makeTempDir()
     await mkdir(path.join(root, '.git'))
     await mkdir(path.join(root, '.spw', '_workbench', 'node_modules'), { recursive: true })
+    await writeFile(path.join(root, '.spw', 'README.md'), '# Spw Workspace\n')
     await writeFile(path.join(root, '.spw', 'index.spw'), '# Index\n')
     await writeFile(path.join(root, '.spw', 'workspace.spw'), '# Workspace\n')
     await writeFile(
@@ -58,6 +59,24 @@ describe('spw doctor', () => {
     expect(report.next).toEqual([])
   })
 
+  it('warns when the optional consumer orientation entrypoint is absent', async () => {
+    const root = await makeTempDir()
+    await mkdir(path.join(root, '.git'))
+    await mkdir(path.join(root, '.spw', '_workbench', 'node_modules'), { recursive: true })
+    await writeFile(path.join(root, '.spw', 'index.spw'), '# Index\n')
+    await writeFile(path.join(root, '.spw', 'workspace.spw'), '# Workspace\n')
+    await writeFile(path.join(root, '.spw', 'mount.spw'), '# Mount\n')
+    await writeFile(path.join(root, '.spw', '_workbench', 'package.json'), '{"name":"spw-workbench"}\n')
+
+    const report = await inspectDoctorTarget(root)
+
+    expect(report.status).toBe('warn')
+    expect(report.checks.find((check) => check.id === 'consumer-orientation')).toMatchObject({
+      status: 'warn',
+      fix: 'cd .spw/_workbench && npm run spw:init -- ../..',
+    })
+  })
+
   it('doctor --fix seeds the portable scaffold and refreshes the commit gate', async () => {
     const root = await makeTempDir()
     await mkdir(path.join(root, '.git', 'hooks'), { recursive: true })
@@ -67,6 +86,7 @@ describe('spw doctor', () => {
     await applyDoctorFixes(root)
 
     await expect(access(path.join(root, '.spw', 'index.spw'))).resolves.toBeUndefined()
+    await expect(access(path.join(root, '.spw', 'README.md'))).resolves.toBeUndefined()
     await expect(access(path.join(root, '.spw', 'workspace.spw'))).resolves.toBeUndefined()
     await expect(access(path.join(root, '.spw', 'mount.spw'))).resolves.toBeUndefined()
     await expect(access(path.join(root, '.git', 'hooks', 'pre-commit'))).resolves.toBeUndefined()

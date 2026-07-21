@@ -4,6 +4,7 @@ import process from 'node:process'
 import { type SpwMatch, spwq } from '@spwashi/spw-seed'
 import { extractReferenceRaw, filterRootRefs, resolveCliSelector } from './selectors'
 import type { QueryArgs, QueryRow } from './types'
+import { resolveWorkspacePath, tryDiscoverSpwWorkspace, type SpwWorkspace } from './workspace'
 
 const SELECT_FIELDS = new Set<keyof QueryRow>([
   'file',
@@ -18,11 +19,15 @@ const SELECT_FIELDS = new Set<keyof QueryRow>([
   'text',
 ])
 
-const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', 'release'])
+const IGNORED_DIRS = new Set(['.git', '_workbench', 'node_modules', 'dist', 'release'])
 
 export async function runQueryCli(args: QueryArgs): Promise<void> {
   const { selector } = resolveCliSelector(args.selector, args.expr)
-  const files = await collectFiles(args.roots)
+  const workspace = await tryDiscoverSpwWorkspace()
+  const resolvedRoots = workspace
+    ? await Promise.all(args.roots.map((root) => resolveWorkspacePath(workspace, root)))
+    : args.roots
+  const files = await collectFiles(resolvedRoots)
   const whereFilters = parseWhere(args.where)
   const selectFields = parseSelect(args.select)
   const rows: QueryRow[] = []
@@ -37,7 +42,7 @@ export async function runQueryCli(args: QueryArgs): Promise<void> {
     }
 
     for (const match of matches) {
-      const row = toRow(file, source, match)
+      const row = toRow(file, source, match, workspace)
       if (!passesWhere(row, whereFilters)) continue
       rows.push(row)
     }
@@ -90,9 +95,9 @@ async function collectFiles(roots: string[]): Promise<string[]> {
   return [...files].sort()
 }
 
-function toRow(file: string, source: string, match: SpwMatch): QueryRow {
+function toRow(file: string, source: string, match: SpwMatch, workspace: SpwWorkspace | null): QueryRow {
   const snippet = source.slice(match.span.startOffset, match.span.endOffset).replace(/\s+/g, ' ').trim()
-  const relFile = path.relative(process.cwd(), file)
+  const relFile = path.relative(workspace?.consumerRoot ?? process.cwd(), file)
   const row: QueryRow = {
     file: relFile,
     kind: match.node.type,
@@ -247,7 +252,7 @@ function renderCountMap(map: Map<string, number>): string {
 
 async function collectSpwFiles(root: string): Promise<string[]> {
   const absRoot = path.resolve(root)
-  const stat = await fs.stat(absRoot).catch(() => null)
+  const stat = await statOrNull(absRoot)
   if (!stat) return []
 
   if (stat.isFile()) {
@@ -280,7 +285,24 @@ async function collectSpwFiles(root: string): Promise<string[]> {
 async function readText(filePath: string): Promise<string | null> {
   try {
     return await fs.readFile(filePath, 'utf8')
-  } catch {
-    return null
+  } catch (error) {
+    if (nodeErrorCode(error) === 'ENOENT') return null
+    throw error
   }
+}
+
+async function statOrNull(target: string) {
+  try {
+    return await fs.stat(target)
+  } catch (error) {
+    const code = nodeErrorCode(error)
+    if (code === 'ENOENT' || code === 'ENOTDIR') return null
+    throw error
+  }
+}
+
+function nodeErrorCode(error: unknown): string | undefined {
+  return typeof error === 'object' && error !== null && 'code' in error
+    ? String((error as { code?: unknown }).code)
+    : undefined
 }

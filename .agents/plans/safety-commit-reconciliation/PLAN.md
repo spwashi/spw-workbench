@@ -55,13 +55,17 @@ The authoritative initial manifest is `git show --name-status a333db8d`. Partiti
 
 1. `.[plans] =scope[safety-commit-reconciliation] — record reconstruction invariants and manifest`
 2. `^seed[workspace,coupling,topography] =stabilize[kernels] — restore portable kernels and repair structural invariants`
-3. `&[runtime] =integrate[coupling-events] — restore runtime interpretation and relation evidence`
-4. `&[cli,analyzers] =surface[operational-topography] — restore safe navigation and probe tooling`
-5. `&[lsp,vscode] =project[workspace-observations] — restore thin editor transports`
-6. `.[canon,skills] =align[operational-theory] — restore exhibits after executable behavior exists`
-7. `.[plans] =rebase[checkpoint-ecology] — restore plan surfaces and refresh dependency truth`
-8. `^seed[form-contours] =project[density] — replay reviewed contour and mobility receipts`
-9. `&[runtime,plans] =integrate[liminality-bridge] — replay explicit effects and aligned theory`
+3. `^seed[topography] =repair[parse-health] — count escaped delimiter parity once`
+4. `&[runtime] =integrate[coupling-events] — restore runtime interpretation and relation evidence`
+5. `^seed[workspace] =define[manifest-evidence] — make root authority diagnosable`
+6. `&[analyzers] =measure[topography] — delegate parse health to Seed evidence`
+7. `&[cli,workspace] =orient[mounted-consumers] — anchor navigation in consumer authority`
+8. `&[cli,pulse] =preview[mutations] — restore atomic probe and write gates`
+9. `&[lsp,vscode] =project[workspace-observations] — restore thin editor transports`
+10. `.[canon,skills] =align[operational-theory] — restore exhibits after executable behavior exists`
+11. `.[plans] =rebase[checkpoint-ecology] — restore plan surfaces and refresh dependency truth`
+12. `^seed[form-contours] =project[density] — replay reviewed contour and mobility receipts`
+13. `&[runtime,plans] =integrate[liminality-bridge] — replay explicit effects and aligned theory`
 
 Each commit must pass the smallest relevant build/test/lint gate and contain exactly one `#[episode]{ ... }` block.
 
