@@ -1,6 +1,6 @@
 # Plan: vscode-authoring-probe-loop
 
-Design the VS Code authoring loop around `.spw` workspace semantics by making completions, theming cues, formatting/refactor actions, code lenses, commands, and status surfaces register-aware and probe-oriented.
+Design a thin VS Code authoring projection over Seed/LSP evidence: completions, theming cues, differential previews, code lenses, commands, and status surfaces that are profile-aware and probe-oriented.
 
 ## Goal
 
@@ -14,27 +14,39 @@ The authoring loop is also where new users *learn* Spw dynamics. The completion 
 
 ## Scope
 
-- **In scope**: register-aware completion for metrics and root/selector contexts, **phase-aware completion** (after `?` suggest `~`, after `&` suggest `*`, cursor-local phase determines suggestion ranking), clickable code-lens actions including materialization-state lenses ("Generate body" on frames without projections, "Stale projection" on ungrounded bodies), probe/run commands, **materialization breadcrumb** in status bar showing `priming|concept|frame|body` for cursor context, **spirit-sequence phase indicator** in status bar, theming nuance tied to state and confidence, formatting/refactor interactions, graph-query affordances, **operator-frequency heat** command showing the current file's operator distribution (echoing the manifest's `$%[op.distribution]` probe), interaction rules for surfacing runtime/probe state in ordinary editing flow, shared `SpwContext` fields (`activePhase`, `materializationState`, `probeHistory`), optional consumption of atlas/register context when present, and cross-plan event emission (`authoring.phaseEntered`, `materialization.advanced`, `probe.completed`).
-- **Out of scope**: redesigning the formatter, replacing the terminal harness, adding a bespoke webview console, or implementing manifest parsing or register snapshot transport (atlas and register-explorer scope respectively).
+- **In scope**: exact-context completion for metrics and root/selector contexts; optional, declared linguistic phase profiles; previewable code-lens actions; read-only probe commands; materialization and operator-distribution observations with evidence grades; reading/review transform profiles; formatting/refactor actions that consume the shared differential plan; interaction rules for surfacing runtime/probe state in ordinary editing flow; additive shared context; optional atlas/register evidence when present.
+- **Out of scope**: client-local phase semantics; regex-owned structural truth; redesigning the formatter; write-capable pulses before verified differentials; replacing the terminal harness; adding a bespoke webview console; or implementing manifest parsing or register snapshot transport.
+
+## Ladder position
+
+Roadmap rung **4**. Depends on:
+
+- Shared cursor/context transport from `vscode-plugin-performance` (do not add a third debounce)
+- Seed-owned exact selection and differential envelopes from `operational-topography`
+- Canonical custom-protocol registry from the capability plan
+- `spw/phaseContext` and/or `spw/operatorFrequency` **server** implementations from capability plan (client types today are **phantoms**)
+- Soft: register snapshot if lenses need live registers
+
+See `.agents/plans/vscode-lsp-roadmap/PLAN.md`.
 
 ## Files
 
 ```text
-[NEW] .agents/plans/vscode-authoring-probe-loop/PLAN.md
-[NEW] .agents/plans/vscode-authoring-probe-loop/wip.spw
-[NEW] .agents/plans/vscode-authoring-probe-loop/vscode-authoring-probe-loop.spw
+[MOD] .agents/plans/vscode-authoring-probe-loop/PLAN.md
+[MOD] .agents/plans/vscode-authoring-probe-loop/wip.spw
+[REF] .agents/plans/vscode-authoring-probe-loop/vscode-authoring-probe-loop.spw
 [MOD] extensions/vscode-spw/package.json
 [MOD] extensions/vscode-spw/src/extension.ts
 [MOD] extensions/vscode-spw/src/context.ts
 [NEW] extensions/vscode-spw/src/status/runtime-status.ts
 [NEW] extensions/vscode-spw/src/commands/probe-commands.ts
+[MOD] extensions/vscode-spw/src/lsp/custom-requests.ts
 [MOD] packages/spw-lsp/src/context.ts
 [MOD] packages/spw-lsp/src/types.ts
 [MOD] packages/spw-lsp/src/stdio-server.ts
 [MOD] packages/spw-lsp/src/handlers/editing.ts
 [MOD] packages/spw-lsp/src/handlers/display.ts
 [MOD] packages/spw-lsp/src/handlers/analysis.ts
-[DEL] (none)
 ```
 
 ### Craft guard
@@ -42,24 +54,24 @@ The authoring loop is also where new users *learn* Spw dynamics. The completion 
 - Keep completions data-driven; do not hardcode another parallel register vocabulary into the completion handler.
 - Keep code-lens text and commands aligned so every promoted action explains exactly what it will inspect or reveal.
 - Treat status surfaces as summary only; detailed register/probe inspection should stay in explorer or detail commands.
-- Formatting and refactor actions should reuse the same semantic model as probes and completion so the editor does not teach contradictory transformations.
+- Formatting and refactor actions consume the same Seed-owned differential plan as CLI/LSP formatting; the client only previews and applies authorized edits.
 - Watch `packages/spw-lsp/src/handlers/editing.ts` and `packages/spw-lsp/src/handlers/display.ts` for density; helper extraction may be needed before behavior grows.
-- Phase-aware completion must derive suggestions from `SIGIL_SEMANTICS` and the spirit sequence, not from a parallel hardcoded map. The completion handler reads the cursor's look-back context to determine the current phase.
+- A phase profile must derive from a versioned server-owned profile and exact cursor context. `SIGIL_SEMANTICS` and regex look-back may render experiments, but cannot establish grammar or runtime truth.
 - Materialization breadcrumb and phase indicator must be cheap to compute — no full AST reparse on every keystroke. Use the document's cached parse result from `ServerIndex.getDocument()`.
 - SpwContext fields added by this plan (`activePhase`, `materializationState`, `probeHistory`) must be additive; do not remove or rename fields from the atlas or register-explorer plans.
 - Status messages use Spw vocabulary: "? → 3 resonances found", "cursor phase: ~ potential", "body ungrounded — spec owner changed".
 - If atlas/register context is absent, degrade to local file scope rather than hiding completions, code-lens actions, or status surfaces.
 
-## Phase-Aware Completion
+## Profile-Aware Completion (proposed)
 
-The spirit sequence defines a natural progression. The completion system should make this felt. The **literate-ui pattern** (`.spw/patterns/literate-ui.spw`) formalizes each operator as a navigation gesture and each phase as a completion context — the look-back rule and suggestion ranking below are direct applications of literate-ui's spirit navigation spine.
+The spirit sequence is one interpretive linguistic profile. The completion system may make that profile available without presenting it as parser or runtime law. The **literate-ui pattern** (`.spw/patterns/literate-ui.spw`) supplies candidate navigation language; measured acceptance, reversal, and task outcomes determine whether ranking is useful.
 
-- **Look-back rule**: from the cursor position, scan backward for the nearest unmatched spirit operator. This determines the current phase context.
+- **Context rule**: request the exact parser-owned selection and profile projection. A raw look-back scan is disclosed E1 lexical evidence, not a structural phase fact.
 - **Phase-appropriate suggestions**: after `?` (probe), rank `~` operators and naming patterns higher. After `&` (merge), rank `*` collapse and concrete binding patterns higher. After `^` (framing), suggest closing the frame and naming the integration.
 - **Spirit-sequence hint**: when the user types a spirit operator, the completion detail shows where this operator sits in the full sequence (`?~@&*^`) and what typically follows.
 - **Binding-phase awareness**: `!`, `=`, `%`, `#` are binding operators outside the main spirit progression. Completions after these should suggest the appropriate binding-phase patterns (action targets, constraints, metrics, annotation names) rather than spirit-sequence continuations.
 
-This behavior is computed in the LSP completion handler (`packages/spw-lsp/src/handlers/editing.ts`) by reading the cursor's parse context from the cached AST.
+This behavior belongs in the LSP completion handler only after the Seed selection and profile contract can support it; the client renders the returned ranking explanation.
 
 ## Materialization Breadcrumb
 
@@ -144,24 +156,24 @@ These fields complete the `SpwContext` shape defined in `vscode-interaction-cont
 ## Performance Considerations
 
 ### Cursor-movement costs
-Phase detection and materialization breadcrumb update on every `onDidChangeTextEditorSelection`. These must be **sub-millisecond** or the editor will feel sluggish.
+Phase projection and materialization breadcrumbs may update on cursor movement only after an actual-path latency budget is measured. No fixed threshold is asserted yet.
 
-- **Phase look-back**: scan backward from cursor through the current line's raw text for the nearest spirit operator. Do NOT re-parse the full document. The regex `[?~@&*^!=%#.$]` on `lineText.slice(0, cursorChar)` is O(line-length) and sufficient for solo-ship. AST-precise phase detection is a future enrichment (seed phase-context extraction).
+- **Phase evidence**: prefer cached parser-owned selection. A line regex may power an explicitly lexical prototype, with false-positive fixtures for strings, comments, nested containers, and adjacency.
 - **Materialization heuristic**: read the enclosing frame from `ServerIndex.getDocument(uri).parseResult` (already cached). Check for `~` bindings, `^` frames, and `ProjectionEntry` presence. Do NOT walk the full AST — read only the node at cursor depth.
 - **Debounce**: batch cursor-movement updates with a 50ms trailing debounce. VS Code fires many selection events during a single arrow-key hold.
 - **Status bar updates**: use `StatusBarItem.text` assignment (cheap) rather than re-creating the item. Create both status items once in `activate()`.
 
 ### Completion performance
-The existing completion handler (`editing.ts:21-169`) already splits the document with `source.split('\n')[pos.line]` per request. Phase-aware ranking adds a look-back scan on the same line — negligible cost. Do NOT add a full-document scan for operator frequency during completion; that belongs only in the explicit "Show Operator Distribution" command.
+Measure completion latency on representative files before and after ranking. Do not describe added work as negligible without a trace; full-document operator scans remain an explicit command or cached server observation.
 
 ### Operator-frequency heat command
-This is an **on-demand command**, not a continuous computation. Iterate all lines once, count sigils with a character-class regex, display via `vscode.window.showQuickPick`. For a 1000-line file this is <5ms. Cache the result on `ServerIndex.getDocument()` content hash if needed for repeated invocations.
+This is an **on-demand command**, not a continuous computation. Prefer lexer-owned counts so strings/comments are classified. Record file size, warm/cold state, elapsed time, and content hash before choosing a cache or latency budget.
 
 ### Event bus overhead
-All 7 cross-plan events are `vscode.EventEmitter` — synchronous, in-process, zero serialization. Emitting on cursor movement (after debounce) adds no measurable cost. Do NOT emit events before the debounce settles.
+Cross-plan events are synchronous and in-process, but their listeners may perform work. Measure the complete event path and do not emit cursor events before the shared invalidation policy settles.
 
 ### probe.completed and trial run
-`trialRunSpw()` already exists in `HandlerDeps` and runs synchronously in the LSP process. The probe command should run it via an LSP custom request (`spw/probe`) to avoid blocking the extension host. Display results via `OutputChannel` or quick pick, not inline editor decorations (those require per-line layout and are expensive for large results).
+`trialRunSpw()` exists in `HandlerDeps` and runs synchronously in the LSP process. A `spw/probe` custom request is proposed, not implemented or advertised; it must pass the protocol-registry and effect-grade review before a client command depends on it.
 
 ## Design Considerations
 

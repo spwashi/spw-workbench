@@ -1,0 +1,44 @@
+# vscode-editor-contract
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @plan: ~".agents/plans/vscode-editor-contract/PLAN.md"
+ @topography: ~".agents/plans/operational-topography/operational-topography.spw"
+ @roadmap: ~".agents/plans/vscode-lsp-roadmap/PLAN.md"
+ @interaction: ~".agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw"
+ @client_rpc: ~"extensions/vscode-spw/src/lsp/custom-requests.ts"
+ @stdio: ~"packages/spw-lsp/src/stdio-server.ts"
+}
+
+^["orientation"]{
+ lane: #execution_truth
+ ladder: #service
+ rule: "Seed owns parse/structure truth; LSP assembles revision-addressed observations; client owns composition and presentation; invalidation has one owner per observation"
+}
+
+^["authority"]{
+ manifest: "consumer declarations and root evidence from .spw/workspace.spw"
+ index: "behavioral observations from ServerIndex"
+ client: "presentation only; never silently override manifest"
+}
+
+^["transport"]{
+ standard_lsp: [#hover, #completion, #semanticTokens, #definition, #diagnostics]
+ custom_landed: [#annotations, #contextAtPosition, #workspaceManifest, #workspaceTemperature, #select]
+ custom_phantom: [#resonance, #registerSnapshot, #operatorFrequency, #phaseContext]
+}
+
+^["topography_envelope"]{
+ selection: [#revision, #document_version, #source_span, #ast_path, #parse_state]
+ evidence: [#epistemic_grade, #method, #profile, #cost, #uncertainty, #counterexamples]
+ effects: [#effect_grade, #capability, #preview, #preconditions]
+ differential: [#ordered_edits, #source_map, #mutation_profile, #verification]
+}
+
+^["invalidation"]{
+ document: [#didOpen, #didChange, #didSave, #didClose]
+ workspace: [#didChangeWatchedFiles, #scanWorkspace]
+ cursor: [#shared_context_bus]
+ visibility: [#gate_tree_refresh]
+}

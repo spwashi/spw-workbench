@@ -1,0 +1,195 @@
+# Path & Reference Enhancement
+#
+# How ~"…" / @root / #names / projections / walks become a graded
+# reference forest — for humans, static analysis, and LLMs.
+#
+# @see packages/spw-lsp/src/spw-selector.ts
+# @see packages/spw-lsp/src/handlers/navigation.ts
+# @see packages/spw-seed/src/query/presets.ts  (PATH_REFS, REFERENCES, NAVIGABLE)
+# @see .spw/conventions/naming.spw
+# @see .spw/conventions/selection.spw
+# @see .agents/plans/spw-garden-geometry/phd-domain-topography.spw  (reference strata)
+
+#:layer #!pragmatics
+#:garden #!reference
+#:lsp #!navigation
+
+^seed[Spw.Garden.Path.ReferenceEnhancement v:0.1 @profile:Spw.b @intent:path_ref_forest]
+
+^["roots"]{
+ @selector: ~"../../../packages/spw-lsp/src/spw-selector.ts"
+ @navigation: ~"../../../packages/spw-lsp/src/handlers/navigation.ts"
+ @presets: ~"../../../packages/spw-seed/src/query/presets.ts"
+ @naming: ~"../../../.spw/conventions/naming.spw"
+ @selection: ~"../../../.spw/conventions/selection.spw"
+ @topography: ~"./phd-domain-topography.spw"
+ @substrate: ~"./substrate-organelle-physics.spw"
+}
+
+// ── Today (footholds) ──────────────────────────────────────────
+
+^["today"]{
+ ~#status: "implemented_partial"
+ kinds: #[pathRef_tilde_quote, rootRef_at_root]
+ discovery: "selectPathRefs — AST spwq + strict regex fallback; guard mid-token / prose ~"
+ navigation: #[definition, documentLink, references_basename_search, rename_annotations]
+ resolve: "resolveReferencePath — workspace roots, allowDirectory, strip anchors"
+ index: "doc.selectorHits on open/change; broken refs as diagnostics"
+ inlay: "path resolve display when differs from written form"
+ presets: "PATH_REFS $~\"_\" | REFERENCES $@_ | NAVIGABLE union"
+}
+
+^["gaps"]{
+ multi_hop: "definition lands file:0:0 — no frame/anchor target range"
+ reverse_index: "references are needle/basename scan not graph"
+ edge_kinds: "only path/root — no projection, braid, graft, ONF as edges"
+ transect: "resolve is filesystem; missing strata packet (relation distance, revision)"
+ anchors: "stripAnchor on resolve; #fragment rarely lands in-file"
+ prose_guard: "strict but not AST-prose-aware everywhere"
+ mount: "consumer vs _workbench authority not encoded on every hit"
+ typed_hit: "SpwSelectorHit thin — no resolve status, no contentHash of target"
+}
+
+// ── Reference kinds (forest) ───────────────────────────────────
+
+^["edge_kinds"]{
+ ~#status: "proposed"
+ path_ref: "~\"relative/or/tilde\" — local adjacency"
+ root_ref: "@name/… — shelf/workspace root"
+ fragment: "#anchor or frame name after path"
+ annotation_ref: "#topic / #:lens / #!intent co-loci"
+ projection: "mold → gen cast (specOwner → target)"
+ graft: "mount / seed exchange / submodule portability refs"
+ braid_pair: "same-line or same-frame craft partners"
+ query_hit: "ephemeral lens match edge"
+ onf_derive: "surface → normalized shape (semantic derivative)"
+ virtual: "catalog id, doi, external SOR — projection in, not invent path"
+}
+
+// ── Resolution enhancements ────────────────────────────────────
+
+^["resolve"]{
+ ~#status: "proposed"
+ packet: .{
+  written: "raw surface form"
+  resolved_path: "absolute or workspace-relative canonical"
+  target_range: "line/col in target (frame, anchor, symbol) — not 0:0"
+  status: "ok | missing | ambiguous | external | generated | outside_authority"
+  edge_kind: "from edge_kinds"
+  revision: "contentHash or git when available"
+  strata: "source+relation minimum; structure if frame landed"
+ }
+ multi_candidate: "ambiguous → list with scores (basename vs exact vs index.*)"
+ directory: "allowDirectory keeps index.spw / folder contract; show children count"
+ mount_policy: "hits into .spw/_workbench tagged instrument; consumer corpus default exclude"
+}
+
+// ── Index & reverse graph ──────────────────────────────────────
+
+^["index"]{
+ ~#status: "proposed"
+ forward: "file → outgoing hits[] with resolve packets"
+ reverse: "target → incoming locations (true find-all-refs)"
+ projection_bidirectional: "specOwner ↔ gen body"
+ rebuild: "contentHash incremental; full scan cold tier"
+ query: "spwq NAVIGABLE + workspace index join"
+}
+
+// ── Navigation UX ──────────────────────────────────────────────
+
+^["navigation"]{
+ definition: "land target_range not file start; peek shows transect"
+ links: "underline only resolvable; tooltip written→resolved + status"
+ references: "group by edge_kind; filter generated; include/exclude mount"
+ rename: "path rewrite plan S2 exact; annotation rename already partial"
+ hover: "anti-echo: show resolve status, twins, Δ if nested — not restate ~path"
+ inlay: "keep resolve alias; add broken/ambiguous markers"
+ code_lens: "N incoming · M outgoing · stale cast?"
+ walk: "path edges seed assembly/meaning walks (ref forest)"
+}
+
+// ── Static analysis ────────────────────────────────────────────
+
+^["static"]{
+ E0: #[
+  "unresolved path/root ref",
+  "cycle detect optional policy",
+  "rename breakage count (name-impact)",
+  "generated pointing at missing mold"
+ ]
+ E1: #[
+  "relation_distance histogram",
+  "orphan targets (no reverse)",
+  "cross-bed density",
+  "ambiguous basename ratio"
+ ]
+ E2: "interpretive 'important dependency' — labeled only"
+ ci: "audit:refs JSON; optional SARIF"
+}
+
+// ── LLM tools ──────────────────────────────────────────────────
+
+^["llm"]{
+ tools: #[
+  .{name=spw.ref.resolve, in="hit|uri+pos", out="resolve packet"},
+  .{name=spw.ref.outgoing, in="uri", out="hits[]"},
+  .{name=spw.ref.incoming, in="target", out="locations[]"},
+  .{name=spw.ref.impact, in="old→new path", out="edit plan S2 dry"},
+  .{name=spw.ref.walk, in="seed+policy", out="trace steps"}
+ ]
+ rules: #[
+  "never invent ranges — only packets from index",
+  "multi-file path rewrite only via S2 plan",
+  "mount instrument paths not rewritten as consumer content"
+ ]
+}
+
+// ── Org / domain ───────────────────────────────────────────────
+
+^["org"]{
+ ownership: "@root map is org topology; name-impact = reorg cost"
+ beds: "refs that cross beds are graft points — audit explicitly"
+ portability: "tilde-relative and @root preferred over absolute (naming.spw)"
+ phd: "reference strata in phd-domain-topography — pin cite = source depth; method dependence = relation+operation"
+}
+
+// ── Syntax / dialect enhancements (optional) ───────────────────
+
+^["syntax_surface"]{
+ ~#status: "proposed_careful"
+ keep: "~\"path\" and @root/path as primary"
+ enhance_tags: "~<tag>\"path\" already partially supported — index tags as edge metadata"
+ fragment: "~\"file\"#>anchor or ~\"file\"#frame — land structure depth"
+ typed_roots: "declare @root kinds (content|instrument|gen) in shelves"
+ external: "~url: or @http for virtual edges — resolve status=external"
+}
+
+// ── Implementation order ───────────────────────────────────────
+
+^["roadmap"]{
+ P0: #[
+  "resolve packet + target_range (frames/anchors)",
+  "reverse index for true references",
+  "broken/ambiguous diagnostics unified"
+ ]
+ P1: #[
+  "projection bidirectional edges",
+  "mount authority tagging",
+  "hover/inlay status; code lens counts"
+ ]
+ P2: #[
+  "ref forest walk seed",
+  "S2 path rewrite plan",
+  "LLM tools + audit:refs JSON"
+ ]
+ P3: #[
+  "external/virtual edges",
+  "cross-garden read-only twins"
+ ]
+}
+
+^["invariant"]{
+ "Paths are relation-stratum facts; layout of the string is not the edge.",
+ "Prose must not spawn path hits.",
+ "Exact selection and revision on every edit-bearing path change.",
+}

@@ -13,6 +13,7 @@ description: Turn engineering/design questions in this repo into rigorous, repro
 4. Run the smallest experiment that can answer the question.
 5. Write a short note using the template in `assets/notebook-template.md`.
 6. If code changes are made, keep them minimal and leave a clear rollback path.
+7. Record repository revision, input/profile hashes, tool path, and—when an agent participates—model identity plus a dated capability snapshot. A newer model is a new condition, not a rewrite of prior observations.
 
 ## Output Contract
 
@@ -22,13 +23,13 @@ description: Turn engineering/design questions in this repo into rigorous, repro
 
 ## Codebase Research Affordances
 
-### Grok Probe Methodology
+### Agent Probe Methodology
 The codebase has an established pattern for AI-agent research probes:
 
 1. **Write a probe** in `.spw` format: `src/lang/seeds/probes/grok-syntax-exp-v0.N.spw`
-2. **Send to agent** (Grok, Claude, etc.) for exploration
-3. **Archive response** as `grok-response-{topic}-v0.N.spw`
-4. **Evaluate findings**: which Grok-adopted syntax is canonical vs aspirational vs experimental?
+2. **Send to a named, versioned agent condition** for exploration
+3. **Archive response** with topic, model/capability snapshot, prompt hash, and revision
+4. **Evaluate findings**: which suggested syntax is implemented, measured, proposed, or interpretive?
 5. **Integrate**: update theory files and probes with validated findings
 
 ### Probe Header Convention
@@ -36,9 +37,12 @@ The codebase has an established pattern for AI-agent research probes:
 ^seed[probe-name v:0.4 @profile:Spw.b @target:AgentName_VersionDate]
 ```
 
+For longitudinal studies, keep raw observations append-only and distinguish behavioral measurements from explicit human reports. Do not infer familiarity, enjoyment, emotion, or expertise directly from spacing, syntax density, dwell time, or model prose.
+
 ### Research Axes in This Codebase
 - **Syntax generation**: Gen 1 → Gen 2 → Gen 3 evolution tracked across 217 `.spw` files
-- **Operator semantics**: 12 operators read through 5+ interpretive domains
+- **Operator semantics**: 13 lexer operator tokens and several container forms read through implemented, proposed, and interpretive layers
+- **Operational topography**: exact selections, layout/label differentials, transform profiles, and longitudinal familiarity studies
 - **Normalization**: SNF → SiNF → SeNF pipeline (does it terminate? is it confluent?)
 - **Facet resonance**: do shared `.{}` keys across component docs create useful navigability?
 - **Cascade resolution**: does priority-ordered merge produce consistent overrides?
@@ -64,7 +68,7 @@ npm run audit:md            # Markdown report of all @spw: markers (good for res
 
 Update this skill when:
 - A new probe format is established (new header convention) → update Probe Header Convention
-- A new AI agent is used for probes (Gemini, Copilot, etc.) → update Grok Probe Methodology to be agent-agnostic
+- A materially different model/tool condition is used → update the capability-snapshot fields or comparison protocol
 - A research axis is resolved (e.g., ONF confluence proven) → mark it as resolved in Research Axes
 - New wonder calculus axioms are added → update Wonder Calculus section
 

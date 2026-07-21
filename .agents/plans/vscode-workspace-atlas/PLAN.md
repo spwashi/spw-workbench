@@ -15,25 +15,44 @@ The atlas is one of three coordinated VS Code surfaces. It contributes manifest 
 - **In scope**: define the atlas view hierarchy, manifest-derived root loading, fallback behavior when the manifest is absent or incomplete, root and plane interactions, graph-query entry points, cross-tree resonance presentation, rotation between topology/contract/resonance/phase/query perspectives, spirit-sequence phase axis for workspace nodes, materialization state badges, live memory temperature alongside declared memory placement, manifest authority rules, shared `SpwContext` fields (`manifestState`, `workspaceTemperature`, `activeRoot`), cross-plan event emission (`atlas.rootSelected`, `atlas.perspectiveRotated`), resonance computation via a typed `spw/resonance` LSP endpoint, the shared interaction contract artifact, and the minimum LSP or index additions needed to expose workspace metadata cleanly without requiring the other two surfaces to land first.
 - **Out of scope**: changing the workspace manifest semantics, redesigning root syntax, building projection generation tooling inside the extension, or implementing register snapshot transport (register-explorer scope).
 
+## Ladder position
+
+Roadmap rung **3a (follow-up)** — core atlas view and LSP workspace handlers are **already landed**. This plan is no longer greenfield. Prefer extraction, visibility gating, and earned `spw/resonance` over rewrites.
+
+See `.agents/plans/vscode-lsp-roadmap/PLAN.md`.
+
 ## Files
 
 ```text
-[NEW] .agents/plans/vscode-workspace-atlas/PLAN.md
-[NEW] .agents/plans/vscode-workspace-atlas/wip.spw
-[NEW] .agents/plans/vscode-workspace-atlas/vscode-workspace-atlas.spw
-[NEW] .agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw
+[MOD] .agents/plans/vscode-workspace-atlas/PLAN.md
+[MOD] .agents/plans/vscode-workspace-atlas/wip.spw
+[REF] .agents/plans/vscode-workspace-atlas/vscode-workspace-atlas.spw
+[REF] .agents/plans/vscode-workspace-atlas/vscode-interaction-contract.spw
 [MOD] extensions/vscode-spw/package.json
 [MOD] extensions/vscode-spw/src/extension.ts
 [MOD] extensions/vscode-spw/src/context.ts
 [MOD] extensions/vscode-spw/src/roots.ts
-[NEW] extensions/vscode-spw/src/views/workspace-tree.ts
+[MOD] extensions/vscode-spw/src/views/workspace-tree.ts
 [MOD] packages/spw-lsp/src/helpers.ts
 [MOD] packages/spw-lsp/src/server-index.ts
 [MOD] packages/spw-lsp/src/types.ts
 [MOD] packages/spw-lsp/src/stdio-server.ts
-[NEW] packages/spw-lsp/src/handlers/workspace.ts
-[DEL] (none)
+[MOD] packages/spw-lsp/src/handlers/workspace.ts
+[MOD?] packages/spw-lsp/src/handlers/display.ts
 ```
+
+### Landed (do not re-scaffold)
+
+- `extensions/vscode-spw/src/views/workspace-tree.ts` (~725 lines — extract if growing)
+- `packages/spw-lsp/src/handlers/workspace.ts`
+- Client/server: `spw/workspaceManifest`, `spw/workspaceTemperature`
+- Commands: re-ground / select root in extension `package.json`
+
+### Not landed / blocked on capability honesty
+
+- Server `spw/resonance` (client type exists — **phantom** until capability plan implements or demotes)
+- Full phase/materialization badge depth as specified below
+- Visibility-gated refresh (pair with `vscode-plugin-performance`)
 
 ### Craft guard
 
@@ -42,7 +61,7 @@ The atlas is one of three coordinated VS Code surfaces. It contributes manifest 
 - Keep root labels aligned with manifest terminology such as roots, memory locations, generated surfaces, and harness contracts.
 - The atlas should not become a generic graph canvas in this slice; graph queries should open focused result sets around the selected node or subtree.
 - Watch hot files `extensions/vscode-spw/src/extension.ts`, `extensions/vscode-spw/src/roots.ts`, and `packages/spw-lsp/src/server-index.ts` for concept creep.
-- Structural claims come from the manifest; behavioral observations come from the index. Inferred data must never silently override manifest truth (see `vscode-interaction-contract.spw ^["manifest_authority"]` for the full authority table).
+- Structural declarations come from the manifest; behavioral observations come from the index. Inferred data must never silently override manifest authority (see `vscode-interaction-contract.spw ^["manifest_authority"]` for the full table).
 - SpwContext fields added by this plan (`manifestState`, `workspaceTemperature`, `activeRoot`) must be additive; do not remove or rename fields that `context.ts` already exposes.
 - Command names should use Spw vocabulary: "Re-ground" over "Refresh", "Rotate lens" over "Switch view", "Unprimed" over "Not initialized".
 
@@ -92,7 +111,7 @@ The LSP exposes a `spw/resonance` request that returns typed resonance edges for
 
 ## Manifest Authority
 
-Structural claims come from the manifest; behavioral observations come from the index.
+Structural declarations come from the manifest; behavioral observations come from the index.
 
 | Section | Authority | Fallback when manifest absent |
 |---|---|---|

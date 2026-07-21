@@ -11,7 +11,16 @@
  consumer_owns: [".spw/index.spw", ".spw/workspace.spw", ".spw/mount.spw", ".spw/conventions/*", ".spw/claims/*", ".spw/audits/*"]
  workbench_root: ".spw/_workbench"
  workbench_provides: ["parser", "runtime", "LSP", "CLI", "spec library", "agent tooling"]
- prefix_rule: "\"_\" marks infrastructure roots; they are mounted, versioned, and queryable without masquerading as site-authored canon content"
+ prefix_rule: "\"_\" marks infrastructure roots; they are mounted, versioned, and queryable without masquerading as consumer-authored canon content"
+}
+
+^"orientation_contract"{
+ prompt_entry: ".spw/README.md"
+ first_reads: [".spw/README.md", ".spw/index.spw", ".spw/workspace.spw", ".spw/mount.spw"]
+ command_ladder: ["spw doctor .", "spw roots", "spw tree @spw --depth 3", "spw select .spw/index.spw --selector navigable --summary"]
+ model_rule: "state consumer authority, exclude _workbench from the consumer corpus, name one bounded question, and keep evidence revision-aware"
+ working_references: [".spw/_workbench/docs/runtime/md/mounted-workbench.md", ".spw/_workbench/.agents/skills/spw-mounted-consumer-review/SKILL.md"]
+ portability: "orientation text uses mount-relative references and contains no repository identity assumptions"
 }
 
 ^"mount_protocol"{
@@ -51,7 +60,7 @@
 ^"invariant"{
   "The consumer owns its .spw canon; the workbench owns .spw/_workbench.",
   "mount.spw records version, engagement, and resolution explicitly rather than relying on undocumented path folklore.",
-  "_workbench is infrastructure and should not be enumerated as site content in indexes, shelves, or publish surfaces.",
+  "_workbench is infrastructure and should not be enumerated as consumer content in indexes, shelves, or publish surfaces.",
 }
 
 #>wonder_spw_conventions_submodule_1

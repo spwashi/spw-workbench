@@ -4,23 +4,40 @@ Improve the VS Code extension's startup, indexing, and live-update behavior with
 
 ## Goal
 
-The current preview extension pays too much work too early: it starts the LSP through `tsx`, scans the workspace eagerly, rebuilds full annotation snapshots on save, and asks for cursor context from multiple surfaces independently. The desired end state is a faster, quieter extension that still preserves the repo's thin-client posture: semantic truth remains in `packages/spw-lsp/`, while the VS Code client becomes more selective about when it activates, refreshes, and recomputes. This branch improves performance, layering, and quiet feedback by removing duplicate work rather than hiding it behind longer debounce windows.
-
-The plan should teach which costs belong to startup, which belong to steady-state editing, and which belong only to visible UI surfaces. It should also make the tradeoffs legible enough that future editor work does not reintroduce the same drift under a different feature name.
+The preview extension still pays too much work too early: activation starts the LSP, annotation mirror, context strip, concepts tree, and workspace atlas immediately (`activationEvents: []`), and surfaces can request cursor context independently. Compiled LSP launch **exists** (`build:server` → `dist/stdio-server.js`; extension prefers `*.js` over `tsx`), but source-first fallback and eager UI work still dominate feel. The desired end state is a faster, quieter extension that preserves thin-client posture: semantic truth in `packages/spw-lsp/`, selective activation/refresh/recompute on the client.
 
 **Taste note**: performance, layering, quiet feedback.
 
+## Ladder position
+
+Roadmap rung **2** (after editor-contract + capability honesty). See `.agents/plans/vscode-lsp-roadmap/PLAN.md`.
+
+Does **not** replace `typescript-perf-audit-infra` (that measures `tsc`). Editor paths need separate wall-time probes: activation → LSP ready, save → sidebar, cursor → strip, initialize → scan complete.
+
 ## Scope
 
-- **In scope**: audit advertised/configured/invoked/observed/tested behavior; compiled LSP launch strategy for shipped/editor-preview use; activation gating for tree views and sidecars; incremental annotation sync; deduplicated cursor-context transport; selective refresh rules; semantic-token reuse; bounded-concurrency scanning; mounted-consumer measurements.
-- **Out of scope**: adding new editor capabilities, changing Spw language semantics, redesigning atlas or concepts UX beyond refresh policy, broad mount-protocol redesign, or building a full telemetry pipeline before performance fixes land.
+- **In scope**: ensure compiled server is the default resolved path in workbench + mounted consumers; activation gating (`onLanguage:spw` and/or lazy view registration); incremental annotation sync; single shared cursor-context transport; visibility-gated tree refresh; semantic tokens from parse/index not full-text regex rescans; bounded workspace scan; hot-file extraction if dispatcher/index grows; mounted-consumer measurements.
+- **Out of scope**: new editor capabilities; Spw language changes; atlas/concepts UX redesign beyond refresh policy; full telemetry SaaS; implementing phantom `spw/*` methods (capability plan); TypeScript 7 adoption (upgrade ladder).
+
+## Landed vs remaining (2026-07-20)
+
+| Item | Status |
+|------|--------|
+| Prefer `stdio-server.js` when present | **Landed** in `extension.ts` |
+| `tsx` fallback when only `.ts` | Still present (ok for dev; must not be ship default) |
+| Eager `annotationIndex.activate()` + both trees | **Still eager** |
+| Shared cursor context bus | **Not landed** |
+| Incremental annotation delta | **Not landed** (full rebuild risk remains) |
+| Semantic tokens from ServerIndex parse | **Partial / verify** — plan still targets regex elimination |
+| File size pressure | `display.ts` ~1410, `server-index.ts` ~1160, trees ~725–750 |
 
 ## Files
 
 ```text
-[NEW] .agents/plans/vscode-plugin-performance/PLAN.md
-[NEW] .agents/plans/vscode-plugin-performance/wip.spw
-[NEW] .agents/plans/vscode-plugin-performance/vscode-plugin-performance.spw
+[MOD] .agents/plans/vscode-plugin-performance/PLAN.md
+[MOD] .agents/plans/vscode-plugin-performance/wip.spw
+[REF] .agents/plans/vscode-plugin-performance/vscode-plugin-performance.spw
+[REF] .agents/plans/vscode-lsp-roadmap/PLAN.md
 [REF] .spw/tooling/editor-surface-audit.spw
 [MOD] extensions/vscode-spw/package.json
 [MOD] extensions/vscode-spw/src/extension.ts
@@ -34,49 +51,47 @@ The plan should teach which costs belong to startup, which belong to steady-stat
 [MOD] packages/spw-lsp/src/server-index.ts
 [MOD] packages/spw-lsp/src/handlers/semantic-tokens.ts
 [MOD?] packages/spw-lsp/src/handlers/workspace.ts
-[DEL] (none)
+[MOD?] packages/spw-lsp/src/handlers/display.ts
 ```
 
 ### Craft guard
 
-- Keep semantic/editor truth in the LSP; performance work must not create a client-only semantics fork.
-- `packages/spw-lsp/src/stdio-server.ts` is already a hot, oversized file; extract helper logic instead of widening the dispatcher further if launch or refresh logic expands.
-- `extensions/vscode-spw/src/extension.ts` should remain orchestration-only; activation gating belongs in small helpers, not in one accumulating switchboard.
-- Prefer incremental invalidation over global refresh. A faster-looking system that still recomputes everything is not actually lower concept count.
-- Avoid solving every latency issue with longer debounce values. Debounce hides noise; it does not remove duplicate work.
-- Visibility matters: if a tree view or status surface is not visible, it should not drive LSP traffic unless it owns a correctness-critical invariant.
+- Keep semantic truth in the LSP; no client-only semantics fork.
+- Do not widen `stdio-server.ts` or `server-index.ts` without extraction.
+- `extension.ts` stays orchestration-only; activation gating in small helpers.
+- Incremental invalidation over longer debounce.
+- Hidden surfaces do not drive LSP traffic.
+- Measure before claiming; log probe table in wip stream.
 
 ## Commits
 
-1. `.[plans] — stage vscode-plugin-performance planning artifacts`
-2. `&[vscode-startup] — ship compiled LSP launch path and lean activation wiring`
-3. `&[vscode-index] — replace full annotation rebuilds with incremental workspace sync`
-4. `&[vscode-context] — share cursor context and gate view refreshes by visibility`
-5. `&[spw-lsp] — reuse parse output for semantic tokens and tighten workspace scan cost`
-6. `![vscode-performance] *audit[mounted-consumer] — verify startup, save, cursor, and sidebar behavior`
+1. `.[plans] — refresh vscode-plugin-performance against landed launch path`
+2. `&[vscode-startup] — default compiled LSP path + lean activation wiring`
+3. `&[vscode-index] — incremental annotation sync (no full rebuild on every save)`
+4. `&[vscode-context] — shared cursor context + visibility-gated tree refresh`
+5. `&[spw-lsp] — parse-backed semantic tokens + scan cost bounds`
+6. `![vscode-performance] *audit[mounted-consumer] — startup, save, cursor, sidebar probes`
 
 ## Fuzz Strategy
 
-- Explore loop: `fuzz:explore --target=vscode-plugin-performance`
-- Stabilize loop: `fuzz:stabilize --target=vscode-plugin-performance`
-- Ship gate: `fuzz:ship --target=vscode-plugin-performance`
-
-The branch should pair these loops with concrete manual probes: activation time from window open to ready LSP, save-to-sidebar freshness, cursor-move request rate, semantic-token latency on a representative `.spw` file, and initialize-to-scan-complete time on the same workspace corpus.
+- Explore: `npm run build:lsp && npm run build:vscode` (or workspace equivalents)
+- Stabilize: `npm run test:run` + LSP package tests under `packages/spw-lsp`
+- Ship: `npm run fuzz:ship`
+- Manual probes (record in stream): activation→ready, save→sidebar, cursor RPS, semantic-token latency, scan complete
 
 ## Agentic Hygiene
 
-- Rebase target: `main@d503198758b88f5894102609473997e02ca196ce`
+- Rebase target: `main@b4832193891b2b89b7e1e20dc0e462e2e4c9236e`
 - Rebase cadence: before commit 1, before merge
-- Hygiene split: no committed branch drift relative to `main`; one unrelated local edit exists at `.agents/plans/v030-release-prep/wip.spw` and should remain untouched throughout this branch
+- Hygiene split: none; coordinate with capability plan if touching custom-request types
 
 ## Dependencies
 
-- `mounted-consumer-tooling` — shared identity-free fixture and evidence states
-
-Adjacent VS Code plans share hot files such as `extensions/vscode-spw/src/extension.ts`, `extensions/vscode-spw/src/context.ts`, and `packages/spw-lsp/src/stdio-server.ts`; treat them as coordination risks rather than reasons to skip the shared audit contract.
+- Soft prior: `vscode-editor-contract`, `lsp-custom-request-completions` (avoid optimizing phantom calls)
+- Soft parallel: `typescript-perf-audit-infra` (toolchain only)
+- `mounted-consumer-tooling` — identity-free fixtures
+- Sibling risk: atlas/register/authoring share `extension.ts`, `context.ts`, `stdio-server.ts`
 
 ## Spw Artifact
-
-This branch warrants a distilled artifact because the value is not only the patch set; it is the operational doctrine for future editor work. The sidecar `.spw` records the learning principles, performance axes, and tradeoffs so later VS Code or LSP features can reuse the same judgment instead of rediscovering it by profiling regressions.
 
 `.agents/plans/vscode-plugin-performance/vscode-plugin-performance.spw`

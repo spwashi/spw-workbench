@@ -6,6 +6,7 @@
 - Outputs:
 - Constraints:
 - Scale (N, latency, memory):
+- Current implementation facts:
 
 ## Likely Domain(s)
 
@@ -21,6 +22,7 @@
 List 2–3 options with tradeoffs:
 
 1. Technique:
+   - Status: implemented | measured | proposed | interpretive
    - Why it fits:
    - Complexity:
    - Failure modes:
@@ -30,6 +32,7 @@ List 2–3 options with tradeoffs:
 ## Recommendation
 
 - Pick one and justify.
+- Name the invariant to preserve, a falsifier, and the measurement that would earn promotion.
 
 ## Next Learning Steps
 

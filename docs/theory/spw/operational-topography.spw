@@ -1,0 +1,346 @@
+# Operational Topography
+#
+# A measurable contract for source placement, nested structure, soft layout,
+# approximate discovery, orientation profiles, hydration plans, and evidence.
+#
+# @see docs/theory/spw/operators.spw
+# @see docs/theory/spw/onf.spw
+# @see packages/spw-seed/src/query/types.ts
+# @see packages/spw-runtime/src/interpreter/interpreter.ts
+
+#:layer #!semantics
+
+^seed[Spw.Operational.Topography v:0.1 @profile:Spw.b @intent:measurable_contract]
+{_topography
+
+ ## Status Vocabulary
+
+ status: .{
+ implemented = `directly observable in parser, runtime, CLI, or LSP code`
+ measured = `recomputable from named inputs with a published method`
+ proposed = `a typed contract or experiment that is not yet runtime law`
+ interpretive = `a local rendering, metaphor, or human report`
+ }[reg=facet]
+
+ rule: `Every semantic statement on this surface must be readable with one of the four statuses.`
+
+ ## Selection Transect
+
+ definition: `A selection transect is a revision-addressed cross-section through named source, structural, relational, temporal, layout, and operational strata.`
+
+ strata: #[
+ .{id=source, status=implemented, owns=#[glyph, token, trivia, span, line, column]},
+ .{id=structure, status=partial, owns=#[ast_path, container_pair, frame_path, parse_state]},
+ .{id=relation, status=partial, owns=#[root, incoming, outgoing, graph_distance]},
+ .{id=time, status=partial, owns=#[revision, episode, observation, producer]},
+ .{id=layout, status=proposed, owns=#[gap, indentation, alignment, cadence]},
+ .{id=operation, status=partial, owns=#[onf, port, fixity, effect, cost, trace]},
+ ][reg=set]
+
+ coordinate_identity: .{
+ required = #[universe, root, file, source_span, revision, profile]
+ optional = #[document_version, content_hash, frame_path, observation_id]
+ counterexample = `A hover summary without revision, profile, or source range is commentary, not a reproducible transect.`
+ }[reg=facet]
+
+ depth_axes: #[
+ .{id=source_offset, meaning=`character or byte position in one source revision`},
+ .{id=ast_depth, meaning=`ancestor count in the parsed tree`},
+ .{id=container_depth, meaning=`matched delimiter nesting`},
+ .{id=frame_depth, meaning=`named frame ancestry`},
+ .{id=relation_distance, meaning=`reference or projection hops`},
+ .{id=temporal_depth, meaning=`episode or observation distance`},
+ .{id=authority_depth, meaning=`consumer, workbench, adapter, or external boundary crossings`},
+ ][reg=set]
+
+ invariant_depth: `No depth axis may substitute for another without an explicit projection.`
+
+ ## Orientation
+
+ orientation: .{
+ canonical = #[open, close, prefix, postfix, before, after, ingress, egress]
+ render_only = #[left, right, inward, outward, accumulate, release]
+ reading_context = #[direction, writing_system, editor_projection, local_profile]
+ }[reg=facet]
+
+ invariant_orientation_1: `Changing a render-only orientation profile must preserve tokens, AST ancestry, ONF, semantic coordinates, and effects.`
+ invariant_orientation_2: `Any orientation rule that changes parsing, operand order, normalization, or evaluation is a versioned dialect rule.`
+
+ counterexamples_orientation: #[
+ `Calling an opening delimiter left is not portable across writing direction or visual projection.`,
+ `Relabeling open as accumulate is presentational; reversing containment at close is a language change.`,
+ `A postfix glyph does not have distinct semantics merely because a theory surface names a postfix strategy.`,
+ ][reg=set]
+
+ ## Spacing and Surface Identity
+
+ spacing: .{
+ implemented = `The lexer emits whitespace tokens with source spans. Default parsing retains them; grammar skips whitespace at many boundaries but also observes newline and token adjacency for inline payload and operator-label decisions.`
+ proposed_role = `Verified layout observations may contribute soft evidence for reading and approximate discovery.`
+ measures = #[token_gap, newline_gap, blank_line_cadence, indent_delta, alignment_run, density_transition]
+ authority = `An edit is layout-only only after same-profile reparse and comparison of a declared semantic projection.`
+ counterexample = `!x and ! x need not select the same grammar path merely because they differ only by a space.`
+ }[reg=facet]
+
+ identities: .{
+ semantic_or_plan = `derived from semantic structure; optional formatting does not participate`
+ surface_or_layout = `derived from source trivia and layout under a declared normalization profile`
+ status = proposed
+ }[reg=facet]
+
+ invariant_spacing: `A formatting-only edit may change layout observations but must not change semantic or plan identity.`
+ counterexample_spacing: `Raw display columns are not universal distance because tabs, graphemes, wrapping, proportional fonts, and bidirectional text alter presentation.`
+
+ ## Formatting and Differentials
+
+ formatter_reality: .{
+ cli_canonical = `implemented: newline, trailing-whitespace, and final-newline normalization`
+ cli_equiv = `implemented lexical rewrites; equivalence is not parser-verified and source-like text in comments or strings may be touched`
+ lsp = `implemented heuristic whole-document and isolated-range TextEdits using a different formatting profile`
+ lsp_limits = `requested tab policy is not honored; isolated ranges lose enclosing depth; selection formatting can discard relative indentation`
+ labels = `proposed: AST label fields exist, but grammar does not populate paired labels or retain paired delimiter tokens for Frame, Body, and Scope`
+ current_hash = `canonicalize hashes its resulting source; it does not establish semantic identity`
+ }[reg=facet]
+
+ parse_states: #[
+ .{id=complete_structured, permits=`E0 structural observations and verified transform planning`},
+ .{id=recovered, permits=`diagnosis and read-only source evidence only`},
+ .{id=invalid_or_partial, permits=`diagnosis only`},
+ ][reg=set]
+
+ rule_parse_state: `Parse success alone is insufficient because malformed delimiter text may recover as Prose; structured status also requires full consumption, expected node classes, and well-nested parser-owned pairs.`
+
+ layout_differential: .{
+ status = proposed
+ input = #[document_version, source_hash, lex_profile, context_mode, exact_selection, style_profile]
+ output = #[ordered_text_edits, before_layout, after_layout, mutation_profile, verification, source_map]
+ preconditions = #[same_document_version, same_source_hash, exact_parser_owned_span]
+ verification = #[full_consumption, no_parse_errors, well_nested_pairs, declared_projection_preserved, idempotent]
+ }[reg=facet]
+
+ label_differential: .{
+ status = proposed
+ operations = #[add, repair, remove, reapply]
+ identity = #[container_path, pair_id, open_span, close_span]
+ impact = #[label_delta, reference_delta, semantic_classification]
+ rule = `A derived editor label may be render-only; a source label requires specified grammar, pair identity, and dialect semantics.`
+ }[reg=facet]
+
+ context_ports: #[before_open, open_boundary, inside, close_boundary, after_close, surrounding_context]
+
+ mutation_profile: .{
+ status = proposed
+ dimensions = #[layout_delta, token_delta, structure_delta, label_delta, reference_delta, semantic_result, effect_grade, reversibility]
+ rule = `A pulse appends a vector observation; it does not increment one scalar mutation score.`
+ }[reg=facet]
+
+ indentation_pulse: ?<
+ exact_select,
+ measure,
+ plan,
+ preview,
+ verify_preconditions,
+ confirm_and_apply_one_S2_edit,
+ reparse,
+ compare_identities,
+ record_observation,
+ stop_or_repeat
+ >[reg=pipeline]
+
+ pulse_stop: #[fixed_point, idempotence_failure, parse_failure, identity_failure, budget_exhausted, authority_failure, conflict, cancellation]
+
+ invariant_mutation_target: `Approximate and fuzzy matches may suggest candidates, but an edit target must be re-resolved as an exact parser-owned span against the current document version.`
+
+ ## Rotations and Transform Profiles
+
+ transform_classes: #[
+ .{id=view_rotation, status=proposed, writes_source=false, examples=#[outline, transpose, fold, graph, mirrored_orientation]},
+ .{id=layout_rewrite, status=proposed, writes_source=true, examples=#[indent, align, cadence, line_break]},
+ .{id=structural_rewrite, status=proposed, writes_source=true, examples=#[extract, inline, reorder, wrap, unwrap]},
+ ][reg=set]
+
+ transform_contract: .{
+ identity = #[transform_id, version, profile_hash, tool_configuration, input_revision]
+ geometry = #[domain, codomain, coordinate_map, inverse_or_loss]
+ preserves = #[source_span_trace, declared_projection, references, effects]
+ reports = #[ordered_edits, moved_regions, source_map, mutation_profile, cost]
+ rule = `Call a transform a rotation only when its coordinate mapping and inverse are defined; lossy views are projections and effectful source changes are rewrites.`
+ }[reg=facet]
+
+ transform_profiles: #[
+ .{id=reading, optimize=#[orientation_time, continuity, local_context]},
+ .{id=review, optimize=#[stable_anchors, semantic_signal_per_hunk, moved_region_trace, low_layout_noise]},
+ .{id=teaching, optimize=#[progressive_disclosure, named_structure, reversible_steps]},
+ .{id=compact, optimize=#[viewport_density, recoverable_context]},
+ ][reg=set]
+
+ diff_value: .{
+ measures = #[semantic_changes_per_hunk, layout_only_hunks, stable_anchor_rate, moved_region_traceability, reviewer_time, reviewer_errors]
+ rule = `No profile may optimize hunk count by hiding semantic, reference, or effect changes.`
+ tooling = `Tab width, spaces policy, wrapping, font, diff algorithm, and editor projection belong in the profile or observation envelope.`
+ }[reg=facet]
+
+ ## Exact and Approximate Selection
+
+ scan_pipeline: ?<hard_constraints, exact_tier, approximate_tier, diversity_rerank, explanation>[reg=pipeline]
+
+ match_features: #[
+ .{id=operator, class=structural},
+ .{id=container, class=structural},
+ .{id=named_depth, class=structural},
+ .{id=token_trigram, class=lexical},
+ .{id=sequence_alignment, class=ordered},
+ .{id=subtree_shape, class=structural},
+ .{id=relation_distance, class=relational},
+ .{id=layout_distance, class=surface},
+ ][reg=set]
+
+ gradients: #[
+ .{id=match_distance, question=`How different is this candidate?`},
+ .{id=discovery_priority, question=`Why is this candidate useful now?`},
+ .{id=mutability, question=`What change class is possible?`},
+ .{id=reversibility, question=`How can the effect be undone?`},
+ .{id=authority, question=`Who or what may perform it?`},
+ .{id=cost, question=`What work and resources are required?`},
+ .{id=uncertainty, question=`How strong is the evidence?`},
+ ][reg=set]
+
+ invariant_scan_1: `Exact matches precede approximate matches unless the query explicitly requests another ordering.`
+ invariant_scan_2: `Authority and effect constraints are hard gates; no weighted score may compensate for failing them.`
+ invariant_scan_3: `Every approximate result exposes feature values, profile weights, tier, and rejection or inclusion reasons.`
+
+ current_probe_note: `Operator and brace coverage saturates across common generated wonder blocks; current lattice scores are retrieval hints, not topographic laws.`
+
+ ## Hydration
+
+ definition_hydration: `Hydration binds a validated abstract plan to named adapters, resources, and capabilities without changing its source identity.`
+
+ hydration_pipeline: ?<
+ abstract_sequence,
+ typed_plan,
+ validated_plan,
+ capability_bound_plan,
+ effect_preview,
+ emitted_artifact_or_run,
+ append_only_observation
+ >[reg=pipeline]
+
+ contracts: .{
+ operator = #[ports, cardinality, determinism, fixity, effects]
+ range = #[domain, bounds, inclusivity, step, unit, overflow]
+ container = #[scope, isolation, lifetime, transaction]
+ payload = #[schema, units, serialization, provenance]
+ stream = #[ordering, laziness, backpressure, cancellation, error]
+ artifact = #[plan_hash, target, source_map, generator_version]
+ }[reg=facet]
+
+ hydration_status: .{
+ implemented = `Seed parses Stream and NRange nodes and normalizes them into ONF frame labels.`
+ loss = `Current Stream normalization drops the parsed sink, so ONF does not yet preserve the full source contract.`
+ not_implemented = `The runtime does not yet provide range algebra, stream scheduling, sink delivery, adapter binding, or script emission.`
+ caution = `The ONF hydrate label on ! is a normalization name; current runtime ! returns its first argument.`
+ }[reg=facet]
+
+ effect_grades: #[
+ .{id=S0, meaning=`read and measure only`},
+ .{id=S1, meaning=`in-memory or sandbox transformation`},
+ .{id=S2, meaning=`workspace edit with preview, snapshot preconditions, and explicit apply authority`},
+ .{id=S3, meaning=`external process, equipment, or material effect with explicit confirmation`},
+ ][reg=set]
+
+ ## Evidence for Humans and Agents
+
+ evidence_packet: .{
+ identity = #[consumer_revision, workbench_revision, profile_hash, query_hash, source_span]
+ selection = #[exact_hits, near_hits, counterexamples, exclusions]
+ explanation = #[feature_contributions, hard_rejections, cost, uncertainty]
+ budgets = #[bytes, files, nodes, results, duration]
+ authority = #[consumer_owned, mounted_infrastructure_excluded, human_selected_upstream]
+ }[reg=facet]
+
+ nutrition: .{
+ dense = `many addressable distinctions per byte`
+ nutritious = `each included field changes orientation, comparison, falsification, or the next safe move`
+ anti_pattern = `Repeated prose, duplicated source, or high operator coverage without counterevidence`
+ }[reg=facet]
+
+ model_context: .{
+ record = #[model_id, capability_snapshot, prompt_hash, context_query, tool_path, output_hash]
+ rule = `Newer capability is a new experimental condition, not permission to rewrite prior observations.`
+ }[reg=facet]
+
+ familiarity_observation: .{
+ status = proposed
+ behavioral = #[time_to_orient, navigation_actions, selection_errors, edit_accuracy, delayed_recall]
+ reported = #[familiarity, confidence, readability, preference]
+ controls = #[content, structure, task_order, exposure, editor_configuration]
+ rule = `Familiarity is a longitudinal person-task observation with uncertainty, not a property inferred from whitespace or operator density.`
+ protocol = `.agents/plans/operational-topography/WHITESPACE-PHYSICS.md`
+ }[reg=facet]
+
+ play_to_promotion: ?<
+ sandbox_babble,
+ candidate_pattern,
+ exact_fixture,
+ impact_packet,
+ steward_review,
+ accept_clarify_localize_or_reject,
+ versioned_idiom,
+ migration_preview,
+ longitudinal_observation
+ >[reg=pipeline]
+
+ learning_roles: .{
+ learner = `explores inside a bounded S0 or S1 universe and records questions, surprises, and explicit reports`
+ steward = `uses repository authority and evidence to explain downstream consequences and promotion choices`
+ rule = `Authority follows capabilities and review contracts, not an inferred novice, veteran, human, or model identity.`
+ }[reg=facet]
+
+ idiom_impact_packet: .{
+ identity = #[candidate_hash, source_revision, profile_hash, producer]
+ evidence = #[before_after_examples, exact_occurrences, near_occurrences, counterexamples]
+ deltas = #[parse, structure, references, queries, projections, scripts, effects, tests, tools]
+ migration = #[recipe, preview, reversibility, cost, uncertainty]
+ nuance = #[accepted_examples, near_misses, rejected_alternatives, local_exceptions, promotion_reason]
+ }[reg=facet]
+
+ rule_babble: `Generative babbling may develop syntax feel, script aesthetics, or concepts, but it cannot promote itself or mutate an approximate match set.`
+
+ ## Epistemic Grades
+
+ epistemic_grades: #[
+ .{id=E0, meaning=`deterministic observation from a named code path; structured status additionally requires the declared parse, consumption, and recovery predicates`},
+ .{id=E1, meaning=`recomputable score with declared method and profile`},
+ .{id=E2, meaning=`explicit human interpretation, report, or preference`},
+ ][reg=set]
+
+ rule_grades: `Epistemic grade and effect grade are independent axes.`
+
+ ## Development Timing
+
+ trajectory: ?<
+ repair_mounted_authority,
+ align_theory_with_runtime,
+ ship_read_only_selection_transect,
+ evaluate_exact_first_evidence_packets,
+ preview_abstract_plan_hydration,
+ project_shared_contract_in_editors,
+ learn_from_longitudinal_observations
+ >[reg=pipeline]
+
+ timing_reason: `Recent mounted-root, query, LSP, editor, and model-capability changes make consolidation and measurement more valuable than adding another speculative semantic surface.`
+
+ ## Falsification
+
+ falsify: #[
+ `A render-only profile changes semantic coordinates or runtime effects.`,
+ `Formatting-only variants change semantic or plan identity.`,
+ `A second application of one layout profile produces additional edits without a disclosed external-state change.`,
+ `A rotation or review profile hides a semantic, reference, or effect delta.`,
+ `An approximate result cannot reconstruct its score from disclosed contributions.`,
+ `A sample cannot be reproduced from its revisions, query, profile, and source spans.`,
+ `Hydration performs an effect beyond its declared and confirmed grade.`,
+ `Two editor clients produce different semantic JSON for the same revision and position.`,
+ ][reg=set]
+
+}_topography

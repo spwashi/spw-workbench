@@ -1,0 +1,55 @@
+# typescript-upgrade-ladder
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @plan: ~".agents/plans/typescript-upgrade-ladder/PLAN.md"
+ @perf: ~".agents/plans/typescript-perf-audit-infra/PLAN.md"
+ @observatory: ~".agents/plans/typescript-toolchain-observatory/PLAN.md"
+ @package: ~"package.json"
+ @tsconfig_base: ~"tsconfig.base.json"
+}
+
+^["orientation"]{
+ lane: #execution_truth
+ ladder: #service
+ rule: "upgrade the compiler in rungs; never skip the bridge; never claim speed without a baseline"
+}
+
+^["rungs"]{
+ ~[0]: "baseline — capture 5.9 timings and diagnostics"
+ ~[A]: "prep — drop baseUrl, set types, align pins"
+ ~[B]: "bridge — TypeScript 6, no ignoreDeprecations"
+ ~[C]: "dual — native 7 for tsc, 6 API for tooling"
+ ~[D]: "default — 7 primary only after C + measured gain"
+}
+
+^["gates"]{
+ non_negotiable: [
+  "fuzz:ship green per rung",
+  "no ignoreDeprecations on main",
+  "documented which binary is tsc",
+ ]
+ soft: [
+  "eslint resolves 6 API under dual-install",
+  "stableTypeOrdering used only for 6↔7 diagnosis",
+ ]
+}
+
+^["config_checklist"]{
+ drop: [#baseUrl]
+ set: [#types_node, #paths_root_relative]
+ already_ok: [#strict_true, #moduleResolution_bundler, #target_es2022]
+}
+
+^["dual_install"]{
+ native: "TypeScript 7 owns build and fuzz:types"
+ api: "TypeScript 6 package remains for typescript-eslint until 7.1 API"
+ policy: "name packages and scripts so agents cannot confuse which tsc ran"
+}
+
+^["connections"]{
+ #typescript_perf_audit_infra: "measure before and after rung C"
+ #typescript_toolchain_observatory: "long-form comparison and projection design"
+ #audit_fuzz_truthfulness: "script names must match the compiler they invoke"
+}

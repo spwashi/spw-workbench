@@ -1,0 +1,345 @@
+// Operator × Brace Composition
+#
+// A layered compositional model: operators act; braces bound; together they
+// form register frames. Lexical kinds stay distinct inside one tagged algebra.
+#
+// Resolves the <> / container inconsistency by *status-tagged layers*, not by
+// forcing every delimiter into OperatorKind.
+#
+// @see packages/spw-seed/src/types/token.ts
+// @see packages/spw-seed/src/normalize.ts
+// @see packages/spw-runtime/src/state/type-affinities.ts
+// @see packages/spw-runtime/src/interpreter/interpreter.ts
+// @see docs/theory/spw/operators.spw
+// @see docs/theory/spw/onf.spw
+// @see docs/theory/spw/coupling-constructors.spw
+// @see docs/theory/spw/register-geometry.spw
+// @see .spw/registries/brace-physics.spw
+// @see .spw/registries/register-bank.spw
+
+#:layer #!semantics
+#:theory #!composition
+
+^seed[Spw.Theory.OperatorBrace.Composition v:0.1 @profile:Spw.b @intent:layered_operator_brace_model]
+
+^["roots"]{
+ @token: ~"../../../packages/spw-seed/src/types/token.ts"
+ @normalize: ~"../../../packages/spw-seed/src/normalize.ts"
+ @affinities: ~"../../../packages/spw-runtime/src/state/type-affinities.ts"
+ @interpret: ~"../../../packages/spw-runtime/src/interpreter/interpreter.ts"
+ @operators: ~"./operators.spw"
+ @onf: ~"./onf.spw"
+ @coupling: ~"./coupling-constructors.spw"
+ @register_geometry: ~"./register-geometry.spw"
+ @brace_physics: ~"../../../.spw/registries/brace-physics.spw"
+ @register_bank: ~"../../../.spw/registries/register-bank.spw"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Layer discipline (do not collapse)
+// ═══════════════════════════════════════════════════════════════
+
+^["layers"]{
+ ~#rule: "Composition is defined per layer. A semantic statement must name its layer or it is interpretive only."
+
+ lexical: .{
+  status: "implemented"
+  operators: "OperatorKind tokens — ! ^ ~ ? * = @ # . & $ % and digraph <>"
+  containers: "ContainerKind open/close — () [] {} plus <<>> Stream, <> shell as < > Capsule, (()) NRange"
+  fact: "<> digraph is OPERATOR; < and > alone are CAPSULE delimiters; << >> are STREAM delimiters"
+  correction: "Do not say '<> is a container token' at the lexer layer"
+ }
+
+ structural: .{
+  status: "implemented"
+  nodes: #[Operation, Frame, Body, Scope, Capsule, Stream, NRange, Expression]
+  composition: "terms compose by juxtaposition and connectors; containers nest by pair identity"
+  fact: "CapsuleNode, StreamNode, Operation(<>) are three AST shapes, not one"
+ }
+
+ normalized: .{
+  status: "implemented_structural_projection"
+  form: "σ(args)[reg=… frames…]"
+  op_lowering: "Operation sigil → reg label (<> → couple; ? → probe; …)"
+  coupling_projection: "<> records {kind:couple,form:operator,arity}; paired Bounds record {kind,form:boundary,occupancy,payload,surface,actPlacement?}"
+  container_lowering: "Capsule → reg capsule (or #[] / .{} specials); Stream → ?(args)[reg=stream]; Frame/Body/Scope retain distinct regs while sharing structural coupling coordinates"
+  gaps: #["sink drop on Stream", "uneven delimiter retention", "ONF table still lists ?<a,b> as stream — surface drift"]
+ }
+
+ runtime: .{
+  status: "implemented_partial"
+  op_eval: "dispatch on ONF sigil; <> couples two string register keys when arity≥2"
+  affinity: "OPERATOR_AFFINITIES map sigil → accessMode + preferred containerAffinity"
+  brace_affinity: "BRACE_AFFINITIES map delimiter surfaces to runtime display/access hints; these are not parser or evaluation laws"
+ }
+
+ interpretive: .{
+  status: "profile_only"
+  names: "wonder/action/… brace charge tables, chemistry commentary"
+  rule: "May guide UI and teaching; may not invent runtime effects from glyph shape alone"
+ }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Two-sorted composition: Act × Bound
+// ═══════════════════════════════════════════════════════════════
+
+^["sorts"]{
+ Act: .{
+  role: "operator - transforms or relates values and registers according to its implemented path"
+  members: "OperatorKind including <>"
+  syntax: "current parser is prefix-oriented; postfix is proposed; ONF arguments are a normalized representation"
+ }
+ Bound: .{
+  role: "paired boundary - delimits an interior payload from exterior context"
+  members: "Frame Body Scope Capsule Stream NRange"
+  syntax: "paired grammar forms; optional label fields exist on some AST types but are not populated by current grammar"
+ }
+ product: .{
+  pattern: "Act · Bound  or  Bound carrying Act inside"
+  register_frame: "preferred combos Act+Bound → reg kind (operators.spw register_frames)"
+  examples: #[
+   "#[…] = # + [] → set",
+   ".{…} = . + {} → facet",
+   "@(…) = @ + () → perspective",
+   "<<…>> = stream container → ONF ? with reg=stream (sigil borrowed from wonder family — documented debt)",
+   "<>[a,b] or <> as op = explicit couple → reg=couple"
+  ]
+ }
+ Coupling: .{
+  role: "shared compositional interface over Act relation and paired Bound variants"
+  invariant: "form distinguishes operator from boundary; kind preserves each constructor; no common evaluator is implied"
+  implementation: "packages/spw-seed/src/types/coupling.ts"
+ }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// The <> complex (source of inconsistency)
+// ═══════════════════════════════════════════════════════════════
+
+^["angle_complex"]{
+ ~#problem: "Three different angle-bracket phenomena share glyphs and metaphors."
+
+ digraph_operator: .{
+  token: "OPERATOR value <>"
+  ast: "Operation"
+  onf: "<>(args)[reg=couple]"
+  runtime: "registers.couple(a,b) when two string args"
+  meaning: "explicit coupling between named registers / elements"
+  status: "implemented"
+ }
+
+ capsule_container: .{
+  tokens: "CAPSULE_OPEN <  / CAPSULE_CLOSE >  (kind '<' '>')"
+  ast: "Capsule"
+  onf: "σ(args)[reg=capsule] or #[] / .{} specials from open form"
+  runtime: "boundary / interface payload — not the digraph couple evaluator"
+  meaning: "typed conduit / concept shell (interpretive: concept)"
+  status: "implemented_parse; uneven delimiter retention"
+ }
+
+ stream_container: .{
+  tokens: "STREAM_OPEN << / STREAM_CLOSE >>"
+  ast: "Stream"
+  onf: "?(args)[reg=stream]  — currently borrows ? sigil"
+  runtime: "stream scheduling proposed; sink often dropped"
+  meaning: "ordered channel of values"
+  status: "implemented_parse; runtime partial"
+ }
+
+ affinity_hint: .{
+  register_bank: "? uses conditional affinity; a local profile may suggest capsule context without changing identity"
+  type_affinities: "<> retains a capsule-oriented display affinity, not a Capsule token or evaluator"
+  status: "runtime display hint; optional physical interpretation"
+ }
+
+ theory_drift: #[
+  "onf.ts table: ?<a,b> → stream  (surface not primary; <<>> is primary Stream syntax)",
+  "register-geometry: containers #[`[]`,`{}`,`<>`,`()`] collapses digraph with capsule shell",
+  "brace-physics angle: open < / close > describes capsule charge, not operator <>",
+  "operators.spw correctly splits: containers vs adjacent token <>"
+ ]
+
+ law: "Name the layer: digraph_operator | capsule_container | stream_container | affinity_hint"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Compositional laws
+// ═══════════════════════════════════════════════════════════════
+
+^["design_laws"]{
+ status: "mixed; token distinctness and tagged ONF projection are implemented, pair identity and profile laws remain proposed"
+ L1_token_distinctness: "Operator digraph <> ≠ Capsule delimiters < > ≠ Stream << >> at lexer and AST."
+ L2_pair_identity: "Every Bound has parser-owned open/close pair_id or is structurally unverified."
+ L3_nesting: "Bound_a(Bound_b(x)) ≠ Bound_b(Bound_a(x)) without proved equivalence."
+ L4_act_inside_bound: "Operators inside a container compose in document order; container only changes scope/ports, not sigil identity."
+ L5_register_frame: "Act×Bound combos may define preferred reg labels; absence of combo is still valid Spw."
+ L6_affinity_not_syntax: "containerAffinity and brace affinity are soft preferences for tooling/runtime, not parse rules."
+ L7_coupling_family: "Paired boundaries and the digraph couple share a tagged coupling view without lexical unification; pair_id applies to paired boundaries, not intrinsically to the <> operation."
+ L8_orientation: "open/close canonical; left/right is render profile only."
+ L9_onf_honesty: "Normalization tables must match implemented surfaces; mark proposed rows explicitly."
+ L10_effects: "No runtime effect from delimiter shape alone — only from Operation/interpret paths or explicit contracts."
+ L11_orthogonality: "Kind, form, occupancy, payload, placement, and measured profile axes remain independent; empty is not a new kind or register."
+ L12_relative_symmetry: "< ( [ { share open-boundary kinematics for tooling; kind-specific operational physics remains explicit, profile-owned, and independently testable."
+ L13_terminology: "Paired boundary is the canonical structural class; brace/bracket sets are named profiles and may exclude angle forms."
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Product table (Act × Bound) — preferred frames
+// ═══════════════════════════════════════════════════════════════
+
+^["product_table"]{
+ ~#status: "mixed_implemented_and_proposed"
+ ~#note: "Rows are preferred register-frame constructors, not exhaustive grammar."
+
+ rows: #[
+  .{surface=`#[…]`, act=`#`, bound=`Frame[]`, reg=set, status=implemented_onf},
+  .{surface=`.{…}`, act=`.`, bound=`Body{}`, reg=facet, status=implemented_onf},
+  .{surface=`@(…)`, act=`@`, bound=`Scope()`, reg=perspective, status=implemented_onf},
+  .{surface=`<<…>>`, act=`?_borrowed`, bound=`Stream`, reg=stream, status=implemented_parse_partial_runtime},
+  .{surface=`<…>`, act=`none_required`, bound=`Capsule`, reg=capsule, status=implemented_parse},
+  .{surface=`<>` , act=`<>`, bound=`none`, reg=couple, status=implemented_op},
+  .{surface=`<>[…]`, act=`<>`, bound=`Frame[]`, reg=couple, status=proposed_idiom},
+  .{surface=`?<>…`, act=`?`, bound=`affinity_membrane`, reg=probe, status=interpretive_idiom},
+ ]
+
+ debt: #[
+  "Stream ONF uses ? sigil — conflates wonder operator with stream container at normalized layer",
+  "Capsule open charAt(0) as sigil is fragile for multi-char opens",
+  "Product table not enforced by grammar — tooling may suggest"
+ ]
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Compositional forms (how to read stacks)
+// ═══════════════════════════════════════════════════════════════
+
+^["reading_forms"]{
+ prefix_act: "`!x` `~x` `*x` — Act applies to term"
+ postfix_act: "`x!` proposed in places — mark status"
+ framed_act: "`^[\"name\"]{ body }` — Bound hosts Acts"
+ coupled_act: "`<>(a,b)` or couple idiom — Act relates peers"
+ stacked_bound: "interpretive `<concept>(scene)[mode]{body}` — design form, not guaranteed law"
+ connector: "`..` `|` `/` compose Expressions — not braces, not <> digraph"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Tooling consequences
+// ═══════════════════════════════════════════════════════════════
+
+^["tooling"]{
+ status: "proposed consequences unless the line explicitly describes current behavior"
+ lexer: "keep three angle phenomena distinct in tokens and semantic tokens"
+ parser: "pair_id for all Bounds; populate labels when grammar allows"
+ onf: "fix table: Stream ≠ digraph <>; fix ?<a,b> row or implement as alias"
+ runtime: "<> only couples; Stream scheduling separate path"
+ affinities: "document affinity as a soft runtime/display hint; do not use it as syntax or coupling identity"
+ lsp: "hover: name layer (operator couple vs capsule vs stream); brace depth uses Bound pairs only"
+ query: "spw ls --braces treats <>{} as delimiter glyphs — clarify digraph vs capsule in docs"
+ static: "E0: unmatched Bound pairs; E1: affinity mismatch warnings optional"
+ llm: "tools must pass edge/kind: operator_couple | capsule | stream | frame | body | scope"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Orthogonal structural dimensions and optional profiles
+// ═══════════════════════════════════════════════════════════════
+
+^["fill_states"]{
+ ~#status: "structural_E0_implemented; physical_and_evaluation_profiles_proposed"
+ ~#note: "Symmetry comes from shared coordinates; nuance comes from tagged kinds and separately named profiles."
+
+ dimensions: .{
+  kind: "couple | frame | body | scope | capsule | stream | nrange — implemented tag"
+  form: "operator | boundary — implemented discriminant"
+  arity: "non-negative operand count on operator coupling"
+  occupancy: "empty | inhabited on boundary coupling — from normalized interior count"
+  payload: "void | space | act | term | multi on boundary coupling"
+  act_placement: "interior | prefix | postfix | none when structurally known"
+  profile_axes: "charge, capacitance, permeability, tense, feel, and geometry require a named method and revision"
+ }
+
+ space_reality: .{
+  lexer: "WHITESPACE tokens retained with spans"
+  ast: "`[ ]` `{ }` `( )` collapse to empty content — space ≡ void at ONF today"
+  payload_space: "reserved class; not produced by classifyPayload until AST keeps space evidence"
+  counterexample: "`!x` vs `! x` still differ at Operation (label vs valence); interior space does not"
+ }
+
+ matrix: #[
+  .{kind=frame, form=boundary, empty=`[] → reg=inner occupancy=empty payload=void`, act=`[!] → payload=act placement=interior`, term=`[x] → payload=term`},
+  .{kind=body, form=boundary, empty=`{} → reg=around occupancy=empty payload=void`, act=`{!} → payload=act placement=interior`, term=`{x} → payload=term`},
+  .{kind=scope, form=boundary, empty=`() → reg=scope occupancy=empty payload=void`, act=`(!) → payload=act placement=interior`, term=`(x) → payload=term`},
+  .{kind=stream, form=boundary, empty=`<<>> → reg=stream occupancy=empty`, term=`<<x>> → payload=term`, runtime=`coupling tag prevents borrowed ? sigil from taking Wonder conditional path`},
+  .{kind=capsule, form=boundary, empty=`< > → reg=capsule occupancy=empty`, note=`bare <> is operator couple, never an empty capsule`},
+  .{kind=nrange, form=boundary, empty=`missing expression → reg=range occupancy=empty`, note=`surface parse support remains grammar-sensitive`},
+  .{kind=couple, form=operator, zero=`<> → reg=couple arity=0`, inhabited=`two evaluated string operands may create a peer edge`, note=`no occupancy, payload, open/close charge, or empty register`}
+ ]
+
+ profile_orientation: .{
+  bound_ports: "an optional profile may annotate open_boundary and close_boundary; the Seed projection does not assign charge"
+  prefix_act: "`!Bound` — Act before Bound product; a structurally retained Frame projection records placement=prefix"
+  postfix_act: "`Bound!` — today sequence juxtaposition; Operation.position postfix proposed not implemented"
+  interior_act: "Act inside Bound — payload=act, actPlacement=interior"
+  law: "prefix/postfix are canonical; left/right is render-only (L8)"
+  status: "position field on OperationNode declared but unset by parser"
+ }
+
+ evaluation_boundary: .{
+  L10: "No runtime effect from delimiter shape alone"
+  empty_boundary: "empty occupancy remains metadata; runtime does not invent kind-specific unit values"
+  stream_vs_wonder: "?(…)[coupling={kind:stream,form:boundary}] returns Stream args rather than using Wonder's conditional path"
+  couple_zero: "zero-arity <> returns its empty argument list and creates no edge"
+ }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Migration / consistency actions
+// ═══════════════════════════════════════════════════════════════
+
+^["extension_status"]{
+ ~#status: "implemented_structural_projection"
+ seed: "packages/spw-seed/src/types/coupling.ts — discriminated descriptors, ports, arity, occupancy, payload, placement, guarded readers, and revisioned semantic-profile projection"
+ normalize: "Bounds attach boundary coupling coordinates; digraph <> attaches operator coupling coordinates; register identity is independent of occupancy"
+ runtime: "<> alone creates peer edges; Stream tag disambiguates borrowed ? sigil; no physical profile or boundary evaluator is inferred"
+ remaining: #[
+  "parser pair_id ports on Bound nodes",
+  "Stream without borrowing ? sigil",
+  "space payload when AST retains whitespace evidence",
+  "postfix fixity Operation.position=postfix",
+  "profile discovery and registry protocol for experimental physical and mathematical annotations"
+ ]
+}
+
+^["consistency_actions"]{
+ P0_docs: #[
+  "register-geometry: rename container member <> to capsule_shell or list digraph separately — partial",
+  "onf.ts table: <<a,b>> primary + coupling.kind — done",
+  "register-bank: ? affinity restored to conditional; capsule preference remains profile-only — done"
+ ]
+ P1_onf: #[
+  "Stream ONF: dedicated stream sigil without borrowing ?",
+  "Capsule: stop open.charAt(0) sigil hack where possible"
+ ]
+ P2_coupling: #[
+  "implement Coupling interface fields on Bound nodes (pair_id, ports) per coupling-constructors",
+  "test colored composition and typed rewrite laws against the structural projection before adding evaluation"
+ ]
+ forbid: #[
+  "lexing all braces as OPERATOR",
+  "assigning couple runtime to Capsule delimiters alone",
+  "UI treating <<>> and <> as the same token"
+ ]
+}
+
+#>wonder_spw_theory_operator_brace_composition_1
+?["Is the angle form at the caret a digraph_operator, capsule_container, or stream_container?"]{
+  #:depth #!computational // lens: formal structure
+  !probe{ "if the token type is OPERATOR value <>, digraph; if CAPSULE_OPEN, capsule; if STREAM_OPEN, stream — write one sentence that would be false if you mixed them." }
+  $%[angle_complex]
+}
+
+#>wonder_spw_theory_operator_brace_composition_2
+?["Which product_table row is an idiom, not a parse law?"]{
+  #:depth #!educational // lens: curated collection
+  !probe{ "list rows with status proposed or interpretive; name one that tooling may suggest but must not require." }
+}

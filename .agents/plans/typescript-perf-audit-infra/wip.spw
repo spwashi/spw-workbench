@@ -1,0 +1,124 @@
+# wip — typescript-perf-audit-infra
+# Branch: feature/typescript-perf-audit-infra
+# Started: 2026-07-20
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @plan: ~".agents/plans/typescript-perf-audit-infra/PLAN.md"
+ @artifact: ~".agents/plans/typescript-perf-audit-infra/typescript-perf-audit-infra.spw"
+ @observatory: ~".agents/plans/typescript-toolchain-observatory/PLAN.md"
+ @ladder: ~".agents/plans/typescript-upgrade-ladder/PLAN.md"
+ @package: ~"package.json"
+ @typecheck: ~"tsconfig.typecheck.json"
+ @solution: ~"tsconfig.json"
+ @analyzers: ~"scripts/analyzers/"
+ @skill: ~".agents/skills/spw-typescript-affordances/SKILL.md"
+ @extended_diagnostics: "https://www.typescriptlang.org/tsconfig/extendedDiagnostics.html"
+ @generate_trace: "https://www.typescriptlang.org/tsconfig/generateTrace.html"
+}
+
+^["intent"]{
+ ~#goal: "Land local-first TypeScript performance audit infrastructure: timed typecheck identity, version matrix, honest package scripts, and projection-ready JSON so upgrade and config claims can be measured."
+ ~#taste: "measurement, clarity, claim discipline"
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#measurement_literacy, #claim_discipline, #script_truth]
+ review_surfaces: [@plan, @artifact, @package, @typecheck, @analyzers, @skill]
+ snippet_routes: [#perf_row_schema, #matrix_table, #audit_scripts]
+}
+
+^["concept_index"]{
+ primary: [#typescript, #performance, #audit, #baseline, #matrix, #identity]
+ surfaces: [#scripts, #ci, #docs, #plans]
+ tensions: [#noise_variance, #missing_compiler, #claim_inflation]
+ transfers: [#service]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread current fuzz:types/build scripts before inventing new names",
+  "< ship single-run JSON identity first",
+  "$ record what became comparable",
+  "^ fold into skill + ladder docs",
+  "% keep wall-time as primary metric while diagnostics are optional",
+ ]
+ gates: [#schema_stable, #local_first, #skip_missing_cleanly, #no_default_flip]
+}
+
+^["parallel_work"]{
+ critical_path: [#single_run_profiler, #package_scripts]
+ parallelizable: [#matrix_runner, #docs, #spw_projection]
+ shared_hot_files: ["package.json", "scripts/analyzers/typescript-perf.ts"]
+ merge_risks: [#script_name_collision, #observatory_overlap]
+ handoff_artifacts: [@plan, @artifact, @package]
+}
+
+^["supporting_documents"]{
+ must_ship: [@plan, @artifact]
+ helpful: [@observatory, @ladder, @skill, @extended_diagnostics, @generate_trace]
+ carries: [#schema, #script_map, #interpretation_notes]
+}
+
+^["interaction_depth"]{
+ subjects: [#latency, #trust, #legibility, #comparison]
+ questions: [#what_is_faster, #what_is_noise, #what_is_skippable]
+ qualities: [#clarity, #traceability]
+}
+
+^["risk_model"]{
+ hard_failures: ["perf script mutates compiler defaults", "matrix fails hard when TS7 absent"]
+ soft_failures: ["high variance on shared CI", "extendedDiagnostics format drift"]
+ recoveries: ["skip rows", "wall-time only mode", "local baselines"]
+ non_negotiables: ["local-first", "measure-only", "truthful script names"]
+}
+
+^["validation"]{
+ hypotheses: [
+  "JSON row schema is stable across runs",
+  "matrix skips missing compilers without false failure",
+  "identity fields suffice for ladder claims",
+ ]
+ negative_controls: ["fuzz:types unchanged", "no network"]
+ demo_path: ["single json row", "matrix table after dual-install", "quote in ladder stream"]
+}
+
+^["stream"]{
+ >>[2026-07-20] observe — typescript-toolchain-observatory planned profile/matrix scripts but none exist under scripts/analyzers (no typescript-profile.ts).
+ >>[2026-07-20] observe — fuzz:types is only `npx tsc -p tsconfig.typecheck.json --noEmit` with no duration or version identity.
+ >>[2026-07-20] observe — TS 7 is stable; --checkers/--builders/--singleThreaded are real knobs worth matrix rows after dual-install.
+ >>[2026-07-20] decide — this plan is the executable first slice of the observatory: single-run + matrix + package scripts; projection polish can remain observatory-owned.
+ >>[2026-07-20] decide — keep audit scripts separate from fuzz:types so ship gates stay binary while perf stays comparative.
+ >>[2026-07-20] taste — a good audit row should answer: which compiler, which config, how long, did it pass — without narrative fluff.
+}
+
+^["open"]{
+ ?[cache_location]: "Prefer node_modules/.cache/spw-ts-perf vs .agents/state/typescript-perf for local baselines?"
+ ?[ci_gate]: "Stay non-gating forever, or later optional budget with high variance tolerance?"
+ ?[median_runs]: "v1 single run only, or n=3 median from the start?"
+}
+
+^["commits"]{
+ ~[1]: ".[plans] — stage typescript-perf-audit-infra planning artifacts"
+ ~[2]: "#[audit] — add typescript-perf single-run profiler with JSON identity schema"
+ ~[3]: "#[audit] — add version/config matrix runner and compare mode"
+ ~[4]: "#[audit] — wire package scripts audit:ts:perf(+json/matrix)"
+ ~[5]: ".[docs] — document perf audit protocol in skill + research note"
+ ~[6]: "![audit] — smoke matrix on current 5.9; golden schema shape tests if cheap"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@bca875c7f059edc8b9df4696cce9ed92a52acc1b"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "package.json, scripts/analyzers/typescript-perf.ts"
+ ~#next_commit: "1"
+ ~#open_count: "3"
+ ~#last_stream: "2026-07-20"
+ ~#taste_debt: "no baseline store yet; claims about TS7 speed remain folklore for this repo"
+}

@@ -3,6 +3,7 @@ import { parseCommand, parseCommonFlags, parseQueryArgs } from './args'
 import { runSpwDevCli } from './dev'
 import { printDoctorHelp, runSpwDoctorCli } from './doctor'
 import { printSpwFormatHelp, runSpwFormatCli } from './format'
+import { printSpwPulseHelp, runSpwPulseCli } from './pulse'
 import { printHelpPage } from './help'
 import { printInitUsage, runSpwInitCli } from './init'
 import { runSpwLsCli } from './ls'
@@ -12,7 +13,9 @@ import { printMemHelp } from './mem'
 import { runSpwMountCli } from './mount'
 import { printMountHelp } from './mount'
 import { runQueryCli } from './query'
+import { printRootsHelp, runSpwRootsCli } from './roots'
 import { printSelectUsage, runSpwSelectCli } from './select'
+import { printTreeHelp, runSpwTreeCli } from './tree'
 
 export async function runSpwCli(argv: string[]): Promise<void> {
   const { command, args: rawArgs } = parseCommand(argv)
@@ -60,6 +63,24 @@ export async function runSpwCli(argv: string[]): Promise<void> {
     return
   }
 
+  if (command === 'roots') {
+    if (common.flags.help) {
+      printRootsHelp()
+      return
+    }
+    await runSpwRootsCli(toCliArgv(command, args))
+    return
+  }
+
+  if (command === 'tree') {
+    if (common.flags.help) {
+      printTreeHelp()
+      return
+    }
+    await runSpwTreeCli(toCliArgv(command, args))
+    return
+  }
+
   switch (command) {
     case 'ls':
       if (common.flags.help) {
@@ -96,6 +117,15 @@ export async function runSpwCli(argv: string[]): Promise<void> {
       }
       await runSpwFormatCli(toCliArgv(command, args))
       return
+    case 'pulse':
+    case 'mutate':
+    case 'beat':
+      if (common.flags.help) {
+        printSpwPulseHelp()
+        return
+      }
+      await runSpwPulseCli(toCliArgv(command, args))
+      return
     case 'dev':
       await runSpwDevCli()
       return
@@ -123,13 +153,16 @@ function printHelp(): void {
         title: 'Commands',
         lines: [
           'init         Bootstrap a .spw workspace in a target directory',
-          'doctor       Diagnose site-install readiness in a target directory',
+          'doctor       Diagnose mounted-consumer readiness',
+          'roots        List declared workspace roots and ownership roles',
+          'tree         Render a bounded tree of .spw files',
           'query | q    Deep multi-file query (from/select/where style)',
           'select       Single-file AST selector surface (absorbs spwq)',
           'ls           Liminal sequence selector engine (operator/braces/probe)',
           'mount        Mount/check surfaces for workbench-shaped roots',
           'mem          Memory surface tools',
           'format       Spw formatter',
+          'pulse        Topographical mutation probes (plan/diff/check)',
           'dev          Hot loop runner',
           'help         Print this help',
         ],
@@ -140,16 +173,18 @@ function printHelp(): void {
           'install      Alias for init',
           'seq          Alias for ls',
           'spwq         Alias for select',
+          'mutate|beat  Alias for pulse',
         ],
       },
       {
         title: 'Try',
         lines: [
-          'spw init my-site',
-          'spw doctor my-site',
-          'npm run spw -- init my-site',
+          'spw doctor',
+          'spw roots',
+          'spw tree @spw',
           'npm run spw -- query --help',
           'npm run spw -- format --help',
+          'npm run spw -- pulse --help',
         ],
       },
     ],

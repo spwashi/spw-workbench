@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { desugar, normalizeToONF } from '../normalize'
+import { boundaryCoordinateForSurface } from '../types/coupling'
 import { collectPrecipitates, precipitateToSpw, projectionToSpw } from '../../runtime/pipeline/stages'
 
 const dummySpan = { start: { line: 1, column: 1, offset: 0 }, end: { line: 1, column: 2, offset: 1 } }
@@ -102,24 +103,144 @@ describe('normalizeToONF', () => {
     expect(onf.frames.value).toBe('hello world')
   })
 
-  it('Frame → _[inner]', () => {
-    const onf = normalizeToONF(makeNode('Frame', { content: [makeId('x')] }))
-    expect(onf.frames.reg).toBe('inner')
-    expect(onf.args).toHaveLength(1)
+  it('Frame keeps register identity while occupancy varies', () => {
+    const filled = normalizeToONF(makeNode('Frame', { content: [makeId('x')] }))
+    expect(filled.frames.reg).toBe('inner')
+    expect(filled.args).toHaveLength(1)
+    expect((filled.frames.coupling as { kind: string; occupancy: string })?.kind).toBe('frame')
+    expect((filled.frames.coupling as { form: string })?.form).toBe('boundary')
+    expect((filled.frames.coupling as { occupancy: string })?.occupancy).toBe('inhabited')
+    expect((filled.frames.coupling as { payload: string })?.payload).toBe('term')
+    expect(filled.frames.coupling).not.toHaveProperty('charge')
+    expect(filled.frames.coupling).not.toHaveProperty('family')
+
+    const empty = normalizeToONF(makeNode('Frame', { content: [] }))
+    expect(empty.frames.reg).toBe('inner')
+    expect((empty.frames.coupling as { occupancy: string; surface: string })?.occupancy).toBe('empty')
+    expect((empty.frames.coupling as { surface: string })?.surface).toBe('[]')
+    expect((empty.frames.coupling as { payload: string })?.payload).toBe('void')
   })
 
-  it('Body → _[around]', () => {
-    const onf = normalizeToONF(makeNode('Body', {
+  it('Frame with bare operator → payload act + interior placement', () => {
+    const op = makeNode('Operation', { operator: makeToken('OPERATOR', '!') })
+    const filled = normalizeToONF(makeNode('Frame', {
+      content: [makeNode('Parameter', { value: makeNode('Expression', { terms: [op], connectors: [] }) })],
+    }))
+    expect((filled.frames.coupling as { payload: string; actPlacement?: string })?.payload).toBe('act')
+    expect((filled.frames.coupling as { actPlacement?: string })?.actPlacement).toBe('interior')
+  })
+
+  it('Body keeps register identity while occupancy varies', () => {
+    const filled = normalizeToONF(makeNode('Body', {
       sequence: makeNode('Sequence', { expressions: [makeId('a')] }),
     }))
-    expect(onf.frames.reg).toBe('around')
-  })
+    expect(filled.frames.reg).toBe('around')
+    expect((filled.frames.coupling as { kind: string })?.kind).toBe('body')
+    expect((filled.frames.coupling as { form: string })?.form).toBe('boundary')
+    expect((filled.frames.coupling as { payload: string })?.payload).toBe('term')
 
-  it('Scope → _[scope]', () => {
-    const onf = normalizeToONF(makeNode('Scope', {
+    const empty = normalizeToONF(makeNode('Body', {
       sequence: makeNode('Sequence', { expressions: [] }),
     }))
-    expect(onf.frames.reg).toBe('scope')
+    expect(empty.frames.reg).toBe('around')
+    expect((empty.frames.coupling as { occupancy: string })?.occupancy).toBe('empty')
+    expect((empty.frames.coupling as { payload: string })?.payload).toBe('void')
+  })
+
+  it('Body with bare operator → payload act', () => {
+    const op = makeNode('Operation', { operator: makeToken('OPERATOR', '!') })
+    const filled = normalizeToONF(makeNode('Body', {
+      sequence: makeNode('Sequence', {
+        expressions: [makeNode('Expression', { terms: [op], connectors: [] })],
+      }),
+    }))
+    expect((filled.frames.coupling as { payload: string; actPlacement?: string })?.payload).toBe('act')
+    expect((filled.frames.coupling as { actPlacement?: string })?.actPlacement).toBe('interior')
+  })
+
+  it('Scope keeps register identity while occupancy varies', () => {
+    const filled = normalizeToONF(makeNode('Scope', {
+      sequence: makeNode('Sequence', { expressions: [makeId('x')] }),
+    }))
+    expect(filled.frames.reg).toBe('scope')
+    expect((filled.frames.coupling as { kind: string })?.kind).toBe('scope')
+    expect((filled.frames.coupling as { form: string })?.form).toBe('boundary')
+
+    const empty = normalizeToONF(makeNode('Scope', {
+      sequence: makeNode('Sequence', { expressions: [] }),
+    }))
+    expect(empty.frames.reg).toBe('scope')
+    expect((empty.frames.coupling as { surface: string })?.surface).toBe('()')
+    expect((empty.frames.coupling as { payload: string })?.payload).toBe('void')
+  })
+
+  it('Stream keeps register identity and disambiguates the borrowed ? sigil', () => {
+    const filled = normalizeToONF(makeNode('Stream', {
+      sequence: makeNode('Sequence', { expressions: [makeId('a')] }),
+    }))
+    expect(filled.sigil).toBe('?')
+    expect(filled.frames.reg).toBe('stream')
+    expect((filled.frames.coupling as { kind: string })?.kind).toBe('stream')
+    expect((filled.frames.coupling as { form: string })?.form).toBe('boundary')
+    expect((filled.frames.coupling as { payload: string })?.payload).toBe('term')
+
+    const empty = normalizeToONF(makeNode('Stream', {
+      sequence: makeNode('Sequence', { expressions: [] }),
+    }))
+    expect(empty.frames.reg).toBe('stream')
+    expect((empty.frames.coupling as { occupancy: string })?.occupancy).toBe('empty')
+    expect((empty.frames.coupling as { payload: string })?.payload).toBe('void')
+  })
+
+  it('Capsule keeps register identity while occupancy varies', () => {
+    const filled = normalizeToONF(makeNode('Capsule', {
+      open: makeToken('CAPSULE_OPEN', '<'),
+      body: makeNode('Body', {
+        sequence: makeNode('Sequence', { expressions: [makeId('x')] }),
+      }),
+    }))
+    expect(filled.frames.reg).toBe('capsule')
+    expect((filled.frames.coupling as { kind: string })?.kind).toBe('capsule')
+    expect((filled.frames.coupling as { form: string })?.form).toBe('boundary')
+    expect((filled.frames.coupling as { payload: string })?.payload).toBe('term')
+
+    const empty = normalizeToONF(makeNode('Capsule', {
+      open: makeToken('CAPSULE_OPEN', '<'),
+      body: makeNode('Body', {
+        sequence: makeNode('Sequence', { expressions: [] }),
+      }),
+    }))
+    // Empty body → empty capsule occupancy
+    expect(empty.frames.reg).toBe('capsule')
+    expect((empty.frames.coupling as { occupancy: string; surface: string })?.occupancy).toBe('empty')
+    expect((empty.frames.coupling as { payload: string })?.payload).toBe('void')
+  })
+
+  it('Digraph <> is an operator coupling with arity, not boundary occupancy', () => {
+    const empty = normalizeToONF(makeNode('Operation', {
+      operator: makeToken('OPERATOR', '<>'),
+    }))
+    expect(empty.sigil).toBe('<>')
+    expect(empty.frames.reg).toBe('couple')
+    expect(empty.frames.coupling).toMatchObject({
+      kind: 'couple',
+      form: 'operator',
+      surface: '<>',
+      arity: 0,
+    })
+    expect(empty.frames.coupling).not.toHaveProperty('occupancy')
+    expect(empty.frames.coupling).not.toHaveProperty('payload')
+  })
+
+  it('Prefix Act·Bound ![] records placement on the paired-boundary projection', () => {
+    const onf = normalizeToONF(makeNode('Operation', {
+      operator: makeToken('OPERATOR', '!'),
+      frame: makeNode('Frame', { content: [] }),
+    }))
+    expect(onf.sigil).toBe('!')
+    expect((onf.frames.bound as { kind: string; occupancy: string })?.kind).toBe('frame')
+    expect((onf.frames.bound as { occupancy: string })?.occupancy).toBe('empty')
+    expect((onf.frames.bound as { actPlacement: string })?.actPlacement).toBe('prefix')
   })
 
   it('Match → ?[match]', () => {
@@ -172,6 +293,21 @@ describe('normalizeToONF', () => {
     const onf = normalizeToONF(makeNode('Sequence', { expressions: [makeId('x'), makeId('y')] }))
     expect(onf.frames.reg).toBe('sequence')
     expect(onf.args).toHaveLength(2)
+  })
+})
+
+describe('coupling surface coordinates', () => {
+  it('treats base opening delimiters uniformly while preserving their kinds', () => {
+    expect(['<', '(', '[', '{'].map(boundaryCoordinateForSurface)).toEqual([
+      { kind: 'capsule', form: 'boundary', side: 'open', surface: '<' },
+      { kind: 'scope', form: 'boundary', side: 'open', surface: '(' },
+      { kind: 'frame', form: 'boundary', side: 'open', surface: '[' },
+      { kind: 'body', form: 'boundary', side: 'open', surface: '{' },
+    ])
+  })
+
+  it('does not reinterpret the adjacent <> relation as a boundary surface', () => {
+    expect(boundaryCoordinateForSurface('<>')).toBeUndefined()
   })
 })
 

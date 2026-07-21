@@ -128,9 +128,9 @@ export async function inspectDoctorTarget(targetDir: string): Promise<DoctorRepo
   })
 
   const scaffoldChecks: Array<[string, string]> = [
-    ['site-index', path.join(spwRoot, 'index.spw')],
-    ['site-workspace', path.join(spwRoot, 'workspace.spw')],
-    ['site-mount', path.join(spwRoot, 'mount.spw')],
+    ['consumer-index', path.join(spwRoot, 'index.spw')],
+    ['consumer-workspace', path.join(spwRoot, 'workspace.spw')],
+    ['consumer-mount', path.join(spwRoot, 'mount.spw')],
   ]
 
   for (const [id, target] of scaffoldChecks) {
@@ -143,6 +143,15 @@ export async function inspectDoctorTarget(targetDir: string): Promise<DoctorRepo
       fix: present || !hasWorkbench ? undefined : SCAFFOLD_COMMAND,
     })
   }
+
+  const orientationReadme = path.join(spwRoot, 'README.md')
+  const hasOrientationReadme = await exists(orientationReadme)
+  checks.push({
+    id: 'consumer-orientation',
+    status: hasOrientationReadme ? 'ok' : 'warn',
+    summary: hasOrientationReadme ? '.spw/README.md present' : 'missing optional .spw/README.md prompt entrypoint',
+    fix: hasOrientationReadme || !hasWorkbench ? undefined : SCAFFOLD_COMMAND,
+  })
 
   const next = unique(checks.flatMap((check) => (check.fix ? [check.fix] : [])))
   return {
@@ -166,7 +175,7 @@ export function printDoctorHelp(): void {
         title: 'Checks',
         lines: [
           'git repository presence',
-          '.spw scaffold presence (index, workspace, mount)',
+          '.spw scaffold presence (README, index, workspace, mount)',
           '.spw/_workbench checkout and package metadata',
           'workbench dependency install state',
         ],

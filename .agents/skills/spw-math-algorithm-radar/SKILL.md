@@ -10,8 +10,9 @@ description: Maintain a living map of relevant math/algorithms for this repo; us
 1. Identify the concrete problem (inputs, outputs, constraints, scale).
 2. Classify the problem using `references/radar-template.md` (domain, likely tools, failure modes).
 3. Propose 2–3 candidate techniques with tradeoffs and complexity.
-4. Recommend one path and list "next learning steps" (papers/chapters/implementations).
-5. If asked, implement a small spike or benchmark in the repo with tight scope and tests.
+4. Mark each statement as implemented fact, measured result, proposed model, or interpretive analogy; name one falsifier.
+5. Recommend one path and list "next learning steps" (papers/chapters/implementations).
+6. If asked, implement a small spike or benchmark in the repo with tight scope and tests.
 
 ## Output Contract
 
@@ -21,11 +22,14 @@ description: Maintain a living map of relevant math/algorithms for this repo; us
 
 ## Math Already in This Codebase
 
-### Fiber Bundle Model (Register Geometry)
-The register space is modeled as a fiber bundle: `(base=sigil, fiber=register-state, projection=type-check)`. Non-commutative operator pairs (`!(~x) ≠ ~(!x)`) define distinct homotopy classes. See `docs/theory/spw/register-geometry.spw`.
+### Register Geometry Research Projection
+The register space has been interpreted as a fiber bundle, but the fiber, projection, non-commutativity, and homotopy language is proposed rather than an implemented invariant. See `docs/theory/spw/register-geometry.spw` and verify parser→ONF→runtime paths before using it algorithmically.
 
 ### Tiered Normalization (ONF)
-A three-tier normal form pipeline: SNF (surface lexical normalization) → SiNF (per-sigil reduction automata) → SeNF (cross-sigil semantic normalization, may not terminate). Each tier is a fixed-point iteration. See `docs/theory/spw/onf.spw`.
+SNF-like lexer output and a partial AST-to-ONF projection exist. SiNF reducers, SeNF optimization, confluence, termination, and fixed-point laws remain proposed. See `docs/theory/spw/onf.spw`.
+
+### Coupling Constructors
+The recommended implementation model for paired delimiters is a recursive tagged boundary view. A colored operad or multicategory is the formal composition hypothesis; topology supplies boundary/interior/exterior vocabulary; typed tree rewriting supplies transforms and critical-pair tests. See `docs/theory/spw/coupling-constructors.spw`.
 
 ### Cascade Resolution
 Layered override with priority ordering — functionally a priority-ordered merge of semantic frames. `[cascade=layer priority=N]` with `[resolve=cascade]` for resolution.

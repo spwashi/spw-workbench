@@ -8,7 +8,7 @@
 
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
-import { parse, type Token } from '@spwashi/spw-seed'
+import { parseWorkspaceRootDeclarations } from '@spwashi/spw-seed'
 import type { HandlerDeps } from '../types'
 
 // ── Response types ───────────────────────────────────────────────
@@ -121,108 +121,13 @@ function parseManifestRoots(
   text: string,
   uriFromPath: HandlerDeps['uriFromPath'],
 ): WorkspaceRootEntry[] {
-  const { tokens } = parse(text)
-  const significant = tokens.filter((token) => token.type !== 'WHITESPACE' && token.type !== 'EOF')
   const manifestDir = path.dirname(manifestPath)
-
-  for (let i = 0; i < significant.length; i++) {
-    const frame = matchFrameHeader(significant, i)
-    if (!frame || frame.name !== 'roots') continue
-
-    const bodyTokens: Token[] = []
-    let depth = 1
-    i = frame.bodyStartIndex
-
-    while (++i < significant.length && depth > 0) {
-      const token = significant[i]
-      if (token.type === 'CONTAINER_OPEN' && token.kind === '{') {
-        depth++
-      } else if (token.type === 'CONTAINER_CLOSE' && token.kind === '}') {
-        depth--
-        if (depth === 0) break
-      }
-      bodyTokens.push(token)
-    }
-
-    return parseRootEntries(bodyTokens, manifestDir, uriFromPath)
-  }
-
-  return []
-}
-
-function parseRootEntries(
-  tokens: Token[],
-  manifestDir: string,
-  uriFromPath: HandlerDeps['uriFromPath'],
-): WorkspaceRootEntry[] {
-  const roots: WorkspaceRootEntry[] = []
-
-  for (let i = 0; i < tokens.length; i++) {
-    const at = tokens[i]
-    const name = tokens[i + 1]
-    const colon = tokens[i + 2]
-    const tilde = tokens[i + 3]
-    const pathToken = tokens[i + 4]
-
-    if (
-      at?.type !== 'OPERATOR' || at.kind !== '@' ||
-      name?.type !== 'IDENTIFIER' ||
-      colon?.type !== 'COLON' ||
-      tilde?.type !== 'OPERATOR' || tilde.kind !== '~' ||
-      pathToken?.type !== 'STRING'
-    ) {
-      continue
-    }
-
-    const relativePath = unquote(pathToken.value)
+  return parseWorkspaceRootDeclarations(text).map(({ sigil, relativePath }) => {
     const resolvedPath = path.resolve(manifestDir, relativePath)
-    roots.push({
-      sigil: name.value,
+    return {
+      sigil,
       resolvedPath,
       uri: uriFromPath(resolvedPath),
-    })
-    i += 4
-  }
-
-  return roots
-}
-
-function matchFrameHeader(
-  tokens: Token[],
-  index: number,
-): { name: string; bodyStartIndex: number } | null {
-  const caret = tokens[index]
-  if (caret?.type !== 'OPERATOR' || caret.kind !== '^') {
-    return null
-  }
-
-  const next = tokens[index + 1]
-  if (!next) return null
-
-  if (next.type === 'STRING') {
-    const brace = tokens[index + 2]
-    if (brace?.type === 'CONTAINER_OPEN' && brace.kind === '{') {
-      return { name: unquote(next.value), bodyStartIndex: index + 2 }
     }
-    return null
-  }
-
-  if (next.type === 'CONTAINER_OPEN' && next.kind === '[') {
-    const label = tokens[index + 2]
-    const close = tokens[index + 3]
-    const brace = tokens[index + 4]
-    if (
-      (label?.type === 'STRING' || label?.type === 'IDENTIFIER') &&
-      close?.type === 'CONTAINER_CLOSE' && close.kind === ']' &&
-      brace?.type === 'CONTAINER_OPEN' && brace.kind === '{'
-    ) {
-      return { name: unquote(label.value), bodyStartIndex: index + 4 }
-    }
-  }
-
-  return null
-}
-
-function unquote(value: string): string {
-  return value.replace(/^["'`]|["'`]$/g, '')
+  })
 }

@@ -1,15 +1,29 @@
 # Operators Canonical Reference
 #
-# Canonical 12 operators + 4 containers for docs, UI tokens, and ONF.
-# @see src/seed/types/token.ts (OperatorKind)
-# @see src/core/types/branded.ts (OperatorSigil)
+# Reader vocabulary for 12 single-sigil operators, the <> couple operator,
+# and four interpretive brace profiles. These do not map one-for-one to lexer kinds.
+# Interpretive names are not substitutes for parser or runtime behavior.
+# @see packages/spw-seed/src/types/token.ts (OperatorKind)
+# @see packages/spw-runtime/src/interpreter/interpreter.ts (implemented evaluation)
+# @see docs/theory/spw/operational-topography.spw (orientation and status discipline)
+# @see docs/theory/spw/coupling-constructors.spw (shared boundary algebra)
 
 #:layer #!semantics
 
 ^seed[Spw.Operators v:0.3 @profile:Spw.b @intent:canonical_map]
 {_ops
 
- ## ── Operators (12 sigils) ──────────────────────────────────
+ // ── Status Discipline ──────────────────────────────────────
+
+ status: .{
+ token = `implemented in the portable lexer/parser`
+ onf = `implemented normalization label or shape`
+ runtime = `implemented interpreter behavior`
+ proposed = `research strategy requiring tests before promotion`
+ interpretive = `reader-facing name or local profile`
+ }[reg=facet]
+
+ // ── Interpretive Operator Names ───────────────────────────
 
  operators: .{
  `~` = potential
@@ -24,51 +38,93 @@
  `$` = substrate
  `%` = measure
  `=` = configuration
+ `<>` = coupling
  }[reg=facet]
 
- ## ── Containers (4 brace pairs) ─────────────────────────────
+ // These names are stable reader vocabulary, not a runtime behavior table.
+
+ runtime_reality: #[
+ .{sigil=`#`, status=runtime, behavior=`reduce arguments and resonate a register`},
+ .{sigil=`@`, status=runtime, behavior=`observe the first argument through a named observer`},
+ .{sigil=`&`, status=runtime, behavior=`merge arguments through register confluence`},
+ .{sigil=`=`, status=runtime, behavior=`write the first argument to a register`},
+ .{sigil=`%`, status=runtime, behavior=`measure a named or focused register`},
+ .{sigil=`$`, status=runtime, behavior=`materialize register metadata`},
+ .{sigil=`.`, status=runtime, behavior=`access a framed property path or return the base value`},
+ .{sigil=`?`, status=runtime, behavior=`return the second argument or true when the first is truthy`},
+ .{sigil=`!`, status=runtime, behavior=`return the first argument`},
+ .{sigil=`^`, status=runtime, behavior=`return an integrated wrapper around arguments`},
+ .{sigil=`~`, status=runtime, behavior=`return a deferred wrapper around the first argument`},
+.{sigil=`*`, status=runtime, behavior=`write and return a collapsed first argument`},
+ .{sigil=`<>`, status=runtime, behavior=`create a bidirectional register edge only when the first two evaluated operands are string keys; return all operands`},
+ ][reg=set]
+
+ runtime_order: `All ONF arguments are evaluated eagerly before dispatch; surface frames may normalize into metadata rather than arguments.`
+
+ // ── Interpretive Brace Profiles ────────────────────────────
 
  containers: .{
- `<>` = concept
+ `< >` = concept
  `()` = scene
  `[]` = mode
  `{}` = definition
  }[reg=facet]
 
- ## ── Register Frame Constructors ────────────────────────────
- ## Operator × Container → canonical register
+ // Container names are interpretive profiles. Concrete grammar also includes
+ // specialized Capsule <...>, Stream <<>>, and NRange (()) boundaries, while the
+ // adjacent token <> is an operator.
+
+ coupling_family: .{
+ status = implemented_structural_projection
+ semantic_rule = `The <> relation and every paired delimiter expose a tagged coupling interface; form distinguishes operator operands from boundary interiors.`
+ lexical_rule = `Keep concrete delimiter and operator token kinds distinct; semantic operation does not require lexical OPERATOR uniformity.`
+ normalization = `ONF records operator {kind,form,arity} or boundary {kind,form,occupancy,payload,surface,actPlacement?}; it does not rewrite every Bound into <>.`
+ profile_rule = `Charge, tense, geometry, and kind-specific evaluation require named, revisioned profiles and evidence.`
+ }[reg=facet]
+
+ orientation: .{
+ canonical = #[open, close, prefix, postfix, before, after]
+ render_only = #[left, right, inward, outward, accumulate, release]
+ invariant = `Render-only orientation preserves tokens, AST, ONF, and effects.`
+ dialect_gate = `Operand order, containment, normalization, or effect changes require a versioned dialect.`
+ status = `proposed policy; current parser does not enforce profile preservation or dialect gates`
+ }[reg=facet]
+
+ // ── Proposed Register Frame Constructors ──────────────────
+ // Operator × Container → canonical register
 
  register_frames: #[
  .{ combo = `#[...]`, operator = `#`, container = `[]`, reg = set, meaning = `category / ground-truth set` },
  .{ combo = `.{...}`, operator = `.`, container = `{}`, reg = facet, meaning = `property facet / definition` },
  .{ combo = `@(...)`, operator = `@`, container = `()`, reg = perspective, meaning = `observer scope` },
- .{ combo = `?<...>`, operator = `?`, container = `<>`, reg = stream, meaning = `becoming / durational stream` }
+ .{ combo = `<<...>>@sink`, operator = `?`, container = `<<>>`, reg = stream, meaning = `stream target; normalization currently drops sink semantics` }
  ][reg=set]
 
- ## ── Compositional Form ─────────────────────────────────────
+ // ── Compositional Form ─────────────────────────────────────
 
  compositional_form: .{
  pattern = `<concept>(scene)[mode]{body}`
  flow = `concept -> scene -> mode -> definition`
  emphasis = `Prefer container stack for scoped semantics over ad-hoc prose markers.`
+ status = `interpretive design form; not a parser-guaranteed semantic nesting law`
  }[reg=facet]
 
- ## ── ONF Reduction ──────────────────────────────────────────
- ## Every surface expression → σ(args...)[reg=R ...]
+ // ── ONF Targets ────────────────────────────────────────────
+ // Desired σ(args...)[reg=R ...] shapes; see onf.spw for current counterexamples.
 
  onf_examples: #[
  .{ surface = `x / y`, onf = `/(x, y)[reg=proj]` },
- .{ surface = `x!`, onf = `!(x)[reg=hydrate]` },
+ .{ surface = `x!`, onf = `!(x)[reg=hydrate]`, status = proposed_postfix },
  .{ surface = `~x`, onf = `~(x)[reg=defer]` },
  .{ surface = `#[a, b]`, onf = `#(a, b)[reg=set]` },
  .{ surface = `.{k: v}`, onf = `.({k: v})[reg=facet]` },
- .{ surface = `?<a, b>`, onf = `?(a, b)[reg=stream]` },
+ .{ surface = `<<a, b>>@sink`, onf = `?(a, b)[reg=stream sink=sink]`, status = proposed_sink_preservation },
  .{ surface = `_`, onf = `_()[reg=hole]` },
  .{ surface = `` `phrase` ``, onf = `` `(phrase)[reg=phrase]` `` }
  ][reg=set]
 
- ## ── Runtime Aliases ────────────────────────────────────────
- ## Bridge canonical → existing UI/operator color token names
+ // ── Runtime Aliases ────────────────────────────────────────
+ // Bridge canonical → existing UI/operator color token names
 
  runtime_aliases: .{
  action = inject
@@ -82,8 +138,8 @@
  vibration = reflect
  }[reg=facet]
 
- ## ── Per-Sigil Strategies ───────────────────────────────────
- ## From onf.spw per_sigil_automata
+ // ── Proposed Per-Sigil Strategies ──────────────────────────
+ // Research hypotheses from onf.spw; not the current runtime behavior table.
 
  strategies: #[
  .{ sigil = `!`, strategy = eager, path = ?<evaluate, dispatch, capture>, terminal = `register binding` },
@@ -100,7 +156,12 @@
  .{ sigil = `%`, strategy = measuring, path = ?<sample, normalize, ratio>, terminal = `unit scalar` }
  ][reg=set]
 
- ## ── Adopted Heuristics (from Grok probes v0.5–0.8) ────────
+ strategy_status: proposed
+ strategy_falsifier: `A strategy is not promoted until parser form, ONF, runtime trace, and counterexample tests agree.`
+
+ // ── Legacy Candidate Heuristics (Grok probes v0.5–0.8) ───
+
+ heuristic_status: `research candidates; type=auto does not mean implemented`
 
  heuristics: #[
  .{ id = proj_chain, rule = `x / y / z → /(x,#[y,z])[proj]`, type = auto },
@@ -112,15 +173,16 @@
  .{ id = resolve_cascade,rule = `x/p with layers → /(x,p)[resolve=cascade]`, type = auto }
  ][reg=set]
 
- ## ── LSP / DAP Prep ────────────────────────────────────────
+ // ── LSP / DAP Prep ────────────────────────────────────────
 
  lsp_dap: .{
+ status = proposed
  lsp = `Use canonical names in diagnostics/hover text`
  dap = `Emit canonical operator labels in step events`
  sheaf = `Cache subset parses by container stack key`
  }[reg=facet]
 
- ## ── Notes ──────────────────────────────────────────────────
+ // ── Notes ──────────────────────────────────────────────────
 
  notes: #[
  `LoD should gate visibility of semantic layers, not globally dim most UI.`,
@@ -140,11 +202,11 @@
 }
 
 #>wonder_docs_theory_spw_operators_2
-?["How would a biology algorithm express Spw.Operators v:0.3 @profile:Spw.b @intent:canonical_map?"]{
-  #:depth #!computational // lens: living system
-  ~#translation_target: "biology"
+?["How would a local universe translate Spw.Operators without changing their implemented behavior?"]{
+  #:depth #!computational // lens: profile translation
+  ~#translation_target: "repository-local orientation and vocabulary profile"
   ~#source_concept: "Spw.Operators v:0.3 @profile:Spw.b @intent:canonical_map"
-  !probe{ "rewrite the root frame in biology vocabulary; where the translation breaks reveals Spw's untranslatable concepts." }
+  !probe{ "rewrite only interpretive labels; any changed token, ONF node, or runtime trace reveals an operational rather than presentational translation." }
   $%[register.bank_size, register.active_bindings]
   ~<docs/theory/spw/audio-architecture.spw>  // nearest neighbor
 }

@@ -1,0 +1,427 @@
+# Substrate · Organelle · Beat · Block Physics
+#
+# Instantiating theoretical substrates; tuning what precipitates and when;
+# liminal spaces as projection surfaces for beat-lifecycle memory with
+# variable mutability; refactor/transform handles; ecological block anatomy;
+# operators as portals or suborganelles.
+#
+# Status: implemented | measured | proposed | interpretive
+#
+# @see packages/spw-runtime/src/pipeline/stages.ts
+# @see packages/spw-runtime/src/pipeline/substrate.ts
+# @see packages/spw-runtime/src/state/types.ts  (LIMINALITY_ORDER, immutable, phases)
+# @see .spw/runtime/precipitates.spw
+# @see .agents/plans/spw-garden-geometry/editor-surface-physics.spw
+# @see .agents/plans/spw-garden-geometry/phd-domain-topography.spw
+# @see docs/theory/spw/register-geometry.spw
+
+#:layer #!semantics
+#:garden #!substrate
+#:runtime #!organelle
+
+^seed[Spw.Garden.Substrate.OrganellePhysics v:0.1 @profile:Spw.b @intent:substrate_beat_block_portal]
+
+^["roots"]{
+ @precipitates_runtime: ~"../../../.spw/runtime/precipitates.spw"
+ @stages: ~"../../../packages/spw-runtime/src/pipeline/stages.ts"
+ @substrate_ts: ~"../../../packages/spw-runtime/src/pipeline/substrate.ts"
+ @register_types: ~"../../../packages/spw-runtime/src/state/types.ts"
+ @editor_physics: ~"./editor-surface-physics.spw"
+ @garden: ~"./spw-garden-geometry.spw"
+ @register_geometry: ~"../../../docs/theory/spw/register-geometry.spw"
+ @literate_arch: ~"../../../.spw/patterns/literate-architecture.spw"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Instantiating theoretical substrates
+// ═══════════════════════════════════════════════════════════════
+
+^["theoretical_substrates"]{
+ ~#definition: "A substrate is an instantiated processing medium: batch pipeline, event log, index memory, editor projection, or domain prime gloss — not a free metaphor."
+ ~#status: "implemented_partial+proposed"
+
+ ~#kinds: .{
+  structural_pipeline: .{
+   status: "implemented"
+   instance: "A-line stages desugar→parse→normalize→interpret"
+   yields: "Precipitate per stage"
+   note: "batch sequential — stages.ts"
+  }
+  event_substrate: .{
+   status: "implemented"
+   instance: "Substrate event log (write/couple/phase-advance/mark)"
+   yields: "Resonance detections; register events"
+   bind: "~ deferral = substrate binding (substrate.ts)"
+  }
+  index_memory: .{
+   status: "implemented"
+   instance: "ServerIndex docs hot/warm/cold + contentHash"
+   yields: "lineContexts, annotations, projections, temperature"
+  }
+  trial_runtime: .{
+   status: "implemented_partial"
+   instance: "LSP runtimeTrialCache per uri TTL"
+   yields: "RunSpwResult for hover/lens — not edit authority"
+  }
+  prime_gloss: .{
+   status: "proposed"
+   instance: "domain prime pack bound to a bed"
+   yields: "presentation only — never a second AST"
+  }
+  walk_trace: .{
+   status: "proposed"
+   instance: "TraceRecord ring of walk/pulse precipitates"
+   yields: "patternSignature, novelty, byproducts"
+  }
+  external_SOR: .{
+   status: "proposed"
+   instance: "LIMS/ELN/graph adapter as projection edge in"
+   yields: "read-mostly; write only via graded authority"
+  }
+ }
+
+ ~#instantiate: .{
+  steps: #[
+   "name substrate kind + revision",
+   "bind scope (file | category | lens | workspace)",
+   "declare yield types (precipitate classes)",
+   "set mutability envelope (see beat_lifecycle)",
+   "attach liminality for memory projection",
+   "tune properties that change *what* and *when* falls out"
+  ]
+  invariant: "Instantiation is explicit; silent dual substrates fork truth."
+ }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Tuning properties → what precipitates and when
+// ═══════════════════════════════════════════════════════════════
+
+^["precipitation_tuning"]{
+ ~#thesis: "Precipitates are not inevitable weather — knobs select which reactions run, when they fire, and what is kept as memory."
+ ~#status: "proposed+footholds"
+
+ ~#knobs: .{
+  stage_gate: .{
+   what: "which pipeline stages emit precipitates"
+   when: "always | on-change | on-pulse-beat | manual"
+   impact: "interpret-only trials vs full desugar→interpret chain"
+  }
+  hash_gate: .{
+   what: "skip re-reaction if contentHash unchanged"
+   when: "didChange/didSave"
+   impact: "suppresses duplicate precipitates; preserves identity"
+  }
+  grade_cap: .{
+   what: "max evidence/effect grade auto-allowed (E0–E2 / S0–S3)"
+   when: "pulse auto-beats"
+   impact: "E2 wonder never auto-precipitates as mutation"
+  }
+  budget: .{
+   what: "maxFilesPerBeat, maxMsPerBeat, maxConcurrent"
+   when: "each beat"
+   impact: "contracts explode complexity; partial precipitate + remaining queue"
+  }
+  liminality: .{
+   what: "local | liminal | visible | global memory placement"
+   when: "on write / phase-advance"
+   impact: "eviction weight; what survives GC; what is projectable to editor"
+  }
+  immutable_flag: .{
+   what: "register entry immutable?"
+   when: "set/couple"
+   impact: "blocks write precipitates; forces fork/clone paths"
+  }
+  phase_floor: .{
+   what: "minimum register phase before facet retained"
+   when: "enrichment"
+   impact: "lex facets cheap-evict; semantic facets sticky (memoryWeight)"
+  }
+  format_profile: .{
+   what: "canonicalize options for lattice vs prose"
+   when: "format beat"
+   impact: "whitespace precipitates vs identity-stable hash"
+  }
+  prime: .{
+   what: "gloss pack"
+   when: "hover/trace render"
+   impact: "presentation precipitate only"
+  }
+  walk_policy: .{
+   what: "melody|assembly|meaning|novelty|byproduct"
+   when: "walk tick"
+   impact: "which edges expand frontier; which byproducts collect"
+  }
+ }
+
+ ~#when_matrix: #[
+  .{event=keystroke, default=debounce_analyze, precipitate=["lineContext_delta"], mutability=index_only},
+  .{event=save, default=reindex+optional_format, precipitate=["doc_hash", "trial_invalidate"], mutability=disk_if_format},
+  .{event=pulse_beat, default=scoped_assay, precipitate=["trace_step", "metrics"], mutability=grade_gated},
+  .{event=lens_tick, default=dryRun, precipitate=["preview_edits"], mutability=S2_plan_only},
+  .{event=evict, default=tier_demote, precipitate=["memory_drop"], mutability=meta_only},
+ ]
+
+ ~#seorm: "Tuning is material process control — temperature (tier), pressure (budget), catalyst (pulse), quench (immutable)."
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Liminal spaces as projection surfaces for beat-lifecycle memory
+// ═══════════════════════════════════════════════════════════════
+
+^["liminal_projection"]{
+ ~#definition: "Liminality (local→liminal→visible→global) is not only GC: it is *where* beat memory may be projected for reading and *how mutable* that memory is."
+ ~#status: "implemented_types+proposed_editor"
+
+ ~#order: #[local, liminal, visible, global]
+ ~#source: "LIMINALITY_ORDER in state/types.ts"
+
+ ~#spaces: .{
+  local: .{
+   meaning: "scratch of one beat / one selection"
+   projects_to: "ephemeral hover scrap; strip flash"
+   mutability: "high — discarded at beat end unless promoted"
+   lifecycle: "born on beat start → dies on beat complete unless pin"
+  }
+  liminal: .{
+   meaning: "between reactions — trial cache, walk frontier, dryRun plan"
+   projects_to: "compare panel draft; pulse status; pending tick queue"
+   mutability: "medium — replaceable by newer hash; not source of write authority"
+   lifecycle: "survives few beats; demotes on idle or contentHash change"
+  }
+  visible: .{
+   meaning: "committed to UI observation (open doc hot tier, shown tree)"
+   projects_to: "atlas/concepts strip; diagnostics; temperature"
+   mutability: "low for structure — edits require exact selection + plan"
+   lifecycle: "tied to open/visible surfaces; visibility gate keeps cold when hidden"
+  }
+  global: .{
+   meaning: "workspace/index/projection graph / harness runs"
+   projects_to: "gardenStats, twin index, episode archive"
+   mutability: "lowest — episode + revision required for change claims"
+   lifecycle: "phenology scale; cold tier + archive"
+  }
+ }
+
+ ~#beat_lifecycle: .{
+  phases: #[
+   .{id=prime, liminal_default=local, mutability=none, note="bind substrate + knobs"},
+   .{id=ingress, liminal_default=local, mutability=read, note="select exact locus / frontier"},
+   .{id=react, liminal_default=liminal, mutability=index_or_dry, note="analyze / trial / walk expand"},
+   .{id=precipitate, liminal_default=liminal, mutability=meta, note="emit Precipitate {input,output,delta}"},
+   .{id=project, liminal_default=visible, mutability=ui, note="render to strip/hover/trace view"},
+   .{id=promote_or_evict, liminal_default=global_or_drop, mutability=grade_gated, note="archive trace vs discard local"},
+   .{id=egress, liminal_default=local, mutability=none, note="clear scratch"},
+  ]
+  variable_mutability: #[
+   .{effect=S0_observe, may_write=#[]},
+   .{effect=S1_index, may_write=#[lineContexts, annotations, temperature]},
+   .{effect=S2_edit_plan, may_write=#[workspace_edit_preview], require=exact_selection},
+   .{effect=S3_mutate, may_write=#[disk], require=#[human_or_explicit_gate, dryRun_off]},
+  ]
+ }
+
+ ~#memory_about_beats: .{
+  holds: #[beat_id, knobs_snapshot, precipitates, liminality_path, mutability_log]
+  project_surfaces: #[
+   "status bar pulse beat n/m",
+   "trace view step list",
+   "hover mechanics (tier, age)",
+   "harness run archive"
+  ]
+  invariant: "Mutability log is append-only meta; rewriting history requires new episode."
+ }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Refactoring / transformation handles
+// ═══════════════════════════════════════════════════════════════
+
+^["transform_handles"]{
+ ~#thesis: "Handles are named, graded transforms for readability or combination — not free-form rewrite."
+ ~#status: "proposed+partial_code_actions"
+
+ ~#readability: #[
+  .{handle=indent_lattice, effect=format, grade=S1, knobs=format_profile, note="brace physics only"},
+  .{handle=blank_frames, effect=format, grade=S1, knobs=blankLineBetweenFrames},
+  .{handle=name_qualify, effect=annotate_suggest, grade=S2_dry, note="suggest qualified path in comment or label"},
+  .{handle=extract_frame, effect=wrap_selection, grade=S2, implemented="codeAction wrap-in-frame"},
+  .{handle=collapse_ambient_echo, effect=presentation, grade=S0, note="anti-echo hover profile"},
+  .{handle=prime_gloss, effect=presentation, grade=S0, note="switch domain language"},
+ ]
+
+ ~#combination: #[
+  .{handle=merge_braids, effect=edit_plan, grade=S2, note="combine same-line atoms — exact ranges"},
+  .{handle=compose_lens, effect=query, grade=S0, note="and/or/descend patterns"},
+  .{handle=confluence_walk, effect=walk, grade=S0, note="&-style merge of frontiers"},
+  .{handle=onf_normalize, effect=derive, grade=S1, note="precipitate shape for compare"},
+  .{handle=cast_refresh, effect=projection_check, grade=S1, note="stale mold→cast"},
+  .{handle=twin_align, effect=compare, grade=S0, note="shape twins for isomorphic refactor targets"},
+ ]
+
+ ~#rules: #[
+  "readability transforms prefer S0–S1; combination that rewrites structure is S2+ exact",
+  "always show before/after precipitate delta",
+  "batch combination only via lens_tick budgets",
+  "never combine across immutable=true without fork"
+ ]
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Ecological block anatomy
+// ═══════════════════════════════════════════════════════════════
+
+^["ecological_block"]{
+ ~#definition: "A block is an ecological unit of Spw matter: container + membrane + organelles + local substrate + ports — configurable in place, auditable, updatable at workspace scale."
+ ~#status: "proposed+literate_arch_foothold"
+ ~#foothold: @literate_arch
+
+ ~#anatomy: .{
+  membrane: .{
+   forms: #["{ }", "[ ]", "( )", "frame ^[\"\"]", "capsule", "stream"]
+   role: "pair physics; select unit; liminality boundary"
+  }
+  lumen: .{
+   forms: #[sequence, prose_chunks, nested_blocks]
+   role: "interior matter — format/select laws by prose kind"
+  }
+  organelles: .{
+   forms: #[operators_as_portals, annotations, path_refs, probes, metrics]
+   role: "localized function — see operator_portals"
+  }
+  ports: .{
+   forms: #[openLabel, closeLabel, path_ref, @root, projection_spec]
+   role: "import/export across blocks; graft points"
+  }
+  local_substrate: .{
+   forms: #[lineContexts_slice, ambient_stack, local_registers]
+   role: "beat memory local to block"
+  }
+  genome_tags: .{
+   forms: #["#:layer", "#!intent", "prime", "category"]
+   role: "culture / audit classification"
+  }
+ }
+
+ ~#in_place_configuration: .{
+  means: #[
+   "edit membrane labels / frame name",
+   "attach #:pulse or #:hover profile frames nearby",
+   "set liminality/immutable via register meta when runtime-bound",
+   "local format profile override for prose vs lattice"
+  ]
+  rule: "config is data in .spw — not hidden plugin state"
+ }
+
+ ~#workspace_updates: .{
+   means: #[
+    "category pulse over blocks matching lens",
+    "gardenStats / twin index refresh",
+    "projection graph rebind",
+    "episode commit as phenology"
+   ]
+   rule: "workspace updates are budgeted pulses; block membrane stays exact"
+ }
+
+ ~#audits: .{
+   means: #[
+    "brace physics per block",
+    "pair completeness inside lumen",
+    "port resolve (path_ref)",
+    "stale cast if block owns projection",
+    "name-impact if genome_tags rename"
+   ]
+   grade: "E0 structure; E1 measures; E2 never auto-fail ship"
+ }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Operators as portals or suborganelles
+// ═══════════════════════════════════════════════════════════════
+
+^["operator_portals"]{
+ ~#thesis: "Operators are not paint — they are portals (edge openers) or suborganelles (localized reactors) inside an ecological block."
+ ~#status: "proposed+sigil_semantics_foothold"
+
+ ~#portal: .{
+  definition: "opens a transition across strata or substrates"
+  examples: .{
+   "?": "portal to assay / wonder — ingress measure"
+   "~": "portal to potential / deferred bind — substrate attach"
+   "@": "portal to perspective / scope — observer frame"
+   "&": "portal to confluence — merge frontiers"
+   "-> / connectors": "portal along path_ref relation"
+   path_ref: "portal across files (relation stratum)"
+  }
+  beat: "ingress or expand frontier; low mutability default"
+ }
+
+ ~#suborganelle: .{
+  definition: "localized reactor that transforms lumen contents or register fiber"
+  examples: .{
+   "!": "kinetic action organelle — inject effect"
+   "*": "collapse organelle — materialize value"
+   "=": "bind organelle — constraint / config"
+   "%": "measure organelle — score / depth"
+   "#": "annotation organelle — metadata marker in this optional ecological profile"
+   "^": "frame organelle — integrate container / climb"
+   "$": "substrate introspection organelle"
+  }
+  beat: "react / precipitate; mutability grade-gated"
+ }
+
+ ~#dual_nature: #[
+  "same sigil may portal in navigation walk and organelle in interpret",
+  "editor should show portal vs organelle *mode* from context (walk vs trial)",
+  "semantic tokens already color roles — portal/organelle is a higher gloss"
+ ]
+
+ ~#plugin_expression: .{
+  hover: "role + portal|organelle + next beat suggestion"
+  walk: "portals expand edges; organelles mark precipitate sites"
+  completion: "phase-aware organelle ranking after portal"
+  immutable: "organelle blocked if register immutable — portal may still read"
+ }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SEORM + complexity
+// ═══════════════════════════════════════════════════════════════
+
+^["seorm"]{
+ ~#phrase: "Software as Engineering on Reality as a Material"
+ ~#material: "source spans, braces, registers, indexes, traces"
+ ~#engineering: "instantiate substrate, tune knobs, run beats, audit blocks"
+ ~#reality: "domain primes + external SOR projections — not fantasy rewrite of lab/field systems"
+ ~#explode: "more organelles, multi-liminal memory, walk policies, domain packs"
+ ~#contract: "grade caps, budgets, anti-echo, exact selection, visibility gate"
+}
+
+^["handles"]{
+ instantiate_substrate: "bind kind+scope+yields+mutability"
+ tune_precipitate: "edit knobs; dry-run beat; inspect delta"
+ pin_liminal: "promote local→visible→global memory"
+ transform_readability: "indent_lattice | extract_frame | prime_gloss"
+ transform_combine: "compose_lens | onf_normalize | twin_align"
+ audit_block: "membrane+ports+genome_tags checks"
+ portal_walk: "expand via portal ops"
+ organelle_react: "trial precipitate at caret organelle"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Wonders
+// ═══════════════════════════════════════════════════════════════
+
+#>wonder_spw_garden_substrate_organelle_1
+?["Which liminal space should hold the last pulse precipitate, and who may mutate it?"]{
+  #:depth #!computational // lens: material grain
+  !probe{ "classify last editor action as beat phase; assign liminality; name mutability class S0–S3." }
+  $%[liminal_projection.spaces]
+}
+
+#>wonder_spw_garden_substrate_organelle_2
+?["Is the caret operator a portal or a suborganelle in this context?"]{
+  #:depth #!educational // lens: formal structure
+  !probe{ "if you are walking references, it portals; if you are interpreting registers, it reacts — write both glosses." }
+  ~<.spw/runtime/precipitates.spw>
+}

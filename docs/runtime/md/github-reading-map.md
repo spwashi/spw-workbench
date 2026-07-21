@@ -12,9 +12,9 @@ Use it to answer three questions:
 
 1. [README.md](../../../README.md)
 2. [quick-start.md](./quick-start.md)
-3. [site-install-release-story.md](./site-install-release-story.md)
+3. [mounted-workbench.md](./mounted-workbench.md)
 
-Those three surfaces define the repo, the install boundary, and the current public contract.
+Those three surfaces define the repository, its mount boundary, and the current public contract.
 
 ## Language And LSP
 
@@ -46,6 +46,7 @@ Read:
 2. [`.spw/mount.spw`](../../../.spw/mount.spw)
 3. [`.spw/conventions/submodule.spw`](../../../.spw/conventions/submodule.spw)
 4. [quick-start.md](./quick-start.md)
+5. [mounted-workbench.md](./mounted-workbench.md)
 
 This is the shortest route to the consumer/workbench boundary.
 

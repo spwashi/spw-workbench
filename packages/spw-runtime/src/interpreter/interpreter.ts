@@ -1,4 +1,11 @@
-import { normalizeToONF, $register, type OperatorKind, type SeedNode, type ONFNode } from '@spwashi/spw-seed'
+import {
+  normalizeToONF,
+  $register,
+  readCouplingFrame,
+  type OperatorKind,
+  type SeedNode,
+  type ONFNode,
+} from '@spwashi/spw-seed'
 import { RegisterBank } from '../state/register-bank'
 import { descriptorForKey } from '../state/type-affinities'
 import type { RegisterId, RegisterWriteOptions, RuntimeValence, RuntimeValue } from '../state/types'
@@ -268,6 +275,13 @@ function evaluate(node: ONFNode, context: EvalContext): RuntimeValue {
     }
 
     case '?': {
+      // Stream borrows `?` in ONF. Its structural coupling tag prevents it from
+      // accidentally taking Wonder's conditional evaluator.
+      const streamCoupling = readCouplingFrame(node.frames)
+      if (streamCoupling?.form === 'boundary' && streamCoupling.kind === 'stream') {
+        return args
+      }
+      // Wonder / probe: conditional
       const condition = args[0]
       if (condition) return args[1] ?? true
       return null
@@ -299,7 +313,7 @@ function evaluate(node: ONFNode, context: EvalContext): RuntimeValue {
     }
 
     case '<>': {
-      // Coupling: couple registers
+      // Explicit relation coupling. Boundary kinds never reach this evaluator.
       if (args.length >= 2 && typeof args[0] === 'string' && typeof args[1] === 'string') {
         context.registers.couple($register`${args[0]}`, $register`${args[1]}`)
       }

@@ -1,0 +1,276 @@
+# Register · Tokenization · Configuration Enhancement
+#
+# How registers, semantic/TextMate coloring, and config menus/files
+# should evolve for garden geometry, static analysis, and LLM tools.
+#
+# @see packages/spw-runtime/src/state/types.ts
+# @see packages/spw-runtime/src/state/register-bank.ts
+# @see packages/spw-lsp/src/handlers/semantic-tokens.ts
+# @see packages/spw-lsp/src/types.ts  (SpwConfig)
+# @see extensions/vscode-spw/package.json
+# @see extensions/vscode-spw/syntaxes/spw.tmLanguage.json
+# @see .spw/registries/register-bank.spw
+# @see .agents/plans/spw-garden-geometry/substrate-organelle-physics.spw
+
+#:layer #!pragmatics
+#:lsp #!registers
+#:editor #!tokens
+#:config #!menus
+
+^seed[Spw.Garden.Register.Token.Config v:0.1 @profile:Spw.b @intent:register_token_config_enhance]
+
+^["roots"]{
+ @register_types: ~"../../../packages/spw-runtime/src/state/types.ts"
+ @register_bank: ~"../../../packages/spw-runtime/src/state/register-bank.ts"
+ @register_spw: ~"../../../.spw/registries/register-bank.spw"
+ @semantic_tokens: ~"../../../packages/spw-lsp/src/handlers/semantic-tokens.ts"
+ @tm_grammar: ~"../../../extensions/vscode-spw/syntaxes/spw.tmLanguage.json"
+ @package_json: ~"../../../extensions/vscode-spw/package.json"
+ @spw_config: ~"../../../packages/spw-lsp/src/types.ts"
+ @colors: "package.json contributes.colors (spw.lens, phase*, tier*)"
+ @substrate: ~"./substrate-organelle-physics.spw"
+ @editor_physics: ~"./editor-surface-physics.spw"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Register enhancement
+// ═══════════════════════════════════════════════════════════════
+
+^["registers_today"]{
+ ~#status: "implemented_runtime+phantom_lsp"
+ runtime: .{
+  branded: "RegisterId / $register factories (seed)"
+  bank: "RegisterBank — set/get, history 0-9, phase envelope, valence, liminality, immutable"
+  phases: "lex→parse→semantic→optimize→pragmatic (+ aliases)"
+  liminality: "local|liminal|visible|global"
+  substrate: "optional event log for writes/phase-advance"
+  affinities: "OperatorKind → RegisterDescriptor (accessMode, containerAffinity)"
+ }
+ lsp: .{
+  trial: "runtimeTrialCache — trialRunSpw for hover fragments"
+  custom_typed_only: "spw/registerSnapshot — client type, no server handler (phantom)"
+  display: "hover/code-lens may show trial fragments as any — weak typing"
+ }
+}
+
+^["registers_enhance"]{
+ ~#status: "proposed"
+
+ ~#model: .{
+  cell: "id + value + meta{phase, facets, valence, liminality, immutable, memoryWeight}"
+  snapshot: "revision-addressed { uri, contentHash, at, cells[], substrateEvents? }"
+  view: "projection of snapshot for editor — never second bank in client"
+ }
+
+ ~#lsp_protocol: #[
+  .{method=spw/registerSnapshot, params="{ uri, includeHistory?, phaseMin? }", result=snapshot, grade=E0_structure},
+  .{method=spw/registerAt, params="{ uri, position|registerId }", result=cell_transect, grade=E1},
+  .{method=spw/registerDiff, params="{ uri, aHash, bHash }", result=coordinate_diff, grade=E1},
+ ]
+
+ ~#editor_surfaces: .{
+  explorer: "Register tree (phase groups) — visibility gated; consumes snapshot only"
+  hover: "if caret on $ / register use: cell phase + liminality + immutable — anti-echo value if on line"
+  code_lens: "optional: phase · writes · stale facet — actionable only"
+  strip: "optional one-slot: focused register id + phase"
+  colors: "map phase/liminality to existing spw.phase* / spw.tier* theme colors"
+ }
+
+ ~#static_analysis: #[
+  "immutable write attempt → diagnostic",
+  "phase regression (optional policy)",
+  "orphan history slots",
+  "trial vs index hash mismatch warning"
+ ]
+
+ ~#llm_tools: #[
+  "spw.register.snapshot — graded packet",
+  "spw.register.at — single cell",
+  "never free invent register state — only from trial/index"
+ ]
+
+ ~#tuning_knobs: .{
+  trial_ttl_ms: "when trial cache expires"
+  phase_floor: "min phase retained under eviction"
+  liminality_default: "local vs liminal for new cells"
+  include_history: "snapshot size"
+  auto_trial_on_save: "bool — cost vs freshness"
+ }
+
+ ~#organelle_link: "operators as suborganelles write registers; portals read/navigate — substrate-organelle-physics"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Plugin tokenization / coloring
+// ═══════════════════════════════════════════════════════════════
+
+^["tokens_today"]{
+ ~#status: "implemented_layered"
+ textmate: "syntaxes/spw.tmLanguage.json — syntactic fallback + atmosphere"
+ semantic: "LSP semanticTokens/full — regex-line classification (not yet AST-backed)"
+ legend_types: #[operator, type, variable, property, function, string, keyword, comment]
+ legend_mods: #[declaration, definition, readonly, deprecated, modification, async]
+ theme_bridge: "semanticTokenScopes map types → *.spw TextMate scopes"
+ custom_colors: "spw.lens|intent|anchor|topic|promptRoot|phase*|tier* in package.json"
+ client_semantics: "extensions/vscode-spw/src/semantics.ts SIGIL_SEMANTICS for UI copy"
+}
+
+^["tokens_enhance"]{
+ ~#status: "proposed"
+ ~#principle: "TextMate = syntax atmosphere; semantic tokens = meaning from ServerIndex; custom colors = Spw theme axes (phase/tier/annotation). No third coloring engine in the client."
+
+ ~#semantic_v2: .{
+  source: "prefer doc tokens/AST/lineContexts over pure regex"
+  portal_vs_organelle: "modifier or custom type: portal (nav) vs organelle (react) by context"
+  path_status: "variable + deprecated/error-style when unresolved (if theme allows)"
+  prose_kinds: "comment vs string vs muted 'decorator' for domain prose — don't paint narrative as code"
+  register_use: "property/function when $register / history keys"
+  range_tokens: "proposed semanticTokens/range for large files"
+  incremental: "proposed delta tokens on contentHash change"
+ }
+
+ ~#legend_extensions: .{
+  proposed_types: #[namespace, /* frames */, label, /* openLabel */, decorator /* domain prose */]
+  proposed_mods: #[defaultLibrary /* roots */, documentation /* wonder */, injected /* ! effect */]
+  note: "extend only when VS Code theme mapping + tests exist"
+ }
+
+ ~#textmate: .{
+  keep: "fast open, no LSP required"
+  enhance: "scopes for braces by depth (meta.brace.depth.N) if useful for theming"
+  avoid: "duplicating full semantic classification in JSON grammar"
+ }
+
+ ~#theme: .{
+  document: "default Spw theme or contribute colors only (already)"
+  prime_skins: "proposed — chemical vs legal color tips via settings → semanticTokenRules"
+  high_contrast: "ensure phase/tier colors meet HC defaults"
+ }
+
+ ~#static_llm: .{
+  static: "token tests golden data[]; legend satisfies OperatorKind coverage where claimed"
+  llm: "do not rely on colors; use transect. Token stream optional for embedding"
+ }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Configuration menus and files
+// ═══════════════════════════════════════════════════════════════
+
+^["config_today"]{
+ ~#status: "implemented_thin"
+ lsp_SpwConfig: .{
+  inlayHints: "paths | annotations | frames"
+  diagnostics: "unresolvedRefs severity | staleProjections"
+  roots: "Record path overrides"
+  workspace.exclude: "dirs"
+  formatOnSave: "bool default false"
+  load: "loadConfig(workspaceRoot, initializationOptions)"
+ }
+ vscode_package: .{
+  contributes: "language, grammar, snippets, semanticTokenScopes, colors, views, menus (view title only)"
+  missing: "contributes.configuration settings UI schema"
+  activationEvents: "empty — always eager"
+ }
+ spw_files: .{
+  workspace_shelves_editing: "roots, categories, planes"
+  no_unified: "spw.config.spw / .vscode/settings merge story underdocumented"
+ }
+}
+
+^["config_layers"]{
+ ~#status: "proposed"
+ ~#resolution_order: #[
+  "language defaults (DEFAULT_CONFIG)",
+  ".spw/workspace.spw + shelves + editing categories (org law)",
+  ".spw/config.spw or config frames (proposed garden profiles)",
+  "LSP initializationOptions",
+  ".vscode/settings.json / user settings (editor UX)",
+  "bed-local #:hover #!profile / #:pulse (presentation + SOP)"
+ ]
+ ~#rule: "Org law in .spw; editor comfort in VS Code settings; never put semantic truth only in settings.json"
+}
+
+^["config_menus"]{
+ ~#status: "proposed"
+ contributes_configuration: .{
+  "spw.lsp.trace": "off|messages|verbose"
+  "spw.server.path": "override stdio server"
+  "spw.format.onSave": "mirror formatOnSave"
+  "spw.inlayHints.paths|annotations|frames|braceDepth": "bools"
+  "spw.diagnostics.unresolvedRefs": "error|warning|hint|off"
+  "spw.diagnostics.staleProjections": "bool"
+  "spw.hover.echoPolicy": "suppress-visible|verbose"
+  "spw.hover.deltaMode": "enter|enter+exit|off"
+  "spw.hover.maxLines": "number"
+  "spw.prime": "string pack id"
+  "spw.registers.autoTrial": "bool"
+  "spw.registers.showExplorer": "bool"
+  "spw.tokens.preferSemantic": "bool"
+  "spw.views.lazyActivate": "bool"
+  "spw.pulse.default": "profile id"
+  "spw.paths.mountAuthority": "tag instrument paths"
+ }
+ menus: .{
+  command_palette: "Spw: * handles (Δ-read, compare, twins, walk, pulse, registers, export packet)"
+  editor_context: "when editorLangId == spw — Go to resolved path, Find twins, Register at cursor"
+  view_title: "existing concepts/workspace + Geometry/Trace when added"
+  editor_title: "optional prime picker dropdown"
+ }
+ settings_editor: "contributes.configuration with markdownDescription linking to .spw docs"
+}
+
+^["config_files"]{
+ ~#proposed_layout: .{
+  ".spw/config.spw": "org defaults — diagnostics policy, default prime, format profile name, pulse library refs"
+  ".spw/editing.spw": "categories macro/measurement/prose/runtime (exists pattern)"
+  ".spw/shelves.spw": "@name → paths (exists)"
+  ".vscode/settings.json": "user/team UX overrides only"
+  ".vscode/extensions.json": "recommend spw-language"
+  "bed frames": "#:hover #!profile / #:pulse #!profile nested in domain folders"
+ }
+ schema: "JSON schema optional for settings; Spw config validated by parse + small schema check"
+ reload: "didChangeConfiguration → merge SpwConfig; contentHash beds on save"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Joint behavior
+// ═══════════════════════════════════════════════════════════════
+
+^["joint"]{
+ register_colors: "phase/liminality → spw.phase* / spw.tier* when explorer or tokens know cell meta"
+ config_drives_tokens: "spw.tokens.preferSemantic false → TextMate only for perf demos"
+ config_drives_registers: "autoTrial off in large workspaces; explorer lazy"
+ config_drives_refs: "mountAuthority + unresolved severity"
+ static: "config schema tests; token golden; register snapshot fixture"
+ llm: "tools read effective config packet; cannot elevate grade_cap via settings alone — org .spw wins"
+}
+
+^["roadmap"]{
+ P0: #[
+  "contributes.configuration for existing SpwConfig mirrors",
+  "implement or demote spw/registerSnapshot",
+  "document config resolution order"
+ ]
+ P1: #[
+  "AST/index-backed semantic tokens v2",
+  "register explorer gated + theme colors",
+  "hover/inlay settings + echoPolicy"
+ ]
+ P2: #[
+  ".spw/config.spw + bed profiles",
+  "prime pack setting",
+  "token range/incremental"
+ ]
+ P3: #[
+  "portal/organelle modifiers",
+  "settings UI for pulse library",
+  "HC theme pack"
+ ]
+}
+
+^["invariant"]{
+ "Registers: one bank authority (runtime/index trial), client is view.",
+ "Tokens: TextMate atmosphere, semantic meaning, theme axes — three layers max.",
+ "Config: .spw owns org law; VS Code settings own editor comfort.",
+}

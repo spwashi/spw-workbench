@@ -20,7 +20,8 @@ Taste note: improve **clarity**, **measurement**, **release truth**, and **commu
   - explicit connection to adjacent plans in DX, release, audit/fuzz truthfulness, and plan clustering
 
 - **Out of scope**:
-  - adopting TypeScript 7 by default in the same branch
+  - adopting TypeScript 7 by default in the same branch (see `typescript-upgrade-ladder`)
+  - implementing the first profiler/matrix scripts if `typescript-perf-audit-infra` owns them — this plan keeps research projections, release QA narrative, and broader config-matrix curiosity
   - changing runtime/editor product behavior beyond what is required to measure or validate toolchain implications
   - adding network-bound telemetry or external SaaS benchmarking
   - replacing existing custom docs/`.spw` validators with ESLint
@@ -74,6 +75,8 @@ Fuzz strategy:
 
 ## Dependencies
 
+- **`typescript-perf-audit-infra`** — first executable slice: single-run profiler, version matrix, `audit:ts:perf*` scripts (implements observatory core before projection polish)
+- **`typescript-upgrade-ladder`** — staged 5.9 → 6 → 7 migration; consumes observatory/perf baselines for speed claims; does not own measurement scripts
 - `audit-fuzz-truthfulness` — the measurement surface should inherit its "truthful command contract" discipline and avoid vague script names
 - `skills-instrumentation-utility` — shared instrumentation conventions can keep toolchain output structured and consistent with other skill/report surfaces
 - `runtime-dx-foundation` — operational language for timings, failures, and next actions should stay compatible with the broader DX story

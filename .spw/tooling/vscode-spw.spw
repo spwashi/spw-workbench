@@ -19,7 +19,7 @@
 ^"release_posture" {
  preview_truth: "The VS Code extension is the current preview editor surface for v0.3.0. Its metadata and README should stay narrower than the mounted-consumer startup story."
  thin_client_boundary: "Client owns packaging, snippets, tree views, annotation mirroring, and typed spw/* requests. Semantic/editor truth belongs to packages/spw-lsp/src/stdio-server.ts and handler clusters."
- startup_truth: "Current extension startup still expects a workbench checkout layout so it can resolve packages/spw-lsp/src/stdio-server.ts. Mounted .spw/_workbench startup is an active quality/design lane, not current release truth."
+ startup_truth: "Extension startup resolves the LSP from an explicit workbench root, a canonical checkout, a mounted .spw/_workbench, an installed package, or its extension-relative fallback. Packaging remains preview-grade."
  standalone_server: "External editors can run npm run lsp from a workbench root; upstream-bridge keeps server discovery outside the VS Code extension."
 }
 
@@ -43,6 +43,8 @@
 
 ^"client_features" {
  concepts_tree: "annotation-based sidebar panel (Spw Explorer)"
+ workspace_atlas: "manifest roots, memory tiers, projections, cursor context, and spirit distribution"
+ navigator: "Spw: Navigate Roots and Landmarks combines manifest roots and indexed annotations in a searchable quick pick"
  annotation_index: "annotation mirror fed through typed spw/annotations requests"
  semantic_layering: "TextMate grammar, snippets, and language configuration stay client-side; semantic/editor behavior comes from the LSP"
  on_enter_rules: "# and // comment continuation"
@@ -54,7 +56,7 @@
  quiet_feedback: "tree views, hovers, status copy, and quick picks should each earn their interruption cost"
  reversible_editing: "rename and preview-rich edits should remain bounded, inspectable, and calmer than blind workspace churn"
  semantic_layering: "semantic tokens prove meaning; TextMate owns syntactic fallback and atmosphere"
- startup_honesty: "do not imply mounted-consumer or marketplace readiness beyond what the current startup path can actually support"
+ startup_honesty: "describe mounted resolution as shipped while keeping packaging and marketplace claims preview-scoped"
  verification: "LSP handler tests, extension compile, mounted-consumer probes, and preview-truth docs should move together"
 }
 
@@ -68,7 +70,7 @@
 
 ^"supporting_surfaces" {
  integration_note: ~"../../docs/runtime/md/lsp-editor-integration.md"
- release_story: ~"../../docs/runtime/md/site-install-release-story.md"
+ mount_guide: ~"../../docs/runtime/md/mounted-workbench.md"
  extension_readme: ~"../../extensions/vscode-spw/README.md"
 }
 
@@ -84,5 +86,5 @@
 ^"invariant" {
  "LSP server is spawned per workspace via stdio, not shared across workspaces",
  "VS Code contributions complement LSP behavior; they should not fork semantic meaning into a second editor-only semantics stack",
- "Preview language stays narrower than mounted-consumer startup truth until the extension can resolve .spw/_workbench directly",
+ "Root and landmark navigation uses LSP-owned manifest and annotation data rather than a second client-side scan",
 }

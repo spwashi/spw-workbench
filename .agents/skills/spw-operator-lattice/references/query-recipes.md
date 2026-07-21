@@ -6,7 +6,15 @@
 npm run spw:ls -- --seq '?~@&*^' --braces '<>{}' --model lattice --root .spw --top 30
 ```
 
-Use when evaluating phase symmetry and brace consistency.
+Use as a broad lexical retrieval sweep. Common generated blocks saturate this query; it does not establish phase symmetry, pair consistency, or `<>` operator coverage.
+
+## Ordered Negative-Control Sweep
+
+```bash
+npm run spw:ls -- --seq '?~@&*^' --mode ordered --strict --surface ast --root .spw --top 30 --json
+```
+
+Compare with a shuffled sequence and record both result sets. Current ranking is not exact-first, and AST recovery does not by itself prove structured validity.
 
 ## Intrinsic Label Probe
 

@@ -4,6 +4,7 @@ import process from 'node:process'
 import { type SpwMatch, spwq } from '@spwashi/spw-seed'
 import { extractReferenceRaw, filterRootRefs, resolveCliSelector } from './selectors'
 import type { QueryArgs, QueryRow } from './types'
+import { resolveWorkspacePath, tryDiscoverSpwWorkspace, type SpwWorkspace } from './workspace'
 
 const SELECT_FIELDS = new Set<keyof QueryRow>([
   'file',
@@ -18,11 +19,15 @@ const SELECT_FIELDS = new Set<keyof QueryRow>([
   'text',
 ])
 
-const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', 'release'])
+const IGNORED_DIRS = new Set(['.git', '_workbench', 'node_modules', 'dist', 'release', 'build'])
 
 export async function runQueryCli(args: QueryArgs): Promise<void> {
   const { selector } = resolveCliSelector(args.selector, args.expr)
-  const files = await collectFiles(args.roots)
+  const workspace = await tryDiscoverSpwWorkspace()
+  const resolvedRoots = args.roots.map((root) =>
+    workspace && root.startsWith('@') ? resolveWorkspacePath(workspace, root) : root,
+  )
+  const files = await collectFiles(resolvedRoots)
   const whereFilters = parseWhere(args.where)
   const selectFields = parseSelect(args.select)
   const rows: QueryRow[] = []
@@ -37,7 +42,7 @@ export async function runQueryCli(args: QueryArgs): Promise<void> {
     }
 
     for (const match of matches) {
-      const row = toRow(file, source, match)
+      const row = toRow(file, source, match, workspace)
       if (!passesWhere(row, whereFilters)) continue
       rows.push(row)
     }
@@ -90,9 +95,9 @@ async function collectFiles(roots: string[]): Promise<string[]> {
   return [...files].sort()
 }
 
-function toRow(file: string, source: string, match: SpwMatch): QueryRow {
+function toRow(file: string, source: string, match: SpwMatch, workspace: SpwWorkspace | null): QueryRow {
   const snippet = source.slice(match.span.startOffset, match.span.endOffset).replace(/\s+/g, ' ').trim()
-  const relFile = path.relative(process.cwd(), file)
+  const relFile = path.relative(workspace?.consumerRoot ?? process.cwd(), file)
   const row: QueryRow = {
     file: relFile,
     kind: match.node.type,

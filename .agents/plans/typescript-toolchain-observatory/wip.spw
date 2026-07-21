@@ -18,6 +18,10 @@
  @ts_generate_trace: "https://www.typescriptlang.org/tsconfig/generateTrace.html"
  @ts_native_preview: "https://devblogs.microsoft.com/typescript/announcing-typescript-native-previews/"
  @ts7_progress: "https://devblogs.microsoft.com/typescript/progress-on-typescript-7-december-2025/"
+ @ts6_announce: "https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/"
+ @ts7_announce: "https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/"
+ @perf_audit: ~".agents/plans/typescript-perf-audit-infra/PLAN.md"
+ @upgrade_ladder: ~".agents/plans/typescript-upgrade-ladder/PLAN.md"
 }
 
 ^["intent"]{
@@ -78,6 +82,9 @@
  >> [2026-03-28 14:37] decide — this lane should remain local-first and optional: TS7/native preview can be tested, but it should not silently become a default or release gate.
  >> [2026-03-28 14:38] decide — the value surface is not only "faster compile"; it is also explainability. Measurements should be serializable into JSON, Markdown, and .spw so they can feed docs, research notes, and release claims.
  >> [2026-03-28 14:39] taste — the strongest version of this work turns toolchain folklore into reusable engineering taste: what changed, what stayed invariant, and which surfaces were actually affected.
+ >> [2026-07-20] observe — TypeScript 7.0 is stable (native Go); TypeScript 6.0 is the bridge. Repo still on ~5.9.3; no typescript-profile scripts landed yet.
+ >> [2026-07-20] decide — split execution: typescript-perf-audit-infra owns first profiler/matrix/package scripts; typescript-upgrade-ladder owns 5.9→6→7 dual-install; this plan retains research projections, bundle QA narrative, and broader comparison axes.
+ >> [2026-07-20] revise — version-matrix language should treat TS7 as installable stable, not only native-preview; dual-install with @typescript/typescript6 remains required for eslint API until 7.1.
 }
 
 ^["open"]{

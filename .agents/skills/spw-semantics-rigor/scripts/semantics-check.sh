@@ -19,10 +19,12 @@ if [ $SPW_HELP -eq 1 ]; then spw_print_help; exit 0; fi
 
 STATE_STATUS="clean"
 STATE_SCOPE="context_loader"
-STATE_SOURCE_COUNT=$(spw_count_files "src" '*.ts' -not -path '*/__tests__/*')
+STATE_PACKAGE_COUNT=$(spw_count_files "packages" '*.ts' -not -path '*/__tests__/*')
+STATE_LEGACY_COUNT=$(spw_count_files "src" '*.ts' -not -path '*/__tests__/*')
+STATE_SOURCE_COUNT=$((STATE_PACKAGE_COUNT + STATE_LEGACY_COUNT))
 STATE_SPW_COUNT=$(spw_count_files "docs/theory/spw" '*.spw')
 STATE_TOTAL_COUNT=$((STATE_SOURCE_COUNT + STATE_SPW_COUNT))
-STATE_NEARBY="docs/theory/spw;src;lib/spw-v0.2.0-alpha/architecture"
+STATE_NEARBY="docs/theory/spw;packages;src;lib/spw-v0.3.0"
 
 spw_seed "$SPW_SCRIPT_NAME" "1.1" "context_loader"
 spw_section_open "vocabulary_map"
@@ -38,8 +40,8 @@ spw_set_close
 
 echo ""
 spw_set_open "operator_coverage"
-operators=('!' '^' '~' '?' '*' '=' '@' '#' '.' '&' '$' '%')
-names=('action' 'ascension' 'potential' 'wonder' 'value' 'configuration' 'perspective' 'vibration' 'ground' 'subject' 'substrate' 'measure')
+operators=('!' '^' '~' '?' '*' '=' '@' '#' '.' '&' '$' '%' '<>')
+names=('action' 'ascension' 'potential' 'wonder' 'value' 'configuration' 'perspective' 'vibration' 'ground' 'subject' 'substrate' 'measure' 'coupling')
 
 i=0
 for op in "${operators[@]}"; do
@@ -49,7 +51,7 @@ for op in "${operators[@]}"; do
   else
     in_ops="\`⚠ bonk\`"
   fi
-  ts_count=$(grep -rl "$(printf '%q' "$op")" src/ --include='*.ts' 2>/dev/null | wc -l | tr -d ' ' || echo 0)
+  ts_count=$(grep -rlF "$op" packages/ src/ --include='*.ts' 2>/dev/null | wc -l | tr -d ' ' || echo 0)
   echo "    .{ operator = \`$op\`, name = \`$name\`, docs = $in_ops, ts_refs = $ts_count }"
   i=$((i + 1))
 done
@@ -57,8 +59,8 @@ spw_set_close
 
 echo ""
 spw_set_open "branded_types"
-if [ -f "src/seed/types/token.ts" ]; then
-  grep -E 'export type (OperatorKind|ModifierKind|ConnectorKind|ContainerKind|TokenType)' src/seed/types/token.ts 2>/dev/null | sed 's/export type \([^ =]*\).*/    `\1`,/' || true
+if [ -f "packages/spw-seed/src/types/token.ts" ]; then
+  grep -E 'export type (OperatorKind|ModifierKind|ConnectorKind|ContainerKind|TokenType)' packages/spw-seed/src/types/token.ts 2>/dev/null | sed 's/export type \([^ =]*\).*/    `\1`,/' || true
 fi
 if [ -f "src/runtime/state/types.ts" ]; then
   grep -E 'export type (RegisterAccessMode|ContainerAffinity)' src/runtime/state/types.ts 2>/dev/null | sed 's/export type \([^ =]*\).*/    `\1`,/' || true
@@ -69,16 +71,16 @@ echo ""
 echo "  metaphor_bridge: #[  /* term distribution: .spw vs .ts */"
 for term in valence register facet stratum cascade perspective operator container quality layer region context; do
   in_spw=$(grep -rl "$term" docs/ --include='*.spw' 2>/dev/null | wc -l | tr -d ' ' || echo 0)
-  in_ts=$(grep -rl "$term" src/ --include='*.ts' 2>/dev/null | wc -l | tr -d ' ' || echo 0)
+  in_ts=$(grep -rl "$term" packages/ src/ --include='*.ts' 2>/dev/null | wc -l | tr -d ' ' || echo 0)
   echo "    .{ term = \`$term\`, spw_count = $in_spw, ts_count = $in_ts }"
 done
 spw_set_close
 
 echo ""
 spw_facet_open "normalization_pipeline"
-echo "    SNF  = \`surface lexer output (src/seed/lexer/)\`"
-echo "    SiNF = \`per-sigil reduction (src/seed/types/ast/onf.ts)\`"
-echo "    SeNF = \`cross-sigil semantic normalization (open research)\`"
+echo "    SNF  = \`implemented lexer output (packages/spw-seed/src/lexer/)\`"
+echo "    SiNF = \`partial AST-to-ONF projection; fixity reducers proposed\`"
+echo "    SeNF = \`cross-sigil semantic normalization (proposed research)\`"
 spw_facet_close
 
 spw_section_close "vocabulary_map"

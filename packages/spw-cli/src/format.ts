@@ -19,7 +19,7 @@ interface MutationCounts {
   wildcardExpanded: number
 }
 
-const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', '.agents'])
+const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', 'release', 'build', '_workbench', '.agents'])
 const DEFAULT_TARGETS = ['.spw']
 const FULL_REPO_TARGETS = ['index.spw', '.spw', 'docs', 'lib', 'packages', 'prompts', 'src']
 
@@ -89,7 +89,7 @@ export function printSpwFormatHelp(): void {
         lines: [
           'Without targets, the formatter scans .spw only.',
           'With --full, the formatter scans index.spw, .spw, docs, lib, packages, prompts, and src.',
-          'Directories are walked recursively; .git, node_modules, dist, and .agents are skipped.',
+          'Directories are walked recursively; .git, node_modules, dist, release, build, _workbench, and .agents are skipped.',
         ],
       },
       {

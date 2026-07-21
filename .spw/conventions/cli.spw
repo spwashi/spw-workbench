@@ -9,18 +9,20 @@
 ^"command_model"{
  entry: "spw <command> [flags]"
  local_entry: "npm run spw -- <command> [flags]"
- public_commands: [init, query, select, ls, roots, doctor, capabilities, review, mount, mem, format, dev]
+ public_commands: [init, query, select, ls, roots, tree, doctor, mount, mem, format, dev]
+ planned_commands: [capabilities, review]
  compatibility_aliases: ["spw install <target>", "spwq <file.spw>", "spw seq ...", "spw-workbench <command> ..."]
- internal_composition: "packages/spw-cli/src/{args,init,query,select,selectors,run,types}.ts"
+ internal_composition: "packages/spw-cli/src/{args,init,query,roots,tree,workspace,select,selectors,run,types}.ts"
  distribution_direction: "publish root spw as the package binary; keep install/spw-workbench as compatibility and DX/bootstrap support"
 }
 
 ^"mounted_consumer_observability"{
- roots: "spw roots reports consumer root, mount root, engaged surfaces, and normalized resolution paths"
+ roots: "spw roots reports declared and fallback roots with consumer-relative paths, path kinds, and authority roles"
+ tree: "spw tree selects a declared root or consumer-relative path and renders its .spw files; mounted infrastructure is excluded unless explicit"
  doctor: "spw doctor checks mount presence, revision state, parser/CLI/LSP reachability, and scan exclusions"
- capabilities: "spw capabilities emits advertised and observed CLI/LSP/editor capabilities with owning layers"
- review: "spw review orchestrates a named review profile and writes consumer-owned evidence"
- formats: [#human, #json, #spw]
+ planned_capabilities: "spw capabilities should emit advertised and observed CLI/LSP/editor capabilities with owning layers"
+ planned_review: "spw review should orchestrate a named review profile and write consumer-owned evidence"
+ shipped_formats: [#human, #json]
  path_policy: "outputs use paths relative to consumer or workbench root; machine-local absolute paths are never serialized"
  exit_policy: "unsupported capability and degraded fallback are distinct from command failure"
 }
@@ -48,6 +50,7 @@
   "CLI output should remain scriptable and human-readable.",
   "Compatibility aliases should point at one package-owned implementation rather than carrying independent behavior.",
   "Mounted-consumer observability is scriptable, revision-aware, and free of repository identity assumptions.",
+  "Commands invoked through .spw/_workbench resolve relative consumer inputs from the consumer root.",
 }
 
 #>wonder_spw_conventions_cli_1

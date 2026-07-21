@@ -1,61 +1,93 @@
 # Plan: lsp-custom-request-completions
 
-Audit the complete LSP capability surface before deciding which custom requests deserve implementation.
+Audit the complete LSP capability surface and **close the phantom custom-request gap** before new editor surfaces depend on methods that do not exist.
 
 ## Goal
 
-Produce an evidence matrix for standard and custom LSP capabilities across the server and editor clients. Exercise the server from an identity-free mounted-consumer fixture, distinguish declared capabilities from observed behavior, and implement only the custom requests whose semantics and cost are justified by a concrete authoring surface.
+Produce an evidence matrix for standard and custom LSP capabilities across server and clients. Distinguish advertised, configured, invoked, observed, and tested behavior. Implement only custom requests earned by a concrete authoring or explorer surface — or **remove/optionalize** client types that currently lie.
 
-Taste note: authority honesty, portability, and evidence before parity.
+**Taste note**: authority honesty, portability, evidence discipline.
+
+## Ladder position
+
+Roadmap rung **1**. See `.agents/plans/vscode-lsp-roadmap/PLAN.md`.
+
+## Capability snapshot (2026-07-20)
+
+### Standard methods (server `initialize` capabilities)
+
+Advertised and routed in `stdio-server.ts`: definition/declaration, references, rename(+prepare), documentLink, hover, documentSymbol, workspaceSymbol, codeAction, completion, codeLens, formatting/rangeFormatting, documentHighlight, inlayHint, foldingRange, semanticTokens/full, textDocumentSync.
+
+### Custom methods
+
+| Method | Server handler | Client type | Client invoke helper | Notes |
+|--------|----------------|-------------|----------------------|-------|
+| `spw/select` | yes | no typed map entry | — | Server-only / CLI-adjacent |
+| `spw/annotations` | yes | yes | yes | Core for concepts/index |
+| `spw/contextAtPosition` | yes | yes | yes | Strip + atlas cursor |
+| `spw/workspaceManifest` | yes | yes | yes | Atlas roots |
+| `spw/workspaceTemperature` | yes | yes | yes | Memory tier UI |
+| `spw/resonance` | **no** | yes | — | **Phantom** — atlas plan wants it |
+| `spw/registerSnapshot` | **no** | yes | — | **Phantom** — register explorer |
+| `spw/operatorFrequency` | **no** | yes | — | **Phantom** — authoring heat |
+| `spw/phaseContext` | **no** | yes | — | **Phantom** — authoring status |
+
+Policy for this plan: either implement with tests + mounted-consumer evidence, or demote client types so call sites cannot pretend success.
+
+Server routing is not capability advertisement. The current tree has no single custom-protocol registry from which handlers, initialization metadata, TypeScript request maps, client helpers, and audit rows are derived. Establish that registry before adding `spw/topography`, differential preview, garden, pulse, or hydration methods.
 
 ## Scope
 
-- **In scope:** Inventory advertised capabilities, handlers, client calls, tests, mounted-consumer behavior, failure modes, and performance costs; identify duplicate client-side semantics; implement only earned custom requests.
-- **Out of scope:** Assuming every declared request must exist; requiring identical editor UI; inventing consumer-specific fixtures; broad runtime or parser changes.
+- **In scope**: canonical protocol registry; evidence matrix; fix phantom types; implement only earned methods (prefer `phaseContext` / `registerSnapshot` / `operatorFrequency` / `resonance` only when a landed surface needs them *now*); tests under `packages/spw-lsp/src/__tests__`; optional capability-audit test; document matrix in plan/artifact.
+- **Out of scope**: assuming every typed request must exist; identical multi-editor UI; consumer-specific fixtures with absolute paths; broad parser changes; full register explorer UI (only transport if earned).
 
-## Evidence contract
+## Files
 
-For each capability, record whether it is:
-
-1. advertised by the server,
-2. configured by a client,
-3. invoked by a client,
-4. observed to return useful behavior, and
-5. covered by a repeatable test.
-
-The audit fixture must use only relative paths and generic consumer content. Results must record both consumer and mounted-workbench revisions without embedding repository identities.
-
-## Candidate files
-
-```
+```text
+[MOD] .agents/plans/lsp-custom-request-completions/PLAN.md
+[MOD] .agents/plans/lsp-custom-request-completions/wip.spw
+[NEW] packages/spw-lsp/src/protocol.ts
 [MOD] packages/spw-lsp/src/stdio-server.ts
-[MOD] packages/spw-lsp/src/handlers/analysis.ts
-[MOD] packages/spw-lsp/src/server-index.ts
 [MOD] packages/spw-lsp/src/types.ts
+[MOD] packages/spw-lsp/src/handlers/analysis.ts
+[MOD?] packages/spw-lsp/src/handlers/workspace.ts
+[MOD?] packages/spw-lsp/src/handlers/display.ts
+[MOD] packages/spw-lsp/src/server-index.ts
 [MOD] extensions/vscode-spw/src/lsp/custom-requests.ts
 [NEW] packages/spw-lsp/src/__tests__/capability-audit.test.ts
+[REF] .spw/tooling/editor-surface-audit.spw
 ```
 
-The audit decides the final implementation file set. New handler modules are not assumed in advance.
+### Craft guard
+
+- Extract from `stdio-server` / `display` rather than growing switchboards.
+- Prefer one typed request boundary; no client-side reimplementation of register/runtime trials.
+- Every new method needs distinct evidence for: registry entry, handler, advertisement/discovery, type, client invocation, observed response/failure, test, and matrix row.
+- `spw/topography` and edit-preview methods transport Seed-owned coordinates and differential plans; the LSP does not invent a second structural model.
 
 ## Commits
 
-1. `![lsp] *audit[capabilities] — map advertised, invoked, observed, and tested behavior`
-2. `![lsp] *audit[mounted-consumer] — exercise root discovery and failure modes`
-3. `^seed[lsp] =request[earned] — implement justified semantic requests`
-4. `![lsp] =evidence[snapshots] — verify server and editor capability claims`
+1. `vocab[lsp] =register[protocol] — one source for custom method identity and discovery`
+2. `![lsp] *audit[capabilities] — matrix handled/advertised/configured/invoked/observed/tested`
+3. `vocab[lsp] — demote or implement phantom spw/* client types`
+4. `^seed[lsp] =request[earned] — implement only justified semantic requests`
+5. `![lsp] =evidence[snapshots] — server + mounted-consumer evidence`
 
 ## Agentic Hygiene
 
-- Rebase target: `main`
+- Rebase target: `main@b4832193891b2b89b7e1e20dc0e462e2e4c9236e`
 - Rebase cadence: before commit 1, before implementation, before merge
-- Hygiene split: keep audit evidence separate from any implementation
+- Hygiene split: keep pure audit commit separate from implementation
 
 ## Dependencies
 
-- `.agents/plans/mounted-consumer-tooling/PLAN.md`
-- `.spw/tooling/editor-surface-audit.spw`
+- Hard: `operational-topography` ownership and evidence/effect envelope
+- Soft: `vscode-editor-contract`, `vscode-lsp-roadmap`
+- `mounted-consumer-tooling`
+- Downstream: performance (avoid optimizing dead calls), register explorer, authoring
 
 ## Spw Artifact
 
-Create a distilled artifact only after the audit establishes stable capability and evidence categories.
+Create/update distilled capability matrix after audit stabilizes categories.
+
+Optional: `.agents/plans/lsp-custom-request-completions/lsp-capability-matrix.spw`

@@ -1,0 +1,142 @@
+// Form Geometry
+#
+// Compositional geometry for labels moving through liminal shapes.
+// Rules are first-class, status-tagged, and partially computational.
+#
+// @see packages/spw-seed/src/canonical/form-geometry.ts
+// @see docs/theory/spw/form-ladders.spw
+// @see packages/spw-runtime/src/state/types.ts — LIMINALITY_ORDER
+
+#:layer #!semantics
+
+^seed[Spw.Form.Geometry v:0.1 @profile:Spw.b @intent:label_mobility_computational]
+
+^["status"]{
+ implemented: "LabelSite, LiminalShape, MOBILITY_RULES with apply() subset, HOF runners, site graph"
+ partial: "path progressions, rehost orbits, reference walks"
+ proposed: "pair open/close labels, register liminality bridge as S1 runtime write"
+ law: "Surface liminal shapes ≠ register liminality — bridge is explicit map, not identity"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Coordinates
+// ═══════════════════════════════════════════════════════════════
+
+^["label_sites"]{
+ free: "ambient unbound name"
+ operator_adjacent: "!name aperture label"
+ frame_param: "[name] / [name: _]"
+ facet_key: ".{name: v}"
+ header: `^["name"]{}`
+ capsule_tag: "<name>"
+ path_node: "segment in a / b / c"
+ ref_handle: "@(name)"
+ couple_peer: "<>(a,b) key"
+ interior_term: "bare id in Bound chamber"
+ stream_slot: "position in <<…>>"
+ register_meta: "$(name)"
+}
+
+^["liminal_shapes"]{
+ void: "empty Bound — no host yet"
+ hole: "explicit _ placeholder"
+ aperture: "open/ingress — operator-adjacent"
+ chamber: "interior payload"
+ egress: "close-boundary (pair labels proposed)"
+ exterior: "outside Bounds — free/path ambient"
+ membrane: "capsule interface"
+ channel: "stream-ordered"
+ published: "header/ref — globally addressable surface"
+}
+
+^["register_bridge"]{
+ order: #[local, liminal, visible, global]
+ map: .{
+  void_hole: local
+  aperture_chamber_egress: liminal
+  exterior_membrane_channel: visible
+  published: global
+ }
+ status: profile_soft
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Motions (geometric programs)
+// ═══════════════════════════════════════════════════════════════
+
+^["motions"]{
+ ingress: "exterior → chamber/aperture/membrane (pull label in)"
+ egress: "chamber → exterior (push label out)"
+ orbit: "reposition around ports of one Bound"
+ promote_demote: "raise/lower liminal shape or register level"
+ project: "into path / ref geometry"
+ fold_unfold: "many labels ↔ one published unit"
+ rehost: "change host brace (frame → capsule → scope)"
+}
+
+^["computational_rules"]{
+ // Implemented apply() today
+ implemented: #[
+  ingress.operator_label,
+  ingress.frame_select,
+  ingress.frame_hole,
+  ingress.facet_key,
+  ingress.capsule_tag,
+  ingress.ref_handle,
+  ingress.header,
+  egress.frame_select,
+  egress.operator_label,
+  egress.ref_handle,
+  project.frame_to_path,
+  project.path_extend,
+  rehost.interior_to_facet,
+  orbit.frame_param_to_tag,
+  orbit.tag_to_ref
+ ]
+ proposed: #[fold.facets_to_header, promote.register_bridge]
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Reference progression & higher-order forms
+// ═══════════════════════════════════════════════════════════════
+
+^["reference_progressions"]{
+ selection_path: `free → [L] → L / _ → @(L)`
+ ground_publish: `free → .{L: _} → ^["L"]{}`
+ membrane_observe: `free → <L> → @(L)`
+ path_chain: `free → L / _ → L / a → L / a / b`
+ action_cycle: `free ⇄ !L`
+}
+
+^["higher_order_forms"]{
+ // composition sketches — runnable via runHigherOrderForm
+ select_then_path: `project ∘ ingress_select`
+ ground_then_publish: `promote_header ∘ ingress_ground`
+ membrane_to_observer: `rehost_ref ∘ ingress_membrane`
+ label_orbit: `frame → capsule → scope` // rehost chain
+ action_aperture_cycle: `egress ∘ ingress`
+ interior_ground_fold: `{L} → .{L: L}`
+ path_deepen: `path_extendⁿ ∘ path_root`
+}
+
+^["composition_law"]{
+ rule: `HOF program is sequential rule composition; failure stops (no silent skip)`
+ inverse: `When inverse ids exist, cycle tests require identity on free labels`
+ computational_gate: `Only rules with apply() run; proposed rules return incomplete walk`
+}
+
+^["cli"]{
+ rules: `npm run spw:pulse -- --geometry rules`
+ forms: `npm run spw:pulse -- --geometry hof`
+ graph: `npm run spw:pulse -- --geometry graph`
+ walk: `npm run spw:pulse -- --geometry walk --label name --form hof.select_then_path`
+}
+
+^["falsify"]{
+ #[
+  "implemented rule.apply returns non-null on wrong site without matching surface",
+  "register liminality claimed identical to LiminalShape without bridge map",
+  "HOF completed=true while a proposed rule without apply was in the program",
+  "egress inverse of ingress fails identity on free label round-trip"
+ ]
+}

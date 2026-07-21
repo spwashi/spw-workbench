@@ -1,35 +1,46 @@
 # Operator Normal Form (ONF)
 #
-# Every surface expression reduces to: σ(args...)[reg=R ...]
+# Design target: structurally represented AST nodes lower to sigma(args...)[reg=R ...].
+# Parser recovery may retain source as prose, and many displayed equivalences are proposed.
 # Sigil is the callee. No named verbs. Arguments are positional.
 #
-# @see src/lang/grammar/onf-spec.md
+# @see packages/spw-seed/src/normalize.ts
+# @see packages/spw-seed/src/grammar/expressions.ts
 # @see docs/theory/spw/register-geometry.spw
+# @see docs/theory/spw/operational-topography.spw
 
 #:layer #!semantics
 
 ^seed[Spw.ONF v:0.3 @profile:Spw.b @intent:normalization_spec]
 {_onf
 
- ## ── Core Rule ──────────────────────────────────────────────
+ // ── Core Rule ──────────────────────────────────────────────
 
  rule: .{
  form = `σ(args...)[reg=R ...]`
  sigil = `the operator character (callee)`
  args = `positional, left-to-right`
  frames = `reg + arbitrary key-value metadata`
- note = `momentum frames excluded from semantic hash`
+ hash_target = `A future semantic hash may exclude explicitly classified momentum frames; no semantic hash is implemented.`
  }[reg=facet]
 
- ## ── Normalization Table ────────────────────────────────────
+ implementation_status: .{
+ implemented = `AST nodes normalize into the uniform ONFNode shape in packages/spw-seed/src/normalize.ts.`
+ partial = `Several reg labels name intended strategies more strongly than the current interpreter implements.`
+ proposed = `Semantic hash, surface expansion, full fixity equivalence, and SeNF optimization remain contracts or research.`
+ }[reg=facet]
+
+ // ── Normalization Targets ──────────────────────────────────
+
+ target_status: proposed
 
  normalization: #[
  .{ surface = `x / y`, onf = `/(x, y)[reg=proj]` },
- .{ surface = `x!`, onf = `!(x)[reg=hydrate]` },
+ .{ surface = `x!`, onf = `!(x)[reg=hydrate]`, note = `postfix target; not current parser behavior` },
  .{ surface = `~x`, onf = `~(x)[reg=defer]` },
  .{ surface = `#[a, b]`, onf = `#(a, b)[reg=set]` },
  .{ surface = `.{k: v}`, onf = `.({k: v})[reg=facet]` },
- .{ surface = `?<a, b>`, onf = `?(a, b)[reg=stream]` },
+ .{ surface = `<<a, b>>@sink`, onf = `?(a, b)[reg=stream sink=sink]`, note = `sink preservation is a target` },
  .{ surface = `_`, onf = `_()[reg=hole]` },
  .{ surface = `` `phrase` ``, onf = `` `(phrase)[reg=phrase]` `` },
  .{ surface = `x = y`, onf = `=(x, y)[reg=config]` },
@@ -38,8 +49,26 @@
  .{ surface = `$x`, onf = `$(x)[reg=substrate]` }
  ][reg=set]
 
- ## ── Fixity ─────────────────────────────────────────────────
- ## All fixity positions reduce to the same ONF
+ parser_reality: .{
+ fixity = prefix_only
+ position_field = `declared on OperationNode but currently unset`
+ adjacent_identifier = `!x records x as an operator label`
+ separated_identifier = `! x may record x as valence metadata`
+ postfix = `x! parses as a sequence containing x and a zero-argument ! operation`
+ stream = `<<a,b>>@sink is the implemented Stream syntax; normalization currently drops the sink`
+ recovery = `Malformed delimiter forms may parse successfully as Prose, so parse success is not structured validity.`
+ }[reg=facet]
+
+ implemented_counterexamples: #[
+ .{surface=`!x`, current=`!()[reg=hydrate label=x]`},
+ .{surface=`! x`, current=`!()[reg=hydrate valence=x]`},
+ .{surface=`x!`, current=`sequence(id(x),!())[reg=sequence]`},
+ .{surface=`<<a,b>>@sink`, current=`?(a,b)[reg=stream]`, loss=`sink`},
+ .{surface=`?<a,b>`, current=`not a Stream node`},
+ ][reg=set]
+
+ // ── Fixity Target ──────────────────────────────────────────
+ // Intended normalization law; parser coverage and source-order tests are required.
 
  fixity: #[
  .{ pos = prefix, example = `!x`, clause = imperative, onf = `!(x)` },
@@ -47,26 +76,61 @@
  .{ pos = postfix, example = `x!`, clause = declarative, onf = `!(x)` }
  ][reg=set]
 
- ## ── Invariants ─────────────────────────────────────────────
+ fixity_status: `proposed; current operation grammar is prefix-only`
+ orientation_rule: `prefix/postfix and before/after are canonical coordinates; left/right is a render-only profile unless a dialect changes operand order.`
+ fixity_counterexample: `The OperationNode position field alone does not prove that both surface forms parse or preserve evaluation order.`
+
+ // ── Invariants ─────────────────────────────────────────────
 
  invariants: .{
- idempotent = `normalizeToONF(parse(desugar(src))) is idempotent`
- hash_stable = `ONF → semantic_hash excludes momentum frames`
- dialect_gated = `no implicit rewrites in default pipeline`
- round_trip = `surface → ONF → expand → surface is identity`
+ deterministic = `The same AST input produces the same ONF value under one implementation revision.`
+ idempotent_target = `A future ONF-to-ONF normalizer reaches a fixed point.`
+ hash_stable_target = `A specified semantic hash has declared frame inclusion rules.`
+ rewrite_visibility = `Desugaring emits a separate precipitate; dialect gating remains a proposed policy.`
+ round_trip_target = `surface → ONF → expand → surface preserves the declared identity class`
  }[reg=facet]
 
- ## ── Register Frame Constructors ────────────────────────────
+ invariant_status: .{
+ deterministic = implemented
+ idempotent_target = proposed
+ hash_stable_target = proposed
+ rewrite_visibility = partial
+ round_trip_target = proposed
+ }[reg=facet]
+
+ // ── Register Frames and Coupling Projection ───────────────
 
  register_frames: #[
- .{ form = `#[...]`, operator = `#`, container = `[]`, reg = set, meaning = `category / ground-truth set` },
- .{ form = `.{...}`, operator = `.`, container = `{}`, reg = facet, meaning = `property facet / definition` },
- .{ form = `@(...)`, operator = `@`, container = `()`, reg = perspective, meaning = `observer scope` },
- .{ form = `?<...>`, operator = `?`, container = `<>`, reg = stream, meaning = `becoming / durational stream` }
+ .{ form = `#[...]`, operator = `#`, container = `[]`, reg = set, coupling_kind = frame, meaning = `category / ground-truth set` },
+ .{ form = `.{...}`, operator = `.`, container = `{}`, reg = facet, coupling_kind = body, meaning = `property facet / definition` },
+ .{ form = `@(...)`, operator = `@`, container = `()`, reg = perspective, coupling_kind = scope, meaning = `observer scope` },
+ .{ form = `<<...>>@sink`, operator = `?_borrowed`, container = `<<>>`, reg = stream, coupling_kind = stream, meaning = `stream channel; sink preservation proposed; ? sigil historical` },
+ .{ form = `<...>`, operator = none, container = capsule, reg = capsule, coupling_kind = capsule, coupling_form = boundary, meaning = `capsule shell; membrane is an interpretive profile` },
+ .{ form = `<>`, operator = `<>`, container = none, reg = couple, coupling_kind = couple, coupling_form = operator, meaning = `explicit couple Act` }
  ][reg=set]
 
- ## ── Tiered Normalization ───────────────────────────────────
- ## Instead of one ONF, three tiers:
+ structural_forms: #[
+ .{ surface = `[]`, reg = inner, kind = frame, form = boundary, occupancy = empty, payload = void },
+ .{ surface = `{}`, reg = around, kind = body, form = boundary, occupancy = empty, payload = void },
+ .{ surface = `()`, reg = scope, kind = scope, form = boundary, occupancy = empty, payload = void },
+ .{ surface = `< >`, reg = capsule, kind = capsule, form = boundary, occupancy = empty, payload = void, note = `delimiter pair; not digraph token` },
+ .{ surface = `<<>>`, reg = stream, kind = stream, form = boundary, occupancy = empty, payload = void },
+ .{ surface = `(())`, reg = range, kind = nrange, form = boundary, occupancy = empty, payload = void },
+ .{ surface = `<>`, reg = couple, kind = couple, form = operator, arity = 0, note = `zero operands; operator coupling has no occupancy or interior payload` }
+ ][reg=set]
+
+ payload_classes: #[
+ .{ class = void, meaning = `no ONF args` },
+ .{ class = space, meaning = `whitespace-only interior; currently collapses to void at AST` },
+ .{ class = act, meaning = `single Operation arg (or Parameter-peeled Act in frame)` },
+ .{ class = term, meaning = `single non-act arg` },
+ .{ class = multi, meaning = `two or more args` }
+ ][reg=set]
+
+ fill_state_note: `Space-filled braces [ ] { } ( ) are token-distinct but AST-empty. A retained prefix Act·Frame projection records actPlacement=prefix; broader prefix/postfix placement remains incomplete. Stream ONF still uses ? sigil; coupling kind/form prevents Stream from taking Wonder's conditional path. Empty occupancy does not change register identity or assign a runtime unit.`
+
+ // ── Tiered Normalization ───────────────────────────────────
+ // Instead of one ONF, three tiers:
 
  tiers: #[
  .{
@@ -76,14 +140,16 @@
  producer = lexer
  memory = `O(1) state`
  speed = `single pass`
+ status = implemented
  },
  .{
  tier = SiNF
  name = `Sigil Normal Form`
- what = `Per-sigil reduction. !x and x! both → !(x), but !(x) and ~(x) remain distinct.`
- producer = `parser + reducers`
+ what = `Design tier for per-sigil reduction; current normalizeToONF performs one partial AST-to-ONF projection and does not equate !x with x!.`
+ producer = `current partial normalizer; future reducers`
  memory = `O(depth) for context stack`
  speed = `per-sigil automaton`
+ status = partial
  },
  .{
  tier = SeNF
@@ -92,12 +158,23 @@
  producer = optimizer
  memory = `O(program) for full analysis`
  speed = `Church-Rosser: do all paths converge?`
+ status = proposed
  }
  ][reg=set]
 
  tier_pipeline: ?< lexer, SNF, `parser + reducers`, SiNF, optimizer, SeNF >[reg=pipeline]
 
- ## ── Per-Sigil Automata ─────────────────────────────────────
+ // ── Proposed Per-Sigil Automata ────────────────────────────
+
+ automata_status: proposed
+
+ runtime_reality: .{
+ argument_order = `The interpreter evaluates every ONF argument eagerly before operator dispatch.`
+ hydrate = `! returns its first evaluated argument; it does not dispatch, capture, or bind.`
+ defer = `~ wraps an already evaluated value; it is not currently lazy quotation.`
+ query = `? is a truthy conditional; it does not open a channel, wait, or schedule a stream.`
+ falsifier = `Any proposed automaton becomes implemented only with parser-to-ONF-to-runtime golden tests for its surface forms and effects.`
+ }[reg=facet]
 
  automata: #[
  .{ sigil = `!`, strategy = eager, path = ?<evaluate, dispatch, capture>, terminal = `register binding (void)` },
@@ -114,10 +191,13 @@
  .{ sigil = `%`, strategy = measuring, path = ?<sample, normalize, ratio>, terminal = `unit scalar` }
  ][reg=set]
 
- ## Key: cross-sigil reductions don't commute
- ## !(~x) ≠ ~(!x) — eagerness and laziness are distinct homotopy classes
+ // Research question: which cross-sigil reductions commute?
+ // !(~x) and ~(!x) are candidate counterexamples; establish their distinction with
+ // parser, ONF, and runtime tests before assigning a topological interpretation.
 
- ## ── Adopted Heuristics (Grok v0.5–0.8) ────────────────────
+ // ── Legacy Candidate Heuristics (Grok v0.5–0.8) ──────────
+
+ heuristic_status: `research candidates; type=auto does not mean implemented`
 
  heuristics: #[
  .{ id = proj_chain, surface = `x / y / z`, onf = `/(x,#[y,z])[proj]`, tier = SiNF, type = auto },
@@ -134,22 +214,23 @@
  .{ id = mid_pipe_unify, surface = `data~!#filter ?(x)`, onf = `?(#(!(~(data)),filter),x)`, tier = SeNF, type = gated }
  ][reg=set]
 
- ## ── Open Questions ─────────────────────────────────────────
+ // ── Open Questions ─────────────────────────────────────────
 
  open_questions: #[
  `Should all operators reduce to the same σ(args)[frames] shape?`,
  `Or does each sigil define its own reduction strategy?`,
- `Status: tiered approach (SNF/SiNF/SeNF) chosen over uniform ONF.`,
+ `Status: tiered approach (SNF/SiNF/SeNF) proposed; only lexer output and a partial AST-to-ONF projection exist.`,
  `SeNF termination: Turing-complete features like unify may not terminate.`
  ]
 
- ## ── Implementation ─────────────────────────────────────────
+ // ── Implementation ─────────────────────────────────────────
 
  implementation: .{
- types = `src/seed/types/ast/onf.ts`
- normalize = `src/seed/normalize.ts`
- spec = `src/lang/grammar/onf-spec.md`
- frames = `src/lang/grammar/register-frames.md`
+ types = `packages/spw-seed/src/types/ast/onf.ts`
+ normalize = `packages/spw-seed/src/normalize.ts`
+ runtime = `packages/spw-runtime/src/interpreter/interpreter.ts`
+ parser = `packages/spw-seed/src/grammar/expressions.ts`
+ canonical_source_hash = `packages/spw-seed/src/canonical/index.ts`
  geometry = `docs/theory/spw/register-geometry.spw`
  }[reg=facet]
 

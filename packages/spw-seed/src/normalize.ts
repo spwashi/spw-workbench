@@ -1,6 +1,7 @@
 import { parse, type ParseOutput } from './parser'
 import type { SeedNode } from './types'
 import type { ONFNode } from './types/ast/onf'
+import { withCoupling } from './types/coupling'
 
 export interface DesugarResult {
   source: string
@@ -164,16 +165,39 @@ export function normalizeToONF(node: ASTNode): ONFNode {
         case '<>': reg = 'couple'; break
       }
 
-      const frames: Record<string, unknown> = {
+      let frames: Record<string, unknown> = {
         reg,
         ...extractFrameBindings(op.frame),
       }
+
+      // Digraph <> is an operator coupling. Zero operands means arity 0, not an empty Bound.
+      if (sigil === '<>') {
+        frames = withCoupling(frames, 'couple', {
+          args,
+          argCount: args.length,
+        })
+      }
+
+      // Preserve the paired-boundary side of a prefix Act·Frame product.
+      if (op.frame && !op.body) {
+        const frameArgs = (op.frame.content ?? []).map((c: any) => normalizeToONF(c))
+        frames.bound = withCoupling({}, 'frame', {
+          args: frameArgs,
+          argCount: frameArgs.length,
+          actPlacement: 'prefix',
+        }).coupling
+      }
+
       const valence = extractValence(op)
       if (valence && valence.length > 0) {
         frames.valence = valence
       }
       if (op.operatorLabel?.value) {
         frames.label = op.operatorLabel.value
+      }
+      // OperationNode.position is declared but unset by the parser today.
+      if (op.position === 'prefix' || op.position === 'postfix') {
+        frames.fixity = op.position
       }
 
       return { sigil: sigil as any, args, frames }
@@ -186,9 +210,32 @@ export function normalizeToONF(node: ASTNode): ONFNode {
         ? cap.body.sequence.expressions.map((e: any) => normalizeToONF(e))
         : []
 
-      if (open === '#[') return { sigil: '#', args, frames: { reg: 'set' } }
-      if (open === '.{') return { sigil: '.', args, frames: { reg: 'facet' } }
-      return { sigil: open.charAt(0) as any, args, frames: { reg: 'capsule' } }
+      // Preferred Act×Bound idioms keep their register; Bounds carry structural fill data.
+      if (open === '#[') {
+        return {
+          sigil: '#',
+          args,
+          frames: withCoupling({ reg: 'set' }, 'frame', { args, argCount: args.length }),
+        }
+      }
+      if (open === '.{') {
+        return {
+          sigil: '.',
+          args,
+          frames: withCoupling({ reg: 'facet' }, 'body', { args, argCount: args.length }),
+        }
+      }
+      // Capsule may carry a tag without body — tag alone is not interior payload occupancy.
+      const tag = cap.tag?.value
+      return {
+        sigil: open.charAt(0) as any,
+        args,
+        frames: withCoupling(
+          tag ? { tag } : {},
+          'capsule',
+          { args, argCount: args.length },
+        ),
+      }
     }
 
     case 'Stream': {
@@ -196,7 +243,12 @@ export function normalizeToONF(node: ASTNode): ONFNode {
       const args: ONFNode[] = stream.sequence
         ? stream.sequence.expressions.map((e: any) => normalizeToONF(e))
         : []
-      return { sigil: '?', args, frames: { reg: 'stream' } }
+      // Historical ? sigil borrow; coupling.form/kind disambiguate Stream from Wonder.
+      return {
+        sigil: '?',
+        args,
+        frames: withCoupling({}, 'stream', { args, argCount: args.length }),
+      }
     }
 
     case 'Identifier': {
@@ -269,14 +321,30 @@ export function normalizeToONF(node: ASTNode): ONFNode {
 
     case 'NRange': {
       const nrange = node as any
-      const exprNode = nrange.expression ? normalizeToONF(nrange.expression) : { sigil: '_' as const, args: [], frames: { reg: 'empty' } }
-      return { sigil: '_', args: [exprNode], frames: { reg: 'range' } }
+      // Empty n-range: no expression → empty occupancy of kind nrange (not generic empty).
+      if (!nrange.expression) {
+        return {
+          sigil: '_',
+          args: [],
+          frames: withCoupling({}, 'nrange', { occupancy: 'empty', payload: 'void' }),
+        }
+      }
+      const exprNode = normalizeToONF(nrange.expression)
+      return {
+        sigil: '_',
+        args: [exprNode],
+        frames: withCoupling({}, 'nrange', { args: [exprNode], argCount: 1 }),
+      }
     }
 
     case 'Frame': {
       const frame = node as any
       const contentArgs: ONFNode[] = (frame.content ?? []).map((c: any) => normalizeToONF(c))
-      return { sigil: '_', args: contentArgs, frames: { reg: 'inner' } }
+      return {
+        sigil: '_',
+        args: contentArgs,
+        frames: withCoupling({}, 'frame', { args: contentArgs, argCount: contentArgs.length }),
+      }
     }
 
     case 'Body': {
@@ -284,7 +352,11 @@ export function normalizeToONF(node: ASTNode): ONFNode {
       const bodyArgs: ONFNode[] = body.sequence
         ? body.sequence.expressions.map((e: any) => normalizeToONF(e))
         : []
-      return { sigil: '_', args: bodyArgs, frames: { reg: 'around' } }
+      return {
+        sigil: '_',
+        args: bodyArgs,
+        frames: withCoupling({}, 'body', { args: bodyArgs, argCount: bodyArgs.length }),
+      }
     }
 
     case 'Scope': {
@@ -293,7 +365,15 @@ export function normalizeToONF(node: ASTNode): ONFNode {
         ? scope.sequence.expressions.map((e: any) => normalizeToONF(e))
         : []
       const scopeName = scope.name?.value
-      return { sigil: '_', args: scopeArgs, frames: { reg: 'scope', ...(scopeName ? { name: scopeName } : {}) } }
+      return {
+        sigil: '_',
+        args: scopeArgs,
+        frames: withCoupling(
+          { ...(scopeName ? { name: scopeName } : {}) },
+          'scope',
+          { args: scopeArgs, argCount: scopeArgs.length },
+        ),
+      }
     }
 
     case 'Condition': {

@@ -4,6 +4,7 @@
 
 ^["roots"]{
  @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @topography: ~".agents/plans/operational-topography/operational-topography.spw"
  @references: ~".agents/plans/vscode-authoring-probe-loop/references/index.spw"
  @selection: ~".spw/conventions/selection.spw"
  @tooling: ~".spw/tooling/vscode-spw.spw"
@@ -68,6 +69,7 @@
 }
 
 ^["formatting_refactors"]{
+ contract: "consume one parser-verified differential plan; client previews and applies but does not derive edit semantics"
  formatting_actions: [
   "format current file",
   "format selected range",
@@ -77,10 +79,10 @@
  refactor_actions: [
   "reveal anchor backlinks before rename",
   "rename selector or root with preview",
-  "rotate between equivalent surface spellings when semantics are preserved",
+  "rotate between equivalent views when inverse and source map are declared",
   "extract frame from deep nested block",
  ]
- inspection_before_refactor: "every non-trivial refactor command should preview affected files or graph edges before edit confirmation"
+ inspection_before_refactor: "every non-trivial refactor command shows exact targets, affected files/edges, mutation profile, source map, verification, and effect grade before confirmation"
 }
 
 ^["commands"]{
@@ -152,7 +154,7 @@
  rotate_inspection: [
   "user invokes Rotate Inspection Perspective",
   "status bar, code lens, and quick pick rotate together between local, cross-file, tree, and graph views",
-  "cursor stays anchored to the same semantic target when possible",
+  "cursor stays anchored through a revision-addressed source map; information loss is disclosed",
  ]
  graph_query_flow: [
   "cursor sits on selector, anchor, frame, or root",

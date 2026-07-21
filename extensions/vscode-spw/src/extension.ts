@@ -10,6 +10,7 @@ import { AnnotationIndex } from './annotation-index'
 import { createSpwContext } from './context'
 import { registerContextStrip } from './context-strip'
 import { createSpwCustomRequestClient } from './lsp/custom-requests'
+import { registerSpwNavigation } from './navigation'
 import { ROOT_MAP, resolveRoot } from './roots'
 import { SIGIL_SEMANTICS } from './semantics'
 import { registerConceptsTreeView } from './views/concepts-tree'
@@ -43,6 +44,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
   const disposables: vscode.Disposable[] = [
     ...registerContextStrip(spw),
+    ...registerSpwNavigation(spw),
     ...registerConceptsTreeView(spw),
     ...registerWorkspaceAtlasView(spw),
   ]

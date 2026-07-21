@@ -68,6 +68,7 @@ export function printInitUsage(): void {
       {
         title: 'Compatibility',
         lines: [
+          '.spw/README.md              prompt and navigation entrypoint',
           'spw install [target-directory]',
           'npm run spw -- install [target-directory]',
           'npm run spw:install -- [target-directory]',

@@ -36,6 +36,7 @@ describe('spw init portability', () => {
     const mountPath = path.join(runtime.templateRoot, 'base/.spw/mount.spw')
 
     await expect(access(path.join(runtime.templateRoot, 'base/.spw/index.spw'))).resolves.toBeUndefined()
+    await expect(access(path.join(runtime.templateRoot, 'base/.spw/README.md'))).resolves.toBeUndefined()
     await expect(access(path.join(runtime.templateRoot, 'base/.spw/workspace.spw'))).resolves.toBeUndefined()
     await expect(access(mountPath)).resolves.toBeUndefined()
 

@@ -19,14 +19,16 @@ Run workbench instruments from an independent consumer repository without absorb
 
 ## Workflow
 
-1. Discover the nearest ancestor containing `.spw/mount.spw`; do not assume the current directory is the consumer root.
-2. Resolve `.spw/_workbench` and verify that it is a readable mount rather than copied consumer content.
-3. Read consumer authority surfaces before workbench documentation.
-4. Choose a bounded audit target: CLI, LSP, one editor integration, canon, or plans.
-5. Run deterministic probes from the consumer root, passing an explicit root whenever the command supports one.
-6. Classify every capability as advertised, configured, invoked, observed, or tested. Do not collapse those states into a single support claim.
-7. Record commands, tool versions, failures, verdicts, and both repository revisions using relative paths and generic labels.
-8. Separate consumer findings from portable workbench improvements. Do not upstream private corpus excerpts or consumer identifiers.
+1. Enumerate ancestor mount candidates; do not stop at the nearest `.spw/mount.spw`, because a mounted workbench may contain its own canonical manifest.
+2. Prefer the outer candidate whose consumer-owned `.spw/_workbench` contains the infrastructure checkout and whose mount contract points at that checkout. Record ambiguity instead of silently choosing infrastructure authority.
+3. If a legacy consumer has a mounted gitlink but no consumer-owned mount manifest, classify discovery as legacy/partial and require an explicit consumer root until compatibility tooling exists.
+4. Resolve `.spw/_workbench` and verify that it is readable tooling infrastructure rather than copied consumer content.
+5. Read consumer authority surfaces before workbench documentation.
+6. Choose a bounded audit target: CLI, LSP, one editor integration, canon, plans, or a repo-local evidence sample.
+7. Run deterministic probes from the consumer root, passing explicit roots, limits, profiles, and equivalence modes whenever supported.
+8. Classify every capability as advertised, configured, invoked, observed, or tested. Do not collapse those states into a single support claim.
+9. Record commands, tool versions, failures, verdicts, and both repository revisions using relative paths and generic labels.
+10. Separate consumer findings from portable workbench improvements. Do not upstream private corpus excerpts or consumer identifiers.
 
 ## Review Contract
 
@@ -40,6 +42,15 @@ A complete review records:
 - actionable failures with relative paths;
 - a consumer-local disposition for each finding;
 - optional identity-free upstream questions selected by a human.
+
+For agent-facing samples, also record:
+
+- query/profile hash or exact arguments;
+- relative source spans and content hashes when available;
+- exact, approximate, and counterexample tiers;
+- byte/file/node/result/time budgets;
+- excluded paths and why they were excluded;
+- which fields are deterministic facts, recomputable scores, or interpretations.
 
 ## Required References
 

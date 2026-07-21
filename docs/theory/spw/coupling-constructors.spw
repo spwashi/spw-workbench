@@ -1,0 +1,189 @@
+# Coupling Constructors
+#
+# A shared algebra for one explicit relation operator and six paired boundary
+# kinds, without collapsing lexer, parser, normalized, runtime, and
+# interpretive layers into one statement.
+#
+# @see packages/spw-seed/src/types/token.ts
+# @see packages/spw-seed/src/types/ast/nodes.ts
+# @see packages/spw-seed/src/normalize.ts
+# @see docs/theory/spw/operational-topography.spw
+
+#:layer #!semantics
+
+^seed[Spw.Coupling.Constructors v:0.1 @profile:research @intent:boundary_algebra]
+{_coupling
+
+ // ── Problem ────────────────────────────────────────────────
+
+ question: `Should (), [], {}, and <...> be understood as kinds of coupling, and how should that relate to the existing <> operator?`
+
+ constraints: #[
+ `Preserve current parser facts while the model is evaluated.`,
+ `Support nesting, paired labels, layout differentials, rotations, and source maps.`,
+ `Do not assign runtime effects merely from delimiter shape.`,
+ `Remain portable across editor orientation and writing direction.`,
+ ][reg=set]
+
+ // ── Current Reality ────────────────────────────────────────
+
+ current: .{
+ operator_kind = `<> is one of thirteen OperatorKind tokens and normalizes with reg=couple.`
+ runtime = `The <> ONF evaluator couples two named registers only when it receives two string arguments, then returns the evaluated argument list.`
+ containers = `Seed has distinct Frame [], Body {}, Scope (), Capsule <...>, Stream <<...>>, and NRange ((...)) AST nodes.`
+ uneven_pairs = `Stream and NRange retain both delimiters; Capsule retains only open; Frame, Body, and Scope retain neither delimiter token and do not populate their optional label fields.`
+ projection = `ONF now records frames.coupling as a discriminated structural projection: operator {kind, form, surface, arity} or boundary {kind, form, occupancy, payload, surface, actPlacement?}.`
+ conclusion = `Lexically, <> is an operator and paired delimiters are not one uniform operator class. Compositionally, both forms now expose one tagged coupling interface without sharing evaluation law.`
+ }[reg=facet]
+
+ // ── Candidate Models ───────────────────────────────────────
+
+ candidates: #[
+ .{
+ id = lexical_unification
+ move = `Classify every paired delimiter as an OPERATOR token.`
+ benefit = `superficial token symmetry`
+ cost = `destabilizes nesting, recovery, highlighting, and existing AST distinctions`
+ verdict = not_recommended
+ },
+ .{
+ id = tagged_boundary_algebra
+ move = `Keep concrete parser nodes but give them a shared Coupling interface and optional common normalized lowering.`
+ benefit = `one contract for pair identity, ports, labels, transforms, and evidence without erasing kind-specific payloads`
+ cost = `requires explicit lowering and preservation laws`
+ verdict = implemented_structural_projection
+ },
+ .{
+ id = physical_field_law
+ move = `Assign charge, tension, or permeability directly from glyph shape.`
+ benefit = `evocative rendering`
+ cost = `confuses metaphor with semantics and lacks a measurement path`
+ verdict = interpretive_profile_only
+ },
+ ][reg=set]
+
+ // ── Structural Coupling Algebra ────────────────────────────
+
+ definition: `A coupling constructor is a tagged compositional form. An operator coupling relates positional operands; a boundary coupling relates an interior payload to exterior context through paired ports.`
+
+ coupling: .{
+ common = #[kind, form, surface]
+ operator = .{form=operator, kind=couple, required=#[arity], ports=#[before_operator, operand, after_operator]}
+ boundary = .{form=boundary, kinds=#[frame,body,scope,capsule,stream,nrange], required=#[occupancy,payload], ports=#[before_open,open_boundary,inside,close_boundary,after_close], optional=#[actPlacement]}
+ proposed_pair_evidence = #[pair_id, open_span, close_span, open_label, close_label, source_revision]
+ profile_fields = #[ingress, egress, charge, capacitance, tense, geometry, effect_contract]
+ evidence = #[parse_state, source_map, structure_fingerprint, profile_id, profile_revision]
+ }[reg=facet]
+
+ relative_symmetry: .{
+ principle = `Same kinematics, different dynamics.`
+ shared = `< ( [ { may all be addressed as open-boundary surfaces for pair navigation, interior entry, depth, labels, and edit preview.`
+ distinct = `Their kind tags capsule | scope | frame | body remain available to select different operational profiles, diagnostics, rewrite laws, and measurements.`
+ lexer_guard = `The shared surface coordinate is applied after token classification; adjacent <> is the operator coupling, not an open followed by a close.`
+ }[reg=facet]
+
+ terminology: .{
+ canonical = `paired boundary for the structural class; delimiter surface for a concrete token`
+ profile_scoped = `brace and bracket are reader/tool vocabulary whose membership must be declared`
+ angle_rule = `A brace profile may exclude <...>; exclusion changes the named set, not Capsule's implemented boundary form.`
+ reporting = `Scans and editor requests report their boundary-set profile so counts remain comparable.`
+ }[reg=facet]
+
+ // ── Semantic Utility Profiles ──────────────────────────────
+
+ semantic_profile: .{
+ status = `implemented portable contract; concrete profiles remain separately versioned`
+ source = `packages/spw-seed/src/types/coupling.ts`
+ identity = #[id, revision, status]
+ status_values = #[interpretive, measured, operational]
+ scope = `includedKinds discloses the exact operator/boundary set; angle forms may be included or excluded`
+ kind_entry = #[kind, name, description, portRoles, dimensions, dynamics]
+ dimension = #[id, description, valueType, unit, method, falsifier]
+ dynamics = #[operation, input, output, effectGrade, evidence]
+ projection = `projectCouplingSemantics returns structure and named semantics side by side; it never overwrites kind, form, occupancy, payload, or arity.`
+ validation = `invalid ports are rejected for the form; S1-S3 effects cannot hide in interpretive or merely measured profiles.`
+ }[reg=facet]
+
+ semantic_utility_law: `A profile becomes more semantically useful by improving discrimination, prediction, measurement, or safe action while preserving structural counterexamples and evidence identity.`
+
+ surface_kinds: #[
+ .{surface=`<>`, current_ast=Operation, kind=couple, form=operator},
+ .{surface=`(...)`, current_ast=Scope, kind=scope, form=boundary},
+ .{surface=`[...]`, current_ast=Frame, kind=frame, form=boundary},
+ .{surface=`{...}`, current_ast=Body, kind=body, form=boundary},
+ .{surface=`<...>`, current_ast=Capsule, kind=capsule, form=boundary},
+ .{surface=`<<...>>@sink`, current_ast=Stream, kind=stream, form=boundary},
+ .{surface=`((...))`, current_ast=NRange, kind=nrange, form=boundary},
+ ][reg=set]
+
+ lowering_target: #[
+ `<> -> <>(args)[reg=couple coupling={kind:couple,form:operator,arity:n}]`,
+ `(...) -> _(payload)[reg=scope coupling={kind:scope,form:boundary,...}]`,
+ `[...] -> _(payload)[reg=inner coupling={kind:frame,form:boundary,...}]`,
+ `{...} -> _(payload)[reg=around coupling={kind:body,form:boundary,...}]`,
+ `<...> -> <(payload)[reg=capsule coupling={kind:capsule,form:boundary,...}]`,
+ ]
+
+ lowering_status: `implemented structural metadata; a rewrite of every form to the <> sigil is neither implemented nor required`
+
+ // ── Laws ───────────────────────────────────────────────────
+
+ laws: #[
+ .{id=form_preservation, rule=`Operator and boundary forms share composition vocabulary without becoming interchangeable lexical or AST forms.`},
+ .{id=pair_identity, rule=`Open and close belong to one parser-owned pair or the coupling is not structurally verified.`},
+ .{id=orthogonal_dimensions, rule=`Kind, form, occupancy, payload, placement, and any profile measurements remain separate coordinates; empty does not mint a new kind or register.`},
+ .{id=relative_symmetry, rule=`Operations defined only on boundary topology may be shared across kinds; operational dynamics must dispatch through an explicit kind/profile and preserve counterexamples.`},
+ .{id=order, rule=`Payload source order is preserved unless a kind-specific, versioned law declares commutation.`},
+ .{id=nesting, rule=`C_a(C_b(x)) remains distinguishable from C_b(C_a(x)) unless an explicit equivalence is proved.`},
+ .{id=labels, rule=`Open and close labels attach to pair identity; a mismatch is evidence, not an implicit rename.`},
+ .{id=orientation, rule=`Open/close is canonical; left/right and accumulate/release are render profiles.`},
+ .{id=effects, rule=`Boundary kind alone grants no read, write, runtime, or external capability.`},
+ .{id=transforms, rule=`A rotation declares an inverse; a lossy map is a projection; a source-changing map is a rewrite with a mutation profile.`},
+ ][reg=set]
+
+ // ── Mathematical Radar ─────────────────────────────────────
+
+ radar: .{
+ implementation = `A recursive tagged union is implemented as the smallest useful data model.`
+ composition = `A colored operad or multicategory is the most promising formal language: boundary kinds are colors, nested containers compose, and ports constrain valid substitution.`
+ transformations = `Typed tree rewriting supplies matching, preconditions, critical-pair tests, source maps, and reversible refactoring rules.`
+ geometry = `Topology contributes boundary/interior/exterior and gluing vocabulary, but screen distance and physical force remain measured projections rather than semantic facts.`
+ measurement = `HCI experiments test whether a profile changes orientation time, errors, recall, or explicit familiarity.`
+ }[reg=facet]
+
+ complexity: .{
+ parse_and_annotate = `O(n) in tokens for a completed parse and pair table`
+ exact_transform = `O(size of selected subtree + reference impact query)`
+ approximate_search = `index-dependent and never direct write authority`
+ }[reg=facet]
+
+ // ── Physical Use ───────────────────────────────────────────
+
+ physical_profile: .{
+ useful_analogy = `A boundary couples interior and exterior through interface conditions.`
+ measurable_axes = #[span, depth, crossing_count, reference_flow, edit_frequency, parse_cost, navigation_cost]
+ optional_parameters = #[permeability, isolation, ingress, egress, lifetime]
+ caution = `These parameters become semantic only when a dialect and runtime implement them; otherwise they are view or experiment fields.`
+ }[reg=facet]
+
+ // ── Next Learning Steps ────────────────────────────────────
+
+ next: ?<
+ add_parser_owned_pair_identity,
+ query_the_shared_read_only_coupling_projection,
+ build_parser_to_ONF_goldens,
+ test_one_label_differential,
+ test_one_invertible_view_rotation,
+ evaluate_colored_composition_laws,
+ author_one_interpretive_and_one_operational_profile_with_counterexamples,
+ decide_whether_any_common_evaluation_profile_is_useful
+ >[reg=pipeline]
+
+ falsify: #[
+ `The shared interface erases payload distinctions required by the parser or tools.`,
+ `Common lowering makes source maps or diagnostics less precise.`,
+ `A proposed law silently changes order, references, or runtime effects.`,
+ `The physical profile predicts no preregistered behavioral or operational measure.`,
+ ][reg=set]
+
+}_coupling

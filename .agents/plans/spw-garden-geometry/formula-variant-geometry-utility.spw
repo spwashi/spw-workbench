@@ -1,0 +1,295 @@
+# Formula · Variant · Geometry Workflow Utility
+#
+# Utility model for producing formulas, testing variants, and developing
+# workflows/geometry — for humans, static analysis, and LLMs — with the
+# workbench as harness example.
+#
+# @see .spw/harness/evals/baseline-evals.spw
+# @see .spw/harness/claim-protocol.spw
+# @see .spw/harness/probes/probe-loop.spw
+# @see .spw/runtime/precipitates.spw
+# @see packages/spw-seed/src/types/ast/onf.ts
+# @see .agents/plans/spw-garden-geometry/org-static-llm-value.spw
+# @see .agents/plans/spw-garden-geometry/path-reference-enhancement.spw
+
+#:layer #!pragmatics
+#:garden #!utility
+#:harness #!formula
+
+^seed[Spw.Garden.Utility.FormulaVariantGeometry v:0.1 @profile:Spw.b @intent:formula_variant_workflow_geometry]
+
+^["roots"]{
+ @evals: ~"../../../.spw/harness/evals/baseline-evals.spw"
+ @claims: ~"../../../.spw/harness/claim-protocol.spw"
+ @probes: ~"../../../.spw/harness/probes/probe-loop.spw"
+ @precipitates: ~"../../../.spw/runtime/precipitates.spw"
+ @org_value: ~"./org-static-llm-value.spw"
+ @garden: ~"./spw-garden-geometry.spw"
+ @substrate: ~"./substrate-organelle-physics.spw"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Shared utility thesis
+// ═══════════════════════════════════════════════════════════════
+
+^["thesis"]{
+ ~#value: "Utility is a closed loop: author formula → instantiate variants → assay under grades → precipitate traces → promote or discard — same loop for math, UI geometry, org SOPs, and agent tools."
+ ~#status: "proposed+footholds"
+ ~#actors: #[human, static_ci, llm_agent]
+ ~#invariant: "Variants never silently overwrite the formula identity; promotion is explicit episode or S2 plan."
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Formula production
+// ═══════════════════════════════════════════════════════════════
+
+^["formula"]{
+ ~#definition: "A formula is a stable, addressable pattern: Spw structure + optional measure + grade + identity (shape/signature/hash) — not free prose."
+ ~#status: "proposed"
+
+ ~#kinds: .{
+  structural: "op/brace/frame skeleton — ONF shape hash"
+  query: "SpwPattern / lens / NAVIGABLE expression"
+  measure: "$%[…] or E1 method with published formula"
+  pulse_sop: "named beat sequence (org method)"
+  claim: "claim-protocol: id → spec → impl → probe"
+  geometric: "transect + walk policy + edge filter"
+  domain: "prime-glossed formula (same structure, field language)"
+ }
+
+ ~#production_pipeline: #[
+  .{step=sketch, surface="scratch / local liminal", grade=E2_ok},
+  .{step=crystallize, surface="named frame + signature", grade=E1_shape},
+  .{step=normalize, surface="ONF / canonicalize options", grade=E0_identity},
+  .{step=bind_measure, surface="metric or probe attachment", grade=E0_or_E1},
+  .{step=publish, surface="bed library / lenses/ / pulses/", grade=episode},
+ ]
+
+ ~#identity: .{
+  surface_hash: "canonical source (format knobs fixed)"
+  shape_hash: "ONF skeleton — compositional equality"
+  signature: "braid multiset — population twins"
+  formula_id: "stable name in registry frame"
+ }
+
+ ~#tools: #[
+  "spw.formula.normalize — ONF + hashes",
+  "spw.formula.publish — write to library with episode",
+  "compare-read / twin-search — detect accidental duplicates",
+  "extract_frame — readability handle from selection"
+ ]
+
+ ~#static: "library parse + unique formula_id + shape collision report"
+ ~#llm: "generate only into liminal scratch; promote via publish tool with hashes"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Variant testing
+// ═══════════════════════════════════════════════════════════════
+
+^["variants"]{
+ ~#definition: "A variant is a controlled mutation of a formula under an experimental axis — same formula_id lineage, different experimental instance (optional profile word: allele)."
+ ~#status: "proposed"
+
+ ~#axes: #[
+  .{axis=structure, mutate="brace/nest/order", assay="shape_hash + parse E0"},
+  .{axis=naming, mutate="labels/signatures", assay="name-impact + twin distance"},
+  .{axis=measure, mutate="metric knobs/thresholds", assay="E1 score delta"},
+  .{axis=prime, mutate="gloss only", assay="presentation-only — structure hashes unchanged"},
+  .{axis=format, mutate="indent/blank/comment", assay="surface_hash; shape must hold"},
+  .{axis=path, mutate="refs/roots", assay="resolve E0 + reverse index"},
+  .{axis=phase, mutate="register phase floor", assay="snapshot diff"},
+  .{axis=walk_policy, mutate="melody|assembly|meaning", assay="trace patternSignature"},
+ ]
+
+ ~#matrix: .{
+  rows: "variants (A, B, C…)"
+  cols: "assays (parse, resolve, shape, metric, trace, llm_tool_correctness)"
+  cell: "precipitate {pass|fail|score, grade, delta}"
+  store: "harness run ref + optional fixture golden"
+ }
+
+ ~#lifecycle: #[
+  "fork formula → variant frame (liminal or experiments/ bed)",
+  "bind pulse of assays (budgeted)",
+  "run matrix → TraceRecord per cell",
+  "compare matrix → promote winner | discard | merge variant lineage",
+  "never auto-promote on E2 alone"
+ ]
+
+ ~#footholds: .{
+  evals: @evals
+  probes: @probes
+  claims: @claims
+  fuzz: "fuzz:types / fuzz:ship as ship-grade columns"
+ }
+
+ ~#tools: #[
+  "spw.variant.fork",
+  "spw.variant.matrix_run",
+  "spw.variant.compare",
+  "spw.variant.promote — S2 plan or episode only"
+ ]
+
+ ~#llm: "agent proposes variants as dry matrix; human/CI gate promotion"
+ ~#static: "CI can re-run matrix goldens on formula library paths"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Workflow development
+// ═══════════════════════════════════════════════════════════════
+
+^["workflow"]{
+ ~#definition: "A workflow is a pulse (or pulse graph) with ownership, budgets, grades, and memory — an org SOP that is runnable."
+ ~#status: "proposed+pulse_doctrine"
+
+ ~#anatomy: .{
+  trigger: "manual | on-save | schedule | agent"
+  scope: "specific | category | lens | workspace"
+  beats: "ordered assays/transforms"
+  grade_cap: "max auto effect"
+  budget: "files/ms/concurrent"
+  memory: "which liminal tier holds precipitates"
+  promote: "what becomes global/episode"
+ }
+
+ ~#development_loop: #[
+  "author pulse profile in .spw (liminal bed)",
+  "dry-run beats — precipitates only",
+  "variant-test knobs (budget, scope, grade)",
+  "fixture suite for E0 beats",
+  "publish to pulse library + document in agent-surface",
+  "org weekly health consumes published pulse"
+ ]
+
+ ~#examples: #[
+  .{name=geometry_smoke, beats=["parse", "Δ_sanity", "refs_resolve", "capability_honest"]},
+  .{name=formula_release, beats=["normalize", "shape_collision", "variant_matrix_ci", "episode"]},
+  .{name=path_audit, beats=["outgoing", "incoming", "broken", "cross_bed_grafts"]},
+  .{name=llm_tool_eval, beats=["tool_calls_on_fixtures", "avoid_violations", "edit_plan_exactness"]},
+ ]
+
+ ~#tools: #["spw.pulse.preview", "spw.pulse.run", "spw.pulse.diff_config"]
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Geometry development
+// ═══════════════════════════════════════════════════════════════
+
+^["geometry_dev"]{
+ ~#definition: "Geometry development grows the coordinate system: strata, edges, shapes, walks, primes — then formulas/variants/workflows sit on it."
+ ~#status: "proposed+garden_stack"
+
+ ~#layers_to_grow: #[
+  .{layer=source, work="exact spans, prose guards"},
+  .{layer=structure, work="frame/pair tables, ONF shape"},
+  .{layer=relation, work="ref forest, reverse index"},
+  .{layer=time, work="episode, contentHash phenology"},
+  .{layer=layout, work="soft only; never identity"},
+  .{layer=operation, work="precipitates, stage derives, costs"},
+ ]
+
+ ~#dev_practices: #[
+  "add coordinate before UI chrome",
+  "fixture-first: golden transect/compare/twins",
+  "capability matrix row for every new spw/* method",
+  "variant-test walk policies and format profiles",
+  "document prime false-friends when geometry is glossed for a domain"
+ ]
+
+ ~#utility_loop: "geometry kernel → formula (lens/walk/measure) → variant matrix → workflow pulse → org adoption"
+
+ ~#explode_contract: .{
+  explode: "new edge kinds, primes, walk policies, domain packs"
+  contract: "anti-echo defaults, grade caps, budgets, exact selection"
+ }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Unified utility surface (static × LLM × org)
+// ═══════════════════════════════════════════════════════════════
+
+^["utility_surface"]{
+ ~#packages: .{
+  cli: "spw formula|variant|pulse|geometry subcommands (proposed)"
+  lsp: "tools for agents + code lens 'run matrix' on formula frames"
+  harness: "evals columns = assay types; runs ledger stores matrix cells"
+  fixtures: "packages/spw-lsp/src/__tests__/fixtures/geometry|formula"
+ }
+
+ ~#actor_matrix: .{
+  human: "author formulas; read matrix; promote; configure workflow"
+  static_ci: "re-run E0/E1 columns; fail ship on goldens"
+  llm: "propose variants + dry matrix; never promote without gate"
+ }
+
+ ~#value_metrics: #[
+  "time_to_first_formula_publish",
+  "variant_matrix_coverage",
+  "promotion_revert_rate",
+  "geometry_fixture_pass",
+  "llm_edit_plan_exactness",
+  "org_sop_pulse_runs_per_week"
+ ]
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Workbench as utility harness
+// ═══════════════════════════════════════════════════════════════
+
+^["harness_example"]{
+ ~#shows: #[
+  "claim-protocol as formula of proof",
+  "baseline-evals as variant columns",
+  "probe-loop as workflow beat",
+  "precipitates as utility output type",
+  "garden geometry stack as geometry product under test",
+  "mounted consumer as org starter pattern"
+ ]
+ ~#enhance: #[
+  "formula library bed under .spw/lenses or .spw/formulas",
+  "experiments/ bed for variants (cold cache)",
+  "CI job: matrix goldens + capability honesty",
+  "template: one formula + two variants + one pulse + one eval suite"
+ ]
+}
+
+^["roadmap"]{
+ P0: #[
+  "normalize+hash formula identity (ONF+surface)",
+  "fixture compare/twins/Δ",
+  "document utility loop in agent-surface"
+ ]
+ P1: #[
+  "variant matrix runner (CLI or script)",
+  "pulse-as-workflow for geometry smoke",
+  "LSP code lens run assays on formula frame"
+ ]
+ P2: #[
+  "promote path with episode",
+  "LLM tools bound to matrix dry-run",
+  "org SOP library from successful workflows"
+ ]
+ P3: #[
+  "cross-bed formula registry",
+  "multi-consumer matrix in mount harness"
+ ]
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Wonders
+// ═══════════════════════════════════════════════════════════════
+
+#>wonder_spw_garden_formula_variant_geometry_1
+?["What is the smallest useful formula in this workbench, and how would you variant-test it?"]{
+  #:depth #!computational // lens: formal structure
+  !probe{ "pick PATH_REFS or a spirit sequence; name shape hash, one structural variant, one assay column, pass criterion." }
+  $%[formula.kinds]
+}
+
+#>wonder_spw_garden_formula_variant_geometry_2
+?["Which workflow pulse would most improve org + LLM trust this month?"]{
+  #:depth #!educational // lens: ecological zone
+  !probe{ "choose geometry_smoke vs llm_tool_eval vs path_audit — write beats and grade_cap only." }
+  ~<.spw/harness/evals/baseline-evals.spw>
+}

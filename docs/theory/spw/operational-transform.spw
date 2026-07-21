@@ -1,0 +1,85 @@
+// Operational Transform Algebra
+#
+// Fold, matrix, sequence, and OT rebase for mutation differentials.
+# Complements mutation-automata (pulse) and operational-topography (strata).
+#
+// @see packages/spw-seed/src/canonical/operational-transform.ts
+// @see packages/spw-seed/src/canonical/differential.ts
+// @see packages/spw-seed/src/canonical/mutation-automata.ts
+// @see packages/spw-cli/src/pulse.ts
+// @see docs/theory/spw/mutation-automata.spw
+// @see docs/theory/spw/operational-topography.spw
+
+#:layer #!semantics
+
+^seed[Spw.Operational.Transform v:0.1 @profile:Spw.b @intent:ot_fold_matrix_sequence]
+
+^["status"]{
+ implemented: #[
+  "transformEdit / transformEditList — offset OT for SourceEdit",
+  "foldEdits / foldTransforms / composeSequence — left-fold pipelines",
+  "MutationMatrix + vector ops (scale, dot, magnitude, stratum aggregate)",
+  "OPERATIONAL_SEQUENCES + runOperationalSequence (serial | parallel_plan)",
+  "CLI: spw pulse --sequence <id> --matrix"
+ ]
+ not: #[
+  "multi-user collaborative OT protocol / CRDT",
+  "silent merge of overlapping structure edits",
+  "runtime stage sequence desugar|parse|normalize|interpret as SourceEdit OT"
+ ]
+ law: "Overlap is conflict, not magic merge. Layout-only claims require structure-stable topo deltas."
+}
+
+^["primitives"]{
+ transform: .{
+  meaning = `Rebase edit op against already-applied against (same base)`
+  cases = #[before_shift, after_unchanged, identical_noop, overlap_conflict, contained_absorb]
+  status = implemented
+ }
+ fold: .{
+  meaning = `Reduce T1∘T2∘…∘Tn to final source + per-step differentials + folded differential`
+  merge_adjacent = `optional abutting same-rule edits`
+  status = implemented
+ }
+ matrix: .{
+  meaning = `rows = steps|strata; cols = mutation vector axes`
+  ops = #[fromVectors, byStratum, add, vectorMul, transpose, format]
+  status = implemented
+ }
+ sequence: .{
+  meaning = `Named ordered pipeline of rules`
+  modes = #[
+   .{id=serial, law=`each step sees previous output (fold)`},
+   .{id=parallel_plan, law=`each plans on base; OT-compose in step order; report conflicts`}
+  ]
+  builtin = #[layout_then_script, script_then_layout, layout_granular, parallel_layout_script]
+  status = implemented
+ }
+}
+
+^["order_sensitivity"]{
+ claim: `layout_then_script and script_then_layout need not yield identical sources`
+ probe: `spw pulse --sequence layout_then_script vs --sequence script_then_layout --check`
+ matrix: `--matrix prints step×metric mass for each non-identity step`
+}
+
+^["relation_to_pipeline"]{
+ runtime_stages: `desugar | parse | normalize | interpret — precipitate algebra (runtime)`
+ mutation_sequence: `rule folds on source text — S0/S1 differential algebra (seed)`
+ spirit_sequence: `interpretive ?~<#.>@(#.)&[#.]*{#.}^ — not an edit OT schedule`
+ rule: `Do not equate spirit phase order with SourceEdit sequence order without an explicit map`
+}
+
+^["cli"]{
+ pulse_sequence: `npm run spw:pulse -- --sequence layout_then_script --matrix --diff file.spw`
+ pulse_order_probe: `compare layout_then_script vs script_then_layout under --check`
+}
+
+^["falsify"]{
+ #[
+  "transformEdit shifts op when against is entirely after op",
+  "serial fold and single layout_bundle disagree on pure layout_granular identity class without declared options",
+  "parallel_plan silently applies overlapping structure edits",
+  "matrix row count ≠ sequence step count for serial runs with recorded steps"
+ ]
+}

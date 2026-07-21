@@ -8,6 +8,7 @@
  @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
  @plan: ~".agents/plans/vscode-editor-contract/PLAN.md"
  @artifact: ~".agents/plans/vscode-editor-contract/vscode-editor-contract.spw"
+ @topography: ~".agents/plans/operational-topography/operational-topography.spw"
  @performance: ~".agents/plans/vscode-plugin-performance/wip.spw"
  @atlas: ~".agents/plans/vscode-workspace-atlas/wip.spw"
  @extension: ~"extensions/vscode-spw/src/extension.ts"
@@ -23,15 +24,15 @@
 
 ^["intent"]{
  ~#goal: "Define the VS Code editor contract as the boundary between semantic substrate truth and client surface composition. Name what the editor may ask, what the LSP must own, which payloads are authoritative vs inferred, and how invalidation/refresh should work before more UX surfaces or syntax are added."
- ~#taste: "clarity, layering, naming, claim discipline"
+ ~#taste: "clarity, layering, naming, evidence discipline"
 }
 
 ^["development"]{
  lane: #execution_truth
  ladder: #service
  develops: [#editor_contract, #transport_vocabulary, #observation_model, #refresh_ownership]
- review_surfaces: [@cluster, @plan, @performance, @atlas]
- snippet_routes: [#payload, #authority_rule, #invalidation_rule, #surface_claim]
+ review_surfaces: [@cluster, @plan, @topography, @performance, @atlas]
+ snippet_routes: [#payload, #authority_rule, #invalidation_rule, #surface_evidence]
 }
 
 ^["concept_index"]{
@@ -47,7 +48,7 @@
   "< stabilize one observation or invalidation rule at a time",
   "$ record which noun, payload, or ownership rule became more explicit",
   "^ fold the stable contract language back into sidecars and client code",
-  "% keep semantic truth in the LSP while making client composition easier",
+  "% keep parse/structure truth in Seed, observation assembly in LSP, and presentation in clients",
  ]
  gates: [#authority_honesty, #payload_coherence, #refresh_discipline, #surface_separation]
 }
@@ -129,7 +130,10 @@
  >>[2026-04-01 00:00] observe — created this wip as a file-as-prompt surface so editor-contract thinking can happen inside the repo instead of staying ephemeral in chat.
  >>[2026-04-01 00:00] observe — the current architecture already has a strong semantic server center, but the request layer, invalidation rules, and surface vocabulary still feel provisional and spread across multiple client surfaces.
  >>[2026-04-01 00:00] decide — use this branch to formalize observation ownership before adding more UX-specific behavior or syntax pressure.
+ >>[2026-07-20 19:24] revise — consume operational-topography: Seed owns parse and structural coordinates, LSP assembles revision-addressed evidence/effect envelopes, and clients own only projection and interaction state.
+ >>[2026-07-20 19:25] decide — formatting, label, rotation, and refactoring surfaces consume one differential payload with content-hash preconditions and source maps; no client-local rewrite planner.
  >>[2026-04-01 00:00] taste — the contract should make richer UX easier without encouraging a second semantics stack in the client.
+ >>[2026-07-20 21:24] revise — protocol truth and Seed-owned topography now precede editor formatting, rotation, label, and refactoring projections; clients consume revision-addressed evidence and differential envelopes
 }
 
 ^["open"]{
@@ -153,11 +157,11 @@
  ~#status: "planning"
  ~#base_ref: "main@e6a0e877fc485fd7892b2d1537a36baeb5d9b6cf"
  ~#rebased_at: ""
- ~#hygiene_split: "none"
+ ~#hygiene_split: "required-before-implementation"
  ~#files_hot: ".agents/plans/vscode-editor-contract/wip.spw, extensions/vscode-spw/src/context.ts, extensions/vscode-spw/src/lsp/custom-requests.ts, extensions/vscode-spw/src/context-strip.ts, extensions/vscode-spw/src/views/workspace-tree.ts, packages/spw-lsp/src/server-index.ts, packages/spw-lsp/src/stdio-server.ts"
  ~#next_commit: "1"
  ~#open_count: "6"
- ~#last_stream: "2026-04-01 00:00"
+ ~#last_stream: "2026-07-20 21:24"
  ~#taste_debt: "Do not let 'editor contract' become an excuse to freeze immature vocabulary too early. Formalize only the nouns and invalidation rules that genuinely improve cross-surface coherence."
 }
 

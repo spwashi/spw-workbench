@@ -2,6 +2,50 @@ export type { Brand } from './brand'
 export { castToBrand } from './brand'
 export { $register, $frame, $domain, $layer, RegisterId, FrameId, DomainId, LayerId } from './ids'
 
+// Coupling algebra (digraph operator <> + paired boundaries)
+export type {
+  CouplingKind,
+  PairedBoundaryKind,
+  CouplingForm,
+  BoundarySide,
+  CouplingOccupancy,
+  CouplingPayload,
+  ActPlacement,
+  OperatorCouplingPort,
+  BoundaryCouplingPort,
+  CouplingPort,
+  CouplingDescriptor,
+  OperatorCouplingDescriptor,
+  BoundaryCouplingDescriptor,
+  CouplingFrame,
+  OperatorCouplingFrame,
+  BoundaryCouplingFrame,
+  BoundarySurfaceCoordinate,
+  CouplingProfileStatus,
+  CouplingDimensionValueType,
+  CouplingDimensionDefinition,
+  CouplingPortSemantics,
+  CouplingDynamicsDefinition,
+  CouplingKindSemantics,
+  CouplingSemanticsProfile,
+  CouplingProfileIssue,
+  CouplingSemanticsProjection,
+} from './coupling'
+export {
+  COUPLING_DESCRIPTORS,
+  couplingFrame,
+  withCoupling,
+  occupancyFromArgs,
+  classifyPayload,
+  couplingDescriptor,
+  boundaryCoordinateForSurface,
+  boundarySetForProfile,
+  validateCouplingSemanticsProfile,
+  projectCouplingSemantics,
+  isBoundaryCouplingFrame,
+  readCouplingFrame,
+} from './coupling'
+
 // Position tracking
 export type { Position, Span } from './position'
 

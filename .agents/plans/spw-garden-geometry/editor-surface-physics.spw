@@ -1,0 +1,378 @@
+# Editor Surface Physics
+#
+# Prose kinds, brace-formatting physics, selectability, caches, and
+# VS Code plugin behavior — measurable contracts for garden/LSP geometry.
+#
+# Status: implemented | measured | proposed | interpretive
+# (operational-topography vocabulary)
+#
+# @see packages/spw-seed/src/canonical/index.ts
+# @see packages/spw-lsp/src/server-index.ts
+# @see packages/spw-lsp/src/handlers/editing.ts
+# @see packages/spw-lsp/src/context.ts
+# @see .spw/conventions/selection.spw
+# @see .spw/tooling/vscode-spw.spw
+# @see .agents/plans/spw-garden-geometry/PLAN.md
+
+#:layer #!pragmatics
+#:editor #!physics
+#:garden #!surface
+
+^seed[Spw.Garden.Editor.SurfacePhysics v:0.1 @profile:Spw.b @intent:prose_brace_select_cache_plugin]
+
+^["roots"]{
+ @canonical: ~"../../../packages/spw-seed/src/canonical/index.ts"
+ @server_index: ~"../../../packages/spw-lsp/src/server-index.ts"
+ @editing: ~"../../../packages/spw-lsp/src/handlers/editing.ts"
+ @lsp_context: ~"../../../packages/spw-lsp/src/context.ts"
+ @extension: ~"../../../extensions/vscode-spw/src/extension.ts"
+ @selection: ~"../../../.spw/conventions/selection.spw"
+ @vscode_tooling: ~"../../../.spw/tooling/vscode-spw.spw"
+ @prose_ast: ~"../../../packages/spw-seed/src/types/ast/nodes.ts"
+ @garden: ~"./spw-garden-geometry.spw"
+ @phd: ~"./phd-domain-topography.spw"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Kinds of prose
+// ═══════════════════════════════════════════════════════════════
+
+^["prose_kinds"]{
+ ~#definition: "Prose is not one blob. Spw distinguishes AST prose, editorial prose, and domain prose — each with different format, select, and cache physics."
+ ~#status: "proposed+implemented_partial"
+
+ ~#ast_prose: .{
+  status: "implemented"
+  nodes: #[Prose, ProseChunk, linePayload_on_Operation]
+  role: "narrative or free text interleaved with operators inside the parse tree"
+  ONF: "normalize maps Prose → sigil '_' reg=prose"
+  format_physics: "do not reflow as code; preserve user line breaks inside chunks; string-safe brace scan must ignore braces in quotes"
+  select_physics: "ProseChunk is weakly selectable as text span; path-ref detector must NOT treat ~ inside prose as PathRef (spw-selector strictness)"
+  plugin: "TextMate paints as plain; semantic tokens should de-emphasize vs operators"
+ }
+
+ ~#editorial_prose: .{
+  status: "implemented_as_convention"
+  forms: #[line_comment_//, trailing_hash_comment, wonder_probe_text, episode_narrative]
+  role: "author note, not structure"
+  format_physics: "alignComments may column-align trailing #; // stops brace scan for the rest of the line"
+  select_physics: "comments usually not rename targets; wonders are E2 surfaces"
+  plugin: "folding may collapse comment blocks; never drive diagnostics as errors for prose quality"
+ }
+
+ ~#structural_prose: .{
+  status: "proposed"
+  forms: #[frame_label_strings, bullet_items_with_ProseChunk, backtick_phrases]
+  role: "human-readable identity that participates in structure (labels, titles)"
+  format_physics: "preserve quoted interiors; indent only the container, not reflow the quote"
+  select_physics: "frame labels participate in outline/symbols; good twin/search keys at surface layer"
+  plugin: "documentSymbol shows labels; hover may show qualified path not the quote alone"
+ }
+
+ ~#domain_prose: .{
+  status: "proposed"
+  forms: #[prime_gloss, method_narrative, fieldnote, legal_pin_quote, soft_claim]
+  role: "discipline language layered on coordinates (phd-domain-topography)"
+  format_physics: "never auto-rewrite domain wording; format only lattice (braces/indent)"
+  select_physics: "selectable as source span for citation; measured assertions need a grade"
+  plugin: "profile picker changes gloss, not AST; E2 interpretations never gate CI"
+ }
+
+ ~#measurement_prose: .{
+  status: "implemented_partial"
+  forms: #["$%[metric] hover text", code_lens_strings, diagnostic_message]
+  role: "machine-authored explanation of a measure"
+  format_physics: "generated; not user-canonicalized"
+  select_physics: "not a rename target; may deep-link to an exact address"
+  plugin: "anti-echo: do not duplicate visible glyphs in this prose"
+ }
+
+ ~#kind_table: #[
+  .{kind=ast_prose, parse=yes, format=preserve_breaks, select=span_weak, cache=with_doc},
+  .{kind=editorial_prose, parse=trivia, format=comment_align_opt, select=no_rename, cache=with_doc},
+  .{kind=structural_prose, parse=yes, format=preserve_quotes, select=symbol, cache=with_doc},
+  .{kind=domain_prose, parse=optional, format=lattice_only, select=cite_span, cache=profile},
+  .{kind=measurement_prose, parse=no, format=generated, select=deeplink, cache=ttl},
+ ]
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Brace formatting physics — *why* format inside braces matters
+// ═══════════════════════════════════════════════════════════════
+
+^["brace_format_physics"]{
+ ~#thesis: "Braces are structural law (match, depth, pair). Formatting inside braces is presentation of that law — string-safe, depth-aware, and category-sensitive — not aesthetic preference alone."
+ ~#status: "implemented_core+proposed_profiles"
+
+ ~#reasons: .{
+  topology_legibility: "indent tracks container_depth so frame_path is readable by eye (compositional axis)"
+  pair_physics: "open/close alignment makes unmatched braces human-obvious before diagnostics fire"
+  string_safety: "braces inside quotes/backticks are data, not structure — braceStats skips strings and // tails (canonical/index.ts)"
+  hash_stability: "canonicalize options decide what is identity vs noise for surface_hash / contentHash"
+  category_voice: "macro vs prose vs measurement files may want different indent/blank-line policies without changing parse law"
+  anti_reflow: "prose and domain wording must not be reflowed by indentBraces into false structure"
+  domain_prime: "physical/material primes care about depth budget; linguistic primes care about lineation — profiles must not conflate"
+ }
+
+ ~#implemented_options: .{
+  source: @canonical
+  lsp_defaults: "server-index DEFAULT_FORMAT_OPTIONS: indentBraces true, indentSize 2, alignComments true, commentColumn 40, blankLineBetweenFrames true"
+  seed_defaults: "canonical DEFAULT_OPTIONS: indentBraces false — LSP enables brace indent for editor UX"
+  flags: #[
+   normalizeNewlines,
+   trimTrailingWhitespace,
+   ensureFinalNewline,
+   collapseBlankLines,
+   indentBraces,
+   indentSize,
+   alignComments,
+   commentColumn,
+   blankLineBetweenFrames
+  ]
+ }
+
+ ~#physics_rules: #[
+  "indent level = open-brace depth after string-safe scan",
+  "line comments // cut brace scanning for remainder of line",
+  "quoted { } never change depth",
+  "blankLineBetweenFrames only at top-level ^ frames, not every nested }",
+  "format must not invent/remove operators — only whitespace and comment columns",
+  "range format should prefer same options as full doc to avoid dual identity"
+ ]
+
+ ~#proposed_profiles: .{
+  lattice_strict: .{ indentBraces: true, blankLineBetweenFrames: true, alignComments: true, prose: "preserve" }
+  prose_preserve: .{ indentBraces: true, collapseBlankLines: false, alignComments: false, reflow: false }
+  measurement_dense: .{ indentBraces: true, blankLineBetweenFrames: false, indentSize: 2 }
+  generated_frozen: .{ formatOnSave: false, note: "gen/* — do not thrash casts" }
+ }
+
+ ~#diagnostics_coupling: .{
+  status: "implemented"
+  brace_balance: "analysis.ts spw-physics unmatched open/close"
+  depth_budget: "warn when maxDepth >= 5"
+  format_does_not_fix: "formatter is not the linter; physics diagnostics remain authoritative for match law"
+ }
+
+ ~#selectable_after_format: "formatting must preserve semantic spans where possible; if it shifts columns, contentHash invalidates caches (correct)"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// What is selectable
+// ═══════════════════════════════════════════════════════════════
+
+^["selectability"]{
+ ~#definition: "Selection is an exact, revision-addressed range that names a geometric object — not a fuzzy string match."
+ ~#status: "implemented_partial+proposed"
+ ~#axes_convention: @selection
+
+ ~#units: #[
+  .{unit=glyph_span, status=implemented, lsp=["selectionRange", "textDocument/range"], exact=yes},
+  .{unit=token, status=implemented, via=lexer, exact=yes},
+  .{unit=operator_envelope, status=partial, note="prefix/postfix wrappers preserve navigable spans (canon-mount)"},
+  .{unit=path_ref, status=implemented, via=selectorHits, exact=resolve_or_fail},
+  .{unit=annotation_atom, status=implemented, via=annotation index, rename=yes},
+  .{unit=frame, status=partial, via=documentSymbol / frame extract, exact=pair_table_proposed},
+  .{unit=brace_pair, status=proposed, needs=matched_pair_table},
+  .{unit=braid_line, status=partial, via=same-line annotation group},
+  .{unit=signature, status=proposed, not_a_range="corpus key; selection is a representative exact region"},
+  .{unit=shape, status=proposed, not_a_range="ONF hash; compare not select"},
+  .{unit=prose_chunk, status=implemented, weak=yes, rename=no},
+  .{unit=multi_line_body, status=implemented, codeAction=wrap_in_frame},
+ ]
+
+ ~#rules: #[
+  "Edit-bearing ticks require exact parser-owned selection (S2 doctrine)",
+  "Fuzzy twin-search returns candidate regions to select — never auto-apply ranges",
+  "Prose ~ must not produce PathRef selection (selector strict)",
+  "Generated files: select for read; write discouraged without explicit gate",
+  "Layout-only selection (indent column) is not a semantic unit"
+ ]
+
+ ~#plugin_affordances: .{
+  cursor: "context strip + hover use position → contextAtPosition"
+  multi_cursor: "proposed: each cursor its own transect; no merged fuzzy apply"
+  code_action_wrap: "selection → ^[\"name\"]{ selection }"
+  navigate: "spw.navigate roots/landmarks"
+  concepts_filter: "filter is query over index, not a text selection"
+ }
+
+ ~#garden_link: "compare-read and walk seed from current exact selection; expand via ref forest"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Caches
+// ═══════════════════════════════════════════════════════════════
+
+^["caches"]{
+ ~#thesis: "Caches are memory topography: hot/warm/cold tiers + contentHash + TTL sidecars. Plugin must not invent a parallel cache of meaning."
+ ~#status: "implemented_core"
+
+ ~#document_tiers: .{
+  source: @server_index
+  hot: .{ ttl_beats: 8, holds: "open docs: parse, selectorHits, annotations, lineContexts", note="open stays hot" }
+  warm: .{ ttl_beats: 64, holds: "recent: annotation index, resolved paths" }
+  cold: .{ ttl_beats: 256, holds: "workspace scan residue, projection graph adjacency" }
+  promote: "access / open → hot; age demotes warm→cold→evict"
+  invalidate: "contentHash change on didChange/didSave re-analyzes"
+ }
+
+ ~#path_memory_heuristic: .{
+  status: "implemented"
+  hot_paths: #["/query/", "/expr/", "/ops/", ".spw/hot", "gen/ as plane projection"]
+  warm_paths: #["/algos/", "/style", "/phase", "harness"]
+  cold_paths: #["/experiments/"]
+  note: "getCacheTierForFile — planning heat, not only open heat"
+ }
+
+ ~#editing_categories: .{
+  status: "implemented"
+  categories: #[macro, measurement, prose, runtime]
+  via: "editing.spw categories + shelf roots; fallback biome→macro, harness→measurement, hot/agents→runtime"
+  use: "format profile, pulse default grade, prose vs lattice voice"
+ }
+
+ ~#sidecar_caches: .{
+  runtime_trial: .{
+   where: @lsp_context
+   key: uri
+   ttl: "RUNTIME_TRIAL_TTL_MS"
+   holds: "RunSpwResult for hover/lens experiments"
+   rule: "never treat trial cache as source of edit truth without re-run on hash mismatch"
+  }
+  workspace_files: .{
+   where: @lsp_context
+   holds: "file list snapshot with timestamp"
+  }
+  observable_state: .{
+   where: @lsp_context
+   holds: "sidecar for $%[metric] — load on save"
+   status: "implemented_partial_types_weak"
+  }
+  client_annotation_mirror: .{
+   where: "extensions/vscode-spw AnnotationIndex"
+   rule: "mirror of spw/annotations — must invalidate with server; no client co-occur as authority"
+  }
+ }
+
+ ~#plugin_rules: #[
+  "client may cache presentational state (tree expand, filter string)",
+  "client must not cache semantic truth longer than server contentHash",
+  "hidden views should not force hot retention",
+  "formatOnSave uses server formatDocument — one identity",
+  "temperature UI (workspaceTemperature) is observation of tiers, not a second tier system"
+ ]
+
+ ~#proposed: .{
+  shape_signature_index: "contentHash-keyed twin tables"
+  trace_ring_buffer: "last N walk precipitates"
+  prime_profile_cache: "bed → gloss pack"
+ }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Plugin behavior (VS Code thin client)
+// ═══════════════════════════════════════════════════════════════
+
+^["plugin_behavior"]{
+ ~#thesis: "The extension is orchestration + projection. Semantic law is LSP. Eager work and phantom requests are the main trust failures."
+ ~#status: "implemented_partial"
+
+ ~#activation: .{
+  today: "activate starts LanguageClient, annotationIndex, context strip, concepts tree, workspace atlas immediately"
+  problem: "activationEvents empty; pays cost before need"
+  proposed: "onLanguage:spw + lazy view registration; strip only when editor is spw"
+ }
+
+ ~#server_launch: .{
+  preferred: "compiled dist/stdio-server.js via node"
+  fallback: "tsx import of .ts for source-first dev"
+  professional: "fallback must not be default in shipped VSIX"
+ }
+
+ ~#synchronization: .{
+  fileEvents: "**/*.spw watcher"
+  textDocumentSync: full (server capabilities textDocumentSync: 1)
+  note: "full sync + contentHash — incremental analyze is proposed performance work"
+ }
+
+ ~#surfaces: .{
+  strip: "cursor → contextAtPosition; hide if non-spw or multi-selection"
+  concepts: "annotations mirror + client co-occur/braidPairs — migrate authority to server"
+  atlas: "manifest + temperature + cursor context sections — visibility gate proposed"
+  navigation: "spw.navigate roots/landmarks"
+  semantics: "client SIGIL_SEMANTICS table for UI; server owns tokens/hover truth"
+ }
+
+ ~#protocol_honesty: .{
+  client_typed_only: #[spw/resonance, spw/registerSnapshot, spw/operatorFrequency, spw/phaseContext]
+  server_custom: #[spw/select, spw/annotations, spw/contextAtPosition, spw/workspaceManifest, spw/workspaceTemperature]
+  rule: "implement or demote — professionals treat phantom as bug"
+ }
+
+ ~#format_on_save: .{
+  config: "SpwConfig.formatOnSave default false"
+  path: "formatting handler → serverIndex.formatDocument → canonicalize with LSP brace defaults"
+ }
+
+ ~#selection_plugin: .{
+  empty_selection: "strip shows context"
+  non_empty_selection: "strip hides today — proposed: show selection unit kind (token/frame/prose) without full ambient"
+  wrap_frame: "code action on multi-line selection"
+ }
+
+ ~#prose_plugin: .{
+  do: "preserve user lineation; soft highlight; no rename on chunks"
+  dont: "reflow domain prose; treat wonder text as diagnostics; path-match inside narrative"
+ }
+
+ ~#cache_plugin: .{
+  do: "display temperature; trust contentHash invalidation"
+  dont: "rebuild full annotation snapshot every save if server already incremental (performance plan)"
+ }
+
+ ~#quality_bar: @vscode_tooling
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Cross-links: complexity, cultures, SEORM
+// ═══════════════════════════════════════════════════════════════
+
+^["complexity_and_cultures"]{
+ explode: .{
+  when: "twin-search, walk expand, prime gloss, multi-stratum transect"
+  plugin: "Geometry/Trace views opt-in; never default dump"
+ }
+ contract: .{
+  when: "anti-echo hover, Δ-first, one strip line, visibility gate"
+  plugin: "default professional mode"
+ }
+ culture_branch: "domain bed + prime + format profile + selection defaults fork together"
+ culture_merge: "shape/signature twins + compare-read; false-friend table; shared E grades"
+ seorm: "Software as Engineering on Reality as Material — braces/format/select/cache are material handling of source-as-matter; prose kinds are material phases (fluid narrative vs crystalline lattice)"
+}
+
+^["handles"]{
+ format_profile_read: "which canonicalize options apply to this category"
+ select_unit_read: "what geometric unit is under cursor/selection"
+ cache_tier_read: "hot/warm/cold + contentHash age"
+ prose_kind_read: "ast|editorial|structural|domain|measurement"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Wonders
+// ═══════════════════════════════════════════════════════════════
+
+#>wonder_spw_garden_editor_surface_physics_1
+?["Which prose kind is under the caret, and which format law may touch it?"]{
+  #:depth #!computational // lens: material grain
+  !probe{ "classify the line as ast/editorial/structural/domain/measurement prose; name one format flag that must NOT reflow it." }
+  $%[prose_kinds.kind_table]
+}
+
+#>wonder_spw_garden_editor_surface_physics_2
+?["If indentBraces lies about depth, what physics breaks?"]{
+  #:depth #!mathematical // lens: formal structure
+  !probe{ "imagine formatter counted braces inside strings; which diagnostics would false-fire; which hashes would thrash?" }
+  ~<.spw/conventions/selection.spw>
+}

@@ -1,0 +1,87 @@
+// Mutation Automata
+#
+// Configurable operational mutation automata: plan differentials, pulse to a
+// fixed point, and probe topography before/after for quick diff tests.
+#
+// @see packages/spw-seed/src/canonical/mutation-automata.ts
+// @see packages/spw-seed/src/canonical/differential.ts
+// @see packages/spw-seed/src/canonical/topography-probe.ts
+// @see packages/spw-cli/src/pulse.ts
+// @see docs/theory/spw/operational-topography.spw
+// @see docs/theory/spw/operational-devices.spw
+
+#:layer #!semantics
+
+^seed[Spw.Mutation.Automata v:0.1 @profile:Spw.b @intent:differential_pulse_probes]
+
+^["status"]{
+ implemented: #[
+  "SourceEdit differentials with line-span planning",
+  "runMutationAutomata profiles: layout_canonical, layout_full, equiv_scripts, measure_only",
+  "probeMutationTopography: before/plannedAfter/delta + findings",
+  "CLI spw pulse | mutate | beat — plan, --check, --diff, --write, --json"
+ ]
+ proposed: #[
+  "parser-owned span re-resolution before S2 apply",
+  "structure rewrite rules (wrap/unwrap) with pair_id",
+  "LSP TextEdit mapping from SourceEdit"
+ ]
+}
+
+^["automata"]{
+ state: "source revision + hash + topography snapshot"
+ alphabet: "ordered SourceEdit[] under named rules"
+ transition: "plan rule → differential → apply (S1) or report-only (S0)"
+ accept: "fixed_point | budget_exhausted | authority_failure | idempotence_failure"
+ pulse: "one full rule pipeline pass; iterate until accept"
+ law: "Delimiter shape alone grants no write; S2 requires explicit --write / authority"
+}
+
+^["profiles"]{
+ layout_canonical: "layout_bundle — newlines, trim, final newline"
+ layout_full: "granular layout rules including indent and comment align"
+ equiv_scripts: "script rewrites (seq→ls, wildcard, dot-postfix) + layout_bundle"
+ measure_only: "S0 plan; never rewrite returned source"
+}
+
+^["topographical_probes"]{
+ purpose: "Falsify layout-only claims: structure metrics must stay stable when mutation_profile claims layout"
+ measures: #[
+  parseHealth,
+  maxAstDepth,
+  maxPairedContainerDepth,
+  recognizedPairedContainers,
+  explicitCoupleOperations,
+  tokenCount,
+  sourceLength
+ ]
+ delta_flags: #[
+  healthRegressed,
+  structureMoved,
+  layoutOnlyCandidate
+ ]
+ cli: "npm run spw:pulse -- --check --profile layout_canonical [targets]"
+ quick_diff: "npm run spw:pulse -- --diff --profile equiv_scripts path.spw"
+}
+
+^["effect_grades"]{
+ S0: "plan / measure only (default CLI dry-run)"
+ S1: "in-memory apply of differentials"
+ S2: "workspace write (--write) after plan"
+ S3: "external — not used by pulse CLI"
+}
+
+^["sequences"]{
+ @ot: ~"./operational-transform.spw"
+ note: "Named folds: layout_then_script, script_then_layout, layout_granular, parallel_layout_script"
+ cli: "spw pulse --sequence <id> --matrix"
+}
+
+^["falsify"]{
+ #[
+  "layout_only_candidate true while paired container counts change",
+  "healthRegressed after layout_canonical on previously complete_structured source",
+  "dry-run returns rewritten source",
+  "--write without showing planned delta"
+ ]
+}

@@ -11,6 +11,7 @@ import {
 } from './selectors'
 import { printHelpPage } from './help'
 import type { SelectArgs } from './types'
+import { resolveWorkspacePath, tryDiscoverSpwWorkspace } from './workspace'
 
 export async function runSpwSelectCli(argv: string[]): Promise<void> {
   const args = parseSelectArgs(argv.slice(2))
@@ -21,7 +22,8 @@ export async function runSpwSelectCli(argv: string[]): Promise<void> {
   }
 
   const { selector, label } = resolveCliSelector(args.selector, args.expr)
-  const filePath = resolve(args.file)
+  const workspace = await tryDiscoverSpwWorkspace()
+  const filePath = workspace ? resolveWorkspacePath(workspace, args.file) : resolve(args.file)
   const source = readFileSync(filePath, 'utf8')
   const output = parse(source)
 

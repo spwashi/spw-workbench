@@ -1,4 +1,5 @@
-import type { OperatorKind } from '@spwashi/spw-seed'
+import type { CouplingKind, OperatorKind } from '@spwashi/spw-seed'
+import { COUPLING_DESCRIPTORS } from '@spwashi/spw-seed'
 import type { RegisterDescriptor } from './types'
 
 export const DEFAULT_REGISTER_DESCRIPTOR: RegisterDescriptor = {
@@ -29,7 +30,7 @@ export const DEFAULT_REGISTER_DESCRIPTOR: RegisterDescriptor = {
  *   &  Mixture             — multiple streams merging
  *   $  Substrate           — the medium the reaction occurs in
  *   %  Titration           — quantitative measurement of concentration
- *   <> Membrane            — exchange boundary (coupling, capsule, stream)
+ *   <> Explicit relation — creates a peer coupling edge
  */
 export const OPERATOR_AFFINITIES = {
   '!': { name: 'Action', accessMode: 'kinetic', containerAffinity: 'void' },
@@ -48,24 +49,70 @@ export const OPERATOR_AFFINITIES = {
 } satisfies Record<OperatorKind, RegisterDescriptor>
 
 /**
- * Brace Bond Types — Chemistry Commentary
+ * Paired-boundary descriptors aligned with the structural Seed coupling table.
  *
- * Four brace pairs = four bond types (fractal at every scale):
- *   []  Ionic bond       — specification of conditions (frame)
- *   {}  Covalent bond    — shared containment (body)
- *   <>  Hydrogen bond    — weak exchange / membrane (capsule)
- *   ()  Metallic bond    — delocalized perspective (scope)
+ * Digraph `<>` is the explicit couple *Act*. Open glyphs map to Bound kinds:
+ *   []  frame
+ *   {}  body
+ *   <>  digraph couple (operator) — listed for tooling lookups
+ *   < > capsule membrane (delimiters, not digraph)
+ *   ()  scope
+ *   << >> stream
  */
-export const BRACE_AFFINITIES: Record<string, RegisterDescriptor> = {
-  '[': { name: 'Category Brace', accessMode: 'category', containerAffinity: 'category' },
-  ']': { name: 'Category Capture', accessMode: 'category', containerAffinity: 'category' },
-  '{': { name: 'Property Brace', accessMode: 'property', containerAffinity: 'property' },
-  '}': { name: 'Property Capture', accessMode: 'property', containerAffinity: 'property' },
-  '<': { name: 'Coupling Brace', accessMode: 'conditional', containerAffinity: 'conditional' },
-  '>': { name: 'Coupling Capture', accessMode: 'conditional', containerAffinity: 'conditional' },
-  '(': { name: 'Perspective Brace', accessMode: 'perspective', containerAffinity: 'perspective' },
-  ')': { name: 'Perspective Capture', accessMode: 'perspective', containerAffinity: 'perspective' },
+export const BOUNDARY_AFFINITIES: Record<string, RegisterDescriptor> = {
+  '[': { name: 'Frame Open', accessMode: 'category', containerAffinity: 'category' },
+  ']': { name: 'Frame Close', accessMode: 'category', containerAffinity: 'category' },
+  '{': { name: 'Body Open', accessMode: 'property', containerAffinity: 'property' },
+  '}': { name: 'Body Close', accessMode: 'property', containerAffinity: 'property' },
+  '<': { name: 'Capsule Open', accessMode: 'conditional', containerAffinity: 'capsule' },
+  '>': { name: 'Capsule Close', accessMode: 'conditional', containerAffinity: 'capsule' },
+  '(': { name: 'Scope Open', accessMode: 'perspective', containerAffinity: 'perspective' },
+  ')': { name: 'Scope Close', accessMode: 'perspective', containerAffinity: 'perspective' },
+  '<<': { name: 'Stream Open', accessMode: 'conditional', containerAffinity: 'stream' },
+  '>>': { name: 'Stream Close', accessMode: 'conditional', containerAffinity: 'stream' },
+  '((': { name: 'NRange Open', accessMode: 'context', containerAffinity: 'stream' },
+  '))': { name: 'NRange Close', accessMode: 'context', containerAffinity: 'stream' },
+  // Digraph couple Act (not a Bound delimiter)
+  '<>': { name: 'Couple Act', accessMode: 'conditional', containerAffinity: 'capsule' },
 }
+
+/** @deprecated "Brace" is not a stable cross-language category. */
+export const BRACE_AFFINITIES = BOUNDARY_AFFINITIES
+
+/** Map a delimiter or relation surface to its tagged coupling kind. */
+export const COUPLING_KIND_BY_SURFACE: Record<string, CouplingKind> = {
+  '[': 'frame',
+  ']': 'frame',
+  '{': 'body',
+  '}': 'body',
+  '(': 'scope',
+  ')': 'scope',
+  '<': 'capsule',
+  '>': 'capsule',
+  '<<': 'stream',
+  '>>': 'stream',
+  '((': 'nrange',
+  '))': 'nrange',
+  '<>': 'couple',
+}
+
+/** @deprecated Prefer COUPLING_KIND_BY_SURFACE; `<>` is not a brace. */
+export const BRACE_COUPLING_KIND = COUPLING_KIND_BY_SURFACE
+
+export function couplingKindForSurface(glyph: string): CouplingKind | undefined {
+  return COUPLING_KIND_BY_SURFACE[glyph]
+}
+
+/** @deprecated Prefer couplingKindForSurface. */
+export const couplingKindForBrace = couplingKindForSurface
+
+export function couplingDescriptorForSurface(glyph: string) {
+  const kind = COUPLING_KIND_BY_SURFACE[glyph]
+  return kind ? COUPLING_DESCRIPTORS[kind] : undefined
+}
+
+/** @deprecated Prefer couplingDescriptorForSurface. */
+export const couplingDescriptorForBrace = couplingDescriptorForSurface
 
 export function descriptorForKey(key: string): RegisterDescriptor {
   const operator = OPERATOR_AFFINITIES[key as OperatorKind]
@@ -73,9 +120,9 @@ export function descriptorForKey(key: string): RegisterDescriptor {
     return { ...operator }
   }
 
-  const brace = BRACE_AFFINITIES[key]
-  if (brace) {
-    return { ...brace }
+  const boundary = BOUNDARY_AFFINITIES[key]
+  if (boundary) {
+    return { ...boundary }
   }
 
   return {

@@ -32,8 +32,12 @@ export function resolveRoot(sigil: string, workspaceRoot: string, documentUri: v
   return segments ? path.join(workspaceRoot, ...segments) : workspaceRoot
 }
 
-export function getWorkspaceRoot(): string | null {
+export function getWorkspaceRoot(documentUri?: vscode.Uri): string | null {
   const workspaceFolders = vscode.workspace.workspaceFolders
   if (!workspaceFolders || workspaceFolders.length === 0) return null
+  if (documentUri) {
+    const folder = vscode.workspace.getWorkspaceFolder(documentUri)
+    if (folder) return folder.uri.fsPath
+  }
   return workspaceFolders[0].uri.fsPath
 }

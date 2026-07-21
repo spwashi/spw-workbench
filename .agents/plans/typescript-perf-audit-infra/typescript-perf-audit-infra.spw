@@ -1,0 +1,51 @@
+# typescript-perf-audit-infra
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @plan: ~".agents/plans/typescript-perf-audit-infra/PLAN.md"
+ @ladder: ~".agents/plans/typescript-upgrade-ladder/PLAN.md"
+ @observatory: ~".agents/plans/typescript-toolchain-observatory/PLAN.md"
+ @package: ~"package.json"
+ @typecheck: ~"tsconfig.typecheck.json"
+}
+
+^["orientation"]{
+ lane: #execution_truth
+ ladder: #service
+ rule: "measure before upgrade claims; identity before interpretation; skip missing compilers cleanly"
+}
+
+^["identity"]{
+ required: [#command, #config, #typescriptVersion, #durationMs, #exitCode, #startedAt, #status]
+ optional: [#diagnostics, #host, #skipReason]
+}
+
+^["matrix_v1"]{
+ rows: [
+  "typecheck.flat",
+  "solution.build",
+  "typecheck.extended",
+  "typecheck.native.checkers1",
+  "typecheck.native.checkers4",
+ ]
+}
+
+^["scripts"]{
+ audit_ts_perf: "single run"
+ audit_ts_perf_json: "single run JSON"
+ audit_ts_matrix: "installed compilers × matrix rows"
+}
+
+^["gates"]{
+ local_first: true
+ measure_only: true
+ non_gating_default: true
+ truthful_names: true
+}
+
+^["connections"]{
+ #typescript_upgrade_ladder: "rung 0 baseline + post-C compare"
+ #typescript_toolchain_observatory: "research shell; this is the first executable core"
+ #audit_fuzz_truthfulness: "command names must describe coverage"
+}

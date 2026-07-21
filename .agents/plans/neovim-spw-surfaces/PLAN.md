@@ -11,7 +11,7 @@ Taste note: native affordances, graceful degradation, and evidence-led scope.
 ## Scope
 
 - **In scope:** Runtime/filetype loading, server command resolution, consumer-root authority, standard LSP features, existing commands, failure behavior, headless smoke coverage, documentation accuracy.
-- **Conditional:** Focused custom-request wrappers or UI surfaces justified by the shared LSP audit.
+- **Conditional:** Focused custom-request wrappers or UI surfaces justified by the shared LSP audit; render the same topography/evidence/differential payload as other clients using native Neovim affordances.
 - **Out of scope:** Assuming parity with other editors; external UI dependencies; speculative panels; consumer-specific configuration.
 
 ## Candidate files
@@ -43,6 +43,7 @@ The audit determines whether additional UI modules are warranted.
 
 - `.agents/plans/mounted-consumer-tooling/PLAN.md`
 - `.agents/plans/lsp-custom-request-completions/PLAN.md`
+- `.agents/plans/operational-topography/PLAN.md`
 - `.spw/tooling/editor-surface-audit.spw`
 
 ## Spw Artifact

@@ -1,6 +1,6 @@
 # Plan: mounted-workbench-organelle
 
-Make a mounted workbench an orienting organelle: concise prompts and references lead directly to working CLI and VS Code navigation.
+Make a mounted workbench a bounded orienting instrument: concise prompts and references lead directly to working CLI and VS Code navigation. “Organelle” remains an optional explanatory profile preserved by the historical slug, not the governing model.
 
 ## Goal
 
@@ -23,15 +23,14 @@ An independent consumer should be able to mount the workbench, give a repository
 [NEW] packages/spw-cli/src/workspace.ts
 [NEW] packages/spw-cli/src/roots.ts
 [NEW] packages/spw-cli/src/tree.ts
-[MOD] packages/spw-cli/src/args.ts
-[MOD] packages/spw-cli/src/types.ts
 [MOD] packages/spw-cli/src/run.ts
 [MOD] packages/spw-cli/src/index.ts
 [MOD] packages/spw-cli/src/doctor.ts
 [MOD] packages/spw-cli/src/ls/constants.ts
+[MOD] packages/spw-cli/src/query.ts
+[MOD] packages/spw-cli/src/select.ts
 [NEW] src/runtime/__tests__/spw-workspace-navigation.test.ts
 [MOD] packages/spw-lsp/src/handlers/workspace.ts
-[MOD] packages/spw-lsp/src/__tests__/workspace.test.ts
 [NEW] packages/spw-cli/templates/init/base/.spw/README.md
 [MOD] packages/spw-cli/templates/init/base/.spw/index.spw
 [MOD] packages/spw-cli/src/init.ts
@@ -49,9 +48,6 @@ An independent consumer should be able to mount the workbench, give a repository
 [MOD] .spw/conventions/cli.spw
 [MOD] .spw/conventions/submodule.spw
 [MOD] .spw/tooling/vscode-spw.spw
-[MOD] .spw/index.spw
-[MOD] .spw/workspace.spw
-[MOD] .spw/harness/evals/baseline-evals.spw
 [MOD] .agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw
 ```
 
@@ -100,8 +96,9 @@ Fuzz strategy:
 
 - **Hypotheses:** one parsed root contract can serve LSP, CLI, prompts, and VS Code; file-tree output plus AST selection forms a sufficient terminal navigation ladder.
 - **Negative controls:** existing query/select behavior and standard LSP navigation remain unchanged; editor-specific presentation does not move into seed or LSP semantics.
+- **Observed refinement:** query/select path semantics now resolve through the discovered consumer because mounted npm scripts execute with the workbench as their process directory; selector behavior itself remains unchanged.
 - **Demo sequence:** mount → read `.spw/README.md` → run doctor → list roots → render a selected tree → select navigable nodes → invoke VS Code navigator → open a root or annotation.
 
 ## Spw Artifact
 
-`.agents/plans/mounted-workbench-organelle/mounted-workbench-organelle.spw` records the organelle model: consumer-owned intent enters through a small prompt surface, specialized root and selection machinery routes it, and editor/CLI projections remain replaceable.
+`.agents/plans/mounted-workbench-organelle/mounted-workbench-organelle.spw` records the neutral mounted-instrument contract plus an optional organelle translation: consumer-owned intent enters through a small prompt surface, bounded root and selection machinery routes it, and editor/CLI projections remain replaceable.

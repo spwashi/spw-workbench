@@ -485,7 +485,13 @@ export class RegisterBank {
 
   // ── Coupling ───────────────────────────────────────────────
 
-  /** Register a coupling edge between two cells. Bidirectional. */
+  /**
+   * Register a coupling edge between two cells. Bidirectional.
+   * The current edge is created only by the explicit `<>` relation operator.
+   * Boundary observations remain on their own ONF nodes; copying a single
+   * boundary kind onto endpoints would lose information when a cell has
+   * multiple differently described edges.
+   */
   couple(keyA: RegisterId, keyB: RegisterId): void {
     this.ensureEntry(keyA)
     this.ensureEntry(keyB)

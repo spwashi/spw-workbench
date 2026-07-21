@@ -34,6 +34,7 @@ describe('spw doctor', () => {
     const root = await makeTempDir()
     await mkdir(path.join(root, '.git'))
     await mkdir(path.join(root, '.spw', '_workbench', 'node_modules'), { recursive: true })
+    await writeFile(path.join(root, '.spw', 'README.md'), '# Spw Workspace\n')
     await writeFile(path.join(root, '.spw', 'index.spw'), '# Index\n')
     await writeFile(path.join(root, '.spw', 'workspace.spw'), '# Workspace\n')
     await writeFile(
@@ -67,6 +68,7 @@ describe('spw doctor', () => {
     await applyDoctorFixes(root)
 
     await expect(access(path.join(root, '.spw', 'index.spw'))).resolves.toBeUndefined()
+    await expect(access(path.join(root, '.spw', 'README.md'))).resolves.toBeUndefined()
     await expect(access(path.join(root, '.spw', 'workspace.spw'))).resolves.toBeUndefined()
     await expect(access(path.join(root, '.spw', 'mount.spw'))).resolves.toBeUndefined()
     await expect(access(path.join(root, '.git', 'hooks', 'pre-commit'))).resolves.toBeUndefined()

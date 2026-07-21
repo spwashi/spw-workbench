@@ -26,6 +26,7 @@ import type {
   SpwContextAtPositionResult,
 } from '../lsp/custom-requests'
 import type { AnnotationEntry } from '../annotation-index'
+import { openWorkspaceTarget } from '../navigation'
 
 // ── Node types ────────────────────────────────────────────────────
 
@@ -714,27 +715,11 @@ export function registerWorkspaceAtlasView(spw: SpwContext): vscode.Disposable[]
         manifestFrame: null,
       })
       spw.activeRoot = { sigil: node.entry.sigil, resolvedPath: node.entry.resolvedPath }
-      await openWorkspaceRoot(node.entry.resolvedPath)
+      await openWorkspaceTarget(node.entry.resolvedPath)
     },
   )
 
   provider.setVisible(treeView.visible)
 
   return [provider, treeView, visibilitySub, refreshCommand, rootSelectedCommand]
-}
-
-async function openWorkspaceRoot(resolvedPath: string): Promise<void> {
-  const uri = vscode.Uri.file(resolvedPath)
-
-  try {
-    const stat = await vscode.workspace.fs.stat(uri)
-    if ((stat.type & vscode.FileType.Directory) !== 0) {
-      await vscode.commands.executeCommand('revealInExplorer', uri)
-      return
-    }
-  } catch {
-    // Path unresolvable — fall through and try opening as a file
-  }
-
-  await vscode.commands.executeCommand('vscode.open', uri)
 }

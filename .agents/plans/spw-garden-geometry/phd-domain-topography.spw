@@ -1,0 +1,638 @@
+# PhD Domain Topography
+#
+# Expanded discipline map for garden/LSP instruments: naming layers,
+# compositional comparison, prime gloss packs, and the *topographical depth*
+# of a reference (what "this points to" means at each stratum).
+#
+# Status vocabulary (operational-topography):
+#   implemented | measured | proposed | interpretive
+#
+# @see .agents/plans/spw-garden-geometry/PLAN.md
+# @see docs/theory/spw/operational-topography.spw
+# @see docs/theory/spw/materials-ontology.spw
+# @see .spw/conventions/naming.spw
+
+#:layer #!pragmatics
+#:garden #!phd
+#:topography #!reference
+
+^seed[Spw.Garden.Phd.DomainTopography v:0.1 @profile:Spw.b @intent:interdisciplinary_reference_depth]
+
+^["roots"]{
+ @plan: ~"./PLAN.md"
+ @artifact: ~"./spw-garden-geometry.spw"
+ @topography: ~"../../../docs/theory/spw/operational-topography.spw"
+ @naming: ~"../../../.spw/conventions/naming.spw"
+ @materials: ~"../../../docs/theory/spw/materials-ontology.spw"
+ @literate_ui: ~"../../../.spw/patterns/literate-ui.spw"
+ @query_comp: ~"../../../.spw/patterns/query-composition.spw"
+ @loop: ~"../../../.spw/process/loop-observation.spw"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Shared topography of a *reference*
+// ═══════════════════════════════════════════════════════════════
+
+^["reference_topography"]{
+ ~#definition: "A reference is not a single arrow; it is a transect through strata. Depth is multi-axial: source, structure, relation, time, layout, operation (operational-topography)."
+ ~#status: "proposed"
+
+ ~#strata: .{
+  source: .{
+   depth: "glyph → token → span → line/column"
+   reference_means: "this text occurrence cites or embeds that span"
+   phd_use: "quotation fidelity, figure callout, exact locus in manuscript"
+   instruments: [#definition, #documentLink, #rename_surface]
+  }
+  structure: .{
+   depth: "AST path → container pair → frame_path → parse_state"
+   reference_means: "this locus is assembled inside that frame / brace topology"
+   phd_use: "section nesting, lemma under theorem, specimen under clade frame"
+   instruments: [#frame_outline, #assembly_walk, #brace_read]
+  }
+  relation: .{
+   depth: "outgoing → incoming → graph_distance → support population"
+   reference_means: "hop count and edge kind (path_ref, projection, braid_pair, …)"
+   phd_use: "citation graph, homology map, related-work neighborhood"
+   instruments: [#refTree, #walkPreview, #twin_search, #support_read]
+  }
+  time: .{
+   depth: "revision → episode → observation → producer"
+   reference_means: "same coordinate at another revision or episode"
+   phd_use: "chapter history, assay re-run, fieldnote sequence"
+   instruments: [#episode_phenology, #name_impact_over_time, #trace_compare]
+  }
+  layout: .{
+   depth: "gap → indent → cadence → reading projection"
+   reference_means: "presentational adjacency (not semantic identity)"
+   phd_use: "close reading of lineation; score layout; figure placement"
+   instruments: [#layout_observe, #melody_walk]
+   caution: "layout depth must not be sold as structural identity"
+  }
+  operation: .{
+   depth: "ONF → port/fixity → effect → cost → trace precipitate"
+   reference_means: "derivative or byproduct of a transform (normalize, cast, pulse beat)"
+   phd_use: "proof rewrite, process recipe, pipeline stage lineage"
+   instruments: [#onf_derive, #stage_derive, #cast_read, #traceList]
+  }
+ }
+
+ ~#naming_depth: .{
+  surface: "string as typed"
+  qualified: "framePath › atom"
+  signature: "braid multiset + kind mix"
+  shape: "ONF / op–brace skeleton hash"
+  role: "lens/layer/dialect role"
+  episode: "revision + surface hash"
+  prime: "gloss pack id (not a second AST)"
+ }
+
+ ~#comparison_depth: .{
+  E0: "exact name/shape/hash equality — committee-checkable"
+  E1: "measured distance with published method — Jaccard, span profile, walk prefix"
+  E2: "interpretive analogy — labeled noodle; never ship gate"
+ }
+
+ ~#invariant: "No depth axis substitutes for another without an explicit projection (operational-topography)."
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Prime registry (gloss packs)
+// ═══════════════════════════════════════════════════════════════
+
+^["primes"]{
+ ~#rule: "Prime is a gloss over shared topography; claims need a coordinate or stay E2."
+ ~#registry: #[
+  physical, chemical, metaphysical, alchemical, biological, botanical,
+  geological, linguistic, mathematical, social, computational, material,
+  clinical, legal, economic, aesthetic, pedagogical, infrastructural
+ ]
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Expanded PhD domains
+// Each frame: concerns · primes · reference depth (by stratum) ·
+// instruments · false_friends · status
+// ═══════════════════════════════════════════════════════════════
+
+^["domain.biology"]{
+ ~#concerns: #[homology_vs_analogy, reproducibility, developmental_time, specimen_identity]
+ ~#primes: #[biological, material]
+ ~#reference_depth: .{
+  source: "sequence locus, figure panel, methods line"
+  structure: "taxon/clade/experiment frame nesting"
+  relation: "homology edges vs co-citation; twin-search on trait signatures"
+  time: "developmental series, passage number, assay episode"
+  layout: "gel/figure adjacency is not homology"
+  operation: "pipeline stages as protocol; cast = processed dataset"
+ }
+ ~#instruments: #[twin_search, expression_cast, phenology_pulse, evidence_grades]
+ ~#false_friends: "selection ≠ optimization without shared fitness measure"
+ ~#status: "proposed"
+}
+
+^["domain.botany"]{
+ ~#concerns: #[growth_form, seasonal_sampling, graft_chimaera, canopy_structure]
+ ~#primes: #[botanical, biological, geological]
+ ~#reference_depth: .{
+  source: "herbarium label, plot GPS note, photo id"
+  structure: "organ/whorl/stand frames; graft junction as nested container"
+  relation: "graft edges, bed adjacency, seed-exchange path-refs"
+  time: "phenology seasons, growth rings as episode strata"
+  layout: "field sketch spacing interpretive only"
+  operation: "growth pulse; prune = anti-echo; canopy depth metric"
+ }
+ ~#instruments: #[garden_beds, graft_walk, canopy_depth, phenology]
+ ~#status: "proposed"
+}
+
+^["domain.chemistry"]{
+ ~#concerns: #[mechanism_steps, purity, conditions, yield]
+ ~#primes: #[chemical, physical, material]
+ ~#reference_depth: .{
+  source: "reagent name, equation line, spectra peak id"
+  structure: "mechanism step frames; nested conditions"
+  relation: "precursor→product edges; catalyst as braid partner"
+  time: "kinetics series; lab notebook episode"
+  layout: "scheme layout not mechanism truth"
+  operation: "wash/crystallize/refine/react as stage precipitates; purity via normalize"
+ }
+ ~#instruments: #[precipitate_trace, stage_pipeline, valence, lab_episode]
+ ~#status: "proposed"
+}
+
+^["domain.materials"]{
+ ~#concerns: #[microstructure_property, defects, processing_path]
+ ~#primes: #[material, physical, chemical]
+ ~#reference_depth: .{
+  source: "micrograph id, composition table cell"
+  structure: "phase/grain/defect frames (materials-ontology)"
+  relation: "process→microstructure→property walks"
+  time: "heat-treatment history episodes"
+  layout: "plot multipanel adjacency ≠ causal edge"
+  operation: "defect as brace/anomaly measure; phase as signature"
+ }
+ ~#instruments: #[materials_lenses, brace_defects, process_cast, compare_read]
+ ~#foothold: @materials
+ ~#status: "proposed"
+}
+
+^["domain.nanofabrication"]{
+ ~#concerns: #[process_window, scale, contamination, tool_state]
+ ~#primes: #[physical, material, computational]
+ ~#reference_depth: .{
+  source: "recipe step, tool log line, wafer id"
+  structure: "process stack frames; cleanroom zone nesting"
+  relation: "tool→recipe→lot graph"
+  time: "run number, chamber history"
+  layout: "fab UI layout not process law"
+  operation: "budgeted pulses; analyze cost; stale process cast"
+ }
+ ~#instruments: #[pulse_budget, cast_read, name_impact, isolation_scope]
+ ~#status: "proposed"
+}
+
+^["domain.manufacturing"]{
+ ~#concerns: #[lineage, rework, capability, BOM]
+ ~#primes: #[material, infrastructural, computational]
+ ~#reference_depth: .{
+  source: "work order line, serial number"
+  structure: "BOM tree as frame path"
+  relation: "supplier→part→assembly projection"
+  time: "lot traceability episodes"
+  layout: "shop-floor display only"
+  operation: "mold→cast; verified differential rework; QA pulse"
+ }
+ ~#instruments: #[projection_lineage, name_impact, differential_tick, episode_qa]
+ ~#status: "proposed"
+}
+
+^["domain.physics"]{
+ ~#concerns: #[invariance, scale, model_limits, units]
+ ~#primes: #[physical, mathematical]
+ ~#reference_depth: .{
+  source: "equation, dataset point, instrument channel"
+  structure: "model section frames; assumption containers"
+  relation: "derivation edges; experiment↔theory links"
+  time: "run series; calibration episodes"
+  layout: "diagram geometry may encode physical claim — mark status"
+  operation: "shape invariants (ONF); cost as computational analogue of energy only if measured"
+ }
+ ~#instruments: #[shape_twins, graded_measure, compare_read, no_false_precision]
+ ~#status: "proposed"
+}
+
+^["domain.astronomy"]{
+ ~#concerns: #[catalog_identity, multi_messenger, survey_depth]
+ ~#primes: #[physical, geological]
+ ~#reference_depth: .{
+  source: "catalog id, FITS header field"
+  structure: "survey/field/object frames"
+  relation: "cross-match graph distance"
+  time: "epoch, observation night"
+  layout: "sky-map projection is an orientation profile"
+  operation: "pipeline precipitates per reduction stage"
+ }
+ ~#instruments: #[qualified_name, relation_walk, time_transect, stage_derive]
+ ~#status: "proposed"
+}
+
+^["domain.math"]{
+ ~#concerns: #[definition_hygiene, proof_structure, isomorphism]
+ ~#primes: #[mathematical, metaphysical]
+ ~#reference_depth: .{
+  source: "symbol occurrence, equation number"
+  structure: "definition/lemma/theorem/proof frame nesting"
+  relation: "depends-on / cites / generalizes edges"
+  time: "versioned definitions across episodes"
+  layout: "display math adjacency not logical dependency"
+  operation: "shape hash equality; rewrite as ONF; proof walk policy meaning"
+ }
+ ~#instruments: #[shape_twins, compositional_compare, lattice_query, E0_vs_E2]
+ ~#status: "proposed"
+}
+
+^["domain.statistics"]{
+ ~#concerns: #[estimand, uncertainty, multiple_comparisons, preregistration]
+ ~#primes: #[mathematical, computational, social]
+ ~#reference_depth: .{
+  source: "table cell, model formula line"
+  structure: "model/estimand/check frames"
+  relation: "data→model→result projection"
+  time: "preregistered episode vs exploratory"
+  layout: "significance stars layout not evidence"
+  operation: "measure grade E1 with method footnote; E0 only for pure recomputation"
+ }
+ ~#instruments: #[evidence_grades, method_pulse, cast_read, false_friends]
+ ~#status: "proposed"
+}
+
+^["domain.computation"]{
+ ~#concerns: #[correctness, complexity, rewrite_safety, reproducibility]
+ ~#primes: #[computational, mathematical]
+ ~#reference_depth: .{
+  source: "symbol, API path, log line"
+  structure: "module/frame nesting; AST path"
+  relation: "import graph; call graph as walk"
+  time: "build revision; test episode"
+  layout: "IDE layout not semantics"
+  operation: "parse recovery; pulse budgets; verified differential edits"
+ }
+ ~#instruments: #[pulse_isolation, parse_state, differential_kernel, analyze_ms]
+ ~#status: "proposed"
+}
+
+^["domain.english"]{
+ ~#concerns: #[close_reading, genre, argument_structure, citation_ethics]
+ ~#primes: #[linguistic, aesthetic, metaphysical]
+ ~#reference_depth: .{
+  source: "quotation span, page/line"
+  structure: "chapter/section/stanza/paragraph frames"
+  relation: "intertext, allusion, citation graph"
+  time: "draft episodes; reception history"
+  layout: "lineation and white space may be aesthetic claim — mark interpretive"
+  operation: "melody walk as prosody; shape compare for argument isomorphism"
+ }
+ ~#instruments: #[lyrical_walk, naming_layers, twin_search, translation_probe]
+ ~#status: "proposed"
+}
+
+^["domain.linguistics"]{
+ ~#concerns: #[form_function, corpus_representativeness, annotation_scheme]
+ ~#primes: #[linguistic, mathematical, computational]
+ ~#reference_depth: .{
+  source: "token, gloss line, audio time code"
+  structure: "phrase structure / dependency as frames"
+  relation: "cognate or paradigm edges"
+  time: "diachronic episode strata"
+  layout: "interlinear gloss layout is convention"
+  operation: "signature as feature bundle; shape as construction"
+ }
+ ~#instruments: #[signature_compare, dialect_profile, lattice_query, corpus_pulse]
+ ~#status: "proposed"
+}
+
+^["domain.philosophy"]{
+ ~#concerns: #[definition, argument_validity, concept_genealogy]
+ ~#primes: #[metaphysical, linguistic, mathematical]
+ ~#reference_depth: .{
+  source: "quoted passage, fragment id"
+  structure: "argument tree frames (premises/conclusion)"
+  relation: "depends-on, objects-to, refines"
+  time: "tradition strata; edition episodes"
+  layout: "outline indent not entailment"
+  operation: "role names; shape twins for argument forms; E2 for exegesis"
+ }
+ ~#instruments: #[compositional_compare, role_walk, name_impact, evidence_grades]
+ ~#status: "proposed"
+}
+
+^["domain.anthropology"]{
+ ~#concerns: #[emic_etic, fieldnotes, multi_scalar_time, positionality]
+ ~#primes: #[social, linguistic, geological]
+ ~#reference_depth: .{
+  source: "fieldnote line, interview stamp, artifact photo id"
+  structure: "site/session/actor frames"
+  relation: "kin, exchange, citation of consultants (ethics)"
+  time: "field seasons; deep-time geological gloss optional"
+  layout: "notebook spatial layout interpretive"
+  operation: "translation probe; walk as field path; E2 care labels"
+ }
+ ~#instruments: #[translation_probe, walk_trace, social_prime, ethical_E2]
+ ~#status: "proposed"
+}
+
+^["domain.archaeology"]{
+ ~#concerns: #[context, stratigraphy, provenience, reconstruction]
+ ~#primes: #[geological, material, social]
+ ~#reference_depth: .{
+  source: "find number, context sheet"
+  structure: "site/unit/layer/feature frames"
+  relation: "assemblage co-occurrence (not file-wide noise)"
+  time: "stratigraphic temporal depth primary"
+  layout: "harris matrix layout may encode relation — status measured if formalized"
+  operation: "layer census; projection of reconstruction cast"
+ }
+ ~#instruments: #[frame_path, time_transect, signature_support, cast_read]
+ ~#status: "proposed"
+}
+
+^["domain.history"]{
+ ~#concerns: #[source_criticism, periodization, narrative_vs_archive]
+ ~#primes: #[geological, linguistic, social]
+ ~#reference_depth: .{
+  source: "archive citation, folio"
+  structure: "fonds/series/item frames"
+  relation: "prosopography edges; citation"
+  time: "period strata; revision of historiography episodes"
+  layout: "timeline UI not chronology law"
+  operation: "episode phenology; name-impact on period labels"
+ }
+ ~#instruments: #[qualified_name, time_transect, name_impact, compare_read]
+ ~#status: "proposed"
+}
+
+^["domain.social_work"]{
+ ~#concerns: #[ethics, case_vs_system, care_practice, confidentiality]
+ ~#primes: #[social, clinical, pedagogical]
+ ~#reference_depth: .{
+  source: "case note id (privacy), policy clause"
+  structure: "case/system/policy frames — separation invariant"
+  relation: "referral graph; support network (anonymized signatures)"
+  time: "intervention episodes"
+  layout: "form layout not clinical truth"
+  operation: "impact/byproduct walks; E2 notes never auto-mutate case records"
+ }
+ ~#instruments: #[ownership, byproduct_walk, ethical_E2, scope_isolation]
+ ~#invariant: "No pulse payload may write clinical or identifying content without explicit S-level authority and dryRun off only under human gate."
+ ~#status: "proposed"
+}
+
+^["domain.public_health"]{
+ ~#concerns: #[population_vs_individual, surveillance_ethics, intervention_evidence]
+ ~#primes: #[social, biological, statistical]
+ ~#reference_depth: .{
+  source: "indicator definition, dataset doi"
+  structure: "population/cohort/program frames"
+  relation: "exposure→outcome edges with grade"
+  time: "surveillance periods"
+  layout: "dashboard layout not epidemiology"
+  operation: "gardenStats as population metrics; method pulse"
+ }
+ ~#instruments: #[population_metrics, method_pulse, evidence_grades, false_friends]
+ ~#status: "proposed"
+}
+
+^["domain.psychology"]{
+ ~#concerns: #[construct_validity, measurement, replication]
+ ~#primes: #[social, biological, linguistic]
+ ~#reference_depth: .{
+  source: "item text, condition label"
+  structure: "construct/measure/study frames"
+  relation: "construct network; citation"
+  time: "session, longitudinal wave"
+  layout: "survey layout may bias — mark interpretive"
+  operation: "signature as construct bundle; E1 reliability only with method"
+ }
+ ~#instruments: #[signature_compare, method_pulse, evidence_grades, name_impact]
+ ~#status: "proposed"
+}
+
+^["domain.neuroscience"]{
+ ~#concerns: #[level_bridging, atlas_identity, pipeline_variance]
+ ~#primes: #[biological, physical, computational]
+ ~#reference_depth: .{
+  source: "channel, voxel, cell id"
+  structure: "region/circuit/cell-type frames"
+  relation: "connectome edges; atlas cross-walk"
+  time: "recording session, developmental stage"
+  layout: "brain-map orientation profile"
+  operation: "pipeline precipitates; cast = preprocessed series"
+ }
+ ~#instruments: #[qualified_name, relation_walk, stage_derive, cast_read]
+ ~#status: "proposed"
+}
+
+^["domain.education"]{
+ ~#concerns: #[learning_goals, assessment_alignment, equity]
+ ~#primes: #[pedagogical, social, linguistic]
+ ~#reference_depth: .{
+  source: "SLO text, rubric cell"
+  structure: "course/module/lesson/outcome frames"
+  relation: "outcome→activity→assessment edges"
+  time: "term episodes; longitudinal cohort"
+  layout: "LMS layout not pedagogy"
+  operation: "curriculum pulse; wonder as formative E2"
+ }
+ ~#instruments: #[assembly_walk, method_pulse, evidence_grades, lyrical_walk]
+ ~#status: "proposed"
+}
+
+^["domain.law"]{
+ ~#concerns: #[authority, citation_precision, holding_vs_dicta]
+ ~#primes: #[legal, social, linguistic]
+ ~#reference_depth: .{
+  source: "reporter cite, paragraph pin"
+  structure: "opinion/section/holding frames"
+  relation: "cites/overrules/distinguishes graph"
+  time: "procedural history episodes"
+  layout: "reporter formatting convention"
+  operation: "name-impact on doctrine labels; E0 pin cites"
+ }
+ ~#instruments: #[qualified_name, relation_walk, name_impact, evidence_grades]
+ ~#status: "proposed"
+}
+
+^["domain.economics"]{
+ ~#concerns: #[identification, counterfactual, model_scope]
+ ~#primes: #[economic, mathematical, social]
+ ~#reference_depth: .{
+  source: "series id, table cell"
+  structure: "model/assumption/result frames"
+  relation: "causal graph claims graded"
+  time: "sample period episodes"
+  layout: "chart layout not identification"
+  operation: "method pulse; false friends (selection, efficiency)"
+ }
+ ~#instruments: #[method_pulse, compare_read, evidence_grades, false_friends]
+ ~#status: "proposed"
+}
+
+^["domain.political_science"]{
+ ~#concerns: #[concept_stretch, case_selection, institutional_depth]
+ ~#primes: #[social, legal, linguistic]
+ ~#reference_depth: .{
+  source: "document, speech timestamp"
+  structure: "institution/actor/event frames"
+  relation: "alliance, citation, influence edges"
+  time: "regime periods; election cycles"
+  layout: "org chart layout may encode hierarchy claim"
+  operation: "role names; walk policies meaning/assembly"
+ }
+ ~#instruments: #[role_walk, twin_search, time_transect, name_impact]
+ ~#status: "proposed"
+}
+
+^["domain.architecture"]{
+ ~#concerns: #[program, structure, code_compliance, experience]
+ ~#primes: #[aesthetic, material, physical, social]
+ ~#reference_depth: .{
+  source: "drawing sheet, room id"
+  structure: "building/floor/room/detail frames"
+  relation: "adjacency, load path, reference details"
+  time: "design issue episodes; construction phases"
+  layout: "drawing layout is partly structural claim — dual status"
+  operation: "assembly walk; material prime; cast = BIM/export"
+ }
+ ~#instruments: #[assembly_walk, material_prime, cast_read, compare_read]
+ ~#status: "proposed"
+}
+
+^["domain.design"]{
+ ~#concerns: #[system_consistency, accessibility, iteration_speed]
+ ~#primes: #[aesthetic, pedagogical, computational]
+ ~#reference_depth: .{
+  source: "token name, component id"
+  structure: "system/component/state frames"
+  relation: "variant and dependency graph"
+  time: "design sprint episodes"
+  layout: "Figma adjacency not component API"
+  operation: "literate-ui mapping; pair-read; incremental redesign lens"
+ }
+ ~#instruments: #[literate_ui, twin_search, pair_read, lens_tick_dry]
+ ~#foothold: @literate_ui
+ ~#status: "proposed"
+}
+
+^["domain.musicology"]{
+ ~#concerns: #[form, performance_practice, edition]
+ ~#primes: #[aesthetic, linguistic, mathematical]
+ ~#reference_depth: .{
+  source: "measure/beat, recording time"
+  structure: "work/movement/section/phrase frames"
+  relation: "theme recurrence; citation of works"
+  time: "performance episodes; historical practice"
+  layout: "score layout may be compositional claim"
+  operation: "melody walk = lyrical policy; rhythm = brace cadence E1"
+ }
+ ~#instruments: #[lyrical_walk, brace_rhythm, shape_twins, time_transect]
+ ~#status: "proposed"
+}
+
+^["domain.art_history"]{
+ ~#concerns: #[attribution, iconography, provenance]
+ ~#primes: #[aesthetic, geological, social]
+ ~#reference_depth: .{
+  source: "object id, catalog raisonné"
+  structure: "corpus/artist/work/detail frames"
+  relation: "influence, workshop, collection edges"
+  time: "provenance episodes; period strata"
+  layout: "plate layout interpretive"
+  operation: "signature motifs; twin-search visual-structural analogues carefully graded"
+ }
+ ~#instruments: #[qualified_name, twin_search, time_transect, evidence_grades]
+ ~#status: "proposed"
+}
+
+^["domain.theology_religious_studies"]{
+ ~#concerns: #[hermeneutics, tradition, translation]
+ ~#primes: #[metaphysical, linguistic, alchemical, social]
+ ~#reference_depth: .{
+  source: "verse, manuscript witness"
+  structure: "canon/book/pericope frames"
+  relation: "tradition chains; commentary graph"
+  time: "reception history strata"
+  layout: "polyglot layout convention"
+  operation: "translation probe; role/name impact; E2 for doctrine"
+ }
+ ~#instruments: #[translation_probe, naming_layers, relation_walk, evidence_grades]
+ ~#status: "proposed"
+}
+
+^["domain.library_information_science"]{
+ ~#concerns: #[catalog_identity, linked_data, preservation]
+ ~#primes: #[computational, linguistic, infrastructural]
+ ~#reference_depth: .{
+  source: "identifier, MARC/BIBFRAME field"
+  structure: "collection/series/item frames"
+  relation: "subject graph, citation, holdings"
+  time: "accession and migration episodes"
+  layout: "OPAC layout not catalog law"
+  operation: "qualified names; projection to exports; name-impact"
+ }
+ ~#instruments: #[qualified_name, relation_walk, cast_read, name_impact]
+ ~#status: "proposed"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Shared PhD instruments (portable)
+// ═══════════════════════════════════════════════════════════════
+
+^["shared_instruments"]{
+ structural_glossary: "surface + signature + shape + prime gloss"
+ method_as_pulse: "reproducible assay list with grade and budget"
+ related_work_twins: "shape/signature neighbors in garden or mount"
+ revision_archaeology: "episode phenology not only git blame"
+ evidence_labels: "E0/E1/E2 or topography status on every claim"
+ portable_packet: "compare + trace + prime JSON for committee — editor-agnostic"
+ reference_transect: "always state which strata a 'reference' includes"
+}
+
+^["forbid"]{
+ one_master_metaphor: "do not force DNA or reaction or market on every field"
+ interpretation_as_ci: "E2 never fails ship"
+ hidden_uncertainty: "PhDs need visible grades"
+ replace_domain_tools: "Spw coordinates theory/process notes; not ImageJ/R/ELN/field apps"
+ layout_as_structure: "without explicit projection"
+}
+
+^["handles"]{
+ name_impact: "rename as coordinate change"
+ compare_read: "diff of naming/composition axes"
+ twin_search: "population isomorphism search"
+ diff_walk: "two seeds walk until divergence"
+ brace_read: "lattice balance/rhythm"
+ cast_read: "mold→expression freshness"
+ pulse_run: "scoped method beats"
+ lens_preview: "structure as query"
+ walk_tick: "incremental trace precipitation"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Wonder / probes
+// ═══════════════════════════════════════════════════════════════
+
+#>wonder_spw_garden_phd_domain_topography_1
+?["What is the topographical depth of a single reference in this file?"]{
+  #:depth #!computational // lens: formal structure
+  ~#method: "pick domain.biology relation vs domain.math operation; list strata touched"
+  !probe{ "for one citation in your dissertation draft, name source, structure, relation, time, layout, operation depths — which are empty?" }
+  $%[reference_topography.strata]
+}
+
+#>wonder_spw_garden_phd_domain_topography_2
+?["Which prime false-friend would most damage interdisciplinary review?"]{
+  #:depth #!educational // lens: ecological zone
+  ~#candidates: #[selection, efficiency, field, culture, phase, defect, cast]
+  !probe{ "pick two domains; write both glosses for the same word; write the shared coordinate that would make comparison honest — or declare E2." }
+}

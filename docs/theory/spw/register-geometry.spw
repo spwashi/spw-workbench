@@ -1,10 +1,12 @@
 # Register Geometry
 #
-# The register space as a fiber bundle.
-# Reduction automata trace geodesics through this space.
+# A research projection of register state using geometric vocabulary.
+# Fiber, geodesic, group, and homotopy language remains interpretive until
+# the named maps, laws, and invariants are implemented and tested.
 #
 # @see docs/theory/spw/onf.spw (tiered normalization, per-sigil automata)
-# @see docs/theory/spw/operators.spw (12 sigils, 4 containers)
+# @see docs/theory/spw/operators.spw (13 OperatorKind sigils, 4 base containers)
+# @see docs/theory/spw/operational-topography.spw (measurable coordinates and status)
 # @spw:contract:bridge[system=container-algebra,basis=surface-grammar-to-base-axis]
 
 #:layer #!semantics
@@ -12,40 +14,56 @@
 ^seed[Spw.Register.Geometry v:0.2 @profile:Spw.b @intent:fiber_bundle_model]
 {_geom
 
- ## ── Tensor Axes ────────────────────────────────────────────
- ## Five axes define the full register space:
+ // ── Model Status ───────────────────────────────────────────
+
+ status: .{
+ implemented = #[sigil_tokens, container_tokens, register_state_fields, runtime_traces]
+ measured = #[liminality, frequency, coupling, measure_depth]
+ proposed = #[tensor_reachability, reduction_geodesics, container_group_action, topological_classes]
+ interpretive = #[fiber, charge, spin, resonance_language]
+ }[reg=facet]
+
+ falsifier: `If a geometric term cannot identify its domain, map, observable, invariant, and counterexample, it remains an analogy rather than runtime structure.`
+
+ // ── Tensor Axes ────────────────────────────────────────────
+ // Five axes define the full register space:
 
  axes: #[
- .{ axis = 1, name = Sigil, size = 12, members = #[`!`,`^`,`~`,`?`,`*`,`=`,`@`,`#`,`.`,`&`,`$`,`%`] },
- .{ axis = 2, name = Container, size = 4, members = #[`[]`,`{}`,`<>`,`()`] },
+ .{ axis = 1, name = Sigil, size = 13, members = #[`!`,`^`,`~`,`?`,`*`,`=`,`@`,`#`,`.`,`&`,`$`,`%`,`<>`] },
+ // Base Bound axis: four primary pair shapes. Digraph <> is an *Act* (13th OperatorKind), not a Bound.
+ // Capsule shell is written `<…>` (delimiters); empty capsule surface is not the digraph token.
+ .{ axis = 2, name = Container, size = 4, members = #[`[]`,`{}`,`()`,`<…>`] },
  .{ axis = 3, name = Layer, size = 4, members = #[signal, pattern, flow, structure] },
  .{ axis = 4, name = RuntimeQuality, size = 4, members = #[boon, bane, bone, honk] },
  .{ axis = 5, name = Representation, size = 4, members = #[syntactic, semantic, pragmatic, meta] }
  ][reg=set]
 
- ## Full tensor: 12 × 4 × 4 × 4 × 4 = 3,072 cells.
- ## Most cells are empty. Reduction automata determine which are reachable.
+ // Candidate tensor: 13 × 4 × 4 × 4 × 4 = 3,328 cells.
+ // Most cells are empty. Reduction automata determine which are reachable.
 
- ## ── Fiber Bundle ───────────────────────────────────────────
+ // ── Fiber Bundle ───────────────────────────────────────────
 
  bundle: .{
- base = `Sigil(12) × Container(4)`
+ base = `Sigil(13) × Container(4)`
  fiber = `Layer(4) × RuntimeQuality(4) × Representation(4)`
- total = `base × fiber = 3,072 cells`
+ total = `base × fiber = 3,328 cells`
  }[reg=facet]
 
  bridge_notes: .{
- base_containers = `The core algebra reduces container space to [] {} <> ().`
- surface_forms = `docs/theory/spw/semantics-physics.spw may introduce reader-facing mnemonics plus wrapper forms such as << >> and (( )); those wrappers are not extra base axes here.`
+ base_containers = `Core Bound axis: [] {} () <…> (capsule shell). Digraph <> is OperatorKind couple Act — see operator-brace-composition.spw.`
+ surface_forms = `Stream <<>> and NRange (()) are specialized Bounds with coupling.kind stream|nrange; not extra tensor axes here.`
+ empty_forms = `Each Bound may have empty occupancy while retaining its register identity: inner|around|scope|capsule|stream|range.`
+ couple_act = `Digraph <> is form=operator with arity; arity 0 is not boundary emptiness and remains reg=couple.`
  bracket_note = "`[]` surface 'mode/params' and algebraic 'individuation/categorical' are the same axis seen at different resolutions."
  quality_note = `Axis 4 is the four-state runtime quality quartet; bonk lives in valence, not in this tensor.`
+ composition_ref = ~"./operator-brace-composition.spw"
  }[reg=facet]
 
- ## A register entry is a point in the total space: base × fiber.
- ## A reduction automaton is a section of the bundle:
- ## it assigns, to each base point, a PATH through the fiber.
+ // Proposed reading: a register entry may be projected as a point in base × fiber.
+ // Calling a reducer a bundle section requires a total assignment and composition laws;
+ // those properties are not established by the current interpreter.
 
- ## ── Reduction as Geodesic ──────────────────────────────────
+ // ── Reduction as Geodesic ──────────────────────────────────
 
  geodesics: #[
  .{ sigil = `!`, path = ?<token, node, effect, register>, dims = `1D curve (layer descent)`, complexity = deterministic },
@@ -54,12 +72,10 @@
  .{ sigil = `.`, path = ?<token, structure>, dims = `teleport (no continuous path)`, complexity = structural }
  ][reg=set]
 
- ## Dimensionality → optimization complexity:
- ## 0D (point) → trivially normalizable (~ is already normal)
- ## 1D (curve) → single reduction sequence (! is deterministic)
- ## 2D (surface) → nondeterministic, may need exploration (? depends on environment)
+ // These dimensional labels are experimental visualizations. They do not currently
+ // predict parser or interpreter complexity.
 
- ## ── Affinity Constraints ───────────────────────────────────
+ // ── Affinity Constraints ───────────────────────────────────
 
  affinities: #[
  .{ sigil = `!`, accessMode = kinetic, pins = RuntimeQuality, effect = `64-dim → 16 cells` },
@@ -67,53 +83,55 @@
  .{ sigil = `?`, accessMode = conditional, pins = _, effect = `RuntimeQuality remains free` }
  ][reg=set]
 
- ## Each pinned axis reduces the fiber dimension by 4×.
- ## 64-dim fiber with 1 pin → 16 cells
- ## 64-dim fiber with 2 pins → 4 cells
- ## 64-dim fiber with 3 pins → 1 cell (fully determined)
- ##
- ## Optimization: if a sigil pins 2+ axes, the reducer only traverses
- ## a 4D or 1D subspace. This is the geometric source of compilation speed.
+ // Each pinned axis reduces the fiber dimension by 4×.
+ // 64-dim fiber with 1 pin → 16 cells
+ // 64-dim fiber with 2 pins → 4 cells
+ // 64-dim fiber with 3 pins → 1 cell (fully determined)
+ //
+ // Hypothesis: pinning axes could reduce a future search space. No current compiler
+ // benchmark attributes speed to this geometry.
 
- ## ── Container Algebra ──────────────────────────────────────
- ## The 4 container pairs form Klein four group V₄ (ℤ₂ × ℤ₂)
+ // ── Container Algebra ──────────────────────────────────────
+ // Research hypothesis: the 4 container projections may admit a Klein-four action.
 
  container_algebra: .{
  duality_1 = .{ `[]` = individuation, `{}` = definition, axis = `what vs how` }
- duality_2 = .{ `<>` = coupling, `()` = observation, axis = `relation vs perspective` }
+ // Capsule shell <…> (membrane), not digraph couple Act
+ duality_2 = .{ `<…>` = membrane, `()` = observation, axis = `interface vs perspective` }
+ couple_act = .{ digraph = `<>`, role = `explicit peer exchange Act`, not_a_base_container = true }
  }[reg=facet]
 
- ## V₄ acts on the base space by permuting container axes.
- ## Every expression has 4 "views" related by symmetry:
+ // A group claim requires closure, identity, inverses, and composition tests.
+ // The following are proposed views, not established group actions:
 
  views: #[
  .{ container = `#[a, b]`, view = categorical, question = `what set?` },
  .{ container = `.{a: b}`, view = definitional, question = `what structure?` },
- .{ container = `?<a, b>`, view = liminal, question = `what coupling?` },
- .{ container = `@(a, b)`, view = agentive, question = `who observes?` }
+ .{ container = `<<a, b>>`, view = channel, question = `what stream?` },
+ .{ container = `@(a, b)`, view = agentive, question = `who observes?` },
+ .{ act = `<>(a, b)`, view = exchange, question = `what peer couple?` }
  ][reg=set]
 
- ## The register-frame constructors ARE the V₄ action applied to the base space.
+ group_status: proposed
+ group_counterexample: `If a container conversion changes arity, ordering, effects, or loses information, it is not a symmetry operation on the same semantic object.`
 
- ## ── Confluence Topology ────────────────────────────────────
- ## Church-Rosser as topology
+ // ── Ordering and Confluence Questions ──────────────────────
 
  confluence: .{
- contractible = false
- reason = `!(~x) ≠ ~(!x) — forcing a thunk ≠ deferring an action`
- consequence = `These are distinct homotopy classes.`
- fundamental_group = `π₁ encodes which sigil-pairs fail to commute`
- practical = `Optimizer cannot freely reorder cross-sigil operations`
+ status = proposed
+ candidate = `!(~x) may differ from ~(!x)`
+ test = `compare parse, ONF, runtime value, register writes, and trace order`
+ practical_if_confirmed = `Optimizer cannot freely reorder the confirmed pair.`
  }[reg=facet]
 
- ## The non-commutative pairs (from Grok probes):
+ // The non-commutative pairs (from Grok probes):
  non_commutative: #[
  .{ pair = #[`!`,`~`], reason = `eagerness vs laziness` },
  .{ pair = #[`?`,`&`], reason = `stream vs merge ordering` },
  .{ pair = #[`%`,`&`], reason = `measure before vs after merge` }
  ][reg=set]
 
- ## ── Cascade + Depth Integration (Grok v0.8) ───────────────
+ // ── Cascade + Depth Integration (Grok v0.8) ───────────────
 
  cascade_geometry: .{
  layers = `[cascade=base|layer] adds depth axis to fiber`
@@ -122,7 +140,7 @@
  depth_limit = `[depth=N] gates recursive ?<> nesting`
  }[reg=facet]
 
- ## ── Layer Naming (Open) ────────────────────────────────────
+ // ── Layer Naming (Open) ────────────────────────────────────
 
  open_naming: .{
  current = #[signal, pattern, flow, structure]
@@ -137,14 +155,15 @@
  status = `open — current names are provisional`
  }[reg=facet]
 
- ## ── References ─────────────────────────────────────────────
+ // ── References ─────────────────────────────────────────────
 
  references: .{
  onf = `docs/theory/spw/onf.spw`
+ topography = `docs/theory/spw/operational-topography.spw`
  brace_regs = `docs/runtime/spw/brace-registers.spw`
- register_bank = `src/features/keyboard/registers/register-bank.ts`
- spw_algebra = `src/core/types/spw-algebra.ts`
- branded = `src/core/types/branded.ts`
+ register_bank = `packages/spw-runtime/src/state/register-bank.ts`
+ runtime_types = `packages/spw-runtime/src/state/types.ts`
+ seed_types = `packages/spw-seed/src/types/token.ts`
  }[reg=facet]
 
 }_geom

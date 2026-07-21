@@ -1,0 +1,301 @@
+# Org · Static Analysis · LLM Value Model
+#
+# How Spw tooling and this workbench create value for:
+#   - static analysis (structure, grades, audits)
+#   - LLM enhancement (grounded agents, graded tools)
+#   - building an organization (shared geometry, method, memory)
+#   - the workbench as example implementation / harness
+#
+# @see .spw/agent-surface.spw
+# @see .spw/harness/runs/runs-index.spw
+# @see .spw/harness/memory-surface.spw
+# @see docs/runtime/md/mounted-workbench.md
+# @see .agents/skills/spw-mounted-consumer-review/SKILL.md
+# @see .agents/plans/spw-garden-geometry/substrate-organelle-physics.spw
+# @see .agents/plans/spw-garden-geometry/editor-surface-physics.spw
+# @see .agents/plans/spw-garden-geometry/phd-domain-topography.spw
+
+#:layer #!pragmatics
+#:garden #!org
+#:harness #!value
+
+^seed[Spw.Garden.Org.StaticLlmValue v:0.1 @profile:Spw.b @intent:org_static_llm_harness_value]
+
+^["roots"]{
+ @agent_surface: ~"../../../.spw/agent-surface.spw"
+ @runs: ~"../../../.spw/harness/runs/runs-index.spw"
+ @memory: ~"../../../.spw/harness/memory-surface.spw"
+ @mount_docs: ~"../../../docs/runtime/md/mounted-workbench.md"
+ @consumer_skill: ~"../../../.agents/skills/spw-mounted-consumer-review/SKILL.md"
+ @substrate: ~"./substrate-organelle-physics.spw"
+ @editor: ~"./editor-surface-physics.spw"
+ @phd: ~"./phd-domain-topography.spw"
+ @garden: ~"./spw-garden-geometry.spw"
+ @workspace: ~"../../../.spw/workspace.spw"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Dual enhancement: static analysis × LLM
+// ═══════════════════════════════════════════════════════════════
+
+^["dual_value"]{
+ ~#thesis: "Static analysis makes structure and claims *checkable*. LLMs make structure and claims *generative*. Spw's value is the shared geometry both consume — coordinates, grades, exact selections, precipitates — so generation cannot outrun verification."
+ ~#status: "proposed+footholds"
+
+ ~#static_gains: #[
+  "transect packets (source/structure/relation/time/layout/operation)",
+  "shape/signature twins (compositional equality)",
+  "brace physics + depth depth (E0)",
+  "true Δ + name-impact (coordinate change)",
+  "projection mold→cast freshness",
+  "capability matrix (advertised vs observed)",
+  "audit trees under consumer .spw/audits/",
+  "fuzz profiles as staged gates (types/runtime/ship)"
+ ]
+
+ ~#llm_gains: #[
+  "agent-surface affordance map (read/write/query/avoid)",
+  "tool calls that return graded packets not free prose",
+  "pulse/lens/walk as schedulable assays with budgets",
+  "episode + wip.spw as durable agent memory",
+  "harness runs ledger for prompt/context/result refs",
+  "prime gloss for domain language without forking AST",
+  "anti-echo and exact-selection so agents cannot invent ranges",
+  "mounted consumer boundary (workbench is instrument, not corpus)"
+ ]
+
+ ~#coupling_rule: "Every LLM write path must bottom out in a static check or an explicit E2/S2+ gate. Every static claim should be loadable as LLM tool context without re-parsing the monorepo into the prompt."
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Static analysis enhancement
+// ═══════════════════════════════════════════════════════════════
+
+^["static_analysis"]{
+ ~#layers: .{
+  syntax: .{
+   tools: #[parser, spw-syntax-validate, format_canonicalize]
+   value: "identity of source material; string-safe brace law"
+  }
+  structure: .{
+   tools: #[AST, frame_path, pair_table, ONF_shape_hash]
+   value: "compositional compare; twin-search"
+  }
+  relation: .{
+   tools: #[path_ref, projection_graph, ref_forest, name_impact]
+   value: "org graph of ownership and dependence"
+  }
+  semantic_grade: .{
+   tools: #[E0_diagnostics, E1_metrics_with_method, E2_labeled_only]
+   value: "committee/regulator-honest claims"
+  }
+  process: .{
+   tools: #[pulse_isolation, beat_mutability_log, episode_blocks]
+   value: "method reproducibility"
+  }
+  org_boundary: .{
+   tools: #[mount_exclude_workbench, layer_import_guards, precommit_episode]
+   value: "who may change what"
+  }
+ }
+
+ ~#enhance: #[
+  "machine-readable audit JSON (already partial) as org dashboard feed",
+  "CI job: geometry kernel (Δ, shape hash, capability honesty) not only tsc",
+  "policy packs: required metadata labels on regions; forbidden phantom methods",
+  "diff of topography between revisions (what coordinates changed)",
+  "export SARIF-like or custom for brace/resolve/stale-cast findings"
+ ]
+
+ ~#llm_consumes_static: "tool: spw.static.transect | compare | twins | audit — returns packet with grade + revision"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LLM enhancement
+// ═══════════════════════════════════════════════════════════════
+
+^["llm_enhancement"]{
+ ~#thesis: "LLMs amplify Spw when tools are *narrow, graded, and revision-aware* — not when the model is asked to be the parser."
+ ~#status: "proposed+agent_surface_foothold"
+
+ ~#tool_surface: #[
+  .{tool=spw.transect, returns="strata packet", grade_floor=E0},
+  .{tool=spw.compare, returns="coordinate diff", grade_floor=E0},
+  .{tool=spw.twins, returns="shape/signature neighbors", grade_floor=E1},
+  .{tool=spw.walk, returns="trace precipitate steps", grade_floor=E0},
+  .{tool=spw.pulse_preview, returns="scoped beat plan", grade_floor=E1},
+  .{tool=spw.lens_preview, returns="hits dry", grade_floor=E0},
+  .{tool=spw.edit_plan, returns="parser-owned differential", grade_floor=S2},
+  .{tool=spw.audit, returns="markers/syntax/geometry findings", grade_floor=E0},
+  .{tool=spw.memory, returns="wip/plan/run refs", grade_floor=E1},
+ ]
+
+ ~#context_assembly: .{
+  prefer: #[
+   "agent-surface capabilities",
+   "active plan wip.spw intent+cache",
+   "transect of caret or claimed files only",
+   "gardenStats / twins for population claims",
+   "prime pack for domain language"
+  ]
+  avoid: #[
+   "whole-repo paste",
+   "mounted _workbench as consumer corpus",
+   "ungraded free-form resonance prose as facts"
+  ]
+ }
+
+ ~#generation_rules: #[
+  "propose edits as S2 plans with exact ranges — never approximate apply",
+  "label every claim E0/E1/E2",
+  "use pulse budgets for multi-file work",
+  "write episodes and harness run refs after meaningful work",
+  "respect !avoid and layer boundaries from agent-surface"
+ ]
+
+ ~#eval: .{
+  harness: @runs
+  memory: @memory
+  improve: "baseline-evals + probe-loop; score tool-use correctness not only chat quality"
+ }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Spw for building an organization
+// ═══════════════════════════════════════════════════════════════
+
+^["organization"]{
+ ~#thesis: "An organization is a living garden of coordinates: ownership beds, method pulses, graded claims, episode memory, and exportable packets — humans and LLMs share the same topography."
+ ~#status: "proposed"
+
+ ~#org_objects: .{
+  charter: ".spw/workspace.spw + invariants (what the org is for)"
+  beds: "roots/subroots as teams/domains/products"
+  roles: "primes + ownership tags (#:layer #!intent) as org language"
+  methods: "named pulses = SOPs (scope, beats, budget, grade cap)"
+  knowledge: "shape/signature library + twin related-work"
+  decisions: "episodes + compare packets (what changed and why)"
+  audits: "static gates + consumer audits/ tree"
+  onboarding: "agent-surface + phd-domain packs as role glossaries"
+  boundaries: "mount: workbench is instrument; consumer owns .spw/"
+ }
+
+ ~#org_loops: #[
+  .{name=weekly_health, pulse="category E0 brace+resolve+stale-cast", llm="summarize graded findings only"},
+  .{name=design_review, tools="compare+twins+export packet", human="decision episode"},
+  .{name=incident, tools="walk byproduct+name-impact", human="ownership rebind"},
+  .{name=onboard, tools="agent-surface+bed prime", llm="guided tour with avoid list"},
+  .{name=release, tools="fuzz:ship+capability matrix", human="Touch ID / gate"},
+ ]
+
+ ~#culture_branch_merge: .{
+  branch: "fork bed + prime + pulse pack + format profile"
+  merge: "shape twins + false-friend table + shared E grades + episode reconciliation"
+ }
+
+ ~#value_props: #[
+  "one geometry for product, research, and ops notes",
+  "SOPs that are runnable (pulses) not only wiki",
+  "LLM agents that cannot silently rewrite ownership",
+  "auditable memory (runs, wip, episodes) instead of chat residue",
+  "mount pattern scales org-of-orgs (each consumer garden)"
+ ]
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Workbench as example implementation / harness
+// ═══════════════════════════════════════════════════════════════
+
+^["workbench_harness"]{
+ ~#thesis: "spw-workbench is the reference organism: language kernel + runtime + LSP + editors + .spw garden + agent harness — consumers mount it; they do not become it."
+ ~#status: "implemented_partial"
+
+ ~#example_implementation: .{
+  shows: #[
+   "parser/runtime/ONF as material law",
+   "LSP as geometry projector (thin clients)",
+   ".spw as org surface (workspace, shelves, harness)",
+   "plans/skills/workflows as agent OS",
+   "mounted-consumer boundary and review skill",
+   "episode commits and human-in-the-loop gate"
+  ]
+  teach: "copy patterns (beds, pulses, audits, agent-surface), not monorepo identity"
+ }
+
+ ~#harness_roles: .{
+  evals: ".spw/harness/evals — baseline quality"
+  probes: ".spw/harness/probes — assay loops"
+  runs: "append-only LLM/agent ledger"
+  memory: "projection of plan/runtime state"
+  agent_surface: "capability firewall"
+  fuzz: "staged static/runtime ship gates"
+  mount: "consumer authority + instrument workbench"
+ }
+
+ ~#enhance_as_harness: #[
+  "golden geometry fixtures (Δ, shape twins, capability matrix) in CI",
+  "LLM tool-use evals against those fixtures",
+  "template consumer repo that mounts workbench + ships sample beds/pulses",
+  "document 'org starter': workspace.spw + agent-surface + one pulse + audit path",
+  "version geometry packets so orgs can pin workbench instrument revision"
+ ]
+
+ ~#anti_goals: #[
+  "workbench as mandatory monorepo for all products",
+  "LLM with write access to seed grammar without avoid rules",
+  "static analysis that only runs tsc and ignores Spw topography"
+ ]
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Enhancement roadmap (value-ordered)
+// ═══════════════════════════════════════════════════════════════
+
+^["roadmap"]{
+ ~#P0_trust: #[
+  "capability honesty (no phantom spw/*)",
+  "compiled LSP default",
+  "true Δ + anti-echo hover",
+  "agent-surface enforced in evals"
+ ]
+ ~#P1_static_llm_joint: #[
+  "transect + compare + twins tool JSON",
+  "S2 edit_plan only path for multi-file agent edits",
+  "CI geometry job + SARIF-like export"
+ ]
+ ~#P2_org: #[
+  "pulse-as-SOP library",
+  "portable review packets",
+  "consumer template + mount docs as product"
+ ]
+ ~#P3_scale: #[
+  "MCP/tool bridge for external agents",
+  "notebook/cell consumers of same tools",
+  "multi-org twin search across mounted gardens (read-only)"
+ ]
+}
+
+^["metrics_of_value"]{
+ static: #["findings_with_grade", "false_positive_rate", "time_to_fix_broken_ref"]
+ llm: #["tool_call_correctness", "plan_exactness", "avoid_violations", "episode_completeness"]
+ org: #["sop_pulses_run", "packet_exports", "onboarding_time", "cross_bed_merge_conflicts_resolved"]
+ harness: #["fixture_pass_rate", "consumer_mount_smoke", "workbench_pin_drift"]
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Wonders
+// ═══════════════════════════════════════════════════════════════
+
+#>wonder_spw_garden_org_static_llm_1
+?["What single static packet would most improve LLM tool use this week?"]{
+  #:depth #!computational // lens: formal structure
+  !probe{ "pick transect vs compare vs twins vs audit — which removes the most free-prose invention from agent edits?" }
+  $%[llm_enhancement.tool_surface]
+}
+
+#>wonder_spw_garden_org_static_llm_2
+?["If this workbench is the harness, what is the smallest consumer org starter?"]{
+  #:depth #!educational // lens: ecological zone
+  !probe{ "list files a new org must own under .spw/ before any product code — workspace, agent-surface, one pulse, audits path." }
+  ~<.spw/agent-surface.spw>
+}

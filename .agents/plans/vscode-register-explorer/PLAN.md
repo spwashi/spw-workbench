@@ -17,22 +17,31 @@ The register explorer is one of three coordinated VS Code surfaces. It contribut
 - **In scope**: define a register explorer view, register tree hierarchy, detail interactions, refresh/reveal commands, runtime-trial-backed data flow, resonance presentation across files or register groups, graph-query entry points for selected registers, rotation rules between phase/provenance/resonance views, materialization-stage-aware inspection affordances (priming registers show charging operators; body-stage registers show materialized values and projection lineage), spirit-sequence phase trajectory in detail views, optional cross-surface filtering when atlas emits `atlas.rootSelected`, shared `SpwContext` fields (`registerSnapshot`, `focusedRegister`), cross-plan event emission (`register.focused`, `register.phaseChanged`), the minimum LSP transport needed to expose register snapshots to the VS Code extension without making atlas state mandatory, and explicit review of existing runtime/query/editor patterns so the explorer grows from organic repo idioms rather than generic tree-view defaults.
 - **Out of scope**: redesigning runtime register semantics, adding persistent register history storage, changing `RegisterBank` contracts, building a custom webview inspector, or implementing manifest parsing (workspace-atlas scope).
 
+## Ladder position
+
+Roadmap rung **3b**. **Blocked** on capability honesty: client already types `spw/registerSnapshot` but the server has **no handler**. Do not build the tree against a phantom method.
+
+Prior: `lsp-custom-request-completions` (implement or demote), soft: `vscode-plugin-performance` visibility rules, soft: editor-contract field ownership.
+
+See `.agents/plans/vscode-lsp-roadmap/PLAN.md`.
+
 ## Files
 
 ```text
-[NEW] .agents/plans/vscode-register-explorer/PLAN.md
-[NEW] .agents/plans/vscode-register-explorer/wip.spw
-[NEW] .agents/plans/vscode-register-explorer/vscode-register-explorer.spw
+[MOD] .agents/plans/vscode-register-explorer/PLAN.md
+[MOD] .agents/plans/vscode-register-explorer/wip.spw
+[REF] .agents/plans/vscode-register-explorer/vscode-register-explorer.spw
 [MOD] extensions/vscode-spw/package.json
 [MOD] extensions/vscode-spw/src/extension.ts
 [MOD] extensions/vscode-spw/src/context.ts
 [NEW] extensions/vscode-spw/src/views/registers-tree.ts
+[MOD] extensions/vscode-spw/src/lsp/custom-requests.ts
 [MOD] packages/spw-lsp/src/context.ts
 [MOD] packages/spw-lsp/src/types.ts
 [MOD] packages/spw-lsp/src/stdio-server.ts
 [NEW] packages/spw-lsp/src/handlers/runtime.ts
 [MOD?] packages/spw-lsp/src/server-index.ts
-[DEL] (none)
+[MOD?] packages/spw-lsp/src/handlers/display.ts
 ```
 
 ### Craft guard
