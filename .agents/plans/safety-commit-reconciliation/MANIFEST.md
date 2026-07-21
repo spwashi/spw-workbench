@@ -31,6 +31,10 @@ Checkpoint size: 147 files, 17,539 insertions, 1,245 deletions. The original epi
 
 Resolution status after Seed partition:
 
+Portable Seed reconstruction landed as `86d433b4`; later partitions may consume it but must not silently redefine these invariants.
+
+Parse-health follow-up `55190299` makes Seed's topography snapshot the shared lexeme-closure authority; analyzers should delegate to it instead of copying escape logic.
+
 - resolved: `<>` Frame operands now determine ONF arguments and arity;
 - resolved: mutation runs expose one input-coordinate `plannedDifferential` and distinguish planned/applied work;
 - resolved: parallel composition replaces, rather than appends, the cumulative base transform;
@@ -38,6 +42,13 @@ Resolution status after Seed partition:
 - resolved: coupling construction/reading validates arity, own keys, surfaces, placement, and occupancy/payload compatibility;
 - pending LSP partition: shared manifest fallback and duplicate-root policy;
 - resolved: transpose returns a separately labeled, non-vector-multipliable matrix type.
+
+Runtime integration status:
+
+- ready: `<>["a","b"]` lowers two operands, creates exact bidirectional adjacency, and emits a traceable relation event;
+- ready: relation affinity is distinct from Capsule boundary affinity;
+- ready: coupling density is explicitly derived from exact edges and refreshed as register population changes;
+- ready: executable runtime tables no longer present chemistry or acoustic readings as implementation fact.
 
 ## Reviewed post-checkpoint candidates
 

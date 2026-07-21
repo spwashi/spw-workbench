@@ -16,9 +16,16 @@ export type {
 
 export {
   OPERATOR_AFFINITIES,
+  BOUNDARY_AFFINITIES,
   BRACE_AFFINITIES,
+  COUPLING_KIND_BY_SURFACE,
+  BRACE_COUPLING_KIND,
   DEFAULT_REGISTER_DESCRIPTOR,
   descriptorForKey,
+  couplingKindForSurface,
+  couplingKindForBrace,
+  couplingDescriptorForSurface,
+  couplingDescriptorForBrace,
 } from './state/type-affinities'
 
 export { RegisterBank } from './state/register-bank'

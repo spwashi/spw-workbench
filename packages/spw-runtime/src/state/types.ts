@@ -4,6 +4,7 @@ export type { RegisterId }
 export type RegisterAccessMode =
   | 'kinetic'
   | 'structural'
+  | 'relational'
   | 'deferred'
   | 'conditional'
   | 'resolved'
@@ -29,6 +30,7 @@ export type ContainerAffinity =
   | 'scalar'
   | 'stream'
   | 'capsule'
+  | 'relation'
 
 export interface RegisterDescriptor {
   name: string
@@ -181,11 +183,11 @@ export interface RegisterMeta {
   /** Typed address — undefined for legacy cells created with bare string keys */
   address?: RegisterAddress
 
-  // ── Acoustic fields ───────────────────────────────────────
+  // ── Derived observation fields ────────────────────────────
 
   /** Liminality — scope-awareness level */
   liminality?: Liminality
-  /** Acoustic frequency — writes/sec over sliding window */
+  /** Write frequency — writes/sec over a sliding window */
   frequency?: number
   /** Coupling — normalized inter-register reference density (0–1) */
   coupling?: number
@@ -216,4 +218,6 @@ export interface RegisterSnapshot {
   focusKey: RegisterId
   entries: Record<RegisterId, RegisterEntry>
   lensIndex: Record<string, RegisterId[]>
+  /** Exact, bidirectional adjacency for explicit `<>` relations. */
+  couplingEdges: Record<RegisterId, RegisterId[]>
 }

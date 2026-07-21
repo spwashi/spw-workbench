@@ -1,11 +1,11 @@
 /**
- * Substrate — a processing context where register events react.
+ * Substrate — a processing context where register events are dispatched.
  *
  * The structural substrate (A-line pipeline) is batch and sequential.
  * Additional substrates add event-driven and resonance processing.
  *
  * Vocabulary:
- *   Substrate  — surface where reactions happen
+ *   Substrate  — surface where events are processed
  *   Bind       — attach a handler to a substrate (~ deferral = substrate binding)
  *   Emit       — dispatch a register event to bound handlers
  *   Drain      — consume all accumulated events
@@ -99,7 +99,7 @@ export class Substrate {
 
     /**
      * Emit a register event.
-     * @spw:axis[layer=flow] - Event-driven reaction stream.
+     * @spw:axis[layer=flow] - Event-driven dispatch stream.
      */
     emit(event: RegisterEvent): void {
         this.events.push(event)

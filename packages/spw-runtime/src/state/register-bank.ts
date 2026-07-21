@@ -129,7 +129,7 @@ export class RegisterBank {
   private readonly lensIndex = new Map<string, Set<RegisterId>>()
   /** Circular buffer of write timestamps per cell (last N) for frequency computation */
   private readonly writeTimestamps = new Map<string, number[]>()
-  /** Coupling edges: Map<keyA, Set<keyB>> (bidirectional) */
+  /** Exact adjacency for explicit `<>` relations (bidirectional). */
   private readonly couplingEdges = new Map<RegisterId, Set<RegisterId>>()
   private focusKey = $register`"`
   /** Optional substrate for event-driven processing. Opt-in: zero overhead when null. */
@@ -483,16 +483,23 @@ export class RegisterBank {
     return this.get($register`mark:${name}`)
   }
 
-  // ── Coupling ───────────────────────────────────────────────
+  // ── Explicit relations ─────────────────────────────────────
 
-  /** Register a coupling edge between two cells. Bidirectional. */
+  /**
+   * Register a coupling edge between two cells. Adjacency is bidirectional
+   * and idempotent, while each invocation remains visible as an event.
+   * The current edge is created only by the explicit `<>` relation operator.
+   * Boundary observations remain on their own ONF nodes; copying a single
+   * boundary kind onto endpoints would lose information when a cell has
+   * multiple differently described edges.
+   */
   couple(keyA: RegisterId, keyB: RegisterId): void {
     this.ensureEntry(keyA)
     this.ensureEntry(keyB)
 
-    // Add bidirectional edges
     if (!this.couplingEdges.has(keyA)) this.couplingEdges.set(keyA, new Set())
     if (!this.couplingEdges.has(keyB)) this.couplingEdges.set(keyB, new Set())
+
     this.couplingEdges.get(keyA)!.add(keyB)
     this.couplingEdges.get(keyB)!.add(keyA)
 
@@ -514,6 +521,12 @@ export class RegisterBank {
     })
   }
 
+  /** Return a sorted copy of the exact peers related to `key`. */
+  coupledKeys(key: RegisterId): RegisterId[] {
+    const peers = this.couplingEdges.get(key)
+    return peers ? [...peers].sort((a, b) => a.localeCompare(b)) : []
+  }
+
   couplingOf(key: RegisterId): number | undefined {
     return this.entries.get(key)?.meta.coupling
   }
@@ -521,6 +534,7 @@ export class RegisterBank {
   snapshot(): RegisterSnapshot {
     const entries: RegisterSnapshot['entries'] = {}
     const lensIndex: RegisterSnapshot['lensIndex'] = {}
+    const couplingEdges: RegisterSnapshot['couplingEdges'] = {}
 
     for (const [key, entry] of this.entries.entries()) {
       entries[key] = {
@@ -548,10 +562,15 @@ export class RegisterBank {
       lensIndex[lens] = [...keys].sort((a, b) => a.localeCompare(b))
     }
 
+    for (const key of this.entries.keys()) {
+      couplingEdges[key] = this.coupledKeys(key)
+    }
+
     return {
       focusKey: this.focusKey,
       entries,
       lensIndex,
+      couplingEdges,
     }
   }
 
@@ -599,6 +618,7 @@ export class RegisterBank {
     }
 
     this.entries.set(key, entry)
+    this.refreshCouplingDensities()
     return entry
   }
 
@@ -653,7 +673,7 @@ export class RegisterBank {
     }
   }
 
-  /** Record a write timestamp and recompute acoustic frequency for a cell. */
+  /** Record a write timestamp and recompute write frequency for a cell. */
   private recordWriteTimestamp(key: RegisterId): void {
     const now = Date.now()
     let timestamps = this.writeTimestamps.get(key)
@@ -686,5 +706,12 @@ export class RegisterBank {
     const edgeCount = edges ? edges.size : 0
     const totalCells = Math.max(this.entries.size - 1, 1) // exclude self
     entry.meta.coupling = clamp01(edgeCount / totalCells)
+  }
+
+  /** Keep the derived density current when the register population changes. */
+  private refreshCouplingDensities(): void {
+    for (const key of this.entries.keys()) {
+      this.updateCoupling(key)
+    }
   }
 }
