@@ -113,6 +113,22 @@ describe('mounted workspace navigation', () => {
     await expect(resolveWorkspacePath(workspace, '../outside.spw')).rejects.toThrow('outside the consumer root')
   })
 
+  it('keeps an externally stored mounted workbench classified as infrastructure', async () => {
+    const root = await createConsumer()
+    const externalWorkbench = await createCanonicalWorkspace()
+    const mountedWorkbench = path.join(root, '.spw', '_workbench')
+    await fs.rm(mountedWorkbench, { recursive: true })
+    await fs.symlink(externalWorkbench, mountedWorkbench, 'junction')
+
+    const workspace = await discoverSpwWorkspace(
+      path.join(mountedWorkbench, 'packages', 'spw-cli'),
+    )
+
+    expect(workspace.consumerRoot).toBe(root)
+    expect(workspace.roots.find(({ sigil }) => sigil === 'workbench')?.role)
+      .toBe('infrastructure')
+  })
+
   it('falls back only when workspace.spw is absent', async () => {
     const root = await createConsumer(null)
     const workspace = await discoverSpwWorkspace(path.join(root, '.spw', '_workbench'))

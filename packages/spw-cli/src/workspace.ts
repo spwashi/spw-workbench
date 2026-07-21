@@ -254,13 +254,13 @@ async function resolveRoot(
     realPathOrResolved(workbenchRoot),
   ])
   const insideConsumer = isWithin(comparisonConsumer, comparisonPath)
-  const role: WorkspaceRootRole = !insideConsumer
-    ? 'external'
-    : mode === 'canonical'
-      ? 'canonical'
-      : isWithin(comparisonWorkbench, comparisonPath)
-        ? 'infrastructure'
-        : 'consumer'
+  const insideMountedWorkbench = mode === 'mounted-consumer' &&
+    isWithin(comparisonWorkbench, comparisonPath)
+  let role: WorkspaceRootRole
+  if (insideMountedWorkbench) role = 'infrastructure'
+  else if (!insideConsumer) role = 'external'
+  else if (mode === 'canonical') role = 'canonical'
+  else role = 'consumer'
 
   return {
     sigil,
