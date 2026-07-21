@@ -55,6 +55,11 @@
     "audit:ui:selectors:update": "node --import tsx scripts/analyzers/ui-contract-audit.ts --mode=ui-selectors --update",
     "audit:spw:syntax": "node --import tsx scripts/analyzers/spw-syntax-validate.ts -- --exclude .agents",
     "audit:spw:syntax:json": "node --import tsx scripts/analyzers/spw-syntax-validate.ts --json -- --exclude .agents",
+    "audit:topography": "node --import tsx scripts/analyzers/spw-topography-scan.ts -- --exclude .agents",
+    "audit:topography:json": "node --import tsx scripts/analyzers/spw-topography-scan.ts --json -- --exclude .agents",
+    "spw:refactor:check": "node --import tsx scripts/analyzers/spw-refactor-check.ts",
+    "audit:flow": "node --import tsx scripts/analyzers/spw-flow-scan.ts -e .agents",
+    "audit:flow:json": "node --import tsx scripts/analyzers/spw-flow-scan.ts --json -e .agents",
     "audit:async": "npm run audit:markers:async",
     "audit:context-panel": "npm run audit:ui:context-panel",
     "audit:debt": "npm run audit:markers:debt",
@@ -118,6 +123,7 @@
     "build:intellij": "cd extensions/intellij-spw && ./gradlew buildPlugin",
     "build:extensions": "npm run build:vscode && npm run build:intellij",
     "test:run": "npm run test:runtime && npm run test:dom",
+    "test:analyzers": "vitest --config vitest.analyzers.config.ts run",
     "test:seed": "vitest --config vitest.seed.config.ts run",
     "test:runtime": "vitest --config vitest.runtime.config.ts run",
     "test:dom": "vitest --config vitest.dom.config.ts run",
@@ -132,6 +138,7 @@
     "spw:agent:vibe": "bash scripts/agent-tools.sh vibe"
   },
   "devDependencies": {
+    "@types/node": "^20.19.0",
     "@typescript-eslint/parser": "^8.57.2",
     "esbuild": "^0.27.3",
     "eslint": "^9.39.4",
