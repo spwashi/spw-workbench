@@ -17,9 +17,10 @@ Checkpoint size: 147 files, 17,539 insertions, 1,245 deletions. The original epi
 | 3 | analyzers | `scripts/analyzers/**`, analyzer-only tests/config/scripts | Delegate parse health and topography to Seed; do not classify syntax independently. |
 | 4 | workspace navigation | CLI workspace/roots/tree, mounted-aware query/select/orientation, CLI-owned tests/templates | Consumer authority, manifest validity, and external/infrastructure traversal policy must agree before mutation tooling consumes them. |
 | 5 | pulse | CLI pulse module/entrypoint/tests and pulse-only command wiring | Plan every file before any `effect.l2.workspace`; reject incompatible or unknown authority inputs. Contours remain deferred. |
-| 6 | LSP and editor | `packages/spw-lsp/**`, `extensions/vscode-spw/**` | LSP transports Seed observations and manifest diagnostics; extension remains a thin client. |
-| 7 | canon and skills | `.agents/skills/**`, `.spw/**`, `docs/**`, `lib/spw-v0.3.0/**` | Restore semantic exhibits only after their executable references exist; keep plan caches out. |
-| 8 | plan ecology | `.agents/plans/**` | Restore and refresh plans against stable implementation commits; split garden/editor plans when their dependencies differ. |
+| 6 | LSP authority | `packages/spw-lsp/**` | Expose Seed diagnostics through a versioned URI-first contract; re-anchor indexing to consumer authority and quarantine the path-bearing legacy endpoint. |
+| 7 | VS Code client | `extensions/vscode-spw/**`, extension release checks | Consume v1 as a thin URI-native client; repair contributions and ship a self-contained matching server. |
+| 8 | canon and skills | `.agents/skills/**`, `.spw/**`, `docs/**`, `lib/spw-v0.3.0/**` | Restore semantic exhibits only after their executable references exist; keep plan caches out. |
+| 9 | plan ecology | `.agents/plans/**` | Restore and refresh plans against stable implementation commits; split garden/editor plans when their dependencies differ. |
 
 ## Amendment blockers
 
@@ -46,7 +47,7 @@ Workspace contract `51d36684` distinguishes valid from invalid present manifests
 - resolved: parallel composition replaces, rather than appends, the cumulative base transform;
 - resolved: mixed-authority profiles fail atomically with explicit blocked-rule receipts;
 - resolved: coupling construction/reading validates arity, own keys, surfaces, placement, and occupancy/payload compatibility;
-- pending LSP partition: shared manifest fallback and duplicate-root policy;
+- ready for human gate: LSP v1 delegates manifest validity to Seed, distinguishes absent/invalid/unreadable authority, and blocks unusable roots without inferred fallback;
 - resolved: transpose returns a separately labeled, non-vector-multipliable matrix type.
 
 Runtime integration status:
@@ -60,7 +61,9 @@ Tooling integration status:
 
 - landed `f96015fc`: analyzers consume Seed topography evidence, crossed boundaries do not manufacture pairs, and incomplete inputs cannot receive refactor-equivalence receipts;
 - landed `eb45f240`: navigation distinguishes consumer, infrastructure, canonical, and explicitly declared external authority while rejecting invalid manifests, unknown sigils, and realpath aliases into mounted infrastructure;
-- ready for human gate: pulse plans all requested files before one guarded `effect.l2.workspace`, refuses macro/cross-authority writes, rejects non-round-tripping UTF-8, and reports semantic equivalence as unclaimed.
+- landed `5f1dff99`: pulse plans all requested files before one guarded `effect.l2.workspace`, refuses macro/cross-authority writes, rejects non-round-tripping UTF-8, and reports semantic equivalence as unclaimed.
+- landed `28906c5d`: designated mounted-workbench identity takes precedence over generic external classification when the mount resolves through a symlink;
+- ready for human gate: LSP initialization inside a designated mount resolves outer consumer authority before config, observable state, indexing, and scanning while ordinary nested folders remain explicit; v1 is a closed URI-only shape and the legacy method is explicitly quarantined.
 
 ## Reviewed post-checkpoint candidates
 
@@ -73,6 +76,9 @@ Replay only after the checkpoint partitions build:
 - validate liminality options before any RegisterBank mutation and define target-order behavior;
 - reject `--contour` without one ladder before mutation dispatch;
 - prevent `measure_only --write` from acquiring workspace authority;
+- retain the LSP split from editor packaging: v1 protocol/authority first, then a URI-native client with an extracted-archive server smoke;
+- repair selector truth before plugin exposure: require full-token consumption, separate `any` from `*`, project all boundary-coupling discriminants, and define ordered-group semantics before choosing collision-free surface syntax;
+- keep projections out of workspace-manifest v1 until base/target URI, readiness, provenance, revision, and hypothetical status are explicit;
 - reconcile mobility catalogs with their executable `apply` domains;
 - keep `swap-grace.spw` out until its boundary kinds, Frame/Body spelling, surface/runtime liminality, and alternate-form witness are corrected.
 
@@ -81,6 +87,7 @@ Replay only after the checkpoint partitions build:
 - Nine current-main plan references name `main@a333db8d`; refresh them only after the replacement series has stable SHAs.
 - Existing plans that call untracked contour/liminality files “landed” remain conditional until the implementation partition commits.
 - Editor order is `form-geometry P0 -> protocol registry -> formContext P1+`; do not encode a dependency cycle.
+- Query order is `query-truth-v1 -> workspaceQuery/v1 -> saved editor profiles`; current cross-file reference navigation does not validate arbitrary selector expressions.
 - Human authority and effect ceiling are orthogonal: confirming an `effect.l1.memory` plan does not grant `effect.l2.workspace`.
 
 ## Completion comparison

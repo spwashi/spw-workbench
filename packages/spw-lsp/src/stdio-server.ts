@@ -27,7 +27,19 @@ import { hover as _hover, documentSymbols as _documentSymbols, workspaceSymbols 
 import { completion as _completion, formatting as _formatting, rangeFormatting as _rangeFormatting, codeAction as _codeAction } from './handlers/editing'
 import { definition as _definition, documentLinks as _documentLinks, references as _references, prepareRename as _prepareRename, rename as _rename } from './handlers/navigation'
 import { semanticTokens as _semanticTokens, SEMANTIC_TOKENS_LEGEND } from './handlers/semantic-tokens'
-import { workspaceManifest as _workspaceManifest, workspaceTemperature as _workspaceTemperature } from './handlers/workspace'
+import {
+  WorkspaceAuthorityBlockedError,
+  workspaceManifest as _workspaceManifest,
+  workspaceManifestV1 as _workspaceManifestV1,
+  workspaceTemperature as _workspaceTemperature,
+} from './handlers/workspace'
+import {
+  SPW_WORKSPACE_MANIFEST_METHOD,
+  SPW_WORKSPACE_MANIFEST_METHOD_V1,
+  SPW_WORKSPACE_MANIFEST_SCHEMA_VERSION,
+  SPW_WORKSPACE_MANIFEST_SURFACE,
+} from './workspace-protocol'
+import { discoverWorkspaceConsumerPath } from './workspace-authority'
 
 // ── Helpers (extracted) ─────────────────────────────────────────
 import {
@@ -74,6 +86,15 @@ function log(message: string): void { ctx.log(message) }
 function sendResult(id: number | string | null, result: any): void { ctx.sendResult(id, result) }
 function sendError(id: number | string | null, code: number, message: string, data?: any): void { ctx.sendError(id, code, message, data) }
 function sendNotification(method: string, params: any): void { ctx.sendNotification(method, params) }
+
+function documentVersion(value: unknown): number | null {
+  return typeof value === 'number' &&
+    Number.isInteger(value) &&
+    value >= -2_147_483_648 &&
+    value <= 2_147_483_647
+    ? value
+    : null
+}
 
 // ── Thin wrappers (close over module-level state) ───────────────
 
@@ -164,11 +185,17 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
     const deps = getDeps()
     switch (message.method) {
       case 'initialize': {
-        WORKSPACE_ROOT = parseWorkspaceRoot(message.params)
+        const requestedRoot = parseWorkspaceRoot(message.params)
+        WORKSPACE_ROOT = await discoverWorkspaceConsumerPath(requestedRoot)
+        ctx.workspaceRoot = WORKSPACE_ROOT
         CONFIG = await loadConfig(WORKSPACE_ROOT, message.params?.initializationOptions)
         serverIndex = new ServerIndex(WORKSPACE_ROOT)
-        loadObservableState()
-        log(`initialize workspace=${WORKSPACE_ROOT} config=${JSON.stringify(CONFIG)}`)
+        ctx.config = CONFIG
+        ctx.serverIndex = serverIndex
+        ctx.workspaceFilesCache = null
+        workspaceFilesCache = null
+        void loadObservableState()
+        log(`initialize consumer-authority roots=${Object.keys(CONFIG.roots).length}`)
 
         sendResult(id, {
           serverInfo: { name: 'spw-lsp', version: '0.3.0' },
@@ -194,6 +221,19 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
               legend: SEMANTIC_TOKENS_LEGEND,
               full: true,
               range: false,
+            },
+            workspace: {
+              workspaceFolders: { supported: false, changeNotifications: false },
+            },
+            experimental: {
+              spw: {
+                workspaceManifest: {
+                  method: SPW_WORKSPACE_MANIFEST_METHOD_V1,
+                  schemaVersion: SPW_WORKSPACE_MANIFEST_SCHEMA_VERSION,
+                  surface: SPW_WORKSPACE_MANIFEST_SURFACE,
+                  identity: 'uri',
+                },
+              },
             },
           },
         })
@@ -307,7 +347,12 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
         return
       }
 
-      case 'spw/workspaceManifest': {
+      case SPW_WORKSPACE_MANIFEST_METHOD_V1: {
+        sendResult(id, await _workspaceManifestV1(deps))
+        return
+      }
+
+      case SPW_WORKSPACE_MANIFEST_METHOD: {
         sendResult(id, await _workspaceManifest(deps))
         return
       }
@@ -324,8 +369,16 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
         return
     }
   } catch (error) {
-    const details = error instanceof Error ? error.message : String(error)
-    sendError(id, -32603, 'Internal error', details)
+    if (error instanceof WorkspaceAuthorityBlockedError) {
+      sendError(id, -32803, 'Workspace authority is blocked.', {
+        code: error.code,
+        status: error.status,
+      })
+      return
+    }
+    const errorName = error instanceof Error ? error.name : 'UnknownError'
+    log(`request failed method=${message.method} error=${errorName}`)
+    sendError(id, -32603, 'Internal error', { code: 'SPW_INTERNAL_ERROR' })
   }
 }
 
@@ -342,8 +395,8 @@ function handleNotification(message: JsonRpcRequest): void {
     case 'textDocument/didOpen': {
       const uri = message.params?.textDocument?.uri
       const text = message.params?.textDocument?.text
-      const version = Number(message.params?.textDocument?.version ?? 1)
-      if (!uri || typeof text !== 'string') return
+      const version = documentVersion(message.params?.textDocument?.version)
+      if (typeof uri !== 'string' || typeof text !== 'string' || version === null) return
       const filePath = pathFromUri(uri)
       if (!filePath) return
       serverIndex.openDocument(uri, filePath, text, version)
@@ -353,10 +406,10 @@ function handleNotification(message: JsonRpcRequest): void {
 
     case 'textDocument/didChange': {
       const uri = message.params?.textDocument?.uri
-      const version = Number(message.params?.textDocument?.version ?? 1)
+      const version = documentVersion(message.params?.textDocument?.version)
       const changes = Array.isArray(message.params?.contentChanges) ? message.params.contentChanges : []
       const latest = changes[changes.length - 1]
-      if (!uri || typeof latest?.text !== 'string') return
+      if (typeof uri !== 'string' || typeof latest?.text !== 'string' || version === null) return
       serverIndex.updateDocument(uri, latest.text, version)
       debounceDiagnostics(uri)
       return

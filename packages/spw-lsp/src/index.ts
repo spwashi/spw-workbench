@@ -9,4 +9,5 @@ export {
 export { ServerContext } from './context'
 export { ServerIndex, SIGIL_SEMANTICS } from './server-index'
 export { findPathRefAtPosition, selectPathRefs } from './spw-selector'
+export * from './workspace-protocol'
 export * from './types'

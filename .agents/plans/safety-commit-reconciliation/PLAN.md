@@ -8,7 +8,7 @@ Replace one 147-file safety commit with dependency-ordered commits whose claims,
 
 ## Scope
 
-- **In scope**: inventory `a333db8d`; reconstruct it without committing; partition plans/canon, portable Seed kernels, runtime behavior, CLI/analyzers, and LSP/editor consumers; repair concrete defects; validate every partition; replay reviewed post-checkpoint form-contour, form-geometry, and liminality work.
+- **In scope**: inventory `a333db8d`; reconstruct it without committing; partition plans/canon, portable Seed kernels, runtime behavior, CLI/analyzers, LSP authority, and editor consumers; repair concrete defects; validate every partition; replay reviewed post-checkpoint form-contour, form-geometry, and liminality work.
 - **Out of scope**: rewriting upstream history, mutating the dirty `main` checkout, publishing branches, adding unrequested language grammar, or treating biological/physical metaphor as implemented semantics.
 
 Semantic invariants:
@@ -38,8 +38,8 @@ The authoritative initial manifest is `git show --name-status a333db8d`. Partiti
 [MOD] packages/spw-seed/** (portable types, normalization, workspace roots, canonical probes)
 [MOD] packages/spw-runtime/** (coupling evaluation and explicit register effects)
 [MOD] packages/spw-cli/** (navigation, query, pulse, and command wiring)
-[MOD] packages/spw-lsp/** (thin transport over Seed-owned observations)
-[MOD] extensions/vscode-spw/** (thin editor navigation surfaces)
+[MOD] packages/spw-lsp/** (versioned URI-first transport over Seed-owned observations)
+[MOD] extensions/vscode-spw/** (separately bundled thin editor navigation surfaces)
 [MOD] scripts/** (portable analyzers and CLI entry points)
 [MOD] src/seed/__tests__/** (Seed and analyzer regression coverage)
 [MOD] src/runtime/__tests__/** (runtime/CLI integration coverage)
@@ -64,11 +64,13 @@ The authoritative initial manifest is `git show --name-status a333db8d`. Partiti
 7. `&[cli,workspace] =orient[mounted-consumers] — anchor navigation in consumer authority`
 8. `^seed[mutation] =converge[plans] — reach virtual fixed points`
 9. `&[cli,pulse] =preview[mutations] — restore guarded probe and write gates`
-10. `&[lsp,vscode] =project[workspace-observations] — restore thin editor transports`
-11. `.[canon,skills] =align[operational-theory] — restore exhibits after executable behavior exists`
-12. `.[plans] =rebase[checkpoint-ecology] — restore plan surfaces and refresh dependency truth`
-13. `^seed[form-contours] =project[density] — replay reviewed contour and mobility receipts`
-14. `&[runtime,plans] =integrate[liminality-bridge] — replay explicit effects and aligned theory`
+10. `&[cli,workspace] =repair[mount-role] — keep designated mounts infrastructure`
+11. `&[lsp,workspace] =expose[versioned-evidence] — address consumer authority by URI`
+12. `&[vscode] =navigate[workspace-evidence] — bundle a URI-native thin client`
+13. `.[canon,skills] =align[operational-theory] — restore exhibits after executable behavior exists`
+14. `.[plans] =rebase[checkpoint-ecology] — restore plan surfaces and refresh dependency truth`
+15. `^seed[form-contours] =project[density] — replay reviewed contour and mobility receipts`
+16. `&[runtime,plans] =integrate[liminality-bridge] — replay explicit effects and aligned theory`
 
 Each commit must pass the smallest relevant build/test/lint gate and contain exactly one `#[episode]{ ... }` block.
 
@@ -114,6 +116,22 @@ Macro pulses use explicit scoring policies over tree diffs:
 - `pulse_disposition.publish`: extract only well-formed, sourced, dimensioned material into a reviewable publication candidate.
 
 The shared instrument is a revision-aware tree diff: stable node identity where available, approximate correspondence with confidence where not, parse/reference health, mutation-vector strata, topographic distance, reversibility, affected roots, and downstream probes. Healing and babbling are therefore readable policies (`pulse_disposition.repair` and `pulse_disposition.explore`), not model moods. Macro application remains preview/patch-bundle only until a recoverable multi-file transaction or disposable-worktree protocol exists.
+
+## Editor, indexing, and query trajectory
+
+The LSP workspace surface and editor presentation are separate partitions. The server first exposes `spw/workspaceManifest/v1` with a closed runtime decoder, URI identity, open-document version, explicit `absent`/`valid`/`invalid`/`unreadable` evidence, canonical/mounted/standalone modes, and blocked roots for unusable authority. Initialization re-anchors to an outer consumer only when the requested root is inside its designated `.spw/_workbench`; an ordinary nested folder remains explicit authority. The deprecated endpoint retains local paths only for one compatibility window and returns `RequestFailed` when v1 authority is blocked.
+
+The VS Code follow-up consumes v1 directly, keeps URIs intact, repairs command contributions, bundles a matching server inside the extension, and verifies an extracted archive without repository-relative source or `tsx`. A Neovim adapter should consume the same wire schema rather than editor-specific state. Configurable index and clustering profiles belong above this contract: saved selectors, exclusions, grouping dimensions, ranking receipts, and explicitly opted-in usage signals may alter a view, but not workspace authority or canonical definitions. Any adaptive view profile must expose its feature schema, signal source, update rule or producer, revision, reset/freeze control, and resulting ranking parameters. These parameters remain inspectable workspace data and cannot alter parsing, authority, identity, or canonical semantics.
+
+Projection and simulation need their own versioned evidence surface. A future projection receipt should declare readiness, base and target URI, source/spec/generator provenance, revision, diagnostics, and whether its payload is observed, derived, or hypothetical. A hypothetical simulator must be capped at `effect.l1.memory` and should return runtime/topography deltas; it cannot imply source mutation or semantic equivalence.
+
+The present selector engine is not ready for arbitrary plugin queries. Audit evidence found that `$@_` consumes only `$`, unknown glyphs and trailing forms can be ignored, `*` collides with the collapse operator, textual brace selectors cover only `[]`, `{}`, and `()`, and the matcher for the selector AST's `seq` node currently behaves as disjunction. Meanwhile, Grok's proposed slice syntax and a range-transform proposal both use `..`, so an ordered-sequence spelling is not settled. A bounded `query-truth-v1` partition must require full-token consumption, reject unknown glyphs and unterminated literals, give `any` a distinct node, expose every boundary-coupling discriminant, define whether an ordered same-parent group requires adjacency or merely source order, and introduce participant/capture evidence. Surface spelling follows a collision and fixity study. The current CLI already applies flat per-file reference selection across roots; a later `spw/workspaceQuery/v1` would add revisioned URI-grouped transport. Ordered groups never cross files implicitly, and a named cross-file graph edge must carry relation kind, endpoints, provenance, and per-file revision.
+
+Seed already distinguishes the `<>` operator coupling from six boundary couplings: Scope `()`, Frame `[]`, Body `{}`, Capsule `<…>`, Stream `<<…>>`, and NRange `((…))`. Query exposure should project those existing discriminants and shared ports; shared coupling structure does not imply shared physical dynamics. Left/right positions, spans, and depth are parser observations, while polarity or “physics” remains named profile interpretation. Core pattern grammar provides `_` and `...@rest`, but query selectors do not yet provide captures; a later selector design may reuse those forms only with explicit participant/capture receipts. Ordered results are match groups within one URI, while multi-file selection returns URI-grouped evidence rather than one fictitious cross-file sequence.
+
+Whitespace, line/block variety, and character-level contour have a measurable base: indentation histograms, delimiter spans, per-line or per-token depth deltas, node/line density, and edit distance. Familiarity, taste, asymmetry, and polarity are profile-scored hypotheses over those observations. Formatting tools may propose candidates with before/after and restore receipts; they may call a change reversible only after verifying an exact inverse. None establishes semantic equivalence without parser, reference, and downstream-probe evidence.
+
+LSP root evidence is not yet a claim that every navigation helper enforces that authority. Before multi-file selection ships, path resolution must reject lexical `@root/../escape` and realpath/symlink escapes while still permitting explicitly declared external roots. The main-only range-transform and form-contour documents remain proposals, not executable query behavior.
 
 ## Failure Modes
 
