@@ -554,11 +554,14 @@ export function runMutationAutomata(
         break
       }
 
-      if (!canApply) {
-        stopReason = blockedRules.length > 0 ? 'authority_failure' : 'fixed_point'
+      if (!canApply && !planOnly) {
+        stopReason = 'authority_failure'
         break
       }
 
+      // Plan-only runs advance a virtual source to the same fixed point as an
+      // in-memory run while retaining the original returned `source` and
+      // marking every step unapplied.
       current = pass.finalSource
 
       if (requireIdempotence) {

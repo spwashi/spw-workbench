@@ -88,6 +88,27 @@ describe('mutation automata', () => {
     expect(applyEdits(input, collectPlannedEdits(plan))).toBe(plan.plannedSource)
   })
 
+  it('converges a dry plan to the same virtual fixed point as an in-memory run', () => {
+    const input = '...@rest\n'
+    const plan = runMutationAutomata(input, {
+      profile: 'equiv_scripts',
+      dryRun: true,
+      effectCeiling: 'S1',
+    })
+    const applied = runMutationAutomata(input, {
+      profile: 'equiv_scripts',
+      dryRun: false,
+      effectCeiling: 'S1',
+    })
+
+    expect(plan.source).toBe(input)
+    expect(plan.plannedSource).toBe(applied.source)
+    expect(plan.plannedOutputHash).toBe(applied.outputHash)
+    expect(plan.vector).toEqual(applied.vector)
+    expect(plan.stopReason).toBe('fixed_point')
+    expect(plan.steps.every(step => !step.applied)).toBe(true)
+  })
+
   it('exports one original-coordinate edit plan for multi-rule layout', () => {
     const input = 'a  \r\n\r\n\r\nb'
     const plan = planMutation(input, { profile: 'layout_full' })
