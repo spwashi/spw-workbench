@@ -12,9 +12,12 @@ import {
   heuristicAnnotationHints,
   heuristicFrameCount,
   heuristicSigilHistogram,
+  resolveIndexConfig,
   type CorpusFileSignals,
   type CorpusLink,
   type HubScore,
+  type IndexConfig,
+  type IndexDepth,
   type TopographyReport,
 } from '@spwashi/spw-seed'
 import { PATH_REFS, REFERENCES } from '@spwashi/spw-seed'
@@ -55,19 +58,25 @@ export interface ScanOptions {
   resolvePaths?: boolean
   hubTop?: number
   ignore?: ReadonlySet<string>
+  /** Perf <-> completeness dial (see canonical/index-config.ts). Default 'standard'. */
+  index?: IndexDepth | Partial<IndexConfig>
 }
 
 export async function scanCorpus(opts: ScanOptions): Promise<CorpusScanResult> {
   const resolvePaths = opts.resolvePaths !== false
   const hubTop = opts.hubTop ?? 24
   const ignore = opts.ignore ?? CORPUS_IGNORED
+  const indexConfig = resolveIndexConfig(opts.index)
 
   const workspace = await tryDiscoverSpwWorkspace()
   const absRoots = await Promise.all(
     opts.roots.map(async r => (workspace ? resolveWorkspacePath(workspace, r) : path.resolve(r))),
   )
   const fileLists = await Promise.all(absRoots.map(r => collectSpwFiles(r, { ignore })))
-  const filesAbs = [...new Set(fileLists.flat())].sort()
+  let filesAbs = [...new Set(fileLists.flat())].sort()
+  if (indexConfig.maxFiles > 0 && filesAbs.length > indexConfig.maxFiles) {
+    filesAbs = filesAbs.slice(0, indexConfig.maxFiles)
+  }
   const cwd = workspace?.consumerRoot ?? process.cwd()
 
   const links: CorpusLink[] = []
@@ -85,7 +94,7 @@ export async function scanCorpus(opts: ScanOptions): Promise<CorpusScanResult> {
         return null
       }
 
-      const sigils = heuristicSigilHistogram(source)
+      const sigils = indexConfig.operatorCensus ? heuristicSigilHistogram(source) : {}
       const fileLinks: CorpusLink[] = []
       let pathRefCount = 0
       let rootRefCount = 0
@@ -136,7 +145,7 @@ export async function scanCorpus(opts: ScanOptions): Promise<CorpusScanResult> {
         pathRefCount,
         rootRefCount,
         frameCount: heuristicFrameCount(source),
-        annotationHints: heuristicAnnotationHints(source),
+        annotationHints: indexConfig.annotations ? heuristicAnnotationHints(source) : 0,
         lineCount: source.split(/\r?\n/).length,
       }
 
@@ -316,4 +325,9 @@ export function inventoryStats(rows: InventoryRow[]): {
   return { files: rows.length, lines, pathRefs, rootRefs, frames, byRole }
 }
 
-export type { HubScore, TopographyReport }
+/** Parse a --depth flag value; falls back to 'standard' for anything unrecognized. */
+export function parseIndexDepth(raw: string | undefined): IndexDepth {
+  return raw === 'minimal' || raw === 'standard' || raw === 'full' ? raw : 'standard'
+}
+
+export type { HubScore, TopographyReport, IndexConfig, IndexDepth }

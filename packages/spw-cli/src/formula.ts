@@ -7,12 +7,13 @@
 import process from 'node:process'
 import {
   FORMULA_CATALOG,
+  SPW_MATH_IDIOMS,
   aggregateFormulaPatterns,
   scanFormulas,
   summarizeFormulaHits,
   type FormulaHit,
 } from '@spwashi/spw-seed'
-import { scanCorpus } from './corpus-scan'
+import { parseIndexDepth, scanCorpus, type IndexDepth } from './corpus-scan'
 import { printHelpPage } from './help'
 import { formatTable, meta, renderCounts, truncate } from './view'
 
@@ -20,11 +21,13 @@ interface FormulaArgs {
   roots: string[]
   json: boolean
   catalog: boolean
+  idioms: boolean
   scan: boolean
   top: number
   limit: number
   family?: string
   quiet: boolean
+  depth: IndexDepth
 }
 
 function parseFormulaArgs(argv: string[]): FormulaArgs {
@@ -33,10 +36,12 @@ function parseFormulaArgs(argv: string[]): FormulaArgs {
     roots: [],
     json: false,
     catalog: false,
+    idioms: false,
     scan: false,
     top: 24,
     limit: 60,
     quiet: false,
+    depth: 'standard',
   }
   for (let i = 0; i < args.length; i++) {
     const a = args[i]!
@@ -50,6 +55,10 @@ function parseFormulaArgs(argv: string[]): FormulaArgs {
     }
     if (a === '--catalog') {
       parsed.catalog = true
+      continue
+    }
+    if (a === '--idioms') {
+      parsed.idioms = true
       continue
     }
     if (a === '--scan') {
@@ -70,6 +79,14 @@ function parseFormulaArgs(argv: string[]): FormulaArgs {
     }
     if (a.startsWith('--family=')) {
       parsed.family = a.slice('--family='.length).toLowerCase()
+      continue
+    }
+    if (a === '--depth') {
+      parsed.depth = parseIndexDepth(args[++i])
+      continue
+    }
+    if (a.startsWith('--depth=')) {
+      parsed.depth = parseIndexDepth(a.slice('--depth='.length))
       continue
     }
     if (a === '--top') {
@@ -94,8 +111,8 @@ function parseFormulaArgs(argv: string[]): FormulaArgs {
     }
     throw new Error(`spw formula: unknown flag ${a}`)
   }
-  // Default: catalog alone if no roots; scan if roots given; both if both flags
-  if (!parsed.catalog && !parsed.scan) {
+  // Default: catalog alone if no roots/flags; scan if roots given; explicit flags always win
+  if (!parsed.catalog && !parsed.scan && !parsed.idioms) {
     if (parsed.roots.length) parsed.scan = true
     else parsed.catalog = true
   }
@@ -128,11 +145,21 @@ export function printFormulaHelp(): void {
         title: 'Flags',
         lines: [
           '--catalog         Print machine-backed formula catalog',
+          '--idioms          Print surface-pattern idioms with falsify claims',
           '--scan            Scan .spw roots for pattern hits (default when paths given)',
-          '--family <id>     Filter catalog/hits by family',
+          '--family <id>     Filter catalog/idioms/hits by family',
           '--top N           Pattern frequency table size (default 24)',
           '--limit N / -n N  Max hit lines shown (default 60)',
+          '--depth <d>       Scan depth minimal|standard|full (default standard)',
           '--json            Structured envelope',
+        ],
+      },
+      {
+        title: 'Idioms vs catalog',
+        lines: [
+          'catalog  named formula -> meaning (F2.hold, F8.literacy, …)',
+          'idioms   surface syntax -> math machine -> falsifiable claim',
+          'idioms are what an agent checks a claim against, not just what it names',
         ],
       },
       {
@@ -166,6 +193,9 @@ export async function runSpwFormulaCli(argv: string[] = process.argv): Promise<v
   const catalog = FORMULA_CATALOG.filter(
     e => !args.family || e.family === args.family,
   )
+  const idioms = SPW_MATH_IDIOMS.filter(
+    i => !args.family || i.family === args.family,
+  )
 
   type FileReport = { file: string; hits: FormulaHit[]; byFamily: Record<string, number> }
   let reports: FileReport[] = []
@@ -173,7 +203,7 @@ export async function runSpwFormulaCli(argv: string[] = process.argv): Promise<v
   let allHits: Array<FormulaHit & { file: string }> = []
 
   if (args.scan) {
-    const corpus = await scanCorpus({ roots: args.roots })
+    const corpus = await scanCorpus({ roots: args.roots, index: args.depth })
     for (const [file, source] of corpus.sources) {
       let hits = scanFormulas(source)
       if (args.family) hits = hits.filter(h => h.family === args.family)
@@ -199,6 +229,7 @@ export async function runSpwFormulaCli(argv: string[] = process.argv): Promise<v
           from: args.roots,
           family: args.family ?? null,
           catalog: args.catalog ? catalog : undefined,
+          idioms: args.idioms ? idioms : undefined,
           scan: args.scan
             ? {
                 filesWithHits: reports.length,
@@ -229,6 +260,24 @@ export async function runSpwFormulaCli(argv: string[] = process.argv): Promise<v
           truncate(e.meaning, 48),
         ]),
         { maxCol: 48 },
+      ),
+    )
+    if (args.idioms || args.scan) console.log('')
+  }
+
+  if (args.idioms) {
+    if (!args.quiet) meta(`# spw formula idioms  entries=${idioms.length}`)
+    console.log(
+      formatTable(
+        ['id', 'family', 'surface', 'machine', 'falsify'],
+        idioms.map(i => [
+          i.id,
+          i.family,
+          truncate(i.surface, 32),
+          truncate(i.machine, 32),
+          truncate(i.falsify, 40),
+        ]),
+        { maxCol: 40 },
       ),
     )
     if (args.scan) console.log('')

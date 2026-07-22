@@ -6,7 +6,7 @@
 
 import process from 'node:process'
 import { spwq } from '@spwashi/spw-seed'
-import { scanCorpus } from './corpus-scan'
+import { parseIndexDepth, scanCorpus, type IndexDepth } from './corpus-scan'
 import { printHelpPage } from './help'
 import { CLI_SELECTOR_PRESETS, listCliSelectorPresetNames, resolveCliSelector } from './selectors'
 import { formatTable, meta, renderCounts, truncate } from './view'
@@ -27,6 +27,7 @@ interface AnalyzeArgs {
   json: boolean
   topFiles: number
   quiet: boolean
+  depth: IndexDepth
 }
 
 function parseAnalyzeArgs(argv: string[]): AnalyzeArgs {
@@ -37,6 +38,7 @@ function parseAnalyzeArgs(argv: string[]): AnalyzeArgs {
     json: false,
     topFiles: 12,
     quiet: false,
+    depth: 'standard',
   }
   for (let i = 0; i < args.length; i++) {
     const a = args[i]!
@@ -70,6 +72,14 @@ function parseAnalyzeArgs(argv: string[]): AnalyzeArgs {
     }
     if (a.startsWith('--top=')) {
       parsed.topFiles = Math.max(1, Number(a.slice('--top='.length)) || 12)
+      continue
+    }
+    if (a === '--depth') {
+      parsed.depth = parseIndexDepth(args[++i])
+      continue
+    }
+    if (a.startsWith('--depth=')) {
+      parsed.depth = parseIndexDepth(a.slice('--depth='.length))
       continue
     }
     if (!a.startsWith('-')) {
@@ -110,6 +120,15 @@ export function printAnalyzeHelp(): void {
         lines: DEFAULT_SELECTORS,
       },
       {
+        title: 'Flags',
+        lines: [
+          '--selectors / -s <list>   Comma-separated selector names',
+          '--top / --top-files N     Top-activity file count (default 12)',
+          '--depth <d>               Scan depth minimal|standard|full (default standard)',
+          '--json                    Structured envelope',
+        ],
+      },
+      {
         title: 'Sense loop',
         lines: [
           'invent → map → formula → analyze → query/skim detail',
@@ -148,7 +167,7 @@ export async function runSpwAnalyzeCli(argv: string[] = process.argv): Promise<v
     }
   })
 
-  const corpus = await scanCorpus({ roots: args.roots })
+  const corpus = await scanCorpus({ roots: args.roots, index: args.depth })
   const selectorTotals = new Map<string, number>()
   const perFileActivity = new Map<string, number>()
   const perSelectorFiles = new Map<string, number>()

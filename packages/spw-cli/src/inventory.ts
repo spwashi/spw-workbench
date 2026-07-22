@@ -9,8 +9,10 @@ import { printHelpPage } from './help'
 import {
   filterInventory,
   inventoryStats,
+  parseIndexDepth,
   scanCorpus,
   sortInventory,
+  type IndexDepth,
   type InventoryRole,
   type InventoryRow,
 } from './corpus-scan'
@@ -24,6 +26,7 @@ interface InventArgs {
   limit: number
   hubs: number
   quiet: boolean
+  depth: IndexDepth
 }
 
 function parseInventArgs(argv: string[]): InventArgs {
@@ -36,6 +39,7 @@ function parseInventArgs(argv: string[]): InventArgs {
     limit: 80,
     hubs: 24,
     quiet: false,
+    depth: 'standard',
   }
   for (let i = 0; i < args.length; i++) {
     const a = args[i]!
@@ -81,6 +85,14 @@ function parseInventArgs(argv: string[]): InventArgs {
     }
     if (a === '--hubs') {
       parsed.hubs = Math.max(1, Number(args[++i] ?? 24) || 24)
+      continue
+    }
+    if (a === '--depth') {
+      parsed.depth = parseIndexDepth(args[++i])
+      continue
+    }
+    if (a.startsWith('--depth=')) {
+      parsed.depth = parseIndexDepth(a.slice('--depth='.length))
       continue
     }
     if (!a.startsWith('-')) {
@@ -136,6 +148,14 @@ export function printInventHelp(): void {
         ],
       },
       {
+        title: 'Flags',
+        lines: [
+          '--sort / --role / --hubs / --limit / -n   (see usage examples)',
+          '--depth <d>   Scan depth minimal|standard|full (default standard)',
+          '--json        Structured envelope',
+        ],
+      },
+      {
         title: 'Sense loop',
         lines: [
           '1. invent  — what exists + warmth',
@@ -176,6 +196,7 @@ export async function runSpwInventCli(argv: string[] = process.argv): Promise<vo
   const scan = await scanCorpus({
     roots: args.roots,
     hubTop: args.hubs,
+    index: args.depth,
   })
 
   let rows = filterInventory(scan.inventory, args.role)

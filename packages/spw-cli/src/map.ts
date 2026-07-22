@@ -10,7 +10,7 @@ import {
   compareFamiliarity,
   type TopographyReport,
 } from '@spwashi/spw-seed'
-import { scanCorpus } from './corpus-scan'
+import { parseIndexDepth, scanCorpus, type IndexDepth } from './corpus-scan'
 import { printHelpPage } from './help'
 import { formatTable, meta, metaBlock, truncate } from './view'
 
@@ -21,6 +21,7 @@ interface MapArgs {
   hubs: number
   limit: number
   resolvePaths: boolean
+  depth: IndexDepth
 }
 
 function parseMapArgs(argv: string[]): MapArgs {
@@ -31,6 +32,7 @@ function parseMapArgs(argv: string[]): MapArgs {
     hubs: 12,
     limit: 40,
     resolvePaths: true,
+    depth: 'standard',
   }
   for (let i = 0; i < args.length; i++) {
     const a = args[i]!
@@ -70,6 +72,14 @@ function parseMapArgs(argv: string[]): MapArgs {
       parsed.resolvePaths = false
       continue
     }
+    if (a === '--depth') {
+      parsed.depth = parseIndexDepth(args[++i])
+      continue
+    }
+    if (a.startsWith('--depth=')) {
+      parsed.depth = parseIndexDepth(a.slice('--depth='.length))
+      continue
+    }
     if (!a.startsWith('-')) {
       parsed.roots.push(a)
       continue
@@ -101,6 +111,7 @@ export function printMapHelp(): void {
           'Cycles, topo layers, hubs (high degree), orphans, broken targets',
           'Familiarity strands: path basenames, sigil rhythm, frame density, root shelves',
           '--compare: shared strands vs a second corpus (novel codebase with familiar wires)',
+          '--depth <d>: scan depth minimal|standard|full (default standard)',
         ],
       },
       {
@@ -144,6 +155,7 @@ export async function runSpwMapCli(argv: string[] = process.argv): Promise<void>
     roots: args.roots,
     resolvePaths: args.resolvePaths,
     hubTop: args.hubs,
+    index: args.depth,
   })
   const primary = primaryScan.topography
   let compare: TopographyReport | undefined
@@ -153,6 +165,7 @@ export async function runSpwMapCli(argv: string[] = process.argv): Promise<void>
         roots: args.compare,
         resolvePaths: args.resolvePaths,
         hubTop: args.hubs,
+        index: args.depth,
       })
     ).topography
   }
