@@ -1176,7 +1176,8 @@ export async function inlayHints(params: InlayHintParams, deps: HandlerDeps): Pr
 
             const resolved = await deps.resolveReferencePath(hit, source, docPath, { allowDirectory: true })
             const lineText = lines[hit.span.endLine] ?? ''
-            const hintAt = Math.min(hit.span.endCharacter + 1, lineText.length)
+            // endCharacter is exclusive — place the inlay at the end of the path unit
+            const hintAt = Math.min(hit.span.endCharacter, lineText.length)
 
             if (!resolved) continue
 

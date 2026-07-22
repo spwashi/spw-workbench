@@ -314,7 +314,8 @@ export async function codeAction(params: CodeActionParams, deps: HandlerDeps): P
                         [uri]: [{
                             range: {
                                 start: { line: hit.span.startLine, character: hit.span.startCharacter },
-                                end: { line: hit.span.endLine, character: hit.span.endCharacter + 1 },
+                                // endCharacter is exclusive (LSP Range / SpwSelectorSpan contract)
+                                end: { line: hit.span.endLine, character: hit.span.endCharacter },
                             },
                             newText: replacement,
                         }],
