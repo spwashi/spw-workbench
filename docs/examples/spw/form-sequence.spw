@@ -1,0 +1,75 @@
+# Example: Form sequence (confluence wrap → label → membrane)
+#
+# Teachable surface for form algebra — NOT a file-mutation saga.
+# Pair with: docs/learn/cheat-sheet.md, theory/form-ladders.spw, LSP spw/formSequence
+
+#:layer #!pragmatics
+#:status #!active
+
+^["example"]{
+ ~#name: "form-sequence"
+ ~#demonstrates: "wrap / annotate / membrane / reduce on & confluence"
+ ~#effect: "effect.l0.measure — notation only"
+}
+
+^["intent"]{
+ ~#goal: "Show the preferred confluence product ladder as readable steps"
+ ~#taste: "one op per step; labels explicit"
+}
+
+^["sequence"]{
+ # Full wrap chain (read left → right)
+ notation: `& => {&} => {&[#label]} => {&<#tag>_label}`
+
+ steps: #[
+  .{op=seed, surface=`&`, role=`bare confluence Act`}
+  .{op=wrap, surface=`{&}`, role=`materialize merge inside body`}
+  .{op=annotate, surface=`{&[#label]}`, role=`attach #label selection`}
+  .{op=membrane, surface=`{&<#tag>_label}`, role=`capsule tag + underscore label`}
+ ]
+}
+
+^["reduce"]{
+ # Conceptual reverse — peel layers (still notation)
+ notation: `{&<#tag>_label} => {&[#label]} => {&} => &`
+ law: "Reduction is a view; it does not claim semantic identity with the expanded form"
+}
+
+^["selection_labeling"]{
+ # How a label attaches without rewriting the host file
+ styles: #[
+  .{id=hash, example=`{&[#hold]}`, reading=`annotation channel`}
+  .{id=underscore, example=`{&}_hold`, reading=`trailing label token`}
+  .{id=membrane, example=`{&<#chip>_hold}`, reading=`tag + label`}
+ ]
+ process: #[
+  "1. Choose seed (& or existing product)"
+  "2. Wrap if bare"
+  "3. Attach label style"
+  "4. Optional: mask to endpoints for teaching"
+ ]
+}
+
+^["masks"]{
+ endpoints: "keep first + last surfaces only"
+ wrap_only: "seed + wrap"
+ label_path: "annotate | label | membrane | select"
+}
+
+^["try"]{
+ cli: #[
+  `npm run spw -- skim docs/examples/spw/form-sequence.spw`
+  `npm run spw -- pulse docs/examples/spw/form-sequence.spw --check`
+ ]
+ editor: #[
+  `VS Code: Spw: Explain Form Sequence / Insert Form Sequence`
+  `Neovim: :SpwFormSeq`
+ ]
+ theory: ~"../../theory/spw/form-ladders.spw"
+}
+
+^["refuse"]{
+ "Treat this file as executable mutation automata"
+ "Confuse form wrap with effect.l2.workspace write"
+ "Use // as Spw comment culture (prefer #)"
+}

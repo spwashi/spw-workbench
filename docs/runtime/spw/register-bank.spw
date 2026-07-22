@@ -51,6 +51,20 @@
  measure: { op: '%', signature: "(name, scale?) → number", note: "normalized [0,1]" }
 }
 
+^"memory_management"{
+ # Pressure + caching — types long documented facets; bank now enforces.
+ budget: "setMemoryBudget({ maxCost, maxCells?, preferFacetEviction? })"
+ pressure: "memoryPressure() → cost, byLiminality, overBudget"
+ enforce: "enforceMemoryBudget() — strip early facets, then drop cold cells"
+ purge: "purgeColdCells({ maxLiminality, minAgeMs, limit })"
+ protect: #[`"`, `0-9`, `@`, `mark:*`, focus]
+ lru: "get/deposit/touch update lastUsedAt"
+ facets: "setFacetEvictable(key) enables lex/parse strip under pressure"
+ beat_cache: "BeatCache hot|warm|cold — packages/spw-runtime memory-cache"
+ disk: "spw mem status|dump|load|prune"
+ doc: ~"../md/runtime-memory.md"
+}
+
 ^"workflow"{
  enter: ": or /", # command line
  select: '"' + <key>, # set active register

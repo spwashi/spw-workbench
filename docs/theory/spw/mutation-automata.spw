@@ -20,30 +20,33 @@
   "SourceEdit differentials with line-span planning",
   "runMutationAutomata profiles: layout_canonical, layout_full, equiv_scripts, measure_only",
   "probeMutationTopography: before/plannedAfter/delta + findings",
-  "CLI spw pulse | mutate | beat — plan, --check, --diff, --write, --json"
+  "CLI ceilings: pulse effect.l0.measure (+ optional atomic l2.workspace) ≠ mutate l1.memory→l2.workspace ≠ beat (no tree effect)",
+  "REPL: pulse --stdin under l0.measure; mutate --stdin|--dry-run under l1.memory",
+  "docs/runtime/md/pulse-mutate-beat.md hot-module pipeline (effect.l* names)"
  ]
  proposed: #[
-  "parser-owned span re-resolution before S2 apply",
+  "parser-owned span re-resolution before effect.l2.workspace apply",
   "structure rewrite rules (wrap/unwrap) with pair_id",
   "LSP TextEdit mapping from SourceEdit",
-  "range address #:L12-L28 + indent_lines on substring (see range-transform.spw)"
+  "range address #:L12-L28 + indent_lines on substring (see range-transform.spw)",
+  "dev --apply: optional mutate after pulse layout_safe (still explicit)"
  ]
 }
 
 ^["automata"]{
  state: "source revision + hash + topography snapshot"
  alphabet: "ordered SourceEdit[] under named rules"
- transition: "plan rule → differential → apply (S1) or report-only (S0)"
+ transition: "plan rule → differential → apply (effect.l1.memory) or report-only (effect.l0.measure)"
  accept: "fixed_point | budget_exhausted | authority_failure | idempotence_failure"
  pulse: "one full rule pipeline pass; iterate until accept"
- law: "Delimiter shape alone grants no write; S2 requires explicit --write / authority"
+ law: "Delimiter shape alone grants no write; effect.l2.workspace requires explicit --write / authority"
 }
 
 ^["profiles"]{
  layout_canonical: "layout_bundle — newlines, trim, final newline"
  layout_full: "granular layout rules including indent and comment align"
  equiv_scripts: "script rewrites (seq→ls, wildcard, dot-postfix) + layout_bundle"
- measure_only: "S0 plan; never rewrite returned source"
+ measure_only: "effect.l0.measure plan; never rewrite returned source"
 }
 
 ^["topographical_probes"]{
@@ -67,10 +70,11 @@
 }
 
 ^["effect_grades"]{
- S0: "plan / measure only (default CLI dry-run)"
- S1: "in-memory apply of differentials"
- S2: "workspace write (--write) after plan"
- S3: "external — not used by pulse CLI"
+ "effect.l0.measure": "plan / measure only (default pulse dry-run)"
+ "effect.l1.memory": "in-memory apply of differentials"
+ "effect.l2.workspace": "durable tree write (pulse --write / mutate paths)"
+ "effect.l3.external": "outside workbench; refused by pulse"
+ order: "effect.l0.measure → effect.l1.memory → effect.l2.workspace → effect.l3.external"
 }
 
 ^["sequences"]{

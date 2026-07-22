@@ -27,10 +27,12 @@ Each guide includes a 6-week contributor plan:
 
 Regardless of your path, everyone uses:
 
+- **[Learn spine](../learn/README.md)** — 15 min / 1 h / 1 day before deep contribution
+- **[Agent brief](../learn/agent-brief.md)** — prefer/refuse/verify for automated work
 - **[Common Tasks](common-tasks.md)** — How to build, test, commit, and debug
 - **[New Spw Form Template](new-form-template.md)** — Checklist for adding language forms
-- **[AGENTS.md](../AGENTS.md)** — General rules (layer boundaries, testing, code style)
-- **[CONTRIBUTING.md](../CONTRIBUTING.md)** — Quick entry point (start here if you haven't read it)
+- **[AGENTS.md](../../Agents.md)** — General rules (layer boundaries, testing, code style)
+- **[CONTRIBUTING.md](../../CONTRIBUTING.md)** — Quick entry point (start here if you haven't read it)
 
 ---
 

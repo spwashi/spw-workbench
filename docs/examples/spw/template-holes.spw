@@ -1,0 +1,45 @@
+# Example: Template holes and expand discipline
+#
+# Demonstrates saga-style slots. Expand fills; mutate is separate.
+
+#:layer #!pragmatics
+#:status #!active
+
+^["example"]{
+ ~#name: "template-holes"
+ ~#demonstrates: "named slots, defaults, open holes, expand ≠ mutate"
+}
+
+^["intent"]{
+ ~#goal: "Teach named slots and bare holes without mustache foreignness"
+ ~#taste: "positive fill; incomplete blocks lock"
+}
+
+^["surface"]{
+ id: $saga_id
+ kind: ${kind=pe}
+ profile: ${profile=learn_demo}
+ title: $title
+ claim: $claim
+ open_creative: _
+ grade_cap: ${grade=effect.l1.memory}
+}
+
+^["bindings_hint"]{
+ # Suggested --bind keys for emit expand
+ required: #[title, claim, saga_id]
+ optional: #[kind, profile, grade]
+}
+
+^["law"]{
+ expand: "#expand substitutes bindings and defaults"
+ mutate: "changing a locked phrase is #mutate, not expand"
+ incomplete: "open required slots refuse effect.l2.workspace lock"
+}
+
+^["try"]{
+ list_holes: `npm run spw -- emit holes docs/examples/spw/template-holes.spw`
+ expand: `npm run spw -- emit expand docs/examples/spw/template-holes.spw --bind title="Learn" --bind claim="measure first" --bind saga_id="demo"`
+ macros: ~"../../../prompts/sagas/macros.spw"
+ learn: ~"../../learn/worked-cli.md"
+}

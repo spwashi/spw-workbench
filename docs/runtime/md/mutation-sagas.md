@@ -76,11 +76,16 @@ Customize free knobs (objective, budgets, coordinate allow-list) without forking
 # PE hold sample
 npm run spw -- emit pack path/to/pack.spw --host mj --measure
 
+# Fractal + context salience (α(c) reweights Hold; genotype unchanged)
+npm run spw -- emit fractal path/to/pack.spw --profile line_propagate --context canon --measure --json
+
 # Layout / ladder pulse
 npm run spw -- pulse --profile layout_canonical --check file.spw
 npm run spw -- pulse --ladder '&'
 npm run spw -- pulse --ladder frame --contour balanced
 ```
+
+Dimensional axes: `docs/theory/spw/dimensional-axes.spw`, `prompts/substrate/axes.spw`, `packages/spw-cli/src/emit/axes.ts`.
 
 Proposed (not required yet): `spw saga append|expand|optimize` that only appends `>>` lines and prints objective samples.
 

@@ -1,4 +1,12 @@
+# Few-shot Spw cards
+
+Tiny syntax samples. For progressive learning (CLI, form, editors) see
+[docs/learn/README.md](../../learn/README.md) and the [cheat sheet](../../learn/cheat-sheet.md).
+
+Prefer `#` line comments in Spw culture (not `//`).
+
 ```spw
+# Action inject
 !["hello world"]
 ```
 
@@ -57,6 +65,43 @@
      }
 }
 ```
+
+```spw
+# Form sequence (notation — confluence wrap → label)
+# & => {&} => {&[#claim]}
+&
+{&}
+{&[#claim]}
+```
+
+```spw
+# Template slots (expand fills; mutate is separate)
+^["card"]{
+ title: $title
+ claim: ${claim=measure first}
+ open: _
+}
+```
+
+```spw
+# Path + root refs (gf / documentLink)
+~"./form-sequence.spw"
+# @docs/learn/README.md  — when @docs root is declared
+```
+
+```spw
+# Measure + trait
+~#goal: "learn first"
+$%[register.bank_size]
+```
+
+## Next
+
+| Time | Go |
+|------|-----|
+| 15 min | [learn/path.md](../../learn/path.md#15-minutes) |
+| 1 hour | [learn/worked-cli.md](../../learn/worked-cli.md) |
+| Forms | [examples/spw/form-sequence.spw](../../examples/spw/form-sequence.spw) |
 
 ```spw
 ~[@items]{

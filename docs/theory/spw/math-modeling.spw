@@ -1,0 +1,108 @@
+# Math Modeling — testable Spw algebra
+#
+# Spw is not only a notation aesthetic. It should carry equations, graphs,
+# and iterative laws that can be *probed* in the seed kernel.
+#
+# Machine: packages/spw-seed/src/math/
+# PE includes: prompts/math/
+# Roadmap: docs/plans/md/math-hardware-roadmap.md
+
+#:layer #!semantics
+#:status #!active
+
+^seed[Spw.Math.Modeling v:0.1 @profile:research @intent:testable_math]
+{_math
+
+ status: .{
+  implemented = `seed math probes (graph, loop, equation) + emit Hold product`
+  measured = `vitest math.test.ts; pulse --matrix mutation tables`
+  proposed = `Act-level scheduler, fine-grained dataflow IR, novel hardware maps`
+  interpretive = `sigil metaphors for graph/loop/equation (not automatic evaluation)`
+ }[reg=facet]
+
+ // ── Three modeling families ───────────────────────────────────
+
+ families: #[
+  .{
+   id=graph
+   spw_surface = `~path hops, @root edges, & confluence, <> couple, selector DAG`
+   machine = `packages/spw-seed/src/math/graph.ts`
+   tests = #[detectCycle, topologicalSort, shortestPath, adjacencyMatrix]
+   falsify = `A selector graph with a cycle claims acyclicity.`
+  }
+  .{
+   id=loop
+   spw_surface = `saga observe→mutate→measure→decide; pulse sequences; fixed-point Hold`
+   machine = `packages/spw-seed/src/math/loop.ts`
+   tests = #[fixedPoint, rangeFold, orbit, logisticOrbit]
+   falsify = `A "converged" saga exceeds maxIter without eq(x,f(x)).`
+  }
+  .{
+   id=equation
+   spw_surface = `%measure residual; = assignment; Hold ∏ h_i^{α_i}; linear constraints`
+   machine = `packages/spw-seed/src/math/equation.ts + emit/axes holdProduct`
+   tests = #[evalPolynomial, bisectionRoot, solveLinearSystem, productConstraint]
+   falsify = `productConstraint returns 1 when any factor is 0 with positive exponent.`
+  }
+  .{
+   id=field
+   spw_surface = `sites, carriers, decay, diffuse, cascade, affinity, capacity, beat`
+   machine = `packages/spw-seed/src/math/field.ts`
+   tests = #[decayField, transfer, diffuseField, affinityAllocate, capacityStep, fieldBeat]
+   falsify = `Undirected diffuse changes total mass beyond tolerance.`
+   production = `prompts/production/ensemble.spw — show/template ensembles`
+  }
+ ][reg=set]
+
+ // ── Notation bridge (authoring) ───────────────────────────────
+
+ notation: .{
+  graph_edge = `~"to" under from-frame; or explicit edge list in probe surface`
+  cycle_law = `selector graphs must be acyclic (query validate already enforces)`
+  fixed_point = `iterate until measure plateaus — saga stop laws`
+  residual = `%name or Hold shortfall 1 - Hold_c`
+  matrix = `pulse --matrix step×metric; adjacencyMatrix for relation weights`
+ }[reg=facet]
+
+ // ── How to test (agent / human) ───────────────────────────────
+
+ discovery: .{
+  catalog = `spw formula --catalog  # F2 Hold, F8 literacy, field/graph/loop laws`
+  scan = `spw formula <roots> [--family hold|field|measure|…]`
+  inventory = `spw invent <roots>  # where formula-dense hubs live`
+  analyze = `spw analyze <roots>  # multi-selector densities`
+  doc = ~"../../runtime/md/sense-loop.md"
+ }[reg=facet]
+
+ test_loop: #[
+  "1. Write a small model as Spw (relations or PE Hold factors)"
+  "2. Encode the same model in a vitest using seed math probes"
+  "3. Name invariant + falsifier (status discipline)"
+  "4. Optional: pulse --matrix for mutation dynamics; emit --measure for Hold"
+  "5. Promote formula into prompts/math/* only when machine parity holds"
+  "6. Discover existing formulas with spw formula before inventing new ones"
+ ][reg=set]
+
+ // ── Granular processing (forward) ─────────────────────────────
+
+ granular: .{
+  today = `file-level format/pulse; match-level query; Act-level runtime interpret`
+  next = `ONF Act queue with explicit schedule; register-bank spatial addressing`
+  finer = `operator micro-steps (reduce → dispatch → resonate) as observable events`
+  hardware_hook = `each micro-step is a candidate for non-von-Neumann mapping`
+ }[reg=facet]
+
+ // ── Novel hardware (plan pointer) ─────────────────────────────
+
+ hardware: .{
+  roadmap = ~"../../plans/md/math-hardware-roadmap.md"
+  lenses = #[optical_wavefront, neuromorphic_event, fpga_dataflow, print_nv_archive]
+  law = `Metaphor does not ship silicon — each map needs measure + falsifier`
+ }[reg=facet]
+
+ refuse: #[
+  "Opaque ML scores as mathematical Hold without named factors"
+  "Claiming runtime executes document `#` prose as resonate Acts"
+  "Hardware roadmap without a seed-testable intermediate model"
+ ][reg=set]
+}

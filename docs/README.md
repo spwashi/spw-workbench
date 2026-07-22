@@ -28,7 +28,7 @@ docs/
 ├── lang/             # Spw language documentation
 │   └── few-shot.spw.md
 │
-└── learn/            # Learning paths (future)
+└── learn/            # Progressive paths, cheat sheet, worked CLI, agent brief
 ```
 
 ## Entry Points
@@ -41,8 +41,12 @@ docs/
 - **Adding a language form?** See `contributing/new-form-template.md`
 
 ### For Users & Learners
+- **Learn spine (start here)?** Open [learn/README.md](learn/README.md) — 15 min / 1 h / 1 day
+- **Cheat sheet?** [learn/cheat-sheet.md](learn/cheat-sheet.md)
+- **Worked CLI?** [learn/worked-cli.md](learn/worked-cli.md)
+- **Examples?** [examples/](examples/) · [examples/index.spw](examples/index.spw)
 - **Complete navigation?** Open `toc.spw` (table of contents)
-- **New to Spw?** Start with `lang/few-shot.spw.md`
+- **New to Spw syntax?** Start with `lang/few-shot.spw.md`
 - **Understanding the architecture?** See `design/goals.md`
 - **UI design principles?** See `.spw/patterns/literate-ui.spw` (operator navigation, snippet economy, component physics)
 - **Need a top-down map?** Read `architecture-map.md`

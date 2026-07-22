@@ -41,3 +41,12 @@ consumer-repository/
 ```
 
 Continue with the [mounted-workbench contract](mounted-workbench.md) or run `npm --prefix .spw/_workbench run spw -- help`.
+
+## Learn next
+
+| Goal | Doc |
+|------|-----|
+| 15 min / 1 h / 1 day paths | [docs/learn/README.md](../../learn/README.md) |
+| Operators + CLI one-pager | [docs/learn/cheat-sheet.md](../../learn/cheat-sheet.md) |
+| invent → map → formula session | [docs/learn/worked-cli.md](../../learn/worked-cli.md) · [sense-loop.md](sense-loop.md) |
+| Teachable surfaces | [docs/examples/](../../examples/) |
