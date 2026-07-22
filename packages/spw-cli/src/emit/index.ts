@@ -14,7 +14,65 @@ export { listBuiltinRegisters, resolveRegisterDims, applyDimSets } from './regis
 export { extractEmitDocument, sliceNamedFrame } from './extract'
 export { encodeHost } from './codecs'
 export { holdPositive, countNegationSpine } from './positive-ground'
-export { collectAnchors, measureContinuity, parseAnchors } from './continuity'
+export { collectAnchors, measureContinuity, parseAnchors, measureHold } from './continuity'
+export {
+  FRACTAL_PROFILES,
+  listFractalProfiles,
+  resolveFractalProfile,
+  mergeFractalConfig,
+  planFractalMutation,
+  runFractalEmit,
+  parseHostList,
+  parseCoordinateList,
+  renderFractalResult,
+  type FractalRunConfig,
+  type FractalPlan,
+  type FractalEmitResult,
+  type FractalMutationConfig,
+  type FractalEmitConfig,
+  type FractalCoordinate,
+  type FractalObjective,
+} from './fractal'
+export {
+  AXIS_CATALOG,
+  AXIS_CONTEXTS,
+  AXIS_RELATIONS,
+  HOLD_FACTORS,
+  salienceForContext,
+  holdAlphaForContext,
+  holdProduct,
+  literacyProduct,
+  normalizeSalience,
+  weightedMean,
+  cacheAxisContext,
+  parseAxisContext,
+  defaultContextForProfile,
+  estimateLiteracy,
+  type AxisContext,
+  type AbstractAxisId,
+  type AxisCacheSnapshot,
+  type HoldFactorId,
+  type AxisEdge,
+} from './axes'
+export {
+  SPW_TEMPLATE_VERSION,
+  expandTemplate,
+  reportHoles,
+  parseBindingsList,
+  mergeBindingMaps,
+  parseLineage,
+  stampDerivative,
+  renderHoleReport,
+  renderExpandResult,
+  BUILTIN_TEMPLATE_IDS,
+  BUILTIN_TEMPLATE_PATHS,
+  type TemplateBindings,
+  type ExpandOptions,
+  type ExpandResult,
+  type HoleReport,
+  type DerivativeStamp,
+  type BuiltinTemplateId,
+} from './template-fill'
 
 export async function emitPackFromFile(
   filePath: string,
@@ -36,6 +94,9 @@ export function emitPackFromSource(
     register: options.register,
     strictPositive: options.strictPositive,
     strictContinuity: options.strictContinuity,
+    strictStyle: options.strictStyle,
+    strictSubject: options.strictSubject,
+    strictGenre: options.strictGenre,
   }
 
   const ir = extractEmitDocument(source, sourcePath, {
@@ -52,6 +113,22 @@ export function emitPackFromSource(
   if (opts.strictContinuity && !pack.measure.continuity.ok) {
     const detail = pack.measure.continuity.missing.join('; ')
     throw new Error(`spw emit: continuity failed — missing anchors: ${detail}`)
+  }
+
+  if (opts.strictStyle && !pack.measure.style_hold.ok) {
+    throw new Error(
+      `spw emit: style hold failed — missing: ${pack.measure.style_hold.missing.join('; ')}`,
+    )
+  }
+  if (opts.strictSubject && !pack.measure.subject_hold.ok) {
+    throw new Error(
+      `spw emit: subject hold failed — missing: ${pack.measure.subject_hold.missing.join('; ')}`,
+    )
+  }
+  if (opts.strictGenre && !pack.measure.genre_hold.ok) {
+    throw new Error(
+      `spw emit: genre hold failed — missing: ${pack.measure.genre_hold.missing.join('; ')}`,
+    )
   }
 
   // Reflect measure warnings onto IR

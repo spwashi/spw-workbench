@@ -121,14 +121,14 @@ export const FORM_MOBILITY_APPLICATION_PROFILE = {
   id: 'Spw.Form.Geometry.Application',
   revision: '0.1',
   status: 'operational',
-  effectGrade: 'S1',
+  effectGrade: 'effect.l1.memory',
   authority: 'in-memory source only',
   semanticEquivalence: 'not_claimed',
 } as const
 
 export interface MobilityApplicationReceipt {
   profile: typeof FORM_MOBILITY_APPLICATION_PROFILE
-  effectGrade: 'S1'
+  effectGrade: 'effect.l1.memory'
   beforeHash: string
   afterHash: string
   beforeHealth: ParseHealth
@@ -772,7 +772,7 @@ export function applyMobilityRule(
     rule,
     receipt: {
       profile: FORM_MOBILITY_APPLICATION_PROFILE,
-      effectGrade: 'S1',
+      effectGrade: 'effect.l1.memory',
       beforeHash: hashString(source),
       afterHash: hashString(next),
       beforeHealth: beforeTopography.parseHealth,
@@ -864,7 +864,7 @@ export const REFERENCE_PROGRESSIONS: readonly ReferenceProgression[] = [
   {
     id: 'ref.to_register_meta',
     name: 'observer → substrate meta',
-    description: 'Published ref bridges to $(L) surface (runtime promote is separate S1)',
+    description: 'Published ref bridges to $(L) surface (runtime promote is separate effect.l1.memory)',
     waypoints: [
       { site: 'free', liminal: 'exterior' },
       { site: 'ref_handle', liminal: 'published', boundary: 'scope' },

@@ -5,7 +5,7 @@
 import type { EmitDocument, EmitHost, EmitMeasure, HostPacket } from './types'
 import { estimateSentences, holdPositive } from './positive-ground'
 import { phrasesForDims } from './registers'
-import { measureContinuity } from './continuity'
+import { measureHold } from './continuity'
 
 export function encodeHost(ir: EmitDocument, host: EmitHost): HostPacket {
   const base = measureDocument(ir)
@@ -15,7 +15,7 @@ export function encodeHost(ir: EmitDocument, host: EmitHost): HostPacket {
         host,
         fields: { ir: JSON.stringify(ir, null, 2) },
         text: JSON.stringify(ir, null, 2),
-        measure: attachContinuity(base, ir, JSON.stringify(ir)),
+        measure: attachHolds(base, ir, JSON.stringify(ir)),
       }
     case 'mj':
       return encodeMj(ir, base)
@@ -47,13 +47,19 @@ function measureDocument(ir: EmitDocument): EmitMeasure {
     slot_count: Object.keys(ir.slots).length,
     sentence_estimate: estimateSentences(corpus),
     warnings: [...ir.meta.warnings, ...pos.warnings],
-    continuity: measureContinuity(corpus, ir.anchors),
+    continuity: measureHold(corpus, ir.anchors, 'continuity'),
+    style_hold: measureHold(corpus, ir.styleAnchors, 'style'),
+    subject_hold: measureHold(corpus, ir.subjectAnchors, 'subject'),
+    genre_hold: measureHold(corpus, ir.genreAnchors, 'genre'),
   }
 }
 
-function attachContinuity(base: EmitMeasure, ir: EmitDocument, text: string): EmitMeasure {
+function attachHolds(base: EmitMeasure, ir: EmitDocument, text: string): EmitMeasure {
   const pos = holdPositive(text)
-  const continuity = measureContinuity(text, ir.anchors)
+  const continuity = measureHold(text, ir.anchors, 'continuity')
+  const style_hold = measureHold(text, ir.styleAnchors, 'style')
+  const subject_hold = measureHold(text, ir.subjectAnchors, 'subject')
+  const genre_hold = measureHold(text, ir.genreAnchors, 'genre')
   return {
     ...base,
     hold_positive: pos.ok,
@@ -61,12 +67,23 @@ function attachContinuity(base: EmitMeasure, ir: EmitDocument, text: string): Em
     sentence_estimate: estimateSentences(text),
     warnings: [
       ...base.warnings.filter(
-        (w) => !w.startsWith('positive_ground:') && !w.startsWith('continuity:'),
+        (w) =>
+          !w.startsWith('positive_ground:') &&
+          !w.startsWith('continuity:') &&
+          !w.startsWith('style:') &&
+          !w.startsWith('subject:') &&
+          !w.startsWith('genre:'),
       ),
       ...pos.warnings,
       ...continuity.warnings,
+      ...style_hold.warnings,
+      ...subject_hold.warnings,
+      ...genre_hold.warnings,
     ],
     continuity,
+    style_hold,
+    subject_hold,
+    genre_hold,
   }
 }
 
@@ -101,7 +118,7 @@ function encodePlain(ir: EmitDocument, measure: EmitMeasure): HostPacket {
     host: 'plain',
     text,
     fields: { text },
-    measure: attachContinuity(measure, ir, text),
+    measure: attachHolds(measure, ir, text),
   }
 }
 
@@ -137,7 +154,7 @@ function encodeMj(ir: EmitDocument, measure: EmitMeasure): HostPacket {
     host: 'mj',
     text,
     fields,
-    measure: attachContinuity(measure, ir, `${short}\n${final}`),
+    measure: attachHolds(measure, ir, `${short}\n${final}`),
   }
 }
 
@@ -152,7 +169,7 @@ function encodeWebCopy(ir: EmitDocument, measure: EmitMeasure): HostPacket {
     host: 'web_copy',
     text,
     fields,
-    measure: attachContinuity(measure, ir, text),
+    measure: attachHolds(measure, ir, text),
   }
 }
 
@@ -180,7 +197,7 @@ function encodeEngNote(ir: EmitDocument, measure: EmitMeasure): HostPacket {
       body: text,
       ...(ir.traits as Record<string, string>),
     },
-    measure: attachContinuity(measure, ir, text),
+    measure: attachHolds(measure, ir, text),
   }
 }
 
@@ -225,7 +242,7 @@ function encodeBrief(ir: EmitDocument, measure: EmitMeasure): HostPacket {
     host: 'brief',
     text,
     fields,
-    measure: attachContinuity(measure, ir, text),
+    measure: attachHolds(measure, ir, text),
   }
 }
 
@@ -251,7 +268,7 @@ function encodeCopy(ir: EmitDocument, measure: EmitMeasure): HostPacket {
     host: 'copy',
     text,
     fields,
-    measure: attachContinuity(measure, ir, text),
+    measure: attachHolds(measure, ir, text),
   }
 }
 
@@ -278,7 +295,7 @@ function encodeAudio(ir: EmitDocument, measure: EmitMeasure): HostPacket {
     host: 'audio',
     text,
     fields,
-    measure: attachContinuity(measure, ir, text),
+    measure: attachHolds(measure, ir, text),
   }
 }
 
@@ -299,6 +316,6 @@ function encodeSocial(ir: EmitDocument, measure: EmitMeasure): HostPacket {
     host: 'social',
     text,
     fields,
-    measure: attachContinuity(measure, ir, text),
+    measure: attachHolds(measure, ir, text),
   }
 }

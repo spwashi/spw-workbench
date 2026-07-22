@@ -28,7 +28,7 @@ import { readCouplingFrame } from '../types/coupling'
 // ── Roles ──────────────────────────────────────────────────────
 
 /**
- * Conceptual operation of a ladder step (not an S0–S3 effect grade).
+ * Conceptual operation of a ladder step (not an effect.l* ceiling).
  */
 export type EnrichmentRole =
   // structural occupancy

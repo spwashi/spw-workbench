@@ -3,6 +3,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { canonicalize, parse } from '@spwashi/spw-seed'
 import { parseCommonFlags } from './args'
+import { collectSpwFiles } from './fs-walk'
 import { printHelpPage } from './help'
 
 type Command = 'check' | 'init' | 'help'
@@ -194,28 +195,6 @@ function canonical(source: string): string {
     ensureFinalNewline: true,
     collapseBlankLines: false,
   }).source
-}
-
-async function collectSpwFiles(dir: string): Promise<string[]> {
-  const out: string[] = []
-
-  async function walk(current: string): Promise<void> {
-    const entries = await fs.readdir(current, { withFileTypes: true })
-    for (const entry of entries) {
-      const target = path.join(current, entry.name)
-      if (entry.isDirectory()) {
-        await walk(target)
-        continue
-      }
-      if (entry.isFile() && entry.name.endsWith('.spw')) {
-        out.push(target)
-      }
-    }
-  }
-
-  if (!await exists(dir)) return []
-  await walk(dir)
-  return out.sort()
 }
 
 function countSemicolons(source: string): { prefixedLines: number; inlineCount: number } {

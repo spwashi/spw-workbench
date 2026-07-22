@@ -35,7 +35,6 @@ export { runSpwInventCli, printInventHelp } from './inventory'
 export { runSpwFormulaCli, printFormulaHelp } from './formula'
 export { runSpwAnalyzeCli, printAnalyzeHelp } from './analyze'
 export { runSpwMapCli, printMapHelp } from './map'
-export { runSpwGeometryCli, printGeometryHelp } from './geometry'
 export { printGeometryHelp, runSpwGeometryCli } from './geometry'
 export {
   emitPackFromFile,

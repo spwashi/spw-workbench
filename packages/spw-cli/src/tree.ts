@@ -1,6 +1,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
+import { DEFAULT_IGNORED_DIRS } from './fs-walk'
 import { printHelpPage } from './help'
 import {
   discoverSpwWorkspace,
@@ -10,8 +11,6 @@ import {
   resolveWorkspacePath,
   type SpwWorkspace,
 } from './workspace'
-
-const IGNORED_DIRECTORIES = new Set(['.git', 'node_modules', 'dist', 'release'])
 
 export type SpwTreeNode =
   | { kind: 'directory'; name: string; path: string; children: SpwTreeNode[] }
@@ -57,6 +56,7 @@ export async function runSpwTreeCli(argv: string[] = process.argv): Promise<void
 
   if (options.json) {
     console.log(JSON.stringify({
+      command: 'tree',
       consumerRoot: '.',
       selector: options.selector,
       tree,
@@ -64,28 +64,43 @@ export async function runSpwTreeCli(argv: string[] = process.argv): Promise<void
     return
   }
 
-  console.log(`# spw tree ${options.selector}`)
+  console.log(`# spw tree ${options.selector}  depth≤${options.depth}`)
   if (!tree) {
     console.log('(no .spw files)')
     return
   }
   renderTree(tree)
+  const stats = countTree(tree)
+  console.error(`── tree  files=${stats.files}  dirs=${stats.dirs}`)
 }
 
 export function printTreeHelp(): void {
   printHelpPage({
     title: 'Spw Tree',
-    usage: ['spw tree [@root|relative-path] [--from start-path] [--depth 4] [--json]'],
-    sections: [{
-      title: 'Examples',
-      lines: [
-        'spw tree',
-        'spw tree @docs --depth 3',
-        'spw tree @shared --depth 2  # declared external root',
-        'spw tree .agents/plans --depth 2',
-        'spw tree @workbench --include-workbench --depth 2',
-      ],
-    }],
+    usage: [
+      'spw tree [@root|relative-path] [--from start-path] [--depth 4] [--json]',
+      'spw tree prompts --depth 2',
+    ],
+    sections: [
+      {
+        title: 'Notes',
+        lines: [
+          'Shows directories that contain .spw files (and the files themselves).',
+          'Pair with: spw skim <file> · spw select <file> --skim · spw query --from <dir> --skim',
+        ],
+      },
+      {
+        title: 'Examples',
+        lines: [
+          'spw tree',
+          'spw tree prompts --depth 2',
+          'spw tree @docs --depth 3',
+          'spw tree @shared --depth 2  # declared external root',
+          'spw tree .agents/plans --depth 2',
+          'spw tree @workbench --include-workbench --depth 2',
+        ],
+      },
+    ],
   })
 }
 
@@ -117,7 +132,7 @@ async function collectTree(
     entries.sort((a, b) => a.name.localeCompare(b.name))
     for (const entry of entries) {
       if (entry.isSymbolicLink()) continue
-      if (entry.isDirectory() && IGNORED_DIRECTORIES.has(entry.name)) continue
+      if (entry.isDirectory() && DEFAULT_IGNORED_DIRS.has(entry.name)) continue
       const childPath = path.join(target, entry.name)
       if (
         workspace.mode === 'mounted-consumer' &&
@@ -144,9 +159,31 @@ async function collectTree(
   }
 }
 
+function countTree(node: SpwTreeNode): { files: number; dirs: number } {
+  if (node.kind === 'file') return { files: 1, dirs: 0 }
+  let files = 0
+  let dirs = 1
+  for (const c of node.children) {
+    const s = countTree(c)
+    files += s.files
+    dirs += s.dirs
+  }
+  return { files, dirs }
+}
+
+function fileCount(node: SpwTreeNode): number {
+  if (node.kind === 'file') return 1
+  return node.children.reduce((n, c) => n + fileCount(c), 0)
+}
+
 function renderTree(node: SpwTreeNode, prefix = '', isLast = true, root = true): void {
   const branch = root ? '' : isLast ? '└─ ' : '├─ '
-  console.log(`${prefix}${branch}${node.name}`)
+  if (node.kind === 'directory') {
+    const n = fileCount(node)
+    console.log(`${prefix}${branch}${node.name}/  (${n})`)
+  } else {
+    console.log(`${prefix}${branch}${node.name}`)
+  }
   if (node.kind !== 'directory') return
 
   const childPrefix = root ? '' : `${prefix}${isLast ? '   ' : '│  '}`

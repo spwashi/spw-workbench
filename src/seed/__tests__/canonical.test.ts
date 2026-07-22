@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest'
-import { canonicalize, hashString } from '../canonical'
+import {
+  canonicalize,
+  hashString,
+  reflowProseBlocks,
+  wrapWords,
+  isProseCommentLine,
+  resolveFormatProfile,
+} from '../canonical'
 
 describe('canonicalize', () => {
   it('normalizes line endings and trims trailing whitespace', () => {
@@ -133,5 +140,55 @@ describe('blankLineBetweenFrames', () => {
     const input = '^["a"] {\nval\n}\n# comment'
     const result = canonicalize(input, opts)
     expect(result.source).toBe('^["a"] {\nval\n}\n\n# comment\n')
+  })
+})
+
+describe('reflowProse', () => {
+  it('detects prose vs directive comments', () => {
+    expect(isProseCommentLine('# hello')).toBe(true)
+    expect(isProseCommentLine('// note')).toBe(true)
+    expect(isProseCommentLine('#:layer')).toBe(false)
+    expect(isProseCommentLine('#>anchor')).toBe(false)
+    expect(isProseCommentLine('#!intent')).toBe(false)
+  })
+
+  it('wraps long words to width', () => {
+    const lines = wrapWords('one two three four five', 10)
+    expect(lines.every(l => l.length <= 10 || !l.includes(' '))).toBe(true)
+    expect(lines.join(' ')).toContain('one')
+    expect(lines.join(' ')).toContain('five')
+  })
+
+  it('reflows consecutive # prose lines', () => {
+    const input = [
+      '# This is a very long prose comment that should wrap when the print width is small enough to force multiple lines of text.',
+      '# Second sentence continues the paragraph without a blank separator.',
+      '',
+      '#:layer #!keep',
+    ].join('\n')
+    const out = reflowProseBlocks(input, 40)
+    const proseLines = out.split('\n').filter(l => l.startsWith('# ') || l === '#')
+    expect(proseLines.length).toBeGreaterThan(1)
+    expect(out).toContain('#:layer #!keep')
+    expect(proseLines.every(l => l.length <= 42)).toBe(true)
+  })
+
+  it('canonicalize pretty profile indents and reflows', () => {
+    const input = [
+      '# Long header prose about the module that explains intent in many words for wrapping.',
+      '^["frame"]{',
+      'key: value',
+      '}',
+    ].join('\n')
+    const pretty = resolveFormatProfile('pretty', { printWidth: 48 })
+    const result = canonicalize(input, pretty)
+    expect(result.source).toContain('  key: value')
+    expect(result.source.split('\n').some(l => l.startsWith('# '))).toBe(true)
+  })
+
+  it('preserves blank prose paragraph breaks', () => {
+    const input = '# para one wordy enough\n#\n# para two continues'
+    const out = reflowProseBlocks(input, 80)
+    expect(out).toMatch(/# para one[\s\S]*\n#\n# para two/)
   })
 })

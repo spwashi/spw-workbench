@@ -2,6 +2,7 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { canonicalize, parse } from '@spwashi/spw-seed'
+import { collectSpwFiles } from './fs-walk'
 
 const ROOT = path.resolve('.spw')
 const POLL_MS = 1000
@@ -15,28 +16,6 @@ function phaseHint(kind: 'create' | 'change' | 'remove'): string {
   if (kind === 'create') return '?~'
   if (kind === 'change') return '@'
   return '^'
-}
-
-async function collectSpwFiles(dir: string): Promise<string[]> {
-  let entries
-  try {
-    entries = await fs.readdir(dir, { withFileTypes: true })
-  } catch {
-    return []
-  }
-
-  const files: string[] = []
-  for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name)
-    if (entry.isDirectory()) {
-      files.push(...await collectSpwFiles(fullPath))
-      continue
-    }
-    if (entry.isFile() && entry.name.endsWith('.spw')) {
-      files.push(fullPath)
-    }
-  }
-  return files
 }
 
 async function formatAndValidate(filePath: string, kind: 'create' | 'change'): Promise<void> {
