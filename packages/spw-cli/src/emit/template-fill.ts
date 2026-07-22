@@ -218,6 +218,33 @@ export function mergeBindingMaps(...maps: TemplateBindings[]): TemplateBindings 
   return Object.assign({}, ...maps)
 }
 
+/**
+ * Extract a pack's `^"emit"{ ... }` frame (or another named frame) as flat
+ * TemplateBindings — the "combination wizard" bridge between a curated pack
+ * (prompts/domains/*&#47;packs/*.spw, house+title+emit resolved together)
+ * and expandTemplate()'s ${slot} bindings. Handles the three line shapes
+ * packs actually use: `key: value`, `key = "value"`, `~#key: "value"`.
+ */
+export function extractPackBindings(source: string, frameName = 'emit'): TemplateBindings {
+  const frameRe = new RegExp(`\\^"${frameName}"\\{([\\s\\S]*?)\\n\\}`)
+  const match = source.match(frameRe)
+  if (!match) return {}
+
+  const bindings: TemplateBindings = {}
+  const lineRe = /^\s*~?#?([A-Za-z_][\w]*)\s*[:=]\s*(.+?)\s*$/
+
+  for (const rawLine of match[1]!.split('\n')) {
+    const line = lineRe.exec(rawLine)
+    if (!line) continue
+    const [, name, rawValue] = line
+    if (!name || rawValue === undefined) continue
+    const quoted = rawValue.match(/^"(.*)"$/) ?? rawValue.match(/^'(.*)'$/)
+    bindings[name] = quoted ? quoted[1]! : rawValue
+  }
+
+  return bindings
+}
+
 export function parseLineage(source: string): DerivativeLineage | undefined {
   const modeM = source.match(/^\s*mode:\s*#(in_place|fork|overlay)\b/m)
   const baseM = source.match(/^\s*base:\s*~?"([^"]+)"/m) || source.match(/^\s*base:\s*~'([^']+)'/m)

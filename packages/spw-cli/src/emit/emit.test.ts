@@ -25,6 +25,7 @@ import {
 } from './axes'
 import {
   expandTemplate,
+  extractPackBindings,
   reportHoles,
   parseBindingsList,
   stampDerivative,
@@ -411,6 +412,39 @@ describe('template fill', () => {
     expect(BUILTIN_TEMPLATE_IDS.length).toBeGreaterThan(10)
     expect(BUILTIN_TEMPLATE_PATHS['publish.job']).toContain('job-instance')
     expect(BUILTIN_TEMPLATE_PATHS['media.image']).toContain('image.spw')
+  })
+
+  it('extracts pack bindings across all three line shapes (bareword, quoted =, ~# quoted)', () => {
+    const src = [
+      '^"emit"{',
+      ' register: #voice_web_quiet',
+      ' ~#title: "Quiet Board"',
+      ' headline = "Keep the work visible."',
+      '}',
+    ].join('\n')
+    expect(extractPackBindings(src)).toEqual({
+      register: '#voice_web_quiet',
+      title: 'Quiet Board',
+      headline: 'Keep the work visible.',
+    })
+  })
+
+  it('extracts a named frame other than emit', () => {
+    const src = '^"intent"{\n ~#goal: "Ship the thing."\n ~#taste: "plain"\n}\n^"emit"{\n a = "1"\n}\n'
+    expect(extractPackBindings(src, 'intent')).toEqual({ goal: 'Ship the thing.', taste: 'plain' })
+  })
+
+  it('returns empty bindings when the frame is absent', () => {
+    expect(extractPackBindings('^"other"{\n x = "1"\n}\n')).toEqual({})
+  })
+
+  it('feeds directly into expandTemplate as a bindings layer', () => {
+    const pack = '^"emit"{\n title = "Quiet Board"\n claim = "Keep it visible."\n}\n'
+    const bindings = extractPackBindings(pack)
+    const result = expandTemplate('title: $title\nclaim: $claim\nother: $other', bindings)
+    expect(result.text).toContain('title: Quiet Board')
+    expect(result.text).toContain('claim: Keep it visible.')
+    expect(result.open).toEqual(['other'])
   })
 })
 

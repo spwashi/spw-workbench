@@ -57,6 +57,7 @@ export {
 export {
   SPW_TEMPLATE_VERSION,
   expandTemplate,
+  extractPackBindings,
   reportHoles,
   parseBindingsList,
   mergeBindingMaps,

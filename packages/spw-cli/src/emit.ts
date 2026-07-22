@@ -25,6 +25,7 @@ import {
   renderFractalResult,
   parseAxisContext,
   expandTemplate,
+  extractPackBindings,
   reportHoles,
   parseBindingsList,
   stampDerivative,
@@ -38,6 +39,7 @@ import {
   type FractalObjective,
   type AxisContext,
 } from './emit/index'
+import { collectSpwFiles } from './fs-walk'
 import { tryDiscoverSpwWorkspace, resolveWorkspacePath } from './workspace'
 
 const HOST_LIST = EMIT_HOSTS.join('|')
@@ -70,6 +72,11 @@ export async function runSpwEmitCli(argv: string[] = process.argv): Promise<void
     for (const id of BUILTIN_TEMPLATE_IDS) {
       console.log(`${id}  ${BUILTIN_TEMPLATE_PATHS[id]}`)
     }
+    return
+  }
+
+  if (sub === 'packs' || sub === 'list-packs') {
+    await listPacks(rest[1])
     return
   }
 
@@ -180,8 +187,18 @@ async function runTemplateMode(
     return
   }
 
-  const bindings = parseBindingsList(parsed.binds ?? [])
-  // Also allow --set as binding source for thrift (string values as String(n) if numeric)
+  // Layer order (lowest -> highest priority): pack bindings, then --bind, then --set.
+  const bindings: Record<string, string> = {}
+  if (parsed.fromPack) {
+    const workspace = await tryDiscoverSpwWorkspace()
+    const packPath = workspace
+      ? await resolveWorkspacePath(workspace, parsed.fromPack)
+      : resolve(parsed.fromPack)
+    const packSource = await readFile(packPath, 'utf8')
+    Object.assign(bindings, extractPackBindings(packSource))
+  }
+  Object.assign(bindings, parseBindingsList(parsed.binds ?? []))
+  // --set only fills what --bind (and the pack) left unset, matching prior behavior.
   for (const [k, v] of Object.entries(parsed.set)) {
     if (bindings[k] === undefined) bindings[k] = String(v)
   }
@@ -347,6 +364,8 @@ export function printEmitHelp(): void {
       'npm run spw -- emit registers',
       'npm run spw -- emit profiles',
       'npm run spw -- emit templates',
+      'npm run spw -- emit packs [root]',
+      'npm run spw -- emit expand <template.spw> --from-pack <pack.spw> [--bind k="…"]',
     ],
     sections: [
       {
@@ -355,24 +374,34 @@ export function printEmitHelp(): void {
           'pack      Collapse to one or more host packs',
           'fractal   Nest/fold plan + multi-host emit + F2 Hold score + axis cache',
           'plan      Emit fractal mutation stream only (>> steps)',
-          'expand    Fill ${slots} / $name from --bind (template thrift)',
+          'expand    Fill ${slots} / $name from --bind / --from-pack (template thrift)',
           'holes     Report open template slots and bare _',
           'ir        EmitDocument JSON only (spw.emit/1)',
           'fields    Traits, slots, dims, anchors',
           'registers List #voice_* registers',
           'profiles  List fractal run profiles',
           'templates List builtin script template ids → paths',
+          'packs     List prompts/**/packs/*.spw ready-made binding bundles',
         ],
       },
       {
         title: 'Template fill',
         lines: [
           '--bind k=v           Slot binding (repeatable); also --bind=k=v',
+          '--from-pack <file>   Seed bindings from a pack\'s ^"emit"{} frame (--bind overrides it)',
           '--strict-holes       Fail if required slots or bare _ remain',
           '--fill-bare-holes    Replace bare _ with --bare-value (default empty)',
           '--bare-value <s>     Value for bare holes when filling',
           '--derivative mode:base:id[:rev]  Stamp lineage (in_place|fork|overlay)',
-          'Catalog: prompts/templates/  Math includes: prompts/math/',
+          'Catalog: prompts/templates/  Math includes: prompts/math/  Packs: prompts/domains/*/packs/',
+        ],
+      },
+      {
+        title: 'Combination wizard',
+        lines: [
+          '1. spw emit packs                         — see what\'s already curated',
+          '2. spw emit holes <template.spw>           — see what that template still needs',
+          '3. spw emit expand <template.spw> --from-pack <pack.spw> --bind <remaining k=v>',
         ],
       },
       {
@@ -440,6 +469,7 @@ function parseEmitArgs(args: string[]): {
   bonkMax?: number
   nestLoci?: string[]
   binds?: string[]
+  fromPack?: string
   strictHoles?: boolean
   fillBareHoles?: boolean
   bareHoleValue?: string
@@ -469,6 +499,7 @@ function parseEmitArgs(args: string[]): {
   let bonkMax: number | undefined
   let nestLoci: string[] | undefined
   const binds: string[] = []
+  let fromPack: string | undefined
   let strictHoles = false
   let fillBareHoles = false
   let bareHoleValue: string | undefined
@@ -523,6 +554,14 @@ function parseEmitArgs(args: string[]): {
     }
     if (arg.startsWith('--bind=')) {
       binds.push(arg.slice('--bind='.length))
+      continue
+    }
+    if (arg === '--from-pack') {
+      fromPack = args[++i]
+      continue
+    }
+    if (arg.startsWith('--from-pack=')) {
+      fromPack = arg.slice('--from-pack='.length)
       continue
     }
     if (arg === '--strict-holes') {
@@ -699,6 +738,7 @@ function parseEmitArgs(args: string[]): {
     bonkMax: Number.isFinite(bonkMax) ? bonkMax : undefined,
     nestLoci,
     binds,
+    fromPack,
     strictHoles,
     fillBareHoles,
     bareHoleValue,
@@ -734,6 +774,28 @@ function normalizeHost(raw: string): EmitHost {
   const h = raw.toLowerCase().replace(/-/g, '_') as EmitHost
   if ((EMIT_HOSTS as readonly string[]).includes(h)) return h
   throw new Error(`spw emit: unknown host "${raw}" (${HOST_LIST})`)
+}
+
+/** List prompts/**\/packs/*.spw as ready-made binding bundles (the combination wizard's catalog). */
+async function listPacks(root = 'prompts'): Promise<void> {
+  const workspace = await tryDiscoverSpwWorkspace()
+  const absRoot = workspace ? await resolveWorkspacePath(workspace, root) : resolve(root)
+  const files = (await collectSpwFiles(absRoot)).filter(f => f.includes(`${'/'}packs${'/'}`))
+  const base = workspace?.consumerRoot ?? process.cwd()
+
+  if (!files.length) {
+    console.log(`(no packs found under ${root})`)
+    return
+  }
+
+  for (const file of files.sort()) {
+    const source = await readFile(file, 'utf8')
+    const intent = extractPackBindings(source, 'intent')
+    const rel = file.startsWith(base) ? file.slice(base.length + 1) : file
+    console.log(`${rel}`)
+    if (intent.goal) console.log(`  goal:  ${intent.goal}`)
+    if (intent.taste) console.log(`  taste: ${intent.taste}`)
+  }
 }
 
 async function output(body: string, out?: string): Promise<void> {
