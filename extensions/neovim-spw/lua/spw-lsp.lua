@@ -136,6 +136,28 @@ end
 ---@field end_col number
 ---@field text string
 
+---True when ~<inner> is a navigable path (not a bare label or pattern).
+---@param inner string
+---@return boolean
+local function is_angle_path_like(inner)
+  local s = (inner or ''):match('^%s*(.-)%s*$') or ''
+  if s == '' then return false end
+  if s:find('[#*{}%(%)%[%]|]', 1) then return false end
+  if s:find('/', 1, true) then return true end
+  if s:sub(1, 1) == '.' then return true end
+  if s:match('%.[Ss][Pp][Ww]$')
+    or s:match('%.[Tt][Ss][Xx]?$')
+    or s:match('%.[Jj][Ss]$')
+    or s:match('%.[Mm][Jj][Ss]$')
+    or s:match('%.[Cc][Jj][Ss]$')
+    or s:match('%.[Mm][Dd]$')
+    or s:match('%.[Jj][Ss][Oo][Nn]$')
+  then
+    return true
+  end
+  return false
+end
+
 ---@param line string
 ---@return SpwRef[]
 local function collect_refs_in_line(line)
@@ -151,6 +173,22 @@ local function collect_refs_in_line(line)
       end_col = e - 2,
       text = line:sub(s, e - 1),
     })
+  end
+
+  -- ~<.spw/foo.spw>, ~<./index.spw> — angle path without trailing quote
+  for s, inner, e in line:gmatch('()~<([^>]+)>()') do
+    local after = line:sub(e)
+    -- Skip ~<label>"path" (already handled as quoted form)
+    if not after:match('^%s*"') and is_angle_path_like(inner) then
+      table.insert(refs, {
+        kind = 'path',
+        target = inner:match('^%s*(.-)%s*$') or inner,
+        rootName = nil,
+        start_col = s - 1,
+        end_col = e - 2,
+        text = line:sub(s, e - 1),
+      })
+    end
   end
 
   -- @root/path
@@ -202,7 +240,36 @@ local function resolve_ref(ref, root, bufdir, lines)
 
   local resolved
   if ref.kind == 'path' then
-    resolved = vim.fn.fnamemodify(bufdir .. '/' .. targetNoAnchor, ':p')
+    -- Prefer workspace-root resolution for repo-shaped targets (.spw/..., docs/...,
+    -- packages/...) so nested buffers do not invent a duplicated .spw under bufdir.
+    local from_buf = vim.fn.fnamemodify(bufdir .. '/' .. targetNoAnchor, ':p')
+    local from_root = vim.fn.fnamemodify(root .. '/' .. targetNoAnchor, ':p')
+    local looks_repo_relative = targetNoAnchor:match('^%.?%.?/') == nil
+      and (
+        targetNoAnchor:match('^%.spw/')
+        or targetNoAnchor:match('^docs/')
+        or targetNoAnchor:match('^packages/')
+        or targetNoAnchor:match('^lib/')
+        or targetNoAnchor:match('^extensions/')
+        or targetNoAnchor:match('^src/')
+      )
+    if looks_repo_relative then
+      if vim.fn.filereadable(from_root) == 1 or vim.fn.isdirectory(from_root) == 1 then
+        resolved = from_root
+      elseif vim.fn.filereadable(from_buf) == 1 or vim.fn.isdirectory(from_buf) == 1 then
+        resolved = from_buf
+      else
+        resolved = from_root
+      end
+    else
+      if vim.fn.filereadable(from_buf) == 1 or vim.fn.isdirectory(from_buf) == 1 then
+        resolved = from_buf
+      elseif vim.fn.filereadable(from_root) == 1 or vim.fn.isdirectory(from_root) == 1 then
+        resolved = from_root
+      else
+        resolved = from_buf
+      end
+    end
   else
     local base = roots[ref.rootName] or (root .. '/' .. ref.rootName)
     resolved = vim.fn.fnamemodify(base .. '/' .. targetNoAnchor, ':p')

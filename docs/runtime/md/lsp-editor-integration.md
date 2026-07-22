@@ -34,12 +34,14 @@ The current stdio server advertises:
 
 In practical Spw terms, that currently covers:
 
-- path navigation for `~"..."` and `@root/...`
+- path navigation for `~"..."`, `~<path>` (LSP compatibility projection), `~<label>"..."`, and `@root/...`
 - annotation and path reference lookup
 - scope-aware completion for roots, annotations, sigil snippets, and file-system paths
 - semantic tokens layered over the grammar
 - formatting and range formatting
 - diagnostics for parse errors, broken refs, stale projections, brace physics, and runtime-informed checks
+
+Research only (not registered in canon roots): [polyglot LSP search design](./polyglot-lsp-search.md).
 
 ## Quality Bar
 

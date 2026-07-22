@@ -133,7 +133,17 @@
                     ]
                 },
                 {
-                    "comment": "Tilde-string: ~\"./path\"",
+                    "comment": "Navigable path: ~<label>\"./path\" or ~\"./path\"",
+                    "name": "entity.name.type.path-ref.spw",
+                    "match": "~\\s*(?:<[^>\\n\"]+>\\s*)?\"[^\"]*\""
+                },
+                {
+                    "comment": "Navigable path: ~<.spw/foo.spw> or ~<./index.spw> (angle, no trailing quote)",
+                    "name": "entity.name.type.path-ref.spw",
+                    "match": "~\\s*<(?:\\.[^>\\n\"]*|[^>\\n\"]*[/][^>\\n\"]*|[^>\\n\"]*\\.(?:spw|ts|tsx|js|mjs|cjs|md|json))>"
+                },
+                {
+                    "comment": "Tilde-string fallback: ~\"…\" when path-ref match misses edge cases",
                     "name": "string.quoted.tilde-ref.spw",
                     "begin": "(~)(\")",
                     "beginCaptures": {
@@ -421,8 +431,8 @@
                     "match": "!(?=[^bh\\[])|!(?=\\[)"
                 },
                 {
-                    "comment": "Sigil-path: @docs/index.spw, @here/keyboard/index.ts",
-                    "name": "entity.name.type.sigil-path.spw",
+                    "comment": "Navigable root path: @docs/index.spw, @spw/harness/*, @here/keyboard/index.ts",
+                    "name": "entity.name.type.path-ref.spw",
                     "match": "@[a-zA-Z_][a-zA-Z0-9_]*(?:/(?:\\.\\.|[A-Za-z_*])[A-Za-z0-9_.\\-*]*)+"
                 },
                 {

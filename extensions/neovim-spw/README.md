@@ -59,7 +59,7 @@ Set on attach (disable with `vim.g.spw_lsp_keymaps = false`):
 
 | Key | Action |
 |-----|--------|
-| `gf` | Open Spw reference under cursor (`~"..."` or `@root/...`) |
+| `gf` | Open Spw reference under cursor (`~"…"`, `~<path>`, `~<label>"…"`, `@root/...`) |
 | `gF` | Open Spw reference and jump to `#anchor` (line number or label) |
 | `<localleader>a` | Spw code action at cursor (create missing target, or fallback LSP actions) |
 | `<localleader>q` | Populate quickfix with unresolved references in current buffer |

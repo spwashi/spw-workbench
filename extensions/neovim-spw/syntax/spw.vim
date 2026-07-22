@@ -65,6 +65,15 @@ syntax match   spwRegister  '@ghost:\S*'                        display
 " ── PATH ACCESS — word/word (not URL, not comment) ───────────────
 syntax match   spwPath  '[A-Za-z_][A-Za-z0-9_]*\(/[A-Za-z_][A-Za-z0-9_]*\)\+'  display
 
+" ── NAVIGABLE PATH REFS — full unit for jump ergonomics ─────────
+" Order: quoted forms before bare ~; angle pathlike before labels
+syntax match   spwPathRef  '\~\s*<[^>"]\+>\s*"[^"]*"'                         display
+syntax match   spwPathRef  '\~\s*"[^"]*"'                                     display
+syntax match   spwPathRef  '\~\s*<\.[^>"]\+>'                                 display
+syntax match   spwPathRef  '\~\s*<[^>"]*[/][^>"]*>'                           display
+syntax match   spwPathRef  '\~\s*<[^>"]*\.\(spw\|ts\|tsx\|js\|mjs\|cjs\|md\|json\)>' display
+syntax match   spwPathRef  '@[a-zA-Z_][a-zA-Z0-9_]*\(/\%(\.\.\|[A-Za-z_*]\)[A-Za-z0-9_.\-*]*\)\+'  display
+
 " ── EM-DASH separator ─────────────────────────────────────────────
 syntax match   spwEmDash  '—'  display
 
@@ -243,6 +252,7 @@ highlight link spwSpread     SpwSigSubject
 highlight link spwRange      Number
 highlight link spwDotOp      Comment
 highlight link spwPath       SpwBone
+highlight link spwPathRef    SpwPathRef
 highlight link spwPipe       Delimiter
 
 " Streams
@@ -295,6 +305,8 @@ highlight default SpwBane      guifg=#fb4934 gui=bold      ctermfg=167 cterm=bol
 highlight default SpwBonk      guifg=#fe8019                ctermfg=208
 highlight default SpwHonk      guifg=#fabd2f gui=bold      ctermfg=214 cterm=bold
 highlight default SpwPotential guifg=#b16286 gui=italic    ctermfg=132 cterm=italic
+" Navigable path refs — underline so jump targets read as links
+highlight default SpwPathRef   guifg=#83a598 gui=underline ctermfg=109 cterm=underline
 
 " Container pairs — dimmed echoes of their affiliated register (CONTAINER layer)
 highlight default SpwBraceDim  guifg=#b8a100                ctermfg=136
