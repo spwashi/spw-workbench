@@ -101,7 +101,7 @@ export type FormAxis =
   | 'reference' // @, pathref, external target
   | 'path' // / projection chains
   | 'label' // named pair or operator label
-  | 'ground' // baseline / facet / empty unit
+  | 'ground' // baseline / facet; not an invented empty runtime unit
   | 'fold' // reduce / merge / multi→one
   | 'flow' // perspective / ordered channel
   | 'interface' // membrane / couple ports
@@ -128,7 +128,7 @@ export const FORM_LADDER_PROFILE = {
   id: 'Spw.Form.Ladders',
   revision: '0.3',
   status: 'interpretive',
-  includedKinds: ['frame', 'body', 'scope', 'capsule', 'stream', 'nrange'],
+  includedBoundaryKinds: ['frame', 'body', 'scope', 'capsule', 'stream', 'nrange'],
 } as const
 
 export interface OperatorLadder extends FormLadder {
@@ -260,7 +260,7 @@ export const BOUNDARY_LADDERS: Record<BoundaryLadderId, BoundaryLadder> = {
     essence: 'ordered channel — fold over sequence of values',
     emptySurface: '<<>>',
     emptyState: { occupancy: 'empty', payload: 'void' },
-    axes: ['flow', 'fold', 'path'],
+    axes: ['flow', 'fold', 'path', 'reference'],
     arrow: '=>',
     steps: [
       S('empty', '<<>>', 'empty', 'empty channel'),
@@ -308,7 +308,7 @@ export const OPERATOR_LADDERS: Record<OperatorKind, OperatorLadder> = {
     essence: 'merge streams — fold many into one field',
     preferredBoundary: 'body',
     preferredProduct: '{&}',
-    axes: ['fold', 'material', 'selection'],
+    axes: ['fold', 'material', 'selection', 'label', 'ground'],
     arrow: '=>',
     steps: [
       S('seed', '&', 'seed', 'bare confluence Act'),
@@ -328,7 +328,7 @@ export const OPERATOR_LADDERS: Record<OperatorKind, OperatorLadder> = {
     essence: 'commit / hydrate — often prefix over a Bound',
     preferredBoundary: 'void',
     preferredProduct: '![]',
-    axes: ['label', 'selection', 'material'],
+    axes: ['label', 'selection', 'material', 'path', 'ground'],
     arrow: '=>',
     steps: [
       S('seed', '!', 'seed', 'bare action Act'),
@@ -348,7 +348,7 @@ export const OPERATOR_LADDERS: Record<OperatorKind, OperatorLadder> = {
     essence: 'defer — hold without collapse',
     preferredBoundary: 'scope',
     preferredProduct: '~()',
-    axes: ['potential', 'flow', 'ground'],
+    axes: ['potential', 'flow', 'ground', 'reference'],
     arrow: '=>',
     steps: [
       S('seed', '~', 'seed', 'bare potential Act'),
@@ -368,7 +368,7 @@ export const OPERATOR_LADDERS: Record<OperatorKind, OperatorLadder> = {
     essence: 'probe / branch — stream affinity',
     preferredBoundary: 'stream',
     preferredProduct: '<<>>',
-    axes: ['potential', 'flow', 'selection'],
+    axes: ['potential', 'flow', 'selection', 'path', 'fold'],
     arrow: '=>',
     steps: [
       S('seed', '?', 'seed', 'bare wonder Act'),
@@ -388,7 +388,7 @@ export const OPERATOR_LADDERS: Record<OperatorKind, OperatorLadder> = {
     essence: 'collapse to concrete — end of defer chain',
     preferredBoundary: 'body',
     preferredProduct: '*{}',
-    axes: ['ground', 'fold', 'material'],
+    axes: ['ground', 'fold', 'material', 'path'],
     arrow: '=>',
     steps: [
       S('seed', '*', 'seed', 'bare collapse Act'),
@@ -408,7 +408,7 @@ export const OPERATOR_LADDERS: Record<OperatorKind, OperatorLadder> = {
     essence: 'categorical set — selection product',
     preferredBoundary: 'frame',
     preferredProduct: '#[…]',
-    axes: ['selection', 'fold', 'ground'],
+    axes: ['selection', 'fold', 'ground', 'path', 'label'],
     arrow: '=>',
     steps: [
       S('seed', '#', 'seed', 'bare resonance Act'),
@@ -428,7 +428,7 @@ export const OPERATOR_LADDERS: Record<OperatorKind, OperatorLadder> = {
     essence: 'baseline / subject / property ground',
     preferredBoundary: 'body',
     preferredProduct: '.{…}',
-    axes: ['ground', 'path', 'label'],
+    axes: ['ground', 'path', 'label', 'fold'],
     arrow: '=>',
     steps: [
       S('seed', '.', 'seed', 'bare ground Act'),
@@ -468,7 +468,7 @@ export const OPERATOR_LADDERS: Record<OperatorKind, OperatorLadder> = {
     essence: 'promote / label a unit upward',
     preferredBoundary: 'body',
     preferredProduct: '^["name"]{}',
-    axes: ['label', 'material', 'fold'],
+    axes: ['label', 'material', 'fold', 'selection', 'ground'],
     arrow: '=>',
     steps: [
       S('seed', '^', 'seed', 'bare integrate Act'),
@@ -488,7 +488,7 @@ export const OPERATOR_LADDERS: Record<OperatorKind, OperatorLadder> = {
     essence: 'medium / meta register reflection',
     preferredBoundary: 'none',
     preferredProduct: '$(reg)',
-    axes: ['reference', 'ground', 'label'],
+    axes: ['reference', 'ground', 'label', 'path'],
     arrow: '=>',
     steps: [
       S('seed', '$', 'seed', 'bare substrate Act'),
@@ -508,7 +508,7 @@ export const OPERATOR_LADDERS: Record<OperatorKind, OperatorLadder> = {
     essence: 'sample / scale — often over a selection',
     preferredBoundary: 'frame',
     preferredProduct: '%[metric]',
-    axes: ['selection', 'ground', 'reference'],
+    axes: ['selection', 'ground', 'reference', 'label', 'path'],
     arrow: '=>',
     steps: [
       S('seed', '%', 'seed', 'bare measure Act'),
@@ -528,7 +528,7 @@ export const OPERATOR_LADDERS: Record<OperatorKind, OperatorLadder> = {
     essence: 'bind — label a value into place',
     preferredBoundary: 'body',
     preferredProduct: 'k = v',
-    axes: ['label', 'ground', 'material'],
+    axes: ['label', 'ground', 'material', 'selection', 'fold'],
     arrow: '=>',
     steps: [
       S('seed', '=', 'seed', 'bare bind Act'),
@@ -548,7 +548,7 @@ export const OPERATOR_LADDERS: Record<OperatorKind, OperatorLadder> = {
     essence: 'peer exchange — interface between named registers',
     preferredBoundary: 'frame',
     preferredProduct: '<>[a, b]',
-    axes: ['interface', 'reference', 'label'],
+    axes: ['interface', 'reference', 'label', 'path'],
     arrow: '=>',
     steps: [
       S('seed', '<>', 'seed', 'zero-arity couple Act; not an empty boundary'),
@@ -685,7 +685,7 @@ for (const ladder of Object.values(OPERATOR_LADDERS)) {
 // ── Lookup ─────────────────────────────────────────────────────
 
 export function boundaryLadder(id: BoundaryLadderId | string): BoundaryLadder | undefined {
-  if (id in BOUNDARY_LADDERS) return BOUNDARY_LADDERS[id as BoundaryLadderId]
+  if (Object.hasOwn(BOUNDARY_LADDERS, id)) return BOUNDARY_LADDERS[id as BoundaryLadderId]
   // allow [] {} () aliases
   const aliases: Record<string, BoundaryLadderId> = {
     '[]': 'frame',
@@ -707,7 +707,7 @@ export function boundaryLadder(id: BoundaryLadderId | string): BoundaryLadder | 
 }
 
 export function operatorLadder(op: OperatorKind | string): OperatorLadder | undefined {
-  if (op in OPERATOR_LADDERS) return OPERATOR_LADDERS[op as OperatorKind]
+  if (Object.hasOwn(OPERATOR_LADDERS, op)) return OPERATOR_LADDERS[op as OperatorKind]
   return undefined
 }
 
@@ -719,7 +719,7 @@ export function listOperatorLadders(): OperatorLadder[] {
   return Object.values(OPERATOR_LADDERS)
 }
 
-export function listFormLadders(): FormLadder[] {
+export function listFormLadders(): ResolvedFormLadder[] {
   return [...listBoundaryLadders(), ...listOperatorLadders()]
 }
 
@@ -745,6 +745,7 @@ export interface LadderStepProbe {
     couplingKind?: string
     occupancy?: string
     payload?: string
+    arity?: number
   } | null
   topography: TopographySnapshot
   expectationMet: boolean
@@ -772,7 +773,12 @@ function probeStep(step: LadderStep, index: number): LadderStepProbe {
   const topography = snapshotTopography(step.surface)
   const onfNode = firstOnf(step.surface)
   const coupling = onfNode ? readCouplingFrame(onfNode.frames) : undefined
-  const c = coupling as { kind?: string; occupancy?: string; payload?: string } | undefined
+  const c = coupling as {
+    kind?: string
+    occupancy?: string
+    payload?: string
+    arity?: number
+  } | undefined
 
   const onf = onfNode
     ? {
@@ -781,6 +787,7 @@ function probeStep(step: LadderStep, index: number): LadderStepProbe {
         couplingKind: c?.kind,
         occupancy: c?.occupancy,
         payload: c?.payload,
+        arity: c?.arity,
       }
     : null
 
@@ -823,7 +830,8 @@ function probeLadder(ladder: FormLadder): FormLadderProbe {
       ? ` sigil=${s.onf.sigil} reg=${s.onf.reg ?? '—'}` +
         (s.onf.couplingKind ? ` couple=${s.onf.couplingKind}` : '') +
         (s.onf.occupancy ? ` occ=${s.onf.occupancy}` : '') +
-        (s.onf.payload ? ` payload=${s.onf.payload}` : '')
+        (s.onf.payload ? ` payload=${s.onf.payload}` : '') +
+        (s.onf.arity !== undefined ? ` arity=${s.onf.arity}` : '')
       : ' onf=—'
     findings.push(
       `  ${s.index + 1}. [${s.step.role}] ${s.step.surface}  health=${s.parseHealth}` +
@@ -840,6 +848,11 @@ function probeLadder(ladder: FormLadder): FormLadderProbe {
     conceptualSlots,
     findings,
   }
+}
+
+/** Probe either discriminated ladder kind without erasing its identity. */
+export function probeFormLadder(ladder: ResolvedFormLadder): FormLadderProbe {
+  return probeLadder(ladder)
 }
 
 export function probeBoundaryLadder(id: BoundaryLadderId | string): FormLadderProbe | undefined {
@@ -882,7 +895,7 @@ export function formatBoundaryAxisTable(): string {
 export function formatAllLadderNotations(): string {
   const lines: string[] = [
     `# Paired-boundary ladders (${FORM_LADDER_PROFILE.id}@${FORM_LADDER_PROFILE.revision}; ${FORM_LADDER_PROFILE.status})`,
-    `# included kinds: ${FORM_LADDER_PROFILE.includedKinds.join(', ')}`,
+    `# included boundary kinds: ${FORM_LADDER_PROFILE.includedBoundaryKinds.join(', ')}`,
     '',
   ]
   for (const l of listBoundaryLadders()) {

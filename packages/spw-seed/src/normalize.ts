@@ -147,6 +147,15 @@ export function normalizeToONF(node: ASTNode): ONFNode {
       if (op.subject) args.push(normalizeToONF(op.subject))
       if (op.body) args.push(normalizeToONF(op.body))
       if (op.linePayload) args.push(normalizeToONF(op.linePayload))
+      const frameArgs: ONFNode[] = op.frame
+        ? (op.frame.content ?? []).map((content: any) => normalizeToONF(content))
+        : []
+
+      // The explicit couple operator uses its Frame as an operand list. Other
+      // Acts retain Frame content as metadata under frames.bound.
+      if (sigil === '<>' && frameArgs.length > 0) {
+        args.push(...frameArgs)
+      }
 
       let reg = 'op'
       switch (sigil) {
@@ -180,7 +189,6 @@ export function normalizeToONF(node: ASTNode): ONFNode {
 
       // Preserve the paired-boundary side of a prefix Act·Frame product.
       if (op.frame && !op.body) {
-        const frameArgs = (op.frame.content ?? []).map((c: any) => normalizeToONF(c))
         frames.bound = withCoupling({}, 'frame', {
           args: frameArgs,
           argCount: frameArgs.length,

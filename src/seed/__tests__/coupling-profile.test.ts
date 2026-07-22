@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   couplingFrame,
   projectCouplingSemantics,
+  readCouplingFrame,
   validateCouplingSemanticsProfile,
   type CouplingSemanticsProfile,
 } from '../types/coupling'
@@ -104,5 +105,34 @@ describe('coupling semantics profiles', () => {
       expect.objectContaining({ path: 'semantics.frame.portRoles.operand' }),
       expect.objectContaining({ path: 'semantics.frame.dynamics[0].effectGrade' }),
     ]))
+  })
+
+  it('rejects non-finite arity and contradictory boundary states', () => {
+    for (const arity of [Number.NaN, Number.POSITIVE_INFINITY, 1.5, -1]) {
+      expect(() => couplingFrame('couple', { arity })).toThrow(/arity/)
+    }
+    expect(() => couplingFrame('frame', {
+      occupancy: 'empty',
+      payload: 'term',
+    })).toThrow(/incompatible/)
+    expect(() => couplingFrame('body', {
+      occupancy: 'inhabited',
+      payload: 'void',
+    })).toThrow(/incompatible/)
+  })
+
+  it('validates coupling projections without accepting prototype keys', () => {
+    expect(readCouplingFrame({
+      coupling: { kind: 'couple', form: 'operator', surface: '<>', arity: Number.NaN },
+    })).toBeUndefined()
+    expect(readCouplingFrame({
+      coupling: { kind: 'frame', form: 'boundary', surface: '[]', occupancy: 'empty', payload: 'term' },
+    })).toBeUndefined()
+    expect(readCouplingFrame({
+      coupling: { kind: 'toString', form: 'boundary', surface: '[]', occupancy: 'empty', payload: 'void' },
+    })).toBeUndefined()
+    expect(readCouplingFrame({
+      coupling: { kind: 'frame', form: 'boundary', surface: '[]', occupancy: 'empty', payload: 'void', actPlacement: 'sideways' },
+    })).toBeUndefined()
   })
 })

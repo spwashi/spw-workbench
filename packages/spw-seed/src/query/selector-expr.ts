@@ -1,32 +1,17 @@
 /**
- * Spw Selector Expression Parser
+ * Closed text parser for the experimental Spw.q selector surface.
  *
- * Parses Spw-native text expressions into SpwSelector objects.
- * Grammar mirrors Spw's own syntax so selectors feel native:
+ * `$` opens the query envelope and `_` is its anonymous placeholder:
  *
- *   expr     = term (('|' | 'or') term)*
- *   term     = factor (('&' | 'and') factor)*
- *   factor   = 'not' factor | atom
- *   atom     = sigil braces? modifier? value? depth?
- *            | '(' expr ')'
- *   sigil    = '!' | '~' | '@' | '^' | '#' | '.' | '?' | '=' | '&' | '*' | '$' | '%' | '<>'
- *   braces   = '[]' | '{}' | '()' (primary) optionally '[]' | '{}' | '()' (secondary)
- *   modifier = identifier (e.g., 'boon', 'bone')
- *   value    = '"' string '"'
- *   depth    = '@' number | '@' number '-' number
+ *   $@_       references
+ *   $![_]     hydrate operations carrying a Frame
+ *   $<_>      Capsule boundaries
+ *   $_        any node
  *
- * Combinators:
- *   '/' = descend (parent / child)
- *   '..' = sequence (sibling a .. sibling b)
- *
- * Examples:
- *   "^[]"       → { sigil: '^', brace: '[]' }
- *   "^[]{}"     → and({ sigil: '^', brace: '[]' }, { sigil: '^', brace2: '{}' })
- *   "!boon"     → { sigil: '!', modifier: 'boon' }
- *   "~ | @"     → or({ sigil: '~' }, { sigil: '@' })
- *   "^[] / ![]" → descend({ sigil: '^', brace: '[]' }, { sigil: '!', brace: '[]' })
- *   "~\"path\"" → { sigil: '~', value: 'path' }
- *   "*"         → { sigil: '*' }
+ * Bare sigil atoms (`@`, `![]`) retain their legacy projections. Standalone
+ * boundary atoms select the boundary node itself. Ordered groups and named
+ * captures are programmatic until their text fixity no longer collides with
+ * range, slice, core-pattern, or boundary syntax.
  *
  * @spw:surface:query[system=selector-expr,semantic=prolog|sql|css,status=experimental] - Selector expressions are a user-facing query surface
  * @spw:portable:seed[layer=query,system=selector-engine,extract=candidate,basis=no-dom|pure-data] - No DOM or app-specific imports allowed
@@ -34,376 +19,538 @@
  */
 
 import type {
-    SpwSelector,
-    SpwPattern,
-    SigilSelector,
-    BraceSelector,
+  AttachedBoundarySelector,
+  BoundarySelector,
+  SigilSelector,
+  SpwPattern,
+  SpwSelector,
 } from './types'
-import { and, or, not, descend, seq } from './types'
-
-// ── Token types ──────────────────────────────────────────────
-
-type Token =
-    | { type: 'sigil'; value: SigilSelector }
-    | { type: 'brace'; value: BraceSelector }
-    | { type: 'modifier'; value: string }
-    | { type: 'string'; value: string }
-    | { type: 'number'; value: number }
-    | { type: 'pipe' }      // |
-    | { type: 'amp' }       // &
-    | { type: 'bang_not' }  // not
-    | { type: 'slash' }     // /
-    | { type: 'dotdot' }    // ..
-    | { type: 'at' }        // @ (depth prefix)
-    | { type: 'dash' }      // - (depth range separator)
-    | { type: 'lparen' }    // (
-    | { type: 'rparen' }    // )
-    | { type: 'eof' }
-
-// ── Sigil set ────────────────────────────────────────────────
-
-const SIGILS = new Set<string>(['!', '~', '@', '^', '#', '.', '?', '=', '&', '*', '$', '%'])
-
-// ── Tokenizer ────────────────────────────────────────────────
-
-function tokenize(input: string): Token[] {
-    const tokens: Token[] = []
-    let i = 0
-
-    while (i < input.length) {
-        // Skip whitespace
-        if (input[i] === ' ' || input[i] === '\t' || input[i] === '\n') {
-            i++
-            continue
-        }
-
-        // Two-char tokens first
-        if (input[i] === '<' && input[i + 1] === '>') {
-            tokens.push({ type: 'sigil', value: '<>' as SigilSelector })
-            i += 2
-            continue
-        }
-
-        if (input[i] === '.' && input[i + 1] === '.') {
-            tokens.push({ type: 'dotdot' })
-            i += 2
-            continue
-        }
-
-        // Brace pairs
-        if (input[i] === '[' && input[i + 1] === ']') {
-            tokens.push({ type: 'brace', value: '[]' })
-            i += 2
-            continue
-        }
-        if (input[i] === '{' && input[i + 1] === '}') {
-            tokens.push({ type: 'brace', value: '{}' })
-            i += 2
-            continue
-        }
-        if (input[i] === '(' && input[i + 1] === ')') {
-            tokens.push({ type: 'brace', value: '()' })
-            i += 2
-            continue
-        }
-
-        // Single char tokens
-        if (input[i] === '|') { tokens.push({ type: 'pipe' }); i++; continue }
-        if (input[i] === '/') { tokens.push({ type: 'slash' }); i++; continue }
-        if (input[i] === '-') { tokens.push({ type: 'dash' }); i++; continue }
-        if (input[i] === '(') { tokens.push({ type: 'lparen' }); i++; continue }
-        if (input[i] === ')') { tokens.push({ type: 'rparen' }); i++; continue }
-
-        // Sigils — & is both a sigil and an 'amp' combinator
-        // Disambiguate: if followed by another sigil or brace or letter, it's a sigil
-        if (input[i] === '&') {
-            const next = input[i + 1]
-            if (next && (SIGILS.has(next) || next === '[' || next === '{' || next === '(' || /[a-zA-Z]/.test(next))) {
-                tokens.push({ type: 'sigil', value: '&' })
-            } else {
-                tokens.push({ type: 'amp' })
-            }
-            i++
-            continue
-        }
-
-        // Other sigils
-        if (SIGILS.has(input[i])) {
-            tokens.push({ type: 'sigil', value: input[i] as SigilSelector })
-            i++
-            continue
-        }
-
-        // Quoted string
-        if (input[i] === '"') {
-            i++
-            let str = ''
-            while (i < input.length && input[i] !== '"') {
-                if (input[i] === '\\' && i + 1 < input.length) {
-                    str += input[i + 1]
-                    i += 2
-                } else {
-                    str += input[i]
-                    i++
-                }
-            }
-            if (i < input.length) i++ // skip closing quote
-            tokens.push({ type: 'string', value: str })
-            continue
-        }
-
-        // Numbers
-        if (/[0-9]/.test(input[i])) {
-            let num = ''
-            while (i < input.length && /[0-9]/.test(input[i])) {
-                num += input[i]
-                i++
-            }
-            tokens.push({ type: 'number', value: parseInt(num, 10) })
-            continue
-        }
-
-        // Identifiers (modifiers, keywords)
-        if (/[a-zA-Z_]/.test(input[i])) {
-            let ident = ''
-            while (i < input.length && /[a-zA-Z0-9_]/.test(input[i])) {
-                ident += input[i]
-                i++
-            }
-            if (ident === 'not') {
-                tokens.push({ type: 'bang_not' })
-            } else if (ident === 'or') {
-                tokens.push({ type: 'pipe' })
-            } else if (ident === 'and') {
-                tokens.push({ type: 'amp' })
-            } else {
-                tokens.push({ type: 'modifier', value: ident })
-            }
-            continue
-        }
-
-        // Unknown character — skip
-        i++
-    }
-
-    tokens.push({ type: 'eof' })
-    return tokens
-}
-
-// ── Parser ───────────────────────────────────────────────────
-
-class Parser {
-    private pos = 0
-
-    constructor(private tokens: Token[]) { }
-
-    private peek(): Token {
-        return this.tokens[this.pos] ?? { type: 'eof' }
-    }
-
-    private advance(): Token {
-        const tok = this.tokens[this.pos]
-        this.pos++
-        return tok ?? { type: 'eof' }
-    }
-
-    private expect(type: Token['type']): Token {
-        const tok = this.peek()
-        if (tok.type !== type) {
-            throw new SelectorParseError(
-                `Expected ${type}, got ${tok.type}`,
-                this.pos,
-            )
-        }
-        return this.advance()
-    }
-
-    /**
-     * expr = pipeline (('|' | 'or') pipeline)*
-     */
-    parseExpr(): SpwSelector {
-        let left = this.parsePipeline()
-
-        while (this.peek().type === 'pipe') {
-            this.advance()
-            const right = this.parsePipeline()
-            left = or(left, right)
-        }
-
-        return left
-    }
-
-    /**
-     * pipeline = term (('/' descend | '..' seq) term)*
-     */
-    private parsePipeline(): SpwSelector {
-        let left = this.parseTerm()
-
-        while (true) {
-            const tok = this.peek()
-            if (tok.type === 'slash') {
-                this.advance()
-                const right = this.parseTerm()
-                left = descend(left, right)
-            } else if (tok.type === 'dotdot') {
-                this.advance()
-                const right = this.parseTerm()
-                left = seq(left, right)
-            } else {
-                break
-            }
-        }
-
-        return left
-    }
-
-    /**
-     * term = factor (('&' | 'and') factor)*
-     */
-    private parseTerm(): SpwSelector {
-        let left = this.parseFactor()
-
-        while (this.peek().type === 'amp') {
-            this.advance()
-            const right = this.parseFactor()
-            left = and(left, right)
-        }
-
-        return left
-    }
-
-    /**
-     * factor = 'not' factor | atom
-     */
-    private parseFactor(): SpwSelector {
-        if (this.peek().type === 'bang_not') {
-            this.advance()
-            const inner = this.parseFactor()
-            return not(inner)
-        }
-
-        return this.parseAtom()
-    }
-
-    /**
-     * atom = sigil braces? modifier? value? depth?
-     *      | '(' expr ')'
-     *      | modifier (standalone modifier like 'boon')
-     */
-    private parseAtom(): SpwSelector {
-        const tok = this.peek()
-
-        // Grouped expression
-        if (tok.type === 'lparen') {
-            this.advance()
-            const inner = this.parseExpr()
-            this.expect('rparen')
-            return inner
-        }
-
-        // Standalone modifier (e.g., just "boon")
-        if (tok.type === 'modifier') {
-            const mod = this.advance() as Extract<Token, { type: 'modifier' }>
-            return { modifier: mod.value } as SpwPattern
-        }
-
-        // Sigil-led pattern
-        if (tok.type === 'sigil') {
-            const sigil = (this.advance() as Extract<Token, { type: 'sigil' }>).value
-            const pattern: SpwPattern = { sigil }
-
-            // Primary brace
-            if (this.peek().type === 'brace') {
-                pattern.brace = (this.advance() as Extract<Token, { type: 'brace' }>).value
-            }
-
-            // Secondary brace
-            if (this.peek().type === 'brace') {
-                pattern.brace2 = (this.advance() as Extract<Token, { type: 'brace' }>).value
-            }
-
-            // Modifier
-            if (this.peek().type === 'modifier') {
-                pattern.modifier = (this.advance() as Extract<Token, { type: 'modifier' }>).value
-            }
-
-            // Value (quoted string)
-            if (this.peek().type === 'string') {
-                pattern.value = (this.advance() as Extract<Token, { type: 'string' }>).value
-            }
-
-            // Depth: @N or @N-M — '@' is tokenized as sigil('@')
-            const depthTok = this.peek()
-            if (depthTok.type === 'sigil' && (depthTok as Extract<Token, { type: 'sigil' }>).value === '@') {
-                this.advance()
-                if (this.peek().type === 'number') {
-                    const n = (this.advance() as Extract<Token, { type: 'number' }>).value
-                    if (this.peek().type === 'dash') {
-                        this.advance()
-                        const m = (this.expect('number') as Extract<Token, { type: 'number' }>).value
-                        pattern.depthRange = [n, m]
-                    } else {
-                        pattern.depth = n
-                    }
-                }
-            }
-
-            return pattern
-        }
-
-        // Standalone brace (no sigil, just [] or {})
-        if (tok.type === 'brace') {
-            const brace = (this.advance() as Extract<Token, { type: 'brace' }>).value
-            return { brace } as SpwPattern
-        }
-
-        throw new SelectorParseError(
-            `Unexpected token: ${tok.type}`,
-            this.pos,
-        )
-    }
-}
-
-// ── Error class ──────────────────────────────────────────────
+import { and, anyNode, descend, not, or } from './types'
+import { assertSpwSelector } from './validate'
+import { readDecodedQuotedValue } from './quoted'
 
 export class SelectorParseError extends Error {
-    constructor(
-        message: string,
-        public readonly position: number,
+  constructor(
+    message: string,
+    public readonly position: number,
+  ) {
+    super(`SelectorParseError at character ${position}: ${message}`)
+    this.name = 'SelectorParseError'
+  }
+}
+
+type LocatedToken = { offset: number }
+
+type Token = LocatedToken & (
+  | { type: 'sigil'; value: SigilSelector }
+  | { type: 'boundary'; kind: BoundarySelector; value?: string; placeholder: boolean }
+  | { type: 'modifier'; value: string }
+  | { type: 'string'; value: string }
+  | { type: 'number'; value: number }
+  | { type: 'query' }
+  | { type: 'placeholder' }
+  | { type: 'any' }
+  | { type: 'pipe' }
+  | { type: 'amp' }
+  | { type: 'bang_not' }
+  | { type: 'slash' }
+  | { type: 'dash' }
+  | { type: 'lparen' }
+  | { type: 'rparen' }
+  | { type: 'eof' }
+)
+
+const SIGILS = new Set<string>([
+  '!', '~', '@', '^', '#', '.', '?', '=', '&', '*', '$', '%', '<>',
+])
+
+interface BoundaryLexeme {
+  kind: BoundarySelector
+  open: string
+  close: string
+  allowValue: boolean
+}
+
+const BOUNDARY_LEXEMES: readonly BoundaryLexeme[] = [
+  { kind: 'stream', open: '<<', close: '>>', allowValue: true },
+  { kind: 'nrange', open: '((', close: '))', allowValue: true },
+  { kind: 'frame', open: '[', close: ']', allowValue: true },
+  { kind: 'body', open: '{', close: '}', allowValue: true },
+  { kind: 'capsule', open: '<', close: '>', allowValue: true },
+  // A non-empty `(expr)` is grouping. `()` and `(_)` remain Scope selectors.
+  { kind: 'scope', open: '(', close: ')', allowValue: false },
+]
+
+function tokenize(input: string): Token[] {
+  const tokens: Token[] = []
+  let offset = 0
+
+  while (offset < input.length) {
+    const char = input[offset]
+    if (isWhitespace(char)) {
+      offset += 1
+      continue
+    }
+
+    if (input.startsWith('..', offset)) {
+      throw new SelectorParseError(
+        '`..` is reserved for range and slice selectors; ordered query spelling is not assigned',
+        offset,
+      )
+    }
+
+    if (input.startsWith('<>', offset)) {
+      tokens.push({ type: 'sigil', value: '<>', offset })
+      offset += 2
+      continue
+    }
+
+    if (
+      char === '$'
+      && tokens[tokens.length - 1]?.type !== 'query'
+      && startsQueryEnvelope(input, offset + 1)
     ) {
-        super(`SelectorParseError at position ${position}: ${message}`)
-        this.name = 'SelectorParseError'
+      tokens.push({ type: 'query', offset })
+      offset += 1
+      continue
     }
+
+    const boundary = readBoundary(
+      input,
+      offset,
+      tokens[tokens.length - 1]?.type === 'query',
+    )
+    if (boundary) {
+      tokens.push(boundary.token)
+      offset = boundary.nextOffset
+      continue
+    }
+
+    if (char === '|') {
+      tokens.push({ type: 'pipe', offset })
+      offset += 1
+      continue
+    }
+    if (char === '/') {
+      tokens.push({ type: 'slash', offset })
+      offset += 1
+      continue
+    }
+    if (char === '-') {
+      tokens.push({ type: 'dash', offset })
+      offset += 1
+      continue
+    }
+    if (char === '(') {
+      tokens.push({ type: 'lparen', offset })
+      offset += 1
+      continue
+    }
+    if (char === ')') {
+      tokens.push({ type: 'rparen', offset })
+      offset += 1
+      continue
+    }
+    if (char === '_') {
+      tokens.push({ type: 'placeholder', offset })
+      offset += 1
+      continue
+    }
+
+    if (char === '&') {
+      if (isSymbolicAnd(input, offset, tokens)) {
+        tokens.push({ type: 'amp', offset })
+      } else {
+        tokens.push({ type: 'sigil', value: '&', offset })
+      }
+      offset += 1
+      continue
+    }
+
+    if (SIGILS.has(char)) {
+      tokens.push({ type: 'sigil', value: char as SigilSelector, offset })
+      offset += 1
+      continue
+    }
+
+    if (char === '"' || char === "'" || char === '`') {
+      const quoted = readQuoted(input, offset)
+      tokens.push({ type: 'string', value: quoted.value, offset })
+      offset = quoted.nextOffset
+      continue
+    }
+
+    if (/[0-9]/.test(char)) {
+      let end = offset + 1
+      while (end < input.length && /[0-9]/.test(input[end])) end += 1
+      tokens.push({ type: 'number', value: Number(input.slice(offset, end)), offset })
+      offset = end
+      continue
+    }
+
+    if (/[A-Za-z]/.test(char)) {
+      let end = offset + 1
+      while (end < input.length && /[A-Za-z0-9_]/.test(input[end])) end += 1
+      const value = input.slice(offset, end)
+      if (value === 'not') tokens.push({ type: 'bang_not', offset })
+      else if (value === 'or') tokens.push({ type: 'pipe', offset })
+      else if (value === 'and') tokens.push({ type: 'amp', offset })
+      else if (value === 'any') tokens.push({ type: 'any', offset })
+      else tokens.push({ type: 'modifier', value, offset })
+      offset = end
+      continue
+    }
+
+    throw new SelectorParseError(`Unexpected character ${JSON.stringify(char)}`, offset)
+  }
+
+  tokens.push({ type: 'eof', offset: input.length })
+  return tokens
 }
 
-// ── Public API ───────────────────────────────────────────────
+function startsQueryEnvelope(input: string, from: number): boolean {
+  let offset = from
+  while (offset < input.length && isWhitespace(input[offset])) offset += 1
+  if (offset >= input.length) return false
+  if (input[offset] === '_') return true
+  if (input.startsWith('<>', offset)) return true
+  if (SIGILS.has(input[offset])) return true
+  return BOUNDARY_LEXEMES.some(({ open }) => input.startsWith(open, offset))
+}
 
-/**
- * Parse a Spw selector expression string into a SpwSelector object.
- *
- * @example
- * parseSelector('^[]')        // { sigil: '^', brace: '[]' }
- * parseSelector('~ | @')      // or({ sigil: '~' }, { sigil: '@' })
- * parseSelector('^[] / ![]')  // descend({ sigil: '^', brace: '[]' }, { sigil: '!', brace: '[]' })
- * parseSelector('!boon')      // { sigil: '!', modifier: 'boon' }
- * parseSelector('~"./path"')  // { sigil: '~', value: './path' }
- * parseSelector('not ^[]')    // not({ sigil: '^', brace: '[]' })
- */
+function readBoundary(
+  input: string,
+  offset: number,
+  allowScopedValue = false,
+): { token: Token; nextOffset: number } | null {
+  for (const lexeme of BOUNDARY_LEXEMES) {
+    if (!input.startsWith(lexeme.open, offset)) continue
+    if (lexeme.kind === 'capsule' && input.startsWith('<>', offset)) continue
+
+    const contentStart = offset + lexeme.open.length
+    const closeOffset = findUnquotedClose(input, contentStart, lexeme.close)
+    if (closeOffset < 0) {
+      // A single `(` may still be a grouped expression whose close is reported
+      // by the parser. Other boundary openings are unambiguously incomplete.
+      if (lexeme.kind === 'scope' || lexeme.kind === 'nrange') return null
+      throw new SelectorParseError(`Unterminated ${lexeme.kind} boundary selector`, offset)
+    }
+
+    const rawContent = input.slice(contentStart, closeOffset).trim()
+    const interior = parseBoundaryInterior(
+      rawContent,
+      contentStart,
+      lexeme.allowValue || (lexeme.kind === 'scope' && allowScopedValue),
+    )
+    if (!interior.accepted) {
+      if (lexeme.kind === 'scope' || lexeme.kind === 'nrange') return null
+      throw new SelectorParseError(
+        `${lexeme.kind} selector interior must be empty, _, an identifier, or one quoted literal`,
+        contentStart,
+      )
+    }
+
+    return {
+      token: {
+        type: 'boundary',
+        kind: lexeme.kind,
+        placeholder: interior.placeholder,
+        ...(interior.value === undefined ? {} : { value: interior.value }),
+        offset,
+      },
+      nextOffset: closeOffset + lexeme.close.length,
+    }
+  }
+  return null
+}
+
+function findUnquotedClose(input: string, from: number, close: string): number {
+  let quote: string | null = null
+  let escaped = false
+  for (let offset = from; offset < input.length; offset += 1) {
+    const char = input[offset]
+    if (escaped) {
+      escaped = false
+      continue
+    }
+    if (quote && char === '\\') {
+      escaped = true
+      continue
+    }
+    if (char === '"' || char === "'" || char === '`') {
+      quote = quote === char ? null : quote ?? char
+      continue
+    }
+    if (!quote && input.startsWith(close, offset)) return offset
+  }
+  return -1
+}
+
+function parseBoundaryInterior(
+  raw: string,
+  offset: number,
+  allowValue: boolean,
+): { accepted: boolean; value?: string; placeholder: boolean } {
+  if (raw === '') return { accepted: true, placeholder: false }
+  if (raw === '_') return { accepted: true, placeholder: true }
+  if (!allowValue) return { accepted: false, placeholder: false }
+  if (/^[A-Za-z][A-Za-z0-9_]*$/.test(raw)) {
+    return { accepted: true, value: raw, placeholder: false }
+  }
+  if (
+    raw.length >= 2
+    && (raw[0] === '"' || raw[0] === "'" || raw[0] === '`')
+    && raw[raw.length - 1] === raw[0]
+  ) {
+    const quoted = readQuoted(raw, 0)
+    if (quoted.nextOffset !== raw.length) {
+      throw new SelectorParseError('Boundary literal must consume its interior', offset)
+    }
+    return { accepted: true, value: quoted.value, placeholder: false }
+  }
+  return { accepted: false, placeholder: false }
+}
+
+function readQuoted(input: string, offset: number): { value: string; nextOffset: number } {
+  const decoded = readDecodedQuotedValue(input, offset)
+  if (decoded) return decoded
+  throw new SelectorParseError('Unterminated quoted literal', offset)
+}
+
+function isSymbolicAnd(input: string, offset: number, tokens: Token[]): boolean {
+  const previous = tokens[tokens.length - 1]
+  if (
+    !previous
+    || previous.type === 'query'
+    || previous.type === 'pipe'
+    || previous.type === 'amp'
+    || previous.type === 'bang_not'
+    || previous.type === 'slash'
+    || previous.type === 'lparen'
+  ) {
+    return false
+  }
+  const hasSpaceBefore = offset > 0 && isWhitespace(input[offset - 1])
+  const hasSpaceAfter = offset + 1 < input.length && isWhitespace(input[offset + 1])
+  return hasSpaceBefore && hasSpaceAfter
+}
+
+function isWhitespace(char: string | undefined): boolean {
+  return char === ' ' || char === '\t' || char === '\n' || char === '\r'
+}
+
+class Parser {
+  private position = 0
+
+  constructor(private readonly tokens: Token[]) {}
+
+  parse(): SpwSelector {
+    const selector = this.parseExpression()
+    this.expect('eof')
+    assertSpwSelector(selector)
+    return selector
+  }
+
+  private peek(): Token {
+    return this.tokens[this.position] ?? this.tokens[this.tokens.length - 1]!
+  }
+
+  private advance(): Token {
+    const token = this.peek()
+    this.position += 1
+    return token
+  }
+
+  private expect<T extends Token['type']>(type: T): Extract<Token, { type: T }> {
+    const token = this.peek()
+    if (token.type !== type) {
+      throw new SelectorParseError(`Expected ${type}, got ${token.type}`, token.offset)
+    }
+    return this.advance() as Extract<Token, { type: T }>
+  }
+
+  private parseExpression(): SpwSelector {
+    let left = this.parsePipeline()
+    while (this.peek().type === 'pipe') {
+      this.advance()
+      left = or(left, this.parsePipeline())
+    }
+    return left
+  }
+
+  private parsePipeline(): SpwSelector {
+    let left = this.parseTerm()
+    while (this.peek().type === 'slash') {
+      this.advance()
+      left = descend(left, this.parseTerm())
+    }
+    return left
+  }
+
+  private parseTerm(): SpwSelector {
+    let left = this.parseFactor()
+    while (this.peek().type === 'amp') {
+      this.advance()
+      left = and(left, this.parseFactor())
+    }
+    return left
+  }
+
+  private parseFactor(): SpwSelector {
+    if (this.peek().type === 'bang_not') {
+      this.advance()
+      return not(this.parseFactor())
+    }
+    return this.parseAtom()
+  }
+
+  private parseAtom(): SpwSelector {
+    const token = this.peek()
+    if (token.type === 'query') {
+      this.advance()
+      return this.parseQueryAtom()
+    }
+    if (token.type === 'any') {
+      this.advance()
+      return anyNode()
+    }
+    if (token.type === 'lparen') {
+      this.advance()
+      const selector = this.parseExpression()
+      this.expect('rparen')
+      return selector
+    }
+    if (token.type === 'modifier') {
+      this.advance()
+      return { modifier: token.value }
+    }
+    if (token.type === 'sigil') return this.parseSigilPattern(false)
+    if (token.type === 'boundary') return this.parseBoundaryPattern()
+
+    throw new SelectorParseError(`Unexpected token ${token.type}`, token.offset)
+  }
+
+  private parseQueryAtom(): SpwSelector {
+    const token = this.peek()
+    if (token.type === 'placeholder' || token.type === 'any') {
+      this.advance()
+      return token.type === 'placeholder'
+        ? { any: true, placeholder: true }
+        : anyNode()
+    }
+    if (token.type === 'sigil') return this.parseSigilPattern(true)
+    if (token.type === 'boundary') return this.parseBoundaryPattern()
+    throw new SelectorParseError('Query envelope requires a sigil, boundary, or _', token.offset)
+  }
+
+  private parseBoundaryPattern(): SpwPattern {
+    const boundary = this.expect('boundary')
+    return {
+      boundary: boundary.kind,
+      ...(boundary.value === undefined ? {} : { value: boundary.value }),
+      ...(boundary.placeholder ? { placeholder: true as const } : {}),
+    }
+  }
+
+  private parseSigilPattern(queryEnvelope: boolean): SpwPattern {
+    const sigil = this.expect('sigil')
+    const pattern: SpwPattern = { sigil: sigil.value }
+    const withBoundaries: AttachedBoundarySelector[] = []
+    let anonymousPlaceholder = false
+
+    while (this.peek().type === 'boundary') {
+      const boundary = this.expect('boundary')
+      if (!isAttachedBoundary(boundary.kind)) {
+        throw new SelectorParseError(
+          `${boundary.kind} is a direct boundary selector, not an attachable operation boundary`,
+          boundary.offset,
+        )
+      }
+      if (withBoundaries.includes(boundary.kind)) {
+        throw new SelectorParseError(`Duplicate ${boundary.kind} boundary selector`, boundary.offset)
+      }
+      withBoundaries.push(boundary.kind)
+      anonymousPlaceholder ||= boundary.placeholder
+      if (boundary.value !== undefined) {
+        throw new SelectorParseError(
+          'Attached boundary literal matching is unassigned; select the boundary node directly',
+          boundary.offset,
+        )
+      }
+    }
+    if (withBoundaries.length > 0) {
+      if (queryEnvelope) {
+        pattern.withBoundaries = withBoundaries
+      } else {
+        pattern.brace = braceSurface(withBoundaries[0])
+        if (withBoundaries[1]) pattern.brace2 = braceSurface(withBoundaries[1])
+      }
+    }
+
+    if (this.peek().type === 'modifier') {
+      pattern.modifier = this.expect('modifier').value
+    }
+    let hasValueSurface = false
+    if (this.peek().type === 'string') {
+      const literal = this.expect('string').value
+      hasValueSurface = true
+      if (queryEnvelope && literal === '_') anonymousPlaceholder = true
+      else pattern.value = literal
+    }
+    if (this.peek().type === 'placeholder') {
+      this.advance()
+      anonymousPlaceholder = true
+    }
+
+    if (anonymousPlaceholder) pattern.placeholder = true
+
+    if (queryEnvelope) {
+      if (
+        sigil.value === '@'
+        && withBoundaries.length === 0
+        && pattern.modifier === undefined
+      ) pattern.nodeType = 'Reference'
+      else if (sigil.value === '~' && hasValueSurface) pattern.nodeType = 'PathRef'
+      else pattern.nodeType = 'Operation'
+    }
+
+    const depth = this.peek()
+    if (depth.type === 'sigil' && depth.value === '@') {
+      this.advance()
+      const minimum = this.expect('number')
+      if (this.peek().type === 'dash') {
+        this.advance()
+        const maximum = this.expect('number')
+        if (maximum.value < minimum.value) {
+          throw new SelectorParseError('Depth range must be ascending', maximum.offset)
+        }
+        pattern.depthRange = [minimum.value, maximum.value]
+      } else {
+        pattern.depth = minimum.value
+      }
+    }
+
+    return pattern
+  }
+}
+
+function isAttachedBoundary(kind: BoundarySelector): kind is AttachedBoundarySelector {
+  return kind === 'frame' || kind === 'body'
+}
+
+function braceSurface(kind: AttachedBoundarySelector): '[]' | '{}' {
+  return kind === 'frame' ? '[]' : '{}'
+}
+
+/** Parse a selector only when every character belongs to the closed grammar. */
 export function parseSelector(input: string): SpwSelector {
-    const tokens = tokenize(input)
-    const parser = new Parser(tokens)
-    const result = parser.parseExpr()
-    return result
+  return new Parser(tokenize(input)).parse()
 }
 
-/**
- * Try to parse a selector expression. Returns null on failure
- * instead of throwing.
- */
 export function tryParseSelector(input: string): SpwSelector | null {
-    try {
-        return parseSelector(input)
-    } catch {
-        return null
-    }
+  try {
+    return parseSelector(input)
+  } catch {
+    return null
+  }
 }

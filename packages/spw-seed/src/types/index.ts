@@ -10,6 +10,8 @@ export type {
   BoundarySide,
   CouplingOccupancy,
   CouplingPayload,
+  EmptyBoundaryPayload,
+  InhabitedBoundaryPayload,
   ActPlacement,
   OperatorCouplingPort,
   BoundaryCouplingPort,
@@ -32,6 +34,7 @@ export type {
   CouplingSemanticsProjection,
 } from './coupling'
 export {
+  PAIRED_BOUNDARY_KINDS,
   COUPLING_DESCRIPTORS,
   couplingFrame,
   withCoupling,

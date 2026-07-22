@@ -205,7 +205,7 @@ class ConceptsTreeDataProvider implements vscode.TreeDataProvider<ConceptNode> {
 
   private renderGroupItem(element: ConceptGroupNode): vscode.TreeItem {
     const kindSet = new Set(element.entries.map((e) => e.kind))
-    const fileSet = new Set(element.entries.map((e) => e.file.fsPath))
+    const fileSet = new Set(element.entries.map((e) => e.file.toString()))
     const kindCounts = countKinds(element.entries)
 
     const state = element.entries.length > 0
@@ -670,7 +670,7 @@ function isAnnotationKind(value: string): value is AnnotationKind {
 function entryNodes(entries: AnnotationEntry[]): ConceptEntryNode[] {
   return [...entries]
     .sort((a, b) => {
-      const fileA = a.file.fsPath.localeCompare(b.file.fsPath)
+      const fileA = a.file.toString().localeCompare(b.file.toString())
       if (fileA !== 0) return fileA
       return a.line - b.line
     })

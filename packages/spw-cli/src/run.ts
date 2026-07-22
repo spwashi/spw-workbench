@@ -173,7 +173,7 @@ function printHelp(): void {
           'install      Alias for init',
           'seq          Alias for ls',
           'spwq         Alias for select',
-          'mutate|beat  Alias for pulse',
+          'mutate|beat  Aliases for pulse',
         ],
       },
       {

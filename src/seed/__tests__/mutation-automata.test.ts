@@ -4,17 +4,20 @@
 import { describe, it, expect } from 'vitest'
 import {
   applyEdits,
+  collectPlannedEdits,
   differentialFromSources,
   foldTransforms,
   formatMatrix,
   hashString,
   matrixFromVectors,
+  matrixTranspose,
   mutationRulesAsSequenceContext,
   boundaryLadder,
   operatorLadder,
   planMutation,
   probeMutationTopography,
   probeBoundaryLadder,
+  probeFormLadder,
   probeOperatorLadder,
   runMutationAutomata,
   runOperationalSequence,
@@ -76,7 +79,76 @@ describe('mutation automata', () => {
     const input = 'x  \n'
     const plan = planMutation(input, { profile: 'layout_canonical' })
     expect(plan.source).toBe(input)
+    expect(plan.plannedSource).toBe('x\n')
+    expect(plan.changed).toBe(false)
+    expect(plan.wouldChange).toBe(true)
+    expect(plan.requiresWriteAuthority).toBe(true)
+    expect(plan.steps.every(step => !step.applied)).toBe(true)
     expect(plan.steps.some(s => !s.differential.identity)).toBe(true)
+    expect(applyEdits(input, collectPlannedEdits(plan))).toBe(plan.plannedSource)
+  })
+
+  it('converges a dry plan to the same virtual fixed point as an in-memory run', () => {
+    const input = '...@rest\n'
+    const plan = runMutationAutomata(input, {
+      profile: 'equiv_scripts',
+      dryRun: true,
+      effectCeiling: 'S1',
+    })
+    const applied = runMutationAutomata(input, {
+      profile: 'equiv_scripts',
+      dryRun: false,
+      effectCeiling: 'S1',
+    })
+
+    expect(plan.source).toBe(input)
+    expect(plan.plannedSource).toBe(applied.source)
+    expect(plan.plannedOutputHash).toBe(applied.outputHash)
+    expect(plan.vector).toEqual(applied.vector)
+    expect(plan.stopReason).toBe('fixed_point')
+    expect(plan.steps.every(step => !step.applied)).toBe(true)
+  })
+
+  it('exports one original-coordinate edit plan for multi-rule layout', () => {
+    const input = 'a  \r\n\r\n\r\nb'
+    const plan = planMutation(input, { profile: 'layout_full' })
+
+    expect(applyEdits(input, collectPlannedEdits(plan))).toBe(plan.plannedSource)
+    expect(plan.plannedDifferential.beforeHash).toBe(plan.inputHash)
+    expect(plan.plannedDifferential.afterHash).toBe(plan.plannedOutputHash)
+  })
+
+  it('blocks mixed-authority profiles atomically while preserving their plan', () => {
+    const input = 'x  '
+    const result = runMutationAutomata(input, {
+      enabledRules: ['trim_custom', 'write_custom'],
+      effectCeiling: 'S1',
+      dryRun: false,
+      customRules: [
+        {
+          id: 'trim_custom',
+          description: 'trim in memory',
+          stratum: 'layout',
+          effectGrade: 'S1',
+          transform: source => source.trimEnd(),
+        },
+        {
+          id: 'write_custom',
+          description: 'represent a workspace-authorized transform',
+          stratum: 'operation',
+          effectGrade: 'S2',
+          transform: source => `${source}!`,
+        },
+      ],
+    })
+
+    expect(result.stopReason).toBe('authority_failure')
+    expect(result.source).toBe(input)
+    expect(result.plannedSource).toBe('x!')
+    expect(result.rulesResolved).toEqual(['trim_custom', 'write_custom'])
+    expect(result.rulesApplied).toEqual([])
+    expect(result.rulesBlocked).toEqual([{ ruleId: 'write_custom', effectGrade: 'S2' }])
+    expect(result.steps.every(step => !step.applied)).toBe(true)
   })
 
   it('equiv_scripts rewrites spw:seq alias', () => {
@@ -264,6 +336,29 @@ describe('operational transform algebra', () => {
     expect(m.rows).toEqual(['a'])
     expect(m.data[0][0]).toBe(1)
     expect(m.data[0][7]).toBe(-2)
+
+    const transposed = matrixTranspose(m)
+    expect(transposed.rows[0]).toBe('layout_delta')
+    expect(transposed.cols).toEqual(['a'])
+    expect(transposed.data[0]).toEqual([1])
+  })
+
+  it('parallel planning composes three independent length-changing edits', () => {
+    const source = 'a\nb\nc\n'
+    const result = runOperationalSequence(source, {
+      id: 'three-independent-edits',
+      description: 'negative control for cumulative edit duplication',
+      mode: 'parallel_plan',
+      steps: [
+        { id: 'widen-a', kind: 'custom', apply: value => value.replace('a', 'aa') },
+        { id: 'widen-b', kind: 'custom', apply: value => value.replace('b', 'bb') },
+        { id: 'widen-c', kind: 'custom', apply: value => value.replace('c', 'cc') },
+      ],
+    }, mutationRulesAsSequenceContext())
+
+    expect(result.source).toBe('aa\nbb\ncc\n')
+    expect(result.conflicts).toEqual([])
+    expect(applyEdits(source, result.folded.edits)).toBe(result.source)
   })
 })
 
@@ -283,6 +378,8 @@ describe('form ladders (paired-boundary profile)', () => {
     expect(boundaryLadder('()')?.boundary).toBe('scope')
     expect(boundaryLadder('< >')?.boundary).toBe('capsule')
     expect(boundaryLadder('<>')).toBeUndefined()
+    expect(boundaryLadder('toString')).toBeUndefined()
+    expect(operatorLadder('toString')).toBeUndefined()
   })
 
   it('frame ladder is selection-primary with path and fold', () => {
@@ -345,6 +442,16 @@ describe('form ladders (paired-boundary profile)', () => {
     const ground = probeOperatorLadder('.')
     expect(ground!.ladder.name).toMatch(/Ground/i)
   })
+
+  it('couple ladder probe exposes the operand arity it claims', () => {
+    const ladder = operatorLadder('<>')!
+    const probe = probeFormLadder(ladder)
+    const operandStep = probe.steps.find(step => step.step.id === 'couple')
+
+    expect(operandStep?.expectationMet).toBe(true)
+    expect(operandStep?.onf?.couplingKind).toBe('couple')
+    expect(operandStep?.onf?.arity).toBe(2)
+  })
 })
 
 describe('form geometry — label mobility', () => {
@@ -391,5 +498,37 @@ describe('form geometry — label mobility', () => {
     const run = runHigherOrderForm('hof.action_aperture_cycle', 'go')
     expect(run?.completed).toBe(true)
     expect(run?.source).toBe('go')
+  })
+
+  it('keeps mobility catalogs aligned with their executable domains', () => {
+    expect(applyMobilityRule('ingress.header', 'topic', 'topic').ok).toBe(true)
+    expect(applyMobilityRule('ingress.header', '.{topic: _}', 'topic').ok).toBe(false)
+
+    const bridge = applyMobilityRule('promote.register_bridge', '@(topic)', 'topic')
+    expect(bridge.ok && bridge.source).toBe('$(topic)')
+    expect(bridge.ok && bridge.receipt.inverse.status).toBe('exact')
+    expect(applyMobilityRule('promote.register_bridge', '$(topic)', 'topic').ok).toBe(false)
+    expect(applyMobilityRule(
+      'promote.register_bridge',
+      '^["topic"]{payload}',
+      'topic',
+    ).ok).toBe(false)
+
+    expect(applyMobilityRule('egress.pair_labels', '{_topic }_topic', 'topic')).toMatchObject({
+      ok: true,
+      source: 'topic',
+    })
+    expect(applyMobilityRule('egress.pair_labels', '{_topic value }_topic', 'topic').ok).toBe(false)
+    expect(applyMobilityRule(
+      'egress.pair_labels_to_body',
+      '{_topic value }_topic',
+      'topic',
+    )).toMatchObject({ ok: true, source: '{value}' })
+  })
+
+  it('rejects labels outside the declared mobility grammar', () => {
+    const result = applyMobilityRule('ingress.header', '', 'bad"]{payload}')
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.reason).toMatch(/identifier grammar/)
   })
 })

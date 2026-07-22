@@ -20,6 +20,13 @@
  */
 
 import type { BoundaryLadderId } from './form-ladders'
+import { hashString } from './canonicalize'
+import {
+  snapshotTopography,
+  topographyDelta,
+  type ParseHealth,
+  type TopographyDelta,
+} from './topography-probe'
 
 // ── Sites & liminal shapes ─────────────────────────────────────
 
@@ -102,6 +109,44 @@ export interface LabelPositionPattern {
 // ── Mobility rules ─────────────────────────────────────────────
 
 export type RuleStatus = 'implemented' | 'partial' | 'proposed'
+
+export const FORM_GEOMETRY_PROFILE = {
+  id: 'Spw.Form.Geometry',
+  revision: '0.2',
+  status: 'interpretive',
+  labelGrammar: 'identifier',
+} as const
+
+export const FORM_MOBILITY_APPLICATION_PROFILE = {
+  id: 'Spw.Form.Geometry.Application',
+  revision: '0.1',
+  status: 'operational',
+  effectGrade: 'S1',
+  authority: 'in-memory source only',
+  semanticEquivalence: 'not_claimed',
+} as const
+
+export interface MobilityApplicationReceipt {
+  profile: typeof FORM_MOBILITY_APPLICATION_PROFILE
+  effectGrade: 'S1'
+  beforeHash: string
+  afterHash: string
+  beforeHealth: ParseHealth
+  afterHealth: ParseHealth
+  topographyDelta: TopographyDelta
+  /** Mobility changes meaning by design; no semantic equivalence is inferred. */
+  semanticEquivalence: 'not_claimed'
+  inverse: {
+    ruleId?: string
+    comparison: 'trimmed_surface'
+    status: 'unavailable' | 'failed' | 'exact' | 'changed'
+    restoredSource?: string
+  }
+}
+
+export type MobilityApplication =
+  | { ok: true; source: string; rule: MobilityRule; receipt: MobilityApplicationReceipt }
+  | { ok: false; reason: string; rule?: MobilityRule }
 
 export interface MobilityRule {
   id: string
@@ -219,7 +264,7 @@ function applyFreeToRefHandle(source: string, label: string): string | null {
 /** free name → header `^["name"]{}` */
 function applyFreeToHeader(source: string, label: string): string | null {
   const trimmed = source.trim()
-  if (trimmed === label || trimmed === '' || trimmed === '{}' || trimmed === '{^}') {
+  if (trimmed === label || trimmed === '') {
     return `^["${label}"]{}`
   }
   return null
@@ -311,19 +356,12 @@ function applyHeaderToFacet(source: string, label: string): string | null {
 }
 
 /**
- * Surface publish → substrate meta handle.
- *   @(L) | ^["L"]{} | ^["L"]{…} | L  →  $(L)
+ * Observer handle → substrate meta handle.
+ * Headers are rejected because $(L) has no place to retain their payload.
  */
 function applyPublishedToRegisterMeta(source: string, label: string): string | null {
   const trimmed = source.trim()
   if (trimmed === `@(${label})`) return `$(${label})`
-  if (trimmed === `^["${label}"]{}`) return `$(${label})`
-  const headerRe = new RegExp(
-    `^\\^\\[\\s*"${escapeRegExp(label)}"\\s*\\]\\s*\\{[\\s\\S]*\\}\\s*$`,
-  )
-  if (headerRe.test(trimmed)) return `$(${label})`
-  if (trimmed === label) return `$(${label})`
-  if (trimmed === `$(${label})`) return `$(${label})`
   return null
 }
 
@@ -354,15 +392,26 @@ function applyFreeToPairLabels(source: string, label: string): string | null {
 }
 
 /** {_L … }_L → free L (strip pair labels, keep interior if any) */
-function applyPairLabelsToFree(source: string, label: string): string | null {
+function pairLabelInterior(source: string, label: string): string | null {
   const trimmed = source.trim()
   const re = new RegExp(
     `^\\{\\s*_${escapeRegExp(label)}\\s*([\\s\\S]*?)\\s*\\}_${escapeRegExp(label)}\\s*$`,
   )
   const m = trimmed.match(re)
   if (!m) return null
-  const interior = m[1].trim()
-  return interior.length === 0 ? label : `{${interior}}`
+  return m[1].trim()
+}
+
+/** Empty {_L }_L → free L. */
+function applyEmptyPairLabelsToFree(source: string, label: string): string | null {
+  const interior = pairLabelInterior(source, label)
+  return interior === '' ? label : null
+}
+
+/** Inhabited {_L body }_L → unlabeled {body}. */
+function applyInhabitedPairLabelsToBody(source: string, label: string): string | null {
+  const interior = pairLabelInterior(source, label)
+  return interior ? `{${interior}}` : null
 }
 
 /** {_L … }_L → ^["L"]{…} publish pair-labeled body as header */
@@ -457,7 +506,7 @@ export const MOBILITY_RULES: readonly MobilityRule[] = [
   {
     id: 'ingress.header',
     name: 'promote label to integrate header',
-    from: { site: ['free', 'facet_key', 'interior_term'], liminal: ['exterior', 'chamber'] },
+    from: { site: 'free', liminal: ['exterior', 'void'] },
     to: { site: 'header', liminal: 'published', boundary: 'body' },
     rewrite: { before: '$L', after: '^["$L"]{}' },
     status: 'implemented',
@@ -596,10 +645,10 @@ export const MOBILITY_RULES: readonly MobilityRule[] = [
   },
   {
     id: 'promote.register_bridge',
-    name: 'bridge surface published site to substrate meta $(L)',
-    from: { site: ['header', 'ref_handle', 'free'], liminal: ['published', 'exterior'] },
+    name: 'project observer handle to substrate meta $(L)',
+    from: { site: 'ref_handle', liminal: 'published', boundary: 'scope' },
     to: { site: 'register_meta', liminal: 'published' },
-    rewrite: { before: '@($L) | ^["$L"]{} | $L', after: '$($L)' },
+    rewrite: { before: '@($L)', after: '$($L)' },
     inverse: 'demote.register_to_ref',
     status: 'implemented',
     apply: applyPublishedToRegisterMeta,
@@ -626,7 +675,6 @@ export const MOBILITY_RULES: readonly MobilityRule[] = [
     from: { site: ['free', 'interior_term'], liminal: ['exterior', 'void', 'chamber'] },
     to: { site: 'pair_open', liminal: 'aperture', boundary: 'body' },
     rewrite: { before: '$L | {} | {body}', after: '{_$L … }_$L' },
-    inverse: 'egress.pair_labels',
     status: 'implemented',
     apply: applyFreeToPairLabels,
     motion: 'ingress',
@@ -634,13 +682,23 @@ export const MOBILITY_RULES: readonly MobilityRule[] = [
   },
   {
     id: 'egress.pair_labels',
-    name: 'strip pair labels to free or interior body',
+    name: 'strip empty pair labels to a free label',
     from: { site: ['pair_open', 'pair_close'], liminal: ['aperture', 'egress'], boundary: 'body' },
     to: { site: 'free', liminal: 'exterior' },
-    rewrite: { before: '{_$L … }_$L', after: '$L | {…}' },
-    inverse: 'ingress.pair_labels',
+    rewrite: { before: '{_$L }_$L', after: '$L' },
     status: 'implemented',
-    apply: applyPairLabelsToFree,
+    apply: applyEmptyPairLabelsToFree,
+    motion: 'egress',
+    axes: ['label', 'material'],
+  },
+  {
+    id: 'egress.pair_labels_to_body',
+    name: 'strip pair labels while retaining an inhabited body',
+    from: { site: ['pair_open', 'pair_close'], liminal: ['aperture', 'egress'], boundary: 'body' },
+    to: { site: 'interior_term', liminal: 'chamber', boundary: 'body' },
+    rewrite: { before: '{_$L body }_$L', after: '{body}' },
+    status: 'implemented',
+    apply: applyInhabitedPairLabelsToBody,
     motion: 'egress',
     axes: ['label', 'material'],
   },
@@ -686,13 +744,54 @@ export function applyMobilityRule(
   ruleId: string,
   source: string,
   label: string,
-): { ok: true; source: string; rule: MobilityRule } | { ok: false; reason: string; rule?: MobilityRule } {
+): MobilityApplication {
   const rule = RULE_BY_ID.get(ruleId)
   if (!rule) return { ok: false, reason: `unknown rule ${ruleId}` }
   if (!rule.apply) return { ok: false, reason: `rule ${ruleId} has no computational apply (${rule.status})`, rule }
+  if (!isFormLabel(label)) {
+    return { ok: false, reason: `label must match ${FORM_GEOMETRY_PROFILE.labelGrammar} grammar`, rule }
+  }
   const next = rule.apply(source, label)
   if (next === null) return { ok: false, reason: `preconditions failed for ${ruleId}`, rule }
-  return { ok: true, source: next, rule }
+
+  const beforeTopography = snapshotTopography(source)
+  const afterTopography = snapshotTopography(next)
+  const inverseRule = rule.inverse ? RULE_BY_ID.get(rule.inverse) : undefined
+  const restoredSource = inverseRule?.apply?.(next, label) ?? undefined
+  const inverseStatus = !rule.inverse || !inverseRule?.apply
+    ? 'unavailable'
+    : restoredSource === undefined
+      ? 'failed'
+      : restoredSource === source.trim()
+        ? 'exact'
+        : 'changed'
+
+  return {
+    ok: true,
+    source: next,
+    rule,
+    receipt: {
+      profile: FORM_MOBILITY_APPLICATION_PROFILE,
+      effectGrade: 'S1',
+      beforeHash: hashString(source),
+      afterHash: hashString(next),
+      beforeHealth: beforeTopography.parseHealth,
+      afterHealth: afterTopography.parseHealth,
+      topographyDelta: topographyDelta(beforeTopography, afterTopography),
+      semanticEquivalence: 'not_claimed',
+      inverse: {
+        ruleId: rule.inverse,
+        comparison: 'trimmed_surface',
+        status: inverseStatus,
+        restoredSource,
+      },
+    },
+  }
+}
+
+/** Current mobility labels are identifier surfaces, not arbitrary source. */
+export function isFormLabel(label: string): boolean {
+  return /^[A-Za-z_][A-Za-z0-9_]*$/.test(label)
 }
 
 // ── Reference progression ──────────────────────────────────────
@@ -729,14 +828,14 @@ export const REFERENCE_PROGRESSIONS: readonly ReferenceProgression[] = [
   {
     id: 'ref.ground_publish',
     name: 'ground facet → header publish',
-    description: 'Name grounds as facet key then promotes to integrate header',
+    description: 'Name grounds as facet key then folds to integrate header',
     waypoints: [
       { site: 'free', liminal: 'exterior' },
       { site: 'facet_key', liminal: 'chamber', boundary: 'body' },
       { site: 'header', liminal: 'published', boundary: 'body' },
     ],
-    rulePath: ['ingress.facet_key', 'ingress.header'],
-    status: 'partial',
+    rulePath: ['ingress.facet_key', 'fold.facets_to_header'],
+    status: 'implemented',
   },
   {
     id: 'ref.membrane_observe',
@@ -748,7 +847,31 @@ export const REFERENCE_PROGRESSIONS: readonly ReferenceProgression[] = [
       { site: 'ref_handle', liminal: 'published', boundary: 'scope' },
     ],
     rulePath: ['ingress.capsule_tag', 'orbit.tag_to_ref'],
-    status: 'partial',
+    status: 'implemented',
+  },
+  {
+    id: 'ref.pair_publish',
+    name: 'pair labels → header',
+    description: 'Desugar pair labels then publish as header',
+    waypoints: [
+      { site: 'free', liminal: 'exterior' },
+      { site: 'pair_open', liminal: 'aperture', boundary: 'body' },
+      { site: 'header', liminal: 'published', boundary: 'body' },
+    ],
+    rulePath: ['ingress.pair_labels', 'promote.pair_to_header'],
+    status: 'implemented',
+  },
+  {
+    id: 'ref.to_register_meta',
+    name: 'observer → substrate meta',
+    description: 'Published ref bridges to $(L) surface (runtime promote is separate S1)',
+    waypoints: [
+      { site: 'free', liminal: 'exterior' },
+      { site: 'ref_handle', liminal: 'published', boundary: 'scope' },
+      { site: 'register_meta', liminal: 'published' },
+    ],
+    rulePath: ['ingress.ref_handle', 'promote.register_bridge'],
+    status: 'implemented',
   },
   {
     id: 'ref.path_chain',
@@ -792,6 +915,7 @@ export function walkReferenceProgression(
     before: string
     after?: string
     reason?: string
+    receipt?: MobilityApplicationReceipt
   }>
   source: string
   completed: boolean
@@ -806,6 +930,7 @@ export function walkReferenceProgression(
     before: string
     after?: string
     reason?: string
+    receipt?: MobilityApplicationReceipt
   }> = []
 
   for (const ruleId of progression.rulePath) {
@@ -816,7 +941,7 @@ export function walkReferenceProgression(
       return { progression, steps, source, completed: false }
     }
     source = result.source
-    steps.push({ ruleId, ok: true, before, after: source })
+    steps.push({ ruleId, ok: true, before, after: source, receipt: result.receipt })
   }
 
   return { progression, steps, source, completed: true }
@@ -860,11 +985,11 @@ export const HIGHER_ORDER_FORMS: readonly HigherOrderForm[] = [
   {
     id: 'hof.ground_then_publish',
     name: 'Ground then publish',
-    description: 'Seat label as facet key then integrate as header',
-    program: ['ingress.facet_key', 'ingress.header'],
+    description: 'Seat label as facet key then fold facet into integrate header',
+    program: ['ingress.facet_key', 'fold.facets_to_header'],
     boundaries: ['body'],
-    composition: 'promote_header ∘ ingress_ground',
-    status: 'partial',
+    composition: 'fold_header ∘ ingress_ground',
+    status: 'implemented',
     liminalPath: ['exterior', 'chamber', 'published'],
   },
   {
@@ -874,7 +999,7 @@ export const HIGHER_ORDER_FORMS: readonly HigherOrderForm[] = [
     program: ['ingress.capsule_tag', 'orbit.tag_to_ref'],
     boundaries: ['capsule', 'scope'],
     composition: 'rehost_ref ∘ ingress_membrane',
-    status: 'partial',
+    status: 'implemented',
     liminalPath: ['exterior', 'membrane', 'published'],
   },
   {
@@ -893,7 +1018,7 @@ export const HIGHER_ORDER_FORMS: readonly HigherOrderForm[] = [
     program: ['ingress.frame_select', 'orbit.frame_param_to_tag', 'orbit.tag_to_ref'],
     boundaries: ['frame', 'capsule', 'scope'],
     composition: 'rehost_scope ∘ rehost_capsule ∘ ingress_frame',
-    status: 'partial',
+    status: 'implemented',
     liminalPath: ['exterior', 'chamber', 'membrane', 'published'],
   },
   {
@@ -915,6 +1040,36 @@ export const HIGHER_ORDER_FORMS: readonly HigherOrderForm[] = [
     status: 'implemented',
     liminalPath: ['chamber', 'chamber'],
   },
+  {
+    id: 'hof.pair_label_publish',
+    name: 'Pair labels then publish',
+    description: 'Desugar-style {_L }_L pair labels then promote to ^["L"]{}',
+    program: ['ingress.pair_labels', 'promote.pair_to_header'],
+    boundaries: ['body'],
+    composition: 'promote_header ∘ ingress_pair',
+    status: 'implemented',
+    liminalPath: ['exterior', 'aperture', 'published'],
+  },
+  {
+    id: 'hof.publish_to_register',
+    name: 'Publish then substrate bridge',
+    description: 'Free name becomes an observer ref, then a reversible $(L) substrate meta surface',
+    program: ['ingress.ref_handle', 'promote.register_bridge'],
+    boundaries: ['scope'],
+    composition: 'register_bridge ∘ ingress_ref',
+    status: 'implemented',
+    liminalPath: ['exterior', 'published', 'published'],
+  },
+  {
+    id: 'hof.ground_fold_register',
+    name: 'Ground → header → register meta',
+    description: 'Proposed payload-carrying chain: free → facet → header → register projection',
+    program: ['ingress.facet_key', 'fold.facets_to_header', 'promote.register_bridge'],
+    boundaries: ['body'],
+    composition: 'register_bridge ∘ fold_header ∘ ingress_ground',
+    status: 'partial',
+    liminalPath: ['exterior', 'chamber', 'published', 'published'],
+  },
 ]
 
 /**
@@ -926,7 +1081,14 @@ export function runHigherOrderForm(
   startSource?: string,
 ): {
   form: HigherOrderForm
-  steps: Array<{ ruleId: string; ok: boolean; before: string; after?: string; reason?: string }>
+  steps: Array<{
+    ruleId: string
+    ok: boolean
+    before: string
+    after?: string
+    reason?: string
+    receipt?: MobilityApplicationReceipt
+  }>
   source: string
   completed: boolean
 } | undefined {
@@ -940,6 +1102,7 @@ export function runHigherOrderForm(
     before: string
     after?: string
     reason?: string
+    receipt?: MobilityApplicationReceipt
   }> = []
 
   for (const ruleId of form.program) {
@@ -954,7 +1117,7 @@ export function runHigherOrderForm(
       const retry = applyMobilityRule(ruleId, source, label)
       if (retry.ok) {
         source = retry.source
-        steps.push({ ruleId, ok: true, before, after: source })
+        steps.push({ ruleId, ok: true, before, after: source, receipt: retry.receipt })
         continue
       }
     }
@@ -963,7 +1126,7 @@ export function runHigherOrderForm(
       return { form, steps, source, completed: false }
     }
     source = result.source
-    steps.push({ ruleId, ok: true, before, after: source })
+    steps.push({ ruleId, ok: true, before, after: source, receipt: result.receipt })
   }
 
   return { form, steps, source, completed: true }

@@ -35,9 +35,7 @@ export function detectResonances(substrate: Substrate | readonly RegisterEvent[]
 
 // ── Value Echo ──────────────────────────────────────────────────
 
-/**
- * Two registers written with identical values → same precipitate in two vessels.
- */
+/** Two registers written with identical values. */
 function detectValueEchoes(events: readonly RegisterEvent[]): Resonance[] {
     const resonances: Resonance[] = []
     const writes = events.filter(e => e.kind === 'write')
@@ -115,9 +113,7 @@ function detectPhaseSyncs(events: readonly RegisterEvent[]): Resonance[] {
 
 // ── Frequency Lock ──────────────────────────────────────────────
 
-/**
- * Two registers with similar write frequency → harmonic vibration.
- */
+/** Two registers with similar write frequency. */
 function detectFrequencyLocks(events: readonly RegisterEvent[]): Resonance[] {
     const resonances: Resonance[] = []
     const writes = events.filter(e => e.kind === 'write')
@@ -153,9 +149,7 @@ function detectFrequencyLocks(events: readonly RegisterEvent[]): Resonance[] {
 
 // ── Implicit Coupling ───────────────────────────────────────────
 
-/**
- * Value of register A references key of register B → covalent bond.
- */
+/** Value of register A references the key of register B. */
 function detectImplicitCoupling(events: readonly RegisterEvent[]): Resonance[] {
     const resonances: Resonance[] = []
     const writes = events.filter(e => e.kind === 'write')

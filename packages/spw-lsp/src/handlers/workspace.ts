@@ -1,24 +1,29 @@
 /**
- * Workspace Handler
- *
- * Handles `spw/workspaceManifest` and `spw/workspaceTemperature` custom requests.
- * Atlas roots come from `.spw/workspace.spw` when available, otherwise they fall
- * back to index-derived shelves. Behavioral observations come from the live index.
+ * Workspace handlers expose a URI-first v1 evidence surface and a quarantined
+ * legacy adapter for clients that still consume process-local path strings.
  */
 
-import * as fs from 'node:fs/promises'
-import * as path from 'node:path'
-import { parseWorkspaceRootDeclarations } from '@spwashi/spw-seed'
+import {
+  resolveWorkspaceAuthority,
+  resolveWorkspacePathIdentity,
+} from '../workspace-authority'
+import {
+  SPW_WORKSPACE_MANIFEST_SCHEMA_VERSION,
+  SPW_WORKSPACE_MANIFEST_SURFACE,
+  type SpwWorkspaceManifestV1,
+} from '../workspace-protocol'
 import type { HandlerDeps } from '../types'
 
-// ── Response types ───────────────────────────────────────────────
+// ── Legacy response types ──────────────────────────────────────
 
+/** @deprecated Use SpwWorkspaceManifestV1 and URI identity. */
 export interface WorkspaceRootEntry {
   sigil: string
   resolvedPath: string
   uri: string
 }
 
+/** @deprecated Projection declarations will move to a versioned evidence endpoint. */
 export interface WorkspaceProjectionEntry {
   name: string
   root: string
@@ -34,6 +39,7 @@ export interface WorkspaceTemperatureEntry {
   writeCount: number
 }
 
+/** @deprecated Use SpwWorkspaceManifestV1. */
 export interface WorkspaceManifestResult {
   rootSource: 'manifest' | 'inferred'
   manifestUri: string | null
@@ -41,93 +47,103 @@ export interface WorkspaceManifestResult {
   projections: WorkspaceProjectionEntry[]
 }
 
-// ── Handlers ─────────────────────────────────────────────────────
+export class WorkspaceAuthorityBlockedError extends Error {
+  readonly code = 'SPW_WORKSPACE_AUTHORITY_BLOCKED'
 
-export async function workspaceManifest(deps: HandlerDeps): Promise<WorkspaceManifestResult> {
-  const { serverIndex, uriFromPath } = deps
-  const workspaceRoot = serverIndex.getWorkspaceRoot()
-  const manifestPath = path.join(workspaceRoot, '.spw', 'workspace.spw')
-  const manifestUri = uriFromPath(manifestPath)
-  const manifestText = await readWorkspaceManifestText(deps, manifestPath, manifestUri)
+  constructor(readonly status: 'invalid' | 'unreadable') {
+    super('Workspace manifest authority is blocked.')
+    this.name = 'WorkspaceAuthorityBlockedError'
+  }
+}
 
-  const roots = manifestText
-    ? parseManifestRoots(manifestPath, manifestText, uriFromPath)
-    : inferRootsFromShelves(serverIndex.getShelfRoots(), uriFromPath)
+// ── Handlers ───────────────────────────────────────────────────
 
-  const projections: WorkspaceProjectionEntry[] = serverIndex.getProjections().map(p => ({
-    name: p.name,
-    root: p.root,
-    source: p.source,
-    specOwner: p.specOwner,
-    status: p.status,
-  }))
+export async function workspaceManifestV1(deps: HandlerDeps): Promise<SpwWorkspaceManifestV1> {
+  const authority = await resolveWorkspaceAuthority({
+    startPath: deps.workspaceRoot || deps.serverIndex.getWorkspaceRoot(),
+    uriFromPath: deps.uriFromPath,
+    readOpenDocument: (uri) => findOpenWorkspaceDocument(uri, deps),
+  })
 
   return {
-    rootSource: manifestText ? 'manifest' : 'inferred',
-    manifestUri: manifestText ? manifestUri : null,
-    roots,
-    projections,
+    schemaVersion: SPW_WORKSPACE_MANIFEST_SCHEMA_VERSION,
+    surface: SPW_WORKSPACE_MANIFEST_SURFACE,
+    ...authority,
+  }
+}
+
+/**
+ * Compatibility adapter for the existing editor client.
+ *
+ * Invalid and unreadable manifests remain blocked: this adapter never revives
+ * inferred roots after the v1 authority layer has refused them.
+ */
+export async function workspaceManifest(deps: HandlerDeps): Promise<WorkspaceManifestResult> {
+  const evidence = await workspaceManifestV1(deps)
+  if (evidence.rootSource === 'blocked') {
+    throw new WorkspaceAuthorityBlockedError(evidence.manifest.status)
+  }
+  return {
+    rootSource: evidence.rootSource === 'manifest' ? 'manifest' : 'inferred',
+    manifestUri: evidence.manifest.status === 'valid' ? evidence.manifest.uri : null,
+    roots: evidence.roots.map((root) => ({
+      sigil: root.sigil,
+      uri: root.uri,
+      resolvedPath: legacyPathFromUri(root.uri, deps),
+    })),
+    projections: workspaceProjections(deps),
   }
 }
 
 export function workspaceTemperature(deps: HandlerDeps): WorkspaceTemperatureEntry[] {
-  const { serverIndex, uriFromPath } = deps
+  const { serverIndex } = deps
   const beat = serverIndex.getCurrentBeat()
   const entries: WorkspaceTemperatureEntry[] = []
 
   for (const [uri, doc] of serverIndex.allDocuments()) {
     entries.push({
-      uri: uriFromPath ? uriFromPath(doc.filePath) : uri,
+      uri,
       tier: doc.tier,
       beatAge: beat - doc.lastAccessBeat,
       writeCount: doc.writeCount,
     })
   }
 
-  // Hottest first
   return entries.sort((a, b) => a.beatAge - b.beatAge)
 }
 
-async function readWorkspaceManifestText(
+async function findOpenWorkspaceDocument(
+  uri: string,
   deps: HandlerDeps,
-  manifestPath: string,
-  manifestUri: string,
-): Promise<string | null> {
-  const openDoc = deps.serverIndex.getDocument(manifestUri)
-  if (openDoc) {
-    return openDoc.text
-  }
+): Promise<{ text: string; version: number } | null> {
+  const exact = deps.serverIndex.getDocument(uri)
+  if (exact) return { text: exact.text, version: exact.version }
 
-  try {
-    return await fs.readFile(manifestPath, 'utf8')
-  } catch {
-    return null
-  }
-}
-
-function inferRootsFromShelves(
-  shelves: Map<string, string>,
-  uriFromPath: HandlerDeps['uriFromPath'],
-): WorkspaceRootEntry[] {
-  const roots: WorkspaceRootEntry[] = []
-  for (const [sigil, resolvedPath] of shelves) {
-    roots.push({ sigil, resolvedPath, uri: uriFromPath(resolvedPath) })
-  }
-  return roots
-}
-
-function parseManifestRoots(
-  manifestPath: string,
-  text: string,
-  uriFromPath: HandlerDeps['uriFromPath'],
-): WorkspaceRootEntry[] {
-  const manifestDir = path.dirname(manifestPath)
-  return parseWorkspaceRootDeclarations(text).map(({ sigil, relativePath }) => {
-    const resolvedPath = path.resolve(manifestDir, relativePath)
-    return {
-      sigil,
-      resolvedPath,
-      uri: uriFromPath(resolvedPath),
+  const requestedPath = deps.pathFromUri(uri)
+  if (requestedPath === null) return null
+  const requestedIdentity = await resolveWorkspacePathIdentity(requestedPath)
+  for (const [, document] of deps.serverIndex.allDocuments()) {
+    if (await resolveWorkspacePathIdentity(document.filePath) === requestedIdentity) {
+      return { text: document.text, version: document.version }
     }
-  })
+  }
+  return null
+}
+
+function workspaceProjections(deps: HandlerDeps): WorkspaceProjectionEntry[] {
+  return deps.serverIndex.getProjections().map((projection) => ({
+    name: projection.name,
+    root: projection.root,
+    source: projection.source,
+    specOwner: projection.specOwner,
+    status: projection.status,
+  }))
+}
+
+function legacyPathFromUri(uri: string, deps: HandlerDeps): string {
+  const filePath = deps.pathFromUri(uri)
+  if (filePath === null) {
+    throw new Error('Legacy workspace clients require local file URI roots.')
+  }
+  return filePath
 }

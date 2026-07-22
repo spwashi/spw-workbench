@@ -19,14 +19,14 @@ const SELECT_FIELDS = new Set<keyof QueryRow>([
   'text',
 ])
 
-const IGNORED_DIRS = new Set(['.git', '_workbench', 'node_modules', 'dist', 'release', 'build'])
+const IGNORED_DIRS = new Set(['.git', '_workbench', 'node_modules', 'dist', 'release'])
 
 export async function runQueryCli(args: QueryArgs): Promise<void> {
   const { selector } = resolveCliSelector(args.selector, args.expr)
   const workspace = await tryDiscoverSpwWorkspace()
-  const resolvedRoots = args.roots.map((root) =>
-    workspace && root.startsWith('@') ? resolveWorkspacePath(workspace, root) : root,
-  )
+  const resolvedRoots = workspace
+    ? await Promise.all(args.roots.map((root) => resolveWorkspacePath(workspace, root)))
+    : args.roots
   const files = await collectFiles(resolvedRoots)
   const whereFilters = parseWhere(args.where)
   const selectFields = parseSelect(args.select)
@@ -252,7 +252,7 @@ function renderCountMap(map: Map<string, number>): string {
 
 async function collectSpwFiles(root: string): Promise<string[]> {
   const absRoot = path.resolve(root)
-  const stat = await fs.stat(absRoot).catch(() => null)
+  const stat = await statOrNull(absRoot)
   if (!stat) return []
 
   if (stat.isFile()) {
@@ -285,7 +285,24 @@ async function collectSpwFiles(root: string): Promise<string[]> {
 async function readText(filePath: string): Promise<string | null> {
   try {
     return await fs.readFile(filePath, 'utf8')
-  } catch {
-    return null
+  } catch (error) {
+    if (nodeErrorCode(error) === 'ENOENT') return null
+    throw error
   }
+}
+
+async function statOrNull(target: string) {
+  try {
+    return await fs.stat(target)
+  } catch (error) {
+    const code = nodeErrorCode(error)
+    if (code === 'ENOENT' || code === 'ENOTDIR') return null
+    throw error
+  }
+}
+
+function nodeErrorCode(error: unknown): string | undefined {
+  return typeof error === 'object' && error !== null && 'code' in error
+    ? String((error as { code?: unknown }).code)
+    : undefined
 }

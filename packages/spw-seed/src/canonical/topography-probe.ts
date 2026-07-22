@@ -38,6 +38,8 @@ export interface TopographySnapshot {
   parseHealth: ParseHealth
   parserSuccess: boolean
   proseFallback: boolean
+  /** Whether quoted, phrase, and block-comment tokens close under lexer rules. */
+  lexemesClosed: boolean
   tokenCount: number
   significantTokens: number
   maxAstDepth: number | null
@@ -107,25 +109,46 @@ function pairedKind(node: ASTNode): keyof PairedContainerCounts | null {
   }
 }
 
-function haveClosedLexemes(tokens: { type: string; kind?: string; value: string }[]): boolean {
+interface LexemeClosureToken {
+  type: string
+  kind?: string
+  value: string
+}
+
+/**
+ * Report whether every quoted, phrase, and block-comment token has a closing
+ * delimiter. A delimiter preceded by an even run of backslashes is closed;
+ * an odd run escapes it. Tooling should share this rule rather than infer
+ * closure from the final two characters.
+ */
+function lexemesAreClosed(tokens: readonly LexemeClosureToken[]): boolean {
   return tokens.every(token => {
     if (token.type === 'COMMENT' && token.kind === 'block') {
       return token.value.endsWith('*/')
     }
     if (token.type === 'PHRASE') {
-      return token.value.length >= 2 && token.value.startsWith('`') && token.value.endsWith('`')
+      return token.value.startsWith('`') && endsWithUnescapedDelimiter(token.value, '`')
     }
     if (token.type === 'STRING') {
       const q = token.value[0]
       return (
         (q === '"' || q === "'") &&
-        token.value.length >= 2 &&
-        token.value.endsWith(q) &&
-        !token.value.endsWith(`\\${q}`)
+        token.value.startsWith(q) &&
+        endsWithUnescapedDelimiter(token.value, q)
       )
     }
     return true
   })
+}
+
+function endsWithUnescapedDelimiter(value: string, delimiter: string): boolean {
+  if (value.length < 2 || value.at(-1) !== delimiter) return false
+
+  let precedingBackslashes = 0
+  for (let index = value.length - 2; index >= 0 && value[index] === '\\'; index -= 1) {
+    precedingBackslashes += 1
+  }
+  return precedingBackslashes % 2 === 0
 }
 
 /**
@@ -141,7 +164,7 @@ export function snapshotTopography(source: string): TopographySnapshot {
   const nonRecoverableError = errors.some(
     error => (error.data as { recoverable?: boolean } | undefined)?.recoverable === false,
   )
-  const lexemesClosed = haveClosedLexemes(tokens)
+  const lexemesClosed = lexemesAreClosed(tokens)
   const reasons: string[] = []
 
   if (!output.success) reasons.push('parser_failure')
@@ -188,6 +211,7 @@ export function snapshotTopography(source: string): TopographySnapshot {
     parseHealth,
     parserSuccess: output.success,
     proseFallback: Boolean(proseFallback),
+    lexemesClosed,
     tokenCount: tokens.filter(t => t.type !== 'EOF').length,
     significantTokens,
     maxAstDepth: ast ? getMaxDepth(ast) : null,
@@ -273,16 +297,6 @@ export function topographyDelta(
   }
 }
 
-function virtualMutatedSource(source: string, config: MutationAutomataConfig): string {
-  // Always compute applied form for planned topography (ignore dryRun for virtual after)
-  const applied = runMutationAutomata(source, {
-    ...config,
-    dryRun: false,
-    effectCeiling: config.effectCeiling === 'S0' ? 'S1' : (config.effectCeiling ?? 'S1'),
-  })
-  return applied.source
-}
-
 function findingsFrom(
   mutation: MutationRunResult,
   delta: TopographyDelta,
@@ -343,8 +357,7 @@ export function probeMutationTopography(
     ...config,
   })
 
-  const plannedSource = virtualMutatedSource(source, config)
-  const plannedAfter = snapshotTopography(plannedSource)
+  const plannedAfter = snapshotTopography(mutation.plannedSource)
   const after = snapshotTopography(mutation.source)
   const delta = topographyDelta(before, after)
   const plannedDelta = topographyDelta(before, plannedAfter)

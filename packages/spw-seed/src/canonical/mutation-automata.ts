@@ -106,13 +106,28 @@ export interface MutationStep {
 export interface MutationRunResult {
   /** Source after in-memory apply (equals input when dryRun or no edits) */
   source: string
+  /** Virtual fixed-point source produced by the plan, whether or not it applied. */
+  plannedSource: string
   inputHash: string
   outputHash: string
+  plannedOutputHash: string
   changed: boolean
+  wouldChange: boolean
+  /** One coordinate-stable differential from input to plannedSource. */
+  plannedDifferential: SourceDifferential
   stopReason: MutationStopReason
   steps: MutationStep[]
   vector: MutationVector
   profile: string
+  /** Resolved profile rules before authority evaluation. */
+  rulesResolved: string[]
+  /** Rules evaluated to produce the plan. */
+  rulesPlanned: string[]
+  /** Rules that produced at least one applied, non-identity step. */
+  rulesApplied: string[]
+  /** Rules preventing atomic application under the requested ceiling. */
+  rulesBlocked: Array<{ ruleId: string; effectGrade: EffectGrade }>
+  /** @deprecated Use rulesPlanned; retained for transport compatibility. */
   rulesRun: string[]
   effectCeiling: EffectGrade
   dryRun: boolean
@@ -368,7 +383,7 @@ export function resolveMutationRules(config: MutationAutomataConfig = {}): Mutat
   }
 
   let ids: string[]
-  if (config.profile && config.profile in MUTATION_PROFILES) {
+  if (config.profile && Object.hasOwn(MUTATION_PROFILES, config.profile)) {
     ids = [...MUTATION_PROFILES[config.profile as MutationProfileId].rules]
   } else if (config.enabledRules?.length) {
     ids = [...config.enabledRules]
@@ -439,7 +454,7 @@ export function planMutationPass(
       step: ctx.step,
       ruleId: rule.id,
       differential: diff,
-      applied: !diff.identity,
+      applied: false,
     })
     if (!diff.identity) {
       current = applyEdits(current, diff.edits)
@@ -470,14 +485,14 @@ export function runMutationAutomata(
   config: MutationAutomataConfig = {},
 ): MutationRunResult {
   const profileId =
-    (config.profile as MutationProfileId) in MUTATION_PROFILES
+    Object.hasOwn(MUTATION_PROFILES, config.profile as PropertyKey)
       ? (config.profile as MutationProfileId)
       : config.profile
         ? String(config.profile)
         : 'layout_canonical'
 
   const profileDefaults =
-    profileId in MUTATION_PROFILES
+    Object.hasOwn(MUTATION_PROFILES, profileId)
       ? MUTATION_PROFILES[profileId as MutationProfileId]
       : MUTATION_PROFILES.layout_canonical
 
@@ -488,7 +503,7 @@ export function runMutationAutomata(
 
   const rules = resolveMutationRules({
     ...config,
-    profile: profileId in MUTATION_PROFILES ? profileId : config.profile,
+    profile: Object.hasOwn(MUTATION_PROFILES, profileId) ? profileId : config.profile,
   })
 
   const options: CanonicalOptions = {
@@ -499,18 +514,18 @@ export function runMutationAutomata(
   const inputHash = hashString(source)
   const steps: MutationStep[] = []
   let current = source
+  let plannedSource = source
   let vector = zeroVector()
   let stopReason: MutationStopReason = 'fixed_point'
-  const rulesRun = rules.map(r => r.id)
-
-  // Authority: cannot apply if any rule exceeds ceiling for *workspace* —
-  // in-memory apply still allowed for ≤ S1 when ceiling ≥ S1
-  for (const rule of rules) {
-    if (!effectGradeAtMost(rule.effectGrade, effectCeiling) && !dryRun) {
-      // Rules above ceiling may still be planned in measure mode
-      if (effectCeiling === 'S0') continue
-    }
-  }
+  const rulesResolved = rules.map(rule => rule.id)
+  const planOnly = dryRun || effectCeiling === 'S0'
+  const blockedRules = planOnly
+    ? []
+    : rules.filter(rule => !effectGradeAtMost(rule.effectGrade, effectCeiling))
+  const canApply = !planOnly && blockedRules.length === 0
+  const blockedReason = blockedRules.length > 0
+    ? `atomic profile blocked by ${blockedRules.map(rule => `${rule.id}:${rule.effectGrade}`).join(',')}`
+    : undefined
 
   try {
     for (let step = 0; step < maxSteps; step++) {
@@ -520,39 +535,37 @@ export function runMutationAutomata(
         params: config.params ?? {},
       }
 
-      // Filter rules by effect ceiling when applying
-      const activeRules = rules.filter(rule => {
-        if (dryRun || effectCeiling === 'S0') return true // plan all
-        return effectGradeAtMost(rule.effectGrade, effectCeiling)
-      })
+      const pass = planMutationPass(current, rules, ctx)
+      plannedSource = pass.finalSource
+      for (const s of pass.intermediate) {
+        const changedStep = !s.differential.identity
+        steps.push({
+          ...s,
+          applied: canApply && changedStep,
+          ...(!canApply && changedStep
+            ? { skippedReason: blockedReason ?? 'plan_only' }
+            : {}),
+        })
+      }
+      vector = mergeVectors(vector, pass.vector)
 
-      if (activeRules.length === 0 && rules.length > 0 && !dryRun) {
+      if (pass.finalSource === current) {
+        stopReason = blockedRules.length > 0 ? 'authority_failure' : 'fixed_point'
+        break
+      }
+
+      if (!canApply && !planOnly) {
         stopReason = 'authority_failure'
         break
       }
 
-      const pass = planMutationPass(current, activeRules.length ? activeRules : rules, ctx)
-      for (const s of pass.intermediate) {
-        steps.push(s)
-      }
-
-      if (pass.finalSource === current) {
-        stopReason = 'fixed_point'
-        break
-      }
-
-      if (dryRun || effectCeiling === 'S0') {
-        // Record planned vector but do not mutate source
-        vector = mergeVectors(vector, pass.vector)
-        stopReason = 'fixed_point'
-        break
-      }
-
+      // Plan-only runs advance a virtual source to the same fixed point as an
+      // in-memory run while retaining the original returned `source` and
+      // marking every step unapplied.
       current = pass.finalSource
-      vector = mergeVectors(vector, pass.vector)
 
       if (requireIdempotence) {
-        const check = planMutationPass(current, activeRules.length ? activeRules : rules, {
+        const check = planMutationPass(current, rules, {
           ...ctx,
           step: step + 1,
         })
@@ -582,23 +595,42 @@ export function runMutationAutomata(
     stopReason = 'rule_error'
   }
 
-  const changed = current !== source
-  const outputHash = hashString(dryRun || effectCeiling === 'S0' ? source : current)
-  const resultSource = dryRun || effectCeiling === 'S0' ? source : current
+  const resultSource = canApply ? current : source
+  const plannedDifferential = differentialFromSources(
+    source,
+    plannedSource,
+    'mutation_run',
+    'operation',
+    hashString,
+  )
+  const rulesApplied = [...new Set(
+    steps.filter(step => step.applied).map(step => step.ruleId),
+  )]
 
   return {
     source: resultSource,
+    plannedSource,
     inputHash,
     outputHash: hashString(resultSource),
+    plannedOutputHash: hashString(plannedSource),
     changed: resultSource !== source,
+    wouldChange: plannedSource !== source,
+    plannedDifferential,
     stopReason,
     steps,
-    vector: dryRun && !changed ? vector : vector,
+    vector,
     profile: String(profileId),
-    rulesRun,
+    rulesResolved,
+    rulesPlanned: rulesResolved,
+    rulesApplied,
+    rulesBlocked: blockedRules.map(rule => ({
+      ruleId: rule.id,
+      effectGrade: rule.effectGrade,
+    })),
+    rulesRun: rulesResolved,
     effectCeiling,
-    dryRun: dryRun || effectCeiling === 'S0',
-    requiresWriteAuthority: resultSource !== source,
+    dryRun: planOnly,
+    requiresWriteAuthority: plannedSource !== source,
   }
 }
 
@@ -620,13 +652,7 @@ export function planMutation(
  * Collect all non-identity edits from a run (for LSP TextEdit mapping).
  */
 export function collectPlannedEdits(result: MutationRunResult): SourceEdit[] {
-  const edits: SourceEdit[] = []
-  for (const step of result.steps) {
-    if (!step.differential.identity) {
-      edits.push(...step.differential.edits)
-    }
-  }
-  return edits
+  return result.plannedDifferential.edits.map(edit => ({ ...edit }))
 }
 
 export { applyEdits, differentialFromSources }

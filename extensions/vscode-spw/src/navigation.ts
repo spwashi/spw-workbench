@@ -1,11 +1,11 @@
-import * as path from 'node:path'
 import * as vscode from 'vscode'
 import type { AnnotationEntry } from './annotation-index'
 import type { SpwContext } from './context'
+import type { SpwWorkspaceRootEntry } from './lsp/custom-requests'
 
 type NavigationTarget =
-  | { kind: 'root'; sigil: string; resolvedPath: string }
-  | { kind: 'annotation'; entry: AnnotationEntry }
+  | { kind: 'root', entry: SpwWorkspaceRootEntry }
+  | { kind: 'annotation', entry: AnnotationEntry }
 
 interface NavigationItem extends vscode.QuickPickItem {
   target: NavigationTarget
@@ -24,17 +24,17 @@ export function registerSpwNavigation(spw: SpwContext): vscode.Disposable[] {
     const items = await navigationItems(spw)
     const selected = await vscode.window.showQuickPick(items, {
       title: 'Navigate Spw',
-      placeHolder: 'Choose a declared root or indexed landmark',
+      placeHolder: 'Choose a workspace root or indexed landmark',
       matchOnDescription: true,
       matchOnDetail: true,
     })
     if (!selected) return
 
     if (selected.target.kind === 'root') {
-      const { sigil, resolvedPath } = selected.target
-      spw.activeRoot = { sigil, resolvedPath }
-      spw.events.emit('atlas.rootSelected', { sigil, resolvedPath, manifestFrame: null })
-      await openWorkspaceTarget(resolvedPath)
+      const { sigil, uri } = selected.target.entry
+      spw.activeRoot = { sigil, uri }
+      spw.events.emit('atlas.rootSelected', { sigil, uri, manifestFrame: null })
+      await openWorkspaceTarget(uri, selected.target.entry.kind)
       return
     }
 
@@ -42,40 +42,50 @@ export function registerSpwNavigation(spw: SpwContext): vscode.Disposable[] {
   })]
 }
 
-export async function openWorkspaceTarget(resolvedPath: string): Promise<void> {
-  const uri = vscode.Uri.file(resolvedPath)
+export async function openWorkspaceTarget(
+  targetUri: string,
+  knownKind?: SpwWorkspaceRootEntry['kind'],
+): Promise<void> {
+  const uri = vscode.Uri.parse(targetUri)
   try {
-    const stat = await vscode.workspace.fs.stat(uri)
-    if ((stat.type & vscode.FileType.Directory) !== 0) {
+    const kind = knownKind ?? await pathKind(uri)
+    if (kind === 'directory') {
       await vscode.commands.executeCommand('revealInExplorer', uri)
       return
     }
   } catch {
-    // Let the editor report an unresolvable file target.
+    // Let vscode.open report a target that cannot be revealed as a directory.
   }
   await vscode.commands.executeCommand('vscode.open', uri)
+}
+
+export function displayWorkspaceUri(targetUri: string): string {
+  const uri = vscode.Uri.parse(targetUri)
+  const folder = vscode.workspace.getWorkspaceFolder(uri)
+  if (folder) return vscode.workspace.asRelativePath(uri, false) || '.'
+  return uri.toString(true)
 }
 
 async function navigationItems(spw: SpwContext): Promise<NavigationItem[]> {
   const items: NavigationItem[] = []
   try {
     const manifest = await spw.requests.workspaceManifest()
-    for (const root of manifest.roots) {
+    for (const entry of manifest.roots) {
       items.push({
-        label: `$(${rootIcon(root.resolvedPath)}) @${root.sigil}`,
-        description: relativeDisplayPath(root.resolvedPath),
-        detail: manifest.rootSource === 'manifest' ? 'declared workspace root' : 'inferred workspace root',
-        target: { kind: 'root', sigil: root.sigil, resolvedPath: root.resolvedPath },
+        label: `$(${rootIcon(entry.kind)}) @${entry.sigil}`,
+        description: displayWorkspaceUri(entry.uri),
+        detail: `${manifest.rootSource} · ${entry.role} · ${entry.kind}`,
+        target: { kind: 'root', entry },
       })
     }
   } catch {
-    // The annotation index still provides useful navigation while the LSP starts.
+    // Indexed annotations remain useful while workspace evidence is unavailable.
   }
 
   for (const entry of spw.annotationIndex.all()) {
     items.push({
       label: `$(${ANNOTATION_ICONS[entry.kind]}) ${entry.name}`,
-      description: `${relativeDisplayPath(entry.file.fsPath)}:${entry.line + 1}`,
+      description: `${displayWorkspaceUri(entry.file.toString())}:${entry.line + 1}`,
       detail: entry.framePath.length > 0 ? entry.framePath.join(' › ') : entry.kind,
       target: { kind: 'annotation', entry },
     })
@@ -88,14 +98,23 @@ async function openAnnotation(entry: AnnotationEntry): Promise<void> {
   const editor = await vscode.window.showTextDocument(document)
   const position = new vscode.Position(entry.line, 0)
   editor.selection = new vscode.Selection(position, position)
-  editor.revealRange(new vscode.Range(position, position), vscode.TextEditorRevealType.InCenterIfOutsideViewport)
+  editor.revealRange(
+    new vscode.Range(position, position),
+    vscode.TextEditorRevealType.InCenterIfOutsideViewport,
+  )
 }
 
-function relativeDisplayPath(target: string): string {
-  const folder = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(target))
-  return folder ? path.relative(folder.uri.fsPath, target) || '.' : path.basename(target)
+async function pathKind(uri: vscode.Uri): Promise<SpwWorkspaceRootEntry['kind']> {
+  const stat = await vscode.workspace.fs.stat(uri)
+  if ((stat.type & vscode.FileType.Directory) !== 0) return 'directory'
+  if ((stat.type & vscode.FileType.File) !== 0) return 'file'
+  return 'other'
 }
 
-function rootIcon(target: string): string {
-  return path.extname(target) ? 'file' : 'root-folder'
+function rootIcon(kind: SpwWorkspaceRootEntry['kind']): string {
+  if (kind === 'directory') return 'root-folder'
+  if (kind === 'file') return 'file'
+  if (kind === 'unreadable') return 'lock'
+  if (kind === 'missing') return 'warning'
+  return 'question'
 }

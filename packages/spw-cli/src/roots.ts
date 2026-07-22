@@ -40,8 +40,10 @@ export function printRootsHelp(): void {
     sections: [{
       title: 'Behavior',
       lines: [
-        'discovers the nearest consumer containing .spw/mount.spw',
+        'discovers the owning consumer containing .spw/mount.spw',
         'reads root declarations from .spw/workspace.spw',
+        'falls back to @spw only when workspace.spw is absent',
+        'marks explicitly declared out-of-consumer roots as external',
         'reports paths relative to the consumer root',
         'labels .spw/_workbench as infrastructure',
       ],

@@ -5,18 +5,20 @@ import type {
   SpwContextAtPositionResult,
   SpwMaterializationState,
   SpwRegisterSnapshot,
+  SpwWorkspaceRootSource,
   SpwWorkspaceTemperatureEntry,
 } from './lsp/custom-requests'
 import type { SigilSemantic } from './semantics'
 
 export interface SpwManifestState {
-  sourceUri?: string
-  roots: Array<{ sigil: string, resolvedPath: string }>
+  sourceUri: string
+  rootSource: SpwWorkspaceRootSource
+  roots: Array<{ sigil: string, uri: string }>
 }
 
 export interface SpwActiveRoot {
   sigil: string
-  resolvedPath: string
+  uri: string
 }
 
 export interface SpwFocusedRegister {
@@ -50,7 +52,7 @@ export interface SpwCursorContextSnapshot {
 export interface SpwEventMap {
   'atlas.rootSelected': {
     sigil: string
-    resolvedPath: string
+    uri: string
     manifestFrame: string | null
   }
   'atlas.perspectiveRotated': {
@@ -137,8 +139,6 @@ export interface CreateSpwContextOptions {
   documentSelector: vscode.DocumentSelector
   annotationIndex: AnnotationIndex
   requests: SpwCustomRequestClient
-  resolveRoot: (sigil: string, workspaceRoot: string, documentUri: vscode.Uri) => string
-  ROOT_MAP: Record<string, string[]>
   SIGIL_SEMANTICS: Record<string, SigilSemantic>
 }
 
@@ -147,8 +147,6 @@ export interface SpwContext {
   readonly annotationIndex: AnnotationIndex
   readonly requests: SpwCustomRequestClient
   readonly events: SpwEventBus
-  readonly resolveRoot: (sigil: string, workspaceRoot: string, documentUri: vscode.Uri) => string
-  readonly ROOT_MAP: Record<string, string[]>
   readonly SIGIL_SEMANTICS: Record<string, SigilSemantic>
   manifestState: SpwManifestState | null
   workspaceTemperature: Map<string, SpwWorkspaceTemperatureEntry>

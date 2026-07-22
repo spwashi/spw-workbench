@@ -14,15 +14,30 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { parse, type ASTNode } from '@spwashi/spw-seed'
+import { fileURLToPath } from 'node:url'
+import {
+  parse,
+  snapshotTopography,
+  type ASTNode,
+  type ParseHealth,
+} from '@spwashi/spw-seed'
+
+interface SourceParseEvidence {
+  success: boolean
+  structured: boolean
+  errorCount: number
+  health: ParseHealth
+  reasons: string[]
+  topographyAuthority: 'seed_snapshot_topography'
+}
 
 export interface StructuralProjectionResult {
   equivalent: boolean
   diffs: string[]
   nodesA: number
   nodesB: number
-  parseA: { success: boolean; structured: boolean; errorCount: number }
-  parseB: { success: boolean; structured: boolean; errorCount: number }
+  parseA: SourceParseEvidence
+  parseB: SourceParseEvidence
   projection: 'ast-without-source-spans@1'
 }
 
@@ -108,26 +123,34 @@ export function compareSourceProjections(
   sourceA: string,
   sourceB: string,
 ): StructuralProjectionResult {
+  const topographyA = snapshotTopography(sourceA)
+  const topographyB = snapshotTopography(sourceB)
   const parsedA = parse(sourceA)
   const parsedB = parse(sourceB)
   const parseA = {
-    success: parsedA.success,
-    structured: parsedA.ast?.expression.type !== 'Prose',
+    success: topographyA.parserSuccess,
+    structured: !topographyA.proseFallback,
     errorCount: parsedA.errors.length,
-  }
+    health: topographyA.parseHealth,
+    reasons: [...topographyA.reasons],
+    topographyAuthority: 'seed_snapshot_topography' as const,
+  } satisfies SourceParseEvidence
   const parseB = {
-    success: parsedB.success,
-    structured: parsedB.ast?.expression.type !== 'Prose',
+    success: topographyB.parserSuccess,
+    structured: !topographyB.proseFallback,
     errorCount: parsedB.errors.length,
-  }
+    health: topographyB.parseHealth,
+    reasons: [...topographyB.reasons],
+    topographyAuthority: 'seed_snapshot_topography' as const,
+  } satisfies SourceParseEvidence
   const comparison = compareASTEquivalence(parsedA.ast, parsedB.ast)
   const parseDiffs: string[] = []
 
-  if (!parseA.success || !parseA.structured || parseA.errorCount > 0) {
-    parseDiffs.push(`source A is not a complete structured parse (${parseA.errorCount} errors)`)
+  if (parseA.health !== 'complete_structured') {
+    parseDiffs.push(formatIncompleteSource('A', parseA))
   }
-  if (!parseB.success || !parseB.structured || parseB.errorCount > 0) {
-    parseDiffs.push(`source B is not a complete structured parse (${parseB.errorCount} errors)`)
+  if (parseB.health !== 'complete_structured') {
+    parseDiffs.push(formatIncompleteSource('B', parseB))
   }
 
   return {
@@ -138,6 +161,11 @@ export function compareSourceProjections(
     parseB,
     projection: 'ast-without-source-spans@1',
   }
+}
+
+function formatIncompleteSource(label: 'A' | 'B', evidence: SourceParseEvidence): string {
+  const reasons = evidence.reasons.length > 0 ? evidence.reasons.join('|') : 'none'
+  return `source ${label} is not a complete structured parse (health=${evidence.health}; reasons=${reasons})`
 }
 
 async function main(): Promise<void> {
@@ -175,9 +203,8 @@ async function main(): Promise<void> {
 }
 
 if (
-  import.meta.url.startsWith('file:') &&
   process.argv[1] &&
-  path.resolve(process.argv[1]) === path.resolve(new URL(import.meta.url).pathname)
+  path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url))
 ) {
   main().catch(error => {
     console.error(error)

@@ -41,14 +41,14 @@ export async function statKind(target: string): Promise<'file' | 'dir' | null> {
 }
 
 export function parseWorkspaceRoot(params: any, fallback: string): string {
-    const rootUri = params?.rootUri
-    if (typeof rootUri === 'string' && rootUri.startsWith('file://')) {
-        try { return fileURLToPath(rootUri) || fallback } catch { return fallback }
-    }
     const folders = Array.isArray(params?.workspaceFolders) ? params.workspaceFolders : []
     const first = folders[0]?.uri
     if (typeof first === 'string' && first.startsWith('file://')) {
         try { return fileURLToPath(first) || fallback } catch { return fallback }
+    }
+    const rootUri = params?.rootUri
+    if (typeof rootUri === 'string' && rootUri.startsWith('file://')) {
+        try { return fileURLToPath(rootUri) || fallback } catch { return fallback }
     }
     return fallback
 }
@@ -68,7 +68,7 @@ export async function loadConfig(root: string, initOptions?: any, ctx?: ServerCo
     try {
         const raw = await fs.readFile(configPath, 'utf8')
         const parsed = JSON.parse(raw) as Partial<SpwConfig>
-        ctx?.log(`loaded config from ${configPath}`)
+        ctx?.log('loaded workspace config')
         mergeConfig(base, parsed)
     } catch {
         // No config file — that's fine
@@ -83,7 +83,7 @@ export async function loadConfig(root: string, initOptions?: any, ctx?: ServerCo
         base.roots = { ...deriveMountRoots(mountResolution), ...base.roots }
         const existingExclude = base.workspace.exclude ?? []
         base.workspace.exclude = [...new Set([...existingExclude, '_workbench'])]
-        ctx?.log(`loaded site mount from ${mountResolution.mountFile}`)
+        ctx?.log('loaded mounted workspace config')
     }
 
     return base

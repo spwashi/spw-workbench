@@ -2,11 +2,11 @@
  * Workspace Atlas Tree View
  *
  * Renders the workspace contract as a navigable tree of roots, memory tiers,
- * generated projections, cursor context, and spirit-phase distribution.
+ * cursor context, and spirit-phase distribution.
  *
  * Data flows from three sources:
- *   - Workspace manifest: spw/workspaceManifest (roots from `.spw/workspace.spw`
- *     when available, otherwise explicit inferred fallback)
+ *   - Workspace evidence: spw/workspaceManifest/v1 (URI-first roots with
+ *     manifest/fallback/blocked provenance)
  *   - Index observation: spw/workspaceTemperature (behavioral observations)
  *   - Active editor: spw/contextAtPosition (cursor frame context)
  *
@@ -20,13 +20,12 @@ import * as vscode from 'vscode'
 import { getCursorContextAtEditor, type SpwContext } from '../context'
 import type {
   SpwWorkspaceRootEntry,
-  SpwWorkspaceProjectionEntry,
   SpwWorkspaceTemperatureEntry,
   SpwWorkspaceManifest,
   SpwContextAtPositionResult,
 } from '../lsp/custom-requests'
 import type { AnnotationEntry } from '../annotation-index'
-import { openWorkspaceTarget } from '../navigation'
+import { displayWorkspaceUri, openWorkspaceTarget } from '../navigation'
 
 // ── Node types ────────────────────────────────────────────────────
 
@@ -35,7 +34,6 @@ type AtlasNode =
   | RootItemNode
   | MemoryTierNode
   | MemoryFileNode
-  | ProjectionNode
   | PlaceholderNode
   | CursorContextNode
   | CursorDetailNode
@@ -43,7 +41,7 @@ type AtlasNode =
 
 interface SectionNode {
   kind: 'section'
-  id: 'roots' | 'memory' | 'generated' | 'cursor' | 'spirit'
+  id: 'roots' | 'memory' | 'cursor' | 'spirit'
   label: string
   icon: string
   description?: string
@@ -63,11 +61,6 @@ interface MemoryTierNode {
 interface MemoryFileNode {
   kind: 'memory-file'
   entry: SpwWorkspaceTemperatureEntry
-}
-
-interface ProjectionNode {
-  kind: 'projection'
-  entry: SpwWorkspaceProjectionEntry
 }
 
 interface PlaceholderNode {
@@ -139,7 +132,6 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
 
   private manifest: SpwWorkspaceManifest | null = null
   private temperature: SpwWorkspaceTemperatureEntry[] = []
-  private manifestSource: 'manifest' | 'inferred' = 'inferred'
   private cursorContext: SpwContextAtPositionResult | null = null
   private cursorFileLabel: string | null = null
   private readonly subscriptions: vscode.Disposable[]
@@ -243,19 +235,18 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
   private async loadData(): Promise<void> {
     try {
       this.manifest = await this.spw.requests.workspaceManifest()
-      this.manifestSource = this.manifest.rootSource
-      this.spw.manifestState = this.manifest.rootSource === 'manifest'
+      this.spw.manifestState = this.manifest.rootSource !== 'blocked'
         ? {
-            sourceUri: this.manifest.manifestUri ?? undefined,
+            sourceUri: this.manifest.manifest.uri,
+            rootSource: this.manifest.rootSource,
             roots: this.manifest.roots.map((entry) => ({
               sigil: entry.sigil,
-              resolvedPath: entry.resolvedPath,
+              uri: entry.uri,
             })),
           }
         : null
     } catch {
       this.manifest = null
-      this.manifestSource = 'inferred'
       this.spw.manifestState = null
     }
     try {
@@ -298,9 +289,14 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
           `@${node.entry.sigil}`,
           vscode.TreeItemCollapsibleState.None,
         )
-        item.description = node.entry.resolvedPath
-        item.iconPath = new vscode.ThemeIcon('root-folder')
-        item.tooltip = `Root: @${node.entry.sigil}\n${node.entry.resolvedPath}`
+        item.description = displayWorkspaceUri(node.entry.uri)
+        item.iconPath = new vscode.ThemeIcon(rootKindIcon(node.entry.kind))
+        item.tooltip = [
+          `Root: @${node.entry.sigil}`,
+          `Role: ${node.entry.role}`,
+          `Kind: ${node.entry.kind}`,
+          node.entry.uri,
+        ].join('\n')
         item.command = {
           command: 'spwWorkspace.selectRoot',
           title: 'Select Workspace Root',
@@ -342,21 +338,6 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
           arguments: [vscode.Uri.parse(node.entry.uri)],
         }
         item.contextValue = 'atlas-memory-file'
-        return item
-      }
-
-      case 'projection': {
-        const item = new vscode.TreeItem(node.entry.name, vscode.TreeItemCollapsibleState.None)
-        item.description = node.entry.status || node.entry.source
-        item.iconPath = new vscode.ThemeIcon('symbol-class')
-        item.tooltip = [
-          `Projection: ${node.entry.name}`,
-          `Root: ${node.entry.root}`,
-          `Source: ${node.entry.source}`,
-          node.entry.specOwner ? `Spec: ${node.entry.specOwner}` : null,
-          node.entry.status ? `Status: ${node.entry.status}` : null,
-        ].filter(Boolean).join('\n')
-        item.contextValue = 'atlas-projection'
         return item
       }
 
@@ -444,9 +425,8 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
 
   private getRootSections(): SectionNode[] {
     const rootCount = this.manifest?.roots.length ?? 0
-    const projCount = this.manifest?.projections.length ?? 0
     const totalFiles = this.temperature.length
-    const rootSourceTag = this.manifestSource === 'inferred' ? ' (inferred)' : ''
+    const rootSource = this.manifest?.rootSource
     const hasCursor = this.cursorContext !== null
 
     const sections: SectionNode[] = []
@@ -462,15 +442,11 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
     sections.push(
       {
         kind: 'section', id: 'roots', label: 'Roots', icon: 'root-folder-opened',
-        description: rootCount > 0 ? `${rootCount}${rootSourceTag}` : rootSourceTag || undefined,
+        description: rootSource ? `${rootCount} · ${rootSource}` : undefined,
       },
       {
         kind: 'section', id: 'memory', label: 'Memory', icon: 'database',
         description: totalFiles > 0 ? `${totalFiles} tracked` : undefined,
-      },
-      {
-        kind: 'section', id: 'generated', label: 'Generated', icon: 'gear',
-        description: projCount > 0 ? String(projCount) : undefined,
       },
       {
         kind: 'section', id: 'spirit', label: 'Spirit', icon: 'pulse',
@@ -487,8 +463,6 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
         return this.getRootNodes()
       case 'memory':
         return this.getMemoryTierNodes()
-      case 'generated':
-        return this.getProjectionNodes()
       case 'cursor':
         return this.getCursorNodes()
       case 'spirit':
@@ -497,11 +471,17 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
   }
 
   private getRootNodes(): AtlasNode[] {
-    if (!this.manifest || this.manifest.roots.length === 0) {
-      const label = this.manifestSource === 'inferred'
-        ? 'No workspace manifest — roots inferred from index'
-        : 'No roots declared in workspace manifest'
-      return [{ kind: 'placeholder', label }]
+    if (!this.manifest) {
+      return [{ kind: 'placeholder', label: 'Workspace evidence unavailable' }]
+    }
+    if (this.manifest.rootSource === 'blocked') {
+      return this.manifest.manifest.diagnostics.map((diagnostic): PlaceholderNode => ({
+        kind: 'placeholder',
+        label: `${diagnostic.code}: ${diagnostic.message}`,
+      }))
+    }
+    if (this.manifest.roots.length === 0) {
+      return [{ kind: 'placeholder', label: 'Workspace evidence contains no roots' }]
     }
     return this.manifest.roots.map((entry): RootItemNode => ({ kind: 'root', entry }))
   }
@@ -518,13 +498,6 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
       { kind: 'tier', tier: 'warm', files: tiers.warm },
       { kind: 'tier', tier: 'cold', files: tiers.cold },
     ]
-  }
-
-  private getProjectionNodes(): AtlasNode[] {
-    if (!this.manifest || this.manifest.projections.length === 0) {
-      return [{ kind: 'placeholder', label: 'No projections found' }]
-    }
-    return this.manifest.projections.map((entry): ProjectionNode => ({ kind: 'projection', entry }))
   }
 
   // ── Cursor context ("You Are Here") ──────────────────────────
@@ -711,15 +684,23 @@ export function registerWorkspaceAtlasView(spw: SpwContext): vscode.Disposable[]
       if (node.kind !== 'root') return
       spw.events.emit('atlas.rootSelected', {
         sigil: node.entry.sigil,
-        resolvedPath: node.entry.resolvedPath,
+        uri: node.entry.uri,
         manifestFrame: null,
       })
-      spw.activeRoot = { sigil: node.entry.sigil, resolvedPath: node.entry.resolvedPath }
-      await openWorkspaceTarget(node.entry.resolvedPath)
+      spw.activeRoot = { sigil: node.entry.sigil, uri: node.entry.uri }
+      await openWorkspaceTarget(node.entry.uri, node.entry.kind)
     },
   )
 
   provider.setVisible(treeView.visible)
 
   return [provider, treeView, visibilitySub, refreshCommand, rootSelectedCommand]
+}
+
+function rootKindIcon(kind: SpwWorkspaceRootEntry['kind']): string {
+  if (kind === 'directory') return 'root-folder'
+  if (kind === 'file') return 'file'
+  if (kind === 'unreadable') return 'lock'
+  if (kind === 'missing') return 'warning'
+  return 'question'
 }

@@ -23,8 +23,9 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { parse } from '@spwashi/spw-seed'
-import type { Token } from '@spwashi/spw-seed'
+import { fileURLToPath } from 'node:url'
+import { parse, snapshotTopography } from '@spwashi/spw-seed'
+import type { ParseHealth, Token } from '@spwashi/spw-seed'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -58,10 +59,8 @@ type ContainerBoundaryKind = 'body' | 'frame' | 'scope' | 'capsule' | 'stream' |
 interface BoundaryObservationEntry {
   kind: ContainerBoundaryKind
   depth: number
-  tokenPayload: number
+  significantInteriorTokenCount: number
   flowMarkersInside: number
-  /** Index of this container's open token in the token stream. */
-  openIndex: number
 }
 
 export interface FlowFileResult {
@@ -73,16 +72,19 @@ export interface FlowFileResult {
   totalFlowMarkers: number
   /** Other operator sigils (non-flow). */
   otherOperators: number
-  /** Total significant (non-WS, non-EOF) tokens. */
+  /** Total significant (non-whitespace, non-comment, non-EOF) tokens. */
   significantTokens: number
   /** Flow marker density = totalFlowMarkers / significantTokens. */
   flowDensity: number
   parse: {
-    health: 'complete_structured' | 'recovered' | 'invalid'
+    health: ParseHealth
     success: boolean
     errorCount: number
     rootExpression: string | null
-    pairAuthority: 'matched_token_stack'
+    lexemesClosed: boolean
+    reasons: string[]
+    topographyAuthority: 'seed_snapshot_topography'
+    boundaryObservationMethod: 'strict_matched_token_stack'
   }
   /** Named-profile ordering score, or null when fewer than two markers exist. */
   profileOrderScore: number | null
@@ -99,10 +101,10 @@ export interface FlowFileResult {
 
 interface BoundaryStat {
   count: number
-  totalPayload: number
-  maxPayload: number
+  totalSignificantInteriorTokens: number
+  maxSignificantInteriorTokens: number
   maxDepth: number
-  avgPayload: number
+  avgSignificantInteriorTokens: number
   totalFlowInside: number
 }
 
@@ -179,7 +181,8 @@ async function main(): Promise<void> {
 // Core Analysis
 // ---------------------------------------------------------------------------
 
-export function analyzeFlow(file: string, rel: string, source: string): FlowFileResult {
+export function analyzeFlow(_file: string, rel: string, source: string): FlowFileResult {
+  const topography = snapshotTopography(source)
   const parsed = parse(source)
   const { tokens } = parsed
 
@@ -198,13 +201,10 @@ export function analyzeFlow(file: string, rel: string, source: string): FlowFile
   }
 
   const totalFlowMarkers = FLOW_TENSES.reduce((sum, t) => sum + tenses[t], 0)
-  const flowDensity = significant.length > 0 ? totalFlowMarkers / significant.length : 0
+  const flowDensity = topography.significantTokens > 0
+    ? totalFlowMarkers / topography.significantTokens
+    : 0
   const rootExpression = parsed.ast?.expression.type ?? null
-  const parseHealth = !parsed.success
-    ? 'invalid'
-    : parsed.errors.length > 0 || rootExpression === 'Prose'
-      ? 'recovered'
-      : 'complete_structured'
 
   // Interpretive score is kept separate from deterministic observations.
   const profileOrderScore = computeProfileOrderScore(tokens)
@@ -217,16 +217,19 @@ export function analyzeFlow(file: string, rel: string, source: string): FlowFile
     file: rel,
     rel,
     parse: {
-      health: parseHealth,
-      success: parsed.success,
+      health: topography.parseHealth,
+      success: topography.parserSuccess,
       errorCount: parsed.errors.length,
       rootExpression,
-      pairAuthority: 'matched_token_stack',
+      lexemesClosed: topography.lexemesClosed,
+      reasons: [...topography.reasons],
+      topographyAuthority: 'seed_snapshot_topography',
+      boundaryObservationMethod: 'strict_matched_token_stack',
     },
     tenses,
     totalFlowMarkers,
     otherOperators,
-    significantTokens: significant.length,
+    significantTokens: topography.significantTokens,
     flowDensity,
     profileOrderScore,
     boundaries,
@@ -282,12 +285,20 @@ function computeProfileOrderScore(tokens: Token[]): number | null {
  * For each completed container, records:
  *   - boundary kind
  *   - nesting depth at open
- *   - number of significant payload tokens inside
+ *   - number of significant tokens strictly inside its boundaries
  *   - number of flow marker tokens inside
+ *
+ * Any mismatched close invalidates the active stack. This prevents crossed
+ * delimiters such as `{[}]` from later producing a false completed pair.
  */
 function measureBoundaryObservations(tokens: Token[]): BoundaryObservationEntry[] {
   const entries: BoundaryObservationEntry[] = []
-  const stack: { kind: ContainerBoundaryKind; depth: number; payloadStart: number; openIndex: number; flowCount: number }[] = []
+  const stack: {
+    kind: ContainerBoundaryKind
+    depth: number
+    interiorStart: number
+    flowCount: number
+  }[] = []
   let depth = 0
 
   for (let i = 0; i < tokens.length; i += 1) {
@@ -295,24 +306,30 @@ function measureBoundaryObservations(tokens: Token[]): BoundaryObservationEntry[
     const bk = openBoundaryKind(tok)
     if (bk) {
       depth += 1
-      stack.push({ kind: bk, depth, payloadStart: i + 1, openIndex: i, flowCount: 0 })
+      stack.push({ kind: bk, depth, interiorStart: i + 1, flowCount: 0 })
       continue
     }
 
     const closeKind = closeBoundaryKind(tok)
-    if (closeKind && stack.length > 0 && stack[stack.length - 1].kind === closeKind) {
+    if (closeKind) {
+      if (stack.length === 0) continue
+      if (stack[stack.length - 1].kind !== closeKind) {
+        stack.length = 0
+        depth = 0
+        continue
+      }
+
       const frame = stack.pop()!
       depth -= 1
-      let payload = 0
-      for (let j = frame.payloadStart; j < i; j += 1) {
-        if (isSignificant(tokens[j])) payload += 1
+      let significantInteriorTokenCount = 0
+      for (let j = frame.interiorStart; j < i; j += 1) {
+        if (isSignificant(tokens[j])) significantInteriorTokenCount += 1
       }
       entries.push({
         kind: frame.kind,
         depth: frame.depth,
-        tokenPayload: payload,
+        significantInteriorTokenCount,
         flowMarkersInside: frame.flowCount,
-        openIndex: frame.openIndex,
       })
       continue
     }
@@ -361,7 +378,14 @@ function closeBoundaryKind(tok: Token): ContainerBoundaryKind | null {
 // ---------------------------------------------------------------------------
 
 function emptyBoundaryStat(): BoundaryStat {
-  return { count: 0, totalPayload: 0, maxPayload: 0, maxDepth: 0, avgPayload: 0, totalFlowInside: 0 }
+  return {
+    count: 0,
+    totalSignificantInteriorTokens: 0,
+    maxSignificantInteriorTokens: 0,
+    maxDepth: 0,
+    avgSignificantInteriorTokens: 0,
+    totalFlowInside: 0,
+  }
 }
 
 type BoundaryKinds = 'body' | 'frame' | 'scope' | 'capsule' | 'stream' | 'nrange'
@@ -376,15 +400,19 @@ function aggregateBoundaries(entries: BoundaryObservationEntry[]): Record<Bounda
   for (const e of entries) {
     const s = result[e.kind]
     s.count += 1
-    s.totalPayload += e.tokenPayload
+    s.totalSignificantInteriorTokens += e.significantInteriorTokenCount
     s.totalFlowInside += e.flowMarkersInside
-    if (e.tokenPayload > s.maxPayload) s.maxPayload = e.tokenPayload
+    if (e.significantInteriorTokenCount > s.maxSignificantInteriorTokens) {
+      s.maxSignificantInteriorTokens = e.significantInteriorTokenCount
+    }
     if (e.depth > s.maxDepth) s.maxDepth = e.depth
   }
 
   for (const k of ALL_BOUNDARY_KINDS) {
     const s = result[k]
-    s.avgPayload = s.count > 0 ? Math.round((s.totalPayload / s.count) * 10) / 10 : 0
+    s.avgSignificantInteriorTokens = s.count > 0
+      ? Math.round((s.totalSignificantInteriorTokens / s.count) * 10) / 10
+      : 0
   }
 
   return result
@@ -414,16 +442,20 @@ function computeFlowSummary(results: FlowFileResult[]): FlowSummary {
       const g = globalBoundaries[k]
       const f = r.boundaries[k]
       g.count += f.count
-      g.totalPayload += f.totalPayload
+      g.totalSignificantInteriorTokens += f.totalSignificantInteriorTokens
       g.totalFlowInside += f.totalFlowInside
-      if (f.maxPayload > g.maxPayload) g.maxPayload = f.maxPayload
+      if (f.maxSignificantInteriorTokens > g.maxSignificantInteriorTokens) {
+        g.maxSignificantInteriorTokens = f.maxSignificantInteriorTokens
+      }
       if (f.maxDepth > g.maxDepth) g.maxDepth = f.maxDepth
     }
   }
 
   for (const k of ALL_BOUNDARY_KINDS) {
     const g = globalBoundaries[k]
-    g.avgPayload = g.count > 0 ? Math.round((g.totalPayload / g.count) * 10) / 10 : 0
+    g.avgSignificantInteriorTokens = g.count > 0
+      ? Math.round((g.totalSignificantInteriorTokens / g.count) * 10) / 10
+      : 0
   }
 
   return {
@@ -464,10 +496,10 @@ function printHumanReport(summary: FlowSummary, verbose: boolean): void {
   console.log(`  Profile order:      ${averageOrder}`)
   console.log(``)
   console.log(`## Paired-Boundary Observations`)
-  console.log(`  ${'Kind'.padEnd(10)} ${'Count'.padStart(6)} ${'AvgPay'.padStart(8)} ${'MaxPay'.padStart(8)} ${'MaxDep'.padStart(8)} ${'FlowIn'.padStart(8)}`)
+  console.log(`  ${'Kind'.padEnd(10)} ${'Count'.padStart(6)} ${'AvgTok'.padStart(8)} ${'MaxTok'.padStart(8)} ${'MaxDep'.padStart(8)} ${'FlowIn'.padStart(8)}`)
   for (const k of ALL_BOUNDARY_KINDS) {
     const s = summary.globalBoundaries[k]
-    console.log(`  ${k.padEnd(10)} ${String(s.count).padStart(6)} ${String(s.avgPayload).padStart(8)} ${String(s.maxPayload).padStart(8)} ${String(s.maxDepth).padStart(8)} ${String(s.totalFlowInside).padStart(8)}`)
+    console.log(`  ${k.padEnd(10)} ${String(s.count).padStart(6)} ${String(s.avgSignificantInteriorTokens).padStart(8)} ${String(s.maxSignificantInteriorTokens).padStart(8)} ${String(s.maxDepth).padStart(8)} ${String(s.totalFlowInside).padStart(8)}`)
   }
 
   if (verbose) {
@@ -501,7 +533,10 @@ function emptyResult(_file: string, rel: string): FlowFileResult {
       success: false,
       errorCount: 1,
       rootExpression: null,
-      pairAuthority: 'matched_token_stack',
+      lexemesClosed: false,
+      reasons: ['read_failure'],
+      topographyAuthority: 'seed_snapshot_topography',
+      boundaryObservationMethod: 'strict_matched_token_stack',
     },
     tenses: { '~': 0, '?': 0, '!': 0, '^': 0, '%': 0 },
     totalFlowMarkers: 0, otherOperators: 0, significantTokens: 0,
@@ -560,7 +595,7 @@ async function collectSpwFiles(dir: string, files: string[], excludePatterns: st
   }
 }
 
-if (import.meta.url.startsWith('file:') && process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(import.meta.url).pathname)) {
+if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url))) {
   main().catch((err) => {
     console.error(err)
     process.exit(1)

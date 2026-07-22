@@ -17,7 +17,11 @@ describe('Spw structural-projection verifier', () => {
   it('refuses to certify two equally recovered inputs', () => {
     const result = compareSourceProjections('{', '{')
     expect(result.equivalent).toBe(false)
-    expect(result.diffs).toContain('source A is not a complete structured parse (0 errors)')
-    expect(result.diffs).toContain('source B is not a complete structured parse (0 errors)')
+    expect(result.diffs).toContain(
+      'source A is not a complete structured parse (health=recovered; reasons=prose_fallback)',
+    )
+    expect(result.diffs).toContain(
+      'source B is not a complete structured parse (health=recovered; reasons=prose_fallback)',
+    )
   })
 })

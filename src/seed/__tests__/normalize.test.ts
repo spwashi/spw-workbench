@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { desugar, normalizeToONF } from '../normalize'
+import { parse } from '../parser'
 import { boundaryCoordinateForSurface } from '../types/coupling'
 import { collectPrecipitates, precipitateToSpw, projectionToSpw } from '../../runtime/pipeline/stages'
 
@@ -230,6 +231,21 @@ describe('normalizeToONF', () => {
     })
     expect(empty.frames.coupling).not.toHaveProperty('occupancy')
     expect(empty.frames.coupling).not.toHaveProperty('payload')
+  })
+
+  it('lowers <> Frame members into ordered couple operands', () => {
+    const parsed = parse('<>["left", "right"]')
+    expect(parsed.success).toBe(true)
+    const onf = normalizeToONF(parsed.ast as any)
+
+    expect(onf.sigil).toBe('<>')
+    expect(onf.args).toHaveLength(2)
+    expect(onf.frames.coupling).toMatchObject({
+      kind: 'couple',
+      form: 'operator',
+      arity: 2,
+    })
+    expect((onf.frames.bound as { kind?: string })?.kind).toBe('frame')
   })
 
   it('Prefix Act·Bound ![] records placement on the paired-boundary projection', () => {

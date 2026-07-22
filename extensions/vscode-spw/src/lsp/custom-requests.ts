@@ -1,4 +1,14 @@
-import type { LanguageClient } from 'vscode-languageclient/node'
+import {
+  SPW_WORKSPACE_MANIFEST_METHOD_V1,
+  parseSpwWorkspaceManifestV1,
+  type SpwWorkspaceManifestV1,
+  type SpwWorkspaceRootEvidence,
+  type SpwWorkspaceRootSource,
+} from '@spwashi/spw-lsp/workspace-protocol'
+
+export type SpwWorkspaceManifest = SpwWorkspaceManifestV1
+export type SpwWorkspaceRootEntry = SpwWorkspaceRootEvidence
+export type { SpwWorkspaceRootSource }
 
 export type SpwAnnotationKind = 'topic' | 'lens' | 'intent' | 'anchor' | 'prompt_root'
 export type SpwMaterializationState = 'priming' | 'concept' | 'frame' | 'body'
@@ -70,27 +80,6 @@ export interface SpwContextAtPositionResult {
   deltaBraids: string[]
 }
 
-export interface SpwWorkspaceRootEntry {
-  sigil: string
-  resolvedPath: string
-  uri: string
-}
-
-export interface SpwWorkspaceProjectionEntry {
-  name: string
-  root: string
-  source: string
-  specOwner: string
-  status: string
-}
-
-export interface SpwWorkspaceManifest {
-  rootSource: 'manifest' | 'inferred'
-  manifestUri: string | null
-  roots: SpwWorkspaceRootEntry[]
-  projections: SpwWorkspaceProjectionEntry[]
-}
-
 export interface SpwCustomRequestMap {
   'spw/annotations': {
     params: Record<string, never>
@@ -120,7 +109,7 @@ export interface SpwCustomRequestMap {
     params: { uri: string, position: SpwPosition }
     result: SpwContextAtPositionResult | null
   }
-  'spw/workspaceManifest': {
+  'spw/workspaceManifest/v1': {
     params: Record<string, never>
     result: SpwWorkspaceManifest
   }
@@ -174,39 +163,6 @@ function parseAnnotationRecords(value: unknown): SpwAnnotationRecord[] {
   return records
 }
 
-function isWorkspaceRootEntry(value: unknown): value is SpwWorkspaceRootEntry {
-  if (!isRecord(value)) return false
-  return typeof value.sigil === 'string'
-    && typeof value.resolvedPath === 'string'
-    && typeof value.uri === 'string'
-}
-
-function isWorkspaceProjectionEntry(value: unknown): value is SpwWorkspaceProjectionEntry {
-  if (!isRecord(value)) return false
-  return typeof value.name === 'string'
-    && typeof value.root === 'string'
-    && typeof value.source === 'string'
-    && typeof value.specOwner === 'string'
-    && typeof value.status === 'string'
-}
-
-function isWorkspaceManifest(value: unknown): value is SpwWorkspaceManifest {
-  if (!isRecord(value)) return false
-  return (value.rootSource === 'manifest' || value.rootSource === 'inferred')
-    && (value.manifestUri === null || typeof value.manifestUri === 'string')
-    && Array.isArray(value.roots)
-    && value.roots.every(isWorkspaceRootEntry)
-    && Array.isArray(value.projections)
-    && value.projections.every(isWorkspaceProjectionEntry)
-}
-
-function parseWorkspaceManifest(value: unknown): SpwWorkspaceManifest {
-  if (!isWorkspaceManifest(value)) {
-    throw new Error('spw/workspaceManifest returned an invalid payload')
-  }
-  return value
-}
-
 function isWorkspaceTemperatureEntry(value: unknown): value is SpwWorkspaceTemperatureEntry {
   if (!isRecord(value)) return false
   return typeof value.uri === 'string'
@@ -231,14 +187,18 @@ function parseWorkspaceTemperatureEntries(value: unknown): SpwWorkspaceTemperatu
   return entries
 }
 
+export interface SpwRequestTransport {
+  sendRequest<R>(method: string, params: unknown): Promise<R>
+}
+
 class SpwLanguageServerRequests implements SpwCustomRequestClient {
-  constructor(private readonly client: LanguageClient) {}
+  constructor(private readonly client: SpwRequestTransport) {}
 
   async request<K extends SpwCustomRequestMethod>(
     method: K,
     params: SpwCustomRequestMap[K]['params'],
   ): Promise<SpwCustomRequestMap[K]['result']> {
-    return this.client.sendRequest(method, params)
+    return this.client.sendRequest<SpwCustomRequestMap[K]['result']>(method, params)
   }
 
   async annotations(): Promise<SpwAnnotationRecord[]> {
@@ -251,8 +211,8 @@ class SpwLanguageServerRequests implements SpwCustomRequestClient {
   }
 
   async workspaceManifest(): Promise<SpwWorkspaceManifest> {
-    const payload = await this.request('spw/workspaceManifest', {})
-    return parseWorkspaceManifest(payload)
+    const payload = await this.request(SPW_WORKSPACE_MANIFEST_METHOD_V1, {})
+    return parseSpwWorkspaceManifestV1(payload)
   }
 
   async workspaceTemperature(): Promise<SpwWorkspaceTemperatureEntry[]> {
@@ -261,6 +221,6 @@ class SpwLanguageServerRequests implements SpwCustomRequestClient {
   }
 }
 
-export function createSpwCustomRequestClient(client: LanguageClient): SpwCustomRequestClient {
+export function createSpwCustomRequestClient(client: SpwRequestTransport): SpwCustomRequestClient {
   return new SpwLanguageServerRequests(client)
 }

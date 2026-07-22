@@ -35,7 +35,8 @@ VSCODE_TAR="$OUT_DIR/vscode-spw-${VERSION}.tar.gz"
 if [ -d "extensions/vscode-spw/dist" ]; then
   tar -czf "$VSCODE_TAR" \
     -C "extensions/vscode-spw" \
-    package.json README.md language-configuration.json syntaxes src dist
+    package.json README.md icon.png language-configuration.json syntaxes snippets dist
+  node scripts/release/smoke-vscode-extension.mjs "$VSCODE_TAR"
   echo "Created: $VSCODE_TAR"
 else
   echo "VS Code dist output not found at extensions/vscode-spw/dist"

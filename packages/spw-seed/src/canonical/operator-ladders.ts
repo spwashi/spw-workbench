@@ -14,6 +14,7 @@ export {
   listFormLadders,
   implicationsForBoundary,
   implicationsForAxis,
+  probeFormLadder,
   probeBoundaryLadder,
   probeOperatorLadder,
   resolveLadderQuery,

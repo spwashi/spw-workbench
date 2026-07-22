@@ -6,8 +6,15 @@
  * needs disambiguation (Stream currently borrows Wonder's `?` sigil).
  */
 import { describe, expect, it } from 'vitest'
-import { normalizeToONF, parse } from '@spwashi/spw-seed'
-import { interpretSeed } from '@spwashi/spw-runtime'
+import { $register, normalizeToONF, parse } from '@spwashi/spw-seed'
+import {
+  couplingDescriptorForSurface,
+  couplingKindForSurface,
+  descriptorForKey,
+  interpretSeed,
+  RegisterBank,
+  Substrate,
+} from '@spwashi/spw-runtime'
 
 function parseSource(source: string) {
   const result = parse(source)
@@ -67,6 +74,71 @@ describe('structural coupling projection', () => {
       arity: 0,
     })
     expect(value).toEqual([])
+  })
+
+  it('evaluates framed <> operands and exposes the exact relation edge', () => {
+    const substrate = new Substrate('coupling-test')
+    const registers = new RegisterBank({}, substrate)
+    const result = interpretSeed(
+      parseSource('<>["a","b"]'),
+      { captureTrace: false },
+      registers,
+    )
+
+    expect(result.onf.args).toHaveLength(2)
+    expect(result.onf.frames.coupling).toMatchObject({
+      kind: 'couple',
+      form: 'operator',
+      arity: 2,
+    })
+    expect(result.value).toEqual(['"a"', '"b"'])
+    expect(result.registers.couplingEdges['"a"']).toEqual(['"b"'])
+    expect(result.registers.couplingEdges['"b"']).toEqual(['"a"'])
+    expect(substrate.peek()).toContainEqual(expect.objectContaining({
+      kind: 'couple',
+      key: '"a"',
+      coupledWith: '"b"',
+    }))
+  })
+
+  it('keeps relation affinity distinct from capsule boundaries', () => {
+    expect(descriptorForKey('<>')).toEqual({
+      name: 'Coupling',
+      accessMode: 'relational',
+      containerAffinity: 'relation',
+    })
+    expect(descriptorForKey('<').containerAffinity).toBe('capsule')
+  })
+
+  it('does not treat inherited object properties as registered surfaces', () => {
+    expect(couplingKindForSurface('__proto__')).toBeUndefined()
+    expect(couplingDescriptorForSurface('toString')).toBeUndefined()
+    expect(descriptorForKey('toString')).toEqual({
+      name: 'Register toString',
+      accessMode: 'context',
+      containerAffinity: 'void',
+    })
+  })
+
+  it('keeps exact adjacency immutable and derived density current', () => {
+    const bank = new RegisterBank()
+    const a = $register`a`
+    const b = $register`b`
+    const c = $register`c`
+
+    bank.couple(a, b)
+    bank.couple(a, b)
+    expect(bank.coupledKeys(a)).toEqual([b])
+    expect(bank.coupledKeys(b)).toEqual([a])
+
+    const beforePopulationGrowth = bank.couplingOf(a)
+    bank.set(c, 3, { source: 'test' })
+    expect(bank.couplingOf(a)).toBeLessThan(beforePopulationGrowth!)
+    expect(bank.materialize(a)?.coupling).toBe(bank.couplingOf(a))
+
+    const snapshot = bank.snapshot()
+    snapshot.couplingEdges[a].push(c)
+    expect(bank.coupledKeys(a)).toEqual([b])
   })
 
   it('classifies an interior Act independently of boundary kind', () => {

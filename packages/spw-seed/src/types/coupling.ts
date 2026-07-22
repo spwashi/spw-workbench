@@ -17,18 +17,21 @@
  * @see docs/theory/spw/coupling-constructors.spw
  */
 
-/** Structural kind of a coupling constructor. */
-export type CouplingKind =
-  | 'couple'
-  | 'frame'
-  | 'body'
-  | 'scope'
-  | 'capsule'
-  | 'stream'
-  | 'nrange'
+/** Canonical paired-boundary registry; consumers can test six-way coverage. */
+export const PAIRED_BOUNDARY_KINDS = [
+  'frame',
+  'body',
+  'scope',
+  'capsule',
+  'stream',
+  'nrange',
+] as const
 
 /** Paired boundaries are coupling constructors, but not lexical operators. */
-export type PairedBoundaryKind = Exclude<CouplingKind, 'couple'>
+export type PairedBoundaryKind = (typeof PAIRED_BOUNDARY_KINDS)[number]
+
+/** Structural kind of a coupling constructor. */
+export type CouplingKind = 'couple' | PairedBoundaryKind
 
 /** The lexical/structural form prevents symmetry from erasing kind. */
 export type CouplingForm = 'operator' | 'boundary'
@@ -59,6 +62,9 @@ export type CouplingOccupancy = 'empty' | 'inhabited'
  * AST collapses whitespace-only interiors to `void`.
  */
 export type CouplingPayload = 'void' | 'space' | 'act' | 'term' | 'multi'
+
+export type EmptyBoundaryPayload = Extract<CouplingPayload, 'void' | 'space'>
+export type InhabitedBoundaryPayload = Exclude<CouplingPayload, EmptyBoundaryPayload>
 
 /** Position of an Act relative to a paired boundary. */
 export type ActPlacement = 'interior' | 'prefix' | 'postfix' | 'none'
@@ -187,14 +193,17 @@ export interface OperatorCouplingFrame {
 }
 
 /** ONF projection for a paired boundary. */
-export interface BoundaryCouplingFrame {
+interface BoundaryCouplingFrameBase {
   kind: PairedBoundaryKind
   form: 'boundary'
-  occupancy: CouplingOccupancy
-  payload: CouplingPayload
   surface: string
   actPlacement?: ActPlacement
 }
+
+export type BoundaryCouplingFrame = BoundaryCouplingFrameBase & (
+  | { occupancy: 'empty'; payload: EmptyBoundaryPayload }
+  | { occupancy: 'inhabited'; payload: InhabitedBoundaryPayload }
+)
 
 export type CouplingFrame = OperatorCouplingFrame | BoundaryCouplingFrame
 
@@ -235,7 +244,7 @@ export interface CouplingDynamicsDefinition {
   operation: string
   input: string
   output: string
-  /** S0 pure, S1 read, S2 local write, S3 external effect. */
+  /** S0 read/measure, S1 in-memory, S2 workspace write, S3 external effect. */
   effectGrade: 'S0' | 'S1' | 'S2' | 'S3'
   /** Named implementation, experiment, or trace contract supporting the law. */
   evidence: string
@@ -291,6 +300,27 @@ export interface BoundaryCouplingFrameOptions {
   actPlacement?: ActPlacement
 }
 
+const ACT_PLACEMENTS = new Set<ActPlacement>(['interior', 'prefix', 'postfix', 'none'])
+const EMPTY_PAYLOADS = new Set<EmptyBoundaryPayload>(['void', 'space'])
+const INHABITED_PAYLOADS = new Set<InhabitedBoundaryPayload>(['act', 'term', 'multi'])
+
+function isValidArity(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value) && Number.isInteger(value) && value >= 0
+}
+
+function isValidActPlacement(value: unknown): value is ActPlacement {
+  return typeof value === 'string' && ACT_PLACEMENTS.has(value as ActPlacement)
+}
+
+function payloadMatchesOccupancy(
+  occupancy: CouplingOccupancy,
+  payload: unknown,
+): payload is CouplingPayload {
+  return occupancy === 'empty'
+    ? EMPTY_PAYLOADS.has(payload as EmptyBoundaryPayload)
+    : INHABITED_PAYLOADS.has(payload as InhabitedBoundaryPayload)
+}
+
 export function couplingFrame(
   kind: 'couple',
   options?: OperatorCouplingFrameOptions,
@@ -307,29 +337,44 @@ export function couplingFrame(
     const options = typeof occupancyOrOptions === 'object'
       ? occupancyOrOptions as OperatorCouplingFrameOptions
       : {}
+    const arity = options.arity ?? 0
+    if (!isValidArity(arity)) {
+      throw new RangeError('couple arity must be a finite non-negative integer')
+    }
     return {
       kind,
       form: 'operator',
       surface: '<>',
-      arity: Math.max(0, options.arity ?? 0),
+      arity,
     }
   }
 
+  if (!isCouplingKind(kind)) {
+    throw new TypeError(`unknown coupling kind ${String(kind)}`)
+  }
   const descriptor = COUPLING_DESCRIPTORS[kind]
   const options: BoundaryCouplingFrameOptions =
     typeof occupancyOrOptions === 'string'
       ? { occupancy: occupancyOrOptions }
       : occupancyOrOptions as BoundaryCouplingFrameOptions
   const occupancy = options.occupancy ?? 'inhabited'
+  const payload = options.payload ?? (occupancy === 'empty' ? 'void' : 'term')
+  if (!payloadMatchesOccupancy(occupancy, payload)) {
+    throw new TypeError(`payload ${payload} is incompatible with ${occupancy} occupancy`)
+  }
+  if (options.actPlacement !== undefined && !isValidActPlacement(options.actPlacement)) {
+    throw new TypeError(`invalid act placement ${String(options.actPlacement)}`)
+  }
 
-  return {
+  const base = {
     kind,
-    form: 'boundary',
-    occupancy,
-    payload: options.payload ?? (occupancy === 'empty' ? 'void' : 'term'),
+    form: 'boundary' as const,
     surface: occupancy === 'empty' ? descriptor.emptySurface : descriptor.surface,
     ...(options.actPlacement ? { actPlacement: options.actPlacement } : {}),
   }
+  return occupancy === 'empty'
+    ? { ...base, occupancy, payload: payload as EmptyBoundaryPayload }
+    : { ...base, occupancy, payload: payload as InhabitedBoundaryPayload }
 }
 
 export interface WithCouplingOptions {
@@ -395,7 +440,11 @@ export function withCoupling(
 
   const occupancy = options.occupancy ?? (argCount === 0 ? 'empty' : 'inhabited')
   const payload = options.payload
-    ?? (options.args ? classifyPayload(options.args) : occupancy === 'empty' ? 'void' : 'term')
+    ?? (occupancy === 'empty'
+      ? 'void'
+      : options.args
+        ? classifyPayload(options.args)
+        : 'term')
   const actPlacement = options.actPlacement
     ?? (payload === 'act' ? 'interior' : undefined)
 
@@ -460,7 +509,7 @@ export function validateCouplingSemanticsProfile(
 
   const included = new Set<CouplingKind>()
   for (const [index, kind] of profile.includedKinds.entries()) {
-    if (!(kind in COUPLING_DESCRIPTORS)) {
+    if (!Object.hasOwn(COUPLING_DESCRIPTORS, kind)) {
       issues.push({ path: `includedKinds[${index}]`, message: `unknown coupling kind ${String(kind)}` })
     } else if (included.has(kind)) {
       issues.push({ path: `includedKinds[${index}]`, message: `duplicate coupling kind ${kind}` })
@@ -558,7 +607,7 @@ export function isBoundaryCouplingFrame(
 }
 
 function isCouplingKind(value: unknown): value is CouplingKind {
-  return typeof value === 'string' && value in COUPLING_DESCRIPTORS
+  return typeof value === 'string' && Object.hasOwn(COUPLING_DESCRIPTORS, value)
 }
 
 /** Read and validate a structural coupling projection from an ONF frame map. */
@@ -572,7 +621,7 @@ export function readCouplingFrame(
   if (!isCouplingKind(candidate.kind)) return undefined
 
   if (candidate.form === 'operator' && candidate.kind === 'couple') {
-    if (typeof candidate.arity !== 'number' || candidate.arity < 0) return undefined
+    if (candidate.surface !== '<>' || !isValidArity(candidate.arity)) return undefined
     return candidate as unknown as OperatorCouplingFrame
   }
 
@@ -580,8 +629,15 @@ export function readCouplingFrame(
     const occupancy = candidate.occupancy
     const payload = candidate.payload
     if (occupancy !== 'empty' && occupancy !== 'inhabited') return undefined
-    if (!['void', 'space', 'act', 'term', 'multi'].includes(String(payload))) return undefined
-    if (typeof candidate.surface !== 'string') return undefined
+    if (!payloadMatchesOccupancy(occupancy, payload)) return undefined
+    const descriptor = COUPLING_DESCRIPTORS[candidate.kind]
+    const expectedSurface = occupancy === 'empty'
+      ? descriptor.emptySurface
+      : descriptor.surface
+    if (candidate.surface !== expectedSurface) return undefined
+    if (candidate.actPlacement !== undefined && !isValidActPlacement(candidate.actPlacement)) {
+      return undefined
+    }
     return candidate as unknown as BoundaryCouplingFrame
   }
 

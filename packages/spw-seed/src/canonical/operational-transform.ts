@@ -265,15 +265,22 @@ export const STRATUM_ORDER: readonly DifferentialStratum[] = [
   'script',
 ] as const
 
-/** Dense matrix: rows = strata (or step ids), cols = vector axes. */
-export interface MutationMatrix {
-  /** Row labels (stratum or step id) */
-  rows: string[]
-  /** Column labels (vector axes) */
-  cols: readonly MutationVectorAxis[]
+/** Dense numeric matrix whose label domains remain explicit after transforms. */
+export interface LabeledMatrix<
+  RowLabel extends string = string,
+  ColLabel extends string = string,
+> {
+  rows: RowLabel[]
+  cols: readonly ColLabel[]
   /** row-major data[row][col] */
   data: number[][]
 }
+
+/** Step/stratum rows by mutation-vector-axis columns. */
+export type MutationMatrix = LabeledMatrix<string, MutationVectorAxis>
+
+/** Axis rows by original step/stratum columns. Not vector-multipliable. */
+export type TransposedMutationMatrix = LabeledMatrix<MutationVectorAxis, string>
 
 export function vectorToArray(v: MutationVector): number[] {
   return MUTATION_VECTOR_AXES.map(axis => v[axis])
@@ -358,19 +365,21 @@ export function matrixVectorMul(m: MutationMatrix, v: MutationVector): number[] 
   return m.data.map(row => row.reduce((sum, x, j) => sum + x * (col[j] ?? 0), 0))
 }
 
-/** Transpose for row/col swap (step-major ↔ axis-major views). */
-export function matrixTranspose(m: MutationMatrix): MutationMatrix {
+/** Transpose for display/query views without falsifying vector-axis compatibility. */
+export function matrixTranspose(m: MutationMatrix): TransposedMutationMatrix {
   const rows = [...m.cols]
-  const cols = m.rows as unknown as MutationVectorAxis[]
-  const data: number[][] = rows.map((_, j) => m.data.map(row => row[j] ?? 0))
+  const cols = [...m.rows]
+  const data: number[][] = rows.map((_, axisIndex) =>
+    m.data.map(row => row[axisIndex] ?? 0),
+  )
   return {
-    rows: rows as string[],
-    cols: cols.length === MUTATION_VECTOR_AXES.length ? MUTATION_VECTOR_AXES : (cols as readonly MutationVectorAxis[]),
+    rows,
+    cols,
     data,
   }
 }
 
-export function formatMatrix(m: MutationMatrix, precision = 0): string {
+export function formatMatrix(m: LabeledMatrix, precision = 0): string {
   const header = ['', ...m.cols].join('\t')
   const body = m.data.map((row, i) => {
     const cells = row.map(n =>
@@ -521,11 +530,13 @@ export function runOperationalSequence(
       steps.push({ id: step.id, differential: stepDiff, source: mid })
       if (!stepDiff.identity) {
         vector = mergeVectors(vector, stepDiff.vector)
-        applied = [
-          ...applied,
-          ...differentialFromSources(source, mid, step.id, step.stratum ?? 'operation', hashString)
-            .edits,
-        ]
+        applied = differentialFromSources(
+          source,
+          mid,
+          seq.id,
+          'operation',
+          hashString,
+        ).edits
       }
       current = mid
     }

@@ -7,10 +7,11 @@ import {
   findWorkspaceRoot,
   isWithin,
   relativeToConsumer,
+  resolveWorkspacePath,
   type SpwWorkspace,
 } from './workspace'
 
-const IGNORED_DIRECTORIES = new Set(['.git', 'node_modules', 'dist', 'release', 'build'])
+const IGNORED_DIRECTORIES = new Set(['.git', 'node_modules', 'dist', 'release'])
 
 export type SpwTreeNode =
   | { kind: 'directory'; name: string; path: string; children: SpwTreeNode[] }
@@ -32,16 +33,21 @@ export async function buildSpwTree(
   const depth = options.depth ?? 4
   const includeWorkbench = options.includeWorkbench ?? false
   const declaredRoot = selector.startsWith('@') ? findWorkspaceRoot(workspace, selector) : null
-  const target = declaredRoot?.absolutePath ?? path.resolve(workspace.consumerRoot, selector)
+  const target = await resolveWorkspacePath(workspace, selector)
+  const workbenchBoundary = workspace.mode === 'mounted-consumer'
+    ? await realPathOrResolved(workspace.workbenchRoot)
+    : null
+  const targetBoundary = await realPathOrResolved(target)
 
-  if (!isWithin(workspace.consumerRoot, target)) {
-    throw new Error(`Tree target is outside the consumer root: ${selector}`)
-  }
-  if (workspace.mode === 'mounted-consumer' && !includeWorkbench && isWithin(workspace.workbenchRoot, target)) {
+  if (
+    workbenchBoundary &&
+    !includeWorkbench &&
+    (declaredRoot?.role === 'infrastructure' || isWithin(workbenchBoundary, targetBoundary))
+  ) {
     throw new Error('Tree target is mounted infrastructure; pass --include-workbench to inspect it explicitly')
   }
 
-  return collectTree(workspace, target, depth, includeWorkbench)
+  return collectTree(workspace, target, depth, includeWorkbench, workbenchBoundary)
 }
 
 export async function runSpwTreeCli(argv: string[] = process.argv): Promise<void> {
@@ -75,6 +81,7 @@ export function printTreeHelp(): void {
       lines: [
         'spw tree',
         'spw tree @docs --depth 3',
+        'spw tree @shared --depth 2  # declared external root',
         'spw tree .agents/plans --depth 2',
         'spw tree @workbench --include-workbench --depth 2',
       ],
@@ -87,9 +94,15 @@ async function collectTree(
   target: string,
   depth: number,
   includeWorkbench: boolean,
+  workbenchBoundary: string | null,
 ): Promise<SpwTreeNode | null> {
-  const stat = await fs.stat(target).catch(() => null)
+  const stat = await statOrNull(target)
   if (!stat) return null
+  if (
+    workbenchBoundary &&
+    !includeWorkbench &&
+    isWithin(workbenchBoundary, await realPathOrResolved(target))
+  ) return null
 
   if (stat.isFile()) {
     return target.endsWith('.spw')
@@ -111,7 +124,13 @@ async function collectTree(
         !includeWorkbench &&
         isWithin(workspace.workbenchRoot, childPath)
       ) continue
-      const child = await collectTree(workspace, childPath, depth - 1, includeWorkbench)
+      const child = await collectTree(
+        workspace,
+        childPath,
+        depth - 1,
+        includeWorkbench,
+        workbenchBoundary,
+      )
       if (child) children.push(child)
     }
   }
@@ -175,4 +194,30 @@ function parseTreeOptions(args: string[]): TreeOptions {
 function parseDepth(value: string | undefined, fallback: number): number {
   const parsed = Number(value)
   return Number.isInteger(parsed) && parsed >= 0 && parsed <= 20 ? parsed : fallback
+}
+
+async function statOrNull(target: string) {
+  try {
+    return await fs.stat(target)
+  } catch (error) {
+    const code = nodeErrorCode(error)
+    if (code === 'ENOENT' || code === 'ENOTDIR') return null
+    throw error
+  }
+}
+
+async function realPathOrResolved(target: string): Promise<string> {
+  try {
+    return await fs.realpath(target)
+  } catch (error) {
+    const code = nodeErrorCode(error)
+    if (code === 'ENOENT' || code === 'ENOTDIR') return path.resolve(target)
+    throw error
+  }
+}
+
+function nodeErrorCode(error: unknown): string | undefined {
+  return typeof error === 'object' && error !== null && 'code' in error
+    ? String((error as { code?: unknown }).code)
+    : undefined
 }

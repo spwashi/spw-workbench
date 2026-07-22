@@ -1,30 +1,32 @@
 # Spw Language Support for VS Code
 
-This preview extension is a thin client over `spw-lsp`.
+This preview extension is a thin client over the bundled `spw-lsp` server. It provides syntax highlighting, snippets, standard language-server editing features, Concepts and Workspace views, and `Spw: Navigate Roots and Landmarks`.
 
-It provides syntax highlighting, snippets, standard LSP editing features, Concepts and Workspace views, and `Spw: Navigate Roots and Landmarks`. The navigator searches declared workspace roots and indexed annotations, then opens the selected file, directory, or source location.
+Workspace roots come from the closed, URI-first `spw/workspaceManifest/v1` response. The client preserves each root's URI, role, kind, and evidence source; it does not parse manifests, infer fallback paths, or reconstruct local filesystem authority. Invalid or unreadable authority appears as blocked diagnostics in the Workspace view.
 
-## Server Resolution
+## Build and package
 
-The extension looks for the language server in this order:
-
-1. `SPW_WORKBENCH_ROOT`
-2. the open workspace as a canonical checkout
-3. `.spw/_workbench` in the open workspace
-4. `node_modules/spw-workbench`
-5. the extension-relative fallback
-
-## Build
+From the repository root:
 
 ```bash
-npm --prefix extensions/vscode-spw run compile
+npm run build:vscode
+npm run test:vscode
 ```
 
-The extension owns editor wiring and view composition. Parsing, indexing, navigation data, diagnostics, and other language meaning belong to [`spw-lsp`](../../packages/spw-lsp/src/stdio-server.ts).
+The build emits both `dist/extension.js` and the matching `dist/server/spw-lsp.cjs`. Runtime startup uses only that bundled server—there is no workspace checkout search or `tsx` source fallback.
 
-Working references:
+The release bundler packages the extension runtime files and runs an extracted-archive smoke in an arbitrary temporary directory:
 
-- [`src/navigation.ts`](src/navigation.ts)
-- [`src/views/workspace-tree.ts`](src/views/workspace-tree.ts)
-- [`src/views/concepts-tree.ts`](src/views/concepts-tree.ts)
-- [mounted workbench guide](../../docs/runtime/md/mounted-workbench.md)
+```bash
+bash scripts/release/bundle-extensions.sh --skip-build
+```
+
+## Ownership
+
+- `src/extension.ts` owns editor activation and the bundled-server transport.
+- `src/lsp/custom-requests.ts` validates custom response payloads.
+- `src/navigation.ts` opens server-provided URIs without path reconstruction.
+- `src/views/workspace-tree.ts` presents workspace evidence.
+- `spw-lsp` owns parsing, indexing, diagnostics, workspace authority, and language meaning.
+
+Other editors should negotiate the same advertised v1 method and keep URI identity opaque until their final navigation boundary.
