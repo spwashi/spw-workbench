@@ -257,6 +257,11 @@ export {
   formatMobilityRules,
   computationalRuleIds,
   labelSiteGraph,
+  contourFormLadder,
+  reduceFormContour,
+  expandFormContour,
+  restoreFormContour,
+  formatFormContour,
   type CanonicalOptions,
   type CanonicalResult,
   type SourceEdit,
@@ -295,6 +300,14 @@ export {
   type HigherOrderForm,
   type ReferenceProgression,
   type LabelPosition,
+  type FormContourView,
+  type FormContourEvidence,
+  type FormContourPoint,
+  type FormContourDimensions,
+  type FormContour,
+  type FormReductionPolicy,
+  type FormContourReduction,
+  type FormContourExpansion,
 } from './canonical'
 
 // NL preview

@@ -166,3 +166,19 @@ export {
   type HigherOrderForm,
   type SiteEdge,
 } from './form-geometry'
+
+export {
+  contourFormLadder,
+  reduceFormContour,
+  expandFormContour,
+  restoreFormContour,
+  formatFormContour,
+  type FormContourView,
+  type FormContourEvidence,
+  type FormContourPoint,
+  type FormContourDimensions,
+  type FormContour,
+  type FormReductionPolicy,
+  type FormContourReduction,
+  type FormContourExpansion,
+} from './form-contours'
