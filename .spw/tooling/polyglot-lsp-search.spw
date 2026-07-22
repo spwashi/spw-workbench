@@ -1,0 +1,138 @@
+# Polyglot LSP Search
+#
+# Research design for searching other language LSPs from Spw.
+# Not registered in canon roots or workspace manifests until a
+# versioned perspectives or services declaration exists.
+# Do not declare @lang equals lsp inside roots frames.
+
+#>spw_tooling_polyglot_lsp_search
+#:tooling #!lsp
+#:layer #!pragmatics
+#:status #!research
+
+^"intent"{
+ ~#goal: "Address foreign language servers as perspectives, not as a second query language."
+ ~#taste: "Reuse ? ~ @ * $ and path-landing ergonomics; never re-index TypeScript or Python inside Spw."
+ ~#registration: #blocked_until_perspectives_manifest
+ ~#related: [
+  ~"./vscode-spw.spw",
+  ~"./neovim-spw.spw",
+  ~"./editor-surface-audit.spw",
+  ~"../patterns/query-composition.spw",
+  ~"../patterns/literate-ui.spw",
+  ~"../../docs/runtime/md/polyglot-lsp-search.md",
+ ]
+}
+
+^"posture"{
+ foreign_truth: #owns_language_server
+ spw_role: #address_and_forward
+ landing: #path_plus_range
+ probe_feel: #async_wonder
+ absence: #soft_failure
+ rule: "Spw does not re-implement foreign indexing; it names servers, probes them, and lands on ordinary navigable locations."
+}
+
+^"existing_spine"{
+ "?": #probe_search
+ "~": #defer_name_path
+ "@": #perspective_root
+ "*": #collapse_resolve
+ "$": #introspect_capability
+ path_units: ["~\"…\"", "~<path>", "~<label>\"…\"", "@root/path"]
+ query_pipeline: ~"../patterns/query-composition.spw"
+ spirit_nav: "?probe → .ground → @rotate → *collapse"
+}
+
+^"options"{
+ option_1_roots_as_servers: .{
+  name: #roots_as_lsp
+  claim: "Language servers are perspectives; prefer a separate perspectives or services frame, not path roots."
+  declare: '@ts: =lsp[typescript]  // proposed under perspectives, not under roots'
+  search: '?[@ts]{ "symbolName" }'
+  collapse: '*[@ts]{ "symbolName" }'
+  scoped: '?[@ts/packages/spw-lsp]{ "HandlerDeps" }'
+  fit: "Preferred surface form once perspectives exist; do not overload path roots."
+ }
+ option_2_probe_envelope: .{
+  name: #probe_envelope
+  claim: "Keep path roots pure; mark foreign search with an explicit envelope."
+  declare: "optional =lang registry, not required for every probe"
+  search: '?lsp[typescript]{ "symbolName" }'
+  alt: '?lang[ts]{ kind: #symbol, query: "HandlerDeps" }'
+  introspect: '$[@ts]{ workspace/symbol: "mergeRoots" }'
+  fit: "Maximum ownership clarity; risk of two address systems unless unified later."
+ }
+ both_live: "Option 1 is the preferred declaration and buffer form; option 2 remains valid as an explicit envelope alias or CLI spelling."
+}
+
+^"combinatorics"{
+ forms: {
+  declare_root: '@lang: =lsp[server_id]'
+  probe: '?[@lang]{ query }'
+  probe_scoped: '?[@lang/subtree]{ query }'
+  collapse: '*[@lang]{ query }'
+  introspect: '$[@lang]{ caps_or_method }'
+  envelope_alias: '?lsp[server_id]{ query }'
+  batch_pipeline: "from: [@ts, @py] → select → where → via: #workspace_symbol"
+ }
+ sentence: "?probe → @perspective → ~name_or_pattern → *locations"
+ landing: '*{ ~"file.ext" @line:N }  // foreign hit reifies as path + range'
+ dual: .{
+  file_world: ["~\"…\"", "~<…>", "@root/path"]
+  symbol_world: ["?[@lang]{ name }", "*[@lang]{ … }"]
+ }
+}
+
+^"capability_map"{
+ '?[@lang]{ name }': #workspace_symbol
+ '?[@lang]{ name } @open_file': [#document_symbol, #filtered_workspace_symbol]
+ '*[@lang]{ … } | gd': #textDocument_definition
+ gr: #textDocument_references
+ '$[@lang]{ caps }': #initialize_capabilities
+ rule: "Syntax names intent; the bridge owns protocol verbs."
+}
+
+^"constraints"{
+ graceful_absence: "Missing server → soft diagnostic or empty hit, not parse failure."
+ no_second_truth: "Foreign symbol truth stays with that language's server."
+ reify_results: "Resolved hits become path+range so gf/links/underline stay one system."
+ scope_is_not_language: "@ts/packages/… limits the TS server to a subtree; it is not a path dialect."
+ latency_is_ux: "Foreign probes are async; they should feel like ? not like local field reads."
+}
+
+^"anti_patterns"{
+ "ts://symbol/Foo URIs in Spw source",
+ "embedding JSON-RPC or full LSP params in .spw surfaces",
+ "one mega-?{ lang, method, params } blob that abandons operator physics",
+ "auto-search every LSP on bare ?",
+ "treating @ts/foo.ts as only a path when symbols need the TS server",
+}
+
+^"rollout"{
+ phase_1_declare: "Allow @ts: =lsp[typescript] in roots/shelves; editor command search-in-@ts."
+ phase_2_probe: "?[@ts]{ query } → multiplex bridge → locations / quickfix."
+ phase_3_landing: "Results reify as path+range; reuse definition and document-link stacks."
+ phase_4_compose: "Query pipeline from: [@ts, @spw] for agents; still no protocol in surface language."
+ evidence: ~"./editor-surface-audit.spw"
+ status: #design_not_implemented
+}
+
+^"invariants"{
+ "Foreign LSPs are perspectives (@), searches are probes (?), landings are paths (~ / @root).",
+ "Option 1 (roots-as-servers) is the preferred surface; option 2 (probe envelope) is an explicit alias family.",
+ "Path navigation ergonomics remain the universal landing strip after any foreign resolve.",
+ "A polyglot capability is current only when declared, invoked, and observed in a mounted fixture.",
+}
+
+^"mindful_development"{
+ questions: [
+  "Does this form teach file vs symbol world without a second addressing scheme?",
+  "If the foreign server is down, does the author still understand what Spw owns?",
+  "Can a resolved foreign hit be opened with the same path ergonomics as ~\"…\"?",
+  "Is the bridge forwarding, or are we accidentally indexing another language?",
+ ]
+}
+
+~<.spw/patterns/query-composition.spw>  // nearest neighbor
+~<.spw/tooling/editor-surface-audit.spw>  // nearest neighbor
