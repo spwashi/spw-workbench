@@ -86,3 +86,11 @@ export {
   type FormulaHit,
   type FormulaCatalogEntry,
 } from './formula-scan'
+
+export {
+  SPW_MATH_IDIOMS,
+  idiomsForFamily,
+  formatMathIdioms,
+  type MathFamily,
+  type SpwMathIdiom,
+} from './idioms'

@@ -24,11 +24,14 @@ export {
   applyEdits,
   differentialFromSources,
   effectGradeAtMost,
+  epistemicGradeAtMost,
   mergeVectors,
   zeroVector,
   EFFECT_GRADE_ORDER,
+  EPISTEMIC_GRADE_ORDER,
   type DifferentialStratum,
   type EffectGrade,
+  type EpistemicGrade,
   type MutationVector,
   type SourceDifferential,
   type SourceEdit,
@@ -231,6 +234,32 @@ export {
   type FormMask,
   type FormSequenceApplyResult,
 } from './form-sequence'
+
+export {
+  contentHash,
+  parseRangeFragment,
+  splitPathFragment,
+  spanToOffsets,
+  resolveRange,
+  planSpanTransform,
+  applyRangePlan,
+  formatRangePlan,
+  type RangeEncoding,
+  type SourcePosition,
+  type SourceSpan,
+  type ResolvedRange,
+  type SpanTransformId,
+  type SpanTransformOptions,
+  type RangePlan,
+} from './range-transform'
+
+export {
+  INDEX_PRESETS,
+  INDEX_TRADEOFFS,
+  resolveIndexConfig,
+  type IndexDepth,
+  type IndexConfig,
+} from './index-config'
 
 export {
   DREAM_SCHEDULE_SOFT,
