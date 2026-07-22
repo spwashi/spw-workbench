@@ -30,6 +30,14 @@ export {
 
 export { RegisterBank } from './state/register-bank'
 
+export {
+  bridgeRegisterLiminality,
+  applyRegisterBridgeEffect,
+  parseSubstrateMetaSurface,
+  REGISTER_LIMINALITY_BRIDGE_PROFILE,
+  type LiminalityBridgeResult,
+} from './state/liminality-bridge'
+
 export type {
   RuntimeStage,
   RuntimeTrace,
