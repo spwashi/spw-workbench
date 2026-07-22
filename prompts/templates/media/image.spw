@@ -1,0 +1,45 @@
+# Media expert — image / MJ organ ladder
+
+#>spw_template_media_image
+#:template #!media
+#:medium #!image
+#:layer #!creative
+
+^"intent"{
+ ~#goal: "Still image pack with organ ladder and style/subject holds."
+ ~#taste: "portrait→still_life before sheet; positive fill; structural negatives only"
+}
+
+^"roots"{
+ @hold: ~"../../math/hold.spw"
+ @search: ~"../../math/search.spw"
+ @still: ~"../modality/still.spw"
+ @contours: ~"../../image/index.spw"
+ @mj: ~"../../labs/midjourney.spw"
+}
+
+^"script"{
+ id: ${script_id=image.instance}
+ host: #mj
+ register: ${register=voice_braided_relation}
+ context: ${context=production}
+ organ: ${organ=#portrait}
+ ~#title: $title
+ short_prompt: $short_prompt
+ final_prompt: $final_prompt
+ negative_prompt: ${negative_prompt=_}
+ style_lock: ${style_lock=_}
+ subject_lock: ${subject_lock=_}
+ continuity: ${continuity=_}
+}
+
+^"algo"{
+ objective: #signature_composite | #fractal_hold
+ include: #[ @hold, @search, @still ]
+ ladder: #[ #portrait, #still_life, #process, #sheet ]
+ law: "No sheet before portrait/still_life hold"
+ must_hold: #[ hold.style, hold.subject, hold.positive ]
+ negatives: "structural only (anatomy, chrome UI)"
+ profile: pe_style_lock
+ measure_cli: "npm run spw -- emit fractal <path.spw> --profile pe_style_lock --hosts mj,copy --measure"
+}

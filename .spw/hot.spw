@@ -1,6 +1,6 @@
 # Hot
 #
-# Workspace hot-interpretation convention.
+# Workspace hot-interpretation convention + CLI roles for HMR / REPL.
 
 #>spw_hot
 #:convention #!runtime
@@ -10,12 +10,63 @@
  source: @biome/query/hot.spw
  projections: @gen/index.spw
  trace: @biome/trace.spw
+ doc: ~"../docs/runtime/md/pulse-mutate-beat.md"
 }
 
 ^"policy"{
  "hot tier may replace selector ids at interpretation time",
  "all replacements must be traceable to original selector ids",
  "hot projections are generated surfaces, not hand-edited",
+}
+
+# ── CLI differentiation (do not alias these away) ─────────────
+# Effect ceilings: effect.l* only (kernel EffectGrade uses the same strings).
+
+^"effect_ladder"{
+ l0: #effect.l0.measure
+ l1: #effect.l1.memory
+ l2: #effect.l2.workspace
+ l3: #effect.l3.external
+ order: "l0.measure → l1.memory → l2.workspace → l3.external"
+}
+
+^"commands"{
+ beat: .{
+  ceiling: none
+  role: "cadence / debounce only"
+  side_effects: none
+  repl: "tick seq for host loops"
+ }
+
+ pulse: .{
+  ceiling: #effect.l0.measure
+  role: "plan + measure one path or --stdin buffer"
+  side_effects: "optional single-file atomic effect.l2.workspace via --write + risk gate"
+  repl: "return plannedSource + usefulness; host decides apply"
+  refuse: "multi-file write; mounted infra write without --include-workbench plan-only"
+ }
+
+ mutate: .{
+  ceiling: "effect.l1.memory → effect.l2.workspace"
+  role: "apply profile rewrite after accept"
+  side_effects: "direct multi-file effect.l2.workspace, or --stdin JSON source under l1.memory only"
+  repl: "--stdin --json body; never auto-write stdin to disk"
+  hot: "save-all / layout_canonical batch after pulse check"
+ }
+
+ dev: .{
+  ceiling: #orchestrator
+  role: "watch .spw: hygiene format + parse validate"
+  side_effects: "canonical whitespace only; no multi-file effect.l2.workspace"
+  law: "keep light; heavy apply is explicit mutate or pulse --write"
+ }
+}
+
+^"hot_pipeline"{
+ 1: "beat or watcher debounce (500ms craft unit)"
+ 2: "pulse --check|--json [path|stdin] under effect.l0.measure — refuse health regress"
+ 3: "mutate path (l1.memory→l2.workspace) | mutate --stdin (host applies l1.memory body)"
+ 4: "projections stay in @gen — not hand-edited cold packs"
 }
 
 #>wonder_spw_hot_1

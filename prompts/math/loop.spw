@@ -1,0 +1,29 @@
+# Include: Loop / fixed-point probes
+#
+# Machine: packages/spw-seed/src/math/loop.ts
+
+#>spw_math_loop
+#:math #!loop
+#:layer #!semantics
+
+^"form"{
+ fixed_point: "x ← f(x) until eq or maxIter"
+ orbit: "x_{t+1} = f(x_t, t)"
+ budget: "maxIter ≈ saga/pulse grade ceiling"
+}
+
+^"tests"{
+ fixedPoint: "cosine map converges"
+ rangeFold: "discrete reduction"
+ logisticOrbit: "discrete dynamics exhibit"
+}
+
+^"hooks"{
+ saga: "observe→mutate→measure→decide is a measured loop"
+ stop: "plateau | budget | lock_ready (optimize.spw)"
+ bonk: "multi-axis escape when single-coordinate fixed point fails"
+}
+
+^"falsify"{
+ "Reporting converged=true when iterations hit maxIter without eq"
+}

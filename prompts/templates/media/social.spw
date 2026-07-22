@@ -1,0 +1,35 @@
+# Media expert — social short
+
+#>spw_template_media_social
+#:template #!media
+#:medium #!social
+#:layer #!creative
+
+^"intent"{
+ ~#goal: "Hook / body / door under thrift_first."
+ ~#taste: "one breath hook; no negation spine"
+}
+
+^"roots"{
+ @hold: ~"../../math/hold.spw"
+ @thrift: ~"../../math/thrift.spw"
+}
+
+^"script"{
+ id: ${script_id=social.instance}
+ host: #social
+ register: ${register=voice_web_quiet}
+ context: #thrift
+ hook: $hook
+ body: ${body=_}
+ ~#door: $door
+ continuity: ${continuity=_}
+}
+
+^"algo"{
+ objective: #thrift_first
+ include: #[ @hold, @thrift ]
+ must_hold: #[ hold.positive, hold.thrift, hold.continuity ]
+ profile: pe_thrift_social
+ measure_cli: "npm run spw -- emit fractal <path.spw> --profile pe_thrift_social --context thrift --measure"
+}

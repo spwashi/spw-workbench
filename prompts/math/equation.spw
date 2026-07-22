@@ -1,0 +1,32 @@
+# Include: Equation / residual probes
+#
+# Machine: packages/spw-seed/src/math/equation.ts
+# Hold twin: packages/spw-cli/src/emit/axes.ts holdProduct
+
+#>spw_math_equation
+#:math #!equation
+#:layer #!semantics
+
+^"form"{
+ polynomial: "Σ c_i x^i"
+ residual: "f(x) for root finding"
+ linear: "A x = b"
+ hold: "∏ h_i^{α_i}  (constraint product)"
+}
+
+^"tests"{
+ evalPolynomial: "low-degree eval"
+ bisectionRoot: "sign-change roots"
+ solveLinearSystem: "small dense GE"
+ productConstraint: "zero factor collapses product"
+}
+
+^"hooks"{
+ measure: "% and emit --measure"
+ salience: "α(c) exponents from axis context"
+ assignment: "= bias / configuration"
+}
+
+^"falsify"{
+ "Hold or productConstraint ignores a zero factor with α>0"
+}

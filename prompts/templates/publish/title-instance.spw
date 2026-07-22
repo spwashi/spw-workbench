@@ -1,0 +1,45 @@
+# Publish — title instance
+
+#>spw_template_publish_title
+#:template #!publish
+#:surface #!title
+#:layer #!creative
+
+^"intent"{
+ ~#goal: "Logline, claim, audience, continuity anchors for one property."
+ ~#taste: "short anchors; ≤3 vibes; claim survives channel retune"
+}
+
+^"lineage"{
+ mode: #fork
+ base: ~"./title-instance.spw"
+ revision: 0
+ parent: ""
+ derivative_id: ${derivative_id=title.instance}
+}
+
+^"roots"{
+ @title: ~"../../domains/publishing/templates/title.spw"
+ @hold: ~"../../math/hold.spw"
+}
+
+^"title"{
+ id: $title_id
+ working_title: $working_title
+ logline: $logline
+ ~#claim: $claim
+ ~#audience: ${audience=_}
+ status: #draft
+ house: ${house=_}
+}
+
+^"continuity"{
+ anchors: $continuity
+ // pipe form also ok: "Name | material | role"
+}
+
+^"algo"{
+ include: #[ @hold ]
+ must: "anchors concrete (names, materials, places)"
+ measure_jobs: "≥2 jobs under title; continuity hold across hosts"
+}

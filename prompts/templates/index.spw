@@ -1,0 +1,91 @@
+# Prompt script templates — denser modular tree
+#
+# Fill with: npm run spw -- emit expand <file> --bind k=v
+# Holes:     npm run spw -- emit holes <file>
+# Math:      ~"../math/…"
+# Derivatives: ./derivatives.spw
+
+#>spw_templates_index
+#:prompt #!templates
+#:layer #!pragmatics
+#:status #!active
+
+^"intent"{
+ ~#goal: "Modular script templates per medium, modality, and publishing surface — fillable, derivative-aware, math-included."
+ ~#taste: "dense modules; path refs; one template one job; lineage for forks"
+}
+
+^"roots"{
+ @fill: ~"./fill.spw"
+ @derivatives: ~"./derivatives.spw"
+ @math: ~"../math/index.spw"
+ @axes: ~"../substrate/axes.spw"
+ @sagas: ~"../sagas/templates/stream.spw"
+ @saga_nest: ~"../sagas/templates/nest.spw"
+ @saga_line: ~"../sagas/templates/line.spw"
+ @media_image: ~"./media/image.spw"
+ @media_copy: ~"./media/copy.spw"
+ @media_audio: ~"./media/audio.spw"
+ @media_social: ~"./media/social.spw"
+ @media_brief: ~"./media/brief.spw"
+ @mod_still: ~"./modality/still.spw"
+ @mod_motion: ~"./modality/motion.spw"
+ @mod_prose: ~"./modality/prose.spw"
+ @mod_embodied: ~"./modality/embodied.spw"
+ @pub_job: ~"./publish/job-instance.spw"
+ @pub_title: ~"./publish/title-instance.spw"
+ @pub_line: ~"./publish/line-instance.spw"
+ @show_line_field: ~"./show/line-field.spw"
+ @publish_domain: ~"../domains/publishing/index.spw"
+ @ensemble: ~"../production/ensemble.spw"
+}
+
+^"tree"{
+ fill: @fill
+ derivatives: @derivatives
+ math: @math
+ media: #[ @media_brief, @media_copy, @media_social, @media_audio, @media_image ]
+ modality: #[ @mod_still, @mod_motion, @mod_prose, @mod_embodied ]
+ publish: #[ @pub_title, @pub_job, @pub_line ]
+ show: #[ @show_line_field ]
+ sagas: #[ @sagas, @saga_nest, @saga_line ]
+ ensemble: @ensemble
+}
+
+^"dispatch"{
+ // id → path (CLI builtin catalog mirrors this)
+ "saga.stream": @sagas
+ "saga.nest": @saga_nest
+ "saga.line": @saga_line
+ "publish.job": @pub_job
+ "publish.title": @pub_title
+ "publish.line": @pub_line
+ "show.line_field": @show_line_field
+ "media.image": @media_image
+ "media.copy": @media_copy
+ "media.audio": @media_audio
+ "media.social": @media_social
+ "media.brief": @media_brief
+ "modality.still": @mod_still
+ "modality.motion": @mod_motion
+ "modality.prose": @mod_prose
+ "modality.embodied": @mod_embodied
+}
+
+^"compose"{
+ 1: "Pick template id from dispatch"
+ 2: "emit holes <template> — list $slots"
+ 3: "emit expand <template> --bind k=v … [--strict-holes]"
+ 4: "Optional: stamp lineage (fork|overlay|in_place) per @derivatives"
+ 5: "emit pack|fractal with --context from medium expert hooks"
+}
+
+^"cli"{
+ list: "npm run spw -- emit templates"
+ holes: "npm run spw -- emit holes <file.spw>"
+ expand: "npm run spw -- emit expand <file.spw> --bind k=v --out filled.spw"
+ strict: "--strict-holes fails on open $required"
+}
+
+~<./fill.spw>
+~<./derivatives.spw>

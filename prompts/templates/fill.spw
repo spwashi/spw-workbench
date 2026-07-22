@@ -1,0 +1,63 @@
+# Template fill protocol
+#
+# Machine: packages/spw-cli/src/emit/template-fill.ts (spw.template/1)
+
+#>spw_templates_fill
+#:prompt #!fill
+#:layer #!pragmatics
+#:status #!active
+
+^"intent"{
+ ~#goal: "One fill grammar for scripts: holes, defaults, expand ≠ mutate, report open."
+ ~#taste: "explicit slots; positive fill; no silent lock overwrite"
+}
+
+^"roots"{
+ @macros: ~"../sagas/macros.spw"
+ @derivatives: ~"./derivatives.spw"
+ @math_search: ~"../math/search.spw"
+}
+
+^"holes"{
+ _: "creative void — open until filled or left for intrigue"
+ $name: "named required slot"
+ ${name}: "named slot"
+ ${name=default}: "named with default applied on expand unless rebound"
+ $_: "match wildcard — never a creative lock"
+}
+
+^"expand_law"{
+ step: #expand
+ not: #mutate
+ order: "bindings → defaults → remain open"
+ strict: "--strict-holes fails if required open or bare _ remain"
+ locked: "status #locked|#shipped surfaces: tool may report surfaceLocked; do not mass-overwrite locks"
+ positive: "fill wanted content; do not expand opposite-lists into spine"
+}
+
+^"tooling"{
+ report: "emit holes <file>"
+ fill: "emit expand <file> --bind k=v"
+ out: "--out path writes expanded body"
+ json: "--json for machine reports"
+ stamp: "derivatives.spw lineage block via emit expand --derivative … (optional)"
+}
+
+^"bindings_shape"{
+ map: .{ /* $slot → string */ }
+ required: #[ ]  // template-declared
+ optional: #[ ]
+ provenance: "each fill is an expand step in a saga stream when audited"
+}
+
+^"examples"{
+ simple: `
+// template
+host: ${host=mj}
+title: $title
+claim: ${claim=_}
+
+// expand --bind title="Quiet Board" --bind claim="Keep the work visible."
+// → host mj; title Quiet Board; claim filled; no open required
+`
+}

@@ -1,0 +1,38 @@
+# Include: Hold family (F2)
+#
+# @include prompts/math/hold.spw
+# Machine: holdProduct(h, α(c)) in packages/spw-cli/src/emit/axes.ts
+
+#>spw_math_hold
+#:math #!hold
+#:layer #!semantics
+
+^"form"{
+ id: #F2_hold
+ latex: "Hold_c = ∏_i h_i^{α_i(c)}"
+ domain: "h_i ∈ [0,1]; α_i(c) ≥ 0"
+ multi_host: "score = Σ_k w(k)·Hold_c,k / Σ_k w(k)"
+}
+
+^"factors"{
+ hold.positive: "1 if no negation spine else 0"
+ hold.continuity: "anchors_hit / max(1, anchors_checked)"
+ hold.style: "style_lock ratio"
+ hold.subject: "subject_lock ratio"
+ hold.genre: "genre_lock ratio"
+ hold.thrift: "1 / max(1, sentence_estimate)"
+}
+
+^"hooks"{
+ // Expert development entry points per surface
+ emit: "npm run spw -- emit pack|fractal --measure"
+ context: "--context production|canon|thrift|…"
+ promote: "F4: Canonize ⇔ Hold≥θ ∧ evidence ∧ episode"
+ medium_image: "require style + subject holds before sheet organ"
+ medium_copy: "require continuity + positive before social thrift tradeoff"
+ publishing: "line_propagate context #canon elevates style/subject/genre α"
+}
+
+^"refuse"{
+ #[ "opaque composite without named h_i", "α rewrite of genotype locks" ]
+}

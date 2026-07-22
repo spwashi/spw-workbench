@@ -1,0 +1,48 @@
+# Media expert — production brief
+#
+# @include math hold + literacy; host #brief
+
+#>spw_template_media_brief
+#:template #!media
+#:medium #!brief
+#:layer #!creative
+
+^"intent"{
+ ~#goal: "Fillable brief script with expert measure hooks."
+ ~#taste: "goal/audience/claim/acceptance; continuity first"
+}
+
+^"roots"{
+ @hold: ~"../../math/hold.spw"
+ @literacy: ~"../../math/literacy.spw"
+ @job: ~"../../domains/publishing/templates/job.spw"
+ @fill: ~"../fill.spw"
+}
+
+^"script"{
+ id: ${script_id=brief.instance}
+ host: #brief
+ register: ${register=voice_web_quiet}
+ context: ${context=production}
+ ~#title: $title
+ ~#goal: $goal
+ ~#audience: ${audience=_}
+ ~#claim: $claim
+ ~#proof: ${proof=_}
+ ~#door: ${door=_}
+ ~#acceptance: $acceptance
+ continuity: ${continuity=_}
+}
+
+^"algo"{
+ objective: #hold_composite
+ include: #[ @hold, @literacy ]
+ must_hold: #[ hold.positive, hold.continuity ]
+ search: #greedy_one
+ grade_cap: "effect.l1.memory"
+ measure_cli: "npm run spw -- emit pack <path.spw> --host brief --measure --strict-continuity"
+}
+
+^"fill_order"{
+ #[ title, claim, goal, acceptance, audience, proof, door, continuity ]
+}

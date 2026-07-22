@@ -1,0 +1,65 @@
+# Template — show line as field ensemble (fill → beat → emit)
+#
+# Abstract multi-locus production template. Bind ids; run beats; measure Hold.
+
+#>spw_template_show_line_field
+#:template #!show
+#:surface #!line_field
+#:layer #!creative
+
+^"lineage"{
+ mode: #fork
+ base: ~"./line-field.spw"
+ revision: 0
+ parent: ""
+ derivative_id: ${derivative_id=show.line_field}
+}
+
+^"roots"{
+ @ensemble: ~"../../production/ensemble.spw"
+ @field: ~"../../math/field.spw"
+ @propagate: ~"../../domains/publishing/propagate.spw"
+}
+
+^"model"{
+ show_id: $show_id
+ beats: ${beats=3}
+ decay_rate: ${decay_rate=0.05}
+ kappa: ${kappa=0.1}
+ hosts: ${hosts=brief,social,mj}
+}
+
+^"carriers"{
+ style_id: ${style_id=_}
+ subject_id: ${subject_id=_}
+ genre_id: ${genre_id=_}
+ free_mass: ${free_mass=1}
+}
+
+^"continuity"{
+ charge: $continuity
+ # conserved under transfer between beats/hosts when measured
+}
+
+^"emit"{
+ register: ${register=voice_web_quiet}
+ ~#title: $title
+ ~#claim: $claim
+ continuity: $continuity
+ style_lock: ${style_lock=_}
+ subject_lock: ${subject_lock=_}
+ genre_lock: ${genre_lock=_}
+ body: ${body=_}
+ hook: ${hook=_}
+}
+
+^"algo"{
+ include: #[ @field, @ensemble ]
+ steps: [
+  "affinityAllocate carriers → host sites"
+  "for t in beats: fieldBeat"
+  "productConstraint / emit fractal --context canon"
+ ]
+ cache_key: "field:${show_id}:rev0:beat*"
+ feature: "spw.production.ensemble-model@v0.1"
+}

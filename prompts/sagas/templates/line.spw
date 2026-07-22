@@ -1,0 +1,47 @@
+# Saga template — publish line propagate
+
+#>spw_saga_line_template
+#:saga #!template
+#:layer #!creative
+
+^"intent"{
+ ~#goal: "Multi-host line saga with canon context and lock discipline."
+ ~#taste: "bind ids; one lock class per step; measure before lock"
+}
+
+^"roots"{
+ @schema: ~"../schema.spw"
+ @profiles: ~"../profiles.spw"
+ @hold: ~"../../math/hold.spw"
+ @line: ~"../../templates/publish/line-instance.spw"
+}
+
+^"saga"{
+ id: $saga_id
+ kind: #line
+ profile: line_propagate
+ grade_cap: ${grade=effect.l2.workspace}
+ objective: #hold_composite
+ context: #canon
+ status: #open
+}
+
+^"bindings"{
+ style_id: ${style_id=_}
+ subject_id: ${subject_id=_}
+ genre_id: ${genre_id=_}
+ title_ref: $title_ref
+ continuity: $continuity
+ host: ${host=brief}
+}
+
+^"stream"{
+ >>[0] observe — line bindings; hosts brief|copy|audio|social|mj
+ >>[1] expand  — inject style_lock subject_lock genre_lock continuity
+ >>[2] mutate  — ${coordinate=style_phrase}: $from → $to
+ >>[3] measure — %Hold_canon multi-host
+ >>[4] decide  — keep | revert
+ // >>[n] lock — only when slots complete + Hold≥θ
+}
+
+~<../schema.spw>

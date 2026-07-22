@@ -20,6 +20,10 @@
  @optimize: ~"./optimize.spw"
  @profiles: ~"./profiles.spw"
  @template: ~"./templates/stream.spw"
+ @template_nest: ~"./templates/nest.spw"
+ @template_line: ~"./templates/line.spw"
+ @templates_tree: ~"../templates/index.spw"
+ @math: ~"../math/index.spw"
  @example: ~"./runs/quiet-craft-light.spw"
  @ecology: ~"../script-ecology.spw"
  @publish: ~"../domains/publishing/propagate.spw"
@@ -33,6 +37,10 @@
  optimize: @optimize
  profiles: @profiles
  template: @template
+ template_nest: @template_nest
+ template_line: @template_line
+ templates_tree: @templates_tree
+ math: @math
  example_run: @example
 }
 
@@ -48,11 +56,13 @@
 }
 
 ^"quickstart"{
- 1: "Copy templates/stream.spw → runs/<id>.spw"
- 2: "Pick profile from profiles.spw; fill ^bindings"
- 3: "Append >> mutate one coordinate; measure; decide"
- 4: "Optional nest at {&}; fold with valence"
- 5: "Lock only at S2 when slots complete + objective holds"
+ 1: "Copy templates/stream.spw|nest.spw|line.spw → runs/<id>.spw"
+ 2: "emit expand runs/<id>.spw --bind … or fill ^bindings by hand"
+ 3: "Pick profile from profiles.spw"
+ 4: "Append >> mutate one coordinate; measure; decide"
+ 5: "Optional nest at {&}; fold with valence"
+ 6: "Lock only at effect.l2.workspace when slots complete + objective holds"
+ 7: "Medium experts: prompts/templates/media/* + math includes"
 }
 
 ~<./schema.spw>

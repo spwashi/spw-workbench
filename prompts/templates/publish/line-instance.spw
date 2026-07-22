@@ -1,0 +1,66 @@
+# Publish — full line (house → title → multi-host jobs)
+
+#>spw_template_publish_line
+#:template #!publish
+#:surface #!line
+#:layer #!creative
+
+^"intent"{
+ ~#goal: "Propagate style/subject/genre locks across hosts with canon context."
+ ~#taste: "bind ids; retune one lock class at a time"
+}
+
+^"lineage"{
+ mode: #fork
+ base: ~"./line-instance.spw"
+ revision: 0
+ parent: ""
+ derivative_id: ${derivative_id=line.instance}
+}
+
+^"roots"{
+ @propagate: ~"../../domains/publishing/propagate.spw"
+ @hold: ~"../../math/hold.spw"
+ @literacy: ~"../../math/literacy.spw"
+ @profile: ~"../../sagas/profiles.spw"
+}
+
+^"line"{
+ style_id: ${style_id=_}
+ subject_id: ${subject_id=_}
+ genre_id: ${genre_id=_}
+ title_ref: $title_ref
+ house_ref: ${house_ref=_}
+}
+
+^"locks"{
+ style_lock: ${style_lock=_}
+ subject_lock: ${subject_lock=_}
+ genre_lock: ${genre_lock=_}
+ continuity: $continuity
+}
+
+^"emit"{
+ register: ${register=voice_web_quiet}
+ ~#title: $title
+ ~#claim: $claim
+ ~#proof: ${proof=_}
+ ~#door: ${door=_}
+ body: ${body=_}
+ headline: ${headline=_}
+ hook: ${hook=_}
+ final_prompt: ${final_prompt=_}
+ continuity: $continuity
+ style_lock: ${style_lock=_}
+ subject_lock: ${subject_lock=_}
+ genre_lock: ${genre_lock=_}
+}
+
+^"algo"{
+ profile: line_propagate
+ context: #canon
+ include: #[ @hold, @literacy ]
+ hosts: #[ #brief, #copy, #audio, #social, #mj ]
+ measure_cli: "npm run spw -- emit fractal <path.spw> --profile line_propagate --context canon --measure --json"
+ law: "one lock class per mutate; F4 before status #locked on genotypes"
+}

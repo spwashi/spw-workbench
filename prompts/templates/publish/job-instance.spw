@@ -1,0 +1,62 @@
+# Publish — job instance (fill → emit)
+#
+# Copy/fork; expand bindings; emit host packet.
+
+#>spw_template_publish_job
+#:template #!publish
+#:surface #!job
+#:layer #!creative
+
+^"intent"{
+ ~#goal: "One production job under a title — host, acceptance, positive traits."
+ ~#taste: "one host; continuity from title; thrift of chrome"
+}
+
+^"lineage"{
+ mode: #fork
+ base: ~"./job-instance.spw"
+ revision: 0
+ parent: ""
+ derivative_id: ${derivative_id=job.instance}
+}
+
+^"roots"{
+ @domain: ~"../../domains/publishing/index.spw"
+ @job: ~"../../domains/publishing/templates/job.spw"
+ @hold: ~"../../math/hold.spw"
+ @fill: ~"../fill.spw"
+ @derivatives: ~"../derivatives.spw"
+}
+
+^"job"{
+ id: $job_id
+ title_ref: $title_ref
+ house_ref: ${house_ref=_}
+ host: ${host=brief}
+ register: ${register=voice_web_quiet}
+ status: #draft
+ ~#goal: $goal
+ ~#acceptance: $acceptance
+}
+
+^"emit"{
+ register: ${register=voice_web_quiet}
+ ~#title: $title
+ ~#claim: $claim
+ ~#proof: ${proof=_}
+ ~#door: ${door=_}
+ ~#goal: $goal
+ ~#audience: ${audience=_}
+ ~#acceptance: $acceptance
+ continuity: $continuity
+ headline: ${headline=_}
+ hook: ${hook=_}
+ body: ${body=_}
+}
+
+^"algo"{
+ include: #[ @hold ]
+ context: ${context=production}
+ measure: "npm run spw -- emit pack <this.spw> --host <host> --measure --strict-continuity"
+ promote: "status #ready only when Hold ok; #shipped after human accept"
+}

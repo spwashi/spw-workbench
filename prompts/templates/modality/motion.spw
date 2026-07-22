@@ -1,0 +1,38 @@
+# Modality — motion / film beat
+
+#>spw_template_modality_motion
+#:template #!modality
+#:modality #!motion
+#:layer #!creative
+
+^"intent"{
+ ~#goal: "Time-ordered beats with continuity anchors."
+ ~#taste: "one verb per beat; threshold before reveal optional"
+}
+
+^"roots"{
+ @hold: ~"../../math/hold.spw"
+ @film: ~"../../production/film.spw"
+ @audio: ~"../media/audio.spw"
+}
+
+^"shape"{
+ id: #motion
+ media: #[ #film, #audio ]
+ formula: "beat_i = (action, material_response, hold_anchor)"
+}
+
+^"algo"{
+ axes: #[ #axis_pace, #subject_cast, #genre_contract ]
+ search: #greedy_one
+ include: #[ @hold ]
+ must_hold: #[ hold.continuity ]
+}
+
+^"script_holes"{
+ beat: $beat
+ action: $action
+ material_response: ${material_response=_}
+ duration: ${duration=_}
+ continuity: ${continuity=_}
+}

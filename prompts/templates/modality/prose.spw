@@ -1,0 +1,39 @@
+# Modality — prose / copy language
+
+#>spw_template_modality_prose
+#:template #!modality
+#:modality #!prose
+#:layer #!creative
+
+^"intent"{
+ ~#goal: "Written utterance shapes with positive ground."
+ ~#taste: "claim → proof → door; thrift when social"
+}
+
+^"roots"{
+ @hold: ~"../../math/hold.spw"
+ @thrift: ~"../../math/thrift.spw"
+ @copy: ~"../media/copy.spw"
+ @brief: ~"../media/brief.spw"
+ @social: ~"../media/social.spw"
+}
+
+^"shape"{
+ id: #prose
+ media: #[ #brief, #copy, #social, #eng_note ]
+ formula: "claim ⊕ proof? ⊕ door  under register"
+}
+
+^"algo"{
+ axes: #[ #emit_phrasing, #tone_dim, #host_slot ]
+ include: #[ @hold, @thrift ]
+ positive_ground: required
+}
+
+^"script_holes"{
+ claim: $claim
+ proof: ${proof=_}
+ door: $door
+ register: ${register=voice_web_quiet}
+ host: ${host=copy}
+}

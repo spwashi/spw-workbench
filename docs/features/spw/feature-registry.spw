@@ -32,7 +32,7 @@
  # Each feature should live in the layer that owns its behavior.
  core: domains, conventions, layers, operators, quality, tally
  infra: timing, lifecycle, state, accessibility
- lang: grammar, lexer, parser, dialects
+ lang: grammar, lexer, parser, dialects, field-dynamics
  runtime: interpreter, registers, goals
  viz: tokens, AST, flow, steps
  ui: component registry, stacking
@@ -40,6 +40,72 @@
  features: keyboard, onboarding, inspector
  app: integrations and orchestration
  platform: bootstrapping and environment wiring
+ production: ensemble-model, template-fill, show-line fields
+}
+
+^["lang-math-features"]{
+ !["Language & math modeling features"]
+
+ ^feature["spw.math.field-probes"]{
+ version: "0.1.0"
+ status: stable
+ description: "Portable field dynamics: decay, diffuse, transfer, cascade, capacity, affinity, beat"
+ source: "packages/spw-seed/src/math/field.ts"
+ requires: ["spw.math.graph-probes"]
+ }
+
+ ^feature["spw.math.graph-probes"]{
+ version: "0.1.0"
+ status: stable
+ description: "Directed graphs: cycle, topo, shortest path, adjacency matrix"
+ source: "packages/spw-seed/src/math/graph.ts"
+ }
+
+ ^feature["spw.lang.field-dynamics"]{
+ version: "0.1.0"
+ status: preview
+ description: "Linguistic construct map for sites/carriers/ensembles (theory + PE includes)"
+ source: "docs/theory/spw/field-dynamics.spw"
+ requires: ["spw.math.field-probes"]
+ }
+
+ ^feature["spw.lang.relationship-topography"]{
+ version: "0.1.0"
+ status: preview
+ description: "Cross-domain relationship objects + familiarity strands for business/academic/production models"
+ source: "docs/theory/spw/relationship-topography.spw"
+ requires: ["spw.math.graph-probes"]
+ }
+
+ ^feature["spw.tooling.corpus-map"]{
+ version: "0.1.0"
+ status: preview
+ description: "CLI spw map|topo — path/@ graphs, hubs, cycles, layers, compare familiarity"
+ source: "packages/spw-cli/src/map.ts"
+ requires: ["spw.lang.relationship-topography", "spw.math.graph-probes"]
+ cache: "warm report only; genotype packs remain cold"
+ }
+}
+
+^["production-features"]{
+ !["Show & template production modeling"]
+
+ ^feature["spw.production.ensemble-model"]{
+ version: "0.1.0"
+ status: preview
+ description: "Multi-locus show/template ensembles via field beats, affinity, continuity charge"
+ source: "prompts/production/ensemble.spw"
+ requires: ["spw.lang.field-dynamics", "spw.math.field-probes"]
+ cache: "field:{model_id}:rev{n}:beat{t} warm; genotype packs cold"
+ }
+
+ ^feature["spw.production.template-fill"]{
+ version: "0.1.0"
+ status: preview
+ description: "Slot capacity + expand fill as affinity-like allocate; cascade to multi-host emit"
+ source: "prompts/templates/"
+ requires: ["spw.production.ensemble-model"]
+ }
 }
 
 ^["design-features"]{

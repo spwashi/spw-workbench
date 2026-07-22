@@ -1,0 +1,44 @@
+# Include: Field dynamics (abstract)
+#
+# Machine: packages/spw-seed/src/math/field.ts
+# Theory: docs/theory/spw/field-dynamics.spw
+
+#>spw_math_field
+#:math #!field
+#:layer #!semantics
+
+^"form"{
+ site: "locus of amplitude"
+ field: "site → scalar"
+ carrier: "free mass + affinity"
+ coupling: "graph edge weight"
+ decay: "exp(-λ Δt); λ = ln2 / half_life"
+ cascade: "ordered gain stages"
+ capacity: "logistic ceiling"
+ beat: "decay → diffuse → inject"
+}
+
+^"tests"{
+ decayField: "half-life step"
+ transfer: "mass conserved"
+ diffuseField: "undirected mass conserved"
+ affinityAllocate: "capacity caps"
+ capacityStep: "approaches K"
+ cascadeChain: "gain product"
+ fieldBeat: "discrete clock"
+}
+
+^"hooks"{
+ production: ~"../production/ensemble.spw"
+ graph: ~"./graph.spw"
+ loop: ~"./loop.spw"
+ equation: ~"./equation.spw"
+ hold: ~"./hold.spw"
+ feature: "spw.math.field-probes@v0.1"
+ cache_key: "field:{model_id}:rev{n}:beat{t}"
+}
+
+^"falsify"{
+ "Diffuse undirected changes total mass beyond tol"
+ "Affinity places mass above site capacity"
+}

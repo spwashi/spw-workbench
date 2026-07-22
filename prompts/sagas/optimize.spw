@@ -45,9 +45,10 @@
 
 ^"objectives"{
  // Named objective formulas (customize per profile)
+ // Machine: holdProduct(h, α(c)) then weightedMean over hosts/depth — emit/axes.ts
  hold_composite: .{
-  form: "style_hold * subject_hold * positive_ground * thrift^α"
-  default_α: 0.5
+  form: "∏ h_i^{α_i(c)}  with h ∈ {positive, continuity, style, subject, genre, thrift}"
+  default_context: #production
   use: "PE style/subject lock sagas"
  }
  signature_composite: .{
@@ -56,20 +57,34 @@
  }
  layout_safe: .{
   form: "parse_health_ok * (1 - structure_delta_flag) * idempotence"
+  default_context: #layout
   use: "spw pulse layout profiles"
  }
  fractal_hold: .{
-  form: "Σ_d w(d)*hold_composite(d) * fold_purity"
+  form: "Σ_k w(k) * Hold_c(k) / Σ_k w(k)  (k = host or depth arm)"
+  default_context: #production
   use: "nested style/scene sagas"
  }
  thrift_first: .{
-  form: "positive_ground * thrift * continuity"
+  form: "Hold under #thrift α (positive·thrift·continuity emphasized)"
+  default_context: #thrift
   use: "social/web short hosts"
+ }
+ literacy_snapshot: .{
+  form: "L = Form · Agency · Evidence · Memory  (F8; evidence ← Hold)"
+  use: "pedagogy / intergenerational report; not a hard fail gate"
  }
  custom: .{
   form: "user-defined product/sum over metrics"
   law: "Must name metrics; no opaque scores"
  }
+}
+
+^"contexts"{
+ // Axis salience contexts — see @axes; CLI: --context
+ @axes: ~"../substrate/axes.spw"
+ ids: #[ #production, #canon, #research, #pedagogy, #merch, #layout, #thrift ]
+ law: "Salience reweights α(c); never rewrites style_lock / subject_lock / genotype text"
 }
 
 // ── Budgets ────────────────────────────────────────────────────
@@ -82,7 +97,7 @@
  max_rejects: 6
  max_expand: 32
  wall_clock: optional
- grade_cap: #S1
+ grade_cap: "effect.l1.memory"
  law: "Exhausted budget → stop reason budget_exhausted (like automata)"
 }
 
@@ -124,7 +139,7 @@
  fixed_point: "two consecutive measures within ε and no open required slots"
  objective_plateau: "no improvement for p steps"
  budget_exhausted: "any budget hit"
- lock_ready: "objective ≥ threshold and grade_cap allows S2 and slots complete"
+ lock_ready: "objective ≥ threshold and grade_cap allows effect.l2.workspace and slots complete"
  authority_failure: "write/lock refused by membrane"
  bane_streak: "n consecutive !bane → pause"
  user_cancel: "explicit reject/pause"

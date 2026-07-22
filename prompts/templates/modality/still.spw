@@ -1,0 +1,41 @@
+# Modality — still image
+#
+# Expression forms for frozen frame experts.
+
+#>spw_template_modality_still
+#:template #!modality
+#:modality #!still
+#:layer #!creative
+
+^"intent"{
+ ~#goal: "Still-frame composition algebra for PE image organs."
+ ~#taste: "subject + light + materials; one secondary prop"
+}
+
+^"roots"{
+ @hold: ~"../../math/hold.spw"
+ @expressions: ~"../../expressions/index.spw"
+ @media: ~"../media/image.spw"
+}
+
+^"shape"{
+ id: #still
+ media: #image
+ formula: "subject ⊕ light ⊕ materials ⊕ prop≤1"
+ organs: #[ #portrait, #still_life, #interior, #exterior, #diagram ]
+}
+
+^"algo"{
+ axes: #[ #axis_light, #axis_density, #style_phrase, #subject_cast ]
+ search: #greedy_one | #ablate_matrix
+ hold: "style × subject × positive"
+ include: #[ @hold ]
+}
+
+^"script_holes"{
+ subject: $subject
+ light: ${light=_}
+ materials: ${materials=_}
+ prop: ${prop=_}
+ style_phrase: ${style_phrase=_}
+}

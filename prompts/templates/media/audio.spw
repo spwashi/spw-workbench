@@ -1,0 +1,35 @@
+# Media expert — audio / VO beats
+
+#>spw_template_media_audio
+#:template #!media
+#:medium #!audio
+#:layer #!creative
+
+^"intent"{
+ ~#goal: "Cold open, spine, CTA with duration budget."
+ ~#taste: "spoken rhythm; one through-line"
+}
+
+^"roots"{
+ @hold: ~"../../math/hold.spw"
+}
+
+^"script"{
+ id: ${script_id=audio.instance}
+ host: #audio
+ register: ${register=voice_hospitable_craft}
+ context: ${context=production}
+ ~#title: $title
+ cold_open: $cold_open
+ spine: $spine
+ cta: $cta
+ duration: ${duration=30s}
+ continuity: ${continuity=_}
+}
+
+^"algo"{
+ objective: #hold_composite
+ include: #[ @hold ]
+ must_hold: #[ hold.continuity, hold.positive ]
+ measure_cli: "npm run spw -- emit pack <path.spw> --host audio --measure"
+}

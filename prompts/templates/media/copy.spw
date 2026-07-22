@@ -1,0 +1,39 @@
+# Media expert — long-form copy
+
+#>spw_template_media_copy
+#:template #!media
+#:medium #!copy
+#:layer #!creative
+
+^"intent"{
+ ~#goal: "Headline / dek / body / door with thrift-aware density."
+ ~#taste: "one claim; plain speech; door clear"
+}
+
+^"roots"{
+ @hold: ~"../../math/hold.spw"
+ @thrift: ~"../../math/thrift.spw"
+}
+
+^"script"{
+ id: ${script_id=copy.instance}
+ host: #copy
+ register: ${register=voice_web_quiet}
+ context: ${context=production}
+ ~#title: $title
+ ~#claim: $claim
+ headline: $headline
+ dek: ${dek=_}
+ body: $body
+ ~#door: $door
+ continuity: ${continuity=_}
+ style_lock: ${style_lock=_}
+}
+
+^"algo"{
+ objective: #hold_composite
+ include: #[ @hold, @thrift ]
+ must_hold: #[ hold.positive, hold.continuity ]
+ thrift_hint: "dek short; body ≤ channel ceiling"
+ measure_cli: "npm run spw -- emit pack <path.spw> --host copy --measure"
+}

@@ -1,0 +1,29 @@
+# Include: Graph probes
+#
+# Machine: packages/spw-seed/src/math/graph.ts
+
+#>spw_math_graph
+#:math #!graph
+#:layer #!semantics
+
+^"form"{
+ nodes: "frames | registers | path targets"
+ edges: "~path | @root hop | & merge | <> couple | labeled relation"
+}
+
+^"tests"{
+ detectCycle: "directed cycle witness"
+ topologicalSort: "DAG order; throws if cyclic"
+ shortestPath: "Dijkstra non-negative weights"
+ adjacencyMatrix: "dense weights; missing = ∞"
+}
+
+^"hooks"{
+ selectors: "query validate already requires acyclic selector graphs"
+ promote: "dependency graphs of packs must topo-sort before lock"
+ messy_desk: "experimental graphs may cycle; declare #:desk #!experiment"
+}
+
+^"falsify"{
+ "Claiming acyclicity when detectCycle.cyclic is true"
+}

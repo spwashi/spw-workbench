@@ -18,13 +18,15 @@
  @fractal: ~"./fractal.spw"
  @macros: ~"./macros.spw"
  @publish: ~"../domains/publishing/propagate.spw"
+ @axes: ~"../substrate/axes.spw"
 }
 
 // ── PE / style ─────────────────────────────────────────────────
 
 ^"pe_style_lock"{
  kind: #pe
- grade_cap: #S2
+ grade_cap: "effect.l2.workspace"
+ context: #production
  coordinates: #[ #axis_light, #axis_density, #axis_craft, #style_phrase, #tone_dim ]
  objective: #hold_composite
  search: #greedy_one | #ablate_matrix
@@ -37,7 +39,7 @@
 
 ^"pe_subject_cast"{
  kind: #pe
- grade_cap: #S2
+ grade_cap: "effect.l2.workspace"
  coordinates: #[ #subject_cast, #style_phrase, #contour_organ ]
  objective: #hold_composite
  search: #greedy_one
@@ -47,7 +49,8 @@
 
 ^"pe_thrift_social"{
  kind: #pe
- grade_cap: #S1
+ grade_cap: "effect.l1.memory"
+ context: #thrift
  coordinates: #[ #emit_phrasing, #host_slot, #tone_dim ]
  objective: #thrift_first
  search: #ablate_matrix
@@ -59,7 +62,8 @@
 
 ^"line_propagate"{
  kind: #line
- grade_cap: #S2
+ grade_cap: "effect.l2.workspace"
+ context: #canon
  coordinates: #[ #style_phrase, #subject_cast, #genre_contract, #host_slot ]
  objective: #hold_composite
  search: #greedy_one
@@ -72,7 +76,7 @@
 
 ^"layout_canonical"{
  kind: #layout
- grade_cap: #S2
+ grade_cap: "effect.l2.workspace"
  coordinates: #[ #layout_rule ]
  objective: #layout_safe
  search: #ladder_walk
@@ -82,7 +86,7 @@
 
 ^"layout_equiv_preview"{
  kind: #layout
- grade_cap: #S1
+ grade_cap: "effect.l1.memory"
  coordinates: #[ #equiv_script, #layout_rule ]
  objective: #layout_safe
  pulse_profile: equiv_scripts
@@ -93,7 +97,8 @@
 
 ^"fractal_merge"{
  kind: #fractal
- grade_cap: #S1
+ grade_cap: "effect.l1.memory"
+ context: #production
  coordinates: #[ #ladder_step, #fractal_depth, #axis_light, #style_phrase ]
  objective: #fractal_hold
  search: #fractal_dfs
@@ -105,7 +110,8 @@
 
 ^"fractal_style_repo"{
  kind: #fractal
- grade_cap: #S2
+ grade_cap: "effect.l2.workspace"
+ context: #research
  coordinates: #[ #style_phrase, #axis_craft, #macro_fill ]
  objective: #fractal_hold
  container_role: #style_repo
@@ -118,7 +124,7 @@
 
 ^"hybrid_organ_ladder"{
  kind: #hybrid
- grade_cap: #S1
+ grade_cap: "effect.l1.memory"
  coordinates: #[ #contour_organ, #axis_light, #ladder_step ]
  objective: #signature_composite
  search: #greedy_one
@@ -141,5 +147,31 @@
  5: "Run optimize loop; archive when locked"
 }
 
+// ── Machine profiles (CLI) ─────────────────────────────────────
+
+^"cli"{
+ // Deterministic twin of these profiles lives in packages/spw-cli/src/emit/fractal.ts
+ list: "npm run spw -- emit profiles"
+ plan: "npm run spw -- emit plan <file.spw> --profile fractal_merge"
+ run: "npm run spw -- emit fractal <file.spw> --profile fractal_merge --measure"
+ knobs: #[
+  --profile
+  --context
+  --max-depth
+  --depth-weights
+  --coordinates
+  --ladders
+  --hosts
+  --hold-ratio
+  --fold-required
+  --objective
+  --set
+  --register
+ ]
+ law: "CLI profiles are portable JSON-shaped configs; .spw profiles remain the narrative source of truth. --context sets salience α(c) only."
+ axes: "docs/theory/spw/dimensional-axes.spw + prompts/substrate/axes.spw + emit/axes.ts"
+}
+
 ~<./schema.spw>
 ~<./optimize.spw>
+
