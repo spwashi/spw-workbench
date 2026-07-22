@@ -9,13 +9,15 @@
 
 #:layer #!semantics
 
-^seed[Spw.Form.Geometry v:0.1 @profile:Spw.b @intent:label_mobility_computational]
+^seed[Spw.Form.Geometry v:0.2 @profile:interpretive @intent:label_mobility_with_receipts]
 
 ^["status"]{
- implemented: "LabelSite, LiminalShape, MOBILITY_RULES with apply() subset, HOF runners, site graph"
+ implemented: "LabelSite, LiminalShape, bounded MOBILITY_RULES, HOF runners, site graph, application receipts"
  partial: "path progressions, rehost orbits, reference walks"
- proposed: "pair open/close labels, register liminality bridge as S1 runtime write"
+ proposed: "payload-carrying header-to-register projection and parser-owned pair identity"
  law: "Surface liminal shapes ≠ register liminality — bridge is explicit map, not identity"
+ apply_meaning: "implemented means a pure bounded source function exists; it does not make the geometric reading a grammar or runtime law"
+ profiles: `Spw.Form.Geometry@0.2 is interpretive; Spw.Form.Geometry.Application@0.1 is operational S1 and writes no workspace source.`
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -35,6 +37,7 @@
  interior_term: "bare id in Bound chamber"
  stream_slot: "position in <<…>>"
  register_meta: "$(name)"
+ pair_open_close: "{_name interior }_name desugar surface"
 }
 
 ^["liminal_shapes"]{
@@ -58,6 +61,7 @@
   published: global
  }
  status: profile_soft
+ application: `opt-in bridgeRegisterLiminality mutates only the supplied in-memory RegisterBank (S1); parsing $(L) never promotes by itself`
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -71,11 +75,10 @@
  promote_demote: "raise/lower liminal shape or register level"
  project: "into path / ref geometry"
  fold_unfold: "many labels ↔ one published unit"
- rehost: "change host brace (frame → capsule → scope)"
+ rehost: "change host paired-boundary kind (frame → capsule → scope)"
 }
 
 ^["computational_rules"]{
- // Implemented apply() today
  implemented: #[
   ingress.operator_label,
   ingress.frame_select,
@@ -84,16 +87,25 @@
   ingress.capsule_tag,
   ingress.ref_handle,
   ingress.header,
+  ingress.pair_labels,
   egress.frame_select,
   egress.operator_label,
   egress.ref_handle,
+  egress.pair_labels,
   project.frame_to_path,
   project.path_extend,
   rehost.interior_to_facet,
   orbit.frame_param_to_tag,
-  orbit.tag_to_ref
+  orbit.tag_to_ref,
+  fold.facets_to_header,
+  unfold.header_to_facet,
+  promote.register_bridge,
+  demote.register_to_ref,
+  promote.pair_to_header
  ]
- proposed: #[fold.facets_to_header, promote.register_bridge]
+ runtime_s1: `bridgeRegisterLiminality / applyRegisterBridgeEffect promote $(L) cells local→…→global`
+ application_receipt: #[before_hash, after_hash, before_health, after_health, topography_delta, inverse_status, semantic_equivalence]
+ label_grammar: `[A-Za-z_][A-Za-z0-9_]*`
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -109,20 +121,29 @@
 }
 
 ^["higher_order_forms"]{
- // composition sketches — runnable via runHigherOrderForm
  select_then_path: `project ∘ ingress_select`
- ground_then_publish: `promote_header ∘ ingress_ground`
+ ground_then_publish: `fold_header ∘ ingress_ground` // .{L:_} → ^["L"]{_}
  membrane_to_observer: `rehost_ref ∘ ingress_membrane`
- label_orbit: `frame → capsule → scope` // rehost chain
+ label_orbit: `frame → capsule → scope`
  action_aperture_cycle: `egress ∘ ingress`
  interior_ground_fold: `{L} → .{L: L}`
  path_deepen: `path_extendⁿ ∘ path_root`
+ pair_label_publish: `{_L }_L → ^["L"]{}`
+ publish_to_register: `@(L) → $(L)` // surface; runtime promote separate
+ ground_fold_register: `free → facet → header ↛ $(L) until a payload-carrying register projection exists` // partial
+}
+
+^["pair_labels"]{
+ surface: `{_L interior }_L` // matches desugar A{} → {_A }_A
+ status: implemented_surface_rewrite
+ grammar_note: `AST pair label fields still uneven; these rules operate on desugar surface forms`
 }
 
 ^["composition_law"]{
  rule: `HOF program is sequential rule composition; failure stops (no silent skip)`
- inverse: `When inverse ids exist, cycle tests require identity on free labels`
+ inverse: `Every application reports unavailable, failed, exact, or changed under trimmed-surface comparison.`
  computational_gate: `Only rules with apply() run; proposed rules return incomplete walk`
+ semantic_gate: `No mobility application claims semantic equivalence; source information may move even when an inverse is exact.`
 }
 
 ^["cli"]{
@@ -137,6 +158,8 @@
   "implemented rule.apply returns non-null on wrong site without matching surface",
   "register liminality claimed identical to LiminalShape without bridge map",
   "HOF completed=true while a proposed rule without apply was in the program",
-  "egress inverse of ingress fails identity on free label round-trip"
+  "egress inverse of ingress fails identity on free label round-trip",
+  "header payload disappears when projected to $(L)",
+  "a label outside the declared identifier grammar is interpolated into source"
  ]
 }

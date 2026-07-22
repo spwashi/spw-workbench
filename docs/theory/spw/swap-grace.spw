@@ -1,0 +1,140 @@
+// Swap Grace
+#
+// Operator and boundary swapping is an invited mechanic, not an error mode.
+// This surface names the law that makes swapping safe: alternate forms,
+// cursor-preserving substitution, and disclosed (never silent) deltas.
+#
+// @see docs/theory/spw/operational-topography.spw
+// @see docs/theory/spw/coupling-constructors.spw
+// @see docs/theory/spw/form-geometry.spw
+// @see docs/theory/spw/form-contours.spw
+// @see packages/spw-seed/src/types/coupling.ts
+// @see packages/spw-seed/src/canonical/form-geometry.ts
+// @see packages/spw-runtime/src/state/liminality-bridge.ts
+
+#:layer #!semantics
+
+^seed[Spw.Swap.Grace v:0.1 @profile:proposed @intent:safe_exploratory_substitution]
+{_swap_grace
+
+ ## Status Vocabulary
+
+ status: .{
+  implemented = `directly observable in parser, runtime, CLI, or LSP code`
+  measured = `recomputable from named inputs with a published method`
+  proposed = `a typed contract or experiment that is not yet runtime law`
+  interpretive = `a local rendering, metaphor, or human report`
+ }[reg=facet]
+
+ rule: `This surface reuses operational-topography's four-value status vocabulary rather than restating a local variant.`
+
+ ## Motivation
+
+ premise: `Swapping operators, sigils, and boundary spellings is an intended creative mechanic — it produces diff wonder. Mistakes made this way should carry the same grace a kitchen gives an ingredient substitution: bounded, disclosed, and recoverable, not a cliff.`
+ failure_mode: `A swap is graceless when its semantic delta is undeclared, so neither a human nor an agent can tell in advance whether the swap is cosmetic or meaning-changing.`
+
+ ## Cursor
+
+ status: proposed
+
+ definition: `A cursor is the addressable position of one named value in the language's structural lattice: where it sits, what shape holds it, and what it carries.`
+
+ shape: .{
+  label = `the named value this cursor tracks`
+  coupling = `either a paired-boundary kind (frame, body, scope, capsule, stream, nrange) or the couple operator — never conflate operator form with boundary form`
+  boundary_kind = `when coupling is a boundary: one of frame|body|scope|capsule|stream|nrange (seed COUPLING_DESCRIPTORS)`
+  operator_kind = `when coupling is an operator: couple (surface <>) — not a boundary_kind`
+  liminal_stage = `optional runtime LIMINALITY_ORDER stage (local, liminal, visible, global) from packages/spw-runtime — only when the cursor projects into a RegisterBank`
+  surface_form = `the literal spelling used at this position (a sigil, brace pair, or keyword)`
+  payload = `optional cargo satisfying operational-topography's payload contract (schema, units, serialization, provenance)`
+ }[reg=facet]
+
+ axes_separated: .{
+  source_position = `where the glyph sits in the source lattice (label + coupling + surface_form) — parser/seed concern`
+  runtime_liminality = `RegisterBank visibility stage after an explicit effect.l1.memory bridge call — runtime concern`
+  law = `Parsing or rewriting surface text never itself advances liminal_stage; only bridgeRegisterLiminality / applyRegisterBridgeEffect may.`
+ }[reg=facet]
+
+ rule_single_axis: `Surface-syntax waypoint vocabularies (e.g. form-geometry's exterior, void, chamber, hole, aperture, membrane, published) name source_position roles, not runtime liminality. Any rule that terminates at a named surface waypoint must declare which liminal_stage (if any) that waypoint projects onto after an explicit bridge; silence means "not yet mapped," not "not applicable."`
+
+ declared_projection: .{
+  surface_published = `runtime global`
+  source = `packages/spw-runtime/src/state/liminality-bridge.ts`
+  status = implemented
+  counterexample = `Any other surface waypoint claimed to equal a runtime liminality stage without a declared projection like this one.`
+ }[reg=facet]
+
+ ## Recursive Presence
+
+ status: proposed
+
+ rule: `A cursor's payload may itself be a cursor. Nesting must never reduce a nested cursor's own position, payload, or rule history to opacity — every cursor remains independently inspectable at any depth.`
+
+ distinction: `"Recursive" describes the nesting structure; "presence" is the added guarantee that nesting does not hide. A reduced view (see form-contours.spw) may summarize a deep cursor tree, but the underlying tree itself never loses a cursor's presence — only a view does, and only with a receipt.`
+
+ composition_note: `Whether $(label) may appear as a nested payload rather than only a whole-source form is gated by whether its owning boundary's payload schema admits a cursor-shaped payload. This is not yet declared for register_meta sites; treat nested $(label) as unsupported until a boundary kind explicitly admits it.`
+
+ ## Alternate Forms
+
+ status: proposed
+
+ definition: `Two surface strings are alternate forms of one another iff they project to the same (label, coupling, surface role) source_position and neither triggers a distinct runtime effect on parse alone.`
+
+ law_grace_swap: `Substituting one alternate form for another is always grace-safe: the result is syntactically valid, the source_position is unchanged, and no runtime effect fires from the substitution alone.`
+
+ law_not_alternate: `A rewrite that changes boundary_kind, operator_kind, or (after bridge) liminal_stage is a real move (re-typing or promotion), not an alternate form, even when the surface strings look similar. It must carry its own effect grade and inverse, the way form-geometry's mobility rules already do.`
+
+ worked_example_couple_capsule: .{
+  status = implemented
+  observation = `packages/spw-seed/src/types/coupling.ts declares <> as the couple operator (kind=couple, form=operator) and < > (spaced) as the empty Capsule boundary (kind=capsule, form=boundary) — same visual family, deliberately different coupling identities, distinguished by spacing rather than by a different glyph.`
+  reading = `This is not an alternate-forms pair — it is the disclosed opposite case: two near-identical spellings that must NOT be swapped without changing meaning. Swap grace requires this distinction to be look-up-able, not memorized.`
+ }[reg=facet]
+
+ worked_example_register_meta: .{
+  status = implemented
+  observation = `form-geometry.ts's promote.register_bridge accepts only ref_handle (@(L)) as input, not header (^["L"]{}) forms, specifically because a header may carry a payload that $(L) has no slot for.`
+  reading = `@(L) and $(L) are different surface roles (ref_handle vs register_meta). Writing $(L) never itself promotes a RegisterBank cell — only an explicit effect.l1.memory bridge call (bridgeRegisterLiminality) may. Grace comes from that split, not from treating @ and $ as cosmetic alternate forms.`
+ }[reg=facet]
+
+ ## Boundary-Form Consistency
+
+ status: proposed
+
+ rule: `Each paired-boundary kind declares its own admissible set of surface_forms. seed COUPLING_DESCRIPTORS and coupling-constructors includedKinds / local-brace-vocabulary disclosure are this declaration already in practice; this surface names it as a general law rather than a per-profile note.`
+
+ default_forms: .{
+  frame = `[] / […]  (seed emptySurface [] — not {})`
+  body = `{} / {…}`
+  scope = `() / (…)`
+  capsule = `<…> / empty < >`
+  stream = `<<…>>`
+  nrange = `((…))`
+  couple_operator = `<>  (operator form — not a boundary)`
+ }[reg=facet]
+
+ default_form: `Where a boundary_kind has a historical brace-family spelling, that spelling is the declared default alternate form (Frame defaults to []; Body defaults to {}). Generalizing to additional coverage must not strand the default form's legibility — new kinds add options, they do not demote the incumbent.`
+
+ counterexample: `A boundary_kind whose admissible surface_forms are not declared anywhere a reader or analyzer can query them.`
+ counterexample_frame_body: `Calling {} Frame's historical spelling — Body owns {}; Frame owns [].`
+
+ ## Inspectability
+
+ rule_receipt_parity: `A cursor's payload provenance is a receipt in the same sense form-contours.ts uses for reduction: it names what produced the value and can be traced back, not just displayed forward.`
+
+ rule_swap_visibility: `A diff that swaps between two surface_forms of the same source_position should be legible as one named event ("alternate form, no semantic delta") rather than an anonymous character-level change. A diff that changes coupling or liminal_stage should be equally legible as a real move, distinguishing which coordinate changed.`
+
+ not_yet_built: `No analyzer currently classifies a diff hunk this way. spw-topography-scan.ts measures container-kind counts and parse health across real files but has no cursor-diff or swap-group notion yet.`
+
+ ## Falsification
+
+ falsify: #[
+  "A surface waypoint is treated as equal to a runtime liminality stage with no declared_projection entry naming the correspondence.",
+  "Two surface_forms are called alternate forms but produce different runtime effects on parse alone.",
+  "A nested cursor's position or payload becomes unrecoverable through a reduction that carries no receipt.",
+  "A boundary_kind's admissible surface_forms are asserted but not queryable from any doc, type, or profile.",
+  "An alternate-form substitution triggers effect.l1.memory or a workspace write without an explicit separate call.",
+  "Couple operator <> is classified as a boundary_kind or empty capsule without spacing distinction.",
+  "Frame is documented with {} as its default empty surface (that empty surface is []).",
+ ][reg=set]
+
+}_swap_grace

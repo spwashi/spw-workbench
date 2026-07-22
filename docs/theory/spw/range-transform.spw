@@ -1,0 +1,358 @@
+// Range Address & Transform Syntax
+#
+// Proposed surface examples for addressing a span inside a .spw document
+// and applying line- or span-wise transforms (e.g. indent each line).
+// Not grammar law until a tool dialect and goldens land.
+#
+// @see docs/theory/spw/operational-topography.spw
+// @see docs/theory/spw/mutation-automata.spw
+// @see docs/theory/spw/operational-transform.spw
+// @see docs/theory/spw/form-geometry.spw
+// @see packages/spw-seed/src/canonical/differential.ts
+// @see packages/spw-seed/src/canonical/mutation-automata.ts
+// @see packages/spw-cli/src/pulse.ts
+// @see .agents/plans/spw-garden-geometry/path-reference-enhancement.spw
+// @see .agents/plans/form-geometry-editor/PLAN.md
+
+#:layer #!semantics
+#:status #!proposed
+
+^seed[Spw.Range.Transform v:0.1 @profile:research @intent:range_address_and_line_transforms]
+
+^["status"]{
+ status: proposed
+ kernel_ready: #[
+  "SourceEdit differentials (seed differential.ts)",
+  "mutation automata + pulse profiles (indent_braces whole-source)",
+  "path refs ~\"…\" with fragment strip (partial resolve)",
+  "topography exact-select + content-hash preconditions (theory + probes)"
+ ]
+ not_implemented: #[
+  "in-document line/offset fragment grammar",
+  "indent_lines rule on a substring range",
+  "Spw surface ![indent]{ range } as executable tool dialect",
+  "LSP selection → shared range planner"
+ ]
+ law: "Address and transform compose; no Bound glyph means indent by shape alone."
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Composition model
+// ═══════════════════════════════════════════════════════════════
+
+^["model"]{
+ pieces: #[
+  .{id=address, role=`name an exact span in a document (prefer parser-owned)`},
+  .{id=transform, role=`pure span → SourceEdit[] (layout first: indent)`},
+  .{id=apply, role=`topography effect grades: S0 read/measure, S1 sandbox plan, S2 workspace write (see operational-topography.spw)`}
+ ]
+ effect_map: .{
+  S0 = `read and measure only — plan resolve, hash check`
+  S1 = `in-memory or sandbox transformation — SourceEdit plan, no disk write`
+  S2 = `workspace edit with preview, snapshot preconditions, explicit apply`
+  not = `effect.l1.memory (register liminality bridge) — orthogonal axis; range transform does not promote registers`
+ }[reg=facet]
+ pipeline: `resolve_range → plan_edits → verify(hash, optional reparse) → apply?`
+ re_resolve: `Approximate matches may suggest; S2 requires exact span against current document version + contentHash.`
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Address layers
+// ═══════════════════════════════════════════════════════════════
+
+^["address_layers"]{
+ L1_structural: .{
+  status: proposed
+  preference: highest
+  meaning: `Address by AST / Bound / header identity — line numbers drift`
+  examples: #[
+   `~"doc.spw"#^["section"]`,
+   `~"doc.spw"#[frame=path]`,
+   `~"doc.spw"@{body@depth=2}`
+  ]
+  resolve: `{ uri, revision, content_span | open_span+close_span, pair_id? }`
+  note: `Structural fragments need mature pair labels / header resolve; until then L2 is the practical tool form.`
+ }
+
+ L2_source_span: .{
+  status: proposed
+  preference: tooling_default
+  meaning: `Line or offset range with revision preconditions`
+  examples: #[
+   `~"doc.spw"#:L12-L28`,
+   `~"doc.spw"#:L12`,
+   `~"doc.spw"#:L12C0-L28C0`,
+   `~"doc.spw"#@offset=120..340`
+  ]
+  encoding: `Profile declares utf16 (JS/LSP) or utf8; default for editor path is utf16 code units.`
+  write_precondition: `same contentHash / documentVersion as plan time`
+ }
+
+ L3_ephemeral_selection: .{
+  status: proposed
+  preference: interactive
+  meaning: `Editor caret/selection injects the same packet as L2; no Spw surface required`
+  examples: #[
+   `// LSP: selection → RangePlan`,
+   `// CLI: --range-from-selection (host injects offsets)`
+  ]
+  law: `Literate docs use L1/L2 for replay; editor uses L3 for interactivity.`
+ }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Fragment syntax examples (L2)
+// ═══════════════════════════════════════════════════════════════
+
+^["fragment_examples"]{
+ ~#status: proposed
+ ~#note: "Illustrative surfaces. Not current lexer/grammar tokens."
+
+ path_only: #[
+  `~"relative/path.spw"`,
+  `~"./spec.spw"`,
+  `~"../lib/contract.spw"`
+ ]
+
+ line_ranges: #[
+  `~"doc.spw"#:L12-L28`,
+  `~"doc.spw"#:L12`,
+  `~"./a.spw"#:L1-L1`,
+  `~"doc.spw"#:L12C0-L28C0`,
+  `~"doc.spw"#:L12C4-L12C20`
+ ]
+
+ offset_ranges: #[
+  `~"doc.spw"#@offset=0..80`,
+  `~"doc.spw"#@offset=120..340`
+ ]
+
+ structural_fragments: #[
+  `~"doc.spw"#^["section"]`,
+  `~"doc.spw"#name`,
+  `~"doc.spw"#[reg=set]`,
+  `~"doc.spw"@{body@depth=2}`
+ ]
+
+ same_document: #[
+  `~"."#:L40-L62`,
+  `~"@"#:L10-L20`,
+  `// host may bind "." / "@" to current buffer uri`
+ ]
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Transform syntax examples
+// ═══════════════════════════════════════════════════════════════
+
+^["transform_forms"]{
+ ~#status: proposed
+ ~#recommendation: "Option A for commands; B/C as sugar over the same planner."
+
+ // ── Option A: pulse product (mutation / device style) ──────
+
+ option_A_pulse_product: .{
+  status: proposed
+  reading: `!xform carries effect intent; body/frame holds target + options`
+  examples: #[
+   `![indent]{ ~"doc.spw"#:L12-L28 }`,
+   `![indent]{ ~"doc.spw"#:L12-L28 [size=2] }`,
+   `![indent][size=2]{ ~"./spec.spw"#:L40-L62 }`,
+   `![outdent]{ ~"doc.spw"#:L12-L28 }`,
+   `![outdent][size=1]{ ~"doc.spw"#:L12-L28 }`,
+   `![trim]{ ~"doc.spw"#:L12-L28 }`,
+   `![align]{ ~"doc.spw"#^["section"] }`,
+   `![indent]{ ~"."#:L5-L15 [size=2] }`
+  ]
+  grades: .{
+   open_in_doc: `literate plan description — not auto-S2 on open`,
+   tool_run: `S0 resolve / S1 SourceEdit plan / S2 write with hash gate`
+  }
+ }
+
+ // ── Option B: stream-as-lines (line algebra) ────────────────
+
+ option_B_stream_lines: .{
+  status: proposed
+  reading: `Stream Bound = ordered lines of the range; transform maps each line`
+  examples: #[
+   `<< ~"doc.spw"#:L12-L28 >> !indent[size=2]`,
+   `<< ~"doc.spw"#:L12-L28 >> !outdent`,
+   `<< ~"doc.spw"#:L12-L28 >> !trim`,
+   `<< ~"./a.spw"#:L1-L10 >> !prefix[text="// "]`
+  ]
+  fits: `indent each line, prefix, strip trailing space, number lines`
+ }
+
+ // ── Option C: connector pipe (compositional) ────────────────
+
+ option_C_pipe: .{
+  status: proposed
+  reading: `Address then project then transform — geometric composition`
+  examples: #[
+   `~"doc.spw"#:L12-L28 -> !indent[2]`,
+   `~"doc.spw"#:L12-L28 -> !indent[size=2]`,
+   `~"doc.spw"#:L12-L28 / lines -> !indent`,
+   `~"doc.spw"#^["section"] -> !align`,
+   `~"."#:L40-L62 -> !outdent[1]`,
+   `~"doc.spw"#:L12-L28 -> !trim -> !indent[2]`
+  ]
+  connectors: .{
+   `/`: `project range to a view (e.g. lines)`,
+   `->`: `pipe into a named transform Act`
+  }
+ }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Indent-each-line worked examples
+// ═══════════════════════════════════════════════════════════════
+
+^["indent_examples"]{
+ ~#status: proposed
+ ~#rule_id: indent_lines
+ ~#stratum: layout
+
+ before_source: ```
+frame: {
+x
+y
+}
+```
+
+ address: `~"demo.spw"#:L2-L3`
+
+ transform_surfaces: #[
+  `![indent][size=2]{ ~"demo.spw"#:L2-L3 }`,
+  `~"demo.spw"#:L2-L3 -> !indent[2]`,
+  `<< ~"demo.spw"#:L2-L3 >> !indent[size=2]`
+ ]
+
+ after_source: ```
+frame: {
+  x
+  y
+}
+```
+
+ plan_sketch: #[
+  `resolve → offsets for L2 start .. L3 end`,
+  `edits: insert "  " at start of each line in range`,
+  `vector: layout_delta>0, structure claim layout-only after reparse`,
+  `S2 only if contentHash matches`
+ ]
+
+ refuse_when: #[
+  `range cuts mid-token in a way that changes string/lexeme identity under profile`,
+  `reparse structureMoved and profile required layout-only`,
+  `document version mismatch`
+ ]
+}
+
+^["outdent_examples"]{
+ surfaces: #[
+  `![outdent]{ ~"doc.spw"#:L2-L3 }`,
+  `~"doc.spw"#:L2-L3 -> !outdent[2]`
+ ]
+ law: `Outdent removes at most size spaces/tabs per line start; never eats non-indent content.`
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CLI / LSP parity (no new grammar required for M0–M3)
+// ═══════════════════════════════════════════════════════════════
+
+^["tool_parity"]{
+ ~#status: proposed
+ ~#note: "Tool dialect can accept the same address strings without core grammar change."
+
+ cli: #[
+  `npm run spw:pulse -- --range 'doc.spw#:L12-L28' --rule indent_lines --check`,
+  `npm run spw:pulse -- --range 'doc.spw#:L12-L28' --rule indent_lines --write`,
+  `npm run spw:pulse -- --range 'doc.spw#:L12-L28' --rule indent_lines --diff`,
+  `npm run spw:pulse -- --range 'doc.spw#^["section"]' --rule indent_lines --check`
+ ]
+
+ lsp: #[
+  `// selection in editor → RangePlan packet`,
+  `// CodeAction: Indent selection (shared planner)`,
+  `// documentRangeFormatting → same indent_lines / layout profile`
+ ]
+
+ literate_run: `Spw surface is a plan description until a named tool executes it (wonder/device law).`
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Grammar sketch (tool dialect)
+// ═══════════════════════════════════════════════════════════════
+
+^["grammar_sketch"]{
+ ~#status: proposed
+ ~#scope: "tool dialect / high-context; not OperatorKind core until goldens"
+
+ sketch: ```
+range_addr     ::= path_ref fragment?
+path_ref       ::= '~' STRING   // existing PathRef foothold
+fragment       ::= line_frag | offset_frag | structural_frag
+line_frag      ::= '#:' 'L' INT ( '-' 'L' INT )? ( 'C' INT ( '-' 'L' INT 'C' INT )? )?
+offset_frag    ::= '#@offset=' INT '..' INT
+structural_frag::= '#' structural_id   // ^["name"], anchors — progressive
+
+range_xform    ::= '!' xform_name frame? body?
+                |  range_addr ('/' 'lines')? '->' '!' xform_name frame?
+                |  '<<' range_addr '>>' '!' xform_name frame?
+
+xform_name     ::= 'indent' | 'outdent' | 'trim' | 'align' | 'prefix' | …
+```
+
+ options_in_frame: #[
+  `[size=2]`,
+  `[tabs=true]`,
+  `[profile=layout_canonical]`,
+  `[text="// "]` // prefix
+ ]
+}
+
+// ═══════════════════════════════════════════════════════════════
+// What not to overload
+// ═══════════════════════════════════════════════════════════════
+
+^["forbid"]{
+ nrange: `((…)) is expression band, not document line range`
+ bare_frame: `[] is term selection Bound, not UTF-16 offsets`
+ shape_is_indent: `No Bound glyph means indent by delimiter physics (L10)`
+ line_without_hash: `Line ranges without contentHash re-resolve are not S2-safe`
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Ship ladder (documentation of intent)
+// ═══════════════════════════════════════════════════════════════
+
+^["ship_ladder"]{
+ M0: `Address parser #:L12-L28 + path → offsets + hash (seed util)`
+ M1: `Rule indent_lines / outdent_lines on substring → SourceEdit[]`
+ M2: `CLI pulse --range … --rule indent_lines --check|--write|--diff`
+ M3: `LSP selection + range format → same planner`
+ M4: `Optional Spw surfaces Option A/B/C behind tool dialect`
+ M5: `Structural fragments #^["name"] once header/pair resolve is solid`
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Relation to form geometry
+// ═══════════════════════════════════════════════════════════════
+
+^["geometry_link"]{
+ range_as_ref: `A range address is a ref_handle to source geometry, not a register name`
+ selection_axis: `Pinning a span is source-topology selection`
+ path_axis: `doc / span / lines is a reference progression`
+ label_law: `Transforms must re-resolve pair labels; silent label drift is forbidden`
+ surface_preview: `Unapplied plan is an exterior/source preview; applied S2 write is a published document revision — not a RegisterBank liminal_stage change`
+}
+
+^["falsify"]{
+ #[
+  "S2 apply succeeds when contentHash changed since plan",
+  "indent_lines changes string/lexeme identity and still claims layout-only",
+  "((10..20)) accepted as document line range without dialect flag",
+  "literate ![indent]{…} mutates disk on document open"
+ ]
+}
