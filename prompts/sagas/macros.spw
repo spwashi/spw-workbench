@@ -1,0 +1,178 @@
+# Saga macros, placeholders, and templates
+#
+# Spw-native holes and expansion — thrift in saga authoring.
+# Expansion is #expand; creative change remains #mutate.
+
+#>spw_saga_macros
+#:saga #!macros
+#:layer #!pragmatics
+#:status #!active
+
+^"intent"{
+ ~#goal: "Templating that stays Spw: holes, named slots, spell macros, fractal self-slots."
+ ~#taste: "one syntax family; no {{mustache}} required; emit-friendly"
+}
+
+^"roots"{
+ @schema: ~"./schema.spw"
+ @fractal: ~"./fractal.spw"
+ @ladders: ~"../../docs/theory/spw/form-ladders.spw"
+}
+
+// ── Placeholder vocabulary ─────────────────────────────────────
+
+^"holes"{
+ // Form-ladder occupancy
+ _: "uninhabited hole — void payload, open for fill"
+ // Query / match (seed $_ style)
+ $_: "anonymous wildcard placeholder (match any)"
+ // Named slots (saga/template)
+ $name: "named slot — must bind before lock"
+ ${name}: "same; brace form for multi-char"
+ ${name=default}: "named slot with default fill"
+ // Path-shaped
+ @$name: "slot that must resolve to a path/handle"
+ #$name: "slot that must resolve to a concept chip"
+ // Self-similar / fractal
+ &: "confluence seed — merge site"
+ {&}: "preferred product of & ladder — body-hosted merge"
+ {&[$slots]}: "merge with selected slot arms"
+ .{$k: _}: "grounded facet slot"
+}
+
+^"law_holes"{
+ fill_order: "defaults → explicit bindings → still-open _ reported as incomplete"
+ incomplete_blocks_lock: "S2 lock refuses open $required slots"
+ expand_vs_mutate: "#expand substitutes bindings; changing a locked phrase is #mutate #style_phrase"
+ positive_fill: "prefer filling wanted content over listing forbidden"
+}
+
+// ── Macro definition / call ────────────────────────────────────
+
+^"define"{
+ // Author macros as frames (portable, file-local or pack-local)
+ shape: `
+^macro["name"]{
+ ~#role: "what this expands to"
+ params: #[ $a, $b, ${c=default} ]
+ body: \`… surface with $a $b …\`
+}
+ `
+ // Alternate: integration-style name
+ alt: `^["macro.name"]{ params: […]  body: \`…\` }`
+}
+
+^"call"{
+ // Collapse / invoke
+ shapes: #[
+  "*macro[name]{ a: \"…\", b: \"…\" }"
+  "!spell[name]{ $a, $b }"           // kinetic inject of a named spell
+  "~macro[name]"                       // defer — plan expand only
+  "&macro[name]{ … }"                  // confluence: merge macro product into parent
+ ]
+ law: "Call sites are #expand unless the macro body declares coordinate: #…"
+}
+
+// ── Template packs (saga-shaped) ───────────────────────────────
+
+^"templates"{
+ // Skeleton saga stream — slots left open
+ stream_skeleton: `
+^["saga"]{
+ id: $saga_id
+ kind: ${kind=pe}
+ profile: ${profile=pe_style_lock}
+ grade_cap: ${grade=S1}
+ objective: ${objective=hold_composite}
+}
+^["bindings"]{
+ style_id: $style_id
+ subject_id: ${subject_id=_}
+ genre_id: ${genre_id=_}
+ organ: ${organ=#portrait}
+ host: ${host=mj}
+}
+^["stream"]{
+ >>[0] observe — baseline @$organ under #$style_id
+ >>[1] expand  — fill ${open_slots}
+ >>[2] mutate  — $coordinate: $from → $to
+ >>[3] measure — %style_hold %subject_hold %objective
+ >>[4] decide  — ${decision=_}
+ >>[5] ${next=observe|mutate|lock|reject}
+}
+ `
+
+ // Single step template
+ step: ">>[$t] $type — $body"
+ mutate_step: ">>[$t] mutate — $coordinate: $from → $to @$target"
+ measure_step: ">>[$t] measure — $metrics"
+ nest_step: ">>[$t] nest — depth+1 locus $locus profile $profile"
+ fold_step: ">>[$t] fold — child $child_id via & → {&}"
+}
+
+// ── Slot binding map ───────────────────────────────────────────
+
+^"bindings"{
+ // Runtime/tooling shape
+ map: .{
+  // $slot → string | handle | path
+ }
+ required: #[ ]   // fail expand if missing
+ optional: #[ ]   // use default or leave _
+ provenance: "each fill records step id — no silent overwrite of locked slots"
+}
+
+// ── Optimization hooks for macros ──────────────────────────────
+
+^"optimize_hooks"{
+ // Macros can expose knobs for search
+ knobs: #[
+  ${density=0.5}      // tone pole
+  ${light=hearth}     // axis value enum
+  ${phrase=_}         // style phrase candidate
+ ]
+ search_fills: "optimizer proposes binding maps; each map = one #expand then #measure"
+ ablate: "leave one $slot as _ across a matrix; compare objective"
+}
+
+// ── Examples ───────────────────────────────────────────────────
+
+^"examples"{
+ style_retune: `
+^macro["retune_light"]{
+ params: #[ $from, $to, ${organ=#portrait} ]
+ coordinate: #axis_light
+ body: \`
+>>[$t] mutate — axis_light: $from → $to @$organ
+>>[$t+1] measure — %style_hold %signature_hold
+>>[$t+2] decide — keep if %style_hold≥prior else revert
+\`
+}
+*macro[retune_light]{ from: "hearth", to: "canopy", organ: "#exterior" }
+ `
+
+ fractal_merge: `
+// Enrich bare confluence into body-hosted merge, then nest
+>>[0] observe — seed &
+>>[1] expand  — ladder op:& seed → wrap   // & => {&}
+>>[2] nest    — locus {&} profile pe_style_lock
+>>[3] fold    — child results via &
+ `
+
+ hole_fill: `
+^["bindings"]{ subject: "board-keeper", tell: "one clear board" }
+>>[0] expand — subject_lock: "$subject | $tell | ${tell2=_}"
+// after expand: "board-keeper | one clear board | _"  (! incomplete if tell2 required)
+`
+}
+
+^"refuse"{
+ #[
+  "Mustache-only templates as the sole saga language"
+  "Macro that mutates three coordinates silently"
+  "Overwrite locked $slot without #mutate + measure"
+  "Treat $_ match wildcards as creative content locks"
+ ]
+}
+
+~<./schema.spw>

@@ -15,6 +15,7 @@ import { printMountHelp } from './mount'
 import { runQueryCli } from './query'
 import { printRootsHelp, runSpwRootsCli } from './roots'
 import { printSelectUsage, runSpwSelectCli } from './select'
+import { printEmitHelp, runSpwEmitCli } from './emit'
 import { printTreeHelp, runSpwTreeCli } from './tree'
 
 export async function runSpwCli(argv: string[]): Promise<void> {
@@ -129,6 +130,13 @@ export async function runSpwCli(argv: string[]): Promise<void> {
     case 'dev':
       await runSpwDevCli()
       return
+    case 'emit':
+      if (common.flags.help) {
+        printEmitHelp()
+        return
+      }
+      await runSpwEmitCli(toCliArgv(command, args))
+      return
     default:
       console.error(`spw: unknown command "${command}"`)
       printHelp()
@@ -163,6 +171,7 @@ function printHelp(): void {
           'mem          Memory surface tools',
           'format       Spw formatter',
           'pulse        Topographical mutation probes (plan/diff/check)',
+          'emit         Collapse surfaces to host packs (PE / brief IR)',
           'dev          Hot loop runner',
           'help         Print this help',
         ],
@@ -182,6 +191,7 @@ function printHelp(): void {
           'spw doctor',
           'spw roots',
           'spw tree @spw',
+          'npm run spw -- emit --help',
           'npm run spw -- query --help',
           'npm run spw -- format --help',
           'npm run spw -- pulse --help',

@@ -1,0 +1,105 @@
+# Image Contours Index
+#
+# Image prompt kinds for kitchen craft vibes (and future signatures).
+# Each contour is a script shape + subject class, not a new world.
+
+#>spw_prompts_image_index
+#:image #!contour_catalog
+#:layer #!creative
+
+^"roots"{
+ @ecology: ~"../script-ecology.spw"
+ @vibes: ~"../vibes/index.spw"
+ @saga: ~"../sagas/index.spw"
+ @portrait: ~"./portrait.prompt.spw"
+ @interior: ~"./interior.prompt.spw"
+ @still_life: ~"./still-life.prompt.spw"
+ @exterior: ~"./exterior.prompt.spw"
+ @process: ~"./process.prompt.spw"
+ @diagram: ~"./diagram.prompt.spw"
+ @sheet: ~"./sheet.prompt.spw"
+}
+
+^"intent"{
+ ~#goal: "Project one signature into many Midjourney-ready contours for style discovery and asset reuse."
+ ~#taste: "stable anchors, varying subject/composition; agents change one variable per run when locking style"
+ ~#vibes: @vibes
+ ~#ecology: @ecology
+ ~#saga: @saga
+}
+
+^"contours"{
+ // script contour ≈ storytelling / composition role
+ portrait: .{
+  path: @portrait
+  script: #character_beat
+  subject: #spore_baker
+  mj_aspect: "3:4"
+  use: "face/hands/apron clarity; character_ref discovery"
+ }
+ interior: .{
+  path: @interior
+  script: #place_chamber
+  subject: #underroot_oven_chamber
+  mj_aspect: "16:9"
+  use: "environment lock; sref for bakery space"
+ }
+ still_life: .{
+  path: @still_life
+  script: #inventory_fold
+  subject: #scored_boule
+  mj_aspect: "1:1"
+  use: "prop/material fidelity; texture anchors"
+ }
+ exterior: .{
+  path: @exterior
+  script: #threshold_entry
+  subject: #front_shop_under_oaks
+  mj_aspect: "16:9"
+  use: "world establishing shot; path-to-door continuity"
+ }
+ process: .{
+  path: @process
+  script: #action_sequence_beat
+  subject: #kneading_or_scoring
+  mj_aspect: "16:9"
+  use: "hands + craft motion; animation key pose later"
+ }
+ diagram: .{
+  path: @diagram
+  script: #expository_map
+  subject: #bakery_section_schematic
+  mj_aspect: "16:9"
+  use: "teaching / UI / docs; flatter lighting, labeled regions optional"
+ }
+ sheet: .{
+  path: @sheet
+  script: #asset_turnaround
+  subject: #spore_baker_orthographic
+  mj_aspect: "16:9"
+  use: "character sheet; cref stability; multi-view"
+ }
+}
+
+^"agent_loop"{
+ explore: "vary contour organ while locking signature tissue (anchors)"
+ stabilize: "lock seed + winning_phrase_lock; one coordinate per saga step"
+ ship: "fill signature.midjourney.asset_refs when hold spans ≥3 organs"
+ spirit: "? → ~axis → @vibes → [organ] → *emit → %hold → ^lock"
+ saga: @saga
+}
+
+^"default"{
+ contour: @portrait
+ reason: "character is the fastest Midjourney style/character lock for kitchen craft"
+ ~#next: @still_life
+}
+
+^"open"{
+ ?[order]: "Is portrait→still_life→interior the right bootstrap organ order?"
+}
+
+~<../script-ecology.spw>
+~<../vibes/index.spw>
+~<../sagas/index.spw>
+~<../image.prompt.spw>

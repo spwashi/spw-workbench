@@ -1,0 +1,145 @@
+# Named saga profiles
+#
+# Customizable packs: coordinates, objectives, search, hosts, membranes.
+
+#>spw_saga_profiles
+#:saga #!profiles
+#:layer #!pragmatics
+#:status #!active
+
+^"intent"{
+ ~#goal: "Reusable saga profiles so agents pick a pack instead of inventing process each run."
+ ~#taste: "short allow-lists; explicit objective; fractal optional"
+}
+
+^"roots"{
+ @schema: ~"./schema.spw"
+ @optimize: ~"./optimize.spw"
+ @fractal: ~"./fractal.spw"
+ @macros: ~"./macros.spw"
+ @publish: ~"../domains/publishing/propagate.spw"
+}
+
+// ── PE / style ─────────────────────────────────────────────────
+
+^"pe_style_lock"{
+ kind: #pe
+ grade_cap: #S2
+ coordinates: #[ #axis_light, #axis_density, #axis_craft, #style_phrase, #tone_dim ]
+ objective: #hold_composite
+ search: #greedy_one | #ablate_matrix
+ hosts: #[ #mj, #copy ]
+ organs: #[ #portrait, #still_life, #process ]
+ budgets: .{ max_mutate: 8, max_depth: 1 }
+ membrane: #[ no synonym churn, no genre school stamp ]
+ stream_seed: *macro[stream_skeleton]{ profile: "pe_style_lock", host: "mj" }
+}
+
+^"pe_subject_cast"{
+ kind: #pe
+ grade_cap: #S2
+ coordinates: #[ #subject_cast, #style_phrase, #contour_organ ]
+ objective: #hold_composite
+ search: #greedy_one
+ organs: #[ #portrait, #still_life, #sheet ]
+ law: "Portrait → still_life hold before sheet"
+}
+
+^"pe_thrift_social"{
+ kind: #pe
+ grade_cap: #S1
+ coordinates: #[ #emit_phrasing, #host_slot, #tone_dim ]
+ objective: #thrift_first
+ search: #ablate_matrix
+ hosts: #[ #social, #web_copy ]
+ budgets: .{ max_mutate: 5 }
+}
+
+// ── Line / publish ─────────────────────────────────────────────
+
+^"line_propagate"{
+ kind: #line
+ grade_cap: #S2
+ coordinates: #[ #style_phrase, #subject_cast, #genre_contract, #host_slot ]
+ objective: #hold_composite
+ search: #greedy_one
+ requires_locks: #[ style_lock, subject_lock, genre_lock, continuity ]
+ hosts: #[ #brief, #copy, #audio, #social, #mj ]
+ note: "Jobs bind ids; saga retunes one lock class at a time"
+}
+
+// ── Layout / automata bridge ───────────────────────────────────
+
+^"layout_canonical"{
+ kind: #layout
+ grade_cap: #S2
+ coordinates: #[ #layout_rule ]
+ objective: #layout_safe
+ search: #ladder_walk
+ pulse_profile: layout_canonical
+ cli: "spw pulse --profile layout_canonical"
+}
+
+^"layout_equiv_preview"{
+ kind: #layout
+ grade_cap: #S1
+ coordinates: #[ #equiv_script, #layout_rule ]
+ objective: #layout_safe
+ pulse_profile: equiv_scripts
+ note: "Equivalence not claimed — measure structure_delta"
+}
+
+// ── Fractal ────────────────────────────────────────────────────
+
+^"fractal_merge"{
+ kind: #fractal
+ grade_cap: #S1
+ coordinates: #[ #ladder_step, #fractal_depth, #axis_light, #style_phrase ]
+ objective: #fractal_hold
+ search: #fractal_dfs
+ ladders: #[ "op:&", "body", "frame" ]
+ max_depth: 3
+ seed_enrichment: "& => {&}"
+ fold: required
+}
+
+^"fractal_style_repo"{
+ kind: #fractal
+ grade_cap: #S2
+ coordinates: #[ #style_phrase, #axis_craft, #macro_fill ]
+ objective: #fractal_hold
+ container_role: #style_repo
+ search: #beam
+ default_k: 3
+ law: "Nest phrase banks per organ; fold only !boon|!honk arms"
+}
+
+// ── Hybrid discovery ───────────────────────────────────────────
+
+^"hybrid_organ_ladder"{
+ kind: #hybrid
+ grade_cap: #S1
+ coordinates: #[ #contour_organ, #axis_light, #ladder_step ]
+ objective: #signature_composite
+ search: #greedy_one
+ sequence: [
+  "observe organ"
+  "pulse ladder body empty => inhabit"
+  "mutate one axis"
+  "measure signature_hold"
+  "decide next organ or lock"
+ ]
+}
+
+// ── Profile customize recipe ───────────────────────────────────
+
+^"fork_recipe"{
+ 1: "Copy a profile frame → profiles.local.spw or pack"
+ 2: "Retune objective / budgets / coordinate allow-list"
+ 3: "Keep membrane refuse or document fork"
+ 4: "Seed stream from @macros templates"
+ 5: "Run optimize loop; archive when locked"
+}
+
+~<./schema.spw>
+~<./optimize.spw>

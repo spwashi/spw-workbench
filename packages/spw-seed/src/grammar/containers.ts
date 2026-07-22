@@ -10,6 +10,7 @@ import type {
   BodyNode,
   ScopeNode,
   LiteralNode,
+  IdentifierNode,
   ReferenceNode,
   ParameterNode,
   NRangeNode,
@@ -405,7 +406,11 @@ export const streamNode: Parser<StreamNode> = named('stream',
 )
 
 /**
- * Capsule: "<" identifier? frame? body? ">"
+ * Capsule: "<" (identifier | literal)? frame? body? ">"
+ *
+ * Channel atoms: identifier (qualitative), number/string literal (quantitative /
+ * labeled). Prefer a single atom; frame/body allow richer interiors.
+ * Medial arms (`left`/`right`) are attached by expression composition, not here.
  */
 export const capsuleNode: Parser<CapsuleNode> = named('capsule',
   function* capsuleParser(stream, depth) {
@@ -424,9 +429,12 @@ export const capsuleNode: Parser<CapsuleNode> = named('capsule',
     let consumed = openStep.value.consumed
     skipWhitespace(stream)
 
-    // Optional tag identifier
+    // Optional channel atom: identifier tag or number/string literal
     let tag: Token<'IDENTIFIER'> | undefined
-    if (current(stream).type === 'IDENTIFIER') {
+    let channel: LiteralNode | IdentifierNode | undefined
+
+    const tok = current(stream)
+    if (tok.type === 'IDENTIFIER') {
       const tagGen = identifier(stream, depth + 1)
       let tagStep = tagGen.next()
       while (!tagStep.done) {
@@ -436,6 +444,22 @@ export const capsuleNode: Parser<CapsuleNode> = named('capsule',
       if (tagStep.value.success) {
         tag = tagStep.value.value!
         consumed += tagStep.value.consumed
+        channel = {
+          type: 'Identifier',
+          span: tag.span,
+          token: tag,
+        }
+      }
+    } else if (tok.type === 'NUMBER' || tok.type === 'STRING' || tok.type === 'BOOLEAN') {
+      const litGen = literalNode(stream, depth + 1)
+      let litStep = litGen.next()
+      while (!litStep.done) {
+        yield litStep.value
+        litStep = litGen.next()
+      }
+      if (litStep.value.success) {
+        channel = litStep.value.value!
+        consumed += litStep.value.consumed
       }
     }
 
@@ -488,9 +512,12 @@ export const capsuleNode: Parser<CapsuleNode> = named('capsule',
       type: 'Capsule',
       span: { start: startPos, end: endPos },
       open: openStep.value.value!,
+      close: closeStep.value.value!,
       tag,
+      channel,
       frame,
       body,
+      placement: 'shell',
     }
 
     return { success: true, value: node, consumed }

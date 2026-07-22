@@ -1,0 +1,68 @@
+# Saga stream instance template
+#
+# Copy to prompts/sagas/runs/<id>.spw or a pack; fill bindings; append stream.
+
+#>spw_saga_stream_template
+#:saga #!template
+#:layer #!creative
+
+^"intent"{
+ ~#goal: "Ready-to-fill saga file: bindings + open stream + measure hooks."
+ ~#taste: "holes explicit; one profile; append-only"
+}
+
+^"roots"{
+ @schema: ~"../schema.spw"
+ @macros: ~"../macros.spw"
+ @profiles: ~"../profiles.spw"
+ @optimize: ~"../optimize.spw"
+}
+
+^"saga"{
+ id: $saga_id
+ kind: ${kind=pe}
+ profile: ${profile=pe_style_lock}
+ grade_cap: ${grade=S1}
+ objective: ${objective=hold_composite}
+ parent: ""
+ depth: 0
+ status: #open
+}
+
+^"bindings"{
+ style_id: ${style_id=_}
+ subject_id: ${subject_id=_}
+ genre_id: ${genre_id=_}
+ organ: ${organ=#portrait}
+ host: ${host=mj}
+ // open creative holes
+ light: ${light=_}
+ density: ${density=_}
+ phrase_add: ${phrase_add=_}
+}
+
+^"budget"{
+ max_steps: 24
+ max_mutate: 8
+ max_depth: 1
+ max_bonk: 1
+}
+
+^"stream"{
+ >>[0] observe — baseline @$organ host $host style $style_id
+ >>[1] expand  — fill bindings; report open _
+ // >>[2] mutate — axis_light: hearth → canopy @$organ
+ // >>[3] measure — %style_hold %subject_hold %positive_ground %objective
+ // >>[4] decide — keep | revert
+ // >>[5] nest — depth+1 locus {&} profile fractal_merge
+ // >>[6] fold — child via &
+ // >>[n] lock — winning_phrase_lock when grade S2 + slots complete
+}
+
+^"done"{
+ // closed saga changelog (cold memory)
+ // outcome: _
+ // locks_written: []
+}
+
+~<../schema.spw>

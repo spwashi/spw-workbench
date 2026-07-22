@@ -1,0 +1,179 @@
+# Optimizable mutation sagas
+#
+# Objectives, budgets, search strategies — customize without breaking membrane.
+
+#>spw_saga_optimize
+#:saga #!optimize
+#:layer #!pragmatics
+#:status #!active
+
+^"intent"{
+ ~#goal: "Make sagas optimizable: explicit objectives, budgets, search, stop conditions."
+ ~#taste: "propose → measure → decide; never silent multi-axis leaps"
+}
+
+^"roots"{
+ @schema: ~"./schema.spw"
+ @macros: ~"./macros.spw"
+ @fractal: ~"./fractal.spw"
+ @emit: ~"../../docs/runtime/md/spw-emit.md"
+ @automata: ~"../../docs/theory/spw/mutation-automata.spw"
+}
+
+// ── Measures (sampleable) ──────────────────────────────────────
+
+^"metrics"{
+ // PE / publish
+ style_hold: "fraction of style_lock anchors in composed text"
+ subject_hold: "fraction of subject_lock anchors"
+ genre_hold: "fraction of genre_lock / promise"
+ continuity: "title anchors"
+ positive_ground: "1 if no negation spine else 0"
+ thrift: "1 / max(1, sentence_estimate) channel-normalized"
+ // Ecology
+ signature_hold: "style_anchor_reuse * material_clarity * world_coherence"
+ organ_coverage: "contours_with_hold / n"
+ saga_discipline: "single_coordinate_steps / total_steps"
+ // Layout pulse
+ parse_health: "ok | recovered | fail"
+ structure_delta: "0 preferred for layout-only profiles"
+ layout_only_candidate: "boolean from topography probe"
+ // Fractal
+ depth_cost: "depth / max_depth"
+ fold_purity: "folds with measure / total folds"
+}
+
+^"objectives"{
+ // Named objective formulas (customize per profile)
+ hold_composite: .{
+  form: "style_hold * subject_hold * positive_ground * thrift^α"
+  default_α: 0.5
+  use: "PE style/subject lock sagas"
+ }
+ signature_composite: .{
+  form: "signature_hold * organ_coverage * saga_discipline"
+  use: "ecology multi-organ discovery"
+ }
+ layout_safe: .{
+  form: "parse_health_ok * (1 - structure_delta_flag) * idempotence"
+  use: "spw pulse layout profiles"
+ }
+ fractal_hold: .{
+  form: "Σ_d w(d)*hold_composite(d) * fold_purity"
+  use: "nested style/scene sagas"
+ }
+ thrift_first: .{
+  form: "positive_ground * thrift * continuity"
+  use: "social/web short hosts"
+ }
+ custom: .{
+  form: "user-defined product/sum over metrics"
+  law: "Must name metrics; no opaque scores"
+ }
+}
+
+// ── Budgets ────────────────────────────────────────────────────
+
+^"budgets"{
+ max_steps: 24
+ max_mutate: 12
+ max_bonk: 2
+ max_depth: 3
+ max_rejects: 6
+ max_expand: 32
+ wall_clock: optional
+ grade_cap: #S1
+ law: "Exhausted budget → stop reason budget_exhausted (like automata)"
+}
+
+// ── Search strategies ──────────────────────────────────────────
+
+^"search"{
+ greedy_one: .{
+  ~#fill: "At each step try best single-coordinate candidate by last measure"
+  cost: low
+ }
+ ablate_matrix: .{
+  ~#fill: "Hold all slots; vary one $slot or axis across a grid; pick max objective"
+  cost: medium
+  pairs_with: "#expand matrix + #measure"
+ }
+ beam: .{
+  ~#fill: "Keep k partial streams; expand one coordinate each"
+  cost: high
+  default_k: 3
+ }
+ ladder_walk: .{
+  ~#fill: "Advance one form-ladder step; measure parse/structure"
+  cost: low
+  pairs_with: "spw pulse --ladder"
+ }
+ fractal_dfs: .{
+  ~#fill: "Depth-first nest → optimize child → fold; then sibling"
+  cost: medium
+ }
+ random_bonk: .{
+  ~#fill: "Quarantine multi-axis experiment; never auto-lock"
+  valence: !bonk
+ }
+}
+
+// ── Stop conditions ────────────────────────────────────────────
+
+^"stop"{
+ fixed_point: "two consecutive measures within ε and no open required slots"
+ objective_plateau: "no improvement for p steps"
+ budget_exhausted: "any budget hit"
+ lock_ready: "objective ≥ threshold and grade_cap allows S2 and slots complete"
+ authority_failure: "write/lock refused by membrane"
+ bane_streak: "n consecutive !bane → pause"
+ user_cancel: "explicit reject/pause"
+}
+
+// ── Optimizer loop (agent / tool) ──────────────────────────────
+
+^"loop"{
+ 1: "Load profile + bindings + open holes"
+ 2: "#observe baseline; sample metrics"
+ 3: "Search proposes Δ (one coordinate or one expand map)"
+ 4: "Apply as #mutate or #expand (append-only)"
+ 5: "#measure objective + holds"
+ 6: "#decide keep|revert|nest|fold|lock|reject"
+ 7: "Stop if stop condition; else 3"
+ law_membrane: "Refuse lists from ecology/publish still apply to proposals"
+}
+
+// ── Customization surface ──────────────────────────────────────
+
+^"customize"{
+ // What authors may freely retune
+ free: #[
+  objective formula (named metrics only)
+  budgets
+  search strategy
+  coordinate allow-list
+  host/organ defaults
+  ladder id + step range
+  depth weights
+ ]
+ // What requires profile fork + review
+ fork_required: #[
+  membrane refuse changes
+  grade_cap above house default
+  multi-coordinate default (always !bonk)
+ ]
+}
+
+^"cli_bridge"{
+ // Optional tool mapping (today + near)
+ emit_measure: "npm run spw -- emit pack <file> --measure"
+ pulse_plan: "npm run spw -- pulse --profile layout_canonical --check"
+ pulse_ladder: "npm run spw -- pulse --ladder '&'"
+ proposed: #[
+  "spw saga append --type mutate --coordinate axis_light --to canopy"
+  "spw saga optimize --profile pe_style_lock --search ablate_matrix"
+  "spw saga expand --bindings bindings.spw"
+ ]
+}
+
+~<./schema.spw>

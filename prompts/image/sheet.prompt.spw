@@ -1,0 +1,64 @@
+# Image Contour: Sheet — Character turnaround
+#
+# Asset reference sheet for stable character reuse (cref pipeline).
+
+#>image_sheet
+#:image #!sheet
+#:generation #!prompt
+#:layer #!creative
+
+^"meta"{
+ signature: ~"../vibes/index.spw"
+ contour: #sheet
+ script: #asset_turnaround
+ ~#goal: "Multi-view baker on clean ground — costume and proportion lock"
+}
+
+^"identity"{
+ title = spore_baker_turnaround
+ subtitle = front_side_threequarter
+ version = v1
+ intent = midjourney_character_sheet
+
+ variants: .{
+  v_full = "Full body three views"
+  v_bust = "Bust three views + hand inset"
+  v_expression = "Face row soft expressions"
+ }
+
+ focus = *v_full
+ trace = ~[v_full:0.5, v_bust:0.3, v_expression:0.2]
+}
+
+^"brief"{
+ sheet: .{
+  views: [ #front, #side, #three_quarter ]
+  ground = !seamless_warm_paper_or_soft_studio
+  consistency = !same_outfit_apron_flour_dust
+  props = !optional_small_loaf_in_one_hand_only
+ }
+
+ non_negotiables: [
+  #proportion_stable
+  #costume_stable
+  #no_scene_narrative
+ ]
+}
+
+^"emit"{
+ mj_aspect = "16:9"
+ short_prompt = "Character reference sheet of a gentle fantasy baker in flour-dusted linen apron, front side and three-quarter full body views aligned, consistent design, warm paper background, soft studio light, painterly storybook realism, earth ochre cream moss palette, clean silhouette, restrained woodland fantasy"
+
+ final_prompt = "Produce a clean character sheet of the kitchen cook for asset reference: multiple aligned views (front, side, three-quarter), identical costume — linen apron, earth-tone clothes, flour dust, optional soft mushroom-brim hat. Neutral warm paper or soft studio ground, even lighting, no heavy environment. Painterly but proportion-stable. Hands correct. Not a comic page with speech, not action poses."
+
+ negative_prompt = "inconsistent outfit between views, extra limbs, comic panels, speech bubbles, busy background story, horror, armor, neon"
+
+ midjourney_notes: .{
+  flags = "--ar 16:9 --stylize 100"
+  asset_slot = "signature.midjourney.character_ref"
+  lock_when = "costume and head shape match across views"
+ }
+}
+
+~<../vibes/index.spw>
+~<./portrait.prompt.spw>

@@ -1,0 +1,120 @@
+# Prompts Index
+#
+# Domains stay separate:
+#   substrate  — PE (tone, compose, emit)
+#   vibes      — orthogonal feel packs (baking, forest, …)
+#   domains/*  — playable/world packs (culinary fantasy RPG, …)
+#   labs/*     — host-specific instruments (image pack, film, …)
+
+#>spw_prompts_index
+#:prompt #!catalog
+#:layer #!pragmatics
+
+^"intent"{
+ ~#goal: "Spw as prompt-engineering substrate plus optional vibes and domains — no default brand world."
+ ~#taste: "orthogonal vibes; positive ground; general culinary-fantasy when RPG; PE stays vendor-free"
+ ~#status: "active"
+}
+
+^"roots"{
+ // PE core
+ @substrate: ~"./substrate/index.spw"
+ @tone: ~"./substrate/tone-anatomy.spw"
+ @compose: ~"./substrate/compose.spw"
+ @handles: ~"./handles/index.spw"
+ // vibes (orthogonal)
+ @vibes: ~"./vibes/index.spw"
+ @vibe_baking: ~"./vibes/baking.spw"
+ @vibe_forest: ~"./vibes/forest.spw"
+ @vibe_hearth: ~"./vibes/hearth.spw"
+ @vibe_market: ~"./vibes/market.spw"
+ @vibe_mineral: ~"./vibes/mineral.spw"
+ // domains
+ @culinary_fantasy: ~"./domains/culinary-fantasy/index.spw"
+ @publishing: ~"./domains/publishing/index.spw"
+ // optional ecology / labs (legacy creative surfaces may still live here)
+ @ecology: ~"./script-ecology.spw"
+ @lenses: ~"./lenses/index.spw"
+ @facets: ~"./facets/index.spw"
+ @expressions: ~"./expressions/index.spw"
+ @mj: ~"./labs/midjourney.spw"
+ @experiential: ~"./labs/experiential.spw"
+ @film: ~"./production/film.spw"
+ @signatures: ~"./signatures/index.spw"
+ @sagas: ~"./sagas/index.spw"
+ @saga_schema: ~"./sagas/schema.spw"
+ @saga_optimize: ~"./sagas/optimize.spw"
+ // media briefs
+ @image: ~"./image.prompt.spw"
+ @image_contours: ~"./image/index.spw"
+ @song: ~"./song.prompt.spw"
+ @design: ~"./design.prompt.spw"
+ @website: ~"./website.prompt.spw"
+ @media: ~"./media.prompt.spw"
+ @experience: ~"./experience.prompt.spw"
+ @outreach: ~"./outreach.prompt.spw"
+}
+
+^"dispatch"{
+ substrate: @substrate
+ tone: @tone
+ compose: @compose
+ vibes: @vibes
+ culinary_fantasy: @culinary_fantasy
+ publishing: @publishing
+ handles: @handles
+ emit: "npm run spw -- emit …"
+ midjourney: @mj
+ film: @film
+ image: @image
+ sagas: @sagas
+}
+
+^"architecture"{
+ substrate: "PE — tone dimensions, #voice_*, positive_ground, compose, spw emit"
+ vibes: "orthogonal packs — baking, forest, hearth, market, mineral; non-bleed law"
+ culinary_fantasy: "general homebrew RPG domain — places, recipes, tables"
+ publishing: "media house — house / title / job packs → brief|copy|audio|social emit"
+ lenses_labs: "optional optics and host labs"
+ media_briefs: "per-medium .prompt.spw files"
+}
+
+^"compose"{
+ pe: "#voice_* + domain slots + ≤3 #vibe_* → *emit"
+ rpg: "@culinary_fantasy place + vibe stack + scene slots"
+ publish: "@publishing house → title anchors → job host → *emit + continuity"
+ image: "organ + vibe phrase banks + tone material/temperature"
+ law: "mushroom/forest life does not auto-spoil bread; each vibe keeps its fill only"
+}
+
+^"conventions"{
+ positive_ground: "fill wanted poles; no opposite-list spine"
+ vendor_free: "feel-physics only in registers"
+ no_default_brand: "do not require a named shop, mascot, or single kitchen myth"
+}
+
+^"agent_protocol"{
+ pe: [
+  "1. @tone / #voice_*"
+  "2. optional #vibe_* stack (≤3)"
+  "3. *emit via spw emit or host pack"
+ ]
+ culinary_rpg: [
+  "1. @culinary_fantasy anatomy place class"
+  "2. vibe stack from @vibes"
+  "3. fill who/cooks/owed/door"
+  "4. emit table text or scene brief"
+ ]
+ publishing: [
+  "1. house pack (register + law)"
+  "2. title pack (logline + continuity anchors)"
+  "3. job pack (host + acceptance)"
+  "4. spw emit --host brief|copy|audio|social --measure"
+ ]
+}
+
+~<./substrate/index.spw>
+~<./vibes/index.spw>
+~<./domains/culinary-fantasy/index.spw>
+~<./domains/publishing/index.spw>
+~<./handles/index.spw>

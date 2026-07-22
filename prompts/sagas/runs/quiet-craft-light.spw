@@ -1,0 +1,58 @@
+# Example run: retune light under quiet craft line (fractal-ready)
+
+#>spw_saga_run_quiet_craft_light
+#:saga #!run
+#:layer #!creative
+#:status #!example
+
+^"saga"{
+ id: "quiet_craft_light"
+ kind: #pe
+ profile: pe_style_lock
+ grade_cap: #S1
+ objective: hold_composite
+ depth: 0
+ status: #open
+}
+
+^"bindings"{
+ style_id: "quiet_press_ink"
+ subject_id: "board_keeper"
+ genre_id: "quiet_craft"
+ organ: #portrait
+ host: mj
+ light: "hearth"
+ style_lock: "thrift of chrome | cream paper margin | one verb per surface"
+ subject_lock: "board-keeper | one clear board | soft charcoal sleeves"
+}
+
+^"budget"{
+ max_steps: 12
+ max_mutate: 4
+ max_depth: 2
+ max_bonk: 1
+}
+
+^"stream"{
+ >>[0] observe — baseline @portrait host mj style quiet_press_ink light hearth
+ >>[1] expand  — style_lock + subject_lock bound; light slot filled hearth
+ >>[2] mutate — axis_light: hearth → canopy @portrait
+ >>[3] measure — %style_hold=1 %subject_hold=1 %positive_ground=1 %objective↑
+ >>[4] decide — !boon keep canopy for exterior next
+ >>[5] nest — depth+1 locus {&} profile fractal_merge   // & => {&} site
+ >>[6] observe — (child) scene arm under canopy
+ >>[7] mutate — (child) style_phrase +: "dappled canopy paper light"
+ >>[8] measure — (child) %style_hold
+ >>[9] decide — (child) !boon
+ >>[10] fold — child via & → {&[canopy paper light]} valence !boon
+ >>[11] measure — parent %style_hold %fractal_hold
+ >>[12] decide — continue; lock deferred (grade S1)
+}
+
+^"done"{
+ outcome: "canopy light retained; phrase candidate nested; no S2 lock yet"
+ locks_written: []
+ open_holes: []
+}
+
+~<../profiles.spw>

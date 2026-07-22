@@ -1,0 +1,160 @@
+# Production: Film Dimensions
+#
+# Handles for camera, light, design, costume, sound, editorial, soft VFX, direction.
+# World = Underroot; tone = soft prime hospitality (unnamed genre).
+
+#>spw_production_film
+#:production #!film
+#:layer #!creative
+#:status #!active
+
+^"intent"{
+ ~#goal: "Map worldbuilding to production departments with briefable defaults and lens hooks."
+ ~#taste: "handmade scale; motivated light; sound of craft; no empire blockbuster default"
+}
+
+^"roots"{
+ @biome: ~"../biome/underroot.spw"
+ @signature: ~"../vibes/index.spw"
+ @lenses: ~"../lenses/index.spw"
+ @expressions: ~"../expressions/index.spw"
+ @mj: ~"../labs/midjourney.spw"
+ @media: ~"../media.prompt.spw"
+}
+
+// ── Departments ────────────────────────────────────────────────
+
+^"departments"{
+ direction: .{
+  handle: #direction
+  questions: [
+    ?["Whose care is the scene about?"]
+    ?["What is the moral weather?"]
+  ]
+  defaults: !quiet_competence_over_spectacle
+  lenses: [#care_duty, #mythic_soft]
+ }
+
+ camera: .{
+  handle: #camera
+  body: !large_format_or_s35_film_feel
+  lenses_kit: [ #35mm_env, #50mm_portrait, #100mm_craft_macro ]
+  movement: !motivated_slow_push_or_static_observational
+  height: !hand_and_board_respect_eye
+  notes_mj: "map to framing phrases in image organs"
+ }
+
+ lighting: .{
+  handle: #lighting
+  key_sources: [
+    #oven_practical
+    #window_canopy
+    #cap_biolume_accent
+    #market_daylight
+  ]
+  ratio_default: !soft_sculptural_3_to_1
+  avoid: !unmotivated_rgb_club_lighting
+ }
+
+ production_design: .{
+  handle: #production_design
+  palette: [ #ochre, #cream_flour, #crust, #moss, #honey, #soft_charcoal ]
+  hero_sets: [
+    #oven_chamber
+    #front_shop_threshold
+    #spore_cellar
+  ]
+  hero_props: [
+    #scored_boule
+    #clay_starter
+    #peel
+    #banneton
+  ]
+  wear: !thrift_and_patina
+  lenses: [#loam_memory, #door_law]
+ }
+
+ costume: .{
+  handle: #costume
+  base: !linen_apron_earth_tones
+  dust: !flour_as_character
+  optional: !soft_cap_brim_mushroom_hint
+  avoid: !armor_cape_chosen_one_cloak
+ }
+
+ sound_design: .{
+  handle: #sound_design
+  bed: [ #low_oven_rumble, #soft_canopy, #quiet_room_tone_earth ]
+  spots: [ #dough_thud, #score_kiss, #steam_hiss, #jar_clink, #foot_on_path ]
+  music_temp: !acoustic_chamber_folk_warm
+  lenses: [#sensorial, #yeast_time]
+ }
+
+ editorial: .{
+  handle: #editorial
+  rhythm: !proof_time_long_holds_with_craft_inserts
+  j_cuts: !sound_of_next_room_early
+  avoid: !trailer_cut_every_second
+ }
+
+ vfx_soft: .{
+  handle: #vfx_soft
+  allowed: [
+    #steam_enhance
+    #subtle_biolume_particles
+    #mycelium_growth_timelapse_gentle
+  ]
+  refuse: [
+    #dragon
+    #city_destroying_spell
+    #horror_fungal_burst
+  ]
+ }
+
+ producer_constraints: .{
+  handle: #producer_constraints
+  scale: !contained_locations_practical_build_plus_forest_ext
+  unit: !small_artisanal
+  stills_bridge: @mj
+ }
+}
+
+// ── Scenelet template ──────────────────────────────────────────
+
+^"scenelet"{
+ expression: #scenelet
+ duration: 45s_to_90s
+ spine: [
+  ~#threshold_or_board
+  ~#care_action
+  ~#material_response   // dough, steam, jar
+  ~#soft_turn           // invitation, wait, share
+ ]
+ dept_pass: [
+  #direction
+  #camera
+  #lighting
+  #production_design
+  #sound_design
+  #editorial
+ ]
+}
+
+// ── Crosswalk to image organs ──────────────────────────────────
+
+^"stills_crosswalk"{
+ portrait: #costume + #camera_50mm + #lighting_hearth
+ interior: #production_design + #lighting_oven
+ process: #camera_macro + #hand_scale
+ exterior: #door_law + #camera_35mm
+ sheet: #costume + #producer_constraints
+}
+
+^"open"{
+ ?[animatic]: "Prefer MJ animatic from process+exterior before live unit?"
+ ?[lut]: "Lock a print LUT family once sref holds?"
+}
+
+~<../biome/underroot.spw>
+~<../labs/midjourney.spw>
+~<../expressions/index.spw>

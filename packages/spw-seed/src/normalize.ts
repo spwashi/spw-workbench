@@ -213,8 +213,8 @@ export function normalizeToONF(node: ASTNode): ONFNode {
 
     case 'Capsule': {
       const cap = node as any
-      const open = cap.open.value
-      const args: ONFNode[] = (cap.body && cap.body.sequence)
+      const open = cap.open?.value ?? '<'
+      const bodyArgs: ONFNode[] = (cap.body && cap.body.sequence)
         ? cap.body.sequence.expressions.map((e: any) => normalizeToONF(e))
         : []
 
@@ -222,26 +222,65 @@ export function normalizeToONF(node: ASTNode): ONFNode {
       if (open === '#[') {
         return {
           sigil: '#',
-          args,
-          frames: withCoupling({ reg: 'set' }, 'frame', { args, argCount: args.length }),
+          args: bodyArgs,
+          frames: withCoupling({ reg: 'set' }, 'frame', { args: bodyArgs, argCount: bodyArgs.length }),
         }
       }
       if (open === '.{') {
         return {
           sigil: '.',
-          args,
-          frames: withCoupling({ reg: 'facet' }, 'body', { args, argCount: args.length }),
+          args: bodyArgs,
+          frames: withCoupling({ reg: 'facet' }, 'body', { args: bodyArgs, argCount: bodyArgs.length }),
         }
       }
-      // Capsule may carry a tag without body — tag alone is not interior payload occupancy.
-      const tag = cap.tag?.value
+
+      // Channel atom: identifier tag or literal (quantitative / quoted label).
+      let channel: string | undefined = cap.tag?.value
+      let channelKind: 'id' | 'number' | 'string' | 'boolean' | undefined =
+        channel !== undefined ? 'id' : undefined
+      if (cap.channel?.type === 'Literal') {
+        channel = String(cap.channel.token?.value ?? '')
+        const lt = cap.channel.token?.type
+        channelKind =
+          lt === 'NUMBER' ? 'number' : lt === 'BOOLEAN' ? 'boolean' : 'string'
+      } else if (cap.channel?.type === 'Identifier') {
+        channel = cap.channel.token?.value ?? channel
+        channelKind = 'id'
+      }
+
+      const left = cap.left ? normalizeToONF(cap.left) : undefined
+      const right = cap.right ? normalizeToONF(cap.right) : undefined
+      const medial = Boolean(cap.placement === 'medial' || left || right)
+      const args: ONFNode[] = medial
+        ? ([left, right].filter(Boolean) as ONFNode[])
+        : bodyArgs
+
+      // Shell tag/channel alone is not interior occupancy (form-ladder law).
+      // Medial arms and body interiors are inhabited payload.
+      const occupancy = medial || bodyArgs.length > 0 ? 'inhabited' : 'empty'
+      const payload = medial
+        ? args.length >= 2
+          ? 'multi'
+          : args.length === 1
+            ? 'term'
+            : 'void'
+        : bodyArgs.length > 0
+          ? bodyArgs.length > 1
+            ? 'multi'
+            : 'term'
+          : 'void'
+
       return {
-        sigil: open.charAt(0) as any,
+        sigil: '<' as any,
         args,
         frames: withCoupling(
-          tag ? { tag } : {},
+          {
+            reg: medial ? 'composite' : 'capsule',
+            placement: medial ? 'medial' : 'shell',
+            ...(channel !== undefined ? { tag: channel, channel, channelKind } : {}),
+          },
           'capsule',
-          { args, argCount: args.length },
+          { args, argCount: args.length, occupancy, payload } as any,
         ),
       }
     }

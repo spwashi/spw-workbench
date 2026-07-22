@@ -15,6 +15,7 @@ import type {
   ProseChunkNode,
   ModifierChainNode,
   TermNode,
+  CapsuleNode,
 } from '../types'
 import {
   type Parser,
@@ -272,6 +273,7 @@ export const operationNode: Parser<OperationNode> = named('operation',
     }
 
     // Optional subject for operators that take a direct term payload (e.g. ^"setup"{...})
+    // Also: ? takes a Scope when the next token is `(` so probes stay structured.
     let subject: TermNode | undefined
     if (operatorToken.value === '^') {
       skipWhitespace(stream)
@@ -286,6 +288,20 @@ export const operationNode: Parser<OperationNode> = named('operation',
         if (subjStep.value.success) {
           subject = subjStep.value.value!
           consumed += subjStep.value.consumed
+        }
+      }
+    } else if (operatorToken.value === '?') {
+      skipWhitespace(stream)
+      if (current(stream).type === 'CONTAINER_OPEN' && current(stream).value === '(') {
+        const scopeGen = scopeNode(stream, depth + 1)
+        let scopeStep = scopeGen.next()
+        while (!scopeStep.done) {
+          yield scopeStep.value
+          scopeStep = scopeGen.next()
+        }
+        if (scopeStep.value.success) {
+          subject = scopeStep.value.value!
+          consumed += scopeStep.value.consumed
         }
       }
     }
@@ -329,8 +345,14 @@ export const operationNode: Parser<OperationNode> = named('operation',
     }
 
     // Optional inline payload for line-scoped operators (#, ?)
+    // Skip when ? already bound a Scope subject — keep probes inspectable.
     let linePayload: ProseChunkNode | undefined
-    if (!frame && !body && INLINE_PAYLOAD_OPERATORS.has(operatorToken.value)) {
+    if (
+      !frame
+      && !body
+      && !subject
+      && INLINE_PAYLOAD_OPERATORS.has(operatorToken.value)
+    ) {
       skipWhitespace(stream)
       const payload = readLinePayload(stream, operatorToken)
       if (payload.node) {
@@ -486,11 +508,78 @@ export const expressionImpl: Parser<ExpressionNode> = named('expression',
       return { success: false, consumed: 0, error: firstStep.value.error }
     }
 
-    const terms: TermNode[] = [
-      firstStep.value.value!,
-    ]
-    const connectors: Token<'CONNECTOR'>[] = []
+    // First term, then optional medial capsules: left<channel>right
+    // e.g. bagel<scent>coffee, foo<5>bar, chain a<r>b<s>c
+    let headTerm = firstStep.value.value!
     let consumed = firstStep.value.consumed
+
+    while (true) {
+      const saved = stream.position
+      skipWhitespace(stream)
+      if (current(stream).type !== 'CAPSULE_OPEN') {
+        stream.position = saved
+        break
+      }
+
+      const capGen = capsuleNode(stream, depth + 1)
+      let capStep = capGen.next()
+      while (!capStep.done) {
+        yield capStep.value
+        capStep = capGen.next()
+      }
+
+      if (!capStep.value.success) {
+        stream.position = saved
+        break
+      }
+
+      let right: TermNode | undefined
+      const afterCap = stream.position
+      skipWhitespace(stream)
+      // Prefer a tight right arm; do not swallow connectors / closers.
+      const rightTok = current(stream)
+      if (
+        rightTok.type !== 'EOF'
+        && rightTok.type !== 'CONNECTOR'
+        && rightTok.type !== 'COLON'
+        && rightTok.type !== 'CONTAINER_CLOSE'
+        && rightTok.type !== 'CAPSULE_CLOSE'
+        && rightTok.type !== 'STREAM_CLOSE'
+        && rightTok.type !== 'NRANGE_CLOSE'
+        && !(rightTok.type === 'OPERATOR' && rightTok.value === '<>')
+      ) {
+        const rightGen = termNode(stream, depth + 1)
+        let rightStep = rightGen.next()
+        while (!rightStep.done) {
+          yield rightStep.value
+          rightStep = rightGen.next()
+        }
+        if (rightStep.value.success && rightStep.value.consumed > 0) {
+          right = rightStep.value.value!
+          consumed += rightStep.value.consumed
+        } else {
+          stream.position = afterCap
+        }
+      } else {
+        stream.position = afterCap
+      }
+
+      const shell = capStep.value.value!
+      consumed += capStep.value.consumed
+      const endPos = getPosition(stream)
+      const medial: CapsuleNode = {
+        ...shell,
+        type: 'Capsule',
+        span: { start: headTerm.span.start, end: right?.span.end ?? shell.span.end ?? endPos },
+        left: headTerm,
+        right,
+        placement: 'medial',
+      }
+      headTerm = medial
+    }
+
+    const terms: TermNode[] = [headTerm]
+    const connectors: Token<'CONNECTOR'>[] = []
 
     // Binding: <term> : <expression>
     skipWhitespace(stream)
@@ -524,7 +613,7 @@ export const expressionImpl: Parser<ExpressionNode> = named('expression',
       const binding: BindingNode = {
         type: 'Binding',
         span: { start: startPos, end: endPos },
-        key: firstStep.value.value!,
+        key: headTerm,
         value: rhsStep.value.value!,
       }
 

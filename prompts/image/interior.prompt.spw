@@ -1,0 +1,72 @@
+# Image Contour: Interior — Underroot oven chamber
+#
+# Place/chamber establishing for environment style lock.
+
+#>image_interior
+#:image #!interior
+#:generation #!prompt
+#:layer #!creative
+
+^"meta"{
+ signature: ~"../vibes/index.spw"
+ contour: #interior
+ script: #place_chamber
+ ~#goal: "Bake the room as character — shelves, oven mouth, mycelium structure"
+}
+
+^"identity"{
+ title = underroot_oven_chamber
+ subtitle = loaves_on_living_shelves
+ version = v1
+ intent = midjourney_environment_lock
+
+ variants: .{
+  v_hearth = "Deep oven glow, amber volumes, steam"
+  v_biolume = "Cap-lights along shelves, cool accents on warm wood"
+  v_market_prep = "Brighter work light, more tools staged"
+ }
+
+ focus = *v_hearth
+ trace = ~[v_hearth:0.6, v_biolume:0.25, v_market_prep:0.15]
+}
+
+^"brief"{
+ space: .{
+  primary = #underroot_oven_chamber
+  architecture = !packed_earth_arches_timber_ribs_mycelium_shelves
+  hero_feature = !large_oven_mouth_with_embers
+  secondary: [ #mushroom_shelf_of_loaves, #peels_against_wall, #flour_dust_in_air ]
+  figure = !optional_small_baker_silhouette_not_required
+ }
+
+ composition: .{
+  framing = !wide_environmental
+  depth = !layered_foreground_counter_mid_oven_deep_shelves
+  balance = !asymmetrical_oven_third
+ }
+
+ non_negotiables: [
+  #readable_oven_as_focal
+  #tactile_bread_and_wood
+  #earth_architecture
+  #no_city_skyline
+ ]
+}
+
+^"emit"{
+ mj_aspect = "16:9"
+ short_prompt = "Wide interior of a fantasy underground bakery with packed-earth arches and timber ribs, large glowing oven mouth, mycelium shelves holding crusty loaves, flour dust in warm amber light, copper pots, wooden peels, moss and honey palette, painterly storybook realism, tactile steam and wood grain, restrained woodland fantasy"
+
+ final_prompt = "Establish the oven chamber as a wide environmental interior. Packed-earth architecture with soft arches, timber ribs, and living mycelium shelves lined with scored boules and honey loaves. A large oven mouth glows amber and provides the key light; gentle steam and flour motes in the air. Include tactile props: wooden peels, bannetons, copper, linen. Optional tiny baker silhouette for scale only. Style stays painterly storybook realism with warm ochre, cream flour, crust brown, moss green; optional soft biolume on shelf edges. No neon, no rain city, no horror fungi."
+
+ negative_prompt = "sci-fi lab, neon, cyberpunk, dungeon horror, bloody meat, modern stainless restaurant kitchen only, empty white cyclorama, watermark, unreadable mess of props without focal oven"
+
+ midjourney_notes: .{
+  flags = "--ar 16:9 --stylize 180"
+  lock_when = "oven + shelf materials hold across seeds"
+  asset_slot = "signature.midjourney.style_ref when stable"
+ }
+}
+
+~<../vibes/index.spw>
+~<./still-life.prompt.spw>

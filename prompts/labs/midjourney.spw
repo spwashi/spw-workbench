@@ -1,0 +1,193 @@
+# Lab: Midjourney Development
+#
+# Detailed prompt engineering for style discovery under culinary fantasy vibes.
+# Packs, ablations, param grids, ref pipelines — not one-off strings.
+
+#>spw_lab_midjourney
+#:lab #!midjourney
+#:layer #!creative
+#:status #!active
+
+^"intent"{
+ ~#goal: "Turn signature tissue into repeatable MJ runs: phrase locks, negatives, params, sref/cref discipline."
+ ~#taste: "materials and light before lore; stable words; one-variable ablations"
+}
+
+^"roots"{
+ @biome: ~"../biome/underroot.spw"
+ @vibes: ~"../vibes/index.spw"
+ @ecology: ~"../script-ecology.spw"
+ @handles: ~"../handles/index.spw"
+ @tone: ~"../substrate/tone-anatomy.spw"
+ @compose: ~"../substrate/compose.spw"
+ @portrait: ~"../image/portrait.prompt.spw"
+ @saga: ~"../sagas/index.spw"
+ @glyphs: ~"../../docs/assets/glyphs"
+}
+
+// ── Phrase banks (stable; extend carefully) ────────────────────
+
+^"phrase_banks"{
+ materials: [
+  "flour-dusted linen"
+  "scored artisan crust"
+  "worn wood grain board"
+  "wicker banneton"
+  "clay starter jar"
+  "soft mycelium shelf threads"
+  "honey glaze sheen"
+  "packed-earth arch"
+ ]
+
+ light: [
+  "warm oven-amber key light"
+  "soft steam volumetric"
+  "dappled canopy leaf caustics"
+  "cool cap-glow accent"
+  "honest daylight under linen awning"
+ ]
+
+ style_lock: [
+  "painterly storybook realism"
+  "tactile texture priority"
+  "restrained woodland wonder"
+  "hospitable patterned interior"
+  "hand-scale craft focus"
+ ]
+
+ // Intentionally avoid genre stamps in default packs
+ style_refuse: [
+  "cyberpunk"
+  "neon noir city"
+  "grimdark"
+  "portfolio dark fantasy warrior"
+  "fairytale watermark style"   // feel it; don't stamp the school
+ ]
+}
+
+^"neg_bank"{
+ anatomy: "extra fingers, melted hands, fused limbs, body-horror fungi"
+ scene: "parking lot, strip mall, neon signs, readable logos, cars"
+ style: "plastic AI gloss, empty spectacle, chrome armor, glowing evil eyes"
+ type: "gibberish text, watermark, UI chrome"
+}
+
+// ── Pack builder ───────────────────────────────────────────────
+
+^"tone_inject"{
+ ~#from: @tone
+ ~#law: "Positive poles only in the main string; structural failures go to neg_bank."
+ map: .{
+  #tone_temperature_warm: "warm amber key, invitation light"
+  #tone_temperature_cool: "cool cyan rim, slate calm"
+  #tone_material_fused: "copper life through glass structure, two materials negotiate"
+  #tone_material_mineral: "cut crystal face, rigid aperture"
+  #tone_material_organic: "soft mesh, steam, grain, linen dust"
+  #tone_pace_kinetic: "struck once, decisive vertical energy"
+  #tone_pace_patient: "slow wave, continuous ribbon, proof-time hush"
+  #tone_relation_braid: "two strands fused, confluence knot"
+ }
+ register_default: #voice_braided_relation
+}
+
+^"pack_build"{
+ ~#role: "Assemble short_prompt / final_prompt from organ + facet + lens + tone"
+
+ order: [
+  #subject_or_place
+  #action_or_still
+  #tone_material_phrases
+  #tone_temperature_light
+  #materials_from_bank
+  #light_from_bank_or_axis
+  #palette_from_tone_or_craft
+  #style_lock_phrases
+  #composition_law
+ ]
+
+ short_max_clauses: 12
+ final_structure: .{
+  open: "Create a … for the scene:"
+  body: "concrete nouns, readable craft, light motivation"
+  close: "painterly storybook realism; restrained wonder; no neon city, no horror fungi."
+ }
+
+ flags_default: .{
+  portrait: "--ar 3:4 --stylize 150"
+  env: "--ar 16:9 --stylize 160"
+  still: "--ar 1:1 --stylize 120"
+  sheet: "--ar 16:9 --stylize 100"
+  diagram: "--ar 16:9 --stylize 80"
+ }
+
+ seed_discipline: "lock seed when ablating one axis; unlock when exploring content only"
+}
+
+// ── Param grid (experiments) ───────────────────────────────────
+
+^"param_grid"{
+ stylize: [80, 120, 150, 200, 250]
+ weird: [0, 20, 40]
+ note: "Raise stylize after material hold; raise weird only on spore/biolume research"
+}
+
+// ── Pipelines ──────────────────────────────────────────────────
+
+^"sref_pipeline"{
+ steps: [
+  "1. Hold style across ≥3 organs (portrait, still_life, interior)"
+  "2. Pick cleanest env or still as sref parent"
+  "3. Write signature.midjourney.asset_refs.style_ref"
+  "4. Saga >>lock — sref=…"
+ ]
+}
+
+^"cref_pipeline"{
+ steps: [
+  "1. Portrait hold + sheet hold"
+  "2. Same costume/flour language"
+  "3. Write character_ref"
+  "4. Test process beat with cref; measure hand stability"
+ ]
+}
+
+^"ablation"{
+ law: "One change per run when measuring."
+ coordinates: [
+  #stylize
+  #light_axis
+  #flavor_axis
+  #tone_temperature
+  #tone_material
+  #tone_pace
+  #tone_relation
+  #lens
+  #facet
+  #organ
+  #phrase_swap   // only if bank phrase failed
+ ]
+ log: ">>measure — ablation[tone_material:mineral→fused] hold=… notes=…"
+}
+
+// ── Development checklist ──────────────────────────────────────
+
+^"checklist"{
+ #[
+  "Banks used ≥3 material phrases from phrase_banks.materials"
+  "At least one motivated light phrase"
+  "No genre school name in prompt body"
+  "Negatives include anatomy + style refuse"
+  "Flags match organ"
+  "Saga step recorded if axis/organ changed"
+  "Asset ref written only after multi-organ hold"
+ ]
+}
+
+^"open"{
+ ?[version_pin]: "Pin Midjourney version string in flags_default when team standardizes?"
+ ?[weight_syntax]: "Document :: weights only after team confirms version support?"
+}
+
+~<../vibes/index.spw>
+~<../biome/underroot.spw>
+~<../sagas/index.spw>

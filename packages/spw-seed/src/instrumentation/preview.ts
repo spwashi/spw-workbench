@@ -22,10 +22,11 @@ import type {
 function describeOperation(op: OperationNode): string {
   const mod = op.modifiers ? op.modifiers.modifiers.map(m => m.value).join('.') + ' ' : ''
   const label = op.operatorLabel?.value ?? ''
+  const subject = op.subject ? describeTerm(op.subject) : ''
   const frame = op.frame ? describeFrame(op.frame) : ''
   const body = op.body ? describeBody(op.body) : ''
   const inline = op.linePayload?.text ? ` ${op.linePayload.text}` : ''
-  return `${mod}${op.operator.value}${label}${frame}${body ? ` {${body}}` : ''}${inline}`.trim()
+  return `${mod}${op.operator.value}${label}${subject}${frame}${body ? ` {${body}}` : ''}${inline}`.trim()
 }
 
 function describePathRef(ref: PathRefNode): string {
@@ -72,10 +73,22 @@ function describeBody(body: BodyNode): string {
 }
 
 function describeCapsule(cap: CapsuleNode): string {
-  const tag = cap.tag ? cap.tag.value : 'capsule'
+  const channel =
+    cap.tag?.value
+    ?? (cap.channel?.type === 'Literal'
+      ? cap.channel.token.value
+      : cap.channel?.type === 'Identifier'
+        ? cap.channel.token.value
+        : '')
   const frame = cap.frame ? describeFrame(cap.frame) : ''
   const body = cap.body ? `{${describeBody(cap.body)}}` : ''
-  return `<${tag}${frame}>${body}`
+  const shell = `<${channel || 'capsule'}${frame}>${body}`
+  if (cap.placement === 'medial' || cap.left || cap.right) {
+    const L = cap.left ? describeTerm(cap.left) : ''
+    const R = cap.right ? describeTerm(cap.right) : ''
+    return `${L}${shell}${R}`
+  }
+  return shell
 }
 
 function describeStream(stream: StreamNode): string {

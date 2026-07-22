@@ -1,0 +1,115 @@
+# Culinary Fantasy — Anatomy
+#
+# Playable structure for homebrew RPG and fiction. Slots, not set dressing lists.
+
+#>spw_culinary_fantasy_anatomy
+#:domain #!rpg
+#:layer #!creative
+
+^"roots"{
+ @domain: ~"./index.spw"
+ @vibes: ~"../../vibes/index.spw"
+ @tables: ~"./tables.spw"
+}
+
+// ── Place classes (general) ────────────────────────────────────
+
+^"places"{
+ hearth_kitchen: .{
+  ~#role: "indoor cook-site, obligation of shelter"
+  vibe_default: [ #vibe_hearth, #vibe_baking ]
+  slots: [ #who_tends, #what_heats, #what_is_owed ]
+ }
+ road_kitchen: .{
+  ~#role: "mobile or camp cook-site"
+  vibe_default: [ #vibe_hearth, #vibe_forest ]
+  slots: [ #fuel, #watch, #share_or_ration ]
+ }
+ market_stall: .{
+  ~#role: "trade face of food"
+  vibe_default: [ #vibe_market ]
+  slots: [ #wares, #measure, #rumor_price ]
+ }
+ cellar_store: .{
+  ~#role: "time, supply, secrets"
+  vibe_default: [ #vibe_mineral, #vibe_hearth ]
+  slots: [ #what_keeps, #what_spoils_if_ignored, #who_has_key ]
+ }
+ path_forage: .{
+  ~#role: "gather without assuming a dungeon"
+  vibe_default: [ #vibe_forest ]
+  slots: [ #season, #risk, #yield_tag ]
+ }
+ feast_hall: .{
+  ~#role: "politics through plates"
+  vibe_default: [ #vibe_hearth, #vibe_market ]
+  slots: [ #who_sits_where, #dish_means, #insult_or_honor ]
+ }
+}
+
+// ── People (roles, not species lock) ───────────────────────────
+
+^"roles"{
+ #cook
+ #host
+ #forager
+ #trader
+ #guest
+ #rival_kitchen
+ #debt_holder   // someone owed a meal or a favor
+}
+
+// ── Recipe as procedure (game engine friendly) ─────────────────
+
+^"recipe"{
+ ~#shape: "ingredients + time + heat + risk → dish tag + optional move"
+ fields: [
+  #name
+  #ingredients   // tags, not shopping realism
+  #watches       // time cost
+  #heat          // hearth  road  none
+  #risk          // what fails if rushed
+  #yield         // dish tag, boon, obligation
+  #fail_forward  // still edible? still tradable?
+ ]
+ law: "Recipes change social and travel state; they are not only flavor text."
+}
+
+// ── Supply & hospitality ───────────────────────────────────────
+
+^"economy"{
+ tags: [ #fresh, #keeps, #ration, #feast_grade, #offering, #contraband_spice ]
+ hospitality: .{
+  offer_seat: "gain obligation or trust"
+  refuse_seat: "risk slight or keep freedom"
+  share_last: "heroic thrift — cost supply, gain bond"
+ }
+ spoilage: .{
+  ~#rule: "Spoilage is a clock or a failed watch — not implied by forest/mushroom vibes alone."
+  move: "when a keep-tag is neglected, convert #fresh → threatened, then gone"
+ }
+}
+
+// ── Scene brief slots (for emit) ───────────────────────────────
+
+^"scene_slots"{
+ ~#claim: "what this scene is about in one line"
+ ~#place: "place class id"
+ ~#vibes: "≤3 vibe handles with weights"
+ ~#who: "roles present"
+ ~#cooks: "what is on the heat or board"
+ ~#owed: "debt, favor, or free gift"
+ ~#door: "player-facing choice"
+}
+
+^"non_overfit"{
+ refuse_as_required: [
+  #named_mushroom_bakery_brand
+  #single_mascot_creature
+  #one_true_magic_system_of_yeast
+ ]
+ allow_as_optional_pack: "packs/* may specialize; domain stays general"
+}
+
+~<./index.spw>
+~<./tables.spw>

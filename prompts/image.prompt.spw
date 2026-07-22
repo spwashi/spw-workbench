@@ -1,347 +1,187 @@
+# Image Generation Prompt (default projection)
+#
+# Default still-image surface for kitchen craft vibes. Contour kinds live under prompts/image/.
+# Agents: load signature → pick contour → mutate one axis → emit Midjourney text.
+
 #>image_generation_prompt
 #:image
 #:generation
 #:prompt
 #:layer #!creative
 
-^"image_generation" {
-  identity: .{
-    title = midnight_threshold
-    subtitle = creature_on_the_last_platform
-    version = v1
-    status = draft
-    intent = generate_complete_image_brief
-
-    variants: .{
-      v_noir = "Cinematic, high-contrast, moody"
-      v_bloom = "Ethereal, overexposed, soft"
-      v_documentary = "Raw, clinical, naturalistic"
-    }
-
-    focus = *v_noir
-    trace = ~[v_noir:0.6, v_bloom:0.3, v_documentary:0.1]
-  }
-
-  format: .{
-    medium = !digital_illustration
-    orientation = !landscape
-    aspect_ratio = 16:9
-    resolution_target = 4k
-    fidelity = !stylized
-    audience = #general
-    priority = !strong_focal_clarity
-  }
-
-  brief: .{
-    concept: .{
-      premise = a solitary humanoid creature waits on a rain-soaked tram platform as if the city itself is deciding whether to let it cross into another life
-      thesis_image = lonely threshold figure held between neon weather and interior resolve
-      
-      emotional_core[*]: .{
-        v_noir = #somber_isolation
-        v_bloom = #ethereal_wonder
-        v_documentary = #raw_truth
-      }
-      
-      emotional_mix: [
-        #somber_isolation
-        #cautious_longing
-        #threshold_dread
-      ]
-      transformation = from hunted_and_hesitant to self_possessed_and_committed
-    }
-
-    subject: .{
-      primary_subject = !humanoid_creature
-      subject_count = 1
-      
-      subject_state[*]: .{
-        v_noir = !shadowed_and_waiting
-        v_bloom = !glowing_and_reaching
-        v_documentary = !caught_in_motion
-      }
-      
-      details: .{
-        age_or_scale = large
-        silhouette = clear_and_sharp
-        expression = driven_by_&[brief.concept.emotional_core]
-        gesture = !still
-        
-        wardrobe_or_surface[*]: .{
-          v_noir = !structured_wool_and_leather
-          v_bloom = !flowing_silk_and_light
-          v_documentary = !weathered_utilitarian
-        }
-      }
-      
-      anatomy_and_posing: .{
-        eye_contact = !looking_off_camera
-        posture = !slumped_shoulders
-        hand_placement = !resting_on_knees
-        weight_distribution = !leaning_forward
-      }
-      
-      supporting: [
-        !flora
-        !atmosphere
-      ]
-    }
-
-    scene: .{
-      environment_type = !surreal
-      environmental_story = the station feels like a border checkpoint between one identity and another, with the city reduced to wet signs, steel, and waiting light
-      
-      location[*]: .{
-        v_noir = !wet_city_street_neon_reflections
-        v_bloom = !overgrown_glasshouse_sun_dappled
-        v_documentary = !active_transit_hub_fluorescent
-      }
-      
-      architecture_period[*]: .{
-        v_noir = !art_deco_industrial_rivets
-        v_bloom = !neo_classical_ruin_marble
-        v_documentary = !brutalist_civic_concrete
-      }
-
-      time[*]: .{
-        v_noir = !midnight_pitch_black_sky
-        v_bloom = !dawn_golden_hour_haze
-        v_documentary = !harsh_midnoon_directional
-      }
-      
-      weather[*]: .{
-        v_noir = !heavy_rain_droplets_on_lens
-        v_bloom = !morning_fog_volumetric
-        v_documentary = !overcast_flat_white_sky
-      }
-    }
-
-    camera_and_composition: .{
-      framing = !medium_wide_environmental_portrait
-      angle = !low_angle_heroic
-      focal_point = isolates_&[brief.subject.primary_subject]
-      depth_strategy = !layered_foreground_elements
-      balance = !asymmetrical_rule_of_thirds
-      movement_lines: [ #diagonal_up, #curved_flow_fibonacci ]
-    }
-
-    design_system: .{
-      color: .{
-        saturation = !vivid_but_natural
-        logic = structurally_encodes_&[brief.concept.transformation]
-
-        palette[*]: .{
-          v_noir = [ #monochrome_black, #silver_metallic, #charcoal_matte ]
-          v_bloom = [ #pastel_peach, #mint_green, #soft_gold ]
-          v_documentary = [ #desaturated_earth, #concrete_gray, #steel_blue ]
-        }
-        
-        contrast[*]: .{
-          v_noir = !high_black_white_crushed
-          v_bloom = !soft_lifted_blacks_milky
-          v_documentary = !true_to_life_linear_curve
-        }
-      }
-    }
-
-    lighting_and_materiality: .{
-      primary_source = !neon_signage_and_wet_streetlamps
-      direction = !backlight_rim_wrap
-      highlights = specular_on_wet_pavement_horns_and_coat_edges
-
-      lighting_quality[*]: .{
-        v_noir = !hard_specular_bare_bulb
-        v_bloom = !soft_diffused_8x8_silk
-        v_documentary = !available_ambient_street_lamps
-      }
-
-      color_temperature[*]: .{
-        v_noir = !cool_tungsten_3200k_blue_cast
-        v_bloom = !warm_golden_5600k_orange_cast
-        v_documentary = !mixed_fluorescent_4000k_green_shift
-      }
-
-      fill_ratio[*]: .{
-        v_noir = !high_contrast_8_to_1_chiaroscuro
-        v_bloom = !flat_ambient_2_to_1_airy
-        v_documentary = !natural_bounce_4_to_1_realistic
-      }
-      
-      atmosphere_effects: [ 
-        #fog_bloom_diffusion
-        #dust_beams_volumetric
-        #lens_flare_anamorphic_blue
-      ]
-
-      wear_and_age = !weathered_and_used
-      tactile_priority = anchors_&[brief.subject.details.wardrobe_or_surface]
-
-      surface_language[*]: .{
-        v_noir = !wet_asphalt_and_shattered_glass
-        v_bloom = !translucent_petals_and_subsurface_skin
-        v_documentary = !scuffed_plastic_and_frayed_denim
-      }
-      
-      special_effects: [ 
-        #smoke_wisps
-        #glass_refraction_chromatic_split
-        #sweat_beads_macro
-      ]
-    }
-  }
-
-  renderer_profile: .{
-    generative_engine: .{
-      model_architecture = !latent_diffusion_foundation_model
-      sampler = !adaptive_step_stochastic_sampler
-      steps = 40
-      cfg_scale = 7.5
-      clip_skip = 2
-      seed = !randomized_unless_locked
-      
-      lens_feel[*]: .{
-        v_noir = !high_contrast_35mm_anamorphic
-        v_bloom = !dreamy_50mm_soft_focus
-        v_documentary = !clinical_50mm_rectilinear
-      }
-      
-      aperture[*]: .{
-        v_noir = !f_8_deep_focus_everything_sharp
-        v_bloom = !f_1_4_shallow_bokeh_cream
-        v_documentary = !f_5_6_standard_documentary
-      }
-      
-      shutter_speed[*]: .{
-        v_noir = !frozen_motion_1_1000s
-        v_bloom = !long_exposure_drag_1_2s
-        v_documentary = !slight_motion_blur_1_60s
-      }
-
-      film_stock[*]: .{
-        v_noir = !classic_high_contrast_panchromatic_bnw_pushed
-        v_bloom = !tungsten_balanced_motion_picture_film_with_halation
-        v_documentary = !daylight_color_reversal_film
-      }
-      
-      lora_stack: .{
-        primary_style: .{ name = "cinematic_lighting_v2", weight = 0.8 }
-        secondary_texture: .{ name = "analog_film_grain", weight = 0.4 }
-        tertiary_detail: .{ name = "add_detail_xl", weight = 0.2 }
-      }
-
-      controlnet_adapters: .{
-        depth_map = !monocular_depth_estimation_weight_0_5
-        canny_edge = !disabled
-        openpose = !active_for_human_subjects
-        ip_adapter: .{ image_prompt = "reference_image.jpg", weight = 0.6 }
-      }
-    }
-
-    post_processing: .{
-      upscaling: .{
-        algorithm = !generative_adversarial_network_4x
-        denoising_strength = 0.35
-        high_res_fix = !enabled
-      }
-      
-      inpainting: .{
-        face_restoration = !blind_face_restoration_network_weight_0_5
-        hand_correction = !depth_aware_inpainting_mask
-      }
-      
-      color_grading: .{
-        lut = !teal_and_orange_blockbuster
-        vignette = !heavy_dark_corners
-        grain_overlay = !35mm_kodak_scan
-      }
-    }
-  }
-
-  boonhonk: .{
-    definition = "The observable field of wonder; naming taste, posture, and quality."
-    combinatorics: .{
-      instruction = "Use the % operator to quantify taste."
-      formulas: [
-        %[brief.design_system.color.contrast * 2.0] + %[brief.lighting_and_materiality.fill_ratio] = sculptural_density
-        %[brief.subject.subject_state * renderer_profile.generative_engine.lens_feel] + %[brief.lighting_and_materiality.surface_language] = tactile_yield
-        %[renderer_profile.generative_engine.lora_stack] / (1 + %[negatives.style]) = prompt_adherence
-        %[brief.concept.emotional_core] * %[focus * trace] = wonder_ratio
-      ]
-      execution = compute_%[sculptural_density * tactile_yield * prompt_adherence * wonder_ratio]
-    }
-  }
-
-  resolved_brief: .{
-    selected_variant = *v_noir
-    working_summary = a tall antlered humanoid creature in a dark wool coat sits forward on a rain-slick tram platform bench, looking off camera as neon reflections pool across black pavement and art deco steel
-    semantic_source = brief
-    renderer_source = renderer_profile
-    non_negotiables: [
-      #single_subject_only
-      #clear_silhouette
-      #humanoid_pose_with_hands_visible
-      #wet_city_platform_at_midnight
-      #somber_noir_mood
-    ]
-    composition_priorities: [
-      #subject_in_right_third
-      #foreground_rail_or_glass_occlusion
-      #deep_focus_environmental_story
-      #reflection_shapes_lead_eye_back_to_subject
-    ]
-    style_priorities: [
-      #cinematic_noir
-      #high_contrast_monochrome_with_silver_accents
-      #analog_film_grain
-      #restrained_surrealism
-    ]
-  }
-
-  emit: .{
-    short_prompt = "Tall antlered humanoid creature in a dark wool coat waiting alone on a rain-soaked tram platform at midnight, medium-wide environmental portrait, low angle, clear silhouette, looking off camera, leaning forward with hands resting on knees, wet black pavement with neon reflections, art deco steel and rivets, hard noir lighting, backlit rim light, deep focus, layered foreground glass and rails, high-contrast monochrome with silver accents, analog film grain, restrained surreal atmosphere, cinematic 35mm anamorphic."
-
-    final_prompt = "Create a stylized digital illustration in a cinematic noir mode. Show a single tall antlered humanoid creature seated on a tram platform bench at midnight. The subject wears a structured dark wool coat with leather detail, has slumped shoulders, leans forward, and rests both hands on its knees while looking off camera. Frame it as a medium-wide environmental portrait from a low angle so the figure feels isolated but monumental. The setting is a wet city platform with neon reflections, art deco industrial steel, rivets, rain in the air, and a pitch-black sky. Use layered foreground elements like out-of-focus glass, rails, or droplets to add depth without obscuring the subject. Keep the silhouette clean and readable. Light the scene with neon signage and streetlamps, using hard specular highlights, cool 3200k tones, strong rim light, and deep noir contrast. Prioritize wet asphalt, shattered-glass texture cues, subtle smoke wisps, and analog film grain. The image should feel somber, lonely, and on the edge of transformation rather than action-heavy or heroic."
-
-    negative_prompt = "extra fingers, broken hands, warped limbs, fused bodies, missing eyes, too many teeth, elongated neck, cropped subject at joints, tangent collisions with frame, floating objects, cluttered background mergers, incoherent reflections, chromatic aberration abuse, watermark text, jpeg artifacts, blurry foreground over subject, default AI gloss, empty blockbuster spectacle, glowing fantasy eyes, generic portfolio fantasy trends, glossy GPU render aesthetic"
-
-    model_notes = .{
-      preferred_aspect_ratio = 16:9
-      preferred_resolution = 4k
-      guidance = "Use the brief layer to understand image semantics, the renderer_profile layer to populate optional engine-specific controls, and the final_prompt as the main text prompt. Send negative_prompt as a separate negative field. Treat controlnet, LoRA, lens, and post-processing directives as renderer-specific overrides rather than required content semantics."
-    }
-  }
-
-  negatives: .{
-    anatomy: [ 
-      #extra_fingers, 
-      #broken_hands, 
-      #warped_limbs,
-      #fused_bodies,
-      #missing_eyes,
-      #too_many_teeth,
-      #elongated_necks
-    ]
-    composition: [ 
-      #cropped_focal_subject_at_joints, 
-      #tangent_collisions_with_frame,
-      #floating_objects,
-      #horizon_line_askew,
-      #cluttered_background_mergers
-    ]
-    rendering: [ 
-      #plastic_skin_pores, 
-      #incoherent_reflections_in_mirrors, 
-      #chromatic_aberration_abuse,
-      #watermark_text,
-      #jpeg_artifacts,
-      #blurry_foreground
-    ]
-    style: [ 
-      #default_ai_gloss_smooth, 
-      #empty_marvel_spectacle, 
-      #overuse_of_bloom_glowing_eyes,
-      #generic_fantasy_portfolio_trends,
-      #unbiased_gpu_render_engine_aesthetic
-    ]
-  }
+^"roots"{
+ @ecology: ~"./script-ecology.spw"
+ @vibes: ~"./vibes/index.spw"
+ @contours: ~"./image/index.spw"
+ @portrait: ~"./image/portrait.prompt.spw"
+ @saga: ~"./sagas/index.spw"
 }
+
+^"meta"{
+ vibes: @vibes
+ contours: @contours
+ default_contour: @portrait
+ saga: @saga
+ ~#goal: "Stable stylistic signature projected into Midjourney-ready stills; many contours, one world."
+ ~#taste: "earthy mycelial bakery fantasy — tactile, warm, restrained wonder"
+ ~#status: "active"
+ ~#ecology: @ecology
+}
+
+^"identity"{
+ title = default
+ subtitle = portrait_projection_of_signature
+ version = v2
+ status = draft
+ intent = generate_midjourney_image_from_signature
+
+ // Flavor-board versatility (not noir locks)
+ variants: .{
+  v_hearth = "Oven amber, steam, intimate craft"
+  v_canopy = "Forest window light, dappled leaf caustics"
+  v_biolume = "Soft cap-glow, lilac flour dust accents"
+ }
+
+ focus = *v_hearth
+ trace = ~[v_hearth:0.55, v_canopy:0.3, v_biolume:0.15]
+ axis_blend = ~[honey:0.5, spore:0.3, rye:0.2]
+}
+
+^"format"{
+ medium = !digital_illustration
+ orientation = !portrait_preferred_for_default
+ aspect_ratio = 3:4
+ resolution_target = 4k
+ fidelity = !painterly_storybook_realism
+ engine = #midjourney
+ priority = !tactile_clarity_and_style_lock
+}
+
+^"brief"{
+ // Inherits lore from signature; this packet is the default portrait contour
+ concept: .{
+  premise = a careful baker of the underroot shapes living dough while flour hangs like pollen in oven-warm air
+  thesis_image = maker and material — hands, crust, earth light
+  emotional_core[*]: .{
+   v_hearth = #quiet_devotion
+   v_canopy = #open_morning_ease
+   v_biolume = #soft_otherworld_awe
+  }
+  emotional_mix: [ #quiet_devotion, #tactile_joy, #earth_belonging ]
+  transformation = from raw dough uncertainty to scored loaf resolve
+ }
+
+ subject: .{
+  primary_subject = #spore_baker
+  subject_count = 1
+  details: .{
+   silhouette = clear_and_soft
+   wardrobe_or_surface = !linen_apron_flour_earth_tones
+   gesture = !hands_with_dough
+  }
+  anatomy_and_posing: .{
+   eye_contact = !soft_down_or_off
+   posture = !forward_careful
+   hand_placement = !on_board_with_boule
+  }
+ }
+
+ scene: .{
+  environment_type = !fantasy_bakery_interior_shallow
+  environmental_story = the room grows from soil and timber; bread is the local weather
+  location = #underroot_oven_chamber_background
+ }
+
+ design_system: .{
+  color: .{
+   palette = [ #warm_ochre, #crust_brown, #cream_flour, #moss_green, #honey_amber ]
+   contrast = !soft_sculptural_not_crushed_noir
+  }
+ }
+
+ lighting_and_materiality: .{
+  primary_source[*]: .{
+   v_hearth = !oven_glow_key
+   v_canopy = !window_dappled
+   v_biolume = !cap_rim_cool_accent
+  }
+  surface_language = !flour_linen_crust_wood_mycelium_soft
+ }
+}
+
+^"renderer_profile"{
+ generative_engine: .{
+  target = #midjourney
+  sampler_notes = !engine_default_ok
+  style_lock: .{
+   anchors: ~"./vibes/index.spw"  // reuse style_anchors
+   stylize = 150
+   weird = 0
+   seed = !lock_when_comparing_axes
+  }
+  asset_refs: .{
+   style_ref = _
+   character_ref = _
+   winning_phrase_lock = _
+  }
+ }
+}
+
+^"boonhonk"{
+ definition = "Wonder field for this image run."
+ combinatorics: .{
+  instruction = "Measure style stability against signature anchors, not novelty."
+  formulas: [
+   %[style_anchor_reuse] * %[tactile_material_clarity] = signature_hold
+   %[hands_readability] + %[loaf_readability] = craft_truth
+   %[axis_change_count_inverse] * %[wonder_ratio] = useful_imagination
+  ]
+  execution = compute_%[signature_hold * craft_truth * useful_imagination]
+ }
+}
+
+^"resolved_brief"{
+ selected_variant = *v_hearth
+ working_summary = "kitchen cook portrait — flour hands, hearth light, mycelial bakery shallow background"
+ contour = #portrait
+ non_negotiables: [
+  #single_subject
+  #hands_readable
+  #warm_earth_palette
+  #restrained_fantasy
+  #no_noir_city
+ ]
+}
+
+^"emit"{
+ short_prompt = "Portrait of a gentle fantasy baker with flour-dusted linen apron and readable hands shaping a scored boule on wood, warm oven-amber light, cream flour crust-brown moss honey palette, soft steam, painterly storybook realism, tactile texture, restrained woodland mycelial bakery fantasy, clear silhouette, shallow bakery interior"
+
+ final_prompt = "Create a Midjourney-ready portrait for the culinary fantasy signature: a soft-featured baker in a flour-dusted linen apron, hands clearly dusted and working a scored boule on a worn board. Warm hearth key light, optional soft window fill. Shallow bakery interior with wood, steam, and hint of mycelium shelves — background secondary. Painterly storybook realism; materials first (flour, linen, crust, wood). Palette: warm ochre, cream, crust brown, moss, honey amber. Restrained fantasy only. Not noir, not neon city, not body-horror mushrooms, not generic warrior fantasy."
+
+ negative_prompt = "extra fingers, melted hands, body horror fungi, glowing evil eyes, neon city, rain noir streets, chrome, plastic AI skin, watermark, text logos, crowded faces, cyberpunk, blood dark fantasy, empty spectacle"
+
+ midjourney_flags = "--ar 3:4 --stylize 150"
+ model_notes = .{
+  guidance = "Load signature style_anchors; use this emit for default portrait contour. For other subjects/scripts open prompts/image/*.prompt.spw. When a run holds, write asset_refs on the signature."
+  next_contours: [
+   ~"./image/interior.prompt.spw",
+   ~"./image/still-life.prompt.spw",
+   ~"./image/exterior.prompt.spw",
+   ~"./image/process.prompt.spw",
+   ~"./image/diagram.prompt.spw",
+   ~"./image/sheet.prompt.spw",
+  ]
+ }
+}
+
+^"negatives"{
+ anatomy: [ #extra_fingers, #melted_hands, #warped_limbs ]
+ composition: [ #cropped_hands, #busy_face_crowd, #lost_silhouette ]
+ style: [ #noir_city, #neon_cyberpunk, #portfolio_dark_fantasy_default, #plastic_ai_gloss, #horror_mushroom ]
+}
+
+~<./script-ecology.spw>
+~<./vibes/index.spw>
+~<./sagas/index.spw>
+~<./image/index.spw>
+~<./image/portrait.prompt.spw>

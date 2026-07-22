@@ -1,0 +1,138 @@
+# Inline Composites & Organic Syntax
+#
+# Medial capsules and related forms: composable, inspectable, organic
+# spellings for relations, measures, and nested data.
+#
+# @see packages/spw-seed/src/grammar/containers.ts — capsule channel + close
+# @see packages/spw-seed/src/grammar/expressions.ts — medial composition
+# @see docs/theory/spw/coupling-constructors.spw
+# @see docs/theory/spw/form-ladders.spw
+
+#:layer #!semantics
+
+^seed[Spw.Inline.Composites v:0.1 @profile:interpretive @intent:medial_capsule_data]
+
+^"intent"{
+ ~#goal: "Treat angle shells as both membranes and medial channels between terms — qualitative, quantitative, and statistical."
+ ~#taste: "organic spelling; structured ONF; digraph <> stays couple"
+}
+
+// ── Implemented ────────────────────────────────────────────────
+
+^"medial_capsule"{
+ surface: "left<channel>right"
+ examples: #[
+  "bagel<scent>coffee"   // qualitative relation / sensory bridge
+  "foo<5>bar"            // quantitative channel
+  "rate<0.85>hold"       // measure-like weight
+  "a<r>b<s>c"            // chained (left-assoc nest)
+ ]
+ shell: #[
+  "<scent>"              // qualitative channel alone
+  "<5>"                  // quantitative shell
+  "<tag>[params]{body}"  // rich interior (existing)
+ ]
+ lex: "IDENTIFIER CAPSULE_OPEN (IDENTIFIER|NUMBER|STRING) CAPSULE_CLOSE IDENTIFIER"
+ parse: "expression folds term + capsule shell + right term → Capsule placement=medial"
+ onf: .{
+  reg: #composite
+  placement: #medial
+  channel: "string atom"
+  channelKind: #id | #number | #string | #boolean
+  args: #[left, right]
+  coupling: #capsule
+ }
+ refuse: #[
+  "a<>b remains couple operator (digraph), never empty medial"
+  "prose recovery for <5> when channel parse fails"
+ ]
+}
+
+^"tagged_pathref"{
+ surface: `~<role>"relative/path"`
+ examples: #[ `~<night>"../asset/path/item.spw"`, `~<lens>"./selectors/lens.spw"` ]
+ role: "labeled include — role is inspectable without opening the file"
+ onf: "reg=pathref tag=role"
+ law: "Prefer ~<tag>\"path\" over inventing $./path for files"
+}
+
+^"probe_scope"{
+ surface: "? ( … )"
+ example: "?(_lens @main)"
+ law: "? binds a Scope subject when next token is (; does not line-payload the parens"
+ use: "open question over a local view (lens + main binding)"
+}
+
+// ── Statistics & complex data (design affordances) ─────────────
+
+^"statistics"{
+ // Channel as measure dimension; arms as units or samples
+ observation: "sample_a<weight:0.3>sample_b"   // via rich interior later: <weight>{0.3}
+ simple: "a<0.3>b"                               // numeric channel as weight/odds/score
+ series: "t0<μ>t1"                               // Greek/id as estimator tag
+ contingency: "row<cell>col"                     // table cell as medial
+ confidence: "estimate<0.95>interval"            // CI-style reading
+ law: "channelKind=number invites measure tooling; id channels invite ontology labels"
+ not_yet: #[
+  "multi-atom channels without frame (use <tag>[k:v] or body)"
+  "vector channels <1,2,3> — prefer frame or #[1,2,3]"
+ ]
+}
+
+^"complex_data"{
+ graph_edge: "node_u<label>node_v"
+ typed_edge: "person<knows>person"
+ qualified_slot: "field<unit>value"              // e.g. mass<kg>12
+ facet_bridge: "style<material>subject"          // PE / publish genotype bridge
+ saga_locus: "parent<&{fold}>child"              // conceptual; & still confluence Act
+ inspect: "spw select / preview / ONF frames.channel + args"
+}
+
+// ── Family of organic, composable, inspectable forms ───────────
+
+^"organic_family"{
+ // Prefer forms that already have AST + ONF coupling
+ medial_capsule: "left<channel>right — relation as membrane"
+ pathref_tag: `~<role>"path" — address with role`
+ labeled_frame: `^["name"]{ … } — section as named body`
+ scope_view: "(_lens @main) — local perspective bag"
+ frame_select: "[a, b] / [name: x] — params / selection"
+ body_field: ".{k: v} — facet map"
+ set_fold: "#[a, b, c] — categorical set"
+ confluence: "& => {&} — merge site → nested field"
+ couple: "<>[a, b] — explicit peer relation (not capsule)"
+ stream: "<<a, b>> — ordered channel"
+ nrange: "((a / b)) — band / walk"
+ probe: "?(scope) — wonder over a view"
+ measure: "%[metric] — observation (operator surface)"
+ hole: "_ / $slot — open fill for templates and sagas"
+}
+
+^"design_laws"{
+ 1: "Delimiter shape alone is not evaluation law — ONF coupling.kind disambiguates."
+ 2: "Organic spelling must remain round-trippable to structured nodes."
+ 3: "Quantitative channels use NUMBER tokens; do not invent unit syntax inside bare numbers."
+ 4: "Prefer labeled containers ^[\"name\"] for multi-field records over deep medial chains."
+ 5: "Medial chains are left-associative; deep stats tables use frames/bodies."
+ 6: "Digraph <> and capsule <…> never share a token class."
+}
+
+// ── Later ──────────────────────────────────────────────────────
+
+^"proposed"{
+ channel_frame: "left<rate[0.3, unit:odds]>right — structured channel without losing medial arms"
+ unit_sugar: "mass<kg>12 as Literal unit annotation profile (not core lexeme)"
+ select_expr: "spwq path for reg=composite"
+ pulse_profile: "layout-safe rewrite must not break medial spans"
+ saga_coordinate: "#medial_channel as retune axis for style bridges"
+}
+
+^"falsify"{
+ #[
+  "foo<5>bar falls to prose"
+  "bagel<scent>coffee is three unrelated sequence terms with no placement=medial"
+  "a<>b parses as empty medial capsule"
+  "?(scope) stores (scope) only as linePayload text"
+  "channelKind missing on numeric channels in ONF"
+ ]
+}

@@ -28,6 +28,21 @@ export { runSpwMountCli } from './mount'
 export { runQueryCli } from './query'
 export { printRootsHelp, runSpwRootsCli } from './roots'
 export { runSpwSelectCli } from './select'
+export {
+  emitPackFromFile,
+  emitPackFromSource,
+  listBuiltinRegisters,
+  printEmitHelp,
+  runSpwEmitCli,
+  renderPack,
+  writePack,
+  type DimMap,
+  type EmitDocument,
+  type EmitHost,
+  type EmitOptions,
+  type EmitPackResult,
+  type HostPacket,
+} from './emit-public'
 export { buildSpwTree, printTreeHelp, runSpwTreeCli, type SpwTreeNode } from './tree'
 export {
   discoverSpwWorkspace,

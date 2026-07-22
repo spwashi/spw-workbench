@@ -1,0 +1,169 @@
+# Fractal saga design
+#
+# Self-similar enrichment: the same law at every nest depth.
+# Anchor pattern: & => {&}  (form ladder op:& preferred product)
+
+#>spw_saga_fractal
+#:saga #!fractal
+#:layer #!semantics
+#:status #!active
+
+^"intent"{
+ ~#goal: "Fractal mutation: nest the same saga profile inside a container, enrich along ladders, fold with confluence."
+ ~#taste: "self-similar; one coordinate per depth; fold is explicit"
+}
+
+^"roots"{
+ @schema: ~"./schema.spw"
+ @macros: ~"./macros.spw"
+ @ladders: ~"../../docs/theory/spw/form-ladders.spw"
+ @ecology: ~"../script-ecology.spw"
+}
+
+// ── Core fractal law ───────────────────────────────────────────
+
+^"law"{
+ self_similar: "Child saga at depth d+1 uses the same profile grammar as depth d; only locus and bindings change."
+ one_locus: "Each nest targets one container or frame path."
+ one_coordinate: "Inside a child, still one coordinate per #mutate."
+ fold_required: "Leaving a nest without #fold leaves results quarantined (!bonk path)."
+ depth_budget: "Default max_depth 3; deeper requires !bonk + objective justification."
+}
+
+// ── Anchor: & => { & } ─────────────────────────────────────────
+
+^"confluence_ladder"{
+ // From form-ladders op:& — interpretive enrichment, not file mutation by itself
+ id: op:&
+ preferred_product: "{&}"
+ steps: [
+  .{ surface: "&",     role: #seed,   means: "bare merge site" }
+  .{ surface: "{&}",   role: #wrap,   means: "materialize merge inside a body field" }
+  .{ surface: "&[a,b]", role: #select, means: "merge with selection of arms" }
+  .{ surface: "{&[describe!]}", role: #annotate, means: "named force on a merge arm" }
+  .{ surface: "&(a,b,c)", role: #fold, means: "fold n args through confluence" }
+  .{ surface: ".{&: _}", role: #ground, means: "ground a merge slot in a facet" }
+ ]
+ arrow: "=>"
+ notation: "& => {&} => &[a, b] => {&[describe!]} => &(a, b, c) => .{&: _}"
+ saga_use: "Pulse form enrichment as #expand/#pulse; creative fills of arms are #mutate."
+}
+
+^"fractal_read"{
+ // Reading & => {&} as saga physiology
+ seed: "& is the open confluence — parent and child agree to merge later"
+ wrap: "{&} is the body that can host nested style/scene/spell containers"
+ select: "&[$style, $subject] chooses which genotype arms enter the merge"
+ fold: "&(child_a, child_b) collapses measured children into parent stream"
+ ground: ".{&: _} leaves a grounded slot for the next fractal cycle"
+}
+
+// ── Nest / fold protocol ───────────────────────────────────────
+
+^"nest"{
+ step: ">>[t] nest — depth+1 locus $locus profile $profile bindings $map"
+ opens: .{
+  child_id: "$parent/$locus@$t"
+  inherits: #[profile, objective, grade_cap, membrane]
+  rebinds: #[locus, organ, host, open slots]
+ }
+ examples: #[
+  "nest into ^\"style\".phrase_lock"
+  "nest into scene.beat[1]"
+  "nest into {&} after wrap enrichment"
+ ]
+}
+
+^"fold"{
+ step: ">>[t] fold — child $id via & valence $v"
+ merge_rules: .{
+  !boon: "accept child bindings that improved objective"
+  !bane: "discard child bindings; keep parent prior"
+  !bone: "keep anchors; drop experimental phrases"
+  !honk: "promote child binding to parent default focus"
+  !bonk: "keep child stream as quarantine appendix; do not lock"
+ }
+ product: "{&[kept arms]}"   // parent body gains selected arms
+}
+
+// ── Fractal containers (style repo / scene / spells) ───────────
+
+^"container_roles"{
+ // Nested bodies as repositories — same schema, different fill
+ style_repo: .{
+  locus: "^\"style\""
+  hosts: #[ phrase_lock, materials, light, tone_bias ]
+  fractal: "phrase_lock items may nest sub-locks per organ"
+ }
+ scene: .{
+  locus: "^\"scene\""
+  hosts: #[ place, beat, props, climate ]
+  fractal: "each beat[] can nest a mini-scenelet saga"
+ }
+ spells: .{
+  locus: "^\"spells\" or ^macro"
+  hosts: #[ !expression packs ]
+  fractal: "spell body may nest further macros"
+ }
+ subject_cast: .{
+  locus: "^\"subject\""
+  hosts: #[ tells, relations ]
+  fractal: "ensemble members nest as child subjects"
+ }
+}
+
+// ── Ladder-driven enrichment (form pulse) ──────────────────────
+
+^"ladder_walk"{
+ // Customizable: which ladder, which step range, at which depth
+ params: .{
+  ladder: "frame | body | op:& | op:! | …"
+  from_step: "empty|seed|…"
+  to_step: "wrap|fold|…"
+  depth: 0
+ }
+ saga_fragment: `
+>>[t] pulse  — ladder $ladder $from => $to @depth
+>>[t+1] measure — %parse_health %structure_delta
+>>[t+2] decide — keep enrichment if layoutOnly or expected structure move
+ `
+ link: "spw pulse --ladder &  |  --ladder frame  |  --geometry walk"
+}
+
+// ── Self-similar objective ─────────────────────────────────────
+
+^"fractal_objective"{
+ // Objective aggregates across depths
+ form: "Σ_d w(d) * objective(depth=d)"
+ default_weights: ~[d0:0.5, d1:0.3, d2:0.2]
+ law: "A !honk at depth 2 cannot lock parent without parent #fold !boon|!honk"
+}
+
+// ── Worked pattern ─────────────────────────────────────────────
+
+^"pattern_style_scene_merge"{
+ title: "Merge style repo into scene via confluence"
+ stream: `
+>>[0] observe — style anchors + scene beat[0]
+>>[1] expand  — & => {&} at scene.merge
+>>[2] nest    — locus scene.merge/{&} profile pe_style_lock
+>>[3]   (child) mutate — axis_light: hearth → canopy
+>>[4]   (child) measure — %style_hold
+>>[5]   (child) decide — !boon keep
+>>[6] fold    — child via & → {&[canopy light]}
+>>[7] measure — parent %style_hold %subject_hold
+>>[8] decide  — continue or lock
+ `
+}
+
+^"refuse"{
+ #[
+  "Infinite nest without depth_budget"
+  "Fold that rewrites history of child stream"
+  "Using & => {&} as a brand spell instead of confluence structure"
+  "Multi-depth lock in one step without per-depth measure"
+ ]
+}
+
+~<./schema.spw>
+~<./macros.spw>

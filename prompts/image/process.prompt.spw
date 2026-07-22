@@ -1,0 +1,68 @@
+# Image Contour: Process — Knead, score, peel
+#
+# Action beat for craft motion (animation key-pose friendly).
+
+#>image_process
+#:image #!process
+#:generation #!prompt
+#:layer #!creative
+
+^"meta"{
+ signature: ~"../vibes/index.spw"
+ contour: #process
+ script: #action_sequence_beat
+ ~#goal: "Hands + tool + dough at a clear craft moment"
+}
+
+^"identity"{
+ title = scoring_the_boule
+ subtitle = blade_and_flour_bloom
+ version = v1
+ intent = midjourney_action_pose
+
+ variants: .{
+  v_score = "Lame cutting pattern into floured dough"
+  v_knead = "Heel-of-hand press, elastic dough"
+  v_peel = "Loaf sliding into oven mouth"
+ }
+
+ focus = *v_score
+ trace = ~[v_score:0.5, v_knead:0.3, v_peel:0.2]
+}
+
+^"brief"{
+ action[*]: .{
+  v_score = !single_confident_score_stroke
+  v_knead = !forward_press_fold
+  v_peel = !peel_entry_to_glowing_oven
+ }
+
+ body: .{
+  crop = !hands_forearms_board_center
+  face = !optional_soft_blur_or_out_of_frame
+  hands = !anatomically_careful_primary
+ }
+
+ non_negotiables: [
+  #hands_hero
+  #tool_readable
+  #dough_material_truth
+ ]
+}
+
+^"emit"{
+ mj_aspect = "16:9"
+ short_prompt = "Close action shot of floured hands scoring a round loaf with a baker's lame on wood, flour bloom in warm hearth light, crust-to-be surface tactile, bakery interior soft background, painterly realism, honey and cream palette, craft focus"
+
+ final_prompt = "Process beat for kitchen craft: prioritize hands and craft. Default — scoring a floured boule with a lame, clear blade angle, flour dust bloom, worn board. Alternate variants knead or peel-into-oven. Warm hearth light, tactile dough, linen and wood. Face optional and secondary. Painterly storybook realism, restrained fantasy. Hands must not melt or extra-finger."
+
+ negative_prompt = "extra fingers, melted hands, horror, gore, text instructions overlay, modern stand mixer product shot, sterile catalog kitchen only"
+
+ midjourney_notes: .{
+  flags = "--ar 16:9 --stylize 120"
+  lock_when = "hands + tool silhouette correct"
+ }
+}
+
+~<../vibes/index.spw>
+~<./still-life.prompt.spw>

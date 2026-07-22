@@ -1,0 +1,70 @@
+# Image Contour: Diagram — Bakery section schematic
+#
+# Expository / teaching contour — flatter, legible regions (docs, UI, onboarding).
+
+#>image_diagram
+#:image #!diagram
+#:generation #!prompt
+#:layer #!creative
+
+^"meta"{
+ signature: ~"../vibes/index.spw"
+ contour: #diagram
+ script: #expository_map
+ ~#goal: "Readable section of the kitchen spaces — oven, shelves, loft, cellar — for docs and agents"
+}
+
+^"identity"{
+ title = section_map
+ subtitle = from_cellar_to_canopy
+ version = v1
+ intent = midjourney_schematic_storybook
+
+ variants: .{
+  v_cutaway = "Architectural cutaway with warm interiors"
+  v_map = "Top-down soft illustrated plan"
+  v_flow = "Process arrows dough→oven→shelf (minimal text)"
+ }
+
+ focus = *v_cutaway
+ trace = ~[v_cutaway:0.6, v_flow:0.25, v_map:0.15]
+}
+
+^"brief"{
+ regions: [
+  #spore_cellar
+  #underroot_oven_chamber
+  #flour_loft
+  #front_shop_under_oaks
+ ]
+
+ style: .{
+  clarity = !high_region_separation
+  lighting = !even_friendly_illustration
+  text = !no_readable_labels_unless_requested  // avoid MJ gibberish type
+  icons = !loaf_mushroom_simple_silhouettes
+ }
+
+ non_negotiables: [
+  #legible_zones
+  #same_world_palette
+  #not_ui_screenshot
+ ]
+}
+
+^"emit"{
+ mj_aspect = "16:9"
+ short_prompt = "Storybook architectural cutaway of a fantasy mycelium bakery under oak roots, clear zones for cellar starter jars, glowing oven chamber, flour loft, front shop, warm ochre cream moss palette, clean illustrative diagram style, soft lighting, no readable text, whimsical but orderly"
+
+ final_prompt = "Expository diagram of the kitchen as a gentle architectural cutaway: stacked zones — spore cellar with clay jars, underroot oven chamber with shelves of loaves, flour loft, and a small front shop opening to forest. Keep regions visually distinct with soft color coding from the signature palette. Illustrative storybook diagram, even light, minimal decoration, no fake typography. Optional simple loaf/mushroom icons. Not a photoreal mess, not a sci-fi blueprint."
+
+ negative_prompt = "tiny unreadable captions, watermark, photoreal clutter, horror roots, cyber grid HUD, corporate infographic stock"
+
+ midjourney_notes: .{
+  flags = "--ar 16:9 --stylize 80"
+  note = "Lower stylize keeps structure; raise only after zone legibility holds"
+ }
+}
+
+~<../vibes/index.spw>
+~<./interior.prompt.spw>

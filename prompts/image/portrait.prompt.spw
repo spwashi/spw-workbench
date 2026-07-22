@@ -1,0 +1,123 @@
+# Image Contour: Portrait — Spore baker
+#
+# Character beat for Midjourney style/character discovery.
+
+#>image_portrait
+#:image #!portrait
+#:generation #!prompt
+#:layer #!creative
+
+^"roots"{
+ @ecology: ~"../script-ecology.spw"
+ @vibes: ~"../vibes/index.spw"
+ @saga: ~"../sagas/index.spw"
+ @still_life: ~"./still-life.prompt.spw"
+ @sheet: ~"./sheet.prompt.spw"
+ @interior: ~"./interior.prompt.spw"
+}
+
+^"meta"{
+ vibes: @vibes
+ contour: #portrait
+ script: #character_beat
+ organ: #portrait
+ ~#goal: "Readable maker figure — flour, hands, quiet focus — reusable as cref seed"
+ ~#taste: "tactile cottage fantasy; not noir, not warrior portfolio"
+ ~#ecology: @ecology
+ ~#saga: @saga
+ ~#next_organ: @still_life
+}
+
+^"identity"{
+ title = spore_baker_morning
+ subtitle = flour_on_the_cap_brim
+ version = v1
+ status = draft
+ intent = midjourney_character_lock
+
+ variants: .{
+  v_hearth = "Oven-warm amber key, soft smoke, intimate"
+  v_canopy = "Dappled forest fill through shop window"
+  v_biolume = "Cap-glow practicals, cool lilac dust accents"
+ }
+
+ focus = *v_hearth
+ trace = ~[v_hearth:0.55, v_canopy:0.3, v_biolume:0.15]
+ axes_from_signature = ~[honey:0.5, spore:0.3, rye:0.2]
+}
+
+^"brief"{
+ subject: .{
+  primary = #spore_baker
+  count = 1
+  age_feel = !ageless_midlife_craftsperson
+  silhouette = !clear_head_and_shoulders_plus_hands
+  expression = !gentle_concentration
+  gaze = !down_to_dough_or_soft_off_camera
+  hands = !visible_flour_dusted_working_or_resting_on_board
+  wardrobe = !linen_apron_over_earth_tones_mushroom_cap_optional_hat
+  species_note = !subtle_fantasy_only_soft_features_not_horror
+ }
+
+ pose: .{
+  framing = !medium_portrait_chest_up_or_waist_up
+  angle = !slightly_below_eye_level_respectful
+  balance = !asymmetrical_with_negative_space_for_steam
+ }
+
+ setting_hint: .{
+  depth = !shallow_bakery_background
+  props_soft: [ #scored_boule, #wooden_board, #steam_wisp ]
+  do_not = !dominate_with_environment
+ }
+
+ light[*]: .{
+  v_hearth = !warm_oven_key_soft_fill
+  v_canopy = !window_dappled_leaf_caustics
+  v_biolume = !cool_cap_rim_light_warm_skin_keep
+ }
+
+ non_negotiables: [
+  #single_subject
+  #hands_readable
+  #flour_tactility
+  #warm_earth_palette
+  #restrained_fantasy
+ ]
+}
+
+^"emit"{
+ mj_aspect = "3:4"
+ short_prompt = "Portrait of a gentle fantasy baker with soft features and a linen apron dusted in flour, hands visible working dough on a wooden board, warm oven-amber light, cream flour and crust-brown palette, moss and honey accents, quiet concentration, painterly storybook realism, tactile texture, restrained woodland fantasy, clear silhouette, shallow bakery background with soft steam"
+
+ final_prompt = "Create a medium portrait of the kitchen cook: a careful, soft-featured craftsperson in a flour-dusted linen apron over earth-tone clothes, optionally a subtle mushroom-cap brim. Hands must be readable and dusted with flour, resting on or shaping a scored boule on a worn wood board. Keep the face gentle and concentrated, gaze slightly down. Light with warm hearth glow as key and soft fill; allow optional cool biolume flecks only as dust accents. Background is a quiet bakery interior — shelves, steam, wood — out of focus. Style: painterly storybook realism, tactile materials (flour, linen, bread crust, wood grain), warm ochre cream moss honey palette, restrained fantasy, no cyberpunk, no noir city, no heroic warrior framing."
+
+ negative_prompt = "extra fingers, melted hands, horror mushroom body horror, glowing evil eyes, neon city, rain-slick noir streets, chrome armor, hyper-sexualized, plastic AI skin, watermark, text logos, crowded faces, busy market throng, cyberpunk, dark fantasy blood, empty spectacle"
+
+ midjourney_notes: .{
+  flags = "--ar 3:4 --stylize 150"
+  lock_when = "face + hand readability holds across two seeds"
+  next_axis_test = "swap light to canopy or biolume; keep wardrobe and pose"
+  asset_slot = "signature.midjourney.character_ref when stable"
+ }
+}
+
+^"resolved"{
+ working_summary = "Flour-dusted baker portrait, hearth light, dough and hands as tactile anchors"
+ selected_variant = *v_hearth
+}
+
+^"open"{
+ ?[hands_vs_face]: "For first cref lock, prioritize hands+dough crop or full face?"
+}
+
+^["stream"]{
+ // Local mutation notes for this organ (mirror to @saga for ecology-wide history)
+ >>[2026-07-21] observe — organ authored; default v_hearth + honey blend
+}
+
+~<../script-ecology.spw>
+~<../vibes/index.spw>
+~<../sagas/index.spw>
+~<./still-life.prompt.spw>
+~<./interior.prompt.spw>

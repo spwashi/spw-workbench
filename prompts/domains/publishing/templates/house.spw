@@ -1,0 +1,82 @@
+# Publishing — House pack schema
+#
+# Stable voice and material law for a media house (or a single author).
+# Bind once; titles and jobs inherit.
+
+#>spw_publishing_house
+#:domain #!publishing
+#:template #!house
+#:layer #!creative
+
+^"intent"{
+ ~#goal: "Define house voice, palette, refuse list, and default registers so jobs stay legible."
+ ~#taste: "short law; feel-physics only; no vendor names"
+}
+
+^"roots"{
+ @domain: ~"../index.spw"
+ @tone: ~"../../../substrate/tone-anatomy.spw"
+}
+
+// ── Schema (fill in a house instance) ──────────────────────────
+
+^"house"{
+ id: "house_id"                    // slug, not a brand requirement
+ display_name: "working house name"
+ register_default: #voice_hospitable_craft
+ registers_allowed: [
+  #voice_hospitable_craft
+  #voice_patient_precise
+  #voice_web_quiet
+  #voice_braided_relation
+  #voice_kinetic_clear
+ ]
+ ~#claim: "one sentence the house always means"
+ ~#taste: "material adjectives the house prefers"
+ palette: [ #ochre, #cream, #soft_charcoal ]   // tags, not hex lock
+ materials: [ #paper, #hand_type, #warm_wood ]
+ sound_bed: [ #quiet_room, #soft_instrument ]
+}
+
+^"law"{
+ positive_ground: "fill wanted poles in every public surface"
+ vendor_free: "registers are feel-physics; no engine product names"
+ thrift: "one claim per surface; chrome earns its place"
+ continuity: "title anchors override channel fashion when they conflict"
+}
+
+^"refuse"{
+ // structural refuses — not tonal opposite-lists
+ #[
+  "empire blockbuster default"
+  "unmotivated neon club light as house key"
+  "opposite-list as the only brief"
+  "vendor names inside #voice_* definitions"
+ ]
+}
+
+^"emit_slots"{
+ // optional house-level defaults carried into jobs
+ ~#claim: "house claim (inherited if title omits)"
+ ~#proof: "house proof pattern"
+ ~#door: "house default CTA shape"
+ register: "default #voice_*"
+}
+
+^"instance_shape"{
+ // copy this frame into packs/<house-id>.spw
+ example: `
+#>my_house
+^"house"{
+ id: "quiet_press"
+ display_name: "Quiet Press"
+ register_default: #voice_web_quiet
+ ~#claim: "Small tools that keep craft readable."
+ ~#taste: "thrift of chrome; plain speech; one clear next step"
+ palette: [ #ink, #cream_paper, #soft_graphite ]
+ materials: [ #letterpress_feel, #hand_margin ]
+}
+`
+}
+
+~<../index.spw>

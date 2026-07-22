@@ -1,0 +1,115 @@
+# Publishing — Job pack schema
+#
+# One deliverable under a title: host target, register, slots, acceptance.
+# Emit collapses this surface to a host packet.
+
+#>spw_publishing_job
+#:domain #!publishing
+#:template #!job
+#:layer #!creative
+
+^"intent"{
+ ~#goal: "Bound a single production job so agents can fill slots and emit without re-deciding house or title."
+ ~#taste: "one host; one acceptance; positive traits only"
+}
+
+^"roots"{
+ @domain: ~"../index.spw"
+ @title: ~"./title.spw"
+ @house: ~"./house.spw"
+ @compose: ~"../../../substrate/compose.spw"
+}
+
+// ── Schema ─────────────────────────────────────────────────────
+
+^"job"{
+ id: "job_slug"
+ title_ref: "title_slug or path"
+ house_ref: "house_slug or path"
+ host: #brief | #copy | #audio | #social | #mj | #web_copy | #eng_note | #plain
+ register: #voice_web_quiet
+ status: #draft | #ready | #shipped
+ ~#goal: "what this job must achieve"
+ ~#acceptance: "done when…"
+}
+
+^"hosts_fill"{
+ brief: .{
+  must: [ ~#goal, ~#audience, ~#claim, ~#acceptance ]
+  optional: [ ~#proof, ~#door, ~#taste ]
+ }
+
+ copy: .{
+  must: [ headline, ~#claim, body or final_prompt ]
+  optional: [ dek, ~#proof, ~#door ]
+ }
+
+ audio: .{
+  must: [ cold_open or hook, spine or body, ~#door or cta ]
+  optional: [ duration, ~#title, beat ]
+ }
+
+ social: .{
+  must: [ hook, body or text, ~#door ]
+  optional: [ channel, hashtag ]
+ }
+
+ mj: .{
+  must: [ short_prompt, final_prompt ]
+  optional: [ negative_prompt, flags ]
+  note: "negative_prompt is structural only"
+ }
+
+ web_copy: .{
+  must: [ ~#claim, ~#proof, ~#door ]
+ }
+
+ eng_note: .{
+  must: [ ~#goal, ~#acceptance ]
+  optional: [ path refs, constraints as positive fill ]
+ }
+}
+
+^"emit"{
+ // Canonical job emit frame — extract reads this.
+ // register: #voice_*
+ // ~#title / ~#claim / ~#proof / ~#door / ~#goal / ~#audience / ~#acceptance
+ // continuity: "anchor | anchor"
+ // host-specific slots: headline, dek, hook, cold_open, body, cta, duration, …
+}
+
+^"measure"{
+ positive_ground: "no negation spine in traits/slots"
+ continuity: "title anchors present in composed text"
+ thrift: "sentence_estimate stays channel-appropriate (social short; copy longer)"
+}
+
+^"instance_shape"{
+ example: `
+#>job_quiet_board_hero
+^"job"{
+ id: "quiet_board_hero_copy"
+ title_ref: "quiet_board"
+ host: #copy
+ register: #voice_web_quiet
+ ~#goal: "Hero section for the Quiet Board landing."
+ ~#acceptance: "Claim, proof, and door readable in one breath."
+}
+^"emit"{
+ register: #voice_web_quiet
+ ~#title: "Quiet Board"
+ ~#claim: "Keep the work visible."
+ ~#proof: "one screen, one verb"
+ ~#door: "Open the board"
+ ~#audience: "makers who ship small surfaces"
+ ~#goal: "Hero section for the Quiet Board landing."
+ ~#acceptance: "Claim, proof, and door readable in one breath."
+ continuity: "Quiet Board | one screen | one verb"
+ headline = "Keep the work visible."
+ dek = "Quiet Board: one screen, one verb."
+ body = "Quiet Board keeps craft readable. One screen. One verb. One clear next step."
+}
+`
+}
+
+~<../index.spw>

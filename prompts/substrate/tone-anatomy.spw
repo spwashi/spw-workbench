@@ -1,0 +1,336 @@
+# Tone Anatomy
+#
+# Multi-dimensional register for generation. Each dimension has:
+#   - positive pole (what to fill the channel with)
+#   - nuance knobs (how far, how mixed)
+#   - displacement (how the opposite is grounded without naming it)
+#
+# No vendor or engine names. Registers are feel-physics.
+
+#>spw_tone_anatomy
+#:prompt #!tone
+#:layer #!pragmatics
+#:status #!active
+
+^"intent"{
+ ~#goal: "Handles for tuning tone at each dimension with positive anchors and Spw-native blend."
+ ~#taste: "nuance without insult; blend with ~[pole:weight]; measure hold after emit"
+}
+
+^"roots"{
+ @substrate: ~"./index.spw"
+ @compose: ~"./compose.spw"
+ @handles: ~"../handles/index.spw"
+ @glyph_assets: ~"../../docs/assets/glyphs"
+}
+
+// ── Law ────────────────────────────────────────────────────────
+
+^"law"{
+ positive_first: "Emit body fills wanted poles. Opposites are displaced, not catalogued."
+ one_dim_mutate: "When retuning, change one dimension per saga step."
+ blend: "Use ~[a:0.6, b:0.4] for dual-register; avoid three-way mud unless !bonk."
+ name_registers: "Prefer #voice_* and #tone_* handles over adjectives alone."
+}
+
+// ── Dimensions (each is a handle family) ───────────────────────
+
+^"dimensions"{
+
+ // 1. Temperature — warmth of address
+ temperature: .{
+  handle: #tone_temperature
+  poles: .{
+   warm: .{
+    fill: "hearth language, invitation, second-person care, sensory specifics"
+    phrases: [ "come closer to the board", "steady hands", "warm next step" ]
+   }
+   cool: .{
+    fill: "clear air, slate calm, measured distance, crystalline structure"
+    phrases: [ "exact edge", "quiet aperture", "cool precision" ]
+   }
+  }
+  nuance: .{
+   warmth: 0.0_to_1.0   // 0 = full cool fill, 1 = full warm fill
+   default: ~[warm:0.55, cool:0.45]
+  }
+  displace_without_naming: .{
+   // opposite of harsh/sterile is not "not harsh" — it is warm fill + cool structure balance
+   too_harsh: "increase warm fill + hand-scale specifics"
+   too_syrupy: "increase cool fill + shorter clauses + evidence nouns"
+  }
+  glyph_kin: [ #bang_warm_pulse, #crystal_cool_aperture ]
+ }
+
+ // 2. Density — how much is said per unit
+ density: .{
+  handle: #tone_density
+  poles: .{
+   sparse: .{
+    fill: "one claim, white space, single primary action, thrift of chrome"
+    phrases: [ "one door", "one verb", "leave room" ]
+   }
+   lush: .{
+    fill: "layered image, sensory braid, secondary motifs allowed"
+    phrases: [ "shelf of detail", "steam and grain", "braid of senses" ]
+   }
+  }
+  nuance: .{
+   load: 0.0_to_1.0
+   default: ~[sparse:0.6, lush:0.4]
+  }
+  displace_without_naming: .{
+   walls_of_text: "raise sparse; one verb per sentence; one CTA"
+   empty_thin: "raise lush; add one material + one time-of-day"
+  }
+  web_default: ~[sparse:0.7, lush:0.3]
+ }
+
+ // 3. Precision — epistemic posture
+ precision: .{
+  handle: #tone_precision
+  poles: .{
+   exact: .{
+    fill: "named paths, numbers when true, constraints as =bias, falsifiers welcome"
+    phrases: [ "file path said aloud", "acceptance in one line", "measure this" ]
+   }
+   suggestive: .{
+    fill: "image and mood lead; implication over specification"
+    phrases: [ "as if", "toward", "the room suggests" ]
+   }
+  }
+  nuance: .{
+   rigor: 0.0_to_1.0
+   default: ~[exact:0.65, suggestive:0.35]
+  }
+  displace_without_naming: .{
+   handwave: "raise exact; add one checkable trait"
+   pedantic: "raise suggestive; cut third clause; keep one image"
+  }
+  web_default: ~[exact:0.75, suggestive:0.25]
+ }
+
+ // 4. Pace — rhythm of reveal
+ pace: .{
+  handle: #tone_pace
+  poles: .{
+   patient: .{
+    fill: "proof-time, ordered steps, breath between beats"
+    phrases: [ "first the board", "then the score", "wait for the rise" ]
+   }
+   kinetic: .{
+    fill: "forward verbs, short beats, arrival energy"
+    phrases: [ "struck once", "now", "cross the lintel" ]
+   }
+  }
+  nuance: .{
+   tempo: 0.0_to_1.0  // 0 patient … 1 kinetic
+   default: ~[patient:0.6, kinetic:0.4]
+  }
+  displace_without_naming: .{
+   frantic: "raise patient; number steps 1–3 only"
+   stagnant: "raise kinetic; open on a verb"
+  }
+  glyph_kin: [ #yeast_time, #bang_shaft ]
+ }
+
+ // 5. Relation — how self and other sit
+ relation: .{
+  handle: #tone_relation
+  poles: .{
+   companion: .{
+    fill: "with you, shared board, invitation, we-optional"
+    phrases: [ "together at the counter", "your next cut", "I'll hold the peel" ]
+   }
+   sovereign: .{
+    fill: "clear authority of craft, declarative, low hedging"
+    phrases: [ "the rule is", "prefer this path", "done when" ]
+   }
+  }
+  nuance: .{
+   closeness: 0.0_to_1.0
+   default: ~[companion:0.5, sovereign:0.5]
+  }
+  displace_without_naming: .{
+   cold_command: "raise companion; one second-person care line"
+   clingy: "raise sovereign; cut hedges; one acceptance line"
+  }
+  glyph_kin: [ #ampersand_braid ]  // two strands fused — preferred relational physics
+ }
+
+ // 6. Material — sensory grounding (from glyph + craft generations)
+ material: .{
+  handle: #tone_material
+  poles: .{
+   organic: .{
+    fill: "linen, flour, wood grain, dough, steam, copper warm"
+    phrases: [ "worn board", "flour weather", "honey edge" ]
+   }
+   mineral: .{
+    fill: "crystal edge, glass body, slate, cool aperture, particle dust"
+    phrases: [ "cut face", "cyan rim light", "rigid mouth of the frame" ]
+   }
+   fused: .{
+    fill: "two strands — warm life + cool structure in one knot (braid law)"
+    phrases: [ "copper through glass", "soft law in hard aperture", "two materials negotiate" ]
+   }
+  }
+  nuance: .{
+   // default fused honors &-as-hero without requiring bakery or pure crystal
+   blend: ~[fused:0.5, organic:0.3, mineral:0.2]
+  }
+  displace_without_naming: .{
+   generic_gloss: "raise material; name two surfaces and one light source"
+   prop_spam: "one hero material; thrift the rest"
+  }
+  from_generations: #{
+   braid: #fused
+   ribbon: #organic_fluid
+   crystal_bracket: #mineral
+   bang_shaft: #kinetic_mineral_warm
+   seed_forms: #organic_mineral_egg
+  }
+ }
+
+ // 7. Structure — how thought is shaped (web + prose + UI)
+ structure: .{
+  handle: #tone_structure
+  poles: .{
+   linear: .{
+    fill: "ordered sections, headings as doors, one path"
+    phrases: [ "first", "then", "acceptance" ]
+   }
+   spatial: .{
+    fill: "rooms and strata, navigate by roots, optional deep links"
+    phrases: [ "in the loft", "at threshold", "cellar holds" ]
+   }
+  }
+  nuance: .{
+   shape: ~[linear:0.55, spatial:0.45]
+  }
+  web_default: ~[linear:0.6, spatial:0.4]
+  displace_without_naming: .{
+   maze: "raise linear; three headings max"
+   flat_list: "raise spatial; one map of roots"
+  }
+ }
+
+ // 8. Authority — how claims land
+ authority: .{
+  handle: #tone_authority
+  poles: .{
+   evidenced: .{
+    fill: "show the board — path, example, check"
+    phrases: [ "see @root", "example:", "verify with" ]
+   }
+   confiding: .{
+    fill: "shared judgment, taste said aloud, provisional welcome"
+    phrases: [ "in practice", "what holds for me", "open to measure" ]
+   }
+  }
+  nuance: .{
+   stance: ~[evidenced:0.6, confiding:0.4]
+  }
+  displace_without_naming: .{
+   bluff: "raise evidenced; one falsifiable line"
+   timid: "raise confiding slightly but keep one hard acceptance"
+  }
+ }
+}
+
+// ── Named registers (compose poles; address as #voice_*) ─────
+
+^"registers"{
+ ~#role: "Bundles of dimension defaults for common tasks. Mutate one dim after load."
+
+ #voice_patient_precise: .{
+  temperature: ~[warm:0.45, cool:0.55]
+  density: ~[sparse:0.7, lush:0.3]
+  precision: ~[exact:0.8, suggestive:0.2]
+  pace: ~[patient:0.7, kinetic:0.3]
+  relation: ~[companion:0.4, sovereign:0.6]
+  material: ~[fused:0.4, mineral:0.35, organic:0.25]
+  structure: ~[linear:0.7, spatial:0.3]
+  authority: ~[evidenced:0.75, confiding:0.25]
+  use: "engineering notes, API, acceptance criteria, careful web copy"
+ }
+
+ #voice_hospitable_craft: .{
+  temperature: ~[warm:0.7, cool:0.3]
+  density: ~[sparse:0.5, lush:0.5]
+  precision: ~[exact:0.45, suggestive:0.55]
+  pace: ~[patient:0.65, kinetic:0.35]
+  relation: ~[companion:0.65, sovereign:0.35]
+  material: ~[organic:0.55, fused:0.35, mineral:0.1]
+  structure: ~[spatial:0.55, linear:0.45]
+  authority: ~[confiding:0.55, evidenced:0.45]
+  use: "hospitable craft narrative, onboarding, design"
+ }
+
+ #voice_kinetic_clear: .{
+  temperature: ~[warm:0.4, cool:0.6]
+  density: ~[sparse:0.75, lush:0.25]
+  precision: ~[exact:0.7, suggestive:0.3]
+  pace: ~[kinetic:0.75, patient:0.25]
+  relation: ~[sovereign:0.6, companion:0.4]
+  material: ~[fused:0.5, mineral:0.3, organic:0.2]
+  structure: ~[linear:0.8, spatial:0.2]
+  authority: ~[evidenced:0.65, confiding:0.35]
+  use: "CTAs, release notes, short web heroes, struck pulse"
+ }
+
+ #voice_braided_relation: .{
+  // honors & glyph: two strands negotiate
+  temperature: ~[warm:0.55, cool:0.45]
+  density: ~[layered_as_lush:0.55, sparse:0.45]
+  precision: ~[exact:0.5, suggestive:0.5]
+  pace: ~[patient:0.5, kinetic:0.5]
+  relation: ~[companion:0.5, sovereign:0.5]
+  material: ~[fused:0.7, organic:0.15, mineral:0.15]
+  structure: ~[spatial:0.5, linear:0.5]
+  authority: ~[evidenced:0.5, confiding:0.5]
+  use: "docs that teach by confluence; dual-audience; design+eng bridge"
+ }
+
+ #voice_web_quiet: .{
+  temperature: ~[warm:0.5, cool:0.5]
+  density: ~[sparse:0.8, lush:0.2]
+  precision: ~[exact:0.7, suggestive:0.3]
+  pace: ~[patient:0.55, kinetic:0.45]
+  relation: ~[companion:0.45, sovereign:0.55]
+  material: ~[fused:0.45, mineral:0.3, organic:0.25]
+  structure: ~[linear:0.65, spatial:0.35]
+  authority: ~[evidenced:0.7, confiding:0.3]
+  use: "marketing-adjacent product web without carnival"
+ }
+}
+
+// ── Glyph-informed tone (from generation families) ─────────────
+
+^"glyph_tone"{
+ ~#role: "Map operator-physics plates to tone handles without requiring the glyph in emit."
+ #braid: .{ material: #fused, relation: #confluence, register_hint: #voice_braided_relation }
+ #ribbon: .{ material: #organic_fluid, pace: #patient, register_hint: #voice_hospitable_craft }
+ #crystal: .{ material: #mineral, temperature: #cool, register_hint: #voice_patient_precise }
+ #shaft: .{ pace: #kinetic, temperature: #warm_edge, register_hint: #voice_kinetic_clear }
+ #hook: .{ structure: #body_tension, material: #fused_soft }
+ assets: ~"../../docs/assets/glyphs"
+}
+
+// ── Measure ────────────────────────────────────────────────────
+
+^"measure"{
+ hold_temperature: "reader feels intended warm/cool without corrective adjectives"
+ hold_density: "no skim wall; no hollow thinness"
+ hold_precision: "claims checkable or clearly imagistic — not muddled"
+ hold_positive: "emit body has zero opposite-lists; field is full"
+ composite: %[hold_temperature * hold_density * hold_precision * hold_positive]
+}
+
+^"open"{
+ ?[ui_bind]: "Expose registers as website.prompt.spw identity.focus alternatives?"
+ ?[code_comments]: "Default #voice_patient_precise for generated code comments?"
+}
+
+~<./index.spw>
+~<./compose.spw>

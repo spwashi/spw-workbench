@@ -1,0 +1,113 @@
+# Publishing — Title pack schema
+#
+# A "title" is one property (book, film, series, album, product story).
+# Continuity anchors travel across jobs and hosts.
+
+#>spw_publishing_title
+#:domain #!publishing
+#:template #!title
+#:layer #!creative
+
+^"intent"{
+ ~#goal: "Lock logline, audience, vibe stack, and continuity anchors for one title."
+ ~#taste: "short anchors; ≤3 vibes; claim that can survive channel retune"
+}
+
+^"roots"{
+ @domain: ~"../index.spw"
+ @house: ~"./house.spw"
+ @vibes: ~"../../../vibes/index.spw"
+ @compose: ~"../../../substrate/compose.spw"
+}
+
+// ── Schema ─────────────────────────────────────────────────────
+
+^"title"{
+ id: "title_slug"
+ working_title: "working title string"
+ logline: "one breath premise"
+ ~#claim: "public promise of the title"
+ ~#audience: "who this is for"
+ status: #draft | #active | #archived
+ house: ~"path or handle to house pack"
+}
+
+^"continuity"{
+ // Strings that must reappear in job emits (measure checks substrings).
+ // Prefer concrete names, materials, places — not abstract adjectives alone.
+ anchors: [
+  "working title phrase"
+  "hero material or place name"
+  "recurring character or role name"
+ ]
+ palette_lock: [ #tag_a, #tag_b ]
+ material_lock: [ #tag_a ]
+ names_lock: [ #proper_or_role_name ]
+ law: "If an anchor is missing from composed host text, continuity measure warns."
+}
+
+^"vibe_stack"{
+ // Optional texture; non-bleed still applies when vibes are culinary/forest.
+ max: 3
+ items: [
+  // { handle: #vibe_hearth, weight: 0.5 }
+ ]
+}
+
+^"optics"{
+ lenses: []      // ≤2 preferred
+ facets: []
+ film_depts: []  // optional #camera #lighting …
+ image_organs: [] // optional #portrait #still_life …
+}
+
+^"surfaces"{
+ // Planned deliverable kinds for this title (jobs instantiate these).
+ planned: [
+  #brief
+  #copy
+  #social
+  #audio
+  #stills
+  #scenelet
+ ]
+
+}
+
+^"emit_traits"{
+ ~#title: "working title"
+ ~#claim: "title claim"
+ ~#audience: "audience line"
+ ~#proof: "why believe"
+ ~#door: "default invitation"
+ continuity: "pipe- or comma-separated anchors for extract"
+}
+
+^"instance_shape"{
+ example: `
+#>title_quiet_board
+^"title"{
+ id: "quiet_board"
+ working_title: "Quiet Board"
+ logline: "A small tool keeps craft visible on one screen."
+ ~#claim: "Keep the work visible."
+ ~#audience: "makers who ship small surfaces"
+ house: ~"./house.spw"
+}
+^"continuity"{
+ anchors: [ "Quiet Board", "one screen", "one verb" ]
+}
+^"emit"{
+ register: #voice_web_quiet
+ ~#title: "Quiet Board"
+ ~#claim: "Keep the work visible."
+ ~#proof: "one screen, one verb"
+ ~#door: "Open the board"
+ continuity: "Quiet Board | one screen | one verb"
+ short_prompt = "One screen. One verb. Quiet Board."
+ final_prompt = "Quiet Board keeps craft readable — one screen, one verb, one clear next step."
+}
+`
+}
+
+~<../index.spw>

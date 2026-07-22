@@ -1,0 +1,134 @@
+# Publishing — Genre contract
+#
+# A genre here is a house-made *contract of expectations* (pacing, stakes,
+# audience promise) — not a school stamp ("cyberpunk", "grimdark").
+# Develop unique genres; refuse stamp-as-identity.
+
+#>spw_publishing_genre
+#:domain #!publishing
+#:template #!genre
+#:layer #!creative
+
+^"intent"{
+ ~#goal: "Define reusable genre contracts: promise, pacing, stakes, channel fit — without school labels as the spine."
+ ~#taste: "name the promise; fill wanted weather; stamps only as optional market tags if needed"
+}
+
+^"roots"{
+ @domain: ~"../index.spw"
+ @style: ~"./style.spw"
+ @subject: ~"./subject.spw"
+ @ecology: ~"../../../script-ecology.spw"
+ @film: ~"../../../production/film.spw"
+}
+
+// ── Schema ─────────────────────────────────────────────────────
+
+^"genre"{
+ id: "genre_slug"
+ display_name: "working genre name"   // house-local name, not school syllabus
+ status: #sandbox | #candidate | #locked | #retired
+ ~#promise: "what the audience is owed every time"
+ ~#weather: "moral/emotional climate in positive fill"
+ ~#stakes: "what can be lost or gained without spectacle default"
+}
+
+^"contract"{
+ pacing: #patient | #kinetic | #braided   // map to tone pace
+ density: #sparse | #lush
+ relation: #host | #witness | #braid
+ scale: #hand | #chamber | #path | #wide
+ wonder: #restrained | #open              // useful surprise budget
+}
+
+^"channel_fit"{
+ // Where this genre lands well
+ good_for: [ #brief, #copy, #audio, #social, #mj, #scenelet, #essay ]
+ weak_for: []   // optional
+ duration_hint: ""  // e.g. "scenelet 45–90s", "essay 800–1200w"
+}
+
+^"motifs"{
+ // Recurring structural moves — not prop lists stolen from other genres
+ moves: [
+  // "threshold before reveal"
+  // "care action, then material response"
+ ]
+ refuse_moves: [
+  // "empire blockbuster third-act city fall"
+ ]
+}
+
+^"bind"{
+ // Optional default style/subject when this genre is chosen
+ default_style: ""
+ default_register: #voice_hospitable_craft
+ allowed_vibe_stack: []  // empty = any, still non-bleed
+}
+
+^"market_tags"{
+ // Optional external tags for stores/festivals — never the only definition
+ optional: []
+ law: "Market tags are labels for shelves; the contract above is the genotype."
+}
+
+^"refuse"{
+ #[
+  "genre_school_stamp as sole identity"
+  "noir_default_relapse when weather is hospitable"
+  "spectacle scale as default for hand-scale contracts"
+ ]
+}
+
+^"develop"{
+ path: [
+  "1. Write ~#promise + ~#weather + ~#stakes in positive fill"
+  "2. Bind contract poles (pace/density/scale)"
+  "3. Run two titles under the same genre; compare hold"
+  "4. Lock when promise survives channel retune (copy + audio + stills)"
+  "5. Optional market_tags only after genotype stable"
+ ]
+ coordinate_hint: "Genre retune is rare — prefer style or subject mutation first."
+}
+
+^"propagate"{
+ into_emit: [ ~#promise, ~#weather, genre_lock, contract poles as tone set ]
+ into_measure: "genre_hold: promise/weather phrases present when declared"
+ into_hosts: [ #brief, #copy, #audio, #social, #eng_note ]
+ into_tone: "map pacing/density to --set or register bias"
+}
+
+^"emit_slots"{
+ genre_id: "genre_slug"
+ genre_lock: "promise phrase | weather phrase"
+ ~#genre: "one-line promise"
+ ~#promise: "audience owed"
+ ~#weather: "climate fill"
+}
+
+^"instance_shape"{
+ example: `
+#>genre_quiet_craft
+^"genre"{
+ id: "quiet_craft"
+ display_name: "quiet craft"
+ ~#promise: "Competence and care stay visible; chrome never parades."
+ ~#weather: "hospitable focus; soft moral clarity"
+ ~#stakes: "clarity lost to clutter; restored by one verb"
+}
+^"contract"{
+ pacing: #patient
+ density: #sparse
+ scale: #hand
+ wonder: #restrained
+}
+^"emit"{
+ genre_id = "quiet_craft"
+ genre_lock = "care stays visible | thrift of chrome | one verb"
+ ~#promise: "Competence and care stay visible."
+ ~#weather: "hospitable focus"
+}
+`
+}
+
+~<../index.spw>

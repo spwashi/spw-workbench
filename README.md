@@ -71,6 +71,17 @@ Spw is brace-first: operators carry semantic roles and containers carry structur
 
 Containers are `<channel>`, `(group)`, `[selection]`, and `{scope}`. Read [the spirit sequence](docs/design/spw/spirit-sequence.spw) for the semantic model.
 
+## Gallery
+
+Glyph-physics studies imagining each operator as a physical process rather than a mark.
+
+| | | |
+|:--:|:--:|:--:|
+| ![brace](docs/assets/glyphs/brace-hook.png) | ![bracket](docs/assets/glyphs/bracket-crystal.png) | ![tilde](docs/assets/glyphs/tilde-ribbon.png) |
+| `{` waist under tension | `[` rigid containment | `~` a wave, not a spark |
+| ![bang](docs/assets/glyphs/bang-shaft.png) | ![ampersand](docs/assets/glyphs/ampersand-braid.png) | ![closing bracket](docs/assets/glyphs/bracket-crystal-close.png) |
+| `!` a struck, decisive pulse | `&` two strands fused | `]` rigid containment, mirrored |
+
 ## Editor Surface
 
 The VS Code extension provides syntax support, standard LSP features, Concepts and Workspace views, and `Spw: Navigate Roots and Landmarks`. The client owns editor wiring; `spw-lsp` owns language meaning. See the [extension README](extensions/vscode-spw/README.md).

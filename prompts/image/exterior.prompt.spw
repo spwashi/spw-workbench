@@ -1,0 +1,68 @@
+# Image Contour: Exterior — Shop under oaks
+#
+# Threshold/entry establishing shot.
+
+#>image_exterior
+#:image #!exterior
+#:generation #!prompt
+#:layer #!creative
+
+^"meta"{
+ signature: ~"../vibes/index.spw"
+ contour: #exterior
+ script: #threshold_entry
+ ~#goal: "World door — forest path meets bakery front"
+}
+
+^"identity"{
+ title = shop_under_the_oaks
+ subtitle = path_of_flour_and_moss
+ version = v1
+ intent = midjourney_world_establishing
+
+ variants: .{
+  v_morning = "Golden canopy, open door steam"
+  v_mist = "Soft fog, lantern, quiet approach"
+  v_market = "Stall awning, baskets, gentle foot traffic"
+ }
+
+ focus = *v_morning
+ trace = ~[v_morning:0.55, v_mist:0.3, v_market:0.15]
+}
+
+^"brief"{
+ place: .{
+  primary = #front_shop_under_oaks
+  path = #forest_path_to_door
+  architecture = !cottage_timber_plaster_living_roof_moss_mushrooms
+  signage = !carved_wood_loaf_and_mushroom_no_readable_text
+ }
+
+ composition: .{
+  framing = !wide_establishing
+  lead_in = !path_curves_to_door
+  sky = !soft_filtered_through_leaves
+ }
+
+ non_negotiables: [
+  #readable_door_threshold
+  #forest_not_city
+  #inviting_not_horror
+ ]
+}
+
+^"emit"{
+ mj_aspect = "16:9"
+ short_prompt = "Wide exterior of a cozy fantasy bakery cottage under oak trees, mossy living roof with small mushrooms, warm light in open door, steam of bread, forest path of dirt and moss leading to entrance, golden canopy light, earth and honey palette, painterly storybook realism, inviting woodland"
+
+ final_prompt = "Establish the kitchen from outside: a timber-and-plaster bakery cottage nested under large oaks, moss and modest mushrooms on the roof, warm hearth light and bread-steam at an open door. A soft forest path leads the eye to the threshold. Morning canopy light, cream and ochre and moss palette, painterly storybook realism. Optional small figures on the path only if density allows silhouette clarity. No city, no neon, no haunted cabin horror."
+
+ negative_prompt = "modern strip mall, neon signs, readable storefront typography, horror cabin, dark gothic castle, cyberpunk, parking lot, cars"
+
+ midjourney_notes: .{
+  flags = "--ar 16:9 --stylize 160"
+ }
+}
+
+~<../vibes/index.spw>
+~<./portrait.prompt.spw>

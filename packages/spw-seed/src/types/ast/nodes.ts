@@ -127,12 +127,36 @@ export interface OperationNode extends ASTNode {
   linePayload?: ProseChunkNode
 }
 
+/**
+ * Capsule boundary `<…>`.
+ *
+ * Modes:
+ * - **shell** — standalone `<tag>`, `<n>`, `<tag>[…]{…}`
+ * - **medial** — composite `left<channel>right` (e.g. `bagel<scent>coffee`, `foo<5>bar`)
+ *
+ * Channel is the inspectable relation/quality/measure between arms.
+ * Identifier channels also populate `tag` for backward-compatible tooling.
+ */
 export interface CapsuleNode extends ASTNode {
   type: 'Capsule'
   open: Token<'CAPSULE_OPEN'>
+  /** Retained close delimiter when parse succeeded with a pair. */
+  close?: Token<'CAPSULE_CLOSE'>
+  /** Identifier channel (also set when channel is an IdentifierNode). */
   tag?: Token<'IDENTIFIER'>
+  /**
+   * Atom channel when the interior is a single identifier or literal
+   * (numbers for quantitative composites, strings for quoted labels).
+   */
+  channel?: LiteralNode | IdentifierNode
   frame?: FrameNode
   body?: BodyNode
+  /** Left arm of a medial composite (before `<`). */
+  left?: TermNode
+  /** Right arm of a medial composite (after `>`). */
+  right?: TermNode
+  /** `shell` default; `medial` when left and/or right arms are bound. */
+  placement?: 'shell' | 'medial'
 }
 
 export interface StreamNode extends ASTNode {

@@ -80,6 +80,25 @@ describe('Container Disambiguation (Phase 4)', () => {
     expect(coupleOpToken).toBeDefined()
   })
 
+  it('parses numeric shell capsules <5>', () => {
+    const { ast, errors } = parse('<5>')
+    expect(errors).toHaveLength(0)
+    expect(ast).toBeDefined()
+    const src = JSON.stringify(ast)
+    expect(src).toContain('Capsule')
+    expect(src).toContain('"5"')
+  })
+
+  it('parses medial qualitative composites without couple confusion', () => {
+    const { ast, errors } = parse('bagel<scent>coffee')
+    expect(errors).toHaveLength(0)
+    const src = JSON.stringify(ast)
+    expect(src).toContain('medial')
+    expect(src).toContain('scent')
+    expect(src).not.toContain('"<>"')
+  })
+
+
   it('distinguishes couple from comparison operators', () => {
     // < and > as separate tokens should work for comparisons
     const { tokens: ltTokens } = lex('a < b')

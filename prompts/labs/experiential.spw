@@ -1,0 +1,111 @@
+# Lab: Experiential Dimensions
+#
+# Room-scale / embodied exploration of Underroot — not only still image.
+
+#>spw_lab_experiential
+#:lab #!experience
+#:layer #!creative
+#:status #!active
+
+^"intent"{
+ ~#goal: "Explore Underroot as climate, haptics, proxemics, and dwell-time — fairytale-prime hospitality as body state."
+ ~#taste: "comfort with slight otherworld; safety first; wonder as temperature"
+}
+
+^"roots"{
+ @biome: ~"../biome/underroot.spw"
+ @sensorial: ~"../lenses/sensorial.spw"
+ @door: ~"../lenses/door-law.spw"
+ @film: ~"../production/film.spw"
+ @experience_prompt: ~"../experience.prompt.spw"
+}
+
+^"dimensions"{
+ embodiment: .{
+  handle: #embodiment
+  questions: [
+    ?["Standing or seated at the kneading board?"]
+    ?["How far is the oven face heat comfortable?"]
+  ]
+  defaults: !standing_soft_knees_hand_height_counter
+ }
+
+ climate: .{
+  handle: #climate
+  strata_map: .{
+   canopy: !cool_air_leaf_scent
+   hearth_band: !warm_dry_face_steam_pockets
+   dark_water: !cool_damp_mineral
+  }
+  control: !user_can_step_between_bands
+ }
+
+ haptic: .{
+  handle: #haptic
+  surfaces: [
+    #dough_elastic_resistance
+    #flour_dust_slip
+    #wood_grain
+    #warm_crust_tap
+  ]
+  controller_hint: !resistive_trigger_as_dough
+ }
+
+ olfactory_hint: .{
+  handle: #olfactory_hint
+  // most runtimes lack scent — encode as UI/audio metaphor
+  map: [ #yeast_rise, #honey_warm, #woodsmoke_edge ]
+  expression: #sensorial
+ }
+
+ social_proxemics: .{
+  handle: #social_proxemics
+  law: "Visitors stay at shop threshold until invited past counter."
+  distances: .{
+   public: !path_and_door
+   social: !counter
+   personal: !board_with_consent
+  }
+ }
+
+ passthrough_blend: .{
+  handle: #passthrough_blend
+  use: "Optional real room as flour-loft ghost; Underroot props as hologram bakeware"
+  safety: !fade_to_passthrough_at_guardian_bound
+ }
+
+ dwell: .{
+  handle: #dwell
+  min_seconds: 90
+  success: "user tends one care-object without combat affordance"
+ }
+}
+
+^"scenario_seeds"{
+ first_peel: .{
+  branch: #hearthwood_main
+  lenses: [#yeast_time, #care_duty]
+  beat: "wait with the loaf; open oven together"
+ }
+
+ night_jar: .{
+  branch: #night_seep
+  lenses: [#loam_memory, #sensorial]
+  beat: "feed the starter in the cool cellar; hear drip as clock"
+ }
+
+ door_lesson: .{
+  branch: #market_day
+  lenses: [#door_law, #hand_scale]
+  beat: "receive a basket; decide who enters"
+ }
+}
+
+^"measure"{
+ comfort: %[thermal_band_clarity * safety_bound_respect]
+ wonder: %[scaled_marvel_events / session_minutes]
+ hospitality: %[invitations_honored]
+}
+
+~<../biome/underroot.spw>
+~<../experience.prompt.spw>

@@ -1,0 +1,69 @@
+# Image Contour: Still life — Loaf, tools, earth ingredients
+#
+# Inventory/fold contour for material and prop fidelity.
+
+#>image_still_life
+#:image #!still_life
+#:generation #!prompt
+#:layer #!creative
+
+^"meta"{
+ signature: ~"../vibes/index.spw"
+ contour: #still_life
+ script: #inventory_fold
+ ~#goal: "Hero objects with bakery tactility — texture lock for assets"
+}
+
+^"identity"{
+ title = scored_boule_and_honey
+ subtitle = board_with_earth_gifts
+ version = v1
+ intent = midjourney_prop_lock
+
+ variants: .{
+  v_honey = "Glazed loaf, beeswax glow, pollen"
+  v_rye = "Dark dense crumb study, caraway, charcoal fleck"
+  v_spore = "Lilac flour dust, subtle biolume salt"
+ }
+
+ focus = *v_honey
+ trace = ~[v_honey:0.5, v_rye:0.3, v_spore:0.2]
+}
+
+^"brief"{
+ arrangement: .{
+  hero = #scored_boule
+  supporting: [ #banneton_basket, #linen_cloth, #clay_jar_of_starter, #seed_scatter, #knife ]
+  surface = !worn_wood_board
+  background = !soft_void_or_shallow_shelf
+ }
+
+ camera: .{
+  framing = !close_still_life
+  angle = !three_quarter_above
+  depth = !shallow_focus_on_crust_score
+ }
+
+ non_negotiables: [
+  #food_believable
+  #no_plastic_sheen
+  #material_separation_clear
+ ]
+}
+
+^"emit"{
+ mj_aspect = "1:1"
+ short_prompt = "Still life of a freshly scored artisan boule on worn wood with linen, banneton basket, clay starter jar, scattered seeds and flour, warm honey-amber light, crust-brown and cream palette, painterly tactile realism, soft steam, bakery props, restrained fantasy dust"
+
+ final_prompt = "A close still-life for kitchen prop fidelity: one hero scored boule with believable crust and flour bloom on a worn wooden board, linen cloth, wicker banneton, small clay jar of starter, seeds and a bread knife. Lighting warm and appetizing (honey hearth). Emphasize tactile materials — crumb suggestion, wood grain, cloth weave, ceramic glaze. Soft shallow background. Optional faint spore-lilac dust only if variant asks. No plastic food, no text labels, no modern branding."
+
+ negative_prompt = "plastic food, raw meat horror, mold gross-out, logos, readable packaging text, chrome kitchen, neon, cluttered unreadable pile"
+
+ midjourney_notes: .{
+  flags = "--ar 1:1 --stylize 120"
+  lock_when = "crust and flour read as edible/tactile"
+ }
+}
+
+~<../vibes/index.spw>
+~<./process.prompt.spw>

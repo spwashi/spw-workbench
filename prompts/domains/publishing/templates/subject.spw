@@ -1,0 +1,125 @@
+# Publishing — Subject cast
+#
+# Who / what / where is depicted or narrated. Develop once; reuse across
+# organs (portrait → sheet) and hosts (mj → copy → audio).
+
+#>spw_publishing_subject
+#:domain #!publishing
+#:template #!subject
+#:layer #!creative
+
+^"intent"{
+ ~#goal: "Stable subject identity: names, traits, tells, and refuse list for synonym churn."
+ ~#taste: "concrete tells; few names; same subject across contours"
+}
+
+^"roots"{
+ @domain: ~"../index.spw"
+ @style: ~"./style.spw"
+ @ecology: ~"../../../script-ecology.spw"
+ @portrait: ~"../../../image/portrait.prompt.spw"
+ @sheet: ~"../../../image/sheet.prompt.spw"
+}
+
+// ── Schema ─────────────────────────────────────────────────────
+
+^"subject"{
+ id: "subject_slug"
+ kind: #character | #place | #object | #ensemble | #process
+ display_name: "public name"
+ alt_names: []     // allowed only if listed — else synonym churn is refuse
+ status: #sandbox | #candidate | #locked | #retired
+ ~#claim: "what this subject is for in one line"
+}
+
+^"tells"{
+ // Visual/narrative markers that must survive retune
+ body: [
+  // "linen apron dusted with flour"
+ ]
+ face_hands: [
+  // "calm eyes; scarred knuckle on the lame hand"
+ ]
+ costume_props: [
+  // "clay starter jar always nearby"
+ ]
+ place_marks: [
+  // "scored boule on the board"
+ ]
+ voice_tells: [
+  // "speaks in short work sentences"
+ ]
+ // Export for emit:
+ // subject_lock: "name | tell | tell"
+}
+
+^"relations"{
+ // Optional graph — who they cook for, owe, rival
+ owed: ""
+ tends: ""
+ opposes: ""
+ house: ""   // optional house bind
+ style: ""   // optional default style id
+}
+
+^"contour_ladder"{
+ // Teach subject across organs before locking
+ order: [ #portrait, #still_life, #process, #sheet ]
+ law: "Do not skip to sheet before portrait/still-life hold."
+}
+
+^"refuse"{
+ #[
+  "anchor_synonym_churn — renaming tells every job"
+  "parallel_world_rewrite of biography mid-saga"
+  "armor_cape_chosen_one default for craft subjects"
+ ]
+}
+
+^"develop"{
+ path: [
+  "1. Draft display_name + 3–5 tells (body/prop/voice)"
+  "2. Portrait + still_life sandbox under one style"
+  "3. %subject_hold — name + ≥2 tells in emit text"
+  "4. Process/exterior under same locks"
+  "5. Sheet + lock character_ref / subject_lock"
+ ]
+ coordinate: #subject_cast
+}
+
+^"propagate"{
+ into_emit: [ display_name, subject_lock, ~#claim, voice_tells ]
+ into_measure: "subject_hold: name + tells present in host text"
+ into_hosts: [ #mj, #copy, #audio, #social, #brief, #plain ]
+}
+
+^"emit_slots"{
+ subject_id: "subject_slug"
+ subject_lock: "Name | tell one | tell two"
+ ~#subject: "one-line subject claim"
+ ~#title: "often shares working title surface"
+}
+
+^"instance_shape"{
+ example: `
+#>subject_board_keeper
+^"subject"{
+ id: "board_keeper"
+ kind: #character
+ display_name: "the board-keeper"
+ ~#claim: "Keeps one screen honest."
+}
+^"tells"{
+ body: [ "soft charcoal sleeves" ]
+ costume_props: [ "one clear board, no parade of chrome" ]
+ voice_tells: [ "one verb at a time" ]
+}
+^"emit"{
+ subject_id = "board_keeper"
+ subject_lock = "board-keeper | one clear board | soft charcoal sleeves"
+ ~#subject: "Keeps one screen honest."
+}
+`
+}
+
+~<../index.spw>

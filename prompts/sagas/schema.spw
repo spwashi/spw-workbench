@@ -1,0 +1,133 @@
+# Mutation Saga Schema
+#
+# Customizable, optimizable, fractal-capable saga genotype.
+# Append-only streams remain the memory; this file is the law.
+
+#>spw_saga_schema
+#:saga #!schema
+#:layer #!pragmatics
+#:status #!active
+
+^"intent"{
+ ~#goal: "One schema for PE, layout pulse, and style/subject/genre sagas — templated steps, fractal nests, measurable objectives."
+ ~#taste: "one coordinate per step; macros for thrift; optimize without silent multi-axis leaps"
+}
+
+^"roots"{
+ @index: ~"./index.spw"
+ @macros: ~"./macros.spw"
+ @fractal: ~"./fractal.spw"
+ @optimize: ~"./optimize.spw"
+ @profiles: ~"./profiles.spw"
+ @ecology: ~"../script-ecology.spw"
+ @ladders: ~"../../docs/theory/spw/form-ladders.spw"
+ @automata: ~"../../docs/theory/spw/mutation-automata.spw"
+ @publish: ~"../domains/publishing/propagate.spw"
+}
+
+// ── Core shape ─────────────────────────────────────────────────
+
+^"saga"{
+ id: "saga_slug"
+ kind: #pe | #layout | #line | #fractal | #hybrid
+ status: #open | #paused | #locked | #archived
+ grade_cap: #S0 | #S1 | #S2
+ profile: "named profile id from @profiles"
+ objective: "ref or inline objective from @optimize"
+ parent: ""           // optional parent saga id (fractal nest)
+ depth: 0             // 0 = root stream
+}
+
+^"coordinates"{
+ // Exactly one class per #mutate step (unless !bonk)
+ pe: #[
+  #axis_flavor
+  #axis_light
+  #axis_density
+  #axis_craft
+  #axis_era
+  #tone_dim          // one tone dimension pole weight
+  #contour_organ
+  #subject_cast
+  #style_phrase      // additive phrase_lock only
+  #genre_contract
+  #emit_phrasing
+  #host_slot
+ ]
+ layout: #[
+  #layout_rule
+  #indent
+  #blankline
+  #equiv_script
+ ]
+ form: #[
+  #ladder_step       // form-ladder enrichment point
+  #fractal_depth     // apply same ladder one nest deeper
+  #macro_fill        // fill a hole / slot
+ ]
+}
+
+^"step_types"{
+ #observe: "baseline state, no mutation"
+ #mutate:  "one coordinate class change"
+ #measure: "%hold / topography / objective sample"
+ #decide:  "keep | revert | branch | continue"
+ #lock:    "promote refs / phrase locks / asset_refs"
+ #reject:  "discard path; record why"
+ #expand:  "macro / template expansion only (no creative axis)"
+ #pulse:   "invoke layout/form automata plan (S0/S1)"
+ #nest:    "open fractal child saga at deeper container"
+ #fold:    "collapse child results into parent (confluence)"
+}
+
+^"step_shape"{
+ // Authoring surface (append-only)
+ stream_line: ">>[ISO|seq] type — body"
+ // Structured equivalent for tools
+ structured: .{
+  t: "timestamp or monotonic seq"
+  type: #observe | #mutate | …
+  coordinate: "#class"     // required for #mutate
+  from: "_" | "value"      // hole or prior
+  to: "value"              // after
+  target: "@path|#handle|^frame"  // optional locus
+  valence: !boon | !bane | !bone | !bonk | !honk
+  measure: "%name=value …"
+  note: "why"
+ }
+}
+
+^"grades"{
+ S0: "read + plan + measure; no emit write; no asset_refs"
+ S1: "sandbox emit / in-memory pulse; no lock of refs"
+ S2: "lock winning phrases, style_ref, character_ref, or --write layout"
+ law: "Grade only increases after measure supports it."
+}
+
+^"valence"{
+ !boon: "hold/objective improved"
+ !bane: "hold collapsed — prefer revert"
+ !bone: "anchors stable (stability tissue)"
+ !bonk: "multi-axis or fractal leap — quarantine from lock"
+ !honk: "surprise win — candidate promote"
+}
+
+^"memory"{
+ hot: #[^"bindings", active step, objective state]
+ warm: #[^"stream"]
+ cache: "last measures, filled slots, child saga ids"
+ cold: "^[\"done\"] closed → changelog"
+}
+
+^"law"{
+ one_mutation: "One #mutate changes one coordinate class."
+ fractal_ok: "#nest may open a child with the same profile at deeper locus; still one coordinate per child step."
+ macro_is_not_mutate: "#expand fills holes; it does not count as creative mutation unless it changes a locked phrase."
+ optimize_does_not_bypass_membrane: "Search may propose; membrane refuse still applies."
+ append_only: "Never rewrite prior >> lines; reject with a new step."
+}
+
+~<./macros.spw>
+~<./fractal.spw>
+~<./optimize.spw>
+~<./profiles.spw>
