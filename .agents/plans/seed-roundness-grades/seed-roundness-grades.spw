@@ -1,0 +1,46 @@
+// Seed Roundness & Grade Naming — distilled contract
+#
+// Two parallel grade axes exist in Spw's theory docs; only one has been
+// renamed in code. This artifact records the distinction so future work
+// doesn't conflate them.
+#
+// @see .agents/plans/seed-roundness-grades/PLAN.md
+// @see packages/spw-seed/src/canonical/differential.ts
+
+#:layer #!pragmatics
+
+^seed[Spw.Plan.SeedRoundness v:0.1 @profile:agent_surface @intent:close_naming_gap]
+
+^["grade_axes"]{
+ effect_grade: .{
+  meaning: "what may this operation risk? read-only measure vs sandbox plan vs real workspace write vs external"
+  code_name: "EffectGrade — 'effect.l0.measure' | 'effect.l1.memory' | 'effect.l2.workspace' | 'effect.l3.external'"
+  code_home: "packages/spw-seed/src/canonical/differential.ts"
+  doc_shorthand_status: "STALE — docs still say S0/S1/S2/S3; this plan's commit 1 retires that shorthand in living docs"
+  ordering_invariant: "EFFECT_GRADE_ORDER 0/1/2/3 — must not change under rename"
+ }
+ epistemic_grade: .{
+  meaning: "how was this fact established? deterministic observation vs recomputable score vs explicit human interpretation"
+  code_name: "none yet — no EpistemicGrade type exists in packages/spw-seed"
+  doc_shorthand_status: "E0 | E1 | E2, defined in docs/theory/spw/operational-topography.spw:316-319"
+  rename_status: "BLOCKED — no target name decided; do not rename until ?[epistemic-grade-name] in wip.spw resolves"
+ }
+}
+
+^["roundness_matrix"]{
+ // Concept → current AST/code presence → what this plan does about it.
+ n_range: .{ ast: "NRangeNode exists (types/ast/nodes.ts:170)", lexer: "'((' '))' tokens exist", gap: "empty n-range special-case flagged normalize.ts:371", plan_action: "commit 4" }
+ label_differential: .{ ast: "SourceEdit + DifferentialStratum exist (differential.ts)", gap: "no explicit overlapping-label conflict policy", plan_action: "commit 2" }
+ range_address_span_transform: .{ ast: "none — spec only in docs/theory/spw/range-transform.spw", gap: "no implementation module", plan_action: "commit 3, new module" }
+ indexing_configurability: .{ ast: "query/selector-expr.ts + query/match.ts run unconfigured", gap: "no eager/lazy index strategy handle, no documented perf tradeoff", plan_action: "commit 5" }
+ membrane: .{ ast: "none — descriptive-layer only (form-ladders.ts, form-geometry.ts, form-sequence.ts)", gap: "no MembraneNode, no lexer/grammar support", plan_action: "DEFERRED — track B, needs ?[membrane-body-shape]" }
+ multi_arm_select: .{ ast: "none", gap: "form-ladders.ts:379 tags 'fold ?(a,b,c)' as stage='conceptual' — documented aspiration, not grammar", plan_action: "DEFERRED — track B" }
+ stream_fold: .{ ast: "StreamNode exists, no Fold operator/node", gap: "no combinator grammar over streams", plan_action: "DEFERRED — track B" }
+ named_params: .{ ast: "none found", gap: "no named-argument syntax in grammar/expressions.ts or containers.ts", plan_action: "DEFERRED — track B" }
+ new_operator_products: .{ ast: "types/coupling.ts has composition types but scope of 'new operator products' undefined", gap: "no concrete example given yet", plan_action: "DEFERRED — track B, needs ?[operator-products-scope]" }
+}
+
+^["why_deferred"]{
+ rule: "A half-implemented AST node with no lexer/parser support is worse than an honest 'descriptive layer only' or 'conceptual' marker — it invites callers to depend on shape that doesn't parse."
+ evidence: "form-ladders.ts:379 already self-documents 'multi-arm wonder fold' as stage='conceptual'; that marker is doing its job and should stay until a real grammar decision lands."
+}
