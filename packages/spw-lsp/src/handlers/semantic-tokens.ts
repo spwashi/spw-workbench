@@ -8,20 +8,24 @@
  * Token types (indices match TOKEN_TYPES order declared in capabilities):
  *   0  operator    — generic sigil / operator (fallback)
  *   1  type        — #-annotations, type-like constructs
- *   2  variable    — @-roots, ~-references
+ *   2  variable    — @-roots, navigable path refs (~"…", ~<path>, @root/path)
  *   3  property    — ~#traits, =-config
  *   4  function    — !-actions, ?-probes
- *   5  string      — quoted strings, tilde-strings, numerics
+ *   5  string      — quoted strings
  *   6  keyword     — ^-framing, *-variants, %-measure, ##>-anchors
  *   7  comment     — //-comments
+ *   8  number      — numerics, times, fractions
  *
  * Token modifiers (bit flags, matching MODIFIERS order):
  *   0  declaration   — frame/anchor/section declarations
- *   1  definition    — [*] wildcards, definitions
+ *   1  definition    — navigable path units, [*] wildcards
  *   2  readonly      — =-config (config is a constraint)
  *   3  deprecated    — (unused — was misused for ~ in old provider)
  *   4  modification  — !-action (fires effects)
  *   5  async         — ?-probe (deferred measurement)
+ *
+ * Path navigation ergonomics: full path spans are emitted as a single
+ * variable+definition token so editors can underline/jump the whole unit.
  */
 
 import type { DocumentParams, HandlerDeps } from '../types'
@@ -37,6 +41,7 @@ const TT = {
     string:   5,
     keyword:  6,
     comment:  7,
+    number:   8,
 } as const
 
 const TM = {
@@ -48,6 +53,17 @@ const TM = {
     async:        1 << 5,
 } as const
 
+/** Angle-bracket body that should paint/jump as a path (mirrors spw-selector). */
+function isAnglePathLike(inner: string): boolean {
+    const s = inner.trim()
+    if (!s) return false
+    if (/[#*{}()[\]|]/.test(s)) return false
+    if (s.includes('/')) return true
+    if (s.startsWith('.')) return true
+    if (/\.(spw|ts|tsx|js|mjs|cjs|md|json)$/i.test(s)) return true
+    return false
+}
+
 // ── Result type ─────────────────────────────────────────────────
 
 export interface LspSemanticTokens {
@@ -57,7 +73,7 @@ export interface LspSemanticTokens {
 // ── Legend (exported for capability declaration) ────────────────
 
 export const SEMANTIC_TOKENS_LEGEND = {
-    tokenTypes: ['operator', 'type', 'variable', 'property', 'function', 'string', 'keyword', 'comment'],
+    tokenTypes: ['operator', 'type', 'variable', 'property', 'function', 'string', 'keyword', 'comment', 'number'],
     tokenModifiers: ['declaration', 'definition', 'readonly', 'deprecated', 'modification', 'async'],
 }
 
@@ -119,6 +135,34 @@ export function semanticTokens(params: DocumentParams, deps: HandlerDeps): LspSe
                 continue
             }
 
+            // Navigable path units — full span for click/jump ergonomics
+            // ~"path", ~<label>"path"
+            const quotedPathMatch = rest.match(/^~\s*(?:<[^>\n"]+>\s*)?"([^"\n]*)"/)
+            if (quotedPathMatch) {
+                push(lineIndex, col, quotedPathMatch[0].length, TT.variable, TM.definition)
+                col += quotedPathMatch[0].length
+                continue
+            }
+            // ~<.spw/foo.spw>, ~<./index.spw> (angle path, no trailing quote)
+            const anglePathMatch = rest.match(/^~\s*<([^>\n"]+)>(?!\s*")/)
+            if (anglePathMatch && isAnglePathLike(anglePathMatch[1] ?? '')) {
+                push(lineIndex, col, anglePathMatch[0].length, TT.variable, TM.definition)
+                col += anglePathMatch[0].length
+                continue
+            }
+            // @root/path (and @root/path#anchor-ish tails trimmed by class)
+            const rootPathMatch = rest.match(/^@[A-Za-z_][A-Za-z0-9_]*\/[A-Za-z0-9_.\-/*]+/)
+            if (rootPathMatch) {
+                let len = rootPathMatch[0].length
+                // Trim postfix envelope * that is not a /* wildcard
+                if (rootPathMatch[0].endsWith('*') && !rootPathMatch[0].endsWith('/*')) {
+                    len -= 1
+                }
+                push(lineIndex, col, len, TT.variable, TM.definition)
+                col += len
+                continue
+            }
+
             // #:lens — conceptual axis (type + definition)
             const lensMatch = rest.match(/^#:[a-zA-Z_][a-zA-Z0-9_]*/)
             if (lensMatch) {
@@ -154,7 +198,7 @@ export function semanticTokens(params: DocumentParams, deps: HandlerDeps): LspSe
             // numbers, times, fractions
             const numMatch = rest.match(/^\d+(?::\d+|\/\d+|\.\d+)?/)
             if (numMatch) {
-                push(lineIndex, col, numMatch[0].length, TT.string, 0)
+                push(lineIndex, col, numMatch[0].length, TT.number, 0)
                 col += numMatch[0].length
                 continue
             }
@@ -229,7 +273,7 @@ export function semanticTokens(params: DocumentParams, deps: HandlerDeps): LspSe
                 continue
             }
 
-            // @root references (variable)
+            // @root bare name (not @root/path — handled above)
             if (ch === '@') {
                 const refMatch = rest.match(/^@[a-zA-Z_][a-zA-Z0-9_]*/)
                 if (refMatch) {

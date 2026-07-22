@@ -13,7 +13,7 @@ import type { HandlerDeps } from '../types'
 
 const TT = {
   operator: 0, type: 1, variable: 2, property: 3,
-  function: 4, string: 5, keyword: 6, comment: 7,
+  function: 4, string: 5, keyword: 6, comment: 7, number: 8,
 } as const
 
 const TM = {
@@ -66,8 +66,9 @@ function tokenize(text: string) {
 // ── Legend ──────────────────────────────────────────────────────
 
 describe('SEMANTIC_TOKENS_LEGEND', () => {
-  it('declares 8 token types', () => {
-    expect(SEMANTIC_TOKENS_LEGEND.tokenTypes).toHaveLength(8)
+  it('declares 9 token types (includes number for path-fit coloring)', () => {
+    expect(SEMANTIC_TOKENS_LEGEND.tokenTypes).toHaveLength(9)
+    expect(SEMANTIC_TOKENS_LEGEND.tokenTypes).toContain('number')
   })
 
   it('declares 6 token modifiers', () => {
@@ -282,22 +283,83 @@ describe('strings', () => {
     expect(tokens[0]).toMatchObject({ type: TT.string, length: 12 })
   })
 
-  it('numbers → string', () => {
+  it('numbers → number', () => {
     const tokens = tokenize('42')
     expect(tokens).toHaveLength(1)
-    expect(tokens[0]).toMatchObject({ type: TT.string })
+    expect(tokens[0]).toMatchObject({ type: TT.number })
   })
 
-  it('time literal (3:30) → string', () => {
+  it('time literal (3:30) → number', () => {
     const tokens = tokenize('3:30')
     expect(tokens).toHaveLength(1)
-    expect(tokens[0]).toMatchObject({ type: TT.string, length: 4 })
+    expect(tokens[0]).toMatchObject({ type: TT.number, length: 4 })
   })
 
-  it('fraction (1/2) → string', () => {
+  it('fraction (1/2) → number', () => {
     const tokens = tokenize('1/2')
     expect(tokens).toHaveLength(1)
-    expect(tokens[0]).toMatchObject({ type: TT.string, length: 3 })
+    expect(tokens[0]).toMatchObject({ type: TT.number, length: 3 })
+  })
+})
+
+// ── Path navigation ergonomics ────────────────────────────────
+
+describe('navigable path units', () => {
+  it('~"path" is one variable+definition span', () => {
+    const tokens = tokenize('~"plans/index.spw"')
+    expect(tokens).toHaveLength(1)
+    expect(tokens[0]).toMatchObject({
+      length: '~"plans/index.spw"'.length,
+      type: TT.variable,
+      modifiers: TM.definition,
+    })
+  })
+
+  it('~<label>"path" is one navigable span', () => {
+    const raw = '~<core>"../core/index.spw"'
+    const tokens = tokenize(raw)
+    expect(tokens).toHaveLength(1)
+    expect(tokens[0]).toMatchObject({
+      length: raw.length,
+      type: TT.variable,
+      modifiers: TM.definition,
+    })
+  })
+
+  it('~<.spw/foo.spw> angle path is one navigable span', () => {
+    const raw = '~<.spw/agents.spw>'
+    const tokens = tokenize(raw)
+    expect(tokens).toHaveLength(1)
+    expect(tokens[0]).toMatchObject({
+      length: raw.length,
+      type: TT.variable,
+      modifiers: TM.definition,
+    })
+  })
+
+  it('non-path ~<label> is not collapsed into a path unit', () => {
+    // ~ then < then label then > — bare ~ should win, not full path unit
+    const tokens = tokenize('~<core>')
+    expect(tokens[0].type).toBe(TT.variable)
+    expect(tokens[0].length).toBe(1) // just ~
+  })
+
+  it('@root/path is one navigable span', () => {
+    const raw = '@spw/harness/memory-surface.spw'
+    const tokens = tokenize(raw)
+    expect(tokens).toHaveLength(1)
+    expect(tokens[0]).toMatchObject({
+      length: raw.length,
+      type: TT.variable,
+      modifiers: TM.definition,
+    })
+  })
+
+  it('root binding keeps @name and ~"path" as separate navigable pieces', () => {
+    const tokens = tokenize('@cluster: ~"path/to/file.spw"')
+    expect(tokens[0]).toMatchObject({ type: TT.variable, length: 8 }) // @cluster
+    const pathTok = tokens.find((t) => t.modifiers === TM.definition)
+    expect(pathTok).toMatchObject({ type: TT.variable, modifiers: TM.definition })
   })
 })
 
@@ -352,10 +414,10 @@ describe('realistic spw fragments', () => {
 
   it('root binding: @name: ~"path"', () => {
     const tokens = tokenize('@cluster: ~"path/to/file.spw"')
-    const types = tokens.map(t => t.type)
-    // @cluster  :  ~  "path/to/file.spw"
-    expect(types[0]).toBe(TT.variable)  // @cluster
-    expect(tokens[0].length).toBe(8)
+    // @cluster  :  ~"path/to/file.spw" (path is one unit)
+    expect(tokens[0]).toMatchObject({ type: TT.variable, length: 8 })
+    const pathTok = tokens.find((t) => t.length === '~"path/to/file.spw"'.length)
+    expect(pathTok).toMatchObject({ type: TT.variable, modifiers: TM.definition })
   })
 
   it('trait line: ~#goal: "description"', () => {
