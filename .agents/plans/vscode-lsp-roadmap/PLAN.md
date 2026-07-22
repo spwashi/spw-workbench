@@ -10,7 +10,7 @@ End state: agents and humans can answer (1) what ships first, (2) what is alread
 
 **Taste note**: clarity, layering, evidence discipline, performance.
 
-## Current reality (2026-07-20)
+## Current reality (2026-07-21)
 
 ### Landed (do not re-plan as greenfield)
 
@@ -27,35 +27,63 @@ End state: agents and humans can answer (1) what ships first, (2) what is alread
 | LSP package build | `packages/spw-lsp` → `build:server` → `dist/stdio-server.js` |
 | Lore upstream bridge plan | **done** (historical; do not reopen) |
 
+### Seed kernel landed (editor must project, not re-invent)
+
+| Surface | Evidence | Editor implication |
+|---------|----------|-------------------|
+| Coupling ONF frames | `packages/spw-seed/src/types/coupling.ts`, normalize | Hover packet: kind/form/occupancy/payload |
+| Form / boundary ladders | `canonical/form-ladders.ts`, `docs/theory/spw/form-ladders.spw` | Ladder notation + axes at caret |
+| Form contours | `canonical/form-contours.ts`, `docs/theory/spw/form-contours.spw` | Density-budgeted hover/outline/agent views with loss receipts |
+| Form geometry (label mobility) | `canonical/form-geometry.ts`, mobility rules + HOF | Code actions / preview rewrites |
+| Mutation automata + pulse CLI | `canonical/mutation-automata.ts`, `spw-cli` pulse | Format/pulse check share one edit kernel |
+| Differentials | `canonical/differential.ts` | `SourceEdit` → LSP `TextEdit` map |
+| Topography probes | `canonical/topography-probe.ts`, topography scan | Diagnostics prose-fallback / structureMoved |
+| Register liminality bridge (explicit S1 profile) | `spw-runtime` liminality-bridge | Optional command after honest snapshot; syntax has no effect |
+| Theory | `form-geometry.spw`, `mutation-automata.spw`, `operational-transform.spw` | Teaching copy must cite E/S grades |
+
 ### Gaps / drift
 
 | Issue | Detail |
 |-------|--------|
 | **Capability split-brain** | Client types `spw/resonance`, `spw/registerSnapshot`, `spw/operatorFrequency`, `spw/phaseContext` — **not handled** in `stdio-server.ts` |
+| **No `spw/formContext`** | Seed geometry is CLI-probed; LSP/plugin do not yet surface coupling + applicable rules |
+| **Code actions thin** | Only trait ⇄ facet toggle; mobility rules unused in editor |
+| **Format kernel fork** | LSP format ≠ pulse/mutation automata profiles |
 | **Eager activation** | `activationEvents: []` + activate starts LSP, annotation index, strip, both trees immediately |
-| **Hot-file bloat** | `display.ts` ~1410, `server-index.ts` ~1160, atlas/concepts trees ~725–750 lines |
+| **Hot-file bloat** | `display.ts`, `server-index.ts`, atlas/concepts trees remain large |
 | **Type debt** | LSP context/types still heavy `any` (JSON-RPC boundary) |
-| **Missing PLAN.md** | `vscode-editor-contract`, `vscode-cognitive-surface` were wip-only |
-| **Stale plan files** | Atlas still lists trees/handlers as `[NEW]` though present |
 | **Empty `providers/`** | reserved directory, unused |
-| **No editor perf identity** | No structured startup/save/cursor measurements (pair with TS perf audit for *tsc*; editor needs own probes) |
+| **No editor perf identity** | No structured startup/save/cursor measurements |
 
 ## Execution ladder (ordered)
 
 | Rung | Plan | Outcome |
 |------|------|---------|
-| **0a** | `operational-topography` | Seed-owned parse/structure coordinates, evidence/effect grades, exact selection, and differential envelopes |
-| **0b** | This roadmap + editor-contract | Observation ownership, presentation authority, and invalidation rules |
-| **1** | `lsp-custom-request-completions` | Canonical protocol registry plus advertised / configured / invoked / observed / tested matrix; kill or implement phantom methods |
-| **2** | `vscode-plugin-performance` | Compiled launch defaulted, lean activation, incremental annotations, shared cursor context, parse-backed semantic tokens |
-| **3a** | Atlas **follow-up** (not greenfield) | Extract tree complexity, resonance only via earned `spw/resonance`, visibility-gated refresh |
-| **3b** | `vscode-register-explorer` | Register tree + **server** `spw/registerSnapshot` (no client-only trial fork) |
-| **4** | `vscode-authoring-probe-loop` | Phase-aware completion/status/lenses on top of stable transport |
-| **5** | `vscode-cognitive-surface` | Orientation/teaching polish after core surfaces quiet and truthful |
-| **after 1** | `spw-garden-geometry` | Optional anti-echo, measurement, and teaching profiles over the shared evidence contract |
-| **∥** | `typescript-perf-audit-infra` + `typescript-upgrade-ladder` | Faster agent/typecheck loop; dual-install for eslint; not a substitute for editor perf |
+| **0a** | `operational-topography` | Seed-owned parse/structure coordinates, evidence/effect grades, exact selection, differential envelopes — **kernel largely landed; remaining: pair AST labels, editor projection** |
+| **0b** | This roadmap + editor-contract | Observation ownership, presentation authority, invalidation rules |
+| **0c** | `form-geometry-editor` (new) | Project form geometry + pulse into LSP/plugin: hover packet, mobility code actions, `spw/formContext`, pulse check |
+| **1** | `lsp-custom-request-completions` | Canonical protocol registry + matrix; kill or implement phantoms; **earn `spw/formContext` before new garden methods** |
+| **2** | `vscode-plugin-performance` | Compiled launch default, lean activation, incremental annotations, shared cursor context |
+| **3a** | Atlas **follow-up** | Extract tree complexity; resonance only via earned method |
+| **3b** | `vscode-register-explorer` | Register tree + server `spw/registerSnapshot` + liminality column (bridge is S1 runtime) |
+| **4** | `vscode-authoring-probe-loop` | Mobility/HOF actions, pulse commands, differential previews on stable transport |
+| **5** | `vscode-cognitive-surface` | Orientation/teaching polish after core surfaces quiet |
+| **after 1** | `spw-garden-geometry` | Anti-echo + measurement profiles over shared evidence (uses formContext, not a second model) |
+| **∥** | `typescript-perf-audit-infra` + `typescript-upgrade-ladder` | Faster typecheck; not a substitute for editor perf |
 
 Parallel safe after rung 2: IntelliJ/LSP4IJ and mounted-consumer evidence, as long as they do not fork semantics.
+
+### Editor projection slices (from form-geometry proposal)
+
+| Slice | Effect | Notes |
+|-------|--------|-------|
+| **P0** | Coupling hover + digraph/capsule honesty | S0; seed `readCouplingFrame` |
+| **P0** | Code actions whose actual-source mobility receipts pass health/loss/revision gates | S1 plan → S2 apply on accept |
+| **P1** | `spw/formContext` + context strip | One density-parameterized contour packet for strip/actions/teaching |
+| **P1** | Pulse/mutation → LSP `TextEdit` map | One differential kernel |
+| **P2** | Diagnostics prose-fallback; optional empty-bound inlays | Config-gated |
+| **P2** | Semantic token modifiers occupancy / couple vs capsule | Theme-friendly, no charge law |
+| **P3** | HOF walk UI + register bridge command | After honest snapshot path |
 
 ## Doctrine (non-negotiable)
 
@@ -66,7 +94,9 @@ Parallel safe after rung 2: IntelliJ/LSP4IJ and mounted-consumer evidence, as lo
 5. **Additive `SpwContext`.** New fields only; no silent renames across surface plans.
 6. **Hot files extract before grow.** `display.ts`, `server-index.ts`, tree views, `stdio-server` dispatcher — extract helpers, do not widen further.
 7. **Measure editor paths separately from `tsc`.** TS 7 speed ≠ extension startup.
-8. **One differential kernel.** CLI formatting, standard LSP edits, code actions, and future layout/label pulses project one parser-verified plan; editor settings are inputs, not a second formatter semantics.
+8. **One differential kernel.** CLI formatting, standard LSP edits, code actions, pulse, and label-mobility rewrites project one plan (`SourceEdit` / mobility `apply`); editor settings are inputs, not a second semantics.
+9. **Geometry is Seed-owned.** Form ladders, mobility rules, and HOF programs live in `spw-seed`; LSP transports observations and previews; plugin never re-parses for meaning.
+10. **Implemented rules only as executable actions.** Proposed mobility rules may appear as teaching text, never as silent auto-rewrite.
 
 ## Scope
 
@@ -79,6 +109,9 @@ Parallel safe after rung 2: IntelliJ/LSP4IJ and mounted-consumer evidence, as lo
 [NEW] .agents/plans/vscode-lsp-roadmap/PLAN.md
 [NEW] .agents/plans/vscode-lsp-roadmap/wip.spw
 [NEW] .agents/plans/vscode-lsp-roadmap/vscode-lsp-roadmap.spw
+[NEW] .agents/plans/form-geometry-editor/PLAN.md
+[NEW] .agents/plans/form-geometry-editor/wip.spw
+[NEW] .agents/plans/form-geometry-editor/form-geometry-editor.spw
 [NEW] .agents/plans/vscode-editor-contract/PLAN.md
 [NEW] .agents/plans/vscode-cognitive-surface/PLAN.md
 [MOD] .agents/plans/vscode-plugin-performance/PLAN.md
@@ -89,6 +122,8 @@ Parallel safe after rung 2: IntelliJ/LSP4IJ and mounted-consumer evidence, as lo
 [MOD] .agents/plans/vscode-workspace-atlas/wip.spw
 [MOD] .agents/plans/vscode-register-explorer/PLAN.md
 [MOD] .agents/plans/vscode-authoring-probe-loop/PLAN.md
+[MOD] .agents/plans/operational-topography/PLAN.md
+[MOD] .agents/plans/spw-garden-geometry/PLAN.md
 ```
 
 ### Craft guard
@@ -112,7 +147,9 @@ Parallel safe after rung 2: IntelliJ/LSP4IJ and mounted-consumer evidence, as lo
 ## Dependencies
 
 - Child plans listed in ladder (do not merge feature work *as* this plan)
-- Hard input: `operational-topography`
+- Hard input: `operational-topography` (seed kernel)
+- Hard input: `form-geometry-editor` (rung 0c — projects form-geometry + pulse)
+- Soft: `spw-garden-geometry` (anti-echo profiles after formContext)
 - Soft: `typescript-perf-audit-infra`, `typescript-upgrade-ladder`, `mounted-consumer-tooling`, `audit-fuzz-truthfulness`
 
 ## Failure Modes

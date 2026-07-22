@@ -24,10 +24,25 @@ Roadmap rung **4**. Depends on:
 - Shared cursor/context transport from `vscode-plugin-performance` (do not add a third debounce)
 - Seed-owned exact selection and differential envelopes from `operational-topography`
 - Canonical custom-protocol registry from the capability plan
-- `spw/phaseContext` and/or `spw/operatorFrequency` **server** implementations from capability plan (client types today are **phantoms**)
-- Soft: register snapshot if lenses need live registers
+- **`form-geometry-editor` P0–P1** (mobility code actions + optional `spw/formContext`) — do not re-implement geometry in the plugin
+- `spw/phaseContext` and/or `spw/operatorFrequency` **server** implementations from capability plan (client types today are **phantoms**; lower priority than formContext)
+- Soft: register snapshot if lenses need live registers / liminality bridge UI
 
-See `.agents/plans/vscode-lsp-roadmap/PLAN.md`.
+See `.agents/plans/vscode-lsp-roadmap/PLAN.md` and `.agents/plans/form-geometry-editor/PLAN.md`.
+
+## Authoring actions unlocked by form geometry (2026-07-21)
+
+When `form-geometry-editor` lands, the authoring loop should consume:
+
+| Command / action | Kernel |
+|------------------|--------|
+| Lightbulb mobility rewrites | `applyMobilityRule` after actual-source receipt, health, loss, and revision gates |
+| HOF walk preview | `runHigherOrderForm` |
+| Pulse check / apply | `runMutationAutomata` / pulse profiles |
+| Contour teaching / density | `contourFormLadder` + receipt-based reduce/expand |
+| Register promote (gated) | explicit operational bridge profile; `$(L)` syntax alone has no effect |
+
+Do **not** add client-local regex geometry.
 
 ## Files
 

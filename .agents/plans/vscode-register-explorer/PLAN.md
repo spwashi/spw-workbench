@@ -25,6 +25,14 @@ Prior: `lsp-custom-request-completions` (implement or demote), soft: `vscode-plu
 
 See `.agents/plans/vscode-lsp-roadmap/PLAN.md`.
 
+## Kernel note (2026-07-21)
+
+Runtime now has `bridgeRegisterLiminality` / `applyRegisterBridgeEffect` (S1) for promoting cells toward `global` after surface `$(name)`. When `registerSnapshot` is earned:
+
+- Include **liminality** on each entry in the snapshot payload.
+- Optional command **Promote liminality** may call the bridge only after explicit user action (S2 UI over S1 bank mutate).
+- Do not invent a client-side liminality model separate from RegisterBank.
+
 ## Files
 
 ```text

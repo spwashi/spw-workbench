@@ -31,10 +31,23 @@ Advertised and routed in `stdio-server.ts`: definition/declaration, references, 
 | `spw/registerSnapshot` | **no** | yes | — | **Phantom** — register explorer |
 | `spw/operatorFrequency` | **no** | yes | — | **Phantom** — authoring heat |
 | `spw/phaseContext` | **no** | yes | — | **Phantom** — authoring status |
+| `spw/formContext` | **no** | **no** | — | **Proposed (earn)** — form-geometry-editor P1; Seed coupling + ladders + applicable mobility rules |
 
 Policy for this plan: either implement with tests + mounted-consumer evidence, or demote client types so call sites cannot pretend success.
 
 Server routing is not capability advertisement. The current tree has no single custom-protocol registry from which handlers, initialization metadata, TypeScript request maps, client helpers, and audit rows are derived. Establish that registry before adding `spw/topography`, differential preview, garden, pulse, or hydration methods.
+
+### Proposed next earned method (2026-07-21)
+
+**`spw/formContext`** — revision-addressed S0 packet at position:
+
+- `coupling` (kind/form/occupancy/payload when present)
+- boundary/operator contour with requested density, catalog/evidence/view signatures, dimensions, and omitted point ids
+- `labelSites` sketches near caret
+- `applicableRules[]` with status plus actual-source S1 preview receipt (hashes, health delta, inverse status, loss posture); `implemented` alone is not eligibility
+- compact topography (parseHealth, paired depth)
+
+**Do not** type `spw/formContext` in the client until a server handler + test land. Prefer implementing this before re-opening phantom `resonance` / `operatorFrequency` unless a surface hard-requires them.
 
 ## Scope
 
@@ -75,9 +88,10 @@ Server routing is not capability advertisement. The current tree has no single c
 
 ## Agentic Hygiene
 
-- Rebase target: `main@b4832193891b2b89b7e1e20dc0e462e2e4c9236e`
+- Rebase target: `main@a333db8d33606c362439487f41371ad4091506b6`
 - Rebase cadence: before commit 1, before implementation, before merge
 - Hygiene split: keep pure audit commit separate from implementation
+- Cross-link: `.agents/plans/form-geometry-editor/PLAN.md` (earns formContext)
 
 ## Dependencies
 

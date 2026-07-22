@@ -35,29 +35,21 @@ Verify: `npm run test:lsp` focused suites (path-refs, semantic-tokens, navigatio
   `docs/runtime/md/polyglot-lsp-search.md`.
 - Do **not** put `@lang: =lsp[…]` inside path roots; wait for perspectives/services.
 
-## Still dirty / do not merge wholesale
+## Remaining after theory/plan landing (expected)
 
-### Theory and plans
-
-- Theory form-geometry / form-ladders / ladders / topography edits
-- Untracked: `range-transform.spw`, `swap-grace.spw`, `form-geometry-editor/` plan
-- Plan stream updates under `.agents/plans/*` (vscode-*, operational-topography, garden)
-- Fix `swap-grace` Frame/`boundary_kind`/liminality before registration
-- Plans must not call uncommitted work “landed”; use `effect.l0…l3` slugs
-
-### Remaining LSP notes
+### LSP notes (no longer blocking dirty tree)
 
 - Regex allowlists still duplicated across selector, tokens, TextMate ×2, Neovim
   (align deliberately when Seed owns angle paths)
 - Couple vs Capsule (`<>`) rendering still separate from path work
 - Prefer Seed-owned `~<path>` before treating projection as permanent grammar
+- Polyglot: research only until perspectives/services manifest
 
-## Suggested continuation order
+### Next product work
 
-1. Land path-nav product slice(s) if not already committed (selector + tokens + editors).
-2. Land polyglot **research docs only** (no index registration).
-3. Correct theory surfaces (`swap-grace`, effect slugs), then theory/plan commits.
-4. Refresh plan ecology last after product commits.
-5. Review poll: `bash .agents/skills/spw-commit-review/scripts/poll-review.sh --scope=staged --no-state`
+1. `form-geometry-editor` P0 (coupling hover + mobility actions)
+2. Optional Seed versioned `~<path>` or shared path classifier
+3. Plan ecology refresh after editor slices
+4. Review poll on staged product commits
 
-Do not drop the backup stash until remaining dirty files have landed or been rejected.
+Do not drop the backup stash until confirmed empty of unrecovered value.

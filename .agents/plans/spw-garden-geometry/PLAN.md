@@ -20,6 +20,16 @@ This plan now follows `operational-topography`. Its durable core is true delta, 
 
 The first contract is a read-only selection transect and revision-addressed evidence packet. `spw/gardenStats`, executable pulses, edit-bearing lenses, and taste interpretation wait until the shared observation/effect contract is implemented and measured. Epistemic grades (`E0`–`E2`) are separate from effect grades (`S0`–`S3`).
 
+## Trajectory revision — 2026-07-21
+
+Seed now owns **form ladders**, **form geometry** (label mobility / HOF), **mutation automata**, and **pulse CLI** topography probes. Garden presentation should:
+
+1. **Consume** `spw/formContext` (when earned) for anti-echo hover deltas (occupancy/payload/label site) — not invent garden-only structure.
+2. Treat **pulse check** structureMoved / healthRegressed as garden “soil health” *metrics* only under a named measurement profile.
+3. Defer `spw/gardenStats` until formContext + capability registry exist; do not add a third custom-method family without the registry.
+
+Owner of editor projection of geometry: `.agents/plans/form-geometry-editor/PLAN.md` (roadmap 0c).
+
 ## Companion surfaces (refined catalog)
 
 See `index.spw` for the authoritative list. Short map:

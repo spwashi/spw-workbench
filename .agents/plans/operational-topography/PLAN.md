@@ -8,10 +8,27 @@ Define the smallest shared contract that lets a contributor inspect where an ope
 
 Taste note: improve **semantic honesty**, **layering**, **traceability**, **portability**, and **expressiveness** while preserving local style and interpretive freedom.
 
+## Status (2026-07-21)
+
+**Theory + seed kernel: largely landed.** Remaining work is grammar pair labels, Stream ONF honesty, and **editor projection** (owned by `form-geometry-editor` / LSP ladder, not a second topography model).
+
+| Area | Status | Evidence |
+|------|--------|----------|
+| Theory topography / devices / composition | landed | `docs/theory/spw/operational-topography.spw`, coupling, operator-brace-composition |
+| Coupling ONF + occupancy/payload | landed | `packages/spw-seed/src/types/coupling.ts`, normalize |
+| Form / boundary ladders | landed | `canonical/form-ladders.ts` |
+| Form geometry (label mobility, HOF) | landed | `canonical/form-geometry.ts` |
+| Form contour density / restoration | landed | `canonical/form-contours.ts`, `spw pulse --contour` |
+| Mutation automata + pulse CLI | landed | `mutation-automata.ts`, `spw-cli` pulse, `--ladder` / `--geometry` |
+| Differentials + topography probes | landed | `differential.ts`, `topography-probe.ts` |
+| Register liminality bridge | landed opt-in S1 profile | `spw-runtime` liminality-bridge; syntax alone has no effect |
+| Parser pair_id / open_close labels on Frame/Body/Scope | **open** | grammar still uneven |
+| LSP/plugin projection | **open** | see `form-geometry-editor` |
+
 ## Scope
 
 - **In scope**: revise active plans and theory; define source, structural, relational, temporal, layout, operational, and evidence strata; distinguish render-only orientation from versioned dialect semantics; define parser-checked spacing and indentation as measured topology; specify layout and brace-label differentials, exact-first approximate scans, and mutation profiles; define portable LSP evidence packets for agent contexts; define abstract-plan hydration stages, range/stream contracts, effect grades, and source maps; design a longitudinal whitespace-physics experiment; update relevant skills and probe recipes; predict the implementation and editor integration slices.
-- **Out of scope**: changing parser or runtime semantics in this planning pass; making indentation semantic; executing generated scripts; granting background probes write authority; introducing claim, ticket, page, row, genome, or emotion primitives; adding editor panels before a shared LSP response exists; treating a metaphor, mathematical analogy, or model-generated interpretation as an implemented invariant.
+- **Out of scope**: changing parser grammar or inventing new runtime physics; making indentation semantic; executing generated scripts; granting background probes write authority; introducing claim, ticket, page, row, genome, or emotion primitives; adding editor panels before a shared LSP response exists; treating a metaphor, mathematical analogy, or model-generated interpretation as an implemented invariant.
 
 ## Files
 
@@ -24,6 +41,12 @@ Taste note: improve **semantic honesty**, **layering**, **traceability**, **port
 [NEW] docs/theory/spw/coupling-constructors.spw
 [NEW] docs/theory/spw/operator-brace-composition.spw
 [NEW] docs/theory/spw/operational-devices.spw
+[NEW] docs/theory/spw/mutation-automata.spw
+[NEW] docs/theory/spw/operational-transform.spw
+[NEW] docs/theory/spw/form-ladders.spw
+[NEW] docs/theory/spw/form-geometry.spw
+[NEW] docs/theory/spw/form-contours.spw
+[NEW] docs/theory/spw/operator-ladders.spw
 [MOD] docs/theory/index.spw
 [MOD] docs/theory/spw/operators.spw
 [MOD] docs/theory/spw/onf.spw
@@ -71,6 +94,8 @@ Taste note: improve **semantic honesty**, **layering**, **traceability**, **port
 [MOD] .agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw
 [MOD] .agents/plans/plan-ecology-clustering/wip.spw
 [MOD] package.json
+[NEW] packages/spw-cli/src/pulse.ts
+[NEW] scripts/spw-pulse.ts
 [MOD] packages/spw-cli/src/query.ts
 [NEW] packages/spw-seed/src/types/coupling.ts
 [MOD] packages/spw-seed/src/types/index.ts
@@ -90,12 +115,22 @@ Taste note: improve **semantic honesty**, **layering**, **traceability**, **port
 [NEW] src/seed/__tests__/refactor-check.test.ts
 [NEW] src/seed/__tests__/coupling-profile.test.ts
 [NEW] src/runtime/__tests__/coupling-eval.test.ts
+[NEW] src/runtime/__tests__/pulse-write.test.ts
+[NEW] src/seed/__tests__/mutation-automata.test.ts
 [MOD?] packages/spw-seed/src/query/types.ts
 [MOD?] packages/spw-seed/src/query/match.ts
 [MOD?] packages/spw-seed/src/types/ast/nodes.ts
 [MOD?] packages/spw-seed/src/normalize.ts
-[MOD?] packages/spw-seed/src/canonical/index.ts
-[NEW?] packages/spw-seed/src/canonical/differential.ts
+[MOD] packages/spw-seed/src/canonical/index.ts
+[NEW] packages/spw-seed/src/canonical/canonicalize.ts
+[NEW] packages/spw-seed/src/canonical/differential.ts
+[NEW] packages/spw-seed/src/canonical/mutation-automata.ts
+[NEW] packages/spw-seed/src/canonical/operational-transform.ts
+[NEW] packages/spw-seed/src/canonical/topography-probe.ts
+[NEW] packages/spw-seed/src/canonical/form-ladders.ts
+[NEW] packages/spw-seed/src/canonical/form-geometry.ts
+[NEW] packages/spw-seed/src/canonical/form-contours.ts
+[NEW] packages/spw-seed/src/canonical/operator-ladders.ts
 [NEW?] packages/spw-seed/src/canonical/selection.ts
 [NEW?] packages/spw-seed/src/__tests__/format-differential.test.ts
 [NEW?] packages/spw-lsp/src/protocol.ts
@@ -128,7 +163,7 @@ Taste note: improve **semantic honesty**, **layering**, **traceability**, **port
 
 ## Current implementation boundary
 
-- The formatter CLI currently normalizes newlines, trailing whitespace, and the final newline. Its `equiv` mode performs three regex rewrites. It does not expose indentation profiles, source edits, parse-equivalence checks, structural hashes, label operations, or an LSP preview.
+- The established formatter CLI still follows its older normalization path, but Seed now also exposes source differentials, mutation profiles, fixed-point automata, mutation vectors, topography deltas, and named operational sequences. `spw pulse` previews these plans and may perform an S2 file write only after parse-health, layout-structure, conflict, and stale-source gates. This kernel is not yet the LSP formatting protocol and label-pair operations remain proposed.
 - Seed canonicalization has opt-in `indentBraces` and `blankLineBetweenFrames` passes. They are line scanners, not parser-owned transformations, and therefore remain experiments until checked against complete, well-nested parses and adjacency-sensitive syntax.
 - `FrameNode`, `BodyNode`, and `ScopeNode` declare `openLabel` and `closeLabel`, but the container grammar does not populate them. They are reserved type affordances, not an implemented brace-label feature.
 - `OperationNode.position` is not populated by the current prefix parser. Postfix equivalence and orientation-sensitive rewrites remain proposed.
@@ -139,6 +174,9 @@ Taste note: improve **semantic honesty**, **layering**, **traceability**, **port
 - The stdio server handles `spw/select`, while editor declarations and initialization metadata do not yet share a canonical custom-protocol registry. Protocol truth precedes new topography or formatting requests.
 - Raw brace and query scanners can count syntax-like text inside comments or strings and do not prove well-nestedness. An E0 structural result requires parser-owned spans plus an explicit complete/recovered/invalid parse state.
 - The read-only `audit:topography` instrument now uses Seed's AST walker, records parse evidence, treats Prose fallback as recovered, measures nested parsed paired containers separately from explicit `<>` operations, and labels recovered-node counts as partial recognized lower bounds. It does not yet provide source selections, relation strata, LSP payloads, or edit authority.
+- Seed now carries a revisioned, interpretive Form Ladder catalog over an explicitly disclosed six-kind paired-boundary set plus thirteen operators. Empty boundaries share only `occupancy=empty,payload=void`; kind-specific readings remain profile hypotheses. The `<>` ladder composes with a Frame operand surface while retaining `kind=couple,form=operator`.
+- Form contours expose stable catalog indices, role/axis hypotheses, parser evidence, signatures, and dimensional counts. Named reductions report omitted points, roles, axes, and structured evidence; non-identity views claim no semantic equivalence. Expansion reads the retained receipt and can restore the exact input signature. The CLI exposes one-ladder full, endpoint, evidence, axis, and balanced views; source remains untouched.
+- Form Geometry includes pure label-mobility rules and compositional programs. “Implemented” means a bounded source function exists, not that the parser/runtime assigns the proposed geometric meaning. Each successful application now returns hashes, before/after parse health, a topography delta, a no-equivalence posture, and inverse status. Editor edits still require revision-addressed differentials and explicit S2 authority; status alone is insufficient.
 
 ## Layout, label, and pulse differentials
 
@@ -213,13 +251,14 @@ babble -> candidate pattern -> exact fixture -> impact packet -> steward review
 3. `.[skills] =instrument[topographic-samples] — make probes revision-aware and agent-portable`
 4. `vocab[seed,runtime] =model[tagged-coupling] — share boundary kinematics without flattening operational kinds`
 5. `^tooling[seed] =measure[parsed-topography] — ship evidence-bearing read-only corpus scans`
-6. `vocab[lsp] =register[protocol] — make custom capability truth canonical and tested`
-7. `vocab[seed,lsp] =model[selection-transect,differential] — add typed observations and edit previews`
-8. `^seed[lsp,query] =sample[topographic-evidence] — implement exact-first read-only evidence packets`
-9. `&[seed,lsp,cli] =preview[layout,label] — expose parser-checked differential plans`
-10. `&[runtime,cli] =plan[hydration] — compile abstract sequences into previewable effect plans`
-11. `&[vscode,neovim] =project[topography] — render one server-owned contract in thin clients`
-12. `![topography] *verify[semantics,portability,cost] — prove invariants and negative controls`
+6. `^tooling[seed,cli] =contour[expand,reduce] — expose density projections with loss and restoration receipts`
+7. `vocab[lsp] =register[protocol] — make custom capability truth canonical and tested`
+8. `vocab[seed,lsp] =model[selection-transect,differential] — add typed observations and edit previews`
+9. `^seed[lsp,query] =sample[topographic-evidence] — implement exact-first read-only evidence packets`
+10. `&[seed,lsp,cli] =preview[layout,label] — expose parser-checked differential plans`
+11. `&[runtime,cli] =plan[hydration] — compile abstract sequences into previewable effect plans`
+12. `&[vscode,neovim] =project[topography] — render one server-owned contract in thin clients`
+13. `![topography] *verify[semantics,portability,cost] — prove invariants and negative controls`
 
 Fuzz strategy:
 
@@ -267,6 +306,7 @@ Fuzz strategy:
 - **Negative control**: label reapplication preserves pair identity and references; a collision or unrepresentable label yields no edit.
 - **Negative control**: changing a render-only orientation profile changes labels or ordering only.
 - **Negative control**: consumer scans exclude `.spw/_workbench/**` unless infrastructure is the explicit target.
+- **Negative control**: every non-identity contour reduction reports information loss, and full expansion restores the exact input view signature without touching source.
 - **Demo sequence**: locate selection → measure named strata → preview a layout differential → verify parse/structure identity → retrieve exact and approximate neighbors → explain ranking and cost → compile an abstract sequence → preview a capability-bounded plan → record an immutable observation.
 - **Falsify**: reject the contract if either editor returns different semantic JSON, if score contributions cannot reconstruct ranking, if a profile silently changes structure or effects, if a second formatting pass is non-empty, or if a sample cannot be reproduced from its evidence envelope.
 
