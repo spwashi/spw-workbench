@@ -67,7 +67,7 @@ export type EmptyBoundaryPayload = Extract<CouplingPayload, 'void' | 'space'>
 export type InhabitedBoundaryPayload = Exclude<CouplingPayload, EmptyBoundaryPayload>
 
 /** Position of an Act relative to a paired boundary. */
-export type ActPlacement = 'interior' | 'prefix' | 'postfix' | 'none'
+export type ActPlacement = 'interior' | 'prefix' | 'postfix' | 'none' | 'membrane'
 
 const OPERATOR_PORTS = [
   'before_operator',
@@ -198,6 +198,8 @@ interface BoundaryCouplingFrameBase {
   form: 'boundary'
   surface: string
   actPlacement?: ActPlacement
+  /** Named Act·Bound product this boundary normalizes to (e.g. 'select', 'facet'). */
+  product?: string
 }
 
 export type BoundaryCouplingFrame = BoundaryCouplingFrameBase & (
@@ -298,9 +300,10 @@ export interface BoundaryCouplingFrameOptions {
   occupancy?: CouplingOccupancy
   payload?: CouplingPayload
   actPlacement?: ActPlacement
+  product?: string
 }
 
-const ACT_PLACEMENTS = new Set<ActPlacement>(['interior', 'prefix', 'postfix', 'none'])
+const ACT_PLACEMENTS = new Set<ActPlacement>(['interior', 'prefix', 'postfix', 'none', 'membrane'])
 const EMPTY_PAYLOADS = new Set<EmptyBoundaryPayload>(['void', 'space'])
 const INHABITED_PAYLOADS = new Set<InhabitedBoundaryPayload>(['act', 'term', 'multi'])
 
@@ -371,6 +374,7 @@ export function couplingFrame(
     form: 'boundary' as const,
     surface: occupancy === 'empty' ? descriptor.emptySurface : descriptor.surface,
     ...(options.actPlacement ? { actPlacement: options.actPlacement } : {}),
+    ...(options.product ? { product: options.product } : {}),
   }
   return occupancy === 'empty'
     ? { ...base, occupancy, payload: payload as EmptyBoundaryPayload }
@@ -388,6 +392,8 @@ export interface WithCouplingOptions {
   args?: readonly PayloadArg[]
   /** Act placement relative to a paired boundary. */
   actPlacement?: ActPlacement
+  /** Named Act·Bound product this boundary normalizes to (e.g. 'select', 'facet'). */
+  product?: string
 }
 
 type PayloadArg = {
@@ -455,6 +461,7 @@ export function withCoupling(
       occupancy,
       payload,
       actPlacement,
+      product: options.product,
     }),
   }
 }

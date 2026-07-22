@@ -16,6 +16,7 @@ import type {
   NRangeNode,
   StreamNode,
   CapsuleNode,
+  ExpressionNode,
 } from '../types'
 import {
   type Parser,
@@ -277,7 +278,8 @@ export const scopeNode: Parser<ScopeNode> = named('scope',
 )
 
 /**
- * N-range: "(( expression ))"
+ * N-range: "(( expression? ))" — empty `(())` is structured empty occupancy.
+ * Document line ranges use path fragments (`#:L12-L28`), not n-range Bounds.
  */
 export const nrangeNode: Parser<NRangeNode> = named('nrange',
   function* nrangeParser(stream, depth) {
@@ -294,18 +296,22 @@ export const nrangeNode: Parser<NRangeNode> = named('nrange',
     }
 
     let consumed = openStep.value.consumed
+    let expression: ExpressionNode | undefined
 
     skipWhitespace(stream)
-    const exprGen = expressionNode(stream, depth + 1)
-    let exprStep = exprGen.next()
-    while (!exprStep.done) {
-      yield exprStep.value
-      exprStep = exprGen.next()
+    // Optional interior: empty n-range before close
+    if (current(stream).type !== 'NRANGE_CLOSE') {
+      const exprGen = expressionNode(stream, depth + 1)
+      let exprStep = exprGen.next()
+      while (!exprStep.done) {
+        yield exprStep.value
+        exprStep = exprGen.next()
+      }
+      if (exprStep.value.success) {
+        expression = exprStep.value.value!
+        consumed += exprStep.value.consumed
+      }
     }
-    if (!exprStep.value.success) {
-      return { success: false, consumed: 0, error: exprStep.value.error }
-    }
-    consumed += exprStep.value.consumed
 
     skipWhitespace(stream)
     const closeGen = nrangeClose(stream, depth + 1)
@@ -323,7 +329,7 @@ export const nrangeNode: Parser<NRangeNode> = named('nrange',
     const node: NRangeNode = {
       type: 'NRange',
       span: { start: startPos, end: endPos },
-      expression: exprStep.value.value!,
+      ...(expression ? { expression } : {}),
       open: openStep.value.value!,
       close: closeStep.value.value!,
     }

@@ -98,7 +98,7 @@ function describeStream(stream: StreamNode): string {
 }
 
 function describeNRange(nr: NRangeNode): string {
-  return `((${describeExpression(nr.expression)}))`
+  return `((${nr.expression ? describeExpression(nr.expression) : ''}))`
 }
 
 function describeScope(scope: ScopeNode): string {

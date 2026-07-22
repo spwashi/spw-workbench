@@ -169,7 +169,8 @@ export interface StreamNode extends ASTNode {
 
 export interface NRangeNode extends ASTNode {
   type: 'NRange'
-  expression: ExpressionNode
+  /** Optional interior — empty `(())` is structured empty occupancy. */
+  expression?: ExpressionNode
   open: Token<'NRANGE_OPEN'>
   close: Token<'NRANGE_CLOSE'>
 }

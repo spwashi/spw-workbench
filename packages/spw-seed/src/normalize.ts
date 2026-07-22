@@ -157,20 +157,23 @@ export function normalizeToONF(node: ASTNode): ONFNode {
         args.push(...frameArgs)
       }
 
+      // Preferred Act×Bound products: #[] set, .{} facet (machine-facing reg ids).
       let reg = 'op'
+      const hasFrameOnly = Boolean(op.frame && !op.body && !op.subject)
+      const hasBodyOnly = Boolean(op.body && !op.frame && !op.subject)
       switch (sigil) {
         case '!': reg = 'hydrate'; break
         case '~': reg = 'defer'; break
         case '*': reg = 'collapse'; break
         case '=': reg = 'config'; break
         case '@': reg = 'observe'; break
-        case '#': reg = 'resonate'; break
+        case '#': reg = hasFrameOnly ? 'set' : 'resonate'; break
         case '&': reg = 'merge'; break
         case '^': reg = 'integrate'; break
         case '?': reg = 'probe'; break
         case '%': reg = 'measure'; break
         case '$': reg = 'substrate'; break
-        case '.': reg = 'property'; break
+        case '.': reg = hasBodyOnly ? 'facet' : 'property'; break
         case '<>': reg = 'couple'; break
       }
 
@@ -187,12 +190,34 @@ export function normalizeToONF(node: ASTNode): ONFNode {
         })
       }
 
+      // Multi-arm frame content as select product (named params + bare arms).
+      if (op.frame && frameArgs.length > 1) {
+        frames.select = {
+          armCount: frameArgs.length,
+          named: frameArgs.filter((a: any) => a?.frames?.reg === 'parameter' && a?.frames?.name).length,
+        }
+      }
+
       // Preserve the paired-boundary side of a prefix Act·Frame product.
       if (op.frame && !op.body) {
         frames.bound = withCoupling({}, 'frame', {
           args: frameArgs,
           argCount: frameArgs.length,
           actPlacement: 'prefix',
+          product: hasFrameOnly && (sigil === '#' || sigil === '&' || sigil === '?') ? 'select' : undefined,
+        }).coupling
+      }
+
+      // Act·Body product (e.g. .{} facet, &{} wrap).
+      if (op.body && !op.frame) {
+        const bodyArgs: ONFNode[] = op.body.sequence
+          ? op.body.sequence.expressions.map((e: any) => normalizeToONF(e))
+          : []
+        frames.bound = withCoupling({}, 'body', {
+          args: bodyArgs,
+          argCount: bodyArgs.length,
+          actPlacement: 'prefix',
+          product: hasBodyOnly && sigil === '.' ? 'facet' : undefined,
         }).coupling
       }
 
@@ -270,15 +295,31 @@ export function normalizeToONF(node: ASTNode): ONFNode {
             : 'term'
           : 'void'
 
+      // Preserve optional capsule frame (membrane + selection arms) without losing body.
+      const frameArgs: ONFNode[] = cap.frame
+        ? (cap.frame.content ?? []).map((c: any) => normalizeToONF(c))
+        : []
+      const capsuleFrames: Record<string, unknown> = {
+        reg: medial ? 'composite' : 'capsule',
+        placement: medial ? 'medial' : 'shell',
+        ...(channel !== undefined ? { tag: channel, channel, channelKind } : {}),
+        ...(bodyArgs.length > 0 ? { hasBody: true } : {}),
+        ...(frameArgs.length > 0
+          ? {
+              bound: withCoupling({}, 'frame', {
+                args: frameArgs,
+                argCount: frameArgs.length,
+                actPlacement: 'membrane',
+              }).coupling,
+            }
+          : {}),
+      }
+
       return {
         sigil: '<' as any,
         args,
         frames: withCoupling(
-          {
-            reg: medial ? 'composite' : 'capsule',
-            placement: medial ? 'medial' : 'shell',
-            ...(channel !== undefined ? { tag: channel, channel, channelKind } : {}),
-          },
+          capsuleFrames,
           'capsule',
           { args, argCount: args.length, occupancy, payload } as any,
         ),
@@ -291,10 +332,24 @@ export function normalizeToONF(node: ASTNode): ONFNode {
         ? stream.sequence.expressions.map((e: any) => normalizeToONF(e))
         : []
       // Historical ? sigil borrow; coupling.form/kind disambiguate Stream from Wonder.
+      const sinkNode = stream.sink ? normalizeToONF(stream.sink) : undefined
+      // Fold/head: multi-arg streams expose foldReady when argCount > 1.
       return {
         sigil: '?',
         args,
-        frames: withCoupling({}, 'stream', { args, argCount: args.length }),
+        frames: withCoupling(
+          {
+            ...(sinkNode ? { sink: sinkNode } : {}),
+            ...(args.length > 1 ? { foldReady: true, foldKind: 'sequence' } : {}),
+          },
+          'stream',
+          {
+            args,
+            argCount: args.length,
+            occupancy: args.length > 0 ? 'inhabited' : 'empty',
+            payload: args.length > 1 ? 'multi' : args.length === 1 ? 'term' : 'void',
+          } as any,
+        ),
       }
     }
 

@@ -26,10 +26,23 @@ export type EffectGrade =
   | 'effect.l2.workspace'
   | 'effect.l3.external'
 
+/**
+ * Epistemic grade — how a claim is justified (independent of effect ceiling).
+ * Not "lock" (that is effect.l2.workspace).
+ */
+export type EpistemicGrade =
+  | 'epistemic.l0.fact'
+  | 'epistemic.l1.score'
+  | 'epistemic.l2.report'
+
 export const EFFECT_L0_MEASURE = 'effect.l0.measure' as const
 export const EFFECT_L1_MEMORY = 'effect.l1.memory' as const
 export const EFFECT_L2_WORKSPACE = 'effect.l2.workspace' as const
 export const EFFECT_L3_EXTERNAL = 'effect.l3.external' as const
+
+export const EPISTEMIC_L0_FACT = 'epistemic.l0.fact' as const
+export const EPISTEMIC_L1_SCORE = 'epistemic.l1.score' as const
+export const EPISTEMIC_L2_REPORT = 'epistemic.l2.report' as const
 
 export const EFFECT_GRADE_ORDER: Record<EffectGrade, number> = {
   'effect.l0.measure': 0,
@@ -38,8 +51,18 @@ export const EFFECT_GRADE_ORDER: Record<EffectGrade, number> = {
   'effect.l3.external': 3,
 }
 
+export const EPISTEMIC_GRADE_ORDER: Record<EpistemicGrade, number> = {
+  'epistemic.l0.fact': 0,
+  'epistemic.l1.score': 1,
+  'epistemic.l2.report': 2,
+}
+
 export function effectGradeAtMost(grade: EffectGrade, ceiling: EffectGrade): boolean {
   return EFFECT_GRADE_ORDER[grade] <= EFFECT_GRADE_ORDER[ceiling]
+}
+
+export function epistemicGradeAtMost(grade: EpistemicGrade, ceiling: EpistemicGrade): boolean {
+  return EPISTEMIC_GRADE_ORDER[grade] <= EPISTEMIC_GRADE_ORDER[ceiling]
 }
 
 /**
