@@ -1,165 +1,259 @@
 import { describe, expect, it } from 'vitest'
-import { parseSelector, tryParseSelector, SelectorParseError } from '../selector-expr'
-import type { SpwPattern, SpwAnd, SpwOr, SpwNot, SpwDescend, SpwSequence } from '../types'
-import { isAnd, isOr, isNot, isDescend, isSequence, isPattern } from '../types'
+import { PAIRED_BOUNDARY_KINDS } from '../../index'
+import { parseSelector, SelectorParseError, tryParseSelector } from '../selector-expr'
+import type {
+  BoundarySelector,
+  SpwAnd,
+  SpwDescend,
+  SpwNot,
+  SpwOr,
+  SpwPattern,
+} from '../types'
+import {
+  isAnd,
+  isAny,
+  isDescend,
+  isNot,
+  isOr,
+  isPattern,
+} from '../types'
 
 describe('parseSelector', () => {
-    describe('atomic patterns', () => {
-        it('parses a bare sigil', () => {
-            const s = parseSelector('^')
-            expect(isPattern(s)).toBe(true)
-            expect((s as SpwPattern).sigil).toBe('^')
-        })
-
-        it('parses sigil with primary brace', () => {
-            const s = parseSelector('^[]')
-            expect(isPattern(s)).toBe(true)
-            const p = s as SpwPattern
-            expect(p.sigil).toBe('^')
-            expect(p.brace).toBe('[]')
-        })
-
-        it('parses sigil with primary and secondary braces', () => {
-            const s = parseSelector('^[]{}')
-            expect(isPattern(s)).toBe(true)
-            const p = s as SpwPattern
-            expect(p.sigil).toBe('^')
-            expect(p.brace).toBe('[]')
-            expect(p.brace2).toBe('{}')
-        })
-
-        it('parses sigil with modifier', () => {
-            const s = parseSelector('!boon')
-            expect(isPattern(s)).toBe(true)
-            const p = s as SpwPattern
-            expect(p.sigil).toBe('!')
-            expect(p.modifier).toBe('boon')
-        })
-
-        it('parses sigil with value', () => {
-            const s = parseSelector('~"./path"')
-            expect(isPattern(s)).toBe(true)
-            const p = s as SpwPattern
-            expect(p.sigil).toBe('~')
-            expect(p.value).toBe('./path')
-        })
-
-        it('parses standalone modifier', () => {
-            const s = parseSelector('boon')
-            expect(isPattern(s)).toBe(true)
-            expect((s as SpwPattern).modifier).toBe('boon')
-        })
-
-        it('parses standalone brace', () => {
-            const s = parseSelector('[]')
-            expect(isPattern(s)).toBe(true)
-            expect((s as SpwPattern).brace).toBe('[]')
-        })
-
-        it('parses wildcard', () => {
-            const s = parseSelector('*')
-            expect(isPattern(s)).toBe(true)
-            expect((s as SpwPattern).sigil).toBe('*')
-        })
-
-        it('parses <> coupling sigil', () => {
-            const s = parseSelector('<>')
-            expect(isPattern(s)).toBe(true)
-            expect((s as SpwPattern).sigil).toBe('<>')
-        })
+  describe('bare compatibility atoms', () => {
+    it('parses a bare sigil', () => {
+      const selector = parseSelector('^')
+      expect(isPattern(selector)).toBe(true)
+      expect((selector as SpwPattern).sigil).toBe('^')
     })
 
-    describe('combinators', () => {
-        it('parses or with pipe', () => {
-            const s = parseSelector('~ | @')
-            expect(isOr(s)).toBe(true)
-            const o = s as SpwOr
-            expect((o.or[0] as SpwPattern).sigil).toBe('~')
-            expect((o.or[1] as SpwPattern).sigil).toBe('@')
-        })
-
-        it('parses and with ampersand', () => {
-            const s = parseSelector('^[] & ^{}')
-            expect(isAnd(s)).toBe(true)
-        })
-
-        it('parses not', () => {
-            const s = parseSelector('not ^[]')
-            expect(isNot(s)).toBe(true)
-            const n = s as SpwNot
-            expect(isPattern(n.not)).toBe(true)
-            expect((n.not as SpwPattern).sigil).toBe('^')
-        })
-
-        it('parses descend with slash', () => {
-            const s = parseSelector('^[] / ![]')
-            expect(isDescend(s)).toBe(true)
-            const d = s as SpwDescend
-            expect((d.descend[0] as SpwPattern).sigil).toBe('^')
-            expect((d.descend[1] as SpwPattern).sigil).toBe('!')
-        })
-
-        it('parses sequence with dotdot', () => {
-            const s = parseSelector('![] .. ~[]')
-            expect(isSequence(s)).toBe(true)
-            const sq = s as SpwSequence
-            expect((sq.seq[0] as SpwPattern).sigil).toBe('!')
-            expect((sq.seq[1] as SpwPattern).sigil).toBe('~')
-        })
-
-        it('parses grouped expression', () => {
-            const s = parseSelector('(~ | @) & ^[]')
-            expect(isAnd(s)).toBe(true)
-        })
+    it('parses attached boundary products', () => {
+      expect(parseSelector('^[]')).toEqual({
+        sigil: '^',
+        brace: '[]',
+      })
+      expect(parseSelector('^[]{}')).toEqual({
+        sigil: '^',
+        brace: '[]',
+        brace2: '{}',
+      })
     })
 
-    describe('depth selectors', () => {
-        it('parses exact depth', () => {
-            const s = parseSelector('^[] @2')
-            expect(isPattern(s)).toBe(true)
-            expect((s as SpwPattern).depth).toBe(2)
-        })
-
-        it('parses depth range', () => {
-            const s = parseSelector('^[] @1-3')
-            expect(isPattern(s)).toBe(true)
-            expect((s as SpwPattern).depthRange).toEqual([1, 3])
-        })
+    it('parses modifiers and literal values', () => {
+      expect(parseSelector('!boon')).toEqual({ sigil: '!', modifier: 'boon' })
+      expect(parseSelector('~"./path"')).toEqual({ sigil: '~', value: './path' })
+      expect(parseSelector('boon')).toEqual({ modifier: 'boon' })
     })
 
-    describe('preset equivalents', () => {
-        it('NAVIGABLE = ~ | @', () => {
-            const s = parseSelector('~ | @')
-            expect(isOr(s)).toBe(true)
-            const o = s as SpwOr
-            expect((o.or[0] as SpwPattern).sigil).toBe('~')
-            expect((o.or[1] as SpwPattern).sigil).toBe('@')
-        })
-
-        it('DOMAIN_ROOTS = ^[]', () => {
-            const s = parseSelector('^[]')
-            expect(isPattern(s)).toBe(true)
-            const p = s as SpwPattern
-            expect(p.sigil).toBe('^')
-            expect(p.brace).toBe('[]')
-        })
-
-        it('BOON_OPS = !boon', () => {
-            const s = parseSelector('!boon')
-            expect(isPattern(s)).toBe(true)
-            const p = s as SpwPattern
-            expect(p.sigil).toBe('!')
-            expect(p.modifier).toBe('boon')
-        })
+    it('decodes escaped quoted values once', () => {
+      expect(parseSelector(String.raw`~"a\"b"`)).toEqual({ sigil: '~', value: 'a"b' })
     })
 
-    describe('error handling', () => {
-        it('tryParseSelector returns null on invalid input', () => {
-            expect(tryParseSelector('')).toBeNull()
-        })
-
-        it('parseSelector throws SelectorParseError on invalid input', () => {
-            expect(() => parseSelector('')).toThrow(SelectorParseError)
-        })
+    it('makes standalone boundary surfaces select boundary nodes', () => {
+      expect(parseSelector('[]')).toEqual({ boundary: 'frame' })
+      expect(parseSelector('{}')).toEqual({ boundary: 'body' })
+      expect(parseSelector('()')).toEqual({ boundary: 'scope' })
     })
+
+    it('keeps * and <> as literal operators', () => {
+      expect(parseSelector('*')).toEqual({ sigil: '*' })
+      expect(parseSelector('<>')).toEqual({ sigil: '<>' })
+      expect(parseSelector('&')).toEqual({ sigil: '&' })
+    })
+
+    it('uses an explicit any selector', () => {
+      expect(parseSelector('any')).toEqual({ any: true })
+      expect(isAny(parseSelector('any'))).toBe(true)
+    })
+  })
+
+  describe('closed Spw.q envelope', () => {
+    const surfaces = {
+      frame: '$[_]',
+      body: '${_}',
+      scope: '$(_)',
+      capsule: '$<_>',
+      stream: '$<<_>>',
+      nrange: '$((_))',
+    } satisfies Record<BoundarySelector, string>
+    const boundaries = PAIRED_BOUNDARY_KINDS.map(
+      (boundary) => [surfaces[boundary], boundary] as const,
+    )
+
+    it.each(boundaries)('%s selects the %s boundary kind', (source, boundary) => {
+      expect(parseSelector(source)).toEqual({ boundary, placeholder: true })
+    })
+
+    it('distinguishes Capsule from the <> coupling operator', () => {
+      expect(parseSelector('$<_>')).toEqual({ boundary: 'capsule', placeholder: true })
+      expect(parseSelector('$<>_')).toEqual({
+        sigil: '<>',
+        nodeType: 'Operation',
+        placeholder: true,
+      })
+    })
+
+    it('distinguishes explicit ANY from the * collapse operator', () => {
+      expect(parseSelector('$_')).toEqual({ any: true, placeholder: true })
+      expect(parseSelector('$*_')).toEqual({
+        sigil: '*',
+        nodeType: 'Operation',
+        placeholder: true,
+      })
+    })
+
+    it('supports every operator, including $ and &', () => {
+      expect(parseSelector('$$_')).toEqual({
+        sigil: '$',
+        nodeType: 'Operation',
+        placeholder: true,
+      })
+      expect(parseSelector('$&_')).toEqual({
+        sigil: '&',
+        nodeType: 'Operation',
+        placeholder: true,
+      })
+      expect(parseSelector('$ & _')).toEqual(parseSelector('$&_'))
+    })
+
+    it('specializes reference and path-reference envelopes', () => {
+      expect(parseSelector('$@_')).toEqual({
+        sigil: '@',
+        nodeType: 'Reference',
+        placeholder: true,
+      })
+      expect(parseSelector('$~"_"')).toEqual({
+        sigil: '~',
+        nodeType: 'PathRef',
+        placeholder: true,
+      })
+      expect(parseSelector('$~"./path"')).toEqual({
+        sigil: '~',
+        nodeType: 'PathRef',
+        value: './path',
+      })
+      expect(parseSelector('$~_')).toEqual({
+        sigil: '~',
+        nodeType: 'Operation',
+        placeholder: true,
+      })
+    })
+
+    it('parses operations carrying one or more boundaries', () => {
+      expect(parseSelector('$![_]')).toEqual({
+        sigil: '!',
+        nodeType: 'Operation',
+        withBoundaries: ['frame'],
+        placeholder: true,
+      })
+      expect(parseSelector('$^[_]{_}')).toEqual({
+        sigil: '^',
+        nodeType: 'Operation',
+        withBoundaries: ['frame', 'body'],
+        placeholder: true,
+      })
+    })
+
+    it('keeps attached @ forms as operations', () => {
+      expect(parseSelector('$@[_]')).toEqual({
+        sigil: '@',
+        nodeType: 'Operation',
+        withBoundaries: ['frame'],
+        placeholder: true,
+      })
+      expect(parseSelector('$@boon')).toEqual({
+        sigil: '@',
+        nodeType: 'Operation',
+        modifier: 'boon',
+      })
+    })
+
+    it('uses the query envelope to disambiguate a valued Scope', () => {
+      expect(parseSelector('$(x)')).toEqual({ boundary: 'scope', value: 'x' })
+    })
+
+    it('rejects boundaries that cannot attach to an operation', () => {
+      for (const source of ['$!<_>', '$!(_)', '$!<<_>>', '$!((_))']) {
+        expect(() => parseSelector(source)).toThrow(/not an attachable operation boundary/)
+      }
+    })
+
+    it('rejects unscoped values inside attached boundaries', () => {
+      expect(() => parseSelector('$![x]')).toThrow(/literal matching is unassigned/)
+      expect(parseSelector('$[x]')).toEqual({ boundary: 'frame', value: 'x' })
+    })
+  })
+
+  describe('combinators', () => {
+    it('parses union', () => {
+      const selector = parseSelector('~ | @')
+      expect(isOr(selector)).toBe(true)
+      const union = selector as SpwOr
+      expect((union.or[0] as SpwPattern).sigil).toBe('~')
+      expect((union.or[1] as SpwPattern).sigil).toBe('@')
+    })
+
+    it('parses symbolic and word conjunction while preserving bare &', () => {
+      expect(isAnd(parseSelector('^[] & ^{}'))).toBe(true)
+      expect(isAnd(parseSelector('^[] and ^{}'))).toBe(true)
+      expect(parseSelector('&')).toEqual({ sigil: '&' })
+      expect(parseSelector('( & )')).toEqual({ sigil: '&' })
+      expect(isNot(parseSelector('not &'))).toBe(true)
+      expect((parseSelector('^[] & ^{}') as SpwAnd).and).toHaveLength(2)
+    })
+
+    it('parses negation, descent, and grouping', () => {
+      const negated = parseSelector('not ^[]') as SpwNot
+      expect(isNot(negated)).toBe(true)
+      expect(isPattern(negated.not)).toBe(true)
+
+      const descended = parseSelector('^[] / ![]') as SpwDescend
+      expect(isDescend(descended)).toBe(true)
+      expect((descended.descend[0] as SpwPattern).sigil).toBe('^')
+      expect((descended.descend[1] as SpwPattern).sigil).toBe('!')
+
+      expect(isAnd(parseSelector('(~ | @) and ^[]'))).toBe(true)
+      expect(isAnd(parseSelector('((~ | @) and ^[])'))).toBe(true)
+      expect(isOr(parseSelector('((~ | @))'))).toBe(true)
+    })
+
+    it('reserves .. instead of pretending it is a sequence', () => {
+      expect(() => parseSelector('![] .. ~')).toThrow(/reserved for range and slice/)
+    })
+  })
+
+  describe('depth selectors', () => {
+    it('parses exact and ranged depth', () => {
+      expect(parseSelector('^[] @2')).toMatchObject({ depth: 2 })
+      expect(parseSelector('^[] @1-3')).toMatchObject({ depthRange: [1, 3] })
+      expect(() => parseSelector('^[] @3-1')).toThrow(SelectorParseError)
+    })
+  })
+
+  describe('fail-closed behavior', () => {
+    it('requires full token consumption', () => {
+      expect(() => parseSelector('^[] ~')).toThrow(SelectorParseError)
+      expect(() => parseSelector('$@_ trailing')).toThrow(SelectorParseError)
+    })
+
+    it('rejects unknown characters at their character offset', () => {
+      try {
+        parseSelector('^[]:')
+        throw new Error('expected selector parse failure')
+      } catch (error) {
+        expect(error).toBeInstanceOf(SelectorParseError)
+        expect((error as SelectorParseError).position).toBe(3)
+      }
+    })
+
+    it('rejects unterminated literals and malformed boundary interiors', () => {
+      expect(() => parseSelector('~"unfinished')).toThrow(/Unterminated quoted literal/)
+      expect(() => parseSelector('$[a b]')).toThrow(/selector interior/)
+    })
+
+    it('returns null from the tolerant API for every invalid surface', () => {
+      expect(tryParseSelector('')).toBeNull()
+      expect(tryParseSelector('$@_ trailing')).toBeNull()
+      expect(tryParseSelector('! .. ~')).toBeNull()
+    })
+  })
 })

@@ -34,6 +34,7 @@ export type {
   CouplingSemanticsProjection,
 } from './coupling'
 export {
+  PAIRED_BOUNDARY_KINDS,
   COUPLING_DESCRIPTORS,
   couplingFrame,
   withCoupling,

@@ -7,68 +7,74 @@
  * @spw:portable:seed - No DOM or app-specific imports allowed
  */
 
-import type { SpwSelector, SpwPattern } from './types'
-import { or, and } from './types'
+import type { SpwAny, SpwSelector, SpwPattern } from './types'
+import { or } from './types'
 
 // ── Navigation ───────────────────────────────────────────────
 
-/** $~"_" — all path references (~"./path") */
+/** All PathRefs; textual `$~"_"` additionally records `_` provenance. */
 export const PATH_REFS: SpwPattern = { sigil: '~', nodeType: 'PathRef' }
 
-/** $@_ — all @ references */
+/** All References; textual `$@_` additionally records `_` provenance. */
 export const REFERENCES: SpwPattern = { sigil: '@', nodeType: 'Reference' }
 
-/** $~"_" | $@_ — all navigable references (path-refs or @-refs) */
+/** All navigable references (PathRefs or References), without text provenance. */
 export const NAVIGABLE: SpwSelector = or(PATH_REFS, REFERENCES)
 
 // ── Domain structure ─────────────────────────────────────────
 
-/** $^[_] — domain roots with frames */
-export const DOMAIN_ROOTS: SpwPattern = { sigil: '^', brace: '[]' }
+/** Domain roots carrying Frames; textual `$^[_]` also records `_` provenance. */
+export const DOMAIN_ROOTS: SpwPattern = { sigil: '^', withBoundaries: ['frame'] }
 
-/** $^[_]{_} — domain roots with both frame and body */
-export const DOMAIN_ROOTS_FULL: SpwSelector = and(
-    { sigil: '^', brace: '[]' },
-    { sigil: '^', brace2: '{}' },
-)
+/** Domain roots carrying both Frame and Body, without text provenance. */
+export const DOMAIN_ROOTS_FULL: SpwPattern = {
+    sigil: '^',
+    withBoundaries: ['frame', 'body'],
+}
 
 // ── Operations by sigil ──────────────────────────────────────
 
-/** $!_ — all hydrate operations */
+/** All hydrate Operations, without text provenance. */
 export const HYDRATE_OPS: SpwPattern = { sigil: '!', nodeType: 'Operation' }
 
-/** $~_ — all defer/tilde operations */
+/** All defer/tilde Operations, without text provenance. */
 export const DEFER_OPS: SpwPattern = { sigil: '~', nodeType: 'Operation' }
 
-/** $?_ — all query/stream operations */
+/** All query/stream Operations, without text provenance. */
 export const QUERY_OPS: SpwPattern = { sigil: '?', nodeType: 'Operation' }
 
-/** $=_ — all config/binding operations */
+/** All config/binding Operations, without text provenance. */
 export const CONFIG_OPS: SpwPattern = { sigil: '=', nodeType: 'Operation' }
 
-/** $#_ — all annotation/set operations */
+/** All annotation/set Operations, without text provenance. */
 export const ANNOTATION_OPS: SpwPattern = { sigil: '#', nodeType: 'Operation' }
 
 // ── Operations by shape ──────────────────────────────────────
 
-/** $![_] — operations with frames */
-export const OPS_WITH_FRAMES: SpwPattern = { nodeType: 'Operation', brace: '[]' }
+/** Operations carrying Frames, without text provenance. */
+export const OPS_WITH_FRAMES: SpwPattern = {
+    nodeType: 'Operation',
+    withBoundaries: ['frame'],
+}
 
-/** $!{_} — operations with bodies */
-export const OPS_WITH_BODIES: SpwPattern = { nodeType: 'Operation', brace: '{}' }
+/** Operations carrying Bodies, without text provenance. */
+export const OPS_WITH_BODIES: SpwPattern = {
+    nodeType: 'Operation',
+    withBoundaries: ['body'],
+}
 
-/** $(_) — scopes */
-export const SCOPES: SpwPattern = { nodeType: 'Scope', brace: '()' }
+/** Scope boundary nodes, without text provenance. */
+export const SCOPES: SpwPattern = { nodeType: 'Scope', boundary: 'scope' }
 
 // ── Modified operations ──────────────────────────────────────
 
-/** $!boon — boon-labelled operations */
+/** Boon-labelled hydrate Operations. */
 export const BOON_OPS: SpwPattern = { sigil: '!', nodeType: 'Operation', modifier: 'boon' }
 
-/** $!bone — bone-labelled operations */
+/** Bone-labelled hydrate Operations. */
 export const BONE_OPS: SpwPattern = { sigil: '!', nodeType: 'Operation', modifier: 'bone' }
 
 // ── Wildcard ─────────────────────────────────────────────────
 
-/** $_ — any node */
-export const ANY: SpwPattern = { sigil: '*' }
+/** Programmatic wildcard; textual `$_` additionally records `_` provenance. */
+export const ANY: SpwAny = { any: true }

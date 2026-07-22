@@ -13,10 +13,18 @@ export type {
     SpwNot,
     SpwDescend,
     SpwSequence,
+    SpwAny,
+    SpwCapture,
     SpwMatch,
+    SpwMatchParticipant,
+    SpwMatchEvidence,
     SpwMatchSpan,
+    SpwTermSlotCoordinate,
+    SpwSequenceSeparator,
     SigilSelector,
     BraceSelector,
+    BoundarySelector,
+    AttachedBoundarySelector,
 } from './types'
 
 export {
@@ -25,13 +33,19 @@ export {
     not,
     descend,
     seq,
+    anyNode,
+    capture,
     isAnd,
+    isAny,
+    isCapture,
     isOr,
     isNot,
     isDescend,
     isSequence,
     isPattern,
 } from './types'
+
+export { assertSpwSelector, isSpwSelector } from './validate'
 
 // Matcher
 export { matchAll, matchAt } from './match'

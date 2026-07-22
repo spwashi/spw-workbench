@@ -64,7 +64,10 @@ Tooling integration status:
 - landed `5f1dff99`: pulse plans all requested files before one guarded `effect.l2.workspace`, refuses macro/cross-authority writes, rejects non-round-tripping UTF-8, and reports semantic equivalence as unclaimed.
 - landed `28906c5d`: designated mounted-workbench identity takes precedence over generic external classification when the mount resolves through a symlink;
 - landed `0a8adfe2`: LSP initialization inside a designated mount resolves outer consumer authority before config, observable state, indexing, and scanning while ordinary nested folders remain explicit; v1 is a closed URI-only shape and the legacy method is explicitly quarantined;
-- ready for human gate: VS Code consumes the shared v1 decoder, carries URI/role/kind evidence through navigation and atlas state, removes local root inference and legacy projections, bundles the matching server, and passes an extracted-archive smoke.
+- landed `47f4015c`: VS Code consumes the shared v1 decoder, carries URI/role/kind evidence through navigation and atlas state, removes local root inference and legacy projections, bundles the matching server, and passes an extracted-archive smoke;
+- ready for human gate: query truth validates the `$..._` envelope, separates `any` from collapse `*` and from textual `_` provenance, migrates standalone bare boundary atoms from owner filters to direct Frame/Body/Scope selection, exposes all six boundary kinds including Capsule `<…>`, and returns adjacent term-slot groups under one parser-owned Sequence or otherwise-unowned Expression with named capture evidence before any editor query surface consumes it.
+- queued separately: CLI and convention examples use POSIX-safe single quoting so selector `$` sigils reach argv unchanged.
+- queued separately: LSP/editor presentation must tokenize `<>` as one couple operator, retain `<…>` as the Capsule boundary, and retire stale `<>` “capsule / shell” metadata before canon repeats the distinction.
 
 ## Reviewed post-checkpoint candidates
 
@@ -79,6 +82,7 @@ Replay only after the checkpoint partitions build:
 - prevent `measure_only --write` from acquiring workspace authority;
 - retain the LSP split from editor packaging: v1 protocol/authority first, then a URI-native client with an extracted-archive server smoke;
 - repair selector truth before plugin exposure: require full-token consumption, separate `any` from `*`, project all boundary-coupling discriminants, and define ordered-group semantics before choosing collision-free surface syntax;
+- repair editor couple/Capsule presentation before publishing theory: `<>` is one operator token and `<…>` supplies distinct angle-boundary tokens;
 - keep projections out of workspace-manifest v1 until base/target URI, readiness, provenance, revision, and hypothetical status are explicit;
 - keep Neovim workspace evidence in its own partition: negotiate the advertised method and retire local regex/path/write authority before adding root navigation;
 - reconcile mobility catalogs with their executable `apply` domains;

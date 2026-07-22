@@ -17,18 +17,21 @@
  * @see docs/theory/spw/coupling-constructors.spw
  */
 
-/** Structural kind of a coupling constructor. */
-export type CouplingKind =
-  | 'couple'
-  | 'frame'
-  | 'body'
-  | 'scope'
-  | 'capsule'
-  | 'stream'
-  | 'nrange'
+/** Canonical paired-boundary registry; consumers can test six-way coverage. */
+export const PAIRED_BOUNDARY_KINDS = [
+  'frame',
+  'body',
+  'scope',
+  'capsule',
+  'stream',
+  'nrange',
+] as const
 
 /** Paired boundaries are coupling constructors, but not lexical operators. */
-export type PairedBoundaryKind = Exclude<CouplingKind, 'couple'>
+export type PairedBoundaryKind = (typeof PAIRED_BOUNDARY_KINDS)[number]
+
+/** Structural kind of a coupling constructor. */
+export type CouplingKind = 'couple' | PairedBoundaryKind
 
 /** The lexical/structural form prevents symmetry from erasing kind. */
 export type CouplingForm = 'operator' | 'boundary'

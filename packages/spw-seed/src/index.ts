@@ -313,6 +313,7 @@ export {
 // Sugar/desugar helpers
 export { desugar, parseDesugared, normalizeToONF, type DesugarResult, type ONFNode, type FrameMap } from './normalize'
 export {
+  PAIRED_BOUNDARY_KINDS,
   COUPLING_DESCRIPTORS,
   couplingFrame,
   withCoupling,
@@ -331,9 +332,15 @@ export type {
   SpwPattern,
   SpwSelector,
   SpwMatch,
+  SpwMatchParticipant,
+  SpwMatchEvidence,
   SpwMatchSpan,
+  SpwTermSlotCoordinate,
+  SpwSequenceSeparator,
   SigilSelector,
   BraceSelector,
+  BoundarySelector,
+  AttachedBoundarySelector,
 } from './query'
 
 export {
@@ -345,6 +352,10 @@ export {
   not,
   descend,
   seq,
+  anyNode,
+  capture,
+  assertSpwSelector,
+  isSpwSelector,
   PATH_REFS,
   REFERENCES,
   NAVIGABLE,
