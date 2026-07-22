@@ -37,6 +37,19 @@ Layered override with priority ordering — functionally a priority-ordered merg
 ### Salience Mechanics
 `%` operator as normalization to comparable scale. Duty cycle metaphor from EM domain. Used for proportion measurement and priority sorting across cascade layers.
 
+### Seed Math Probes (implemented, tested)
+Portable kernel under `packages/spw-seed/src/math/`:
+- **Graphs**: cycle detect, topological sort, Dijkstra, adjacency matrix
+- **Loops**: fixed-point iteration, bounded while, range fold, orbits, logistic map
+- **Equations**: polynomials, bisection roots, dense linear solve, product constraints, cosine similarity
+- **Fields** (domain-agnostic): decay, undirected diffuse, transfer, cascade, capacity, affinity allocate, fieldBeat — for multi-locus ensembles (production, PE, linguistic constructs) without overfitting to one science cluster
+
+Theory: `docs/theory/spw/math-modeling.spw`, `docs/theory/spw/field-dynamics.spw`.  
+PE includes: `prompts/math/{graph,loop,equation,field}.spw`.  
+Production: `prompts/production/ensemble.spw`, template `show.line_field`.  
+Hardware + granularity plan: `docs/plans/md/math-hardware-roadmap.md`.  
+Run: `npx vitest run packages/spw-seed/src/math/`.
+
 ### Relevant Fields Not Yet Formalized
 - **Category theory**: operator composition as morphisms, register frames as functors
 - **Lattice theory**: facet resonance as lattice meets/joins across component docs
@@ -44,6 +57,7 @@ Layered override with priority ordering — functionally a priority-ordered merg
 - **Graph rewriting**: AST transformations as rewrite rules (for the parser)
 - **Homotopy type theory**: non-commutative pairs as paths in type space
 - **Rhythmic computing**: swing ratios (non-linear time mapping), polyrhythmic LCM (clock sync intervals), groove quantization (snapping to beat grids). Applies to timing deformation axis.
+- **Dataflow / wavefront scheduling**: Act-level queues for novel hardware maps (roadmap Phase B–C)
 
 ## Notes
 

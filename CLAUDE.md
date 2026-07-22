@@ -53,6 +53,7 @@ npm run test:run                 # Full test suite (runtime + dom)
 npm run test:seed                # Parser kernel tests
 npm run test:runtime             # Runtime tests
 npm run test:dom                 # DOM/UI tests
+npm run test:cli                 # spw CLI unit tests (packages/spw-cli/src/**/*.test.ts)
 ```
 
 ### Lint & Audit
@@ -75,11 +76,42 @@ npm run fuzz:boonhonk            # Groove detector (timing/entropy)
 
 ### Development
 ```bash
-npm run spw:dev                  # Development mode
+npm run spw:dev                  # Hot watcher: light format+parse on .spw changes
 npm run lsp                      # Start LSP server
 npm run spw:format .spw          # Format .spw files
-npm run spw:ls                   # List .spw surfaces
+npm run spw:ls                   # List .spw surfaces (spw:seq is the compat alias)
 ```
+
+### spw CLI — read / query surfaces
+```bash
+npm run spw:query -- --from prompts --skim --selector pathRefs   # Multi-file AST query
+npm run spw:select -- <file.spw> --skim                          # Single-file selector
+npm run spw:skim -- <file.spw>                                   # Outline / line-window read
+npm run spw:tree -- prompts --depth 2                            # Bounded .spw directory tree
+npm run spw:roots                                                 # Declared workspace roots
+npm run spw:doctor                                                # Mounted-consumer readiness
+```
+
+### spw CLI — sense loop (corpus topography)
+```bash
+npm run spw:invent -- prompts --sort degree -n 30   # Inventory: lines, refs, frames, topo roles
+npm run spw:map -- prompts --hubs 12                # Hubs, cycles, familiarity strands
+npm run spw:formula -- prompts --family field       # Named formula catalog + pattern discovery
+npm run spw:analyze -- prompts                      # Multi-selector hit densities
+npm run spw:geometry -- --help                      # Form-geometry ladders / mobility probes
+```
+
+### spw CLI — mutation verbs (see `docs/runtime/md/pulse-mutate-beat.md`)
+```bash
+npm run spw:pulse -- <file.spw>                     # Plan-only probe; single-file atomic --write
+npm run spw:mutate -- prompts docs/theory           # Direct multi-file rewrite, no plan/atomic-replace
+npm run spw:beat -- --count 5                       # Pure cadence tick — no tree/memory side effects
+npm run spw:emit -- --help                           # Collapse surfaces to host packs (PE / brief IR)
+npm run spw:mount                                    # Mount/check workbench-shaped roots
+npm run spw:mem:list                                 # Memory surface tools (dump/load/list)
+```
+
+Every `spw` subcommand accepts `--help` for its full flag reference; `npm run spw -- help` lists the whole command surface.
 
 ### Agentic Engineering
 ```bash
