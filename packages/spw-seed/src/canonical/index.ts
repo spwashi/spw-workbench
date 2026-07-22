@@ -8,8 +8,16 @@
 export {
   canonicalize,
   hashString,
+  reflowProseBlocks,
+  wrapWords,
+  isProseCommentLine,
+  isSlashLineComment,
+  migrateSlashCommentsToHash,
+  resolveFormatProfile,
+  FORMAT_PROFILES,
   type CanonicalOptions,
   type CanonicalResult,
+  type FormatProfileId,
 } from './canonicalize'
 
 export {
@@ -55,6 +63,28 @@ export {
   type TopographyMutationProbe,
   type TopographySnapshot,
 } from './topography-probe'
+
+export {
+  extractBraceProjection,
+  braceProjectionDelta,
+  classifyMutationUsefulness,
+  type BraceKind,
+  type BraceKindCounts,
+  type BracePlacement,
+  type BraceProjection,
+  type BraceProjectionDelta,
+  type BraceDeltaSeverity,
+  type MutationUseClass,
+  type MutationUsefulness,
+} from './brace-projection'
+
+export {
+  inspectGeometry,
+  formatGeometryReport,
+  type GeometryReport,
+  type OperatorGeometryEntry,
+  type BraceNestingStats,
+} from './geometry-inspect'
 
 export {
   transformEdit,
@@ -182,3 +212,39 @@ export {
   type FormContourReduction,
   type FormContourExpansion,
 } from './form-contours'
+
+export {
+  CONFLUENCE_WRAP_SEQUENCE,
+  CONFLUENCE_REDUCE_SEQUENCE,
+  BUILTIN_FORM_MASKS,
+  parseFormSequence,
+  classifySurface,
+  applyFormMask,
+  advanceFormSurface,
+  runFormSequence,
+  confluenceLadderCatalog,
+  labelSelection,
+  formatFormSequence,
+  type FormSequenceOp,
+  type FormSequenceStep,
+  type FormSequence,
+  type FormMask,
+  type FormSequenceApplyResult,
+} from './form-sequence'
+
+export {
+  DREAM_SCHEDULE_SOFT,
+  DREAM_SCHEDULE_PLAY,
+  DREAM_SCHEDULE_DEEP,
+  DREAM_SCHEDULES,
+  createDreamRunner,
+  dreamTick,
+  dreamPeek,
+  listDreamSchedules,
+  type DreamPhaseId,
+  type DreamPhaseEffect,
+  type DreamPhase,
+  type DreamSchedule,
+  type DreamTick,
+  type DreamRunnerState,
+} from './dream-schedule'

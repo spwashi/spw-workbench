@@ -578,6 +578,30 @@ function M._on_attach(_, bufnr)
   map('<leader>e',  vim.diagnostic.open_float,                       'Spw: show diagnostic float')
 end
 
+--- Send a custom spw/* request to the attached Spw client.
+---@param method string
+---@param params table|nil
+---@param cb fun(err: any, result: any)
+function M.request_custom(method, params, cb)
+  local get_clients = vim.lsp.get_clients or vim.lsp.get_active_clients
+  if not get_clients then
+    cb('no lsp client api', nil)
+    return
+  end
+  local clients = get_clients({ name = 'spw', bufnr = 0 })
+  if not clients or #clients == 0 then
+    clients = get_clients({ name = 'spw' })
+  end
+  local client = clients and clients[1]
+  if not client then
+    cb('Spw LSP not attached', nil)
+    return
+  end
+  client.request(method, params or {}, function(err, result)
+    cb(err, result)
+  end, 0)
+end
+
 --- Start (or attach to) the Spw LSP server for the current buffer.
 function M.start()
   -- Guard: only in Neovim 0.8+ with the native LSP client
@@ -655,6 +679,99 @@ if not vim.g._spw_lsp_commands_loaded then
   end, {
     desc = 'Preview Spw reference under cursor and jump to #anchor',
   })
+
+  vim.api.nvim_create_user_command('SpwOperatorFreq', function()
+    M.request_custom('spw/operatorFrequency', {
+      uri = vim.uri_from_bufnr(0),
+    }, function(err, result)
+      if err or not result then
+        notify('operatorFrequency failed', vim.log.levels.WARN)
+        return
+      end
+      local lines = { '# Spw operator frequency', 'dominant: ' .. tostring(result.dominantOperator), '' }
+      for _, e in ipairs(result.entries or {}) do
+        table.insert(lines, string.format('%s  %d  %.1f%%', e.operator, e.count, e.percent))
+      end
+      local buf = vim.api.nvim_create_buf(false, true)
+      vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+      vim.bo[buf].filetype = 'markdown'
+      vim.cmd('split')
+      vim.api.nvim_win_set_buf(0, buf)
+    end)
+  end, { desc = 'Show operator frequency for current buffer' })
+
+  vim.api.nvim_create_user_command('SpwPhase', function()
+    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+    M.request_custom('spw/phaseContext', {
+      uri = vim.uri_from_bufnr(0),
+      position = { line = row - 1, character = col },
+    }, function(err, result)
+      if err or not result then
+        notify('phaseContext failed', vim.log.levels.WARN)
+        return
+      end
+      if not result.sigil then
+        notify('No sigil under cursor', vim.log.levels.INFO)
+        return
+      end
+      notify(string.format(
+        'sigil=%s phase=%s  %s — %s',
+        tostring(result.sigil),
+        tostring(result.phase),
+        tostring(result.role or ''),
+        tostring(result.physics or '')
+      ), vim.log.levels.INFO)
+    end)
+  end, { desc = 'Show spirit-phase context at cursor' })
+
+  vim.api.nvim_create_user_command('SpwFormSeq', function(opts)
+    local notation = opts.args ~= '' and opts.args or '& => {&} => {&[#label]} => {&<#tag>_label}'
+    M.request_custom('spw/formSequence', {
+      notation = notation,
+      catalog = true,
+    }, function(err, result)
+      if err or not result then
+        notify('formSequence failed', vim.log.levels.WARN)
+        return
+      end
+      local lines = { '# Form sequence', result.notation or '', '' }
+      for i, s in ipairs(result.steps or {}) do
+        table.insert(lines, string.format('%d. [%s] %s', i - 1, s.op, s.surface))
+      end
+      local buf = vim.api.nvim_create_buf(false, true)
+      vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+      vim.bo[buf].filetype = 'markdown'
+      vim.cmd('split')
+      vim.api.nvim_win_set_buf(0, buf)
+    end)
+  end, { nargs = '?', desc = 'Explain form sequence (default confluence wrap)' })
+
+  vim.api.nvim_create_user_command('SpwTemperature', function()
+    M.request_custom('spw/workspaceTemperature', {}, function(err, result)
+      if err or not result then
+        notify('workspaceTemperature failed', vim.log.levels.WARN)
+        return
+      end
+      local lines = { '# Workspace temperature', '' }
+      for _, e in ipairs(result) do
+        table.insert(lines, string.format('%s  w=%s  age=%s  %s', e.tier, e.writeCount, e.beatAge, e.uri))
+      end
+      if #result == 0 then
+        table.insert(lines, '(empty — open/save .spw files to warm tiers)')
+      end
+      local buf = vim.api.nvim_create_buf(false, true)
+      vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+      vim.bo[buf].filetype = 'markdown'
+      vim.cmd('split')
+      vim.api.nvim_win_set_buf(0, buf)
+    end)
+  end, { desc = 'Show workspace temperature tiers' })
+
+  vim.api.nvim_create_user_command('SpwInsertFormWrap', function()
+    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+    local text = '& => {&} => {&[#label]}'
+    vim.api.nvim_buf_set_text(0, row - 1, col, row - 1, col, { text })
+  end, { desc = 'Insert confluence form wrap sequence at cursor' })
 
   vim.api.nvim_create_user_command('SpwRefsQuickfix', M.references_to_quickfix, {
     desc = 'Populate quickfix with unresolved Spw references in current buffer',

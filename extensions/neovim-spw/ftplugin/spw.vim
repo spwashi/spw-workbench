@@ -1,8 +1,9 @@
 " ftplugin/spw.vim — Spw filetype settings + LSP client start
 " Part of neovim-spw: syntax, LSP, and editor affordances for .spw files.
 
-setlocal commentstring=//\ %s
-setlocal comments=://,s:/*,mb:*,ex:*/
+" Spw culture: # line comments (// is foreign prose; format can migrate).
+setlocal commentstring=#\ %s
+setlocal comments=:#,:b:#,s:/*,mb:*,ex:*/
 setlocal suffixesadd=.spw,.ts,.md
 setlocal includeexpr=substitute(v:fname,'^\\.\\?/','','')
 

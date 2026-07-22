@@ -59,6 +59,38 @@
                 "title": "Spw: Navigate Roots and Landmarks"
             },
             {
+                "command": "spw.showOperatorFrequency",
+                "title": "Spw: Show Operator Frequency"
+            },
+            {
+                "command": "spw.showPhaseContext",
+                "title": "Spw: Show Phase Context at Cursor"
+            },
+            {
+                "command": "spw.insertFormSequence",
+                "title": "Spw: Insert Form Sequence"
+            },
+            {
+                "command": "spw.showFormSequence",
+                "title": "Spw: Explain Form Sequence"
+            },
+            {
+                "command": "spw.showWorkspaceTemperature",
+                "title": "Spw: Workspace Temperature"
+            },
+            {
+                "command": "spw.restartLanguageServer",
+                "title": "Spw: Restart Language Server"
+            },
+            {
+                "command": "spw.inspectGeometry",
+                "title": "Spw: Inspect Geometry (braces + operators)"
+            },
+            {
+                "command": "spw.clearProbeCache",
+                "title": "Spw: Clear Probe Cache"
+            },
+            {
                 "command": "spwConcepts.refresh",
                 "title": "Spw: Refresh Concepts Tree"
             },
@@ -80,6 +112,75 @@
                 "icon": "$(refresh)"
             }
         ],
+        "configuration": {
+            "title": "Spw",
+            "properties": {
+                "spw.inlayHints.paths": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Show path-resolution inlay hints for ~ and @ references."
+                },
+                "spw.inlayHints.annotations": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Show annotation inlay hints (#, #:, #!, #>)."
+                },
+                "spw.inlayHints.frames": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Show frame-depth inlay hints."
+                },
+                "spw.diagnostics.unresolvedRefs": {
+                    "type": "string",
+                    "enum": ["error", "warning", "hint", "off"],
+                    "default": "warning",
+                    "description": "Severity for unresolved path references."
+                },
+                "spw.trace.server": {
+                    "type": "string",
+                    "enum": ["off", "messages", "verbose"],
+                    "default": "off",
+                    "description": "Trace communication between VS Code and the Spw language server."
+                },
+                "spw.surface.highlightPathRefs": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Decorate ~path and @root references so Spw surfaces stand out from host code."
+                },
+                "spw.surface.highlightAnnotations": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Decorate # / #! / #: / #> annotations as distinct surface marks."
+                },
+                "spw.surface.highlightBraces": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Decorate paired bounds {}[]()<> to learn brace geometry."
+                },
+                "spw.surface.highlightOperators": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Decorate operator sigils (^ ! ? ~ …). Off by default (busy); enable to learn operator rhythm."
+                },
+                "spw.compute.decorationRefreshMs": {
+                    "type": "number",
+                    "default": 120,
+                    "minimum": 40,
+                    "description": "Throttle (ms) for surface decoration recomputation after edits."
+                },
+                "spw.compute.geometryOnSave": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "On save, open Spw: Inspect Geometry for the active .spw buffer."
+                },
+                "spw.cache.probeTtlMs": {
+                    "type": "number",
+                    "default": 8000,
+                    "minimum": 0,
+                    "description": "TTL (ms) for client-side probe cache (geometry/frequency). 0 disables cache."
+                }
+            }
+        },
         "colors": [
             { "id": "spw.lens", "description": "Lens annotations (#:) — probing, measurement", "defaults": { "dark": "#4EC9B0", "light": "#267F7F", "highContrast": "#4EC9B0", "highContrastLight": "#267F7F" } },
             { "id": "spw.intent", "description": "Intent annotations (#!) — action, injection", "defaults": { "dark": "#CE9178", "light": "#A31515", "highContrast": "#CE9178", "highContrastLight": "#A31515" } },
@@ -92,7 +193,11 @@
             { "id": "spw.phaseMeta", "description": "Spirit phase: # meta / annotation", "defaults": { "dark": "#9CDCFE", "light": "#0070C1", "highContrast": "#9CDCFE", "highContrastLight": "#0070C1" } },
             { "id": "spw.tierHot", "description": "Hot memory tier", "defaults": { "dark": "#F44747", "light": "#CD3131", "highContrast": "#F44747", "highContrastLight": "#CD3131" } },
             { "id": "spw.tierWarm", "description": "Warm memory tier", "defaults": { "dark": "#CCA700", "light": "#BF8803", "highContrast": "#CCA700", "highContrastLight": "#BF8803" } },
-            { "id": "spw.tierCold", "description": "Cold memory tier", "defaults": { "dark": "#3794FF", "light": "#006AB1", "highContrast": "#3794FF", "highContrastLight": "#006AB1" } }
+            { "id": "spw.tierCold", "description": "Cold memory tier", "defaults": { "dark": "#3794FF", "light": "#006AB1", "highContrast": "#3794FF", "highContrastLight": "#006AB1" } },
+            { "id": "spw.pathRef", "description": "Spw path/root references (~…, @root) — distinct surface", "defaults": { "dark": "#9CDCFE", "light": "#0451A5", "highContrast": "#9CDCFE", "highContrastLight": "#0451A5" } },
+            { "id": "spw.annotation", "description": "Spw annotations (# #! #: #>) — distinct surface", "defaults": { "dark": "#C586C0", "light": "#AF00DB", "highContrast": "#C586C0", "highContrastLight": "#AF00DB" } },
+            { "id": "spw.brace", "description": "Spw paired bounds {}[]()<> — geometry", "defaults": { "dark": "#DCDCAA", "light": "#795E26", "highContrast": "#DCDCAA", "highContrastLight": "#795E26" } },
+            { "id": "spw.operator", "description": "Spw operator sigils — geometry", "defaults": { "dark": "#4EC9B0", "light": "#16825D", "highContrast": "#4EC9B0", "highContrastLight": "#16825D" } }
         ],
         "languages": [
             {

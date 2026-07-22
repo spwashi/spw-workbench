@@ -31,6 +31,30 @@ export {
 export { RegisterBank } from './state/register-bank'
 
 export {
+  BeatCache,
+  cacheKey,
+  type CacheTier,
+  type BeatCacheOptions,
+  type BeatCacheEntry,
+  type BeatCacheStats,
+} from './state/memory-cache'
+
+export {
+  estimateCellCost,
+  evictionScore,
+  isProtectedKey,
+  planEviction,
+  reportMemoryPressure,
+  stripEarlyFacets,
+  type MemoryBudget,
+  type MemoryPressureReport,
+  type EvictionPlan,
+  type FacetEviction,
+  type CellEviction,
+  type ScoredCell,
+} from './state/memory-policy'
+
+export {
   bridgeRegisterLiminality,
   applyRegisterBridgeEffect,
   parseSubstrateMetaSurface,

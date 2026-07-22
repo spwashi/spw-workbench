@@ -57,7 +57,7 @@ describe('mutation automata', () => {
     const result = runMutationAutomata('line  \r\n', {
       profile: 'layout_canonical',
       dryRun: false,
-      effectCeiling: 'S1',
+      effectCeiling: 'effect.l1.memory',
     })
     expect(result.source).toBe('line\n')
     expect(result.changed).toBe(true)
@@ -93,12 +93,12 @@ describe('mutation automata', () => {
     const plan = runMutationAutomata(input, {
       profile: 'equiv_scripts',
       dryRun: true,
-      effectCeiling: 'S1',
+      effectCeiling: 'effect.l1.memory',
     })
     const applied = runMutationAutomata(input, {
       profile: 'equiv_scripts',
       dryRun: false,
-      effectCeiling: 'S1',
+      effectCeiling: 'effect.l1.memory',
     })
 
     expect(plan.source).toBe(input)
@@ -122,21 +122,21 @@ describe('mutation automata', () => {
     const input = 'x  '
     const result = runMutationAutomata(input, {
       enabledRules: ['trim_custom', 'write_custom'],
-      effectCeiling: 'S1',
+      effectCeiling: 'effect.l1.memory',
       dryRun: false,
       customRules: [
         {
           id: 'trim_custom',
           description: 'trim in memory',
           stratum: 'layout',
-          effectGrade: 'S1',
+          effectGrade: 'effect.l1.memory',
           transform: source => source.trimEnd(),
         },
         {
           id: 'write_custom',
           description: 'represent a workspace-authorized transform',
           stratum: 'operation',
-          effectGrade: 'S2',
+          effectGrade: 'effect.l2.workspace',
           transform: source => `${source}!`,
         },
       ],
@@ -147,7 +147,7 @@ describe('mutation automata', () => {
     expect(result.plannedSource).toBe('x!')
     expect(result.rulesResolved).toEqual(['trim_custom', 'write_custom'])
     expect(result.rulesApplied).toEqual([])
-    expect(result.rulesBlocked).toEqual([{ ruleId: 'write_custom', effectGrade: 'S2' }])
+    expect(result.rulesBlocked).toEqual([{ ruleId: 'write_custom', effectGrade: 'effect.l2.workspace' }])
     expect(result.steps.every(step => !step.applied)).toBe(true)
   })
 
@@ -155,7 +155,7 @@ describe('mutation automata', () => {
     const result = runMutationAutomata('run npm run spw:seq -- foo\n', {
       profile: 'equiv_scripts',
       dryRun: false,
-      effectCeiling: 'S1',
+      effectCeiling: 'effect.l1.memory',
     })
     expect(result.source).toContain('spw:ls')
     expect(result.source).not.toContain('spw:seq')

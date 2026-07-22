@@ -33,6 +33,7 @@ import {
   workspaceManifestV1 as _workspaceManifestV1,
   workspaceTemperature as _workspaceTemperature,
 } from './handlers/workspace'
+import { handleSpwProbe } from './handlers/spw-probes'
 import {
   SPW_WORKSPACE_MANIFEST_METHOD,
   SPW_WORKSPACE_MANIFEST_METHOD_V1,
@@ -359,6 +360,17 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
 
       case 'spw/workspaceTemperature': {
         sendResult(id, _workspaceTemperature(deps))
+        return
+      }
+
+      case 'spw/operatorFrequency':
+      case 'spw/phaseContext':
+      case 'spw/resonance':
+      case 'spw/registerSnapshot':
+      case 'spw/formSequence':
+      case 'spw/geometry': {
+        const probe = handleSpwProbe(message.method, message.params, deps)
+        sendResult(id, await Promise.resolve(probe))
         return
       }
 

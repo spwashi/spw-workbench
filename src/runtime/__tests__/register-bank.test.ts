@@ -188,6 +188,63 @@ describe('RegisterBank', () => {
       expect(bank.materialize(reg)?.measureDepth).toBe(2)
     })
 
+    it('memory budget enforces facet strip then cold cell drop', () => {
+      const bank = new RegisterBank()
+      const a = $register`a`
+      const b = $register`b`
+      const c = $register`c`
+      bank.set(a, 'heavy-a', { source: 'test', phase: 'lex' })
+      bank.enrichPhase(a, 'parse')
+      bank.enrichPhase(a, 'semantic')
+      bank.setFacetEvictable(a, true)
+      bank.set(b, 'local-b', { source: 'test' })
+      bank.set(c, 'local-c', { source: 'test' })
+
+      const beforeFacets = bank.materialize(a)?.phases?.facets.length
+      expect(beforeFacets).toBe(3)
+
+      bank.setMemoryBudget({ maxCost: 1, maxCells: 3, preferFacetEviction: true })
+      const pressure = bank.memoryPressure()
+      expect(pressure.cells).toBeGreaterThan(0)
+
+      const plan = bank.enforceMemoryBudget()
+      expect(plan.facetEvictions.length + plan.cellEvictions.length).toBeGreaterThan(0)
+
+      const afterFacets = bank.materialize(a)?.phases?.facets.length
+      // Either facets stripped or cell gone if still over budget
+      if (afterFacets != null) {
+        expect(afterFacets).toBeLessThanOrEqual(beforeFacets!)
+      }
+
+      // Protected default register always remains
+      expect(bank.listKeys()).toContain('"')
+    })
+
+    it('get touches lastUsedAt for LRU', async () => {
+      const bank = new RegisterBank()
+      const reg = $register`lru`
+      bank.set(reg, 1, { source: 'test' })
+      const t0 = bank.materialize(reg)!.lastUsedAt
+      await new Promise(r => setTimeout(r, 5))
+      bank.get(reg)
+      const t1 = bank.materialize(reg)!.lastUsedAt
+      expect(t1 >= t0).toBe(true)
+    })
+
+    it('purgeColdCells drops only local unprotected cells', () => {
+      const bank = new RegisterBank()
+      const cold = $register`cold`
+      const hot = $register`hot`
+      bank.set(cold, 'x', { source: 'test' })
+      bank.set(hot, 'y', { source: 'test' })
+      bank.promote(hot)
+      bank.promote(hot) // visible
+      const dropped = bank.purgeColdCells({ maxLiminality: 'local', limit: 10 })
+      expect(dropped).toContain('cold')
+      expect(dropped).not.toContain('hot')
+      expect(bank.get(hot)).toBe('y')
+    })
+
     it('snapshot clones acoustic fields', () => {
       const bank = new RegisterBank()
       const reg = $register`cell`

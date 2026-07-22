@@ -27,7 +27,7 @@ interface MemoryDumpManifest {
 }
 
 interface CliArgs {
-  command: 'dump' | 'load' | 'list' | 'help'
+  command: 'dump' | 'load' | 'list' | 'status' | 'prune' | 'help'
   from?: string
   out?: string
   runtimeDir?: string
@@ -36,6 +36,9 @@ interface CliArgs {
   wipe: boolean
   includeExtra: boolean
   restoreExtra: boolean
+  /** Keep only the N newest dumps when pruning (default 5). */
+  keep?: number
+  json: boolean
 }
 
 const EXTRA_MEMORY_FILES = [
@@ -48,9 +51,11 @@ export function printMemHelp(): void {
   printHelpPage({
     title: 'Spw Runtime Memory Utility',
     usage: [
-      'node --import tsx scripts/spw-mem.ts dump [--label <name>] [--out <dir>] [--include-extra] [--runtime-dir <dir>] [--dump-root <dir>]',
-      'node --import tsx scripts/spw-mem.ts load [--from <dir>] [--wipe] [--restore-extra] [--runtime-dir <dir>] [--dump-root <dir>]',
-      'node --import tsx scripts/spw-mem.ts list [--dump-root <dir>]',
+      'spw mem dump [--label <name>] [--out <dir>] [--include-extra]',
+      'spw mem load [--from <dir>] [--wipe] [--restore-extra]',
+      'spw mem list',
+      'spw mem status [--json]',
+      'spw mem prune [--keep 5]',
     ],
     sections: [
       {
@@ -59,6 +64,8 @@ export function printMemHelp(): void {
           'dump           Snapshot .agents/state/runtime into a dump folder.',
           'load           Restore runtime memory from a dump folder.',
           'list           Show available dump snapshots.',
+          'status         Runtime dir size, dump count, pressure-style summary.',
+          'prune          Keep newest N dumps; delete older dump folders.',
         ],
       },
       {
@@ -72,6 +79,16 @@ export function printMemHelp(): void {
           '--wipe             Remove existing runtime files before restoring.',
           '--include-extra    Include trace/probe ledger files in dump payload.',
           '--restore-extra    Restore extra files recorded in dump payload.',
+          '--keep N           Dumps to retain on prune (default 5).',
+          '--json             Structured status / prune report.',
+        ],
+      },
+      {
+        title: 'Live bank memory (in-process)',
+        lines: [
+          'RegisterBank.setMemoryBudget / memoryPressure / enforceMemoryBudget',
+          'BeatCache hot|warm|cold TTL beats — packages/spw-runtime memory-cache',
+          'See docs/runtime/md/runtime-memory.md',
         ],
       },
     ],
@@ -82,7 +99,7 @@ function parseArgs(argv: string[]): CliArgs {
   const common = parseCommonFlags(argv.slice(2))
   const args = common.args
   const commandRaw = args[0] ?? 'help'
-  const command = (['dump', 'load', 'list', 'help'].includes(commandRaw)
+  const command = (['dump', 'load', 'list', 'status', 'prune', 'help'].includes(commandRaw)
     ? commandRaw
     : 'help') as CliArgs['command']
 
@@ -91,6 +108,7 @@ function parseArgs(argv: string[]): CliArgs {
     wipe: false,
     includeExtra: false,
     restoreExtra: false,
+    json: false,
   }
 
   if (common.flags.help) {
@@ -100,6 +118,19 @@ function parseArgs(argv: string[]): CliArgs {
 
   for (let i = 1; i < args.length; i += 1) {
     const arg = args[i]
+    if (arg === '--json') {
+      parsed.json = true
+      continue
+    }
+    if (arg === '--keep') {
+      parsed.keep = Math.max(0, Number(args[i + 1] ?? 5) || 5)
+      i += 1
+      continue
+    }
+    if (arg?.startsWith('--keep=')) {
+      parsed.keep = Math.max(0, Number(arg.slice('--keep='.length)) || 5)
+      continue
+    }
     if (arg === '--from') {
       parsed.from = args[i + 1]
       i += 1
@@ -437,6 +468,98 @@ async function loadMemory(args: CliArgs): Promise<void> {
   }
 }
 
+async function dirBytes(root: string): Promise<{ files: number; bytes: number }> {
+  if (!(await exists(root))) return { files: 0, bytes: 0 }
+  const files = await collectFiles(root, { ignoreTopLevel: [] })
+  let bytes = 0
+  for (const rel of files) {
+    const st = await fs.stat(path.join(root, rel)).catch(() => null)
+    if (st) bytes += st.size
+  }
+  return { files: files.length, bytes }
+}
+
+async function statusMemory(args: CliArgs): Promise<void> {
+  const runtimeDir = resolveRuntimeDir(args)
+  const dumpRoot = resolveDumpRoot(args, runtimeDir)
+  const runtime = await dirBytes(runtimeDir)
+  // Exclude dumps from runtime live set if nested
+  let liveFiles = runtime.files
+  let liveBytes = runtime.bytes
+  const dumps = await dirBytes(dumpRoot)
+  if (dumpRoot.startsWith(runtimeDir)) {
+    liveFiles = Math.max(0, runtime.files - dumps.files)
+    liveBytes = Math.max(0, runtime.bytes - dumps.bytes)
+  }
+
+  let dumpCount = 0
+  if (await exists(dumpRoot)) {
+    const entries = await fs.readdir(dumpRoot, { withFileTypes: true })
+    dumpCount = entries.filter(e => e.isDirectory()).length
+  }
+
+  // Soft pressure heuristic on disk footprint (not register-bank cost units)
+  const softBudgetBytes = 32 * 1024 * 1024
+  const ratio = softBudgetBytes > 0 ? liveBytes / softBudgetBytes : 0
+  const level = ratio > 1 ? 'high' : ratio > 0.5 ? 'elevated' : 'normal'
+
+  const payload = {
+    command: 'mem.status',
+    runtimeDir: path.relative(process.cwd(), runtimeDir) || '.',
+    dumpRoot: path.relative(process.cwd(), dumpRoot) || '.',
+    live: { files: liveFiles, bytes: liveBytes },
+    dumps: { count: dumpCount, files: dumps.files, bytes: dumps.bytes },
+    pressure: { level, liveBytes, softBudgetBytes, ratio },
+    next:
+      level === 'high'
+        ? ['spw mem prune --keep 3', 'spw mem dump --label pre-prune']
+        : ['spw mem list', 'RegisterBank.enforceMemoryBudget for live cells'],
+  }
+
+  if (args.json) {
+    console.log(JSON.stringify(payload, null, 2))
+    return
+  }
+
+  console.log(`# spw mem status  pressure=${level}`)
+  console.log(`  live   files=${liveFiles}  bytes=${liveBytes}`)
+  console.log(`  dumps  count=${dumpCount}  bytes=${dumps.bytes}`)
+  console.log(`  soft_budget_bytes=${softBudgetBytes}  ratio=${ratio.toFixed(3)}`)
+  console.log(`  next: ${payload.next.join(' · ')}`)
+}
+
+async function pruneDumps(args: CliArgs): Promise<void> {
+  const runtimeDir = resolveRuntimeDir(args)
+  const dumpRoot = resolveDumpRoot(args, runtimeDir)
+  const keep = args.keep ?? 5
+
+  if (!(await exists(dumpRoot))) {
+    if (args.json) {
+      console.log(JSON.stringify({ command: 'mem.prune', removed: [], kept: [], keep }))
+      return
+    }
+    console.log('spw-mem prune: no dumps found.')
+    return
+  }
+
+  const entries = await fs.readdir(dumpRoot, { withFileTypes: true })
+  const dirs = entries.filter(e => e.isDirectory()).map(e => e.name).sort().reverse()
+  const kept = dirs.slice(0, keep)
+  const removed = dirs.slice(keep)
+
+  for (const name of removed) {
+    await fs.rm(path.join(dumpRoot, name), { recursive: true, force: true })
+  }
+
+  if (args.json) {
+    console.log(JSON.stringify({ command: 'mem.prune', keep, kept, removed }, null, 2))
+    return
+  }
+
+  console.log(`spw-mem prune: kept=${kept.length} removed=${removed.length} (keep=${keep})`)
+  if (removed.length) console.log(`  removed: ${removed.join(', ')}`)
+}
+
 export async function runSpwMemCli(argv: string[] = process.argv): Promise<void> {
   const args = parseArgs(argv)
 
@@ -449,6 +572,12 @@ export async function runSpwMemCli(argv: string[] = process.argv): Promise<void>
       return
     case 'list':
       await listDumps(args)
+      return
+    case 'status':
+      await statusMemory(args)
+      return
+    case 'prune':
+      await pruneDumps(args)
       return
     case 'help':
     default:

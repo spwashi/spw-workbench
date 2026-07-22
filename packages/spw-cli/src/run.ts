@@ -1,8 +1,10 @@
 import process from 'node:process'
 import { parseCommand, parseCommonFlags, parseQueryArgs } from './args'
+import { printBeatHelp, runSpwBeatCli } from './beat'
 import { runSpwDevCli } from './dev'
 import { printDoctorHelp, runSpwDoctorCli } from './doctor'
 import { printSpwFormatHelp, runSpwFormatCli } from './format'
+import { printMutateHelp, runSpwMutateCli } from './mutate'
 import { printSpwPulseHelp, runSpwPulseCli } from './pulse'
 import { printHelpPage } from './help'
 import { printInitUsage, runSpwInitCli } from './init'
@@ -12,11 +14,41 @@ import { runSpwMemCli } from './mem'
 import { printMemHelp } from './mem'
 import { runSpwMountCli } from './mount'
 import { printMountHelp } from './mount'
-import { runQueryCli } from './query'
+import { printQueryHelp, runQueryCli } from './query'
 import { printRootsHelp, runSpwRootsCli } from './roots'
 import { printSelectUsage, runSpwSelectCli } from './select'
 import { printEmitHelp, runSpwEmitCli } from './emit'
 import { printTreeHelp, runSpwTreeCli } from './tree'
+import { printSkimHelp, runSpwSkimCli } from './skim'
+import { printMapHelp, runSpwMapCli } from './map'
+import { printInventHelp, runSpwInventCli } from './inventory'
+import { printFormulaHelp, runSpwFormulaCli } from './formula'
+import { printAnalyzeHelp, runSpwAnalyzeCli } from './analyze'
+import { printGeometryHelp, runSpwGeometryCli } from './geometry'
+import { suggestClosest } from './view'
+
+const KNOWN_COMMANDS = [
+  'help',
+  'query', 'q',
+  'select', 'spwq',
+  'skim', 'read',
+  'invent', 'inventory', 'inv',
+  'map', 'topo',
+  'formula', 'formulas',
+  'analyze', 'stats',
+  'geometry', 'geom',
+  'init', 'install',
+  'doctor',
+  'roots',
+  'tree',
+  'ls', 'seq',
+  'mount',
+  'mem',
+  'format',
+  'pulse', 'mutate', 'beat',
+  'dev',
+  'emit',
+]
 
 export async function runSpwCli(argv: string[]): Promise<void> {
   const { command, args: rawArgs } = parseCommand(argv)
@@ -43,6 +75,60 @@ export async function runSpwCli(argv: string[]): Promise<void> {
       return
     }
     await runSpwSelectCli(toCliArgv(command, args))
+    return
+  }
+
+  if (command === 'skim' || command === 'read') {
+    if (common.flags.help) {
+      printSkimHelp(command)
+      return
+    }
+    await runSpwSkimCli(toCliArgv(command, args))
+    return
+  }
+
+  if (command === 'map' || command === 'topo') {
+    if (common.flags.help) {
+      printMapHelp()
+      return
+    }
+    await runSpwMapCli(toCliArgv(command, args))
+    return
+  }
+
+  if (command === 'invent' || command === 'inventory' || command === 'inv') {
+    if (common.flags.help) {
+      printInventHelp()
+      return
+    }
+    await runSpwInventCli(toCliArgv(command, args))
+    return
+  }
+
+  if (command === 'formula' || command === 'formulas') {
+    if (common.flags.help) {
+      printFormulaHelp()
+      return
+    }
+    await runSpwFormulaCli(toCliArgv(command, args))
+    return
+  }
+
+  if (command === 'analyze' || command === 'stats') {
+    if (common.flags.help) {
+      printAnalyzeHelp()
+      return
+    }
+    await runSpwAnalyzeCli(toCliArgv(command, args))
+    return
+  }
+
+  if (command === 'geometry' || command === 'geom') {
+    if (common.flags.help) {
+      printGeometryHelp()
+      return
+    }
+    await runSpwGeometryCli(toCliArgv(command, args))
     return
   }
 
@@ -119,15 +205,31 @@ export async function runSpwCli(argv: string[]): Promise<void> {
       await runSpwFormatCli(toCliArgv(command, args))
       return
     case 'pulse':
-    case 'mutate':
-    case 'beat':
       if (common.flags.help) {
         printSpwPulseHelp()
         return
       }
       await runSpwPulseCli(toCliArgv(command, args))
       return
+    case 'mutate':
+      if (common.flags.help) {
+        printMutateHelp()
+        return
+      }
+      await runSpwMutateCli(toCliArgv(command, args))
+      return
+    case 'beat':
+      if (common.flags.help) {
+        printBeatHelp()
+        return
+      }
+      await runSpwBeatCli(toCliArgv(command, args))
+      return
     case 'dev':
+      if (common.flags.help) {
+        printDevHelp()
+        return
+      }
       await runSpwDevCli()
       return
     case 'emit':
@@ -137,16 +239,35 @@ export async function runSpwCli(argv: string[]): Promise<void> {
       }
       await runSpwEmitCli(toCliArgv(command, args))
       return
-    default:
+    default: {
       console.error(`spw: unknown command "${command}"`)
+      const hint = suggestClosest(command, KNOWN_COMMANDS)
+      if (hint.length) console.error(`  did you mean: ${hint.join(', ')}?`)
       printHelp()
       process.exitCode = 1
       return
+    }
   }
 }
 
 function toCliArgv(command: string, args: string[]): string[] {
   return ['node', command, ...args]
+}
+
+function printDevHelp(): void {
+  printHelpPage({
+    title: 'Spw Dev',
+    usage: ['spw dev'],
+    sections: [
+      {
+        title: 'What it does',
+        lines: [
+          'Polls .spw for created/changed/removed *.spw files every 1000ms.',
+          'Canonicalizes (format) and parse-validates each touched file in place.',
+        ],
+      },
+    ],
+  })
 }
 
 function printHelp(): void {
@@ -164,15 +285,23 @@ function printHelp(): void {
           'doctor       Diagnose mounted-consumer readiness',
           'roots        List declared workspace roots and ownership roles',
           'tree         Render a bounded tree of .spw files',
-          'query | q    Deep multi-file query (from/select/where style)',
-          'select       Single-file AST selector surface (absorbs spwq)',
+          'invent|inv   Surface inventory: lines, refs, frames, topo roles',
+          'map | topo   Corpus topography, hubs, cycles, familiarity strands',
+          'formula      Named formula catalog + embedded pattern discovery',
+          'analyze|stats Multi-selector hit densities + top active files',
+          'geometry|geom Brace + operator geometry lessons for a surface',
+          'query | q    Multi-file AST query (skim/table/group/count)',
+          'select       Single-file selector (absorbs spwq)',
+          'skim | read  Outline or line-window a surface (no full query)',
           'ls           Liminal sequence selector engine (operator/braces/probe)',
           'mount        Mount/check surfaces for workbench-shaped roots',
           'mem          Memory surface tools',
           'format       Spw formatter',
-          'pulse        Topographical mutation probes (plan/diff/check)',
+          'pulse        effect.l0.measure; optional atomic l2.workspace --write; --stdin REPL',
+          'mutate       l1.memory→l2.workspace (paths) or --stdin buffer for host',
+          'beat         Cadence only — HMR/REPL clock, no tree effect',
           'emit         Collapse surfaces to host packs (PE / brief IR)',
-          'dev          Hot loop runner',
+          'dev          Hot watcher: light format+parse on .spw (not multi-mutate)',
           'help         Print this help',
         ],
       },
@@ -182,40 +311,35 @@ function printHelp(): void {
           'install      Alias for init',
           'seq          Alias for ls',
           'spwq         Alias for select',
-          'mutate|beat  Aliases for pulse',
+          'inventory    Alias for invent',
+          'formulas     Alias for formula',
+          'stats        Alias for analyze',
+        ],
+      },
+      {
+        title: 'Sense loop (inventory → topo → formulas → analysis)',
+        lines: [
+          'spw invent prompts --sort degree -n 30',
+          'spw map prompts --hubs 12',
+          'spw map prompts --compare docs/theory',
+          'spw formula prompts --family field',
+          'spw analyze prompts',
+          'spw query --from prompts --count --selector pathRefs',
+          'spw skim <hub.spw>',
         ],
       },
       {
         title: 'Try',
         lines: [
           'spw doctor',
-          'spw roots',
-          'spw tree @spw',
-          'npm run spw -- emit --help',
-          'npm run spw -- query --help',
-          'npm run spw -- format --help',
-          'npm run spw -- pulse --help',
+          'spw invent --help',
+          'spw formula --catalog',
+          'spw analyze prompts --json',
+          'spw map --help',
+          'spw query --help',
         ],
       },
     ],
   })
 }
 
-function printQueryHelp(): void {
-  printHelpPage({
-    title: 'Spw Query',
-    usage: [
-      'npm run spw -- query [--from .spw,docs] [--selector navigable | --expr "$@_"] [--where "kind=Reference,root=src"] [--select file,kind,target,line,column] [--limit 100] [--format lines|json] [--summary]',
-    ],
-    sections: [
-      {
-        title: 'Examples',
-        lines: [
-          'npm run spw -- query --from .spw,docs --selector navigable --where "kind in PathRef|Reference"',
-          'npm run spw -- query --from .spw --expr "$~\\"_\\" | $@_" --where "root=spw" --select file,kind,root,target,line',
-          'npm run spw -- query --from docs --where "file~onboarding,sigil=@"',
-        ],
-      },
-    ],
-  })
-}

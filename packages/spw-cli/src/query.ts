@@ -2,9 +2,21 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { type SpwMatch, spwq } from '@spwashi/spw-seed'
-import { extractReferenceRaw, filterRootRefs, resolveCliSelector } from './selectors'
-import type { QueryArgs, QueryRow } from './types'
+import { collectSpwFiles as walkSpwFiles, DEFAULT_IGNORED_DIRS } from './fs-walk'
+import { printHelpPage } from './help'
+import { extractReferenceRaw, filterRootRefs, listCliSelectorPresetNames, resolveCliSelector } from './selectors'
+import type { QueryArgs, QueryRow, ViewFormat } from './types'
 import { resolveWorkspacePath, tryDiscoverSpwWorkspace, type SpwWorkspace } from './workspace'
+import {
+  contextAround,
+  countMap,
+  formatTable,
+  meta,
+  metaBlock,
+  renderCounts,
+  suggestClosest,
+  truncate,
+} from './view'
 
 const SELECT_FIELDS = new Set<keyof QueryRow>([
   'file',
@@ -19,77 +31,288 @@ const SELECT_FIELDS = new Set<keyof QueryRow>([
   'text',
 ])
 
-const IGNORED_DIRS = new Set(['.git', '_workbench', 'node_modules', 'dist', 'release'])
+const IGNORED_DIRS = new Set([...DEFAULT_IGNORED_DIRS, '_workbench'])
 
 export async function runQueryCli(args: QueryArgs): Promise<void> {
-  const { selector } = resolveCliSelector(args.selector, args.expr)
+  let selectorLabel: string
+  let selector
+  try {
+    const resolved = resolveCliSelector(args.selector, args.expr)
+    selector = resolved.selector
+    selectorLabel = resolved.label
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    if (msg.startsWith('Unknown selector:')) {
+      const hint = suggestClosest(args.selector, listCliSelectorPresetNames())
+      console.error(`spw query: ${msg}`)
+      if (hint.length) console.error(`  did you mean: ${hint.join(', ')}?`)
+      console.error(`  presets: ${listCliSelectorPresetNames().join(', ')}`)
+      process.exitCode = 1
+      return
+    }
+    throw err
+  }
+
   const workspace = await tryDiscoverSpwWorkspace()
   const resolvedRoots = workspace
-    ? await Promise.all(args.roots.map((root) => resolveWorkspacePath(workspace, root)))
+    ? await Promise.all(args.roots.map(root => resolveWorkspacePath(workspace, root)))
     : args.roots
   const files = await collectFiles(resolvedRoots)
   const whereFilters = parseWhere(args.where)
-  const selectFields = parseSelect(args.select)
-  const rows: QueryRow[] = []
+  const selectFields = parseSelect(args.select, args.format)
+  const sourceByFile = new Map<string, string>()
 
-  for (const file of files) {
-    const source = await readText(file)
-    if (source === null) continue
+  const perFile = await Promise.all(
+    files.map(async (file) => {
+      const source = await readText(file)
+      if (source === null) return null
+      sourceByFile.set(file, source)
 
-    let matches = spwq.fromSource(source, selector)
-    if (!args.expr && args.selector === 'rootRefs') {
-      matches = filterRootRefs(matches)
-    }
+      let matches = spwq.fromSource(source, selector)
+      if (!args.expr && args.selector === 'rootRefs') {
+        matches = filterRootRefs(matches)
+      }
 
-    for (const match of matches) {
-      const row = toRow(file, source, match, workspace)
-      if (!passesWhere(row, whereFilters)) continue
-      rows.push(row)
-    }
-  }
+      return matches
+        .map((match) => toRow(file, source, match, workspace))
+        .filter((row) => passesWhere(row, whereFilters))
+    }),
+  )
+  const rows: QueryRow[] = perFile.flatMap((r) => r ?? [])
 
   const limited = rows.slice(0, Math.max(1, args.limit))
+
+  if (args.count) {
+    const byFile = countMap(rows.map(r => r.file))
+    const byKind = countMap(rows.map(r => r.kind))
+    if (args.format === 'json') {
+      console.log(
+        JSON.stringify(
+          {
+            command: 'query',
+            total: rows.length,
+            scanned: files.length,
+            byFile: Object.fromEntries(byFile),
+            byKind: Object.fromEntries(byKind),
+          },
+          null,
+          2,
+        ),
+      )
+    } else {
+      console.log(`total=${rows.length}  files=${byFile.size}  scanned=${files.length}`)
+      console.log(`kind  ${renderCounts(byKind)}`)
+      console.log(`file  ${renderCounts(byFile, 20)}`)
+    }
+    return
+  }
+
   if (args.format === 'json') {
-    const payload = limited.map((row) => projectRow(row, selectFields))
-    console.log(JSON.stringify({
-      from: args.roots,
-      selector: args.expr || args.selector,
-      where: args.where || '(none)',
-      select: selectFields,
-      scanned: files.length,
-      returned: rows.length,
-      limited: limited.length,
-      rows: payload,
-    }, null, 2))
+    const payload = limited.map(row => projectRow(row, selectFields))
+    console.log(
+      JSON.stringify(
+        {
+          command: 'query',
+          from: args.roots,
+          selector: args.expr || selectorLabel,
+          where: args.where || '(none)',
+          select: selectFields,
+          scanned: files.length,
+          returned: rows.length,
+          limited: limited.length,
+          rows: payload,
+        },
+        null,
+        2,
+      ),
+    )
   } else {
-    console.log('# spw query')
-    console.log(`from: ${args.roots.join(', ')}`)
-    console.log(`selector: ${args.expr || args.selector}`)
-    console.log(`where: ${args.where || '(none)'}`)
-    console.log(`select: ${selectFields.join(',')}`)
-    console.log(`scanned: ${files.length} returned: ${rows.length} limited: ${limited.length}`)
-    for (const row of limited) {
-      const projected = projectRow(row, selectFields)
-      console.log(renderProjected(projected, selectFields))
+    if (!args.quiet) {
+      meta(
+        `# spw query`,
+        `from=${args.roots.join(',')}`,
+        `selector=${args.expr || selectorLabel}`,
+        `where=${args.where || '—'}`,
+        `hits=${rows.length}`,
+        `show=${limited.length}`,
+        `scanned=${files.length}`,
+      )
+    }
+
+    if (limited.length === 0) {
+      meta('  (no matches)')
+      meta('  tip: widen --from, try --selector refs|pathRefs|all, or drop --where')
+    } else if (args.group) {
+      renderGrouped(limited, selectFields, args, sourceByFile, workspace)
+    } else if (args.format === 'table') {
+      console.log(renderAsTable(limited, selectFields))
+    } else if (args.format === 'skim') {
+      for (const row of limited) {
+        console.log(renderSkimRow(row))
+        if (args.context > 0) {
+          const abs = resolveAbs(row.file, workspace)
+          const src = sourceByFile.get(abs) ?? sourceByFile.get(path.resolve(row.file))
+          if (src) {
+            console.log(contextAround(src, row.line, row.line, args.context))
+            console.log('')
+          }
+        }
+      }
+    } else {
+      for (const row of limited) {
+        const projected = projectRow(row, selectFields)
+        console.log(renderProjected(projected, selectFields))
+        if (args.context > 0) {
+          const abs = resolveAbs(row.file, workspace)
+          const src = sourceByFile.get(abs)
+          if (src) {
+            console.log(contextAround(src, row.line, row.line, args.context))
+            console.log('')
+          }
+        }
+      }
+    }
+
+    if (rows.length > limited.length && !args.quiet) {
+      meta(`  … truncated; ${rows.length - limited.length} more (raise --limit)`)
     }
   }
 
   if (args.summary) {
-    const byKind = new Map<string, number>()
-    const bySigil = new Map<string, number>()
-    for (const row of rows) {
-      byKind.set(row.kind, (byKind.get(row.kind) ?? 0) + 1)
-      if (row.sigil) bySigil.set(row.sigil, (bySigil.get(row.sigil) ?? 0) + 1)
-    }
-    console.error(`summary.kind: ${renderCountMap(byKind)}`)
-    console.error(`summary.sigil: ${renderCountMap(bySigil)}`)
+    const byKind = countMap(rows.map(r => r.kind))
+    const bySigil = countMap(rows.map(r => r.sigil).filter(Boolean))
+    const byFile = countMap(rows.map(r => r.file))
+    metaBlock('summary', [
+      ['hits', String(rows.length)],
+      ['files', String(byFile.size)],
+      ['kind', renderCounts(byKind)],
+      ['sigil', renderCounts(bySigil) || '—'],
+      ['top files', renderCounts(byFile, 8)],
+    ])
   }
 }
 
+export function printQueryHelp(): void {
+  printHelpPage({
+    title: 'Spw Query',
+    usage: [
+      'spw query [--from prompts,.spw] [--selector navigable] [--where …] [--format skim|table|lines|json]',
+      'spw query --from prompts --skim --selector pathRefs --limit 30',
+      'spw query --from prompts --count --selector ops:frame',
+      'spw query --from prompts --group --where "file~templates"',
+    ],
+    sections: [
+      {
+        title: 'View flags',
+        lines: [
+          '--skim              Compact file:line kind snippet (great for browsing)',
+          '--table             Aligned columns',
+          '--json              Structured JSON envelope',
+          '--group / -g        Group hits by file',
+          '--count             Totals + histograms only',
+          '--context N / -C N  Source window under each hit',
+          '--limit N / -n N    Cap rows (default 100)',
+          '--quiet / -q        No header banner',
+          '--summary           kind/sigil/file histograms on stderr',
+        ],
+      },
+      {
+        title: 'Filter',
+        lines: [
+          '--from / --root     Comma-separated roots (default .spw)',
+          '--selector / -s     Preset or expr (default navigable)',
+          '--expr / -e         Raw selector expression',
+          '--where / -w        field=val, field~substr, field in A|B',
+          '--select            columns for lines/json (file,kind,line,text,…)',
+        ],
+      },
+      {
+        title: 'Examples',
+        lines: [
+          'spw query --from prompts --skim --selector pathRefs -n 25',
+          'spw query --from prompts,docs --selector navigable --where "kind in PathRef|Reference" --table',
+          'spw query --from prompts --count --selector ops:frame --summary',
+          'spw query --from .spw --expr "$~\\"_\\" | $@_" --where "root=spw" --select file,kind,root,target,line',
+        ],
+      },
+      {
+        title: 'Sense companions',
+        lines: [
+          'spw invent --from <dir>     file catalog + roles',
+          'spw analyze --from <dir>    multi-selector densities',
+          'spw formula --from <dir>    math pattern discovery',
+          'spw map --from <dir>        hubs / layers / cycles',
+        ],
+      },
+      {
+        title: 'Related',
+        lines: [
+          'spw select <file> --skim     single-file',
+          'spw skim <file>              outline without selector',
+          'spw tree <path>              directory map',
+        ],
+      },
+    ],
+  })
+}
+
+function resolveAbs(relFile: string, workspace: SpwWorkspace | null): string {
+  const base = workspace?.consumerRoot ?? process.cwd()
+  return path.resolve(base, relFile)
+}
+
+function renderGrouped(
+  rows: QueryRow[],
+  fields: Array<keyof QueryRow>,
+  args: QueryArgs,
+  sourceByFile: Map<string, string>,
+  workspace: SpwWorkspace | null,
+): void {
+  const groups = new Map<string, QueryRow[]>()
+  for (const row of rows) {
+    const list = groups.get(row.file) ?? []
+    list.push(row)
+    groups.set(row.file, list)
+  }
+  for (const [file, list] of groups) {
+    console.log(`\n## ${file}  (${list.length})`)
+    for (const row of list) {
+      if (args.format === 'skim') console.log(`  ${renderSkimRow(row, true)}`)
+      else console.log(`  ${renderProjected(projectRow(row, fields.filter(f => f !== 'file')), fields.filter(f => f !== 'file'))}`)
+      if (args.context > 0) {
+        const abs = resolveAbs(file, workspace)
+        const src = sourceByFile.get(abs)
+        if (src) console.log(contextAround(src, row.line, row.line, args.context))
+      }
+    }
+  }
+}
+
+function renderSkimRow(row: QueryRow, hideFile = false): string {
+  const loc = `${row.line}:${row.column}`
+  const kind = row.sigil ? `${row.kind}:${row.sigil}` : row.kind
+  const target = row.target || row.label || ''
+  const text = truncate(row.text, 64)
+  if (hideFile) return `${padRight(loc, 8)} ${padRight(kind, 16)} ${target ? `${target}  ` : ''}${text}`
+  return `${row.file}:${loc}  ${padRight(kind, 14)}  ${target ? `${truncate(target, 24)}  ` : ''}${text}`
+}
+
+function padRight(s: string, n: number): string {
+  return s.length >= n ? s : s.padEnd(n)
+}
+
+function renderAsTable(rows: QueryRow[], fields: Array<keyof QueryRow>): string {
+  const headers = fields.map(String)
+  const body = rows.map(row => fields.map(f => String(row[f] ?? '')))
+  return formatTable(headers, body, { maxCol: 40 })
+}
+
 async function collectFiles(roots: string[]): Promise<string[]> {
+  const perRoot = await Promise.all(
+    roots.map((root) => walkSpwFiles(root, { ignore: IGNORED_DIRS })),
+  )
   const files = new Set<string>()
-  for (const root of roots) {
-    const items = await collectSpwFiles(root)
+  for (const items of perRoot) {
     for (const file of items) files.add(file)
   }
   return [...files].sort()
@@ -112,7 +335,7 @@ function toRow(file: string, source: string, match: SpwMatch, workspace: SpwWork
   }
 
   if (match.node.type === 'Operation') {
-    const op = match.node as { operator?: { value?: string }, operatorLabel?: { value?: string } }
+    const op = match.node as { operator?: { value?: string }; operatorLabel?: { value?: string } }
     row.sigil = op.operator?.value ?? ''
     row.label = op.operatorLabel?.value ?? ''
     row.brace = detectBrace(snippet)
@@ -134,7 +357,7 @@ function toRow(file: string, source: string, match: SpwMatch, workspace: SpwWork
     row.target = raw
     const parts = raw.split('/').filter(Boolean)
     if (parts.length >= 2) {
-      row.root = parts[0]
+      row.root = parts[0]!
       row.target = parts.slice(1).join('/')
     }
     return row
@@ -171,25 +394,25 @@ interface WhereClause {
 
 function parseWhere(input: string): WhereClause[] {
   if (!input.trim()) return []
-  const rawClauses = input.split(/[;,]/).map((part) => part.trim()).filter(Boolean)
+  const rawClauses = input.split(/[;,]/).map(part => part.trim()).filter(Boolean)
   const clauses: WhereClause[] = []
 
   for (const rawClause of rawClauses) {
     const inMatch = rawClause.match(/^([a-z_]+)\s+in\s+(.+)$/i)
     if (inMatch) {
-      const field = normalizeField(inMatch[1])
+      const field = normalizeField(inMatch[1]!)
       if (!field) continue
-      const values = inMatch[2].split('|').map((part) => part.trim()).filter(Boolean)
-      clauses.push({ field, op: 'in', value: inMatch[2], values })
+      const values = inMatch[2]!.split('|').map(part => part.trim()).filter(Boolean)
+      clauses.push({ field, op: 'in', value: inMatch[2]!, values })
       continue
     }
 
     const eqOrContains = rawClause.match(/^([a-z_]+)\s*([=~])\s*(.+)$/i)
     if (!eqOrContains) continue
-    const field = normalizeField(eqOrContains[1])
+    const field = normalizeField(eqOrContains[1]!)
     if (!field) continue
     const op = eqOrContains[2] as '=' | '~'
-    const value = trimQuotes(eqOrContains[3].trim())
+    const value = trimQuotes(eqOrContains[3]!.trim())
     clauses.push({ field, op, value, values: [] })
   }
 
@@ -222,12 +445,15 @@ function passesWhere(row: QueryRow, clauses: WhereClause[]): boolean {
   return true
 }
 
-function parseSelect(selectRaw: string): Array<keyof QueryRow> {
+function parseSelect(selectRaw: string, format: ViewFormat): Array<keyof QueryRow> {
+  if (format === 'skim' && selectRaw === 'file,kind,sigil,brace,root,target,label,line,column,text') {
+    return ['file', 'line', 'kind', 'text']
+  }
   const fields = selectRaw
     .split(',')
-    .map((part) => part.trim())
+    .map(part => part.trim())
     .filter(Boolean)
-    .map((part) => normalizeField(part))
+    .map(part => normalizeField(part))
     .filter((field): field is keyof QueryRow => field !== null)
 
   return fields.length > 0 ? fields : ['file', 'kind', 'line', 'column', 'text']
@@ -240,69 +466,13 @@ function projectRow(row: QueryRow, fields: Array<keyof QueryRow>): Record<string
 }
 
 function renderProjected(projected: Record<string, string | number>, fields: Array<keyof QueryRow>): string {
-  return fields.map((field) => `${field}=${JSON.stringify(projected[field] ?? '')}`).join('\t')
+  return fields.map(field => `${field}=${JSON.stringify(projected[field] ?? '')}`).join('\t')
 }
 
-function renderCountMap(map: Map<string, number>): string {
-  return [...map.entries()]
-    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-    .map(([name, count]) => `${name}:${count}`)
-    .join('  ')
-}
-
-async function collectSpwFiles(root: string): Promise<string[]> {
-  const absRoot = path.resolve(root)
-  const stat = await statOrNull(absRoot)
-  if (!stat) return []
-
-  if (stat.isFile()) {
-    return absRoot.endsWith('.spw') ? [absRoot] : []
-  }
-
-  if (!stat.isDirectory()) return []
-
-  const out: string[] = []
-
-  async function walk(dir: string): Promise<void> {
-    const entries = await fs.readdir(dir, { withFileTypes: true })
-    for (const entry of entries) {
-      if (entry.isDirectory() && IGNORED_DIRS.has(entry.name)) continue
-      const target = path.join(dir, entry.name)
-      if (entry.isDirectory()) {
-        await walk(target)
-        continue
-      }
-      if (entry.isFile() && entry.name.endsWith('.spw')) {
-        out.push(target)
-      }
-    }
-  }
-
-  await walk(absRoot)
-  return out
-}
-
-async function readText(filePath: string): Promise<string | null> {
+async function readText(file: string): Promise<string | null> {
   try {
-    return await fs.readFile(filePath, 'utf8')
-  } catch (error) {
-    if (nodeErrorCode(error) === 'ENOENT') return null
-    throw error
+    return await fs.readFile(file, 'utf8')
+  } catch {
+    return null
   }
-}
-
-async function statOrNull(target: string) {
-  try {
-    return await fs.stat(target)
-  } catch (error) {
-    const code = nodeErrorCode(error)
-    if (code === 'ENOENT' || code === 'ENOTDIR') return null
-    throw error
-  }
-}
-
-function nodeErrorCode(error: unknown): string | undefined {
-  return typeof error === 'object' && error !== null && 'code' in error
-    ? String((error as { code?: unknown }).code)
-    : undefined
 }

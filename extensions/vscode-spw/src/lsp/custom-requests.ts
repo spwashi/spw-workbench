@@ -113,6 +113,33 @@ export interface SpwCustomRequestMap {
     params: Record<string, never>
     result: SpwWorkspaceManifest
   }
+  'spw/formSequence': {
+    params: { notation?: string, catalog?: boolean }
+    result: {
+      notation: string
+      steps: Array<{ surface: string, op: string, label?: string, tag?: string }>
+      terminal: string
+      catalog?: Array<{ id: string, surface: string, role: string }>
+    }
+  }
+  'spw/geometry': {
+    params: { uri?: string, text?: string }
+    result: {
+      uri: string | null
+      version: string
+      braces: {
+        kinds: Record<string, number>
+        coupleOps: number
+        medials: number
+        shells: number
+        channels: string[]
+        signature: string
+      }
+      operators: Array<{ sigil: string, count: number, percent: number, role: string }>
+      nesting: { maxDepth: number, openBalance: number, deepLines: number }
+      lessons: string[]
+    }
+  }
 }
 
 export type SpwCustomRequestMethod = keyof SpwCustomRequestMap

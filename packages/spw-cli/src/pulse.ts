@@ -38,6 +38,7 @@ import {
   runOperationalSequence,
   resolveMutationRules,
   snapshotTopography,
+  classifyMutationUsefulness,
   topographyDelta,
   walkReferenceProgression,
   computationalRuleIds,
@@ -92,6 +93,10 @@ interface PulseArgs {
   help: boolean
   full: boolean
   includeWorkbench: boolean
+  /** REPL / hot: plan a buffer from stdin instead of disk targets */
+  stdin: boolean
+  /** Logical path label for --stdin reports */
+  asLabel: string
 }
 
 const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', '_workbench', '.agents'])
@@ -201,12 +206,29 @@ function parseArgs(argv: string[]): PulseArgs {
     help: common.flags.help,
     full: false,
     includeWorkbench: false,
+    stdin: false,
+    asLabel: '<stdin>',
   }
 
   for (let i = 0; i < args.length; i += 1) {
     const arg = args[i]
     if (arg === '--write' || arg === '-w') {
       parsed.write = true
+      continue
+    }
+    if (arg === '--stdin') {
+      parsed.stdin = true
+      continue
+    }
+    if (arg === '--as') {
+      const next = args[i + 1]
+      if (!next || next.startsWith('-')) throw new Error('--as requires a label')
+      parsed.asLabel = next
+      i += 1
+      continue
+    }
+    if (arg.startsWith('--as=')) {
+      parsed.asLabel = arg.slice('--as='.length) || '<stdin>'
       continue
     }
     if (arg === '--accept-semantic-risk') {
@@ -372,6 +394,12 @@ function validatePulseArgs(cli: PulseArgs): string[] {
   if (cli.write && cli.sequence !== null) {
     errors.push('--write is not available for operational sequences')
   }
+  if (cli.stdin && cli.write) {
+    errors.push('--stdin is plan-only; use mutate --stdin for host-applied rewrite, or write a path')
+  }
+  if (cli.stdin && (cli.ladder !== null || cli.geometry !== null)) {
+    errors.push('--stdin is for mutation plan/measure only (not --ladder/--geometry)')
+  }
   if (cli.write && cli.rules.length > 0) {
     errors.push('--write is not available with --rule restrictions')
   }
@@ -457,17 +485,29 @@ export function printSpwPulseHelp(): void {
   const profiles = Object.keys(MUTATION_PROFILES).join(' | ')
   const sequences = Object.keys(OPERATIONAL_SEQUENCES).join(' | ')
   printHelpPage({
-    title: 'Spw Pulse — topographical mutation probes',
+    title: 'Spw Pulse — plan / measure (hot probe)',
     usage: [
-      'npm run spw -- pulse [targets...] [flags]',
-      'npm run spw:pulse -- [targets...] [flags]',
+      'spw pulse [targets...] [flags]',
+      'spw pulse --stdin --as buffer.spw --json --profile layout_canonical',
+      'cat file.spw | spw pulse --stdin --check --json',
     ],
     sections: [
+      {
+        title: 'Hot / REPL role',
+        lines: [
+          'Default effect.l0.measure: topography delta, would-change, usefulness class.',
+          'Atomic single-file effect.l2.workspace only with --write --accept-semantic-risk.',
+          '--stdin plans a host-owned buffer (l0.measure only); pair with mutate --stdin.',
+          'See docs/runtime/md/pulse-mutate-beat.md',
+        ],
+      },
       {
         title: 'Flags',
         lines: [
           `--profile <id>     Mutation profile (${profiles})`,
           `--sequence <id>    Mutation fold/OT pipeline (${sequences})`,
+          '--stdin            Plan a buffer from stdin (REPL / HMR host)',
+          '--as <label>       Logical path for stdin reports',
           '--ladder <q>       Form ladder: boundary (frame|[]|body|{}), op (&|!), all|boundaries|ops',
           '--geometry <mode>  Label mobility geometry: rules|hof|graph|walk|progressions',
           '--label <id>       Label for geometry walk/progressions (default x)',
@@ -898,14 +938,14 @@ function nodeErrorCode(error: unknown): string | undefined {
 type PulseMutationConfig = MutationAutomataConfig & {
   profile: string
   dryRun: boolean
-  effectCeiling: 'S0' | 'S1'
+  effectCeiling: 'effect.l0.measure' | 'effect.l1.memory'
 }
 
 function buildConfig(cli: PulseArgs): PulseMutationConfig {
   const config: PulseMutationConfig = {
     profile: cli.profile,
     dryRun: !cli.write,
-    effectCeiling: cli.profile === 'measure_only' ? 'S0' : 'S1',
+    effectCeiling: cli.profile === 'measure_only' ? 'effect.l0.measure' : 'effect.l1.memory',
   }
   if (cli.profile === 'measure_only') {
     config.dryRun = true
@@ -921,7 +961,7 @@ function executionEvidence(
   config: PulseMutationConfig,
 ): PulseExecutionEvidence {
   return {
-    planEffectCeiling: config.effectCeiling === 'S0'
+    planEffectCeiling: config.effectCeiling === 'effect.l0.measure'
       ? 'effect.l0.measure'
       : 'effect.l1.memory',
     workspaceEffectCeiling: cli.write
@@ -939,10 +979,42 @@ function executionEvidence(
   }
 }
 
-function formatUnified(rel: string, before: string, after: string): string {
+function formatUnified(
+  rel: string,
+  before: string,
+  after: string,
+  plannedDelta?: TopographyDelta,
+): string {
   const bLines = before.split('\n')
   const aLines = after.split('\n')
   const lines = [`--- a/${rel}`, `+++ b/${rel}`]
+
+  // Semantic clarity header: brace projection + usefulness before hunks
+  if (plannedDelta) {
+    const brace = plannedDelta.brace
+    lines.push(
+      `# spw-pulse semantic: health ${plannedDelta.parseHealthBefore}→${plannedDelta.parseHealthAfter}` +
+        (plannedDelta.healthRegressed ? ' REGRESS' : '') +
+        ` | structureMoved=${plannedDelta.structureMoved}` +
+        ` | layoutOnlyCandidate=${plannedDelta.layoutOnlyCandidate}` +
+        ` | brace=${brace.equal ? 'stable' : `DRIFT:${brace.severity}`}`,
+    )
+    if (!brace.equal) {
+      for (const f of brace.findings.slice(0, 6)) {
+        lines.push(`# brace: ${f}`)
+      }
+    }
+    if (plannedDelta.usefulness) {
+      lines.push(`# use: ${plannedDelta.usefulness.class} — ${plannedDelta.usefulness.advice}`)
+    }
+    if (plannedDelta.containerDeltas) {
+      const parts = Object.entries(plannedDelta.containerDeltas)
+        .filter(([, v]) => v !== 0)
+        .map(([k, v]) => `${k}${v > 0 ? '+' : ''}${v}`)
+      if (parts.length) lines.push(`# containers: ${parts.join(' ')}`)
+    }
+  }
+
   // Simple full-file context when small; otherwise prefix/suffix compact
   if (bLines.length + aLines.length < 80) {
     for (const line of bLines) lines.push(`-${line}`)
@@ -1203,6 +1275,79 @@ export interface SpwPulseRunOptions {
   cwd?: string
 }
 
+/**
+ * REPL / hot-module path: plan a host-owned buffer without touching disk.
+ * Ceiling: effect.l0.measure — returns plannedSource for host to accept then mutate.
+ */
+async function runPulseStdin(cli: PulseArgs): Promise<void> {
+  const { readStdin } = await import('./stdio')
+  const source = await readStdin()
+  if (!source && process.stdin.isTTY) {
+    failPulse('spw pulse --stdin requires a piped buffer', cli.json)
+    return
+  }
+
+  const config = buildConfig(cli)
+  const before = snapshotTopography(source)
+  const result = runMutationAutomata(source, {
+    ...config,
+    dryRun: true,
+    effectCeiling: 'effect.l0.measure',
+  })
+  const after = snapshotTopography(result.source)
+  const delta = topographyDelta(before, after)
+  const parseHealthy = after.parseHealth === 'ok' || after.parseHealth === 'recovered'
+  const usefulness = classifyMutationUsefulness({
+    changed: result.changed,
+    healthRegressed: delta.healthRegressed,
+    parseHealthy,
+    braceEqual: delta.brace?.equal ?? true,
+    structureMoved: delta.structureMoved,
+    layoutOnlyCandidate: delta.layoutOnlyCandidate,
+    layoutVectorPositive: true,
+    nonLayoutVectorAxes: false,
+  })
+
+  const envelope = {
+    schemaVersion: SPW_PULSE_SCHEMA_VERSION,
+    surface: SPW_PULSE_SURFACE,
+    mode: 'mutation' as const,
+    ok: !delta.healthRegressed && parseHealthy,
+    context: 'stdin',
+    label: cli.asLabel,
+    profile: cli.profile,
+    changed: result.changed,
+    rules: result.rulesApplied,
+    stop: result.stopReason,
+    usefulness,
+    delta: {
+      healthRegressed: delta.healthRegressed,
+      structureMoved: delta.structureMoved,
+      layoutOnlyCandidate: delta.layoutOnlyCandidate,
+    },
+    /** Planned rewrite — host may pass to mutate --stdin or apply in editor */
+    plannedSource: result.source,
+  }
+
+  if (cli.json) {
+    console.log(JSON.stringify(envelope, null, 2))
+  } else {
+    console.log(
+      `# pulse stdin label=${cli.asLabel} changed=${result.changed} healthOk=${envelope.ok} layoutOnly=${delta.layoutOnlyCandidate}`,
+    )
+    console.log(`# rules=${result.rulesApplied.join(',') || '(none)'} stop=${result.stopReason}`)
+    console.log(`# usefulness=${usefulness.class} — ${usefulness.advice}`)
+    if (cli.unified && result.changed) {
+      console.log(formatUnified(cli.asLabel, source, result.source, delta))
+    } else if (result.changed) {
+      console.log('# plannedSource available via --json (host applies or: mutate --stdin)')
+    }
+  }
+
+  if (cli.check && result.changed) process.exitCode = 1
+  if (delta.healthRegressed) process.exitCode = 1
+}
+
 export async function runSpwPulseCli(
   argv: string[] = process.argv,
   options: SpwPulseRunOptions = {},
@@ -1225,6 +1370,11 @@ export async function runSpwPulseCli(
   const validationErrors = validatePulseArgs(cli)
   if (validationErrors.length > 0) {
     failPulse(validationErrors, cli.json)
+    return
+  }
+
+  if (cli.stdin) {
+    await runPulseStdin(cli)
     return
   }
 
@@ -1420,6 +1570,21 @@ export async function runSpwPulseCli(
       const parseHealthy =
         beforeTopo.parseHealth === 'complete_structured' &&
         afterTopo.parseHealth === 'complete_structured'
+      plannedDelta.usefulness = classifyMutationUsefulness({
+        changed,
+        healthRegressed: plannedDelta.healthRegressed,
+        parseHealthy,
+        braceEqual: plannedDelta.brace.equal,
+        structureMoved: plannedDelta.structureMoved,
+        layoutOnlyCandidate: plannedDelta.layoutOnlyCandidate,
+        layoutVectorPositive: vector.layout_delta > 0,
+        nonLayoutVectorAxes:
+          vector.token_delta !== 0 ||
+          vector.structure_delta !== 0 ||
+          vector.label_delta !== 0 ||
+          vector.reference_delta !== 0 ||
+          vector.script_delta !== 0,
+      })
       const findings = [
         `phase=planning stop=${stopReason} profile=${profileLabel} planComplete=${planComplete}` +
           ` plan.workspaceApplied=false wouldChange=${changed}`,
@@ -1428,14 +1593,21 @@ export async function runSpwPulseCli(
           (plannedDelta.healthRegressed
             ? ' (REGRESSED)'
             : plannedDelta.parseHealthChanged ? ' (changed)' : ' (stable)'),
+        plannedDelta.brace.equal
+          ? 'brace projection: stable'
+          : `brace projection: DRIFT severity=${plannedDelta.brace.severity}` +
+            (plannedDelta.brace.findings[0] ? ` (${plannedDelta.brace.findings[0]})` : ''),
         layoutOnlyEvidence
-          ? 'layout-only evidence: topography stable and non-layout mutation axes are zero'
+          ? 'layout-only evidence: brace+topo stable and non-layout mutation axes are zero'
           : plannedDelta.layoutOnlyCandidate
             ? 'topography-stable candidate: semantic equivalence is not established'
             : plannedDelta.structureMoved
               ? `topo structure moved: astDepthΔ=${plannedDelta.maxAstDepthDelta ?? 'n/a'}`
               : 'topo structure stable',
       ]
+      if (plannedDelta.usefulness) {
+        findings.push(`use: ${plannedDelta.usefulness.class} — ${plannedDelta.usefulness.advice}`)
+      }
 
       if (changed) wouldChange += 1
       if (!planComplete) planFailures += 1
@@ -1594,7 +1766,14 @@ export async function runSpwPulseCli(
         console.log(formatMatrix(report.matrix))
       }
       if (cli.unified) {
-        console.log(formatUnified(report.file, planned.original, planned.plannedSource))
+        console.log(
+          formatUnified(
+            report.file,
+            planned.original,
+            planned.plannedSource,
+            report.plannedDelta,
+          ),
+        )
       }
     }
   }

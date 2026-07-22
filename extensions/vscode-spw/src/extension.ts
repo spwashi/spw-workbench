@@ -13,6 +13,8 @@ import { registerSpwNavigation } from './navigation'
 import { SIGIL_SEMANTICS } from './semantics'
 import { registerConceptsTreeView } from './views/concepts-tree'
 import { registerWorkspaceAtlasView } from './views/workspace-tree'
+import { registerSpwCommands } from './commands'
+import { ProbeCache, readSurfaceConfig, registerSurfaceDecorations } from './surface-decorations'
 
 let client: LanguageClient | undefined
 
@@ -32,6 +34,8 @@ export function activate(context: vscode.ExtensionContext): void {
 
   void annotationIndex.activate()
 
+  const probeCache = new ProbeCache(readSurfaceConfig().probeCacheMs)
+
   context.subscriptions.push(
     { dispose: () => { void client?.stop() } },
     annotationIndex,
@@ -43,6 +47,10 @@ export function activate(context: vscode.ExtensionContext): void {
     ...registerSpwNavigation(spw),
     ...registerConceptsTreeView(spw),
     ...registerWorkspaceAtlasView(spw),
+    ...registerSurfaceDecorations(probeCache, (doc) => {
+      void vscode.commands.executeCommand('spw.inspectGeometry')
+    }),
+    ...registerSpwCommands(context, client, requests, probeCache),
   ]
 
   context.subscriptions.push(...disposables)
@@ -79,11 +87,24 @@ function createServerOptions(context: vscode.ExtensionContext): ServerOptions {
 }
 
 function createClientOptions(): LanguageClientOptions {
+  const cfg = vscode.workspace.getConfiguration('spw')
   return {
     documentSelector: [{ scheme: 'file', language: 'spw' }],
     synchronize: {
       fileEvents: vscode.workspace.createFileSystemWatcher('**/*.spw'),
+      configurationSection: 'spw',
     },
+    initializationOptions: {
+      inlayHints: {
+        paths: cfg.get<boolean>('inlayHints.paths', true),
+        annotations: cfg.get<boolean>('inlayHints.annotations', true),
+        frames: cfg.get<boolean>('inlayHints.frames', true),
+      },
+      diagnostics: {
+        unresolvedRefs: cfg.get<string>('diagnostics.unresolvedRefs', 'warning'),
+      },
+    },
+    middleware: undefined,
   }
 }
 

@@ -244,8 +244,8 @@ export interface CouplingDynamicsDefinition {
   operation: string
   input: string
   output: string
-  /** S0 read/measure, S1 in-memory, S2 workspace write, S3 external effect. */
-  effectGrade: 'S0' | 'S1' | 'S2' | 'S3'
+  /** effect.l0.measure | effect.l1.memory | effect.l2.workspace | effect.l3.external */
+  effectGrade: 'effect.l0.measure' | 'effect.l1.memory' | 'effect.l2.workspace' | 'effect.l3.external'
   /** Named implementation, experiment, or trace contract supporting the law. */
   evidence: string
 }
@@ -567,7 +567,7 @@ export function validateCouplingSemanticsProfile(
           message: 'dynamics fields must be non-empty',
         })
       }
-      if (profile.status !== 'operational' && dynamics.effectGrade !== 'S0') {
+      if (profile.status !== 'operational' && dynamics.effectGrade !== 'effect.l0.measure') {
         issues.push({
           path: `${basePath}.dynamics[${index}].effectGrade`,
           message: 'write or external effects require an operational profile',

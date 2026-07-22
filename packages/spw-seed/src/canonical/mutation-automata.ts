@@ -2,7 +2,7 @@
  * Configurable operational mutation automata.
  *
  * Scripts and layout rewrites plan **differentials** (ordered SourceEdit[]),
- * then optionally apply in memory (S1) or under external write authority (S2).
+ * then optionally apply in memory (effect.l1.memory) or under workspace write authority (effect.l2.workspace).
  * The automaton iterates until a fixed point or a named stop reason.
  *
  * @see docs/theory/spw/operational-topography.spw — indentation_pulse, mutation_profile
@@ -40,7 +40,7 @@ export interface MutationRule {
   id: string
   description: string
   stratum: DifferentialStratum
-  /** Minimum effect grade to *apply* this rule to workspace (plan is always S0/S1) */
+  /** Minimum effect grade to *apply* this rule to workspace (plan is always effect.l0.measure / effect.l1.memory) */
   effectGrade: EffectGrade
   /** Pure transform: source → source */
   transform: (source: string, ctx: MutationContext) => string
@@ -72,13 +72,13 @@ export interface MutationAutomataConfig {
   requireIdempotence?: boolean
   /**
    * Maximum effect grade allowed for application.
-   * Planning always runs; apply is skipped when dryRun or ceiling is S0.
-   * Default S1 (in-memory only).
+   * Planning always runs; apply is skipped when dryRun or ceiling is effect.l0.measure.
+   * Default effect.l1.memory (in-memory only).
    */
   effectCeiling?: EffectGrade
   /**
    * When true, plan differentials but never rewrite the returned source
-   * (S0 measure). When false and ceiling ≥ S1, apply in memory.
+   * (effect.l0.measure). When false and ceiling ≥ effect.l1.memory, apply in memory.
    */
   dryRun?: boolean
   /** Options forwarded to canonicalize-based rules */
@@ -131,7 +131,7 @@ export interface MutationRunResult {
   rulesRun: string[]
   effectCeiling: EffectGrade
   dryRun: boolean
-  /** True when output would require S2 workspace write to persist */
+  /** True when output would require effect.l2.workspace write to persist */
   requiresWriteAuthority: boolean
 }
 
@@ -147,6 +147,9 @@ const DEFAULT_CANONICAL: CanonicalOptions = {
   alignComments: false,
   commentColumn: 40,
   blankLineBetweenFrames: false,
+  reflowProse: false,
+  printWidth: 88,
+  migrateSlashComments: false,
 }
 
 function canonSlice(
@@ -188,7 +191,7 @@ export const BUILTIN_MUTATION_RULES: readonly MutationRule[] = [
     id: 'normalize_newlines',
     description: 'Normalize CRLF/CR to LF',
     stratum: 'source',
-    effectGrade: 'S1',
+    effectGrade: 'effect.l1.memory',
     transform: (s, ctx) =>
       canonSlice(s, ctx, {
         normalizeNewlines: true,
@@ -204,7 +207,7 @@ export const BUILTIN_MUTATION_RULES: readonly MutationRule[] = [
     id: 'trim_trailing_whitespace',
     description: 'Strip trailing whitespace per line',
     stratum: 'layout',
-    effectGrade: 'S1',
+    effectGrade: 'effect.l1.memory',
     transform: (s, ctx) =>
       canonSlice(s, ctx, {
         normalizeNewlines: false,
@@ -220,7 +223,7 @@ export const BUILTIN_MUTATION_RULES: readonly MutationRule[] = [
     id: 'ensure_final_newline',
     description: 'Ensure file ends with a single newline',
     stratum: 'layout',
-    effectGrade: 'S1',
+    effectGrade: 'effect.l1.memory',
     transform: (s, ctx) =>
       canonSlice(s, ctx, {
         normalizeNewlines: false,
@@ -236,7 +239,7 @@ export const BUILTIN_MUTATION_RULES: readonly MutationRule[] = [
     id: 'collapse_blank_lines',
     description: 'Collapse runs of blank lines to at most one',
     stratum: 'layout',
-    effectGrade: 'S1',
+    effectGrade: 'effect.l1.memory',
     transform: (s, ctx) =>
       canonSlice(s, ctx, {
         normalizeNewlines: false,
@@ -252,7 +255,7 @@ export const BUILTIN_MUTATION_RULES: readonly MutationRule[] = [
     id: 'indent_braces',
     description: 'Indent by brace/bracket depth',
     stratum: 'layout',
-    effectGrade: 'S1',
+    effectGrade: 'effect.l1.memory',
     transform: (s, ctx) =>
       canonSlice(s, ctx, {
         normalizeNewlines: true,
@@ -268,7 +271,7 @@ export const BUILTIN_MUTATION_RULES: readonly MutationRule[] = [
     id: 'align_comments',
     description: 'Align trailing # comments within blocks',
     stratum: 'layout',
-    effectGrade: 'S1',
+    effectGrade: 'effect.l1.memory',
     transform: (s, ctx) =>
       canonSlice(s, ctx, {
         normalizeNewlines: false,
@@ -284,7 +287,7 @@ export const BUILTIN_MUTATION_RULES: readonly MutationRule[] = [
     id: 'blank_line_between_frames',
     description: 'Exactly one blank line between top-level ^ frames',
     stratum: 'layout',
-    effectGrade: 'S1',
+    effectGrade: 'effect.l1.memory',
     transform: (s, ctx) =>
       canonSlice(s, ctx, {
         normalizeNewlines: false,
@@ -294,34 +297,53 @@ export const BUILTIN_MUTATION_RULES: readonly MutationRule[] = [
         indentBraces: false,
         alignComments: false,
         blankLineBetweenFrames: true,
+        reflowProse: false,
+      }),
+  },
+  {
+    id: 'reflow_prose',
+    description: 'Wrap block-level # / // prose comments to printWidth',
+    stratum: 'layout',
+    effectGrade: 'effect.l1.memory',
+    transform: (s, ctx) =>
+      canonSlice(s, ctx, {
+        normalizeNewlines: true,
+        trimTrailingWhitespace: true,
+        ensureFinalNewline: false,
+        collapseBlankLines: false,
+        indentBraces: false,
+        alignComments: false,
+        blankLineBetweenFrames: false,
+        reflowProse: true,
+        printWidth: ctx.options.printWidth ?? 88,
       }),
   },
   {
     id: 'equiv_seq_alias',
     description: 'Rewrite npm run spw:seq -- → spw:ls --',
     stratum: 'script',
-    effectGrade: 'S1',
+    effectGrade: 'effect.l1.memory',
     transform: s => s.replace(/npm run spw:seq --/g, 'npm run spw:ls --'),
   },
   {
     id: 'equiv_wildcard',
     description: 'Rewrite .* → *()',
     stratum: 'script',
-    effectGrade: 'S1',
+    effectGrade: 'effect.l1.memory',
     transform: s => s.replace(/\.\*/g, '*()'),
   },
   {
     id: 'equiv_dot_postfix',
     description: 'Normalize .! / .? style postfix sugar to bare sigil',
     stratum: 'script',
-    effectGrade: 'S1',
+    effectGrade: 'effect.l1.memory',
     transform: s => s.replace(/\.([!?~@&*=%#$^_])/g, '$1'),
   },
   {
     id: 'layout_bundle',
     description: 'Single-pass canonical layout bundle (newlines + trim + final nl)',
     stratum: 'layout',
-    effectGrade: 'S1',
+    effectGrade: 'effect.l1.memory',
     transform: (s, ctx) =>
       canonicalize(s, {
         ...ctx.options,
@@ -340,20 +362,21 @@ export const MUTATION_PROFILES: Record<
 > = {
   layout_canonical: {
     rules: ['layout_bundle'],
-    effectCeiling: 'S1',
+    effectCeiling: 'effect.l1.memory',
     requireIdempotence: true,
   },
   layout_full: {
     rules: [
       'normalize_newlines',
       'trim_trailing_whitespace',
+      'reflow_prose',
       'indent_braces',
       'align_comments',
       'blank_line_between_frames',
       'collapse_blank_lines',
       'ensure_final_newline',
     ],
-    effectCeiling: 'S1',
+    effectCeiling: 'effect.l1.memory',
     requireIdempotence: true,
   },
   equiv_scripts: {
@@ -363,12 +386,12 @@ export const MUTATION_PROFILES: Record<
       'equiv_dot_postfix',
       'layout_bundle',
     ],
-    effectCeiling: 'S1',
+    effectCeiling: 'effect.l1.memory',
     requireIdempotence: true,
   },
   measure_only: {
     rules: ['layout_bundle'],
-    effectCeiling: 'S0',
+    effectCeiling: 'effect.l0.measure',
     dryRun: true,
     requireIdempotence: false,
   },
@@ -476,9 +499,9 @@ export function planMutationPass(
 /**
  * Run the mutation automaton to a fixed point or stop reason.
  *
- * - dryRun / effectCeiling S0: plan only; returned source equals input
- * - effectCeiling ≥ S1: apply in memory (S1)
- * - requiresWriteAuthority: true when changed and caller must persist (S2)
+ * - dryRun / effectCeiling effect.l0.measure: plan only; returned source equals input
+ * - effectCeiling ≥ effect.l1.memory: apply in memory (effect.l1.memory)
+ * - requiresWriteAuthority: true when changed and caller must persist (effect.l2.workspace)
  */
 export function runMutationAutomata(
   source: string,
@@ -496,7 +519,7 @@ export function runMutationAutomata(
       ? MUTATION_PROFILES[profileId as MutationProfileId]
       : MUTATION_PROFILES.layout_canonical
 
-  const effectCeiling = config.effectCeiling ?? profileDefaults.effectCeiling ?? 'S1'
+  const effectCeiling = config.effectCeiling ?? profileDefaults.effectCeiling ?? 'effect.l1.memory'
   const dryRun = config.dryRun ?? profileDefaults.dryRun ?? false
   const maxSteps = config.maxSteps ?? 8
   const requireIdempotence = config.requireIdempotence ?? profileDefaults.requireIdempotence ?? true
@@ -518,7 +541,7 @@ export function runMutationAutomata(
   let vector = zeroVector()
   let stopReason: MutationStopReason = 'fixed_point'
   const rulesResolved = rules.map(rule => rule.id)
-  const planOnly = dryRun || effectCeiling === 'S0'
+  const planOnly = dryRun || effectCeiling === 'effect.l0.measure'
   const blockedRules = planOnly
     ? []
     : rules.filter(rule => !effectGradeAtMost(rule.effectGrade, effectCeiling))
@@ -644,7 +667,7 @@ export function planMutation(
   return runMutationAutomata(source, {
     ...config,
     dryRun: true,
-    effectCeiling: config.effectCeiling ?? 'S0',
+    effectCeiling: config.effectCeiling ?? 'effect.l0.measure',
   })
 }
 

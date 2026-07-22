@@ -36,10 +36,32 @@ In practical Spw terms, that currently covers:
 
 - path navigation for `~"..."`, `~<path>` (LSP compatibility projection), `~<label>"..."`, and `@root/...`
 - annotation and path reference lookup
-- scope-aware completion for roots, annotations, sigil snippets, and file-system paths
+- scope-aware completion for roots, annotations, sigil snippets, template `$slots`, form wrap sequences, and file-system paths
 - semantic tokens layered over the grammar
 - formatting and range formatting
 - diagnostics for parse errors, broken refs, stale projections, brace physics, and runtime-informed checks
+
+### Custom `spw/*` methods (editor probes)
+
+| Method | Purpose |
+|--------|---------|
+| `spw/annotations` | Workspace annotation index |
+| `spw/contextAtPosition` | Frame path + braid field at cursor |
+| `spw/workspaceManifest/v1` | URI-first workspace roots |
+| `spw/workspaceTemperature` | Hot/warm/cold file tiers |
+| `spw/operatorFrequency` | Sigil histogram for document or sample |
+| `spw/phaseContext` | Spirit-phase of sigil under cursor |
+| `spw/resonance` | Annotation co-occurrence edges from a URI |
+| `spw/registerSnapshot` | Heuristic `$%[]` / `~#` / observable registers |
+| `spw/formSequence` | Parse confluence wrap/reduce form chains |
+| `spw/geometry` | Brace projection + operator rhythm + nesting lessons |
+| `spw/select` | Path-ref selector hits for a document |
+
+### VS Code surface distinctness
+
+Configurable decorations (`spw.surface.*`) paint path refs, annotations, braces, and optional operators so Spw structure stays distinct from host TypeScript/Markdown. Compute/cache knobs: `spw.compute.decorationRefreshMs`, `spw.compute.geometryOnSave`, `spw.cache.probeTtlMs` (client probe cache for geometry/frequency).
+
+Clients: VS Code commands (`Spw: Show Operator Frequency`, form sequence insert/explain, temperature, restart server); Neovim `:SpwOperatorFreq`, `:SpwPhase`, `:SpwFormSeq`, `:SpwTemperature`.
 
 Research only (not registered in canon roots): [polyglot LSP search design](./polyglot-lsp-search.md).
 

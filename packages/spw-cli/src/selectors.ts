@@ -50,6 +50,26 @@ export function listCliSelectorPresetNames(): string[] {
   return Object.keys(CLI_SELECTOR_PRESETS)
 }
 
+const SELECTOR_ALIASES: Record<string, string> = {
+  path: 'pathRefs',
+  pathref: 'pathRefs',
+  pathrefs: 'pathRefs',
+  paths: 'pathRefs',
+  ref: 'refs',
+  references: 'refs',
+  root: 'rootRefs',
+  rootref: 'rootRefs',
+  rootrefs: 'rootRefs',
+  frame: 'ops:frame',
+  frames: 'ops:frame',
+  body: 'ops:body',
+  bodies: 'ops:body',
+  nav: 'navigable',
+  any: 'all',
+  probe: 'probes',
+  domain: 'domains',
+}
+
 export function resolveCliSelector(selectorName: string, expr: string): ResolvedCliSelector {
   if (expr) {
     const parsed = tryParseSelector(expr)
@@ -62,23 +82,44 @@ export function resolveCliSelector(selectorName: string, expr: string): Resolved
     }
   }
 
-  const preset = CLI_SELECTOR_PRESETS[selectorName]
+  const raw = selectorName.trim()
+  const preset = CLI_SELECTOR_PRESETS[raw]
   if (preset) {
     return {
       selector: preset,
-      label: selectorName,
+      label: raw,
     }
   }
 
-  const parsed = tryParseSelector(selectorName)
-  if (parsed) {
+  // Case-insensitive + alias resolution before free-form expr
+  const lower = raw.toLowerCase()
+  const alias = SELECTOR_ALIASES[lower]
+  if (alias && CLI_SELECTOR_PRESETS[alias]) {
     return {
-      selector: parsed,
-      label: selectorName,
+      selector: CLI_SELECTOR_PRESETS[alias]!,
+      label: alias,
+    }
+  }
+  const fuzzyKey = Object.keys(CLI_SELECTOR_PRESETS).find(k => k.toLowerCase() === lower)
+  if (fuzzyKey) {
+    return {
+      selector: CLI_SELECTOR_PRESETS[fuzzyKey]!,
+      label: fuzzyKey,
     }
   }
 
-  throw new Error(`Unknown selector: ${selectorName}`)
+  // Free-form selector expressions must look like selector syntax, not bare words
+  if (/[$@~?^&*!%#.|\[\]]/.test(raw) || raw.includes(':') && !CLI_SELECTOR_PRESETS[raw]) {
+    const parsed = tryParseSelector(raw)
+    if (parsed) {
+      return {
+        selector: parsed,
+        label: raw,
+      }
+    }
+  }
+
+  throw new Error(`Unknown selector: ${raw}`)
 }
 
 export function filterRootRefs(matches: SpwMatch[]): SpwMatch[] {

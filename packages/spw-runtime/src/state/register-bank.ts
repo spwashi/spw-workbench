@@ -19,6 +19,14 @@ import type {
 } from './types'
 import { LIMINALITY_ORDER, PHASE_ORDER, normalizeRegisterPhase } from './types'
 import { $register } from '@spwashi/spw-seed'
+import {
+  planEviction,
+  reportMemoryPressure,
+  stripEarlyFacets,
+  type EvictionPlan,
+  type MemoryBudget,
+  type MemoryPressureReport,
+} from './memory-policy'
 
 const DEFAULT_FOCUS_KEY = '"'
 const HISTORY_KEYS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] as const
@@ -134,6 +142,8 @@ export class RegisterBank {
   private focusKey = $register`"`
   /** Optional substrate for event-driven processing. Opt-in: zero overhead when null. */
   private substrate: Substrate | null = null
+  /** Soft memory budget; null = unlimited (default). */
+  private memoryBudget: MemoryBudget | null = null
 
   /** @spw:axis[timing] - Window size for write cadence resolution. */
   private static readonly FREQUENCY_WINDOW_SIZE = 10
@@ -144,6 +154,168 @@ export class RegisterBank {
     for (const [key, value] of Object.entries(initial)) {
       this.set($register`${key}`, value, { source: 'init', force: true })
     }
+  }
+
+  // ── Memory budget / pressure ───────────────────────────────
+
+  /** Set or clear the soft memory budget (cost units + optional cell cap). */
+  setMemoryBudget(budget: MemoryBudget | null): void {
+    this.memoryBudget = budget
+  }
+
+  getMemoryBudget(): MemoryBudget | null {
+    return this.memoryBudget
+  }
+
+  /** Snapshot pressure vs budget (does not mutate). */
+  memoryPressure(): MemoryPressureReport {
+    return reportMemoryPressure(this.entries, this.memoryBudget, this.focusKey)
+  }
+
+  /**
+   * Plan facet strip + cell drops to meet budget. Dry-run safe.
+   * Uses current budget when `budget` omitted.
+   */
+  planMemoryEviction(budget?: MemoryBudget): EvictionPlan | null {
+    const b = budget ?? this.memoryBudget
+    if (!b) return null
+    return planEviction(this.entries, b, this.focusKey)
+  }
+
+  /**
+   * Enforce memory budget: strip early facets (when evictable), then drop
+   * low-priority unprotected cells. Returns the applied plan (empty if ok).
+   */
+  enforceMemoryBudget(budget?: MemoryBudget): EvictionPlan {
+    const b = budget ?? this.memoryBudget
+    if (!b) {
+      return { facetEvictions: [], cellEvictions: [], projectedCost: 0, projectedCells: this.entries.size }
+    }
+    const plan = planEviction(this.entries, b, this.focusKey)
+    this.applyEvictionPlan(plan)
+    return plan
+  }
+
+  /**
+   * Strip early phase facets on cells whose envelope is `evictable`.
+   * Keeps the latest facet + current phase. Returns keys touched.
+   */
+  evictEarlyFacets(keys?: RegisterId[]): RegisterId[] {
+    const targets = keys ?? [...this.entries.keys()]
+    const touched: RegisterId[] = []
+    for (const key of targets) {
+      const entry = this.entries.get(key)
+      if (!entry?.meta.phases?.evictable) continue
+      if ((entry.meta.phases.facets.length ?? 0) <= 1) continue
+      const { removed, meta } = stripEarlyFacets(entry.meta)
+      if (!removed.length) continue
+      entry.meta = meta as RegisterMeta
+      touched.push(key)
+      this.substrate?.emit({
+        kind: 'write',
+        key,
+        value: entry.value,
+        phase: entry.meta.phases?.current,
+        source: 'evict:facets',
+        at: nowIso(),
+      })
+    }
+    return touched
+  }
+
+  /**
+   * Drop unprotected cells whose liminality is at most `maxLiminality`
+   * and whose lastUsed is older than `minAgeMs` (default 0 = any age).
+   * Sorted by eviction score; capped by `limit`.
+   */
+  purgeColdCells(options: {
+    maxLiminality?: Liminality
+    minAgeMs?: number
+    limit?: number
+  } = {}): RegisterId[] {
+    const maxLim = options.maxLiminality ?? 'local'
+    const maxRank = LIMINALITY_ORDER.indexOf(maxLim)
+    const minAge = options.minAgeMs ?? 0
+    const limit = options.limit ?? 32
+    const now = Date.now()
+    const plan = planEviction(
+      this.entries,
+      {
+        maxCost: 0,
+        maxCells: 0,
+        preferFacetEviction: false,
+        maxEvictLiminality: maxLim,
+      },
+      this.focusKey,
+      now,
+    )
+    const dropped: RegisterId[] = []
+    for (const cell of plan.cellEvictions) {
+      if (dropped.length >= limit) break
+      const entry = this.entries.get(cell.key)
+      if (!entry) continue
+      const rank = LIMINALITY_ORDER.indexOf(entry.meta.liminality ?? 'local')
+      if (rank > maxRank) continue
+      const last = Date.parse(entry.meta.lastUsedAt)
+      if (Number.isFinite(last) && now - last < minAge) continue
+      if (this.deleteCell(cell.key)) dropped.push(cell.key)
+    }
+    return dropped
+  }
+
+  /** Mark phase envelope as facet-evictable under pressure. */
+  setFacetEvictable(key: RegisterId, evictable = true): boolean {
+    const entry = this.entries.get(key)
+    if (!entry?.meta.phases) return false
+    entry.meta.phases = { ...entry.meta.phases, evictable }
+    return true
+  }
+
+  private applyEvictionPlan(plan: EvictionPlan): void {
+    for (const f of plan.facetEvictions) {
+      this.evictEarlyFacets([f.key])
+    }
+    for (const c of plan.cellEvictions) {
+      this.deleteCell(c.key)
+    }
+  }
+
+  /** Remove a cell and its coupling/lens indexes. Protected keys refuse. */
+  deleteCell(key: RegisterId): boolean {
+    if (key === this.focusKey || key === $register`"` || HISTORY_KEYS.includes(key as typeof HISTORY_KEYS[number])) {
+      return false
+    }
+    if (key === $register`@` || key.startsWith('mark:')) return false
+    const entry = this.entries.get(key)
+    if (!entry) return false
+
+    // Uncouple
+    const peers = this.couplingEdges.get(key)
+    if (peers) {
+      for (const peer of peers) {
+        this.couplingEdges.get(peer)?.delete(key)
+        this.updateCoupling(peer)
+      }
+      this.couplingEdges.delete(key)
+    }
+
+    // Lens index cleanup
+    for (const lens of entry.meta.lenses) {
+      this.lensIndex.get(lens)?.delete(key)
+    }
+
+    this.entries.delete(key)
+    this.writeTimestamps.delete(key)
+    this.refreshCouplingDensities()
+
+    this.substrate?.emit({
+      kind: 'write',
+      key,
+      value: undefined,
+      source: 'evict:cell',
+      at: nowIso(),
+    })
+    return true
   }
 
   /** Attach a substrate for event-driven processing. */
@@ -309,7 +481,17 @@ export class RegisterBank {
 
   get(key: RegisterId = this.focusKey): RuntimeValue {
     const entry = this.ensureEntry(key)
+    // LRU touch — guides cold purge under memory pressure
+    entry.meta.lastUsedAt = nowIso()
     return cloneRuntimeValue(entry.value)
+  }
+
+  /** Touch lastUsedAt without reading value (working-set pin). */
+  touch(key: RegisterId): boolean {
+    const entry = this.entries.get(key)
+    if (!entry) return false
+    entry.meta.lastUsedAt = nowIso()
+    return true
   }
 
   extract(value: RuntimeValue, source = 'extract'): boolean {

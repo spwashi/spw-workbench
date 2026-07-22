@@ -21,6 +21,14 @@ import {
   type MutationRunResult,
 } from './mutation-automata'
 import type { MutationVector } from './differential'
+import {
+  braceProjectionDelta,
+  classifyMutationUsefulness,
+  extractBraceProjection,
+  type BraceProjection,
+  type BraceProjectionDelta,
+  type MutationUsefulness,
+} from './brace-projection'
 
 export type ParseHealth = 'complete_structured' | 'recovered' | 'invalid'
 
@@ -46,6 +54,8 @@ export interface TopographySnapshot {
   maxPairedContainerDepth: number | null
   recognizedPairedContainers: PairedContainerCounts | null
   explicitCoupleOperations: number | null
+  /** Declared brace semantic surface (kinds, medials, channels). */
+  braceProjection: BraceProjection
   reasons: string[]
   sourceLength: number
 }
@@ -64,10 +74,14 @@ export interface TopographyDelta {
   coupleOpsDelta: number | null
   containerDeltas: PairedContainerCounts | null
   sourceLengthDelta: number
-  /** True when structure metrics moved (depth or container counts) */
+  /** True when structure metrics moved (depth, containers, brace projection) */
   structureMoved: boolean
-  /** True when only layout-ish surface metrics moved (tokens/length) and structure stable */
+  /** True when only layout-ish surface metrics moved and brace projection is stable */
   layoutOnlyCandidate: boolean
+  /** Brace projection equality + kind/channel/placement findings */
+  brace: BraceProjectionDelta
+  /** Agent-oriented next action from this delta (set when mutation context available) */
+  usefulness?: MutationUsefulness
 }
 
 export interface TopographyMutationProbe {
@@ -185,6 +199,7 @@ export function snapshotTopography(source: string): TopographySnapshot {
   const recognizedPairedContainers = ast ? emptyContainers() : null
   let explicitCoupleOperations: number | null = ast ? 0 : null
   let maxPairedContainerDepth: number | null = ast ? 0 : null
+  const braceProjection = extractBraceProjection(ast ?? null)
 
   if (ast && recognizedPairedContainers) {
     walkAST(ast, (node, path) => {
@@ -212,6 +227,7 @@ export function snapshotTopography(source: string): TopographySnapshot {
     parserSuccess: output.success,
     proseFallback: Boolean(proseFallback),
     lexemesClosed,
+    braceProjection,
     tokenCount: tokens.filter(t => t.type !== 'EOF').length,
     significantTokens,
     maxAstDepth: ast ? getMaxDepth(ast) : null,
@@ -261,11 +277,14 @@ export function topographyDelta(
       ? after.explicitCoupleOperations - before.explicitCoupleOperations
       : null
 
+  const brace = braceProjectionDelta(before.braceProjection, after.braceProjection)
+
   const structureMoved =
     containerMoved ||
     (maxAstDepthDelta !== null && maxAstDepthDelta !== 0) ||
     (maxPairedContainerDepthDelta !== null && maxPairedContainerDepthDelta !== 0) ||
-    (coupleOpsDelta !== null && coupleOpsDelta !== 0)
+    (coupleOpsDelta !== null && coupleOpsDelta !== 0) ||
+    !brace.equal
 
   const surfaceMoved =
     before.tokenCount !== after.tokenCount ||
@@ -290,10 +309,12 @@ export function topographyDelta(
     structureMoved,
     layoutOnlyCandidate:
       !structureMoved &&
+      brace.equal &&
       !parseHealthChanged &&
       !healthRegressed &&
       surfaceMoved &&
       before.parseHealth === after.parseHealth,
+    brace,
   }
 }
 
@@ -315,8 +336,16 @@ function findingsFrom(
     `topo health ${d.parseHealthBefore} → ${d.parseHealthAfter}` +
       (d.healthRegressed ? ' (REGRESSED)' : d.parseHealthChanged ? ' (changed)' : ' (stable)'),
   )
+  if (d.brace.equal) {
+    lines.push('brace projection: stable (kinds/placement/channels)')
+  } else {
+    lines.push(`brace projection: DRIFT severity=${d.brace.severity}`)
+    for (const f of d.brace.findings.slice(0, 4)) {
+      lines.push(`  brace · ${f}`)
+    }
+  }
   if (d.layoutOnlyCandidate) {
-    lines.push('topo layout-only candidate: structure stable, surface metrics moved')
+    lines.push('topo layout-only candidate: brace+structure stable, surface metrics moved')
   }
   if (d.structureMoved) {
     lines.push(
@@ -329,11 +358,29 @@ function findingsFrom(
       .map(([k, v]) => `${k}${v > 0 ? '+' : ''}${v}`)
     if (parts.length) lines.push(`topo containers: ${parts.join(' ')}`)
   }
+  const use = classifyMutationUsefulness({
+    changed: mutation.changed,
+    healthRegressed: d.healthRegressed,
+    parseHealthy:
+      d.parseHealthBefore === 'complete_structured' &&
+      d.parseHealthAfter === 'complete_structured',
+    braceEqual: d.brace.equal,
+    structureMoved: d.structureMoved,
+    layoutOnlyCandidate: d.layoutOnlyCandidate,
+    layoutVectorPositive: mutation.vector.layout_delta > 0,
+    nonLayoutVectorAxes:
+      mutation.vector.token_delta !== 0 ||
+      mutation.vector.structure_delta !== 0 ||
+      mutation.vector.label_delta !== 0 ||
+      mutation.vector.reference_delta !== 0 ||
+      mutation.vector.script_delta !== 0,
+  })
+  lines.push(`use: ${use.class} — ${use.advice}`)
   if (!mutation.changed && mutation.vector.edit_count === 0) {
     lines.push('fixed point: no planned edits')
   }
   if (mutation.requiresWriteAuthority) {
-    lines.push('S2 write authority required to persist')
+    lines.push('effect.l2.workspace write authority required to persist')
   }
   // Keep delta (applied) vs planned when dry-run differs
   if (mutation.dryRun && plannedDelta.sourceLengthDelta !== delta.sourceLengthDelta) {
@@ -345,7 +392,7 @@ function findingsFrom(
 /**
  * Run mutation automata and probe topography before / after (and planned).
  *
- * Default config is dry-run layout_canonical so CLI pulses are S0-safe.
+ * Default config is dry-run layout_canonical so CLI pulses are effect.l0.measure-safe.
  */
 export function probeMutationTopography(
   source: string,
@@ -361,6 +408,25 @@ export function probeMutationTopography(
   const after = snapshotTopography(mutation.source)
   const delta = topographyDelta(before, after)
   const plannedDelta = topographyDelta(before, plannedAfter)
+  const usefulness = classifyMutationUsefulness({
+    changed: mutation.changed,
+    healthRegressed: plannedDelta.healthRegressed,
+    parseHealthy:
+      plannedDelta.parseHealthBefore === 'complete_structured' &&
+      plannedDelta.parseHealthAfter === 'complete_structured',
+    braceEqual: plannedDelta.brace.equal,
+    structureMoved: plannedDelta.structureMoved,
+    layoutOnlyCandidate: plannedDelta.layoutOnlyCandidate,
+    layoutVectorPositive: mutation.vector.layout_delta > 0,
+    nonLayoutVectorAxes:
+      mutation.vector.token_delta !== 0 ||
+      mutation.vector.structure_delta !== 0 ||
+      mutation.vector.label_delta !== 0 ||
+      mutation.vector.reference_delta !== 0 ||
+      mutation.vector.script_delta !== 0,
+  })
+  plannedDelta.usefulness = usefulness
+  delta.usefulness = usefulness
 
   return {
     mutation,

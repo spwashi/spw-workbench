@@ -1,7 +1,9 @@
-export { parseCommand, parseQueryArgs, parseSelectArgs } from './args'
+export { parseCommand, parseQueryArgs, parseSelectArgs, parseSkimArgs } from './args'
+export { printBeatHelp, runSpwBeatCli } from './beat'
 export { runSpwDevCli } from './dev'
 export { inspectDoctorTarget, printDoctorHelp, runSpwDoctorCli } from './doctor'
-export { runSpwFormatCli } from './format'
+export { printSpwFormatHelp, runSpwFormatCli } from './format'
+export { printMutateHelp, runSpwMutateCli } from './mutate'
 export {
   decidePulseWriteStatus,
   isAcceptedPulseTerminalState,
@@ -22,12 +24,19 @@ export {
   type SpwPulseRunOptions,
 } from './pulse'
 export { printInitUsage, runSpwInitCli } from './init'
-export { runSpwLsCli } from './ls'
-export { runSpwMemCli } from './mem'
-export { runSpwMountCli } from './mount'
-export { runQueryCli } from './query'
+export { printLsHelp, runSpwLsCli } from './ls'
+export { printMemHelp, runSpwMemCli } from './mem'
+export { printMountHelp, runSpwMountCli } from './mount'
+export { printQueryHelp, runQueryCli } from './query'
 export { printRootsHelp, runSpwRootsCli } from './roots'
-export { runSpwSelectCli } from './select'
+export { runSpwSelectCli, printSelectUsage } from './select'
+export { runSpwSkimCli, printSkimHelp } from './skim'
+export { runSpwInventCli, printInventHelp } from './inventory'
+export { runSpwFormulaCli, printFormulaHelp } from './formula'
+export { runSpwAnalyzeCli, printAnalyzeHelp } from './analyze'
+export { runSpwMapCli, printMapHelp } from './map'
+export { runSpwGeometryCli, printGeometryHelp } from './geometry'
+export { printGeometryHelp, runSpwGeometryCli } from './geometry'
 export {
   emitPackFromFile,
   emitPackFromSource,

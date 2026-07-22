@@ -2,8 +2,8 @@
  * Source differentials — ordered text edits with strata and mutation vectors.
  *
  * A differential is a plan from `before` → `after` under a named rule and
- * stratum. Applying edits is pure S1; workspace write authority is S2 and
- * lives outside this module.
+ * stratum. Applying edits is pure effect.l1.memory; workspace write authority
+ * is effect.l2.workspace and lives outside this module.
  *
  * @see docs/theory/spw/operational-topography.spw (layout_differential, mutation_profile)
  * @see docs/theory/spw/operational-devices.spw (semantic differentials)
@@ -17,14 +17,25 @@ export type DifferentialStratum =
   | 'operation'
   | 'script'
 
-/** Effect grade for planned mutations (S0 read … S3 external). */
-export type EffectGrade = 'S0' | 'S1' | 'S2' | 'S3'
+/**
+ * Effect ceiling for planned mutations (transport + kernel share these ids).
+ */
+export type EffectGrade =
+  | 'effect.l0.measure'
+  | 'effect.l1.memory'
+  | 'effect.l2.workspace'
+  | 'effect.l3.external'
+
+export const EFFECT_L0_MEASURE = 'effect.l0.measure' as const
+export const EFFECT_L1_MEMORY = 'effect.l1.memory' as const
+export const EFFECT_L2_WORKSPACE = 'effect.l2.workspace' as const
+export const EFFECT_L3_EXTERNAL = 'effect.l3.external' as const
 
 export const EFFECT_GRADE_ORDER: Record<EffectGrade, number> = {
-  S0: 0,
-  S1: 1,
-  S2: 2,
-  S3: 3,
+  'effect.l0.measure': 0,
+  'effect.l1.memory': 1,
+  'effect.l2.workspace': 2,
+  'effect.l3.external': 3,
 }
 
 export function effectGradeAtMost(grade: EffectGrade, ceiling: EffectGrade): boolean {

@@ -1,6 +1,6 @@
 # Spw Language Support for VS Code
 
-This preview extension is a thin client over the bundled `spw-lsp` server. It provides syntax highlighting, snippets, standard language-server editing features, Concepts and Workspace views, and `Spw: Navigate Roots and Landmarks`.
+This preview extension is a thin client over the bundled `spw-lsp` server. It provides syntax highlighting, snippets, standard language-server editing features, Concepts and Workspace views, `Spw: Navigate Roots and Landmarks`, and probe commands backed by custom `spw/*` methods (operator frequency, phase context, form sequences, workspace temperature, restart server).
 
 Workspace roots come from the closed, URI-first `spw/workspaceManifest/v1` response. The client preserves each root's URI, role, kind, and evidence source; it does not parse manifests, infer fallback paths, or reconstruct local filesystem authority. Invalid or unreadable authority appears as blocked diagnostics in the Workspace view.
 

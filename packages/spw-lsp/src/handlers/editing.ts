@@ -98,7 +98,11 @@ export async function completion(params: CompletionParams, deps: HandlerDeps): P
                     { label: '~[N]', insert: '~[${1:N}]' },
                 ],
                 '&': [
+                    { label: '& => {&}  (wrap confluence)', insert: '& => {&}' },
+                    { label: '& => {&} => {&[#label]}', insert: '& => {&} => {&[#${1:label}]}' },
+                    { label: '{&<#tag>_label} membrane', insert: '{&<#${1:tag}>_${2:label}}' },
                     { label: '&[label]', insert: '&[${1:label}]' },
+                    { label: '{&} wrap body', insert: '{&}' },
                     { label: '&name', insert: '&${1:name}' },
                 ],
                 '%': [
@@ -132,7 +136,30 @@ export async function completion(params: CompletionParams, deps: HandlerDeps): P
         }
     }
 
-    // 4. File-system completion for ~"../" and @root/
+    // 4. Template slot completion after $ or ${
+    const slotPrefix = /\$\{([A-Za-z_][\w]*)$/.exec(prefix) || /(?:^|[^\w$])\$([A-Za-z][\w]*)$/.exec(prefix)
+    if (slotPrefix) {
+        const partial = (slotPrefix[1] ?? '').toLowerCase()
+        const commonSlots = [
+            'saga_id', 'kind', 'profile', 'grade', 'objective',
+            'style_id', 'subject_id', 'genre_id', 'organ', 'host',
+            'title', 'claim', 'label', 'coordinate', 'from', 'to',
+        ]
+        for (const name of commonSlots) {
+            if (partial && !name.startsWith(partial)) continue
+            const braced = prefix.includes('${')
+            items.push({
+                label: braced ? `\${${name}}` : `$${name}`,
+                kind: CK.Variable,
+                detail: 'template slot (expand ≠ mutate)',
+                insertText: braced ? `${name}}` : name,
+                sortText: `0-${name}`,
+            })
+        }
+        if (items.length) return items
+    }
+
+    // 5. File-system completion for ~"../" and @root/
     const fsMatch = /(?:~"((?:\.\.?\/)+)|@([A-Za-z_]\w*)\/)([^"]*)$/.exec(prefix)
     if (fsMatch) {
         const docDir = path.dirname(deps.pathFromUri(uri) || deps.workspaceRoot)
