@@ -11,6 +11,7 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { runMutationAutomata } from '@spwashi/spw-seed'
+import { applyBiasRewrites, biasRewriteRules } from './bias-apply'
 import { collectSpwFiles } from './fs-walk'
 import { printHelpPage } from './help'
 import { readStdin } from './stdio'
@@ -25,6 +26,10 @@ interface MutateCliArgs {
   dryRun: boolean
   stdin: boolean
   asLabel: string
+  /** Path to a bias surface whose edges drive a rewrite (the `--bias` mode). */
+  biasPatch: string | null
+  /** Bias mode is plan-only unless --write is given (it is corpus-wide find/replace). */
+  write: boolean
 }
 
 export async function runSpwMutateCli(argv: string[] = process.argv): Promise<void> {
@@ -39,6 +44,11 @@ export async function runSpwMutateCli(argv: string[] = process.argv): Promise<vo
 
   if (args.stdin) {
     await runStdinMutate(args)
+    return
+  }
+
+  if (args.biasPatch) {
+    await runBiasMutate(args)
     return
   }
 
@@ -119,6 +129,54 @@ export async function runSpwMutateCli(argv: string[] = process.argv): Promise<vo
   }
 }
 
+/**
+ * Rewrite consumer: read a bias surface as an ordered patch. Each `=@from{ @to }`
+ * edge is a rewrite rule (boon → from→to, bane → the revert). Plan-only unless
+ * --write is given — the rewrite is a corpus-wide textual find/replace.
+ */
+async function runBiasMutate(args: MutateCliArgs): Promise<void> {
+  const patchSource = await fs.readFile(path.resolve(args.biasPatch!), 'utf8')
+  const rules = biasRewriteRules(patchSource)
+
+  if (rules.length === 0) {
+    console.error(`spw mutate: no rewrite edges (=@from{ @to }) in ${args.biasPatch}`)
+    process.exitCode = 1
+    return
+  }
+
+  if (args.targets.length === 0) {
+    console.error('spw mutate --bias: name at least one target file/dir to rewrite')
+    process.exitCode = 1
+    return
+  }
+
+  const workspace = await tryDiscoverSpwWorkspace()
+  const files = await resolveTargets(args.targets, workspace)
+  const applied = !args.write ? 'plan' : 'write'
+  const results: Array<Record<string, unknown>> = []
+  let touched = 0
+
+  for (const file of files) {
+    const before = await fs.readFile(file, 'utf8')
+    const { text, hits } = applyBiasRewrites(before, rules)
+    const rel = relLabel(file, workspace)
+    if (hits === 0) {
+      if (!args.quiet && !args.json) console.log(`= ${rel}  (no match)`)
+      continue
+    }
+    touched += 1
+    if (args.write) await fs.writeFile(file, text, 'utf8')
+    if (args.json) results.push({ file: rel, hits, applied })
+    else console.log(`~ ${rel}  ${applied === 'write' ? 'rewrote' : 'would rewrite'} hits=${hits}`)
+  }
+
+  if (args.json) {
+    console.log(JSON.stringify({ command: 'mutate', mode: `bias:${applied}`, rules: rules.length, files: files.length, touched, results }, null, 2))
+  } else if (!args.quiet) {
+    console.error(`spw-mutate: bias rules=${rules.length} files=${files.length} ${applied === 'write' ? 'rewrote' : 'would-rewrite'}=${touched}${args.write ? '' : '  (plan-only; pass --write to apply)'}`)
+  }
+}
+
 async function runStdinMutate(args: MutateCliArgs): Promise<void> {
   const source = await readStdin()
   if (!source && process.stdin.isTTY) {
@@ -177,11 +235,25 @@ function parseMutateArgs(args: string[]): MutateCliArgs {
   let dryRun = false
   let stdin = false
   let asLabel = '<stdin>'
+  let biasPatch: string | null = null
+  let write = false
 
   for (let i = 0; i < args.length; i += 1) {
     const arg = args[i]!
     if (arg === '--help' || arg === '-h') {
       help = true
+      continue
+    }
+    if (arg === '--bias') {
+      biasPatch = args[++i] ?? null
+      continue
+    }
+    if (arg.startsWith('--bias=')) {
+      biasPatch = arg.slice('--bias='.length)
+      continue
+    }
+    if (arg === '--write') {
+      write = true
       continue
     }
     if (arg === '--profile' || arg === '-p') {
@@ -222,7 +294,7 @@ function parseMutateArgs(args: string[]): MutateCliArgs {
     }
   }
 
-  return { targets, profile, quiet, help, json, dryRun, stdin, asLabel }
+  return { targets, profile, quiet, help, json, dryRun, stdin, asLabel, biasPatch, write }
 }
 
 export function printMutateHelp(): void {
@@ -231,6 +303,7 @@ export function printMutateHelp(): void {
     usage: [
       'spw mutate <target...> [--profile layout_canonical] [--dry-run] [--json] [--quiet]',
       'spw mutate --stdin [--as buffer.spw] [--profile layout_canonical] [--json]',
+      'spw mutate --bias <patch.spw> <target...> [--write]   (bias-edge rewrite; plan-only unless --write)',
     ],
     sections: [
       {
@@ -251,6 +324,8 @@ export function printMutateHelp(): void {
           '--as <label>      Logical name for stdin buffer in reports',
           '--json            Machine envelope for hosts',
           '--quiet / -q      Suppress per-file noise',
+          '--bias <file>     Read a bias surface as an ordered patch (=@from{ @to }); boon apply / bane revert',
+          '--write           With --bias: apply the rewrite (default is plan-only)',
         ],
       },
       {
