@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { crawlWorkspace, type CrawlInput } from './atlas'
+import { renderAtlasHtml } from './atlas-html'
 
 const META = { at: '2026-07-23T00:00:00.000Z', ref: 'testref' }
 
@@ -74,5 +75,29 @@ describe('crawlWorkspace — a workspace measured', () => {
     expect(snap.at).toBe(META.at)
     expect(snap.ref).toBe(META.ref)
     expect(snap.surfaces).toBe(1)
+  })
+
+  it('records every surface path so a diff can name what came and went', () => {
+    const snap = crawl({ 'b.spw': '#>b\n', 'a.spw': '#>a\n' })
+    expect(snap.paths).toEqual(['a.spw', 'b.spw'])
+  })
+})
+
+describe('renderAtlasHtml — the visual atlas', () => {
+  it('renders a self-contained page carrying the snapshot\'s figures', () => {
+    const snap = crawlWorkspace([
+      { path: 'canon/reg.spw', source: '#>anchor\n#:layer\n^["x"]{\n}' },
+      { path: 'a.spw', source: '=r{ ~"./canon/reg.spw" }\n' },
+    ], META)
+    const html = renderAtlasHtml(snap)
+
+    expect(html.startsWith('<!doctype html>')).toBe(true)
+    expect(html).toContain(`${snap.surfaces}`)
+    expect(html).toContain('Workspace Atlas')
+    // Self-contained: no external asset can be blocked or fail to load.
+    expect(html).not.toMatch(/https?:\/\//)
+    // Both themes are defined, not just one.
+    expect(html).toContain('prefers-color-scheme')
+    expect(html).toContain('data-theme="light"')
   })
 })

@@ -16,8 +16,9 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { execSync } from 'node:child_process'
-import { parse, particleMix, deixisTable, spwq, type ParticleMix } from '@spwashi/spw-seed'
+import { tokenize, type ParticleMix, type Token } from '@spwashi/spw-seed'
 import { collectSpwFiles } from './fs-walk'
+import { renderAtlasHtml } from './atlas-html'
 import { resolveWorkspacePath, tryDiscoverSpwWorkspace, type SpwWorkspace } from './workspace'
 
 /** One surface, addressed the way the rest of the workspace addresses it. */
@@ -53,6 +54,8 @@ export interface WorkspaceSnapshot {
   hubs: HubEntry[]
   orphans: string[]
   dangling: DanglingRef[]
+  /** Every surface path, sorted — the roster a diff compares for add/remove. */
+  paths: string[]
 }
 
 const VOLATILE_SHARE = 0.6
@@ -82,6 +85,22 @@ function nameGroup(anchor: string): string {
 }
 
 /**
+ * Drain the lexer to its token list. The atlas reads a surface at the token
+ * level — particles and path refs are both visible there — which parses ~20×
+ * faster than building the tree it does not need.
+ */
+function lex(source: string): Token[] {
+  try {
+    const gen = tokenize(source)
+    let result = gen.next()
+    while (!result.done) result = gen.next()
+    return result.value ?? []
+  } catch {
+    return []
+  }
+}
+
+/**
  * Measure a set of surfaces. Pure over its input so a snapshot is reproducible
  * and two snapshots — now and earlier — are directly comparable.
  */
@@ -98,40 +117,45 @@ export function crawlWorkspace(
   const known = new Set(inputs.map((i) => i.path))
   for (const input of inputs) inbound.set(input.path, new Set())
 
+  const ASPECT_MARK = /~#[A-Za-z_]/g
   for (const input of inputs) {
-    const ast = parse(input.source).ast
-    if (!ast) continue
+    const tokens = lex(input.source)
 
     const region = regionOf(input.path)
     const bucket = regions.get(region) ?? { deixis: 0, case: 0, mood: 0, aspect: 0, files: 0 }
-    const mix = particleMix(ast, input.source)
-    bucket.deixis += mix.deixis
-    bucket.case += mix.case
-    bucket.mood += mix.mood
-    bucket.aspect += mix.aspect
+    const anchors = new Set<string>()
+    const baseDir = path.dirname(input.path)
+
+    for (let i = 0; i < tokens.length; i += 1) {
+      const tok = tokens[i]!
+      if (tok.type === 'PARTICLE') {
+        // `#>name` / `#:name` / `#!name`; kind is the aim, value the whole mark.
+        if (tok.kind === '>') { bucket.deixis += 1; anchors.add(tok.value.slice(2)) }
+        else if (tok.kind === ':') bucket.case += 1
+        else if (tok.kind === '!') bucket.mood += 1
+        continue
+      }
+      // A quoted path ref lexes as `~` then a STRING; `~#aspect` is its own
+      // ANNOTATION token and never trips this.
+      if (tok.type === 'OPERATOR' && tok.kind === '~' && tokens[i + 1]?.type === 'STRING') {
+        const { file, fragment } = splitTarget(tokens[i + 1]!.value)
+        if (!file || file.startsWith('@')) continue
+        const resolved = path.normalize(path.join(baseDir, file.replace(/^\.\//, '')))
+        const target = known.has(resolved)
+          ? resolved
+          : inputs.find((f) => f.path.endsWith(`/${path.basename(resolved)}`))?.path ?? null
+        if (target && target !== input.path) inbound.get(target)!.add(input.path)
+        if (fragment) fragTargets.push({ from: input.path, file: resolved, fragment })
+      }
+    }
+
+    bucket.aspect += (input.source.match(ASPECT_MARK) ?? []).length
     bucket.files += 1
     regions.set(region, bucket)
 
-    const anchors = new Set(deixisTable(ast).keys())
     anchorsInFile.set(input.path, anchors)
     for (const anchor of anchors) {
       ;(anchorHome.get(anchor) ?? anchorHome.set(anchor, []).get(anchor)!).push(input.path)
-    }
-
-    const baseDir = path.dirname(input.path)
-    for (const hit of spwq.fromSource(input.source, { nodeType: 'PathRef' })) {
-      const raw = (hit as { value?: string; node?: { path?: { token?: { value?: string } } } })
-      const rawValue = raw.value ?? raw.node?.path?.token?.value ?? ''
-      const { file, fragment } = splitTarget(rawValue)
-      if (!file || file.startsWith('@')) continue
-
-      const resolved = path.normalize(path.join(baseDir, file.replace(/^\.\//, '')))
-      const target = known.has(resolved)
-        ? resolved
-        : inputs.find((i) => i.path.endsWith(`/${path.basename(resolved)}`))?.path ?? null
-
-      if (target && target !== input.path) inbound.get(target)!.add(input.path)
-      if (fragment) fragTargets.push({ from: input.path, file: resolved, fragment })
     }
   }
 
@@ -190,7 +214,62 @@ export function crawlWorkspace(
     hubs,
     orphans: orphans.slice(0, 25),
     dangling,
+    paths: inputs.map((i) => i.path).sort(),
   }
+}
+
+// ── Reading a git revision ──────────────────────────────────────
+
+const SKIP = (rel: string): boolean => rel.includes('_archive/') || rel.includes('templates/init/')
+
+/**
+ * Read every `.spw` surface as it stood at a git revision.
+ *
+ * The crawl is pure over the files it's given, so a snapshot at any commit is
+ * comparable to any other. Blobs are read in one `cat-file --batch` process
+ * rather than a `git show` per file — the difference between one subprocess and
+ * a few hundred. Paths that share content share a blob, so entries are zipped
+ * to the batch output by order, which stays aligned even then.
+ */
+function crawlAtRef(ref: string, cwd: string): WorkspaceSnapshot {
+  // No `*.spw` pathspec: a git glob does not cross `/`, so it would miss every
+  // nested surface. List the whole tree and filter by extension in the loop.
+  const listing = execSync(`git ls-tree -r ${ref}`, { cwd, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 })
+  const entries: Array<{ path: string; sha: string }> = []
+  for (const line of listing.split('\n')) {
+    // <mode> blob <sha>\t<path>
+    const m = line.match(/^\S+ blob (\S+)\t(.+)$/)
+    if (!m) continue
+    const rel = m[2]!
+    if (!rel.endsWith('.spw') || SKIP(rel)) continue
+    entries.push({ path: rel, sha: m[1]! })
+  }
+  if (entries.length === 0) {
+    throw new Error(`no .spw surfaces found at ${ref}`)
+  }
+
+  const out = execSync('git cat-file --batch', {
+    cwd,
+    input: entries.map((e) => e.sha).join('\n') + '\n',
+    maxBuffer: 256 * 1024 * 1024,
+  })
+
+  const inputs: CrawlInput[] = []
+  let p = 0
+  for (const entry of entries) {
+    const nl = out.indexOf(0x0a, p)
+    if (nl < 0) break
+    // header: <sha> blob <size>
+    const header = out.toString('utf8', p, nl)
+    const size = Number(header.split(' ')[2] ?? '0')
+    const start = nl + 1
+    inputs.push({ path: entry.path, source: out.toString('utf8', start, start + size) })
+    p = start + size + 1 // skip content and its trailing newline
+  }
+
+  const at = execSync(`git show -s --format=%cI ${ref}`, { cwd, encoding: 'utf8' }).trim()
+  const shortRef = execSync(`git rev-parse --short ${ref}`, { cwd, encoding: 'utf8' }).trim()
+  return crawlWorkspace(inputs.sort((a, b) => a.path.localeCompare(b.path)), { at, ref: shortRef })
 }
 
 // ── CLI ─────────────────────────────────────────────────────────
@@ -203,6 +282,11 @@ interface AtlasArgs {
   save: boolean
   trend: boolean
   help: boolean
+  /** Diff mode: crawl `from` (and `to`, default working tree) and show deltas. */
+  from: string | null
+  to: string | null
+  /** HTML mode: write the visual atlas to this path (empty string = default). */
+  html: string | null
 }
 
 function currentRef(): string {
@@ -223,14 +307,28 @@ export async function runSpwAtlasCli(argv: string[] = process.argv): Promise<voi
   }
 
   const workspace = await tryDiscoverSpwWorkspace()
+  const base = workspace?.consumerRoot ?? process.cwd()
 
   if (args.trend) {
     await showTrend(workspace)
     return
   }
 
+  if (args.from !== null) {
+    await diffRevisions(args.from, args.to, args.targets, workspace, base)
+    return
+  }
+
   const inputs = await collectInputs(args.targets, workspace)
   const snapshot = crawlWorkspace(inputs, { at: new Date().toISOString(), ref: currentRef() })
+
+  if (args.html !== null) {
+    const target = args.html || path.join(base, '.spw', 'gen', 'atlas.html')
+    await fs.mkdir(path.dirname(target), { recursive: true })
+    await fs.writeFile(target, renderAtlasHtml(snapshot), 'utf8')
+    console.log(`spw atlas: wrote ${path.relative(base, target)} (${snapshot.surfaces} surfaces)`)
+    return
+  }
 
   if (args.save) {
     await saveSnapshot(snapshot, workspace)
@@ -247,19 +345,37 @@ export async function runSpwAtlasCli(argv: string[] = process.argv): Promise<voi
 }
 
 async function collectInputs(targets: string[], workspace: SpwWorkspace | null): Promise<CrawlInput[]> {
-  const roots = targets.length > 0 ? targets : ['.']
   const base = workspace?.consumerRoot ?? process.cwd()
+
+  // No target: the whole tracked repository, so a working-tree crawl scopes the
+  // same way as a git-revision crawl (git ls-tree) and a diff compares like for
+  // like. Untracked scratch is not development, so it stays out.
+  if (targets.length === 0) return collectTrackedInputs(base)
+
   const seen = new Set<string>()
   const inputs: CrawlInput[] = []
-
-  for (const root of roots) {
+  for (const root of targets) {
     const resolved = workspace ? await resolveWorkspacePath(workspace, root) : path.resolve(root)
     for (const file of await collectSpwFiles(resolved)) {
       const rel = path.relative(base, file)
-      // The archive and init templates are noise in a map of the live workspace.
-      if (rel.includes('_archive/') || rel.includes('templates/init/') || seen.has(rel)) continue
+      if (SKIP(rel) || seen.has(rel)) continue
       seen.add(rel)
       inputs.push({ path: rel, source: await fs.readFile(file, 'utf8') })
+    }
+  }
+  return inputs.sort((a, b) => a.path.localeCompare(b.path))
+}
+
+/** Every tracked `.spw` surface, read from the working tree. */
+async function collectTrackedInputs(base: string): Promise<CrawlInput[]> {
+  const listing = execSync('git ls-files', { cwd: base, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 })
+  const inputs: CrawlInput[] = []
+  for (const rel of listing.split('\n')) {
+    if (!rel.endsWith('.spw') || SKIP(rel)) continue
+    try {
+      inputs.push({ path: rel, source: await fs.readFile(path.join(base, rel), 'utf8') })
+    } catch {
+      // listed but gone from disk — skip
     }
   }
   return inputs.sort((a, b) => a.path.localeCompare(b.path))
@@ -371,13 +487,108 @@ function printSummary(s: WorkspaceSnapshot): void {
   }
 }
 
+/**
+ * Crawl two revisions and show how the workspace's properties moved between
+ * them. `to` defaults to the working tree, so `--from HEAD~20` reads as "what
+ * has changed since twenty commits ago".
+ */
+async function diffRevisions(
+  from: string,
+  to: string | null,
+  targets: string[],
+  workspace: SpwWorkspace | null,
+  base: string,
+): Promise<void> {
+  let before: WorkspaceSnapshot
+  let after: WorkspaceSnapshot
+  try {
+    before = crawlAtRef(from, base)
+    after = to ? crawlAtRef(to, base) : await crawlWorkingTree(targets, workspace)
+  } catch (error) {
+    console.error(`spw atlas: ${(error as Error).message}`)
+    process.exitCode = 1
+    return
+  }
+
+  const toLabel = to ?? 'working tree'
+  console.log(`spw atlas diff — ${before.ref} → ${after.ref === before.ref ? toLabel : after.ref}\n`)
+
+  const metric = (label: string, a: number, b: number): void => {
+    const d = b - a
+    const arrow = d > 0 ? `▲ +${d}` : d < 0 ? `▼ ${d}` : '  ='
+    console.log(`  ${label.padEnd(12)} ${String(a).padStart(5)} → ${String(b).padStart(5)}   ${arrow}`)
+  }
+  metric('surfaces', before.surfaces, after.surfaces)
+  metric('anchors', before.anchors, after.anchors)
+  metric('edges', before.edges, after.edges)
+  metric('adrift', before.orphanCount, after.orphanCount)
+  metric('dangling', before.danglingRefs, after.danglingRefs)
+
+  // Surfaces that came and went.
+  const added = diffSets(after.paths, before.paths)
+  const removed = diffSets(before.paths, after.paths)
+  if (added.length > 0) {
+    console.log(`\n  + ${added.length} surface${added.length === 1 ? '' : 's'} added`)
+    for (const p of added.slice(0, 8)) console.log(`      ${p}`)
+  }
+  if (removed.length > 0) {
+    console.log(`\n  − ${removed.length} surface${removed.length === 1 ? '' : 's'} removed`)
+    for (const p of removed.slice(0, 8)) console.log(`      ${p}`)
+  }
+
+  // Regions whose volatility crossed a threshold.
+  const beforeVol = new Map(before.regions.map((r) => [r.region, r]))
+  const shifts: string[] = []
+  for (const r of after.regions) {
+    const b = beforeVol.get(r.region)
+    if (b && b.volatility !== r.volatility) {
+      shifts.push(`      ${r.region}: ${b.volatility} → ${r.volatility}  (${Math.round(b.aspectShare * 100)}% → ${Math.round(r.aspectShare * 100)}% aspect)`)
+    }
+  }
+  if (shifts.length > 0) {
+    console.log(`\n  ~ region volatility shifts`)
+    shifts.forEach((s) => console.log(s))
+  }
+
+  // Newly-broken and newly-fixed deep links.
+  const key = (d: DanglingRef): string => `${d.from}#${d.fragment}`
+  const beforeDang = new Set(before.dangling.map(key))
+  const afterDang = new Set(after.dangling.map(key))
+  const newlyBroken = after.dangling.filter((d) => !beforeDang.has(key(d)))
+  const newlyFixed = before.dangling.filter((d) => !afterDang.has(key(d)))
+  if (newlyBroken.length > 0) {
+    console.log(`\n  ! ${newlyBroken.length} deep-link${newlyBroken.length === 1 ? '' : 's'} newly dangling`)
+    for (const d of newlyBroken.slice(0, 6)) console.log(`      ${d.from} → #${d.fragment}`)
+  }
+  if (newlyFixed.length > 0) {
+    console.log(`\n  ✓ ${newlyFixed.length} deep-link${newlyFixed.length === 1 ? '' : 's'} resolved`)
+  }
+}
+
+function diffSets(a: string[], b: string[]): string[] {
+  const bset = new Set(b)
+  return a.filter((x) => !bset.has(x)).sort()
+}
+
+async function crawlWorkingTree(targets: string[], workspace: SpwWorkspace | null): Promise<WorkspaceSnapshot> {
+  const inputs = await collectInputs(targets, workspace)
+  return crawlWorkspace(inputs, { at: new Date().toISOString(), ref: currentRef() })
+}
+
 function parseAtlasArgs(rest: string[]): AtlasArgs {
-  const args: AtlasArgs = { targets: [], json: false, save: false, trend: false, help: false }
-  for (const arg of rest) {
+  const args: AtlasArgs = { targets: [], json: false, save: false, trend: false, help: false, from: null, to: null, html: null }
+  for (let i = 0; i < rest.length; i += 1) {
+    const arg = rest[i]!
     if (arg === '--help' || arg === '-h') args.help = true
     else if (arg === '--json') args.json = true
     else if (arg === '--save') args.save = true
     else if (arg === '--trend') args.trend = true
+    else if (arg === '--from') args.from = rest[++i] ?? null
+    else if (arg.startsWith('--from=')) args.from = arg.slice('--from='.length)
+    else if (arg === '--to') args.to = rest[++i] ?? null
+    else if (arg.startsWith('--to=')) args.to = arg.slice('--to='.length)
+    else if (arg === '--html') { const n = rest[i + 1]; args.html = n && !n.startsWith('-') ? (i++, n) : '' }
+    else if (arg.startsWith('--html=')) args.html = arg.slice('--html='.length)
     else if (!arg.startsWith('-')) args.targets.push(arg)
   }
   return args
@@ -389,8 +600,11 @@ export function printAtlasHelp(): void {
 Usage:
   spw atlas [roots...]        summary: dialect by region, hubs, adrift, namespace
   spw atlas --json            emit the full snapshot as JSON
+  spw atlas --html [path]     write the visual atlas (default ${path.join('.spw', 'gen', 'atlas.html')})
   spw atlas --save            append a snapshot to ${HISTORY_REL}
   spw atlas --trend           show how the measured properties changed across saved snapshots
+  spw atlas --from <ref>      diff a revision against the working tree
+  spw atlas --from A --to B   diff two revisions — surfaces, edges, volatility shifts, dangling
 
 The crawl measures each region's dialect (aspect share → volatility), the
 surface reference graph (hubs and adrift surfaces), and the anchor namespace
