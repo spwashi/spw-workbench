@@ -2,112 +2,86 @@
  * spw expand — the template consumer for bias edges.
  *
  * A reflexive path edge `={ ~"template.spw" }` (anchor elided → the enclosing
- * node) is *provenance*: "this surface is expanded from / conforms to that
- * template." expand reads the same neutral bias edge as a template:
+ * node) is *provenance*: "this surface is expanded from that template." expand
+ * reads the same neutral bias edge as a template and renders the unfolded view.
  *
- *   unfold (boon)  — materialize the template's content inline, between markers
- *   fold   (bane)  — collapse the materialized content back to the one-line edge
- *
- * Reversible: unfold then fold is the identity. It is a specialization of the
- * mutate reading (a fold/unfold rewrite against a template edge). readBias stays
+ * It is a **projection**, not a mutation: the edge IS the canonical fold, so the
+ * source is never rewritten. Inlining a foreign surface into the source cannot
+ * round-trip through the parser reliably; projecting a view sidesteps that whole
+ * class of fragility. Each template is framed in a `<< … >>` stream (flow of
+ * content) with a provenance line, and nested reflexive edges expand
+ * recursively under a visited-set so cycles terminate. readBias stays
  * verb-neutral in seed; the "template" verb lives here.
  */
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { BIAS, readBias, spwq } from '@spwashi/spw-seed'
+import { biasSites, resolveTilde } from './bias-edges'
 import { printHelpPage } from './help'
 
 interface ExpandArgs {
   targets: string[]
-  fold: boolean
   write: boolean
   json: boolean
   help: boolean
+  maxDepth: number
 }
 
-interface TemplateEdge {
-  template: string
-  endLine: number
+const DEFAULT_DEPTH = 4
+
+/** Reflexive path edges are the template-lineage edges: `={ ~"tpl" }`, `=label{ ~"tpl" }`. */
+function templateSites(source: string) {
+  return biasSites(source).filter(
+    (site) => !site.edge.anchor && site.edge.targets[0]?.kind === 'path',
+  )
 }
 
-const BEGIN = '# >>expand'
-const END = '# <<expand'
+/**
+ * Render the surface with each template edge's content unfolded beneath it,
+ * recursively. Pure projection — returns text, never touches disk state of the
+ * input. `visited` carries the template paths already open on this branch so a
+ * self- or mutually-referential template terminates instead of looping.
+ */
+async function project(
+  source: string,
+  baseDir: string,
+  visited: ReadonlySet<string>,
+  depth: number,
+  maxDepth: number,
+): Promise<{ text: string; unfolded: number }> {
+  const sites = templateSites(source)
+  if (sites.length === 0) return { text: source, unfolded: 0 }
 
-/** Reflexive path edges are template-lineage edges: `={ ~"tpl" }`, `=label{ ~"tpl" }`. */
-function templateEdges(source: string): TemplateEdge[] {
-  let matches
-  try {
-    matches = spwq.fromSource(source, BIAS)
-  } catch {
-    return []
-  }
-  const edges: TemplateEdge[] = []
-  for (const match of matches) {
-    const edge = readBias(match.node)
-    if (!edge || edge.anchor) continue // reflexive only — an anchored edge is a rewrite
-    const target = edge.targets[0]
-    if (!target || target.kind !== 'path') continue
-    edges.push({ template: target.value.split('#')[0]!, endLine: match.span.endLine })
-  }
-  return edges
-}
-
-/** Read a tilde-relative template: workspace root first, then the surface dir. */
-async function readTemplate(template: string, baseDir: string): Promise<string> {
-  for (const candidate of [path.resolve(template), path.resolve(baseDir, template)]) {
-    try {
-      return (await fs.readFile(candidate, 'utf8')).replace(/\n$/, '')
-    } catch {
-      // try next candidate
-    }
-  }
-  throw new Error(`template not found: ${template}`)
-}
-
-/** Insert each template's content in a marked block after its edge (idempotent). */
-async function unfold(source: string, baseDir: string): Promise<{ text: string; count: number }> {
-  const edges = templateEdges(source)
-  if (edges.length === 0) return { text: source, count: 0 }
   const lines = source.split('\n')
-  let count = 0
-  // Bottom-up so inserted lines never shift a not-yet-processed edge's index.
-  for (const edge of [...edges].sort((a, b) => b.endLine - a.endLine)) {
-    const marker = `${BEGIN} ${edge.template}`
-    if (lines.includes(marker)) continue // already unfolded
-    // Template paths are tilde-relative: try the workspace root first, then the
-    // surface's own directory.
-    let body: string
-    try {
-      body = await readTemplate(edge.template, baseDir)
-    } catch {
-      body = `# (template not found: ${edge.template})`
-    }
-    lines.splice(edge.endLine + 1, 0, marker, body, `${END} ${edge.template}`)
-    count += 1
+  let unfolded = 0
+  // Bottom-up so inserted blocks never shift a not-yet-processed edge's line.
+  for (const site of [...sites].sort((a, b) => b.endLine - a.endLine)) {
+    const template = site.edge.targets[0]!.value.split('#')[0]!
+    const block = await renderTemplate(template, baseDir, visited, depth, maxDepth)
+    lines.splice(site.endLine, 0, block)
+    unfolded += 1
   }
-  return { text: lines.join('\n'), count }
+  return { text: lines.join('\n'), unfolded }
 }
 
-/** Strip every `# >>expand P` … `# <<expand P` block, restoring the edge alone. */
-function fold(source: string): { text: string; count: number } {
-  const lines = source.split('\n')
-  const out: string[] = []
-  let skipping = false
-  let count = 0
-  for (const line of lines) {
-    if (!skipping && line.startsWith(BEGIN)) {
-      skipping = true
-      count += 1
-      continue
-    }
-    if (skipping && line.startsWith(END)) {
-      skipping = false
-      continue
-    }
-    if (!skipping) out.push(line)
-  }
-  return { text: out.join('\n'), count }
+/** Frame one template's (recursively projected) content as a provenance stream. */
+async function renderTemplate(
+  template: string,
+  baseDir: string,
+  visited: ReadonlySet<string>,
+  depth: number,
+  maxDepth: number,
+): Promise<string> {
+  const open = `<<  # ⟵ ~"${template}"`
+  if (visited.has(template)) return `${open}\n  # (cycle: already expanding ${template})\n>>`
+  if (depth >= maxDepth) return `${open}\n  # (depth limit ${maxDepth} reached)\n>>`
+
+  const resolved = await resolveTilde(template, baseDir)
+  if (!resolved) return `${open}\n  # (template not found)\n>>`
+
+  const raw = (await fs.readFile(resolved, 'utf8')).replace(/\n$/, '')
+  const nested = await project(raw, path.dirname(resolved), new Set([...visited, template]), depth + 1, maxDepth)
+  return `${open}\n${nested.text}\n>>`
 }
 
 async function runExpand(args: ExpandArgs): Promise<void> {
@@ -116,71 +90,70 @@ async function runExpand(args: ExpandArgs): Promise<void> {
     process.exitCode = 1
     return
   }
-  const applied = args.write ? 'write' : 'plan'
-  const verb = args.fold ? 'fold' : 'unfold'
-  const results: Array<Record<string, unknown>> = []
-  let touched = 0
 
+  const results: Array<Record<string, unknown>> = []
   for (const target of args.targets) {
     const abs = path.resolve(target)
-    const before = await fs.readFile(abs, 'utf8')
-    const { text, count } = args.fold ? fold(before) : await unfold(before, path.dirname(abs))
-    if (count === 0 || text === before) {
-      if (!args.json) console.log(`= ${target}  (no ${verb})`)
-      continue
+    const source = await fs.readFile(abs, 'utf8')
+    const { text, unfolded } = await project(source, path.dirname(abs), new Set(), 0, args.maxDepth)
+
+    if (args.write) {
+      // Derived artifact, never the source — the source stays the canonical fold.
+      const out = abs.replace(/\.spw$/, '') + '.expanded.spw'
+      await fs.writeFile(out, text.endsWith('\n') ? text : `${text}\n`, 'utf8')
+      results.push({ file: target, unfolded, out: path.relative(process.cwd(), out) })
+      if (!args.json) console.error(`~ ${target}  unfolded=${unfolded} → ${path.relative(process.cwd(), out)}`)
+    } else if (args.json) {
+      results.push({ file: target, unfolded, text })
+    } else {
+      process.stdout.write(text.endsWith('\n') ? text : `${text}\n`)
     }
-    touched += 1
-    if (args.write) await fs.writeFile(abs, text, 'utf8')
-    if (args.json) results.push({ file: target, verb, blocks: count, applied })
-    else console.log(`~ ${target}  ${args.write ? verb : `would ${verb}`} blocks=${count}`)
   }
 
-  if (args.json) {
-    console.log(JSON.stringify({ command: 'expand', verb, mode: applied, touched, results }, null, 2))
-  } else {
-    console.error(`spw-expand: ${verb} ${args.write ? 'applied' : 'would-apply'}=${touched}${args.write ? '' : '  (plan-only; pass --write to apply)'}`)
-  }
+  if (args.json) console.log(JSON.stringify({ command: 'expand', results }, null, 2))
 }
 
 function parseExpandArgs(args: string[]): ExpandArgs {
   const targets: string[] = []
-  let fold = false
   let write = false
   let json = false
   let help = false
-  for (const arg of args) {
+  let maxDepth = DEFAULT_DEPTH
+  for (let i = 0; i < args.length; i += 1) {
+    const arg = args[i]!
     if (arg === '--help' || arg === '-h') help = true
-    else if (arg === '--fold') fold = true
-    else if (arg === '--unfold') fold = false
     else if (arg === '--write') write = true
     else if (arg === '--json') json = true
+    else if (arg === '--depth') maxDepth = Number(args[++i]) || DEFAULT_DEPTH
+    else if (arg.startsWith('--depth=')) maxDepth = Number(arg.slice('--depth='.length)) || DEFAULT_DEPTH
     else if (!arg.startsWith('--')) targets.push(arg)
   }
-  return { targets, fold, write, json, help }
+  return { targets, write, json, help, maxDepth }
 }
 
 export function printExpandHelp(): void {
   printHelpPage({
-    title: 'Spw Expand — template unfold / fold',
+    title: 'Spw Expand — template projection',
     usage: [
-      'spw expand <surface...> [--write]           unfold template edges inline',
-      'spw expand --fold <surface...> [--write]    collapse expansions back to the edge',
+      'spw expand <surface...> [--depth N]           project the unfolded view to stdout',
+      'spw expand <surface...> --write               write <surface>.expanded.spw (source untouched)',
     ],
     sections: [
       {
         title: 'Template lineage',
         lines: [
           'A reflexive path edge `={ ~"template.spw" }` declares provenance.',
-          'unfold materializes the template between markers; fold removes it.',
-          'Reversible: unfold then fold restores the original. Plan-only unless --write.',
+          'expand projects each template inline, framed in a `<< … >>` stream,',
+          'recursively (depth-bounded, cycle-guarded). The source is the canonical',
+          'fold and is never rewritten — --write emits a derived .expanded.spw.',
         ],
       },
       {
         title: 'Flags',
         lines: [
-          '--fold / --unfold  Direction (default unfold)',
-          '--write            Apply to disk (default is plan-only)',
-          '--json             Machine envelope',
+          '--depth N   Max recursion depth (default 4)',
+          '--write     Emit <surface>.expanded.spw instead of stdout',
+          '--json      Machine envelope',
         ],
       },
     ],
