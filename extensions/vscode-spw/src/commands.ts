@@ -151,6 +151,60 @@ export function registerSpwCommands(
       await vscode.window.showTextDocument(doc, { preview: true })
     }),
 
+    vscode.commands.registerCommand('spw.showReferenceHubs', async () => {
+      const graph = await vscode.window.withProgress(
+        { location: vscode.ProgressLocation.Window, title: 'Spw: reading the reference graph…' },
+        () => requests.referenceGraph(),
+      )
+      if (!graph || graph.surfaces === 0) {
+        void vscode.window.showInformationMessage('No .spw surfaces found to graph.')
+        return
+      }
+
+      const folder = vscode.workspace.workspaceFolders?.[0]
+      if (!folder) return
+
+      interface SurfacePick extends vscode.QuickPickItem { target?: string }
+
+      const picks: SurfacePick[] = [
+        {
+          label: 'Hubs',
+          kind: vscode.QuickPickItemKind.Separator,
+        } as SurfacePick,
+        ...graph.hubs.map((hub): SurfacePick => ({
+          label: hub.path,
+          // Direction is the reading: many in and few out is a foundation,
+          // many of both is a junction.
+          description: `${hub.inbound} in · ${hub.outbound} out`,
+          detail: hub.referrers.slice(0, 4).join(', ')
+            + (hub.referrers.length > 4 ? `, +${hub.referrers.length - 4} more` : ''),
+          target: hub.path,
+        })),
+        {
+          label: 'Orphans — nothing points here',
+          kind: vscode.QuickPickItemKind.Separator,
+        } as SurfacePick,
+        ...graph.orphans.map((orphan): SurfacePick => ({
+          label: orphan,
+          description: 'no referrers',
+          target: orphan,
+        })),
+      ]
+
+      const chosen = await vscode.window.showQuickPick(picks, {
+        title: `${graph.surfaces} surfaces · ${graph.edges} edges`
+          + ` · ${graph.external} external · ${graph.unresolved} unresolved`,
+        placeHolder: 'Jump to a surface',
+        matchOnDescription: true,
+      })
+      if (!chosen?.target) return
+
+      const doc = await vscode.workspace.openTextDocument(
+        vscode.Uri.joinPath(folder.uri, chosen.target),
+      )
+      await vscode.window.showTextDocument(doc)
+    }),
+
     vscode.commands.registerCommand('spw.restartLanguageServer', async () => {
       await client.restart()
       void vscode.window.showInformationMessage('Spw language server restarted.')

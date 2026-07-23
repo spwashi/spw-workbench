@@ -116,6 +116,7 @@ function verifyCommandContributions(manifest) {
     'spw.showFormSequence',
     'spw.showOperatorFrequency',
     'spw.showPhaseContext',
+    'spw.showReferenceHubs',
     'spw.showWorkspaceTemperature',
     'spwConcepts.clearFilter',
     'spwConcepts.refresh',

@@ -63,6 +63,23 @@ export interface SpwCacheReflection {
   families: SpwSignatureFamily[]
 }
 
+/** A surface and how many others depend on it. */
+export interface SpwReferenceGraphEntry {
+  path: string
+  inbound: number
+  outbound: number
+  referrers: string[]
+}
+
+export interface SpwReferenceGraph {
+  surfaces: number
+  edges: number
+  hubs: SpwReferenceGraphEntry[]
+  orphans: string[]
+  external: number
+  unresolved: number
+}
+
 export interface SpwRegisterEntry {
   name: string
   phase: number
@@ -125,6 +142,10 @@ export interface SpwCustomRequestMap {
     params: Record<string, never>
     result: SpwCacheReflection
   }
+  'spw/referenceGraph': {
+    params: Record<string, never>
+    result: SpwReferenceGraph
+  }
   'spw/registerSnapshot': {
     params: { uri: string }
     result: SpwRegisterSnapshot
@@ -186,6 +207,7 @@ export interface SpwCustomRequestClient {
   workspaceManifest(): Promise<SpwWorkspaceManifest>
   workspaceTemperature(): Promise<SpwWorkspaceTemperatureEntry[]>
   cacheReflection(): Promise<SpwCacheReflection | null>
+  referenceGraph(): Promise<SpwReferenceGraph | null>
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -289,6 +311,19 @@ class SpwLanguageServerRequests implements SpwCustomRequestClient {
       concentration: typeof payload.concentration === 'number' ? payload.concentration : 0,
       notes: Array.isArray(payload.notes) ? (payload.notes as SpwAttentionNote[]) : [],
       families: Array.isArray(payload.families) ? (payload.families as SpwSignatureFamily[]) : [],
+    }
+  }
+
+  async referenceGraph(): Promise<SpwReferenceGraph | null> {
+    const payload = await this.request('spw/referenceGraph', {})
+    if (!isRecord(payload) || typeof payload.surfaces !== 'number') return null
+    return {
+      surfaces: payload.surfaces,
+      edges: typeof payload.edges === 'number' ? payload.edges : 0,
+      hubs: Array.isArray(payload.hubs) ? (payload.hubs as SpwReferenceGraphEntry[]) : [],
+      orphans: Array.isArray(payload.orphans) ? (payload.orphans as string[]) : [],
+      external: typeof payload.external === 'number' ? payload.external : 0,
+      unresolved: typeof payload.unresolved === 'number' ? payload.unresolved : 0,
     }
   }
 }

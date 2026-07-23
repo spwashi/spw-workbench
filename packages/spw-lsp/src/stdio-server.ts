@@ -34,6 +34,10 @@ import {
   workspaceTemperature as _workspaceTemperature,
 } from './handlers/workspace'
 import { cacheReflection as _cacheReflection } from './handlers/cache-reflection'
+import {
+  buildReferenceGraph as _buildReferenceGraph,
+  invalidateReferenceGraph,
+} from './handlers/reference-graph'
 import { handleSpwProbe } from './handlers/spw-probes'
 import {
   SPW_WORKSPACE_MANIFEST_METHOD,
@@ -369,6 +373,11 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
         return
       }
 
+      case 'spw/referenceGraph': {
+        sendResult(id, await _buildReferenceGraph(deps))
+        return
+      }
+
       case 'spw/operatorFrequency':
       case 'spw/phaseContext':
       case 'spw/resonance':
@@ -440,6 +449,8 @@ function handleNotification(message: JsonRpcRequest): void {
       serverIndex.saveDocument(uri)
       debounceDiagnostics(uri)
       loadObservableState()
+      // A save can add or remove a reference, which moves every count.
+      invalidateReferenceGraph()
       return
     }
 
