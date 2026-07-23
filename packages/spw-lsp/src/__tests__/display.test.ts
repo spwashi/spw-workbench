@@ -62,10 +62,17 @@ describe('display handlers', () => {
     }, deps)
 
     const byLine = result.map((hint) => `${hint.position.line}:${hint.label}`)
-    expect(byLine).toContain('1: [field +#:layer · +#!pragmatics]')
-    expect(byLine).toContain('2: [enter outer]')
-    expect(byLine).toContain('3: [field +#:semantics · +#!materialization]')
-    expect(byLine).toContain('4: [? computational · lens: living system · 2 metrics · neighbor]')
+
+    // Hints show only what the line does not already say. The field braids on
+    // lines 1 and 3 are written on those lines, so no field hint repeats them;
+    // "outer" is on line 2, so the frame-entry hint is suppressed too.
+    expect(byLine.some((h) => h.startsWith('1:'))).toBe(false)
+    expect(byLine.some((h) => h.startsWith('2:'))).toBe(false)
+    expect(byLine.some((h) => h.startsWith('3:'))).toBe(false)
+
+    // The wonder hint drops depth/lens (both visible in the block below) and
+    // keeps only the compressive digest — the metric count and neighbor flag.
+    expect(byLine).toContain('4: [? 2 metrics · neighbor]')
   })
 
   it('includes frame path and braid context in annotation hover', async () => {

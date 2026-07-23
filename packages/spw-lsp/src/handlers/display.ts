@@ -57,6 +57,8 @@ interface WonderBlockSummary {
     probe: string | null
     metrics: string[]
     neighbor: string | null
+    /** The block's following lines, so a hint can drop what they already show. */
+    bodyText: string
 }
 
 function annotationKindFromSigil(sigil: string | undefined): DisplayAnnotationKind {
@@ -169,18 +171,21 @@ function formatMarkdownFacetList(
 
 function buildBoundaryHint(
     context: DisplayLineContext | null | undefined,
+    lineText: string,
 ): { label: string; tooltip: string } | null {
     if (!context) return null
 
+    // A hint earns its space by showing what the line does not already say.
+    // The frame name and the line's own braids are visible in the text, so
+    // echoing them inline is pure noise — surface only what the reader can't
+    // see here (an entered frame named elsewhere, an inherited field braid).
     const parts: string[] = []
-    if (context.enteredFrame) {
+    if (context.enteredFrame && !lineText.includes(context.enteredFrame)) {
         parts.push(`enter ${context.enteredFrame}`)
     }
-    // Suppress single-facet field hints — low signal, high noise.
-    // Show field shifts only when 2+ facets move at once.
-    const showFieldShift = context.deltaBraids.length >= 2
-    if (showFieldShift) {
-        const delta = context.deltaBraids.map((braid) => `+${braid}`).join(' · ')
+    const unseenBraids = context.deltaBraids.filter((braid) => !lineText.includes(braid))
+    if (unseenBraids.length >= 2) {
+        const delta = unseenBraids.map((braid) => `+${braid}`).join(' · ')
         parts.push(`field ${delta}`)
     }
     if (parts.length === 0) return null
@@ -203,10 +208,6 @@ function buildBoundaryHint(
         label: ` [${parts.join(' · ')}]`,
         tooltip: tooltip.join(' '),
     }
-}
-
-function truncateText(value: string, maxLength: number): string {
-    return value.length <= maxLength ? value : `${value.slice(0, Math.max(0, maxLength - 1)).trimEnd()}…`
 }
 
 /** Count { and } in a line, skipping quoted string content and line comments. */
@@ -235,13 +236,20 @@ function countBracesOutsideStrings(line: string, startDepth: number): number {
     return depth
 }
 
-function buildWonderHint(summary: WonderBlockSummary): { label: string; tooltip: string } {
+function buildWonderHint(summary: WonderBlockSummary): { label: string; tooltip: string } | null {
+    // The hint sits on the `?[…]{` line; depth and lens are extracted from the
+    // block's own following lines, so when the block is visible they only
+    // repeat it. Keep the parts that genuinely compress — the metric count
+    // stands in for a whole `$%[…]` line — and drop the verbatim echoes.
     const parts: string[] = []
-    if (summary.depth) parts.push(summary.depth)
-    if (summary.lens) parts.push(`lens: ${summary.lens}`)
+    if (summary.depth && !summary.bodyText.includes(summary.depth)) parts.push(summary.depth)
+    if (summary.lens && !summary.bodyText.includes(summary.lens)) parts.push(`lens: ${summary.lens}`)
     if (summary.metrics.length > 0) parts.push(`${summary.metrics.length} metric${summary.metrics.length === 1 ? '' : 's'}`)
     if (summary.neighbor) parts.push('neighbor')
-    if (parts.length === 0) parts.push(truncateText(summary.question, 36))
+
+    // With nothing compressive left, the question is already on the line — no
+    // hint beats a hint that restates what the reader is looking at.
+    if (parts.length === 0) return null
 
     const tooltip: string[] = [summary.question]
     if (summary.probe) tooltip.push(`Probe: ${summary.probe}`)
@@ -296,6 +304,7 @@ function parseWonderBlock(lines: string[], startLine: number): WonderBlockSummar
         probe,
         metrics,
         neighbor,
+        bodyText,
     }
 }
 
@@ -1123,7 +1132,7 @@ export async function inlayHints(params: InlayHintParams, deps: HandlerDeps): Pr
             const context = doc.lineContexts[lineNo] as DisplayLineContext | undefined
 
             if (deps.config.inlayHints.frames || deps.config.inlayHints.annotations) {
-                const boundaryHint = buildBoundaryHint(context)
+                const boundaryHint = buildBoundaryHint(context, line)
                 if (boundaryHint) {
                     hints.push({
                         position: { line: lineNo, character: line.length },
@@ -1137,8 +1146,8 @@ export async function inlayHints(params: InlayHintParams, deps: HandlerDeps): Pr
 
             if (deps.config.inlayHints.annotations) {
                 const wonder = parseWonderBlock(lines, lineNo)
-                if (wonder) {
-                    const hint = buildWonderHint(wonder)
+                const hint = wonder ? buildWonderHint(wonder) : null
+                if (hint) {
                     hints.push({
                         position: { line: lineNo, character: line.length },
                         label: hint.label,
