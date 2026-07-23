@@ -277,3 +277,10 @@ export {
   type DreamTick,
   type DreamRunnerState,
 } from './dream-schedule'
+
+export {
+  readBias,
+  type BiasEdge,
+  type BiasTarget,
+  type BiasSign,
+} from './read-bias'

@@ -345,6 +345,10 @@ export {
   type RangePlan,
   type IndexDepth,
   type IndexConfig,
+  readBias,
+  type BiasEdge,
+  type BiasTarget,
+  type BiasSign,
 } from './canonical'
 
 // NL preview

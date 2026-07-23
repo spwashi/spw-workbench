@@ -68,10 +68,13 @@
  >>[2026-07-22 19:43] taste — invariant to protect: normalize/readBias must stay verb-neutral. No consumer word (resolve/rewrite/template) may leak into the seed product shape; seed emits the edge, CLI verbs interpret. This is the whole point of the polymorphism.
  >>[2026-07-23 00:10] implement — commit 1: dedicated `=`+body bias block in normalize.ts. Old body branch was gated !op.frame, so `=[axis]{ target }` (frame+body) dropped its coupling entirely; new block owns all `=`+body, stamps product:'bias' uniformly. Verified: ={x}, =[depth]{x}, =[depth]{deep shallow}, =boon{x} all → product bias; .{} facet untouched. 362 seed tests pass (1 pre-existing isProseCommentLine failure unrelated).
  >>[2026-07-23 00:12] surprise — the confirmed axis spelling `[reg=depth]` DOES NOT PARSE: `=[reg=depth]{…}` collapses to Prose, and so does `^/./!/?[reg=depth]` — the `reg=` binding is not accepted as a direct operator frame on ANY operator (it is a POSTFIX form in real surfaces: `?(args)[reg=buf]`). Bare `=[depth]{ x }` parses cleanly as frame+body. Axis spelling is now an open decision — see open[axis-spelling].
+ >>[2026-07-23 00:20] decide — axis spelling = BARE prefix `=[depth]{ target }` (user). reg= redundant inside a bias frame anyway; zero grammar debt; unblocks readBias (4) + grammar (5). readBias reads the axis as the frame's first Parameter identifier.
+ >>[2026-07-23 00:30] implement — commits 2-4: query product field + matcher (getNodeProduct mirrors normalize), BIAS preset + `bias` CLI selector (verified `spw:select --selector bias` → 2 edges), readBias → BiasEdge {anchor,axis,targets,sign,valence} verb-neutral (sign forward/inverse from valence, never verb words). 6 unit tests green.
+ >>[2026-07-23 00:32] surprise — TWO seed trees. `packages/spw-seed/src/` is the REAL code; `src/seed/*.ts` are re-export shims (`export * from ../../packages/...`). test:seed globs ONLY `src/seed/**/*.test.ts` — the `packages/spw-seed/src/**/*.test.ts` files (e.g. form-sequence.test.ts) are ORPHANED, run by no config. Package tests must live in `src/seed/__tests__/` and import via `@spwashi/spw-seed`. Relocated read-bias.test.ts there; it runs. Saved to memory.
 }
 
 ^["open"]{
- ?[axis-spelling]: "confirmed `[reg=depth]` does not parse as an operator frame (collapses to Prose on every operator; reg= is a postfix form). bare `=[depth]{ x }` parses now. accept bare [depth] as the axis, or invest in a grammar/lexer fix for the [reg=…] binding? — blocks commit 4 (readBias axis extraction) and 5 (grammar)."
+ # axis-spelling resolved 2026-07-23 00:20 → bare prefix =[depth]{…}
 }
 
 ^["commits"]{
