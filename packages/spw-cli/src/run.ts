@@ -5,6 +5,7 @@ import { runSpwDevCli } from './dev'
 import { printDoctorHelp, runSpwDoctorCli } from './doctor'
 import { printSpwFormatHelp, runSpwFormatCli } from './format'
 import { printMutateHelp, runSpwMutateCli } from './mutate'
+import { printExpandHelp, runSpwExpandCli } from './expand'
 import { printSpwPulseHelp, runSpwPulseCli } from './pulse'
 import { printHelpPage } from './help'
 import { printInitUsage, runSpwInitCli } from './init'
@@ -46,6 +47,7 @@ const KNOWN_COMMANDS = [
   'mem',
   'format',
   'pulse', 'mutate', 'beat',
+  'expand',
   'dev',
   'emit',
 ]
@@ -224,6 +226,13 @@ export async function runSpwCli(argv: string[]): Promise<void> {
         return
       }
       await runSpwBeatCli(toCliArgv(command, args))
+      return
+    case 'expand':
+      if (common.flags.help) {
+        printExpandHelp()
+        return
+      }
+      await runSpwExpandCli(toCliArgv(command, args))
       return
     case 'dev':
       if (common.flags.help) {

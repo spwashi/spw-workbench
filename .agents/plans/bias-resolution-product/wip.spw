@@ -79,6 +79,8 @@
  >>[2026-07-23 01:11] taste — mount reads the edge purely as resolution: follows the pointer, checks existence, never rewrites. First proof the neutral edge carries a verb chosen by the consumer. mutate (8) + expand (9) will read the SAME edge differently.
  >>[2026-07-23 01:25] implement — commit 8 (rewrite consumer): shared bias-apply.ts (biasRewriteRules lifts =@from{ @to } edges → rules in source order; applyBiasRewrites textual, inverse-swaps for bane). mutate `--bias <patch> <targets> [--write]`, PLAN-ONLY unless --write (corpus-wide find/replace = safer default than vanilla mutate). Verified: plan reports hits, file untouched; --write rewrites @Old→@New + path (3 hits); bane patch reverts. Same edge read as rewrite rule.
  >>[2026-07-23 01:26] note — only edges with BOTH anchor+target are rewrites; reflexive/labeled edges (=ref{~"path"}) are skipped by biasRewriteRules — they are resolution/template edges, not rewrites. The consumer's lens decides which edges are in-scope.
+ >>[2026-07-23 01:40] implement — commit 9 (template consumer): new `spw expand` command. Reflexive path edge ={ ~"tpl" } = provenance. unfold (boon) materializes template between # >>expand / # <<expand markers; fold (bane) strips them. Plan-only unless --write. Verified ROUNDTRIP IDENTITY (unfold→fold = original). Registered in aggregate router (run.ts) + spw:expand script + scripts/spw-expand.ts shim. Fixed template path resolution (workspace-root first, then surface dir).
+ >>[2026-07-23 01:42] taste — POLYMORPHISM PROVEN: one neutral edge, three consumers, three verbs — mount(resolution: anchor↦target+existence), mutate(rewrite: from→to, boon/bane), expand(template: unfold/fold, reversible). Each reads the SAME readBias edge; the verb lives in the consumer, never in seed. The widen was worth it.
  >>[2026-07-23 00:32] surprise — TWO seed trees. `packages/spw-seed/src/` is the REAL code; `src/seed/*.ts` are re-export shims (`export * from ../../packages/...`). test:seed globs ONLY `src/seed/**/*.test.ts` — the `packages/spw-seed/src/**/*.test.ts` files (e.g. form-sequence.test.ts) are ORPHANED, run by no config. Package tests must live in `src/seed/__tests__/` and import via `@spwashi/spw-seed`. Relocated read-bias.test.ts there; it runs. Saved to memory.
 }
 
@@ -101,12 +103,12 @@
 }
 
 ^["cache"]{
- ~#status: "seed-foundation-complete"
+ ~#status: "consumers-complete"
  ~#base_ref: "main@993c0994"
  ~#rebased_at: ""
  ~#hygiene_split: "none"
- ~#files_hot: "packages/spw-cli/src/mount.ts"
- ~#next_commit: "6"
+ ~#files_hot: "src/seed/__tests__ + packages/spw-cli fixtures"
+ ~#next_commit: "10"
  ~#open_count: "0"
  ~#last_stream: "2026-07-22 19:43"
  ~#taste_debt: ""
