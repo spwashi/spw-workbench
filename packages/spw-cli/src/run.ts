@@ -7,6 +7,7 @@ import { printSpwFormatHelp, runSpwFormatCli } from './format'
 import { printMutateHelp, runSpwMutateCli } from './mutate'
 import { printExpandHelp, runSpwExpandCli } from './expand'
 import { printRefactorHelp, runSpwRefactorCli } from './refactor'
+import { printRefreshHelp, runSpwRefreshCli } from './refresh'
 import { printSpwPulseHelp, runSpwPulseCli } from './pulse'
 import { printHelpPage } from './help'
 import { printInitUsage, runSpwInitCli } from './init'
@@ -50,6 +51,7 @@ const KNOWN_COMMANDS = [
   'pulse', 'mutate', 'beat',
   'expand',
   'refactor',
+  'refresh',
   'dev',
   'emit',
 ]
@@ -242,6 +244,13 @@ export async function runSpwCli(argv: string[]): Promise<void> {
         return
       }
       await runSpwRefactorCli(toCliArgv(command, args))
+      return
+    case 'refresh':
+      if (common.flags.help) {
+        printRefreshHelp()
+        return
+      }
+      await runSpwRefreshCli(toCliArgv(command, args))
       return
     case 'dev':
       if (common.flags.help) {
