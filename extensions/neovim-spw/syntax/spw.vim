@@ -134,6 +134,13 @@ syntax match   spwSigSchema  '#'                           display
 syntax match   spwSigMeasure  '%\[[^\]]*\]'  display
 syntax match   spwSigMeasure  '%'            display
 
+" $ substrate / selector — addressing, substrate-computed marks.
+" Appears in ~266 surfaces ($#, $^[…], $%[…], $[…]) and had no rule, so it
+" was the one sigil reading as plain text. Bare $ first, so the identifier
+" form ($name) wins at its own start and colors the whole token.
+syntax match   spwSigSubstrate  '\$'                              display
+syntax match   spwSigSubstrate  '\$[a-zA-Z_][a-zA-Z0-9_.]*'      display
+
 " #-annotation subtypes (before generic #schema)
 syntax match   spwAnnotAnchor  '#>[a-zA-Z_][a-zA-Z0-9_]*'  display
 syntax match   spwAnnotIntent  '#![a-zA-Z_][a-zA-Z0-9_]*'  display
@@ -247,6 +254,7 @@ highlight link spwSigSchema       PreProc       " # resonance / meta
 highlight link spwSigMeasure      SpwMeasure    " % observation / scalar
 highlight link spwSigSubject      Identifier    " & entanglement
 highlight link spwSigSet          Statement     " = bias / assign
+highlight link spwSigSubstrate    SpwSubstrate  " $ substrate / selector
 
 " #-annotation subtypes
 highlight link spwAnnotAnchor     SpwAnchor
@@ -354,6 +362,10 @@ highlight default SpwEmDash    guifg=#665c54                ctermfg=241
 
 " Measure sigil
 highlight default SpwMeasure   guifg=#8ec07c gui=italic    ctermfg=108 cterm=italic
+
+" Substrate sigil — the material/addressing layer; a distinct faded aqua so it
+" reads as kin to measure (#8ec07c) without colliding with it.
+highlight default SpwSubstrate guifg=#689d6a gui=bold      ctermfg=72  cterm=bold
 
 " #-annotation subtypes
 highlight default SpwAnchor    guifg=#8ec07c gui=underline  ctermfg=108 cterm=underline
