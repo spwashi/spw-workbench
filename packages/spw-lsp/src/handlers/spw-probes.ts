@@ -10,7 +10,7 @@
  */
 
 import path from 'node:path'
-import { inspectGeometry } from '@spwashi/spw-seed'
+import { inspectGeometry, parse, particleBindings } from '@spwashi/spw-seed'
 import { SIGIL_SEMANTICS } from '../server-index'
 import type { HandlerDeps, LspPosition } from '../types'
 
@@ -349,9 +349,56 @@ export function handleSpwProbe(
       return formSequenceProbe(params)
     case 'spw/geometry':
       return geometryProbe(params, deps)
+    case 'spw/particles':
+      return particlesProbe(params, deps)
     default:
       return null
   }
+}
+
+/**
+ * The particle profile of a document: its deixis (anchor) table plus the
+ * aim mix — the dialect signature extension surfaces tune themselves from
+ * (deixis = navigability, case = queryability, mood = assertion richness,
+ * aspect = volatility / cache churn).
+ */
+async function particlesProbe(
+  params: { uri?: string; text?: string } | undefined,
+  deps: HandlerDeps,
+): Promise<unknown> {
+  let source = typeof params?.text === 'string' ? params.text : ''
+  const uri = params?.uri
+  if (!source && typeof uri === 'string') {
+    source = (await deps.getDocumentText(uri)) ?? ''
+  }
+
+  const mix = { deixis: 0, case: 0, mood: 0, aspect: 0 }
+  // Aspect marks (~#) still live on the legacy Annotation path — count textually.
+  mix.aspect = (source.match(/~#[A-Za-z_]/g) ?? []).length
+
+  const result = parse(source)
+  if (!result.ast) {
+    return { uri: uri ?? null, anchors: [], mix }
+  }
+
+  const anchors: Array<{ name: string; line: number; boundLine: number | null }> = []
+  for (const binding of particleBindings(result.ast)) {
+    const aim = binding.particle.aim
+    if (aim === '>') {
+      mix.deixis += 1
+      anchors.push({
+        name: binding.particle.name.value,
+        line: binding.particle.span.start.line,
+        boundLine: binding.bound?.span?.start.line ?? null,
+      })
+    } else if (aim === ':') {
+      mix.case += 1
+    } else {
+      mix.mood += 1
+    }
+  }
+
+  return { uri: uri ?? null, anchors, mix }
 }
 
 async function geometryProbe(

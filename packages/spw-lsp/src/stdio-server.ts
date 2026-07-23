@@ -368,7 +368,8 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
       case 'spw/resonance':
       case 'spw/registerSnapshot':
       case 'spw/formSequence':
-      case 'spw/geometry': {
+      case 'spw/geometry':
+      case 'spw/particles': {
         const probe = handleSpwProbe(message.method, message.params, deps)
         sendResult(id, await Promise.resolve(probe))
         return
