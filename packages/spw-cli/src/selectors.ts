@@ -1,6 +1,7 @@
 import {
   ANY,
   ANNOTATION_OPS,
+  BIAS,
   BOON_OPS,
   BONE_OPS,
   CONFIG_OPS,
@@ -31,6 +32,7 @@ export const CLI_SELECTOR_PRESETS: Record<string, SpwSelector> = {
   hydrate: HYDRATE_OPS,
   probes: QUERY_OPS,
   configs: CONFIG_OPS,
+  bias: BIAS,
   defers: DEFER_OPS,
   taps: DOMAIN_ROOTS,
   annotations: ANNOTATION_OPS,

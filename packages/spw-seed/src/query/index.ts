@@ -64,6 +64,7 @@ export {
     DEFER_OPS,
     QUERY_OPS,
     CONFIG_OPS,
+    BIAS,
     ANNOTATION_OPS,
     OPS_WITH_FRAMES,
     OPS_WITH_BODIES,

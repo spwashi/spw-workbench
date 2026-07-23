@@ -46,6 +46,9 @@ export const QUERY_OPS: SpwPattern = { sigil: '?', nodeType: 'Operation' }
 /** All config/binding Operations, without text provenance. */
 export const CONFIG_OPS: SpwPattern = { sigil: '=', nodeType: 'Operation' }
 
+/** Bias edges: every `=` carrying a body (the verb-neutral resolution edge). */
+export const BIAS: SpwPattern = { sigil: '=', product: 'bias' }
+
 /** All annotation/set Operations, without text provenance. */
 export const ANNOTATION_OPS: SpwPattern = { sigil: '#', nodeType: 'Operation' }
 
