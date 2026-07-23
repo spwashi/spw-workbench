@@ -19,10 +19,10 @@ import {
   canonicalize,
   hashString,
   particleMix,
+  significantTokens,
   type ParseOutput,
   type ParticleMix,
   type Token,
-  type OperatorKind,
 } from '@spwashi/spw-seed'
 import { selectPathRefs, type SpwSelectorHit } from './spw-selector'
 
@@ -348,7 +348,7 @@ export class ServerIndex {
       const text = await fs.readFile(shelvesPath, 'utf8')
       const shelvesDir = path.dirname(shelvesPath)
       const { tokens } = parse(text)
-      const sig = tokens.filter(t => t.type !== 'WHITESPACE' && t.type !== 'EOF')
+      const sig = significantTokens(tokens)
 
       for (let i = 0; i < sig.length; i++) {
         const tok = sig[i]
@@ -380,7 +380,7 @@ export class ServerIndex {
     try {
       const text = await fs.readFile(topologyPath, 'utf8')
       const { tokens } = parse(text)
-      const sig = tokens.filter(t => t.type !== 'WHITESPACE' && t.type !== 'EOF')
+      const sig = significantTokens(tokens)
 
       for (let i = 0; i < sig.length; i++) {
         // ^subroot[name]{
@@ -441,7 +441,7 @@ export class ServerIndex {
     try {
       const text = await fs.readFile(editingPath, 'utf8')
       const { tokens } = parse(text)
-      const sig = tokens.filter(t => t.type !== 'WHITESPACE' && t.type !== 'EOF')
+      const sig = significantTokens(tokens)
 
       for (let i = 0; i < sig.length; i++) {
         // ^category[name]{
@@ -703,7 +703,7 @@ export class ServerIndex {
 
   private extractSelectorDefs(filePath: string, text: string): void {
     const { tokens } = parse(text)
-    const sig = tokens.filter(t => t.type !== 'WHITESPACE' && t.type !== 'EOF')
+    const sig = significantTokens(tokens)
 
     for (let i = 0; i < sig.length; i++) {
       // ^selector[name]{
@@ -772,7 +772,7 @@ export class ServerIndex {
     try {
       const text = await fs.readFile(genIndexPath, 'utf8')
       const { tokens } = parse(text)
-      const sig = tokens.filter(t => t.type !== 'WHITESPACE' && t.type !== 'EOF')
+      const sig = significantTokens(tokens)
 
       for (let i = 0; i < sig.length; i++) {
         // ^projection[name]{

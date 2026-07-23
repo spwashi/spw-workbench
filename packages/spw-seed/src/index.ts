@@ -89,6 +89,7 @@ export type {
 } from './types'
 
 export { DEFAULT_OPTIONS } from './types'
+export { isSignificantToken, significantTokens } from './types'
 export { castToBrand, $register, $frame, $domain, $layer, RegisterId, FrameId, DomainId, LayerId } from './types'
 
 // Lexer

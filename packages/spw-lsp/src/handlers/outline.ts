@@ -18,7 +18,7 @@
  * file, so the breadcrumb reports the frame the cursor is actually inside.
  */
 
-import { parse } from '@spwashi/spw-seed'
+import { parse, significantTokens } from '@spwashi/spw-seed'
 import type { Token } from '@spwashi/spw-seed'
 import { SK, type LspDocumentSymbol, type LspRange } from '../types'
 
@@ -46,10 +46,6 @@ const SIGIL_SYMBOL: Record<string, { kind: number; detail: string }> = {
  * a wall of metadata above the first real structure in every file.
  */
 const ANCHOR_SYMBOL = { kind: SK.Key, detail: 'anchor' } as const
-
-function isSignificant(token: Token): boolean {
-  return token.type !== 'WHITESPACE' && token.type !== 'EOF'
-}
 
 /** Outline rows are one line tall; a prose-length label is truncated to fit. */
 const MAX_LABEL = 44
@@ -154,7 +150,7 @@ export function outlineFromSource(text: string): LspDocumentSymbol[] {
     pending = null
   }
 
-  const significant = tokens.filter(isSignificant)
+  const significant = significantTokens(tokens)
 
   for (const token of significant) {
     const line = token.span.start.line

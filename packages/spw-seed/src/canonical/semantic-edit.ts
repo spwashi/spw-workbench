@@ -31,6 +31,7 @@
  */
 
 import type { ASTNode } from '../types/ast'
+import type { Token } from '../types/token'
 import type { SpwPattern } from '../query/types'
 import { matchAll } from '../query/match'
 import { parse } from '../parser'
@@ -105,10 +106,9 @@ export interface SemanticPlanOptions {
 
 const DEFAULT_CEILING: EffectGrade = 'effect.l2.workspace'
 
-function nodeSpan(node: ASTNode): { start: number; end: number } | null {
-  const span = (node as { span?: { start?: { offset: number }; end?: { offset: number } } }).span
-  if (!span?.start || !span.end) return null
-  return { start: span.start.offset, end: span.end.offset }
+/** The byte range a node occupies. */
+function nodeOffsets(node: ASTNode): { start: number; end: number } {
+  return { start: node.span.start.offset, end: node.span.end.offset }
 }
 
 /**
@@ -147,8 +147,8 @@ export function planSemanticEdits(
       const rewrite = rule.rewrite(match.node, source, ast)
       if (!rewrite) continue
 
-      const range = rewrite.range ?? nodeSpan(match.node)
-      if (!range || range.end < range.start) continue
+      const range = rewrite.range ?? nodeOffsets(match.node)
+      if (range.end < range.start) continue
 
       // A rewrite that changes nothing is not an edit.
       if (source.slice(range.start, range.end) === rewrite.newText) continue
@@ -236,10 +236,13 @@ function renamedMarkText(sourceText: string, to: string): string {
   return sourceText.replace(/[A-Za-z_]\w*$/, to)
 }
 
-/** The source range of a mark's name token, when it carries one. */
+/**
+ * The source range of a mark's name token. Both marks that carry a name —
+ * Annotation and Particle — store it as a `Token`, so its span is typed.
+ */
 function nameRange(node: ASTNode): { start: number; end: number } | null {
-  const name = (node as { name?: { span?: { start: { offset: number }; end: { offset: number } } } }).name
-  if (!name?.span) return null
+  const name = (node as { name?: Token }).name
+  if (!name) return null
   return { start: name.span.start.offset, end: name.span.end.offset }
 }
 

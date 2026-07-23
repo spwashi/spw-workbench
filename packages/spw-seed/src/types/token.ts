@@ -77,3 +77,21 @@ export interface Token<T extends TokenType = TokenType> {
   /** Type-specific metadata (operator kind, modifier kind, etc.) */
   kind?: OperatorKind | ModifierKind | ConnectorKind | ContainerKind | string
 }
+
+/**
+ * Whether a token carries structure worth scanning — everything but the
+ * whitespace and end-of-file padding a token walk almost always drops first.
+ *
+ * The `tokens.filter(t => t.type !== 'WHITESPACE' && t.type !== 'EOF')` this
+ * replaces was written out at a dozen call sites; naming it makes a token scan
+ * read as what it is and gives consumers of the kernel one definition of
+ * "significant" to share.
+ */
+export function isSignificantToken(token: Token): boolean {
+  return token.type !== 'WHITESPACE' && token.type !== 'EOF'
+}
+
+/** The significant tokens of a stream, in order. */
+export function significantTokens(tokens: readonly Token[]): Token[] {
+  return tokens.filter(isSignificantToken)
+}

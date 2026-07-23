@@ -22,6 +22,7 @@
  */
 
 import type { ASTNode } from '../types/ast'
+import { significantTokens } from '../types/token'
 import { parse } from '../parser'
 import type { SemanticRule, SemanticRewrite } from './semantic-edit'
 
@@ -37,16 +38,6 @@ export interface DeriveContext {
 
 /** Computes a mark's value, or null to leave it untouched. */
 export type MarkDeriver = (ctx: DeriveContext) => string | null
-
-interface Span {
-  start: { offset: number }
-  end: { offset: number }
-}
-
-function spanOf(node: ASTNode | undefined): Span | null {
-  const span = (node as { span?: Span } | undefined)?.span
-  return span?.start && span.end ? span : null
-}
 
 /**
  * Re-wrap a derived value in the quote style the current value already uses,
@@ -77,10 +68,10 @@ export function deriveMark(name: string, derive: MarkDeriver): SemanticRule {
     effectGrade: 'effect.l2.workspace',
     rewrite(node, source, root): SemanticRewrite | null {
       const value = (node as { value?: ASTNode }).value
-      const span = spanOf(value)
       // Only literal-valued marks are derivable; a reference or path is not a
       // summary to recompute.
-      if (!span || value?.type !== 'Literal') return null
+      if (value?.type !== 'Literal') return null
+      const span = value.span
 
       const derived = derive({ node, root, source })
       if (derived === null) return null
@@ -186,7 +177,7 @@ const TIMESTAMP = /\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}/g
  * a character re-scan would get wrong.
  */
 function findFrameRegionByTokens(source: string, label: string): { start: number; end: number } | null {
-  const sig = parse(source).tokens.filter((t) => t.type !== 'WHITESPACE' && t.type !== 'EOF')
+  const sig = significantTokens(parse(source).tokens)
 
   for (let i = 0; i < sig.length; i += 1) {
     if (sig[i]!.type !== 'OPERATOR' || sig[i]!.kind !== '^') continue

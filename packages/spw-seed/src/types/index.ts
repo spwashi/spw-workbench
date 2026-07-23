@@ -61,6 +61,7 @@ export type {
   TokenType,
   Token,
 } from './token'
+export { isSignificantToken, significantTokens } from './token'
 
 // Lexing profiles
 export type {

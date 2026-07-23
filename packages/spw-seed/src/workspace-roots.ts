@@ -1,4 +1,5 @@
 import { parse } from './parser'
+import { significantTokens } from './types'
 import type { Token } from './types'
 
 export interface WorkspaceRootDeclaration {
@@ -42,7 +43,7 @@ export function parseWorkspaceRootDeclarations(source: string): WorkspaceRootDec
 export function analyzeWorkspaceRootManifest(source: string): WorkspaceRootManifestAnalysis {
   const output = parse(source)
   const { tokens } = output
-  const significant = tokens.filter((token) => token.type !== 'WHITESPACE' && token.type !== 'EOF')
+  const significant = significantTokens(tokens)
   const diagnostics: WorkspaceRootManifestDiagnostic[] = []
 
   if (!output.success) {
