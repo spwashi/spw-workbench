@@ -6,6 +6,8 @@
  */
 
 import path from 'node:path'
+import { promises as fs } from 'node:fs'
+import { parse, resolveFragment } from '@spwashi/spw-seed'
 import { selectPathRefs, findPathRefAtPosition } from '../spw-selector'
 import type {
     LspLocation, LspRange, LspTextEdit, LspPosition,
@@ -35,6 +37,50 @@ function referenceSearchNeedles(hit: { kind: string; root?: string; target: stri
     return [...needles].filter(Boolean)
 }
 
+/** The `#anchor` half of a reference target, when it names one. */
+function fragmentOf(target: string): string | null {
+    const hash = target.indexOf('#')
+    if (hash < 0) return null
+    const fragment = target.slice(hash + 1).trim()
+    return fragment.length > 0 ? fragment : null
+}
+
+/** The whole file, when a reference names no finer address. */
+const FILE_START: LspRange = {
+    start: { line: 0, character: 0 },
+    end: { line: 0, character: 0 },
+}
+
+/**
+ * Read the `#fragment` of a reference as a deixis anchor inside the target
+ * surface and return the line it marks.
+ *
+ * A fragment addresses a node, not a file, so `~"spec.spw#registry"` should
+ * land on the registry rather than the top of the page. Falls back to the
+ * file start whenever the anchor is missing or the file cannot be read — a
+ * stale fragment should still navigate somewhere useful.
+ */
+async function fragmentRange(targetPath: string, fragment: string): Promise<LspRange> {
+    try {
+        const text = await fs.readFile(targetPath, 'utf8')
+        const ast = parse(text).ast
+        if (!ast) return FILE_START
+
+        const resolved = resolveFragment(ast, fragment)
+        const particle = resolved.binding?.particle
+        if (!particle) return FILE_START
+
+        // Spans are 1-indexed at the seed; LSP positions are 0-indexed.
+        const line = Math.max(0, particle.span.start.line - 1)
+        return {
+            start: { line, character: 0 },
+            end: { line, character: 0 },
+        }
+    } catch {
+        return FILE_START
+    }
+}
+
 // ── Definition ──────────────────────────────────────────────────
 
 export async function definition(params: DefinitionParams, deps: HandlerDeps): Promise<LspLocation[] | null> {
@@ -55,9 +101,10 @@ export async function definition(params: DefinitionParams, deps: HandlerDeps): P
     const resolved = await deps.resolveReferencePath(hit, source, docPath, { allowDirectory: true })
     if (!resolved) return null
 
+    const fragment = fragmentOf(hit.target)
     return [{
         uri: deps.uriFromPath(resolved),
-        range: { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } },
+        range: fragment ? await fragmentRange(resolved, fragment) : FILE_START,
     }]
 }
 
@@ -82,12 +129,19 @@ export async function documentLinks(
     for (const hit of hits) {
         const resolved = await deps.resolveReferencePath(hit, source, docPath, { allowDirectory: true })
         if (!resolved) continue
+
+        // A fragment rides along as `#L<n>`, the line address editors honour
+        // when opening a link target.
+        const fragment = fragmentOf(hit.target)
+        const anchored = fragment ? await fragmentRange(resolved, fragment) : null
+        const suffix = anchored && anchored.start.line > 0 ? `#L${anchored.start.line + 1}` : ''
+
         links.push({
             range: {
                 start: { line: hit.span.startLine, character: hit.span.startCharacter },
                 end: { line: hit.span.endLine, character: hit.span.endCharacter },
             },
-            target: deps.uriFromPath(resolved),
+            target: `${deps.uriFromPath(resolved)}${suffix}`,
         })
     }
 
