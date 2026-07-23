@@ -1,17 +1,18 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { canonicalize, parse } from '@spwashi/spw-seed'
+import { BIAS, canonicalize, parse, readBias, spwq } from '@spwashi/spw-seed'
 import { parseCommonFlags } from './args'
 import { collectSpwFiles } from './fs-walk'
 import { printHelpPage } from './help'
 
-type Command = 'check' | 'init' | 'help'
+type Command = 'check' | 'init' | 'resolve' | 'help'
 
 interface CliArgs {
   command: Command
   json: boolean
   strict: boolean
+  root: string
 }
 
 interface ParseReport {
@@ -137,14 +138,15 @@ export function printMountHelp(): void {
   printHelpPage({
     title: 'Spw Mount Utility',
     usage: [
-      'node --import tsx scripts/spw-mount.ts [check|init] [--json] [--strict]',
+      'node --import tsx scripts/spw-mount.ts [check|init|resolve] [root] [--json] [--strict]',
     ],
     sections: [
       {
         title: 'Commands',
         lines: [
-          'check   Validate mount v0.1 invariants for .spw root surfaces (default).',
-          'init    Create missing .spw/index.spw and .spw/mount.spw templates.',
+          'check    Validate mount v0.1 invariants for .spw root surfaces (default).',
+          'init     Create missing .spw/index.spw and .spw/mount.spw templates.',
+          'resolve  Read bias edges as resolution pointers (anchor → target); flag dangling surface targets. Read-only.',
         ],
       },
       {
@@ -161,14 +163,18 @@ export function printMountHelp(): void {
 function parseArgs(argv: string[]): CliArgs {
   const common = parseCommonFlags(argv.slice(2))
   const args = common.args
-  const first = args.find((arg) => !arg.startsWith('--'))
-  const command = (first === 'init' || first === 'help' || first === 'check' ? first : 'check') as Command
+  const positionals = args.filter((arg) => !arg.startsWith('--'))
+  const first = positionals[0]
+  const command = (first === 'init' || first === 'help' || first === 'check' || first === 'resolve' ? first : 'check') as Command
+  // For `resolve`, a second positional names the root to scan (default .spw).
+  const root = command === 'resolve' ? (positionals[1] ?? '.spw') : '.spw'
 
   if (common.flags.help) {
     return {
       command: 'help',
       json: false,
       strict: false,
+      root,
     }
   }
 
@@ -176,6 +182,7 @@ function parseArgs(argv: string[]): CliArgs {
     command,
     json: args.includes('--json'),
     strict: args.includes('--strict'),
+    root,
   }
 }
 
@@ -481,6 +488,88 @@ async function runInit(): Promise<void> {
   console.log(`spw-mount:init index=${indexStatus} mount=${mountStatus}`)
 }
 
+/** One bias edge read through the mount (resolution) lens. */
+interface ResolvedEdge {
+  file: string
+  line: number
+  /** Anchor (from-pole); '(self)' when elided — the enclosing node. */
+  anchor: string
+  axis?: string
+  sign: 'forward' | 'inverse'
+  targets: Array<{ value: string; kind: string; exists: boolean | null }>
+}
+
+interface ResolveReport {
+  root: string
+  edges: ResolvedEdge[]
+  dangling: Array<{ file: string; line: number; target: string }>
+  status: 'ok' | 'fail'
+}
+
+/**
+ * Resolution consumer: read each bias edge as a pointer (anchor → target) and
+ * check that surface targets exist. This is the mount *reading* of the neutral
+ * bias edge — it follows the pointer; it does not rewrite anything.
+ */
+async function runResolve(root: string): Promise<ResolveReport> {
+  const rootAbs = path.resolve(root)
+  const files = (await exists(rootAbs))
+    ? (await fs.stat(rootAbs)).isDirectory()
+      ? await collectSpwFiles(rootAbs)
+      : [rootAbs]
+    : []
+
+  const edges: ResolvedEdge[] = []
+  const dangling: ResolveReport['dangling'] = []
+
+  for (const filePath of files) {
+    const source = await fs.readFile(filePath, 'utf8')
+    let matches
+    try {
+      matches = spwq.fromSource(source, BIAS)
+    } catch {
+      continue
+    }
+    const rel = path.relative(process.cwd(), filePath)
+    const fileDir = path.dirname(filePath)
+
+    for (const match of matches) {
+      const edge = readBias(match.node)
+      if (!edge) continue
+      const label = (match.node as { operatorLabel?: { value?: string } }).operatorLabel?.value
+      const line = match.span.startLine + 1
+
+      const targets = await Promise.all(edge.targets.map(async (target) => {
+        // Only surface (path) targets have an on-disk existence to verify.
+        // Strip a #fragment anchor before resolving the file.
+        const surface = target.kind === 'path' ? target.value.split('#')[0]! : null
+        let targetExists: boolean | null = null
+        if (surface) {
+          targetExists = (await exists(path.resolve(surface))) || (await exists(path.resolve(fileDir, surface)))
+          if (!targetExists) dangling.push({ file: rel, line, target: target.value })
+        }
+        return { value: target.value, kind: target.kind, exists: targetExists }
+      }))
+
+      edges.push({
+        file: rel,
+        line,
+        anchor: edge.anchor?.value ?? label ?? '(self)',
+        axis: edge.axis,
+        sign: edge.sign,
+        targets,
+      })
+    }
+  }
+
+  return {
+    root: path.relative(process.cwd(), rootAbs) || root,
+    edges,
+    dangling,
+    status: dangling.length > 0 ? 'fail' : 'ok',
+  }
+}
+
 export async function runSpwMountCli(argv: string[] = process.argv): Promise<void> {
   const args = parseArgs(argv)
 
@@ -491,6 +580,28 @@ export async function runSpwMountCli(argv: string[] = process.argv): Promise<voi
 
   if (args.command === 'init') {
     await runInit()
+    return
+  }
+
+  if (args.command === 'resolve') {
+    const report = await runResolve(args.root)
+    if (args.json) {
+      console.log(JSON.stringify(report, null, 2))
+    } else {
+      console.log(`spw-mount:resolve root=${report.root} edges=${report.edges.length} dangling=${report.dangling.length} status=${report.status}`)
+      for (const edge of report.edges) {
+        const arrow = edge.sign === 'inverse' ? '↤' : '↦'
+        const axis = edge.axis ? `[${edge.axis}]` : ''
+        for (const target of edge.targets) {
+          const mark = target.exists === false ? ' ✗' : target.exists === true ? ' ✓' : ''
+          console.log(`  ${edge.file}:${edge.line}  ${edge.anchor}${axis} ${arrow} ${target.value}${mark}`)
+        }
+      }
+      for (const miss of report.dangling) {
+        console.log(`dangling: ${miss.file}:${miss.line} → ${miss.target}`)
+      }
+    }
+    if (report.status === 'fail') process.exitCode = 1
     return
   }
 
