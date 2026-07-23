@@ -70,6 +70,8 @@
  >>[2026-07-23 00:12] surprise — the confirmed axis spelling `[reg=depth]` DOES NOT PARSE: `=[reg=depth]{…}` collapses to Prose, and so does `^/./!/?[reg=depth]` — the `reg=` binding is not accepted as a direct operator frame on ANY operator (it is a POSTFIX form in real surfaces: `?(args)[reg=buf]`). Bare `=[depth]{ x }` parses cleanly as frame+body. Axis spelling is now an open decision — see open[axis-spelling].
  >>[2026-07-23 00:20] decide — axis spelling = BARE prefix `=[depth]{ target }` (user). reg= redundant inside a bias frame anyway; zero grammar debt; unblocks readBias (4) + grammar (5). readBias reads the axis as the frame's first Parameter identifier.
  >>[2026-07-23 00:30] implement — commits 2-4: query product field + matcher (getNodeProduct mirrors normalize), BIAS preset + `bias` CLI selector (verified `spw:select --selector bias` → 2 edges), readBias → BiasEdge {anchor,axis,targets,sign,valence} verb-neutral (sign forward/inverse from valence, never verb words). 6 unit tests green.
+ >>[2026-07-23 00:45] implement — commit 5 (grammar): `=` anchor binding at expressions.ts, gated to OPERATOR-led subjects only (choice(pathRefNode, referenceNode)). Bare identifier stays operatorLabel (=ref/=workbench preserved), string stays config — zero collision, zero refactor needed. Verified =@node→ref anchor, =~"a"→path anchor; ={x}/=[depth]{x}/=boon{x} unchanged. lint:spw 343/343 pass. 8 readBias tests green (added anchor + label-preservation cases).
+ >>[2026-07-23 00:46] note — user: "I don't mind needing to refactor." Conservative gate needed none — label/anchor/axis/targets are 4 distinct slots that coexist. Broader anchor form (identifier anchors, reinterpreting =ref/=workbench) remains available if wanted; would refactor ~6 canon usages. Open for discussion before consumers.
  >>[2026-07-23 00:32] surprise — TWO seed trees. `packages/spw-seed/src/` is the REAL code; `src/seed/*.ts` are re-export shims (`export * from ../../packages/...`). test:seed globs ONLY `src/seed/**/*.test.ts` — the `packages/spw-seed/src/**/*.test.ts` files (e.g. form-sequence.test.ts) are ORPHANED, run by no config. Package tests must live in `src/seed/__tests__/` and import via `@spwashi/spw-seed`. Relocated read-bias.test.ts there; it runs. Saved to memory.
 }
 
@@ -91,12 +93,12 @@
 }
 
 ^["cache"]{
- ~#status: "planning"
+ ~#status: "seed-foundation-complete"
  ~#base_ref: "main@993c0994"
  ~#rebased_at: ""
  ~#hygiene_split: "none"
- ~#files_hot: "packages/spw-seed/src/normalize.ts"
- ~#next_commit: "1"
+ ~#files_hot: "packages/spw-cli/src/mount.ts"
+ ~#next_commit: "6"
  ~#open_count: "0"
  ~#last_stream: "2026-07-22 19:43"
  ~#taste_debt: ""

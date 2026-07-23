@@ -290,6 +290,24 @@ export const operationNode: Parser<OperationNode> = named('operation',
           consumed += subjStep.value.consumed
         }
       }
+    } else if (operatorToken.value === '=') {
+      // Bias anchor: the from-pole of a bias edge (`=@node{…}`, `=~"path"{…}`).
+      // Only operator-led terms qualify — a bare identifier stays the operator
+      // label (`=ref`) and a string stays a config value, so neither is grabbed
+      // as an anchor. Elided anchor = the enclosing node (reflexive bias).
+      skipWhitespace(stream)
+      if (current(stream).type === 'OPERATOR') {
+        const subjGen = choice<TermNode>(pathRefNode, referenceNode)(stream, depth + 1)
+        let subjStep = subjGen.next()
+        while (!subjStep.done) {
+          yield subjStep.value
+          subjStep = subjGen.next()
+        }
+        if (subjStep.value.success) {
+          subject = subjStep.value.value!
+          consumed += subjStep.value.consumed
+        }
+      }
     } else if (operatorToken.value === '?') {
       skipWhitespace(stream)
       if (current(stream).type === 'CONTAINER_OPEN' && current(stream).value === '(') {

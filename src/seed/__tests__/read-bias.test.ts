@@ -33,6 +33,19 @@ describe('readBias', () => {
     expect(edge!.sign).toBe('forward')
   })
 
+  it('binds an anchor from an operator-led subject (=@node / =~"path")', () => {
+    const ref = bias('=@node{ ~"x" }')
+    expect(ref!.anchor).toEqual({ value: 'node', kind: 'ref' })
+    const path = bias('=~"a/b.spw"{ ~"c/d.spw" }')
+    expect(path!.anchor).toEqual({ value: 'a/b.spw', kind: 'path' })
+    expect(path!.targets).toEqual([{ value: 'c/d.spw', kind: 'path' }])
+  })
+
+  it('leaves a bare identifier as the operator label, not an anchor', () => {
+    // `=ref`, `=workbench` etc. in canon must keep parsing as labeled edges.
+    expect(bias('=ref{ ~"x" }')!.anchor).toBeUndefined()
+  })
+
   it('reads the axis from a bare frame identifier', () => {
     const edge = bias('=[depth]{ deep }')
     expect(edge!.axis).toBe('depth')
