@@ -56,7 +56,8 @@ export type TokenType =
   | 'NUMBER'
   | 'BOOLEAN'
   | 'REFERENCE'      // @path
-  | 'ANNOTATION'     // ~#identifier
+  | 'ANNOTATION'     // ~#identifier (aspect particle; legacy bespoke token)
+  | 'PARTICLE'       // #>name deixis, #:name case — the ⟨stance⟩#⟨aim⟩name lattice
   | 'COMMENT'
   | 'WHITESPACE'
   | 'COLON'
