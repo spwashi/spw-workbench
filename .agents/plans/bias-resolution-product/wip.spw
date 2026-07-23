@@ -72,6 +72,9 @@
  >>[2026-07-23 00:30] implement — commits 2-4: query product field + matcher (getNodeProduct mirrors normalize), BIAS preset + `bias` CLI selector (verified `spw:select --selector bias` → 2 edges), readBias → BiasEdge {anchor,axis,targets,sign,valence} verb-neutral (sign forward/inverse from valence, never verb words). 6 unit tests green.
  >>[2026-07-23 00:45] implement — commit 5 (grammar): `=` anchor binding at expressions.ts, gated to OPERATOR-led subjects only (choice(pathRefNode, referenceNode)). Bare identifier stays operatorLabel (=ref/=workbench preserved), string stays config — zero collision, zero refactor needed. Verified =@node→ref anchor, =~"a"→path anchor; ={x}/=[depth]{x}/=boon{x} unchanged. lint:spw 343/343 pass. 8 readBias tests green (added anchor + label-preservation cases).
  >>[2026-07-23 00:46] note — user: "I don't mind needing to refactor." Conservative gate needed none — label/anchor/axis/targets are 4 distinct slots that coexist. Broader anchor form (identifier anchors, reinterpreting =ref/=workbench) remains available if wanted; would refactor ~6 canon usages. Open for discussion before consumers.
+ >>[2026-07-23 00:55] surprise — canon's real mount-ref idiom is `=ref: path` (a Binding: key=`=ref` op, value=path), NOT body form. readBias returns null for it → mount consumer would find ZERO real edges. Corpus split: only canon-mount.spw:49-51 are surface-pointing resolution edges; the rest (=dialect:/=warmth:/=probe_window:10/=raw:) are value-config bindings, NOT mount refs.
+ >>[2026-07-23 00:57] decide — user chose: refactor canon to body form (one canonical spelling), keep product body-only. Scoped tight to the 3 resolution edges in canon-mount.spw; value-config Bindings left as-is (they hold scalars, not surfaces — not bias edges). commit 6 inserted; consumers shift to 7-9, tests 10, docs 11.
+ >>[2026-07-23 01:00] implement — commit 6: canon-mount.spw =ref: <.spw#anchor> → =ref{ ~"<.spw#anchor>" } (x3). `spw:select --selector bias` now finds 3 real edges in canon; lint:spw 343/343 pass; readBias reads full path#anchor targets.
  >>[2026-07-23 00:32] surprise — TWO seed trees. `packages/spw-seed/src/` is the REAL code; `src/seed/*.ts` are re-export shims (`export * from ../../packages/...`). test:seed globs ONLY `src/seed/**/*.test.ts` — the `packages/spw-seed/src/**/*.test.ts` files (e.g. form-sequence.test.ts) are ORPHANED, run by no config. Package tests must live in `src/seed/__tests__/` and import via `@spwashi/spw-seed`. Relocated read-bias.test.ts there; it runs. Saved to memory.
 }
 
@@ -80,16 +83,17 @@
 }
 
 ^["commits"]{
- ~[1]: "vocab[seed] — neutral `bias` edge product in normalize (anchor·axis·targets·sign)"
- ~[2]: "&[seed-query] — add `product` selector field + honor it in the matcher"
- ~[3]: "&[seed-query] — BIAS preset + register `bias` CLI selector"
- ~[4]: "^seed[bias] — readBias → BiasEdge { anchor, axis, targets, sign } (verb-neutral)"
- ~[5]: "&[seed-grammar] — allow `=` subject (anchor) binding via expressions.ts:278"
- ~[6]: "&[cli-mount] — resolution consumer: spw:mount honors bias edges"
- ~[7]: "&[cli-mutate] — rewrite consumer: bias-sequence as ordered patch (boon=apply/bane=revert)"
- ~[8]: "&[cli-expand] — template consumer: unfold/fold against a template edge (specializes mutate)"
- ~[9]: "![seed-bias] — coverage: product + reader + selector + 3 consumers"
- ~[10]: ".[canon] — document the verb-polymorphic bias product"
+ ~[1]: "vocab[seed] — neutral `bias` edge product in normalize (anchor·axis·targets·sign)  ✓ b2e4b7b4"
+ ~[2]: "&[seed-query] — add `product` selector field + honor it in the matcher  ✓ c33e81d3"
+ ~[3]: "&[seed-query] — BIAS preset + register `bias` CLI selector  ✓ d541c50a"
+ ~[4]: "^seed[bias] — readBias → BiasEdge { anchor, axis, targets, sign }  ✓ 5b0730ba"
+ ~[5]: "&[seed-grammar] — allow `=` subject (anchor) binding via expressions.ts  ✓ 1d0d0c62"
+ ~[6]: ".[canon] — refactor mount refs =ref: path → =ref{ ~\"path\" } body form (user: one spelling)"
+ ~[7]: "&[cli-mount] — resolution consumer: spw:mount honors bias edges"
+ ~[8]: "&[cli-mutate] — rewrite consumer: bias-sequence as ordered patch (boon=apply/bane=revert)"
+ ~[9]: "&[cli-expand] — template consumer: unfold/fold against a template edge (specializes mutate)"
+ ~[10]: "![seed-bias] — coverage: product + reader + selector + 3 consumers"
+ ~[11]: ".[canon] — document the verb-polymorphic bias product"
 }
 
 ^["cache"]{
