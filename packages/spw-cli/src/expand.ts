@@ -16,6 +16,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
+import { derivedSurfaceName } from '@spwashi/spw-seed'
 import { biasSites, resolveTilde } from './bias-edges'
 import { printHelpPage } from './help'
 
@@ -99,7 +100,7 @@ async function runExpand(args: ExpandArgs): Promise<void> {
 
     if (args.write) {
       // Derived artifact, never the source — the source stays the canonical fold.
-      const out = abs.replace(/\.spw$/, '') + '.expanded.spw'
+      const out = derivedSurfaceName(abs, 'expanded')
       await fs.writeFile(out, text.endsWith('\n') ? text : `${text}\n`, 'utf8')
       results.push({ file: target, unfolded, out: path.relative(process.cwd(), out) })
       if (!args.json) console.error(`~ ${target}  unfolded=${unfolded} → ${path.relative(process.cwd(), out)}`)

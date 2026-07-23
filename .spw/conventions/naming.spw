@@ -20,6 +20,14 @@
  root_refs: "@root/path for cross-tree, ~\"./sibling\" for local adjacency"
 }
 
+^"derived_surfaces"{
+ # Generated artifacts, not authored canon. Scanners skip them by default.
+ suffix: "<stem>.<kind>.spw names a derived surface (kind: expanded, …)"
+ provenance: "sourceSurfaceOf(x.expanded.spw) → x.spw; the source stays the canonical fold"
+ excluded: "lint, mount resolve, and the tree walker skip derived surfaces — a projection may frame foreign content that need not re-parse as canon"
+ producer: "spw expand --write emits <stem>.expanded.spw; the source is never rewritten"
+}
+
 ^"invariant"{
  "Naming must expose ownership and composition boundaries.",
  "Public command names stay stable; internals evolve behind composed modules.",

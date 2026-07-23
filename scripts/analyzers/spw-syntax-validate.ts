@@ -23,7 +23,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { parse } from '@spwashi/spw-seed'
+import { isDerivedSurface, parse } from '@spwashi/spw-seed'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -168,7 +168,7 @@ async function collectSpwFiles(dir: string): Promise<string[]> {
         const full = path.join(dir, entry.name)
         if (entry.isDirectory()) {
             files.push(...await collectSpwFiles(full))
-        } else if (entry.isFile() && entry.name.endsWith('.spw')) {
+        } else if (entry.isFile() && entry.name.endsWith('.spw') && !isDerivedSurface(entry.name)) {
             files.push(full)
         }
     }

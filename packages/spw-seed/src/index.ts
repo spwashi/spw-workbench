@@ -436,6 +436,15 @@ export {
   type WorkspaceRootManifestDiagnosticCode,
 } from './workspace-roots'
 
+// Derived surface naming convention
+export {
+  DERIVED_SPW_KINDS,
+  type DerivedSpwKind,
+  isDerivedSurface,
+  sourceSurfaceOf,
+  derivedSurfaceName,
+} from './derived-surface'
+
 // Sugar/desugar helpers
 export { desugar, parseDesugared, normalizeToONF, type DesugarResult, type ONFNode, type FrameMap } from './normalize'
 export {

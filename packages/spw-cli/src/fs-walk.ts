@@ -5,6 +5,7 @@
  */
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
+import { isDerivedSurface } from '@spwashi/spw-seed'
 
 export const DEFAULT_IGNORED_DIRS: ReadonlySet<string> = new Set([
   '.git',
@@ -47,7 +48,7 @@ async function walk(dir: string, ignore: ReadonlySet<string>): Promise<string[]>
         if (ignore.has(entry.name)) return []
         return walk(path.join(dir, entry.name), ignore)
       }
-      if (entry.isFile() && entry.name.endsWith('.spw')) {
+      if (entry.isFile() && entry.name.endsWith('.spw') && !isDerivedSurface(entry.name)) {
         return [path.join(dir, entry.name)]
       }
       return []
