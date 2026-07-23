@@ -33,6 +33,7 @@ import {
   workspaceManifestV1 as _workspaceManifestV1,
   workspaceTemperature as _workspaceTemperature,
 } from './handlers/workspace'
+import { cacheReflection as _cacheReflection } from './handlers/cache-reflection'
 import { handleSpwProbe } from './handlers/spw-probes'
 import {
   SPW_WORKSPACE_MANIFEST_METHOD,
@@ -360,6 +361,11 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
 
       case 'spw/workspaceTemperature': {
         sendResult(id, _workspaceTemperature(deps))
+        return
+      }
+
+      case 'spw/cacheReflection': {
+        sendResult(id, _cacheReflection(deps))
         return
       }
 

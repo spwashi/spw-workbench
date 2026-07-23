@@ -109,6 +109,7 @@ function verifyCommandContributions(manifest) {
   const expected = [
     'spw.clearProbeCache',
     'spw.insertFormSequence',
+    'spw.inspectCache',
     'spw.inspectGeometry',
     'spw.navigate',
     'spw.restartLanguageServer',

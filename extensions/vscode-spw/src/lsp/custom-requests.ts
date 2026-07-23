@@ -40,6 +40,29 @@ export interface SpwWorkspaceTemperatureEntry {
   aspectShare?: number
 }
 
+/** An observation about where this session's attention went. */
+export interface SpwAttentionNote {
+  kind: 'returning' | 'churning' | 'wrote-without-return' | 'expired-view'
+  uri: string
+  detail: string
+}
+
+/** Surfaces grouped by what their shape makes them. */
+export interface SpwSignatureFamily {
+  archetype: 'index' | 'working-state' | 'classified' | 'plain'
+  volatility: 'volatile' | 'settled' | 'durable'
+  uris: string[]
+}
+
+export interface SpwCacheReflection {
+  beat: number
+  tracked: number
+  /** Share of all opens spent on the single most-visited surface, 0–1. */
+  concentration: number
+  notes: SpwAttentionNote[]
+  families: SpwSignatureFamily[]
+}
+
 export interface SpwRegisterEntry {
   name: string
   phase: number
@@ -97,6 +120,10 @@ export interface SpwCustomRequestMap {
   'spw/workspaceTemperature': {
     params: Record<string, never>
     result: SpwWorkspaceTemperatureEntry[]
+  }
+  'spw/cacheReflection': {
+    params: Record<string, never>
+    result: SpwCacheReflection
   }
   'spw/registerSnapshot': {
     params: { uri: string }
@@ -158,6 +185,7 @@ export interface SpwCustomRequestClient {
   contextAtPosition(uri: string, position: SpwPosition): Promise<SpwContextAtPositionResult | null>
   workspaceManifest(): Promise<SpwWorkspaceManifest>
   workspaceTemperature(): Promise<SpwWorkspaceTemperatureEntry[]>
+  cacheReflection(): Promise<SpwCacheReflection | null>
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -250,6 +278,18 @@ class SpwLanguageServerRequests implements SpwCustomRequestClient {
   async workspaceTemperature(): Promise<SpwWorkspaceTemperatureEntry[]> {
     const payload = await this.request('spw/workspaceTemperature', {})
     return parseWorkspaceTemperatureEntries(payload)
+  }
+
+  async cacheReflection(): Promise<SpwCacheReflection | null> {
+    const payload = await this.request('spw/cacheReflection', {})
+    if (!isRecord(payload) || typeof payload.tracked !== 'number') return null
+    return {
+      beat: typeof payload.beat === 'number' ? payload.beat : 0,
+      tracked: payload.tracked,
+      concentration: typeof payload.concentration === 'number' ? payload.concentration : 0,
+      notes: Array.isArray(payload.notes) ? (payload.notes as SpwAttentionNote[]) : [],
+      families: Array.isArray(payload.families) ? (payload.families as SpwSignatureFamily[]) : [],
+    }
   }
 }
 

@@ -116,6 +116,41 @@ export function registerSpwCommands(
       await vscode.window.showTextDocument(doc, { preview: true })
     }),
 
+    vscode.commands.registerCommand('spw.inspectCache', async () => {
+      const reflection = await requests.cacheReflection()
+      if (!reflection || reflection.tracked === 0) {
+        void vscode.window.showInformationMessage('No surfaces read yet this session.')
+        return
+      }
+
+      const short = (uri: string): string => uri.split('/').slice(-2).join('/')
+      const percent = (share: number): string => `${Math.round(share * 100)}%`
+
+      const lines = [
+        '# Spw session attention',
+        '',
+        `${reflection.tracked} surfaces read · beat ${reflection.beat} · `
+          + `${percent(reflection.concentration)} of opens on one surface`,
+        '',
+        '## What stands out',
+        ...(reflection.notes.length > 0
+          ? reflection.notes.map((n) => `- **${n.kind}** — ${short(n.uri)}: ${n.detail}`)
+          : ['- nothing to flag: no stale readings, no abandoned edits']),
+        '',
+        '## Kinds of surface in play',
+        ...reflection.families.map(
+          (f) => `- **${f.archetype}** (${f.volatility}) × ${f.uris.length}`
+            + `\n${f.uris.map((u) => `  - ${short(u)}`).join('\n')}`,
+        ),
+      ]
+
+      const doc = await vscode.workspace.openTextDocument({
+        content: lines.join('\n'),
+        language: 'markdown',
+      })
+      await vscode.window.showTextDocument(doc, { preview: true })
+    }),
+
     vscode.commands.registerCommand('spw.restartLanguageServer', async () => {
       await client.restart()
       void vscode.window.showInformationMessage('Spw language server restarted.')

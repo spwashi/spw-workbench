@@ -60,6 +60,14 @@ export interface DocumentState {
   lineContexts: DocumentLineContext[]
   /** Particle signature of the surface — the material behind its cache stance. */
   mix: ParticleMix
+  /**
+   * Times this surface was opened. Counted from didOpen rather than from
+   * handler traffic, so it measures navigation — returning to a surface —
+   * and not how chatty the editor was about it.
+   */
+  visits: number
+  /** Beat of the last edit, so a write that was never revisited is visible. */
+  lastWriteBeat: number
   lastAccessBeat: number
   tier: 'hot' | 'warm' | 'cold'
   writeCount: number
@@ -203,6 +211,7 @@ export class ServerIndex {
   openDocument(uri: string, filePath: string, text: string, version: number): DocumentState {
     const doc = this.ensureDocument(uri, filePath, text, version)
     doc.tier = 'hot'
+    doc.visits += 1
     return doc
   }
 
@@ -221,6 +230,7 @@ export class ServerIndex {
     doc.version = version
     doc.contentHash = newHash
     doc.lastAccessBeat = this.beat
+    doc.lastWriteBeat = this.beat
     doc.writeCount++
 
     // Reparse
@@ -303,6 +313,8 @@ export class ServerIndex {
       frames: [],
       lineContexts: [],
       mix: { deixis: 0, case: 0, mood: 0, aspect: 0 },
+      visits: 0,
+      lastWriteBeat: -1,
       lastAccessBeat: this.beat,
       tier: 'warm',
       writeCount: 0,
