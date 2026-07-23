@@ -37,12 +37,15 @@ const SIGIL_SYMBOL: Record<string, { kind: number; detail: string }> = {
   '*': { kind: SK.Key, detail: 'variant' },
 }
 
-/** Particle aim → how the mark reads in the outline. */
-const AIM_SYMBOL: Record<string, { kind: number; detail: string }> = {
-  '>': { kind: SK.Key, detail: 'anchor' },
-  ':': { kind: SK.Enum, detail: 'case' },
-  '!': { kind: SK.Event, detail: 'mood' },
-}
+/**
+ * Only deixis earns an outline row.
+ *
+ * An anchor is a destination — `~"file#anchor"` resolves to it, so it belongs
+ * in a list of places you can go. Case and mood classify the surface rather
+ * than address it, and canon opens with four to six of them, which would put
+ * a wall of metadata above the first real structure in every file.
+ */
+const ANCHOR_SYMBOL = { kind: SK.Key, detail: 'anchor' } as const
 
 function isSignificant(token: Token): boolean {
   return token.type !== 'WHITESPACE' && token.type !== 'EOF'
@@ -80,9 +83,8 @@ function declaredSymbol(line: Token[]): { name: string; kind: number; detail: st
   if (!head) return null
 
   if (head.type === 'PARTICLE') {
-    const aim = AIM_SYMBOL[head.kind ?? '']
-    if (!aim) return null
-    return { name: head.value, kind: aim.kind, detail: aim.detail }
+    if (head.kind !== '>') return null
+    return { name: head.value, ...ANCHOR_SYMBOL }
   }
 
   if (head.type !== 'OPERATOR') return null

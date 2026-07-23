@@ -62,7 +62,7 @@ describe('outlineFromSource — every frame form is a landmark', () => {
 })
 
 describe('outlineFromSource — marks are landmarks, never containers', () => {
-  it('keeps a header particle to its own line so breadcrumbs stay honest', () => {
+  it('keeps an anchor to its own line so breadcrumbs stay honest', () => {
     // The regression this replaced: `#:surface` claimed every following line,
     // so the breadcrumb reported it while the cursor sat inside the frame.
     const source = [
@@ -74,22 +74,22 @@ describe('outlineFromSource — marks are landmarks, never containers', () => {
       '}', //              5
     ].join('\n')
 
-    const symbols = outlineFromSource(source)
-    expect(flat(symbols)).toEqual([
+    expect(flat(outlineFromSource(source))).toEqual([
       '#>anchor_name@0-0',
-      '#:surface@1-1',
       '^body@3-5',
     ])
   })
 
-  it('reads all three particle aims with their lattice names', () => {
+  it('lists anchors only — a destination is a place you can go', () => {
     const symbols = outlineFromSource('#>anchor\n#:layer\n#!pragmatics\n')
-    expect(symbols.map((s) => s.detail)).toEqual(['anchor', 'case', 'mood'])
+    expect(names(symbols)).toEqual(['#>anchor'])
+    expect(symbols[0]!.detail).toBe('anchor')
   })
 
-  it('names a mood particle even when it shares a line with a case', () => {
-    // Only the line-leading mark becomes the landmark; the rest are its company.
-    expect(names(outlineFromSource('#:layer #!pragmatics\n'))).toEqual(['#:layer'])
+  it('keeps a header stack of case and mood out of the outline entirely', () => {
+    // The shape every canonical surface opens with: it classifies the file
+    // rather than addressing it, so it is not a landmark.
+    expect(outlineFromSource('#:layer #!pragmatics\n#:status #!draft\n')).toEqual([])
   })
 })
 
