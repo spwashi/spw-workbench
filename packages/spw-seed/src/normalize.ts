@@ -208,8 +208,10 @@ export function normalizeToONF(node: ASTNode): ONFNode {
         }).coupling
       }
 
-      // Act·Body product (e.g. .{} facet, &{} wrap).
-      if (op.body && !op.frame) {
+      // Act·Body product (e.g. .{} facet, &{} wrap). `=` is handled below as a
+      // bias edge so its body coupling is stamped uniformly whether or not an
+      // anchor (subject) or axis (frame) decorates it.
+      if (op.body && !op.frame && sigil !== '=') {
         const bodyArgs: ONFNode[] = op.body.sequence
           ? op.body.sequence.expressions.map((e: any) => normalizeToONF(e))
           : []
@@ -218,6 +220,23 @@ export function normalizeToONF(node: ASTNode): ONFNode {
           argCount: bodyArgs.length,
           actPlacement: 'prefix',
           product: hasBodyOnly && sigil === '.' ? 'facet' : undefined,
+        }).coupling
+      }
+
+      // Bias edge: `=`+body is a verb-neutral directed edge. The body carries the
+      // ranked targets; an optional subject is the anchor (from-pole, elided =
+      // enclosing node) and an optional frame `[reg=…]` is the axis. The product
+      // tag names the shape only — no verb (resolve/rewrite/template) lives here;
+      // consumers interpret the edge. See readBias() and .spw/registries/bias-product.spw.
+      if (sigil === '=' && op.body) {
+        const bodyArgs: ONFNode[] = op.body.sequence
+          ? op.body.sequence.expressions.map((e: any) => normalizeToONF(e))
+          : []
+        frames.bound = withCoupling({}, 'body', {
+          args: bodyArgs,
+          argCount: bodyArgs.length,
+          actPlacement: 'prefix',
+          product: 'bias',
         }).coupling
       }
 
