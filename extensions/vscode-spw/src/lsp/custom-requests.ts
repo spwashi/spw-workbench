@@ -30,9 +30,14 @@ export interface SpwResonanceEdge {
 
 export interface SpwWorkspaceTemperatureEntry {
   uri: string
+  /** How recently the surface was read. */
   tier: string
   beatAge: number
   writeCount: number
+  /** What the surface is made of: whether its content keeps or expires. */
+  volatility?: 'volatile' | 'settled' | 'durable'
+  /** Aspect (`~#`) marks as a share of all particle marks, 0–1. */
+  aspectShare?: number
 }
 
 export interface SpwRegisterEntry {

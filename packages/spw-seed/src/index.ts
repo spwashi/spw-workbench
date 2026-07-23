@@ -351,7 +351,10 @@ export {
   type BiasSign,
   particleBindings,
   deixisTable,
+  particleMix,
+  particleMixTotal,
   type ParticleBinding,
+  type ParticleMix,
   resolveFragment,
   type ResolvedFragment,
 } from './canonical'

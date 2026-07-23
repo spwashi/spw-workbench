@@ -117,6 +117,13 @@ const TIER_ICONS: Record<string, string> = {
   cold: 'circle-outline',
 }
 
+/** What a surface's aspect density means for reading it again. */
+const VOLATILITY_HINT: Record<string, string> = {
+  volatile: 'Volatile — deferred state throughout; re-read rather than trust a cached view',
+  settled: 'Settled — some deferred state; expect revision',
+  durable: 'Durable — canon marks; safe to hold',
+}
+
 /** Density bar for phase distribution */
 function densityBar(count: number, total: number, width: number = 6): string {
   if (total <= 0) return '░'.repeat(width)
@@ -326,12 +333,22 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
       case 'memory-file': {
         const short = node.entry.uri.split('/').pop() ?? node.entry.uri
         const item = new vscode.TreeItem(short, vscode.TreeItemCollapsibleState.None)
-        item.description = `${node.entry.tier} · age ${node.entry.beatAge}`
+        const { volatility, aspectShare } = node.entry
+        // Recency and volatility are independent: age says when it was last
+        // read, volatility says whether that reading still holds.
+        item.description = volatility
+          ? `${node.entry.tier} · ${volatility} · age ${node.entry.beatAge}`
+          : `${node.entry.tier} · age ${node.entry.beatAge}`
         item.iconPath = new vscode.ThemeIcon(
           'file',
           new vscode.ThemeColor(TIER_COLORS[node.entry.tier] ?? 'spw.tierCold'),
         )
-        item.tooltip = `${node.entry.uri}\nTier: ${node.entry.tier} · Beat age: ${node.entry.beatAge} · Writes: ${node.entry.writeCount}`
+        const stance = volatility
+          ? `\n${VOLATILITY_HINT[volatility]}${
+            typeof aspectShare === 'number' ? ` (${Math.round(aspectShare * 100)}% aspect)` : ''
+          }`
+          : ''
+        item.tooltip = `${node.entry.uri}\nTier: ${node.entry.tier} · Beat age: ${node.entry.beatAge} · Writes: ${node.entry.writeCount}${stance}`
         item.command = {
           command: 'vscode.open',
           title: 'Open',

@@ -16,11 +16,11 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { isDerivedSurface, parse, particleBindings } from '@spwashi/spw-seed'
+import { isDerivedSurface, parse, particleBindings, particleMix, type ParticleMix } from '@spwashi/spw-seed'
 
 const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', 'dist-ssr', 'release', '.agents'])
 
-interface Mix { deixis: number; case: number; mood: number; aspect: number }
+type Mix = ParticleMix
 
 interface Census {
   files: number
@@ -91,24 +91,27 @@ async function census(roots: string[]): Promise<Census> {
     const tree = rel.split(path.sep)[0] ?? '.'
     const mix = (trees[tree] ??= emptyMix())
     const source = await fs.readFile(file, 'utf8')
-    mix.aspect += (source.match(/~#[A-Za-z_]/g) ?? []).length
+    const ast = parse(source).ast ?? null
 
-    const result = parse(source)
-    if (!result.ast) continue
+    // The mix is measured by the seed so the census, the LSP probe, and the
+    // cache tiers all read one definition of a surface's signature.
+    const fileMix = particleMix(ast, source)
+    mix.deixis += fileMix.deixis
+    mix.case += fileMix.case
+    mix.mood += fileMix.mood
+    mix.aspect += fileMix.aspect
 
-    for (const binding of particleBindings(result.ast)) {
-      const { aim } = binding.particle
+    if (!ast) continue
+
+    for (const binding of particleBindings(ast)) {
+      if (binding.particle.aim !== '>') continue
       const name = binding.particle.name.value
-      if (aim === '>') {
-        mix.deixis += 1
-        ;(anchorFiles.get(name) ?? anchorFiles.set(name, new Set()).get(name)!).add(rel)
-        if (!binding.bound) {
-          unboundAnchors.push({ name, file: rel, line: binding.particle.span.start.line })
-        }
-      } else if (aim === ':') mix.case += 1
-      else mix.mood += 1
+      ;(anchorFiles.get(name) ?? anchorFiles.set(name, new Set()).get(name)!).add(rel)
+      if (!binding.bound) {
+        unboundAnchors.push({ name, file: rel, line: binding.particle.span.start.line })
+      }
     }
-    noiseOf(result.ast, source, rel, noiseMarks)
+    noiseOf(ast, source, rel, noiseMarks)
   }
 
   for (const mix of Object.values(trees)) {

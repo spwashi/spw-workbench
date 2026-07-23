@@ -18,7 +18,9 @@ import {
   parse,
   canonicalize,
   hashString,
+  particleMix,
   type ParseOutput,
+  type ParticleMix,
   type Token,
   type OperatorKind,
 } from '@spwashi/spw-seed'
@@ -56,6 +58,8 @@ export interface DocumentState {
   annotations: AnnotationEntry[]
   frames: FrameEntry[]
   lineContexts: DocumentLineContext[]
+  /** Particle signature of the surface — the material behind its cache stance. */
+  mix: ParticleMix
   lastAccessBeat: number
   tier: 'hot' | 'warm' | 'cold'
   writeCount: number
@@ -298,6 +302,7 @@ export class ServerIndex {
       annotations: [],
       frames: [],
       lineContexts: [],
+      mix: { deixis: 0, case: 0, mood: 0, aspect: 0 },
       lastAccessBeat: this.beat,
       tier: 'warm',
       writeCount: 0,
@@ -314,6 +319,7 @@ export class ServerIndex {
       doc.parseResult = null
     }
     doc.selectorHits = selectPathRefs(doc.text)
+    doc.mix = particleMix(doc.parseResult?.ast ?? null, doc.text)
     // Pass parse result so analyzeDocumentContext reuses tokens already produced
     const structure = analyzeDocumentContext(doc.filePath, doc.text, doc.parseResult)
     doc.annotations = structure.annotations

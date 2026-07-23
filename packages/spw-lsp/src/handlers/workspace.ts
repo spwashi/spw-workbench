@@ -3,6 +3,7 @@
  * legacy adapter for clients that still consume process-local path strings.
  */
 
+import { particleMixTotal, type ParticleMix } from '@spwashi/spw-seed'
 import {
   resolveWorkspaceAuthority,
   resolveWorkspacePathIdentity,
@@ -32,11 +33,22 @@ export interface WorkspaceProjectionEntry {
   status: string
 }
 
+/**
+ * How much of a surface is deferred state — the share of its marks that are
+ * `~#` aspect. Aspect names content that expires, so a surface thick with it
+ * is one whose cached reads go stale on their own.
+ */
+export type Volatility = 'volatile' | 'settled' | 'durable'
+
 export interface WorkspaceTemperatureEntry {
   uri: string
   tier: string
   beatAge: number
   writeCount: number
+  /** What the surface is made of, independent of when it was last read. */
+  volatility: Volatility
+  /** Aspect marks as a share of all particle marks, 0–1. */
+  aspectShare: number
 }
 
 /** @deprecated Use SpwWorkspaceManifestV1. */
@@ -95,6 +107,39 @@ export async function workspaceManifest(deps: HandlerDeps): Promise<WorkspaceMan
   }
 }
 
+/**
+ * Two thirds deferred state is a working surface; a third is a settled one
+ * still under revision. Below that the marks are durable canon.
+ */
+const VOLATILE_SHARE = 0.6
+const SETTLED_SHARE = 0.3
+
+/**
+ * Read a surface's cache stance from its particle mix.
+ *
+ * The seed measures the material and this decides the policy — caching is the
+ * server's concern, not the parser's. A surface with no marks at all has
+ * nothing to go stale, so it reads as durable.
+ */
+export function volatilityOf(mix: ParticleMix): { volatility: Volatility; aspectShare: number } {
+  const total = particleMixTotal(mix)
+  if (total === 0) return { volatility: 'durable', aspectShare: 0 }
+
+  const aspectShare = mix.aspect / total
+  const volatility: Volatility =
+    aspectShare >= VOLATILE_SHARE ? 'volatile'
+      : aspectShare >= SETTLED_SHARE ? 'settled'
+        : 'durable'
+
+  return { volatility, aspectShare }
+}
+
+/**
+ * The workspace's cache picture on two independent axes: `tier` is how
+ * recently a surface was read, `volatility` is whether its content keeps.
+ * Crossing them is what makes the reading actionable — a cold durable surface
+ * is safe to keep cached, while a hot volatile one must be re-read on change.
+ */
 export function workspaceTemperature(deps: HandlerDeps): WorkspaceTemperatureEntry[] {
   const { serverIndex } = deps
   const beat = serverIndex.getCurrentBeat()
@@ -106,6 +151,7 @@ export function workspaceTemperature(deps: HandlerDeps): WorkspaceTemperatureEnt
       tier: doc.tier,
       beatAge: beat - doc.lastAccessBeat,
       writeCount: doc.writeCount,
+      ...volatilityOf(doc.mix),
     })
   }
 

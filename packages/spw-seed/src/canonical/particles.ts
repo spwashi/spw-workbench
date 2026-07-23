@@ -103,6 +103,47 @@ export function particleBindings(root: ASTNode): ParticleBinding[] {
   return out
 }
 
+/**
+ * How many marks of each aim a surface carries — its dialect signature.
+ *
+ * The four aims measure different things about a surface, so the mix reads as
+ * a profile rather than a score: deixis is navigability (how addressable it
+ * is), case is queryability, mood is assertion richness, and aspect is
+ * volatility — `~#` marks are deferred state, so a surface dense in them is
+ * one whose content expires.
+ *
+ * Aspect still lives on the legacy Annotation node rather than the particle
+ * family, so it is counted from the source. Pass the source to include it.
+ */
+export interface ParticleMix {
+  deixis: number
+  case: number
+  mood: number
+  aspect: number
+}
+
+const ASPECT_MARK = /~#[A-Za-z_]/g
+
+export function particleMix(root: ASTNode | null, source = ''): ParticleMix {
+  const mix: ParticleMix = { deixis: 0, case: 0, mood: 0, aspect: 0 }
+  mix.aspect = (source.match(ASPECT_MARK) ?? []).length
+  if (!root) return mix
+
+  for (const binding of particleBindings(root)) {
+    switch (binding.particle.aim) {
+      case '>': mix.deixis += 1; break
+      case ':': mix.case += 1; break
+      default: mix.mood += 1
+    }
+  }
+  return mix
+}
+
+/** Total marks in a mix — the denominator for density questions. */
+export function particleMixTotal(mix: ParticleMix): number {
+  return mix.deixis + mix.case + mix.mood + mix.aspect
+}
+
 /** The deixis (anchor) table of a tree: name → binding, first wins per name. */
 export function deixisTable(root: ASTNode): Map<string, ParticleBinding> {
   const table = new Map<string, ParticleBinding>()

@@ -524,14 +524,52 @@ describe('workspace temperature', () => {
         tier: 'hot',
         beatAge: 0,
         writeCount: 1,
+        volatility: 'durable',
+        aspectShare: 0,
       },
       {
         uri: pathToFileURL(coldPath).toString(),
         tier: 'hot',
         beatAge: 2,
         writeCount: 0,
+        volatility: 'durable',
+        aspectShare: 0,
       },
     ])
+  })
+
+  it('reports volatility independently of how recently a surface was read', () => {
+    const workspaceRoot = path.resolve('/workspace')
+    const serverIndex = new ServerIndex(workspaceRoot)
+    const planPath = path.join(workspaceRoot, 'plan.spw')
+    const canonPath = path.join(workspaceRoot, 'canon.spw')
+
+    // Both are equally hot; only their material differs.
+    serverIndex.openDocument(
+      pathToFileURL(planPath).toString(),
+      planPath,
+      '^["cache"]{\n ~#status: "open"\n ~#next: "4"\n ~#age: "1"\n}',
+      1,
+    )
+    serverIndex.openDocument(
+      pathToFileURL(canonPath).toString(),
+      canonPath,
+      '#>canon_anchor\n#:layer #!canon',
+      1,
+    )
+
+    const byUri = new Map(
+      workspaceTemperature(makeWorkspaceDeps(serverIndex, workspaceRoot)).map((e) => [e.uri, e]),
+    )
+
+    expect(byUri.get(pathToFileURL(planPath).toString())).toMatchObject({
+      tier: 'hot',
+      volatility: 'volatile',
+    })
+    expect(byUri.get(pathToFileURL(canonPath).toString())).toMatchObject({
+      tier: 'hot',
+      volatility: 'durable',
+    })
   })
 
   it('preserves the document URI instead of reconstructing a local file URI', () => {

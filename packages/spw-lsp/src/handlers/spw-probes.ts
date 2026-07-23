@@ -10,7 +10,7 @@
  */
 
 import path from 'node:path'
-import { inspectGeometry, parse, particleBindings } from '@spwashi/spw-seed'
+import { inspectGeometry, parse, particleMix, deixisTable } from '@spwashi/spw-seed'
 import { SIGIL_SEMANTICS } from '../server-index'
 import type { HandlerDeps, LspPosition } from '../types'
 
@@ -372,31 +372,15 @@ async function particlesProbe(
     source = (await deps.getDocumentText(uri)) ?? ''
   }
 
-  const mix = { deixis: 0, case: 0, mood: 0, aspect: 0 }
-  // Aspect marks (~#) still live on the legacy Annotation path — count textually.
-  mix.aspect = (source.match(/~#[A-Za-z_]/g) ?? []).length
+  const ast = parse(source).ast ?? null
+  const mix = particleMix(ast, source)
+  if (!ast) return { uri: uri ?? null, anchors: [], mix }
 
-  const result = parse(source)
-  if (!result.ast) {
-    return { uri: uri ?? null, anchors: [], mix }
-  }
-
-  const anchors: Array<{ name: string; line: number; boundLine: number | null }> = []
-  for (const binding of particleBindings(result.ast)) {
-    const aim = binding.particle.aim
-    if (aim === '>') {
-      mix.deixis += 1
-      anchors.push({
-        name: binding.particle.name.value,
-        line: binding.particle.span.start.line,
-        boundLine: binding.bound?.span?.start.line ?? null,
-      })
-    } else if (aim === ':') {
-      mix.case += 1
-    } else {
-      mix.mood += 1
-    }
-  }
+  const anchors = [...deixisTable(ast).entries()].map(([name, binding]) => ({
+    name,
+    line: binding.particle.span.start.line,
+    boundLine: binding.bound?.span?.start.line ?? null,
+  }))
 
   return { uri: uri ?? null, anchors, mix }
 }

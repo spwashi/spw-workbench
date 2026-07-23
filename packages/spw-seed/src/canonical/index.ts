@@ -288,7 +288,10 @@ export {
 export {
   particleBindings,
   deixisTable,
+  particleMix,
+  particleMixTotal,
   type ParticleBinding,
+  type ParticleMix,
 } from './particles'
 
 export {
