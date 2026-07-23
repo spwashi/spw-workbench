@@ -86,9 +86,16 @@ function getNodeSigil(node: ASTNode): string | undefined {
       return '~'
     case 'Annotation':
       return '#'
+    case 'Particle':
+      return '#'
     default:
       return undefined
   }
+}
+
+function getNodeAim(node: ASTNode): string | undefined {
+  if (node.type !== 'Particle') return undefined
+  return (node as { aim?: string }).aim
 }
 
 /** Compatibility projection for the original brace/brace2 fields. */
@@ -166,6 +173,8 @@ function getNodeValue(node: ASTNode): string | undefined {
     case 'Operation': {
       return (node as OperationNode).operatorLabel?.value
     }
+    case 'Particle':
+      return (node as { name?: { value?: string } }).name?.value
     case 'Capsule':
       return (node as CapsuleNode).tag?.value
     case 'Frame':
@@ -213,6 +222,7 @@ function matchPattern(node: ASTNode, pattern: SpwPattern, depth: number): boolea
   }
   if (pattern.modifier !== undefined && getNodeModifier(node) !== pattern.modifier) return false
   if (pattern.product !== undefined && getNodeProduct(node) !== pattern.product) return false
+  if (pattern.aim !== undefined && getNodeAim(node) !== pattern.aim) return false
   if (pattern.value !== undefined && getNodeValue(node) !== pattern.value) return false
   if (pattern.depth !== undefined && depth !== pattern.depth) return false
   if (pattern.depthRange !== undefined) {

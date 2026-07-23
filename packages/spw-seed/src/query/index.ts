@@ -65,6 +65,8 @@ export {
     QUERY_OPS,
     CONFIG_OPS,
     BIAS,
+    PARTICLES,
+    ANCHORS,
     ANNOTATION_OPS,
     OPS_WITH_FRAMES,
     OPS_WITH_BODIES,

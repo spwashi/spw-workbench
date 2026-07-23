@@ -49,6 +49,12 @@ export const CONFIG_OPS: SpwPattern = { sigil: '=', nodeType: 'Operation' }
 /** Bias edges: every `=` carrying a body (the verb-neutral resolution edge). */
 export const BIAS: SpwPattern = { sigil: '=', product: 'bias' }
 
+/** Every particle mark: #>deixis, #:case, #!mood. */
+export const PARTICLES: SpwPattern = { nodeType: 'Particle' }
+
+/** Deixis particles — the anchors fragments resolve to. */
+export const ANCHORS: SpwPattern = { nodeType: 'Particle', aim: '>' }
+
 /** All annotation/set Operations, without text provenance. */
 export const ANNOTATION_OPS: SpwPattern = { sigil: '#', nodeType: 'Operation' }
 

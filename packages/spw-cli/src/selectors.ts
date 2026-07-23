@@ -1,7 +1,9 @@
 import {
+  ANCHORS,
   ANY,
   ANNOTATION_OPS,
   BIAS,
+  PARTICLES,
   BOON_OPS,
   BONE_OPS,
   CONFIG_OPS,
@@ -33,6 +35,8 @@ export const CLI_SELECTOR_PRESETS: Record<string, SpwSelector> = {
   probes: QUERY_OPS,
   configs: CONFIG_OPS,
   bias: BIAS,
+  particles: PARTICLES,
+  anchors: ANCHORS,
   defers: DEFER_OPS,
   taps: DOMAIN_ROOTS,
   annotations: ANNOTATION_OPS,

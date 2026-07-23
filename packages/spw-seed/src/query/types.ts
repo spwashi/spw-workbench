@@ -72,6 +72,8 @@ export interface SpwPattern {
    * 'select'). Derived from the AST to mirror normalize.ts without normalizing.
    */
   product?: string
+  /** Match a particle's aim: `>` deixis, `:` case, `!` mood. */
+  aim?: '>' | ':' | '!'
   /**
    * Match an exact scalar: path/reference/literal/identifier value, Operation
    * label, Capsule tag, or the first descendant scalar of a boundary node.
