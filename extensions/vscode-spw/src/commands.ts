@@ -9,7 +9,7 @@ import type { ProbeCache } from './surface-decorations'
 const FORM_SEQ = '& => {&} => {&[#label]} => {&<#tag>_label}'
 
 export function registerSpwCommands(
-  context: vscode.ExtensionContext,
+  _context: vscode.ExtensionContext,
   client: LanguageClient,
   requests: SpwCustomRequestClient,
   probeCache?: ProbeCache,
@@ -129,7 +129,7 @@ export function registerSpwCommands(
       }
       const uri = editor.document.uri.toString()
       const cacheKey = `geometry:${uri}:${editor.document.version}`
-      let result = probeCache?.get<{
+      let cachedResult = probeCache?.get<{
         braces: {
           kinds: Record<string, number>
           coupleOps: number
@@ -140,10 +140,11 @@ export function registerSpwCommands(
         nesting: { maxDepth: number }
         lessons: string[]
       }>(cacheKey)
-      if (!result) {
-        result = await client.sendRequest('spw/geometry', { uri })
-        probeCache?.set(cacheKey, result)
+      if (!cachedResult) {
+        cachedResult = await client.sendRequest('spw/geometry', { uri })
+        probeCache?.set(cacheKey, cachedResult)
       }
+      const result = cachedResult!
       const k = result.braces?.kinds ?? {}
       const lines = [
         `# Spw geometry`,
