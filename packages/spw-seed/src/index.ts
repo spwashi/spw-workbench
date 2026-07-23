@@ -357,6 +357,16 @@ export {
   type ParticleMix,
   resolveFragment,
   type ResolvedFragment,
+  planSemanticEdits,
+  applySemanticPlan,
+  renameMark,
+  renameParticle,
+  type SemanticRule,
+  type SemanticRewrite,
+  type SemanticEdit,
+  type SemanticConflict,
+  type SemanticPlan,
+  type SemanticPlanOptions,
 } from './canonical'
 
 // NL preview

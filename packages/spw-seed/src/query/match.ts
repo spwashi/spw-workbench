@@ -175,6 +175,10 @@ function getNodeValue(node: ASTNode): string | undefined {
     }
     case 'Particle':
       return (node as { name?: { value?: string } }).name?.value
+    case 'Annotation':
+      // A mark's name is its identity: `~#status` selects as `status`, so the
+      // 4001 aspect marks in a corpus are addressable the way particles are.
+      return (node as { name?: { value?: string } }).name?.value?.replace(/^\W+/, '')
     case 'Capsule':
       return (node as CapsuleNode).tag?.value
     case 'Frame':

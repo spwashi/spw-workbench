@@ -298,3 +298,16 @@ export {
   resolveFragment,
   type ResolvedFragment,
 } from './resolve-fragment'
+
+export {
+  planSemanticEdits,
+  applySemanticPlan,
+  renameMark,
+  renameParticle,
+  type SemanticRule,
+  type SemanticRewrite,
+  type SemanticEdit,
+  type SemanticConflict,
+  type SemanticPlan,
+  type SemanticPlanOptions,
+} from './semantic-edit'
