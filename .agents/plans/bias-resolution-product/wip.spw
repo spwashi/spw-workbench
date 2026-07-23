@@ -1,0 +1,93 @@
+# wip — bias-resolution-product
+# Branch: feature/bias-resolution-product
+# Started: 2026-07-22
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @plan: ~".agents/plans/bias-resolution-product/PLAN.md"
+ @normalize: ~"packages/spw-seed/src/normalize.ts"
+ @presets: ~"packages/spw-seed/src/query/presets.ts"
+ @coupling: ~"packages/spw-seed/src/types/coupling.ts"
+ @rel: ~".spw/biome/ocean/expr/rel.spw"   # existing register_bias array convention
+ @physics: ~".spw/registries/brace-physics.spw"  # valence pentad markers
+}
+
+^["intent"]{
+ ~#goal: "Canonicalize `={ target }` as a named resolution-bias product. Today `=`+body normalizes to an inert `config` body with no product identity; give it product `bias` so it is queryable and honored. Frame `[reg=…]` names the axis, body-sequence ranks targets (first strongest), `~`-path is the target form, valence signs direction (boon=attractor, bane=repeller)."
+ ~#taste: "expressiveness + naming — a shape the parser already accepts becomes a first-class, addressable product with zero grammar surgery; reuses the existing register_bias ordered-array convention and the ~/valence vocabulary rather than inventing new glyphs"
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#taste, #linguistics, #design_transfer]
+ review_surfaces: [@plan, @normalize, @rel]
+ snippet_routes: [#example, #query, #snippet]
+}
+
+^["concept_index"]{
+ primary: [#resolution_bias, #named_product, #collapse_target]
+ surfaces: [#seed, #query, #canon]
+ tensions: [#product_vs_boundary_match, #axis_naming, #self_ref_collision]
+ transfers: [#language, #component, #service]
+}
+
+^["parallel_work"]{
+ critical_path: [#normalize_product]     # everything downstream keys off the product name
+ parallelizable: [#canon_docs, #selector_preset]
+ shared_hot_files: ["packages/spw-seed/src/normalize.ts", "packages/spw-seed/src/query/types.ts"]
+ merge_risks: [#hot_file, #naming_drift]
+ handoff_artifacts: [@plan]
+}
+
+^["risk_model"]{
+ # hard: product name collides with an existing reg id → downstream selectors mis-hit
+ # soft: `product` field absent from SpwPattern → BIAS preset falls back to withBoundaries:['body'] (broader match)
+ # non_negotiable: `=`+body that carried NO product before must still parse and normalize identically except for the added product tag (no roundtrip regression)
+}
+
+^["validation"]{
+ # hypotheses: [ "every current ={…} in the corpus normalizes unchanged except for product:'bias'" ]
+ # negative_controls: [ "=[x] frame-only and bare = ops keep reg:'config' with no product", "'.'-facet product untouched" ]
+ # demo_path: [ "spw:select a fixture --selector bias → hits the ={~\"...\"} node", "readBias(node) → { axis, targets, sign }" ]
+}
+
+^["stream"]{
+ >>[2026-07-22 19:10] decide — bias reading chosen over self-ref: self-ref is redundant with filename, collides with ~ (locative), and distributed self-declaration fights .spw/index.spw routing. bias is coherent with =:config and reuses register_bias arrays.
+ >>[2026-07-22 19:12] observe — seam is normalize.ts:220; product is stamped only for '.'→facet today. `=`+body-only currently yields reg:'config' with an unnamed body coupling.
+ >>[2026-07-22 19:14] observe — SpwPattern (query/types.ts) has no `product` field; BIAS preset can match `{sigil:'=', withBoundaries:['body']}` today but a precise product match needs the field + matcher support.
+ >>[2026-07-22 19:15] observe — subject slot is gated to ^ and ? only (expressions.ts:278); `="reg"{…}` subject-binding is the one stretch form that touches the grammar.
+ >>[2026-07-22 19:16] taste — target form composes cleanly: = says "lean toward", ~ says "this surface"; nesting keeps locative meaning with ~ and directional meaning with =, dissolving the self-ref tension.
+}
+
+^["open"]{
+ ?[axis-slot]: "frame [reg=depth] vs a bare frame [depth] — which names the biased register? lean [reg=…] to match existing binding idiom."
+ ?[product-name]: "product id `bias` vs `pin`/`ref` — `bias` matches =:config valence and register_bias prior art."
+ ?[consumer-depth]: "portable readBias() in seed as the honoring consumer, or wire directly into spw:mount/index resolution? plan ships readBias + selector; mount wiring deferred unless cheap."
+}
+
+^["commits"]{
+ ~[1]: "vocab[seed] — name the `=`+body ONF product `bias` in normalize"
+ ~[2]: "&[seed-query] — add `product` selector field + honor it in the matcher"
+ ~[3]: "&[seed-query] — BIAS preset + register `bias` CLI selector"
+ ~[4]: "^seed[bias] — readBias consumer: axis / ranked targets / valence sign"
+ ~[5]: "![seed-bias] — normalize + reader + selector coverage"
+ ~[6]: ".[canon] — document the bias resolution product (operator surface + docs)"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@993c0994"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "packages/spw-seed/src/normalize.ts"
+ ~#next_commit: "1"
+ ~#open_count: "3"
+ ~#last_stream: "2026-07-22 19:16"
+ ~#taste_debt: ""
+}
+
+^["done"]{
+ # Written at merge time.
+}
