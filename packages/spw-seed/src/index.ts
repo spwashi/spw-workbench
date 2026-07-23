@@ -367,6 +367,11 @@ export {
   type SemanticConflict,
   type SemanticPlan,
   type SemanticPlanOptions,
+  deriveMark,
+  countOps,
+  latestTimestamp,
+  type MarkDeriver,
+  type DeriveContext,
 } from './canonical'
 
 // NL preview

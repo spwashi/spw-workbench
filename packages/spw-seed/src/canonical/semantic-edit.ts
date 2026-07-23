@@ -61,8 +61,13 @@ export interface SemanticRule {
   stratum: DifferentialStratum
   /** The permission this patch demands to touch a workspace. */
   effectGrade: EffectGrade
-  /** Return a replacement for a matched node, or null to leave it alone. */
-  rewrite(node: ASTNode, source: string): SemanticRewrite | null
+  /**
+   * Return a replacement for a matched node, or null to leave it alone.
+   *
+   * `root` is the whole parsed surface, so a rule that summarizes the document
+   * (a derived mark) can reach past the node it landed on to its siblings.
+   */
+  rewrite(node: ASTNode, source: string, root: ASTNode): SemanticRewrite | null
 }
 
 export interface SemanticEdit extends SourceEdit {
@@ -139,7 +144,7 @@ export function planSemanticEdits(
     for (const match of matchAll(ast, rule.select)) {
       plan.matched += 1
 
-      const rewrite = rule.rewrite(match.node, source)
+      const rewrite = rule.rewrite(match.node, source, ast)
       if (!rewrite) continue
 
       const range = rewrite.range ?? nodeSpan(match.node)

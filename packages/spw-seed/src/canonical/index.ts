@@ -311,3 +311,11 @@ export {
   type SemanticPlan,
   type SemanticPlanOptions,
 } from './semantic-edit'
+
+export {
+  deriveMark,
+  countOps,
+  latestTimestamp,
+  type MarkDeriver,
+  type DeriveContext,
+} from './derived-marks'
