@@ -77,7 +77,11 @@ function buildStatusText(context: SpwContextAtPositionResult): string {
     parts.push(`enter ${context.enteredFrame}`)
   } else {
     const ambient = formatInlineBraids(context.ambientBraids.slice(-2), 2)
-    if (ambient) parts.push(`field ${ambient}`)
+    if (ambient) {
+      // Label by particle kind: moods, cases, deixis, aspects
+      const kinds = classifyParticles(context.ambientBraids.slice(-2))
+      parts.push(`${kinds} ${ambient}`)
+    }
   }
 
   return `${STRIP_LABEL}: ${parts.join(' | ')}`
@@ -115,4 +119,17 @@ function formatInlineBraids(values: string[], limit: number): string | null {
 
 function asCode(value: string): string {
   return `\`${value.replace(/`/g, '\\`')}\``
+}
+
+/** Classify particles by their aim/prefix to label the statusbar intelligently. */
+function classifyParticles(braids: string[]): string {
+  if (braids.length === 0) return 'field'
+  const kinds = new Set<string>()
+  for (const b of braids) {
+    if (b.startsWith('#!')) kinds.add('mood')
+    else if (b.startsWith('#:')) kinds.add('case')
+    else if (b.startsWith('#>')) kinds.add('deixis')
+    else if (b.startsWith('~#')) kinds.add('aspect')
+  }
+  return [...kinds].sort().join(' · ') || 'field'
 }
