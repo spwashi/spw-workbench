@@ -55,6 +55,14 @@ const libraryEntrypoints: DistLibraryEntrypoint[] = [
     declarationSource: 'types/spw-seed/src/parser.d.ts',
   },
   {
+    // The full parser-kernel surface (parse, normalize, query, canonical
+    // readers) — the consumable form of @spwashi/spw-seed.
+    entry: 'packages/spw-seed/src/index.ts',
+    outfile: 'seed.js',
+    declarationFacade: 'seed.d.ts',
+    declarationSource: 'types/spw-seed/src/index.d.ts',
+  },
+  {
     entry: 'packages/spw-runtime/src/substrate.ts',
     outfile: 'substrate.js',
     declarationFacade: 'substrate.d.ts',
@@ -134,7 +142,10 @@ async function normalizeExecutable(filePath: string): Promise<void> {
 }
 
 async function emitDeclarations(entrypoints: DistLibraryEntrypoint[]): Promise<void> {
-  const configPath = path.join(rootDir, 'tsconfig.json')
+  // tsconfig.json is solution-style (files: [], references only) and carries
+  // no compilerOptions — the typecheck config extends the base with the
+  // workspace paths map the declaration program needs to resolve @spwashi/*.
+  const configPath = path.join(rootDir, 'tsconfig.typecheck.json')
   const configFile = ts.readConfigFile(configPath, ts.sys.readFile)
 
   if (configFile.error) {
@@ -153,6 +164,11 @@ async function emitDeclarations(entrypoints: DistLibraryEntrypoint[]): Promise<v
       noEmit: false,
       rootDir: path.join(rootDir, 'packages'),
       outDir: declarationRoot,
+      // Pin ambient types to this repo. Without this, tsc walks ancestor
+      // node_modules and drags in unrelated ambients (bun-types broke the
+      // build from two directories up).
+      types: ['node'],
+      typeRoots: [path.join(rootDir, 'node_modules/@types')],
     },
   })
 
@@ -236,6 +252,10 @@ async function writeDistPackage(rootPackage: RootPackageManifest, entrypoints: D
     default: `./${entrypoint.outfile}`,
   })
 
+  // Key exports by outfile, not array position — adding an entrypoint must
+  // never silently remap another subpath.
+  const byOutfile = Object.fromEntries(entrypoints.map((e) => [e.outfile, entryExport(e)]))
+
   const distPackage = {
     name: rootPackage.name,
     version: rootPackage.version,
@@ -247,12 +267,13 @@ async function writeDistPackage(rootPackage: RootPackageManifest, entrypoints: D
     engines: rootPackage.engines,
     types: './index.d.ts',
     exports: {
-      '.': entryExport(entrypoints[0]),
-      './runtime': entryExport(entrypoints[0]),
-      './parser': entryExport(entrypoints[1]),
-      './substrate': entryExport(entrypoints[2]),
-      './resonance': entryExport(entrypoints[3]),
-      './pipeline': entryExport(entrypoints[4]),
+      '.': byOutfile['index.js'],
+      './runtime': byOutfile['index.js'],
+      './seed': byOutfile['seed.js'],
+      './parser': byOutfile['parser.js'],
+      './substrate': byOutfile['substrate.js'],
+      './resonance': byOutfile['resonance.js'],
+      './pipeline': byOutfile['pipeline.js'],
     },
     bin: {
       spw: './bin/spw.js',
@@ -275,6 +296,9 @@ async function writeDistPackage(rootPackage: RootPackageManifest, entrypoints: D
       'resonance.js.map',
       'resonance.d.ts',
       'scripts',
+      'seed.js',
+      'seed.js.map',
+      'seed.d.ts',
       'substrate.js',
       'substrate.js.map',
       'substrate.d.ts',

@@ -104,8 +104,18 @@ function verifyCommandContributions(manifest) {
   const actual = (manifest.contributes?.commands ?? [])
     .map((entry) => entry.command)
     .sort()
+  // Reviewed 2026-07-23: the LSP arc added the probe/geometry/form-sequence
+  // command set; every entry below is registered in extension source.
   const expected = [
+    'spw.clearProbeCache',
+    'spw.insertFormSequence',
+    'spw.inspectGeometry',
     'spw.navigate',
+    'spw.restartLanguageServer',
+    'spw.showFormSequence',
+    'spw.showOperatorFrequency',
+    'spw.showPhaseContext',
+    'spw.showWorkspaceTemperature',
     'spwConcepts.clearFilter',
     'spwConcepts.refresh',
     'spwConcepts.setFilter',
