@@ -1,7 +1,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { canonicalize, parse } from '@spwashi/spw-seed'
+import { canonicalize, parse, resolveFragment } from '@spwashi/spw-seed'
 import { parseCommonFlags } from './args'
 import { biasSites, resolveTilde } from './bias-edges'
 import { collectSpwFiles } from './fs-walk'
@@ -531,11 +531,26 @@ async function runResolve(root: string): Promise<ResolveReport> {
     for (const site of biasSites(source)) {
       const { edge, line } = site
       const targets = await Promise.all(edge.targets.map(async (target) => {
-        // Only surface (path) targets have an on-disk existence to verify.
+        // Only surface (path) targets have an on-disk existence to verify;
+        // a #fragment additionally names a deixis anchor inside the target.
         let targetExists: boolean | null = null
         if (target.kind === 'path') {
-          targetExists = (await resolveTilde(target.value, fileDir)) !== null
-          if (!targetExists) dangling.push({ file: rel, line, target: target.value })
+          const resolved = await resolveTilde(target.value, fileDir)
+          targetExists = resolved !== null
+          if (!targetExists) {
+            dangling.push({ file: rel, line, target: target.value })
+          } else if (target.fragment) {
+            const targetSource = await fs.readFile(resolved!, 'utf8')
+            const answer = resolveFragment(parse(targetSource).ast!, target.fragment)
+            if (!answer.binding) {
+              targetExists = false
+              dangling.push({
+                file: rel,
+                line,
+                target: `${target.value} (anchor missing; has: ${answer.available.join(', ') || 'none'})`,
+              })
+            }
+          }
         }
         return { value: target.value, kind: target.kind, exists: targetExists }
       }))

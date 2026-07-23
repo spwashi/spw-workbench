@@ -16,7 +16,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { derivedSurfaceName } from '@spwashi/spw-seed'
+import { derivedSurfaceName, parse, resolveFragment } from '@spwashi/spw-seed'
 import { biasSites, resolveTilde } from './bias-edges'
 import { printHelpPage } from './help'
 
@@ -57,8 +57,9 @@ export async function project(
   let unfolded = 0
   // Bottom-up so inserted blocks never shift a not-yet-processed edge's line.
   for (const site of [...sites].sort((a, b) => b.endLine - a.endLine)) {
-    const template = site.edge.targets[0]!.value.split('#')[0]!
-    const block = await renderTemplate(template, baseDir, visited, depth, maxDepth)
+    const target = site.edge.targets[0]!
+    const template = target.value.split('#')[0]!
+    const block = await renderTemplate(template, target.fragment, baseDir, visited, depth, maxDepth)
     lines.splice(site.endLine, 0, block)
     unfolded += 1
   }
@@ -68,20 +69,31 @@ export async function project(
 /** Frame one template's (recursively projected) content as a provenance stream. */
 async function renderTemplate(
   template: string,
+  fragment: string | undefined,
   baseDir: string,
   visited: ReadonlySet<string>,
   depth: number,
   maxDepth: number,
 ): Promise<string> {
-  const open = `<<  # ⟵ ~"${template}"`
-  if (visited.has(template)) return `${open}\n  # (cycle: already expanding ${template})\n>>`
+  const label = fragment ? `${template}#${fragment}` : template
+  const open = `<<  # ⟵ ~"${label}"`
+  if (visited.has(label)) return `${open}\n  # (cycle: already expanding ${label})\n>>`
   if (depth >= maxDepth) return `${open}\n  # (depth limit ${maxDepth} reached)\n>>`
 
   const resolved = await resolveTilde(template, baseDir)
   if (!resolved) return `${open}\n  # (template not found)\n>>`
 
-  const raw = (await fs.readFile(resolved, 'utf8')).replace(/\n$/, '')
-  const nested = await project(raw, path.dirname(resolved), new Set([...visited, template]), depth + 1, maxDepth)
+  let raw = (await fs.readFile(resolved, 'utf8')).replace(/\n$/, '')
+  if (fragment) {
+    // Project only the deixis-anchored node's region, not the whole surface.
+    const answer = resolveFragment(parse(raw).ast!, fragment)
+    const bound = answer.binding?.bound
+    if (!bound) {
+      return `${open}\n  # (anchor missing; has: ${answer.available.join(', ') || 'none'})\n>>`
+    }
+    raw = raw.slice(bound.span.start.offset, bound.span.end.offset).trimEnd()
+  }
+  const nested = await project(raw, path.dirname(resolved), new Set([...visited, label]), depth + 1, maxDepth)
   return `${open}\n${nested.text}\n>>`
 }
 
