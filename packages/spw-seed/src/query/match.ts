@@ -134,6 +134,24 @@ function getNodeModifier(node: ASTNode): string | undefined {
   return (node as OperationNode).modifiers?.modifiers?.[0]?.value
 }
 
+/**
+ * Derive the named Act·Bound product a node normalizes to, read straight from the
+ * AST. Mirrors the bound-product stamps in normalize.ts (the canonical source),
+ * kept here so selectors can match `{ product: 'bias' }` without normalizing.
+ */
+function getNodeProduct(node: ASTNode): string | undefined {
+  if (node.type !== 'Operation') return undefined
+  const op = node as OperationNode
+  const sigil = getNodeSigil(node)
+  // Bias edge: any `=` carrying a body; anchor (subject) and axis (frame) optional.
+  if (sigil === '=' && op.body) return 'bias'
+  const hasFrameOnly = Boolean(op.frame && !op.body && !op.subject)
+  const hasBodyOnly = Boolean(op.body && !op.frame && !op.subject)
+  if (sigil === '.' && hasBodyOnly) return 'facet'
+  if (hasFrameOnly && (sigil === '#' || sigil === '&' || sigil === '?')) return 'select'
+  return undefined
+}
+
 function getNodeValue(node: ASTNode): string | undefined {
   switch (node.type) {
     case 'PathRef': {
@@ -194,6 +212,7 @@ function matchPattern(node: ASTNode, pattern: SpwPattern, depth: number): boolea
     if (!pattern.withBoundaries.every((kind) => attached.includes(kind))) return false
   }
   if (pattern.modifier !== undefined && getNodeModifier(node) !== pattern.modifier) return false
+  if (pattern.product !== undefined && getNodeProduct(node) !== pattern.product) return false
   if (pattern.value !== undefined && getNodeValue(node) !== pattern.value) return false
   if (pattern.depth !== undefined && depth !== pattern.depth) return false
   if (pattern.depthRange !== undefined) {

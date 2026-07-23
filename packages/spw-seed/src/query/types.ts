@@ -68,6 +68,11 @@ export interface SpwPattern {
   /** Match by modifier valence */
   modifier?: ModifierKind | string
   /**
+   * Match the named Act·Bound product a node normalizes to (e.g. 'bias', 'facet',
+   * 'select'). Derived from the AST to mirror normalize.ts without normalizing.
+   */
+  product?: string
+  /**
    * Match an exact scalar: path/reference/literal/identifier value, Operation
    * label, Capsule tag, or the first descendant scalar of a boundary node.
    */

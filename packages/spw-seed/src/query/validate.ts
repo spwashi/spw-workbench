@@ -54,6 +54,7 @@ const PATTERN_KEYS = new Set([
   'boundary',
   'withBoundaries',
   'modifier',
+  'product',
   'value',
   'depth',
   'depthRange',
