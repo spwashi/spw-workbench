@@ -43,7 +43,7 @@ function templateSites(source: string) {
  * input. `visited` carries the template paths already open on this branch so a
  * self- or mutually-referential template terminates instead of looping.
  */
-async function project(
+export async function project(
   source: string,
   baseDir: string,
   visited: ReadonlySet<string>,
