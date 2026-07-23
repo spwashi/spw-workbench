@@ -18,6 +18,7 @@ import type {
     HandlerDeps,
 } from '../types'
 import { SK } from '../types'
+import { outlineFromSource } from './outline'
 
 type DisplayAnnotationKind = 'topic' | 'lens' | 'intent' | 'anchor'
 
@@ -876,90 +877,8 @@ export function documentSymbols(params: DocumentParams, deps: HandlerDeps): LspD
 
     const doc = deps.serverIndex.getDocument(uri)
     if (!doc) return []
-    const lines = doc.text.split('\n')
 
-    const symbols: LspDocumentSymbol[] = []
-    const stack: Array<{ indent: number; symbol: LspDocumentSymbol }> = []
-
-    const tapRe = /^(\s*)\^(?:\["([^"]+)"\]|"([^"]+)"|\[([A-Za-z_]\w*)\])/
-    const injectRe = /^(\s*)!(?:boon|bone|bane|bonk|honk)?\["([^"]+)"\]/
-    const probeRe = /^(\s*)\?\["([^"]+)"\]/
-    const configRe = /^(\s*)=([a-zA-Z_]\w*):/
-    const annotRe = /^(\s*)#(!|:|>)?([a-zA-Z_]\w*)/
-
-    function addSymbol(sym: LspDocumentSymbol, indent: number): void {
-        while (stack.length > 0 && stack[stack.length - 1].indent >= indent) stack.pop()
-        if (stack.length > 0) {
-            const parent = stack[stack.length - 1].symbol
-            if (!parent.children) parent.children = []
-            parent.children.push(sym)
-        } else {
-            symbols.push(sym)
-        }
-        stack.push({ indent, symbol: sym })
-    }
-
-    for (let i = 0; i < lines.length; i += 1) {
-        const line = lines[i]
-        const lr = { start: { line: i, character: 0 }, end: { line: i, character: line.length } }
-
-        const tap = tapRe.exec(line)
-        if (tap) {
-            const indent = tap[1].length
-            const name = tap[2] || tap[3] || tap[4]
-            const sr = { start: { line: i, character: tap.index }, end: { line: i, character: tap.index + tap[0].length } }
-            addSymbol({ name, detail: 'frame', kind: SK.Module, range: lr, selectionRange: sr }, indent)
-            continue
-        }
-
-        const inject = injectRe.exec(line)
-        if (inject) {
-            const indent = inject[1].length
-            const sr = { start: { line: i, character: inject.index }, end: { line: i, character: inject.index + inject[0].length } }
-            addSymbol({ name: inject[2], detail: 'facet', kind: SK.Event, range: lr, selectionRange: sr }, indent)
-            continue
-        }
-
-        const probe = probeRe.exec(line)
-        if (probe) {
-            const indent = probe[1].length
-            const sr = { start: { line: i, character: probe.index }, end: { line: i, character: probe.index + probe[0].length } }
-            addSymbol({ name: `? ${probe[2]}`, detail: 'probe', kind: SK.Boolean, range: lr, selectionRange: sr }, indent)
-            continue
-        }
-
-        const config = configRe.exec(line)
-        if (config) {
-            const indent = config[1].length
-            const sr = { start: { line: i, character: config.index }, end: { line: i, character: config.index + config[0].length } }
-            addSymbol({ name: `= ${config[2]}`, detail: 'config', kind: SK.Property, range: lr, selectionRange: sr }, indent)
-            continue
-        }
-
-        const annot = annotRe.exec(line)
-        if (annot) {
-            const indent = annot[1].length
-            const prefix = annot[2] || ''
-            const name = annot[3]
-            const kindLabel: Record<string, { kind: number; detail: string }> = {
-                '': { kind: SK.Key, detail: 'topic' },
-                ':': { kind: SK.Enum, detail: 'lens' },
-                '!': { kind: SK.Event, detail: 'intent' },
-                '>': { kind: SK.Interface, detail: 'anchor' },
-            }
-            const info = kindLabel[prefix] || kindLabel['']
-            const sr = { start: { line: i, character: annot.index }, end: { line: i, character: annot.index + annot[0].length } }
-            addSymbol({ name: `#${prefix}${name}`, detail: info.detail, kind: info.kind, range: lr, selectionRange: sr }, indent)
-            continue
-        }
-
-        // Extend parent range
-        if (stack.length > 0) {
-            stack[stack.length - 1].symbol.range.end = lr.end
-        }
-    }
-
-    return symbols
+    return outlineFromSource(doc.text)
 }
 
 // ── Workspace Symbols ───────────────────────────────────────────
