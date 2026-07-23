@@ -25,8 +25,14 @@ import { decodeQuotedToken } from '../query/quoted'
 
 /** A pole of a bias edge, tagged by how it was written so consumers can route it. */
 export interface BiasTarget {
+  /** The pole as written, including any `#fragment`. */
   value: string
   kind: 'path' | 'ref' | 'name' | 'literal'
+  /**
+   * The `#anchor` sub-address of a path pole, when present. A fragment names a
+   * deixis anchor inside the target surface — the granular part, not the file.
+   */
+  fragment?: string
 }
 
 /** Direction of the edge. boon → forward, bane → inverse. Verb-neutral by design. */
@@ -49,8 +55,12 @@ export interface BiasEdge {
 function termScalar(node: ASTNode | undefined): BiasTarget | undefined {
   if (!node) return undefined
   switch (node.type) {
-    case 'PathRef':
-      return { value: decodeQuotedToken((node as PathRefNode).path.token.value), kind: 'path' }
+    case 'PathRef': {
+      const value = decodeQuotedToken((node as PathRefNode).path.token.value)
+      const hash = value.indexOf('#')
+      if (hash > 0) return { value, kind: 'path', fragment: value.slice(hash + 1) }
+      return { value, kind: 'path' }
+    }
     case 'Reference': {
       const ref = node as ReferenceNode
       return { value: ref.raw ?? ref.path.map((t) => t.value).join('.'), kind: 'ref' }

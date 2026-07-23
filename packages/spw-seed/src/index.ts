@@ -352,6 +352,8 @@ export {
   particleBindings,
   deixisTable,
   type ParticleBinding,
+  resolveFragment,
+  type ResolvedFragment,
 } from './canonical'
 
 // NL preview

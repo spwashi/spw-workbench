@@ -290,3 +290,8 @@ export {
   deixisTable,
   type ParticleBinding,
 } from './particles'
+
+export {
+  resolveFragment,
+  type ResolvedFragment,
+} from './resolve-fragment'
