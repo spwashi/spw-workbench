@@ -23,7 +23,10 @@ syntax region  spwBlockComment  start='/\*' end='\*/'
 " ── Strings and Phrases ─────────────────────────────────────────
 " Strings with contained highlighting for sigils inside quotes
 syntax region  spwString  start=+"+ end=+"+ skip=+\\\"+  oneline contains=spwStrSeed,spwStrSigil,spwStrEmDash,spwStrLabNum,spwStrScaffold
-syntax region  spwPhrase  start=+'+ end=+'+ skip=+\\'+   oneline
+" Single-quoted phrase, but an apostrophe inside a word (01's, Boof's, n't) is
+" a possessive/contraction, not a quote — require the opening ' to sit at a
+" word boundary so prose stops being swallowed as a string.
+syntax region  spwPhrase  start=+\w\@<!'+ end=+'+ skip=+\\'+   oneline
 syntax region  spwPhrase  start=+`+ end=+`+ skip=+\\`+   oneline
 
 " Contained: sigils and keywords that appear inside strings
@@ -67,8 +70,11 @@ syntax match   spwPath  '[A-Za-z_][A-Za-z0-9_]*\(/[A-Za-z_][A-Za-z0-9_]*\)\+'  d
 
 " ── NAVIGABLE PATH REFS — full unit for jump ergonomics ─────────
 " Order: quoted forms before bare ~; angle pathlike before labels
-syntax match   spwPathRef  '\~\s*<[^>"]\+>\s*"[^"]*"'                         display
-syntax match   spwPathRef  '\~\s*"[^"]*"'                                     display
+" The quoted forms carry a #fragment sub-address (~"file#anchor") that resolves
+" to a deixis anchor inside the target, so it colors like an anchor.
+syntax match   spwPathRef  '\~\s*<[^>"]\+>\s*"[^"]*"'                         display contains=spwPathFragment
+syntax match   spwPathRef  '\~\s*"[^"]*"'                                     display contains=spwPathFragment
+syntax match   spwPathFragment '#[A-Za-z_][A-Za-z0-9_-]*\ze"'                 display contained
 syntax match   spwPathRef  '\~\s*<\.[^>"]\+>'                                 display
 syntax match   spwPathRef  '\~\s*<[^>"]*[/][^>"]*>'                           display
 syntax match   spwPathRef  '\~\s*<[^>"]*\.\(spw\|ts\|tsx\|js\|mjs\|cjs\|md\|json\)>' display
@@ -102,9 +108,13 @@ syntax match   spwSigWonder  '?match\>'                   display
 syntax match   spwSigWonder  '?[a-zA-Z_][a-zA-Z0-9_.]*'  display
 syntax match   spwSigWonder  '?\ze[^a-zA-Z_]'             display
 
-" ~ potential/superposition (not followed by #)
+" ~ potential/superposition — bare sigil, but not when it opens a quoted ref.
+" `~\"…\"` is a navigable ref whose match starts at the ~; excluding the quote
+" here lets that match win instead of the bare sigil swallowing the ~ and
+" leaving the quotes to the generic string rule. `<` stays included so a
+" `~<rationale>` capsule still colors its ~.
 syntax match   spwSigPotential  '\~[a-zA-Z_][a-zA-Z0-9_]*'  display
-syntax match   spwSigPotential  '\~\ze[^#a-zA-Z_]'           display
+syntax match   spwSigPotential  '\~\ze[^#"a-zA-Z_]'          display
 syntax match   spwSigPotential  '\~$'                         display
 
 " * value/observable — collapse to measurement
@@ -251,8 +261,9 @@ highlight link spwConnector  Operator
 highlight link spwSpread     SpwSigSubject
 highlight link spwRange      Number
 highlight link spwDotOp      Comment
-highlight link spwPath       SpwBone
-highlight link spwPathRef    SpwPathRef
+highlight link spwPath         SpwBone
+highlight link spwPathRef      SpwPathRef
+highlight link spwPathFragment SpwAnchor
 highlight link spwPipe       Delimiter
 
 " Streams
