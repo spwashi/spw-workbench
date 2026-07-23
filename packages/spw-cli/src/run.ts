@@ -8,6 +8,7 @@ import { printMutateHelp, runSpwMutateCli } from './mutate'
 import { printExpandHelp, runSpwExpandCli } from './expand'
 import { printRefactorHelp, runSpwRefactorCli } from './refactor'
 import { printRefreshHelp, runSpwRefreshCli } from './refresh'
+import { printAtlasHelp, runSpwAtlasCli } from './atlas'
 import { printSpwPulseHelp, runSpwPulseCli } from './pulse'
 import { printHelpPage } from './help'
 import { printInitUsage, runSpwInitCli } from './init'
@@ -52,6 +53,7 @@ const KNOWN_COMMANDS = [
   'expand',
   'refactor',
   'refresh',
+  'atlas',
   'dev',
   'emit',
 ]
@@ -251,6 +253,13 @@ export async function runSpwCli(argv: string[]): Promise<void> {
         return
       }
       await runSpwRefreshCli(toCliArgv(command, args))
+      return
+    case 'atlas':
+      if (common.flags.help) {
+        printAtlasHelp()
+        return
+      }
+      await runSpwAtlasCli(toCliArgv(command, args))
       return
     case 'dev':
       if (common.flags.help) {
