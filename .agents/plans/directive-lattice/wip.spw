@@ -1,0 +1,83 @@
+# wip — directive-lattice
+# Branch: feature/directive-lattice
+# Started: 2026-07-23
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @plan: ~".agents/plans/directive-lattice/PLAN.md"
+ @lexer: ~"packages/spw-seed/src/lexer/matchers/identifiers.ts"
+ @canonicalize: ~"packages/spw-seed/src/canonical/canonicalize.ts"
+ @bias_registry: ~".spw/registries/bias-product.spw"
+ @naming: ~".spw/conventions/naming.spw"
+}
+
+^["intent"]{
+ ~#goal: "Unify the `#` directive family — ⟨stance⟩#⟨aim⟩name — into one lexed, structured token lattice so #> anchors become addressable nodes: linguistic support for enhanced indexing, discoverable referential patterns, and new patterns for encoding structured relationships. Fragment resolution (~\"file#anchor\") rides on it."
+ ~#taste: "expressiveness + cognitive modeling — constructs that invite wonder about language features; the lattice makes the combinatorics (prefix stance × postfix aim) legible and open instead of four special cases plus prose fallback"
+}
+
+^["concept_index"]{
+ primary: [#directive_lattice, #anchor_node, #fragment_resolution, #stance_aim_slots]
+ surfaces: [#lexer, #grammar, #normalize, #query, #cli_mount, #cli_expand, #canon]
+ tensions: [#prose_fallback, #roundtrip_safety, #rename_scope, #blast_radius]
+ transfers: [#indexing, #module_exports, #macro_substrate, #deep_links]
+}
+
+^["survey"]{
+ # Corpus usage counts, 2026-07-23 (grounding for design + renames):
+ ~#anchor_marks: "#> ×593 — one per canonical file + wonder probes"
+ ~#classify_marks: "#: ×1051 — top: layer(208) depth(172) status(30) template(22)"
+ ~#assert_marks: "#! ×1026 — top: pragmatics(107) creative(67) experiential(41)"
+ ~#state_marks: "~# ×2133 — deferred/mutable bindings (goal, status, cache keys)"
+ ~#unused: "## ×0 in corpus"
+ ~#wild_exotics: "$#e $#d $#s $#_ =#p — substrate- and config-prefixed marks already invented in the wild; the lattice is being reached for"
+ ~#parse_today: "#! and ## lex clean; #: and #> FALL TO PROSE (# op + ProseChunk, no span) — the bug that blocks fragment addressing"
+}
+
+^["risk_model"]{
+ # hard_failures: any of 344 corpus files failing parse or roundtrip after DIRECTIVE lexing
+ # hard_failures: canonicalize/format reflowing directive lines they previously left alone
+ # soft_failures: emit/skim/corpus counters that regex for #> needing re-pointing
+ # non_negotiables: surface syntax unchanged (sigils stay; renames touch concept names in code/docs only); canonicalize roundtrip byte-stable on all 344
+}
+
+^["stream"]{
+ >>[2026-07-23 03:05] observe — #: and #> fall to Prose; #!/## lex clean; ~# has its own matchAnnotation. Inconsistent recognition of one family: ⟨stance⟩#⟨aim⟩name.
+ >>[2026-07-23 03:06] decide — treat as one DIRECTIVE token family with stance (prefix) and aim (postfix) slots; # is the resonance/metadata plane, stance = modality entering the plane (~ defer, $ substrate, = config…), aim = what the mark does (> points, : classifies, ! asserts).
+ >>[2026-07-23 03:08] observe — wild exotics ($#e, =#p) prove authors already compose stances; lattice recognition legitimizes existing practice rather than inventing new syntax.
+ >>[2026-07-23 03:10] decide — user aims recorded: (1) enhanced indexing + discoverable referential patterns + new structured-relationship encodings; (2) Spw ethos — expressive cognitive modeling, constructs that invite wonder; (3) renaming the combinatorics is open. Renames = concept vocabulary, never sigils.
+ >>[2026-07-23 03:12] decide — anchored-node relation: a directive binds to the expression that FOLLOWS it (doc-comment placement). #>anchor → the next node is the anchored node; that binding is the export/index table fragments resolve into.
+ >>[2026-07-23 03:20] decide — naming = LINGUISTIC PARTICLES (user): family `particle ⟨stance⟩#⟨aim⟩name`; #> deixis (points at the node that follows), #: case (classifies bearer's role), #! mood (asserts pragmatic force), ~# aspect (deferred state-in-time). Sigils unchanged; code/types/canon adopt the vocabulary.
+ >>[2026-07-23 03:22] decide — user: recognize FILE PATTERNS for semantic depth. First-class pattern: the header particle stack (deixis + case/mood pair — `#>anchor` `#:layer #!pragmatics`) opening ~every canonical file. Census commit added: discover recurring particle stacks corpus-wide (spw:formula/analyze), name them in the registry, refactor only where a recognized pattern adds nuance — never mechanical rewriting.
+}
+
+^["open"]{
+ ?[prose_chunks]: "after DIRECTIVE lexing, what remains of the Prose fallback for #-lines — does ProseChunk need its own refinement pass? (user flagged)"
+ ?[pattern_refactors]: "census will surface candidate file-pattern refactors; which (if any) to apply is a per-pattern decision with the user at commit 9."
+}
+
+^["commits"]{
+ ~[1]: ".[plans] =stage[directive-lattice] — plan artifacts"
+ ~[2]: "^seed[lexer] — DIRECTIVE token family ⟨stance⟩#⟨aim⟩name"
+ ~[3]: "&[seed-grammar] — directive nodes bind to the following expression"
+ ~[4]: "vocab[seed] — normalize directive regs + rename lattice vocabulary"
+ ~[5]: "&[seed-query] — directive selectors (aim/name); anchors preset"
+ ~[6]: "^seed[fragment] — resolve ~\"file#anchor\" → anchored node span"
+ ~[7]: "&[cli] — mount verifies fragments; expand projects fragment regions"
+ ~[8]: "![seed] — corpus roundtrip gate + particle + fragment coverage"
+ ~[9]: "^seed[census] — particle-stack pattern discovery across the corpus"
+ ~[10]: ".[canon] — particle-lattice registry; naming conventions; pattern refactors (user-gated)"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@bb1ffe65"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none — note: user stash 'grok-working-tree-before-reconciliation' pending on main touches overlapping files (index.spw, seed index); reconcile at their merge"
+ ~#files_hot: "packages/spw-seed/src/lexer/*"
+ ~#next_commit: "1"
+ ~#open_count: "2"
+ ~#last_stream: "2026-07-23 03:12"
+ ~#taste_debt: ""
+}
