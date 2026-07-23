@@ -7,7 +7,8 @@
  * `applyBiasRewrites` to apply them textually. readBias stays verb-neutral in
  * seed; the verb ("rewrite") lives here, in the consumer.
  */
-import { BIAS, readBias, spwq, type BiasTarget } from '@spwashi/spw-seed'
+import type { BiasTarget } from '@spwashi/spw-seed'
+import { biasSites } from './bias-edges'
 
 /** A directed rewrite lifted from a bias edge: replace `from` with `to`. */
 export interface RewriteRule {
@@ -39,15 +40,8 @@ export function poleToken(pole: BiasTarget): string {
  */
 export function biasRewriteRules(source: string): RewriteRule[] {
   const rules: RewriteRule[] = []
-  let matches
-  try {
-    matches = spwq.fromSource(source, BIAS)
-  } catch {
-    return rules
-  }
-  for (const match of matches) {
-    const edge = readBias(match.node)
-    if (!edge || !edge.anchor || edge.targets.length === 0) continue
+  for (const { edge } of biasSites(source)) {
+    if (!edge.anchor || edge.targets.length === 0) continue
     rules.push({
       from: poleToken(edge.anchor),
       to: poleToken(edge.targets[0]!),

@@ -1,8 +1,9 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { BIAS, canonicalize, parse, readBias, spwq } from '@spwashi/spw-seed'
+import { canonicalize, parse } from '@spwashi/spw-seed'
 import { parseCommonFlags } from './args'
+import { biasSites, resolveTilde } from './bias-edges'
 import { collectSpwFiles } from './fs-walk'
 import { printHelpPage } from './help'
 
@@ -524,28 +525,16 @@ async function runResolve(root: string): Promise<ResolveReport> {
 
   for (const filePath of files) {
     const source = await fs.readFile(filePath, 'utf8')
-    let matches
-    try {
-      matches = spwq.fromSource(source, BIAS)
-    } catch {
-      continue
-    }
     const rel = path.relative(process.cwd(), filePath)
     const fileDir = path.dirname(filePath)
 
-    for (const match of matches) {
-      const edge = readBias(match.node)
-      if (!edge) continue
-      const label = (match.node as { operatorLabel?: { value?: string } }).operatorLabel?.value
-      const line = match.span.startLine + 1
-
+    for (const site of biasSites(source)) {
+      const { edge, line } = site
       const targets = await Promise.all(edge.targets.map(async (target) => {
         // Only surface (path) targets have an on-disk existence to verify.
-        // Strip a #fragment anchor before resolving the file.
-        const surface = target.kind === 'path' ? target.value.split('#')[0]! : null
         let targetExists: boolean | null = null
-        if (surface) {
-          targetExists = (await exists(path.resolve(surface))) || (await exists(path.resolve(fileDir, surface)))
+        if (target.kind === 'path') {
+          targetExists = (await resolveTilde(target.value, fileDir)) !== null
           if (!targetExists) dangling.push({ file: rel, line, target: target.value })
         }
         return { value: target.value, kind: target.kind, exists: targetExists }
@@ -554,7 +543,7 @@ async function runResolve(root: string): Promise<ResolveReport> {
       edges.push({
         file: rel,
         line,
-        anchor: edge.anchor?.value ?? label ?? '(self)',
+        anchor: edge.anchor?.value ?? site.label ?? '(self)',
         axis: edge.axis,
         sign: edge.sign,
         targets,
