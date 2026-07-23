@@ -8,6 +8,7 @@ import type {
   Token,
   ReferenceNode,
   AnnotationNode,
+  ParticleNode,
   LiteralNode,
   PathRefNode,
   ErrorEventData,
@@ -24,7 +25,7 @@ import {
   choice,
   named,
 } from '../combinators'
-import { annotation, colon, capsuleOpen, capsuleClose, identifier, stringLit } from './tokens'
+import { annotation, particle, colon, capsuleOpen, capsuleClose, identifier, stringLit } from './tokens'
 import { literalNode } from './literals'
 
 function isReferencePathToken(token: Token): boolean {
@@ -364,6 +365,46 @@ export const pathRefNode: Parser<PathRefNode> = named('pathRef',
 /**
  * Annotation node: ~#name or ~#name: value
  */
+/**
+ * Particle: `#⟨aim⟩name` — `#>anchor` (deixis), `#:layer` (case).
+ * The token arrives pre-fused from the lexer; this node splits aim and name
+ * and carries spans so the particle is addressable (fragments resolve to it).
+ */
+export const particleNode: Parser<ParticleNode> = named('particle',
+  function* particleParser(stream, depth) {
+    const partGen = particle(stream, depth + 1)
+    let partStep = partGen.next()
+    while (!partStep.done) {
+      yield partStep.value
+      partStep = partGen.next()
+    }
+
+    if (!partStep.value.success) {
+      return { success: false, consumed: 0, error: partStep.value.error }
+    }
+
+    const partToken = partStep.value.value! as Token<'PARTICLE'>
+    const aim = partToken.value.charAt(1) as ParticleNode['aim']
+    const nameToken: Token<'IDENTIFIER'> = {
+      type: 'IDENTIFIER',
+      value: partToken.value.slice(2),
+      span: partToken.span,
+    }
+
+    return {
+      success: true,
+      consumed: partStep.value.consumed,
+      value: {
+        type: 'Particle' as const,
+        token: partToken,
+        aim,
+        name: nameToken,
+        span: partToken.span,
+      },
+    }
+  }
+)
+
 export const annotationNode: Parser<AnnotationNode> = named('annotation',
   function* annotationParser(stream, depth) {
     const startPos = getPosition(stream)

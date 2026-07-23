@@ -29,6 +29,7 @@ export type ASTNodeType =
   | 'Literal'
   | 'Identifier'
   | 'Annotation'
+  | 'Particle'
   | 'Condition'
   | 'Parameter'
   | 'Comment'

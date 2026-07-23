@@ -36,10 +36,10 @@
 }
 
 ^["risk_model"]{
- # hard_failures: any of 344 corpus files failing parse or roundtrip after DIRECTIVE lexing
- # hard_failures: canonicalize/format reflowing directive lines they previously left alone
+ # hard_failures: any of 344 corpus files failing parse after PARTICLE changes
  # soft_failures: emit/skim/corpus counters that regex for #> needing re-pointing
- # non_negotiables: surface syntax unchanged (sigils stay; renames touch concept names in code/docs only); canonicalize roundtrip byte-stable on all 344
+ # non_negotiables: corpus stays PARSEABLE (the operational floor)
+ # relaxed 2026-07-23 (user): byte-stability/shape preservation is NOT sacred — "not very attached to existing .spw documents"; deliberate surface refactors are welcome when they improve interpretability. Wonder about syntax freely; refactor corpus later.
 }
 
 ^["stream"]{
@@ -51,6 +51,9 @@
  >>[2026-07-23 03:20] decide — naming = LINGUISTIC PARTICLES (user): family `particle ⟨stance⟩#⟨aim⟩name`; #> deixis (points at the node that follows), #: case (classifies bearer's role), #! mood (asserts pragmatic force), ~# aspect (deferred state-in-time). Sigils unchanged; code/types/canon adopt the vocabulary.
  >>[2026-07-23 03:40] note — detour before commit 2 (user): evaluated the grok stash for integration. Verdict: main's reconciliation already superseded it — all three insertion-heavy residues (topography-scan local types, vscode roots.ts hardcoded map, dev.ts inlined walker) move logic OUT of shared modules, opposite of the new module-consumability priority. Payload archived on feature/grok-lsp-reconciliation.
  >>[2026-07-23 03:55] implement — commit 2: matchParticle lexes #>name (deixis) and #:name (case) as single PARTICLE tokens (aim in token.kind), registered before the operator matcher. Deliberately incremental: #!/##/~#/#[ untouched; bare #>/#: without a name left alone; strings safe. Corpus: 344/344 parse, token count 190858→187538 (~3.3k particles unified). Gates: types baseline, seed 370+6, cli 101; runtime failures (4) confirmed pre-existing via clean-branch stash check.
+ >>[2026-07-23 04:15] implement — commit 3 (grammar + binding): ParticleNode term (aim/name/span, TermNode union) parsed via particleNode beside annotationNode; PARTICLE added to isSpwTrigger so particles break prose accumulation (the real fix — canon files open with # prose comments, headers lived in ProseChunk TEXT). particleBindings/deixisTable exported: runs of marks (particle-led or boundary-less ops) flow to the first content item; scans Sequences AND Prose chunks. Verified on real canon: bias-product 3 anchors, orphaned-files 2 (matches user screenshot breadcrumb), index 3, all bound. Gates: 344/344, types 4 baseline, seed 376+5, cli 101, runtime pre-existing.
+ >>[2026-07-23 04:16] note — user screenshot: vscode extension already renders Local/Ambient Braids from these marks — the UI consumer deixisTable is built for. Interop path: braids-from-seed-API replaces braids-from-regex.
+ >>[2026-07-23 04:17] note — isMarkLike (boundary-less op) doubles as the first noise detector for the census: it is exactly the "underspecified operator use" class the user flagged for lint/mutation rules.
  >>[2026-07-23 03:22] decide — user: recognize FILE PATTERNS for semantic depth. First-class pattern: the header particle stack (deixis + case/mood pair — `#>anchor` `#:layer #!pragmatics`) opening ~every canonical file. Census commit added: discover recurring particle stacks corpus-wide (spw:formula/analyze), name them in the registry, refactor only where a recognized pattern adds nuance — never mechanical rewriting.
 }
 
@@ -68,7 +71,7 @@
  ~[6]: "^seed[fragment] — resolve ~\"file#anchor\" → anchored node span"
  ~[7]: "&[cli] — mount verifies fragments; expand projects fragment regions"
  ~[8]: "![seed] — corpus roundtrip gate + particle + fragment coverage"
- ~[9]: "^seed[census] — particle-stack pattern discovery across the corpus"
+ ~[9]: "^seed[census] — particle-stack discovery + noise/underspecification detection (orphan deixis, unbound case, boundary-less # marks, duplicate anchors) feeding lint diagnostics and mutation profiles (user: develop more useful patterns for old .spw)"
  ~[10]: ".[canon] — particle-lattice registry; naming conventions; pattern refactors (user-gated)"
 }
 

@@ -32,6 +32,7 @@ import { expressionNode } from './expressions'
  */
 function isSpwTrigger(token: Token): boolean {
     if (token.type === 'OPERATOR') return true
+    if (token.type === 'PARTICLE') return true // #>deixis / #:case break prose into structure
     if (token.type === 'CAPSULE_OPEN') return true
     if (token.type === 'STREAM_OPEN') return true
     if (token.type === 'NRANGE_OPEN') return true

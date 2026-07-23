@@ -400,6 +400,15 @@ export function normalizeToONF(node: ASTNode): ONFNode {
       return { sigil: '#', args: valueArgs, frames: { reg: 'annotation', value: name } }
     }
 
+    case 'Particle': {
+      // ⟨stance⟩#⟨aim⟩name — `>` deixis points at the node that follows,
+      // `:` case classifies it. Full lattice vocabulary lands with the
+      // particle regs pass; the reg here is the aim's particle name.
+      const part = node as any
+      const reg = part.aim === '>' ? 'deixis' : 'case'
+      return { sigil: '#', args: [], frames: { reg, value: part.name?.value ?? '' } }
+    }
+
     case 'ModifierChain': {
       const chain = node as any
       const modifiers = (chain.modifiers ?? []).map((m: any) => m.value).join(',')

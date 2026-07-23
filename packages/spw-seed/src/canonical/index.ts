@@ -284,3 +284,9 @@ export {
   type BiasTarget,
   type BiasSign,
 } from './read-bias'
+
+export {
+  particleBindings,
+  deixisTable,
+  type ParticleBinding,
+} from './particles'

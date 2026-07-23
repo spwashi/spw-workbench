@@ -47,7 +47,7 @@ export { literalNode, identifierNode } from './literals'
 export { wildcardNode, spreadNode, patternNode, matchArmNode } from './patterns'
 
 // Reference and annotation nodes
-export { referenceNode, annotationNode } from './references'
+export { referenceNode, annotationNode, particleNode } from './references'
 
 // Modifier chain
 export { modifierChain } from './modifiers'

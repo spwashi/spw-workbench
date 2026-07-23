@@ -349,6 +349,9 @@ export {
   type BiasEdge,
   type BiasTarget,
   type BiasSign,
+  particleBindings,
+  deixisTable,
+  type ParticleBinding,
 } from './canonical'
 
 // NL preview

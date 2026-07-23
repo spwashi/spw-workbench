@@ -32,6 +32,7 @@ export type TermNode =
   | LiteralNode
   | IdentifierNode
   | AnnotationNode
+  | ParticleNode
   | MatchNode
   | WildcardNode
   | SpreadNode
@@ -240,6 +241,21 @@ export interface ParameterNode extends ASTNode {
   type: 'Parameter'
   name?: Token<'IDENTIFIER' | 'STRING'>
   value: LiteralNode | ReferenceNode | PathRefNode | ExpressionNode
+}
+
+/**
+ * Particle: the `⟨stance⟩#⟨aim⟩name` lattice on the resonance/metadata plane.
+ * A particle binds to the expression that follows it in its sequence —
+ * `#>anchor` (deixis) names the node after it; `#:layer` (case) classifies it.
+ * The binding is derived, not stored: see canonical/particles.ts.
+ */
+export interface ParticleNode extends ASTNode {
+  type: 'Particle'
+  token: Token<'PARTICLE'>
+  /** Postfix aim: `>` deixis (points), `:` case (classifies). */
+  aim: '>' | ':'
+  /** The particle's name, e.g. `spw_index` in `#>spw_index`. */
+  name: Token<'IDENTIFIER'>
 }
 
 // ============================================================================
