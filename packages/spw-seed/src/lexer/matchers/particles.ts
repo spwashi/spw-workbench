@@ -6,19 +6,18 @@
  * `>` deixis (points at the node that follows), `:` case (classifies its
  * bearer's role). See `.agents/plans/directive-lattice/PLAN.md`.
  *
- * Recognition is deliberately incremental: only the aims that previously fell
- * to prose (`>`, `:`) are lexed here. `#!` mood and `##` already lex via the
- * operator path and stay untouched; `~#` aspect keeps its bespoke
- * matchAnnotation. Those cells migrate to this family only when the corpus
- * roundtrip gate can prove the move is invisible.
+ * Three aims lex here: `>` deixis, `:` case, and `!` mood (asserts pragmatic
+ * force — migrated off the operator path 2026-07-23, ONF change user-approved).
+ * `##` is unoccupied in the corpus and `~#` aspect keeps its bespoke
+ * matchAnnotation until its value-binding semantics migrate deliberately.
  */
 
 import type { Token, ParseEvent, TokenEventData } from '../../types'
 import type { LexerState } from '../state'
 import { getPosition, advance, peek, isAtEnd } from '../state'
 
-/** Aims recognized as PARTICLE tokens today. */
-const PARTICLE_AIMS: ReadonlySet<string> = new Set(['>', ':'])
+/** Aims recognized as PARTICLE tokens. */
+const PARTICLE_AIMS: ReadonlySet<string> = new Set(['>', ':', '!'])
 
 /**
  * Match `#⟨aim⟩name` (e.g. `#>anchor`, `#:layer`). The name is required —

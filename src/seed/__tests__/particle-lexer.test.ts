@@ -24,14 +24,20 @@ describe('particle lexer — ⟨stance⟩#⟨aim⟩name', () => {
     expect(particle?.kind).toBe(':')
   })
 
-  it('lexes the header stack: case + mood side by side', () => {
+  it('lexes the header stack: case + mood as sibling particles', () => {
     expect(lex('#:layer #!pragmatics')).toEqual([
       'PARTICLE:#:layer',
-      // mood still lexes via the operator path — untouched until its migration
-      'OPERATOR:#',
-      'OPERATOR:!',
-      'IDENTIFIER:pragmatics',
+      'PARTICLE:#!pragmatics',
     ])
+  })
+
+  it('lexes mood (#!name) with its aim in kind', () => {
+    const gen = tokenize('#!canon')
+    let result = gen.next()
+    while (!result.done) result = gen.next()
+    const particle = result.value.find((t) => t.type === 'PARTICLE')
+    expect(particle?.value).toBe('#!canon')
+    expect(particle?.kind).toBe('!')
   })
 
   it('leaves non-particle # forms exactly as before', () => {

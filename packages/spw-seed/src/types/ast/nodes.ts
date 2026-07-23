@@ -252,8 +252,8 @@ export interface ParameterNode extends ASTNode {
 export interface ParticleNode extends ASTNode {
   type: 'Particle'
   token: Token<'PARTICLE'>
-  /** Postfix aim: `>` deixis (points), `:` case (classifies). */
-  aim: '>' | ':'
+  /** Postfix aim: `>` deixis (points), `:` case (classifies), `!` mood (asserts). */
+  aim: '>' | ':' | '!'
   /** The particle's name, e.g. `spw_index` in `#>spw_index`. */
   name: Token<'IDENTIFIER'>
 }

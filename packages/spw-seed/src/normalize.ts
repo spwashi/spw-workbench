@@ -401,11 +401,12 @@ export function normalizeToONF(node: ASTNode): ONFNode {
     }
 
     case 'Particle': {
-      // ⟨stance⟩#⟨aim⟩name — `>` deixis points at the node that follows,
-      // `:` case classifies it. Full lattice vocabulary lands with the
-      // particle regs pass; the reg here is the aim's particle name.
+      // ⟨stance⟩#⟨aim⟩name — the particle lattice's linguistic regs:
+      // `>` deixis points at the node that follows, `:` case classifies its
+      // bearer's role, `!` mood asserts pragmatic force. (`~#` aspect still
+      // normalizes via its legacy Annotation node.)
       const part = node as any
-      const reg = part.aim === '>' ? 'deixis' : 'case'
+      const reg = part.aim === '>' ? 'deixis' : part.aim === ':' ? 'case' : 'mood'
       return { sigil: '#', args: [], frames: { reg, value: part.name?.value ?? '' } }
     }
 
