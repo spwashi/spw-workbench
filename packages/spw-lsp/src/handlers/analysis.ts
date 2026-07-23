@@ -7,6 +7,7 @@
 
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
+import { parse } from '@spwashi/spw-seed'
 import type {
     LspDiagnostic, LspFoldingRange, DocumentParams,
     HandlerDeps,
@@ -119,40 +120,38 @@ export async function publishDiagnostics(uri: string, deps: HandlerDeps): Promis
 
     // 4. Brace physics — unmatched braces + depth budget
     {
-        const lines = doc.text.split('\n')
         const braceStack: Array<{ line: number; character: number }> = []
         let maxDepth = 0
         let maxDepthLine = -1
 
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i]
-            let stringDelimiter: StringDelimiter = null
-            for (let j = 0; j < line.length; j++) {
-                const ch = line[j]
-                const nextDelimiter = nextStringDelimiter(line, j, stringDelimiter)
-                if (nextDelimiter !== stringDelimiter) {
-                    stringDelimiter = nextDelimiter
-                    continue
+        // Counted from the token stream rather than by re-scanning characters.
+        // A hand-rolled scan has to re-derive where strings and comments begin,
+        // and a brace inside one is indistinguishable from a real one: this
+        // file's prose holds twelve such braces, one of them unpaired, which
+        // read as an unclosed body in a document the parser accepts cleanly.
+        const { tokens } = doc.parseResult ?? parse(doc.text)
+        for (const token of tokens) {
+            const at = {
+                line: Math.max(0, token.span.start.line - 1),
+                character: Math.max(0, token.span.start.column - 1),
+            }
+
+            if (token.type === 'CONTAINER_OPEN' && token.kind === '{') {
+                braceStack.push(at)
+                if (braceStack.length > maxDepth) {
+                    maxDepth = braceStack.length
+                    maxDepthLine = at.line
                 }
-                if (stringDelimiter) continue
-                if (ch === '/' && line[j + 1] === '/') break // line comment
-                if (ch === '{') {
-                    braceStack.push({ line: i, character: j })
-                    if (braceStack.length > maxDepth) {
-                        maxDepth = braceStack.length
-                        maxDepthLine = i
-                    }
-                } else if (ch === '}') {
-                    if (braceStack.length === 0) {
-                        diagnostics.push({
-                            range: { start: { line: i, character: j }, end: { line: i, character: j + 1 } },
-                            severity: 2,
-                            source: 'spw-physics',
-                            message: 'Unmatched closing brace — no corresponding opening brace.',
-                        })
-                    } else {
-                        braceStack.pop()
-                    }
+            } else if (token.type === 'CONTAINER_CLOSE' && token.kind === '}') {
+                if (braceStack.length === 0) {
+                    diagnostics.push({
+                        range: { start: at, end: { line: at.line, character: at.character + 1 } },
+                        severity: 2,
+                        source: 'spw-physics',
+                        message: 'Unmatched closing brace — no corresponding opening brace.',
+                    })
+                } else {
+                    braceStack.pop()
                 }
             }
         }

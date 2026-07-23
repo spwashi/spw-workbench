@@ -69,6 +69,35 @@ describe('diagnostics — unmatched braces', () => {
     expect(braceErrors[0].range.start.line).toBe(0)
   })
 
+  it('ignores braces written inside prose', async () => {
+    // Counted from the token stream, so a brace in a string is a character in
+    // a string. Re-scanning the text made this document read as unbalanced.
+    const deps = makeDeps({
+      text: [
+        '^["test"] {',
+        '  shape: `ONF records operator {kind, form, surface`,',
+        '  pair: `Frame [], Body {}, Scope ()`,',
+        '}',
+      ].join('\n'),
+    })
+    await publishDiagnostics('file:///test.spw', deps)
+    const braceErrors = deps.diagnostics.filter(d =>
+      d.source === 'spw-physics' && (d.message.includes('Unclosed') || d.message.includes('Unmatched'))
+    )
+    expect(braceErrors).toEqual([])
+  })
+
+  it('still reports a real imbalance in a file that also has prose braces', async () => {
+    const deps = makeDeps({
+      text: ['^["test"] {', '  note: `a { in prose`,', '  ^["inner"] {'].join('\n'),
+    })
+    await publishDiagnostics('file:///test.spw', deps)
+    const unclosed = deps.diagnostics.filter(d =>
+      d.source === 'spw-physics' && d.message.includes('Unclosed')
+    )
+    expect(unclosed.length).toBe(2)
+  })
+
   it('passes for balanced braces', async () => {
     const deps = makeDeps({ text: '^["test"] {\n  ~#key: value\n}' })
     await publishDiagnostics('file:///test.spw', deps)
