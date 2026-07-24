@@ -43,55 +43,82 @@ end
 
 --- Locate the workspace root by walking up from `bufpath` looking for
 --- marker files that indicate an Spw project.
+---
+--- A directory that *contains* `.spw/` (mounted consumer) or a project
+--- manifest is a strong root. A bare `index.spw` sibling is only a weak
+--- marker: canon files live inside `.spw/`, and stopping there would make
+--- the `.spw` directory itself the root, hiding the consumer's shelves and
+--- topology from the server.
 ---@param bufpath string
 ---@return string
 local function find_root(bufpath)
-  local markers = { 'package.json', '.spw', 'index.spw', '.git' }
+  local strong = { '.spw', 'package.json', '.git' }
   local dir = vim.fn.fnamemodify(bufpath, ':h')
+  local weak
 
-  -- Walk upward until we hit / or find a marker
+  -- Walk upward until we hit / or find a strong marker
   while dir ~= '/' and dir ~= '' do
-    for _, marker in ipairs(markers) do
+    for _, marker in ipairs(strong) do
       local candidate = dir .. '/' .. marker
       if vim.fn.isdirectory(candidate) == 1 or vim.fn.filereadable(candidate) == 1 then
         return dir
       end
     end
+    if not weak and vim.fn.filereadable(dir .. '/index.spw') == 1 then
+      weak = dir
+    end
     dir = vim.fn.fnamemodify(dir, ':h')
   end
 
-  -- Fallback: directory of the current file
-  return vim.fn.fnamemodify(bufpath, ':h')
+  -- Fallback: weak marker, then directory of the current file
+  return weak or vim.fn.fnamemodify(bufpath, ':h')
 end
 
---- Build the command to start the LSP server.
+---True when `dir` is a workbench checkout whose package.json has an "lsp" script.
+---@param dir string
+---@return boolean
+local function has_lsp_script(dir)
+  local pkg = dir .. '/package.json'
+  if vim.fn.filereadable(pkg) ~= 1 then return false end
+  local content = table.concat(vim.fn.readfile(pkg), '\n')
+  return content:find('"lsp"') ~= nil
+end
+
+--- Build the command to start the LSP server, and the directory to launch
+--- it from. The launch directory matters: `npm run` and `npx tsx` resolve
+--- against the workbench's own package.json/node_modules, which for a
+--- mounted consumer live under `<root>/.spw/_workbench`, not the root.
 --- Checks `vim.g.spw_lsp_cmd` first, then falls back to `npm run lsp`
 --- (which invokes `npx tsx packages/spw-lsp/src/upstream-bridge.ts` via package.json).
 ---@param root string  workspace root
----@return string[]
+---@return string[] cmd
+---@return string cwd
 local function build_cmd(root)
   -- User override: vim.g.spw_lsp_cmd = { 'npx', 'tsx', 'packages/spw-lsp/src/stdio-server.ts' }
   if vim.g.spw_lsp_cmd then
-    return vim.g.spw_lsp_cmd
+    return vim.g.spw_lsp_cmd, root
   end
 
-  -- Check for the npm "lsp" script in the workspace
-  local pkg = root .. '/package.json'
-  if vim.fn.filereadable(pkg) == 1 then
-    local content = table.concat(vim.fn.readfile(pkg), '\n')
-    if content:find('"lsp"') then
-      return { 'npm', 'run', 'lsp' }
-    end
+  -- Canonical workbench checkout: the root itself carries the "lsp" script
+  -- --silent: npm's run banner goes to stdout and corrupts the LSP stream
+  if has_lsp_script(root) then
+    return { 'npm', 'run', '--silent', 'lsp' }, root
+  end
+
+  -- Mounted consumer: the workbench lives at <root>/.spw/_workbench
+  local mounted = root .. '/.spw/_workbench'
+  if has_lsp_script(mounted) then
+    return { 'npm', 'run', '--silent', 'lsp' }, mounted
   end
 
   -- Direct invocation fallback
   local server = root .. '/packages/spw-lsp/src/stdio-server.ts'
   if vim.fn.filereadable(server) == 1 then
-    return { 'npx', 'tsx', server }
+    return { 'npx', 'tsx', server }, root
   end
 
   -- Last resort
-  return { 'npm', 'run', 'lsp' }
+  return { 'npm', 'run', '--silent', 'lsp' }, root
 end
 
 ---@param root string
@@ -614,11 +641,12 @@ function M.start()
   if bufpath == '' then return end
 
   local root = vim.g.spw_lsp_root or find_root(bufpath)
-  local cmd = build_cmd(root)
+  local cmd, cmd_cwd = build_cmd(root)
 
   vim.lsp.start({
     name = 'spw',
     cmd = cmd,
+    cmd_cwd = cmd_cwd,
     root_dir = root,
     filetypes = { 'spw' },
     settings = {},

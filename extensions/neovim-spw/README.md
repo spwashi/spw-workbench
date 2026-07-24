@@ -24,12 +24,22 @@ ln -s /path/to/spw-workbench/extensions/neovim-spw \
       ~/.local/share/nvim/site/pack/spw/start/neovim-spw
 ```
 
+### Mounted consumers
+
+Works from any repo that mounts the workbench at `.spw/_workbench` (see
+`spw init`): the workspace root resolves to the consumer repo — so the server
+reads its `.spw/shelves.spw` / `topology.spw` — while the server process
+launches from the mounted workbench, where `npm run lsp` resolves. No
+configuration needed; `vim.g.spw_lsp_cmd` / `vim.g.spw_lsp_root` still
+override.
+
 ## Configuration
 
 The LSP starts automatically when you open a `.spw` file. Override defaults:
 
 ```lua
--- Custom LSP command (default: npm run lsp)
+-- Custom LSP command (default: npm run --silent lsp, launched from the
+-- workbench that owns the script)
 vim.g.spw_lsp_cmd = { 'npx', 'tsx', 'packages/spw-lsp/src/stdio-server.ts' }
 
 -- Force a specific workspace root
