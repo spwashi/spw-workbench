@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { crawlWorkspace, type CrawlInput } from './atlas'
+import { crawlWorkspace, isScaffolding, type CrawlInput } from './atlas'
 import { renderAtlasHtml } from './atlas-html'
 
 const META = { at: '2026-07-23T00:00:00.000Z', ref: 'testref' }
@@ -80,6 +80,31 @@ describe('crawlWorkspace — a workspace measured', () => {
   it('records every surface path so a diff can name what came and went', () => {
     const snap = crawl({ 'b.spw': '#>b\n', 'a.spw': '#>a\n' })
     expect(snap.paths).toEqual(['a.spw', 'b.spw'])
+  })
+
+  it('flags an anchor name that lives in more than one surface', () => {
+    const snap = crawl({
+      'a.spw': '#>shared\n^["x"]{\n}',
+      'b.spw': '#>shared\n^["y"]{\n}',
+      'c.spw': '#>unique\n^["z"]{\n}',
+    })
+    expect(snap.ambiguousAnchors).toHaveLength(1)
+    expect(snap.ambiguousAnchors[0]).toMatchObject({ name: 'shared', files: ['a.spw', 'b.spw'] })
+  })
+})
+
+describe('isScaffolding — a mounting consumer measures its own content', () => {
+  it('excludes the mounted workbench, the archive, and init templates', () => {
+    // The one that matters for a consumer: their .spw/_workbench mount is the
+    // machinery they installed, not a surface they authored.
+    expect(isScaffolding('.spw/_workbench/packages/spw-seed/x.spw')).toBe(true)
+    expect(isScaffolding('.agents/plans/_archive/old/wip.spw')).toBe(true)
+    expect(isScaffolding('packages/spw-cli/templates/init/base/.spw/index.spw')).toBe(true)
+  })
+
+  it('keeps a consumer\'s own surfaces', () => {
+    expect(isScaffolding('.spw/index.spw')).toBe(false)
+    expect(isScaffolding('docs/theory/x.spw')).toBe(false)
   })
 })
 

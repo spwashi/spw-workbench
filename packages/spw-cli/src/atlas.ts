@@ -38,6 +38,8 @@ export interface RegionDialect extends ParticleMix {
 
 export interface HubEntry { path: string; inbound: number }
 export interface DanglingRef { from: string; target: string; fragment: string }
+/** An anchor name that lives in more than one surface — an ambiguous `#anchor`. */
+export interface AmbiguousAnchor { name: string; files: string[] }
 
 /** Everything the crawl measures at one moment. */
 export interface WorkspaceSnapshot {
@@ -54,6 +56,8 @@ export interface WorkspaceSnapshot {
   hubs: HubEntry[]
   orphans: string[]
   dangling: DanglingRef[]
+  /** Anchor names that appear in more than one surface — ambiguous deep-link targets. */
+  ambiguousAnchors: AmbiguousAnchor[]
   /** Every surface path, sorted — the roster a diff compares for add/remove. */
   paths: string[]
 }
@@ -200,6 +204,14 @@ export function crawlWorkspace(
   const edges = [...inbound.values()].reduce((sum, refs) => sum + refs.size, 0)
   const anchorTotal = [...anchorHome.values()].reduce((sum, homes) => sum + homes.length, 0)
 
+  // The same anchor name in two surfaces makes `~"file#name"` ambiguous when a
+  // reader drops the file — worth flagging, but init-template copies share
+  // names by design, so those are already filtered out of the crawl.
+  const ambiguousAnchors: AmbiguousAnchor[] = [...anchorHome.entries()]
+    .filter(([, homes]) => new Set(homes).size > 1)
+    .map(([name, homes]) => ({ name, files: [...new Set(homes)].sort() }))
+    .sort((a, b) => b.files.length - a.files.length || a.name.localeCompare(b.name))
+
   return {
     at: meta.at,
     ref: meta.ref,
@@ -214,13 +226,23 @@ export function crawlWorkspace(
     hubs,
     orphans: orphans.slice(0, 25),
     dangling,
+    ambiguousAnchors,
     paths: inputs.map((i) => i.path).sort(),
   }
 }
 
 // ── Reading a git revision ──────────────────────────────────────
 
-const SKIP = (rel: string): boolean => rel.includes('_archive/') || rel.includes('templates/init/')
+/**
+ * Whether a surface is scaffolding rather than a workspace's own content: the
+ * archive, init-template files, and — the one that matters for a mounting
+ * consumer — the workbench itself, mounted at `.spw/_workbench`. A consumer
+ * runs these tools to measure their surfaces, not the machinery they mounted.
+ */
+export function isScaffolding(rel: string): boolean {
+  return rel.includes('_archive/') || rel.includes('templates/init/') || rel.includes('_workbench/')
+}
+const SKIP = isScaffolding
 
 /**
  * Read every `.spw` surface as it stood at a git revision.
@@ -281,6 +303,7 @@ interface AtlasArgs {
   json: boolean
   save: boolean
   trend: boolean
+  advice: boolean
   help: boolean
   /** Diff mode: crawl `from` (and `to`, default working tree) and show deltas. */
   from: string | null
@@ -321,6 +344,11 @@ export async function runSpwAtlasCli(argv: string[] = process.argv): Promise<voi
 
   const inputs = await collectInputs(args.targets, workspace)
   const snapshot = crawlWorkspace(inputs, { at: new Date().toISOString(), ref: currentRef() })
+
+  if (args.advice) {
+    printAdvice(snapshot)
+    return
+  }
 
   if (args.html !== null) {
     const target = args.html || path.join(base, '.spw', 'gen', 'atlas.html')
@@ -575,14 +603,66 @@ async function crawlWorkingTree(targets: string[], workspace: SpwWorkspace | nul
   return crawlWorkspace(inputs, { at: new Date().toISOString(), ref: currentRef() })
 }
 
+/**
+ * Turn the measured properties into teachable advice.
+ *
+ * The atlas measures; this reads the measurements as convention adherence and
+ * says what to do about the gaps — the layer a mounting consumer learns Spw
+ * from. Each finding names the convention, points at where it's unmet, and
+ * where a tool can fix it, names the tool.
+ */
+function printAdvice(s: WorkspaceSnapshot): void {
+  const findings: Array<{ head: string; why: string; items: string[]; fix?: string }> = []
+
+  const orphanIndexes = s.orphans.filter((o) => o.endsWith('/index.spw') || o === 'index.spw')
+  if (orphanIndexes.length > 0) {
+    findings.push({
+      head: `${orphanIndexes.length} index surface${orphanIndexes.length === 1 ? '' : 's'} nothing links to`,
+      why: 'An index is written to be arrived at. One nothing points at is unreachable by navigation — link it from its parent surface with a ~"…" ref.',
+      items: orphanIndexes.slice(0, 8),
+    })
+  }
+
+  if (s.dangling.length > 0) {
+    findings.push({
+      head: `${s.dangling.length} deep-link${s.dangling.length === 1 ? '' : 's'} target an anchor that isn't there`,
+      why: 'A ~"file#anchor" resolves to a #>anchor inside the target. When the anchor is gone the link dangles — fix the name or add the anchor.',
+      items: s.dangling.slice(0, 8).map((d) => `${d.from} → #${d.fragment}`),
+    })
+  }
+
+  if (s.ambiguousAnchors.length > 0) {
+    findings.push({
+      head: `${s.ambiguousAnchors.length} anchor name${s.ambiguousAnchors.length === 1 ? '' : 's'} live in more than one surface`,
+      why: 'Anchor names are the workspace\'s addresses. When two surfaces share one, ~"…#name" is ambiguous and reverse lookups collide — give each a distinct name.',
+      items: s.ambiguousAnchors.slice(0, 8).map((a) => `${a.name} — in ${a.files.length}: ${a.files.slice(0, 3).map((f) => f.split('/').pop()).join(', ')}${a.files.length > 3 ? ', …' : ''}`),
+      fix: 'spw refactor anchor:<name>=<new-name>',
+    })
+  }
+
+  console.log(`spw atlas advice — ${s.surfaces} surfaces measured, ref ${s.ref}\n`)
+  if (findings.length === 0) {
+    console.log('  nothing to flag: no orphan indexes, no dangling links, no ambiguous anchors.')
+    return
+  }
+  findings.forEach((f, i) => {
+    console.log(`  ${i + 1}. ${f.head}`)
+    console.log(`     ${f.why}`)
+    for (const item of f.items) console.log(`       · ${item}`)
+    if (f.fix) console.log(`     fix: ${f.fix}`)
+    console.log('')
+  })
+}
+
 function parseAtlasArgs(rest: string[]): AtlasArgs {
-  const args: AtlasArgs = { targets: [], json: false, save: false, trend: false, help: false, from: null, to: null, html: null }
+  const args: AtlasArgs = { targets: [], json: false, save: false, trend: false, advice: false, help: false, from: null, to: null, html: null }
   for (let i = 0; i < rest.length; i += 1) {
     const arg = rest[i]!
     if (arg === '--help' || arg === '-h') args.help = true
     else if (arg === '--json') args.json = true
     else if (arg === '--save') args.save = true
     else if (arg === '--trend') args.trend = true
+    else if (arg === '--advice') args.advice = true
     else if (arg === '--from') args.from = rest[++i] ?? null
     else if (arg.startsWith('--from=')) args.from = arg.slice('--from='.length)
     else if (arg === '--to') args.to = rest[++i] ?? null
@@ -600,6 +680,7 @@ export function printAtlasHelp(): void {
 Usage:
   spw atlas [roots...]        summary: dialect by region, hubs, adrift, namespace
   spw atlas --json            emit the full snapshot as JSON
+  spw atlas --advice          convention findings: orphan indexes, dangling links, ambiguous anchors
   spw atlas --html [path]     write the visual atlas (default ${path.join('.spw', 'gen', 'atlas.html')})
   spw atlas --save            append a snapshot to ${HISTORY_REL}
   spw atlas --trend           show how the measured properties changed across saved snapshots
