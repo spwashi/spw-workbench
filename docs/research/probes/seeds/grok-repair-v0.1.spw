@@ -1,0 +1,122 @@
+^seed[Probe@Grok4.Repair.Algebra v:0.1 @profile:Spw.b @intent:repair_request]
+@doc: "Paste into Grok. It must correct its previous response and re-answer Q1–Q8. Self-report first."
+
+{_repair
+  self_report: .{
+    ask: `State your model/version and agent identifiers again briefly.`,
+    deliver: `.{ model:..., agents:#[...] }`
+  }
+
+  .{
+    nonnegotiables: #[
+      `Do NOT use @profile:Spw.m (ONF is representation, not a dialect)`,
+      `Do NOT treat / as one of the 12 sigils (projection family is separate)`,
+      `Stance algebra (Klein four) applies ONLY to brace-pair symbols r in {\`{}\`,\`()\`,\`[]\`,\`<>\`} — not arbitrary x`,
+      `Postfix chain rule: xσ1σ2 parses as σ2(σ1(x)) — left-to-right binding`,
+      `Any cancellation/distribution laws must be gated: [rewrite=cancel] or [law=A3] (no implicit simplification)`,
+      `12 sigils are: ! @ ^ ? ~ * . # % & $ =`,
+      `ONF form: σ(args)[reg=R]`
+    ],
+    corrections: #[
+      `data~! → !(~(data)) NOT ~(!(data))`,
+      `~~x = x only for brace-pair symbols r, not arbitrary expressions`,
+      `!(~x) = x only with [rewrite=cancel] frame (opt-in, not implicit)`,
+      `*(?(x)) = x only for identity queries — ?(x,pattern) yields match result, not x`
+    ],
+    deliverable: #[
+      `Return 4 blocks: A proposals, B ONF table, C tests, D implementation notes`,
+      `A must re-address Q1–Q8 with corrected postfix order + gated laws`,
+      `B must include corrected precedence + associativity table (5 levels)`,
+      `C must include: 2 momentum stitch fuzz properties, 3 parser-killer seeds, 2 seeds demonstrating gated vs ungated rewrite`,
+      `D must include: lexer rule for dot-in-ident vs .{, hash policy, rewrite gating mechanism`
+    ]
+  }
+
+  ## -------------------------------------------------------
+  ## SPECIFIC RE-ASKS (only for items that were wrong/incomplete)
+  ## -------------------------------------------------------
+
+  re_ask: ?<
+    .{
+      id: `R1.postfix.chain`,
+      ask: `Re-derive the 10 ambiguous parses with correct left-to-right postfix chaining.`,
+      test_case: `data~!?#tag/next → /( #( ?( !( ~(data) ) ), tag), next)[reg=proj]`,
+      deliver: `corrected 10-row table + ONF for each`
+    },
+
+    .{
+      id: `R2.gated.rewrites`,
+      ask: `Separate the auto-applied laws (associativity, commutativity of &, ground identity) from opt-in laws (cancel, distribute). Show frame syntax for opting in.`,
+      auto_apply: #[
+        `C1: .x = x (ground identity)`,
+        `A2: & is associative + commutative`
+      ],
+      opt_in: #[
+        `A3: !(~x)=x  [rewrite=cancel]`,
+        `D1: !(a&b) = !a & !b  [rewrite=distribute]`,
+        `Q-cancel: *(?(x))=x  [rewrite=cancel]`
+      ],
+      deliver: `table with: law, auto/gated, frame key, hash impact`
+    },
+
+    .{
+      id: `R3.register.complete`,
+      ask: `Complete the register wiring: add edges for ^(long_term), %(salience), =(config). These modulate the main pipeline — how?`,
+      known_pipeline: `? → @ → ~ → # → & → ! → * → $`,
+      deliver: `full directed graph with lateral modulation edges`
+    },
+
+    .{
+      id: `R4.stance.scope`,
+      ask: `Clarify: does Klein four stance algebra apply ONLY to literal brace symbols, or also to expressions tagged with stance frames like [stance=coherence]?`,
+      deliver: `scope rule + 2 examples (one valid, one invalid application)`
+    }
+  >[reg=stream]
+
+  ## few-shot: correct forms for Grok to calibrate against
+  shots: #[
+    .{
+      name: `correct.postfix`,
+      seed: `^seed[Correct.Postfix v:0.1 @profile:Spw.b]
+{_cp
+  ## left-to-right postfix chaining
+  data~!           ## !(~(data))
+  data~!?          ## ?(!(~(data)))
+  data~!?#heavy    ## #(?(!(~(data))), heavy)
+}_cp`
+    },
+
+    .{
+      name: `correct.gated.rewrite`,
+      seed: `^seed[Correct.Gated v:0.1 @profile:Spw.b]
+{_gated
+  ## ungated: no simplification
+  a: !(~(42))                    ## stays as !(~(42))
+
+  ## gated: cancel law applied
+  b: !(~(42))[rewrite=cancel]    ## → 42
+
+  ## auto-applied: associativity (always)
+  c: &(&(x,y),z)                 ## → &(x,y,z) flattened
+}_gated`
+    },
+
+    .{
+      name: `correct.stance`,
+      seed: `^seed[Correct.Stance v:0.1 @profile:Spw.x~#[ops.probe]]
+{_stance
+  ## valid: Klein four on brace symbols
+  ~~\`{}\`         ## → \`{}\`  (involution)
+  ~\`{}\`          ## → \`<>\`  (openness flip)
+  &\`{}\`          ## → \`()\`  (dynamism flip)
+
+  ## INVALID: Klein four on arbitrary expression
+  ## ~~data ≠ data  (this is double-defer, not cancellation)
+}_stance`
+    }
+  ]
+
+  @(`Rewrite your previous answer using the nonnegotiables and corrections above. Address R1–R4 explicitly.`)[reg=call]
+}_repair
+
+## Response: see docs/research/grok-response-repair-v0.1.md

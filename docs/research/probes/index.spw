@@ -1,0 +1,143 @@
+# Probe Corpus Index
+#
+# A probe is a differential instrument: fixed stimulus, captured response,
+# versioned on two axes. Responses without seeds are anecdotes; seeds without
+# responses are untested. This index holds the pairs together.
+
+#>spw_research_probes_index
+#:layer #!pragmatics
+#:status #!active
+
+^["roots"]{
+ @here: ~"."
+ @seeds: ~"./seeds"
+ @research: ~"../index.spw"
+ @harness: ~"../../../.spw/harness/probes/probe-loop.spw"
+ @archive: ~"../../../.spw/harness/probes/archive-index.spw"
+ @calculus: ~"../../theory/md/probe-calculus.md"
+}
+
+^["intent"]{
+ ~#goal: "Keep every captured response paired with the re-runnable stimulus that produced it."
+ ~#taste: "stimulus is the artifact; the response is only evidence about a moment"
+ ~#status: "active"
+}
+
+// ── Two-axis versioning ────────────────────────────────────────
+//
+// A probe result is a reading at coordinates (language, model). Drift observed
+// against a single-axis record is unattributable — you cannot tell whether the
+// language moved or the reader did.
+
+^["axes"]{
+ language: .{
+  meaning: "the Spw version the seed was authored against"
+  source: `package.json version at the capturing commit`
+  ~#valence: !bone
+ }
+ model: .{
+  meaning: "the reader under test, including its self-reported configuration"
+  source: `the self_report block the seed requests first`
+  ~#valence: !boon
+ }
+ ~#claim: "One reading fixes one cell. A trend needs two cells that differ on exactly one axis."
+}
+
+// ── Captured pairs ─────────────────────────────────────────────
+
+^["pairs"]{
+ algebra: .{
+  seed: ~"./seeds/grok-algebra-v0.3.spw"
+  response: ~"./grok-response-algebra-v0.3.md"
+  language: "0.2.0-alpha.1"
+  model: "Grok 4.20 (xAI, 4-agent council)"
+  captured: "2026-02-17"
+  asks: "12x12 sigil composition matrix; laws gated by [rewrite=cancel]"
+ }
+ compiler: .{
+  seed: ~"./seeds/grok-compiler-v0.1.spw"
+  response: ~"./grok-response-compiler-v0.1.md"
+  language: "0.2.0-alpha.1"
+  model: "Grok 4.20 (xAI, 4-agent council)"
+  captured: "2026-02-17"
+  asks: "lowering path from surface to host pack"
+ }
+ repair: .{
+  seed: ~"./seeds/grok-repair-v0.1.spw"
+  response: ~"./grok-response-repair-v0.1.md"
+  language: "0.2.0-alpha.1"
+  model: "Grok 4.20 (xAI, 4-agent council)"
+  captured: "2026-02-17"
+  asks: "correct a prior reading against stated nonnegotiables"
+  ~#note: "the only seed that measures correction rather than first reading"
+ }
+ scaffold: .{
+  seed: ~"./seeds/grok-scaffold-v0.4.spw"
+  response: ~"./grok-response-scaffold-v0.4.md"
+  language: "0.2.0-alpha.1"
+  model: "Grok 4.20 (xAI, 4-agent council)"
+  captured: "2026-02-17"
+  asks: "generate surface structure from a described intent"
+ }
+ syntax: .{
+  seed: ~"./seeds/grok-syntax-v0.2.spw"
+  response: ~"./grok-response-syntax-v0.2.md"
+  language: "0.2.0-alpha.1"
+  model: "Grok 4.20 (xAI, 4-agent council)"
+  captured: "2026-02-17"
+  asks: "read unglossed surfaces and name what each operator does"
+ }
+}
+
+// ── Open cells ─────────────────────────────────────────────────
+
+^["gaps"]{
+ ~#claim: "Every pair above sits at language 0.2.0-alpha.1. The workspace is at 0.3.0."
+ unattributed_drift: .{
+  meaning: "no pair has been re-run since the language moved a minor version"
+  fix: `re-run any seed at 0.3.0 against the same model family to isolate the language axis`
+  ~#valence: !bonk
+ }
+ single_model: .{
+  meaning: "every reading comes from one model family"
+  fix: `run one seed against a second family to isolate the model axis`
+  ~#valence: !bonk
+ }
+ orphan_responses: .{
+  meaning: "11 Grok 4.10 responses were captured and later dropped from the tree"
+  source: `git log --all --format='' --name-only | rg 'seeds/probes/'`
+  ~#valence: !bane
+ }
+}
+
+// ── Conventional pull ──────────────────────────────────────────
+//
+// The discriminator that matters for a language outside the training
+// distribution: how hard does the reader translate notation back toward
+// the nearest familiar thing?
+
+^["discriminators"]{
+ sigils: .{
+  signal: "partial priors exist — ! near assert/negate, ? near query"
+  weakness: "a reader can fake competence from shape alone"
+  ~#valence: !honk
+ }
+ valence_pentad: .{
+  signal: "boon/bane/bone/bonk/honk carry no distributional prior"
+  strength: "correct reading implies the reader consulted the surface, not its memory"
+  ~#valence: !boon
+  ~#claim: "this is the cheapest true discriminator in the corpus"
+ }
+ brace_stance: .{
+  signal: "brace-pair symbols carry stance; arbitrary expressions do not"
+  weakness: "over-generalization here is the most common recorded error"
+  source: ~"./seeds/grok-repair-v0.1.spw"
+  ~#valence: !bone
+ }
+}
+
+^["try"]{
+ parse_seeds: `npm run spw -- skim docs/research/probes/seeds/grok-syntax-v0.2.spw`
+ inventory: `npm run spw -- invent docs/research/probes --sort degree`
+ replay: `for f in docs/research/probes/seeds/*.spw; do npm run spw -- skim "$f"; done`
+}

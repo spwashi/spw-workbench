@@ -1,0 +1,218 @@
+^seed[Probe@Grok4.Scaffold.Spw v:0.4 @profile:Spw.b @intent:prompt_to_grok]
+@doc: "Probe 5: Implementation scaffold + voice-preserving synthesis + open question resolution. Paste entire seed. Self-report first. This probe builds on 4 prior probes (Syntax v0.2, Algebra v0.3, Repair v0.1, Compiler v0.1) and asks for concrete implementation artifacts."
+
+{_probe
+  .{
+    target: `Grok (state your version in self-report)`,
+    mission: `Produce implementation-ready TypeScript scaffolds for Spw v0.1.1 informed by all prior probe responses. Resolve remaining open questions. Output voice-tagged decisions.`,
+    prior_probes: #[
+      `Syntax v0.2: ONF normalization table, dot context-sensitivity, backtick phrases, momentum frames`,
+      `Algebra v0.3: 12x12 composition matrix, algebraic identities, register wiring, cancel pairs, fixity, LLM risk`,
+      `Repair v0.1: left-to-right postfix correction, / separation, no Spw.m, stance brace-literal only, gated rewrites`,
+      `Compiler v0.1: runtime register storage model, parser momentum state machine, compiler pipeline, 4D git-script, typing ergonomics`
+    ],
+    invariants: #[
+      `ONF sigil-as-callee: σ(args...)[reg=R frame...] (no named desugar verbs)`,
+      `dot reserved for facet only: .{...} ; dot-in-ident is IDENT_CHAR unless immediately before {`,
+      `/ is projection family (prefix/infix/postfix); NOT one of the 12 sigils`,
+      `12 sigils: ! @ ^ ? ~ * . # % & $ =`,
+      `4 brace-pairs as containment registers: #[] .{} @() ?<>`,
+      `postfix chains bind LEFT-TO-RIGHT: xσ₁σ₂ parses as σ₂(σ₁(x))`,
+      `stance algebra (Klein V4) applies ONLY to brace-pair symbols, not arbitrary expressions`,
+      `rewrite/cancel laws are OPT-IN via [rewrite=...] frames (no implicit simplification)`,
+      `auto-applied laws: .x=x (ground identity), & associativity+commutativity`,
+      `3-hash model: semantic_hash excludes momentum; env_hash includes it`,
+      `ASI continuation across: / ! #[ [~`,
+      `no new keywords; backtick phrases canonical`,
+      `ONF is internal — no Spw.m user-facing dialect`
+    ],
+    output_contract: #[
+      `Return 6 blocks in order: A–F`,
+      `TypeScript must compile (ES2022+, no external deps beyond standard lib)`,
+      `Every decision must be tagged with: who endorses, who warns, evidence`,
+      `When uncertain: list assumptions + give ≥2 alternatives`,
+      `Use Spw.b for examples, never Spw.m`
+    ]
+  }
+
+  ## -------------------------------------------------------
+  ## (0) SELF-REPORT: DO NOT SKIP
+  ## -------------------------------------------------------
+
+  self_report: .{
+    id: `SR.version.modes.tools`,
+    ask: `State your model/version, whether multi-agent is available, and list tools you can actually use.`,
+    deliver: `.{ model:..., multi_agent:..., agents:#[...], tools:#[...] }`
+  }
+
+  ## -------------------------------------------------------
+  ## COUNCIL ROUTING (voice-preserving)
+  ## -------------------------------------------------------
+
+  council: .{
+    doc: `Each agent owns a review lens. Tag your contributions.`,
+    roles: #[
+      .{ id:`Grok`, role:`breadth_radar`, optimize:`recency + external signal`, risk:`noise + selection bias` },
+      .{ id:`Lucas`, role:`constraint_guardian`, optimize:`invariants + integration`, risk:`over-compress taste` },
+      .{ id:`Harper`, role:`taste_translator`, optimize:`ergonomics + human factors`, risk:`overgeneralize` },
+      .{ id:`Benjamin`, role:`compressor`, optimize:`brevity + triangulation`, risk:`flatten disagreement` }
+    ],
+    synthesis_rule: `1. Canonical facts (shared). 2. Divergences (agent-specific). 3. Decision proposals (tagged with who objects and why).`
+  }
+
+  ## -------------------------------------------------------
+  ## A: ONF AST NODE — TypeScript scaffold
+  ## -------------------------------------------------------
+
+  A: .{
+    id: `A.onf.ast`,
+    ask: `Design the core ONF AST node type in TypeScript. This is the internal representation after normalization.`,
+    must_cover: #[
+      `ONFNode type with: sigil, args, frames (reg + arbitrary key-value)`,
+      `SigilKind enum for all 12 sigils`,
+      `FrameMap type for [reg=R key=val ...] metadata`,
+      `MomentumFrame type (droppable provenance)`,
+      `Hole node type for _ and _[id=K]`,
+      `How surface AST maps to ONF (normalization function signature)`
+    ],
+    examples: #[
+      `!(~(data))[reg=hydrate] → ONFNode { sigil: '!', args: [ONFNode { sigil: '~', args: ['data'] }], frames: { reg: 'hydrate' } }`,
+      `_()[reg=hole id=K] → ONFNode { sigil: '_', args: [], frames: { reg: 'hole', id: 'K' } }`
+    ],
+    deliver: `Complete TypeScript type definitions + normalize() function signature`
+  }
+
+  ## -------------------------------------------------------
+  ## B: REGISTER BANK — TypeScript scaffold
+  ## -------------------------------------------------------
+
+  B: .{
+    id: `B.register.bank`,
+    ask: `Design the RegisterBank class that manages runtime state for all 12 sigil registers.`,
+    must_cover: #[
+      `RegisterBank class with typed storage per sigil (from Compiler probe: ring-buffer, arena, hashset, etc.)`,
+      `open/read/write/seal lifecycle methods`,
+      `Effect boundary semantics for ! (commit-on-seal)`,
+      `Scope management for @ (push/pop)`,
+      `Cost tracking for $ (reflect-only, high cost)`,
+      `Interaction graph: main pipeline ?→@→~→#→&→!→*→$ + laterals`
+    ],
+    constraints: #[
+      `No external dependencies`,
+      `Must be deterministic (same inputs → same outputs)`,
+      `Hash-stable: semantic_hash computable from bank state`
+    ],
+    deliver: `TypeScript class definition with method signatures + JSDoc comments`
+  }
+
+  ## -------------------------------------------------------
+  ## C: GATED REWRITE ENGINE — TypeScript scaffold
+  ## -------------------------------------------------------
+
+  C: .{
+    id: `C.gated.rewrite`,
+    ask: `Design the gated rewrite engine that applies cancel/composition laws only when [rewrite=...] is present.`,
+    must_cover: #[
+      `RewriteRule type: { name, pattern (ONF match), replacement (ONF), conditions }`,
+      `Built-in rules: !~ cancel, *? materialize, ~~ involution, && idempotent, . identity`,
+      `RewriteEngine class with: register(rule), apply(node, rewriteTag) → node`,
+      `E-graph integration point (even if stub): how would an e-graph store equivalence classes?`,
+      `Hash stability: prove that apply() preserves semantic_hash when it should`
+    ],
+    open_question: `Should ~~data on non-brace expressions be a warning or an error? The repair probe says "illegal stance on non-brace" but operator algebra says ~~x = x (involution). Propose a resolution.`,
+    deliver: `TypeScript types + RewriteEngine class + at least 3 built-in rules implemented`
+  }
+
+  ## -------------------------------------------------------
+  ## D: OPEN QUESTION RESOLUTION
+  ## -------------------------------------------------------
+
+  D: .{
+    id: `D.open.questions`,
+    ask: `Resolve these 5 open questions from the analysis of prior probes. For each: state the decision, evidence, who endorses / who warns.`,
+    questions: #[
+      .{
+        q: `[rewrite=cancel] on ~~data: warning or error?`,
+        context: `Repair says "illegal stance on non-brace." Algebra says ~~ = involution. These are different algebras (stance vs operator). How to reconcile?`
+      },
+      .{
+        q: `Lighter syntax for .{} (most common construct)?`,
+        context: `Grok suggested .{} as default record. But it requires shift+period+shift+left-brace. Is there a lighter surface form that normalizes to .{}?`
+      },
+      .{
+        q: `E-graph from start vs AST→ONF→rewrite pipeline?`,
+        context: `Grok suggested pure e-graph. Tradeoff: more powerful rewrites vs more complex implementation. What's the right starting point for v0.1.1?`
+      },
+      .{
+        q: `Momentum flush semantics in long REPL sessions?`,
+        context: `Risk: momentum state accumulates indefinitely. Need timeout or explicit flush. What triggers a flush? How does it interact with ?<> streams?`
+      },
+      .{
+        q: `Benchmark targets: what constitutes "fast enough"?`,
+        context: `Micro: 1M postfix chains. Macro: 4D git blame on 10k commits. Are these the right targets? What latency/throughput numbers should we aim for?`
+      }
+    ],
+    deliver: `For each: decision + evidence + endorsers/warners + Spw seed showing the resolution`
+  }
+
+  ## -------------------------------------------------------
+  ## E: TEST HARNESS DESIGN
+  ## -------------------------------------------------------
+
+  E: .{
+    id: `E.test.harness`,
+    ask: `Design a test harness for Spw that validates ONF round-trip, hash stability, and rewrite correctness.`,
+    must_cover: #[
+      `Round-trip test: parse(print(parse(input))) === parse(input)`,
+      `Hash stability: semantic_hash(normalize(x)) === semantic_hash(normalize(parse(print(normalize(x)))))`,
+      `Rewrite correctness: apply(cancel, !(~x)) === x`,
+      `Fuzz strategy: how to generate random valid Spw expressions`,
+      `"Parser killer" corpus: at least 10 adversarial inputs from prior probes`,
+      `Momentum tests: ASI across newlines with /!#[ continuations`
+    ],
+    prior_fuzz: #[
+      `!(~?x!);data~!?#/next`,
+      `$var?<>`,
+      `data~!?#\n/next[rewrite=cancel] ; mid~! ; ~~\`{}\``,
+      `^seed[abc]!new~!old;&(main,feature)[rewrite=merge]`
+    ],
+    deliver: `TypeScript test file structure + at least 5 concrete test cases`
+  }
+
+  ## -------------------------------------------------------
+  ## F: DECISION SLATE (voice-tagged)
+  ## -------------------------------------------------------
+
+  F: .{
+    id: `F.decision.slate`,
+    ask: `Produce a decision slate: 10 implementation decisions, each tagged with who endorses and who warns.`,
+    format: #[
+      `decision: what to do`,
+      `evidence: why`,
+      `endorses: which agent(s) support this`,
+      `warns: which agent(s) flag risks`,
+      `invariant_test: machine-checkable constraint that prevents drift`
+    ],
+    example: .{
+      decision: `Postfix chains bind left-to-right`,
+      evidence: `Repair probe correction; aligns with reading order`,
+      endorses: #[`Lucas (invariant)`, `Harper (ergonomics)`],
+      warns: #[`Benjamin (breaks some algebraic symmetry assumptions)`],
+      invariant_test: `parse("x~!") === ONFNode { sigil:'!', args:[ONFNode { sigil:'~', args:['x'] }] }`
+    },
+    deliver: `10 decisions in the format above`
+  }
+
+  ## -------------------------------------------------------
+  ## SYNTHESIS INSTRUCTIONS
+  ## -------------------------------------------------------
+
+  synthesis: .{
+    rule: `Do NOT merge agent voices into flat prose. Keep attributions visible.`,
+    output: #[
+      `Each section A–F should show: canonical facts (shared), divergences (agent-tagged), final proposal`,
+      `If agents disagree, show the disagreement explicitly with evidence on both sides`,
+      `End with a single "invariant test suite" block: machine-checkable assertions for all decisions`
+    ]
+  }
+}

@@ -1,0 +1,319 @@
+^seed[Probe@Grok4.20.CompilerModel.Spw v:0.1 @profile:Spw.b @intent:prompt_to_grok]
+@doc: "Probe 3: Compiler + runtime architecture + ergonomic taste + 4D git-script. Paste entire seed. Self-report first. This probe plays to Grok's unique strengths: realtime social intelligence for syntax taste, X developer sentiment for ergonomic decisions, and adversarial creativity for unknown-unknowns."
+
+{_probe
+  .{
+    target: `Grok (state your version in self-report)`,
+    mission: `Design compiler+runtime architecture for Spw v0.1.1 that is: deterministic, streaming-friendly, hash-stable, LLM-hardened, fast on modern hardware, and a joy to type.`,
+    invariants: #[
+      `ONF sigil-as-callee: σ(args...)[reg=R frame...] (no named desugar verbs)`,
+      `dot reserved for facet only: .{...} ; dot-in-ident is IDENT_CHAR unless immediately before {`,
+      `/ is projection family (prefix/infix/postfix); NOT one of the 12 sigils`,
+      `12 sigils: ! @ ^ ? ~ * . # % & $ =`,
+      `4 brace-pairs as containment registers: #[] .{} @() ?<>`,
+      `postfix chains bind LEFT-TO-RIGHT: xσ₁σ₂ parses as σ₂(σ₁(x))`,
+      `stance algebra (Klein V4) applies ONLY to brace-pair symbols, not arbitrary expressions`,
+      `rewrite/cancel laws are OPT-IN via [rewrite=...] frames (no implicit simplification)`,
+      `auto-applied laws: .x=x (ground identity), & associativity+commutativity`,
+      `3-hash model: semantic_hash excludes momentum; env_hash includes it`,
+      `ASI continuation across: / ! #[ [~`,
+      `no new keywords; backtick phrases canonical`,
+      `ONF is internal — no Spw.m user-facing dialect`
+    ],
+    output_contract: #[
+      `Return 7 blocks in order: A–G`,
+      `Every proposal: surface form + ONF + fixity + precedence + printer rule`,
+      `If you introduce a frame key: define default + canonical emission`,
+      `Show Spw.b and Spw.l for each example`,
+      `When uncertain: list assumptions + give ≥2 alternatives`
+    ]
+  }
+
+  ## -------------------------------------------------------
+  ## (0) SELF-REPORT: DO NOT SKIP
+  ## -------------------------------------------------------
+
+  self_report: .{
+    id: `SR.version.modes.tools`,
+    ask: `State your model/version, whether multi-agent is available, and list tools you can actually use.`,
+    deliver: `.{ model:..., multi_agent:..., agents:#[...], tools:#[...] }`
+  }
+
+  ## -------------------------------------------------------
+  ## COUNCIL ROUTING
+  ## -------------------------------------------------------
+
+  roles: .{
+    runtime: `Register architecture, storage types, lifecycle, effect boundaries.`,
+    parser: `Lexer rules, precedence, momentum state machine, incremental strategy.`,
+    compiler: `IR design, rewrite engine, canonicalization, lowering to JS/WASM.`,
+    taste: `Typing ergonomics, developer sentiment, syntax personality, social intelligence.`
+  }
+
+  ## -------------------------------------------------------
+  ## A: RUNTIME REGISTER MODEL
+  ## -------------------------------------------------------
+
+  A: .{
+    id: `A.runtime.registers`,
+    ask: `Propose a runtime register architecture for the 12 sigils that is ergonomic and fast.`,
+    must_cover: #[
+      `storage type per σ (stack, arena, persistent map, rope, stream, ring-buffer, etc.)`,
+      `lifecycle: open/read/write/seal; when momentum flush occurs`,
+      `visibility/scoping: how @() interacts with register stacks`,
+      `effect boundary: how ! and * commit work; determinism`,
+      `debugging: trace keyed by env_hash; reproduce from surface_hash if enabled`,
+      `lateral registers: how ^ (long_term), % (salience), = (config) modulate the main pipeline`
+    ],
+    deliver: #[
+      `12-row table: σ → storage → lifetime → mutation rules → cost model`,
+      `interaction graph (who feeds who, including lateral edges)`,
+      `1 seed demonstrating flow through all 12`
+    ]
+  }
+
+  ## -------------------------------------------------------
+  ## B: PARSER + MOMENTUM + INCREMENTAL
+  ## -------------------------------------------------------
+
+  B: .{
+    id: `B.parser.momentum.incremental`,
+    ask: `Parser architecture: lexer, precedence, momentum stitcher, incremental reparse.`,
+    must_cover: #[
+      `dot rule: '.' is IDENT_CHAR unless immediately before '{'`,
+      `postfix chains LEFT-TO-RIGHT: data~! → !(~(data))`,
+      `precedence/assoc table (5 levels)`,
+      `momentum 5-state machine (Idle, Carry, Resume, Flush, Error)`,
+      `continuation token set: / ! #[ [~`,
+      `error recovery: mid-token, mid-chain, unexpected newline`,
+      `incremental: tree-sitter compatible? or custom? what minimum reparse unit?`
+    ],
+    deliver: #[
+      `5-state machine pseudo-code`,
+      `fuzz properties (stitch invariant + hash invariants)`,
+      `3 adversarial seeds: mid-token, mid-chain, mount boundary`
+    ]
+  }
+
+  ## -------------------------------------------------------
+  ## C: COMPILER PIPELINE + IR
+  ## -------------------------------------------------------
+
+  C: .{
+    id: `C.compiler.pipeline.ir`,
+    ask: `Modern compiler pipeline for Spw with ONF internal and web-first lowering.`,
+    must_cover: #[
+      `IRs: surface AST → ONF AST → typed core → lowerings (JS/WASM/native)`,
+      `canonicalization checkpoints; caching by semantic_hash`,
+      `rewrite engine: e-graphs or term-rewrite? how to validate identities without changing meaning?`,
+      `gated rewrites: how [rewrite=cancel] triggers law application in the pipeline`,
+      `incremental compilation units and stable IDs`,
+      `interop boundary for @() calls into host JS/TS functions`
+    ],
+    deliver: #[
+      `pipeline diagram`,
+      `pass list with input/output invariants`,
+      `1 end-to-end example: surface → ONF → lowered JS`
+    ]
+  }
+
+  ## -------------------------------------------------------
+  ## D: HARDWARE + PARALLELISM
+  ## -------------------------------------------------------
+
+  D: .{
+    id: `D.hardware.parallelism`,
+    ask: `How should Spw exploit modern hardware without breaking determinism?`,
+    must_cover: #[
+      `parallel eval using operator-only forms + frames (no keywords)`,
+      `channels: ?<>[reg=chan] + frames [par=on await=...]`,
+      `commutative vs ordered reductions: canonicalization for reordered results`,
+      `WASM constraints (threads, SIMD, memory model)`,
+      `GPU/WGSL: when it makes sense (streams, reductions, transforms)`
+    ],
+    deliver: #[
+      `determinism rules + canonicalization`,
+      `2 seeds: commutative reduce, ordered pipeline`,
+      `recommendation: browser baseline vs native fast path`
+    ]
+  }
+
+  ## -------------------------------------------------------
+  ## E: TYPING ERGONOMICS + SOCIAL SYNTAX TASTE
+  ## (this question is specifically for Grok's unique strengths)
+  ## -------------------------------------------------------
+
+  E: .{
+    id: `E.taste.ergonomics.typing`,
+    ask: `Use your X/social intelligence + developer sentiment analysis to evaluate Spw's typing ergonomics. What makes a language feel good under the fingers?`,
+    context: `Grok has unique access to realtime developer discourse. Use it. This is not a question about correctness — it's about feel, flow, and the combinatorics of human hands on keyboards.`,
+    must_cover: #[
+      `finger reach analysis: which of the 12 sigils require shift? Which don't? How does this correlate with frequency of use?`,
+      `bigram fluency: which 2-sigil chains (e.g. ~!, ?#, &!) are comfortable to type in sequence? Which are ergonomic disasters?`,
+      `keyboard layout sensitivity: how does Spw feel on QWERTY vs Dvorak vs Colemak? any sigils that are poorly placed on common layouts?`,
+      `developer sentiment: search X/social for complaints about -> => :: << and other syntactic choices in Rust, Haskell, APL, etc. What patterns do developers love vs hate typing?`,
+      `infix vs postfix preference: do developers on social media prefer x.method() chains (postfix-ish) or func(x) (prefix)? how does Spw's tri-fixity model align with this?`,
+      `cognitive load of brace nesting: when does .{} inside #[] inside @() become unreadable? what is the practical nesting depth limit?`,
+      `backtick vs quote: sentiment on backtick-delimited strings (JS template literals) vs single/double quotes? does Spw's choice align?`
+    ],
+    deliver: #[
+      `12-sigil ergonomic score (1-10) on QWERTY with rationale`,
+      `top 5 comfortable bigrams + top 5 uncomfortable bigrams`,
+      `3 syntax friction points from X/developer discourse that Spw should learn from`,
+      `recommendation: any sigil reassignments or default-fixity changes that would improve typing flow?`
+    ]
+  }
+
+  ## -------------------------------------------------------
+  ## F: 4D GIT-SCRIPT — INCREMENTAL HISTORY AS SPW STREAM
+  ## (novel concept; exploit Grok's creative reasoning)
+  ## -------------------------------------------------------
+
+  F: .{
+    id: `F.4d.git.script.history`,
+    ask: `Treat git history as a 4D Spw script: each commit is a transformation, the full history is a typed stream, diffs are operator applications. Design this.`,
+    context: `Spw probes evolve through conversation. The probe file itself has a git history — v0.1 → v0.2 → v0.3 → repair. Each version is a delta. We want the VERSION SEQUENCE ITSELF to be expressible as a Spw stream with momentum. The Git log becomes a first-class Spw runtime artifact.`,
+    must_cover: #[
+      `commit-as-operator: what sigil represents a commit? (propose: ^seed[...] as commit header, diff body as operator applications)`,
+      `branch-as-scope: how does @() model branching? is a branch an attention fork?`,
+      `merge-as-reduce: is git merge expressible as &(branch_a, branch_b)?`,
+      `diff-as-transformation: can file diffs be represented as operator chains? (e.g., added line = !line, deleted = ~line, modified = line~!)`,
+      `blame-as-register: can $ (substrate) track per-line provenance (commit, author, time)?`,
+      `the 4th dimension: if X/Y/Z are file/line/column, what is the 4th axis? (time? perspective? intention?)`,
+      `streaming: can git log be treated as a momentum stream where each commit is a chunk?`
+    ],
+    deliver: #[
+      `git-to-Spw mapping table (git concept → Spw construct → ONF)`,
+      `1 seed showing 3 commits as a Spw stream`,
+      `1 seed showing a merge as & reduction`,
+      `philosophical note: what does "4D Spw script" reveal about code evolution?`
+    ]
+  }
+
+  ## -------------------------------------------------------
+  ## G: UNKNOWN-UNKNOWNS + WONDER
+  ## -------------------------------------------------------
+
+  G: .{
+    id: `G.unknown_unknowns.wonder`,
+    ask: `What are we missing? List risks, opportunities, and beautiful accidents waiting to happen.`,
+    context: `This is where Grok shines. Use your breadth. Connect Spw to ideas from music theory, topology, cellular automata, linguistics, or anything else that creates genuine surprise. We want wonder, not just correctness.`,
+    must_cover: #[
+      `10 non-obvious risks or opportunities for Spw's design`,
+      `connections to fields we haven't considered (biology? game theory? typography? acoustic phonetics?)`,
+      `what would break hash stability in practice? (real-world edge cases, not theoretical)`,
+      `what would make Spw go viral? (developer taste, meme potential, community formation patterns)`,
+      `1-2 alternative architectures you'd choose instead of our current design (and why)`,
+      `what to benchmark first (5 micro + 5 macro tests)`
+    ],
+    deliver: #[
+      `ranked risk/opportunity list with rationale`,
+      `3 surprising cross-domain connections with worked Spw examples`,
+      `benchmark suite sketch`,
+      `"if you could change one thing" recommendation`
+    ]
+  }
+
+  ## -------------------------------------------------------
+  ## FEW-SHOT SEEDS
+  ## -------------------------------------------------------
+
+  shots: #[
+    .{
+      name: `S1.stream.addr.proj`,
+      seed: `^seed[Shot.Stream.Addr.Proj v:0.1 @profile:Spw.b]
+{_s
+  &_addr <= &?<fs, \`src/core/operators.ts\`, HEAD>[reg=addr]
+  @_v <= &_addr! / #[lines, symbols]
+  $_emit <= materialize(&_addr)
+  > inspect: @_v
+}_s`
+    },
+
+    .{
+      name: `S2.postfix.chain.correct`,
+      note: `Demonstrates correct left-to-right postfix chaining.`,
+      seed: `^seed[Shot.Postfix.Correct v:0.1 @profile:Spw.b]
+{_pc
+  data~!         ## !(~(data))
+  data~!?        ## ?(!(~(data)))
+  data~!?#heavy  ## #(?(!(~(data))), heavy)
+}_pc`
+    },
+
+    .{
+      name: `S3.gated.rewrite`,
+      note: `Demonstrates opt-in vs auto-applied rewrite laws.`,
+      seed: `^seed[Shot.Gated.Rewrite v:0.1 @profile:Spw.b]
+{_gated
+  ## ungated: no simplification
+  a: !(~(42))                    ## stays as !(~(42))
+
+  ## gated: cancel law applied
+  b: !(~(42))[rewrite=cancel]    ## → 42
+
+  ## auto-applied: associativity (always)
+  c: &(&(x,y),z)                 ## → &(x,y,z) flattened
+}_gated`
+    },
+
+    .{
+      name: `S4.git.as.stream`,
+      note: `Exercises the 4D git-script concept.`,
+      seed: `^seed[Shot.Git.Stream v:0.1 @profile:Spw.x~#[ops.probe]]
+{_git
+  ## each commit is a ^seed with a diff body
+  ^seed[commit.abc123 @author:\`spwashi\` @time:2026-02-17]
+  .{
+    !(\`src/parser.ts\`)     ## added file
+    ~(\`src/old-parser.ts\`) ## removed file
+    &(\`src/types.ts\`)~!    ## modified file (defer old, force new)
+  }
+
+  ## branch as @() scope
+  @(feature/algebra) <= ^seed[commit.def456] .{ ... }
+
+  ## merge as & reduction
+  &(main, @(feature/algebra))[rewrite=merge]
+}_git`
+    },
+
+    .{
+      name: `S5.web.interop`,
+      seed: `^seed[Shot.Web.Interop v:0.1 @profile:Spw.l]
+{_w;@_json<=.{title:\`hi\`,tags:#[ui,web]};@_r<=@(fetch,@_json)[reg=call];>inspect:@_r;}_w;`
+    }
+  ]
+
+  ## -------------------------------------------------------
+  ## CORRECTIONS FROM PREVIOUS PROBES (Grok must honor these)
+  ## -------------------------------------------------------
+
+  corrections: .{
+    note: `These were errors in probe v0.2/v0.3 responses. Do NOT repeat them.`,
+    items: #[
+      `postfix chains: xσ₁σ₂ → σ₂(σ₁(x)) — left-to-right, NOT right-to-left`,
+      `/ is NOT one of the 12 sigils — it is the projection family, documented separately`,
+      `~~x=x ONLY for brace-pair symbols r ∈ {\`{}\`, \`()\`, \`[]\`, \`<>\`} — not arbitrary x`,
+      `!(~x)=x ONLY with explicit [rewrite=cancel] frame — never auto-applied`,
+      `ONF is internal — do NOT use @profile:Spw.m (there is no user-facing Spw.m dialect)`,
+      `cancel pairs are opt-in: no implicit simplification`
+    ]
+  }
+
+  ## response format
+  @(
+    `Return blocks in this order:`,
+    ?< `A) Runtime register model`,
+       `B) Parser model`,
+       `C) Compiler pipeline`,
+       `D) Hardware/parallel plan`,
+       `E) Typing ergonomics + social syntax taste`,
+       `F) 4D git-script design`,
+       `G) Unknown-unknowns + wonder`
+    >[reg=call]
+  )
+
+}_probe
+
+## Response: see docs/research/grok-response-compiler-v0.1.md

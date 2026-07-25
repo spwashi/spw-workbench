@@ -1,0 +1,284 @@
+^seed[Probe@Grok4.20.Spw.Algebra v:0.3 @profile:Spw.b @intent:prompt_to_grok]
+@doc: "Probe 2: Algebraic reduction laws + register interaction matrix. Self-report first, then route. Paste this entire seed. If multi-agent exists, list actual agent IDs/names first then assign to roles. If not, simulate the 4 roles in one answer."
+
+{_probe
+  .{
+    target: `Grok (state your version in self-report)`,
+    goal: `Formalize the algebraic laws governing Spw's 12 operator sigils`,
+    prior: `Probe v0.2 established: ONF sigil-as-callee, 4 brace metaphysics, Klein V4, carry stack momentum, &/% reduce/fold split, hole EBNF, / tri-fixity. All adopted.`,
+    invariants: #[
+      `12 sigils: ! @ ^ ? ~ * . # % & $ =`,
+      `ONF form: σ(args)[reg=R]`,
+      `semantic_hash must be invariant under algebraic rewrites`,
+      `no new keywords or sigils`,
+      `perspective invariance: laws hold under all 6 operant perspectives`
+    ]
+  }
+
+  ## -------------------------------------------------------
+  ## (0) SELF-REPORT: DO NOT SKIP
+  ## -------------------------------------------------------
+
+  self_report: .{
+    id: `SR.version.modes.tools`,
+    ask: `State your model/version string, whether multi-agent is available, and list tool/mode features you can actually use in this chat.`,
+    deliver: `one facet .{ model:..., multi_agent:..., agents:#[...], tools:#[...], notes:... }. If unknown, set value to \`unknown\` (do not guess).`
+  }
+
+  ## -------------------------------------------------------
+  ## COUNCIL ROUTING (map to real agents if present; else simulate roles)
+  ## -------------------------------------------------------
+
+  roles: .{
+    lead: `Synthesize the operator algebra. Referee conflicts. Final table must be self-consistent.`,
+    research: `Compare each law against pi-calculus, linear logic (!, ?, &, ⊕), Haskell MonadPlus, APL operator algebra, J forks/hooks. Note intentional divergences.`,
+    logic: `For each law: equation, proof sketch or counterexample, axiom vs derivable, hash_stable y/n.`,
+    ergonomics: `For each law: surface-syntax example in Spw.b. Flag unreadable syntax or surprising behavior.`
+  }
+
+  ## -------------------------------------------------------
+  ## Q1: OPERATOR COMPOSITION TABLE (all agents)
+  ## -------------------------------------------------------
+
+  Q1: .{
+    id: `Q1.composition`,
+    ask: `For the 12 operator sigils, determine which pairs compose meaningfully. Produce a 12×12 interaction matrix.`,
+    context: .{
+      operators: #[
+        .{ sigil: `!`, topology: `injection`,       role: `force/hydrate` },
+        .{ sigil: `@`, topology: `locus`,            role: `perspective/scope` },
+        .{ sigil: `^`, topology: `elevation`,        role: `bind/seed header` },
+        .{ sigil: `?`, topology: `probe`,            role: `query/optional/stream` },
+        .{ sigil: `~`, topology: `superposition`,    role: `defer/interpolate` },
+        .{ sigil: `*`, topology: `materialization`,  role: `dereference/match` },
+        .{ sigil: `.`, topology: `ground`,           role: `facet/baseline` },
+        .{ sigil: `#`, topology: `resonance`,        role: `tag/index/set` },
+        .{ sigil: `%`, topology: `ratio`,            role: `normalize/fold` },
+        .{ sigil: `&`, topology: `merge`,            role: `overlay/reduce` },
+        .{ sigil: `$`, topology: `substrate`,        role: `materialize/reflect` },
+        .{ sigil: `=`, topology: `bias`,             role: `assign/config` }
+      ]
+    },
+    deliver: .{
+      matrix: `12×12 table where cell (σ₁, σ₂) = "compose", "commute", "cancel", "distribute", or "⊥" (no meaningful composition)`,
+      Benjamin: `for each non-⊥ cell, state the composition law as an equation`,
+      Harper: `annotate cells that mirror known structures (e.g., !~ mirrors linear logic's promotion/dereliction)`,
+      Lucas: `flag any composition that produces >3 consecutive sigils in surface syntax`
+    }
+  }
+
+  ## -------------------------------------------------------
+  ## Q2: ALGEBRAIC IDENTITIES (Benjamin lead, HEAVY)
+  ## -------------------------------------------------------
+
+  Q2: .{
+    id: `Q2.identities`,
+    ask: `Enumerate the algebraic identities (axioms + derived laws) for the operator algebra.`,
+    must_cover: #[
+      `identity elements: σ(id) = ? for each σ`,
+      `involutions: which σ satisfy σ(σ(x)) = x?`,
+      `commutativity: σ(a, b) = σ(b, a) for which σ?`,
+      `associativity: σ(σ(a, b), c) = σ(a, σ(b, c)) for which σ?`,
+      `distributivity: σ₁(a, σ₂(b, c)) = σ₂(σ₁(a, b), σ₁(a, c)) for which pairs?`,
+      `absorption: σ₁(σ₂(x)) = x for which pairs? (cancel pairs)`,
+      `idempotency: σ(x, x) = x for which σ?`
+    ],
+    format: #[
+      `axiom_id: A1, A2, ..., AN`,
+      `for each: equation, proof_status (axiom|derived|conjecture), hash_stable (yes|no)`,
+      `adversarial: 3 expressions that look like they should simplify but don't`
+    ],
+    Harper: `compare against: linear logic (!A ⊗ !B = !(A & B)), Kleene algebra (a** = a*), Boolean algebra`
+  }
+
+  ## -------------------------------------------------------
+  ## Q3: REGISTER INTERACTION WIRING (all agents)
+  ## -------------------------------------------------------
+
+  Q3: .{
+    id: `Q3.register.wiring`,
+    ask: `Define the full register interaction model: which registers can feed into which, and what happens at each junction.`,
+    registers: #[
+      .{ sigil: `?`, name: `inquiry`,     cognitive: `search frontier / curiosity queue` },
+      .{ sigil: `~`, name: `working_mem`, cognitive: `uncommitted / deferred values` },
+      .{ sigil: `!`, name: `motor`,       cognitive: `effect execution / hydration` },
+      .{ sigil: `@`, name: `attention`,   cognitive: `focus stack / scope` },
+      .{ sigil: `#`, name: `schema`,      cognitive: `tag activation / classification` },
+      .{ sigil: `.`, name: `ground`,      cognitive: `baseline / default context` },
+      .{ sigil: `*`, name: `output`,      cognitive: `perceptual result / materialized value` },
+      .{ sigil: `^`, name: `long_term`,   cognitive: `persistent bindings / seeds` },
+      .{ sigil: `&`, name: `integrate`,   cognitive: `feature merger / overlay` },
+      .{ sigil: `%`, name: `salience`,    cognitive: `priority / proportion` },
+      .{ sigil: `$`, name: `meta`,        cognitive: `substrate reflection / cost` },
+      .{ sigil: `=`, name: `config`,      cognitive: `preferences / bias` }
+    ],
+    deliver: .{
+      wiring: `directed graph: edges = "σ₁ feeds σ₂" with condition + transformation`,
+      layers: `group registers into layers (input/processing/output/meta)`,
+      lifecycle: `for each register: open → read → write → seal transitions`,
+      Grok: `ensure no circular dependencies break hash determinism`,
+      Lucas: `show a "cognitive pipeline" example: inquiry → attention → working_mem → motor → output`
+    }
+  }
+
+  ## -------------------------------------------------------
+  ## Q4: CANCEL PAIRS AND CONSERVATION (physics agent, HEAVY)
+  ## -------------------------------------------------------
+
+  Q4: .{
+    id: `Q4.conservation`,
+    ask: `Identify conservation laws in the operator algebra. What quantities are preserved under operator application?`,
+    must_cover: #[
+      `cancel pairs: which (σ₁, σ₂) satisfy σ₁(σ₂(x)) = x?`,
+      `e.g., does !(~(x)) = x? (hydrate a deferral = original?)`,
+      `e.g., does *(?(x)) = x? (materialize a query = original?)`,
+      `conservation: what is the "energy" analog? (mechanical cost model says fixity predicts substrate cost)`,
+      `symmetry → conservation (Noether): each brace symmetry (Klein V4) should correspond to a conserved quantity`
+    ],
+    deliver: #[
+      `cancel pair table`,
+      `conserved quantities (at least 2) with physical analogy`,
+      `connection to mechanical cost model: K = <M, A, V, E, T, R>`
+    ],
+    Harper: `compare against: CPT symmetry, Noether's theorem applied to formal languages, linear logic's cut-elimination`
+  }
+
+  ## -------------------------------------------------------
+  ## Q5: FIXITY INTERACTION LAWS (Lucas lead)
+  ## -------------------------------------------------------
+
+  Q5: .{
+    id: `Q5.fixity.laws`,
+    ask: `How do prefix and postfix forms of the same operator interact? What about mixed-operator fixity chains?`,
+    must_cover: #[
+      `same-op: does prefix-σ composed with postfix-σ simplify? e.g., ?(x?) = ?`,
+      `mixed-op chains: !~?x — what is the canonical evaluation order?`,
+      `postfix chains: x?!& — right-to-left or left-to-right?`,
+      `prefix-postfix sandwich: !x? — is this !(x?) or (!x)?`,
+      `binding strength: prefix binds tighter than infix (existing); but what about prefix-postfix collisions?`
+    ],
+    deliver: #[
+      `fixity precedence table (7 levels max)`,
+      `10 ambiguous expressions with their canonical parse`,
+      `printer rules: where to insert spaces to disambiguate`
+    ],
+    Lucas: `flag any expression that reads differently than it parses`
+  }
+
+  ## -------------------------------------------------------
+  ## Q6: LLM-HARDENED SYNTAX CHECK (Lucas lead)
+  ## -------------------------------------------------------
+
+  Q6: .{
+    id: `Q6.llm.hardened`,
+    ask: `Evaluate Spw syntax for LLM-hardened properties. Which constructs are likely to cause AI hallucination?`,
+    must_cover: #[
+      `sigil ambiguity: which sigils are most likely to be confused by LLMs? (e.g., $ vs # in other languages)`,
+      `brace mismatch: <> as container vs comparison — how often will LLMs get this wrong?`,
+      `frame key verbosity: [reg=proj mode=val] — will LLMs hallucinate invalid frame keys?`,
+      `ONF stability: if an LLM generates ONF directly, what are the most likely malformations?`,
+      `few-shot learnability: how many examples does an LLM need to generate valid Spw?`
+    ],
+    deliver: #[
+      `risk table: construct × hallucination probability (high/medium/low)`,
+      `mitigation: syntax changes that reduce hallucination risk`,
+      `3-shot prompt template that teaches Spw to any LLM`
+    ]
+  }
+
+  ## -------------------------------------------------------
+  ## FEW-SHOT: algebraic expressions to reason from
+  ## -------------------------------------------------------
+
+  shots: #[
+    .{
+      name: `S1.cancel`,
+      seed: `^seed[Shot.Cancel v:0.1 @profile:Spw.b]
+{_cancel
+  ## does hydration cancel deferral?
+  x: ~(42)            ## deferred 42
+  y: !(x)             ## hydrate the deferral
+  ## question: y == 42?
+
+  ## does materialization cancel query?
+  q: ?(KB, pattern)   ## query
+  m: *(q)             ## materialize
+  ## question: m == result, or m == *(?(KB, pattern))?
+}_cancel`
+    },
+
+    .{
+      name: `S2.chain`,
+      seed: `^seed[Shot.Chain v:0.1 @profile:Spw.b]
+{_chain
+  ## prefix chain: evaluation order?
+  a: !~?x             ## !(~(?(x))) or ?(?̃(!x))?
+
+  ## postfix chain: binding order?
+  b: data~!?#tagged   ## (((data~)!)?)#tagged
+
+  ## mixed: prefix meets postfix
+  c: !data?            ## !(data?) or (!data)?
+}_chain`
+    },
+
+    .{
+      name: `S3.distribute`,
+      seed: `^seed[Shot.Distribute v:0.1 @profile:Spw.b]
+{_dist
+  ## does ! distribute over &?
+  lhs: !(a & b)
+  rhs: !a & !b
+  ## question: lhs == rhs?
+
+  ## does ? distribute over #[]?
+  lhs2: ?(#[a, b, c])
+  rhs2: #[?a, ?b, ?c]
+  ## question: lhs2 == rhs2?
+}_dist`
+    },
+
+    .{
+      name: `S4.pipeline`,
+      note: `Exercises cognitive register pipeline.`,
+      seed: `^seed[Shot.Pipeline v:0.1 @profile:Spw.b]
+{_pipe
+  ## cognitive flow: inquiry → attention → working → motor → output
+  ?need                  ## open inquiry register
+  @KB/index              ## position attention
+  ~candidates            ## defer into working memory
+  #[relevant]            ## activate schema filter
+  *match                 ## materialize output
+  !result                ## execute motor (emit)
+
+  ## question: is this a valid register flow? which transitions are illegal?
+}_pipe`
+    }
+  ]
+
+  ## -------------------------------------------------------
+  ## CONTEXT: design ancestry for the agents
+  ## -------------------------------------------------------
+
+  context: .{
+    operant_perspectives: `6 lenses: computation, EM, photonics, cognition, learning-from-text, illustration. Same AST, different reading. Laws must hold under all 6.`,
+    mechanical_cost: `K = <M, A, V, E, T, R>. Lexical fixity predicts substrate cost. Projection (@) = zero cost; materialization ($) = accrues cost.`,
+    klein_four: `~ (openness flip): {} <-> <>, () <-> []. & (dynamism flip): {} <-> (), [] <-> <>. Commute: ~& = &~. Exhaustive: V4.`,
+    existing_laws: `& is merge (commutative adopted), % is fold (ordered adopted), / tri-fixity (adopted), carry stack (adopted).`
+  }
+
+  ## response format
+  @(
+    `Return in this order:`,
+    ?< `A) 12×12 composition matrix`,
+       `B) Algebraic identities table (axiom/derived/conjecture, hash_stable y/n)`,
+       `C) Register wiring diagram (directed graph + layers)`,
+       `D) Cancel pairs + conservation laws`,
+       `E) Fixity precedence table + 10 ambiguous parses`,
+       `F) LLM-hardened risk table + 3-shot prompt template`
+    >[reg=call]
+  )
+
+}_probe
+
+## Response: see docs/research/grok-response-algebra-v0.3.md

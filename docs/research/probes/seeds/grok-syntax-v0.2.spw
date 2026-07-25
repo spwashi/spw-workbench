@@ -1,0 +1,385 @@
+```spw
+^seed[Probe@Grok4.20.Spw v:0.2 @profile:Spw.b @intent:prompt_to_grok]
+@doc: "Paste this entire seed into Grok 4.20. Ask Grok to answer in Spw blocks + ONF notes + adversarial tests. v0.2 adds register/runtime questions, dialect density comparison, and more syntax exercises."
+
+{_probe
+  .{
+    target: `Grok 4.20 (multi-agent council if available)`,
+    goal: `Evolve Spw v0.1.1 operator-brace algebra + normalization + momentum + runtime registers`,
+    invariants: #[
+      `sigil-as-callee ONF (no named desugar verbs): σ(args)[reg=R]`,
+      `dot reserved for facet only (.{...}); slash / for projection`,
+      `semantic_hash excludes momentum frames; env_hash includes them`,
+      `ASI continuation across / ! #[ [~`,
+      `no new keywords (prefer frames + operators)`,
+      `12 operator sigils: ! @ ^ ? ~ * . # % & $ =`,
+      `4 brace-pairs as containment registers: #[] .{} @() ?<>`,
+      `Klein four group on braces: ~ (openness flip) and & (dynamism flip)`,
+      `backtick phrases preferred over guillemets`,
+      `perspective invariance: C(parse(expr, P_A)) = C(parse(expr, P_B))`
+    ],
+    output_contract: #[
+      `Return 4 blocks: (A) proposals, (B) ONF desugars, (C) tests, (D) implementation notes`,
+      `Every proposal must include: surface form, ONF, fixity (prefix/infix/postfix), and printer rule`,
+      `If you invent a new frame key, define its default + canonical emission`,
+      `Show dialect density: same expression in Spw.b (readable) and Spw.l (compressed)`
+    ]
+  }
+
+  ## council routing (map to Grok's agents if multi-agent is present)
+  council: #[
+    .{ role: `syntax`,  dialect: `Spw.b`, focus: #[
+        `lexer rules (dot-in-ident vs .{ facet)`,
+        `fixity table completion for all 12 sigils`,
+        `projection/selection family: prefix / postfix x/ infix x/y`,
+        `reg inference: when can [reg=...] be omitted?`
+      ] },
+    .{ role: `logic`,   dialect: `Spw.l`, focus: #[
+        `operator precedence + associativity`,
+        `pattern matching/unification via _ holes`,
+        `reduction laws + equivalences (hash stability)`,
+        `compositionality laws: (x/a)/b vs x/#[a,b]`
+      ] },
+    .{ role: `physics`, dialect: `Spw.x~#[ops.probe,ops.metaphysical]`, focus: #[
+        `12-operator cognitive register model`,
+        `brace metaphysics: individuation #[] coherence .{} agency @() becoming ?<>`,
+        `Klein four symmetry probing: ~ flips openness, & flips dynamism`,
+        `signal calculus: operator chains as cognitive state machines`
+      ] },
+    .{ role: `systems`, dialect: `Spw.b`, focus: #[
+        `stream momentum state machine (carry/resume/flush)`,
+        `runtime register storage: how operators map to runtime state`,
+        `incremental parsing + diff-friendly printer`,
+        `fuzz properties + differential tests (TS/Rust/Py)`
+      ] }
+  ]
+
+  ## -------------------------------------------------------
+  ## QUESTIONS (answer each with: surface, ONF, tests, printer)
+  ## -------------------------------------------------------
+
+  questions: ?<
+    .{
+      id: `Q1.proj.select`,
+      ask: `Design /-family for key/value/entry selection: keys, values, entries, slices, nested derivatives.`,
+      must_cover: #[
+        `x / key (infix: project field)`,
+        `x / #[k1,k2] (pick multiple)`,
+        `x / ..(i,j) (range slice)`,
+        `/path (prefix: absolute from root)`,
+        `x/ (postfix: coerce to path / get keys)`,
+        `mode frames: [mode=val|entry|key] for selection variants`,
+        `compositionality: (x / a) / b == x / #[a,b] (if adopted)`
+      ],
+      deliver: #[
+        `ONF for all 3 fixities of /`,
+        `printer spacing rules for Spw.b vs Spw.l`,
+        `adversarial ASI tests (newline before / must bind)`
+      ]
+    },
+
+    .{
+      id: `Q2.pattern.unify`,
+      ask: `Specify pattern matching + unification using operators + frames (no new keywords).`,
+      must_cover: #[
+        `_ hole (unconstrained) and _[id=K] (named binding)`,
+        `unify result shape: facet .{K: value} for bindings`,
+        `dispatch site: ?(concept, pattern)[mode=unify]`,
+        `failure mode: optional (x?) returns empty vs error`,
+        `nested holes: .{ mass: _, nested: .{ charge: _[id=Q] } }`
+      ],
+      deliver: #[
+        `EBNF fragment for hole production`,
+        `3 minimal seeds + 1 parser-killer seed`,
+        `ONF for _ and _[id=K]`
+      ]
+    },
+
+    .{
+      id: `Q3.parallel.reduce`,
+      ask: `Define parallel/async + channels + reduction with operator-only forms.`,
+      must_cover: #[
+        `channel: ?<...>[reg=chan] or ?(name)[reg=chan]`,
+        `spawn/join via frames: [par=on], [await=all|any|first]`,
+        `reduction: & with [reg=reduce] or % with [reg=fold]`,
+        `determinism: semantic_hash must be order-independent for commutative reductions`,
+        `non-commutative case: use @omap or ?<ordered>[reg=seq]`
+      ],
+      deliver: #[
+        `algebraic laws per reduction operator`,
+        `canonicalization strategy when parallel results reorder`,
+        `2 seeds: one commutative, one ordered`
+      ]
+    },
+
+    .{
+      id: `Q4.stream.momentum`,
+      ask: `Stream-momentum parser state machine: carry, resume, flush, error recovery.`,
+      must_cover: #[
+        `postfix triggers: ~ ! ? & (and chained: data~!)`,
+        `continuation tokens: / ! #[ [~`,
+        `carry stack vs single carry (choose + justify)`,
+        `stitch invariant: parse(A+B) == stitch(partial(A), partial(B))`,
+        `timeout/flush: what happens when no continuation arrives?`,
+        `error recovery: next chunk lacks continuation token`
+      ],
+      deliver: #[
+        `pseudo-code state machine (5 states max)`,
+        `fuzz property spec for stitch invariant`,
+        `momentum frame format: [momentum=carry momentum.op=σ]`
+      ]
+    },
+
+    .{
+      id: `Q5.printer.hash`,
+      ask: `Canonical printer for Spw.b + Spw.l with ONF internal. Include drift strategy.`,
+      must_cover: #[
+        `backtick normalization (accept guillemets, emit backticks)`,
+        `dot-in-ident vs .{ disambiguation in output`,
+        `3-hash model: surface_hash, semantic_hash, env_hash`,
+        `C3 condensed form: token-invariant with F2 pretty form`,
+        `frame ordering: alphabetical keys in canonical output`
+      ],
+      deliver: #[
+        `printer rule table (spacing, newlines, indentation)`,
+        `15-line canonicalization checklist`,
+        `2 seeds: F2 + C3 equivalence demonstration`
+      ]
+    },
+
+    .{
+      id: `Q6.register.runtime`,
+      ask: `Map the 12 operator sigils to runtime register storage. How does an interpreter use them?`,
+      must_cover: #[
+        `each sigil as a named register with a storage type`,
+        `register lifecycle: open, read, write, close/seal`,
+        `register interaction matrix: which registers can feed into which?`,
+        `register visibility per dialect (Spw.b shows all; Spw.l compresses)`,
+        `how $ (substrate) and = (bias) differ from the other 10`,
+        `how RegisterKind (text|node|html|selection|landmark|operator|environment) maps`
+      ],
+      deliver: #[
+        `register state table (12 rows)`,
+        `interaction diagram (which σ feeds into which σ)`,
+        `1 seed showing register flow across all 12`
+      ]
+    },
+
+    .{
+      id: `Q7.dialect.density`,
+      ask: `Show how dialect profiles control expression density. Same semantics, different surface.`,
+      must_cover: #[
+        `Spw.q: strict core (minimal sugar)`,
+        `Spw.z: compact (records + typed nodes)`,
+        `Spw.b: block (readable, vertical)`,
+        `Spw.l: line (compressed, REPL)`,
+        `Spw.x: extended (register-frames + holes + probes)`,
+        `ONF: sigil-as-callee (internal)`,
+        `density spectrum: character count for equivalent expressions`
+      ],
+      deliver: #[
+        `1 concept expressed in all 5 surface dialects + ONF`,
+        `density ratio table (chars per dialect)`,
+        `which constructs are available per dialect`
+      ]
+    },
+
+    .{
+      id: `Q8.symmetry.probe`,
+      ask: `Formalize Klein four symmetry probing on brace-pairs. How to navigate concept stance systematically.`,
+      must_cover: #[
+        `~ involution: {} <-> <>, () <-> []  (openness flip)`,
+        `& involution: {} <-> (), [] <-> <>  (dynamism flip)`,
+        `~& composition: {} <-> [] (diagonal)`,
+        `stance access: C.{} C@() C#[] C?<> as four exhaustive projections`,
+        `probing: ?(C, ~\`{}\`) = relational view of C's definitional layer`,
+        `is there a natural fifth operation or is V4 provably complete?`
+      ],
+      deliver: #[
+        `group multiplication table`,
+        `2 seeds: one exercising all 4 stances, one using symmetry flips`,
+        `connection to operant perspective invariance axiom`
+      ]
+    }
+  >[reg=stream]
+
+  ## -------------------------------------------------------
+  ## FEW-SHOT SEEDS (examples to reason from)
+  ## -------------------------------------------------------
+
+  shots: #[
+    .{
+      name: `S1.memory.planes`,
+      note: `Exercises: addr streams, hydration, projection, materialize gate.`,
+      seed: `^seed[Shot.Memory.Planes v:0.1 @profile:Spw.b]
+{_m
+  &_addr <= &?<fs, \`src/core/operators.ts\`, HEAD>[reg=addr]
+  @_view <= &_addr! / #[lines, symbols]
+  $_emit <= materialize(&_addr)     ## only materialize creates $
+  > inspect: @_view
+}_m`
+    },
+
+    .{
+      name: `S2.math.matrix`,
+      note: `Exercises: Spw.l line density, register-frame #[], nested sets.`,
+      seed: `^seed[Shot.Math.Matrix v:0.1 @profile:Spw.l]
+{_mx;@_A<=#[#[1,2];#[3,4]];@_B<=#[#[2,0];#[1,2]];
+@_C<=@(@(mul,@_A),@_B)[reg=math];>inspect:@_C;}_mx;`
+    },
+
+    .{
+      name: `S3.metaphysics`,
+      note: `Exercises: all 4 brace metaphysics, stance access, meta frames.`,
+      seed: `^seed[Shot.Metaphysics v:0.1 @profile:Spw.x~#[ops.probe,ops.metaphysical]]
+{_c
+  @_real <= #[entity] [meta=individuation]
+  @_cog  <= .{ @_real / qualia } [meta=coherence]
+  @_act  <= @( @_cog / act )     [meta=agency]
+  @_flow <= ?< @_act / becoming> [meta=becoming]
+  > inspect: @_flow
+}_c`
+    },
+
+    .{
+      name: `S4.fixity.voice`,
+      note: `Exercises: prefix/infix/postfix as imperative/narrative/declarative voice.`,
+      seed: `^seed[Shot.Fixity.Voice v:0.1 @profile:Spw.b]
+{_voice
+  ## imperative (prefix-heavy)
+  !~?target
+
+  ## narrative (infix-heavy)
+  source ? fallback & overlay ~ blend
+
+  ## declarative (postfix-heavy)
+  result?!&#stable
+
+  ## mixed: question opens a flow of answers
+  @_answers <= ?< !compute, ~estimate, *measure >
+  > inspect: @_answers
+}_voice`
+    },
+
+    .{
+      name: `S5.projection.family`,
+      note: `Exercises: all 3 fixities of /, register-frame pick, prefix absolute, postfix coerce.`,
+      seed: `^seed[Shot.Projection v:0.1 @profile:Spw.b]
+{_proj
+  ## infix: field access
+  @_title <= doc / title
+
+  ## infix: multi-pick
+  @_subset <= doc / #[title, author, tags]
+
+  ## prefix: absolute from root
+  @_abs <= /KB/Components/DemoCard
+
+  ## postfix: keys / coerce to path
+  @_keys <= doc/
+
+  ## chained
+  @_deep <= doc / meta / tags / #[0]
+
+  > inspect: @_title
+  > inspect: @_keys
+}_proj`
+    },
+
+    .{
+      name: `S6.holes.unify`,
+      note: `Exercises: hole tokens, pattern matching, named bindings.`,
+      seed: `^seed[Shot.Holes.Unify v:0.1 @profile:Spw.x~#[ops.holes]]
+{_unify
+  Concept: .{
+    mass: 42,
+    charge: -1,
+    nested: .{ spin: `up`, color: `red` }
+  }
+
+  Pattern: .{
+    mass: _,
+    charge: _[id=Q],
+    nested: .{ spin: _[id=S] }
+  }
+
+  @_matches <= ?(Concept, Pattern)[mode=unify]
+  ## expected: .{ Q: -1, S: \`up\` }
+
+  > inspect: @_matches
+}_unify`
+    },
+
+    .{
+      name: `S7.symmetry`,
+      note: `Exercises: Klein four brace probing, stance access.`,
+      seed: `^seed[Shot.Symmetry v:0.1 @profile:Spw.x~#[ops.probe]]
+{_sym
+  C: .{
+    mass: 42,
+    process: @(transform),
+    tags: #[heavy, stable],
+    flow: ?<measure, compute, emit>
+  }
+
+  ## four exhaustive stance projections
+  @_def  <= C.{}     ## definitional: what is C?
+  @_proc <= C@()     ## agentive: what does C do?
+  @_idx  <= C#[]     ## individuating: how is C distinct?
+  @_lim  <= C?<>     ## liminal: what is C becoming?
+
+  ## symmetry flip: ~ swaps openness
+  @_rel  <= ?(C, ~\`{}\`)   ## {} -> <> : relational view of definition
+
+  ## symmetry flip: & swaps dynamism
+  @_act  <= ?(C, &\`{}\`)   ## {} -> () : agentive view of definition
+
+  > inspect: @_def
+  > inspect: @_rel
+  > inspect: @_act
+}_sym`
+    },
+
+    .{
+      name: `S8.density.compare`,
+      note: `Same expression across dialects — density spectrum demonstration.`,
+      seed: `## Spw.b (block)
+^seed[Shot.Density.B v:0.1 @profile:Spw.b]
+{_d
+  &_addr <= &?<fs, \`src/demo.ts\`, HEAD>[reg=addr]
+  @_view <= &_addr! / #[title, body]
+    [~Debugger@]
+  > inspect: @_view
+}_d
+
+## Spw.l (line) — same semantics, compressed
+^seed[Shot.Density.L v:0.1 @profile:Spw.l]
+{_d;&_addr<=&?<fs,\`src/demo.ts\`,HEAD>[reg=addr];@_view<=&_addr!/#[title,body][~Debugger@];>inspect:@_view;}_d;
+
+## ONF (internal) — sigil-as-callee, explicit reg
+## &(&(?(fs,\`src/demo.ts\`,HEAD)[reg=addr])[reg=ref])[reg=ref]
+## /(!(...)  [reg=hydrate], #(title,body)[reg=set])[reg=proj]`
+    }
+  ]
+
+  ## context documents (inform Grok of design ancestry)
+  context: .{
+    operant_perspectives: `12 operators are topological invariants that manifest differently under 6 interpretive lenses: computation, electromagnetism, photonics, cognition, learning-from-text, illustration. Canonical form is perspective-invariant.`,
+    mechanical_cost: `Lexical fixity directly predicts substrate cost. Projection (@) has zero material cost; only materialization ($) accrues cost.`,
+    cognitive_registers: `Each operator is a named cognitive buffer: ? inquiry queue, ~ working memory, ! motor planning, @ attentional focus, # schema activation, . baseline state, * perceptual output, ^ long-term memory, & feature integration, % salience, $ metacognition, = preferences.`,
+    existing_desugar: `normalize.ts has: A{} -> {_A }_A (label sugar) and σ_name -> σ(name) (intrinsic sugar). Both retained.`
+  }
+
+  ## response format
+  @(
+    `Return blocks in this order:`,
+    ?< `A) Proposal deltas (surface + ONF + fixity + dialect density)`,
+       `B) ONF desugar table (complete for forms you touched)`,
+       `C) Seeds: minimal + adversarial (ASI, mounts, momentum, holes)`,
+       `D) Implementation notes: lexer, parser, printer, fuzz, runtime registers`
+  >[reg=call]
+
+}_probe
+```
+
+## Response: see docs/research/grok-response-syntax-v0.2.md
