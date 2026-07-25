@@ -167,6 +167,23 @@ export async function scanCorpus(opts: ScanOptions): Promise<CorpusScanResult> {
     hubTop,
   })
 
+  // The seed's broken-target pass only knows the scanned .spw set — it cannot
+  // see .md targets, directories, or files outside the roots. Verify each
+  // candidate against the disk here, where the filesystem is in scope.
+  if (resolvePaths && topography.brokenTargets.length) {
+    const missing = await Promise.all(
+      topography.brokenTargets.map(async (target) => {
+        try {
+          await fs.access(path.resolve(cwd, target))
+          return null
+        } catch {
+          return target
+        }
+      }),
+    )
+    topography.brokenTargets = missing.filter((t): t is string => t !== null)
+  }
+
   const inventory = buildInventory(signals, topography)
 
   return {

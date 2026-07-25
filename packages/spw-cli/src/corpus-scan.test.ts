@@ -162,6 +162,26 @@ describe('scanCorpus (end-to-end against real .spw files)', () => {
     await fs.rm(root, { recursive: true, force: true })
   })
 
+  it('only flags path targets that are truly missing from disk', async () => {
+    await fs.writeFile(path.join(root, 'notes.md'), '# notes\n', 'utf8')
+    await fs.mkdir(path.join(root, 'assets'), { recursive: true })
+    await fs.mkdir(path.join(root, 'lens'), { recursive: true })
+    await fs.writeFile(
+      path.join(root, 'lens', 'probe.spw'),
+      '^[frame]{\n  ~"../notes.md"\n  ~"../assets"\n  ~"./missing.spw"\n}\n',
+      'utf8',
+    )
+
+    const cwd = process.cwd()
+    process.chdir(root)
+    try {
+      const result = await scanCorpus({ roots: ['lens'] })
+      expect(result.topography.brokenTargets).toEqual(['lens/missing.spw'])
+    } finally {
+      process.chdir(cwd)
+    }
+  })
+
   it('scans, links, and inventories a small corpus without re-reading files twice', async () => {
     const cwd = process.cwd()
     process.chdir(root)
