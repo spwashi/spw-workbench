@@ -115,17 +115,35 @@ const VOLATILE_SHARE = 0.6
 const SETTLED_SHARE = 0.3
 
 /**
+ * Marks that commit rather than report. `~#taste` names a standard the surface
+ * holds itself to and `~#goal` names what it is for — neither expires, so
+ * neither is evidence of churn. Counting them as deferred state made declaring
+ * a standard on a canon surface read as though the surface had destabilized,
+ * which is backwards: a commitment is what makes content keep.
+ */
+const COMMITMENT_MARKS = /~#(taste|goal|intent|purpose|contract|invariant|rule|policy)\b/g
+
+/**
  * Read a surface's cache stance from its particle mix.
  *
  * The seed measures the material and this decides the policy — caching is the
  * server's concern, not the parser's. A surface with no marks at all has
  * nothing to go stale, so it reads as durable.
+ *
+ * Pass the source to discount commitment marks. Without it every `~#` counts
+ * as deferred state, because the mix alone cannot tell a standard from a
+ * status readout — they share the sigil.
  */
-export function volatilityOf(mix: ParticleMix): { volatility: Volatility; aspectShare: number } {
+export function volatilityOf(
+  mix: ParticleMix,
+  source = '',
+): { volatility: Volatility; aspectShare: number } {
   const total = particleMixTotal(mix)
   if (total === 0) return { volatility: 'durable', aspectShare: 0 }
 
-  const aspectShare = mix.aspect / total
+  const commitments = (source.match(COMMITMENT_MARKS) ?? []).length
+  const deferred = Math.max(0, mix.aspect - commitments)
+  const aspectShare = deferred / total
   const volatility: Volatility =
     aspectShare >= VOLATILE_SHARE ? 'volatile'
       : aspectShare >= SETTLED_SHARE ? 'settled'
@@ -151,7 +169,7 @@ export function workspaceTemperature(deps: HandlerDeps): WorkspaceTemperatureEnt
       tier: doc.tier,
       beatAge: beat - doc.lastAccessBeat,
       writeCount: doc.writeCount,
-      ...volatilityOf(doc.mix),
+      ...volatilityOf(doc.mix, doc.text),
     })
   }
 

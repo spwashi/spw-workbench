@@ -3,7 +3,7 @@ import { parse, particleMix } from '@spwashi/spw-seed'
 import { volatilityOf } from '../handlers/workspace'
 
 function readStance(source: string) {
-  return volatilityOf(particleMix(parse(source).ast ?? null, source))
+  return volatilityOf(particleMix(parse(source).ast ?? null, source), source)
 }
 
 describe('volatilityOf — cache stance read from the material', () => {
@@ -38,6 +38,32 @@ describe('volatilityOf — cache stance read from the material', () => {
 
   it('treats a surface with no marks as durable — nothing can go stale', () => {
     expect(readStance('^["plain"]{\n  x: 1\n}').volatility).toBe('durable')
+  })
+
+  it('does not read a declared standard as churn', () => {
+    // `~#taste` and `~#goal` commit; they are why content keeps, not evidence
+    // it expires. Counting them as deferred state made adding a standard to a
+    // canon surface look like the surface had destabilized.
+    const canon = ['#>anchor', '#:layer #!canon', '^["intent"]{', '}'].join('\n')
+    const committed = [
+      '#>anchor',
+      '#:layer #!canon',
+      '^["intent"]{',
+      ' ~#goal: "route the canon surfaces"',
+      ' ~#taste: "every root here resolves"',
+      '}',
+    ].join('\n')
+
+    expect(readStance(canon).volatility).toBe('durable')
+    expect(readStance(committed).volatility).toBe('durable')
+    expect(readStance(committed).aspectShare).toBe(0)
+  })
+
+  it('still reads a status readout as deferred, sigil shared or not', () => {
+    const source = ['#>anchor', '#:layer #!canon', '~#taste: "held"', '~#status: "open"'].join('\n')
+
+    // One deferred mark of five total — the taste is discounted, the status is not.
+    expect(readStance(source).aspectShare).toBeCloseTo(0.2, 5)
   })
 
   it('reports the aspect share that produced the reading', () => {

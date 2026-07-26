@@ -990,6 +990,35 @@ interface ScopeContext {
   frameName: string | null
 }
 
+/** Annotation kind → the sigil a braid string carries. */
+const BRAID_PREFIX: Record<AnnotationKind, string> = {
+  topic: '#',
+  lens: '#:',
+  intent: '#!',
+  anchor: '#>',
+  prompt_root: '##>',
+}
+
+/** Particle sigil → the annotation kind it declares. */
+const PARTICLE_KINDS: Record<string, AnnotationKind> = {
+  '>': 'anchor',
+  ':': 'lens',
+  '!': 'intent',
+}
+
+/**
+ * Read a particle token as an annotation. `#>anchor`, `#:lens`, and `#!intent`
+ * each arrive as one PARTICLE carrying its own sigil and name — the lexer
+ * stopped emitting them as `#` plus separate pieces, and this index went blind
+ * to every header facet until it read the particle directly.
+ */
+function annotationFromParticle(tok: Token): { kind: AnnotationKind; name: string } | null {
+  const kind = PARTICLE_KINDS[String((tok as { kind?: string }).kind)]
+  if (!kind) return null
+  const name = tok.value.slice(2) // drop the two-character sigil
+  return name ? { kind, name } : null
+}
+
 function annotationKindFromTokens(
   tokens: Token[],
   hashIdx: number,
@@ -998,37 +1027,10 @@ function annotationKindFromTokens(
   const next = tokens[hashIdx + 1]
   if (!next) return null
 
-  // ##>name — prompt root anchor
-  if (next.type === 'OPERATOR' && next.kind === '#') {
-    const after = tokens[hashIdx + 2]
-    const name = tokens[hashIdx + 3]
-    if (after?.type === 'CAPSULE_CLOSE' && name?.type === 'IDENTIFIER') {
-      return { kind: 'prompt_root', name: name.value, advance: 3 }
-    }
-  }
-
-  // #>anchor
-  if (next.type === 'CAPSULE_CLOSE' && next.kind === '>') {
-    const name = tokens[hashIdx + 2]
-    if (name?.type === 'IDENTIFIER') {
-      return { kind: 'anchor', name: name.value, advance: 2 }
-    }
-  }
-
-  // #!intent
-  if (next.type === 'OPERATOR' && next.kind === '!') {
-    const name = tokens[hashIdx + 2]
-    if (name?.type === 'IDENTIFIER') {
-      return { kind: 'intent', name: name.value, advance: 2 }
-    }
-  }
-
-  // #:lens
-  if (next.type === 'COLON') {
-    const name = tokens[hashIdx + 2]
-    if (name?.type === 'IDENTIFIER') {
-      return { kind: 'lens', name: name.value, advance: 2 }
-    }
+  // ##>name — prompt root anchor: a bare `#` followed by an anchor particle.
+  if (next.type === 'PARTICLE' && (next as { kind?: string }).kind === '>') {
+    const name = next.value.slice(2)
+    if (name) return { kind: 'prompt_root', name, advance: 1 }
   }
 
   // #topic
@@ -1135,11 +1137,26 @@ function analyzeFromTokens(
         })
         continue
       }
+      // #>anchor / #:lens / #!intent — one particle token each.
+      if (tok.type === 'PARTICLE') {
+        const particle = annotationFromParticle(tok)
+        if (!particle) continue
+        localBraids.push(`${BRAID_PREFIX[particle.kind]}${particle.name}`)
+        annotations.push({
+          file: filePath,
+          line: i,
+          kind: particle.kind,
+          name: particle.name,
+          sectionLabel: framePath[framePath.length - 1],
+          framePath,
+        })
+        continue
+      }
+
       if (tok.type !== 'OPERATOR' || tok.kind !== '#') continue
       const result = annotationKindFromTokens(sig, j)
       if (!result) continue
-      const prefix = { topic: '#', lens: '#:', intent: '#!', anchor: '#>', prompt_root: '##>' }[result.kind]
-      localBraids.push(`${prefix}${result.name}`)
+      localBraids.push(`${BRAID_PREFIX[result.kind]}${result.name}`)
       annotations.push({
         file: filePath,
         line: i,
