@@ -32,7 +32,7 @@ import {
   named,
 } from '../combinators'
 import { operator, connector, colon, identifier } from './tokens'
-import { referenceNode, annotationNode, glossNode, particleNode, pathRefNode } from './references'
+import { referenceNode, annotationNode, appositionNode, particleNode, pathRefNode } from './references'
 import { modifierChain } from './modifiers'
 import { frameNode, bodyNode, scopeNode, capsuleNode, streamNode, nrangeNode } from './containers'
 import { literalNode, identifierNode } from './literals'
@@ -480,7 +480,7 @@ export const termNode: Parser<TermNode> = lazy(() => named('term',
 
     const fallbackGen = choice<TermNode>(
       bulletNode,
-      glossNode,
+      appositionNode,
       annotationNode,
       particleNode,
       pathRefNode,

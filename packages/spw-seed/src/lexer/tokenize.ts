@@ -14,7 +14,7 @@ import {
   matchModifier,
   matchBoolean,
   matchAnnotation,
-  matchGloss,
+  matchApposition,
   matchParticle,
   createStringMatcher,
   matchNumber,
@@ -57,9 +57,9 @@ export function* tokenize(
     matchContainer,
     matchModifier,
     matchBoolean,
-    // Both open with `~#`; the gloss form must claim `~#(` and `~#name(`
+    // Both open with `~#`; the apposition form must claim `~#(` and `~#name(`
     // before the annotation matcher takes the name and stops.
-    matchGloss,
+    matchApposition,
     matchAnnotation,
     stringMatcher,
     matchNumber,

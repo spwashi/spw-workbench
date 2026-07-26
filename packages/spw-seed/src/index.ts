@@ -104,9 +104,9 @@ export {
   listLexProfiles,
   buildOperatorMap,
   buildConnectorMap,
-  glossParts,
+  appositionParts,
 } from './lexer'
-export type { GlossParts } from './lexer'
+export type { AppositionParts } from './lexer'
 
 // Combinators
 export type { TokenStream, Parser } from './combinators'

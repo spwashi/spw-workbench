@@ -12,7 +12,7 @@ import {
   skipWhitespace,
   named,
 } from '../combinators'
-import { annotationNode, glossNode } from './references'
+import { annotationNode, appositionNode } from './references'
 import { sequenceNode } from './expressions'
 import { proseNode } from './prose'
 
@@ -29,10 +29,10 @@ export const seedNode: Parser<SeedNode> = named('seed',
     while (true) {
       skipWhitespace(stream)
       const leading = current(stream).type
-      if (leading !== 'ANNOTATION' && leading !== 'GLOSS') break
+      if (leading !== 'ANNOTATION' && leading !== 'APPOSITION') break
 
-      const annGen = leading === 'GLOSS'
-        ? glossNode(stream, depth + 1)
+      const annGen = leading === 'APPOSITION'
+        ? appositionNode(stream, depth + 1)
         : annotationNode(stream, depth + 1)
       let annStep = annGen.next()
       while (!annStep.done) {

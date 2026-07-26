@@ -25,8 +25,8 @@ import {
   choice,
   named,
 } from '../combinators'
-import { annotation, particle, gloss, colon, capsuleOpen, capsuleClose, identifier, stringLit } from './tokens'
-import { glossParts } from '../lexer/matchers'
+import { annotation, particle, apposition, colon, capsuleOpen, capsuleClose, identifier, stringLit } from './tokens'
+import { appositionParts } from '../lexer/matchers'
 import { literalNode } from './literals'
 
 function isReferencePathToken(token: Token): boolean {
@@ -407,31 +407,31 @@ export const particleNode: Parser<ParticleNode> = named('particle',
 )
 
 /**
- * `~#(nearest neighbor)` / `~#lens(living system)` — one GLOSS token becomes an
- * Annotation carrying a gloss.
+ * `~#(nearest neighbor)` / `~#lens(living system)` — one APPOSITION token becomes an
+ * Annotation carrying an apposition.
  *
  * It stays an Annotation node rather than a type of its own so that everything
  * already counting marks — selectors, the taste instrument, the semantic index
- * — sees a gloss without being taught to. A reading that no instrument can
+ * — sees an apposition without being taught to. A reading that no instrument can
  * count is the comment we are replacing.
  */
-export const glossNode: Parser<AnnotationNode> = named('gloss',
-  function* glossParser(stream, depth) {
+export const appositionNode: Parser<AnnotationNode> = named('apposition',
+  function* appositionParser(stream, depth) {
     const startPos = getPosition(stream)
 
-    const glossGen = gloss(stream, depth + 1)
-    let glossStep = glossGen.next()
-    while (!glossStep.done) {
-      yield glossStep.value
-      glossStep = glossGen.next()
+    const appositionGen = apposition(stream, depth + 1)
+    let appositionStep = appositionGen.next()
+    while (!appositionStep.done) {
+      yield appositionStep.value
+      appositionStep = appositionGen.next()
     }
 
-    if (!glossStep.value.success) {
-      return { success: false, consumed: 0, error: glossStep.value.error }
+    if (!appositionStep.value.success) {
+      return { success: false, consumed: 0, error: appositionStep.value.error }
     }
 
-    const glossToken = glossStep.value.value!
-    const parts = glossParts(glossToken.value)
+    const appositionToken = appositionStep.value.value!
+    const parts = appositionParts(appositionToken.value)
 
     const node: AnnotationNode = {
       type: 'Annotation',
@@ -439,12 +439,12 @@ export const glossNode: Parser<AnnotationNode> = named('gloss',
       name: {
         type: 'IDENTIFIER',
         value: parts.name ?? '',
-        span: glossToken.span,
+        span: appositionToken.span,
       },
-      gloss: { body: parts.body, anonymous: parts.name === null },
+      apposition: { body: parts.body, anonymous: parts.name === null },
     }
 
-    return { success: true, value: node, consumed: glossStep.value.consumed }
+    return { success: true, value: node, consumed: appositionStep.value.consumed }
   }
 )
 

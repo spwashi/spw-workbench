@@ -235,12 +235,12 @@ export interface IdentifierNode extends ASTNode {
  * A reading laid alongside the thing it reads — `~#(nearest neighbor)` or
  * `~#lens(living system)`.
  *
- * Where `~#name: value` states a datum, a gloss states how to hold what sits
+ * Where `~#name: value` states a datum, an apposition states how to hold what sits
  * beside it, and the parens are the `@` container, so the reading is
  * perspectival by construction. The body is prose the parser keeps whole; an
- * anonymous gloss has no key because its text is its entire meaning.
+ * anonymous apposition has no key because its text is its entire meaning.
  */
-export interface GlossLabel {
+export interface AppositionLabel {
   /** Raw label text between the parens. */
   body: string
   /** True when no name was declared. */
@@ -252,7 +252,7 @@ export interface AnnotationNode extends ASTNode {
   name: Token<'IDENTIFIER'>
   value?: LiteralNode | ReferenceNode | PathRefNode
   /** Present when written as `~#(phrase)` or `~#name(phrase)`. */
-  gloss?: GlossLabel
+  apposition?: AppositionLabel
 }
 
 export interface ParameterNode extends ASTNode {
