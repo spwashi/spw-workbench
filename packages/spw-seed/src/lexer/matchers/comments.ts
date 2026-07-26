@@ -1,5 +1,10 @@
 /**
  * Comment Matchers
+ *
+ * Spw has no block comments. `/` is unassigned in the operator lattice, so
+ * `/*` must not open anything — a stray one used to swallow the rest of a
+ * surface silently. Prose belongs in `#` header lines; inline notes belong
+ * in annotations, which the parser can actually see.
  */
 
 import type { Token, ParseEvent, TokenEventData } from '../../types'
@@ -34,48 +39,6 @@ export function* matchLineComment(
   yield {
     type: 'token',
     rule: 'lineComment',
-    position: start,
-    data: { token } as TokenEventData,
-    timestamp: performance.now(),
-    depth,
-  }
-
-  return token
-}
-
-/**
- * Match block comment: /\* ... *\/
- */
-export function* matchBlockComment(
-  state: LexerState,
-  depth: number
-): Generator<ParseEvent, Token | null, void> {
-  if (peekString(state, 2) !== '/*') return null
-
-  const start = getPosition(state)
-  let value = '/*'
-  advance(state, 2)
-
-  while (!isAtEnd(state) && peekString(state, 2) !== '*/') {
-    value += peek(state)
-    advance(state)
-  }
-
-  if (peekString(state, 2) === '*/') {
-    value += '*/'
-    advance(state, 2)
-  }
-
-  const token: Token<'COMMENT'> = {
-    type: 'COMMENT',
-    value,
-    span: { start, end: getPosition(state) },
-    kind: 'block',
-  }
-
-  yield {
-    type: 'token',
-    rule: 'blockComment',
     position: start,
     data: { token } as TokenEventData,
     timestamp: performance.now(),

@@ -62,7 +62,7 @@ export class CoverageCollector {
     // Pipeline helper
     'lex',
     // Token rules
-    'whitespace', 'lineComment', 'blockComment', 'operator',
+    'whitespace', 'lineComment', 'operator',
     'connector', 'container', 'modifier', 'boolean', 'string',
     'number', 'dot', 'colon', 'comma', 'comparison',
   ])

@@ -24,11 +24,12 @@ describe('topography lexeme closure', () => {
     })
   })
 
-  it('reports block-comment closure in the same evidence surface', () => {
+  /**
+   * Spw has no block comments, so `/*` opens nothing and there is no third
+   * delimiter pair to leave hanging. Both forms are ordinary tokens.
+   */
+  it('treats block-comment delimiters as ordinary tokens, not a lexeme pair', () => {
     expect(snapshotTopography('/* complete */')).toMatchObject({ lexemesClosed: true })
-    expect(snapshotTopography('/* open')).toMatchObject({
-      lexemesClosed: false,
-      reasons: expect.arrayContaining(['unterminated_lexeme']),
-    })
+    expect(snapshotTopography('/* open')).toMatchObject({ lexemesClosed: true })
   })
 })

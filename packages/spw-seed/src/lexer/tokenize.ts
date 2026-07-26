@@ -9,7 +9,6 @@ import {
   type TokenMatcher,
   matchWhitespace,
   matchLineComment,
-  matchBlockComment,
   matchComparison,
   matchContainer,
   matchModifier,
@@ -48,7 +47,6 @@ export function* tokenize(
   const matchers: TokenMatcher[] = [
     matchWhitespace,
     matchLineComment,
-    matchBlockComment,
     matchSpread,
     connectorMatcher,
     matchComparison,

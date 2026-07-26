@@ -38,7 +38,7 @@ describe('operational topography scanner', () => {
   })
 
   it('rejects lexemes that Seed currently accepts at EOF without a diagnostic', () => {
-    for (const source of ['"unterminated', '`unterminated', '/* unterminated']) {
+    for (const source of ['"unterminated', '`unterminated']) {
       const result = scan(source)
       expect(result.parseHealth).toBe('invalid')
       expect(result.parseEvidence.lexemesClosed).toBe(false)

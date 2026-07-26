@@ -46,7 +46,7 @@ export interface TopographySnapshot {
   parseHealth: ParseHealth
   parserSuccess: boolean
   proseFallback: boolean
-  /** Whether quoted, phrase, and block-comment tokens close under lexer rules. */
+  /** Whether quoted and phrase tokens close under lexer rules. */
   lexemesClosed: boolean
   tokenCount: number
   significantTokens: number
@@ -130,16 +130,15 @@ interface LexemeClosureToken {
 }
 
 /**
- * Report whether every quoted, phrase, and block-comment token has a closing
- * delimiter. A delimiter preceded by an even run of backslashes is closed;
- * an odd run escapes it. Tooling should share this rule rather than infer
- * closure from the final two characters.
+ * Report whether every quoted and phrase token has a closing delimiter. A
+ * delimiter preceded by an even run of backslashes is closed; an odd run
+ * escapes it. Tooling should share this rule rather than infer closure from
+ * the final two characters.
+ *
+ * Spw has no block comments, so there is no third delimiter pair to close.
  */
 function lexemesAreClosed(tokens: readonly LexemeClosureToken[]): boolean {
   return tokens.every(token => {
-    if (token.type === 'COMMENT' && token.kind === 'block') {
-      return token.value.endsWith('*/')
-    }
     if (token.type === 'PHRASE') {
       return token.value.startsWith('`') && endsWithUnescapedDelimiter(token.value, '`')
     }
