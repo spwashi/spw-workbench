@@ -7,12 +7,14 @@
  *   spw/resonance         — annotation co-occurrence edges from an open URI
  *   spw/registerSnapshot  — heuristic register-like markers in a document
  *   spw/formSequence      — parse/advance confluence form sequences
+ *   spw/formContext       — caret-local coupling + gated mobility packet
  */
 
 import path from 'node:path'
 import { inspectGeometry, parse, particleMix, deixisTable } from '@spwashi/spw-seed'
 import { SIGIL_SEMANTICS } from '../server-index'
 import type { HandlerDeps, LspPosition } from '../types'
+import { assembleFormContext } from './form-context'
 
 const SIGIL_CHARS = new Set(['^', '!', '?', '~', '*', '=', '@', '#', '.', '&', '$', '%', '<', '>'])
 
@@ -351,6 +353,8 @@ export function handleSpwProbe(
       return geometryProbe(params, deps)
     case 'spw/particles':
       return particlesProbe(params, deps)
+    case 'spw/formContext':
+      return formContextProbe(params, deps)
     default:
       return null
   }
@@ -395,4 +399,70 @@ async function geometryProbe(
     source = (await deps.getDocumentText(uri)) ?? ''
   }
   return { uri: uri ?? null, ...inspectGeometry(source) }
+}
+
+/**
+ * Revision-addressed caret form context (coupling packet + mobility previews).
+ * Clients must treat `revision` as the document version the packet was built for.
+ */
+async function formContextProbe(
+  params: { uri?: string; position?: LspPosition } | undefined,
+  deps: HandlerDeps,
+): Promise<unknown> {
+  const uri = params?.uri
+  const position = params?.position
+  if (!uri || !position) {
+    return { ok: false, reason: 'uri and position required' }
+  }
+
+  const doc = deps.serverIndex.getDocument(uri)
+  if (!doc) {
+    return { ok: false, reason: 'document not open', uri, revision: null }
+  }
+
+  const ctx = assembleFormContext(doc, position)
+  if (!ctx) {
+    return { ok: false, reason: 'no form context', uri, revision: doc.version }
+  }
+
+  return {
+    ok: true,
+    uri: ctx.uri,
+    revision: ctx.revision,
+    offset: ctx.offset,
+    nodeType: ctx.nodeType,
+    label: ctx.label,
+    labelPosition: ctx.labelPosition,
+    surface: ctx.surface,
+    surfaceText: ctx.surfaceText,
+    coupling: ctx.coupling,
+    mobility: ctx.mobility.map((m) => ({
+      ruleId: m.ruleId,
+      name: m.name,
+      status: m.status,
+      motion: m.motion,
+      gated: m.gated,
+      reason: m.reason,
+      preview: m.preview,
+      rewrite: m.rewrite,
+      // Receipt is available for gated pass; strip bulky topography unless needed.
+      receipt: m.receipt
+        ? {
+            beforeHealth: m.receipt.beforeHealth,
+            afterHealth: m.receipt.afterHealth,
+            inverse: m.receipt.inverse,
+            effectGrade: m.receipt.effectGrade,
+            semanticEquivalence: m.receipt.semanticEquivalence,
+          }
+        : undefined,
+    })),
+    conceptual: ctx.conceptual.map((m) => ({
+      ruleId: m.ruleId,
+      name: m.name,
+      status: m.status,
+      gated: m.gated,
+      reason: m.reason,
+      rewrite: m.rewrite,
+    })),
+  }
 }

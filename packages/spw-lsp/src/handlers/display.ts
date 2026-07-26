@@ -19,6 +19,7 @@ import type {
 } from '../types'
 import { SK } from '../types'
 import { outlineFromSource } from './outline'
+import { formContextHover } from './form-context'
 
 type DisplayAnnotationKind = 'topic' | 'lens' | 'intent' | 'anchor'
 
@@ -425,6 +426,15 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
         return {
             contents: { kind: 'markdown', value: md },
             range: { start: { line: pos.line, character: start }, end: { line: pos.line, character: end } },
+        }
+    }
+
+    // 1.5 Form geometry — coupling packet + label site (seed-owned)
+    {
+        const doc = deps.serverIndex.getDocument(uri)
+        if (doc) {
+            const formHover = formContextHover(doc, pos)
+            if (formHover) return formHover
         }
     }
 

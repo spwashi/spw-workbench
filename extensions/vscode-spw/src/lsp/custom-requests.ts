@@ -193,6 +193,54 @@ export interface SpwCustomRequestMap {
       lessons: string[]
     }
   }
+  'spw/formContext': {
+    params: { uri: string, position: SpwPosition }
+    result: {
+      ok: boolean
+      reason?: string
+      uri?: string
+      revision?: number | null
+      offset?: number
+      nodeType?: string | null
+      label?: string | null
+      labelPosition?: {
+        site: string
+        liminal: string
+        boundary?: string
+        depth?: number
+      } | null
+      surface?: { start: number, end: number } | null
+      surfaceText?: string | null
+      coupling?: {
+        kind: string
+        form: 'boundary' | 'operator'
+        surface: string
+        occupancy?: 'empty' | 'inhabited'
+        payload?: string
+        arity?: number
+        empty: boolean
+        coupleVsCapsule: string
+      } | null
+      mobility?: Array<{
+        ruleId: string
+        name: string
+        status: string
+        motion: string
+        gated: 'pass' | 'fail' | 'conceptual'
+        reason?: string
+        preview?: string
+        rewrite: { before: string, after: string }
+      }>
+      conceptual?: Array<{
+        ruleId: string
+        name: string
+        status: string
+        gated: 'pass' | 'fail' | 'conceptual'
+        reason?: string
+        rewrite: { before: string, after: string }
+      }>
+    }
+  }
 }
 
 export type SpwCustomRequestMethod = keyof SpwCustomRequestMap

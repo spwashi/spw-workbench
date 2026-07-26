@@ -15,6 +15,7 @@ import type {
     HandlerDeps,
 } from '../types'
 import { CK } from '../types'
+import { formContextCodeActions } from './form-context'
 
 // ── Completion ──────────────────────────────────────────────────
 
@@ -377,6 +378,12 @@ export async function codeAction(params: CodeActionParams, deps: HandlerDeps): P
                 }
             }
         })
+    }
+
+    // Label-mobility actions — only receipt-gated implemented rules
+    {
+        const caret = range.start
+        actions.push(...formContextCodeActions(doc, caret))
     }
 
     return actions
