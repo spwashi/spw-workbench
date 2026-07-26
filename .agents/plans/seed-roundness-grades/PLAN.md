@@ -4,7 +4,7 @@ Close the gap between code and docs on effect-grade naming, and bring several pa
 
 ## Goal
 
-`packages/spw-seed/src/canonical/differential.ts` already defines `EffectGrade` as `effect.l0.measure` → `effect.l3.external`, but the living docs (`docs/theory/spw/*.spw` and neighbors) still describe the same concept as `S0`–`S3` shorthand, and a second, distinct "epistemic grade" (`E0`–`E2`) axis exists undocumented-in-code. Separately, several AST concepts are only partially round: `NRangeNode` and `BodyNode` are real, parsed AST types, but `differential.ts`'s label/rule-conflict handling, the range-address/span-transform described in `docs/theory/spw/range-transform.spw`, and query-engine indexing configurability are all either incomplete or undocumented as code.
+`packages/spw-seed/src/canonical/differential.ts` already defines `EffectGrade` as `effect.l0.measure` → `effect.l3.external`, but the living docs (`docs/theory/spw/*.spw` and neighbors) still describe the same concept as `S0`–`S3` shorthand. The former E0–E2 axis has since been resolved as non-ordinal evidence provenance owned by `spw-q-stabilization`. Separately, several AST concepts are only partially round: `NRangeNode` and `BodyNode` are real, parsed AST types, but `differential.ts`'s label/rule-conflict handling, the range-address/span-transform described in `docs/theory/spw/range-transform.spw`, and query-engine indexing configurability are all either incomplete or undocumented as code.
 
 **Taste note**: this plan is about *naming consistency and correctness* — retiring stale shorthand now that the code has already moved on, and finishing partial implementations rather than letting "conceptual" markers (e.g. `form-ladders.ts:379`'s multi-arm fold) linger indefinitely without a decision either way.
 
@@ -19,7 +19,7 @@ The user's original request also named four genuinely new grammar features (name
   - Close roundness gaps in `NRangeNode` parsing (e.g. the empty-n-range special case already flagged in `normalize.ts:371`).
   - Add configurable indexing handles to the query engine (`query/selector-expr.ts` / `query/match.ts`), with the perf/impl tradeoff documented alongside the existing effect-grade docs.
 - **Out of scope** (tracked as open questions, not attempted here):
-  - Renaming the `E0`–`E2` "epistemic grade" axis — no target name has been decided; see `?[epistemic-grade-name]` in `wip.spw`.
+  - Migrating the former `E0`–`E2` axis; this is now owned by `spw-q-stabilization` as evidence basis/domain/role/provenance.
   - Promoting `membrane` from its current descriptive-layer-only role (`form-ladders.ts`, `form-geometry.ts`, `form-sequence.ts`) to a first-class AST node coupled with `BodyNode` — needs a design decision (`?[membrane-body-shape]`).
   - Net-new grammar: named params, multi-arm selects (`fold ?(a,b,c)` is explicitly tagged `stage: 'conceptual'` in `form-ladders.ts:379`, i.e. documented-but-unbuilt), stream folds, and "new operator products" — each is a from-scratch lexer→grammar→AST design, not a roundness pass, and deserves its own plan once scoped concretely (`?[operator-products-scope]`).
   - Any code scaffolding for "temporal/subtree linguistics" runtime readiness beyond a docs note — depth undecided (`?[temporal-subtree-depth]`).

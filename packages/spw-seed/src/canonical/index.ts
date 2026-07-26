@@ -24,15 +24,30 @@ export {
   applyEdits,
   differentialFromSources,
   effectGradeAtMost,
-  epistemicGradeAtMost,
   mergeVectors,
   zeroVector,
+  EVIDENCE_BASES,
+  EVIDENCE_DOMAINS,
+  EVIDENCE_ROLES,
   EFFECT_GRADE_ORDER,
-  EPISTEMIC_GRADE_ORDER,
+  type DerivedEvidenceContribution,
+  type DerivedEvidenceProvenance,
   type DifferentialStratum,
+  type EvidenceArtifactRef,
+  type EvidenceBasis,
+  type EvidenceContribution,
+  type EvidenceDomain,
+  type EvidenceMethod,
+  type EvidenceProducer,
+  type EvidenceReporter,
+  type EvidenceRole,
+  type EvidenceUncertainty,
   type EffectGrade,
-  type EpistemicGrade,
   type MutationVector,
+  type ObservedEvidenceContribution,
+  type ObservedEvidenceProvenance,
+  type ReportedEvidenceContribution,
+  type ReportedEvidenceProvenance,
   type SourceDifferential,
   type SourceEdit,
 } from './differential'
@@ -88,6 +103,11 @@ export {
   type OperatorGeometryEntry,
   type BraceNestingStats,
 } from './geometry-inspect'
+
+export {
+  findNodeAtOffset,
+  positionToOffset,
+} from './geometry-inspect-position'
 
 export {
   transformEdit,

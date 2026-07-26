@@ -1,0 +1,107 @@
+# wip — spw-cli-overhaul
+# Branch: main (planning phase)
+# Started: 2026-07-25
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @plan: ~".agents/plans/spw-cli-overhaul/PLAN.md"
+ @cli_package: ~"packages/spw-cli/package.json"
+ @cli_commands: ~"packages/spw-cli/src/commands.ts"
+ @cli_args: ~"packages/spw-cli/src/args.ts"
+}
+
+^["intent"]{
+ ~#goal: "Overhaul Spw CLI tooling for flag parsing consistency, code deduplication, standardized JSON envelope schemas, package.json hygiene, legacy script elimination, and caching architecture plan."
+ ~#taste: "Systematic CLI ergonomics, strict schema envelopes, clean workspace packaging."
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#taste, #cli_ergonomics, #schema_discipline]
+ review_surfaces: [@plan, @cli_commands, @cli_args]
+ snippet_routes: [#args, #envelope, #json_schema]
+}
+
+^["concept_index"]{
+ primary: [#cli_architecture]
+ surfaces: [#cli, #package_json, #scripts, #docs]
+ tensions: [#flag_drift, #legacy_shims, #json_schema_drift]
+ transfers: [#schema, #args_parser, #envelope_builder]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? audit all CLI subcommand parsing and JSON output formats",
+  "< build unified JSON envelope builder and flag parser utilities",
+  "$ update all subcommands to conform to standard JSON schema and flag conventions",
+  "^ eliminate legacy scripts and update package.json shims",
+  "% verify all vitest test suites pass",
+ ]
+ gates: [#cli_tests, #schema_validation, #clean_package_json]
+}
+
+^["parallel_work"]{
+ critical_path: [#args_parser, #envelope_builder]
+ parallelizable: [#subcommand_refactor, #script_cleanup, #cache_plan]
+ shared_hot_files: ["packages/spw-cli/src/args.ts", "packages/spw-cli/src/types.ts", "package.json"]
+ merge_risks: [#script_references]
+ handoff_artifacts: [@plan]
+}
+
+^["supporting_documents"]{
+ must_ship: [@plan]
+ helpful: [@cli_package]
+ carries: [#json_schema, #cache_architecture]
+}
+
+^["stream"]{
+ >>[2026-07-25 19:16] observe — audited CLI codebase, identified legacy wrapper scripts in scripts/ and flag parsing variations across commands.
+ >>[2026-07-25 19:16] decide — establish standardized SpwCliEnvelope schema in packages/spw-cli/src/envelope.ts and unify subcommand parsing in packages/spw-cli/src/args.ts.
+ >>[2026-07-25 19:22] implement — created packages/spw-cli/src/envelope.ts and unit tests in envelope.test.ts.
+ >>[2026-07-25 19:23] implement — added validateUnknownFlags helper and splitCsv utilities to args.ts.
+ >>[2026-07-25 19:23] implement — refactored invent and map subcommands to output schema-conforming JSON response envelopes.
+ >>[2026-07-25 19:24] implement — updated package.json scripts to route directly through packages/spw-cli/src/main.ts and removed 20+ legacy wrapper scripts from scripts/.
+ >>[2026-07-25 19:24] implement — authored persistent caching architecture plan in docs/design/spw-cli-cache-plan.md.
+ >>[2026-07-25 19:26] revise — updated SPW_SCHEMA_URI from placeholder to official repository URL (https://raw.githubusercontent.com/spwashi/spw-workbench/main/schemas/v0.3.0/envelope.json).
+ >>[2026-07-25 19:26] verify — verified vitest test:cli passes.
+ >>[2026-07-25 21:10] review — schema URL has no repository artifact; envelope adoption is partial and must be described as such.
+ >>[2026-07-25 21:10] review — validateUnknownFlags is unused and cannot understand option arity; query/view parsing remains fail-open.
+ >>[2026-07-25 21:10] revise — narrowed protocol migration to invent and map; remaining JSON commands are explicit follow-up work.
+ >>[2026-07-25 21:45] fix — reconciled emit mode narrowing, pulse ParseHealth vocabulary, and the LSP Variable completion kind so workspace typechecking can proceed.
+ >>[2026-07-25 21:55] fix — repaired BoundaryLadderId import ownership and updated the stale slash-comment prose assertion; full LSP ambient-braid failures remain separately deferred.
+ >>[2026-07-25 22:00] verify — build, CLI tests, seed tests, docs lint, Spw validation, schema validation, routed help smoke, and diff hygiene pass; LSP remains 204/207 on three unrelated semantic-context expectations.
+ >>[2026-07-25 22:08] revise — repointed living ocean, harness, and mount instrumentation from deleted wrapper paths to package-owned CLI modules.
+ >>[2026-07-25 22:15] verify — producer provenance is pinned to the CLI package version by test; final CLI suite passes 143/143 and workspace typecheck passes.
+ >>[2026-07-25 23:41] fix — aligned runtime integration assertions with the routed pulse, mutate, beat, select, and semantic-frame contracts; resolved 4 failures.
+ >>[2026-07-25 23:42] verify — fuzz:ship passes: build plus 763 seed, runtime, CLI, harness, and DOM tests.
+}
+
+^["open"]{
+ ?[json_migration]: "Plan the all-command envelope migration after the v1 wire schema is validated on invent and map."
+}
+
+^["commits"]{
+ ~[1]: "#[cli] — add standardized JSON response envelope and CLI error builder"
+ ~[2]: "vocab[cli] — unify flag parsing helpers and unknown flag validation in args.ts"
+ ~[3]: "&[cli] — refactor subcommands to use standard envelope and unified flag parser"
+ ~[4]: "&[cli] — remove legacy scripts and shims, clean package.json scripts"
+ ~[5]: ".[cli] — add caching architecture plan for corpus scanning and queries"
+ ~[6]: "![cli] — verify full test suite across CLI package and workspace"
+}
+
+^["cache"]{
+ ~#status: "review"
+ ~#base_ref: "main@949e7ed3e5e1"
+ ~#rebased_at: "not_rebased_dirty_main"
+ ~#hygiene_split: "required_before_commit"
+ ~#files_hot: "packages/spw-cli/src/args.ts,packages/spw-cli/src/envelope.ts,package.json,docs/design/spw-cli-cache-plan.md,.spw/harness/evals/baseline-evals.spw"
+ ~#next_commit: "6"
+ ~#open_count: "1"
+ ~#last_stream: "2026-07-25 23:42"
+ ~#taste_debt: "Remaining JSON commands still emit legacy shapes; migrate them as a separate atomic protocol change."
+}
+
+^["done"]{
+}

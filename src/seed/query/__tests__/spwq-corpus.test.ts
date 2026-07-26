@@ -6,15 +6,25 @@ import { NAVIGABLE, PATH_REFS, REFERENCES, parse, spwq, walkAST } from '../../in
 const WORKSPACE_MANIFEST = readFileSync(resolve(process.cwd(), '.spw/workspace.spw'), 'utf8')
 const SPW_INDEX = readFileSync(resolve(process.cwd(), '.spw/index.spw'), 'utf8')
 
-function parseSource(source: string) {
+/**
+ * Parse each manifest once for the whole file.
+ *
+ * These are the two largest surfaces in the corpus and parsing them is
+ * CPU-bound. Re-parsing per assertion put the file close enough to the 5s
+ * default timeout that it failed intermittently once the suite grew.
+ */
+function parseOnce(source: string) {
   const output = parse(source)
-  expect(output.ast).toBeTruthy()
-  return output.ast!
+  if (!output.ast) throw new Error('corpus manifest failed to parse')
+  return output.ast
 }
 
-function collectNodeTypes(source: string): Map<string, number> {
+const WORKSPACE_AST = parseOnce(WORKSPACE_MANIFEST)
+const INDEX_AST = parseOnce(SPW_INDEX)
+
+function collectNodeTypes(ast: typeof WORKSPACE_AST): Map<string, number> {
   const counts = new Map<string, number>()
-  walkAST(parseSource(source), (node) => {
+  walkAST(ast, (node) => {
     counts.set(node.type, (counts.get(node.type) ?? 0) + 1)
   })
   return counts
@@ -22,7 +32,7 @@ function collectNodeTypes(source: string): Map<string, number> {
 
 describe('spwq corpus dogfood', () => {
   it('walks real workspace manifests beyond the top-level nodes', () => {
-    const counts = collectNodeTypes(WORKSPACE_MANIFEST)
+    const counts = collectNodeTypes(WORKSPACE_AST)
 
     expect(counts.get('Seed')).toBe(1)
     expect(counts.get('Prose')).toBeGreaterThanOrEqual(1)
@@ -32,7 +42,7 @@ describe('spwq corpus dogfood', () => {
   })
 
   it('finds navigable refs in the workspace manifest', () => {
-    const matches = spwq.fromSource(WORKSPACE_MANIFEST, NAVIGABLE)
+    const matches = spwq(WORKSPACE_AST, NAVIGABLE)
     const pathTargets = matches
       .filter((match) => match.node.type === 'PathRef')
       .map((match) => {
@@ -52,8 +62,8 @@ describe('spwq corpus dogfood', () => {
   })
 
   it('keeps index manifest selection observable through presets', () => {
-    const pathRefs = spwq.fromSource(SPW_INDEX, PATH_REFS)
-    const refs = spwq.fromSource(SPW_INDEX, REFERENCES)
+    const pathRefs = spwq(INDEX_AST, PATH_REFS)
+    const refs = spwq(INDEX_AST, REFERENCES)
 
     expect(pathRefs.length).toBeGreaterThan(10)
     expect(refs.length).toBeGreaterThan(10)

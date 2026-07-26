@@ -139,7 +139,7 @@ export function printMountHelp(): void {
   printHelpPage({
     title: 'Spw Mount Utility',
     usage: [
-      'node --import tsx scripts/spw-mount.ts [check|init|resolve] [root] [--json] [--strict]',
+      'spw mount [check|init|resolve] [root] [--json] [--strict]',
     ],
     sections: [
       {

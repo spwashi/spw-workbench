@@ -127,15 +127,17 @@
  >>[2026-07-22 17:42] decide — user chose 'combination wizard CLI first' over song-contour decomposition. Built on what already existed: emit.ts already had expand/holes/templates subcommands (template-fill.ts's ${slot} engine) but no way to source bindings from a curated pack automatically.
  >>[2026-07-22 17:50] implement — added extractPackBindings(source, frameName='emit') to template-fill.ts: regex-scrapes a named frame's three real line shapes (bareword `key: value`, `key = "value"`, `~#key: "value"`), mirroring the existing parseLineage() convention rather than introducing a new parsing style. Wired into emit.ts: new `spw emit packs [root]` subcommand (walks prompts/**/packs/*.spw via fs-walk's collectSpwFiles, shows goal/taste from each pack's own ^"intent" frame via the same extractor) and `--from-pack <file>` on `spw emit expand` (layers: pack bindings < --bind < --set, preserving prior --bind/--set precedence exactly).
  >>[2026-07-22 17:52] verify — extractPackBindings tested directly against both real packs (quiet-board.spw: 19 keys; quiet-craft-line.spw: 26 keys including genre_id/subject_id/style_id) before wiring into the CLI. End-to-end: `spw emit expand title-instance.spw --from-pack quiet-craft-line.spw` correctly filled 3 slots from the pack and reported the 3 that remained open (logline/title_id/working_title -- slot-name vocabulary mismatch between this pack and this specific template, surfaced honestly rather than silently guessed). Added 4 unit tests to emit.test.ts. tsc --noEmit clean (pre-existing unrelated emit.ts:101 error untouched); test:cli 94/94; lint:spw 343/343.
+ >>[2026-07-25 21:10] decide — resolved [epistemic-grade-name]: retire the ordinal grade model; spw-q-stabilization owns observed/derived/reported basis plus independent domain, role, and provenance.
+ >>[2026-07-25 21:10] decide — resolved [plan-history-exclusion]: update living doctrine and active cross-references only; retained plan episodes keep their original vocabulary.
 }
 
 ^["open"]{
- ?[epistemic-grade-name]: "What should E0/E1/E2 be renamed to? Candidate mirroring effect.l*: epistemic.e0.fact / epistemic.e1.score / epistemic.e2.report — needs confirmation before any doc edits in that family."
+ # resolved: [epistemic-grade-name] — see stream 2026-07-25 21:10
  ?[membrane-body-shape]: "Should membrane become a modifier field on BodyNode (e.g. BodyNode.membrane?: MembraneSpec) or a distinct wrapping AST node? Blocks track B entirely."
  ?[operator-products-scope]: "'New operator products' — is this asking for new composition algebra in types/coupling.ts, or new concrete operator sigils? Needs a concrete example from the user."
  ?[temporal-subtree-depth]: "'Runtime architectural preparedness for temporal/subtree linguistics' — is this a docs-only readiness note in docs/runtime/, or actual scaffolding (new interfaces/types) in packages/spw-runtime with no behavior yet?"
  ?[track-b-sequencing]: "Confirm track B (named params, multi-arm select, stream fold, new operator products, membrane+body) is deferred to follow-up plans rather than attempted in this branch."
- ?[plan-history-exclusion]: "Confirm: historical .agents/plans/*/{wip.spw,PLAN.md,*.spw} keep their original S0-S3/E0-E2 text as-written (retained operational memory), and only living docs/theory + docs/design + docs/audits + .spw/conventions + prompts + SKILL.md get renamed."
+ # resolved: [plan-history-exclusion] — see stream 2026-07-25 21:10
  ?[prose-naming-collision]: "'Prose' currently means two different things: # lines (real isProseCommentLine treatment, tolerant reflow) vs. unquoted bareword values inside braces (raw token stream, breaks on arbitrary punctuation — root cause of the image.prompt.spw/song.prompt.spw lexer errors just fixed by quoting). Give bareword-value positions real prose semantics too, or keep the split and stop calling unquoted brace values 'prose' so future authors don't assume they're lexer-safe the way # comments are?"
  ?[tooling-value-broad-scope]: "User asked to 'enhance tooling value for script ecology, knowledgebase development, kinds of media, reasons for prompts, prep for dense learning material and expert-level density across domains' -- too broad/abstract to scope alone; needs a follow-up conversation to pick a concrete first slice (which domain, which command, what 'expert-level density' means operationally)."
  ?[song-contours-deferred]: "User picked 'combination wizard CLI first' over decomposing song.prompt.spw into prompts/song/ contours (the other concretely-scoped option from the .prompt architecture question). Still open: image/ is the only media type with procedural-dimension (contour) decomposition; song/website/design/experience/media/outreach remain monolithic."
@@ -156,11 +158,11 @@
  ~#base_ref: "main@d852b1aa"
  ~#rebased_at: "n/a — no rebase needed, working tree clean at plan time"
  ~#hygiene_split: "none — staged directly on main per recent plan convention (see bab81e15 form-geometry-editor)"
- ~#files_hot: "packages/spw-seed/src/canonical/differential.ts (externally modified, uncommitted), packages/spw-seed/src/canonical/range-transform.ts (external, NEW, has a type error at line 330), packages/spw-seed/src/canonical/index-config.ts (external, NEW), packages/spw-seed/src/normalize.ts (external, has 2 type errors)"
+ ~#files_hot: "packages/spw-seed/src/canonical/differential.ts,packages/spw-seed/src/canonical/range-transform.ts,packages/spw-seed/src/canonical/index-config.ts,packages/spw-seed/src/normalize.ts"
  ~#next_commit: "1 (unaffected by the collision — pure docs rename); commits 2-5 need re-scoping against what already landed"
- ~#open_count: "6 (epistemic-grade-name now effectively resolved by external work: epistemic.l0.fact/l1.score/l2.report — confirm with user before treating as final)"
- ~#last_stream: "2026-07-22 17:20"
- ~#taste_debt: "track B (named params, multi-arm select, stream fold, new operator products, membrane+body AST promotion) deferred pending open questions; do not stub AST nodes prematurely. Additionally: packages/spw-seed currently fails tsc --noEmit due to in-flight external edits — not this plan's doing, but blocks validating commit 1's demo sequence (spw query needs a working build) until resolved."
+ ~#open_count: "8"
+ ~#last_stream: "2026-07-25 21:10"
+ ~#taste_debt: "track B (named params, multi-arm select, stream fold, new operator products, membrane+body AST promotion) remains deferred pending open questions; do not stub AST nodes prematurely."
 }
 
 ^["done"]{

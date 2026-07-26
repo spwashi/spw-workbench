@@ -1296,7 +1296,8 @@ async function runPulseStdin(cli: PulseArgs): Promise<void> {
   })
   const after = snapshotTopography(result.source)
   const delta = topographyDelta(before, after)
-  const parseHealthy = after.parseHealth === 'ok' || after.parseHealth === 'recovered'
+  const parseHealthy =
+    after.parseHealth === 'complete_structured' || after.parseHealth === 'recovered'
   const usefulness = classifyMutationUsefulness({
     changed: result.changed,
     healthRegressed: delta.healthRegressed,

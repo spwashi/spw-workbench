@@ -5,6 +5,7 @@ import {
   reflowProseBlocks,
   wrapWords,
   isProseCommentLine,
+  isSlashLineComment,
   resolveFormatProfile,
 } from '../canonical'
 
@@ -146,7 +147,8 @@ describe('blankLineBetweenFrames', () => {
 describe('reflowProse', () => {
   it('detects prose vs directive comments', () => {
     expect(isProseCommentLine('# hello')).toBe(true)
-    expect(isProseCommentLine('// note')).toBe(true)
+    expect(isProseCommentLine('// note')).toBe(false)
+    expect(isSlashLineComment('// note')).toBe(true)
     expect(isProseCommentLine('#:layer')).toBe(false)
     expect(isProseCommentLine('#>anchor')).toBe(false)
     expect(isProseCommentLine('#!intent')).toBe(false)

@@ -64,4 +64,13 @@ export {
   type WorkspaceRootRole,
 } from './workspace'
 export { runSpwCli } from './run'
+export {
+  SpwExit,
+  currentExitCode,
+  exitCodeFor,
+  resetExitCode,
+  setExitCode,
+  type SpwExitCode,
+  type SpwExitReason,
+} from './exit'
 export type { QueryArgs, QueryRow, SelectArgs, SpwCliCommand } from './types'

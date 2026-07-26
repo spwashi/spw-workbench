@@ -1,6 +1,6 @@
-import process from 'node:process'
 import { parseCommand, parseCommonFlags } from './args'
 import { findCommand, knownCommands, printRootHelp } from './commands'
+import { setExitCode } from './exit'
 import { suggestClosest } from './view'
 
 export async function runSpwCli(argv: string[]): Promise<void> {
@@ -19,7 +19,8 @@ export async function runSpwCli(argv: string[]): Promise<void> {
     const hint = suggestClosest(command, knownCommands())
     if (hint.length) console.error(`  did you mean: ${hint.join(', ')}?`)
     printRootHelp()
-    process.exitCode = 1
+    // Usage / option errors are exit 2 (see SpwExit / spw-q-candidate-spec §2.1).
+    setExitCode('usage')
     return
   }
 

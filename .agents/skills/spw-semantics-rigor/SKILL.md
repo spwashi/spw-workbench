@@ -11,7 +11,7 @@ description: Make the codebase's semantics model more rigorous (cognitive lingui
 2. Anchor the concept in existing repo artifacts (docs, types, runtime behavior).
 3. Classify each statement as `implemented`, `measured`, `proposed`, or `interpretive`.
 4. Write down explicit definitions and at least one counterexample.
-5. Separate epistemic grade (`E0` fact, `E1` recomputable score, `E2` human interpretation) from effect grade (`S0` read through `S3` external effect).
+5. Describe evidence with independent basis (`observed`, `derived`, `reported`), domain, role, and provenance; keep this separate from effect authority.
 6. Translate the definition into a checkable form (tests, validators, instrumentation, lint rules).
 7. Update docs/specs and add a "how to falsify" note (what evidence would disprove it).
 8. Express the formalization in Spw using Gen 3 syntax alongside code.
@@ -65,10 +65,12 @@ Treat `()`, `[]`, `{}`, `<...>`, specialized pairs, and explicit `<>` as a propo
 - A render-only profile must preserve tokens, AST, normalized projection, semantic coordinates, and effects.
 - Any orientation that changes operand order, containment, normalization, or evaluation is a versioned dialect.
 
-### Evidence and Effect Grades
-- `E0`: deterministic observation from a named code path; structured status also declares consumption, recovery, and pair predicates.
-- `E1`: recomputable score with declared method and profile.
-- `E2`: explicit human interpretation or preference.
+### Evidence Provenance and Effect Grades
+- `observed`: read from a named, revision-addressed artifact without another semantic classification rule.
+- `derived`: computed from referenced inputs by a named, versioned method; declare determinism, profile, and uncertainty where applicable.
+- `reported`: attributed to a named human, agent, or model context.
+- Evidence also declares its domain (`syntax`, `topology`, `preference`, and so on) and role (`match`, `filter`, `projection`, or `annotation`).
+- Evidence bases are categorical, not ordered, and never grant effect authority.
 - `S0`: read/measure only.
 - `S1`: in-memory or sandbox transformation.
 - `S2`: workspace edit with preview, snapshot preconditions, and explicit apply authority.

@@ -781,14 +781,30 @@ describe('pulse versioned transport', () => {
     })
   })
 
-  it.each(['pulse', 'mutate', 'beat'])('routes %s through the public CLI', async command => {
-    await runSpwCli(['node', 'spw', command, '--geometry', 'hof', '--json'])
+  it('routes pulse through the public CLI with its geometry contract', async () => {
+    await runSpwCli(['node', 'spw', 'pulse', '--geometry', 'hof', '--json'])
 
     expect(loggedJson()).toMatchObject({
       schemaVersion: SPW_PULSE_SCHEMA_VERSION,
       surface: 'spw.pulse',
       mode: 'hof',
       ok: true,
+    })
+  })
+
+  it('routes mutate through the public CLI with its own help surface', async () => {
+    await runSpwCli(['node', 'spw', 'mutate', '--help'])
+
+    expect(vi.mocked(console.log).mock.calls.flat().join('\n')).toContain('Spw Mutate')
+  })
+
+  it('routes beat through the public CLI with a bounded cadence', async () => {
+    await runSpwCli(['node', 'spw', 'beat', '--count', '1', '--json'])
+
+    expect(loggedJson()).toMatchObject({
+      command: 'beat',
+      seq: 1,
+      intervalMs: 500,
     })
   })
 })

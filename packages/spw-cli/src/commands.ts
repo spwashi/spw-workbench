@@ -18,7 +18,13 @@ import { printMapHelp, runSpwMapCli } from './map'
 import { printMemHelp, runSpwMemCli } from './mem'
 import { printMountHelp, runSpwMountCli } from './mount'
 import { printMutateHelp, runSpwMutateCli } from './mutate'
-import { printSpwPulseHelp, runSpwPulseCli } from './pulse'
+import {
+  printSpwPulseHelp,
+  runSpwPulseCli,
+  SPW_PULSE_SCHEMA_VERSION,
+  SPW_PULSE_SURFACE,
+  type PulseErrorEnvelope,
+} from './pulse'
 import { printQueryHelp, runQueryCli } from './query'
 import { printRefactorHelp, runSpwRefactorCli } from './refactor'
 import { printRefreshHelp, runSpwRefreshCli } from './refresh'
@@ -58,6 +64,32 @@ export const COMMAND_GROUPS: { id: CommandGroup; title: string; blurb: string }[
 /** Shape a subcommand's argv the way the command modules expect it. */
 function argv(invoked: string, args: string[]): string[] {
   return ['node', invoked, ...args]
+}
+
+/**
+ * Preserve the machine-readable failure contract that belonged to the deleted
+ * pulse wrapper. Other commands delegate failures to the root host, but pulse
+ * already publishes its own versioned JSON surface.
+ */
+async function runPulseCommand(invoked: string, args: string[]): Promise<void> {
+  try {
+    await runSpwPulseCli(argv(invoked, args))
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    if (args.includes('--json')) {
+      const envelope = {
+        schemaVersion: SPW_PULSE_SCHEMA_VERSION,
+        surface: SPW_PULSE_SURFACE,
+        mode: 'error',
+        ok: false,
+        errors: [message],
+      } satisfies PulseErrorEnvelope
+      console.log(JSON.stringify(envelope, null, 2))
+    } else {
+      console.error(`spw pulse: ${message}`)
+    }
+    process.exitCode = 1
+  }
 }
 
 export const COMMANDS: CommandSpec[] = [
@@ -237,7 +269,7 @@ export const COMMANDS: CommandSpec[] = [
     group: 'effect',
     summary: 'effect.l0.measure; optional atomic l2.workspace --write; --stdin REPL',
     printHelp: () => printSpwPulseHelp(),
-    run: (invoked, args) => runSpwPulseCli(argv(invoked, args)),
+    run: runPulseCommand,
   },
   {
     name: 'mutate',

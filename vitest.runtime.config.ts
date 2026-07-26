@@ -6,7 +6,12 @@ export default defineConfig({
     alias: vitestWorkspaceAlias,
   },
   test: {
-    include: ['src/runtime/**/*.test.ts'],
+    // Runtime suite lives under src/runtime (imports packages/spw-runtime).
+    // Package-local tests are included when they land under packages/spw-runtime.
+    include: [
+      'src/runtime/**/*.test.ts',
+      'packages/spw-runtime/src/**/*.test.ts',
+    ],
     environment: 'node',
     globals: false,
     restoreMocks: true,

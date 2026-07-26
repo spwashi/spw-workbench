@@ -12,6 +12,7 @@ import {
 } from '@spwashi/spw-seed'
 import { parseIndexDepth, scanCorpus, type IndexDepth } from './corpus-scan'
 import { printHelpPage } from './help'
+import { formatJsonEnvelope } from './envelope'
 import { formatTable, meta, metaBlock, truncate } from './view'
 
 interface MapArgs {
@@ -172,15 +173,11 @@ export async function runSpwMapCli(argv: string[] = process.argv): Promise<void>
 
   if (args.json) {
     console.log(
-      JSON.stringify(
-        {
-          primary: serializeReport(primary),
-          compare: compare ? serializeReport(compare) : undefined,
-          familiarity: compare ? compareFamiliarity(primary, compare) : undefined,
-        },
-        null,
-        2,
-      ),
+      formatJsonEnvelope('map', {
+        primary: serializeReport(primary),
+        compare: compare ? serializeReport(compare) : undefined,
+        familiarity: compare ? compareFamiliarity(primary, compare) : undefined,
+      }),
     )
     return
   }

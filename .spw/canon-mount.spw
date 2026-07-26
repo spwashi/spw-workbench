@@ -7,7 +7,7 @@
 #:dialect #!canon
 #:layer #!pragmatics
 
-^seed[Workbench.SpwDir.Mount v:0.1 @profile:Spw.x~#[ops.register_frames,ops.probe,ops.matrix,surface.hash] @intent:canon-root]
+^seed[Workbench.SpwDir.Mount v:0.1 @profile:Spw.x @intent:canon-root]
 ?(
  @(
  Orchestrator,
@@ -34,13 +34,13 @@
 
 ^"adversarial"{
  #:dialect #!fuzz
- # Adversarial test seed — fuzzes .spw/ mount, root index.spw relocation, dot-dir ASI
+ # Adversarial test seed fuzzes .spw/ mount, root index.spw relocation, dot-dir ASI
  ^seed[Workbench.SpwDir.Adversary v:0.1 @profile:Spw.l @intent:fuzz]
  ?<mount .spw/>
  index.spw
  .agents/
  docs/seed/
- # Spw.b boundary on dot-dir; Spw.m must canonicalize without ambiguity
+ # Spw.b boundary on dot-dir, Spw.m must canonicalize without ambiguity
 }
 
 ^"dialect_lexing"{
@@ -54,7 +54,7 @@
 
 ^"mount_slice_v01"{
  #:mount #!status
- active_now: [".spw/index.spw", ".spw/mount.spw", "scripts/spw-mount.ts", ".spw/harness/evals/baseline-evals.spw#suites.mount_slice_v01"]
+ active_now: [".spw/index.spw", ".spw/mount.spw", "packages/spw-cli/src/mount.ts", ".spw/harness/evals/baseline-evals.spw#suites.mount_slice_v01"]
  proposed_next: ["semicolon-as-boundary in scoped dialect mode", "; prefixed line semantics", "@lock runtime enforcement layer"]
  interpreted_constructs: ["example:<>", "example:;", "example:?<> (proposal)"]
 }

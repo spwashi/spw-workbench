@@ -1,13 +1,11 @@
 import { describe, expect, it } from 'vitest'
+import { runtime } from '../../testing/runtime-harness'
 import { runSpw } from '../pipeline/run-spw'
 import { Substrate } from '../pipeline/substrate'
 
 describe('runSpw', () => {
   it('parses and interprets valid Spw input', () => {
-    const result = runSpw('!["hello"]')
-
-    expect(result.success).toBe(true)
-    if (!result.success) return
+    const result = runtime.success('!["hello"]')
 
     expect(result.parse.success).toBe(true)
     expect(result.runtime.registers.focusKey).toBe('"')
@@ -17,10 +15,7 @@ describe('runSpw', () => {
   })
 
   it('returns parse issues for invalid input', () => {
-    const result = runSpw('\u0000')
-
-    expect(result.success).toBe(false)
-    if (result.success) return
+    const result = runtime.failure('\u0000')
 
     expect(result.issues.length).toBeGreaterThan(0)
     expect(result.issues[0]?.stage).toBe('parse')
@@ -40,7 +35,14 @@ describe('runSpw', () => {
     expect(focus?.meta.valence).toEqual(['boon'])
     expect(focus?.meta.registerRole).toBe('collapse')
     expect(focus?.meta.descriptor.containerAffinity).toBe('value')
-    expect(focus?.meta.semanticFrames).toBeUndefined()
+    expect(focus?.meta.semanticFrames).toMatchObject({
+      bound: {
+        kind: 'body',
+        form: 'boundary',
+        occupancy: 'inhabited',
+        actPlacement: 'prefix',
+      },
+    })
     expect(focus?.meta.phases?.current).toBe('pragmatic')
     expect(result.telemetry.events).toHaveLength(2)
     expect(result.telemetry.events[0]).toMatchObject({

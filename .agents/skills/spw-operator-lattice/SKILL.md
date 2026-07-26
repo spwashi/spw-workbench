@@ -26,7 +26,7 @@ Use this skill when the task is about operator-sequence perspective, label symme
 
 - CLI `OPERATOR_SET` does not yet include Seed's adjacent `<>` operator; angle characters are counted only by the raw brace stream.
 - The default `hybrid` match chooses the better of ordered and multiset coverage, so `--seq` is not necessarily an adjacency or full-order assertion. Use `--mode ordered --strict` when order is required and still inspect contributions.
-- Raw operator/brace scans can count strings and comments and do not prove well-nested pairs. AST mode may still inherit parser recovery. Do not label either structured E0 evidence without a complete-parse and pair-identity predicate.
+- Raw operator/brace scans can count strings and comments and do not prove well-nested pairs. AST mode may still inherit parser recovery. Describe raw scans as derived lexical evidence; claim observed structure only with a revision, complete-parse state, and parser-owned pair identity.
 - Ranking currently compares probe score and aggregate coverage before `strictHit`; exact-first ranking is a target, not current behavior.
 - `--model` currently changes explanatory hints, not the ranking formula.
 

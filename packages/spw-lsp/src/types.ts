@@ -184,6 +184,7 @@ export const CK = {
     Keyword: 14,
     Reference: 18,
     Field: 5,
+    Variable: 6,
 } as const
 
 // ── Request Param Types ─────────────────────────────────────────

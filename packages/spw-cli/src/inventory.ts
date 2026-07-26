@@ -16,6 +16,7 @@ import {
   type InventoryRole,
   type InventoryRow,
 } from './corpus-scan'
+import { formatJsonEnvelope } from './envelope'
 import { formatTable, meta, truncate } from './view'
 
 interface InventArgs {
@@ -207,26 +208,20 @@ export async function runSpwInventCli(argv: string[] = process.argv): Promise<vo
 
   if (args.json) {
     console.log(
-      JSON.stringify(
-        {
-          command: 'invent',
-          from: args.roots,
-          sort: args.sort,
-          role: args.role,
-          stats: {
-            ...stats,
-            cyclic: scan.topography.cyclic,
-            layers: scan.topography.layers.length,
-            brokenTargets: broken,
-            links: scan.topography.links,
-          },
-          rows: limited,
-          returned: limited.length,
-          totalMatching: rows.length,
+      formatJsonEnvelope('invent', limited, {
+        from: args.roots,
+        sort: args.sort,
+        role: args.role,
+        stats: {
+          ...stats,
+          cyclic: scan.topography.cyclic,
+          layers: scan.topography.layers.length,
+          brokenTargets: broken,
+          links: scan.topography.links,
         },
-        null,
-        2,
-      ),
+        returned: limited.length,
+        totalMatching: rows.length,
+      }),
     )
     return
   }

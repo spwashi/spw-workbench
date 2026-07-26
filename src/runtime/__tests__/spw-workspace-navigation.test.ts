@@ -306,7 +306,7 @@ describe('mounted workspace navigation', () => {
 
     lines.length = 0
     await runSpwCli(['node', 'spw', 'select', '@shared/shared.spw', '--format=json'])
-    const selection = JSON.parse(lines.at(-1) ?? '[]') as unknown[]
-    expect(selection.length).toBeGreaterThan(0)
+    const selection = JSON.parse(lines.at(-1) ?? '{}') as { matches?: unknown[] }
+    expect(selection.matches?.length).toBeGreaterThan(0)
   })
 })

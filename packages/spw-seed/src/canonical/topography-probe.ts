@@ -6,7 +6,7 @@
  * paired-container depth, and container counts — not only string hashes.
  *
  * Pulse stop reasons and mutation vectors come from the automata; this module
- * adds a stratified topographic delta (E0 when derived from parse).
+ * adds a derived topographic delta with a named parse path.
  *
  * @see docs/theory/spw/operational-topography.spw
  * @see packages/spw-seed/src/canonical/mutation-automata.ts
@@ -166,7 +166,10 @@ function endsWithUnescapedDelimiter(value: string, delimiter: string): boolean {
 }
 
 /**
- * Snapshot operational topography for a source string (E0 from parse path).
+ * Snapshot operational topography for a source string.
+ *
+ * Fields read from parser output are observed syntax/structure evidence for
+ * this source revision; classifications computed here are derived evidence.
  */
 export function snapshotTopography(source: string): TopographySnapshot {
   const output = parse(source)

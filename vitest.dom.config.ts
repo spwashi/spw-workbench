@@ -6,7 +6,8 @@ export default defineConfig({
     alias: vitestWorkspaceAlias,
   },
   test: {
-    include: ['src/testing/**/*.test.ts'],
+    // DOM-only fixtures. Headless harness tests use vitest.testing.config.ts (node).
+    include: ['src/testing/**/dom-css-harness.test.ts'],
     environment: 'jsdom',
     globals: false,
     restoreMocks: true,

@@ -98,7 +98,7 @@ export async function runSpwEmitCli(argv: string[] = process.argv): Promise<void
   const pathArgs = mode === sub ? rest.slice(1) : rest
   const parsed = parseEmitArgs(pathArgs)
 
-  if (!parsed.file && mode !== 'profiles' && mode !== 'templates') {
+  if (!parsed.file) {
     printEmitHelp()
     process.exitCode = 1
     return

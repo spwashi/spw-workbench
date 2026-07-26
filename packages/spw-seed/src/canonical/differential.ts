@@ -27,22 +27,120 @@ export type EffectGrade =
   | 'effect.l3.external'
 
 /**
- * Epistemic grade — how a claim is justified (independent of effect ceiling).
- * Not "lock" (that is effect.l2.workspace).
+ * How an evidence contribution was produced.
+ *
+ * These values are categories, not grades: a reported preference is neither
+ * above nor below an observed syntax span. Effect authority remains a separate
+ * ordered concept.
  */
-export type EpistemicGrade =
-  | 'epistemic.l0.fact'
-  | 'epistemic.l1.score'
-  | 'epistemic.l2.report'
+export const EVIDENCE_BASES = ['observed', 'derived', 'reported'] as const
+export type EvidenceBasis = (typeof EVIDENCE_BASES)[number]
+
+/** The subject of an evidence contribution, independent of how it was made. */
+export const EVIDENCE_DOMAINS = [
+  'source',
+  'syntax',
+  'structure',
+  'topology',
+  'layout',
+  'runtime',
+  'architecture',
+  'preference',
+] as const
+export type EvidenceDomain = (typeof EVIDENCE_DOMAINS)[number]
+
+/** The contribution an item of evidence makes to a result. */
+export const EVIDENCE_ROLES = ['match', 'filter', 'projection', 'annotation'] as const
+export type EvidenceRole = (typeof EVIDENCE_ROLES)[number]
+
+/** Versioned tool or code path that emitted an evidence contribution. */
+export interface EvidenceProducer {
+  id: string
+  version: string
+}
+
+/** Immutable identity of an artifact used as evidence. */
+export interface EvidenceArtifactRef {
+  id: string
+  revision: string
+}
+
+/** Versioned method used to derive evidence from one or more artifacts. */
+export interface EvidenceMethod {
+  id: string
+  version: string
+  deterministic: boolean
+  /** Hash of the exact heuristic or profile configuration, when applicable. */
+  profileHash?: string
+}
+
+/** Recomputable description of uncertainty emitted by a derivation method. */
+export interface EvidenceUncertainty {
+  measure: string
+  value: number
+  unit?: string
+}
+
+/** Attributed human, agent, or model identity credited with a report. */
+export interface EvidenceReporter {
+  id: string
+  kind: 'human' | 'agent' | 'model'
+  /** Software or model version when the reporter has one. */
+  version?: string
+}
+
+export interface ObservedEvidenceProvenance {
+  producer: EvidenceProducer
+  artifact: EvidenceArtifactRef
+}
+
+export interface DerivedEvidenceProvenance {
+  producer: EvidenceProducer
+  method: EvidenceMethod
+  inputs: readonly [EvidenceArtifactRef, ...EvidenceArtifactRef[]]
+  /** Present only for method-derived evidence, never for direct observations or reports. */
+  uncertainty?: EvidenceUncertainty
+}
+
+export interface ReportedEvidenceProvenance {
+  producer: EvidenceProducer
+  reporter: EvidenceReporter
+  context?: EvidenceArtifactRef
+}
+
+interface EvidenceContributionBase {
+  domain: EvidenceDomain
+  role: EvidenceRole
+}
+
+export interface ObservedEvidenceContribution extends EvidenceContributionBase {
+  basis: 'observed'
+  provenance: ObservedEvidenceProvenance
+}
+
+export interface DerivedEvidenceContribution extends EvidenceContributionBase {
+  basis: 'derived'
+  provenance: DerivedEvidenceProvenance
+}
+
+export interface ReportedEvidenceContribution extends EvidenceContributionBase {
+  basis: 'reported'
+  provenance: ReportedEvidenceProvenance
+}
+
+/**
+ * Portable evidence descriptor. Narrow on `basis` to obtain the provenance
+ * required for that basis; no ordering or "at most" relation is defined.
+ */
+export type EvidenceContribution =
+  | ObservedEvidenceContribution
+  | DerivedEvidenceContribution
+  | ReportedEvidenceContribution
 
 export const EFFECT_L0_MEASURE = 'effect.l0.measure' as const
 export const EFFECT_L1_MEMORY = 'effect.l1.memory' as const
 export const EFFECT_L2_WORKSPACE = 'effect.l2.workspace' as const
 export const EFFECT_L3_EXTERNAL = 'effect.l3.external' as const
-
-export const EPISTEMIC_L0_FACT = 'epistemic.l0.fact' as const
-export const EPISTEMIC_L1_SCORE = 'epistemic.l1.score' as const
-export const EPISTEMIC_L2_REPORT = 'epistemic.l2.report' as const
 
 export const EFFECT_GRADE_ORDER: Record<EffectGrade, number> = {
   'effect.l0.measure': 0,
@@ -51,18 +149,8 @@ export const EFFECT_GRADE_ORDER: Record<EffectGrade, number> = {
   'effect.l3.external': 3,
 }
 
-export const EPISTEMIC_GRADE_ORDER: Record<EpistemicGrade, number> = {
-  'epistemic.l0.fact': 0,
-  'epistemic.l1.score': 1,
-  'epistemic.l2.report': 2,
-}
-
 export function effectGradeAtMost(grade: EffectGrade, ceiling: EffectGrade): boolean {
   return EFFECT_GRADE_ORDER[grade] <= EFFECT_GRADE_ORDER[ceiling]
-}
-
-export function epistemicGradeAtMost(grade: EpistemicGrade, ceiling: EpistemicGrade): boolean {
-  return EPISTEMIC_GRADE_ORDER[grade] <= EPISTEMIC_GRADE_ORDER[ceiling]
 }
 
 /**

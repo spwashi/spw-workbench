@@ -1,6 +1,10 @@
 /**
  * Closed text parser for the experimental Spw.q selector surface.
  *
+ * Candidate contract: `docs/design/spw-q-candidate-spec.md`.
+ * Status remains experimental; promotion requires semantic fingerprints,
+ * migration fixtures, and compatibility gates in addition to syntax goldens.
+ *
  * `$` opens the query envelope and `_` is its anonymous placeholder:
  *
  *   $@_       references
@@ -9,9 +13,17 @@
  *   $_        any node
  *
  * Bare sigil atoms (`@`, `![]`) retain their legacy projections. Standalone
- * boundary atoms select the boundary node itself. Ordered groups and named
- * captures are programmatic until their text fixity no longer collides with
- * range, slice, core-pattern, or boundary syntax.
+ * boundary atoms select the boundary node itself.
+ *
+ * Candidate gaps still open in this experimental surface (fail closed when added):
+ *   - `?name:$atom` captures (programmatic `capture()` exists)
+ *   - comma-driven `(A, B)` sequences (programmatic `seq()` + match slots exist)
+ *   - composite marks `$~#name`, `$#>name`, `$#:name`, `$#!name`
+ *   - valence-only modifiers (bone|boon|bane|bonk|honk); non-valence → label
+ *   - child combinator `A > B` (descendant `/` already works)
+ *   - caret diagnostics (line/column), not offset-only errors
+ *
+ * Reserved: `..` range/slice, `>>` stream. Spaced `&` is conjunction; bare `&` is integrate.
  *
  * @spw:surface:query[system=selector-expr,semantic=prolog|sql|css,status=experimental] - Selector expressions are a user-facing query surface
  * @spw:portable:seed[layer=query,system=selector-engine,extract=candidate,basis=no-dom|pure-data] - No DOM or app-specific imports allowed
