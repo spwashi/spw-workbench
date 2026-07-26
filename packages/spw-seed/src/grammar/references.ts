@@ -25,7 +25,8 @@ import {
   choice,
   named,
 } from '../combinators'
-import { annotation, particle, colon, capsuleOpen, capsuleClose, identifier, stringLit } from './tokens'
+import { annotation, particle, gloss, colon, capsuleOpen, capsuleClose, identifier, stringLit } from './tokens'
+import { glossParts } from '../lexer/matchers'
 import { literalNode } from './literals'
 
 function isReferencePathToken(token: Token): boolean {
@@ -402,6 +403,48 @@ export const particleNode: Parser<ParticleNode> = named('particle',
         span: partToken.span,
       },
     }
+  }
+)
+
+/**
+ * `~#(nearest neighbor)` / `~#lens(living system)` — one GLOSS token becomes an
+ * Annotation carrying a gloss.
+ *
+ * It stays an Annotation node rather than a type of its own so that everything
+ * already counting marks — selectors, the taste instrument, the semantic index
+ * — sees a gloss without being taught to. A reading that no instrument can
+ * count is the comment we are replacing.
+ */
+export const glossNode: Parser<AnnotationNode> = named('gloss',
+  function* glossParser(stream, depth) {
+    const startPos = getPosition(stream)
+
+    const glossGen = gloss(stream, depth + 1)
+    let glossStep = glossGen.next()
+    while (!glossStep.done) {
+      yield glossStep.value
+      glossStep = glossGen.next()
+    }
+
+    if (!glossStep.value.success) {
+      return { success: false, consumed: 0, error: glossStep.value.error }
+    }
+
+    const glossToken = glossStep.value.value!
+    const parts = glossParts(glossToken.value)
+
+    const node: AnnotationNode = {
+      type: 'Annotation',
+      span: { start: startPos, end: getPosition(stream) },
+      name: {
+        type: 'IDENTIFIER',
+        value: parts.name ?? '',
+        span: glossToken.span,
+      },
+      gloss: { body: parts.body, anonymous: parts.name === null },
+    }
+
+    return { success: true, value: node, consumed: glossStep.value.consumed }
   }
 )
 

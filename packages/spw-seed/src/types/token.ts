@@ -57,6 +57,7 @@ export type TokenType =
   | 'BOOLEAN'
   | 'REFERENCE'      // @path
   | 'ANNOTATION'     // ~#identifier (aspect particle; legacy bespoke token)
+  | 'GLOSS'          // ~#(phrase) or ~#name(phrase) — a reading laid alongside
   | 'PARTICLE'       // #>name deixis, #:name case — the ⟨stance⟩#⟨aim⟩name lattice
   | 'COMMENT'
   | 'WHITESPACE'

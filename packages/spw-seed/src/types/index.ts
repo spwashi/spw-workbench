@@ -100,6 +100,7 @@ export type {
   LiteralNode,
   IdentifierNode,
   AnnotationNode,
+  GlossLabel,
   ParameterNode,
   ConditionNode,
   ProseNode,

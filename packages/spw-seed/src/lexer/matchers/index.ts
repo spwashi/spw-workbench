@@ -22,6 +22,7 @@ export type TokenMatcher = (
 
 export { matchWhitespace } from './whitespace'
 export { matchLineComment } from './comments'
+export { matchGloss, glossParts, type GlossParts } from './gloss'
 export { matchParticle } from './particles'
 export { matchOperator, createOperatorMatcher } from './operators'
 export { matchConnector, createConnectorMatcher } from './connectors'
