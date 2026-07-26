@@ -106,8 +106,16 @@ export {
 
 export {
   findNodeAtOffset,
+  findNodePathAtOffset,
   positionToOffset,
+  offsetToPosition,
 } from './geometry-inspect-position'
+
+export {
+  resolveLabelPosition,
+  resolveLabelContext,
+} from './geometry-resolver'
+export type { ResolvedLabelContext, LabelSurfaceSpan } from './geometry-resolver'
 
 export {
   transformEdit,
