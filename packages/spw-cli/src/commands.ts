@@ -25,6 +25,7 @@ import { printRefreshHelp, runSpwRefreshCli } from './refresh'
 import { printRootsHelp, runSpwRootsCli } from './roots'
 import { printSelectUsage, runSpwSelectCli } from './select'
 import { printSkimHelp, runSpwSkimCli } from './skim'
+import { printTasteHelp, runSpwTasteCli } from './taste'
 import { printTreeHelp, runSpwTreeCli } from './tree'
 
 /**
@@ -145,6 +146,13 @@ export const COMMANDS: CommandSpec[] = [
     summary: 'Brace + operator geometry lessons for a surface',
     printHelp: () => printGeometryHelp(),
     run: (invoked, args) => runSpwGeometryCli(argv(invoked, args)),
+  },
+  {
+    name: 'taste',
+    group: 'sense',
+    summary: 'Taste coverage, standard vocabulary, and mark fidelity',
+    printHelp: () => printTasteHelp(),
+    run: (invoked, args) => runSpwTasteCli(argv(invoked, args)),
   },
 
   // ── Read ─────────────────────────────────────────────────────
