@@ -6,6 +6,7 @@ setlocal commentstring=#\ %s
 setlocal comments=:#,:b:#,s:/*,mb:*,ex:*/
 setlocal suffixesadd=.spw,.ts,.md
 setlocal includeexpr=substitute(v:fname,'^\\.\\?/','','')
+setlocal omnifunc=v:lua.require'spw.completion'.omnifunc
 
 " Folding: brace-depth based (matches IntelliJ SpwFoldingBuilder)
 setlocal foldmethod=syntax

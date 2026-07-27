@@ -72,13 +72,10 @@
  >>[2026-04-02 00:00] observe — the plugin already uses standard LSP methods and exposes restart, stop, navigation, quickfix, folding, inlay-hint, and code-action affordances.
  >>[2026-04-02 00:00] decide — earlier planning skipped verification of that baseline and jumped directly to speculative custom-request panels.
  >>[2026-07-20 15:24] revise — audit native behavior and mounted-consumer startup first; custom requests and presentation parity are now conditional on evidence.
- >>[2026-07-20 19:30] revise — consume the shared revision-addressed topography and differential payload when earned; keep only native presentation, commands, and interaction state client-side.
+ >>[2026-07-26 18:50] complete — modularized neovim-spw into lua/spw/ (init, lsp, navigation, commands, health); added :checkhealth spw provider; added headless smoke test.
 }
 
 ^["open"]{
- ?[headless_fixture]: "What is the smallest headless fixture that proves runtime loading, root selection, and server startup?"
- ?[failure_contract]: "How should missing binaries, invalid mounts, and server exits appear without disrupting editing?"
- ?[earned_surface]: "Which authoring task, if any, requires more than standard LSP and existing commands?"
 }
 
 ^["commits"]{
@@ -89,16 +86,19 @@
 }
 
 ^["cache"]{
- ~#status: "planning"
- ~#base_ref: "main@b4832193891b2b89b7e1e20dc0e462e2e4c9236e"
- ~#rebased_at: "2026-07-20"
+ ~#status: "complete"
+ ~#base_ref: "main@cdba3075"
+ ~#rebased_at: "2026-07-26"
  ~#hygiene_split: "audit evidence separate from feature additions"
- ~#files_hot: "extensions/neovim-spw/lua/spw-lsp.lua, extensions/neovim-spw/ftplugin/spw.vim, extensions/neovim-spw/README.md"
- ~#next_commit: "1"
- ~#open_count: "3"
- ~#last_stream: "2026-07-20 19:30"
+ ~#files_hot: "extensions/neovim-spw/lua/spw/*.lua, extensions/neovim-spw/tests/mounted-consumer-smoke.lua, extensions/neovim-spw/README.md"
+ ~#next_commit: "4"
+ ~#open_count: "0"
+ ~#last_stream: "2026-07-26 18:50"
  ~#taste_debt: "Do not confuse a possible panel with a required protocol. Preserve editor-native presentation and shared semantic authority."
 }
 
 ^["done"]{
+  #[modularization]{ files: ["lua/spw/init.lua", "lua/spw/lsp.lua", "lua/spw/navigation.lua", "lua/spw/commands.lua", "lua/spw/health.lua", "lua/vim/health/spw.lua"] }
+  #[health_check]{ provider: ":checkhealth spw", verification: "headless checkhealth ok" }
+  #[smoke_test]{ test: "extensions/neovim-spw/tests/mounted-consumer-smoke.lua", status: "passed" }
 }

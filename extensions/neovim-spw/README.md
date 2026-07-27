@@ -98,6 +98,25 @@ Set on attach (disable with `vim.g.spw_lsp_keymaps = false`):
 | `:SpwFormSeq [notation]` | Explain form sequence (default confluence wrap) |
 | `:SpwTemperature` | Workspace temperature tiers |
 | `:SpwInsertFormWrap` | Insert `& => {&} => {&[#label]}` at cursor |
+| `:SpwWrapContainer [label]` | Wrap visual selection or word under cursor in Spw container `^["label"]{ ... }` |
+
+## Auto-completion & Omnifunc
+
+The plugin provides a native `omnifunc` provider (`<C-x><C-o>`):
+
+- **`@`**: Autocompletes workspace root shelf aliases (`@biome/`, `@harness/`, `@gen/`, `@docs/`, etc.)
+- **`#`**: Autocompletes directives (`#!pragmatics`, `#!semantics`, `#!physics`) and label anchors
+- **`~`**: Autocompletes reference templates (`~"..."`, `~<...>`)
+
+Works seamlessly with `nvim-cmp` or `blink.cmp` via the omni completion source.
+
+## Tree-sitter queries
+
+The plugin ships native Tree-sitter query captures under `queries/spw/`:
+
+- `queries/spw/highlights.scm`: AST-level syntax highlighting for operators, sigils, and containers
+- `queries/spw/folds.scm`: Structural folding for block and record containers
+- `queries/spw/indents.scm`: Automatic indentation formatting inside container blocks
 
 If a leader mapping does not trigger, inspect what owns it in the current buffer:
 
@@ -145,3 +164,20 @@ Code lens on the first line of `.spw/` files shows the **workspace plane** and *
 ◈ register · macro   ← plane · category
 ⚠ generated surface — do not hand-edit   ← files in .spw/gen/
 ```
+
+## Health check
+
+Run Neovim's health check to verify your setup (Node.js, LSP binary, Neovim version, workspace root resolution):
+
+```vim
+:checkhealth spw
+```
+
+## Headless testing
+
+Run the headless smoke test suite:
+
+```sh
+nvim --headless -u NONE -l extensions/neovim-spw/tests/mounted-consumer-smoke.lua
+```
+
