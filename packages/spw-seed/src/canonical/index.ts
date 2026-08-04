@@ -179,6 +179,21 @@ export {
   type MutationUsefulness,
 } from './brace-projection'
 
+/** Unit-cell apposition lattice — parse-free readings for granules / pattern ecology. */
+export {
+  APPOSITION_SCAN_VERSION,
+  scanAppositions,
+  appositionSpectrum,
+  appositionMasksEqual,
+  diffAppositionLattices,
+  type AppositionSpan,
+  type AppositionCell,
+  type AppositionLattice,
+  type AppositionSpectrum,
+  type AppositionLatticeDelta,
+  type ScanAppositionsOptions,
+} from './apposition-scan'
+
 export {
   inspectGeometry,
   formatGeometryReport,

@@ -40,6 +40,7 @@ import { printSelectUsage, runSpwSelectCli } from './select'
 import { printSkimHelp, runSpwSkimCli } from './skim'
 import { printTasteHelp, runSpwTasteCli } from './taste'
 import { printTreeHelp, runSpwTreeCli } from './tree'
+import { printLatticeHelp, runSpwLatticeCli } from './lattice'
 
 /**
  * Which part of the loop a command belongs to. Groups order the help page and
@@ -198,6 +199,14 @@ export const COMMANDS: CommandSpec[] = [
     summary: 'Brace + operator geometry lessons for a surface',
     printHelp: () => printGeometryHelp(),
     run: (invoked, args) => runSpwGeometryCli(argv(invoked, args)),
+  },
+  {
+    name: 'lattice',
+    aliases: ['readings'],
+    group: 'sense',
+    summary: 'Apposition unit-cell spectrum (~# readings) without a full parse',
+    printHelp: () => printLatticeHelp(),
+    run: (_invoked, args) => runSpwLatticeCli(['lattice', ...args]),
   },
   {
     name: 'measure',
