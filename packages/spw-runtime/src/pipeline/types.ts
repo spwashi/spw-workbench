@@ -19,6 +19,17 @@ export interface RunSpwOptions {
   captureTrace?: boolean
   registers?: RegisterBank
   substrate?: Substrate
+  /** File path for dialect path-defaults and stack resolve. */
+  path?: string
+  /** Force dialect id (Spw.b|l|m|…). */
+  dialect?: string
+  /**
+   * When true (default), parse() auto-detects dialect and preprocesses.
+   * Set false when caller already ran prepareSource / HotSession.
+   */
+  autoDialect?: boolean
+  /** Stability channel for telemetry / future gates (not yet effect-enforcing here). */
+  channel?: string
 }
 
 export interface RunSpwSuccess {
@@ -29,6 +40,9 @@ export interface RunSpwSuccess {
   telemetry: RuntimeTelemetry
   /** Per-stage precipitates from the pipeline run */
   precipitates?: AnyPrecipitate[]
+  /** Dialect reported by parse when autoDialect / options applied. */
+  dialect?: string
+  channel?: string
 }
 
 export interface RunSpwFailure {
@@ -37,6 +51,8 @@ export interface RunSpwFailure {
   parse: ParseOutput<SeedNode>
   issues: RuntimeIssue[]
   telemetry: RuntimeTelemetry
+  dialect?: string
+  channel?: string
 }
 
 export type RunSpwResult = RunSpwSuccess | RunSpwFailure

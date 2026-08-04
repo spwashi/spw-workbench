@@ -19,4 +19,12 @@ export interface ParseOutput<T = SeedNode> {
   error?: { message: string, expected?: string[], found?: string }
   duration: number
   lexProfile?: string
+  /** Resolved dialect after detection (Spw.b, Spw.l, …). */
+  dialect?: string
+  /** How dialect was chosen: header | pragma | path | option | default */
+  dialectSource?: string
+  /** True when newline-as-space (or other) preprocess rewrote the input. */
+  dialectPreprocessed?: boolean
+  /** Experimental / plan syntax ids cited via =exp[ id: … ] (and known catalog hits). */
+  experimentalRefs?: string[]
 }

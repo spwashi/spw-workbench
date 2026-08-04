@@ -1,0 +1,132 @@
+# wip — apposition-cache-granules
+# Branch: feature/apposition-cache-granules
+# Started: 2026-07-27
+
+#:layer #!pragmatics
+#:cache #!granularity
+
+^["roots"]{
+ @surface_identity: ~".spw/patterns/surface-identity.spw"
+ @plan: ~".agents/plans/apposition-cache-granules/PLAN.md"
+ @artifact: ~".agents/plans/apposition-cache-granules/apposition-cache-granules.spw"
+ @cache_spec: ~".spw/biome/ocean/algos/cache.spw"
+ @server_index: ~"packages/spw-lsp/src/server-index.ts"
+ @apposition: ~"packages/spw-seed/src/lexer/matchers/apposition.ts"
+ @reference_graph: ~"packages/spw-lsp/src/handlers/reference-graph.ts"
+ @workspace_temp: ~"packages/spw-lsp/src/handlers/workspace.ts"
+ @beat_plan: ~".agents/plans/spw-beat-diff-precipitation/PLAN.md"
+ @geometry_plan: ~".agents/plans/geometric-analysis-tooling/PLAN.md"
+}
+
+^["intent"]{
+ ~#goal: "Invalidate the LSP cache proportionally to the edit by keying granules on appositions authors already placed, fix the three confirmed cache defects that make granularity moot, and surface granule state through codeLens."
+ ~#taste: "correctness, resolution, disclosure"
+ ~#premise: "The apposition body is lexed raw to the matching paren, so a surface's whole apposition set is extractable without a parse — an ergonomic decision that is also a cheap validity probe."
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#taste, #linguistics, #design_transfer]
+ review_surfaces: [@plan, @cache_spec, @server_index, @apposition]
+ snippet_routes: [#example, #query, #snippet]
+}
+
+^["concept_index"]{
+ primary: [#apposition_granule, #envelope_validity, #inbound_index, #eviction_correctness]
+ secondary: [#frame_hash, #codelens_disclosure, #parse_free_scan]
+ surfaces: [#seed_canonical, #lsp_cache, #lsp_handlers]
+ tensions: [#coverage_gap, #anonymous_keys, #beat_plan_collision]
+ transfers: [#language, #component, #service]
+}
+
+^["measurements"]{
+ ~#census: "220 appositions — 157 neighbor, 56 lens, 2 name, 5 anonymous"
+ ~#coverage: "182 of 493 .spw surfaces carry an apposition; 63% of the corpus has none"
+ ~#leak: "demonstrated — document evicted after 400 ticks, searchAnnotations still returns its entry"
+ ~#server_index_size: "1234 lines, already double the 600-line craft guard — this plan must not grow it"
+ ~#discarded_index: "buildReferenceGraph computes inbound: Map<string, Set<string>> and caches only the hubs/orphans report"
+ ~#unmemoized: "resolveReferencePath is called per candidate per references request and cached nowhere"
+ ~#kernel_drop: "ParseOutput carries duration, lexProfile, and events; ServerIndex keeps the AST and discards all three"
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread roots and live code before widening claims",
+  "< ship one concept-sized artifact, patch, or snippet",
+  "$ record what became clearer, indexable, or measurable",
+  "^ fold the new truth back into plan, spec, docs, or tool surface",
+  "% keep one invariant stable while experimenting",
+ ]
+ gates: [#preview_truth, #snippet_reuse, #claim_discipline]
+}
+
+^["parallel_work"]{
+ critical_path: [#eviction_correctness, #parse_free_scan]
+ parallelizable: [#inbound_index, #codelens_disclosure]
+ shared_hot_files: [
+  "packages/spw-lsp/src/server-index.ts",
+  "packages/spw-lsp/src/types.ts",
+  "packages/spw-seed/src/types/ast/nodes.ts",
+ ]
+ merge_risks: [#beat_plan_collision, #live_grammar_edits]
+ handoff_artifacts: [@plan, @artifact]
+}
+
+^["supporting_documents"]{
+ must_ship: [@plan, @artifact]
+ helpful: [@cache_spec, @workspace_temp, @reference_graph]
+ carries: [#examples, #review_notes]
+}
+
+^["interaction_depth"]{
+ subjects: [#feedback, #legibility, #latency]
+ questions: [#what_is_primary, #what_is_visible, #what_survives_an_edit]
+ qualities: [#clarity, #containment]
+}
+
+^["stream"]{
+ >>[2026-07-27 12:30] observe — Cache audit found three defects; the eviction leak is demonstrated by probe, not inferred. Document is deleted from documents; its annotation index entry survives.
+ >>[2026-07-27 12:30] observe — cache.spw already specifies composite keys, hash-prefix eviction, and coupling cascade. None are implemented. The spec is a better design than what runs; treat drift as the bug.
+ >>[2026-07-27 12:35] decide — Key granules on appositions rather than minting a new anchor. 220 are already placed, they are author-maintained, and the raw-body lexing makes them verifiable without a parse.
+ >>[2026-07-27 12:35] taste — server-index.ts at 1234 lines is already double the guard. Granule, validity, and inbound-index logic go to packages/spw-lsp/src/cache/; server-index.ts should end this plan net smaller.
+ >>[2026-07-27 12:40] observe — Coverage is the honest constraint: 182 of 493 surfaces carry an apposition. The other 63% fall back to whole-file invalidation, so the fallback path must not regress.
+ >>[2026-07-27 12:40] decide — Deferred incremental parsing. LexerState is already a serializable checkpoint and both tokenize and seedNode are generators, so the affordance is real, but safe-restart-point analysis is its own plan.
+ >>[2026-07-27 13:10] observe — plan-ecology sweep: granule_key is declared in .spw/patterns/surface-identity.spw alongside content_hash and shape_fingerprint. The ?[granule_agreement] question now has a surface to be answered on.
+}
+
+^["open"]{
+ ?[coverage]: "Does apposition-keyed granularity pay for itself when 63% of surfaces carry no apposition? Measure reparse volume on a real edit sequence before building past commit 7."
+ ?[anonymous]: "5 anonymous appositions anchor a span but supply no key. Degrade to span-position identity, or exclude them from granule keying entirely?"
+ ?[ordering]: "spw-beat-diff-precipitation edits server-index.ts for dynamic TTLs and collides with commits 3-5. Land this plan first, or rebase onto it?"
+ ?[granule_agreement]: "geometric-analysis-tooling will key on shapeFingerprint. Should both plans share one granule identity type before either ships a key format?"
+}
+
+^["commits"]{
+ ~[1]: ".[plans] — file apposition-cache-granules"
+ ~[2]: "![spw-lsp] — pin the confirmed cache defects: eviction leak and recency flattening"
+ ~[3]: "&[spw-lsp] — evict a document's index entries with the document"
+ ~[4]: "&[spw-lsp] — peekDocument for bulk reads so fan-out stops flattening recency"
+ ~[5]: "&[spw-lsp] — derive workspaceAnnotations from annotationsByFile, dropping the per-save rebuild"
+ ~[6]: "^seed[spw-seed] — apposition scan: name, body, and span hash without a parse"
+ ~[7]: "^seed[spw-seed] — frame-level content hashes keyed by apposition name"
+ ~[8]: "&[spw-lsp] — retain the inbound reference index the graph build already computes"
+ ~[9]: "&[spw-lsp] — reuse derived data when a granule's apposition envelope is unchanged"
+ ~[10]: "#[spw-lsp] — codeLens surfacing granule tier, volatility, inbound degree, and hash age"
+ ~[11]: "![tests] — scan/parse parity, envelope stability, and invalidation-proportionality suites"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@f5af9eb3"
+ ~#rebased_at: ""
+ ~#hygiene_split: "required — in-flight grammar edits touch types/ast/nodes.ts, where AppositionLabel lives"
+ ~#files_hot: "packages/spw-lsp/src/server-index.ts, packages/spw-lsp/src/types.ts, packages/spw-seed/src/types/ast/nodes.ts"
+ ~#next_commit: "1"
+ ~#open_count: "4"
+ ~#last_stream: "2026-07-27 13:10"
+ ~#taste_debt: "two-axis eviction (tier x volatility) is correct and deferred — workspaceTemperature already computes volatility and the evictor ignores it"
+}
+
+^["done"]{
+}

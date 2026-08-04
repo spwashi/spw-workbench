@@ -21,6 +21,89 @@ export {
 } from './canonicalize'
 
 export {
+  readAuthorityDeclarations,
+  reconcileAuthority,
+  AUTHORITY_FACETS,
+  type AuthorityKind,
+  type AuthorityClaim,
+  type AuthorityDeclaration,
+  type ObservedAuthority,
+  type AuthorityVerdict,
+  type AuthorityFinding,
+} from './authority'
+
+export {
+  readMassDeclarations,
+  measureMass,
+  reconcileMass,
+  applyMassCorrections,
+  MEASURABLE_KEYS,
+  type MassDeclaration,
+  type MeasuredMass,
+  type MassReconciliation,
+  type MassVerdict,
+  type MeasurableKey,
+  type DeclaredMeasure,
+} from './self-mass'
+
+export {
+  CORE_SNIPPETS,
+  SPW_SNIPPET_VERSION,
+  getSnippet,
+  listSnippets,
+  snippetSource,
+  hydrateSnippet,
+  toVscodeSnippets,
+  formatVscodeSnippetsJson,
+  parseBindings,
+  type SpwSnippet,
+  type SnippetFamily,
+  type SnippetBindings,
+  type HydrateResult,
+  type VscodeSnippetMap,
+} from './snippet'
+
+export {
+  bootstrapMeasureRegistry,
+  loadMeasureContextFromSpw,
+  resolveFamily,
+  reconcileMetric,
+  reconcileFamily,
+  contextForFamily,
+  MASS_FAMILY,
+  THRIFT_FILE_ALGORITHM,
+  BUILTIN_FAMILIES,
+  BUILTIN_ALGORITHMS,
+  defaultScheme,
+  type EvalSchemeId,
+  type EvalScheme,
+  type MeasureVerdict,
+  type AttentionalScopeKind,
+  type AttentionalScope,
+  type PerceptivePlane,
+  type RepresentationalForm,
+  type MeasureFamilyDef,
+  type MeasureAlgorithmDef,
+  type DeclaredMetric,
+  type MeasureDeclaration,
+  type ObservedMetric,
+  type MeasureReconciliation,
+  type MeasureContextRegistry,
+} from './measure-protocol'
+
+export {
+  formatPulses,
+  compareFormatProfiles,
+  diffLines,
+  FORMAT_CAPABILITIES,
+  type FormatCapability,
+  type FormatPulse,
+  type FormatPulseSequence,
+  type ProfileComparison,
+  type DiffLine,
+} from './format-pulses'
+
+export {
   applyEdits,
   differentialFromSources,
   effectGradeAtMost,
@@ -103,6 +186,52 @@ export {
   type OperatorGeometryEntry,
   type BraceNestingStats,
 } from './geometry-inspect'
+
+export {
+  scanFlowProtocol,
+  formatFlowProtocolSummary,
+  type FlowRole,
+  type FlowFixity,
+  type FlowUnit,
+  type FlowProtocolModule,
+} from './flow-protocol'
+
+export {
+  detectGeometricResonances,
+  buildResonanceContext,
+  runResonanceDetectors,
+  compileGeometryBytecode,
+  bytecodeOpSimilarity,
+  buildGeometryField,
+  resolveWeightScheme,
+  formatResonanceSummary,
+  formatGeometryFieldSummary,
+  formatResonanceAsSpw,
+  formatGeometryFieldAsSpw,
+  DEFAULT_RESONANCE_DETECTORS,
+  WEIGHT_SCHEME_DEFAULT,
+  WEIGHT_SCHEME_AGENT,
+  WEIGHT_SCHEME_THRIFT,
+  WEIGHT_SCHEMES,
+  detectOpCooccur,
+  detectPhraseAdjacent,
+  detectScheduleSlot,
+  detectProbeMeasure,
+  detectBiasPole,
+  detectDepthBand,
+  type GeometricResonanceType,
+  type GeometricResonance,
+  type GeometricResonanceReport,
+  type GeometryBytecode,
+  type ResonanceDetectionContext,
+  type ResonanceDetector,
+  type ResonanceWeightScheme,
+  type ResonanceFeatureGains,
+  type GeometrySurfaceCard,
+  type GeometryStrand,
+  type GeometryField,
+  type BuildGeometryFieldOptions,
+} from './geometric-resonance'
 
 export {
   findNodeAtOffset,
@@ -285,6 +414,7 @@ export {
   INDEX_PRESETS,
   INDEX_TRADEOFFS,
   resolveIndexConfig,
+  applyDialectIndexBias,
   type IndexDepth,
   type IndexConfig,
 } from './index-config'
@@ -347,3 +477,15 @@ export {
   type MarkDeriver,
   type DeriveContext,
 } from './derived-marks'
+
+export {
+  MEDIAL_CAPSULE_CHANNELS,
+  VALENCE_PARTICLES,
+  TEMPLATE_SLOTS,
+  SIGIL_SNIPPET_CATALOG,
+  type MedialChannelDef,
+  type ValenceParticleDef,
+  type TemplateSlotDef,
+  type SigilSnippetDef,
+} from './catalog'
+

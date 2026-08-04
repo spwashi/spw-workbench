@@ -8,6 +8,7 @@
  * @see form-ladders.ts
  */
 
+import { parse } from '../parser'
 import { extractBraceProjection, type BraceProjection } from './brace-projection'
 import { SIGIL_CHARS } from './geometry-inspect-sigils'
 
@@ -25,11 +26,28 @@ export interface BraceNestingStats {
   deepLines: number
 }
 
+/**
+ * A place where structured parsing gave up and the surface degraded to prose.
+ *
+ * The fallback is intended — a documentation language must not hard-fail — but
+ * it must not be silent either. Reporting the stall point turns "my expression
+ * did nothing" into a line number and a token.
+ */
+export interface ProseDegradation {
+  line: number
+  column: number
+  /** Token type parsing stopped on, e.g. `ARROW`, `CAPSULE_CLOSE`. */
+  found?: string
+  message: string
+}
+
 export interface GeometryReport {
   version: 'spw.geometry/1'
   braces: BraceProjection
   operators: OperatorGeometryEntry[]
   nesting: BraceNestingStats
+  /** Surfaces that fell back to prose, with the token that stopped the parse. */
+  degradations: ProseDegradation[]
   /** short teaching lines */
   lessons: string[]
 }
@@ -58,14 +76,31 @@ export function inspectGeometry(source: string): GeometryReport {
   const braces = extractBraceProjection(source)
   const operators = censusOperators(source)
   const nesting = nestingStats(source)
-  const lessons = buildLessons(braces, operators, nesting)
+  const degradations = collectDegradations(source)
+  const lessons = buildLessons(braces, operators, nesting, degradations)
   return {
     version: 'spw.geometry/1',
     braces,
     operators,
     nesting,
+    degradations,
     lessons,
   }
+}
+
+function collectDegradations(source: string): ProseDegradation[] {
+  const out: ProseDegradation[] = []
+  for (const w of parse(source).warnings) {
+    const data = w.data as { code?: string; message?: string; found?: string } | undefined
+    if (data?.code !== 'prose-degradation') continue
+    out.push({
+      line: w.position.line,
+      column: w.position.column,
+      found: data.found,
+      message: data.message ?? 'Surface degraded to prose.',
+    })
+  }
+  return out
 }
 
 function censusOperators(source: string): OperatorGeometryEntry[] {
@@ -110,6 +145,7 @@ function buildLessons(
   braces: BraceProjection,
   operators: OperatorGeometryEntry[],
   nesting: BraceNestingStats,
+  degradations: ProseDegradation[],
 ): string[] {
   const out: string[] = []
   const k = braces.kinds
@@ -158,6 +194,16 @@ function buildLessons(
   if (nesting.openBalance !== 0) {
     out.push(`Unbalanced open braces (balance=${nesting.openBalance}) — check close pairs.`)
   }
+  if (degradations.length > 0) {
+    const where = degradations
+      .slice(0, 3)
+      .map(d => `line ${d.line}${d.found ? ` (${d.found})` : ''}`)
+      .join(', ')
+    const more = degradations.length > 3 ? `, +${degradations.length - 3} more` : ''
+    out.push(
+      `${degradations.length} surface${degradations.length === 1 ? '' : 's'} degraded to prose at ${where}${more} — structure was written but not parsed.`,
+    )
+  }
   out.push('Learn: empty → inhabit → label/select → path/ref → fold (form-ladders).')
   return out
 }
@@ -177,6 +223,15 @@ export function formatGeometryReport(r: GeometryReport): string {
     lines.push(
       `  ${o.sigil}  ${String(o.count).padStart(4)}  ${o.percent.toFixed(1).padStart(5)}%  ${o.role}`,
     )
+  }
+  if (r.degradations.length > 0) {
+    lines.push('', 'degraded to prose')
+    for (const d of r.degradations.slice(0, 12)) {
+      lines.push(`  ! ${d.line}:${d.column}  ${d.message}`)
+    }
+    if (r.degradations.length > 12) {
+      lines.push(`  … +${r.degradations.length - 12} more`)
+    }
   }
   lines.push('', 'lessons')
   for (const L of r.lessons) lines.push(`  · ${L}`)

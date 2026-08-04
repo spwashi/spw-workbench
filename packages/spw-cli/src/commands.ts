@@ -9,6 +9,13 @@ import { printExpandHelp, runSpwExpandCli } from './expand'
 import { printSpwFormatHelp, runSpwFormatCli } from './format'
 import { printFormulaHelp, runSpwFormulaCli } from './formula'
 import { printGeometryHelp, runSpwGeometryCli } from './geometry'
+import { printSpwMassHelp, runSpwMassCli } from './mass'
+import { printSpwAuthorityHelp, runSpwAuthorityCli } from './authority'
+import { printSpwProfileHelp, runSpwProfileCli } from './profile'
+import { printSpwExpHelp, runSpwExpCli } from './exp'
+import { printSnippetHelp, runSpwSnippetCli } from './snippet'
+import { printCycleHelp, runSpwCycleCli } from './cycle'
+import { printCiteHelp, printFollowHelp, runSpwCiteCli, runSpwFollowCli } from './cite'
 import { printHelpPage } from './help'
 import { printInitUsage, runSpwInitCli } from './init'
 import { printInventHelp, runSpwInventCli } from './inventory'
@@ -64,6 +71,18 @@ export const COMMAND_GROUPS: { id: CommandGroup; title: string; blurb: string }[
 /** Shape a subcommand's argv the way the command modules expect it. */
 function argv(invoked: string, args: string[]): string[] {
   return ['node', invoked, ...args]
+}
+
+/**
+ * `spw measure mass …` / `spw measure thrift …` — family token for help literacy.
+ * Today only the mass/thrift family is implemented; strip so mass CLI sees paths.
+ */
+function stripMeasureFamily(args: string[]): string[] {
+  const family = args[0]
+  if (family === 'mass' || family === 'thrift' || family === 'size') {
+    return args.slice(1)
+  }
+  return args
 }
 
 /**
@@ -132,19 +151,20 @@ export const COMMANDS: CommandSpec[] = [
   },
 
   // ── Sense ────────────────────────────────────────────────────
+  // Primaries follow cli-sense-reorientation; old names remain aliases (era-1).
   {
-    name: 'invent',
-    aliases: ['inventory', 'inv'],
+    name: 'census',
+    aliases: ['invent', 'inventory', 'inv'],
     group: 'sense',
-    summary: 'Surface inventory: lines, refs, frames, topo roles',
+    summary: 'Multi-file population: lines, refs, frames, topo roles',
     printHelp: () => printInventHelp(),
     run: (invoked, args) => runSpwInventCli(argv(invoked, args)),
   },
   {
-    name: 'map',
-    aliases: ['topo'],
+    name: 'graph',
+    aliases: ['map', 'topo'],
     group: 'sense',
-    summary: 'Corpus topography, hubs, cycles, familiarity strands',
+    summary: 'Reference topology: hubs, cycles, ego, familiarity strands',
     printHelp: () => printMapHelp(),
     run: (invoked, args) => runSpwMapCli(argv(invoked, args)),
   },
@@ -173,11 +193,26 @@ export const COMMANDS: CommandSpec[] = [
   },
   {
     name: 'geometry',
-    aliases: ['geom'],
+    aliases: ['geom', 'form'],
     group: 'sense',
     summary: 'Brace + operator geometry lessons for a surface',
     printHelp: () => printGeometryHelp(),
     run: (invoked, args) => runSpwGeometryCli(argv(invoked, args)),
+  },
+  {
+    name: 'measure',
+    aliases: ['mass', 'thrift'],
+    group: 'sense',
+    summary: 'Metrics under schemes (mass/thrift family today; more later)',
+    printHelp: () => printSpwMassHelp(),
+    run: (invoked, args) => runSpwMassCli(argv(invoked, stripMeasureFamily(args))),
+  },
+  {
+    name: 'authority',
+    group: 'sense',
+    summary: 'Declared !writes / &joins vs what the subject actually does',
+    printHelp: () => printSpwAuthorityHelp(),
+    run: (invoked, args) => runSpwAuthorityCli(argv(invoked, args)),
   },
   {
     name: 'taste',
@@ -185,6 +220,43 @@ export const COMMANDS: CommandSpec[] = [
     summary: 'Taste coverage, standard vocabulary, and mark fidelity',
     printHelp: () => printTasteHelp(),
     run: (invoked, args) => runSpwTasteCli(argv(invoked, args)),
+  },
+  {
+    name: 'surface',
+    aliases: ['profile', 'stack'],
+    group: 'sense',
+    summary: 'One-file card: dialect stack (form/graph/thrift lenses later)',
+    printHelp: () => printSpwProfileHelp(),
+    run: (invoked, args) => runSpwProfileCli(argv(invoked, args)),
+  },
+  {
+    name: 'exp',
+    aliases: ['experimental', 'catalog'],
+    group: 'sense',
+    summary: 'Experimental syntax catalog (list/show reference ids)',
+    printHelp: () => printSpwExpHelp(),
+    run: (invoked, args) => runSpwExpCli(argv(invoked, args)),
+  },
+  {
+    name: 'cycle',
+    group: 'sense',
+    summary: 'Inspectable before/after sense steps (cache, flow, IR)',
+    printHelp: () => printCycleHelp(),
+    run: (_invoked, args) => runSpwCycleCli(['node', 'cycle', ...args]),
+  },
+  {
+    name: 'cite',
+    group: 'sense',
+    summary: 'Point at form bytecode (@bc) — Spw dual-read, no JSON',
+    printHelp: () => printCiteHelp(),
+    run: (_invoked, args) => runSpwCiteCli(['node', 'cite', ...args]),
+  },
+  {
+    name: 'follow',
+    group: 'sense',
+    summary: 'Resolve @bc or surface under grain; optional --collapse',
+    printHelp: () => printFollowHelp(),
+    run: (_invoked, args) => runSpwFollowCli(['node', 'follow', ...args]),
   },
 
   // ── Read ─────────────────────────────────────────────────────
@@ -240,6 +312,14 @@ export const COMMANDS: CommandSpec[] = [
     summary: 'Project template lineage inline (source untouched)',
     printHelp: () => printExpandHelp(),
     run: (invoked, args) => runSpwExpandCli(argv(invoked, args)),
+  },
+  {
+    name: 'snippet',
+    aliases: ['snip'],
+    group: 'shape',
+    summary: 'Generate and hydrate seed templates (editor emit)',
+    printHelp: () => printSnippetHelp(),
+    run: (_invoked, args) => runSpwSnippetCli(['node', 'snippet', ...args]),
   },
   {
     name: 'refactor',
@@ -355,11 +435,13 @@ export function printRootHelp(): void {
       ...groups,
       { title: 'Compatibility', lines: aliases },
       {
-        title: 'Sense loop (inventory → topo → formulas → analysis)',
+        title: 'Sense loop (census → graph → formulas → analysis)',
         lines: [
-          'spw invent prompts --sort degree -n 30',
-          'spw map prompts --hubs 12',
-          'spw map prompts --compare docs/theory',
+          'spw census prompts --sort degree -n 30',
+          'spw graph prompts --hubs 12',
+          'spw graph prompts --compare docs/theory',
+          'spw surface <file.spw>',
+          'spw measure mass prompts --json',
           'spw formula prompts --family field',
           'spw analyze prompts',
           'spw query --from prompts --count --selector pathRefs',
@@ -373,7 +455,8 @@ export function printRootHelp(): void {
           'spw atlas --advice',
           'spw formula --catalog',
           'spw analyze prompts --json',
-          'spw map --help',
+          'spw graph --help',
+          'spw census --help',
         ],
       },
     ],

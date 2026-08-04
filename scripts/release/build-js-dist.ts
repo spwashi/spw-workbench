@@ -19,6 +19,10 @@ type DistEntrypoint = {
   entry: string
   outfile: string
   executable?: boolean
+  /** Browser target: minified, `browser` platform, no Node builtins. */
+  browser?: boolean
+  /** Fail the build if the minified output exceeds this many bytes. */
+  maxBytes?: number
 }
 
 type DistLibraryEntrypoint = DistEntrypoint & {
@@ -31,6 +35,7 @@ const distDir = path.join(rootDir, 'dist')
 const declarationAliasTargets = {
   '@spwashi/spw-seed': 'types/spw-seed/src/index.d.ts',
   '@spwashi/spw-seed/parser': 'types/spw-seed/src/parser.d.ts',
+  '@spwashi/spw-seed/lite': 'types/spw-seed/src/lite.d.ts',
   '@spwashi/spw-runtime': 'types/spw-runtime/src/index.d.ts',
   '@spwashi/spw-runtime/pipeline': 'types/spw-runtime/src/pipeline.d.ts',
   '@spwashi/spw-runtime/substrate': 'types/spw-runtime/src/substrate.d.ts',
@@ -80,6 +85,18 @@ const libraryEntrypoints: DistLibraryEntrypoint[] = [
     declarationFacade: 'pipeline.d.ts',
     declarationSource: 'types/spw-runtime/src/pipeline.d.ts',
   },
+  {
+    // The browser target — a scanner and a geometry probe, nothing above them.
+    // Client bundles read Spw through this instead of dragging the compiler in.
+    // Minified and size-capped: the budget is the feature, so a regression that
+    // pulls the kernel back in fails the build rather than shipping quietly.
+    entry: 'packages/spw-seed/src/lite.ts',
+    outfile: 'lite.js',
+    declarationFacade: 'lite.d.ts',
+    declarationSource: 'types/spw-seed/src/lite.d.ts',
+    browser: true,
+    maxBytes: 4096,
+  },
 ]
 
 async function main(): Promise<void> {
@@ -89,7 +106,7 @@ async function main(): Promise<void> {
   await fs.rm(distDir, { recursive: true, force: true })
   await fs.mkdir(path.join(distDir, 'bin'), { recursive: true })
 
-  for (const { entry, outfile, executable } of jsEntrypoints) {
+  for (const { entry, outfile, executable, browser, maxBytes } of jsEntrypoints) {
     const absEntry = path.join(rootDir, entry)
     const absOutfile = path.join(distDir, outfile)
 
@@ -98,12 +115,17 @@ async function main(): Promise<void> {
       outfile: absOutfile,
       bundle: true,
       format: 'esm',
-      platform: 'node',
+      platform: browser ? 'browser' : 'node',
+      minify: browser === true,
       sourcemap: true,
-      target: ['node20'],
+      target: browser ? ['es2020'] : ['node20'],
       logLevel: 'silent',
       tsconfig: path.join(rootDir, 'tsconfig.json'),
     })
+
+    if (maxBytes !== undefined) {
+      await enforceSizeBudget(absOutfile, outfile, maxBytes)
+    }
 
     if (executable) {
       await normalizeExecutable(absOutfile)
@@ -126,6 +148,28 @@ async function readRootPackage(): Promise<RootPackageManifest> {
   const packagePath = path.join(rootDir, 'package.json')
   const source = await fs.readFile(packagePath, 'utf8')
   return JSON.parse(source) as RootPackageManifest
+}
+
+/**
+ * Fail the build when a size-capped target outgrows its budget.
+ *
+ * A browser target that silently doubles is the failure this prevents: the
+ * reason to have a lite build at all is the number, so the number is checked.
+ */
+async function enforceSizeBudget(
+  filePath: string,
+  label: string,
+  maxBytes: number,
+): Promise<void> {
+  const { size } = await fs.stat(filePath)
+  const pct = Math.round((size / maxBytes) * 100)
+  if (size > maxBytes) {
+    throw new Error(
+      `${label} is ${size} bytes, over its ${maxBytes}-byte budget (${pct}%). ` +
+        'Something pulled the kernel into the browser target — check its imports.',
+    )
+  }
+  console.log(`  ${label}  ${size}/${maxBytes} bytes (${pct}% of budget)`)
 }
 
 async function normalizeExecutable(filePath: string): Promise<void> {
@@ -271,6 +315,7 @@ async function writeDistPackage(rootPackage: RootPackageManifest, entrypoints: D
       './runtime': byOutfile['index.js'],
       './seed': byOutfile['seed.js'],
       './parser': byOutfile['parser.js'],
+      './lite': byOutfile['lite.js'],
       './substrate': byOutfile['substrate.js'],
       './resonance': byOutfile['resonance.js'],
       './pipeline': byOutfile['pipeline.js'],
@@ -289,6 +334,9 @@ async function writeDistPackage(rootPackage: RootPackageManifest, entrypoints: D
       'parser.js',
       'parser.js.map',
       'parser.d.ts',
+      'lite.js',
+      'lite.js.map',
+      'lite.d.ts',
       'pipeline.js',
       'pipeline.js.map',
       'pipeline.d.ts',

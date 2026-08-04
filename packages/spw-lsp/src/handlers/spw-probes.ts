@@ -8,10 +8,35 @@
  *   spw/registerSnapshot  — heuristic register-like markers in a document
  *   spw/formSequence      — parse/advance confluence form sequences
  *   spw/formContext       — caret-local coupling + gated mobility packet
+ *   spw/surfaceProfile    — multi-axis stack + exp refs + prepare receipt
+ *   spw/phraseScan        — brace-phrase census (emergent grammar prep)
+ *   spw/channelPolicy     — stability channel policy map / resolve
+ *   spw/flowProtocol      — sigil×brace×adjacency flow/routine/strategy/procedure/bias
+ *   spw/geometricResonance — form-geometry + adjacency resonances
+ *   spw/probeMeasure      — wonder/probe/metric census (+ optional substrate note)
  */
 
 import path from 'node:path'
-import { inspectGeometry, parse, particleMix, deixisTable } from '@spwashi/spw-seed'
+import {
+  inspectGeometry,
+  parse,
+  particleMix,
+  deixisTable,
+  scanExperimentalRefs,
+  getSyntaxCatalogEntry,
+  scanFlowProtocol,
+  formatFlowProtocolSummary,
+  detectGeometricResonances,
+} from '@spwashi/spw-seed'
+import {
+  scanBracePhrases,
+  countPhrasesById,
+  prepareSource,
+  resolveChannelPolicy,
+  CHANNEL_POLICIES,
+  measureProbesAndSubstrate,
+  type StabilityChannel,
+} from '@spwashi/spw-runtime'
 import { SIGIL_SEMANTICS } from '../server-index'
 import type { HandlerDeps, LspPosition } from '../types'
 import { assembleFormContext } from './form-context'
@@ -355,9 +380,197 @@ export function handleSpwProbe(
       return particlesProbe(params, deps)
     case 'spw/formContext':
       return formContextProbe(params, deps)
+    case 'spw/activity':
+    case 'spw/beat':
+      return activityProbe(params, deps)
+    case 'spw/surfaceProfile':
+      return surfaceProfileProbe(params, deps)
+    case 'spw/phraseScan':
+      return phraseScanProbe(params, deps)
+    case 'spw/channelPolicy':
+      return channelPolicyProbe(params)
+    case 'spw/flowProtocol':
+      return flowProtocolProbe(params, deps)
+    case 'spw/geometricResonance':
+      return geometricResonanceProbe(params, deps)
+    case 'spw/probeMeasure':
+      return probeMeasureProbe(params, deps)
     default:
       return null
   }
+}
+
+/**
+ * Resolved multi-axis stack + exp refs + prepare receipt for a document.
+ * Prepares VS Code / Neovim surface cards and sense CLI composition.
+ */
+async function surfaceProfileProbe(
+  params: { uri?: string; text?: string; channel?: string } | undefined,
+  deps: HandlerDeps,
+): Promise<unknown> {
+  let source = typeof params?.text === 'string' ? params.text : ''
+  const uri = params?.uri
+  if (!source && typeof uri === 'string') {
+    source = (await deps.getDocumentText(uri)) ?? ''
+  }
+  const filePath =
+    typeof uri === 'string' ? deps.pathFromUri(uri) : undefined
+  const rel = filePath
+    ? path.relative(deps.workspaceRoot, filePath)
+    : undefined
+
+  const prepared = prepareSource(source, {
+    path: rel || undefined,
+    channel: params?.channel,
+  })
+  const stack = prepared.stack
+  const exp = scanExperimentalRefs(source)
+  const phrases = countPhrasesById(scanBracePhrases(source))
+  const flow = scanFlowProtocol(source, rel)
+  const probeMeasure = measureProbesAndSubstrate(source)
+
+  return {
+    uri: uri ?? null,
+    channel: prepared.channel,
+    dialectAllowed: prepared.dialectAllowed,
+    note: prepared.note ?? null,
+    preprocessed: prepared.preprocessed,
+    stack: {
+      dialect: stack.dialect,
+      dialectSource: stack.dialectSource,
+      review: stack.review,
+      format: stack.format,
+      lex: stack.lex,
+      mutation: stack.mutation,
+      reading: stack.reading,
+      domain: stack.domain,
+      contextMode: stack.contextMode,
+      metasyntax: stack.metasyntax,
+    },
+    experimental: {
+      ids: exp.ids,
+      unknown: exp.ids.filter(id => !getSyntaxCatalogEntry(id)),
+      known: exp.ids.filter(id => !!getSyntaxCatalogEntry(id)),
+    },
+    phrases,
+    flow: {
+      summary: formatFlowProtocolSummary(flow),
+      roles: flow.roles,
+      schedules: flow.schedules,
+      biasAxes: flow.biasAxes,
+    },
+    probeMeasure: probeMeasure.summary,
+  }
+}
+
+/** Brace-phrase census for emergent grammar / sense surface cards. */
+async function phraseScanProbe(
+  params: { uri?: string; text?: string } | undefined,
+  deps: HandlerDeps,
+): Promise<unknown> {
+  let source = typeof params?.text === 'string' ? params.text : ''
+  const uri = params?.uri
+  if (!source && typeof uri === 'string') {
+    source = (await deps.getDocumentText(uri)) ?? ''
+  }
+  const hits = scanBracePhrases(source)
+  return {
+    uri: uri ?? null,
+    counts: countPhrasesById(hits),
+    hits: hits.slice(0, 80).map(h => ({
+      phraseId: h.phraseId,
+      fixity: h.fixity,
+      index: h.index,
+      match: h.match,
+    })),
+    total: hits.length,
+  }
+}
+
+/** List or resolve stability channel policy (runtime session prep). */
+function channelPolicyProbe(params: { channel?: string } | undefined): unknown {
+  if (params?.channel) {
+    return resolveChannelPolicy(params.channel as StabilityChannel | string)
+  }
+  return {
+    channels: Object.keys(CHANNEL_POLICIES),
+    policies: CHANNEL_POLICIES,
+  }
+}
+
+async function loadSource(
+  params: { uri?: string; text?: string } | undefined,
+  deps: HandlerDeps,
+): Promise<{ source: string; uri: string | null; rel?: string }> {
+  let source = typeof params?.text === 'string' ? params.text : ''
+  const uri = params?.uri ?? null
+  if (!source && typeof uri === 'string') {
+    source = (await deps.getDocumentText(uri)) ?? ''
+  }
+  const filePath = typeof uri === 'string' ? deps.pathFromUri(uri) : undefined
+  const rel = filePath ? path.relative(deps.workspaceRoot, filePath) : undefined
+  return { source, uri, rel }
+}
+
+/** Prefix/postfix sigils × braces → flow protocol module. */
+async function flowProtocolProbe(
+  params: { uri?: string; text?: string } | undefined,
+  deps: HandlerDeps,
+): Promise<unknown> {
+  const { source, uri, rel } = await loadSource(params, deps)
+  const mod = scanFlowProtocol(source, rel)
+  return {
+    uri,
+    summary: formatFlowProtocolSummary(mod),
+    ...mod,
+    // Cap unit payload for clients
+    units: mod.units.slice(0, 80),
+  }
+}
+
+/** Geometric + schedule adjacency resonances (scheme from dialect or param). */
+async function geometricResonanceProbe(
+  params: { uri?: string; text?: string; scheme?: string } | undefined,
+  deps: HandlerDeps,
+): Promise<unknown> {
+  const { source, uri } = await loadSource(params, deps)
+  // Prefer explicit scheme; else infer agent for plan paths, thrift for Spw.x, default else
+  let scheme = params?.scheme
+  if (!scheme) {
+    const path = typeof uri === 'string' ? uri : ''
+    if (path.includes('/.agents/plans/') || path.includes('wip.spw')) scheme = 'agent'
+    else if (/@dialect\s*:\s*Spw\.x|@profile:Spw\.x/.test(source)) scheme = 'thrift'
+    else if (/@dialect\s*:\s*Spw\.f/.test(source)) scheme = 'agent'
+  }
+  const report = detectGeometricResonances(source, {
+    uri: typeof uri === 'string' ? uri : undefined,
+    scheme,
+  })
+  return {
+    uri,
+    scheme: report.scheme,
+    bytecode: report.bytecode,
+    geometry: report.geometry,
+    resonances: report.resonances.slice(0, 48),
+    summary: `resonance scheme=${report.scheme} n=${report.resonances.length} bc=${report.bytecode.contentHash}`,
+    // Cap unit payload; prefer Spw dual-read via formatResonanceAsSpw on clients
+    flow: {
+      roles: report.flow.roles,
+      schedules: report.flow.schedules,
+      biasAxes: report.flow.biasAxes,
+      units: report.flow.units.slice(0, 40),
+    },
+  }
+}
+
+/** Probe/wonder/metric census (document-local; substrate optional later). */
+async function probeMeasureProbe(
+  params: { uri?: string; text?: string } | undefined,
+  deps: HandlerDeps,
+): Promise<unknown> {
+  const { source, uri } = await loadSource(params, deps)
+  const report = measureProbesAndSubstrate(source)
+  return { uri, ...report, probes: report.probes.slice(0, 60) }
 }
 
 /**
@@ -466,3 +679,15 @@ async function formContextProbe(
     })),
   }
 }
+
+/** Request-activity probe — epoch evidence without temperature or modulus tick. */
+export function activityProbe(
+  params: { textDocument?: { uri: string } } | undefined,
+  deps: HandlerDeps,
+) {
+  const uri = params?.textDocument?.uri
+  return deps.serverIndex.getActivityStatus(uri)
+}
+
+/** @deprecated Prefer activityProbe */
+export const beatProbe = activityProbe

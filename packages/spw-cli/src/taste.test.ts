@@ -37,13 +37,20 @@ describe('declaredMarks', () => {
 })
 
 describe('mark visibility', () => {
-  // The reason this command counts lexically instead of through the AST.
-  it('counts marks the parser drops when a frame carries a backtick', () => {
+  // Backticks used to void the surrounding frame, so the AST lost the mark and
+  // only a lexical scan could find it. PHRASE is a literal now and both agree.
+  it('agrees with the parser when a frame carries a backtick', () => {
     const source = '^["a"]{\n b: .{\n  src: `npm run x`\n  ~#taste: "held"\n }\n}\n'
 
     const parsed = spwq.fromSource(source, { nodeType: 'Annotation' } as never) as unknown[]
-    expect(parsed).toHaveLength(0)
+    expect(parsed).toHaveLength(1)
     expect(declaredMarks(source).map((m) => m.name)).toEqual(['taste'])
+  })
+
+  // The scan stays lexical for reasons the AST cannot express: a mark named
+  // inside a backtick command is a mention, not a declaration.
+  it('still reads marks the AST would count differently', () => {
+    expect(declaredMarks(' cmd: `grep ~#taste: .`\n')).toEqual([])
   })
 
   it('agrees with the parser when no backtick is present', () => {

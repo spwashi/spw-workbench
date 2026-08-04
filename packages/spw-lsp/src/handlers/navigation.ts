@@ -183,11 +183,12 @@ export async function references(params: ReferencesParams, deps: HandlerDeps): P
 
                 const perFile = await deps.mapWithConcurrency(files, 16, async (filePath: string) => {
                     const fileUri = deps.uriFromPath(filePath)
-                    const fileText = await deps.getDocumentText(fileUri)
+                    const cachedDoc = deps.serverIndex.getDocument(fileUri)
+                    const fileText = cachedDoc ? cachedDoc.text : await deps.getDocumentText(fileUri)
                     if (fileText === null) return [] as LspLocation[]
                     if (!needles.some((needle) => fileText.includes(needle))) return [] as LspLocation[]
 
-                    const candidateHits = selectPathRefs(fileText).filter((candidate) =>
+                    const candidateHits = (cachedDoc?.selectorHits ?? selectPathRefs(fileText)).filter((candidate) =>
                         needles.some((needle) => candidate.raw.includes(needle) || candidate.target.includes(needle))
                     )
                     if (candidateHits.length === 0 && !fileText.includes(basenameNeedle)) {

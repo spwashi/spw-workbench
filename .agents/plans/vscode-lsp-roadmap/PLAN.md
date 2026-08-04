@@ -1,14 +1,27 @@
 # Plan: vscode-lsp-roadmap
 
-Coordinate VS Code extension and `spw-lsp` work as one ecology: ordered rungs, thin-client doctrine, capability honesty, and links to TypeScript upgrade/perf plans.
+Coordinate **editor clients** (VS Code primary reference, Neovim native peer, IntelliJ follow-on) and `spw-lsp` as one ecology: ordered rungs, thin-client doctrine, capability honesty, shared diagnostics/probes, and links to TypeScript upgrade/perf plans.
 
 ## Goal
 
-The repo already has rich VS Code/LSP *plans* and a working preview extension, but the plan graph is hard to execute: some surfaces are partially landed, some PLAN.md files were missing, base SHAs drifted, file predictions still say `[NEW]` for code that exists, and client custom-request types advertise methods the server never handles. This roadmap is the **execution truth** layer — not a feature dump.
+The repo already has rich VS Code/LSP *plans* and working preview clients (VS Code + Neovim), but the plan graph is hard to execute: some surfaces are partially landed, client custom-request types advertise methods the server never handles, and **editor-specific chrome** risks forking semantics that belong in the LSP. This roadmap is the **execution truth** layer — not a feature dump and not a VS-Code-only wishlist.
 
-End state: agents and humans can answer (1) what ships first, (2) what is already true in tree, (3) what must stay in LSP vs client, (4) how performance and type-safety work support editor quality.
+End state: agents and humans can answer (1) what ships first, (2) what is already true in tree, (3) what must stay in LSP vs client, (4) how both VS Code and Neovim project the same server truth through native affordances, (5) how performance and type-safety support editor quality.
 
-**Taste note**: clarity, layering, evidence discipline, performance.
+**Taste note**: clarity, layering, evidence discipline, performance, **cross-client honesty**.
+
+### Multi-client doctrine (2026-07-27)
+
+| Layer | Owner | VS Code | Neovim |
+|-------|--------|---------|--------|
+| Parse / measure / mobility / mass | Seed | consume via LSP | consume via LSP |
+| Diagnostics, hover, code actions, rename, format | `spw-lsp` | LanguageClient | `vim.lsp` |
+| Custom `spw/*` (earned only) | `spw-lsp` | `custom-requests.ts` | `lsp.request_custom` |
+| Trees / status bar / webviews | VS Code client | Concepts, Atlas, strip | **do not port** — use quickfix, notify, splits, lualine |
+| Syntax fallback | client | TextMate | `syntax/spw.vim` + treesitter queries |
+| Commands | client map | Command palette | `:Spw*` + keymaps |
+
+**Rule:** new author value lands as **LSP diagnostics / code actions / earned methods** first. Client chrome is a *projection*, not a second semantic engine. Neovim does not need panel parity; it needs the same **truth density** via quickfix, floats, and statusline.
 
 ## Current reality (2026-07-21)
 
@@ -17,15 +30,17 @@ End state: agents and humans can answer (1) what ships first, (2) what is alread
 | Surface | Evidence |
 |---------|----------|
 | Thin client + LanguageClient | `extensions/vscode-spw/src/extension.ts` |
-| Compiled LSP preferred; tsx fallback | `createServerOptions` prefers `*.js` |
-| Concepts + Workspace Atlas trees | `views/concepts-tree.ts`, `views/workspace-tree.ts` |
-| Context strip + navigation | `context-strip.ts`, `navigation.ts` |
-| Annotation index | `annotation-index.ts` |
-| Custom request client types | `lsp/custom-requests.ts` |
+| Neovim native LSP client | `extensions/neovim-spw/lua/spw/lsp.lua`, `:Spw*` commands, `gf`/`gF` navigation |
+| Compiled LSP preferred; tsx fallback | VS Code `createServerOptions` prefers `*.js`; Neovim resolves workbench / mount |
+| Concepts + Workspace Atlas trees | VS Code only: `views/concepts-tree.ts`, `views/workspace-tree.ts` |
+| Context strip + navigation | VS Code `context-strip.ts`; Neovim statusline via standard diagnostics |
+| Annotation index | VS Code `annotation-index.ts` |
+| Custom request client types | VS Code `lsp/custom-requests.ts`; Neovim wrappers for operatorFreq / phase / form / temperature |
 | Standard LSP methods | definition, hover, symbols, completion, codeLens, format, rename, semantic tokens, … |
 | Server custom methods | `spw/select`, `spw/annotations`, `spw/contextAtPosition`, `spw/workspaceManifest`, `spw/workspaceTemperature` |
 | LSP package build | `packages/spw-lsp` → `build:server` → `dist/stdio-server.js` |
 | Lore upstream bridge plan | **done** (historical; do not reopen) |
+| Seed self-mass + CLI mass | `self-mass.ts`, `spw mass` — **not yet** projected as editor diagnostics |
 
 ### Seed kernel landed (editor must project, not re-invent)
 
@@ -54,24 +69,49 @@ End state: agents and humans can answer (1) what ships first, (2) what is alread
 | **Type debt** | LSP context/types still heavy `any` (JSON-RPC boundary) |
 | **Empty `providers/`** | reserved directory, unused |
 | **No editor perf identity** | No structured startup/save/cursor measurements |
+| **Measure not in editor** | `%mass` / authority live in seed+CLI; wonder `$%[file.*]` metrics and plan surfaces have no diagnostic loop in VS Code or Neovim |
+| **Neovim phantom parity risk** | `:SpwOperatorFreq` / `:SpwPhase` call methods that may still be client-ahead of server (same capability honesty problem as VS Code) |
+| **Panel-first bias** | Plans historically specify VS Code trees; Neovim authors (and mounted consumers) need quickfix/statusline projections of the same packets |
 
 ## Execution ladder (ordered)
 
 | Rung | Plan | Outcome |
 |------|------|---------|
 | **0a** | `operational-topography` | Seed-owned parse/structure coordinates, evidence/effect grades, exact selection, differential envelopes — **kernel largely landed; remaining: pair AST labels, editor projection** |
-| **0b** | This roadmap + editor-contract | Observation ownership, presentation authority, invalidation rules |
-| **0c** | `form-geometry-editor` (new) | Project form geometry + pulse into LSP/plugin: hover packet, mobility code actions, `spw/formContext`, pulse check |
-| **1** | `lsp-custom-request-completions` | Canonical protocol registry + matrix; kill or implement phantoms; **earn `spw/formContext` before new garden methods** |
-| **2** | `vscode-plugin-performance` | Compiled launch default, lean activation, incremental annotations, shared cursor context |
-| **3a** | Atlas **follow-up** | Extract tree complexity; resonance only via earned method |
-| **3b** | `vscode-register-explorer` | Register tree + server `spw/registerSnapshot` + liminality column (bridge is S1 runtime) |
-| **4** | `vscode-authoring-probe-loop` | Mobility/HOF actions, pulse commands, differential previews on stable transport |
-| **5** | `vscode-cognitive-surface` | Orientation/teaching polish after core surfaces quiet |
+| **0b** | This roadmap + editor-contract | Observation ownership, presentation authority, invalidation rules; **client-agnostic** |
+| **0c** | `form-geometry-editor` | Project form geometry + pulse into LSP: hover packet, mobility code actions, `spw/formContext`, pulse check — **both clients** |
+| **1** | `lsp-custom-request-completions` | Canonical protocol registry + matrix; kill or implement phantoms; **earn `spw/formContext` before new garden methods**; demote Neovim wrappers that call dead methods |
+| **1b** | `measure-invariant-generalization` → LSP | Project `%mass`/scheme/authority reconcile as **diagnostics + exact-only code actions** (no client re-measure) |
+| **2** | `vscode-plugin-performance` | Compiled launch default, lean activation, incremental annotations, shared cursor context; server-side cost bounds help Neovim equally |
+| **2n** | `neovim-spw-surfaces` | Mounted-consumer audit; keymap/quickfix quality; earned command wrappers only; **no panel-parity program** |
+| **3a** | Atlas **follow-up** | Extract tree complexity; resonance only via earned method (**VS Code**) |
+| **3b** | `vscode-register-explorer` | Register tree + server `spw/registerSnapshot` (**VS Code chrome**; Neovim gets optional float later) |
+| **4** | `vscode-authoring-probe-loop` | Mobility/HOF actions, pulse, wonder-block probes, plan-context — **LSP-first; Neovim `:Spw*` projections** |
+| **4c** | `curiosity-mutation-ergonomics` | Combinator walk invitations, explore/stabilize mutation families — **seed/CLI first**; LSP invitation packets after |
+| **4d** | `syntax-profile-stack` + `shape-syntax-ecology` | Dialect/stack on hover; experimental syntax catalog refs; screenshot dual-read policy; cache keys dialect×preprocess |
+| **4e** | `refactor-experiment-lifecycle` | Multi-file plan apply from editor only via earned WorkspaceEdit from plan |
+| **5** | `vscode-cognitive-surface` | Reading profiles (author / prompt / research / creative), orientation copy — shared vocabulary; client chrome differs |
 | **after 1** | `spw-garden-geometry` | Anti-echo + measurement profiles over shared evidence (uses formContext, not a second model) |
 | **∥** | `typescript-perf-audit-infra` + `typescript-upgrade-ladder` | Faster typecheck; not a substitute for editor perf |
 
-Parallel safe after rung 2: IntelliJ/LSP4IJ and mounted-consumer evidence, as long as they do not fork semantics.
+Parallel safe after rung 2: IntelliJ/LSP4IJ, mounted-consumer evidence, and Neovim surface hardening, as long as they do not fork semantics.
+
+### Highest-leverage product slices (both editors)
+
+Priority order for “plugin feels like a workbench”:
+
+1. **Mass / path / open-question diagnostics** — declare→observe→reconcile in the problem list; exact-only fix (`workspace/applyEdit`).
+2. **Cursor-local probe actions** — code action / `:SpwCodeAction` on `%mass`, `!probe`, `?["…"]` wonder blocks, `$%[file.*]` metric lines (screenshot-native).
+3. **Status-disciplined hover** — runtime/token facts first; interpretive metaphors only with `#implemented` / `#proposed` / `#interpretive` badges.
+4. **Plan context** — when URI is under `.agents/plans/<slug>/`, expose next commit / open count (VS Code status strip; Neovim statusline or `:SpwPlan`).
+5. **Dialect / profile stack on hover** — `resolveSurfaceProfile`; machine_lint; experimental catalog ids when present.
+6. **Brace material packet** — coupling occupancy/payload (formContext); dual liminality never collapsed.
+7. **Screenshot/LLM play policy** — stable semantic tokens; vision proposes, AST/plan disposes.
+
+## Imagination / play (roadmap-level)
+
+Plans in this ecology are for **humans who deepen expertise**—optionally folding an LLM via IDE or screenshot. They are not execution authority. Play: open three plans (syntax-profile-stack, form-geometry-editor, shape-syntax-ecology) and reconstruct the lattice without chat history.
+5. **Reading profiles** — noise budget: author vs prompt-fold vs research vs creative (config / `vim.g.spw_reading_profile`).
 
 ### Editor projection slices (from form-geometry proposal)
 
@@ -97,11 +137,14 @@ Parallel safe after rung 2: IntelliJ/LSP4IJ and mounted-consumer evidence, as lo
 8. **One differential kernel.** CLI formatting, standard LSP edits, code actions, pulse, and label-mobility rewrites project one plan (`SourceEdit` / mobility `apply`); editor settings are inputs, not a second semantics.
 9. **Geometry is Seed-owned.** Form ladders, mobility rules, and HOF programs live in `spw-seed`; LSP transports observations and previews; plugin never re-parses for meaning.
 10. **Implemented rules only as executable actions.** Proposed mobility rules may appear as teaching text, never as silent auto-rewrite.
+11. **Measure is Seed-owned; write is exact+drift only.** Clients never invent tolerances; schemes come from the surface or a named profile.
+12. **Neovim is a peer client, not a port.** Native quickfix, floats, and keymaps project the same packets; do not require VS Code tree views for Neovim completeness.
+13. **Wonder and `$%` metrics are first-class probe sites.** Surfaces like `.spw/index.spw` already author `!probe` and `$%[file.frame_count, …]`; the editor must close that loop.
 
 ## Scope
 
-- **In scope**: plan ecology hygiene, Seed/LSP ownership, protocol-registry honesty, performance rung, ordered surface delivery, shared differential projections, cross-links to TS plans, fill missing PLAN.md files, refresh stale file lists and base refs.
-- **Out of scope**: implementing all surfaces in one branch; changing Spw language semantics; replacing IntelliJ work; adopting TS 7 inside the extension alone without monorepo dual-install policy.
+- **In scope**: plan ecology hygiene, Seed/LSP ownership, protocol-registry honesty, performance rung, ordered surface delivery for **VS Code + Neovim**, shared differential and measure projections, cross-links to TS plans and `measure-invariant-generalization`, fill missing PLAN.md files, refresh stale file lists and base refs.
+- **Out of scope**: implementing all surfaces in one branch; changing Spw language semantics; VS Code webview consoles; Neovim external UI plugins as dependencies; adopting TS 7 inside one extension alone without monorepo dual-install policy.
 
 ## Files (roadmap artifacts only)
 
@@ -124,6 +167,10 @@ Parallel safe after rung 2: IntelliJ/LSP4IJ and mounted-consumer evidence, as lo
 [MOD] .agents/plans/vscode-authoring-probe-loop/PLAN.md
 [MOD] .agents/plans/operational-topography/PLAN.md
 [MOD] .agents/plans/spw-garden-geometry/PLAN.md
+[NEW] .agents/plans/neovim-spw-surfaces/PLAN.md
+[MOD] .agents/plans/measure-invariant-generalization/PLAN.md
+[MOD] .spw/tooling/vscode-spw.spw
+[MOD] .spw/tooling/neovim-spw.spw
 ```
 
 ### Craft guard
@@ -149,6 +196,8 @@ Parallel safe after rung 2: IntelliJ/LSP4IJ and mounted-consumer evidence, as lo
 - Child plans listed in ladder (do not merge feature work *as* this plan)
 - Hard input: `operational-topography` (seed kernel)
 - Hard input: `form-geometry-editor` (rung 0c — projects form-geometry + pulse)
+- Hard input for measure diagnostics: `measure-invariant-generalization` seed schemes (rung 1b may land exact-mass diagnostics before full EvalScheme)
+- Peer client: `neovim-spw-surfaces` (rung 2n)
 - Soft: `spw-garden-geometry` (anti-echo profiles after formContext)
 - Soft: `typescript-perf-audit-infra`, `typescript-upgrade-ladder`, `mounted-consumer-tooling`, `audit-fuzz-truthfulness`
 

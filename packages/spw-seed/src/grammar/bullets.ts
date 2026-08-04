@@ -12,7 +12,6 @@ import type {
     Token,
     BulletNode,
     ProseChunkNode,
-    ExpressionNode,
 } from '../types'
 import {
     type Parser,
@@ -24,6 +23,82 @@ import {
     named,
 } from '../combinators'
 import { expressionNode } from './expressions'
+
+/** Collect the rest of the marker's line as one prose chunk. */
+function readLineText(
+    stream: Parameters<Parser<BulletNode>>[0],
+    marker: Token,
+): { chunk: ProseChunkNode; consumed: number } {
+    const markerLine = marker.span.start.line
+    const collected: Token[] = []
+    let consumed = 0
+
+    while (true) {
+        const tok = current(stream)
+        if (tok.type === 'EOF') break
+        if (tok.span.start.line !== markerLine) break
+        if (tok.type === 'COMMENT') break
+        collected.push(tok)
+        advance(stream)
+        consumed += 1
+    }
+
+    let startIdx = 0
+    while (startIdx < collected.length && collected[startIdx]!.type === 'WHITESPACE') startIdx++
+    let endIdx = collected.length - 1
+    while (endIdx >= startIdx && collected[endIdx]!.type === 'WHITESPACE') endIdx--
+
+    const text = startIdx <= endIdx
+        ? collected.slice(startIdx, endIdx + 1).map((t) => t.value).join('')
+        : ''
+
+    return {
+        chunk: {
+            type: 'ProseChunk',
+            span: startIdx <= endIdx
+                ? { start: collected[startIdx]!.span.start, end: collected[endIdx]!.span.end }
+                : { start: marker.span.end, end: marker.span.end },
+            text,
+        },
+        consumed,
+    }
+}
+
+/**
+ * Stream entry: `>>[2026-07-27 13:15] observe — text`
+ *
+ * `.agents/plans/*​/wip.spw` records development streams this way. `>>` lexes as
+ * STREAM_CLOSE, so this only applies where no `<<` is open — inside stream
+ * bounds the token still closes the stream. Requires the marker to start its
+ * line, which a closing `>>` on its own line does too; `streamDepth` is what
+ * separates them.
+ */
+export const streamEntryNode: Parser<BulletNode> = named('streamEntry',
+    function* streamEntryParser(stream, _depth) {
+        if (stream.streamDepth > 0) return { success: false, consumed: 0 }
+        if (current(stream).type !== 'STREAM_CLOSE') return { success: false, consumed: 0 }
+
+        const startPos = getPosition(stream)
+        const marker = current(stream) as Token<'STREAM_CLOSE'>
+        advance(stream)
+        let consumed = 1
+
+        const { chunk, consumed: textConsumed } = readLineText(stream, marker)
+        consumed += textConsumed
+
+        yield* []
+        return {
+            success: true,
+            value: {
+                type: 'Bullet',
+                span: { start: startPos, end: getPosition(stream) },
+                marker,
+                item: chunk,
+            },
+            consumed,
+        }
+    }
+)
 
 /**
  * Bullet item: .. <expression>
@@ -50,7 +125,6 @@ export const bulletNode: Parser<BulletNode> = named('bullet',
 
         // If the bullet starts with a Spw trigger, parse as expression;
         // otherwise capture prose text on the same line.
-        const markerLine = marker.span.start.line
         const t0 = current(stream)
         const isSpw = (
             t0.type === 'OPERATOR'
@@ -85,33 +159,8 @@ export const bulletNode: Parser<BulletNode> = named('bullet',
             return { success: true, value: node, consumed }
         }
 
-        const collected: Token[] = []
-        while (true) {
-            const tok = current(stream)
-            if (tok.type === 'EOF') break
-            if (tok.span.start.line !== markerLine) break
-            if (tok.type === 'COMMENT') break
-            collected.push(tok)
-            advance(stream)
-            consumed += 1
-        }
-
-        let startIdx = 0
-        while (startIdx < collected.length && collected[startIdx].type === 'WHITESPACE') startIdx++
-        let endIdx = collected.length - 1
-        while (endIdx >= startIdx && collected[endIdx].type === 'WHITESPACE') endIdx--
-
-        const text = startIdx <= endIdx
-            ? collected.slice(startIdx, endIdx + 1).map((t) => t.value).join('')
-            : ''
-
-        const chunk: ProseChunkNode = {
-            type: 'ProseChunk',
-            span: startIdx <= endIdx
-                ? { start: collected[startIdx].span.start, end: collected[endIdx].span.end }
-                : { start: marker.span.end, end: marker.span.end },
-            text,
-        }
+        const { chunk, consumed: textConsumed } = readLineText(stream, marker)
+        consumed += textConsumed
 
         const endPos = getPosition(stream)
         const node: BulletNode = {

@@ -6,19 +6,34 @@
 #:dialect #!specification
 #:layer #!grammar
 
-^seed[Dialect.Registry.Clean v:0.1 @profile:Spw.b @intent:accurate-useful]
+^seed[Dialect.Registry.Clean v:0.2 @profile:Spw.b @intent:accurate-useful]
+// Runtime detection: packages/spw-seed/src/dialect/detect.ts
+// Stack model: docs/theory/spw/syntax-profile-stack.spw + ./syntax-profile-stack.spw
+
 .dialect.registry {
- Spw.b: .{role:"block", lex:"newline=statement boundary", scope:".spw/ exhibits + specs + architecture", geometry:"author", default:true}
- Spw.l: .{role:"line", lex:"single-line compact (newline-as-space)", scope:"queries + probes + selectors", geometry:"search"}
- Spw.m: .{role:"mathematical",lex:"pure Operator Normal Form (F2-idempotent)", scope:"hash source + canonical truth", geometry:"machine"}
- Spw.x: .{role:"executable", lex:"@profile:Spw.x~#[flags] + @lock advisory", scope:"live .spw/ + runtime + hot evolution", geometry:"executable"}
+ Spw.b: .{role:"block", lex:"newline=statement boundary", scope:".spw/ exhibits + specs + architecture", geometry:"author", default:true, metasyntax:"none"}
+ Spw.l: .{role:"line", lex:"single-line compact (newline-as-space)", scope:"queries + probes + selectors", geometry:"search", metasyntax:"newlineAsSpace+highContext"}
+ Spw.m: .{role:"mathematical",lex:"ONF-leaning machine", scope:"packages embedded .spw + hash identity", geometry:"machine", metasyntax:"machineLint"}
+ Spw.x: .{role:"executable", lex:"hot evolution + measure-first", scope:"live .spw/ + runtime", geometry:"executable", metasyntax:"machineLint"}
+ Spw.q: .{role:"query", lex:"selector compact (extends l)", scope:"query/selector surfaces", geometry:"search", metasyntax:"newlineAsSpace+highContext"}
+ Spw.f: .{role:"flow", lex:"mutation-CA authoring", scope:"mutation-flow theory + φ surfaces", geometry:"flow", metasyntax:"flowGlyphs"}
+ Spw.p: .{role:"plan", lex:"agent/plan streams", scope:".agents/plans wip/PLAN companions", geometry:"plan", metasyntax:"planStream"}
+ Spw.t: .{role:"template", lex:"expand lineage", scope:"templates + prompt packs", geometry:"template", metasyntax:"highContext"}
 }
-.extensions #[Spw.o (ocean), Spw.q (query), Spw.t (template)] .{gate:"probe+cache", fallback:"Spw.l"}
+.extensions #[Spw.o (ocean, legacy gate)] .{gate:"probe+cache", fallback:"Spw.l"}
+.detection #[
+ "@dialect:Spw.x",
+ "#:dialect Spw.f",
+ "^seed[… @profile:Spw.b …]",
+ "path defaults when header absent (see syntax-stack)"
+]
 .invariants #[
  "exactly one active dialect per .spw file at parse time"
- "absent marker → Spw.b (author geometry in .spw/)"
- "Spw.m is always the semantic ground truth for hash + identity"
- "dialect switching inside file forbidden (F2 stability)"
+ "absent marker → path default → Spw.b"
+ "header/pragma beats path"
+ "Spw.m machineLint is warning-level, not parse failure"
+ "dialect switching mid-file forbidden (F2 stability)"
+ "autoDialect on parse() may preprocess (l/q); callers needing raw bytes set autoDialect:false"
 ]
 
 #>wonder_spw_registries_dialectspec_1

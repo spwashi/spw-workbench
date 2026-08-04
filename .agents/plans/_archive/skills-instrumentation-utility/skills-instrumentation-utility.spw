@@ -1,0 +1,70 @@
+# Skills Instrumentation Utility Contract
+
+#:layer #!pragmatics
+
+^["utility_contract"]{
+ file: "scripts/spw-lib.sh",
+ purpose: "shared Spw output framing and argument parsing for skill scripts",
+ guarantees: [
+ "stable section/set/facet/affordance wrappers",
+ "filter_path support for scoped scans",
+ "portable file-count utilities"
+ ]
+}
+
+^["instrumentation_affordances"]{
+ baseline: [
+ "npm run lint:spw",
+ "npm run audit",
+ "npm run analyze:perturb"
+ ],
+ release_gates: [
+ "npm run lint:v020",
+ "npm run lint:v020:runtime",
+ "npm run lint:v020:architecture"
+ ]
+}
+
+^["falsify"]{
+ disproof: [
+ "skill scripts fail due to missing shared utility",
+ "skill tooling references commands not present in package scripts",
+ "instrumentation output diverges across skills without shared wrappers"
+ ]
+}
+
+^["parallel_work"]{
+ critical_path: [#utility_contract, #instrumentation_affordances]
+ parallelizable: [#release_gates, #output_wrappers, #scoped_scans]
+ merge_risks: [#script_drift, #wrapper_drift, #missing_command]
+ handoff_artifacts: [#script_contract, #command_matrix, #wrapper_examples]
+}
+
+^["supporting_documents"]{
+ must_ship: [#script_inventory, #command_matrix]
+ helpful: [#wrapper_examples, #failure_notes, #portability_guide]
+ carries: [#usage_examples, #release_gate_map, #scope_rules]
+}
+
+^["interaction_depth"]{
+ subjects: [#legibility, #script_portability, #output_shape, #failure_locality, #reusability]
+ questions: [#what_is_shared, #what_is_skill_specific, #what_breaks_first]
+ qualities: [#consistency, #portability, #low_surprise]
+}
+
+#>wonder_agents_plans_skillsinstrumentationutilit_1
+?["How would a biology portfolio express utility_contract?"]{
+  #:depth #!stylistic // lens: living system
+  ~#translation_target: "biology"
+  ~#source_concept: "utility_contract"
+  !probe{ "rewrite the root frame in biology vocabulary; where the translation breaks reveals Spw's untranslatable concepts." }
+  $%[runtime.stage, runtime.queue_depth]
+}
+
+#>wonder_agents_plans_skillsinstrumentationutilit_2
+?["How does this file's voice differ from skills-instrumentation-utility/skills-instrumentation-utility (skills-instrumentation-utility/skills-instrumentation-utility)?"]{
+  #:depth #!educational // lens: curated collection
+  ~<@_> // nearest neighbor
+  $%[op.distribution]@here vs $%[op.distribution]@_
+  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
+}

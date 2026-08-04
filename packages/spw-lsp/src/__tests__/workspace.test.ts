@@ -522,6 +522,7 @@ describe('workspace temperature', () => {
       {
         uri: pathToFileURL(hotPath).toString(),
         tier: 'hot',
+        accessAgeRequests: 0,
         beatAge: 0,
         writeCount: 1,
         volatility: 'durable',
@@ -530,6 +531,7 @@ describe('workspace temperature', () => {
       {
         uri: pathToFileURL(coldPath).toString(),
         tier: 'hot',
+        accessAgeRequests: 2,
         beatAge: 2,
         writeCount: 0,
         volatility: 'durable',

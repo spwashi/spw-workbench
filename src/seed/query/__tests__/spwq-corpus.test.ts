@@ -35,7 +35,9 @@ describe('spwq corpus dogfood', () => {
     const counts = collectNodeTypes(WORKSPACE_AST)
 
     expect(counts.get('Seed')).toBe(1)
-    expect(counts.get('Prose')).toBeGreaterThanOrEqual(1)
+    // The manifest parses structurally end to end — no prose fallback. It used
+    // to need one because frame items are written one per line without commas.
+    expect(counts.get('Prose')).toBeUndefined()
     expect(counts.get('PathRef')).toBeGreaterThan(20)
     expect(counts.get('Reference')).toBeGreaterThan(10)
     expect(counts.get('Operation')).toBeGreaterThan(20)

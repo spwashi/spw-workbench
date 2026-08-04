@@ -11,6 +11,11 @@ export interface TokenStream {
   position: number
   marks: number[]  // Stack of positions for backtracking
   contextMode: 'low' | 'high'
+  /**
+   * Open `<<` bounds enclosing the cursor. Zero means a `>>` at the start of a
+   * line closes nothing and is a stream-entry marker instead.
+   */
+  streamDepth: number
 }
 
 export function createTokenStream(
@@ -22,6 +27,7 @@ export function createTokenStream(
     position: 0,
     marks: [],
     contextMode,
+    streamDepth: 0,
   }
 }
 

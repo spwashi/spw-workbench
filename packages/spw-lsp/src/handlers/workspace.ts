@@ -40,15 +40,20 @@ export interface WorkspaceProjectionEntry {
  */
 export type Volatility = 'volatile' | 'settled' | 'durable'
 
+/** Document retention + access age — tier is retention class, not temperature product. */
 export interface WorkspaceTemperatureEntry {
   uri: string
+  /** Internal retention class (hot|warm|cold) — eviction policy only. */
   tier: string
-  beatAge: number
+  /** requestEpoch − lastAccessEpoch */
+  accessAgeRequests: number
   writeCount: number
   /** What the surface is made of, independent of when it was last read. */
   volatility: Volatility
   /** Aspect marks as a share of all particle marks, 0–1. */
   aspectShare: number
+  /** @deprecated Prefer accessAgeRequests */
+  beatAge: number
 }
 
 /** @deprecated Use SpwWorkspaceManifestV1. */
@@ -160,20 +165,22 @@ export function volatilityOf(
  */
 export function workspaceTemperature(deps: HandlerDeps): WorkspaceTemperatureEntry[] {
   const { serverIndex } = deps
-  const beat = serverIndex.getCurrentBeat()
+  const epoch = serverIndex.getCurrentRequestEpoch()
   const entries: WorkspaceTemperatureEntry[] = []
 
   for (const [uri, doc] of serverIndex.allDocuments()) {
+    const accessAgeRequests = epoch - doc.lastAccessEpoch
     entries.push({
       uri,
       tier: doc.tier,
-      beatAge: beat - doc.lastAccessBeat,
+      accessAgeRequests,
+      beatAge: accessAgeRequests,
       writeCount: doc.writeCount,
       ...volatilityOf(doc.mix, doc.text),
     })
   }
 
-  return entries.sort((a, b) => a.beatAge - b.beatAge)
+  return entries.sort((a, b) => a.accessAgeRequests - b.accessAgeRequests)
 }
 
 async function findOpenWorkspaceDocument(

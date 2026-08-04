@@ -1,0 +1,510 @@
+# wip — refactor-experiment-lifecycle
+# Branch: feature/refactor-experiment-lifecycle
+# Started: 2026-07-27
+#
+# Codebase-wide selection/refactor as experiments; intermediate surfaces;
+# worktree + episode VCS. Companion design note lives in conversation stream
+# and PLAN.md — this surface is operational memory.
+
+#:layer #!pragmatics
+#:status #!planning
+
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @plan: ~".agents/plans/refactor-experiment-lifecycle/PLAN.md"
+ @artifact: ~".agents/plans/refactor-experiment-lifecycle/refactor-experiment-lifecycle.spw"
+ @pattern: ~".spw/patterns/query-composition.spw"
+ @semantic_edit: ~"packages/spw-seed/src/canonical/semantic-edit.ts"
+ @differential: ~"packages/spw-seed/src/canonical/differential.ts"
+ @refactor_cli: ~"packages/spw-cli/src/refactor.ts"
+ @bias_apply: ~"packages/spw-cli/src/bias-apply.ts"
+ @bias_edges: ~"packages/spw-cli/src/bias-edges.ts"
+ @query: ~"packages/spw-cli/src/query.ts"
+ @mutate: ~"packages/spw-cli/src/mutate.ts"
+ @pulse: ~"packages/spw-cli/src/pulse.ts"
+ @envelope: ~"packages/spw-cli/src/envelope.ts"
+ @exit: ~"packages/spw-cli/src/exit.ts"
+ @pulse_doc: ~"docs/runtime/md/pulse-mutate-beat.md"
+ @devices: ~"docs/theory/spw/operational-devices.spw"
+ @nav_rename: ~"packages/spw-lsp/src/handlers/navigation.ts"
+ @curiosity: ~".agents/plans/curiosity-mutation-ergonomics/PLAN.md"
+ @measure: ~".agents/plans/measure-invariant-generalization/PLAN.md"
+ @form_editor: ~".agents/plans/form-geometry-editor/PLAN.md"
+ @roadmap: ~".agents/plans/vscode-lsp-roadmap/PLAN.md"
+ @mounted: ~".agents/plans/mounted-consumer-tooling/PLAN.md"
+ @cli_conv: ~".spw/conventions/cli.spw"
+ @flow_ca: ~"docs/theory/spw/mutation-flow-automata.spw"
+ @ecology: ~".agents/plans/shape-syntax-ecology/PLAN.md"
+}
+
+^["intent"]{
+ ~#goal: "Make multi-file selection and refactoring a reversible experiment lifecycle: revisioned select → semantic plan as data → intermediate projections → hash-gated apply (worktree or workspace) → verify → git episode — one spine, many front-ends."
+ ~#taste: "correctness under drift, plan-first honesty, intermediate Spw as human patch language, VCS as durability not second semantics"
+ ~#why_now: "semantic-edit already promises patches-as-values; refactor/bias/mutate do not yet share a durable plan id or worktree sandbox"
+ ~#non_goal: "auto-commit carnival; OT research project; replacing pulse single-file atomic path"
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#refactor_algebra, #vcs_ergonomics, #agent_handoff, #taste]
+ review_surfaces: [@plan, @artifact, @semantic_edit, @refactor_cli, @pulse_doc, @curiosity]
+ snippet_routes: [#plan_schema, #selection_hash, #worktree_apply, #episode_trailer]
+ grows_judgment: [
+  "when is a selection frozen enough to plan?",
+  "when must apply refuse vs rebase?",
+  "what belongs in Spw intermediate vs JSON only?",
+ ]
+}
+
+^["concept_index"]{
+ primary: [
+  #refactor_plan,
+  #selection_corpus,
+  #content_hash,
+  #intermediate_surface,
+  #worktree_l1,
+  #hash_gated_apply,
+  #episode_record,
+ ]
+ surfaces: [#seed, #cli, #schemas, #docs, #lsp, #git, #gen]
+ tensions: [
+  #stale_plan,
+  #multi_file_transaction,
+  #mount_refuse,
+  #gen_retention,
+  #compat_oneshot_refactor,
+ ]
+ transfers: [
+  #query_selection,
+  #semantic_edit,
+  #bias_patch,
+  #pulse_health,
+  #emit_brief,
+  #curiosity_candidate,
+  #lsp_workspace_edit,
+ ]
+ vocabulary: .{
+  selection: "frozen set of uri + contentHash (+ optional revision)"
+  plan: "spw.refactor.plan/1 — rules, edits, ceiling, parent_plan, selection hash"
+  receipt: "apply result: applied edits, skipped, conflicts, tree kind"
+  intermediate: "plan.json | patch.spw | emit brief | editor multi-diff — same plan.id"
+  worktree_l1: "filesystem sandbox equivalent of effect.l1.memory for multi-file"
+  workspace_l2: "durable consumer tree write under hash gate"
+ }
+}
+
+^["lifecycle"]{
+ stages: [
+  .{ id: select, ceiling: effect.l0.measure, out: "selection.json" },
+  .{ id: plan, ceiling: effect.l0.measure, out: "plan.json | patch.spw" },
+  .{ id: check, ceiling: effect.l0.measure, out: "ok | stale | conflict" },
+  .{ id: apply_worktree, ceiling: effect.l1.worktree, out: "worktree + receipt" },
+  .{ id: apply_workspace, ceiling: effect.l2.workspace, out: "tree + receipt" },
+  .{ id: verify, ceiling: effect.l0.measure, out: "report" },
+  .{ id: record, ceiling: git, out: "episode commit + Spw-Plan trailer" },
+ ]
+ spine: "plan.id appears in every projection and the commit trailer"
+ refuse: [
+  "apply when any contentHash mismatches",
+  "apply overlapping edits without conflict report",
+  "write mounted infrastructure without explicit policy",
+  "absolute paths in plan or commit body",
+ ]
+}
+
+^["effect_matrix"]{
+ # Align with pulse-mutate-beat; add worktree rung for multi-file experiment
+ effect.l0.measure: "select, plan, check, verify — no durable write"
+ effect.l1.memory: "stdin/buffer apply (existing mutate --stdin)"
+ effect.l1.worktree: "NEW — apply plan into git worktree; main clean"
+ effect.l2.workspace: "hash-gated multi-file write to consumer tree"
+ effect.l3.external: "refused (same as pulse)"
+ note: "pulse multi-file refuse stays; experiments use explicit refactor apply path"
+}
+
+^["intermediate_surfaces"]{
+ plan_json: .{
+  role: "agent review, CI artifact, LSP load"
+  location: ".spw/gen/experiments/<id>/plan.json"
+ }
+ patch_spw: .{
+  role: "human-editable bias/experiment surface"
+  location: ".spw/gen/experiments/<id>/patch.spw"
+  compile: "bias edges + metadata → SemanticRule[] → plan"
+ }
+ emit_brief: .{
+  role: "PR / agent prose from plan summary"
+  tool: "spw emit or thin formatter over plan.summary"
+ }
+ editor_diff: .{
+  role: "WorkspaceEdit / neovim multi-diff from plan.edits"
+  status: #proposed
+ }
+ receipt_json: .{
+  role: "what actually applied; inputs to verify + episode"
+  location: ".spw/gen/experiments/<id>/receipt.json"
+ }
+ policy: .{
+  gen_default: "gitignore gen/experiments unless research pins patch.spw"
+  canon: "gen is never second canon root without ~#status"
+ }
+}
+
+^["selection_model"]{
+ fields: #[uri, contentHash, revision?]
+ hash: "content hash of file bytes (or normalized? decide — default raw utf8)"
+ drift: "re-select → added | removed | changed | unchanged"
+ filter: "optional SpwPattern — same vocabulary as spw query"
+ excludes: "node_modules, dist, _workbench, .git — align fs-walk"
+ canary: "first N files | single root | atlas hub cluster"
+}
+
+^["plan_model"]{
+ schema: "spw.refactor.plan/1"
+ fields: [
+  id,
+  created_at,
+  selection_hash,
+  files: "uri+contentHash[]",
+  rules: "SemanticRule ids / serialized specs / bias path",
+  edits: "SemanticEdit[] with reason, effectGrade, stratum",
+  conflicts,
+  effectCeiling,
+  parent_plan,
+  summary: "counts by file, by stratum, by grade",
+ ]
+ ops: #[compose, check, rebase]
+ rebase: "re-select → re-plan rules → parent_plan link → conflict report"
+}
+
+^["vcs_integration"]{
+ worktree: .{
+  create: "git worktree add <path> -b spw/experiment/<id>"
+  apply: "write files under worktree root only"
+  discard: "git worktree remove + branch delete"
+  merge: "human or agent merges branch — not silent"
+ }
+ commit: .{
+  when: "after successful workspace apply OR explicit record of worktree accept"
+  subject: "sigil[scope] — experiment <short-id>"
+  body: "exactly one #[episode]{ … } block"
+  trailer: "Spw-Plan: <id>"
+  trailer_hash: "Spw-Selection-Hash: <selection_hash>"
+  privacy: "no /Users/ or machine-local paths"
+ }
+ history: "git log --grep=Spw-Plan: for experiment archaeology"
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread semantic-edit, refactor.ts, pulse-mutate-beat before widening plan schema",
+  "< ship one lifecycle stage as runnable CLI (prefer plan+check before apply)",
+  "$ measure: stale-refuse rate, apply success, worktree adoption",
+  "^ fold receipts into docs and exit codes",
+  "% keep oneshot spw refactor --write as compat negative control",
+ ]
+ gates: [
+  #hash_gate,
+  #plan_first_default,
+  #no_absolute_paths,
+  #effect_grade_declared,
+  #mount_policy,
+ ]
+}
+
+^["parallel_work"]{
+ critical_path: [
+  #refactor_plan_types,
+  #selection_hash,
+  #plan_check,
+  #hash_gated_apply,
+ ]
+ parallelizable: [
+  #worktree_helper,
+  #patch_spw_compile,
+  #docs_matrix,
+  #envelope_shapes,
+ ]
+ deferred: [
+  #lsp_workspace_edit,
+  #plan_rebase_ot_depth,
+  #emit_brief_polish,
+ ]
+ shared_hot_files: [
+  "packages/spw-cli/src/refactor.ts",
+  "packages/spw-seed/src/canonical/semantic-edit.ts",
+  "packages/spw-cli/src/envelope.ts",
+ ]
+ merge_risks: [
+  #hot_file_refactor_cli,
+  #exit_code_semantics,
+  #envelope_schema_drift,
+ ]
+ handoff_artifacts: [@plan, @artifact, @semantic_edit]
+}
+
+^["supporting_documents"]{
+ must_ship: [@plan, @artifact]
+ helpful: [@pulse_doc, @cli_conv, @devices]
+ carries: [
+  #plan_schema_example,
+  #selection_fixture,
+  #worktree_demo_script,
+  #episode_template,
+  #compat_matrix_pulse_mutate_refactor,
+ ]
+ produces: [
+  "docs/runtime/md/refactor-experiment.md",
+  "schemas/spw-refactor-plan.v1.schema.json",
+ ]
+}
+
+^["interaction_depth"]{
+ subjects: [
+  #selection_freeze,
+  #plan_review,
+  #intermediate_edit,
+  #worktree_sandbox,
+  #apply_trust,
+  #verify_loop,
+  #episode_memory,
+ ]
+ questions: [
+  #what_is_frozen,
+  #what_is_stale,
+  #what_is_reversible,
+  #what_is_multi_file_transaction,
+  #what_is_human_vs_agent_path,
+ ]
+ qualities: [
+  #clarity,
+  #honesty,
+  #reversibility,
+  #legibility,
+  #trust,
+ ]
+ high_level: "experiment id, blast radius, canary, accept/refuse"
+ low_level: "SemanticEdit range, reason, contentHash, SourceEdit apply order"
+}
+
+^["audience_folds"]{
+ author: "refactor marks without abandoning multi-file renames"
+ agent: "plan.json handoff; check before write; worktree default suggestion"
+ research: "pin patch.spw under gen or harness runs; replay selection"
+ creative: "bias surface as dialect experiment; soft canary"
+ mounted_consumer: "refuse _workbench writes; selection excludes mount"
+}
+
+^["compose_with"]{
+ curiosity: .{
+  plan: @curiosity
+  relation: "invitations become experiment candidates, not direct writes"
+ }
+ measure: .{
+  plan: @measure
+  relation: "verify stage may run mass/authority; stabilize claims post-apply"
+ }
+ form_geometry: .{
+  plan: @form_editor
+  relation: "mobility rules compile to SemanticEdit entries in plan"
+ }
+ pulse_mutate: .{
+  doc: @pulse_doc
+  relation: "effect ceilings shared; multi-file experiment ≠ pulse --write expand"
+ }
+}
+
+^["risk_model"]{
+ hard_failures: [
+  "apply with stale contentHash silently",
+  "overlapping edits last-writer-wins without conflict",
+  "worktree path outside policy / escapes repo",
+  "plan stores absolute user paths",
+  "mounted _workbench corpus rewritten by default",
+ ]
+ soft_failures: [
+  "gen/experiments disk junk",
+  "oneshot refactor and plan apply diverge in edge cases",
+  "rebase produces empty plan after corpus delete",
+  "large selection OOM — need streaming or canary",
+ ]
+ recoveries: [
+  "refuse apply + print which uris drifted",
+  "withhold conflict cluster; allow non-overlapping subset apply only if flagged",
+  "worktree remove on failure optional",
+  "compat path keeps legacy refactor --write",
+ ]
+ non_negotiables: [
+  "plan-first default (no write without explicit apply)",
+  "hash gate on workspace apply",
+  "effect grade on every edit",
+  "privacy: no absolute user paths in commits or plans",
+  "seed stays portable (git worktree is CLI edge, not seed)",
+ ]
+}
+
+^["validation"]{
+ hypotheses: [
+  "stale hash refuse prevents half-applied multi-file renames",
+  "worktree experiments increase safe throughput vs dirty main",
+  "Spw patch intermediate improves human review quality vs json-only",
+  "plan.id in git trailer enables archaeology of experiments",
+  "canary-first reduces refuse_health surprises on full apply",
+ ]
+ negative_controls: [
+  "spw refactor oneshot --write still works",
+  "spw pulse single-file --write policy unchanged",
+  "spw query selector vocabulary unchanged",
+  "semantic-edit pure functions remain host-free",
+ ]
+ metrics: [
+  "plan check: stale rate on dirty tree",
+  "apply: files changed / conflicts / duration",
+  "worktree: create+apply+remove smoke",
+  "compat: golden oneshot rename fixture",
+ ]
+ demo_path: [
+  "1 select prompts/** with hashes → selection.json",
+  "2 plan mark:old=new → plan.json + optional patch.spw",
+  "3 touch one file → check → stale refuse",
+  "4 rebase/replan → check ok",
+  "5 apply --worktree → run tests in worktree",
+  "6 apply --workspace → receipt",
+  "7 record episode commit with Spw-Plan trailer",
+  "8 verify: query count of new mark; optional mass",
+ ]
+}
+
+^["cli_sketch"]{
+ # Proposed shape — refine at implement time; keep oneshot flags working
+ select: "spw refactor select <targets> [--selector …] --json"
+ plan: "spw refactor plan --selection sel.json --rename mark:a=b --json"
+ plan_bias: "spw refactor plan --selection sel.json --bias patch.spw --json"
+ check: "spw refactor check plan.json"
+ apply_wt: "spw refactor apply plan.json --worktree <path>"
+ apply_ws: "spw refactor apply plan.json --workspace --write"
+ rebase: "spw refactor rebase plan.json --selection sel.json"
+ record: "spw refactor record receipt.json  # episode helper"
+}
+
+^["stream"]{
+ >>[2026-07-27] observe — semantic-edit.ts explicitly designs for plan storage, composition, rebase, agent-authored rules
+ >>[2026-07-27] observe — spw refactor is plan-first oneshot: print or --write; no durable plan id or hash gate across time
+ >>[2026-07-27] observe — bias-apply lifts Spw edges to ordered rewrite rules; natural intermediate language
+ >>[2026-07-27] observe — pulse refuses multi-file --write; correct for reckless path; experiments need explicit multi-file accept
+ >>[2026-07-27] observe — envelope exists for structured CLI; not yet universal on refactor
+ >>[2026-07-27] observe — LSP rename is workspace-wide for annotations/@roots — special case of plan, not general experiment bus
+ >>[2026-07-27] decide — spine is spw.refactor.plan/1; all intermediates share plan.id
+ >>[2026-07-27] decide — effect.l1.worktree is the VCS seam for multi-file sandbox (CLI edge, not seed)
+ >>[2026-07-27] decide — extend refactor CLI rather than new top-level command soup; keep oneshot compat
+ >>[2026-07-27] decide — gen/experiments/<id>/ for plan/patch/receipt; gitignore default; pin patch when research needs it
+ >>[2026-07-27] decide — seed owns plan types + check; CLI owns selection IO, worktree, git episode
+ >>[2026-07-27] taste — intermediate Spw should feel like authoring, not dumping JSON into a .spw file
+ >>[2026-07-27] taste — refuse is a feature; silent partial apply is the failure mode we design against
+ >>[2026-07-27] note — compose curiosity (candidates), measure (verify), form-geometry (mobility edits) without reimplementing
+ >>[2026-07-27] note — exit.ts already has refactor-apply refuse code 4; align check/apply failures with exit taxonomy
+ >>[2026-07-27] hygiene — plan artifacts only until feature branch; exclude package *.d.ts noise
+ >>[2026-07-27] note — mutation-flow-automata.spw: φ_lower → plan id; * worktree handle; selection as cell filter
+ >>[2026-07-27] revise — shape-syntax-ecology; imagination/play; dialect-honest selection hashes
+}
+
+^["open"]{
+ ?[hash_basis]: "contentHash over raw file bytes vs canonicalize(profile) — raw is simpler; canonical resists format-only drift. Which default?"
+ ?[subcommand_shape]: "spw refactor plan|check|apply vs spw experiment … as top-level group?"
+ ?[partial_apply]: "allow non-overlapping subset apply on conflict, or always all-or-nothing for workspace l2?"
+ ?[worktree_path]: "convention under repo .spw/gen/worktrees vs sibling directory — security and mount policy?"
+ ?[selection_revision]: "is git blob oid worth storing alongside contentHash, or hash-only?"
+ ?[bias_roundtrip]: "must patch.spw round-trip after plan compile, or one-way compile is enough for v1?"
+ ?[lsp_when]: "WorkspaceEdit from plan in this branch or strictly editor follow-on?"
+ ?[streaming]: "large monorepo selection — stream edits per file vs full plan in memory?"
+}
+
+^["commits"]{
+ ~[1]: ".[refactor] — plan refactor-experiment-lifecycle artifacts"
+ ~[2]: "vocab[seed] — spw.refactor.plan/1 types, hash, check"
+ ~[3]: "![seed] — refactor-plan tests (stale hash, conflict, compose)"
+ ~[4]: "#[cli] — selection corpus + plan/check from semantic rules"
+ ~[5]: "&[cli] — hash-gated apply workspace + receipt envelope"
+ ~[6]: "^[cli] — worktree apply (l1) + episode commit helper"
+ ~[7]: "#[cli] — bias/experiment surface → plan compile"
+ ~[8]: ".[docs] — refactor-experiment + pulse-mutate matrix"
+ ~[9]: "#[lsp]? — WorkspaceEdit from plan (optional follow-on)"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@0c7cdfb7178079bf27a9a062ba1b310d07296f41"
+ ~#rebased_at: ""
+ ~#hygiene_split: "plan-only vs implement; exclude untracked *.d.ts"
+ ~#files_hot: "packages/spw-cli/src/refactor.ts, packages/spw-seed/src/canonical/semantic-edit.ts, packages/spw-cli/src/envelope.ts"
+ ~#next_commit: "1"
+ ~#open_count: "8"
+ ~#last_stream: "2026-07-27 hygiene"
+ ~#taste_debt: "hash_basis and partial_apply undecided — block apply-workspace design until resolved"
+ ~#phase: "pre-flight"
+ ~#related_plans: "curiosity-mutation-ergonomics, measure-invariant-generalization, form-geometry-editor, vscode-lsp-roadmap"
+}
+
+^["done"]{
+ # Written at merge time.
+ # ~#shipped: []
+ # ~#dropped: []
+ # ~#surprised: ""
+ # ~#duration: ""
+ # ~#taste: ""
+}
+
+# ── Wonders (species: algebraic, reverse-edge, thrift, vcs) ──
+
+#>wonder_refactor_experiment_lifecycle_1
+?["What is the algebraic closure of a refactor plan under rebase?"]{
+  #:depth #!computational
+  #:species #!algebraic_closure
+  $^["plan_model"]@here => %[formula.compose]
+  !probe{ "compose plan A then rebase onto moved selection: which fields are invariant (id lineage, rules) vs recomputed (edits, hashes)?" }
+  $%[file.frame_count, plan.phase_progress]
+  ~<packages/spw-seed/src/canonical/semantic-edit.ts>
+}
+
+#>wonder_refactor_experiment_lifecycle_2
+?["What is conspicuously absent from multi-file mutate that plan lifecycle must supply?"]{
+  #:depth #!educational
+  #:species #!blind_spot
+  ~#present: [#profile, #dry_run, #multi_path]
+  ~#expected_but_missing: "frozen selection hash + durable plan id + worktree sandbox"
+  !probe{ "list mutate flags; list pulse refuse conditions; the gap is the experiment spine" }
+  $%[file.frame_count, file.annotation_density]
+  ~<packages/spw-cli/src/mutate.ts>
+  ~<docs/runtime/md/pulse-mutate-beat.md>
+}
+
+#>wonder_refactor_experiment_lifecycle_3
+?["Does reversing apply direction (workspace → plan) change meaning?"]{
+  #:depth #!stylistic
+  #:species #!reverse_edge
+  !probe{ "git diff after ad-hoc edit cannot always reconstitute SemanticRule; plan→tree is generative, tree→plan is archaeology — name the loss" }
+  $%[line.operator_density]
+  ~<.agents/plans/refactor-experiment-lifecycle/PLAN.md>
+}
+
+#>wonder_refactor_experiment_lifecycle_4
+?["When is an intermediate surface thriftless theater?"]{
+  #:depth #!mathematical
+  #:species #!felt_rhythm
+  !probe{ "if patch.spw is only JSON with braces, delete it; thrift = human can edit poles without fighting the format" }
+  $%[file.brace_depth_max, line.operator_density] => ~#reading_feel
+  ~<packages/spw-cli/src/bias-apply.ts>
+}
+
+#>wonder_refactor_experiment_lifecycle_5
+?["How does effect.l1.worktree teach the practice circuit?"]{
+  #:depth #!educational
+  #:species #!ecological_zone
+  // wonder → substrate(selection) → potentiation(plan) → cluster(canary)
+  // → confluence(multi-file edits) → performance(apply) → evaluation(verify)
+  // → metareference(episode + Spw-Plan trailer)
+  !probe{ "map each lifecycle stage to the practice circuit; where do humans drop the thread today?" }
+  $%[process.iteration_count]
+  ~<.agents/plans/curiosity-mutation-ergonomics/curiosity-mutation-ergonomics.spw>
+}

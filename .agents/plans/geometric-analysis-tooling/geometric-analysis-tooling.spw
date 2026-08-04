@@ -1,0 +1,128 @@
+# ONF Shape Fingerprint — resonance as recurrence
+#
+# The structural primitive this branch adds: a label-erased reduction over ONF
+# that answers "is this the same shape?" where existing hashes answer "is this
+# the same text?". Recurrence of a fingerprint across files is the operational
+# definition of resonance; anti-unification of near-misses is the path from
+# detecting a pattern to developing one.
+#
+# @see packages/spw-seed/src/types/ast/onf.ts
+# @see packages/spw-seed/src/types/coupling.ts
+# @see packages/spw-seed/src/canonical/brace-projection.ts
+# @see .agents/plans/spw-garden-geometry/formula-variant-geometry-utility.spw
+# @see docs/theory/spw/form-ladders.spw
+
+#:layer #!pragmatics
+#:geometry #!fingerprint
+
+^seed[Spw.Geometry.ShapeFingerprint v:0.1 @profile:Spw.b @intent:structural_resonance]
+
+^["roots"]{
+ @onf: ~"../../../packages/spw-seed/src/types/ast/onf.ts"
+ @coupling: ~"../../../packages/spw-seed/src/types/coupling.ts"
+ @brace_projection: ~"../../../packages/spw-seed/src/canonical/brace-projection.ts"
+ @garden_formula: ~"../spw-garden-geometry/formula-variant-geometry-utility.spw"
+ @form_ladders: ~"../../../docs/theory/spw/form-ladders.spw"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Thesis
+// ═══════════════════════════════════════════════════════════════
+
+^["thesis"]{
+ ~#value: "A corpus knows its own idioms, but nothing in the tree can currently ask it. Text hashes see difference; counts multisets see quantity; neither sees skeleton. Erase the labels and hash what remains, and the same form spoken in different words collapses to one key."
+ ~#status: "declared+unimplemented"
+ ~#prior_art: "onf.ts declares the invariant; garden names the formula kind; neither has a machine"
+ ~#invariant: "Fingerprint equality is shape equality. Label, layout, and momentum never participate."
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Why not a hash
+// ═══════════════════════════════════════════════════════════════
+
+^["naming"]{
+ ~#term: "shapeFingerprint"
+ ~#rejected: "shapeHash, semanticHash, structuralHash"
+
+ ~#rationale: .{
+  existing_sense: "hashString already means content identity — inputHash/outputHash in mutation-automata, beforeHash/afterHash in form-geometry, the source id in range-transform"
+  collision_inverted: "for a content hash, collision is failure; for a shape fingerprint, collision is the finding"
+  head_noun: "two inverted collision semantics should not share a head noun in one codebase"
+  qualifier_kept: "ONF shape is retained so this stays recognizable as the thing onf.ts and @garden_formula already name"
+ }
+
+ ~#reconciliation: #[
+  "onf.ts doc invariant: semantic hash → shape fingerprint",
+  "@garden_formula ~#kinds.structural: ONF shape hash → ONF shape fingerprint",
+ ]
+}
+
+// ═══════════════════════════════════════════════════════════════
+// The reduction
+// ═══════════════════════════════════════════════════════════════
+
+^["reduction"]{
+ ~#substrate: "ONFNode = { sigil, args[], frames } — already normalized, already positional, already label-free at the sigil"
+ ~#erase: #[label, rewrite, momentum, surface_layout]
+ ~#keep: #[sigil, arity, arg_order, coupling_kind, coupling_form]
+
+ ~#rule: "fp(n) = H(n.sigil · n.args.map(fp))"
+ ~#depth: .{
+  k1: "immediate shape — one operator and its arity"
+  k2: "operator and its children's operators — the idiom scale"
+  k3: "phrase scale — where surfaces start to differ"
+ }
+
+ ~#hole: "'_' is already the ONF hole sigil, so a template is an ONFNode, not a parallel datatype"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Resonance
+// ═══════════════════════════════════════════════════════════════
+
+^["resonance"]{
+ ~#definition: "A fingerprint occurring in n distinct files above the corpus recurrence threshold."
+ ~#not: "similarity of text, proximity in a graph, or shared vocabulary"
+
+ ~#reading: .{
+  once: "idiosyncratic — the surface said something only it says"
+  few: "shared phrasing — possibly borrowed, possibly convergent"
+  many: "idiom — a form the corpus has settled on without anyone naming it"
+ }
+
+ ~#threshold: "derived from corpus quantiles, never hand-picked — the noise axis governs where accident ends and idiom begins"
+ ~#falsify: "If no fingerprint recurs at k=2 across three files in docs/theory/spw, the corpus has no shared skeleton and this thesis is false for it. Report that; do not lower the threshold until something appears."
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Development — detection is not enough
+// ═══════════════════════════════════════════════════════════════
+
+^["anti_unification"]{
+ ~#move: "Two fingerprints differing at exactly one argument slot generalize to a template with '_' at that slot."
+ ~#yield: "The template is a discovered form — a candidate rung, stated in the same ONF the parser already emits."
+
+ ~#ladder_bridge: "@form_ladders enumerates rungs a human wrote down. Anti-unified templates are rungs the corpus wrote down without noticing. Where the two agree, the ladder is confirmed; where they diverge, one of them is learning something."
+
+ ~#discipline: #[
+  "a template with every slot a hole is vacuous — bound generalization by remaining specificity",
+  "discovered templates sit beside FORMULA_CATALOG, they do not rewrite it",
+  "promotion from discovered to named is an explicit episode, never automatic",
+ ]
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Invariants the implementation must honor
+// ═══════════════════════════════════════════════════════════════
+
+^["invariants"]{
+ %[momentum_free]: "Mutating frames.momentum must not change any fingerprint — the invariant onf.ts already declares and no code has yet been held to."
+ %[layout_free]: "Layout-only rewrites must leave every fingerprint unchanged — the same claim @brace_projection makes for pair preservation."
+ %[kind_sensitive]: "Capsule and couple must not collapse. @coupling discriminates CouplingForm operator|boundary; the fingerprint consumes that discrimination rather than re-deriving it."
+ %[order_sensitive]: "fp is over args in order. A counts multiset was the old signature's mistake; do not repeat it."
+}
+
+^["open"]{
+ ?[cost]: "Merkle reduction over the full corpus at k=1..3 — measure before caching. Premature memoization would reintroduce the identity-hash confusion this vocabulary exists to prevent."
+ ?[fixity_yield]: "Arity keying assumes fixity is recoverable from parser position. onf.ts says it is often unset; if it stays unset, k=1 fingerprints lose their sharpest coordinate."
+}

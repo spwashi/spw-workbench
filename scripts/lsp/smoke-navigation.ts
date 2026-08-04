@@ -13,7 +13,7 @@ interface JsonRpcMessage {
   error?: { code: number, message: string, data?: any }
 }
 
-const REFERENCE_REQUEST_TIMEOUT_MS = 10_000
+const REFERENCE_REQUEST_TIMEOUT_MS = 15_000
 
 class LspClient {
   private child: ChildProcessWithoutNullStreams

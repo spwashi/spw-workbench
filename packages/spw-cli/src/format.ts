@@ -14,6 +14,9 @@ import path from 'node:path'
 import process from 'node:process'
 import {
   canonicalize,
+  compareFormatProfiles,
+  diffLines,
+  formatPulses,
   resolveFormatProfile,
   type CanonicalOptions,
   type FormatProfileId,
@@ -38,6 +41,11 @@ interface CliArgs {
   width?: number
   diff: boolean
   quiet: boolean
+  /** Read the profile as a step-by-step diffable sequence; never writes. */
+  pulse: boolean
+  /** Read one surface under several profiles at once; never writes. */
+  profiles?: string[]
+  context: number
 }
 
 interface MutationCounts {
@@ -61,6 +69,8 @@ function parseArgs(argv: string[]): CliArgs {
     mode: 'canonical',
     diff: false,
     quiet: false,
+    pulse: false,
+    context: 2,
   }
 
   for (let i = 0; i < args.length; i += 1) {
@@ -76,6 +86,24 @@ function parseArgs(argv: string[]): CliArgs {
     }
     if (arg === '--diff') {
       parsed.diff = true
+      continue
+    }
+    if (arg === '--pulse') {
+      parsed.pulse = true
+      continue
+    }
+    if (arg === '--profiles' || arg.startsWith('--profiles=')) {
+      const raw = arg.startsWith('--profiles=')
+        ? arg.slice('--profiles='.length)
+        : (args[++i] ?? '')
+      parsed.profiles = raw.split(',').map(s => s.trim()).filter(Boolean).map(parseProfileId)
+      continue
+    }
+    if (arg === '--context' || arg.startsWith('--context=')) {
+      const raw = arg.startsWith('--context=')
+        ? arg.slice('--context='.length)
+        : (args[++i] ?? '2')
+      parsed.context = Math.max(0, Number(raw) || 0)
       continue
     }
     if (arg === '--quiet' || arg === '-q') {
@@ -150,6 +178,8 @@ function parseArgs(argv: string[]): CliArgs {
       arg === 'layout' ||
       arg === 'prose' ||
       arg === 'canonical' ||
+      arg === 'wide' ||
+      arg === 'culture' ||
       arg === 'equiv'
     ) {
       parsed.mode = parseMode(arg)
@@ -168,13 +198,21 @@ function parseArgs(argv: string[]): CliArgs {
   return parsed
 }
 
+const PROFILE_IDS = ['canonical', 'pretty', 'layout', 'prose', 'wide', 'culture'] as const
+const PROFILE_LIST = `${PROFILE_IDS.join('|')}|equiv`
+
 function parseMode(raw: string): FormatMode {
   const v = raw.toLowerCase()
-  if (v === 'equiv' || v === 'pretty' || v === 'layout' || v === 'prose' || v === 'canonical') {
-    return v
-  }
+  if (v === 'equiv') return v
+  if ((PROFILE_IDS as readonly string[]).includes(v)) return v as FormatProfileId
+  throw new Error(`spw format: unknown profile "${raw}" (${PROFILE_LIST})`)
+}
+
+function parseProfileId(raw: string): FormatProfileId {
+  const v = raw.toLowerCase()
+  if ((PROFILE_IDS as readonly string[]).includes(v)) return v as FormatProfileId
   throw new Error(
-    `spw format: unknown profile "${raw}" (canonical|pretty|layout|prose|equiv)`,
+    `spw format: unknown profile "${raw}" in --profiles (${PROFILE_IDS.join('|')})`,
   )
 }
 
@@ -193,8 +231,19 @@ export function printSpwFormatHelp(): void {
           'canonical  Whitespace hygiene only (default; historical)',
           'pretty     Indent braces + frame blanks + prose reflow + collapse blanks',
           'layout     Indent + frame blanks + align trailing # comments (no prose rewrite)',
+          'wide       layout at 4-space indent — adopt a wider indent per file',
           'prose      Block-level # / // reflow + hygiene (no re-indent)',
+          'culture    pretty + migrate borrowed // comments to # light',
           'equiv      Equivalence script rewrites + layout_bundle hygiene',
+        ],
+      },
+      {
+        title: 'Reading modes (never write)',
+        lines: [
+          '--pulse                    Read the profile as ordered steps, one diff per rule',
+          '--profiles a,b,c           Read one surface under several profiles at once',
+          '--context N                Diff context lines (default 2)',
+          '--diff                     With --profiles, show each profile’s diff',
         ],
       },
       {
@@ -235,6 +284,8 @@ export function printSpwFormatHelp(): void {
           'spw format --profile layout --check --diff prompts/sagas',
           'spw format --full --profile canonical --check',
           'spw format docs --mode equiv',
+          'spw format docs/examples/spw/sense-loop.spw --pulse --mode wide',
+          'spw format prompts/index.spw --profiles canonical,layout,wide --diff',
         ],
       },
     ],
@@ -251,7 +302,7 @@ function resolveTargets(cli: CliArgs): string[] {
 
 function buildOptions(cli: CliArgs): CanonicalOptions {
   let profile: FormatProfileId = 'canonical'
-  if (cli.mode === 'pretty' || cli.mode === 'layout' || cli.mode === 'prose') {
+  if (cli.mode !== 'equiv' && cli.mode !== 'canonical') {
     profile = cli.mode
   } else if (cli.mode === 'canonical') {
     // Flag-only upgrades when profile left at default
@@ -358,6 +409,80 @@ export function shortDiff(before: string, after: string, maxHunks = 12): string 
   return lines.join('\n')
 }
 
+const MAX_DIFF_LINES = 40
+
+function renderDiff(before: string, after: string, context: number): string[] {
+  const all = diffLines(before, after, context)
+  const shown = all.slice(0, MAX_DIFF_LINES).map(d => {
+    const mark = d.kind === 'add' ? '+' : d.kind === 'remove' ? '-' : ' '
+    return `    ${mark} ${d.text}`
+  })
+  if (all.length > MAX_DIFF_LINES) {
+    shown.push(`    … +${all.length - MAX_DIFF_LINES} more line(s)`)
+  }
+  return shown
+}
+
+/**
+ * Read a profile as an ordered sequence of pulses, each with its own diff.
+ *
+ * Answers "which rule did this?" — a single formatted blob cannot. Read-only:
+ * this never writes, so a rule set can be inspected before it is adopted.
+ */
+function printPulses(
+  display: string,
+  source: string,
+  mode: FormatMode,
+  cli: CliArgs,
+  options: CanonicalOptions,
+): void {
+  const profile: FormatProfileId = mode === 'equiv' ? 'canonical' : mode
+  const seq = formatPulses(source, profile, options)
+
+  console.log(`# ${display}  profile=${seq.profile}  indent=${seq.options.indentSize}`)
+  if (seq.pulses.length === 0) {
+    console.log('  (profile enables no rewriting capabilities)')
+    return
+  }
+
+  seq.pulses.forEach((pulse, i) => {
+    const arrow = i === 0 ? '' : '=> '
+    const status = pulse.changed ? `${pulse.linesChanged} line(s)` : 'no change'
+    console.log(`  ${arrow}${pulse.capability} — ${pulse.label} [${status}]`)
+    if (pulse.changed && !cli.quiet) {
+      for (const line of renderDiff(pulse.before, pulse.after, cli.context)) {
+        console.log(line)
+      }
+    }
+  })
+
+  console.log(
+    `  ${seq.changedCount}/${seq.pulses.length} pulse(s) changed the surface.`,
+  )
+}
+
+/**
+ * Read one surface under several rule sets, each measured against the original.
+ */
+function printProfileComparison(
+  display: string,
+  source: string,
+  cli: CliArgs,
+  overrides: Partial<CanonicalOptions>,
+): void {
+  const rows = compareFormatProfiles(source, cli.profiles!, overrides)
+  console.log(`# ${display}`)
+  for (const row of rows) {
+    const status = row.changed ? `${row.linesChanged} line(s)` : 'no change'
+    console.log(`  ${row.profile.padEnd(10)} [${status}]  ${row.capabilities.join(' ')}`)
+    if (row.changed && cli.diff && !cli.quiet) {
+      for (const line of renderDiff(source, row.formatted, cli.context)) {
+        console.log(line)
+      }
+    }
+  }
+}
+
 async function formatFile(
   filePath: string,
   check: boolean,
@@ -419,6 +544,23 @@ export async function runSpwFormatCli(argv: string[] = process.argv): Promise<vo
   const files = Array.from(fileSet).sort()
   if (files.length === 0) {
     console.log('spw-format: no .spw files found.')
+    return
+  }
+
+  // Inspection modes read the surface and print; they never write.
+  if (cli.pulse || cli.profiles) {
+    const overrides: Partial<CanonicalOptions> = {}
+    if (cli.indentSize !== undefined) overrides.indentSize = cli.indentSize
+    if (cli.width !== undefined) overrides.printWidth = cli.width
+
+    for (const file of files) {
+      const rel = path.relative(repoRoot, file)
+      const display = rel.startsWith('..') ? file : rel || file
+      const source = await fs.readFile(file, 'utf8')
+      if (cli.profiles) printProfileComparison(display, source, cli, overrides)
+      else printPulses(display, source, cli.mode, cli, options)
+      console.log('')
+    }
     return
   }
 

@@ -1,0 +1,346 @@
+// CLI Sense Reorientation
+//
+// Intermediate IRs - naming matrix - subcommands - dense l/x - streams - *
+#:layer #!pragmatics
+#:status #!proposed
+@dialect:Spw.p
+
+^seed[Spw.Plan.Cli.Sense.Reorientation v:0.3 @profile:Spw.p @intent:compose_sense]
+
+^["roots"]{
+ @plan: ~".agents/plans/cli-sense-reorientation/PLAN.md"
+ @wip: ~".agents/plans/cli-sense-reorientation/wip.spw"
+ @ecology: ~".agents/plans/shape-syntax-ecology/shape-syntax-ecology.spw"
+ @commands: ~"packages/spw-cli/src/commands.ts"
+ @stages: ~"packages/spw-runtime/src/pipeline/stages.ts"
+ @cache: ~"packages/spw-runtime/src/state/memory-cache.ts"
+ @dialect_mod: ~"packages/spw-seed/src/dialect/index.ts"
+}
+
+^["thesis"]{
+ ~#claim: "Sense tools compose when intermediate IRs are named and verbs navigate abstractly-not when every concern grows a new top-level name."
+ ~#taste: "composition - globs - dense serial - crystallize streams - alias-safe renames"
+}
+
+^["ir"]{
+ PreprocessIR: .{ from: dialect , note: "l/q newlineAsSpace" }
+ ParseIR: .{ from: parse , fields: #[ast, tokens, dialect, expRefs] }
+ StackIR: .{ from: resolveSurfaceProfile }
+ FormIR: .{ from: geometry , method: ast }
+ GraphIR: .{ from: map_atlas }
+ MeasureIR: .{ from: measure , families: #[mass, authority, density, health, drift] }
+ SelectionIR: .{ from: glob+hash+list+stdin , multi: #yes }
+ PlanIR: .{ from: refactor_curiosity }
+ StreamIR: .{ from: stdin_batch_live , dialect: #[Spw.l, Spw.x] }
+ PrecipitateIR: .{ from: runtime_stages }
+ CacheIR: .{ from: BeatCache , key: #[hash, dialect, preprocess] }
+ EnvelopeIR: .{ from: cli_json , views: #[text, json, md] }
+}
+
+// ── Naming catalogs (rec + alternatives) ─────────────────────
+
+^["names_rec"]{
+ surface: .{ was: profile , also: #[stack, card, face, who, inspect, describe, id, portrait, sheet, dossier, lens, scan] , rec: surface }
+ stack: .{ was: profile_thin , also: #[identity, id] , rec: stack }
+ census: .{ was: invent , also: #[roster, inventory, inv, index, survey, catalog, population, roll, rollcall, ls_corpus, stat, stats, manifest, audit, tally, ledger] , rec: census }
+ measure: .{ was: mass , also: #[thrift, gauge, meter, assay, check, verify, metric, metrics, score, reconcile, observe, declare] , rec: measure }
+ graph: .{ was: map , also: #[topo, net, network, deps, web, lattice, mesh, links, refgraph, constellation, nav] , rec: graph_or_map_dual }
+ geometry: .{ was: geometry , also: #[form, shape, structure, brace, ops, morph, layout, fingerprint, gestalt, geom] , rec: geometry }
+ exp: .{ was: exp , also: #[catalog, experimental, xref, syntax, registry, features, hooks] , rec: exp }
+ stream: .{ was: new , also: #[events, follow, feed, pipe] , rec: stream }
+ crystallize: .{ was: new , also: #[fold, seal, materialize, freeze, collapse, capture, snap, snapshot] , rec: crystallize , op: "*" }
+ bench: .{ was: new , also: #[perf, time, speed, timing, budget, load, stress] , never: profile , rec: bench }
+ atlas: .{ was: atlas , rec: atlas }
+ ir: .{ was: late , also: #[dump, debug_ir] , rec: delay_until_envelope_v2 }
+}
+
+^["names_mass_family"]{
+ // under measure
+ mass: .{ also: #[thrift, size, bulk] }
+ authority: .{ also: #[access, caps, rights] }
+ density: .{ also: #[form_density, compact] }
+ health: .{ also: #[parse, sanity] }
+ drift: .{ also: #[stale, delta] }
+ scheme: .{ also: #[eval] }
+ hits: .{ also: #[selectors] }
+ formula: .{ also: #[patterns] }
+ taste: .{ also: #[vocab] }
+}
+
+^["names_verdict"]{
+ pass: .{ also: #[ok, green] }
+ fail: .{ also: #[red] }
+ drift: .{ also: #[warn, amber] }
+ missing: .{ also: #[undeclared] }
+ skip: .{ also: #[n_a] }
+}
+
+^["names_short_collision"]{
+ // never bare
+ m: high  # measure|map|mass
+ s: high  # surface|stack|stream|skim
+ p: high  # profile|pulse|perf
+ c: medium  # census|crystallize
+ // ok when listed
+ inv: census
+ geom: geometry
+ topo: graph
+ perf: bench
+ exp: exp
+}
+
+^["open_decisions"]{
+ population: .{ opts: #[census, roster, inventory] , rec: census }
+ identity_card: .{ opts: #[surface, card, portrait] , rec: surface }
+ topology: .{ opts: #[graph, map, dual] , rec: dual_one_release }
+ crystallize_locus: .{ opts: #[top_level, under_stream, flag] , rec: top_level }
+ measure_fold: .{ opts: #[now, after_MeasureIR] , rec: after_MeasureIR }
+ ultra_short: .{ opts: #[none, unique_only] , rec: unique_only }
+}
+
+// ── Subcommand trees ─────────────────────────────────────────
+
+^["sub_surface"]{
+ default: show
+ cmds: #[show, stack, form, graph, ego, thrift, mass, exp, outline, frames, dialect, review, format, health, all, dump]
+ flags: #[only, lenses, glob, json, md, text, l, x, dialect, method, depth, no_lessons, compare, quiet]
+ aliases_cmd: #[profile, stack]
+}
+
+^["sub_census"]{
+ default: list
+ cmds: #[list, summary, hubs, leaves, orphans, bridges, adrift, roles, paths, dialects, profiles, frames, size, stale, export]
+ flags: #[sort, n, role, min_lines, max_lines, json, md, compare, since, glob, exclude]
+ aliases_cmd: #[invent, inventory, inv]
+}
+
+^["sub_measure"]{
+ default: all_families
+ cmds: #[mass, thrift, size, authority, density, health, drift, claim, scheme, families, schemes, hits, formula, taste, diff, report]
+ flags: #[family, scheme, write, missing, strict, stdin, dialect, json, md, text, glob, compare]
+ aliases_cmd: #[mass, thrift]
+}
+
+^["sub_graph"]{
+ default: show
+ cmds: #[show, hubs, orphans, leaves, cycles, components, bridges, ego, neighbors, path, paths, edges, nodes, degree, matrix, export]
+ flags: #[n, depth, type, direction, min_degree, compare, json, md, glob, format]
+ aliases_cmd: #[map, topo]
+}
+
+^["sub_atlas"]{
+ cmds: #[summary, html, trend, advice, save, diff, show, graph, census]
+ flags: #[from, to, html_path, json, md]
+}
+
+^["sub_geometry"]{
+ default: show
+ cmds: #[show, pairs, braces, ops, depth, lessons, fingerprint, ladder, mobility, compare]
+ flags: #[method, stdin, json, md, text]
+ aliases_cmd: #[geom, form, shape]
+}
+
+^["sub_exp"]{
+ cmds: #[list, show, used, search, related, missing, export]
+ flags: #[status, dialect, hook, json, glob, format]
+ aliases_cmd: #[experimental, catalog, syntax]
+}
+
+^["sub_stream"]{
+ cmds: #[read, follow, batch, window, cat, filter, head, tail, stats, export, crystallize]
+ flags: #[stdin, dialect, glob, last, kind, n, format]
+ aliases_cmd: #[events, feed]
+}
+
+^["sub_crystallize"]{
+ cmds: #[window, op, out, into]
+ flags: #[stdin, window_n, op_fold_seal_snapshot_aggregate, into_measure_surface, out, json]
+ op_glyph: "*"
+ locus_opts: #[top_level, stream_nested, flag]
+ rec_locus: top_level
+}
+
+^["sub_bench"]{
+ cmds: #[parse, query, pulse, surface, measure, graph, census, lsp_hover, all]
+ flags: #[dialect, iterations, warmup, budget, fail_over, suite, json, md]
+ aliases_cmd: #[perf]
+ never_name: profile
+}
+
+^["sub_analyze_keep"]{
+ analyze: #[density, compare]
+ formula: #[list, scan, show]
+ taste: #[]
+ authority: #[]  # until measure authority
+}
+
+^["sub_read"]{
+ query: #[explain, glob, stdin, format]
+ select: #[show, explain]
+ skim: #[outline, window, head]
+ ls: #[ports, depth]
+ stream: #ref[sub_stream]
+}
+
+^["sub_ir_late"]{
+ cmds: #[parse, stack, form, graph, measure, selection, envelope]
+ rec: delay_until_envelope_v2
+}
+
+// ── Dense serial + star ──────────────────────────────────────
+
+^["dense_serial"]{
+ Spw.l: .{ cold: #yes , newlineAsSpace: #yes , use: #[logs, batches, probes] }
+ Spw.x: .{ hot: #yes , ceilings: #yes , use: #[live, HMR, reg_snap] }
+ example_l: '@dialect:Spw.l ^["e"]{ t: 1 , k: write , $: ~"a.spw" }'
+ example_x: '@dialect:Spw.x << ^["tick"]{ beat: 1 } ; *{ =id[win] } >>'
+}
+
+^["star"]{
+ shell_glob: "**"
+ crystallize: "*"
+ law: "shell expands paths; * folds StreamIR under effect grade"
+}
+
+^["compose"]{
+ SelectionIR: << census | measure | graph | surface* >>
+ ParseIR: << geometry | query | pulse >>
+ StreamIR: << crystallize | precipitate | emit >>
+ styles: #[
+  "verb noun: spw measure mass x"
+  "flag family: spw measure x --family mass"
+  "pipe IR: spw census x --json | jq"
+ ]
+ pattern: "verb [subcommand] <SelectionIR> [--json|--md|--text|--l|--x]"
+ recipes: #[
+  "surface path.spw"
+  "census prompts/** --sort degree -n 30"
+  "measure mass path.spw"
+  "graph ego path.spw --depth 2"
+  "stream batch --glob logs/** | crystallize --window 100 --into measure"
+  "bench parse packages/** --budget ms=500"
+ ]
+}
+
+^["help_sense"]{
+ lines: #[
+  "surface   One-file card (stack - form - graph - thrift - exp)"
+  "stack     Identity stack only"
+  "census    Multi-file population, roles, hubs"
+  "geometry  Deep brace/operator form"
+  "graph     Reference topology (map/topo alias)"
+  "atlas     Workspace observatory"
+  "measure   Metrics under schemes (mass family included)"
+  "exp       Experimental syntax catalog"
+  "stream    StreamIR read/follow/batch"
+  "crystallize  Fold stream (*)"
+  "bench     Timed performance (not identity)"
+ ]
+ compat: #[
+  "invent|inventory|inv -> census"
+  "mass -> measure mass"
+  "profile -> surface stack"
+  "map|topo -> graph"
+  "geom|form -> geometry"
+  "experimental|catalog -> exp"
+  "perf -> bench"
+ ]
+}
+
+^["falsify"]{
+ #[
+  "profile means CPU bench"
+  "mass remains only thrift verb forever without measure parent"
+  "invent stays primary name in help"
+  "* in docs means shell glob only"
+  "live Spw.x without ceilings"
+  "flag soup instead of verb noun subcommands"
+  "bare ultra-short aliases m/s/p without collision board"
+  "crystallize only as unquoted shell *"
+ ]
+}
+
+#>wonder_cli_sense_naming_1
+?["Is census clearer than roster for invent?"]{
+  !probe{ =id[p_census] }
+  $%[name.clarity, name.alias_cost]
+}
+
+#>wonder_cli_sense_naming_2
+?["Should map and graph be dual-primary for one release?"]{
+  !probe{ =id[p_graph] }
+  ~<.agents/plans/cli-sense-reorientation/PLAN.md>
+}
+
+#>wonder_cli_sense_naming_3
+?["Top-level crystallize vs spw stream crystallize?"]{
+  !probe{ =id[p_crystallize_locus] }
+  $%[compose.clarity, verb_budget]
+}
+
+#>wonder_cli_sense_naming_4
+?["When fold analyze/formula/taste under measure?"]{
+  !probe{ =id[p_measure_fold] }
+  ~<.agents/plans/measure-invariant-generalization/PLAN.md>
+}
+
+^["examples"]{
+ surface_card: |
+  // spw surface path.spw
+  // or LSP spw/surfaceProfile { uri }
+  // stack + phrases + exp
+
+ census: |
+  // spw census prompts/** --sort degree -n 30
+  // alias: invent, inventory, inv
+
+ measure: |
+  // spw measure mass path.spw
+  // spw measure authority path.spw
+  // spw measure --family all --json
+
+ graph: |
+  // spw graph ego path.spw --depth 2
+  // spw graph hubs prompts/** -n 12
+  // alias: map, topo
+
+ schedule_stream: |
+  << ~ ; ? ; % ; ! ; * ; ^ >>
+  // spw stream follow --stdin | spw crystallize --window 20
+
+ hot: |
+  // createHotSession({ channel: trial }).evaluate(src)
+  // cacheHit on second evaluate
+
+ recipes: #[
+  "surface path.spw"
+  "census prompts/** --sort degree -n 30"
+  "measure mass path.spw"
+  "graph ego path.spw --depth 2"
+  "bench parse packages/** --budget ms=500"
+ ]
+}
+
+^["open"]{
+ ?[census_vs_roster]: "census (population) vs roster (list) - still rec census?"
+ ?[surface_vs_stack]: "surface composite primary; stack thin - confirm?"
+ ?[graph_rename]: "dual-primary map+graph one release then prefer graph?"
+ ?[measure_fold]: "when fold authority/taste/analyze under measure only?"
+ ?[crystallize_cli]: "top-level crystallize or spw stream crystallize?"
+ ?[profile_compat]: "profile -> surface stack only, or full surface?"
+ ?[ultra_short]: "ship inv/geom/topo only, or also g for graph?"
+ ?[surface_p0]: "implement surface as HotSession.inspect wrapper first?"
+ ?[envelope_v2]: "when require ir+cache blocks in every --json?"
+}
+
+#>wonder_cli_sense_naming_5
+?["What is the first command a new agent should run on a folder?"]{
+  !probe{ =id[p_first_cmd] }
+  $%[census, surface, doctor]
+}
+
+#>wonder_cli_sense_naming_6
+?["Does HotRuntimeSession.inspect replace spw profile?"]{
+  !probe{ =id[p_inspect_profile] }
+  $%[stack, phrases, exp]
+}

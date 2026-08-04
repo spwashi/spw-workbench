@@ -185,7 +185,11 @@ function debounceDiagnostics(uri: string): void {
 
 async function handleRequest(message: JsonRpcRequest): Promise<void> {
   const id = message.id ?? null
-  serverIndex.tick()
+  // Advance request epoch only — no modulus "tick" notification.
+  // Notifications require typed material cause + before/after identities (phase 4+).
+  if (serverIndex) {
+    serverIndex.tick()
+  }
 
   try {
     const deps = getDeps()
@@ -385,7 +389,15 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
       case 'spw/formSequence':
       case 'spw/geometry':
       case 'spw/particles':
-      case 'spw/formContext': {
+      case 'spw/formContext':
+      case 'spw/activity':
+      case 'spw/beat': // compatibility alias — same evidence as spw/activity
+      case 'spw/surfaceProfile':
+      case 'spw/phraseScan':
+      case 'spw/channelPolicy':
+      case 'spw/flowProtocol':
+      case 'spw/geometricResonance':
+      case 'spw/probeMeasure': {
         const probe = handleSpwProbe(message.method, message.params, deps)
         sendResult(id, await Promise.resolve(probe))
         return

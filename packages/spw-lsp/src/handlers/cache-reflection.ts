@@ -91,9 +91,9 @@ export function archetypeOf(mix: ParticleMix, refCount = 0): Archetype {
 }
 
 function noteFor(
-  doc: { uri: string; visits: number; writeCount: number; lastWriteBeat: number; tier: string },
+  doc: { uri: string; visits: number; writeCount: number; lastWriteEpoch: number; tier: string },
   volatility: Volatility,
-  beat: number,
+  requestEpoch: number,
 ): AttentionNote | null {
   const { uri } = doc
 
@@ -109,11 +109,11 @@ function noteFor(
     return { kind: 'churning', uri, detail: `${doc.writeCount} edits this session` }
   }
 
-  if (doc.writeCount > 0 && doc.lastWriteBeat >= 0 && beat - doc.lastWriteBeat > ABANDON_AGE && doc.tier !== 'hot') {
+  if (doc.writeCount > 0 && doc.lastWriteEpoch >= 0 && requestEpoch - doc.lastWriteEpoch > ABANDON_AGE && doc.tier !== 'hot') {
     return {
       kind: 'wrote-without-return',
       uri,
-      detail: `edited ${beat - doc.lastWriteBeat} beats ago and not reopened since`,
+      detail: `edited ${requestEpoch - doc.lastWriteEpoch} request-epochs ago and not reopened since`,
     }
   }
 

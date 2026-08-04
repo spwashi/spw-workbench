@@ -67,8 +67,8 @@ export interface DocumentState {
    */
   visits: number
   /** Beat of the last edit, so a write that was never revisited is visible. */
-  lastWriteBeat: number
-  lastAccessBeat: number
+  lastWriteEpoch: number
+  lastAccessEpoch: number
   tier: 'hot' | 'warm' | 'cold'
   writeCount: number
 }
@@ -149,7 +149,7 @@ export const SIGIL_SEMANTICS: Record<string, SigilSemantic> = {
   '$': { role: 'selector / addressing', physics: 'addressing potential', phase: 'query', phaseIndex: -1, tuning: 'normalize selector forms to improve cache hit rate' },
   '<>': { role: 'capsule / shell', physics: 'enclosure — wrap and transport', phase: 'access', phaseIndex: -1, tuning: 'use for short-lived transport envelopes' },
   '_': { role: 'intrinsic / identity', physics: 'identity — core register', phase: 'identity', phaseIndex: -1, tuning: 'carry stable label identity across transforms' },
-}
+} satisfies Record<string, SigilSemantic>
 
 const SPIRIT_SEQUENCE = '?~ <#.> @(#.) &[#.] *{#.} ^'
 const SPIRIT_PHASES = ['?~', '<#.>', '@(#.)', '&[#.]', '*{#.}', '^']
@@ -170,7 +170,7 @@ export class ServerIndex {
   private framesByFile = new Map<string, FrameEntry[]>()
   private projections: ProjectionEntry[] = []
   private selectorDefs = new Map<string, SelectorDefinition>()
-  private beat = 0
+  private requestEpoch = 0
   private workspaceRoot: string
 
   // ── Workspace config (loaded from .spw/shelves.spw, topology.spw, editing.spw) ──
@@ -188,8 +188,8 @@ export class ServerIndex {
   // ── Beat tracking ───────────────────────────────────────────
 
   tick(): void {
-    this.beat += 1
-    if (this.beat % WARM_TTL === 0) {
+    this.requestEpoch += 1
+    if (this.requestEpoch % WARM_TTL === 0) {
       this.evictStale()
     }
   }
@@ -197,13 +197,55 @@ export class ServerIndex {
   private evictStale(): void {
     for (const [uri, doc] of this.documents) {
       if (doc.tier === 'hot') continue // open docs stay hot
-      const age = this.beat - doc.lastAccessBeat
+      const age = this.requestEpoch - doc.lastAccessEpoch
       if (doc.tier === 'warm' && age > WARM_TTL) {
         doc.tier = 'cold'
       } else if (doc.tier === 'cold' && age > COLD_TTL) {
         this.documents.delete(uri)
       }
     }
+  }
+
+  // ── Request-activity probe (not substrate pulse / temperature) ─
+
+  /**
+   * Public activity evidence: request epoch and per-document access ages.
+   * Retention tier stays internal (eviction only) — not projected as temperature.
+   */
+  getActivityStatus(uri?: string) {
+    let surface:
+      | {
+          uri: string
+          visits: number
+          lastWriteEpoch: number
+          lastAccessEpoch: number
+          accessAgeRequests: number
+        }
+      | undefined
+
+    if (uri) {
+      const doc = this.documents.get(uri)
+      if (doc) {
+        surface = {
+          uri: doc.uri,
+          visits: doc.visits,
+          lastWriteEpoch: doc.lastWriteEpoch,
+          lastAccessEpoch: doc.lastAccessEpoch,
+          accessAgeRequests: this.requestEpoch - doc.lastAccessEpoch,
+        }
+      }
+    }
+
+    return {
+      requestEpoch: this.requestEpoch,
+      activeDocuments: this.documents.size,
+      surface,
+    }
+  }
+
+  /** @deprecated Prefer getActivityStatus — beat named request traffic incorrectly. */
+  getBeatStatus(uri?: string) {
+    return this.getActivityStatus(uri)
   }
 
   // ── Document lifecycle ────────────────────────────────────────
@@ -222,15 +264,15 @@ export class ServerIndex {
     const newHash = hashString(text)
     if (newHash === doc.contentHash) {
       doc.version = version
-      doc.lastAccessBeat = this.beat
+      doc.lastAccessEpoch = this.requestEpoch
       return doc
     }
 
     doc.text = text
     doc.version = version
     doc.contentHash = newHash
-    doc.lastAccessBeat = this.beat
-    doc.lastWriteBeat = this.beat
+    doc.lastAccessEpoch = this.requestEpoch
+    doc.lastWriteEpoch = this.requestEpoch
     doc.writeCount++
 
     // Reparse
@@ -242,7 +284,7 @@ export class ServerIndex {
     const doc = this.documents.get(uri)
     if (!doc) return
     doc.tier = 'warm'
-    doc.lastAccessBeat = this.beat
+    doc.lastAccessEpoch = this.requestEpoch
   }
 
   saveDocument(uri: string): void {
@@ -264,14 +306,19 @@ export class ServerIndex {
     return this.documents
   }
 
+  getCurrentRequestEpoch(): number {
+    return this.requestEpoch
+  }
+
+  /** @deprecated Prefer getCurrentRequestEpoch */
   getCurrentBeat(): number {
-    return this.beat
+    return this.requestEpoch
   }
 
   getDocument(uri: string): DocumentState | null {
     const doc = this.documents.get(uri)
     if (doc) {
-      doc.lastAccessBeat = this.beat
+      doc.lastAccessEpoch = this.requestEpoch
     }
     return doc ?? null
   }
@@ -297,7 +344,7 @@ export class ServerIndex {
         this.parseDocument(existing)
       }
       existing.version = version
-      existing.lastAccessBeat = this.beat
+      existing.lastAccessEpoch = this.requestEpoch
       return existing
     }
 
@@ -314,8 +361,8 @@ export class ServerIndex {
       lineContexts: [],
       mix: { deixis: 0, case: 0, mood: 0, aspect: 0 },
       visits: 0,
-      lastWriteBeat: -1,
-      lastAccessBeat: this.beat,
+      lastWriteEpoch: -1,
+      lastAccessEpoch: this.requestEpoch,
       tier: 'warm',
       writeCount: 0,
     }

@@ -50,6 +50,16 @@ export interface ParserOptions {
    * high: accepts ergonomic sugar and desugars into canonical forms
    */
   contextMode: ParseContextMode
+  /**
+   * When true (default), detect Spw dialect from source headers/pragmas and
+   * apply dialect metasyntax (e.g. newline-as-space for Spw.l / Spw.q).
+   * Set false to disable auto-detection.
+   */
+  autoDialect?: boolean
+  /** Explicit dialect id (Spw.b | Spw.l | …); overrides auto-detection when set. */
+  dialect?: string
+  /** Optional path for path-based dialect/review defaults (repo-relative preferred). */
+  path?: string
 }
 
 export const DEFAULT_OPTIONS: ParserOptions = {
@@ -59,4 +69,7 @@ export const DEFAULT_OPTIONS: ParserOptions = {
   debug: false,
   lexProfile: undefined,
   contextMode: 'low',
+  autoDialect: true,
+  dialect: undefined,
+  path: undefined,
 }

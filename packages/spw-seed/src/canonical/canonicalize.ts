@@ -52,7 +52,7 @@ export interface CanonicalResult {
 }
 
 /** Named bundles for CLI / pulse profiles. */
-export type FormatProfileId = 'canonical' | 'pretty' | 'layout' | 'prose' | 'culture'
+export type FormatProfileId = 'canonical' | 'pretty' | 'layout' | 'prose' | 'culture' | 'wide'
 
 export const FORMAT_PROFILES: Record<FormatProfileId, Partial<CanonicalOptions>> = {
   /** Whitespace hygiene only (CLI default historically) */
@@ -106,6 +106,27 @@ export const FORMAT_PROFILES: Record<FormatProfileId, Partial<CanonicalOptions>>
     alignComments: false,
     reflowProse: true,
     printWidth: 88,
+    migrateSlashComments: false,
+  },
+  /**
+   * `layout` at four-space indent.
+   *
+   * Two spaces reads narrow at depth, but the convention is corpus-wide and not
+   * worth flipping at once. This makes the wider indent nameable so it can be
+   * adopted per file or per directory, and `spw format --pulse --mode wide`
+   * shows exactly what it would do before anything is written.
+   */
+  wide: {
+    normalizeNewlines: true,
+    trimTrailingWhitespace: true,
+    ensureFinalNewline: true,
+    collapseBlankLines: true,
+    indentBraces: true,
+    indentSize: 4,
+    alignComments: true,
+    commentColumn: 40,
+    blankLineBetweenFrames: true,
+    reflowProse: false,
     migrateSlashComments: false,
   },
   /**

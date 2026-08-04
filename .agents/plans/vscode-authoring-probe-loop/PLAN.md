@@ -1,21 +1,60 @@
 # Plan: vscode-authoring-probe-loop
 
-Design a thin VS Code authoring projection over Seed/LSP evidence: completions, theming cues, differential previews, code lenses, commands, and status surfaces that are profile-aware and probe-oriented.
+Design a thin **authoring projection** over Seed/LSP evidence: completions, differential previews, code lenses/actions, probe commands, and status surfaces that are profile-aware and probe-oriented — **LSP-first**, with VS Code chrome and Neovim `:Spw*` / keymap projections of the same server products.
 
 ## Goal
 
-The current authoring experience is still mostly static: completions are sigil snippets plus annotation names, code lenses are descriptive but inert, theming carries little state nuance, and runtime/probe state is hidden inside hover or terminal workflows. The desired end state is an authoring loop where register-aware completion, actionable code lenses, formatting/refactor actions, graph-query probes, rotation-style perspective changes, and lightweight status surfaces shorten the path from edit to inspection. This improves correctness and expressiveness by letting the editor expose the same register and workspace signals that the runtime and harness already know.
+The current authoring experience is still mostly static: completions are sigil snippets plus annotation names, code lenses are descriptive but inert, theming carries little state nuance, and runtime/probe state is hidden inside hover or terminal workflows. Living surfaces already *author* probes — wonder blocks, `!probe{…}`, `$%[file.frame_count, …]` on files like `.spw/index.spw` — but the editor does not close that loop.
 
-The authoring loop is one of three coordinated VS Code surfaces. It contributes `SpwContext.activePhase`, `SpwContext.materializationState`, and `SpwContext.probeHistory`, can consume atlas/register context when available, and must still ship coherently from local parse/runtime context when the other two surfaces have not landed. See `vscode-interaction-contract.spw` in the workspace-atlas plan directory for the shared event vocabulary, capability model, and additive composition contract.
+Desired end state: an authoring loop where register-aware completion, **actionable** lenses/actions, formatting/refactor previews, mass/measure reconcile, wonder-block probes, plan-context chips, and lightweight status surfaces shorten the path from edit to inspection. VS Code may use status bar + code lens; Neovim uses quickfix, floats, and commands. Semantics stay on the server.
 
-The authoring loop is also where new users *learn* Spw dynamics. The completion system, code lenses, hover, and status bar together form a teaching surface for the spirit sequence and materialization cycle. The extension teaches the language by speaking it.
+The authoring loop is one of three coordinated **VS Code** surfaces (Atlas / Registers / Authoring). It contributes `SpwContext.activePhase`, `SpwContext.materializationState`, and `SpwContext.probeHistory`, can consume atlas/register context when available, and must still ship coherently from local parse/runtime context when the other two surfaces have not landed. Neovim does **not** require those trees.
 
-**Taste note**: correctness, expressiveness, performance.
+See `vscode-interaction-contract.spw` for VS Code event vocabulary. Cross-client doctrine: `.agents/plans/vscode-lsp-roadmap/PLAN.md` multi-client table.
+
+**Taste note**: correctness, expressiveness, performance, cross-client honesty.
+
+## Ecology
+
+Parent: `.agents/plans/shape-syntax-ecology/PLAN.md`.  
+Syntactic presence at cursor: mass, wonder, `$%`, σ inspect, dialect stack, experimental refs.  
+σ-chain is the shared intermediate vocabulary with mutation-flow and refactor plans.  
+Imagination: cursor probes are the **IDE play surface**; code lenses should teach shape literacy not dump internals.
+
+## Imagination / play
+
+| Mode | Play |
+|------|------|
+| **IDE** | Place caret on `!probe`, `%mass`, `?["…"]`; list available actions (even if stub); plan context in `.agents/plans` |
+| **Screenshot** | Capture lens row + status strip; ask model what site types are present; verify |
+| **Learning** | Author one wonder with dual-track metrics; resolve `$%` when measure lands |
+| **Falsify** | Client-local phase as grammar law; auto-apply without receipt |
+
+## Practical use
+
+| Concern | Hook |
+|---------|------|
+| Selectors | completion ranking after Seed selection contract |
+| Intermediate | pulse/mobility previews |
+| Memory | probeHistory bounded; p dialect for plan files |
+| Tests | capability-honest methods only |
+| Expand/reduce | not primary; optional outline reduce |
 
 ## Scope
 
-- **In scope**: exact-context completion for metrics and root/selector contexts; optional, declared linguistic phase profiles; previewable code-lens actions; read-only probe commands; materialization and operator-distribution observations with evidence grades; reading/review transform profiles; formatting/refactor actions that consume the shared differential plan; interaction rules for surfacing runtime/probe state in ordinary editing flow; additive shared context; optional atlas/register evidence when present.
-- **Out of scope**: client-local phase semantics; regex-owned structural truth; redesigning the formatter; write-capable pulses before verified differentials; replacing the terminal harness; adding a bespoke webview console; or implementing manifest parsing or register snapshot transport.
+- **In scope**:
+  - exact-context completion for metrics and root/selector contexts
+  - optional, declared linguistic phase profiles (status-tagged; not parser law)
+  - previewable code-lens / code-action sites at: frames, `%mass`, `!probe`, wonder `?["…"]`, `$%[…]` metric lists
+  - read-only probe commands + earned `spw/probe` only after protocol registry
+  - **mass/measure diagnostics projection** (consume seed reconcile via LSP; exact-only apply)
+  - **plan-context** when URI ∈ `.agents/plans/<slug>/` (next commit, open questions)
+  - materialization and operator-distribution observations with evidence grades
+  - reading profiles: `author | prompt | research | creative` (noise budget shared with cognitive-surface)
+  - formatting/refactor actions that consume the shared differential plan
+  - Neovim command/keymap projections of the same server products (`neovim-spw-surfaces`)
+  - additive shared context; optional atlas/register evidence when present (VS Code)
+- **Out of scope**: client-local phase semantics; regex-owned structural truth; redesigning the formatter; write-capable pulses before verified differentials; replacing the terminal harness; webview consoles; Neovim panel parity; implementing register snapshot transport; inventing tolerances in the client.
 
 ## Ladder position
 
@@ -44,6 +83,17 @@ When `form-geometry-editor` lands, the authoring loop should consume:
 
 Do **not** add client-local regex geometry.
 
+## Cursor-local probe sites (product priority)
+
+| Site in buffer | Author question | VS Code | Neovim |
+|----------------|-----------------|---------|--------|
+| `%mass{…}` / scheme | Is the claim true? | diagnostic + “Correct mass (exact)” action | `[d]` + code action |
+| `~"path"` / `@root` | Can I land there? | document link + broken-ref diagnostic | `gf` / quickfix |
+| `!probe{…}` | What does this ask? | lens “Show probe” / copy | `:SpwProbe` |
+| `?["wonder"]` + `$%[metrics]` | What should we measure? | hover metrics keys; optional evaluate when earned | same via float |
+| `^["open"]` / plan `wip.spw` | What is unresolved? | status strip plan chip | `:SpwPlan` |
+| Spirit sigil under cursor | Where am I in the sequence? | context strip + hover badges | statusline / `:SpwPhase` if earned |
+
 ## Files
 
 ```text
@@ -62,6 +112,10 @@ Do **not** add client-local regex geometry.
 [MOD] packages/spw-lsp/src/handlers/editing.ts
 [MOD] packages/spw-lsp/src/handlers/display.ts
 [MOD] packages/spw-lsp/src/handlers/analysis.ts
+[MOD?] packages/spw-lsp/src/handlers/measure-diagnostics.ts   mass/authority publishDiagnostics
+[MOD] extensions/neovim-spw/lua/spw/commands.lua              projections only
+[REF] .agents/plans/neovim-spw-surfaces/PLAN.md
+[REF] .agents/plans/measure-invariant-generalization/PLAN.md
 ```
 
 ### Craft guard

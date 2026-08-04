@@ -98,6 +98,8 @@ Flags of interest:
 ## Related
 
 - `docs/theory/spw/mutation-automata.spw`
+- `docs/theory/spw/mutation-flow-automata.spw` — proposed glyph-first flow/CA notation (`~ ? % ! * ^`, profiles as cellular rule tables, `||` vs `;` schedules); not runtime law
+- `docs/theory/spw/syntax-profile-stack.spw` — dialect × review × format stack; `packages/spw-seed/src/dialect` detection used by `parse()`
 - `.spw/hot.spw`
 - `packages/spw-cli/src/{pulse,mutate,beat,dev}.ts`
 - `packages/spw-seed/src/canonical/differential.ts` (`EffectGrade` = `effect.l*`)

@@ -7,7 +7,11 @@
 
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
-import { parse } from '@spwashi/spw-seed'
+import {
+    parse,
+    getSyntaxCatalogEntry,
+    scanExperimentalRefs,
+} from '@spwashi/spw-seed'
 import type {
     LspDiagnostic, LspFoldingRange, DocumentParams,
     HandlerDeps,
@@ -67,6 +71,43 @@ export async function publishDiagnostics(uri: string, deps: HandlerDeps): Promis
                 severity: 1,
                 source: 'spw',
                 message: `${msg}${expected}${found}`,
+            })
+        }
+    }
+
+    // 1b. Unknown experimental catalog citations (=exp[ id: … ])
+    {
+        const source = doc.text
+        const scan = scanExperimentalRefs(source)
+        for (const ref of scan.expRefs) {
+            if (getSyntaxCatalogEntry(ref.id)) continue
+            const idx = typeof ref.offset === 'number' ? ref.offset : source.indexOf(ref.id)
+            let line = 0
+            let character = 0
+            if (idx >= 0) {
+                const before = source.slice(0, idx)
+                line = before.split('\n').length - 1
+                character = before.length - (before.lastIndexOf('\n') + 1)
+            }
+            const len = typeof ref.length === 'number' ? ref.length : ref.id.length
+            diagnostics.push({
+                range: {
+                    start: { line, character },
+                    end: { line, character: character + len },
+                },
+                severity: 3, // Information — prepare for catalog literacy, not hard fail
+                source: 'spw-exp',
+                message: `unknown experimental id "${ref.id}" — not in SYNTAX_CATALOG (add to packages/spw-seed/src/experimental/)`,
+            })
+        }
+
+        // Soft chip when author marks regional Spw.o (not a core DialectId yet)
+        if (/@dialect\s*:\s*Spw\.o\b|#:\s*dialect\b[^\n]*Spw\.o\b/.test(source)) {
+            diagnostics.push({
+                range: { start: { line: 0, character: 0 }, end: { line: 0, character: 1 } },
+                severity: 4, // Hint
+                source: 'spw-dialect',
+                message: 'Regional dialect Spw.o — channel experimental|ocean only until graduated',
             })
         }
     }

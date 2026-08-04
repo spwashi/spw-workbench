@@ -19,8 +19,11 @@ export type OperatorKind = '!' | '^' | '~' | '?' | '*' | '=' | '@' | '#' | '.' |
 /** Spw modifiers: valence markers */
 export type ModifierKind = 'bone' | 'boon' | 'bane' | 'bonk' | 'honk'
 
-/** Spw connectors: sequence, alternative, parallel, path, mapping */
-export type ConnectorKind = '..' | '|' | '/' | '->'
+/**
+ * Spw connectors: sequence, alternative, parallel, path, mapping, schedule.
+ * `;` = sequential schedule (streams / CA pipelines); `||` = parallel schedule.
+ */
+export type ConnectorKind = '..' | '|' | '/' | '->' | ';' | '||' | '+' | '-'
 
 /** Container delimiters */
 export type ContainerKind =

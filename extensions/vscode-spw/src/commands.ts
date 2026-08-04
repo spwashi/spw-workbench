@@ -255,6 +255,149 @@ export function registerSpwCommands(
       await vscode.window.showTextDocument(doc, { preview: true, viewColumn: vscode.ViewColumn.Beside })
     }),
 
+    vscode.commands.registerCommand('spw.showSurfaceProfile', async () => {
+      const editor = vscode.window.activeTextEditor
+      if (!editor || editor.document.languageId !== 'spw') {
+        void vscode.window.showInformationMessage('Open a .spw file first.')
+        return
+      }
+      const uri = editor.document.uri.toString()
+      const result = await client.sendRequest<{
+        stack?: Record<string, string>
+        flow?: { summary?: string }
+        probeMeasure?: string
+        experimental?: { known?: string[]; unknown?: string[] }
+        phrases?: Record<string, number>
+      }>('spw/surfaceProfile', { uri })
+      const stack = result.stack ?? {}
+      const lines = [
+        '# Spw surface profile',
+        '',
+        '## Stack',
+        ...Object.entries(stack).map(([k, v]) => `- **${k}**: \`${v}\``),
+        '',
+        `## Flow`,
+        result.flow?.summary ?? '(none)',
+        '',
+        `## Probes`,
+        result.probeMeasure ?? '(none)',
+        '',
+        '## Experimental',
+        `known: ${(result.experimental?.known ?? []).join(', ') || '—'}`,
+        `unknown: ${(result.experimental?.unknown ?? []).join(', ') || '—'}`,
+        '',
+        '## Phrases',
+        ...Object.entries(result.phrases ?? {})
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 12)
+          .map(([id, n]) => `- \`${id}\` ×${n}`),
+      ]
+      const doc = await vscode.workspace.openTextDocument({
+        content: lines.join('\n'),
+        language: 'markdown',
+      })
+      await vscode.window.showTextDocument(doc, { preview: true, viewColumn: vscode.ViewColumn.Beside })
+    }),
+
+    vscode.commands.registerCommand('spw.showFlowProtocol', async () => {
+      const editor = vscode.window.activeTextEditor
+      if (!editor || editor.document.languageId !== 'spw') {
+        void vscode.window.showInformationMessage('Open a .spw file first.')
+        return
+      }
+      const uri = editor.document.uri.toString()
+      const result = await client.sendRequest<{
+        summary?: string
+        roles?: Record<string, number>
+        schedules?: string[]
+        biasAxes?: string[]
+        units?: Array<{ role: string; fixity: string; surface: string; line: number; confidence: number }>
+      }>('spw/flowProtocol', { uri })
+      const lines = [
+        '# Spw flow protocol',
+        result.summary ?? '',
+        '',
+        '## Roles',
+        ...Object.entries(result.roles ?? {})
+          .filter(([, n]) => n > 0)
+          .map(([r, n]) => `- ${r}: ${n}`),
+        '',
+        '## Schedules',
+        ...(result.schedules ?? []).map(s => `- \`${s}\``),
+        '',
+        '## Bias axes',
+        ...(result.biasAxes ?? []).map(a => `- ${a}`),
+        '',
+        '## Units (sample)',
+        ...(result.units ?? [])
+          .slice(0, 24)
+          .map(u => `- L${u.line} [${u.role}/${u.fixity}] \`${u.surface}\` (${u.confidence})`),
+      ]
+      const doc = await vscode.workspace.openTextDocument({
+        content: lines.join('\n'),
+        language: 'markdown',
+      })
+      await vscode.window.showTextDocument(doc, { preview: true, viewColumn: vscode.ViewColumn.Beside })
+    }),
+
+    vscode.commands.registerCommand('spw.showGeometricResonance', async () => {
+      const editor = vscode.window.activeTextEditor
+      if (!editor || editor.document.languageId !== 'spw') {
+        void vscode.window.showInformationMessage('Open a .spw file first.')
+        return
+      }
+      const uri = editor.document.uri.toString()
+      const result = await client.sendRequest<{
+        resonances?: Array<{ type: string; ends: [string, string]; strength: number; evidence: string }>
+        geometry?: { maxDepth?: number; topOps?: Array<{ op: string; count: number }> }
+      }>('spw/geometricResonance', { uri })
+      const lines = [
+        '# Spw geometric resonance',
+        `maxDepth=${result.geometry?.maxDepth ?? 0}`,
+        '',
+        '## Top ops',
+        ...(result.geometry?.topOps ?? []).map(o => `- ${o.op} ×${o.count}`),
+        '',
+        '## Resonances',
+        ...(result.resonances ?? [])
+          .slice(0, 30)
+          .map(r => `- [${r.type}] ${r.ends[0]} ↔ ${r.ends[1]}  ${r.strength.toFixed(2)}  ${r.evidence}`),
+      ]
+      const doc = await vscode.workspace.openTextDocument({
+        content: lines.join('\n'),
+        language: 'markdown',
+      })
+      await vscode.window.showTextDocument(doc, { preview: true, viewColumn: vscode.ViewColumn.Beside })
+    }),
+
+    vscode.commands.registerCommand('spw.showProbeMeasure', async () => {
+      const editor = vscode.window.activeTextEditor
+      if (!editor || editor.document.languageId !== 'spw') {
+        void vscode.window.showInformationMessage('Open a .spw file first.')
+        return
+      }
+      const uri = editor.document.uri.toString()
+      const result = await client.sendRequest<{
+        summary?: string
+        wonderCount?: number
+        probeCount?: number
+        metricCount?: number
+        probes?: Array<{ kind: string; line: number; surface: string; body?: string }>
+      }>('spw/probeMeasure', { uri })
+      const lines = [
+        '# Spw probe measure',
+        result.summary ?? '',
+        `wonder=${result.wonderCount ?? 0} probe=${result.probeCount ?? 0} metric=${result.metricCount ?? 0}`,
+        '',
+        ...(result.probes ?? []).map(p => `- L${p.line} [${p.kind}] ${p.surface}${p.body ? ` — ${p.body}` : ''}`),
+      ]
+      const doc = await vscode.workspace.openTextDocument({
+        content: lines.join('\n'),
+        language: 'markdown',
+      })
+      await vscode.window.showTextDocument(doc, { preview: true, viewColumn: vscode.ViewColumn.Beside })
+    }),
+
     vscode.commands.registerCommand('spw.clearProbeCache', () => {
       probeCache?.clear()
       void vscode.window.showInformationMessage('Spw probe cache cleared.')

@@ -1,11 +1,13 @@
 /**
  * Shared .spw file-tree walker. Single source of truth for directory
- * exclusions and traversal so query/tree/mount/dev can't drift out of sync
- * (previously each reimplemented this with a different ignore-list).
+ * exclusions and traversal so query/tree/mount/dev/invent/map can't drift.
+ *
+ * Skips derived `*.expanded.spw` and everything under `.spw/gen/` (corpus
+ * authority stays on authored sources).
  */
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
-import { isDerivedSurface } from '@spwashi/spw-seed'
+import { shouldSkipCorpusSurface } from '@spwashi/spw-seed'
 
 export const DEFAULT_IGNORED_DIRS: ReadonlySet<string> = new Set([
   '.git',
@@ -31,25 +33,39 @@ export async function collectSpwFiles(
   const abs = path.resolve(root)
   const stat = await fs.stat(abs).catch(() => null)
   if (!stat) return []
-  if (stat.isFile()) return abs.endsWith('.spw') ? [abs] : []
+  if (stat.isFile()) {
+    if (!abs.endsWith('.spw')) return []
+    if (shouldSkipCorpusSurface(abs) || shouldSkipCorpusSurface(path.basename(abs))) return []
+    return [abs]
+  }
   if (!stat.isDirectory()) return []
 
   const out = await walk(abs, ignore)
   return out.sort()
 }
 
+/** Skip `.spw/gen` wholesale when walking under a `.spw` tree. */
+function skipDirectory(dir: string, entryName: string, ignore: ReadonlySet<string>): boolean {
+  if (ignore.has(entryName)) return true
+  // Corpus must not invent/map gen dumps
+  if (entryName === 'gen' && path.basename(dir) === '.spw') return true
+  return false
+}
+
 async function walk(dir: string, ignore: ReadonlySet<string>): Promise<string[]> {
   const entries = await fs.readdir(dir, { withFileTypes: true }).catch(() => [])
 
   const results = await Promise.all(
-    entries.map(async (entry) => {
+    entries.map(async entry => {
       if (entry.name.startsWith('.') && entry.name !== '.spw') return []
       if (entry.isDirectory()) {
-        if (ignore.has(entry.name)) return []
+        if (skipDirectory(dir, entry.name, ignore)) return []
         return walk(path.join(dir, entry.name), ignore)
       }
-      if (entry.isFile() && entry.name.endsWith('.spw') && !isDerivedSurface(entry.name)) {
-        return [path.join(dir, entry.name)]
+      if (entry.isFile() && entry.name.endsWith('.spw')) {
+        const full = path.join(dir, entry.name)
+        if (shouldSkipCorpusSurface(entry.name) || shouldSkipCorpusSurface(full)) return []
+        return [full]
       }
       return []
     }),

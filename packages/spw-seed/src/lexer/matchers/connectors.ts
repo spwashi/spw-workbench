@@ -1,7 +1,8 @@
 /**
  * Connector Matcher
  *
- * Spw connectors: .. | & / ->
+ * Spw connectors: .. | || / -> ; (+ extras from profile)
+ * Digraphs (`||`, `->`, `..`) win over single-char via longest-match sort.
  */
 
 import type { Token, ParseEvent, TokenEventData } from '../../types'

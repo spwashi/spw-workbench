@@ -1,0 +1,897 @@
+# wip — canon-rewrite-v2
+# Branch: feature/canon-rewrite-v2 (bootstrap → phase 0)
+# Started: 2026-08-04
+#
+# PLAN.md = pre-flight. This file = agent working set.
+# Advance by phase acceptance + corpus pass (commit count irrelevant).
+#
+# ── RESET / BOOTSTRAP (once) ─────────────────────────────────
+# 1 backup tip     git branch backup/pre-rewrite-v2-tip 8bb423c7
+# 2 park dirty     git stash push -m wip/cite-tag-session -- <dirty_paths>
+# 3 abort rebase   git -C ../wt-canon-rewrite-v2 rebase --abort
+# 4 reset cwd      git reset --hard upstream/main   # HEAD=d9da60ad
+# 5 feature br     git switch -C feature/canon-rewrite-v2
+# 6 tip tree       git checkout backup/pre-rewrite-v2-tip -- .
+#                  ancestry=upstream; working tree=tip capability (clean retrospect)
+# 7 phase 0        doctrine + clock hygiene
+# 8 stash re-land  later as cite-tag discharge (not blind pop)
+# Refuse: rebase -i the 31; continue mid-rebase v2.
+# Untracked .agents/plans/canon-rewrite-v2/ survives hard reset.
+#
+# ── notation ─────────────────────────────────────────────────
+# %name + {interprets, considers, surfaces, run}
+# op_stance  *_subjective  &_objective
+# live | tree | template
+#
+#:layer #!pragmatics
+#:status #!phase0
+#>canon_rewrite_v2_wip
+
+^["roots"]{
+ @plan: ~".agents/plans/canon-rewrite-v2/PLAN.md"
+ @wip: ~".agents/plans/canon-rewrite-v2/wip.spw"
+ @beat_diff: ~".agents/plans/spw-beat-diff-precipitation/PLAN.md"
+ @activity_review: ~".agents/plans/spw-beat-diff-precipitation/activity-stop-decision-review.spw"
+ @cache_materials_review: ~".agents/plans/spw-beat-diff-precipitation/cache-partial-materials-review.spw"
+ @granules: ~".agents/plans/apposition-cache-granules/PLAN.md"
+ @geometry_tooling: ~".agents/plans/geometric-analysis-tooling/PLAN.md"
+ @cli_sense: ~".agents/plans/cli-sense-reorientation/PLAN.md"
+ @brace_charge: ~"docs/theory/spw/brace-charge-crawl.spw"
+ @fixity: ~"docs/theory/spw/fixity-brace-phrases.spw"
+ @form_geometry: ~"docs/theory/spw/form-geometry.spw"
+ @operators: ~"docs/theory/spw/operators.spw"
+ @operational_topo: ~"docs/theory/spw/operational-topography.spw"
+ @measure_kernel: ~"docs/theory/spw/measure-context-kernel.spw"
+ @register_bank: ~".spw/registries/register-bank.spw"
+ @dialect_spec: ~".spw/registries/dialect-spec.spw"
+ @workspace: ~".spw/workspace.spw"
+ @index_spw: ~".spw/index.spw"
+ @cli_conventions: ~".spw/conventions/cli.spw"
+ @cache_algo: ~".spw/biome/ocean/algos/cache.spw"
+ @seed_ir: ~"packages/spw-seed/src/ir"
+ @seed_query: ~"packages/spw-seed/src/query"
+ @hot_session: ~"packages/spw-runtime/src/session/hot-session.ts"
+ @charge: ~"packages/spw-runtime/src/session/charge.ts"
+ @channels: ~"packages/spw-runtime/src/session/channels.ts"
+ @dialect_policy: ~"packages/spw-runtime/src/session/dialect-policy.ts"
+ @memory_cache: ~"packages/spw-runtime/src/state/memory-cache.ts"
+ @lsp_server: ~"packages/spw-lsp/src/server-index.ts"
+ @cli_pulse: ~"packages/spw-cli/src/pulse.ts"
+ @cli_commands: ~"packages/spw-cli/src/commands.ts"
+}
+
+^["intent"]{
+ ~#goal: "Rebuild tip capability on upstream/main with field hygiene; interleave quanta/cache/change/pattern code with corpus norm; ff-push when lawful."
+ ~#taste: "One noun per clock; identity ≠ retention ≠ projection; collate before discharge; %measures carry landmarks; stances label ops without rebinding glyphs."
+ ~#non_goal: "SHA archaeology; finish mid-rebase edit-all."
+ ~#asset: "tip tree + hygiene lessons"
+ ~#liability: "temperature/beat-as-product draft history"
+ %publish_base{
+  interprets: objective
+  considers: #[upstream/main@d9da60ad]
+  surfaces: #[git, plan_cache]
+  run: "rebuild ancestry root only"
+ }
+ %commit_count{
+  interprets: subjective
+  considers: #[discharge_units]
+  surfaces: #[wip, episode]
+  run: "ignore as success metric"
+ }
+}
+
+^["development"]{
+ lane: #rewrite_recovery
+ ladder: #service
+ develops: #[#taste, #linguistics, #architecture, #information_science, #type_discipline, #ecological_literacy]
+ review_surfaces: #[@plan, @brace_charge, @workspace, @operators, @measure_kernel, @register_bank]
+ snippet_routes: #[#example, #query, #dual_read, #wonder, #live, #template]
+ posture: "phase acceptance over commit theater"
+ %lane_capability{
+  interprets: objective
+  considers: #[tip_backup_tree, capability_checklist]
+  surfaces: #[test, smoke]
+  run: "parity against tip before push"
+ }
+}
+
+// ═══════════════════════════════════════════════════════════
+// MEASURE PROTOCOL — %name + four landmarks
+// ═══════════════════════════════════════════════════════════
+
+^["measure_protocol"]{
+ // % is measure (register bank: ratio / normalized instrument).
+ // Name = what is measured. Landmarks = how to read/run it.
+ // FORBIDDEN: %objective[foo]  →  use %foo { interprets: objective … }
+
+ landmarks: .{
+  interprets: "objective | subjective | mixed | interpretive — authority of the claim"
+  considers: "basis, sample, profile, excluded noise"
+  surfaces: "live | tree | template | card | cli | lsp | test | postings — disclosure site"
+  run: "instrument / recipe / mode that produces the value"
+ }
+
+ interprets_authority: .{
+  objective: "recomputable; may gate product keys and discharge"
+  subjective: "literacy/rank/taste; must not enter IrRef identity"
+  mixed: "both parts labeled; only objective part may gate writes"
+  interpretive: "teaching profile; no gate"
+ }
+
+ surfaces_modes: .{
+  live: "register/session working set; partial products; memory-lean"
+  tree: "full AST/ONF materialize; exact spwq and AstDelta"
+  template: "holes + preprocess blend; pattern capture/apply and format pulses"
+  card: "Spw dual-read disclose"
+  cli: "stdout/json command surface"
+  lsp: "editor projection"
+  test: "vitest / fuzz gate"
+  postings: "index handle map"
+ }
+
+ // Compact catalog — scan vertically: name · interprets · considers · surfaces · run
+ catalog: #[
+  .{ id: %product_identity, interprets: objective, considers: #[contentHash, uri_span_rev, dialect, lex_profile, producer_schema, boundary, channel_eval], surfaces: #[live, tree, postings], run: "irRefKey" },
+  .{ id: %key_excludes, interprets: objective, considers: #[request_epoch, soft_bc_tag, resonance_rank, cache_tier, attention], surfaces: #[test, types], run: "brand + law tests refuse these in IrRef" },
+  .{ id: %layout_only_write, interprets: objective, considers: #[brace.equal, ast_structural_empty, lex.triviaOnly], surfaces: #[cli, test], run: "ChangeReport ∧ pulse gate" },
+  .{ id: %craft_guard, interprets: objective, considers: #[file_lines, import_count], surfaces: #[test, review], run: "≤600 lines ∧ ≤12 imports else split" },
+  .{ id: %gen_skip, interprets: objective, considers: #[.spw/gen, expanded_surfaces], surfaces: #[cli], run: "fs-walk shouldSkipCorpusSurface" },
+  .{ id: %effect_ceiling, interprets: objective, considers: #[channel_policy], surfaces: #[runtime, cli], run: "crawl/discharge check" },
+  .{ id: %parse_health, interprets: objective, considers: #[before_after_ParseHealth], surfaces: #[card, cli], run: "topography / ChangeReport" },
+  .{ id: %path_receipt, interprets: objective, considers: #[dialect, producer_schema, preprocess_flags], surfaces: #[live, product], run: "stamp on every materialized quantum" },
+  .{ id: %brand_separation, interprets: objective, considers: #[RequestEpoch, SessionBeat, ContentHash], surfaces: #[types, test], run: "non-assignability" },
+  .{ id: %report_identity, interprets: objective, considers: #[beforeHash, afterHash, profileStackHash, producer], surfaces: #[card, test], run: "ChangeReport header" },
+  .{ id: %structure_if_brace, interprets: objective, considers: #[brace_severity], surfaces: #[cli, test], run: "severity > layout_ok ⇒ structureMoved" },
+  .{ id: %fuzzy_not_exact, interprets: objective, considers: #[fuzzy_hit], surfaces: #[cli, lsp], run: "apply requires spwq/handle revalidate" },
+  .{ id: %scheme_version, interprets: objective, considers: #[SearchTuning.scheme], surfaces: #[postings], run: "score memo key only — not product key" },
+  .{ id: %basis_tag, interprets: objective, considers: #[lite, full, mixed], surfaces: #[card], run: "tag every fuzzy report" },
+  .{ id: %phase_gate, interprets: objective, considers: #[phase.acceptance, stream_evidence], surfaces: #[wip, test], run: "acceptance holds with evidence" },
+  .{ id: %eviction_leak, interprets: objective, considers: #[document_evict, index_entries], surfaces: #[test], run: "cache-eviction red→green" },
+  .{ id: %apposition_stable, interprets: objective, considers: #[~# names], surfaces: #[corpus, test], run: "stabilize before granule land" },
+  .{ id: %temperature_ban, interprets: subjective, considers: #[public_activity_projection], surfaces: #[lsp, card], run: "grep/public API review" },
+  .{ id: %resonance_rank, interprets: subjective, considers: #[bytecode, handles, ecology], surfaces: #[cli, live], run: "SearchTuning schedule only" },
+  .{ id: %reading_profile, interprets: subjective, considers: #[author, prompt, research, creative], surfaces: #[grain, card], run: "reweight disclose + fuzzy gains" },
+  .{ id: %domain_pack, interprets: subjective, considers: #[materials, flow, …], surfaces: #[SearchTuning], run: "feature gains not contentHash" },
+  .{ id: %wonder_quality, interprets: subjective, considers: #[wonder_count, probe_depth], surfaces: #[corpus], run: "census open wonders; prefer few" },
+  .{ id: %commit_narrative, interprets: subjective, considers: #[episode_scene], surfaces: #[git], run: "scene→change→verify taste" },
+  .{ id: %rank_boosts, interprets: subjective, considers: #[sameFixity, sameLabelSite, minScore], surfaces: #[cli], run: "SearchTuning knobs" },
+ ]
+
+ law: "interprets:objective may gate keys/writes; interprets:subjective may rank/disclose only"
+}
+
+// ═══════════════════════════════════════════════════════════
+// OPERATOR STANCES — labels on all sigils (not glyph rebinds)
+// ═══════════════════════════════════════════════════════════
+
+^["operator_stances"]{
+ // Form: <sigil>_<stance>  e.g. *_subjective  &_objective
+ // Stance is operational definition of *how the Act is used in this plan*,
+ // not a new lexer token. Implements scannable dual-read of each op.
+
+ law: "stance labels literacy and gate class; glyph runtime meaning stays operators.spw / register bank"
+
+ table: #[
+  .{ op: "!", name: action,
+     _objective: "force apply / effect intent on discharge",
+     _subjective: "urgency of review — does not raise effectCeiling" },
+  .{ op: "?", name: wonder,
+     _objective: "probe with instrumented !probe receipt",
+     _subjective: "open question without instrument" },
+  .{ op: "~", name: potential,
+     _objective: "plan-only / potentiated product / deferred charge state",
+     _subjective: "suspended reading — not yet attended" },
+  .{ op: "*", name: value,
+     _objective: "collapse bind value carrier into product",
+     _subjective: "magnetic-bind literacy reading of *" },
+  .{ op: "&", name: subject,
+     _objective: "confluence merge / subject key for claims",
+     _subjective: "WITH/OF rhetorical join — not automatic merge" },
+  .{ op: "^", name: integration,
+     _objective: "structural lift into published/header form",
+     _subjective: "ascension metaphor for status — not liminality alone" },
+  .{ op: "#", name: vibration,
+     _objective: "resonate/category/set/particle lattice signal",
+     _subjective: "electrical-bus reading — never rebind primary #" },
+  .{ op: "@", name: perspective,
+     _objective: "observer scope / ref handle",
+     _subjective: "whose grain discloses the card" },
+  .{ op: ".", name: ground,
+     _objective: "path step / property ground",
+     _subjective: "narrative ground — render-only orientation risk" },
+  .{ op: "$", name: substrate,
+     _objective: "register meta / session substrate id",
+     _subjective: "felt substrate of work — not a second clock" },
+  .{ op: "%", name: measure,
+     _objective: "landmarked instrument (this protocol)",
+     _subjective: "felt thrift without scheme id — refuse as gate" },
+  .{ op: "=", name: configuration,
+     _objective: "register write / declared config",
+     _subjective: "preference as if law — refuse without channel" },
+  .{ op: "<>", name: coupling,
+     _objective: "bidirectional edge when keys allow",
+     _subjective: "soft couple literacy" },
+  .{ op: "_", name: hole,
+     _objective: "AT site / pattern hole / ONF hole",
+     _subjective: "deliberate under-specification for teaching" },
+ ]
+
+ // Diff-card triad (prepositional geometry) — always with stance if ambiguous
+ diff_triad: .{
+  _: "AT hole — often _objective on templates"
+  &: "WITH subject — &_objective on authority; &_subjective on prose join"
+  ^: "INTO integrate — ^_objective on structure promote"
+ }
+
+ charge_pair: .{
+  ~_objective: "potentiated plan"
+  *_objective: "value discharge bind"
+  ~_subjective: "not yet cared about"
+  *_subjective: "magnetic literacy only"
+ }
+}
+
+// ═══════════════════════════════════════════════════════════
+// REGISTERS — working set for live mode
+// ═══════════════════════════════════════════════════════════
+
+^["registers"]{
+ // Align with @register_bank; plan uses registers as live-mode memory, not new physics.
+ @bank: @register_bank
+
+ plan_registers: .{
+  // Named slots agents may hold without re-materializing trees
+  $phase: "current phase id 0..7"
+  $corpus_pass: "A..F or empty"
+  $mode: "live | tree | template — active interpretation mode"
+  $channel: "stability channel for next discharge"
+  $grain: "resolved granularity card"
+  $tuning: "SearchTuning scheme + weights"
+  $last_report: "ChangeReport handle / @bc"
+  $last_measure: "last %name + landmarks"
+  $open_wonders: "set of #>wonder ids still open"
+  $hot_files: "craft-guard watch list"
+ }
+
+ access: .{
+  live: "read/write plan_registers + BeatCache inspect plane; avoid full AST"
+  tree: "materialize AST/ONF into temporary registers; drop after op"
+  template: "bind holes into $bindings; preprocess under dialect; optional tree for validate"
+ }
+
+ %register_pressure{
+  interprets: objective
+  considers: #[cache_max_entries, inspect_plane_size, open_docs]
+  surfaces: #[live, runtime]
+  run: "session.stats + BeatCache.stats; demote by session_beat only"
+ }
+}
+
+// ═══════════════════════════════════════════════════════════
+// INTERPRETATION MODES — live / tree / template
+// ═══════════════════════════════════════════════════════════
+
+^["interpretation_modes"]{
+ // Three modes trade memory, exactness, and preprocess blend.
+ // Select per op; stamp on %measure.surfaces and product producer notes.
+
+ live: .{
+  aim: "memory efficiency; streaming/working-set interpretation"
+  materializes: #[tokens_window, handles, bytecode, phrase_census, registers]
+  avoids: #[full_ast_unless_required, whole_corpus_parse]
+  good_for: #[fuzzy_rank, cite_follow, activity, granule_validity_probe, census_skim]
+  charge: "~_objective products stay potentiated; * only on explicit bind"
+  %live_footprint{
+   interprets: objective
+   considers: #[open_docs, inspect_entries, postings_hot]
+   surfaces: #[live, runtime]
+   run: "session inspect plane caps"
+  }
+ }
+
+ tree: .{
+  aim: "exact structural truth"
+  materializes: #[full_parse, onf, spwq, AstDelta, brace_projection]
+  avoids: #[silent_partial_as_closed]
+  good_for: #[exact_query, layout_only_gate, authority_subject, pattern_exact_apply_validate]
+  charge: "*_objective after successful parse product"
+  %tree_cost{
+   interprets: objective
+   considers: #[file_bytes, maxAstDepth]
+   surfaces: #[tree, test]
+   run: "parse + walkAST; budget by grain.depth"
+  }
+ }
+
+ template: .{
+  aim: "blended preprocessing + interpretation — holes, desugar, format pulses, pattern instantiate"
+  materializes: #[preprocess_dialect, desugar?, hole_bindings, pulse_plan, snippet_hydrate]
+  blend: "preprocess(dialect) → fill holes → optional tree validate → differential"
+  good_for: #[pattern_capture_apply, format_pulses, mutate_plan, wonder_scaffold]
+  charge: "~_objective until validate; *_objective on accepted after-text"
+  %template_blend{
+   interprets: mixed
+   considers: #[dialect, holes, desugar_flag, bindings]
+   surfaces: #[template, cli, card]
+   run: "prepare → instantiate → compareLex/Ast → ChangeReport"
+  }
+ }
+
+ mode_matrix: #[
+  .{ op: "census/graph", prefer: live, escalate: tree },
+  .{ op: "select/spwq exact", prefer: tree, escalate: none },
+  .{ op: "fuzzy find", prefer: live, escalate: tree_revalidate },
+  .{ op: "pulse plan", prefer: template, escalate: tree },
+  .{ op: "pulse write", prefer: template_then_tree, escalate: refuse_if_structure },
+  .{ op: "granule reuse", prefer: live, escalate: tree_on_envelope_miss },
+  .{ op: "wonder probe", prefer: live, escalate: template_if_scaffold },
+ ]
+
+ dialect_flow: "modes ride SurfaceProfileStack; dialect preprocess is template/live shared; tree always stamps %path_receipt"
+}
+
+// ═══════════════════════════════════════════════════════════
+// WONDER ARCHITECTURE
+// ═══════════════════════════════════════════════════════════
+
+^["wonder_architecture"]{
+ // Enhance trailing ?[] footer pattern into navigable, measurable inquiry nodes.
+
+ node: .{
+  id: "#>wonder_<topic_stable>"  // not path-encoded
+  body: "?[\"…\"]{ landmarks + optional !probe }"
+  layer: pragmatics
+  charge: ~_objective  // potentiated until answered
+ }
+
+ landmarks_on_wonder: .{
+  // Same four as %measures so wonders are scannable instruments
+  interprets: "usually subjective|interpretive; objective if !probe has method"
+  considers: "axes, files, measures in scope"
+  surfaces: "card|cli|registry|live"
+  run: "manual | !probe recipe | template scaffold"
+ }
+
+ registry: .{
+  home: "domain index.spw or domain/_wonder.spw list of ids + one-liner + status"
+  status: #[open, answered, deferred, refused]
+  edges: " ~#neighbor + pathref — ecological resonance"
+ }
+
+ probe: .{
+  form: "!probe{ … }"
+  stance: "!_objective when instrumented; !_subjective when rhetorical"
+  receipt: "optional %name { … } result"
+ }
+
+ modes: .{
+  live: "list open wonders from $open_wonders; no full parse"
+  tree: "spwq for ? and #>wonder*"
+  template: "scaffold new wonder from pattern capture"
+ }
+
+ quality: %wonder_quality  // see measure catalog
+
+ anti_patterns: #[
+  "path-encoded ids wonder_docs_theory_…",
+  "auto pair of empty wonders per file",
+  "wonder that claims grammar authority",
+ ]
+
+ // Embedded wonders for this branch — topic-stable ids
+}
+
+#>wonder_clocks
+?["If request epoch and session beat shared a public name, which product key fails first?"]{
+  interprets: objective
+  considers: #[%key_excludes, %brand_separation]
+  surfaces: #[test, card]
+  run: "construct IrRef with epoch field — must refuse"
+  !probe{ "assignability between RequestEpoch and SessionBeat brands." }
+}
+
+#>wonder_brace_bias
+?["Brace equal but reader feels motion — missing lex stratum or subjective Δ?"]{
+  interprets: mixed
+  considers: #[%layout_only_write, %structure_if_brace, %temperature_ban]
+  surfaces: #[cli, card]
+  run: "ChangeReport on comment-only vs channel-tag edit"
+  !probe{ "compare usefulness class and write gate." }
+}
+
+#>wonder_dialect_flow
+?["Which combinator path does Spw.l close that Spw.b leaves open — same glyphs, different %path_receipt?"]{
+  interprets: objective
+  considers: #[%path_receipt, dialect_preprocess]
+  surfaces: #[tree, test]
+  run: "prepare under two dialects; compare product keys"
+  !probe{ "hash preprocess output; stamp path receipts." }
+}
+
+#>wonder_nominal_vs_syntactic
+?["After particle pass A, do nominal postings beat syntactic cosine for find-frame?"]{
+  interprets: subjective
+  considers: #[%resonance_rank, %rank_boosts, handles]
+  surfaces: #[cli, live]
+  run: "precision@k label query vs bytecode neighbors"
+  !_subjective{ "rank only — exact apply still revalidates" }
+}
+
+#>wonder_star_magnetic
+?["What falsifies treating * as physical force rather than *_objective value bind / *_subjective literacy?"]{
+  interprets: interpretive
+  considers: #[@charge, interpreter_*]
+  surfaces: #[card]
+  run: "trace * → ChargePacket claims"
+  !probe{ "list instrumented vs named-only claims." }
+}
+
+#>wonder_hub_ecology
+?["If workspace stops being graph sun, which indexes become stars — biome or accident?"]{
+  interprets: subjective
+  considers: #[ecological_resonance, pass_C]
+  surfaces: #[cli]
+  run: "spw graph before/after hub split"
+  !probe{ "list hubs; wonder-bridge edges." }
+}
+
+#>wonder_obj_subj_delta
+?["Can MutationVector and taste census disagree on 'nothing changed' — who opens effect.l2?"]{
+  interprets: objective
+  considers: #[%layout_only_write, %wonder_quality]
+  surfaces: #[cli, test]
+  run: "whitespace pulse vs particle-header edit"
+  !probe{ "only objective layout_only may authorize --write." }
+}
+
+#>wonder_mode_memory
+?["When does live mode lie by omission versus tree mode waste memory — who picks $mode?"]{
+  interprets: mixed
+  considers: #[%live_footprint, %tree_cost, grain]
+  surfaces: #[live, runtime]
+  run: "same query live vs tree; compare product set and RSS proxy"
+  !probe{ "document escalate rules in mode_matrix." }
+}
+
+#>wonder_template_blend
+?["Is pattern apply a template mode discharge or a tree mode rewrite — where does %template_blend stop?"]{
+  interprets: mixed
+  considers: #[%template_blend, %fuzzy_not_exact, channel]
+  surfaces: #[template, cli]
+  run: "instantiate → ChangeReport → ceiling check"
+  !probe{ "refuse apply without exact revalidate." }
+}
+
+#>wonder_register_pressure
+?["Which plan_registers must survive a session_beat demotion without invalidating %product_identity?"]{
+  interprets: objective
+  considers: #[%register_pressure, %product_identity]
+  surfaces: #[live]
+  run: "tick BeatCache; assert IrRef keys stable"
+  !probe{ "retention ≠ identity." }
+}
+
+// ═══════════════════════════════════════════════════════════
+// DIFFERENTIALS
+// ═══════════════════════════════════════════════════════════
+
+^["differentials"]{
+ thesis: "Objective strata are the edit script; subjective strata are reader/ecology; brace and operational biases project; dialect flow chooses combinator path."
+
+ objective: .{
+  strata: #[source, lex, ast, onf, brace, ref, operation]
+  carriers: #[SourceDifferential, LexDelta, AstDelta, BraceProjectionDelta, TopographyDelta, MutationVector]
+  combinatorics: "op × boundary × fixity × path"
+  measure: %report_identity
+ }
+
+ subjective: .{
+  strata: #[taste, reading, wonder, ecological_role, literacy]
+  law: "advise only — no layout-only, no cache hit"
+  measure: %reading_profile
+ }
+
+ brace_bias: .{
+  equal: "layout candidate with lex.triviaOnly"
+  drift: #[kind, placement, channel, couple, medial]
+  measure: %structure_if_brace
+  stance: "&#_objective on structure; &#_subjective never softens severity"
+ }
+
+ operational_bias: .{
+  sources: #[@dialect_policy, SearchTuning, dimensional_axes]
+  law: "never mutates contentHash"
+  measure: %rank_boosts
+  stance: "=_objective config write under channel; =_subjective preference only"
+ }
+
+ dialect_flow: .{
+  path: "source → preprocess → desugar? → lex → parse → onf → grain"
+  combinatorics: #[
+   "sigil × brace × fixity → phrase",
+   "label_site × liminal_shape → mobility",
+   "channel × crawl_verb × charge_state → motion",
+   "IrKind × producer → family",
+   "handle × contentHash → posting",
+  ]
+  measure: %path_receipt
+  modes: "live shares preprocess; tree stamps full path; template blends holes"
+ }
+}
+
+// ═══════════════════════════════════════════════════════════
+// DOCTRINE (compact)
+// ═══════════════════════════════════════════════════════════
+
+^["doctrine"]{
+ identity: #[contentHash, uri_span_rev, dialect, lex_profile, producer_schema, boundary, channel_eval]
+ retention: #[session_beat, cache_tier_ttl, max_entries, volatility]
+ projection: #[grain, follow, disclose, card]
+ forbid_in_identity: %key_excludes
+ clocks: .{ request_epoch: "LSP count", session_beat: "retention tick", format_pulse: "format rule id" }
+ collate: #[search, census, plan_pulse, capture, dry_run, wonder]
+ discharge: #[write, commit, precipitate, hard_follow_eval]
+ status_vocabulary: #[implemented, measured, proposed, interpretive]
+}
+
+// ═══════════════════════════════════════════════════════════
+// PREDICTED FILE TREES
+// ═══════════════════════════════════════════════════════════
+
+^["predicted_trees"]{
+ doctrine_and_plans: #{
+  [NEW] ".agents/plans/canon-rewrite-v2/PLAN.md"
+  [MOD] ".agents/plans/canon-rewrite-v2/wip.spw"
+  [NEW?] "docs/theory/spw/operational-field.spw"
+  [NEW?] ".spw/patterns/operational-field.spw"
+  [NEW?] ".spw/patterns/measure-landmarks.spw"
+  [NEW?] ".spw/patterns/diff-field-legend.spw"
+  [NEW?] ".spw/patterns/interpretation-modes.spw"
+  [NEW?] ".agents/plans/canon-rewrite-v2/references/index.spw"
+ }
+
+ seed: #{
+  [MOD] "packages/spw-seed/src/ir/{ref,kinds,granularity,index}.ts"
+  [NEW?] "packages/spw-seed/src/ir/brands.ts"
+  [NEW] "packages/spw-seed/src/canonical/apposition-scan.ts"
+  [NEW] "packages/spw-seed/src/canonical/change-report.ts"
+  [NEW?] "packages/spw-seed/src/canonical/{lex-delta,ast-delta,hunk-format}.ts"
+  [NEW?] "packages/spw-seed/src/query/{pattern-capture,handles,search-tuning}.ts"
+  [MOD] "packages/spw-seed/src/query/{types,spwq,presets,selector-expr,match}.ts"
+  [MOD] "packages/spw-seed/src/canonical/{brace-projection,topography-probe,differential,geometric-resonance,format-pulses,index}.ts"
+  [MOD] "packages/spw-seed/src/{normalize,index,dialect/*,lexer/profiles}.ts"
+  [SPLIT?] "packages/spw-seed/src/canonical/form-geometry.ts → geometry/*"
+  [MOVE?] "packages/spw-seed/src/statics/*"
+ }
+
+ runtime: #{
+  [MOD] "packages/spw-runtime/src/session/{hot-session,charge,channels,crawl,phrases,dialect-policy,sense-cycle,prepare,probe-measure,index}.ts"
+  [SPLIT] "hot-session → session-{evaluate,inspect,cite}.ts"
+  [MOD] "packages/spw-runtime/src/state/memory-cache.ts"
+  [MOD] "packages/spw-runtime/src/{index,pipeline/stages}.ts"
+ }
+
+ lsp: #{
+  [MOD] "packages/spw-lsp/src/{server-index,types,stdio-server}.ts"
+  [SPLIT] "server-index → index/{documents,clocks,products}.ts"
+  [NEW] "packages/spw-lsp/src/cache/{granule,validity,inbound-index}.ts"
+  [NEW?] "packages/spw-lsp/src/cache/postings.ts"
+  [MOD] "packages/spw-lsp/src/handlers/{navigation,reference-graph,workspace,display,spw-probes,cache-reflection}.ts"
+  [SPLIT] "display.ts → display/*"
+  [NEW] "packages/spw-lsp/src/__tests__/{cache-eviction,cache-granule,change-report}.test.ts"
+ }
+
+ cli: #{
+  [MOD] "packages/spw-cli/src/{commands,pulse,cycle,cite,query,select,formula,geometry,fs-walk,corpus-scan,map,inventory,profile,taste}.ts"
+  [SPLIT] "pulse.ts → pulse/{plan,apply,report}.ts"
+  [NEW?] "packages/spw-cli/src/find.ts"
+  [MOVE] "commands → workspace/|sense/|read/|shape/|effect/|shared/"
+ }
+
+ corpus: #{
+  [MOD] ".spw/{index,workspace}.spw"
+  [MOD] ".spw/**/index.spw"
+  [MOD] ".spw/conventions/{cli,autocompletion}.spw"
+  [MOD] "docs/theory/spw/**"
+  [MOD] "prompts/**"
+  [NEW?] "docs/theory/spw/_wonder.spw"
+ }
+
+ legacy: #{
+  [MOVE] "src/seed/__tests__ → packages/spw-seed"
+  [MOVE] "src/runtime/__tests__ → packages/spw-runtime"
+  [DEL?] "src/seed/**"
+  [DEL?] "src/runtime/**"
+  [MOD] "vitest*.config.*"
+  [MOD] "tsconfig.base.json"
+  [MOD] "package.json"
+  [MOD] "packages/*/package.json"
+ }
+
+ extensions: #{
+  [MOD?] "extensions/neovim-spw/lua/spw/{activity,commands}.lua"
+  [MOD?] "extensions/vscode-spw/**"
+ }
+}
+
+// ═══════════════════════════════════════════════════════════
+// TASTE AUDITS
+// ═══════════════════════════════════════════════════════════
+
+^["taste_audits"]{
+ craft: .{
+  measure: %craft_guard
+  offenders: #[pulse~1831, display~1461, server-index~1234, form-geometry~1209, form-ladders~943, register-bank~899, resonance~864, emit~833, seed/index~764, hot-session~763]
+ }
+ naming: .{
+  pass: #[census/graph/measure, IrKind, ChargePacket, CommandGroup]
+  debt: #[temperature_tiers, beatAge/beatTick, open_string_schemes, helpers.ts]
+ }
+ layering: .{
+  pass: "seed→runtime→cli|lsp"
+  debt: #[dual_src_packages, tests_under_src, flat_cli, empty_pkg_deps]
+ }
+ metaphor: .{
+  refuse: #[request_as_lifecycle, resonance_as_hit, electrical_hash_rebind, layout_without_brace]
+  profile_ok: #[*_subjective_magnetic, #_subjective_bus, materials_nav]
+ }
+ corpus: .{
+  pass: #[workspace_layers, index_spw_count, wonder_form]
+  debt: #[layer_only_headers, path_wonder_ids, workspace_ref_magnet, apposition_sparse]
+ }
+ measure_notation: .{
+  pass: "%name + landmarks"
+  debt: "legacy %objective[name] form — purged from this wip"
+ }
+ scannability: .{
+  aim: "vertical catalog rows; stance table; mode matrix; short roots"
+  refuse: "prose-only constraints without %name row"
+ }
+}
+
+// ═══════════════════════════════════════════════════════════
+// ECOLOGY + RESONANCE (predictions)
+// ═══════════════════════════════════════════════════════════
+
+^["ecology_predictions"]{
+ after: .{
+  A: "particle completeness ↑"
+  B: "silent Spw.b ↓"
+  C: "hubs decentralize"
+  D: "nominal postings ↑"
+  E: "pattern neighbors queryable"
+  F: "gen noise ↓"
+ }
+ measure: %phase_gate
+ agent_path: "census → graph → surface → geometry → cite"
+ features: #[wonder_bridge_role, domain_quantum, attention_plane, thrift_strands, fixity_maps]
+}
+
+^["resonance_predictions"]{
+ syntactic: .{ bases: #[opVector, brace, phrase, fixity, lex, skeleton], measure: %resonance_rank }
+ nominal: .{ bases: #[label, #>, ~#, pathref, @bc_tag, formulaId], measure: %rank_boosts }
+ ecological: .{ bases: #[hub_neighborhood, domain_index, wonder_edge, layer_cooccur, dialect_default] }
+ law: %fuzzy_not_exact
+ combinatoric: "product = exact axes+hash; resonance = soft distance under scheme; dialect fixes free axes"
+ cross_mode: %basis_tag
+}
+
+// ═══════════════════════════════════════════════════════════
+// BOOTSTRAP / PHASES / CORPUS
+// ═══════════════════════════════════════════════════════════
+
+^["bootstrap"]{
+ // Status flips through: pending → in_progress → tree_imported → phase0 → done
+ status: tree_imported
+ posture: "clean retrospect — ancestry at upstream; capability as working tree from backup tip"
+ refuse: #["rebase -i the 31", "continue wt-canon-rewrite-v2 mid-rebase", "reset without tip backup"]
+
+ steps: #[
+  .{ id: 1, act: "backup tip", run: "git branch backup/pre-rewrite-v2-tip 8bb423c7", status: done },
+  .{ id: 2, act: "park dirty cite+session", run: "stash wip/cite-tag-session", status: done },
+  .{ id: 3, act: "abort mid-rebase v2", run: "rebase --abort", status: done },
+  .{ id: 4, act: "reset cwd to upstream", run: "git reset --hard upstream/main", status: done },
+  .{ id: 5, act: "feature branch", run: "feature/canon-rewrite-v2 @ d9da60ad", status: done },
+  .{ id: 6, act: "import tip tree", run: "checkout backup/pre-rewrite-v2-tip -- .", status: done },
+  .{ id: 7, act: "phase 0", run: "doctrine + clock hygiene", status: in_progress },
+ ]
+
+ refs: .{
+  upstream: "d9da60ad0bbfd90ebaa5742709f162b61f041bae"
+  tip: "8bb423c728ae837ff190605a15ddd117bb2ea14a"
+  backup_branch: "backup/pre-rewrite-v2-tip"
+  feature_branch: "feature/canon-rewrite-v2"
+  stash_message: "wip/cite-tag-session"
+  mid_rebase_worktree: "wt-canon-rewrite-v2"
+ }
+
+ dirty_paths: #[
+  "packages/spw-cli/src/cite.ts",
+  "packages/spw-runtime/src/session/hot-session.ts",
+  "packages/spw-runtime/src/session/index.ts",
+  "packages/spw-runtime/src/index.ts",
+  "packages/spw-runtime/src/session/dialect-policy.test.ts",
+ ]
+
+ preserve_untracked: #[
+  ".agents/plans/canon-rewrite-v2/",
+  ".agents/plans/workbench-architecture-review/",
+ ]
+
+ after_reset: .{
+  HEAD: "upstream/main"
+  working_tree: "tip capability (after step 6)"
+  history_story: "new discharges only — no museum of 31"
+  next: "phase 0 doctrine + clocks"
+ }
+
+ measure: %publish_base
+}
+
+^["phases"]{
+ ~[0]: .{ name: "doctrine_clocks", mode: #[template, tree], acceptance: "no public request-as-pulse", measure: %temperature_ban }
+ ~[1]: .{ name: "irref", mode: #[tree, test], acceptance: "one key builder", measure: %product_identity }
+ ~[2]: .{ name: "quanta", mode: #[tree, live], corpus: A, acceptance: "apposition+boundary tests", measure: %apposition_stable }
+ ~[3]: .{ name: "runtime", mode: #[live], corpus: B, acceptance: "inspect≠eval; tag≠hash", measure: %path_receipt }
+ ~[4]: .{ name: "change", mode: #[template, tree], corpus: C, acceptance: "lex+ast narrative", measure: %layout_only_write }
+ ~[5]: .{ name: "lsp_granules", mode: #[live, tree], corpus: D, acceptance: "eviction+granules", measure: %eviction_leak }
+ ~[6]: .{ name: "patterns", mode: #[live, template], corpus: E, acceptance: "fuzzy revalidate", measure: %fuzzy_not_exact }
+ ~[7]: .{ name: "ship", mode: #[tree, test], corpus: F, acceptance: "packages primary; push-ready", measure: %phase_gate }
+}
+
+^["corpus_passes"]{
+ scope: #[".spw", "docs/theory", "prompts"]
+ ~[A]: .{ with: 2, measure: %apposition_stable }
+ ~[B]: .{ with: 3 }
+ ~[C]: .{ with: 4, measure: %wonder_quality }
+ ~[D]: .{ with: 5 }
+ ~[E]: .{ with: 6 }
+ ~[F]: .{ with: 7, measure: %gen_skip }
+}
+
+^["packages"]{
+ seed: #[lex, parse, onf, statics, ir, query]
+ runtime: #[interpret, channel, charge, crawl, session_cache]
+ cli: #[workspace, sense, read, shape, effect]
+ lsp: #[products, projection, postings]
+ %dag{ interprets: objective, considers: #[import_edges], surfaces: #[test], run: "eslint boundary or tsc project refs" }
+}
+
+^["god_files"]{
+ freeze: #[pulse, display, server-index, form-geometry, hot-session, seed/index]
+ measure: %craft_guard
+}
+
+^["cli_info_sci"]{
+ path: "census → graph → surface → geometry → cite"
+ groups_are_cost: true
+ %group_write{ interprets: objective, considers: #[CommandGroup], surfaces: #[cli], run: "effect may write; sense must not" }
+}
+
+^["typescript"]{
+ today: "~5.9.3"
+ adopt: #[satisfies, brands, const_unions, closed_ids, subpaths]
+ measure: %brand_separation
+}
+
+^["capability_checklist"]{
+ preserve: #[parse, dialect, session, hot_session, measure, pulse, cite_follow, census_graph, gen_skip, lsp_nav]
+ improve: #[clocks, keys, particles, change_narrative, trees, handles, measure_landmarks, modes]
+ measure: %lane_capability
+}
+
+^["concept_index"]{
+ primary: #[measure_landmarks, operator_stance, register_live, mode_live_tree_template, wonder_node, objective_delta, subjective_delta, brace_bias, dialect_flow, resonance_three]
+ surfaces: #[#seed, #runtime, #lsp, #cli, #corpus]
+ tensions: #[notation_creep, mode_lie_by_omission, stance_vs_rebind, register_pressure]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread measure_protocol + mode_matrix + phase acceptance",
+  "< one track green (code|corpus) in declared $mode",
+  "$ record %measures with full landmarks in stream",
+  "^ fold handles/aliases; fix predicted_trees if diverged",
+  "% hold: subjective interprets never gates keys; live mode never fakes closed parse",
+ ]
+ gates: #[#claim_discipline, #collate_before_discharge, #craft_guard, #landmark_complete, #mode_honest]
+}
+
+^["parallel_work"]{
+ critical_path: #[#bootstrap, #p0, #p1, #p2, #p3, #p4, #p5, #p6, #p7]
+ parallelizable: #[#test_migration, #doctrine_prose, #synonym_docs]
+ never_parallel: .{ server_index: #["granule","clocks"], pulse: #["change","split"], apposition_rename: #["granule"] }
+ shared_hot_files: #["server-index.ts", "pulse.ts", "hot-session.ts", "spw-seed/index.ts", "query/types.ts"]
+ handoff_artifacts: #[@plan, @wip]
+}
+
+^["supporting_documents"]{
+ must_ship: #[@plan, @wip]
+ helpful: #[@beat_diff, @granules, @brace_charge, @operators, @measure_kernel, @register_bank]
+ optional_new: #["operational-field.spw", "measure-landmarks.spw", "interpretation-modes.spw", "diff-field-legend.spw"]
+}
+
+^["interaction_depth"]{
+ subjects: #[#navigation, #trust, #modes, #registers, #measures, #wonder, #scannability]
+ questions: #[#what_is_measured, #how_interpreted, #what_considered, #how_surfaced, #how_run, #which_mode, #which_stance]
+ qualities: #[#clarity, #conciseness, #scannability, #memory_honesty]
+}
+
+^["risk_model"]{
+ hard: #["lost tip capability", "ref break", "granule regress", "keys include epoch/resonance", "subjective gates write"]
+ soft: #["fuzzy as exact", "live omission lie", "god-file growth", "stance read as lexer rebind", "register leak"]
+ recoveries: #["capability checklist", "alias pass", "file-quantum fallback", "brands", "exact revalidate", "mode escalate"]
+ non_negotiables: #["collate<discharge", "effectCeiling", "gen skip", "no abs paths", "landmarks on every % gate", "stance≠new glyph"]
+}
+
+^["validation"]{
+ per_phase: #["tests", "fuzz:types", "craft counts", "%measures in stream with 4 landmarks"]
+ corpus: #["lint:spw", "tree", "census", "graph", "wonder registry"]
+ ship: #["fuzz:ship", "capability", "doctor"]
+ measure: %phase_gate
+}
+
+^["dependencies"]{
+ supersede: #[@beat_diff]
+ absorb: #[@granules]
+ later: #[@geometry_tooling]
+ non_goal: #["feature/canon-retrospective-rewrite", "mid-rebase v2"]
+}
+
+^["open"]{
+ ?[bootstrap]: "green-light abort/park/branch/import"
+ ?[doctrine_path]: "theory vs patterns for operational-field"
+ ?[wonder_registry]: "index list vs _wonder.spw"
+ ?[hot_session_rename]: "episode vs type rename"
+ ?[region_key]: "apposition+range fallback"
+ ?[parse_fragment]: "defer partial parse?"
+ ?[tier_names]: "TTL hot/warm/cold vs ttlClass"
+ ?[fuzzy_cli]: "query --fuzzy vs find"
+ ?[stance_syntax]: "document-only op_stance vs experimental catalog entry"
+ ?[live_budgets]: "numeric caps for inspect plane / postings?"
+}
+
+^["commits"]{
+ ~#note: "illustrative — not a quota"
+ ~[1]: ".[doctrine] — field + measure landmarks + stances + modes"
+ ~[2]: "vocab[clocks] — brands; temperature ban"
+ ~[3]: "&[seed-ir] — IrRef laws"
+ ~[4]: "^seed[quanta] — windows, apposition, boundary"
+ ~[5]: ".[corpus] — pass A particles"
+ ~[6]: "&[runtime] — live planes; @bc hash/tag"
+ ~[7]: "^seed[change] — ChangeReport"
+ ~[8]: "![lsp] — granules cache"
+ ~[9]: "^seed[pattern] — handles; SearchTuning"
+ ~[10]: "&[hygiene] — packages; CLI folders; ship"
+}
+
+^["stream"]{
+ >>[2026-08-04] decide — rebuild from upstream; interleave corpus; commit count irrelevant.
+ >>[2026-08-04] precipitate — PLAN + comprehensive wip.
+ >>[2026-08-04] revise — predicted trees, taste, ecology, resonance, %objective/%subjective forms, wonders.
+ >>[2026-08-04] revise — measure protocol: %name only + interprets/considers/surfaces/run landmarks; purge %objective[name].
+ >>[2026-08-04] revise — operator_stances for all sigils (_objective/_subjective); registers for live memory; interpretation_modes live|tree|template; wonder_architecture with landmarked wonders; scannability/conciseness pass.
+ >>[2026-08-04] bootstrap — backup/pre-rewrite-v2-tip @ 8bb423c7; stash wip/cite-tag-session; abort wt-canon-rewrite-v2 rebase; reset hard upstream/main; branch feature/canon-rewrite-v2; import tip tree as working tree (~246 paths).
+ >>[2026-08-04] phase0 — file docs/theory/spw/operational-field.spw; LSP requestEpoch + accessAgeRequests; remove $spw/beatTick; spw/activity (+ spw/beat alias); public activity omits temperature tiers; retention tier remains internal eviction only.
+}
+
+^["cache"]{
+ ~#status: "phase0_in_progress"
+ ~#base_ref: "upstream/main@d9da60ad0bbfd90ebaa5742709f162b61f041bae"
+ ~#capability_ref: "backup/pre-rewrite-v2-tip@8bb423c7"
+ ~#branch: "feature/canon-rewrite-v2"
+ ~#stash: "wip/cite-tag-session pre-rewrite-v2"
+ ~#next_phase: "0"
+ ~#next_action: "finish phase0 tests; doctrine link; prepare discharge when human authorizes commit"
+ ~#mode_default: "live for sense; tree for exact; template for pulse/pattern"
+ ~#measure_form: "%name{interprets,considers,surfaces,run}"
+ ~#stance_form: "<sigil>_<objective|subjective>"
+ ~#open_count: "10"
+ ~#last_stream: "2026-08-04"
+ ~#laws: "landmarks complete on gate measures; stance≠lexer; live honest about partials; subjective never keys"
+ ~#phase0_done: "doctrine surface; requestEpoch rename; beatTick removed; activity probe"
+ ~#phase0_remaining: "vitest green; optional activity.test.ts; index.spw link; human commit gate"
+}
+
+^["done"]{
+}

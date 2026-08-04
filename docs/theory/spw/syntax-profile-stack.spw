@@ -1,0 +1,245 @@
+// Syntax profile stack - dialects - defaults
+//
+// Multi-axis surface profile model + dialect catalog with examples.
+// Runtime: packages/spw-seed/src/dialect/*
+// Review: .agents/skills/spw-commit-review/scripts/spw-syntax-review.ts
+//
+// @see .spw/registries/dialect-spec.spw
+// @see docs/theory/spw/mutation-flow-automata.spw
+
+#:layer #!pragmatics
+#:status #!active
+
+^seed[Spw.Syntax.Profile.Stack v:0.2 @profile:Spw.b @intent:multi_axis_stack]
+
+^["roots"]{
+ @registry: ~"../../../.spw/registries/syntax-profile-stack.spw"
+ @dialects: ~"../../../.spw/registries/dialect-spec.spw"
+ @flow: ~"./mutation-flow-automata.spw"
+ @ref_deref: ~"./reference-deref-geometry.spw"
+ @brace_charge: ~"./brace-charge-crawl.spw"
+ @fixity: ~"./fixity-brace-phrases.spw"
+ @impl: ~"../../../packages/spw-seed/src/dialect/index.ts"
+ @review: ~"../../../.agents/skills/spw-commit-review/scripts/spw-syntax-review.ts"
+}
+
+^["thesis"]{
+ ~#claim: "One stack per surface: dialect x review x format x lex x mutation x reading x domain - resolved once, shared by parse, format, hook, LSP."
+ ~#taste: "axes not soup; header beats path; archive waived; glyphs over prose."
+}
+
+^["stack"]{
+ dialect: "Spw.b|l|m|x|q|f|p|t - parse geometry + metasyntax"
+ review: "historical|agent|plan|canon|narrative|strict|flow|query|runtime - lint policy"
+ format: "canonical|pretty|layout|prose|culture|wide"
+ lex: "default|prose"
+ mutation: "none|hygiene|measure|explore|stabilize"
+ reading: "author|prompt|research|creative"
+ domain: "general|flow|query|plan|gfx|materials|canon"
+}
+
+^["resolve_order"]{
+ 1: "option.dialect / CLI flags"
+ 2: "@dialect: / #:dialect / @profile:Spw.* header"
+ 3: "path defaults (plans->p, packages->m, ...)"
+ 4: "Spw.b default"
+}
+
+// ── Dialects (thorough examples) ─────────────────────────────
+
+^["Spw.b"]{
+ role: "block author geometry - default living .spw"
+ metasyntax: #{ newlineAsSpace: #no }
+ example: |
+  ^seed[Demo v:0.3 @profile:Spw.b]
+  ^["roots"]{
+   @self: ~"x.ts"
+   ~#goal: "block frames"
+  }
+}
+
+^["Spw.l"]{
+ role: "line compact - queries, one-liners; newline≈space"
+ metasyntax: #{ newlineAsSpace: #yes , highContext: #yes }
+ example: |
+  @dialect:Spw.l
+  ^["hit"]{ !boon } ^["miss"]{ !bane }
+}
+
+^["Spw.m"]{
+ role: "machine / ONF-leaning; soft lints on historical sugar"
+ metasyntax: #{ machineLint: #yes }
+ example: |
+  ^seed[Kernel @profile:Spw.m]
+  ^["cell"]{ . { k: v } }
+  // warns on ^"quoted" and @domain:
+}
+
+^["Spw.x"]{
+ role: "executable / hot; measure-first mutation family default"
+ metasyntax: #{ machineLint: #yes }
+ example: |
+  ^seed[Hot @profile:Spw.x]
+  ^["loop"]{ =ceiling[ l0 ] }
+}
+
+^["Spw.q"]{
+ role: "query/selector dialect (extends l)"
+ metasyntax: #{ newlineAsSpace: #yes , highContext: #yes }
+ example: |
+  #:dialect Spw.q
+  { sigil: "!" , modifier: "boon" }
+}
+
+^["Spw.f"]{
+ role: "flow / mutation-CA authoring"
+ metasyntax: #{ flowGlyphs: #yes }
+ example: |
+  @dialect:Spw.f
+  =φ[ id: soft ]{ << ~ ; ? ; % ; ! ; ^ >> }
+}
+
+^["Spw.p"]{
+ role: "plan / agent wip streams"
+ metasyntax: #{ planStream: #yes }
+ example: |
+  @dialect:Spw.p
+  ^["stream"]{ >>[2026-07-27] note - ... }
+  ^["open"]{ ?[x]: "..." }
+}
+
+^["Spw.t"]{
+ role: "template / expand lineage"
+ metasyntax: #{ highContext: #yes }
+ example: |
+  @profile:Spw.t
+  ^["tpl"]{ ~#slot: _ }
+}
+
+// ── Review profiles (examples) ───────────────────────────────
+
+^["review_examples"]{
+ historical: "lib/spw-v0.2.0-alpha/** - waive old forms"
+ agent_surface: ".agents/skills/**"
+ plan_surface: ".agents/plans/** - Spw.p default"
+ canon_surface: ".spw/**"
+ narrative_surface: "docs/** prompts/**"
+ strict_surface: "packages/** embedded .spw"
+ flow_surface: "mutation-flow*.spw"
+ query_surface: "query/selector paths"
+ runtime_state: "*.state.spw"
+}
+
+^["path_defaults"]{
+ ".agents/plans/**": { dialect: Spw.p , review: plan_surface , format: pretty }
+ ".spw/**": { dialect: Spw.b , review: canon_surface , format: pretty }
+ "packages/**": { dialect: Spw.m , review: strict_surface , format: layout }
+ "docs/**": { dialect: Spw.b , review: narrative_surface , format: prose }
+ "lib/**/v0.2*": { review: historical , format: canonical }
+}
+
+^["runtime"]{
+ detect: "packages/spw-seed/src/dialect/detect.ts"
+ stack: "packages/spw-seed/src/dialect/syntax-stack.ts"
+ parse: "parse() autoDialect=true -> dialect + preprocess + machine_lint warnings"
+ api: #[detectDialect, resolveSurfaceProfile, parse]
+}
+
+^["forward"]{
+ lint: "expand pattern catalog; required policies for hot"
+ refactor_hints: "discouraged forms -> code actions (quoted_frame->^[\"id\"])"
+ autorefactor: "plan-first SemanticEdit; never silent on historical"
+ standards: "edition pin @edition:YYYY.MM"
+ ecology: ~"../../.agents/plans/shape-syntax-ecology/PLAN.md"
+ experimental_catalog: "packages/spw-seed/src/experimental/syntax-catalog.ts - reference ids for Spw.f/σ/φ"
+ imagination: "IDE hover stack; screenshot gestalt only with AST dual-read"
+ cache_key: "contentHash x dialect x preprocess x toolVersion"
+}
+
+^["ethos_product"]{
+ // dialects as product surfaces - familiarity curriculum
+ curriculum: "b -> p -> q/l -> m -> f -> x -> t"
+ Spw.b: "canon literacy"
+ Spw.p: "episodic agent memory"
+ Spw.q: "address / select"
+ Spw.l: "compact search geometry"
+ Spw.m: "machine honesty"
+ Spw.f: "flow mutation lab"
+ Spw.x: "hot under ceilings"
+ Spw.t: "template expand lineage"
+}
+
+// ── Stack resolve examples ─────────────────────────────────────
+
+^["examples"]{
+ header_wins: |
+  @dialect:Spw.l
+  ^seed[Demo v:0.3 @profile:Spw.l @intent:compact]
+  // detect: Spw.l from header; path defaults ignored when header present
+
+ path_default: |
+  // file under .agents/plans/foo/wip.spw without header
+  // expect dialect Spw.p , review plan_surface
+
+ machine: |
+  ^seed[Kernel @profile:Spw.m]
+  ^["cell"]{ . { k: v } }
+  // machineLint may soft-warn historical sugar
+
+ flow_lab: |
+  @dialect:Spw.f
+  =exp[ id: flow.sigma_chain , status: proposed ]
+  =phi[ id: soft ]{ << ~ ; ? ; % ; ! ; ^ >> }
+
+ hot_live: |
+  @dialect:Spw.x
+  =ceiling[ l0 ]
+  ^["loop"]{ !probe{ =id[p] } }
+
+ plan_stream: |
+  @dialect:Spw.p
+  ^["stream"]{ >>[2026-07-27] note - stack example }
+  ^["open"]{ ?[x]: "when does path beat header?" }
+
+ consumer: |
+  // mounted consumer: channel consumer, dialect from consumer headers
+  // never inherit workbench Spw.o without ocean channel
+}
+
+^["open"]{
+ ?[header_vs_path]: "If header Spw.b sits under packages/**, does path m win or header?"
+ ?[edition_pin]: "When is @edition required on hot surfaces?"
+ ?[tool_disagree]: "LSP vs CLI vs format - which stack is authoritative on conflict?"
+ ?[regional_o]: "Graduate Spw.o to core DialectId or keep forever regional?"
+ ?[mutation_axis]: "Does mutation family change parse geometry or only rewrite policy?"
+ ?[lex_prose]: "When does unknownAsText fire without prose lex profile?"
+ ?[cache_tool]: "Must cache key include toolVersion always, or only on format/rewrite?"
+ ?[autorefactor]: "May plan-first SemanticEdit rewrite dialect marks without human episode?"
+}
+
+#>wonder_syntax_stack_1
+?["When do two tools disagree on active stack?"]{
+  !probe{ =id[p_stack] }
+  $%[ dialect , review , format ]
+}
+
+#>wonder_syntax_stack_2
+?["Does Spw.l preprocess change contentHash for mass reconcile?"]{
+  #:depth #!computational
+  !probe{ =id[p_l_hash] }
+  $%[contentHash, preprocess, scheme]
+}
+
+#>wonder_syntax_stack_3
+?["Should plan surfaces refuse Spw.x without explicit ceiling?"]{
+  #:depth #!pragmatics
+  !probe{ =id[p_plan_x] }
+  $%[channel, effectCeiling]
+}
+
+#>wonder_syntax_stack_4
+?["What is the teaching order when a learner only has one hour?"]{
+  #:depth #!educational
+  !probe{ =id[p_curriculum] }
+  // free answer against curriculum b->p->q/l->m->f->x->t
+}

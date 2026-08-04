@@ -70,6 +70,12 @@ async function navigationItems(spw: SpwContext): Promise<NavigationItem[]> {
   const items: NavigationItem[] = []
   try {
     const manifest = await spw.requests.workspaceManifest()
+    if (manifest.roots.length > 0) {
+      items.push({
+        label: 'Workspace Roots',
+        kind: vscode.QuickPickItemKind.Separator,
+      } as unknown as NavigationItem)
+    }
     for (const entry of manifest.roots) {
       items.push({
         label: `$(${rootIcon(entry.kind)}) @${entry.sigil}`,
@@ -82,7 +88,14 @@ async function navigationItems(spw: SpwContext): Promise<NavigationItem[]> {
     // Indexed annotations remain useful while workspace evidence is unavailable.
   }
 
-  for (const entry of spw.annotationIndex.all()) {
+  const annotations = spw.annotationIndex.all()
+  if (annotations.length > 0) {
+    items.push({
+      label: 'Indexed Landmarks & Annotations',
+      kind: vscode.QuickPickItemKind.Separator,
+    } as unknown as NavigationItem)
+  }
+  for (const entry of annotations) {
     items.push({
       label: `$(${ANNOTATION_ICONS[entry.kind]}) ${entry.name}`,
       description: `${displayWorkspaceUri(entry.file.toString())}:${entry.line + 1}`,

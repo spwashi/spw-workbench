@@ -31,7 +31,10 @@ spw_detect_agent_heuristic() {
     printf '%s\n' "codex-air"
   elif [ -n "${CODEX_THREAD_ID:-}" ] || [ "${CODEX_CI:-0}" = "1" ]; then
     printf '%s\n' "codex"
-  elif [ -n "${CLAUDE_SESSION_ID:-}" ] || [ -n "${ANTHROPIC_API_KEY:-}" ]; then
+  elif [ "${CLAUDECODE:-0}" = "1" ] || [ -n "${CLAUDE_CODE_SESSION_ID:-}" ] || [ -n "${CLAUDE_CODE_ENTRYPOINT:-}" ]; then
+    # Claude Code sets CLAUDECODE/CLAUDE_CODE_*; CLAUDE_SESSION_ID is not a
+    # variable it exports, and ANTHROPIC_API_KEY only means API access is
+    # configured — neither indicates who is driving this commit.
     printf '%s\n' "claude"
   elif [ -n "${GEMINI_SESSION_ID:-}" ] || [ -n "${GOOGLE_API_KEY:-}" ]; then
     printf '%s\n' "gemini"
@@ -73,6 +76,9 @@ spw_read_agent_context() {
   AGENT_CONTEXT_ACTOR=""
   AGENT_CONTEXT_SOURCE=""
   AGENT_CONTEXT_CONFIDENCE=""
+  AGENT_CONTEXT_UPDATED_AT=""
+  AGENT_CONTEXT_THREAD_ID=""
+  AGENT_CONTEXT_BUNDLE_ID=""
 
   context_file="$(spw_agent_context_file "$repo_root" 2>/dev/null || true)"
   [ -n "$context_file" ] || return 1
@@ -83,11 +89,59 @@ spw_read_agent_context() {
       actor) AGENT_CONTEXT_ACTOR="$value" ;;
       source) AGENT_CONTEXT_SOURCE="$value" ;;
       confidence) AGENT_CONTEXT_CONFIDENCE="$value" ;;
+      updated_at) AGENT_CONTEXT_UPDATED_AT="$value" ;;
+      thread_id) AGENT_CONTEXT_THREAD_ID="$value" ;;
+      bundle_id) AGENT_CONTEXT_BUNDLE_ID="$value" ;;
     esac
   done < "$context_file"
 
   [ -n "$AGENT_CONTEXT_ACTOR" ] || return 1
   return 0
+}
+
+# Seconds a cached context stays trusted without corroboration. Disclosure axis:
+# past this, the gate would rather say "unsure" than name the wrong actor.
+spw_agent_context_ttl_seconds() {
+  printf '%s\n' "${SPW_AGENT_CONTEXT_TTL_SECONDS:-86400}"
+}
+
+spw__epoch_from_iso() {
+  local iso="${1:-}"
+  [ -n "$iso" ] || return 1
+  date -u -j -f '%Y-%m-%dT%H:%M:%SZ' "$iso" '+%s' 2>/dev/null && return 0
+  date -u -d "$iso" '+%s' 2>/dev/null && return 0
+  return 1
+}
+
+# A cached context is only trustworthy while the environment that produced it
+# still looks the same. The file already recorded thread_id and bundle_id; until
+# now nothing compared them, so one agent's context pinned every later commit —
+# including a human's — to that agent's name.
+spw_agent_context_is_current() {
+  local now stamped age ttl
+
+  # Identity corroboration: a recorded id that disagrees with the live
+  # environment means this context belongs to a different session.
+  if [ -n "$AGENT_CONTEXT_THREAD_ID" ] && [ "$AGENT_CONTEXT_THREAD_ID" != "${CODEX_THREAD_ID:-}" ]; then
+    return 1
+  fi
+  if [ -n "$AGENT_CONTEXT_BUNDLE_ID" ] && [ "$AGENT_CONTEXT_BUNDLE_ID" != "${__CFBundleIdentifier:-}" ]; then
+    return 1
+  fi
+
+  ttl="$(spw_agent_context_ttl_seconds)"
+  [ "$ttl" -gt 0 ] 2>/dev/null || return 0
+
+  stamped="$(spw__epoch_from_iso "$AGENT_CONTEXT_UPDATED_AT" || true)"
+  # An unparseable or absent timestamp is not evidence of freshness.
+  [ -n "$stamped" ] || return 1
+
+  now="$(date -u '+%s' 2>/dev/null || true)"
+  [ -n "$now" ] || return 0
+
+  age=$(( now - stamped ))
+  [ "$age" -lt 0 ] && return 1   # clock skew / future stamp — do not trust
+  [ "$age" -le "$ttl" ]
 }
 
 spw_resolve_agent_context() {
@@ -98,8 +152,16 @@ spw_resolve_agent_context() {
   AGENT_CONTEXT_SOURCE=""
   AGENT_CONTEXT_CONFIDENCE=""
 
-  if spw_read_agent_context "$repo_root"; then
-    return 0
+  # An explicit SPW_AGENT in the live environment outranks anything cached.
+  if [ -z "${SPW_AGENT:-}" ] && spw_read_agent_context "$repo_root"; then
+    if spw_agent_context_is_current; then
+      return 0
+    fi
+    # Stale or uncorroborated: fall through to fresh detection rather than
+    # keep asserting a name the environment no longer supports.
+    AGENT_CONTEXT_ACTOR=""
+    AGENT_CONTEXT_SOURCE=""
+    AGENT_CONTEXT_CONFIDENCE=""
   fi
 
   heuristic_actor="$(spw_detect_agent_heuristic)"

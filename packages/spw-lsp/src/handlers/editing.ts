@@ -7,6 +7,11 @@
 
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
+import {
+    MEDIAL_CAPSULE_CHANNELS,
+    SIGIL_SNIPPET_CATALOG,
+    TEMPLATE_SLOTS,
+} from '@spwashi/spw-seed'
 import { SIGIL_SEMANTICS } from '../server-index'
 import type {
     LspCompletionItem, LspTextEdit, LspPosition,
@@ -46,6 +51,20 @@ export async function completion(params: CompletionParams, deps: HandlerDeps): P
         return items
     }
 
+    // 1b. Medial capsule channel completion after <
+    if (prefix.endsWith('<')) {
+        for (const channelDef of MEDIAL_CAPSULE_CHANNELS) {
+            items.push({
+                label: `<${channelDef.name}>`,
+                kind: CK.Interface,
+                detail: `${channelDef.description} (${channelDef.category})`,
+                insertText: `${channelDef.name}>`,
+                sortText: `0-${channelDef.name}`,
+            })
+        }
+        return items
+    }
+
     // 2. Annotation name completion after #, #:, #!, #>
     const annotPrefix = prefix.match(/(?:##>|#!|#:|#>|#)([a-zA-Z_]\w*)$/)
     if (annotPrefix) {
@@ -71,63 +90,12 @@ export async function completion(params: CompletionParams, deps: HandlerDeps): P
         const sigil = sigilPrefixMatch[1]
         const sem = SIGIL_SEMANTICS[sigil]
         if (sem) {
-            const sigilSnippets: Record<string, Array<{ label: string; insert: string }>> = {
-                '^': [
-                    { label: '^["section"] {', insert: '^["${1:section}"] {\n\t$0\n}' },
-                    { label: '^seed[name]', insert: '^seed[${1:name}]' },
-                    { label: '^selector[name]', insert: '^selector[${1:name}]' },
-                ],
-                '!': [
-                    { label: '!boon["label"]', insert: '!boon["${1:label}"]' },
-                    { label: '!bone["label"]', insert: '!bone["${1:label}"]' },
-                    { label: '!bonk["label"]', insert: '!bonk["${1:label}"]' },
-                ],
-                '#': [
-                    { label: '##>prompt_root', insert: '##>${1:prompt_root}' },
-                    { label: '#>anchor', insert: '#>${1:anchor}' },
-                    { label: '#:lens', insert: '#:${1:lens}' },
-                    { label: '#!intent', insert: '#!${1:intent}' },
-                ],
-                '@': [],
-                '?': [
-                    { label: '?["question"]', insert: '?["${1:question}"]' },
-                    { label: '?match', insert: '?match' },
-                ],
-                '~': [
-                    { label: '~#trait: value', insert: '~#${1:trait}: ${2:value}' },
-                    { label: '~"path/to/file"', insert: '~"${1:path}"' },
-                    { label: '~[N]', insert: '~[${1:N}]' },
-                ],
-                '&': [
-                    { label: '& => {&}  (wrap confluence)', insert: '& => {&}' },
-                    { label: '& => {&} => {&[#label]}', insert: '& => {&} => {&[#${1:label}]}' },
-                    { label: '{&<#tag>_label} membrane', insert: '{&<#${1:tag}>_${2:label}}' },
-                    { label: '&[label]', insert: '&[${1:label}]' },
-                    { label: '{&} wrap body', insert: '{&}' },
-                    { label: '&name', insert: '&${1:name}' },
-                ],
-                '%': [
-                    { label: '%[measure.path]', insert: '%[${1:measure.path}]' },
-                ],
-                '*': [
-                    { label: '*variant', insert: '*${1:variant}' },
-                ],
-                '$': [
-                    { label: '$["selector"]', insert: '$["${1:selector}"]' },
-                    { label: '$^["frame"]', insert: '$^["${1:frame}"]' },
-                    { label: '$%[register.path]', insert: '$%[${1:register.path}]' },
-                ],
-                '=': [
-                    { label: '=raw: "value"', insert: '=raw: "${1:value}"' },
-                    { label: '=config', insert: '=${1:key}: ${2:value}' },
-                ],
-            }
-            const snippets = sigilSnippets[sigil] ?? []
+            const snippets = SIGIL_SNIPPET_CATALOG[sigil] ?? []
             for (const s of snippets) {
                 items.push({
                     label: s.label,
                     kind: CK.Keyword,
-                    detail: `${sem.role} — ${sem.physics}`,
+                    detail: s.detail ? `${sem.role} — ${s.detail}` : `${sem.role} — ${sem.physics}`,
                     insertText: s.insert,
                     insertTextFormat: 2, // Snippet
                     sortText: `0-${s.label}`,
@@ -141,20 +109,15 @@ export async function completion(params: CompletionParams, deps: HandlerDeps): P
     const slotPrefix = /\$\{([A-Za-z_][\w]*)$/.exec(prefix) || /(?:^|[^\w$])\$([A-Za-z][\w]*)$/.exec(prefix)
     if (slotPrefix) {
         const partial = (slotPrefix[1] ?? '').toLowerCase()
-        const commonSlots = [
-            'saga_id', 'kind', 'profile', 'grade', 'objective',
-            'style_id', 'subject_id', 'genre_id', 'organ', 'host',
-            'title', 'claim', 'label', 'coordinate', 'from', 'to',
-        ]
-        for (const name of commonSlots) {
-            if (partial && !name.startsWith(partial)) continue
+        for (const slotDef of TEMPLATE_SLOTS) {
+            if (partial && !slotDef.name.startsWith(partial)) continue
             const braced = prefix.includes('${')
             items.push({
-                label: braced ? `\${${name}}` : `$${name}`,
+                label: braced ? `\${${slotDef.name}}` : `$${slotDef.name}`,
                 kind: CK.Variable,
-                detail: 'template slot (expand ≠ mutate)',
-                insertText: braced ? `${name}}` : name,
-                sortText: `0-${name}`,
+                detail: slotDef.description,
+                insertText: braced ? `${slotDef.name}}` : slotDef.name,
+                sortText: `0-${slotDef.name}`,
             })
         }
         if (items.length) return items

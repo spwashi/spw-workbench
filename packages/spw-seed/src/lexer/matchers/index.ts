@@ -21,7 +21,7 @@ export type TokenMatcher = (
 // ============================================================================
 
 export { matchWhitespace } from './whitespace'
-export { matchLineComment } from './comments'
+export { matchLineComment, matchHashLineProse } from './comments'
 export { matchApposition, appositionParts, type AppositionParts } from './apposition'
 export { matchParticle } from './particles'
 export { matchOperator, createOperatorMatcher } from './operators'

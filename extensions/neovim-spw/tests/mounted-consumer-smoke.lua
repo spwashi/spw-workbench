@@ -72,4 +72,9 @@ local ok, err = pcall(function()
 end)
 assert_true(ok, 'spw.health executes without errors: ' .. tostring(err))
 
+-- Test 9: Statusline helper & SpwBeat command existence
+local st = spw.statusline()
+assert_true(type(st) == 'string', 'statusline helper returns string')
+assert_true(vim.fn.exists(':SpwBeat') == 2, ':SpwBeat command registered')
+
 print('✓ All neovim-spw smoke tests passed cleanly.')

@@ -1,0 +1,85 @@
+# CLI mode audit matrix
+#
+# Living table: verb → modes × ceiling × authoring write × intermediate.
+# Commit 3 freezes; update stream when registry changes.
+
+#>spw_plan_cli_mode_audit
+#:audit #!cli
+#:layer #!pragmatics
+
+^"roots"{
+ @plan: ~"./PLAN.md"
+ @doctrine: ~"./cli-mode-overhaul.spw"
+ @commands: ~"../../../packages/spw-cli/src/commands.ts"
+}
+
+^"legend"{
+ modes: #[#measure, #preview, #stream, #precipitate, #generate, #patch, #write, #cadence]
+ ceilings: #[#none, #effect.l0.measure, #effect.l1.memory, #effect.l2.workspace, #effect.l3.external]
+ authoring_write: #[#yes, #no, #derived_only]
+}
+
+^"registry"{
+ #:snapshot
+ # default_mode → elevated; max ceiling; authoring write; notes
+
+ init: .{modes: [#generate, #write], ceiling: #effect.l2.workspace, authoring: #yes}
+ doctor: .{modes: [#measure], ceiling: #effect.l0.measure, authoring: #no}
+ roots: .{modes: [#measure], ceiling: #effect.l0.measure, authoring: #no}
+ mount: .{modes: [#measure, #write], ceiling: #effect.l2.workspace, authoring: #yes, note: "init vs check"}
+ tree: .{modes: [#measure], ceiling: #effect.l0.measure, authoring: #no}
+
+ invent: .{modes: [#measure], ceiling: #effect.l0.measure, authoring: #no, rename: #candidate}
+ map: .{modes: [#measure], ceiling: #effect.l0.measure, authoring: #no, rename: #candidate}
+ atlas: .{modes: [#measure, #generate], ceiling: #effect.l2.workspace, authoring: #derived_only, note: "HTML snapshot discipline"}
+ formula: .{modes: [#measure], ceiling: #effect.l0.measure, authoring: #no}
+ analyze: .{modes: [#measure], ceiling: #effect.l0.measure, authoring: #no, rename: #candidate}
+ geometry: .{modes: [#measure], ceiling: #effect.l0.measure, authoring: #no, buffer: #stdin}
+ mass: .{modes: [#measure, #write], ceiling: #effect.l2.workspace, authoring: #yes, risk: #write_in_sense}
+ authority: .{modes: [#measure], ceiling: #effect.l0.measure, authoring: #no}
+ taste: .{modes: [#measure], ceiling: #effect.l0.measure, authoring: #no}
+
+ query: .{modes: [#measure, #stream], ceiling: #effect.l0.measure, authoring: #no}
+ select: .{modes: [#measure], ceiling: #effect.l0.measure, authoring: #no}
+ skim: .{modes: [#measure], ceiling: #effect.l0.measure, authoring: #no}
+ ls: .{modes: [#measure, #stream], ceiling: #effect.l0.measure, authoring: #no, rename: #candidate}
+
+ format: .{modes: [#preview, #write], ceiling: #effect.l2.workspace, authoring: #yes}
+ expand: .{modes: [#preview, #generate], ceiling: #effect.l2.workspace, authoring: #derived_only, kind: #expanded}
+ refactor: .{modes: [#preview, #patch, #write], ceiling: #effect.l2.workspace, authoring: #yes}
+ refresh: .{modes: [#preview, #patch, #write], ceiling: #effect.l2.workspace, authoring: #yes}
+ emit: .{modes: [#generate, #stream, #write], ceiling: #effect.l2.workspace, authoring: #yes, open: #l3_external}
+
+ pulse: .{modes: [#measure, #preview, #precipitate, #write], ceiling: #effect.l2.workspace, authoring: #yes, default: #measure}
+ mutate: .{modes: [#preview, #write], ceiling: #effect.l2.workspace, authoring: #yes, default: #write_on_paths}
+ beat: .{modes: [#cadence], ceiling: #none, authoring: #no}
+ mem: .{modes: [#measure, #write], ceiling: #effect.l2.workspace, authoring: #yes, note: "memory surface paths"}
+ dev: .{modes: [#measure, #write], ceiling: #effect.l2.workspace, authoring: #yes, note: "hygiene whitespace only"}
+}
+
+^"orphans"{
+ path_check: .{modes: [#measure], ceiling: #effect.l0.measure, authoring: #no, home: #absorb_registry}
+ census: .{modes: [#measure], ceiling: #effect.l0.measure, authoring: #no, home: #absorb_registry}
+ syntax_validate: .{modes: [#measure], ceiling: #effect.l0.measure, authoring: #no, home: #absorb_or_doctor}
+ plan_bash: .{modes: [#measure, #write], ceiling: #effect.l2.workspace, authoring: #yes, home: #spw_plan}
+}
+
+^"gaps"{
+ no_registry_mode_field: #yes
+ no_flow_cache: #yes
+ precipitate_cli_emit: #missing
+ derived_kinds: #[#expanded]
+ writers_unlabeled: #[#mass, #refresh, #format, #dev, #mutate_default]
+}
+
+^"hot_patch_targets"{
+ pulse_plannedSource: #precipitate_candidate
+ mutate_stdin_body: #preview_l1
+ expand_stream_frames: #generate
+ refresh_semantic_plan: #patch
+ beat_ticks: #flow_cache_clock
+}
+
+^"stream"{
+ >>[2026-07-27 16:45] observe — Initial matrix from commands.ts + write/stdin census + pulse-mutate-beat + expand derived policy.
+}

@@ -6,23 +6,23 @@
  * LSP server context (ServerIndex) available for richer classification.
  *
  * Token types (indices match TOKEN_TYPES order declared in capabilities):
- *   0  operator    — generic sigil / operator (fallback)
+ *   0  operator    — braces, &, <<>>, <>, generic operators
  *   1  type        — #-annotations, type-like constructs
- *   2  variable    — @-roots, navigable path refs (~"…", ~<path>, @root/path)
- *   3  property    — ~#traits, =-config
- *   4  function    — !-actions, ?-probes
+ *   2  variable    — @-roots, $, navigable path refs (~"…", ~<path>, @root/path)
+ *   3  property    — ~#traits, =-config, =exp[
+ *   4  function    — !-actions, !charge, ?-probes, #!intent
  *   5  string      — quoted strings
- *   6  keyword     — ^-framing, *-variants, %-measure, ##>-anchors
+ *   6  keyword     — ^-framing, *, %, $%[, @dialect, ##>-anchors
  *   7  comment     — //-comments
  *   8  number      — numerics, times, fractions
  *
  * Token modifiers (bit flags, matching MODIFIERS order):
- *   0  declaration   — frame/anchor/section declarations
- *   1  definition    — navigable path units, [*] wildcards
- *   2  readonly      — =-config (config is a constraint)
- *   3  deprecated    — (unused — was misused for ~ in old provider)
- *   4  modification  — !-action (fires effects)
- *   5  async         — ?-probe (deferred measurement)
+ *   0  declaration   — frame/anchor, brace open, =exp, ^seed
+ *   1  definition    — path units, dialect marks, <<>>, <>
+ *   2  readonly      — =-config, bare * crystallize
+ *   3  deprecated    — (unused)
+ *   4  modification  — !-action / !charge
+ *   5  async         — ?-probe, stream digraphs
  *
  * Path navigation ergonomics: full path spans are emitted as a single
  * variable+definition token so editors can underline/jump the whole unit.
@@ -117,6 +117,56 @@ export function semanticTokens(params: DocumentParams, deps: HandlerDeps): LspSe
             if (rest.startsWith('//')) {
                 push(lineIndex, col, lineText.length - col, TT.comment, 0)
                 break
+            }
+
+            // # line comment (Spw light) — rest of line when # not followed by : ! > letter
+            if (ch === '#' && rest.length > 1 && !/[#:!>a-zA-Z_]/.test(rest[1]!)) {
+                // plain "# " comment body — handled below as topic if #word; skip
+            }
+
+            // @dialect:Spw.x / @profile:Spw.x — dialect product surface (keyword + definition)
+            const dialectMark = rest.match(/^@(?:dialect|profile)\s*:\s*Spw\.[blmxqfpt]\b/i)
+            if (dialectMark) {
+                push(lineIndex, col, dialectMark[0].length, TT.keyword, TM.definition)
+                col += dialectMark[0].length
+                continue
+            }
+
+            // =exp[ id: …  — experimental catalog citation (property + declaration)
+            const expMatch = rest.match(/^=\s*exp\s*\[/)
+            if (expMatch) {
+                push(lineIndex, col, expMatch[0].length, TT.property, TM.declaration)
+                col += expMatch[0].length
+                continue
+            }
+
+            // $%[ — measure bundle open (keyword + definition)
+            if (rest.startsWith('$%[')) {
+                push(lineIndex, col, 3, TT.keyword, TM.definition)
+                col += 3
+                continue
+            }
+
+            // << or >> stream / schedule brackets (operator + async for flow)
+            if (rest.startsWith('<<') || rest.startsWith('>>')) {
+                push(lineIndex, col, 2, TT.operator, TM.async)
+                col += 2
+                continue
+            }
+
+            // !boon !bane !bone !bonk !honk — charged action (function + modification)
+            const chargeMatch = rest.match(/^!(?:boon|bane|bone|bonk|honk)\b/)
+            if (chargeMatch) {
+                push(lineIndex, col, chargeMatch[0].length, TT.function, TM.modification)
+                col += chargeMatch[0].length
+                continue
+            }
+
+            // ^seed[ — framing declaration
+            if (rest.startsWith('^seed[')) {
+                push(lineIndex, col, 6, TT.keyword, TM.declaration)
+                col += 6
+                continue
             }
 
             // ##>anchor — prompt root anchor (keyword + declaration)
@@ -252,9 +302,44 @@ export function semanticTokens(params: DocumentParams, deps: HandlerDeps): LspSe
                 continue
             }
 
-            // *-variant (keyword)
-            if (ch === '*' && /[a-zA-Z_]/.test(rest[1] ?? '')) {
-                push(lineIndex, col, 1, TT.keyword, 0)
+            // *-variant then bare * crystallize
+            if (ch === '*') {
+                const mod = /[a-zA-Z_]/.test(rest[1] ?? '') ? 0 : TM.readonly
+                push(lineIndex, col, 1, TT.keyword, mod)
+                col++
+                continue
+            }
+
+            // &[ confluence-select then bare &
+            if (ch === '&') {
+                if (rest.startsWith('&[')) {
+                    push(lineIndex, col, 2, TT.operator, TM.definition)
+                    col += 2
+                    continue
+                }
+                push(lineIndex, col, 1, TT.operator, TM.definition)
+                col++
+                continue
+            }
+
+            // $-substrate (variable)
+            if (ch === '$') {
+                push(lineIndex, col, 1, TT.variable, 0)
+                col++
+                continue
+            }
+
+            // <> couple digraph before bare <
+            if (rest.startsWith('<>')) {
+                push(lineIndex, col, 2, TT.operator, TM.definition)
+                col += 2
+                continue
+            }
+
+            // Brace material — pair open/close as operator (shape literacy)
+            if (ch === '{' || ch === '}' || ch === '[' || ch === ']' || ch === '(' || ch === ')') {
+                const open = ch === '{' || ch === '[' || ch === '('
+                push(lineIndex, col, 1, TT.operator, open ? TM.declaration : 0)
                 col++
                 continue
             }
@@ -263,13 +348,6 @@ export function semanticTokens(params: DocumentParams, deps: HandlerDeps): LspSe
             if (ch === '+') {
                 push(lineIndex, col, 1, TT.operator, 0)
                 col++
-                continue
-            }
-
-            // &[-reference (operator + bracket)
-            if (ch === '&' && rest.startsWith('&[')) {
-                push(lineIndex, col, 2, TT.operator, 0)
-                col += 2
                 continue
             }
 
@@ -286,15 +364,15 @@ export function semanticTokens(params: DocumentParams, deps: HandlerDeps): LspSe
                 continue
             }
 
-            // remaining operators: . & $ *
-            if (ch === '.' || ch === '&' || ch === '$' || ch === '*') {
+            // remaining: .
+            if (ch === '.') {
                 push(lineIndex, col, 1, TT.operator, 0)
                 col++
                 continue
             }
 
-            // containers: [] {} () <>
-            if ('[]{}()<>'.includes(ch)) {
+            // angle leftovers < >
+            if (ch === '<' || ch === '>') {
                 push(lineIndex, col, 1, TT.operator, TM.definition)
                 col++
                 continue

@@ -144,6 +144,83 @@ export function sepBy<T, S>(
 }
 
 /**
+ * Match items with an *optional* delimiter between them.
+ *
+ * Same shape as {@link sepBy}, except juxtaposition also separates: `[a, b]`
+ * and `[a b]` (including across newlines) both yield two items. Sequences
+ * already read this way — separators mark a boundary rather than create it —
+ * so bracketed content stays consistent with sequence content.
+ */
+export function sepByOptional<T, S>(
+  item: Parser<T>,
+  separator: Parser<S>
+): Parser<T[]> {
+  return function* sepByOptionalParser(stream, depth): Generator<ParseEvent, ParseResult<T[]>, void> {
+    const pos = getPosition(stream)
+
+    yield {
+      type: 'enter',
+      rule: 'sepByOptional',
+      position: pos,
+      data: { input: current(stream).value } as EnterEventData,
+      timestamp: performance.now(),
+      depth,
+    }
+
+    const results: T[] = []
+    let totalConsumed = 0
+
+    while (!isAtEnd(stream)) {
+      mark(stream)
+
+      const itemGen = item(stream, depth + 1)
+      let itemStep = itemGen.next()
+      while (!itemStep.done) {
+        yield itemStep.value
+        itemStep = itemGen.next()
+      }
+
+      // Guard against zero-width success, which would spin this loop forever.
+      if (!itemStep.value.success || itemStep.value.consumed === 0) {
+        reset(stream)
+        break
+      }
+
+      unmark(stream)
+      results.push(itemStep.value.value!)
+      totalConsumed += itemStep.value.consumed
+
+      // Separator is optional: consume it when written, keep going when not.
+      mark(stream)
+      const sepGen = separator(stream, depth + 1)
+      let sepStep = sepGen.next()
+      while (!sepStep.done) {
+        yield sepStep.value
+        sepStep = sepGen.next()
+      }
+
+      if (sepStep.value.success) {
+        unmark(stream)
+        totalConsumed += sepStep.value.consumed
+      } else {
+        reset(stream)
+      }
+    }
+
+    yield {
+      type: 'exit',
+      rule: 'sepByOptional',
+      position: getPosition(stream),
+      data: { success: true, consumed: totalConsumed, result: results } as ExitEventData,
+      timestamp: performance.now(),
+      depth,
+    }
+
+    return { success: true, value: results, consumed: totalConsumed }
+  }
+}
+
+/**
  * Match content between opening and closing delimiters
  */
 export function between<O, C, T>(

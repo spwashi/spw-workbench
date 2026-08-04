@@ -8,6 +8,7 @@ const UPDATE_DELAY_MS = 80
 export function registerContextStrip(spw: SpwContext): vscode.Disposable[] {
   const item = vscode.window.createStatusBarItem('spw.context', vscode.StatusBarAlignment.Left, 40)
   item.name = 'Spw Field'
+  item.command = 'spw.showPhaseContext'
 
   let timer: ReturnType<typeof setTimeout> | undefined
   let requestVersion = 0

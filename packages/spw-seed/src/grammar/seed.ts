@@ -65,12 +65,34 @@ export const seedNode: Parser<SeedNode> = named('seed',
       // If we didn't reach EOF, the file likely contains prose-heavy lines; fall back to prose parsing.
       skipWhitespace(stream)
       const reachedEOF = current(stream).type === 'EOF'
+      // Capture where structured parsing stalled before rewinding — after the
+      // rewind the position is the start of the surface, which teaches nothing.
+      const stall = current(stream)
       if (!reachedEOF) {
         stream.position = savedPos
       }
 
       // sequenceNode can succeed with consumed=0; treat that as failure so we fall back to prose.
       if (!reachedEOF || !(exprResult.success && exprResult.consumed > 0)) {
+        // The fallback itself is correct — a documentation language must not
+        // hard-fail on a malformed expression. Silence is the defect: without a
+        // signal an author sees a degraded parse and cannot learn why. Report
+        // where structured parsing stopped, then degrade as before.
+        yield {
+          type: 'warning',
+          rule: 'seed',
+          position: stall.span.start,
+          data: {
+            message: reachedEOF
+              ? 'Structured parse consumed nothing; surface degraded to prose.'
+              : `Structured parse stopped at ${stall.type} ${JSON.stringify(stall.value)}; surface degraded to prose.`,
+            code: 'prose-degradation',
+            found: stall.type,
+          },
+          timestamp: performance.now(),
+          depth,
+        } as ParseEvent
+
         const proseGen = proseNode(stream, depth + 1)
         let proseStep = proseGen.next()
         while (!proseStep.done) {

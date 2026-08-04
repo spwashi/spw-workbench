@@ -1,0 +1,68 @@
+# Surface Identity Pattern
+#
+# Three ways a surface can be identified, what each one is good for, and why
+# they must not share a name. Written because four plans arrived at the same
+# idea under three different words.
+
+#>spw_pattern_surface_identity
+#:pattern #!identity
+#:layer #!pragmatics
+
+^"roots"{
+ @cache_algo: ~"../biome/ocean/algos/cache.spw"
+ @workspace: ~"../workspace.spw"
+ @hot: ~"../hot.spw"
+}
+
+^"identities"{
+ content_hash: {
+ answers: "did this text change?"
+ over: "raw source bytes"
+ collision: "failure — two different sources sharing a hash is a bug"
+ machine: "canonicalize(source).hash"
+ good_for: "change detection, cache invalidation, differential input/output pairs"
+ }
+
+ shape_fingerprint: {
+ answers: "does this form recur elsewhere?"
+ over: "ONF sigil + arity + argument order, labels erased"
+ collision: "the finding — many-to-one is the entire purpose"
+ machine: "declared in onf.ts as a semantic-hash invariant; unimplemented"
+ good_for: "resonance discovery, idiom detection, anti-unified templates"
+ }
+
+ granule_key: {
+ answers: "what survives an edit elsewhere in this file?"
+ over: "an author-declared region — apposition name plus span"
+ collision: "namespace error — two granules with one key means the key is too coarse"
+ machine: "unimplemented"
+ good_for: "invalidation proportional to the edit, partial reuse of derived data"
+ }
+}
+
+^"invariant"{
+ "Collision semantics differ per identity kind; a shared head noun would erase the difference.",
+ "`hash` is reserved for content identity. Recurrence uses `fingerprint`. Regions use `key`.",
+ "A hit and a cold recompute return the same answer — when they diverge the key was wrong, not the cache.",
+}
+
+^"ownership"{
+ #:governance
+ @cache_algo: "owns composite cache keys, tier TTLs, and eviction policy — the authority the implementation drifted from"
+ workspace_block: "one ^\"cache\"{} block in @workspace holds beat cadence and granule policy together; two blocks for one policy surface would fork the vocabulary"
+ note: "beat config and cache config are the same concern seen from two plans; they reconcile here rather than in either branch"
+}
+
+^"consumers"{
+ #:plans
+ geometric_analysis_tooling: "shape_fingerprint — implements it, settles the naming across onf.ts and the garden plan"
+ apposition_cache_granules: "granule_key — keys on appositions already placed in the corpus"
+ spw_beat_diff_precipitation: "content_hash + the shared workspace block — beat TTLs govern when identities expire"
+ spw_garden_geometry: "shape_fingerprint under ~#kinds.structural, as a formula kind"
+ operational_topography: "ParseHealth is the shared validity notion; identity work reuses it rather than minting a parallel one"
+}
+
+^"open"{
+ ?[granule_vs_shape]: "A region has both a granule key and a shape fingerprint. One identity type with two projections, or two types that happen to co-locate?"
+ ?[persistence]: "@hot grades effects l0.measure to l3.external. Identities held in memory are l1; persisted indexes are l2.workspace. Which identities earn persistence?"
+}

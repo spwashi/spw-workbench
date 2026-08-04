@@ -1,0 +1,99 @@
+# Refactor Experiment Lifecycle
+#
+# Spine: spw.refactor.plan/1 — select → plan → intermediate → apply → verify → record.
+#:layer #!pragmatics
+#:status #!proposed
+@dialect:Spw.p
+
+^seed[Spw.Plan.Refactor.Experiment v:0.2 @profile:Spw.p @intent:plan_as_data]
+
+^["roots"]{
+ @plan: ~".agents/plans/refactor-experiment-lifecycle/PLAN.md"
+ @wip: ~".agents/plans/refactor-experiment-lifecycle/wip.spw"
+ @ecology: ~".agents/plans/shape-syntax-ecology/shape-syntax-ecology.spw"
+ @semantic: ~"packages/spw-seed/src/canonical/semantic-edit.ts"
+ @differential: ~"packages/spw-seed/src/canonical/differential.ts"
+ @refactor: ~"packages/spw-cli/src/refactor.ts"
+ @bias: ~"packages/spw-cli/src/bias-apply.ts"
+ @query: ~"packages/spw-cli/src/query.ts"
+ @pulse_doc: ~"docs/runtime/md/pulse-mutate-beat.md"
+ @flow: ~"docs/theory/spw/mutation-flow-automata.spw"
+ @envelope: ~"packages/spw-cli/src/envelope.ts"
+}
+
+^["thesis"]{
+ ~#claim: "Codebase-wide refactor is safe when the plan is data, selection is hashed, apply is gated, and git records plan.id."
+ ~#taste: "refuse over silent partial; worktree before main; Spw intermediate only if humans can edit poles"
+}
+
+^["anatomy"]{
+ . {
+  select: .{ dialect: Spw.q , out: selection.json , fields: #[uri, contentHash] }
+  plan: .{ schema: "spw.refactor.plan/1" , rules: SemanticRule , edits: SemanticEdit }
+  intermediate: .{
+   ~ : plan_field
+   % : check
+   * : #[mem, worktree]
+   ^ : receipt
+   paths: #[
+    ~".spw/gen/experiments/<id>/plan.json"
+    ~".spw/gen/experiments/<id>/patch.spw"
+    ~".spw/gen/experiments/<id>/receipt.json"
+   ]
+  }
+  apply: .{ l1_worktree: #proposed , l2: hash_gated }
+  record: .{ trailer: #[Spw-Plan, Spw-Selection-Hash] , episode: #yes }
+  =exp[ id: refactor.plan_v1 , status: proposed , runtimeHook: lower ]
+  =exp[ id: refactor.worktree_l1 , status: proposed , runtimeHook: none ]
+ }
+}
+
+^["spine"]{
+ stages: << select ; plan ; check ; apply_worktree ; apply_workspace ; verify ; record >>
+ law: "plan.id in every projection and the episode trailer"
+ sigma: << ~ ; ? ; % ; ! ; * ; ^ >>
+}
+
+^["effect"]{
+ l0: #[select, plan, check, verify]
+ l1_memory: stdin_buffer
+ l1_worktree: git_sandbox
+ l2: hash_gated_workspace
+}
+
+^["refuse"]{
+ stale_hash: #hard
+ overlap_conflict: #hard
+ mount_default: #hard
+ absolute_paths: #hard
+}
+
+^["compose"]{
+ curiosity: ~".agents/plans/curiosity-mutation-ergonomics/curiosity-mutation-ergonomics.spw"
+ measure: ~".agents/plans/measure-invariant-generalization/measure-invariant-generalization.spw"
+ form: ~".agents/plans/form-geometry-editor/form-geometry-editor.spw"
+ syntax: ~".agents/plans/syntax-profile-stack/syntax-profile-stack.spw"
+ pulse: @pulse_doc
+}
+
+^["synergy"]{
+ lsp: .{ WorkspaceEdit_from_plan: proposed }
+ nvim: .{ multi_diff: proposed }
+ cli: .{ plan_check_apply: proposed }
+ cache_key: #[contentHash, dialect, preprocess]
+}
+
+^["imagination"]{
+ ide: "select → plan → touch file → expect stale"
+ shot: "plan summary blast radius; verify hashes"
+ learn: "q for select; b for patch.spw; m for machine rename"
+ falsify: "git line-diff as semantic plan"
+}
+
+#>wonder_refactor_rich_1
+?["Is the plan the subject or the intermediate?"]{
+  #:species #!reverse_edge
+  !probe{ =id[p_plan_meta] }
+  $%[file.frame_count]
+  ~<packages/spw-seed/src/canonical/semantic-edit.ts>
+}

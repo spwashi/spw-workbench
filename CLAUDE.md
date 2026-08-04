@@ -94,8 +94,10 @@ npm run spw:doctor                                                # Mounted-cons
 
 ### spw CLI — sense loop (corpus topography)
 ```bash
-npm run spw:invent -- prompts --sort degree -n 30   # Inventory: lines, refs, frames, topo roles
-npm run spw:map -- prompts --hubs 12                # Hubs, cycles, familiarity strands
+npm run spw:census -- prompts --sort degree -n 30   # Population: lines, refs, frames, topo roles (alias: invent)
+npm run spw:graph -- prompts --hubs 12              # Hubs, cycles, familiarity strands (alias: map)
+npm run spw:surface -- <file.spw>                   # Stack card: dialect × review × format (alias: profile)
+npm run spw:measure -- <file.spw>                   # Mass/thrift metrics (alias: mass)
 npm run spw:formula -- prompts --family field       # Named formula catalog + pattern discovery
 npm run spw:analyze -- prompts                      # Multi-selector hit densities
 npm run spw:geometry -- --help                      # Form-geometry ladders / mobility probes

@@ -1,0 +1,143 @@
+# wip — geometric-analysis-tooling
+# Branch: feature/geometric-analysis-tooling
+# Started: 2026-07-26
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @surface_identity: ~".spw/patterns/surface-identity.spw"
+ @plan: ~".agents/plans/geometric-analysis-tooling/PLAN.md"
+ @artifact: ~".agents/plans/geometric-analysis-tooling/geometric-analysis-tooling.spw"
+ @register_geometry: ~"docs/theory/spw/register-geometry.spw"
+ @onf: ~"docs/theory/spw/onf.spw"
+ @operator_lattice_skill: ~".agents/skills/spw-operator-lattice/SKILL.md"
+ @defect_site: ~"packages/spw-seed/src/canonical/geometry-inspect.ts"
+ @brace_projection: ~"packages/spw-seed/src/canonical/brace-projection.ts"
+ @topography: ~"packages/spw-seed/src/canonical/topography-probe.ts"
+ @onf_types: ~"packages/spw-seed/src/types/ast/onf.ts"
+ @coupling: ~"packages/spw-seed/src/types/coupling.ts"
+ @normalize: ~"packages/spw-seed/src/normalize.ts"
+ @garden_formula: ~".agents/plans/spw-garden-geometry/formula-variant-geometry-utility.spw"
+}
+
+^["intent"]{
+ ~#goal: "Move the operator census and nesting off character scanning onto the AST, then build order (n-grams, depth profile) and shape (label-erased subtree fingerprints, anti-unification) on top, each z-scored against a corpus baseline."
+ ~#taste: "correctness, expressiveness, layering"
+ ~#defect: "inspectGeometry mixes two epistemologies — extractBraceProjection parses, censusOperators scans chars — and they contradict each other in the same report."
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#taste, #linguistics, #design_transfer]
+ review_surfaces: [@plan, @defect_site, @register_geometry, @onf]
+ snippet_routes: [#example, #query, #snippet]
+}
+
+^["concept_index"]{
+ primary: [#ast_census, #operator_rhythm, #shape_fingerprint, #corpus_baseline]
+ secondary: [#lexer_fixity, #lsp_tensor_hover, #spectral_cli, #falsifiable_lesson]
+ surfaces: [#lexer, #seed_canonical, #lsp, #cli]
+ tensions: [#parse_recovery, #hover_latency, #fingerprint_cost, #vocabulary_drift]
+ transfers: [#language, #component, #service]
+}
+
+^["measurements"]{
+ ~#repro: "printf '^[demo]{ \"a string with ! and ~ and { unbalanced\" }' | spw geometry --stdin"
+ ~#observed: "ops=3 (! ~ ^) and a false unbalanced-brace lesson; braces=2 from the AST path is correct"
+ ~#expected: "ops=1 (^), balanced, no unbalance lesson"
+ ~#histogram_gap: "operator rhythm is sorted by count — order discarded, so no rhythm survives"
+ ~#shape_gap: "hashString hashes source text; BraceProjection.signature is an order-free counts multiset; neither sees skeleton"
+ ~#shape_declared: "onf.ts invariant 'momentum frames are excluded from semantic hash' + garden ~#kinds.structural 'ONF shape hash' — both declare it; grep semanticHash|shapeHash|structuralHash finds zero implementations"
+ ~#baseline_gap: "geometry is single-file only while formula/analyze/map already consume scanCorpus"
+ ~#coupling_solved: "types/coupling.ts + normalize.ts already discriminate capsule from couple; the previous revision scoped that as lexer work it does not need"
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread roots and live code before widening claims",
+  "< ship one concept-sized artifact, patch, or snippet",
+  "$ record what became clearer, indexable, or measurable",
+  "^ fold the new truth back into plan, spec, docs, or tool surface",
+  "% keep one invariant stable while experimenting",
+ ]
+ gates: [#preview_truth, #snippet_reuse, #claim_discipline]
+}
+
+^["parallel_work"]{
+ critical_path: [#lexer_fixity, #ast_census]
+ parallelizable: [#lsp_tensor_hover, #spectral_cli]
+ shared_hot_files: [
+  "packages/spw-seed/src/lexer/tokenize.ts",
+  "packages/spw-seed/src/canonical/geometry-inspect.ts",
+  "packages/spw-lsp/src/handlers/spw-probes.ts",
+ ]
+ merge_risks: [#naming_drift, #uncommitted_lsp_drift]
+ handoff_artifacts: [@plan, @artifact]
+}
+
+^["supporting_documents"]{
+ must_ship: [@plan, @artifact]
+ helpful: [@operator_lattice_skill, @brace_projection, @topography]
+ carries: [#examples, #review_notes]
+}
+
+^["interaction_depth"]{
+ subjects: [#feedback, #legibility, #latency]
+ questions: [#what_is_primary, #what_is_visible, #what_is_surprising]
+ qualities: [#clarity, #containment]
+}
+
+^["stream"]{
+ >>[2026-07-26 23:17] observe — Initialized plan for geometric analysis tooling across spw-seed, spw-lsp, and spw-cli.
+ >>[2026-07-26 23:40] observe — Ran spw geometry on a stdin fixture; report self-contradicts. Sigils inside a quoted string counted as operators, and a `{` inside that string produced a false unbalanced-brace lesson while the AST-derived brace counts stayed correct.
+ >>[2026-07-26 23:40] decide — Reframed scope around the census defect. Lexer fixity stays upstream (it supplies site/arity), but the spine is now: AST census -> order -> shape -> baseline.
+ >>[2026-07-26 23:40] taste — Previous revision listed four paths that do not exist (matchers/operator.ts, matchers/container.ts, handlers/hover.ts, handlers/diagnostics.ts, ls/index.ts) and omitted geometry-inspect.ts, the module holding the defect. Corrected.
+ >>[2026-07-26 23:40] taste — geometry-inspect.ts at 184 lines cannot absorb census + rhythm + shape + lessons under the 400-line target; split into four single-concern modules. form-geometry.ts (1209) and form-ladders.ts (943) are already over guard — import, never extend.
+ >>[2026-07-26 23:40] observe — vitest.seed.config.ts includes both src/seed/**/*.test.ts and packages/spw-seed/src/**/*.test.ts, so package-local seed tests do run.
+ >>[2026-07-26 23:55] observe — ONF is already the substrate the shape work needs: ONFNode is {sigil, args[], frames}, positional and label-free, and '_' is already the hole sigil. Anti-unified templates are therefore ONF terms, not a new datatype.
+ >>[2026-07-26 23:55] observe — The shape primitive is declared but unimplemented. onf.ts states 'momentum frames are excluded from semantic hash' as an invariant; garden names 'ONF shape hash' as a formula kind; grep for semanticHash|shapeHash|structuralHash returns zero hits. Commit 6 redeems a promise rather than adding an idea.
+ >>[2026-07-26 23:55] decide — Dropped capsule/couple disambiguation from scope. types/coupling.ts already discriminates CouplingForm operator|boundary over the six-way PairedBoundaryKind registry, and normalize.ts stamps it. The bare `<` container token from the lexer is correct; disambiguation is downstream and already done.
+ >>[2026-07-26 23:55] decide — Narrowed commit 2 from 'add fixity metadata' to 'populate what onf.ts already declares'. normalize.ts stamps actPlacement in several sites already; the gap is parser position, which onf.ts flags as 'often unset'.
+ >>[2026-07-26 23:58] decide — Named the primitive shapeFingerprint over shapeHash, at the user's prompting. hashString is content identity across mutation-automata, range-transform, and form-geometry; collision there is failure, here it is the finding. Added commit 5 as a vocab pass so the reconciliation lands before the implementation.
+ >>[2026-07-27 13:10] observe — plan-ecology sweep: .spw/patterns/surface-identity.spw now holds the shared identity vocabulary. shape_fingerprint is declared there; commit 5 settles the name against that surface rather than against this plan alone.
+}
+
+^["open"]{
+ ?[fallback]: "Do prose-heavy .spw surfaces parse well enough that an AST census does not go blind where the char scan was merely noisy? Decides whether fallback:true is a rare path or the common one."
+ ?[recurrence]: "What min-recur threshold separates idiom from accident for shape fingerprints? Needs corpus data from commit 6 — do not hand-pick it in commit 5."
+ ?[hygiene]: "Uncommitted LSP + neovim drift touches handlers/spw-probes.ts, a shared hot file with commit 8. Split branch or defer the LSP commits?"
+ ?[fixity_yield]: "What fraction of operator nodes can actually recover fixity from parser position? onf.ts says 'often unset'. If the yield is low after commit 2, commit 6's arity keying loses resolution and the census falls back to sigil x site."
+}
+
+^["resolved"]{
+ $[vocab]: "Resolved 2026-07-26. Three names existed for one idea: onf.ts 'semantic hash' (declared invariant, never implemented), garden plan 'ONF shape hash' (~#kinds.structural), and this plan's 'fingerprint'. Settled on shapeFingerprint, keeping the ONF-shape qualifier. Rationale: hashString already means content identity here (inputHash/outputHash, beforeHash/afterHash, range-transform source id) where collision is failure; a shape fingerprint is many-to-one by design, where collision is the finding. Inverted collision semantics should not share a head noun. Commit 5 does the reconciliation before commit 6 implements."
+}
+
+^["commits"]{
+ ~[1]: ".[plans] — refresh geometric-analysis-tooling scope around AST-census findings"
+ ~[2]: "^seed[spw-seed] — stamp actPlacement/fixity from parser position; carry container depth in lexer state"
+ ~[3]: "^seed[geometry] — move operator census and nesting onto the AST; bump report to spw.geometry/2"
+ ~[4]: "^seed[geometry] — add operator n-grams and depth profile so rhythm carries order"
+ ~[5]: "vocab[geometry] — settle shape fingerprint vs content hash across onf.ts and the garden plan"
+ ~[6]: "^seed[geometry] — implement the ONF shape fingerprint and anti-unified templates"
+ ~[7]: "&[spw-cli] — corpus mode for spw geometry: scanCorpus baseline, z-scored deviation, derived thresholds"
+ ~[8]: "#[spw-lsp] — surface Register Geometry coordinates and non-commutative diagnostics from the /2 report"
+ ~[9]: "&[spw-cli] — spectral graph metrics over the reference graph (Laplacian / Fiedler)"
+ ~[10]: "![tests] — fixity, census parity, fingerprint stability, and corpus baseline suites"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@d9da60ad"
+ ~#rebased_at: ""
+ ~#hygiene_split: "required — LSP/neovim drift shares handlers/spw-probes.ts with commit 7"
+ ~#files_hot: "packages/spw-seed/src/canonical/geometry-inspect.ts, packages/spw-seed/src/lexer/tokenize.ts, packages/spw-lsp/src/handlers/spw-probes.ts"
+ ~#next_commit: "2"
+ ~#open_count: "4"
+ ~#last_stream: "2026-07-27 13:10"
+ ~#taste_debt: "spectral metrics (commit 9) is the most speculative rung — ship only if the baseline from commit 7 gives it something to be surprising against"
+}
+
+^["done"]{
+}

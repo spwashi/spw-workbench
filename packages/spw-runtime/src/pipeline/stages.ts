@@ -234,8 +234,12 @@ export function* runSpwStepped(
         delta: summarizeDesugar(source, desugared),
     } satisfies DesugarPrecipitate
 
-    // ── Stage 2: Parse ──────────────────────────────────────────
-    const parseOutput = parse(desugared)
+    // ── Stage 2: Parse (dialect-aware when path/dialect/autoDialect set) ──
+    const parseOutput = parse(desugared, {
+        autoDialect: options.autoDialect,
+        dialect: options.dialect,
+        path: options.path,
+    })
 
     yield {
         stage: 'parse',
@@ -262,6 +266,8 @@ export function* runSpwStepped(
             parse: parseOutput,
             issues,
             telemetry,
+            dialect: parseOutput.dialect,
+            channel: options.channel,
         }
     }
 
@@ -301,6 +307,8 @@ export function* runSpwStepped(
         parse: parseOutput,
         runtime,
         telemetry,
+        dialect: parseOutput.dialect,
+        channel: options.channel,
     }
 }
 

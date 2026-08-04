@@ -150,13 +150,13 @@ export interface SpwConfig {
     formatOnSave?: boolean
 }
 
-export const DEFAULT_CONFIG: Required<SpwConfig> = {
+export const DEFAULT_CONFIG = {
     inlayHints: { paths: true, annotations: true, frames: true },
     diagnostics: { unresolvedRefs: 'warning', staleProjections: true },
     roots: {},
     workspace: { exclude: ['node_modules', '.git', '.claude'] },
     formatOnSave: false,
-}
+} satisfies Required<SpwConfig>
 
 // ── Constants ───────────────────────────────────────────────────
 
@@ -273,3 +273,33 @@ export interface HandlerDeps {
     observableState: Record<string, any> | null
     observableStateLoadedAt: number
 }
+
+// ── Spw request activity (request epoch — not substrate pulse) ─
+
+export interface SpwActivityParams {
+    textDocument?: TextDocumentIdentifier
+}
+
+/** @deprecated Prefer SpwActivityParams */
+export type SpwBeatParams = SpwActivityParams
+
+export interface SpwActivitySurfaceStatus {
+    uri: string
+    visits: number
+    lastWriteEpoch: number
+    lastAccessEpoch: number
+    /** requestEpoch − lastAccessEpoch (protocol traffic, not wall time). */
+    accessAgeRequests: number
+}
+
+/** @deprecated Prefer SpwActivitySurfaceStatus */
+export type SpwBeatSurfaceStatus = SpwActivitySurfaceStatus
+
+export interface SpwActivityResult {
+    requestEpoch: number
+    activeDocuments: number
+    surface?: SpwActivitySurfaceStatus
+}
+
+/** @deprecated Prefer SpwActivityResult */
+export type SpwBeatResult = SpwActivityResult

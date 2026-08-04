@@ -1,0 +1,257 @@
+# CLI verb alignment — audit exhibit
+#
+# Four axes: verb alignment, composability, Spw-nativity, agent friendliness.
+# Companion to PLAN.md Appendix C. Snapshot against main tip command registry.
+
+#>spw_plan_cli_verb_alignment
+#:pattern #!cli
+#:layer #!pragmatics
+#:depth #!operational
+#:audit #!snapshot
+
+^"roots"{
+ @plan: ~"../PLAN.md"
+ @index: ~"./index.spw"
+ @doctrine: ~"../hygiene-index-consolidation.spw"
+ @commands: ~"../../../../packages/spw-cli/src/commands.ts"
+ @envelope: ~"../../../../packages/spw-cli/src/envelope.ts"
+ @hot: ~"../../../../.spw/hot.spw"
+ @cli_convention: ~"../../../../.spw/conventions/cli.spw"
+ @agent_tools: ~"../../../../scripts/agent-tools.sh"
+ @referentiality: ~"./documentation-referentiality.spw"
+}
+
+^"intent"{
+ ~#goal: "Make the Spw CLI one honest verb lattice: groups match cost, flags compose, output is agent-parseable, and every command is a Spw-native product rather than a host script with a Spw name."
+ ~#taste: "clarity + correctness + agent affordance"
+ ~#premise: "A command group is a claim about what it costs to run; an unversioned JSON blob is a second dialect."
+ ~#non_goal: "Do not rename public verbs for fashion; aliases absorb muscle memory."
+}
+
+// ── Four audit axes ───────────────────────────────────────────
+
+^"axes"{
+ #:depth #!structural
+
+ verb_alignment: .{
+  asks: "does the verb name the Spw act, and does its group match effect cost?"
+  good: "pulse/mutate/beat ceilings declared in hot.spw; mass/authority name surface products"
+  bad: "sense verbs that --write; shape vs sense for refresh; stale convention command lists"
+ }
+
+ composability: .{
+  asks: "can an agent chain outputs without custom parsers per verb?"
+  good: "COMMANDS registry; shared help page; invent/map on envelope"
+  bad: "partial envelope; pulse private schema; flag soup; no stdin graph for sense"
+ }
+
+ spw_nativity: .{
+  asks: "does the verb read Spw structure (seed products) rather than host text?"
+  good: "query/select/skim; mass/authority/taste; refresh semantic edits"
+  bad: "analyzers outside registry; census only as npm script; dual geometry epistemologies"
+ }
+
+ agent_friendliness: .{
+  asks: "stable exit, relative paths, --json, --help, discoverable capabilities?"
+  good: "exit.ts reasons; path policy in convention; doctor --json"
+  bad: "plan/agent tools live in bash; capabilities/review planned not shipped; unversioned --json"
+ }
+}
+
+// ── Registry snapshot (groups) ────────────────────────────────
+
+^"registry"{
+ #:index #!commands
+ workspace: #[init, doctor, roots, mount, tree]
+ sense: #[invent, map, atlas, formula, analyze, geometry, mass, authority, taste]
+ read: #[query, select, skim, ls]
+ shape: #[format, expand, refactor, refresh, emit]
+ effect: #[pulse, mutate, beat, mem, dev]
+ aliases: #[install, inventory, inv, topo, formulas, stats, geom, q, spwq, read, seq]
+ planned_unshipped: #[capabilities, review]
+ outside_registry: #[
+  "scripts/analyzers/* (path-check, census, syntax-validate)",
+  "scripts/agent-tools.sh plan:* vibe kb",
+ ]
+}
+
+^"effect_alignment"{
+ #:hot
+ @hot: ~"../../../../.spw/hot.spw"
+ beat: #none
+ pulse: #effect.l0.measure
+ pulse_write: #effect.l2.workspace
+ mutate: #effect.l1.memory
+ mutate_write: #effect.l2.workspace
+ dev: #orchestrator_light
+ # Tension: mass --write and refresh --write are l2-ish but live under sense/shape
+ mass_write: #effect.l2.workspace
+ refresh_write: #effect.l2.workspace
+ ~#claim: "any --write must advertise ceiling in help summary, not only in prose docs"
+}
+
+// ── Findings ──────────────────────────────────────────────────
+
+^"findings"{
+ #:audit
+
+ F1_convention_drift: .{
+  severity: #medium
+  axis: #verb_alignment
+  detail: "conventions/cli.spw public_commands is a subset of COMMANDS; planned capabilities/review still absent"
+ }
+
+ F2_write_in_sense: .{
+  severity: #medium
+  axis: #verb_alignment
+  detail: "mass --write and refresh --write mutate workspace while group claims measure-only or shape-only; help must name ceiling"
+ }
+
+ F3_envelope_partial: .{
+  severity: #high
+  axis: #composability
+  detail: "envelope v1 used by invent/map (and some others); mass/authority/atlas/geometry/beat emit ad-hoc JSON; pulse has a private schemaVersion surface"
+ }
+
+ F4_flag_heterogeneity: .{
+  severity: #medium
+  axis: #composability
+  detail: "--from/--json/--write/--stdin not uniform; query has rich composition; geometry is --stdin; sense loop is path-positional"
+ }
+
+ F5_agent_tools_split: .{
+  severity: #high
+  axis: #agent_friendliness
+  detail: "plan:status/check/init/stream and vibe/kb are bash agent-tools, not spw verbs; refresh is spw but plan ecology is not"
+ }
+
+ F6_orphan_analyzers: .{
+  severity: #medium
+  axis: #spw_nativity
+  detail: "particle census, path-check, syntax-validate live under scripts/analyzers and npm run audit:* — not discoverable via spw help"
+ }
+
+ F7_capabilities_gap: .{
+  severity: #high
+  axis: #agent_friendliness
+  detail: "agents cannot ask what the binary supports; convention already names spw capabilities and spw review"
+ }
+
+ F8_group_cost_claim: .{
+  severity: #low
+  axis: #verb_alignment
+  detail: "COMMAND_GROUPS blurbs are honest cost claims; keep them; do not invent a sixth group for agents — put plan under workspace or shape with clear ceiling"
+ }
+}
+
+// ── Verb map: Spw product → CLI ───────────────────────────────
+
+^"product_map"{
+ #:nativity
+ path_ref: #[query, select, mount, tree, doctor]
+ particle: #[taste, analyze, "census (orphan)"]
+ bias: #[expand, mutate, mount]
+ mass_facet: #[mass]
+ authority_claims: #[authority]
+ geometry_report: #[geometry]
+ plan_cache: #[refresh]
+ effect_ladder: #[pulse, mutate, beat]
+ formula: #[formula, emit]
+ topography: #[map, invent, atlas]
+ # Missing product verbs
+ plan_ecology: "bash plan:* only"
+ capabilities: "unshipped"
+ review_profile: "unshipped"
+ path_check: "npm lint:docs / analyzer only"
+}
+
+// ── Agent contract goals ──────────────────────────────────────
+
+^"agent_contract"{
+ #:disclosure
+ must: #[
+  #relative_paths_only,
+  #exit_code_stable,
+  #help_on_every_verb,
+  #json_opt_in,
+  #no_absolute_user_paths,
+ ]
+ should: #[
+  #envelope_v1_all_json,
+  #capabilities_verb,
+  #plan_verbs_under_spw,
+  #stdin_stdout_compose,
+  #effect_ceiling_in_help,
+ ]
+ must_not: #[
+  #silent_write,
+  #second_json_schema_per_verb,
+  #host_cwd_identity_in_payload,
+ ]
+}
+
+^"composability_patterns"{
+ #:process
+ sense_then_read: "spw invent ROOT --json | agent picks hub | spw skim HUB | spw query --from ROOT --selector pathRefs"
+ plan_only_then_write: "spw pulse PATH --json | human/agent accept | spw pulse PATH --write"
+ refresh_fixpoint: "spw refresh ROOTS --json && spw refresh ROOTS --json  # second totalEdits 0"
+ ecology: "spw plan status --json  # goal: not only bash agent-tools"
+ capabilities: "spw capabilities --json  # advertised vs observed"
+}
+
+// ── Plan slices ───────────────────────────────────────────────
+
+^"plan_slices"{
+ #:process #!this_and_follow_on
+
+ this_plan_commit_7: #[
+  "ecology multi-plan status via spw (wrap or reimplement plan:status/check)",
+  "refresh remains envelope-friendly --json",
+  "document verb ceilings for mass/refresh --write in help",
+ ]
+
+ follow_on_envelope: #[
+  "migrate mass, authority, taste, atlas, geometry, beat, doctor to envelope v1",
+  "retire pulse-private error shape or dual-publish envelope fields",
+ ]
+
+ follow_on_capabilities: #[
+  "spw capabilities from COMMANDS + LSP/editor probes",
+  "spw review profile orchestration (convention planned)",
+ ]
+
+ follow_on_nativity: #[
+  "register path-check and census under spw (workspace or sense)",
+  "update conventions/cli.spw public_commands from COMMANDS",
+ ]
+
+ out_of_scope_here: #[
+  "rename invent/map/analyze",
+  "server-index feature spines",
+  "new effect grades",
+ ]
+}
+
+^"invariant"{
+ "Group membership is a cost claim; --write that exceeds the group's blurb must say so in the one-line summary.",
+ "One JSON envelope family for new agent work; private schemas need dual-publish or migration.",
+ "Plan ecology verbs belong on the spw binary if agents are first-class users.",
+ "conventions/cli.spw must not list a smaller world than COMMANDS.",
+}
+
+#>wonder_cli_verb_alignment_1
+?["Which verb would an agent call to learn what it may call?"]{
+  #:depth #!computational
+  ~#missing: #capabilities
+  !probe{ "today: read commands.ts or help text. Goal: spw capabilities --json with group, ceiling, json contract id." }
+  $%[cli.command_count, cli.envelope_coverage]
+}
+
+#>wonder_cli_verb_alignment_2
+?["Is invent measure or mutation when --json only?"]{
+  #:depth #!educational
+  ~#group: #sense
+  ~#ceiling: #effect.l0.measure
+  !probe{ "if invent never writes, group is honest. Contrast mass --write: same group, different ceiling — help must not lie by omission." }
+  @hot
+}

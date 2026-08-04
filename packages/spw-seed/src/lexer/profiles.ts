@@ -27,8 +27,11 @@ export const DEFAULT_OPERATOR_MAP = {
 export const DEFAULT_CONNECTOR_MAP: Record<string, string> = {
   '..': '..',
   '->': '->',
+  // Longer digraphs first (createConnectorMatcher sorts by length).
+  '||': '||', // parallel schedule inside <<>> / flow CA
   '|': '|',
   '/': '/',
+  ';': ';', // sequential schedule (streams, CA pipelines, claim lists)
 }
 
 export const DEFAULT_LEX_PROFILE: LexProfile = {

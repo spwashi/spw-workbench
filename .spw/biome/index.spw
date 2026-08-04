@@ -1,0 +1,114 @@
+// Biome registry - workbench + consumer extensibility
+//
+// Ocean is the reference experimental biome. Consumers may add
+// .spw/biome/<name>/ with the same module shape under channel=consumer.
+//
+// @see .spw/biome/ocean/index.spw
+// @see docs/theory/spw/brace-charge-crawl.spw
+// @see packages/spw-runtime/src/session/channels.ts
+
+#:layer #!pragmatics
+#:status #!proposed
+
+^seed[Workbench.Biome.Registry v:0.1 @profile:Spw.b @intent:biome_extensibility]
+
+^["roots"]{
+ @ocean: ~"./ocean/index.spw"
+ @cache: ~"./ocean/algos/cache.spw"
+ @syntax_exp: ~"./ocean/experiments/syntax.spw"
+ @theory_charge: ~"../../docs/theory/spw/brace-charge-crawl.spw"
+ @theory_fixity: ~"../../docs/theory/spw/fixity-brace-phrases.spw"
+ @session: ~"../../packages/spw-runtime/src/session"
+ @stack: ~"../registries/syntax-profile-stack.spw"
+}
+
+^["thesis"]{
+ ~#claim: "Biomes are modular experiment libraries; core dialects graduate out; consumers extend by shape, not by forking packages."
+ ~#taste: "channel-honest - cold experimental cache - portable module map"
+}
+
+^["modules_shape"]{
+ required: #[intent, modules]
+ optional: #[algorithms, query, experiments, expressions, runtime, libraries]
+ note: "ocean/index.spw is the reference layout"
+}
+
+^["registered"]{
+ ocean: .{
+  path: ~"./ocean/index.spw"
+  channel: experimental
+  regional_dialect: Spw.o
+  role: "workbench experimental nursery"
+ }
+}
+
+^["consumer"]{
+ path_pattern: ".spw/biome/<name>/"
+ channel: consumer
+ law: #[
+  "consumer-owned .spw remains authority"
+  "never write .spw/_workbench infrastructure from consumer biome"
+  "cache keys include channel=consumer"
+  "graduate only with probe evidence + episode"
+ ]
+}
+
+^["graduate"]{
+ from: "biome experiment / Spw.o phrase / =exp proposed"
+ to: "packages/* seed|runtime + SYNTAX_CATALOG partial|implemented"
+ gate: "Hold - dual-read - tests - channel leave experimental"
+}
+
+^["falsify"]{
+ #[
+  "ocean Spw.o treated as core without channel"
+  "consumer biome imports workbench @/ paths"
+  "experiment in warm cache as if stable"
+ ]
+}
+
+^["examples"]{
+ ocean_ref: |
+  // workbench nursery
+  // path: .spw/biome/ocean/
+  // channel: experimental
+  // regional: Spw.o in experiments/syntax.spw
+
+ consumer_scaffold: |
+  // consumer repo
+  // .spw/biome/my_pack/
+  //   index.spw   ^["intent"]{ ... }
+  //   modules map mirrors ocean modules_shape
+  // channel: consumer
+  // cache keys include ch:consumer
+
+ graduate_path: |
+  // 1 ocean phrase nursery
+  // 2 =exp proposed + dual-read
+  // 3 SYNTAX_CATALOG partial
+  // 4 packages/* + tests
+  // 5 channel leave experimental
+}
+
+^["open"]{
+ ?[min_shape]: "Is intent+modules enough to register a consumer biome?"
+ ?[name_collision]: "Who owns biome name uniqueness across consumers?"
+ ?[spw_o_forever]: "Keep Spw.o forever regional, or graduate as Spw.o core?"
+ ?[warm_leak]: "How do we detect experiments incorrectly warm-cached?"
+ ?[shared_pack]: "May two consumers share a biome pack via mount without forking?"
+ ?[doctor]: "Should spw doctor report biome registry readiness?"
+}
+
+#>wonder_biome_1
+?["What is the smallest honest consumer biome?"]{
+  #:depth #!pragmatics
+  !probe{ =id[p_min_biome] }
+  $%[modules_shape, channel]
+}
+
+#>wonder_biome_2
+?["When does graduating a phrase kill the nursery's freedom?"]{
+  #:depth #!educational
+  !probe{ =id[p_graduate_cost] }
+  $%[Hold, thrift, literacy]
+}

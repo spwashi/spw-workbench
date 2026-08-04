@@ -1,104 +1,80 @@
 # wip — neovim-spw-surfaces
 # Branch: feature/neovim-spw-surfaces
-# Started: 2026-04-02
+# Started: 2026-07-27
 
 #:layer #!pragmatics
 
 ^["roots"]{
  @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
  @plan: ~".agents/plans/neovim-spw-surfaces/PLAN.md"
- @mount_plan: ~".agents/plans/mounted-consumer-tooling/PLAN.md"
- @lsp_plan: ~".agents/plans/lsp-custom-request-completions/PLAN.md"
- @topography: ~".agents/plans/operational-topography/operational-topography.spw"
- @audit: ~".spw/tooling/editor-surface-audit.spw"
- @nvim_plugin: ~"extensions/neovim-spw/lua/spw-lsp.lua"
- @nvim_ftplugin: ~"extensions/neovim-spw/ftplugin/spw.vim"
- @nvim_readme: ~"extensions/neovim-spw/README.md"
+ @archive: ~".agents/plans/_archive/neovim-spw-surfaces/PLAN.md"
+ @roadmap: ~".agents/plans/vscode-lsp-roadmap/PLAN.md"
+ @measure: ~".agents/plans/measure-invariant-generalization/PLAN.md"
+ @authoring: ~".agents/plans/vscode-authoring-probe-loop/PLAN.md"
+ @tooling: ~".spw/tooling/neovim-spw.spw"
+ @extension: ~"extensions/neovim-spw/lua/spw/init.lua"
+ @commands: ~"extensions/neovim-spw/lua/spw/commands.lua"
+ @lsp: ~"extensions/neovim-spw/lua/spw/lsp.lua"
+ @stdio: ~"packages/spw-lsp/src/stdio-server.ts"
+ @ecology: ~".agents/plans/shape-syntax-ecology/PLAN.md"
 }
 
 ^["intent"]{
- ~#goal: "Audit and strengthen Neovim's native LSP behavior from an identity-free mounted consumer; add semantic UI only where evidence demonstrates a gap."
- ~#taste: "native affordances, graceful degradation, evidence-led scope"
+ ~#goal: "Make Neovim a peer client of spw-lsp with the same truth density as VS Code via diagnostics, code actions, and :Spw* projections — no panel parity program."
+ ~#taste: "native affordances, capability honesty, quiet feedback, thrift"
 }
 
 ^["development"]{
  lane: #execution_truth
- ladder: #component
- develops: [#neovim_capability_evidence, #mounted_consumer_startup, #native_lsp_contract]
- review_surfaces: [@cluster, @plan, @mount_plan, @lsp_plan, @topography, @audit, @nvim_plugin]
- snippet_routes: [#headless_probe, #root_resolution, #failure_evidence]
+ ladder: #service
+ develops: [#native_lsp, #mounted_consumer, #probe_loop]
+ review_surfaces: [@plan, @tooling, @roadmap, @commands]
+ snippet_routes: [#audit, #keymap, #diagnostic]
 }
 
 ^["concept_index"]{
- primary: [#startup, #root_discovery, #diagnostics, #navigation, #folding, #inlay_hints]
- surfaces: [#neovim, #native_lsp, #quickfix, #commands]
- tensions: [#graceful_degradation, #root_authority, #runtimepath_resolution, #parity_assumption]
- transfers: [#component, #language, #instrument]
-}
-
-^["recursive_improvement"]{
- loop: [
-  "? inventory runtime loading, commands, LSP configuration, and tests",
-  "< run a headless probe from an identity-free mounted consumer",
-  "$ record configured, invoked, observed, and tested states",
-  "^ close portability or documentation gaps with native APIs",
-  "% add custom protocol surfaces only when the shared LSP audit earns them",
- ]
- gates: [#consumer_root_authority, #server_reachable, #failure_visible, #repeatable_test]
-}
-
-^["parallel_work"]{
- critical_path: [#surface_inventory, #mounted_consumer_probe]
- parallelizable: [#documentation_audit, #failure_mode_audit]
- shared_hot_files: ["extensions/neovim-spw/lua/spw-lsp.lua"]
- merge_risks: [#command_name_collision, #runtimepath_assumption, #client_server_drift]
- handoff_artifacts: [@plan, @nvim_readme]
-}
-
-^["supporting_documents"]{
- must_ship: [@plan, @nvim_readme]
- helpful: [@mount_plan, @lsp_plan, @audit]
- carries: [#capability_matrix, #headless_probe, #root_contract]
-}
-
-^["audit_surface"]{
- evidence_states: [#advertised, #configured, #invoked, #observed, #tested]
- standard_features: [#diagnostics, #definition, #references, #rename, #code_actions, #folding, #inlay_hints]
- existing_commands: [#restart, #stop, #open_ref, #peek_ref, #refs_quickfix, #code_action]
- conditional_surfaces: [#custom_requests, #native_float, #statusline_component]
+ primary: [#neovim, #lsp_client, #diagnostics, #probe]
+ surfaces: [#editor, #mounted_consumer, #plans]
+ tensions: [#phantom_methods, #panel_temptation, #cursor_hold_cost]
+ transfers: [#vscode_packets, #quickfix, #statusline]
 }
 
 ^["stream"]{
- >>[2026-04-02 00:00] observe — the plugin already uses standard LSP methods and exposes restart, stop, navigation, quickfix, folding, inlay-hint, and code-action affordances.
- >>[2026-04-02 00:00] decide — earlier planning skipped verification of that baseline and jumped directly to speculative custom-request panels.
- >>[2026-07-20 15:24] revise — audit native behavior and mounted-consumer startup first; custom requests and presentation parity are now conditional on evidence.
- >>[2026-07-26 18:50] complete — modularized neovim-spw into lua/spw/ (init, lsp, navigation, commands, health); added :checkhealth spw provider; added headless smoke test.
+ >>[2026-07-27] revise — revive plan from archive; multi-client doctrine with vscode-lsp-roadmap
+ >>[2026-07-27] observe — neovim already has OperatorFreq/Phase/Temperature/FormSeq commands; capability honesty still required
+ >>[2026-07-27] observe — index.spw wonder blocks + $% metrics are authored but editor-inert
+ >>[2026-07-27] decide — mass/path/open-question diagnostics land on server first; Neovim only projects
+ >>[2026-07-27] decide — :SpwPlan thin-reads wip frames; no second Spw parser in Lua
+ >>[2026-07-27] taste — builtins first; telescope optional never required
+ >>[2026-07-27] revise — shape-syntax-ecology; :SpwProfile; screenshot dual-read; dialect statusline
 }
 
 ^["open"]{
+ ?[statusline]: "Ship optional statusline.lua helper or document lualine snippet only?"
+ ?[probe_method]: "Earn spw/probe vs encode probe results only as diagnostics?"
 }
 
 ^["commits"]{
- ~[1]: "![neovim] *audit[surfaces] — map configured, invoked, observed, and tested features"
- ~[2]: "![neovim] *audit[mounted-consumer] — verify startup, roots, and failure behavior"
- ~[3]: "^[neovim] =contract[native-lsp] — close portability and documentation gaps"
- ~[4]: "&[neovim] =surface[earned] — expose justified semantic affordances"
+ ~[1]: "![neovim] *audit[surfaces] — map configured, invoked, observed, tested"
+ ~[2]: "![neovim] *audit[mounted-consumer] — startup, roots, failure behavior"
+ ~[3]: "vocab[neovim] — soft-fail or demote phantom custom-request wrappers"
+ ~[4]: ".[neovim] — README + health honesty for mount/workbench discovery"
+ ~[5]: "&[neovim] — project mass/path diagnostics + exact-only code actions"
+ ~[6]: "^[neovim] — :SpwPlan / optional statusline + reading_profile setting"
+ ~[7]: "![neovim] — smoke for wonder/ref/diagnostic contracts"
 }
 
 ^["cache"]{
- ~#status: "complete"
- ~#base_ref: "main@cdba3075"
- ~#rebased_at: "2026-07-26"
- ~#hygiene_split: "audit evidence separate from feature additions"
- ~#files_hot: "extensions/neovim-spw/lua/spw/*.lua, extensions/neovim-spw/tests/mounted-consumer-smoke.lua, extensions/neovim-spw/README.md"
- ~#next_commit: "4"
- ~#open_count: "0"
- ~#last_stream: "2026-07-26 18:50"
- ~#taste_debt: "Do not confuse a possible panel with a required protocol. Preserve editor-native presentation and shared semantic authority."
+ ~#status: "planning"
+ ~#base_ref: "main@0c7cdfb7178079bf27a9a062ba1b310d07296f41"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "extensions/neovim-spw/lua/spw/commands.lua, extensions/neovim-spw/lua/spw/lsp.lua"
+ ~#next_commit: "1"
+ ~#open_count: "2"
+ ~#last_stream: "2026-07-27 revive"
+ ~#taste_debt: ""
 }
 
 ^["done"]{
-  #[modularization]{ files: ["lua/spw/init.lua", "lua/spw/lsp.lua", "lua/spw/navigation.lua", "lua/spw/commands.lua", "lua/spw/health.lua", "lua/vim/health/spw.lua"] }
-  #[health_check]{ provider: ":checkhealth spw", verification: "headless checkhealth ok" }
-  #[smoke_test]{ test: "extensions/neovim-spw/tests/mounted-consumer-smoke.lua", status: "passed" }
 }

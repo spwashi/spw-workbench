@@ -73,9 +73,19 @@ export interface ExpressionNode extends ASTNode {
   connectors: Token<'CONNECTOR'>[]
 }
 
+/**
+ * Sequence of sibling steps.
+ *
+ * Steps are joined by a separator from one table (`,` and `=>`); `separators[i]`
+ * is the mark written between `expressions[i]` and `expressions[i + 1]`, or
+ * absent when steps were merely juxtaposed. Connectors (`..`, `->`, `|`, `/`)
+ * are *not* separators — they bind inside a single Expression at chain level.
+ */
 export interface SequenceNode extends ASTNode {
   type: 'Sequence'
   expressions: ExpressionNode[]
+  /** Written separator marks, positionally aligned to the gaps between steps. */
+  separators?: (Token<'COMMA'> | Token<'ARROW'> | undefined)[]
 }
 
 // ============================================================================
@@ -88,9 +98,14 @@ export interface BindingNode extends ASTNode {
   value: ExpressionNode
 }
 
+/**
+ * Line-level item: `.. text` or, for plan streams, `>>[stamp] verb — text`.
+ *
+ * `>>` only marks an entry outside `<<…>>` bounds, where it closes nothing.
+ */
 export interface BulletNode extends ASTNode {
   type: 'Bullet'
-  marker: Token<'CONNECTOR'>
+  marker: Token<'CONNECTOR'> | Token<'STREAM_CLOSE'>
   item: ExpressionNode | ProseChunkNode
 }
 
@@ -150,6 +165,12 @@ export interface CapsuleNode extends ASTNode {
    * (numbers for quantitative composites, strings for quoted labels).
    */
   channel?: LiteralNode | IdentifierNode
+  /**
+   * Full interior sequence when the channel is richer than a single atom
+   * (`<X@1>`, `<Module|null>`, `<scheduled Record>`). Set only on the general
+   * path; atom capsules keep `tag`/`channel` and leave this undefined.
+   */
+  interior?: SequenceNode
   frame?: FrameNode
   body?: BodyNode
   /** Left arm of a medial composite (before `<`). */
@@ -219,7 +240,8 @@ export interface ReferenceNode extends ASTNode {
 
 export interface LiteralNode extends ASTNode {
   type: 'Literal'
-  token: Token<'STRING'> | Token<'NUMBER'> | Token<'BOOLEAN'>
+  /** `PHRASE` is the backtick string form — canon writes notation examples in it. */
+  token: Token<'STRING'> | Token<'NUMBER'> | Token<'BOOLEAN'> | Token<'PHRASE'>
 }
 
 export interface IdentifierNode extends ASTNode {

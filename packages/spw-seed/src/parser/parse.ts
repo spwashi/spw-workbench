@@ -4,13 +4,24 @@ import type { ParseOutput } from './output'
 import { tokenize, resolveLexProfile } from '../lexer'
 import { createTokenStream, current, skipWhitespace, getPosition } from '../combinators'
 import { seedNode } from '../grammar'
+import {
+  applyDialectPreprocess,
+  collectMachineLintWarnings,
+  isDialectId,
+  resolveSurfaceProfile,
+  type DialectId,
+} from '../dialect'
+import { scanExperimentalRefs } from '../experimental'
 
 /**
- * Parse Spw source code into AST
+ * Parse Spw source code into AST.
  *
- * @spw:portable:seed[layer=parser,system=seed-parser,extract=candidate,basis=no-dom|core-invariants] - No DOM or app-specific imports allowed
- * @spw:seed:kernel[system=seed-parser,extract=candidate,density=kernel,basis=core-invariants] - Minimal parse kernel for later extraction
- * @spw:lens:syntactic - structure recognition, form → tree
+ * When `autoDialect` is enabled (default), detects Spw.b/l/m/x/q/f/p/t from
+ * headers/pragmas/path and applies dialect metasyntax (e.g. Spw.l newline-as-space).
+ *
+ * @spw:portable:seed[layer=parser,system=seed-parser,extract=candidate,basis=no-dom|core-invariants]
+ * @spw:seed:kernel[system=seed-parser,extract=candidate,density=kernel,basis=core-invariants]
+ * @spw:lens:syntactic
  */
 export function parse(
   input: string,
@@ -22,8 +33,56 @@ export function parse(
   const errors: ParseEvent[] = []
   const warnings: ParseEvent[] = []
 
+  const auto = opts.autoDialect !== false
+  let source = input
+  let dialect: string | undefined
+  let dialectSource: string | undefined
+  let dialectPreprocessed = false
+
+  if (auto || opts.dialect || opts.path) {
+    const explicit = opts.dialect && isDialectId(opts.dialect) ? opts.dialect as DialectId : undefined
+    const stack = resolveSurfaceProfile(input, {
+      dialect: explicit,
+      path: opts.path,
+    })
+    dialect = stack.dialect
+    dialectSource = stack.dialectSource
+
+    if (!opts.contextMode || options.contextMode === undefined) {
+      opts.contextMode = stack.contextMode
+    }
+    if (!opts.lexProfile) {
+      opts.lexProfile = stack.lex === 'prose' || stack.metasyntax.unknownAsText
+        ? 'prose'
+        : stack.lex
+    }
+
+    if (stack.metasyntax.newlineAsSpace) {
+      const next = applyDialectPreprocess(input, stack.dialect, true)
+      if (next !== input) {
+        source = next
+        dialectPreprocessed = true
+      }
+    }
+
+    if (stack.metasyntax.machineLint) {
+      for (const msg of collectMachineLintWarnings(input)) {
+        const evt = {
+          type: 'warning' as const,
+          rule: 'dialect.machine_lint',
+          position: { offset: 0, line: 1, column: 1 },
+          data: { message: msg },
+          timestamp: performance.now(),
+          depth: 0,
+        }
+        events.push(evt)
+        warnings.push(evt)
+      }
+    }
+  }
+
   const lexProfile = resolveLexProfile(opts.lexProfile)
-  const lexGen = tokenize(input, 0, { profile: lexProfile })
+  const lexGen = tokenize(source, 0, { profile: lexProfile })
   let lexStep = lexGen.next()
 
   while (!lexStep.done) {
@@ -62,7 +121,6 @@ export function parse(
   const result = parseStep.value
 
   // Enforce full consumption: a successful parse must end at EOF.
-  // This prevents partial parses (common source of false-positive lints).
   let success = result.success
   if (success) {
     skipWhitespace(stream)
@@ -89,6 +147,7 @@ export function parse(
   }
 
   const duration = performance.now() - startTime
+  const expScan = scanExperimentalRefs(input)
 
   return {
     success,
@@ -99,5 +158,9 @@ export function parse(
     warnings,
     duration,
     lexProfile: lexProfile.id,
+    dialect,
+    dialectSource,
+    dialectPreprocessed,
+    experimentalRefs: expScan.ids.length > 0 ? expScan.ids : undefined,
   }
 }

@@ -1,0 +1,100 @@
+# The Reading Is The Cache Boundary
+#
+# Why an apposition is the right granule for cache invalidation: it is
+# author-declared, verifiable without a parse, perspectival by construction,
+# and already placed 220 times across this corpus.
+#
+# @see .spw/biome/ocean/algos/cache.spw
+# @see packages/spw-seed/src/lexer/matchers/apposition.ts
+# @see packages/spw-seed/src/types/ast/nodes.ts (AppositionLabel)
+# @see packages/spw-lsp/src/handlers/workspace.ts (volatilityOf)
+
+#:layer #!pragmatics
+#:cache #!granularity
+
+^seed[Spw.Cache.AppositionGranule v:0.1 @profile:Spw.b @intent:granular_invalidation]
+
+^["roots"]{
+ @cache_spec: ~"../../../.spw/biome/ocean/algos/cache.spw"
+ @apposition: ~"../../../packages/spw-seed/src/lexer/matchers/apposition.ts"
+ @nodes: ~"../../../packages/spw-seed/src/types/ast/nodes.ts"
+ @volatility: ~"../../../packages/spw-lsp/src/handlers/workspace.ts"
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Thesis
+// ═══════════════════════════════════════════════════════════════
+
+^["thesis"]{
+ ~#value: "A cache needs granules. This language grew them for a different reason and has not noticed: an apposition marks a region and declares how to hold it, which is a boundary and a key in one mark."
+ ~#status: "proposed"
+ ~#premise: "Invalidation should be proportional to the edit. Today it is proportional to the file."
+ ~#invariant: "A hit and a cold recompute return the same answer. Reuse is an optimization; correctness is not negotiable."
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Why this mark and not another
+// ═══════════════════════════════════════════════════════════════
+
+^["why_apposition"]{
+ ~#declared: "The boundary is chosen by an author who knows what belongs together, not inferred from indentation or byte distance."
+
+ ~#parse_free: .{
+  fact: "the body is lexed raw to the matching paren"
+  reason_given: "prose carries commas and apostrophes; tokenizing it would make ordinary phrasing a syntax error"
+  consequence: "the whole apposition set of a surface is extractable by a scan"
+  gift: "a validity probe at lexer cost for data that cost a parse — an ergonomic decision paying an unrelated debt"
+ }
+
+ ~#perspectival: "The parens are the @ container, so a reading is a declared perspective on a region. The language's perspective marker and the cache's view key are already the same object."
+
+ ~#survives_edits: "A named apposition is an identity that outlives edits elsewhere in the file. Offsets are not. Line numbers are not. contentHash is not."
+
+ ~#already_placed: .{
+  neighbor: 157
+  lens: 56
+  name: 2
+  anonymous: 5
+  surfaces_covered: "182 of 493"
+ }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// What each key kind carries
+// ═══════════════════════════════════════════════════════════════
+
+^["key_kinds"]{
+ ~#lens: "Declares the interpretation under which derived data was computed. Derived data keyed by lens invalidates when the lens changes, not when the file does — the selectorId of @cache_spec, supplied by the author instead of inferred."
+ ~#neighbor: "Declares adjacency by hand. @cache_spec asks that coupled files share eviction fate and proposes deriving coupling from edges; 157 marks already assert it from someone who knows the corpus better than degree-counting does."
+ ~#anonymous: "Anchors a span, supplies no key. Degrades to positional identity — the one identity that does not survive an edit. Five exist; they are the honest edge of this design."
+}
+
+// ═══════════════════════════════════════════════════════════════
+// The envelope
+// ═══════════════════════════════════════════════════════════════
+
+^["envelope"]{
+ ~#definition: "A granule's envelope is its apposition set plus the span hash of each — the cheap summary a scan can produce and a cache can compare."
+ ~#decides: "reuse or reparse. Never correctness."
+ ~#asymmetry: "A false 'changed' costs one reparse. A false 'unchanged' serves stale data. The probe must be conservative in exactly one direction."
+
+ %[proportionality]: "An edit inside one granule leaves sibling envelopes unchanged. If that fails, the boundary is not stable and the premise is wrong."
+ %[parity]: "The scan and the parser agree on every apposition in the corpus — same names, same bodies, same spans."
+ %[fallback]: "63% of surfaces carry no apposition and fall back to whole-file invalidation. That path must not regress."
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Standing on what already exists
+// ═══════════════════════════════════════════════════════════════
+
+^["inheritance"]{
+ ~#from_spec: "@cache_spec already specifies composite keys, hash-prefix eviction, and coupling cascade. None are implemented. This plan treats the drift as the bug and the spec as the design."
+ ~#from_volatility: "@volatility computes whether a surface's content keeps, on an axis independent of recency, and the evictor ignores it. Granularity is the first half; crossing tier with volatility is the second, deferred."
+ ~#from_kernel: "ParseOutput already carries duration, lexProfile, and events — cost, key dimension, and instability signal. All three are dropped at the ServerIndex boundary."
+}
+
+^["open"]{
+ ?[coverage]: "Does this pay for itself at 37% surface coverage? Measure reparse volume on a real edit sequence before building past the scan."
+ ?[granule_identity]: "geometric-analysis-tooling will key on shapeFingerprint. One granule identity serving both, or two keyed views of one region?"
+ ?[promotion]: "If the envelope probe holds, @cache_spec should absorb it as a named key kind rather than leaving it in a branch plan."
+}

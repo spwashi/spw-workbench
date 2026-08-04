@@ -27,6 +27,29 @@
 | `<>` | capsule / shell (not digraph `<>` operator) |
 | `<<>>` | stream |
 
+Capsule interiors take a full expression, not only an atom: `<scent>`, `<5>`,
+`<Module|null>`, `<scheduled Record>` all parse.
+
+## Separators (joining steps)
+
+| Mark | Reading |
+|------|---------|
+| `,` | next sibling step |
+| `=>` | next step in a form sequence |
+| *(space)* | juxtaposition — siblings with no written mark |
+
+Separators join **sibling steps** in a sequence. Connectors bind one level
+tighter, *inside* a single expression:
+
+| Mark | Reading |
+|------|---------|
+| `..` | range / bullet marker |
+| `->` | chain into |
+| `\|` | alternation |
+| `/` | path segment |
+
+So `a => b` is two steps; `a -> b` is one chained expression.
+
 ## Effect grades (tools)
 
 | Grade | Meaning |

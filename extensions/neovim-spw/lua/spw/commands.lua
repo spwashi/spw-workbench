@@ -148,6 +148,31 @@ function M.setup()
     local label = opts.args ~= '' and opts.args or 'label'
     form.wrap_selection_in_container(label)
   end, { nargs = '?', range = true, desc = 'Wrap visual selection or word under cursor in Spw container' })
+
+  vim.api.nvim_create_user_command('SpwBeat', function()
+    local uri = vim.uri_from_bufnr(0)
+    lsp.request_custom('spw/beat', {
+      textDocument = { uri = uri },
+    }, function(err, result)
+      if err or not result then
+        notify('spw/beat request failed', vim.log.levels.WARN)
+        return
+      end
+      local tier_symbol = { hot = '⚡', warm = '♨', cold = '❄' }
+      local surface_str = ''
+      if result.surface then
+        local sym = tier_symbol[result.surface.tier] or '○'
+        surface_str = string.format('\n  Active surface: %s %s (visits: %d, age: %d beats)',
+          sym, result.surface.tier, result.surface.visits, result.surface.beatAge)
+      end
+      notify(string.format('Spw LSP Beat: %d | Docs: %d (hot: %d, warm: %d, cold: %d)%s',
+        result.beat, result.activeDocuments,
+        result.tiers and result.tiers.hot or 0,
+        result.tiers and result.tiers.warm or 0,
+        result.tiers and result.tiers.cold or 0,
+        surface_str), vim.log.levels.INFO)
+    end)
+  end, { desc = 'Display Spw LSP beat counter and cache tier telemetry' })
 end
 
 return M

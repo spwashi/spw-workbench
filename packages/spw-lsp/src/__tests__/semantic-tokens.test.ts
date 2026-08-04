@@ -151,9 +151,9 @@ describe('single-character operators', () => {
     expect(tokens[0]).toMatchObject({ type: TT.keyword, modifiers: 0 })
   })
 
-  it('$ → operator', () => {
+  it('$ → variable (substrate)', () => {
     const tokens = tokenize('$')
-    expect(tokens[0]).toMatchObject({ type: TT.operator, modifiers: 0 })
+    expect(tokens[0]).toMatchObject({ type: TT.variable, modifiers: 0 })
   })
 
   it('+ → operator', () => {
@@ -216,8 +216,8 @@ describe('compound patterns', () => {
   it('&[ → operator (2-char match)', () => {
     const tokens = tokenize('&[scope]')
     expect(tokens).toHaveLength(2) // &[ pair + ] bracket; "scope" is plain text (falls through)
-    expect(tokens[0]).toMatchObject({ length: 2, type: TT.operator })
-    expect(tokens[1]).toMatchObject({ type: TT.operator, modifiers: TM.definition }) // ]
+    expect(tokens[0]).toMatchObject({ length: 2, type: TT.operator, modifiers: TM.definition })
+    expect(tokens[1]).toMatchObject({ type: TT.operator, modifiers: 0 }) // ] close
   })
 
   it('[*] → keyword + definition', () => {
@@ -234,23 +234,49 @@ describe('compound patterns', () => {
     expect(tokens[0]).toMatchObject({ type: TT.keyword, modifiers: 0 })
   })
 
-  it('* alone (no following ident) → operator', () => {
+  it('* alone (no following ident) → keyword + readonly (crystallize)', () => {
     const tokens = tokenize('* ')
     expect(tokens).toHaveLength(1)
-    expect(tokens[0]).toMatchObject({ type: TT.operator })
+    expect(tokens[0]).toMatchObject({ type: TT.keyword, modifiers: TM.readonly })
+  })
+
+  it('@dialect:Spw.f → keyword + definition', () => {
+    const tokens = tokenize('@dialect:Spw.f')
+    expect(tokens[0]).toMatchObject({ type: TT.keyword, modifiers: TM.definition })
+  })
+
+  it('=exp[ → property + declaration', () => {
+    const tokens = tokenize('=exp[ id: flow.phi ]')
+    expect(tokens[0]).toMatchObject({ type: TT.property, modifiers: TM.declaration })
+  })
+
+  it('!boon → function + modification (charged action)', () => {
+    const tokens = tokenize('!boon')
+    expect(tokens).toHaveLength(1)
+    expect(tokens[0]).toMatchObject({ type: TT.function, modifiers: TM.modification, length: 5 })
+  })
+
+  it('<< stream digraph → operator + async', () => {
+    const tokens = tokenize('<<')
+    expect(tokens).toHaveLength(1)
+    expect(tokens[0]).toMatchObject({ type: TT.operator, modifiers: TM.async, length: 2 })
   })
 })
 
 // ── Containers ─────────────────────────────────────────────────
 
 describe('containers', () => {
-  it('classifies all container brackets as operator + definition', () => {
+  it('classifies braces as operator; open=declaration, <> digraph=definition', () => {
     const tokens = tokenize('[]{}()<>')
-    expect(tokens).toHaveLength(8)
-    for (const t of tokens) {
+    // 6 singles + one <> digraph = 7 tokens
+    expect(tokens).toHaveLength(7)
+    for (const t of tokens.slice(0, 6)) {
       expect(t.type).toBe(TT.operator)
-      expect(t.modifiers).toBe(TM.definition)
     }
+    // opens: declaration; closes: 0
+    expect(tokens[0].modifiers).toBe(TM.declaration) // [
+    expect(tokens[1].modifiers).toBe(0) // ]
+    expect(tokens[6]).toMatchObject({ type: TT.operator, modifiers: TM.definition, length: 2 }) // <>
   })
 })
 
@@ -435,7 +461,7 @@ describe('realistic spw fragments', () => {
   it('probe block: ?["question"]{}', () => {
     const tokens = tokenize('?["What?"]{}')
     expect(tokens[0]).toMatchObject({ type: TT.function, modifiers: TM.async }) // ?
-    expect(tokens[1]).toMatchObject({ type: TT.operator, modifiers: TM.definition }) // [
+    expect(tokens[1]).toMatchObject({ type: TT.operator, modifiers: TM.declaration }) // [ open
     expect(tokens[2]).toMatchObject({ type: TT.string }) // "What?"
   })
 

@@ -71,6 +71,35 @@ function isContiguous(left: Token, right: Token): boolean {
   return left.span.end.offset === right.span.start.offset
 }
 
+/**
+ * Path tokens between `<` and `>`, e.g. `~<../vibes/index.spw>`.
+ *
+ * The unquoted-path restriction exists because `~./foo` is ambiguous with an
+ * operator chain. Capsule bounds remove that ambiguity — the `>` says where the
+ * path ends — so this form needs no high-context mode and no leading `./`.
+ * Returns `[]` unless a `>` closes the run on the same contiguous stretch.
+ */
+function peekBoundedPathTokens(stream: TokenStream): Token[] {
+  const tokens: Token[] = []
+  let cursor = stream.position
+  let previous: Token | undefined
+
+  while (cursor < stream.tokens.length) {
+    const token = stream.tokens[cursor]
+    if (!token) break
+    if (token.type === 'CAPSULE_CLOSE') {
+      return tokens.length > 0 ? tokens : []
+    }
+    if (!isBarePathToken(token)) break
+    if (previous && !isContiguous(previous, token)) break
+    tokens.push(token)
+    previous = token
+    cursor += 1
+  }
+
+  return []
+}
+
 function peekBarePathTokens(stream: TokenStream): Token[] {
   const first = stream.tokens[stream.position]
   if (!first || !isBarePathStartToken(first)) return []
@@ -254,7 +283,41 @@ export const pathRefNode: Parser<PathRefNode> = named('pathRef',
       }
       consumed += openStep.value.consumed
 
+      // `~<../vibes/index.spw>` — the bounds carry the path itself rather than a
+      // tag. Checked before the tag branch because `~<domains/culinary>` starts
+      // with a valid identifier and would otherwise be read as a tag.
       skipWhitespace(stream)
+      const boundedPath = peekBoundedPathTokens(stream)
+      if (boundedPath.length > 0) {
+        const pathToken = stringTokenFromBarePath(boundedPath)
+        consumeTokenCount(stream, boundedPath.length)
+        consumed += boundedPath.length
+
+        skipWhitespace(stream)
+        const boundedCloseGen = capsuleClose(stream, depth + 1)
+        let boundedCloseStep = boundedCloseGen.next()
+        while (!boundedCloseStep.done) {
+          yield boundedCloseStep.value
+          boundedCloseStep = boundedCloseGen.next()
+        }
+        if (!boundedCloseStep.value.success) {
+          return { success: false, consumed: 0, error: boundedCloseStep.value.error }
+        }
+        consumed += boundedCloseStep.value.consumed
+
+        const endPos = getPosition(stream)
+        return {
+          success: true,
+          value: {
+            type: 'PathRef',
+            span: { start: startPos, end: endPos },
+            operator: tildeToken,
+            path: { type: 'Literal', span: pathToken.span, token: pathToken },
+          },
+          consumed,
+        }
+      }
+
       const tagGen = identifier(stream, depth + 1)
       let tagStep = tagGen.next()
       while (!tagStep.done) {

@@ -1,5 +1,6 @@
 /**
- * spw invent — inventory of .spw surfaces with topography roles + signal counts.
+ * spw census (invent) — multi-file population with topography roles + signal counts.
+ * Canonical: census. Aliases: invent, inventory, inv.
  *
  * First step of the sense loop: what is here, what is warm (hub), what is cold (orphan).
  */
@@ -133,12 +134,12 @@ function parseRole(s: string): InventoryRole | 'all' {
 
 export function printInventHelp(): void {
   printHelpPage({
-    title: 'Spw Invent — surface inventory',
+    title: 'Spw Census — multi-file population inventory',
     usage: [
-      'spw invent [paths...] [--from a,b] [--sort degree|lines|refs|frames|file] [--role hub|orphan|…]',
-      'spw invent prompts --sort lines -n 40',
-      'spw invent .spw --role hub --json',
-      'spw inv docs/theory   # alias',
+      'spw census [paths...] [--from a,b] [--sort degree|lines|refs|frames|file] [--role hub|orphan|…]',
+      'spw census prompts --sort lines -n 40',
+      'spw census .spw --role hub --json',
+      'spw invent … / spw inv …   # compat aliases',
     ],
     sections: [
       {

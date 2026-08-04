@@ -25,7 +25,6 @@ import {
   peek,
   advance,
   skipWhitespace,
-  token,
   literal,
   choice,
   lazy,
@@ -38,7 +37,7 @@ import { frameNode, bodyNode, scopeNode, capsuleNode, streamNode, nrangeNode } f
 import { literalNode, identifierNode } from './literals'
 import { wildcardNode, spreadNode } from './patterns'
 import { matchNode } from './match'
-import { bulletNode } from './bullets'
+import { bulletNode, streamEntryNode } from './bullets'
 
 // matchNode — extracted to ./match.ts
 export { matchNode } from './match'
@@ -54,12 +53,62 @@ function isBarePathStartToken(token: Token): boolean {
   return false
 }
 
-function shouldStopLinePayload(token: Token, previous?: Token): boolean {
+/**
+ * Line the last consumed significant token ended on.
+ *
+ * Read from the token stream rather than the preceding AST node: a node's span
+ * can already extend past the newline (a bullet collects to end of line and
+ * stops with the cursor on the next line's first token), which would make a
+ * same-line test agree with itself.
+ */
+function lastSignificantLine(stream: TokenStream): number | undefined {
+  for (let i = stream.position - 1; i >= 0; i--) {
+    const tok = stream.tokens[i]!
+    if (tok.type === 'WHITESPACE' || tok.type === 'COMMENT') continue
+    return tok.span.end.line
+  }
+  return undefined
+}
+
+/**
+ * True when nothing but whitespace precedes the operator on its line.
+ *
+ * Spw culture puts prose in `#` header lines (see lexer/matchers/comments.ts —
+ * `//` is the only lexed comment). A header line is prose to end of line, so it
+ * must not be chopped at the first operator the way an inline `x #note` is.
+ */
+function startsItsLine(stream: TokenStream, opIndex: number): boolean {
+  for (let i = opIndex - 1; i >= 0; i--) {
+    const tok = stream.tokens[i]!
+    if (tok.type !== 'WHITESPACE') return false
+    if (tok.value.includes('\n')) return true
+  }
+  return true
+}
+
+/**
+ * @param openDepth brackets opened *within* the payload so far. A close bracket
+ *   at depth 0 belongs to an enclosing bound and must end the payload; one at
+ *   depth > 0 closes a pair the payload itself opened (`# Phase 1 (?~): …`).
+ * @param headerLine payload owns the rest of its line, so only an unmatched
+ *   close bracket may end it early — it still may not escape its own bound.
+ */
+function shouldStopLinePayload(
+  token: Token,
+  previous?: Token,
+  openDepth = 0,
+  headerLine = false,
+): boolean {
+  if (token.type === 'CONTAINER_CLOSE' && openDepth === 0) return true
+  if (headerLine) return false
   if (token.type === 'COMMENT') return true
   if (token.type === 'CONNECTOR') return true
   if (token.type === 'CAPSULE_OPEN' || token.type === 'CAPSULE_CLOSE') return true
   if (token.type === 'STREAM_OPEN' || token.type === 'STREAM_CLOSE') return true
   if (token.type === 'NRANGE_OPEN' || token.type === 'NRANGE_CLOSE') return true
+  // An inline payload may not swallow a separator that joins sibling steps —
+  // but only at its own level, so `#note (a, b)` keeps its parenthetical.
+  if ((token.type === 'COMMA' || token.type === 'ARROW') && openDepth === 0) return true
   if (token.type === 'WHITESPACE' && token.value.includes('\n')) return true
   if (token.type === 'OPERATOR') {
     const prevWasWhitespace = !previous || previous.type === 'WHITESPACE'
@@ -69,17 +118,24 @@ function shouldStopLinePayload(token: Token, previous?: Token): boolean {
   return false
 }
 
-function readLinePayload(stream: TokenStream, opToken: Token): { node?: ProseChunkNode; consumed: number } {
+function readLinePayload(
+  stream: TokenStream,
+  opToken: Token,
+  headerLine = false,
+): { node?: ProseChunkNode; consumed: number } {
   const opLine = opToken.span.start.line
   const collected: Token[] = []
   let consumed = 0
   let prev: Token | undefined
+  let openDepth = 0
 
   while (true) {
     const token = current(stream)
     if (token.type === 'EOF') break
     if (token.span.start.line !== opLine) break
-    if (shouldStopLinePayload(token, prev)) break
+    if (shouldStopLinePayload(token, prev, openDepth, headerLine)) break
+    if (token.type === 'CONTAINER_OPEN') openDepth++
+    else if (token.type === 'CONTAINER_CLOSE') openDepth--
     collected.push(token)
     prev = token
     advance(stream)
@@ -140,6 +196,7 @@ export const operationNode: Parser<OperationNode> = named('operation',
 
     // Required operator
     skipWhitespace(stream)
+    const opIndex = stream.position
     const opGen = operator(stream, depth + 1)
     let opStep = opGen.next()
     while (!opStep.done) {
@@ -372,7 +429,7 @@ export const operationNode: Parser<OperationNode> = named('operation',
       && INLINE_PAYLOAD_OPERATORS.has(operatorToken.value)
     ) {
       skipWhitespace(stream)
-      const payload = readLinePayload(stream, operatorToken)
+      const payload = readLinePayload(stream, operatorToken, startsItsLine(stream, opIndex))
       if (payload.node) {
         linePayload = payload.node
       }
@@ -479,6 +536,7 @@ export const termNode: Parser<TermNode> = lazy(() => named('term',
     }
 
     const fallbackGen = choice<TermNode>(
+      streamEntryNode,
       bulletNode,
       appositionNode,
       annotationNode,
@@ -648,9 +706,18 @@ export const expressionImpl: Parser<ExpressionNode> = named('expression',
     }
 
     // (connector term)*
+    //
+    // A chain stays on its line. `@location: docs/` ends with a trailing path
+    // separator, and without this the chain reached across the newline to take
+    // the next line's key as its right-hand term — collapsing both lines.
     while (true) {
       skipWhitespace(stream)
-      if (current(stream).type !== 'CONNECTOR') break
+      const connTok = current(stream)
+      if (connTok.type !== 'CONNECTOR') break
+      // The connector must continue the line it is chaining, not open a new one.
+      // Otherwise `.. a: "x"` followed by `.. b: "y"` reads the second bullet's
+      // marker as a connector and swallows both lines into one expression.
+      if (connTok.span.start.line !== lastSignificantLine(stream)) break
 
       const connGen = connector(stream, depth + 1)
       let connStep = connGen.next()
@@ -665,6 +732,9 @@ export const expressionImpl: Parser<ExpressionNode> = named('expression',
       consumed += connStep.value.consumed
 
       skipWhitespace(stream)
+      // `@location: docs/` ends with a trailing separator; the next line's key
+      // is not its right-hand term.
+      if (current(stream).span.start.line !== connTok.span.start.line) break
       const termGen = termNode(stream, depth + 1)
       let termStep = termGen.next()
       while (!termStep.done) {
@@ -691,22 +761,47 @@ export const expressionImpl: Parser<ExpressionNode> = named('expression',
 )
 
 /**
- * Sequence: expression*
+ * Sequence separators — one table, uniform treatment.
+ *
+ * Every mark here joins *sibling steps*: `a, b` and `a => b` both yield a
+ * two-expression Sequence, differing only in the recorded separator. `=>` is
+ * the form-sequence arrow taught by docs/learn/cheat-sheet.md and split by
+ * canonical/form-sequence.ts; parsing it here keeps the taught notation and the
+ * parsed notation the same shape.
+ *
+ * CONNECTOR (`..`, `->`, `|`, `/`, `+`) is deliberately absent: connectors bind
+ * one level tighter, inside a single Expression at chainNode, so `a -> b` is
+ * one chained Expression rather than two steps.
+ */
+export const SEQUENCE_SEPARATOR_TYPES = ['COMMA', 'ARROW'] as const
+export type SequenceSeparatorType = (typeof SEQUENCE_SEPARATOR_TYPES)[number]
+const SEQUENCE_SEPARATOR_SET: ReadonlySet<string> = new Set(SEQUENCE_SEPARATOR_TYPES)
+
+/** True when the token joins two sequence steps (as opposed to closing or chaining). */
+export function isSequenceSeparator(token: Token): boolean {
+  return SEQUENCE_SEPARATOR_SET.has(token.type)
+}
+
+/**
+ * Sequence: expression (separator? expression)*
  */
 export const sequenceImpl: Parser<SequenceNode> = named('sequence',
   function* sequenceParser(stream, depth) {
     const startPos = getPosition(stream)
     const expressions: ExpressionNode[] = []
+    const separators: (Token<'COMMA'> | Token<'ARROW'> | undefined)[] = []
     let consumed = 0
 
     while (true) {
       skipWhitespace(stream)
 
-      // Check for end of sequence (closing delimiter or EOF)
+      // Check for end of sequence (closing delimiter or EOF).
+      // `>>` only ends the sequence when a `<<` is actually open; otherwise it
+      // marks a stream entry (see streamEntryNode) and the sequence continues.
       const curr = current(stream)
       if (curr.type === 'EOF' ||
         curr.type === 'CONTAINER_CLOSE' ||
-        curr.type === 'STREAM_CLOSE' ||
+        (curr.type === 'STREAM_CLOSE' && stream.streamDepth > 0) ||
         curr.type === 'NRANGE_CLOSE' ||
         curr.type === 'CAPSULE_CLOSE') {
         break
@@ -724,19 +819,28 @@ export const sequenceImpl: Parser<SequenceNode> = named('sequence',
       expressions.push(step.value.value!)
       consumed += step.value.consumed
 
-      // Skip optional comma
+      // Optional separator between steps — see SEQUENCE_SEPARATOR_TYPES
       skipWhitespace(stream)
-      if (current(stream).type === 'COMMA') {
+      const sep = current(stream)
+      if (isSequenceSeparator(sep)) {
         advance(stream)
         consumed += 1
+        separators.push(sep as Token<'COMMA'> | Token<'ARROW'>)
+      } else {
+        separators.push(undefined)
       }
     }
+
+    // separators[i] describes the gap after expressions[i]; the trailing gap is
+    // only meaningful when another step followed it.
+    separators.length = Math.max(0, expressions.length - 1)
 
     const endPos = getPosition(stream)
     const node: SequenceNode = {
       type: 'Sequence',
       span: { start: startPos, end: endPos },
       expressions,
+      separators,
     }
 
     return { success: true, value: node, consumed }

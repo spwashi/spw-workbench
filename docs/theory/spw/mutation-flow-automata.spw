@@ -1,0 +1,696 @@
+// Mutation as flow - cellular - diff-oriented automata
+//
+// Glyph-first notation for mutation-as-flow-modeling: intermediate states,
+// inspection, and mutation profiles as cellular automata over differentials.
+//
+// Status discipline: proposed syntax / interpretive flow - not runtime law.
+// Kernel mapping below cites implemented seed/CLI behavior explicitly.
+//
+// @see packages/spw-seed/src/canonical/mutation-automata.ts
+// @see packages/spw-seed/src/canonical/differential.ts
+// @see packages/spw-seed/src/canonical/topography-probe.ts
+// @see packages/spw-seed/src/types/coupling.ts
+// @see packages/spw-cli/src/pulse.ts
+// @see docs/theory/spw/mutation-automata.spw
+// @see docs/theory/spw/operational-devices.spw
+// @see docs/theory/spw/operational-topography.spw
+// @see docs/runtime/md/pulse-mutate-beat.md
+// @see docs/theory/spw/valence-architecture.spw
+// @see .agents/plans/refactor-experiment-lifecycle/PLAN.md
+// @see .agents/plans/curiosity-mutation-ergonomics/PLAN.md
+// @see .agents/plans/measure-invariant-generalization/PLAN.md
+
+#:layer #!semantics
+#:status #!proposed
+
+^["meta"]{
+ ~#intent: "Document mutation as flow over cells; profiles as CA rule tables; diffs as alphabet; inspection as non-advancing %."
+ ~#taste: "sigils/braces/charge first; identifiers only for IC, rule, profile, ceiling, lock, scheme, plan id"
+ ~#audience: #[authors, tool_implementers, agents]
+ ~#non_goal: "new OperatorKinds; silent multi-file write; emotion-as-parser-law"
+}
+
+^["status"]{
+ implemented: #[
+  SourceEdit,
+  DifferentialStratum,
+  MutationVector,
+  runMutationAutomata,
+  MutationProfileId_layout_canonical_layout_full_equiv_scripts_measure_only,
+  pulse_sequences_matrix,
+  topography_delta,
+  effect_grades_l0_l3,
+  valence_modifiers_boon_bane_bone_bonk_honk_selectable,
+  coupling_boundary_ports_model,
+ ]
+ interpretive: #[
+  flow_markers_as_tenses,
+  charge_on_flow,
+  sigma_chain,
+ ]
+ proposed: #[
+  cell_c,
+  neighborhood_N,
+  profile_phi_as_CA,
+  inspect_percent_bundle,
+  intermediate_buffers,
+  schedule_parallel_bar,
+  sigma_as_facet,
+  cell_selection_filter,
+  phi_composition,
+  phi_lower_to_MutationRule,
+  effect_l1_worktree_handle,
+ ]
+}
+
+// ════════════════════════════════════════════════════════════
+// 1. Flow alphabet Σ
+// ════════════════════════════════════════════════════════════
+// Tense = flow role. Does not add OperatorKind entries.
+// Aligns with operational-devices flow_markers; adds % as non-advancing inspect.
+
+^["Σ"]{
+ ~  : "soft / unapplied field of edits / open continuum"
+ ?  : "pause / branch / choose rule arm / sample site"
+ %  : "observe / measure - MUST NOT advance write"
+ !  : "fire rule / accept step; optional valence modifier"
+ *  : "collapse intermediate -> concrete source buffer"
+ ^  : "seal step / named revision / fixed_point candidate"
+ &  : "join cells / multi-site rule / provenance merge"
+ //  : "set of cells / strata index / cast"
+ .  : "local facets / params / sigma-as-facet candidate"
+ @  : "frame of inspection / binder / FOV"
+ $  : "substrate handle (uri, buffer id)"
+ =  : "identifier tags only: ic, rule, profile, ceiling, lock, stop, plan"
+ <> : "couple before/after or dual site"
+ <<>> : "ordered rule stream / one pulse pipeline"
+ (()) : "continuous param domain (t, stretch, temperature)"
+ _  : "hole / free port in pattern"
+}
+
+^["Σ_charge"]{
+ // Charge = valence modifier on ! (and selectable in query). Not a resting OperatorKind.
+ // @see valence-architecture.spw - bonk catalytic overlay vs BBBH runtime quartet
+ !boon : "open / expand / yield flow"
+ !bane : "cut / tighten / edge"
+ !bone : "rest / armature / seal"
+ !bonk : "catalytic impact - event step"
+ !honk : "signal spike / take / inspect accent"
+
+ // flow coloring (interpretive):
+ !boon{ ~ }
+ !bane{ * }
+ !bone{ ^ }
+ !bonk{ ! }
+ !honk{ ? }
+}
+
+// ════════════════════════════════════════════════════════════
+// 2. Cell - neighborhood - state
+// ════════════════════════════════════════════════════════════
+
+^["cell"]{
+ // c ≔ (locus, sigma, d?)
+ // locus in { span, node, $uri#offset }
+ // sigma in { ~, ?, %, !, *, ^ }
+ // d  = planned or applied differential on strata tapes
+
+ law: "A cell is the smallest site delta may update in one schedule slot."
+
+ . {
+  $ : ~"doc.spw"
+  @ : @(ast)
+  // : #[source, structure, layout, reference, operation, script]
+  sigma : ~
+  =id[ c0 ]
+ }
+}
+
+^["N"]{
+ // Neighborhood classes (policy ids only)
+ law: "N(c) must not include sites outside the frozen selection hash when multi-file."
+
+ local: #[before_open, open_boundary, inside, close_boundary, after_close]
+ // local ports = coupling boundary_ports (implemented model; edit address partial)
+
+ graph: "path-ref k-hop"
+ cast:  "#[] under same ^[...] unit"
+ file:  "cells in selection corpus"
+
+ . {
+  =N[ local: ports , graph: 1 , cast: #[] , file: sel ]
+ }
+}
+
+^["S"]{
+ // Global CA configuration
+ // S = #[ c... ] with shared =plan[ id ] and =ceiling[ ... ]
+ // hash: selection contentHash vector (refactor-experiment spine)
+
+ . {
+  =plan[ id: e1 , parent: _ ]
+  =ceiling[ l0 ]
+  #[ c0 , c1 , c2 ]
+ }
+}
+
+// ════════════════════════════════════════════════════════════
+// 3. Intermediate states - sigma-chain
+// ════════════════════════════════════════════════════════════
+
+^["sigma"]{
+ // Default interpretive path (may branch; not an execution contract):
+ //   ~  =>  ?  =>  %  =>  !  =>  *  =>  ^
+ //
+ // Devices catalog: ~ ? ! ^ ; this surface inserts % so inspection is first-class.
+
+ occupancy: .{
+  ~ : "soft plan / unapplied SourceEdit field"
+  ? : "branch / wonder / choose phi arm"
+  % : "inspect without write (effect.l0.measure)"
+  ! : "fire rule transform (charge tints only)"
+  * : "materialize intermediate buffer (effect.l1.memory or worktree handle)"
+  ^ : "seal named step / fixed_point candidate / revision id"
+ }
+
+ default_pipeline: << ~ ; ? ; % ; ! ; * ; ^ >>
+
+ law: #[
+  "% never mutates source bytes",
+  "* forbidden under =ceiling[l0]",
+  "^ does not imply l2.workspace - only seals a named intermediate or plan step",
+  "branching: ? may skip * (explore family) or skip ! (measure-only)",
+ ]
+}
+
+^["buf"]{
+ // Named intermediate buffers - identifiers only
+ . {
+  ~{ =id[plan] }                      // soft d field (l0)
+  *{ =id[mem] }                       // l1.memory source string
+  *{ $ : ~".spw/gen/wt/e1" }          // l1.worktree handle (CLI edge)
+  ^{ =id[sealed] }                    // accepted revision / contentHash
+  <>{ =id[before] , =id[after] }      // dual inspection couple
+ }
+
+ ceilings: .{
+  l0: "plan only - no * materialize to durable store"
+  l1_memory: "*{ =id[mem] }"
+  l1_worktree: "*{ $: ~\".../wt/...\" }  // proposed effect rung for multi-file sandbox"
+  l2_workspace: "!{ $: @self } with contentHash gate"
+ }
+}
+
+// ════════════════════════════════════════════════════════════
+// 4. Inspection (non-advancing)
+// ════════════════════════════════════════════════════════════
+
+^["inspect"]{
+ maps_to: #[effect.l0.measure, probeMutationTopography, spw_pulse_check]
+
+ // atom samples
+ %[health]
+ %[depth]
+ %[pair]
+ %[len]
+ %[sigma]                                  // flow occupancy of focus cell
+ %[d]{ # : #[layout, structure] }      // strata touched by planned differential
+ %[vol]{ scheme: tol{ abs: 0.02 } }    // measure lattice (scheme id only)
+
+ // bundle
+ $%[ %[health] , %[d] , %[sigma] ]
+
+ law: "% and $% are observational; if a tool rewrites under %, that is a bug"
+}
+
+// ════════════════════════════════════════════════════════════
+// 5. Diff-oriented alphabet d
+// ════════════════════════════════════════════════════════════
+
+^["d"]{
+ // Implemented: SourceEdit + DifferentialStratum + MutationVector
+ // CA reading: one edit = letter; ordered edits = word; stratum = tape
+
+ strata: #[source, structure, layout, reference, operation, script]
+
+ =e[ i: 0 , r: (s, e) , t: "..." , # : layout , ! : effect.l0.measure ]
+
+ law: #[
+  "overlapping =e ranges without conflict report => refuse (withhold)",
+  "layout-only claims require brace projection stability (topography)",
+  "reason strings ride SemanticEdit when rule is selector-addressed",
+ ]
+}
+
+// ════════════════════════════════════════════════════════════
+// 6. Profile phi as cellular rule table
+// ════════════════════════════════════════════════════════════
+
+^["phi"]{
+ // phi : (c, N(c), d?) -> { ~ | ? | % | !charge | * | ^ | ∅ }
+ // ∅ = refuse / noop
+
+ signature: "local rule table over neighborhood; pure plan until * or l2"
+
+ // registered families (hygiene/measure partially implemented as MutationProfileId)
+ =phi[ id: layout_canonical , family: hygiene ]
+ =phi[ id: layout_full , family: hygiene ]
+ =phi[ id: equiv_scripts , family: hygiene ]
+ =phi[ id: measure_only , family: measure , =ceiling[ l0 ] ]
+ =phi[ id: explore_soft , family: explore , =ceiling[ l0 ] ]
+ =phi[ id: stabilize_G , family: stabilize , =ceiling[ l0 ] ]
+
+ // glyph-dense arm
+ =phi[ id: r_squash ]{
+  ?[ =N[ local: inside ] ]
+  %[vol]{ scheme: tol{ abs: 0.02 } }
+  !boon{ ~(()) }
+  *{ =e[ # : structure ] }
+  ^[ =stop[ fixed_point | budget | refuse ] ]
+ }
+}
+
+^["family"]{
+ hygiene: .{
+  phi: #[layout_canonical, layout_full, equiv_scripts]
+  sigma: << layout rules ; % check ; *? ; ^ >>
+  implemented: #yes
+ }
+ measure: .{
+  phi: #[measure_only]
+  sigma: "<< % ... >>  // no *"
+  implemented: #yes
+ }
+ explore: .{
+  sigma: "<< ~ ; ? ; % ; ! ; ^ >>  // no durable *"
+  =ceiling[ l0 ]
+  implemented: #no
+ }
+ stabilize: .{
+  sigma: << % ; ! ; * ; ^ ; =claim >>
+  implemented: #no
+ }
+}
+
+// ════════════════════════════════════════════════════════════
+// 7. Automaton delta - stop - pulse
+// ════════════════════════════════════════════════════════════
+
+^["delta"]{
+ // delta(S, phi, schedule) = S'
+ // Implemented loop: runMutationAutomata until stop reason
+
+ ^["step_k"]{
+  =phi[ id: layout_canonical ]
+  =ceiling[ l0 ]
+  <<
+    %[sigma]@c
+    ?{ =N[c] }
+    !{ =phi }
+    %{ d }
+    *{ =e[] }
+    ^{ =id[k] }
+  >>
+ }
+
+ =stop[ fixed_point | budget_exhausted | idempotence_failure | authority_failure | conflict | cancellation | rule_error ]
+
+ // stop reasons align with MutationStopReason in mutation-automata.ts
+}
+
+// ════════════════════════════════════════════════════════════
+// 8. Continuations (syntax experiments)
+// ════════════════════════════════════════════════════════════
+
+^["cont_schedule"]{
+ // Sequential vs parallel schedule inside <<>>
+ // ;  = sequential slots (default CA tick order)
+ // || = parallel slots - only when strata orthogonal OR ranges disjoint
+
+ id: cont_schedule
+ status: #proposed
+
+ sequential: << a ; b ; c >>
+ parallel:   << a || b >>
+ mixed:      << prep ; ( a || b ) ; seal >>
+
+ law: #[
+  "|| on overlapping =e ranges without conflict => refuse",
+  "|| across layout || script maps to existing sequence parallel_layout_script when both phi are hygiene",
+  "matrix mode (pulse --matrix) enumerates schedule products; this surface names the glyph",
+ ]
+
+ // map to implemented pulse sequences where possible:
+ map: .{
+  layout_then_script: << phi_layout ; phi_script >>
+  script_then_layout: << phi_script ; phi_layout >>
+  parallel_layout_script: << phi_layout || phi_script >>
+ }
+}
+
+^["cont_sigma_facet"]{
+ // sigma as facet vs prefix-only occupancy
+ id: cont_sigma_facet
+ status: #proposed
+
+ prefix: ~{ ... }          // occupancy by wrapper
+ facet:  . { sigma: ~ , ... }  // occupancy as readable field
+
+ // inspection
+ %[sigma]           // works for either encoding if normalized
+ .sigma             // proposed ground path when facet form is used
+
+ law: #[
+  "one cell has one sigma; facet and prefix must not disagree after normalize",
+  "authors may prefer facet for metareference; machines may lower to prefix Act",
+ ]
+
+ open: "Does normalize stamp sigma into ONF metadata or only authoring sugar?"
+}
+
+^["cont_cell_select"]{
+ // Cell selection = filter S through pattern before delta
+ id: cont_cell_select
+ status: #proposed
+
+ // structural select (implemented SpwPattern vocabulary)
+ ?[ =sel[ { sigil: "!" , modifier: "boon" } ] ]
+
+ // proposed: selection freezes corpus then filters cells
+ =sel[ corpus: frozen , pattern: P , N: filter ]
+ S_prime = #[ c in S | P(c) AND c in N_policy ]
+
+ law: #[
+  "select is effect.l0.measure",
+  "delta may not invent cells outside =sel",
+  "multi-file: contentHash vector from refactor-experiment selection model",
+ ]
+
+ map: .{
+  spw_query: "SpwPattern match -> loci",
+  semantic_edit: "select field of SemanticRule",
+  refactor_plan: "selection.json -> cells",
+ }
+}
+
+^["cont_phi_compose"]{
+ // Compose profiles: phi_a & phi_b
+ id: cont_phi_compose
+ status: #proposed
+
+ =phi[ id: a ] & =phi[ id: b ]
+
+ // sequential compose (pipeline)
+ =phi[ id: ab ]{ << =phi[a] ; =phi[b] >> }
+
+ // parallel compose (orthogonal strata only)
+ =phi[ id: a_par_b ]{ << =phi[a] || =phi[b] >> }
+
+ law: #[
+  "compose refuses if both write same stratum tape and ranges may overlap unless conflict algebra defined",
+  "measure phi (no *) always composes left or right without write hazard",
+  "explore phi cannot be composed into a pipeline that introduces * without raising ceiling check",
+ ]
+
+ // stratum orthogonality table (soft):
+ // layout ⟂ script often ok in parallel_layout_script
+ // structure ∥ layout usually sequential
+ // reference ∥ structure needs explicit order
+}
+
+^["cont_phi_lower"]{
+ // Compile path: glyph phi surface -> MutationRule[] + plan id
+ id: cont_phi_lower
+ status: #proposed
+
+ pipeline: <<
+  ~{ =phi surface }
+  %{ parse + validate falsify }
+  !{ lower }
+  *{ =plan[ id ] + MutationRule[] | SemanticRule[] }
+  ^{ =id[artifact] }
+ >>
+
+ lower_table: #[
+  .{ glyph: "~{...}" , kernel: "unapplied SourceEdit[] field / plan stub" },
+  .{ glyph: "?[ =N | =sel ]" , kernel: "rule guard / SpwPattern / port filter" },
+  .{ glyph: "%[k]{ scheme }" , kernel: "l0 probe + measure lattice" },
+  .{ glyph: "!charge{...}" , kernel: "MutationRule.transform or SemanticRule.rewrite; charge=metadata" },
+  .{ glyph: "*{ =e }" , kernel: "applyEdits l1 or plan apply gate" },
+  .{ glyph: "^{...}" , kernel: "stop / seal / fixed_point check" },
+  .{ glyph: << ; >> , kernel: "rule order / pulse sequence" },
+  .{ glyph: << || >> , kernel: "parallel sequence | refuse on overlap" },
+  .{ glyph: "&{ =G => #[] }" , kernel: "multi-cell same rule id / group apply" },
+  .{ glyph: "=ceiling[l0|l1|l2]" , kernel: "EffectGrade" },
+  .{ glyph: "=stop[...]" , kernel: "MutationStopReason" },
+ ]
+
+ artifact: .{
+  plan: "spw.refactor.plan/1 or mutation plan envelope"
+  rules: "MutationRule[] and/or SemanticRule[]"
+  receipt: "after apply - hashes, conflicts, stop"
+ }
+
+ law: "seed stays portable: lower may live in seed; git worktree apply stays CLI edge"
+}
+
+^["cont_group_G"]{
+ // Group action on cell sets (from clay/charge/group thread)
+ id: cont_group_G
+ status: #proposed
+
+ =G[ id: g , inv: g_ ]
+ =lock[ #[ root ] ]
+ &{ =G[g] => #[ c0 , c1 ] }
+
+ law: #[
+  "identity ~= !bone seal with empty d",
+  "inverse =G[inv] must be declared or refuse 'group' claim",
+  "stabilizer =lock set omitted from free DOF",
+  "not a group if health/projection breaks - demote to semantic_risk story beat",
+ ]
+}
+
+// ════════════════════════════════════════════════════════════
+// 9. Worked examples
+// ════════════════════════════════════════════════════════════
+
+^["ex_soft_seal"]{
+ @self: ~"fig.spw"
+ =ic[ sigma: ~ , vol: 1 ]
+ =phi[ id: soft_then_seal ]{
+  <<
+    ~{ (()) }
+    ?{ =N[ inside ] }
+    %[vol]{ scheme: tol{ abs: 0.02 } }
+    !boon
+    *{ =ceiling[ l1 ] }
+    !bone
+    ^{ =id[ f ] }
+  >>
+ }
+ =stop[ fixed_point ]
+ $%[ %[sigma] , %[vol] , %[d] ]
+}
+
+^["ex_hygiene_pulse"]{
+ // Lowering of implemented layout_canonical pulse (documentation sugar)
+ =phi[ id: layout_canonical , family: hygiene ]
+ =ceiling[ l0 ]
+ << !{ =phi } ; %[health] ; %[pair] ; ^{ =stop[ fixed_point ] } >>
+ // * only when host sets ceiling >= l1 or pulse --write (l2) under policy
+}
+
+^["ex_parallel_schedule"]{
+ =phi[ id: lay , family: hygiene ]
+ =phi[ id: scr , family: hygiene ]
+ << =phi[lay] || =phi[scr] >>
+ // -> pulse --sequence parallel_layout_script when both implemented
+}
+
+^["ex_cell_select_then_delta"]{
+ =sel[ pattern: { modifier: "boon" } ]
+ =phi[ id: measure_only ]
+ << ?{ =sel } ; % ; ^{ =id[k] } >>
+}
+
+^["ex_phi_compose"]{
+ =phi[ id: ab ]{
+  << =phi[ measure_only ] ; =phi[ layout_canonical ] >>
+ }
+ // measure then hygiene - no write until ceiling raised
+}
+
+// ════════════════════════════════════════════════════════════
+// 10. Kernel map (implemented truth)
+// ════════════════════════════════════════════════════════════
+
+^["map"]{
+ ~   => "unapplied plan / soft SourceEdit field"
+ ?   => "rule arm / matrix branch / sel filter"
+ %   => "effect.l0.measure + topography probe + measure schemes"
+ !   => "MutationRule.transform | SemanticRule.rewrite; charge=metadata"
+ *   => "effect.l1.memory applyEdits; or worktree handle (proposed)"
+ ^   => "step seal / fixed_point candidate / named revision"
+ <<>> => "rule pipeline; pulse sequences / matrix"
+ ;    => "sequential schedule"
+ ||   => "parallel schedule (proposed glyph; partial via sequences)"
+ d    => "SourceEdit + DifferentialStratum + MutationVector"
+ phi    => "MutationProfileId + MutationRule[] (+ SemanticRule[] when selector-addressed)"
+ N    => "ports from coupling; files from selection; graph proposed"
+ delta    => "runMutationAutomata"
+ =stop => "MutationStopReason"
+ =ceiling => "EffectGrade"
+ plan.id => "refactor-experiment / envelope artifact id"
+}
+
+^["map_cli"]{
+ "spw pulse --check --profile layout_canonical" : "<< !phi ; % ; ^ >> l0"
+ "spw pulse --diff" : "%[d] report"
+ "spw pulse --sequence parallel_layout_script" : << phi_a || phi_b >>
+ "spw mutate --profile ..." : "* then optional l2 paths"
+ "spw mutate --dry-run" : "l1 plan without l2"
+ "spw beat" : "clock only - no delta on tree"
+ "spw refactor ..." : "selector-addressed SemanticRule plans (extend toward =plan)"
+}
+
+// ════════════════════════════════════════════════════════════
+// 11. Falsify
+// ════════════════════════════════════════════════════════════
+
+^["falsify"]{
+ #[
+  "* under =ceiling[l0]",
+  "% mutates source bytes",
+  "phi claims layout while %[pair] or brace projection moves",
+  "family=stabilize fires ! without prior % when policy requires inspect-first",
+  "N(c) or || slot includes site outside selection contentHash",
+  "parallel || on overlapping =e without conflict report",
+  "phi_a & phi_b both write structure with no order and no orthogonality proof",
+  "dry-run / measure_only returns rewritten source as committed",
+  "charge modifier changes parse tree meaning without dialect gate",
+  "absolute user paths in =id handles or plan artifacts",
+ ]
+}
+
+// ════════════════════════════════════════════════════════════
+// 12. Implementation roadmap (documentation order, not commits)
+// ════════════════════════════════════════════════════════════
+
+^["roadmap"]{
+ P0: "Keep this surface + cross-links as canon for glyph vocabulary"
+ P1: "Document sigma/phi sugar over existing pulse profiles (no new runtime)"
+ P2: "cont_phi_lower: compile subset of =phi arms -> MutationRule[] tests"
+ P3: "cont_schedule || <-> pulse sequences matrix honesty"
+ P4: "cont_cell_select: selection hash + pattern -> cell set"
+ P5: "cont_phi_compose with stratum conflict checks"
+ P6: "l1.worktree *{ $ } via refactor-experiment apply"
+ P7: "LSP/Neovim %[sigma] / invitation projections (editor plans)"
+}
+
+^["related"]{
+ @mutation_automata: ~"./mutation-automata.spw"
+ @devices: ~"./operational-devices.spw"
+ @topography: ~"./operational-topography.spw"
+ @ot: ~"./operational-transform.spw"
+ @valence: ~"./valence-architecture.spw"
+ @pulse_doc: ~"../runtime/md/pulse-mutate-beat.md"
+ @refactor_plan: ~"../../.agents/plans/refactor-experiment-lifecycle/PLAN.md"
+ @curiosity: ~"../../.agents/plans/curiosity-mutation-ergonomics/PLAN.md"
+ @measure: ~"../../.agents/plans/measure-invariant-generalization/PLAN.md"
+ @ecology: ~"../../.agents/plans/shape-syntax-ecology/PLAN.md"
+ @syntax: ~"../../.agents/plans/syntax-profile-stack/PLAN.md"
+ @stack: ~"./syntax-profile-stack.spw"
+}
+
+^["runtime_reference"]{
+ // experimental syntax must be greppable before lower
+ catalog_planned: "packages/spw-seed/src/experimental/syntax-catalog.ts"
+ ids: #[flow.sigma_chain, flow.phi, flow.cell, flow.schedule_par]
+ law: "catalog status proposed => runtimeHook none|lint|lower - never silent interpret"
+ dialect: Spw.f
+}
+
+// ════════════════════════════════════════════════════════════
+// Wonders
+// ════════════════════════════════════════════════════════════
+
+#>wonder_mutation_flow_1
+?["Is sigma a state of the cell or of the observer?"]{
+  #:depth #!computational
+  %[sigma]
+  !probe{ =id[p_sigma] }
+  $%[ %[sigma] , %[d] ]
+  // if both: facet form documents observer report; prefix form is occupancy law
+}
+
+#>wonder_mutation_flow_2
+?["When does <<~;?;%;!;*;^>> fail to commute?"]{
+  #:depth #!computational
+  !probe{ =id[p_commute] }
+  %[d]{ # : #[structure, layout] }
+}
+
+#>wonder_mutation_flow_3
+?["What is the stabilizer of || ?"]{
+  #:depth #!computational
+  !probe{ =id[p_par] }
+  // free: disjoint ranges + orthogonal strata; lock: shared structure tape
+  =lock[ #[ structure ] ]
+}
+
+#>wonder_mutation_flow_4
+?["Where does phi_lower lose information?"]{
+  #:depth #!educational
+  !probe{ =id[p_lower] }
+  $%[ %[sigma] ]
+  // charge tints, wonder prose, and human !probe bodies may not enter MutationRule
+}
+
+// ── Worked examples + open board ─────────────────────────────
+
+^["examples"]{
+ default_pipeline: << ~ ; ? ; % ; ! ; * ; ^ >>
+ sequential: << a ; b ; c >>
+ parallel: << a || b >>
+ mixed: << prep ; ( a || b ) ; seal >>
+ phi_soft: |
+  @dialect:Spw.f
+  =phi[ id: soft ]{ << ~ ; ? ; % ; ! ; ^ >> }
+  =ceiling[ l0 ]
+  =exp[ id: flow.sigma_chain , status: proposed ]
+ cell_sketch: |
+  // cell locus + sigma occupancy + delta
+  // c = { $: ~"mod.spw" , sigma: ~ , d: structure }
+ inspect_only: |
+  // % never mutates source bytes
+  %[pair]
+  %[structure]
+ refuse: |
+  // || on overlapping structure ranges without lock => refuse
+}
+
+^["open"]{
+ ?[sigma_locus]: "Is sigma cell state, observer report, or both (facet vs prefix)?"
+ ?[commute]: "Which pairs in <<~;?;%;!;*;^>> never commute under structure tape?"
+ ?[par_stabilizer]: "Is disjoint range enough for ||, or need orthogonal strata always?"
+ ?[phi_lower_loss]: "Which human-only fields must never enter MutationRule?"
+ ?[ceiling_default]: "Default ceiling for Spw.f plan surfaces - l0 always?"
+ ?[schedule_matrix]: "Does pulse --matrix enumerate || products or only sequential?"
+ ?[catalog_hook]: "When may flow.sigma_chain runtimeHook become lower?"
+ ?[stream_entry]: "Outside <<>>, is >> stream entry still orthogonal to schedule ; ?"
+}
+
+#>wonder_mutation_flow_5
+?["Can a soft phi ever write under consumer channel?"]{
+  #:depth #!pragmatics
+  !probe{ =id[p_soft_consumer] }
+  $%[channel, ceiling, authority]
+}
+
+#>wonder_mutation_flow_6
+?["What is one tick of the default pipeline on an empty cell?"]{
+  #:depth #!experiential
+  !probe{ =id[p_empty_tick] }
+  $%[sigma, d]
+}

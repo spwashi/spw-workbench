@@ -1,0 +1,134 @@
+# Syntax Profile Stack - plan artifact
+#
+# Companion to docs/theory/spw/syntax-profile-stack.spw and seed dialect module.
+# Optimistic anatomy for CLI/LSP/format consumers.
+
+#:layer #!pragmatics
+#:status #!active
+@dialect:Spw.p
+
+^seed[Spw.Plan.SyntaxProfile.Stack v:0.2 @profile:Spw.p @intent:stack_product]
+
+^["roots"]{
+ @plan: ~".agents/plans/syntax-profile-stack/PLAN.md"
+ @wip: ~".agents/plans/syntax-profile-stack/wip.spw"
+ @ecology: ~".agents/plans/shape-syntax-ecology/shape-syntax-ecology.spw"
+ @theory: ~"docs/theory/spw/syntax-profile-stack.spw"
+ @registry: ~".spw/registries/syntax-profile-stack.spw"
+ @dialects: ~".spw/registries/dialect-spec.spw"
+ @impl: ~"packages/spw-seed/src/dialect/index.ts"
+ @parse: ~"packages/spw-seed/src/parser/parse.ts"
+ @review: ~".agents/skills/spw-commit-review/scripts/spw-syntax-review.ts"
+}
+
+^["thesis"]{
+ ~#claim: "One stack per surface - dialect x review x format x lex x mutation x reading x domain - resolved once for parse, lint, format, hover."
+ ~#taste: "header > path > default; axes not soup; archive waived"
+}
+
+^["anatomy"]{
+ . {
+  detect: .{ $: @impl , ports: #[header, pragma, path, option] }
+  stack: .{ $: @impl , type: SurfaceProfileStack }
+  preprocess: .{ l_q: newlineAsSpace , disclose: dialectPreprocessed }
+  lint: .{ m_x: machine_lint , review: @review }
+  consumers: #[parse, format, lsp, cli, commit_hook]
+ }
+}
+
+^["stack_axes"]{
+ dialect: #[Spw.b, Spw.l, Spw.m, Spw.x, Spw.q, Spw.f, Spw.p, Spw.t]
+ review: #[historical, agent_surface, plan_surface, canon_surface, narrative_surface, strict_surface, flow_surface, query_surface, runtime_state]
+ format: #[canonical, pretty, layout, prose, culture, wide]
+ mutation: #[none, hygiene, measure, explore, stabilize]
+ reading: #[author, prompt, research, creative]
+}
+
+^["declare"]{
+ seed: '^seed[Name v:0.3 @profile:Spw.b]'
+ dialect_at: '@dialect:Spw.f'
+ pragma: '#:dialect Spw.q'
+}
+
+^["path_defaults"]{
+ ".agents/plans/**": .{ dialect: Spw.p , review: plan_surface }
+ ".spw/**": .{ dialect: Spw.b , review: canon_surface }
+ "packages/**": .{ dialect: Spw.m , review: strict_surface }
+ "docs/**": .{ dialect: Spw.b , review: narrative_surface }
+}
+
+^["synergy"]{
+ =exp[ id: cli.profile_show , status: proposed ]
+ =exp[ id: lsp.stack_hover , status: proposed ]
+ =exp[ id: format.from_stack , status: proposed ]
+ =exp[ id: action.quoted_frame_to_bracket , status: proposed ]
+}
+
+^["imagination"]{
+ ide: "flip @dialect on a wip; watch parse warnings under Spw.m"
+ shot: "header + nested frames; model guesses dialect; verify"
+ learn: "one example per dialect from theory surface"
+}
+
+^["falsify"]{
+ #[
+  "two tools disagree on active stack for same file"
+  "path beats explicit header"
+  "l/q preprocess hidden from cache key"
+ ]
+}
+
+#>wonder_syntax_profile_stack_art_1
+?["Which axis is still invisible in the editor?"]{
+  !probe{ =id[p_axis] }
+  $%[stack.dialect, stack.review, stack.format]
+  ~<packages/spw-seed/src/dialect/syntax-stack.ts>
+}
+
+^["examples"]{
+ flip_dialect: |
+  // start as Spw.b
+  @dialect:Spw.b
+  ^["x"]{ a: 1 }
+  // flip to Spw.m - machineLint may appear
+  @dialect:Spw.m
+
+ l_preprocess: |
+  @dialect:Spw.l
+  a
+  b
+  // after prepare: "a b" (newlineAsSpace)
+
+ path_default: |
+  // packages/foo/bar.spw without header -> Spw.m default
+  // .agents/plans/x/wip.spw -> Spw.p
+
+ exp_cite: |
+  =exp[ id: dialect.stack , status: partial ]
+  =exp[ id: cli.profile_show , status: proposed ]
+
+ lsp_card: |
+  // spw/surfaceProfile on this file
+  // stack.dialect + metasyntax flags
+}
+
+^["open"]{
+ ?[invisible_axis]: "mutation or reading - which axis still missing from hover?"
+ ?[cli_profile_landed]: "Mark cli.profile_show implemented after ship?"
+ ?[format_from_stack]: "format.from_stack uses review or format axis?"
+ ?[quoted_frame_action]: "Code action safety under historical profile?"
+ ?[stack_disagree]: "Which tool wins when LSP and CLI stacks differ?"
+ ?[edition]: "Require @edition on packages/**?"
+}
+
+#>wonder_syntax_profile_stack_art_2
+?["Does flipping @dialect alone change contentHash for measure?"]{
+  !probe{ =id[p_flip_hash] }
+  $%[preprocess, contentHash]
+}
+
+#>wonder_syntax_profile_stack_art_3
+?["What is the smallest header that pins a full stack?"]{
+  !probe{ =id[p_min_header] }
+  $%[dialect, review, format]
+}

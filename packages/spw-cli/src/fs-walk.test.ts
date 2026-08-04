@@ -70,4 +70,19 @@ describe('collectSpwFiles', () => {
   it('DEFAULT_IGNORED_DIRS contains the expected hygiene set', () => {
     expect([...DEFAULT_IGNORED_DIRS].sort()).toEqual(['.git', 'dist', 'node_modules', 'release'])
   })
+
+  it('skips derived *.expanded.spw and .spw/gen corpus dumps', async () => {
+    await fs.mkdir(path.join(root, '.spw', 'gen', 'session'), { recursive: true })
+    await fs.writeFile(path.join(root, 'src.expanded.spw'), '', 'utf8')
+    await fs.writeFile(path.join(root, '.spw', 'canon.spw'), '', 'utf8')
+    await fs.writeFile(path.join(root, '.spw', 'gen', 'session', 'handle.spw'), '', 'utf8')
+    const files = await collectSpwFiles(root)
+    const rel = files.map(f => path.relative(root, f)).sort()
+    expect(rel).toContain('top.spw')
+    expect(rel).toContain(path.join('.spw', 'canon.spw'))
+    expect(rel.some(f => f.includes('expanded'))).toBe(false)
+    expect(rel.some(f => f.includes(`${path.sep}gen${path.sep}`) || f.includes('/gen/'))).toBe(
+      false,
+    )
+  })
 })

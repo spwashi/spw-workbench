@@ -1,0 +1,243 @@
+# wip — cli-mode-overhaul
+# Branch: feature/cli-mode-overhaul
+# Started: 2026-07-27
+
+#:layer #!pragmatics
+#:depth #!operational
+#:template #!cli
+
+#>cli_mode_overhaul
+#:index #!cli
+
+^["roots"]{
+ @plan: ~".agents/plans/cli-mode-overhaul/PLAN.md"
+ @artifact: ~".agents/plans/cli-mode-overhaul/cli-mode-overhaul.spw"
+ @mode_audit: ~".agents/plans/cli-mode-overhaul/mode-audit.spw"
+ @commands: ~"packages/spw-cli/src/commands.ts"
+ @envelope: ~"packages/spw-cli/src/envelope.ts"
+ @hot: ~".spw/hot.spw"
+ @cli_convention: ~".spw/conventions/cli.spw"
+ @precipitates: ~".spw/runtime/precipitates.spw"
+ @derived: ~"packages/spw-seed/src/derived-surface.ts"
+ @gen: ~".spw/gen/index.spw"
+ @pulse_doc: ~"docs/runtime/md/pulse-mutate-beat.md"
+ @hygiene_cli: ~".agents/plans/hygiene-index-consolidation/references/cli-verb-alignment.spw"
+ @surface_identity: ~".spw/patterns/surface-identity.spw"
+ @beat_plan: ~".agents/plans/spw-beat-diff-precipitation/PLAN.md"
+}
+
+^["intent"]{
+ ~#goal: "Overhaul the CLI around explicit effect modes, intermediate Spw precipitates, and flow caches for hot/patch loops — free to rename underused verbs; agents discover tools by mode and ceiling, not folklore."
+ ~#taste: "correctness + clarity + agent affordance + expressiveness"
+ ~#premise: "Muscle memory does not exist for unused tools; modes and artifacts must be first-class or every --write is a surprise."
+ ~#non_goal: "Do not preserve invent/map/analyze names out of habit; do not touch LSP server-index feature spines here."
+ ~#stance_rename: "free — aliases optional for one transition, not sacred"
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#taste, #dx, #design_transfer]
+ review_surfaces: [@plan, @mode_audit, @commands, @hot, @precipitates, @envelope]
+ snippet_routes: [#example, #query, #snippet]
+}
+
+^["concept_index"]{
+ primary: [
+  #effect_mode,
+  #precipitate,
+  #flow_cache,
+  #patch,
+  #generate_vs_write,
+  #command_spec_modes,
+ ]
+ secondary: [
+  #envelope_mode_fields,
+  #derived_kinds,
+  #capabilities,
+  #free_rename,
+  #hot_loop,
+ ]
+ surfaces: [#cli, #seed_derived, #hot, #gen, #docs_runtime]
+ tensions: [
+  #write_without_label,
+  #precipitate_vs_runtime_stage,
+  #flow_cache_vs_beat_ttl,
+  #rename_breaks_scripts,
+ ]
+ transfers: [#language, #service, #agent]
+}
+
+^["mode_lattice"]{
+ #:depth #!structural
+ measure: "observe only — effect.l0.measure"
+ preview: "would-be body or diff — l0 or l1.memory; no authoring write"
+ stream: "ordered events or saga steps on stdout"
+ precipitate: "stage or plan artifact as Spw/JSON intermediate"
+ generate: "derived projection only — @gen or .<kind>.spw"
+ patch: "addressable structural edit plan"
+ write: "durable authoring-tree mutation — effect.l2.workspace"
+ cadence: "clock only — no tree effect"
+}
+
+^["assumptions_overhaul"]{
+ #:revise
+ was: [
+  "group blurbs imply cost but --write is scattered",
+  "verb names stable for muscle memory",
+  "JSON shape per command is fine",
+  "hot loop re-parses every time",
+  "only expanded is a derived kind",
+  "plan tools live in bash",
+ ]
+ becomes: [
+  "every command declares modes[] and ceiling",
+  "rename free when usage is thin",
+  "envelope v1 carries mode + ceiling + optional precipitates",
+  "flow-cache holds planned body keyed by hash/profile",
+  "derived kinds for planned/patch/precipitate as audit requires",
+  "capabilities + plan status on spw binary",
+ ]
+}
+
+^["parallel_work"]{
+ critical_path: [
+  #mode_taxonomy,
+  #audit_matrix,
+  #envelope_fields,
+  #derived_kinds,
+  #flow_cache,
+ ]
+ parallelizable: [
+  #help_rewrite,
+  #orphan_analyzers,
+  #convention_sync,
+ ]
+ shared_hot_files: [
+  "packages/spw-cli/src/commands.ts",
+  "packages/spw-cli/src/envelope.ts",
+  "packages/spw-seed/src/derived-surface.ts",
+  ".spw/hot.spw",
+ ]
+ merge_risks: [
+  #hygiene_commit_7_plan_status,
+  #beat_plan_workspace_block,
+ ]
+ handoff_artifacts: [@plan, @artifact, @mode_audit]
+ forbidden_here: [
+  "packages/spw-lsp/src/server-index.ts",
+ ]
+}
+
+^["supporting_documents"]{
+ must_ship: [@plan, @artifact, @mode_audit]
+ helpful: [@hot, @precipitates, @pulse_doc, @hygiene_cli, @derived]
+ carries: [#audit_matrix, #compose_recipes, #rename_candidates]
+}
+
+^["risk_model"]{
+ hard_failures: [
+  #mode_ceiling_lie,
+  #flow_cache_as_canon,
+  #silent_write,
+ ]
+ soft_failures: [
+  #rename_breaks_npm_scripts,
+  #precipitate_not_parseable,
+ ]
+ recoveries: [
+  #single_mode_table_tests,
+  #gen_only_durable_cache,
+  #optional_transition_aliases,
+ ]
+ non_negotiables: [
+  #no_absolute_user_paths,
+  #beat_never_writes_tree,
+  #expand_never_rewrites_source,
+ ]
+}
+
+^["validation"]{
+ hypotheses: [
+  "every COMMANDS entry gets non-empty modes without misc bucket",
+  "hot loop can reapply planned body from flow-cache without full corpus sense",
+  "agents filter tools by mode and ceiling from capabilities alone",
+ ]
+ negative_controls: [
+  "beat never writes",
+  "expand --write only derived",
+  "pulse default measure without --write",
+ ]
+ demo_path: [
+  "capabilities --json modes and ceilings",
+  "pulse measure then precipitate planned",
+  "mutate stdin preview then path write",
+  "expand derived still excluded from canon walk",
+  "flow-cache invalidate on hash change",
+ ]
+}
+
+^["stream"]{
+ >>[2026-07-27 16:44] observe — User: CLI verbs lack muscle memory (unused); want intermediate Spw precipitation / flow caches for hot reload and patching; need explicit audit of write/preview/stream/precipitate/generate; plan to improve CLI and overhaul assumptions.
+ >>[2026-07-27 16:44] observe — Existing law: hot.spw + pulse-mutate-beat.md define effect.l* ceilings; precipitates.spw defines runtime stage precipitates renderable as Spw; derived-surface only knows expanded; expand correctly generates not source-writes; mass/refresh/format/dev write without registry-level mode labels.
+ >>[2026-07-27 16:44] decide — New plan cli-mode-overhaul. Free rename stance. Mode lattice: measure preview stream precipitate generate patch write cadence. Flow-cache under gen policy, share identity vocab with surface-identity (not a second beat config fork). Supersedes hygiene Appendix C muscle-memory preservation.
+ >>[2026-07-27 16:44] decide — Commit order: taxonomy → full audit freeze → envelope fields → derived kinds → flow-cache → migrate writers → capabilities/plan → rename pass → ship.
+ >>[2026-07-27 16:44] taste — Prefer modes carrying meaning over invent/map/analyze brand names; pulse/mutate/beat stay differentiated by ceiling even if help is rewritten.
+ >>[2026-07-27 16:45] note — Hygiene-index commit 7 (plan status on spw) overlaps capabilities commit; absorb or rebase after hygiene lands.
+ >>[2026-07-27 16:51] observe — Sibling plan naming-profile-convention-align owns profile-family qualification and head-noun law; CLI modes register there as mode not profile. Free rename of verbs still free; public mode names go through alignment map.
+}
+
+^["open"]{
+ ?[rename_scope]: "Which sense verbs merge or rename first — invent+analyze, ls vs query, atlas vs map — once modes land?"
+ ?[flow_cache_durability]: "Memory-only default, or disk under .spw/gen/flow/ from day one for multi-process HMR?"
+ ?[precipitate_spw]: "Must planned bodies always be valid Spw, or allow parse:false JSON precipitates for non-round-trip IR?"
+ ?[hygiene_overlap]: "Land hygiene commit 7 first, or absorb plan status into this plan commit 8?"
+ ?[emit_ceiling]: "Does emit ever reach effect.l3.external, and must that be refused by default?"
+}
+
+^["commits"]{
+ ~[1]: ".[plans] — file cli-mode-overhaul with mode audit matrix"
+ ~[2]: "vocab[cli] — mode taxonomy + CommandSpec mode/ceiling/artifact fields"
+ ~[3]: "![cli] — freeze mode×ceiling×artifact audit for registry + orphans"
+ ~[4]: "#[cli] — envelope v1 mode, ceiling, precipitates/patch/cacheKey"
+ ~[5]: "^seed[derived] — precipitate/planned/patch kinds; exclude from canon walks"
+ ~[6]: "&[cli] — flow-cache for hot/patch intermediate Spw"
+ ~[7]: "&[cli] — migrate writers to mode-declared paths; help lists modes"
+ ~[8]: "#[cli] — spw capabilities --json; absorb plan status/check"
+ ~[9]: "vocab[cli] — free rename/merge pass driven by audit"
+ ~[10]: "![cli] — envelope coverage, flow-cache fixpoint, hot-loop smoke"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@0c7cdfb7"
+ ~#rebased_at: ""
+ ~#hygiene_split: "required vs hygiene-index-consolidation plan-status commit; no server-index"
+ ~#files_hot: "packages/spw-cli/src/commands.ts, packages/spw-cli/src/envelope.ts, packages/spw-seed/src/derived-surface.ts, .spw/hot.spw"
+ ~#next_commit: "1"
+ ~#open_count: "5"
+ ~#last_stream: "2026-07-27 16:45"
+ ~#taste_debt: "rename candidates not ranked by corpus script usage yet — commit 9 needs a quick rg of package.json and docs before merge"
+}
+
+^["done"]{
+}
+
+#>wonder_cli_mode_overhaul_1
+?["What is the difference between generate and write?"]{
+  #:depth #!computational
+  ~#generate: "derived only — scanners skip; sourceSurfaceOf recovers authoring"
+  ~#write: "authoring tree — content_hash identity; canon walks include"
+  !probe{ "expand --write must stay generate; mass --write is write; atlas HTML must pick one and label it." }
+  @derived
+}
+
+#>wonder_cli_mode_overhaul_2
+?["Where does a planned rewrite live between pulse and mutate?"]{
+  #:depth #!experiential
+  ~#today: "only in envelope plannedSource or host memory"
+  ~#goal: "flow-cache keyed by contentHash+profile; optional *.planned.spw precipitate"
+  !probe{ "if the host dies mid-HMR, is the plan recoverable without re-sensing the corpus?" }
+  @hot
+  @precipitates
+}

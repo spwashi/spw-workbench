@@ -32,6 +32,20 @@ function M.omnifunc(findstart, base) return completion.omnifunc(findstart, base)
 
 function M.health() return health.check() end
 
+local _last_statusline = '⚡ spw'
+function M.statusline()
+  local bufnr = vim.api.nvim_get_current_buf()
+  if vim.bo[bufnr].filetype ~= 'spw' then return '' end
+  local uri = vim.uri_from_bufnr(bufnr)
+  lsp.request_custom('spw/beat', { textDocument = { uri = uri } }, function(err, result)
+    if err or not result then return end
+    local sym = { hot = '⚡', warm = '♨', cold = '❄' }
+    local tier_sym = result.surface and sym[result.surface.tier] or '⚡'
+    _last_statusline = string.format('%s b:%d', tier_sym, result.beat)
+  end)
+  return _last_statusline
+end
+
 function M.setup(opts)
   opts = opts or {}
   if opts.lsp_cmd then vim.g.spw_lsp_cmd = opts.lsp_cmd end

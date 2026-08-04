@@ -17,6 +17,8 @@ import type {
   StreamNode,
   CapsuleNode,
   ExpressionNode,
+  SequenceNode,
+  OperationNode,
 } from '../types'
 import {
   type Parser,
@@ -24,7 +26,7 @@ import {
   current,
   skipWhitespace,
   choice,
-  sepBy,
+  sepByOptional,
   named,
 } from '../combinators'
 import {
@@ -47,14 +49,26 @@ import {
 import { literalNode } from './literals'
 import { referenceNode } from './references'
 import { parameterNode } from './parameters'
-import { sequenceNode, expressionNode } from './expressions'
+import { sequenceNode, expressionNode, operationNode } from './expressions'
 
 /**
- * Frame content: parameters, references, or literals
+ * Frame content: parameters, references, literals, or operator terms.
+ *
+ * `operationNode` is last so it only claims what the others decline — chiefly
+ * sigil-led arms like `[#label]` and `[=bias]`, which the cheat-sheet teaches
+ * and which otherwise voided the frame and degraded the surface to prose.
+ *
+ * The comma is optional, matching sequences: canon writes list frames one item
+ * per line without trailing commas, and those must read as items, not prose.
  */
-const frameContent: Parser<(LiteralNode | ReferenceNode | ParameterNode)[]> = named('frameContent',
-  sepBy(
-    choice<LiteralNode | ReferenceNode | ParameterNode>(parameterNode, referenceNode, literalNode),
+const frameContent: Parser<(LiteralNode | ReferenceNode | ParameterNode | OperationNode)[]> = named('frameContent',
+  sepByOptional(
+    choice<LiteralNode | ReferenceNode | ParameterNode | OperationNode>(
+      parameterNode,
+      referenceNode,
+      literalNode,
+      operationNode,
+    ),
     comma
   )
 )
@@ -358,12 +372,16 @@ export const streamNode: Parser<StreamNode> = named('stream',
     let consumed = openStep.value.consumed
     skipWhitespace(stream)
 
+    // Inside these bounds a `>>` closes the stream; outside them it opens a
+    // stream entry (see streamEntryNode).
+    stream.streamDepth += 1
     const seqGen = sequenceNode(stream, depth + 1)
     let seqStep = seqGen.next()
     while (!seqStep.done) {
       yield seqStep.value
       seqStep = seqGen.next()
     }
+    stream.streamDepth -= 1
     if (!seqStep.value.success) {
       return { success: false, consumed: 0, error: seqStep.value.error }
     }
@@ -412,10 +430,17 @@ export const streamNode: Parser<StreamNode> = named('stream',
 )
 
 /**
- * Capsule: "<" (identifier | literal)? frame? body? ">"
+ * Capsule: "<" (atom frame? body? | sequence) ">"
  *
- * Channel atoms: identifier (qualitative), number/string literal (quantitative /
- * labeled). Prefer a single atom; frame/body allow richer interiors.
+ * Two interiors, tried in order:
+ *
+ * - **atom** — identifier (qualitative) or number/string literal (quantitative /
+ *   labeled), optionally followed by frame/body. Populates `tag`/`channel`,
+ *   which medial composites and channel-census tooling read.
+ * - **sequence** — any expression between the bounds (`<X@1>`, `<Module|null>`,
+ *   `<scheduled Record>`), recorded on `interior`. Reached only by backtracking
+ *   when the atom path fails to land on `>`, so atom capsules parse unchanged.
+ *
  * Medial arms (`left`/`right`) are attached by expression composition, not here.
  */
 export const capsuleNode: Parser<CapsuleNode> = named('capsule',
@@ -432,7 +457,9 @@ export const capsuleNode: Parser<CapsuleNode> = named('capsule',
       return { success: false, consumed: 0, error: openStep.value.error }
     }
 
-    let consumed = openStep.value.consumed
+    const openConsumed = openStep.value.consumed
+    const afterOpen = stream.position
+    let consumed = openConsumed
     skipWhitespace(stream)
 
     // Optional channel atom: identifier tag or number/string literal
@@ -502,14 +529,54 @@ export const capsuleNode: Parser<CapsuleNode> = named('capsule',
     }
 
     skipWhitespace(stream)
-    const closeGen = capsuleClose(stream, depth + 1)
+    let closeGen = capsuleClose(stream, depth + 1)
     let closeStep = closeGen.next()
     while (!closeStep.done) {
       yield closeStep.value
       closeStep = closeGen.next()
     }
+
+    // The atom path did not land on `>`. Rewind to just after `<` and read the
+    // interior as a full sequence, so richer channels parse instead of voiding
+    // the capsule and degrading the whole surface to prose.
+    let interior: SequenceNode | undefined
     if (!closeStep.value.success) {
-      return { success: false, consumed: 0, error: closeStep.value.error }
+      stream.position = afterOpen
+      consumed = openConsumed
+      tag = undefined
+      channel = undefined
+      frame = undefined
+      body = undefined
+
+      skipWhitespace(stream)
+      const seqGen = sequenceNode(stream, depth + 1)
+      let seqStep = seqGen.next()
+      while (!seqStep.done) {
+        yield seqStep.value
+        seqStep = seqGen.next()
+      }
+      if (!seqStep.value.success) {
+        return { success: false, consumed: 0, error: seqStep.value.error }
+      }
+      consumed += seqStep.value.consumed
+
+      skipWhitespace(stream)
+      closeGen = capsuleClose(stream, depth + 1)
+      closeStep = closeGen.next()
+      while (!closeStep.done) {
+        yield closeStep.value
+        closeStep = closeGen.next()
+      }
+      if (!closeStep.value.success) {
+        return { success: false, consumed: 0, error: closeStep.value.error }
+      }
+
+      const seq = seqStep.value.value!
+      if (seq.expressions.length === 0) {
+        // `<>` is the concept operator, not an empty capsule — leave it alone.
+        return { success: false, consumed: 0 }
+      }
+      interior = seq
     }
     consumed += closeStep.value.consumed
 
@@ -521,6 +588,7 @@ export const capsuleNode: Parser<CapsuleNode> = named('capsule',
       close: closeStep.value.value!,
       tag,
       channel,
+      interior,
       frame,
       body,
       placement: 'shell',

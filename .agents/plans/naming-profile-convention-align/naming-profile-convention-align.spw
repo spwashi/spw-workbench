@@ -1,0 +1,64 @@
+# Naming · Profile · Convention Alignment
+#
+# One mind for public names. Older designs stay indexed; new ones register.
+
+#>spw_plan_naming_profile_convention_align
+#:pattern #!naming
+#:layer #!pragmatics
+#:depth #!operational
+
+^"roots"{
+ @plan: ~"./PLAN.md"
+ @wip: ~"./wip.spw"
+ @census: ~"./naming-census.spw"
+ @surface_identity: ~"../../../.spw/patterns/surface-identity.spw"
+ @conventions: ~"../../../.spw/conventions/index.spw"
+ @dialect: ~"../../../.spw/registries/dialect-spec.spw"
+ @hot: ~"../../../.spw/hot.spw"
+ @cli_mode: ~"../cli-mode-overhaul/cli-mode-overhaul.spw"
+}
+
+^"intent"{
+ ~#goal: "Public names have a family and an owner; head nouns do not invert collision semantics under one word."
+ ~#method: "census → qualify → index → gate co-development"
+}
+
+^"head_noun_law"{
+ #:extends
+ @surface_identity: "collision-aware identity kinds"
+ ~#general: "any public head noun with inverted meaning needs a family qualifier or a new noun"
+ examples: {
+  profile: "always dialect | format | mutation | emit | form | review | lens"
+  hash: "content identity only"
+  mode: "CLI effect mode — not a profile"
+  grade: "prefer effect.l* in public; S*/E* plan-local or historical"
+ }
+}
+
+^"co_development"{
+ when_public_name: [
+  "add alignment or census row with owner and status",
+  "if head noun collides, qualify or rename",
+  "update owning convention or registry in the same series",
+  "link older plans that used the bare noun",
+ ]
+ stable: #[#dialect_markers, #effect_l_slugs, #content_hash_noun]
+ fluid: #[#unused_cli_verbs, #internal_type_aliases]
+}
+
+^"profile_families"{
+ dialect: #geometry_authoring
+ format: #pretty_layout_prose_canonical
+ mutation: #layout_canonical_measure_only
+ emit: #fractal_saga_profiles
+ form: #geometry_ladder_profiles
+ review: #syntax_review_profiles
+ lens: #harness_lens
+}
+
+^"invariant"{
+ "Help and public docs never say profile without a family.",
+ "conventions/index lists every live convention file or explicitly excludes it.",
+ "CLI mode and mutation profile are different families.",
+ "Older designs gain alignment roots; they are not silently deleted.",
+}

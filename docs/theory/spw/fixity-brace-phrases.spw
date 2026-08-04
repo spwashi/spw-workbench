@@ -1,0 +1,341 @@
+// Fixity - brace phrases - emergent optimizable grammar
+//
+// How Act placement (fixity), Bound shells, and phrase extensions generate
+// grammar constructs that can be measured, cached, rewritten, and graduated.
+//
+// @see docs/theory/spw/operator-brace-composition.spw
+// @see docs/theory/spw/brace-charge-crawl.spw
+// @see docs/theory/spw/reference-deref-geometry.spw
+// @see docs/theory/spw/form-ladders.spw
+// @see docs/theory/spw/onf.spw
+// @see packages/spw-seed/src/types/coupling.ts  ActPlacement
+// @see packages/spw-seed/src/normalize.ts         frames.fixity
+// @see packages/spw-seed/src/types/ast/nodes.ts   Operation.position
+
+#:layer #!semantics
+#:status #!proposed
+
+^seed[Spw.Fixity.Brace.Phrases v:0.1 @profile:Spw.b @intent:emergent_grammar]
+
+^["roots"]{
+ @op_brace: ~"./operator-brace-composition.spw"
+ @brace_charge: ~"./brace-charge-crawl.spw"
+ @ref_deref: ~"./reference-deref-geometry.spw"
+ @form_ladders: ~"./form-ladders.spw"
+ @onf: ~"./onf.spw"
+ @act_placement: ~"../../../packages/spw-seed/src/types/coupling.ts"
+ @normalize: ~"../../../packages/spw-seed/src/normalize.ts"
+ @phrases: ~"../../../packages/spw-runtime/src/session/phrases.ts"
+ @catalog: ~"../../../packages/spw-seed/src/experimental/syntax-catalog.ts"
+ @ocean_syntax: ~"../../../.spw/biome/ocean/experiments/syntax.spw"
+}
+
+^["thesis"]{
+ ~#claim: "Fixity is where the Act sits relative to its Bound; a brace phrase is a stable ActxBound silhouette; emergent grammars are phrase families that survive measure, rewrite, and channel gates-and are therefore optimizable."
+ ~#taste: "prefix-honest today - postfix as dual - phrases over keywords - optimize by law not fashion"
+ ~#law: "Optimization rewrites only under declared fixity + phrase schema + channel; free glyph shuffle is not optimization."
+}
+
+// ── 1. Fixity inventory (measured + proposed) ──────────────────
+
+^["fixity"]{
+ // Aligns ActPlacement and Operation.position / ONF frames.fixity
+
+ kinds: .{
+  prefix: .{
+   placement: prefix
+   silhouette: `![]`  `*boon{...}`  `^["n"]{}`  `~"path"`
+   status: implemented_primary
+   note: "Current parser is prefix-oriented (operator-brace composition)"
+   charge: "Act arms before Bound captures"
+  }
+  postfix: .{
+   placement: postfix
+   silhouette: `data~`  `x!`  `.!` / `.?` sugar (equiv_dot_postfix)
+   status: partial_proposed
+   note: "ONF can stamp frames.fixity; grammar population uneven"
+   charge: "Bound first, Act discharges after (stitch / pipeline feel)"
+   assoc: "left-to-right: x~! => !(~(x)) per probe repair Q5"
+  }
+  interior: .{
+   placement: interior
+   silhouette: Act inside Bound payload
+   status: implemented_structural
+   charge: "capture of Act as material, not aperture"
+  }
+  membrane: .{
+   placement: membrane
+   silhouette: capsule tag / shell
+   status: implemented_partial
+   charge: "shield + interface ports"
+  }
+  infix: .{
+   placement: none  # conceptual until grammar owns it
+   silhouette: `a & b`  `a / b`  `a = b`  couple `<>`
+   status: proposed_dialect_gated
+   note: "Some digraphs already relational; general infix needs frames"
+   charge: "confluence / path / bias between two poles"
+  }
+  none: .{
+   placement: none
+   silhouette: bare Bound or bare Act seed
+   status: implemented
+  }
+ }
+
+ precedence_sketch: #[
+  1: "braces + frames (Bound skeleton)"
+  2: "postfix chain (L->R)"
+  3: "prefix Act"
+  4: "infix / = & % and couple"
+  5: "momentum / newline carry (dialect l/q)"
+  6: "gated rewrite frames last"
+ ]
+ source: "docs/research/probes/grok-response-repair-v0.1.md ONF table - interpretive until seed owns table"
+
+ dual: .{
+  prefix: "point / arm / potentiate-before-capture"
+  postfix: "follow / discharge-after-inhabit"
+  literacy: "fixity must remain silhouette-visible - invisible default kills dual-read"
+ }
+}
+
+// ── 2. Brace phrases ───────────────────────────────────────────
+
+^["brace_phrases"]{
+ definition: "A brace phrase is a minimal recognizable ActxBound (or Bound-only) unit whose silhouette is stable enough to name, cache, and rewrite."
+
+ anatomy: .{
+  act: "optional OperatorKind + label + valence"
+  bound: "Frame|Body|Scope|Capsule|Stream|NRange"
+  fixity: "prefix|postfix|interior|membrane|infix|none"
+  payload: "interior occupancy (void -> inhabited -> multi)"
+  meta: "channel, dialect, scheme, =exp id"
+ }
+
+ examples: #[
+  .{ id: phrase.select_empty , form: `![]` , fixity: prefix , role: "select empty frame" }
+  .{ id: phrase.collapse_body , form: `*{...}` , fixity: prefix , role: "discharge into body" }
+  .{ id: phrase.integrate_frame , form: `^["n"]{}` , fixity: prefix , role: "named integrate" }
+  .{ id: phrase.path_potential , form: `~"p"` , fixity: prefix , role: "potentiate path" }
+  .{ id: phrase.probe_body , form: `?{...}` , fixity: prefix , role: "wonder capture" }
+  .{ id: phrase.stream_window , form: `<<...>>` , fixity: none , role: "order-capture channel" }
+  .{ id: phrase.scope_path , form: `@(a/b)` , fixity: none , role: "hold + path" }
+  .{ id: phrase.postfix_defer , form: `data~` , fixity: postfix , role: "potential after subject" }
+  .{ id: phrase.couple , form: `<>["a","b"]` , fixity: infixish , role: "relation product" }
+  .{ id: phrase.apposition , form: `~#goal: "..."` , fixity: prefix , role: "stance apposition" }
+  .{ id: phrase.literal_bank , form: `` `=[d]{...}` `` , fixity: none , role: "backtick phrase literal" }
+ ]
+
+ extensions: .{
+  labeled_act: "Act + label aperture (!boon, =φ[id]) - does not change Act kind"
+  multi_bound: "Act owning Frame then Body (`![] {}` products)"
+  nested_phrase: "phrase inside phrase - tree of silhouettes"
+  phrase_bank: "#[ phrase, ... ] or materials: [ \"...\" ] for PE/style"
+  gated_rewrite: "`[rewrite=...]` last in precedence - optimizers only"
+ }
+
+ capture_vs_shield: .{
+  capture_phrase: "inhabit interior (charge in)"
+  shield_phrase: "membrane/ceiling/channel (charge wall)"
+  see: ~"./brace-charge-crawl.spw"
+ }
+}
+
+// ── 3. Emergent grammar ────────────────────────────────────────
+
+^["emergent"]{
+ sense: "A family of phrases becomes grammar when tools can *recognize, measure, and prefer* it without one-off English."
+
+ emergence_ladder: #[
+  1: "singleton silhouette seen in corpus (census / geometry)"
+  2: "named phrase id in catalog (=exp or phrase bank)"
+  3: "rewrite law under fixity (equiv / mobility / OT)"
+  4: "dialect projection (cost + view differ)"
+  5: "channel-gated use (trial -> stable)"
+  6: "optimizer objective (thrift, hold, latency, literacy)"
+  7: "graduate to seed parse / ONF law"
+ ]
+
+ recognizers: #[
+  "FormIR op+brace fingerprint"
+  "lite scan phrase tokens (backticks)"
+  "REFERENCE_PROGRESSIONS + form ladders"
+  "SYNTAX_CATALOG / =exp"
+  "GraphIR of pathrefs between phrase surfaces"
+ ]
+
+ not_emergence: #[
+  "one-off prose description of a pattern"
+  "IDE snippet without measure"
+  "keyword macro that erases ActxBound silhouette"
+ ]
+}
+
+// ── 4. Optimizable constructs ──────────────────────────────────
+
+^["optimize"]{
+ law: "A construct is optimizable when it has (schema x fixity x measure x rewrite x cache key)."
+
+ axes: .{
+  thrift: "glyph/line cost of phrase family"
+  hold: "survives lens/host (dimensional-axes hold family)"
+  latency: "parse+preprocess+projection cost per dialect"
+  hit_rate: "CacheIR / OptCacheIR for phrase rewrite"
+  literacy: "dual-read prefix vs postfix clarity"
+  charge: "portability of value/subject/substrate after rewrite"
+ }
+
+ rewrite_classes: #[
+  .{ class: fixity_normalize , ex: "postfix chain -> nested prefix ONF" , status: partial }
+  .{ class: equiv_sugar , ex: "equiv_dot_postfix .! -> !" , status: implemented_rule }
+  .{ class: bound_fold , ex: "empty->inhabit ladder compress" , status: interpretive }
+  .{ class: path_chain , ex: "ref.path_chain deepen/shallow" , status: partial }
+  .{ class: dialect_project , ex: "b block <-> l line pack" , status: proposed }
+  .{ class: crawl_collate , ex: "phrase census -> bank" , status: proposed }
+  .{ class: crystallize , ex: "stream phrases -> * sealed" , status: proposed }
+ ]
+
+ opt_cache_key: "#{ phraseId, fixity, dialect, channel, contentHash, scheme }"
+
+ algorithm_sketch: |
+  recognize phrases -> fingerprint
+  -> score under objective (thriftxholdxlatency)
+  -> candidate rewrites under fixity laws
+  -> measure delta (scheme)
+  -> accept if Hold>=theta AND channel allows
+  -> OptCacheIR.set(key, rewrite)
+  -> optional Spw.x algo frame for live opt
+
+ spw_x_sketch: |
+  @dialect:Spw.x
+  ^["algo"]{ =id[phrase_opt] , kind: rewrite , on: FormIR
+   , fixity: #[prefix, postfix] , scheme: thrift }
+  ^["opt"]{ =id[memo] , algo: ~phrase_opt , hit: #yes , tier: hot }
+}
+
+// ── 5. Dialect & channel interaction ───────────────────────────
+
+^["dialect_channel"]{
+ Spw.b: "prefix phrases legible; teach dual with postfix samples"
+ Spw.l: "phrase packs on one line; postfix stitch density high"
+ Spw.q: "selector phrases as grammar of follow"
+ Spw.m: "ONF fixity frames machine-stable; sugar soft-lint"
+ Spw.x: "live phrase opt; discharge under ceiling"
+ Spw.f: "sigma-chain as ordered phrase pipeline"
+ Spw.p: "plan phrases; avoid hot opt without x"
+ Spw.o: "ocean regional phrase trials; channel=ocean|experimental"
+
+ channel: "trial may invent phrase ids; stable requires catalog+tests"
+ regional: "biome phrase banks do not shadow core without graduate"
+}
+
+// ── 6. Uses (concrete maneuver menu) ───────────────────────────
+
+^["uses"]{
+ teach: "fixity dual-read in geometry lessons (prefix vs postfix)"
+ author: "phrase banks for PE / style / curriculum materials"
+ query: "select by phrase fingerprint / fixity frame"
+ refactor: "normalize fixity under plan; mobility rules"
+ sense: "census phrase families; measure thrift of bank"
+ crawl: "collate phrases -> accumulate bank -> discharge catalog"
+ runtime: "ONF fixity stamp; session OptCacheIR; channel gate"
+ consumer: "local phrase packs under consumer channel; no core pollute"
+ biome: "ocean experiments/syntax.spw as phrase nursery"
+ emergent_lang: "promote high-Hold phrase families to dialect sugar"
+}
+
+// ── 7. Preparation for syntax development ──────────────────────
+
+^["runway"]{
+ #[
+  "A. stamp fixity consistently in normalize (prefix|postfix|membrane)"
+  "B. catalog phrase ids (SYNTAX_CATALOG + ocean phrase bank)"
+  "C. geometry/CLI: phrase fingerprint + fixity column"
+  "D. rewrite table: fixity_normalize + dialect_project"
+  "E. OptCacheIR + bench thrift of phrase families"
+  "F. graduate only with episode + dual-read tests"
+ ]
+}
+
+^["falsify"]{
+ #[
+  "optimization changes meaning without scheme receipt"
+  "postfix sugar without L->R law disclosure"
+  "phrase id without silhouette"
+  "infix free-form that collides couple <> and capsule < >"
+  "cache key omits fixity or channel"
+  "emergent grammar claimed from one file anecdote"
+ ]
+}
+
+// ── Worked examples (prefix dual postfix) ──────────────────────
+
+^["examples"]{
+ prefix_bank: |
+  ![]
+  *boon{ ready }
+  ^["frame"]{ k: v }
+  ~"path/to.spw"
+  ?{ wonder }
+  ~#goal: "teach fixity"
+
+ postfix_bank: |
+  // L->R: data~!  means  !(~(data)) when both apply
+  data~
+  // sugar family (equiv_dot_postfix rules): .! .?
+
+ couple_vs_capsule: |
+  // couple operator (relation)
+  <>["a", "b"]
+  // capsule membrane (Bound)
+  <tag>{ body }
+
+ stream_schedule: |
+  << ~ ; ? ; % ; ! ; * ; ^ >>
+  << a || b >>
+
+ opt_key: |
+  // phraseOptKey sketch
+  // ph:phrase.select_empty|fx:prefix|d:Spw.b|ch:trial|sch:thrift
+
+ emergence_story: |
+  // 1 see ![] in census
+  // 2 name phrase.select_empty in catalog
+  // 3 rewrite under fixity law
+  // 4 dialect project b <-> l
+  // 5 channel trial -> stable
+  // 6 graduate with episode
+}
+
+^["open"]{
+ ?[postfix_scope]: "Which dialects may author postfix by default?"
+ ?[infix_gate]: "Is general infix only Spw.m/x, or also Spw.b with frames?"
+ ?[phrase_id_authority]: "Who mints phrase ids - catalog maintainers or ocean nursery auto?"
+ ?[opt_objective]: "Default objective thrift x hold, or literacy-first for teaching surfaces?"
+ ?[labeled_act]: "Does !boon change fingerprint or only meta?"
+ ?[bank_format]: "Phrase banks as #[] of strings, or of =exp-linked forms?"
+ ?[onf_stamp]: "Must every Operation stamp frames.fixity, or only when non-prefix?"
+ ?[screenshot]: "May screenshot dual-read claim phrase ids without AST ground truth?"
+}
+
+#>wonder_fixity_1
+?["Does postfix left-to-right survive a dialect project to Spw.l?"]{
+  #:depth #!computational
+  !probe{ =id[p_postfix_l] }
+  $%[fixity, dialect, Hold]
+}
+
+#>wonder_fixity_2
+?["When is a silhouette a phrase and not noise?"]{
+  #:depth #!educational
+  !probe{ =id[p_emergence] }
+  $%[census, catalog, thrift]
+}
+
+#>wonder_fixity_3
+?["What scheme rejects a thrift-winning rewrite that loses dual-read?"]{
+  #:depth #!semantics
+  !probe{ =id[p_opt_gate] }
+  $%[literacy.form, thrift]
+}

@@ -9,6 +9,7 @@ import {
   type TokenMatcher,
   matchWhitespace,
   matchLineComment,
+  matchHashLineProse,
   matchComparison,
   matchContainer,
   matchModifier,
@@ -48,6 +49,8 @@ export function* tokenize(
   const matchers: TokenMatcher[] = [
     matchWhitespace,
     matchLineComment,
+    // Before operator `#`: narrative titles `# Title - subtitle`
+    matchHashLineProse,
     matchSpread,
     connectorMatcher,
     matchComparison,

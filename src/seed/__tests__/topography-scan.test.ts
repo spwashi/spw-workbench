@@ -25,8 +25,16 @@ describe('operational topography scanner', () => {
 
   it('reports prose fallback and recoverable lexer errors', () => {
     expect(scan('{').parseEvidence.reasons).toContain('prose_fallback')
-    expect(scan('[x y]').parseHealth).toBe('recovered')
+    expect(scan('[x').parseHealth).toBe('recovered')
     expect(scan('§').parseEvidence.reasons).toEqual(['recoverable_errors', 'prose_fallback'])
+  })
+
+  it('reads juxtaposed frame items as structure, not recovery', () => {
+    // Frame separators are optional, so `[x y]` is two items rather than a
+    // surface that had to fall back to prose.
+    const result = scan('[x y]')
+    expect(result.parseHealth).toBe('complete_structured')
+    expect(result.parseEvidence.reasons).toEqual([])
   })
 
   it('does not mistake the explicit couple operator for an angle boundary', () => {

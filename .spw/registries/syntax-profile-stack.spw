@@ -1,0 +1,85 @@
+# Syntax profile stack registry (workspace)
+#
+# Pointers + defaults for multi-axis surface profiles.
+# Implementation: packages/spw-seed/src/dialect/
+# Spec narrative: docs/theory/spw/syntax-profile-stack.spw
+
+#:layer #!pragmatics
+#:status #!active
+
+^seed[Workbench.Registry.Syntax.Profile.Stack v:0.2 @profile:Spw.b @intent:stack_pointers]
+
+^["roots"]{
+ @theory: ~"../../docs/theory/spw/syntax-profile-stack.spw"
+ @dialects: ~"./dialect-spec.spw"
+ @flow: ~"../../docs/theory/spw/mutation-flow-automata.spw"
+ @ref_deref: ~"../../docs/theory/spw/reference-deref-geometry.spw"
+ @brace_charge: ~"../../docs/theory/spw/brace-charge-crawl.spw"
+ @fixity: ~"../../docs/theory/spw/fixity-brace-phrases.spw"
+ @impl: ~"../../packages/spw-seed/src/dialect/index.ts"
+ @session: ~"../../packages/spw-runtime/src/session"
+ @catalog: ~"../../packages/spw-seed/src/experimental/syntax-catalog.ts"
+}
+
+^["dialects"]{
+ core: #[Spw.b, Spw.l, Spw.m, Spw.x, Spw.q, Spw.f, Spw.p, Spw.t]
+ regional: #[Spw.o]
+ default: Spw.b
+ note: "Spw.o is ocean/biome regional - channel experimental|ocean only until graduated"
+}
+
+^["channels"]{
+ ids: #[stable, trial, draft, live, experimental, consumer, ocean]
+ law: "channel is permission; dialect is geometry - both in cache keys"
+}
+
+^["declare"]{
+ header: "@profile:Spw.b | @dialect:Spw.l | #:dialect Spw.f"
+ seed: "^seed[Name v:0.3 @profile:Spw.b @intent:...]"
+ channel: "=channel[ experimental ] | ~#channel: experimental"
+}
+
+^["api"]{
+ detectDialect: "source -> DialectDetection"
+ resolveSurfaceProfile: "source + path -> SurfaceProfileStack"
+ parse: "autoDialect applies metasyntax + machine_lint"
+ session: "packages/spw-runtime/src/session - channels, charge, crawl, phrases"
+}
+
+^["examples"]{
+ header: |
+  @dialect:Spw.l
+  ^seed[Demo v:0.3 @profile:Spw.l]
+ path_plan: |
+  // .agents/plans/foo/wip.spw -> Spw.p default
+ channel: |
+  // experimental|ocean for Spw.o nursery
+  // consumer for mounted packs
+ session: |
+  // prepareSource(src, { path, channel })
+  // HotRuntimeSession.inspect(src)
+ lsp: |
+  // spw/surfaceProfile { uri }
+  // spw/phraseScan { text }
+  // spw/channelPolicy { channel: live }
+}
+
+^["open"]{
+ ?[regional_core]: "List Spw.o under dialects.core only after graduate episode?"
+ ?[channel_declare]: "Is =channel[...] syntax or only ~#channel / session option?"
+ ?[api_surface]: "Expose prepareSource on CLI as spw surface prepare?"
+ ?[path_globs]: "Do path_defaults support negation globs?"
+ ?[edition]: "Pin @edition on registry seed?"
+}
+
+#>wonder_registry_stack_1
+?["Which pointer root is still missing for agents?"]{
+  !probe{ =id[p_reg_root] }
+  $%[session, catalog, theory]
+}
+
+#>wonder_registry_stack_2
+?["Can a consumer resolve stack without workbench biome?"]{
+  !probe{ =id[p_consumer_stack] }
+  $%[channel, path_defaults]
+}

@@ -1,0 +1,428 @@
+# Documentation robustness and referentiality
+#
+# Goals, grades, and expression exhibits for Spw that can be checked —
+# not only narrated. Companion to PLAN.md Appendix B.
+
+#>spw_plan_documentation_referentiality
+#:pattern #!referentiality
+#:layer #!pragmatics
+#:depth #!operational
+
+^"roots"{
+ @plan: ~"../PLAN.md"
+ @index: ~"./index.spw"
+ @doctrine: ~"../hygiene-index-consolidation.spw"
+ @surface_identity: ~"../../../../.spw/patterns/surface-identity.spw"
+ @bias: ~"../../../../.spw/registries/bias-product.spw"
+ @query: ~"../../../../.spw/patterns/query-composition.spw"
+ @path_check: ~"../../../../scripts/analyzers/spw-path-check.ts"
+ @writerside: ~"../../../../scripts/analyzers/writerside-check.ts"
+ @hot: ~"../../../../.spw/hot.spw"
+ @workspace: ~"../../../../.spw/workspace.spw"
+ @examples: ~"../../../../docs/examples/index.spw"
+ @template_holes: ~"../../../../docs/examples/spw/template-holes.spw"
+ @merge_provenance: ~"../../../../docs/examples/spw/merge-provenance.spw"
+ @naming: ~"../../../../.spw/conventions/naming.spw"
+}
+
+^"intent"{
+ ~#goal: "Make documentation and cross-surface reference honest: every declared path, fragment, and identity kind is resolvable or explicitly unmeasurable; expressions prefer structure over opaque strings; dimensional forms name axes, grades, and modalities in the AST."
+ ~#taste: "disclosure + resolution + correctness"
+ ~#premise: "A reference that only exists inside a quoted English sentence is not a reference — it is a rumor."
+ ~#non_goal: "This surface does not change the parser. It grades what tools should check and what authors should prefer."
+}
+
+// ── Robustness grades ─────────────────────────────────────────
+
+^"robustness_grades"{
+ #:disclosure #!grade
+ # What documentation integrity means, ordered soft to hard.
+
+ g0_parse: .{
+  name: #parse_clean
+  asks: "does the surface lex and parse?"
+  machine: "lint:spw / syntax-validate"
+  ceiling: #effect.l0.measure
+ }
+
+ g1_local_ref: .{
+  name: #local_ref_resolve
+  asks: "do relative path refs and @root maps resolve on disk?"
+  machine: "spw-path-check"
+  ceiling: #effect.l0.measure
+ }
+
+ g2_fragment: .{
+  name: #fragment_resolve
+  asks: "does file#anchor land on a deixis-anchored node?"
+  machine: "path-check + resolveFragment / mount verify"
+  ceiling: #effect.l0.measure
+ }
+
+ g3_inbound: .{
+  name: #inbound_integrity
+  asks: "who points here; are archive moves repointed?"
+  machine: "reference graph + archive-repoint audit"
+  ceiling: #effect.l0.measure
+ }
+
+ g4_shape: .{
+  name: #organelle_shape
+  asks: "does the surface carry required products for its archetype?"
+  machine: "future schema product — not this plan"
+  ceiling: #effect.l0.measure
+ }
+
+ g5_writerside: .{
+  name: #topic_links
+  asks: "do Writerside topic targets exist?"
+  machine: "writerside-check"
+  ceiling: #effect.l0.measure
+ }
+
+ ~#ship_floor: "this plan hardens g1 + g2 + g5 and indexes g3; g4 stays a language follow-on"
+}
+
+// ── Referential forms that already work ───────────────────────
+
+^"forms_live"{
+ #:resolution #!examples
+ # Prefer these in new documentation. Each row: expression, what tools can ask.
+
+ path_local: .{
+  expr: ~"./documentation-referentiality.spw"
+  asks: "does this sibling exist?"
+  product: #path_ref
+ }
+
+ path_up: .{
+  expr: ~"../PLAN.md"
+  asks: "does the plan preflight still sit beside this exhibit?"
+  product: #path_ref
+ }
+
+ root_bind: .{
+  expr: "@examples"
+  asks: "is the bound root declared in this surface's roots frame?"
+  product: #root_alias
+ }
+
+ fragment: .{
+  expr: ~"../../../../.spw/patterns/surface-identity.spw#spw_pattern_surface_identity"
+  asks: "does the anchor exist as deixis on the target surface?"
+  product: #fragment_ref
+  note: "anchor name must match a #> form on the target; tools verify at g2"
+ }
+
+ bias_template: .{
+  expr: "={ ~\"../../../../docs/examples/spw/template-holes.spw\" }"
+  asks: "what surface is provenance for this lean?"
+  product: #bias_edge
+  consumers: [#mount, #expand, #mutate]
+ }
+
+ particle_header: .{
+  expr: "#:layer #!pragmatics"
+  asks: "what case and mood classify this surface?"
+  product: #particle
+ }
+
+ deixis: .{
+  expr: "#>spw_plan_documentation_referentiality"
+  asks: "what is the addressable export of this file?"
+  product: #particle_deixis
+ }
+
+ aspect_claim: .{
+  expr: "~#ship_floor"
+  asks: "is this mark durable canon or mutable summary?"
+  product: #particle_aspect
+  modality: #authored_until_refresh
+ }
+
+ measure: .{
+  expr: "%[path.resolve_ms, path.dangling_count]"
+  asks: "what metrics would a probe report without mutating?"
+  product: #measure
+  ceiling: #effect.l0.measure
+ }
+
+ closed_token: .{
+  expr: "#effect.l0.measure"
+  asks: "is the effect ceiling a closed token rather than free prose?"
+  product: #case_or_concept_token
+ }
+
+ set_required: .{
+  expr: "#[title, claim, saga_id]"
+  asks: "what keys are required for a template fill?"
+  product: #set
+  see: @template_holes
+ }
+
+ labeled_frame: .{
+  expr: "^\"intent\"{ … }"
+  asks: "can outline/skim name this section without regex?"
+  product: #frame
+ }
+}
+
+// ── Soft forms to migrate away from ───────────────────────────
+
+^"forms_soft"{
+ #:noise #!anti_examples
+ # Same intent, weaker checkability. Keep only when structure cannot yet hold the payload.
+
+ string_path: .{
+  soft: "file: \".spw/workspace.spw\""
+  prefer: "@workspace or a ~ path ref to workspace.spw"
+  why: "quoted path is not a PathRef token family tools already select"
+ }
+
+ string_selector: .{
+  soft: "navigable_selector stored only as a quoted expr string"
+  prefer: "live selector in a frame, or a path ref to a selector surface"
+  why: "second dialect inside a string; path-check cannot validate it"
+ }
+
+ string_grade: .{
+  soft: "ceiling: \"effect.l0.measure\""
+  prefer: "ceiling: #effect.l0.measure"
+  why: "closed token vs opaque prose; enumerations become queryable"
+ }
+
+ freeform_map: .{
+  soft: "consumer_authority: \"the host owns data…\""
+  prefer: "particle-classified frame + path refs to owning surfaces"
+  why: "no product; tools cannot distinguish claim from caption"
+ }
+
+ foreign_comment: .{
+  soft: "// see workspace.spw for roots"
+  prefer: "@workspace binding plus # comment or apposition"
+  why: "Spw has no //; law in foreign comments is invisible to seed"
+ }
+
+ prose_only_link: .{
+  soft: "See docs/examples/index.spw for the hub."
+  prefer: "@examples: ~\"../../../../docs/examples/index.spw\""
+  why: "English path is not resolvable structure"
+ }
+}
+
+// ── Goals: parse without strings ──────────────────────────────
+
+^"goals_without_strings"{
+ #:depth #!computational
+ ~#aim: "Maximize claims that remain meaningful when all STRING and PHRASE payloads are erased."
+
+ already_stringless: #[
+  #particle_headers,
+  #deixis_anchors,
+  #closed_hash_tokens,
+  #operator_sigils,
+  #brace_structure,
+  #root_alias_names,
+  #set_of_identifiers,
+  #stream_of_identifiers,
+  #measure_brackets,
+ ]
+
+ should_become_stringless: #[
+  #effect_ceilings_as_tokens,
+  #status_vocab_as_tokens,
+  #cluster_lanes_as_tokens,
+  #required_key_sets,
+  #boolean_flags_as_yes_no_tokens,
+  #tier_names_hot_warm_cold,
+ ]
+
+ must_remain_strings_for_now: #[
+  #filesystem_paths,
+  #human_prose_goals,
+  #host_command_lines,
+  #selector_expr_until_native_ast,
+  #multi_word_exhibit_titles,
+ ]
+
+ erase_test: .{
+  method: "parse; drop STRING and PHRASE tokens; ask which products still have enough structure to query"
+  pass: "roots aliases, particle mix, deixis table, closed tokens, frame labels still recoverable"
+  fail: "only freeform maps and quoted laws remain — surface was documentation cosplay"
+ }
+
+ expressions: {
+  # Path and identity without embedding law in the string payload —
+  # the string is only the address, not the claim.
+  address_only: ~"../../../../.spw/hot.spw"
+  claim_beside: #effect.l0.measure
+  # Closed options without quotes
+  status_ok: #planning
+  status_bad_prose: "planning with a long caveat in the token"
+  # Required keys as a set, not a comma sentence
+  required: #[plan, wip, artifact]
+  # Measure without a narrative sentence
+  observe: %[ref.resolved, ref.dangling, ref.fragment_miss]
+ }
+}
+
+// ── Goals: parse with more dimension ──────────────────────────
+
+^"goals_with_dimension"{
+ #:depth #!mathematical
+ ~#aim: "Where a string remains, surround it with axes so tools know what kind of claim it is."
+
+ axes: {
+  resolution: "how fine is the address — file, fragment, granule, span?"
+  disclosure: "how much must the reader or tool know — outline, hover, full body?"
+  stability: "may this change without a migration — durable, aspect, derived?"
+  noise: "is this signal or garnish — required claim vs exhibit flourish?"
+  effect: "what ceiling may a consumer reach — l0 to l3?"
+  modality: "authored, derived, pinned, substrate?"
+  identity: "content_hash, shape_fingerprint, or granule_key?"
+ }
+
+ dimensional_expr: {
+  # Aspect mark: mutable summary, refresh-owned
+  ~#last_stream: "2026-07-27 17:45"
+  # Case + mood: classification without a prose paragraph
+  #:referentiality #!checkable
+  # Bias with path target: lean carries a resolvable pole
+  =provenance{ ~"../../../../docs/examples/spw/template-holes.spw" }
+  # Measure: observational, non-writing
+  $%[robustness.grade, ref.inbound_degree]
+  # Effect ceiling as token next to a human gloss (gloss may stay string)
+  ceiling: #effect.l0.measure
+  ~#ceiling_gloss: "read-only documentation checks"
+  # Identity kind named, not implied by the word hash
+  identity_kind: #content_hash
+ }
+
+ richer_than_today: #[
+  #path_plus_fragment_plus_expected_product,
+  #root_alias_plus_role_token,
+  #bias_plus_consumer_set,
+  #selector_ast_not_string,
+  #quantity_plus_unit_channel,
+  #claim_stream_atoms,
+ ]
+
+ dimensional_ladder: {
+  d0_bare_string: "docs/examples/index.spw as prose only"
+  d1_path_ref: ~"../../../../docs/examples/index.spw"
+  d2_root_alias: "@examples"
+  d3_fragment: ~"../../../../.spw/patterns/surface-identity.spw#spw_pattern_surface_identity"
+  d4_biased_provenance: "={ ~\"../../../../docs/examples/spw/template-holes.spw\" }"
+  d5_typed_claim: "product + modality + ceiling + path together in one frame"
+  ~#authoring_floor: "new plan and canon docs prefer d1 or better; indexes and manifests prefer d2 or better"
+ }
+}
+
+// ── Worked before / after ─────────────────────────────────────
+
+^"migrate_examples"{
+ #:educational
+
+ workspace_pointer: .{
+  before: "docs root lives at docs/ and is listed in workspace.spw"
+  after_roots: "@docs bound to a ~ path ref under roots"
+  after_use: "@docs"
+  gains: "path-check + documentLink + query pathRefs"
+ }
+
+ effect_ceiling: .{
+  before: "side_effects described only as a long quoted sentence containing effect.l2.workspace"
+  after: "ceiling: #effect.l2.workspace"
+  after_gloss: "~#when carries the human gate sentence"
+  gains: "closed token queryable; prose stays aspect gloss"
+ }
+
+ plan_status: .{
+  before: "status mark holds a whole paragraph of caveat"
+  after_token: "~#status: \"planning\""
+  after_detail: "stream entry carries the sentence"
+  gains: "ecology readers parse one token; history stays in stream"
+ }
+
+ cross_plan: .{
+  before: "see apposition-cache-granules for server-index collision"
+  after: "@apposition: ~\"../../apposition-cache-granules/PLAN.md\""
+  after_schedule: "~#schedule names apposition before beat"
+  gains: "broken plan move fails g1; schedule remains aspect"
+ }
+
+ fragment_nav: .{
+  before: "open surface-identity and search for granule_key"
+  after: ~"../../../../.spw/patterns/surface-identity.spw#spw_pattern_surface_identity"
+  gains: "definition and documentLink; mount dangling-fragment detection"
+ }
+}
+
+// ── Tool goals for this plan (commit 6+) ──────────────────────
+
+^"tool_goals"{
+ #:process #!this_plan
+
+ path_check: {
+  must: #[
+    #resolve_tilde_paths,
+    #resolve_root_maps,
+    #report_dangling_with_location,
+  ]
+  add: #[
+    #fragment_anchor_existence,
+    #archive_repoint_warn,
+    #optional_json_report,
+  ]
+  non_goal: "do not execute selectors embedded in strings"
+ }
+
+ writerside: {
+  must: #[
+    #topic_link_targets_exist,
+  ]
+  add: #[
+    #cross_list_spw_surfaces_claiming_topics,
+  ]
+ }
+
+ query_demos: {
+  path_refs: "npm run spw -- query --from .agents/plans/hygiene-index-consolidation --selector pathRefs --summary"
+  navigable: "npm run spw -- query --from .spw/patterns --selector navigable --limit 20"
+  skim: "npm run spw -- skim .agents/plans/hygiene-index-consolidation/references/documentation-referentiality.spw"
+ }
+
+ fixtures: {
+  plant_bad_path: "temporary path ref to a missing surface must fail lint:docs:strict"
+  plant_bad_fragment: "temporary fragment to a missing anchor must fail once g2 is on"
+  remove_plants: "gate green after removal"
+ }
+}
+
+// ── Invariants ────────────────────────────────────────────────
+
+^"invariant"{
+ "Every @root in this file resolves at g1.",
+ "Path strings that are addresses use ~ or @ forms, not bare quoted paths in freeform maps.",
+ "Effect ceilings and status-like fields prefer closed tokens; prose is aspect gloss or stream.",
+ "This surface does not implement g4 organelle schema or claim-list grammar.",
+ "String erase_test is a goal metric for follow-on language work, not a ship gate for hygiene commits 2 through 5.",
+}
+
+#>wonder_documentation_referentiality_1
+?["What remains if every string payload is erased from this surface?"]{
+  #:depth #!computational
+  ~#lens: "stringless skeleton"
+  !probe{ "list products still queryable: roots, particles, tokens, sets, measures, path-ref operators. If only freeform keys remain, rewrite." }
+  $%[ref.resolved, ref.string_ratio, particle.mix]
+}
+
+#>wonder_documentation_referentiality_2
+?["Which dimension is missing from a path that only points at a file?"]{
+  #:depth #!educational
+  ~#have: [#resolution]
+  ~#want: [#fragment, #modality, #effect, #identity]
+  !probe{ "climb dimensional_ladder d1 to d5 for one real plan ref; stop at the first rung tools cannot check yet." }
+  @path_check
+  ~<"./index.spw">
+}

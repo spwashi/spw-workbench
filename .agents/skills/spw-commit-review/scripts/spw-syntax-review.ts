@@ -12,8 +12,19 @@ export type SyntaxProfileId =
   | 'canon_surface'
   | 'narrative_surface'
   | 'strict_surface'
+  | 'flow_surface'
+  | 'query_surface'
+  | 'plan_surface'
 
-export type PatternId = 'quoted_frame' | 'domain_meta' | 'trait_hash' | 'trait_bare'
+export type PatternId =
+  | 'quoted_frame'
+  | 'domain_meta'
+  | 'trait_hash'
+  | 'trait_bare'
+  | 'slash_line_comment'
+  | 'absolute_user_path'
+  | 'star_under_l0_doc'
+
 export type PatternPolicy = 'allowed' | 'discouraged' | 'historical'
 export type ReviewLevel = 'ok' | 'warn' | 'waive'
 
@@ -38,6 +49,8 @@ export interface SyntaxReviewResult {
   patterns: PatternReview[]
   level: ReviewLevel
   message: string
+  /** Detected dialect marker when present (header/pragma). */
+  dialectHint?: string
 }
 
 type CliOptions = {
@@ -58,7 +71,20 @@ const PATTERNS: PatternSpec[] = [
   { id: 'domain_meta', label: '@domain:', regex: /@domain:/g },
   { id: 'trait_hash', label: '~#…', regex: /~#/g },
   { id: 'trait_bare', label: '~name:', regex: /^\s*~(?!#)[A-Za-z_][A-Za-z0-9_]*:/gm },
+  { id: 'slash_line_comment', label: '// comment', regex: /(?<![:\"'])\/\//g },
+  { id: 'absolute_user_path', label: '/Users/… path', regex: /\/Users\/[^\s\"']+/g },
+  { id: 'star_under_l0_doc', label: '*=l0 doc smell', regex: /=\s*ceiling\s*\[\s*l0\s*\][\s\S]{0,80}\*/g },
 ]
+
+const soft: Record<PatternId, PatternPolicy> = {
+  quoted_frame: 'allowed',
+  domain_meta: 'discouraged',
+  trait_hash: 'allowed',
+  trait_bare: 'allowed',
+  slash_line_comment: 'discouraged',
+  absolute_user_path: 'discouraged',
+  star_under_l0_doc: 'discouraged',
+}
 
 const PROFILE_POLICIES: Record<SyntaxProfileId, Record<PatternId, PatternPolicy>> = {
   historical: {
@@ -66,36 +92,37 @@ const PROFILE_POLICIES: Record<SyntaxProfileId, Record<PatternId, PatternPolicy>
     domain_meta: 'historical',
     trait_hash: 'historical',
     trait_bare: 'historical',
+    slash_line_comment: 'historical',
+    absolute_user_path: 'discouraged',
+    star_under_l0_doc: 'historical',
   },
-  agent_surface: {
-    quoted_frame: 'allowed',
+  agent_surface: { ...soft },
+  plan_surface: { ...soft, trait_bare: 'allowed' },
+  runtime_state: { ...soft },
+  canon_surface: { ...soft },
+  narrative_surface: { ...soft, slash_line_comment: 'discouraged' },
+  flow_surface: {
+    ...soft,
+    star_under_l0_doc: 'discouraged',
+    quoted_frame: 'discouraged',
+  },
+  query_surface: {
+    quoted_frame: 'discouraged',
     domain_meta: 'discouraged',
     trait_hash: 'allowed',
-    trait_bare: 'allowed',
-  },
-  runtime_state: {
-    quoted_frame: 'allowed',
-    domain_meta: 'discouraged',
-    trait_hash: 'allowed',
-    trait_bare: 'allowed',
-  },
-  canon_surface: {
-    quoted_frame: 'allowed',
-    domain_meta: 'discouraged',
-    trait_hash: 'allowed',
-    trait_bare: 'allowed',
-  },
-  narrative_surface: {
-    quoted_frame: 'allowed',
-    domain_meta: 'discouraged',
-    trait_hash: 'allowed',
-    trait_bare: 'allowed',
+    trait_bare: 'discouraged',
+    slash_line_comment: 'discouraged',
+    absolute_user_path: 'discouraged',
+    star_under_l0_doc: 'discouraged',
   },
   strict_surface: {
     quoted_frame: 'discouraged',
     domain_meta: 'discouraged',
     trait_hash: 'discouraged',
     trait_bare: 'discouraged',
+    slash_line_comment: 'discouraged',
+    absolute_user_path: 'discouraged',
+    star_under_l0_doc: 'discouraged',
   },
 }
 
@@ -106,6 +133,9 @@ const PROFILE_LABELS: Record<SyntaxProfileId, string> = {
   canon_surface: 'canon_surface',
   narrative_surface: 'narrative_surface',
   strict_surface: 'strict_surface',
+  flow_surface: 'flow_surface',
+  query_surface: 'query_surface',
+  plan_surface: 'plan_surface',
 }
 
 const PROFILE_NOTES: Record<SyntaxProfileId, string> = {
@@ -115,6 +145,9 @@ const PROFILE_NOTES: Record<SyntaxProfileId, string> = {
   canon_surface: 'workspace canon surfaces allow quoted frames and concise traits',
   narrative_surface: 'docs/spec/story surfaces allow the current narrative idiom mix',
   strict_surface: 'strict machine surfaces prefer explicit modern structural forms',
+  flow_surface: 'mutation-flow / φ authoring; discourage * under l0 documentation smells',
+  query_surface: 'selector/query compact surfaces; prefer Spw.l/q geometry',
+  plan_surface: 'feature plans and wip streams; agent idioms welcome',
 }
 
 export async function reviewFiles(
@@ -157,7 +190,8 @@ export async function reviewFile(
   const allowed = patterns.filter((pattern) => pattern.policy === 'allowed' && pattern.fullCount > 0)
 
   const level: ReviewLevel = warned.length > 0 ? 'warn' : waived.length > 0 ? 'waive' : 'ok'
-  const message = renderSummary(profile, allowed, warned, waived, patterns)
+  const dialectHint = detectDialectHint(source)
+  const message = renderSummary(profile, allowed, warned, waived, patterns, dialectHint)
 
   return {
     filePath,
@@ -166,48 +200,73 @@ export async function reviewFile(
     patterns,
     level,
     message,
+    dialectHint,
   }
 }
 
+/** Align with packages/spw-seed/src/dialect/syntax-stack detectReviewProfile. */
 export function detectSyntaxProfile(normalizedPath: string): SyntaxProfile {
+  const p = normalizedPath.replace(/\\/g, '/')
+
   if (
-    normalizedPath.includes('/_archive/')
-    || normalizedPath.startsWith('docs/archive/')
-    || normalizedPath.startsWith('lib/spw-v0.1.0-alpha/')
-    || normalizedPath.startsWith('lib/spw-v0.2.0-alpha/')
+    p.includes('/_archive/')
+    || p.startsWith('docs/archive/')
+    || p.startsWith('lib/spw-v0.1.0-alpha/')
+    || p.startsWith('lib/spw-v0.2.0-alpha/')
   ) {
     return profile('historical')
   }
 
-  if (normalizedPath.startsWith('.agents/')) {
+  if (p.startsWith('.agents/plans/') || p.includes('/.agents/plans/')) {
+    return profile('plan_surface')
+  }
+
+  if (p.startsWith('.agents/')) {
     return profile('agent_surface')
   }
 
   if (
-    normalizedPath.endsWith('.state.spw')
-    || normalizedPath.startsWith('.agents/state/')
-    || normalizedPath.startsWith('.spw/state/')
+    p.endsWith('.state.spw')
+    || p.startsWith('.agents/state/')
+    || p.startsWith('.spw/state/')
   ) {
     return profile('runtime_state')
   }
 
   if (
-    normalizedPath === '.spw'
-    || normalizedPath === 'index.spw'
-    || normalizedPath.startsWith('.spw/')
+    p.includes('mutation-flow')
+    || p.includes('/flow/')
+    || p.endsWith('mutation-flow-automata.spw')
   ) {
+    return profile('flow_surface')
+  }
+
+  if (p.includes('/query/') || p.includes('selector') || p.endsWith('.q.spw')) {
+    return profile('query_surface')
+  }
+
+  if (p === '.spw' || p === 'index.spw' || p.startsWith('.spw/')) {
     return profile('canon_surface')
   }
 
-  if (
-    normalizedPath.startsWith('docs/')
-    || normalizedPath.startsWith('lib/')
-    || normalizedPath.includes('/docs/')
-  ) {
+  if (p.startsWith('docs/') || p.startsWith('lib/') || p.includes('/docs/') || p.startsWith('prompts/')) {
     return profile('narrative_surface')
   }
 
   return profile('strict_surface')
+}
+
+function detectDialectHint(source: string): string | undefined {
+  const head = source.slice(0, 4096)
+  const m =
+    /@dialect\s*:\s*(Spw\.[blmxqfpt])\b/i.exec(head)
+    ?? /#:\s*dialect\b[^\n]*?(Spw\.[blmxqfpt])\b/i.exec(head)
+    ?? /@profile\s*:\s*(Spw\.[blmxqfpt])\b/i.exec(head)
+  if (!m?.[1]) return undefined
+  const id = m[1]
+  return id.startsWith('Spw.') || id.startsWith('spw.')
+    ? `Spw.${id.slice(4)}`
+    : id
 }
 
 export function printHelp(): void {
@@ -245,25 +304,27 @@ function renderSummary(
   warned: PatternReview[],
   waived: PatternReview[],
   patterns: PatternReview[],
+  dialectHint?: string,
 ): string {
+  const dialectPrefix = dialectHint ? `dialect=${dialectHint}; ` : ''
   if (warned.length > 0) {
-    return `profile=${profile.label}; introduced discouraged forms: ${renderCounts(warned, 'added')}`
+    return `${dialectPrefix}profile=${profile.label}; introduced discouraged forms: ${renderCounts(warned, 'added')}`
   }
 
   if (waived.length > 0) {
     const waivedCounts = renderCounts(waived, 'full')
-    return `profile=${profile.label}; historical forms waived: ${waivedCounts}`
+    return `${dialectPrefix}profile=${profile.label}; historical forms waived: ${waivedCounts}`
   }
 
   if (allowed.length > 0) {
-    return `profile=${profile.label}; allowed forms: ${renderCounts(allowed, 'full')}`
+    return `${dialectPrefix}profile=${profile.label}; allowed forms: ${renderCounts(allowed, 'full')}`
   }
 
   if (patterns.length > 0) {
-    return `profile=${profile.label}; reviewed forms present with no action`
+    return `${dialectPrefix}profile=${profile.label}; reviewed forms present with no action`
   }
 
-  return `profile=${profile.label}; no reviewed forms detected`
+  return `${dialectPrefix}profile=${profile.label}; no reviewed forms detected`
 }
 
 function renderCounts(items: PatternReview[], mode: 'full' | 'added'): string {

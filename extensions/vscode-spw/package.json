@@ -99,6 +99,22 @@
                 "title": "Spw: Inspect Geometry (braces + operators)"
             },
             {
+                "command": "spw.showSurfaceProfile",
+                "title": "Spw: Surface Profile (stack · flow · probes)"
+            },
+            {
+                "command": "spw.showFlowProtocol",
+                "title": "Spw: Flow Protocol (sigil × brace modules)"
+            },
+            {
+                "command": "spw.showGeometricResonance",
+                "title": "Spw: Geometric Resonance"
+            },
+            {
+                "command": "spw.showProbeMeasure",
+                "title": "Spw: Probe & Measure Census"
+            },
+            {
                 "command": "spw.clearProbeCache",
                 "title": "Spw: Clear Probe Cache"
             },
@@ -171,8 +187,13 @@
                 },
                 "spw.surface.highlightOperators": {
                     "type": "boolean",
-                    "default": false,
-                    "description": "Decorate operator sigils (^ ! ? ~ …). Off by default (busy); enable to learn operator rhythm."
+                    "default": true,
+                    "description": "Decorate operator sigils by phase (? wonder, ! action, ^ frame, @ observer, ~ potential, * collapse, = constraint). Each gets its own theme color."
+                },
+                "spw.surface.highlightSemantics": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Decorate semantic constructs: pipe labels (|word, |^word), charge: keys, status: tier values, ~#key: compound properties, =exp[ slots."
                 },
                 "spw.compute.decorationRefreshMs": {
                     "type": "number",
@@ -201,7 +222,9 @@
             { "id": "spw.promptRoot", "description": "Prompt root anchors (##>) — navigation landmark", "defaults": { "dark": "#C586C0", "light": "#AF00DB", "highContrast": "#C586C0", "highContrastLight": "#AF00DB" } },
             { "id": "spw.phaseWonder", "description": "Spirit phase: ? wonder / ~ potential", "defaults": { "dark": "#4EC9B0", "light": "#267F7F", "highContrast": "#4EC9B0", "highContrastLight": "#267F7F" } },
             { "id": "spw.phaseAction", "description": "Spirit phase: ! action / injection", "defaults": { "dark": "#CE9178", "light": "#A31515", "highContrast": "#CE9178", "highContrastLight": "#A31515" } },
-            { "id": "spw.phaseIntegration", "description": "Spirit phase: ^ integration / @ observer", "defaults": { "dark": "#D16969", "light": "#795E26", "highContrast": "#D16969", "highContrastLight": "#795E26" } },
+            { "id": "spw.phaseIntegration", "description": "Spirit phase: ^ frame/synthesis operator", "defaults": { "dark": "#B07EE0", "light": "#6A35A8", "highContrast": "#B07EE0", "highContrastLight": "#6A35A8" } },
+            { "id": "spw.phaseObserver", "description": "Spirit phase: @ observer/perspective operator", "defaults": { "dark": "#5DBADB", "light": "#0278AE", "highContrast": "#5DBADB", "highContrastLight": "#0278AE" } },
+            { "id": "spw.phasePotential", "description": "Spirit phase: ~ potential/defer operator", "defaults": { "dark": "#57D6A3", "light": "#1B8F6A", "highContrast": "#57D6A3", "highContrastLight": "#1B8F6A" } },
             { "id": "spw.phaseMeta", "description": "Spirit phase: # meta / annotation", "defaults": { "dark": "#9CDCFE", "light": "#0070C1", "highContrast": "#9CDCFE", "highContrastLight": "#0070C1" } },
             { "id": "spw.tierHot", "description": "Hot memory tier", "defaults": { "dark": "#F44747", "light": "#CD3131", "highContrast": "#F44747", "highContrastLight": "#CD3131" } },
             { "id": "spw.tierWarm", "description": "Warm memory tier", "defaults": { "dark": "#CCA700", "light": "#BF8803", "highContrast": "#CCA700", "highContrastLight": "#BF8803" } },
@@ -209,7 +232,12 @@
             { "id": "spw.pathRef", "description": "Spw path/root references (~…, @root) — distinct surface", "defaults": { "dark": "#9CDCFE", "light": "#0451A5", "highContrast": "#9CDCFE", "highContrastLight": "#0451A5" } },
             { "id": "spw.annotation", "description": "Spw annotations (# #! #: #>) — distinct surface", "defaults": { "dark": "#C586C0", "light": "#AF00DB", "highContrast": "#C586C0", "highContrastLight": "#AF00DB" } },
             { "id": "spw.brace", "description": "Spw paired bounds {}[]()<> — geometry", "defaults": { "dark": "#DCDCAA", "light": "#795E26", "highContrast": "#DCDCAA", "highContrastLight": "#795E26" } },
-            { "id": "spw.operator", "description": "Spw operator sigils — geometry", "defaults": { "dark": "#4EC9B0", "light": "#16825D", "highContrast": "#4EC9B0", "highContrastLight": "#16825D" } }
+            { "id": "spw.operator", "description": "Spw residual operator sigils ($, %) — receding neutral", "defaults": { "dark": "#7FBFB8", "light": "#357972", "highContrast": "#7FBFB8", "highContrastLight": "#357972" } },
+            { "id": "spw.valenceBoon", "description": "Runtime valence: boon (growth, implemented state)", "defaults": { "dark": "#4EC9B0", "light": "#16825D", "highContrast": "#4EC9B0", "highContrastLight": "#16825D" } },
+            { "id": "spw.valenceBane", "description": "Runtime valence: bane (hazard, error state)", "defaults": { "dark": "#F44747", "light": "#CD3131", "highContrast": "#F44747", "highContrastLight": "#CD3131" } },
+            { "id": "spw.valenceBone", "description": "Runtime valence: bone (scaffold, partial state)", "defaults": { "dark": "#CCA700", "light": "#BF8803", "highContrast": "#CCA700", "highContrastLight": "#BF8803" } },
+            { "id": "spw.valenceBonk", "description": "Runtime valence: bonk (conflict, boundary interruption)", "defaults": { "dark": "#CE9178", "light": "#A31515", "highContrast": "#CE9178", "highContrastLight": "#A31515" } },
+            { "id": "spw.valenceHonk", "description": "Runtime valence: honk (telemetry, high-priority signal)", "defaults": { "dark": "#C586C0", "light": "#AF00DB", "highContrast": "#C586C0", "highContrastLight": "#AF00DB" } }
         ],
         "languages": [
             {
@@ -242,15 +270,26 @@
                 "language": "spw",
                 "scopes": {
                     "operator": [ "keyword.operator.spw" ],
+                    "operator.declaration": [ "punctuation.section.block.begin.spw", "keyword.operator.brace.open.spw" ],
+                    "operator.definition": [ "keyword.operator.couple.spw", "keyword.operator.confluence.spw" ],
+                    "operator.async": [ "keyword.operator.stream.spw" ],
                     "type": [ "entity.name.type.spw" ],
+                    "type.definition": [ "entity.name.type.lens.spw" ],
                     "variable": [ "variable.other.spw" ],
+                    "variable.definition": [ "entity.name.type.path-ref.spw" ],
                     "property": [ "variable.other.property.spw" ],
+                    "property.declaration": [ "entity.name.tag.exp.spw", "variable.other.property.exp.spw" ],
+                    "property.readonly": [ "variable.other.constant.spw", "keyword.operator.config.spw" ],
                     "function": [ "entity.name.function.spw" ],
+                    "function.modification": [ "entity.name.function.action.spw", "markup.bold.spw" ],
+                    "function.async": [ "entity.name.function.probe.spw" ],
                     "string": [ "string.quoted.spw" ],
                     "keyword": [ "keyword.control.spw" ],
+                    "keyword.declaration": [ "keyword.control.frame.spw", "entity.name.function.frame.spw" ],
+                    "keyword.definition": [ "keyword.control.dialect.spw", "entity.name.tag.dialect.spw" ],
+                    "keyword.readonly": [ "keyword.operator.collapse.spw" ],
                     "comment": [ "comment.line.spw" ],
-                    "number": [ "constant.numeric.spw" ],
-                    "variable.definition": [ "entity.name.type.path-ref.spw" ]
+                    "number": [ "constant.numeric.spw" ]
                 }
             }
         ],

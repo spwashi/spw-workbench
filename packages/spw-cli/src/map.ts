@@ -1,5 +1,6 @@
 /**
- * spw map — learn topography & relationship interplay in a corpus.
+ * spw graph (map) — reference topology & relationship interplay in a corpus.
+ * Canonical: graph. Aliases: map, topo.
  *
  * Useful for novel codebases with strands of familiarity (path refs, roots,
  * frames, sigil rhythm) and for business/academic relationship packs.
@@ -97,12 +98,12 @@ function splitCsv(s: string): string[] {
 
 export function printMapHelp(): void {
   printHelpPage({
-    title: 'Spw Map — corpus topography & familiarity',
+    title: 'Spw Graph — corpus topography & familiarity',
     usage: [
-      'spw map [paths...] [--from a,b] [--compare otherRoot] [--json] [--hubs 12]',
-      'spw map prompts --hubs 15',
-      'spw map prompts --compare docs/theory',
-      'spw topo .spw   # alias',
+      'spw graph [paths...] [--from a,b] [--compare otherRoot] [--json] [--hubs 12]',
+      'spw graph prompts --hubs 15',
+      'spw graph prompts --compare docs/theory',
+      'spw map … / spw topo …   # compat aliases',
     ],
     sections: [
       {
@@ -118,8 +119,8 @@ export function printMapHelp(): void {
       {
         title: 'Sense loop',
         lines: [
-          'spw invent <roots>     inventory + roles',
-          'spw map <roots>        topography (this command)',
+          'spw census <roots>     population + roles',
+          'spw graph <roots>      topology (this command)',
           'spw formula <roots>    formula catalog + pattern scan',
           'spw analyze <roots>    multi-selector stats',
           'spw query / skim       drill into hits',

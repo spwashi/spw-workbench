@@ -22,11 +22,23 @@ extensions/intellij-spw/gradle.properties
 .idea/
 .vscode/
 
-# .spw generated projections (runtime/build outputs)
+# .spw generated projections (runtime/build outputs; invent/map skip all of gen/)
 .spw/gen/build/
 .spw/gen/cache/
 .spw/gen/lens/
+.spw/gen/session/
+.spw/gen/geometry/
+.spw/gen/field/
+.spw/gen/resonance/
+.spw/gen/cycle/
+.spw/gen/index/
 
 # captured tool/command output parked at the repo root
 /.output.txt
 /*.output.txt
+
+# Accidental tsc declaration emit next to sources.
+# Package tsconfigs use outDir under node_modules/.cache/tsbuild/*;
+# colocated *.d.ts usually means a bare `tsc` ran without that project.
+packages/*/src/**/*.d.ts
+packages/*/src/**/*.d.ts.map

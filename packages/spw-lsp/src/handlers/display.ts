@@ -20,6 +20,15 @@ import type {
 import { SK } from '../types'
 import { outlineFromSource } from './outline'
 import { formContextHover } from './form-context'
+import {
+  formatCatalogEntryMarkdown,
+  getSyntaxCatalogEntry,
+  resolveSurfaceProfile,
+  scanExperimentalRefs,
+  scanFlowProtocol,
+  formatFlowProtocolSummary,
+} from '@spwashi/spw-seed'
+import { scanBracePhrases, countPhrasesById, measureProbesAndSubstrate } from '@spwashi/spw-runtime'
 
 type DisplayAnnotationKind = 'topic' | 'lens' | 'intent' | 'anchor'
 
@@ -349,6 +358,105 @@ function isEscapedCharacter(text: string, index: number): boolean {
 
 // ── Hover ───────────────────────────────────────────────────────
 
+/**
+ * Hover for =exp[ id: … ], @dialect/@profile:Spw.*, and file-level stack chip
+ * when the caret is on a ^seed[ header or first-line dialect mark.
+ */
+function hoverExperimentalOrDialect(
+    source: string,
+    line: string,
+    pos: LspPosition,
+    docPath: string | null,
+    workspaceRoot: string,
+): LspHover | null {
+    // =exp[ id: foo.bar ]
+    const expRe = /=\s*exp\s*\[\s*id\s*:\s*([a-zA-Z][a-zA-Z0-9_.]*)/g
+    let m: RegExpExecArray | null
+    while ((m = expRe.exec(line)) !== null) {
+        const id = m[1]!
+        const idStart = m.index + m[0].lastIndexOf(id)
+        const idEnd = idStart + id.length
+        if (pos.character < idStart || pos.character >= idEnd) continue
+        const entry = getSyntaxCatalogEntry(id)
+        const md = entry
+            ? formatCatalogEntryMarkdown(entry)
+            : `**\`${id}\`** — *unknown experimental id*\n\nNot in SYNTAX_CATALOG. Add to \`packages/spw-seed/src/experimental/syntax-catalog.ts\` to make it referenceable.`
+        return {
+            contents: { kind: 'markdown', value: md },
+            range: {
+                start: { line: pos.line, character: idStart },
+                end: { line: pos.line, character: idEnd },
+            },
+        }
+    }
+
+    // @dialect:Spw.x / @profile:Spw.x / #:dialect Spw.x
+    const dialectRe = /@(?:dialect|profile)\s*:\s*(Spw\.[blmxqfpt])\b|#:\s*dialect\b[^\n]*(Spw\.[blmxqfpt])\b/gi
+    dialectRe.lastIndex = 0
+    while ((m = dialectRe.exec(line)) !== null) {
+        const raw = m[1] ?? m[2]
+        if (!raw) continue
+        const start = m.index
+        const end = m.index + m[0].length
+        if (pos.character < start || pos.character >= end) continue
+        const rel = docPath ? path.relative(workspaceRoot, docPath) : ''
+        const stack = resolveSurfaceProfile(source, { path: rel || undefined })
+        const dialect = raw.replace(/^spw\./i, 'Spw.')
+        let md = `**Dialect \`${dialect}\`**\n\n`
+        md += `Resolved stack: **${stack.dialect}** (${stack.dialectSource}) · review=\`${stack.review}\` · format=\`${stack.format}\` · mutation=\`${stack.mutation}\`\n\n`
+        md += `metasyntax: newlineAsSpace=${stack.metasyntax.newlineAsSpace} machineLint=${stack.metasyntax.machineLint} flowGlyphs=${stack.metasyntax.flowGlyphs} planStream=${stack.metasyntax.planStream}\n\n`
+        md += `_Product surface — see docs/theory/spw/syntax-profile-stack.spw_`
+        return {
+            contents: { kind: 'markdown', value: md },
+            range: {
+                start: { line: pos.line, character: start },
+                end: { line: pos.line, character: end },
+            },
+        }
+    }
+
+    // ^seed[ … ] header — show stack chip for the document
+    if (/^\s*\^seed\[/.test(line) && pos.character < Math.min(line.length, 48)) {
+        const rel = docPath ? path.relative(workspaceRoot, docPath) : ''
+        const stack = resolveSurfaceProfile(source, { path: rel || undefined })
+        const cited = scanExperimentalRefs(source)
+        let md = `**Surface profile stack**\n\n`
+        md += `| axis | value |\n|---|---|\n`
+        md += `| dialect | \`${stack.dialect}\` (${stack.dialectSource}) |\n`
+        md += `| review | \`${stack.review}\` |\n`
+        md += `| format | \`${stack.format}\` |\n`
+        md += `| mutation | \`${stack.mutation}\` |\n`
+        md += `| domain | \`${stack.domain}\` |\n`
+        md += `| reading | \`${stack.reading}\` |\n\n`
+        if (cited.ids.length > 0) {
+            md += `Cited \`=exp\` ids: ${cited.ids.map(id => `\`${id}\``).join(', ')}\n`
+        }
+        const phraseCounts = countPhrasesById(scanBracePhrases(source))
+        const topPhrases = Object.entries(phraseCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 6)
+        if (topPhrases.length > 0) {
+            md += `\n**Brace phrases** (sense prep):\n`
+            for (const [id, n] of topPhrases) {
+                md += `- \`${id}\` x${n}\n`
+            }
+        }
+        const flow = scanFlowProtocol(source)
+        md += `\n**Flow protocol:** ${formatFlowProtocolSummary(flow)}\n`
+        const pm = measureProbesAndSubstrate(source)
+        md += `**Probes:** ${pm.summary}\n`
+        return {
+            contents: { kind: 'markdown', value: md },
+            range: {
+                start: { line: pos.line, character: 0 },
+                end: { line: pos.line, character: Math.min(line.length, 64) },
+            },
+        }
+    }
+
+    return null
+}
+
 export async function hover(params: HoverParams, deps: HandlerDeps): Promise<LspHover | null> {
     const uri = params?.textDocument?.uri
     const pos = params?.position as LspPosition | undefined
@@ -360,6 +468,10 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
     const docPath = deps.pathFromUri(uri)
     const line = source.split('\n')[pos.line] ?? ''
     const charAtPos = line[pos.character]
+
+    // 0. Experimental catalog / dialect stack (plan-syntax presence)
+    const expHover = hoverExperimentalOrDialect(source, line, pos, docPath, deps.workspaceRoot)
+    if (expHover) return expHover
 
     // 1. Annotation hover
     const annotationMatches = collectAnnotationMatches(line)
@@ -583,7 +695,7 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
                 'file.frame_count': 'Number of ^-frames in this file',
                 'file.annotation_density': 'Annotations per line (higher = more semantic richness)',
                 'file.brace_depth_max': 'Maximum nesting depth of braces',
-                'cache.tier': 'Cache temperature tier (hot/warm/cold)',
+                'cache.tier': 'Retention class for eviction (hot/warm/cold) — not product identity',
                 'cache.hit_ms': 'Average cache hit latency in milliseconds',
                 'cache.hit_ratio': 'Ratio of cache hits to total lookups',
                 'registry.entry_count': 'Number of entries in this registry',

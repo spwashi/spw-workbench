@@ -1,0 +1,395 @@
+// Reference / dereference geometry
+//
+// Ergonomic ref<->deref as shape-literate address, dialect fit, and dimensional lift.
+// Interpretive + proposed; does not change parser law until status -> partial/implemented.
+//
+// @see docs/theory/spw/form-ladders.spw
+// @see docs/theory/spw/form-geometry.spw
+// @see docs/theory/spw/dimensional-axes.spw
+// @see docs/theory/spw/syntax-profile-stack.spw
+// @see packages/spw-seed/src/canonical/form-geometry.ts  REFERENCE_PROGRESSIONS
+// @see packages/spw-seed/src/canonical/form-ladders.ts
+
+#:layer #!semantics
+#:status #!proposed
+
+^seed[Spw.Reference.Deref.Geometry v:0.1 @profile:Spw.b @intent:shape_address]
+
+^["roots"]{
+ @form_ladders: ~"./form-ladders.spw"
+ @form_geometry: ~"./form-geometry.spw"
+ @axes: ~"./dimensional-axes.spw"
+ @stack: ~"./syntax-profile-stack.spw"
+ @brace_charge: ~"./brace-charge-crawl.spw"
+ @fixity: ~"./fixity-brace-phrases.spw"
+ @progressions: ~"../../../packages/spw-seed/src/canonical/form-geometry.ts"
+}
+
+^["thesis"]{
+ ~#claim: "Reference and dereference are dual enrichments on the same form ladder: a shape that *points* and a shape that *follows*-recognizable by silhouette, not by English keywords."
+ ~#taste: "glyph presence - dual axes - dialect honesty - dimension as product of axes not new glyphs"
+ ~#law: "Address is progressive occupancy of selection -> path -> ref -> fold; deref is progressive resolution along that chain under a declared channel and effect grade."
+}
+
+// ── Existing inventory (measured / partial) ────────────────────
+
+^["inventory"]{
+ pathref: .{
+  form: `~"relative/path"`
+  role: path
+  axis: #[path, potential]
+  note: "tilde-relative path product; high thrift, high recognizability"
+ }
+ root_bind: .{
+  form: `@name: ~"..."`
+  role: ref
+  axis: #[reference, label]
+  note: "named root in surface header; graph node seed"
+ }
+ scope_hold: .{
+  form: `@(here)` | `@(a / b)`
+  role: hold+path
+  axis: #[flow, path, reference]
+  note: "scope ladder: empty () -> inhabit -> path -> perspective"
+ }
+ select: .{
+  form: `$` | `$[key]` | `$~"expr"`
+  role: select
+  axis: #[selection, address]
+  note: "select/address operator; geometry-inspect maps $ -> select/address"
+ }
+ measure_at: .{
+  form: `$%[facet]@locus`
+  role: select+measure
+  axis: #[selection, measure]
+  note: "measure projected at a place - dual of bare %"
+ }
+ anchor: .{
+  form: `#>id`
+  role: handle
+  axis: #[label, reference]
+  note: "cross-surface handle candidate (devices)"
+ }
+ projection: .{
+  form: `$^["_"]@here => &[@workspace]`
+  role: local->global
+  axis: #[reference, fold, path]
+  note: "cognitive laser / theory index idiom"
+ }
+ progression: .{
+  catalog: REFERENCE_PROGRESSIONS
+  ids: #[
+   ref.selection_path
+   ref.ground_publish
+   ref.membrane_observe
+   ref.pair_publish
+   ref.to_register_meta
+   ref.path_chain
+   ref.action_label_cycle
+  ]
+ }
+}
+
+// ── Shape-driven recognizability ───────────────────────────────
+
+^["recognizability"]{
+ principle: "A Spw script is legible when *glyph silhouettes* encode role faster than tokens encode English."
+ dual: .{
+  ref: "outward mark - tilde-quote, @name, #>id, path segment - *points away*"
+  deref: "inward resolution - $, @() hold, * collapse of address, follow / - *arrives*"
+ }
+ silhouette_rules: #[
+  "~\"...\" is always path-potential (never bare English path)"
+  "@word is always root or perspective (never decoration)"
+  "$ is always select/address (never money metaphor in canon)"
+  "/ inside () or path chain is always projection segment"
+  "=> is always projection/enrichment arrow in theory surfaces (not file mutate)"
+  "paired empty [] {} () <<>> are always *holes* before inhabit"
+ ]
+ anti_patterns: #[
+  "keyword-only ref (ref path.spw) - flattens shape literacy"
+  "invisible deref (auto-follow without $ or @() mark)"
+  "one glyph overloaded for path AND select AND measure without composition"
+  "English path strings without ~ - loses pathref census and graph IR"
+ ]
+ form_ladder_alignment: `empty -> inhabit -> label/select -> path/ref -> ground/fold`
+ note: "Ref sits at path/ref rung; deref is the *walk* of that rung under a channel."
+}
+
+// ── Ergonomic ref / deref (proposed silhouettes) ───────────────
+
+^["ergonomic"]{
+ // Prefer composition of existing glyphs over new alphabet letters.
+ // New sugar only when silhouette stays dialect-honest.
+
+ point: .{
+  name: "point / bind"
+  forms: #[
+   `~"path"`                    // pathref product
+   `@id: ~"path"`               // named bind
+   `@id`                        // bare root mention (already)
+   `#>anchor`                   // handle
+   `=id[handle]`                // sealed id (exp-adjacent)
+  ]
+  shape: "prefix mark + payload or name"
+ }
+
+ follow: .{
+  name: "follow / deref"
+  forms: #[
+   `$ @id`                      // select then root (conceptual space)
+   `$(@id)`                     // hold-select composite (proposed sugar)
+   `$~"path"`                   // select pathref (devices already candidate)
+   `@id / seg / seg`            // path deepen (scope ladder)
+   `* @id`                      // collapse address -> value (hot / Spw.x)
+   `* $~"path"`                 // crystallize path into value window
+  ]
+  shape: "select or collapse *before* address - order encodes effect grade"
+ }
+
+ rebind: .{
+  name: "rebind / alias"
+  forms: #[
+   `@local: @remote`            // alias roots
+   `@local: ~"..." / @remote`     // path then peer
+  ]
+  shape: "left @ is always the new name (bind side)"
+ }
+
+ partial: .{
+  name: "partial address"
+  forms: #[
+   `$[ incomplete ]`            // select hole
+   `~"dir/**"`                  // glob as path family (SelectionIR; shell-owned **)
+   `@id?`                       // optional root (proposed; dialect-gated)
+  ]
+  shape: "holes and globs remain *visible* occupancy gaps"
+ }
+
+ dual_read: .{
+  name: "ref and deref co-visible"
+  example: |
+   @self: ~"mod.spw"
+   $~"mod.spw"           // follow path product
+   *@self                // follow named bind (proposed hot)
+  law: "If a human cannot see which glyph *points* and which *follows*, the form failed literacy."
+ }
+}
+
+// ── Dialect fit ────────────────────────────────────────────────
+
+^["dialect_fit"]{
+ Spw.b: .{
+  role: "author geometry"
+  fit: "full pathref + @roots + $%[...]@locus; teach dual-read"
+  avoid: "dense $ chains without newlines"
+ }
+ Spw.l: .{
+  role: "line compact"
+  fit: "ND path packs; $~\"a\" $~\"b\" on one line; newline≈space"
+  avoid: "deep @() nesting that needs block scanning"
+ }
+ Spw.m: .{
+  role: "machine / ONF"
+  fit: "σ-stable addresses; hashable path chains; soft-lint bare English paths"
+  avoid: "prose path comments as fake refs"
+ }
+ Spw.q: .{
+  role: "selector"
+  fit: "deref *is* the dialect - selectors as address language; $~ and frame select"
+  natural: "query IS follow-shaped"
+ }
+ Spw.x: .{
+  role: "hot / executable"
+  fit: "* @reg live handle; stream addresses; crystallize path window; channel-keyed cache"
+  ceiling: "deref under effect grade; no silent host write from $ alone"
+ }
+ Spw.f: .{
+  role: "flow CA"
+  fit: "path slots in φ cells; ~ as potential edge; * as materialize address"
+  avoid: "confusing shell ** with * crystallize"
+ }
+ Spw.p: .{
+  role: "plan streams"
+  fit: "@plan @wip @artifact roots; stream lines may cite ~ without full graph load"
+  avoid: "hot * collapse in plan surfaces without Spw.x"
+ }
+ Spw.t: .{
+  role: "template"
+  fit: "placeholder addresses; expand rewrites ~ and @ together"
+ }
+}
+
+// ── Dimensional generalization ─────────────────────────────────
+
+^["dimensions"]{
+ law: "Higher order address is a *product of axes*, not a new letter for each dimension."
+
+ d0: .{
+  name: "name / hole"
+  forms: #[ `_` , `id` , `[]` empty select ]
+  object: "0-dimensional address - a point without path"
+ }
+
+ d1: .{
+  name: "path chain"
+  forms: #[ `~"a/b"` , `@() / seg` , `ref.path_chain` ]
+  object: "1-dimensional address - ordered segments"
+  measure: "length, hop count"
+ }
+
+ d2: .{
+  name: "graph surface"
+  forms: #[ ego , hubs , path a->b , couple <> ]
+  object: "2-dimensional address - neighborhood / mesh"
+  measure: "degree, components, cycles"
+  ir: GraphIR
+ }
+
+ d3: .{
+  name: "stack x graph x time"
+  forms: #[
+   "dialectxreviewxformat stack at uri"
+   "GraphIR ego at beat t"
+   "AttentionIR trail"
+  ]
+  object: "volume of identity-in-context"
+  ir: #[IdentityIR, StackIR, AttentionIR, CacheIR]
+ }
+
+ dn: .{
+  name: "field / media composite"
+  forms: #[
+   "composite IdentityIR (many uris as one work)"
+   "partial identity (broken parse window)"
+   "biasxresonancexmeasure as soft coordinates"
+  ]
+  object: "n-dimensional locus in field dynamics"
+  ir: #[BiasIR, ResonanceIR, MeasureIR, KbIR]
+  note: "dimensional-axes.spw: axes compose by named formulas; they do not silently overwrite"
+ }
+
+ lift_rules: #[
+  "d0->d1: label/select -> path (form ladder)"
+  "d1->d2: path set + edges -> GraphIR (census/map)"
+  "d2->d3: bind stack + beat + attention to each node"
+  "d3->dn: product with bias, resonance, scheme, media parts"
+  "deref at order k resolves only axes declared in the channel"
+ ]
+
+ channel_law: "Stability channel (stable|trial|draft|live|consumer) gates which dimensional axes may be *followed* vs merely *pointed*."
+}
+
+// ── Shape lattice (visual S) ───────────────────────────────────
+
+^["shape_lattice"]{
+ // S-curve as dual spiral of point<->follow under heat.
+ point_arm: "ref / path / @ - outward bind"
+ follow_arm: "$ / * / @() - inward resolve"
+ heat: "AttentionIR + CacheIR hot trail along the S"
+ plate: "public IdentityIR card (shape lattice face)"
+ smoke: "crystallize / StreamIR residue after follow"
+ law: "Recognizability fails when point-arm and follow-arm share one indistinguishable mark."
+}
+
+// ── Runtime / CLI hooks (greenfield-friendly) ──────────────────
+
+^["hooks"]{
+ status: proposed
+ seed: #[
+  "Lex/Parse keep pathref and @ and $ as first-class AST (already)"
+  "optional deref sugar: *@id and $(@id) under dialect Spw.x|q"
+  "SelectionIR accepts pathref globs without shell-only story"
+ ]
+ runtime: #[
+  "Hot session cache keys include channel + pathref hash"
+  "deref resolves under ConsumerContext roots (mount-aware)"
+  "ResonanceIR may propose soft refs (non-declared path-like couples)"
+ ]
+ cli: #[
+  "spw graph ego ~\"path\" and spw surface ~\"path\" same SelectionIR"
+  "spw select --explain shows ref vs deref steps"
+  "spw ir path <uri> dumps d1 address + d2 ego slice"
+ ]
+ falsify: #[
+  "deref without visible follow glyph"
+  "path strings in English without ~ still count as pathRefs"
+  "higher dimension invents new alphabetic operators instead of axis products"
+  "consumer mount follows workbench paths without channel gate"
+ ]
+}
+
+^["related"]{
+ brace_charge: ~"./brace-charge-crawl.spw"
+ fixity: ~"./fixity-brace-phrases.spw"
+ stack: ~"./syntax-profile-stack.spw"
+}
+
+// ── Worked examples (dual-read point vs follow) ───────────────
+
+^["examples"]{
+ point_bind: |
+  @self: ~"packages/spw-seed/src/index.ts"
+  @theory: ~"./form-ladders.spw"
+  #>anchor_ref
+
+ follow_select: |
+  $~"packages/spw-seed/src/index.ts"
+  $%[op.distribution]@here
+  @(theory / form-ladders)
+
+ dual_read: |
+  // point and follow co-visible - literacy check
+  @self: ~"mod.spw"
+  $~"mod.spw"
+  // proposed hot collapse (Spw.x):
+  // *@self
+
+ dimension_lift: |
+  // d0 name
+  id
+  // d1 path
+  ~"a/b/c.spw"
+  // d2 ego (CLI, not glyph): spw graph ego a.spw --depth 2
+  // d3 stack x beat: prepareSource + HotRuntimeSession
+
+ bad: |
+  // anti-examples - break recognizability
+  ref packages/spw-seed/src/index.ts
+  // English path without tilde - pathRef census blind
+  "packages/foo.spw"
+}
+
+^["open"]{
+ ?[star_at]: "Is *@id Spw.x-only, or also Spw.q select-collapse?"
+ ?[paren_select]: "$(@id) vs $ @id spacing - which silhouette teaches better?"
+ ?[optional_root]: "@id? optional - or stick to partial IdentityIR completeness?"
+ ?[d2_sugar]: "Do we need a compact ego-literal glyph, or is graph CLI enough?"
+ ?[measure_locus]: "Should $%[facet]@locus be the only measure-at-place form, or also % at $?"
+ ?[composite_id]: "How does composite IdentityIR cite many @roots without losing d1 thrift?"
+ ?[channel_follow]: "Which axes may consumer channel follow vs only point?"
+ ?[resonance_soft]: "May ResonanceIR propose soft pathRefs that never were ~ written?"
+}
+
+#>wonder_ref_deref_1
+?["Can a reader name the point-arm and follow-arm in three seconds?"]{
+  #:depth #!educational
+  !probe{ =id[p_silhouette] }
+  $%[literacy.form, thrift]
+  ~#example: "show dual_read block without labels"
+}
+
+#>wonder_ref_deref_2
+?["When does path chain become graph without a CLI?"]{
+  #:depth #!computational
+  !probe{ =id[p_d1_d2] }
+  $%[GraphIR, SelectionIR]
+  // free: only when edges are declared; lock: no silent couple invent
+}
+
+#>wonder_ref_deref_3
+?["Does *@reg discharge subject identity or only value?"]{
+  #:depth #!semantics
+  !probe{ =id[p_star_at] }
+  $%[charge.value, charge.subject]
+}

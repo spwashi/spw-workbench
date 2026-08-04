@@ -1,0 +1,71 @@
+# CLI Mode Overhaul
+#
+# Modes, precipitates, flow caches — not muscle memory.
+
+#>spw_plan_cli_mode_overhaul
+#:pattern #!cli
+#:layer #!pragmatics
+#:depth #!operational
+
+^"roots"{
+ @plan: ~"./PLAN.md"
+ @wip: ~"./wip.spw"
+ @mode_audit: ~"./mode-audit.spw"
+ @hot: ~"../../../.spw/hot.spw"
+ @precipitates: ~"../../../.spw/runtime/precipitates.spw"
+ @derived: ~"../../../packages/spw-seed/src/derived-surface.ts"
+ @envelope: ~"../../../packages/spw-cli/src/envelope.ts"
+ @commands: ~"../../../packages/spw-cli/src/commands.ts"
+ @gen: ~"../../../.spw/gen/index.spw"
+ @surface_identity: ~"../../../.spw/patterns/surface-identity.spw"
+}
+
+^"intent"{
+ ~#goal: "CLI tools declare what they do to the world; intermediates are Spw-native when possible; hot and patch loops share a flow cache."
+ ~#rename: "free — unused verbs have no muscle memory to protect"
+}
+
+^"modes"{
+ measure: .{ceiling: #effect.l0.measure, durable: #no}
+ preview: .{ceiling: #effect.l0.measure, durable: #no, may: #l1_memory_body}
+ stream: .{ceiling: #effect.l0.measure, durable: #no}
+ precipitate: .{ceiling: #effect.l1.memory, durable: #optional_gen}
+ generate: .{ceiling: #effect.l2.workspace, durable: #derived_only}
+ patch: .{ceiling: #effect.l0.measure, apply: #effect.l2.workspace}
+ write: .{ceiling: #effect.l2.workspace, durable: #authoring}
+ cadence: .{ceiling: #none, durable: #no}
+}
+
+^"intermediates"{
+ precipitate: "pipeline or plan artifact — prefer renderable Spw per runtime precipitates doctrine"
+ flow_cache: "beat- or contentHash-keyed store of planned body/patch; gen or memory; never hand-edited canon"
+ patch: "addressable semantic edit set"
+ generation: ".<kind>.spw or @gen projection; scanners skip"
+}
+
+^"hot_loop"{
+ 1: #cadence
+ 2: #measure
+ 3: #precipitate
+ 4: #preview
+ 5: #patch_or_write
+ 6: #invalidate_flow_cache
+ ~#refuse: "silent write; treating gen as authoring; second beat config block outside surface-identity"
+}
+
+^"envelope"{
+ required: #[ok, schemaVersion, command, mode, ceiling]
+ optional: #[precipitates, patch, cacheKey, summary, data]
+}
+
+^"invariant"{
+ "Every write path is a declared mode, not a flag surprise.",
+ "Generate never mutates sourceSurfaceOf targets.",
+ "Flow cache collision is a key error; content hash collision is failure — surface-identity nouns.",
+ "capabilities lists modes and ceilings; agents do not scrape help prose.",
+}
+
+^"open"{
+ ?[cache_disk]: "memory-only vs .spw/gen/flow/ for multi-process HMR"
+ ?[planned_parse]: "planned precipitates must parse as Spw, or allow parse:false IR"
+}

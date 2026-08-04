@@ -16,6 +16,34 @@ The editor does not yet show or apply most of this. End state: caret-local **for
 
 **Taste note**: evidence discipline, thin client, one differential kernel, learnability without capacitance theatre.
 
+## Ecology
+
+Parent: `.agents/plans/shape-syntax-ecology/PLAN.md`.  
+**Braces as inspectable material:** coupling kind/form/occupancy/payload + brace projection — practical “material sample.”  
+**Liminality:** surface shapes ≠ register stages; only `Spw.Runtime.RegisterLiminalityBridge` crosses (`published`↔`global`).  
+Syntactic presence: hover packet + mobility actions are how shape literacy enters the IDE; screenshot of ports/nesting for gestalt play with AST dual-read.  
+Dialect: structural work under Spw.b/m; do not require Spw.f for mobility.
+
+## Imagination / play
+
+| Mode | Play |
+|------|------|
+| **IDE** | Hover a `{}` / `[]` pair; read occupancy/payload when formContext ships; preview mobility without apply |
+| **Screenshot** | Nested brace silhouette; ask model for depth and pair kinds; verify with parse/brace-projection |
+| **Learning** | Walk one label through liminal shapes in docs; refuse claiming register promotion from parse alone |
+| **Falsify** | Capacitance theatre; auto-HOF; surface liminality = runtime liminality |
+
+## Practical use
+
+| Concern | Hook |
+|---------|------|
+| Intermediate | mobility receipt = SourceEdit plan |
+| Refactor | structure rules feed refactor-experiment |
+| Memory | none required; optional register bridge is explicit l1 |
+| Tests | pair projection stability under layout |
+| Reduce | ONF/shape views peer geometry plan |
+| Selectors | port/site filters later |
+
 ## Ladder position
 
 Roadmap rung **0c** (after operational-topography kernel, before or parallel to capability registry work that *earns* `spw/formContext`). See `.agents/plans/vscode-lsp-roadmap/PLAN.md`.
