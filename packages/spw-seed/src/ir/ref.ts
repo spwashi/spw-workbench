@@ -1,5 +1,12 @@
 /**
  * Addressable IR handles — portable identity for intermediates.
+ *
+ * Product identity (irRefKey) includes kind, uri, contentHash, dialect,
+ * channel, lens, schema, and producer when present.
+ * Retention stamps (bornBeat / session beat) and request epoch never key.
+ *
+ * @see docs/theory/spw/operational-field.spw
+ * @see packages/spw-seed/src/ir/field-brands.ts
  */
 
 import type { IrKind } from './kinds'
@@ -42,14 +49,26 @@ export interface IrRef {
   lens?: IrLens
   /** Stage or producer id (parse, hot-session, lsp, …). */
   producer?: string
-  /** Beat or monotic stamp when known. */
+  /**
+   * Retention / birth stamp when known (session beat).
+   * Never participates in irRefKey product identity.
+   */
   bornBeat?: number
-  /** Schema version of payload shape. */
+  /** Schema version of payload shape (producer schema id). */
   schema?: string
 }
 
-/** Stable string key for maps / BeatCache. */
-export function irRefKey(ref: Pick<IrRef, 'kind' | 'uri' | 'contentHash' | 'dialect' | 'channel' | 'lens'>): string {
+/** Fields that participate in durable product identity. */
+export type IrRefKeyParts = Pick<
+  IrRef,
+  'kind' | 'uri' | 'contentHash' | 'dialect' | 'channel' | 'lens' | 'schema' | 'producer'
+>
+
+/**
+ * Stable string key for maps / product caches.
+ * Excludes bornBeat (retention) and any request-epoch material.
+ */
+export function irRefKey(ref: IrRefKeyParts): string {
   const segs = [
     `k:${ref.kind}`,
     ref.uri ? `u:${ref.uri}` : '',
@@ -57,6 +76,8 @@ export function irRefKey(ref: Pick<IrRef, 'kind' | 'uri' | 'contentHash' | 'dial
     ref.dialect ? `d:${ref.dialect}` : '',
     ref.channel ? `ch:${ref.channel}` : '',
     ref.lens ? `lens:${ref.lens.level}:${ref.lens.id}` : '',
+    ref.schema ? `s:${ref.schema}` : '',
+    ref.producer ? `p:${ref.producer}` : '',
   ].filter(Boolean)
   return segs.join('|')
 }

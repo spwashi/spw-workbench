@@ -4,6 +4,7 @@
 
 export * from './kinds'
 export * from './ref'
+export * from './field-brands'
 export * from './lens'
 export * from './graph'
 export * from './slices'

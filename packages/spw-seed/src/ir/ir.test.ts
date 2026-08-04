@@ -15,18 +15,45 @@ import {
 } from './index'
 
 describe('ir interconnect', () => {
-  it('keys refs by kind, hash, dialect, channel, lens', () => {
+  it('keys refs by kind, hash, dialect, channel, lens, schema, producer', () => {
     const a = irRef('parse', {
       contentHash: 'abc',
       dialect: 'Spw.b',
       channel: 'trial',
       lens: makeLens('file', 'default'),
+      schema: 'spw.parse/1',
+      producer: 'seed',
     })
     const key = irRefKey(a)
     expect(key).toContain('k:parse')
     expect(key).toContain('h:abc')
     expect(key).toContain('ch:trial')
     expect(key).toContain('lens:file:default')
+    expect(key).toContain('s:spw.parse/1')
+    expect(key).toContain('p:seed')
+  })
+
+  it('product identity ignores retention bornBeat', () => {
+    const base = {
+      contentHash: 'abc',
+      dialect: 'Spw.b' as const,
+      channel: 'trial' as const,
+    }
+    const a = irRef('parse', { ...base, bornBeat: 1 })
+    const b = irRef('parse', { ...base, bornBeat: 999 })
+    expect(irRefKey(a)).toBe(irRefKey(b))
+  })
+
+  it('dialect change yields a new product key', () => {
+    const a = irRef('parse', { contentHash: 'abc', dialect: 'Spw.b' })
+    const b = irRef('parse', { contentHash: 'abc', dialect: 'Spw.l' })
+    expect(irRefKey(a)).not.toBe(irRefKey(b))
+  })
+
+  it('schema change yields a new product key', () => {
+    const a = irRef('lex', { contentHash: 'abc', schema: 'spw.lex/1' })
+    const b = irRef('lex', { contentHash: 'abc', schema: 'spw.lex/2' })
+    expect(irRefKey(a)).not.toBe(irRefKey(b))
   })
 
   it('links produces/consumes and finds neighbors', () => {
