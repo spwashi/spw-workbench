@@ -95,6 +95,7 @@ export interface HotCiteHandle {
 }
 
 export interface HotEvalRecord {
+  /** Hash of prepared source bytes (post-dialect cut). */
   contentHash: string
   prepared: PreparedSource
   result: RunSpwResult
@@ -106,6 +107,7 @@ export interface HotEvalRecord {
 }
 
 export interface HotInspectRecord {
+  /** Hash of prepared source bytes (post-dialect cut). */
   contentHash: string
   prepared: PreparedSource
   parse: ReturnType<typeof parse>
@@ -125,6 +127,11 @@ export interface HotInspectRecord {
 
 function hashContent(source: string): string {
   return createHash('sha256').update(source).digest('hex').slice(0, 16)
+}
+
+/** Prefer path receipt preparedHash when present (same algorithm as prepare). */
+function productHash(prepared: PreparedSource): string {
+  return prepared.pathReceipt?.preparedHash ?? hashContent(prepared.source)
 }
 
 function optChannelsFor(handles: readonly OptHandleId[]) {
@@ -247,7 +254,8 @@ export class HotRuntimeSession {
     })
 
     const policy = resolveDialectPolicy(prepared.stack.dialect)
-    const contentHash = hashContent(prepared.source)
+    // Product identity uses prepared cut × dialect × channel (path receipt proves why).
+    const contentHash = productHash(prepared)
     const key = cacheKey(
       channelCacheParts({
         channel: this.channel,
@@ -313,7 +321,7 @@ export class HotRuntimeSession {
       resonanceScheme: options.resonanceScheme,
       ...options.grain,
     })
-    const contentHash = hashContent(prepared.source)
+    const contentHash = productHash(prepared)
     const scheme = options.resonanceScheme ?? grain.resonanceScheme
     const key = cacheKey(
       channelCacheParts({
@@ -469,6 +477,7 @@ export class HotRuntimeSession {
     const card = cite.inspect!
     const p = card.dialectPolicy
     const grain = cite.grain
+    const receipt = card.prepared.pathReceipt
     const lines = [
       `// hot-inspect  channel=${this.channel}  beat=${card.atBeat}`,
       `@dialect:${card.prepared.stack.dialect}`,
@@ -481,11 +490,20 @@ export class HotRuntimeSession {
       `  opt: #[ ${p.optHandles.join(' ; ')} ]`,
       `  literacy: "${p.literacy.replace(/"/g, '\\"')}"`,
       `}`,
+      `^["path_receipt"]{`,
+      `  ~#originalHash: ${receipt.originalHash}`,
+      `  ~#preparedHash: ${receipt.preparedHash}`,
+      `  ~#preprocessed: ${receipt.preprocessed}`,
+      `  ~#dialectSource: ${receipt.dialectSource}`,
+      `  ~#schema: ${receipt.schema}`,
+      `}`,
       `^["card"]{`,
       `  path: ${options.path ? `~"${options.path}"` : '_'}`,
-      `  contentHash: ${card.contentHash}`,
+      `  ~#mask: ${card.bytecode.contentHash}`,
+      `  ~#preparedHash: ${card.contentHash}`,
+      `  ~#plane: ${grain.plane}`,
+      `  ~#grain: ${grain.depth}`,
       `  pointer: ${cite.pointer}`,
-      `  bytecode: ${card.bytecode.contentHash}`,
       `  parseOk: ${card.parse.success ? '#yes' : '#no'}`,
       `  inspectHit: ${card.cacheHit ? '#yes' : '#no'}`,
       `}`,
@@ -495,8 +513,37 @@ export class HotRuntimeSession {
   }
 
   /**
-   * Point arm — content-addressed bytecode/handle without forcing host JSON.
-   * Dual-read form: `@bc:<hash>` for follow/collapse.
+   * Dual-read cite card — uri + mask + grain; pointer is mask facet for follow interop.
+   * Soft tags are not first-class; use @bind or ~# cells for human names.
+   */
+  formatCiteSpw(handle: HotCiteHandle): string {
+    const r = handle.inspect?.prepared.pathReceipt
+    const mask = handle.ref.contentHash ?? handle.pointer.replace(/^@bc:/, '')
+    return [
+      `// cite  dual-read point arm`,
+      `^["cite"]{`,
+      `  ~#uri: ${handle.path ? `~"${handle.path}"` : '_'}`,
+      `  ~#mask: ${mask}`,
+      `  ~#plane: ${handle.grain.plane}`,
+      `  ~#grain: ${handle.grain.depth}`,
+      `  ~#follow: ${handle.grain.follow}`,
+      `  ~#channel: ${handle.ref.channel ?? this.channel}`,
+      `  ~#dialect: ${handle.ref.dialect ?? '_'}`,
+      `  ~#schema: ${handle.ref.schema ?? 'spw.geometry.bc/1'}`,
+      r
+        ? `  ~#preparedHash: ${r.preparedHash}`
+        : `  ~#preparedHash: ${handle.inspect?.contentHash ?? '_'}`,
+      r ? `  ~#preprocessed: ${r.preprocessed}` : null,
+      `  ~#pointer: ${handle.pointer}`,
+      `}`,
+    ]
+      .filter(Boolean)
+      .join('\n')
+  }
+
+  /**
+   * Point arm — content-addressed form product without host JSON.
+   * Mask = bytecode contentHash; pointer keeps @bc: for follow interop only.
    */
   cite(source: string, options: HotEvalOptions = {}): HotCiteHandle {
     const inspect = this.inspect(source, options)

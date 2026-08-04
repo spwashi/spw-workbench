@@ -70,6 +70,15 @@ export {
 } from './prepare'
 
 export {
+  PATH_RECEIPT_VERSION,
+  PREPARE_PRODUCER_SCHEMA,
+  type PathReceipt,
+  hashSourceBytes,
+  buildPathReceipt,
+  formatPathReceiptSpw,
+} from './path-receipt'
+
+export {
   type HotSessionOptions,
   type HotEvalOptions,
   type HotEvalRecord,

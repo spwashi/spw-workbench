@@ -151,41 +151,29 @@ function grainOpts(args: CiteArgs) {
   }
 }
 
-function printHandle(handle: HotCiteHandle, extra?: string): void {
-  const card = handle.inspect
-  const dialect = card?.prepared.stack.dialect ?? handle.ref.dialect ?? 'Spw.b'
-  console.log(`// spw cite/follow  pointer=${handle.pointer}`)
-  console.log(`@dialect:${dialect}`)
-  console.log(`^seed[Hot.Handle v:0.1 @profile:${dialect} @intent:bc_pointer]`)
-  console.log(formatGrain(handle))
-  console.log(`^["handle"]{`)
-  console.log(`  pointer: ${handle.pointer}`)
-  console.log(`  path: ${handle.path ? `~"${handle.path}"` : '_'}`)
-  console.log(`  bytecode: ${handle.ref.contentHash ?? '_'}`)
-  console.log(`  dialect: ${dialect}`)
-  console.log(`  parseOk: ${card?.parse.success ? '#yes' : '#no'}`)
-  console.log(`  inspectHit: ${card?.cacheHit ? '#yes' : '#no'}`)
+function printHandle(
+  session: ReturnType<typeof createHotSession>,
+  handle: HotCiteHandle,
+  extra?: string,
+): void {
+  // Dual-read cite card: uri + mask + grain; pointer is mask interop only (not soft tag).
+  console.log(session.formatCiteSpw(handle))
   if (handle.evaluate) {
-    console.log(`  evalOk: ${handle.evaluate.result.success ? '#yes' : '#no'}`)
-    console.log(`  evalHit: ${handle.evaluate.cacheHit ? '#yes' : '#no'}`)
+    console.log(
+      `^["eval"]{ ok: ${handle.evaluate.result.success ? '#yes' : '#no'}, hit: ${handle.evaluate.cacheHit ? '#yes' : '#no'} }`,
+    )
   }
-  console.log(`}`)
+  const card = handle.inspect
   if (card && card.geometric.resonances.length) {
     const top = card.geometric.resonances
       .slice(0, 6)
       .map(r => `${r.type}@${r.strength}`)
       .join(' ; ')
-    console.log(`^["resonance"]{ scheme: ${card.geometric.scheme}, n: ${card.geometric.resonances.length}, top: #[ ${top} ] }`)
+    console.log(
+      `^["resonance"]{ scheme: ${card.geometric.scheme}, n: ${card.geometric.resonances.length}, top: #[ ${top} ] }`,
+    )
   }
   if (extra) console.log(`// ${extra}`)
-}
-
-function formatGrain(handle: HotCiteHandle): string {
-  const g = handle.grain
-  return (
-    `^["granularity"]{ depth: ${g.depth}, plane: ${g.plane}, follow: ${g.follow}, ` +
-    `disclose: ${g.disclose}, scheme: ${g.resonanceScheme}, volatility: ${g.volatility.toFixed(2)} }`
-  )
 }
 
 async function rememberHandle(handle: HotCiteHandle): Promise<string> {
@@ -258,7 +246,7 @@ export async function runSpwCiteCli(argv: string[] = process.argv): Promise<void
       grain: grainOpts(args),
       resonanceScheme: args.scheme,
     })
-    printHandle(handle)
+    printHandle(session, handle)
     if (args.remember) {
       const dest = await rememberHandle(handle)
       console.log(`// remembered ~"${dest}"`)
@@ -352,12 +340,12 @@ export async function runSpwFollowCli(argv: string[] = process.argv): Promise<vo
         path: rel,
         grain: { ...grain, follow: 'hard', plane: 'eval' },
       })
-      if (followed) printHandle(followed, col.note)
-      else printHandle(cited, col.note)
+      if (followed) printHandle(session, followed, col.note)
+      else printHandle(session, cited, col.note)
       if (!col.ok) process.exitCode = 1
     } else {
       const followed = session.follow(cited.pointer, { path: rel, grain })
-      printHandle(followed ?? cited)
+      printHandle(session, followed ?? cited)
     }
 
   } catch (e) {

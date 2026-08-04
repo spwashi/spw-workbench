@@ -1,22 +1,23 @@
 # wip — canon-rewrite-v2
-# Branch: feature/canon-rewrite-v2 (bootstrap → phase 0)
+# Branch: feature/canon-rewrite-v2
 # Started: 2026-08-04
 #
 # PLAN.md = pre-flight. This file = agent working set.
 # Advance by phase acceptance + corpus pass (commit count irrelevant).
 #
-# ── RESET / BOOTSTRAP (once) ─────────────────────────────────
-# 1 backup tip     git branch backup/pre-rewrite-v2-tip 8bb423c7
-# 2 park dirty     git stash push -m wip/cite-tag-session -- <dirty_paths>
-# 3 abort rebase   git -C ../wt-canon-rewrite-v2 rebase --abort
-# 4 reset cwd      git reset --hard upstream/main   # HEAD=d9da60ad
-# 5 feature br     git switch -C feature/canon-rewrite-v2
-# 6 tip tree       git checkout backup/pre-rewrite-v2-tip -- .
-#                  ancestry=upstream; working tree=tip capability (clean retrospect)
-# 7 phase 0        doctrine + clock hygiene
-# 8 stash re-land  later as cite-tag discharge (not blind pop)
-# Refuse: rebase -i the 31; continue mid-rebase v2.
-# Untracked .agents/plans/canon-rewrite-v2/ survives hard reset.
+# ── SHIPPED ──────────────────────────────────────────────────
+# bootstrap   backup tip; stash cite; abort mid-rebase; reset upstream; feature br; tip tree
+# phase 0     08e2bc1c operational-field; requestEpoch; no beatTick; spw/activity
+# phase 1     186451f2 field-brands; irRefKey schema+producer; bornBeat out
+# phase 2a    b8a6949d scanAppositions lattice; spw lattice|readings; pattern-ecology map
+#
+# ── PRIORITY REORIENT (post design thread) ───────────────────
+# DEFER   soft @bc:tag — prefer @bind, ~#cell, #> landmark, mask facet on cards
+# DEFER   bulk corpus pass A until path receipts + intermediates land
+# NEXT    phase 2b/3*: path_receipt + intermediate memory + dual-read cite card
+# THEN    fixity stamps / phrase keys; channel medium matrix; ChangeReport
+# LATER   pins ~"p"@mask; #>(target); granules; comment interstitial; organ loops
+# Refuse: rebase -i the 31; soft tags as product identity; resonance as cache hit
 #
 # ── notation ─────────────────────────────────────────────────
 # %name + {interprets, considers, surfaces, run}
@@ -24,7 +25,7 @@
 # live | tree | template
 #
 #:layer #!pragmatics
-#:status #!phase0
+#:status #!phase2b
 #>canon_rewrite_v2_wip
 
 ^["roots"]{
@@ -61,11 +62,11 @@
 }
 
 ^["intent"]{
- ~#goal: "Rebuild tip capability on upstream/main with field hygiene; interleave quanta/cache/change/pattern code with corpus norm; ff-push when lawful."
- ~#taste: "One noun per clock; identity ≠ retention ≠ projection; collate before discharge; %measures carry landmarks; stances label ops without rebinding glyphs."
- ~#non_goal: "SHA archaeology; finish mid-rebase edit-all."
- ~#asset: "tip tree + hygiene lessons"
- ~#liability: "temperature/beat-as-product draft history"
+ ~#goal: "Rebuild tip capability on upstream/main with field hygiene; dual-read ref/deref geometry; dialect path receipts; inspectable intermediates in session memory; pattern lattice; ff-push when lawful."
+ ~#taste: "One noun per clock; identity ≠ retention ≠ projection; collate before discharge; soft names are binds/landmarks not host @bc tags; potentiation holds field without silent collapse."
+ ~#non_goal: "SHA archaeology; soft @bc:tag dialect; resonance-as-hit; bulk comment rewrite before ChangeReport."
+ ~#asset: "tip tree + clocks + ir brands + lattice scan"
+ ~#liability: "temperature history; underdesigned channel medium; cite as bare @bc string only"
  %publish_base{
   interprets: objective
   considers: #[upstream/main@d9da60ad]
@@ -77,6 +78,37 @@
   considers: #[discharge_units]
   surfaces: #[wip, episode]
   run: "ignore as success metric"
+ }
+}
+
+^["priority_reorient"]{
+ // Design thread: pins/masks, #>(…), grain/plane, channel redesign, tacit ellipsis,
+ // ref/deref combinatorics, dialect intermediates, @bc hesitation.
+ now: #[
+  "path_receipt on prepare + session records",
+  "intermediate product envelope (inspect vs eval)",
+  "cite dual-read card: uri + mask + plane + grain (hash facet, not soft tag)",
+  "tests: dialect/preprocess split keys; receipt fields present",
+ ]
+ next: #[
+  "fixity stamp coverage + phrase ids in inspect",
+  "channel×dialect medium matrix docs + allow tests",
+  "ChangeReport lex/ast v1",
+  "corpus pass A light (particle #> on high-traffic .spw only)",
+ ]
+ defer: #[
+  "soft @bc:tag index",
+  "pinned pathref lexer sugar ~\"p\"@mask",
+  "explicit #>(target) grammar",
+  "comment interstitial promote CLI",
+  "organ runtime loops",
+  "full LSP granules (phase 5)",
+ ]
+ address_literacy: .{
+  soft_name: "@id: bind | ~#cell | #> landmark"
+  content_pin: "mask facet on card / lattice mask / IrRef hash"
+  follow: "$~ path | *@bind under channel+grain"
+  refuse: "@bc:tag as authoring dialect"
  }
 }
 
@@ -693,7 +725,8 @@
   .{ id: 4, act: "reset cwd to upstream", run: "git reset --hard upstream/main", status: done },
   .{ id: 5, act: "feature branch", run: "feature/canon-rewrite-v2 @ d9da60ad", status: done },
   .{ id: 6, act: "import tip tree", run: "checkout backup/pre-rewrite-v2-tip -- .", status: done },
-  .{ id: 7, act: "phase 0", run: "doctrine + clock hygiene", status: in_progress },
+  .{ id: 7, act: "phase 0–2a discharges", run: "08e2bc1c 186451f2 b8a6949d", status: done },
+  .{ id: 8, act: "phase 2b path_receipt + intermediates", run: "in progress", status: in_progress },
  ]
 
  refs: .{
@@ -703,6 +736,7 @@
   feature_branch: "feature/canon-rewrite-v2"
   stash_message: "wip/cite-tag-session"
   mid_rebase_worktree: "wt-canon-rewrite-v2"
+  commits: "08e2bc1c 186451f2 b8a6949d"
  }
 
  dirty_paths: #[
@@ -729,14 +763,29 @@
 }
 
 ^["phases"]{
- ~[0]: .{ name: "doctrine_clocks", mode: #[template, tree], acceptance: "no public request-as-pulse", measure: %temperature_ban }
- ~[1]: .{ name: "irref", mode: #[tree, test], acceptance: "one key builder", measure: %product_identity }
- ~[2]: .{ name: "quanta", mode: #[tree, live], corpus: A, acceptance: "apposition+boundary tests", measure: %apposition_stable }
- ~[3]: .{ name: "runtime", mode: #[live], corpus: B, acceptance: "inspect≠eval; tag≠hash", measure: %path_receipt }
- ~[4]: .{ name: "change", mode: #[template, tree], corpus: C, acceptance: "lex+ast narrative", measure: %layout_only_write }
- ~[5]: .{ name: "lsp_granules", mode: #[live, tree], corpus: D, acceptance: "eviction+granules", measure: %eviction_leak }
- ~[6]: .{ name: "patterns", mode: #[live, template], corpus: E, acceptance: "fuzzy revalidate", measure: %fuzzy_not_exact }
- ~[7]: .{ name: "ship", mode: #[tree, test], corpus: F, acceptance: "packages primary; push-ready", measure: %phase_gate }
+ ~[0]: .{ name: "doctrine_clocks", status: done, sha: "08e2bc1c", measure: %temperature_ban }
+ ~[1]: .{ name: "irref", status: done, sha: "186451f2", measure: %product_identity }
+ ~[2a]: .{ name: "lattice_scan", status: done, sha: "b8a6949d", measure: %apposition_stable }
+ ~[2b]: .{
+  name: "path_receipt_intermediates"
+  status: ready_to_discharge
+  mode: #[live, tree]
+  acceptance: "PreparedSource carries pathReceipt; eval/inspect use preparedHash; cite dual-read uri+mask+grain"
+  measure: %path_receipt
+  implements: #[
+   "path-receipt.ts + buildPathReceipt",
+   "PreparedSource.pathReceipt always set",
+   "productHash prefers pathReceipt.preparedHash",
+   "formatCiteSpw dual-read card; pointer = mask interop only",
+   "hot-session tests 7/7",
+  ]
+ }
+ ~[3]: .{ name: "runtime_medium", status: pending, after: "2b", note: "channel×dialect matrix; fixity in inspect; grain defaults; soft tags still deferred" }
+ ~[4]: .{ name: "change_report", status: pending, acceptance: "lex+ast narrative", measure: %layout_only_write }
+ ~[5]: .{ name: "lsp_granules", status: pending, note: "uses lattice masks as unit-cell keys" }
+ ~[6]: .{ name: "patterns_fuzzy", status: pending, note: "handles without @bc:tag" }
+ ~[7]: .{ name: "ship", status: pending, measure: %phase_gate }
+ ~[corpus_A]: .{ name: "particle_light", status: deferred, note: "after 2b; high-traffic .spw only" }
 }
 
 ^["corpus_passes"]{
@@ -876,26 +925,30 @@
  >>[2026-08-04] discharge — 08e2bc1c land tip capability + phase 0 clocks (Touch ID authorized).
  >>[2026-08-04] phase1 — field-brands ContentHash RequestEpoch SessionBeat ProducerSchema; irRefKey includes schema+producer excludes bornBeat; law tests; theory index links operational-field.
  >>[2026-08-04] phase2 — scanAppositions unit-cell lattice + mask + spectrum + delta; spw lattice|readings CLI; pattern-ecology-tooling.spw (materials/photonics metaphor gate); slight chem/semicon naming for future interstitial/comment tooling.
+ >>[2026-08-04] reorient — defer soft @bc:tag; prefer bind/cell/landmark + mask facet; next 2b path_receipt + intermediate stamps + dual-read cite card; then fixity/channel medium, ChangeReport; corpus A light later.
+ >>[2026-08-04] phase2b — PathReceipt on prepare; productHash=preparedHash; formatCiteSpw dual-read uri/mask/grain; hot-session tests; soft tags still deferred.
 }
 
 ^["cache"]{
- ~#status: "phase2_ready_to_discharge"
+ ~#status: "phase2b_ready_to_discharge"
  ~#base_ref: "upstream/main@d9da60ad0bbfd90ebaa5742709f162b61f041bae"
  ~#capability_ref: "backup/pre-rewrite-v2-tip@8bb423c7"
  ~#branch: "feature/canon-rewrite-v2"
- ~#tip_commit: "08e2bc1c"
- ~#stash: "wip/cite-tag-session pre-rewrite-v2"
- ~#next_phase: "2"
- ~#next_action: "commit lattice scan+CLI; corpus pass A optional next; then phase 3 runtime"
+ ~#commits: "08e2bc1c 186451f2 b8a6949d"
+ ~#stash: "wip/cite-tag-session — re-land as dual-read card only, no soft tag"
+ ~#next_phase: "3"
+ ~#next_action: "commit 2b; then channel×dialect medium + fixity stamps"
  ~#mode_default: "live for sense; tree for exact; template for pulse/pattern"
  ~#measure_form: "%name{interprets,considers,surfaces,run}"
  ~#stance_form: "<sigil>_<objective|subjective>"
- ~#open_count: "9"
+ ~#open_count: "8"
  ~#last_stream: "2026-08-04"
- ~#laws: "landmarks complete on gate measures; stance≠lexer; live honest about partials; subjective never keys"
- ~#phase0_done: "landed in 08e2bc1c"
- ~#phase1_done: "field-brands; irRefKey schema+producer; bornBeat excluded; tests green"
- ~#phase2_partial: "apposition lattice scan + spw lattice CLI + pattern ecology map"
+ ~#laws: "path receipt on every prepare; soft name≠mask; inspect≠eval; subjective never keys"
+ ~#phase0_done: "08e2bc1c"
+ ~#phase1_done: "186451f2"
+ ~#phase2a_done: "b8a6949d lattice"
+ ~#phase2b_done: "pathReceipt + formatCiteSpw dual-read"
+ ~#priority: "path_receipt > dual-read cite > fixity/channel matrix > ChangeReport > soft tags never"
 }
 
 ^["done"]{

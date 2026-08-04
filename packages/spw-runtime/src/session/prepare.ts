@@ -1,8 +1,10 @@
 /**
  * Meta-syntax prepare — dialect stack resolve + preprocess before parse/run.
+ * Every prepare cut carries a path receipt (original vs prepared identity).
  *
  * @see packages/spw-seed/src/dialect
  * @see docs/theory/spw/brace-charge-crawl.spw
+ * @see packages/spw-runtime/src/session/path-receipt.ts
  */
 
 import {
@@ -13,6 +15,7 @@ import {
 } from '@spwashi/spw-seed'
 import type { StabilityChannel } from './channels'
 import { channelAllowsDialect, resolveChannelPolicy } from './channels'
+import { buildPathReceipt, type PathReceipt } from './path-receipt'
 
 export interface PrepareSourceOptions {
   path?: string
@@ -33,6 +36,40 @@ export interface PreparedSource {
   /** False when channel forbids the resolved dialect (still returns source). */
   dialectAllowed: boolean
   note?: string
+  /** Why this cut has its identity — dialect medium + hashes. */
+  pathReceipt: PathReceipt
+}
+
+function finalize(
+  original: string,
+  source: string,
+  stack: SurfaceProfileStack,
+  preprocessed: boolean,
+  channel: StabilityChannel,
+  dialectAllowed: boolean,
+  path?: string,
+  note?: string,
+): PreparedSource {
+  const pathReceipt = buildPathReceipt({
+    original,
+    prepared: source,
+    stack,
+    preprocessed,
+    channel,
+    dialectAllowed,
+    path,
+    note,
+  })
+  return {
+    source,
+    original,
+    stack,
+    preprocessed,
+    channel,
+    dialectAllowed,
+    note,
+    pathReceipt,
+  }
 }
 
 /**
@@ -48,14 +85,8 @@ export function prepareSource(
 
   if (!auto && !options.dialect && !options.path) {
     const stack = resolveSurfaceProfile(input, {})
-    return {
-      source: input,
-      original: input,
-      stack,
-      preprocessed: false,
-      channel,
-      dialectAllowed: channelAllowsDialect(resolveChannelPolicy(channel), stack.dialect),
-    }
+    const dialectAllowed = channelAllowsDialect(resolveChannelPolicy(channel), stack.dialect)
+    return finalize(input, input, stack, false, channel, dialectAllowed, options.path)
   }
 
   const stack = resolveSurfaceProfile(input, {
@@ -76,15 +107,18 @@ export function prepareSource(
     }
   }
 
-  return {
+  const note = dialectAllowed
+    ? undefined
+    : `channel ${channel} does not allow dialect ${stack.dialect}`
+
+  return finalize(
+    input,
     source,
-    original: input,
     stack,
     preprocessed,
     channel,
     dialectAllowed,
-    note: dialectAllowed
-      ? undefined
-      : `channel ${channel} does not allow dialect ${stack.dialect}`,
-  }
+    options.path,
+    note,
+  )
 }
