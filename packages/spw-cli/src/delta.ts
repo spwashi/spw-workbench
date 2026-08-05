@@ -67,7 +67,7 @@ function parseArgs(argv: string[]): DeltaArgs {
 export function printDeltaHelp(): void {
   printHelpPage({
     name: 'delta',
-    summary: 'Lex + brace ChangeReport for two surface revisions (collate-only)',
+    summary: 'Lex + nest-path ChangeReport for two surface revisions (collate-only)',
     usage: ['spw delta <before> <after> [--json]'],
     groups: [
       {
@@ -80,8 +80,9 @@ export function printDeltaHelp(): void {
       {
         title: 'Notes',
         lines: [
-          'layoutOnly = brace equal ∧ structuralOps=0 ∧ triviaOnly',
-          'Product type remains ChangeReport; this verb names the gap, not a write',
+          'layoutOnly = brace ∧ nest skeleton ∧ labels ∧ structuralOps=0 ∧ triviaOnly',
+          'Container labels (frame params, capsule channels, open/close) appear in nestLabeled*',
+          'Product type remains ChangeReport; verb names the gap, not a write',
           'Sense/collate only — never mutates the workspace',
         ],
       },
@@ -118,6 +119,14 @@ function toJsonEnvelope(report: ChangeReport, beforePath: string, afterPath: str
         braceEqual: report.ast.braceEqual,
         braceSeverity: report.ast.brace.severity,
         pathMatch: report.ast.pathMatch,
+        nestSkeletonEqual: report.ast.nest.skeletonEqual,
+        nestBefore: report.ast.nest.beforeSkeleton,
+        nestAfter: report.ast.nest.afterSkeleton,
+        nestLabeledBefore: report.ast.nest.beforeLabeled,
+        nestLabeledAfter: report.ast.nest.afterLabeled,
+        labelsEqual: report.ast.nest.labelsEqual,
+        labelsAdded: report.ast.nest.labelsAdded,
+        labelsRemoved: report.ast.nest.labelsRemoved,
         findings: report.ast.findings,
       },
     },
@@ -140,7 +149,9 @@ export async function runSpwDeltaCli(argv: string[]): Promise<void> {
   if (!parsed.quiet) {
     meta(
       `# spw delta  identity=${report.identity} layoutOnly=${report.layoutOnly}` +
-        ` lexOps=${report.lex.structuralOps} brace=${report.ast.brace.severity}`,
+        ` lexOps=${report.lex.structuralOps} brace=${report.ast.brace.severity}` +
+        ` nest=${report.ast.nest.skeletonEqual ? 'eq' : 'moved'}` +
+        ` labels=${report.ast.nest.labelsEqual ? 'eq' : 'moved'}`,
     )
   }
   console.log(formatChangeReportSpw(report))

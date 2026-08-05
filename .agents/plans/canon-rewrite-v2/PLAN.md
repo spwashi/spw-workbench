@@ -172,6 +172,33 @@ Each phase has **code track** + **corpus track**. Finish a phase when its accept
 
 **Acceptance:** two revisions of a file yield lex+ast narrative; pulse can print it; hubs not sole graph gods.
 
+**Status:** core landed (`a320db3a` — ChangeReport + `spw delta`). Pulse disclose of delta cards still open (do not grow `pulse.ts` god-file).
+
+---
+
+### Phase 4b — Container nest-path clusters
+
+**Intent (original, restore):** form families from **nest paths** over the paired-boundary alphabet, not brace-count histograms alone.
+
+**Alphabet (encode order):** `<>(){}[]`  
+(plus stream `<<>>` / n-range `(())` when present — same product family, secondary).
+
+**Focus:** **nest paths** — e.g. `{[]}` vs `[]{}` are different forms even when kind *counts* match.
+
+**Product (landed)**
+
+- `scanNestPaths` / `nestPathDelta` / `nestPathSpectrum` / `formatNestPathSpw`
+- Unlabeled `skeleton` + `clusterKey`; labeled skeleton + labels multiset
+- **Container labels on delta:** open/close labels, scope name, capsule channel/tag, simple frame param (`seed[Demo]`)
+- `ChangeReport` / `spw delta`: `pathMatch` = brace equal ∧ nest skeleton equal; `layoutOnly` also requires `labelsEqual` (label rename is not layout-only)
+
+**Doctrine note — couple vs capsule**
+
+- Operator coupling digraph `<>` and capsule shell **were not originally meant to diverge**.
+- Both share glyph `<>` in nest alphabet; kind retained for tooling. Lex reunify is a later semantics episode.
+
+**Acceptance:** `{[]}` ≠ `[]{}` cluster keys; label rename discloses `labelDelta` and clears layoutOnly; whitespace-only still layoutOnly when nest+labels hold.
+
 ---
 
 ### Phase 5 — LSP index quanta & proportional invalidation

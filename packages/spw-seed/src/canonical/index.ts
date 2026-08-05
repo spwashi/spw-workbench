@@ -209,6 +209,21 @@ export {
   type ChangeReport,
 } from './change-report'
 
+/** Nest-path form clusters — alphabet <>(){}[]; labels for delta. */
+export {
+  NEST_PATH_VERSION,
+  NEST_PATH_ALPHABET,
+  scanNestPaths,
+  nestPathDelta,
+  nestPathSpectrum,
+  formatNestPathSpw,
+  type NestPathKind,
+  type NestPathGlyph,
+  type NestPathNode,
+  type NestPathLattice,
+  type NestPathDelta,
+} from './nest-path'
+
 export {
   inspectGeometry,
   formatGeometryReport,

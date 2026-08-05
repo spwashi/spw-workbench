@@ -212,7 +212,7 @@ export const COMMANDS: CommandSpec[] = [
   {
     name: 'delta',
     group: 'sense',
-    summary: 'Lex + brace ChangeReport for two surface revisions (collate-only)',
+    summary: 'Lex + nest-path ChangeReport for two surface revisions (collate-only)',
     printHelp: () => printDeltaHelp(),
     run: (_invoked, args) => runSpwDeltaCli(['delta', ...args]),
   },

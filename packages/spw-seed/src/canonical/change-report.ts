@@ -1,15 +1,17 @@
 /**
  * ChangeReport — lex + brace/AST narrative for two source revisions.
  *
- * Path-match v1: token LCS on non-trivia sequences + brace projection delta.
- * Full tree-edit-distance AST diff is deferred; brace equal is the structural
- * gate for layout-only claims.
+ * Path-match: token LCS + brace projection + nest-path skeleton (phase 4b).
+ * Container labels ride on nest paths for delta; label renames are not layout-only.
+ * Full TED AST diff remains deferred.
  *
  * Layout-only law (measured):
- *   brace.equal ∧ structuralOps === 0 ∧ lex.triviaOnly
+ *   brace.equal ∧ nest.skeletonEqual ∧ nest.labelsEqual
+ *   ∧ structuralOps === 0 ∧ lex.triviaOnly
  *
  * @see packages/spw-seed/src/canonical/differential.ts
  * @see packages/spw-seed/src/canonical/brace-projection.ts
+ * @see packages/spw-seed/src/canonical/nest-path.ts
  * @see docs/theory/spw/operational-field.spw
  */
 
@@ -22,6 +24,12 @@ import {
   type BraceProjectionDelta,
 } from './brace-projection'
 import { differentialFromSources } from './differential'
+import {
+  scanNestPaths,
+  nestPathDelta,
+  type NestPathDelta,
+  type NestPathLattice,
+} from './nest-path'
 
 export const CHANGE_REPORT_VERSION = 'spw.change_report/1' as const
 
@@ -65,10 +73,18 @@ export interface LexChangeReport {
 }
 
 export interface AstChangeReport {
-  /** Brace projection equality — structure gate for layout-only. */
+  /** Brace projection equality — count/signature gate. */
   braceEqual: boolean
   brace: BraceProjectionDelta
-  /** Parse-free path-match v1: same brace signature is the AST path claim. */
+  /** Nest-path forests for both revisions. */
+  nestBefore: NestPathLattice
+  nestAfter: NestPathLattice
+  /** Nest skeleton + label delta (container labels where present). */
+  nest: NestPathDelta
+  /**
+   * Structural path-match: brace equal ∧ nest skeleton equal.
+   * Label renames keep pathMatch true but clear layoutOnly.
+   */
   pathMatch: boolean
   findings: string[]
 }
@@ -80,7 +96,10 @@ export interface ChangeReport {
   identity: boolean
   lex: LexChangeReport
   ast: AstChangeReport
-  /** brace equal ∧ structuralOps === 0 ∧ triviaOnly */
+  /**
+   * brace equal ∧ nest skeleton equal ∧ nest labels equal
+   * ∧ structuralOps === 0 ∧ triviaOnly
+   */
   layoutOnly: boolean
   /** Line-oriented edit count from differential (not identity of layoutOnly). */
   editSpans: number
@@ -211,23 +230,31 @@ export function compareLex(before: string, after: string): LexChangeReport {
 }
 
 /**
- * Path-match AST compare v1 — brace projection is the structural path product.
- * Does not invent full TED; callers that need richer topology use topographyProbe.
+ * AST/form compare — brace counts + nest-path skeleton (with container labels).
+ * Does not invent full TED; topographyProbe remains for richer topology.
  */
 export function compareAst(before: string, after: string): AstChangeReport {
   const bProj = extractBraceProjection(before)
   const aProj = extractBraceProjection(after)
   const brace = braceProjectionDelta(bProj, aProj)
-  const findings = [...brace.findings]
+  const nestBefore = scanNestPaths(before)
+  const nestAfter = scanNestPaths(after)
+  const nest = nestPathDelta(nestBefore, nestAfter)
+  const findings = [...brace.findings, ...nest.findings]
   if (brace.equal) {
     findings.push('brace path-match equal')
   } else {
     findings.push(`brace severity: ${brace.severity}`)
   }
+  const pathMatch = brace.equal && nest.skeletonEqual
+  if (pathMatch) findings.push('nest skeleton path-match')
   return {
     braceEqual: brace.equal,
     brace,
-    pathMatch: brace.equal,
+    nestBefore,
+    nestAfter,
+    nest,
+    pathMatch,
     findings,
   }
 }
@@ -253,6 +280,8 @@ export function buildChangeReport(
   const layoutOnly =
     !identity &&
     astReport.braceEqual &&
+    astReport.nest.skeletonEqual &&
+    astReport.nest.labelsEqual &&
     lexReport.structuralOps === 0 &&
     lexReport.triviaOnly
 
@@ -261,6 +290,8 @@ export function buildChangeReport(
     identity ? 'identity' : layoutOnly ? 'layout-only' : 'structural-or-surface',
     `lexOps=${lexReport.structuralOps}`,
     `brace=${astReport.braceEqual ? 'eq' : astReport.brace.severity}`,
+    `nest=${astReport.nest.skeletonEqual ? 'eq' : 'moved'}`,
+    `labels=${astReport.nest.labelsEqual ? 'eq' : 'moved'}`,
   ].filter(Boolean)
 
   return {
@@ -278,6 +309,11 @@ export function buildChangeReport(
 
 /** Spw dual-read card for agents / pulse disclosure. */
 export function formatChangeReportSpw(report: ChangeReport): string {
+  const nest = report.ast.nest
+  const labelBits = [
+    ...nest.labelsRemoved.map(l => `-${l}`),
+    ...nest.labelsAdded.map(l => `+${l}`),
+  ]
   const lines = [
     `^["delta"]{`,
     `  ~#version: ${report.version}`,
@@ -294,6 +330,13 @@ export function formatChangeReportSpw(report: ChangeReport): string {
     `  ~#braceEqual: ${report.ast.braceEqual ? '#yes' : '#no'}`,
     `  ~#braceSeverity: ${report.ast.brace.severity}`,
     `  ~#pathMatch: ${report.ast.pathMatch ? '#yes' : '#no'}`,
+    `  ~#nestSkeletonEqual: ${nest.skeletonEqual ? '#yes' : '#no'}`,
+    `  ~#nestBefore: "${nest.beforeSkeleton.replace(/"/g, '\\"')}"`,
+    `  ~#nestAfter: "${nest.afterSkeleton.replace(/"/g, '\\"')}"`,
+    `  ~#nestLabeledBefore: "${nest.beforeLabeled.replace(/"/g, '\\"')}"`,
+    `  ~#nestLabeledAfter: "${nest.afterLabeled.replace(/"/g, '\\"')}"`,
+    `  ~#labelsEqual: ${nest.labelsEqual ? '#yes' : '#no'}`,
+    `  ~#labelDelta: #[ ${labelBits.map(x => `"${x.replace(/"/g, '\\"')}"`).join(' ; ')} ]`,
     `  ~#note: "${report.note.replace(/"/g, '\\"')}"`,
     `}`,
   ]
