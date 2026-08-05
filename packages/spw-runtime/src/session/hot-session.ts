@@ -9,185 +9,72 @@
  *   evaluate cache — interpret products
  *   inspect cache  — form/resonance/bytecode cards (dialect.inspectMemory)
  *
+ * Split: types → hot-session-types; opt → hot-session-opt; format → hot-session-format.
+ *
  * @see packages/spw-runtime/src/session/dialect-policy.ts
  * @see docs/theory/spw/brace-charge-crawl.spw
  */
 
-import { createHash } from 'node:crypto'
 import {
   parse,
-  type DialectId,
   detectGeometricResonances,
   scanFlowProtocol,
   buildSurfaceInterconnect,
   interconnectSummary,
   makeLens,
-  openOptChannel,
   irRef,
   irRefKey,
   resolveGranularity,
   grainWantsResonance,
   grainWantsEval,
   grainWantsInterconnect,
-  formatGranularityAsSpw,
-  formatResonanceAsSpw,
   resolveWeightScheme,
   type InterconnectGraph,
   type GeometricResonanceReport,
-  type GeometryBytecode,
   type IrRef,
   type Granularity,
   type ResolveGranularityInput,
 } from '@spwashi/spw-seed'
 import { RegisterBank } from '../state/register-bank'
-import { BeatCache, cacheKey, type CacheTier } from '../state/memory-cache'
+import { BeatCache, cacheKey } from '../state/memory-cache'
 import { Substrate } from '../pipeline/substrate'
 import { runSpw } from '../pipeline/run-spw'
-import type { RunSpwOptions, RunSpwResult } from '../pipeline/types'
+import type { RunSpwOptions } from '../pipeline/types'
 import type { StabilityChannel } from './channels'
 import { resolveChannelPolicy, channelCacheParts } from './channels'
 import type { ConsumerContext } from './consumer'
-import { prepareSource, type PreparedSource } from './prepare'
+import { prepareSource } from './prepare'
 import {
   scanBracePhrases,
   countPhrasesById,
   countFixity,
   phraseKeysForHits,
-  type PhraseHit,
-  type FixityKind,
 } from './phrases'
-import {
-  resolveRuntimeMedium,
-  type RuntimeMedium,
-} from './medium-matrix'
+import { resolveRuntimeMedium } from './medium-matrix'
 import { measureProbesAndSubstrate } from './probe-measure'
 import {
   resolveDialectPolicy,
   resolveProductCacheTier,
   type DialectRuntimePolicy,
-  type OptHandleId,
 } from './dialect-policy'
+import {
+  type HotSessionOptions,
+  type HotEvalOptions,
+  type HotCiteHandle,
+  type HotEvalRecord,
+  type HotInspectRecord,
+  productHash,
+} from './hot-session-types'
+import { optChannelsFor } from './hot-session-opt'
+import { formatCiteSpw as formatCiteSpwCard, formatInspectSpw } from './hot-session-format'
 
-export interface HotSessionOptions {
-  channel?: StabilityChannel | string
-  consumer?: ConsumerContext
-  cacheMaxEntries?: number
-  defaultTier?: CacheTier
-  /** Session id for substrate naming. */
-  id?: string
-}
-
-export interface HotEvalOptions {
-  path?: string
-  dialect?: DialectId | string
-  autoDialect?: boolean
-  desugar?: boolean
-  captureTrace?: boolean
-  /** Force recompute even on cache hit. */
-  recompute?: boolean
-  /** Cache tier for this entry. */
-  tier?: CacheTier
-  /** Override resonance scheme (else dialect policy / grain). */
-  resonanceScheme?: string
-  /** Granularity overrides (depth/plane/follow/disclose). */
-  grain?: Partial<ResolveGranularityInput>
-}
-
-/** In-memory handle for bytecode / surface cites (point arm). */
-export interface HotCiteHandle {
-  ref: IrRef
-  /** Spw dual-read pointer form. */
-  pointer: string
-  grain: Granularity
-  source: string
-  path?: string
-  inspect?: HotInspectRecord
-  evaluate?: HotEvalRecord
-}
-
-export interface HotEvalRecord {
-  /** Hash of prepared source bytes (post-dialect cut). */
-  contentHash: string
-  prepared: PreparedSource
-  result: RunSpwResult
-  phrases: PhraseHit[]
-  phraseCounts: Record<string, number>
-  cacheHit: boolean
-  atBeat: number
-  dialectPolicy?: string
-}
-
-export interface HotInspectRecord {
-  /** Hash of prepared source bytes (post-dialect cut). */
-  contentHash: string
-  prepared: PreparedSource
-  parse: ReturnType<typeof parse>
-  phrases: PhraseHit[]
-  phraseCounts: Record<string, number>
-  /** Act placement histogram — potentiation dual-read. */
-  fixityCounts: Record<FixityKind, number>
-  /** phrase×fixity opt keys for combinator caches. */
-  phraseKeys: string[]
-  /** Resolved channel×dialect medium (agency wall + form medium). */
-  medium: RuntimeMedium
-  experimentalRefs: string[]
-  flow: ReturnType<typeof scanFlowProtocol>
-  geometric: GeometricResonanceReport
-  probeMeasure: ReturnType<typeof measureProbesAndSubstrate>
-  channel: StabilityChannel
-  cache: ReturnType<BeatCache<unknown>['stats']>
-  dialectPolicy: DialectRuntimePolicy
-  bytecode: GeometryBytecode
-  cacheHit: boolean
-  atBeat: number
-}
-
-function hashContent(source: string): string {
-  return createHash('sha256').update(source).digest('hex').slice(0, 16)
-}
-
-/** Prefer path receipt preparedHash when present (same algorithm as prepare). */
-function productHash(prepared: PreparedSource): string {
-  return prepared.pathReceipt?.preparedHash ?? hashContent(prepared.source)
-}
-
-function optChannelsFor(handles: readonly OptHandleId[]) {
-  const all: Record<string, ReturnType<typeof openOptChannel>> = {
-    parse_reuse: openOptChannel('parse_reuse', ['parse', 'lex', 'preprocess'], {
-      via: ['produces', 'consumes'],
-    }),
-    phrase_opt: openOptChannel('phrase_opt', ['phrase', 'form', 'flow'], {
-      scheme: 'thrift',
-      via: ['optimizes', 'projects'],
-    }),
-    path_memo: openOptChannel('path_memo', ['graph', 'selection'], {
-      via: ['traverses', 'cites'],
-      budget: { nodes: 4096 },
-    }),
-    label_opt: openOptChannel('label_opt', ['phrase', 'form', 'identity'], {
-      scheme: 'default',
-      via: ['optimizes', 'cites'],
-      cacheFragment: 'label',
-    }),
-    bias_rank: openOptChannel('bias_rank', ['bias', 'flow', 'attention'], {
-      via: ['optimizes', 'resonates'],
-      cacheFragment: 'bias',
-    }),
-    schedule_opt: openOptChannel('schedule_opt', ['flow', 'stream'], {
-      via: ['resonates', 'projects'],
-      cacheFragment: 'schedule',
-    }),
-    probe_opt: openOptChannel('probe_opt', ['probe', 'measure', 'resonance'], {
-      scheme: 'thrift',
-      via: ['resonates', 'optimizes'],
-      cacheFragment: 'probe',
-    }),
-    precipitate_cite: openOptChannel('precipitate_cite', ['precipitate', 'onf', 'parse'], {
-      via: ['precipitates', 'projects'],
-    }),
-  }
-  return handles.map(h => all[h]).filter((c): c is NonNullable<typeof c> => !!c)
-}
+export type {
+  HotSessionOptions,
+  HotEvalOptions,
+  HotCiteHandle,
+  HotEvalRecord,
+  HotInspectRecord,
+} from './hot-session-types'
 
 /**
  * Persistent interpret session: shared bank/substrate, beat-tiered caches.
@@ -222,7 +109,10 @@ export class HotRuntimeSession {
   }
 
   /** Resolve grain from dialect/channel/consumer + overrides. */
-  grainFor(preparedDialect: string, override?: Partial<ResolveGranularityInput>): Granularity {
+  grainFor(
+    preparedDialect: string,
+    override?: Partial<ResolveGranularityInput>,
+  ): Granularity {
     return resolveGranularity({
       dialect: preparedDialect,
       channel: this.channel,
@@ -249,8 +139,6 @@ export class HotRuntimeSession {
   cacheStats() {
     const evaluate = this.cache.stats()
     const inspect = this.inspectCache.stats()
-    // Top-level fields stay evaluate-plane for sense-cycle / callers;
-    // nested planes disclose both memories.
     return {
       ...evaluate,
       evaluate,
@@ -271,7 +159,6 @@ export class HotRuntimeSession {
     })
 
     const policy = resolveDialectPolicy(prepared.stack.dialect)
-    // Product identity uses prepared cut × dialect × channel (path receipt proves why).
     const contentHash = productHash(prepared)
     const key = cacheKey(
       channelCacheParts({
@@ -324,7 +211,6 @@ export class HotRuntimeSession {
   /**
    * Parse-only surface card: flow, geometric resonance (scheme from grain/dialect),
    * bytecode, probes. Optionally cached in inspect plane.
-   * Resonance volume is a product of language physics (volatility × scheme limit).
    */
   inspect(source: string, options: HotEvalOptions = {}): HotInspectRecord {
     const prepared = prepareSource(source, {
@@ -352,7 +238,6 @@ export class HotRuntimeSession {
     if (!options.recompute && policy.inspectMemory) {
       const hit = this.inspectCache.get(key)
       if (hit) {
-        // Soft volatility pressure on hits
         if (grain.volatility > 0.5) this.tick(0, grain.volatility * 0.25)
         return {
           ...hit,
@@ -388,7 +273,6 @@ export class HotRuntimeSession {
         },
       })
     } else {
-      // Skim/bytecode-only: still compile bytecode via detect with limit 0 edges
       geometric = detectGeometricResonances(prepared.original, {
         uri: options.path,
         scheme: { ...resolveWeightScheme(scheme), limit: 0, floor: 1 },
@@ -424,15 +308,13 @@ export class HotRuntimeSession {
       this.inspectCache.set(key, record, tier)
     }
 
-    // Volatility demotes stale working set after materialize
     if (grain.volatility > 0.4) this.tick(0, grain.volatility * 0.5)
 
     return record
   }
 
   /**
-   * Build interconnect graph for a surface using dialect opt handles
-   * (labels, bias, schedule, probe as optimization levers).
+   * Build interconnect graph for a surface using dialect opt handles.
    */
   interconnect(source: string, options: HotEvalOptions = {}): {
     graph: InterconnectGraph
@@ -481,7 +363,9 @@ export class HotRuntimeSession {
         })),
       },
       biasAxes: card.flow.biasAxes,
-      labels: Object.keys(card.phraseCounts).filter(k => k.includes('label') || k.startsWith('phrase.')),
+      labels: Object.keys(card.phraseCounts).filter(
+        k => k.includes('label') || k.startsWith('phrase.'),
+      ),
       lenses: {
         primary: makeLens('session', this.id),
         optChannels: opts,
@@ -496,90 +380,18 @@ export class HotRuntimeSession {
     }
   }
 
-  /**
-   * Spw-native inspect surface (not JSON) — dual-read card for agents/humans.
-   */
+  /** Spw-native inspect surface (not JSON). */
   inspectAsSpw(source: string, options: HotEvalOptions = {}): string {
     const cite = this.cite(source, options)
-    const card = cite.inspect!
-    const p = card.dialectPolicy
-    const grain = cite.grain
-    const receipt = card.prepared.pathReceipt
-    const lines = [
-      `// hot-inspect  channel=${this.channel}  beat=${card.atBeat}`,
-      `@dialect:${card.prepared.stack.dialect}`,
-      `^seed[Hot.Inspect v:0.1 @profile:${card.prepared.stack.dialect} @intent:inspect]`,
-      formatGranularityAsSpw(grain),
-      `^["policy"]{`,
-      `  subject: "${p.subject.replace(/"/g, '\\"')}"`,
-      `  cacheTier: ${p.cacheTier}`,
-      `  resonanceScheme: ${grain.resonanceScheme}`,
-      `  opt: #[ ${p.optHandles.join(' ; ')} ]`,
-      `  literacy: "${p.literacy.replace(/"/g, '\\"')}"`,
-      `}`,
-      `^["path_receipt"]{`,
-      `  ~#originalHash: ${receipt.originalHash}`,
-      `  ~#preparedHash: ${receipt.preparedHash}`,
-      `  ~#preprocessed: ${receipt.preprocessed}`,
-      `  ~#dialectSource: ${receipt.dialectSource}`,
-      `  ~#schema: ${receipt.schema}`,
-      `}`,
-      `^["fixity"]{`,
-      `  ~#prefix: ${card.fixityCounts.prefix}`,
-      `  ~#postfix: ${card.fixityCounts.postfix}`,
-      `  ~#infix: ${card.fixityCounts.infix}`,
-      `  ~#none: ${card.fixityCounts.none}`,
-      `}`,
-      `^["medium"]{`,
-      `  ~#channel: ${card.medium.channel}`,
-      `  ~#dialect: ${card.medium.dialect}`,
-      `  ~#ceiling: ${card.medium.effectCeiling}`,
-      `  ~#follow: ${card.medium.maxFollowDefault}`,
-      `  ~#plane: ${card.medium.defaultPlane}`,
-      `  ~#collateOnly: ${card.medium.collateOnly ? '#yes' : '#no'}`,
-      `}`,
-      `^["card"]{`,
-      `  path: ${options.path ? `~"${options.path}"` : '_'}`,
-      `  ~#mask: ${card.bytecode.contentHash}`,
-      `  ~#preparedHash: ${card.contentHash}`,
-      `  ~#plane: ${grain.plane}`,
-      `  ~#grain: ${grain.depth}`,
-      `  pointer: ${cite.pointer}`,
-      `  parseOk: ${card.parse.success ? '#yes' : '#no'}`,
-      `  inspectHit: ${card.cacheHit ? '#yes' : '#no'}`,
-      `}`,
-      formatResonanceAsSpw(card.geometric, options.path),
-    ]
-    return lines.join('\n')
+    return formatInspectSpw(cite.inspect!, cite.grain, cite.pointer, {
+      path: options.path,
+      channel: this.channel,
+    })
   }
 
-  /**
-   * Dual-read cite card — uri + mask + grain; pointer is mask facet for follow interop.
-   * Soft tags are not first-class; use @bind or ~# cells for human names.
-   */
+  /** Dual-read cite card — uri + mask + grain. */
   formatCiteSpw(handle: HotCiteHandle): string {
-    const r = handle.inspect?.prepared.pathReceipt
-    const mask = handle.ref.contentHash ?? handle.pointer.replace(/^@bc:/, '')
-    return [
-      `// cite  dual-read point arm`,
-      `^["cite"]{`,
-      `  ~#uri: ${handle.path ? `~"${handle.path}"` : '_'}`,
-      `  ~#mask: ${mask}`,
-      `  ~#plane: ${handle.grain.plane}`,
-      `  ~#grain: ${handle.grain.depth}`,
-      `  ~#follow: ${handle.grain.follow}`,
-      `  ~#channel: ${handle.ref.channel ?? this.channel}`,
-      `  ~#dialect: ${handle.ref.dialect ?? '_'}`,
-      `  ~#schema: ${handle.ref.schema ?? 'spw.geometry.bc/1'}`,
-      r
-        ? `  ~#preparedHash: ${r.preparedHash}`
-        : `  ~#preparedHash: ${handle.inspect?.contentHash ?? '_'}`,
-      r ? `  ~#preprocessed: ${r.preprocessed}` : null,
-      `  ~#pointer: ${handle.pointer}`,
-      `}`,
-    ]
-      .filter(Boolean)
-      .join('\n')
+    return formatCiteSpwCard(handle, this.channel)
   }
 
   /**
@@ -600,7 +412,9 @@ export class HotRuntimeSession {
       producer: this.id,
       bornBeat: this.currentBeat(),
       schema: 'spw.geometry.bc/1',
-      lens: makeLens('session', this.id, { labels: grain.plane === 'resonance' ? ['resonance'] : ['bytecode'] }),
+      lens: makeLens('session', this.id, {
+        labels: grain.plane === 'resonance' ? ['resonance'] : ['bytecode'],
+      }),
     })
     const key = irRefKey(ref)
     const pointer = `@bc:${inspect.bytecode.contentHash}`
@@ -628,15 +442,9 @@ export class HotRuntimeSession {
   ): HotCiteHandle | null {
     const key =
       typeof pointerOrRef === 'string'
-        ? pointerOrRef.startsWith('@bc:')
-          ? pointerOrRef
-          : pointerOrRef
+        ? pointerOrRef
         : irRefKey(pointerOrRef)
     let handle = this.handles.get(key) ?? this.handles.get(key.replace(/^@bc:/, ''))
-    if (!handle && options.path) {
-      // Re-cite if source provided via recompute path only
-      return null
-    }
     if (!handle) return null
 
     const grain = options.grain
@@ -644,7 +452,6 @@ export class HotRuntimeSession {
       : handle.grain
 
     if (grainWantsInterconnect(grain) || grain.follow !== 'point') {
-      // Refresh inspect under current grain
       handle = {
         ...handle,
         inspect: this.inspect(handle.source, {
@@ -695,10 +502,12 @@ export class HotRuntimeSession {
       depth: 'card',
       ...options.grain,
     })
+    const ptr =
+      typeof pointerOrRef === 'string' ? pointerOrRef : irRefKey(pointerOrRef)
     if (grain.follow !== 'hard') {
       return {
         ok: false,
-        pointer: typeof pointerOrRef === 'string' ? pointerOrRef : irRefKey(pointerOrRef),
+        pointer: ptr,
         note: 'collapse requires follow=hard (Spw.x / live channel)',
       }
     }
@@ -706,7 +515,7 @@ export class HotRuntimeSession {
     if (policy.effectCeiling === 'none') {
       return {
         ok: false,
-        pointer: typeof pointerOrRef === 'string' ? pointerOrRef : irRefKey(pointerOrRef),
+        pointer: ptr,
         note: 'channel effectCeiling=none forbids collapse',
       }
     }
@@ -717,7 +526,7 @@ export class HotRuntimeSession {
     if (!handle?.evaluate) {
       return {
         ok: false,
-        pointer: typeof pointerOrRef === 'string' ? pointerOrRef : irRefKey(pointerOrRef),
+        pointer: ptr,
         note: 'no handle — cite first, then collapse',
       }
     }

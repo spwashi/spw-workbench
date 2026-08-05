@@ -97,6 +97,8 @@ export {
   HotRuntimeSession,
   createHotSession,
 } from './hot-session'
+export { formatInspectSpw, formatCiteSpw as formatHotCiteSpw } from './hot-session-format'
+export { productHash, hashContent } from './hot-session-types'
 
 export {
   type DialectSubjectId,
