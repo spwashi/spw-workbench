@@ -13,7 +13,8 @@
 # phase 2b    9fa0da13 path receipts; dual-read cite cards
 # phase 3     3507a2f6 RuntimeMedium matrix; fixity/phraseKeys on inspect
 # phase 4     a320db3a ChangeReport + spw delta
-# phase 4b    nest-path clusters + labels on delta (this discharge)
+# phase 4b    a221c0b6 nest-path clusters + labels on delta
+# phase 4c    Patch selection→store→apply (this discharge)
 #
 # ── PRIORITY REORIENT (post design thread) ───────────────────
 # DEFER   soft @bc:tag — prefer @bind, ~#cell, #> landmark, mask facet on cards
@@ -91,14 +92,15 @@
  // Design thread: pins/masks, #>(…), grain/plane, channel redesign, tacit ellipsis,
  // ref/deref combinatorics, dialect intermediates, @bc hesitation.
  now: #[
-  "phase 4 discharged — ChangeReport + spw delta",
-  "phase 4b parked — nest-path clusters (see PLAN + ^[\"phase_4b_nest_paths\"])",
+  "Patch: AstSelection → differential+narrative → memory|ir|file",
+  "apply: file | files | node span/selector",
+  "spw delta --patch collate card (discharged a87de2ff)",
  ]
  next: #[
-  "4b: scanNestPaths + cluster key (focus nest paths, alphabet <>(){}[])",
+  "optional: durable ∆ file pack; LSP selection→Patch",
+  "channel-gated apply CLI (not sense group)",
   "pulse disclose delta cards (without growing pulse.ts god-file)",
-  "corpus pass A light (particle #> on high-traffic .spw only)",
-  "deeper fixity stamps at parse/seed boundary",
+  "corpus pass A light",
  ]
  defer: #[
   "soft @bc:tag index",
@@ -826,6 +828,18 @@
    "spw delta dual-read nest* + labelDelta",
   ]
  }
+ ~[4c]: .{
+  name: "patch_pipeline"
+  status: ready_to_discharge
+  after: "4b"
+  acceptance: "selection→Patch→apply file|files|nodes; hash gate; memory bank"
+  implements: #[
+   "seed/canonical/patch.ts",
+   "IrKind patch + schema spw.patch/1",
+   "PatchMemoryBank; applyPatch*; formatPatchSpw",
+   "spw delta --patch",
+  ]
+ }
  ~[5]: .{ name: "lsp_granules", status: pending, note: "uses lattice masks as unit-cell keys" }
  ~[6]: .{ name: "patterns_fuzzy", status: pending, note: "handles without @bc:tag" }
  ~[7]: .{ name: "ship", status: pending, measure: %phase_gate }
@@ -974,7 +988,8 @@
  >>[2026-08-04] phase3 — RuntimeMedium channel×dialect matrix; countFixity/phraseKeysForHits; inspect stamps medium+fixity; productCacheTier compose; tests 14/14 medium+hot. Discharge 3507a2f6.
  >>[2026-08-04] phase4 — ChangeReport seed (compareLex LCS, compareAst brace path-match, layoutOnly law); CLI named spw delta (not change/diff); dual-read ^["delta"] card; tests 8/8 + smoke. Discharge a320db3a.
  >>[2026-08-05] park 4b — container nest-path clusters (alphabet <>(){}[]); focus nest paths not open-order/phrases; couple <> and capsule shell were not originally meant to diverge (impl split ≠ doctrine); lex reunify out of 4b.
- >>[2026-08-05] phase4b — scanNestPaths; nest skeleton vs labeled; container labels on delta (frame param, capsule channel); layoutOnly requires labelsEqual; pathMatch = brace ∧ nest skeleton; tests 16/16.
+ >>[2026-08-05] phase4b — scanNestPaths; nest skeleton vs labeled; container labels on delta (frame param, capsule channel); layoutOnly requires labelsEqual; pathMatch = brace ∧ nest skeleton; tests 16/16. Discharge a221c0b6.
+ >>[2026-08-05] phase4c — Patch pipeline: AstSelection, buildPatch, PatchMemoryBank, apply file|files|span/nodes; IrKind patch; spw delta --patch; tests 26/26 with nest+change.
 }
 
 ^["phase_4b_nest_paths"]{
@@ -999,14 +1014,14 @@
 }
 
 ^["cache"]{
- ~#status: "phase4b_ready_to_discharge"
+ ~#status: "phase4c_ready_to_discharge"
  ~#base_ref: "upstream/main@d9da60ad0bbfd90ebaa5742709f162b61f041bae"
  ~#capability_ref: "backup/pre-rewrite-v2-tip@8bb423c7"
  ~#branch: "feature/canon-rewrite-v2"
  ~#commits: "08e2bc1c 186451f2 b8a6949d 9fa0da13 3507a2f6 a320db3a"
  ~#stash: "wip/cite-tag-session — dual-read already re-landed in 2b"
- ~#next_phase: "discharge 4b | pulse disclose | corpus A"
- ~#next_action: "commit nest-path + labeled delta; pulse disclose later"
+ ~#next_phase: "discharge 4c | pulse disclose | corpus A | LSP selection"
+ ~#next_action: "commit Patch pipeline; apply CLI later under effect group"
  ~#mode_default: "live for sense; tree for exact; template for pulse/pattern"
  ~#measure_form: "%name{interprets,considers,surfaces,run}"
  ~#stance_form: "<sigil>_<objective|subjective>"
@@ -1019,8 +1034,9 @@
  ~#phase2b_done: "9fa0da13 pathReceipt + formatCiteSpw dual-read"
  ~#phase3_done: "3507a2f6 medium-matrix + fixity/phraseKeys on inspect"
  ~#phase4_done: "a320db3a ChangeReport + spw delta"
- ~#phase4b: "nest_path_clusters + labels on delta (pending commit)"
- ~#priority: "discharge 4b > pulse disclose | corpus A > granules > soft tags never"
+ ~#phase4b: "a221c0b6 nest_path_clusters + labels on delta"
+ ~#phase4c: "Patch selection→store→apply (pending commit)"
+ ~#priority: "discharge 4c > pulse disclose | corpus A > granules > soft tags never"
 }
 
 ^["done"]{

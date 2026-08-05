@@ -22,6 +22,8 @@ export const IR_KINDS = [
   'resonance',
   'selection',
   'plan',
+  /** Patch product — selection + differential + narrative (apply under ceiling). */
+  'patch',
   'stream',
   'precipitate',
   'cache',

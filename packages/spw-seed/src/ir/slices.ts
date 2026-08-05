@@ -7,7 +7,7 @@ import type { IrRef } from './ref'
 import type { FlowProtocolModule } from '../canonical/flow-protocol'
 import type { GeometricResonanceReport } from '../canonical/geometric-resonance'
 
-/** Glob/list/stdin selection of surfaces. */
+/** Glob/list/stdin selection of surfaces (and optional AST node pin). */
 export interface SelectionIR {
   uris: string[]
   contentHashes?: Record<string, string>
@@ -15,6 +15,10 @@ export interface SelectionIR {
   stdin?: boolean
   /** Optional selector id or AST dump ref. */
   selector?: string
+  /** Byte span when selection is range-addressed (pairs with Patch). */
+  span?: { start: number; end: number }
+  /** Nest-path skeleton pin from scanNestPaths. */
+  nestSkeleton?: string
 }
 
 /** Multi-axis stack (dialect × review × format × …). */

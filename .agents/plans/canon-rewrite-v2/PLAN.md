@@ -201,6 +201,47 @@ Each phase has **code track** + **corpus track**. Finish a phase when its accept
 
 ---
 
+### Phase 4c — Patch pipeline (selection → store → apply)
+
+**Intent:** one product spine for agent/CLI/LSP rewrite loops.
+
+**Vocabulary:** **delta** = sense narrative (`ChangeReport`, `spw delta`); **patch** = frozen apply product (`Patch`, IrKind `patch`).
+
+```
+AstSelection  →  Delta narrative + SourceDifferential  →  Patch (IrRef)
+                      ↓                                      ↓
+              collate (sense)                      store: memory | ir | file
+                      ↓                                      ↓
+         apply target: file | files | nodes       (discharge under channel ceiling)
+```
+
+**Code (landed spine)**
+
+- `AstSelection` — uri, span, selector (SpwPattern | citation string), nest skeleton/labels
+- `Patch` — selection + `SourceDifferential` + optional `ChangeReport` + narrative + `effectCeiling` + `applyTarget` + `store`
+- IrKind `patch`; schema `spw.patch/1`; product key via `irRefKey` (store/retention out)
+- `buildPatch` / `buildPatchFromEdits`
+- `applyPatch` (file or span/selector-scoped nodes); `applyPatchToFiles`
+- `PatchMemoryBank` — session memory by irRefKey
+- CLI: `spw delta --patch` (alias `--cache`) emits `^["patch"]` card (collate only; no write)
+
+**Compose with existing**
+
+- Semantic plans → `buildPatchFromEdits` after `planSemanticEdits`
+- Range plans → same
+- Nest path + labels already inside ChangeReport narrative
+
+**Not yet (later)**
+
+- Durable IR file pack format on disk beyond memory bank
+- Multi-file patch rebased per uri (today: hash-matched apply per file)
+- LSP selection → Patch round-trip
+- Channel-gated apply CLI (effect group; not sense)
+
+**Acceptance:** build → memory bank → apply round-trip with hash gate; span selection filters edits; stale beforeHash refuses; `spw delta --patch` prints dual-read card.
+
+---
+
 ### Phase 5 — LSP index quanta & proportional invalidation
 
 **Code**

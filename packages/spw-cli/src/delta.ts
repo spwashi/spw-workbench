@@ -1,21 +1,20 @@
 /**
- * spw delta — two-revision ChangeReport (lex LCS + brace path-match).
+ * spw delta — two-revision ChangeReport (lex LCS + nest path-match).
  *
  * Collate-only sense verb: never writes. Names the *product gap* between two
- * cuts, not a VCS diff and not a workspace rewrite.
- *
- * Layout-only claim (measured):
- *   brace equal ∧ structuralOps === 0 ∧ triviaOnly
+ * cuts. Freeze a apply-ready **Patch** with `--patch` (alias `--cache`).
  *
  * Usage:
  *   spw delta <before.spw> <after.spw>
- *   spw delta --json before.spw after.spw
+ *   spw delta --patch before.spw after.spw
  */
 
 import { readFileSync } from 'node:fs'
 import process from 'node:process'
 import {
+  buildPatch,
   buildChangeReport,
+  formatPatchSpw,
   formatChangeReportSpw,
   type ChangeReport,
 } from '@spwashi/spw-seed'
@@ -27,12 +26,15 @@ interface DeltaArgs {
   afterPath: string
   json: boolean
   quiet: boolean
+  /** Emit Patch product card (selection + edits + store=memory). */
+  patch: boolean
 }
 
 function parseArgs(argv: string[]): DeltaArgs {
   const args = argv[0] === 'delta' ? argv.slice(1) : argv
   let json = false
   let quiet = false
+  let patch = false
   const paths: string[] = []
   for (let i = 0; i < args.length; i++) {
     const a = args[i]!
@@ -42,6 +44,11 @@ function parseArgs(argv: string[]): DeltaArgs {
     }
     if (a === '--quiet' || a === '-q') {
       quiet = true
+      continue
+    }
+    // --patch preferred; --cache retained as synonym for freeze-to-product
+    if (a === '--patch' || a === '--cache' || a === '--cached') {
+      patch = true
       continue
     }
     if (a === '--help' || a === '-h') {
@@ -61,6 +68,7 @@ function parseArgs(argv: string[]): DeltaArgs {
     afterPath: paths[1]!,
     json,
     quiet,
+    patch,
   }
 }
 
@@ -68,28 +76,30 @@ export function printDeltaHelp(): void {
   printHelpPage({
     name: 'delta',
     summary: 'Lex + nest-path ChangeReport for two surface revisions (collate-only)',
-    usage: ['spw delta <before> <after> [--json]'],
+    usage: ['spw delta <before> <after> [--json] [--patch]'],
     groups: [
       {
         title: 'Options',
         lines: [
-          '--json       Machine ChangeReport envelope',
-          '--quiet, -q  Suppress meta header',
+          '--json         Machine ChangeReport (or Patch with --patch)',
+          '--patch        Freeze Patch product (selection + edits + IrRef); collate only',
+          '--cache        Alias for --patch',
+          '--quiet, -q    Suppress meta header',
         ],
       },
       {
         title: 'Notes',
         lines: [
+          'delta = sense narrative; patch = apply-ready product (this command never writes)',
           'layoutOnly = brace ∧ nest skeleton ∧ labels ∧ structuralOps=0 ∧ triviaOnly',
-          'Container labels (frame params, capsule channels, open/close) appear in nestLabeled*',
-          'Product type remains ChangeReport; verb names the gap, not a write',
-          'Sense/collate only — never mutates the workspace',
+          'Apply targets: file | files | nodes (seed applyPatch*)',
         ],
       },
     ],
     examples: [
       'spw delta a.spw b.spw',
-      'spw delta --json before.spw after.spw',
+      'spw delta --patch before.spw after.spw',
+      'spw delta --json --patch before.spw after.spw',
     ],
   })
 }
@@ -140,6 +150,48 @@ export async function runSpwDeltaCli(argv: string[]): Promise<void> {
   const report = buildChangeReport(before, after, {
     uri: `${parsed.beforePath}→${parsed.afterPath}`,
   })
+
+  if (parsed.patch) {
+    const product = buildPatch(before, after, {
+      uri: parsed.beforePath,
+      store: 'memory',
+      applyTarget: 'file',
+      includeReport: true,
+    })
+    if (parsed.json) {
+      console.log(
+        JSON.stringify(
+          {
+            command: 'delta',
+            mode: 'patch',
+            version: product.version,
+            ref: product.ref,
+            selection: product.selection,
+            narrative: product.narrative,
+            edits: product.differential.edits.length,
+            beforeHash: product.differential.beforeHash,
+            afterHash: product.differential.afterHash,
+            effectCeiling: product.effectCeiling,
+            store: product.store,
+            report: toJsonEnvelope(report, parsed.beforePath, parsed.afterPath).report,
+          },
+          null,
+          2,
+        ),
+      )
+      return
+    }
+    if (!parsed.quiet) {
+      meta(
+        `# spw delta --patch  edits=${product.differential.edits.length}` +
+          ` store=${product.store} layoutOnly=${product.narrative.layoutOnly}` +
+          ` applyTarget=${product.applyTarget}`,
+      )
+    }
+    console.log(formatPatchSpw(product))
+    console.log(formatChangeReportSpw(report))
+    return
+  }
 
   if (parsed.json) {
     console.log(JSON.stringify(toJsonEnvelope(report, parsed.beforePath, parsed.afterPath), null, 2))

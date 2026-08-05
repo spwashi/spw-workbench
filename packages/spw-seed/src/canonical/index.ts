@@ -224,6 +224,29 @@ export {
   type NestPathDelta,
 } from './nest-path'
 
+/** Patch — selection → differential → store → apply (file|files|nodes). */
+export {
+  PATCH_VERSION,
+  PATCH_SCHEMA,
+  PATCH_PRODUCER,
+  selectionFromSource,
+  buildPatch,
+  buildPatchFromEdits,
+  filterEditsForSelection,
+  applyPatch,
+  applyPatchToFiles,
+  PatchMemoryBank,
+  formatPatchSpw,
+  type PatchStore,
+  type ApplyTargetKind,
+  type AstSelection,
+  type PatchNarrative,
+  type Patch,
+  type BuildPatchOptions,
+  type ApplyPatchResult,
+  type FilePatchTarget,
+} from './patch'
+
 export {
   inspectGeometry,
   formatGeometryReport,
