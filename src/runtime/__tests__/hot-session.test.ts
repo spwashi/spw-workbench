@@ -3,6 +3,9 @@ import {
   createHotSession,
   prepareSource,
   CHANNEL_POLICIES,
+  resolveRuntimeMedium,
+  countFixity,
+  scanBracePhrases,
 } from '../../../packages/spw-runtime/src/session'
 
 describe('prepareSource', () => {
@@ -76,6 +79,19 @@ describe('HotRuntimeSession', () => {
     // pointer is mask interop (@bc:<hex>), not a soft human tag
     expect(handle.pointer).toMatch(/^@bc:[0-9a-f]+$/)
     expect(card).toContain(`~#mask: ${handle.ref.contentHash}`)
+  })
+
+  it('inspect stamps fixity histogram and runtime medium', () => {
+    const session = createHotSession({ channel: 'draft', id: 'fixity-medium' })
+    const src = '![]\n~"mod.spw"\n<>\n'
+    const card = session.inspect(src)
+    expect(card.fixityCounts.prefix).toBeGreaterThanOrEqual(2)
+    expect(card.fixityCounts.infix).toBeGreaterThanOrEqual(1)
+    expect(card.phraseKeys.some(k => k.includes('fx:prefix'))).toBe(true)
+    expect(card.medium.channel).toBe('draft')
+    expect(card.medium.collateOnly).toBe(true)
+    expect(card.medium.maxFollowDefault).toBe('point')
+    expect(card.medium.dialectAllowed).toBe(true)
   })
 
   it('recompute bypasses cache', () => {

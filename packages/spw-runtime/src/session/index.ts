@@ -61,7 +61,17 @@ export {
   scanBracePhrases,
   phraseOptKey,
   countPhrasesById,
+  countFixity,
+  phraseKeysForHits,
 } from './phrases'
+
+export {
+  MEDIUM_MATRIX_VERSION,
+  type RuntimeMedium,
+  resolveRuntimeMedium,
+  mediumMatrixSnapshot,
+  formatRuntimeMediumSpw,
+} from './medium-matrix'
 
 export {
   type PrepareSourceOptions,

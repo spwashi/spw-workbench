@@ -48,7 +48,18 @@ import type { StabilityChannel } from './channels'
 import { resolveChannelPolicy, channelCacheParts } from './channels'
 import type { ConsumerContext } from './consumer'
 import { prepareSource, type PreparedSource } from './prepare'
-import { scanBracePhrases, countPhrasesById, type PhraseHit } from './phrases'
+import {
+  scanBracePhrases,
+  countPhrasesById,
+  countFixity,
+  phraseKeysForHits,
+  type PhraseHit,
+  type FixityKind,
+} from './phrases'
+import {
+  resolveRuntimeMedium,
+  type RuntimeMedium,
+} from './medium-matrix'
 import { measureProbesAndSubstrate } from './probe-measure'
 import {
   resolveDialectPolicy,
@@ -113,6 +124,12 @@ export interface HotInspectRecord {
   parse: ReturnType<typeof parse>
   phrases: PhraseHit[]
   phraseCounts: Record<string, number>
+  /** Act placement histogram — potentiation dual-read. */
+  fixityCounts: Record<FixityKind, number>
+  /** phrase×fixity opt keys for combinator caches. */
+  phraseKeys: string[]
+  /** Resolved channel×dialect medium (agency wall + form medium). */
+  medium: RuntimeMedium
   experimentalRefs: string[]
   flow: ReturnType<typeof scanFlowProtocol>
   geometric: GeometricResonanceReport
@@ -352,6 +369,13 @@ export class HotRuntimeSession {
       path: options.path,
     })
     const phrases = scanBracePhrases(prepared.original)
+    const fixityCounts = countFixity(phrases)
+    const phraseKeys = phraseKeysForHits(phrases, {
+      dialect: prepared.stack.dialect,
+      channel: this.channel,
+      contentHash,
+    })
+    const medium = resolveRuntimeMedium(this.channel, prepared.stack.dialect)
     const flow = scanFlowProtocol(prepared.original, options.path)
 
     let geometric: GeometricResonanceReport
@@ -379,6 +403,9 @@ export class HotRuntimeSession {
       parse: parseResult,
       phrases,
       phraseCounts: countPhrasesById(phrases),
+      fixityCounts,
+      phraseKeys,
+      medium,
       experimentalRefs: parseResult.experimentalRefs ?? [],
       flow,
       geometric,
@@ -496,6 +523,20 @@ export class HotRuntimeSession {
       `  ~#preprocessed: ${receipt.preprocessed}`,
       `  ~#dialectSource: ${receipt.dialectSource}`,
       `  ~#schema: ${receipt.schema}`,
+      `}`,
+      `^["fixity"]{`,
+      `  ~#prefix: ${card.fixityCounts.prefix}`,
+      `  ~#postfix: ${card.fixityCounts.postfix}`,
+      `  ~#infix: ${card.fixityCounts.infix}`,
+      `  ~#none: ${card.fixityCounts.none}`,
+      `}`,
+      `^["medium"]{`,
+      `  ~#channel: ${card.medium.channel}`,
+      `  ~#dialect: ${card.medium.dialect}`,
+      `  ~#ceiling: ${card.medium.effectCeiling}`,
+      `  ~#follow: ${card.medium.maxFollowDefault}`,
+      `  ~#plane: ${card.medium.defaultPlane}`,
+      `  ~#collateOnly: ${card.medium.collateOnly ? '#yes' : '#no'}`,
       `}`,
       `^["card"]{`,
       `  path: ${options.path ? `~"${options.path}"` : '_'}`,

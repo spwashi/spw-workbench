@@ -10,12 +10,13 @@
 # phase 0     08e2bc1c operational-field; requestEpoch; no beatTick; spw/activity
 # phase 1     186451f2 field-brands; irRefKey schema+producer; bornBeat out
 # phase 2a    b8a6949d scanAppositions lattice; spw lattice|readings; pattern-ecology map
+# phase 2b    9fa0da13 path receipts; dual-read cite cards
+# phase 3     medium-matrix + fixity/phraseKeys on inspect (this discharge)
 #
 # ── PRIORITY REORIENT (post design thread) ───────────────────
 # DEFER   soft @bc:tag — prefer @bind, ~#cell, #> landmark, mask facet on cards
-# DEFER   bulk corpus pass A until path receipts + intermediates land
-# NEXT    phase 2b/3*: path_receipt + intermediate memory + dual-read cite card
-# THEN    fixity stamps / phrase keys; channel medium matrix; ChangeReport
+# DEFER   bulk corpus pass A until ChangeReport scaffolding
+# NEXT    ChangeReport lex/ast v1; corpus pass A light; deeper fixity stamps
 # LATER   pins ~"p"@mask; #>(target); granules; comment interstitial; organ loops
 # Refuse: rebase -i the 31; soft tags as product identity; resonance as cache hit
 #
@@ -25,7 +26,7 @@
 # live | tree | template
 #
 #:layer #!pragmatics
-#:status #!phase2b
+#:status #!phase3
 #>canon_rewrite_v2_wip
 
 ^["roots"]{
@@ -52,6 +53,8 @@
  @seed_ir: ~"packages/spw-seed/src/ir"
  @seed_query: ~"packages/spw-seed/src/query"
  @hot_session: ~"packages/spw-runtime/src/session/hot-session.ts"
+ @medium_matrix: ~"packages/spw-runtime/src/session/medium-matrix.ts"
+ @phrases: ~"packages/spw-runtime/src/session/phrases.ts"
  @charge: ~"packages/spw-runtime/src/session/charge.ts"
  @channels: ~"packages/spw-runtime/src/session/channels.ts"
  @dialect_policy: ~"packages/spw-runtime/src/session/dialect-policy.ts"
@@ -66,7 +69,7 @@
  ~#taste: "One noun per clock; identity ≠ retention ≠ projection; collate before discharge; soft names are binds/landmarks not host @bc tags; potentiation holds field without silent collapse."
  ~#non_goal: "SHA archaeology; soft @bc:tag dialect; resonance-as-hit; bulk comment rewrite before ChangeReport."
  ~#asset: "tip tree + clocks + ir brands + lattice scan"
- ~#liability: "temperature history; underdesigned channel medium; cite as bare @bc string only"
+ ~#liability: "temperature history; ChangeReport absent; corpus particle light still deferred"
  %publish_base{
   interprets: objective
   considers: #[upstream/main@d9da60ad]
@@ -85,16 +88,16 @@
  // Design thread: pins/masks, #>(…), grain/plane, channel redesign, tacit ellipsis,
  // ref/deref combinatorics, dialect intermediates, @bc hesitation.
  now: #[
-  "path_receipt on prepare + session records",
-  "intermediate product envelope (inspect vs eval)",
-  "cite dual-read card: uri + mask + plane + grain (hash facet, not soft tag)",
-  "tests: dialect/preprocess split keys; receipt fields present",
+  "channel×dialect RuntimeMedium (agency wall + form medium)",
+  "fixityCounts + phraseKeys on HotInspectRecord",
+  "inspectAsSpw dual-read cards for medium + fixity",
+  "productCacheTier = dialect×channel tier compose",
  ]
  next: #[
-  "fixity stamp coverage + phrase ids in inspect",
-  "channel×dialect medium matrix docs + allow tests",
   "ChangeReport lex/ast v1",
   "corpus pass A light (particle #> on high-traffic .spw only)",
+  "deeper fixity stamps at parse/seed boundary",
+  "split hot-session if still >600 when next touch",
  ]
  defer: #[
   "soft @bc:tag index",
@@ -780,7 +783,20 @@
    "hot-session tests 7/7",
   ]
  }
- ~[3]: .{ name: "runtime_medium", status: pending, after: "2b", note: "channel×dialect matrix; fixity in inspect; grain defaults; soft tags still deferred" }
+ ~[3]: .{
+  name: "runtime_medium"
+  status: ready_to_discharge
+  after: "2b"
+  mode: #[live, tree]
+  acceptance: "resolveRuntimeMedium channel×dialect; inspect stamps fixityCounts+phraseKeys+medium; soft tags still deferred"
+  implements: #[
+   "session/medium-matrix.ts",
+   "countFixity + phraseKeysForHits",
+   "HotInspectRecord.medium/fixityCounts/phraseKeys",
+   "inspectAsSpw medium+fixity cards",
+   "medium-matrix + hot-session tests",
+  ]
+ }
  ~[4]: .{ name: "change_report", status: pending, acceptance: "lex+ast narrative", measure: %layout_only_write }
  ~[5]: .{ name: "lsp_granules", status: pending, note: "uses lattice masks as unit-cell keys" }
  ~[6]: .{ name: "patterns_fuzzy", status: pending, note: "handles without @bc:tag" }
@@ -926,29 +942,31 @@
  >>[2026-08-04] phase1 — field-brands ContentHash RequestEpoch SessionBeat ProducerSchema; irRefKey includes schema+producer excludes bornBeat; law tests; theory index links operational-field.
  >>[2026-08-04] phase2 — scanAppositions unit-cell lattice + mask + spectrum + delta; spw lattice|readings CLI; pattern-ecology-tooling.spw (materials/photonics metaphor gate); slight chem/semicon naming for future interstitial/comment tooling.
  >>[2026-08-04] reorient — defer soft @bc:tag; prefer bind/cell/landmark + mask facet; next 2b path_receipt + intermediate stamps + dual-read cite card; then fixity/channel medium, ChangeReport; corpus A light later.
- >>[2026-08-04] phase2b — PathReceipt on prepare; productHash=preparedHash; formatCiteSpw dual-read uri/mask/grain; hot-session tests; soft tags still deferred.
+ >>[2026-08-04] phase2b — PathReceipt on prepare; productHash=preparedHash; formatCiteSpw dual-read uri/mask/grain; hot-session tests; soft tags still deferred. Discharge 9fa0da13.
+ >>[2026-08-04] phase3 — RuntimeMedium channel×dialect matrix; countFixity/phraseKeysForHits; inspect stamps medium+fixity; productCacheTier compose; tests 14/14 medium+hot.
 }
 
 ^["cache"]{
- ~#status: "phase2b_ready_to_discharge"
+ ~#status: "phase3_ready_to_discharge"
  ~#base_ref: "upstream/main@d9da60ad0bbfd90ebaa5742709f162b61f041bae"
  ~#capability_ref: "backup/pre-rewrite-v2-tip@8bb423c7"
  ~#branch: "feature/canon-rewrite-v2"
- ~#commits: "08e2bc1c 186451f2 b8a6949d"
- ~#stash: "wip/cite-tag-session — re-land as dual-read card only, no soft tag"
- ~#next_phase: "3"
- ~#next_action: "commit 2b; then channel×dialect medium + fixity stamps"
+ ~#commits: "08e2bc1c 186451f2 b8a6949d 9fa0da13"
+ ~#stash: "wip/cite-tag-session — dual-read already re-landed in 2b"
+ ~#next_phase: "4"
+ ~#next_action: "ChangeReport lex/ast v1; corpus A light optional"
  ~#mode_default: "live for sense; tree for exact; template for pulse/pattern"
  ~#measure_form: "%name{interprets,considers,surfaces,run}"
  ~#stance_form: "<sigil>_<objective|subjective>"
- ~#open_count: "8"
+ ~#open_count: "7"
  ~#last_stream: "2026-08-04"
- ~#laws: "path receipt on every prepare; soft name≠mask; inspect≠eval; subjective never keys"
+ ~#laws: "path receipt on every prepare; soft name≠mask; inspect≠eval; medium=channel wall×dialect form; subjective never keys"
  ~#phase0_done: "08e2bc1c"
  ~#phase1_done: "186451f2"
  ~#phase2a_done: "b8a6949d lattice"
- ~#phase2b_done: "pathReceipt + formatCiteSpw dual-read"
- ~#priority: "path_receipt > dual-read cite > fixity/channel matrix > ChangeReport > soft tags never"
+ ~#phase2b_done: "9fa0da13 pathReceipt + formatCiteSpw dual-read"
+ ~#phase3_done: "medium-matrix + fixity/phraseKeys on inspect"
+ ~#priority: "ChangeReport > corpus A light > granules > soft tags never"
 }
 
 ^["done"]{

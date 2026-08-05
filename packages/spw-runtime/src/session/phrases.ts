@@ -97,6 +97,38 @@ export function phraseOptKey(parts: {
     .join('|')
 }
 
+/** Histogram of Act placement — potentiation dual-read (prefix vs postfix…). */
+export function countFixity(hits: readonly PhraseHit[]): Record<FixityKind, number> {
+  const out: Record<FixityKind, number> = {
+    prefix: 0,
+    postfix: 0,
+    interior: 0,
+    membrane: 0,
+    infix: 0,
+    none: 0,
+  }
+  for (const h of hits) {
+    out[h.fixity] = (out[h.fixity] ?? 0) + 1
+  }
+  return out
+}
+
+/** Opt-key fragments for each hit — phrase×fixity for combinator caches. */
+export function phraseKeysForHits(
+  hits: readonly PhraseHit[],
+  parts: { dialect?: string; channel?: StabilityChannel | string; contentHash?: string } = {},
+): string[] {
+  return hits.map(h =>
+    phraseOptKey({
+      phraseId: h.phraseId,
+      fixity: h.fixity,
+      dialect: parts.dialect,
+      channel: parts.channel,
+      contentHash: parts.contentHash,
+    }),
+  )
+}
+
 export function countPhrasesById(hits: readonly PhraseHit[]): Record<string, number> {
   const out: Record<string, number> = {}
   for (const h of hits) {
