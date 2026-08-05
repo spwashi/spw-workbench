@@ -29,6 +29,10 @@
  @channels: ~"../../../packages/spw-runtime/src/session/channels.ts"
  @crawl: ~"../../../packages/spw-runtime/src/session/crawl.ts"
  @charge: ~"../../../packages/spw-runtime/src/session/charge.ts"
+ @brace_physics: ~"../../../.spw/registries/brace-physics.spw"
+ @bridge: ~"./charge-valence-brace-bridge.spw"
+ @register_geometry: ~"./register-geometry.spw"
+ @range_transform: ~"./range-transform.spw"
 }
 
 ^["thesis"]{
@@ -135,6 +139,32 @@
  law: "Portability without subject+substrate provenance is a leaky packet."
 }
 
+// ── 2b. Accounting: where charge sits (operand, inner, overlap) ─
+
+^["accounting"]{
+ status: proposed
+ law: "Charge needs a *where*, not just a *what-state* - naming vocabulary that already exists elsewhere, no new glyphs."
+
+ operand_vs_inner: .{
+  operator_ports: "before_operator, operand, after_operator (brace-physics.spw coupling_extension) - Act-relative"
+  boundary_ports: "before_open, open_boundary, inside, close_boundary, after_close (same block) - Bound-relative"
+  named_regions: "inner|around|scope|capsule|stream|range (register-geometry.spw empty_forms) - identity-relative"
+  law: "one locus carries a value at all three simultaneously - views, not competing addresses"
+ }
+
+ overlap: .{
+  status: "gap - not addressed anywhere in the corpus"
+  missing: "register-geometry + range-transform model nesting and disjoint spans, never overlap-without-containment"
+  hypothesis: "paired-boundary grammar likely forbids it for raw Bound spans; derived regions (two ResonanceIR feature windows, two AttentionIR trails) could still overlap - unverified, see ?[overlap_regions]"
+ }
+
+ particle_locus: .{
+  particle: "the token itself - <stance>#<aim>name (types/ast/nodes.ts); #:layer and #>anchor are both Particle, distinguished by aim"
+  anchor: "the bookmark a deixis particle (aim='>') leaves - #>id is a particle, the id it names becomes an anchor"
+  accounting_gap: "ChargeProvenance has no particle-level field - coarser than 'which #>anchor produced this', see ?[particle_accounting]"
+ }
+}
+
 // ── 3. Potentiation and vibration ──────────────────────────────
 
 ^["potentiation"]{
@@ -158,6 +188,12 @@
  }
 
  dual: "potentiate (arm) vs vibrate (measure) - do not collapse into one verb"
+
+ ex_nihilo_check: .{
+  feeling: "an empty Bound reads as creation from nothing - first mark in a fresh {}"
+  correction: "not literally nothing - register-geometry.spw's law says a Bound keeps its register identity (inner|around|scope|capsule|stream|range) through empty occupancy; charge_states.latent is a real state, not an absent one. It's potential resolving to actual, same as empty -> inhabit, never nothing -> something."
+  law: "keep the feeling as pedagogy; correct the physics under it"
+ }
 }
 
 // ── 4. Operators with labels ───────────────────────────────────
@@ -307,10 +343,12 @@
  law: "Fixity = Act placement on Bound; brace phrase = stable ActxBound silhouette; optimizable iff schemaxfixityxmeasurexrewritexcache."
 
  fixity_charge: .{
-  prefix: "potentiate / arm before capture"
-  postfix: "discharge after inhabit (pipeline stitch)"
+  prefix: "potentiate / arm before capture — form +{ }"
+  postfix: "discharge after inhabit (pipeline stitch) — form { }+"
   membrane: "shield ports"
   infix: "confluence / path between poles (gated)"
+  em: ~"./em-fixity-association.spw"
+  law: "fixity is association geometry, not Bound open/close polarity and not ChargeState"
  }
 
  phrase_crawl: .{
@@ -442,15 +480,46 @@
   // cache key: hash x dialect x channel
 }
 
+^["decisions"]{
+ // Grounded against source, not folklore. Proposed until repeated in a
+ // canonical contract (runtime-foundation.spw's own falsify rule).
+
+ valence_vs_charge: .{
+  q: "valence (quality) vs charge (portable field) - how to teach without collision?"
+  a: "name the collision, don't paper over it - three distinct 'charge' senses live in this corpus; disambiguate on sight by which one's active."
+  senses: #[
+   "(1) portable field quantity - value|subject|substrate, this file, real types in charge.ts"
+   "(2) per-container open/close polarity metaphor - brace-physics.spw charge_table, #!interpretive"
+   "(3) valence-as-electron-charge metaphor - valence-architecture.spw + brace-physics.spw valence_composition ('sum of valence markers')"
+  ]
+  because: "this file's own law already draws the line - valence is charge-neutral quality, charge here is what moves under crawl verbs; only (1) has load-bearing types, (2)/(3) are self-declared metaphor"
+  cite: ~"../../../.spw/registries/brace-physics.spw"
+ }
+
+ discharge_l0: .{
+  q: "is crystallize to Spw.l record l0 measure or l1 memory?"
+  a: "l1.memory - crystallize produces a new sealed in-memory value (bound -> discharged), not a report on existing state."
+  because: "mutation-automata.spw: l0.measure never rewrites returned source, l1.memory is in-memory apply of a differential; crystallize is exactly that - a new artifact exists after the call"
+  cite: ~"./mutation-automata.spw"
+ }
+
+ soft_resonance: .{
+  q: "should soft resonance edges enter GraphIR, or stay ResonanceIR-only?"
+  a: "stay ResonanceIR-only - promotion into GraphIR needs an explicit graduate step, same discipline as regional dialect graduation, never a silent merge."
+  because: "geometric-resonance.ts only edges among uris already in the caller's selection, never invents one; letting soft edges leak into GraphIR repeats this file's own falsify entry on English paths without ~"
+  cite: ~"./reference-deref-geometry.spw"
+ }
+}
+
 ^["open"]{
  ?[capture_default]: "Is empty Bound always shield-void, or sometimes latent capture?"
- ?[valence_vs_charge]: "How do we teach valence (quality) vs charge (portable field) without collision?"
  ?[vibration_measure]: "Is vibration only runtime frequency, or also AttentionIR trail?"
  ?[crawl_compose]: "May two crawl verbs compose on one SelectionIR pass, or always one verb per plan?"
  ?[lens_mute]: "Who may mutate lens mid-crawl - human only, or probe heat?"
- ?[discharge_l0]: "Is crystallize to Spw.l record l0 measure or l1 memory?"
  ?[biome_module]: "Minimum modules_shape for consumer biome graduate?"
- ?[soft_resonance]: "Should soft resonance edges enter GraphIR or stay ResonanceIR-only?"
+ ?[line_charge_bridge]: "tension_gradient's line-span rhythm is a separate interpretive axis from this file's charge - ever bridge them, or stay orthogonal on purpose?"
+ ?[overlap_regions]: "register-geometry + range-transform model nesting and disjoint spans - is overlap-without-containment a real case here, or does paired-boundary law forbid it by construction?"
+ ?[particle_accounting]: "would per-particle charge accounting (which #>anchor discharged which value) be worth the bookkeeping, or does substrate-level provenance already cover it?"
 }
 
 #>wonder_brace_charge_1

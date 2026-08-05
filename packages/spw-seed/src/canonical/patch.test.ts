@@ -108,7 +108,11 @@ describe('PatchMemoryBank', () => {
     expect(bank.get(irRefKey(d.ref))?.differential.afterHash).toBe(
       d.differential.afterHash,
     )
-    expect(formatPatchSpw(d)).toContain('^["patch"]{')
+    const card = formatPatchSpw(d)
+    expect(card).toContain('^["patch"]{')
+    expect(card).toContain('^["product"]{')
+    expect(card).toContain('^["payload"]{')
+    expect(card).toContain('^["selection"]{')
   })
 })
 

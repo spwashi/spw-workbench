@@ -17,6 +17,7 @@ import { createHash } from 'node:crypto'
 import { parse } from '../parser'
 import { getNodeChildren } from '../instrumentation/audit'
 import type { ASTNode } from '../types/ast'
+import { facet, formatSpwCard } from './spw-card'
 
 export const NEST_PATH_VERSION = 'spw.nest_path/1' as const
 
@@ -423,17 +424,19 @@ export function nestPathSpectrum(
 }
 
 export function formatNestPathSpw(lat: NestPathLattice): string {
-  return [
-    `^["nest_path"]{`,
-    `  ~#version: ${lat.version}`,
-    `  ~#skeleton: "${lat.skeleton.replace(/"/g, '\\"')}"`,
-    `  ~#labeled: "${lat.labeledSkeleton.replace(/"/g, '\\"')}"`,
-    `  ~#cluster: ${lat.clusterKey}`,
-    `  ~#labeledCluster: ${lat.labeledClusterKey}`,
-    `  ~#labels: #[ ${lat.labels.map(l => `"${l.replace(/"/g, '\\"')}"`).join(' ; ')} ]`,
-    `  ~#parseOk: ${lat.parseOk ? '#yes' : '#no'}`,
-    `}`,
-  ].join('\n')
+  return formatSpwCard('nest_path', [
+    facet.group('product', [
+      facet.atom('version', lat.version),
+      facet.flag('parseOk', lat.parseOk),
+    ]),
+    facet.group('form', [
+      facet.str('skeleton', lat.skeleton || undefined),
+      facet.str('labeled', lat.labeledSkeleton || undefined),
+      facet.atom('cluster', lat.clusterKey),
+      facet.atom('labeledCluster', lat.labeledClusterKey),
+      facet.list('labels', lat.labels),
+    ]),
+  ])
 }
 
 // Re-export glyph table for tests / docs

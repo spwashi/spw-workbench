@@ -65,6 +65,29 @@ export {
 } from './workspace'
 export { runSpwCli } from './run'
 export {
+  t,
+  defineLoc,
+  loadLocOverrides,
+  isLocKey,
+  type LocKey,
+  type LocCatalog,
+  type LocParams,
+  type SectionKey,
+} from './loc'
+export { helpLoc, printHelpPage, renderHelpPage, type HelpPage, type CommandHelpPage } from './help'
+export {
+  cacheDeltaReport,
+  cachePatchProduct,
+  listCliCache,
+  getCliCacheEntry,
+  clearCliCache,
+  cliCacheDir,
+  formatCliCacheIndexSpw,
+  type CliCacheEntry,
+  type CliCacheEntryMeta,
+  type CliCacheKind,
+} from './session/workspace-cache'
+export {
   SpwExit,
   currentExitCode,
   exitCodeFor,

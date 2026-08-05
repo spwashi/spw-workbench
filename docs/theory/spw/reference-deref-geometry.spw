@@ -11,7 +11,7 @@
 // @see packages/spw-seed/src/canonical/form-ladders.ts
 
 #:layer #!semantics
-#:status #!proposed
+#:status #!partial
 
 ^seed[Spw.Reference.Deref.Geometry v:0.1 @profile:Spw.b @intent:shape_address]
 
@@ -23,6 +23,8 @@
  @brace_charge: ~"./brace-charge-crawl.spw"
  @fixity: ~"./fixity-brace-phrases.spw"
  @progressions: ~"../../../packages/spw-seed/src/canonical/form-geometry.ts"
+ @crawl: ~"../../../packages/spw-runtime/src/session/crawl.ts"
+ @charge_impl: ~"../../../packages/spw-runtime/src/session/charge.ts"
 }
 
 ^["thesis"]{
@@ -360,15 +362,73 @@
   "packages/foo.spw"
 }
 
+^["decisions"]{
+ // Answers to the former ^["open"] set, grounded against source not folklore.
+ // Grammar unchanged - see ^["hooks"] for implementation status of each.
+
+ star_at: .{
+  q: "*@id: Spw.x-only, or also Spw.q select-collapse?"
+  a: "channel-only, not dialect-gated - Spw.x is the taught home, not a wall."
+  because: #[
+   "brace-charge-crawl.spw law: dialect = geometry; channel = permission"
+   "crawl.ts gates verb='discharge' on policy.effectCeiling alone, never dialect"
+   "CHANNEL_POLICIES.live already allows Spw.q beside Spw.x at effectCeiling l2"
+  ]
+  cite: ~"../../../packages/spw-runtime/src/session/crawl.ts"
+ }
+
+ paren_select: .{
+  q: "$(@id) vs $ @id spacing?"
+  a: "$(@id), no space - matches scope_hold's @(...); spaced $ @id risks token-split under Spw.l/Spw.q newlineAsSpace."
+  cite: "inventory.scope_hold; syntax-profile-stack.spw Spw.l/Spw.q metasyntax"
+ }
+
+ optional_root: .{
+  q: "@id? optional, or wait for IdentityIR completeness?"
+  a: "no new ? sigil - reuse the existing hole (_). IdentityIR has zero implementation; nothing to design a completeness model against yet."
+  cite: "dimensions.d0 (`_`); liminal_shapes.hole; grep confirms no IdentityIR type anywhere"
+ }
+
+ d2_sugar: .{
+  q: "compact ego-literal glyph, or is graph CLI enough?"
+  a: "CLI stays the sole d2 form - a new glyph per dimension is the exact anti-pattern hooks.falsify already names."
+  cite: ~"../../../packages/spw-seed/src/ir/slices.ts"
+ }
+
+ measure_locus: .{
+  q: "should $%[facet]@locus be the only measure-at-place form, or also % at $?"
+  a: "not competitors - $%[facet]@locus queries, bare %family{...} declares; every $%[...] usage in the corpus already follows one shape."
+  cite: ~"../../../docs/theory/spw/measure-context-kernel.spw"
+ }
+
+ composite_id: .{
+  q: "composite identity across many @roots without losing d1 thrift?"
+  a: "reuse the existing roots header facet - this doc uses it on itself. IdentityIR, once typed, should model that shape, not invent a literal."
+  cite: "this file's own ^[\"roots\"] block"
+ }
+
+ channel_follow: .{
+  q: "which axes may consumer channel follow vs only point?"
+  a: "ChannelPolicy.effectCeiling per StabilityChannel, plus isInfrastructurePath for mounted-consumer - no new gate."
+  because: #[
+   "crawl.ts refuses discharge purely on effectCeiling === 'none'"
+   "consumer.ts's isInfrastructurePath already point-not-follows workbenchRoot"
+   "brace-charge-crawl.spw law: dialect = geometry; channel = permission"
+  ]
+  cite: ~"../../../packages/spw-runtime/src/session/crawl.ts"
+ }
+
+ resonance_soft: .{
+  q: "may ResonanceIR propose soft pathRefs that were never ~ written?"
+  a: "no - it only edges among uris already in its SelectionIR; geometric-resonance.ts never invents one. Keeps the pathref-census anti-pattern from firing."
+  cite: ~"../../../packages/spw-seed/src/canonical/geometric-resonance.ts"
+ }
+}
+
 ^["open"]{
- ?[star_at]: "Is *@id Spw.x-only, or also Spw.q select-collapse?"
- ?[paren_select]: "$(@id) vs $ @id spacing - which silhouette teaches better?"
- ?[optional_root]: "@id? optional - or stick to partial IdentityIR completeness?"
- ?[d2_sugar]: "Do we need a compact ego-literal glyph, or is graph CLI enough?"
- ?[measure_locus]: "Should $%[facet]@locus be the only measure-at-place form, or also % at $?"
- ?[composite_id]: "How does composite IdentityIR cite many @roots without losing d1 thrift?"
- ?[channel_follow]: "Which axes may consumer channel follow vs only point?"
- ?[resonance_soft]: "May ResonanceIR propose soft pathRefs that never were ~ written?"
+ // No open design questions remain from the original set - see ^["decisions"].
+ // Residual work is implementation-only, tracked in ^["hooks"].status.
+ ?[grammar_when]: "When does *@id / $(@id) graduate from decided-sugar to actual parser law (status partial -> implemented)?"
 }
 
 #>wonder_ref_deref_1

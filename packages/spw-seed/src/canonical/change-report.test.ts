@@ -71,11 +71,14 @@ describe('buildChangeReport', () => {
     expect(r.lex.structuralOps).toBeGreaterThan(0)
   })
 
-  it('formats dual-read Spw card', () => {
+  it('formats dual-read Spw card with nested groups', () => {
     const r = buildChangeReport('a', 'b')
     const card = formatChangeReportSpw(r)
     expect(card).toContain('^["delta"]{')
+    expect(card).toContain('^["identity"]{')
+    expect(card).toContain('^["lex"]{')
+    expect(card).toContain('^["form"]{')
     expect(card).toContain('~#layoutOnly:')
-    expect(card).toContain('~#lexStructuralOps:')
+    expect(card).toContain('~#ops:')
   })
 })

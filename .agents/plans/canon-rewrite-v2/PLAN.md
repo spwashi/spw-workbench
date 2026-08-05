@@ -220,25 +220,46 @@ AstSelection  →  Delta narrative + SourceDifferential  →  Patch (IrRef)
 - `AstSelection` — uri, span, selector (SpwPattern | citation string), nest skeleton/labels
 - `Patch` — selection + `SourceDifferential` + optional `ChangeReport` + narrative + `effectCeiling` + `applyTarget` + `store`
 - IrKind `patch`; schema `spw.patch/1`; product key via `irRefKey` (store/retention out)
-- `buildPatch` / `buildPatchFromEdits`
-- `applyPatch` (file or span/selector-scoped nodes); `applyPatchToFiles`
-- `PatchMemoryBank` — session memory by irRefKey
-- CLI: `spw delta --patch` (alias `--cache`) emits `^["patch"]` card (collate only; no write)
+- `buildPatch` / `buildPatchFromEdits` / `applyPatch` / `applyPatchToFiles` / `PatchMemoryBank`
+- CLI: `spw delta --patch` freezes apply-ready card (collate only; no workspace write)
+
+**Vocabulary:** **delta** = sense narrative; **patch** = apply product; **`--cache`** = session disclosure memory (not an alias of `--patch`).
 
 **Compose with existing**
 
 - Semantic plans → `buildPatchFromEdits` after `planSemanticEdits`
-- Range plans → same
-- Nest path + labels already inside ChangeReport narrative
+- Nest path + labels inside ChangeReport narrative
 
 **Not yet (later)**
 
-- Durable IR file pack format on disk beyond memory bank
-- Multi-file patch rebased per uri (today: hash-matched apply per file)
-- LSP selection → Patch round-trip
-- Channel-gated apply CLI (effect group; not sense)
+- Multi-file patch rebased per uri; LSP selection → Patch; channel-gated apply CLI (effect group)
 
 **Acceptance:** build → memory bank → apply round-trip with hash gate; span selection filters edits; stale beforeHash refuses; `spw delta --patch` prints dual-read card.
+
+---
+
+### Phase 4d — Representational disclosure & session cache
+
+**Doctrine**
+
+- `docs/theory/spw/representational-disclosure.spw` — product ≠ disclosure ≠ retention ≠ attention
+- Nested-frame Spw dual-read (groups as `^["lex"]{…}`, not pad-as-law)
+- CLI loc: in-module `defineLoc('module', { 'section.key': … })` → full key `module.section.key`
+
+**Code (landed)**
+
+- `formatSpwCard` / `facet.group` — nested disclosure serializer
+- ChangeReport / Patch / nest_path cards use nested groups
+- Session cache under `.spw/gen/session/cli-cache/`: `index.spw` + `<id>.spw` disclosure; `<id>.product.json` rehydrate only
+- `spw delta --cache` stores; `--list` / `--show` / `--clear` inspect (default Spw, JSON only with `--json`)
+
+**Field doctrine (charge · valence · fixity)**
+
+- `charge-valence-brace-bridge.spw` — orthogonalize brace polarity vs operational ChargePacket vs material valence
+- `em-fixity-association.spw` — fixity as Act×Bound association (`+{}` vs `{}+`); EM literacy only, not Maxwell law
+- brace-physics registry headers status-tagged; G1–G8 gaps named
+
+**Acceptance:** nested-frame cards green in tests; `--list` Spw index; theory index links disclosure + bridge + em-fixity.
 
 ---
 

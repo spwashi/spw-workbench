@@ -38,6 +38,7 @@ import {
   type ChangeReport,
 } from './change-report'
 import { scanNestPaths } from './nest-path'
+import { facet, formatSpwCard } from './spw-card'
 
 export const PATCH_VERSION = 'spw.patch/1' as const
 export const PATCH_SCHEMA = 'spw.patch/1' as const
@@ -451,32 +452,40 @@ export class PatchMemoryBank {
   }
 }
 
-/** Dual-read card for a patch (collate surface). */
+/**
+ * Spw dual-read disclosure of a Patch.
+ * Nested frames = product / payload / selection groups.
+ */
 export function formatPatchSpw(patch: Patch): string {
   const n = patch.narrative
   const sel = patch.selection
-  return [
-    `^["patch"]{`,
-    `  ~#version: ${patch.version}`,
-    `  ~#schema: ${patch.schema}`,
-    `  ~#ref: "${irRefKey(patch.ref).replace(/"/g, '\\"')}"`,
-    `  ~#store: ${patch.store}`,
-    `  ~#applyTarget: ${patch.applyTarget}`,
-    `  ~#ceiling: ${patch.effectCeiling}`,
-    `  ~#before: ${patch.differential.beforeHash.slice(0, 16)}`,
-    `  ~#after: ${patch.differential.afterHash.slice(0, 16)}`,
-    `  ~#edits: ${patch.differential.edits.length}`,
-    `  ~#identity: ${n.identity ? '#yes' : '#no'}`,
-    `  ~#layoutOnly: ${n.layoutOnly ? '#yes' : '#no'}`,
-    `  ~#pathMatch: ${n.pathMatch ? '#yes' : '#no'}`,
-    `  ~#nest: ${n.nestSkeletonEqual ? '#eq' : '#moved'}`,
-    `  ~#labels: ${n.labelsEqual ? '#eq' : '#moved'}`,
-    `  ~#uri: ${sel.uri ? `~"${sel.uri.replace(/"/g, '\\"')}"` : '_'}`,
-    `  ~#nestSkeleton: "${(sel.nestSkeleton ?? '').replace(/"/g, '\\"')}"`,
-    `  ~#selectionSpan: ${
-      sel.span ? `${sel.span.start}:${sel.span.end}` : '_'
-    }`,
-    `  ~#note: "${n.note.replace(/"/g, '\\"')}"`,
-    `}`,
-  ].join('\n')
+  const span =
+    sel.span != null ? `${sel.span.start}:${sel.span.end}` : undefined
+  return formatSpwCard('patch', [
+    facet.group('product', [
+      facet.atom('version', patch.version),
+      facet.atom('schema', patch.schema),
+      facet.str('ref', irRefKey(patch.ref)),
+      facet.atom('store', patch.store),
+      facet.atom('apply', patch.applyTarget),
+      facet.atom('ceiling', patch.effectCeiling),
+    ]),
+    facet.group('payload', [
+      facet.atom('before', patch.differential.beforeHash.slice(0, 16)),
+      facet.atom('after', patch.differential.afterHash.slice(0, 16)),
+      facet.atom('edits', patch.differential.edits.length),
+      facet.flag('identity', n.identity),
+      facet.flag('layoutOnly', n.layoutOnly),
+      facet.flag('pathMatch', n.pathMatch),
+      facet.state('nest', n.nestSkeletonEqual),
+      facet.state('labels', n.labelsEqual),
+    ]),
+    facet.group('selection', [
+      facet.path('uri', sel.uri),
+      facet.str('nestForm', sel.nestSkeleton || undefined),
+      facet.str('nestLabeled', sel.nestLabeled || undefined),
+      facet.atom('span', span),
+    ]),
+    facet.group('note', [facet.str('text', n.note)]),
+  ])
 }

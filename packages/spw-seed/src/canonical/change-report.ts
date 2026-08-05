@@ -30,6 +30,7 @@ import {
   type NestPathDelta,
   type NestPathLattice,
 } from './nest-path'
+import { facet, formatSpwCard } from './spw-card'
 
 export const CHANGE_REPORT_VERSION = 'spw.change_report/1' as const
 
@@ -307,38 +308,44 @@ export function buildChangeReport(
   }
 }
 
-/** Spw dual-read card for agents / pulse disclosure. */
+/**
+ * Spw dual-read disclosure of a ChangeReport.
+ * Nested frames = groups (representational-disclosure doctrine).
+ */
 export function formatChangeReportSpw(report: ChangeReport): string {
   const nest = report.ast.nest
   const labelBits = [
     ...nest.labelsRemoved.map(l => `-${l}`),
     ...nest.labelsAdded.map(l => `+${l}`),
   ]
-  const lines = [
-    `^["delta"]{`,
-    `  ~#version: ${report.version}`,
-    `  ~#before: ${report.beforeHash}`,
-    `  ~#after: ${report.afterHash}`,
-    `  ~#identity: ${report.identity ? '#yes' : '#no'}`,
-    `  ~#layoutOnly: ${report.layoutOnly ? '#yes' : '#no'}`,
-    `  ~#editSpans: ${report.editSpans}`,
-    `  ~#lexStructuralOps: ${report.lex.structuralOps}`,
-    `  ~#lexTriviaOnly: ${report.lex.triviaOnly ? '#yes' : '#no'}`,
-    `  ~#lexInsert: ${report.lex.inserted}`,
-    `  ~#lexDelete: ${report.lex.deleted}`,
-    `  ~#lexReplace: ${report.lex.replaced}`,
-    `  ~#braceEqual: ${report.ast.braceEqual ? '#yes' : '#no'}`,
-    `  ~#braceSeverity: ${report.ast.brace.severity}`,
-    `  ~#pathMatch: ${report.ast.pathMatch ? '#yes' : '#no'}`,
-    `  ~#nestSkeletonEqual: ${nest.skeletonEqual ? '#yes' : '#no'}`,
-    `  ~#nestBefore: "${nest.beforeSkeleton.replace(/"/g, '\\"')}"`,
-    `  ~#nestAfter: "${nest.afterSkeleton.replace(/"/g, '\\"')}"`,
-    `  ~#nestLabeledBefore: "${nest.beforeLabeled.replace(/"/g, '\\"')}"`,
-    `  ~#nestLabeledAfter: "${nest.afterLabeled.replace(/"/g, '\\"')}"`,
-    `  ~#labelsEqual: ${nest.labelsEqual ? '#yes' : '#no'}`,
-    `  ~#labelDelta: #[ ${labelBits.map(x => `"${x.replace(/"/g, '\\"')}"`).join(' ; ')} ]`,
-    `  ~#note: "${report.note.replace(/"/g, '\\"')}"`,
-    `}`,
-  ]
-  return lines.join('\n')
+  return formatSpwCard('delta', [
+    facet.group('identity', [
+      facet.atom('version', report.version),
+      facet.atom('before', report.beforeHash),
+      facet.atom('after', report.afterHash),
+      facet.flag('identity', report.identity),
+      facet.flag('layoutOnly', report.layoutOnly),
+      facet.atom('editSpans', report.editSpans),
+    ]),
+    facet.group('lex', [
+      facet.atom('ops', report.lex.structuralOps),
+      facet.flag('trivia', report.lex.triviaOnly),
+      facet.atom('insert', report.lex.inserted),
+      facet.atom('delete', report.lex.deleted),
+      facet.atom('replace', report.lex.replaced),
+    ]),
+    facet.group('form', [
+      facet.flag('braceEq', report.ast.braceEqual),
+      facet.atom('brace', report.ast.brace.severity),
+      facet.flag('pathMatch', report.ast.pathMatch),
+      facet.state('nest', nest.skeletonEqual),
+      facet.str('nestBefore', nest.beforeSkeleton || undefined),
+      facet.str('nestAfter', nest.afterSkeleton || undefined),
+      facet.str('labeledBefore', nest.beforeLabeled || undefined),
+      facet.str('labeledAfter', nest.afterLabeled || undefined),
+      facet.state('labels', nest.labelsEqual),
+      facet.list('labelDelta', labelBits),
+    ]),
+    facet.group('note', [facet.str('text', report.note)]),
+  ])
 }

@@ -194,6 +194,18 @@ export {
   type ScanAppositionsOptions,
 } from './apposition-scan'
 
+/** Dual-read Spw card helpers — nested-frame disclosure. */
+export {
+  formatSpwCard,
+  formatSpwCards,
+  facet,
+  type SpwFacet,
+  type SpwGroup,
+  type SpwCardPart,
+  type SpwFacetValue,
+  type FormatSpwCardOptions,
+} from './spw-card'
+
 /** Lex + brace ChangeReport — two-revision narrative (path-match v1). */
 export {
   CHANGE_REPORT_VERSION,

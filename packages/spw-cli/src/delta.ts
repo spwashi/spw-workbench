@@ -1,12 +1,12 @@
 /**
- * spw delta — two-revision ChangeReport (lex LCS + nest path-match).
+ * spw delta — sense narrative between two surface revisions.
  *
- * Collate-only sense verb: never writes. Names the *product gap* between two
- * cuts. Freeze a apply-ready **Patch** with `--patch` (alias `--cache`).
+ *   delta   — ChangeReport (stdout dual-read)
+ *   --patch — freeze apply-ready Patch product
+ *   --cache — keep report/patch in workspace session memory (.spw/gen/session/cli-cache)
+ *   --list / --show / --clear — inspect or wipe session cache
  *
- * Usage:
- *   spw delta <before.spw> <after.spw>
- *   spw delta --patch before.spw after.spw
+ * Collate-only: never rewrites authored trees.
  */
 
 import { readFileSync } from 'node:fs'
@@ -18,16 +18,71 @@ import {
   formatChangeReportSpw,
   type ChangeReport,
 } from '@spwashi/spw-seed'
-import { printHelpPage } from './help'
+import { helpLoc, printHelpPage } from './help'
+import { defineLoc } from './loc'
+import {
+  cacheDeltaReport,
+  cachePatchProduct,
+  clearCliCache,
+  cliCacheDir,
+  formatCliCacheIndexSpw,
+  getCliCacheEntry,
+  listCliCache,
+} from './session/workspace-cache'
 import { meta } from './view'
 
+/** Copy for this module — revise here; keys are section.key → delta.section.key */
+const d = defineLoc('delta', {
+  'help.summary':
+    'Lex + nest-path ChangeReport for two surface revisions (collate-only)',
+  'help.usage': 'spw delta <before> <after> [--json] [--cache] [--patch]',
+  'help.usage_list': 'spw delta --list [--json]',
+  'help.usage_show': 'spw delta --show <id> [--json]',
+  'help.opt_json': '--json         Machine envelope (report, patch, or cache entry)',
+  'help.opt_patch':
+    '--patch        Freeze Patch product to stdout (apply-ready; does not write workspace)',
+  'help.opt_cache':
+    '--cache        Keep delta/patch in workspace session memory for later inspect',
+  'help.opt_list': '--list         List session-cached deltas for this workspace',
+  'help.opt_show': '--show <id>    Show one cached delta/patch by id',
+  'help.opt_clear': '--clear        Clear session delta cache for this workspace',
+  'help.opt_quiet': '--quiet, -q    Suppress meta header',
+  'help.note_vocab':
+    'delta = sense narrative; patch = apply product; --cache = session memory (not a write to authored trees)',
+  'help.note_layout':
+    'layoutOnly = brace ∧ nest skeleton ∧ labels ∧ structuralOps=0 ∧ triviaOnly',
+  'help.note_session':
+    'Session cache lives under .spw/gen/session/cli-cache/ (skipped by invent/map as gen)',
+  'help.ex_basic': 'spw delta a.spw b.spw',
+  'help.ex_cache': 'spw delta --cache before.spw after.spw',
+  'help.ex_patch': 'spw delta --patch before.spw after.spw',
+  'help.ex_list': 'spw delta --list',
+  'meta.header':
+    '# spw delta  identity={identity} layoutOnly={layoutOnly} lexOps={lexOps} brace={brace} nest={nest} labels={labels}',
+  'meta.cached':
+    '# spw delta --cache  id={id}  edits={edits} layoutOnly={layoutOnly}  session={session}',
+  'meta.patch':
+    '# spw delta --patch  edits={edits} store={store} layoutOnly={layoutOnly} applyTarget={applyTarget}',
+  'meta.list_header': '# spw delta --list  n={count}  session={session}',
+  'error.need_paths': 'need exactly two paths (before after)',
+  'error.unknown_flag': 'unknown flag {flag}',
+  'error.missing_show_id': 'need --show <id>',
+  'error.not_found': 'no cached entry with id {id}',
+  'status.empty': 'no cached deltas in this workspace session',
+  'status.stored': 'stored {id} in session cache ({kind})',
+  'status.cleared': 'cleared {count} cached entr(y/ies)',
+})
+
 interface DeltaArgs {
-  beforePath: string
-  afterPath: string
+  beforePath?: string
+  afterPath?: string
   json: boolean
   quiet: boolean
-  /** Emit Patch product card (selection + edits + store=memory). */
   patch: boolean
+  cache: boolean
+  list: boolean
+  clear: boolean
+  showId?: string
 }
 
 function parseArgs(argv: string[]): DeltaArgs {
@@ -35,7 +90,12 @@ function parseArgs(argv: string[]): DeltaArgs {
   let json = false
   let quiet = false
   let patch = false
+  let cache = false
+  let list = false
+  let clear = false
+  let showId: string | undefined
   const paths: string[] = []
+
   for (let i = 0; i < args.length; i++) {
     const a = args[i]!
     if (a === '--json') {
@@ -46,9 +106,28 @@ function parseArgs(argv: string[]): DeltaArgs {
       quiet = true
       continue
     }
-    // --patch preferred; --cache retained as synonym for freeze-to-product
-    if (a === '--patch' || a === '--cache' || a === '--cached') {
+    if (a === '--patch') {
       patch = true
+      continue
+    }
+    if (a === '--cache' || a === '--cached') {
+      cache = true
+      continue
+    }
+    if (a === '--list') {
+      list = true
+      continue
+    }
+    if (a === '--clear') {
+      clear = true
+      continue
+    }
+    if (a === '--show') {
+      const id = args[++i]
+      if (!id || id.startsWith('-')) {
+        throw new Error(`spw delta: ${d('error.missing_show_id')}`)
+      }
+      showId = id
       continue
     }
     if (a === '--help' || a === '-h') {
@@ -56,50 +135,58 @@ function parseArgs(argv: string[]): DeltaArgs {
       process.exit(0)
     }
     if (a.startsWith('-')) {
-      throw new Error(`spw delta: unknown flag ${a}`)
+      throw new Error(`spw delta: ${d('error.unknown_flag', { flag: a })}`)
     }
     paths.push(a)
   }
+
+  if (list || clear || showId) {
+    return { json, quiet, patch, cache, list, clear, showId }
+  }
+
   if (paths.length !== 2) {
-    throw new Error('spw delta: need exactly two paths (before after)')
+    throw new Error(`spw delta: ${d('error.need_paths')}`)
   }
   return {
-    beforePath: paths[0]!,
-    afterPath: paths[1]!,
+    beforePath: paths[0],
+    afterPath: paths[1],
     json,
     quiet,
     patch,
+    cache,
+    list,
+    clear,
   }
 }
 
 export function printDeltaHelp(): void {
   printHelpPage({
     name: 'delta',
-    summary: 'Lex + nest-path ChangeReport for two surface revisions (collate-only)',
-    usage: ['spw delta <before> <after> [--json] [--patch]'],
+    summary: d('help.summary'),
+    usage: [d('help.usage'), d('help.usage_list'), d('help.usage_show')],
     groups: [
       {
-        title: 'Options',
+        title: helpLoc('help.options'),
         lines: [
-          '--json         Machine ChangeReport (or Patch with --patch)',
-          '--patch        Freeze Patch product (selection + edits + IrRef); collate only',
-          '--cache        Alias for --patch',
-          '--quiet, -q    Suppress meta header',
+          d('help.opt_json'),
+          d('help.opt_patch'),
+          d('help.opt_cache'),
+          d('help.opt_list'),
+          d('help.opt_show'),
+          d('help.opt_clear'),
+          d('help.opt_quiet'),
         ],
       },
       {
-        title: 'Notes',
-        lines: [
-          'delta = sense narrative; patch = apply-ready product (this command never writes)',
-          'layoutOnly = brace ∧ nest skeleton ∧ labels ∧ structuralOps=0 ∧ triviaOnly',
-          'Apply targets: file | files | nodes (seed applyPatch*)',
-        ],
+        title: helpLoc('help.notes'),
+        lines: [d('help.note_vocab'), d('help.note_layout'), d('help.note_session')],
       },
     ],
     examples: [
-      'spw delta a.spw b.spw',
-      'spw delta --patch before.spw after.spw',
-      'spw delta --json --patch before.spw after.spw',
+      d('help.ex_basic'),
+      d('help.ex_cache'),
+      d('help.ex_patch'),
+      d('help.ex_list'),
     ],
   })
 }
@@ -143,68 +230,170 @@ function toJsonEnvelope(report: ChangeReport, beforePath: string, afterPath: str
   }
 }
 
+function runList(json: boolean, quiet: boolean): void {
+  const entries = listCliCache()
+  if (json) {
+    console.log(
+      JSON.stringify(
+        {
+          command: 'delta',
+          mode: 'list',
+          session: cliCacheDir(),
+          entries,
+        },
+        null,
+        2,
+      ),
+    )
+    return
+  }
+  if (!quiet) {
+    meta(d('meta.list_header', { count: entries.length, session: cliCacheDir() }))
+  }
+  // Spw dual-read index — default surface (not a host table)
+  console.log(formatCliCacheIndexSpw(entries, { session: cliCacheDir() }))
+}
+
+function runShow(id: string, json: boolean, quiet: boolean): void {
+  const entry = getCliCacheEntry(id)
+  if (!entry) {
+    throw new Error(`spw delta: ${d('error.not_found', { id })}`)
+  }
+  if (json) {
+    console.log(JSON.stringify({ command: 'delta', mode: 'show', entry }, null, 2))
+    return
+  }
+  if (!quiet) {
+    meta(
+      `# spw delta --show ${entry.id}  kind=${entry.kind}  ${entry.beforePath ?? ''}→${entry.afterPath ?? ''}`,
+    )
+  }
+  console.log(entry.dualReadSpw)
+}
+
+function runClear(json: boolean, quiet: boolean): void {
+  const count = clearCliCache()
+  if (json) {
+    console.log(JSON.stringify({ command: 'delta', mode: 'clear', count }, null, 2))
+    return
+  }
+  if (!quiet) meta(d('status.cleared', { count }))
+  else console.log(d('status.cleared', { count }))
+}
+
 export async function runSpwDeltaCli(argv: string[]): Promise<void> {
   const parsed = parseArgs(argv)
-  const before = readFileSync(parsed.beforePath, 'utf8')
-  const after = readFileSync(parsed.afterPath, 'utf8')
-  const report = buildChangeReport(before, after, {
-    uri: `${parsed.beforePath}→${parsed.afterPath}`,
-  })
 
-  if (parsed.patch) {
-    const product = buildPatch(before, after, {
-      uri: parsed.beforePath,
-      store: 'memory',
-      applyTarget: 'file',
-      includeReport: true,
-    })
-    if (parsed.json) {
-      console.log(
-        JSON.stringify(
-          {
-            command: 'delta',
-            mode: 'patch',
-            version: product.version,
-            ref: product.ref,
-            selection: product.selection,
-            narrative: product.narrative,
-            edits: product.differential.edits.length,
-            beforeHash: product.differential.beforeHash,
-            afterHash: product.differential.afterHash,
-            effectCeiling: product.effectCeiling,
-            store: product.store,
-            report: toJsonEnvelope(report, parsed.beforePath, parsed.afterPath).report,
-          },
-          null,
-          2,
-        ),
-      )
-      return
-    }
-    if (!parsed.quiet) {
-      meta(
-        `# spw delta --patch  edits=${product.differential.edits.length}` +
-          ` store=${product.store} layoutOnly=${product.narrative.layoutOnly}` +
-          ` applyTarget=${product.applyTarget}`,
-      )
-    }
-    console.log(formatPatchSpw(product))
-    console.log(formatChangeReportSpw(report))
+  if (parsed.clear) {
+    runClear(parsed.json, parsed.quiet)
+    return
+  }
+  if (parsed.list) {
+    runList(parsed.json, parsed.quiet)
+    return
+  }
+  if (parsed.showId) {
+    runShow(parsed.showId, parsed.json, parsed.quiet)
     return
   }
 
+  const beforePath = parsed.beforePath!
+  const afterPath = parsed.afterPath!
+  const before = readFileSync(beforePath, 'utf8')
+  const after = readFileSync(afterPath, 'utf8')
+  const report = buildChangeReport(before, after, {
+    uri: `${beforePath}→${afterPath}`,
+  })
+
+  // Freeze patch product when requested
+  const product = parsed.patch
+    ? buildPatch(before, after, {
+        uri: beforePath,
+        store: parsed.cache ? 'file' : 'memory',
+        applyTarget: 'file',
+        includeReport: true,
+      })
+    : undefined
+
+  // Session memory: --cache keeps inspectable shapes for this workspace
+  let cacheId: string | undefined
+  if (parsed.cache) {
+    if (product) {
+      const entry = cachePatchProduct(product, {
+        beforePath,
+        afterPath,
+        report,
+      })
+      cacheId = entry.id
+    } else {
+      const entry = cacheDeltaReport(report, { beforePath, afterPath })
+      cacheId = entry.id
+    }
+  }
+
   if (parsed.json) {
-    console.log(JSON.stringify(toJsonEnvelope(report, parsed.beforePath, parsed.afterPath), null, 2))
+    const body: Record<string, unknown> = {
+      ...toJsonEnvelope(report, beforePath, afterPath),
+    }
+    if (product) {
+      body.mode = 'patch'
+      body.patch = {
+        version: product.version,
+        ref: product.ref,
+        selection: product.selection,
+        narrative: product.narrative,
+        edits: product.differential.edits.length,
+        beforeHash: product.differential.beforeHash,
+        afterHash: product.differential.afterHash,
+        effectCeiling: product.effectCeiling,
+        store: product.store,
+      }
+    }
+    if (cacheId) {
+      body.cached = {
+        id: cacheId,
+        session: cliCacheDir(),
+        kind: product ? 'patch' : 'delta',
+      }
+    }
+    console.log(JSON.stringify(body, null, 2))
     return
   }
 
   if (!parsed.quiet) {
-    meta(
-      `# spw delta  identity=${report.identity} layoutOnly=${report.layoutOnly}` +
-        ` lexOps=${report.lex.structuralOps} brace=${report.ast.brace.severity}` +
-        ` nest=${report.ast.nest.skeletonEqual ? 'eq' : 'moved'}` +
-        ` labels=${report.ast.nest.labelsEqual ? 'eq' : 'moved'}`,
-    )
+    if (cacheId) {
+      meta(
+        d('meta.cached', {
+          id: cacheId,
+          edits: product?.differential.edits.length ?? report.editSpans,
+          layoutOnly: report.layoutOnly,
+          session: cliCacheDir(),
+        }),
+      )
+      meta(d('status.stored', { id: cacheId, kind: product ? 'patch' : 'delta' }))
+    } else if (product) {
+      meta(
+        d('meta.patch', {
+          edits: product.differential.edits.length,
+          store: product.store,
+          layoutOnly: product.narrative.layoutOnly,
+          applyTarget: product.applyTarget,
+        }),
+      )
+    } else {
+      meta(
+        d('meta.header', {
+          identity: report.identity,
+          layoutOnly: report.layoutOnly,
+          lexOps: report.lex.structuralOps,
+          brace: report.ast.brace.severity,
+          nest: report.ast.nest.skeletonEqual ? 'eq' : 'moved',
+          labels: report.ast.nest.labelsEqual ? 'eq' : 'moved',
+        }),
+      )
+    }
   }
+
+  if (product) console.log(formatPatchSpw(product))
   console.log(formatChangeReportSpw(report))
 }

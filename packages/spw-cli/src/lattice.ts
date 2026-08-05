@@ -17,8 +17,29 @@ import {
   type AppositionSpectrum,
 } from '@spwashi/spw-seed'
 import { scanCorpus, type IndexDepth } from './corpus-scan'
-import { printHelpPage } from './help'
+import { helpLoc, printHelpPage } from './help'
+import { defineLoc } from './loc'
 import { formatTable, meta, truncate } from './view'
+
+/** Copy for lattice — revise here; keys section.key → lattice.section.key */
+const L = defineLoc('lattice', {
+  'help.summary':
+    'Apposition unit-cell spectrum — named readings without a full parse',
+  'help.usage': 'spw lattice [paths...] [--json] [--top N] [--depth standard]',
+  'help.opt_json': '--json            Machine spectrum + per-file lattices',
+  'help.opt_top': '--top, -n N       Top named species in aggregate (default 24)',
+  'help.opt_depth': '--depth <level>   Corpus walk depth (minimal|standard|full)',
+  'help.opt_limit': '--limit N         Max files listed with cells (default 40)',
+  'help.opt_quiet': '--quiet, -q       Suppress headers',
+  'help.note_cells': 'Unit cell = ~#name(body) or ~#(body). Mask = envelope hash.',
+  'help.note_comments': 'Does not promote comments; that is future interstitial tooling.',
+  'help.note_alias': 'Alias: spw readings',
+  'help.ex_basic': 'spw lattice .spw docs/theory --top 20',
+  'help.ex_json': 'spw lattice prompts --json',
+  'meta.header':
+    '# spw lattice  files={files} with_cells={withCells} cells={cells} named={named}',
+  'status.none': '  (no apposition unit cells — try paths with ~#name(…) readings)',
+})
 
 interface LatticeArgs {
   roots: string[]
@@ -82,32 +103,25 @@ function parseArgs(argv: string[]): LatticeArgs {
 export function printLatticeHelp(): void {
   printHelpPage({
     name: 'lattice',
-    summary: 'Apposition unit-cell spectrum — named readings without a full parse',
-    usage: ['spw lattice [paths...] [--json] [--top N] [--depth standard]'],
+    summary: L('help.summary'),
+    usage: [L('help.usage')],
     groups: [
       {
-        title: 'Options',
+        title: helpLoc('help.options'),
         lines: [
-          '--json            Machine spectrum + per-file lattices',
-          '--top, -n N       Top named species in aggregate (default 24)',
-          '--depth <level>   Corpus walk depth (minimal|standard|full)',
-          '--limit N         Max files listed with cells (default 40)',
-          '--quiet, -q       Suppress headers',
+          L('help.opt_json'),
+          L('help.opt_top'),
+          L('help.opt_depth'),
+          L('help.opt_limit'),
+          L('help.opt_quiet'),
         ],
       },
       {
-        title: 'Notes',
-        lines: [
-          'Unit cell = ~#name(body) or ~#(body). Mask = envelope hash.',
-          'Does not promote comments; that is future interstitial tooling.',
-          'Alias: spw readings',
-        ],
+        title: helpLoc('help.notes'),
+        lines: [L('help.note_cells'), L('help.note_comments'), L('help.note_alias')],
       },
     ],
-    examples: [
-      'spw lattice .spw docs/theory --top 20',
-      'spw lattice prompts --json',
-    ],
+    examples: [L('help.ex_basic'), L('help.ex_json')],
   })
 }
 
@@ -196,7 +210,7 @@ export async function runSpwLatticeCli(argv: string[]): Promise<void> {
   }
 
   if (topNames.length === 0) {
-    meta('  (no apposition unit cells — try paths with ~#name(…) readings)')
+    meta(L('status.none'))
     return
   }
 
