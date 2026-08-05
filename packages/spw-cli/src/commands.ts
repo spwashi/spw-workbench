@@ -41,6 +41,7 @@ import { printSkimHelp, runSpwSkimCli } from './skim'
 import { printTasteHelp, runSpwTasteCli } from './taste'
 import { printTreeHelp, runSpwTreeCli } from './tree'
 import { printLatticeHelp, runSpwLatticeCli } from './lattice'
+import { printDeltaHelp, runSpwDeltaCli } from './delta'
 
 /**
  * Which part of the loop a command belongs to. Groups order the help page and
@@ -207,6 +208,13 @@ export const COMMANDS: CommandSpec[] = [
     summary: 'Apposition unit-cell spectrum (~# readings) without a full parse',
     printHelp: () => printLatticeHelp(),
     run: (_invoked, args) => runSpwLatticeCli(['lattice', ...args]),
+  },
+  {
+    name: 'delta',
+    group: 'sense',
+    summary: 'Lex + brace ChangeReport for two surface revisions (collate-only)',
+    printHelp: () => printDeltaHelp(),
+    run: (_invoked, args) => runSpwDeltaCli(['delta', ...args]),
   },
   {
     name: 'measure',

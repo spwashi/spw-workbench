@@ -194,6 +194,21 @@ export {
   type ScanAppositionsOptions,
 } from './apposition-scan'
 
+/** Lex + brace ChangeReport — two-revision narrative (path-match v1). */
+export {
+  CHANGE_REPORT_VERSION,
+  compareLex,
+  compareAst,
+  buildChangeReport,
+  formatChangeReportSpw,
+  type LexOpKind,
+  type LexTokenKey,
+  type LexOp,
+  type LexChangeReport,
+  type AstChangeReport,
+  type ChangeReport,
+} from './change-report'
+
 export {
   inspectGeometry,
   formatGeometryReport,
