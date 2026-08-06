@@ -35,8 +35,11 @@ effect.l0.measure → effect.l1.memory → effect.l2.workspace → effect.l3.ext
                  │
                  ▼
         pulse ── effect.l0.measure ── accept? ──► mutate
-                 │                              (l1.memory → l2.workspace)
-                 │
+                 │          │                   (l1.memory → l2.workspace)
+                 │          └── --cut → session bank (stencil)
+                 │                              │
+                 │                              └── mutate --from <id>
+                 │                                  (replan on other surfaces)
                  └── pulse --write → effect.l2.workspace
                      (one file, atomic, risk-gated)
 ```
@@ -44,6 +47,33 @@ effect.l0.measure → effect.l1.memory → effect.l2.workspace → effect.l3.ext
 - **Pulse** answers: *what would change, and is structure still healthy?* (`effect.l0.measure`)
 - **Mutate** answers: *make the tree (or buffer) match the profile now* (`effect.l1.memory`, then `effect.l2.workspace` when writing paths)
 - **Beat** answers: *when is the next tick?*
+
+## Stencil transfer (island fix)
+
+Pulse, mutate, and session cache share one product — a **stencil** — instead of opaque after-bytes or one-shot CLI memory.
+
+| Metaphor | Meaning |
+|----------|---------|
+| **Stencil** | Cutout: mutation **program** (profile / rules) + **form mask** (nest + brace) |
+| **Bank** | Session retention under `.spw/gen/session/cli-cache/` |
+| **Cut** | `pulse … --cut` — collate stencil into bank (no write-by-default) |
+| **Press** | `mutate --from <id> <targets>` — replan under stencil program |
+
+**Transfer law (v1):** always **replan** on the target. Never reuse donor byte offsets. Mask gate:
+
+| Mode | Rule |
+|------|------|
+| `soft` (default) | brace **or** nest signature match |
+| `strict` | brace **and** nest match |
+| `off` | always replan |
+
+```bash
+spw pulse a.spw --cut
+spw mutate --from <stencil-id> b.spw --dry-run
+spw mutate --from <stencil-id> prompts --mask soft
+```
+
+Seed type: `packages/spw-seed/src/canonical/stencil.ts` (`spw.stencil/1`).
 
 ## Hot module (HMR / watcher)
 

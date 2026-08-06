@@ -1,6 +1,9 @@
 # Cache Algorithm
 #
-# Cache contracts for ocean-biome selectors and LSP navigation.
+# Beat-tier contracts for ocean-biome selectors and LSP navigation.
+# This is the *beat_evaluate / beat_inspect* plane only.
+# Collate bank (CLI session products) and fs dumps are other planes —
+# see docs/theory/spw/cache-field.spw.
 
 #>spw_ocean_cache_algo
 #:cache #!optimization
@@ -8,8 +11,11 @@
 
 ^"intent"{
  ~#goal: "Cache expensive selector/link resolution with deterministic invalidation."
+ ~#plane: "beat_evaluate + beat_inspect (session beat clock) — not collate bank"
+ ~#field: ~"docs/theory/spw/cache-field.spw"
  ~#lspFocus: "definition, documentLink, and workspace symbol warm paths."
  ~#taste: "A hit and a cold recomputation return the same answer; when they diverge the key was wrong, not the cache."
+ ~#cli: "spw inspect cache <file> · spw inspect medium"
 }
 
 ^"keys"{

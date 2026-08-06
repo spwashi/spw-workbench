@@ -1,0 +1,129 @@
+# Cache field — retention planes (not one "the cache")
+#
+# Law: identity ≠ retention ≠ disclosure ≠ attention.
+# Four planes keep CLI, LSP, and runtime from lying with the same word.
+#
+# @see .spw/biome/ocean/algos/cache.spw
+# @see docs/theory/spw/operational-field.spw
+# @see docs/theory/spw/representational-disclosure.spw
+# @see packages/spw-runtime/src/state/memory-cache.ts
+# @see packages/spw-cli/src/session/workspace-cache.ts
+
+#:layer #!semantics
+#:status #!measured
+#:dialect Spw.b
+
+^["roots"]{
+ @ocean_algo: ~"../../../.spw/biome/ocean/algos/cache.spw"
+ @field: ~"./operational-field.spw"
+ @disclosure: ~"./representational-disclosure.spw"
+ @beat_impl: ~"../../../packages/spw-runtime/src/state/memory-cache.ts"
+ @hot: ~"../../../packages/spw-runtime/src/session/hot-session.ts"
+ @cli_bank: ~"../../../packages/spw-cli/src/session/workspace-cache.ts"
+ @inspect: ~"../../../packages/spw-cli/src/inspect.ts"
+ @channels: ~"../../../packages/spw-runtime/src/session/channels.ts"
+}
+
+^["thesis"]{
+ ~#claim: "There is no single cache — only retention planes with different clocks and product laws."
+ ~#claim: "A hit must return the same answer as a cold recompute; key bugs are correctness bugs."
+ ~#law: "Request epoch, session beat, and collate-bank TTL never enter product identity (irRefKey)."
+ ~#taste: "Name the plane before you tune the TTL."
+}
+
+// ── Four retention planes ──────────────────────────────────────
+
+^["planes"]{
+ beat_evaluate: .{
+  clock: "session beat (HotRuntimeSession.cache)"
+  holds: "interpret / evaluate products"
+  key: #[channel, dialect, contentHash, path?]
+  tiers: #[hot, warm, cold]
+  ttl_beats: .{ hot: 8, warm: 64, cold: 256 }
+  hosts: #[runtime, lsp_warm_paths]
+  inspect: "spw inspect cache <file>"
+ }
+
+ beat_inspect: .{
+  clock: "session beat (HotRuntimeSession.inspectCache)"
+  holds: "form / resonance / bytecode cards when dialect.inspectMemory"
+  key: "same family as evaluate + inspect lens"
+  hosts: #[runtime, lsp_geometry_probes]
+  inspect: "spw inspect cache <file>  (reports evaluate + inspect planes)"
+ }
+
+ collate_bank: .{
+  clock: "workspace session (wall time + entry cap), not beat"
+  holds: "ChangeReport · Patch · Stencil — collate products only"
+  path: ".spw/gen/session/cli-cache/"
+  law: "never write-by-default; stamp/bank is collate; apply is discharge"
+  hosts: #[cli_delta, cli_pulse_stamp, cli_mutate_from]
+  inspect: "spw inspect bank"
+ }
+
+ host_fs_dump: .{
+  clock: "filesystem snapshot time"
+  holds: ".agents/state/runtime dumps (mem dump/load)"
+  hosts: #[cli_mem]
+  inspect: "spw inspect memory · spw mem list"
+ }
+
+ corpus_scan_memo: .{
+  clock: "mtime+size fingerprint of scanned files + scan options"
+  holds: "CorpusProduct — population rows + TopographyReport + links/signals"
+  memory: "process-local full scan (sources + product), cap 16"
+  disk: ".spw/gen/session/corpus-memo/<fp>.product.json + dual-read .spw"
+  invalidation: "any mtime/size change → new fingerprint → fresh scan"
+  hosts: #[cli_census, cli_graph, cli_density, cli_formula, cli_taste]
+  product: "spw.corpus/1 (seed: buildCorpusProduct / buildPopulation)"
+  inspect: "spw inspect corpus [roots]"
+  law: "sources are not identity — disk memo drops text; re-read on disk hit"
+ }
+}
+
+^["forbid"]{
+ ~#mix: "Do not report LSP request-activity as beat temperature."
+ ~#mix: "Do not put collate-bank ids into evaluate cache keys."
+ ~#mix: "Do not use resonance rank or soft tags in durable product identity."
+ ~#word: "temperature in workspaceTemperature is retention class language — not ocean warmth product."
+}
+
+^["keys"]{
+ shape: #[fileHash, dialect, channel, lens, phraseId?, fixity?, selectorId?]
+ eviction: "prefix match on fileHash (and friends) when source changes"
+ law: "missing dialect|channel|lens in the key is a bug, not a miss"
+}
+
+^["promotion"]{
+ on_hit: "repeated access may promote warm→hot (BeatCache)"
+ on_tick: "beat advance sweeps expired TTLs"
+ on_cap: "maxEntries evicts coldest first"
+}
+
+^["cli_hooks"]{
+ inspect_cache: "live HotRuntimeSession stats after evaluate/inspect sample"
+ inspect_bank: "list dual-read + product sidecars under gen/session/cli-cache"
+ inspect_corpus: "population/topography memo stats + dual-read corpus card"
+ inspect_medium: "RuntimeMedium matrix (channel × dialect aperture)"
+ inspect_session: "prepare/parse/inspect/evaluate receipt + cache hit flags"
+ inspect_memory: "durable dump pressure (mem status)"
+ mem_dump_load: "filesystem snapshot — different plane from beat cache"
+}
+
+^["composition"]{
+ ~#agent: "collate bank (stencil) → mutate --from; beat cache stays inside one process"
+ ~#lsp: "documentLink/hover hot; workspaceSymbol warm; definition cold — ocean algo"
+ ~#runtime: "evaluate plane for interpret; inspect plane for form cards"
+}
+
+^["try"]{
+ ~#probe[
+  "spw inspect bank",
+  "spw inspect corpus docs/runtime",
+  "spw inspect cache docs/theory/spw/cache-field.spw",
+  "spw inspect medium --channel trial",
+  "spw inspect session docs/theory/spw/cache-field.spw --beats 2",
+  "spw inspect memory",
+  "spw form docs/theory/spw/cache-field.spw --static",
+ ]
+}

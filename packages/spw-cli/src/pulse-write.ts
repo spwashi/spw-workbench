@@ -94,4 +94,6 @@ export interface PulseFileReport {
   matrix?: MutationMatrix
   sequenceConflicts?: number
   writeStatus: PulseWriteStatus
+  /** Session bank id when --cut cut a stencil for mutate --from. */
+  stencilId?: string
 }

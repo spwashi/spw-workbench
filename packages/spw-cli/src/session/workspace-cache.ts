@@ -16,10 +16,11 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync
 import path from 'node:path'
 import process from 'node:process'
 import { createHash } from 'node:crypto'
-import type { ChangeReport, Patch } from '@spwashi/spw-seed'
+import type { ChangeReport, Patch, Stencil } from '@spwashi/spw-seed'
 import {
   formatChangeReportSpw,
   formatPatchSpw,
+  formatStencilSpw,
   formatSpwCard,
   formatSpwCards,
   facet,
@@ -28,7 +29,7 @@ import {
 
 export const CLI_CACHE_SCHEMA = 'spw.cli_session_cache/1' as const
 
-export type CliCacheKind = 'delta' | 'patch'
+export type CliCacheKind = 'delta' | 'patch' | 'stencil'
 
 export interface CliCacheEntryMeta {
   id: string
@@ -49,6 +50,8 @@ export interface CliCacheEntry extends CliCacheEntryMeta {
   report?: ChangeReport
   /** Frozen Patch when kind is patch. */
   patch?: Patch
+  /** Stencil when kind is stencil (replan transfer program + mask). */
+  stencil?: Stencil
   /** Nested-frame dual-read disclosure (default inspect). */
   dualReadSpw: string
 }
@@ -193,6 +196,7 @@ function persistEntry(cwd: string, entry: CliCacheEntry): void {
     editCount: entry.editCount,
     report: entry.report,
     patch: entry.patch,
+    stencil: entry.stencil,
   }
   writeFileSync(entryProductPath(cwd, entry.id), JSON.stringify(product, null, 2) + '\n', 'utf8')
 
@@ -234,6 +238,42 @@ export function cacheDeltaReport(
   memMap(cwd).set(id, entry)
   persistEntry(cwd, entry)
   return entry
+}
+
+/** Bank a stencil (cut by pulse --cut) into session memory + disk. */
+export function cacheStencil(
+  stencil: Stencil,
+  options: {
+    cwd?: string
+    beforePath?: string
+  } = {},
+): CliCacheEntry {
+  const cwd = options.cwd ?? process.cwd()
+  const entry: CliCacheEntry = {
+    schema: CLI_CACHE_SCHEMA,
+    id: stencil.id,
+    kind: 'stencil',
+    createdAt: new Date().toISOString(),
+    cwd,
+    beforePath: options.beforePath ?? stencil.sourceUri,
+    note: stencil.note,
+    layoutOnly: stencil.mask.layoutOnlyCandidate,
+    identity: false,
+    editCount: 0,
+    stencil,
+    dualReadSpw: formatStencilSpw(stencil),
+  }
+  memMap(cwd).set(stencil.id, entry)
+  persistEntry(cwd, entry)
+  return entry
+}
+
+/** Load stencil by id from session bank (or undefined). */
+export function getStencil(
+  id: string,
+  cwd: string = process.cwd(),
+): Stencil | undefined {
+  return getCliCacheEntry(id, cwd)?.stencil
 }
 
 /** Store a frozen Patch in session memory + disk. */
@@ -322,7 +362,11 @@ export function getCliCacheEntry(
     const entry: CliCacheEntry = {
       schema: CLI_CACHE_SCHEMA,
       id,
-      kind: dualReadSpw.includes('^["patch"]') ? 'patch' : 'delta',
+      kind: dualReadSpw.includes('^["stencil"]')
+        ? 'stencil'
+        : dualReadSpw.includes('^["patch"]')
+          ? 'patch'
+          : 'delta',
       createdAt: '',
       cwd,
       note: 'disclosure-only (no product sidecar)',

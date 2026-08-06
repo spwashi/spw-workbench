@@ -1,11 +1,10 @@
 /**
- * spw census (invent) — multi-file population with topography roles + signal counts.
- * Canonical: census. Aliases: invent, inventory, inv.
- *
- * First step of the sense loop: what is here, what is warm (hub), what is cold (orphan).
+ * spw census — population product (multi-file inventory + topo roles).
+ * Collate chain step 1. Route aliases: invent, inventory, inv (not taught).
  */
 
 import process from 'node:process'
+import { formatCorpusProductSpw, formatPopulationSpw } from '@spwashi/spw-seed'
 import { printHelpPage } from './help'
 import {
   filterInventory,
@@ -18,7 +17,14 @@ import {
   type InventoryRow,
 } from './corpus-scan'
 import { formatJsonEnvelope } from './envelope'
-import { formatTable, meta, truncate } from './view'
+import {
+  emitDetail,
+  emitHeader,
+  emitNext,
+  formatTable,
+  setMetaQuiet,
+  truncate,
+} from './view'
 
 interface InventArgs {
   roots: string[]
@@ -29,6 +35,8 @@ interface InventArgs {
   hubs: number
   quiet: boolean
   depth: IndexDepth
+  /** Dual-read Spw (default) | host table | json via --json */
+  format: 'spw' | 'table'
 }
 
 function parseInventArgs(argv: string[]): InventArgs {
@@ -42,11 +50,25 @@ function parseInventArgs(argv: string[]): InventArgs {
     hubs: 24,
     quiet: false,
     depth: 'standard',
+    format: 'spw',
   }
   for (let i = 0; i < args.length; i++) {
     const a = args[i]!
     if (a === '--json') {
       parsed.json = true
+      continue
+    }
+    if (a === '--table' || a === '--format=table') {
+      parsed.format = 'table'
+      continue
+    }
+    if (a === '--spw' || a === '--format=spw') {
+      parsed.format = 'spw'
+      continue
+    }
+    if (a === '--format') {
+      const next = (args[++i] ?? 'spw').toLowerCase()
+      if (next === 'table' || next === 'spw') parsed.format = next
       continue
     }
     if (a === '--quiet' || a === '-q') {
@@ -86,7 +108,12 @@ function parseInventArgs(argv: string[]): InventArgs {
       continue
     }
     if (a === '--hubs') {
+      // Route-only alias for hub table width; prefer --limit for body rows.
       parsed.hubs = Math.max(1, Number(args[++i] ?? 24) || 24)
+      continue
+    }
+    if (a.startsWith('--hubs=')) {
+      parsed.hubs = Math.max(1, Number(a.slice('--hubs='.length)) || 24)
       continue
     }
     if (a === '--depth') {
@@ -101,15 +128,23 @@ function parseInventArgs(argv: string[]): InventArgs {
       parsed.roots.push(a)
       continue
     }
-    throw new Error(`spw invent: unknown flag ${a}`)
+    throw new Error(`spw census: unknown flag ${a}`)
   }
   if (!parsed.roots.length) parsed.roots = ['.']
   return parsed
 }
 
 function stripCommand(argv: string[]): string[] {
-  const slice = argv[0] === 'invent' || argv[0] === 'inventory' || argv[0] === 'inv' ? argv.slice(1) : argv
-  return slice
+  const head = argv[0]
+  if (
+    head === 'census' ||
+    head === 'invent' ||
+    head === 'inventory' ||
+    head === 'inv'
+  ) {
+    return argv.slice(1)
+  }
+  return argv
 }
 
 function splitCsv(s: string): string[] {
@@ -121,7 +156,7 @@ function parseSort(s: string): InventArgs['sort'] {
   if (k === 'file' || k === 'lines' || k === 'refs' || k === 'frames' || k === 'sigils' || k === 'degree') {
     return k
   }
-  throw new Error(`spw invent: --sort must be file|lines|refs|frames|sigils|degree (got ${s})`)
+  throw new Error(`spw census: --sort must be file|lines|refs|frames|sigils|degree (got ${s})`)
 }
 
 function parseRole(s: string): InventoryRole | 'all' {
@@ -129,51 +164,48 @@ function parseRole(s: string): InventoryRole | 'all' {
   if (k === 'all' || k === 'hub' || k === 'orphan' || k === 'leaf' || k === 'source' || k === 'node') {
     return k
   }
-  throw new Error(`spw invent: --role must be all|hub|orphan|leaf|source|node (got ${s})`)
+  throw new Error(`spw census: --role must be all|hub|orphan|leaf|source|node (got ${s})`)
 }
 
 export function printInventHelp(): void {
   printHelpPage({
-    title: 'Spw Census — multi-file population inventory',
+    title: 'Spw Census — population product',
     usage: [
       'spw census [paths...] [--from a,b] [--sort degree|lines|refs|frames|file] [--role hub|orphan|…]',
       'spw census prompts --sort lines -n 40',
+      'spw census prompts --table          # host grid',
       'spw census .spw --role hub --json',
-      'spw invent … / spw inv …   # compat aliases',
     ],
     sections: [
       {
-        title: 'Columns',
+        title: 'Product',
         lines: [
-          'file · lines · pathRefs · rootRefs · frames · annot · in/out degree · role · top sigils',
-          'role: hub (high degree) | source (out only) | leaf (in only) | orphan | node',
+          'Default dual-read: ^["corpus"] + ^["population"] with ~"path"{ role ; … }',
+          'role: hub | source | leaf | orphan | node',
+          'Memo: process + .spw/gen/session/corpus-memo (mtime fingerprint)',
         ],
       },
       {
         title: 'Flags',
         lines: [
-          '--sort / --role / --hubs / --limit / -n   (see usage examples)',
-          '--depth <d>   Scan depth minimal|standard|full (default standard)',
-          '--json        Structured envelope',
+          '--sort <k>         degree|lines|refs|frames|file|sigils',
+          '--role <r>         all|hub|orphan|leaf|source|node',
+          '--limit / -n       Max body rows (default 80)',
+          '--depth <d>        minimal|standard|full',
+          '--spw / --format spw   Dual-read (default)',
+          '--table / --format table  Host spreadsheet grid',
+          '--json             Machine envelope',
+          '--quiet / -q       Suppress header and next:',
         ],
       },
       {
-        title: 'Sense loop',
+        title: 'Examples',
         lines: [
-          '1. invent  — what exists + warmth',
-          '2. map     — hubs, layers, cycles, broken targets',
-          '3. formula — named + embedded math patterns',
-          '4. query   — multi-file select/count/group analysis',
-          '5. skim    — read a hub without full query',
-        ],
-      },
-      {
-        title: 'Pair with',
-        lines: [
-          'spw map <same roots> --hubs 12',
-          'spw formula <same roots> --top 20',
-          'spw query --from <dir> --count --selector pathRefs',
-          'spw skim <hub.spw>',
+          'spw census prompts -n 12',
+          'spw census prompts --table',
+          'spw graph <same roots> --limit 12',
+          'spw inspect corpus prompts',
+          'spw density <same roots>',
         ],
       },
     ],
@@ -207,12 +239,16 @@ export async function runSpwInventCli(argv: string[] = process.argv): Promise<vo
   const stats = inventoryStats(scan.inventory)
   const broken = scan.topography.brokenTargets.length
 
+  setMetaQuiet(args.quiet)
+
   if (args.json) {
     console.log(
-      formatJsonEnvelope('invent', limited, {
+      formatJsonEnvelope('census', limited, {
         from: args.roots,
         sort: args.sort,
         role: args.role,
+        product: scan.product,
+        memoPlane: scan.memoPlane,
         stats: {
           ...stats,
           cyclic: scan.topography.cyclic,
@@ -227,43 +263,61 @@ export async function runSpwInventCli(argv: string[] = process.argv): Promise<vo
     return
   }
 
-  if (!args.quiet) {
-    meta(
-      `# spw invent  files=${stats.files}  lines=${stats.lines}  links=${scan.topography.links}  cyclic=${scan.topography.cyclic}`,
-    )
-    meta(
-      `  refs path=${stats.pathRefs} root=${stats.rootRefs}  frames=${stats.frames}  broken=${broken}`,
-    )
-    const roleCounts = Object.entries(stats.byRole)
-      .sort((a, b) => b[1] - a[1])
-      .map(([k, v]) => `${k}:${v}`)
-      .join(' ')
-    meta(`  roles  ${roleCounts || '—'}`)
-  }
+  emitHeader('census', {
+    files: stats.files,
+    lines: stats.lines,
+    links: scan.topography.links,
+    cyclic: scan.topography.cyclic,
+    memo: scan.memoPlane,
+    format: args.format,
+  })
+  emitDetail(
+    `refs path=${stats.pathRefs} root=${stats.rootRefs}  frames=${stats.frames}  broken=${broken}`,
+  )
+  const roleCounts = Object.entries(stats.byRole)
+    .sort((a, b) => b[1] - a[1])
+    .map(([k, v]) => `${k}:${v}`)
+    .join(' ')
+  emitDetail(`roles  ${roleCounts || '—'}`)
+  emitDetail(`product ${scan.product.version}  fp=${scan.product.fingerprint.slice(0, 12)}`)
 
   if (!limited.length) {
-    meta('  (no files)')
-    meta('  tip: pass a root with .spw files, e.g. spw invent prompts')
+    emitDetail('(no files)')
+    emitDetail('tip: pass a root with .spw files, e.g. spw census prompts')
     return
   }
 
-  console.log(
-    formatTable(
-      ['file', 'lines', 'pRef', 'rRef', 'frm', 'ann', 'in', 'out', 'role', 'sigils'],
-      limited.map(r => rowCells(r)),
-      { maxCol: 52 },
-    ),
-  )
+  if (args.format === 'table') {
+    console.log(
+      formatTable(
+        ['file', 'lines', 'pRef', 'rRef', 'frm', 'ann', 'in', 'out', 'role', 'sigils'],
+        limited.map(r => rowCells(r)),
+        { maxCol: 52 },
+      ),
+    )
+  } else {
+    // Dual-read: path-bound population (live-ish statements) + corpus head
+    const head = formatCorpusProductSpw(
+      { ...scan.product, population: limited },
+      { rowLimit: args.limit, includeRows: false },
+    )
+    const pop = formatPopulationSpw(limited, {
+      among: args.roots,
+      limit: args.limit,
+    })
+    console.log(`${head}\n\n${pop}`)
+  }
 
   if (rows.length > limited.length) {
-    meta(`  … ${rows.length - limited.length} more (raise --limit)`)
+    emitDetail(`… ${rows.length - limited.length} more (raise --limit)`)
   }
 
-  if (!args.quiet) {
-    meta(
-      '  next: spw map <roots> · spw formula <roots> · spw query --from <dir> --count · spw skim <hub>',
-    )
-  }
+  emitNext(
+    'spw graph <roots>',
+    'spw formula <roots>',
+    'spw density <roots>',
+    'spw inspect corpus <roots>',
+  )
 }
 
 function rowCells(r: InventoryRow): string[] {

@@ -22,6 +22,7 @@ import {
   formatResonanceAsSpw,
   formatResonanceSummary,
   inspectGeometry,
+  parse,
   resolveWeightScheme,
   type GeometryField,
   type GeometricResonanceReport,
@@ -29,7 +30,7 @@ import {
 } from '@spwashi/spw-seed'
 import { formatJsonEnvelope } from './envelope'
 import { printHelpPage } from './help'
-import { meta } from './view'
+import { emitDetail, emitHeader, emitNext, formatTable, meta } from './view'
 import { resolveWorkspacePath, tryDiscoverSpwWorkspace } from './workspace'
 
 const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', '_workbench', '.agents'])
@@ -54,6 +55,11 @@ interface GeomArgs {
   limit: number
   /** Cap surfaces walked from directories. */
   maxFiles: number
+  /**
+   * Static-analysis pack: parse health + nesting balance + top lessons
+   * without full resonance (cheap multi-file triage).
+   */
+  staticOnly: boolean
 }
 
 function parseArgs(argv: string[]): GeomArgs {
@@ -71,11 +77,16 @@ function parseArgs(argv: string[]): GeomArgs {
     scheme: 'default',
     limit: 48,
     maxFiles: 200,
+    staticOnly: false,
   }
   for (let i = 0; i < args.length; i++) {
     const a = args[i]!
     if (a === '--help' || a === '-h') {
       parsed.help = true
+      continue
+    }
+    if (a === '--static' || a === '--sa') {
+      parsed.staticOnly = true
       continue
     }
     if (a === '--json') {
@@ -119,7 +130,7 @@ function parseArgs(argv: string[]): GeomArgs {
       parsed.theme = a.slice('--theme='.length)
       continue
     }
-    if (a === '--limit') {
+    if (a === '--limit' || a === '-n') {
       parsed.limit = Math.max(1, Number(args[++i] ?? 48) || 48)
       continue
     }
@@ -152,69 +163,55 @@ function parseArgs(argv: string[]): GeomArgs {
 
 export function printGeometryHelp(): void {
   printHelpPage({
-    title: 'Spw Geometry — braces, operators, resonance, workspace field',
+    title: 'Spw Form — script geometry + static analysis',
     usage: [
-      'spw geometry <file.spw> [--spw|--json|--ndjson]',
-      'spw geometry prompts --resonance --scheme agent --spw',
-      'spw geometry docs prompts --field --theme probe --spw',
-      'cat surface.spw | spw geometry --stdin --resonance --spw',
-      'spw geom docs/examples/spw/form-sequence.spw',
+      'spw form <file.spw> [--static] [--resonance] [--spw|--json]',
+      'spw form prompts --static --limit 40',
+      'spw form prompts --resonance --scheme agent --spw',
+      'spw form docs prompts --field --theme probe --spw',
+      'cat surface.spw | spw form --stdin --resonance --spw',
     ],
     sections: [
       {
-        title: 'Effect ceiling',
+        title: 'Value (why not just open the editor)',
         lines: [
-          'effect.l0.measure — read-only; never rewrites trees',
-          'No --write / --fix / --apply (rejected with guidance)',
-          'Derived expand: spw expand --write → *.expanded.spw (not geometry)',
-          'Gen root (offline dumps): .spw/gen/geometry · .spw/gen/field — never invent roots',
+          'Batch static triage across roots (parse balance, depth, lessons)',
+          'Geometry bytecode + resonance for cache keys / similarity (headless)',
+          'Multi-file field strands — expensive to rebuild by hand in LSP',
+          'effect.l0.measure only — never writes',
         ],
       },
       {
-        title: 'What you learn',
+        title: 'Modes',
         lines: [
-          'Brace bounds + operator rhythm + nesting depth (form card)',
-          'Geometry bytecode: contentHash + opVector for cache / similarity',
-          '--resonance: weighted edges (probe↔measure, schedule, op co-occur…)',
-          '--field: multi-surface strands + op-vector similarity across corpus',
-        ],
-      },
-      {
-        title: 'Weight schemes (--scheme)',
-        lines: [
-          'default  balanced form + flow',
-          'agent    amplify probe/measure + schedule (corpus loops)',
-          'thrift   measure coupling + depth as mass pressure',
-        ],
-      },
-      {
-        title: 'Output surface',
-        lines: [
-          'human     teaching report (default)',
-          '--spw     Spw-native dual-read cards + @bc pointers (preferred machine)',
-          '--json    host envelope only when a non-Spw consumer requires JSON',
-          '--ndjson  stream host objects (interop only; prefer --spw)',
+          '--static      cheap multi-file static pack (default lean for dirs)',
+          '(default)     full form card per surface',
+          '--resonance   bytecode + weighted geometric resonances',
+          '--field       aggregate workspace field strands',
         ],
       },
       {
         title: 'Flags',
         lines: [
-          '--resonance / --with-resonance   attach bytecode + resonances',
+          '--static / --sa                  static-analysis table (dirs lean here)',
+          '--resonance / --with-resonance   bytecode + resonances',
           '--field                          workspace field aggregation',
           '--scheme ID                      default | agent | thrift',
           '--theme TOKEN                    filter field by role/type',
-          '--limit N                        resonance / strand cap',
+          '--limit N                        resonance / strand / static row cap',
           '--max-files N                    directory walk cap (default 200)',
           '--stdin                          read source from stdin',
           '--spw | --json | --ndjson        machine output (prefer --spw)',
         ],
       },
       {
-        title: 'Pair with',
+        title: 'Examples',
         lines: [
-          'spw cycle --before a --after b   inspectable sense delta',
-          'spw measure · spw map · spw surface',
-          'VS Code: Spw: Inspect Geometry · surface decorations',
+          'spw form prompts --static',
+          'spw inspect static <file>     # same plane, thinner entry',
+          'spw inspect session <file>    # + beat cache hit flags',
+          'spw lattice <roots>           # corpus ~# spectrum only',
+          'spw cycle --before a --after b',
         ],
       },
     ],
@@ -365,8 +362,87 @@ export async function runSpwGeometryCli(argv: string[] = process.argv): Promise<
   }
 
   if (!sources.length) {
-    console.error('spw geometry: no .spw surfaces found')
+    console.error('spw form: no .spw surfaces found')
     process.exitCode = 1
+    return
+  }
+
+  // Directory walks lean static unless the user asked for resonance/field/spw card
+  const leanStatic =
+    args.staticOnly ||
+    (sources.length > 1 && !args.resonance && !args.fieldOnly && !args.field && !args.theme && !args.spwOut)
+
+  if (leanStatic) {
+    const limited = sources.slice(0, args.limit)
+    const rows = limited.map(s => {
+      const g = inspectGeometry(s.text)
+      const p = parse(s.text, { path: s.uri })
+      const issues: string[] = []
+      if (!p.success) issues.push(`parse×${p.errors?.length ?? 1}`)
+      if (g.nesting.openBalance !== 0) issues.push(`unbal=${g.nesting.openBalance}`)
+      if (g.degradations.length) issues.push(`degrade×${g.degradations.length}`)
+      if (g.lessons[0]) issues.push(g.lessons[0].slice(0, 36))
+      const opTop = g.operators
+        .slice()
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 3)
+        .map(o => `${o.sigil}×${o.count}`)
+        .join(' ')
+      return {
+        file: s.uri,
+        parse: p.success ? 'ok' : 'fail',
+        depth: g.nesting.maxDepth,
+        deep: g.nesting.deepLines,
+        ops: opTop || '—',
+        issues: issues.join('; ') || '—',
+        lessons: g.lessons,
+      }
+    })
+
+    emitHeader('form', {
+      mode: 'static',
+      files: sources.length,
+      shown: rows.length,
+      effect: 'effect.l0.measure',
+    })
+
+    if (args.json) {
+      console.log(
+        formatJsonEnvelope('form.static', rows, {
+          files: sources.length,
+          effect: 'effect.l0.measure',
+        }),
+      )
+      return
+    }
+
+    console.log(
+      formatTable(
+        ['file', 'parse', 'depth', 'deepLn', 'ops', 'issues'],
+        rows.map(r => [
+          r.file,
+          r.parse,
+          String(r.depth),
+          String(r.deep),
+          r.ops,
+          r.issues.slice(0, 48),
+        ]),
+        { maxCol: 40 },
+      ),
+    )
+    if (sources.length > limited.length) {
+      emitDetail(`… ${sources.length - limited.length} more (raise --limit)`)
+    }
+    // Surface first lesson block for single-file static
+    if (rows.length === 1 && rows[0]!.lessons.length) {
+      console.log('')
+      for (const L of rows[0]!.lessons.slice(0, 6)) console.log(`  · ${L}`)
+    }
+    emitNext(
+      'spw form <file> --resonance',
+      'spw inspect session <file>',
+      'spw lattice <roots>',
+    )
     return
   }
 

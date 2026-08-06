@@ -1,7 +1,63 @@
 /**
- * Shared CLI view helpers for query / select / skim / read.
- * Prefer greppable lines, short headers on stderr, body on stdout.
+ * Shared CLI view helpers — disclosure grammar for all commands.
+ *
+ * Law (docs/runtime/spw/cli-command-surface.spw):
+ *   meta  → stderr   body → stdout
+ *   header form:  # <primary>[ <mode>]  k=v k=v
+ *   next form:    next: <primary> … · <primary> …
+ *   --quiet       suppresses header / detail / next
+ *
+ * Primary tokens match the registry (and IrKind when collating that product).
  */
+
+let quietMeta = false
+
+/** Process-local quiet for meta lines (headers, next:, tips). */
+export function setMetaQuiet(quiet: boolean): void {
+  quietMeta = quiet
+}
+
+export function isMetaQuiet(): boolean {
+  return quietMeta
+}
+
+/** Format `k=v` fields; skip undefined/null/empty. */
+export function formatFields(
+  fields: Record<string, string | number | boolean | null | undefined>,
+): string {
+  return Object.entries(fields)
+    .filter(([, v]) => v !== undefined && v !== null && v !== '')
+    .map(([k, v]) => `${k}=${v}`)
+    .join('  ')
+}
+
+/**
+ * Standard command header on stderr.
+ * @example emitHeader('census', { files: 12, lines: 400, cyclic: true })
+ * @example emitHeader('formula', { roots: 'prompts', hits: 9 }, { mode: 'scan' })
+ */
+export function emitHeader(
+  primary: string,
+  fields: Record<string, string | number | boolean | null | undefined> = {},
+  options: { mode?: string } = {},
+): void {
+  if (quietMeta) return
+  const mode = options.mode ? ` ${options.mode}` : ''
+  const body = formatFields(fields)
+  meta(`# ${primary}${mode}${body ? `  ${body}` : ''}`)
+}
+
+/** Indented meta detail line (still suppressed by quiet). */
+export function emitDetail(...parts: string[]): void {
+  if (quietMeta) return
+  meta(' ', ...parts)
+}
+
+/** Footer companions — primaries only. */
+export function emitNext(...steps: string[]): void {
+  if (quietMeta || steps.length === 0) return
+  meta(`  next: ${steps.join(' · ')}`)
+}
 
 export function pad(s: string, width: number, align: 'left' | 'right' = 'left'): string {
   const t = s.length > width ? `${s.slice(0, Math.max(0, width - 1))}…` : s
@@ -193,10 +249,12 @@ export function renderOutline(items: OutlineFrame[], opts: { maxLabel?: number }
 }
 
 export function meta(...parts: string[]): void {
+  if (quietMeta) return
   console.error(parts.filter(Boolean).join(' '))
 }
 
 export function metaBlock(title: string, rows: Array<[string, string]>): void {
+  if (quietMeta) return
   console.error(`── ${title} ──`)
   const w = Math.max(...rows.map(r => r[0].length), 8)
   for (const [k, v] of rows) {

@@ -40,6 +40,7 @@ import {
   snapshotTopography,
   classifyMutationUsefulness,
   topographyDelta,
+  cutStencil,
   walkReferenceProgression,
   computationalRuleIds,
   labelSiteGraph,
@@ -68,6 +69,7 @@ import {
   type PulseFileReport,
   type PulseWriteStatus,
 } from './pulse-write'
+import { cacheStencil } from './session/workspace-cache'
 
 export type { PulseFileReport, PulseWriteStatus } from './pulse-write'
 export {
@@ -111,6 +113,11 @@ interface PulseArgs {
   stdin: boolean
   /** Logical path label for --stdin reports */
   asLabel: string
+  /**
+   * Cut a stencil (program + form mask) from this plan and bank it for
+   * mutate --from. Collate only — does not enable write-by-default.
+   */
+  cut: boolean
 }
 
 const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', '_workbench', '.agents'])
@@ -222,6 +229,7 @@ function parseArgs(argv: string[]): PulseArgs {
     includeWorkbench: false,
     stdin: false,
     asLabel: '<stdin>',
+    cut: false,
   }
 
   for (let i = 0; i < args.length; i += 1) {
@@ -271,6 +279,10 @@ function parseArgs(argv: string[]): PulseArgs {
     }
     if (arg === '--include-workbench') {
       parsed.includeWorkbench = true
+      continue
+    }
+    if (arg === '--cut') {
+      parsed.cut = true
       continue
     }
     if (arg === '--profile' || arg === '-p') {
@@ -535,18 +547,19 @@ export function printSpwPulseHelp(): void {
           '--json             Machine-readable probe report',
           '--full             Expand default targets across repo semantic surfaces',
           '--include-workbench  Permit plan-only inspection of mounted infrastructure',
+          '--cut              Cut + bank a stencil for mutate --from (collate)',
         ],
       },
       {
         title: 'Defaults',
         lines: [
           'Plan-only dry-run (no write). Profile layout_canonical.',
+          'Write is never a workspace default — only explicit --write (single-file, gated).',
           '--write is limited to layout_canonical and refuses sequences or rule restrictions.',
           '--write refuses multiple files and external or mounted authority.',
+          '--cut banks a form mask (nest+brace); press elsewhere via mutate --from (replan).',
           'Effect slugs: effect.l0.measure → l1.memory → l2.workspace → l3.external.',
           'Reports mutation vector + topography delta (parse health, depths, containers).',
-          '--sequence uses fold (serial) or OT-compose (parallel_plan) algebra.',
-          'equiv_scripts is a legacy compatibility-preview id; equivalence is not claimed.',
           'Use --check for quick differential regression tests.',
         ],
       },
@@ -554,18 +567,13 @@ export function printSpwPulseHelp(): void {
         title: 'Examples',
         lines: [
           'npm run spw:pulse -- docs/theory/spw/onf.spw',
+          'npm run spw:pulse -- file.spw --cut',
+          'spw mutate --from <stencil-id> other.spw --dry-run',
           'npm run spw:pulse -- --profile equiv_scripts --check .spw',
           'npm run spw:pulse -- --write --accept-semantic-risk file.spw',
           'npm run spw:pulse -- --sequence layout_then_script --matrix --diff file.spw',
           'npm run spw:pulse -- --ladder frame',
-          'npm run spw:pulse -- --ladder "[]"',
-          'npm run spw:pulse -- --ladder "&"',
-          'npm run spw:pulse -- --ladder boundaries --matrix',
-          'npm run spw:pulse -- --ladder all',
           'npm run spw:pulse -- --geometry hof',
-          'npm run spw:pulse -- --geometry walk --form hof.select_then_path --label topic',
-          'npm run spw:pulse -- --geometry graph',
-          'npm run spw:pulse -- --sequence script_then_layout --check .spw',
         ],
       },
     ],
@@ -1561,6 +1569,29 @@ export async function runSpwPulseCli(
         sourceUnchanged: true,
       })
 
+      let cutStencilId: string | undefined
+      if (cli.cut) {
+        const stencil = cutStencil({
+          profile: cli.sequence ? profileLabel : String(cli.profile),
+          sequence: cli.sequence,
+          rules: cli.rules.length ? cli.rules : undefined,
+          sourceUri: rel,
+          source: original,
+          result: {
+            inputHash,
+            plannedOutputHash: plannedHash,
+            plannedSource,
+            changed,
+            rulesPlanned: [],
+          },
+          layoutOnlyCandidate: layoutOnlyEvidence || plannedDelta.layoutOnlyCandidate,
+          planCeiling: 'effect.l0.measure',
+        })
+        const banked = cacheStencil(stencil, { beforePath: rel })
+        cutStencilId = banked.id
+        findings.push(`stencil cut id=${banked.id} (mutate --from ${banked.id})`)
+      }
+
       plannedFiles.push({
         absolutePath: file,
         original,
@@ -1588,6 +1619,7 @@ export async function runSpwPulseCli(
           matrix,
           sequenceConflicts,
           writeStatus,
+          ...(cutStencilId ? { stencilId: cutStencilId } : {}),
         },
       })
     }

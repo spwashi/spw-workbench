@@ -68,6 +68,17 @@ export {
   heuristicSigilHistogram,
   heuristicFrameCount,
   heuristicAnnotationHints,
+  CORPUS_PRODUCT_VERSION,
+  CORPUS_PRODUCT_SCHEMA,
+  topSigils,
+  populationRoleOf,
+  buildPopulation,
+  populationStats,
+  sortPopulation,
+  filterPopulation,
+  buildCorpusProduct,
+  formatCorpusProductSpw,
+  formatPopulationSpw,
   type RelationKind,
   type CorpusLink,
   type CorpusFileSignals,
@@ -75,6 +86,10 @@ export {
   type FamiliarityStrand,
   type TopographyReport,
   type FamiliarityCompare,
+  type PopulationRole,
+  type PopulationRow,
+  type PopulationStats,
+  type CorpusProduct,
 } from './corpus'
 
 export {

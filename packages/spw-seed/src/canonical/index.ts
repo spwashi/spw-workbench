@@ -236,6 +236,37 @@ export {
   type NestPathDelta,
 } from './nest-path'
 
+/** Stencil — replan transfer program + form mask (cutout for mutate --from). */
+export {
+  STENCIL_VERSION,
+  STENCIL_SCHEMA,
+  buildStencilMask,
+  cutStencil,
+  gateStencilMask,
+  stencilToAutomataConfig,
+  applyStencil,
+  formatStencilSpw,
+  type StencilMask,
+  type Stencil,
+  type StencilMaskMode,
+  type StencilMaskGate,
+} from './stencil'
+
+/** Geometric composition forms (conceptual probe, act→consequence). */
+export {
+  COMPOSITION_FORM_VERSION,
+  recognizeCompositionSequence,
+  recognizeCompositionSource,
+  compositionToProduct,
+  formatCompositionSpw,
+  hostLabel,
+  actBodySketch,
+  type CompositionKind,
+  type ConceptualProbeForm,
+  type ActConsequenceForm,
+  type CompositionForm,
+} from './composition-forms'
+
 /** Patch — selection → differential → store → apply (file|files|nodes). */
 export {
   PATCH_VERSION,

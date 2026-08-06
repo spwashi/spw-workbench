@@ -208,4 +208,8 @@ export {
   type CycleStepReceipt,
   type CycleCard,
   type SenseCycleResult,
+  COMPOSITION_EVAL_VERSION,
+  evaluateCompositionSource,
+  type CompositionEvalOptions,
+  type CompositionEvalResult,
 } from './session'

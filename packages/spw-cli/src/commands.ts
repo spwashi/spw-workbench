@@ -42,18 +42,26 @@ import { printTasteHelp, runSpwTasteCli } from './taste'
 import { printTreeHelp, runSpwTreeCli } from './tree'
 import { printLatticeHelp, runSpwLatticeCli } from './lattice'
 import { printDeltaHelp, runSpwDeltaCli } from './delta'
+import { printInspectHelp, runSpwInspectCli } from './inspect'
 
 /**
  * Which part of the loop a command belongs to. Groups order the help page and
  * keep the vocabulary honest: a command's group is a claim about what it costs
  * you to run it.
  */
-export type CommandGroup = 'workspace' | 'sense' | 'read' | 'shape' | 'effect'
+/**
+ * Loop cost band. Matches collate-before-discharge (operational-field).
+ * @see docs/runtime/spw/cli-command-surface.spw
+ */
+export type CommandGroup = 'workspace' | 'collate' | 'select' | 'shape' | 'effect'
 
 export interface CommandSpec {
-  /** Canonical name. What the help page prints and what docs should cite. */
+  /**
+   * Primary token — registry, help, headers, dual-read card kind.
+   * Prefer IrKind when the command collates that product (stack, graph, measure, form, …).
+   */
   name: string
-  /** Accepted alternates. Listed under Compatibility, never in the main list. */
+  /** Route-only alternates. Never taught in headers / Examples / next:. */
   aliases?: string[]
   group: CommandGroup
   /** One line, present tense, no trailing period — the help page reads as a list. */
@@ -64,10 +72,10 @@ export interface CommandSpec {
 
 export const COMMAND_GROUPS: { id: CommandGroup; title: string; blurb: string }[] = [
   { id: 'workspace', title: 'Workspace', blurb: 'where surfaces live and whether they are reachable' },
-  { id: 'sense', title: 'Sense', blurb: 'measure the corpus without touching it' },
-  { id: 'read', title: 'Read', blurb: 'pull structure out of surfaces' },
+  { id: 'collate', title: 'Collate', blurb: 'effect.l0.measure — produce IR products without writing the tree' },
+  { id: 'select', title: 'Select', blurb: 'pull selection or outline from sources' },
   { id: 'shape', title: 'Shape', blurb: 'rewrite surfaces or project them elsewhere' },
-  { id: 'effect', title: 'Effect', blurb: 'staged writes and cadence' },
+  { id: 'effect', title: 'Effect', blurb: 'plan, apply, cadence — staged writes' },
 ]
 
 /** Shape a subcommand's argv the way the command modules expect it. */
@@ -152,160 +160,168 @@ export const COMMANDS: CommandSpec[] = [
     run: (invoked, args) => runSpwTreeCli(argv(invoked, args)),
   },
 
-  // ── Sense ────────────────────────────────────────────────────
-  // Primaries follow cli-sense-reorientation; old names remain aliases (era-1).
+  // ── Collate (effect.l0.measure — IR products) ────────────────
+  // Primaries prefer IrKind tokens when collating that product.
+  // @see docs/runtime/spw/cli-command-surface.spw
   {
     name: 'census',
     aliases: ['invent', 'inventory', 'inv'],
-    group: 'sense',
-    summary: 'Multi-file population: lines, refs, frames, topo roles',
+    group: 'collate',
+    summary: 'Population product: lines, refs, frames, topo roles',
     printHelp: () => printInventHelp(),
     run: (invoked, args) => runSpwInventCli(argv(invoked, args)),
   },
   {
     name: 'graph',
     aliases: ['map', 'topo'],
-    group: 'sense',
-    summary: 'Reference topology: hubs, cycles, ego, familiarity strands',
+    group: 'collate',
+    summary: 'Graph / topography IR: hubs, cycles, familiarity strands',
     printHelp: () => printMapHelp(),
     run: (invoked, args) => runSpwMapCli(argv(invoked, args)),
   },
   {
     name: 'atlas',
-    group: 'sense',
-    summary: "Measure a workspace's material properties and watch them develop",
+    group: 'collate',
+    summary: 'Longitudinal workspace material measures',
     printHelp: () => printAtlasHelp(),
     run: (invoked, args) => runSpwAtlasCli(argv(invoked, args)),
   },
   {
     name: 'formula',
     aliases: ['formulas'],
-    group: 'sense',
-    summary: 'Named formula catalog + embedded pattern discovery',
+    group: 'collate',
+    summary: 'Formula catalog + embedded pattern hits',
     printHelp: () => printFormulaHelp(),
     run: (invoked, args) => runSpwFormulaCli(argv(invoked, args)),
   },
   {
-    name: 'analyze',
-    aliases: ['stats'],
-    group: 'sense',
-    summary: 'Multi-selector hit densities + top active files',
+    name: 'density',
+    aliases: ['analyze', 'stats'],
+    group: 'collate',
+    summary: 'Selector hit densities + top active files',
     printHelp: () => printAnalyzeHelp(),
     run: (invoked, args) => runSpwAnalyzeCli(argv(invoked, args)),
   },
   {
-    name: 'geometry',
-    aliases: ['geom', 'form'],
-    group: 'sense',
-    summary: 'Brace + operator geometry lessons for a surface',
+    name: 'form',
+    aliases: ['geometry', 'geom'],
+    group: 'collate',
+    summary: 'Script geometry + static form analysis (brace/op/resonance/field)',
     printHelp: () => printGeometryHelp(),
     run: (invoked, args) => runSpwGeometryCli(argv(invoked, args)),
   },
   {
     name: 'lattice',
     aliases: ['readings'],
-    group: 'sense',
-    summary: 'Apposition unit-cell spectrum (~# readings) without a full parse',
+    group: 'collate',
+    summary: 'Corpus ~# apposition spectrum (prefer form/inspect for one file)',
     printHelp: () => printLatticeHelp(),
     run: (_invoked, args) => runSpwLatticeCli(['lattice', ...args]),
   },
   {
     name: 'delta',
-    group: 'sense',
-    summary: 'Compare revisions; session-cache deltas; freeze patches (collate-only)',
+    group: 'collate',
+    summary: 'ChangeReport product; optional patch bank (collate-only)',
     printHelp: () => printDeltaHelp(),
     run: (_invoked, args) => runSpwDeltaCli(['delta', ...args]),
   },
   {
     name: 'measure',
     aliases: ['mass', 'thrift'],
-    group: 'sense',
-    summary: 'Metrics under schemes (mass/thrift family today; more later)',
+    group: 'collate',
+    summary: 'Measure IR under schemes (mass/thrift family today)',
     printHelp: () => printSpwMassHelp(),
     run: (invoked, args) => runSpwMassCli(argv(invoked, stripMeasureFamily(args))),
   },
   {
     name: 'authority',
-    group: 'sense',
+    group: 'collate',
     summary: 'Declared !writes / &joins vs what the subject actually does',
     printHelp: () => printSpwAuthorityHelp(),
     run: (invoked, args) => runSpwAuthorityCli(argv(invoked, args)),
   },
   {
     name: 'taste',
-    group: 'sense',
+    group: 'collate',
     summary: 'Taste coverage, standard vocabulary, and mark fidelity',
     printHelp: () => printTasteHelp(),
     run: (invoked, args) => runSpwTasteCli(argv(invoked, args)),
   },
   {
-    name: 'surface',
-    aliases: ['profile', 'stack'],
-    group: 'sense',
-    summary: 'One-file card: dialect stack (form/graph/thrift lenses later)',
+    name: 'stack',
+    aliases: ['surface', 'profile'],
+    group: 'collate',
+    summary: 'Profile stack IR — dialect × review × format card',
     printHelp: () => printSpwProfileHelp(),
     run: (invoked, args) => runSpwProfileCli(argv(invoked, args)),
   },
   {
     name: 'exp',
     aliases: ['experimental', 'catalog'],
-    group: 'sense',
+    group: 'collate',
     summary: 'Experimental syntax catalog (list/show reference ids)',
     printHelp: () => printSpwExpHelp(),
     run: (invoked, args) => runSpwExpCli(argv(invoked, args)),
   },
   {
     name: 'cycle',
-    group: 'sense',
-    summary: 'Inspectable before/after sense steps (cache, flow, IR)',
+    group: 'collate',
+    summary: 'Before/after sense receipts (prepare→inspect); pairs with inspect',
     printHelp: () => printCycleHelp(),
     run: (_invoked, args) => runSpwCycleCli(['node', 'cycle', ...args]),
   },
   {
+    name: 'inspect',
+    group: 'collate',
+    summary: 'Cache/bank/medium/session/static planes (effect.l0.measure)',
+    printHelp: () => printInspectHelp(),
+    run: (invoked, args) => runSpwInspectCli(argv(invoked, args)),
+  },
+  {
     name: 'cite',
-    group: 'sense',
+    group: 'collate',
     summary: 'Point at form bytecode (@bc) — Spw dual-read, no JSON',
     printHelp: () => printCiteHelp(),
     run: (_invoked, args) => runSpwCiteCli(['node', 'cite', ...args]),
   },
   {
     name: 'follow',
-    group: 'sense',
+    group: 'collate',
     summary: 'Resolve @bc or surface under grain; optional --collapse',
     printHelp: () => printFollowHelp(),
     run: (_invoked, args) => runSpwFollowCli(['node', 'follow', ...args]),
   },
 
-  // ── Read ─────────────────────────────────────────────────────
+  // ── Select ───────────────────────────────────────────────────
   {
     name: 'query',
     aliases: ['q'],
-    group: 'read',
-    summary: 'Multi-file AST query (skim/table/group/count)',
+    group: 'select',
+    summary: 'Multi-file AST selection (table/group/count)',
     printHelp: () => printQueryHelp(),
     run: (_invoked, args) => runQueryCli(parseQueryArgs(args)),
   },
   {
     name: 'select',
     aliases: ['spwq'],
-    group: 'read',
-    summary: 'Single-file selector (absorbs spwq)',
+    group: 'select',
+    summary: 'Single-file selection product',
     printHelp: () => printSelectUsage(),
     run: (invoked, args) => runSpwSelectCli(argv(invoked, args)),
   },
   {
-    name: 'skim',
-    aliases: ['read'],
-    group: 'read',
-    summary: 'Outline or line-window a surface (no full query)',
+    name: 'outline',
+    aliases: ['skim', 'read'],
+    group: 'select',
+    summary: 'Outline or line-window disclosure (no full selection)',
     printHelp: (invoked) => printSkimHelp(invoked),
     run: (invoked, args) => runSpwSkimCli(argv(invoked, args)),
   },
   {
     name: 'ls',
     aliases: ['seq'],
-    group: 'read',
-    summary: 'Liminal sequence selector engine (operator/braces/probe)',
+    group: 'select',
+    summary: 'Liminal sequence selection (operator/braces/probe)',
     printHelp: (invoked) => printLsHelp(invoked === 'seq' ? 'spw:seq' : 'spw:ls'),
     run: (invoked, args) =>
       runSpwLsCli(
@@ -385,7 +401,7 @@ export const COMMANDS: CommandSpec[] = [
   {
     name: 'mem',
     group: 'effect',
-    summary: 'Memory surface tools',
+    summary: 'Durable fs dump/load of runtime state (not beat cache — see inspect)',
     printHelp: () => printMemHelp(),
     run: (invoked, args) => runSpwMemCli(argv(invoked, args)),
   },
@@ -452,28 +468,31 @@ export function printRootHelp(): void {
       ...groups,
       { title: 'Compatibility', lines: aliases },
       {
-        title: 'Sense loop (census → graph → formulas → analysis)',
+        title: 'Collate chain (IR products at effect.l0.measure)',
         lines: [
           'spw census prompts --sort degree -n 30',
-          'spw graph prompts --hubs 12',
+          'spw graph prompts --limit 12',
           'spw graph prompts --compare docs/theory',
-          'spw surface <file.spw>',
+          'spw stack <file.spw>',
           'spw measure mass prompts --json',
           'spw formula prompts --family field',
-          'spw analyze prompts',
+          'spw density prompts',
+          'spw form <file.spw>',
           'spw query --from prompts --count --selector pathRefs',
-          'spw skim <hub.spw>',
+          'spw outline <hub.spw>',
         ],
       },
       {
-        title: 'Try',
+        title: 'Examples',
         lines: [
           'spw doctor',
           'spw atlas --advice',
           'spw formula --catalog',
-          'spw analyze prompts --json',
+          'spw density prompts --json',
           'spw graph --help',
-          'spw census --help',
+          'spw stack --help',
+          'spw pulse a.spw --stamp',
+          'spw mutate --from <stencil-id> b.spw --dry-run',
         ],
       },
     ],

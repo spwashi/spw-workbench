@@ -379,6 +379,48 @@ export const operationNode: Parser<OperationNode> = named('operation',
           consumed += scopeStep.value.consumed
         }
       }
+    } else if (operatorToken.value === '~') {
+      // Membrane potential: ~<consequence> (not path-shaped PathRef).
+      // Path forms remain pathRefNode (~"…" / ~<./path> / ~<tag>"path").
+      skipWhitespace(stream)
+      if (current(stream).type === 'CAPSULE_OPEN') {
+        const subjGen = capsuleNode(stream, depth + 1)
+        let subjStep = subjGen.next()
+        while (!subjStep.done) {
+          yield subjStep.value
+          subjStep = subjGen.next()
+        }
+        if (subjStep.value.success) {
+          subject = subjStep.value.value!
+          consumed += subjStep.value.consumed
+        }
+      }
+    } else if (operatorToken.value === '@') {
+      // Perspective lens: @"appendix.spw" or @~"path" as subject payload.
+      skipWhitespace(stream)
+      if (current(stream).type === 'STRING') {
+        const litGen = literalNode(stream, depth + 1)
+        let litStep = litGen.next()
+        while (!litStep.done) {
+          yield litStep.value
+          litStep = litGen.next()
+        }
+        if (litStep.value.success) {
+          subject = litStep.value.value!
+          consumed += litStep.value.consumed
+        }
+      } else if (current(stream).type === 'OPERATOR' && current(stream).value === '~') {
+        const subjGen = pathRefNode(stream, depth + 1)
+        let subjStep = subjGen.next()
+        while (!subjStep.done) {
+          yield subjStep.value
+          subjStep = subjGen.next()
+        }
+        if (subjStep.value.success) {
+          subject = subjStep.value.value!
+          consumed += subjStep.value.consumed
+        }
+      }
     }
 
     // Optional frame

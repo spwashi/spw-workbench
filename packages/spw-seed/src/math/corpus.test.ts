@@ -1,10 +1,13 @@
 import { describe, it, expect } from 'vitest'
 import {
   analyzeTopography,
+  buildCorpusProduct,
+  buildPopulation,
   compareFamiliarity,
   graphFromLinks,
   heuristicSigilHistogram,
   heuristicFrameCount,
+  populationStats,
   type CorpusLink,
 } from './corpus'
 import { detectCycle } from './graph'
@@ -42,6 +45,79 @@ describe('corpus topography', () => {
       knownFiles: new Set(['a.spw', 'b.spw', 'c.spw']),
     })
     expect(r.brokenTargets.some(t => t.includes('index.spw'))).toBe(true)
+  })
+
+  it('builds population product with hub/orphan roles', () => {
+    const known = new Set(['a.spw', 'b.spw', 'c.spw', 'lib/index.spw', 'orphan.spw'])
+    const topo = analyzeTopography(links, {
+      knownFiles: known,
+      signals: [
+        {
+          file: 'a.spw',
+          sigils: { '~': 2 },
+          pathRefCount: 2,
+          rootRefCount: 0,
+          frameCount: 1,
+          annotationHints: 0,
+          lineCount: 10,
+        },
+        {
+          file: 'orphan.spw',
+          sigils: {},
+          pathRefCount: 0,
+          rootRefCount: 0,
+          frameCount: 0,
+          annotationHints: 0,
+          lineCount: 3,
+        },
+      ],
+      hubTop: 4,
+    })
+    const pop = buildPopulation(
+      [
+        {
+          file: 'a.spw',
+          sigils: { '~': 2 },
+          pathRefCount: 2,
+          rootRefCount: 0,
+          frameCount: 1,
+          annotationHints: 0,
+          lineCount: 10,
+        },
+        {
+          file: 'orphan.spw',
+          sigils: {},
+          pathRefCount: 0,
+          rootRefCount: 0,
+          frameCount: 0,
+          annotationHints: 0,
+          lineCount: 3,
+        },
+      ],
+      topo,
+    )
+    expect(pop.find(r => r.file === 'orphan.spw')?.role).toBe('orphan')
+    const product = buildCorpusProduct({
+      fingerprint: 'abc',
+      roots: ['.'],
+      hubTop: 4,
+      resolvePaths: true,
+      indexDepth: 'standard',
+      links,
+      signals: pop.map(r => ({
+        file: r.file,
+        sigils: {},
+        pathRefCount: r.pathRefs,
+        rootRefCount: r.rootRefs,
+        frameCount: r.frames,
+        annotationHints: r.annotations,
+        lineCount: r.lines,
+      })),
+      topography: topo,
+      population: pop,
+    })
+    expect(product.schema).toBe('spw.corpus/1')
+    expect(populationStats(pop).files).toBe(2)
   })
 
   it('compares familiarity between corpora', () => {

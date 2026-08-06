@@ -1,0 +1,218 @@
+# CLI command surface — IR composition law
+#
+# Names serve four ends equally:
+#   1. composition   — verbs/products chain without metaphor soup
+#   2. IR            — primary ≈ packages/spw-seed/src/ir/kinds.ts when collating
+#   3. Spw dual-read — command name = ^["card"] kind for disclosure
+#   4. maintainability — registry, file, header, npm entry teach one token
+#
+# @see packages/spw-seed/src/ir/kinds.ts
+# @see docs/theory/spw/operational-field.spw
+# @see docs/theory/spw/representational-disclosure.spw
+# @see packages/spw-cli/src/commands.ts
+
+#:layer #!pragmatics
+#:status #!measured
+#:dialect Spw.b
+
+^["roots"]{
+ @ir_kinds: ~"../../../packages/spw-seed/src/ir/kinds.ts"
+ @commands: ~"../../../packages/spw-cli/src/commands.ts"
+ @field: ~"../../theory/spw/operational-field.spw"
+ @disclosure: ~"../../theory/spw/representational-disclosure.spw"
+ @view: ~"../../../packages/spw-cli/src/view.ts"
+ @naming: ~"../../../.spw/conventions/naming.spw"
+}
+
+^["thesis"]{
+ ~#claim: "A CLI primary is either an IR product kind (collate) or a transform that consumes one (select/shape/effect)."
+ ~#claim: "Disclosure headers use the same token as the dual-read card and the registry name."
+ ~#claim: "Aliases may route once; they never appear in headers, next:, Sense loops, or Examples."
+ ~#law: "identity ≠ retention ≠ disclosure — header fields are disclosure of a product, not a second name."
+ ~#taste: "short nouns for products; short verbs for transforms; one token per job."
+}
+
+// ── Four ends ──────────────────────────────────────────────────
+
+^["ends"]{
+ composition: .{
+  meaning: "A later command can name what an earlier one produced."
+  test: "pulse stamps stencil; mutate --from consumes stencil — same noun both sides."
+  refuse: "invent→map→profile chain where no product is named."
+ }
+ ir: .{
+  meaning: "Collate primaries share tokens with IrKind when the product is that kind."
+  spine: #[stack, form, graph, measure, selection, plan, patch, probe]
+  test: "spw stack discloses SurfaceProfileStack; IR kind is stack."
+ }
+ inspectability: .{
+  meaning: "Default human/agent reading is Spw nested frames, not host DualReadView."
+  header: "# <primary>[ <mode>]  k=v k=v"
+  card: "^[\"<primary>\"]{ … facets matching header keys … }"
+  refuse: "JSON as default dual-read; pretty-print as product contract."
+ }
+ maintainability: .{
+  meaning: "One registry entry; file prefers primary name; npm script prefers primary."
+  test: "grep <primary> finds help, header, COMMANDS, and dual-read card."
+  refuse: "half-rename (registry says census, header says invent)."
+ }
+}
+
+// ── Groups = loop cost (collate before discharge) ──────────────
+
+^["groups"]{
+ workspace: "orient — where surfaces live; reachability"
+ collate: "effect.l0.measure — produce IR products / measure only"
+ select: "pull selection / outline from products or sources"
+ shape: "project or rewrite without necessarily committing policy"
+ effect: "plan → apply → workspace write; cadence"
+}
+
+// ── Primary map: registry name → product / transform ───────────
+// product: collate noun matching dual-read kind
+// transform: verb consuming a product or surface text
+
+^["primaries"]{
+ // workspace
+ init: "transform — bootstrap workspace"
+ doctor: "probe — readiness"
+ roots: "product — declared roots list"
+ mount: "transform — mount check"
+ tree: "disclosure — bounded path tree"
+
+ // collate (IR-aligned)
+ census: "product population — multi-file inventory + topo roles (not yet IrKind; instrument name)"
+ graph: "product graph / topography — IrKind graph"
+ atlas: "product — longitudinal material measures"
+ formula: "product formula_hits + catalog"
+ density: "product selector densities (was analyze)"
+ form: "product form geometry (was geometry; IrKind form)"
+ lattice: "product apposition lattice"
+ delta: "product ChangeReport; may bank patch"
+ measure: "product measure reconciliation — IrKind measure"
+ authority: "product claim vs observe"
+ taste: "product mark/vocabulary fidelity"
+ stack: "product profile stack — IrKind stack (was surface)"
+ exp: "catalog probe — experimental ids"
+ cycle: "probe before/after collate steps"
+ cite: "disclosure @bc point"
+ follow: "disclosure grain follow / collapse"
+
+ // select
+ query: "product multi-file selection"
+ select: "product single-file selection — IrKind selection family"
+ outline: "disclosure outline frames (was skim)"
+ ls: "product liminal sequence selection"
+
+ // shape
+ format: "transform source text"
+ expand: "project template lineage"
+ snippet: "project seed templates"
+ refactor: "transform marks by structure"
+ refresh: "recompute plan cache product"
+ emit: "project host pack / envelope"
+
+ // effect
+ pulse: "product plan (+ optional stencil stamp) — IrKind plan; ceiling l0 default"
+ mutate: "transform apply plan/profile; may write l2"
+ beat: "clock only — retention tick, no product"
+ mem: "retention tools for runtime memory"
+ dev: "hot collate loop on .spw"
+}
+
+// ── Composition spine (what chains) ────────────────────────────
+
+^["compose"]{
+ collate_chain: #[
+  "spw census <roots>     → population rows",
+  "spw graph <roots>      → graph / topo IR",
+  "spw stack <file>       → stack IR",
+  "spw measure <target>   → measure IR",
+  "spw formula <roots>    → formula hits",
+  "spw density <roots>    → selector densities",
+  "spw delta a b          → ChangeReport / patch bank",
+ ]
+ select_chain: #[
+  "spw query --from <dir> → selection multi",
+  "spw select <file>      → selection single",
+  "spw outline <file>     → outline disclosure",
+ ]
+ effect_chain: #[
+  "spw pulse <file> --stamp → plan + stencil (bank)",
+  "spw mutate --from <id>   → replan apply under mask",
+  "spw mutate <paths>       → profile apply write",
+ ]
+ law: "Name the product the next command must accept. Do not invent a second metaphor for the same product."
+}
+
+// ── Header / arg law (disclosure grammar) ──────────────────────
+
+^["header"]{
+ form: "# <primary>[ <mode>]  k=v k=v …"
+ stream: "meta → stderr; body table/text → stdout"
+ mode: "bare word for sub-product (catalog|scan|status), never a flag echo"
+ keys: "stable per primary; same keys as dual-read facets when possible"
+ next: "next: <primary> … · <primary> …   — primaries only"
+ quiet: "--quiet / -q suppresses header, detail lines, and next:"
+}
+
+^["args"]{
+ limit: "--limit / -n  — max body rows (tables, hubs, hit lines)"
+ json: "--json — machine envelope disclosure (not default dual-read)"
+ quiet: "--quiet / -q"
+ help: "--help / -h"
+ refuse_dual: "--top and --hubs as *taught* flags — accept as limit aliases only if needed"
+ formula_hits: "when two quantities differ: --limit = table size; --hits = sample hit lines"
+}
+
+// ── Rename ledger (from → to) ──────────────────────────────────
+// Primaries below are the teaching tokens. Old tokens may still route.
+
+^["rename"]{
+ surface: stack
+ geometry: form
+ analyze: density
+ skim: outline
+ // keep: census, graph, measure, formula, delta, lattice, query, select, pulse, mutate
+ // graph stays graph (IrKind). topo is not the primary.
+ // measure stays measure (IrKind). mass/thrift are families under measure.
+}
+
+^["alias_route_only"]{
+ ~#policy: "Route for one migration era. Never teach in header/help Examples/next:."
+ stack: #[surface, profile]
+ form: #[geometry, geom]
+ density: #[analyze, stats]
+ outline: #[skim, read]
+ census: #[invent, inventory, inv]
+ graph: #[map, topo]
+ measure: #[mass, thrift]
+}
+
+// ── Impl files (prefer rename when touching) ───────────────────
+
+^["impl"]{
+ census: ~"../../../packages/spw-cli/src/inventory.ts"
+ graph: ~"../../../packages/spw-cli/src/map.ts"
+ measure: ~"../../../packages/spw-cli/src/mass.ts"
+ stack: ~"../../../packages/spw-cli/src/profile.ts"
+ density: ~"../../../packages/spw-cli/src/analyze.ts"
+ outline: ~"../../../packages/spw-cli/src/skim.ts"
+ form: ~"../../../packages/spw-cli/src/geometry.ts"
+ registry: ~"../../../packages/spw-cli/src/commands.ts"
+ emit: ~"../../../packages/spw-cli/src/view.ts"
+}
+
+// ── Try ────────────────────────────────────────────────────────
+
+^["try"]{
+ ~#law[
+  "spw help",
+  "spw stack docs/runtime/spw/cli-command-surface.spw",
+  "spw outline docs/runtime/spw/cli-command-surface.spw",
+  "spw census docs/runtime -n 5",
+  "spw graph docs/runtime --limit 5",
+  "spw density docs/runtime",
+  "spw form docs/runtime/spw/cli-command-surface.spw",
+ ]
+}

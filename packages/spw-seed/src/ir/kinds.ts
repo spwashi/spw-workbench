@@ -15,6 +15,10 @@ export const IR_KINDS = [
   'identity',
   'form',
   'graph',
+  /** Multi-file population (census IR) — rows + roles over a root set. */
+  'population',
+  /** Full corpus collate product (population + topography + links). */
+  'corpus',
   'attention',
   'bias',
   'measure',

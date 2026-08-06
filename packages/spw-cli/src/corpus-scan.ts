@@ -1,6 +1,9 @@
 /**
- * Shared corpus scan for map / invent / formula / analyze.
- * One walk, one parse pass per file → links + signals + source index.
+ * Shared corpus scan for census / graph / formula / density.
+ * One walk → CorpusProduct (population + topography) + optional sources.
+ *
+ * Memo plane: process memory + .spw/gen/session/corpus-memo/ (product only).
+ * @see docs/theory/spw/cache-field.spw
  */
 
 import { promises as fs } from 'node:fs'
@@ -9,37 +12,43 @@ import process from 'node:process'
 import { spwq } from '@spwashi/spw-seed'
 import {
   analyzeTopography,
+  buildCorpusProduct,
+  buildPopulation,
+  filterPopulation,
   heuristicAnnotationHints,
   heuristicFrameCount,
   heuristicSigilHistogram,
+  populationStats,
   resolveIndexConfig,
+  sortPopulation,
   type CorpusFileSignals,
   type CorpusLink,
+  type CorpusProduct,
   type HubScore,
   type IndexConfig,
   type IndexDepth,
+  type PopulationRole,
+  type PopulationRow,
   type TopographyReport,
 } from '@spwashi/spw-seed'
 import { PATH_REFS, REFERENCES } from '@spwashi/spw-seed'
+import {
+  fingerprintCorpusKey,
+  getDiskCorpusProduct,
+  getMemoryCorpusMemo,
+  setDiskCorpusProduct,
+  setMemoryCorpusMemo,
+  type CorpusMemoKeyParts,
+} from './corpus-memo'
 import { collectSpwFiles, DEFAULT_IGNORED_DIRS } from './fs-walk'
 import { resolveWorkspacePath, tryDiscoverSpwWorkspace, type SpwWorkspace } from './workspace'
 
 export const CORPUS_IGNORED = new Set([...DEFAULT_IGNORED_DIRS, '_workbench', '.agents'])
 
-export type InventoryRole = 'hub' | 'orphan' | 'leaf' | 'source' | 'node' | 'broken-target'
-
-export interface InventoryRow {
-  file: string
-  lines: number
-  pathRefs: number
-  rootRefs: number
-  frames: number
-  annotations: number
-  sigilTop: string
-  role: InventoryRole
-  inDegree: number
-  outDegree: number
-}
+/** @deprecated Prefer PopulationRole from seed */
+export type InventoryRole = PopulationRole
+/** @deprecated Prefer PopulationRow from seed */
+export type InventoryRow = PopulationRow
 
 export interface CorpusScanResult {
   cwd: string
@@ -49,8 +58,12 @@ export interface CorpusScanResult {
   links: CorpusLink[]
   signals: CorpusFileSignals[]
   topography: TopographyReport
-  inventory: InventoryRow[]
+  /** Population product rows (census IR). */
+  inventory: PopulationRow[]
+  /** Portable collate product (no sources). */
+  product: CorpusProduct
   workspace: SpwWorkspace | null
+  memoPlane: 'memory' | 'disk' | 'fresh'
 }
 
 export interface ScanOptions {
@@ -60,12 +73,20 @@ export interface ScanOptions {
   ignore?: ReadonlySet<string>
   /** Perf <-> completeness dial (see canonical/index-config.ts). Default 'standard'. */
   index?: IndexDepth | Partial<IndexConfig>
+  /** Skip memo (force fresh). */
+  noMemo?: boolean
+  /** Persist product to disk memo (default true). */
+  persistMemo?: boolean
 }
 
 export async function scanCorpus(opts: ScanOptions): Promise<CorpusScanResult> {
   const resolvePaths = opts.resolvePaths !== false
   const hubTop = opts.hubTop ?? 24
   const ignore = opts.ignore ?? CORPUS_IGNORED
+  const indexDepth: IndexDepth =
+    typeof opts.index === 'string'
+      ? parseIndexDepth(opts.index)
+      : 'standard'
   const indexConfig = resolveIndexConfig(opts.index)
 
   const workspace = await tryDiscoverSpwWorkspace()
@@ -79,13 +100,82 @@ export async function scanCorpus(opts: ScanOptions): Promise<CorpusScanResult> {
   }
   const cwd = workspace?.consumerRoot ?? process.cwd()
 
+  // Cheap fingerprint from mtime/size before reading bodies
+  const fileStats: Record<string, string> = {}
+  await Promise.all(
+    filesAbs.map(async abs => {
+      const rel = normalizeRel(path.relative(cwd, abs))
+      try {
+        const st = await fs.stat(abs)
+        fileStats[rel] = `${st.mtimeMs}:${st.size}`
+      } catch {
+        fileStats[rel] = 'missing'
+      }
+    }),
+  )
+
+  const keyParts: CorpusMemoKeyParts = {
+    cwd,
+    roots: absRoots.map(r => normalizeRel(path.relative(cwd, r) || r)),
+    hubTop,
+    resolvePaths,
+    indexDepth,
+    maxFiles: indexConfig.maxFiles,
+    fileStats,
+  }
+
+  const fingerprint = fingerprintCorpusKey(keyParts)
+
+  if (!opts.noMemo) {
+    const mem = getMemoryCorpusMemo(fingerprint)
+    if (mem) {
+      return {
+        ...mem.result,
+        product: { ...mem.product, memoHit: true, memoPlane: 'memory' },
+        memoPlane: 'memory',
+      }
+    }
+
+    const diskProduct = getDiskCorpusProduct(fingerprint, cwd)
+    if (diskProduct) {
+      // Re-read sources only (skip selector/topo recompute)
+      const sources = new Map<string, string>()
+      const filesFromProduct = diskProduct.signals.map(s => path.resolve(cwd, s.file))
+      await Promise.all(
+        filesFromProduct.map(async abs => {
+          const rel = normalizeRel(path.relative(cwd, abs))
+          try {
+            sources.set(rel, await fs.readFile(abs, 'utf8'))
+          } catch {
+            /* skip */
+          }
+        }),
+      )
+      const result: CorpusScanResult = {
+        cwd,
+        filesAbs: filesFromProduct,
+        sources,
+        links: diskProduct.links,
+        signals: diskProduct.signals,
+        topography: diskProduct.topography,
+        inventory: diskProduct.population,
+        product: diskProduct,
+        workspace,
+        memoPlane: 'disk',
+      }
+      setMemoryCorpusMemo(fingerprint, result, diskProduct)
+      return result
+    }
+  }
+
+  // Fresh scan
   const links: CorpusLink[] = []
   const signals: CorpusFileSignals[] = []
   const knownRel = new Set<string>()
   const sources = new Map<string, string>()
 
   const perFile = await Promise.all(
-    filesAbs.map(async (abs) => {
+    filesAbs.map(async abs => {
       const rel = normalizeRel(path.relative(cwd, abs))
       let source: string
       try {
@@ -167,12 +257,9 @@ export async function scanCorpus(opts: ScanOptions): Promise<CorpusScanResult> {
     hubTop,
   })
 
-  // The seed's broken-target pass only knows the scanned .spw set — it cannot
-  // see .md targets, directories, or files outside the roots. Verify each
-  // candidate against the disk here, where the filesystem is in scope.
   if (resolvePaths && topography.brokenTargets.length) {
     const missing = await Promise.all(
-      topography.brokenTargets.map(async (target) => {
+      topography.brokenTargets.map(async target => {
         try {
           await fs.access(path.resolve(cwd, target))
           return null
@@ -184,9 +271,21 @@ export async function scanCorpus(opts: ScanOptions): Promise<CorpusScanResult> {
     topography.brokenTargets = missing.filter((t): t is string => t !== null)
   }
 
-  const inventory = buildInventory(signals, topography)
+  const inventory = buildPopulation(signals, topography)
+  const product = buildCorpusProduct({
+    fingerprint,
+    roots: keyParts.roots,
+    hubTop,
+    resolvePaths,
+    indexDepth: keyParts.indexDepth,
+    links,
+    signals,
+    topography,
+    population: inventory,
+    memoPlane: 'fresh',
+  })
 
-  return {
+  const result: CorpusScanResult = {
     cwd,
     filesAbs,
     sources,
@@ -194,80 +293,27 @@ export async function scanCorpus(opts: ScanOptions): Promise<CorpusScanResult> {
     signals,
     topography,
     inventory,
+    product,
     workspace,
+    memoPlane: 'fresh',
   }
+
+  if (!opts.noMemo) {
+    setMemoryCorpusMemo(fingerprint, result, product)
+    if (opts.persistMemo !== false) {
+      setDiskCorpusProduct(product, cwd)
+    }
+  }
+
+  return result
 }
 
+/** @deprecated Use buildPopulation from seed */
 export function buildInventory(
   signals: CorpusFileSignals[],
   topo: TopographyReport,
-): InventoryRow[] {
-  const hubSet = new Set(topo.hubs.map(h => h.id))
-  const orphanSet = new Set(topo.orphans)
-  const degree = degreeMaps(topo)
-
-  return signals
-    .map((signal): InventoryRow => {
-      const inDegree = degree.inDegree.get(signal.file) ?? 0
-      const outDegree = degree.outDegree.get(signal.file) ?? 0
-      return {
-        file: signal.file,
-        lines: signal.lineCount,
-        pathRefs: signal.pathRefCount,
-        rootRefs: signal.rootRefCount,
-        frames: signal.frameCount,
-        annotations: signal.annotationHints,
-        sigilTop: topSigils(signal.sigils, 3),
-        role: roleOf(signal.file, hubSet, orphanSet, inDegree, outDegree),
-        inDegree,
-        outDegree,
-      }
-    })
-    .sort((a, b) => a.file.localeCompare(b.file))
-}
-
-function roleOf(
-  file: string,
-  hubs: Set<string>,
-  orphans: Set<string>,
-  inDegree: number,
-  outDegree: number,
-): InventoryRole {
-  if (hubs.has(file)) return 'hub'
-  if (orphans.has(file)) return 'orphan'
-  if (outDegree === 0 && inDegree > 0) return 'leaf'
-  if (inDegree === 0 && outDegree > 0) return 'source'
-  return 'node'
-}
-
-function degreeMaps(topo: TopographyReport): {
-  inDegree: Map<string, number>
-  outDegree: Map<string, number>
-} {
-  const inDegree = new Map<string, number>()
-  const outDegree = new Map<string, number>()
-  for (const node of topo.graph.nodes) {
-    inDegree.set(node, 0)
-    outDegree.set(node, 0)
-  }
-  for (const edge of topo.graph.edges) {
-    outDegree.set(edge.from, (outDegree.get(edge.from) ?? 0) + 1)
-    inDegree.set(edge.to, (inDegree.get(edge.to) ?? 0) + 1)
-  }
-  // Prefer hub scores when available for known files
-  for (const hub of topo.hubs) {
-    inDegree.set(hub.id, hub.inDegree)
-    outDegree.set(hub.id, hub.outDegree)
-  }
-  return { inDegree, outDegree }
-}
-
-function topSigils(sigils: Record<string, number>, n: number): string {
-  return Object.entries(sigils)
-    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-    .slice(0, n)
-    .map(([k, v]) => `${k}${v}`)
-    .join(' ')
+): PopulationRow[] {
+  return buildPopulation(signals, topo)
 }
 
 export function unquote(value: string): string {
@@ -285,66 +331,13 @@ export function normalizeRel(p: string): string {
   return p.split(path.sep).join('/')
 }
 
-export function sortInventory(
-  rows: InventoryRow[],
-  key: 'file' | 'lines' | 'refs' | 'frames' | 'sigils' | 'degree',
-): InventoryRow[] {
-  const copy = [...rows]
-  const refCount = (row: InventoryRow) => row.pathRefs + row.rootRefs
-  const degreeSum = (row: InventoryRow) => row.inDegree + row.outDegree
-  copy.sort((a, b) => {
-    switch (key) {
-      case 'lines':
-        return b.lines - a.lines || a.file.localeCompare(b.file)
-      case 'refs':
-        return refCount(b) - refCount(a) || a.file.localeCompare(b.file)
-      case 'frames':
-        return b.frames - a.frames || a.file.localeCompare(b.file)
-      case 'sigils':
-        return b.sigilTop.length - a.sigilTop.length || a.file.localeCompare(b.file)
-      case 'degree':
-        return degreeSum(b) - degreeSum(a) || a.file.localeCompare(b.file)
-      default:
-        return a.file.localeCompare(b.file)
-    }
-  })
-  return copy
-}
-
-export function filterInventory(
-  rows: InventoryRow[],
-  role: InventoryRole | 'all' | undefined,
-): InventoryRow[] {
-  if (!role || role === 'all') return rows
-  return rows.filter(row => row.role === role)
-}
-
-export function inventoryStats(rows: InventoryRow[]): {
-  files: number
-  lines: number
-  pathRefs: number
-  rootRefs: number
-  frames: number
-  byRole: Record<string, number>
-} {
-  const byRole: Record<string, number> = {}
-  let lines = 0
-  let pathRefs = 0
-  let rootRefs = 0
-  let frames = 0
-  for (const row of rows) {
-    lines += row.lines
-    pathRefs += row.pathRefs
-    rootRefs += row.rootRefs
-    frames += row.frames
-    byRole[row.role] = (byRole[row.role] ?? 0) + 1
-  }
-  return { files: rows.length, lines, pathRefs, rootRefs, frames, byRole }
-}
+export const sortInventory = sortPopulation
+export const filterInventory = filterPopulation
+export const inventoryStats = populationStats
 
 /** Parse a --depth flag value; falls back to 'standard' for anything unrecognized. */
 export function parseIndexDepth(raw: string | undefined): IndexDepth {
   return raw === 'minimal' || raw === 'standard' || raw === 'full' ? raw : 'standard'
 }
 
-export type { HubScore, TopographyReport, IndexConfig, IndexDepth }
+export type { HubScore, TopographyReport, IndexConfig, IndexDepth, CorpusProduct, PopulationRow }

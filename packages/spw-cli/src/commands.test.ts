@@ -78,25 +78,30 @@ describe('command registry', () => {
     }
   })
 
-  it('routes sense renames with era-1 aliases', () => {
+  it('routes IR-aligned primaries with route-only aliases', () => {
     expect(findCommand('census')?.name).toBe('census')
     expect(findCommand('invent')?.name).toBe('census')
-    expect(findCommand('inventory')?.name).toBe('census')
-    expect(findCommand('inv')?.name).toBe('census')
 
     expect(findCommand('graph')?.name).toBe('graph')
     expect(findCommand('map')?.name).toBe('graph')
-    expect(findCommand('topo')?.name).toBe('graph')
 
     expect(findCommand('measure')?.name).toBe('measure')
     expect(findCommand('mass')?.name).toBe('measure')
-    expect(findCommand('thrift')?.name).toBe('measure')
 
-    expect(findCommand('surface')?.name).toBe('surface')
-    expect(findCommand('profile')?.name).toBe('surface')
-    expect(findCommand('stack')?.name).toBe('surface')
+    expect(findCommand('stack')?.name).toBe('stack')
+    expect(findCommand('surface')?.name).toBe('stack')
+    expect(findCommand('profile')?.name).toBe('stack')
 
-    expect(findCommand('form')?.name).toBe('geometry')
+    expect(findCommand('form')?.name).toBe('form')
+    expect(findCommand('geometry')?.name).toBe('form')
+
+    expect(findCommand('density')?.name).toBe('density')
+    expect(findCommand('analyze')?.name).toBe('density')
+
+    expect(findCommand('outline')?.name).toBe('outline')
+    expect(findCommand('skim')?.name).toBe('outline')
+
+    expect(findCommand('inspect')?.name).toBe('inspect')
     expect(findCommand('catalog')?.name).toBe('exp')
   })
 })

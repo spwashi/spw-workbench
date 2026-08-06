@@ -127,3 +127,10 @@ export {
   type SenseCycleResult,
   runSenseCycle,
 } from './sense-cycle'
+
+export {
+  COMPOSITION_EVAL_VERSION,
+  evaluateCompositionSource,
+  type CompositionEvalOptions,
+  type CompositionEvalResult,
+} from './composition-eval'

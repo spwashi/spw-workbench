@@ -183,7 +183,7 @@ export async function runSpwMapCli(argv: string[] = process.argv): Promise<void>
     return
   }
 
-  printReport('primary', primary, args)
+  printReport('primary', primary, args, primaryScan.memoPlane)
   if (compare) {
     console.log('')
     printReport('compare', compare, args)
@@ -199,12 +199,18 @@ export async function runSpwMapCli(argv: string[] = process.argv): Promise<void>
     if (fam.onlyB.length) meta(`  only compare stems: ${fam.onlyB.slice(0, 12).join(', ')}`)
   }
 
-  meta('  next: spw invent <roots> · spw formula <roots> · spw analyze <roots> · spw skim <hub>')
+  meta('  next: spw census <roots> · spw formula <roots> · spw density <roots> · spw outline <hub>')
 }
 
-function printReport(label: string, r: TopographyReport, args: MapArgs): void {
+function printReport(
+  label: string,
+  r: TopographyReport,
+  args: MapArgs,
+  memo?: string,
+): void {
   meta(
-    `# spw map ${label}  files=${r.files}  links=${r.links}  cyclic=${r.cyclic}  hubs=${r.hubs.length}`,
+    `# graph ${label}  files=${r.files}  links=${r.links}  cyclic=${r.cyclic}  hubs=${r.hubs.length}` +
+      (memo ? `  memo=${memo}` : ''),
   )
   if (r.cyclic && r.cycleWitness) {
     console.log(`cycle: ${r.cycleWitness.join(' → ')}`)

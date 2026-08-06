@@ -75,6 +75,13 @@ describe('bounded path references', () => {
     // them the high-context requirement stands.
     expect(degradations('~../vibes/index.spw').length).toBeGreaterThan(0)
   })
+
+  it('does not overfit bare ~<name> as PathRef (membrane potential)', () => {
+    const found = JSON.stringify(parse('~<consequence>').ast)
+    expect(found).not.toContain('"type":"PathRef"')
+    expect(found).toContain('"type":"Operation"')
+    expect(found).toContain('"type":"Capsule"')
+  })
 })
 
 describe('chains stay on their line', () => {

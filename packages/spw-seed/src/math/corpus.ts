@@ -396,3 +396,288 @@ export function heuristicFrameCount(source: string): number {
 export function heuristicAnnotationHints(source: string): number {
   return (source.match(/#:[A-Za-z_]|#![\w]|#>/g) ?? []).length
 }
+
+// ── Population product (census IR) + corpus product envelope ────
+// Portable: no filesystem. CLI walk + memo attaches fingerprint/roots.
+
+export const CORPUS_PRODUCT_VERSION = 'spw.corpus/1' as const
+export const CORPUS_PRODUCT_SCHEMA = 'spw.corpus/1' as const
+
+export type PopulationRole = 'hub' | 'orphan' | 'leaf' | 'source' | 'node' | 'broken-target'
+
+/** One row of the population product (multi-file census IR). */
+export interface PopulationRow {
+  file: string
+  lines: number
+  pathRefs: number
+  rootRefs: number
+  frames: number
+  annotations: number
+  sigilTop: string
+  role: PopulationRole
+  inDegree: number
+  outDegree: number
+}
+
+export interface PopulationStats {
+  files: number
+  lines: number
+  pathRefs: number
+  rootRefs: number
+  frames: number
+  byRole: Record<string, number>
+}
+
+/**
+ * Durable collate product: topography + population + link/signal evidence.
+ * Sources (file text) stay outside — re-read or process-memo them separately.
+ */
+export interface CorpusProduct {
+  version: typeof CORPUS_PRODUCT_VERSION
+  schema: typeof CORPUS_PRODUCT_SCHEMA
+  /** Content-address of scan inputs (roots + options + file mtime/size digests). */
+  fingerprint: string
+  roots: string[]
+  hubTop: number
+  resolvePaths: boolean
+  indexDepth: string
+  scannedAt: string
+  links: CorpusLink[]
+  signals: CorpusFileSignals[]
+  topography: TopographyReport
+  population: PopulationRow[]
+  stats: PopulationStats
+  /** Set when rehydrated from memo. */
+  memoHit?: boolean
+  memoPlane?: 'memory' | 'disk' | 'fresh'
+}
+
+export function topSigils(sigils: Record<string, number>, n = 3): string {
+  return Object.entries(sigils)
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, n)
+    .map(([k, v]) => `${k}${v}`)
+    .join(' ')
+}
+
+function degreeMapsFromTopo(topo: TopographyReport): {
+  inDegree: Map<string, number>
+  outDegree: Map<string, number>
+} {
+  const inDegree = new Map<string, number>()
+  const outDegree = new Map<string, number>()
+  for (const node of topo.graph.nodes) {
+    inDegree.set(node, 0)
+    outDegree.set(node, 0)
+  }
+  for (const edge of topo.graph.edges) {
+    outDegree.set(edge.from, (outDegree.get(edge.from) ?? 0) + 1)
+    inDegree.set(edge.to, (inDegree.get(edge.to) ?? 0) + 1)
+  }
+  for (const hub of topo.hubs) {
+    inDegree.set(hub.id, hub.inDegree)
+    outDegree.set(hub.id, hub.outDegree)
+  }
+  return { inDegree, outDegree }
+}
+
+export function populationRoleOf(
+  file: string,
+  hubs: Set<string>,
+  orphans: Set<string>,
+  inDegree: number,
+  outDegree: number,
+): PopulationRole {
+  if (hubs.has(file)) return 'hub'
+  if (orphans.has(file)) return 'orphan'
+  if (outDegree === 0 && inDegree > 0) return 'leaf'
+  if (inDegree === 0 && outDegree > 0) return 'source'
+  return 'node'
+}
+
+/** Build population rows from signals + topography (pure). */
+export function buildPopulation(
+  signals: CorpusFileSignals[],
+  topo: TopographyReport,
+): PopulationRow[] {
+  const hubSet = new Set(topo.hubs.map(h => h.id))
+  const orphanSet = new Set(topo.orphans)
+  const degree = degreeMapsFromTopo(topo)
+
+  return signals
+    .map((signal): PopulationRow => {
+      const inDegree = degree.inDegree.get(signal.file) ?? 0
+      const outDegree = degree.outDegree.get(signal.file) ?? 0
+      return {
+        file: signal.file,
+        lines: signal.lineCount,
+        pathRefs: signal.pathRefCount,
+        rootRefs: signal.rootRefCount,
+        frames: signal.frameCount,
+        annotations: signal.annotationHints,
+        sigilTop: topSigils(signal.sigils, 3),
+        role: populationRoleOf(signal.file, hubSet, orphanSet, inDegree, outDegree),
+        inDegree,
+        outDegree,
+      }
+    })
+    .sort((a, b) => a.file.localeCompare(b.file))
+}
+
+export function populationStats(rows: readonly PopulationRow[]): PopulationStats {
+  const byRole: Record<string, number> = {}
+  let lines = 0
+  let pathRefs = 0
+  let rootRefs = 0
+  let frames = 0
+  for (const row of rows) {
+    lines += row.lines
+    pathRefs += row.pathRefs
+    rootRefs += row.rootRefs
+    frames += row.frames
+    byRole[row.role] = (byRole[row.role] ?? 0) + 1
+  }
+  return { files: rows.length, lines, pathRefs, rootRefs, frames, byRole }
+}
+
+export function sortPopulation(
+  rows: PopulationRow[],
+  key: 'file' | 'lines' | 'refs' | 'frames' | 'sigils' | 'degree',
+): PopulationRow[] {
+  const copy = [...rows]
+  const refCount = (row: PopulationRow) => row.pathRefs + row.rootRefs
+  const degreeSum = (row: PopulationRow) => row.inDegree + row.outDegree
+  copy.sort((a, b) => {
+    switch (key) {
+      case 'lines':
+        return b.lines - a.lines || a.file.localeCompare(b.file)
+      case 'refs':
+        return refCount(b) - refCount(a) || a.file.localeCompare(b.file)
+      case 'frames':
+        return b.frames - a.frames || a.file.localeCompare(b.file)
+      case 'sigils':
+        return b.sigilTop.length - a.sigilTop.length || a.file.localeCompare(b.file)
+      case 'degree':
+        return degreeSum(b) - degreeSum(a) || a.file.localeCompare(b.file)
+      default:
+        return a.file.localeCompare(b.file)
+    }
+  })
+  return copy
+}
+
+export function filterPopulation(
+  rows: PopulationRow[],
+  role: PopulationRole | 'all' | undefined,
+): PopulationRow[] {
+  if (!role || role === 'all') return rows
+  return rows.filter(row => row.role === role)
+}
+
+/** Assemble corpus product from scan evidence (no sources). */
+export function buildCorpusProduct(input: {
+  fingerprint: string
+  roots: string[]
+  hubTop: number
+  resolvePaths: boolean
+  indexDepth: string
+  links: CorpusLink[]
+  signals: CorpusFileSignals[]
+  topography: TopographyReport
+  population?: PopulationRow[]
+  scannedAt?: string
+  memoHit?: boolean
+  memoPlane?: CorpusProduct['memoPlane']
+}): CorpusProduct {
+  const population = input.population ?? buildPopulation(input.signals, input.topography)
+  return {
+    version: CORPUS_PRODUCT_VERSION,
+    schema: CORPUS_PRODUCT_SCHEMA,
+    fingerprint: input.fingerprint,
+    roots: [...input.roots],
+    hubTop: input.hubTop,
+    resolvePaths: input.resolvePaths,
+    indexDepth: input.indexDepth,
+    scannedAt: input.scannedAt ?? new Date().toISOString(),
+    links: input.links,
+    signals: input.signals,
+    topography: input.topography,
+    population,
+    stats: populationStats(population),
+    memoHit: input.memoHit,
+    memoPlane: input.memoPlane ?? 'fresh',
+  }
+}
+
+/** Escape a path for ~"…" dual-read. */
+function quotePathSpw(p: string): string {
+  return `"${p.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+}
+
+/**
+ * Dual-read population rows — path-bound frames (live statements), not table cells.
+ */
+export function formatPopulationSpw(
+  rows: readonly PopulationRow[],
+  options: { among?: string[]; limit?: number } = {},
+): string {
+  const limit = options.limit ?? 40
+  const shown = rows.slice(0, limit)
+  const among = (options.among ?? []).map(r => `~${quotePathSpw(r)}`).join(' ')
+  const lines: string[] = [
+    `^["population"]{`,
+    among ? `  ~ among: ${among}` : '  ~ among: _',
+    `  ~#n: ${rows.length}`,
+    `  ~#shown: ${shown.length}`,
+  ]
+  for (const r of shown) {
+    const deg = r.inDegree + r.outDegree
+    lines.push(
+      `  ~${quotePathSpw(r.file)}{ ${r.role} ; lines: ${r.lines} ; degree: ${deg} ; in: ${r.inDegree} ; out: ${r.outDegree} }`,
+    )
+  }
+  if (rows.length > shown.length) {
+    lines.push(`  ~#more: ${rows.length - shown.length}`)
+  }
+  lines.push(`}`)
+  return lines.join('\n')
+}
+
+/** Dual-read disclosure of a corpus product (geometry first, then population). */
+export function formatCorpusProductSpw(
+  product: CorpusProduct,
+  options: { rowLimit?: number; includeRows?: boolean } = {},
+): string {
+  const includeRows = options.includeRows !== false
+  const rowLimit = options.rowLimit ?? 24
+  const roleBits = Object.entries(product.stats.byRole)
+    .sort((a, b) => b[1] - a[1])
+    .map(([k, v]) => `${k}:${v}`)
+    .join(' ')
+  const hubPaths = product.topography.hubs
+    .slice(0, 8)
+    .map(h => `~${quotePathSpw(h.id)}`)
+    .join(' ')
+  const rootPaths = product.roots.map(r => `~${quotePathSpw(r)}`).join(' ')
+  const head = [
+    `^["corpus"]{`,
+    `  ~ among: ${rootPaths || '_'}`,
+    `  ~#version: ${product.version}`,
+    `  ~#fingerprint: ${product.fingerprint.slice(0, 16)}`,
+    `  ~#files: ${product.stats.files}`,
+    `  ~#lines: ${product.stats.lines}`,
+    `  ~#links: ${product.topography.links}`,
+    `  ~#cyclic: ${product.topography.cyclic ? '#yes' : '#no'}`,
+    `  ~ under: ${product.memoPlane ?? 'fresh'}`,
+    `  ~#roles: ${roleBits || '_'}`,
+    `  ~ hubs: ${hubPaths || '_'}`,
+    `  ~#broken: ${product.topography.brokenTargets.length}`,
+    `}`,
+  ].join('\n')
+  if (!includeRows) return head
+  const pop = formatPopulationSpw(product.population, {
+    among: product.roots,
+    limit: rowLimit,
+  })
+  return `${head}\n\n${pop}`
+}

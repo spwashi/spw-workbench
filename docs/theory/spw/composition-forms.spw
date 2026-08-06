@@ -1,0 +1,65 @@
+# Composition forms — geometric multi-term surfaces
+#
+# Surface silhouettes that compose Acts and Bounds without PathRef overfit
+# or camelCase property bags.
+#
+# @see packages/spw-seed/src/canonical/composition-forms.ts
+# @see packages/spw-runtime/src/session/composition-eval.ts
+# @see docs/theory/spw/operator-atlas.spw
+# @see docs/theory/spw/em-fixity-association.spw
+
+#:layer #!semantics
+#:status #!measured
+#:dialect Spw.b
+
+^["roots"]{
+ @impl: ~"../../../packages/spw-seed/src/canonical/composition-forms.ts"
+ @eval: ~"../../../packages/spw-runtime/src/session/composition-eval.ts"
+ @cli: ~"../../../packages/spw-cli/src/inspect.ts"
+ @atlas: ~"./operator-atlas.spw"
+ @onf: ~"./onf.spw"
+}
+
+^["thesis"]{
+ ~#claim: "Composition is shown by what sits inside what and what points at what — not by k=v bags."
+ ~#claim: "~<name> is membrane potential; path-shaped ~<…> and ~\"…\" remain PathRef."
+ ~#law: "Recognize silhouettes after parse; full postfix ONF fold is still progressive."
+}
+
+^["forms"]{
+ conceptual_probe: .{
+  surface: `<file>@"appendix.spw"?`
+  geometry: "membrane(host) · perspective(lens) · probe"
+  eval: "load host conceptual space; resolve lens relative to host; probe under host dialect"
+  cli: "spw inspect compose '<file>@\"appendix.spw\"?'"
+ }
+
+ act_consequence: .{
+  surface: `!{…} ~<consequence>`
+  also: `?{…} ~<answer>`
+  geometry: "discharge|probe body · potential membrane"
+  not: "PathRef"
+  cli: "spw inspect compose '!{ do } ~<out>' · 'spw inspect compose '?{ ask } ~<answer>'"
+ }
+
+ scoped: .{
+  surface: `(!{…})~<…>` / `(?{…})~<…>`
+  geometry: "observation () around the head Act"
+ }
+}
+
+^["path_boundary"]{
+ path_ref: #[`~"path"`, `~<./a.spw>`, `~<../x.spw>`, `~<tag>"path"`]
+ membrane: #[`~<consequence>`, `~<answer>`, `~<out>`]
+ law: "path-shaped interior (./ ../ / or extension) → PathRef; bare name → membrane"
+}
+
+^["try"]{
+ ~#probe[
+  "spw inspect compose '<file>@\"appendix.spw\"?'",
+  "spw inspect compose '!{ prep } ~<consequence>'",
+  "spw inspect compose '?{ ask } ~<answer>'",
+  "spw census docs/runtime -n 5",
+  "spw census docs/runtime --table -n 5",
+ ]
+}

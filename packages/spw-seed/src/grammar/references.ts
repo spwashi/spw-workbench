@@ -67,6 +67,20 @@ function isBarePathToken(token: Token): boolean {
   return false
 }
 
+/**
+ * Bounded `~<…>` is PathRef only when the interior is path-shaped.
+ * A bare name (`~<consequence>`) is membrane potential, not a path —
+ * that form must not overfit PathRef (conceptual-space / act→consequence).
+ */
+export function isPathShapedRaw(raw: string): boolean {
+  if (!raw) return false
+  if (raw.startsWith('./') || raw.startsWith('../') || raw.startsWith('/')) return true
+  if (raw.includes('/')) return true
+  // file-like extension (.spw, .md, .ts, …)
+  if (/\.[A-Za-z][\w-]{0,7}$/.test(raw)) return true
+  return false
+}
+
 function isContiguous(left: Token, right: Token): boolean {
   return left.span.end.offset === right.span.start.offset
 }
@@ -283,38 +297,54 @@ export const pathRefNode: Parser<PathRefNode> = named('pathRef',
       }
       consumed += openStep.value.consumed
 
-      // `~<../vibes/index.spw>` — the bounds carry the path itself rather than a
-      // tag. Checked before the tag branch because `~<domains/culinary>` starts
-      // with a valid identifier and would otherwise be read as a tag.
+      // `~<../vibes/index.spw>` — bounds carry a *path-shaped* interior.
+      // `~<consequence>` is NOT PathRef — membrane potential (fail pathRef;
+      // operation ~ + capsule subject). Checked before tag+string form.
       skipWhitespace(stream)
       const boundedPath = peekBoundedPathTokens(stream)
       if (boundedPath.length > 0) {
-        const pathToken = stringTokenFromBarePath(boundedPath)
-        consumeTokenCount(stream, boundedPath.length)
-        consumed += boundedPath.length
+        const raw = boundedPath.map(t => t.value).join('')
+        if (isPathShapedRaw(raw)) {
+          const pathToken = stringTokenFromBarePath(boundedPath)
+          consumeTokenCount(stream, boundedPath.length)
+          consumed += boundedPath.length
 
-        skipWhitespace(stream)
-        const boundedCloseGen = capsuleClose(stream, depth + 1)
-        let boundedCloseStep = boundedCloseGen.next()
-        while (!boundedCloseStep.done) {
-          yield boundedCloseStep.value
-          boundedCloseStep = boundedCloseGen.next()
-        }
-        if (!boundedCloseStep.value.success) {
-          return { success: false, consumed: 0, error: boundedCloseStep.value.error }
-        }
-        consumed += boundedCloseStep.value.consumed
+          skipWhitespace(stream)
+          const boundedCloseGen = capsuleClose(stream, depth + 1)
+          let boundedCloseStep = boundedCloseGen.next()
+          while (!boundedCloseStep.done) {
+            yield boundedCloseStep.value
+            boundedCloseStep = boundedCloseGen.next()
+          }
+          if (!boundedCloseStep.value.success) {
+            return { success: false, consumed: 0, error: boundedCloseStep.value.error }
+          }
+          consumed += boundedCloseStep.value.consumed
 
-        const endPos = getPosition(stream)
+          const endPos = getPosition(stream)
+          return {
+            success: true,
+            value: {
+              type: 'PathRef',
+              span: { start: startPos, end: endPos },
+              operator: tildeToken,
+              path: { type: 'Literal', span: pathToken.span, token: pathToken },
+            },
+            consumed,
+          }
+        }
+        // Non-path interior: leave stream at CAPSULE_OPEN content for failure
+        // so choice backtracks; operationNode can take ~ + capsule.
         return {
-          success: true,
-          value: {
-            type: 'PathRef',
-            span: { start: startPos, end: endPos },
-            operator: tildeToken,
-            path: { type: 'Literal', span: pathToken.span, token: pathToken },
+          success: false,
+          consumed: 0,
+          error: {
+            message:
+              'Bounded ~<…> PathRef requires a path-shaped interior (./ ../ / or file extension). Use ~"…" for paths; ~<name> is membrane potential.',
+            expected: ['path-shaped interior', 'string path after tag'],
+            found: current(stream).type,
+            recoverable: true,
           },
-          consumed,
         }
       }
 
@@ -353,6 +383,23 @@ export const pathRefNode: Parser<PathRefNode> = named('pathRef',
         return { success: false, consumed: 0, error: closeStep.value.error }
       }
       consumed += closeStep.value.consumed
+
+      // Tag-only capsule without following string path is not PathRef
+      // (`~<tag>"path"` is the labeled path form). Fail so ~ + capsule can bind.
+      skipWhitespace(stream)
+      if (current(stream).type !== 'STRING' && peekBarePathTokens(stream).length === 0) {
+        return {
+          success: false,
+          consumed: 0,
+          error: {
+            message:
+              'Labeled path form is ~<tag>"path". Bare ~<name> is membrane potential, not PathRef.',
+            expected: ['string path'],
+            found: current(stream).type,
+            recoverable: true,
+          },
+        }
+      }
     }
 
     // Required string literal path (high-context can desugar bare ./path tokens)

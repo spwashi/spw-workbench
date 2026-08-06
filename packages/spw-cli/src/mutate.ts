@@ -10,10 +10,12 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
+import { applyStencil, type StencilMaskMode } from '@spwashi/spw-seed'
 import { runMutationAutomata } from '@spwashi/spw-seed'
 import { applyBiasRewrites, biasRewriteRules } from './bias-apply'
 import { collectSpwFiles } from './fs-walk'
 import { printHelpPage } from './help'
+import { getStencil } from './session/workspace-cache'
 import { readStdin } from './stdio'
 import { resolveWorkspacePath, tryDiscoverSpwWorkspace, type SpwWorkspace } from './workspace'
 
@@ -30,6 +32,10 @@ interface MutateCliArgs {
   biasPatch: string | null
   /** Bias mode is plan-only unless --write is given (it is corpus-wide find/replace). */
   write: boolean
+  /** Session stencil id from pulse --cut (replan transfer). */
+  fromStencil: string | null
+  /** Mask gate for --from: soft | strict | off */
+  maskMode: StencilMaskMode
 }
 
 export async function runSpwMutateCli(argv: string[] = process.argv): Promise<void> {
@@ -49,6 +55,11 @@ export async function runSpwMutateCli(argv: string[] = process.argv): Promise<vo
 
   if (args.biasPatch) {
     await runBiasMutate(args)
+    return
+  }
+
+  if (args.fromStencil) {
+    await runStencilMutate(args)
     return
   }
 
@@ -127,6 +138,128 @@ export async function runSpwMutateCli(argv: string[] = process.argv): Promise<vo
       `spw-mutate: files=${files.length} ${args.dryRun ? 'would-mutate' : 'mutated'}=${mutated} profile=${args.profile}`,
     )
   }
+}
+
+/**
+ * Apply a banked stencil to targets by replan (mask-gated).
+ * Never transfers donor byte offsets.
+ */
+async function runStencilMutate(args: MutateCliArgs): Promise<void> {
+  const stencil = getStencil(args.fromStencil!)
+  if (!stencil) {
+    console.error(
+      `spw mutate: no stencil "${args.fromStencil}" in session bank (pulse --cut first)`,
+    )
+    process.exitCode = 1
+    return
+  }
+  if (args.targets.length === 0) {
+    console.error('spw mutate --from: name at least one target file/dir')
+    process.exitCode = 1
+    return
+  }
+
+  const workspace = await tryDiscoverSpwWorkspace()
+  const files = await resolveTargets(args.targets, workspace)
+  if (files.length === 0) {
+    console.error('spw mutate --from: no .spw files matched targets')
+    process.exitCode = 1
+    return
+  }
+
+  const results: Array<Record<string, unknown>> = []
+  let mutated = 0
+  let refused = 0
+
+  for (const file of files) {
+    const before = await fs.readFile(file, 'utf8')
+    const rel = relLabel(file, workspace)
+    const applied = applyStencil(before, stencil, {
+      maskMode: args.maskMode,
+      dryRun: args.dryRun,
+      effectCeiling: 'effect.l1.memory',
+    })
+
+    if (!applied.ok || !applied.result) {
+      refused += 1
+      if (args.json) {
+        results.push({
+          file: rel,
+          refused: true,
+          reason: applied.refused,
+          gate: applied.gate.findings,
+        })
+      } else if (!args.quiet) {
+        console.log(`× ${rel}  refused: ${applied.refused}`)
+      }
+      continue
+    }
+
+    const result = applied.result
+    const changed = result.changed
+    if (args.json) {
+      results.push({
+        file: rel,
+        refused: false,
+        changed,
+        stencil: stencil.id,
+        rules: result.rulesApplied,
+        stop: result.stopReason,
+        gate: applied.gate.findings,
+        ...(args.dryRun ? { source: result.source } : {}),
+      })
+    }
+
+    if (!changed) {
+      if (!args.quiet && !args.json) {
+        console.log(`= ${rel}  (no change under stencil ${stencil.id})`)
+      }
+      continue
+    }
+
+    if (!args.dryRun) {
+      await fs.writeFile(file, result.source, 'utf8')
+      mutated += 1
+      if (!args.json) {
+        console.log(
+          `~ ${rel}  stencil=${stencil.id} rules=${result.rulesApplied.join(',') || '(none)'}`,
+        )
+      }
+    } else {
+      mutated += 1
+      if (!args.json) {
+        console.log(
+          `~ ${rel}  dry-run stencil=${stencil.id} rules=${result.rulesApplied.join(',') || '(none)'}`,
+        )
+      }
+    }
+  }
+
+  if (args.json) {
+    console.log(
+      JSON.stringify(
+        {
+          command: 'mutate',
+          mode: 'from-stencil',
+          stencil: stencil.id,
+          profile: stencil.profile,
+          maskMode: args.maskMode,
+          dryRun: args.dryRun,
+          files: files.length,
+          mutated,
+          refused,
+          results,
+        },
+        null,
+        2,
+      ),
+    )
+  } else if (!args.quiet) {
+    console.error(
+      `spw-mutate: from=${stencil.id} files=${files.length} mutated=${mutated} refused=${refused} mask=${args.maskMode}`,
+    )
+  }
+  if (refused > 0) process.exitCode = 1
 }
 
 /**
@@ -237,6 +370,8 @@ function parseMutateArgs(args: string[]): MutateCliArgs {
   let asLabel = '<stdin>'
   let biasPatch: string | null = null
   let write = false
+  let fromStencil: string | null = null
+  let maskMode: StencilMaskMode = 'soft'
 
   for (let i = 0; i < args.length; i += 1) {
     const arg = args[i]!
@@ -250,6 +385,28 @@ function parseMutateArgs(args: string[]): MutateCliArgs {
     }
     if (arg.startsWith('--bias=')) {
       biasPatch = arg.slice('--bias='.length)
+      continue
+    }
+    if (arg === '--from' || arg === '--from-stencil') {
+      fromStencil = args[++i] ?? null
+      continue
+    }
+    if (arg.startsWith('--from=')) {
+      fromStencil = arg.slice('--from='.length)
+      continue
+    }
+    if (arg.startsWith('--from-stencil=')) {
+      fromStencil = arg.slice('--from-stencil='.length)
+      continue
+    }
+    if (arg === '--mask') {
+      const next = (args[++i] ?? 'soft') as StencilMaskMode
+      if (next === 'soft' || next === 'strict' || next === 'off') maskMode = next
+      continue
+    }
+    if (arg.startsWith('--mask=')) {
+      const next = arg.slice('--mask='.length) as StencilMaskMode
+      if (next === 'soft' || next === 'strict' || next === 'off') maskMode = next
       continue
     }
     if (arg === '--write') {
@@ -294,7 +451,20 @@ function parseMutateArgs(args: string[]): MutateCliArgs {
     }
   }
 
-  return { targets, profile, quiet, help, json, dryRun, stdin, asLabel, biasPatch, write }
+  return {
+    targets,
+    profile,
+    quiet,
+    help,
+    json,
+    dryRun,
+    stdin,
+    asLabel,
+    biasPatch,
+    write,
+    fromStencil,
+    maskMode,
+  }
 }
 
 export function printMutateHelp(): void {
@@ -302,8 +472,9 @@ export function printMutateHelp(): void {
     title: 'Spw Mutate — apply (hot / batch)',
     usage: [
       'spw mutate <target...> [--profile layout_canonical] [--dry-run] [--json] [--quiet]',
+      'spw mutate --from <stencil-id> <target...> [--mask soft|strict|off] [--dry-run]',
       'spw mutate --stdin [--as buffer.spw] [--profile layout_canonical] [--json]',
-      'spw mutate --bias <patch.spw> <target...> [--write]   (bias-edge rewrite; plan-only unless --write)',
+      'spw mutate --bias <patch.spw> <target...> [--write]',
     ],
     sections: [
       {
@@ -312,6 +483,7 @@ export function printMutateHelp(): void {
           'Apply after an accepted plan (often pulse under effect.l0.measure).',
           'Paths: effect.l1.memory rewrite → effect.l2.workspace direct write.',
           'REPL: --stdin stays effect.l1.memory — returns { source, changed, rules }.',
+          '--from <id>: replan transfer from pulse --cut (mask-gated; never donor byte offsets).',
           'See docs/runtime/md/pulse-mutate-beat.md',
         ],
       },
@@ -319,29 +491,32 @@ export function printMutateHelp(): void {
         title: 'Flags',
         lines: [
           '--profile / -p    Mutation profile (default layout_canonical)',
+          '--from <id>       Apply banked stencil by replan (session cli-cache)',
+          '--mask <mode>     soft|strict|off form gate for --from (default soft)',
           '--dry-run         effect.l1.memory only — no effect.l2.workspace write',
           '--stdin           Read buffer from stdin; never auto-writes disk',
           '--as <label>      Logical name for stdin buffer in reports',
           '--json            Machine envelope for hosts',
           '--quiet / -q      Suppress per-file noise',
-          '--bias <file>     Read a bias surface as an ordered patch (=@from{ @to }); boon apply / bane revert',
-          '--write           With --bias: apply the rewrite (default is plan-only)',
+          '--bias <file>     Bias surface rewrite (=@from{ @to }); plan-only unless --write',
+          '--write           With --bias: apply the rewrite',
         ],
       },
       {
         title: 'vs pulse / beat',
         lines: [
-          'pulse   effect.l0.measure (+ optional atomic l2.workspace --write)',
-          'mutate  l1.memory → l2.workspace (paths) or l1.memory body (--stdin)',
+          'pulse   effect.l0.measure (+ optional atomic l2.workspace --write); --cut',
+          'mutate  l1.memory → l2.workspace; --from stencil replan',
           'beat    Timing only — no tree effect',
+          'Default pulse write is never a workspace setting — collate first',
         ],
       },
       {
         title: 'Try',
         lines: [
+          'spw pulse a.spw --cut',
+          'spw mutate --from <id> b.spw --dry-run',
           'spw mutate prompts/index.spw --dry-run --json',
-          'cat file.spw | spw mutate --stdin --as file.spw --json',
-          'spw mutate prompts --profile layout_canonical',
         ],
       },
     ],
