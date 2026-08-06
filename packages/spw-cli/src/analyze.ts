@@ -281,7 +281,7 @@ export async function runSpwAnalyzeCli(argv: string[] = process.argv): Promise<v
 
   if (!args.quiet) {
     meta(
-      '  next: spw invent --role hub · spw formula <roots> · spw query --from … --skim -s pathRefs',
+      '  next: spw census --role hub · spw formula <roots> · spw query --from … --skim -s pathRefs',
     )
   }
 }

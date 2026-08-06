@@ -165,10 +165,10 @@ export function printFormulaHelp(): void {
       {
         title: 'Analysis path',
         lines: [
-          'spw invent prompts --role hub',
+          'spw census prompts --role hub',
           'spw formula prompts --family measure',
           'spw query --from prompts --count --selector probes',
-          'spw map prompts --compare docs/theory',
+          'spw graph prompts --compare docs/theory',
         ],
       },
     ],
@@ -340,7 +340,7 @@ export async function runSpwFormulaCli(argv: string[] = process.argv): Promise<v
     }
 
     if (!args.quiet) {
-      meta('  next: spw invent --role hub · spw query --from … --count · skim high-score files')
+      meta('  next: spw census --role hub · spw query --from … --count · spw outline <hub>')
     }
   }
 }

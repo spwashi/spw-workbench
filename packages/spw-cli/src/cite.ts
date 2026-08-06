@@ -107,7 +107,7 @@ export function printCiteHelp(): void {
           'spw cite x.spw --remember',
           'spw follow @bc:… --path x.spw',
           'spw follow x.spw --collapse',
-          'Pair with: spw geometry --spw · spw cycle',
+          'Pair with: spw form --spw · spw cycle · spw inspect compose',
         ],
       },
     ],

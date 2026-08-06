@@ -77,8 +77,6 @@ export {
   sortPopulation,
   filterPopulation,
   buildCorpusProduct,
-  formatCorpusProductSpw,
-  formatPopulationSpw,
   type RelationKind,
   type CorpusLink,
   type CorpusFileSignals,

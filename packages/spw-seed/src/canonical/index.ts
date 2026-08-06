@@ -267,6 +267,13 @@ export {
   type CompositionForm,
 } from './composition-forms'
 
+/** Corpus / population / topography dual-read (formatSpwCard). */
+export {
+  formatPopulationSpw,
+  formatTopographySpw,
+  formatCorpusProductSpw,
+} from './corpus-disclosure'
+
 /** Patch — selection → differential → store → apply (file|files|nodes). */
 export {
   PATCH_VERSION,

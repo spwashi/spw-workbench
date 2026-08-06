@@ -124,7 +124,7 @@ export function printCycleHelp(): void {
         lines: [
           'spw cycle --before x.spw --after y.spw --json | jq .data.delta',
           'spw cycle fixture/before fixture/after --channel experimental',
-          'Pair with: spw surface, spw measure, spw snippet hydrate',
+          'Pair with: spw stack, spw measure, spw inspect compose',
         ],
       },
       {

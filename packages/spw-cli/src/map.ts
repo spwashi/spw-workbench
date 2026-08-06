@@ -1,20 +1,27 @@
 /**
- * spw graph (map) — reference topology & relationship interplay in a corpus.
- * Canonical: graph. Aliases: map, topo.
- *
- * Useful for novel codebases with strands of familiarity (path refs, roots,
- * frames, sigil rhythm) and for business/academic relationship packs.
+ * spw graph — corpus topography & familiarity (IrKind graph product).
+ * Route aliases: map, topo (not taught).
  */
 
 import process from 'node:process'
 import {
   compareFamiliarity,
+  formatTopographySpw,
   type TopographyReport,
 } from '@spwashi/spw-seed'
 import { parseIndexDepth, scanCorpus, type IndexDepth } from './corpus-scan'
 import { printHelpPage } from './help'
 import { formatJsonEnvelope } from './envelope'
-import { formatTable, meta, metaBlock, truncate } from './view'
+import {
+  emitDetail,
+  emitHeader,
+  emitNext,
+  formatTable,
+  meta,
+  metaBlock,
+  setMetaQuiet,
+  truncate,
+} from './view'
 
 interface MapArgs {
   roots: string[]
@@ -24,10 +31,15 @@ interface MapArgs {
   limit: number
   resolvePaths: boolean
   depth: IndexDepth
+  format: 'spw' | 'table'
+  quiet: boolean
 }
 
 function parseMapArgs(argv: string[]): MapArgs {
-  const args = argv[0] === 'map' || argv[0] === 'topo' ? argv.slice(1) : argv
+  const args =
+    argv[0] === 'graph' || argv[0] === 'map' || argv[0] === 'topo'
+      ? argv.slice(1)
+      : argv
   const parsed: MapArgs = {
     roots: [],
     json: false,
@@ -35,11 +47,30 @@ function parseMapArgs(argv: string[]): MapArgs {
     limit: 40,
     resolvePaths: true,
     depth: 'standard',
+    format: 'spw',
+    quiet: false,
   }
   for (let i = 0; i < args.length; i++) {
     const a = args[i]!
     if (a === '--json') {
       parsed.json = true
+      continue
+    }
+    if (a === '--quiet' || a === '-q') {
+      parsed.quiet = true
+      continue
+    }
+    if (a === '--table' || a === '--format=table') {
+      parsed.format = 'table'
+      continue
+    }
+    if (a === '--spw' || a === '--format=spw') {
+      parsed.format = 'spw'
+      continue
+    }
+    if (a === '--format') {
+      const next = (args[++i] ?? 'spw').toLowerCase()
+      if (next === 'table' || next === 'spw') parsed.format = next
       continue
     }
     if (a === '--from' || a === '--root') {
@@ -58,16 +89,22 @@ function parseMapArgs(argv: string[]): MapArgs {
       parsed.compare = splitCsv(a.slice('--compare='.length))
       continue
     }
-    if (a === '--hubs') {
-      parsed.hubs = Math.max(1, Number(args[++i] ?? 12) || 12)
+    if (a === '--hubs' || a === '--limit' || a === '-n') {
+      const n = Math.max(1, Number(args[++i] ?? 12) || 12)
+      parsed.hubs = n
+      parsed.limit = n
       continue
     }
     if (a.startsWith('--hubs=')) {
-      parsed.hubs = Math.max(1, Number(a.slice('--hubs='.length)) || 12)
+      const n = Math.max(1, Number(a.slice('--hubs='.length)) || 12)
+      parsed.hubs = n
+      parsed.limit = n
       continue
     }
-    if (a === '--limit' || a === '-n') {
-      parsed.limit = Math.max(1, Number(args[++i] ?? 40) || 40)
+    if (a.startsWith('--limit=')) {
+      const n = Math.max(1, Number(a.slice('--limit='.length)) || 40)
+      parsed.hubs = n
+      parsed.limit = n
       continue
     }
     if (a === '--no-resolve') {
@@ -86,7 +123,7 @@ function parseMapArgs(argv: string[]): MapArgs {
       parsed.roots.push(a)
       continue
     }
-    throw new Error(`spw map: unknown flag ${a}`)
+    throw new Error(`spw graph: unknown flag ${a}`)
   }
   if (!parsed.roots.length) parsed.roots = ['.']
   return parsed
@@ -98,40 +135,43 @@ function splitCsv(s: string): string[] {
 
 export function printMapHelp(): void {
   printHelpPage({
-    title: 'Spw Graph — corpus topography & familiarity',
+    title: 'Spw Graph — topography product',
     usage: [
-      'spw graph [paths...] [--from a,b] [--compare otherRoot] [--json] [--hubs 12]',
-      'spw graph prompts --hubs 15',
+      'spw graph [paths...] [--from a,b] [--compare otherRoot] [--limit 12]',
+      'spw graph prompts --limit 15',
       'spw graph prompts --compare docs/theory',
-      'spw map … / spw topo …   # compat aliases',
+      'spw graph prompts --table',
     ],
     sections: [
       {
-        title: 'What it shows',
+        title: 'Product',
         lines: [
-          'Path-ref & @root relationship graph across .spw files',
-          'Cycles, topo layers, hubs (high degree), orphans, broken targets',
-          'Familiarity strands: path basenames, sigil rhythm, frame density, root shelves',
-          '--compare: shared strands vs a second corpus (novel codebase with familiar wires)',
-          '--depth <d>: scan depth minimal|standard|full (default standard)',
+          'Default dual-read: ^["graph"] with hubs/strands/broken via formatSpwCard',
+          'Host grid: --table',
+          'Shares corpus scan memo with census (mtime fingerprint)',
         ],
       },
       {
-        title: 'Sense loop',
+        title: 'Flags',
         lines: [
-          'spw census <roots>     population + roles',
-          'spw graph <roots>      topology (this command)',
-          'spw formula <roots>    formula catalog + pattern scan',
-          'spw analyze <roots>    multi-selector stats',
-          'spw query / skim       drill into hits',
+          '--compare / -c   Second root set for familiarity strands',
+          '--limit / -n     Hub / broken row cap (also accepts --hubs)',
+          '--depth <d>      minimal|standard|full',
+          '--no-resolve     Leave path targets unresolved',
+          '--spw            Dual-read (default)',
+          '--table          Host tables',
+          '--json           Machine envelope',
+          '--quiet / -q     Suppress meta',
         ],
       },
       {
-        title: 'Uses',
+        title: 'Examples',
         lines: [
-          'Business/academic relationship packs (who depends on whom)',
-          'Onboarding to a new Spw tree that still uses ~ and @',
-          'Cache planning: hubs are warm candidates; orphans may be cold archives',
+          'spw census <roots> -n 20',
+          'spw graph <roots> --limit 12',
+          'spw formula <roots>',
+          'spw density <roots>',
+          'spw inspect corpus <roots>',
         ],
       },
     ],
@@ -153,6 +193,8 @@ export async function runSpwMapCli(argv: string[] = process.argv): Promise<void>
     return
   }
 
+  setMetaQuiet(args.quiet)
+
   const primaryScan = await scanCorpus({
     roots: args.roots,
     resolvePaths: args.resolvePaths,
@@ -161,7 +203,9 @@ export async function runSpwMapCli(argv: string[] = process.argv): Promise<void>
   })
   const primary = primaryScan.topography
   let compare: TopographyReport | undefined
+  let compareRoots: string[] | undefined
   if (args.compare?.length) {
+    compareRoots = args.compare
     compare = (
       await scanCorpus({
         roots: args.compare,
@@ -174,43 +218,91 @@ export async function runSpwMapCli(argv: string[] = process.argv): Promise<void>
 
   if (args.json) {
     console.log(
-      formatJsonEnvelope('map', {
+      formatJsonEnvelope('graph', {
         primary: serializeReport(primary),
         compare: compare ? serializeReport(compare) : undefined,
         familiarity: compare ? compareFamiliarity(primary, compare) : undefined,
+        product: primaryScan.product,
+        memoPlane: primaryScan.memoPlane,
       }),
     )
     return
   }
 
-  printReport('primary', primary, args, primaryScan.memoPlane)
-  if (compare) {
-    console.log('')
-    printReport('compare', compare, args)
-    const fam = compareFamiliarity(primary, compare)
-    console.log('')
-    metaBlock('familiarity (shared strands)', [
-      ['path overlap', fam.pathOverlap.toFixed(3)],
-      ['sigil cosine', fam.cosineSigils.toFixed(3)],
-      ['frame affinity', fam.frameOverlap.toFixed(3)],
-      ...fam.sharedStrands.map(s => [s.id, `${s.score.toFixed(3)}  ${truncate(s.detail, 60)}`] as [string, string]),
-    ])
-    if (fam.onlyA.length) meta(`  only primary stems: ${fam.onlyA.slice(0, 12).join(', ')}`)
-    if (fam.onlyB.length) meta(`  only compare stems: ${fam.onlyB.slice(0, 12).join(', ')}`)
+  emitHeader('graph', {
+    files: primary.files,
+    links: primary.links,
+    cyclic: primary.cyclic,
+    hubs: primary.hubs.length,
+    memo: primaryScan.memoPlane,
+    format: args.format,
+  })
+
+  if (args.format === 'table') {
+    printReportTable('primary', primary, args)
+  } else {
+    console.log(
+      formatTopographySpw(primary, {
+        among: args.roots,
+        label: 'primary',
+        memo: primaryScan.memoPlane,
+        hubLimit: args.hubs,
+        brokenLimit: args.limit,
+      }),
+    )
   }
 
-  meta('  next: spw census <roots> · spw formula <roots> · spw density <roots> · spw outline <hub>')
+  if (compare && compareRoots) {
+    console.log('')
+    if (args.format === 'table') {
+      printReportTable('compare', compare, args)
+    } else {
+      console.log(
+        formatTopographySpw(compare, {
+          among: compareRoots,
+          label: 'compare',
+          hubLimit: args.hubs,
+          brokenLimit: args.limit,
+        }),
+      )
+    }
+    const fam = compareFamiliarity(primary, compare)
+    console.log('')
+    metaBlock('familiarity', [
+      ['path_overlap', fam.pathOverlap.toFixed(3)],
+      ['sigil_cosine', fam.cosineSigils.toFixed(3)],
+      ['frame_affinity', fam.frameOverlap.toFixed(3)],
+      ...fam.sharedStrands.map(
+        s =>
+          [s.id, `${s.score.toFixed(3)}  ${truncate(s.detail, 60)}`] as [
+            string,
+            string,
+          ],
+      ),
+    ])
+    if (fam.onlyA.length) {
+      emitDetail(`only primary stems: ${fam.onlyA.slice(0, 12).join(', ')}`)
+    }
+    if (fam.onlyB.length) {
+      emitDetail(`only compare stems: ${fam.onlyB.slice(0, 12).join(', ')}`)
+    }
+  }
+
+  emitNext(
+    'spw census <roots>',
+    'spw formula <roots>',
+    'spw density <roots>',
+    'spw outline <hub>',
+  )
 }
 
-function printReport(
+function printReportTable(
   label: string,
   r: TopographyReport,
   args: MapArgs,
-  memo?: string,
 ): void {
   meta(
-    `# graph ${label}  files=${r.files}  links=${r.links}  cyclic=${r.cyclic}  hubs=${r.hubs.length}` +
-      (memo ? `  memo=${memo}` : ''),
+    `# graph ${label}  files=${r.files}  links=${r.links}  cyclic=${r.cyclic}  hubs=${r.hubs.length}`,
   )
   if (r.cyclic && r.cycleWitness) {
     console.log(`cycle: ${r.cycleWitness.join(' → ')}`)
@@ -219,7 +311,9 @@ function printReport(
     console.log(`layers: ${r.layers.length}  (depth of dependency stack)`)
     for (let i = 0; i < Math.min(r.layers.length, 8); i++) {
       const layer = r.layers[i]!
-      console.log(`  L${i} (${layer.length})  ${layer.slice(0, 6).join(', ')}${layer.length > 6 ? ', …' : ''}`)
+      console.log(
+        `  L${i} (${layer.length})  ${layer.slice(0, 6).join(', ')}${layer.length > 6 ? ', …' : ''}`,
+      )
     }
   }
 
@@ -228,7 +322,14 @@ function printReport(
     console.log(
       formatTable(
         ['hub', 'in', 'out', 'Σ'],
-        r.hubs.slice(0, args.hubs).map(h => [truncate(h.id, 48), String(h.inDegree), String(h.outDegree), String(h.total)]),
+        r.hubs
+          .slice(0, args.hubs)
+          .map(h => [
+            truncate(h.id, 48),
+            String(h.inDegree),
+            String(h.outDegree),
+            String(h.total),
+          ]),
       ),
     )
   }
@@ -237,7 +338,9 @@ function printReport(
     console.log('')
     console.log('strands (familiarity wires)')
     for (const s of r.strands) {
-      console.log(`  ${s.id.padEnd(22)} ${s.score.toFixed(3)}  ${truncate(s.detail, 64)}`)
+      console.log(
+        `  ${s.id.padEnd(22)} ${s.score.toFixed(3)}  ${truncate(s.detail, 64)}`,
+      )
     }
   }
 

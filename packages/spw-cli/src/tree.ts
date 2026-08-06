@@ -86,7 +86,7 @@ export function printTreeHelp(): void {
         title: 'Notes',
         lines: [
           'Shows directories that contain .spw files (and the files themselves).',
-          'Pair with: spw skim <file> · spw select <file> --skim · spw query --from <dir> --skim',
+          'Pair with: spw outline <file> · spw select <file> --skim · spw query --from <dir> --skim',
         ],
       },
       {

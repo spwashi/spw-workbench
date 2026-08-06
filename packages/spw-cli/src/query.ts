@@ -238,17 +238,17 @@ export function printQueryHelp(): void {
       {
         title: 'Sense companions',
         lines: [
-          'spw invent --from <dir>     file catalog + roles',
-          'spw analyze --from <dir>    multi-selector densities',
+          'spw census --from <dir>     population + roles',
+          'spw density --from <dir>    multi-selector densities',
           'spw formula --from <dir>    math pattern discovery',
-          'spw map --from <dir>        hubs / layers / cycles',
+          'spw graph --from <dir>      hubs / layers / cycles',
         ],
       },
       {
         title: 'Related',
         lines: [
           'spw select <file> --skim     single-file',
-          'spw skim <file>              outline without selector',
+          'spw outline <file>           outline without selector',
           'spw tree <path>              directory map',
         ],
       },
