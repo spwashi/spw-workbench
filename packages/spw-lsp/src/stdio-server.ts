@@ -28,8 +28,6 @@ import { completion as _completion, formatting as _formatting, rangeFormatting a
 import { definition as _definition, documentLinks as _documentLinks, references as _references, prepareRename as _prepareRename, rename as _rename } from './handlers/navigation'
 import { semanticTokens as _semanticTokens, SEMANTIC_TOKENS_LEGEND } from './handlers/semantic-tokens'
 import {
-  WorkspaceAuthorityBlockedError,
-  workspaceManifest as _workspaceManifest,
   workspaceManifestV1 as _workspaceManifestV1,
   workspaceTemperature as _workspaceTemperature,
 } from './handlers/workspace'
@@ -40,7 +38,6 @@ import {
 } from './handlers/reference-graph'
 import { handleSpwProbe } from './handlers/spw-probes'
 import {
-  SPW_WORKSPACE_MANIFEST_METHOD,
   SPW_WORKSPACE_MANIFEST_METHOD_V1,
   SPW_WORKSPACE_MANIFEST_SCHEMA_VERSION,
   SPW_WORKSPACE_MANIFEST_SURFACE,
@@ -362,11 +359,6 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
         return
       }
 
-      case SPW_WORKSPACE_MANIFEST_METHOD: {
-        sendResult(id, await _workspaceManifest(deps))
-        return
-      }
-
       case 'spw/workspaceTemperature': {
         sendResult(id, _workspaceTemperature(deps))
         return
@@ -377,7 +369,8 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
         return
       }
 
-      case 'spw/referenceGraph': {
+      case 'spw/referenceGraph':
+      case 'spw/corpus': {
         sendResult(id, await _buildReferenceGraph(deps))
         return
       }
@@ -391,7 +384,6 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
       case 'spw/particles':
       case 'spw/formContext':
       case 'spw/activity':
-      case 'spw/beat': // compatibility alias — same evidence as spw/activity
       case 'spw/surfaceProfile':
       case 'spw/phraseScan':
       case 'spw/channelPolicy':
@@ -410,13 +402,6 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
         return
     }
   } catch (error) {
-    if (error instanceof WorkspaceAuthorityBlockedError) {
-      sendError(id, -32803, 'Workspace authority is blocked.', {
-        code: error.code,
-        status: error.status,
-      })
-      return
-    }
     const errorName = error instanceof Error ? error.name : 'UnknownError'
     log(`request failed method=${message.method} error=${errorName}`)
     sendError(id, -32603, 'Internal error', { code: 'SPW_INTERNAL_ERROR' })

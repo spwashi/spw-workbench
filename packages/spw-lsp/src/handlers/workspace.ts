@@ -1,6 +1,5 @@
 /**
- * Workspace handlers expose a URI-first v1 evidence surface and a quarantined
- * legacy adapter for clients that still consume process-local path strings.
+ * Workspace handlers — URI-first manifest evidence and retention-tier temperature.
  */
 
 import { particleMixTotal, type ParticleMix } from '@spwashi/spw-seed'
@@ -14,24 +13,10 @@ import {
   type SpwWorkspaceManifestV1,
 } from '../workspace-protocol'
 import type { HandlerDeps } from '../types'
-
-// ── Legacy response types ──────────────────────────────────────
-
-/** @deprecated Use SpwWorkspaceManifestV1 and URI identity. */
-export interface WorkspaceRootEntry {
-  sigil: string
-  resolvedPath: string
-  uri: string
-}
-
-/** @deprecated Projection declarations will move to a versioned evidence endpoint. */
-export interface WorkspaceProjectionEntry {
-  name: string
-  root: string
-  source: string
-  specOwner: string
-  status: string
-}
+import {
+  formatWorkspaceTemperatureSpw,
+  type WorkspaceTemperatureEnvelope,
+} from './corpus-disclose'
 
 /**
  * How much of a surface is deferred state — the share of its marks that are
@@ -52,25 +37,6 @@ export interface WorkspaceTemperatureEntry {
   volatility: Volatility
   /** Aspect marks as a share of all particle marks, 0–1. */
   aspectShare: number
-  /** @deprecated Prefer accessAgeRequests */
-  beatAge: number
-}
-
-/** @deprecated Use SpwWorkspaceManifestV1. */
-export interface WorkspaceManifestResult {
-  rootSource: 'manifest' | 'inferred'
-  manifestUri: string | null
-  roots: WorkspaceRootEntry[]
-  projections: WorkspaceProjectionEntry[]
-}
-
-export class WorkspaceAuthorityBlockedError extends Error {
-  readonly code = 'SPW_WORKSPACE_AUTHORITY_BLOCKED'
-
-  constructor(readonly status: 'invalid' | 'unreadable') {
-    super('Workspace manifest authority is blocked.')
-    this.name = 'WorkspaceAuthorityBlockedError'
-  }
 }
 
 // ── Handlers ───────────────────────────────────────────────────
@@ -86,29 +52,6 @@ export async function workspaceManifestV1(deps: HandlerDeps): Promise<SpwWorkspa
     schemaVersion: SPW_WORKSPACE_MANIFEST_SCHEMA_VERSION,
     surface: SPW_WORKSPACE_MANIFEST_SURFACE,
     ...authority,
-  }
-}
-
-/**
- * Compatibility adapter for the existing editor client.
- *
- * Invalid and unreadable manifests remain blocked: this adapter never revives
- * inferred roots after the v1 authority layer has refused them.
- */
-export async function workspaceManifest(deps: HandlerDeps): Promise<WorkspaceManifestResult> {
-  const evidence = await workspaceManifestV1(deps)
-  if (evidence.rootSource === 'blocked') {
-    throw new WorkspaceAuthorityBlockedError(evidence.manifest.status)
-  }
-  return {
-    rootSource: evidence.rootSource === 'manifest' ? 'manifest' : 'inferred',
-    manifestUri: evidence.manifest.status === 'valid' ? evidence.manifest.uri : null,
-    roots: evidence.roots.map((root) => ({
-      sigil: root.sigil,
-      uri: root.uri,
-      resolvedPath: legacyPathFromUri(root.uri, deps),
-    })),
-    projections: workspaceProjections(deps),
   }
 }
 
@@ -162,8 +105,10 @@ export function volatilityOf(
  * recently a surface was read, `volatility` is whether its content keeps.
  * Crossing them is what makes the reading actionable — a cold durable surface
  * is safe to keep cached, while a hot volatile one must be re-read on change.
+ *
+ * Always returns `{ entries, dualReadSpw }` — no bare-array shape.
  */
-export function workspaceTemperature(deps: HandlerDeps): WorkspaceTemperatureEntry[] {
+export function workspaceTemperature(deps: HandlerDeps): WorkspaceTemperatureEnvelope {
   const { serverIndex } = deps
   const epoch = serverIndex.getCurrentRequestEpoch()
   const entries: WorkspaceTemperatureEntry[] = []
@@ -174,13 +119,16 @@ export function workspaceTemperature(deps: HandlerDeps): WorkspaceTemperatureEnt
       uri,
       tier: doc.tier,
       accessAgeRequests,
-      beatAge: accessAgeRequests,
       writeCount: doc.writeCount,
       ...volatilityOf(doc.mix, doc.text),
     })
   }
 
-  return entries.sort((a, b) => a.accessAgeRequests - b.accessAgeRequests)
+  entries.sort((a, b) => a.accessAgeRequests - b.accessAgeRequests)
+  return {
+    entries,
+    dualReadSpw: formatWorkspaceTemperatureSpw(entries),
+  }
 }
 
 async function findOpenWorkspaceDocument(
@@ -199,22 +147,4 @@ async function findOpenWorkspaceDocument(
     }
   }
   return null
-}
-
-function workspaceProjections(deps: HandlerDeps): WorkspaceProjectionEntry[] {
-  return deps.serverIndex.getProjections().map((projection) => ({
-    name: projection.name,
-    root: projection.root,
-    source: projection.source,
-    specOwner: projection.specOwner,
-    status: projection.status,
-  }))
-}
-
-function legacyPathFromUri(uri: string, deps: HandlerDeps): string {
-  const filePath = deps.pathFromUri(uri)
-  if (filePath === null) {
-    throw new Error('Legacy workspace clients require local file URI roots.')
-  }
-  return filePath
 }

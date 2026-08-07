@@ -243,11 +243,6 @@ export class ServerIndex {
     }
   }
 
-  /** @deprecated Prefer getActivityStatus — beat named request traffic incorrectly. */
-  getBeatStatus(uri?: string) {
-    return this.getActivityStatus(uri)
-  }
-
   // ── Document lifecycle ────────────────────────────────────────
 
   openDocument(uri: string, filePath: string, text: string, version: number): DocumentState {

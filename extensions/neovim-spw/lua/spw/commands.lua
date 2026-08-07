@@ -110,24 +110,23 @@ function M.setup()
 
   vim.api.nvim_create_user_command('SpwTemperature', function()
     lsp.request_custom('spw/workspaceTemperature', {}, function(err, result)
-      if err or not result then
+      if err or not result or type(result.dualReadSpw) ~= 'string' then
         notify('workspaceTemperature failed', vim.log.levels.WARN)
         return
       end
-      local lines = { '# Workspace temperature', '' }
-      for _, e in ipairs(result) do
-        table.insert(lines, string.format('%s  w=%s  age=%s  %s', e.tier, e.writeCount, e.beatAge, e.uri))
-      end
-      if #result == 0 then
+      local entries = result.entries or {}
+      local lines = vim.split(result.dualReadSpw, '\n', { plain = true })
+      if #entries == 0 then
+        table.insert(lines, '')
         table.insert(lines, '(empty — open/save .spw files to warm tiers)')
       end
       local buf = vim.api.nvim_create_buf(false, true)
       vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-      vim.bo[buf].filetype = 'markdown'
+      vim.bo[buf].filetype = 'spw'
       vim.cmd('split')
       vim.api.nvim_win_set_buf(0, buf)
     end)
-  end, { desc = 'Show workspace temperature tiers' })
+  end, { desc = 'Show workspace temperature tiers (Spw dual-read)' })
 
   vim.api.nvim_create_user_command('SpwInsertFormWrap', function()
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -149,30 +148,29 @@ function M.setup()
     form.wrap_selection_in_container(label)
   end, { nargs = '?', range = true, desc = 'Wrap visual selection or word under cursor in Spw container' })
 
-  vim.api.nvim_create_user_command('SpwBeat', function()
+  vim.api.nvim_create_user_command('SpwActivity', function()
     local uri = vim.uri_from_bufnr(0)
-    lsp.request_custom('spw/beat', {
+    lsp.request_custom('spw/activity', {
       textDocument = { uri = uri },
     }, function(err, result)
       if err or not result then
-        notify('spw/beat request failed', vim.log.levels.WARN)
+        notify('spw/activity request failed', vim.log.levels.WARN)
         return
       end
-      local tier_symbol = { hot = '⚡', warm = '♨', cold = '❄' }
       local surface_str = ''
       if result.surface then
-        local sym = tier_symbol[result.surface.tier] or '○'
-        surface_str = string.format('\n  Active surface: %s %s (visits: %d, age: %d beats)',
-          sym, result.surface.tier, result.surface.visits, result.surface.beatAge)
+        surface_str = string.format('\n  Active surface: visits=%d age=%d',
+          result.surface.visits or 0, result.surface.accessAgeRequests or 0)
       end
-      notify(string.format('Spw LSP Beat: %d | Docs: %d (hot: %d, warm: %d, cold: %d)%s',
-        result.beat, result.activeDocuments,
-        result.tiers and result.tiers.hot or 0,
-        result.tiers and result.tiers.warm or 0,
-        result.tiers and result.tiers.cold or 0,
-        surface_str), vim.log.levels.INFO)
+      notify(string.format('Spw LSP activity: epoch %d | Docs: %d%s',
+        result.requestEpoch or 0, result.activeDocuments or 0, surface_str), vim.log.levels.INFO)
     end)
-  end, { desc = 'Display Spw LSP beat counter and cache tier telemetry' })
+  end, { desc = 'Display Spw LSP request-epoch activity' })
+
+  -- Alias kept as a command name only; method is spw/activity.
+  vim.api.nvim_create_user_command('SpwBeat', function()
+    vim.cmd('SpwActivity')
+  end, { desc = 'Alias for SpwActivity (request-epoch probe)' })
 end
 
 return M

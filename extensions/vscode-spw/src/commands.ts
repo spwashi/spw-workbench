@@ -99,19 +99,14 @@ export function registerSpwCommands(
     }),
 
     vscode.commands.registerCommand('spw.showWorkspaceTemperature', async () => {
-      const entries = await requests.workspaceTemperature()
+      const { entries, dualReadSpw } = await requests.workspaceTemperature()
       if (!entries.length) {
         void vscode.window.showInformationMessage('No workspace temperature data yet (open/save .spw files).')
         return
       }
-      const top = entries
-        .slice()
-        .sort((a, b) => b.writeCount - a.writeCount)
-        .slice(0, 20)
-        .map(e => `${e.tier.padEnd(6)} w=${e.writeCount}  age=${e.beatAge}  ${e.uri}`)
       const doc = await vscode.workspace.openTextDocument({
-        content: ['# Spw workspace temperature', '', ...top].join('\n'),
-        language: 'markdown',
+        content: dualReadSpw,
+        language: 'spw',
       })
       await vscode.window.showTextDocument(doc, { preview: true })
     }),

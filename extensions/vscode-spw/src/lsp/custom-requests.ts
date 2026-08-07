@@ -30,9 +30,10 @@ export interface SpwResonanceEdge {
 
 export interface SpwWorkspaceTemperatureEntry {
   uri: string
-  /** How recently the surface was read. */
+  /** How recently the surface was read (retention class). */
   tier: string
-  beatAge: number
+  /** requestEpoch − lastAccessEpoch */
+  accessAgeRequests: number
   writeCount: number
   /** What the surface is made of: whether its content keeps or expires. */
   volatility?: 'volatile' | 'settled' | 'durable'
@@ -78,6 +79,12 @@ export interface SpwReferenceGraph {
   orphans: string[]
   external: number
   unresolved: number
+  dualReadSpw: string
+}
+
+export interface SpwWorkspaceTemperature {
+  entries: SpwWorkspaceTemperatureEntry[]
+  dualReadSpw: string
 }
 
 export interface SpwRegisterEntry {
@@ -136,13 +143,17 @@ export interface SpwCustomRequestMap {
   }
   'spw/workspaceTemperature': {
     params: Record<string, never>
-    result: SpwWorkspaceTemperatureEntry[]
+    result: SpwWorkspaceTemperature
   }
   'spw/cacheReflection': {
     params: Record<string, never>
     result: SpwCacheReflection
   }
   'spw/referenceGraph': {
+    params: Record<string, never>
+    result: SpwReferenceGraph
+  }
+  'spw/corpus': {
     params: Record<string, never>
     result: SpwReferenceGraph
   }
@@ -253,7 +264,7 @@ export interface SpwCustomRequestClient {
   annotations(): Promise<SpwAnnotationRecord[]>
   contextAtPosition(uri: string, position: SpwPosition): Promise<SpwContextAtPositionResult | null>
   workspaceManifest(): Promise<SpwWorkspaceManifest>
-  workspaceTemperature(): Promise<SpwWorkspaceTemperatureEntry[]>
+  workspaceTemperature(): Promise<SpwWorkspaceTemperature>
   cacheReflection(): Promise<SpwCacheReflection | null>
   referenceGraph(): Promise<SpwReferenceGraph | null>
 }
@@ -297,24 +308,25 @@ function isWorkspaceTemperatureEntry(value: unknown): value is SpwWorkspaceTempe
   if (!isRecord(value)) return false
   return typeof value.uri === 'string'
     && typeof value.tier === 'string'
-    && typeof value.beatAge === 'number'
+    && typeof value.accessAgeRequests === 'number'
     && typeof value.writeCount === 'number'
 }
 
-function parseWorkspaceTemperatureEntries(value: unknown): SpwWorkspaceTemperatureEntry[] {
-  if (!Array.isArray(value)) {
-    throw new Error('spw/workspaceTemperature returned a non-array payload')
+function parseWorkspaceTemperature(value: unknown): SpwWorkspaceTemperature {
+  if (!isRecord(value) || !Array.isArray(value.entries)) {
+    throw new Error('spw/workspaceTemperature expected { entries, dualReadSpw }')
   }
-
   const entries: SpwWorkspaceTemperatureEntry[] = []
-  for (const entry of value) {
+  for (const entry of value.entries) {
     if (!isWorkspaceTemperatureEntry(entry)) {
       throw new Error('spw/workspaceTemperature returned an invalid entry')
     }
     entries.push(entry)
   }
-
-  return entries
+  if (typeof value.dualReadSpw !== 'string') {
+    throw new Error('spw/workspaceTemperature missing dualReadSpw')
+  }
+  return { entries, dualReadSpw: value.dualReadSpw }
 }
 
 export interface SpwRequestTransport {
@@ -345,9 +357,9 @@ class SpwLanguageServerRequests implements SpwCustomRequestClient {
     return parseSpwWorkspaceManifestV1(payload)
   }
 
-  async workspaceTemperature(): Promise<SpwWorkspaceTemperatureEntry[]> {
+  async workspaceTemperature(): Promise<SpwWorkspaceTemperature> {
     const payload = await this.request('spw/workspaceTemperature', {})
-    return parseWorkspaceTemperatureEntries(payload)
+    return parseWorkspaceTemperature(payload)
   }
 
   async cacheReflection(): Promise<SpwCacheReflection | null> {
@@ -365,6 +377,7 @@ class SpwLanguageServerRequests implements SpwCustomRequestClient {
   async referenceGraph(): Promise<SpwReferenceGraph | null> {
     const payload = await this.request('spw/referenceGraph', {})
     if (!isRecord(payload) || typeof payload.surfaces !== 'number') return null
+    if (typeof payload.dualReadSpw !== 'string') return null
     return {
       surfaces: payload.surfaces,
       edges: typeof payload.edges === 'number' ? payload.edges : 0,
@@ -372,6 +385,7 @@ class SpwLanguageServerRequests implements SpwCustomRequestClient {
       orphans: Array.isArray(payload.orphans) ? (payload.orphans as string[]) : [],
       external: typeof payload.external === 'number' ? payload.external : 0,
       unresolved: typeof payload.unresolved === 'number' ? payload.unresolved : 0,
+      dualReadSpw: payload.dualReadSpw,
     }
   }
 }

@@ -6,8 +6,20 @@ import {
   truncate,
   formatTable,
 } from './view'
+import { facet, formatSpwCard } from '@spwashi/spw-seed'
 
 describe('view helpers', () => {
+  it('builds dual-read header cards via formatSpwCard', () => {
+    const card = formatSpwCard('census', [
+      facet.atom('files', 9),
+      facet.flag('cyclic', false),
+      facet.atom('memo', 'disk'),
+    ])
+    expect(card).toContain('^["census"]')
+    expect(card).toContain('~#files:')
+    expect(card).toContain('~#cyclic:')
+  })
+
   it('truncates with ellipsis', () => {
     expect(truncate('hello world', 8)).toBe('hello w…')
     expect(truncate('short', 10)).toBe('short')

@@ -1,6 +1,5 @@
 import type { WorkspaceRootManifestDiagnosticCode } from '@spwashi/spw-seed'
 
-export const SPW_WORKSPACE_MANIFEST_METHOD = 'spw/workspaceManifest' as const
 export const SPW_WORKSPACE_MANIFEST_METHOD_V1 = 'spw/workspaceManifest/v1' as const
 export const SPW_WORKSPACE_MANIFEST_SCHEMA_VERSION = 1 as const
 export const SPW_WORKSPACE_MANIFEST_SURFACE = 'spw.workspaceManifest' as const

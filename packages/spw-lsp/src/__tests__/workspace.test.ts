@@ -5,12 +5,10 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { ServerIndex } from '../server-index'
 import {
-  workspaceManifest,
   workspaceManifestV1,
   workspaceTemperature,
 } from '../handlers/workspace'
 import {
-  SPW_WORKSPACE_MANIFEST_METHOD,
   SPW_WORKSPACE_MANIFEST_METHOD_V1,
 } from '../workspace-protocol'
 import { discoverWorkspaceConsumerPath } from '../workspace-authority'
@@ -58,8 +56,7 @@ async function makeCanonicalWorkbench(workspaceRoot: string): Promise<void> {
 }
 
 describe('workspace manifest protocol', () => {
-  it('uses stable, separately versioned request method names', () => {
-    expect(SPW_WORKSPACE_MANIFEST_METHOD).toBe('spw/workspaceManifest')
+  it('uses the URI-first v1 method name', () => {
     expect(SPW_WORKSPACE_MANIFEST_METHOD_V1).toBe('spw/workspaceManifest/v1')
   })
 
@@ -127,7 +124,6 @@ describe('workspace manifest protocol', () => {
       const deps = makeWorkspaceDeps(serverIndex, workspaceRoot)
 
       const result = await workspaceManifestV1(deps)
-      const legacy = await workspaceManifest(deps)
 
       expect(result.rootSource).toBe('fallback')
       expect(result.manifest).toEqual({
@@ -142,16 +138,7 @@ describe('workspace manifest protocol', () => {
         role: 'canonical',
         kind: 'directory',
       }])
-      expect(legacy).toEqual({
-        rootSource: 'inferred',
-        manifestUri: null,
-        roots: [{
-          sigil: 'spw',
-          uri: pathToFileURL(path.join(workspaceRoot, '.spw')).toString(),
-          resolvedPath: path.join(workspaceRoot, '.spw'),
-        }],
-        projections: [],
-      })
+      expect(JSON.stringify(result)).not.toContain('resolvedPath')
     })
   })
 
@@ -206,10 +193,6 @@ describe('workspace manifest protocol', () => {
         sigil: 'repo',
       })
       expect(JSON.stringify(result.manifest.diagnostics)).not.toContain(workspaceRoot)
-      await expect(workspaceManifest(makeWorkspaceDeps(serverIndex, workspaceRoot))).rejects.toMatchObject({
-        code: 'SPW_WORKSPACE_AUTHORITY_BLOCKED',
-        status: 'invalid',
-      })
     })
   })
 
@@ -477,7 +460,7 @@ describe('workspace manifest protocol', () => {
     })
   })
 
-  it('quarantines resolvedPath to the deprecated compatibility response', async () => {
+  it('never emits process-local path fields on the v1 surface', async () => {
     await withTempWorkspace(async (workspaceRoot) => {
       await makeCanonicalWorkbench(workspaceRoot)
       await fs.writeFile(
@@ -486,26 +469,24 @@ describe('workspace manifest protocol', () => {
         'utf8',
       )
       const serverIndex = new ServerIndex(workspaceRoot)
-      const deps = makeWorkspaceDeps(serverIndex, workspaceRoot)
+      const current = await workspaceManifestV1(makeWorkspaceDeps(serverIndex, workspaceRoot))
 
-      const legacy = await workspaceManifest(deps)
-      const current = await workspaceManifestV1(deps)
-
-      expect(legacy).toMatchObject({
-        rootSource: 'manifest',
-        roots: [{
-          sigil: 'repo',
-          resolvedPath: workspaceRoot,
-          uri: pathToFileURL(workspaceRoot).toString(),
-        }],
-      })
-      expect(JSON.stringify(current)).not.toContain('resolvedPath')
+      expect(current.rootSource).toBe('manifest')
+      expect(current.roots).toEqual([{
+        sigil: 'repo',
+        uri: pathToFileURL(workspaceRoot).toString(),
+        role: 'canonical',
+        kind: 'directory',
+      }])
+      expect(JSON.stringify(current)).not.toMatch(
+        /"(?:resolvedPath|absolutePath|filePath|beatAge)"\s*:/,
+      )
     })
   })
 })
 
 describe('workspace temperature', () => {
-  it('sorts by beat age and retains write counts', () => {
+  it('sorts by access age, retains write counts, and always dual-reads', () => {
     const workspaceRoot = path.resolve('/workspace')
     const serverIndex = new ServerIndex(workspaceRoot)
     const coldPath = path.join(workspaceRoot, 'cold.spw')
@@ -518,12 +499,11 @@ describe('workspace temperature', () => {
 
     const result = workspaceTemperature(makeWorkspaceDeps(serverIndex, workspaceRoot))
 
-    expect(result).toEqual([
+    expect(result.entries).toEqual([
       {
         uri: pathToFileURL(hotPath).toString(),
         tier: 'hot',
         accessAgeRequests: 0,
-        beatAge: 0,
         writeCount: 1,
         volatility: 'durable',
         aspectShare: 0,
@@ -532,12 +512,14 @@ describe('workspace temperature', () => {
         uri: pathToFileURL(coldPath).toString(),
         tier: 'hot',
         accessAgeRequests: 2,
-        beatAge: 2,
         writeCount: 0,
         volatility: 'durable',
         aspectShare: 0,
       },
     ])
+    expect(result.dualReadSpw).toContain('^["workspace_temperature"]')
+    expect(result.dualReadSpw).toContain('~#accessAge:')
+    expect(JSON.stringify(result)).not.toContain('beatAge')
   })
 
   it('reports volatility independently of how recently a surface was read', () => {
@@ -561,7 +543,7 @@ describe('workspace temperature', () => {
     )
 
     const byUri = new Map(
-      workspaceTemperature(makeWorkspaceDeps(serverIndex, workspaceRoot)).map((e) => [e.uri, e]),
+      workspaceTemperature(makeWorkspaceDeps(serverIndex, workspaceRoot)).entries.map((e) => [e.uri, e]),
     )
 
     expect(byUri.get(pathToFileURL(planPath).toString())).toMatchObject({
@@ -582,6 +564,6 @@ describe('workspace temperature', () => {
 
     const result = workspaceTemperature(makeWorkspaceDeps(serverIndex, workspaceRoot))
 
-    expect(result[0]?.uri).toBe(remoteUri)
+    expect(result.entries[0]?.uri).toBe(remoteUri)
   })
 })

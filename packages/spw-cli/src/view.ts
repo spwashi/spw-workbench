@@ -1,14 +1,16 @@
 /**
  * Shared CLI view helpers — disclosure grammar for all commands.
  *
- * Law (docs/runtime/spw/cli-command-surface.spw):
+ * Law:
  *   meta  → stderr   body → stdout
- *   header form:  # <primary>[ <mode>]  k=v k=v
- *   next form:    next: <primary> … · <primary> …
- *   --quiet       suppresses header / detail / next
+ *   header: formatSpwCard primary { ~#k: v … } on stderr
+ *   next:   ^["next"]{ ~#steps: #[ … ] }
  *
- * Primary tokens match the registry (and IrKind when collating that product).
+ * @see packages/spw-seed/src/canonical/spw-card.ts
+ * @see docs/runtime/spw/cli-command-surface.spw
  */
+
+import { facet, formatSpwCard, type SpwCardPart, type SpwFacetValue } from '@spwashi/spw-seed'
 
 let quietMeta = false
 
@@ -21,30 +23,42 @@ export function isMetaQuiet(): boolean {
   return quietMeta
 }
 
-/** Format `k=v` fields; skip undefined/null/empty. */
-export function formatFields(
+function fieldParts(
   fields: Record<string, string | number | boolean | null | undefined>,
-): string {
-  return Object.entries(fields)
-    .filter(([, v]) => v !== undefined && v !== null && v !== '')
-    .map(([k, v]) => `${k}=${v}`)
-    .join('  ')
+): SpwCardPart[] {
+  const parts: SpwCardPart[] = []
+  for (const [key, value] of Object.entries(fields)) {
+    if (value === undefined || value === null || value === '') continue
+    if (typeof value === 'boolean') {
+      parts.push(facet.flag(key, value))
+    } else if (typeof value === 'number') {
+      parts.push(facet.atom(key, value))
+    } else if (
+      typeof value === 'string' &&
+      (value.includes('/') || value.endsWith('.spw') || value.startsWith('.'))
+    ) {
+      parts.push(facet.path(key, value))
+    } else {
+      parts.push(facet.atom(key, value as SpwFacetValue))
+    }
+  }
+  return parts
 }
 
-/**
- * Standard command header on stderr.
- * @example emitHeader('census', { files: 12, lines: 400, cyclic: true })
- * @example emitHeader('formula', { roots: 'prompts', hits: 9 }, { mode: 'scan' })
- */
+/** Standard command header on stderr — dual-read card via formatSpwCard. */
 export function emitHeader(
   primary: string,
   fields: Record<string, string | number | boolean | null | undefined> = {},
   options: { mode?: string } = {},
 ): void {
   if (quietMeta) return
-  const mode = options.mode ? ` ${options.mode}` : ''
-  const body = formatFields(fields)
-  meta(`# ${primary}${mode}${body ? `  ${body}` : ''}`)
+  const parts: SpwCardPart[] = []
+  if (options.mode) parts.push(facet.atom('mode', options.mode))
+  parts.push(...fieldParts(fields))
+  const card = formatSpwCard(primary, parts)
+  for (const line of card.split('\n')) {
+    console.error(line)
+  }
 }
 
 /** Indented meta detail line (still suppressed by quiet). */
@@ -56,7 +70,24 @@ export function emitDetail(...parts: string[]): void {
 /** Footer companions — primaries only. */
 export function emitNext(...steps: string[]): void {
   if (quietMeta || steps.length === 0) return
-  meta(`  next: ${steps.join(' · ')}`)
+  const card = formatSpwCard('next', [facet.list('steps', steps)])
+  for (const line of card.split('\n')) {
+    console.error(line)
+  }
+}
+
+export function meta(...parts: string[]): void {
+  if (quietMeta) return
+  console.error(parts.filter(Boolean).join(' '))
+}
+
+export function metaBlock(title: string, rows: Array<[string, string]>): void {
+  if (quietMeta) return
+  const parts: SpwCardPart[] = rows.map(([k, v]) => facet.str(k, v))
+  const card = formatSpwCard(title, parts)
+  for (const line of card.split('\n')) {
+    console.error(line)
+  }
 }
 
 export function pad(s: string, width: number, align: 'left' | 'right' = 'left'): string {
@@ -78,8 +109,8 @@ export function editDistance(a: string, b: string): number {
   const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0))
   for (let i = 0; i <= m; i++) dp[i]![0] = i
   for (let j = 0; j <= n; j++) dp[0]![j] = j
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
+  for (let i = 1; i < m + 1; i++) {
+    for (let j = 1; j < n + 1; j++) {
       const cost = a[i - 1] === b[j - 1] ? 0 : 1
       dp[i]![j] = Math.min(
         (dp[i - 1]![j] ?? 0) + 1,
@@ -246,20 +277,6 @@ export function renderOutline(items: OutlineFrame[], opts: { maxLabel?: number }
     lines.push(`${loc} ${mark} ${indent}${label}  ${truncate(it.snippet, 56)}`)
   }
   return lines.join('\n')
-}
-
-export function meta(...parts: string[]): void {
-  if (quietMeta) return
-  console.error(parts.filter(Boolean).join(' '))
-}
-
-export function metaBlock(title: string, rows: Array<[string, string]>): void {
-  if (quietMeta) return
-  console.error(`── ${title} ──`)
-  const w = Math.max(...rows.map(r => r[0].length), 8)
-  for (const [k, v] of rows) {
-    console.error(`  ${pad(k, w)}  ${v}`)
-  }
 }
 
 export function countMap(items: string[]): Map<string, number> {

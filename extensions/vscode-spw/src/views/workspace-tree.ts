@@ -257,9 +257,10 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
       this.spw.manifestState = null
     }
     try {
-      this.temperature = await this.spw.requests.workspaceTemperature()
+      const temp = await this.spw.requests.workspaceTemperature()
+      this.temperature = temp.entries
       this.spw.workspaceTemperature = new Map(
-        this.temperature.map((entry) => [entry.uri, entry]),
+        temp.entries.map((entry) => [entry.uri, entry]),
       )
     } catch {
       this.temperature = []
@@ -337,8 +338,8 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
         // Recency and volatility are independent: age says when it was last
         // read, volatility says whether that reading still holds.
         item.description = volatility
-          ? `${node.entry.tier} · ${volatility} · age ${node.entry.beatAge}`
-          : `${node.entry.tier} · age ${node.entry.beatAge}`
+          ? `${node.entry.tier} · ${volatility} · age ${node.entry.accessAgeRequests}`
+          : `${node.entry.tier} · age ${node.entry.accessAgeRequests}`
         item.iconPath = new vscode.ThemeIcon(
           'file',
           new vscode.ThemeColor(TIER_COLORS[node.entry.tier] ?? 'spw.tierCold'),
@@ -348,7 +349,7 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
             typeof aspectShare === 'number' ? ` (${Math.round(aspectShare * 100)}% aspect)` : ''
           }`
           : ''
-        item.tooltip = `${node.entry.uri}\nTier: ${node.entry.tier} · Beat age: ${node.entry.beatAge} · Writes: ${node.entry.writeCount}${stance}`
+        item.tooltip = `${node.entry.uri}\nTier: ${node.entry.tier} · Access age: ${node.entry.accessAgeRequests} · Writes: ${node.entry.writeCount}${stance}`
         item.command = {
           command: 'vscode.open',
           title: 'Open',

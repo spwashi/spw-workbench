@@ -48,7 +48,8 @@ In practical Spw terms, that currently covers:
 | `spw/annotations` | Workspace annotation index |
 | `spw/contextAtPosition` | Frame path + braid field at cursor |
 | `spw/workspaceManifest/v1` | URI-first workspace roots |
-| `spw/workspaceTemperature` | Hot/warm/cold file tiers |
+| `spw/workspaceTemperature` | `{ entries, dualReadSpw }` — retention tier + Spw card |
+| `spw/referenceGraph` / `spw/corpus` | Hubs/orphans/edges + `dualReadSpw` |
 | `spw/operatorFrequency` | Sigil histogram for document or sample |
 | `spw/phaseContext` | Spirit-phase of sigil under cursor |
 | `spw/resonance` | Annotation co-occurrence edges from a URI |
@@ -57,11 +58,13 @@ In practical Spw terms, that currently covers:
 | `spw/geometry` | Brace projection + operator rhythm + nesting lessons |
 | `spw/select` | Path-ref selector hits for a document |
 
+Graph and temperature always include `dualReadSpw` (seed `formatSpwCard`, same as CLI census/graph). Temperature `tier` is access-age retention (`accessAgeRequests`), not beat-cache warmth — `docs/theory/spw/cache-field.spw`.
+
 ### VS Code surface distinctness
 
 Configurable decorations (`spw.surface.*`) paint path refs, annotations, braces, and optional operators so Spw structure stays distinct from host TypeScript/Markdown. Compute/cache knobs: `spw.compute.decorationRefreshMs`, `spw.compute.geometryOnSave`, `spw.cache.probeTtlMs` (client probe cache for geometry/frequency).
 
-Clients: VS Code commands (`Spw: Show Operator Frequency`, form sequence insert/explain, temperature, restart server); Neovim `:SpwOperatorFreq`, `:SpwPhase`, `:SpwFormSeq`, `:SpwTemperature`.
+Clients: VS Code commands (`Spw: Show Operator Frequency`, form sequence insert/explain, temperature, restart server); Neovim `:SpwOperatorFreq`, `:SpwPhase`, `:SpwFormSeq`, `:SpwTemperature`, `:SpwActivity`.
 
 Research only (not registered in canon roots): [polyglot LSP search design](./polyglot-lsp-search.md).
 

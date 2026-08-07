@@ -16,6 +16,10 @@ import { promises as fs } from 'node:fs'
 import { selectPathRefs } from '../spw-selector'
 import { stripAnchor } from '../helpers'
 import type { HandlerDeps } from '../types'
+import {
+  formatReferenceGraphSpw,
+  type ReferenceGraphEnvelope,
+} from './corpus-disclose'
 
 export interface ReferenceGraphEntry {
   /** Workspace-relative path. */
@@ -85,10 +89,15 @@ async function readSource(filePath: string, deps: HandlerDeps): Promise<string |
   }
 }
 
-export async function buildReferenceGraph(deps: HandlerDeps): Promise<ReferenceGraphReport> {
+export async function buildReferenceGraph(
+  deps: HandlerDeps,
+): Promise<ReferenceGraphEnvelope> {
   const beat = deps.serverIndex.getCurrentBeat()
   if (cache && cache.root === deps.workspaceRoot && beat - cache.builtAtBeat < GRAPH_TTL) {
-    return cache.report
+    return {
+      ...cache.report,
+      dualReadSpw: formatReferenceGraphSpw(cache.report),
+    }
   }
 
   const files = await deps.getWorkspaceSpwFiles()
@@ -179,5 +188,8 @@ export async function buildReferenceGraph(deps: HandlerDeps): Promise<ReferenceG
   }
 
   cache = { root: deps.workspaceRoot, builtAtBeat: beat, report }
-  return report
+  return {
+    ...report,
+    dualReadSpw: formatReferenceGraphSpw(report),
+  }
 }

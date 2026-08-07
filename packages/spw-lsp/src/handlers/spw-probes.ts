@@ -381,7 +381,6 @@ export function handleSpwProbe(
     case 'spw/formContext':
       return formContextProbe(params, deps)
     case 'spw/activity':
-    case 'spw/beat':
       return activityProbe(params, deps)
     case 'spw/surfaceProfile':
       return surfaceProfileProbe(params, deps)
@@ -688,6 +687,3 @@ export function activityProbe(
   const uri = params?.textDocument?.uri
   return deps.serverIndex.getActivityStatus(uri)
 }
-
-/** @deprecated Prefer activityProbe */
-export const beatProbe = activityProbe

@@ -37,11 +37,11 @@ function M.statusline()
   local bufnr = vim.api.nvim_get_current_buf()
   if vim.bo[bufnr].filetype ~= 'spw' then return '' end
   local uri = vim.uri_from_bufnr(bufnr)
-  lsp.request_custom('spw/beat', { textDocument = { uri = uri } }, function(err, result)
+  lsp.request_custom('spw/activity', { textDocument = { uri = uri } }, function(err, result)
     if err or not result then return end
-    local sym = { hot = '⚡', warm = '♨', cold = '❄' }
-    local tier_sym = result.surface and sym[result.surface.tier] or '⚡'
-    _last_statusline = string.format('%s b:%d', tier_sym, result.beat)
+    local epoch = result.requestEpoch or 0
+    local age = result.surface and result.surface.accessAgeRequests or 0
+    _last_statusline = string.format('⚡ e:%d a:%d', epoch, age)
   end)
   return _last_statusline
 end

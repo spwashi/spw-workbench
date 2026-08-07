@@ -75,6 +75,9 @@ describe('buildReferenceGraph — standing comes from who points at you', () => 
     expect(report.hubs[0]).toMatchObject({ path: 'shared.spw', inbound: 3, outbound: 0 })
     expect(report.hubs[0]!.referrers).toEqual(['a.spw', 'b.spw', 'c.spw'])
     expect(report.edges).toBe(3)
+    expect(report.dualReadSpw).toContain('^["reference_graph"]')
+    expect(report.dualReadSpw).toContain('~#of:')
+    expect(report.dualReadSpw).toContain('shared.spw')
   })
 
   it('separates a foundation from a junction by direction', async () => {

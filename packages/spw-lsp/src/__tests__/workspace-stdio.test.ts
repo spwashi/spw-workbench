@@ -7,7 +7,6 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { build } from 'esbuild'
 import {
   parseSpwWorkspaceManifestV1,
-  SPW_WORKSPACE_MANIFEST_METHOD,
   SPW_WORKSPACE_MANIFEST_METHOD_V1,
 } from '../workspace-protocol'
 
@@ -125,7 +124,7 @@ afterEach(async () => {
 })
 
 describe('workspace stdio integration', () => {
-  it('re-anchors nested initialization and dispatches versioned and legacy evidence', async () => {
+  it('re-anchors nested initialization and dispatches URI-first v1 evidence', async () => {
     const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'spw-lsp-stdio-'))
     try {
       const consumerRoot = path.join(tempRoot, 'consumer with spaces')
@@ -203,13 +202,6 @@ describe('workspace stdio integration', () => {
       })
       expect(infrastructure.result).toEqual([])
 
-      const legacy = await activeClient.request(SPW_WORKSPACE_MANIFEST_METHOD, {})
-      expect(legacy.result).toMatchObject({ rootSource: 'manifest' })
-      expect((legacy.result as { roots: unknown[] }).roots).toContainEqual(expect.objectContaining({
-        sigil: 'repo',
-        resolvedPath: consumerRoot,
-      }))
-
       activeClient.notify('textDocument/didOpen', {
         textDocument: {
           uri: pathToFileURL(manifestPath).toString(),
@@ -271,16 +263,6 @@ describe('workspace stdio integration', () => {
           readFrom: { kind: 'open-document', version: 0 },
         },
         roots: [],
-      })
-
-      const blockedLegacy = await activeClient.request(SPW_WORKSPACE_MANIFEST_METHOD, {})
-      expect(blockedLegacy.error).toEqual({
-        code: -32803,
-        message: 'Workspace authority is blocked.',
-        data: {
-          code: 'SPW_WORKSPACE_AUTHORITY_BLOCKED',
-          status: 'invalid',
-        },
       })
     } finally {
       await activeClient?.close()
