@@ -16,7 +16,15 @@ describe('corpus disclosure (formatSpwCard)', () => {
     knownFiles: new Set(['a.spw', 'b.spw', 'c.spw']),
     hubTop: 4,
   })
-  const signals = [
+  const signals: Array<{
+    file: string
+    sigils: Record<string, number>
+    pathRefCount: number
+    rootRefCount: number
+    frameCount: number
+    annotationHints: number
+    lineCount: number
+  }> = [
     {
       file: 'a.spw',
       sigils: { '~': 1 },

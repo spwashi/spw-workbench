@@ -185,6 +185,7 @@ export const CK = {
     Reference: 18,
     Field: 5,
     Variable: 6,
+    Interface: 8,
 } as const
 
 // ── Request Param Types ─────────────────────────────────────────

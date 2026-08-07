@@ -69,6 +69,7 @@ import {
   type PulseFileReport,
   type PulseWriteStatus,
 } from './pulse-write'
+import { emitPulseDelta } from './pulse-disclose'
 import { cacheStencil } from './session/workspace-cache'
 
 export type { PulseFileReport, PulseWriteStatus } from './pulse-write'
@@ -118,6 +119,11 @@ interface PulseArgs {
    * mutate --from. Collate only — does not enable write-by-default.
    */
   cut: boolean
+  /**
+   * Emit ChangeReport dual-read cards for planned rewrites (collate-only).
+   * Off under --json (host already has structured reports).
+   */
+  delta: boolean
 }
 
 const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', '_workbench', '.agents'])
@@ -230,12 +236,17 @@ function parseArgs(argv: string[]): PulseArgs {
     stdin: false,
     asLabel: '<stdin>',
     cut: false,
+    delta: false,
   }
 
   for (let i = 0; i < args.length; i += 1) {
     const arg = args[i]
     if (arg === '--write' || arg === '-w') {
       parsed.write = true
+      continue
+    }
+    if (arg === '--delta') {
+      parsed.delta = true
       continue
     }
     if (arg === '--stdin') {
@@ -543,6 +554,7 @@ export function printSpwPulseHelp(): void {
           '--write, -w        Atomically replace one parse-complete consumer file',
           '--accept-semantic-risk  Required for --write; equivalence is not claimed',
           '--diff, -u         Print unified-ish before/after hunks for changing files',
+          '--delta            Emit ChangeReport dual-read cards for planned rewrites',
           '--matrix, -m       Print step×metric mutation matrix after each change',
           '--json             Machine-readable probe report',
           '--full             Expand default targets across repo semantic surfaces',
@@ -1285,6 +1297,9 @@ async function runPulseStdin(cli: PulseArgs): Promise<void> {
     } else if (result.changed) {
       console.log('# plannedSource available via --json (host applies or: mutate --stdin)')
     }
+    if (cli.delta && result.changed) {
+      emitPulseDelta(source, result.source, { uri: cli.asLabel })
+    }
   }
 
   if (cli.check && result.changed) process.exitCode = 1
@@ -1741,6 +1756,9 @@ export async function runSpwPulseCli(
             report.plannedDelta,
           ),
         )
+      }
+      if (cli.delta && report.wouldChange) {
+        emitPulseDelta(planned.original, planned.plannedSource, { uri: report.file })
       }
     }
   }

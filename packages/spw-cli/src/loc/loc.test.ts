@@ -33,7 +33,6 @@ describe('loc keys', () => {
   it('rejects bad section keys', () => {
     expect(() =>
       defineLoc('bad', {
-        // @ts-expect-error intentional
         nope: 'x',
       } as Record<`${string}.${string}`, string>),
     ).toThrow(/section\.key/)

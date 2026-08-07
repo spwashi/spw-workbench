@@ -38,9 +38,12 @@ describe('comment containment', () => {
   })
 
   it('leaves */ as ordinary content rather than a terminator', () => {
+    // `# ` + space is hash-prose (one COMMENT); `*/` must not close anything.
     const source = `# a glob like src/*/docs/ reads as text\n${FRAME}`
+    const comments = commentTokens(source)
 
-    expect(commentTokens(source)).toHaveLength(0)
+    expect(comments).toHaveLength(1)
+    expect(comments[0]!.value).toContain('*/')
     expect(annotationCount(source)).toBe(1)
   })
 

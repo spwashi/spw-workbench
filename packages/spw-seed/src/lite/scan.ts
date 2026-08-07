@@ -100,11 +100,29 @@ export function scan(source: string): LiteToken[] {
       continue
     }
 
-    // `//` is the only lexed comment; `#` prose lines are operator-led.
+    // `//` line comments (same as full lexer).
     if (ch === '/' && source[i + 1] === '/') {
       while (i < n && source[i] !== '\n') i++
       push('comment', start, i)
       continue
+    }
+
+    // Hash-prose titles: `# …` to EOL when `#` is followed by whitespace or EOL.
+    // Structural forms (`#:layer`, `#>id`, `#[…]`, `#{…}`, bare `#yes`) stay operators/particles.
+    if (ch === '#') {
+      const next = source[i + 1]
+      if (
+        next === undefined ||
+        next === ' ' ||
+        next === '\t' ||
+        next === '\n' ||
+        next === '\r'
+      ) {
+        i++
+        while (i < n && source[i] !== '\n') i++
+        push('comment', start, i)
+        continue
+      }
     }
 
     if (ch === '"' || ch === "'") {

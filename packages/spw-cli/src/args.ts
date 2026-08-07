@@ -2,6 +2,7 @@ import type { QueryArgs, SelectArgs, SpwCliCommand } from './types'
 
 export interface CommonFlags {
   help: boolean
+  json: boolean
 }
 
 export function parseCommand(argv: string[]): SpwCliCommand {
@@ -15,12 +16,17 @@ export function parseCommand(argv: string[]): SpwCliCommand {
 
 export function parseCommonFlags(args: string[]): { args: string[]; flags: CommonFlags } {
   const nextArgs: string[] = []
-  const flags: CommonFlags = { help: false }
+  const flags: CommonFlags = { help: false, json: false }
 
   for (const arg of args) {
+    // Help is owned by the root dispatcher; strip it so subcommands do not re-print.
     if (arg === '--help' || arg === '-h') {
       flags.help = true
       continue
+    }
+    // JSON is common but also re-parsed by many subcommands — keep it on the wire.
+    if (arg === '--json') {
+      flags.json = true
     }
 
     nextArgs.push(arg)
