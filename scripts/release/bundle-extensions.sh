@@ -29,6 +29,15 @@ if [ "$SKIP_BUILD" -eq 0 ]; then
       exit 1
     fi
   fi
+
+  echo "Verifying IntelliJ plugin compatibility (npm run verify:intellij)..."
+  if ! npm run verify:intellij; then
+    if [ "$BEST_EFFORT" -eq 1 ]; then
+      echo "verify:intellij failed; continuing in best-effort mode"
+    else
+      exit 1
+    fi
+  fi
 fi
 
 VSCODE_TAR="$OUT_DIR/vscode-spw-${VERSION}.tar.gz"

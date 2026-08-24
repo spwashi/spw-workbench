@@ -8,8 +8,16 @@
  client: #native_intellij_plugin
  syntax_fallback: #textmate
  semantic_owner: #lsp
- startup: "configurable command and working directory; mounted-workbench discovery remains an audit and implementation lane"
+ startup: "explicit working directory, project launcher, then mounted .spw/_workbench; explicit commands retain authority"
  custom_requests: #not_exposed_by_current_native_client
+}
+
+^["compatibility"]{
+ build_runtime: .{ java = 21, gradle = "9.5", kotlin = "2.4.10" }[reg=facet]
+ compile_host: .{ product = #webstorm, version = "2024.2.1", branch = 242 }[reg=facet]
+ verified_hosts: ["2026.2.0.1", "2026.2.1"]
+ declared_range: "242..262.*"
+ native_lsp_horizon: "The 262 verifier accepts the adapter but marks JetBrains native LSP APIs deprecated; reconsider the substrate before a 263 compatibility claim."
 }
 
 ^["native_features"]{
@@ -32,4 +40,5 @@
  "A gutter marker is not navigation unless it exposes a working target action.",
  "Platform compatibility copy stays narrower than the tested matrix.",
  "LSP client migration requires repeated utility evidence, not parity pressure.",
+ "A consumer project owns document identity even when a mounted workbench owns the launcher process.",
 }

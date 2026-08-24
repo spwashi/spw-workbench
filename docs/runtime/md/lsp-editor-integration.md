@@ -100,11 +100,26 @@ npm run lsp
 
 `npm run lsp` resolves through the upstream bridge, which keeps server discovery outside the VS Code extension itself.
 
+### WebStorm Path
+
+The IntelliJ plugin keeps the open project as the LSP document root while resolving the executable
+tool root in this order:
+
+1. Working directory explicitly configured in **Settings | Tools | Spw LSP**.
+2. The open project when its `package.json` declares an `lsp` script.
+3. The project's mounted `.spw/_workbench` when that package declares an `lsp` script.
+
+The plugin invokes the selected package script as `npm run --silent lsp`. Explicit commands still
+take precedence, and syntax highlighting, folding, and structure view remain available if Node or
+the launcher is missing.
+
 ## Validation
 
 - `npm run test:lsp` runs the handler unit test suite (80 tests across semantic tokens, editing, and navigation).
 - `npm run lsp:smoke` checks definition and document-link navigation over stdio.
 - `npm --prefix extensions/vscode-spw run compile` verifies the VS Code client bundle.
+- `npm run test:intellij` covers launcher discovery and native plugin helpers.
+- `npm run verify:intellij` verifies plugin structure and the declared WebStorm 2026.2 hosts.
 - `npm run spw -- select docs/index.spw --selector=pathRefs --format=lines` is still a useful selector-side sanity check for path references.
 
 ### Handler Test Coverage

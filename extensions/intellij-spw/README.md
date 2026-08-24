@@ -13,9 +13,20 @@ This is the IntelliJ Platform plugin for the Spw (Symbolic Processing Workbench)
 
 ### Prerequisites
 
-- Java 21 (required by IntelliJ Platform 2024.2+)
-- IntelliJ Platform 2024.2+ (build 242+) (IntelliJ IDEA Ultimate, WebStorm)
+- Java 21
+- WebStorm 2024.2.1 through 2026.2.x (IntelliJ Platform builds 242 through 262)
 - Node.js 18+ (only required if you enable LSP)
+
+The repository includes `.java-version` for Java version managers. On an Intel macOS Homebrew
+installation, the equivalent environment setup is:
+
+```bash
+brew install openjdk@21
+brew link --force openjdk@21
+java -version
+```
+
+The final command should report Java 21 before running Gradle.
 
 ### Building the Plugin
 
@@ -26,6 +37,21 @@ To build the plugin, run:
 ```
 
 The built plugin ZIP will be in `build/distributions/`.
+
+From the repository root, `npm run test:intellij` runs focused plugin tests and
+`npm run verify:intellij` runs the project, structure, and WebStorm compatibility gates.
+
+### Compatibility coordinates
+
+| Coordinate | Value |
+|---|---|
+| Build host | WebStorm 2024.2.1 |
+| Verified hosts | WebStorm 2026.2.0.1 and 2026.2.1 |
+| Declared range | `since-build=242`, `until-build=262.*` |
+| Build runtime | Java 21, Gradle 9.5 |
+
+Building against the oldest host protects the backwards-compatible floor. Plugin Verifier checks
+the packaged artifact against the two 2026.2 hosts before a release bundle is assembled.
 
 ### Running/Debugging
 
@@ -40,7 +66,7 @@ To run a development instance of IntelliJ with the plugin installed:
 By default, the plugin starts the LSP server using:
 
 ```
-npm run lsp
+npm run --silent lsp
 ```
 
 If your project layout differs, open **Settings | Tools | Spw LSP** and configure a custom command
@@ -48,8 +74,12 @@ and/or working directory.
 
 Tips:
 - Leave fields empty to use defaults.
-- Set the working directory to the repo root containing `package.json` with an `lsp` script.
-- The stable launcher contract is `npm run lsp`, which runs `scripts/lsp/stdio-upstream-bridge.ts`.
+- The plugin first checks the open project for a `package.json` with an `lsp` script, then checks
+  the project's mounted `.spw/_workbench`.
+- Set the working directory to explicitly override that discovery order.
+- The stable package-script contract is `npm run lsp`; the plugin invokes it with `--silent` so npm
+  does not add presentation output to the LSP stdio channel.
+- The script runs `scripts/lsp/stdio-upstream-bridge.ts`.
 - That launcher checks, in order: `SPW_LSP_SERVER_PATH`, local `packages/spw-lsp/src/stdio-server.ts`,
   local `scripts/lsp/stdio-server.ts`, then the `remote.lore.url` checkout path for those same paths.
 
