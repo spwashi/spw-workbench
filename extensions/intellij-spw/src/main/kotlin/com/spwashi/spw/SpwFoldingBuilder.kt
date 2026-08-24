@@ -3,7 +3,6 @@ package com.spwashi.spw
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
-import com.intellij.lang.folding.NamedFoldingDescriptor
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -34,7 +33,7 @@ class SpwFoldingBuilder : FoldingBuilderEx() {
                         if (endLine > lineIndex) {
                             val range = TextRange(braceStart, braceEnd + 1)
                             descriptors.add(
-                                NamedFoldingDescriptor(
+                                FoldingDescriptor(
                                     foldNode,
                                     range,
                                     null,
@@ -55,7 +54,7 @@ class SpwFoldingBuilder : FoldingBuilderEx() {
                     val endOffset = document.getLineEndOffset(foldEnd - 1)
                     if (endOffset > startOffset) {
                         descriptors.add(
-                            NamedFoldingDescriptor(
+                            FoldingDescriptor(
                                 foldNode,
                                 TextRange(startOffset, endOffset),
                                 null,

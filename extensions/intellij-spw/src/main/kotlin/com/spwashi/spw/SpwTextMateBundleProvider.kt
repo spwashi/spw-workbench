@@ -1,15 +1,17 @@
 package com.spwashi.spw
 
-import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.openapi.application.PathManager
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.extensions.PluginId
 import org.jetbrains.plugins.textmate.api.TextMateBundleProvider
 import java.net.JarURLConnection
 import java.net.URL
+import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
+import java.security.MessageDigest
+import java.util.HexFormat
+import java.util.jar.JarEntry
 
 class SpwTextMateBundleProvider : TextMateBundleProvider {
     override fun getBundles(): List<TextMateBundleProvider.PluginBundle> {
@@ -47,26 +49,26 @@ class SpwTextMateBundleProvider : TextMateBundleProvider {
     }
 
     private fun extractFromJar(resource: URL): Path? {
-        val plugin = PluginManagerCore.getPlugin(PluginId.getId(PLUGIN_ID))
-        val version = plugin?.version ?: "dev"
-        val bundleRoot = Path.of(PathManager.getSystemPath(), "spw-textmate", version, "textmate")
-        val packageJson = bundleRoot.resolve(PACKAGE_JSON)
-
-        if (Files.exists(packageJson)) {
-            return bundleRoot
-        }
-
-        Files.createDirectories(bundleRoot)
-
         try {
             val connection = resource.openConnection() as? JarURLConnection ?: return null
             connection.jarFile.use { jar ->
-                val entries = jar.entries()
-                while (entries.hasMoreElements()) {
-                    val entry = entries.nextElement()
-                    if (entry.isDirectory || !entry.name.startsWith("textmate/")) {
-                        continue
-                    }
+                val entries = jar.entries().asSequence()
+                    .filter { !it.isDirectory && it.name.startsWith("textmate/") }
+                    .toList()
+                val bundleRoot = Path.of(
+                    PathManager.getSystemPath(),
+                    "spw-textmate",
+                    bundleCacheKey(entries),
+                    "textmate",
+                )
+                val packageJson = bundleRoot.resolve(PACKAGE_JSON)
+
+                if (Files.exists(packageJson)) {
+                    return bundleRoot
+                }
+
+                Files.createDirectories(bundleRoot)
+                for (entry in entries) {
                     val relativePath = entry.name.removePrefix("textmate/")
                     if (relativePath.isBlank()) {
                         continue
@@ -77,17 +79,25 @@ class SpwTextMateBundleProvider : TextMateBundleProvider {
                         Files.copy(input, target, StandardCopyOption.REPLACE_EXISTING)
                     }
                 }
+
+                return bundleRoot
             }
         } catch (e: Exception) {
             logger.warn("Failed to extract Spw TextMate bundle from plugin JAR.", e)
             return null
         }
+    }
 
-        return bundleRoot
+    private fun bundleCacheKey(entries: List<JarEntry>): String {
+        val digest = MessageDigest.getInstance("SHA-256")
+        entries.sortedBy { it.name }.forEach { entry ->
+            val identity = "${entry.name}\u0000${entry.crc}\u0000${entry.size}\n"
+            digest.update(identity.toByteArray(StandardCharsets.UTF_8))
+        }
+        return HexFormat.of().formatHex(digest.digest()).take(16)
     }
 
     companion object {
-        private const val PLUGIN_ID = "com.spwashi.spw"
         private const val PACKAGE_JSON = "package.json"
 
         private val logger = Logger.getInstance(SpwTextMateBundleProvider::class.java)
