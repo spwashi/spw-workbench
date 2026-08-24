@@ -153,7 +153,12 @@ function describeExpression(expr: ExpressionNode): string {
       parts.push(expr.connectors[idx].value)
     }
   })
-  return parts.join(' ')
+  const head = parts.join(' ')
+  const frame = expr.frame ? describeFrame(expr.frame) : ''
+  const body = expr.body ? `{${describeBody(expr.body)}}` : ''
+  const scope = expr.scope ? describeScope(expr.scope) : ''
+  const capsule = expr.capsule ? describeCapsule(expr.capsule) : ''
+  return `${head}${frame}${body}${scope}${capsule}`
 }
 
 function describeSequence(seq: { expressions: ExpressionNode[] }): string {

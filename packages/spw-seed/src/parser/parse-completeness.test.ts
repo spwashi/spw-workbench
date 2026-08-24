@@ -9,12 +9,12 @@ describe('parse completeness receipts', () => {
     const result = parseExpression(source)
 
     expect(result.success).toBe(true)
-    expect(result.ast?.type).toBe('Sequence')
+    expect(result.ast?.type).toBe('Expression')
     expect(result.ast?.span.end.offset).toBe(source.length)
     expect(result.completeness).toMatchObject({
       complete: true,
       expectedRootKind: 'Expression',
-      actualRootKind: 'Sequence',
+      actualRootKind: 'Expression',
       proseFallback: false,
       remaining: { text: '' },
     })

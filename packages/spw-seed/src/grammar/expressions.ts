@@ -12,6 +12,7 @@ import type {
   SequenceNode,
   FrameNode,
   BodyNode,
+  ScopeNode,
   ProseChunkNode,
   ModifierChainNode,
   TermNode,
@@ -644,8 +645,91 @@ export const expressionImpl: Parser<ExpressionNode> = named('expression',
     // e.g. bagel<scent>coffee, foo<5>bar, chain a<r>b<s>c
     let headTerm = firstStep.value.value!
     let consumed = firstStep.value.consumed
+    let postfixFrame: FrameNode | undefined
+    let postfixBody: BodyNode | undefined
+    let postfixScope: ScopeNode | undefined
+    let postfixCapsule: CapsuleNode | undefined
+    const headLine = headTerm.span.end.line
 
     while (true) {
+      const saved = stream.position
+      skipWhitespace(stream)
+      const opener = current(stream)
+      if (opener.span.start.line !== headLine) {
+        stream.position = saved
+        break
+      }
+
+      if (!postfixFrame && opener.value === '[') {
+        const frameGen = frameNode(stream, depth + 1)
+        let frameStep = frameGen.next()
+        while (!frameStep.done) {
+          yield frameStep.value
+          frameStep = frameGen.next()
+        }
+        if (!frameStep.value.success) {
+          return { success: false, consumed: 0, error: frameStep.value.error }
+        }
+        postfixFrame = frameStep.value.value
+        consumed += frameStep.value.consumed
+        continue
+      }
+
+      if (!postfixBody && opener.value === '{') {
+        const bodyGen = bodyNode(stream, depth + 1)
+        let bodyStep = bodyGen.next()
+        while (!bodyStep.done) {
+          yield bodyStep.value
+          bodyStep = bodyGen.next()
+        }
+        if (!bodyStep.value.success) {
+          return { success: false, consumed: 0, error: bodyStep.value.error }
+        }
+        postfixBody = bodyStep.value.value
+        consumed += bodyStep.value.consumed
+        continue
+      }
+
+      if (!postfixScope && opener.value === '(' && opener.type === 'CONTAINER_OPEN') {
+        const scopeGen = scopeNode(stream, depth + 1)
+        let scopeStep = scopeGen.next()
+        while (!scopeStep.done) {
+          yield scopeStep.value
+          scopeStep = scopeGen.next()
+        }
+        if (!scopeStep.value.success) {
+          return { success: false, consumed: 0, error: scopeStep.value.error }
+        }
+        postfixScope = scopeStep.value.value
+        consumed += scopeStep.value.consumed
+        continue
+      }
+
+      if (
+        !postfixCapsule
+        && opener.type === 'CAPSULE_OPEN'
+        && (postfixFrame || postfixBody || postfixScope)
+      ) {
+        const capGen = capsuleNode(stream, depth + 1)
+        let capStep = capGen.next()
+        while (!capStep.done) {
+          yield capStep.value
+          capStep = capGen.next()
+        }
+        if (!capStep.value.success) {
+          stream.position = saved
+          break
+        }
+        postfixCapsule = capStep.value.value
+        consumed += capStep.value.consumed
+        continue
+      }
+
+      stream.position = saved
+      break
+    }
+
+    while (!(postfixFrame || postfixBody || postfixScope || postfixCapsule)) {
       const saved = stream.position
       skipWhitespace(stream)
       if (current(stream).type !== 'CAPSULE_OPEN') {
@@ -754,6 +838,10 @@ export const expressionImpl: Parser<ExpressionNode> = named('expression',
         span: { start: startPos, end: endPos },
         terms: [binding as unknown as TermNode],
         connectors: [],
+        frame: postfixFrame,
+        body: postfixBody,
+        scope: postfixScope,
+        capsule: postfixCapsule,
       }
 
       return { success: true, value: node, consumed }
@@ -808,6 +896,10 @@ export const expressionImpl: Parser<ExpressionNode> = named('expression',
       span: { start: startPos, end: endPos },
       terms,
       connectors,
+      frame: postfixFrame,
+      body: postfixBody,
+      scope: postfixScope,
+      capsule: postfixCapsule,
     }
 
     return { success: true, value: node, consumed }

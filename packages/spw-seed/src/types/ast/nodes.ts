@@ -75,6 +75,14 @@ export interface ExpressionNode extends ASTNode {
   type: 'Expression'
   terms: TermNode[]
   connectors: Token<'CONNECTOR'>[]
+  /** Same-line postfix `[…]` on an identifier-led noun. */
+  frame?: FrameNode
+  /** Same-line postfix `{…}` on an identifier-led noun. */
+  body?: BodyNode
+  /** Same-line postfix `(…)` on an identifier-led noun. */
+  scope?: ScopeNode
+  /** Same-line postfix shell `<…>` when not a two-arm medial capsule. */
+  capsule?: CapsuleNode
 }
 
 /**
