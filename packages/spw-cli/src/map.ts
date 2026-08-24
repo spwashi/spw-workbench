@@ -11,6 +11,7 @@ import {
 } from '@spwashi/spw-seed'
 import { scanCorpus } from './corpus-scan'
 import {
+  CORPUS_SPREAD_HELP_LINES,
   indexDepthForSpread,
   readCorpusSpreadArgument,
   type CorpusSpread,
@@ -147,11 +148,11 @@ export function printMapHelp(): void {
     ],
     sections: [
       {
-        title: 'Product',
+        title: 'Output',
         lines: [
-          'Default dual-read: ^["graph"] with hubs/strands/broken via formatSpwCard',
-          'Host grid: --table',
-          'Shares corpus scan memo with census (mtime fingerprint)',
+          'Default: a Spw graph card with hubs, strands, and broken references',
+          'Table: --table',
+          'Reuse: shares the census corpus memo keyed by mtime fingerprint',
         ],
       },
       {
@@ -159,13 +160,12 @@ export function printMapHelp(): void {
         lines: [
           '--compare / -c   Second root set for familiarity strands',
           '--limit / -n     Hub / broken row cap (also accepts --hubs)',
-          '--spread <distance>  Corpus work near|standard|far',
-          '--depth <d>          Compatibility alias: minimal|standard|full',
+          ...CORPUS_SPREAD_HELP_LINES,
           '--no-resolve     Leave path targets unresolved',
-          '--spw            Dual-read (default)',
-          '--table          Host tables',
-          '--json           Machine envelope',
-          '--quiet / -q     Suppress meta',
+          '--spw            Spw graph card (default)',
+          '--table          Aligned tables',
+          '--json           Versioned JSON envelope',
+          '--quiet / -q     Suppress headers, details, and recommendations',
         ],
       },
       {

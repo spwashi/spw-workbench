@@ -8,6 +8,7 @@ import process from 'node:process'
 import { spwq } from '@spwashi/spw-seed'
 import { scanCorpus } from './corpus-scan'
 import {
+  CORPUS_SPREAD_HELP_LINES,
   indexDepthForSpread,
   readCorpusSpreadArgument,
   type CorpusSpread,
@@ -110,7 +111,7 @@ export function printAnalyzeHelp(): void {
     ],
     sections: [
       {
-        title: 'What you get',
+        title: 'Output',
         lines: [
           'Per-selector hit totals + density (hits per 100 lines)',
           'Top files by combined activity',
@@ -127,15 +128,14 @@ export function printAnalyzeHelp(): void {
         lines: [
           '--selectors / -s <list>   Comma-separated selector names',
           '--top / --top-files N     Top-activity file count (default 12)',
-          '--spread <distance>  Corpus work near|standard|far (default standard)',
-          '--depth <d>          Compatibility alias: minimal|standard|full',
-          '--json               JSON product (legacy unwrapped shape)',
+          ...CORPUS_SPREAD_HELP_LINES,
+          '--json               Complete JSON product (legacy unwrapped shape)',
         ],
       },
       {
         title: 'Sense loop',
         lines: [
-          'census → graph → formula → density → query/skim detail',
+          'census → graph → formula → density → query/outline detail',
           `presets: ${listCliSelectorPresetNames().join(', ')}`,
         ],
       },

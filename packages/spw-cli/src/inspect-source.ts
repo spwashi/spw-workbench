@@ -275,12 +275,12 @@ export async function runSourceInspection(options: RunSourceInspectionOptions): 
   emitRecommendations(
     {
       command: `spw inspect source ${target} --through tokens --events none --sample ${sample} --spw`,
-      purpose: 'read a bounded lexical receipt',
-      cost: `token stage only; ${sample} token examples`,
+      purpose: 'ask what the lexer sees without building structure',
+      cost: `token stage only; Spw view shows ${sample} examples and names omissions`,
     },
     {
       command: `spw inspect source ${target} --through trace --events trace --ndjson`,
-      purpose: 'stream every progressive stage for replay or instrumentation',
+      purpose: 'observe when each progressive source product becomes available',
       cost: 'full parse plus retained trace events',
     },
   )

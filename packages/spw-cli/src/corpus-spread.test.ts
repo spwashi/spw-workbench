@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  CORPUS_SPREAD_HELP_LINES,
   indexDepthForSpread,
   parseCorpusSpread,
   readCorpusSpreadArgument,
@@ -24,6 +25,13 @@ describe('corpus spread arguments', () => {
     expect(indexDepthForSpread('near')).toBe('minimal')
     expect(indexDepthForSpread('standard')).toBe('standard')
     expect(indexDepthForSpread('far')).toBe('full')
+  })
+
+  it('teaches the lyrical handle beside its exact profile mapping', () => {
+    expect(CORPUS_SPREAD_HELP_LINES[0]).toContain(
+      'near→minimal, standard→standard, far→full',
+    )
+    expect(CORPUS_SPREAD_HELP_LINES[1]).toContain('Compatibility route')
   })
 
   it('leaves unrelated arguments to the command parser', () => {

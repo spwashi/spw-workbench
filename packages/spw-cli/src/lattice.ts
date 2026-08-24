@@ -18,6 +18,7 @@ import {
 } from '@spwashi/spw-seed'
 import { scanCorpus } from './corpus-scan'
 import {
+  CORPUS_SPREAD_HELP_LINES,
   indexDepthForSpread,
   readCorpusSpreadArgument,
   type CorpusSpread,
@@ -31,12 +32,10 @@ const L = defineLoc('lattice', {
   'help.summary':
     'Apposition unit-cell spectrum — named readings without a full parse',
   'help.usage': 'spw lattice [paths...] [--json] [--top N] [--spread standard]',
-  'help.opt_json': '--json            Machine spectrum + per-file lattices',
+  'help.opt_json': '--json            Complete JSON spectrum + per-file lattices',
   'help.opt_top': '--top, -n N       Top named species in aggregate (default 24)',
-  'help.opt_depth': '--spread <distance>  Corpus work (near|standard|far)',
-  'help.opt_depth_alias': '--depth <d>          Compatibility alias (minimal|standard|full)',
   'help.opt_limit': '--limit N         Max files listed with cells (default 40)',
-  'help.opt_quiet': '--quiet, -q       Suppress headers',
+  'help.opt_quiet': '--quiet, -q       Suppress headers and details',
   'help.note_cells': 'Unit cell = ~#name(body) or ~#(body). Mask = envelope hash.',
   'help.note_comments': 'Does not promote comments; that is future interstitial tooling.',
   'help.note_alias': 'Alias: spw readings',
@@ -114,8 +113,7 @@ export function printLatticeHelp(): void {
         lines: [
           L('help.opt_json'),
           L('help.opt_top'),
-          L('help.opt_depth'),
-          L('help.opt_depth_alias'),
+          ...CORPUS_SPREAD_HELP_LINES,
           L('help.opt_limit'),
           L('help.opt_quiet'),
         ],

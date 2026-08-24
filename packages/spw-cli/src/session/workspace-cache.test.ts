@@ -43,7 +43,7 @@ describe('workspace session cache', () => {
     expect(again?.dualReadSpw).toContain('^["identity"]{')
   })
 
-  it('stores patch product with dual-read nested groups', () => {
+  it('stores a patch product with nested Spw card groups', () => {
     const before = 'x\n'
     const after = 'y\n'
     const report = buildChangeReport(before, after)

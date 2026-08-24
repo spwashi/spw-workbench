@@ -15,6 +15,7 @@ import {
 } from '@spwashi/spw-seed'
 import { scanCorpus, type CorpusScanResult } from './corpus-scan'
 import {
+  CORPUS_SPREAD_HELP_LINES,
   indexDepthForSpread,
   readCorpusSpreadArgument,
   type CorpusSpread,
@@ -147,22 +148,21 @@ export function printFormulaHelp(): void {
       {
         title: 'Flags',
         lines: [
-          '--catalog         Print machine-backed formula catalog',
+          '--catalog         Print the built-in formula catalog',
           '--idioms          Print surface-pattern idioms with falsify claims',
           '--scan            Scan .spw roots for pattern hits (default when paths given)',
           '--family <id>     Filter catalog/idioms/hits by family',
           '--top N           Pattern frequency table size (default 24)',
           '--limit N / -n N  Max hit lines shown (default 60)',
-          '--spread <distance>  Corpus work near|standard|far (default standard)',
-          '--depth <d>          Compatibility alias: minimal|standard|full',
-          '--json               JSON product (legacy unwrapped shape)',
+          ...CORPUS_SPREAD_HELP_LINES,
+          '--json               Complete JSON product (legacy unwrapped shape)',
         ],
       },
       {
         title: 'Idioms vs catalog',
         lines: [
           'catalog  named formula -> meaning (F2.hold, F8.literacy, …)',
-          'idioms   surface syntax -> math machine -> falsifiable claim',
+          'idioms   surface syntax -> computational mapping -> falsifiable claim',
           'idioms are what an agent checks a claim against, not just what it names',
         ],
       },

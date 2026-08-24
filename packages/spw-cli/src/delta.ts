@@ -1,7 +1,7 @@
 /**
  * spw delta — sense narrative between two surface revisions.
  *
- *   delta   — ChangeReport (stdout dual-read)
+ *   delta   — ChangeReport (stdout Spw card)
  *   --patch — freeze apply-ready Patch product
  *   --cache — keep report/patch in workspace session memory (.spw/gen/session/cli-cache)
  *   --list / --show / --clear — inspect or wipe session cache
@@ -250,7 +250,7 @@ function runList(json: boolean, quiet: boolean): void {
   if (!quiet) {
     meta(d('meta.list_header', { count: entries.length, session: cliCacheDir() }))
   }
-  // Spw dual-read index — default surface (not a host table)
+  // Spw card index — default surface (not a host table)
   console.log(formatCliCacheIndexSpw(entries, { session: cliCacheDir() }))
 }
 

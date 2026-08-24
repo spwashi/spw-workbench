@@ -3,6 +3,12 @@ import type { IndexDepth } from './corpus-scan'
 export const CORPUS_SPREADS = ['near', 'standard', 'far'] as const
 export type CorpusSpread = (typeof CORPUS_SPREADS)[number]
 
+/** Shared public copy: keep the lyrical handle beside its current index mapping. */
+export const CORPUS_SPREAD_HELP_LINES = [
+  '--spread <distance>  Corpus work: near→minimal, standard→standard, far→full',
+  '--depth <profile>    Compatibility route for minimal|standard|full',
+] as const
+
 const INDEX_DEPTH_BY_SPREAD = {
   near: 'minimal',
   standard: 'standard',

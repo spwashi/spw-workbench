@@ -5,7 +5,7 @@
  * --remember is effect.l2-ish only for `.spw/gen/session/` handle cards
  * (never rewrites authored sources).
  *
- * Dual-read:
+ * Spw card:
  *   cite  → point  (@bc:<hash>)
  *   follow → soft resolve under grain
  *   follow --collapse → hard evaluate (* @bc under channel law)
@@ -71,7 +71,7 @@ function parseArgs(argv: string[], verb: 'cite' | 'follow'): CiteArgs {
     else if (a === '--path') args.pathHint = tokens[++i]
     else if (a.startsWith('--path=')) args.pathHint = a.slice('--path='.length)
     else if (a === '--json' || a === '--ndjson') {
-      throw new Error(`spw ${verb}: use Spw dual-read stdout (no --json). Prefer default output.`)
+      throw new Error(`spw ${verb}: use the default Spw card output; --json is not available.`)
     }
     else if (a === '--write' || a === '--fix') {
       throw new Error(
@@ -96,7 +96,7 @@ export function printCiteHelp(): void {
       {
         title: 'What it does',
         lines: [
-          'effect.l0.measure — prepares + inspects; prints Spw dual-read card',
+          'Prepares and inspects without writing; prints a Spw card',
           'Emits pointer @bc:<contentHash> for later follow/collapse',
           '--remember writes handle under .spw/gen/session/ (not authored sources)',
         ],
@@ -128,7 +128,7 @@ export function printFollowHelp(): void {
         lines: [
           'Soft follow: refresh inspect under granularity',
           '--hard / --collapse: evaluate (* @bc) when channel allows',
-          'No authored tree writes; no host JSON',
+          'No authored tree writes; output remains a Spw card',
         ],
       },
       {
@@ -156,7 +156,7 @@ function printHandle(
   handle: HotCiteHandle,
   extra?: string,
 ): void {
-  // Dual-read cite card: uri + mask + grain; pointer is mask interop only (not soft tag).
+  // Spw cite card: uri + mask + grain; pointer is mask interop only (not soft tag).
   console.log(session.formatCiteSpw(handle))
   if (handle.evaluate) {
     console.log(

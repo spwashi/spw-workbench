@@ -4,7 +4,7 @@
  * effect.l0.measure only — never writes host trees.
  * (Contrast: spw measure --write / spw pulse --write are effect.l2.workspace.)
  *
- * Output surfaces (prefer Spw dual-read over JSON):
+ * Output surfaces (prefer Spw cards over JSON):
  *   human · --spw card · --json envelope · --ndjson stream
  * Intermediate: geometry bytecode + weight-schemed resonances.
  * Gen dumps (optional future --to-gen): `.spw/gen/geometry|field/` — not canon.
@@ -40,7 +40,7 @@ interface GeomArgs {
   json: boolean
   /** One JSON object per surface (host interop only). */
   ndjson: boolean
-  /** Spw-native dual-read cards (preferred machine surface). */
+  /** Source-shaped Spw cards (preferred interoperable surface). */
   spwOut: boolean
   stdin: boolean
   help: boolean
@@ -201,7 +201,7 @@ export function printGeometryHelp(): void {
           '--limit N                        resonance / strand / static row cap',
           '--max-files N                    directory walk cap (default 200)',
           '--stdin                          read source from stdin',
-          '--spw | --json | --ndjson        machine output (prefer --spw)',
+          '--spw | --json | --ndjson        output form; prefer source-shaped Spw cards',
         ],
       },
       {

@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { renderHelpPage } from './help'
-import { COMMAND_GROUPS, COMMANDS, findCommand, knownCommands } from './commands'
+import { COMMAND_GROUPS, COMMANDS, findCommand, knownCommands, printRootHelp } from './commands'
 
 /**
  * The registry is the single source of truth for routing, the accepted-token
@@ -49,6 +49,31 @@ describe('command registry', () => {
       expect(opensWell, `${spec.name}: "${spec.summary}" opens as neither title nor address`).toBe(
         true,
       )
+    }
+  })
+
+  it('opens public summaries with outcomes rather than execution addresses', () => {
+    const internalAddress = /\b(?:IR|effect\.l\d|l\d\.[a-z][\w.]*)\b/
+
+    for (const spec of COMMANDS) {
+      expect(spec.summary, `${spec.name} exposes an internal execution address`).not.toMatch(
+        internalAddress,
+      )
+      expect(spec.summary, `${spec.name} teaches an option before its outcome`).not.toMatch(
+        /--[a-z]/,
+      )
+    }
+  })
+
+  it('places compatibility routes after canonical examples', () => {
+    const log = vi.spyOn(console, 'log').mockImplementation(() => undefined)
+    try {
+      printRootHelp()
+      const text = String(log.mock.calls[0]?.[0] ?? '')
+      expect(text.indexOf('Examples:')).toBeGreaterThan(-1)
+      expect(text.indexOf('Compatibility routes:')).toBeGreaterThan(text.indexOf('Examples:'))
+    } finally {
+      log.mockRestore()
     }
   })
 

@@ -120,7 +120,7 @@ interface PulseArgs {
    */
   cut: boolean
   /**
-   * Emit ChangeReport dual-read cards for planned rewrites (collate-only).
+   * Emit Spw ChangeReport cards for planned rewrites (collate-only).
    * Off under --json (host already has structured reports).
    */
   delta: boolean
@@ -554,9 +554,9 @@ export function printSpwPulseHelp(): void {
           '--write, -w        Atomically replace one parse-complete consumer file',
           '--accept-semantic-risk  Required for --write; equivalence is not claimed',
           '--diff, -u         Print unified-ish before/after hunks for changing files',
-          '--delta            Emit ChangeReport dual-read cards for planned rewrites',
+          '--delta            Emit Spw ChangeReport cards for planned rewrites',
           '--matrix, -m       Print step×metric mutation matrix after each change',
-          '--json             Machine-readable probe report',
+          '--json             Structured JSON probe report',
           '--full             Expand default targets across repo semantic surfaces',
           '--include-workbench  Permit plan-only inspection of mounted infrastructure',
           '--cut              Cut + bank a stencil for mutate --from (collate)',

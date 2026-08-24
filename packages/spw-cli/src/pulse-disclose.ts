@@ -1,5 +1,5 @@
 /**
- * Pulse dual-read — ChangeReport cards without growing pulse.ts.
+ * Pulse Spw cards — ChangeReport disclosure without growing pulse.ts.
  *
  * Collate-only disclosure: original → plannedSource as Spw delta card
  * (same spine as `spw delta`, via formatSpwCard).
@@ -10,7 +10,7 @@
 
 import { buildChangeReport, formatChangeReportSpw } from '@spwashi/spw-seed'
 
-/** Build a dual-read ChangeReport card for a pulse plan revision pair. */
+/** Build a Spw ChangeReport card for a pulse plan revision pair. */
 export function pulseDeltaCard(
   before: string,
   after: string,
@@ -22,7 +22,7 @@ export function pulseDeltaCard(
   return formatChangeReportSpw(report)
 }
 
-/** Print dual-read when the planned rewrite differs from the source. */
+/** Print a Spw card when the planned rewrite differs from the source. */
 export function emitPulseDelta(
   before: string,
   after: string,

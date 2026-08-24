@@ -259,13 +259,13 @@ export async function runSpacingInspection(options: RunSpacingInspectionOptions)
   emitRecommendations(
     {
       command: `spw inspect spacing ${target} --events none --sample ${limit} --spw`,
-      purpose: 'read a bounded gap and affinity card',
-      cost: 'display is sampled; lexing and parsing are not',
+      purpose: 'compare lexical gaps and tight identifier segments',
+      cost: `Spw view shows ${limit} examples; lexing and parsing still run`,
     },
     {
       command: `spw inspect spacing ${target} --events diagnostics --json`,
-      purpose: 'recover the complete exact gap product as machine data',
-      cost: 'machine output is complete and may be large',
+      purpose: 'recover every gap and source span as JSON',
+      cost: 'complete output may be large and may expose authored source details',
     },
   )
 }

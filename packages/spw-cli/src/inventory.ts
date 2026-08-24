@@ -15,6 +15,7 @@ import {
   type InventoryRow,
 } from './corpus-scan'
 import {
+  CORPUS_SPREAD_HELP_LINES,
   indexDepthForSpread,
   readCorpusSpreadArgument,
   type CorpusSpread,
@@ -38,7 +39,7 @@ interface InventArgs {
   hubs: number
   quiet: boolean
   spread: CorpusSpread
-  /** Dual-read Spw (default) | host table | json via --json */
+  /** Spw cards (default) | aligned table | JSON via --json. */
   format: 'spw' | 'table'
 }
 
@@ -174,16 +175,16 @@ export function printInventHelp(): void {
     usage: [
       'spw census [paths...] [--from a,b] [--sort degree|lines|refs|frames|file] [--role hub|orphan|…]',
       'spw census prompts --sort lines -n 40',
-      'spw census prompts --table          # host grid',
+      'spw census prompts --table          # table output',
       'spw census .spw --role hub --json',
     ],
     sections: [
       {
-        title: 'Product',
+        title: 'Output',
         lines: [
-          'Default dual-read: ^["corpus"] + ^["population"] with ~"path"{ role ; … }',
+          'Default: source-shaped Spw cards for corpus settings and population rows',
           'role: hub | source | leaf | orphan | node',
-          'Memo: process + .spw/gen/session/corpus-memo (mtime fingerprint)',
+          'Reuse: process memory + .spw/gen/session/corpus-memo, keyed by mtime fingerprint',
         ],
       },
       {
@@ -192,12 +193,11 @@ export function printInventHelp(): void {
           '--sort <k>         degree|lines|refs|frames|file|sigils',
           '--role <r>         all|hub|orphan|leaf|source|node',
           '--limit / -n       Max body rows (default 80)',
-          '--spread <distance>  Corpus work near|standard|far',
-          '--depth <d>          Compatibility alias: minimal|standard|full',
-          '--spw / --format spw   Dual-read (default)',
-          '--table / --format table  Host spreadsheet grid',
-          '--json             Machine envelope',
-          '--quiet / -q       Suppress header and next:',
+          ...CORPUS_SPREAD_HELP_LINES,
+          '--spw / --format spw   Spw cards (default)',
+          '--table / --format table  Aligned table',
+          '--json             Versioned JSON envelope',
+          '--quiet / -q       Suppress headers, details, and recommendations',
         ],
       },
       {
@@ -302,7 +302,7 @@ export async function runSpwInventCli(argv: string[] = process.argv): Promise<vo
       ),
     )
   } else {
-    // Dual-read: path-bound population (live-ish statements) + corpus head
+    // Spw cards: path-bound population statements + corpus head.
     const head = formatCorpusProductSpw(
       { ...scan.product, population: limited },
       { rowLimit: args.limit, includeRows: false },

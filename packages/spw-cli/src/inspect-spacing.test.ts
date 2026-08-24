@@ -24,7 +24,7 @@ describe('spacing inspection product', () => {
     expect(inspection.gaps.some(gap => gap.raw === '\n\n')).toBe(true)
   })
 
-  it('renders the same product as a dual-read Spw card', () => {
+  it('renders the same product as a source-shaped Spw card', () => {
     const inspection = buildSpacingInspection('a . b', { file: 'a.spw' })
     const card = formatSpacingInspectionSpw(inspection)
     expect(card).toContain('^["spacing"]')

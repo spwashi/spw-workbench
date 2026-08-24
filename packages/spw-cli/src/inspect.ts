@@ -52,7 +52,7 @@ import { parseInspectArgs, type InspectArgs } from './inspect-args'
 
 export function printInspectHelp(): void {
   printHelpPage({
-    title: 'Spw Inspect — source / product / runtime planes',
+    title: 'Spw Inspect — examine source, products, and runtime state',
     usage: [
       'spw inspect cache <file.spw> [--channel trial] [--beats 2] [--json]',
       'spw inspect bank [--json] [--spw]',
@@ -71,16 +71,16 @@ export function printInspectHelp(): void {
       {
         title: 'Planes',
         lines: [
-          'cache     beat_evaluate + beat_inspect (HotRuntimeSession)',
-          'bank      collate products (delta/patch/stencil) under gen/session/cli-cache',
-          'corpus    population + topography memo (mtime fingerprint)',
-          'compose   geometric composition: conceptual probe / act|probe→membrane',
-          'medium    RuntimeMedium matrix (channel × dialect)',
-          'session   prepare/parse/inspect receipt + hit flags',
-          'memory    durable fs dumps (spw mem status)',
-          'static    parse + brace + nest summary',
-          'source    progressive tokens → structure → trace intermediate products',
-          'spacing   exact lexical gaps + tight identifier segments (observational)',
+          'cache     evaluate one file through the beat cache; show hit/miss receipt',
+          'bank      list collated delta, patch, and stencil products',
+          'corpus    inspect or clear the shared census/graph memo',
+          'compose   inspect conceptual probe and act|probe→membrane shapes',
+          'medium    resolve the runtime channel × dialect matrix',
+          'session   show prepare/parse/inspect receipts and cache-hit flags',
+          'memory    inspect durable runtime dumps through spw mem status',
+          'static    summarize parse, brace, and nesting form',
+          'source    produce tokens → structure → trace progressively',
+          'spacing   classify exact lexical gaps and tight identifier segments',
           'Theory: docs/theory/spw/cache-field.spw · composition-forms',
         ],
       },
@@ -94,15 +94,15 @@ export function printInspectHelp(): void {
         ],
       },
       {
-        title: 'Performance / granularity',
+        title: 'Work and display controls',
         lines: [
-          '--through <stage>  last source stage executed: tokens|structure|trace',
-          '--events <policy>  retained instrumentation: none|diagnostics|trace',
-          '--sample N         displayed source/spacing examples; does not reduce parser work',
-          '--spread <distance> corpus work on census/graph/density/formula/taste/lattice',
-          'Trace promotes --events to trace. Event retention does not yet suppress generator work.',
-          'JSON products remain complete; --sample bounds human/Spw examples, not recoverable machine data.',
-          'Compatibility aliases: --product, --event-policy, --limit; scheduled for a declared CLI boundary.',
+          '--through <stage>   Stop source inspection after tokens, structure, or trace',
+          '--events <policy>   Retain none, diagnostics, or trace parser events',
+          '--sample N          Bound visible source/spacing examples; exact products stay complete',
+          '--spread <distance> Select near, standard, or far work in corpus commands',
+          'Requesting --through trace makes --events trace effective.',
+          'Event retention currently does not skip event construction.',
+          'JSON and NDJSON preserve exact data; bounded human and Spw views name omissions.',
         ],
       },
       {
@@ -112,11 +112,11 @@ export function printInspectHelp(): void {
           '--dialect <id>   force dialect for medium / session',
           '--beats N        tick session beat before re-sample',
           '--recompute      bypass evaluate / wipe corpus memo',
-          '--limit / -n     shared row cap; compatibility form for source/spacing samples',
-          '--spw            dual-read cards where available',
-          '--json           machine envelope',
-          '--ndjson         emit source stages as soon as each becomes available',
-          '--quiet / -q     suppress headers',
+          '--limit / -n     shared row cap outside source/spacing inspection',
+          '--spw            render a source-shaped Spw card where supported',
+          '--json           emit JSON; source/spacing products remain complete',
+          '--ndjson         emit each source stage when it becomes available',
+          '--quiet / -q     suppress headers, details, and recommendations',
         ],
       },
       {
@@ -129,6 +129,15 @@ export function printInspectHelp(): void {
           'spw inspect cache docs/theory/spw/cache-field.spw',
           'spw inspect source docs/index.spw --through structure --events diagnostics --spw',
           'spw inspect spacing docs/index.spw --spw',
+        ],
+      },
+      {
+        title: 'Compatibility routes',
+        lines: [
+          '--product <stage>       Routes to --through; prefer --through',
+          '--event-policy <policy> Routes to --events; prefer --events',
+          'source/spacing --limit N routes to --sample; prefer --sample',
+          'Removal waits for a declared CLI boundary and first-party migration.',
         ],
       },
     ],
@@ -266,7 +275,7 @@ async function runBank(args: InspectArgs): Promise<void> {
 
   const first = getCliCacheEntry(entries[0]!.id)
   if (first?.dualReadSpw && !args.quiet) {
-    emitDetail(`show: dual-read at ${path.join(session, entries[0]!.id + '.spw')}`)
+    emitDetail(`show: Spw card at ${path.join(session, entries[0]!.id + '.spw')}`)
   }
   emitNext('spw mutate --from <stencil-id> <targets>', 'spw delta --show <id>')
 }
@@ -626,7 +635,7 @@ async function runCompose(args: InspectArgs): Promise<void> {
     return
   }
 
-  // Default dual-read card + findings
+  // Default Spw card + findings
   console.log(result.dualReadSpw)
   console.log('')
   for (const f of result.findings) {

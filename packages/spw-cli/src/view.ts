@@ -45,7 +45,7 @@ function fieldParts(
   return parts
 }
 
-/** Standard command header on stderr — dual-read card via formatSpwCard. */
+/** Standard command header on stderr — a source-shaped Spw card. */
 export function emitHeader(
   primary: string,
   fields: Record<string, string | number | boolean | null | undefined> = {},

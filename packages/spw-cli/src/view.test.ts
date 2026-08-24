@@ -9,7 +9,7 @@ import {
 import { facet, formatSpwCard } from '@spwashi/spw-seed'
 
 describe('view helpers', () => {
-  it('builds dual-read header cards via formatSpwCard', () => {
+  it('builds source-shaped header cards via formatSpwCard', () => {
     const card = formatSpwCard('census', [
       facet.atom('files', 9),
       facet.flag('cyclic', false),

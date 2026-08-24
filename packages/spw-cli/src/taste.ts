@@ -16,6 +16,7 @@ import process from 'node:process'
 import { spwq } from '@spwashi/spw-seed'
 import { scanCorpus, type InventoryRow } from './corpus-scan'
 import {
+  CORPUS_SPREAD_HELP_LINES,
   indexDepthForSpread,
   readCorpusSpreadArgument,
   type CorpusSpread,
@@ -186,7 +187,7 @@ function parseTasteArgs(argv: string[]): TasteArgs {
 
 export function printTasteHelp(): void {
   printHelpPage({
-    title: 'spw taste — measure how a corpus states its own standards',
+    title: 'Spw Taste — measure how a corpus states its own standards',
     usage: [
       'spw taste [paths...]',
       'spw taste prompts --missing',
@@ -218,9 +219,8 @@ export function printTasteHelp(): void {
           '--vocab          only the vocabulary table',
           '--fidelity       only the parser-visibility audit',
           '--top / -n N     rows per table (default 15)',
-          '--spread <distance>  corpus work near|standard|far',
-          '--depth <d>          compatibility alias: minimal|standard|full',
-          '--json               JSON product (legacy unwrapped shape)',
+          ...CORPUS_SPREAD_HELP_LINES,
+          '--json               Complete JSON product (legacy unwrapped shape)',
         ],
       },
       {

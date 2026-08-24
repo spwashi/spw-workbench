@@ -3,7 +3,7 @@ import { parse } from '@spwashi/spw-seed'
 import { pulseDeltaCard } from './pulse-disclose'
 
 describe('pulse-disclose', () => {
-  it('emits a parseable ChangeReport dual-read card for a planned rewrite', () => {
+  it('emits a parseable Spw ChangeReport card for a planned rewrite', () => {
     const before = '^["x"]{ ~#a: "1" }\n'
     const after = '^["x"]{ ~#a: "2" }\n'
     const card = pulseDeltaCard(before, after, { uri: 'probe.spw' })

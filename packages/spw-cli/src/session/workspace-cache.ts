@@ -7,7 +7,7 @@
  *   retention   — gen/session (not canon); invent/map skip
  *
  * On disk (Spw-first):
- *   index.spw          — dual-read index of entries
+ *   index.spw          — Spw card index of entries
  *   <id>.spw           — disclosure card(s)
  *   <id>.product.json  — machine product for rehydrate (optional; not default show)
  */
@@ -52,7 +52,7 @@ export interface CliCacheEntry extends CliCacheEntryMeta {
   patch?: Patch
   /** Stencil when kind is stencil (replan transfer program + mask). */
   stencil?: Stencil
-  /** Nested-frame dual-read disclosure (default inspect). */
+  /** Nested-frame Spw card disclosure (default inspect). */
   dualReadSpw: string
 }
 
@@ -111,7 +111,7 @@ function toMeta(entry: CliCacheEntry): CliCacheEntryMeta {
   }
 }
 
-/** Dual-read index surface — default list output and on-disk index.spw. */
+/** Spw card index surface — default list output and on-disk index.spw. */
 export function formatCliCacheIndexSpw(
   entries: readonly CliCacheEntryMeta[],
   options: { session?: string } = {},
@@ -166,7 +166,7 @@ function writeIndex(cwd: string, index: CliCacheIndex): void {
   mkdirSync(dir, { recursive: true })
   // machine meta (rehydrate list)
   writeFileSync(indexJsonPath(cwd), JSON.stringify(index, null, 2) + '\n', 'utf8')
-  // Spw dual-read index (default human/agent surface)
+  // Spw card index (default human/agent surface)
   writeFileSync(
     indexSpwPath(cwd),
     formatCliCacheIndexSpw(index.entries, { session: cliCacheDir(cwd) }) + '\n',
