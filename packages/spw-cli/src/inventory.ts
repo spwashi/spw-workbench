@@ -9,13 +9,16 @@ import { printHelpPage } from './help'
 import {
   filterInventory,
   inventoryStats,
-  parseIndexDepth,
   scanCorpus,
   sortInventory,
-  type IndexDepth,
   type InventoryRole,
   type InventoryRow,
 } from './corpus-scan'
+import {
+  indexDepthForSpread,
+  readCorpusSpreadArgument,
+  type CorpusSpread,
+} from './corpus-spread'
 import { formatJsonEnvelope } from './envelope'
 import {
   emitDetail,
@@ -34,7 +37,7 @@ interface InventArgs {
   limit: number
   hubs: number
   quiet: boolean
-  depth: IndexDepth
+  spread: CorpusSpread
   /** Dual-read Spw (default) | host table | json via --json */
   format: 'spw' | 'table'
 }
@@ -49,7 +52,7 @@ function parseInventArgs(argv: string[]): InventArgs {
     limit: 80,
     hubs: 24,
     quiet: false,
-    depth: 'standard',
+    spread: 'standard',
     format: 'spw',
   }
   for (let i = 0; i < args.length; i++) {
@@ -116,12 +119,10 @@ function parseInventArgs(argv: string[]): InventArgs {
       parsed.hubs = Math.max(1, Number(a.slice('--hubs='.length)) || 24)
       continue
     }
-    if (a === '--depth') {
-      parsed.depth = parseIndexDepth(args[++i])
-      continue
-    }
-    if (a.startsWith('--depth=')) {
-      parsed.depth = parseIndexDepth(a.slice('--depth='.length))
+    const spread = readCorpusSpreadArgument(args, i, 'census')
+    if (spread) {
+      parsed.spread = spread.spread
+      i = spread.nextIndex
       continue
     }
     if (!a.startsWith('-')) {
@@ -191,7 +192,8 @@ export function printInventHelp(): void {
           '--sort <k>         degree|lines|refs|frames|file|sigils',
           '--role <r>         all|hub|orphan|leaf|source|node',
           '--limit / -n       Max body rows (default 80)',
-          '--depth <d>        minimal|standard|full',
+          '--spread <distance>  Corpus work near|standard|far',
+          '--depth <d>          Compatibility alias: minimal|standard|full',
           '--spw / --format spw   Dual-read (default)',
           '--table / --format table  Host spreadsheet grid',
           '--json             Machine envelope',
@@ -227,10 +229,11 @@ export async function runSpwInventCli(argv: string[] = process.argv): Promise<vo
     return
   }
 
+  const indexDepth = indexDepthForSpread(args.spread)
   const scan = await scanCorpus({
     roots: args.roots,
     hubTop: args.hubs,
-    index: args.depth,
+    index: indexDepth,
   })
 
   let rows = filterInventory(scan.inventory, args.role)
@@ -247,6 +250,7 @@ export async function runSpwInventCli(argv: string[] = process.argv): Promise<vo
         from: args.roots,
         sort: args.sort,
         role: args.role,
+        controls: { spread: args.spread, indexDepth },
         product: scan.product,
         memoPlane: scan.memoPlane,
         stats: {
@@ -270,6 +274,8 @@ export async function runSpwInventCli(argv: string[] = process.argv): Promise<vo
     cyclic: scan.topography.cyclic,
     memo: scan.memoPlane,
     format: args.format,
+    spread: args.spread,
+    index_depth: indexDepth,
   })
   emitDetail(
     `refs path=${stats.pathRefs} root=${stats.rootRefs}  frames=${stats.frames}  broken=${broken}`,

@@ -29,8 +29,17 @@ describe('spacing inspection product', () => {
     const card = formatSpacingInspectionSpw(inspection)
     expect(card).toContain('^["spacing"]')
     expect(card).toContain('~#surface: inspect.spacing/1')
+    expect(card).toContain('~#events: diagnostics')
+    expect(card).toContain('~#sample: 24')
     expect(card).toContain('^["gap-0"]')
     expect(card).toContain('~#class: open')
     expect(card).toContain('raw_visible')
+  })
+
+  it('accepts the canonical events handle', () => {
+    const inspection = buildSpacingInspection('a . b', { events: 'none' })
+
+    expect(inspection.events.policy).toBe('none')
+    expect(inspection.events.retained).toBe(0)
   })
 })

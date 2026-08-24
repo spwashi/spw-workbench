@@ -16,7 +16,12 @@ import {
   type AppositionLattice,
   type AppositionSpectrum,
 } from '@spwashi/spw-seed'
-import { scanCorpus, type IndexDepth } from './corpus-scan'
+import { scanCorpus } from './corpus-scan'
+import {
+  indexDepthForSpread,
+  readCorpusSpreadArgument,
+  type CorpusSpread,
+} from './corpus-spread'
 import { helpLoc, printHelpPage } from './help'
 import { defineLoc } from './loc'
 import { formatTable, meta, truncate } from './view'
@@ -25,10 +30,11 @@ import { formatTable, meta, truncate } from './view'
 const L = defineLoc('lattice', {
   'help.summary':
     'Apposition unit-cell spectrum — named readings without a full parse',
-  'help.usage': 'spw lattice [paths...] [--json] [--top N] [--depth standard]',
+  'help.usage': 'spw lattice [paths...] [--json] [--top N] [--spread standard]',
   'help.opt_json': '--json            Machine spectrum + per-file lattices',
   'help.opt_top': '--top, -n N       Top named species in aggregate (default 24)',
-  'help.opt_depth': '--depth <level>   Corpus walk depth (minimal|standard|full)',
+  'help.opt_depth': '--spread <distance>  Corpus work (near|standard|far)',
+  'help.opt_depth_alias': '--depth <d>          Compatibility alias (minimal|standard|full)',
   'help.opt_limit': '--limit N         Max files listed with cells (default 40)',
   'help.opt_quiet': '--quiet, -q       Suppress headers',
   'help.note_cells': 'Unit cell = ~#name(body) or ~#(body). Mask = envelope hash.',
@@ -45,14 +51,9 @@ interface LatticeArgs {
   roots: string[]
   json: boolean
   quiet: boolean
-  depth: IndexDepth
+  spread: CorpusSpread
   top: number
   limit: number
-}
-
-function parseDepth(raw: string): IndexDepth {
-  if (raw === 'minimal' || raw === 'standard' || raw === 'full') return raw
-  throw new Error(`spw lattice: --depth must be minimal|standard|full (got ${raw})`)
 }
 
 function parseArgs(argv: string[]): LatticeArgs {
@@ -61,7 +62,7 @@ function parseArgs(argv: string[]): LatticeArgs {
     roots: [],
     json: false,
     quiet: false,
-    depth: 'standard',
+    spread: 'standard',
     top: 24,
     limit: 40,
   }
@@ -75,8 +76,10 @@ function parseArgs(argv: string[]): LatticeArgs {
       parsed.quiet = true
       continue
     }
-    if (a === '--depth' && args[i + 1]) {
-      parsed.depth = parseDepth(args[++i]!)
+    const spread = readCorpusSpreadArgument(args, i, 'lattice')
+    if (spread) {
+      parsed.spread = spread.spread
+      i = spread.nextIndex
       continue
     }
     if ((a === '--top' || a === '-n') && args[i + 1]) {
@@ -112,6 +115,7 @@ export function printLatticeHelp(): void {
           L('help.opt_json'),
           L('help.opt_top'),
           L('help.opt_depth'),
+          L('help.opt_depth_alias'),
           L('help.opt_limit'),
           L('help.opt_quiet'),
         ],
@@ -141,7 +145,8 @@ export async function runSpwLatticeCli(argv: string[]): Promise<void> {
     return
   }
 
-  const corpus = await scanCorpus({ roots: args.roots, index: args.depth })
+  const indexDepth = indexDepthForSpread(args.spread)
+  const corpus = await scanCorpus({ roots: args.roots, index: indexDepth })
   const rows: FileLatticeRow[] = []
   const aggregateNames: Record<string, number> = {}
   let totalCells = 0
@@ -174,6 +179,7 @@ export async function runSpwLatticeCli(argv: string[]): Promise<void> {
         {
           command: 'lattice',
           version: 'spw.lattice/1',
+          controls: { spread: args.spread, indexDepth, memoPlane: corpus.memoPlane },
           roots: args.roots,
           filesScanned,
           filesWithCells,
@@ -204,7 +210,7 @@ export async function runSpwLatticeCli(argv: string[]): Promise<void> {
 
   if (!args.quiet) {
     meta(
-      `# spw lattice  files=${filesScanned} with_cells=${filesWithCells} ` +
+      `# spw lattice  spread=${args.spread} index_depth=${indexDepth} memo=${corpus.memoPlane} files=${filesScanned} with_cells=${filesWithCells} ` +
         `cells=${totalCells} named=${totalNamed} anonymous=${totalAnonymous}`,
     )
   }

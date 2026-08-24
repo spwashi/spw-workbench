@@ -9,7 +9,12 @@ import {
   formatTopographySpw,
   type TopographyReport,
 } from '@spwashi/spw-seed'
-import { parseIndexDepth, scanCorpus, type IndexDepth } from './corpus-scan'
+import { scanCorpus } from './corpus-scan'
+import {
+  indexDepthForSpread,
+  readCorpusSpreadArgument,
+  type CorpusSpread,
+} from './corpus-spread'
 import { printHelpPage } from './help'
 import { formatJsonEnvelope } from './envelope'
 import {
@@ -30,7 +35,7 @@ interface MapArgs {
   hubs: number
   limit: number
   resolvePaths: boolean
-  depth: IndexDepth
+  spread: CorpusSpread
   format: 'spw' | 'table'
   quiet: boolean
 }
@@ -46,7 +51,7 @@ function parseMapArgs(argv: string[]): MapArgs {
     hubs: 12,
     limit: 40,
     resolvePaths: true,
-    depth: 'standard',
+    spread: 'standard',
     format: 'spw',
     quiet: false,
   }
@@ -111,12 +116,10 @@ function parseMapArgs(argv: string[]): MapArgs {
       parsed.resolvePaths = false
       continue
     }
-    if (a === '--depth') {
-      parsed.depth = parseIndexDepth(args[++i])
-      continue
-    }
-    if (a.startsWith('--depth=')) {
-      parsed.depth = parseIndexDepth(a.slice('--depth='.length))
+    const spread = readCorpusSpreadArgument(args, i, 'graph')
+    if (spread) {
+      parsed.spread = spread.spread
+      i = spread.nextIndex
       continue
     }
     if (!a.startsWith('-')) {
@@ -156,7 +159,8 @@ export function printMapHelp(): void {
         lines: [
           '--compare / -c   Second root set for familiarity strands',
           '--limit / -n     Hub / broken row cap (also accepts --hubs)',
-          '--depth <d>      minimal|standard|full',
+          '--spread <distance>  Corpus work near|standard|far',
+          '--depth <d>          Compatibility alias: minimal|standard|full',
           '--no-resolve     Leave path targets unresolved',
           '--spw            Dual-read (default)',
           '--table          Host tables',
@@ -195,11 +199,12 @@ export async function runSpwMapCli(argv: string[] = process.argv): Promise<void>
 
   setMetaQuiet(args.quiet)
 
+  const indexDepth = indexDepthForSpread(args.spread)
   const primaryScan = await scanCorpus({
     roots: args.roots,
     resolvePaths: args.resolvePaths,
     hubTop: args.hubs,
-    index: args.depth,
+    index: indexDepth,
   })
   const primary = primaryScan.topography
   let compare: TopographyReport | undefined
@@ -211,7 +216,7 @@ export async function runSpwMapCli(argv: string[] = process.argv): Promise<void>
         roots: args.compare,
         resolvePaths: args.resolvePaths,
         hubTop: args.hubs,
-        index: args.depth,
+        index: indexDepth,
       })
     ).topography
   }
@@ -219,6 +224,7 @@ export async function runSpwMapCli(argv: string[] = process.argv): Promise<void>
   if (args.json) {
     console.log(
       formatJsonEnvelope('graph', {
+        controls: { spread: args.spread, indexDepth },
         primary: serializeReport(primary),
         compare: compare ? serializeReport(compare) : undefined,
         familiarity: compare ? compareFamiliarity(primary, compare) : undefined,
@@ -236,6 +242,8 @@ export async function runSpwMapCli(argv: string[] = process.argv): Promise<void>
     hubs: primary.hubs.length,
     memo: primaryScan.memoPlane,
     format: args.format,
+    spread: args.spread,
+    index_depth: indexDepth,
   })
 
   if (args.format === 'table') {

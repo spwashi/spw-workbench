@@ -13,7 +13,7 @@ import {
   type TokenType,
 } from '@spwashi/spw-seed'
 import { formatJsonEnvelope } from './envelope'
-import { emitDetail, emitHeader, emitNext, formatTable } from './view'
+import { emitDetail, emitHeader, emitRecommendations, formatTable, shellArg } from './view'
 
 export const SPACING_INSPECTION_SURFACE = 'inspect.spacing/1' as const
 
@@ -59,6 +59,8 @@ export interface SpacingInspection {
 
 export interface BuildSpacingInspectionOptions {
   file?: string
+  events?: ParseEventPolicy
+  /** @deprecated Use events. */
   eventPolicy?: ParseEventPolicy
 }
 
@@ -70,6 +72,8 @@ export interface RunSpacingInspectionOptions extends FormatSpacingInspectionOpti
   file: string
   json?: boolean
   showSpw?: boolean
+  events?: ParseEventPolicy
+  /** @deprecated Use events. */
   eventPolicy?: ParseEventPolicy
 }
 
@@ -80,7 +84,7 @@ export function buildSpacingInspection(
   const file = options.file ?? '<memory>'
   const parsed = parse(source, {
     path: file === '<memory>' ? undefined : file,
-    eventPolicy: options.eventPolicy ?? 'diagnostics',
+    eventPolicy: options.events ?? options.eventPolicy ?? 'diagnostics',
   })
   const gapCounts = Object.fromEntries(GAP_CLASSES.map(kind => [kind, 0])) as Record<GapClass, number>
 
@@ -160,8 +164,11 @@ export function formatSpacingInspectionSpw(
     facet.path('file', inspection.file),
     facet.flag('parse_ok', inspection.parse.ok),
     facet.atom('parse_errors', inspection.parse.errors),
-    facet.group('events', [
-      facet.atom('policy', inspection.events.policy),
+    facet.group('controls', [
+      facet.atom('events', inspection.events.policy),
+      facet.atom('sample', limit),
+    ]),
+    facet.group('event-receipt', [
       facet.atom('generated', inspection.events.generated),
       facet.atom('retained', inspection.events.retained),
     ]),
@@ -199,7 +206,7 @@ export async function runSpacingInspection(options: RunSpacingInspectionOptions)
   const file = path.relative(process.cwd(), abs) || path.basename(abs)
   const inspection = buildSpacingInspection(source, {
     file,
-    eventPolicy: options.eventPolicy,
+    events: options.events ?? options.eventPolicy,
   })
   const limit = options.limit ?? 24
 
@@ -208,12 +215,16 @@ export async function runSpacingInspection(options: RunSpacingInspectionOptions)
     file,
     gaps: inspection.gaps.length,
     parse: inspection.parse.ok,
+    events: inspection.events.policy,
+    sample: limit,
   })
 
   if (options.json) {
     console.log(formatJsonEnvelope('inspect.spacing', inspection, {
       gaps: inspection.gaps.length,
       qualifiedIdentifiers: inspection.tightIdentifiers.length,
+      events: inspection.events.policy,
+      sample: limit,
     }))
     return
   }
@@ -224,6 +235,7 @@ export async function runSpacingInspection(options: RunSpacingInspectionOptions)
   }
 
   emitDetail('observational: classifies source relationships without changing AST or runtime meaning')
+  emitDetail(`controls  events=${inspection.events.policy} sample=${limit}`)
   emitDetail(`classes  ${GAP_CLASSES.map(kind => `${kind}=${inspection.gapCounts[kind]}`).join('  ')}`)
   emitDetail(`events   policy=${inspection.events.policy} generated=${inspection.events.generated} retained=${inspection.events.retained}`)
 
@@ -242,6 +254,18 @@ export async function runSpacingInspection(options: RunSpacingInspectionOptions)
   for (const identifier of inspection.tightIdentifiers.slice(0, limit)) {
     emitDetail(`identifier ${identifier.value} → ${identifier.segments.join(' / ')}`)
   }
-  if (inspection.gaps.length > limit) emitDetail(`… ${inspection.gaps.length - limit} more gaps (raise --limit)`)
-  emitNext(`spw inspect spacing ${file} --spw`, `spw inspect spacing ${file} --json`)
+  if (inspection.gaps.length > limit) emitDetail(`… ${inspection.gaps.length - limit} more gaps (raise --sample)`)
+  const target = shellArg(file)
+  emitRecommendations(
+    {
+      command: `spw inspect spacing ${target} --events none --sample ${limit} --spw`,
+      purpose: 'read a bounded gap and affinity card',
+      cost: 'display is sampled; lexing and parsing are not',
+    },
+    {
+      command: `spw inspect spacing ${target} --events diagnostics --json`,
+      purpose: 'recover the complete exact gap product as machine data',
+      cost: 'machine output is complete and may be large',
+    },
+  )
 }

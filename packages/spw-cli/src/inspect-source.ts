@@ -12,7 +12,7 @@ import {
   type SpwCardPart,
 } from '@spwashi/spw-seed'
 import { buildEnvelope, formatJsonEnvelope } from './envelope'
-import { emitDetail, emitHeader, emitNext, formatTable } from './view'
+import { emitDetail, emitHeader, emitRecommendations, formatTable, shellArg } from './view'
 
 export const SOURCE_INSPECTION_SURFACE = 'inspect.source/1' as const
 
@@ -21,12 +21,20 @@ export interface SourceInspection {
   status: 'observational'
   file: string
   request: SourceProductDepth
+  controls: {
+    through: SourceProductDepth
+    events: ParseEventPolicy
+  }
   products: SourceProduct[]
 }
 
 export interface BuildSourceInspectionOptions {
   file?: string
+  through?: SourceProductDepth
+  events?: ParseEventPolicy
+  /** @deprecated Use through. */
   product?: SourceProductDepth
+  /** @deprecated Use events. */
   eventPolicy?: ParseEventPolicy
   observe?: (product: SourceProduct) => void
 }
@@ -37,7 +45,11 @@ export interface FormatSourceInspectionOptions {
 
 export interface RunSourceInspectionOptions extends FormatSourceInspectionOptions {
   file: string
+  through?: SourceProductDepth
+  events?: ParseEventPolicy
+  /** @deprecated Use through. */
   product?: SourceProductDepth
+  /** @deprecated Use events. */
   eventPolicy?: ParseEventPolicy
   json?: boolean
   ndjson?: boolean
@@ -49,9 +61,12 @@ export function buildSourceInspection(
   options: BuildSourceInspectionOptions = {},
 ): SourceInspection {
   const file = options.file ?? '<memory>'
+  const through = options.through ?? options.product ?? 'structure'
+  const requestedEvents = options.events ?? options.eventPolicy ?? 'diagnostics'
+  const effectiveEvents = through === 'trace' ? 'trace' : requestedEvents
   const result = produceSourceProducts(source, {
-    product: options.product ?? 'structure',
-    eventPolicy: options.eventPolicy ?? 'diagnostics',
+    product: through,
+    eventPolicy: effectiveEvents,
     path: file === '<memory>' ? undefined : file,
     uri: file,
   }, options.observe)
@@ -61,6 +76,10 @@ export function buildSourceInspection(
     status: 'observational',
     file,
     request: result.request,
+    controls: {
+      through: result.request,
+      events: effectiveEvents,
+    },
     products: result.products,
   }
 }
@@ -75,6 +94,11 @@ export function formatSourceInspectionSpw(
     facet.atom('status', inspection.status),
     facet.path('file', inspection.file),
     facet.atom('request', inspection.request),
+    facet.group('controls', [
+      facet.atom('through', inspection.controls.through),
+      facet.atom('events', inspection.controls.events),
+      facet.atom('sample', limit),
+    ]),
     facet.atom('stages', inspection.products.length),
   ]
 
@@ -100,7 +124,7 @@ export function formatSourceInspectionSpw(
     for (const [index, token] of tokens.data.tokens.slice(0, limit).entries()) {
       parts.push(facet.group(`token-${index}`, [
         facet.atom('type', token.type),
-        facet.str('value', token.value),
+        facet.str('value_visible', visibleTokenValue(token.value)),
         facet.atom('start', token.span.start.offset),
         facet.atom('end', token.span.end.offset),
       ]))
@@ -132,18 +156,23 @@ export async function runSourceInspection(options: RunSourceInspectionOptions): 
   const abs = path.resolve(options.file)
   const source = await fs.readFile(abs, 'utf8')
   const file = path.relative(process.cwd(), abs) || path.basename(abs)
-  const request = options.product ?? 'structure'
+  const through = options.through ?? options.product ?? 'structure'
+  const requestedEvents = options.events ?? options.eventPolicy ?? 'diagnostics'
+  const events = through === 'trace' ? 'trace' : requestedEvents
+  const sample = options.limit ?? 16
 
   emitHeader('inspect', {
     plane: 'source',
     file,
-    product: request,
+    through,
+    events,
+    sample,
   })
 
   const inspection = buildSourceInspection(source, {
     file,
-    product: request,
-    eventPolicy: options.eventPolicy,
+    through,
+    events,
     observe: options.ndjson
       ? product => console.log(JSON.stringify(buildEnvelope('inspect.source.stage', product, {
           sequence: product.sequence.index,
@@ -157,18 +186,24 @@ export async function runSourceInspection(options: RunSourceInspectionOptions): 
 
   if (options.json) {
     console.log(formatJsonEnvelope('inspect.source', inspection, {
-      request,
+      through,
+      events,
+      sample,
       stages: inspection.products.length,
     }))
     return
   }
 
   if (options.showSpw) {
-    console.log(formatSourceInspectionSpw(inspection, { limit: options.limit }))
+    console.log(formatSourceInspectionSpw(inspection, { limit: sample }))
     return
   }
 
-  emitDetail('observational: requested depth selects disclosure and may stop before deeper stages')
+  emitDetail('observational: through selects executed stages; sample bounds display only')
+  emitDetail(`controls  through=${through} events=${events} sample=${sample}`)
+  if (through === 'trace' && requestedEvents !== 'trace') {
+    emitDetail('trace requires full event retention; effective events=trace')
+  }
   console.log(formatTable(
     ['seq', 'product', 'ir', 'status', 'complete', 'elapsed', 'deferred'],
     inspection.products.map(product => [
@@ -187,9 +222,18 @@ export async function runSourceInspection(options: RunSourceInspectionOptions): 
     const details = productDetails(product)
     emitDetail(`${product.stage.padEnd(9)} ${Object.entries(details).map(([key, value]) => `${key}=${value}`).join(' ')}`)
   }
-  emitNext(
-    `spw inspect source ${file} --product tokens --spw`,
-    `spw inspect source ${file} --product trace --ndjson`,
+  const target = shellArg(file)
+  emitRecommendations(
+    {
+      command: `spw inspect source ${target} --through tokens --events none --spw`,
+      purpose: 'read a bounded lexical receipt',
+      cost: 'token stage only; display sample defaults to 16',
+    },
+    {
+      command: `spw inspect source ${target} --through trace --events trace --ndjson`,
+      purpose: 'stream every progressive stage for replay or instrumentation',
+      cost: 'full parse plus retained trace events',
+    },
   )
 }
 
@@ -225,4 +269,13 @@ function formatCompleteness(value: number): string {
 
 function roundMilliseconds(value: number): number {
   return Math.round(value * 1000) / 1000
+}
+
+function visibleTokenValue(value: string): string {
+  if (value.length === 0) return '∅'
+  return value
+    .replace(/\r/g, '␍')
+    .replace(/\n/g, '↵')
+    .replace(/\t/g, '⇥')
+    .replace(/ /g, '·')
 }

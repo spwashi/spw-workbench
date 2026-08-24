@@ -14,7 +14,12 @@
 
 import process from 'node:process'
 import { spwq } from '@spwashi/spw-seed'
-import { parseIndexDepth, scanCorpus, type IndexDepth, type InventoryRow } from './corpus-scan'
+import { scanCorpus, type InventoryRow } from './corpus-scan'
+import {
+  indexDepthForSpread,
+  readCorpusSpreadArgument,
+  type CorpusSpread,
+} from './corpus-spread'
 import { printHelpPage } from './help'
 import { formatTable, meta, truncate } from './view'
 
@@ -46,7 +51,7 @@ interface TasteArgs {
   missing: boolean
   vocab: boolean
   fidelity: boolean
-  depth: IndexDepth
+  spread: CorpusSpread
 }
 
 /**
@@ -158,7 +163,7 @@ function parseTasteArgs(argv: string[]): TasteArgs {
     missing: false,
     vocab: false,
     fidelity: false,
-    depth: 'standard',
+    spread: 'standard',
   }
 
   for (let i = 0; i < args.length; i++) {
@@ -169,8 +174,8 @@ function parseTasteArgs(argv: string[]): TasteArgs {
     if (a === '--fidelity') { parsed.fidelity = true; continue }
     if (a === '--top' || a === '-n') { parsed.top = Math.max(1, Number(args[++i]) || 15); continue }
     if (a.startsWith('--top=')) { parsed.top = Math.max(1, Number(a.slice(6)) || 15); continue }
-    if (a === '--depth') { parsed.depth = parseIndexDepth(args[++i]); continue }
-    if (a.startsWith('--depth=')) { parsed.depth = parseIndexDepth(a.slice(8)); continue }
+    const spread = readCorpusSpreadArgument(args, i, 'taste')
+    if (spread) { parsed.spread = spread.spread; i = spread.nextIndex; continue }
     if (!a.startsWith('-')) { parsed.roots.push(a); continue }
     throw new Error(`spw taste: unknown flag ${a}`)
   }
@@ -213,8 +218,9 @@ export function printTasteHelp(): void {
           '--vocab          only the vocabulary table',
           '--fidelity       only the parser-visibility audit',
           '--top / -n N     rows per table (default 15)',
-          '--depth <d>      scan depth minimal|standard|full',
-          '--json           structured envelope',
+          '--spread <distance>  corpus work near|standard|far',
+          '--depth <d>          compatibility alias: minimal|standard|full',
+          '--json               JSON product (legacy unwrapped shape)',
         ],
       },
       {
@@ -248,7 +254,8 @@ export async function runSpwTasteCli(argv: string[] = process.argv): Promise<voi
     fidelity: args.fidelity,
   }
 
-  const corpus = await scanCorpus({ roots: args.roots, index: args.depth })
+  const indexDepth = indexDepthForSpread(args.spread)
+  const corpus = await scanCorpus({ roots: args.roots, index: indexDepth })
   const rows = buildTasteRows(corpus.sources, corpus.inventory, show.fidelity)
 
   const withTaste = rows.filter((r) => r.taste)
@@ -263,6 +270,7 @@ export async function runSpwTasteCli(argv: string[] = process.argv): Promise<voi
     console.log(JSON.stringify({
       ok: true,
       command: 'taste',
+      controls: { spread: args.spread, indexDepth, memoPlane: corpus.memoPlane },
       roots: args.roots,
       summary: {
         surfaces: rows.length,
@@ -281,7 +289,7 @@ export async function runSpwTasteCli(argv: string[] = process.argv): Promise<voi
   }
 
   if (show.coverage) {
-    meta(`# spw taste  roots=${args.roots.join(',')}  surfaces=${rows.length}`)
+    meta(`# spw taste  spread=${args.spread}  index_depth=${indexDepth}  memo=${corpus.memoPlane}  roots=${args.roots.join(',')}  surfaces=${rows.length}`)
     console.log()
 
     const byRegion = new Map<string, { total: number; taste: number; reach: number }>()

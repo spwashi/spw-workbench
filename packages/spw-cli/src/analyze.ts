@@ -1,12 +1,17 @@
 /**
- * spw analyze — multi-selector data analysis over a corpus in one pass.
+ * spw density — multi-selector data analysis over a corpus in one pass.
  *
  * Complements invent (catalog), map (topo), formula (math patterns), query (one selector).
  */
 
 import process from 'node:process'
 import { spwq } from '@spwashi/spw-seed'
-import { parseIndexDepth, scanCorpus, type IndexDepth } from './corpus-scan'
+import { scanCorpus } from './corpus-scan'
+import {
+  indexDepthForSpread,
+  readCorpusSpreadArgument,
+  type CorpusSpread,
+} from './corpus-spread'
 import { printHelpPage } from './help'
 import { CLI_SELECTOR_PRESETS, listCliSelectorPresetNames, resolveCliSelector } from './selectors'
 import { formatTable, meta, renderCounts, truncate } from './view'
@@ -27,18 +32,18 @@ interface AnalyzeArgs {
   json: boolean
   topFiles: number
   quiet: boolean
-  depth: IndexDepth
+  spread: CorpusSpread
 }
 
 function parseAnalyzeArgs(argv: string[]): AnalyzeArgs {
-  const args = argv[0] === 'analyze' || argv[0] === 'stats' ? argv.slice(1) : argv
+  const args = argv[0] === 'density' || argv[0] === 'analyze' || argv[0] === 'stats' ? argv.slice(1) : argv
   const parsed: AnalyzeArgs = {
     roots: [],
     selectors: [...DEFAULT_SELECTORS],
     json: false,
     topFiles: 12,
     quiet: false,
-    depth: 'standard',
+    spread: 'standard',
   }
   for (let i = 0; i < args.length; i++) {
     const a = args[i]!
@@ -74,19 +79,17 @@ function parseAnalyzeArgs(argv: string[]): AnalyzeArgs {
       parsed.topFiles = Math.max(1, Number(a.slice('--top='.length)) || 12)
       continue
     }
-    if (a === '--depth') {
-      parsed.depth = parseIndexDepth(args[++i])
-      continue
-    }
-    if (a.startsWith('--depth=')) {
-      parsed.depth = parseIndexDepth(a.slice('--depth='.length))
+    const spread = readCorpusSpreadArgument(args, i, 'density')
+    if (spread) {
+      parsed.spread = spread.spread
+      i = spread.nextIndex
       continue
     }
     if (!a.startsWith('-')) {
       parsed.roots.push(a)
       continue
     }
-    throw new Error(`spw analyze: unknown flag ${a}`)
+    throw new Error(`spw density: unknown flag ${a}`)
   }
   if (!parsed.roots.length) parsed.roots = ['.']
   if (!parsed.selectors.length) parsed.selectors = [...DEFAULT_SELECTORS]
@@ -99,11 +102,11 @@ function splitCsv(s: string): string[] {
 
 export function printAnalyzeHelp(): void {
   printHelpPage({
-    title: 'Spw Analyze — multi-selector corpus stats',
+    title: 'Spw Density — multi-selector corpus stats',
     usage: [
-      'spw analyze [paths...] [--selectors pathRefs,ops:frame,annotations]',
-      'spw analyze prompts --json',
-      'spw stats docs/theory   # alias',
+      'spw density [paths...] [--selectors pathRefs,ops:frame,annotations]',
+      'spw density prompts --json',
+      'spw analyze docs/theory   # compatibility alias',
     ],
     sections: [
       {
@@ -124,14 +127,15 @@ export function printAnalyzeHelp(): void {
         lines: [
           '--selectors / -s <list>   Comma-separated selector names',
           '--top / --top-files N     Top-activity file count (default 12)',
-          '--depth <d>               Scan depth minimal|standard|full (default standard)',
-          '--json                    Structured envelope',
+          '--spread <distance>  Corpus work near|standard|far (default standard)',
+          '--depth <d>          Compatibility alias: minimal|standard|full',
+          '--json               JSON product (legacy unwrapped shape)',
         ],
       },
       {
         title: 'Sense loop',
         lines: [
-          'invent → map → formula → analyze → query/skim detail',
+          'census → graph → formula → density → query/skim detail',
           `presets: ${listCliSelectorPresetNames().join(', ')}`,
         ],
       },
@@ -162,12 +166,13 @@ export async function runSpwAnalyzeCli(argv: string[] = process.argv): Promise<v
         return { selector: CLI_SELECTOR_PRESETS[name]!, label: name }
       }
       throw new Error(
-        `spw analyze: unknown selector "${name}" (presets: ${listCliSelectorPresetNames().join(', ')})`,
+        `spw density: unknown selector "${name}" (presets: ${listCliSelectorPresetNames().join(', ')})`,
       )
     }
   })
 
-  const corpus = await scanCorpus({ roots: args.roots, index: args.depth })
+  const indexDepth = indexDepthForSpread(args.spread)
+  const corpus = await scanCorpus({ roots: args.roots, index: indexDepth })
   const selectorTotals = new Map<string, number>()
   const perFileActivity = new Map<string, number>()
   const perSelectorFiles = new Map<string, number>()
@@ -213,7 +218,8 @@ export async function runSpwAnalyzeCli(argv: string[] = process.argv): Promise<v
     console.log(
       JSON.stringify(
         {
-          command: 'analyze',
+          command: 'density',
+          controls: { spread: args.spread, indexDepth, memoPlane: corpus.memoPlane },
           from: args.roots,
           files: corpus.inventory.length,
           lines: totalLines,
@@ -234,10 +240,10 @@ export async function runSpwAnalyzeCli(argv: string[] = process.argv): Promise<v
 
   if (!args.quiet) {
     meta(
-      `# spw analyze  files=${corpus.inventory.length}  lines=${totalLines}  links=${corpus.topography.links}  cyclic=${corpus.topography.cyclic}`,
+      `# spw density  spread=${args.spread}  index_depth=${indexDepth}  files=${corpus.inventory.length}  lines=${totalLines}  links=${corpus.topography.links}  cyclic=${corpus.topography.cyclic}`,
     )
     meta(
-      `  broken=${corpus.topography.brokenTargets.length}  layers=${corpus.topography.layers.length}  hubs=${corpus.topography.hubs.length}`,
+      `  broken=${corpus.topography.brokenTargets.length}  layers=${corpus.topography.layers.length}  hubs=${corpus.topography.hubs.length}  memo=${corpus.memoPlane}`,
     )
   }
 

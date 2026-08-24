@@ -13,7 +13,12 @@ import {
   summarizeFormulaHits,
   type FormulaHit,
 } from '@spwashi/spw-seed'
-import { parseIndexDepth, scanCorpus, type IndexDepth } from './corpus-scan'
+import { scanCorpus, type CorpusScanResult } from './corpus-scan'
+import {
+  indexDepthForSpread,
+  readCorpusSpreadArgument,
+  type CorpusSpread,
+} from './corpus-spread'
 import { printHelpPage } from './help'
 import { formatTable, meta, renderCounts, truncate } from './view'
 
@@ -27,7 +32,7 @@ interface FormulaArgs {
   limit: number
   family?: string
   quiet: boolean
-  depth: IndexDepth
+  spread: CorpusSpread
 }
 
 function parseFormulaArgs(argv: string[]): FormulaArgs {
@@ -41,7 +46,7 @@ function parseFormulaArgs(argv: string[]): FormulaArgs {
     top: 24,
     limit: 60,
     quiet: false,
-    depth: 'standard',
+    spread: 'standard',
   }
   for (let i = 0; i < args.length; i++) {
     const a = args[i]!
@@ -81,12 +86,10 @@ function parseFormulaArgs(argv: string[]): FormulaArgs {
       parsed.family = a.slice('--family='.length).toLowerCase()
       continue
     }
-    if (a === '--depth') {
-      parsed.depth = parseIndexDepth(args[++i])
-      continue
-    }
-    if (a.startsWith('--depth=')) {
-      parsed.depth = parseIndexDepth(a.slice('--depth='.length))
+    const spread = readCorpusSpreadArgument(args, i, 'formula')
+    if (spread) {
+      parsed.spread = spread.spread
+      i = spread.nextIndex
       continue
     }
     if (a === '--top') {
@@ -150,8 +153,9 @@ export function printFormulaHelp(): void {
           '--family <id>     Filter catalog/idioms/hits by family',
           '--top N           Pattern frequency table size (default 24)',
           '--limit N / -n N  Max hit lines shown (default 60)',
-          '--depth <d>       Scan depth minimal|standard|full (default standard)',
-          '--json            Structured envelope',
+          '--spread <distance>  Corpus work near|standard|far (default standard)',
+          '--depth <d>          Compatibility alias: minimal|standard|full',
+          '--json               JSON product (legacy unwrapped shape)',
         ],
       },
       {
@@ -201,9 +205,12 @@ export async function runSpwFormulaCli(argv: string[] = process.argv): Promise<v
   let reports: FileReport[] = []
   let patterns: ReturnType<typeof aggregateFormulaPatterns> = []
   let allHits: Array<FormulaHit & { file: string }> = []
+  let memoPlane: CorpusScanResult['memoPlane'] | undefined
+  const indexDepth = indexDepthForSpread(args.spread)
 
   if (args.scan) {
-    const corpus = await scanCorpus({ roots: args.roots, index: args.depth })
+    const corpus = await scanCorpus({ roots: args.roots, index: indexDepth })
+    memoPlane = corpus.memoPlane
     for (const [file, source] of corpus.sources) {
       let hits = scanFormulas(source)
       if (args.family) hits = hits.filter(h => h.family === args.family)
@@ -226,6 +233,7 @@ export async function runSpwFormulaCli(argv: string[] = process.argv): Promise<v
       JSON.stringify(
         {
           command: 'formula',
+          controls: { spread: args.spread, indexDepth, memoPlane: memoPlane ?? null, applied: args.scan },
           from: args.roots,
           family: args.family ?? null,
           catalog: args.catalog ? catalog : undefined,
@@ -286,7 +294,7 @@ export async function runSpwFormulaCli(argv: string[] = process.argv): Promise<v
   if (args.scan) {
     if (!args.quiet) {
       meta(
-        `# spw formula scan  roots=${args.roots.join(',')}  files_hit=${reports.length}  hits=${allHits.length}`,
+        `# spw formula scan  spread=${args.spread}  index_depth=${indexDepth}  memo=${memoPlane}  roots=${args.roots.join(',')}  files_hit=${reports.length}  hits=${allHits.length}`,
       )
     }
 

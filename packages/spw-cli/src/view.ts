@@ -76,6 +76,39 @@ export function emitNext(...steps: string[]): void {
   }
 }
 
+export interface CliRecommendation {
+  command: string
+  purpose: string
+  cost?: string
+}
+
+/**
+ * Explain a small set of copyable next moves without hiding their work cost.
+ * Keep emitNext for terse legacy companions; prefer this on new inspection surfaces.
+ */
+export function formatRecommendations(recommendations: readonly CliRecommendation[]): string {
+  return formatSpwCard('next', recommendations.map((recommendation, index) =>
+    facet.group(`step-${index + 1}`, [
+      facet.str('command', recommendation.command),
+      facet.str('purpose', recommendation.purpose),
+      ...(recommendation.cost ? [facet.str('cost', recommendation.cost)] : []),
+    ]),
+  ))
+}
+
+export function emitRecommendations(...recommendations: CliRecommendation[]): void {
+  if (quietMeta || recommendations.length === 0) return
+  for (const line of formatRecommendations(recommendations).split('\n')) {
+    console.error(line)
+  }
+}
+
+/** Quote one argument for the copyable POSIX-shell commands emitted by this CLI. */
+export function shellArg(value: string): string {
+  if (/^[A-Za-z0-9_./:@%+=,-]+$/.test(value)) return value
+  return `'${value.replace(/'/g, `'"'"'`)}'`
+}
+
 export function meta(...parts: string[]): void {
   if (quietMeta) return
   console.error(parts.filter(Boolean).join(' '))
