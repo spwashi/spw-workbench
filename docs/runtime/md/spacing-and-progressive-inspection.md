@@ -145,6 +145,43 @@ Readable projections may normalize control characters: token samples use `value_
 
 When a human inspection finishes, its `next` card keeps a safely quoted, copyable command beside the question that move answers and the additional work or output cost it incurs. This makes a recommendation explainable rather than merely convenient. Help and next steps must not suggest that `--sample` makes parsing faster, that `--events none` suppresses event generation, or that `--through tokens` is a complete syntax judgment.
 
+## Operational Syntax, Notation, and Prose
+
+An August 2026 warning audit exposed a recurring boundary: a `.spw` surface may contain an expression to evaluate, notation to discuss, or prose to read. Those roles should remain visually recognizable without making quoted examples accidentally executable.
+
+The audit established these implemented conventions:
+
+| Surface need | Current form | Status |
+|---|---|---|
+| indentation-bounded multiline prose | `key: |` followed by a deeper-indented body | parsed as a bounded prose leaf |
+| file dialect authority | a column-zero pragma or a `^seed[...]` profile | indented examples cannot retune the file |
+| operator suffix affinity | a suffix or fallback modifier on the operator’s own line | cannot claim the next line’s binding key |
+| machine-readable frame identity | `^["id"]{ ... }` | preferred over the ambiguous quoted-frame shorthand |
+| proposed syntax shown as data | a labeled string, phrase, list entry, or block scalar | preserved as an exhibit; not executed |
+| repeated mapping rows | `#[ .{ glyph, meaning } ... ]` | queryable structure rather than an unowned prose table |
+
+The distinction is consequential. For example, this is a notation exhibit:
+
+```spw
+measure_sample: "%[d]{ # : #[structure, layout] }"
+```
+
+It says that the spelling is under discussion. Removing the quotes would claim that the active grammar owns and should execute the form. Tools should retain that distinction in hover, formatting, refactoring, and intermediate products.
+
+The same audit identified language opportunities that are not implemented merely because examples are now warning-free:
+
+- A first-class notation or exhibit node could preserve tokens, source spans, and optional dialect identity without assigning runtime effects.
+- Comparison, mapping, and equivalence need an explicit relation vocabulary before bare `>`, `=>`, or `==` can be treated as general expressions.
+- Signed numbers such as `+0.08` need a declared lexical and AST rule if they are to remain numeric rather than operator-plus-number surfaces.
+- `#[...]` is the current explicit collection form. Older `[...]` lists and prose unions such as `a | b | c` need a migration story or a distinct choice/type product, not silent equivalence.
+- Multiline quoted strings should usually become `key: |` prose. A future formatter may offer that conversion only with preview and reparse evidence.
+
+This is also a tooling opportunity. A formatter or scaffold command can recognize repeated `glyph → meaning` prose, offer a structured table, and show the resulting AST delta. It must not infer that every arrow or vertical bar is a universal relation operator. Corpus frequency is evidence for design work, not authority to change meaning.
+
+### Source-owned validation boundary
+
+Workspace syntax lint walks authored `.spw` surfaces. It skips registered derived suffixes such as `*.expanded.spw` and every product under `.spw/gen/`, including session memos and generated indexes. Those products remain inspectable when targeted directly, but they do not acquire canon authority or make source lint depend on whichever local generation tasks happened to run. Commit review uses the canonical `packages/spw-seed` parser first; the consolidated `src/seed` tree is only a compatibility fallback for older layouts.
+
 ## Compatibility and Migration
 
 Default library behavior remains disclosure-rich: parser events default to `trace`, and runtime traces default to `evaluation`. The older `captureTrace` runtime option remains as a compatibility alias.

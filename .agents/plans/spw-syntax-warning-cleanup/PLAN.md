@@ -10,7 +10,7 @@ Taste note: improve correctness and readability together—structured-looking so
 
 ## Scope
 
-- **In scope**: header-scoped dialect detection; `#name:` / `?name:` binding lookahead; indentation-bounded block scalars; warning-by-warning corpus normalization; machine-frame spelling; derived-session exclusion; focused parser tests and strict corpus verification.
+- **In scope**: header-scoped dialect detection; `#name:` / `?name:` binding lookahead; indentation-bounded block scalars; warning-by-warning corpus normalization; machine-frame spelling; derived-session exclusion; a documented syntax-boundary census; focused parser tests and strict corpus verification.
 - **Out of scope**: inventing unrelated syntax, removing prose fallback, changing operator semantics, interpreting Markdown as structured Spw, or rewriting archival version libraries beyond the precise warning site.
 
 ## Files
@@ -27,8 +27,13 @@ Taste note: improve correctness and readability together—structured-looking so
 [MOD] packages/spw-seed/src/grammar/expressions.ts
 [MOD] packages/spw-seed/src/grammar/separators.test.ts
 [MOD] packages/spw-seed/src/types/ast/nodes.ts
+[NEW] packages/spw-seed/src/derived-surface.test.ts
 [MOD?] scripts/analyzers/spw-syntax-validate.ts
+[MOD] scripts/spw-lib.sh
 [MOD?] warning-bearing `.spw` surfaces named by the strict validator
+[MOD] docs/runtime/md/spacing-and-progressive-inspection.md
+[MOD] .agents/plans/gap-affinity-tooling/{PLAN.md,wip.spw}
+[MOD] .agents/plans/shape-syntax-ecology/{PLAN.md,wip.spw}
 ```
 
 ### Craft guard
@@ -44,8 +49,11 @@ Taste note: improve correctness and readability together—structured-looking so
 2. `![spw-seed] — constrain dialect and binding lookahead`
 3. `&[spw-seed] — parse indentation-bounded block scalars`
 4. `![spw-seed] — keep operator suffixes on their line`
-5. `.[spw-corpus] — normalize remaining degraded surfaces`
-6. `![spw-lint] — prove a warning-free source corpus`
+5. `.[spw-corpus] — align active surfaces with parser contracts`
+6. `.[spw-corpus] — distinguish prose from structured conventions`
+7. `.[spw-exhibits] — separate notation from execution`
+8. `.[docs,plans] — record syntax-boundary opportunities`
+9. `![spw-lint] — prove a warning-free source corpus`
 
 ## Agentic Hygiene
 
@@ -67,7 +75,7 @@ Taste note: improve correctness and readability together—structured-looking so
 
 ## Validation
 
-- **Hypotheses**: all committed source surfaces parse without warnings; block scalar text and span remain stable; zero-warning validation excludes only declared derived planes.
+- **Hypotheses**: all committed source surfaces parse without warnings; block scalar text and span remain stable; zero-warning validation excludes only declared derived planes; notation examples remain recognizable without acquiring runtime authority.
 - **Negative controls**: explicit column-zero pragmas still win; `^seed` profiles still win over path defaults; inline prose and malformed expressions still degrade visibly; standard parsers and normalizers retain behavior.
 - **Demo sequence**: parse a canonical frame containing two `key: |` values followed by a sibling key and frame; inspect the AST; run strict corpus lint.
 

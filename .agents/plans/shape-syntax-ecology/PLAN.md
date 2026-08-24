@@ -29,6 +29,7 @@ A reviewing human (and any LLM they fold in via IDE or screenshot) should be abl
 |------|-----------------|
 | **syntax-profile-stack** | Dialect detect, stack resolve, metasyntax, lint runway (**seed landed partial**) |
 | **shape-syntax-ecology** (this) | Coordination, runtime reference hooks, imagination contract |
+| **spw-syntax-warning-cleanup** | Executable corpus census: parser-owned forms, notation exhibits, and unresolved syntax opportunities |
 | **mutation-flow-automata** (theory) | Glyph σ/φ/CA; intermediate states |
 | **curiosity-mutation-ergonomics** | Combinator cells, explore/stabilize profiles, sustained curiosity |
 | **refactor-experiment-lifecycle** | select→plan→intermediate→worktree→episode |
@@ -130,6 +131,18 @@ Aligns with `REFERENCE_PROGRESSIONS`, form ladders (`empty → … → path/ref 
 | Memory | p stream + beat cache + experiment gen/ (precipitation defaults) |
 | Refactor | plan spine + intermediate σ + worktree l1 |
 
+### Operational expression, notation exhibit, and prose
+
+The 2026-08-24 warning census adds a three-way status boundary to this ecology:
+
+1. An **operational expression** is parser-owned and may proceed toward normalization or runtime interpretation.
+2. A **notation exhibit** preserves a proposed or comparative spelling for inspection, teaching, or design; it carries no effect authority.
+3. **Prose** explains a construct and may use `key: |` when indentation-bounded multiline disclosure is useful.
+
+Current strings, phrases, lists, and block scalars can host notation exhibits, but they do not preserve a typed token product. A follow-on catalog/design slice should consider an exhibit node or product with source span, token sequence, declared dialect, implementation status, and explicit `runtimeHook: none`. This extends the existing experimental catalog discipline without treating every example as executable grammar.
+
+The census also records three adjacent candidates that remain proposed: typed relations for recurring `>`, `=>`, and `==`; signed numeric literals; and a migration among legacy `[...]`, explicit `#[...]`, and choice-like `a | b | c`. Their frequency is evidence for experiments, not promotion.
+
 ## Imagination contract (plans as sparks)
 
 Every related plan should include a short **`## Imagination / play`** block:
@@ -180,6 +193,8 @@ Every related plan should include a short **`## Imagination / play`** block:
 [MOD] .agents/plans/vscode-authoring-probe-loop/wip.spw
 [MOD] .agents/plans/vscode-cognitive-surface/PLAN.md
 [MOD] .agents/plans/vscode-cognitive-surface/wip.spw
+[MOD] .agents/plans/spw-syntax-warning-cleanup/PLAN.md
+[MOD] docs/runtime/md/spacing-and-progressive-inspection.md
 [MOD?] docs/theory/spw/syntax-profile-stack.spw
 [MOD?] docs/theory/spw/mutation-flow-automata.spw
 [NEW?] packages/spw-seed/src/experimental/syntax-catalog.ts  // follow-on implement
@@ -191,16 +206,18 @@ Every related plan should include a short **`## Imagination / play`** block:
 2. `vocab[seed] — experimental syntax-catalog reference ids` (follow-on)
 3. `![seed] — catalog tests + parse optional exp refs` (follow-on)
 4. `#[lsp] — hover stack + exp refs` (follow-on, after capability honesty)
+5. `.[plans,docs] — distinguish operational syntax, notation exhibits, and prose`
 
 ## Agentic Hygiene
 
-- Rebase target: `main@0c7cdfb7178079bf27a9a062ba1b310d07296f41`
+- Rebase target: `main@f01a1d4ce5f654cd874b5ccfcdf1a6692a5ab3f3`
 - Plan-only updates first; catalog code in separate commits
 - Hygiene: no accidental `*.d.ts`
 
 ## Dependencies
 
 - Hard soft: syntax-profile-stack (landed dialect module)
+- Evidence: spw-syntax-warning-cleanup (warning-free corpus census and parser repairs)
 - Soft: all ecology children listed above
 - Theory: mutation-flow-automata, syntax-profile-stack, form-geometry, valence, liminality-bridge
 
@@ -216,6 +233,7 @@ Every related plan should include a short **`## Imagination / play`** block:
 - Ecology map lists every related plan with one-line role
 - Each child plan has Imagination/play + stream note dated
 - Human can open three plans and reconstruct today’s lattice without chat history
+- Reader documentation states which warning-census findings are implemented conventions and which remain proposed syntax
 
 ## Spw Artifact
 

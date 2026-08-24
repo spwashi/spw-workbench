@@ -46,6 +46,21 @@ The work crosses the timing, disclosure, stability, resolution, and noise axes. 
   - Treating indentation width, font metrics, or raw display columns as universal semantic distance.
   - Declaring a global `v0.4`; the first contract is capability-versioned as `syntax.gap-affinity/1` and may graduate independently.
 
+### Syntax-boundary census checkpoint — 2026-08-24
+
+The warning-free corpus pass supplies direct evidence for the affinity and formatter horizon:
+
+| Finding | Present treatment | Plan consequence |
+|---|---|---|
+| `key: |` appeared 64 times without parser ownership | indentation-bounded `ProseChunk` now parses | formatter may prefer block prose over multiline quotes, with preview |
+| an operator suffix could claim a next-line key | suffix fallback is now line-affine | future AssociationIR must preserve line ports as semantic evidence |
+| `+0.08` is operator plus number, not a signed literal | quoted in data-oriented surfaces | signed-number ownership needs an explicit affinity and AST decision |
+| `>`, `=>`, and `==` recur as comparison/mapping/equivalence prose | labeled strings or structured rows | frequency does not grant relation semantics; define relations before formatting them |
+| `[...]`, `#[...]`, and `a | b | c` coexist | active structures use `#[...]`; unions remain quoted notation | corpus migration needs declared collection/choice products and compatibility receipts |
+| operator programs are often discussed rather than executed | labeled strings, phrases, lists, or block scalars | investigate a notation/exhibit product whose tokens retain no runtime authority |
+
+These are separate from gap width. Binding affinity may decide whether a sign, relation mark, or suffix associates with a neighbor, but it must not invent the semantic kind of the resulting node. The reader-facing boundary and examples live in `docs/runtime/md/spacing-and-progressive-inspection.md`.
+
 ## Files
 
 ### Implementation checkpoint — 2026-08-24
