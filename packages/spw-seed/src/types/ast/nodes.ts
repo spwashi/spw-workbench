@@ -31,6 +31,7 @@ export type TermNode =
   | FrameNode
   | LiteralNode
   | IdentifierNode
+  | ProseChunkNode
   | AnnotationNode
   | ParticleNode
   | MatchNode

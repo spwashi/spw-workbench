@@ -38,6 +38,7 @@ import { literalNode, identifierNode } from './literals'
 import { wildcardNode, spreadNode } from './patterns'
 import { matchNode } from './match'
 import { bulletNode, streamEntryNode } from './bullets'
+import { blockScalarNode } from './block-scalar'
 
 // matchNode — extracted to ./match.ts
 export { matchNode } from './match'
@@ -579,6 +580,7 @@ export const termNode: Parser<TermNode> = lazy(() => named('term',
     }
 
     const fallbackGen = choice<TermNode>(
+      blockScalarNode,
       streamEntryNode,
       bulletNode,
       appositionNode,
