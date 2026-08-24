@@ -44,7 +44,9 @@ export interface FormatSourceInspectionOptions {
 }
 
 export interface RunSourceInspectionOptions extends FormatSourceInspectionOptions {
-  file: string
+  file?: string
+  /** In-memory source for --stdin, --text, or editor buffers. */
+  source?: string
   through?: SourceProductDepth
   events?: ParseEventPolicy
   /** @deprecated Use through. */
@@ -67,7 +69,7 @@ export function buildSourceInspection(
   const result = produceSourceProducts(source, {
     through,
     eventPolicy: effectiveEvents,
-    path: file === '<memory>' ? undefined : file,
+    path: file.startsWith('<') ? undefined : file,
     uri: file,
   }, options.observe)
 
@@ -91,6 +93,7 @@ export function formatSourceInspectionSpw(
   const limit = options.limit ?? 16
   const parts: SpwCardPart[] = [
     facet.atom('surface', inspection.surface),
+    facet.atom('plane', 'source'),
     facet.atom('status', inspection.status),
     facet.path('file', inspection.file),
     facet.atom('request', inspection.request),
@@ -200,9 +203,7 @@ export function formatSourceInspectionSamples(
 }
 
 export async function runSourceInspection(options: RunSourceInspectionOptions): Promise<void> {
-  const abs = path.resolve(options.file)
-  const source = await fs.readFile(abs, 'utf8')
-  const file = path.relative(process.cwd(), abs) || path.basename(abs)
+  const { source, file } = await loadSourceInput(options.file, options.source)
   const through = options.through ?? options.product ?? 'structure'
   const requestedEvents = options.events ?? options.eventPolicy ?? 'diagnostics'
   const events = through === 'trace' ? 'trace' : requestedEvents
@@ -271,7 +272,7 @@ export async function runSourceInspection(options: RunSourceInspectionOptions): 
   }
   console.log('')
   console.log(formatSourceInspectionSamples(inspection, { limit: sample }))
-  const target = shellArg(file)
+  const target = file.startsWith('<') ? '--stdin' : shellArg(file)
   emitRecommendations(
     {
       command: `spw inspect source ${target} --through tokens --events none --sample ${sample} --spw`,
@@ -284,6 +285,19 @@ export async function runSourceInspection(options: RunSourceInspectionOptions): 
       cost: 'full parse plus retained trace events',
     },
   )
+}
+
+async function loadSourceInput(
+  file: string | undefined,
+  source: string | undefined,
+): Promise<{ source: string; file: string }> {
+  if (source !== undefined) return { source, file: file ?? '<memory>' }
+  if (!file) throw new Error('spw inspect source: expected a file, --stdin, or --text')
+  const abs = path.resolve(file)
+  return {
+    source: await fs.readFile(abs, 'utf8'),
+    file: path.relative(process.cwd(), abs) || path.basename(abs),
+  }
 }
 
 function productDetails(product: SourceProduct): Record<string, string | number | boolean> {
@@ -299,6 +313,11 @@ function productDetails(product: SourceProduct): Record<string, string | number 
     case SOURCE_PRODUCT_IDS.structure:
       return {
         parse_ok: product.data.success,
+        parse_complete: product.completeness.complete,
+        consumed_end: product.completeness.consumed.end.offset,
+        remaining_chars: product.completeness.remaining.text.length,
+        expected_root: product.completeness.expectedRootKind,
+        prose_fallback: product.completeness.proseFallback,
         errors: product.data.diagnostics.errors.length,
         warnings: product.data.diagnostics.warnings.length,
         events_generated: product.data.events.generated,

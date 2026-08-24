@@ -46,6 +46,21 @@ describe('inspect arguments', () => {
   })
 
   it.each([
+    [['source', '--stdin'], { mode: 'source', stdin: true }],
+    [['spacing', '--text', 'a . b'], { mode: 'spacing', text: 'a . b' }],
+  ])('accepts one buffer-shaped input for source and spacing', (argv, expected) => {
+    expect(parseInspectArgs(argv)).toMatchObject(expected)
+  })
+
+  it.each([
+    [['source', 'file.spw', '--stdin'], 'choose one input'],
+    [['spacing', '--stdin', '--text=a . b'], 'choose one input'],
+    [['cache', '--stdin'], '--stdin and --text are available'],
+  ])('rejects ambiguous or unsupported buffer input', (argv, message) => {
+    expect(() => parseInspectArgs(argv)).toThrow(message)
+  })
+
+  it.each([
     [['spacing', 'example.spw', '--through', 'tokens'], '--through is available for inspect source'],
     [['cache', 'example.spw', '--events', 'none'], '--events is available for inspect source or inspect spacing'],
     [['corpus', '--sample', '4'], '--sample is available for inspect source or inspect spacing'],

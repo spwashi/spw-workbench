@@ -25,6 +25,8 @@ export interface InspectArgs {
   ndjson: boolean
   quiet: boolean
   help: boolean
+  stdin: boolean
+  text?: string
   channel: string
   dialect?: string
   beats: number
@@ -64,6 +66,7 @@ export function parseInspectArgs(argv: readonly string[]): InspectArgs {
     ndjson: false,
     quiet: false,
     help: false,
+    stdin: false,
     channel: 'trial',
     beats: 0,
     recompute: false,
@@ -94,6 +97,23 @@ export function parseInspectArgs(argv: readonly string[]): InspectArgs {
     }
     if (argument === '--spw') {
       parsed.showSpw = true
+      continue
+    }
+    if (argument === '--stdin') {
+      parsed.stdin = true
+      continue
+    }
+    if (argument === '--text') {
+      const value = raw[i + 1]
+      if (value === undefined || value.startsWith('--')) {
+        throw new Error('spw inspect: --text requires source text')
+      }
+      parsed.text = value
+      i++
+      continue
+    }
+    if (argument.startsWith('--text=')) {
+      parsed.text = argument.slice('--text='.length)
       continue
     }
     if (argument === '--recompute') {
@@ -188,6 +208,7 @@ export function parseInspectArgs(argv: readonly string[]): InspectArgs {
   }
   validateProjection(parsed)
   validateHandleModes(parsed.mode, explicit)
+  validateInputMode(parsed)
   return parsed
 }
 
@@ -240,5 +261,18 @@ function validateHandleModes(mode: InspectMode, explicit: ExplicitHandles): void
   }
   if (explicit.sample && mode !== 'source' && mode !== 'spacing') {
     throw new Error('spw inspect: --sample is available for inspect source or inspect spacing')
+  }
+}
+
+function validateInputMode(parsed: InspectArgs): void {
+  const hasInlineInput = parsed.stdin || parsed.text !== undefined
+  if (hasInlineInput && parsed.mode !== 'source' && parsed.mode !== 'spacing') {
+    throw new Error('spw inspect: --stdin and --text are available for inspect source or inspect spacing')
+  }
+  if (parsed.stdin && parsed.text !== undefined) {
+    throw new Error('spw inspect: choose one input: --stdin or --text')
+  }
+  if (hasInlineInput && parsed.targets.length > 0) {
+    throw new Error('spw inspect: choose one input: a file, --stdin, or --text')
   }
 }

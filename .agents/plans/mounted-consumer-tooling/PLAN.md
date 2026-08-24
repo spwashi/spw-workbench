@@ -26,7 +26,7 @@ Maintenance disposition:
 
 - **Landed in the parser-completeness episode:** parser and source-structure products disclose consumed and remaining source, intended root, and prose fallback; standalone expression parsing now enforces complete structured consumption.
 - **Landed in the doctor-portability episode:** doctor defaults to consumer-relative names, offers an explicit absolute-path projection, and reports observed mount revision, cleanliness, pin drift, and default exclusions.
-- **Next bounded proof:** one emitted Spw card must round-trip through the source inspector before broader card claims expand.
+- **Landed in the Spw-card proof episode:** source and spacing inspection accept file, stdin, or literal input, and one emitted source card round-trips through the source inspector with complete structure and preserved plane/file/through bindings.
 
 ## Scope
 

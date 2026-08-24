@@ -1,8 +1,10 @@
-import { describe, expect, it } from 'vitest'
+import { parse, SOURCE_PRODUCT_IDS } from '@spwashi/spw-seed'
+import { describe, expect, it, vi } from 'vitest'
 import {
   buildSourceInspection,
   formatSourceInspectionSamples,
   formatSourceInspectionSpw,
+  runSourceInspection,
   SOURCE_INSPECTION_SURFACE,
 } from './inspect-source'
 
@@ -31,6 +33,7 @@ describe('source intermediate inspection', () => {
 
     expect(card).toContain('^["source"]')
     expect(card).toContain('~#surface: inspect.source/1')
+    expect(card).toContain('~#plane: source')
     expect(card).toContain('~#product: source.tokens/1')
     expect(card).toContain('~#product: source.structure/1')
     expect(card).toContain('~#product: source.trace/1')
@@ -40,6 +43,54 @@ describe('source intermediate inspection', () => {
     expect(card).toContain('~#value_visible:')
     expect(card).toContain('omitted_tokens')
     expect(card).toContain('omitted_events')
+  })
+
+  it('round-trips one Spw card with its plane, file, and through bindings intact', () => {
+    const file = 'examples/roundtrip.spw'
+    const card = formatSourceInspectionSpw(buildSourceInspection('a . b', {
+      file,
+      through: 'structure',
+      events: 'none',
+    }), { limit: 2 })
+    const parsed = parse(card, { eventPolicy: 'none' })
+    const reinspection = buildSourceInspection(card, {
+      file: '<stdin>',
+      through: 'structure',
+      events: 'none',
+    })
+    const structure = reinspection.products.find(
+      product => product.product === SOURCE_PRODUCT_IDS.structure,
+    )!
+    const values = parsed.tokens.map(token => token.value)
+
+    expect(parsed.success).toBe(true)
+    expect(parsed.completeness.complete).toBe(true)
+    expect(parsed.completeness.remaining.text).toBe('')
+    expect(parsed.completeness.proseFallback).toBe(false)
+    expect(values).toEqual(expect.arrayContaining([
+      '~#plane', 'source', '~#file', `"${file}"`, '~#through', 'structure',
+    ]))
+    expect(structure.data.success).toBe(true)
+    expect(structure.completeness.complete).toBe(true)
+    expect(structure.completeness.remaining.text).toBe('')
+    expect(structure.completeness.proseFallback).toBe(false)
+  })
+
+  it('inspects in-memory source without resolving a filesystem path', async () => {
+    const log = vi.spyOn(console, 'log').mockImplementation(() => undefined)
+    vi.spyOn(console, 'error').mockImplementation(() => undefined)
+
+    await runSourceInspection({
+      file: '<text>',
+      source: 'a . b',
+      through: 'structure',
+      events: 'none',
+      json: true,
+    })
+
+    const envelope = JSON.parse(log.mock.calls.map(call => String(call[0])).join('\n'))
+    expect(envelope.data.file).toBe('<text>')
+    expect(envelope.data.products).toHaveLength(2)
   })
 
   it('promotes trace requests to trace event retention', () => {

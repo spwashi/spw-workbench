@@ -69,7 +69,9 @@ export interface FormatSpacingInspectionOptions {
 }
 
 export interface RunSpacingInspectionOptions extends FormatSpacingInspectionOptions {
-  file: string
+  file?: string
+  /** In-memory source for --stdin, --text, or editor buffers. */
+  source?: string
   json?: boolean
   showSpw?: boolean
   events?: ParseEventPolicy
@@ -83,7 +85,7 @@ export function buildSpacingInspection(
 ): SpacingInspection {
   const file = options.file ?? '<memory>'
   const parsed = parse(source, {
-    path: file === '<memory>' ? undefined : file,
+    path: file.startsWith('<') ? undefined : file,
     eventPolicy: options.events ?? options.eventPolicy ?? 'diagnostics',
   })
   const gapCounts = Object.fromEntries(GAP_CLASSES.map(kind => [kind, 0])) as Record<GapClass, number>
@@ -201,9 +203,7 @@ export function formatSpacingInspectionSpw(
 }
 
 export async function runSpacingInspection(options: RunSpacingInspectionOptions): Promise<void> {
-  const abs = path.resolve(options.file)
-  const source = await fs.readFile(abs, 'utf8')
-  const file = path.relative(process.cwd(), abs) || path.basename(abs)
+  const { source, file } = await loadSpacingInput(options.file, options.source)
   const inspection = buildSpacingInspection(source, {
     file,
     events: options.events ?? options.eventPolicy,
@@ -255,7 +255,7 @@ export async function runSpacingInspection(options: RunSpacingInspectionOptions)
     emitDetail(`identifier ${identifier.value} → ${identifier.segments.join(' / ')}`)
   }
   if (inspection.gaps.length > limit) emitDetail(`… ${inspection.gaps.length - limit} more gaps (raise --sample)`)
-  const target = shellArg(file)
+  const target = file.startsWith('<') ? '--stdin' : shellArg(file)
   emitRecommendations(
     {
       command: `spw inspect spacing ${target} --events none --sample ${limit} --spw`,
@@ -268,4 +268,17 @@ export async function runSpacingInspection(options: RunSpacingInspectionOptions)
       cost: 'complete output may be large and may expose authored source details',
     },
   )
+}
+
+async function loadSpacingInput(
+  file: string | undefined,
+  source: string | undefined,
+): Promise<{ source: string; file: string }> {
+  if (source !== undefined) return { source, file: file ?? '<memory>' }
+  if (!file) throw new Error('spw inspect spacing: expected a file, --stdin, or --text')
+  const abs = path.resolve(file)
+  return {
+    source: await fs.readFile(abs, 'utf8'),
+    file: path.relative(process.cwd(), abs) || path.basename(abs),
+  }
 }

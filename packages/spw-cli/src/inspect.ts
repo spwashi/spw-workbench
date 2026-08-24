@@ -49,6 +49,7 @@ import { formatCorpusProductSpw } from '@spwashi/spw-seed'
 import { runSpacingInspection } from './inspect-spacing'
 import { runSourceInspection } from './inspect-source'
 import { parseInspectArgs, type InspectArgs } from './inspect-args'
+import { readStdin } from './stdio'
 
 export function printInspectHelp(): void {
   printHelpPage({
@@ -60,8 +61,8 @@ export function printInspectHelp(): void {
       'spw inspect session <file.spw> [--beats 1] [--recompute]',
       'spw inspect memory [--json]',
       'spw inspect static <file.spw>',
-      'spw inspect source <file.spw> [--through tokens|structure|trace] [--events diagnostics] [--sample N]',
-      'spw inspect spacing <file.spw> [--events diagnostics] [--sample N] [--spw|--json]',
+      'spw inspect source <file.spw>|--stdin|--text <source> [--through tokens|structure|trace]',
+      'spw inspect spacing <file.spw>|--stdin|--text <source> [--events diagnostics] [--spw|--json]',
       'spw inspect corpus [roots...]',
       'spw inspect compose \'<file>@"appendix.spw"?\'',
       'spw inspect compose \'!{ do } ~<consequence>\'',
@@ -99,6 +100,8 @@ export function printInspectHelp(): void {
           '--through <stage>   Stop source inspection after tokens, structure, or trace',
           '--events <policy>   Retain none, diagnostics, or trace parser events',
           '--sample N          Bound visible source/spacing examples; exact products stay complete',
+          '--stdin             Read one source/spacing surface from standard input',
+          '--text <source>     Inspect a small literal surface; stdin avoids shell-history disclosure',
           '--spread <distance> Select near, standard, or far work in corpus commands',
           'Requesting --through trace makes --events trace effective.',
           'Event retention currently does not skip event construction.',
@@ -128,6 +131,8 @@ export function printInspectHelp(): void {
           'spw census docs/runtime -n 8',
           'spw inspect cache docs/theory/spw/cache-field.spw',
           'spw inspect source docs/index.spw --through structure --events diagnostics --spw',
+          'cat fragment.spw | spw inspect source --stdin --through structure --events none',
+          'spw inspect spacing --text "a . b" --spw',
           'spw inspect spacing docs/index.spw --spw',
         ],
       },
@@ -187,14 +192,10 @@ export async function runSpwInspectCli(argv: string[] = process.argv): Promise<v
       await runCompose(args)
       break
     case 'source': {
-      const file = args.targets[0]
-      if (!file || args.targets.length > 1) {
-        console.error('spw inspect source: pass exactly one .spw file')
-        process.exitCode = 1
-        break
-      }
+      const input = await resolveInspectionInput(args, 'source')
+      if (!input) break
       await runSourceInspection({
-        file,
+        ...input,
         through: args.through,
         events: args.events,
         json: args.json,
@@ -205,14 +206,10 @@ export async function runSpwInspectCli(argv: string[] = process.argv): Promise<v
       break
     }
     case 'spacing': {
-      const file = args.targets[0]
-      if (!file || args.targets.length > 1) {
-        console.error('spw inspect spacing: pass exactly one .spw file')
-        process.exitCode = 1
-        break
-      }
+      const input = await resolveInspectionInput(args, 'spacing')
+      if (!input) break
       await runSpacingInspection({
-        file,
+        ...input,
         json: args.json,
         showSpw: args.showSpw,
         limit: args.limit,
@@ -224,6 +221,22 @@ export async function runSpwInspectCli(argv: string[] = process.argv): Promise<v
       printInspectHelp()
       process.exitCode = 1
   }
+}
+
+async function resolveInspectionInput(
+  args: InspectArgs,
+  mode: 'source' | 'spacing',
+): Promise<{ file: string; source?: string } | null> {
+  if (args.stdin) return { file: '<stdin>', source: await readStdin() }
+  if (args.text !== undefined) return { file: '<text>', source: args.text }
+
+  const file = args.targets[0]
+  if (!file || args.targets.length > 1) {
+    console.error(`spw inspect ${mode}: pass one .spw file, --stdin, or --text`)
+    process.exitCode = 1
+    return null
+  }
+  return { file }
 }
 
 async function runBank(args: InspectArgs): Promise<void> {

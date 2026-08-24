@@ -93,6 +93,22 @@ The lexical record is written when lexing finishes, before grammar work starts. 
 
 The default human table, bounded Spw card, complete JSON bundle, and live NDJSON stream are projections of the same typed stage records. `--sample N` bounds examples in human and Spw projections only; it does not reduce lexer or parser work. Bounded views state how many token or event samples they omit. JSON and NDJSON retain the complete requested payload.
 
+Single-source inspection also accepts a stream or a small literal, without pretending those inputs are corpus roots:
+
+```bash
+cat fragment.spw | spw inspect source --stdin --through structure --events none
+spw inspect spacing --text "a . b" --spw
+```
+
+File, `--stdin`, and `--text` are mutually exclusive and apply only to source and spacing inspection. Prefer stdin for private or multiline buffers because a `--text` literal may remain in shell history or a process listing.
+
+The Spw-card claim now has an executable round-trip proof. A source card can become the next source inspection input, preserving its written `plane`, `file`, and `through` bindings while the receiving parse reports complete structure, no remainder, and no prose fallback:
+
+```bash
+spw inspect source file.spw --through structure --events none --spw \
+  | spw inspect source --stdin --through structure --events none
+```
+
 `index` and `semantic` remain deferred capability names. This increment does not build a sparse workspace index, normalize an AST, incrementally reparse edits, or suppress parser-generator event construction.
 
 ## Disclosure and Cost
@@ -136,6 +152,7 @@ These controls are deliberately separate:
 | readable examples | `--sample N` | formatter `limit` | bounded human/Spw disclosure only |
 | corpus extent | `--spread near|standard|far` | corpus index configuration | current file/signal preset (`minimal|standard|full`) |
 | semantic interpretation | dialect and surface profile | parser profile options | syntax defaults, preprocessing, and provenance |
+| single-source input | file, `--stdin`, or `--text` | `file` or in-memory `source` | input transport only; not grammar or corpus extent |
 
 `through` is not a traversal mode or a parser profile. It means “execute through this stage.” `spread` applies to corpus commands such as `census`, `graph`, `density`, `formula`, `taste`, and `lattice`; it does not change single-source parsing. The current spread presets still couple corpus extent and signal resolution. A later measured slice will separate those dimensions.
 
