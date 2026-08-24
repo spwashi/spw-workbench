@@ -1,12 +1,13 @@
 # %product% Documentation
 
-%product% is a research-oriented browser workbench for exploring Spw parsing, semantics, runtime behavior, and UI architecture.
+%product% is a language and tooling workbench for recognizing structure, asking progressive questions of source, and carrying those answers across humans, agents, CLIs, runtimes, and editors.
 
-This Writerside instance is focused on contributor onboarding and maintenance workflows for this repository.
+Start with [](spw-feature-surface.md) for a concise feature view, then expand into internals or syntax experiments only when the question needs that depth.
 
 ## Navigation
 
 - [](orientation-for-artists.md)
+- [](spw-feature-surface.md)
 - [](exhibits.md)
 - [](prompt-packs.md)
 - [](claims.md)
@@ -24,6 +25,7 @@ This Writerside instance is focused on contributor onboarding and maintenance wo
 <tabs>
     <tab title="New Contributor">
         <list>
+            <li><a href="spw-feature-surface.md"/></li>
             <li><a href="quick-start-checklist.topic"/></li>
             <li><a href="workbench-architecture.md"/></li>
             <li><a href="developer-workflow.md"/></li>
@@ -33,6 +35,7 @@ This Writerside instance is focused on contributor onboarding and maintenance wo
     </tab>
     <tab title="Artist">
         <list>
+            <li><a href="spw-feature-surface.md"/></li>
             <li><a href="orientation-for-artists.md"/></li>
             <li><a href="exhibits.md"/></li>
             <li><a href="prompt-packs.md"/></li>
@@ -45,6 +48,7 @@ This Writerside instance is focused on contributor onboarding and maintenance wo
     </tab>
     <tab title="Maintainer">
         <list>
+            <li><a href="spw-feature-surface.md"/></li>
             <li><a href="maintenance-surface.topic"/></li>
             <li><a href="validation-playbook.topic"/></li>
             <li><a href="writerside-integration.md"/></li>
@@ -82,6 +86,7 @@ npm run lint:spw
 <seealso>
     <category ref="spw-workbench">
         <a href="orientation-for-artists.md"/>
+        <a href="spw-feature-surface.md"/>
         <a href="exhibits.md"/>
         <a href="quick-start-checklist.topic"/>
         <a href="developer-workflow.md"/>

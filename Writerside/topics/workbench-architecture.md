@@ -1,35 +1,34 @@
 # Workbench Architecture
 
-This project uses a layered architecture. Keep imports and responsibilities aligned to these boundaries.
+This project is a package-oriented monorepo with canon and editor surfaces around a portable language kernel. Keep semantic ownership aligned to these boundaries.
 
-## Layer order
+## Package order
 
-From inner to outer:
+From portable meaning to host projection:
 
-1. `core` - primitives, conventions, operator model
-2. `infra` - timing, lifecycle, state, accessibility foundations
-3. `lang` / `seed` - parsing, grammar, semantic interpretation adapters
-4. `runtime` - interpreter, document/session state, REPL/API
-5. `viz` - AST/tokens/flow renderers
-6. `ui` / `design` - component primitives, themes, tokens, contracts
-7. `features` - keyboard, onboarding, interaction behavior
-8. `app` - workbench composition and components
-9. `platform` - browser bootstrap and integration wiring
+1. `packages/spw-seed` — lexer, parser, AST types, and portable source products
+2. `packages/spw-runtime` — interpreter and substrate-driven event system
+3. `packages/spw-lsp` — editor-neutral language and workspace semantics
+4. `packages/spw-cli` — commands, intermediate products, and projections
+5. `extensions` — VS Code, WebStorm/IntelliJ, and Neovim adapters
+6. `.spw` and `lib/spw-v0.3.0` — current canon, conventions, and specification surfaces
 
 ## Key entrypoints
 
-- Browser entry: `src/platform/main.ts`
-- App bootstrap: `src/platform/bootstrap.ts`
-- Workbench root: `src/app/spw-workbench.ts`
-- Source index map: `src/index.spw`
+- Parser kernel: `packages/spw-seed/src/index.ts`
+- Runtime package: `packages/spw-runtime/src/index.ts`
+- LSP server: `packages/spw-lsp/src/stdio-server.ts`
+- CLI entry: `packages/spw-cli/src/main.ts`
+- Canon workspace: `.spw/workspace.spw`
 - Docs index map: `docs/index.spw`
 
 ## Architecture rules
 
-- Inner layers must not depend on outer layers.
-- `lang` and parser logic should remain portable and not absorb UI concerns.
-- UI and design should consume shared contracts/tokens rather than hardcoded structure.
-- Prefer adding behavior in existing layer domains before creating new top-level modules.
+- Seed remains portable and does not absorb runtime, editor, or UI concerns.
+- Runtime and LSP consume shared Seed contracts rather than reparsing with host-local semantics.
+- Editor clients discover, launch, and project; they do not become second semantic engines.
+- Consumer repositories remain authoritative when the workbench is mounted at `.spw/_workbench`.
+- Stable, observational, and experimental syntax claims remain visibly distinct.
 
 ## Where to read next
 

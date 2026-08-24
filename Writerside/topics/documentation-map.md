@@ -13,6 +13,7 @@ Use this map to jump between canonical documentation surfaces in the repository.
 | Agent workflow rules | Contribution protocol | `AGENTS.md` |
 | Writerside entrypoint | Documentation build config | `Writerside/writerside.cfg` |
 | Writerside TOC and instances | Internal/public doc graph | `Writerside/spw-workbench.tree` |
+| Three-depth feature surface | Value, internals, and syntax experiment boundary | `Writerside/topics/spw-feature-surface.md` |
 
 ## Architecture and planning
 
