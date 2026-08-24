@@ -18,6 +18,8 @@ import {
   scanNestPaths,
   scanAppositions,
   appositionSpectrum,
+  PARSE_EVENT_POLICIES,
+  type ParseEventPolicy,
 } from '@spwashi/spw-seed'
 import {
   createHotSession,
@@ -46,6 +48,7 @@ import { scanCorpus } from './corpus-scan'
 import { emitDetail, emitHeader, emitNext, formatTable, setMetaQuiet } from './view'
 import { runSpwMemCli } from './mem'
 import { formatCorpusProductSpw } from '@spwashi/spw-seed'
+import { runSpacingInspection } from './inspect-spacing'
 
 type InspectMode =
   | 'cache'
@@ -56,6 +59,7 @@ type InspectMode =
   | 'static'
   | 'corpus'
   | 'compose'
+  | 'spacing'
   | 'help'
 
 interface InspectArgs {
@@ -70,6 +74,7 @@ interface InspectArgs {
   recompute: boolean
   showSpw: boolean
   limit: number
+  eventPolicy: ParseEventPolicy
 }
 
 function parseArgs(argv: string[]): InspectArgs {
@@ -85,6 +90,7 @@ function parseArgs(argv: string[]): InspectArgs {
     recompute: false,
     showSpw: false,
     limit: 24,
+    eventPolicy: 'diagnostics',
   }
 
   const modes = new Set<string>([
@@ -96,6 +102,7 @@ function parseArgs(argv: string[]): InspectArgs {
     'static',
     'corpus',
     'compose',
+    'spacing',
     'help',
   ])
 
@@ -153,6 +160,22 @@ function parseArgs(argv: string[]): InspectArgs {
       parsed.limit = Math.max(1, Number(a.slice('--limit='.length)) || 24)
       continue
     }
+    if (a === '--event-policy') {
+      const policy = raw[++i]
+      if (!policy || !PARSE_EVENT_POLICIES.includes(policy as ParseEventPolicy)) {
+        throw new Error('spw inspect: --event-policy must be none|diagnostics|trace')
+      }
+      parsed.eventPolicy = policy as ParseEventPolicy
+      continue
+    }
+    if (a.startsWith('--event-policy=')) {
+      const policy = a.slice('--event-policy='.length)
+      if (!PARSE_EVENT_POLICIES.includes(policy as ParseEventPolicy)) {
+        throw new Error('spw inspect: --event-policy must be none|diagnostics|trace')
+      }
+      parsed.eventPolicy = policy as ParseEventPolicy
+      continue
+    }
     if (!a.startsWith('-') && modes.has(a) && parsed.mode === 'help' && parsed.targets.length === 0) {
       parsed.mode = a as InspectMode
       continue
@@ -173,7 +196,7 @@ function parseArgs(argv: string[]): InspectArgs {
 
 export function printInspectHelp(): void {
   printHelpPage({
-    title: 'Spw Inspect — cache / bank / corpus / compose / session',
+    title: 'Spw Inspect — source / product / runtime planes',
     usage: [
       'spw inspect cache <file.spw> [--channel trial] [--beats 2] [--json]',
       'spw inspect bank [--json] [--spw]',
@@ -181,6 +204,7 @@ export function printInspectHelp(): void {
       'spw inspect session <file.spw> [--beats 1] [--recompute]',
       'spw inspect memory [--json]',
       'spw inspect static <file.spw>',
+      'spw inspect spacing <file.spw> [--event-policy diagnostics] [--spw|--json]',
       'spw inspect corpus [roots...]',
       'spw inspect compose \'<file>@"appendix.spw"?\'',
       'spw inspect compose \'!{ do } ~<consequence>\'',
@@ -198,6 +222,7 @@ export function printInspectHelp(): void {
           'session   prepare/parse/inspect receipt + hit flags',
           'memory    durable fs dumps (spw mem status)',
           'static    parse + brace + nest summary',
+          'spacing   exact lexical gaps + tight identifier segments (observational)',
           'Theory: docs/theory/spw/cache-field.spw · composition-forms',
         ],
       },
@@ -217,7 +242,8 @@ export function printInspectHelp(): void {
           '--dialect <id>   force dialect for medium / session',
           '--beats N        tick session beat before re-sample',
           '--recompute      bypass evaluate / wipe corpus memo',
-          '--limit / -n     bank / static / corpus row width',
+          '--limit / -n     bank / static / corpus / spacing row width',
+          '--event-policy   none | diagnostics | trace (spacing; default diagnostics)',
           '--spw            dual-read cards where available',
           '--json           machine envelope',
           '--quiet / -q     suppress headers',
@@ -231,6 +257,7 @@ export function printInspectHelp(): void {
           'spw inspect corpus docs/runtime',
           'spw census docs/runtime -n 8',
           'spw inspect cache docs/theory/spw/cache-field.spw',
+          'spw inspect spacing docs/index.spw --spw',
         ],
       },
     ],
@@ -279,6 +306,22 @@ export async function runSpwInspectCli(argv: string[] = process.argv): Promise<v
     case 'compose':
       await runCompose(args)
       break
+    case 'spacing': {
+      const file = args.targets[0]
+      if (!file || args.targets.length > 1) {
+        console.error('spw inspect spacing: pass exactly one .spw file')
+        process.exitCode = 1
+        break
+      }
+      await runSpacingInspection({
+        file,
+        json: args.json,
+        showSpw: args.showSpw,
+        limit: args.limit,
+        eventPolicy: args.eventPolicy,
+      })
+      break
+    }
     default:
       printInspectHelp()
       process.exitCode = 1

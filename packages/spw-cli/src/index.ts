@@ -65,6 +65,19 @@ export {
 } from './workspace'
 export { runSpwCli } from './run'
 export {
+  buildSpacingInspection,
+  formatSpacingInspectionSpw,
+  runSpacingInspection,
+  SPACING_INSPECTION_SURFACE,
+  type SpacingIdentifier,
+  type SpacingGapAnchor,
+  type SpacingGap,
+  type SpacingInspection,
+  type BuildSpacingInspectionOptions,
+  type FormatSpacingInspectionOptions,
+  type RunSpacingInspectionOptions,
+} from './inspect-spacing'
+export {
   t,
   defineLoc,
   loadLocOverrides,
