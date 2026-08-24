@@ -70,6 +70,12 @@ export type TokenType =
   | 'EOF'
   | 'ERROR'
 
+export interface IdentifierTokenData {
+  /** Tight dot-connected segments; `a.b.c` becomes `['a', 'b', 'c']`. */
+  segments: string[]
+  qualified: boolean
+}
+
 // ============================================================================
 // Token Interface
 // ============================================================================
@@ -80,6 +86,8 @@ export interface Token<T extends TokenType = TokenType> {
   span: Span
   /** Type-specific metadata (operator kind, modifier kind, etc.) */
   kind?: OperatorKind | ModifierKind | ConnectorKind | ContainerKind | string
+  /** Segment data is present only on IDENTIFIER tokens. */
+  identifier?: IdentifierTokenData
 }
 
 /**

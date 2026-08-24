@@ -1,7 +1,7 @@
 import type { ParseEvent, SeedNode, ParserOptions } from '../types'
-import { DEFAULT_OPTIONS } from '../types'
+import { DEFAULT_OPTIONS, retainsParseEvent } from '../types'
 import type { ParseOutput } from './output'
-import { tokenize, resolveLexProfile } from '../lexer'
+import { classifyTokenGaps, tokenize, resolveLexProfile } from '../lexer'
 import { createTokenStream, current, skipWhitespace, getPosition } from '../combinators'
 import { seedNode } from '../grammar'
 import {
@@ -32,6 +32,14 @@ export function parse(
   const events: ParseEvent[] = []
   const errors: ParseEvent[] = []
   const warnings: ParseEvent[] = []
+  let generatedEvents = 0
+
+  const observeEvent = (event: ParseEvent): void => {
+    generatedEvents++
+    if (event.type === 'error') errors.push(event)
+    if (event.type === 'warning') warnings.push(event)
+    if (retainsParseEvent(opts.eventPolicy, event)) events.push(event)
+  }
 
   const auto = opts.autoDialect !== false
   let source = input
@@ -75,8 +83,7 @@ export function parse(
           timestamp: performance.now(),
           depth: 0,
         }
-        events.push(evt)
-        warnings.push(evt)
+        observeEvent(evt)
       }
     }
   }
@@ -86,13 +93,7 @@ export function parse(
   let lexStep = lexGen.next()
 
   while (!lexStep.done) {
-    events.push(lexStep.value)
-    if (lexStep.value.type === 'error') {
-      errors.push(lexStep.value)
-    }
-    if (lexStep.value.type === 'warning') {
-      warnings.push(lexStep.value)
-    }
+    observeEvent(lexStep.value)
     lexStep = lexGen.next()
   }
 
@@ -108,13 +109,7 @@ export function parse(
   let parseStep = parseGen.next()
 
   while (!parseStep.done) {
-    events.push(parseStep.value)
-    if (parseStep.value.type === 'error') {
-      errors.push(parseStep.value)
-    }
-    if (parseStep.value.type === 'warning') {
-      warnings.push(parseStep.value)
-    }
+    observeEvent(parseStep.value)
     parseStep = parseGen.next()
   }
 
@@ -141,8 +136,7 @@ export function parse(
         timestamp: performance.now(),
         depth: 0,
       }
-      events.push(evt)
-      errors.push(evt)
+      observeEvent(evt)
     }
   }
 
@@ -153,7 +147,10 @@ export function parse(
     success,
     ast: result.value,
     tokens,
+    gaps: classifyTokenGaps(source, tokens),
     events,
+    eventPolicy: opts.eventPolicy,
+    eventCounts: { generated: generatedEvents, retained: events.length },
     errors,
     warnings,
     duration,

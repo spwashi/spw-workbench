@@ -13,6 +13,7 @@ export type {
   Span,
   Brand,
   Token,
+  IdentifierTokenData,
   TokenType,
   OperatorKind,
   ModifierKind,
@@ -86,9 +87,14 @@ export type {
   ParserOptions,
   LexProfile,
   LexOptions,
+  LexOutput,
+  GapClass,
+  TokenGap,
+  ParseEventPolicy,
+  ParseEventCounts,
 } from './types'
 
-export { DEFAULT_OPTIONS } from './types'
+export { DEFAULT_OPTIONS, GAP_CLASSES, PARSE_EVENT_POLICIES, retainsParseEvent } from './types'
 export { isSignificantToken, significantTokens } from './types'
 export { castToBrand, $register, $frame, $domain, $layer, RegisterId, FrameId, DomainId, LayerId } from './types'
 
@@ -105,6 +111,8 @@ export {
   buildOperatorMap,
   buildConnectorMap,
   appositionParts,
+  classifyGap,
+  classifyTokenGaps,
 } from './lexer'
 export type { AppositionParts } from './lexer'
 
@@ -873,4 +881,3 @@ export {
   type TemplateSlotDef,
   type SigilSnippetDef,
 } from './canonical'
-

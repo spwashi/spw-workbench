@@ -10,6 +10,7 @@ export * from './matchers'
 
 export { tokenize } from './tokenize'
 export { lex } from './lex'
+export { classifyGap, classifyTokenGaps } from './gaps'
 export {
   DEFAULT_LEX_PROFILE,
   PROSE_LEX_PROFILE,

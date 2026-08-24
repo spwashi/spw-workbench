@@ -9,7 +9,9 @@ import type { LexerState } from '../state'
 import { getPosition, advance, peek, isAtEnd } from '../state'
 
 /**
- * Match identifier: letter (letter | digit | _ | . | -)*
+ * Match identifier: letter (letter | digit | _ | -)* with optional tight
+ * dot-connected segments. A dot belongs to the identifier only when another
+ * identifier segment starts immediately after it.
  * Also detects standalone _ as a HOLE token.
  */
 export function* matchIdentifier(
@@ -43,15 +45,31 @@ export function* matchIdentifier(
   let value = firstChar
   advance(state)
 
-  while (!isAtEnd(state) && /[a-zA-Z0-9_.-]/.test(peek(state))) {
-    value += peek(state)
-    advance(state)
+  while (!isAtEnd(state)) {
+    const char = peek(state)
+    if (/[a-zA-Z0-9_-]/.test(char)) {
+      value += char
+      advance(state)
+      continue
+    }
+    if (char === '.' && /[a-zA-Z_]/.test(peek(state, 1) ?? '')) {
+      value += char
+      advance(state)
+      continue
+    }
+    break
   }
+
+  const segments = value.split('.')
 
   const token: Token<'IDENTIFIER'> = {
     type: 'IDENTIFIER',
     value,
     span: { start, end: getPosition(state) },
+    identifier: {
+      segments,
+      qualified: segments.length > 1,
+    },
   }
 
   yield {

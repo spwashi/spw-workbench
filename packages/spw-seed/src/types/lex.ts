@@ -1,3 +1,7 @@
+import type { ParseEvent, ParseEventCounts, ParseEventPolicy } from './events'
+import type { TokenGap } from './gaps'
+import type { Token } from './token'
+
 /**
  * Lexing Profiles
  *
@@ -33,4 +37,14 @@ export interface LexProfile {
 
 export interface LexOptions {
   profile?: LexProfile | string
+  /** Retained event detail; generation counts remain visible for cost accounting. */
+  eventPolicy?: ParseEventPolicy
+}
+
+export interface LexOutput {
+  tokens: Token[]
+  gaps: TokenGap[]
+  events: ParseEvent[]
+  eventPolicy: ParseEventPolicy
+  eventCounts: ParseEventCounts
 }

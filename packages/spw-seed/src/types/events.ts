@@ -21,6 +21,16 @@ export type ParseEventType =
   | 'warning'       // Non-fatal issue
   | 'debug'         // Debug information
 
+/** How much of the generated event stream a parser product retains. */
+export const PARSE_EVENT_POLICIES = ['none', 'diagnostics', 'trace'] as const
+
+export type ParseEventPolicy = (typeof PARSE_EVENT_POLICIES)[number]
+
+export interface ParseEventCounts {
+  generated: number
+  retained: number
+}
+
 // ============================================================================
 // Parse Event Interface
 // ============================================================================
@@ -32,6 +42,12 @@ export interface ParseEvent<T = unknown> {
   data: T                   // Event-specific payload
   timestamp: number         // Performance timing
   depth: number             // Nesting depth for logging
+}
+
+export function retainsParseEvent(policy: ParseEventPolicy, event: ParseEvent): boolean {
+  if (policy === 'trace') return true
+  if (policy === 'diagnostics') return event.type === 'error' || event.type === 'warning'
+  return false
 }
 
 // ============================================================================

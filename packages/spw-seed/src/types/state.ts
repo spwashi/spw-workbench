@@ -6,7 +6,7 @@
 
 import type { Position } from './position'
 import type { Token } from './token'
-import type { ParseEvent, ErrorEventData } from './events'
+import type { ParseEvent, ErrorEventData, ParseEventPolicy } from './events'
 import type { LexProfile } from './lex'
 
 // ============================================================================
@@ -42,6 +42,8 @@ export interface ParserOptions {
   includeWhitespace: boolean
   maxErrors: number
   debug: boolean
+  /** Retained event detail; diagnostics remain available in errors/warnings. */
+  eventPolicy: ParseEventPolicy
   /** Optional lex profile for experimental syntax. */
   lexProfile?: LexProfile | string
   /**
@@ -67,6 +69,7 @@ export const DEFAULT_OPTIONS: ParserOptions = {
   includeWhitespace: true,
   maxErrors: 10,
   debug: false,
+  eventPolicy: 'trace',
   lexProfile: undefined,
   contextMode: 'low',
   autoDialect: true,

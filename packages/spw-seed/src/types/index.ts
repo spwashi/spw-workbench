@@ -60,6 +60,7 @@ export type {
   ContainerKind,
   TokenType,
   Token,
+  IdentifierTokenData,
 } from './token'
 export { isSignificantToken, significantTokens } from './token'
 
@@ -67,7 +68,11 @@ export { isSignificantToken, significantTokens } from './token'
 export type {
   LexProfile,
   LexOptions,
+  LexOutput,
 } from './lex'
+
+export type { GapClass, TokenGap } from './gaps'
+export { GAP_CLASSES } from './gaps'
 
 // Parse events
 export type {
@@ -79,7 +84,10 @@ export type {
   MatchEventData,
   BacktrackEventData,
   ErrorEventData,
+  ParseEventPolicy,
+  ParseEventCounts,
 } from './events'
+export { PARSE_EVENT_POLICIES, retainsParseEvent } from './events'
 
 // AST types
 export type {

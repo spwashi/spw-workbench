@@ -4,7 +4,14 @@
  * Result types for parser operations.
  */
 
-import type { Token, ParseEvent, SeedNode } from '../types'
+import type {
+  Token,
+  TokenGap,
+  ParseEvent,
+  ParseEventCounts,
+  ParseEventPolicy,
+  SeedNode,
+} from '../types'
 
 /**
  * Result of a parse operation
@@ -13,7 +20,10 @@ export interface ParseOutput<T = SeedNode> {
   success: boolean
   ast?: T
   tokens: Token[]
+  gaps: TokenGap[]
   events: ParseEvent[]
+  eventPolicy: ParseEventPolicy
+  eventCounts: ParseEventCounts
   errors: ParseEvent[]
   warnings: ParseEvent[]
   error?: { message: string, expected?: string[], found?: string }
