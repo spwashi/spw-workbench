@@ -143,3 +143,27 @@ describe('sigil binding lookahead', () => {
     ).toHaveLength(0)
   })
 })
+
+describe('operator suffix line affinity', () => {
+  it('does not claim the next binding key as a modifier', () => {
+    const source = [
+      '^["contract"]{',
+      ' pacing: #patient | #kinetic | #braided',
+      ' density: #sparse | #lush',
+      '}',
+    ].join('\n')
+    const result = parse(source)
+
+    expect(result.success).toBe(true)
+    expect(
+      result.warnings.filter(w => (w.data as { code?: string }).code === 'prose-degradation'),
+    ).toHaveLength(0)
+    expect(JSON.stringify(result.ast)).toContain('"density"')
+  })
+
+  it('keeps a spaced same-line modifier available', () => {
+    const result = parse('^ name["x"]')
+    expect(result.success).toBe(true)
+    expect(result.ast!.expression.type).toBe('Sequence')
+  })
+})

@@ -256,7 +256,11 @@ export const operationNode: Parser<OperationNode> = named('operation',
 
     // Optional modifier chain (after operator) - canonical form: !boon["x"]
     skipWhitespace(stream)
-    if (!modifiers && current(stream).type === 'MODIFIER') {
+    if (
+      !modifiers
+      && current(stream).type === 'MODIFIER'
+      && current(stream).span.start.line === operatorToken.span.end.line
+    ) {
       const modGen = modifierChain(stream, depth + 1)
       let modStep = modGen.next()
       while (!modStep.done) {
@@ -272,7 +276,12 @@ export const operationNode: Parser<OperationNode> = named('operation',
 
     // Fallback: allow identifier chain as modifier (e.g. ^name["x"])
     skipWhitespace(stream)
-    if (!modifiers && current(stream).type === 'IDENTIFIER' && !current(stream).value.startsWith('_')) {
+    if (
+      !modifiers
+      && current(stream).type === 'IDENTIFIER'
+      && !current(stream).value.startsWith('_')
+      && current(stream).span.start.line === operatorToken.span.end.line
+    ) {
       const idGen = identifier(stream, depth + 1)
       let idStep = idGen.next()
       while (!idStep.done) {

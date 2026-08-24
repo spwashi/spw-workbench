@@ -43,8 +43,9 @@ Taste note: improve correctness and readability together—structured-looking so
 1. `.[plans] — classify Spw syntax warning roots`
 2. `![spw-seed] — constrain dialect and binding lookahead`
 3. `&[spw-seed] — parse indentation-bounded block scalars`
-4. `.[spw-corpus] — normalize remaining degraded surfaces`
-5. `![spw-lint] — prove a warning-free source corpus`
+4. `![spw-seed] — keep operator suffixes on their line`
+5. `.[spw-corpus] — normalize remaining degraded surfaces`
+6. `![spw-lint] — prove a warning-free source corpus`
 
 ## Agentic Hygiene
 
