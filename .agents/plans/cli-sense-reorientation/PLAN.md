@@ -16,6 +16,12 @@ Today’s verbs grew by accretion (`invent`, `mass`, `profile`, `map`, `atlas`, 
 
 **Taste:** abstract navigation, functional composition, honest density, dialect-aware serialization.
 
+### Progressive protocol checkpoint — 2026-08-24
+
+`codex/gap-affinity-tooling` now supplies the first representative producer: `spw.progressive-product/1` records product id, revision, IR kind, sequence, stage, requested-field completeness, elapsed time, explicit omissions, and deferred depths. `spw inspect source` exposes `source.tokens/1`, `source.structure/1`, and `source.trace/1` as human, Spw, JSON, or live NDJSON projections. The token record leaves before grammar work, giving benchmarking infrastructure a real time-to-first-useful-output boundary.
+
+This proves the shared protocol at one source boundary; it does not make envelope v2 universal, rename CLI verbs, or implement the wider IR catalog. The next adoption step should use the same record shape in one non-parser producer before considering it a general CLI law.
+
 ## Intermediate data structures (named spine)
 
 These are the “bytes between stages”—not always on disk, always conceptually addressable.

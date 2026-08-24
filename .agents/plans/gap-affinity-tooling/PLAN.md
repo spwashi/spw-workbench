@@ -54,13 +54,13 @@ The first observational slice is implemented on `codex/gap-affinity-tooling`: ex
 
 This checkpoint does **not** activate `syntax.gap-affinity/1`, AssociationIR, comma/semicolon body laws, formatter migrations, workspace style inference, or HTML/CSS/JS projection budgets. Those remain later commits gated by corpus and benchmark evidence.
 
-### Progressive tooling slice — 2026-08-24
+### Progressive tooling checkpoint — 2026-08-24
 
-The next bounded slice turns source stages into reusable intermediate products before adding association semantics. It introduces one portable progressive-product protocol with product id, revision, sequence, stage, completeness, elapsed time, included fields, and explicit omissions. The first producer exposes `tokens`, `structure`, and `trace` depths; `index` and `semantic` remain advertised only as later capability levels.
+Commit `deb9e226` turns source stages into reusable intermediate products before adding association semantics. It introduces the portable `spw.progressive-product/1` protocol with product id, revision, sequence, stage, completeness, elapsed time, included fields, and explicit omissions. The first producer exposes `tokens`, `structure`, and `trace` depths; `index` and `semantic` remain advertised only as later capability levels.
 
 `spw inspect source <file> --product <depth>` projects the same typed product as a concise human view, a Spw card, a JSON envelope, or an NDJSON stage stream. `tokens` must stop after dialect preparation and lexing. `structure` may continue through parsing. `trace` is the same structural product with retained parser events, never a second grammar. NDJSON records must be emitted when each stage is actually available; a command may not label a buffered final dump as progressive output.
 
-This slice does not promise incremental parsing, index construction, semantic normalization, or generator-event suppression. Its receipts disclose executed stages and omissions so later performance work can replace implementation without changing the consumer contract.
+This checkpoint does not promise incremental parsing, index construction, semantic normalization, or generator-event suppression. Its receipts disclose executed stages and omissions so later performance work can replace implementation without changing the consumer contract.
 
 ```text
 [NEW] .agents/plans/gap-affinity-tooling/PLAN.md

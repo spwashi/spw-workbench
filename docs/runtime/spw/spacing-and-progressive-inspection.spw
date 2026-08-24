@@ -6,7 +6,10 @@
 
 ^["roots"]{
  @implementation: ~"../../../packages/spw-cli/src/inspect-spacing.ts"
+ @source_inspection: ~"../../../packages/spw-cli/src/inspect-source.ts"
  @lexer: ~"../../../packages/spw-seed/src/lexer/gaps.ts"
+ @products: ~"../../../packages/spw-seed/src/parser/products.ts"
+ @progressive_ir: ~"../../../packages/spw-seed/src/ir/progressive.ts"
  @reader_note: ~"../md/spacing-and-progressive-inspection.md"
  @cli_law: ~"./cli-command-surface.spw"
 }
@@ -33,6 +36,19 @@
  envelope: `spw inspect spacing file.spw --json`
  ~#claim: "one source-linked product can disclose itself at human, Spw-card, or agent interchange depth"
  ~#status: #observational
+}
+
+^["source-products"]{
+ protocol: `spw.progressive-product/1`
+ depths: #[tokens ; structure ; trace]
+ commands: #[
+  `spw inspect source file.spw --product tokens`
+  `spw inspect source file.spw --product structure --spw`
+  `spw inspect source file.spw --product trace --ndjson`
+ ]
+ ~#law: "tokens stops after lex; structure reuses that lex pass; trace widens disclosure over the same parse"
+ ~#receipt: #[product ; revision ; ir ; sequence ; stage ; status ; completeness ; included ; omitted ; deferred ; elapsed_ms]
+ ~#future: #[index ; semantic ; incremental_parse ; generator_suppression]
 }
 
 ^["cost-receipt"]{

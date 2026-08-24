@@ -84,7 +84,7 @@ Fuzz strategy:
 
 ## Agentic Hygiene
 
-- Rebase target: `main@66ed9a2ea2c490522eed38004f6848c7966efc26`
+- Rebase target: `main@c46558ffbb29a10abb1fee11dbec8aa522cbc8b3`
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: none; clean branch with no uncommitted drift
 
@@ -93,7 +93,7 @@ Fuzz strategy:
 - `typescript-perf-audit-infra`: complementary focus on low-level `tsc` telemetry; this plan implements the comprehensive CLI and toolchain efficiency observatory.
 - `typescript-toolchain-observatory`: research and release projection companion.
 - `typescript-upgrade-ladder`: will consume baseline snapshots from this infrastructure.
-- `cli-sense-reorientation`: defines shared intermediate products and progressive output forms the harness must observe without inventing benchmark-only schemas.
+- `cli-sense-reorientation`: defines shared intermediate products and progressive output forms the harness must observe without inventing benchmark-only schemas. The first measurable surface is now `spw inspect source --product trace --ndjson`, whose `spw.progressive-product/1` records expose real lex, parse, and trace availability boundaries.
 - `cli-mode-overhaul`: defines measure/stream/precipitate/write distinctions so benchmark runs can state their effect ceiling and avoid mutating authoring roots.
 - `gap-affinity-tooling`: defines the parse-product/event-policy matrix and association identities the harness measures without inventing alternate benchmark grammars.
 - `runtime-dx-foundation`: owns actionable health checks and failure-locality vocabulary for package-manager, native-addon, ABI, platform, and cache faults.

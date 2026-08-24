@@ -26,6 +26,8 @@
  path_policy: "outputs use paths relative to consumer or workbench root; machine-local absolute paths are never serialized"
  exit_policy: "unsupported capability and degraded fallback are distinct from command failure"
  spacing_projection: "spw inspect spacing keeps consumer-relative paths and projects one observational product as a table, Spw card, or JSON envelope"
+ source_products: "spw inspect source requests tokens, structure, or trace over one parser kernel and projects the stage records as human, Spw, JSON, or live NDJSON output"
+ progressive_protocol: "spw.progressive-product/1 records product, revision, IR, sequence, stage, completeness, elapsed time, included fields, omissions, and deferred depths"
 }
 
 ^"query_grammar"{
@@ -50,6 +52,7 @@
   "Canonical help prefers spw verbs; aliases exist only to preserve muscle memory or migration paths.",
   "CLI output should remain scriptable and human-readable.",
   "Intermediate products disclose generated and retained cost separately when depth is configurable.",
+  "A progressive stream emits each stage when it becomes available; a buffered final bundle is not labeled progressive.",
   "Compatibility aliases should point at one package-owned implementation rather than carrying independent behavior.",
   "Mounted-consumer observability is scriptable, revision-aware, and free of repository identity assumptions.",
   "Commands invoked through .spw/_workbench resolve relative consumer inputs from the consumer root.",

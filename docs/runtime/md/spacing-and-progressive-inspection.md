@@ -35,7 +35,7 @@ Identifiers were already part of the language. This change makes their dotted se
 
 Segment metadata is lexical evidence, not an ontological claim. A value such as `index.spw` may also be seen as two tight segments when it appears unquoted; tools must use its surrounding context before calling it a category, property path, or filename.
 
-## One Product, Three Projections
+## One Spacing Product, Three Projections
 
 Run:
 
@@ -59,6 +59,40 @@ This is an intermediate-output pattern: keep one source-linked product, then dis
 
 The product is marked `observational`. It does not yet make gap classes part of parsing or runtime meaning, and the formatter does not yet migrate between classes.
 
+## Source Products at Useful Depths
+
+Spacing is one question about source. Tools can now ask for three progressively deeper intermediate products without treating every question as a complete parse trace:
+
+| Request | Product | Work completed |
+|---|---|---|
+| `tokens` | `source.tokens/1` | dialect preparation, lexing, exact gaps, lexical diagnostics |
+| `structure` | `source.structure/1` | the token product, then the AST and parser diagnostics |
+| `trace` | `source.trace/1` | the structural product, then the retained parser event stream |
+
+Use `inspect source` to choose the useful depth:
+
+```bash
+spw inspect source path/to/file.spw --product tokens
+spw inspect source path/to/file.spw --product structure --spw
+spw inspect source path/to/file.spw --product trace --json
+```
+
+A `tokens` request stops before grammar work. `structure` reuses the same lexical pass rather than asking a second parser to reinterpret the source. `trace` widens disclosure over that same structural result and implies the `trace` event policy.
+
+Every stage follows `spw.progressive-product/1` and names its product id, revision, IR kind, sequence, stage, status, completeness, included and omitted fields, deferred deeper forms, and elapsed time. Completeness is measured against the fields requested at that stage. A complete token product can therefore honestly defer an AST rather than calling itself a broken parse.
+
+For a live line-delimited stream, use:
+
+```bash
+spw inspect source path/to/file.spw --product trace --ndjson
+```
+
+The lexical record is written when lexing finishes, before grammar work starts. The structure and trace records follow when those products become available. This makes time to first useful output measurable; it is not a final bundle split into lines after completion.
+
+The default human table, bounded Spw card, complete JSON bundle, and live NDJSON stream are projections of the same typed stage records. Bounded views state how many token or event samples they omit. JSON and NDJSON retain the complete requested payload.
+
+`index` and `semantic` remain deferred capability names. This increment does not build a sparse workspace index, normalize an AST, incrementally reparse edits, or suppress parser-generator event construction.
+
 ## Disclosure and Cost
 
 Parser event products accept three retention policies:
@@ -69,12 +103,14 @@ Parser event products accept three retention policies:
 
 Errors and warnings remain available through their dedicated arrays under every policy. Products report both generated and retained counts.
 
-Use the CLI flag to compare the projections:
+Use the CLI flag to compare spacing projections or source-product costs:
 
 ```bash
 spw inspect spacing path/to/file.spw --event-policy none
 spw inspect spacing path/to/file.spw --event-policy diagnostics
 spw inspect spacing path/to/file.spw --event-policy trace
+spw inspect source path/to/file.spw --product structure --event-policy none
+spw inspect source path/to/file.spw --product structure --event-policy diagnostics
 ```
 
 The current parser still constructs its generator events before applying the retention policy. Lower retention reduces stored output, not the full generation cost. The generated/retained receipt makes that limitation measurable for the next performance pass.
