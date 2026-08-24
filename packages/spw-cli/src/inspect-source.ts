@@ -65,7 +65,7 @@ export function buildSourceInspection(
   const requestedEvents = options.events ?? options.eventPolicy ?? 'diagnostics'
   const effectiveEvents = through === 'trace' ? 'trace' : requestedEvents
   const result = produceSourceProducts(source, {
-    product: through,
+    through,
     eventPolicy: effectiveEvents,
     path: file === '<memory>' ? undefined : file,
     uri: file,
@@ -75,9 +75,9 @@ export function buildSourceInspection(
     surface: SOURCE_INSPECTION_SURFACE,
     status: 'observational',
     file,
-    request: result.request,
+    request: result.through,
     controls: {
-      through: result.request,
+      through: result.through,
       events: effectiveEvents,
     },
     products: result.products,

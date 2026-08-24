@@ -13,7 +13,6 @@ import {
   reconcileAuthority,
   type AuthorityFinding,
 } from '@spwashi/spw-seed'
-import { extractAuthority } from './authority-extract'
 import { parseCommonFlags } from './args'
 import { printHelpPage } from './help'
 
@@ -164,6 +163,7 @@ export async function runSpwAuthorityCli(argv: string[] = process.argv): Promise
   const reports: SubjectReport[] = []
   let leaks = 0
   let stale = 0
+  let authorityExtractor: typeof import('./authority-extract').extractAuthority | undefined
 
   for (const file of Array.from(fileSet).sort()) {
     const source = await fs.readFile(file, 'utf8')
@@ -207,7 +207,8 @@ export async function runSpwAuthorityCli(argv: string[] = process.argv): Promise
         continue
       }
 
-      const observed = extractAuthority(subject, path.relative(repoRoot, resolved))
+      authorityExtractor ??= (await import('./authority-extract')).extractAuthority
+      const observed = authorityExtractor(subject, path.relative(repoRoot, resolved))
       const findings = reconcileAuthority(declaration.claims, observed)
       leaks += findings.filter(f => f.verdict === 'leak').length
       stale += findings.filter(f => f.verdict === 'stale').length

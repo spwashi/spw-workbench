@@ -30,7 +30,7 @@ describe('parse product disclosure', () => {
 
   it('answers a token question without running the grammar stage', () => {
     const shallow = produceSourceProducts('a . b', {
-      product: 'tokens',
+      through: 'tokens',
       eventPolicy: 'none',
     })
     const structural = produceSourceProducts('a . b', {
@@ -45,6 +45,8 @@ describe('parse product disclosure', () => {
     )!
 
     expect(shallow.output).toBeUndefined()
+    expect(shallow.through).toBe('tokens')
+    expect(shallow.request).toBe('tokens')
     expect(shallow.products.map(product => product.product)).toEqual([
       SOURCE_PRODUCT_IDS.tokens,
     ])
@@ -56,7 +58,7 @@ describe('parse product disclosure', () => {
   it('publishes each requested depth when it becomes available', () => {
     const published: string[] = []
     const result = produceSourceProducts('^seed{ a . b }', {
-      product: 'trace',
+      through: 'trace',
       eventPolicy: 'none',
       uri: 'examples/progressive.spw',
     }, product => {
@@ -76,6 +78,18 @@ describe('parse product disclosure', () => {
     expect(trace.data.events.length).toBeGreaterThan(0)
     expect(tokens.deferred).toContain('ast')
     expect(trace.deferred).toContain('semantic')
+  })
+
+  it('keeps product as a compatibility alias while through wins explicitly', () => {
+    const compatibility = produceSourceProducts('a . b', { product: 'tokens' })
+    const explicit = produceSourceProducts('a . b', {
+      through: 'structure',
+      product: 'tokens',
+    })
+
+    expect(compatibility.through).toBe('tokens')
+    expect(explicit.through).toBe('structure')
+    expect(explicit.products).toHaveLength(2)
   })
 
   it('keeps the structural product aligned with the parser API', () => {

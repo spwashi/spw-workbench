@@ -106,18 +106,22 @@ export type SourceProduct = SourceTokensProduct | SourceStructureProduct | Sourc
 export type SourceProductObserver = (product: SourceProduct) => void
 
 export interface SourceProductOptions extends Partial<ParserOptions> {
+  through?: SourceProductDepth
+  /** @deprecated Use through. */
   product?: SourceProductDepth
   uri?: string
 }
 
 export interface SourceProductResult {
+  through: SourceProductDepth
+  /** @deprecated Use through. */
   request: SourceProductDepth
   products: SourceProduct[]
   output?: ParseOutput<SeedNode>
 }
 
 interface PipelineControls {
-  request: SourceProductDepth
+  through: SourceProductDepth
   collect: boolean
   observe?: SourceProductObserver
 }
@@ -133,8 +137,8 @@ export function produceSourceProducts(
   options: SourceProductOptions = {},
   observe?: SourceProductObserver,
 ): SourceProductResult {
-  const request = options.product ?? 'structure'
-  return runSourcePipeline(input, options, { request, collect: true, observe })
+  const through = options.through ?? options.product ?? 'structure'
+  return runSourcePipeline(input, options, { through, collect: true, observe })
 }
 
 /** Parser-compatible path that avoids allocating progressive records. */
@@ -143,7 +147,7 @@ export function parseSourceStructure(
   options: Partial<ParserOptions> = {},
 ): ParseOutput<SeedNode> {
   const result = runSourcePipeline(input, options, {
-    request: 'structure',
+    through: 'structure',
     collect: false,
   })
   return result.output!
@@ -156,7 +160,7 @@ function runSourcePipeline(
 ): SourceProductResult {
   const startedAt = performance.now()
   const opts: ParserOptions = { ...DEFAULT_OPTIONS, ...options }
-  if (controls.request === 'trace') opts.eventPolicy = 'trace'
+  if (controls.through === 'trace') opts.eventPolicy = 'trace'
 
   const products: SourceProduct[] = []
   const events: ParseEvent[] = []
@@ -247,7 +251,7 @@ function runSourcePipeline(
     errors: [...errors],
     warnings: [...warnings],
   })
-  const total = PRODUCT_TOTALS[controls.request]
+  const total = PRODUCT_TOTALS[controls.through]
 
   if (controls.collect || controls.observe) {
     publish(buildProgressiveProduct({
@@ -270,7 +274,9 @@ function runSourcePipeline(
     }))
   }
 
-  if (controls.request === 'tokens') return { request: controls.request, products }
+  if (controls.through === 'tokens') {
+    return { through: controls.through, request: controls.through, products }
+  }
 
   const filteredTokens = tokens.filter(token => {
     if (!opts.includeWhitespace && token.type === 'WHITESPACE') return false
@@ -354,7 +360,7 @@ function runSourcePipeline(
     }))
   }
 
-  if (controls.request === 'trace' && (controls.collect || controls.observe)) {
+  if (controls.through === 'trace' && (controls.collect || controls.observe)) {
     publish(buildProgressiveProduct({
       product: SOURCE_PRODUCT_IDS.trace,
       revision: 1,
@@ -373,5 +379,5 @@ function runSourcePipeline(
     }))
   }
 
-  return { request: controls.request, products, output }
+  return { through: controls.through, request: controls.through, products, output }
 }
