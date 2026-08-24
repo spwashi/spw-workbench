@@ -25,10 +25,14 @@ Taste note: improve **semantic honesty**, **layering**, **traceability**, **port
 | Parser pair_id / open_close labels on Frame/Body/Scope | **open** | grammar still uneven |
 | LSP/plugin projection | **open** | see `form-geometry-editor` |
 
+## Gap-affinity handoff (2026-08-24)
+
+This plan's landed spacing contract remains authoritative for raw trivia, display width, indentation, and layout evidence. The `gap-affinity-tooling` follow-on introduces an opt-in `syntax.gap-affinity/1` capability in which the declared gap class—not arbitrary column width—may participate in grammar. Variation within one soft class remains layout; crossing `tight`, `open`, `cadence`, or `episode` is a semantic migration when the capability says those classes differ. Both raw surface identity and declared association identity are required.
+
 ## Scope
 
 - **In scope**: revise active plans and theory; define source, structural, relational, temporal, layout, operational, and evidence strata; distinguish render-only orientation from versioned dialect semantics; define parser-checked spacing and indentation as measured topology; specify layout and brace-label differentials, exact-first approximate scans, and mutation profiles; define portable LSP evidence packets for agent contexts; define abstract-plan hydration stages, range/stream contracts, effect grades, and source maps; design a longitudinal whitespace-physics experiment; update relevant skills and probe recipes; predict the implementation and editor integration slices.
-- **Out of scope**: changing parser grammar or inventing new runtime physics; making indentation semantic; executing generated scripts; granting background probes write authority; introducing claim, ticket, page, row, genome, or emotion primitives; adding editor panels before a shared LSP response exists; treating a metaphor, mathematical analogy, or model-generated interpretation as an implemented invariant.
+- **Out of scope**: changing parser grammar or inventing new runtime physics; making arbitrary indentation width semantic; executing generated scripts; granting background probes write authority; introducing claim, ticket, page, row, genome, or emotion primitives; adding editor panels before a shared LSP response exists; treating a metaphor, mathematical analogy, or model-generated interpretation as an implemented invariant.
 
 ## Files
 
@@ -157,7 +161,7 @@ Taste note: improve **semantic honesty**, **layering**, **traceability**, **port
 - `packages/spw-lsp/src/server-index.ts` and several editor display files already exceed 600 lines. Add only an indexed extraction seam there; put topographic assembly in a dedicated handler or service.
 - Keep Seed portable and deterministic. Layout measurements may consume lexer trivia and spans but must not import editor, filesystem, model, or workbench concerns.
 - Keep the canonical data model vector-valued. Similarity, discovery priority, mutability, reversibility, authority, cost, and uncertainty must not collapse into one score.
-- A spacing or orientation profile may change presentation and approximate ranking; it must not change ONF or runtime effects unless identified as a new dialect version.
+- A spacing or orientation profile may change presentation and approximate ranking; it must not change ONF or runtime effects unless identified as a versioned semantic capability. The gap-affinity follow-on owns that capability and its migrations.
 - Generated scripts are projections. Use target AST/code generation, parameterized values, source maps, and capability references rather than concatenated executable strings.
 - Existing plan files are shared hot surfaces. Preserve their append-only streams and make targeted trajectory revisions rather than wholesale rewrites.
 
@@ -280,6 +284,7 @@ Fuzz strategy:
 - `lsp-custom-request-completions` — advertised/configured/invoked/observed/tested capability discipline.
 - `vscode-plugin-performance` and `typescript-perf-audit-infra` — actual-path timing and toolchain baselines; parallel, not semantic prerequisites.
 - Mounted workspace discovery must prefer consumer authority in realistic nested mounts before repo-local sample claims can ship.
+- `gap-affinity-tooling` is the semantic-spacing and formatter follow-on. It consumes this plan's raw/source and differential contracts; it is not a prerequisite for the landed topography kernel.
 
 ## Failure Modes
 
@@ -299,9 +304,9 @@ Fuzz strategy:
 
 - **Hypothesis**: a parser-owned selection transect can answer useful orientation questions without a new AST primitive.
 - **Hypothesis**: exact-first structural ranking plus diversity reranking produces compact, non-repetitive evidence packets for human and agent use.
-- **Hypothesis**: spacing improves discovery as a disclosed soft feature while semantic identity remains stable.
+- **Hypothesis**: raw spacing variation within one declared gap class improves discovery as a disclosed soft feature while association identity remains stable.
 - **Hypothesis**: abstract sequence hydration is useful as a pure plan and preview before execution exists.
-- **Negative control**: formatting-only variants retain the same semantic/plan identity and raw structural coordinates.
+- **Negative control**: formatting-only variants preserve declared gap classes, semantic/plan identity, and raw structural coordinates; a gap-class crossing is tested as a migration instead.
 - **Negative control**: applying the same layout profile twice produces an empty second differential.
 - **Negative control**: label reapplication preserves pair identity and references; a collision or unrepresentable label yields no edit.
 - **Negative control**: changing a render-only orientation profile changes labels or ordering only.

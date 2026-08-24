@@ -30,6 +30,8 @@
  @cli_benchmarks: ~".agents/plans/cli-benchmarking-infra/PLAN.md"
  @syntax_stack: ~".agents/plans/syntax-profile-stack/PLAN.md"
  @site_install: ~".agents/plans/spw-site-install/PLAN.md"
+ @gap_affinity: ~".agents/plans/gap-affinity-tooling/gap-affinity-tooling.spw"
+ @package_radius: ~".agents/plans/package-iteration-radius/package-iteration-radius.spw"
 }
 
 ^"cluster_operator_map"{
@@ -103,40 +105,48 @@
 ^"consumer_direction"{
  reading_order: [#compatibility, #intermediate_disclosure, #mounted_authority, #evidence, #projection]
  compatibility: .{
-  owns: [#language_edition, #syntax_profile, #ast_schema, #product_schema, #package_contract, #cli_protocol, #capabilities]
-  routes: [@syntax_stack, @canon_rewrite, @site_install]
+  owns: [#language_edition, #syntax_profile, #gap_affinity, #ast_schema, #product_schema, #package_contract, #environment_contract, #cli_protocol, #capabilities]
+  routes: [@syntax_stack, @gap_affinity, @package_radius, @canon_rewrite, @site_install]
   refuses: [#scalar_version_as_total_state, #undocumented_fallback, #consumer_specific_fixture]
  }
  intermediate_disclosure: .{
-  owns: [#product_identity, #stage, #completeness, #revision, #projection]
-  routes: [@canon_rewrite, @cli_sense, @cli_modes]
+  owns: [#product_identity, #parse_product, #event_policy, #stage, #completeness, #revision, #projection]
+  routes: [@canon_rewrite, @cli_sense, @cli_modes, @gap_affinity]
   forms: [#human, #spw, #json, #ndjson]
   refuses: [#separate_meaning_per_format, #projection_as_product_identity]
  }
  mounted_authority: .{
-  owns: [#consumer_roots, #mount_revision, #review_profile, #retention, #exchange_gate]
+  owns: [#consumer_roots, #mount_revision, #review_profile, #retention, #exchange_gate, #zero_annotation_floor]
   routes: [@mounted_consumer_tooling, @mounted_workbench_organelle, @site_install]
   refuses: [#mounted_root_as_consumer_canon, #automatic_upstream_write, #identity_leakage]
  }
  evidence: .{
-  owns: [#workload_shape, #consumer_revision, #workbench_revision, #raw_samples, #outcome, #instrumentation]
-  routes: [@cli_benchmarks, @cli_sense]
+  owns: [#workload_shape, #consumer_revision, #workbench_revision, #environment_receipt, #iteration_radius, #raw_samples, #outcome, #instrumentation]
+  routes: [@cli_benchmarks, @cli_sense, @package_radius]
   outcomes: [#pass, #regression, #unstable, #envfault, #skipped]
   refuses: [#silent_outlier_removal, #inferred_phase_timing, #single_run_claim]
  }
  projection: .{
-  owns: [#disclosure_policy, #interaction_profile, #privacy_boundary, #native_affordance]
+  owns: [#disclosure_policy, #interaction_profile, #privacy_boundary, #native_affordance, #optional_annotation]
   routes: [@editor_audit, @lsp_roadmap, @garden_geometry]
   refuses: [#ui_semantics_as_language_law, #metaphor_without_mapping, #private_plane_auto_reveal]
  }
  ~#law: "a consumer should infer what is stable, proposed, measurable, and optional without knowing which repositories motivated the contract"
 }
 
+^"consumer_conversation"{
+ workbench_says: [#capability, #product, #migration, #cost, #omission, #environment_requirement]
+ consumer_returns: [#gap_report, #workload_shape, #missing_question, #failure_receipt, #sidecar_posture, #revision_pair]
+ baseline: [#ordinary_source, #no_required_annotation, #consumer_authority]
+ promotion_gate: [#repeated_shape, #portable_contract, #source_backref, #promotion_state, #negative_control, #no_identity_leak]
+ ~#law: "projects influence shared tools through reproducible consequences, not by becoming fixtures, biographies, or hidden language profiles"
+}
+
 ^"design_ladder"{
- language: .{op:"?", plans:["canon-rewrite-v2", "syntax-profile-stack", "shape-syntax-ecology", "precipitate-model-alignment", "register-phase-evolution"], asks:[#semantics, #compatibility, #phase_vocab, #product_identity], into:"*"}
+ language: .{op:"?", plans:["canon-rewrite-v2", "syntax-profile-stack", "gap-affinity-tooling", "shape-syntax-ecology", "precipitate-model-alignment", "register-phase-evolution"], asks:[#semantics, #compatibility, #gap_affinity, #phase_vocab, #product_identity], into:"*"}
  component: .{op:"*", plans:["audit-css-tokens", "audit-data-attributes", "audit-ui-data-models", "vscode-authoring-probe-loop", "vscode-register-explorer"], asks:[#state, #style, #operator_widget, #register], into:"."}
  page: .{op:".", plans:["curriculum-html-css-mastery", "curriculum-html-svg-mastery", "ecosystem-surface-governance", "symmetry-explorer-instrument", "spw-garden-geometry"], asks:[#navigation, #layout, #atmosphere, #exhibit], into:"!"}
- service: .{op:"!", plans:["canon-rewrite-v2", "spw-site-install", "cli-sense-reorientation", "cli-mode-overhaul", "cli-benchmarking-infra", "runtime-dx-foundation", "vscode-lsp-roadmap"], asks:[#compatibility, #install, #diagnostics, #progressive_output, #evidence], into:"?"}
+ service: .{op:"!", plans:["canon-rewrite-v2", "spw-site-install", "package-iteration-radius", "gap-affinity-tooling", "cli-sense-reorientation", "cli-mode-overhaul", "cli-benchmarking-infra", "runtime-dx-foundation", "vscode-lsp-roadmap"], asks:[#compatibility, #install, #diagnostics, #iteration_radius, #progressive_output, #evidence], into:"?"}
  bridge: .{op:"@", plans:["operational-topography", "obsidian-spw", "intellij-lsp4ij", "neovim-spw-surfaces", "lsp-custom-request-completions"], asks:[#substrate, #transfer, #protocol, #failure_locality, #topography], into:"!"}
  ~#cycle: "? -> * -> . -> ! -> ?"
  ~#cross: "@ bridge plans straddle ! and ~ — they execute a port but learn the target substrate"
@@ -226,6 +236,8 @@
   audit_fuzz_truthfulness: .{learn:[#truth, #dx, #governance], discuss:[#launch, #ownership], probe:[#coherence, #readability]}
   commit_gate_redesign: .{learn:[#dx, #governance, #truth], discuss:[#ownership, #launch], probe:[#failure_locality, #coherence]}
   ecosystem_surface_governance: .{learn:[#governance, #page, #service], discuss:[#launch, #surface_fit], probe:[#coherence, #interest]}
+  gap_affinity_tooling: .{learn:[#lexing, #formatting, #performance], discuss:[#spacing_semantics, #migration, #consumer_exchange], probe:[#truth, #latency, #transfer]}
+  package_iteration_radius: .{learn:[#packages, #dx, #failure_locality], discuss:[#onboarding, #dependency_radius, #compatibility], probe:[#first_actionable_result, #clean_consumer, #environment_delta]}
   canon_rewrite_v2: .{learn:[#product_identity, #disclosure, #package_boundary], discuss:[#compatibility, #projection], probe:[#truth, #coherence, #portability]}
   cli_benchmarking_infra: .{learn:[#latency, #measurement, #consumer_shape], discuss:[#regression, #readability], probe:[#ttfe, #phase_timing, #variance]}
   cli_mode_overhaul: .{learn:[#effect_grade, #intermediate, #dx], discuss:[#preview, #stream, #write], probe:[#truth, #failure_locality]}
@@ -298,7 +310,7 @@
  // Dated planning snapshot; refresh from cache state before scheduling decisions.
  // Useful for prioritization and staleness detection.
  snapshot_at: "2026-08-24"
- hot: ["canon-rewrite-v2", "spw-site-install", "cli-sense-reorientation", "cli-mode-overhaul", "cli-benchmarking-infra", "syntax-profile-stack", "ecosystem-surface-governance"]
+ hot: ["canon-rewrite-v2", "spw-site-install", "package-iteration-radius", "gap-affinity-tooling", "cli-sense-reorientation", "cli-mode-overhaul", "cli-benchmarking-infra", "syntax-profile-stack", "ecosystem-surface-governance"]
  warm: ["shape-syntax-ecology", "vscode-lsp-roadmap", "runtime-dx-foundation", "apposition-cache-granules", "spw-beat-diff-precipitation"]
  cold: ["intellij-lsp4ij", "obsidian-spw", "image-prompt-split", "brand-core-ids", "command-experience-tools"]
  stranded: ["refactor-import-sprawl", "audit-css-tokens", "audit-data-attributes", "audit-ui-data-models", "symmetry-explorer-instrument"]

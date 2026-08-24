@@ -18,6 +18,7 @@
         "sub-16ms interactive frame budget (format, outline, select)",
         "sub-100ms macro response budget (pulse, census, inspect)",
         "time to first useful event, final completion, and event cadence",
+        "iteration radius: dependency cone, invalidated tasks, and first actionable result",
         "p50 and p90 with every raw sample retained and instability classified",
         "throughput scaling slope vs corpus volume (O(N) verification)",
       ],
@@ -49,6 +50,7 @@
         "thread scaling efficiency under --checkers",
         "Bytecode VM vs Tree-Walker execution multiplier",
         "instrumented phase attribution when real spans exist (Lex -> Parse -> Traversal -> IR -> IO -> Typecheck)",
+        "parser product x event-policy cost with generation and retention separated",
       ],
     },
   ],
@@ -65,14 +67,23 @@
     { id: "compare_engine", file: "scripts/bench/compare.ts", role: "Revision-compatible differential analysis and PASS/REGRESSION/UNSTABLE/ENVFAULT/SKIPPED gating" },
     { id: "efficiency_report", file: "scripts/bench/efficiency-report.ts", role: "Multi-format emission: Markdown Brief, Terminal Dash, JSON, Spw" },
     { id: "runner", file: "scripts/bench/runner.ts", role: "Unified command-line interface and package script orchestrator" },
+    { id: "environment_receipt", file: "scripts/diagnostics/environment-receipt.ts", role: "Redacted lockfile, runtime, ABI, platform, native capability, and cache compatibility input" },
+    { id: "iteration_radius", file: "scripts/bench/iteration-radius.ts", role: "Dependency cone, invalidation, leaf feedback, and integration completion measures" },
   ],
+}
+
+^"parser_cost_matrix"{
+  products: [#tokens, #structure, #index, #semantic, #trace]
+  event_policies: [#none, #diagnostics, #trace]
+  measures: [#elapsed, #peak_rss, #product_completeness, #events_generated, #events_retained]
+  law: "less retained output is not less parser work unless generation and phase spans also change"
 }
 
 ^"verification"{
   regression_threshold_default: 15.0, # percent
   outcomes: [#pass, #regression, #unstable, #envfault, #skipped]
-  provenance: [#workbench_revision, #workload_schema, #runtime_version, #platform, #cold_warm, #profile]
-  negative_controls: [#no_silent_outlier_removal, #no_inferred_phase_timing, #no_named_consumer_fixture, #no_tree_mutation]
+  provenance: [#workbench_revision, #workload_schema, #lockfile_hash, #dependency_graph_hash, #runtime_version, #node_abi, #platform, #cache_class, #profile]
+  negative_controls: [#no_silent_outlier_removal, #no_inferred_phase_timing, #no_retention_as_generation_claim, #no_named_consumer_fixture, #no_tree_mutation]
   gates: [
     "npm run test:bench",
     "npm run bench:quick",

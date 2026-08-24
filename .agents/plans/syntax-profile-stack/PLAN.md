@@ -23,6 +23,9 @@ Replace fragmented “profile” meanings (review-only path labels, format modes
 - Autorefactor plans via semantic-edit (quoted_frame → `^["id"]`)
 - Data-driven path table from `.spw/registries` (optional load)
 - Edition pin `@edition:`
+- Replace destructive Spw.l/q newline preprocessing with a source-mapped gap projection that retains original coordinates and declares whether cadence or episode collapses to open.
+- Carry the resolved `syntax.gap-affinity/1` capability, format-policy revision, and association product identity through stack provenance. Workspace policy may select rendering defaults; it may not silently select grammar.
+- Keep parser product requests and event policies as execution/disclosure axes beside the syntax stack, never as dialect aliases.
 - **Experimental syntax catalog** (reference ids for Spw.f/φ, σ-chain, etc.) — see `shape-syntax-ecology`
 - Cache keys: always include `dialect × preprocess` for l/q
 - Gestalt token contract stable enough for screenshot/LLM dual-read (with AST ground truth)
@@ -31,6 +34,8 @@ Replace fragmented “profile” meanings (review-only path labels, format modes
 
 Parent: `.agents/plans/shape-syntax-ecology/PLAN.md`  
 Peers: curiosity-mutation-ergonomics, refactor-experiment-lifecycle, measure-invariant-generalization, vscode-lsp-roadmap, neovim-spw-surfaces, vscode-cognitive-surface.
+
+Follow-on: `gap-affinity-tooling` owns source-mapped gap classes, association-aware formatting, profile migration receipts, and question-oriented parser products.
 
 Dialects are **product surfaces** (ethos): b literacy · p memory · q/l address · m machine · f flow lab · x hot · t expand. Familiarity curriculum: `b → p → q/l → m → f → x → t`.
 
@@ -89,6 +94,7 @@ Dialects are **product surfaces** (ethos): b literacy · p memory · q/l address
 - Soft: refactor-experiment-lifecycle (autorefactor plans)
 - Soft: mutation-flow-automata theory (Spw.f)
 - Soft: vscode-lsp-roadmap (hover stack)
+- Soft follow-on: gap-affinity-tooling (declared gap capability, source maps, format policy, and execution-product axes)
 
 ## Validation
 

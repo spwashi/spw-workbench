@@ -17,6 +17,8 @@ Today, performance across the CLI's command and toolchain surfaces is measured a
   - Comprehensive CLI benchmarks across all 5 groups: `collate` (census, graph, atlas, formula, density, form, lattice, delta, measure, authority, taste, stack, inspect), `select` (query, select, outline, ls), `shape` (format, expand, snippet, refactor, emit), `effect` (pulse, beat, mem), `workspace` (roots, mount, tree, doctor).
   - TypeScript compiler profiler: flat typecheck (`tsc -p`), solution build (`tsc -b`), `--extendedDiagnostics` parser, and TS 7 native parallelism matrix (`--checkers`).
   - First-class timing products: process start, time to first useful event, per-event cadence, final completion, peak RSS, and total bytes/products disclosed. Phase attribution is present only for phases carrying actual spans.
+  - Parser-cost matrix: cross requested products (`tokens`, `structure`, `index`, `semantic`, `trace`) with event policies (`none`, `diagnostics`, `trace`), and measure event generation separately from retention so a smaller output is not mistaken for less parser work.
+  - Reproducibility receipt: record lockfile hash, package-manager/runtime version, Node ABI, platform/architecture/libc where available, workspace dependency graph hash, cache class, optional native-addon availability, and resolved Spw capability/profile revisions. Environment mismatches are classified before semantic or performance comparison.
   - Differential comparison engine: latency and throughput deltas, memory delta, capability/revision compatibility checks, and outcome-aware regression gating (`bench:check`).
   - Multi-format efficiency reporting: concise Markdown brief (`.benchmarks/efficiency-report.md`), terminal summary, structured JSON (`.benchmarks/latest.json`), NDJSON progress events, and Spw projection (`.benchmarks/efficiency.spw`) over the same benchmark product.
   - Explicit outcomes: `PASS`, `REGRESSION`, `UNSTABLE`, `ENVFAULT`, and `SKIPPED`; a noisy or incompatible environment never becomes an ordinary pass/fail result.
@@ -57,7 +59,7 @@ Today, performance across the CLI's command and toolchain surfaces is measured a
 - Zero external runtime dependencies added to production packages (uses existing `tsx`, `typescript`, `vitest`).
 - In-process harness must reset global state and mocks between benchmark runs.
 - Benchmark outputs in `.benchmarks/history/` must be gitignored to keep the repository clean.
-- Workloads and reports must carry workbench revision, workload revision/schema, runtime/compiler versions, platform facts, cold/warm class, and exact command/profile.
+- Workloads and reports must carry workbench revision, workload revision/schema, runtime/compiler versions, lockfile and dependency-graph identity, platform/ABI facts, cold/warm/cache class, and exact command/profile.
 - Never infer lexer/parser/runtime phase time by subtracting unrelated wall clocks; use real spans or report phase attribution as unavailable.
 - Generated consumer fixtures describe capability and corpus shape only; no downstream repository name, private corpus, or local absolute path enters snapshots.
 
@@ -93,6 +95,8 @@ Fuzz strategy:
 - `typescript-upgrade-ladder`: will consume baseline snapshots from this infrastructure.
 - `cli-sense-reorientation`: defines shared intermediate products and progressive output forms the harness must observe without inventing benchmark-only schemas.
 - `cli-mode-overhaul`: defines measure/stream/precipitate/write distinctions so benchmark runs can state their effect ceiling and avoid mutating authoring roots.
+- `gap-affinity-tooling`: defines the parse-product/event-policy matrix and association identities the harness measures without inventing alternate benchmark grammars.
+- `runtime-dx-foundation`: owns actionable health checks and failure-locality vocabulary for package-manager, native-addon, ABI, platform, and cache faults.
 
 ## Failure Modes
 
@@ -100,6 +104,7 @@ Fuzz strategy:
 - **Soft**: TypeScript 7 binary not present in development environment — handled gracefully with `status: 'skipped'` or fallback to TS 5.9 baseline.
 - **Soft**: High variance on busy systems — preserved in raw samples and surfaced as `UNSTABLE`; reruns may narrow the environment, but the report does not discard inconvenient measurements.
 - **Soft**: A CLI command emits no progressive event — time to first output is marked unavailable rather than approximated from final completion.
+- **Soft**: equivalent source behaves differently across machines because dependency, ABI, native-addon, or cache state differs — classify `ENVFAULT`, print the mismatched receipt fields, and do not report a language or performance regression.
 - **Non-negotiable**: Zero mutation of working tree files during benchmark execution; zero network calls; strict adherence to typed schemas.
 
 ## Validation
@@ -109,9 +114,13 @@ Fuzz strategy:
   - Instrumented phase spans explain material regressions while unavailable phases remain explicitly unknown.
   - Regression gate distinguishes performance degradation from variance and environment faults before selecting an exit status.
   - Multi-dimensional efficiency report presents clear, evidence-backed leverage across operational, computational, cognitive, and toolchain dimensions.
+  - Product/event matrices reveal whether speedups come from less semantic work, less instrumentation generation, or only less retained output.
+  - Reproducibility receipts localize cross-machine build and benchmark failures before developers chase source-level causes.
 - **Negative controls**:
   - `npm run test:run`, `npm run build`, and `npm run lint` remain completely green.
   - Production distribution package builds remain unaffected.
+  - Changing only the event-retention policy cannot be reported as reduced event generation unless an instrumented counter also changes.
+  - A deliberately mismatched lockfile or Node ABI fixture produces `ENVFAULT`, not `REGRESSION`.
 - **Demo sequence**:
   1. `npm run test:bench` → verifies stats, harness, and reporter math.
   2. `npm run bench:cli` → runs complete CLI benchmark suite with phase attribution.

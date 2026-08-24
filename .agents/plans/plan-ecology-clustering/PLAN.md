@@ -17,13 +17,13 @@ Taste note: improve **clarity**, **layering**, **naming**, and **meaningfulness*
 
 Consumers should be able to read direction without recognizing a repository name or reconstructing the workbench's private chronology. The active spine is therefore expressed through five portable contracts:
 
-1. **Compatibility** — identify language edition, syntax/profile stack, parser and product schemas, CLI protocol, and capability set independently. A scalar release label does not imply that every dimension advanced together.
-2. **Intermediate disclosure** — expose stable product identities through staged, progressive, and collapsible views. Human text, Spw, JSON, and event streams are projections of the same products rather than separately authored meanings.
-3. **Mounted authority** — consumer-owned roots and conventions remain authoritative; mounted tooling supplies versioned instruments, diagnostics, and review protocols.
-4. **Evidence** — performance and usability claims carry workloads, revisions, raw samples, outcome classes, and actual instrumentation boundaries. Representative consumer shapes are described by capability, never identity.
-5. **Projection** — editor and interface experiments consume parser/runtime truth and remain optional projections. Metaphors may guide an interaction profile but do not silently become language law.
+1. **Compatibility** — identify language edition, syntax/gap profile, parser and product schemas, package/environment contract, CLI protocol, and capability set independently. A scalar release label does not imply that every dimension advanced together.
+2. **Intermediate disclosure** — expose stable product identities through staged, progressive, and collapsible views, including explicit parser-product and event policies. Human text, Spw, JSON, and event streams are projections of the same products rather than separately authored meanings.
+3. **Mounted authority** — consumer-owned roots and conventions remain authoritative; mounted tooling supplies versioned instruments, diagnostics, and review protocols. Baseline utility requires no Spw annotations.
+4. **Evidence** — performance and usability claims carry workloads, revisions, environment receipts, iteration radius, raw samples, outcome classes, and actual instrumentation boundaries. Representative consumer shapes are described by capability, never identity.
+5. **Projection** — editor and interface experiments consume parser/runtime truth and remain optional projections. Metaphors and feature annotations may improve recognizability but do not silently become language law or adoption requirements.
 
-Current execution should strengthen this spine in roughly that order. Landed foundations remain reference material; speculative editor work should not be presented as a compatibility or release prerequisite.
+Current execution should strengthen this spine in roughly that order. The gap-affinity and package-iteration-radius plans make semantic spacing, profile migration, reproducible builds, and feedback radius explicit additions to the spine. Landed foundations remain reference material; speculative editor work should not be presented as a compatibility or release prerequisite.
 
 ## Files
 
@@ -40,6 +40,12 @@ Current execution should strengthen this spine in roughly that order. Landed fou
 [MOD] .agents/plans/curriculum-html-css-mastery/PLAN.md
 [MOD] .agents/plans/curriculum-html-svg-mastery/PLAN.md
 [MOD] .agents/plans/curriculum-logic-terminal-mastery/PLAN.md
+[NEW] .agents/plans/gap-affinity-tooling/PLAN.md
+[NEW] .agents/plans/gap-affinity-tooling/wip.spw
+[NEW] .agents/plans/gap-affinity-tooling/gap-affinity-tooling.spw
+[NEW] .agents/plans/package-iteration-radius/PLAN.md
+[NEW] .agents/plans/package-iteration-radius/wip.spw
+[NEW] .agents/plans/package-iteration-radius/package-iteration-radius.spw
 ```
 
 ### Craft guard
@@ -69,7 +75,7 @@ Fuzz strategy:
 
 ## Dependencies
 
-none
+- This plan is the directional index for `gap-affinity-tooling` and `package-iteration-radius`; neither depends on the clustering artifact for runtime behavior.
 
 ## Spw Artifact
 

@@ -1,0 +1,93 @@
+# Package Iteration Radius
+# Distilled contract for package truth, reproducible environments, onboarding, and fast trustworthy feedback.
+
+#>package_iteration_radius
+#:layer #!pragmatics
+#:status #!proposed
+
+^seed[Spw.Plan.Package.Iteration.Radius v:0.1 @profile:Spw.p @intent:package_environment_contract]
+
+^["status"]{
+ implemented: #[
+  "private npm workspaces cover packages and the VS Code extension",
+  "package-lock and a root Node engine range are committed",
+  "internal packages share version 0.3.0 and are currently private",
+  "doctor, JS distribution assembly, and pack dry-run surfaces exist",
+ ]
+ observed: #[
+  "internal manifests do not yet disclose dependency, export, engine, or leaf-task contracts",
+  "root and extension toolchain ranges are not identical",
+ ]
+ proposed: #[#package_contract_audit, #environment_receipt, #iteration_radius, #generated_consumer_smoke]
+}
+
+^["terms"]{
+ iteration_radius: "the dependency, build, test, cache, and conceptual surface a change traverses before a trustworthy result"
+ first_actionable_result: "the earliest output that can correctly guide the next developer action"
+ environment_compatibility: "equality or declared compatibility across the receipt fields required by a task"
+ package_truth: "declared ownership, imports, exports, artifacts, tools, and release role agree with observed use"
+}
+
+^["package_contract"]{
+ identity: #[#package_name, #package_revision, #public_or_private, #product_schema]
+ declares: #[#dependencies, #exports, #engines, #toolchain, #scripts, #artifacts, #release_role]
+ verifies: #[#import_graph, #pack_contents, #clean_consumer, #leaf_task, #integration_task]
+ rule: "workspace hoisting, source paths, and root globals cannot satisfy a generated consumer smoke"
+}
+
+^["environment_receipt"]{
+ identity: #[#repository_revision, #lockfile_hash, #dependency_graph_hash, #task]
+ compatibility: #[#package_manager, #node_version, #node_abi, #platform, #architecture, #libc, #toolchain_versions]
+ state: #[#cache_class, #optional_capabilities, #native_addons, #external_tools]
+ privacy: #[#no_username, #no_hostname, #no_absolute_path, #allowlisted_environment_only]
+ failure_classes: #[source, manifest, lockfile, runtime, native_addon, abi, platform, cache, external_tool]
+ rule: "incompatible environments yield ENVFAULT before semantic or performance comparison"
+}
+
+^["radius_product"]{
+ input: #[#changed_files, #changed_packages, #task, #environment_receipt]
+ structural: #[#dependency_cone, #invalidated_packages, #invalidated_tasks, #files_loaded, #types_loaded]
+ timing: #[#first_actionable_ms, #completion_ms, #cold_or_warm, #cache_class]
+ outcome: #[#pass, #regression, #unstable, #envfault, #skipped]
+ law: "a smaller radius is valuable only when leaf and public integration products agree"
+}
+
+^["onboarding"]{
+ journey: ?<environment_check, explain_dependencies, run_leaf_task, verify_integration, smoke_consumer>[reg=pipeline]
+ documentation: #[#first_build_guide, #package_reference, #decision_notes, #migration_notes, #troubleshooting_codes]
+ convenience: "defaults shorten the common path, disclose inherited decisions, and provide an explicit override or migration route"
+}
+
+^["compatibility_dimensions"]{
+ axes: #[#language_edition, #syntax_capability, #package_contract, #runtime_api, #cli_protocol, #editor_protocol, #consumer_profile]
+ release_rule: "repository version is a coordinate label, not proof that every axis advanced together"
+ migration: #[#from, #to, #preconditions, #compatibility_window, #dry_run, #apply, #verify, #receipt]
+}
+
+^["invariants"]{
+ #[
+  "environment faults do not become parser or runtime regressions",
+  "clean consumers see only declared public surfaces",
+  "warm, cold, and clean-install measurements remain separate",
+  "leaf speed never substitutes for public-product verification",
+  "receipts are identity-free and contain no absolute local paths",
+ ]
+}
+
+^["falsify"]{
+ probes: #[
+  `audit manifest imports, exports, engines, scripts, and artifacts`,
+  `compare two redacted environment receipts`,
+  `measure one leaf edit through leaf and integration tasks`,
+  `pack and install in a clean generated consumer`,
+  `inject an ABI or native-addon mismatch fixture`,
+ ]
+ reject_if: #[#ambient_root_required, #opaque_machine_difference, #leaf_product_drift, #receipt_identity_leak, #radius_rewards_skipped_truth]
+}
+
+#>wonder_package_iteration_radius_artifact_1
+?["What convenience does this dependency buy, and what radius does it impose?"]{
+ $^["package_contract"]@here => $^["radius_product"]@here
+ !probe{ "remove or isolate one edge, then compare first actionable result, invalidation cone, public product, and troubleshooting cost." }
+ $%[dependency.cone, first_actionable.ms, product.identity]
+}
