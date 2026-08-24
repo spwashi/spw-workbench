@@ -20,12 +20,14 @@ import {
   applySemanticPlan,
   renameMark,
   renameParticle,
+  buildRefactorPlanCard,
   type SemanticRule,
   type SemanticEdit,
   type EffectGrade,
 } from '@spwashi/spw-seed'
 import { collectSpwFiles } from './fs-walk'
 import { resolveWorkspacePath, tryDiscoverSpwWorkspace } from './workspace'
+import { formatJsonEnvelope } from './envelope'
 
 interface RefactorArgs {
   targets: string[]
@@ -133,20 +135,36 @@ export async function runSpwRefactorCli(argv: string[] = process.argv): Promise<
     })
   }
 
+  const card = buildRefactorPlanCard({
+    write: args.write,
+    rules: rules.map(rule => ({
+      id: rule.id,
+      description: rule.description,
+      effectGrade: rule.effectGrade,
+    })),
+    totalEdits,
+    totalConflicts,
+    renameSpecs: args.renames,
+    report,
+  })
+
   if (args.json) {
-    console.log(JSON.stringify({
-      mode: args.write ? 'write' : 'plan',
-      files: report.length,
-      totalEdits,
-      totalConflicts,
-      report,
-    }, null, 2))
+    console.log(formatJsonEnvelope('refactor', card, {
+      surface: card.surface,
+      mode: card.mode,
+      effect: card.effect,
+      files: card.files,
+      totalEdits: card.totalEdits,
+      totalConflicts: card.totalConflicts,
+    }))
     return
   }
 
   const verb = args.write ? 'rewrote' : 'would rewrite'
   console.log(`spw refactor: ${verb} ${totalEdits} mark(s) in ${report.length} file(s)`
     + (totalConflicts > 0 ? ` · ${totalConflicts} conflict(s) withheld` : ''))
+  console.log(`  surface ${card.surface}  effect ${card.effect}`)
+  console.log(`  omitted ${card.omitted.join(', ')}`)
   for (const entry of report) {
     const mark = entry.wrote ? '✓' : '·'
     console.log(`  ${mark} ${entry.file}  (${entry.edits.length} edit${entry.edits.length === 1 ? '' : 's'}`
@@ -188,7 +206,7 @@ Rename kinds:
 
 Flags:
   --write           apply the edits (default is plan-only)
-  --json            emit the plan as JSON for review
+  --json            emit spw.refactor.plan/1 in the CLI envelope for review
   -h, --help        this help
 
 The stance prefix is always preserved; only the name changes. Every other byte

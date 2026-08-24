@@ -839,6 +839,14 @@ export {
   type CachePlane,
   type CacheLayerCard,
   type CacheLayerStats,
+  REFACTOR_PLAN_SURFACE,
+  REFACTOR_PLAN_OMISSIONS,
+  buildRefactorPlanCard,
+  type RefactorPlanCard,
+  type RefactorPlanFileCard,
+  type RefactorPlanRuleCard,
+  type RefactorPlanMode,
+  type RefactorRenameKind,
 } from './ir'
 
 // Experimental syntax catalog (plan/runtime reference ids)

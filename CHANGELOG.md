@@ -46,6 +46,7 @@ Compatibility note: a surface that depended on an indented example selecting the
 
 - Treat editor hosts as peer feedback surfaces: they owe depth and respect parity of questions and receipts, while remaining optional projections rather than a completeness program or release gate.
 - Add `cache.layer/1` so CLI, LSP, VS Code, and Neovim name the same four cache planes, including omissions.
+- Emit `spw.refactor.plan/1` from `spw refactor --json`: effect grade, rules as data, and named omissions for hashes, parent plan, worktree apply, and rebase.
 - Synchronize the CLI convention with all 37 canonical commands and their route-only aliases.
 - Separate implemented behavior, proposed migration work, and interpretive metaphor so aspiration does not masquerade as runtime fact.
 - Record inspection as local and read-only by default; exploratory syntax, editor activity, and cache warmth do not become person-level authority evidence.
