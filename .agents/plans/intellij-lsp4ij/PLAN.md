@@ -1,10 +1,10 @@
 # Plan: intellij-lsp4ij
 
-Evaluate whether migrating the IntelliJ plugin from the native JetBrains LSP API to LSP4IJ earns its added dependency and migration cost through repeated mounted-consumer review needs.
+Evaluate whether migrating the IntelliJ plugin from the deprecated native JetBrains LSP API to LSP4IJ earns its added dependency and migration cost before compatibility expands beyond the verified 262 platform branch.
 
 ## Goal
 
-The native JetBrains LSP API cannot invoke custom `spw/*` requests, while LSP4IJ can expose a typed custom-request interface. That difference is real, but VS Code feature parity is not by itself a migration reason. This plan stays speculative until identity-free mounted-consumer audits show that a custom request materially improves claim/evidence navigation, repository orientation, or review provenance beyond standard LSP and IntelliJ-native affordances.
+The 2026.2 Plugin Verifier accepts the native adapter but reports its LSP types as deprecated. LSP4IJ can also expose a typed custom-request interface. Those differences are real, but deprecation and VS Code feature parity are not by themselves migration reasons. This plan stays speculative through the 262 range; it must be decided before a 263 compatibility claim, using identity-free mounted-consumer evidence and the replacement APIs available at that boundary.
 
 Taste note: clarity (cleaner LSP4IJ API), layering (no more native LSP API lock-in), expressiveness (three new views).
 
@@ -42,7 +42,7 @@ Craft guard: Watch `SpwWorkspaceService` for state management scope creep. Panel
 
 ## Commits
 
-1. `&[intellij] =fix[build] — fix SpwLspConfigurable and bump Gradle IntelliJ Plugin to 2.13.1`
+1. `![intellij] *audit[native-lsp] — identify the 263 replacement boundary and compare LSP4IJ`
 2. `&[intellij] =migration[lsp4ij] — replace native LSP API with LSP4IJ LanguageServerFactory`
 3. `^seed[intellij] — add SpwCustomServer interface and WorkspaceService state caching`
 4. `&[intellij] =surface[panels] — add annotation panel, workspace atlas panel, context strip widget`
@@ -58,6 +58,7 @@ Craft guard: Watch `SpwWorkspaceService` for state management scope creep. Panel
 - `spw-site-install` — mounted-consumer startup and the repo-local review contract must work before custom-request UI is evaluated
 - `lsp-custom-request-completions` — server handlers must be stable and useful outside the VS Code client
 - `mounted-consumer-tooling` — supplies the capability evidence matrix and activation criterion
+- `webstorm-compatibility` — supplies the verified 242..262.* range, shared launcher resolver, and native-LSP deprecation receipt
 
 ## Spw Artifact
 
