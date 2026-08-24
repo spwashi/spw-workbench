@@ -6,6 +6,7 @@ Improve IntelliJ Spw plugin integration reliability and configurability.
 
 Ensure TextMate bundles load deterministically and LSP startup failures are surfaced with actionable diagnostics.
 Add basic configuration hooks so the LSP can run outside the repo root or in non-standard environments.
+Success is failure locality and named receipts (profile, cache plane, launch path) at peer depth with the other hosts, not a complete IntelliJ feature set and not a sketch of VS Code.
 Taste note: improve correctness and clarity in editor integration behavior.
 
 ## Scope

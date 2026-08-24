@@ -38,6 +38,8 @@ Peers: curiosity-mutation-ergonomics, refactor-experiment-lifecycle, measure-inv
 
 Follow-on: `gap-affinity-tooling` owns source-mapped gap classes, association-aware formatting, profile migration receipts, and question-oriented parser products.
 
+Editors consume the stack; they do not define it. A host that cannot yet show which profile won is missing a receipt, not a reason to fork dialect law into client chrome.
+
 Dialects are **product surfaces** (ethos): b literacy · p memory · q/l address · m machine · f flow lab · x hot · t expand. Familiarity curriculum: `b → p → q/l → m → f → x → t`.
 
 ## Imagination / play

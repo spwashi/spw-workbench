@@ -4,14 +4,16 @@ Give VS Code, IntelliJ/WebStorm, and Neovim a recognizable set of Spw workbench 
 
 ## Goal
 
-The three editor clients should expose the same conceptual moves: inspect a file's `form`, read its `stack` profile, inspect cache behavior, use standard LSP Rename at the caret, and preview broader corpus refactors through the plan-first CLI. Live-document clients may use the shared LSP for file probes; saved-file and corpus operations use parameterized CLI invocations whose working directory remains the consumer repository even when `.spw/_workbench` owns the executable.
+The three editor clients should expose the same conceptual moves: inspect a file's `form`, read its `stack` profile, inspect cache behavior, use standard LSP Rename at the caret, and preview broader corpus refactors through the plan-first CLI. Those moves owe **depth** (they should actually reach structure, winning profile, memo plane, and effect grade) and **respect parity** (peer hosts, comparable truth density, native form). Host designs are not assumed sound or complete. Balancing those implications is the design problem: copying chrome is false parity; leaving one host deep and the others shallow is false depth. A missing receipt is a kernel, profile, or runtime question, not a reason to invent a fourth engine or to treat one host as the real product.
 
-Taste note: improve recognizability, reversibility, performance legibility, and cross-editor resonance while preserving thin-client layering.
+Live-document clients may use the shared LSP for file probes; saved-file and corpus operations use parameterized CLI invocations whose working directory remains the consumer repository even when `.spw/_workbench` owns the executable.
+
+Taste note: improve recognizability, reversibility, performance legibility, and cross-editor resonance while preserving thin-client layering, peer depth, and question parity.
 
 ## Scope
 
 - **In scope**: canonical instrument names and effect grades; safe CLI argument construction; workbench/mounted-consumer discovery; explicit file probes for form, surface stack, and cache; cache hit/miss/age receipts where the client owns a cache; standard LSP rename guidance; read-only corpus refactor planning; background execution, cancellation, and recoverable error copy; editor-native result surfaces; focused tests and documentation for VS Code, IntelliJ/WebStorm, and Neovim.
-- **Out of scope**: applying corpus refactors from an editor; a second parser or rewrite engine; automatic probe traffic on cursor movement; persistent user-activity telemetry; migrating IntelliJ to another LSP client; changing Spw grammar or CLI compatibility aliases; implementing the full revisioned refactor experiment lifecycle.
+- **Out of scope**: applying corpus refactors from an editor; a second parser or rewrite engine; automatic probe traffic on cursor movement; persistent user-activity telemetry; migrating IntelliJ to another LSP client; changing Spw grammar or CLI compatibility aliases; implementing the full revisioned refactor experiment lifecycle; treating chrome mimicry as parity; treating one host as the real product; treating host chrome as language law.
 
 ## Files
 

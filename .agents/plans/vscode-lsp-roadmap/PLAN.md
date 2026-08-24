@@ -21,7 +21,9 @@ End state: agents and humans can answer (1) what ships first, (2) what is alread
 | Syntax fallback | client | TextMate | `syntax/spw.vim` + treesitter queries |
 | Commands | client map | Command palette | `:Spw*` + keymaps |
 
-**Rule:** new author value lands as **LSP diagnostics / code actions / earned methods** first. Client chrome is a *projection*, not a second semantic engine. Neovim does not need panel parity; it needs the same **truth density** via quickfix, floats, and statusline.
+**Rule:** new author value lands as **LSP diagnostics / code actions / earned methods** first. Client chrome is a *projection*, not a second semantic engine. Neovim does not need VS Code panels; it needs **peer depth**. Parity is truth density and named receipts, not chrome.
+
+**Feedback law (2026-08-24):** host designs are not assumed sound or complete, and they are not sketches of one another. Keep them because they disclose cache layer, profile stack, and runtime cost. Missing depth or uneven parity is the next kernel, profile, or runtime question — not permission to finish one IDE or to starve a peer.
 
 ## Current reality (2026-07-21)
 

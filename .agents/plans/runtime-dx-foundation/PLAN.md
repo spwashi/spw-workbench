@@ -10,7 +10,7 @@ Three concrete outcomes:
 
 1. **Failures are traceable**: a parse error, runtime fault, or LSP timeout reads as a station in the spiritual testing path (literature → seed → runtime → query → telemetry → publish) rather than an opaque red light.
 2. **Installation is debuggable**: when an external codebase runs `spw init` or starts the LSP, diagnostic output confirms what worked, what didn't, and what to try next.
-3. **Performance is visible**: LSP response times, parse durations, and selector traversal counts surface in both editor status bars and CLI output.
+3. **Performance is visible**: LSP response times, parse durations, and selector traversal counts surface in both editor status bars and CLI output. Editor chrome is a projection of those receipts, not the owner of the instrumentation.
 
 This is the service-design rung in the current ecology. The plan should teach the team how installability, diagnostics, and instrumentation become part of the product's language rather than hidden implementation residue. The strongest commits here will leave behind greppable codes, stable health-check snippets, and troubleshooting loops that another developer can actually follow.
 

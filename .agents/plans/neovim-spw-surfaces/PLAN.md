@@ -14,7 +14,7 @@ Strengthen Neovim as a **native peer client** of `spw-lsp`: same truth density a
 - `%mass` / authority claims once seed schemes exist
 - Progressive source products at the cursor or selected structural range, with spans, profile provenance, omissions, event counts, elapsed time, and cache plane visible as a scientific receipt
 
-End state: a Neovim session on a workbench or mounted consumer feels like a workbench — diagnostics, actions, and statusline speak Spw — while remaining **builtins-first** (no telescope/nui dependency required).
+End state: a Neovim session on a workbench or mounted consumer is a **peer host** — diagnostics, `:Spw*` receipts, and statusline can name structure, winning profile, and cache/runtime cost at comparable truth density to VS Code and IntelliJ, while remaining **builtins-first** (no telescope/nui dependency required). Builtins-first is the contour, not a depth cap. Missing receipts are kernel or runtime questions, not a reason to stay a sketch of another editor.
 
 **Taste note:** native affordances, quiet feedback, capability honesty, thrift.
 

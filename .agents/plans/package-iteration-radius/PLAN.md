@@ -16,6 +16,7 @@ Taste note: improve **onboarding**, **failure locality**, **package hygiene**, *
 - Most toolchain dependencies and scripts live at the root. The VS Code workspace declares its own TypeScript and esbuild ranges, which are materially different from the root ranges and need an intentional compatibility explanation or convergence rule.
 - `spw doctor`, JS distribution assembly, and `npm pack --dry-run` exist as useful foundations; they do not yet produce one cross-machine environment or iteration-radius receipt.
 - Current package `exports` route directly to TypeScript source and are import boundaries, not measured distribution bundles. Exploratory minified esbuild probes measured approximately 2.5 KB for Seed lite, 68.6 KB for Seed parser, 64.2 KB for progressive products, 313.6 KB for the full Seed barrel, 305.7 KB for the LSP stdio entry, and 4.1 MB for the eager CLI entry. These are structural observations under one tool invocation, not release budgets.
+- Editor hosts may report iteration radius, cache class, and activation cost. They do not own package contracts; a slow or incomplete host is a radius signal, not a reason to widen kernel work.
 - The CLI registry eagerly imports every command. Its bundle includes about 3.57 MB from `typescript` solely through authority extraction, so ordinary help and inspection routes inherit a compiler module they do not use.
 
 These are implementation facts, not a claim that the current layout is broken. The first slice is an audit and contract pass before dependency or version changes.

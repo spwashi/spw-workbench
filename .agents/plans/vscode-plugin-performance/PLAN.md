@@ -4,7 +4,7 @@ Improve the VS Code extension's startup, indexing, and live-update behavior with
 
 ## Goal
 
-The preview VS Code extension still pays too much work too early: activation starts the LSP, annotation mirror, context strip, concepts tree, and workspace atlas immediately (`activationEvents: []`), and surfaces can request cursor context independently. Compiled LSP launch **exists** (`build:server` → `dist/stdio-server.js`; extension prefers `*.js` over `tsx`), but source-first fallback and eager UI work still dominate feel. The desired end state is a faster, quieter extension that preserves thin-client posture: semantic truth in `packages/spw-lsp/`, selective activation/refresh/recompute on the client.
+The preview VS Code extension still pays too much work too early: activation starts the LSP, annotation mirror, context strip, concepts tree, and workspace atlas immediately (`activationEvents: []`), and surfaces can request cursor context independently. Compiled LSP launch **exists** (`build:server` → `dist/stdio-server.js`; extension prefers `*.js` over `tsx`), but source-first fallback and eager UI work still dominate feel. The desired end state is a faster, quieter extension that preserves thin-client posture: semantic truth in `packages/spw-lsp/`, selective activation/refresh/recompute on the client. Remaining eager work is a cache, activation-profile, and scan-bound problem. Do not treat missing trees, strips, or atlas completeness as the performance goal.
 
 **Server-side cost bounds help Neovim equally** (same stdio server). Neovim-specific CursorHold / fold refresh costs live in `neovim-spw-surfaces`; do not “fix” them by adding VS Code-only debounce that leaves the server heavy.
 
