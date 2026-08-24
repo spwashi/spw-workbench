@@ -1,6 +1,7 @@
 -- lua/spw/commands.lua — Spw user commands for Neovim
 local lsp = require('spw.lsp')
 local nav = require('spw.navigation')
+local instruments = require('spw.instruments')
 local M = {}
 
 ---@param msg string
@@ -28,6 +29,36 @@ function M.setup()
 
   vim.api.nvim_create_user_command('SpwStop', lsp.stop, {
     desc = 'Stop the Spw LSP server',
+  })
+
+  vim.api.nvim_create_user_command('SpwForm', instruments.form, {
+    desc = 'Inspect current Spw form through the live LSP document',
+  })
+
+  vim.api.nvim_create_user_command('SpwStack', instruments.stack, {
+    desc = 'Inspect current Spw surface stack through the live LSP document',
+  })
+
+  vim.api.nvim_create_user_command('SpwCache', instruments.cache, {
+    desc = 'Inspect Spw LSP session cache reflection',
+  })
+
+  vim.api.nvim_create_user_command('SpwRename', function() vim.lsp.buf.rename() end, {
+    desc = 'Rename Spw symbol through the standard LSP capability',
+  })
+
+  vim.api.nvim_create_user_command('SpwRefactorPlan', function(opts)
+    local run = function(spec)
+      if spec and vim.trim(spec) ~= '' then instruments.refactor_plan(spec) end
+    end
+    if opts.args ~= '' then
+      run(opts.args)
+    else
+      vim.ui.input({ prompt = 'Spw rename plan (kind:from=to): ' }, run)
+    end
+  end, {
+    nargs = '?',
+    desc = 'Preview a plan-only Spw corpus refactor (mark|anchor|case|mood:from=to)',
   })
 
   vim.api.nvim_create_user_command('SpwOpenRef', function()

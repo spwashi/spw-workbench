@@ -14,7 +14,9 @@ import { SIGIL_SEMANTICS } from './semantics'
 import { registerConceptsTreeView } from './views/concepts-tree'
 import { registerWorkspaceAtlasView } from './views/workspace-tree'
 import { registerSpwCommands } from './commands'
-import { ProbeCache, readSurfaceConfig, registerSurfaceDecorations } from './surface-decorations'
+import { registerSpwInstrumentCommands } from './instruments/commands'
+import { ProbeCache } from './instruments/probe-cache'
+import { readSurfaceConfig, registerSurfaceDecorations } from './surface-decorations'
 
 let client: LanguageClient | undefined
 
@@ -50,7 +52,8 @@ export function activate(context: vscode.ExtensionContext): void {
     ...registerSurfaceDecorations(probeCache, (doc) => {
       void vscode.commands.executeCommand('spw.inspectGeometry')
     }),
-    ...registerSpwCommands(context, client, requests, probeCache),
+    ...registerSpwCommands(client, requests),
+    ...registerSpwInstrumentCommands(client, requests, probeCache),
   ]
 
   context.subscriptions.push(...disposables)

@@ -21,6 +21,16 @@ end
 ---@return table|nil
 function M.resolve_host(consumer_root)
   local root = vim.fn.fnamemodify(consumer_root, ':p'):gsub('/$', '')
+  local configured = vim.trim(vim.g.spw_cli_root or '')
+  if configured ~= '' then
+    local tool_root = configured:sub(1, 1) == '/'
+      and vim.fn.fnamemodify(configured, ':p'):gsub('/$', '')
+      or vim.fn.fnamemodify(root .. '/' .. configured, ':p'):gsub('/$', '')
+    if M.has_npm_script(tool_root, 'spw') then
+      return { consumer_root = root, tool_root = tool_root }
+    end
+    return nil
+  end
   if M.has_npm_script(root, 'spw') then
     return { consumer_root = root, tool_root = root }
   end

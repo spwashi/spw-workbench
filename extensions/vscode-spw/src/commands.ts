@@ -4,15 +4,12 @@
 import * as vscode from 'vscode'
 import type { LanguageClient } from 'vscode-languageclient/node'
 import type { SpwCustomRequestClient } from './lsp/custom-requests'
-import type { ProbeCache } from './surface-decorations'
 
 const FORM_SEQ = '& => {&} => {&[#label]} => {&<#tag>_label}'
 
 export function registerSpwCommands(
-  _context: vscode.ExtensionContext,
   client: LanguageClient,
   requests: SpwCustomRequestClient,
-  probeCache?: ProbeCache,
 ): vscode.Disposable[] {
   return [
     vscode.commands.registerCommand('spw.showOperatorFrequency', async () => {
@@ -111,41 +108,6 @@ export function registerSpwCommands(
       await vscode.window.showTextDocument(doc, { preview: true })
     }),
 
-    vscode.commands.registerCommand('spw.inspectCache', async () => {
-      const reflection = await requests.cacheReflection()
-      if (!reflection || reflection.tracked === 0) {
-        void vscode.window.showInformationMessage('No surfaces read yet this session.')
-        return
-      }
-
-      const short = (uri: string): string => uri.split('/').slice(-2).join('/')
-      const percent = (share: number): string => `${Math.round(share * 100)}%`
-
-      const lines = [
-        '# Spw session attention',
-        '',
-        `${reflection.tracked} surfaces read · beat ${reflection.beat} · `
-          + `${percent(reflection.concentration)} of opens on one surface`,
-        '',
-        '## What stands out',
-        ...(reflection.notes.length > 0
-          ? reflection.notes.map((n) => `- **${n.kind}** — ${short(n.uri)}: ${n.detail}`)
-          : ['- nothing to flag: no stale readings, no abandoned edits']),
-        '',
-        '## Kinds of surface in play',
-        ...reflection.families.map(
-          (f) => `- **${f.archetype}** (${f.volatility}) × ${f.uris.length}`
-            + `\n${f.uris.map((u) => `  - ${short(u)}`).join('\n')}`,
-        ),
-      ]
-
-      const doc = await vscode.workspace.openTextDocument({
-        content: lines.join('\n'),
-        language: 'markdown',
-      })
-      await vscode.window.showTextDocument(doc, { preview: true })
-    }),
-
     vscode.commands.registerCommand('spw.showReferenceHubs', async () => {
       const graph = await vscode.window.withProgress(
         { location: vscode.ProgressLocation.Window, title: 'Spw: reading the reference graph…' },
@@ -203,95 +165,6 @@ export function registerSpwCommands(
     vscode.commands.registerCommand('spw.restartLanguageServer', async () => {
       await client.restart()
       void vscode.window.showInformationMessage('Spw language server restarted.')
-    }),
-
-    vscode.commands.registerCommand('spw.inspectGeometry', async () => {
-      const editor = vscode.window.activeTextEditor
-      if (!editor || editor.document.languageId !== 'spw') {
-        void vscode.window.showInformationMessage('Open a .spw file first.')
-        return
-      }
-      const uri = editor.document.uri.toString()
-      const cacheKey = `geometry:${uri}:${editor.document.version}`
-      let cachedResult = probeCache?.get<{
-        braces: {
-          kinds: Record<string, number>
-          coupleOps: number
-          medials: number
-          channels: string[]
-        }
-        operators: Array<{ sigil: string; count: number; percent: number; role: string }>
-        nesting: { maxDepth: number }
-        lessons: string[]
-      }>(cacheKey)
-      if (!cachedResult) {
-        cachedResult = await client.sendRequest('spw/geometry', { uri })
-        probeCache?.set(cacheKey, cachedResult)
-      }
-      const result = cachedResult!
-      const k = result.braces?.kinds ?? {}
-      const lines = [
-        `# Spw geometry`,
-        `()=${k.scope ?? 0} []=${k.frame ?? 0} {}=${k.body ?? 0} <>=${k.capsule ?? 0}  couple=${result.braces?.coupleOps ?? 0}  medials=${result.braces?.medials ?? 0}`,
-        `maxDepth=${result.nesting?.maxDepth ?? 0}`,
-        '',
-        'operators',
-        ...(result.operators ?? [])
-          .slice(0, 12)
-          .map(o => `${o.sigil}  ${o.count}  ${o.percent.toFixed(1)}%  ${o.role}`),
-        '',
-        'lessons',
-        ...(result.lessons ?? []).map(L => `· ${L}`),
-      ]
-      const doc = await vscode.workspace.openTextDocument({
-        content: lines.join('\n'),
-        language: 'markdown',
-      })
-      await vscode.window.showTextDocument(doc, { preview: true, viewColumn: vscode.ViewColumn.Beside })
-    }),
-
-    vscode.commands.registerCommand('spw.showSurfaceProfile', async () => {
-      const editor = vscode.window.activeTextEditor
-      if (!editor || editor.document.languageId !== 'spw') {
-        void vscode.window.showInformationMessage('Open a .spw file first.')
-        return
-      }
-      const uri = editor.document.uri.toString()
-      const result = await client.sendRequest<{
-        stack?: Record<string, string>
-        flow?: { summary?: string }
-        probeMeasure?: string
-        experimental?: { known?: string[]; unknown?: string[] }
-        phrases?: Record<string, number>
-      }>('spw/surfaceProfile', { uri })
-      const stack = result.stack ?? {}
-      const lines = [
-        '# Spw surface profile',
-        '',
-        '## Stack',
-        ...Object.entries(stack).map(([k, v]) => `- **${k}**: \`${v}\``),
-        '',
-        `## Flow`,
-        result.flow?.summary ?? '(none)',
-        '',
-        `## Probes`,
-        result.probeMeasure ?? '(none)',
-        '',
-        '## Experimental',
-        `known: ${(result.experimental?.known ?? []).join(', ') || '—'}`,
-        `unknown: ${(result.experimental?.unknown ?? []).join(', ') || '—'}`,
-        '',
-        '## Phrases',
-        ...Object.entries(result.phrases ?? {})
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, 12)
-          .map(([id, n]) => `- \`${id}\` ×${n}`),
-      ]
-      const doc = await vscode.workspace.openTextDocument({
-        content: lines.join('\n'),
-        language: 'markdown',
-      })
-      await vscode.window.showTextDocument(doc, { preview: true, viewColumn: vscode.ViewColumn.Beside })
     }),
 
     vscode.commands.registerCommand('spw.showFlowProtocol', async () => {
@@ -393,9 +266,5 @@ export function registerSpwCommands(
       await vscode.window.showTextDocument(doc, { preview: true, viewColumn: vscode.ViewColumn.Beside })
     }),
 
-    vscode.commands.registerCommand('spw.clearProbeCache', () => {
-      probeCache?.clear()
-      void vscode.window.showInformationMessage('Spw probe cache cleared.')
-    }),
   ]
 }

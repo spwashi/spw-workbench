@@ -65,8 +65,16 @@ export function cliProcess(host: SpwCliHost, invocation: SpwCliInvocation): SpwC
   }
 }
 
-export async function resolveSpwCliHost(consumerRoot: string): Promise<SpwCliHost | undefined> {
+export async function resolveSpwCliHost(
+  consumerRoot: string,
+  configuredToolRoot = '',
+): Promise<SpwCliHost | undefined> {
   const root = path.resolve(consumerRoot)
+  const configured = configuredToolRoot.trim()
+  if (configured) {
+    const toolRoot = path.isAbsolute(configured) ? configured : path.resolve(root, configured)
+    return await hasNpmScript(toolRoot, 'spw') ? { consumerRoot: root, toolRoot } : undefined
+  }
   if (await hasNpmScript(root, 'spw')) return { consumerRoot: root, toolRoot: root }
 
   const mountedWorkbench = path.join(root, '.spw', '_workbench')

@@ -56,6 +56,7 @@ function M.setup(opts)
   if opts.lsp_disable ~= nil then vim.g.spw_lsp_disable = opts.lsp_disable end
   if opts.auto_mkdir ~= nil then vim.g.spw_auto_mkdir = opts.auto_mkdir end
   if opts.lsp_settings then vim.g.spw_lsp_settings = opts.lsp_settings end
+  if opts.cli_root then vim.g.spw_cli_root = opts.cli_root end
 
   require('spw.commands').setup()
 end

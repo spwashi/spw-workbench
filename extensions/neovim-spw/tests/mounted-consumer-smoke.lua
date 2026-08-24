@@ -96,4 +96,9 @@ assert_true(not table.concat(plan.args, '|'):find('%-%-write'), 'Corpus refactor
 local invalid_ok = pcall(cli.refactor_plan, 'status=phase')
 assert_true(not invalid_ok, 'Malformed refactor specs are rejected')
 
+-- Test 11: Workbench instrument commands are discoverable and remain explicit
+for _, command in ipairs({ 'SpwForm', 'SpwStack', 'SpwCache', 'SpwRename', 'SpwRefactorPlan' }) do
+  assert_true(vim.fn.exists(':' .. command) == 2, ':' .. command .. ' command registered')
+end
+
 print('✓ All neovim-spw smoke tests passed cleanly.')

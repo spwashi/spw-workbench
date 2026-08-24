@@ -43,6 +43,7 @@
  */
 
 import * as vscode from 'vscode'
+import type { ProbeCache } from './instruments/probe-cache'
 
 export interface SurfaceDecorationConfig {
   highlightPathRefs: boolean
@@ -78,29 +79,6 @@ export function readSurfaceConfig(): SurfaceDecorationConfig {
     geometryOnSave: c.get('compute.geometryOnSave', DEFAULTS.geometryOnSave),
     probeCacheMs:   Math.max(0, c.get('cache.probeTtlMs',     DEFAULTS.probeCacheMs)),
   }
-}
-
-/** Simple TTL cache for expensive client probes (geometry / frequency). */
-export class ProbeCache {
-  private readonly map = new Map<string, { at: number; value: unknown }>()
-  constructor(private ttlMs: number) {}
-
-  setTtl(ms: number): void { this.ttlMs = ms }
-
-  get<T>(key: string): T | undefined {
-    if (this.ttlMs <= 0) return undefined
-    const hit = this.map.get(key)
-    if (!hit) return undefined
-    if (Date.now() - hit.at > this.ttlMs) { this.map.delete(key); return undefined }
-    return hit.value as T
-  }
-
-  set(key: string, value: unknown): void {
-    if (this.ttlMs <= 0) return
-    this.map.set(key, { at: Date.now(), value })
-  }
-
-  clear(): void { this.map.clear() }
 }
 
 // ── Exclusion mask ────────────────────────────────────────────────
