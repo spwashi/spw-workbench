@@ -18,7 +18,12 @@
  * session, and says so.
  */
 
-import { particleMixTotal, type ParticleMix } from '@spwashi/spw-seed'
+import {
+  assembleCacheLayers,
+  particleMixTotal,
+  type CacheLayerCard,
+  type ParticleMix,
+} from '@spwashi/spw-seed'
 import type { HandlerDeps } from '../types'
 import { volatilityOf, type Volatility } from './workspace'
 
@@ -64,6 +69,8 @@ export interface SignatureFamily {
 }
 
 export interface CacheReflection {
+  plane: 'lsp_session_reflection'
+  layers: CacheLayerCard[]
   beat: number
   tracked: number
   /** Share of all opens spent on the single most-visited surface, 0–1. */
@@ -155,6 +162,13 @@ export function cacheReflection(deps: HandlerDeps): CacheReflection {
   }
 
   return {
+    plane: 'lsp_session_reflection',
+    layers: assembleCacheLayers({
+      lsp_session_reflection: {
+        source: 'language-server session reflection',
+        stats: { size: tracked, visits: totalVisits },
+      },
+    }),
     beat,
     tracked,
     concentration: totalVisits > 0 ? peakVisits / totalVisits : 0,

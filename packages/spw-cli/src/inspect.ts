@@ -18,6 +18,8 @@ import {
   scanNestPaths,
   scanAppositions,
   appositionSpectrum,
+  assembleCacheLayers,
+  formatCacheLayerLines,
 } from '@spwashi/spw-seed'
 import {
   createHotSession,
@@ -325,8 +327,20 @@ async function runCache(args: InspectArgs): Promise<void> {
   const stats = session.cacheStats()
   const policy = resolveChannelPolicy(channel)
 
+  const layers = assembleCacheLayers({
+    runtime_cache: {
+      source: 'hot-session evaluate/inspect cache',
+      stats: {
+        hits: second.cacheHit ? 1 : 0,
+        misses: first.cacheHit ? 0 : 1,
+        size: stats.evaluate?.size ?? stats.size,
+      },
+    },
+  })
+
   const payload = {
-    plane: 'beat_evaluate+beat_inspect',
+    plane: 'runtime_cache',
+    layers,
     file: rel,
     channel,
     channelTier: policy.cacheDefaultTier,
@@ -341,7 +355,7 @@ async function runCache(args: InspectArgs): Promise<void> {
   }
 
   emitHeader('inspect', {
-    plane: 'beat_cache',
+    plane: 'runtime_cache',
     file: rel,
     channel,
     beat: payload.beat,
@@ -352,6 +366,10 @@ async function runCache(args: InspectArgs): Promise<void> {
   if (args.json) {
     console.log(formatJsonEnvelope('inspect.cache', payload))
     return
+  }
+
+  for (const line of formatCacheLayerLines(layers)) {
+    if (line) emitDetail(line)
   }
 
   emitDetail(

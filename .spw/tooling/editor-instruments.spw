@@ -55,8 +55,9 @@
 
 ^["receipts"]{
  common: [#question, #source, #scope, #duration_when_measured, #exit_state, #effect]
- cache_layers: [#editor_probe_cache, #lsp_session_reflection, #runtime_cache]
- rule: "Name the cache layer; do not flatten distinct caches into one hit/miss claim."
+ cache_layers: [#editor_probe_cache, #lsp_session_reflection, #runtime_cache, #corpus_memo]
+ protocol: "cache.layer/1"
+ rule: "Name the cache layer; do not flatten distinct caches into one hit/miss claim. Absent planes stay on the card as omissions."
  vscode: "The editor-local TTL cache reports entries, TTL, hits, misses, expirations, disabled reads, writes, and clears."
  neovim: "No additional probe cache; cache inspection identifies LSP session reflection."
  intellij: "Saved-file CLI cache JSON stays reusable as a read-only intermediate document."

@@ -55,7 +55,19 @@ export interface SpwSignatureFamily {
   uris: string[]
 }
 
+export interface SpwCacheLayerCard {
+  surface?: 'cache.layer/1'
+  plane: 'editor_probe_cache' | 'lsp_session_reflection' | 'runtime_cache' | 'corpus_memo'
+  present: boolean
+  source: string
+  omission?: string
+  next?: string
+  stats?: Record<string, number | string | boolean | undefined>
+}
+
 export interface SpwCacheReflection {
+  plane?: 'lsp_session_reflection'
+  layers?: SpwCacheLayerCard[]
   beat: number
   tracked: number
   /** Share of all opens spent on the single most-visited surface, 0–1. */

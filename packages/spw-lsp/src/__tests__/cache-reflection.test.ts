@@ -113,6 +113,20 @@ describe('cacheReflection — what the session paid attention to', () => {
 
   it('reports an empty session without inventing attention', () => {
     const reflection = cacheReflection(deps(new ServerIndex(ROOT)))
-    expect(reflection).toMatchObject({ tracked: 0, concentration: 0, notes: [], families: [] })
+    expect(reflection).toMatchObject({
+      plane: 'lsp_session_reflection',
+      tracked: 0,
+      concentration: 0,
+      notes: [],
+      families: [],
+    })
+    expect(reflection.layers.map((layer) => layer.plane)).toEqual([
+      'editor_probe_cache',
+      'lsp_session_reflection',
+      'runtime_cache',
+      'corpus_memo',
+    ])
+    expect(reflection.layers.find((layer) => layer.plane === 'lsp_session_reflection')?.present).toBe(true)
+    expect(reflection.layers.find((layer) => layer.plane === 'editor_probe_cache')?.present).toBe(false)
   })
 })

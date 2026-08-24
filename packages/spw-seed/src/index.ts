@@ -829,6 +829,16 @@ export {
   type ProgressiveProductCompleteness,
   type ProgressiveProductRecord,
   type BuildProgressiveProductInput,
+  CACHE_LAYER_SURFACE,
+  CACHE_PLANES,
+  CACHE_LAYER_DEFAULTS,
+  assembleCacheLayers,
+  formatCacheLayerLines,
+  omitCacheLayer,
+  presentCacheLayer,
+  type CachePlane,
+  type CacheLayerCard,
+  type CacheLayerStats,
 } from './ir'
 
 // Experimental syntax catalog (plan/runtime reference ids)

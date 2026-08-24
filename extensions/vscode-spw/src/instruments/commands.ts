@@ -1,8 +1,8 @@
 import { execFile } from 'node:child_process'
 import * as vscode from 'vscode'
 import type { LanguageClient } from 'vscode-languageclient/node'
-import type { SpwCustomRequestClient } from '../lsp/custom-requests'
-import type { ProbeCache, ProbeCacheReadState } from './probe-cache'
+import type { SpwCacheLayerCard, SpwCustomRequestClient } from '../lsp/custom-requests'
+import type { ProbeCache, ProbeCacheReadState, ProbeCacheSnapshot } from './probe-cache'
 import {
   cliProcess,
   refactorPlanInvocation,
@@ -28,6 +28,59 @@ interface SurfaceProfileResult {
   probeMeasure?: string
   experimental?: { known?: string[]; unknown?: string[] }
   phrases?: Record<string, number>
+}
+
+function overlayEditorProbeLayer(
+  layers: SpwCacheLayerCard[] | undefined,
+  snapshot: ProbeCacheSnapshot | undefined,
+): SpwCacheLayerCard[] {
+  const next = layers?.length
+    ? layers.map(layer => ({ ...layer }))
+    : [
+      { plane: 'editor_probe_cache', present: false, source: 'editor-local TTL probe cache', omission: 'this host does not keep an editor probe cache' },
+      { plane: 'lsp_session_reflection', present: false, source: 'language-server session reflection', omission: 'no LSP session in this process' },
+      { plane: 'runtime_cache', present: false, source: 'hot-session evaluate/inspect cache', omission: 'runtime cache not sampled here', next: 'spw inspect cache <file.spw>' },
+      { plane: 'corpus_memo', present: false, source: 'corpus product memo', omission: 'corpus memo not sampled here', next: 'spw census --json' },
+    ] satisfies SpwCacheLayerCard[]
+
+  const editor: SpwCacheLayerCard = snapshot
+    ? {
+      plane: 'editor_probe_cache',
+      present: true,
+      source: 'editor-local TTL cache · explicit form probes only',
+      stats: { ...snapshot },
+    }
+    : {
+      plane: 'editor_probe_cache',
+      present: false,
+      source: 'editor-local TTL probe cache',
+      omission: 'not configured',
+    }
+
+  const index = next.findIndex(layer => layer.plane === 'editor_probe_cache')
+  if (index >= 0) next[index] = editor
+  else next.unshift(editor)
+  return next
+}
+
+function renderCacheLayers(layers: SpwCacheLayerCard[]): string[] {
+  const lines: string[] = []
+  for (const layer of layers) {
+    lines.push(`## ${layer.plane}`)
+    lines.push(`present: ${layer.present}`)
+    lines.push(`source: ${layer.source}`)
+    if (!layer.present && layer.omission) lines.push(`omission: ${layer.omission}`)
+    if (layer.next) lines.push(`next: ${layer.next}`)
+    if (layer.stats) {
+      const stats = Object.entries(layer.stats)
+        .filter(([, value]) => value !== undefined)
+        .map(([key, value]) => `${key}=${value}`)
+        .join(' ')
+      if (stats) lines.push(stats)
+    }
+    lines.push('')
+  }
+  return lines
 }
 
 export function registerSpwInstrumentCommands(
@@ -109,17 +162,15 @@ export function registerSpwInstrumentCommands(
       const local = probeCache?.snapshot()
       const short = (uri: string): string => uri.split('/').slice(-2).join('/')
       const percent = (share: number): string => `${Math.round(share * 100)}%`
+      const layers = overlayEditorProbeLayer(reflection?.layers, local)
       const lines = [
         '# Spw cache',
         '',
-        '## VS Code probe cache',
-        'source: editor-local TTL cache · scope: explicit form probes only',
-        local
-          ? `entries=${local.entries} ttl=${local.ttlMs}ms hits=${local.hits} misses=${local.misses} expired=${local.expired} disabled=${local.disabled} writes=${local.writes} clears=${local.clears}`
-          : '(not configured)',
+        'parity: cache.layer/1',
+        ...renderCacheLayers(layers),
         '',
         '## LSP session attention',
-        'source: language-server session reflection · not the editor TTL cache',
+        'plane: lsp_session_reflection',
         reflection && reflection.tracked > 0
           ? `${reflection.tracked} surfaces read · beat ${reflection.beat} · ${percent(reflection.concentration)} of opens on one surface`
           : 'No surfaces read yet this LSP session.',

@@ -89,19 +89,44 @@ function M.stack()
   end, 'Spw surface stack')
 end
 
+local function render_cache_layers(layers)
+  local lines = { 'parity: cache.layer/1', '' }
+  for _, layer in ipairs(layers or {}) do
+    table.insert(lines, '## ' .. (layer.plane or 'cache'))
+    table.insert(lines, 'present: ' .. tostring(layer.present == true))
+    table.insert(lines, 'source: ' .. (layer.source or ''))
+    if layer.present ~= true and layer.omission then
+      table.insert(lines, 'omission: ' .. layer.omission)
+    end
+    if layer.next then table.insert(lines, 'next: ' .. layer.next) end
+    if type(layer.stats) == 'table' then
+      local parts = {}
+      for key, value in pairs(layer.stats) do
+        table.insert(parts, string.format('%s=%s', key, tostring(value)))
+      end
+      table.sort(parts)
+      if #parts > 0 then table.insert(lines, table.concat(parts, ' ')) end
+    end
+    table.insert(lines, '')
+  end
+  return lines
+end
+
 function M.cache()
   lsp.request_custom('spw/cacheReflection', {}, function(err, result)
     if err or not result then
       notify('Spw cache failed: ' .. tostring(err or 'empty result'), vim.log.levels.WARN)
       return
     end
-    local lines = {
-      '# Spw cache', '',
-      'source: LSP session reflection · Neovim does not add an editor probe cache', '',
+    local lines = { '# Spw cache', '' }
+    vim.list_extend(lines, render_cache_layers(result.layers))
+    vim.list_extend(lines, {
+      '## LSP session attention',
+      'plane: lsp_session_reflection',
       string.format('tracked=%d beat=%d concentration=%.0f%%',
         result.tracked or 0, result.beat or 0, (result.concentration or 0) * 100),
       '', '## What stands out',
-    }
+    })
     if #(result.notes or {}) == 0 then table.insert(lines, '- nothing to flag') end
     for _, note in ipairs(result.notes or {}) do
       table.insert(lines, string.format('- **%s** — %s: %s',
