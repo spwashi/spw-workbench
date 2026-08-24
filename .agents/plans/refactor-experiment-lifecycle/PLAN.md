@@ -17,6 +17,8 @@ Selection (`query`/`select`), semantic edits (`semantic-edit.ts`), corpus rename
 
 **Taste note:** correctness (hash-gated apply), reversibility (worktree l1), layering (seed plan kernel; CLI I/O; git at the edge), expressiveness (Spw bias/experiment surfaces as human patch language).
 
+The landed editor-instrument baseline previews the current one-shot `spw refactor` JSON plan from VS Code, IntelliJ/WebStorm, and Neovim without `--write`. It is a safe bridge, not a claim that `spw.refactor.plan/1`, selection hashes, rebase, or worktree apply have landed.
+
 ## Ecology
 
 Parent: `.agents/plans/shape-syntax-ecology/PLAN.md`.  

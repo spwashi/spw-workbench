@@ -6,8 +6,8 @@ This note is the current integration and design reference for the Spw language s
 
 - The VS Code extension is a **preview thin client** for `v0.3.0`.
 - The language server is the **semantic truth surface** for editor behavior.
-- The extension currently expects a **workbench checkout layout** so it can launch `packages/spw-lsp/src/stdio-server.ts`.
-- Mounted `.spw/_workbench` startup is an active quality/design lane, not a capability the extension should currently overclaim.
+- The VS Code extension launches its bundled CommonJS server; it does not depend on consumer TypeScript or `tsx` at runtime.
+- Mounted `.spw/_workbench` supplies CLI-backed corpus instruments when a consumer does not expose its own npm `spw` script.
 
 ## Current Capability Surface
 
@@ -64,7 +64,17 @@ Graph and temperature always include `dualReadSpw` (seed `formatSpwCard`, same a
 
 Configurable decorations (`spw.surface.*`) paint path refs, annotations, braces, and optional operators so Spw structure stays distinct from host TypeScript/Markdown. Compute/cache knobs: `spw.compute.decorationRefreshMs`, `spw.compute.geometryOnSave`, `spw.cache.probeTtlMs` (client probe cache for geometry/frequency).
 
-Clients: VS Code commands (`Spw: Show Operator Frequency`, form sequence insert/explain, temperature, restart server); Neovim `:SpwOperatorFreq`, `:SpwPhase`, `:SpwFormSeq`, `:SpwTemperature`, `:SpwActivity`.
+Clients also share a question-level instrument sequence without requiring identical UI:
+
+| Question | VS Code | IntelliJ/WebStorm | Neovim |
+|---|---|---|---|
+| Form | guided live side-by-side Markdown | saved-file read-only Spw preview | `:SpwForm` scratch split |
+| Stack | guided live side-by-side Markdown | saved-file read-only JSON | `:SpwStack` scratch split |
+| Cache | editor TTL receipt + LSP reflection | CLI cache JSON | `:SpwCache` LSP reflection |
+| Rename | standard LSP Rename | native IntelliJ Rename backed by LSP | `:SpwRename` / `<leader>rn` |
+| Corpus refactor | guided CLI JSON plan | action-dialog CLI JSON plan | `:SpwRefactorPlan kind:from=to` |
+
+The shared vocabulary makes a feature comparable across hosts. Each projection preserves its substrate's contour: VS Code favors guided comparison, IntelliJ favors structural/native refactoring context, and Neovim favors terse buffer composition. Corpus plans never add `--write`.
 
 Research only (not registered in canon roots): [polyglot LSP search design](./polyglot-lsp-search.md).
 
@@ -83,12 +93,7 @@ The extension and LSP should be judged by these rules:
 
 ### VS Code Preview Path
 
-The extension currently resolves the server from a workbench checkout:
-
-- `packages/spw-lsp/src/stdio-server.ts`
-- `packages/spw-lsp/src/upstream-bridge.ts`
-
-That is the truthful preview path today.
+The extension packages and launches `dist/server/spw-lsp.cjs`. It does not search a consumer workspace for source TypeScript or require `tsx` at runtime. A mounted workbench is only needed for CLI-backed corpus planning when the consumer does not already expose an npm `spw` script.
 
 ### Standalone Editor Path
 
@@ -112,6 +117,8 @@ tool root in this order:
 The plugin invokes the selected package script as `npm run --silent lsp`. Explicit commands still
 take precedence, and syntax highlighting, folding, and structure view remain available if Node or
 the launcher is missing.
+
+File instruments use `npm --prefix <tool-root> run --silent spw -- ...` while keeping the open project as process `cwd`. This keeps CLI discovery, relative paths, and corpus authority consumer-owned even when `.spw/_workbench` supplies the executable.
 
 ## Validation
 

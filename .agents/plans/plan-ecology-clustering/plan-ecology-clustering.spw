@@ -24,6 +24,8 @@
  @garden_geometry: ~".agents/plans/spw-garden-geometry/spw-garden-geometry.spw"
  @lsp_roadmap: ~".agents/plans/vscode-lsp-roadmap/vscode-lsp-roadmap.spw"
  @editor_audit: ~".spw/tooling/editor-surface-audit.spw"
+ @editor_instruments: ~".spw/tooling/editor-instruments.spw"
+ @editor_instrument_plan: ~".agents/plans/editor-cli-instruments/editor-cli-instruments.spw"
  @canon_rewrite: ~".agents/plans/canon-rewrite-v2/PLAN.md"
  @cli_sense: ~".agents/plans/cli-sense-reorientation/PLAN.md"
  @cli_modes: ~".agents/plans/cli-mode-overhaul/PLAN.md"
@@ -129,7 +131,7 @@
  }
  projection: .{
   owns: [#disclosure_policy, #interaction_profile, #privacy_boundary, #native_affordance, #optional_annotation]
-  routes: [@editor_audit, @lsp_roadmap, @garden_geometry]
+  routes: [@editor_audit, @editor_instruments, @lsp_roadmap, @garden_geometry]
   refuses: [#ui_semantics_as_language_law, #metaphor_without_mapping, #private_plane_auto_reveal]
  }
  ~#law: "a consumer should infer what is stable, proposed, measurable, and optional without knowing which repositories motivated the contract"
@@ -148,7 +150,7 @@
  component: .{op:"*", plans:["audit-css-tokens", "audit-data-attributes", "audit-ui-data-models", "vscode-authoring-probe-loop", "vscode-register-explorer"], asks:[#state, #style, #operator_widget, #register], into:"."}
  page: .{op:".", plans:["curriculum-html-css-mastery", "curriculum-html-svg-mastery", "ecosystem-surface-governance", "symmetry-explorer-instrument", "spw-garden-geometry"], asks:[#navigation, #layout, #atmosphere, #exhibit], into:"!"}
  service: .{op:"!", plans:["canon-rewrite-v2", "spw-site-install", "package-iteration-radius", "gap-affinity-tooling", "cli-sense-reorientation", "cli-mode-overhaul", "cli-benchmarking-infra", "runtime-dx-foundation", "vscode-lsp-roadmap"], asks:[#compatibility, #install, #diagnostics, #iteration_radius, #progressive_output, #evidence], into:"?"}
- bridge: .{op:"@", plans:["operational-topography", "obsidian-spw", "intellij-lsp4ij", "webstorm-compatibility", "neovim-spw-surfaces", "lsp-custom-request-completions"], asks:[#substrate, #transfer, #protocol, #failure_locality, #topography], into:"!"}
+ bridge: .{op:"@", plans:["operational-topography", "editor-cli-instruments", "obsidian-spw", "intellij-lsp4ij", "webstorm-compatibility", "neovim-spw-surfaces", "lsp-custom-request-completions"], asks:[#substrate, #transfer, #protocol, #failure_locality, #topography, #host_contour], into:"!"}
  ~#cycle: "? -> * -> . -> ! -> ?"
  ~#cross: "@ bridge plans straddle ! and ~ — they execute a port but learn the target substrate"
  ~#principal: "^ keeps the ladder permeable — local learning should rise into durable design judgment"
@@ -244,6 +246,7 @@
   cli_mode_overhaul: .{learn:[#effect_grade, #intermediate, #dx], discuss:[#preview, #stream, #write], probe:[#truth, #failure_locality]}
   cli_sense_reorientation: .{learn:[#composition, #ir, #projection], discuss:[#verbs, #progressive_output], probe:[#readability, #interoperability]}
   intellij_plugin_integration: .{learn:[#dx, #editor_scope], discuss:[#surface_fit, #ownership], probe:[#fallback, #latency]}
+  editor_cli_instruments: .{learn:[#editor_scope, #interaction, #performance_literacy], discuss:[#host_contour, #refactor_preview, #cache_provenance], probe:[#transfer, #latency, #creativity]}
   webstorm_compatibility: .{learn:[#compatibility, #dx, #editor_scope], discuss:[#support_matrix, #mounted_startup], probe:[#fallback, #transfer, #truth]}
   lsp_custom_request_completions: .{learn:[#service, #query, #telemetry], discuss:[#surface_fit, #phase_vocab], probe:[#truth, #latency]}
   operational_topography: .{learn:[#semantics, #query, #evidence, #layout], discuss:[#authority, #orientation, #mutation], probe:[#truth, #transfer, #failure_locality]}
@@ -292,6 +295,7 @@
  // transfer syntax, LSP, custom requests, and views across host substrates.
  // These plans should converge on shared vocabulary even though they ship independently.
  targets: {
+  shared: .{plans:["editor-cli-instruments"], contract:~".spw/tooling/editor-instruments.spw"}
   vscode: .{plans:["vscode-workspace-atlas", "vscode-register-explorer", "vscode-authoring-probe-loop", "vscode-plugin-performance", "vscode-editor-contract", "vscode-cognitive-surface"], contract:~"extensions/vscode-spw/src/context.ts"}
   intellij: .{plans:["webstorm-compatibility", "intellij-plugin-integration", "intellij-lsp4ij"], contract:~"extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwLanguage.kt"}
   neovim: .{plans:["neovim-spw-surfaces"], contract:~"extensions/neovim-spw/syntax/spw.vim"}
@@ -312,7 +316,7 @@
  // Dated planning snapshot; refresh from cache state before scheduling decisions.
  // Useful for prioritization and staleness detection.
  snapshot_at: "2026-08-24"
- hot: ["canon-rewrite-v2", "spw-site-install", "package-iteration-radius", "gap-affinity-tooling", "webstorm-compatibility", "cli-sense-reorientation", "cli-mode-overhaul", "cli-benchmarking-infra", "syntax-profile-stack", "ecosystem-surface-governance"]
+ hot: ["canon-rewrite-v2", "spw-site-install", "package-iteration-radius", "gap-affinity-tooling", "webstorm-compatibility", "editor-cli-instruments", "cli-sense-reorientation", "cli-mode-overhaul", "cli-benchmarking-infra", "syntax-profile-stack", "ecosystem-surface-governance"]
  warm: ["shape-syntax-ecology", "vscode-lsp-roadmap", "runtime-dx-foundation", "apposition-cache-granules", "spw-beat-diff-precipitation"]
  cold: ["intellij-lsp4ij", "obsidian-spw", "image-prompt-split", "brand-core-ids", "command-experience-tools"]
  stranded: ["refactor-import-sprawl", "audit-css-tokens", "audit-data-attributes", "audit-ui-data-models", "symmetry-explorer-instrument"]

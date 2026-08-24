@@ -8,6 +8,7 @@ This is the IntelliJ Platform plugin for the Spw (Symbolic Processing Workbench)
 - **File Type Recognition**: Automatically recognizes `.spw` files.
 - **LSP Support (optional)**: Starts the Spw language server when available, with per-project settings.
 - **Navigation Aids**: Folding rules for section blocks and headings.
+- **Workbench Instruments**: Saved-file Form, Surface Stack, and Cache inspection; standard LSP Rename; plan-only corpus refactors.
 
 ## Getting Started
 
@@ -15,7 +16,7 @@ This is the IntelliJ Platform plugin for the Spw (Symbolic Processing Workbench)
 
 - Java 21
 - WebStorm 2024.2.1 through 2026.2.x (IntelliJ Platform builds 242 through 262)
-- Node.js 18+ (only required if you enable LSP)
+- Node.js `^20.19.0` or `>=22.12.0` with npm (required for LSP and CLI instruments)
 
 The repository includes `.java-version` for Java version managers. On an Intel macOS Homebrew
 installation, the equivalent environment setup is:
@@ -83,6 +84,22 @@ Tips:
 - That launcher checks, in order: `SPW_LSP_SERVER_PATH`, local `packages/spw-lsp/src/stdio-server.ts`,
   local `scripts/lsp/stdio-server.ts`, then the `remote.lore.url` checkout path for those same paths.
 
+### Workbench Instruments
+
+Open **Tools | Spw Instruments** or use Find Action:
+
+| Action | Behavior |
+|---|---|
+| **Inspect Spw Form** | Runs `spw form <surface> --resonance --spw` and opens a read-only Spw preview. |
+| **Inspect Spw Surface Stack** | Runs `spw stack <surface> --json` and opens reusable JSON. |
+| **Inspect Spw Cache** | Runs `spw inspect cache <surface> --json`; cache tier and hit state remain CLI-owned. |
+| **Rename Spw Symbol** | Delegates to the standard IntelliJ Rename action backed by LSP prepareRename/rename. |
+| **Plan Spw Corpus Refactor...** | Runs `spw refactor . --rename kind:from=to --json`; the action never adds `--write`. |
+
+The process runs from the open consumer project while npm selects the project or mounted-workbench tool root. A dirty editor buffer is not silently inspected as stale disk content: save it, then rerun the file instrument. Results run in cancellable background tasks and open as read-only typed previews.
+
+This host's creative contour is structural: keep Structure View, folding, and native Rename close while opening reusable Spw/JSON products as ordinary editor documents. The plugin does not reproduce the parser in Kotlin; it lets the same surface feel different when seen as outline, folded architecture, live LSP symbol, and saved intermediate form.
+
 ### Color Semantics
 
 The TextMate grammar now emits IntelliJ-friendly scopes for headings, annotations, sigils, paths,
@@ -95,18 +112,9 @@ To customize colors: **Settings | Editor | Color Scheme | TextMate Bundles | Spw
 Section blocks like `^['roots']{ ... }`, `^["roots"]{ ... }`, `^[Integration]['roots']{ ... }`,
 and `^seed[...]` are foldable and indexed in Structure View to keep large files scannable.
 
-## Implementation Roadmap
+## Design Boundary
 
-Currently, the plugin uses the TextMate grammar from the VS Code extension for syntax highlighting. To provide deeper language support, the following steps are recommended:
-
-1. **Custom Lexer and Parser**: Use JFlex and Grammar-Kit to implement a full BNF-based parser for Spw.
-2. **PSI (Program Structure Interface)**: Define PSI elements to enable advanced features like:
-   - Go to Definition
-   - Find Usages
-   - Rename Refactoring
-   - Code Completion
-3. **Annotators/Inspectors**: Add custom logic for semantic validation and highlighting.
-4. **LSP Integration**: Alternatively, if Spw has a Language Server, use the IntelliJ LSP API.
+TextMate supplies syntax fallback and native IntelliJ components supply folding, structure, gutter, actions, and previews. The shared Spw LSP owns semantic navigation, completion, diagnostics, and caret rename; the CLI owns saved-file and corpus instruments. A future PSI or client-substrate change should follow observed gaps, not duplicate parser meaning inside Kotlin.
 
 ## Project Structure
 

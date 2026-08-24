@@ -54,6 +54,10 @@ vim.g.spw_auto_mkdir = false
 -- Pass server-side settings (overlaid on .spw/config.json)
 vim.g.spw_lsp_settings = { inlayHints = { paths = false } }
 
+-- Optional CLI tool root for corpus refactor plans. Relative paths resolve
+-- from the consumer workspace; otherwise project and .spw/_workbench are discovered.
+vim.g.spw_cli_root = '.spw/_workbench'
+
 -- Disable the default buffer keymaps (set your own in on_attach)
 vim.g.spw_lsp_keymaps = false
 
@@ -93,12 +97,19 @@ Set on attach (disable with `vim.g.spw_lsp_keymaps = false`):
 | `:SpwPeekRef` | Preview reference under cursor and jump to `#anchor` |
 | `:SpwRefsQuickfix` | Quickfix list of unresolved references in current buffer |
 | `:SpwCodeAction` | Local Spw code actions under cursor |
+| `:SpwForm` | Inspect live brace geometry and resonance (`spw/geometry`) |
+| `:SpwStack` | Inspect the live surface profile (`spw/surfaceProfile`) |
+| `:SpwCache` | Inspect LSP session cache reflection; Neovim adds no client probe cache |
+| `:SpwRename` | Rename the symbol at the caret through standard LSP Rename |
+| `:SpwRefactorPlan [kind:from=to]` | Open a plan-only corpus refactor through the canonical CLI |
 | `:SpwOperatorFreq` | Operator/sigil frequency for current buffer (`spw/operatorFrequency`) |
 | `:SpwPhase` | Spirit-phase context at cursor (`spw/phaseContext`) |
 | `:SpwFormSeq [notation]` | Explain form sequence (default confluence wrap) |
 | `:SpwTemperature` | Workspace temperature tiers |
 | `:SpwInsertFormWrap` | Insert `& => {&} => {&[#label]}` at cursor |
 | `:SpwWrapContainer [label]` | Wrap visual selection or word under cursor in Spw container `^["label"]{ ... }` |
+
+The concise creative loop is `:SpwForm` → `:SpwStack` → `:SpwCache` → `:SpwRename` → `:SpwRefactorPlan`. File probes use live buffer text through the LSP. Results are ordinary scratch splits that can be searched, copied, remapped, or composed with the rest of a Neovim workflow. Corpus planning uses saved files, runs with the consumer root as `cwd`, opens JSON in a scratch buffer, and never adds `--write`.
 
 ## Auto-completion & Omnifunc
 
@@ -180,4 +191,3 @@ Run the headless smoke test suite:
 ```sh
 nvim --headless -u NONE -l extensions/neovim-spw/tests/mounted-consumer-smoke.lua
 ```
-

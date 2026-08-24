@@ -31,6 +31,7 @@ Does **not** replace `typescript-perf-audit-infra` (that measures `tsc`). Editor
 | Shared cursor context bus | **Not landed** |
 | Incremental annotation delta | **Not landed** (full rebuild risk remains) |
 | Semantic tokens from ServerIndex parse | **Partial / verify** — plan still targets regex elimination |
+| Explicit instrument traffic | **Landed** — Form/Stack/Cache are user-invoked; editor TTL cache now exposes its own receipt |
 | File size pressure | `display.ts` ~1410, `server-index.ts` ~1160, trees ~725–750 |
 
 ## Files

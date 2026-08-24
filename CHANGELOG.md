@@ -34,6 +34,14 @@ Version-local release records remain under `lib/spw-v*/CHANGELOG.md`. Commit `#[
 - Separate implemented behavior, proposed migration work, and interpretive metaphor so aspiration does not masquerade as runtime fact.
 - Record inspection as local and read-only by default; exploratory syntax, editor activity, and cache warmth do not become person-level authority evidence.
 
+### Editor instruments
+
+- Give VS Code, IntelliJ/WebStorm, and Neovim a recognizable Form → Stack → Cache → Rename → Refactor Plan sequence without moving semantic ownership out of the shared LSP and CLI.
+- Preserve host contour: guided side-by-side live views in VS Code, structure/action/typed-preview integration in IntelliJ/WebStorm, and terse composable scratch-buffer commands in Neovim.
+- Keep file probes live in VS Code and Neovim; make IntelliJ saved-file probes refuse dirty-buffer ambiguity and open reusable read-only Spw/JSON results.
+- Add plan-only corpus refactor actions that preserve the consumer repository as process authority, discover a project or mounted-workbench CLI, and never add `--write`.
+- Make the VS Code TTL probe cache inspectable while naming it separately from LSP session reflection and runtime/CLI caches.
+
 ### Compatibility and open boundaries
 
 - Compatibility spellings remain available: `--product`, `--event-policy`, source/spacing `--limit`, and corpus `--depth` route to their canonical controls.

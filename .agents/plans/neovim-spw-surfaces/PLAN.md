@@ -66,6 +66,7 @@ Depends on:
 | LSP start / mount discovery | `lua/spw/lsp.lua`, README mounted-consumer story |
 | Navigation | `lua/spw/navigation.lua` — open/peek ref, anchors |
 | Commands | `lua/spw/commands.lua` — Restart, Stop, InlayHints, OpenRef, PeekRef, OperatorFreq, Phase, FormSeq, Temperature, … |
+| Cross-editor instruments | `:SpwForm`, `:SpwStack`, `:SpwCache`, `:SpwRename`, and plan-only `:SpwRefactorPlan`; live probes use LSP and results use scratch splits |
 | Form inserts | `lua/spw/form.lua` |
 | Health | `lua/spw/health.lua`, `lua/vim/health/spw.lua` |
 | Smoke | `tests/mounted-consumer-smoke.lua` |

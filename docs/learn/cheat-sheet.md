@@ -103,14 +103,15 @@ spw geometry docs/examples/spw/form-sequence.spw
 # kinds () [] {} <>  · couple/medials · operator % · nesting lessons
 ```
 
-VS Code: **Spw: Inspect Geometry**; surface decorations (Settings → Spw → Surface).
+VS Code: **Spw: Inspect Form**; surface decorations (Settings → Spw → Surface).
 
 ## Editors
 
 | Client | Probe |
 |--------|--------|
-| VS Code | Spw: Operator Frequency, Form Sequence, Temperature, Restart LS |
-| Neovim | `:SpwOperatorFreq` `:SpwPhase` `:SpwFormSeq` `:SpwTemperature` |
+| VS Code | Spw: Inspect Form, Inspect Surface Stack, Inspect Cache, Rename Symbol, Plan Corpus Refactor |
+| IntelliJ/WebStorm | Tools → Spw Instruments → Form, Surface Stack, Cache, Rename, Corpus Refactor Plan |
+| Neovim | `:SpwForm` `:SpwStack` `:SpwCache` `:SpwRename` `:SpwRefactorPlan` |
 | Comments | `# …` (not `//` as Spw culture) |
 
 ## Learn more
