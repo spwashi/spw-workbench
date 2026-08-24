@@ -20,6 +20,7 @@ Taste note: improve **clarity**, **recognizability**, **naming**, and **expressi
   - Keep recommendations copyable and pair each command with the question it answers and the additional work or disclosure it incurs.
   - Add cheap checks for stable summary and alias-teaching invariants where they can be enforced without snapshotting prose.
   - Record implemented wording as implemented, proposed retirement as proposed, and metaphor mappings as interpretive unless code makes them observable.
+  - Publish one root changelog for unreleased consumer-facing summaries while retaining version-local histories and commit episodes as deeper records.
 - **Out of scope**:
   - Renaming commands, removing compatibility aliases, changing parser/runtime behavior, or adding CLI commands.
   - Parser bundles, package entry points, caching policy, association semantics, formatter migrations, and Spw `v0.4` release meaning.
@@ -59,6 +60,12 @@ Taste note: improve **clarity**, **recognizability**, **naming**, and **expressi
 [MOD] docs/runtime/spw/cli-command-surface.spw
 [MOD] docs/runtime/spw/spacing-and-progressive-inspection.spw
 [MOD] docs/runtime/md/spacing-and-progressive-inspection.md
+[NEW] CHANGELOG.md
+[MOD] README.md
+[MOD] docs/README.md
+[MOD] docs/index.spw
+[MOD] docs/toc.spw
+[MOD] lib/spw-v0.3.0/CHANGELOG.md
 ```
 
 ### Craft guard
@@ -72,12 +79,13 @@ Taste note: improve **clarity**, **recognizability**, **naming**, and **expressi
 1. `.[plans] — bound CLI copy and taste audit`
 2. `vocab[cli] — clarify outcomes, controls, and recommendations`
 3. `.[conventions] — codify CLI voice and metaphor boundaries`
+4. `.[changelog] — publish unreleased workbench changes`
 
 ## Agentic Hygiene
 
 - Rebase target: `main@c46558ffbb29a10abb1fee11dbec8aa522cbc8b3`
 - Rebase cadence: main is an ancestor before commit 1; recheck before merge
-- Hygiene split: continue in the clean `codex/gap-affinity-tooling` worktree because the audited controls landed on this branch; isolate this editorial slice in three commits and do not absorb unrelated main/worktree drift
+- Hygiene split: continue in the clean `codex/gap-affinity-tooling` worktree because the audited controls landed on this branch; isolate the plan, executable copy, convention, and changelog episodes and do not absorb unrelated main/worktree drift
 
 ## Dependencies
 
