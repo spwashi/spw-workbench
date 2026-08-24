@@ -1,19 +1,53 @@
 # CLI Conventions
 #
-# Public command grammar for an immaculate Spw CLI surface.
+# Public command grammar for a recognizable, composable Spw CLI surface.
 
 #>spw_cli_conventions
 #:cli #!convention
 #:layer #!pragmatics
 
 ^"command_model"{
- entry: "spw <command> [flags]"
- local_entry: "npm run spw -- <command> [flags]"
- public_commands: [init, query, select, ls, roots, tree, doctor, mount, inspect, mem, format, dev]
+ entry: "spw <command> [arguments] [options]"
+ local_entry: "npm run spw -- <command> [arguments] [options]"
+ public_commands: [init, doctor, roots, mount, tree, census, graph, atlas, formula, density, form, lattice, delta, measure, authority, taste, stack, exp, cycle, inspect, cite, follow, query, select, outline, ls, format, expand, snippet, refactor, refresh, emit, pulse, mutate, beat, mem, dev]
  planned_commands: [capabilities, review]
- compatibility_aliases: ["spw install <target>", "spwq <file.spw>", "spw seq ...", "spw-workbench <command> ..."]
- internal_composition: "packages/spw-cli/src/{args,init,query,roots,tree,workspace,select,selectors,run,types}.ts"
+ command_aliases: ["install -> init", "invent|inventory|inv -> census", "map|topo -> graph", "formulas -> formula", "analyze|stats -> density", "geometry|geom -> form", "readings -> lattice", "mass|thrift -> measure", "surface|profile -> stack", "experimental|catalog -> exp", "q -> query", "spwq -> select", "skim|read -> outline", "seq -> ls", "snip -> snippet"]
+ entry_aliases: ["spw-workbench <command> ..."]
+ registry: "packages/spw-cli/src/commands.ts"
+ shared_help: "packages/spw-cli/src/{help,view,corpus-spread}.ts"
  distribution_direction: "publish root spw as the package binary; keep install/spw-workbench as compatibility and DX/bootstrap support"
+}
+
+^"claim_status"{
+ implemented: [#registry_routes, #root_help_groups, #through, #events, #sample, #spread, #spw_card, #recommendation_card]
+ proposed: [#capabilities_command, #review_command, #alias_retirement_boundary]
+ interpretive: [#lyrical_handle, #manufacturing_metaphor, #print_metaphor, #photoelectronics_metaphor]
+ law: "Implemented names must have a code or output trace; proposed names must not appear as shipped commands; interpretive names need a mapping and counterexample before becoming semantic claims."
+}
+
+^"public_voice"{
+ order: [#outcome, #cost_or_disclosure, #compatibility]
+ summary: "root summaries begin with an observable action or product, not an effect address, IR type, option, or alias"
+ help: "command help may add implementation precision after the primary outcome is recognizable"
+ recommendation: "purpose states the question answered; cost states additional work, retention, disclosure, or output size"
+ refuse: ["effect.l0.measure as the first explanation", "an option before the command outcome", "compatibility routes before canonical examples"]
+}
+
+^"output_vocabulary"{
+ spw_card: "source-shaped output readable as text and parseable as Spw"
+ table: "aligned rows for terminal reading; not promised to parse as Spw"
+ json: "structured output for scripts; command help states whether it is enveloped and complete"
+ ndjson: "line-delimited JSON emitted as records become available when the producer is progressive"
+ legacy_term: "dual-read is not taught in public copy; it describes an ambition, not a recognizable output form"
+ counterexample: "a pretty table is readable by two audiences but is not a Spw card"
+}
+
+^"metaphor_boundary"{
+ through: "implemented motion: execute through one named source stage, then stop"
+ spread: "implemented field extent: near->minimal, standard->standard, far->full corpus work"
+ lattice: "implemented scan: named and anonymous ~# apposition cells; comments are not interstitial cells"
+ law: "manufacturing, print, photoelectronics, and field language may aid memory only beside an observable mapping and a stated limit"
+ counterexample: "spread does not measure semantic distance, social proximity, or author affinity"
 }
 
 ^"mounted_consumer_observability"{
@@ -48,22 +82,22 @@
 }
 
 ^"progressive_controls"{
- through: "--through tokens|structure|trace — last single-source stage executed"
- events: "--events none|diagnostics|trace — retained parser instrumentation"
- sample: "--sample N — bounded human and Spw examples; does not reduce parser work"
- spread: "--spread near|standard|far — corpus extent mapped to minimal|standard|full index profiles"
+ through: "--through tokens|structure|trace — stop after the named single-source stage"
+ events: "--events none|diagnostics|trace — retain the named parser instrumentation"
+ sample: "--sample N — bound visible human and Spw examples; exact products stay complete and parser work does not shrink"
+ spread: "--spread near|standard|far — corpus work mapped in order to minimal|standard|full index profiles"
  api_mapping: "through -> SourceProductOptions.through; events -> ParserOptions.eventPolicy; sample -> formatter limit; spread -> corpus index"
  profile_boundary: "dialect and surface profiles may affect interpretation; performance handles may not"
  bundle_boundary: "package entry points choose shipped or loaded modules; a runtime through value does not promise tree-shaking"
 }
 
 ^"output_contract"{
- exact: [json, ndjson]
+ source_exact: [json, ndjson]
  bounded: [human, spw]
  visible_field: "lossy display normalization uses explicit names such as value_visible"
  omission_law: "every bounded product states omitted rows, tokens, events, or fields"
- envelope_law: "new machine products use the versioned CLI envelope; legacy unwrapped JSON requires an explicit migration boundary"
- path_law: "machine products carry relative paths; copyable recommendations quote shell arguments"
+ envelope_law: "new structured products use the versioned CLI envelope; legacy unwrapped JSON requires an explicit migration boundary"
+ path_law: "structured products carry relative paths; copyable recommendations quote shell arguments"
 }
 
 ^"recommendation_contract"{
@@ -83,18 +117,20 @@
  data: "source text, exact spans, diagnostics, event traces, and cache receipts may reveal private authored or exploratory material"
  retention: "single-source inspection does not persist a hidden activity log; corpus memo and editor caches disclose their plane and identity"
  authority: "inspection evidence never grants an effect, infers a person-level trait, or becomes an authority-facing score"
- export: "complete machine output is an explicit stdout choice; bounded views disclose loss before sharing"
+ export: "complete structured output is an explicit stdout choice; bounded views disclose loss before sharing"
  correction: "authority-facing projections preserve provenance, uncertainty, and a route to inspect or contest the underlying receipt"
 }
 
 ^"invariant"{
   "Public command names stay stable as internals evolve.",
+  "Public help states outcome before implementation address and compatibility route.",
   "Canonical help prefers spw verbs; aliases exist only to preserve muscle memory or migration paths.",
+  "A Spw card is source-shaped and parseable as Spw; dual-read is not a public output name.",
   "CLI output should remain scriptable and human-readable.",
   "Intermediate products disclose generated and retained cost separately when depth is configurable.",
   "Execution horizon, event retention, display sample, corpus spread, syntax profile, and package bundle remain independent axes.",
   "A progressive stream emits each stage when it becomes available; a buffered final bundle is not labeled progressive.",
-  "Readable normalization never overwrites the exact recoverable machine product.",
+  "Readable normalization never overwrites the exact recoverable structured product.",
   "Recommendations keep command, purpose, and cost together.",
   "Exploratory syntax, editor activity, and cache warmth never become person-level authority evidence.",
   "Compatibility aliases should point at one package-owned implementation rather than carrying independent behavior.",

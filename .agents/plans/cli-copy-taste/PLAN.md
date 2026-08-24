@@ -16,6 +16,7 @@ Taste note: improve **clarity**, **recognizability**, **naming**, and **expressi
   - Distinguish public outcome language from internal IR/effect addresses without removing useful technical precision.
   - Define `through`, `events`, `sample`, and `spread` with one wording across CLI and Spw convention surfaces.
   - Make exact, bounded, streaming, and legacy machine output terms explicit and non-interchangeable.
+  - Replace `dual-read` in public CLI copy with `Spw card`, defined as source-shaped output readable as text and parseable as Spw.
   - Keep recommendations copyable and pair each command with the question it answers and the additional work or disclosure it incurs.
   - Add cheap checks for stable summary and alias-teaching invariants where they can be enforced without snapshotting prose.
   - Record implemented wording as implemented, proposed retirement as proposed, and metaphor mappings as interpretive unless code makes them observable.
@@ -32,20 +33,32 @@ Taste note: improve **clarity**, **recognizability**, **naming**, and **expressi
 [NEW] .agents/plans/cli-copy-taste/wip.spw
 [MOD] packages/spw-cli/src/commands.ts
 [MOD] packages/spw-cli/src/commands.test.ts
-[MOD?] packages/spw-cli/src/help.ts
+[MOD] packages/spw-cli/src/corpus-spread.ts
+[MOD] packages/spw-cli/src/corpus-spread.test.ts
 [MOD] packages/spw-cli/src/inspect.ts
 [MOD] packages/spw-cli/src/inspect-source.ts
 [MOD] packages/spw-cli/src/inspect-spacing.ts
-[MOD?] packages/spw-cli/src/inventory.ts
-[MOD?] packages/spw-cli/src/map.ts
-[MOD?] packages/spw-cli/src/analyze.ts
-[MOD?] packages/spw-cli/src/formula.ts
-[MOD?] packages/spw-cli/src/taste.ts
-[MOD?] packages/spw-cli/src/lattice.ts
-[MOD] packages/spw-cli/src/view-recommendations.test.ts
+[MOD] packages/spw-cli/src/inventory.ts
+[MOD] packages/spw-cli/src/map.ts
+[MOD] packages/spw-cli/src/analyze.ts
+[MOD] packages/spw-cli/src/formula.ts
+[MOD] packages/spw-cli/src/taste.ts
+[MOD] packages/spw-cli/src/lattice.ts
+[MOD] packages/spw-cli/src/cite.ts
+[MOD] packages/spw-cli/src/delta.ts
+[MOD] packages/spw-cli/src/geometry.ts
+[MOD] packages/spw-cli/src/pulse.ts
+[MOD] packages/spw-cli/src/pulse-disclose.ts
+[MOD] packages/spw-cli/src/session/workspace-cache.ts
+[MOD] packages/spw-cli/src/view.ts
+[MOD] packages/spw-cli/src/inspect-spacing.test.ts
+[MOD] packages/spw-cli/src/pulse-disclose.test.ts
+[MOD] packages/spw-cli/src/session/workspace-cache.test.ts
+[MOD] packages/spw-cli/src/view.test.ts
 [MOD] .spw/conventions/cli.spw
 [MOD] docs/runtime/spw/cli-command-surface.spw
-[MOD?] docs/runtime/md/spacing-and-progressive-inspection.md
+[MOD] docs/runtime/spw/spacing-and-progressive-inspection.spw
+[MOD] docs/runtime/md/spacing-and-progressive-inspection.md
 ```
 
 ### Craft guard

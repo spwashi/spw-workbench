@@ -43,7 +43,7 @@ Run:
 spw inspect spacing path/to/file.spw
 ```
 
-The default view is a bounded table for quick reading. The same underlying product can be projected as a `.spw` card:
+The default view is a bounded table for quick reading. The same underlying product can be projected as a Spw card—source-shaped output that is readable as text and parseable as Spw:
 
 ```bash
 spw inspect spacing path/to/file.spw --spw
@@ -55,7 +55,7 @@ or as a versioned JSON envelope:
 spw inspect spacing path/to/file.spw --json
 ```
 
-This is an intermediate-output pattern: keep one source-linked product, then disclose it at the depth a person, script, or agent needs. The `.spw` card is meant to remain recognizable when copied into a workbench conversation; JSON remains the complete machine interchange form.
+This is an intermediate-output pattern: keep one source-linked product, then disclose it at the depth a person, script, or agent needs. The Spw card is meant to remain recognizable when copied into a workbench conversation; JSON remains the complete structured interchange form.
 
 The product is marked `observational`. It does not yet make gap classes part of parsing or runtime meaning, and the formatter does not yet migrate between classes.
 
@@ -143,7 +143,7 @@ Bundle choice is a sixth, package-level concern. A tokens request avoids grammar
 
 Readable projections may normalize control characters: token samples use `value_visible` with marks such as `↵`, `⇥`, and `·`. The field name signals that this is a display form. Exact text remains available in JSON and NDJSON.
 
-When a human inspection finishes, its `next` card keeps a safely quoted, copyable command beside the purpose of that move and the additional work or output cost it incurs. This makes a recommendation explainable rather than merely convenient. Help and next steps must not suggest that `--sample` makes parsing faster, that `--events none` suppresses event generation, or that `--through tokens` is a complete syntax judgment.
+When a human inspection finishes, its `next` card keeps a safely quoted, copyable command beside the question that move answers and the additional work or output cost it incurs. This makes a recommendation explainable rather than merely convenient. Help and next steps must not suggest that `--sample` makes parsing faster, that `--events none` suppresses event generation, or that `--through tokens` is a complete syntax judgment.
 
 ## Compatibility and Migration
 
