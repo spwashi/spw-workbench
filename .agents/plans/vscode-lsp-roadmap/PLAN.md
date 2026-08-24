@@ -211,7 +211,7 @@ Plans in this ecology are for **humans who deepen expertise**—optionally foldi
 ## Validation
 
 - **Hypotheses**: capability matrix matches stdio-server + custom-requests; ladder order reduces thrash on `extension.ts` / `stdio-server.ts`
-- **Negative controls**: lore-upstream-bridge stays done; language semantics unchanged
+- **Negative controls**: the landed standalone LSP entrypoint remains stable; language semantics remain unchanged
 - **Demo**: open PLAN table → point at files in tree → show one phantom method pair
 
 ## Spw Artifact

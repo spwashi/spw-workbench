@@ -1,0 +1,148 @@
+# wip — cli-benchmarking-infra
+# Branch: feature/cli-benchmarking-infra
+# Started: 2026-08-15
+
+#:layer #!pragmatics
+
+^["roots"]{
+  @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+  @plan: ~".agents/plans/cli-benchmarking-infra/PLAN.md"
+  @perf_infra: ~".agents/plans/typescript-perf-audit-infra/PLAN.md"
+  @observatory: ~".agents/plans/typescript-toolchain-observatory/PLAN.md"
+  @ladder: ~".agents/plans/typescript-upgrade-ladder/PLAN.md"
+  @artifact: ~".agents/plans/cli-benchmarking-infra/cli-benchmarking-infra.spw"
+}
+
+^["intent"]{
+  ~#goal: "Implement a revision-aware benchmarking observatory that distinguishes first useful output, final completion, memory, throughput, real phase spans, variance, and environment faults across CLI and toolchain workloads."
+  ~#taste: "Improve performance legibility and measurement discipline without discarding outliers, inferring spans, or naming downstream consumers."
+}
+
+^["development"]{
+  lane: #execution_truth
+  ladder: #service
+  develops: [#taste, #performance_discipline, #measurement_truth, #value_attribution]
+  review_surfaces: [@plan, @perf_infra, @observatory, @ladder]
+  snippet_routes: [#bench_cli, #bench_ts, #bench_compare, #bench_check, #efficiency_report]
+}
+
+^["concept_index"]{
+  primary: [#benchmarking, #ttfe, #progressive_output, #phase_attribution, #outcome_class, #regression_gating]
+  surfaces: [#cli, #compiler, #runtime, #observatory]
+  tensions: [#timing_noise, #cold_vs_warm, #allocation_churn, #silent_output, #inferred_span, #audience_fidelity]
+  transfers: [#measurement_harness, #statistical_filter, #telemetry_schema, #report_projection]
+}
+
+^["recursive_improvement"]{
+  loop: [
+    "? reread CLI command surface and existing typecheck scripts before designing harness",
+    "< implement statistical math core and in-process execution harness",
+    "$ retain raw samples and record first-event, final, memory, throughput, and actual spans across representative command groups",
+    "^ integrate differential comparison engine and regression threshold checks",
+    "% generate multi-dimensional efficiency reports in markdown, terminal, json, and spw forms",
+  ]
+  gates: [#raw_sample_retention, #instrumented_spans, #zero_side_effects, #outcome_truth, #reproducible_snapshots]
+}
+
+^["parallel_work"]{
+  critical_path: [#harness_core, #cli_benchmarks, #compare_engine, #reporter]
+  parallelizable: [#toolchain_benchmarks, #unit_tests, #spw_projection]
+  shared_hot_files: ["package.json"]
+  merge_risks: [#script_name_drift]
+  handoff_artifacts: [@plan, @artifact]
+}
+
+^["supporting_documents"]{
+  must_ship: [@plan, @artifact]
+  helpful: [@perf_infra, @observatory]
+  carries: [#workloads, #benchmarks, #efficiency_report, #stats_tests]
+}
+
+^["interaction_depth"]{
+  subjects: [#cli_latency, #phase_breakdown, #regression_feedback, #efficiency_visualization]
+  questions: [#where_is_time_spent, #what_regressed, #what_efficiency_improved]
+  qualities: [#clarity, #precision, #reproducibility]
+}
+
+^["risk_model"]{
+  hard_failures: [
+    "Subprocess spawn overhead dominates micro-benchmarks (mitigated by in-process harness)",
+    "GC timing unpredictability skews memory deltas (mitigated by controlled warmup and IQR filtering)",
+  ]
+  soft_failures: [
+    "TypeScript 7 binary absent on system (mitigated by graceful fallback to TS 5.9 with skip status)",
+    "High variance on noisy machines (mitigated by IQR outlier elimination and multi-sample confidence intervals)",
+  ]
+  recoveries: [
+    "Runner falls back cleanly to active TS compiler when preview versions are uninstalled",
+    "Regression gate outputs explicit delta percentage and threshold exceeded",
+  ]
+  non_negotiables: [
+    "Benchmarking never mutates production repository files or source trees",
+    "Zero network access required for local execution",
+    "All outputs validate against strongly-typed JSON and Spw schemas",
+    "IQR fences annotate but never silently delete raw samples",
+    "Generated consumer workloads are identity-free and carry no private corpus",
+  ]
+}
+
+^["validation"]{
+  hypotheses: [
+    "In-process harness isolates pure AST/IR work from CLI process overhead",
+    "Time to first useful event distinguishes progressive tools from minute-long silent completion",
+    "Instrumented phase spans explain regressions without treating inferred subtraction as measurement",
+    "Differential comparison distinguishes regression, instability, environment fault, and skipped capability",
+    "Efficiency report provides clear evidence of performance scaling without artificial financial jargon",
+  ]
+  negative_controls: [
+    "npm run test:run, npm run build, and npm run lint remain 100% green",
+    "Production package dist files are unaffected by benchmark infrastructure",
+  ]
+  demo_path: [
+    "npm run test:bench",
+    "npm run bench:quick",
+    "npm run bench:cli",
+    "npm run bench:save",
+    "npm run bench:compare",
+    "npm run bench:check",
+    "npm run bench:report",
+  ]
+}
+
+^["commits"]{
+  ~[1]: ".[plans] — stage cli-benchmarking-infra planning artifacts"
+  ~[2]: "#[bench] — add retained-sample statistics, outcomes, and data models"
+  ~[3]: "#[bench] — add synthetic, workbench, and identity-free consumer-shape workloads"
+  ~[4]: "#[bench] — implement in-process and subprocess harness with first-event and profiling hooks"
+  ~[5]: "#[bench] — add comprehensive benchmark suite across all 5 CLI command groups"
+  ~[6]: "#[bench] — add TypeScript toolchain profiler and TS7 readiness matrix"
+  ~[7]: "#[bench] — implement differential comparison, instrumented spans, and outcome-aware regression gate"
+  ~[8]: "#[bench] — add multi-dimensional efficiency report generator (Markdown, Terminal, JSON, Spw)"
+  ~[9]: "#[bench] — create unified runner CLI and wire package scripts"
+  ~[10]: "![bench] — add test suite for stats math, harness, attribution, and reporters"
+  ~[11]: ".[bench] — document benchmarking protocol, efficiency lattice, and runbook"
+}
+
+^["stream"]{
+  >>[2026-08-15 22:26] observe — User requested benchmarking infrastructure around CLI features, TS7 readiness, refactoring support, and stakeholder/investor value communication.
+  >>[2026-08-15 22:27] decide — Frame efficiency across four multi-dimensional axes (Operational, Compute/Energy, Cognitive/Comms, Toolchain/VM) with first-class phase attribution and regression gating.
+  >>[2026-08-15 22:28] taste — Ground benchmarks in reproducible physical/structural efficiency instead of artificial SaaS financial metrics.
+  >>[2026-08-24 10:10] observe — exploratory consumer-shaped probes exposed a missing primary metric: time to first useful output can be operationally worse than total completion, and heterogeneous corpora make silent outlier deletion misleading.
+  >>[2026-08-24 10:11] decide — retain every raw sample, classify instability and environment faults explicitly, measure progressive event cadence, and attribute phases only through real spans.
+  >>[2026-08-24 10:12] revise — benchmark generated capability shapes rather than named downstream repositories; reports carry both revisions and disclose compatibility before comparing results.
+}
+
+^["open"]{
+}
+
+^["cache"]{
+  ~#status: "planning"
+  ~#base_ref: "main@66ed9a2ea2c490522eed38004f6848c7966efc26"
+  ~#rebased_at: "2026-08-24"
+  ~#hygiene_split: "preserve this uncommitted plan as one bounded planning unit; implementation starts only after workload and outcome review"
+  ~#files_hot: ".agents/plans/cli-benchmarking-infra/PLAN.md, .agents/plans/cli-benchmarking-infra/wip.spw, .agents/plans/cli-benchmarking-infra/cli-benchmarking-infra.spw, package.json"
+  ~#next_commit: "1"
+  ~#open_count: "0"
+  ~#last_stream: "2026-08-24 10:12"
+  ~#taste_debt: "The first implementation slice should cover representative workloads and truthful output cadence before promising every CLI command, compiler candidate, profiler, and report form."
+}

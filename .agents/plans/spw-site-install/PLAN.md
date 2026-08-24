@@ -37,6 +37,19 @@ Taste note: improve **clarity** and **layering**. The site owns its surfaces. Th
 
 - **Out of scope**: npm package publishing (npm remains an option but not the primary path), workbench internal architecture, LSP server implementation, diagnostic station codes (runtime-dx-foundation), automatic upstream publication of site findings, or treating private site material as workbench fixtures.
 
+## Consumer-readable compatibility contract
+
+A mounted consumer must not need a repository name, private migration story, or scalar release guess to determine whether the workbench fits. `mount.spw`, `spw capabilities --json`, and `spw doctor --json` should disclose a compatibility vector:
+
+- exact consumer and workbench revisions;
+- language edition and syntax/profile stack;
+- parser/AST, canonical product, runtime, and CLI envelope schemas;
+- supported output forms and progressive-event protocol;
+- engaged capabilities with `implemented`, `measured`, `proposed`, or `interpretive` status;
+- retention/privacy policy for generated evidence and the human-gated exchange boundary.
+
+`v0.4` may later name a language compatibility gate, but it must not imply that package layout, runtime protocol, editor projection, or every consumer profile advanced at the same pace. Consumers compare the dimensions they actually depend on.
+
 ## Files
 
 ```text
@@ -130,11 +143,12 @@ Fuzz strategy:
 
 - `absorb-spwq-cli` — CLI command taxonomy must be settled (spw init, spw doctor placement)
 - `runtime-dx-foundation` — diagnostic station model for spw doctor
-- `ecosystem-surface-governance` — launch ladder determines which surfaces are engageable
-- `lsp-lore-upstream-bridge` — LSP entry point must support submodule-relative resolution
+- `ecosystem-surface-governance` — launch ladder determines which surfaces are engageable, and installability requires one repo-local review without authority leakage across the mount boundary
+- Landed standalone LSP entrypoint — mount resolution must continue to work without repository-specific bootstrap code
 - `vscode-lsp-integration` — extension startup and thin-client expectations should align with submodule-relative LSP discovery
-- `v030-release-prep` — release narrative should describe this install model truthfully rather than defaulting to npm-publish language
-- `ecosystem-surface-governance` — installability should require one successful repo-local review without authority leakage across the mount boundary
+- Archived release evidence — future release narratives must describe this install model truthfully rather than defaulting to npm-publish language
+- `cli-sense-reorientation` — progressive human, Spw, JSON, and event output should disclose one stable product rather than fork meaning by format
+- `cli-benchmarking-infra` — installability claims need revision-aware time-to-first-output, completion, memory, and failure evidence from identity-free consumer shapes
 
 ## Spw Artifact
 

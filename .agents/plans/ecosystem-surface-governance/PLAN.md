@@ -13,6 +13,12 @@ Taste note: portable function, honest stewardship, and readiness evidence.
 - **In scope:** Maintain `.spw/surfaces/surface-archetypes.spw` and its index; define readiness and installability; route adjacent plans through evidence-backed governance; keep the registry discoverable.
 - **Out of scope:** Naming or registering domains, predicting publication shape, assigning ownership, implementing runtime/editor features, or treating an archetype as a launch commitment.
 
+## Readiness language
+
+Readiness is a vector, not a single maturity adjective. A consumer-facing claim should say which language edition, schema/protocol, capability profile, projection, and evidence revision it covers. `implemented`, `measured`, `proposed`, and `interpretive` remain distinct; a resonant metaphor or polished projection cannot promote an unmeasured runtime contract.
+
+Independent consumers may supply pressure and evidence, but active governance surfaces describe them only by capability shape, authority boundary, workload, and observed behavior. Identity and private corpus provenance remain on the consumer side of the mount unless a human deliberately publishes a distillation.
+
 ## Files
 
 ```text

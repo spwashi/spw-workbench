@@ -1,0 +1,82 @@
+# cli-benchmarking-infra — Revision-Aware Efficiency Observatory
+# Distilled Architecture & Efficiency Lattice
+
+#:layer #!design
+
+^"domain"{
+  name: "Spw CLI Benchmarking & Revision-Aware Efficiency Observatory",
+  substrate: "TypeScript & Node.js V8 Runtime",
+  evolution_horizon: ["TypeScript 5.9", "TypeScript 6.0", "TypeScript 7.0 Native", "Bytecode VM"],
+}
+
+^"efficiency_lattice"{
+  dimensions: [
+    {
+      id: "operational_cadence",
+      name: "Operational Cadence & Latency Bands",
+      metrics: [
+        "sub-16ms interactive frame budget (format, outline, select)",
+        "sub-100ms macro response budget (pulse, census, inspect)",
+        "time to first useful event, final completion, and event cadence",
+        "p50 and p90 with every raw sample retained and instability classified",
+        "throughput scaling slope vs corpus volume (O(N) verification)",
+      ],
+    },
+    {
+      id: "compute_energy",
+      name: "Computational Thermodynamics & Memory Density",
+      metrics: [
+        "heap allocation rate & GC cycle pressure",
+        "peak RSS memory consumption per 10k lines",
+        "zero-copy memory transfer efficiency",
+        "concurrent worker/agent density per system footprint",
+      ],
+    },
+    {
+      id: "cognitive_communication",
+      name: "Cognitive Compression & Information Flow",
+      metrics: [
+        "IR product compression vs source surface size",
+        "developer/agent inner-loop turnaround velocity",
+        "semantic token density & signal-to-noise ratio",
+      ],
+    },
+    {
+      id: "toolchain_evolution",
+      name: "Toolchain & Substrate Evolution",
+      metrics: [
+        "TypeScript native compiler speedup matrix (5.9 -> 6 -> 7)",
+        "thread scaling efficiency under --checkers",
+        "Bytecode VM vs Tree-Walker execution multiplier",
+        "instrumented phase attribution when real spans exist (Lex -> Parse -> Traversal -> IR -> IO -> Typecheck)",
+      ],
+    },
+  ],
+}
+
+^"architecture"{
+  components: [
+    { id: "stats_core", file: "scripts/bench/stats.ts", role: "Raw sample retention, percentiles, dispersion, IQR annotation, and outcome classification" },
+    { id: "workload_engine", file: "scripts/bench/workloads.ts", role: "Synthetic, workbench, and identity-free consumer-shape workloads" },
+    { id: "harness", file: "scripts/bench/harness.ts", role: "In-process operation runner and subprocess cold/warm CLI runner with first-event and profiling hooks" },
+    { id: "cli_benchmarks", file: "scripts/bench/cli-benchmarks.ts", role: "5-group command suite (collate, select, shape, effect, workspace)" },
+    { id: "toolchain_benchmarks", file: "scripts/bench/toolchain-benchmarks.ts", role: "TypeScript compiler & typecheck diagnostic profiling" },
+    { id: "phase_attribution", file: "scripts/bench/phase-attribution.ts", role: "Actual span collection; unavailable phases remain unknown" },
+    { id: "compare_engine", file: "scripts/bench/compare.ts", role: "Revision-compatible differential analysis and PASS/REGRESSION/UNSTABLE/ENVFAULT/SKIPPED gating" },
+    { id: "efficiency_report", file: "scripts/bench/efficiency-report.ts", role: "Multi-format emission: Markdown Brief, Terminal Dash, JSON, Spw" },
+    { id: "runner", file: "scripts/bench/runner.ts", role: "Unified command-line interface and package script orchestrator" },
+  ],
+}
+
+^"verification"{
+  regression_threshold_default: 15.0, # percent
+  outcomes: [#pass, #regression, #unstable, #envfault, #skipped]
+  provenance: [#workbench_revision, #workload_schema, #runtime_version, #platform, #cold_warm, #profile]
+  negative_controls: [#no_silent_outlier_removal, #no_inferred_phase_timing, #no_named_consumer_fixture, #no_tree_mutation]
+  gates: [
+    "npm run test:bench",
+    "npm run bench:quick",
+    "npm run bench:check",
+    "npm run bench:report",
+  ],
+}

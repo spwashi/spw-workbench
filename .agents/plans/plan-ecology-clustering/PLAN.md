@@ -13,6 +13,18 @@ Taste note: improve **clarity**, **layering**, **naming**, and **meaningfulness*
 - **In scope**: define the cluster taxonomy, define a commit-selection bar, assign every active plan a learning/discussion/research value, align canopy/release/curriculum plans to that map, make explicit the learning-science ladder from language-design study into component, page, and service design, deepen the artifact with concrete pattern-review, web-capability, syntax-testing, and snippet-discovery surfaces, and treat mounted-consumer review as the primary transfer test between workbench doctrine and developing repositories.
 - **Out of scope**: archiving large numbers of plans, rewriting every stale plan to packages-era paths, or changing implementation scope for runtime/editor features.
 
+## Direction snapshot — 2026-08-24
+
+Consumers should be able to read direction without recognizing a repository name or reconstructing the workbench's private chronology. The active spine is therefore expressed through five portable contracts:
+
+1. **Compatibility** — identify language edition, syntax/profile stack, parser and product schemas, CLI protocol, and capability set independently. A scalar release label does not imply that every dimension advanced together.
+2. **Intermediate disclosure** — expose stable product identities through staged, progressive, and collapsible views. Human text, Spw, JSON, and event streams are projections of the same products rather than separately authored meanings.
+3. **Mounted authority** — consumer-owned roots and conventions remain authoritative; mounted tooling supplies versioned instruments, diagnostics, and review protocols.
+4. **Evidence** — performance and usability claims carry workloads, revisions, raw samples, outcome classes, and actual instrumentation boundaries. Representative consumer shapes are described by capability, never identity.
+5. **Projection** — editor and interface experiments consume parser/runtime truth and remain optional projections. Metaphors may guide an interaction profile but do not silently become language law.
+
+Current execution should strengthen this spine in roughly that order. Landed foundations remain reference material; speculative editor work should not be presented as a compatibility or release prerequisite.
+
 ## Files
 
 ```text
@@ -21,8 +33,10 @@ Taste note: improve **clarity**, **layering**, **naming**, and **meaningfulness*
 [NEW] .agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw
 [MOD] .agents/plans/ecosystem-surface-governance/PLAN.md
 [MOD] .agents/plans/ecosystem-surface-governance/wip.spw
-[MOD] .agents/plans/v030-release-prep/PLAN.md
-[MOD] .agents/plans/v030-release-prep/wip.spw
+[MOD] .agents/plans/spw-site-install/PLAN.md
+[MOD] .agents/plans/spw-site-install/wip.spw
+[MOD] .agents/plans/cli-benchmarking-infra/PLAN.md
+[MOD] .agents/plans/cli-benchmarking-infra/wip.spw
 [MOD] .agents/plans/curriculum-html-css-mastery/PLAN.md
 [MOD] .agents/plans/curriculum-html-svg-mastery/PLAN.md
 [MOD] .agents/plans/curriculum-logic-terminal-mastery/PLAN.md
@@ -49,7 +63,7 @@ Fuzz strategy:
 
 ## Agentic Hygiene
 
-- Rebase target: `main@32859b93`
+- Rebase target: `main@66ed9a2e`
 - Rebase cadence: before commit 1, before merge
 - Hygiene split: none
 

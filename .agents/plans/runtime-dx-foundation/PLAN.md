@@ -112,7 +112,7 @@ Fuzz strategy:
 
 - `spw-site-install` — installation flow defines the failure modes that `spw doctor` and station diagnostics must explain.
 - `ecosystem-surface-governance` — provides the spiritual testing path (station vocabulary) that diagnostic IDs should mirror.
-- `lsp-lore-upstream-bridge` — LSP entry point must be stable before diagnostic propagation is wired.
+- Landed standalone LSP entrypoint — diagnostic propagation must preserve repository-relative mount resolution and avoid consumer-specific bootstrap assumptions.
 - `absorb-spwq-cli` — CLI command taxonomy must be settled before `--diagnostics` flag placement.
 - `plan-ecology-clustering` — this plan occupies the `service` rung and should turn runtime truth into reusable install, support, and release knowledge.
 
