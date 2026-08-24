@@ -13,6 +13,16 @@ Version-local release records remain under `lib/spw-v*/CHANGELOG.md`. Commit `#[
 - Add the portable `spw.progressive-product/1` protocol and source products for `tokens`, `structure`, and `trace` over one parser kernel.
 - Add `spw inspect spacing` and `spw inspect source` projections as bounded tables, source-shaped Spw cards, complete JSON, or progressive NDJSON where supported.
 
+### Parser ownership and authored-source validation
+
+- Parse established `key: |` forms as indentation-bounded prose leaves that stop before sibling bindings and enclosing braces.
+- Limit file dialect authority to a column-zero pragma or the declared seed profile, so an indented syntax example cannot retune its containing document.
+- Keep operator suffixes and fallback modifiers on the operator's own line rather than allowing them to consume the next line's binding key.
+- Distinguish operational expressions from notation exhibits and explanatory prose; proposed programs remain inspectable without acquiring runtime authority.
+- Validate the authored corpus with the canonical `packages/spw-seed` parser while excluding registered derived surfaces and `.spw/gen/` products. The current strict source census passes 374 of 374 surfaces without warnings.
+
+Compatibility note: a surface that depended on an indented example selecting the file dialect, or on a trailing operator claiming a next-line identifier, now parses differently. Use `spw inspect source` or `spw inspect spacing` to review the affected boundary before formatting or migration.
+
 ### Work, evidence, and performance controls
 
 - Teach `--through` for the last source stage executed, `--events` for retained parser instrumentation, and `--sample` for visible example bounds.
@@ -42,13 +52,30 @@ Version-local release records remain under `lib/spw-v*/CHANGELOG.md`. Commit `#[
 - Add plan-only corpus refactor actions that preserve the consumer repository as process authority, discover a project or mounted-workbench CLI, and never add `--write`.
 - Make the VS Code TTL probe cache inspectable while naming it separately from LSP session reflection and runtime/CLI caches.
 
+### Editor compatibility and mounted launch
+
+- Build the IntelliJ/WebStorm plugin with Java 21 and declare compatibility with IntelliJ Platform builds 242 through 262.x.
+- Verify the plugin against WebStorm 2026.2.0.1 and 2026.2.1 while retaining WebStorm 2024.2.1 as the build floor.
+- Resolve an explicit command, a project-local workbench, or a mounted `.spw/_workbench` launcher in that order without transferring workspace authority to the tool checkout.
+- Keep platform branch 263 as an explicit native-LSP substrate decision rather than widening compatibility beyond verified APIs.
+
 ### Compatibility and open boundaries
 
 - Compatibility spellings remain available: `--product`, `--event-policy`, source/spacing `--limit`, and corpus `--depth` route to their canonical controls.
 - Gap classes remain observational. This snapshot does not activate semantic spacing affinity or formatter migrations.
 - Sparse indexes, generator-event suppression, parser bundle entry points, alias removal, and a shared meaning for `v0.4` remain open work rather than release claims.
 
-See [Spacing and Progressive Inspection](docs/runtime/md/spacing-and-progressive-inspection.md) and the [CLI convention](.spw/conventions/cli.spw) for the operational contracts.
+### Episode map
+
+The detailed engineering history remains linear and queryable through these inclusive episode spans:
+
+- `cdd0b40a–0fb37533` — spacing evidence, progressive products, and recoverable CLI controls
+- `cb84c040–ba40cea9` — CLI language, metaphor boundaries, and the first consumer changelog
+- `1864c0d9–0db31751` — WebStorm compatibility, mounted launch, and verification
+- `a3e54329–f01a1d4c` — cross-editor Form, Stack, Cache, Rename, and Refactor Plan instruments
+- `bbf75ecd–459ce61e` — parser ownership, corpus conventions, notation exhibits, and strict validation
+
+Continue with [Spacing and Progressive Inspection](docs/runtime/md/spacing-and-progressive-inspection.md), the [CLI convention](.spw/conventions/cli.spw), the [editor and LSP contract](docs/runtime/md/lsp-editor-integration.md), or the [IntelliJ/WebStorm compatibility surface](extensions/intellij-spw/README.md).
 
 ## Version-local histories
 

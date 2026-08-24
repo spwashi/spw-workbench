@@ -53,6 +53,8 @@ This is an organelle rather than a repository center: it supplies machinery, pre
 | [`packages/spw-lsp/`](packages/spw-lsp) | semantic editor behavior |
 | [`packages/spw-cli/`](packages/spw-cli) | workspace discovery, selection, queries, and diagnostics |
 | [`extensions/vscode-spw/`](extensions/vscode-spw) | thin VS Code client and navigation surfaces |
+| [`extensions/intellij-spw/`](extensions/intellij-spw) | IntelliJ/WebStorm structure, actions, previews, and shared-LSP launch |
+| [`extensions/neovim-spw/`](extensions/neovim-spw) | composable Neovim commands, scratch products, and shared-LSP launch |
 | [`.spw/`](.spw) | canon, conventions, exhibits, and tooling contracts |
 | [`docs/`](docs) | public narrative documentation |
 | [`.agents/`](.agents) | plans, skills, workflows, and local instruments |
@@ -85,7 +87,13 @@ Glyph-physics studies imagining each operator as a physical process rather than 
 
 ## Editor Surface
 
-The VS Code extension provides syntax support, standard LSP features, Concepts and Workspace views, and `Spw: Navigate Roots and Landmarks`. The client owns editor wiring; `spw-lsp` owns language meaning. See the [extension README](extensions/vscode-spw/README.md).
+The shared LSP and CLI own language meaning and source products; each editor keeps the interaction style native to its host:
+
+- [VS Code](extensions/vscode-spw/README.md) provides syntax and LSP support, Concepts and Workspace views, live-buffer probes, and guided side-by-side instrument views.
+- [IntelliJ/WebStorm](extensions/intellij-spw/README.md) provides TextMate fallback, structure and folding, typed actions, saved-file previews, and mounted-workbench launch recovery.
+- [Neovim](extensions/neovim-spw/README.md) provides terse commands, live-buffer probes, composable scratch results, and plan-only corpus refactor output.
+
+Across the three hosts, Form → Stack → Cache → Rename → Refactor Plan is a recognizable sequence rather than a requirement that every editor look alike. See the [editor and LSP contract](docs/runtime/md/lsp-editor-integration.md) and [unreleased changelog](CHANGELOG.md) for capability and compatibility details.
 
 ## Development
 
