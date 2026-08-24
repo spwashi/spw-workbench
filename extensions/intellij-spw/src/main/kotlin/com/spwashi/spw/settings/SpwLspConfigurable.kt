@@ -2,6 +2,7 @@ package com.spwashi.spw.settings
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.Configurable
+import com.intellij.openapi.ui.TextBrowseFolderListener
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
@@ -30,23 +31,20 @@ class SpwLspConfigurable(private val project: Project) : Configurable {
             }
             commandField = JBTextField().apply {
                 toolTipText = "Override the LSP command when you cannot use the default launcher contract (for example, \"pnpm run lsp\")."
-                emptyText.text = "Default: npm run lsp"
+                emptyText.text = "Default: npm run --silent lsp"
                 text = initialState.command
             }
             workDirField = TextFieldWithBrowseButton().apply {
                 toolTipText = "Optional working directory for the LSP process."
                 val descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
-                addBrowseFolderListener(
-                    "Select Spw LSP Working Directory",
-                    "Choose the repo root that contains package.json with the `lsp` script.",
-                    project,
-                    descriptor
-                )
+                    .withTitle("Select Spw LSP Working Directory")
+                    .withDescription("Choose the repo root that contains package.json with the `lsp` script.")
+                addBrowseFolderListener(TextBrowseFolderListener(descriptor, project))
                 text = initialState.workDir
             }
 
             val helperLabel = JBLabel(
-                "Leave fields empty to use defaults. The working directory should contain package.json with an `lsp` script; the launcher then resolves local or lore-remote server sources."
+                "Leave fields empty to use the project launcher or a mounted .spw/_workbench. Set a working directory to override discovery."
             ).apply {
                 foreground = UIUtil.getContextHelpForeground()
                 font = UIUtil.getLabelFont(UIUtil.FontSize.SMALL)
@@ -100,6 +98,5 @@ class SpwLspConfigurable(private val project: Project) : Configurable {
     private fun updateEnabledState(enabled: Boolean) {
         commandField?.isEnabled = enabled
         workDirField?.isEnabled = enabled
-        workDirField?.button?.isEnabled = enabled
     }
 }

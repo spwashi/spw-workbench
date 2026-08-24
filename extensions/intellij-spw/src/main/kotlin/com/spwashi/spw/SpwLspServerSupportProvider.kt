@@ -24,8 +24,8 @@ class SpwLspServerSupportProvider : LspServerSupportProvider {
         if (!state.enabled) return
 
         val basePath = project.basePath
-        val workDir = resolveWorkDir(basePath, state.workDir)
-        if (workDir.isBlank()) {
+        val toolRoot = SpwLspLauncher.resolveToolRoot(basePath, state.workDir)
+        if (toolRoot == null) {
             notifyOnce(
                 project,
                 LspStartupIssue.MissingProjectRoot,
@@ -33,8 +33,9 @@ class SpwLspServerSupportProvider : LspServerSupportProvider {
             )
             return
         }
+        val workDir = toolRoot.path.toString()
 
-        if (!Files.isDirectory(Paths.get(workDir))) {
+        if (!Files.isDirectory(toolRoot.path)) {
             notifyOnce(
                 project,
                 LspStartupIssue.MissingWorkDir,
@@ -59,20 +60,20 @@ class SpwLspServerSupportProvider : LspServerSupportProvider {
             return
         }
 
-        if (!Files.isRegularFile(Paths.get(workDir, "package.json"))) {
+        if (!Files.isRegularFile(toolRoot.path.resolve("package.json"))) {
             notifyOnce(
                 project,
                 LspStartupIssue.MissingPackageJson,
-                "Spw LSP requires a package.json in the configured working directory so the default launcher can run `npm run lsp`: $workDir."
+                "Spw LSP could not find a package.json with the launcher contract in the project or mounted `.spw/_workbench`: $workDir."
             )
             return
         }
 
-        if (!hasLspScript(workDir)) {
+        if (!SpwLspLauncher.hasLspScript(toolRoot.path)) {
             notifyOnce(
                 project,
                 LspStartupIssue.MissingLspScript,
-                "Spw LSP requires an \"lsp\" script in package.json. The default launcher contract is `npm run lsp`."
+                "Spw LSP requires an \"lsp\" script in package.json. The default launcher contract is `npm run --silent lsp`."
             )
             return
         }
@@ -83,21 +84,8 @@ class SpwLspServerSupportProvider : LspServerSupportProvider {
         }
 
         serverStarter.ensureServerStarted(
-            SpwLspServerDescriptor(project, "Spw", listOf("npm", "run", "lsp"), workDir)
+            SpwLspServerDescriptor(project, "Spw", listOf("npm", "run", "--silent", "lsp"), workDir)
         )
-    }
-
-    private fun resolveWorkDir(basePath: String?, workDir: String): String {
-        val trimmed = workDir.trim()
-        if (trimmed.isEmpty()) {
-            return basePath.orEmpty()
-        }
-        val path = Paths.get(trimmed)
-        return if (path.isAbsolute) {
-            path.normalize().toString()
-        } else {
-            basePath?.let { Paths.get(it, trimmed).normalize().toString() }.orEmpty()
-        }
     }
 
     private fun isExecutableAvailable(command: String, workDir: String): Boolean {
@@ -107,59 +95,6 @@ class SpwLspServerSupportProvider : LspServerSupportProvider {
             command.contains("/") || command.contains("\\") -> Files.isExecutable(Paths.get(workDir, command))
             else -> PathEnvironmentVariableUtil.findInPath(command) != null
         }
-    }
-
-    private fun hasLspScript(workDir: String): Boolean {
-        val packageJsonPath = Paths.get(workDir, "package.json")
-        if (!Files.isRegularFile(packageJsonPath)) return false
-        return try {
-            val content = Files.readString(packageJsonPath)
-            val scriptsIdx = content.indexOf("\"scripts\"")
-            if (scriptsIdx < 0) return false
-
-            val scriptsObjectStart = content.indexOf('{', scriptsIdx)
-            if (scriptsObjectStart < 0) return false
-
-            val scriptsObject = extractJsonObject(content, scriptsObjectStart) ?: return false
-            LSP_SCRIPT_PATTERN.containsMatchIn(scriptsObject)
-        } catch (_: Exception) {
-            false
-        }
-    }
-
-    private fun extractJsonObject(content: String, objectStart: Int): String? {
-        var depth = 0
-        var inString = false
-        var escaped = false
-
-        for (i in objectStart until content.length) {
-            val ch = content[i]
-
-            if (inString) {
-                if (escaped) {
-                    escaped = false
-                    continue
-                }
-                when (ch) {
-                    '\\' -> escaped = true
-                    '"' -> inString = false
-                }
-                continue
-            }
-
-            when (ch) {
-                '"' -> inString = true
-                '{' -> depth += 1
-                '}' -> {
-                    depth -= 1
-                    if (depth == 0) {
-                        return content.substring(objectStart, i + 1)
-                    }
-                }
-            }
-        }
-
-        return null
     }
 
     private fun notifyOnce(project: Project, issue: LspStartupIssue, message: String) {
@@ -187,7 +122,6 @@ class SpwLspServerSupportProvider : LspServerSupportProvider {
     companion object {
         private const val LSP_NOTIFICATION_GROUP = "Spw LSP"
         private val NOTIFIED_ISSUES_KEY = Key.create<MutableSet<LspStartupIssue>>("spw.lsp.startup.issues")
-        private val LSP_SCRIPT_PATTERN = Regex(""""lsp"\s*:""")
     }
 }
 
