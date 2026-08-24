@@ -48,6 +48,12 @@ The work crosses the timing, disclosure, stability, resolution, and noise axes. 
 
 ## Files
 
+### Implementation checkpoint — 2026-08-24
+
+The first observational slice is implemented on `codex/gap-affinity-tooling`: exact gap products, segment-aware dotted identifiers, parse-event retention policies, runtime-trace policies, policy-aware hot-session cache keys, and `inspect.spacing/1` table/Spw/JSON projections. Tests currently prove token/gap/AST invariance across parse policies and value/register invariance across runtime policies.
+
+This checkpoint does **not** activate `syntax.gap-affinity/1`, AssociationIR, comma/semicolon body laws, formatter migrations, workspace style inference, or HTML/CSS/JS projection budgets. Those remain later commits gated by corpus and benchmark evidence.
+
 ```text
 [NEW] .agents/plans/gap-affinity-tooling/PLAN.md
 [NEW] .agents/plans/gap-affinity-tooling/wip.spw
@@ -95,9 +101,11 @@ The work crosses the timing, disclosure, stability, resolution, and noise axes. 
 [NEW] packages/spw-seed/src/parser/products.test.ts
 [NEW] packages/spw-seed/src/canonical/format-spacing.test.ts
 [NEW] packages/spw-cli/src/inspect-spacing.ts
+[NEW] packages/spw-cli/src/inspect-spacing.test.ts
 [NEW] packages/spw-cli/src/format-policy.ts
 [NEW] packages/spw-cli/src/format-migrate.ts
 [MOD] packages/spw-cli/src/inspect.ts
+[MOD] packages/spw-cli/src/tsconfig.json
 [MOD] packages/spw-cli/src/format.ts
 [MOD] packages/spw-lsp/src/handlers/editing.ts
 [MOD] packages/spw-lsp/src/server-index.ts
@@ -109,6 +117,19 @@ The work crosses the timing, disclosure, stability, resolution, and noise axes. 
 [MOD] docs/theory/spw/syntax-profile-stack.spw
 [NEW] docs/guides/format-profile-migrations.md
 [NEW] docs/reference/format-policy.md
+[NEW] docs/runtime/md/spacing-and-progressive-inspection.md
+[NEW] docs/runtime/spw/spacing-and-progressive-inspection.spw
+[MOD] docs/runtime/spw/cli-command-surface.spw
+[MOD] docs/toc.spw
+[MOD] .spw/conventions/cli.spw
+[MOD] packages/spw-runtime/src/interpreter/types.ts
+[MOD] packages/spw-runtime/src/interpreter/interpreter.ts
+[NEW] packages/spw-runtime/src/interpreter/trace.ts
+[MOD] packages/spw-runtime/src/pipeline/types.ts
+[MOD] packages/spw-runtime/src/pipeline/stages.ts
+[MOD] packages/spw-runtime/src/session/hot-session-types.ts
+[MOD] packages/spw-runtime/src/session/hot-session.ts
+[NEW] packages/spw-runtime/src/interpreter/trace-policy.test.ts
 [MOD] .spw/registries/dialect-spec.spw
 [MOD] .spw/registries/syntax-profile-stack.spw
 [NEW?] .spw/registries/format-policy.spw
@@ -149,9 +170,9 @@ Fuzz strategy:
 
 ## Agentic Hygiene
 
-- Rebase target: `main@6b49b60c9c06162402408f5a85339d68831534dd`
+- Rebase target: `main@c46558ffbb29a10abb1fee11dbec8aa522cbc8b3`
 - Rebase cadence: create `codex/gap-affinity-tooling` from the reviewed planning commit before implementation commit 2; rebase again before merge.
-- Hygiene split: none at plan creation; the worktree was clean. Plan artifacts are the only authorized edits in this pass. Any implementation begins in a dedicated worktree after the plan and migration scope receive review.
+- Hygiene split: implementation is isolated in `codex/gap-affinity-tooling`. Preserve separate review episodes for Seed lexer/parser products, runtime disclosure/cache identity, CLI/docs projection, and cross-plan maintenance.
 
 ## Dependencies
 

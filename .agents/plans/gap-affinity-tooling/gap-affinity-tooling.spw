@@ -3,7 +3,7 @@
 
 #>gap_affinity_tooling
 #:layer #!semantics
-#:status #!proposed
+#:status #!partial
 
 ^seed[Spw.Plan.Gap.Affinity.Tooling v:0.1 @profile:Spw.p @intent:gap_association_product]
 
@@ -15,22 +15,29 @@
  @syntax_stack: ~"docs/theory/spw/syntax-profile-stack.spw"
  @identifier_lexer: ~"packages/spw-seed/src/lexer/matchers/identifiers.ts"
  @parse: ~"packages/spw-seed/src/parser/parse.ts"
+ @runtime_trace: ~"packages/spw-runtime/src/interpreter/types.ts"
+ @spacing_inspect: ~"packages/spw-cli/src/inspect-spacing.ts"
+ @reader_note: ~"docs/runtime/md/spacing-and-progressive-inspection.md"
  @format: ~"packages/spw-seed/src/canonical/format-pulses.ts"
 }
 
 ^["status"]{
  implemented: #[
-  "lexer emits whitespace tokens with source spans",
-  "identifier matcher currently accepts internal, repeated, and trailing dots",
+  "lexer emits TokenGap products with exact raw intervals, trivia indices, spans, and tight/open/cadence/episode classes",
+  "tight dotted identifiers retain IDENTIFIER compatibility and expose ordered segments",
+  "trailing dot and repeated dot silhouettes remain explicit operator or connector products",
   "grammar observes adjacency in selected operator-label and inline-payload paths",
-  "parse and lex convenience APIs currently retain generated events",
+  "parse and lex products disclose none/diagnostics/trace retention with generated and retained counts",
+  "runtime traces disclose none/stages/evaluation with generated and retained counts",
+  "inspect.spacing/1 projects one observational product as table, Spw card, or JSON envelope",
   "format pulses disclose ordered string-rewrite capabilities",
  ]
  measured: #[
   "consumer-shaped probes found dot-heavy expressions and material parse-event volume",
+  "docs/index.spw produced 335 classified gaps and 7563 generated parse events while diagnostics retained zero",
   "exact performance attribution remains a benchmark input, not language law",
  ]
- proposed: #[#gap_ir, #association_ir, #parse_product_request, #event_policy, #workspace_format_policy, #format_profile_migration, #format_receipt, #consumer_exchange, #projection_budget_hint]
+ proposed: #[#association_ir, #parse_product_request, #workspace_format_policy, #format_profile_migration, #format_receipt, #consumer_exchange, #projection_budget_hint]
  interpretive: #[#spacing_resonance, #charge, #affect, #atmosphere]
 }
 
@@ -77,6 +84,17 @@
  events: .{ids=#[none, diagnostics, trace], may_change=#[#event_count, #memory, #latency], preserves=#[#semantic_product]}
  tooling: .{name=`spacing resonance`, may_change=#[#rank, #fold, #suggestion], preserves=#[#tokens, #ast, #onf, #effects]}
  projection: .{may_change=#[#disclosure, #atmosphere, #interaction], preserves=#[#semantic_baseline, #association_hash]}
+}
+
+^["observational_increment"]{
+ surface: #inspect_spacing_1
+ status: #implemented
+ revisions: #[cdd0b40a ; 8d454ad6 ; 211d7653]
+ preserves: #[#raw_gap, #token_type, #ast, #runtime_value, #register_semantics]
+ discloses: #[#gap_class, #identifier_segments, #events_generated, #events_retained, #relative_path]
+ projections: #[#table, #spw_card, #json_envelope]
+ refuses: #[#association_semantics, #format_write, #workspace_style_inference]
+ verification: #[#test_seed_701, #test_runtime_184, #test_cli_192, #typecheck, #spw_374, #writerside]
 }
 
 ^["formatting_law"]{
