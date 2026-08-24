@@ -1,0 +1,100 @@
+# wip — spw-syntax-warning-cleanup
+# Branch: codex/spw-syntax-warning-cleanup
+# Started: 2026-08-24
+
+#:layer #!pragmatics
+
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @plan: ~".agents/plans/spw-syntax-warning-cleanup/PLAN.md"
+ @fix: ~".agents/plans/spw-syntax-warning-cleanup/FIX.md"
+ @parser: ~"packages/spw-seed/src/grammar/seed.ts"
+ @validator: ~"scripts/analyzers/spw-syntax-validate.ts"
+}
+
+^["intent"]{
+ ~#goal: "Move the committed Spw corpus from 56 warnings to zero by repairing language ownership and stale source spelling, not by silencing evidence."
+ ~#taste: "A structured-looking surface should parse structurally; an intentional prose surface should declare that boundary recognizably."
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #language
+ develops: [#parser_correctness, #syntax_literacy, #recoverability]
+ review_surfaces: [@plan, @fix, @parser, @validator]
+}
+
+^["concept_index"]{
+ primary: [#prose_degradation, #dialect_authority, #block_scalar]
+ surfaces: [#seed, #corpus, #lint]
+ tensions: [#structured_vs_prose, #indentation_vs_spacing, #compatibility_vs_clarity]
+ transfers: [#language, #tooling, #documentation]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? trace the first unowned token and deepest failed production",
+  "< repair one repeated construct or one isolated stale spelling",
+  "$ recount warnings and inspect changed AST products",
+  "^ retain a focused regression test for every parser repair",
+  "% keep prose-degradation visible as the invariant",
+ ]
+ gates: [#warning_count_decreases, #no_silent_fallback, #strict_corpus]
+}
+
+^["parallel_work"]{
+ critical_path: [#seed_parser]
+ parallelizable: [#corpus_normalization, #validator_boundary]
+ shared_hot_files: ["packages/spw-seed/src/grammar/expressions.ts"]
+ merge_risks: [#parser_hot_path, #corpus_breadth]
+ handoff_artifacts: [@plan, @fix]
+}
+
+^["risk_model"]{
+ hard_failures: [#scalar_eats_sibling, #pragma_from_example, #warning_suppression]
+ soft_failures: [#overquoted_example, #archive_churn]
+ recoveries: [#focused_trace, #prefix_minimization, #per_group_recount]
+ non_negotiables: [#strict_zero_warnings, #prose_fallback_remains_visible]
+}
+
+^["validation"]{
+ hypotheses: [#source_corpus_zero, #block_scalar_bounded, #dialect_header_scoped]
+ negative_controls: [#malformed_surface_still_warns, #explicit_pragma_wins, #normalization_stable]
+ demo_path: [#dialect, #binding, #block_scalar, #corpus, #strict_lint]
+}
+
+^["stream"]{
+ >>[2026-08-24 15:08] observe — main reports 57 warnings across 381 files; one belongs to an ignored session corpus memo, leaving 56 committed-source warnings.
+ >>[2026-08-24 15:12] diagnose — warnings divide into dialect false positives, sigil binding lookahead, repeated unparsed forms, three machine-frame spellings, and derived-session scope.
+ >>[2026-08-24 15:15] implement — header-scoped dialect detection and colon lookahead pass 57 focused seed tests and reduce committed warnings from 56 to 53.
+ >>[2026-08-24 15:17] surprise — `key: |` appears 64 times across canon; warning traces identify a missing indentation-bounded block-scalar production rather than isolated typos.
+ >>[2026-08-24 15:18] taste — block scalars should become a known prose leaf with an exact indentation boundary, not a permissive rest-of-file escape hatch.
+}
+
+^["open"]{
+ ?[mixed_markdown]: "Should the one Markdown-heavy .spw surface be made explicit prose or migrated into frames?"
+}
+
+^["commits"]{
+ ~[1]: ".[plans] — classify Spw syntax warning roots"
+ ~[2]: "![spw-seed] — constrain dialect and binding lookahead"
+ ~[3]: "&[spw-seed] — parse indentation-bounded block scalars"
+ ~[4]: ".[spw-corpus] — normalize remaining degraded surfaces"
+ ~[5]: "![spw-lint] — prove a warning-free source corpus"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@f01a1d4ce5f654cd874b5ccfcdf1a6692a5ab3f3"
+ ~#rebased_at: "2026-08-24"
+ ~#hygiene_split: "none"
+ ~#files_hot: "packages/spw-seed/src/dialect/detect.ts, packages/spw-seed/src/grammar/expressions.ts, scripts/analyzers/spw-syntax-validate.ts"
+ ~#next_commit: "1"
+ ~#open_count: "1"
+ ~#last_stream: "2026-08-24 15:18"
+ ~#taste_debt: "expressions.ts is already oversized; route block scalars through a new grammar module and avoid adding another parsing concern inline."
+}
+
+^["done"]{
+ # Written at merge time.
+}
