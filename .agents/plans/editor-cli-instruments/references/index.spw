@@ -1,0 +1,29 @@
+# references — editor-cli-instruments
+
+#:layer #!reference
+
+^["source_index"]{
+ @lsp: "https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/"
+ @jetbrains_actions: "https://plugins.jetbrains.com/docs/intellij/action-system.html"
+ @jetbrains_lsp: "https://plugins.jetbrains.com/docs/intellij/language-server-protocol.html"
+ @jetbrains_tool_windows: "https://plugins.jetbrains.com/docs/intellij/tool-window.html"
+ @vscode_commands: "https://code.visualstudio.com/api/references/commands"
+ @neovim_lsp: "https://neovim.io/doc/user/lsp.html"
+}
+
+^["signature"]{
+ ~#profile: "standard LSP semantics braided with primary editor-platform interaction contracts"
+ ~#recognition: "Standard rename remains portable; editor-specific actions only choose invocation and projection."
+}
+
+^["topic_anchors"]{
+ rename: [@lsp, @jetbrains_lsp, @neovim_lsp, #standard_capability]
+ actions: [@jetbrains_actions, @vscode_commands, #explicit_invocation, #keymap_discovery]
+ output: [@jetbrains_tool_windows, #containment, #cancellation, #recovery]
+}
+
+^["operational_density"]{
+ checks: [#capability_truth, #action_update_thread, #no_action_state, #standard_rename]
+ drift_risks: [#platform_api_rename, #command_copy_drift, #custom_request_assumption]
+ release_implications: [#support_matrix, #marketplace_copy, #teaching_surface]
+}

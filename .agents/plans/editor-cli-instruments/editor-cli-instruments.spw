@@ -1,0 +1,48 @@
+# Editor CLI Instruments
+
+#>spw_editor_cli_instruments
+#:tooling #!contract
+#:layer #!pragmatics
+
+^["questions"]{
+ form: .{ command = "spw form <surface>", asks = #geometry_and_resonance, effect = #l0_measure }[reg=facet]
+ stack: .{ command = "spw stack <surface>", asks = #surface_profile, effect = #l0_measure }[reg=facet]
+ cache: .{ command = "spw inspect cache <surface>", asks = #cache_state_and_cost, effect = #l0_measure }[reg=facet]
+ rename: .{ protocol = #text_document_rename, asks = #symbol_change, effect = #l2_workspace_edit }[reg=facet]
+ corpus_refactor: .{ command = "spw refactor . --rename <kind:from=to> --json", asks = #multi_surface_change_plan, effect = #l0_plan }[reg=facet]
+}
+
+^["routing"]{
+ live_document: [#lsp_when_earned, #includes_unsaved_text]
+ saved_document: [#cli_allowed, #dirty_state_must_be_visible]
+ corpus: [#cli_plan_only]
+ semantic_owner: [#spw_seed, #spw_lsp, #spw_cli]
+ projections: [#vscode, #intellij, #neovim]
+}
+
+^["mounted_consumer"]{
+ executable: "npm --prefix <tool-root> run --silent spw -- ..."
+ process_cwd: #consumer_root
+ input_identity: #consumer_relative_path
+ excludes: [".spw/_workbench/** from consumer corpus"]
+}
+
+^["receipt"]{
+ required: [#question, #source, #scope, #duration, #exit_state, #cache_state, #recovery]
+ cache_sources: [#editor_probe_cache, #lsp_session_reflection, #runtime_cache]
+ rule: "Name the cache layer; never flatten distinct caches into one hit/miss claim."
+}
+
+^["safety"]{
+ invocation: #argument_array_not_shell_string
+ automation: #explicit_only
+ corpus_refactor: #never_write_from_editor_instrument
+ privacy: [#local_output, #no_person_level_inference, #no_authority_effect]
+ failure: [#copyable_receipt, #save_and_retry, #settings_route]
+}
+
+^["recognition"]{
+ common_names: [#form, #stack, #cache, #rename, #refactor_plan]
+ local_shapes: [#command_palette, #action_menu, #neovim_command]
+ lyrical_sequence: "form → stack → cache → rename → plan"
+}
