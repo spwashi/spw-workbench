@@ -133,3 +133,13 @@ describe('prose degradation is reported', () => {
     ).toHaveLength(0)
   })
 })
+
+describe('sigil binding lookahead', () => {
+  it.each(['#first', '?second'])('keeps %s available as a binding key', key => {
+    const result = parse(`^["bindings"]{ ${key}: .{ value: 1 } tail: 2 }`)
+    expect(result.success).toBe(true)
+    expect(
+      result.warnings.filter(w => (w.data as { code?: string }).code === 'prose-degradation'),
+    ).toHaveLength(0)
+  })
+})

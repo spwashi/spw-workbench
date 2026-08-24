@@ -469,6 +469,7 @@ export const operationNode: Parser<OperationNode> = named('operation',
       && !body
       && !subject
       && INLINE_PAYLOAD_OPERATORS.has(operatorToken.value)
+      && current(stream).type !== 'COLON'
     ) {
       skipWhitespace(stream)
       const payload = readLinePayload(stream, operatorToken, startsItsLine(stream, opIndex))

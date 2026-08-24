@@ -34,6 +34,24 @@ describe('detectDialect', () => {
     const src = '@dialect:Spw.m\n^seed[X @profile:Spw.b]\n'
     expect(detectDialect(src).id).toBe('Spw.m')
   })
+
+  it('does not treat indented examples as file pragmas', () => {
+    const src = [
+      '^seed[Examples @profile:Spw.b]',
+      '^["example"]{',
+      '  @dialect:Spw.l',
+      '  #:dialect Spw.q',
+      '  @profile:Spw.f',
+      '}',
+    ].join('\n')
+
+    expect(detectDialect(src).id).toBe('Spw.b')
+    expect(detectDialect(src).source).toBe('header')
+  })
+
+  it('ignores an indented dialect example without a seed header', () => {
+    expect(detectDialect('example: |\n  @dialect:Spw.l\n').id).toBe('Spw.b')
+  })
 })
 
 describe('applyDialectPreprocess', () => {

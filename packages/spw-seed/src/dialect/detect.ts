@@ -13,11 +13,14 @@ import {
 /** Match @profile:Spw.b or @profile:Spw.b~#[flags] inside seed / free text. */
 const PROFILE_AT = /@profile\s*:\s*(Spw\.[blmxqfpt])\b/i
 
-/** Match dialect: Spw.l or @dialect:Spw.l */
-const DIALECT_AT = /@dialect\s*:\s*(Spw\.[blmxqfpt])\b/i
+/** Match a file-level @dialect:Spw.l pragma, never an indented example. */
+const DIALECT_AT = /^@dialect\s*:\s*(Spw\.[blmxqfpt])\b/im
 
-/** Match #:dialect Spw.q or #:dialect #!Spw.q */
-const DIALECT_PRAGMA = /#:\s*dialect\b[^\n]*?(Spw\.[blmxqfpt])\b/i
+/** Match a file-level #:dialect Spw.q pragma, never an indented example. */
+const DIALECT_PRAGMA = /^#:\s*dialect\b[^\n]*?(Spw\.[blmxqfpt])\b/im
+
+/** Match a standalone file-level @profile declaration outside a seed header. */
+const PROFILE_LINE = /^@profile\s*:\s*(Spw\.[blmxqfpt])\b/im
 
 /** Match ^seed[… @profile:Spw.b …] on early lines */
 const SEED_HEAD = /^\s*\^seed\[[^\]]{0,400}\]/m
@@ -83,8 +86,9 @@ export function detectDialect(source: string): DialectDetection {
     }
   }
 
-  // Anywhere in head (fallback)
-  const any = PROFILE_AT.exec(head)
+  // Standalone profile pragma (fallback). Requiring column zero keeps examples,
+  // quoted instructions, and nested payloads from retuning the whole surface.
+  const any = PROFILE_LINE.exec(head)
   if (any?.[1]) {
     const id = normalizeDialectId(any[1])
     if (id) {
