@@ -44,6 +44,7 @@ docs/
 - **Learn spine (start here)?** Open [learn/README.md](learn/README.md) — 15 min / 1 h / 1 day
 - **Cheat sheet?** [learn/cheat-sheet.md](learn/cheat-sheet.md)
 - **Worked CLI?** [learn/worked-cli.md](learn/worked-cli.md)
+- **What changed?** [../CHANGELOG.md](../CHANGELOG.md) — unreleased work and version-local release histories
 - **Examples?** [examples/](examples/) · [examples/index.spw](examples/index.spw)
 - **Complete navigation?** Open `toc.spw` (table of contents)
 - **New to Spw syntax?** Start with `lang/few-shot.spw.md`

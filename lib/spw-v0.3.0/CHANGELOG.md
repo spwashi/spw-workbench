@@ -1,5 +1,7 @@
 # Spw v0.3.0 Changelog
 
+> This is the version-local `v0.3.0` record. See the repository [changelog](../../CHANGELOG.md) for later unreleased work; an unreleased entry is not a `v0.4` promise.
+
 ## v0.3.0 — 2026-03-26
 
 This entry records the structural milestone that already landed in the repo. It does not claim the public release gates are closed yet.

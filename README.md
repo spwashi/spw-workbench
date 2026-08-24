@@ -9,6 +9,7 @@ It ships a portable parser, runtime, language server, CLI, VS Code extension, an
 - [Reading map](docs/runtime/md/github-reading-map.md) — shortest route through this repository
 - [Quick start](docs/runtime/md/quick-start.md) — create or mount a workspace
 - [Mounted workbench](docs/runtime/md/mounted-workbench.md) — prompt, ownership, and navigation contract
+- [Changelog](CHANGELOG.md) — unreleased changes and version-local histories
 - [Workspace manifest](.spw/workspace.spw) — canonical roots and language settings
 
 For a local checkout:
