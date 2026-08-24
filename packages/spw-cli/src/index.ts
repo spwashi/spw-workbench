@@ -79,6 +79,7 @@ export {
 } from './inspect-spacing'
 export {
   buildSourceInspection,
+  formatSourceInspectionSamples,
   formatSourceInspectionSpw,
   runSourceInspection,
   SOURCE_INSPECTION_SURFACE,

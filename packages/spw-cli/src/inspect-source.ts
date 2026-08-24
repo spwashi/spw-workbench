@@ -152,6 +152,53 @@ export function formatSourceInspectionSpw(
   return formatSpwCard('source', parts)
 }
 
+export function formatSourceInspectionSamples(
+  inspection: SourceInspection,
+  options: FormatSourceInspectionOptions = {},
+): string {
+  const limit = options.limit ?? 16
+  const sections: string[] = []
+  const tokens = inspection.products.find(product => product.product === SOURCE_PRODUCT_IDS.tokens)
+  if (tokens) {
+    sections.push('token sample')
+    sections.push(formatTable(
+      ['#', 'type', 'value_visible', 'start', 'end'],
+      tokens.data.tokens.slice(0, limit).map((token, index) => [
+        String(index),
+        token.type,
+        visibleTokenValue(token.value),
+        String(token.span.start.offset),
+        String(token.span.end.offset),
+      ]),
+      { maxCol: 36 },
+    ))
+    if (tokens.data.tokens.length > limit) {
+      sections.push(`… ${tokens.data.tokens.length - limit} more tokens (raise --sample)`)
+    }
+  }
+
+  const trace = inspection.products.find(product => product.product === SOURCE_PRODUCT_IDS.trace)
+  if (trace) {
+    sections.push('event sample')
+    sections.push(formatTable(
+      ['#', 'type', 'rule', 'offset', 'depth'],
+      trace.data.events.slice(0, limit).map((event, index) => [
+        String(index),
+        event.type,
+        event.rule,
+        String(event.position.offset),
+        String(event.depth),
+      ]),
+      { maxCol: 36 },
+    ))
+    if (trace.data.events.length > limit) {
+      sections.push(`… ${trace.data.events.length - limit} more events (raise --sample)`)
+    }
+  }
+
+  return sections.join('\n')
+}
+
 export async function runSourceInspection(options: RunSourceInspectionOptions): Promise<void> {
   const abs = path.resolve(options.file)
   const source = await fs.readFile(abs, 'utf8')
@@ -222,12 +269,14 @@ export async function runSourceInspection(options: RunSourceInspectionOptions): 
     const details = productDetails(product)
     emitDetail(`${product.stage.padEnd(9)} ${Object.entries(details).map(([key, value]) => `${key}=${value}`).join(' ')}`)
   }
+  console.log('')
+  console.log(formatSourceInspectionSamples(inspection, { limit: sample }))
   const target = shellArg(file)
   emitRecommendations(
     {
-      command: `spw inspect source ${target} --through tokens --events none --spw`,
+      command: `spw inspect source ${target} --through tokens --events none --sample ${sample} --spw`,
       purpose: 'read a bounded lexical receipt',
-      cost: 'token stage only; display sample defaults to 16',
+      cost: `token stage only; ${sample} token examples`,
     },
     {
       command: `spw inspect source ${target} --through trace --events trace --ndjson`,

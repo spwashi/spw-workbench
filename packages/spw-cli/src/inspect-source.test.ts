@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   buildSourceInspection,
+  formatSourceInspectionSamples,
   formatSourceInspectionSpw,
   SOURCE_INSPECTION_SURFACE,
 } from './inspect-source'
@@ -49,5 +50,20 @@ describe('source intermediate inspection', () => {
 
     expect(inspection.controls.events).toBe('trace')
     expect(inspection.products.at(-1)?.product).toBe('source.trace/1')
+  })
+
+  it('makes the human sample bound visible without losing exact product data', () => {
+    const inspection = buildSourceInspection('a . b\n', {
+      through: 'trace',
+      events: 'trace',
+    })
+    const sample = formatSourceInspectionSamples(inspection, { limit: 1 })
+
+    expect(sample).toContain('token sample')
+    expect(sample).toContain('event sample')
+    expect(sample).toContain('value_visible')
+    expect(sample).toContain('more tokens (raise --sample)')
+    expect(sample).toContain('more events (raise --sample)')
+    expect(inspection.products[0]?.data).toHaveProperty('tokens')
   })
 })
