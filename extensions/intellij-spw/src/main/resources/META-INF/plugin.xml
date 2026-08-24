@@ -38,6 +38,7 @@
         
         <platform.lsp.serverSupportProvider implementation="com.spwashi.spw.SpwLspServerSupportProvider"/>
         <notificationGroup id="Spw LSP" displayType="BALLOON"/>
+        <notificationGroup id="Spw Instruments" displayType="BALLOON"/>
         <projectConfigurable
             id="spw.lsp"
             groupId="tools"
@@ -69,4 +70,31 @@
     <extensions defaultExtensionNs="com.intellij.textmate">
         <bundleProvider implementation="com.spwashi.spw.SpwTextMateBundleProvider"/>
     </extensions>
+
+    <actions>
+        <group id="Spw.Instruments" text="Spw Instruments" popup="true">
+            <action id="Spw.InspectForm"
+                    class="com.spwashi.spw.SpwInspectFormAction"
+                    text="Inspect Spw Form"
+                    description="Measure the saved surface's brace geometry and resonance through the canonical Spw CLI"/>
+            <action id="Spw.InspectStack"
+                    class="com.spwashi.spw.SpwInspectStackAction"
+                    text="Inspect Spw Surface Stack"
+                    description="Profile the saved surface through the canonical Spw stack command"/>
+            <action id="Spw.InspectCache"
+                    class="com.spwashi.spw.SpwInspectCacheAction"
+                    text="Inspect Spw Cache"
+                    description="Read cache tier, hit state, and parser statistics for the saved surface"/>
+            <separator/>
+            <action id="Spw.Rename"
+                    class="com.spwashi.spw.SpwRenameAction"
+                    text="Rename Spw Symbol"
+                    description="Delegate a caret rename to the standard IntelliJ LSP rename action"/>
+            <action id="Spw.PlanCorpusRefactor"
+                    class="com.spwashi.spw.SpwPlanCorpusRefactorAction"
+                    text="Plan Spw Corpus Refactor..."
+                    description="Preview a mark, anchor, case, or mood rename across the consumer corpus without writing"/>
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </group>
+    </actions>
 </idea-plugin>
