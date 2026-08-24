@@ -1,4 +1,3 @@
-```spw
 ^seed[Probe@Grok4.20.Spw v:0.2 @profile:Spw.b @intent:prompt_to_grok]
 @doc: "Paste this entire seed into Grok 4.20. Ask Grok to answer in Spw blocks + ONF notes + adversarial tests. v0.2 adds register/runtime questions, dialect density comparison, and more syntax exercises."
 
@@ -371,15 +370,13 @@
   }
 
   ## response format
-  @(
-    `Return blocks in this order:`,
-    ?< `A) Proposal deltas (surface + ONF + fixity + dialect density)`,
-       `B) ONF desugar table (complete for forms you touched)`,
-       `C) Seeds: minimal + adversarial (ASI, mounts, momentum, holes)`,
-       `D) Implementation notes: lexer, parser, printer, fuzz, runtime registers`
-  >[reg=call]
+  response_order: #[
+    `A) Proposal deltas (surface + ONF + fixity + dialect density)`,
+    `B) ONF desugar table (complete for forms you touched)`,
+    `C) Seeds: minimal + adversarial (ASI, mounts, momentum, holes)`,
+    `D) Implementation notes: lexer, parser, printer, fuzz, runtime registers`
+  ]
 
 }_probe
-```
 
-## Response: see docs/research/grok-response-syntax-v0.2.md
+response: ~"../grok-response-syntax-v0.2.md"

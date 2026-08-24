@@ -209,16 +209,16 @@
  maps_to: #[effect.l0.measure, probeMutationTopography, spw_pulse_check]
 
  // atom samples
- %[health]
- %[depth]
- %[pair]
- %[len]
- %[sigma]                                  // flow occupancy of focus cell
- %[d]{ # : #[layout, structure] }      // strata touched by planned differential
- %[vol]{ scheme: tol{ abs: 0.02 } }    // measure lattice (scheme id only)
-
- // bundle
- $%[ %[health] , %[d] , %[sigma] ]
+ atom_samples: #[
+  "%[health]",
+  "%[depth]",
+  "%[pair]",
+  "%[len]",
+  "%[sigma] — flow occupancy of focus cell",
+  "%[d]{ # : #[layout, structure] } — strata touched by planned differential",
+  "%[vol]{ scheme: tol{ abs: 0.02 } } — measure lattice (scheme id only)"
+ ]
+ bundle_sample: "$%[ %[health], %[d], %[sigma] ]"
 
  law: "% and $% are observational; if a tool rewrites under %, that is a bug"
 }
@@ -441,11 +441,11 @@
   .{ glyph: "!charge{...}" , kernel: "MutationRule.transform or SemanticRule.rewrite; charge=metadata" },
   .{ glyph: "*{ =e }" , kernel: "applyEdits l1 or plan apply gate" },
   .{ glyph: "^{...}" , kernel: "stop / seal / fixed_point check" },
-  .{ glyph: << ; >> , kernel: "rule order / pulse sequence" },
-  .{ glyph: << || >> , kernel: "parallel sequence | refuse on overlap" },
+  .{ glyph: "<< ; >>" , kernel: "rule order / pulse sequence" },
+  .{ glyph: "<< || >>" , kernel: "parallel sequence | refuse on overlap" },
   .{ glyph: "&{ =G => #[] }" , kernel: "multi-cell same rule id / group apply" },
   .{ glyph: "=ceiling[l0|l1|l2]" , kernel: "EffectGrade" },
-  .{ glyph: "=stop[...]" , kernel: "MutationStopReason" },
+  .{ glyph: "=stop[...]" , kernel: "MutationStopReason" }
  ]
 
  artifact: .{
@@ -529,22 +529,24 @@
 // ════════════════════════════════════════════════════════════
 
 ^["map"]{
- ~   => "unapplied plan / soft SourceEdit field"
- ?   => "rule arm / matrix branch / sel filter"
- %   => "effect.l0.measure + topography probe + measure schemes"
- !   => "MutationRule.transform | SemanticRule.rewrite; charge=metadata"
- *   => "effect.l1.memory applyEdits; or worktree handle (proposed)"
- ^   => "step seal / fixed_point candidate / named revision"
- <<>> => "rule pipeline; pulse sequences / matrix"
- ;    => "sequential schedule"
- ||   => "parallel schedule (proposed glyph; partial via sequences)"
- d    => "SourceEdit + DifferentialStratum + MutationVector"
- phi    => "MutationProfileId + MutationRule[] (+ SemanticRule[] when selector-addressed)"
- N    => "ports from coupling; files from selection; graph proposed"
- delta    => "runMutationAutomata"
- =stop => "MutationStopReason"
- =ceiling => "EffectGrade"
- plan.id => "refactor-experiment / envelope artifact id"
+ entries: #[
+  .{ glyph: "~", meaning: "unapplied plan / soft SourceEdit field" },
+  .{ glyph: "?", meaning: "rule arm / matrix branch / selection filter" },
+  .{ glyph: "%", meaning: "effect.l0.measure + topography probe + measure schemes" },
+  .{ glyph: "!", meaning: "MutationRule.transform | SemanticRule.rewrite; charge=metadata" },
+  .{ glyph: "*", meaning: "effect.l1.memory applyEdits; or worktree handle (proposed)" },
+  .{ glyph: "^", meaning: "step seal / fixed_point candidate / named revision" },
+  .{ glyph: "<<>>", meaning: "rule pipeline; pulse sequences / matrix" },
+  .{ glyph: ";", meaning: "sequential schedule" },
+  .{ glyph: "||", meaning: "parallel schedule (proposed glyph; partial via sequences)" },
+  .{ glyph: "d", meaning: "SourceEdit + DifferentialStratum + MutationVector" },
+  .{ glyph: "phi", meaning: "MutationProfileId + MutationRule[] (+ SemanticRule[] when selector-addressed)" },
+  .{ glyph: "N", meaning: "ports from coupling; files from selection; graph proposed" },
+  .{ glyph: "delta", meaning: "runMutationAutomata" },
+  .{ glyph: "=stop", meaning: "MutationStopReason" },
+  .{ glyph: "=ceiling", meaning: "EffectGrade" },
+  .{ glyph: "plan.id", meaning: "refactor-experiment / envelope artifact id" }
+ ]
 }
 
 ^["map_cli"]{
@@ -631,7 +633,7 @@
 ?["When does <<~;?;%;!;*;^>> fail to commute?"]{
   #:depth #!computational
   !probe{ =id[p_commute] }
-  %[d]{ # : #[structure, layout] }
+  measure_sample: "%[d]{ # : #[structure, layout] }"
 }
 
 #>wonder_mutation_flow_3
