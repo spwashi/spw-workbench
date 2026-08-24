@@ -1,0 +1,50 @@
+# WebStorm Compatibility Coordinates
+
+#>spw_webstorm_compatibility
+#:layer #!pragmatics
+
+^["coordinates"]{
+ plugin: .{
+  id = "com.spwashi.spw"
+  version_source = "extensions/intellij-spw/build.gradle.kts"
+ }[reg=facet]
+ build: .{
+  java = 21
+  gradle = "9.5"
+  kotlin = "2.4.10"
+  intellij_platform_plugin = "2.18.1"
+ }[reg=facet]
+ host: .{
+  product = #webstorm
+  compile_floor = "2024.2.1"
+  requested = "2026.2.0.1"
+  declared_builds = "242..262.*"
+ }[reg=facet]
+}
+
+^["compatibility_law"]{
+ "Compile against the oldest supported host so newer API availability cannot hide a backwards-compatibility break.",
+ "Verify the packaged plugin against the requested newest host before claiming that host in public copy.",
+ "Keep plugin version, host range, Java runtime, build tooling, and LSP protocol as independent coordinates.",
+ "Narrow a claim when evidence is missing; never widen a range because the branch number looks adjacent.",
+}
+
+^["launcher_law"]{
+ document_root: #consumer_project
+ tool_root_order: [#explicit_workdir, #project_with_lsp_script, #mounted_workbench]
+ command_order: [#explicit_command, #npm_run_lsp]
+ semantic_owner: #spw_lsp
+ editor_role: [#discover, #launch, #notify, #project]
+}
+
+^["evidence"]{
+ build_receipts: [#java_version, #gradle_version, #build_plugin, #unit_tests]
+ compatibility_receipts: [#plugin_structure, #oldest_host_compile, #requested_host_verifier]
+ portability_receipts: [#checkout_launch, #mounted_launch, #missing_node_recovery]
+ negative_controls: [#shared_lsp_tests, #vscode_build, #neovim_contract_unchanged]
+}
+
+#>wonder_webstorm_compatibility_matrix
+?["When is a compatibility range a claim rather than a wish?"]{
+ !probe{ "pair each boundary with a reproducible build or verifier receipt and name any untested interior as inferred rather than directly observed." }
+}
