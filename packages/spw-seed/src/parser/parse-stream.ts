@@ -2,8 +2,9 @@ import type { ParseEvent, SeedNode, ParserOptions } from '../types'
 import type { ParseOutput } from './output'
 import { DEFAULT_OPTIONS, retainsParseEvent } from '../types'
 import { classifyTokenGaps, tokenize, resolveLexProfile } from '../lexer'
-import { createTokenStream } from '../combinators'
+import { createTokenStream, current, getPosition, skipWhitespace } from '../combinators'
 import { seedNode } from '../grammar'
+import { buildParseCompletenessReceipt } from './completeness'
 
 /**
  * Streaming parser - yields events as they occur
@@ -55,10 +56,47 @@ export function* parseStream(
   }
 
   const result = parseStep.value
+  let success = result.success
+  let outputError = result.success ? undefined : result.error
+  if (success) {
+    skipWhitespace(stream)
+    if (current(stream).type !== 'EOF') {
+      success = false
+      const found = current(stream)
+      outputError = {
+        message: `Unexpected trailing tokens starting at ${found.type} (${JSON.stringify(found.value)})`,
+        expected: ['EOF'],
+        found: found.type,
+        recoverable: false,
+      }
+      const event: ParseEvent = {
+        type: 'error',
+        rule: 'parse',
+        position: getPosition(stream),
+        data: {
+          ...outputError,
+          recoverable: false,
+        },
+        timestamp: performance.now(),
+        depth: 0,
+      }
+      if (observeEvent(event)) yield event
+    }
+  }
+
+  const completeness = buildParseCompletenessReceipt({
+    source: input,
+    tokens,
+    expectedRootKind: 'Seed',
+    actualRoot: result.value,
+    remainingToken: current(stream),
+    proseFallback: result.value?.expression.type === 'Prose',
+  })
   const duration = performance.now() - startTime
 
   return {
-    success: result.success,
+    success,
+    completeness,
     ast: result.value,
     tokens,
     gaps: classifyTokenGaps(input, tokens),
@@ -67,7 +105,7 @@ export function* parseStream(
     eventCounts: { generated: generatedEvents, retained: events.length },
     errors,
     warnings,
-    error: result.success ? undefined : result.error,
+    error: outputError,
     duration,
     lexProfile: lexProfile.id,
   }

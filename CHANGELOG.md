@@ -11,6 +11,7 @@ Version-local release records remain under `lib/spw-v*/CHANGELOG.md`. Commit `#[
 - Preserve exact inter-token gaps, comments, and spans while classifying visible relationships as `tight`, `open`, `cadence`, or `episode`.
 - Retain dotted identifiers such as `a.b.c` with explicit segment metadata; leave trailing and repeated dots available to operator and connector tokenization.
 - Add the portable `spw.progressive-product/1` protocol and source products for `tokens`, `structure`, and `trace` over one parser kernel.
+- Make parse completeness explicit: standalone expressions consume the seed expression grammar, reject non-trivia remainders, and expose consumed/remaining spans, expected root, and prose fallback on parser and structure-product receipts.
 - Add `spw inspect spacing` and `spw inspect source` projections as bounded tables, source-shaped Spw cards, complete JSON, or progressive NDJSON where supported.
 
 ### Parser ownership and authored-source validation

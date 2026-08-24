@@ -81,6 +81,8 @@ A `tokens` request stops before grammar work. `structure` reuses the same lexica
 
 Every stage follows `spw.progressive-product/1` and names its product id, revision, IR kind, sequence, stage, status, completeness, included and omitted fields, deferred deeper forms, and elapsed time. Completeness is measured against the fields requested at that stage. A complete token product can therefore honestly defer an AST rather than calling itself a broken parse.
 
+A structure product adds a source-consumption receipt to that existing completeness field. It records the consumed span, exact remaining span and text, expected and actual root kinds, and whether the parser fell back to prose. Requested fields can all be present (`value: 1`) while `complete: false` says the source did not satisfy the intended structured root. The same receipt is available on `parse()` and `parseExpression()` results; `parseExpression()` now uses the seed expression grammar and never reports success for a non-trivia remainder.
+
 For a live line-delimited stream, use:
 
 ```bash

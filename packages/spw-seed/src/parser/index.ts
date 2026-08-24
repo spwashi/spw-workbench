@@ -9,7 +9,11 @@ import type { LogFormatter } from './formatters'
 import { textFormatter } from './formatters'
 import { parseStream } from './parse-stream'
 
-export type { ParseOutput } from './output'
+export type {
+  ParseOutput,
+  ParseCompletenessReceipt,
+  ParseExpectedRootKind,
+} from './output'
 export type {
   SourceProductDepth,
   SourceProductIdentity,
@@ -18,6 +22,7 @@ export type {
   SourceProductEvents,
   SourceTokensData,
   SourceStructureData,
+  SourceStructureCompleteness,
   SourceTraceData,
   SourceTokensProduct,
   SourceStructureProduct,

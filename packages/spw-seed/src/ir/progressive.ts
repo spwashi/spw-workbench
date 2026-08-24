@@ -21,6 +21,7 @@ export interface ProgressiveProductRecord<
   ProductId extends string = string,
   Stage extends string = string,
   Data = unknown,
+  Completeness extends ProgressiveProductCompleteness = ProgressiveProductCompleteness,
 > {
   surface: typeof PROGRESSIVE_PRODUCT_SURFACE
   product: ProductId
@@ -29,7 +30,7 @@ export interface ProgressiveProductRecord<
   sequence: ProgressiveProductSequence
   stage: Stage
   status: ProgressiveProductStatus
-  completeness: ProgressiveProductCompleteness
+  completeness: Completeness
   /** Products or fields intentionally left for a deeper request. */
   deferred: readonly string[]
   /** Time from request start until this product became available. */

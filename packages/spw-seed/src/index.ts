@@ -58,6 +58,7 @@ export type {
   ASTNode,
   ASTNodeType,
   SeedNode,
+  SeedExpressionNode,
   ExpressionNode,
   OperationNode,
   ModifierChainNode,
@@ -152,6 +153,8 @@ export {
 // Parser
 export type {
   ParseOutput,
+  ParseCompletenessReceipt,
+  ParseExpectedRootKind,
   LogFormatter,
   TraceNode,
   SourceProductDepth,
@@ -161,6 +164,7 @@ export type {
   SourceProductEvents,
   SourceTokensData,
   SourceStructureData,
+  SourceStructureCompleteness,
   SourceTraceData,
   SourceTokensProduct,
   SourceStructureProduct,

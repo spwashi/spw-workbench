@@ -14,8 +14,11 @@ import type { ASTNode } from './index'
 export interface SeedNode extends ASTNode {
   type: 'Seed'
   annotations: AnnotationNode[]
-  expression: ExpressionNode | SequenceNode | ProseNode
+  expression: SeedExpressionNode
 }
+
+/** The grammar-owned expression surface carried by a seed or standalone parse. */
+export type SeedExpressionNode = ExpressionNode | SequenceNode | ProseNode
 
 export type TermNode =
   | BindingNode

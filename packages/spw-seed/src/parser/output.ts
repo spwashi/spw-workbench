@@ -11,13 +11,31 @@ import type {
   ParseEventCounts,
   ParseEventPolicy,
   SeedNode,
+  ASTNodeType,
+  Span,
 } from '../types'
+
+export type ParseExpectedRootKind = 'Seed' | 'Expression'
+
+/** Portable evidence that a parse covered the source and met its root contract. */
+export interface ParseCompletenessReceipt {
+  complete: boolean
+  consumed: Span
+  remaining: {
+    span: Span
+    text: string
+  }
+  expectedRootKind: ParseExpectedRootKind
+  actualRootKind?: ASTNodeType
+  proseFallback: boolean
+}
 
 /**
  * Result of a parse operation
  */
 export interface ParseOutput<T = SeedNode> {
   success: boolean
+  completeness: ParseCompletenessReceipt
   ast?: T
   tokens: Token[]
   gaps: TokenGap[]

@@ -109,5 +109,8 @@ describe('parse product disclosure', () => {
     expect(progressive.output?.ast).toEqual(parsed.ast)
     expect(structure.data.ast).toEqual(parsed.ast)
     expect(structure.completeness.value).toBe(1)
+    expect(structure.completeness.complete).toBe(parsed.completeness.complete)
+    expect(structure.completeness.consumed).toEqual(parsed.completeness.consumed)
+    expect(structure.completeness.remaining).toEqual(parsed.completeness.remaining)
   })
 })

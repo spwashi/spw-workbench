@@ -21,9 +21,11 @@ import {
 import { scanExperimentalRefs } from '../experimental'
 import {
   buildProgressiveProduct,
+  type ProgressiveProductCompleteness,
   type ProgressiveProductRecord,
 } from '../ir/progressive'
-import type { ParseOutput } from './output'
+import type { ParseCompletenessReceipt, ParseOutput } from './output'
+import { buildParseCompletenessReceipt } from './completeness'
 
 export const SOURCE_PRODUCT_DEPTHS = ['tokens', 'structure', 'trace'] as const
 export type SourceProductDepth = (typeof SOURCE_PRODUCT_DEPTHS)[number]
@@ -77,6 +79,10 @@ export interface SourceStructureData {
   experimentalRefs?: string[]
 }
 
+/** Requested-field disclosure plus source-consumption truth for structure products. */
+export interface SourceStructureCompleteness
+  extends ProgressiveProductCompleteness, ParseCompletenessReceipt {}
+
 export interface SourceTraceData {
   source: SourceProductIdentity
   profile: SourceProductProfile
@@ -93,7 +99,8 @@ export type SourceTokensProduct = ProgressiveProductRecord<
 export type SourceStructureProduct = ProgressiveProductRecord<
   typeof SOURCE_PRODUCT_IDS.structure,
   'parse',
-  SourceStructureData
+  SourceStructureData,
+  SourceStructureCompleteness
 >
 
 export type SourceTraceProduct = ProgressiveProductRecord<
@@ -293,11 +300,18 @@ function runSourcePipeline(
 
   const result = parseStep.value
   let success = result.success
+  let outputError = result.success ? undefined : result.error
   if (success) {
     skipWhitespace(stream)
     if (current(stream).type !== 'EOF') {
       success = false
       const found = current(stream)
+      outputError = {
+        message: `Unexpected trailing tokens starting at ${found.type} (${JSON.stringify(found.value)})`,
+        expected: ['EOF'],
+        found: found.type,
+        recoverable: false,
+      }
       observeEvent({
         type: 'error',
         rule: 'parse',
@@ -316,8 +330,17 @@ function runSourcePipeline(
 
   const experimentalRefs = scanExperimentalRefs(input).ids
   const duration = performance.now() - startedAt
+  const completeness = buildParseCompletenessReceipt({
+    source: input,
+    tokens,
+    expectedRootKind: 'Seed',
+    actualRoot: result.value,
+    remainingToken: current(stream),
+    proseFallback: result.value?.expression.type === 'Prose',
+  })
   const output: ParseOutput<SeedNode> = {
     success,
+    completeness,
     ast: result.value,
     tokens,
     gaps,
@@ -326,6 +349,7 @@ function runSourcePipeline(
     eventCounts: { generated: generatedEvents, retained: events.length },
     errors,
     warnings,
+    error: outputError,
     duration,
     lexProfile: lexProfile.id,
     dialect,
@@ -335,7 +359,7 @@ function runSourcePipeline(
   }
 
   if (controls.collect || controls.observe) {
-    publish(buildProgressiveProduct({
+    const structureProduct = buildProgressiveProduct({
       product: SOURCE_PRODUCT_IDS.structure,
       revision: 1,
       ir: 'parse',
@@ -357,7 +381,14 @@ function runSourcePipeline(
         events: eventReceipt(),
         experimentalRefs: output.experimentalRefs,
       },
-    }))
+    })
+    publish({
+      ...structureProduct,
+      completeness: {
+        ...structureProduct.completeness,
+        ...output.completeness,
+      },
+    })
   }
 
   if (controls.through === 'trace' && (controls.collect || controls.observe)) {
