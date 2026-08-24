@@ -104,8 +104,9 @@ function verifyCommandContributions(manifest) {
   const actual = (manifest.contributes?.commands ?? [])
     .map((entry) => entry.command)
     .sort()
-  // Reviewed 2026-07-23: the LSP arc added the probe/geometry/form-sequence
-  // command set; every entry below is registered in extension source.
+  // Reviewed 2026-08-24: every entry below is registered in extension source.
+  // Keep this independent receipt explicit rather than deriving it from the
+  // manifest being verified.
   const expected = [
     'spw.clearProbeCache',
     'spw.insertFormSequence',
@@ -114,9 +115,13 @@ function verifyCommandContributions(manifest) {
     'spw.navigate',
     'spw.restartLanguageServer',
     'spw.showFormSequence',
+    'spw.showFlowProtocol',
+    'spw.showGeometricResonance',
     'spw.showOperatorFrequency',
     'spw.showPhaseContext',
+    'spw.showProbeMeasure',
     'spw.showReferenceHubs',
+    'spw.showSurfaceProfile',
     'spw.showWorkspaceTemperature',
     'spwConcepts.clearFilter',
     'spwConcepts.refresh',
@@ -125,7 +130,7 @@ function verifyCommandContributions(manifest) {
     'spwWorkspace.refresh',
   ].sort()
   assert(JSON.stringify(actual) === JSON.stringify(expected),
-    'Command palette contributions do not match the reviewed public surface.')
+    'Command contributions do not match the reviewed public surface.')
 }
 
 function runtimePath(value, field) {

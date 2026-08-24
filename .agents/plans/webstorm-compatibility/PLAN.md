@@ -17,6 +17,7 @@ Taste note: improve **correctness**, **portability**, **recoverability**, and **
   - Declare `sinceBuild=242` and `untilBuild=262.*`; remove claims about unverified 2026.3 compatibility.
   - Add deterministic mounted-workbench discovery so a consumer project can launch the shared `npm run lsp` contract from `.spw/_workbench` without manual settings.
   - Tighten plugin documentation, settings copy, and release build commands around the tested support matrix and LSP recovery path.
+  - Give Writerside one concise three-depth Spw surface: recognizable feature value, inspectable package/runtime/editor internals, and explicitly labeled syntax experimentation.
   - Re-run shared LSP and VS Code verification as negative controls; do not fork server semantics into Kotlin.
 - **Out of scope**:
   - Migrating from the native JetBrains LSP API to LSP4IJ.
@@ -28,6 +29,8 @@ Taste note: improve **correctness**, **portability**, **recoverability**, and **
 
 ```text
 [NEW] extensions/intellij-spw/.java-version
+[NEW] extensions/intellij-spw/gradle.properties
+[MOD] .gitignore
 [MOD] extensions/intellij-spw/build.gradle.kts
 [MOD] extensions/intellij-spw/gradle/wrapper/gradle-wrapper.properties
 [MOD?] extensions/intellij-spw/gradle/wrapper/gradle-wrapper.jar
@@ -35,6 +38,8 @@ Taste note: improve **correctness**, **portability**, **recoverability**, and **
 [MOD?] extensions/intellij-spw/gradlew.bat
 [MOD] extensions/intellij-spw/src/main/resources/META-INF/plugin.xml
 [MOD] extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwLspServerSupportProvider.kt
+[MOD] extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwTextMateBundleProvider.kt
+[MOD] extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwFoldingBuilder.kt
 [NEW] extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwLspLauncher.kt
 [NEW] extensions/intellij-spw/src/test/kotlin/com/spwashi/spw/SpwLspLauncherTest.kt
 [MOD] extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/settings/SpwLspConfigurable.kt
@@ -43,6 +48,12 @@ Taste note: improve **correctness**, **portability**, **recoverability**, and **
 [MOD] scripts/release/bundle-extensions.sh
 [MOD?] docs/runtime/md/lsp-editor-integration.md
 [MOD] .spw/tooling/intellij-plugin.spw
+[NEW] Writerside/topics/spw-feature-surface.md
+[MOD] Writerside/topics/starter-topic.md
+[MOD] Writerside/topics/workbench-architecture.md
+[MOD] Writerside/topics/documentation-map.md
+[MOD] Writerside/spw-workbench.tree
+[MOD] Writerside/spw-workbench-public.tree
 ```
 
 ### Craft guard
@@ -59,7 +70,9 @@ Taste note: improve **correctness**, **portability**, **recoverability**, and **
 2. `#[intellij] — align Java, Gradle, Kotlin, and WebStorm verification coordinates`
 3. `&[intellij,lsp] — resolve mounted workbench launchers with tested diagnostics`
 4. `.[intellij,editors] — publish support matrix and release verification path`
-5. `![intellij] *verify[webstorm] — retain compatibility and build evidence`
+5. `.[writerside] — frame Spw value, internals, and syntax experiments`
+6. `![vscode,release] — align archive smoke with the public command surface`
+7. `![intellij] *verify[webstorm] — retain compatibility and build evidence`
 
 Fuzz strategy:
 
