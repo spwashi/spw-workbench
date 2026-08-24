@@ -470,7 +470,10 @@ spw_validate_spw_file() {
     return 0
   fi
 
-  if [ -d "$SPW_TOOL_ROOT/src/seed" ] || [ -f "$SPW_TOOL_ROOT/src/seed/index.ts" ]; then
+  if [ -f "$SPW_TOOL_ROOT/packages/spw-seed/src/index.ts" ]; then
+    parser_entry="./packages/spw-seed/src/index.ts"
+    node_args=(--import tsx)
+  elif [ -d "$SPW_TOOL_ROOT/src/seed" ] || [ -f "$SPW_TOOL_ROOT/src/seed/index.ts" ]; then
     parser_entry="./src/seed"
     node_args=(--import tsx)
   elif [ -f "$SPW_TOOL_ROOT/parser.js" ]; then
