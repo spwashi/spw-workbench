@@ -78,6 +78,16 @@ export {
   type RunSpacingInspectionOptions,
 } from './inspect-spacing'
 export {
+  buildSourceInspection,
+  formatSourceInspectionSpw,
+  runSourceInspection,
+  SOURCE_INSPECTION_SURFACE,
+  type SourceInspection,
+  type BuildSourceInspectionOptions,
+  type FormatSourceInspectionOptions,
+  type RunSourceInspectionOptions,
+} from './inspect-source'
+export {
   t,
   defineLoc,
   loadLocOverrides,

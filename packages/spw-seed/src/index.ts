@@ -150,9 +150,31 @@ export {
 } from './grammar'
 
 // Parser
-export type { ParseOutput, LogFormatter, TraceNode } from './parser'
+export type {
+  ParseOutput,
+  LogFormatter,
+  TraceNode,
+  SourceProductDepth,
+  SourceProductIdentity,
+  SourceProductProfile,
+  SourceProductDiagnostics,
+  SourceProductEvents,
+  SourceTokensData,
+  SourceStructureData,
+  SourceTraceData,
+  SourceTokensProduct,
+  SourceStructureProduct,
+  SourceTraceProduct,
+  SourceProduct,
+  SourceProductObserver,
+  SourceProductOptions,
+  SourceProductResult,
+} from './parser'
 export {
   parse,
+  produceSourceProducts,
+  SOURCE_PRODUCT_DEPTHS,
+  SOURCE_PRODUCT_IDS,
   parseExpression,
   parseStream,
   parseWithLog,
@@ -796,6 +818,13 @@ export {
   type GranularityFollow,
   type GranularityDisclose,
   type ResolveGranularityInput,
+  PROGRESSIVE_PRODUCT_SURFACE,
+  buildProgressiveProduct,
+  type ProgressiveProductStatus,
+  type ProgressiveProductSequence,
+  type ProgressiveProductCompleteness,
+  type ProgressiveProductRecord,
+  type BuildProgressiveProductInput,
 } from './ir'
 
 // Experimental syntax catalog (plan/runtime reference ids)

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { parse } from './parse'
+import { produceSourceProducts, SOURCE_PRODUCT_IDS } from './products'
 
 describe('parse product disclosure', () => {
   it('changes event retention without changing the lexical or semantic product', () => {
@@ -25,5 +26,74 @@ describe('parse product disclosure', () => {
     expect(result.eventCounts.retained).toBe(0)
     expect(result.eventCounts.generated).toBeGreaterThan(0)
     expect(result.errors.length).toBeGreaterThan(0)
+  })
+
+  it('answers a token question without running the grammar stage', () => {
+    const shallow = produceSourceProducts('a . b', {
+      product: 'tokens',
+      eventPolicy: 'none',
+    })
+    const structural = produceSourceProducts('a . b', {
+      product: 'structure',
+      eventPolicy: 'none',
+    })
+    const shallowTokens = shallow.products.find(
+      product => product.product === SOURCE_PRODUCT_IDS.tokens,
+    )!
+    const structuralProduct = structural.products.find(
+      product => product.product === SOURCE_PRODUCT_IDS.structure,
+    )!
+
+    expect(shallow.output).toBeUndefined()
+    expect(shallow.products.map(product => product.product)).toEqual([
+      SOURCE_PRODUCT_IDS.tokens,
+    ])
+    expect(shallowTokens.data.events.generated).toBeLessThan(
+      structuralProduct.data.events.generated,
+    )
+  })
+
+  it('publishes each requested depth when it becomes available', () => {
+    const published: string[] = []
+    const result = produceSourceProducts('^seed{ a . b }', {
+      product: 'trace',
+      eventPolicy: 'none',
+      uri: 'examples/progressive.spw',
+    }, product => {
+      published.push(product.product)
+    })
+
+    expect(published).toEqual([
+      SOURCE_PRODUCT_IDS.tokens,
+      SOURCE_PRODUCT_IDS.structure,
+      SOURCE_PRODUCT_IDS.trace,
+    ])
+    expect(result.products.map(product => product.sequence.index)).toEqual([1, 2, 3])
+    expect(result.products.every(product => product.sequence.total === 3)).toBe(true)
+    expect(result.output?.eventPolicy).toBe('trace')
+    const tokens = result.products.find(product => product.product === SOURCE_PRODUCT_IDS.tokens)!
+    const trace = result.products.find(product => product.product === SOURCE_PRODUCT_IDS.trace)!
+    expect(trace.data.events.length).toBeGreaterThan(0)
+    expect(tokens.deferred).toContain('ast')
+    expect(trace.deferred).toContain('semantic')
+  })
+
+  it('keeps the structural product aligned with the parser API', () => {
+    const source = '{ a ; b ; c }'
+    const parsed = parse(source, { eventPolicy: 'diagnostics' })
+    const progressive = produceSourceProducts(source, {
+      product: 'structure',
+      eventPolicy: 'diagnostics',
+    })
+    const structure = progressive.products.find(
+      product => product.product === SOURCE_PRODUCT_IDS.structure,
+    )!
+
+    expect(progressive.output?.success).toBe(parsed.success)
+    expect(progressive.output?.tokens).toEqual(parsed.tokens)
+    expect(progressive.output?.gaps).toEqual(parsed.gaps)
+    expect(progressive.output?.ast).toEqual(parsed.ast)
+    expect(structure.data.ast).toEqual(parsed.ast)
+    expect(structure.completeness.value).toBe(1)
   })
 })

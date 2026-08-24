@@ -10,6 +10,24 @@ import { textFormatter } from './formatters'
 import { parseStream } from './parse-stream'
 
 export type { ParseOutput } from './output'
+export type {
+  SourceProductDepth,
+  SourceProductIdentity,
+  SourceProductProfile,
+  SourceProductDiagnostics,
+  SourceProductEvents,
+  SourceTokensData,
+  SourceStructureData,
+  SourceTraceData,
+  SourceTokensProduct,
+  SourceStructureProduct,
+  SourceTraceProduct,
+  SourceProduct,
+  SourceProductObserver,
+  SourceProductOptions,
+  SourceProductResult,
+} from './products'
+export { SOURCE_PRODUCT_DEPTHS, SOURCE_PRODUCT_IDS, produceSourceProducts } from './products'
 export type { LogFormatter } from './formatters'
 export { textFormatter, jsonFormatter, compactFormatter } from './formatters'
 export type { TraceNode } from './trace'

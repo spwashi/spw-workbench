@@ -19,7 +19,9 @@ import {
   scanAppositions,
   appositionSpectrum,
   PARSE_EVENT_POLICIES,
+  SOURCE_PRODUCT_DEPTHS,
   type ParseEventPolicy,
+  type SourceProductDepth,
 } from '@spwashi/spw-seed'
 import {
   createHotSession,
@@ -49,6 +51,7 @@ import { emitDetail, emitHeader, emitNext, formatTable, setMetaQuiet } from './v
 import { runSpwMemCli } from './mem'
 import { formatCorpusProductSpw } from '@spwashi/spw-seed'
 import { runSpacingInspection } from './inspect-spacing'
+import { runSourceInspection } from './inspect-source'
 
 type InspectMode =
   | 'cache'
@@ -59,6 +62,7 @@ type InspectMode =
   | 'static'
   | 'corpus'
   | 'compose'
+  | 'source'
   | 'spacing'
   | 'help'
 
@@ -66,6 +70,7 @@ interface InspectArgs {
   mode: InspectMode
   targets: string[]
   json: boolean
+  ndjson: boolean
   quiet: boolean
   help: boolean
   channel: string
@@ -75,6 +80,7 @@ interface InspectArgs {
   showSpw: boolean
   limit: number
   eventPolicy: ParseEventPolicy
+  product: SourceProductDepth
 }
 
 function parseArgs(argv: string[]): InspectArgs {
@@ -83,6 +89,7 @@ function parseArgs(argv: string[]): InspectArgs {
     mode: 'help',
     targets: [],
     json: false,
+    ndjson: false,
     quiet: false,
     help: false,
     channel: 'trial',
@@ -91,6 +98,7 @@ function parseArgs(argv: string[]): InspectArgs {
     showSpw: false,
     limit: 24,
     eventPolicy: 'diagnostics',
+    product: 'structure',
   }
 
   const modes = new Set<string>([
@@ -102,6 +110,7 @@ function parseArgs(argv: string[]): InspectArgs {
     'static',
     'corpus',
     'compose',
+    'source',
     'spacing',
     'help',
   ])
@@ -114,6 +123,10 @@ function parseArgs(argv: string[]): InspectArgs {
     }
     if (a === '--json') {
       parsed.json = true
+      continue
+    }
+    if (a === '--ndjson') {
+      parsed.ndjson = true
       continue
     }
     if (a === '--quiet' || a === '-q') {
@@ -176,6 +189,22 @@ function parseArgs(argv: string[]): InspectArgs {
       parsed.eventPolicy = policy as ParseEventPolicy
       continue
     }
+    if (a === '--product') {
+      const product = raw[++i]
+      if (!product || !SOURCE_PRODUCT_DEPTHS.includes(product as SourceProductDepth)) {
+        throw new Error('spw inspect: --product must be tokens|structure|trace')
+      }
+      parsed.product = product as SourceProductDepth
+      continue
+    }
+    if (a.startsWith('--product=')) {
+      const product = a.slice('--product='.length)
+      if (!SOURCE_PRODUCT_DEPTHS.includes(product as SourceProductDepth)) {
+        throw new Error('spw inspect: --product must be tokens|structure|trace')
+      }
+      parsed.product = product as SourceProductDepth
+      continue
+    }
     if (!a.startsWith('-') && modes.has(a) && parsed.mode === 'help' && parsed.targets.length === 0) {
       parsed.mode = a as InspectMode
       continue
@@ -191,6 +220,12 @@ function parseArgs(argv: string[]): InspectArgs {
   if (parsed.mode === 'help' && parsed.targets.length > 0 && !parsed.help) {
     parsed.mode = 'static'
   }
+  if (parsed.ndjson && (parsed.json || parsed.showSpw)) {
+    throw new Error('spw inspect: --ndjson cannot be combined with --json or --spw')
+  }
+  if (parsed.ndjson && parsed.mode !== 'source') {
+    throw new Error('spw inspect: --ndjson is currently available for inspect source')
+  }
   return parsed
 }
 
@@ -204,6 +239,7 @@ export function printInspectHelp(): void {
       'spw inspect session <file.spw> [--beats 1] [--recompute]',
       'spw inspect memory [--json]',
       'spw inspect static <file.spw>',
+      'spw inspect source <file.spw> [--product tokens|structure|trace] [--spw|--json|--ndjson]',
       'spw inspect spacing <file.spw> [--event-policy diagnostics] [--spw|--json]',
       'spw inspect corpus [roots...]',
       'spw inspect compose \'<file>@"appendix.spw"?\'',
@@ -222,6 +258,7 @@ export function printInspectHelp(): void {
           'session   prepare/parse/inspect receipt + hit flags',
           'memory    durable fs dumps (spw mem status)',
           'static    parse + brace + nest summary',
+          'source    progressive tokens → structure → trace intermediate products',
           'spacing   exact lexical gaps + tight identifier segments (observational)',
           'Theory: docs/theory/spw/cache-field.spw · composition-forms',
         ],
@@ -242,10 +279,12 @@ export function printInspectHelp(): void {
           '--dialect <id>   force dialect for medium / session',
           '--beats N        tick session beat before re-sample',
           '--recompute      bypass evaluate / wipe corpus memo',
-          '--limit / -n     bank / static / corpus / spacing row width',
-          '--event-policy   none | diagnostics | trace (spacing; default diagnostics)',
+          '--limit / -n     bank / static / corpus / source / spacing row width',
+          '--product        tokens | structure | trace (source; default structure)',
+          '--event-policy   none | diagnostics | trace (source/spacing; default diagnostics)',
           '--spw            dual-read cards where available',
           '--json           machine envelope',
+          '--ndjson         emit source stages as soon as each becomes available',
           '--quiet / -q     suppress headers',
         ],
       },
@@ -257,6 +296,7 @@ export function printInspectHelp(): void {
           'spw inspect corpus docs/runtime',
           'spw census docs/runtime -n 8',
           'spw inspect cache docs/theory/spw/cache-field.spw',
+          'spw inspect source docs/index.spw --product structure --spw',
           'spw inspect spacing docs/index.spw --spw',
         ],
       },
@@ -306,6 +346,24 @@ export async function runSpwInspectCli(argv: string[] = process.argv): Promise<v
     case 'compose':
       await runCompose(args)
       break
+    case 'source': {
+      const file = args.targets[0]
+      if (!file || args.targets.length > 1) {
+        console.error('spw inspect source: pass exactly one .spw file')
+        process.exitCode = 1
+        break
+      }
+      await runSourceInspection({
+        file,
+        product: args.product,
+        eventPolicy: args.eventPolicy,
+        json: args.json,
+        ndjson: args.ndjson,
+        showSpw: args.showSpw,
+        limit: args.limit,
+      })
+      break
+    }
     case 'spacing': {
       const file = args.targets[0]
       if (!file || args.targets.length > 1) {
