@@ -22,7 +22,7 @@
  "promote .spw/ to live canon root; migrate index.spw + docs/seed/"
 )
 
-^"onf_desugaring"{
+^["onf_desugaring"]{
  #:dialect #!canonicalization
  # ONF/Spw.m desugaring (F2-idempotent, semantic-hash stable)
  ^seed[Workbench.SpwDir.Mount.ONF v:0.1 @profile:Spw.m @intent:canon-root]
@@ -32,7 +32,7 @@
  )
 }
 
-^"adversarial"{
+^["adversarial"]{
  #:dialect #!fuzz
  # Adversarial test seed fuzzes .spw/ mount, root index.spw relocation, dot-dir ASI
  ^seed[Workbench.SpwDir.Adversary v:0.1 @profile:Spw.l @intent:fuzz]
@@ -43,7 +43,7 @@
  # Spw.b boundary on dot-dir, Spw.m must canonicalize without ambiguity
 }
 
-^"dialect_lexing"{
+^["dialect_lexing"]{
  #:dialect #!rules
  # Registry source of truth:
  =ref{ ~".spw/registries/dialect-spec.spw#spw_dialect_registry" }
@@ -52,14 +52,14 @@
  # Summary: Spw.b (block/author), Spw.l (line/search), Spw.m (ONF/machine), Spw.x (executable/live)
 }
 
-^"mount_slice_v01"{
+^["mount_slice_v01"]{
  #:mount #!status
  active_now: [".spw/index.spw", ".spw/mount.spw", "packages/spw-cli/src/mount.ts", ".spw/harness/evals/baseline-evals.spw#suites.mount_slice_v01"]
  proposed_next: ["semicolon-as-boundary in scoped dialect mode", "; prefixed line semantics", "@lock runtime enforcement layer"]
  interpreted_constructs: ["example:<>", "example:;", "example:?<> (proposal)"]
 }
 
-^"semantic_relationships"{
+^["semantic_relationships"]{
  #:semantics #!relationships
  core_surfaces: {
  index: ".spw/index.spw#spw_index"
@@ -89,7 +89,7 @@
  }
 }
 
-^"materialization_cycle"{
+^["materialization_cycle"]{
  #:semantics #!cycle
  priming: "?/~ operators and selector sequences charge register state"
  concept: "potential remains addressable before body generation"
@@ -98,7 +98,7 @@
  memory_location: "hot -> warm -> cold routing is explicit by path; replay recovers transitions"
 }
 
-^"operator_semantics"{
+^["operator_semantics"]{
  #:ops #!semantics
  subject_ref: "& (confluence / bound reference)"
  substrate_ref: "$ (substrate / introspection)"
@@ -110,13 +110,13 @@
  envelope_contract: "prefix/postfix wrappers preserve navigable reference spans in LSP selection and definition"
 }
 
-^"hashing"{
+^["hashing"]{
  #:canon #!invariant
  semantic_hash: "hash(canonical(Spw.m)) — unchanged"
  surface_hash: "locks .spw/ payloads for episode stability"
 }
 
-^"migration"{
+^["migration"]{
  #:ops #!migration
  step_1: "drop seed into .spw/ or .agents/ — Orchestrator auto-binds"
  step_2: "next episode commit: Workbench.SpwDir.Mount v:0.1"
@@ -124,7 +124,7 @@
  invariant: "agents hardened to .spw/"
 }
 
-^"invariant"{
+^["invariant"]{
  "All rewrites produce valid Spw."
  "Use this exact combinatorics to evolve the entire workbench inside .spw/."
  "Ready for v0.2.0."
