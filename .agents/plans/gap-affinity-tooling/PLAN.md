@@ -58,7 +58,7 @@ This checkpoint does **not** activate `syntax.gap-affinity/1`, AssociationIR, co
 
 Commit `deb9e226` turns source stages into reusable intermediate products before adding association semantics. It introduces the portable `spw.progressive-product/1` protocol with product id, revision, sequence, stage, completeness, elapsed time, included fields, and explicit omissions. The first producer exposes `tokens`, `structure`, and `trace` depths; `index` and `semantic` remain advertised only as later capability levels.
 
-`spw inspect source <file> --product <depth>` projects the same typed product as a concise human view, a Spw card, a JSON envelope, or an NDJSON stage stream. `tokens` must stop after dialect preparation and lexing. `structure` may continue through parsing. `trace` is the same structural product with retained parser events, never a second grammar. NDJSON records must be emitted when each stage is actually available; a command may not label a buffered final dump as progressive output.
+`spw inspect source <file> --through <stage>` projects the same typed product as a concise human view, a Spw card, a JSON envelope, or an NDJSON stage stream. `tokens` must stop after dialect preparation and lexing. `structure` may continue through parsing. `trace` is the same structural product with retained parser events, never a second grammar. NDJSON records must be emitted when each stage is actually available; a command may not label a buffered final dump as progressive output.
 
 This checkpoint does not promise incremental parsing, index construction, semantic normalization, or generator-event suppression. Its receipts disclose executed stages and omissions so later performance work can replace implementation without changing the consumer contract.
 
@@ -92,9 +92,9 @@ Execution horizon, semantic profile, event retention, display sampling, and dist
 | semantic profile | dialect/surface stack | parser profile options | interpretation and provenance |
 | shipped code | package subpath or built artifact | import boundary | modules a consumer loads; not a runtime parser profile |
 
-The Seed source-product API should teach `through` as its canonical option while accepting `product` through a declared compatibility window. `eventPolicy` remains the precise API name: CLI lyricality does not require every typed property to copy a flag token. A lower `through` value may avoid deeper runtime work, but it cannot make statically imported grammar disappear from a browser bundle.
+Commit `f3ab94eb` makes `through` the canonical Seed source-product option and result field while accepting `product` and `request` through a declared compatibility window. `eventPolicy` remains the precise API name: CLI lyricality does not require every typed property to copy a flag token. A lower `through` value may avoid deeper runtime work, but it cannot make statically imported grammar disappear from a browser bundle.
 
-Exploratory minified esbuild measurements provide a structural signal, not a release budget: the existing lite scanner is about 2.5 KB, the parser entry about 68.6 KB, the progressive-products module about 64.2 KB, the full Seed barrel about 313.6 KB, the LSP stdio entry about 305.7 KB, and the eager CLI entry about 4.1 MB. About 3.57 MB of that CLI bundle is the TypeScript compiler, pulled into every route by the authority extractor. Defer that compiler import until the authority command actually runs; evaluate true bundle splitting, public subpaths, and generated-consumer import smokes under `package-iteration-radius` rather than advertising source export paths as finished bundles.
+Exploratory minified esbuild measurements provide a structural signal, not a release budget: the existing lite scanner is about 2.5 KB, the parser entry about 68.6 KB, the progressive-products module about 64.2 KB, the full Seed barrel about 313.6 KB, the LSP stdio entry about 305.7 KB, and the eager CLI entry about 4.1 MB. About 3.57 MB of that CLI bundle was the TypeScript compiler, pulled into every route by the authority extractor. Commit `f3ab94eb` defers that compiler until authority analysis actually needs it; a split probe isolates it in an authority-only chunk and fresh-process command-registry imports fell from one exploratory 969 ms baseline to 211–324 ms. Evaluate public subpaths, production chunks, and generated-consumer import smokes under `package-iteration-radius` rather than treating these local probes as release guarantees.
 
 Do not mint performance-only parser profiles. Separate lex/product entry points may eventually let a browser ship only the stage it can use, while one progressive facade remains convenient for Node and tooling consumers. Both surfaces must return compatible product identities, spans, diagnostics, and provenance for equivalent work.
 
@@ -232,7 +232,8 @@ Current CLI handle episode:
 3. `vocab[cli]+&[inspect,corpus] — extract typed arguments and teach canonical handles`
 4. `.[plans] — separate parser horizon, profile, and bundle contracts`
 5. `vocab[api]+&[cli] — align through and defer compiler loading`
-6. `.[docs,plans] — document handle cost boundaries and compatibility aliases`
+6. `&[cli] — make source samples visibly bounded`
+7. `.[docs,plans] — document handle cost boundaries and compatibility aliases`
 
 Fuzz strategy:
 

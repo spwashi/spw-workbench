@@ -42,13 +42,37 @@
  protocol: `spw.progressive-product/1`
  depths: #[tokens ; structure ; trace]
  commands: #[
-  `spw inspect source file.spw --product tokens`
-  `spw inspect source file.spw --product structure --spw`
-  `spw inspect source file.spw --product trace --ndjson`
+  `spw inspect source file.spw --through tokens --events none`
+  `spw inspect source file.spw --through structure --sample 8 --spw`
+  `spw inspect source file.spw --through trace --events trace --ndjson`
  ]
  ~#law: "tokens stops after lex; structure reuses that lex pass; trace widens disclosure over the same parse"
  ~#receipt: #[product ; revision ; ir ; sequence ; stage ; status ; completeness ; included ; omitted ; deferred ; elapsed_ms]
  ~#future: #[index ; semantic ; incremental_parse ; generator_suppression]
+}
+
+^["control-axes"]{
+ through: "last single-source stage executed"
+ events: "retained parser instrumentation"
+ sample: "bounded human and Spw examples; machine products stay complete"
+ spread: "near, standard, or far corpus extent mapped to current index presets"
+ profile: "semantic interpretation and provenance"
+ bundle: "modules shipped or loaded; never a performance dialect"
+ api: .{
+  through: `SourceProductOptions.through`
+  events: `ParserOptions.eventPolicy`
+  sample: `formatter.limit`
+  spread: `corpus.index`
+ }
+ ~#law: "execution horizon, retention, disclosure, corpus extent, semantics, and distribution remain independent"
+}
+
+^["recoverability"]{
+ bounded: #[human ; spw]
+ exact: #[json ; ndjson]
+ visible_controls: #[`↵` ; `⇥` ; `·`]
+ recommendation: #[command ; purpose ; cost]
+ ~#law: "a lossy readable field names its visibility; exact source remains in a machine product"
 }
 
 ^["cost-receipt"]{
@@ -61,7 +85,9 @@
 ^["compatibility"]{
  unchanged: #[`a.b.c` ; `a . b` ; runtime_value ; register_semantics]
  clarified: #[`a.` ; `a..b`]
+ aliases: #[`--product -> --through` ; `--event-policy -> --events` ; `--limit -> --sample` ; `--depth -> --spread`]
  migration_law: "crossing a gap class is not ordinary formatting"
+ retirement_law: "inventory, notice, migrate first-party examples, then remove aliases at one declared boundary"
 }
 
 ?["Can Spw remain flexible between human and machine language without becoming vague?"]{

@@ -8,6 +8,20 @@ Replace adopter-specific planning language with an abstract consumer-repository 
 
 Taste note: improve **clarity**, **layering**, **portability**, and **truthfulness**. Consumer-owned `.spw/` remains authoritative; `.spw/_workbench` remains versioned infrastructure; audit output remains owned by the consumer repository.
 
+## Maintenance evidence — 2026-08-24
+
+A revision-aware read-only corpus probe found portable tooling gaps rather than consumer-specific grammar requirements:
+
+- Single-file targeting is inconsistent: outline-style commands accept a positional file while query requires `--from`; the failure does not yet suggest the canonical correction.
+- Some JSON outline snippets contain display ellipses, so a machine projection can lose exact source. Bounded display and recoverable data need separate fields.
+- Single-source inspection cannot yet accept stdin/text, an unsaved editor buffer, a range, or an explicit resolved profile, forcing direct parser calls for embedded expressions.
+- Parser success alone is not sufficient evidence for an intended expression: completeness, consumed input, expected root kind, and prose fallback need a receipt.
+- A consumer mount note can drift from the mounted revision. Doctor/capabilities should compare declared and observed revisions rather than trusting prose metadata.
+- Default scans must disclose mount, generated, and agent-infrastructure exclusions so a broad output cannot silently include the workbench or derived corpus.
+- Multidimensional consumer projections need a state receipt: independent channels and normalized simplex weights are different geometries; thresholded expressions, color, and card order are lossy views rather than recoverable state. Cultural or genre labels remain post-hoc observations with context/evidence, not automatic consequences of a mixer coordinate.
+
+These findings enter workbench plans as identity-free protocol evidence. The consumer corpus and repository history remain external and unchanged.
+
 ## Scope
 
 - **In scope**: remove specific domain identifiers from active canon, code, tests, templates, plans, and skills; replace the named-domain portfolio with reusable surface archetypes; abstract mount terminology; add a portable mounted-consumer review skill; plan CLI root discovery, machine-readable doctor/capability output, and review orchestration; define LSP and editor evidence audits; align current plan caches and streams.
