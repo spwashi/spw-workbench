@@ -30,7 +30,7 @@ describe('spw doctor', () => {
     expect(report.next).toContain('git submodule add https://github.com/spwashi/spw-workbench .spw/_workbench')
   })
 
-  it('accepts a minimal consumer scaffold with an installed embedded workbench', async () => {
+  it('accepts a minimal consumer scaffold while disclosing unavailable revision evidence', async () => {
     const root = await makeTempDir()
     await mkdir(path.join(root, '.git'))
     await mkdir(path.join(root, '.spw', '_workbench', 'node_modules'), { recursive: true })
@@ -55,7 +55,8 @@ describe('spw doctor', () => {
 
     const report = await inspectDoctorTarget(root)
 
-    expect(report.status).toBe('ok')
+    expect(report.status).toBe('warn')
+    expect(report.checks.find((check) => check.id === 'workbench-revision')?.status).toBe('warn')
     expect(report.next).toEqual([])
   })
 
@@ -92,6 +93,7 @@ describe('spw doctor', () => {
     await expect(access(path.join(root, '.git', 'hooks', 'pre-commit'))).resolves.toBeUndefined()
 
     const report = await inspectDoctorTarget(root)
-    expect(report.status).toBe('ok')
+    expect(report.status).toBe('warn')
+    expect(report.workbench.checkout).toBe('unavailable')
   })
 })

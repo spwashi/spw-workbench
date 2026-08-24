@@ -1,7 +1,21 @@
 export { parseCommand, parseQueryArgs, parseSelectArgs, parseSkimArgs } from './args'
 export { printBeatHelp, runSpwBeatCli } from './beat'
 export { runSpwDevCli } from './dev'
-export { inspectDoctorTarget, printDoctorHelp, runSpwDoctorCli } from './doctor'
+export {
+  DEFAULT_DOCTOR_SCAN_EXCLUSIONS,
+  formatDoctorSpw,
+  inspectDoctorTarget,
+  printDoctorHelp,
+  printDoctorReport,
+  readDoctorWorkbenchPin,
+  runSpwDoctorCli,
+  type DoctorCheck,
+  type DoctorCheckoutState,
+  type DoctorPathMode,
+  type DoctorPinStatus,
+  type DoctorReport,
+  type InspectDoctorOptions,
+} from './doctor'
 export { printSpwFormatHelp, runSpwFormatCli } from './format'
 export { printMutateHelp, runSpwMutateCli } from './mutate'
 export {

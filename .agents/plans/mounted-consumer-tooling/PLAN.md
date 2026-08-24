@@ -25,8 +25,8 @@ These findings enter workbench plans as identity-free protocol evidence. The con
 Maintenance disposition:
 
 - **Landed in the parser-completeness episode:** parser and source-structure products disclose consumed and remaining source, intended root, and prose fallback; standalone expression parsing now enforces complete structured consumption.
-- **Next bounded episode:** doctor defaults to consumer-relative names, offers an explicit absolute-path projection, and reports observed mount revision, cleanliness, pin drift, and default exclusions.
-- **Later proof:** one emitted Spw card must round-trip through the source inspector before broader card claims expand.
+- **Landed in the doctor-portability episode:** doctor defaults to consumer-relative names, offers an explicit absolute-path projection, and reports observed mount revision, cleanliness, pin drift, and default exclusions.
+- **Next bounded proof:** one emitted Spw card must round-trip through the source inspector before broader card claims expand.
 
 ## Scope
 

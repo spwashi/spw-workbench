@@ -33,6 +33,7 @@ Compatibility note: a surface that depended on an indented example selecting the
 
 ### CLI legibility and recoverability
 
+- Make `spw doctor` products consumer-relative by default, add explicit `--paths absolute` disclosure, and report workbench HEAD/checkout/pin drift plus default corpus exclusions in human, Spw, and JSON forms.
 - Make root help state observable outcomes before internal effect addresses, IR names, options, or aliases.
 - Put canonical examples before compatibility routes and keep aliases routed to one implementation.
 - Replace the public term `dual-read` with **Spw card**: source-shaped output readable as text and parseable as Spw.
