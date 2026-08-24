@@ -9,19 +9,21 @@
 }
 
 ^["dependencies"]{
- core > []
- infra > [core]
- lib/spw > []
- design > [core]
- ui > [core, design]
- lang > [core, infra, lib/spw]
- viz > [core, infra, lang]
- runtime > [core, infra, lang]
- features > [core, infra, ui, viz]
- debug > [infra, runtime]
- cli > [infra, lang, runtime]
- app > [core, infra, design, ui, lang, viz, features, runtime]
- platform > [app, core, infra, design, ui, features]
+ modules: #[
+  .{ module: "core", requires: #[] },
+  .{ module: "infra", requires: #[core] },
+  .{ module: "lib/spw", requires: #[] },
+  .{ module: "design", requires: #[core] },
+  .{ module: "ui", requires: #[core, design] },
+  .{ module: "lang", requires: #[core, infra, "lib/spw"] },
+  .{ module: "viz", requires: #[core, infra, lang] },
+  .{ module: "runtime", requires: #[core, infra, lang] },
+  .{ module: "features", requires: #[core, infra, ui, viz] },
+  .{ module: "debug", requires: #[infra, runtime] },
+  .{ module: "cli", requires: #[infra, lang, runtime] },
+  .{ module: "app", requires: #[core, infra, design, ui, lang, viz, features, runtime] },
+  .{ module: "platform", requires: #[app, core, infra, design, ui, features] }
+ ]
 }
 
 ^["portability"]{

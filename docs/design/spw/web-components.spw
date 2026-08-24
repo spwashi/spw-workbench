@@ -29,17 +29,19 @@
 }
 
 ^["decision-rules"]{
- 1. If an element must be a focus/selection/action target, keep it in light DOM.
- 2. If it is a leaf visual primitive (chip, kbd, badge), Shadow DOM is safe.
- 3. If it needs theme-driven styling, prefer Shadow DOM + CSS vars + ::part.
- 4. If design mode must inspect internals, expose parts via exportparts.
- 5. If the element is used in selection/yank/paste flows, keep the host in light DOM with data-spw-component.
+ rules: #[
+  "If an element must be a focus, selection, or action target, keep it in light DOM",
+  "If it is a leaf visual primitive (chip, kbd, badge), Shadow DOM is safe",
+  "If it needs theme-driven styling, prefer Shadow DOM + CSS vars + ::part",
+  "If design mode must inspect internals, expose parts via exportparts",
+  "If the element is used in selection, yank, or paste flows, keep the host in light DOM with data-spw-component"
+ ]
 }
 
 ^["component-hierarchy"]{
- ~shell.light: [app, header, main, sidebar, editor, inspector, geology-panel, footer]
- ~panels.light: [drawer, command-bar, context-tuner, key-hint-bar, prompting-rail]
- ~primitives.shadow: [spw-chip, spw-kbd, spw-badge, spw-toggle, spw-pill]
+ ~shell.light: #[app, header, main, sidebar, editor, inspector, geology-panel, footer]
+ ~panels.light: #[drawer, command-bar, context-tuner, key-hint-bar, prompting-rail]
+ ~primitives.shadow: #[spw-chip, spw-kbd, spw-badge, spw-toggle, spw-pill]
  ~hybrid: "spw-panel can be light DOM with internal shadow primitives."
 }
 

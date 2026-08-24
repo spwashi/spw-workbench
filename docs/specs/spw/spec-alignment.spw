@@ -77,14 +77,11 @@
  ~#taste_posture_split{
  ~#existing: "Taste@ as meta-domain for aesthetic evaluation"
  ~#new_spec{
- Spw.Taste > TasteProfile # aesthetic: layout/pacing only
- Spw.Posture > BehaviorProfile # behavioral: safety/performance/rigor
+ taste_profile: "Spw.Taste -> TasteProfile; aesthetic layout and pacing only"
+ behavior_profile: "Spw.Posture -> BehaviorProfile; safety, performance, and rigor"
  }
  ~#action: "Split domains/TASTE.md, add domains/POSTURE.md"
- ~#aliases{
- "Spw.Profile.*" == "Spw.Posture.*"
- "Spw.Stance.*" == "Spw.Posture.*"
- }
+ ~#aliases: #["Spw.Profile.* == Spw.Posture.*", "Spw.Stance.* == Spw.Posture.*"]
  }
 
  ~#dialect_tokens{
@@ -163,15 +160,12 @@
 
 ^["Feature Documentation Strategy"]{
  ~#principle{
- "Each feature has three homes:
- 1. @spec/ - specification (what)
- 2. docs/*.spw - codebase topology (where)
- 3. @src/**/README.md - implementation notes (how)"
+ homes: "Each feature has three homes: @spec/ for what, docs/*.spw for where, and @src/**/README.md for how."
  }
 
  ~#flow{
- spec > implementation > integration
- @spec/ > @src/seed/ > @src/lang/
+ sequence: "spec > implementation > integration"
+ route: "@spec/ > @src/seed/ > @src/lang/"
  }
 
  ~#traceability{

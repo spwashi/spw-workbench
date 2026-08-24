@@ -25,35 +25,20 @@
 }
 
 ^["css"]{
- .spw-{domain}-{component}
- .spw-{domain}-{component}-{element}
- .spw-{domain}-{component}--{modifier}
+ class_names: #[
+  ".spw-{domain}-{component}",
+  ".spw-{domain}-{component}-{element}",
+  ".spw-{domain}-{component}--{modifier}"
+ ]
  # See docs/classname-contract.md for canonical vs compatibility rules.
 }
 
 ^["css-tokens"]{
- # Design token namespaces
- --spw-color-* # color tokens
- --spw-space-* # spacing tokens
- --spw-font-* # typography tokens
-
- # Narrative tokens (personality → CSS bridge)
- --spw-narrative-* # personality traits as CSS values
- --spw-narrative-breath-* # derived breath animation values
- --spw-narrative-grain-* # derived grain/texture values
- --spw-narrative-echo-opacity-* # derived echo visibility
- --spw-narrative-motion-* # derived motion easing
-
- # Cognitive tokens (semantic features → CSS bridge)
- --spw-cognitive-* # intensity, proximity, clarity
-
- # Context/region textures
- --spw-context-texture-*
- --spw-region-texture-*
-
- # Theme-specific
- --echo-opacity-* # echo leitmotif opacity (lg/md/sm)
- --echo-base-opacity-* # base echo values before cognitive modulation
+ design: #["--spw-color-*", "--spw-space-*", "--spw-font-*"]
+ narrative: #["--spw-narrative-*", "--spw-narrative-breath-*", "--spw-narrative-grain-*", "--spw-narrative-echo-opacity-*", "--spw-narrative-motion-*"]
+ cognitive: #["--spw-cognitive-*"]
+ context: #["--spw-context-texture-*", "--spw-region-texture-*"]
+ theme: #["--echo-opacity-*", "--echo-base-opacity-*"]
 }
 
 ^["events"]{
@@ -93,8 +78,7 @@
 }
 
 ^["data"]{
- data-spw-{domain}
- data-spw-{domain}-{suffix}
+ attributes: #["data-spw-{domain}", "data-spw-{domain}-{suffix}"]
 }
 
 ^["data-state"]{
@@ -117,12 +101,12 @@
 }
 
 ^["types"]{
- Phase: pending | loading | ready | error | hidden
- TimingPhase: pending | init | loading | ready | active | idle | error | destroy
- Layer: syntactic | semantic | pragmatic
- Quality: boon | bane | bone | honk
- Valence: boon | bane | bone | bonk | honk | null
- StackingLevel: base | content | panels | floating | overlay | modal | notification | system
+ Phase: "pending | loading | ready | error | hidden"
+ TimingPhase: "pending | init | loading | ready | active | idle | error | destroy"
+ Layer: "syntactic | semantic | pragmatic"
+ Quality: "boon | bane | bone | honk"
+ Valence: "boon | bane | bone | bonk | honk | null"
+ StackingLevel: "base | content | panels | floating | overlay | modal | notification | system"
 }
 
 #>wonder_docs_plans_spw_patterns_1
