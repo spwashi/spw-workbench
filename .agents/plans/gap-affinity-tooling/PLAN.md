@@ -69,9 +69,13 @@ The next bounded slice separates three user decisions that the current flags blu
 - `--through tokens|structure|trace` names the last stage allowed to execute. It becomes the taught work-depth handle; `--product` remains a compatibility alias.
 - `--events none|diagnostics|trace` names retained instrumentation. It becomes the taught retention handle; `--event-policy` remains a compatibility alias. It must continue to disclose that retention does not yet suppress generator construction.
 - `--sample N` bounds examples in source/spacing projections. It becomes the taught display-granularity handle; `--limit` remains the shared row/sample compatibility form. Sampling never claims to reduce parser work.
-- `--scan-depth minimal|standard|full` names corpus/index work in `census`, `graph`, `density`, `formula`, `taste`, and `lattice`. Their existing `--depth` form remains a compatibility alias. Numeric tree/expansion depth keeps `--depth` because it measures actual structural recursion rather than an index profile.
+- `--spread near|standard|far` names the extent of corpus/index work in `census`, `graph`, `density`, `formula`, `taste`, and `lattice`. It maps explicitly to the current `minimal|standard|full` index presets and discloses both names in receipts. Their existing `--depth` form remains a compatibility alias. Numeric tree/expansion depth keeps `--depth` because it measures actual structural recursion rather than an index profile.
 
-Extract inspect argument parsing from the 812-line dispatcher into a focused typed boundary module. Add one shared strict scan-depth reader so corpus commands stop silently mapping misspelled depth values to `standard`. Parsers validate canonical names and aliases once, reject mode-inapplicable handles, and expose resolved work/display choices to commands. Human/Spw/JSON products disclose effective handles so a consumer can distinguish execution thrift from output thrift.
+Extract inspect argument parsing from the 812-line dispatcher into a focused typed boundary module. Add one shared strict corpus-spread reader so commands stop silently mapping misspelled depth values to `standard`. Parsers validate canonical names and aliases once, reject mode-inapplicable handles, and expose resolved work/display choices to commands. Human/Spw/JSON products disclose effective handles so a consumer can distinguish execution thrift from output thrift.
+
+`spread` is deliberately lyrical but not allowed to hide implementation. `near` means the current minimal profile, `standard` remains the everyday profile, and `far` means the current full profile. The present presets still couple two dimensions: how many files enter the field and which derived signals are developed. A later measured slice should separate **spread** (corpus extent) from **resolution** (signal detail), then make cache reuse monotone where a valid far/high-resolution product can answer a nearer/lower-resolution question by projection. Cache policy remains a separate future handle (`use|refresh|off` is the plain candidate); block-local warming requires stable content-plus-ancestry identity rather than line offsets.
+
+Compatibility is a migration state, not the target vocabulary. A later declared CLI boundary should inventory aliases, publish canonical replacements and machine-readable notices, migrate first-party examples, and remove the aliases as one reviewable episode. Command discovery should then group recognizable verbs by consumer intent while allowing lyrical nouns such as `through` and `spread` to carry memorable, disclosed motion.
 
 This slice does not add a one-shot latency budget, benchmark gate, hidden `--fast` bundle, incremental parse window, or event-generation suppression. Those require multi-run measurement or deeper kernel work; they should not be implied by friendlier argument names.
 
@@ -128,8 +132,8 @@ This slice does not add a one-shot latency budget, benchmark gate, hidden `--fas
 [NEW] packages/spw-cli/src/inspect-source.test.ts
 [NEW] packages/spw-cli/src/inspect-args.ts
 [NEW] packages/spw-cli/src/inspect-args.test.ts
-[NEW] packages/spw-cli/src/scan-depth.ts
-[NEW] packages/spw-cli/src/scan-depth.test.ts
+[NEW] packages/spw-cli/src/corpus-spread.ts
+[NEW] packages/spw-cli/src/corpus-spread.test.ts
 [MOD] packages/spw-cli/src/analyze.ts
 [MOD] packages/spw-cli/src/inventory.ts
 [MOD] packages/spw-cli/src/map.ts
@@ -204,8 +208,9 @@ Current progressive tooling episode:
 Current CLI handle episode:
 
 1. `.[plans] — separate work, retention, and display handles`
-2. `vocab[cli]+&[inspect,corpus] — extract typed arguments and teach canonical handles`
-3. `.[docs,plans] — document handle cost boundaries and compatibility aliases`
+2. `.[plans] — tune corpus work as near, standard, and far spread`
+3. `vocab[cli]+&[inspect,corpus] — extract typed arguments and teach canonical handles`
+4. `.[docs,plans] — document handle cost boundaries and compatibility aliases`
 
 Fuzz strategy:
 
