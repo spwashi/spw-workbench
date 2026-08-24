@@ -28,19 +28,22 @@ internal object SpwLspLauncher {
         }
 
         val projectRoot = projectBase?.let(Path::of)?.normalize() ?: return null
-        if (hasLspScript(projectRoot)) {
+        if (hasNpmScript(projectRoot, LSP_SCRIPT)) {
             return SpwLspToolRoot(projectRoot, SpwLspToolRootSource.Project)
         }
 
         val mountedWorkbench = projectRoot.resolve(MOUNTED_WORKBENCH_PATH)
-        if (hasLspScript(mountedWorkbench)) {
+        if (hasNpmScript(mountedWorkbench, LSP_SCRIPT)) {
             return SpwLspToolRoot(mountedWorkbench, SpwLspToolRootSource.MountedWorkbench)
         }
 
         return SpwLspToolRoot(projectRoot, SpwLspToolRootSource.Project)
     }
 
-    fun hasLspScript(toolRoot: Path): Boolean {
+    fun hasLspScript(toolRoot: Path): Boolean = hasNpmScript(toolRoot, LSP_SCRIPT)
+
+    fun hasNpmScript(toolRoot: Path, script: String): Boolean {
+        if (!NPM_SCRIPT_NAME_PATTERN.matches(script)) return false
         val packageJsonPath = toolRoot.resolve(PACKAGE_JSON)
         if (!Files.isRegularFile(packageJsonPath)) return false
 
@@ -51,7 +54,7 @@ internal object SpwLspLauncher {
             if (scriptsObjectStart < 0) return false
 
             val scriptsObject = extractJsonObject(content, scriptsObjectStart) ?: return false
-            LSP_SCRIPT_PATTERN.containsMatchIn(scriptsObject)
+            Regex("\"${Regex.escape(script)}\"\\s*:").containsMatchIn(scriptsObject)
         } catch (_: Exception) {
             false
         }
@@ -94,6 +97,7 @@ internal object SpwLspLauncher {
 
     private const val PACKAGE_JSON = "package.json"
     private const val MOUNTED_WORKBENCH_PATH = ".spw/_workbench"
+    private const val LSP_SCRIPT = "lsp"
     private val SCRIPTS_PROPERTY_PATTERN = Regex(""""scripts"\s*:""")
-    private val LSP_SCRIPT_PATTERN = Regex(""""lsp"\s*:""")
+    private val NPM_SCRIPT_NAME_PATTERN = Regex("[A-Za-z0-9:_-]+")
 }

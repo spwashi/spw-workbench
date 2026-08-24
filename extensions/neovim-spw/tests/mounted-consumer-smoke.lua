@@ -77,4 +77,23 @@ local st = spw.statusline()
 assert_true(type(st) == 'string', 'statusline helper returns string')
 assert_true(vim.fn.exists(':SpwBeat') == 2, ':SpwBeat command registered')
 
+-- Test 10: CLI instruments preserve consumer authority under a mounted workbench
+local cli = require('spw.cli')
+local fake_consumer = '/workspace/consumer'
+local fake_mount = fake_consumer .. '/.spw/_workbench'
+local invocation = cli.form(fake_consumer, fake_consumer .. '/docs/example.spw')
+local cli_cmd = cli.command({ consumer_root = fake_consumer, tool_root = fake_mount }, invocation)
+assert_eq(table.concat(cli_cmd, '|'), table.concat({
+  'npm', '--prefix', fake_mount, 'run', '--silent', 'spw', '--',
+  'form', 'docs/example.spw', '--resonance', '--spw',
+}, '|'), 'CLI command separates mounted tool root from consumer-relative surface')
+
+local plan = cli.refactor_plan('mark:status=phase')
+assert_eq(table.concat(plan.args, '|'), 'refactor|.|--rename|mark:status=phase|--json',
+  'Corpus refactor is plan-only')
+assert_true(not table.concat(plan.args, '|'):find('%-%-write'), 'Corpus refactor never adds --write')
+
+local invalid_ok = pcall(cli.refactor_plan, 'status=phase')
+assert_true(not invalid_ok, 'Malformed refactor specs are rejected')
+
 print('✓ All neovim-spw smoke tests passed cleanly.')

@@ -7,12 +7,15 @@ local nav = require('spw.navigation')
 local health = require('spw.health')
 local form = require('spw.form')
 local completion = require('spw.completion')
+local cli = require('spw.cli')
 
 function M.start() return lsp.start() end
 function M.stop() return lsp.stop() end
 function M.restart() return lsp.restart() end
 function M.find_root(bufpath) return lsp.find_root(bufpath) end
 function M.build_cmd(root) return lsp.build_cmd(root) end
+function M.build_cli_cmd(host, invocation) return cli.command(host, invocation) end
+function M.resolve_cli_host(root) return cli.resolve_host(root) end
 function M.request_custom(method, params, cb) return lsp.request_custom(method, params, cb) end
 function M._on_attach(client, bufnr) return lsp._on_attach(client, bufnr) end
 

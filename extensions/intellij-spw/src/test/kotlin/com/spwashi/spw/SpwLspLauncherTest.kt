@@ -86,6 +86,21 @@ class SpwLspLauncherTest {
         assertTrue(SpwLspLauncher.hasLspScript(toolRoot))
     }
 
+    @Test
+    fun `npm script detection supports the shared CLI without accepting script injection`() = withTempDirectory { toolRoot ->
+        toolRoot.resolve("package.json").writeText(
+            """{
+              "scripts": {
+                "lsp": "tsx server.ts",
+                "spw": "tsx cli.ts"
+              }
+            }"""
+        )
+
+        assertTrue(SpwLspLauncher.hasNpmScript(toolRoot, "spw"))
+        assertFalse(SpwLspLauncher.hasNpmScript(toolRoot, "spw\" || true"))
+    }
+
     private fun writeLauncher(toolRoot: Path) {
         toolRoot.createDirectories()
         toolRoot.resolve("package.json").writeText(
