@@ -15,6 +15,8 @@ Taste note: improve **onboarding**, **failure locality**, **package hygiene**, *
 - The root export map points directly to source modules and currently represents Runtime plus selected parser/substrate surfaces, not a complete package publication contract.
 - Most toolchain dependencies and scripts live at the root. The VS Code workspace declares its own TypeScript and esbuild ranges, which are materially different from the root ranges and need an intentional compatibility explanation or convergence rule.
 - `spw doctor`, JS distribution assembly, and `npm pack --dry-run` exist as useful foundations; they do not yet produce one cross-machine environment or iteration-radius receipt.
+- Current package `exports` route directly to TypeScript source and are import boundaries, not measured distribution bundles. Exploratory minified esbuild probes measured approximately 2.5 KB for Seed lite, 68.6 KB for Seed parser, 64.2 KB for progressive products, 313.6 KB for the full Seed barrel, 305.7 KB for the LSP stdio entry, and 4.1 MB for the eager CLI entry. These are structural observations under one tool invocation, not release budgets.
+- The CLI registry eagerly imports every command. Its bundle includes about 3.57 MB from `typescript` solely through authority extraction, so ordinary help and inspection routes inherit a compiler module they do not use.
 
 These are implementation facts, not a claim that the current layout is broken. The first slice is an audit and contract pass before dependency or version changes.
 
@@ -22,6 +24,7 @@ These are implementation facts, not a claim that the current layout is broken. T
 
 - **In scope**:
   - Inventory each workspace's public/private status, dependency edges, exports, engine/toolchain assumptions, scripts, build artifacts, and release role; compare declared edges with imported edges.
+  - Classify each entry point as source route, runtime-load boundary, tree-shakable module, split chunk, or published artifact. Measure cold import and built bytes separately; neither substitutes for semantic execution cost.
   - Define an environment receipt carrying repository and lockfile revisions, package-manager version, Node runtime/ABI, platform/architecture/libc where available, toolchain versions, cache class, optional/native dependency state, and invoked task.
   - Extend doctor/build failures with stable categories and next actions: `source`, `manifest`, `lockfile`, `runtime`, `native-addon`, `abi`, `platform`, `cache`, and `external-tool`.
   - Define iteration-radius metrics: changed packages, dependency cone, invalidated tasks, files/types loaded, cold and warm time to first actionable result, final completion, cache hit class, and required external tools.
@@ -58,6 +61,8 @@ These are implementation facts, not a claim that the current layout is broken. T
 [MOD] packages/spw-runtime/package.json
 [MOD] packages/spw-lsp/package.json
 [MOD] packages/spw-cli/package.json
+[MOD] packages/spw-cli/src/commands.ts
+[MOD] packages/spw-cli/src/authority.ts
 [MOD] extensions/vscode-spw/package.json
 [MOD] package.json
 [MOD?] package-lock.json
@@ -127,6 +132,7 @@ Fuzz strategy:
 
 - **Hypotheses**:
   - Most Seed and CLI questions can reach a trustworthy result without rebuilding or understanding the LSP, editor, runtime, and docs surfaces.
+  - Lazy command loading and explicit Seed subpaths keep unused compiler, canonical, query, and instrumentation modules outside ordinary consumer startup without forking parser semantics.
   - Declared import/export edges plus generated-consumer smokes catch hoisting and source-path assumptions before release.
   - Environment receipts turn inconsistent cross-machine failures into a small comparison of causal dimensions.
   - Explicit package and migration decisions reduce onboarding explanation load without hiding the workbench's flexibility.
@@ -135,6 +141,7 @@ Fuzz strategy:
   - Warm cache, cold cache, and clean install are separate classes and are never averaged together.
   - Changing hostname or checkout path does not change the redacted environment identity.
   - Touching a docs-only file does not invalidate a Seed leaf task; changing a Seed public type does invalidate declared dependents.
+  - A tokens-only browser consumer does not ship the full canonical/query barrel, while its token product matches the progressive Node facade on the same fixture.
   - The same source failure produces the same stable category across supported machines even when underlying tool wording differs.
   - Human and machine-facing setup guides resolve to the same checked prerequisite graph and generated command smoke.
 - **Demo sequence**:

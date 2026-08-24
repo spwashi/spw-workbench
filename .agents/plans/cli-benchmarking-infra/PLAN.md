@@ -14,10 +14,11 @@ Today, performance across the CLI's command and toolchain surfaces is measured a
   - Statistical core: retained raw samples, warmup labels, p50/p90, dispersion, sample count, and confidence intervals where sample size and distribution assumptions make them meaningful. IQR fences annotate instability; they do not silently remove observations from the reported corpus.
   - Workload matrix: synthetic scales (micro, standard, stress, dense mesh), workbench-owned corpora, and generated identity-free consumer shapes such as small-clean, error-heavy, deep-nesting, broad-graph, and mounted-mixed roots.
   - Dual execution harness: in-process direct module runner for pure AST/IR operations + subprocess CLI runner for cold start, flag parsing, progressive stdout, disk I/O, and Node.js V8 profiling hooks.
+  - Startup/import matrix: root help, representative light commands, source inspection, LSP startup, and heavyweight opt-in commands. Record loaded-module and built-byte composition beside latency without claiming bytes are time.
   - Comprehensive CLI benchmarks across all 5 groups: `collate` (census, graph, atlas, formula, density, form, lattice, delta, measure, authority, taste, stack, inspect), `select` (query, select, outline, ls), `shape` (format, expand, snippet, refactor, emit), `effect` (pulse, beat, mem), `workspace` (roots, mount, tree, doctor).
   - TypeScript compiler profiler: flat typecheck (`tsc -p`), solution build (`tsc -b`), `--extendedDiagnostics` parser, and TS 7 native parallelism matrix (`--checkers`).
   - First-class timing products: process start, time to first useful event, per-event cadence, final completion, peak RSS, and total bytes/products disclosed. Phase attribution is present only for phases carrying actual spans.
-  - Parser-cost matrix: cross requested products (`tokens`, `structure`, `index`, `semantic`, `trace`) with event policies (`none`, `diagnostics`, `trace`), and measure event generation separately from retention so a smaller output is not mistaken for less parser work.
+  - Parser-cost matrix: cross source horizons (`--through tokens|structure|trace`, with later `index|semantic` only after those products exist) with event policies (`none`, `diagnostics`, `trace`), and measure event generation separately from retention so a smaller output is not mistaken for less parser work.
   - Reproducibility receipt: record lockfile hash, package-manager/runtime version, Node ABI, platform/architecture/libc where available, workspace dependency graph hash, cache class, optional native-addon availability, and resolved Spw capability/profile revisions. Environment mismatches are classified before semantic or performance comparison.
   - Differential comparison engine: latency and throughput deltas, memory delta, capability/revision compatibility checks, and outcome-aware regression gating (`bench:check`).
   - Multi-format efficiency reporting: concise Markdown brief (`.benchmarks/efficiency-report.md`), terminal summary, structured JSON (`.benchmarks/latest.json`), NDJSON progress events, and Spw projection (`.benchmarks/efficiency.spw`) over the same benchmark product.
@@ -93,7 +94,7 @@ Fuzz strategy:
 - `typescript-perf-audit-infra`: complementary focus on low-level `tsc` telemetry; this plan implements the comprehensive CLI and toolchain efficiency observatory.
 - `typescript-toolchain-observatory`: research and release projection companion.
 - `typescript-upgrade-ladder`: will consume baseline snapshots from this infrastructure.
-- `cli-sense-reorientation`: defines shared intermediate products and progressive output forms the harness must observe without inventing benchmark-only schemas. The first measurable surface is now `spw inspect source --product trace --ndjson`, whose `spw.progressive-product/1` records expose real lex, parse, and trace availability boundaries.
+- `cli-sense-reorientation`: defines shared intermediate products and progressive output forms the harness must observe without inventing benchmark-only schemas. The first measurable surface is now `spw inspect source --through trace --ndjson`, whose `spw.progressive-product/1` records expose real lex, parse, and trace availability boundaries.
 - `cli-mode-overhaul`: defines measure/stream/precipitate/write distinctions so benchmark runs can state their effect ceiling and avoid mutating authoring roots.
 - `gap-affinity-tooling`: defines the parse-product/event-policy matrix and association identities the harness measures without inventing alternate benchmark grammars.
 - `runtime-dx-foundation`: owns actionable health checks and failure-locality vocabulary for package-manager, native-addon, ABI, platform, and cache faults.
@@ -115,6 +116,7 @@ Fuzz strategy:
   - Regression gate distinguishes performance degradation from variance and environment faults before selecting an exit status.
   - Multi-dimensional efficiency report presents clear, evidence-backed leverage across operational, computational, cognitive, and toolchain dimensions.
   - Product/event matrices reveal whether speedups come from less semantic work, less instrumentation generation, or only less retained output.
+  - Startup composition reveals whether a light command pays to load compiler, formatter, canonical, or editor-only code it never invokes.
   - Reproducibility receipts localize cross-machine build and benchmark failures before developers chase source-level causes.
 - **Negative controls**:
   - `npm run test:run`, `npm run build`, and `npm run lint` remain completely green.

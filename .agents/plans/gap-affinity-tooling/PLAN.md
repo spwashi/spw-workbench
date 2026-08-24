@@ -62,9 +62,9 @@ Commit `deb9e226` turns source stages into reusable intermediate products before
 
 This checkpoint does not promise incremental parsing, index construction, semantic normalization, or generator-event suppression. Its receipts disclose executed stages and omissions so later performance work can replace implementation without changing the consumer contract.
 
-### CLI performance-handle slice — 2026-08-24
+### CLI performance-handle checkpoint — 2026-08-24
 
-The next bounded slice separates three user decisions that the current flags blur:
+Commit `40c03d20` separates the user decisions that the earlier flags blurred:
 
 - `--through tokens|structure|trace` names the last stage allowed to execute. It becomes the taught work-depth handle; `--product` remains a compatibility alias.
 - `--events none|diagnostics|trace` names retained instrumentation. It becomes the taught retention handle; `--event-policy` remains a compatibility alias. It must continue to disclose that retention does not yet suppress generator construction.
@@ -78,6 +78,25 @@ Extract inspect argument parsing from the 812-line dispatcher into a focused typ
 Compatibility is a migration state, not the target vocabulary. A later declared CLI boundary should inventory aliases, publish canonical replacements and machine-readable notices, migrate first-party examples, and remove the aliases as one reviewable episode. Command discovery should then group recognizable verbs by consumer intent while allowing lyrical nouns such as `through` and `spread` to carry memorable, disclosed motion.
 
 This slice does not add a one-shot latency budget, benchmark gate, hidden `--fast` bundle, incremental parse window, or event-generation suppression. Those require multi-run measurement or deeper kernel work; they should not be implied by friendlier argument names.
+
+### Parser horizon, API, and bundle boundary — 2026-08-24
+
+Execution horizon, semantic profile, event retention, display sampling, and distribution bundle are independent contracts:
+
+| Axis | CLI | Typed API | Consequence |
+|---|---|---|---|
+| source horizon | `--through tokens|structure|trace` | `through` | last stage allowed to execute |
+| event retention | `--events none|diagnostics|trace` | `eventPolicy` | which generated parser events are retained |
+| display sample | `--sample N` | formatter `limit` | bounded human/Spw examples only |
+| corpus extent | `--spread near|standard|far` | index configuration | files admitted to corpus work |
+| semantic profile | dialect/surface stack | parser profile options | interpretation and provenance |
+| shipped code | package subpath or built artifact | import boundary | modules a consumer loads; not a runtime parser profile |
+
+The Seed source-product API should teach `through` as its canonical option while accepting `product` through a declared compatibility window. `eventPolicy` remains the precise API name: CLI lyricality does not require every typed property to copy a flag token. A lower `through` value may avoid deeper runtime work, but it cannot make statically imported grammar disappear from a browser bundle.
+
+Exploratory minified esbuild measurements provide a structural signal, not a release budget: the existing lite scanner is about 2.5 KB, the parser entry about 68.6 KB, the progressive-products module about 64.2 KB, the full Seed barrel about 313.6 KB, the LSP stdio entry about 305.7 KB, and the eager CLI entry about 4.1 MB. About 3.57 MB of that CLI bundle is the TypeScript compiler, pulled into every route by the authority extractor. Defer that compiler import until the authority command actually runs; evaluate true bundle splitting, public subpaths, and generated-consumer import smokes under `package-iteration-radius` rather than advertising source export paths as finished bundles.
+
+Do not mint performance-only parser profiles. Separate lex/product entry points may eventually let a browser ship only the stage it can use, while one progressive facade remains convenient for Node and tooling consumers. Both surfaces must return compatible product identities, spans, diagnostics, and provenance for equivalent work.
 
 ```text
 [NEW] .agents/plans/gap-affinity-tooling/PLAN.md
@@ -113,6 +132,7 @@ This slice does not add a one-shot latency budget, benchmark gate, hidden `--fas
 [NEW] packages/spw-seed/src/normalize-associations.ts
 [MOD?] packages/spw-seed/src/normalize.ts
 [NEW] packages/spw-seed/src/parser/products.ts
+[MOD] packages/spw-seed/src/parser/products.test.ts
 [NEW] packages/spw-seed/src/ir/progressive.ts
 [MOD] packages/spw-seed/src/parser/parse.ts
 [MOD] packages/spw-seed/src/parser/parse-stream.ts
@@ -124,7 +144,6 @@ This slice does not add a one-shot latency budget, benchmark gate, hidden `--fas
 [MOD] packages/spw-seed/src/index.ts
 [NEW] packages/spw-seed/src/lexer/gaps.test.ts
 [NEW] packages/spw-seed/src/grammar/associations.test.ts
-[NEW] packages/spw-seed/src/parser/products.test.ts
 [NEW] packages/spw-seed/src/canonical/format-spacing.test.ts
 [NEW] packages/spw-cli/src/inspect-spacing.ts
 [NEW] packages/spw-cli/src/inspect-spacing.test.ts
@@ -143,6 +162,7 @@ This slice does not add a one-shot latency budget, benchmark gate, hidden `--fas
 [NEW] packages/spw-cli/src/format-policy.ts
 [NEW] packages/spw-cli/src/format-migrate.ts
 [MOD] packages/spw-cli/src/inspect.ts
+[MOD] packages/spw-cli/src/authority.ts
 [MOD] packages/spw-cli/src/tsconfig.json
 [MOD] packages/spw-cli/src/format.ts
 [MOD] packages/spw-lsp/src/handlers/editing.ts
@@ -210,7 +230,9 @@ Current CLI handle episode:
 1. `.[plans] — separate work, retention, and display handles`
 2. `.[plans] — tune corpus work as near, standard, and far spread`
 3. `vocab[cli]+&[inspect,corpus] — extract typed arguments and teach canonical handles`
-4. `.[docs,plans] — document handle cost boundaries and compatibility aliases`
+4. `.[plans] — separate parser horizon, profile, and bundle contracts`
+5. `vocab[api]+&[cli] — align through and defer compiler loading`
+6. `.[docs,plans] — document handle cost boundaries and compatibility aliases`
 
 Fuzz strategy:
 

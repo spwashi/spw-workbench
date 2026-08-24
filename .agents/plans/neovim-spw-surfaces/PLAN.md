@@ -12,6 +12,7 @@ Strengthen Neovim as a **native peer client** of `spw-lsp`: same truth density a
 - Wonder blocks `?["…"]` with `!probe` and `$%[file.frame_count, …]`
 - Plan / design surfaces under `.agents/plans/`
 - `%mass` / authority claims once seed schemes exist
+- Progressive source products at the cursor or selected structural range, with spans, profile provenance, omissions, event counts, elapsed time, and cache plane visible as a scientific receipt
 
 End state: a Neovim session on a workbench or mounted consumer feels like a workbench — diagnostics, actions, and statusline speak Spw — while remaining **builtins-first** (no telescope/nui dependency required).
 
@@ -79,6 +80,7 @@ Depends on:
 | **No plan context** | Editing `wip.spw` / plan artifacts has no statusline next-commit signal |
 | **Statusline field** | VS Code context strip has no Neovim counterpart (optional lualine/heirline snippet, not required dependency) |
 | **Reading profiles** | No `vim.g.spw_reading_profile` noise budget |
+| **No progressive source inspector** | Current commands expose operator and phase probes, but not the shared tokens → structure → trace product or its completeness/cost receipt |
 | **Panel temptation** | Avoid porting Concepts/Atlas trees; prefer quickfix + float + notify |
 
 ## Scope
@@ -96,6 +98,9 @@ Depends on:
   - `:SpwPlan` — if path matches `.agents/plans/<slug>/`, show goal / next commit / open count from `wip.spw` (client parse of thin frames OK; do not re-parse full Spw semantics)
 - Optional statusline helper module (pure Lua, no plugin dep) exposing phase/facet when `spw/contextAtPosition` is earned
 - `vim.g.spw_reading_profile` = `author|prompt|research|creative` — maps to LSP init settings / diagnostic tag filters when server supports them
+- `:SpwInspect [tokens|structure|trace]` — project the shared progressive source product for the file, cursor block, or selection into a scratch buffer/float. File-backed CLI fallback is acceptable; unsaved/range inspection requires an earned server request or stdin protocol, never a Lua parser.
+- A research projection showing exact spans, resolved dialect/profile, included/omitted fields, completeness, generated/retained events, elapsed time, parser/product revision, and cache plane. A broad-audience site may render the same receipt as cards or expandable layers without changing its state or provenance.
+- Local-only inspection by default. No editor activity telemetry, person-level inference, or authority effect follows from an exploratory source product.
 - README + health checks for mount/workbench discovery
 - Headless smoke expansion: open index.spw-like fixture, assert diagnostic or navigation contract
 
@@ -115,6 +120,7 @@ Depends on:
 | `spw/contextAtPosition` | optional statusline / `:SpwPhase` if earned |
 | `spw/workspaceTemperature` | `:SpwTemperature` (landed wrapper) |
 | `spw/formContext` | float or notify when earned |
+| progressive source products (`tokens → structure → trace`) | `:SpwInspect` scratch/float with range, omissions, cost, and cache receipt; quickfix only for actual diagnostics |
 | Plan metadata | `:SpwPlan` (client thin-read) |
 
 ## Files
@@ -126,6 +132,7 @@ Depends on:
 [MOD] extensions/neovim-spw/lua/spw/lsp.lua
 [MOD?] extensions/neovim-spw/lua/spw/plan.lua          thin plan-context reader
 [MOD?] extensions/neovim-spw/lua/spw/statusline.lua    optional context chip
+[NEW?] extensions/neovim-spw/lua/spw/inspect.lua       progressive product projection; no parser
 [MOD] extensions/neovim-spw/lua/spw/health.lua
 [MOD] extensions/neovim-spw/README.md
 [MOD] extensions/neovim-spw/tests/mounted-consumer-smoke.lua
@@ -151,7 +158,8 @@ Depends on:
 4. `.[neovim] — README + health honesty for mount/workbench discovery`
 5. `&[neovim] — project mass/path diagnostics + exact-only code actions` (after LSP emits them)
 6. `^[neovim] — :SpwPlan / optional statusline + reading_profile setting`
-7. `![neovim] — smoke for wonder/ref/diagnostic contracts`
+7. `&[neovim] — project shared source products for file, block, and selection inspection`
+8. `![neovim] — smoke for wonder/ref/diagnostic/source-product contracts`
 
 ## Agentic Hygiene
 
@@ -170,6 +178,7 @@ Depends on:
 ## Failure Modes
 
 - **Hard:** Lua re-parses Spw and disagrees with LSP
+- **Hard:** a bounded editor card drops exact spans or omissions while presenting itself as the recoverable source product
 - **Hard:** commands advertise dead `spw/*` methods as success paths
 - **Soft:** statusline spam on CursorHold
 - **Non-negotiable:** no absolute user paths in docs/examples; placeholders only

@@ -16,6 +16,8 @@
  @commands: ~"extensions/neovim-spw/lua/spw/commands.lua"
  @lsp: ~"extensions/neovim-spw/lua/spw/lsp.lua"
  @stdio: ~"packages/spw-lsp/src/stdio-server.ts"
+ @source_products: ~"packages/spw-seed/src/parser/products.ts"
+ @source_inspect: ~"packages/spw-cli/src/inspect-source.ts"
  @ecology: ~".agents/plans/shape-syntax-ecology/PLAN.md"
 }
 
@@ -33,7 +35,7 @@
 }
 
 ^["concept_index"]{
- primary: [#neovim, #lsp_client, #diagnostics, #probe]
+ primary: [#neovim, #lsp_client, #diagnostics, #probe, #progressive_source_product]
  surfaces: [#editor, #mounted_consumer, #plans]
  tensions: [#phantom_methods, #panel_temptation, #cursor_hold_cost]
  transfers: [#vscode_packets, #quickfix, #statusline]
@@ -47,11 +49,15 @@
  >>[2026-07-27] decide — :SpwPlan thin-reads wip frames; no second Spw parser in Lua
  >>[2026-07-27] taste — builtins first; telescope optional never required
  >>[2026-07-27] revise — shape-syntax-ecology; :SpwProfile; screenshot dual-read; dialect statusline
+ >>[2026-08-24 12:58] observe — the CLI now exposes tokens, structure, and trace as one progressive product with spans, provenance, omissions, elapsed time, and event counts; Neovim lacks a native projection of that scientific receipt.
+ >>[2026-08-24 12:59] decide — add :SpwInspect as a projection, never a Lua parser: file-backed CLI fallback may land first, while unsaved buffer, selection, and block-local work require an earned shared server or stdin protocol.
+ >>[2026-08-24 13:00] taste — scientific/editor and broad-audience/site surfaces may differ in density and interaction, but they share product identity, provenance, loss receipts, and local-first privacy boundaries.
 }
 
 ^["open"]{
  ?[statusline]: "Ship optional statusline.lua helper or document lualine snippet only?"
  ?[probe_method]: "Earn spw/probe vs encode probe results only as diagnostics?"
+ ?[source_product_transport]: "Should unsaved and range inspection use one earned LSP request, a shared stdin envelope, or both over the same SourceProduct contract?"
 }
 
 ^["commits"]{
@@ -61,19 +67,20 @@
  ~[4]: ".[neovim] — README + health honesty for mount/workbench discovery"
  ~[5]: "&[neovim] — project mass/path diagnostics + exact-only code actions"
  ~[6]: "^[neovim] — :SpwPlan / optional statusline + reading_profile setting"
- ~[7]: "![neovim] — smoke for wonder/ref/diagnostic contracts"
+ ~[7]: "&[neovim] — project shared source products for file, block, and selection inspection"
+ ~[8]: "![neovim] — smoke for wonder/ref/diagnostic/source-product contracts"
 }
 
 ^["cache"]{
  ~#status: "planning"
- ~#base_ref: "main@0c7cdfb7178079bf27a9a062ba1b310d07296f41"
- ~#rebased_at: ""
+ ~#base_ref: "main@c46558ffbb29a10abb1fee11dbec8aa522cbc8b3"
+ ~#rebased_at: "2026-08-24"
  ~#hygiene_split: "none"
- ~#files_hot: "extensions/neovim-spw/lua/spw/commands.lua, extensions/neovim-spw/lua/spw/lsp.lua"
+ ~#files_hot: "extensions/neovim-spw/lua/spw/commands.lua, extensions/neovim-spw/lua/spw/lsp.lua, packages/spw-lsp/src/stdio-server.ts"
  ~#next_commit: "1"
- ~#open_count: "2"
- ~#last_stream: "2026-07-27 revive"
- ~#taste_debt: ""
+ ~#open_count: "3"
+ ~#last_stream: "2026-08-24 13:00"
+ ~#taste_debt: "Source-product transport for unsaved buffers and structural ranges must be earned once across clients; no Lua parser or hidden editor telemetry."
 }
 
 ^["done"]{

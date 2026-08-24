@@ -18,6 +18,7 @@ Taste note:
 - In scope:
   - The three confirmed audit defects: index entries surviving eviction, `getDocument` flattening recency during bulk fan-out, `workspaceAnnotations` O(n) rebuild per save.
   - Frame-level content hashes keyed by apposition name, so derived data survives edits in sibling frames.
+  - A shared granule receipt that carries content identity, structural ancestry, resolved syntax/profile revision, parser/product revision, and available source horizon. Line offsets locate a granule but never identify it.
   - An apposition scan in `spw-seed` — extract name, body, and span hash without invoking the parser.
   - A validity probe that reuses derived data when a granule's apposition envelope is unchanged.
   - Retaining the `inbound` reference index that `buildReferenceGraph` already computes and throws away.
@@ -25,6 +26,7 @@ Taste note:
 - Out of scope:
   - Incremental parsing and lexer resume. `LexerState` is already a serializable checkpoint and both `tokenize` and `seedNode` are generators, so the affordance exists — but safe-restart-point analysis is its own plan, and this one gets most of the win without it.
   - Stable node identity and subtree fingerprints — owned by `geometric-analysis-tooling`; this plan keys on apposition names instead, which already exist in the source.
+  - Corpus `spread` and signal `resolution` policy — owned by corpus tooling. A valid far/high-resolution cache may project toward a nearer question, but editor granule identity remains independent of that traversal vocabulary.
   - Beat TTL configuration and `$spw/stateReload` — owned by `spw-beat-diff-precipitation`. See Dependencies; the conflict is real.
   - Two-axis eviction (crossing `tier` with `volatility`). Correct and desirable, but it changes eviction policy while this plan changes eviction *correctness*; sequencing them together would confound both.
 
@@ -100,6 +102,7 @@ Fuzz strategy:
 - **Hard**: 5 appositions are anonymous (`~#(…)`), so they anchor a span but supply no key. Granule identity must degrade to span-position for those, which is exactly the identity that does not survive edits.
 - **Soft**: envelope comparison produces false "unchanged" readings and serves stale derived data. Mitigation: the probe decides *reuse*, never *correctness* — a reuse miss costs a reparse, and a reuse hit must be verifiable against a full parse in tests.
 - **Non-negotiable**: a cache hit and a cold recompute return the same answer. This is `cache.spw`'s own stated taste — *"when they diverge the key was wrong, not the cache"* — and it is the one property this plan must not trade for speed.
+- **Non-negotiable**: cache warmth, edit cadence, or inspection history does not become person-level evidence or an authority-facing score.
 
 ## Validation
 

@@ -26,6 +26,7 @@ Replace fragmented “profile” meanings (review-only path labels, format modes
 - Replace destructive Spw.l/q newline preprocessing with a source-mapped gap projection that retains original coordinates and declares whether cadence or episode collapses to open.
 - Carry the resolved `syntax.gap-affinity/1` capability, format-policy revision, and association product identity through stack provenance. Workspace policy may select rendering defaults; it may not silently select grammar.
 - Keep parser product requests and event policies as execution/disclosure axes beside the syntax stack, never as dialect aliases.
+- Keep distribution bundles as a package axis beside the stack: a lite/lexer/parser/product entry point changes shipped modules, not dialect, association, or parser-profile meaning. A `through` horizon may stop runtime work but does not promise static tree-shaking.
 - **Experimental syntax catalog** (reference ids for Spw.f/φ, σ-chain, etc.) — see `shape-syntax-ecology`
 - Cache keys: always include `dialect × preprocess` for l/q
 - Gestalt token contract stable enough for screenshot/LLM dual-read (with AST ground truth)
@@ -55,6 +56,7 @@ Dialects are **product surfaces** (ethos): b literacy · p memory · q/l address
 | Selectors | Spw.q preprocess + highContext |
 | Refactor hints | strict/m discourages quoted_frame → code action |
 | Intermediate | stack does not replace σ-chain; points at mutation-flow |
+| Bundling | entry points may narrow shipped code; they do not mint performance dialects |
 | Memory | p dialect + plan_surface review |
 | Tests | dialect.test + parse-dialect; catalog tests next |
 | Expand | t dialect; derived-surface skip |
