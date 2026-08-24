@@ -14,6 +14,7 @@ import {
   type Granularity,
   type IrRef,
   type ResolveGranularityInput,
+  type ParseEventPolicy,
 } from '@spwashi/spw-seed'
 import type { BeatCache, CacheTier } from '../state/memory-cache'
 import type { RunSpwResult } from '../pipeline/types'
@@ -24,6 +25,7 @@ import type { PhraseHit, FixityKind } from './phrases'
 import type { RuntimeMedium } from './medium-matrix'
 import type { DialectRuntimePolicy } from './dialect-policy'
 import type { ProbeMeasureReport } from './probe-measure'
+import type { RuntimeTracePolicy } from '../interpreter/types'
 
 export interface HotSessionOptions {
   channel?: StabilityChannel | string
@@ -39,6 +41,9 @@ export interface HotEvalOptions {
   dialect?: DialectId | string
   autoDialect?: boolean
   desugar?: boolean
+  parseEventPolicy?: ParseEventPolicy
+  runtimeTracePolicy?: RuntimeTracePolicy
+  /** @deprecated Prefer runtimeTracePolicy. */
   captureTrace?: boolean
   /** Force recompute even on cache hit. */
   recompute?: boolean

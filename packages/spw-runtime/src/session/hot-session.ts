@@ -160,12 +160,21 @@ export class HotRuntimeSession {
 
     const policy = resolveDialectPolicy(prepared.stack.dialect)
     const contentHash = productHash(prepared)
+    const parseEventPolicy = options.parseEventPolicy ?? 'trace'
+    const runtimeTracePolicy = options.runtimeTracePolicy
+      ?? (options.captureTrace === true ? 'evaluation' : 'none')
+    const evaluateProfile = [
+      options.path ? `path:${options.path}` : '',
+      `desugar:${options.desugar ?? true}`,
+      `parse-events:${parseEventPolicy}`,
+      `runtime-trace:${runtimeTracePolicy}`,
+    ].filter(Boolean).join('|')
     const key = cacheKey(
       channelCacheParts({
         channel: this.channel,
         dialect: prepared.stack.dialect,
         fileHash: contentHash,
-        extra: options.path ? `path:${options.path}` : undefined,
+        extra: evaluateProfile,
       }),
     )
 
@@ -178,6 +187,8 @@ export class HotRuntimeSession {
 
     const runOpts: RunSpwOptions = {
       desugar: options.desugar,
+      parseEventPolicy: options.parseEventPolicy,
+      runtimeTracePolicy: options.runtimeTracePolicy,
       captureTrace: options.captureTrace ?? false,
       registers: this.registers,
       substrate: this.substrate,
@@ -226,12 +237,13 @@ export class HotRuntimeSession {
     })
     const contentHash = productHash(prepared)
     const scheme = options.resonanceScheme ?? grain.resonanceScheme
+    const parseEventPolicy = options.parseEventPolicy ?? 'trace'
     const key = cacheKey(
       channelCacheParts({
         channel: this.channel,
         dialect: prepared.stack.dialect,
         fileHash: contentHash,
-        extra: `inspect|${options.path ? `path:${options.path}` : ''}|${scheme}|${grain.depth}|${grain.plane}`,
+        extra: `inspect|${options.path ? `path:${options.path}` : ''}|parse-events:${parseEventPolicy}|${scheme}|${grain.depth}|${grain.plane}`,
       }),
     )
 
@@ -252,6 +264,7 @@ export class HotRuntimeSession {
       autoDialect: false,
       dialect: prepared.stack.dialect,
       path: options.path,
+      eventPolicy: parseEventPolicy,
     })
     const phrases = scanBracePhrases(prepared.original)
     const fixityCounts = countFixity(phrases)

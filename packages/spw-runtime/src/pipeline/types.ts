@@ -1,5 +1,5 @@
-import type { ParseOutput, SeedNode } from '@spwashi/spw-seed'
-import type { RuntimeInterpretation } from '../interpreter/types'
+import type { ParseEventPolicy, ParseOutput, SeedNode } from '@spwashi/spw-seed'
+import type { RuntimeInterpretation, RuntimeTracePolicy } from '../interpreter/types'
 import type { RegisterBank } from '../state/register-bank'
 import type { AnyPrecipitate } from './stages'
 import type { RegisterEvent, Resonance, Substrate } from './substrate'
@@ -16,6 +16,9 @@ export interface RuntimeTelemetry {
 
 export interface RunSpwOptions {
   desugar?: boolean
+  parseEventPolicy?: ParseEventPolicy
+  runtimeTracePolicy?: RuntimeTracePolicy
+  /** @deprecated Prefer runtimeTracePolicy. */
   captureTrace?: boolean
   registers?: RegisterBank
   substrate?: Substrate

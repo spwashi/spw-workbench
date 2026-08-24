@@ -16,7 +16,7 @@
 
 import type { SeedNode, ONFNode, ParseOutput } from '@spwashi/spw-seed'
 import type { RegisterSnapshot, RuntimeValue } from '../state/types'
-import type { RuntimeInterpretation, RuntimeInterpreterOptions } from '../interpreter/types'
+import type { RuntimeInterpretation } from '../interpreter/types'
 import { parse, desugar, normalizeToONF } from '@spwashi/spw-seed'
 import { interpretSeed } from '../interpreter/interpreter'
 import { RegisterBank } from '../state/register-bank'
@@ -178,7 +178,7 @@ function summarizeParse(output: ParseOutput<SeedNode>): string {
     if (!output.success || !output.ast) {
         return `parse failed: ${output.errors.length} error(s)`
     }
-    return `parsed → ${output.ast.type} (${output.events.length} events, ${output.errors.length} errors)`
+    return `parsed → ${output.ast.type} (${output.eventCounts.generated}/${output.eventCounts.retained} events generated/retained, ${output.errors.length} errors)`
 }
 
 function summarizeNormalize(onf: ONFNode): string {
@@ -194,7 +194,8 @@ function countONFNodes(node: ONFNode): number {
     return count
 }
 
-function summarizeInterpret(value: RuntimeValue, snapshot: RegisterSnapshot): string {
+function summarizeInterpret(runtime: RuntimeInterpretation): string {
+    const { value, registers: snapshot, traceCounts } = runtime
     const regCount = Object.keys(snapshot.entries).length
     const valueType = value === null || value === undefined
         ? 'null'
@@ -203,7 +204,7 @@ function summarizeInterpret(value: RuntimeValue, snapshot: RegisterSnapshot): st
             : typeof value === 'object'
                 ? `record(${Object.keys(value).length})`
                 : typeof value
-    return `interpreted → ${valueType} (${regCount} registers)`
+    return `interpreted → ${valueType} (${regCount} registers, ${traceCounts.generated}/${traceCounts.retained} traces generated/retained)`
 }
 
 // ── Generator Pipeline ──────────────────────────────────────────
@@ -239,6 +240,7 @@ export function* runSpwStepped(
         autoDialect: options.autoDialect,
         dialect: options.dialect,
         path: options.path,
+        eventPolicy: options.parseEventPolicy,
     })
 
     yield {
@@ -285,7 +287,10 @@ export function* runSpwStepped(
     // ── Stage 4: Interpret ──────────────────────────────────────
     const runtime = interpretSeed(
         parseOutput.ast,
-        { captureTrace: options.captureTrace ?? true },
+        {
+            tracePolicy: options.runtimeTracePolicy,
+            captureTrace: options.captureTrace,
+        },
         registers,
     )
 
@@ -295,7 +300,7 @@ export function* runSpwStepped(
         input: onf,
         output: runtime.value,
         registersAfter: runtime.registers,
-        delta: summarizeInterpret(runtime.value, runtime.registers),
+        delta: summarizeInterpret(runtime),
     } satisfies InterpretPrecipitate
 
     const telemetry = collectTelemetry(substrate, eventStartIndex)

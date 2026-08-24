@@ -12,23 +12,17 @@ import type { RegisterId, RegisterWriteOptions, RuntimeValence, RuntimeValue } f
 import type {
   RuntimeInterpretation,
   RuntimeInterpreterOptions,
-  RuntimeStage,
   RuntimeTrace,
+  RuntimeTracePolicy,
 } from './types'
+import { resolveRuntimeTracePolicy } from './types'
+import { recordRuntimeTrace } from './trace'
 
 interface EvalContext {
   registers: RegisterBank
   traces: RuntimeTrace[]
-  captureTrace: boolean
-}
-
-function trace(context: EvalContext, stage: RuntimeStage, message: string): void {
-  if (!context.captureTrace) return
-  context.traces.push({
-    stage,
-    message,
-    at: new Date().toISOString(),
-  })
+  tracePolicy: RuntimeTracePolicy
+  generatedTraces: number
 }
 
 function coerceRuntimeValue(value: unknown): RuntimeValue {
@@ -164,7 +158,7 @@ function registerKey(raw: string | undefined, fallback: RegisterId): RegisterId 
 function evaluate(node: ONFNode, context: EvalContext): RuntimeValue {
   const args = node.args.map(arg => evaluate(arg, context))
 
-  trace(context, 'interpret', `evaluate sigil ${node.sigil}`)
+  recordRuntimeTrace(context, 'interpret', 'evaluation', `evaluate sigil ${node.sigil}`)
 
   switch (node.sigil) {
     case '_': {
@@ -308,7 +302,7 @@ function evaluate(node: ONFNode, context: EvalContext): RuntimeValue {
         source: 'interpret:collapse',
         force: true,
       })
-      trace(context, 'interpret', `collapse *${key} → ${typeof collapsed}`)
+      recordRuntimeTrace(context, 'interpret', 'evaluation', `collapse *${key} → ${typeof collapsed}`)
       return collapsed
     }
 
@@ -365,17 +359,18 @@ export function interpretSeed(
   options: RuntimeInterpreterOptions = {},
   registers = new RegisterBank()
 ): RuntimeInterpretation {
-  const captureTrace = options.captureTrace ?? true
+  const tracePolicy = resolveRuntimeTracePolicy(options)
   const context: EvalContext = {
     registers,
     traces: [],
-    captureTrace,
+    tracePolicy,
+    generatedTraces: 0,
   }
 
-  trace(context, 'normalize', 'normalize seed AST into ONF')
+  recordRuntimeTrace(context, 'normalize', 'stage', 'normalize seed AST into ONF')
   const onf = normalizeToONF(ast)
 
-  trace(context, 'interpret', 'run ONF interpreter')
+  recordRuntimeTrace(context, 'interpret', 'stage', 'run ONF interpreter')
   const value = evaluate(onf, context)
 
   return {
@@ -384,5 +379,10 @@ export function interpretSeed(
     value,
     registers: registers.snapshot(),
     traces: context.traces,
+    tracePolicy,
+    traceCounts: {
+      generated: context.generatedTraces,
+      retained: context.traces.length,
+    },
   }
 }

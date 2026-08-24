@@ -64,10 +64,15 @@ export {
 
 export type {
   RuntimeStage,
+  RuntimeTraceDetail,
+  RuntimeTracePolicy,
+  RuntimeTraceCounts,
   RuntimeTrace,
   RuntimeInterpreterOptions,
   RuntimeInterpretation,
 } from './interpreter/types'
+
+export { RUNTIME_TRACE_POLICIES, resolveRuntimeTracePolicy } from './interpreter/types'
 
 export { interpretSeed } from './interpreter/interpreter'
 
