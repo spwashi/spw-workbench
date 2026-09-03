@@ -12,10 +12,10 @@
  * and the declaration quietly becomes fiction. This reads the claims so a
  * tracer can compare them against what the subject actually does.
  *
- * The stream interior is read as text rather than through its AST. `;` is a
- * sequential connector in the lexer (streams / CA pipelines), but claim split
- * still uses text so qualifier forms like `dataset[*]` stay robust — the tree
- * may fragment those, while the list-of-names reading is more faithful.
+ * The stream interior is read as text rather than through its AST. `;` is the
+ * sequential schedule separator (streams / CA pipelines), but claim split still
+ * uses text so qualifier forms like `dataset[*]` stay robust — the tree may
+ * fragment those, while the list-of-names reading is more faithful.
  *
  * Portable: parsing and slicing only. Inspecting the subject belongs to the
  * caller, which needs a filesystem and a JavaScript parser.

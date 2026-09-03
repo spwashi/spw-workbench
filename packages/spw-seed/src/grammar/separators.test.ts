@@ -77,6 +77,57 @@ describe('sequence separators', () => {
   })
 })
 
+describe('schedule separators (; sequential, || parallel)', () => {
+  it('splits steps on ; the way , and => do', () => {
+    const seq = topSequence('a ; b ; c')
+    expect(seq.expressions).toHaveLength(3)
+    expect(seq.separators?.map(s => s?.value)).toEqual([';', ';'])
+  })
+
+  it('records || as a parallel-schedule separator', () => {
+    const seq = topSequence('a || b')
+    expect(seq.expressions).toHaveLength(2)
+    expect(seq.separators?.map(s => s?.value)).toEqual(['||'])
+  })
+
+  it('does not chain ; inside an Expression', () => {
+    const seq = topSequence('a ; b')
+    expect(seq.expressions[0]!.terms).toHaveLength(1)
+    expect(seq.expressions[0]!.connectors).toHaveLength(0)
+  })
+
+  it('mixes with , and => in one table', () => {
+    const seq = topSequence('a ; b => c, d')
+    expect(seq.expressions).toHaveLength(4)
+    expect(seq.separators?.map(s => s?.value)).toEqual([';', '=>', ','])
+  })
+
+  it('keeps -> and .. chaining one Expression, unlike ;', () => {
+    expect(topSequence('a -> b').expressions).toHaveLength(1)
+    expect(topSequence('a .. b').expressions).toHaveLength(1)
+  })
+
+  it('drives the taught CA pipeline as sibling steps inside <<>>', () => {
+    const stream: any = findNode(topSequence('<< ~ ; ? ; % ; ! ; * ; ^ >>'), 'Stream')
+    expect(stream).not.toBeNull()
+    expect(stream.sequence.expressions).toHaveLength(6)
+    expect(stream.sequence.separators.map((s: any) => s?.value)).toEqual([';', ';', ';', ';', ';'])
+  })
+
+  it('splits a { … ; … } body into ordinal steps', () => {
+    const body: any = findNode(topSequence('anchor { first ; second ; third }'), 'Body')
+    expect(body).not.toBeNull()
+    expect(body.sequence.expressions).toHaveLength(3)
+    expect(body.sequence.separators.map((s: any) => s?.value)).toEqual([';', ';'])
+  })
+
+  it('reads #[a ; b ; c] as three frame arms', () => {
+    const frame: any = findNode(topSequence('#[a ; b ; c]'), 'Frame')
+    expect(frame).not.toBeNull()
+    expect(frame.content).toHaveLength(3)
+  })
+})
+
 describe('capsule interiors', () => {
   it('keeps atom channels on tag/channel', () => {
     const capsule = findNode(topSequence('<scent>'), 'Capsule') as CapsuleNode

@@ -69,16 +69,24 @@ describe('ASCII schedule connectors', () => {
     const stream = findType(result.ast, 'Stream') as StreamNode
     expect(stream).not.toBeNull()
     const seq = stream.sequence as SequenceNode
-    const expr = seq.expressions[0] as ExpressionNode
-    expect(expr.terms.length).toBe(6)
-    // n terms ⇒ n-1 connectors
-    expect(expr.connectors.map(c => c.value)).toEqual([';', ';', ';', ';', ';'])
+    // `;` joins sibling steps: six expressions, five recorded separators.
+    expect(seq.expressions).toHaveLength(6)
+    expect(seq.separators?.map(s => s?.value)).toEqual([';', ';', ';', ';', ';'])
+    // Each step is one term — `;` does not chain inside an Expression.
+    expect((seq.expressions[0] as ExpressionNode).terms).toHaveLength(1)
+    expect((seq.expressions[0] as ExpressionNode).connectors).toHaveLength(0)
   })
 
   it('parses mixed sequential and parallel schedules', () => {
     const result = parse('<< prep ; ( a || b ) ; seal >>')
     expect(result.success).toBe(true)
     expect(result.errors ?? []).toHaveLength(0)
+    const seq = (findType(result.ast, 'Stream') as StreamNode).sequence as SequenceNode
+    // `;` splits three steps; the `||` rides inside the parenthesised step.
+    expect(seq.expressions).toHaveLength(3)
+    expect(seq.separators?.map(s => s?.value)).toEqual([';', ';'])
+    const scope = findType(seq.expressions[1], 'Scope') as { sequence: SequenceNode }
+    expect(scope.sequence.separators?.map(s => s?.value)).toEqual(['||'])
   })
 })
 

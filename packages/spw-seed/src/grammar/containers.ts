@@ -49,7 +49,7 @@ import {
 import { literalNode } from './literals'
 import { referenceNode } from './references'
 import { parameterNode } from './parameters'
-import { sequenceNode, expressionNode, operationNode } from './expressions'
+import { sequenceNode, expressionNode, operationNode, scheduleSeparator } from './expressions'
 
 /**
  * Frame content: parameters, references, literals, or operator terms.
@@ -58,8 +58,10 @@ import { sequenceNode, expressionNode, operationNode } from './expressions'
  * sigil-led arms like `[#label]` and `[=bias]`, which the cheat-sheet teaches
  * and which otherwise voided the frame and degraded the surface to prose.
  *
- * The comma is optional, matching sequences: canon writes list frames one item
- * per line without trailing commas, and those must read as items, not prose.
+ * The separator is optional, matching sequences: canon writes list frames one
+ * item per line without trailing commas, and those must read as items, not
+ * prose. `,` and the `;` / `||` schedule pair all separate — `#[a ; b ; c]`
+ * reads as three arms, the same list `<< a ; b ; c >>` yields as steps.
  */
 const frameContent: Parser<(LiteralNode | ReferenceNode | ParameterNode | OperationNode)[]> = named('frameContent',
   sepByOptional(
@@ -69,7 +71,7 @@ const frameContent: Parser<(LiteralNode | ReferenceNode | ParameterNode | Operat
       literalNode,
       operationNode,
     ),
-    comma
+    choice<Token<'COMMA'> | Token<'CONNECTOR'>>(comma, scheduleSeparator)
   )
 )
 

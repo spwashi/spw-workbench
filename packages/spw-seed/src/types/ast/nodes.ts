@@ -88,16 +88,18 @@ export interface ExpressionNode extends ASTNode {
 /**
  * Sequence of sibling steps.
  *
- * Steps are joined by a separator from one table (`,` and `=>`); `separators[i]`
- * is the mark written between `expressions[i]` and `expressions[i + 1]`, or
- * absent when steps were merely juxtaposed. Connectors (`..`, `->`, `|`, `/`)
- * are *not* separators — they bind inside a single Expression at chain level.
+ * Steps are joined by a separator from one table (`,`, `=>`, and the `;` / `||`
+ * schedule pair); `separators[i]` is the mark written between `expressions[i]`
+ * and `expressions[i + 1]`, or absent when steps were merely juxtaposed. Plain
+ * chain connectors (`..`, `->`, `|`, `/`) are *not* separators — they bind
+ * inside a single Expression at chain level. `;` and `||` lex as CONNECTOR but
+ * rank here (see grammar/expressions.ts `isScheduleSeparator`).
  */
 export interface SequenceNode extends ASTNode {
   type: 'Sequence'
   expressions: ExpressionNode[]
   /** Written separator marks, positionally aligned to the gaps between steps. */
-  separators?: (Token<'COMMA'> | Token<'ARROW'> | undefined)[]
+  separators?: (Token<'COMMA'> | Token<'ARROW'> | Token<'CONNECTOR'> | undefined)[]
 }
 
 // ============================================================================

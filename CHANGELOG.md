@@ -21,9 +21,10 @@ Version-local release records remain under `lib/spw-v*/CHANGELOG.md`. Commit `#[
 - Limit file dialect authority to a column-zero pragma or the declared seed profile, so an indented syntax example cannot retune its containing document.
 - Keep operator suffixes and fallback modifiers on the operator's own line rather than allowing them to consume the next line's binding key.
 - Distinguish operational expressions from notation exhibits and explanatory prose; proposed programs remain inspectable without acquiring runtime authority.
+- Rank the `;` sequential and `||` parallel schedule marks as sequence separators beside `,` and `=>`: `<< a ; b ; c >>`, `{ a ; b ; c }`, and `#[a ; b ; c]` now read as sibling steps rather than one term chain, and `Sequence.separators` records which mark was written. Plain chain connectors (`..`, `->`, `|`, `/`) are unchanged.
 - Validate the authored corpus with the canonical `packages/spw-seed` parser while excluding registered derived surfaces and `.spw/gen/` products. The current strict source census passes 374 of 374 surfaces without warnings.
 
-Compatibility note: a surface that depended on an indented example selecting the file dialect, or on a trailing operator claiming a next-line identifier, now parses differently. Use `spw inspect source` or `spw inspect spacing` to review the affected boundary before formatting or migration.
+Compatibility note: a surface that depended on an indented example selecting the file dialect, on a trailing operator claiming a next-line identifier, or on `;` / `||` chaining terms inside one expression, now parses differently. Use `spw inspect source` or `spw inspect spacing` to review the affected boundary before formatting or migration.
 
 ### Work, evidence, and performance controls
 

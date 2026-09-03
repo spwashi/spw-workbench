@@ -856,6 +856,10 @@ export const expressionImpl: Parser<ExpressionNode> = named('expression',
       skipWhitespace(stream)
       const connTok = current(stream)
       if (connTok.type !== 'CONNECTOR') break
+      // `;` / `||` rank as sequence separators, not chain connectors: they join
+      // sibling steps (`<< ~ ; ? ; % >>`), so leave them for sequenceImpl to
+      // record between expressions rather than pulling a right-hand term here.
+      if (isScheduleSeparator(connTok)) break
       // The connector must continue the line it is chaining, not open a new one.
       // Otherwise `.. a: "x"` followed by `.. b: "y"` reads the second bullet's
       // marker as a connector and swallows both lines into one expression.
@@ -915,18 +919,58 @@ export const expressionImpl: Parser<ExpressionNode> = named('expression',
  * canonical/form-sequence.ts; parsing it here keeps the taught notation and the
  * parsed notation the same shape.
  *
- * CONNECTOR (`..`, `->`, `|`, `/`, `+`) is deliberately absent: connectors bind
- * one level tighter, inside a single Expression at chainNode, so `a -> b` is
- * one chained Expression rather than two steps.
+ * Plain CONNECTOR chains (`..`, `->`, `|`, `/`, `+`) are deliberately absent:
+ * they bind one level tighter, inside a single Expression at chainNode, so
+ * `a -> b` is one chained Expression rather than two steps. The `;` / `||`
+ * schedule pair is the exception — it lexes as CONNECTOR but ranks *here*
+ * (see {@link isScheduleSeparator}), because the canon writes CA pipelines and
+ * claim lists as `<< a ; b ; c >>` / `<< a || b >>` and means sibling steps.
  */
 export const SEQUENCE_SEPARATOR_TYPES = ['COMMA', 'ARROW'] as const
 export type SequenceSeparatorType = (typeof SEQUENCE_SEPARATOR_TYPES)[number]
 const SEQUENCE_SEPARATOR_SET: ReadonlySet<string> = new Set(SEQUENCE_SEPARATOR_TYPES)
 
+/**
+ * The schedule pair: `;` sequential, `||` parallel.
+ *
+ * docs/theory/spw/flow-protocol-sigils.spw: "; sequential , || parallel inside
+ * <<". Both lex as CONNECTOR tokens; the grammar, not the lexer, decides they
+ * separate sibling steps instead of chaining terms.
+ */
+const SCHEDULE_SEPARATOR_VALUES: ReadonlySet<string> = new Set([';', '||'])
+
+/** True when a CONNECTOR token is the `;` / `||` schedule pair. */
+export function isScheduleSeparator(token: Token): boolean {
+  return token.type === 'CONNECTOR' && SCHEDULE_SEPARATOR_VALUES.has(token.value)
+}
+
 /** True when the token joins two sequence steps (as opposed to closing or chaining). */
 export function isSequenceSeparator(token: Token): boolean {
-  return SEQUENCE_SEPARATOR_SET.has(token.type)
+  return SEQUENCE_SEPARATOR_SET.has(token.type) || isScheduleSeparator(token)
 }
+
+/**
+ * Parser form of {@link isScheduleSeparator} — matches only `;` / `||`, so a
+ * frame's `sepByOptional` can accept a schedule separator beside `,`.
+ */
+export const scheduleSeparator: Parser<Token<'CONNECTOR'>> = named('scheduleSeparator',
+  function* scheduleSeparatorParser(stream, depth) {
+    const tok = current(stream)
+    if (!isScheduleSeparator(tok)) {
+      return {
+        success: false,
+        consumed: 0,
+        error: {
+          message: `Expected ; or ||, found ${tok.type}:${tok.value}`,
+          expected: [';', '||'],
+          found: tok.value,
+          recoverable: true,
+        },
+      }
+    }
+    return yield* connector(stream, depth + 1)
+  }
+)
 
 /**
  * Sequence: expression (separator? expression)*
@@ -935,7 +979,7 @@ export const sequenceImpl: Parser<SequenceNode> = named('sequence',
   function* sequenceParser(stream, depth) {
     const startPos = getPosition(stream)
     const expressions: ExpressionNode[] = []
-    const separators: (Token<'COMMA'> | Token<'ARROW'> | undefined)[] = []
+    const separators: (Token<'COMMA'> | Token<'ARROW'> | Token<'CONNECTOR'> | undefined)[] = []
     let consumed = 0
 
     while (true) {
@@ -971,7 +1015,7 @@ export const sequenceImpl: Parser<SequenceNode> = named('sequence',
       if (isSequenceSeparator(sep)) {
         advance(stream)
         consumed += 1
-        separators.push(sep as Token<'COMMA'> | Token<'ARROW'>)
+        separators.push(sep as Token<'COMMA'> | Token<'ARROW'> | Token<'CONNECTOR'>)
       } else {
         separators.push(undefined)
       }
