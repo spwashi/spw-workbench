@@ -137,3 +137,19 @@ Fuzz strategy:
 `.agents/plans/mounted-consumer-tooling/mounted-consumer-tooling.spw`
 
 The artifact records the portable vocabulary, authority boundary, audit axes, evidence contract, and plan routing shared by CLI, LSP, and editor work.
+
+## Query profiling probe — 2026-09-05
+
+Question → Which source/stage accounts for a consumer pathRefs count missing a 15-second bound?
+
+Command → From the consumer root, run the candidate workbench CLI:
+`node --import "$WORKBENCH/node_modules/tsx/dist/loader.mjs" "$WORKBENCH/packages/spw-cli/src/main.ts" query --from .spw --selector pathRefs --count --profile 2>query-profile.log`.
+`WORKBENCH` is the candidate checkout; this probe used the isolated `codex/query-profile` worktree based on `f2e5b61b`. A Python subprocess supervisor imposed a 15-second wall timeout and killed the child (SIGKILL); stdout was empty. The consumer mount/pin was not changed.
+
+Observed evidence → 308 discovered; 64 completed, 543002 completed source bytes. Completed stage receipts totaled discovery 142.856 ms (includes workspace/root resolution), reads 97.987 ms, parsing 14068.635 ms, selector evaluation 134.154 ms, row formatting/filtering 4.741 ms. Final output formatting was not reached. The final entered operation was parse on `.spw/audits/page-component-census-2026-07.spw` (9177 bytes); its parse did not complete before termination. The slowest completed source was `.spw/audits/metaphor-primitive-research-branching-2026-07.spw` (23055 bytes) at 7359.606 ms, with an AST and parser errors. Paths are consumer-relative; no source contents are emitted or copied into canon. These observations distinguish the slowest completed source from the final entered source.
+
+Next action → In the consumer, use the slowest completed source's receipt to reduce it to a shareable regression fixture with known references; investigate parser recovery cost and compare the final entered source separately. Profile mode serializes reads to avoid attributing event-loop blockage to read latency; timings include profiling overhead in wall elapsed and are not an unprofiled benchmark.
+
+Completion criterion → A reduced fixture preserves expected references and identifies a reproducible expensive operation, followed by a separately verified performance patch. This patch completes optional diagnostics only; the underlying slowdown remains unresolved.
+
+Verification → Known two-reference UTF-8 fixture preserves stdout/status for count JSON, row JSON, table, and skim/context. Report tests cover stage sums, bytes, empty scans, and five-source ranking. Typecheck passes. No consumer edits, stash, push, or pin update.

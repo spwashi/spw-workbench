@@ -6,6 +6,7 @@ export interface SpwCliCommand {
 export type ViewFormat = 'lines' | 'json' | 'skim' | 'table'
 
 export interface QueryArgs {
+  profile?: boolean
   roots: string[]
   selector: string
   expr: string

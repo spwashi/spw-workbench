@@ -163,6 +163,10 @@ export function parseQueryArgs(args: string[]): QueryArgs {
       continue
     }
 
+    if (arg === '--profile') {
+      parsed.profile = true
+      continue
+    }
     if (arg === '--summary') {
       parsed.summary = true
       continue

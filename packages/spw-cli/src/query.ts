@@ -1,9 +1,10 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { type SpwMatch, spwq } from '@spwashi/spw-seed'
+import { parse, type SpwMatch, spwq } from '@spwashi/spw-seed'
 import { collectSpwFiles as walkSpwFiles, DEFAULT_IGNORED_DIRS } from './fs-walk'
 import { printHelpPage } from './help'
+import { QueryProfile } from './query-profile'
 import { extractReferenceRaw, filterRootRefs, listCliSelectorPresetNames, resolveCliSelector } from './selectors'
 import type { QueryArgs, QueryRow, ViewFormat } from './types'
 import { resolveWorkspacePath, tryDiscoverSpwWorkspace, type SpwWorkspace } from './workspace'
@@ -53,142 +54,190 @@ export async function runQueryCli(args: QueryArgs): Promise<void> {
     throw err
   }
 
+  const profile = args.profile ? new QueryProfile() : undefined
+  const discoveryStarted = profile ? performance.now() : 0
   const workspace = await tryDiscoverSpwWorkspace()
   const resolvedRoots = workspace
     ? await Promise.all(args.roots.map(root => resolveWorkspacePath(workspace, root)))
     : args.roots
   const files = await collectFiles(resolvedRoots)
+  if (profile) {
+    profile.discovered = files.length
+    profile.finishStage('discovery', discoveryStarted)
+  }
   const whereFilters = parseWhere(args.where)
   const selectFields = parseSelect(args.select, args.format)
   const sourceByFile = new Map<string, string>()
 
-  const perFile = await Promise.all(
-    files.map(async (file) => {
-      const source = await readText(file)
-      if (source === null) return null
-      sourceByFile.set(file, source)
+  const processFile = async (file: string) => {
+    const relFile = path.relative(workspace?.consumerRoot ?? process.cwd(), file)
+    const readStarted = profile ? performance.now() : 0
+    const read = await readText(file)
+    profile?.finishStage('read', readStarted, relFile)
+    if (read === null) {
+      profile?.emit('read-error', { file: relFile })
+      return null
+    }
+    const { source, bytes: sourceBytes } = read
+    sourceByFile.set(file, source)
 
-      let matches = spwq.fromSource(source, selector)
-      if (!args.expr && args.selector === 'rootRefs') {
-        matches = filterRootRefs(matches)
+    let matches: SpwMatch[]
+    let parseOutcome = 'unknown'
+    const bytes = profile ? sourceBytes : 0
+    let sourceElapsedMs = profile ? performance.now() - readStarted : 0
+    if (profile) {
+      profile.enter('parse', relFile, bytes)
+      const parseStarted = performance.now()
+      const output = parse(source)
+      sourceElapsedMs += performance.now() - parseStarted
+      parseOutcome = output.ast ? (output.errors.length ? 'ast-with-errors' : 'ast') : 'no-ast'
+      profile.finishStage('parse', parseStarted, relFile)
+      profile.emit('parse-outcome', { file: relFile, parseOutcome, errors: output.errors.length })
+      profile.enter('evaluate', relFile, bytes)
+      const evaluateStarted = performance.now()
+      // Same AST guard and query as spwq.fromSource; recovered ASTs remain queryable.
+      matches = output.ast ? spwq(output.ast, selector) : []
+      sourceElapsedMs += performance.now() - evaluateStarted
+      profile.finishStage('evaluate', evaluateStarted, relFile)
+    } else {
+      matches = spwq.fromSource(source, selector)
+    }
+    const formatStarted = profile ? performance.now() : 0
+    if (!args.expr && args.selector === 'rootRefs') matches = filterRootRefs(matches)
+    const result = matches
+      .map((match) => toRow(file, source, match, workspace))
+      .filter((row) => passesWhere(row, whereFilters))
+    if (profile) {
+      sourceElapsedMs += performance.now() - formatStarted
+      profile.finishStage('format', formatStarted, relFile)
+      profile.complete({ file: relFile, bytes, elapsedMs: sourceElapsedMs, parseOutcome })
+    }
+    return result
+  }
+  // Serialize only profiling: concurrent read latency otherwise includes blocked JS time.
+  const perFile = []
+  if (profile) {
+    for (const file of files) perFile.push(await processFile(file))
+  } else {
+    perFile.push(...await Promise.all(files.map(processFile)))
+  }
+  const formatStarted = profile ? performance.now() : 0
+  try {
+    const rows: QueryRow[] = perFile.flatMap((r) => r ?? [])
+
+    const limited = rows.slice(0, Math.max(1, args.limit))
+
+    if (args.count) {
+      const byFile = countMap(rows.map(r => r.file))
+      const byKind = countMap(rows.map(r => r.kind))
+      if (args.format === 'json') {
+        console.log(
+          JSON.stringify(
+            {
+              command: 'query',
+              total: rows.length,
+              scanned: files.length,
+              byFile: Object.fromEntries(byFile),
+              byKind: Object.fromEntries(byKind),
+            },
+            null,
+            2,
+          ),
+        )
+      } else {
+        console.log(`total=${rows.length}  files=${byFile.size}  scanned=${files.length}`)
+        console.log(`kind  ${renderCounts(byKind)}`)
+        console.log(`file  ${renderCounts(byFile, 20)}`)
       }
+      return
+    }
 
-      return matches
-        .map((match) => toRow(file, source, match, workspace))
-        .filter((row) => passesWhere(row, whereFilters))
-    }),
-  )
-  const rows: QueryRow[] = perFile.flatMap((r) => r ?? [])
-
-  const limited = rows.slice(0, Math.max(1, args.limit))
-
-  if (args.count) {
-    const byFile = countMap(rows.map(r => r.file))
-    const byKind = countMap(rows.map(r => r.kind))
     if (args.format === 'json') {
+      const payload = limited.map(row => projectRow(row, selectFields))
       console.log(
         JSON.stringify(
           {
             command: 'query',
-            total: rows.length,
+            from: args.roots,
+            selector: args.expr || selectorLabel,
+            where: args.where || '(none)',
+            select: selectFields,
             scanned: files.length,
-            byFile: Object.fromEntries(byFile),
-            byKind: Object.fromEntries(byKind),
+            returned: rows.length,
+            limited: limited.length,
+            rows: payload,
           },
           null,
           2,
         ),
       )
     } else {
-      console.log(`total=${rows.length}  files=${byFile.size}  scanned=${files.length}`)
-      console.log(`kind  ${renderCounts(byKind)}`)
-      console.log(`file  ${renderCounts(byFile, 20)}`)
-    }
-    return
-  }
+      if (!args.quiet) {
+        meta(
+          `# spw query`,
+          `from=${args.roots.join(',')}`,
+          `selector=${args.expr || selectorLabel}`,
+          `where=${args.where || '—'}`,
+          `hits=${rows.length}`,
+          `show=${limited.length}`,
+          `scanned=${files.length}`,
+        )
+      }
 
-  if (args.format === 'json') {
-    const payload = limited.map(row => projectRow(row, selectFields))
-    console.log(
-      JSON.stringify(
-        {
-          command: 'query',
-          from: args.roots,
-          selector: args.expr || selectorLabel,
-          where: args.where || '(none)',
-          select: selectFields,
-          scanned: files.length,
-          returned: rows.length,
-          limited: limited.length,
-          rows: payload,
-        },
-        null,
-        2,
-      ),
-    )
-  } else {
-    if (!args.quiet) {
-      meta(
-        `# spw query`,
-        `from=${args.roots.join(',')}`,
-        `selector=${args.expr || selectorLabel}`,
-        `where=${args.where || '—'}`,
-        `hits=${rows.length}`,
-        `show=${limited.length}`,
-        `scanned=${files.length}`,
-      )
-    }
-
-    if (limited.length === 0) {
-      meta('  (no matches)')
-      meta('  tip: widen --from, try --selector refs|pathRefs|all, or drop --where')
-    } else if (args.group) {
-      renderGrouped(limited, selectFields, args, sourceByFile, workspace)
-    } else if (args.format === 'table') {
-      console.log(renderAsTable(limited, selectFields))
-    } else if (args.format === 'skim') {
-      for (const row of limited) {
-        console.log(renderSkimRow(row))
-        if (args.context > 0) {
-          const abs = resolveAbs(row.file, workspace)
-          const src = sourceByFile.get(abs) ?? sourceByFile.get(path.resolve(row.file))
-          if (src) {
-            console.log(contextAround(src, row.line, row.line, args.context))
-            console.log('')
+      if (limited.length === 0) {
+        meta('  (no matches)')
+        meta('  tip: widen --from, try --selector refs|pathRefs|all, or drop --where')
+      } else if (args.group) {
+        renderGrouped(limited, selectFields, args, sourceByFile, workspace)
+      } else if (args.format === 'table') {
+        console.log(renderAsTable(limited, selectFields))
+      } else if (args.format === 'skim') {
+        for (const row of limited) {
+          console.log(renderSkimRow(row))
+          if (args.context > 0) {
+            const abs = resolveAbs(row.file, workspace)
+            const src = sourceByFile.get(abs) ?? sourceByFile.get(path.resolve(row.file))
+            if (src) {
+              console.log(contextAround(src, row.line, row.line, args.context))
+              console.log('')
+            }
+          }
+        }
+      } else {
+        for (const row of limited) {
+          const projected = projectRow(row, selectFields)
+          console.log(renderProjected(projected, selectFields))
+          if (args.context > 0) {
+            const abs = resolveAbs(row.file, workspace)
+            const src = sourceByFile.get(abs)
+            if (src) {
+              console.log(contextAround(src, row.line, row.line, args.context))
+              console.log('')
+            }
           }
         }
       }
-    } else {
-      for (const row of limited) {
-        const projected = projectRow(row, selectFields)
-        console.log(renderProjected(projected, selectFields))
-        if (args.context > 0) {
-          const abs = resolveAbs(row.file, workspace)
-          const src = sourceByFile.get(abs)
-          if (src) {
-            console.log(contextAround(src, row.line, row.line, args.context))
-            console.log('')
-          }
-        }
+
+      if (rows.length > limited.length && !args.quiet) {
+        meta(`  … truncated; ${rows.length - limited.length} more (raise --limit)`)
       }
     }
 
-    if (rows.length > limited.length && !args.quiet) {
-      meta(`  … truncated; ${rows.length - limited.length} more (raise --limit)`)
+    if (args.summary) {
+      const byKind = countMap(rows.map(r => r.kind))
+      const bySigil = countMap(rows.map(r => r.sigil).filter(Boolean))
+      const byFile = countMap(rows.map(r => r.file))
+      metaBlock('summary', [
+        ['hits', String(rows.length)],
+        ['files', String(byFile.size)],
+        ['kind', renderCounts(byKind)],
+        ['sigil', renderCounts(bySigil) || '—'],
+        ['top files', renderCounts(byFile, 8)],
+      ])
     }
-  }
-
-  if (args.summary) {
-    const byKind = countMap(rows.map(r => r.kind))
-    const bySigil = countMap(rows.map(r => r.sigil).filter(Boolean))
-    const byFile = countMap(rows.map(r => r.file))
-    metaBlock('summary', [
-      ['hits', String(rows.length)],
-      ['files', String(byFile.size)],
-      ['kind', renderCounts(byKind)],
-      ['sigil', renderCounts(bySigil) || '—'],
-      ['top files', renderCounts(byFile, 8)],
-    ])
+  } finally {
+    profile?.finishStage('format', formatStarted)
+    profile?.report()
   }
 }
 
@@ -214,6 +263,9 @@ export function printQueryHelp(): void {
           '--limit N / -n N    Cap rows (default 100)',
           '--quiet / -q        No header banner',
           '--summary           kind/sigil/file histograms on stderr',
+          '--profile           Stage/source receipts on stderr; serial source reads',
+          '                    Discovery includes workspace resolution; format includes row filtering/output.',
+          '                    Stage totals exclude receipts; wall elapsed includes diagnostics.',
         ],
       },
       {
@@ -229,6 +281,7 @@ export function printQueryHelp(): void {
       {
         title: 'Examples',
         lines: [
+          'spw query --from .spw --selector pathRefs --count --profile 2>query-profile.log',
           'spw query --from prompts --skim --selector pathRefs -n 25',
           'spw query --from prompts,docs --selector navigable --where "kind in PathRef|Reference" --table',
           'spw query --from prompts --count --selector ops:frame --summary',
@@ -469,9 +522,10 @@ function renderProjected(projected: Record<string, string | number>, fields: Arr
   return fields.map(field => `${field}=${JSON.stringify(projected[field] ?? '')}`).join('\t')
 }
 
-async function readText(file: string): Promise<string | null> {
+async function readText(file: string): Promise<{ source: string; bytes: number } | null> {
   try {
-    return await fs.readFile(file, 'utf8')
+    const buffer = await fs.readFile(file)
+    return { source: buffer.toString('utf8'), bytes: buffer.length }
   } catch {
     return null
   }
