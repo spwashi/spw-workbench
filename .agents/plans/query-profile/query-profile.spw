@@ -1,0 +1,125 @@
+# Query Profile
+# Opt-in stage and source receipts for a slow multi-file query.
+
+#>query_profile
+#:layer #!pragmatics
+#:status #!measured
+
+^seed[Spw.Cli.Query.Profile v:0.1 @profile:planning @intent:query_stage_receipts]
+
+^["roots"]{
+ @plan: ~".agents/plans/query-profile/PLAN.md"
+ @wip: ~".agents/plans/query-profile/wip.spw"
+ @query: ~"packages/spw-cli/src/query.ts"
+ @helper: ~"packages/spw-cli/src/query-profile.ts"
+ @tests: ~"packages/spw-cli/src/query-profile.test.ts"
+ @fixture: ~"packages/spw-cli/src/fixtures/query-profile.spw"
+ @cli_surface: ~"docs/runtime/spw/cli-command-surface.spw"
+ @consumer_plan: ~".agents/plans/mounted-consumer-tooling/PLAN.md"
+ @benchmarks: ~".agents/plans/cli-benchmarking-infra/cli-benchmarking-infra.spw"
+}
+
+^["intent"]{
+ ~#goal: "A killed query still names the source it entered and the stages that finished."
+ ~#taste: "Truthful timing; stdout and reference semantics stay ordinary."
+ ~#axis: #timing
+}
+
+^["status"]{
+ implemented: #[
+  "spw query --profile writes NDJSON receipts to stderr",
+  "stages are discovery, read, parse, evaluate, and format",
+  "enter receipts use writeSync so a blocked parser still leaves a path",
+  "report keeps five slowest completed sources with relative path, bytes, elapsedMs, parseOutcome",
+  "profile mode serializes source reads so blocked event-loop time is not blamed on read",
+ ]
+ measured: #[#fixture_parity, #consumer_bound]
+ proposed: #[#slowest_source_fixture, #parser_recovery_cost]
+ interpretive: []
+ refuse: #[
+  "profiling is a speedup",
+  "a timeout proves a parser defect",
+  "source contents on stderr",
+  "compatibility aliases or a tracing framework",
+ ]
+}
+
+^["receipts"]{
+ prefix: `spw query profile `
+ clock: `performance.now monotonic elapsedMs`
+ events: #[enter, stage, source, report, read-error, parse-outcome]
+ stages: .{
+  discovery: "workspace and root resolution plus file enumeration"
+  read: "source bytes into memory"
+  parse: "AST / query preparation for one source"
+  evaluate: "selector matching on that prepared source"
+  format: "row filtering plus output projection"
+ }
+ report: .{
+  discovered: "files found"
+  processed: "sources that completed"
+  bytes: "completed source bytes"
+  stagesMs: "sum of finished stage receipts"
+  elapsedMs: "wall including diagnostics"
+  slowest: "up to five completed sources, descending elapsedMs"
+ }
+}
+
+^["invariants"]{
+ stdout: "identical with --profile off"
+ exit: "identical with --profile off"
+ stderr_plain: "no profile receipts unless --profile"
+ contents: "never print source text"
+ paths: "repo- or consumer-relative; no machine-local prefixes"
+}
+
+^["command"]{
+ copy: `npm run spw -- query --from .spw --selector pathRefs --count --profile 2>query-profile.log`
+ product: "ordinary query selection on stdout"
+ disclosure: "stage and source receipts on stderr"
+}
+
+^["observed"]{
+ date: "2026-09-05"
+ revision: "f2e5b61b"
+ bound: "15s wall; supervisor SIGKILL"
+ stdout: "empty"
+ discovered: 308
+ processed: 64
+ bytes: 543002
+ stagesMs: .{
+  discovery: 142.856
+  read: 97.987
+  parse: 14068.635
+  evaluate: 134.154
+  format: 4.741
+ }
+ last_enter: .{
+  stage: parse
+  file: ".spw/audits/page-component-census-2026-07.spw"
+  bytes: 9177
+  completed: false
+ }
+ slowest_completed: .{
+  file: ".spw/audits/metaphor-primitive-research-branching-2026-07.spw"
+  bytes: 23055
+  elapsedMs: 7359.606
+  parseOutcome: ast
+  errors: true
+ }
+ law: "slowest completed source ≠ last entered source"
+ paths: "consumer-relative; contents not copied into canon"
+}
+
+^["next"]{
+ question: "Which completed source and which unfinished enter should become fixtures?"
+ action: "Reduce the slowest completed source to a shareable reference fixture; compare the last entered source separately."
+ completion: "A later performance patch names its own workload, cache state, and stage totals. This instrument does not close the slowdown."
+}
+
+^["tests"]{
+ parity: "count JSON, row JSON, table, and skim/context keep stdout and exit"
+ accounting: "stage sums, bytes, empty scans, five-source ranking"
+ enter: "parse enter precedes that source's parse stage receipt"
+ contents: "fixture UTF-8 body is absent from stderr"
+}

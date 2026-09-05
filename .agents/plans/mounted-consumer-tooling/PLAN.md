@@ -153,3 +153,5 @@ Next action → In the consumer, use the slowest completed source's receipt to r
 Completion criterion → A reduced fixture preserves expected references and identifies a reproducible expensive operation, followed by a separately verified performance patch. This patch completes optional diagnostics only; the underlying slowdown remains unresolved.
 
 Verification → Known two-reference UTF-8 fixture preserves stdout/status for count JSON, row JSON, table, and skim/context. Report tests cover stage sums, bytes, empty scans, and five-source ranking. Typecheck passes. No consumer edits, stash, push, or pin update.
+
+Canonical instrument surface → `.agents/plans/query-profile/query-profile.spw`. Copyable command: `npm run spw -- query --from .spw --selector pathRefs --count --profile 2>query-profile.log`.
