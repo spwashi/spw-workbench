@@ -1,0 +1,121 @@
+# Construction Worlds
+# Measured probes: a construction should remain inspectable after lowering.
+
+#:layer #!semantics
+#:status #!partial
+#:dialect Spw.b
+
+^["roots"]{
+ @normalize: ~"../../../packages/spw-seed/src/normalize.ts"
+ @nodes: ~"../../../packages/spw-seed/src/types/ast/nodes.ts"
+ @field: ~"../../../packages/spw-seed/src/math/field.ts"
+ @field_tests: ~"../../../packages/spw-seed/src/math/field.test.ts"
+ @interpreter: ~"../../../packages/spw-runtime/src/interpreter/interpreter.ts"
+ @merge: ~"../../../packages/spw-runtime/src/state/register-bank.ts"
+ @onf: ~"../../theory/spw/onf.spw"
+ @field_dynamics: ~"../../theory/spw/field-dynamics.spw"
+ @noun_plan: ~"../../../.agents/plans/noun-postfix-containers/PLAN.md"
+ @query_profile: ~"../../../.agents/plans/query-profile/query-profile.spw"
+ @focus: ~"./navigable-focus.spw"
+}
+
+^["intent"]{
+ ~#goal: "Keep authored constructions as objects that can inhabit a small world with explicit laws."
+ ~#taste: "Preserve form through lowering; give material terms an intervention, not a mood."
+ ~#question: "What language or runtime change would make combination, partiality, and local dynamics inspectable?"
+}
+
+^["condition"]{
+ revision: "f2e5b61b"
+ effect: #[S0, S1]
+ edits: "no repository source edits in the originating probes"
+ model: "one dated agent condition; not a comparison against earlier models"
+}
+
+^["probes"]{
+ noun_onf: .{
+  input: `x[a]{b}`
+  parse: "complete; Expression.frame and Expression.body retained"
+  onf: "identical to identifier x"
+  fuller: `surfaces[route]{path.role.archetype}(hold)<publish>`
+  fuller_onf: "bare identifier surfaces"
+  grade: #measured
+  next: "noun-postfix bound AST slots; ONF coverage is the next align"
+ }
+ nested_ops: .{
+  input: #[`!(~x)`, `~(!x)`]
+  parse: "complete"
+  onf: "outer attached scope absent"
+  grade: #measured
+  refuse: "errors=0 as effect-semantics evidence"
+ }
+ eager_eval: .{
+  path: @interpreter
+  law: "arguments evaluate before operator dispatch; deferred wrappers hold already-forced values"
+  grade: #measured
+ }
+ diffusion: .{
+  start: `{a:1,b:0,c:0}`
+  forward: `{a:.5,b:.25,c:.25}`
+  reversed_edges: `{a:.5,b:.5,c:0}`
+  conserved: 1
+  grade: #measured
+  reading: "sequential edge exchange, not a simultaneous Euler step"
+ }
+ capacity: .{
+  call: `capacityStep(9, 10, 2, 1)`
+  result: 10.8
+  clamp: "floor at 0; no ceiling at K"
+  grade: #measured
+  note: "explicit Euler overshoot; existing tests use a milder rate"
+ }
+ affinity: .{
+  mass: 10
+  sites: "two capacity-10 sites, equal affinity 1"
+  result: "all mass to the lexically first site"
+  grade: #measured
+  tension: "code is greedy; some descriptions say proportional"
+ }
+ controls: .{
+  field_tests: 10
+  noun_tests: 8
+  result: "all pass"
+  reading: "missing contract cases, not failing tests"
+ }
+}
+
+^["claims"]{
+ preserve: "A normalized construction retains head, source-ordered attachments, boundaries, references, and provenance."
+ equate: "A profile may assign two constructions the same value while keeping distinct construction records."
+ partial: "Holes, contradictions, alternatives, and missing authority are different states; one saturation number is not enough."
+ combine: "Composition, intersection, alternatives, and override stay named; right-biased merge is one profile, not the discovery law."
+ local_eval: "A microcosm may choose when to force a computation; current eagerness remains the default profile."
+ material: "Permeability, capacity, catalyst, memory, and elasticity name responses to an intervention."
+}
+
+^["first_patch"]{
+ name: "construction-preserving normalization"
+ test: "distinguish x, x[a], x{b}, and x[a]{b} at the structural normalized layer"
+ out_of_scope: "new sigils; silent rewrite of current runtime values"
+}
+
+^["exhibits"]{
+ nursery: .{
+  do: "typed noun constructions; exact structural matching; record which rule licensed each composition"
+  falsify: "typed constraints improve neither validity nor candidate diversity against Cartesian enumeration"
+ }
+ membrane: .{
+  do: "two compartments, one typed port, tokens tracked separately from references"
+  falsify: "unexplained token gain/loss, effects across a closed port, or undocumented rename sensitivity"
+ }
+ catalyst: .{
+  do: "a context token enables one rule and remains; remove it and compare the trace"
+  falsify: "the purported catalyst has no effect once schedule artifacts are controlled"
+ }
+}
+
+^["refuse"]{
+ ~#inventory_as_vector: "a typed family of combinations is not automatically a vector space"
+ ~#conservation_of_meaning: "tokens may obey accounting; interpretations may proliferate"
+ ~#dwell: "time spent looking is not comprehension"
+}
