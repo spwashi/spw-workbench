@@ -1,5 +1,6 @@
 import { parse, type ParseOutput } from './parser'
-import type { SeedNode } from './types'
+import type { ExpressionNode, SeedNode } from './types'
+import { preserveExpressionConstruction } from './normalize-construction'
 import type { ONFNode } from './types/ast/onf'
 import { withCoupling } from './types/coupling'
 
@@ -121,15 +122,17 @@ export function normalizeToONF(node: ASTNode): ONFNode {
       return normalizeToONF((node as any).expression)
 
     case 'Expression': {
-      const expr = node as any
+      const expr = node as ExpressionNode
       if (!expr.connectors || expr.connectors.length === 0) {
-        if (expr.terms && expr.terms.length > 0) return normalizeToONF(expr.terms[0])
+        if (expr.terms && expr.terms.length > 0) {
+          return preserveExpressionConstruction(expr, normalizeToONF(expr.terms[0]!), normalizeToONF)
+        }
         return { sigil: '_', args: [], frames: { reg: 'empty' } }
       }
-      let current = normalizeToONF(expr.terms[0])
+      let current = normalizeToONF(expr.terms[0]!)
       for (let i = 0; i < expr.connectors.length; i++) {
-        const connector = expr.connectors[i].value
-        const right = normalizeToONF(expr.terms[i + 1])
+        const connector = expr.connectors[i]!.value
+        const right = normalizeToONF(expr.terms[i + 1]!)
         const reg = connector === '/' ? 'proj' : 'conn'
         current = {
           sigil: connector as any,
@@ -137,7 +140,7 @@ export function normalizeToONF(node: ASTNode): ONFNode {
           frames: { reg }
         }
       }
-      return current
+      return preserveExpressionConstruction(expr, current, normalizeToONF)
     }
 
     case 'Operation': {

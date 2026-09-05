@@ -725,6 +725,8 @@ export {
 } from './derived-surface'
 
 // Sugar/desugar helpers
+export { projectONFForValue, type ONFValueProjectionReceipt } from './normalize-construction'
+export type { ONFConstructionFrame, PostfixAttachmentKind } from './types/ast/onf'
 export { desugar, parseDesugared, normalizeToONF, type DesugarResult, type ONFNode, type FrameMap } from './normalize'
 export {
   PAIRED_BOUNDARY_KINDS,

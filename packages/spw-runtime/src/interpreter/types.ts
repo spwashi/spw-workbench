@@ -1,4 +1,4 @@
-import type { ONFNode, SeedNode } from '@spwashi/spw-seed'
+import type { ONFNode, ONFValueProjectionReceipt, SeedNode } from '@spwashi/spw-seed'
 import type { RegisterSnapshot, RuntimeValue } from '../state/types'
 
 export type RuntimeStage = 'normalize' | 'interpret'
@@ -35,6 +35,8 @@ export function resolveRuntimeTracePolicy(options: RuntimeInterpreterOptions): R
 export interface RuntimeInterpretation {
   ast: SeedNode
   onf: ONFNode
+  /** Present when the current evaluator omits structural postfix attachments. */
+  valueProjection?: ONFValueProjectionReceipt
   value: RuntimeValue
   registers: RegisterSnapshot
   traces: RuntimeTrace[]

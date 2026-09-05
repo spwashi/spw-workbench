@@ -12,6 +12,18 @@
  */
 
 import type { ModifierKind, OperatorKind } from '../token'
+import type { Span } from '../position'
+
+export type PostfixAttachmentKind = 'frame' | 'body' | 'scope' | 'capsule'
+
+/** AST-local provenance; offsets use the parser's source coordinate system. */
+export interface ONFConstructionFrame {
+    version: 'spw.onf.construction/1'
+    source: Span
+    head: Span
+    /** Positional metadata for args[1..], sorted by original source offset. */
+    attachments: Array<{ kind: PostfixAttachmentKind; source: Span }>
+}
 
 // =============================================================================
 // Frame Map
@@ -35,6 +47,8 @@ export type FrameMap = {
     label?: string
     rewrite?: string
     momentum?: unknown
+    /** With reg=construction: args[0] is the head; args[1..] are postfix attachments. */
+    construction?: ONFConstructionFrame
     [key: string]: unknown
 }
 
@@ -80,6 +94,7 @@ export interface ONFNode {
  *
  * | Surface       | ONF                                                              |
  * |---------------|------------------------------------------------------------------|
+ * | x[a]{b}     | _(x, [a], {b})[reg=construction, construction={source,head,attachments}] |
  * | x / y         | /(x, y)[reg=proj]                                                |
  * | x!            | !(x)[reg=hydrate]                                                |
  * | ~x            | ~(x)[reg=defer]                                                  |

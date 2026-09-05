@@ -1,5 +1,6 @@
 import {
   normalizeToONF,
+  projectONFForValue,
   $register,
   readCouplingFrame,
   type OperatorKind,
@@ -371,11 +372,13 @@ export function interpretSeed(
   const onf = normalizeToONF(ast)
 
   recordRuntimeTrace(context, 'interpret', 'stage', 'run ONF interpreter')
-  const value = evaluate(onf, context)
+  const projection = projectONFForValue(onf)
+  const value = evaluate(projection.node, context)
 
   return {
     ast,
     onf,
+    ...(projection.receipt.omissions.length ? { valueProjection: projection.receipt } : {}),
     value,
     registers: registers.snapshot(),
     traces: context.traces,
