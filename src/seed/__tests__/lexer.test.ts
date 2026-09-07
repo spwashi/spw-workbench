@@ -168,6 +168,13 @@ describe('Lexer', () => {
       expect(filtered[0].value).toBe('->')
     })
 
+    it('tokenizes project-join as one connector', () => {
+      const { tokens } = lex('~>')
+      const filtered = tokens.filter(t => t.type !== 'WHITESPACE' && t.type !== 'EOF')
+      expect(filtered[0].type).toBe('CONNECTOR')
+      expect(filtered[0].value).toBe('~>')
+    })
+
     it('tokenizes path connector', () => {
       const { tokens } = lex('/')
       const filtered = tokens.filter(t => t.type !== 'WHITESPACE' && t.type !== 'EOF')

@@ -919,9 +919,9 @@ export const expressionImpl: Parser<ExpressionNode> = named('expression',
  * canonical/form-sequence.ts; parsing it here keeps the taught notation and the
  * parsed notation the same shape.
  *
- * Plain CONNECTOR chains (`..`, `->`, `|`, `/`, `+`) are deliberately absent:
+ * Plain CONNECTOR chains (`..`, `->`, `~>`, `|`, `/`, `+`) are deliberately absent:
  * they bind one level tighter, inside a single Expression at chainNode, so
- * `a -> b` is one chained Expression rather than two steps. The `;` / `||`
+ * `a -> b` / `a ~> b` is one chained Expression rather than two steps. The `;` / `||`
  * schedule pair is the exception — it lexes as CONNECTOR but ranks *here*
  * (see {@link isScheduleSeparator}), because the canon writes CA pipelines and
  * claim lists as `<< a ; b ; c >>` / `<< a || b >>` and means sibling steps.

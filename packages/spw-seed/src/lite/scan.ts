@@ -63,7 +63,7 @@ export interface LiteToken {
   bound?: LiteBoundKind
 }
 
-const CONNECTORS = ['..', '->', '|', '/', '+']
+const CONNECTORS = ['..', '->', '~>', '|', '/', '+']
 const IDENT_START = /[A-Za-z_]/
 /** Dots and hyphens continue a name: `register.bank_size` is one identifier. */
 const IDENT_BODY = /[A-Za-z0-9_.-]/

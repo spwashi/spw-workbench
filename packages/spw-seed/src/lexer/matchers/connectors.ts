@@ -1,7 +1,7 @@
 /**
  * Connector Matcher
  *
- * Spw connectors: .. | || / -> ; (+ extras from profile)
+ * Spw connectors: .. | || / -> ~> ; (+ extras from profile)
  * Digraphs (`||`, `->`, `..`) win over single-char via longest-match sort.
  */
 

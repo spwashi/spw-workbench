@@ -63,6 +63,27 @@ describe('sequence separators', () => {
     expect(seq.expressions).toHaveLength(1)
   })
 
+  it('keeps ~> project-join inside one expression', () => {
+    const seq = topSequence('sow ~> tend')
+    expect(seq.expressions).toHaveLength(1)
+    expect(seq.expressions[0]?.connectors?.map(c => c.value)).toEqual(['~>'])
+  })
+
+  it('parses a project-join body without degrading to prose', () => {
+    const result = parse('cauldron[garden]{sow ~> tend ~> harvest}\n')
+    expect(result.success).toBe(true)
+    expect(result.errors ?? []).toHaveLength(0)
+    expect(result.completeness.proseFallback).toBe(false)
+    const body = findNode(result.ast, 'Body')
+    expect(body).not.toBeNull()
+    const chained = findNode(body, 'Expression') as {
+      connectors?: Array<{ value?: string }>
+      terms?: unknown[]
+    } | null
+    expect(chained?.connectors?.map(c => c.value)).toEqual(['~>', '~>'])
+    expect(chained?.terms).toHaveLength(3)
+  })
+
   it('parses the taught confluence ladder as four steps', () => {
     const seq = topSequence('& => {&} => {&[#label]} => {&<#tag>_label}')
     expect(seq.expressions).toHaveLength(4)

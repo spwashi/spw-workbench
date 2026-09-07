@@ -91,7 +91,7 @@ export interface ExpressionNode extends ASTNode {
  * Steps are joined by a separator from one table (`,`, `=>`, and the `;` / `||`
  * schedule pair); `separators[i]` is the mark written between `expressions[i]`
  * and `expressions[i + 1]`, or absent when steps were merely juxtaposed. Plain
- * chain connectors (`..`, `->`, `|`, `/`) are *not* separators — they bind
+ * chain connectors (`..`, `->`, `~>`, `|`, `/`) are *not* separators — they bind
  * inside a single Expression at chain level. `;` and `||` lex as CONNECTOR but
  * rank here (see grammar/expressions.ts `isScheduleSeparator`).
  */

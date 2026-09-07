@@ -62,6 +62,20 @@ describe('ASCII schedule connectors', () => {
     ])
   })
 
+  it('lexes ~> as one project connector, not tilde plus capsule-close', () => {
+    const { errs, types } = significant('sow ~> tend ~> harvest')
+    expect(errs).toHaveLength(0)
+    expect(types).toEqual([
+      'IDENTIFIER:sow',
+      'CONNECTOR:~>',
+      'IDENTIFIER:tend',
+      'CONNECTOR:~>',
+      'IDENTIFIER:harvest',
+    ])
+    expect(types.some(t => t.startsWith('CAPSULE_CLOSE'))).toBe(false)
+    expect(types.some(t => t === 'OPERATOR:~')).toBe(false)
+  })
+
   it('parses CA-style operator pipelines inside streams', () => {
     const result = parse('<< ~ ; ? ; % ; ! ; * ; ^ >>')
     expect(result.success).toBe(true)

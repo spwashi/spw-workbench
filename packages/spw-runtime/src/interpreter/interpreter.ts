@@ -345,6 +345,11 @@ function evaluate(node: ONFNode, context: EvalContext): RuntimeValue {
       return args[args.length - 1] ?? null
     }
 
+    case '~>' as any: {
+      // Project-join: move between distinct stations; last station is the value
+      return args[args.length - 1] ?? null
+    }
+
     default: {
       return {
         sigil: node.sigil,

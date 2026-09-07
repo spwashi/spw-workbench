@@ -28,8 +28,8 @@ export function createOperatorMatcher(
     const start = getPosition(state)
     const char = peek(state)
 
-    // Reserved for annotations (~#)
-    if (char === '~' && peek(state, 1) === '#') {
+    // Reserved for annotations (~#) and project-join (~>)
+    if (char === '~' && (peek(state, 1) === '#' || peek(state, 1) === '>')) {
       return null
     }
 

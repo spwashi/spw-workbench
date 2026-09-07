@@ -27,6 +27,7 @@ export const DEFAULT_OPERATOR_MAP = {
 export const DEFAULT_CONNECTOR_MAP: Record<string, string> = {
   '..': '..',
   '->': '->',
+  '~>': '~>', // project-join: movement between distinct stations
   // Longer digraphs first (createConnectorMatcher sorts by length).
   '||': '||', // parallel schedule inside <<>> / flow CA
   '|': '|',
