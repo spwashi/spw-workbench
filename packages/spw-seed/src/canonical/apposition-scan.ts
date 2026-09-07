@@ -28,16 +28,19 @@ export interface AppositionSpan {
   end: number
 }
 
+/** How the cell was written: paren unit-cell or colon annotation. */
+export type AppositionForm = 'paren' | 'colon'
+
 /**
  * One apposition unit cell — parse-free extract.
- * `mask` is the content-addressed envelope (full `~#…(…)` text).
+ * `mask` is the content-addressed envelope (full `~#…(…)` or `~#name: …` text).
  */
 export interface AppositionCell {
   /** Declared name, or null when anonymous `~#(…)`. */
   name: string | null
-  /** Raw label text between the parens. */
+  /** Raw label text between the parens, or the colon-form value. */
   body: string
-  /** Full matched source including `~#` and parens. */
+  /** Full matched source including `~#` and parens or colon payload. */
   raw: string
   span: AppositionSpan
   /** Hash of `raw` — mask for exact envelope identity. */
@@ -45,6 +48,8 @@ export interface AppositionCell {
   /** Hash of `body` alone — useful when perimeter renames but content holds. */
   bodyMask: string
   anonymous: boolean
+  /** `paren` is `~#name(…)`; `colon` is `~#name:`. */
+  form: AppositionForm
 }
 
 /** Lattice = ordered unit cells on one source revision. */
@@ -59,6 +64,10 @@ export interface AppositionLattice {
   anonymousCount: number
   /** Distinct non-null names (set size). */
   distinctNames: number
+  /** `~#name(…)` unit cells. */
+  parenCount: number
+  /** `~#name:` annotation cells — reported separately so the two forms stay visible. */
+  colonCount: number
 }
 
 export interface ScanAppositionsOptions {
@@ -69,9 +78,30 @@ export interface ScanAppositionsOptions {
   strict?: boolean
 }
 
+function pushCell(
+  cells: AppositionCell[],
+  raw: string,
+  start: number,
+  name: string | null,
+  body: string,
+  form: AppositionForm,
+): void {
+  cells.push({
+    name,
+    body,
+    raw,
+    span: { start, end: start + raw.length },
+    mask: hashString(raw),
+    bodyMask: hashString(body),
+    anonymous: name == null,
+    form,
+  })
+}
+
 /**
  * Scan source for apposition unit cells without the full lexer/parser.
- * Mirrors matchApposition rules: `~#` + optional name + balanced `(…)` on one line.
+ * Paren form mirrors matchApposition: `~#` + optional name + balanced `(…)` on one line.
+ * Colon form `~#name:` is a distinct species so an annotation-heavy corpus is not an empty field.
  */
 export function scanAppositions(
   source: string,
@@ -87,56 +117,57 @@ export function scanAppositions(
       continue
     }
 
-    // Reject `~#name:` annotation form — name then ':' is not an apposition.
     let ahead = i + 2
     while (ahead < len && /[a-zA-Z0-9_-]/.test(source[ahead]!)) ahead++
-    if (ahead >= len || source[ahead] !== '(') {
-      i++
-      continue
-    }
+    const name = source.slice(i + 2, ahead) || null
 
-    const start = i
-    // Consume through name to '('
-    let raw = source.slice(i, ahead + 1)
-    i = ahead + 1
-    let depth = 1
-    let closed = false
+    if (ahead < len && source[ahead] === '(') {
+      const start = i
+      let raw = source.slice(i, ahead + 1)
+      i = ahead + 1
+      let depth = 1
+      let closed = false
 
-    while (i < len) {
-      const ch = source[i]!
-      if (ch === '\n') break
-      raw += ch
-      i++
-      if (ch === '(') depth++
-      else if (ch === ')') {
-        depth--
-        if (depth === 0) {
-          closed = true
-          break
+      while (i < len) {
+        const ch = source[i]!
+        if (ch === '\n') break
+        raw += ch
+        i++
+        if (ch === '(') depth++
+        else if (ch === ')') {
+          depth--
+          if (depth === 0) {
+            closed = true
+            break
+          }
         }
       }
-    }
 
-    if (!closed) {
-      if (options.strict) {
-        break
+      if (!closed) {
+        if (options.strict) {
+          break
+        }
+        if (i === start) i = start + 2
+        continue
       }
-      // Leave i where we stopped; avoid infinite loop on `~#`
-      if (i === start) i = start + 2
+
+      const parts = appositionParts(raw)
+      pushCell(cells, raw, start, parts.name, parts.body, 'paren')
       continue
     }
 
-    const parts = appositionParts(raw)
-    const end = start + raw.length
-    cells.push({
-      name: parts.name,
-      body: parts.body,
-      raw,
-      span: { start, end },
-      mask: hashString(raw),
-      bodyMask: hashString(parts.body),
-      anonymous: parts.name == null,
-    })
+    if (ahead < len && source[ahead] === ':' && name) {
+      const start = i
+      let end = ahead + 1
+      while (end < len && source[end] !== '\n') end++
+      const raw = source.slice(start, end)
+      const body = source.slice(ahead + 1, end).trim()
+      pushCell(cells, raw, start, name, body, 'colon')
+      i = end
+      continue
+    }
+
+    i++
   }
 
   const names = new Set(cells.map(c => c.name).filter((n): n is string => n != null))
@@ -148,6 +179,8 @@ export function scanAppositions(
     namedCount: cells.filter(c => !c.anonymous).length,
     anonymousCount: cells.filter(c => c.anonymous).length,
     distinctNames: names.size,
+    parenCount: cells.filter(c => c.form === 'paren').length,
+    colonCount: cells.filter(c => c.form === 'colon').length,
   }
 }
 
@@ -169,6 +202,8 @@ export interface AppositionSpectrum {
   named: number
   anonymous: number
   distinctNames: number
+  paren: number
+  colon: number
   /** name → cell count (doping density of each named species). */
   byName: Record<string, number>
 }
@@ -186,6 +221,8 @@ export function appositionSpectrum(lattice: AppositionLattice): AppositionSpectr
     named: lattice.namedCount,
     anonymous: lattice.anonymousCount,
     distinctNames: lattice.distinctNames,
+    paren: lattice.parenCount,
+    colon: lattice.colonCount,
     byName,
   }
 }

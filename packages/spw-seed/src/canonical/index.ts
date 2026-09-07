@@ -188,11 +188,34 @@ export {
   diffAppositionLattices,
   type AppositionSpan,
   type AppositionCell,
+  type AppositionForm,
   type AppositionLattice,
   type AppositionSpectrum,
   type AppositionLatticeDelta,
   type ScanAppositionsOptions,
 } from './apposition-scan'
+
+export {
+  FINGERPRINT_VERSION,
+  fingerprintSource,
+  formatFingerprintSignature,
+  type FormFingerprint,
+  type FingerprintSourceOptions,
+} from './fingerprint'
+
+export {
+  CITATION_RESOLVE_VERSION,
+  classifyCitation,
+  sourceDeclaresAnchor,
+  type CitationKind,
+  type ClassifiedCitation,
+} from './resolve-citation'
+
+export {
+  ANNOTATION_LINT_VERSION,
+  scanMalformedAxes,
+  type MalformedAxisFinding,
+} from './annotation-lint'
 
 /** Dual-read Spw card helpers — nested-frame disclosure. */
 export {

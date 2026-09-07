@@ -17,19 +17,29 @@ describe('scanAppositions', () => {
     ].join('\n')
 
     const lattice = scanAppositions(src)
-    expect(lattice.cells).toHaveLength(3)
-    expect(lattice.namedCount).toBe(2)
+    expect(lattice.cells).toHaveLength(4)
+    expect(lattice.namedCount).toBe(3)
     expect(lattice.anonymousCount).toBe(1)
+    expect(lattice.parenCount).toBe(3)
+    expect(lattice.colonCount).toBe(1)
     expect(lattice.cells[0]!.name).toBe('goal')
     expect(lattice.cells[0]!.body).toBe('ship the lattice')
+    expect(lattice.cells[0]!.form).toBe('paren')
     expect(lattice.cells[2]!.anonymous).toBe(true)
+    expect(lattice.cells[3]!.form).toBe('colon')
+    expect(lattice.cells[3]!.name).toBe('label')
+    expect(lattice.cells[3]!.body).toBe('value')
     expect(lattice.cells[0]!.mask).toHaveLength(8)
   })
 
-  it('does not treat ~#name: annotations as cells', () => {
+  it('reports ~#name: annotations as a distinct colon species', () => {
     const lattice = scanAppositions('~#goal: ship\n~#lens(real cell)\n')
-    expect(lattice.cells).toHaveLength(1)
-    expect(lattice.cells[0]!.name).toBe('lens')
+    expect(lattice.cells).toHaveLength(2)
+    expect(lattice.parenCount).toBe(1)
+    expect(lattice.colonCount).toBe(1)
+    expect(lattice.cells.find(c => c.form === 'paren')?.name).toBe('lens')
+    expect(lattice.cells.find(c => c.form === 'colon')?.name).toBe('goal')
+    expect(lattice.cells.find(c => c.form === 'colon')?.body).toBe('ship')
   })
 
   it('handles nested parens in the body', () => {
@@ -41,13 +51,14 @@ describe('scanAppositions', () => {
   it('matches full lexer APPOSITION tokens on simple surfaces', () => {
     const src = '^["x"]{ ~#goal(one) ~#taste(two) }\n'
     const lattice = scanAppositions(src)
+    const parenCells = lattice.cells.filter(c => c.form === 'paren')
     const tokens = lex(src).tokens.filter(t => t.type === 'APPOSITION')
-    expect(tokens.length).toBe(lattice.cells.length)
+    expect(tokens.length).toBe(parenCells.length)
     for (let i = 0; i < tokens.length; i++) {
       const parts = appositionParts(tokens[i]!.value)
-      expect(lattice.cells[i]!.name).toBe(parts.name)
-      expect(lattice.cells[i]!.body).toBe(parts.body)
-      expect(lattice.cells[i]!.raw).toBe(tokens[i]!.value)
+      expect(parenCells[i]!.name).toBe(parts.name)
+      expect(parenCells[i]!.body).toBe(parts.body)
+      expect(parenCells[i]!.raw).toBe(tokens[i]!.value)
     }
   })
 
