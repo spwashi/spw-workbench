@@ -21,7 +21,8 @@ Version-local release records remain under `lib/spw-v*/CHANGELOG.md`. Commit `#[
 - Limit file dialect authority to a column-zero pragma or the declared seed profile, so an indented syntax example cannot retune its containing document.
 - Keep operator suffixes and fallback modifiers on the operator's own line rather than allowing them to consume the next line's binding key.
 - Distinguish operational expressions from notation exhibits and explanatory prose; proposed programs remain inspectable without acquiring runtime authority.
-- Rank the `;` sequential and `||` parallel schedule marks as sequence separators beside `,` and `=>`: `<< a ; b ; c >>`, `{ a ; b ; c }`, and `#[a ; b ; c]` now read as sibling steps rather than one term chain, and `Sequence.separators` records which mark was written. Plain chain connectors (`..`, `->`, `|`, `/`) are unchanged.
+- Rank the `;` sequential and `||` parallel schedule marks as sequence separators beside `,` and `=>`: `<< a ; b ; c >>`, `{ a ; b ; c }`, and `#[a ; b ; c]` now read as sibling steps rather than one term chain, and `Sequence.separators` records which mark was written. Plain chain connectors (`..`, `->`, `~>`, `|`, `/`) are unchanged.
+- Lex `~>` as one project-join connector so a body such as `{sow ~> tend ~> harvest}` stays structured instead of degrading to prose.
 - Validate the authored corpus with the canonical `packages/spw-seed` parser while excluding registered derived surfaces and `.spw/gen/` products. The current strict source census passes 374 of 374 surfaces without warnings.
 
 Compatibility note: a surface that depended on an indented example selecting the file dialect, on a trailing operator claiming a next-line identifier, or on `;` / `||` chaining terms inside one expression, now parses differently. Use `spw inspect source` or `spw inspect spacing` to review the affected boundary before formatting or migration.
@@ -42,6 +43,10 @@ Compatibility note: a surface that depended on an indented example selecting the
 - Replace the public term `dual-read` with **Spw card**: source-shaped output readable as text and parseable as Spw.
 - Keep recommendation commands copyable and pair each with the question answered and the additional work, retention, disclosure, or output cost.
 - Preserve exact JSON/NDJSON products when human or Spw views sample rows or normalize visible control characters.
+- Add `spw fingerprint` (AST Type=count contour), `spw resolve` (classified pathRefs), and `spw lint` (axis annotations and unique `#>` anchors).
+- Count `~#name:` lattice cells as a distinct colon species so annotation-heavy corpora are not an empty field.
+- Skip `_workbench` and `build` in default corpus walks; `--include-infrastructure` / `--all` opts back in. `.git` stays skipped.
+- Add compact `spw query --stats` receipts: files walked/parsed, bytes, parse_ms, total_ms.
 
 ### Documentation and governance
 
