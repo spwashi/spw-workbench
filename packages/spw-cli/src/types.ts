@@ -7,6 +7,8 @@ export type ViewFormat = 'lines' | 'json' | 'skim' | 'table'
 
 export interface QueryArgs {
   profile?: boolean
+  stats?: boolean
+  includeInfrastructure?: boolean
   roots: string[]
   selector: string
   expr: string

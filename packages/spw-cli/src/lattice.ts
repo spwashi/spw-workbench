@@ -36,14 +36,14 @@ const L = defineLoc('lattice', {
   'help.opt_top': '--top, -n N       Top named species in aggregate (default 24)',
   'help.opt_limit': '--limit N         Max files listed with cells (default 40)',
   'help.opt_quiet': '--quiet, -q       Suppress headers and details',
-  'help.note_cells': 'Unit cell = ~#name(body) or ~#(body). Mask = envelope hash.',
+  'help.note_cells': 'Paren cell = ~#name(body) or ~#(body). Colon cell = ~#name:. Mask = envelope hash.',
   'help.note_comments': 'Does not promote comments; that is future interstitial tooling.',
   'help.note_alias': 'Alias: spw readings',
   'help.ex_basic': 'spw lattice .spw docs/theory --top 20',
   'help.ex_json': 'spw lattice prompts --json',
   'meta.header':
-    '# spw lattice  files={files} with_cells={withCells} cells={cells} named={named}',
-  'status.none': '  (no apposition unit cells — try paths with ~#name(…) readings)',
+    '# spw lattice  files={files} with_cells={withCells} cells={cells} named={named} paren={paren} colon={colon}',
+  'status.none': '  (no apposition unit cells — try paths with ~#name(…) or ~#name: readings)',
 })
 
 interface LatticeArgs {
@@ -150,6 +150,8 @@ export async function runSpwLatticeCli(argv: string[]): Promise<void> {
   let totalCells = 0
   let totalNamed = 0
   let totalAnonymous = 0
+  let totalParen = 0
+  let totalColon = 0
   let filesWithCells = 0
   const filesScanned = corpus.sources.size
 
@@ -160,6 +162,8 @@ export async function runSpwLatticeCli(argv: string[]): Promise<void> {
     totalCells += lattice.cells.length
     totalNamed += lattice.namedCount
     totalAnonymous += lattice.anonymousCount
+    totalParen += lattice.parenCount
+    totalColon += lattice.colonCount
     const spectrum = appositionSpectrum(lattice)
     for (const [name, n] of Object.entries(spectrum.byName)) {
       aggregateNames[name] = (aggregateNames[name] ?? 0) + n
@@ -184,15 +188,20 @@ export async function runSpwLatticeCli(argv: string[]): Promise<void> {
           totalCells,
           totalNamed,
           totalAnonymous,
+          totalParen,
+          totalColon,
           topNames: Object.fromEntries(topNames),
           files: rows.slice(0, args.limit).map(r => ({
             path: r.path,
             substrateHash: r.lattice.substrateHash,
             named: r.spectrum.named,
             anonymous: r.spectrum.anonymous,
+            paren: r.spectrum.paren,
+            colon: r.spectrum.colon,
             byName: r.spectrum.byName,
             cells: r.lattice.cells.map(c => ({
               name: c.name,
+              form: c.form,
               mask: c.mask,
               span: c.span,
               body: truncate(c.body, 80),
@@ -209,7 +218,7 @@ export async function runSpwLatticeCli(argv: string[]): Promise<void> {
   if (!args.quiet) {
     meta(
       `# spw lattice  spread=${args.spread} index_depth=${indexDepth} memo=${corpus.memoPlane} files=${filesScanned} with_cells=${filesWithCells} ` +
-        `cells=${totalCells} named=${totalNamed} anonymous=${totalAnonymous}`,
+        `cells=${totalCells} named=${totalNamed} anonymous=${totalAnonymous} paren=${totalParen} colon=${totalColon}`,
     )
   }
 
@@ -236,11 +245,12 @@ export async function runSpwLatticeCli(argv: string[]): Promise<void> {
     console.log('surfaces with densest named lattice')
     console.log(
       formatTable(
-        ['named', 'anon', 'path'],
+        ['named', 'anon', 'paren/colon', 'path'],
         sample.map(r => [
           String(r.lattice.namedCount),
           String(r.lattice.anonymousCount),
-          truncate(r.path, 56),
+          `${r.lattice.parenCount}/${r.lattice.colonCount}`,
+          truncate(r.path, 52),
         ]),
       ),
     )

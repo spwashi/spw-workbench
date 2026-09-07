@@ -46,6 +46,13 @@ describe('parseQueryArgs', () => {
     expect(parsed.limit).toBe(100)
   })
 
+  it('accepts --stats and --include-infrastructure', () => {
+    const parsed = parseQueryArgs(['--stats', '--include-infrastructure'])
+    expect(parsed.stats).toBe(true)
+    expect(parsed.includeInfrastructure).toBe(true)
+    expect(parseQueryArgs(['--all']).includeInfrastructure).toBe(true)
+  })
+
   it('accepts both "--flag value" and "--flag=value" forms identically', () => {
     const spaced = parseQueryArgs(['--from', 'prompts,docs', '--limit', '25'])
     const equals = parseQueryArgs(['--from=prompts,docs', '--limit=25'])

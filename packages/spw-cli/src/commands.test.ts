@@ -128,5 +128,10 @@ describe('command registry', () => {
 
     expect(findCommand('inspect')?.name).toBe('inspect')
     expect(findCommand('catalog')?.name).toBe('exp')
+
+    expect(findCommand('fingerprint')?.name).toBe('fingerprint')
+    expect(findCommand('fp')?.name).toBe('fingerprint')
+    expect(findCommand('resolve')?.name).toBe('resolve')
+    expect(findCommand('lint')?.name).toBe('lint')
   })
 })

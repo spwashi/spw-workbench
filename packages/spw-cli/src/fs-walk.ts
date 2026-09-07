@@ -9,16 +9,28 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import { shouldSkipCorpusSurface } from '@spwashi/spw-seed'
 
-export const DEFAULT_IGNORED_DIRS: ReadonlySet<string> = new Set([
-  '.git',
+/** Derived / mounted trees a consumer walk should skip unless asked. */
+export const INFRASTRUCTURE_DIRS: ReadonlySet<string> = new Set([
   'node_modules',
   'dist',
   'release',
+  'build',
+  '_workbench',
+])
+
+export const DEFAULT_IGNORED_DIRS: ReadonlySet<string> = new Set([
+  '.git',
+  ...INFRASTRUCTURE_DIRS,
 ])
 
 export interface CollectSpwFilesOptions {
   /** Directory basenames to skip entirely. Defaults to DEFAULT_IGNORED_DIRS. */
   ignore?: ReadonlySet<string>
+  /**
+   * Walk node_modules, dist, build, release, and _workbench.
+   * `.git` stays skipped. Ignored when `ignore` is passed explicitly.
+   */
+  includeInfrastructure?: boolean
 }
 
 /**
@@ -29,7 +41,8 @@ export async function collectSpwFiles(
   root: string,
   options: CollectSpwFilesOptions = {},
 ): Promise<string[]> {
-  const ignore = options.ignore ?? DEFAULT_IGNORED_DIRS
+  const ignore = options.ignore
+    ?? (options.includeInfrastructure ? new Set(['.git']) : DEFAULT_IGNORED_DIRS)
   const abs = path.resolve(root)
   const stat = await fs.stat(abs).catch(() => null)
   if (!stat) return []

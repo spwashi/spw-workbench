@@ -167,6 +167,14 @@ export function parseQueryArgs(args: string[]): QueryArgs {
       parsed.profile = true
       continue
     }
+    if (arg === '--stats') {
+      parsed.stats = true
+      continue
+    }
+    if (arg === '--include-infrastructure' || arg === '--all') {
+      parsed.includeInfrastructure = true
+      continue
+    }
     if (arg === '--summary') {
       parsed.summary = true
       continue

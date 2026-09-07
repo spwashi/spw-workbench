@@ -43,6 +43,9 @@ import { printTreeHelp, runSpwTreeCli } from './tree'
 import { printLatticeHelp, runSpwLatticeCli } from './lattice'
 import { printDeltaHelp, runSpwDeltaCli } from './delta'
 import { printInspectHelp, runSpwInspectCli } from './inspect'
+import { printFingerprintHelp, runSpwFingerprintCli } from './fingerprint'
+import { printResolveHelp, runSpwResolveCli } from './resolve'
+import { printLintHelp, runSpwLintCli } from './lint'
 
 /**
  * Which part of the loop a command belongs to. Groups order the help page and
@@ -278,6 +281,21 @@ export const COMMANDS: CommandSpec[] = [
     run: (invoked, args) => runSpwInspectCli(argv(invoked, args)),
   },
   {
+    name: 'fingerprint',
+    aliases: ['fp'],
+    group: 'collate',
+    summary: 'Count AST node types for one expression or surface',
+    printHelp: () => printFingerprintHelp(),
+    run: (_invoked, args) => runSpwFingerprintCli(['fingerprint', ...args]),
+  },
+  {
+    name: 'lint',
+    group: 'collate',
+    summary: 'Check axis annotations and unique #> anchors',
+    printHelp: () => printLintHelp(),
+    run: (_invoked, args) => runSpwLintCli(['lint', ...args]),
+  },
+  {
     name: 'cite',
     group: 'collate',
     summary: 'Point to form bytecode with a Spw card receipt',
@@ -300,6 +318,13 @@ export const COMMANDS: CommandSpec[] = [
     summary: 'Select and aggregate AST rows across files',
     printHelp: () => printQueryHelp(),
     run: (_invoked, args) => runQueryCli(parseQueryArgs(args)),
+  },
+  {
+    name: 'resolve',
+    group: 'select',
+    summary: 'Classify pathRefs into file, route, directory, or external targets',
+    printHelp: () => printResolveHelp(),
+    run: (_invoked, args) => runSpwResolveCli(['resolve', ...args]),
   },
   {
     name: 'select',

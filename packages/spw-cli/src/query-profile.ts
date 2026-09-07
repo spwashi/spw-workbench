@@ -49,4 +49,16 @@ export class QueryProfile {
       slowest: this.slowest,
     })
   }
+
+  stageMs(stage: QueryStage): number {
+    return this.stages[stage]
+  }
+
+  get bytesRead(): number {
+    return this.bytes
+  }
+
+  get filesParsed(): number {
+    return this.processed
+  }
 }

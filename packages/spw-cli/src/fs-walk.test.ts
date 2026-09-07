@@ -39,6 +39,17 @@ describe('collectSpwFiles', () => {
     expect(files.some(f => f.includes('.git'))).toBe(false)
   })
 
+  it('walks mounted workbench files only when includeInfrastructure is set', async () => {
+    await fs.mkdir(path.join(root, '_workbench', 'pkg'), { recursive: true })
+    await fs.writeFile(path.join(root, '_workbench', 'pkg', 'mounted.spw'), '', 'utf8')
+    const pruned = await collectSpwFiles(root)
+    expect(pruned.some(f => f.includes('_workbench'))).toBe(false)
+    const full = await collectSpwFiles(root, { includeInfrastructure: true })
+    expect(full.some(f => f.includes(`${path.sep}_workbench${path.sep}`) || f.includes('/_workbench/'))).toBe(true)
+    expect(full.some(f => f.includes('node_modules'))).toBe(true)
+    expect(full.some(f => f.includes(`${path.sep}.git${path.sep}`) || f.includes('/.git/'))).toBe(false)
+  })
+
   it('excludes other dotfile directories (not just DEFAULT_IGNORED_DIRS)', async () => {
     const files = await collectSpwFiles(root)
     expect(files.some(f => f.includes('.hidden'))).toBe(false)
@@ -68,7 +79,14 @@ describe('collectSpwFiles', () => {
   })
 
   it('DEFAULT_IGNORED_DIRS contains the expected hygiene set', () => {
-    expect([...DEFAULT_IGNORED_DIRS].sort()).toEqual(['.git', 'dist', 'node_modules', 'release'])
+    expect([...DEFAULT_IGNORED_DIRS].sort()).toEqual([
+      '.git',
+      '_workbench',
+      'build',
+      'dist',
+      'node_modules',
+      'release',
+    ])
   })
 
   it('skips derived *.expanded.spw and .spw/gen corpus dumps', async () => {

@@ -32,7 +32,7 @@ const SELECT_FIELDS = new Set<keyof QueryRow>([
   'text',
 ])
 
-const IGNORED_DIRS = new Set([...DEFAULT_IGNORED_DIRS, '_workbench'])
+const IGNORED_DIRS = DEFAULT_IGNORED_DIRS
 
 export async function runQueryCli(args: QueryArgs): Promise<void> {
   let selectorLabel: string
@@ -55,12 +55,16 @@ export async function runQueryCli(args: QueryArgs): Promise<void> {
   }
 
   const profile = args.profile ? new QueryProfile() : undefined
+  const statsStarted = args.stats || profile ? performance.now() : 0
+  let statsBytes = 0
+  let statsParsed = 0
+  let statsParseMs = 0
   const discoveryStarted = profile ? performance.now() : 0
   const workspace = await tryDiscoverSpwWorkspace()
   const resolvedRoots = workspace
     ? await Promise.all(args.roots.map(root => resolveWorkspacePath(workspace, root)))
     : args.roots
-  const files = await collectFiles(resolvedRoots)
+  const files = await collectFiles(resolvedRoots, args.includeInfrastructure === true)
   if (profile) {
     profile.discovered = files.length
     profile.finishStage('discovery', discoveryStarted)
@@ -80,6 +84,10 @@ export async function runQueryCli(args: QueryArgs): Promise<void> {
     }
     const { source, bytes: sourceBytes } = read
     sourceByFile.set(file, source)
+    if (args.stats) {
+      statsBytes += sourceBytes
+      statsParsed += 1
+    }
 
     let matches: SpwMatch[]
     let parseOutcome = 'unknown'
@@ -100,7 +108,9 @@ export async function runQueryCli(args: QueryArgs): Promise<void> {
       sourceElapsedMs += performance.now() - evaluateStarted
       profile.finishStage('evaluate', evaluateStarted, relFile)
     } else {
+      const parseStarted = args.stats ? performance.now() : 0
       matches = spwq.fromSource(source, selector)
+      if (args.stats) statsParseMs += performance.now() - parseStarted
     }
     const formatStarted = profile ? performance.now() : 0
     if (!args.expr && args.selector === 'rootRefs') matches = filterRootRefs(matches)
@@ -238,6 +248,17 @@ export async function runQueryCli(args: QueryArgs): Promise<void> {
   } finally {
     profile?.finishStage('format', formatStarted)
     profile?.report()
+    if (args.stats) {
+      const stats = {
+        files_walked: files.length,
+        files_parsed: profile?.filesParsed ?? statsParsed,
+        bytes_read: profile?.bytesRead ?? statsBytes,
+        cache_hits: 0,
+        parse_ms: Math.round((profile ? profile.stageMs('parse') : statsParseMs) * 10) / 10,
+        total_ms: Math.round((performance.now() - statsStarted) * 10) / 10,
+      }
+      console.error(`spw query stats ${JSON.stringify(stats)}`)
+    }
   }
 }
 
@@ -266,6 +287,8 @@ export function printQueryHelp(): void {
           '--profile           Stage/source receipts on stderr; serial source reads',
           '                    Discovery includes workspace resolution; format includes row filtering/output.',
           '                    Stage totals exclude receipts; wall elapsed includes diagnostics.',
+          '--stats             Compact walk/parse timing on stderr (files, bytes, parse_ms, total_ms)',
+          '--include-infrastructure  Also walk node_modules, dist, build, _workbench (--all)',
         ],
       },
       {
@@ -281,6 +304,7 @@ export function printQueryHelp(): void {
       {
         title: 'Examples',
         lines: [
+          'spw query --from .spw --selector pathRefs --count --stats',
           'spw query --from .spw --selector pathRefs --count --profile 2>query-profile.log',
           'spw query --from prompts --skim --selector pathRefs -n 25',
           'spw query --from prompts,docs --selector navigable --where "kind in PathRef|Reference" --table',
@@ -360,9 +384,11 @@ function renderAsTable(rows: QueryRow[], fields: Array<keyof QueryRow>): string 
   return formatTable(headers, body, { maxCol: 40 })
 }
 
-async function collectFiles(roots: string[]): Promise<string[]> {
+async function collectFiles(roots: string[], includeInfrastructure = false): Promise<string[]> {
   const perRoot = await Promise.all(
-    roots.map((root) => walkSpwFiles(root, { ignore: IGNORED_DIRS })),
+    roots.map((root) => walkSpwFiles(root, includeInfrastructure
+      ? { includeInfrastructure: true }
+      : { ignore: IGNORED_DIRS })),
   )
   const files = new Set<string>()
   for (const items of perRoot) {
