@@ -37,6 +37,8 @@ export interface LexProfile {
 
 export interface LexOptions {
   profile?: LexProfile | string
+  /** Preserve line-leading plan entries outside ordinary << >> stream bounds. */
+  planStream?: boolean
   /** Retained event detail; generation counts remain visible for cost accounting. */
   eventPolicy?: ParseEventPolicy
 }

@@ -191,6 +191,7 @@ function runSourcePipeline(
   let dialect: string | undefined
   let dialectSource: string | undefined
   let dialectPreprocessed = false
+  let planStream = false
 
   if (auto || opts.dialect || opts.path) {
     const explicit = opts.dialect && isDialectId(opts.dialect)
@@ -199,6 +200,7 @@ function runSourcePipeline(
     const stack = resolveSurfaceProfile(input, { dialect: explicit, path: opts.path })
     dialect = stack.dialect
     dialectSource = stack.dialectSource
+    planStream = stack.metasyntax.planStream
 
     if (!opts.contextMode || options.contextMode === undefined) opts.contextMode = stack.contextMode
     if (!opts.lexProfile) {
@@ -230,7 +232,7 @@ function runSourcePipeline(
   }
 
   const lexProfile = resolveLexProfile(opts.lexProfile)
-  const lexGen = tokenize(preparedSource, 0, { profile: lexProfile })
+  const lexGen = tokenize(preparedSource, 0, { profile: lexProfile, planStream })
   let lexStep = lexGen.next()
   while (!lexStep.done) {
     observeEvent(lexStep.value)

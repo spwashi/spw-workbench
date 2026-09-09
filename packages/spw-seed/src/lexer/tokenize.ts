@@ -30,6 +30,7 @@ import {
   matchPhrase,
 } from './matchers'
 import { buildConnectorMap, buildOperatorMap, resolveLexProfile } from './profiles'
+import { readPlanStreamEntry } from './plan-stream'
 
 /**
  * Tokenize input, yielding ParseEvents for each token and returning all tokens.
@@ -45,6 +46,7 @@ export function* tokenize(
   const operatorMatcher = createOperatorMatcher(buildOperatorMap(lexProfile))
   const connectorMatcher = createConnectorMatcher(buildConnectorMap(lexProfile))
   const stringMatcher = createStringMatcher(lexProfile.stringQuotes)
+  let streamDepth = 0
 
   const matchers: TokenMatcher[] = [
     matchWhitespace,
@@ -83,6 +85,21 @@ export function* tokenize(
   }
 
   while (!isAtEnd(state)) {
+    const entry = options.planStream ? readPlanStreamEntry(state, streamDepth) : null
+    if (entry) {
+      for (const token of entry) {
+        tokens.push(token)
+        yield {
+          type: 'token',
+          rule: 'planStreamEntry',
+          position: token.span.start,
+          data: { token } as TokenEventData,
+          timestamp: performance.now(),
+          depth,
+        }
+      }
+      continue
+    }
     let matched = false
 
     for (const matcher of matchers) {
@@ -96,6 +113,8 @@ export function* tokenize(
 
       if (result.value !== null) {
         tokens.push(result.value)
+        if (result.value.type === 'STREAM_OPEN') streamDepth++
+        if (result.value.type === 'STREAM_CLOSE') streamDepth = Math.max(0, streamDepth - 1)
         matched = true
         break
       }
