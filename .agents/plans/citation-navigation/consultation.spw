@@ -1,0 +1,107 @@
+# Consultation parcels — independent judgment with resumable evidence
+#>atlas_consultation
+#:operation #!contract
+#:fixity #!experimental
+#:layer #!pragmatics
+@atlas: ~"./workbench-atlas.spw"
+@cache: ~"./evidence-cache.spw"
+@plan: ~"./PLAN.md"
+
+^["use"]{
+ invitation: "Choose one parcel below and ask any available collaborator to challenge it. Consultations may happen sequentially across separate sessions."
+ dispatch: "Prepared, not dispatched. The human chooses collaborators and timing."
+ independence: "An operation and question define the parcel; a model brand does not own a discipline."
+ authority: "A returned recommendation is a proposal. It does not authorize patches or commits."
+ handback: "The collaborator may return text for integration, or edit an explicitly assigned documentation/cache file when authorized in that session."
+ lifecycle: ["offered", "selected", "investigating", "returned", "reviewed", "accepted or contested or superseded"]
+ bookkeeping: "Store current state with the parcel and append transitions; a status is not proof of completion."
+}
+
+^["parcel_contract"]{
+ input: ["question", "operation", "base revision", "entry sources", "observed evidence", "unknowns", "read scope", "write scope", "budget", "stop condition"]
+ output: ["answer", "source addresses", "commands actually run", "observed results", "inferences", "counterexample", "proposed next step", "changes made", "remaining uncertainty"]
+ coherence: "One parcel must be answerable without reading every plan or a full conversation."
+ source_budget: "Default first read: the named parcel and at most five relevant source files. Expand only for a named unresolved dependency and record why."
+ output_budget: "Prefer one concise finding per question; link evidence instead of repeating source."
+ permissions: "Role labels describe work posture; actual host permissions and explicit session instructions govern writes."
+ failures: ["source missing", "revision differs", "instrument unavailable", "scope too broad", "premise refuted"]
+ failure_return: "Return the missing evidence or refuted premise, not a fabricated completion."
+}
+
+#>parcel_constructs
+^["constructs"]{
+ state: "offered"
+ operation: "audit"
+ question: "Which authored constructions are navigable today, and which distinctions does the language require before definition or rename is safe?"
+ first_read: ["packages/spw-lsp/src/handlers/outline.ts", "packages/spw-lsp/src/handlers/navigation.ts", "packages/spw-lsp/src/__tests__/outline.test.ts", "packages/spw-seed/src/index.ts"]
+ sense: "Run existing outline and fragment tests; inspect parser exports before choosing representative specimens."
+ specimens: ["noun-led expression", "same-line nested frames", "multiline head", "incomplete body", "same name in two scopes", "quoted reference-like prose"]
+ returns: "A construct × movement matrix with supported, partial, absent, unspecified, and untested cells; each verdict has evidence."
+ counterclaim: "The outline is deliberately selective; omitted forms might belong in structural selection rather than more tree rows."
+ stop: "Six discriminating specimens and a recommendation for one vertical slice."
+ write_scope: "No implementation edits. Return a finding or use a separately authorized plan-local return file."
+}
+
+#>parcel_architecture
+^["architecture"]{
+ state: "offered"
+ operation: "audit"
+ question: "Can the present LSP support reliable structural and evidence navigation through contained changes?"
+ first_read: ["packages/spw-lsp/src/stdio-server.ts", "packages/spw-lsp/src/server-index.ts", "packages/spw-lsp/src/context.ts", "packages/spw-lsp/src/handlers/display.ts", "packages/spw-lsp/src/workspace-protocol.ts"]
+ sense: "Trace one open/change/request/close sequence and one manifest change through real handlers."
+ returns: "An ownership map, one concrete lifecycle failure or verified invariant, and retain/extract/replace recommendations with migration cost."
+ counterclaim: "Large files alone do not justify a rewrite; identify responsibility or behavior failures."
+ stop: "One live document journey and one workspace invalidation journey, with explicit omissions."
+ write_scope: "No implementation edits. Keep any authorized notes separate from other parcel returns."
+}
+
+#>parcel_experience
+^["experience"]{
+ state: "offered"
+ operation: "prime"
+ question: "What should a reader see and do first to imagine an unfamiliar Spw codebase?"
+ first_read: ["extensions/vscode-spw/package.json", "extensions/vscode-spw/src/navigation.ts", "extensions/vscode-spw/src/views/concepts-tree.ts", "extensions/vscode-spw/src/views/workspace-tree.ts", "workbench-atlas.spw#information_architecture"]
+ sense: "Inventory current commands and views; if an installed editor is available, attempt owner-finding and construct-navigation tasks."
+ returns: "Two competing interaction sketches, a walkthrough for each, and a list of features to retain, regroup, or retire."
+ alternatives: ["question-led entry with short trails", "structure-led entry with an inspectable neighborhood"]
+ counterclaim: "A new atlas may duplicate native Outline and search. Demonstrate the extra decision it enables."
+ stop: "Recommend one experiment and a criterion that would cause us to reject it."
+ write_scope: "Design return only; no extension changes or unsupported claims of UI testing."
+}
+
+#>parcel_memory
+^["memory"]{
+ state: "offered"
+ operation: "contract"
+ question: "What is the smallest durable handoff that lets another session disagree usefully and resume after source changes?"
+ first_read: ["consultation.spw", "evidence-cache.spw", "workbench-atlas.spw#reading_trails", "../../../.spw/tooling/editor-instruments.spw"]
+ sense: "Simulate a handoff using one finding, then change one cited dependency and identify what must be rechecked."
+ returns: "A worked return and invalidation example; identify redundant fields and any missing authority distinction."
+ counterclaim: "The documentation can become more expensive than rereading the code. Measure handoff input size and unnecessary fields."
+ stop: "One resumable example; no new registry or scheduler."
+ write_scope: "An explicitly authorized plan-local example only; existing findings stay intact."
+}
+
+^["return_template"]{
+ parcel: "unassigned"
+ status: "template, not a submitted finding"
+ base_revision: "record actual revision"
+ question: "one concrete question"
+ observation: "what the inspected source or executed probe establishes"
+ evidence: ["repository-relative source and span", "exact probe arguments", "actual result"]
+ interpretation: "what is inferred beyond the observation"
+ counterexample: "what would refute this recommendation"
+ recommendation: "one next action and why"
+ invalidated_by: ["specific source dependency or contract change"]
+ proposed_doc_change: "named frame to revise; do not silently rewrite competing evidence"
+ unresolved: "what another reader still needs to decide"
+}
+
+^["integration"]{
+ order: "Construct and experience consultations can proceed independently; architecture selects a seam using their findings; memory can challenge all return formats."
+ concurrency: "Each consultation owns a separate return file if writing is authorized. One integrator updates the shared cache and plan after reviewing returns."
+ disagreement: "Retain claim A, claim B, their evidence, and the cheapest discriminating probe. Agreement by several agents is not a substitute for verification."
+ acceptance: "Record an explicit reason, reviewer, and dependency revision when a proposal becomes the selected design."
+ source_change: "Mark affected evidence needs-recheck; preserve the prior result as historical evidence."
+ next_session: "Read the selected parcel, fresh evidence, and unresolved disagreement; do not replay the whole design collection."
+}

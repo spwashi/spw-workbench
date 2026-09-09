@@ -1,0 +1,183 @@
+# Citation navigation — an authored path through meaning
+# Proposed contract; implementation and host parity remain unverified.
+#>citation_navigation
+#:layer #!pragmatics
+#:operation #!contract
+#:fixity #!tending
+
+@atlas: ~"./workbench-atlas.spw"
+@plan: ~"./PLAN.md"
+@stream: ~"./wip.spw"
+@instruments: ~"../../../.spw/tooling/editor-instruments.spw"
+@audit: ~"../../../.spw/tooling/editor-surface-audit.spw"
+@mount: ~"../../../.spw/conventions/submodule.spw"
+
+^["intent"]{
+ question: "Where does this expression point, and what will I encounter when I follow it?"
+ utility: "Reduce the effort of recovering context while preserving the author's chosen vocabulary and relations."
+ unit: "One citation at an explicit invocation point."
+ operation: "Inspect, then optionally navigate."
+ effect: "Inspection is read-only; navigation changes editor location, not source."
+ status: "proposed candidate slice; atlas audit gates supersede citation-first delivery order"
+}
+
+^["cognitive_questions"]{
+ orientation: "Which authored surface and enclosing frame am I reading?"
+ deixis: "What does this particular reference designate?"
+ granularity: "Does it address a file, directory, route, or section?"
+ confidence: "Was that destination found in the current buffer, on disk, or not verified?"
+ repair: "Is the file absent, the anchor absent, or the citation malformed?"
+ return: "Can I follow the reference and return through the editor's normal navigation history?"
+ restraint: "Answer the local question before suggesting a workspace-wide search."
+}
+
+^["linguistic_distinctions"]{
+ reference: "An authored relation selected by the parser; resemblance of words alone does not establish a reference."
+ anchor: "A named address within a surface. Its line may move without changing its identity."
+ frame: "Structural context surrounding a reference; display separately from the destination."
+ label: "Author-owned wording. Retain it alongside any derived target description."
+ topic: "A possible retrieval facet, not proof that two surfaces assert the same thing."
+ interpretation: "A suggested relation must carry its basis and remain distinguishable from an explicit citation."
+ first_slice: "Explicit citations and anchor navigation only."
+}
+
+^["existing_evidence"]{
+ cli: .{
+  state = "implemented; inspected in source"
+  surface = "packages/spw-cli/src/resolve.ts"
+  fact = "Uses parser citation classification and reports file and anchor existence."
+  limit = "No claim here that current CLI and LSP resolution are equivalent."
+ }[reg=facet]
+ lsp: .{
+  state = "inspected in source"
+  surface = "packages/spw-lsp/src/handlers/navigation.ts"
+  fact = "Definition and document links resolve fragments by reading the target from disk."
+  hypothesis = "Unsaved movement of a target anchor can produce a stale destination line."
+  next = "Reproduce with URI-specific source and target buffers."
+ }[reg=facet]
+ fixture: .{
+  state = "existing tests inspected; not executed in this planning pass"
+  surface = "packages/spw-lsp/src/__tests__/fragment-navigation.test.ts"
+  coverage = "Saved targets, distinct anchors, absent fragments, stale anchors."
+  missing = "Unsaved target changes and explicit evidence of fallback."
+ }[reg=facet]
+}
+
+^["resolution_model"]{
+ extraction: "Use parser-selected path references; never search quoted prose with a replacement regex."
+ classification: "Reuse the seed classifier's actual vocabulary; add protocol variants only after inspecting its types."
+ stages: ["extract", "classify", "resolve path", "read target", "resolve fragment", "project evidence"]
+ outcomes: ["resolved", "missing-file", "missing-anchor", "malformed", "external", "unreadable", "unsupported"]
+ note: "These are proposed semantic outcomes, not a claim that an existing API exposes this exact enum."
+ missing_anchor: "The file may remain navigable; disclose that the requested section was not found."
+ external: "Classify without fetching; inspection does not verify remote existence."
+ directory: "Preserve directory intent and document any index-file resolution."
+ route: "Resolve through existing consumer authority; do not assume every leading slash means a filesystem root."
+ ambiguity: "If several targets are plausible, preserve candidates or an explicit unresolved result rather than silently selecting one."
+}
+
+^["receipt"]{
+ schema_status: "proposed; settle names at the shared protocol boundary"
+ identity: ["source URI", "source span", "raw authored citation", "path", "fragment"]
+ destination: ["target kind", "resolved URI when known", "target range when known", "resolution outcome"]
+ freshness: ["source origin", "source document version when available", "target origin", "target document version when available"]
+ ownership: ["consumer root", "tooling root", "target role"]
+ cost: ["scope", "duration only when measured", "truncation or cancellation when applicable"]
+ optional: ["enclosing authored frame", "fallback explanation"]
+ absent: "Unavailable evidence stays absent or explicitly unknown; never synthesize success."
+ paths: "LSP transport may require absolute URIs; portable reports and fixtures use repository-relative paths."
+}
+
+^["freshness"]{
+ read_order: ["current open target buffer", "saved target when no open buffer exists"]
+ buffer_authority: "An open empty buffer is authoritative; do not fall back to the nonempty saved file."
+ deletion: "An anchor deleted in the buffer is absent even when it remains on disk."
+ movement: "Use the current target span after inserted or removed lines."
+ source: "Select the reference from the current source text with a matching index version."
+ races: "If documents change during asynchronous resolution, recompute or label the receipt stale before applying navigation."
+ caching: "Start without an additional cache. Any later cache must key source and target identity/version and explain invalidation."
+ fallback: "Read failures and missing anchors must not become indistinguishable successful section jumps."
+}
+
+^["authority"]{
+ consumer: "Owns manifest roots, authored paths, conventions, and corpus inclusion."
+ workbench: "Supplies parser, resolver, LSP, CLI, and editor projections."
+ corpus_excludes: [".spw/_workbench/**", "node_modules/**", ".git/**"]
+ explicit_mount_reference: "A deliberately authored reference into tooling can be followed without adding tooling to consumer search results."
+ local_only: "No network calls or consumer excerpts in upstream fixtures."
+ revision_evidence: "Consumer-owned verification records both repository revisions and exact probe arguments."
+}
+
+^["host_projection"]{
+ vscode: .{
+  action = "Inspect citation at caret"
+  presentation = "Compact native selection or read-only preview with authored reference, target, and evidence."
+  follow = "Use the resolved location and preserve native back navigation."
+  transport = "Proposed typed LSP request; command identifier is not yet allocated."
+ }[reg=facet]
+ neovim: .{
+  action = "Explicit command at caret"
+  presentation = "Ordinary scratch output for the receipt; native location jump for follow."
+  transport = "Shared LSP when available. Label any existing local fallback as a different evidence source."
+ }[reg=facet]
+ intellij_webstorm: .{
+  action = "Inspect saved citation using the available native action boundary."
+  presentation = "Read-only result with source and target provenance."
+  transport = "Verify native LSP availability before claiming live support; existing CLI instruments use saved files."
+  dirty = "Where only saved-file inspection is available, explain save-and-retry instead of presenting disk evidence as live."
+ }[reg=facet]
+ parity: "Same questions and evidence semantics; verify each host independently."
+ idle: "No citation inspection traffic on cursor movement, hidden view refresh, or a timer."
+}
+
+^["verification"]{
+ moved_anchor: .{
+  arrange = "Saved anchor at line 3; open target inserts two lines above it."
+  expect = "Definition and link address the current anchor at line 5."
+ }[reg=facet]
+ deleted_anchor: .{
+  arrange = "Anchor exists on disk and is deleted in the open target."
+  expect = "Inspection reports missing-anchor; any file-start fallback is explicitly disclosed."
+ }[reg=facet]
+ empty_buffer: .{
+  arrange = "Open target text is empty while disk retains an anchor."
+  expect = "No successful anchor result from disk."
+ }[reg=facet]
+ saved_target: .{
+  arrange = "Target is not open and its anchor exists on disk."
+  expect = "Saved-file location resolves with disk provenance."
+ }[reg=facet]
+ malformed: .{
+  arrange = "Quoted prose contains reference-like punctuation without a parser-selected citation."
+  expect = "No fabricated citation or navigation action."
+ }[reg=facet]
+ isolation: .{
+  arrange = "Synthetic consumer contains an authored citation and a mounted infrastructure tree."
+  expect = "Consumer enumeration excludes infrastructure; an explicit tooling citation remains followable."
+ }[reg=facet]
+ host_failure: .{
+  arrange = "Server lacks the proposed request or is unavailable."
+  expect = "Client names unsupported inspection; it does not invent a successful receipt."
+ }[reg=facet]
+ budgets: "One selected citation per inspection; cancellation supported at the host boundary. Corpus search requires a separate explicit action and limits."
+ evidence_states: ["advertised", "configured", "invoked", "observed", "tested"]
+ pass_rule: "Record each probe's actual evidence state, including omissions; do not promote source inspection to runtime proof."
+}
+
+^["future_affordances"]{
+ status: "candidates; not implementation commitments for this slice"
+ backlinks: "Who explicitly points here? Preserve exact references separately from lexical neighbors."
+ frame_trail: "How did I arrive at this concept? Show authored enclosing frames and native visit history."
+ facets: "Find authored surfaces by declared operation, layer, or fixity without interpreting these as quality scores."
+ comparison: "Open two cited claims side by side with their anchors and provenance."
+ reading_arc: "Offer an explainable, optional reading sequence only after testing usefulness against a real author task."
+ promotion_gate: "Name a repeated question, an evidence producer, a bounded invocation, and a falsification probe before adding UI."
+}
+
+^["delivery"]{
+ first: "Prove live-buffer fragment navigation with meaningful regression fixtures."
+ second: "Expose a narrow shared citation receipt while preserving existing CLI output compatibility."
+ third: "Project explicit inspection through native editor commands and verify failure behavior."
+ fourth: "Record consumer-owned verification; update portable documentation with only verified host coverage."
+ gate: "Plan commit requires human authorization before source edits under the current planning workflow."
+}

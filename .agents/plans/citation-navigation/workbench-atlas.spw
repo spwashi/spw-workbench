@@ -1,0 +1,152 @@
+# Workbench atlas — navigating constructs, evidence, and unfinished thought
+# Design proposal. Names below identify design concepts, not implemented APIs.
+#>workbench_atlas
+#:operation #!prime
+#:fixity #!experimental
+#:layer #!pragmatics
+
+@plan: ~"./PLAN.md"
+@citations: ~"./citation-navigation.spw"
+@consultation: ~"./consultation.spw"
+@evidence: ~"./evidence-cache.spw"
+@instruments: ~"../../../.spw/tooling/editor-instruments.spw"
+
+^["thesis"]{
+ ambition: "Make a novel codebase imaginable: a person can discover its vocabulary, traverse its constructions, inspect its claims, and leave a precise question for another reader."
+ unit_of_attention: "A situated construct: authored text, structural context, relations, owner, and evidence."
+ success: "Each investigation leaves the next reader a shorter route to an informed decision."
+ continuity: "The same addressable evidence can be read by a human, an editor, a CLI, or a consulted agent."
+ source_of_truth: "Authored source and explicit owner contracts remain authoritative. Maps and interpretations are revisable projections."
+ first_principle: "An unfamiliar language needs discoverable movements through structure as much as syntax coloring."
+}
+
+^["information_architecture"]{
+ place: .{
+  question = "Where am I, and what owns this region?"
+  shows = ["consumer root", "file", "enclosing construction", "authored owner when declared"]
+  movement = ["parent construction", "previous or next sibling", "named landmark", "return"]
+ }[reg=facet]
+ meaning: .{
+  question = "What is this expression doing here?"
+  shows = ["authored name", "structural shape", "active profile", "local bindings", "declared facets"]
+  movement = ["expand selection by structure", "definition", "other authored uses", "contrast specimen"]
+ }[reg=facet]
+ evidence: .{
+  question = "Why should I believe this claim or relationship?"
+  shows = ["citation", "probe description", "recorded result", "revision", "counterexample", "unknowns"]
+  movement = ["claim to cited evidence", "evidence to producer", "producer to observed result"]
+ }[reg=facet]
+ inquiry: .{
+  question = "What should we investigate or decide next?"
+  shows = ["open question", "bounded consultation parcel", "competing interpretations", "next discriminating probe"]
+  movement = ["prepare context", "consult", "compare returns", "retain finding", "resume"]
+ }[reg=facet]
+ projection: "Use these as questions governing existing surfaces before creating four new panels."
+ progressive_disclosure: "Start with current place and one useful next movement; expose relations and evidence when requested."
+}
+
+^["construct_navigation"]{
+ address: "Prefer authored anchors; otherwise pair document identity and version with a precise span. Structural fingerprints are relocation hints, never guaranteed stable identities."
+ structural_moves: ["parent", "child", "previous sibling", "next sibling", "expand selection", "shrink selection"]
+ semantic_moves: ["binding to use", "use to binding", "citation to destination", "claim to probe", "question to candidate answer"]
+ contrast_moves: ["same construct in another profile", "same label in another scope", "counterexample"]
+ coverage_matrix: ["named operator frame", "noun-led expression", "nested frame/body/capsule", "multiple constructs on one line", "multiline head", "anchor", "annotation", "incomplete expression", "quoted prose"]
+ contract: "Each movement declares whether it follows syntax, an authored relation, a measured relation, or an interpretation."
+ unresolved_semantics: "Do not implement scope-aware rename or definition by guessing binding rules. Mark the form unsupported until its language contract is explicit."
+ graceful_incompleteness: "Expose the smallest reliable enclosing region and its uncertainty while text is incomplete."
+ navigation_history: "Ordinary editor history remains the return mechanism; a saved investigation trail is a separate, intentional artifact."
+}
+
+^["relation_model"]{
+ vertices: ["surface", "construct", "authored concept", "claim", "question", "probe", "result", "parcel"]
+ authored_edges: ["contains", "cites", "declares", "explicitly-owned-by", "explicitly-tests"]
+ computed_edges: ["same-label", "co-occurs", "shape-similar", "changed-since"]
+ interpreted_edges: ["may-explain", "may-contradict", "suggested-next-read"]
+ edge_receipt: ["edge kind", "source addresses", "producer", "revision or document versions", "basis", "freshness", "coverage"]
+ disambiguation: "Equal spelling across scopes creates a search candidate, not one merged concept."
+ contradiction: "Competing claims stay side by side until an explicit decision or discriminating observation resolves them."
+ graph_presentation: "Default to a small typed neighborhood or trail. A global graph is an optional diagnostic view, not the main entry point."
+ missing: "Missing ownership or probes should be discoverable gaps, without treating every exploratory note as a defect."
+}
+
+^["reading_trails"]{
+ authored: "A reader selects a question, an entry address, and a short sequence of sources with a reason for each transition."
+ generated: "An optional proposed route names its derivation; it never overwrites the authored route."
+ trail_step: ["address", "question to answer here", "edge to next step", "what would invalidate this step"]
+ stopping_rule: "Stop when the question is answerable or a missing piece is named; do not keep adding context because it is connected."
+ ownership_trail: "Public behavior → declared contract → implementation owner → validation producer."
+ language_trail: "Expression → structural components → profile rule → worked example → counterexample."
+ inquiry_trail: "Question → previous finding → unsettled alternative → next probe → consultation parcel."
+ resume: "Show what changed since a saved trail was last verified and reopen only the affected steps."
+}
+
+^["editor_journeys"]{
+ unfamiliar_repo: .{
+  entry = "Open a consumer workspace with no remembered repository lore."
+  sequence = ["choose a question", "see authored roots and a short trail", "open owner", "inspect construction", "follow evidence", "record remaining uncertainty"]
+  proof = "Reader names the owner and a relevant validation path without opening unrelated infrastructure."
+ }[reg=facet]
+ unfamiliar_construct: .{
+  entry = "Caret inside a nested noun expression."
+  sequence = ["show enclosing structure", "expand one boundary", "move to sibling", "inspect profile", "open a contrasting example"]
+  proof = "Moves preserve the expected structural region and explain unsupported semantics."
+ }[reg=facet]
+ returning_collaborator: .{
+  entry = "A saved inquiry has two agent returns and changed source."
+  sequence = ["show changed evidence", "compare agreements and disagreements", "rerun one selected probe", "update the finding", "choose next parcel"]
+  proof = "No stale proposal silently becomes implementation authority."
+ }[reg=facet]
+ changing_vocabulary: .{
+  entry = "A name appears in several scopes and one quotation."
+  sequence = ["separate exact uses from label matches", "inspect binding support", "preview supported rename", "retain unresolved cases"]
+  proof = "A shared spelling alone never authorizes a workspace edit."
+ }[reg=facet]
+}
+
+^["architecture"]{
+ seed: "Owns parsing, spans, structural identities within a parse, and specified binding semantics. Remains portable and editor-independent."
+ shared_analysis: "A proposed pure analysis seam turns parsed structure into typed navigation facts. Decide its package location after mapping current dependencies."
+ workspace_service: "Owns consumer authority, indexed sources, live overlays, file discovery, and invalidation. Reuse existing index seams where sound."
+ lsp: "Projects live facts through standard capabilities where possible; custom requests carry Spw-specific evidence only when standard shapes are insufficient."
+ cli: "Projects saved-source facts into bounded, reproducible reports and consultation inputs. Does not import editor presentation."
+ plugins: "Own gestures, focus, native history, disclosure, cancellation, and accessible rendering. Domain inference should not live only in one plugin."
+ model_assistance: "Consumes an explicit context parcel and produces attributed proposals. No model is required for basic browsing, structure navigation, or evidence inspection."
+ evolution: "Migrate one verified vertical slice at a time; keep compatibility adapters rather than replacing the server wholesale."
+}
+
+^["lsp_review"]{
+ correctness: ["construct coverage", "scope and binding rules", "range precision", "UTF-16 positions", "incomplete syntax", "dirty target buffers", "document version races"]
+ lifecycle: ["initialization", "open/change/close", "file deletion", "manifest changes", "cancellation", "shutdown", "restart", "multi-root limitations"]
+ cost: ["parse reuse", "workspace discovery", "bounded relation queries", "cold versus warm requests", "large files", "stale asynchronous responses"]
+ contracts: ["advertised versus handled capabilities", "typed custom requests", "unsupported-request behavior", "URI fidelity", "error provenance"]
+ design_question: "Which invariants belong in shared analysis and which are truly transport concerns?"
+ rewrite_gate: "Recommend replacement only if a contained repair cannot establish the required invariants; report evidence and migration cost."
+}
+
+^["plugin_review"]{
+ preserve: ["native roots and landmark navigation", "concept grouping", "structural coloring", "form and profile instruments"]
+ investigate: ["entry point discoverability", "overlapping commands", "concept versus annotation naming", "stale index feedback", "hidden refresh work", "keyboard-only use", "plain-language failure states"]
+ concept_tree: "Retain useful grouping; distinguish authored concepts, label occurrences, and co-occurrence suggestions in labels and interactions."
+ inspect_not_assume: "Existing visual richness does not prove orientation utility; source review does not establish how the installed plugin behaves."
+ native_hosts: "Start the interaction experiment in VS Code, then carry evidence contracts to other hosts with independent capability receipts."
+ compatibility: "Existing command identifiers remain aliases while any reorganized entry points are evaluated."
+}
+
+^["delivery_gates"]{
+ gate_0: "Establish construct and host capability matrix; consultation may reject this information architecture."
+ gate_1: "Demonstrate place → parent/sibling → citation → evidence on one synthetic unfamiliar workspace."
+ gate_2: "Create a context parcel from that journey; a second session returns a finding that can be checked without its chat history."
+ gate_3: "Resume after source changes and show precise invalidation rather than silently reusing stale conclusions."
+ gate_4: "Test the journey against an independent consumer and document host-specific gaps."
+ first_implementation: "Choose from audited failures. Citation freshness is one candidate, not the governing ambition."
+ exclusions: "No automatic model dispatch, claim promotion, source mutation, or plugin publication follows from this design document."
+}
+
+^["evaluation"]{
+ tasks: ["find owner", "explain construction", "find counterexample", "resume inquiry", "handoff without full transcript"]
+ measures: ["task completion", "wrong destinations", "unrelated files opened", "context bytes supplied", "stale evidence detected", "ability to state why a relation exists"]
+ method: "Record baseline using present tools, then repeat matched tasks with the proposed slice; counterbalance order where feasible."
+ baseline: "Not yet measured. No improvement percentage is claimed."
+ rejection: "Reject a surface that increases browsing without improving correct answers or recoverability."
+ agency: "The reader can inspect, ignore, revise, export, and delete suggested trails and consultation material."
+}

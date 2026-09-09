@@ -1,0 +1,85 @@
+# Atlas evidence cache — observations, hypotheses, and invalidation
+#>atlas_evidence
+#:operation #!cache
+#:fixity #!tending
+#:layer #!pragmatics
+@atlas: ~"./workbench-atlas.spw"
+@consultation: ~"./consultation.spw"
+
+^["provenance"]{
+ workbench_revision: "462f6478a78a42be6d2197a7329ab1826b40a7f6"
+ recorded: "2026-09-08"
+ method: "Targeted source inspection and existing navigation unit tests."
+ scope: "Worktree design; no installed-editor inspection or full LSP audit."
+ consumer_transfer: "Design borrows the workflow shape of operation-led parcels, sense/probe/retained findings, named reading trails, and invalidatable caches. Consumer-specific policy is not imported as workbench authority."
+ validity: "Recheck observations when named source dependencies change. Revision equality alone does not prove working-tree equality."
+}
+
+^["findings"]{
+ concepts: .{
+  state = "source-inspected"
+  source = "extensions/vscode-spw/src/views/concepts-tree.ts"
+  observation = "Supports concept/kind/file/phase grouping, filtering, density display, and co-occurrence-derived relations."
+  interpretation = "Useful existing affordances; annotation organization may not answer ownership or investigation questions."
+  next_probe = "Attempt an unfamiliar-workspace ownership task in the installed plugin."
+ }[reg=facet]
+ outline: .{
+  state = "source-inspected"
+  source = "packages/spw-lsp/src/handlers/outline.ts"
+  observation = "declaredSymbol examines a line head, accepts anchors or named operators, and requires an operator head for other symbols."
+  hypothesis = "Noun-led and additional same-line constructs may lack outline destinations."
+  caveat = "This is a coverage hypothesis, not a reproduced parser failure; selective outline policy may be intentional."
+  next_probe = "Compare parsed specimens, outline rows, and desired structural movements."
+ }[reg=facet]
+ freshness: .{
+  state = "source-inspected"
+  source = "packages/spw-lsp/src/handlers/navigation.ts"
+  observation = "Fragment range lookup reads the target from disk."
+  hypothesis = "A moved unsaved anchor can produce a stale jump."
+  next_probe = "URI-specific source and target buffers with moved and deleted anchors."
+ }[reg=facet]
+ annotation_refresh: .{
+  state = "source-inspected"
+  source = "extensions/vscode-spw/src/annotation-index.ts"
+  observation = "Rebuilds at activation and after save with a fixed delay; rebuild errors are swallowed."
+  hypothesis = "The user may not know whether retained entries are stale or unavailable."
+  next_probe = "Fail an annotation request after a successful build and inspect visible state."
+ }[reg=facet]
+ capabilities: .{
+  state = "advertised in source"
+  source = "packages/spw-lsp/src/stdio-server.ts"
+  observation = "Advertises definition, declaration, references, rename, symbols, and folding; inspected initialization does not advertise selectionRange and marks multiple workspace folders unsupported."
+  next_probe = "Compare runtime initialization and request handling with a construct capability matrix."
+ }[reg=facet]
+ responsibility: .{
+  state = "measured source size"
+  source = "packages/spw-lsp/src/handlers/display.ts; extensions/vscode-spw/src/views/concepts-tree.ts"
+  observation = "1461 and 750 lines respectively at the inspected baseline."
+  interpretation = "Both deserve responsibility review before adding atlas behavior; line count does not prove poor design."
+ }[reg=facet]
+}
+
+^["cache_policy"]{
+ separates: ["observations", "interpretations", "proposals", "decisions"]
+ dependency: "Every finding identifies the source or probe on which it depends."
+ refresh: "Recheck affected findings on demand after a dependency changes; do not rescan the entire corpus to refresh one parcel."
+ retention: "Supersede with a dated successor and reason rather than overwriting the old result as if it never existed."
+ promotion: "A useful repeated finding may become an authored contract after review; repetition alone does not confer authority."
+ garbage_collection: "Drop duplicated summaries and expired retrieval products while retaining cited decisions and their evidence."
+}
+
+^["baseline_tests"]{
+ state: "executed; passed"
+ command: "node_modules/.bin/vitest --config vitest.lsp.config.ts run packages/spw-lsp/src/__tests__/outline.test.ts packages/spw-lsp/src/__tests__/fragment-navigation.test.ts"
+ result: "2 files passed; 15 tests passed (9 outline, 6 fragments)."
+ scope: "Existing tests on the inspected main checkout; no implementation changes in the design worktree."
+ limitation: "Does not exercise proposed structural movements, dirty target variants, transport lifecycle, or installed editor interaction."
+}
+
+^["plan_stream_repair"]{
+ state: "implemented and tested; integration authorized"
+ sources: ["packages/spw-seed/src/lexer/plan-stream.ts", "packages/spw-seed/src/parser/plan-stream.test.ts"]
+ observation: "Spw.p preserves plan entry timestamps and message punctuation as source-aligned text, retaining the existing bullet representation."
+ verification: "777 seed tests pass; seed TypeScript and targeted ESLint pass."
+ limitation: "No structured timestamp fields or atlas UI are introduced by this repair."
+}
