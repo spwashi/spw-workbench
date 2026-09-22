@@ -110,6 +110,13 @@ function extractValence(op: any): ModifierKind[] | undefined {
     .filter((modifier: unknown): modifier is ModifierKind => typeof modifier === 'string')
 }
 
+/** Keep an expression charge-sign on the normalized node that represents that expression. */
+function stampExpressionCharge(expr: ExpressionNode, node: ONFNode): ONFNode {
+  const valence = extractValence(expr)
+  if (!valence || valence.length === 0) return node
+  return { ...node, frames: { ...node.frames, valence } }
+}
+
 /**
  * Normalize an AST to Operator Normal Form.
  * Converts structural nodes (Operation, Capsule, Expression) into uniform σ(args)[frames].
@@ -123,24 +130,33 @@ export function normalizeToONF(node: ASTNode): ONFNode {
 
     case 'Expression': {
       const expr = node as ExpressionNode
+      let normalized: ONFNode
       if (!expr.connectors || expr.connectors.length === 0) {
         if (expr.terms && expr.terms.length > 0) {
-          return preserveExpressionConstruction(expr, normalizeToONF(expr.terms[0]!), normalizeToONF)
+          normalized = preserveExpressionConstruction(expr, normalizeToONF(expr.terms[0]!), normalizeToONF)
+        } else {
+          const hole: ONFNode = {
+            sigil: '_',
+            args: [],
+            frames: { reg: expr.modifiers ? 'charge' : 'empty' },
+          }
+          normalized = preserveExpressionConstruction(expr, hole, normalizeToONF)
         }
-        return { sigil: '_', args: [], frames: { reg: 'empty' } }
-      }
-      let current = normalizeToONF(expr.terms[0]!)
-      for (let i = 0; i < expr.connectors.length; i++) {
-        const connector = expr.connectors[i]!.value
-        const right = normalizeToONF(expr.terms[i + 1]!)
-        const reg = connector === '/' ? 'proj' : 'conn'
-        current = {
-          sigil: connector as any,
-          args: [current, right],
-          frames: { reg }
+      } else {
+        let current = normalizeToONF(expr.terms[0]!)
+        for (let i = 0; i < expr.connectors.length; i++) {
+          const connector = expr.connectors[i]!.value
+          const right = normalizeToONF(expr.terms[i + 1]!)
+          const reg = connector === '/' ? 'proj' : 'conn'
+          current = {
+            sigil: connector as any,
+            args: [current, right],
+            frames: { reg }
+          }
         }
+        normalized = preserveExpressionConstruction(expr, current, normalizeToONF)
       }
-      return preserveExpressionConstruction(expr, current, normalizeToONF)
+      return stampExpressionCharge(expr, normalized)
     }
 
     case 'Operation': {

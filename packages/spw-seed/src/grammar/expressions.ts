@@ -621,35 +621,129 @@ export const termNode: Parser<TermNode> = lazy(() => named('term',
   }
 ))
 
+/** `[…]` `{…}` `(…)` open the noun's mode, body, and scope — not a new head term. */
+function isNounPostfixOpener(token: Token): boolean {
+  return token.value === '['
+    || token.value === '{'
+    || (token.value === '(' && token.type === 'CONTAINER_OPEN')
+}
+
 /**
- * Expression: term (connector term)*
+ * A charge-sign with no further noun ends here.
+ * A following line is the next sequence step. `..` is an interval, not a boundary,
+ * so it stays outside this enhancement.
+ */
+function chargeEndsExpression(token: Token, chargeLine: number): boolean {
+  if (token.span.start.line !== chargeLine) return true
+  if (
+    token.type === 'EOF'
+    || token.type === 'CONTAINER_CLOSE'
+    || token.type === 'CAPSULE_CLOSE'
+    || token.type === 'STREAM_CLOSE'
+    || token.type === 'NRANGE_CLOSE'
+    || token.type === 'COMMA'
+    || token.type === 'ARROW'
+    || token.type === 'COLON'
+  ) return true
+  return isScheduleSeparator(token)
+}
+
+/**
+ * Expression: charge-sign? term (connector term)*
+ *
+ * `boon` / `boon.honk` attach as ModifierChain and the noun parse continues.
+ * A chain followed by an operator (`boon!`, `boon.home`, `boon.honk!`) stays
+ * the operation prefix it already was. `boon..honk` stays an interval.
  */
 export const expressionImpl: Parser<ExpressionNode> = named('expression',
   function* expressionParser(stream, depth) {
     const startPos = getPosition(stream)
 
-    // First term
     skipWhitespace(stream)
-    const firstGen = termNode(stream, depth + 1)
-    let firstStep = firstGen.next()
-    while (!firstStep.done) {
-      yield firstStep.value
-      firstStep = firstGen.next()
+    const origin = stream.position
+    let charge: ModifierChainNode | undefined
+    let chargeConsumed = 0
+
+    if (current(stream).type === 'MODIFIER') {
+      const modGen = modifierChain(stream, depth + 1)
+      let modStep = modGen.next()
+      while (!modStep.done) {
+        yield modStep.value
+        modStep = modGen.next()
+      }
+
+      if (modStep.value.success) {
+        skipWhitespace(stream)
+        const next = current(stream)
+        // Operation prefixes stay operations. `boon..honk` is an interval, not a charge.
+        const interval = next.type === 'CONNECTOR' && next.value === '..'
+        if (next.type === 'OPERATOR' || interval) {
+          stream.position = origin
+        } else {
+          charge = modStep.value.value
+          chargeConsumed = modStep.value.consumed
+        }
+      } else {
+        stream.position = origin
+      }
     }
 
-    if (!firstStep.value.success) {
-      return { success: false, consumed: 0, error: firstStep.value.error }
+    const chargeLine = charge?.span.end.line
+    const heldForPostfix = charge !== undefined
+      && chargeLine !== undefined
+      && current(stream).span.start.line === chargeLine
+      && isNounPostfixOpener(current(stream))
+    const chargeOnly = charge !== undefined
+      && chargeLine !== undefined
+      && !heldForPostfix
+      && chargeEndsExpression(current(stream), chargeLine)
+
+    let headTerm: TermNode | undefined
+    let consumed = chargeConsumed
+
+    if (!heldForPostfix && !chargeOnly) {
+      const firstGen = termNode(stream, depth + 1)
+      let firstStep = firstGen.next()
+      while (!firstStep.done) {
+        yield firstStep.value
+        firstStep = firstGen.next()
+      }
+
+      if (!firstStep.value.success) {
+        const stalled = current(stream)
+        if (charge && chargeLine !== undefined && chargeEndsExpression(stalled, chargeLine)) {
+          // The chain is the whole expression (`[honk]`, `{boon.honk}`).
+        } else {
+          stream.position = origin
+          return { success: false, consumed: 0, error: firstStep.value.error }
+        }
+      } else {
+        headTerm = firstStep.value.value!
+        consumed += firstStep.value.consumed
+      }
+    }
+
+    if (!headTerm && !charge) {
+      stream.position = origin
+      return {
+        success: false,
+        consumed: 0,
+        error: {
+          message: 'Expected an expression',
+          expected: ['Expression'],
+          found: current(stream).type,
+          recoverable: true,
+        },
+      }
     }
 
     // First term, then optional medial capsules: left<channel>right
     // e.g. bagel<scent>coffee, foo<5>bar, chain a<r>b<s>c
-    let headTerm = firstStep.value.value!
-    let consumed = firstStep.value.consumed
     let postfixFrame: FrameNode | undefined
     let postfixBody: BodyNode | undefined
     let postfixScope: ScopeNode | undefined
     let postfixCapsule: CapsuleNode | undefined
-    const headLine = headTerm.span.end.line
+    const headLine = headTerm?.span.end.line ?? chargeLine!
 
     while (true) {
       const saved = stream.position
@@ -729,7 +823,7 @@ export const expressionImpl: Parser<ExpressionNode> = named('expression',
       break
     }
 
-    while (!(postfixFrame || postfixBody || postfixScope || postfixCapsule)) {
+    while (headTerm && !(postfixFrame || postfixBody || postfixScope || postfixCapsule)) {
       const saved = stream.position
       skipWhitespace(stream)
       if (current(stream).type !== 'CAPSULE_OPEN') {
@@ -794,12 +888,12 @@ export const expressionImpl: Parser<ExpressionNode> = named('expression',
       headTerm = medial
     }
 
-    const terms: TermNode[] = [headTerm]
+    const terms: TermNode[] = headTerm ? [headTerm] : []
     const connectors: Token<'CONNECTOR'>[] = []
 
     // Binding: <term> : <expression>
     skipWhitespace(stream)
-    if (current(stream).type === 'COLON') {
+    if (headTerm && current(stream).type === 'COLON') {
       const colonGen = colon(stream, depth + 1)
       let colonStep = colonGen.next()
       while (!colonStep.done) {
@@ -838,6 +932,7 @@ export const expressionImpl: Parser<ExpressionNode> = named('expression',
         span: { start: startPos, end: endPos },
         terms: [binding as unknown as TermNode],
         connectors: [],
+        ...(charge ? { modifiers: charge } : {}),
         frame: postfixFrame,
         body: postfixBody,
         scope: postfixScope,
@@ -852,7 +947,8 @@ export const expressionImpl: Parser<ExpressionNode> = named('expression',
     // A chain stays on its line. `@location: docs/` ends with a trailing path
     // separator, and without this the chain reached across the newline to take
     // the next line's key as its right-hand term — collapsing both lines.
-    while (true) {
+    // A charge with no subject is not a chain arm; leave a following connector alone.
+    while (headTerm) {
       skipWhitespace(stream)
       const connTok = current(stream)
       if (connTok.type !== 'CONNECTOR') break
@@ -900,6 +996,7 @@ export const expressionImpl: Parser<ExpressionNode> = named('expression',
       span: { start: startPos, end: endPos },
       terms,
       connectors,
+      ...(charge ? { modifiers: charge } : {}),
       frame: postfixFrame,
       body: postfixBody,
       scope: postfixScope,

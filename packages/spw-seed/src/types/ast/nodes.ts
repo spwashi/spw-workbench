@@ -75,6 +75,11 @@ export interface ExpressionNode extends ASTNode {
   type: 'Expression'
   terms: TermNode[]
   connectors: Token<'CONNECTOR'>[]
+  /**
+   * Charge-sign: a valence chain (`boon`, `boon.honk`) riding this expression.
+   * It is not a noun slot and does not replace subject, mode, body, scope, or capsule.
+   */
+  modifiers?: ModifierChainNode
   /** Same-line postfix `[…]` on an identifier-led noun. */
   frame?: FrameNode
   /** Same-line postfix `{…}` on an identifier-led noun. */
