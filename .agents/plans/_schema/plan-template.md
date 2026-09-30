@@ -1,6 +1,6 @@
 # Plan: <slug>
 
-One-line description.
+One-line description. (Card, phase, and next move: [wip.spw](./wip.spw) · index: [../index.spw](../index.spw))
 
 ## Goal
 

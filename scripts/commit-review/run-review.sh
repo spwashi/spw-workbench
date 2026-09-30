@@ -16,7 +16,7 @@ spw_commit_review_cgrep() {
 spw_commit_review_run() {
   local staged_all total report warnings errors
   local ts_files spw_files agent_spw strata_spw golden
-  local f content bad ac hs hw ho sc fw g1 gm gv hf hs2 hb hr gc
+  local f content bad ac hs hw ho card cg cp sc fw g1 gm gv hf hs2 hb hr gc
 
   spw_resolve_agent_context "$REPO_ROOT"
   REVIEW_AGENT="${SPW_COMMIT_REVIEW_AGENT:-$AGENT_CONTEXT_ACTOR}"
@@ -65,9 +65,26 @@ spw_commit_review_run() {
       content=$(git show ":$f" 2>/dev/null || true)
       [ -z "$content" ] && continue
       hs=$(spw_commit_review_cgrep "$content" '^\^')
-      hw=$(spw_commit_review_cgrep "$content" '^>>')
-      ho=$(spw_commit_review_cgrep "$content" '^?')
-      report="${report}  ✓  ${f} (sections:${hs} stream:${hw} open:${ho})\n"
+      hw=$(spw_commit_review_cgrep "$content" '^[[:space:]]*>>\[')
+      ho=$(spw_commit_review_cgrep "$content" '^[[:space:]]*?\[[^"]')
+      card=""
+      if [ "$(basename "$f")" = "wip.spw" ]; then
+        # Schema v2: the card's operator is the lane glyph; phase is its first binding.
+        cg=$(printf '%s\n' "$content" | sed -n 's/^\([!?~@.^]\)\["card"\]{.*/\1/p' | head -n 1)
+        cp=$(printf '%s\n' "$content" | sed -n 's/^ phase: #\([a-z]*\).*/\1/p' | head -n 1)
+        if [ -n "$cg" ]; then
+          card=" card:${cg}#${cp:-?}"
+          if git diff --cached -U0 -- "$f" | grep -qE '^[+-]([!?~@.^]\["card"\]| (phase|gist|touches|entry):)' \
+            && ! printf '%s\n' "$REVIEW_STAGED_ALL" | grep -qx '.agents/plans/index.spw'; then
+            report="${report}  ⚠  ${f} — card changed; index.spw not staged (npm run spw:plan:index -- --write)\n"
+            warnings=$((warnings + 1))
+          fi
+        else
+          report="${report}  ⚠  ${f} — no card (see .agents/plans/_schema/wip.spw CARD)\n"
+          warnings=$((warnings + 1))
+        fi
+      fi
+      report="${report}  ✓  ${f} (sections:${hs} stream:${hw} open:${ho}${card})\n"
     done <<< "$agent_spw"
   fi
 

@@ -274,6 +274,30 @@ agent_kb_path() {
   esac
 }
 
+# Card fields live in the first `<glyph>["card"]{}` frame of wip.spw (schema v2).
+agent_plan_card_glyph() {
+  sed -n 's/^\([!?~@.^]\)\["card"\]{.*/\1/p' "$1" | head -n 1
+}
+
+agent_plan_card_value() {
+  local key="$1"
+  local file="$2"
+  awk -v key="$key" '
+    /^[!?~@.^]\["card"\]\{/ { inside = 1; next }
+    inside && /^}/ { exit }
+    inside {
+      line = $0
+      sub(/^[ \t]+/, "", line)
+      if (index(line, key ":") == 1) {
+        sub("^" key ":[ \t]*", "", line)
+        gsub(/^["#]|"$/, "", line)
+        print line
+        exit
+      }
+    }
+  ' "$file"
+}
+
 agent_load_plan_context() {
   local explicit_slug="${1-}"
   local resolved_dir
@@ -304,6 +328,9 @@ agent_load_plan_context() {
   AGENT_PLAN_CTX_CACHE_OPEN_COUNT="$(agent_plan_cache_value open_count "$AGENT_PLAN_CTX_WIP_FILE")"
   AGENT_PLAN_CTX_CACHE_LAST_STREAM="$(agent_plan_cache_value last_stream "$AGENT_PLAN_CTX_WIP_FILE")"
   AGENT_PLAN_CTX_FILES_HOT="$(agent_plan_cache_value files_hot "$AGENT_PLAN_CTX_WIP_FILE")"
+  AGENT_PLAN_CTX_GLYPH="$(agent_plan_card_glyph "$AGENT_PLAN_CTX_WIP_FILE")"
+  AGENT_PLAN_CTX_PHASE="$(agent_plan_card_value phase "$AGENT_PLAN_CTX_WIP_FILE")"
+  AGENT_PLAN_CTX_CARD_NEXT="$(agent_plan_card_value next "$AGENT_PLAN_CTX_WIP_FILE")"
   AGENT_PLAN_CTX_ACTUAL_OPEN_COUNT="$(agent_plan_count_open_questions "$AGENT_PLAN_CTX_WIP_FILE")"
   actual_last_stream_line="$(agent_plan_last_stream_line "$AGENT_PLAN_CTX_WIP_FILE")"
   AGENT_PLAN_CTX_LAST_STREAM_LINE="$actual_last_stream_line"
@@ -542,6 +569,7 @@ agent_plan_init() {
     -e "s/<slug>/$slug/g" \
     "$target_dir/PLAN.md"
   sed -i '' \
+    -e "s/<slug_id>/${slug//-/_}/g" \
     -e "s/<slug>/$slug/g" \
     -e "s/<YYYY-MM-DD>/$today/g" \
     -e "s/main@<sha>/main@$base_sha/g" \
@@ -623,6 +651,9 @@ agent_plan_collect_issues() {
   if [ ! -f "$AGENT_PLAN_CTX_PLAN_FILE" ]; then
     agent_plan_check_add_issue "high" "missing_plan_md" "PLAN.md is missing"
   fi
+  if [ -z "$AGENT_PLAN_CTX_GLYPH" ]; then
+    agent_plan_check_add_issue "medium" "missing_card" "wip.spw has no <glyph>[\"card\"]{} frame (see _schema/wip.spw CARD)"
+  fi
   if [ -z "$AGENT_PLAN_CTX_ACTUAL_LAST_STREAM" ]; then
     agent_plan_check_add_issue "medium" "stream_silence" "stream has no entries"
   elif [ -n "$AGENT_PLAN_CTX_STREAM_AGE_HOURS" ] && [ "$AGENT_PLAN_CTX_STREAM_AGE_HOURS" -gt 48 ]; then
@@ -649,6 +680,8 @@ agent_plan_status_print_text() {
   echo "Branch: $AGENT_PLAN_CTX_BRANCH"
   echo "Dir: $AGENT_PLAN_CTX_DIR"
   echo "Base Ref: ${AGENT_PLAN_CTX_BASE_REF:-none}"
+  echo "Card: ${AGENT_PLAN_CTX_GLYPH:-none} #${AGENT_PLAN_CTX_PHASE:-none}"
+  echo "Next Move: ${AGENT_PLAN_CTX_CARD_NEXT:-none}"
   echo "Status: ${AGENT_PLAN_CTX_STATUS:-none}"
   echo "Next Commit: ${AGENT_PLAN_CTX_NEXT_COMMIT:-none}"
   echo "Open Questions: cache=${AGENT_PLAN_CTX_CACHE_OPEN_COUNT:-none} actual=${AGENT_PLAN_CTX_ACTUAL_OPEN_COUNT:-0}"
@@ -676,6 +709,9 @@ agent_plan_status_print_json() {
   printf '"branch":"%s",' "$(agent_json_escape "$AGENT_PLAN_CTX_BRANCH")"
   printf '"dir":"%s",' "$(agent_json_escape "$AGENT_PLAN_CTX_DIR")"
   printf '"base_ref":"%s",' "$(agent_json_escape "$AGENT_PLAN_CTX_BASE_REF")"
+  printf '"glyph":"%s",' "$(agent_json_escape "$AGENT_PLAN_CTX_GLYPH")"
+  printf '"phase":"%s",' "$(agent_json_escape "$AGENT_PLAN_CTX_PHASE")"
+  printf '"card_next":"%s",' "$(agent_json_escape "$AGENT_PLAN_CTX_CARD_NEXT")"
   printf '"status":"%s",' "$(agent_json_escape "$AGENT_PLAN_CTX_STATUS")"
   printf '"next_commit":"%s",' "$(agent_json_escape "$AGENT_PLAN_CTX_NEXT_COMMIT")"
   printf '"cache_open_count":"%s",' "$(agent_json_escape "$AGENT_PLAN_CTX_CACHE_OPEN_COUNT")"

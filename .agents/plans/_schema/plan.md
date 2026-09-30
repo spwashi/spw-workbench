@@ -3,9 +3,10 @@
 Every agent feature branch has two artifacts at `.agents/plans/<slug>/`:
 
 - **PLAN.md** — pre-flight scope; filed before any code is written
-- **wip.spw** — running development stream; updated throughout and may remain as retained operational memory after merge
+- **wip.spw** — opens with the plan's **card** (lane glyph, phase, gist, touches, entry, next), then the running development stream; updated throughout and may remain as retained operational memory after merge
 
-See `_schema/wip.spw` for the wip.spw convention and memory model.
+See `_schema/wip.spw` for the wip.spw convention, the card, phases, lane glyphs, and edges.
+`.agents/plans/index.spw` is the flat projection of every card (`npm run spw:plan:index -- --write`).
 
 ---
 
@@ -102,7 +103,8 @@ they must be moved into a dedicated hygiene branch or explicitly deferred.
 ### `## Dependencies`
 
 Other feature branches or plan slugs that must be merged first.
-Write `none` if standalone.
+Write `none` if standalone. Mirror them as `needs` refs in wip.spw `^["edges"]` so the
+index and editors can follow them.
 
 ---
 

@@ -15,6 +15,9 @@
 #
 # Each section maps to a memory region:
 #
+# glance <lane>["card"] ^["edges"]
+# First frames in the file. Hot, tiny, mutable. The flat index is derived from them.
+#
 # working set ^["roots"] ^["intent"] ^["development"] ^["concept_index"] ^["recursive_improvement"] ^["parallel_work"] ^["supporting_documents"] ^["interaction_depth"] ^["risk_model"] ^["validation"] ^["open"] ^["commits"]
 # Hot. Actively consulted. Mutable. Risk and validation frames are optional.
 #
@@ -32,6 +35,92 @@
 # - Stream entries are never deleted, only annotated.
 # - Open questions are removed when resolved — resolution logged in stream first.
 # - Cache is recomputed — never hand-edited.
+
+# ──────────────────────────────────────────────
+# CARD
+# ──────────────────────────────────────────────
+#
+# Every wip.spw opens with an anchor, a kind declaration, and a card:
+#
+#   #>plan_<slug_id>            — fragment target: ~".agents/plans/<slug>/wip.spw#plan_<slug_id>"
+#   #:plan #!<lane>             — kind + lane, for particle census and grep
+#   <glyph>["card"]{
+#    phase: #<phase>
+#    gist: "<one line: what this plan makes true>"
+#    touches: [~"<repo-root-relative dir or file>", ...]
+#    entry: ~"./<file>"          — the first file to open after the card
+#    next: "<one concrete next move>"
+#   }
+#
+# The card is the plan's glance: what a reader, an agent, or the index needs
+# before anything else. Five bindings, no prose paragraphs. Keep the gist under
+# ~100 characters and in the present tense. `touches` names the narrowest
+# existing paths the plan changes (1–4 entries); it is what lets a reader
+# arriving from code find the plan (`npm run spw:plan:index -- --touch <path>`).
+# A plan that will create a path not yet on disk may add an optional sixth
+# binding, `will_touch: [~"<path>"]`; the index reads it like touches and asks
+# for it to be promoted once the path exists.
+#
+# ──────────────────────────────────────────────
+# LANE GLYPHS
+# ──────────────────────────────────────────────
+#
+# The card's operator is its lane. Editors colour operators, so a plan's lane
+# is visible before a word is read. Glyphs mirror plan-ecology-clustering
+# ^"cluster_operator_map":
+#
+#   ! execution_truth           — what becomes truer? adoption, release, trust
+#   @ projection_feedback       — what becomes discussable across hosts? editor and CLI depth, parity
+#   ? public_interest_research  — what is worth asking? theory, prompts, exhibits
+#   ~ curriculum_formation      — what is learned? precedents, labs, transfer
+#   ^ principal_engineering     — what doctrine rises? ecology, taste, design ladders
+#   . rewrite_recovery          — what must be regrounded? moved layouts, lost ownership
+#
+# ──────────────────────────────────────────────
+# PHASES
+# ──────────────────────────────────────────────
+#
+# card.phase is a controlled vocabulary; ~#status in the cache may keep nuance.
+#
+#   #seed       — idea recorded; no committed scope
+#   #planning   — scoped; no implementation landed
+#   #active     — implementation in motion
+#   #review     — implementation exists; awaiting verification or the human gate
+#   #landed     — foundation merged to main; follow-on work stays in this plan
+#   #dormant    — valid but deliberately cold; reheat by writing a stream entry
+#   #stranded   — premise or targets vanished; needs a human disposition
+#   #done       — nothing left; archive-ready
+#
+# ──────────────────────────────────────────────
+# EDGES
+# ──────────────────────────────────────────────
+#
+# ^["edges"] is optional and follows the card. Each kind lists file-relative
+# refs to sibling plans (`~"../<slug>/wip.spw"`), which resolve identically in
+# the CLI, the LSP, and the index generator.
+#
+#   needs       — must land first
+#   feeds       — consumes this plan's output
+#   shares      — overlapping hot files or vocabulary; coordinate
+#   supersedes  — replaces an earlier (often archived) plan
+#
+# Authored edges are claims. The index also computes ^["kin"] — plans whose
+# touches overlap without any declared edge — as a prompt, never as a claim.
+#
+# ──────────────────────────────────────────────
+# INDEX
+# ──────────────────────────────────────────────
+#
+# .agents/plans/index.spw is the flat projection of every card: one frame per
+# phase with rows grouped by lane glyph, a touches map from code regions to
+# plans, computed kin, and drift. Its authored frames (legend, doors) are
+# preserved; derived frames are rewritten by:
+#
+#   npm run spw:plan:index -- --write     # refresh
+#   npm run spw:plan:index -- --check     # exit 1 on card problems or a stale index
+#   npm run spw:plan:index                # terse table in the terminal
+#
+# Edit the card, never the index rows.
 
 # ──────────────────────────────────────────────
 # DEVELOPMENT FRAME
@@ -223,7 +312,7 @@
 # Derived key-value facts — fast context loading for agents entering mid-task.
 #
 # Standard keys:
-# ~#status: "planning | active | blocked | review | done"
+# ~#status: "free-form nuance (e.g. query_truth_ready_for_human_gate); the controlled vocabulary is card.phase"
 # ~#base_ref: "main@<sha> used for branch baseline"
 # ~#rebased_at: "timestamp of last successful rebase"
 # ~#hygiene_split: "branch/ref used to isolate unrelated drift"
@@ -251,8 +340,12 @@
 #
 # The same wip.spw supports multiple read patterns:
 #
+# $["glance"]
+# reads: <lane>["card"] + ^["edges"]
+# purpose: decide in five lines whether this is the plan you need; the index is this projection over every plan
+#
 # $["agent prompt"]
-# reads: ^["roots"] + ^["intent"] + ^["development"] + ^["concept_index"] + ^["recursive_improvement"] + ^["parallel_work"] + ^["supporting_documents"] + ^["interaction_depth"] + ^["cache"] + ^["open"] + ^["commits"]
+# reads: <lane>["card"] + ^["edges"] + ^["roots"] + ^["intent"] + ^["development"] + ^["concept_index"] + ^["recursive_improvement"] + ^["parallel_work"] + ^["supporting_documents"] + ^["interaction_depth"] + ^["cache"] + ^["open"] + ^["commits"]
 # skips: ^["stream"] (too verbose for context windows)
 # purpose: agent enters mid-task, orients in ~40 lines
 #
