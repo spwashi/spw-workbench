@@ -21,11 +21,19 @@ import { resolveWorkspacePath, tryDiscoverSpwWorkspace } from './workspace'
 
 export type ResolveVerdict = 'ok' | 'missing-file' | 'missing-anchor' | 'malformed' | 'external'
 
+/**
+ * Which base a relative target resolved against. The citing file's directory is
+ * tried first, then the consumer root — the same order the LSP follows, so a
+ * `~"packages/…"` citation that navigates in the editor also resolves here.
+ */
+export type ResolveBasis = 'file' | 'root'
+
 export interface ResolvedCitationRow extends ClassifiedCitation {
   file: string
   line: number
   exists: boolean | null
   anchorExists: boolean | null
+  basis: ResolveBasis | null
   verdict: ResolveVerdict
 }
 
@@ -72,6 +80,7 @@ export function printResolveHelp(): void {
         lines: [
           'Extraction uses the parser (pathRefs). Classification splits path and fragment.',
           'Does not treat ~": " prose as a citation — that is the regex failure this replaces.',
+          'Relative targets resolve against the citing file, then the consumer root (the LSP order); basis says which.',
         ],
       },
     ],
@@ -95,7 +104,7 @@ async function pathExists(abs: string): Promise<boolean> {
   }
 }
 
-async function resolveOne(
+export async function resolveOne(
   citingFile: string,
   rawTarget: string,
   line: number,
@@ -108,6 +117,7 @@ async function resolveOne(
     line,
     exists: null,
     anchorExists: null,
+    basis: null,
     verdict: classified.kind === 'malformed' ? 'malformed' : 'ok',
   }
 
@@ -119,11 +129,19 @@ async function resolveOne(
   }
 
   const citingDir = path.dirname(path.resolve(consumerRoot, citingFile))
-  const abs = classified.kind === 'route'
-    ? path.resolve(consumerRoot, classified.targetPath.replace(/^\/+/, ''))
-    : path.resolve(citingDir, classified.targetPath)
+  const candidates: Array<[ResolveBasis, string]> = classified.kind === 'route'
+    ? [['root', path.resolve(consumerRoot, classified.targetPath.replace(/^\/+/, ''))]]
+    : [['file', path.resolve(citingDir, classified.targetPath)], ['root', path.resolve(consumerRoot, classified.targetPath)]]
 
-  row.exists = await pathExists(abs)
+  let abs = candidates[0]![1]
+  row.exists = false
+  for (const [basis, candidate] of candidates) {
+    if (!await pathExists(candidate)) continue
+    abs = candidate
+    row.exists = true
+    row.basis = basis
+    break
+  }
   if (!row.exists) {
     row.verdict = 'missing-file'
     return row
@@ -194,12 +212,13 @@ export async function runSpwResolveCli(argv: string[]): Promise<void> {
     missingFile: rows.filter(row => row.verdict === 'missing-file').length,
     missingAnchor: rows.filter(row => row.verdict === 'missing-anchor').length,
     malformed: rows.filter(row => row.verdict === 'malformed').length,
+    viaRoot: rows.filter(row => row.basis === 'root').length,
   }
 
   if (args.json) {
     console.log(formatJsonEnvelope('resolve', rows, summary))
   } else {
-    meta(`# spw resolve  total=${summary.total} ok=${summary.ok} missing_file=${summary.missingFile} missing_anchor=${summary.missingAnchor} malformed=${summary.malformed}`)
+    meta(`# spw resolve  total=${summary.total} ok=${summary.ok} missing_file=${summary.missingFile} missing_anchor=${summary.missingAnchor} malformed=${summary.malformed} via_root=${summary.viaRoot}`)
     const broken = rows.filter(row => row.verdict !== 'ok' && row.verdict !== 'external')
     if (broken.length === 0) {
       console.log('all citations resolve')
