@@ -164,7 +164,13 @@ export function countOps(frameLabel: string, operator: string): MarkDeriver {
   }
 }
 
-const TIMESTAMP = /\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}/g
+/**
+ * A stream entry head — `>>[2026-09-05 14:10]`, `>>[2026-09-05]`, or
+ * `>>["2026-09-05"]`. Anchoring on the head keeps dates quoted inside an
+ * entry's message from counting, and admits the date-only heads that plans
+ * also write.
+ */
+const ENTRY_STAMP = />>\[\s*"?(\d{4}-\d{2}-\d{2}(?:[ T]\d{2}:\d{2})?)/g
 
 /**
  * The source region a named frame's braces enclose, found from the token
@@ -213,7 +219,7 @@ function findFrameRegionByTokens(source: string, label: string): { start: number
 }
 
 /**
- * The newest `YYYY-MM-DD HH:MM` timestamp inside a named frame.
+ * The newest entry timestamp inside a named frame, with or without a time.
  *
  * The honest value of `~#last_stream`, which had drifted hours behind the
  * entries it was meant to name. Scoped to the frame so the mark's own stale
@@ -225,9 +231,10 @@ export function latestTimestamp(frameLabel: string): MarkDeriver {
     const region = findFrameRegionByTokens(source, frameLabel)
     if (!region) return null
     const text = source.slice(region.start, region.end)
-    const stamps = text.match(TIMESTAMP)
-    if (!stamps || stamps.length === 0) return null
-    // ISO-ish timestamps sort lexically, so the max is the newest.
-    return stamps.map((s) => s.replace('T', ' ')).sort().at(-1) ?? null
+    const stamps = [...text.matchAll(ENTRY_STAMP)].map((m) => m[1]!.replace('T', ' '))
+    if (stamps.length === 0) return null
+    // ISO-ish timestamps sort lexically, so the max is the newest; a date-only
+    // head sorts before any timed entry on the same day.
+    return stamps.sort().at(-1) ?? null
   }
 }
