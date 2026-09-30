@@ -2,7 +2,24 @@
 # Branch: feature/cli-benchmarking-infra
 # Started: 2026-08-15
 
+#>plan_cli_benchmarking_infra
+#:plan #!execution_truth
 #:layer #!pragmatics
+
+!["card"]{
+ phase: #planning
+ gist: "Benchmarks retain raw samples and separate first output, completion, real spans, and env faults."
+ touches: [~"scripts", ~"package.json"]
+ will_touch: [~"scripts/bench"]
+ entry: ~"./cli-benchmarking-infra.spw"
+ next: "Commit 2: create scripts/bench/ (not yet present) with retained-sample stats and the five outcome classes."
+}
+
+^["edges"]{
+ needs: [~"../cli-sense-reorientation/wip.spw", ~"../gap-affinity-tooling/wip.spw"]
+ feeds: [~"../typescript-upgrade-ladder/wip.spw"]
+ shares: [~"../typescript-perf-audit-infra/wip.spw", ~"../typescript-toolchain-observatory/wip.spw", ~"../cli-mode-overhaul/wip.spw", ~"../runtime-dx-foundation/wip.spw"]
+}
 
 ^["roots"]{
   @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"

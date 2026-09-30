@@ -2,7 +2,22 @@
 # Branch: codex/query-profile
 # Started: 2026-09-05
 
+#>plan_query_profile
+#:plan #!execution_truth
 #:layer #!pragmatics
+
+!["card"]{
+ phase: #landed
+ gist: "A slow or killed query names the source it entered and the stages that finished, on stderr."
+ touches: [~"packages/spw-cli/src/query.ts", ~"packages/spw-cli/src/query-profile.ts", ~"docs/runtime/spw/cli-command-surface.spw"]
+ entry: ~"./query-profile.spw"
+ next: "Reduce the slowest completed consumer source to a shareable fixture without copying its contents."
+}
+
+^["edges"]{
+ feeds: [~"../mounted-consumer-tooling/wip.spw"]
+ shares: [~"../cli-benchmarking-infra/wip.spw"]
+}
 
 ^["roots"]{
  @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
@@ -103,7 +118,7 @@
  ~#files_hot: "packages/spw-cli/src/query.ts"
  ~#next_commit: "2"
  ~#open_count: "1"
- ~#last_stream: "2026-09-05 14:10 revise"
+ ~#last_stream: "2026-09-05 14:10"
  ~#taste_debt: "query.ts still owns pipeline plus help; helper owns receipts only"
 }
 

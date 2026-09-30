@@ -2,7 +2,23 @@
 # Branch: feature/vscode-editor-contract
 # Started: 2026-04-01
 
+#>plan_vscode_editor_contract
+#:plan #!projection_feedback
 #:layer #!pragmatics
+
+@["card"]{
+ phase: #dormant
+ gist: "Each editor payload names its owner, authority class, and invalidator; surfaces compose, not fork."
+ touches: [~"extensions/vscode-spw/src/context.ts", ~"extensions/vscode-spw/src/lsp/custom-requests.ts"]
+ entry: ~"./vscode-editor-contract.spw"
+ next: "Refresh the artifact transport frame: spw-probes.ts now serves the four former phantom methods (bb0ec2ef)."
+}
+
+^["edges"]{
+ needs: [~"../operational-topography/wip.spw", ~"../lsp-custom-request-completions/wip.spw"]
+ feeds: [~"../vscode-plugin-performance/wip.spw", ~"../vscode-register-explorer/wip.spw", ~"../vscode-authoring-probe-loop/wip.spw"]
+ shares: [~"../vscode-workspace-atlas/wip.spw"]
+}
 
 ^["roots"]{
  @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"

@@ -121,6 +121,9 @@ npm run spw:plan:init -- <slug>  # Initialize local feature plan surfaces
 npm run spw:plan:stream -- --type decide --message "..." [--slug <slug>]  # Append one stream entry
 npm run spw:plan:status -- [--slug <slug>]  # Read plan cache/status for the active or named plan
 npm run spw:plan:check -- [--slug <slug>]   # Detect cache drift and stale plan surfaces
+npm run spw:plan:index                      # Glance at every plan card (phase, lane glyph, stream age, gist)
+npm run spw:plan:index -- --touch <path>    # Which plans touch a file or directory
+npm run spw:plan:index -- --write|--check   # Refresh / verify .agents/plans/index.spw
 npm run spw:agent:kb             # List local agent reference surfaces
 npm run spw:agent:kb -- --json   # Emit KB topics as JSON
 npm run spw:agent:vibe -- --json # Emit branch/plan context as JSON
@@ -204,9 +207,10 @@ Agent operational knowledge lives in `.agents/`:
 - **worktree-task.md** — Feature branch + worktree lifecycle
 
 ### Plans (`.agents/plans/`)
+Start at `.agents/plans/index.spw` — a flat table derived from plan cards, with "doors" for different kinds of reader.
 Feature branch plans follow the schema at `.agents/plans/_schema/`:
 - `PLAN.md` — pre-flight scope (goal, files, commits, agentic hygiene)
-- `wip.spw` — running development stream with memory model
+- `wip.spw` — opens with a card (`<glyph>["card"]{ phase gist touches entry next }`; glyph = lane: `!` execution, `@` projection, `?` research, `~` curriculum, `^` principal, `.` recovery), optional `^["edges"]`, then the running stream with memory model
 - Archived plans live in `.agents/plans/_archive/`
 
 ## Craft Guards

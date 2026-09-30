@@ -9,10 +9,11 @@ This directory is the agent-facing counterpart to `.spw/` (canon surfaces) and `
 ```
 .agents/
 ├── skills/           # 14 operational skills with SKILL.md, scripts, references
-├── plans/            # Feature branch plans (29 active, 25 archived)
+├── plans/            # Feature branch plans (~74 live, ~32 archived)
+│   ├── index.spw     # Flat routing table — derived from every plan's card
 │   ├── _schema/      # Plan templates: plan.md, wip.spw, wip-template.spw
 │   ├── _archive/     # Merged/completed plans
-│   └── <slug>/       # Active plans: PLAN.md + wip.spw [+ <slug>.spw]
+│   └── <slug>/       # Live plans: PLAN.md + wip.spw [+ <slug>.spw]
 ├── workflows/        # Agent coordination workflows (commit-review, validation, worktree)
 ├── state/            # Runtime state conventions + local cache (runtime/ is git-ignored)
 └── orphaned-files.spw  # Reachability audit snapshot
@@ -50,18 +51,32 @@ Each skill has a `SKILL.md` manifest and optional `scripts/` and `references/` s
 
 ## Plans
 
+Start at **`plans/index.spw`** — one flat file over the nested plan directories:
+rows grouped by phase and lane glyph, a map from code regions to plans, computed
+kin, drift, and *doors* (routes for a first visit, a returning collaborator, an
+agent resuming, someone arriving from code, a language designer, a host
+maintainer, a mounted consumer, a wanderer, and the ecology's steward).
+
+```bash
+npm run spw:plan:index                    # glance: phase · glyph · slug · stream age · gist
+npm run spw:plan:index -- --touch <path>  # which plans touch this file or directory?
+npm run spw:plan:index -- --wander        # one resting plan and one of its open questions
+npm run spw:plan:index -- --check         # card problems or a stale index → exit 1
+npm run spw:plan:index -- --write         # refresh the derived frames of index.spw
+```
+
 Plans follow the schema at `plans/_schema/`:
 
 - **`plan.md`** — Required sections: Goal (with taste note), Scope, Files, Commits, Agentic Hygiene, Dependencies, Spw Artifact
-- **`wip.spw`** — Memory model: intent (hot) → stream (warm, append-only) → cache (derived) → done (cold, written at merge)
-- **`wip-template.spw`** — Copy this to start a new plan
+- **`wip.spw`** — Opens with a **card** whose operator is the lane glyph (`!` execution · `@` projection · `?` research · `~` curriculum · `^` principal · `.` recovery) and whose bindings are `phase`, `gist`, `touches`, `entry`, `next`; optional `^["edges"]` follow. Memory model: glance (card) → intent (hot) → stream (warm, append-only) → cache (derived) → done (cold, written at merge)
+- **`wip-template.spw`** — `npm run spw:plan:init -- <slug>` copies it
 
 ### Plan Lifecycle
 1. Create `feature/<slug>` branch (optionally via worktree)
-2. Write PLAN.md + wip.spw before touching source files
-3. Develop with stream entries (`>>[timestamp] type — content`)
-4. Fill `^["done"]` section at merge time
-5. Archive to `plans/_archive/` after merge
+2. Write PLAN.md + wip.spw (card first) before touching source files; `npm run spw:plan:index -- --write`
+3. Develop with stream entries (`>>[timestamp] type — content`); move `card.phase` as the plan moves
+4. Fill `^["done"]` section at merge time; set `phase: #done`
+5. Archive to `plans/_archive/` after merge (index `^["done"]` lists the candidates)
 
 ## State
 

@@ -60,14 +60,21 @@ in PLAN.md `## Agentic Hygiene`.
 
 ### Step 3: Create wip.spw
 
-Copy `.agents/plans/_schema/wip-template.spw` to `.agents/plans/<slug>/wip.spw`.
+Run `npm run spw:plan:init -- <slug>` (copies `.agents/plans/_schema/wip-template.spw`
+and substitutes `<slug>`, `<slug_id>`, date, and base SHA), or copy the template by hand.
 
 **Populate immediately:**
+- The card — the first frame. Change its operator to the plan's lane glyph
+  (`!` execution · `@` projection · `?` research · `~` curriculum · `^` principal · `.` recovery)
+  and keep `#:plan #!<lane>` above it in step. Fill `phase` (usually `#planning`), a
+  one-line `gist`, 1–4 existing `touches`, `entry`, and `next`.
+- `^["edges"]` — `needs` / `feeds` / `shares` / `supersedes` refs to sibling plans, or delete the frame
 - `^["intent"]` — write `~#goal` and `~#taste` (which craft quality is being improved)
 - `^["commits"]` — draft initial `~[N]: "sigil[scope] — description"` using project sigils
 - `^["cache"]` — set `~#status: "planning"` (already in template)
 
 **Populate during work:**
+- The card — move `phase` as the plan moves; rewrite `next` whenever the next move changes
 - `^["stream"]` — append `>>[timestamp] type — content` entries as you go
 - `^["open"]` — add `?[label]: "question"` entries; remove when resolved
 - `^["cache"]` — update `~#status`, `~#files_hot`, `~#next_commit` as state changes
@@ -163,6 +170,8 @@ Commit PLAN.md and `wip.spw` to the feature branch **before touching any source 
 ## Output Checklist
 
 - [ ] `<slug>` chosen and documented
+- [ ] `wip.spw` card filled (lane glyph, phase, gist, touches, entry, next); `npm run spw:plan:index -- --slug <slug> --check` passes
+- [ ] `npm run spw:plan:index -- --write` run so `.agents/plans/index.spw` lists the plan
 - [ ] `wip.spw` created with `^["intent"]` (goal + taste) and initial `^["commits"]`
 - [ ] All predicted files listed with change type
 - [ ] Craft guard checked (file size, imports, concept count)

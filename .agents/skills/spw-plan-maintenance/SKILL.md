@@ -31,7 +31,13 @@ Triggers:
 Scan the active plan directory for drift signals.
 
 ```bash
-# Active-branch summary
+# Whole-ecology glance: phase, lane glyph, stream age, gist per plan
+npm run spw:plan:index
+
+# Card problems (missing card, bad phase, dead touch/entry/edge) + stale index
+npm run spw:plan:index -- --check
+
+# Active-branch summary (now includes card glyph, phase, next move)
 npm run spw:plan:status
 
 # Active-branch check
@@ -53,6 +59,9 @@ For each plan, check:
 | **Open questions resolved** | `^["open"]` has entries whose decisions are in the stream | Low — cleanup |
 | **Missing cross-references** | New artifacts not referenced in dependent plans | Medium — plans diverge from ecosystem |
 | **Stale dependencies** | `## Dependencies` names archived or completed plans | Low — cleanup |
+| **Card drift** | `card.phase` disagrees with commits/stream; `next` already done; `touches` moved | Medium — the index lies |
+| **Cooling** | `^["drift"] cooling` in `index.spw` (active/review, stream 30+ days behind the ecology) | Medium — re-phase or reheat |
+| **Undeclared kin** | `^["kin"]` in `index.spw` pairs plans that overlap in code with no edge | Low — declare `shares`, or ignore |
 
 ```bash
 # Quick staleness probe: find plans with old base_ref SHAs
@@ -62,7 +71,12 @@ grep -r 'base_ref' .agents/plans/*/wip.spw | grep -v _archive | grep -v _schema
 git log --oneline main | head -20
 ```
 
-### Step 2: Refresh caches
+### Step 2: Refresh cards and caches
+
+Cards are authored: re-read the plan and move `phase`, rewrite `next`, fix `touches`.
+Then regenerate the index — `npm run spw:plan:index -- --write` — and read its
+`^["drift"]` frame. Derived cache marks (`open_count`, `last_stream`) are recomputed by
+`npm run spw:refresh -- .agents/plans/<slug> --write`.
 
 For each plan whose cache is stale, update the `^["cache"]` block in `wip.spw`:
 
@@ -89,7 +103,7 @@ When a new artifact has landed, identify all plans and surfaces that should refe
 | New `.spw/registries/*.spw` | .spw/index.spw, workspace.spw, harness evals |
 | New `.spw/conventions/*.spw` | conventions/index.spw, .spw/index.spw, workspace.spw |
 | New plan artifact (`<slug>.spw`) | dependent plans' `## Dependencies`, interaction contracts |
-| New plan (`PLAN.md + wip.spw`) | plan-ecology-clustering if it exists, adjacent plans' dependency sections |
+| New plan (`PLAN.md + wip.spw`) | its card + `npm run spw:plan:index -- --write`; plan-ecology-clustering `^"plan_map"`; adjacent plans' `^["edges"]` |
 
 **Checklist for each new artifact:**
 - [ ] Indexed in the parent `index.spw`
@@ -138,6 +152,8 @@ For new artifacts, verify they parse and their index references resolve.
 
 After individual plan maintenance, assess the overall ecology:
 
+- Do card glyphs match plan-ecology-clustering `^"plan_map"`? (The glyph is the lane; disagreements are either a stale map or a mis-carded plan.)
+- Does `^["kin"]` in `index.spw` reveal coordination the plans never declared?
 - Are plan clusters (execution-truth, curriculum, research, speculative) correctly assigned?
 - Do dependency edges form a DAG (no cycles)?
 - Are shared hot files identified across plans that might conflict?

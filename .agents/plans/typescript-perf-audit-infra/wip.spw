@@ -2,7 +2,22 @@
 # Branch: feature/typescript-perf-audit-infra
 # Started: 2026-07-20
 
+#>plan_typescript_perf_audit_infra
+#:plan #!execution_truth
 #:layer #!pragmatics
+
+!["card"]{
+ phase: #dormant
+ gist: "Timed typecheck rows name compiler, config, and duration so upgrade claims become measurable."
+ touches: [~"scripts/analyzers", ~"package.json"]
+ entry: ~"./typescript-perf-audit-infra.spw"
+ next: "Commit 2: add scripts/analyzers/typescript-perf.ts emitting one JSON identity row for tsconfig.typecheck.json on 5.9."
+}
+
+^["edges"]{
+ feeds: [~"../typescript-upgrade-ladder/wip.spw", ~"../typescript-toolchain-observatory/wip.spw"]
+ shares: [~"../audit-fuzz-truthfulness/wip.spw"]
+}
 
 ^["roots"]{
  @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"

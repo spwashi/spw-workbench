@@ -2,7 +2,22 @@
 # Branch: feature/vscode-workspace-atlas
 # Started: 2026-03-26
 
+#>plan_vscode_workspace_atlas
+#:plan #!projection_feedback
 #:layer #!pragmatics
+
+@["card"]{
+ phase: #landed
+ gist: "The Atlas tree renders consumer-owned roots, memory tiers, and cursor context from the manifest."
+ touches: [~"extensions/vscode-spw/src/views/workspace-tree.ts", ~"packages/spw-lsp/src/handlers/workspace.ts", ~"packages/spw-lsp/src/server-index.ts"]
+ entry: ~"./vscode-workspace-atlas.spw"
+ next: "Extract workspace-tree.ts (724 lines) before wiring the now-served spw/resonance into atlas nodes."
+}
+
+^["edges"]{
+ feeds: [~"../vscode-register-explorer/wip.spw", ~"../vscode-authoring-probe-loop/wip.spw"]
+ shares: [~"../vscode-plugin-performance/wip.spw"]
+}
 
 ^["roots"]{
  @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"

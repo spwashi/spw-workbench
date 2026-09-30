@@ -2,7 +2,23 @@
 # Branch: feature/typescript-upgrade-ladder
 # Started: 2026-07-20
 
+#>plan_typescript_upgrade_ladder
+#:plan #!execution_truth
 #:layer #!pragmatics
+
+!["card"]{
+ phase: #dormant
+ gist: "The compiler climbs 5.9 → 6 → 7 in green rungs, with dual-install and no silent default flip."
+ touches: [~"tsconfig.base.json", ~"package.json", ~"extensions/vscode-spw/package.json"]
+ entry: ~"./typescript-upgrade-ladder.spw"
+ next: "Rung A: drop baseUrl from tsconfig.base.json, set explicit types, and pin extensions/vscode-spw typescript (still ^5.2.0) to the root."
+}
+
+^["edges"]{
+ needs: [~"../typescript-perf-audit-infra/wip.spw"]
+ feeds: [~"../typescript-toolchain-observatory/wip.spw"]
+ shares: [~"../audit-fuzz-truthfulness/wip.spw"]
+}
 
 ^["roots"]{
  @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"

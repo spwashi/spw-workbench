@@ -2,8 +2,23 @@
 # Branch: feature/apposition-cache-granules
 # Started: 2026-07-27
 
+#>plan_apposition_cache_granules
+#:plan #!execution_truth
 #:layer #!pragmatics
 #:cache #!granularity
+
+!["card"]{
+ phase: #planning
+ gist: "LSP cache entries die with their document and invalidate per apposition granule, not per file."
+ touches: [~"packages/spw-lsp/src/server-index.ts", ~"packages/spw-lsp/src/handlers", ~"packages/spw-seed/src/canonical/apposition-scan.ts"]
+ entry: ~"./apposition-cache-granules.spw"
+ next: "Commit 2: pin the leak in a failing test; evictStale still deletes documents but keeps their annotation and frame index entries."
+}
+
+^["edges"]{
+ needs: [~"../operational-topography/wip.spw"]
+ shares: [~"../spw-beat-diff-precipitation/wip.spw", ~"../geometric-analysis-tooling/wip.spw"]
+}
 
 ^["roots"]{
  @surface_identity: ~".spw/patterns/surface-identity.spw"

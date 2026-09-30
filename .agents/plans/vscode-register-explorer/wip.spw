@@ -2,7 +2,22 @@
 # Branch: feature/vscode-register-explorer
 # Started: 2026-03-26
 
+#>plan_vscode_register_explorer
+#:plan #!projection_feedback
 #:layer #!pragmatics
+
+@["card"]{
+ phase: #dormant
+ gist: "A VS Code Register Explorer shows register phase, provenance, and resonance from a server snapshot."
+ touches: [~"extensions/vscode-spw/src/views", ~"extensions/vscode-spw/src/context.ts", ~"packages/spw-lsp/src/handlers"]
+ entry: ~"./vscode-register-explorer.spw"
+ next: "Decide whether the regex-backed spw/registerSnapshot (bb0ec2ef) is honest enough, or earn a RegisterBank snapshot."
+}
+
+^["edges"]{
+ needs: [~"../lsp-custom-request-completions/wip.spw"]
+ shares: [~"../vscode-authoring-probe-loop/wip.spw"]
+}
 
 ^["roots"]{
  @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"

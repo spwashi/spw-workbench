@@ -1,0 +1,181 @@
+# Relationship contours — who arrives at Spw, what knows them, and what each needs first
+#
+# Written during the 2026-09-28 plan-schema pass. Evidence below was measured in
+# that pass; proposals are unimplemented unless marked landed.
+
+#>relationship_contours
+#:operation #!prime
+#:fixity #!experimental
+#:layer #!pragmatics
+
+@plan: ~"./PLAN.md"
+@index: ~"../index.spw"
+@schema: ~"../_schema/wip.spw"
+@atlas: ~"../citation-navigation/workbench-atlas.spw"
+@learn: ~"../../../docs/learn/index.spw"
+@generator: ~"../../../scripts/plans/plan-index.ts"
+
+^["thesis"]{
+ claim: "A language is met by many kinds of reader at once. Each relationship needs a first move that works without the others' context, and every surface that knows Spw should answer the same question at comparable depth."
+ unit: "A door: the question someone arrives with, and at most four hops to the file that answers it."
+ balance: "Flat surfaces for speed (one index, one card, one table); nested surfaces for depth (plan dirs, artifacts, streams). The flat surface is always derived from the nested one, never maintained beside it."
+ surprise: "Predictable improvements remove friction someone already feels. Unpredictable ones put two things side by side that nobody filed together — kin, wander, a random open question — and let the reader notice."
+}
+
+^["relationships"]{
+ stranger: .{
+  knows = "nothing about Spw; maybe a link"
+  needs_first = "what this is, one runnable thing, and one thing being built"
+  door = "index doors.first_visit → docs/learn path (t15)"
+  gap = "no single sentence of Spw appears before the second file"
+ }[reg=facet]
+ reader: .{
+  knows = "how to read .spw, not the repository's history"
+  needs_first = "where a surface sits and what owns it"
+  door = "card.entry; roots frames; LSP go-to-definition on @roots and ~refs"
+  gap = "root-relative refs were unverifiable outside the editor until spw resolve learned the LSP's fallback"
+ }[reg=facet]
+ author: .{
+  knows = "the syntax well enough to write"
+  needs_first = "fast feedback: does it parse, what dialect, what profile"
+  door = "npm run spw:dev; spw stack <file>"
+  gap = "parse throughput (~64 KB/s) makes corpus-wide checks feel batch-like"
+ }[reg=facet]
+ agent: .{
+  knows = "only what is in its context window"
+  needs_first = "the smallest truthful state: phase, next move, open questions"
+  door = "doors.agent_resume; spw:plan:status now prints card glyph, phase, next"
+  gap = "caches drifted because nothing recomputed them; spw refresh covers two marks only"
+ }[reg=facet]
+ tool: .{
+  knows = "the parser's products and whatever the tool re-derives"
+  needs_first = "one shared semantics per question (path basis, dialect, anchors)"
+  door = "@spwashi/spw-seed exports: parse, lex, significantTokens, classifyCitation"
+  gap = "CLI and LSP resolved refs differently; plan dialect is selected by path only"
+ }[reg=facet]
+ host: .{
+  knows = "an editor's gestures and its own plugin"
+  needs_first = "what peers already do and what the shared products are"
+  door = "doors.host_maintainer; '@' rows; ecology interaction_target_cluster"
+  gap = "operator colouring now carries plan lanes — hosts that do not colour operators lose that cue"
+ }[reg=facet]
+ consumer: .{
+  knows = "their own repository, which mounts the workbench"
+  needs_first = "what is stable, what is optional, what never writes upstream"
+  door = "doors.consumer; spw doctor; mounted-consumer-tooling card"
+  gap = "consumer-facing plans are findable by lane, not by the question 'is this safe to adopt?'"
+ }[reg=facet]
+ designer: .{
+  knows = "why the operators mean what they mean"
+  needs_first = "where the language is changing and what evidence each change carries"
+  door = "doors.language_designer; '?' and '^' rows; dialect-spec"
+  gap = "language questions surfaced by tooling (below) have no inbox besides plan streams"
+ }[reg=facet]
+ steward: .{
+  knows = "the ecology as a whole"
+  needs_first = "what lies: stale phases, dead refs, cooling plans, undeclared coordination"
+  door = "doors.steward; spw:plan:index --check; ^[\"drift\"]; ^[\"kin\"]"
+  gap = "twenty-plus free-form statuses collapsed to eight phases only by hand this once"
+ }[reg=facet]
+ wanderer: .{
+  knows = "nothing in particular, on purpose"
+  needs_first = "one thing worth reheating"
+  door = "spw:plan:index --wander"
+  gap = "wonder frames are templated and repeat; they invite but rarely route"
+ }[reg=facet]
+}
+
+^["surfaces_that_know"]{
+ seed: .{ knows = ["tokens", "AST", "dialects by path", "anchors", "derived marks"] owes = "one semantics every other surface reuses" }[reg=facet]
+ lsp: .{ knows = ["live buffers", "@roots", "~refs with root fallback", "fragments"] owes = "the same answers as the CLI on saved text" }[reg=facet]
+ cli: .{ knows = ["saved corpus", "resolve", "refresh", "census", "graph"] owes = "bounded, reproducible reports an agent can cite" }[reg=facet]
+ plan_tools: .{ knows = ["cards", "cache", "stream", "index", "commit-gate readout"] owes = "a glance that is derived, never hand-kept" }[reg=facet]
+ hosts: .{ knows = ["gestures", "colour", "panels"] owes = "native form, peer depth" }[reg=facet]
+ docs_learn: .{ knows = ["timeboxed paths (t15, t60, t1d)", "agent brief"] owes = "a route into live work, not only into theory" }[reg=facet]
+}
+
+^["evidence"]{
+ // Measured 2026-09-28 on main@3eaab637 plus this pass's working tree.
+ resolve_parity: "spw resolve over .agents/plans: 1183 of 1388 refs reported missing before; 32 after adding the LSP's consumer-root fallback (1155 resolve via root). Landed in packages/spw-cli/src/resolve.ts with tests."
+ status_sprawl: "74 live plans carried 20+ distinct ~#status spellings (verifying, landed_foundation, query_truth_ready_for_human_gate, post_4d_stabilize_open_work …); cards now use eight phases."
+ parse_throughput: "Full parse of 74 wip.spw files (646 KB) took ~10.1 s; lexing the same took ~0.45 s. A 6-line card slice parses in ~9 ms."
+ validator_cost: "spw-syntax-validate over .agents/plans (186 files) reported 94.5 s."
+ import_cost: "@spwashi/spw-seed root import ~680 ms under tsx; /parser ~250 ms; /lite ~100 ms."
+ typecheck_head: "npm run build fails on main@3eaab637: 5 errors in packages/spw-seed/src/grammar/expression-charge.test.ts (ParseEvent data typing)."
+ gate_counts: "The commit gate counted stream entries with ^>> — always 0 for indented streams. Fixed to count indented >>[ entries and ?[ questions."
+ empty_dirs: "Six empty, untracked plan directories (already archived or never written) looked like live plans in ls. Removed."
+ phases: "After carding from git evidence: 23 landed, 19 dormant, 14 done, 7 planning, 7 stranded, 5 active, 0 review. Glyphs: 42 !, 11 @, 9 ?, 6 ~, 5 ^, 2 ."
+ cache_lag: "31 caches name an earlier stage than their card's phase; five carding agents independently asked for commit-to-plan matching."
+ stream_heads: "Plans write three entry heads: >>[date time] (1109), >>[date] (152), >>[\"date\"] (29). seed latestTimestamp read only the first, so spw refresh would have moved some last_stream values backwards. Fixed and tested."
+ marker_roots: "spw-marker-audit never scanned packages/: 119 markers before, 158 after; @spw:axis 0 → 9."
+ fuzz_claims: "CLAUDE.md described fuzz:boonhonk as a groove detector; package.json maps it to test:runtime. Doc corrected; the detector remains unbuilt."
+}
+
+^["predictable"]{
+ // Friction someone already feels; payoff is known. Ordered by leverage.
+ landed_evidence: "Match each plan's ^[\"commits\"] subjects and PLAN.md Files against git log main since Started; accept squashed and cross-plan landings (b7c5c7df, 08e2bc1c) by diff-stat. Emit a suggested phase and landed_by sha; plan-index shows disagreement with the card."
+ parse_budget: "Profile the parser on plan-sized inputs; set a throughput budget in fuzz:boonhonk. Every corpus tool (validate, resolve, census, index) inherits the gain."
+ green_head: "Fix the expression-charge.test.ts typing so npm run build is a trustworthy gate again."
+ validator_lex_first: "Let spw-syntax-validate lex-check first and parse only on demand or in --strict; report both costs."
+ refresh_card: "Teach spw refresh to derive cache ~#status from card.phase (or retire ~#status), and next_commit from landed commit subjects."
+ index_in_gate: "The commit gate already nudges when a card changes without index.spw staged; add plan-index --check to fuzz:stabilize so CI agrees."
+ dialect_by_declaration: "A wip.spw copied out of .agents/plans silently changes dialect. Honour an in-file dialect particle before the path rule, and have plan-index warn when they disagree."
+ resolve_parse_dialect: "spw resolve parses without the file's path, so plan streams lex under the base dialect. Pass { path } for dialect parity with the validator and LSP."
+}
+
+^["field_reports"]{
+ // Recurring observations from the eight carding agents, 2026-09-28.
+ cache_blindness: "Caches never learn when commits merge, or when another plan lands their work; 'review' outlived its commits by five weeks in several plans."
+ phantom_drift: "Seven VS Code/LSP plans still call resonance, registerSnapshot, operatorFrequency, and phaseContext phantoms; bb0ec2ef has served them since 2026-07-22. Compare spw/* names in plan text with stdio-server.ts cases."
+ unowned_verb: "spw capabilities is scheduled by absorb-spwq-cli, cli-mode-overhaul, and mounted-consumer-tooling; no plan owns it."
+ vocabulary_collision: "5f181249 exported spw.fingerprint/1 (node counts) while geometric-analysis-tooling reserves shapeFingerprint; surface-identity ^consumers could back a naming lint."
+ archive_reuse: "Archiving under a reused slug left the archived neovim plan's self-roots pointing at the revived plan. Archive moves should rewrite self-roots; revivals should declare supersedes."
+ edge_prose: "PLAN.md Dependencies mix kinds in prose ('culturally succeeds', 'soft', 'parent'); one template line per kind would let edges be derived rather than interpreted."
+ flat_cli: "packages/spw-cli/src is ~90 flat files, so CLI touches collapse onto commands.ts; kin sees shared files, not shared verbs."
+}
+
+^["dispositions"]{
+ // Human decisions the pass surfaced. One sitting clears most of them.
+ archive_ready: [#brand_core_ids, #cli_copy_taste, #construction_onf, #construction_worlds, #consumer_cli_instruments, #editor_cli_instruments, #image_prompt_split, #intellij_plugin_integration, #lib_arch_spw_theory, #mounted_workbench_organelle, #noun_postfix_containers, #prompt_surface_align, #spw_syntax_warning_cleanup, #webstorm_compatibility]
+ archive_caveats: "mounted-workbench-organelle is cited by plan-ecology-clustering roots and ^mounted_review_flow; brand-core-ids wants a closing stream note; the codex/webstorm-compatibility worktree and branch are prunable."
+ stranded: "audit-css-tokens, audit-data-attributes, audit-ui-data-models, symmetry-explorer-instrument, refactor-import-sprawl, command-experience-tools: relocate to a site repo, re-scope against packages/, or archive. spw-beat-diff-precipitation: re-scope onto request epochs, the shared cache block, and ChangeReport, or archive."
+ decide: [
+  "safety-commit-reconciliation: commits 14–17, and whether backup stash c85227ab can go",
+  "register-phase-evolution: keep the remainder or fold into spw-q-stabilization",
+  "spw capabilities: name one owning plan",
+  "seed-roundness-grades: re-scope commits 2–5 now superseded by bbb14615/12b54eb7",
+  "ecosystem-surface-governance: retire branding-era header and goal",
+  "lsp-custom-request-completions: reframe as registry + audit over 23 served spw/* methods",
+  "vscode-register-explorer: is the heuristic registerSnapshot honest enough to build on",
+  "phase_authority: retire ~#status, derive it, or keep it as nuance (31 lag today)",
+ ]
+}
+
+^["unpredictable"]{
+ // Instruments that put unfiled things side by side. Payoff unknown by design.
+ kin: "Computed pairs of plans overlapping in code without a declared edge. Some will be noise; the ones that are not are coordination nobody wrote down."
+ wander: "One resting plan, one of its open questions at random, its kin. A way to reheat without a backlog meeting."
+ glyph_census: "Counting cards by lane glyph shows where the ecology's attention actually is — which may disagree with the doctrine in plan-ecology-clustering."
+ operator_colour: "Plans now look different by lane in any editor that colours operators. Watch whether people start reading lanes before titles."
+ kin_confirmed: "Computed kin paired vscode-editor-contract with citation-navigation — the same overlap a carding agent had noticed by reading both plans."
+ door_misses: "Record which door a reader tried and where they got stuck (a one-line stream entry type, 'door'). The misses will name the relationships this list forgot."
+ random_open_in_status: "spw:plan:status could print one open question at random, the way --wander does; an agent resuming might answer something nobody asked it to."
+}
+
+^["language_contours"]{
+ // Questions about the language itself, surfaced by building tooling on it.
+ operator_as_classifier: "The card's operator carries the lane. The parser accepts any operator before [\"label\"]{}, so classification costs no new syntax — is that a pattern to name (and to bound), or an accident to reserve against?"
+ particle_kind: "#:plan #!<lane> declares kind and lane redundantly with the card operator. Particles are cheap to census; operators are cheap to see. Which is canonical when they disagree?"
+ line_payload_trap: "A bare #tag mid-line swallows the rest of the line as prose (`@x: ~\"p\" #active \"gist\"` loses the gist). Row authors will hit this; the index sidesteps it by carrying phase in the frame label, not the row. Should #tag payload end at a string literal?"
+ path_basis: "File-relative first, then consumer root, is now shared by LSP and CLI — but it is tool behaviour, not a declared language rule. Write it into the dialect spec so a third tool cannot drift."
+ anchor_identity: "#>plan_<slug> gives every plan a citable fragment. Plans cite each other by file today; fragments would survive a card moving within the file."
+ prospective_ref: "will_touch names paths that do not exist yet. A reference with a prospective stance is a real intent, not a dead link — should the language mark it (an aspect particle on ~\"…\") so every resolver treats it alike?"
+ dialect_position: "@dialect:Spw.p is honoured only within the first 4096 characters; inserting a card pushed some headers down. Position-sensitive declarations are fragile under additive schema changes."
+ glance_pattern: "The card is a general shape: kind, phase, gist, touches, entry, next. Skills, tooling specs, registries, and docs spines could all open with one."
+}
+
+^["open"]{
+ ?[glance_pattern]: "Promote the card to .spw/patterns/glance-card.spw and try it on one non-plan surface?"
+ ?[phase_authority]: "Retire ~#status, derive it from card.phase, or keep both with distinct meanings?"
+ ?[archive_policy]: "Should #done plans move to _archive automatically once the index lists them, or stay until a human archives them?"
+}

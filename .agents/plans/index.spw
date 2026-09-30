@@ -1,0 +1,320 @@
+# Plans — flat index
+#
+# One routing table over the nested plan directories. Legend and doors are
+# authored; every frame from ^["active"] down is derived from plan cards by
+# `npm run spw:plan:index -- --write`. Edit the card, never a derived row.
+
+#>plans_index
+#:index #!plans
+#:layer #!pragmatics
+
+^["roots"]{
+ @schema: ~"./_schema/wip.spw"
+ @template: ~"./_schema/wip-template.spw"
+ @ecology: ~"./plan-ecology-clustering/plan-ecology-clustering.spw"
+ @archive: ~"./_archive"
+ @canon: ~"../../.spw/index.spw"
+ @learn: ~"../../docs/learn/index.spw"
+ @roadmaps: ~"../../docs/plans/index.spw"
+ @generator: ~"../../scripts/plans/plan-index.ts"
+ @contours: ~"./relationship-contours/relationship-contours.spw"
+}
+
+^["legend"]{
+ // A card's operator is its lane; the glyph groups rows below.
+ '!': .{ lane = #execution_truth asks = "what becomes truer?" }
+ '@': .{ lane = #projection_feedback asks = "what becomes discussable across hosts?" }
+ '?': .{ lane = #public_interest_research asks = "what is worth asking?" }
+ '~': .{ lane = #curriculum_formation asks = "what is learned?" }
+ '^': .{ lane = #principal_engineering asks = "what doctrine rises?" }
+ '.': .{ lane = #rewrite_recovery asks = "what must be regrounded?" }
+ phases: [#active, #review, #landed, #planning, #seed, #dormant, #stranded, #done]
+}
+
+^["doors"]{
+ // Arrive with a question; leave with the next file. Each door is at most four hops.
+ first_visit: .{
+  ask = "What is Spw, and what is being built right now?"
+  route = ["legend", "active", "one card", "its entry"]
+  then = [@learn, @canon]
+ }
+ returning: .{
+  ask = "What moved while I was away?"
+  run = "npm run spw:plan:index"
+  route = ["stream age column", "drift.cooling", "a card's next"]
+ }
+ agent_resume: .{
+  ask = "Where exactly was this plan left?"
+  run = "npm run spw:plan:status -- --slug <slug>"
+  route = ["card", "cache", "open", "last five stream entries"]
+ }
+ from_code: .{
+  ask = "Which plans care about the file I am holding?"
+  run = "npm run spw:plan:index -- --touch <path>"
+  route = ["touches", "the card", "its edges"]
+ }
+ language_designer: .{
+  ask = "Where is the language itself changing?"
+  route = [@roadmaps, "'?' and '^' rows", "directive-lattice and shape-syntax-ecology cards", ~"../../.spw/registries/dialect-spec.spw"]
+ }
+ host_maintainer: .{
+  ask = "What does my editor or client owe, and what do its peers already do?"
+  route = ["'@' rows", "ecology interaction_target_cluster", ~"../../.spw/tooling/editor-instruments.spw"]
+ }
+ consumer: .{
+  ask = "I mount the workbench in another repository — what is stable for me?"
+  run = "npm run spw:doctor"
+  route = ["mounted-consumer-tooling card", ~"../../.spw/conventions/submodule.spw"]
+ }
+ wanderer: .{
+  ask = "Nothing urgent — what is worth reheating?"
+  run = "npm run spw:plan:index -- --wander"
+  route = ["kin", "a resting card", "one open question"]
+ }
+ steward: .{
+  ask = "Is the ecology telling the truth?"
+  run = "npm run spw:plan:index -- --check"
+  route = ["drift", "/maintain-plans", @ecology, @contours]
+ }
+}
+
+^["active"]{
+ '!': {
+  @hygiene_index_consolidation: ~"./hygiene-index-consolidation/wip.spw" "Git status, doc refs, plan caches, and a plan index tell the truth without archaeology."
+  @package_iteration_radius: ~"./package-iteration-radius/wip.spw" "Package manifests, environment receipts, and leaf tasks make each change's build radius visible."
+  @refactor_experiment_lifecycle: ~"./refactor-experiment-lifecycle/wip.spw" "Multi-file refactors run as hash-gated experiments under one spw.refactor.plan/1 id."
+ }
+ '^': {
+  @plan_ecology_clustering: ~"./plan-ecology-clustering/wip.spw" "Every plan carries a lane, a learning value, and a place in one legible direction spine."
+  @relationship_contours: ~"./relationship-contours/wip.spw" "Give each kind of reader a first move; make every surface answer the same question alike."
+ }
+}
+
+^["landed"]{
+ '!': {
+  @absorb_spwq_cli: ~"./absorb-spwq-cli/wip.spw" "One package-owned spw CLI owns truthful selector verbs; spwq survives only as a hidden alias."
+  @audit_fuzz_truthfulness: ~"./audit-fuzz-truthfulness/wip.spw" "audit:* and fuzz:* names state what they scan and verify, with JSON output to rank and diff."
+  @canon_rewrite_v2: ~"./canon-rewrite-v2/wip.spw" "Main carries lawful field coordinates, product identity, nested disclosure, and delta≠patch."
+  @cli_sense_reorientation: ~"./cli-sense-reorientation/wip.spw" "Sense verbs compose over named IRs and one progressive product protocol, not accreted names."
+  @commit_gate_redesign: ~"./commit-gate-redesign/wip.spw" "The human authorizes a summarized commit; hook and poll-review share one review engine."
+  @ecosystem_surface_governance: ~"./ecosystem-surface-governance/wip.spw" "Surface archetypes carry readiness evidence and stewardship, never a domain, owner, or deploy target"
+  @gap_affinity_tooling: ~"./gap-affinity-tooling/wip.spw" "Token gaps and operator affinity become declared syntax products that formatting and tools preserve."
+  @measure_invariant_generalization: ~"./measure-invariant-generalization/wip.spw" "Measures declare an evaluation scheme, so exact mass and fuzzy invariants share one reconcile loop."
+  @mounted_consumer_tooling: ~"./mounted-consumer-tooling/wip.spw" "Any repo mounting .spw/_workbench gets audited CLI, LSP, and editor tooling without being named"
+  @operational_topography: ~"./operational-topography/wip.spw" "Spw has one neutral, parser-owned contract for placement, nesting, orientation, and evidence."
+  @query_profile: ~"./query-profile/wip.spw" "A slow or killed query names the source it entered and the stages that finished, on stderr."
+  @runtime_axis_traceability: ~"./runtime-axis-traceability/wip.spw" "Runtime constants and stages carry @spw:axis traces that reviewers read back to design axes."
+  @safety_commit_reconciliation: ~"./safety-commit-reconciliation/wip.spw" "Checkpoint a333db8d lands as dependency-ordered, independently verified commits."
+  @seed_roundness_grades: ~"./seed-roundness-grades/wip.spw" "Living docs say effect.l0..l3 as differential.ts does; n-range and range-transform are round."
+  @spw_cli_overhaul: ~"./spw-cli-overhaul/wip.spw" "The CLI routes through one package, parses flags fail-closed, and speaks a versioned JSON envelope."
+  @spw_q_stabilization: ~"./spw-q-stabilization/wip.spw" "Spw.q is a versioned pre-v1 candidate whose evidence names provenance, not an ordinal ladder."
+  @spw_site_install: ~"./spw-site-install/wip.spw" "A consumer mounts the workbench at .spw/_workbench and keeps its own .spw canon and review evidence"
+  @syntax_profile_stack: ~"./syntax-profile-stack/wip.spw" "One dialect × surface-profile stack resolves once for parse, review, format, and editor hover."
+  @vscode_lsp_roadmap: ~"./vscode-lsp-roadmap/wip.spw" "Editor clients and spw-lsp advance on one ordered ladder with honest capabilities and thin clients."
+ }
+ '@': {
+  @form_geometry_editor: ~"./form-geometry-editor/wip.spw" "Editors show caret-local form geometry and offer only receipt-gated mobility edits from Seed."
+  @vscode_workspace_atlas: ~"./vscode-workspace-atlas/wip.spw" "The Atlas tree renders consumer-owned roots, memory tiers, and cursor context from the manifest."
+ }
+ '^': {
+  @directive_lattice: ~"./directive-lattice/wip.spw" "One lexed particle family ⟨stance⟩#⟨aim⟩name turns #> anchors into addressable fragment targets."
+  @shape_syntax_ecology: ~"./shape-syntax-ecology/wip.spw" "Experimental syntax stays citable by catalog id and status in seed and LSP without becoming law."
+ }
+}
+
+^["planning"]{
+ '!': {
+  @apposition_cache_granules: ~"./apposition-cache-granules/wip.spw" "LSP cache entries die with their document and invalidate per apposition granule, not per file."
+  @cli_benchmarking_infra: ~"./cli-benchmarking-infra/wip.spw" "Benchmarks retain raw samples and separate first output, completion, real spans, and env faults."
+  @cli_mode_overhaul: ~"./cli-mode-overhaul/wip.spw" "Every CLI command declares its effect mode and ceiling, so no --write arrives as a surprise."
+  @lsp_custom_request_completions: ~"./lsp-custom-request-completions/wip.spw" "Every spw/* method has one registry entry and a matrix row from handled through tested."
+ }
+ '@': {
+  @citation_navigation: ~"./citation-navigation/wip.spw" "Make an unfamiliar Spw workspace navigable by construct, evidence trail, and resumable inquiry."
+  @intellij_lsp4ij: ~"./intellij-lsp4ij/wip.spw" "IntelliJ's LSP substrate (native API vs LSP4IJ) is chosen on mounted-consumer evidence before 263"
+  @neovim_spw_surfaces: ~"./neovim-spw-surfaces/wip.spw" "Neovim is a builtins-first spw-lsp peer: honest :Spw* wrappers, projected diagnostics, :SpwInspect"
+ }
+}
+
+^["dormant"]{
+ '!': {
+  @geometric_analysis_tooling: ~"./geometric-analysis-tooling/wip.spw" "spw geometry counts operators from the AST, not characters, and fingerprints recurring ONF shape."
+  @register_phase_evolution: ~"./register-phase-evolution/wip.spw" "Selectors, spwq, and docs share the canonical register phases lex→parse→semantic→optimize→pragmatic."
+  @runtime_dx_foundation: ~"./runtime-dx-foundation/wip.spw" "Seed, runtime, LSP, CLI, and editor failures share one greppable station code and a next action."
+  @typescript_perf_audit_infra: ~"./typescript-perf-audit-infra/wip.spw" "Timed typecheck rows name compiler, config, and duration so upgrade claims become measurable."
+  @typescript_upgrade_ladder: ~"./typescript-upgrade-ladder/wip.spw" "The compiler climbs 5.9 → 6 → 7 in green rungs, with dual-install and no silent default flip."
+  @vscode_plugin_performance: ~"./vscode-plugin-performance/wip.spw" "VS Code starts lean and stops paying for hidden surfaces, full rebuilds, and duplicate LSP calls."
+ }
+ '@': {
+  @obsidian_spw: ~"./obsidian-spw/wip.spw" "Obsidian renders .spw files and markdown fences locally, with LSP-backed Concepts and Atlas views"
+  @vscode_authoring_probe_loop: ~"./vscode-authoring-probe-loop/wip.spw" "Cursor probe sites (%mass, !probe, wonder, $%) get LSP actions that VS Code and Neovim both project."
+  @vscode_cognitive_surface: ~"./vscode-cognitive-surface/wip.spw" "Editor surfaces answer a few orientation questions via shared reading profiles, not added chrome."
+  @vscode_editor_contract: ~"./vscode-editor-contract/wip.spw" "Each editor payload names its owner, authority class, and invalidator; surfaces compose, not fork."
+  @vscode_register_explorer: ~"./vscode-register-explorer/wip.spw" "A VS Code Register Explorer shows register phase, provenance, and resonance from a server snapshot."
+ }
+ '?': {
+  @curiosity_mutation_ergonomics: ~"./curiosity-mutation-ergonomics/wip.spw" "Plan-only explore profiles invite underused combinator cells and stabilize relations that survive."
+  @precipitate_model_alignment: ~"./precipitate-model-alignment/wip.spw" "Precipitate, substrate, assay, and resonance name checkable roles in the runtime pipeline."
+  @spw_garden_geometry: ~"./spw-garden-geometry/wip.spw" "Hovers show only what reading cannot: true deltas, cross-file facts, and measured mechanics."
+  @typescript_toolchain_observatory: ~"./typescript-toolchain-observatory/wip.spw" "TypeScript config, version, and bundle experiments become comparable JSON, Markdown, and .spw rows."
+ }
+ '~': {
+  @curriculum_html_css_mastery: ~"./curriculum-html-css-mastery/wip.spw" "Five HTML/CSS spec labs turn web-platform precedents into reusable Spw page heuristics."
+  @curriculum_html_svg_mastery: ~"./curriculum-html-svg-mastery/wip.spw" "Fifty hand-authored SVG labs turn coordinates, paths, filters, and motion into Spw precedent."
+  @curriculum_logic_terminal_mastery: ~"./curriculum-logic-terminal-mastery/wip.spw" "TTY, Prolog, Haskell, and GQL labs sharpen Spw CLI and query design with classical precedent."
+ }
+ '^': {
+  @naming_profile_convention_align: ~"./naming-profile-convention-align/wip.spw" "Each head noun (profile, hash, mode) has one owning family, indexed and co-developed across plans."
+ }
+}
+
+^["stranded"]{
+ '!': {
+  @spw_beat_diff_precipitation: ~"./spw-beat-diff-precipitation/wip.spw" "workspace.spw configures beat TTLs and diff precipitation; hot write beats reload registers live."
+ }
+ '@': {
+  @command_experience_tools: ~"./command-experience-tools/wip.spw" "Spw concepts are looked up, selected, and manipulated through typed, previewable command intents."
+ }
+ '?': {
+  @symmetry_explorer_instrument: ~"./symmetry-explorer-instrument/wip.spw" "A D4/Z4 symmetry explorer animates the eight group actions on a 2x2 tile grid."
+ }
+ '~': {
+  @audit_css_tokens: ~"./audit-css-tokens/wip.spw" "Color, rhythm, and spacing trace to named Valence token scales instead of ad-hoc hex values."
+  @audit_data_attributes: ~"./audit-data-attributes/wip.spw" "data-* and ARIA attributes reflect named state machines through declared reflection contracts."
+  @audit_ui_data_models: ~"./audit-ui-data-models/wip.spw" "Implicit UI state becomes typed algebras in which illegal states are unrepresentable."
+ }
+ '.': {
+  @refactor_import_sprawl: ~"./refactor-import-sprawl/wip.spw" "src/platform/bootstrap splits into boot init, app layout, and feature wiring under a layer DAG."
+ }
+}
+
+^["done"]{
+ '!': {
+  @cli_copy_taste: ~"./cli-copy-taste/wip.spw" "CLI help leads with outcomes, names cost and disclosure, and marks aliases as compatibility routes."
+  @construction_onf: ~"./construction-onf/wip.spw" "Structural ONF keeps expression heads, ordered postfix attachments, and AST span provenance."
+  @consumer_cli_instruments: ~"./consumer-cli-instruments/wip.spw" "Mounted consumers get ~> joins, two-form lattice, fingerprint, resolve, lint, and query --stats."
+  @editor_cli_instruments: ~"./editor-cli-instruments/wip.spw" "Form, Stack, Cache, Rename, and Refactor Plan read alike in VS Code, IntelliJ, Neovim, and the CLI."
+  @intellij_plugin_integration: ~"./intellij-plugin-integration/wip.spw" "The IntelliJ plugin loads TextMate reliably, reports LSP startup failures, and launches from a mount"
+  @mounted_workbench_organelle: ~"./mounted-workbench-organelle/wip.spw" "A mount orients consumers via shared root parsing, spw roots/tree/select, and VS Code navigation"
+  @noun_postfix_containers: ~"./noun-postfix-containers/wip.spw" "Same-line [frame]{body}(scope)<capsule> bind onto one identifier-led expression, not sequence steps."
+  @spw_syntax_warning_cleanup: ~"./spw-syntax-warning-cleanup/wip.spw" "Strict lint passes the authored Spw corpus at zero warnings because the parser owns canon forms."
+  @webstorm_compatibility: ~"./webstorm-compatibility/wip.spw" "The IntelliJ plugin builds on Java 21 and verifies on WebStorm 242–262.* with mounted LSP startup"
+ }
+ '?': {
+  @construction_worlds: ~"./construction-worlds/wip.spw" "Construction preservation and portable focus stay recorded as graded research claims, not law."
+  @image_prompt_split: ~"./image-prompt-split/wip.spw" "The image prompt reads in three passes: brief, renderer_profile, then emit."
+  @lib_arch_spw_theory: ~"./lib-arch-spw-theory/wip.spw" "The v0.2 library has an architecture map, .spw supports, and a checked plane-axis theory bridge."
+  @prompt_surface_align: ~"./prompt-surface-align/wip.spw" "Prompt packs parse without lexer errors, and editors treat ##> prompt headers as anchors."
+ }
+ '.': {
+  @brand_core_ids: ~"./brand-core-ids/wip.spw" "Register, Frame, Domain, and Layer IDs are nominal brands, so tsc rejects mixed identifiers."
+ }
+}
+
+^["touches"]{
+ // package-sized regions → plans; `npm run spw:plan:index -- --touch <path>` answers finer paths
+ ~".agents/plans": [@hygiene_index_consolidation, @plan_ecology_clustering, @relationship_contours]
+ ~".agents/skills": [@commit_gate_redesign, @curriculum_html_css_mastery, @curriculum_html_svg_mastery, @mounted_consumer_tooling]
+ ~".agents/workflows": [@commit_gate_redesign]
+ ~".gitignore": [@hygiene_index_consolidation]
+ ~".spw/biome": [@audit_css_tokens]
+ ~".spw/conventions": [@absorb_spwq_cli, @audit_data_attributes, @cli_copy_taste, @command_experience_tools, @curriculum_logic_terminal_mastery, @mounted_consumer_tooling, @naming_profile_convention_align, @spw_site_install]
+ ~".spw/hot.spw": [@cli_mode_overhaul]
+ ~".spw/patterns": [@curriculum_html_svg_mastery, @naming_profile_convention_align, @plan_ecology_clustering]
+ ~".spw/registries": [@directive_lattice, @syntax_profile_stack]
+ ~".spw/surfaces": [@ecosystem_surface_governance]
+ ~".spw/tooling": [@audit_data_attributes, @editor_cli_instruments, @mounted_consumer_tooling, @neovim_spw_surfaces, @plan_ecology_clustering, @vscode_lsp_roadmap, @webstorm_compatibility]
+ ~".spw/workspace.spw": [@spw_beat_diff_precipitation]
+ ~"docs/contributing": [@audit_fuzz_truthfulness]
+ ~"docs/design": [@audit_css_tokens, @audit_data_attributes, @curriculum_html_css_mastery, @curriculum_html_svg_mastery, @spw_q_stabilization]
+ ~"docs/research": [@construction_worlds, @typescript_toolchain_observatory]
+ ~"docs/runtime": [@cli_copy_taste, @curiosity_mutation_ergonomics, @precipitate_model_alignment, @query_profile, @register_phase_evolution, @shape_syntax_ecology]
+ ~"docs/specs": [@precipitate_model_alignment]
+ ~"docs/theory": [@audit_ui_data_models, @canon_rewrite_v2, @operational_topography, @seed_roundness_grades, @shape_syntax_ecology, @syntax_profile_stack]
+ ~"docs/toc.spw": [@ecosystem_surface_governance]
+ ~"extensions": [@obsidian_spw]
+ ~"extensions/intellij-spw": [@editor_cli_instruments, @intellij_lsp4ij, @intellij_plugin_integration, @prompt_surface_align, @webstorm_compatibility]
+ ~"extensions/neovim-spw": [@editor_cli_instruments, @neovim_spw_surfaces, @spw_beat_diff_precipitation, @spw_garden_geometry, @vscode_authoring_probe_loop]
+ ~"extensions/obsidian-spw": [@obsidian_spw]
+ ~"extensions/vscode-spw": [@audit_ui_data_models, @citation_navigation, @command_experience_tools, @editor_cli_instruments, @form_geometry_editor, @lsp_custom_request_completions, @mounted_workbench_organelle, @prompt_surface_align, @safety_commit_reconciliation, @spw_garden_geometry, @typescript_upgrade_ladder, @vscode_authoring_probe_loop, @vscode_cognitive_surface, @vscode_editor_contract, @vscode_plugin_performance, @vscode_register_explorer, @vscode_workspace_atlas]
+ ~"lib/spw-v0.2.0-alpha": [@lib_arch_spw_theory]
+ ~"package.json": [@audit_fuzz_truthfulness, @cli_benchmarking_infra, @package_iteration_radius, @spw_cli_overhaul, @typescript_perf_audit_infra, @typescript_upgrade_ladder]
+ ~"packages/spw-cli": [@absorb_spwq_cli, @canon_rewrite_v2, @citation_navigation, @cli_copy_taste, @cli_mode_overhaul, @cli_sense_reorientation, @consumer_cli_instruments, @curiosity_mutation_ergonomics, @curriculum_logic_terminal_mastery, @gap_affinity_tooling, @geometric_analysis_tooling, @hygiene_index_consolidation, @measure_invariant_generalization, @mounted_consumer_tooling, @mounted_workbench_organelle, @naming_profile_convention_align, @package_iteration_radius, @query_profile, @refactor_experiment_lifecycle, @register_phase_evolution, @relationship_contours, @runtime_dx_foundation, @safety_commit_reconciliation, @spw_cli_overhaul, @spw_site_install]
+ ~"packages/spw-lsp": [@apposition_cache_granules, @citation_navigation, @command_experience_tools, @form_geometry_editor, @geometric_analysis_tooling, @lsp_custom_request_completions, @prompt_surface_align, @runtime_dx_foundation, @safety_commit_reconciliation, @spw_beat_diff_precipitation, @spw_garden_geometry, @vscode_authoring_probe_loop, @vscode_lsp_roadmap, @vscode_plugin_performance, @vscode_register_explorer, @vscode_workspace_atlas]
+ ~"packages/spw-runtime": [@brand_core_ids, @construction_onf, @precipitate_model_alignment, @runtime_axis_traceability, @runtime_dx_foundation, @spw_site_install]
+ ~"packages/spw-seed": [@absorb_spwq_cli, @apposition_cache_granules, @audit_ui_data_models, @brand_core_ids, @canon_rewrite_v2, @cli_mode_overhaul, @cli_sense_reorientation, @command_experience_tools, @construction_onf, @consumer_cli_instruments, @curiosity_mutation_ergonomics, @curriculum_logic_terminal_mastery, @directive_lattice, @gap_affinity_tooling, @geometric_analysis_tooling, @measure_invariant_generalization, @mounted_workbench_organelle, @noun_postfix_containers, @operational_topography, @package_iteration_radius, @prompt_surface_align, @refactor_experiment_lifecycle, @register_phase_evolution, @relationship_contours, @runtime_dx_foundation, @safety_commit_reconciliation, @seed_roundness_grades, @shape_syntax_ecology, @spw_q_stabilization, @spw_syntax_warning_cleanup, @syntax_profile_stack]
+ ~"prompts/image": [@image_prompt_split]
+ ~"prompts/image.prompt.spw": [@image_prompt_split]
+ ~"schemas/spw-cli-envelope.v1.schema.json": [@spw_cli_overhaul]
+ ~"scripts": [@cli_benchmarking_infra]
+ ~"scripts/analyzers": [@audit_fuzz_truthfulness, @hygiene_index_consolidation, @lib_arch_spw_theory, @runtime_axis_traceability, @spw_syntax_warning_cleanup, @typescript_perf_audit_infra, @typescript_toolchain_observatory]
+ ~"scripts/bench": [@cli_benchmarking_infra]
+ ~"scripts/commit-review": [@commit_gate_redesign]
+ ~"scripts/plans": [@relationship_contours]
+ ~"scripts/pre-commit": [@commit_gate_redesign]
+ ~"scripts/release": [@typescript_toolchain_observatory]
+ ~"src": [@refactor_import_sprawl, @symmetry_explorer_instrument]
+ ~"tsconfig.base.json": [@typescript_upgrade_ladder]
+}
+
+^["kin"]{
+ // computed: live plans that overlap in code or name each other, with no declared edge — a prompt to compare, not a claim
+ absorb_spwq_cli: [@package_iteration_radius, @safety_commit_reconciliation, @spw_q_stabilization]
+ apposition_cache_granules: [@citation_navigation, @form_geometry_editor, @spw_garden_geometry]
+ audit_fuzz_truthfulness: [@hygiene_index_consolidation, @runtime_axis_traceability]
+ canon_rewrite_v2: [@curiosity_mutation_ergonomics, @directive_lattice, @measure_invariant_generalization]
+ citation_navigation: [@apposition_cache_granules, @form_geometry_editor, @geometric_analysis_tooling]
+ cli_mode_overhaul: [@cli_sense_reorientation, @refactor_experiment_lifecycle]
+ cli_sense_reorientation: [@cli_mode_overhaul, @spw_cli_overhaul]
+ commit_gate_redesign: [@obsidian_spw]
+ curiosity_mutation_ergonomics: [@canon_rewrite_v2, @naming_profile_convention_align, @safety_commit_reconciliation]
+ curriculum_html_svg_mastery: [@naming_profile_convention_align]
+ curriculum_logic_terminal_mastery: [@spw_q_stabilization, @query_profile, @safety_commit_reconciliation]
+ directive_lattice: [@canon_rewrite_v2, @gap_affinity_tooling, @geometric_analysis_tooling]
+ form_geometry_editor: [@vscode_register_explorer, @apposition_cache_granules, @citation_navigation]
+ gap_affinity_tooling: [@directive_lattice, @geometric_analysis_tooling]
+ geometric_analysis_tooling: [@citation_navigation, @directive_lattice, @gap_affinity_tooling]
+ hygiene_index_consolidation: [@audit_fuzz_truthfulness, @relationship_contours, @typescript_perf_audit_infra]
+ intellij_lsp4ij: [@obsidian_spw]
+ lsp_custom_request_completions: [@vscode_lsp_roadmap, @obsidian_spw, @safety_commit_reconciliation]
+ measure_invariant_generalization: [@canon_rewrite_v2, @spw_garden_geometry, @syntax_profile_stack]
+ mounted_consumer_tooling: [@curriculum_logic_terminal_mastery, @naming_profile_convention_align]
+ naming_profile_convention_align: [@curiosity_mutation_ergonomics, @safety_commit_reconciliation, @directive_lattice]
+ neovim_spw_surfaces: [@spw_garden_geometry, @curiosity_mutation_ergonomics, @obsidian_spw]
+ obsidian_spw: [@commit_gate_redesign, @intellij_lsp4ij, @lsp_custom_request_completions]
+ operational_topography: [@canon_rewrite_v2, @seed_roundness_grades]
+ package_iteration_radius: [@absorb_spwq_cli]
+ plan_ecology_clustering: [@naming_profile_convention_align]
+ precipitate_model_alignment: [@runtime_axis_traceability, @runtime_dx_foundation]
+ query_profile: [@curriculum_logic_terminal_mastery, @register_phase_evolution]
+ refactor_experiment_lifecycle: [@canon_rewrite_v2, @cli_mode_overhaul, @spw_cli_overhaul]
+ register_phase_evolution: [@spw_q_stabilization, @query_profile, @safety_commit_reconciliation]
+ relationship_contours: [@canon_rewrite_v2, @hygiene_index_consolidation]
+ runtime_axis_traceability: [@precipitate_model_alignment, @audit_fuzz_truthfulness, @typescript_perf_audit_infra]
+ runtime_dx_foundation: [@precipitate_model_alignment, @safety_commit_reconciliation]
+ safety_commit_reconciliation: [@absorb_spwq_cli, @curiosity_mutation_ergonomics, @curriculum_logic_terminal_mastery]
+ seed_roundness_grades: [@canon_rewrite_v2, @form_geometry_editor, @lsp_custom_request_completions]
+ shape_syntax_ecology: [@neovim_spw_surfaces, @seed_roundness_grades, @vscode_authoring_probe_loop]
+ spw_cli_overhaul: [@cli_sense_reorientation, @refactor_experiment_lifecycle, @naming_profile_convention_align]
+ spw_garden_geometry: [@neovim_spw_surfaces, @vscode_plugin_performance, @vscode_cognitive_surface]
+ spw_q_stabilization: [@register_phase_evolution, @curriculum_logic_terminal_mastery, @absorb_spwq_cli]
+ spw_site_install: [@naming_profile_convention_align]
+ syntax_profile_stack: [@curiosity_mutation_ergonomics, @measure_invariant_generalization, @neovim_spw_surfaces]
+ typescript_perf_audit_infra: [@spw_garden_geometry, @vscode_plugin_performance, @hygiene_index_consolidation]
+ typescript_toolchain_observatory: [@hygiene_index_consolidation, @runtime_axis_traceability]
+ vscode_authoring_probe_loop: [@apposition_cache_granules, @citation_navigation, @geometric_analysis_tooling]
+ vscode_cognitive_surface: [@vscode_register_explorer, @vscode_workspace_atlas, @spw_garden_geometry]
+ vscode_editor_contract: [@spw_garden_geometry, @citation_navigation, @form_geometry_editor]
+ vscode_lsp_roadmap: [@lsp_custom_request_completions]
+ vscode_plugin_performance: [@spw_garden_geometry, @vscode_register_explorer, @apposition_cache_granules]
+ vscode_register_explorer: [@form_geometry_editor, @vscode_cognitive_surface, @vscode_plugin_performance]
+ vscode_workspace_atlas: [@vscode_cognitive_surface, @apposition_cache_granules, @citation_navigation]
+}
+
+^["drift"]{
+ ok: "every card parses; every touch, entry, and edge resolves"
+ // advisories below never fail --check; they name where attention has drifted
+ cooling: [@package_iteration_radius, @refactor_experiment_lifecycle] // active or review, stream 30+ days behind the ecology's newest entry
+ status_lags_phase: [@absorb_spwq_cli, @audit_fuzz_truthfulness, @cli_copy_taste, @cli_sense_reorientation, @commit_gate_redesign, @construction_worlds, @directive_lattice, @ecosystem_surface_governance, @form_geometry_editor, @gap_affinity_tooling, @hygiene_index_consolidation, @image_prompt_split, @intellij_plugin_integration, @lib_arch_spw_theory, @measure_invariant_generalization, @mounted_workbench_organelle, @noun_postfix_containers, @operational_topography, @prompt_surface_align, @query_profile, @refactor_experiment_lifecycle, @runtime_axis_traceability, @safety_commit_reconciliation, @seed_roundness_grades, @shape_syntax_ecology, @spw_cli_overhaul, @spw_q_stabilization, @spw_site_install, @syntax_profile_stack, @vscode_lsp_roadmap, @webstorm_compatibility] // cache ~#status names an earlier stage than card.phase
+ plan_map_coverage: "44 of 75 cards appear in plan-ecology-clustering ^plan_map"
+}

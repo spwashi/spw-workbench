@@ -4,6 +4,15 @@ Quick reference for identifying stale plans during a maintenance sweep.
 
 ## Per-Plan Checks
 
+### Card (`<glyph>["card"]` in wip.spw)
+
+- [ ] Glyph matches the plan's lane (and `#:plan #!<lane>` above it)
+- [ ] `phase` matches reality (commits landed, stream recency, targets exist)
+- [ ] `gist` still describes what the plan makes true
+- [ ] every `touches` path exists; `entry` resolves
+- [ ] `next` names a move that has not already happened
+- [ ] `^["edges"]` targets exist and are reciprocated where it matters
+
 ### Cache (`^["cache"]` in wip.spw)
 
 - [ ] `~#status` matches reality (planning/active/blocked/review/done)
@@ -38,6 +47,9 @@ Quick reference for identifying stale plans during a maintenance sweep.
 - [ ] Shared hot files are noted in `^["parallel_work"]` when plans overlap
 
 ## Ecology-Level Checks
+
+- [ ] `npm run spw:plan:index -- --check` passes (no card problems, index current)
+- [ ] `^["drift"] cooling` in index.spw is empty or acknowledged
 
 - [ ] No plan claims `active` without recent stream activity (>2 weeks stale)
 - [ ] Release-blocking plans are distinguishable from curriculum/research/speculative
