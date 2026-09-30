@@ -43,7 +43,7 @@ interface MarkerSummary {
   count: number
 }
 
-const SCAN_ROOTS = ['src', 'docs', 'lib', 'scripts', 'extensions', '.agents/skills']
+const SCAN_ROOTS = ['packages', 'src', 'docs', 'lib', 'scripts', 'extensions', '.agents/skills']
 const ALLOWED_EXT = new Set(['.ts', '.tsx', '.js', '.mjs', '.cjs', '.md', '.spw'])
 const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', 'release', 'build'])
 

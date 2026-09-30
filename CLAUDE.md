@@ -71,7 +71,7 @@ npm run audit:spw:syntax         # .spw syntax validation (excludes .agents)
 npm run fuzz:types               # tsc --noEmit
 npm run fuzz:stabilize           # types + runtime tests
 npm run fuzz:ship                # build + full test suite
-npm run fuzz:boonhonk            # Groove detector (timing/entropy)
+npm run fuzz:boonhonk            # Currently an alias of test:runtime (groove detector not yet built)
 ```
 
 ### Development
