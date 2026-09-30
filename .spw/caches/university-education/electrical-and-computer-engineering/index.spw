@@ -1,0 +1,46 @@
+# Electrical & Computer Engineering Curricular Hub
+#
+# Root cache index for undergraduate and master's degree programs across electrical engineering, digital logic, microelectronics, and computer systems.
+
+#>spw_cache_univ_ece_index
+#:cache #!electrical_and_computer_engineering
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the full pedagogical continuum from Maxwellian electrodynamics, circuit analysis, and analog semiconductor electronics to digital logic, computer architecture, VLSI, and distributed embedded systems."
+  ~#accreditation: "ABET Engineering Accreditation Commission Criteria for Electrical and Computer Engineering, IEEE Curriculum Guidelines"
+  ~#protocol: "cache.layer/1"
+}
+
+^"roots"{
+  @undergrad_ee: ~"./undergrad-electrical-engineering.spw"
+  @undergrad_ce: ~"./undergrad-computer-engineering.spw"
+  @masters_ece: ~"./masters-electrical-and-computer-engineering.spw"
+  @taste: ~"./taste.spw"
+}
+
+^"dispatch"{
+  undergrad_electrical_engineering: @undergrad_ee
+  undergrad_computer_engineering: @undergrad_ce
+  masters_electrical_and_computer_engineering: @masters_ece
+  taste_considerations: @taste
+}
+
+^"taste"{
+  ~#taste: "Electrical and computer engineering is the alchemy that transmuted humble beach sand into machines capable of simulating the universe."
+  ~#wonder: "How does the physical drift of electrons across a three-nanometer silicon oxide barrier become the execution of an abstract mathematical algorithm?"
+}
+
+^"invariants"{
+  "Electrical curricula balance continuous time-domain differential equations with frequency-domain transforms (Fourier, Laplace, Phasors).",
+  "Computer engineering curricula enforce clean abstraction layers: physics -> device -> logic gate -> register transfer -> microarchitecture -> ISA -> OS.",
+  "Circuit design and embedded systems courses require physical laboratory oscilloscope debugging and hardware-in-the-loop verification.",
+}
+
+#>wonder_ece_index_1
+?["How does the early pedagogical exposure to hardware description languages (Verilog/SystemVerilog) reshape software engineering mental models?"]{
+  #:depth #!pedagogical ~#lens(hardware_concurrency_intuition)
+  ~#hypothesis: "Students who write synchronous hardware descriptions with non-blocking assignments (<=) grasp distributed concurrency and race conditions 40% faster in high-level software than students taught exclusively on sequential von Neumann languages."
+  !probe{ "Track concurrency bug rates in multithreaded systems courses between students with prior Verilog FPGA experience vs software-only backgrounds." }
+  $%[pedagogy.concurrency_mastery_score, bugs.race_condition_incidence_rate]
+}

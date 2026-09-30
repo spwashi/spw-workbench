@@ -1,0 +1,94 @@
+# JetBrains Syntax Highlighting & Color Semantics
+#
+# Cache of TextMate grammar scopes, color scheme mappings, and token categorization in JetBrains.
+
+#>spw_cache_jetbrains_syntax_highlighting
+#:cache #!jetbrains
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Cache TextMate grammar registrations and color semantic mappings designed for IntelliJ IDEs."
+  ~#provider: "com.spwashi.spw.SpwTextMateBundleProvider"
+  ~#bundle_path: "textmate/spw.tmLanguage.json"
+  ~#config_route: "Settings | Editor | Color Scheme | TextMate Bundles | Spw Language"
+}
+
+^["textmate_bundle"]{
+  grammar_name: "Spw Language"
+  scope_name: "source.spw"
+  file_types: ["spw"]
+  language_configuration: "textmate/language-configuration.json"
+  bracket_pairs: [
+    ["{", "}"],
+    ["[", "]"],
+    ["(", ")"],
+    ["<", ">"]
+  ]
+  line_comment: "//"
+}
+
+^["scope_palette"]{
+  operators: .{
+    scope: "keyword.operator.spw"
+    symbols: ["!", "^", "~", "?", "=", "@", "*", "%", "$", "&"]
+    semantic_role: "Operator physics and functional transformations"
+  }[reg=facet]
+
+  valences: .{
+    scope: "entity.name.tag.valence.spw"
+    modifiers: ["boon", "bane", "bone", "bonk", "honk"]
+    semantic_role: "Valence semantics modulating intentional tone and consequence"
+  }[reg=facet]
+
+  headings: .{
+    scope: "markup.heading.spw"
+    pattern: "^#\\s+.*"
+    semantic_role: "Section titles and outline milestones"
+  }[reg=facet]
+
+  anchors: .{
+    scope: "entity.name.label.anchor.spw"
+    pattern: "#>[a-zA-Z0-9_.-]+"
+    semantic_role: "Corpus-wide addressable coordinates"
+  }[reg=facet]
+
+  axes_and_modes: .{
+    scope: "keyword.other.annotation.spw"
+    pattern: "#:[a-zA-Z0-9_-]+ | #![a-zA-Z0-9_-]+"
+    semantic_role: "Taxonomic axes and modality tags"
+  }[reg=facet]
+
+  path_references: .{
+    scope: "string.interpolated.pathref.spw"
+    pattern: "@[a-zA-Z0-9_/-]+"
+    semantic_role: "Subroot paths and corpus links"
+  }[reg=facet]
+
+  comments: .{
+    scope: "comment.line.double-slash.spw"
+    pattern: "//.*"
+    semantic_role: "Transient notes and editorial prose"
+  }[reg=facet]
+}
+
+^["at_root_resolution"]{
+  canon_roots: #[
+    "@docs",
+    "@src",
+    "@lib",
+    "@theory",
+    "@scripts",
+    "@core",
+    "@runtime",
+    "@design",
+    "@infra",
+    "@here"
+  ]
+  behavior: "Highlighted as distinct references to prevent confusion with string literals"
+}
+
+^["invariants"]{
+  "TextMate scopes map cleanly to standard IntelliJ color schemes without requiring custom theme plugins.",
+  "Operators retain high visual contrast against string and prose backgrounds.",
+  "Valences are highlighted distinctly from generic keywords to convey emotional and intentional charge.",
+}

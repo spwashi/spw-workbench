@@ -1,0 +1,70 @@
+# VS Code Wonder-Sensitive Taste Considerations
+#
+# Curated taste considerations, interruption economics, and wonder probes for VS Code tooling.
+
+#>spw_cache_vscode_taste
+#:cache #!vscode
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Articulate the aesthetic, cognitive, and wonder-sensitive taste principles guiding Spw integration in VS Code."
+  ~#companion: ~"../../tooling/vscode-spw.spw"
+}
+
+^["interruption_economics"]{
+  ~#thesis: "Every hover, completion, code lens, and notification imposes a cognitive tax; each must justify its existence."
+  rules: #[
+    "Zero unsolicited popups: Diagnostics communicate through unobtrusive underlines, not modal dialogs.",
+    "Hover thrift: Hovers display exact address, resolved target, and documentation; they never repeat the exact text under the cursor.",
+    "Quiet status bar: The status bar reports language mode and LSP connectivity; it does not blink or stream animated tickers."
+  ]
+}
+
+^["anti_echo_doctrine"]{
+  ~#thesis: "A tool that echoes back what is already visible on the screen insults the reader's intelligence."
+  mandates: #[
+    "Do not put 'frame: name' in hover text when the cursor is literally on ^[\"name\"].",
+    "Do not put 'operator: !' in a tooltip when the character ! is right there.",
+    "Do provide: Destination target path, resolution status, container depth, and caller references."
+  ]
+}
+
+^["live_preview_decorum"]{
+  ~#thesis: "Side-by-side previews are companion instruments, not demanding divas."
+  etiquette: #[
+    "Open in ViewColumn.Beside without stealing keyboard focus from the active document.",
+    "Refresh quietly in the background; do not jump the scroll position when updating.",
+    "Preserve cursor independence: scrolling the source does not force-scroll the preview unless locked by the user."
+  ]
+}
+
+^["thin_client_restraint"]{
+  ~#thesis: "The extension must resist the temptation to build a second parser in TypeScript."
+  boundaries: #[
+    "If a question requires AST reasoning, ask the Language Server via JSON-RPC.",
+    "If an action requires mutating multi-file workspace state, defer to the canonical Spw CLI.",
+    "The client's role is ergonomic projection, keyboard shortcuts, and native VS Code UI fidelity."
+  ]
+}
+
+^["invariants"]{
+  "Taste principles are enforced in code reviews and test assertions.",
+  "Decorative features that increase editor latency above 16ms per frame are disabled by default.",
+  "The user can disable any visual embellishment via spw.surface.* configuration settings.",
+}
+
+#>wonder_vscode_taste_1
+?["Which editor surface teaches the most real Spw structure per unit of interruption?"]{
+  #:depth #!philosophical ~#lens(pedagogical_economy)
+  ~#hypothesis: "Inlay hints on @-roots teach path resolution continuously and silently, far outperforming intrusive hover cards."
+  !probe{ "Disable all hovers for 3 days while keeping inlay hints active; measure whether navigation speed increases and author frustration decreases." }
+  $%[inlay_hints.guidance_score, hover.interruption_cost]
+}
+
+#>wonder_vscode_taste_2
+?["How does the anti-echo doctrine preserve the sacred space of authorial attention?"]{
+  #:depth #!experiential ~#lens(authorial_reverence)
+  ~#hypothesis: "When tooltips only speak when they have non-obvious truth to share, authors begin to trust tooltips again rather than reflexively closing them."
+  !probe{ "Audit 20 hover interactions; count what percentage of words provide new information vs repeating visible tokens." }
+  $%[hover.novel_information_ratio, author.hover_dismissal_rate]
+}

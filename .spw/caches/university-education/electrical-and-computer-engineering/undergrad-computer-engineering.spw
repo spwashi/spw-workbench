@@ -1,0 +1,97 @@
+# Undergraduate Computer Engineering Curricular Architecture
+#
+# ABET-accredited Bachelor of Science (B.S.) in Computer Engineering: digital logic, RISC-V computer architecture, embedded systems, and FPGA synthesis.
+
+#>spw_cache_univ_undergrad_ce
+#:cache #!computer_engineering
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the four-year undergraduate curriculum for an ABET-accredited Bachelor of Science in Computer Engineering, articulating Boolean switching theory, pipelined CPU microarchitecture, bare-metal embedded firmware, and FPGA co-design."
+  ~#accreditation: "ABET EAC Criteria for Computer Engineering"
+}
+
+^["digital_logic_and_switching_circuit_design"]{
+  sophomore_gateway: "Digital Systems Design with FPGA Lab."
+  switching_theory: #[
+    "Boolean Algebra & Simplification: De Morgan's laws, canonical SOP/POS expressions, Karnaugh maps (4-6 variables), and hazard-free minimization",
+    "Combinational Building Blocks: Multiplexers, priority encoders, decoders, magnitude comparators, and Carry-Lookahead Adders (CLA)",
+    "Sequential Circuit Timing: D flip-flops, latches, setup time (t_setup), hold time (t_hold), clock-to-q delay, and metastability MTBF",
+    "Finite State Machine (FSM) Synthesis: Mealy and Moore machine architectures, state transition graphs, one-hot encoding, and state minimization",
+    "Hardware Description Languages (HDL): SystemVerilog RTL, structural vs behavioral models, non-blocking assignments (<=), and self-checking testbenches"
+  ]
+}
+
+^["computer_architecture_and_processor_design"]{
+  junior_core: "Computer Organization and Microarchitecture."
+  cpu_architecture: .{
+    instruction_set_architecture: "RISC-V (RV32I/RV64I) green-sheet specification: register files, R/I/S/B/U/J instruction encoding, and ABI calling conventions"
+    pipelined_datapath_design: #[
+      "Classic 5-Stage RISC Pipeline: Instruction Fetch (IF), Decode (ID), Execute (EX), Memory (MEM), and Write-Back (WB)",
+      "Structural & Data Hazard Resolution: Data forwarding paths, hazard detection units, pipeline stalls, and load-use delays",
+      "Control Hazard Mitigation: Branch prediction strategies (static prediction, dynamic 2-bit saturating branch history tables, branch target buffers)"
+    ]
+    memory_hierarchy: #[
+      "Cache Topologies: Direct-mapped, set-associative, and fully associative caches; write-through vs write-back policies; 3C miss classification (Compulsory, Capacity, Conflict)",
+      "Virtual Memory Systems: Multi-level page tables, Translation Lookaside Buffers (TLB), page fault exceptions, and memory protection bits"
+    ]
+  }[reg=facet]
+}
+
+^["embedded_systems_and_firmware_engineering"]{
+  junior_senior_core: "Microcontroller Interfacing and Real-Time Systems."
+  embedded_domains: #[
+    "Bare-Metal ARM Cortex-M: Memory-Mapped I/O (MMIO), peripheral bit-banding, linker scripts, vector table initialization, and assembly startup routines",
+    "Hardware Peripherals & Interfacing: Timers/counters, Pulse-Width Modulation (PWM), Successive Approximation ADCs, and Direct Memory Access (DMA) transfers",
+    "Interrupt Architecture: Nested Vectored Interrupt Controller (NVIC), ISR latency, priority preemption, and atomic critical sections",
+    "Serial Bus Communication: UART asynchronous framing, SPI synchronous master-slave shifts, and I2C open-drain bus arbitration with pull-up resistors",
+    "Real-Time Operating Systems (RTOS): FreeRTOS task scheduling, preemptive priority dispatch, semaphores, mutexes with Priority Inheritance, and message queues"
+  ]
+}
+
+^["fpga_synthesis_and_soc_co_design"]{
+  senior_core: "Advanced Digital Design and Reconfigurable Computing."
+  fpga_methodologies: .{
+    device_architecture: "SRAM-based FPGAs: Configurable Logic Blocks (CLBs), 6-input Look-Up Tables (LUTs), dedicated carry chains, DSP48 slices, and Block RAM (BRAM)"
+    synthesis_and_timing: #[
+      "Logic Synthesis: Technology mapping, place-and-route algorithms, and netlist optimization",
+      "Static Timing Analysis (STA): Setup and hold slack equations, clock skew, critical path identification, and multi-cycle path constraints (SDC/XDC)"
+    ]
+    soc_integration: "Hardware-Software Co-Design pairing hard ARM processor cores with programmable FPGA fabric via AXI4-Lite and AXI4-Stream interconnects"
+  }[reg=facet]
+}
+
+^["senior_computer_engineering_capstone"]{
+  senior_culmination: "Two-semester Embedded Hardware/Software Systems Project."
+  capstone_milestones: #[
+    "Custom PCB Engineering: Multi-layer schematic capture (Altium/KiCad), high-speed differential pair routing, ground plane isolation, and DRC rules",
+    "Embedded Linux Systems: Yocto/Buildroot custom BSP builds, Linux device tree overlays, and custom kernel character drivers",
+    "Hardware Security Integration: Secure boot chains, cryptographic accelerators (AES, SHA), and physically unclonable functions (PUFs)",
+    "System-Level Validation: Hardware-in-the-loop logic analyzer testing, boundary scan (JTAG) debugging, and automated regression suites"
+  ]
+}
+
+^["taste"]{
+  ~#taste: "Computer engineering is the mastery of the great abstraction tower: knowing that when a line of code executes, microscopic gates are physically flipping charges across tiny wires."
+  ~#wonder: "Why does the concept of pipelining—doing five operations at once on different instructions—fivefold increase CPU throughput without speeding up the clock by a single Hertz?"
+
+  principles: #[
+    "Timing is everything: In digital logic, a circuit that outputs the correct answer ten picoseconds too late is completely broken.",
+    "Hardware is parallel by default: Software developers think in sequential loops; computer engineers think in billions of electrons moving simultaneously.",
+    "Busses are physical transmission lines: Never treat a PCB trace as a zero-resistance wire once clock frequencies exceed 50 megahertz."
+  ]
+}
+
+^"invariants"{
+  "Synchronous sequential circuits must satisfy setup and hold time requirements with positive worst-case slack across all PVT (Process, Voltage, Temperature) corners.",
+  "Interrupt Service Routines (ISRs) must execute deterministically without blocking or invoking long dynamic memory allocations.",
+  "Custom printed circuit boards must pass electrical rule checks (ERC) and manufacturing design rule checks (DRC) prior to fabrication."
+}
+
+#>wonder_undergrad_ce_1
+?["How does the physical implementation of a 5-stage RISC-V core on an FPGA affect student debugging strategies compared to software-only QEMU simulation?"]{
+  #:depth #!pedagogical ~#lens(hardware_grounded_cognition)
+  ~#hypothesis: "Students who debug pipeline forwarding bugs using real-time hardware logic analyzer probes (ILA) pinpoint race conditions and uninitialized register state 3x faster than those using printf debugging in software emulators."
+  !probe{ "Compare time-to-root-cause for subtle pipeline branch hazard bugs across student groups using on-chip FPGA hardware logic analyzers vs software instruction set simulators." }
+  $%[pedagogy.hazard_troubleshooting_minutes, microarch.branch_hazard_detection_rate]
+}

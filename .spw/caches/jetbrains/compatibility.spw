@@ -1,0 +1,59 @@
+# JetBrains Compatibility Matrix
+#
+# Cache of verified platform versions, build ranges, and toolchain coordinates.
+
+#>spw_cache_jetbrains_compatibility
+#:cache #!jetbrains
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Cache compatibility coordinates, verified IDE releases, and verification gates for intellij-spw."
+  ~#gradle_build: ~"../../../extensions/intellij-spw/build.gradle.kts"
+  ~#verified_reference: ~"../../../.agents/plans/webstorm-compatibility/references/index.spw"
+}
+
+^["coordinates"]{
+  build_host: .{
+    product: "WebStorm"
+    version: "2024.2.1"
+    build_branch: 242
+    rationale: "Building against the oldest host protects backwards-compatible API floor"
+  }[reg=facet]
+
+  verified_hosts: #[
+    .{ product: "WebStorm", version: "2026.2.0.1", build: "262.8665.341" },
+    .{ product: "WebStorm", version: "2026.2.1", build: "262.9437.145" }
+  ]
+
+  declared_range: .{
+    since_build: "242"
+    until_build: "262.*"
+    coverage: "Covers all 2024.2, 2025.x, and 2026.1 through 2026.2.x JetBrains releases"
+  }[reg=facet]
+}
+
+^["build_toolchain"]{
+  java_runtime: "Java 21 (OpenJDK 21 via .java-version)"
+  gradle_version: "Gradle 9.5"
+  kotlin_version: "Kotlin 2.4.10"
+  platform_gradle_plugin: "org.jetbrains.intellij.platform 2.18.1"
+  textmate_plugin_dep: "bundledPlugin('org.jetbrains.plugins.textmate')"
+}
+
+^["verification_gates"]{
+  test_command: "npm run test:intellij"
+  verify_command: "npm run verify:intellij"
+  gradle_tasks: #[
+    ":extensions:intellij-spw:test",
+    ":extensions:intellij-spw:verifyPlugin",
+    ":extensions:intellij-spw:verifyPluginProjectConfiguration",
+    ":extensions:intellij-spw:verifyPluginStructure"
+  ]
+  plugin_verifier: "Validates compiled JAR against declared WebStorm target versions before release bundle"
+}
+
+^["invariants"]{
+  "Platform compatibility copy stays narrower than or equal to the empirically tested matrix.",
+  "Build host remains pinned to the earliest supported release to avoid accidental modern API leakage.",
+  "All plugin verification tasks pass cleanly with zero fatal API usage findings before distribution packaging.",
+}

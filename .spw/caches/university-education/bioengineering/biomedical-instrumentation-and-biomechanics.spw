@@ -1,0 +1,44 @@
+# Biomedical Instrumentation & Biomechanics Curriculum Cache
+#
+# Biopotential amplifiers (CMRR), glucose amperometry, microfluidic laminar flow, and Windkessel hemodynamics.
+
+#>spw_cache_univ_bioeng_biomech
+#:cache #!biomedical_instrumentation_and_biomechanics
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model biomedical instrumentation circuits, biopotential CMRR physics, microfluidic laminar transport, viscoelastic tissue mechanics, and pulsatile hemodynamics."
+  ~#protocol: "cache.layer/1"
+}
+
+^"biopotential_instrumentation_and_biosensors"{
+  "biopotential_amplification_and_filtering": .{
+    instrumentation_amplifier_architecture: "Three-op-amp configuration; ultra-high input impedance (>10^10 ohms) preventing tissue loading; Common-Mode Rejection Ratio (CMRR > 100 dB) eliminating 50/60 Hz power-line interference; Driven Right Leg (DRL) circuit actively suppressing common-mode displacement currents",
+    electrophysiological_signal_processing: "ECG Einthoven triangle (P-QRS-T complex); notch filtering, analog-to-digital conversion (Nyquist sampling rate), and baseline wander suppression via high-pass filtering",
+  }[reg=facet],
+  "amperometric_biosensors_and_spr": .{
+    glucose_oxidase_amperometry: "Glucose oxidized by immobilized glucose oxidase (GOx) yielding gluconic acid and H2O2; electrochemical oxidation of H2O2 at platinum anode (+0.7V vs Ag/AgCl) producing current proportional to blood glucose concentration",
+    surface_plasmon_resonance_spr: "Evanescent wave optical biosensor detecting refractive index shifts at gold-dielectric interface; real-time label-free measurement of macromolecular association (k_on), dissociation (k_off), and affinity constants (K_D)",
+  }[reg=facet],
+}
+
+^"microfluidics_and_continuum_biomechanics"{
+  "laminar_microfluidics_and_organ_on_a_chip": .{
+    low_reynolds_number_physics: "Reynolds number Re = rho * v * D_h / mu << 1; viscous forces dominate inertia; absence of turbulence; fluid streams flow side-by-side with mixing governed strictly by molecular diffusion (Péclet number Pe)",
+    pdms_soft_lithography_and_organs_on_chips: "Molding microchannels in polydimethylsiloxane (PDMS); Huh & Ingber lung-on-a-chip mimicking alveolar-capillary barrier under cyclic mechanical vacuum strain, reproducing physiological pulmonary mechanics and inflammatory responses",
+  }[reg=facet],
+  "viscoelasticity_and_pulsatile_hemodynamics": .{
+    tissue_viscoelastic_models: "Maxwell series vs Kelvin-Voigt parallel vs Standard Linear Solid (SLS); modeling creep compliance and stress relaxation in articular cartilage and arterial walls",
+    navier_stokes_and_windkessel_hemodynamics: "Womersley number alpha = R * sqrt(omega * rho / mu) governing pulsatile velocity profiles; Two-element Windkessel model (peripheral resistance R and total arterial compliance C) capturing diastolic blood pressure decay",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_bioeng_biomech_1
+  ?["Why do vascular endothelial cells align their cytoskeletons and maintain anti-thrombotic health under high laminar shear stress, but trigger atherosclerosis under low oscillating disturbed flow?"]{
+    #:depth #!biomechanical ~#lens(endothelial_mechanosensing_and_enos_activation)
+    ~#hypothesis: "Laminar shear stress (>15 dyn/cm^2) activates the endothelial PECAM-1/VE-cadherin/VEGFR2 mechanosensory complex, stimulating continuous flow-dependent phosphorylation of endothelial Nitric Oxide Synthase (eNOS) via PI3K/Akt. Disturbed recirculating flow at arterial bifurcations fails to activate this molecular tension sensor, silencing eNOS and triggering NF-kappa-B inflammatory adhesion molecule expression (VCAM-1)."
+    !probe{ "Apply uniform laminar shear vs reciprocating disturbed shear stress to cultured human aortic endothelial cells in microfluidic channels and measure eNOS phosphorylation kinetics." }
+    $%[hemodynamics.shear_stress_dyn_cm2, biochemistry.enos_ser1177_phosphorylation_fold]
+  }
+}

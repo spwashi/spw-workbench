@@ -1,0 +1,70 @@
+# TikTok LIVE Moderation & Safety Architecture
+#
+# Real-time computer vision, audio transcription, text filtering, and human-in-the-loop safety controls.
+
+#>spw_cache_tiktok_live_moderation
+#:cache #!tiktok_live
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the multi-layered moderation pipeline protecting creators, viewers, and platform integrity in real time."
+  ~#threat_vectors: #[nudity_violence, hate_speech, copyright_infringement, dangerous_stunts, fraud_scams]
+}
+
+^["automated_screening"]{
+  vision_scanning: .{
+    mechanism: "Keyframe extraction every 1 to 3 seconds sent to computer vision classification models"
+    detection: "Detects nudity, weapons, graphic violence, self-harm, and unauthorized brand counterfeits"
+    latency: "Sub-second inference flagging high-confidence violations for automatic stream termination"
+  }[reg=facet]
+
+  audio_stream_asr: .{
+    mechanism: "Real-time automatic speech recognition (ASR) converting spoken audio to text tokens"
+    analysis: "NLP models scan for hate speech, harassment, banned financial schemes, and illegal solicitations"
+  }[reg=facet]
+
+  chat_filter_engine: .{
+    mechanism: "High-throughput token matching engine with character substitution normalization (leetspeak, zero-width spaces)"
+    custom_blocklists: "Creators define up to 500 custom banned keywords and regex patterns for their chat room"
+  }[reg=facet]
+}
+
+^["creator_moderator_tools"]{
+  moderator_roles: "Creators can appoint up to 50 moderators per room with granular permissions"
+  comment_slow_mode: "Restricts viewers to posting one comment every 5, 10, or 30 seconds"
+  temporary_mute: "Mutes specific users for 5 minutes, 15 minutes, or the remainder of the live broadcast"
+  room_block_kick: "Removes user and blocks their IP and device fingerprint from re-entering"
+  comment_approval_queue: "Filter that holds suspicious comments for moderator review before public display"
+}
+
+^["policy_enforcement_ladder"]{
+  level_1_warning: "In-stream banner visible only to creator: 'Potential community guideline violation detected'"
+  level_2_fyp_suppression: "Stream remains accessible via direct profile link but is removed from algorithmic FYP distribution"
+  level_3_temporary_freeze: "Stream screen blurred with interstitial warning while human safety reviewer inspects"
+  level_4_hard_termination: "Immediate stream teardown, host disconnect, and temporary or permanent LIVE access suspension"
+}
+
+^["taste"]{
+  ~#taste: "Moderation must act like a soundproof studio wall: imperceptible when respected, impenetrable when breached."
+  ~#wonder: "Can automated safety algorithms distinguish between theatrical drama and genuine interpersonal harm in real time?"
+
+  principles: #[
+    "Speed protects: In live broadcasts, waiting 30 seconds to remove dangerous content is 30 seconds too late.",
+    "Proportionality: Suppressing algorithmic discovery for minor infractions allows creators to self-correct without immediate banishment.",
+    "Creator autonomy: Empowering human community moderators produces better cultural discernment than rigid global rules."
+  ]
+}
+
+^["invariants"]{
+  "Streams flagged for severe self-harm or violence are severed at the ingest level within 5 seconds.",
+  "Banned keywords are matched using phonetic and semantic embedding tables to prevent evasion.",
+  "All moderation actions log immutable cryptographic audit receipts for creator appeals.",
+}
+
+#>wonder_tiktok_live_moderation_1
+?["How does real-time AI speech moderation change what topics creators dare to discuss on live video?"]{
+  #:depth #!philosophical ~#lens(algorithmic_chilling)
+  ~#hypothesis: "Creators develop an internalized lexical evasion dialect (algospeak) to prevent automated keyword classifiers from throttling their stream distribution."
+  !probe{ "Analyze transcripts of 50 political or health live streams; track occurrences of substituted euphemisms used to bypass ASR filters." }
+  $%[lexicon.algospeak_frequency, moderation.false_positive_rate]
+}

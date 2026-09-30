@@ -1,0 +1,89 @@
+# Statistical & Molecular Thermodynamics Curricular Architecture
+#
+# Graduate statistical ensembles, molecular partition functions, quantum Fermi/Bose statistics, and virial fluid equations.
+
+#>spw_cache_univ_thermo_statistical
+#:cache #!thermodynamics
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the graduate curriculum in statistical mechanics and molecular thermodynamics, bridging microscopic quantum energy levels with macroscopic state properties."
+  ~#foundations: "Gibbs Statistical Ensembles, Boltzmann Entropy, and Molecular Simulation"
+}
+
+^["statistical_ensembles_and_thermodynamic_connections"]{
+  ensemble_framework: "Connecting microscopic phase space probability densities to macroscopic potentials."
+  ensemble_types: #[
+    "Microcanonical Ensemble (N, V, E): Isolated systems, microstates, ergodic hypothesis, density of states Omega, and Boltzmann entropy S = k_B * ln Omega",
+    "Canonical Ensemble (N, V, T): Systems in thermal contact with a heat bath, Boltzmann probability distribution P_i = exp(-E_i / k_B*T) / Q",
+    "Canonical Partition Function Q: Sum over all quantum states; bridging to macroscopic Helmholtz free energy A = -k_B*T * ln Q",
+    "Grand Canonical Ensemble (mu, V, T): Open systems exchanging heat and particles, grand partition function Xi, and grand potential Phi = -P*V"
+  ]
+}
+
+^["molecular_partition_functions_of_gases"]{
+  energy_factorization: "Separation of molecular energy modes for independent non-interacting particles."
+  molecular_modes: .{
+    translational_partition: "Particle in a 3D box, thermal de Broglie wavelength Lambda = h / sqrt(2*pi*m*k_B*T), and q_trans = V / Lambda^3"
+    rotational_partition: #[
+      "Rigid rotator approximation, rotational symmetry numbers sigma, and characteristic rotational temperatures Theta_rot",
+      "Nuclear spin statistics: Ortho-hydrogen (triplet spin) and para-hydrogen (singlet spin) equilibrium ratios"
+    ]
+    vibrational_partition: "Harmonic oscillator approximation, zero-point vibrational energy (1/2*h*nu), and vibrational heat capacity departure"
+    electronic_and_nuclear: "Ground-state degeneracies, low-lying spin-orbit states (e.g. NO molecule), and nuclear spin degeneracy factors"
+  }[reg=facet]
+}
+
+^["quantum_statistics_of_ideal_quantum_gases"]{
+  quantum_indistinguishability: "Symmetry requirements of multi-particle wavefunctions for bosons and fermions."
+  quantum_distributions: #[
+    "Fermi-Dirac Statistics: Antisymmetric wavefunctions, Pauli exclusion, Fermi energy E_F, Fermi temperature, and degenerate electron gas pressure",
+    "Bose-Einstein Statistics: Symmetric wavefunctions, photon blackbody radiation (Planck law), and phonon heat capacity (Debye T^3 law)",
+    "Bose-Einstein Condensation (BEC): Macroscopic ground-state occupation below critical temperature T_c when thermal de Broglie wavelength overlaps interparticle spacing"
+  ]
+}
+
+^["interacting_fluids_and_molecular_simulation"]{
+  condensed_phases: "Thermodynamics of non-ideal gases and liquids governed by intermolecular potentials."
+  liquid_state_theory: .{
+    virial_expansion: "Equation of state in powers of density, Mayer f-function, and second virial coefficient B_2(T) related to pair potentials (Lennard-Jones)"
+    radial_distribution_function: "Pair correlation function g(r), structure factor S(k) from X-ray/neutron scattering, and the Kirkwood-Buff solution theory"
+    molecular_simulation_algorithms: #[
+      "Monte Carlo Simulation: Metropolis-Hastings importance sampling algorithm in canonical (NVT) and isobaric-isothermal (NPT) ensembles",
+      "Molecular Dynamics: Velocity-Verlet numerical time integration, Nose-Hoover thermostats, and Parrinello-Rahman barostats"
+    ]
+  }[reg=facet]
+}
+
+^["thermodynamic_fluctuations_and_critical_phenomena"]{
+  fluctuation_theory: #[
+    "Energy and Density Fluctuations: Variance of internal energy proportional to heat capacity (k_B*T^2*Cv); density fluctuations proportional to isothermal compressibility",
+    "Critical Opalescence: Divergence of correlation length xi near the vapor-liquid critical point scattering visible light",
+    "Ising Model & Phase Transitions: Exact 1D solution via transfer matrix method (no phase transition at T > 0), and 2D Onsager spontaneous magnetization"
+  ]
+}
+
+^["taste"]{
+  ~#taste: "Statistical mechanics is the ultimate proof that macroscopic certainty emerges inexorably from microscopic quantum chaos."
+  ~#wonder: "Why does the simple counting of microscopic arrangements (microstates) correctly predict the temperature at which water boils?"
+
+  principles: #[
+    "Microstates are democratic: Every accessible quantum microstate of an isolated system is equally probable; temperature is simply the rate of entropy increase with energy.",
+    "Indistinguishability matters: Failing to divide by N! leads to the Gibbs paradox where mixing identical gases creates spurious entropy.",
+    "Fluctuations disclose responses: The response of a system to an external force (compressibility, heat capacity) is equal to its spontaneous equilibrium fluctuations."
+  ]
+}
+
+^"invariants"{
+  "Chemical potential for a Bose gas must strictly satisfy mu <= 0 to prevent unphysical negative state occupation numbers.",
+  "Partition functions must sum over all accessible microstates and guarantee positive probabilities.",
+  "Calculations of thermodynamic properties must take the thermodynamic limit (N -> infinity, V -> infinity with N/V constant).",
+}
+
+#>wonder_thermo_statistical_1
+?["How does the Kirkwood-Buff theory of solutions resolve local hydration shell clustering around hydrophobic solutes in water?"]{
+  #:depth #!physical ~#lens(solvation_thermodynamics)
+  ~#hypothesis: "Integrating experimental radial distribution functions g(r) via Kirkwood-Buff integrals accurately predicts anomalous negative excess partial molar volumes of alcohol-water mixtures without requiring arbitrary empirical fitting parameters."
+  !probe{ "Compute Kirkwood-Buff integrals G_ij from molecular dynamics trajectories of water-ethanol mixtures across 0 to 100% compositions." }
+  $%[solvation.partial_molar_volume_excess, simulation.kirkwood_buff_integral_cm3]
+}

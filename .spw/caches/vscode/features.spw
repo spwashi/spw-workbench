@@ -1,0 +1,124 @@
+# VS Code Features Overview
+#
+# Inventory, architecture, and wonder-sensitive taste of Spw in Visual Studio Code.
+
+#>spw_cache_vscode_features
+#:cache #!vscode
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Cache the comprehensive capability inventory, thin-client boundary, and design contour of the Spw VS Code extension."
+  ~#extension_id: "spwashi.spw-language"
+  ~#version: "0.3.0"
+  ~#entry: ~"../../../extensions/vscode-spw/README.md"
+  ~#manifest: ~"../../../extensions/vscode-spw/package.json"
+}
+
+^["core_capabilities"]{
+  thin_client_boundary: .{
+    client_responsibilities: #[packaging, views, quick_picks, tree_providers, client_probe_cache, typed_lsp_requests]
+    server_responsibilities: #[diagnostics, hover, completion, rename, document_links, semantic_tokens, formatting]
+    server_entry: "packages/spw-lsp/src/stdio-server.ts"
+  }[reg=facet]
+
+  side_by_side_projections: .{
+    form_preview: "Live geometry and brace resonance opened in column 2 beside the active document"
+    stack_preview: "Live syntax profile and dialect stack rendered as typed JSON preview"
+    cache_preview: "Live cache layer card displaying client TTL stats and LSP session reflection"
+    unsaved_text_support: "LSP probes inspect dirty in-memory buffers without requiring disk writes"
+  }[reg=facet]
+
+  activity_bar_views: .{
+    container_id: "spw-explorer"
+    container_icon: "$(symbol-misc)"
+    views: #[
+      .{ id: "spwWorkspace", name: "Workspace", focus: #atlas_manifest_memory_spirit },
+      .{ id: "spwConcepts", name: "Concepts", focus: #annotation_taxonomy_filtering }
+    ]
+  }[reg=facet]
+
+  visual_decorations: .{
+    phases: "Color-coded operator sigils by spirit phase (? wonder, ! action, ^ frame, @ observer, ~ potential, * collapse)"
+    valences: "Thematic background badges for boon, bane, bone, bonk, and honk"
+    bounds: "Subtle pairing glyphs for {} [] () <>"
+    path_refs: "Distinct styling for ~path and @root references"
+  }[reg=facet]
+
+  client_probe_cache: .{
+    config_key: "spw.cache.probeTtlMs"
+    default_ttl: 8000
+    cache_clear_command: "spw.clearProbeCache"
+    inspectable: "Reports hits, misses, expirations, and active entries in 'Spw: Inspect Cache'"
+  }[reg=facet]
+}
+
+^["host_contour"]{
+  creative_loop: "Keep source visible while comparing live form and stack projections; use guided quick pick prompts when a local idea wants broader consequence."
+  strengths: #[
+    #guided_command_palette,
+    #quick_pick,
+    #side_by_side_live_preview,
+    #inspectable_ttl_cache,
+    #rich_editor_decorations,
+    #activity_bar_atlas
+  ]
+  contrast_intellij: "IntelliJ anchors on saved-file truth and Structure View; VS Code excels at live buffer participation and ambient semantic styling."
+  contrast_neovim: "Neovim maximizes keyboard density and terminal brevity; VS Code offers visual exploratory sidecars and multi-pane views."
+}
+
+^["command_palette"]{
+  instruments: #[
+    .{ command: "spw.inspectGeometry", title: "Spw: Inspect Form" },
+    .{ command: "spw.showSurfaceProfile", title: "Spw: Inspect Surface Stack" },
+    .{ command: "spw.inspectCache", title: "Spw: Inspect Cache" },
+    .{ command: "spw.renameSymbol", title: "Spw: Rename Symbol" },
+    .{ command: "spw.planCorpusRefactor", title: "Spw: Plan Corpus Refactor..." },
+    .{ command: "spw.clearProbeCache", title: "Spw: Clear Probe Cache" }
+  ]
+  navigation: #[
+    .{ command: "spw.navigate", title: "Spw: Navigate Roots and Landmarks" },
+    .{ command: "spw.showReferenceHubs", title: "Spw: Reference Hubs & Orphans" }
+  ]
+  physics: #[
+    .{ command: "spw.showOperatorFrequency", title: "Spw: Show Operator Frequency" },
+    .{ command: "spw.showPhaseContext", title: "Spw: Show Phase Context at Cursor" },
+    .{ command: "spw.showFlowProtocol", title: "Spw: Flow Protocol (sigil × brace modules)" },
+    .{ command: "spw.showGeometricResonance", title: "Spw: Geometric Resonance" },
+    .{ command: "spw.showProbeMeasure", title: "Spw: Probe & Measure Census" },
+    .{ command: "spw.showWorkspaceTemperature", title: "Spw: Workspace Temperature" }
+  ]
+}
+
+^["taste"]{
+  ~#taste: "Exploration without clutter; live feedback without cognitive thrashing."
+  ~#wonder: "Can an editor preview its own syntax physics without breaking the author's train of thought?"
+
+  principles: #[
+    "Quiet ambient presence: Decorations highlight syntactic phase without turning code into a carnival of conflicting colors.",
+    "Side-by-side calm: Live preview buffers open beside the editor and refresh throttled at 120ms to prevent visual jitter.",
+    "Honest cache boundary: The client TTL cache reports its own existence honestly; it never pretends to be runtime interpreter memory.",
+    "Guided consequence: Multi-file refactor plans present explicit options in a quick pick, making scope visible before execution."
+  ]
+}
+
+^["invariants"]{
+  "VS Code contributions complement LSP behavior rather than duplicating semantic rules.",
+  "Inlay hints and decorations refresh asynchronously and never block the main typing thread.",
+  "Probe cache flushes automatically on document edits when contentHash drifts.",
+}
+
+#>wonder_vscode_features_1
+?["How does the side-by-side form projection alter the editing experience?"]{
+  #:depth #!experiential ~#lens(mirror_projection)
+  ~#hypothesis: "Viewing live brace geometry in a side pane allows the author to feel the structural balance of a file as they type."
+  !probe{ "Type a complex nested frame; observe the adjacent form preview update its operator distribution in real time. Does this encourage earlier structural closure?" }
+  $%[preview.refresh_rate_ms, author.edit_to_close_duration]
+}
+
+#>wonder_vscode_features_2
+?["What is the danger of an over-eager live probe cache in an interactive editor?"]{
+  #:depth #!computational ~#lens(cache_drift)
+  ~#hypothesis: "If client-side probe TTL is too long, the author sees stale resonance metrics after editing; if too short, it thrashes the LSP server with redundant queries."
+  !probe{ "Vary spw.cache.probeTtlMs from 1000ms to 30000ms; measure hit rate vs perceived metric freshness during active refactoring." }
+  $%[cache.hit_count, cache.staleness_event_count]
+}

@@ -1,0 +1,91 @@
+# Systems & Memory Features: Rust, Zig, and Beyond
+#
+# Analysis of beloved systems programming features: comptime, explicit allocators, defer, and ownership.
+
+#>spw_cache_lang_systems_memory
+#:cache #!languages
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Analyze the breakthrough language features in modern systems programming (Rust, Zig) that bring safety, mechanical sympathy, and developer delight."
+  ~#focus: "Memory governance without garbage collection, metaprogramming without separate syntax, and deterministic cleanup"
+}
+
+^["zig_comptime"]{
+  ~#feature: "comptime (Compile-Time Execution in Ordinary Syntax)"
+  language: "Zig"
+  why_developers_love_it: #[
+    "No separate macro language: Write ordinary loops, if-statements, and function calls that run at compile time.",
+    "Types as first-class values: A type is simply a value of type 'type'; generic functions are just functions that take or return types.",
+    "Zero runtime cost: Computes lookup tables, parses embedded formats, and validates constraints at build time."
+  ]
+  contrast: "Replaces C preprocessor macros (#define) and C++ template metaprogramming with clean, debuggable, identical syntax."
+}
+
+^["zig_explicit_allocators"]{
+  ~#feature: "Explicit Allocators (No Hidden Heap Allocations)"
+  language: "Zig"
+  why_developers_love_it: #[
+    "Zero hidden allocations: If a function does not accept an 'allocator' parameter, it is guaranteed not to allocate heap memory.",
+    "Pluggable strategies: Pass an ArenaAllocator for batch request handling, a FixedBufferAllocator for embedded, or GPA for testing.",
+    "Built-in leak detection: GeneralPurposeAllocator automatically detects and reports exact memory leaks in test runs."
+  ]
+  contrast: "Replaces implicit global malloc/new calls with transparent, parameter-driven memory lifecycle control."
+}
+
+^["defer_and_errdefer"]{
+  ~#feature: "defer and errdefer (Lexical Resource Cleanup)"
+  language: "Zig / Go"
+  why_developers_love_it: #[
+    "Proximity of acquisition and release: 'const file = try open(); defer file.close();' places cleanup immediately adjacent to creation.",
+    "errdefer precision: Executes cleanup ONLY if the function exits via an error return, simplifying rollback logic in multi-step allocations.",
+    "No RAII ceremony: Avoids writing full destructor classes or wrapper structs just to free a single pointer."
+  ]
+  contrast: "Replaces messy nested 'goto cleanup' blocks in C and heavyweight destructor classes in C++."
+}
+
+^["rust_ownership_and_borrowing"]{
+  ~#feature: "Ownership, Borrowing, and Non-Lexical Lifetimes (NLL)"
+  language: "Rust"
+  why_developers_love_it: #[
+    "Fearless memory safety: Eliminates use-after-free, double-free, and dangling pointers at compile time without a garbage collector.",
+    "Fearless concurrency: The Send and Sync traits prevent data races across threads at compile time.",
+    "Zero-cost abstractions: Iterators, closures, and option types compile down to optimal assembly equivalent to hand-tuned C."
+  ]
+  contrast: "Eliminates the agonizing debugging of random memory corruption and race conditions in production systems."
+}
+
+^["rust_match_and_question_mark"]{
+  ~#feature: "Exhaustive Pattern Matching & the '?' Error Operator"
+  language: "Rust"
+  why_developers_love_it: #[
+    "Exhaustiveness guarantee: Adding a new variant to an enum forces the compiler to flag every unhandled match across the codebase.",
+    "Ergonomic propagation: The '?' operator unpacks Ok(val) or returns early with Err(e), eliminating repetitive 'if err != nil' checks.",
+    "Rich destructuring: Match deeply into nested structs, slices, guards, and references in a single readable block."
+  ]
+}
+
+^["taste"]{
+  ~#taste: "Mechanical sympathy is liberating: when you understand how memory is laid out, fear of the machine disappears."
+  ~#wonder: "Why does passing an explicit allocator parameter feel less burdensome and more empowering than hidden global memory?"
+
+  principles: #[
+    "Transparent costs: A language feature that conceals an O(N) allocation behind innocent syntax is a trap.",
+    "Compiler as partner: Rust's compiler error messages teach programming concepts rather than merely scolding the author.",
+    "Determinism over speculation: Knowing the exact nanosecond a buffer is released brings deep peace of mind."
+  ]
+}
+
+^["invariants"]{
+  "Explicit memory parameters guarantee zero heap allocation in embedded and real-time paths.",
+  "Pattern match exhaustiveness is enforced at compile time with zero unhandled case exceptions.",
+  "Error handling preserves stack trace context without throwing untyped runtime exceptions.",
+}
+
+#>wonder_lang_systems_memory_1
+?["How does comptime fundamentally resolve the decades-old tension between generics and code clarity?"]{
+  #:depth #!philosophical ~#lens(syntactic_unification)
+  ~#hypothesis: "By treating types as ordinary runtime-like values at compile time, comptime eliminates the need for a secondary template syntax, unifying the cognitive model of programming."
+  !probe{ "Compare implementing a generic circular ring buffer in Zig (using comptime type parameters) vs C++ (using templates and SFINAE/concepts); measure lines of boilerplate and compiler diagnostic clarity." }
+  $%[syntax.boilerplate_line_count, compiler.diagnostic_clarity_score]
+}

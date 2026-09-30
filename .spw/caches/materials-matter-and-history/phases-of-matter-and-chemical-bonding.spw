@@ -1,0 +1,47 @@
+# Phases of Matter & Chemical Bonding Curriculum Cache
+#
+# Condensed matter phases, non-Newtonian shear rheology, DLVO colloids, and chemical bonding regimes.
+
+#>spw_cache_mat_phases_bonds
+#:cache #!phases_of_matter_and_chemical_bonding
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the fundamental thermodynamic phases of matter, non-Newtonian fluid rheology, colloidal dispersions, and the quantum-chemical taxonomy of chemical bonds."
+  ~#protocol: "cache.layer/1"
+}
+
+^"phases_of_matter_and_rheological_states"{
+  "solids_liquids_and_supercritical_states": .{
+    crystalline_vs_amorphous_solids: "Crystalline solids: long-range translational order, distinct 14 Bravais lattices, sharp melting points (e.g., ferrite in steel); Amorphous glasses: lack long-range periodicity, characterized by glass transition temperature T_g (e.g., PMMA acrylic)",
+    newtonian_vs_non_newtonian_liquids: "Newtonian liquids: constant viscosity independent of shear strain (e.g., water); Non-Newtonian shear-thinning (pseudoplastic): viscosity drops under shear stress, enabling ink to flow smoothly through fountain pen nibs and paint to brush out evenly without running",
+    thixotropy_and_yield_stress: "Thixotropic fluids: reversible time-dependent gel-sol-gel transition; high static viscosity prevents pigment sedimentation in storage, but liquefies into low-viscosity liquid upon mechanical stirring or brushing (Bingham plastic yield stress)",
+    supercritical_fluids_and_plasmas: "Supercritical fluid (T > T_c, P > P_c): continuous fluid state exhibiting gas-like diffusivity and liquid-like solvent power; Plasmas: quasi-neutral ionized gases of free electrons and ions utilized in semiconductor surface functionalization",
+  }[reg=facet],
+  "colloidal_systems_and_dlvo_stability": .{
+    colloid_taxonomy: "Dispersions with particle diameters between 1nm and 1 micrometer: Sols (solid particles in liquid, e.g., carbon black ink), Emulsions (liquid droplets in liquid, e.g., acrylic emulsion paint), Gels (interconnected liquid-swollen polymeric network), and Aerosols",
+    dlvo_colloidal_stability_theory: "Derjaguin-Landau-Verwey-Overbeek (DLVO) framework: colloidal stability governed by competition between attractive London dispersion van der Waals forces and repulsive electrostatic double-layer (zeta potential) interactions; zeta potential > +30mV or < -30mV prevents irreversible particle agglomeration",
+  }[reg=facet],
+}
+
+^"quantum_chemistry_of_chemical_bonding"{
+  "primary_intramolecular_bonds": .{
+    metallic_bonding: "Electrostatic attraction between delocalized conduction electron gas ('electron sea') and fixed positive cation cores; non-directional orbital overlap conferring exceptional thermal/electrical conductivity, optical reflectivity, and slip-plane ductility/malleability under plastic shear",
+    covalent_bonding: "Directional quantum sharing of valence electron pairs; hybridization (sp, sp2, sp3); high bond dissociation energies (200-1,000 kJ/mol); forms discrete volatile molecules, infinite covalent network lattices (diamond, graphite), and linear macromolecular chains (polymers, cellulose)",
+    ionic_bonding: "Coulombic electrostatic attraction between oppositely charged ions (electronegativity difference Delta chi > 2.0); non-directional lattice packing governed by radius ratio rules; high melting points, electrical insulator in solid phase, brittle cleavage under shear due to like-charge alignment",
+  }[reg=facet],
+  "secondary_intermolecular_forces": .{
+    hydrogen_bonding: "Specialized dipole-dipole attraction where hydrogen covalently bound to small, highly electronegative atoms (N, O, F) interacts with lone pairs on adjacent atoms; bond strength 10-40 kJ/mol; responsible for the anomalous density of water, the helical structure of wool, and the crystalline tenacity of cellulose microfibrils",
+    van_der_waals_and_dispersion_forces: "Keesom permanent dipole interactions, Debye induced dipole forces, and London dispersion forces arising from quantum fluctuating instantaneous multipoles; scales as 1/r^6; determines pigment particle agglomeration and polymer inter-chain cohesion",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_mat_phases_bonds_1
+  ?["Why does non-directional metallic bonding allow steel to bend and deform without shattering, whereas directional covalent or ionic solids fracture catastrophically?"]{
+    #:depth #!materials ~#lens(metallic_electron_sea_plastic_accommodation)
+    ~#hypothesis: "In metallic bonding, conduction electrons are delocalized across the entire crystal lattice. When mechanical stress forces planes of atoms to slide past one another (dislocation glide along close-packed planes), the fluid electron sea instantly flows to shield repulsive cation-cation encounters, maintaining cohesive binding energy throughout large plastic deformations without cleavage."
+    !probe{ "Simulate dislocation slip core energies in body-centered cubic iron vs covalent silicon under high shear strain via density functional theory (DFT)." }
+    $%[mechanics.dislocation_glide_peierls_stress_mpa, bonding.metallic_electron_delocalization_ratio]
+  }
+}

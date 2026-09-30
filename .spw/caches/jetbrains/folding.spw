@@ -1,0 +1,59 @@
+# JetBrains Code Folding
+#
+# Cache of folding descriptors, region calculations, and placeholder geometry.
+
+#>spw_cache_jetbrains_folding
+#:cache #!jetbrains
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Cache code folding rules that collapse large Spw surfaces into scannable structural architectures."
+  ~#builder: "com.spwashi.spw.SpwFoldingBuilder"
+  ~#extension_point: "com.intellij.lang.foldingBuilder"
+}
+
+^["folding_rules"]{
+  frame_blocks: .{
+    pattern: "^['\"]([^\"]+)['\"]\\s*\\{"
+    folding_region: "From opening { to matching closing }"
+    collapsed_placeholder: "{ ... }"
+    default_collapsed: false
+    description: "Folds top-level and nested frame bodies while preserving the frame header."
+  }[reg=facet]
+
+  section_headings: .{
+    pattern: "^#\\s+(.+)$"
+    folding_region: "From heading line through the last non-empty line before the next heading or EOF"
+    collapsed_placeholder: "# ... [section]"
+    default_collapsed: false
+    description: "Folds multi-line markdown-style document sections under their parent heading."
+  }[reg=facet]
+
+  custom_projections: .{
+    pattern: "^(projection|subroot)\\[([^\\]]+)\\]\\s*\\{"
+    folding_region: "From opening { to matching closing }"
+    collapsed_placeholder: "{ ... }"
+    default_collapsed: false
+    description: "Folds projection blocks, subroot boundaries, and generator directives."
+  }[reg=facet]
+}
+
+^["builder_mechanics"]{
+  scanner: "Single-pass text scan tracking open/close brace balance and string escapes"
+  string_safety: "Braces inside double quotes or single quotes are ignored by brace depth tracking"
+  comment_safety: "Line comments (//) truncate brace scanning for the remainder of the line"
+  nesting_support: "Recursive region descriptors allow nested frames to fold independently"
+  performance_budget: "Sub-millisecond region calculation even on 10,000+ line surfaces"
+}
+
+^["placeholder_geometry"]{
+  collapsed_text_frames: "{ ... }"
+  collapsed_text_headings: "# Heading [folded]"
+  preservation: "Folded regions preserve line numbering in gutter and maintain caret jump coordinates"
+}
+
+^["invariants"]{
+  "String-safe brace counting prevents false region termination on quoted braces.",
+  "Heading folds never swallow subsequent sibling headings of the same or higher rank.",
+  "Folding builder is dumb-aware and calculates regions immediately without waiting for index readiness.",
+}

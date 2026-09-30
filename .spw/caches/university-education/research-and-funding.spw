@@ -1,0 +1,70 @@
+# University Research Economics & Laboratory Topologies
+#
+# Financial engines, grant mechanics, F&A indirect cost recovery, and academic lab structures.
+
+#>spw_cache_univ_research
+#:cache #!university
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the financial engine and laboratory social organization that powers modern scientific and scholarly research."
+  ~#regulatory_framework: "Uniform Guidance (2 CFR 200), Bayh-Dole Act of 1980, federal peer-review study sections"
+}
+
+^["grant_funding_pipeline"]{
+  federal_agencies: #[
+    .{ agency: "NIH (National Institutes of Health)", budget: "$45B+", focus: "Biomedical, clinical, translational, R01 investigator-initiated awards" },
+    .{ agency: "NSF (National Science Foundation)", budget: "$10B+", focus: "Fundamental science, engineering, computing, mathematical sciences" },
+    .{ agency: "DoD / DARPA / DOE", budget: "$20B+", focus: "Mission-critical applied physics, national energy, high-risk frontier technology" }
+  ]
+  study_section_peer_review: "Competitive scoring by panels of scientific peers based on Significance, Innovation, Approach, and Environment."
+}
+
+^["overhead_and_indirect_costs"]{
+  fa_rates: .{
+    acronym: "Facilities and Administrative (F&A) rates (also known as Indirect Cost recovery)"
+    typical_range: "50% to 65% on top of direct research costs (negotiated federally)"
+    role: "Subsidizes institutional physical plant, HVAC, library subscriptions, hazardous waste disposal, compliance offices, and university administration."
+  }[reg=facet]
+  economic_dependence: "R1 universities depend on F&A overhead streams to balance general institutional operating budgets."
+}
+
+^["the_laboratory_ecosystem"]{
+  hierarchy: #[
+    .{ role: "Principal Investigator (PI / Tenured Professor)", function: "Grant acquisition, strategic direction, paper editing, lab funding, doctoral mentorship" },
+    .{ role: "Postdoctoral Research Fellows", function: "Full-time senior researchers executing breakthrough experiments, mentoring graduate students" },
+    .{ role: "Doctoral Candidates (Ph.D.)", function: "5-6 year apprenticeship conducting dissertation experiments, publishing first-author papers, teaching recitations" },
+    .{ role: "Master's & Undergraduate Researchers", function: "Entry-level lab hands gaining wet-lab or computational experience, assisting on senior projects" }
+  ]
+}
+
+^["tech_transfer_and_patents"]{
+  bayh_dole_act_1980: "Permits universities to retain title to inventions arising from federally funded research."
+  tlo_office: "Technology Licensing Offices file patents, license intellectual property to industry, and incubate faculty spinouts."
+  commercialization_tension: "Balancing open public science against lucrative proprietary patent licensing deals."
+}
+
+^["taste"]{
+  ~#taste: "True basic research is an act of faith: funding questions whose answers cannot yet be imagined."
+  ~#wonder: "Why do the greatest commercial breakthroughs (the Internet, mRNA vaccines, CRISPR) trace back to federally funded university labs?"
+
+  principles: #[
+    "Long-term patience: Basic science operates on 20-year horizons that corporate quarterly earnings reports cannot sustain.",
+    "Student-first apprenticeship: The primary product of a university lab is not the patent or the paper; it is the newly minted scientist.",
+    "Open publication: Publicly funded science belongs in the public sphere, free from predatory publisher paywalls."
+  ]
+}
+
+^["invariants"]{
+  "Direct grant funds cannot be commingled with institutional discretionary accounts.",
+  "Human and animal research protocols require prior IRB (Institutional Review Board) or IACUC approval.",
+  "Financial conflict of interest disclosures are mandatory for all key grant personnel.",
+}
+
+#>wonder_univ_research_1
+?["How does the pursuit of high F&A overhead shape which academic disciplines a university prioritizes?"]{
+  #:depth #!philosophical ~#lens(financial_gravity)
+  ~#hypothesis: "Because laboratory sciences generate 60% indirect overhead while theoretical humanities generate zero, university capital investments skew heavily toward wet-lab sciences."
+  !probe{ "Track the square footage growth of medical/engineering buildings vs arts/humanities buildings across 20 major R1 universities over 20 years." }
+  $%[space.wet_lab_expansion_sqft, space.humanities_expansion_sqft]
+}

@@ -1,0 +1,49 @@
+# Graduate Advanced Microeconomic Theory Curriculum Cache
+#
+# Axiomatic preferences, duality, Arrow-Debreu general equilibrium, and mechanism design.
+
+#>spw_cache_univ_grad_micro
+#:cache #!graduate_advanced_microeconomic_theory
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model doctoral microeconomic theory (MWG standard): axiomatic choice under risk, general equilibrium existence proofs, welfare theorems, and mechanism design."
+  ~#protocol: "cache.layer/1"
+}
+
+^"axiomatic_choice_and_duality_theory"{
+  "preference_axioms_and_expected_utility": .{
+    rational_preference_structure: "Binary relation >= on consumption set X; Complete, Transitive, Continuous (guaranteeing continuous utility representation by Debreu's theorem), and Strictly Convex (strict preference for mixtures)",
+    vnm_expected_utility_under_risk: "von Neumann-Morgenstern axioms over lotteries (Completeness, Transitivity, Continuity, Independence Axiom); representation: U(L) = sum_k p_k * u(x_k)",
+    arrow_pratt_risk_aversion_measures: "Coefficient of Absolute Risk Aversion ARA(w) = -u''(w) / u'(w); Relative Risk Aversion RRA(w) = -w * u''(w) / u'(w); Pratt's theorem equivalence to risk premium and concavity",
+  }[reg=facet],
+  "duality_in_consumption_and_production": .{
+    envelope_theorems_and_identities: "Roy's Identity: x_l(p, m) = -(dv/dp_l) / (dv/dm); Shephard's Lemma: h_l(p, u) = de(p, u) / dp_l; Hotelling's Lemma: y_l(p) = dpi(p) / dp_l",
+    slutsky_matrix_properties: "Substitution matrix S(p, m) = [dh_l/dp_k] is symmetric, negative semi-definite, satisfies p * S(p, m) = 0 (homogeneity of degree 0), and has rank at most L-1",
+  }[reg=facet],
+}
+
+^"general_equilibrium_and_mechanism_design"{
+  "arrow_debreu_general_equilibrium_and_welfare": .{
+    walrasian_equilibrium_definition: "Price vector p* in unit simplex and allocations (x*, y*) such that consumers maximize utility, firms maximize profits, and markets clear (excess demand z(p*) <= 0)",
+    existence_via_fixed_point_theorems: "Excess demand z(p) satisfies Walras' Law (p * z(p) = 0); existence of market clearing p* proven via Brouwer or Kakutani Fixed Point Theorem on correspondence z(p)",
+    first_fundamental_welfare_theorem: "If preferences are locally non-satiated, any competitive equilibrium allocation is Pareto efficient; requires zero externalities and complete markets",
+    second_fundamental_welfare_theorem: "If preferences and production sets are convex, any Pareto efficient allocation can be supported as a competitive equilibrium through lump-sum wealth transfers",
+  }[reg=facet],
+  "information_economics_and_mechanism_design": .{
+    adverse_selection_and_signaling: "Akerlof lemons model unraveling; Spence job-market signaling where high-ability types burn resources to credibly signal under Single-Crossing condition",
+    principal_agent_and_moral_hazard: "Contract design under unobservable effort: balancing optimal risk sharing (first-best) against incentive compatibility constraints (second-best deadweight loss)",
+    revelation_principle_and_vcg: "Any equilibrium outcome of any Bayesian game can be replicated by an incentive-compatible direct revelation mechanism; Vickrey-Clarke-Groves (VCG) mechanisms guaranteeing dominant strategy truthful revelation",
+    myerson_satterthwaite_theorem: "No bilateral trading mechanism between buyer and seller with private valuations can be simultaneously Pareto efficient, Bayesian incentive compatible, individually rational, and budget balanced",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_grad_micro_1
+  ?["Why does the Myerson-Satterthwaite theorem mathematically prove that private bargaining can never guarantee 100% efficient trade in the presence of asymmetric information?"]{
+    #:depth #!theoretical ~#lens(information_rents_and_inevitable_inefficiency)
+    ~#hypothesis: "To induce private valuation types to report truthfully without subsidies, the mechanism must pay information rents to agents with favorable private information. When trade is marginally mutually beneficial, these information rents exhaust the entire economic surplus, mathematically forcing the probability of trade to drop below 100% on the margin."
+    !probe{ "Solve the incentive-compatibility integral constraints for a uniform distribution bilateral trade environment to compute the exact Deadweight Loss of the optimal mechanism." }
+    $%[mechanism.information_rent_integral, micro.myerson_satterthwaite_efficiency_loss]
+  }
+}

@@ -1,0 +1,59 @@
+# JetBrains Feature Cache Index
+#
+# Root cache index for JetBrains (IntelliJ IDEA, WebStorm) features and instruments in Spw.
+
+#>spw_cache_jetbrains_index
+#:cache #!jetbrains
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Cache structural, semantic, and instrument features provided by the JetBrains Spw plugin."
+  ~#host: "WebStorm and IntelliJ IDEA Platform (builds 242..262.*)"
+  ~#source_manifest: ~"../../../extensions/intellij-spw/src/main/resources/META-INF/plugin.xml"
+  ~#spec_owner: ~"../../tooling/intellij-plugin.spw"
+}
+
+^"roots"{
+  @features: ~"./features.spw"
+  @instruments: ~"./instruments.spw"
+  @navigation: ~"./navigation.spw"
+  @folding: ~"./folding.spw"
+  @syntax: ~"./syntax-highlighting.spw"
+  @live_templates: ~"./live-templates.spw"
+  @lsp: ~"./lsp-client.spw"
+  @compatibility: ~"./compatibility.spw"
+  @cache_layer: ~"./cache-layer.spw"
+}
+
+^"dispatch"{
+  overview: @features
+  instruments: @instruments
+  navigation: @navigation
+  folding: @folding
+  syntax_highlighting: @syntax
+  live_templates: @live_templates
+  lsp_integration: @lsp
+  compatibility_matrix: @compatibility
+  cache_reflection: @cache_layer
+}
+
+^"taste"{
+  ~#taste: "The JetBrains host contour honors structural density, native action integration, and saved-buffer discipline."
+  ~#rule: "Parity is of questions and evidence fields, not of panels or duplicated chrome."
+}
+
+^"invariants"{
+  "TextMate and native IntelliJ UI supply syntax and layout projection; shared LSP owns semantic meaning.",
+  "Workbench instruments inspect saved buffers and parameterize the canonical Spw CLI without duplicating parsers.",
+  "Corpus refactor actions remain plan-only and never add --write from the editor.",
+  "A dirty buffer is never silently inspected as stale disk content: save and retry is enforced.",
+  "Native action gestures and Structure View preserve the host creative contour while sharing cross-host truth depth.",
+}
+
+#>wonder_jetbrains_index_1
+?["What is the defining taste invariant across the entire JetBrains Spw cache?"]{
+  #:depth #!philosophical ~#lens(host_contour)
+  ~#hypothesis: "The JetBrains integration rejects emulation of other editors, preferring native IntelliJ action idioms and Structure View indexing."
+  !probe{ "Compare how an author executes a symbol rename in IntelliJ vs VS Code vs Neovim; verify that each host uses its native muscle memory while dispatching to the same LSP protocol." }
+  $%[action.native_fidelity, lsp.protocol_equivalence]
+}

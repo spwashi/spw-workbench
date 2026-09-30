@@ -1,0 +1,156 @@
+# JetBrains Features Overview
+#
+# Inventory, structural profile, and wonder-sensitive taste of Spw in JetBrains IDEs.
+
+#>spw_cache_jetbrains_features
+#:cache #!jetbrains
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Provide a comprehensive cache of Spw capabilities available within IntelliJ Platform hosts."
+  ~#client: #native_intellij_plugin
+  ~#plugin_id: "com.spwashi.spw"
+  ~#entry: ~"../../../extensions/intellij-spw/README.md"
+  ~#spec_owner: ~"../../tooling/intellij-plugin.spw"
+}
+
+^["core_capabilities"]{
+  file_type: .{
+    extension: "spw"
+    name: "Spw"
+    icon: "icons/spwFile.svg"
+    commenter: "SpwCommenter (// line comment toggle with Cmd+/)"
+    spellcheck: "SpwSpellcheckingStrategy (skips operators/sigils, inspects comments/strings)"
+    language_id: "Spw"
+  }[reg=facet]
+
+  syntax_presentation: .{
+    provider: "SpwTextMateBundleProvider"
+    bundle: "textmate/spw.tmLanguage.json"
+    color_scheme: "Settings | Editor | Color Scheme | TextMate Bundles | Spw Language"
+    scopes: #[headings, annotations, sigils, paths, operators, valences]
+    contrast_design: "Tailored to high-contrast and low-saturation themes without operator glare."
+  }[reg=facet]
+
+  navigable_structure: .{
+    structure_view: "SpwStructureViewFactory (Cmd+7)"
+    code_folding: "SpwFoldingBuilder (frames and headings)"
+    gutter_markers: "SpwAnnotationLineMarkerProvider (anchors, frames, claims)"
+    outline_fidelity: "Indexes AST landmark nodes into a searchable hierarchical tree."
+  }[reg=facet]
+
+  semantic_service: .{
+    lsp_support: "SpwLspServerSupportProvider"
+    launcher: "SpwLspLauncher"
+    configuration: "Settings | Tools | Spw LSP"
+    capabilities: #[definition, hover, document_link, workspace_symbol, diagnostics, rename]
+    notifications: "Balloon notifications via 'Spw LSP' notification group."
+  }[reg=facet]
+
+  workbench_instruments: .{
+    runner: "SpwCliRunner"
+    actions: #[inspect_form, inspect_stack, inspect_cache, rename_symbol, plan_corpus_refactor]
+    access: "Tools | Spw Instruments or Find Action"
+    execution_contour: "Background task with ProgressIndicator and cancel button; opens LightVirtualFile."
+  }[reg=facet]
+
+  editing_aids: .{
+    context: "SpwTemplateContext"
+    templates: #[frame, intent, anno, subroot, prop, episode, stream]
+    tab_expansion: true
+    smart_indent: "Inherits platform brace matching and block boundary indentation."
+  }[reg=facet]
+}
+
+^["host_contour"]{
+  creative_loop: "Move between structural outline (Cmd+7) and reusable saved-file products; keep semantic rename inside the host refactoring gesture."
+  strengths: #[
+    #native_action_system,
+    #structure_view,
+    #folding,
+    #typed_read_only_preview,
+    #gutter_line_markers,
+    #live_templates
+  ]
+  contrast_vscode: "VS Code keeps live side-by-side previews with unsaved text; IntelliJ preserves native buffer discipline and opens saved CLI products as read-only editor tabs."
+  contrast_neovim: "Neovim emphasizes terse keyboard commands into scratch splits; IntelliJ anchors on Structure View, gutter icons, and native action dialogs."
+}
+
+^["action_registry"]{
+  inspect_form: .{
+    id: "Spw.InspectForm"
+    text: "Inspect Spw Form"
+    command: "spw form <surface> --resonance --spw"
+    output: "read-only typed Spw preview"
+    guard: #saved_file_truth
+  }[reg=facet]
+
+  inspect_stack: .{
+    id: "Spw.InspectStack"
+    text: "Inspect Spw Surface Stack"
+    command: "spw stack <surface> --json"
+    output: "read-only JSON preview"
+    guard: #saved_file_truth
+  }[reg=facet]
+
+  inspect_cache: .{
+    id: "Spw.InspectCache"
+    text: "Inspect Spw Cache"
+    command: "spw inspect cache <surface> --json"
+    output: "read-only JSON receipt"
+    guard: #saved_file_truth
+  }[reg=facet]
+
+  rename: .{
+    id: "Spw.Rename"
+    text: "Rename Spw Symbol"
+    delegates_to: "IdeActions.ACTION_RENAME"
+    backend: "LSP textDocument/prepareRename and textDocument/rename"
+    guard: #lsp_active
+  }[reg=facet]
+
+  plan_refactor: .{
+    id: "Spw.PlanCorpusRefactor"
+    text: "Plan Spw Corpus Refactor..."
+    command: "spw refactor . --rename <kind:from=to> --json"
+    dialog: "prompt for mark|anchor|case|mood:from=to"
+    output: "read-only JSON plan"
+    guard: #never_write_from_editor
+  }[reg=facet]
+}
+
+^["taste"]{
+  ~#taste: "Dignity of structure over decorative noise; quiet instruments over chatty tool windows."
+  ~#wonder: "Why does an IDE feel grounded when its actions return documents rather than modal cards?"
+
+  principles: #[
+    "Saved-buffer discipline: Refuse to analyze unsaved text with CLI tools; truth requires disk persistence.",
+    "Native gesture reverence: Do not invent a custom rename modal when IntelliJ's native Refactor > Rename is already reflexive in muscle memory.",
+    "Outline contemplation: Structure View is not a search index; it is an architectural drawing of container hierarchy.",
+    "Zero-chatter backgrounding: Long-running CLI calls run silently with a standard progress indicator, reporting only on completion or failure.",
+    "Textual reusability: Previews are ordinary editor buffers that can be split, searched, copied, or diffed using standard IDE shortcuts."
+  ]
+}
+
+^["invariants"]{
+  "Every instrument action runs in a background thread and does not freeze the UI.",
+  "Dirty buffers trigger an explicit warning to save and retry, preventing stale analysis.",
+  "The IntelliJ plugin delegates semantic reasoning to LSP and CLI rather than re-implementing AST parsing in Kotlin.",
+  "Preview documents created by instruments are strictly read-only and marked non-project light files.",
+}
+
+#>wonder_jetbrains_features_1
+?["How does Structure View transform an author's relationship with container depth?"]{
+  #:depth #!experiential ~#lens(architectural_scaffold)
+  ~#hypothesis: "When nested ^['frame']{} containers become an outline tree, authors catch runaway nesting before the compiler warns of depth exhaustion."
+  !probe{ "Open a 400-line Spw file with 4 levels of nested frames; collapse all in Structure View; verify whether the top-level intent remains intelligible from frame names alone." }
+  $%[file.brace_depth_max, structure.element_count, structure.nesting_ratio]
+}
+
+#>wonder_jetbrains_features_2
+?["Why does JetBrains reject live unsaved probe preview in favor of saved disk truth?"]{
+  #:depth #!philosophical ~#lens(epistemic_grounding)
+  ~#hypothesis: "Unsaved text is an uncommitted hypothesis; running CLI instruments on uncommitted drafts conflates transient speculation with durable workspace state."
+  !probe{ "Measure the cognitive difference between editing with instant phantom feedback versus saving deliberately before asking for an architectural resonance reading." }
+  $%[buffer.dirty_state_rejection_count, instrument.invocation_cadence]
+}

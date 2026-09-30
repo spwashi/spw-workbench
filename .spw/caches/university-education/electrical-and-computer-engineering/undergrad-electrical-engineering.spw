@@ -1,0 +1,98 @@
+# Undergraduate Electrical Engineering Curricular Architecture
+#
+# ABET-accredited Bachelor of Science (B.S.) in Electrical Engineering: circuits, signals and systems, analog electronics, electromagnetics, and power.
+
+#>spw_cache_univ_undergrad_ee
+#:cache #!electrical_engineering
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the four-year undergraduate curriculum for an ABET-accredited Bachelor of Science in Electrical Engineering, articulating circuit analysis, signal transforms, analog microelectronics, and electromagnetics."
+  ~#accreditation: "ABET EAC Criteria for Electrical, Electronics, and Communication Engineering"
+}
+
+^["linear_circuit_analysis_and_ac_networks"]{
+  sophomore_gateway: "Circuits I & II with Circuit Prototyping Laboratory."
+  circuit_foundations: #[
+    "Kirchhoff's Laws & Network Theorems: KCL, KVL, nodal and mesh analysis, Thevenin/Norton equivalents, and maximum power transfer",
+    "Operational Amplifier Circuits: Ideal op-amp golden rules, inverting/non-inverting configurations, instrumentation amplifiers, and active filters",
+    "Transient Dynamics: First-order RC/RL step response, second-order RLC differential equations, damping ratio zeta, and resonant ringing",
+    "Sinusoidal Steady-State: Phasor transform, complex impedance Z, admittance Y, AC real/reactive/apparent power, and power factor correction",
+    "Frequency Resonance: Series and parallel RLC resonant tanks, quality factor Q, and 3dB bandwidth calculations"
+  ]
+}
+
+^["signals_linear_systems_and_transforms"]{
+  sophomore_junior_core: "Continuous and Discrete Signals and Systems."
+  signal_disciplines: .{
+    time_domain_foundations: #[
+      "Classification: Continuous-Time (CT) vs Discrete-Time (DT), energy vs power signals, and causality/stability conditions",
+      "Convolution: Impulse response h(t), LTI system response via convolution integral and discrete convolution sum"
+    ]
+    frequency_domain_transforms: #[
+      "Fourier Analysis: Continuous Fourier Series (harmonic decomposition), CTFT, DTFT, and Fast Fourier Transform (FFT) computational mechanics",
+      "Laplace Transform: Bilateral/unilateral Laplace, Region of Convergence (ROC), transfer function H(s), pole-zero constellation, and BIBO stability",
+      "Z-Transform: Discrete system transfer functions H(z), unit circle stability, and digital FIR/IIR filter synthesis",
+      "Sampling Theorem: Nyquist-Shannon sampling rate (fs >= 2*B), spectral aliasing, and anti-aliasing reconstruction filters"
+    ]
+  }[reg=facet]
+}
+
+^["semiconductor_devices_and_analog_electronics"]{
+  junior_core: "Electronic Circuits and Semiconductor Physics Lab."
+  microelectronics: #[
+    "p-n Junction Diodes: Built-in potential, depletion width, drift/diffusion currents, Shockley diode equation, and Zener reverse breakdown",
+    "MOSFET Device Physics: Inversion layer formation, threshold voltage Vth, triode and saturation regimes, square-law model, and channel-length modulation lambda",
+    "Bipolar Junction Transistors (BJT): Forward-active, saturation, and cutoff operations; Ebers-Moll and hybrid-pi small-signal models",
+    "Single & Multi-Stage Amplifiers: Common-source, common-drain, and common-gate topologies; differential amplifier pairs and active current mirrors",
+    "Frequency Response & Feedback: High-frequency parasitic capacitances, Miller multiplication theorem, negative feedback topologies, and Bode stability margins"
+  ]
+}
+
+^["electromagnetics_and_wave_transmission"]{
+  junior_core: "Electromagnetic Fields, Waves, and Transmission Lines."
+  wave_physics: .{
+    maxwell_field_equations: "Differential and integral Maxwell equations, Lorentz gauge, plane waves in lossless/lossy media, skin depth, and Poynting vector flux"
+    transmission_lines: #[
+      "Distributed circuit model (R, L, G, C parameters), telegrapher's equations, and characteristic impedance Z0",
+      "Voltage Standing Wave Ratio (VSWR), reflection coefficient Gamma, and bounce diagrams for transient digital pulses",
+      "Smith Chart: Graphical impedance matching using single-stub and quarter-wavelength transmission line transformers",
+      "Waveguides & Antennas: Rectangular metallic waveguides (TE/TM modes, cutoff frequencies) and dipole radiation patterns"
+    ]
+  }[reg=facet]
+}
+
+^["power_systems_and_electromechanical_energy"]{
+  senior_core: "Energy Conversion and Power Systems."
+  power_engineering: #[
+    "Three-Phase AC Networks: Balanced Y and Delta generator/load configurations, per-phase equivalent circuits, and line-to-line vs line-to-neutral voltages",
+    "Power Transformers: Magnetic core hysteresis, leakage inductance, ideal transformer scaling, and per-unit normalization",
+    "Electric Machinery: Three-phase induction motors (torque-slip curves, rotor equivalent circuit), synchronous generators, and brushless DC motors",
+    "Power Electronics: Switched-mode power supplies, buck/boost DC-DC converters, pulse-width modulation (PWM) inverters, and grid interconnects"
+  ]
+}
+
+^["taste"]{
+  ~#taste: "Undergraduate electrical engineering is the art of giving invisible electromagnetic fields an architecture that performs work and carries thought."
+  ~#wonder: "Why does the Laplace s-plane transform a horrifying system of coupled high-order differential equations into simple high-school algebra?"
+
+  principles: #[
+    "Impedance matching is everywhere: From microwave transmission lines to audio amplifiers, maximum power transfers only when source and load impedances match.",
+    "Ground is not a magical sink: Current flows only in closed loops; always trace where the return current travels on the circuit board.",
+    "Noise is physics, not bad luck: Johnson-Nyquist thermal noise and shot noise set absolute physical limits on the smallest signal you can detect."
+  ]
+}
+
+^"invariants"{
+  "Analog circuit designs must demonstrate phase margins greater than 45 degrees to guarantee feedback loop stability.",
+  "Digital transmission line traces must be terminated with characteristic impedance when signal rise time is less than twice the propagation delay.",
+  "High-voltage laboratory experiments require dual-operator presence and verified physical grounding rods before contact.",
+}
+
+#>wonder_undergrad_ee_1
+?["How does the physical fabrication of custom microwave microstrip filters on FR-4 boards alter student understanding of Maxwell's boundary conditions?"]{
+  #:depth #!pedagogical ~#lens(rf_hardware_intuition)
+  ~#hypothesis: "Students who lay out, mill, and test microstrip bandpass filters with a vector network analyzer (VNA) identify parasitic coupling and dielectric dispersion 50% faster than those using 2D circuit simulators alone."
+  !probe{ "Measure filter design iteration counts and insertion loss prediction accuracy across physical RF prototyping vs simulation-only student cohorts." }
+  $%[rf.s21_insertion_loss_accuracy_db, pedagogy.vna_troubleshooting_proficiency]
+}

@@ -1,0 +1,49 @@
+# Graduate Macroeconomics & Econometrics Curriculum Cache
+#
+# DSGE dynamic programming, New Keynesian sticky prices, GMM estimation, and structural VARs.
+
+#>spw_cache_univ_grad_macro_metrics
+#:cache #!graduate_macroeconomics_and_econometrics
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model doctoral dynamic macroeconomics (DSGE models, Calvo pricing, Bellman equations) and advanced econometric theory (GMM, time series VARs, cointegration)."
+  ~#protocol: "cache.layer/1"
+}
+
+^"dynamic_stochastic_macroeconomics_dsge"{
+  "optimal_growth_and_bellman_dynamics": .{
+    ramsey_cass_koopmans_framework: "Infinite-horizon intertemporal consumer optimization: max sum_t beta^t * u(c_t); Bellman equation V(k) = max { u(f(k) - k') + beta * V(k') }",
+    euler_equation_and_transversality: "Euler equation: u'(c_t) = beta * E_t[u'(c_t+1) * (1 + f'(k_t+1) - delta)]; Transversality Condition (TVC): lim_t beta^t * u'(c_t) * k_t+1 = 0 ruling out explosive asset bubbles",
+    real_business_cycle_rbc_foundations: "Kydland-Prescott: business cycles driven by exogenous Total Factor Productivity (TFP) technology shocks; Pareto optimal competitive allocations under flexible wages and prices",
+  }[reg=facet],
+  "new_keynesian_dsge_and_monetary_policy": .{
+    calvo_staggered_price_setting: "Firms adjust prices in any period with exogenous probability 1 - theta; induces aggregate nominal price rigidity and real output effects from monetary shocks",
+    three_equation_new_keynesian_model: "1) Dynamic IS curve: x_t = E_t[x_t+1] - (1/sigma) * (i_t - E_t[pi_t+1] - r_t_nat); 2) New Keynesian Phillips Curve: pi_t = beta * E_t[pi_t+1] + kappa * x_t; 3) Monetary Policy Taylor Rule",
+    taylor_principle_for_determinacy: "The central bank must raise nominal interest rates more than one-for-one with inflation (phi_pi > 1) to anchor inflation expectations and guarantee a unique, stable rational expectations equilibrium",
+    search_and_matching_dmp_model: "Diamond-Mortensen-Pissarides framework: Beveridge curve matching unemployment U and vacancies V via matching function M(U, V); wages determined by generalized Nash bargaining",
+  }[reg=facet],
+}
+
+^"advanced_econometric_estimation_and_time_series"{
+  "generalized_method_of_moments_gmm": .{
+    moment_conditions_orthogonality: "Model specifies population moment conditions E[m(w_i, theta_0)] = 0; sample analogue m_bar(theta) minimized via quadratic form J(theta) = m_bar(theta)' * W * m_bar(theta)",
+    optimal_weighting_matrix: "Hansen's efficient two-step estimator: optimal weight W* = S^(-1), where S is the asymptotic covariance matrix of sample moments",
+    hansen_j_test_of_overidentification: "J_stat = N * m_bar(theta_hat)' * W* * m_bar(theta_hat) distributed as chi-square with degrees of freedom equal to (number of moments - number of parameters); tests joint model validity",
+  }[reg=facet],
+  "structural_time_series_and_cointegration": .{
+    vector_autoregressions_var: "Reduced-form VAR: Y_t = sum_p A_p * Y_t-p + u_t; Structural VAR (SVAR) requires identification restrictions (Cholesky triangularization, Blanchard-Quah long-run restrictions, sign restrictions)",
+    unit_roots_and_cointegration: "Non-stationary I(1) processes; Augmented Dickey-Fuller tests; Johansen trace and maximum eigenvalue rank tests identifying cointegrating vectors beta such that beta' * Y_t is stationary I(0)",
+    vector_error_correction_models_vecm: "Delta Y_t = alpha * beta' * Y_t-1 + sum_p Gamma_p * Delta Y_t-p + e_t; alpha governs error correction speed back to long-run cointegrated equilibrium trajectory",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_grad_macro_metrics_1
+  ?["Why do standard New Keynesian DSGE models struggle to predict catastrophic financial crises like the 2008 Great Recession?"]{
+    #:depth #!theoretical ~#lens(linearization_and_financial_friction_blindness)
+    ~#hypothesis: "Standard DSGE models log-linearize around a steady state and assume a representative consumer with frictionless credit markets. In reality, financial crises are driven by massive non-linear tipping points—collateral fire sales, debt-deflation spirals (Fisher), and bank runs—that violate log-linear approximations and cannot be captured without non-convex balance-sheet constraints."
+    !probe{ "Simulate systemic liquidity crises comparing log-linearized DSGE models against non-linear global solution models with occasionally binding leverage constraints (He-Krishnamurthy / Brunnermeier-Sannikov)." }
+    $%[macro.non_linear_amplification_multiplier, finance.crisis_tipping_point_probability]
+  }
+}

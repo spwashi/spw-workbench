@@ -1,0 +1,94 @@
+# JetBrains Live Templates & Editing Aids
+#
+# Cache of Live Templates, snippet expansions, commenter, and spellchecking strategies.
+
+#>spw_cache_jetbrains_live_templates
+#:cache #!jetbrains
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Cache snippet expansions, live template keys, and editor editing aids for JetBrains IDEs."
+  ~#resource: "liveTemplates/spwTemplates.xml"
+  ~#context_class: "com.spwashi.spw.SpwTemplateContext"
+  ~#commenter_class: "com.spwashi.spw.SpwCommenter"
+  ~#spellcheck_class: "com.spwashi.spw.SpwSpellcheckingStrategy"
+}
+
+^["templates_catalog"]{
+  frame: .{
+    abbreviation: "frame"
+    description: "Insert a named frame container"
+    template: "^[\"$NAME$\"]{\\n  $END$\\n}"
+    variables: ["NAME"]
+  }[reg=facet]
+
+  intent: .{
+    abbreviation: "intent"
+    description: "Insert an intent block with goal"
+    template: "^\"intent\"{\\n  ~#goal: \"$GOAL$\"\\n  $END$\\n}"
+    variables: ["GOAL"]
+  }[reg=facet]
+
+  anno: .{
+    abbreviation: "anno"
+    description: "Insert an axis and modality annotation pair"
+    template: "#:$AXIS$ #!$MOD$"
+    variables: ["AXIS", "MOD"]
+  }[reg=facet]
+
+  subroot: .{
+    abbreviation: "subroot"
+    description: "Insert a subroot routing definition"
+    template: "^subroot[$NAME$]{\\n  path: @$PATH$\\n  $END$\\n}"
+    variables: ["NAME", "PATH"]
+  }[reg=facet]
+
+  prop: .{
+    abbreviation: "prop"
+    description: "Insert a property definition"
+    template: "$KEY$: $VALUE$"
+    variables: ["KEY", "VALUE"]
+  }[reg=facet]
+
+  episode: .{
+    abbreviation: "episode"
+    description: "Insert a commit or stream episode block"
+    template: "#[episode]{\\n  ~[scene]{ $SCENE$ }\\n  ![change]{ $CHANGE$ }\\n  *[verify]{ $VERIFY$ }\\n}"
+    variables: ["SCENE", "CHANGE", "VERIFY"]
+  }[reg=facet]
+
+  stream: .{
+    abbreviation: "stream"
+    description: "Insert an append-only stream entry"
+    template: ">>[$DATE$] $STATUS$ — $NOTE$"
+    variables: ["DATE", "STATUS", "NOTE"]
+  }[reg=facet]
+}
+
+^["context_configuration"]{
+  context_id: "SPW"
+  implementation: "SpwTemplateContext"
+  base_context: "TemplateContextType"
+  is_in_context: "Returns true if active PSI file has .spw extension or SpwLanguage"
+}
+
+^["commenter_and_spellcheck"]{
+  commenter: .{
+    class: "SpwCommenter"
+    line_comment_prefix: "//"
+    block_comment_prefix: null
+    block_comment_suffix: null
+    shortcut: "Cmd+/ (toggle line comment)"
+  }[reg=facet]
+
+  spellchecking: .{
+    class: "SpwSpellcheckingStrategy"
+    behavior: "Inspects comment text and quoted string contents; ignores operators, sigils, and bracket punctuation"
+  }[reg=facet]
+}
+
+^["invariants"]{
+  "Live templates expand cleanly with Tab key when typing abbreviations in .spw files.",
+  "Spw templates do not trigger in non-Spw documents.",
+  "Spellchecking never flags Spw operators, valences, or sigils as misspelled words.",
+}

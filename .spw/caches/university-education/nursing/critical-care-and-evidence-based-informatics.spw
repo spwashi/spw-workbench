@@ -1,0 +1,44 @@
+# Critical Care Nursing & Evidence-Based Informatics Cache
+#
+# Arterial line waveforms, vasoactive titration, ARDSNet ventilator protocols, and PICO evidence translation.
+
+#>spw_cache_univ_nursing_critical_care
+#:cache #!critical_care_and_evidence_based_informatics
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model intensive care nursing hemodynamics, arterial line square-wave fidelity, vasoactive drug titration, mechanical ventilation protocols, and health informatics decision support."
+  ~#protocol: "cache.layer/1"
+}
+
+^"invasive_hemodynamic_monitoring_and_vasoactive_titration"{
+  "arterial_lines_and_central_venous_monitoring": .{
+    arterial_line_waveform_fidelity: "Phlebostatic axis leveling (4th intercostal space, mid-axillary line); Square-wave fast flush test assessing dynamic response: optimal damping showing sharp vertical drop with 1-2 post-flush oscillations; recognizing overdamping (false low systolic, lost dicrotic notch) and underdamping",
+    central_venous_pressure_cvp: "Normal CVP 2-8 mmHg measuring right ventricular preload; trend interpretation guiding fluid responsiveness; monitoring for complications (pneumothorax, catheter-related bloodstream infections CRBSI/CLABSI bundles)",
+  }[reg=facet],
+  "vasoactive_infusion_titration_protocols": .{
+    norepinephrine_and_vasopressin: "Norepinephrine (Levophed) alpha-1 vasoconstriction with mild beta-1 inotropy titrated by micrograms/min to maintain Mean Arterial Pressure (MAP) >= 65 mmHg; Vasopressin (0.03 units/min fixed non-titrated adjunct) restoring vascular tone in catecholamine-refractory shock",
+    inotropes_and_sedation_scales: "Dobutamine and Milrinone in cardiogenic shock; Richmond Agitation-Sedation Scale (RASS) targeting light sedation (-1 to 0) to reduce ventilator days and ICU delirium (CAM-ICU screening)",
+  }[reg=facet],
+}
+
+^"mechanical_ventilation_and_evidence_based_practice"{
+  "arterial_blood_gas_and_ardsnet_ventilation": .{
+    abg_systematic_interpretation: "pH (7.35-7.45), PaCO2 (35-45 mmHg, respiratory component), HCO3- (22-26 mEq/L, metabolic component); ROME heuristic (Respiratory Opposite, Metabolic Equal); evaluating primary vs fully compensated disturbances and PaO2/FiO2 hypoxemic ratios",
+    ardsnet_lung_protective_strategy: "Low tidal volume ventilation (4-8 mL/kg of predicted/ideal body weight) and plateau pressure limit <= 30 cmH2O to prevent volutrauma and barotrauma; titration of Positive End-Expiratory Pressure (PEEP) to maintain alveolar patency",
+  }[reg=facet],
+  "nursing_informatics_and_ebp_translation": .{
+    alarm_fatigue_and_clinical_decision_support: "Mitigating sensory desensitization from non-actionable physiological monitor alarms; optimizing smart EHR pump guardrails and sepsis predictive scoring algorithms without alert burnout",
+    pico_evidence_translation_framework: "Structuring clinical inquiries (Population, Intervention, Comparison, Outcome); appraising randomized trials to implement nurse-driven protocols (e.g., spontaneous breathing trials, chlorhexidine oral care, early progressive mobility)",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_nursing_critical_care_1
+  ?["How does a nurse's continuous titration of multiple vasoactive infusions preserve organ perfusion when systemic vascular resistance and cardiac contractility are decoupling in mixed septic-cardiogenic shock?"]{
+    #:depth #!clinical ~#lens(dynamic_hemodynamic_vector_balancing)
+    ~#hypothesis: "The critical care nurse manages a multi-dimensional control system in real time. Rather than treating blood pressure as a single scalar number, the nurse continuously reconciles MAP, urine output, arterial pulse pressure variation (PPV), and mixed venous oxygen saturation (SvO2), balancing afterload resistance (norepinephrine) against inotropic stroke volume (dobutamine) to optimize tissue microvascular capillary perfusion."
+    !probe{ "Record second-by-second infusion pump titration logs synchronized with continuous cardiac index and end-tidal CO2 during resuscitation of mixed septic-cardiogenic shock patients." }
+    $%[icu.vasopressor_titration_latency_seconds, hemodynamics.microvascular_perfusion_index]
+  }
+}

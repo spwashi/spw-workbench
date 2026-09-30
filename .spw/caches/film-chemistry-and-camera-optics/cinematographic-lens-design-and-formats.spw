@@ -1,0 +1,76 @@
+# Cinematographic Lens Design & Sensor Formats Cache
+#
+# Optics of motion picture primes, anamorphic cylindrical squeeze, aperture transmission, and image circle geometry.
+
+#>spw_cache_camera_optics_cinema
+#:cache #!cinematographic_lens_design_and_formats
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model cinematographic optical mechanics, front vs rear anamorphic squeeze physics, photometric T-stops, focus breathing compensation, and sensor format circle geometry."
+  ~#protocol: "cache.layer/1"
+}
+
+^"cinema_optical_lineages_and_mechanics"{
+  "t_stops_vs_f_stops": .{
+    geometric_f_stop: "f_number = f / D; ratio of focal length to entrance pupil diameter; determines geometric depth of field",
+    photometric_t_stop: "T_stop = f_number / sqrt(transmittance_tau); accounts for light absorption and reflection losses across multi-element glass surfaces",
+    exposure_consistency: "Guarantees identical sensor lux illumination across different focal lengths and zoom ranges when shooting at identical T-stops",
+    clickless_iris_gearing: "Standard 0.8 MOD pitch gears, continuous linear marked rotation (T1.3 to T22) allowing smooth exposure iris pulls during camera motion",
+  }[reg=facet],
+  "focus_breathing_mitigation": .{
+    breathing_definition: "Unwanted focal length magnification change (field-of-view zooming) occurring when moving focus between close-up and infinity",
+    optical_compensation_group: "Internal focusing designs using counter-moving floating lens groups to keep the principal plane and field angle invariant across focus throw",
+    vintage_vs_modern: "Vintage lenses (Super Baltars, K-35s) exhibit prominent breathing utilized for dramatic tension; modern cinema primes (ARRI Master Primes, Cooke S7/i) eliminate breathing to <0.5%",
+    extended_focus_throw: "270 to 300 degrees of mechanical rotation with dual calibrated witness scales (feet and meters) for wireless focus puller follow-focus units",
+  }[reg=facet],
+  "classic_cinema_prime_lineages": .{
+    cooke_speed_panchro_look: "T2.0 to T2.3 primes; balanced warm skin rendering, gradual organic contrast roll-off, controlled field curvature holding focus in center with subtle falloff",
+    zeiss_super_speeds_mk_iii: "T1.3 high-speed optics; high micro-contrast, neutral color balance, iconic triangular iris shape producing distinct out-of-focus geometry at T2.0-T2.8",
+    arri_zeiss_master_primes: "T1.3 across set (12mm to 150mm); dual floating optical elements, zero visible breathing, uniform sharpness to edge of Super 35 circle, advanced anti-reflective T* XP multicoating",
+    canon_k35_series: "1970s Academy Award-winning optics; fast T1.3-T1.5; asymmetrical amber and cyan flares, gentle lower contrast, soft skin texture beloved in modern digital capture",
+  }[reg=facet],
+}
+
+^"anamorphic_optics_and_squeeze_mechanics"{
+  "front_anamorphic_cylindrical_optics": .{
+    cylindrical_lens_elements: "Front optical group with cylindrical curvature that compresses the horizontal axis of light by factor S (squeeze ratio 2.0x or 1.33x) while leaving vertical axis uncompressed",
+    aspect_ratio_extraction: "Super 35 4:3 native film gate (1.33:1) compressed by 2.0x squeeze de-squeezes in projection/post to classic 2.39:1 (2.40:1) theatrical widescreen",
+    oval_bokeh_geometry: "Out-of-focus background points of light are rendered as 2:1 vertical ellipses because vertical blur circle is unmagnified while horizontal blur circle is compressed by optical squeeze",
+    anamorphic_flares: "Internal reflections across horizontal cylindrical glass surfaces produce iconic horizontal blue, amber, or neutral streak flares across light sources",
+  }[reg=facet],
+  "anamorphic_aberrations_and_mumps": .{
+    anamorphic_breathing_and_mumps: "Early anamorphics suffered from squeeze reduction at close focus (dropping from 2.0x to 1.5x), artificially widening actors' faces (the dreaded 'anamorphic mumps')",
+    panavision_cylindrical_focus_pair: "Gottschalk patent employing counter-rotating or counter-translating cylindrical elements in focus mechanism to maintain exact 2.0x squeeze down to minimum focus distance",
+    astigmatic_depth_of_field: "Horizontal and vertical planes have distinct effective focal lengths; provides wide horizontal field of view with the shallower depth of field of a telephoto vertical lens",
+  }[reg=facet],
+  "rear_anamorphic_adapters": .{
+    mechanism: "Rear optical element installed between spherical prime/zoom and lens mount; expands vertical image by 2x or compresses circle without front cylindrical elements",
+    tradeoffs: "Causes 1 to 2 stops of light loss; eliminates front anamorphic characteristics (retains circular bokeh and spherical flares while achieving 2.39:1 framing)",
+  }[reg=facet],
+}
+
+^"sensor_formats_and_circle_of_confusion"{
+  "format_dimensions_and_image_circles": .{
+    super_16_mm: "Dimensions: 12.52mm x 7.41mm; Diagonal / Image Circle: 14.54mm; Circle of Confusion CoC: 0.015mm",
+    super_35_mm_4_perf: "Dimensions: 24.89mm x 18.66mm; Diagonal / Image Circle: 31.11mm; CoC: 0.020mm; classic motion picture standard",
+    full_frame_large_format: "Dimensions: 36.00mm x 24.00mm (VistaVision: 37.7mm x 24.9mm, ARRI LF: 36.70mm x 25.54mm); Image Circle: 43.3mm to 44.7mm; CoC: 0.030mm",
+    medium_format_alexa_65: "Dimensions: 54.12mm x 25.58mm (A3X sensor); Image Circle: 59.86mm; CoC: 0.040mm; replicates 65mm 5-perf motion picture film scale",
+  }[reg=facet],
+  "modulation_transfer_function_mtf": .{
+    mtf_definition: "Modulation Transfer Function: MTF(nu) = (I_max - I_min) / (I_max + I_min) normalized against zero spatial frequency; measures lens contrast reproduction across line pairs per mm (lp/mm)",
+    spatial_frequency_thresholds: "10 lp/mm evaluates macroscopic structure and subjective contrast punch; 20-30 lp/mm evaluates recognizable textural detail; 40-80 lp/mm tests fine resolution limits",
+    sagittal_vs_tangential_curves: "Divergence between sagittal (radial) and tangential (meridional) MTF lines quantifies astigmatism and off-axis coma across sensor radius",
+    diffraction_cutoff_frequency: "nu_cutoff = 1 / (lambda * N); at f/16 (N=16) with green light (550nm), optical cutoff drops to ~113 lp/mm, softening high-resolution digital sensors",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_camera_optics_cinema_1
+  ?["Why does an anamorphic 50mm lens render an actor's face with the dimensional presence of a telephoto portrait while capturing the sprawling lateral environment of a 25mm wide lens?"]{
+    #:depth #!physical ~#lens(anamorphic_perspective_bifurcation)
+    ~#hypothesis: "Anamorphic optics decouple horizontal and vertical perspective: the vertical axis behaves as a true 50mm spherical focal length, producing natural portrait foreshortening and flattering facial compression without nose enlargement, while the 2x front cylindrical squeeze expands the horizontal field of view to match a 25mm lens. This optical bifurcation isolates the subject against an expansive panoramic context without wide-angle facial distortion."
+    !probe{ "Calculate entrance pupil magnification and spatial field angle matrices separately for X and Y Cartesian axes on a 50mm 2x anamorphic optical assembly." }
+    $%[optics.horizontal_vertical_focal_ratio, optics.facial_compression_perspective_metric]
+  }
+}

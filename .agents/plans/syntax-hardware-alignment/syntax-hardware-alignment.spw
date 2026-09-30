@@ -1,0 +1,149 @@
+// Syntax - Hardware - Alignment
+//
+// Seven proposed syntax moves, each staged as a commented sample exhibit.
+// Organizing metaphor: a header stack is a bus transaction — deixis is the
+// address lines, case the control lines, mood the flag/strobe, aspect the
+// latched (volatile) state, $%[...] the readback register. Every proposal is
+// tested against one invariant: one signal per wire.
+//
+// Samples stay in comment fences until they earn a lexer/parser spike; the
+// current grammar must keep parsing this artifact clean.
+//
+// @see .agents/plans/syntax-hardware-alignment/PLAN.md
+// @see packages/spw-seed/src/canonical/particles.ts
+// @see scripts/analyzers/spw-cut-gate.ts
+
+#:layer #!pragmatics
+#:status #!proposed
+
+^["roots"]{
+ @plan: ~".agents/plans/syntax-hardware-alignment/PLAN.md"
+ @wip: ~".agents/plans/syntax-hardware-alignment/wip.spw"
+ @particles: ~"packages/spw-seed/src/canonical/particles.ts"
+ @cut_gate: ~"scripts/analyzers/spw-cut-gate.ts"
+ @cache_root: ~".spw/caches/index.spw"
+ @ecology: ~".agents/plans/shape-syntax-ecology/shape-syntax-ecology.spw"
+}
+
+^["thesis"]{
+ ~#claim: "Constructs grow more playable and more honest when every duplicated wire is removed (dispatch, lens triplets, path-in-anchor) and every missing wire is added (evidential, metric latch, refresh strobe)."
+ ~#metaphor: "particle paradigm as memory-bus transaction: deixis=address, case=control, mood=strobe, aspect=latch, metric=readback"
+ ~#non_goal: "Metaphor as runtime; parser edits before samples are reviewed; new law without catalog entries."
+}
+
+// ── Proposal 1: derive routes from roots (#!route mood) ──────────────────
+// The ^"roots" / ^"dispatch" pair duplicates a 30-entry memory map; the cut
+// gate already bans ^"dispatch". Routes become a mood on the binding and
+// tooling derives the table as a view — never edited, never stale.
+//
+#   ^"roots"{
+#     @jetbrains: ~"./jetbrains/index.spw" #!route(overview)
+#     @vscode:    ~"./vscode/index.spw"    #!route
+#   }
+
+^["p1_route_mood"]{
+ ~#status: "proposed"
+ ~#removes: "shadow register — dispatch tables duplicate the address decoder"
+ ~#play: "LSP renders, folds, and queries the derived dispatch view"
+ ~#gate_hook: "existing dispatch ban stays; derived views are exempt by construction"
+}
+
+// ── Proposal 2: metric latch slot ($%[handle = value @rev]) ──────────────
+// A $% port today never latches. A fill-in-place form lets the cut gate
+// --emit pass write back the measured value with provenance.
+//
+#   $%[cache.anchor_count]                      # port declared (tool: "unmeasured")
+#   $%[cache.anchor_count = 412 @rev da5189bb]  # latched readback + provenance
+
+^["p2_metric_latch"]{
+ ~#status: "proposed"
+ ~#adds: "latched readback with strobe timestamp — the document as oscilloscope"
+ ~#play: "hover runs the S0 measurement against the reflexive-handle set and diffs the latch"
+ ~#gate_hook: "latch diffing: re-measure and flag drift between latched and live values"
+}
+
+// ── Proposal 3: effect grades as probe privilege rings (!probe[S0]) ──────
+// !probe{ "prose" } is opaque; S0-S3 effect grades surface grammatically as
+// privilege rings, so read-only probes become auto-runnable by contract.
+//
+#   !probe[S0]{ "Count #> anchors across the cut; verify cross-refs resolve." }
+#   !probe[S2]{ "Rewrite stale ~#as_of stamps." }   # requires apply authority
+
+^["p3_probe_rings"]{
+ ~#status: "proposed"
+ ~#adds: "bus privilege level on the probe port"
+ ~#play: "press play on a document: auto-run every S0 probe in a file"
+ ~#gate_hook: "S0 probe bodies must not name write verbs — machine-checkable lint"
+}
+
+// ── Proposal 4: evidential particle (#~) ─────────────────────────────────
+// The paradigm has deixis, case, mood, aspect — evidentiality (observed /
+// derived / reported) is smuggled in as ordinary keys. A fourth-wall particle
+// carries provenance with the word, like a parity bit on the data line.
+//
+#   #>spw_cache_jetbrains_index
+#   #:layer #!pragmatics
+#   #~derived(plugin.xml @rev 1f17c86e)     # evidential: how do I know this?
+
+^["p4_evidential"]{
+ ~#status: "proposed"
+ ~#adds: "evidentiality as a particle aim — extends the ParticleNode.aim union"
+ ~#play: "link-resolution extends naturally: a #~derived source newer than the file is a staleness finding"
+ ~#open: "glyph choice — #~ may collide visually with aspect ~# in dense stacks"
+}
+
+// ── Proposal 5: temporal strobe for caches (era/season + ~#as_of) ────────
+// Derived surfaces decay unless refreshed (DRAM). Standardize the refresh
+// line so staleness renders as literal fade, and a domain cache with ~#as_of
+// becomes a cut membership claim.
+//
+#   #:era #!2026-09
+#   ~#as_of: "2026-09-30"
+
+^["p5_refresh_strobe"]{
+ ~#status: "proposed"
+ ~#adds: "decay signal on cache surfaces — the missing bridge to dated cuts"
+ ~#play: "editor dims by age; the 'caches are derived' invariant becomes physics"
+ ~#gate_hook: "era/season already optional axes; ~#as_of older than source refs is a finding"
+}
+
+// ── Proposal 6: scoped anchors (base + offset addressing) ────────────────
+// #>wonder_jetbrains_index_1 hand-encodes the file path (absolute address).
+// Hierarchical anchors scope by the file's head anchor: segment + offset.
+//
+#   #>spw_cache_jetbrains_index      # segment base
+#   ...
+#   #>.wonder.1                      # resolves as spw_cache_jetbrains_index.wonder.1
+
+^["p6_scoped_anchors"]{
+ ~#status: "proposed"
+ ~#removes: "path-in-anchor duplication"
+ ~#play: "anchors short enough to type from memory; ~\"file#.wonder.1\" stays stable across renames of the prefix"
+ ~#invariant: "deixisTable first-wins rule holds per segment"
+}
+
+// ── Proposal 7: fuse the lens gesture ────────────────────────────────────
+// #:depth #!philosophical ~#lens(universal_lattice) splits one interpretive
+// gesture across three marks on three wires; the lens carries its depth.
+//
+#   ~#lens(universal_lattice, depth: philosophical)
+
+^["p7_lens_fuse"]{
+ ~#status: "proposed"
+ ~#removes: "three marks on three wires for one control word"
+ ~#gate_hook: "lens/depth vocabulary checks collapse into a single site"
+}
+
+^["next_steps"]{
+ ~[1]: "lexer/parser spike for #!route(...) payload and #~ evidential aim"
+ ~[2]: "cut-gate additions: S0-probe verb lint, $%[… = …] latch diffing, #~derived staleness check"
+ ~[3]: "wonder probe about the proposals in src/lang/seeds/probes/ — evolve syntax through the repo's own research loop"
+}
+
+#>wonder_syntax_hardware_alignment_1
+?["Which of the seven proposals survives contact with the lexer?"]{
+  #:depth #!computational ~#lens(host_contour)
+  ~#hypothesis: "The two particle-family extensions (#!route payload, #~ evidential) are cheap because ParticleNode.aim is already a union; the latch slot and probe rings need new payload grammar."
+  !probe{ "Spike each proposal against the seed lexer on a branch; record which ones parse with only a token-table change versus a grammar production." }
+  $%[proposal.spike_cost, proposal.gate_checkability, particle.aim_union_size]
+}

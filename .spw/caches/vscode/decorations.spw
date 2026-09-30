@@ -1,0 +1,141 @@
+# VS Code Editor Decorations & Surface Styling
+#
+# Cache of editor text decorations, spirit phase coloring, valence styling, and throttle physics in VS Code.
+
+#>spw_cache_vscode_decorations
+#:cache #!vscode
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Cache the visual decoration rules, theme color definitions, and rendering performance bounds of the VS Code extension."
+  ~#source: "extensions/vscode-spw/src/surface/"
+  ~#config_prefix: "spw.surface"
+}
+
+^["surface_decorations"]{
+  highlight_path_refs: .{
+    key: "spw.surface.highlightPathRefs"
+    default: true
+    description: "Decorates ~path and @root references with distinct contrast colors to separate syntax from host text."
+    theme_color: "spw.pathRef"
+  }[reg=facet]
+
+  highlight_annotations: .{
+    key: "spw.surface.highlightAnnotations"
+    default: true
+    description: "Decorates # / #! / #: / #> annotations with specialized thematic colors."
+    theme_color: "spw.annotation"
+  }[reg=facet]
+
+  highlight_braces: .{
+    key: "spw.surface.highlightBraces"
+    default: true
+    description: "Decorates paired bounds {} [] () <> to highlight syntactic enclosure geometry."
+    theme_color: "spw.brace"
+  }[reg=facet]
+
+  highlight_operators: .{
+    key: "spw.surface.highlightOperators"
+    default: true
+    description: "Decorates operator sigils according to their spirit sequence phase."
+  }[reg=facet]
+
+  highlight_semantics: .{
+    key: "spw.surface.highlightSemantics"
+    default: true
+    description: "Decorates semantic constructs: pipe labels (|word), charge keys, and status values."
+  }[reg=facet]
+}
+
+^["phase_colors"]{
+  wonder: .{
+    id: "spw.phaseWonder"
+    sigils: ["?", "~"]
+    description: "Spirit phase: inquiry, potential, deferral"
+    dark_theme: "#4EC9B0"
+    light_theme: "#267F7F"
+  }[reg=facet]
+
+  action: .{
+    id: "spw.phaseAction"
+    sigils: ["!"]
+    description: "Spirit phase: execution, injection, change"
+    dark_theme: "#CE9178"
+    light_theme: "#A31515"
+  }[reg=facet]
+
+  integration: .{
+    id: "spw.phaseIntegration"
+    sigils: ["^"]
+    description: "Spirit phase: frame, elevation, durable synthesis"
+    dark_theme: "#B07EE0"
+    light_theme: "#6A35A8"
+  }[reg=facet]
+
+  observer: .{
+    id: "spw.phaseObserver"
+    sigils: ["@"]
+    description: "Spirit phase: perspective, subroot, witness"
+    dark_theme: "#5DBADB"
+    light_theme: "#0278AE"
+  }[reg=facet]
+
+  potential: .{
+    id: "spw.phasePotential"
+    sigils: ["~"]
+    description: "Spirit phase: latent reference, connection candidate"
+    dark_theme: "#57D6A3"
+    light_theme: "#1B8F6A"
+  }[reg=facet]
+
+  meta: .{
+    id: "spw.phaseMeta"
+    sigils: ["#"]
+    description: "Spirit phase: resonance, tag, taxonomic axis"
+    dark_theme: "#9CDCFE"
+    light_theme: "#0070C1"
+  }[reg=facet]
+}
+
+^["valence_badges"]{
+  boon: .{ id: "spw.valenceBoon", dark: "#4EC9B0", light: "#16825D", meaning: "growth, verified truth, healthy state" }[reg=facet]
+  bane: .{ id: "spw.valenceBane", dark: "#F44747", light: "#CD3131", meaning: "hazard, error condition, failure point" }[reg=facet]
+  bone: .{ id: "spw.valenceBone", dark: "#CCA700", light: "#BF8803", meaning: "scaffold, structural bone, work-in-progress" }[reg=facet]
+  bonk: .{ id: "spw.valenceBonk", dark: "#CE9178", light: "#A31515", meaning: "boundary collision, interruption, unexpected state" }[reg=facet]
+  honk: .{ id: "spw.valenceHonk", dark: "#C586C0", light: "#AF00DB", meaning: "alert, urgent telemetry, intentional shout" }[reg=facet]
+}
+
+^["throttle_and_performance"]{
+  refresh_throttle_ms: .{
+    key: "spw.compute.decorationRefreshMs"
+    default: 120
+    minimum: 40
+    rationale: "Buffers keystrokes so decoration parsing occurs during brief typing pauses, avoiding CPU spikes."
+  }
+  viewport_limiting: "Decorations calculate on the visible editor range plus a 100-line buffer above and below."
+}
+
+^["taste"]{
+  ~#taste: "Color is syntax physics made visible; never paint for aesthetic indulgence alone."
+  ~#wonder: "Can an editor palette convey emotional valence without causing cognitive fatigue?"
+
+  principles: #[
+    "Receding neutrals: Residual punctuation should recede into the background; only operators and anchors step forward.",
+    "Theme symbiosis: Built-in colors use standard VS Code theme token hooks where possible to harmonize with user color themes.",
+    "Anti-dazzle restraint: Never use blinking or overly bright neon highlights; Spw is literature to be read for hours."
+  ]
+}
+
+^["invariants"]{
+  "Decorations never shift line positions or wrap lines artificially.",
+  "Theme colors provide explicit high-contrast variants for accessibility compliance.",
+  "Decoration calculation aborts immediately if the editor document is closed or changes URI.",
+}
+
+#>wonder_vscode_decorations_1
+?["How does phase-based operator coloring change the way an author scans a Spw file?"]{
+  #:depth #!experiential ~#lens(chromatic_resonance)
+  ~#hypothesis: "When operators (? ! ^ @ ~ *) have distinct phase colors, an author perceives the energy flow of a file before reading the words."
+  !probe{ "Observe an uncolored Spw file vs a phase-decorated Spw file: measure how quickly an author locates the primary execution trigger (!) vs the framing block (^)." }
+  $%[decorations.scan_latency_ms, visual.color_contrast_ratio]
+}

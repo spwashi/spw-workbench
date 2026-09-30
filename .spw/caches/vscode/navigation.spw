@@ -1,0 +1,103 @@
+# VS Code Navigation & Quick Picks
+#
+# Cache of root/landmark navigation, quick picks, document links, and inlay hints in VS Code.
+
+#>spw_cache_vscode_navigation
+#:cache #!vscode
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Cache symbol navigation, landmark discovery, link resolution, and inlay hint features in VS Code."
+  ~#source: "extensions/vscode-spw/src/navigation/"
+  ~#command: "spw.navigate"
+}
+
+^["navigate_roots_and_landmarks"]{
+  command_id: "spw.navigate"
+  title: "Spw: Navigate Roots and Landmarks"
+  behavior: "Fuses workspace manifest roots (@docs, @src, @theory, etc.) and indexed annotations (#>, ^) into a single searchable quick pick."
+  quick_pick_sections: #[
+    .{ section: "Workspace Roots", items: "Manifest paths declared in .spw/index.spw and workspace.spw" },
+    .{ section: "Anchors (#>)", items: "All unique addressable anchors across the active corpus" },
+    .{ section: "Frames (^)", items: "Primary structural frames and intent declarations" },
+    .{ section: "Plans", items: "Active plans under .agents/plans/ with their current status" }
+  ]
+  fuzzy_filtering: true
+  match_highlighting: true
+}
+
+^["symbol_providers"]{
+  document_symbols: .{
+    feature: "vscode.languages.registerDocumentSymbolProvider"
+    hierarchy: "Nested frame structure (^['name']) containing properties, sub-frames, and wonders"
+    symbol_kinds: #[
+      .{ node: "frame", kind: "SymbolKind.Class" },
+      .{ node: "subroot", kind: "SymbolKind.Package" },
+      .{ node: "heading", kind: "SymbolKind.String" },
+      .{ node: "anchor", kind: "SymbolKind.Key" },
+      .{ node: "property", kind: "SymbolKind.Property" }
+    ]
+  }[reg=facet]
+
+  workspace_symbols: .{
+    feature: "vscode.languages.registerWorkspaceSymbolProvider"
+    scope: "Corpus-wide search triggered via Cmd+T / Ctrl+T"
+    index_source: "LSP server-side symbol index with incremental file invalidation"
+  }[reg=facet]
+}
+
+^["document_links"]{
+  provider: "vscode.languages.registerDocumentLinkProvider"
+  targets: #[
+    .{ pattern: "~\"path/to/file.spw\"", resolution: "Relative file-system path" },
+    .{ pattern: "@root/file.spw", resolution: "Subroot alias mapped via .spw/index.spw roots" },
+    .{ pattern: "~<label>\"path\"", resolution: "Compat projection or labeled path reference" },
+    .{ pattern: "#>anchor", resolution: "Navigates to the definition of anchor within workspace" }
+  ]
+  click_gesture: "Cmd+Click (macOS) / Ctrl+Click (Linux/Windows) directly opens target buffer"
+}
+
+^["inlay_hints"]{
+  path_hints: .{
+    key: "spw.inlayHints.paths"
+    default: true
+    description: "Displays resolved destination filenames alongside @-root abbreviations"
+  }[reg=facet]
+
+  annotation_hints: .{
+    key: "spw.inlayHints.annotations"
+    default: true
+    description: "Displays axis names and modality descriptions beside compact sigils"
+  }[reg=facet]
+
+  frame_depth_hints: .{
+    key: "spw.inlayHints.frames"
+    default: true
+    description: "Displays nesting level indicators when brace depth exceeds 3"
+  }[reg=facet]
+}
+
+^["taste"]{
+  ~#taste: "Navigation should feel like stepping across stones, not swimming through mud."
+  ~#wonder: "Can an author navigate a 10,000-line corpus without touching the mouse or memorizing directory paths?"
+
+  principles: #[
+    "Prompt over hierarchy: Quick picks with fuzzy match beat deep folder tree clicking every time.",
+    "Clickable truth: Every path reference in a Spw file is a live hyperlink to its destination.",
+    "Discreet inlay hints: Hints give peripheral orientation; if they cause editor text to jump or dance, they are too loud."
+  ]
+}
+
+^["invariants"]{
+  "Quick pick navigation relies on server-indexed annotations and does not re-scan the file system on keypress.",
+  "Document links validate file existence before rendering as clickable hyperlinks.",
+  "Inlay hints do not alter file text or character offsets.",
+}
+
+#>wonder_vscode_navigation_1
+?["Does combining roots and anchors in one quick pick encourage deeper cross-subroot thinking?"]{
+  #:depth #!experiential ~#lens(hyperlink_ecology)
+  ~#hypothesis: "When roots and anchors appear in the same fuzzy search, authors treat the whole repository as a single topological manifold rather than isolated subprojects."
+  !probe{ "Type 'anchor' into 'Spw: Navigate Roots and Landmarks'; measure the ratio of cross-root jumps vs intra-folder jumps over a week of authoring." }
+  $%[navigation.cross_root_ratio, quick_pick.selection_latency_ms]
+}

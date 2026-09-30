@@ -1,0 +1,44 @@
+# Information Retrieval & Search Systems Curriculum Cache
+#
+# TF-IDF vector space models, Okapi BM25 ranking, Cranfield evaluation, MAP/NDCG, and dense semantic search.
+
+#>spw_cache_univ_lis_retrieval
+#:cache #!information_retrieval_and_search_systems
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model mathematical information retrieval algorithms, vector space cosine geometry, Okapi BM25 probabilistic ranking, Cranfield benchmark evaluation metrics, and neural semantic search."
+  ~#protocol: "cache.layer/1"
+}
+
+^"mathematical_ir_models_and_ranking_algorithms"{
+  "vector_space_model_and_tf_idf": .{
+    salton_vector_space_formalism: "Documents and queries mapped as sparse vectors in N-dimensional term vocabulary space; similarity computed via Cosine angle metric: sim(q, d) = (q * d) / (||q|| * ||d||)",
+    tf_idf_weighting_formulation: "Term Frequency-Inverse Document Frequency: w_t,d = (1 + log(tf_t,d)) * log10(N / df_t); rewards terms frequent within the document but rare across the global corpus",
+  }[reg=facet],
+  "probabilistic_retrieval_and_okapi_bm25": .{
+    bm25_ranking_function: "RSV_bm25 = sum_i IDF_i * (tf_i,d * (k_1 + 1)) / (tf_i,d + k_1 * (1 - b + b * (len_d / avg_len))); k_1 tuning term frequency saturation (~1.2-2.0); b tuning document length penalty (~0.75)",
+    dense_vector_semantic_retrieval: "Transformer bi-encoders mapping queries and text chunks into dense continuous embedding spaces (768/1536 dimensions); approximate nearest neighbor vector indexing (HNSW, FAISS) capturing conceptual synonymy beyond lexical keyword matching",
+  }[reg=facet],
+}
+
+^"cranfield_evaluation_and_search_interfaces"{
+  "retrieval_metrics_and_trec_benchmarks": .{
+    precision_recall_tradeoff: "Precision = Relevant_Retrieved / Total_Retrieved; Recall = Relevant_Retrieved / Total_Relevant_In_Corpus; F1 harmonic mean F_1 = 2 * (P * R) / (P + R)",
+    ranked_evaluation_map_and_ndcg: "Mean Average Precision (MAP) averaging precision at each relevant document rank; Normalized Discounted Cumulative Gain (NDCG@k = DCG@k / IDCG@k) using logarithmic discount to penalize relevant documents ranked far down the search engine results page",
+  }[reg=facet],
+  "discovery_layers_and_faceted_navigation": .{
+    library_discovery_services: "Next-generation discovery layers (Primo, Summon, EDS) integrating local ILS catalogs, institutional repositories, and global journal indices into a single unified search bar",
+    faceted_search_and_rocchio_feedback: "Dynamic multi-attribute drill-down (format, peer-reviewed, publication decade, subject); Rocchio relevance feedback adjusting query vectors toward relevant documents and away from non-relevant documents",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_lis_retrieval_1
+  ?["Why does the probabilistic Okapi BM25 algorithm remain fiercely competitive with massive billion-parameter neural embedding search models across general domain text retrieval?"]{
+    #:depth #!algorithmic ~#lens(exact_match_fidelity_and_zero_hallucination)
+    ~#hypothesis: "Neural semantic search excels at broad topical matching but suffers from embedding compression loss on exact entities, rare technical jargon, SKU numbers, and boolean precision. BM25 enforces strict lexical exact-match constraints and term saturation physics, maintaining robust zero-shot out-of-distribution performance without susceptibility to embedding hallucinations."
+    !probe{ "Benchmark Zero-Shot BEIR retrieval datasets comparing BM25 vs dense bi-encoder models across biomedical (BioASQ) and legal (TREC-COVID) corpora." }
+    $%[retrieval.bm25_out_of_distribution_ndcg10, neural_ir.lexical_exact_match_failure_rate]
+  }
+}

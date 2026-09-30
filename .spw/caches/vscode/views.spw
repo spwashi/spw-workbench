@@ -1,0 +1,109 @@
+# VS Code Explorer Views: Atlas & Concepts
+#
+# Cache of Spw Explorer Activity Bar views, Workspace Atlas, and Concepts Tree providers in VS Code.
+
+#>spw_cache_vscode_views
+#:cache #!vscode
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Cache the tree provider architectures, grouping algorithms, and interactive states of the Spw Activity Bar views."
+  ~#source: "extensions/vscode-spw/src/views/"
+  ~#container_id: "spw-explorer"
+}
+
+^["activity_bar_container"]{
+  id: "spw-explorer"
+  title: "Spw"
+  icon: "$(symbol-misc)"
+  views: #[
+    .{ id: "spwWorkspace", name: "Workspace" },
+    .{ id: "spwConcepts", name: "Concepts" }
+  ]
+}
+
+^["workspace_atlas_view"]{
+  view_id: "spwWorkspace"
+  title: "Workspace"
+  tree_data_provider: "SpwWorkspaceAtlasTreeDataProvider"
+  refresh_command: "spwWorkspace.refresh"
+  sections: #[
+    .{
+      section: "Manifest Roots",
+      content: "All declared @roots with active file counts and reachability indicators",
+      icon: "$(root-folder)"
+    },
+    .{
+      section: "Memory Tiers",
+      content: "Hot, Warm, and Cold file classifications based on recent editing cadence and path heuristics",
+      icon: "$(flame)"
+    },
+    .{
+      section: "Projection Surfaces",
+      content: "Generated projection surfaces under .spw/gen/ with spec and generator owner links",
+      icon: "$(layers)"
+    },
+    .{
+      section: "Spirit Distribution",
+      content: "Workspace-wide census of operator sigils (? wonder, ! action, ^ frame, @ observer, ~ potential, * collapse)",
+      icon: "$(pie-chart)"
+    },
+    .{
+      section: "Cursor Context",
+      content: "Live reflection of current caret position, active frame path, and local brace depth",
+      icon: "$(symbol-interface)"
+    }
+  ]
+}
+
+^["concepts_tree_view"]{
+  view_id: "spwConcepts"
+  title: "Concepts"
+  tree_data_provider: "SpwConceptsTreeDataProvider"
+  refresh_command: "spwConcepts.refresh"
+  data_source: "LSP custom request 'spw/annotations'"
+  capabilities: #[
+    "Groups annotations by axis (#:axis) and modality (#!mod)",
+    "Displays co-occurrence frequencies across files",
+    "Links directly to line numbers of annotation usages",
+    "Provides interactive filtering by regex or substring"
+  ]
+}
+
+^["grouping_and_filtering"]{
+  grouping_modes: #[
+    .{ mode: "by_axis", description: "Cluster annotations by primary semantic axis (e.g., #:tooling, #:layer, #:syntax)" },
+    .{ mode: "by_modality", description: "Cluster annotations by intent modifier (e.g., #!editor, #!canon, #!runtime)" },
+    .{ mode: "by_file", description: "Cluster annotations by file location within the workspace tree" },
+    .{ mode: "flat", description: "Alphabetical flat list of all indexed concepts" }
+  ]
+  set_grouping_command: "spwConcepts.setGrouping"
+  set_filter_command: "spwConcepts.setFilter"
+  clear_filter_command: "spwConcepts.clearFilter"
+  filter_feedback: "View title updates dynamically to 'Concepts (filtered)' when active"
+}
+
+^["taste"]{
+  ~#taste: "Tree views must answer real author questions rather than merely exposing engine internals."
+  ~#wonder: "When is a sidebar tree an illuminating atlas, and when is it merely an extra scrollbar to ignore?"
+
+  principles: #[
+    "Respectful lazy-loading: Views fetch tree nodes on expansion; they never stall extension activation with eager full-corpus scans.",
+    "Dynamic title disclosure: If a filter is applied, the user must never wonder why nodes are missing—the title bar discloses the constraint.",
+    "Contextual grounding: Clicking a leaf node jumps to code; double-clicking a branch expands without jumping."
+  ]
+}
+
+^["invariants"]{
+  "Workspace Atlas and Concepts trees refresh on user request or document save, never on every keystroke.",
+  "Concepts tree mirrors server-side annotation index rather than parsing files in client-side TypeScript.",
+  "Empty tree sections display informative placeholder messages guiding the user to action.",
+}
+
+#>wonder_vscode_views_1
+?["Does the Concepts Tree reveal hidden cross-cutting concerns that directory trees obscure?"]{
+  #:depth #!experiential ~#lens(concept_topology)
+  ~#hypothesis: "Organizing code by concept axis (#:layer, #:tooling) reveals architectural couplings that physical directory folders conceal."
+  !probe{ "Group Concepts by axis; identify three concepts spanning both packages/ and extensions/; evaluate whether this view clarifies or confuses subsystem ownership." }
+  $%[concepts.cross_package_link_count, author.concept_discovery_time_s]
+}

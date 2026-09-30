@@ -1,0 +1,77 @@
+# VS Code Probe Cache Mechanics
+#
+# Cache of in-memory TTL probe cache architecture, hit/miss metrics, and invalidation physics in VS Code.
+
+#>spw_cache_vscode_probe_cache
+#:cache #!vscode
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Cache the internal design, TTL parameters, and inspection receipts of the VS Code client-side probe cache."
+  ~#source: "extensions/vscode-spw/src/instruments/probe-cache.ts"
+  ~#protocol: "cache.layer/1"
+}
+
+^["architecture"]{
+  role: "Client-side memory cache storing high-frequency LSP geometry and surface profile responses."
+  key_shape: #[uri, contentHash, requestType, parameterHash]
+  storage: "In-memory Map with epoch timestamps and access counters."
+  entries: #[
+    .{ type: "spw/geometry", description: "Brace depth, operator frequency, and resonance breakdown" },
+    .{ type: "spw/surfaceProfile", description: "Dialect stack and evaluation posture" },
+    .{ type: "spw/operatorFrequency", description: "Sigil count distribution across the document" }
+  ]
+}
+
+^["configuration_and_lifecycle"]{
+  config_key: "spw.cache.probeTtlMs"
+  default_ttl_ms: 8000
+  minimum_ttl_ms: 0
+  zero_behavior: "When set to 0, probe cache is completely disabled; every request passes through to LSP/CLI."
+  manual_clear_command: "spw.clearProbeCache"
+  automatic_clear: "Triggered whenever the document contentHash changes via onDidChangeTextDocument."
+}
+
+^["reflection_protocol"]{
+  accounting_fields: #[
+    "entries: number of active cached responses currently held",
+    "hits: total successful cache reads since activation",
+    "misses: total requests requiring live LSP computation",
+    "expirations: entries evicted due to TTL expiration",
+    "disabled_reads: queries bypassed because TTL was set to 0",
+    "writes: total entries stored",
+    "clears: count of explicit cache flushes"
+  ]
+  card_output: "Surfaced in 'Spw: Inspect Cache' under the editor_probe_cache section of cache.layer/1."
+}
+
+^["invalidation_rules"]{
+  content_hash_rule: "Any document edit that alters the parsed contentHash invalidates all cached probes for that URI."
+  document_close_rule: "Closing an editor tab purges its associated probe entries to prevent memory leaks."
+  timeout_sweep: "Periodic background timer sweeps and deletes entries older than probeTtlMs."
+}
+
+^["taste"]{
+  ~#taste: "The client probe cache exists to spare the CPU, not to manufacture truth."
+  ~#wonder: "Can a cache remain completely transparent about its own freshness without burdening the user?"
+
+  principles: #[
+    "Truthful accounting: Every hit, miss, and eviction is tracked; the editor never fabricates fake hit ratios.",
+    "Fast flush: When in doubt, clearing the cache with Cmd+Shift+P > Spw: Clear Probe Cache takes less than 50 milliseconds.",
+    "Separation of planes: The client TTL cache never claims ownership of LSP session reflection or CLI runtime memory."
+  ]
+}
+
+^["invariants"]{
+  "Probe cache keys always include contentHash to prevent serving stale metrics after an edit.",
+  "Memory usage is bounded; cache capacity caps at 256 active entries with LRU eviction.",
+  "Probe cache clearing emits a non-intrusive status bar message confirming the flush.",
+}
+
+#>wonder_vscode_probe_cache_1
+?["Why must an editor maintain an independent probe cache separate from the LSP server?"]{
+  #:depth #!computational ~#lens(latency_boundary)
+  ~#hypothesis: "Network/IPC round trips across stdio add 5-20ms of jitter; client-side caching enables instantaneous side-by-side UI re-renders during cursor navigation."
+  !probe{ "Measure preview latency when moving cursor through a 1,000-line file with cache enabled vs disabled; measure CPU utilization of the node stdio process." }
+  $%[ipc.latency_delta_ms, lsp.cpu_load_reduction_ratio]
+}

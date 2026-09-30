@@ -1,0 +1,48 @@
+# Film & Theatre Curricular Hub
+#
+# Root cache index for undergraduate (B.A./B.F.A.) and graduate (M.F.A.) degree programs in dramatic theatre, cinematic arts, and directing.
+
+#>spw_cache_univ_film_theatre_index
+#:cache #!film_and_theatre
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the full pedagogical continuum of dramatic and cinematic arts: from Stanislavskian acting, scenography, and dramaturgy to film directing, cinematic coverage, and MFA thesis production."
+  ~#accreditation: "National Association of Schools of Theatre (NAST), National Association of Schools of Art and Design (NASAD)"
+  ~#protocol: "cache.layer/1"
+}
+
+^"roots"{
+  @undergrad_theatre: ~"./undergrad-theatre-and-dramatic-arts.spw"
+  @undergrad_film: ~"./undergrad-film-studies-and-production.spw"
+  @grad_theatre_mfa: ~"./graduate-theatre-and-directing-mfa.spw"
+  @grad_film_mfa: ~"./graduate-film-directing-and-cinema-mfa.spw"
+  @taste: ~"./taste.spw"
+}
+
+^"dispatch"{
+  undergrad_theatre: @undergrad_theatre
+  undergrad_film: @undergrad_film
+  graduate_theatre_mfa: @grad_theatre_mfa
+  graduate_film_mfa: @grad_film_mfa
+  taste_considerations: @taste
+}
+
+^"taste"{
+  ~#taste: "Theatre is the communion of living breath in a shared room; film is the preservation of that breath sculpted through time and light."
+  ~#wonder: "Why does an actor standing on a bare wooden stage under a single spotlight hold the power to bring five hundred strangers to collective tears?"
+}
+
+^"invariants"{
+  "Dramatic curricula maintain the foundational primacy of live textual analysis and embodied physical presence.",
+  "Film production sequences enforce strict safety protocols regarding stage rigging, high-voltage lighting, and physical performer boundaries.",
+  "Directing students must demonstrate practical competence in actor communication, spatial blocking, and visual scene analysis.",
+}
+
+#>wonder_film_theatre_index_1
+?["How does the early training in Meisner repetition exercises alter a film actor's responsiveness to unexpected camera movements?"]{
+  #:depth #!pedagogical ~#lens(somatic_listening)
+  ~#hypothesis: "Actors trained in Meisner partner-listening maintain spontaneous emotional authenticity under unpredictable handheld camera blocking, reducing false takes by 35% compared to actors relying purely on pre-planned internal emotional recall."
+  !probe{ "Track take count to director approval and micro-expression latency in film scene shoots featuring Meisner-trained vs Method-only actors." }
+  $%[performance.takes_to_approval_count, acting.emotional_spontaneity_score]
+}

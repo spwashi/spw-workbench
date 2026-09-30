@@ -1,0 +1,82 @@
+# Year 1 Curriculum: Web Development & Browser Internals
+#
+# Complete 52-week daily curriculum tracing modern web development from UI surfaces to browser engines.
+
+#>spw_cache_podcast_year1
+#:cache #!podcasting
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Detail the 365 daily episodes of Year 1 exploring browser rendering, JavaScript runtimes, network protocols, and distributed web architecture."
+  ~#timeline: "Episodes 001 - 365 (Weeks 01 - 52)"
+}
+
+^["quarter_1_the_surface"]{
+  theme: "DOM, CSSOM, and the Physics of Layout & Compositing (Weeks 01 - 13 · Episodes 001 - 091)"
+  weekly_modules: #[
+    .{ week: "01-02", topic: "HTML Tokenization & Tree Construction", spec: "WHATWG HTML Living Standard; tokenizer state machines; spec-compliant error recovery" },
+    .{ week: "03-04", topic: "CSSOM & Selector Matching Algorithms", spec: "CSS Syntax Level 3; selector specificity trees; bloom filters in Blink and WebKit" },
+    .{ week: "05-06", topic: "The Layout Tree & Box Model Physics", spec: "Formatting contexts: Block, Inline, BFC; margin collapsing; intrinsic sizing calculations" },
+    .{ week: "07-08", topic: "Deep Dive: Flexbox & Grid Algorithmic Specifications", spec: "CSS Flexible Box Layout Module Level 1; CSS Grid Level 2; track sizing passes" },
+    .{ week: "09-10", topic: "Painting, Stacking Contexts & Paint Invalidation", spec: "Display lists; z-index ordering; clip paths; rasterization pipelines" },
+    .{ week: "11-13", topic: "Compositing, GPU Layers & Hardware Acceleration", spec: "Layer trees; tiling; texture memory; off-thread scrolling; compositor frame submission" }
+  ]
+}
+
+^["quarter_2_the_runtime"]{
+  theme: "JavaScript Engine Architecture & Virtual Machine Internals (Weeks 14 - 26 · Episodes 092 - 182)"
+  weekly_modules: #[
+    .{ week: "14-16", topic: "Lexing, AST Generation & Bytecode Compilation", spec: "Babel/TypeScript ASTs; V8 Ignition register-based bytecode format and dispatch table" },
+    .{ week: "17-19", topic: "Type Feedback & Inline Caches (ICs)", spec: "Monomorphic, polymorphic, and megamorphic ICs; hidden classes / shapes / maps" },
+    .{ week: "20-22", topic: "JIT Compilation & Deoptimization: TurboFan / Maglev", spec: "Sea of Nodes IR; speculative optimization; escape analysis; deopt bailouts" },
+    .{ week: "23-24", topic: "Garbage Collection Mechanics: Scavenge, Mark-Sweep & Compaction", spec: "Generational hypothesis; young generation semi-spaces; Orinoco concurrent marking; pointers" },
+    .{ week: "25-26", topic: "The Browser Event Loop & Concurrency Model", spec: "HTML event loop spec; microtask queues; task prioritization; requestAnimationFrame; postMessage" }
+  ]
+}
+
+^["quarter_3_the_network"]{
+  theme: "Transport Protocols, Security & Real-Time Data (Weeks 27 - 39 · Episodes 183 - 273)"
+  weekly_modules: #[
+    .{ week: "27-28", topic: "From Sockets to TCP: Handshakes, Congestion & Retransmission", spec: "TCP sliding window; slow start; loss recovery (CUBIC, BBR); socket buffer sizing" },
+    .{ week: "29-30", topic: "TLS 1.3 Cryptographic Handshake & Certificate Verification", spec: "Diffie-Hellman ephemeral key exchange; AES-GCM; ALPN negotiation; 0-RTT risks" },
+    .{ week: "31-33", topic: "The Evolution of HTTP: HTTP/1.1 Pipelining to HTTP/2 Multiplexing", spec: "HOL blocking; binary framing; HPACK compression; stream dependency trees" },
+    .{ week: "34-36", topic: "HTTP/3 & QUIC: UDP-Based Reliable Transport", spec: "RFC 9000; connection IDs; migration across networks; QPACK header compression" },
+    .{ week: "37-39", topic: "Bidirectional Real-Time Communication: WebSockets & WebRTC Data Channels", spec: "RFC 6455 framing; masking keys; SCTP over DTLS; ICE candidate gathering; STUN/TURN" }
+  ]
+}
+
+^["quarter_4_the_distributed_web"]{
+  theme: "WebAssembly, Server Runtimes, and Distributed State (Weeks 40 - 52 · Episodes 274 - 365)"
+  weekly_modules: #[
+    .{ week: "40-42", topic: "WebAssembly Core: Binary Format, Stack Machine & WAT", spec: "W3C WebAssembly Core 2.0; linear memory; module validation; SIMD instructions" },
+    .{ week: "43-44", topic: "Server-Side Runtimes: Node.js, Bun & libuv Event Loops", spec: "libuv thread pool; v8 bindings; non-blocking POSIX I/O; buffer allocation" },
+    .{ week: "45-47", topic: "Data Persistence: Relational Storage & Indexing Mechanics", spec: "B-Tree page structures; WAL (Write-Ahead Logging); ACID transactions in PostgreSQL; query planning" },
+    .{ week: "48-50", topic: "Edge Computing & Distributed Caching Topologies", spec: "V8 isolates at the edge; CDN cache invalidation; stale-while-revalidate; CRDT synchronization" },
+    .{ week: "51-52", topic: "Capstoning Year 1: Peeling Back the Web Sandbox", spec: "Handcrafting a WebAssembly binary that reads raw memory buffers, setting up Year 2 systems programming" }
+  ]
+}
+
+^["taste"]{
+  ~#taste: "The web is not an application framework; it is an open, polyglot hypermedia operating environment."
+  ~#wonder: "How did a simple text markup language for sharing physics papers evolve into the world's most ubiquitous distributed computing runtime?"
+
+  principles: #[
+    "Inspect over guess: Always open DevTools and performance profilers before offering architectural opinions.",
+    "Respect backward compatibility: The web's greatest triumph is that code written in 1996 still parses and runs today.",
+    "Hardware humility: Remember that every CSS blur filter forces the GPU to execute millions of fragment shader passes."
+  ]
+}
+
+^["invariants"]{
+  "Every topic in Year 1 connects high-level developer ergonomics to underlying browser engine implementation.",
+  "Weekly modules culminate in hands-on performance benchmarks comparing theoretical model with observed telemetry.",
+  "Episodes ground discussions in primary W3C, WHATWG, and IETF specifications.",
+}
+
+#>wonder_podcast_year1_1
+?["Why does understanding V8 hidden classes fundamentally improve high-performance JavaScript authoring?"]{
+  #:depth #!computational ~#lens(engine_empathy)
+  ~#hypothesis: "When a developer understands how shape transitions invalidate inline caches, they structure object allocations predictably, avoiding polymorphic deoptimizations."
+  !probe{ "Benchmark two JSON parsers: one mutating object properties dynamically vs one allocating fixed-shape prototypes; measure JIT execution speed in V8." }
+  $%[v8.ic_hit_rate_percentage, execution.benchmark_delta_ms]
+}

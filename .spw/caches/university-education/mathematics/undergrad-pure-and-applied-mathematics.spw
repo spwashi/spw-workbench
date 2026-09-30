@@ -1,0 +1,49 @@
+# Undergraduate Pure & Applied Mathematics Curriculum Cache
+#
+# Linear algebra spectral theorem, group/ring/field Galois theory, metric space analysis, and ODEs/PDEs.
+
+#>spw_cache_univ_undergrad_math
+#:cache #!undergrad_pure_and_applied_mathematics
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model undergraduate pure and applied mathematics: linear algebra spectral decompositions, abstract algebraic structures and Galois theory, metric space real analysis, and differential equations."
+  ~#protocol: "cache.layer/1"
+}
+
+^"linear_algebra_and_abstract_algebra"{
+  "linear_algebra_and_spectral_theory": .{
+    vector_spaces_and_rank_nullity: "Vector spaces over field F; linear independence, basis, dimension; Rank-Nullity Theorem: dim(V) = dim(ker T) + dim(im T)",
+    inner_products_and_gram_schmidt: "Inner product spaces, Cauchy-Schwarz inequality |<u, v>|^2 <= <u, u> <v, v>; Gram-Schmidt orthogonalization constructing orthonormal bases; orthogonal projections",
+    spectral_theorem_and_svd: "Spectral Theorem: Real symmetric matrices (Hermitian in C) are orthogonally diagonalizable with real eigenvalues; Singular Value Decomposition (SVD): A = U * Sigma * V^T for arbitrary rectangular matrices",
+    canonical_forms: "Characteristic polynomial, Cayley-Hamilton theorem p(A) = 0; minimal polynomial; Jordan canonical form decomposing non-diagonalizable operators into generalized eigenspace Jordan blocks",
+  }[reg=facet],
+  "abstract_algebra_and_galois_theory": .{
+    groups_and_isomorphism_theorems: "Subgroups, Lagrange's Theorem (|G| = [G:H] * |H|); Normal subgroups N <| G; Quotient groups G/N; First Isomorphism Theorem G/ker(phi) ~= im(phi); Sylow theorems on p-subgroups",
+    rings_ideals_and_factorization: "Rings, commutative rings, integral domains; Prime ideals P (R/P is an integral domain) and Maximal ideals M (R/M is a field); Hierarchy: Euclidean Domains -> Principal Ideal Domains (PIDs) -> Unique Factorization Domains (UFDs)",
+    galois_theory_and_polynomial_roots: "Field extensions K/F; degree [K:F]; Splitting fields, normal and separable extensions; Galois group Gal(K/F); Fundamental Theorem of Galois Theory establishing bijection between intermediate fields and subgroups of Gal(K/F); Insolvability of general quintic by radicals (non-solvability of A_5)",
+  }[reg=facet],
+}
+
+^"real_analysis_and_differential_equations"{
+  "metric_space_topology_and_convergence": .{
+    completeness_and_compactness: "Metric spaces (X, d); Cauchy sequences, completeness (Banach spaces); Heine-Borel theorem (compactness equivalent to closed and bounded in R^n); Bolzano-Weierstrass property",
+    uniform_continuity_and_function_spaces: "Continuous functions on compact spaces are uniformly continuous; Sequences of functions: Pointwise vs Uniform convergence; Weierstrass M-test; Uniform limit of continuous functions is continuous",
+    arzela_ascoli_and_stone_weierstrass: "Arzela-Ascoli Theorem: A family of continuous functions on a compact metric space is relatively compact in C(K) under sup-norm if and only if it is equicontinuous and pointwise bounded; Stone-Weierstrass polynomial density",
+  }[reg=facet],
+  "ordinary_and_partial_differential_equations": .{
+    picard_lindelof_existence_and_uniqueness: "For initial value problem dy/dt = f(t, y) with f continuous and Lipschitz in y, there exists a unique local solution constructed via contraction mapping on Picard iterates",
+    linear_systems_and_lyapunov_stability: "dx/dt = A * x solved by matrix exponential e^(At); Phase plane classification of equilibria (saddles, nodes, spirals, centers); Lyapunov functions proving asymptotic stability without explicit solutions",
+    boundary_value_pdes_and_fourier_analysis: "Separation of variables for Heat equation (u_t = k * u_xx), Wave equation (u_tt = c^2 * u_xx), and Laplace equation (Delta u = 0); Fourier series expansion in orthogonal trigonometric basis",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_undergrad_math_1
+  ?["Why does the algebraic impossibility of solving the general quintic equation by radicals mirror the geometric impossibility of trisecting an arbitrary angle with compass and straightedge?"]{
+    #:depth #!algebraic ~#lens(galois_field_extension_hierarchies)
+    ~#hypothesis: "Both geometric compass-and-straightedge constructions and radical formulas correspond to finite towers of field extensions: ruler-and-compass operations generate only quadratic extensions ([K:F] = 2^k), making angle trisection (requiring degree 3) impossible. Radical solutions require solvable Galois groups with abelian factor quotients, which fails for polynomial degrees n >= 5 because the alternating group A_5 is simple and non-abelian."
+    !probe{ "Trace the subfield lattices and Galois groups for the general quintic x^5 - 4x + 2 = 0 to demonstrate the simple structure of S_5 and A_5." }
+    $%[galois.solvability_composition_series, algebra.quintic_radical_impossibility_metric]
+  }
+}

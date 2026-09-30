@@ -1,0 +1,47 @@
+# Archival Science & Digital Preservation Curriculum Cache
+#
+# Provenance, respect des fonds, OAIS reference models (SIP/AIP/DIP), PREMIS fixity, and format migration.
+
+#>spw_cache_univ_lis_archives
+#:cache #!archival_science_and_digital_preservation
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model archival theory (provenance and original order), Schellenberg appraisal, OAIS functional preservation architecture (ISO 14721), PREMIS metadata, and digital fixity auditing."
+  ~#protocol: "cache.layer/1"
+}
+
+^"classical_archival_theory_and_arrangement"{
+  "foundational_principles_of_provenance_and_order": .{
+    principle_of_provenance: "Records originating from a distinct corporate entity, family, or individual creator must maintain their distinct identity and never be intermingled with records of other creators",
+    respect_des_fonds_and_original_order: "Preserving the original structural filing and classification order established by the creator; maintaining contextual integrity and evidential authenticity",
+    schellenberg_and_macro_appraisal: "Primary values (administrative, fiscal, legal operational utility) vs Secondary values (evidential and historical informational value); Terry Cook macro-appraisal analyzing institutional societal functions rather than single folders",
+  }[reg=facet],
+  "dacs_and_encoded_archival_description_ead": .{
+    multilevel_hierarchical_description: "DACS standard organizing fonds -> record series -> subseries -> container/box -> folder -> item; contextualizing records from general repository summary to specific artifact",
+    ead3_xml_schema_architecture: "Encoded Archival Description schema encoding finding aids for global web discoverability, indexing biographical historical notes, scope and content, and container lists",
+  }[reg=facet],
+}
+
+^"digital_preservation_and_the_oais_reference_model"{
+  "oais_functional_entities_and_information_packages": .{
+    iso_14721_information_packages: "Submission Information Package (SIP from donor) -> Ingest processing -> Archival Information Package (AIP stored in deep preservation vault with preservation metadata) -> Dissemination Information Package (DIP rendered to public researchers)",
+    core_functional_entities: "Ingest, Archival Storage (distributed geographical replication), Data Management, Administration, Preservation Planning (monitoring format obsolescence), and Access",
+  }[reg=facet],
+  "premis_metadata_and_bit_level_curation": .{
+    premis_data_model: "Preservation Metadata Implementation Strategies tracking Objects, Events (ingest, fixity check, format migration), Agents, and Rights; auditing provenance history across digital lifecycles",
+    fixity_auditing_against_bit_rot: "Continuous automated checksum verification (SHA-256 cryptographic hashes) verifying data integrity across storage volumes to detect silent bit rot, magnetic demagnetization, and bit-level corruption",
+    preservation_strategies_migration_vs_emulation: "Migration (batch transcoding vulnerable proprietary file formats into open standardized archival containers: TIFF, PDF/A-1a, Broadcast WAV) vs Emulation (virtualizing obsolete hardware and OS stacks)",
+    web_archiving_warc_standards: "Crawling dynamic web pages using Heritrix and capturing raw HTTP request/response payloads inside standardized WARC (Web ARChive) packages",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_lis_archives_1
+  ?["Why is the early 21st century paradoxically considered by digital archivists to be a potential 'Digital Dark Age' compared to 15th-century parchment?"]{
+    #:depth #!epistemological ~#lens(the_digital_dark_age_paradox)
+    ~#hypothesis: "Gutenberg paper and vellum manuscripts require only human eyes and ambient sunlight to decode 600 years later. Digital files are nested within fragile technological dependency stacks: operating systems, proprietary software codecs, and decaying magnetic disk media that become physically and logically unreadable within 15 years, threatening to erase decades of human cultural history."
+    !probe{ "Audit unreadable file percentage across 20-year-old magnetic tape and optical media archives from institutional university collections." }
+    $%[archives.media_obsolescence_unreadable_percentage, preservation.emulation_fidelity_score]
+  }
+}

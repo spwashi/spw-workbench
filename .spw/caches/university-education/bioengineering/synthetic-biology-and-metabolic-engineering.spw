@@ -1,0 +1,46 @@
+# Synthetic Biology & Metabolic Engineering Curriculum Cache
+#
+# Genetic toggle switches, repressilators, Golden Gate assembly, and Flux Balance Analysis (FBA).
+
+#>spw_cache_univ_bioeng_synbio
+#:cache #!synthetic_biology_and_metabolic_engineering
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model forward-engineered genetic circuits, bistable transcriptional switches, Golden Gate assembly, and genome-scale Flux Balance Analysis."
+  ~#protocol: "cache.layer/1"
+}
+
+^"synthetic_gene_circuits_and_modular_assembly"{
+  "bistable_switches_and_oscillators": .{
+    gardner_collins_toggle_switch: "Two mutually repressing transcriptional repressors (e.g., LacI and TetR); produces bistable state retention switchable via chemical inducers (IPTG, aTc); exhibits hysteresis memory",
+    elowitz_leibler_repressilator: "Cyclic three-node negative feedback ring (LacI inhibits TetR, TetR inhibits cI, cI inhibits LacI); generates sustained autonomous limit-cycle oscillations with period ~150 minutes",
+    digital_logic_and_riboswitches: "Orthogonal transcriptional AND/OR/NOR logic gates; RNA toehold switches utilizing structural strand displacement to gate translation initiation with high on/off dynamic range",
+  }[reg=facet],
+  "assembly_standards_and_retroactivity": .{
+    golden_gate_and_gibson_assembly: "Golden Gate using Type IIS restriction endonucleases (BsaI, BsmBI) that cleave outside non-palindromic recognition sites to assemble 10+ fragments with seamless four-base overhangs; Gibson isothermal 50 C assembly (T5 exonuclease, Phusion polymerase, Taq ligase)",
+    retroactivity_and_chassis_burden: "Downstream circuit loading altering upstream dynamic properties (retroactivity); host cell resource competition where high synthetic gene expression sequesters ribosomes, triggering cellular growth arrest",
+  }[reg=facet],
+}
+
+^"metabolic_engineering_and_flux_analysis"{
+  "stoichiometric_flux_balance_analysis_fba": .{
+    steady_state_stoichiometric_matrix: "Metabolic network modeled as m x n stoichiometric matrix S; steady-state assumption dX/dt = S * v = 0 where v is reaction flux vector",
+    linear_programming_optimization: "Objective function: maximize Z = c^T * v (typically biomass growth rate) subject to S * v = 0 and thermodynamic lower/upper bounds v_min <= v <= v_max",
+    carbon_13_metabolic_flux_analysis: "Feeding 13C-labeled glucose substrates; tracking mass isotopomer distributions (MIDs) via GC-MS and LC-MS to resolve intracellular metabolic split ratios and futile cycles",
+  }[reg=facet],
+  "pathway_optimization_and_biomanufacturing": .{
+    cofactor_and_redox_balancing: "Balancing NADH/NAD+ and NADPH/NADP+ ratios; engineering transhydrogenases; rerouting carbon through pentose phosphate pathway for biosynthetic reducing equivalents",
+    microbial_chemical_synthesis: "Engineering industrial strains (E. coli, S. cerevisiae) for production of artemisinin precursors (Keasling), 1,4-butanediol, nylon monomers, and bio-jet fuels",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_bioeng_synbio_1
+  ?["Why do synthetic gene circuits exhibit massive cell-to-cell phenotypic noise even among genetically identical clonal populations in identical environments?"]{
+    #:depth #!biophysical ~#lens(intrinsic_vs_extrinsic_molecular_noise)
+    ~#hypothesis: "Cellular gene expression is inherently discrete and stochastic. At low molecular copy numbers (e.g., 5-10 mRNA molecules per cell), thermal fluctuations in RNA polymerase binding and transcriptional bursting introduce inescapable intrinsic Poisson noise, which amplifies through downstream metabolic cascades."
+    !probe{ "Measure dual-reporter cross-correlation (cyan vs yellow fluorescent proteins under identical promoters) in single living cells using microfluidic mother-machine time-lapse imaging." }
+    $%[stochastic.intrinsic_noise_fraction, biophysics.transcriptional_burst_frequency_min]
+  }
+}

@@ -1,0 +1,88 @@
+# TikTok LIVE Streaming Pipeline Architecture
+#
+# Technical architecture of ingest, transcoding, edge caching, and real-time signaling.
+
+#>spw_cache_tiktok_live_pipeline
+#:cache #!tiktok_live
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the technical network pipeline delivering video, audio, and state synchronization at global scale."
+  ~#latency_target: "Sub-second (glass-to-glass latency between 800ms and 1500ms for standard CDN, <400ms for WebRTC interactive)"
+}
+
+^["ingest_protocols"]{
+  rtmp_secure: .{
+    protocol: "RTMPS (RTMP over TLS on port 443)"
+    payload: "H.264 / AAC video and audio muxed in FLV containers"
+    use_case: "Third-party software ingest (OBS, vMix, Wirecast, LIVE Studio)"
+    buffer_target: "1000ms jitter buffer at ingest point of presence (PoP)"
+  }[reg=facet]
+
+  srt_ingest: .{
+    protocol: "SRT (Secure Reliable Transport) over UDP"
+    payload: "ARQ packet recovery for unstable cellular and Wi-Fi networks"
+    use_case: "Mobile creator broadcasting from mobile networks with high packet loss"
+  }[reg=facet]
+
+  webrtc_interactive: .{
+    protocol: "WebRTC with customized congestion control (GCC / BBR-live)"
+    payload: "Opus audio + H.264/H.265 video with sub-300ms latency"
+    use_case: "Host-to-guest and PK Battle real-time two-way dialogue"
+  }[reg=facet]
+}
+
+^["transcoding_and_abr"]{
+  ladder: #[
+    .{ label: "1080p60", bitrate: 6000, codec: "HEVC / H.264", fps: 60 },
+    .{ label: "720p60", bitrate: 3500, codec: "HEVC / H.264", fps: 60 },
+    .{ label: "720p30", bitrate: 2000, codec: "H.264", fps: 30 },
+    .{ label: "480p30", bitrate: 1000, codec: "H.264", fps: 30 },
+    .{ label: "360p30", bitrate: 600, codec: "H.264", fps: 30 }
+  ]
+  hardware_acceleration: "FPGA and GPU transcode clusters at regional ingest datacenters"
+  gop_size: "1 to 2 seconds fixed keyframe interval to allow rapid client quality shifts"
+}
+
+^["distribution_and_edge"]{
+  delivery_protocols: #[
+    .{ protocol: "LL-HLS", chunk_size_ms: 500, target_latency_s: 2.0 },
+    .{ protocol: "CMAF-DASH", chunk_size_ms: 200, target_latency_s: 1.2 },
+    .{ protocol: "FLV-over-WebSocket", packet_mode: "streamed", target_latency_s: 0.8 },
+    .{ protocol: "Sub-Second WebRTC", packet_mode: "direct_rtp", target_latency_s: 0.3 }
+  ]
+  edge_coalescing: "Dynamic tree distribution: ingest master fanouts to regional reflectors, then to thousands of edge PoPs."
+}
+
+^["realtime_messaging_bus"]{
+  chat_and_gifts: .{
+    transport: "Persistent WebSocket connection multiplexing chat, gifts, and room events"
+    throughput: "Up to 50,000 messages per second in high-traffic rooms (>500k concurrent viewers)"
+    throttling_strategy: "Client-side priority queues: Gift animations and system alerts skip ahead of general text chat"
+  }[reg=facet]
+}
+
+^["taste"]{
+  ~#taste: "Latency is not merely an engineering metric; latency is the oxygen of conversational intimacy."
+  ~#wonder: "At what exact millisecond threshold does a viewer feel that their comment was heard in the same room?"
+
+  principles: #[
+    "Zero freeze over high fidelity: In live social interaction, dropping frame resolution is always preferred to buffering.",
+    "Graceful degradation: When bandwidth collapses, audio must persist uninterrupted even if video drops to a still frame.",
+    "Clock alignment: Gift animations on the viewer's screen must trigger simultaneously with the host's reaction."
+  ]
+}
+
+^["invariants"]{
+  "Every live stream segment is encrypted in transit using TLS 1.3 or DTLS-SRTP.",
+  "Viewer bitrate adaptation switches qualities smoothly without rebuffering pauses.",
+  "WebRTC co-host streams are re-encoded and muxed into a single stream at the server before downstream edge broadcast.",
+}
+
+#>wonder_tiktok_live_pipeline_1
+?["Why is multiplexing multi-guest video at the edge superior to client-side mesh networking?"]{
+  #:depth #!computational ~#lens(bandwidth_symmetry)
+  ~#hypothesis: "Client-side mesh topologies require N-squared upload bandwidth on mobile devices; server-side compositing maintains a constant upload bitrate regardless of guest count."
+  !probe{ "Simulate 8 video guests on 4G cellular: measure battery consumption and thermal throttling between client mesh vs server-side MCU mixing." }
+  $%[client.upload_bandwidth_kbps, device.thermal_headroom_celsius]
+}

@@ -1,0 +1,88 @@
+# Podcasting Topical Cross-Index & Query Matrix
+#
+# Dense query matrix and cross-reference catalog optimized for Spw query tools (spwq, spw query, spw graph).
+
+#>spw_cache_podcast_topical
+#:cache #!podcasting
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Provide a dense, structured index connecting technologies, beloved language features, and specifications across all 3 years of the curriculum."
+  ~#query_optimization: "Optimized for spw select, spw query, and spw graph resolution."
+  ~#language_features_ref: ~"../language-features/index.spw"
+}
+
+^["domain_cross_index"]{
+  web_tier: #[
+    .{ topic: "DOM_Tree", years: [1], episodes: [1, 2, 3], prereqs: [], leads_to: ["Layout_Tree", "Virtual_DOM"] },
+    .{ topic: "CSS_Layout_Box", years: [1], episodes: [5, 6, 7, 8], prereqs: ["DOM_Tree"], leads_to: ["BFC", "Compositing"] },
+    .{ topic: "TypeScript_Discriminated_Unions", years: [1], episodes: [12, 13], prereqs: ["AST"], leads_to: ["Type_Narrowing", "Satisfies_Operator"] },
+    .{ topic: "V8_Ignition", years: [1], episodes: [14, 15, 16], prereqs: ["AST"], leads_to: ["V8_TurboFan", "Bytecode_Interpreters"] },
+    .{ topic: "V8_TurboFan", years: [1, 2], episodes: [20, 21, 22], prereqs: ["V8_Ignition", "ICs"], leads_to: ["SSA_Form", "JIT_Compilation"] },
+    .{ topic: "HTTP_3_QUIC", years: [1], episodes: [34, 35, 36], prereqs: ["TCP", "TLS"], leads_to: ["UDP_Multiplexing", "Congestion_Control"] },
+    .{ topic: "WebAssembly_Core", years: [1, 2], episodes: [40, 41, 42, 51], prereqs: ["Stack_Machine"], leads_to: ["LLVM_IR", "Memory_Paging"] }
+  ]
+
+  systems_tier: #[
+    .{ topic: "x86_ARM_ABI", years: [2], episodes: [55, 56, 57], prereqs: ["Assembly"], leads_to: ["Stack_Frames", "Register_Alloc"] },
+    .{ topic: "Pointer_Arithmetic", years: [2], episodes: [58, 59, 60], prereqs: ["Memory_Addressing"], leads_to: ["Custom_Allocators", "Unsafe_Rust"] },
+    .{ topic: "Cache_Coherence_MESI", years: [2], episodes: [61, 62], prereqs: ["Memory_Hierarchy"], leads_to: ["Memory_Barriers", "Lock_Free"] },
+    .{ topic: "Virtual_Memory_MMU", years: [2], episodes: [66, 67, 68], prereqs: ["Page_Tables"], leads_to: ["OS_Kernels", "Memory_Protection"] },
+    .{ topic: "Custom_Allocators", years: [2], episodes: [69, 70, 71], prereqs: ["Virtual_Memory_MMU"], leads_to: ["Arena_Alloc", "jemalloc"] },
+    .{ topic: "Zig_Explicit_Allocators", years: [2], episodes: [70, 71], prereqs: ["Custom_Allocators"], leads_to: ["Zero_Hidden_Allocation"] },
+    .{ topic: "Zig_Defer_Errdefer", years: [2], episodes: [72], prereqs: ["Resource_Management"], leads_to: ["RAII_Alternatives"] },
+    .{ topic: "Rust_Borrow_Checker", years: [2, 3], episodes: [79, 80, 81, 82], prereqs: ["Pointer_Arithmetic"], leads_to: ["Affine_Types", "Linear_Logic"] },
+    .{ topic: "Zig_Comptime", years: [2, 3], episodes: [86, 87, 88], prereqs: ["AST", "Generics"], leads_to: ["Metaprogramming_Without_Macros"] },
+    .{ topic: "LLVM_SSA_Passes", years: [2, 3], episodes: [92, 93, 94, 95], prereqs: ["AST", "CFG"], leads_to: ["Abstract_Interpretation", "Type_Inference"] }
+  ]
+
+  abstract_tier: #[
+    .{ topic: "Elixir_Pipe_Operator", years: [1, 3], episodes: [100, 101], prereqs: ["Function_Composition"], leads_to: ["Linear_Dataflow"] },
+    .{ topic: "Clojure_HAMT_Persistence", years: [1, 3], episodes: [102, 103], prereqs: ["Trie_Data_Structures"], leads_to: ["Structural_Sharing"] },
+    .{ topic: "Untyped_Lambda_Calculus", years: [3], episodes: [105, 106, 107], prereqs: ["Mathematical_Induction"], leads_to: ["STLC", "Church_Turing"] },
+    .{ topic: "Curry_Howard_Bridge", years: [3], episodes: [111, 112, 113], prereqs: ["STLC", "Intuitionistic_Logic"], leads_to: ["Dependent_Types", "Coq_Proofs"] },
+    .{ topic: "Hindley_Milner_W", years: [3], episodes: [114, 115], prereqs: ["STLC", "Unification"], leads_to: ["Type_Inference", "Principal_Types"] },
+    .{ topic: "Category_Theory_Monads", years: [3], episodes: [121, 122, 123], prereqs: ["Functors", "Natural_Transformations"], leads_to: ["Adjunctions", "Monadic_I_O"] },
+    .{ topic: "Julia_Multiple_Dispatch", years: [3], episodes: [124, 125], prereqs: ["Type_Specialization"], leads_to: ["Expression_Problem_Solution"] },
+    .{ topic: "TLA_Plus_Verification", years: [3], episodes: [126, 127, 128], prereqs: ["Temporal_Logic"], leads_to: ["Model_Checking", "Consensus_Verification"] },
+    .{ topic: "Raft_Consensus", years: [3], episodes: [134, 135, 136], prereqs: ["FLP_Theorem", "RPC"], leads_to: ["Distributed_State_Machines", "PBFT"] },
+    .{ topic: "APL_Rank_Polymorphism", years: [3], episodes: [141, 142], prereqs: ["Tensor_Algebra"], leads_to: ["Loopless_Vectorization"] },
+    .{ topic: "Zero_Knowledge_SNARKs", years: [3], episodes: [150, 151, 152], prereqs: ["Polynomial_Commitments", "Elliptic_Curves"], leads_to: ["Verifiable_Computing"] }
+  ]
+}
+
+^["spw_query_affordances"]{
+  example_selector_queries: #[
+    "spw select .spw/caches/podcasting/topical-index.spw --query 'topic=Zig*'",
+    "spw select .spw/caches/podcasting/topical-index.spw --query 'topic=*Pipe*'",
+    "spw query --from .spw/caches/podcasting/ --selector pathRefs",
+    "spw graph .spw/caches/podcasting/ --limit 30",
+    "spw density .spw/caches/podcasting/"
+  ]
+  utility: "Allows researchers to find every episode covering a given prerequisite, language feature, or concept across the 3-year corpus."
+}
+
+^["taste"]{
+  ~#taste: "A syllabus is not a list of books; it is a directed acyclic graph of conceptual dependencies."
+  ~#wonder: "Can an entire computer science education be rendered as a single traversable knowledge lattice?"
+
+  principles: #[
+    "Explicit dependencies: Every topic declares its prerequisite concepts and downstream destinations.",
+    "Bidirectional discovery: Querying a concept reveals both how to prepare for it and where it leads.",
+    "Non-linear traversal: While broadcast chronologically, the index empowers asynchronous on-demand mastery."
+  ]
+}
+
+^["invariants"]{
+  "Every entry in the topical index contains non-empty topic, years, and episodes arrays.",
+  "Graph cycles are prohibited; prerequisite chains form a strict DAG.",
+  "Cross-references between year tiers are validated via relative Spw path references.",
+}
+
+#>wonder_podcast_topical_1
+?["How does representing an educational curriculum as an AST lattice change how students navigate study?"]{
+  #:depth #!computational ~#lens(lattice_pedagogy)
+  ~#hypothesis: "When students see that 'Rust borrow checking' leads directly to 'Linear logic' and 'Affine type theory', they study with intentional direction rather than blind memorization."
+  !probe{ "Trace the shortest path between 'CSS Flexbox' and 'Curry-Howard Correspondence' in this topical index." }
+  $%[graph.shortest_path_edges, graph.cyclomatic_complexity]
+}

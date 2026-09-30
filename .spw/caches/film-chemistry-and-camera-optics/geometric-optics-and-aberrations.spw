@@ -1,0 +1,93 @@
+# Geometric Optics & Optical Aberrations Cache
+#
+# Formalization of paraxial ray tracing, Seidel monochromatic aberrations, chromatic dispersion, and lens design physics.
+
+#>spw_cache_camera_optics_geometric
+#:cache #!geometric_optics_and_aberrations
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model paraxial and non-paraxial geometric optics, Seidel third-order monochromatic aberrations, dispersion metrics, and anti-reflective coating physics for cinematographic lens design."
+  ~#protocol: "cache.layer/1"
+}
+
+^"refraction_and_dispersion"{
+  "snells_law": .{
+    snell_equation: "n_1 * sin(theta_1) = n_2 * sin(theta_2)",
+    refractive_index: "n = c / v_phase, ratio of light speed in vacuum to phase velocity in medium",
+    total_internal_reflection: "theta_critical = arcsin(n_2 / n_1) where n_1 > n_2; foundational for prism assemblies and optical glass elements",
+    fermat_principle: "Light travels between two points along the path requiring extremum optical path length (OPL = integral n dl)",
+  }[reg=facet],
+  "chromatic_dispersion_and_abbe_number": .{
+    sellmeier_dispersion_equation: "n^2(lambda) = 1 + sum_i (B_i * lambda^2) / (lambda^2 - C_i); empirical dispersion relationship across visible spectrum",
+    abbe_number_definition: "V_d = (n_d - 1) / (n_F - n_C) using spectral lines d (Helium 587.56nm), F (Hydrogen 486.13nm), C (Hydrogen 656.28nm)",
+    crown_vs_flint_glass: "Crown glass: V_d > 50, lower dispersion, lower refractive index; Flint glass: V_d < 50, high dispersion, higher refractive index",
+    anomalous_partial_dispersion: "Fluorite (CaF2) and ED (Extra-low Dispersion) glass crystals exhibit non-linear dispersion curves crucial for secondary spectrum apochromatic correction",
+  }[reg=facet],
+  "paraxial_optics_and_matrix_formalism": .{
+    paraxial_approximation: "sin(theta) approx theta, tan(theta) approx theta, cos(theta) approx 1; Gaussian optics",
+    ray_transfer_matrix_abcd: "[y_2; u_2] = [A, B; C, D] * [y_1; u_1]; y = ray height, u = ray angle",
+    interface_refraction_matrix: "R = [1, 0; -(n_2 - n_1) / (r * n_2), n_1 / n_2]; r = surface curvature radius",
+    free_space_translation_matrix: "T = [1, d; 0, 1]; d = axial thickness between successive glass surfaces",
+    cardinal_points: "Focal points (F_1, F_2), Principal planes (H_1, H_2), Nodal points (N_1, N_2); effective focal length (EFL) and back focal distance (BFD)",
+  }[reg=facet],
+}
+
+^"seidel_monochromatic_aberrations"{
+  "spherical_aberration_w040": .{
+    definition: "Marginal rays incident near lens aperture periphery focus at different axial position than central paraxial rays",
+    wavefront_aberration_term: "W(rho, theta) = W_040 * rho^4 where rho is normalized pupil radius",
+    undercorrected_vs_overcorrected: "Undercorrected: edge rays converge too close; produces soft halo with hard center; Overcorrected: edge rays converge past paraxial focus",
+    bokeh_manifestation: "Overcorrection creates bright-ringed 'soap bubble' bokeh discs; undercorrection creates soft, feather-edged Gaussian blur circles; balanced spherical produces creamy cinematic out-of-focus roll-off",
+    stopping_down_behavior: "Reduces quadratically with aperture stop (proportional to (1/N)^3); stopping down 2 stops eliminates majority of primary spherical aberration",
+  }[reg=facet],
+  "coma_w131": .{
+    definition: "Off-axis aberration where magnification varies as function of aperture zone, rendering point light sources as comet-shaped flares with tail pointing toward or away from optical axis",
+    wavefront_aberration_term: "W(rho, theta, h) = W_131 * h * rho^3 * cos(theta); h = field height",
+    tangential_vs_sagittal_coma: "Tangential flare length is exactly three times the sagittal flare width; asymmetric smearing degrading edge resolution",
+    abbe_sine_condition: "Condition for coma-free imaging of small axial objects: n * sin(alpha) / (n_prime * sin(alpha_prime)) = constant = magnification m; lenses satisfying this are aplanatic",
+  }[reg=facet],
+  "astigmatism_and_field_curvature_w222_w220": .{
+    astigmatism_definition: "Off-axis rays in tangential (meridional) and sagittal planes focus at distinct longitudinal surfaces (T and S focal surfaces)",
+    astigmatism_wavefront: "W(rho, theta, h) = W_222 * h^2 * rho^2 * cos^2(theta); turns out-of-focus point sources into ellipses oriented radially or tangentially",
+    petzval_field_curvature: "Curvature of the image plane formed by optical system: Petzval sum = sum_i (1 / (n_i * r_i)) = 1 / R_petzval",
+    anastigmat_design: "Correcting both astigmatism and field curvature simultaneously; early Cooke Triplet and Zeiss Tessar separated elements to balance positive and negative Petzval contributions",
+    vintage_swirly_bokeh: "Uncorrected Petzval curvature (Petzval 1840 design, Helios 44-2) causes tangential smearing at edge of frame, producing iconic circular vortex bokeh",
+  }[reg=facet],
+  "distortion_w311": .{
+    definition: "Variation in transverse magnification across radial field distance, preserving sharpness but distorting geometric rectilinearity",
+    barrel_distortion: "Negative distortion: magnification decreases with field height (edges compressed inward); common in wide-angle retrofocus lenses",
+    pincushion_distortion: "Positive distortion: magnification increases with field height (corners pulled outward); common in telephoto lenses and rear-anamorphic systems",
+    mustache_distortion: "Complex higher-order (5th-order) distortion combining barrel at center and pincushion at extreme corners; difficult to correct without multi-element floating groups",
+  }[reg=facet],
+}
+
+^"chromatic_aberration_and_coatings"{
+  "axial_and_lateral_chromatic_aberration": .{
+    longitudinal_chromatic_aberration_loca: "Different wavelengths focus at different axial distances along optical axis; manifests as green fringing behind focus and magenta/purple fringing in front of focus",
+    transverse_chromatic_aberration_laca: "Different wavelengths produce different image magnifications; manifests as color fringing (cyan/red or yellow/blue) increasing radially toward frame corners; does NOT decrease when stopping down aperture",
+    achromatic_doublet: "Cemented crown-flint pair matching opposite dispersion to bring two wavelengths (red 656nm and blue 486nm) to common focal point",
+    apochromatic_triplet_apo: "Optical group correcting chromatic aberration for three visible wavelengths simultaneously and reducing secondary spectrum residual blur to diffraction limits",
+  }[reg=facet],
+  "aspherical_elements_and_surface_finishing": .{
+    even_asphere_equation: "z(r) = (c * r^2) / (1 + sqrt(1 - (1 + k) * c^2 * r^2)) + alpha_4 * r^4 + alpha_6 * r^6 + ...; k = conic constant",
+    aberration_cancellation: "A single aspheric surface replaces 2-3 spherical elements, drastically reducing spherical aberration and weight while enabling fast f/1.2 - f/1.4 apertures",
+    manufacturing_and_onion_rings: "Precision Glass Molding (PGM) and diamond-turning sub-micron tooling grooves can imprint concentric ridges on glass surface, manifesting as concentric 'onion-ring' striations inside out-of-focus bokeh highlights",
+  }[reg=facet],
+  "anti_reflective_thin_film_coatings": .{
+    fresnel_reflection_uncoated: "R = ((n_1 - n_2) / (n_1 + n_2))^2; glass (n=1.52) in air reflects approx 4.25% per surface; a 16-element cinema zoom loses over 75% light without coatings",
+    quarter_wave_destructive_interference: "n_film = sqrt(n_substrate), optical thickness n_film * d = lambda / 4; reflected waves from air-film and film-glass interfaces interfere destructively",
+    multi_layer_broadband_coatings: "Alternating high/low index dielectric thin films (TiO2, SiO2, MgF2) tuned to eliminate reflections across 400nm - 700nm band to <0.2% per surface",
+    veiling_glare_and_contrast: "Suppression of internal bounce reflections preserves micro-contrast in deep shadows and eliminates milky washed-out flare under direct light sources",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_camera_optics_geometric_1
+  ?["How does intentionally leaving undercorrected spherical aberration in portrait lenses create the illusion of glowing, luminous skin without losing eyelash sharpness?"]{
+    #:depth #!physical ~#lens(aberration_spatial_frequency_filtering)
+    ~#hypothesis: "Undercorrected spherical aberration creates a two-tier point spread function (PSF): an extremely sharp, high-intensity central diffraction core surrounded by an expansive, low-intensity diffuse halo. The paraxial core resolves fine high-frequency lines (individual hairs, eyelashes), while the halo floods adjacent mid-frequency contrast (skin pores, micro-blemishes), synthesizing an ethereal optical luminescence unreachable by digital blur filters."
+    !probe{ "Trace the modulation transfer function (MTF) across 10 lp/mm and 40 lp/mm for a Cooke Speed Panchro and Leica Noctilux 50mm f/0.95 at wide open aperture." }
+    $%[optics.psf_core_to_halo_energy_ratio, optics.spatial_frequency_contrast_suppression]
+  }
+}

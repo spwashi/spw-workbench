@@ -1,0 +1,95 @@
+# VS Code Cache Layer Representation
+#
+# Cache of cache.layer/1 representation, plane mappings, and live probe accounting in VS Code.
+
+#>spw_cache_vscode_cache_layer
+#:cache #!vscode
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Document how the VS Code host reflects cache.layer/1 planes, specifically filling the editor_probe_cache plane."
+  ~#protocol: "cache.layer/1"
+  ~#source: "extensions/vscode-spw/src/instruments/commands.ts"
+  ~#theory: ~"../../../docs/theory/spw/cache-field.spw"
+}
+
+^["protocol_card"]{
+  surface: "cache.layer/1"
+  host: #vscode
+  transport: #live_lsp_with_cli_fallback
+  inspection_command: "spw.inspectCache (Spw: Inspect Cache)"
+  client_probe_cache_active: true
+}
+
+^["plane_breakdown"]{
+  editor_probe_cache: .{
+    plane: "editor_probe_cache"
+    present: true
+    source: "editor-local TTL probe cache"
+    stats: #[
+      "entries: active cached responses in Map",
+      "ttlMs: current TTL configuration (spw.cache.probeTtlMs)",
+      "hits: successful cache retrievals",
+      "misses: live queries delegated to LSP",
+      "expirations: entries pruned by background timer",
+      "disabled_reads: queries executed when TTL=0",
+      "writes: cache additions",
+      "clears: manual flush count"
+    ]
+    note: "Unlike JetBrains and Neovim, VS Code fills this plane with live in-memory metrics."
+  }[reg=facet]
+
+  lsp_session_reflection: .{
+    plane: "lsp_session_reflection"
+    present: true
+    source: "language-server session reflection"
+    detail: "Queried via custom request 'spw/cacheReflection' when LSP client is connected."
+  }[reg=facet]
+
+  runtime_cache: .{
+    plane: "runtime_cache"
+    present: false
+    omission: "runtime cache not sampled here"
+    next: "spw inspect cache <file.spw>"
+    note: "The VS Code editor action queries the live probe cache and LSP reflection; runtime evaluation requires explicit CLI invocation."
+  }[reg=facet]
+
+  corpus_memo: .{
+    plane: "corpus_memo"
+    present: false
+    source: "corpus product memo"
+    omission: "corpus memo not sampled here"
+    next: "spw census --json"
+  }[reg=facet]
+}
+
+^["inspection_receipt"]{
+  command: "spw.inspectCache"
+  action: "Assembles four-plane card and opens virtual document 'spw-cache://<surface>.card'"
+  formatting: "Rendered according to packages/spw-seed/src/ir/cache-layer.ts formatCacheLayerLines"
+}
+
+^["taste"]{
+  ~#taste: "Name the cache layer; never flatten distinct caches into one hit/miss claim."
+  ~#wonder: "Why is a four-plane cache card more honest than a single 95% hit-rate badge?"
+
+  principles: #[
+    "Truthful omissions: An absent plane is not a bug; it is an honest statement that this process did not sample that clock.",
+    "Clock distinction: The editor probe cache ticks on wall-clock milliseconds; the runtime cache ticks on session beats.",
+    "Independent invalidation: Flushing the editor probe cache does not perturb the language server's internal symbol cache."
+  ]
+}
+
+^["invariants"]{
+  "VS Code cache card explicitly declares which planes are present and provides 'next' commands for omitted planes.",
+  "Clearing the client probe cache emits a clear event and zeroes out active entries immediately.",
+  "The cache card preview is strictly read-only.",
+}
+
+#>wonder_vscode_cache_layer_1
+?["Why must an editor disclose its cache planes instead of hiding them behind instant UI?"]{
+  #:depth #!philosophical ~#lens(mechanical_sympathy)
+  ~#hypothesis: "When developers see which cache plane served an answer, they develop mechanical sympathy with the compiler, understanding why an edit was fast or slow."
+  !probe{ "Ask a developer to debug why a symbol rename took 200ms; compare their diagnostic speed when given a 4-plane cache card vs no cache feedback." }
+  $%[debug.time_to_root_cause_s, developer.system_comprehension_score]
+}

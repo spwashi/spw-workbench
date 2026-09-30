@@ -1,0 +1,43 @@
+# Pathophysiology & Pharmacology in Nursing Curriculum Cache
+#
+# Pharmacokinetics (CYP450), telemetry dysrhythmias, septic shock bundles, and DKA insulin protocols.
+
+#>spw_cache_univ_nursing_patho_pharm
+#:cache #!pathophysiology_and_pharmacology_in_nursing
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model clinical nursing pharmacokinetics, cardiovascular telemetry interpretation, surviving sepsis resuscitation bundles, and acute metabolic crisis protocols."
+  ~#protocol: "cache.layer/1"
+}
+
+^"pharmacokinetics_and_narrow_therapeutic_monitoring"{
+  "adme_principles_and_drug_metabolism": .{
+    hepatic_first_pass_and_bioavailability: "Oral drug fraction F reaching systemic circulation reduced by gut and liver metabolism; Cytochrome P450 enzyme kinetics (CYP3A4, CYP2D6) subject to induction (rifampin, St. John's wort) or inhibition (grapefruit juice, amiodarone)",
+    protein_binding_and_renal_elimination: "Albumin binding governing free pharmacologically active drug fractions; hypoalbuminemic states increasing free drug toxicity risks; dose adjustments based on creatinine clearance and eGFR",
+  }[reg=facet],
+  "narrow_therapeutic_index_surveillance": .{
+    therapeutic_drug_monitoring: "Monitoring peak and trough serum concentrations for narrow therapeutic window drugs: Vancomycin (trough 15-20 mcg/mL preventing nephrotoxicity), Digoxin (0.5-0.9 ng/mL; toxicity exacerbated by hypokalemia), Lithium, and Phenytoin",
+  }[reg=facet],
+}
+
+^"acute_pathophysiological_syndromes_and_nursing_interventions"{
+  "cardiovascular_emergencies_and_telemetry": .{
+    acute_coronary_syndrome_acs: "STEMI vs NSTEMI; continuous 12-lead ECG monitoring (ST-elevation, T-wave inversion); serial high-sensitivity Troponin tracking; immediate nursing interventions: oxygen if SpO2 < 90%, sublingual nitroglycerin (contraindicated with PDE-5 inhibitors), chewable aspirin 324mg, heparin anticoagulation",
+    lethal_dysrhythmia_management: "Rapid rhythm identification: Ventricular Fibrillation and pulseless Ventricular Tachycardia (immediate unsynchronized defibrillation + CPR + epinephrine/amiodarone); Atrial Fibrillation with Rapid Ventricular Response (rate control via IV diltiazem or metoprolol; stroke prevention with anticoagulation)",
+  }[reg=facet],
+  "septic_shock_and_metabolic_crises": .{
+    surviving_sepsis_one_hour_bundle: "1) Measure blood lactate (re-measure if >2 mmol/L); 2) Obtain blood cultures prior to starting antibiotics; 3) Administer broad-spectrum empiric IV antimicrobials; 4) Rapidly infuse 30 mL/kg balanced crystalloid for hypotension (MAP < 65) or lactate >= 4 mmol/L; 5) Initiate vasopressors (Norepinephrine first-line) to maintain MAP >= 65 mmHg",
+    diabetic_ketoacidosis_dka_resuscitation: "Pathophysiology: absolute insulin deficiency driving lipolysis and ketogenesis; fluid resuscitation with 0.9% Normal Saline; continuous IV regular insulin infusion (0.1 units/kg/hr); mandatory potassium monitoring (holding insulin if K+ < 3.3 mEq/L to prevent fatal cardiac arrest); adding 5% dextrose when blood glucose drops below 200 mg/dL to prevent cerebral edema while clearing ketoacidosis",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_nursing_patho_pharm_1
+  ?["Why must a nurse ensure a patient's serum potassium is above 3.3 mEq/L before initiating an IV insulin infusion in severe Diabetic Ketoacidosis?"]{
+    #:depth #!pharmacological ~#lens(insulin_driven_hypokalemic_cardiac_arrest)
+    ~#hypothesis: "Insulin drives potassium from the extracellular fluid into the intracellular compartment by stimulating the sodium-potassium ATPase pump (Na+/K+ ATPase). In DKA, total body potassium is severely depleted despite normal serum levels due to acidosis-induced extracellular shifts. Initiating insulin before correcting serum hypokalemia causes a catastrophic drop in extracellular potassium, triggering lethal ventricular dysrhythmias (VTach/VFib) or asystole."
+    !probe{ "Audit cardiac telemetry dysrhythmia logs and potassium replenishment timing in emergency department DKA resuscitation cohorts." }
+    $%[nursing.pre_insulin_potassium_check_compliance, dka.hypokalemic_dysrhythmia_incidence]
+  }
+}

@@ -1,0 +1,90 @@
+# TikTok LIVE Feature Taxonomy
+#
+# Comprehensive taxonomy of features, broadcast tools, and viewer mechanics in TikTok LIVE.
+
+#>spw_cache_tiktok_live_features
+#:cache #!tiktok_live
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Map the feature set of TikTok LIVE into structured, queryable categories for systems modeling and product analysis."
+  ~#domain: "Live video broadcasting, social gaming, creator monetization"
+}
+
+^["core_pillars"]{
+  broadcasting: .{
+    mobile_direct: "In-app camera broadcast with beauty filters, AR masks, and background green screen"
+    desktop_studio: "TikTok LIVE Studio (Windows native app supporting multi-scene, screen capture, audio routing)"
+    rtmp_ingest: "Dedicated stream key & server URL for OBS Studio, vMix, and professional hardware encoders"
+  }[reg=facet]
+
+  interaction: .{
+    pk_battles: "5-minute head-to-head competitive mini-games decided by viewer gift velocity"
+    multi_guest: "Up to 8 interactive video or audio guest boxes with host moderation"
+    live_chat: "High-throughput chat stream with emoji reactions, subscriber badges, and top-gifter highlights"
+    interactive_polls: "Real-time voting widgets with instant visual tallying on screen"
+  }[reg=facet]
+
+  monetization: .{
+    virtual_gifts: "Micro-transactions converting TikTok Coins into animated visual stickers and Diamond payouts"
+    subscriptions: "Recurring monthly memberships granting exclusive badges, emotes, and sub-only chat"
+    live_shopping: "TikTok Shop product showcases, flash discounts, and in-app checkout without leaving stream"
+  }[reg=facet]
+
+  discoverability: .{
+    for_you_injection: "Algorithmic live stream previews served directly into the standard vertical FYP feed"
+    live_tab: "Dedicated immersive vertical swipe feed exclusively for browsing active livestreams"
+    category_tags: "Taxonomy tags (Gaming, Music, Daily Life, Education, Commerce) for targeted discovery"
+  }[reg=facet]
+}
+
+^["broadcast_modes"]{
+  portrait_mobile: .{
+    resolution: "720x1280 or 1080x1920 (9:16 aspect ratio)"
+    framerate: "30fps or 60fps"
+    primary_use: "Talking head, lifestyle, direct fan engagement, makeup tutorials"
+  }[reg=facet]
+
+  landscape_gaming: .{
+    resolution: "1920x1080 (16:9 aspect ratio)"
+    framerate: "60fps high bitrate (up to 8000 kbps)"
+    primary_use: "PC and console esports, competitive gaming, multi-window production"
+  }[reg=facet]
+
+  audio_only: .{
+    bandwidth_saving: "Low-bitrate voice rooms for podcasts, storytelling, and panel discussions"
+    layout: "Avatar circle grid with speaking wave indicators"
+  }[reg=facet]
+}
+
+^["creator_toolkit"]{
+  ar_effects: "Proprietary Effect House integrations: interactive AR games controlled by head/mouth movements"
+  sound_board: "In-stream sound effects, royalty-free background music library, voice changers"
+  goal_bars: "Configurable follower goals, gift goals, and like count target overlays"
+  moderator_delegation: "Assign trusted viewers as moderators with powers to mute, kick, and pin comments"
+}
+
+^["taste"]{
+  ~#taste: "TikTok LIVE is continuous ambient presence punctuated by bursts of competitive kinetic energy."
+  ~#wonder: "Why does the vertical 9:16 frame create an illusion of private intimate access that horizontal 16:9 fails to achieve?"
+
+  principles: #[
+    "Immediate hook: Viewers swiping through the live feed decide whether to stay within 2.5 seconds.",
+    "Responsive acknowledgment: Top creators verbally acknowledge gifters within 3 seconds of donation.",
+    "Pacing rhythm: Alternating between calm narrative connection and high-intensity PK Battle rounds."
+  ]
+}
+
+^["invariants"]{
+  "Every broadcast mode adheres to strict automated safety and community guideline scanners.",
+  "Viewer count metrics display smoothed concurrency rather than raw instantaneous connection counts.",
+  "Gift animations render client-side using hardware-accelerated WebGL or metal sprite engines.",
+}
+
+#>wonder_tiktok_live_features_1
+?["How does algorithmic FYP injection reshape creator retention strategy?"]{
+  #:depth #!experiential ~#lens(attention_funnel)
+  ~#hypothesis: "Because viewers arrive continuously through the FYP swipe, creators cannot structure streams with a single beginning, middle, and end; every 90 seconds must function as an onboarding hook."
+  !probe{ "Sample 10 live streams; track how often creators reset context or re-explain what they are doing to incoming swipe traffic." }
+  $%[retention.re_onboarding_interval_s, viewer.bounce_rate_30s]
+}

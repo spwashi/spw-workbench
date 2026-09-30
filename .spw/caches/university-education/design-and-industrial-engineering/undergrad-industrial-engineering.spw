@@ -1,0 +1,94 @@
+# Undergraduate Industrial Engineering Curricular Architecture
+#
+# ABET-accredited Bachelor of Science (B.S.) in Industrial Engineering: operations research, queueing theory, lean manufacturing, and Six Sigma.
+
+#>spw_cache_univ_undergrad_ie
+#:cache #!industrial_engineering
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the four-year undergraduate curriculum for an ABET-accredited Bachelor of Science in Industrial Engineering, articulating mathematical optimization, stochastic queueing, lean manufacturing, and statistical quality control."
+  ~#accreditation: "ABET EAC Criteria for Industrial and Systems Engineering, IISE Academic Guidelines"
+}
+
+^["deterministic_operations_research_and_optimization"]{
+  sophomore_junior_gateway: "Linear Programming and Deterministic Optimization."
+  optimization_core: #[
+    "Linear Programming Formulation: Decision variables, linear objective functions, convex polyhedral feasible regions, and extreme point solutions",
+    "Simplex Method & Duality: Standard form matrix simplex, revised simplex algorithm, dual problem formulation, and economic shadow price interpretation",
+    "Sensitivity Analysis: Range of optimality for objective coefficients, range of feasibility for right-hand side resource constraints",
+    "Integer & Combinatorial Programming: Mixed-Integer Programming (MIP), branch-and-bound search trees, cutting planes, and binary decision variables",
+    "Network Flow Optimization: Shortest path algorithms (Dijkstra), minimum spanning trees, transportation/assignment problems, and max-flow min-cut theorem"
+  ]
+}
+
+^["stochastic_modeling_and_queueing_theory"]{
+  junior_core: "Probabilistic Operations Research and Queueing Analysis."
+  stochastic_disciplines: .{
+    markovian_processes: #[
+      "Discrete-Time Markov Chains (DTMC): State transition probability matrices, Chapman-Kolmogorov equations, classification of states, and stationary distributions",
+      "Continuous-Time Markov Chains (CTMC): Generator rate matrices (Q), birth-death processes, and Kolmogorov differential equations"
+    ]
+    queueing_systems: #[
+      "Fundamental Law: Little's Law (L = lambda * W and Lq = lambda * Wq) holding universally across all stationary queues",
+      "Markovian Queues: M/M/1 (single server with exponential service), M/M/c (multi-server load sharing), and M/M/c/K (finite buffer balking)",
+      "Non-Markovian Queues: M/G/1 Pollaczek-Khinchine formula incorporating general service time variance, and Jackson open queueing networks"
+    ]
+  }[reg=facet]
+}
+
+^["manufacturing_systems_facilities_and_lean"]{
+  junior_senior_core: "Manufacturing Systems Engineering and Lean Production."
+  production_mechanics: #[
+    "Assembly Line Balancing: Takt time calculation based on customer demand, minimum theoretical workstations, and precedence diagram heuristics",
+    "Cellular Manufacturing: Group technology, part families, machine-part incidence matrices, and rank order clustering (ROC)",
+    "Lean Production & Toyota Production System (TPS): The seven wastes (Muda), value stream mapping (VSM), Kanban pull replenishment, and Poka-Yoke mistake-proofing",
+    "Work Measurement & Ergonomics: Predetermined Motion Time Systems (MOST and MTM-1), stopwatch time studies, normal time vs standard time allowances"
+  ]
+}
+
+^["statistical_quality_engineering_and_six_sigma"]{
+  junior_senior_core: "Quality Control and Design of Experiments."
+  quality_suite: .{
+    statistical_process_control: #[
+      "Shewhart Control Charts: Variable charts (X-bar and R, X-bar and s); Attribute charts (p fraction non-conforming, c defect count)",
+      "Western Electric Sensitizing Rules: Detecting non-random trends, cyclic shifts, and process mean drift before out-of-spec defects occur",
+      "Process Capability Analysis: Potential capability Cp, performance capability Cpk accounting for centering, and Six Sigma defect rates (3.4 DPMO)"
+    ]
+    design_of_experiments: "2^k full and fractional factorial designs, confounding structures, ANOVA F-tests, and Response Surface Methodology (RSM) central composite designs"
+  }[reg=facet]
+}
+
+^["engineering_economics_and_capital_budgeting"]{
+  senior_core: "Engineering Economic Analysis and Financial Modeling."
+  financial_engineering: #[
+    "Time Value of Money: Present worth (PW), future worth (FW), and capital recovery factors under compounding interest",
+    "Project Evaluation Metrics: Net Present Value (NPV), Internal Rate of Return (IRR), and incremental Benefit-Cost (B/C) ratio comparisons",
+    "Tax & Depreciation Accounting: Modified Accelerated Cost Recovery System (MACRS) depreciation schedules, tax shields, and inflation-adjusted cash flows"
+  ]
+}
+
+^["taste"]{
+  ~#taste: "Industrial engineering is the supreme pursuit of flow: viewing human systems not as static machinery, but as rivers of material, information, and labor where bottlenecks are dissolved."
+  ~#wonder: "Why does adding a second server to a single checkout line cut customer waiting times by far more than half due to the non-linear physics of queues?"
+
+  principles: #[
+    "Variability is the enemy of capacity: A system running at 95% utilization will experience catastrophic queue blowups if process times have high variance.",
+    "Optimize the whole, not the piece: Sub-optimizing a single workstation often worsens total factory lead time by piling up work-in-process inventory.",
+    "People are not machines: Sustainable efficiency is achieved by eliminating useless friction and cognitive fatigue, never by sweating workers faster."
+  ]
+}
+
+^"invariants"{
+  "Linear and integer programming models must declare non-negativity and integrality constraints explicitly.",
+  "Queueing system calculations must verify that total traffic arrival intensity is strictly less than service capacity (rho < 1) for steady-state existence.",
+  "Control chart limits must be set at plus-and-minus three standard errors (3-sigma) based on valid statistical subgroups."
+}
+
+#>wonder_undergrad_ie_1
+?["How does the mathematical implementation of CONWIP (Constant Work-in-Process) control compare to traditional push MRP in mitigating semiconductor fab cycle time volatility?"]{
+  #:depth #!engineering ~#lens(factory_physics_dynamics)
+  ~#hypothesis: "Enforcing strict upper bounds on total wafer fab work-in-process via CONWIP pull cards reduces mean cycle times by 32% and standard deviation of cycle time by 55% compared to push-scheduled dispatching."
+  !probe{ "Simulate discrete-event 300mm wafer fabrication logistics comparing CONWIP card control against push MRP scheduling under machine breakdown shocks." }
+  $%[factory.mean_cycle_time_days, fab.wip_inventory_wafer_count]
+}

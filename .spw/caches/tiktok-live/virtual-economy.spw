@@ -1,0 +1,89 @@
+# TikTok LIVE Virtual Economy & Gifting Architecture
+#
+# Mechanics of virtual currency, gift tiers, creator payouts, and gamified donation incentives.
+
+#>spw_cache_tiktok_live_economy
+#:cache #!tiktok_live
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the micro-transaction economy converting fiat currency into viewer engagement tokens and creator revenue."
+  ~#currency_units: #[Fiat_USD, TikTok_Coins, TikTok_Diamonds]
+}
+
+^["currency_trio"]{
+  fiat_onramp: .{
+    mechanism: "In-app purchase (Apple App Store, Google Play) or Web Recharge Portal"
+    web_advantage: "Direct web recharge offers ~30% higher coin yield by bypassing app store commissions"
+  }[reg=facet]
+
+  coins: .{
+    role: "User-facing consumer spending currency"
+    exchange_rate: "Roughly ~65 to 70 coins per $1.00 USD (fluctuates by package size and payment rail)"
+    fungibility: "Non-refundable, non-withdrawable by viewers; can only be spent on gifts and promotions"
+  }[reg=facet]
+
+  diamonds: .{
+    role: "Creator-facing earnings metric"
+    accrual_rate: "1 Coin gifted = 0.5 to 1.0 Diamond accrued to broadcaster"
+    cashout_rate: "200 Diamonds = $1.00 USD cashout value (subject to platform revenue share, typically 50%)"
+  }[reg=facet]
+}
+
+^["gifting_hierarchy"]{
+  micro_gifts: #[
+    .{ name: "Rose", cost_coins: 1, animation: "Subtle inline icon ping in chat" },
+    .{ name: "TikTok", cost_coins: 1, animation: "Logo bounce" },
+    .{ name: "Finger Heart", cost_coins: 5, animation: "Floating heart overlay" }
+  ]
+
+  mid_tier_gifts: #[
+    .{ name: "Doughnut", cost_coins: 30, animation: "Spinning pastry" },
+    .{ name: "Cap and Mustache", cost_coins: 99, animation: "AR face tracker applied to creator" },
+    .{ name: "Corgi", cost_coins: 299, animation: "Animated puppy running across screen" }
+  ]
+
+  prestige_gifts: #[
+    .{ name: "Interstellar", cost_coins: 10000, animation: "Full-screen galaxy warp transition" },
+    .{ name: "Lion", cost_coins: 29999, animation: "3D roaring lion walking across bottom third" },
+    .{ name: "TikTok Universe", cost_coins: 34999, animation: "Screen takeover with holographic stadium fireworks (~$500 value)" }
+  ]
+}
+
+^["transaction_flow"]{
+  step_1_wallet_debit: "Atomic deduction from viewer's Coin ledger in distributed transactional database"
+  step_2_pubsub_broadcast: "Message published to room channel with gift type, sender profile, and recipient ID"
+  step_3_creator_credit: "Asynchronous ledger credit incrementing creator's accumulated Diamond balance"
+  step_4_animation_trigger: "All connected room clients trigger local WebGL/Lottie animation overlay"
+}
+
+^["gamification_loops"]{
+  combo_streaks: "Tapping the gift button repeatedly within 3 seconds multiplies the combo counter (x10, x50, x100)"
+  top_gifter_leaderboard: "Real-time rank list (Top 1, 2, 3) pinned at the top of the broadcast frame"
+  gifter_badges: "Badges displayed beside user comments scaling with total lifetime spending (levels 1 through 50)"
+}
+
+^["taste"]{
+  ~#taste: "The gift is not a tip; it is a ticket to co-author the live broadcast's visual spectacle."
+  ~#wonder: "Why will a viewer spend $500 on a 15-second virtual lion animation that dissolves without physical trace?"
+
+  principles: #[
+    "Immediate recognition: The creator's instantaneous verbal shoutout validates the social status of the gift.",
+    "Spectacle inflation: High-tier gifts take over the screen, momentarily subordinating the host to the gifter's act.",
+    "Community belonging: Low-cost 1-coin gifts allow casual viewers to participate in collective goal bars without financial strain."
+  ]
+}
+
+^["invariants"]{
+  "Coin-to-gift transactions are strictly idempotent; duplicate network retries never double-charge the user.",
+  "Diamond accrual complies with regional tax reporting and identity verification (KYC) before cashout.",
+  "Animations yield gracefully if device framerate drops below 20fps to prevent app crashes.",
+}
+
+#>wonder_tiktok_live_economy_1
+?["How does the conversion of money into coins, then gifts, then diamonds distance users from fiat value?"]{
+  #:depth #!philosophical ~#lens(tokenized_abstraction)
+  ~#hypothesis: "Multi-layered currency tokenization removes psychological friction from micro-transactions, turning expenditure into game play."
+  !probe{ "Measure donation velocity when users are shown fiat dollar amounts ($450) vs token values (30,000 Coins); evaluate spend hesitation latency." }
+  $%[payment.hesitation_ms, conversion.elasticity_delta]
+}

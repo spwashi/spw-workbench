@@ -1,0 +1,50 @@
+# Indie Author Ecosystem Cache Index
+#
+# Root cache index for self-publishing business models, author software tools, community traditions, rapid release, and genre trends.
+
+#>spw_cache_indie_author_index
+#:cache #!indie_author_ecosystem
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the operational architecture, software toolchain, direct-sales business models, community traditions, and emergent genre cultures of the independent author publishing ecosystem."
+  ~#domains: "Self-publishing, author toolchains, digital book distribution, reader community dynamics, and niche genre cultures"
+  ~#protocol: "cache.layer/1"
+}
+
+^"roots"{
+  @publishing_platforms: ~"./publishing-platforms-and-business-models.spw"
+  @software_tools: ~"./author-software-and-production-tools.spw"
+  @community_traditions: ~"./marketing-readers-and-community-traditions.spw"
+  @genre_conventions: ~"./genre-conventions-and-cultural-trends.spw"
+  @taste: ~"./taste.spw"
+}
+
+^"dispatch"{
+  publishing_platforms_and_business_models: @publishing_platforms
+  author_software_and_production_tools: @software_tools
+  marketing_readers_and_community_traditions: @community_traditions
+  genre_conventions_and_cultural_trends: @genre_conventions
+  taste_considerations: @taste
+}
+
+^"taste"{
+  ~#taste: "Indie authorship is the democratization of literature: authors claiming direct kinship with readers without asking permission from legacy gatekeepers."
+  ~#wonder: "Why do niche genre subcultures flourish with intense reader loyalty and economic vitality in indie publishing while being systematically ignored by traditional legacy houses?"
+}
+
+^"invariants"{
+  "Distribution models must distinguish between exclusive subscription pools (KDP Select / KENPC) and multi-channel wide distribution.",
+  "Author toolchains must account for epub compliance, metadata typography, and secure ARC digital rights management.",
+  "Community practices must model ethical reader engagement, abundance-mindset data sharing, and transparent advertising analytics.",
+}
+
+^"wonder_probes"{
+  #>wonder_indie_author_index_1
+  ?["How did independent authors transform the economics of genre fiction from single-copy sales into backlist subscription reading engines yielding seven-figure annual author royalties?"]{
+    #:depth #!economic ~#lens(backlist_monetization_flywheel)
+    ~#hypothesis: "By leveraging algorithmic reader recommendations in Kindle Unlimited and serialized web platforms (Royal Road), indie authors treat completed multi-book series as interconnected reading engines where front-end ad spend on Book 1 is profitably amortized across guaranteed read-through rates across Books 2 through 10."
+    !probe{ "Calculate read-through drop-off percentages and Lifetime Customer Value (LTV) curves across 5-book and 10-book indie fantasy and romance series." }
+    $%[publishing.series_readthrough_rate, economics.reader_lifetime_value_ratio]
+  }
+}

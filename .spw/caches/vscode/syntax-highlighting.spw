@@ -1,0 +1,90 @@
+# VS Code Dual-Layered Syntax Presentation
+#
+# Cache of TextMate grammar fallback, LSP semantic token layers, and token scope mappings in VS Code.
+
+#>spw_cache_vscode_syntax_highlighting
+#:cache #!vscode
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Cache the dual-layered syntax architecture combining fast TextMate fallback with server-owned semantic tokens in VS Code."
+  ~#textmate_grammar: ~"../../../extensions/vscode-spw/syntaxes/spw.tmLanguage.json"
+  ~#semantic_legend: "packages/spw-lsp/src/handlers/semantic-tokens.ts"
+}
+
+^["textmate_base_layer"]{
+  role: "Immediate, zero-latency syntactic coloring applied as soon as a .spw file is opened."
+  grammar_path: "./syntaxes/spw.tmLanguage.json"
+  scope_name: "source.spw"
+  regex_categories: #[
+    "Braces and bounds: { } [ ] ( ) < >",
+    "Operator sigils: ! ^ ~ ? = @ * % $ &",
+    "Annotations: #: #! #> #",
+    "Valence keywords: boon, bane, bone, bonk, honk",
+    "String literals: double and single quoted strings",
+    "Line comments: // and trailing #"
+  ]
+}
+
+^["semantic_tokens_layer"]{
+  role: "Server-computed semantic tokens layered over TextMate scopes after AST analysis."
+  provider: "textDocument/semanticTokens/full and full/delta"
+  server_source: "packages/spw-lsp/src/handlers/semantic-tokens.ts"
+  token_types: #[
+    "operator",
+    "type",
+    "variable",
+    "property",
+    "function",
+    "string",
+    "keyword",
+    "comment",
+    "number"
+  ]
+  token_modifiers: #[
+    "declaration",
+    "definition",
+    "async",
+    "readonly",
+    "modification"
+  ]
+}
+
+^["token_scope_mapping"]{
+  operator_declaration: ["punctuation.section.block.begin.spw", "keyword.operator.brace.open.spw"]
+  operator_definition: ["keyword.operator.couple.spw", "keyword.operator.confluence.spw"]
+  operator_async: ["keyword.operator.stream.spw"]
+  type_definition: ["entity.name.type.lens.spw"]
+  variable_definition: ["entity.name.type.path-ref.spw"]
+  property_declaration: ["entity.name.tag.exp.spw", "variable.other.property.exp.spw"]
+  property_readonly: ["variable.other.constant.spw", "keyword.operator.config.spw"]
+  function_modification: ["entity.name.function.action.spw", "markup.bold.spw"]
+  function_async: ["entity.name.function.probe.spw"]
+  keyword_declaration: ["keyword.control.frame.spw", "entity.name.function.frame.spw"]
+  keyword_definition: ["keyword.control.dialect.spw", "entity.name.tag.dialect.spw"]
+}
+
+^["taste"]{
+  ~#taste: "TextMate provides atmosphere and fallback; semantic tokens prove verified meaning."
+  ~#wonder: "Can an editor color a symbol differently once it learns that the symbol actually resolves?"
+
+  principles: #[
+    "Graceful degradation: If the LSP is disconnected, TextMate grammar keeps the document readable and structured.",
+    "Progressive disclosure: Unresolved paths appear as basic strings; once the LSP resolves them, semantic tokens elevate them to interactive references.",
+    "Unified theme respect: Semantic tokens map to standard VS Code TextMate scope names to inherit theme color harmony automatically."
+  ]
+}
+
+^["invariants"]{
+  "Semantic tokens are delta-updated to conserve IPC bandwidth on large files.",
+  "TextMate grammar contains zero external binary dependencies and loads synchronously.",
+  "Token modifiers never conflict with base token types.",
+}
+
+#>wonder_vscode_syntax_1
+?["How does the transition from TextMate regex to LSP semantic tokens affect perceived typing fluidity?"]{
+  #:depth #!experiential ~#lens(progressive_perception)
+  ~#hypothesis: "The user perceives immediate typing response from TextMate regex, followed 80ms later by deeper semantic confirmation from the LSP."
+  !probe{ "Type a newly declared anchor; observe the instant scope assignment vs the subsequent semantic token confirmation. Does the subtle shift provide reassuring feedback?" }
+  $%[semantic_tokens.delta_latency_ms, textmate.parse_time_ms]
+}

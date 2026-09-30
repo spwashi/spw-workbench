@@ -1,0 +1,46 @@
+# Horticulture & Botany Curricular Hub
+#
+# Root cache index for undergraduate and master's degree programs in plant biology, systematic botany, horticultural production, and crop genomics.
+
+#>spw_cache_univ_hort_botany_index
+#:cache #!horticulture_and_botany
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the full pedagogical continuum from plant anatomy, photosystem biophysics, and phylogenetic systematics to controlled environment agriculture, soil microbiome ecology, and CRISPR plant genome editing."
+  ~#accreditation: "Botanical Society of America (BSA) Core Competencies, American Society for Horticultural Science (ASHS) Standards"
+  ~#protocol: "cache.layer/1"
+}
+
+^"roots"{
+  @undergrad_botany: ~"./undergrad-botany-and-plant-biology.spw"
+  @undergrad_horticulture: ~"./undergrad-horticultural-science.spw"
+  @masters_hort_botany: ~"./masters-horticulture-and-plant-genomics.spw"
+  @taste: ~"./taste.spw"
+}
+
+^"dispatch"{
+  undergrad_botany: @undergrad_botany
+  undergrad_horticultural_science: @undergrad_horticulture
+  masters_horticulture_and_genomics: @masters_hort_botany
+  taste_considerations: @taste
+}
+
+^"taste"{
+  ~#taste: "Plants are the quiet architects of the Earth's atmosphere: without their steady conversion of sunlight into sugar, the planet is a barren rock."
+  ~#wonder: "How does a 100-meter-tall California redwood pull tons of water from the soil to its crown against gravity without a single moving mechanical part?"
+}
+
+^"invariants"{
+  "Botanical curricula balance microscopic cellular/genetic physiology with macroscopic field taxonomy and ecological herbarium collection.",
+  "Horticultural science adheres to rigorous soil physical-chemical balances (cation exchange, water potential, macronutrient/micronutrient stoichiometry).",
+  "Plant breeding and biotechnology curricula require strict biosafety containment protocols and environmental gene-flow risk assessments.",
+}
+
+#>wonder_hort_botany_index_1
+?["How does the symbiotic colonization of arbuscular mycorrhizal fungi alter drought resistance gene expression in agricultural crops?"]{
+  #:depth #!biological ~#lens(mycorrhizal_symbiosis)
+  ~#hypothesis: "Fungal hyphal networks penetrating root cortical cells upregulate host plant aquaporin gene transcription and osmoprotectant synthesis, maintaining photosynthetic carbon fixation at leaf water potentials 40% lower than non-colonized plants."
+  !probe{ "Measure chlorophyll fluorescence (Fv/Fm), stomatal conductance, and root aquaporin mRNA expression in mycorrhizal vs non-mycorrhizal tomato plants under progressive water withholding." }
+  $%[physiology.drought_water_potential_bar, transcriptomics.aquaporin_expression_fold]
+}

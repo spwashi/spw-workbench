@@ -1,0 +1,48 @@
+# Secondary Education Curricula & Family Support Cache Index
+#
+# Root cache index for top U.S. high school curricular frameworks, student advising, and wraparound family support.
+
+#>spw_cache_secondary_index
+#:cache #!secondary_ed
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the academic acceleration pathways and comprehensive student/family support ecosystems in top U.S. secondary schools."
+  ~#focus: "AP/IB/Dual Enrollment curricula, STEM & Humanities acceleration, special education (IEP/504), mental health, and community wraparound"
+  ~#protocol: "cache.layer/1"
+}
+
+^"roots"{
+  @advanced_curricula: ~"./advanced-curricula.spw"
+  @pathways: ~"./stem-and-humanities-pathways.spw"
+  @student_support: ~"./student-support-services.spw"
+  @family_wraparound: ~"./family-and-community-wraparound.spw"
+  @taste: ~"./taste.spw"
+}
+
+^"dispatch"{
+  advanced_curricula: @advanced_curricula
+  stem_and_humanities_pathways: @pathways
+  student_support_services: @student_support
+  family_and_community_wraparound: @family_wraparound
+  taste_considerations: @taste
+}
+
+^"taste"{
+  ~#taste: "Secondary education is the crucible where childhood curiosity crystallizes into adult intellectual agency."
+  ~#wonder: "Can high school remain a vibrant landscape of intellectual discovery rather than a pressure-cooker of admissions competition?"
+}
+
+^"invariants"{
+  "Curricular acceleration tracks balance rigorous academic standards with student emotional wellbeing.",
+  "Wraparound services address non-academic barriers (nutrition, mental health, language access) as foundational to learning.",
+  "Special education accommodations adhere strictly to federal IDEA and Section 504 legal mandates.",
+}
+
+#>wonder_secondary_index_1
+?["How does the presence of comprehensive family wraparound services transform academic outcomes in high-poverty secondary schools?"]{
+  #:depth #!philosophical ~#lens(ecological_equity)
+  ~#hypothesis: "When a school provides on-site food pantries, bilingual family liaisons, and mental health clinicians, academic achievement gaps narrow faster than through curricular revisions alone."
+  !probe{ "Compare graduation rates and college matriculation in schools offering full wraparound health/family hubs vs standard curricular-only high schools." }
+  $%[retention.high_school_graduation_rate, family.engagement_index]
+}

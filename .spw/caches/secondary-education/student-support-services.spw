@@ -1,0 +1,77 @@
+# Secondary Student Support Services & Specialized Counseling
+#
+# Guidance counseling architectures, college advising, special education (IEP/504), and MTSS tiers.
+
+#>spw_cache_sec_student_support
+#:cache #!secondary_ed
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the guidance, counseling, special education, and academic support frameworks that sustain adolescent flourishing."
+  ~#statutory_framework: "IDEA (Individuals with Disabilities Education Act), Section 504 of the Rehabilitation Act of 1973, ASCA National Model"
+}
+
+^["academic_and_college_counseling"]{
+  caseload_benchmarks: "Top independent and comprehensive high schools achieve 150:1 or 200:1 student-to-counselor ratios (vs. national public average of 400:1+)."
+  advising_dimensions: #[
+    "Four-Year Curricular Blueprint: Strategic course selection balancing rigor with mental health sustainability",
+    "Post-Secondary Matriculation Guidance: Holistic college matching, essay workshops, interview preparation",
+    "Financial Aid Navigation: Comprehensive FAFSA and CSS Profile completion drives for first-generation families",
+    "Alternative Career Pathways: Vocational apprenticeships, union trade sponsorships, and gap-year fellowships"
+  ]
+}
+
+^["special_education_frameworks"]{
+  iep_framework: .{
+    law: "IDEA (Individuals with Disabilities Education Act)"
+    document: "Individualized Education Program (IEP)"
+    components: #[
+      "Present Level of Academic Achievement and Functional Performance (PLAAFP)",
+      "Measurable annual academic and behavioral goals",
+      "Special education services, co-teaching models, and speech/occupational therapies",
+      "Least Restrictive Environment (LRE) mandate ensuring maximum integration with neurotypical peers"
+    ]
+  }[reg=facet]
+
+  section_504_accommodations: .{
+    law: "Section 504 of the Rehabilitation Act of 1973"
+    scope: "Accommodations for physical, sensory, or neurological impairments (ADHD, anxiety, chronic illness)"
+    provisions: #[extended_time_testing, distraction_free_environment, stop_the_clock_breaks, accessible_tech]
+  }[reg=facet]
+}
+
+^["multi_tiered_systems_of_support_mtss"]{
+  tier_1_universal: "High-quality classroom instruction, universal social-emotional learning, school-wide positive behavioral norms (80-85% of students)."
+  tier_2_targeted: "Small-group literacy interventions, math clinics, executive functioning check-ins, grief/divorce support groups (10-15%)."
+  tier_3_intensive: "Individualized crisis intervention, dedicated behavioral intervention plans, wraparound case management (1-5%)."
+}
+
+^["peer_tutoring_and_writing_centers"]{
+  writing_centers: "Trained student fellows provide non-evaluative feedback on thesis statements, evidence synthesis, and essay outlines."
+  math_labs: "Drop-in tutoring stations where advanced calculus students mentor peers struggling with algebraic foundations."
+}
+
+^["taste"]{
+  ~#taste: "Counseling is not administrative paperwork; it is the art of seeing an adolescent when they feel invisible."
+  ~#wonder: "Why does a 20-minute conversation with a trusted counselor have the power to alter the entire trajectory of a teenager's life?"
+
+  principles: #[
+    "Unconditional positive regard: Meeting every struggling student with empathy rather than disciplinary irritation.",
+    "Neurodiversity as variation: Viewing learning differences as distinct cognitive contours rather than broken machinery.",
+    "Destigmatizing mental health: Making seeking emotional support as routine as getting an ice pack for a twisted ankle."
+  ]
+}
+
+^["invariants"]{
+  "IEP annual review meetings require mandatory participation of parents, general education teachers, and specialists.",
+  "Section 504 accommodations are legally binding on all instructional staff without exception.",
+  "Counseling records maintain strict privacy under FERPA and clinical confidentiality ethics.",
+}
+
+#>wonder_sec_student_support_1
+?["How does low student-to-counselor ratio directly impact first-generation college matriculation?"]{
+  #:depth #!philosophical ~#lens(institutional_advocacy)
+  ~#hypothesis: "When a counselor knows a student's family, fears, and hopes intimately, they demystify the intimidating labyrinth of higher education admissions and financial aid."
+  !probe{ "Track 4-year college application rates of low-income students in high schools with 150:1 ratios vs 500:1 ratios." }
+  $%[college.first_gen_matriculation_rate, financial_aid.pell_grant_capture_percentage]
+}

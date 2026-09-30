@@ -1,0 +1,45 @@
+# Revenue Management & Dynamic Pricing Curriculum Cache
+#
+# RevPAR calculus, unconstrained demand forecasting, price elasticity, and multi-channel OTA distribution.
+
+#>spw_cache_univ_hosp_revenue
+#:cache #!revenue_management_and_dynamic_pricing
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model hospitality revenue optimization algorithms, perishable inventory yield mechanics, RevPAR and GOPPAR analytics, and OTA distribution channel economics."
+  ~#protocol: "cache.layer/1"
+}
+
+^"perishable_inventory_and_performance_metrics"{
+  "foundational_hospitality_kpis": .{
+    occupancy_and_adr_metrics: "Occupancy Percentage (Occ = Total Rooms Sold / Total Rooms Available); Average Daily Rate (ADR = Total Room Revenue / Total Rooms Sold); balancing volume against pricing integrity",
+    revpar_and_goppar_equations: "Revenue Per Available Room: RevPAR = Total Room Revenue / Total Rooms Available = ADR * Occ; Gross Operating Profit Per Available Room (GOPPAR = Gross Operating Profit / Total Rooms Available) capturing bottom-line operational efficiency",
+    competitive_benchmarking_str_report: "Revenue Generation Index (RGI / RevPAR Index = Hotel RevPAR / Competitive Set RevPAR * 100); Market Penetration Index (MPI for occupancy); Average Rate Index (ARI for ADR)",
+  }[reg=facet],
+  "unconstrained_demand_and_overbooking_stochastics": .{
+    unconstrained_demand_estimation: "Forecasting true total market demand unhindered by fixed physical room capacity limits; reconstructing suppressed demand lost to sellouts or rate closures",
+    overbooking_probability_models: "Balancing the expected marginal revenue of selling an extra room against the expected cost of 'walking' an overbooked guest (relocation cost, compensation, and severe brand goodwill erosion) using Poisson or binomial no-show distributions",
+  }[reg=facet],
+}
+
+^"dynamic_pricing_and_distribution_channel_economics"{
+  "market_segmentation_and_rate_fences": .{
+    price_elasticity_segmentation: "Business/Corporate transient segment (price inelastic, short booking window, demanding flexibility) vs Leisure transient segment (price elastic, long lead time, rate-sensitive); Group contracts with attrition and cancellation clauses",
+    inventory_controls_and_hurdle_rates: "Minimum Length of Stay (MLOS), Maximum Length of Stay, and Closed to Arrival (CTA) deployed to protect shoulder dates around high-demand compression peaks",
+  }[reg=facet],
+  "electronic_distribution_and_channel_costs": .{
+    distribution_channel_mix: "Direct Brand.com (lowest distribution cost, highest guest data capture, loyalty point incentives) vs Global Distribution Systems (GDS: Sabre, Amadeus connecting corporate travel agents) vs Online Travel Agencies (OTAs: Booking Holdings, Expedia Group)",
+    ota_commission_economics_and_parity: "OTAs charging 15% to 25% commissions; Rate Parity contractual clauses requiring hotels to display identical public room rates across all digital storefronts; utilizing member-only private fencing to drive direct bookings",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_hosp_revenue_1
+  ?["Why do hotels achieve higher total revenue by discounting rooms on shoulder dates (Sunday and Thursday) with a 3-night minimum stay requirement rather than slashing rates on the peak Saturday night?"]{
+    #:depth #!algorithmic ~#lens(compression_arbitrage_and_spillover)
+    ~#hypothesis: "Slashing prices on peak nights cannibalizes high-yield, inelastic weekend leisure travelers who would pay full rate. Implementing a 3-night Minimum Length of Stay (MLOS) over the weekend leverages the Saturday compression peak to force travelers to absorb perishable inventory on lower-demand shoulder nights, maximizing total stay revenue and overall RevPAR."
+    !probe{ "Simulate booking pick-up trajectories and net profit margins across hotels utilizing flat open pricing vs MLOS hurdle restrictions during peak holiday weekends." }
+    $%[revenue.mlos_shoulder_occupancy_lift, hospitality.revpar_yield_maximization_ratio]
+  }
+}

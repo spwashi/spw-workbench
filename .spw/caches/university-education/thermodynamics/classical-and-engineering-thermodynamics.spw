@@ -1,0 +1,109 @@
+# Classical & Engineering Thermodynamics Curricular Architecture
+#
+# Foundational laws, property equations of state, power cycles, exergy analysis, and reactive combustion.
+
+#>spw_cache_univ_thermo_classical
+#:cache #!thermodynamics
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the foundational undergraduate curriculum in classical and applied engineering thermodynamics, articulating state postulates, conservation laws, power cycles, and exergy accounting."
+  ~#standard: "Core Mechanical and Chemical Engineering ABET Thermodynamics Canon"
+}
+
+^["fundamental_laws_and_state_postulates"]{
+  axiomatic_structure: "The four universal laws governing macroscopic matter and energy transfer."
+  core_axioms: #[
+    "Zeroth Law: Thermal equilibrium is an equivalence relation, establishing the existence and universality of empirical temperature scales",
+    "First Law: Energy conservation for closed and open systems; internal energy U as a state function; heat Q and work W as path-dependent boundary fluxes",
+    "Second Law: Kelvin-Planck and Clausius formulations; Clausius inequality (oint dQ/T <= 0); absolute thermodynamic temperature scale and entropy S",
+    "Third Law (Nernst Theorem): The entropy of all pure, perfectly crystalline substances approaches a universal constant (zero) as temperature approaches absolute zero",
+    "State Postulate: The thermodynamic state of a simple compressible substance is completely specified by exactly two independent intensive properties"
+  ]
+}
+
+^["substance_behavior_and_equations_of_state"]{
+  phase_behavior: "Relating pressure, temperature, specific volume, and thermodynamic potentials."
+  property_formalisms: .{
+    equation_models: #[
+      "Ideal gas law (P*v = R*T) and compressibility factor Z = P*v/(R*T) departure charts",
+      "Real gas cubic equations: van der Waals, Redlich-Kwong, and Peng-Robinson modeling molecular attraction and co-volume exclusion"
+    ]
+    multiphase_surfaces: #[
+      "P-v-T three-dimensional state surfaces, triple line, and critical point (Tc, Pc)",
+      "Property diagrams: P-v, T-s, and h-s (Mollier diagram) with quality x in two-phase saturated liquid-vapor domes",
+      "Compressed liquid, saturated mixture, and superheated vapor property steam tables"
+    ]
+  }[reg=facet]
+}
+
+^["open_system_first_and_second_law_control_volumes"]{
+  engineering_devices: "Mass and energy balances across steady and unsteady flow envelopes."
+  unit_devices: #[
+    "Nozzles and Diffusers: Enthalpy-to-kinetic energy conversion with negligible work and heat exchange",
+    "Turbines and Compressors: Shaft work extraction or compression with isentropic efficiencies (eta_turb, eta_comp)",
+    "Throttling Devices: Isenthalpic expansion (Joule-Thomson coefficient mu_JT) through porous plugs or expansion valves",
+    "Mixing Chambers & Heat Exchangers: Direct contact mixing and indirect surface convective heat transfer"
+  ]
+}
+
+^["power_and_refrigeration_cycles"]{
+  cyclical_architectures: "Closed thermodynamic loops transforming heat into work and pumping heat against gradients."
+  cycles_suite: .{
+    vapor_power: #[
+      "Rankine Cycle: Boiler, steam turbine, condenser, and feed pump",
+      "Efficiency Enhancements: Superheating to avoid turbine blade moisture, reheat cycles, and regenerative feedwater heaters (open and closed FWHs)"
+    ]
+    gas_power: #[
+      "Brayton Cycle: Compressor, combustion chamber, and gas turbine; regeneration, intercooling, and reheating",
+      "Internal Combustion Cycles: Air-standard Otto (spark ignition) and Diesel (compression ignition) cycles"
+    ]
+    refrigeration: #[
+      "Vapor-Compression Refrigeration: Evaporator, compressor, condenser, expansion valve, and Coefficient of Performance (COP)",
+      "Refrigerant thermodynamics: Environmental low-GWP refrigerants (CO2, ammonia, hydrofluoroolefins)"
+    ]
+  }[reg=facet]
+}
+
+^["exergy_availability_and_second_law_destruction"]{
+  thermodynamic_utility: "Quantifying the true maximum work potential of a system relative to an environmental dead state (T0, P0)."
+  exergy_foundations: #[
+    "Dead-State Reference: Complete thermal, mechanical, and chemical equilibrium with the ambient environment",
+    "Exergy Balance: Flow exergy psi = (h - h0) - T0*(s - s0) + V^2/2 + g*z",
+    "Gouy-Stodola Theorem: Exergy destruction rate X_dest = T0 * S_gen, proving that all real irreversible processes destroy available work",
+    "Second-Law Efficiency: Ratio of recovered exergy to supplied exergy, diagnosing true thermodynamic perfection"
+  ]
+}
+
+^["psychrometrics_and_reactive_combustion"]{
+  gas_mixtures_and_reactions: #[
+    "Dalton's law of partial pressures and Amagat's law of partial volumes for non-reactive ideal gas mixtures",
+    "Psychrometry: Dry-bulb, wet-bulb, and dew-point temperatures; relative humidity and humidity ratio on psychrometric charts",
+    "Reactive Combustion: Theoretical air, excess air, air-fuel ratio, enthalpy of formation, and adiabatic flame temperature calculation"
+  ]
+}
+
+^["taste"]{
+  ~#taste: "Classical thermodynamics is an intellectual marble monument: forged before the existence of atoms was verified, yet so structurally sound that Einstein remarked it would never be overthrown."
+  ~#wonder: "Why does the simple concept of entropy dictate that you can scramble an egg in three seconds, but all the computers and power plants on Earth cannot unscramble it?"
+
+  principles: #[
+    "Energy is conserved; exergy is destroyed: The First Law tells you the bill; the Second Law tells you what you actually lost.",
+    "State functions have zero memory: It matters not whether a gas arrived at a state by an explosion or gentle heating; internal energy and entropy depend only on the present state.",
+    "Perpetual motion is impossible: Any design that claims to generate power without a cold reservoir is a physical impossibility."
+  ]
+}
+
+^"invariants"{
+  "Cycle efficiency calculations must never violate the Carnot efficiency upper bound (eta_th <= 1 - T_cold / T_hot).",
+  "Entropy generation in an isolated system must be strictly greater than or equal to zero (dS_isolated >= 0).",
+  "Open system control volume balances must account for enthalpy and kinetic/potential energy fluxes across all ports.",
+}
+
+#>wonder_thermo_classical_1
+?["Can supercritical carbon dioxide (sCO2) Allam power cycles achieve zero atmospheric emissions with higher thermal efficiency than traditional combined cycles?"]{
+  #:depth #!engineering ~#lens(oxy_fuel_combustion)
+  ~#hypothesis: "Oxy-fuel combustion Allam cycles operating with supercritical CO2 at 300 bar and 1150C reach 58% net thermal efficiency while inherently capturing 100% of pipeline-ready CO2 without parasitic post-combustion amine scrubbers."
+  !probe{ "Model second-law exergy destruction breakdown across the sCO2 combustor, primary recuperator, and axial turbine." }
+  $%[thermodynamics.allam_cycle_efficiency, carbon.inherent_capture_purity_percent]
+}

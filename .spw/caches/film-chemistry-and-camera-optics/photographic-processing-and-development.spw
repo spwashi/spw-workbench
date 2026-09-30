@@ -1,0 +1,100 @@
+# Photographic Processing & Chemical Development Architecture
+#
+# Redox chemistry, developer superadditivity, ECN-2/C-41 chromogenic cycles, sensitometric D-log E curves, and silver recovery.
+
+#>spw_cache_film_chem_processing
+#:cache #!film_chemistry
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the chemical kinetics, redox potentials, industrial machine processing, and sensitometric calibration of photographic development systems."
+  ~#standards: "Kodak Motion Picture ECN-2 Process Specifications, ISO 5-4 Diffuse Density Standards"
+}
+
+^["redox_kinetics_of_silver_reduction"]{
+  electrochemical_foundations: "Catalytic reduction of silver halide crystals into filamentary metallic silver."
+  redox_mechanics: #[
+    "Reduction Potential Window: Developing agents operate with standard reduction potentials (E0) capable of reducing silver ions catalyzed by latent image specks while leaving unexposed grains untouched",
+    "Developing Agents: Hydroquinone (high contrast, slow acting), Metol / Elon (rapid shadow initiation, low contrast), and Phenidone (superadditive activator)",
+    "Developer Superadditivity: Pairing Phenidone with Hydroquinone produces a reduction rate 4x faster than the sum of their individual kinetic rates",
+    "Formulation Chemistry: Preservatives (sodium sulfite scavenging aerial oxygen), activators (sodium carbonate establishing alkaline pH 10-12), and restrainers (potassium bromide suppressing unexposed chemical fog)"
+  ]
+}
+
+^["motion_picture_ecn2_and_c41_chromogenic_cycles"]{
+  industrial_machine_processing: "Continuous motion picture laboratory processing at tightly regulated speeds and temperatures."
+  ecn2_processing_sequence: .{
+    prebath_and_remjet_removal: #[
+      "Alkaline prebath (sodium sulfate, borax, sodium hydroxide) softening the remjet carbon black antihalation backing",
+      "High-pressure hydraulic spray nozzles and motorized buffing rollers stripping all carbon black particles prior to developer tanks"
+    ]
+    color_developer_cd3: #[
+      "Kodak CD-3 Developing Agent: 4-(N-ethyl-N-2-methanesulfonamidoethyl)-2-methylphenylenediamine developing silver and generating oxidized developer",
+      "Dye Coupler Reaction: Oxidized CD-3 couples with incorporated colorless couplers to synthesize insoluble cyan, magenta, and yellow azomethine dyes",
+      "Process Control: Temperature maintained at exactly 41.1C (106.0F) +/- 0.1C; continuous replenishment counteracting chemical exhaustion"
+    ]
+    stop_bleach_and_fix: #[
+      "Acid stop bath halting development within three seconds to prevent chemical density streaks",
+      "Ferric EDTA Bleach: Re-oxidizing all metallic silver back into silver bromide without altering synthetic organic dyes",
+      "Ammonium Thiosulfate Fixer: Chelating all residual silver halides into water-soluble silver diammino-thiosulfate complexes",
+      "Final Wash & Conditioning: De-ionized countercurrent water wash and biocide surfactant bath eliminating water drying spots"
+    ]
+  }[reg=facet]
+}
+
+^["black_and_white_reversal_and_staining_developers"]{
+  monochrome_chemistries: #[
+    "Solvent Developers (Kodak D-76): High sulfite content acting as a mild silver halide solvent, slightly dissolving grain boundaries to produce smooth tonality",
+    "Acutance & Staining Formulations (Pyro / 510-Pyro): Pyrogallol and catechol crosslinking gelatin locally around silver filaments, tanning edges for hyper-acutance",
+    "Reversal Processing: First development to negative silver, potassium permanganate/sulfuric acid bleaching away negative silver, chemical or light fogging, and second development to projection positive"
+  ]
+}
+
+^["sensitometry_and_d_log_e_characteristic_curves"]{
+  density_metrology: "Hurter & Driffield (H&D) curves plotting diffuse transmission density (D) vs logarithm of exposure (log H)."
+  sensitometric_zones: .{
+    curve_morphology: #[
+      "Base Plus Fog (D-min): Inherent optical density of unexposed clear film base plus developer background fog",
+      "Toe Region: Non-linear threshold response where subtle shadow details begin to emerge from the noise floor",
+      "Straight-Line Portion: Linear slope defining photographic contrast (gamma gamma = dD / d(log H))",
+      "Shoulder Region (D-max): Highlight compression asymptotic plateau where all available silver halide grains are reduced"
+    ]
+    push_and_pull_processing: #[
+      "Push Processing: Increasing developer time or temperature (Push +1, +2 stops); raises effective ISO, increases graininess and contrast index",
+      "Pull Processing: Decreasing developer time (Pull -1 stop); flattens contrast curve, tames harsh highlights, and produces finer grain"
+    ]
+  }[reg=facet]
+}
+
+^["silver_recovery_and_environmental_stewardship"]{
+  ecological_lab_operations: #[
+    "Electrolytic Silver Recovery: Passing low-voltage direct current through spent fixer tanks, plating out 99% pure metallic silver onto stainless steel cathodes",
+    "Secondary Ion Exchange: Trapping trace silver ions on resin beds, reducing effluent discharge to below municipal EPA thresholds (< 0.1 ppm Ag)",
+    "Chemical Neutralization: Buffering acidic stop and fixer waste streams and monitoring Chemical Oxygen Demand (COD) before sewer release"
+  ]
+}
+
+^["taste"]{
+  ~#taste: "Film processing is precision chemistry in the dark: a millimeter change in developer level or a tenth-of-a-degree thermal drift alters the visual soul of an entire motion picture."
+  ~#wonder: "Why does the chemical reaction between oxidized CD-3 and a pyrazolone molecule produce exactly the vibrant magenta dye that makes skin tones luminous on a cinema screen?"
+
+  principles: #[
+    "Temperature is destiny: In color chemistry, a 0.5-degree temperature shift changes the development rate of the blue, green, and red layers unevenly, creating irreversible color cross-overs.",
+    "Chemistry before grading: You cannot 'fix it in post' if the silver was underdeveloped; digital scanners can only amplify grain and noise in thin negatives.",
+    "Silver is sacred: Every gram of silver used to capture a movie must be carefully reclaimed, recycled, and returned to industry."
+  ]
+}
+
+^"invariants"{
+  "ECN-2 developer temperature must be held within +/- 0.1C of specification across the entire film roll run.",
+  "Film control strips (pre-exposed step wedges) must be processed and read on a densitometer daily to verify chemical activity before production film is dipped.",
+  "Wastewater silver concentrations must be monitored and kept compliant with environmental water protection standards.",
+}
+
+#>wonder_film_chem_processing_1
+?["How does the chemical replacement of hydroquinone with ascorbic acid (Vitamin C) in phenidone developers alter edge acutance and environmental toxicity?"]{
+  #:depth #!chemical ~#lens(eco_developer_kinetics)
+  ~#hypothesis: "Phenidone-Ascorbate developers (e.g. Xtol) eliminate toxic phenolic effluents while producing higher edge acutance through localized adjacent adjacency effects (edge-staining border density) without increasing grain clumpiness."
+  !probe{ "Measure micro-densitometer knife-edge scans and cellular cytotoxicity assays comparing standard D-76 against buffered phenidone-ascorbate developers." }
+  $%[chemistry.edge_acutance_density_delta, toxicology.effluent_cytotoxicity_ec50]
+}

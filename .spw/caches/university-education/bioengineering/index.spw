@@ -1,0 +1,48 @@
+# University Bioengineering Curriculum Cache Index
+#
+# Root cache index for synthetic biology gene circuits, tissue scaffolds, biomechanics, and microfluidic instrumentation.
+
+#>spw_cache_univ_bioeng_index
+#:cache #!bioengineering
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model undergraduate and doctoral bioengineering: synthetic genetic logic gates, metabolic flux analysis, biomaterial hydrogels and tissue scaffolds, continuum biomechanics, and microfluidic lab-on-a-chip systems."
+  ~#domains: "Biomedical engineering, synthetic biology, metabolic engineering, tissue engineering, biomechanics, and biosensors"
+  ~#protocol: "cache.layer/1"
+}
+
+^"roots"{
+  @synbio_metabolic: ~"./synthetic-biology-and-metabolic-engineering.spw"
+  @biomaterials_tissue: ~"./biomaterials-and-tissue-engineering.spw"
+  @instrumentation_biomech: ~"./biomedical-instrumentation-and-biomechanics.spw"
+  @taste: ~"./taste.spw"
+}
+
+^"dispatch"{
+  synthetic_biology_and_metabolic_engineering: @synbio_metabolic
+  biomaterials_and_tissue_engineering: @biomaterials_tissue
+  biomedical_instrumentation_and_biomechanics: @instrumentation_biomech
+  taste_considerations: @taste
+}
+
+^"taste"{
+  ~#taste: "Bioengineering is the dialogue between engineering abstraction and biological plasticity: teaching living matter to compute, heal, and synthesize."
+  ~#wonder: "Can human engineers build biological circuits that match the self-healing resilience and billion-year evolutionary robustness of natural organisms?"
+}
+
+^"invariants"{
+  "Genetic circuit models must account for metabolic burden, retroactivity, and transcriptional noise.",
+  "Biomaterial and tissue scaffold designs must balance porosity, degradation kinetics, and mechanotransductive stiffness matching native ECM.",
+  "Biomechanics and transport equations must adhere to Navier-Stokes hemodynamics, Starling's law of filtration, and continuum viscoelasticity.",
+}
+
+^"wonder_probes"{
+  #>wonder_univ_bioeng_index_1
+  ?["Why do synthetic genetic logic circuits (such as repressilators and toggle switches) experience evolutionary drift and loss-of-function within dozens of cellular generations?"]{
+    #:depth #!engineering ~#lens(metabolic_burden_and_evolutionary_counterselection)
+    ~#hypothesis: "Synthetic circuits consume significant cellular ATP, amino acids, and RNA polymerases without providing direct Darwinian survival advantages. Non-functional mutants that acquire point mutations in synthetic promoters grow faster than circuit-bearing cells, causing rapid evolutionary takeover in continuous chemostat cultures."
+    !probe{ "Track plasmid sequencing drift and cellular growth rates across 100 generations of E. coli harboring multi-gene synthetic metabolic pathways vs empty vector controls." }
+    $%[synbio.circuit_loss_of_function_generations, evolution.growth_rate_advantage_mutants]
+  }
+}

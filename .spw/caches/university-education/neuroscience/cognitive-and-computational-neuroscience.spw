@@ -1,0 +1,45 @@
+# Cognitive & Computational Neuroscience Curriculum Cache
+#
+# Population vector coding, STDP plasticity, attractor networks, predictive coding, and optogenetics.
+
+#>spw_cache_univ_neuro_computational
+#:cache #!cognitive_and_computational_neuroscience
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model computational neural dynamics, attractor network memory models, hierarchical predictive coding, neural oscillations, and modern optogenetic neurotechnologies."
+  ~#protocol: "cache.layer/1"
+}
+
+^"neural_coding_and_attractor_dynamics"{
+  "population_coding_and_stdp": .{
+    population_vector_coding: "Georgopoulos motor tuning: broad cosine tuning curves across individual neurons whose weighted vector sum precisely predicts hand trajectories in physical 3D space",
+    spike_timing_dependent_plasticity_stdp: "Pre-synaptic spike arriving 10ms before post-synaptic spike induces LTP; post-synaptic spike arriving before pre-synaptic spike induces LTD; critical asymmetric ~20ms causality window",
+  }[reg=facet],
+  "continuous_attractor_networks_and_spatial_maps": .{
+    grid_cells_and_entorhinal_geometry: "Edvard & May-Britt Moser: medial entorhinal cortex grid cells firing in periodic hexagonal tessellations across physical space; continuous ring/torus attractor network dynamics",
+    place_cells_and_cognitive_mapping: "O'Keefe hippocampal place cells establishing allocentric spatial representations; sharp-wave ripples (SWRs, 150-250 Hz) driving time-compressed forward/reverse memory replay during sleep consolidation",
+  }[reg=facet],
+}
+
+^"oscillations_predictive_processing_and_neurotechnologies"{
+  "neural_oscillations_and_predictive_coding": .{
+    cross_frequency_coupling: "Theta-gamma phase-amplitude coupling (PAC): phase of slow hippocampal theta (4-8 Hz) modulates the amplitude of fast gamma bursts (30-80 Hz), chunking multi-item working memory buffers",
+    hierarchical_predictive_processing: "Friston & Rao-Ballard: top-down cortical projections convey generative Bayesian predictions; bottom-up projections convey precision-weighted prediction errors; minimizing variational free energy",
+  }[reg=facet],
+  "cutting_edge_neurotechnological_instrumentation": .{
+    neuropixels_and_dense_electrophysiology: "Silicon CMOS probes recording thousands of simultaneous single-unit action potentials across multiple cortical and subcortical brain regions in awake behaving animals",
+    optogenetics_and_calcium_imaging: "Deisseroth & Boyden: Channelrhodopsin-2 (ChR2, 470nm blue light excitation) and Halorhodopsin (NpHR, 590nm yellow light inhibition) enabling millisecond cell-type-specific causal control; two-photon GCaMP in vivo calcium imaging",
+    fmri_bold_hemodynamics: "Blood Oxygenation Level Dependent (BOLD) contrast tracking paramagnetism of deoxygenated hemoglobin; Resting-state networks (Default Mode Network, Central Executive, Salience Network)",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_neuro_computational_1
+  ?["Why do hippocampal place cells replay spatial navigation trajectories in reverse sequence immediately after a reward is received at the end of a maze?"]{
+    #:depth #!computational ~#lens(temporal_difference_credit_assignment)
+    ~#hypothesis: "Reverse replay implements biological temporal-difference (TD) reinforcement learning. Replaying spatial sequences backwards from the reward location back to the maze choice point propagates the newly earned value function backward in time through synaptic STDP, allowing the animal to assign causal credit to the sequence of prior decisions that produced success."
+    !probe{ "Record hippocampal CA1 sharp-wave ripple spike sequences and ventral striatal dopamine transients during maze goal arrival under variable reward magnitudes." }
+    $%[hippocampus.reverse_replay_spike_compression_factor, dopamine.td_error_correlation_coefficient]
+  }
+}

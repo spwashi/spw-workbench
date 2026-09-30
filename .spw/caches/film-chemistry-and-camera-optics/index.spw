@@ -1,0 +1,48 @@
+# Film Chemistry & Camera Optics Cache Index
+#
+# Root cache index for photochemical silver halide physics, emulsion development, geometric lens aberrations, and anamorphic optics.
+
+#>spw_cache_film_optics_index
+#:cache #!film_chemistry_and_camera_optics
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the physical and chemical foundations of cinematography: from silver halide crystal photochemistry and chromogenic color coupling to Seidel optical aberration theory, anamorphic cylindrical squeeze, and MTF resolution metrics."
+  ~#domains: "Photochemical science, physical and geometric optics, lens design, and sensor format physics"
+  ~#protocol: "cache.layer/1"
+}
+
+^"roots"{
+  @emulsion_chemistry: ~"./photochemical-emulsion-chemistry.spw"
+  @processing_development: ~"./photographic-processing-and-development.spw"
+  @geometric_aberrations: ~"./geometric-optics-and-aberrations.spw"
+  @lens_design_formats: ~"./cinematographic-lens-design-and-formats.spw"
+  @taste: ~"./taste.spw"
+}
+
+^"dispatch"{
+  photochemical_emulsion_chemistry: @emulsion_chemistry
+  photographic_processing_and_development: @processing_development
+  geometric_optics_and_aberrations: @geometric_aberrations
+  cinematographic_lens_design_and_formats: @lens_design_formats
+  taste_considerations: @taste
+}
+
+^"taste"{
+  ~#taste: "Photochemical film is an organic, silver-sculpted witness to time; optical glass is the crystal window through which reality is bent into art."
+  ~#wonder: "Why does the random, organic distribution of silver halide grain in a 35mm film frame create a visual sensation of depth and breath that sterile grid-arranged digital pixels cannot duplicate?"
+}
+
+^"invariants"{
+  "Photochemical descriptions must balance crystal lattice physics with chemical development oxidation-reduction mechanisms.",
+  "Optical ray tracing and lens metrics must respect Snell's law, wave diffraction limits, and format circle of confusion standards.",
+  "Preservation and archival specifications must account for chemical stability (vinegar syndrome, dye fading) and temperature/humidity control.",
+}
+
+#>wonder_film_optics_index_1
+?["How does the non-linear highlight rolloff of motion picture color negative film (Kodak Vision3 5219) prevent digital sensor clipping?"]{
+  #:depth #!physical ~#lens(photochemical_highlight_shoulder)
+  ~#hypothesis: "The natural multi-layer density distribution and varying sensitivity thresholds of tabular silver halide grains produce a gentle, continuous asymptotic shoulder on the D-log E curve, allowing film to retain textural detail across five stops of extreme overexposure where CMOS sensors clip to flat white."
+  !probe{ "Measure micro-densitometer density curves and spectral highlights on high-contrast exterior film negative vs ARRI Alexa / RED digital raw sensor captures." }
+  $%[chemistry.negative_density_shoulder_slope, optics.highlight_dynamic_range_stops]
+}

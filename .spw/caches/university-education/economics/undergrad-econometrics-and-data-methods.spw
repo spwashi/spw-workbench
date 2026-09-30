@@ -1,0 +1,49 @@
+# Undergraduate Econometrics & Data Methods Curriculum Cache
+#
+# OLS mechanics, Gauss-Markov theorem, instrumental variables, DiD, RDD, and causal inference.
+
+#>spw_cache_univ_undergrad_econometrics
+#:cache #!undergrad_econometrics_and_data_methods
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model undergraduate econometrics: Ordinary Least Squares algebra, Gauss-Markov BLUE proofs, omitted variable bias, and the modern causal inference toolkit."
+  ~#protocol: "cache.layer/1"
+}
+
+^"classical_linear_regression_foundations"{
+  "ols_algebra_and_gauss_markov_theorem": .{
+    ols_matrix_derivation: "beta_hat = (X'X)^(-1) * X'Y; minimizes sum of squared residuals e'e; residual vector e orthogonal to regressor column space (X'e = 0)",
+    gauss_markov_assumptions: "1) Linear in parameters, 2) Random sampling, 3) No perfect multicollinearity, 4) Zero conditional mean E[u|X] = 0 (strict exogeneity), 5) Spherical disturbances Var(u|X) = sigma^2 * I (homoskedasticity and no autocorrelation)",
+    blue_optimality: "Under Gauss-Markov assumptions, OLS is the Best Linear Unbiased Estimator (BLUE); variance of any other linear unbiased estimator exceeds OLS variance by a positive semi-definite matrix",
+    robust_inference_against_violations: "White-Huber heteroskedasticity-consistent standard errors; cluster-robust standard errors clustering variance at the geographic or institutional treatment level",
+  }[reg=facet],
+  "omitted_variable_bias_and_measurement_error": .{
+    ovb_formula: "When true model includes X_1 and X_2, but X_2 is omitted: E[beta_1_tilde] = beta_1 + beta_2 * (Cov(X_1, X_2) / Var(X_1)); bias sign determined by product of omission impact and correlation",
+    attenuation_bias_from_classical_error: "Classical measurement error in explanatory variable X* shrinks estimated coefficient toward zero: plim beta_hat = beta * (sigma_X^2 / (sigma_X^2 + sigma_v^2))",
+  }[reg=facet],
+}
+
+^"causal_inference_and_quasi_experimental_methods"{
+  "potential_outcomes_and_instrumental_variables": .{
+    rubin_causal_model: "Individual causal effect: Y_i(1) - Y_i(0); fundamental problem of causal inference: only one potential outcome observed; Average Treatment Effect ATE vs ATT on treated",
+    instrumental_variables_iv_2sls: "Instrument Z satisfies: 1) Relevance Cov(Z, X) != 0 (first-stage F-statistic > 10 to avoid weak instrument bias), and 2) Exclusion restriction Cov(Z, u) = 0 (Z affects Y exclusively through X)",
+    late_theorem_angrist_imbens: "Under monotonicity (no defiers), IV estimates the Local Average Treatment Effect (LATE): causal effect localized exclusively to the subpopulation of 'compliers'",
+  }[reg=facet],
+  "difference_in_differences_and_regression_discontinuity": .{
+    difference_in_differences_did: "Y_it = alpha + gamma * Treat_i + lambda * Post_t + delta * (Treat_i * Post_t) + e_it; delta identifies causal treatment effect under Parallel Trends assumption",
+    parallel_trends_and_staggered_timing: "Testing pre-trends via event-study leads; correcting for heterogeneous treatment effects in staggered rollout panels (Callaway & Sant'Anna, Goodman-Bacon decomposition)",
+    regression_discontinuity_design_rdd: "Sharp RDD (treatment probability jumps 0 to 1 at threshold c) vs Fuzzy RDD; causal identification requires continuity of potential outcomes across the threshold; validated via McCrary density test",
+    panel_fixed_effects: "Within-estimator transforming data by subtracting entity-level time-means, completely eliminating all time-invariant unobserved confounders (e.g., individual ability, fixed culture)",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_undergrad_econometrics_1
+  ?["Why did the 'credibility revolution' in empirical economics prioritize natural experiment quasi-randomization over complex structural macroeconomic estimation?"]{
+    #:depth #!epistemological ~#lens(identification_over_structural_unification)
+    ~#hypothesis: "Structural models required hundreds of unverifiable assumptions regarding utility functional forms and rational expectations, allowing economists to generate any desired ideological conclusion. The quasi-experimental identification revolution (natural experiments, lotteries, policy discontinuities) tied causal claims to transparent, verifiable source variation that could withstand hostile empirical replication."
+    !probe{ "Audit empirical replication rates and standard error sensitivities across structural macro models vs quasi-experimental micro studies published in top-5 economics journals from 1990 to 2025." }
+    $%[econometrics.empirical_replication_success_rate, methodology.identification_robustness_score]
+  }
+}

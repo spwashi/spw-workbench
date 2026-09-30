@@ -1,0 +1,80 @@
+# Structural & Homoiconic Languages: Clojure, Lisp, and Smalltalk
+#
+# Analysis of code-as-data, structural AST editing, persistent data structures, and live REPL loops.
+
+#>spw_cache_lang_structural_homoiconic
+#:cache #!languages
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Analyze the homoiconic and image-based language features that turn programming into real-time interactive sculpting of live data structures."
+  ~#focus: "Homoiconicity, structural editing (Paredit), persistent HAMTs, and connected REPL development"
+}
+
+^["homoiconicity"]{
+  ~#feature: "Homoiconicity (Code as Data)"
+  language: "Clojure / Common Lisp / Racket"
+  why_developers_love_it: #[
+    "Zero syntax friction: Code is literally composed of the language's own core data structures (lists, vectors, maps, symbols).",
+    "Hygienic structural macros: Metaprogramming manipulates ordinary collections using standard map/filter functions rather than string concatenation.",
+    "Data-driven architecture: Systems can serialize their own logic over the network as plain EDN or s-expressions."
+  ]
+  contrast: "Replaces brittle token-splicing macro systems with first-class AST data transformation."
+}
+
+^["structural_editing"]{
+  ~#feature: "Structural Editing (Paredit / Parinfer / Tree-Sitter Navigation)"
+  language: "Lisp / Clojure tooling ecosystem"
+  why_developers_love_it: #[
+    "Geometry over characters: Operations manipulate AST nodes (slurp, barf, splice, wrap, raise) rather than loose characters.",
+    "Impossible syntax errors: You can never leave an unclosed bracket or mismatched parenthesis; the editor guarantees structural balance.",
+    "Thought-speed refactoring: Raising a sub-expression or swapping sibling nodes happens in a single keystroke."
+  ]
+}
+
+^["persistent_data_structures"]{
+  ~#feature: "Persistent Immutable Data Structures & Structural Sharing"
+  language: "Clojure (Rich Hickey) / Immutable.js"
+  technology: "HAMT (Hash Array Mapped Tries) and Bit-Partitioned Vector Tries"
+  why_developers_love_it: #[
+    "Zero defensive copying: Passing large collections across threads never requires copying; immutable structures share identical memory trees.",
+    "Near O(1) performance: Inserting into a 1,000,000-item vector creates a new root with 4 pointer updates, not a 1,000,000-item re-allocation.",
+    "Elimination of race conditions: Threads read historical snapshots safely without mutex locks."
+  ]
+}
+
+^["the_connected_repl"]{
+  ~#feature: "The Connected REPL & Live Image-Based Computing"
+  language: "Clojure / Smalltalk / Common Lisp"
+  why_developers_love_it: #[
+    "Zero restart cycle: Connect the editor directly to a live server process running for weeks; re-evaluate a single function in 2 milliseconds.",
+    "Interactive state exploration: Query live application databases and inspected memory directly in the editor buffer.",
+    "Playful hypothesis testing: Try out an algorithm with real production-shaped data before committing it to a file."
+  ]
+  contrast: "Replaces the sluggish 'edit -> recompile -> restart -> re-navigate UI -> check log' cycle with instant feedback."
+}
+
+^["taste"]{
+  ~#taste: "Programming is not writing instructions for a dead machine; it is having a continuous conversation with a living runtime."
+  ~#wonder: "Why do developers who master structural editing find editing text with cursor arrows painfully primitive?"
+
+  principles: #[
+    "Simplicity over familiarity: Clojure separates 'simple' (unbraided, independent) from 'easy' (familiar, nearby).",
+    "Code is an expression of data: The less special syntax a language invents, the more universal its tooling becomes.",
+    "Live feedback accelerates thought: The shorter the latency between an idea and its execution, the more adventurous the author becomes."
+  ]
+}
+
+^["invariants"]{
+  "Persistent data structures preserve historical references unmodified when new versions are materialized.",
+  "Structural editing commands preserve bracket, brace, and parenthesis balance under all transformations.",
+  "REPL evaluation executes in the live process environment without altering untouched module state.",
+}
+
+#>wonder_lang_structural_homoiconic_1
+?["Why did Lisp s-expressions survive for nearly 70 years while thousands of trendy syntaxes vanished?"]{
+  #:depth #!philosophical ~#lens(mathematical_invariance)
+  ~#hypothesis: "S-expressions are not a syntax; they are the direct mathematical notation of an abstract syntax tree. You cannot improve on the geometry of trees."
+  !probe{ "Attempt to design a syntax that allows arbitrary code-as-data manipulation with fewer syntactic rules than parenthesized lists." }
+  $%[syntax.rule_count, grammar.metaprogramming_expressiveness]
+}

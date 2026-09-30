@@ -1,0 +1,46 @@
+# Systems Neuroscience & Sensory Circuits Curriculum Cache
+#
+# Hubel-Wiesel visual hierarchies, dual-stream processing, tonotopic maps, and basal ganglia motor loops.
+
+#>spw_cache_univ_neuro_systems
+#:cache #!systems_neuroscience_and_sensory_circuits
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model sensory-motor systems neuroscience: cortical column organization, visual receptive fields, tonotopic mapping, and basal ganglia motor control loops."
+  ~#protocol: "cache.layer/1"
+}
+
+^"visual_pathways_and_cortical_hierarchies"{
+  "retinogeniculate_architecture": .{
+    retinal_circuitry: "Photoreceptors (rods/cones) hyperpolarizing in response to photons; center-surround receptive fields computed by horizontal and bipolar cells; Retinal Ganglion Cells: Parvocellular P-cells (high spatial acuity, red-green color) vs Magnocellular M-cells (high temporal resolution, luminance contrast)",
+    lateral_geniculate_nucleus_lgn: "Six laminated layers: layers 1-2 magnocellular, layers 3-6 parvocellular; intercalated koniocellular layers processing blue-yellow chromatic information",
+  }[reg=facet],
+  "striate_and_extrastriate_visual_cortex": .{
+    hubel_and_wiesel_receptive_fields: "V1 layer IV receiving LGN inputs; Simple cells exhibiting linear receptive fields with distinct excitatory/inhibitory zones responding to bar orientation; Complex cells exhibiting spatial phase invariance and direction selectivity",
+    columnar_organization: "Ocular dominance columns, orientation pinwheels, and cytochrome oxidase blobs (color processing) forming functional hypercolumns spanning ~1mm^2 of cortex",
+    two_streams_hypothesis: "Dorsal 'Where/How' pathway (V1 -> V2 -> MT/V5 -> posterior parietal) computing spatial relations and visually guided grasping; Ventral 'What' pathway (V1 -> V2 -> V4 -> Inferior Temporal / FFA) recognizing objects and faces",
+  }[reg=facet],
+}
+
+^"somatosensory_auditory_and_motor_circuits"{
+  "auditory_and_somatosensory_topographies": .{
+    tonotopic_mechanotransduction: "Cochlear basilar membrane stiffness gradient: high frequencies resonate at narrow rigid base, low frequencies at wide compliant apex; hair cell stereocilia tip-link opening; Interaural Time Differences (ITD) calculated in Medial Superior Olive (MSO)",
+    somatosensory_homunculus: "Penfield cortical somatotopic map in postcentral gyrus (S1); cortical magnification disproportionately allocating tissue to fingers, lips, and tongue based on receptor density; plastic reorganization post-amputation",
+  }[reg=facet],
+  "basal_ganglia_and_motor_execution": .{
+    corticospinal_tract: "Pyramidal tract originating in layer V of primary motor cortex (M1), decussating in medullary pyramids, synapsing on alpha motor neurons in spinal ventral horn",
+    basal_ganglia_dual_pathway_loops: "Direct Pathway (Striatum D1 -> GPi/SNr inhibition -> thalamic disinhibition) facilitating motor initiation; Indirect Pathway (Striatum D2 -> GPe -> STN -> GPi excitation) suppressing unwanted movement",
+    cerebellar_motor_coordination: "Granule cell parallel fibers and climbing fibers synapsing on Purkinje cells, computing real-time forward sensory prediction errors for smooth motor coordination",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_neuro_systems_1
+  ?["How does the basal ganglia direct/indirect pathway balance prevent involuntary muscular spasms while allowing instant fluid initiation of intentional movement?"]{
+    #:depth #!circuit ~#lens(recurrent_striatal_gating_thresholds)
+    ~#hypothesis: "The basal ganglia acts as a central winner-take-all brake-and-throttle system. Continuous tonic high-frequency GABAergic output from the internal globus pallidus keeps the motor thalamus completely silenced. The direct pathway delivers a focused, highly localized inhibitory pulse that precisely releases the brakes on a single intended motor program, while the indirect pathway casts diffuse surround inhibition over all competing motor candidates."
+    !probe{ "Record multi-electrode local field potentials in striatum, GPi, and motor thalamus during rapid choice reaction time tasks in primates." }
+    $%[basal_ganglia.gpi_tonic_firing_rate_hz, motor.thalamic_disinhibition_latency_ms]
+  }
+}

@@ -1,0 +1,47 @@
+# Cellular & Molecular Neurobiology Curriculum Cache
+#
+# Hodgkin-Huxley action potential kinetics, patch-clamp electrophysiology, SNARE exocytosis, and LTP plasticity.
+
+#>spw_cache_univ_neuro_cellular
+#:cache #!cellular_and_molecular_neurobiology
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model cellular neuronal biophysics, Goldman-Hodgkin-Katz membrane thermodynamics, Hodgkin-Huxley ion channel kinetics, synaptic vesicular release, and molecular LTP plasticity."
+  ~#protocol: "cache.layer/1"
+}
+
+^"membrane_biophysics_and_action_potential_kinetics"{
+  "electrochemical_equilibrium_and_ghk_equation": .{
+    nernst_equilibrium_potential: "E_ion = (R * T / (z * F)) * ln([ion]_out / [ion]_in); E_K ~ -90mV, E_Na ~ +60mV, E_Ca ~ +125mV, E_Cl ~ -65mV",
+    goldman_hodgkin_katz_ghk_voltage: "V_m = (RT/F) * ln((P_K*[K]_out + P_Na*[Na]_out + P_Cl*[Cl]_in) / (P_K*[K]_in + P_Na*[Na]_in + P_Cl*[Cl]_out)); resting potential dominated by potassium leak channels",
+    patch_clamp_electrophysiology: "Neher and Sakmann technique: cell-attached, whole-cell, inside-out, and outside-out configurations recording single ion channel picoampere quantum currents",
+  }[reg=facet],
+  "hodgkin_huxley_mathematical_formulation": .{
+    membrane_current_differential_equation: "I_m = C_m * (dV/dt) + g_bar_Na * m^3 * h * (V - E_Na) + g_bar_K * n^4 * (V - E_K) + g_leak * (V - E_leak)",
+    gating_variables_kinetics: "m (Na activation, fast), h (Na inactivation, ball-and-chain peptide), n (K delayed rectifier activation); voltage-dependent transition rates alpha(V) and beta(V)",
+    saltatory_conduction_and_myelin: "Oligodendrocytes and Schwann cells insulating axons; high-density Nav1.6 clustering at Nodes of Ranvier driving saltatory conduction exceeding 100 m/s",
+  }[reg=facet],
+}
+
+^"synaptic_transmission_and_molecular_plasticity"{
+  "vesicular_exocytosis_and_neurotransmitters": .{
+    snare_complex_fusion_machinery: "v-SNARE (synaptobrevin) binding t-SNAREs (syntaxin-1, SNAP-25) into tight four-helix bundle; synaptotagmin-1 acting as low-affinity cooperative calcium sensor triggering membrane fusion in <200 microseconds",
+    neurotransmitter_systems_taxonomy: "Glutamatergic excitation (AMPA ionotropic, NMDA coincident, mGluR GPCR); GABAergic inhibition (GABA_A chloride conductance, GABA_B Gi-coupled opening GIRK channels); Neuromodulators (Dopamine, Serotonin, Norepinephrine, Acetylcholine)",
+  }[reg=facet],
+  "long_term_potentiation_and_molecular_memory": .{
+    nmda_receptor_coincidence_detector: "NMDA channels blocked by extracellular Mg2+ at resting potentials; require simultaneous glutamate binding and postsynaptic depolarization to expel Mg2+, permitting massive Ca2+ influx",
+    camkii_and_ampa_receptor_trafficking: "Ca2+/calmodulin binds CaMKII, inducing autophosphorylation at Thr286 (molecular memory switch); phosphorylated CaMKII drives exocytosis and synaptic trapping of GluA1-containing AMPA receptors, increasing synaptic strength",
+    structural_spine_remodeling: "Actin polymerization expanding dendritic spine volume; retrograde endocannabinoid or nitric oxide signaling modulating presynaptic release probability",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_neuro_cellular_1
+  ?["How does autophosphorylated CaMKII maintain an uninterrupted synaptic memory trace across months when individual protein molecules degrade and turnover within days?"]{
+    #:depth #!molecular ~#lens(cooperative_enzymatic_bistability)
+    ~#hypothesis: "CaMKII forms a dodecameric holoenzyme composed of two stacked hexameric rings. As individual protein subunits undergo metabolic turnover and exchange, the remaining active phosphorylated subunits within the ring autophosphorylate incoming unphosphorylated replacements in trans, creating a self-sustaining bistable macromolecular memory switch that outlives its physical molecular components."
+    !probe{ "Simulate stochastic state transitions and subunit exchange rates in CaMKII dodecameric rings under basal vs elevated postsynaptic calcium microdomain transients." }
+    $%[biophysics.camkii_bistable_switch_half_life_days, synaptic.subunit_transphosphorylation_rate]
+  }
+}

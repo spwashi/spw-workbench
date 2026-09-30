@@ -1,0 +1,57 @@
+# Steel & Ferrous Metallurgy Curriculum Cache
+#
+# Iron-carbon phase diagrams, martensite shear, Damascus wootz steel, Bessemer converters, and green hydrogen DRI.
+
+#>spw_cache_mat_steel
+#:cache #!steel_and_ferrous_metallurgy
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model ferrous physical metallurgy, austenite-to-martensite shear transformations, Bessemer mass production thermodynamics, and the world-historical rise of the industrial steel age."
+  ~#protocol: "cache.layer/1"
+}
+
+^"physical_metallurgy_and_phase_transformations"{
+  "iron_allotropes_and_the_fe_c_equilibrium": .{
+    allotropic_phases: "Alpha-ferrite (BCC, stable <912 C, maximum interstitial carbon solubility 0.022 wt%); Gamma-austenite (FCC, stable 912-1394 C, octahedral interstitial voids accommodating up to 2.14 wt% carbon); Delta-ferrite (BCC >1394 C); Liquid melt",
+    eutectoid_pearlite_reaction: "At 727 C and 0.76 wt% carbon: Austenite decomposes into Pearlite (alternating microscopic lamellae of ductile alpha-ferrite and hard, brittle orthorhombic cementite Fe3C)",
+    hall_petch_strengthening: "Yield strength inversely proportional to grain diameter: sigma_y = sigma_0 + k_y * d^(-1/2); grain boundary refinement blocking dislocation slip without compromising fracture toughness",
+  }[reg=facet],
+  "non_equilibrium_martensite_and_tempering": .{
+    martensitic_diffusionless_shear: "Rapid liquid quenching (water, brine, oil) bypassing carbon diffusion; FCC austenite undergoes diffusionless military shear transformation into distorted Body-Centered Tetragonal (BCT) Martensite; extreme interstitial carbon trapping generating intense lattice strain and dislocation density (~65 HRC hardness)",
+    tempering_and_toughness_recovery: "Reheating quenched martensite to 200-600 C allowing trapped carbon to precipitate as sub-micron transition carbides, relaxing macro residual stresses while restoring plastic fracture toughness",
+    stainless_steel_passivation: "Alloying with minimum 10.5 wt% Chromium; spontaneous atmospheric formation of an ultra-thin (1-3nm), self-healing amorphous Chromium Oxide (Cr2O3) passive film preventing oxidative rusting",
+  }[reg=facet],
+}
+
+^"structural_applications_and_heavy_industry"{
+  "infrastructure_and_transportation_mechanics": .{
+    structural_shapes_and_rebar: "Hot-rolled wide-flange I-beams (ASTM A992) and deformed reinforcing rebar in concrete; balancing high tensile strength (400-550 MPa) with seismic energy dissipation ductility",
+    continuous_welded_rail_cwr: "High-strength pearlite steel rails welded into continuous multi-kilometer ribbons, eliminating mechanical rail joints and carrying multi-thousand-ton freight trains at 150+ km/h",
+    automotive_and_naval_armor: "Advanced High-Strength Steels (AHSS: Dual Phase DP, Transformation-Induced Plasticity TRIP steels) providing ultra-lightweight passenger crash-cell survivability; HY-80/HY-100 submarine hulls",
+  }[reg=facet],
+}
+
+^"world_history_and_the_rise_of_the_industrial_age"{
+  "ancient_bloomery_to_damascus_wootz": .{
+    bronze_age_collapse_and_iron_bloomeries: "Scarcity of Mediterranean tin (~1200 BCE) forcing Hittites to master solid-state bloomery smelting; beating porous spongy iron to expel silicate slag into malleable wrought iron",
+    wootz_crucible_steel_and_damascus_blades: "Southern Indian crucible smelting of high-carbon iron with glass flux; thermal cycling forming cementite nanowires encapsulated in carbon nanotubes; yielding the famed watered-silk wavy pattern and razor durability of Damascus swords",
+    japanese_tamahagane_and_differential_clay_quenching: "Smelting black ironsand in charcoal Tatara furnaces; master swordsmiths folding steel thousands of times to homogenize carbon, applying clay wash (yakibare) to quench the cutting edge into hard martensite while leaving the spine flexible pearlite (hamon line)",
+  }[reg=facet],
+  "the_bessemer_revolution_and_modern_decarbonization": .{
+    bessemer_converter_and_cheap_steel: "Henry Bessemer (1856): blowing atmospheric air through molten pig iron to oxidize carbon and silicon via violent internal exothermic reaction without external fuel; Robert Mushet adding manganese spiegeleisen to deoxidize; dropping steel costs by 85% and launching the modern railway age",
+    carnegie_and_the_gilded_age_skyscrapers: "Andrew Carnegie integrating blast furnaces, Bessemer converters, and rolling mills at Edgar Thomson Works; steel replacing wood and masonry to birth the modern skyscraper (Chicago Home Insurance Building 1885) and massive suspension bridges",
+    twentieth_century_total_warfare: "Krupp steel guns, Dreadnought battleships, tank armor, and mass artillery shells transforming warfare into industrial material attrition",
+    green_hydrogen_direct_reduced_iron_dri: "The 21st-century metallurgical transition: replacing carbon-coking coal blast furnaces (responsible for 7-9% of global greenhouse emissions) with green electrolytic hydrogen shaft furnaces (H2-DRI) and Electric Arc Furnaces (EAF)",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_mat_steel_1
+  ?["How does dissolving less than one weight-percent of tiny carbon atoms into pure ductile iron increase its tensile strength by over four hundred percent?"]{
+    #:depth #!crystallographic ~#lens(interstitial_dislocation_pinning)
+    ~#hypothesis: "Pure iron deforms easily because linear crystal defects (dislocations) glide unimpeded across close-packed slip planes. Carbon atoms are much smaller than iron atoms and occupy tight interstitial octahedral crystal voids. The localized anisotropic strain fields surrounding these interstitial carbon atoms interact with the strain fields of dislocations, physically locking them in place (Cottrell atmospheres) and requiring massive mechanical stress to initiate plastic deformation."
+    !probe{ "Measure the yield point phenomenon and Cottrell atmosphere unlock forces in low-carbon steel under high-strain-rate tensile testing." }
+    $%[metallurgy.upper_yield_point_stress_delta_mpa, mechanics.cottrell_atmosphere_binding_energy_ev]
+  }
+}

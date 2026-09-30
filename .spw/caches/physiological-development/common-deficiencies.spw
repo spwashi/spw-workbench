@@ -1,0 +1,91 @@
+# Common Subclinical Nutritional Deficiencies & Biomarkers
+#
+# Biochemical mechanisms, physiological manifestations, and clinical remediation for widespread micronutrient deficits.
+
+#>spw_cache_physio_deficiencies
+#:cache #!physio_dev
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the biochemical pathophysiology, clinical presentations, and biomarker diagnostics of pervasive modern micronutrient deficiencies."
+  ~#focus: "Ferritin/Iron, Vitamin D3/K2, Magnesium, Methylation factors (B12/Folate), Zinc/Copper balance, Omega-3s, and Iodine/Selenium"
+}
+
+^["iron_depletion_and_non_anemic_tissue_deficiency"]{
+  prevalence: "Affecting up to 40% of menstruating females, pregnant women, endurance athletes, and strict plant-based populations."
+  biochemical_cascade: .{
+    pathophysiology: "Depleted cellular ferritin impairs mitochondrial Electron Transport Chain (Complex I-IV) and Thyroid Peroxidase (TPO) before hemoglobin drops"
+    clinical_symptoms: #[chronic_fatigue, restless_legs_syndrome, brain_fog, exertional_dyspnea, telogen_effluvium_hair_loss]
+    diagnostic_panel: #[serum_ferritin, total_iron_binding_capacity, transferrin_saturation, complete_blood_count]
+    therapeutic_threshold: "Optimal ferritin targets > 50-70 ng/mL; values < 30 ng/mL represent severe tissue depletion even with normal hemoglobin"
+  }[reg=facet]
+}
+
+^["vitamin_d3_and_k2_calcium_paradox"]{
+  etiology: "Indoor lifestyles and high-latitude sun angles induce widespread 25-hydroxyvitamin D [25(OH)D] insufficiency (< 30 ng/mL)."
+  synergy_mechanics: #[
+    "Vitamin D3 (Cholecalciferol): Induces intestinal calcium absorption proteins (calbindin) and modulates immune gene transcription",
+    "Vitamin K2 (Menaquinone MK-7): Carboxylates osteocalcin (depositing calcium into bone matrix) and Matrix Gla Protein (preventing arterial calcification)",
+    "The Calcification Hazard: Unopposed high-dose Vitamin D3 without K2 risks soft tissue and coronary artery calcification"
+  ]
+}
+
+^["magnesium_depletion_and_atp_instability"]{
+  depletion_drivers: "Soil remineralization loss, municipal water softening, refined food processing, and chronic psychological stress (urinary wasting)."
+  cellular_roles: #[
+    "ATP Chelation: Every molecule of ATP must bind a magnesium ion (Mg-ATP) to be biologically active in cellular energy transfer",
+    "NMDA Receptor Gating: Magnesium serves as the physiological voltage gate preventing toxic neuronal calcium influx and hyperexcitability",
+    "Therapeutic Chelates: Bisglycinate for calming and sleep; L-Threonate for crossing blood-brain barrier; Malate for muscle soreness"
+  ]
+}
+
+^["vitamin_b12_folate_and_one_carbon_metabolism"]{
+  methylation_dynamics: "Methylcobalamin and 5-methyltetrahydrofolate (5-MTHF) donate methyl groups for homocysteine recycling into methionine."
+  manifestations: #[
+    "Hyperhomocysteinemia: Elevated serum homocysteine (> 10 umol/L) damaging endothelial walls and escalating vascular risk",
+    "Subacute Combined Degeneration: Unremediated B12 deficiency causing irreversible demyelination of spinal dorsal columns and peripheral neuropathy",
+    "MTHFR Polymorphisms: Common genetic variants (C677T) reducing folate reduction efficiency, necessitating bioavailable L-methylfolate"
+  ]
+}
+
+^["omega_3_index_and_inflammatory_resolution"]{
+  modern_dietary_skew: "Modern industrial diets exhibit an Omega-6 to Omega-3 ratio exceeding 15:1 (vs. ancestral 2:1), driving chronic pro-inflammatory signaling."
+  biochemical_remedy: #[
+    "Eicosapentaenoic Acid (EPA): Competes with arachidonic acid to yield anti-inflammatory 3-series prostaglandins and Specialized Pro-resolving Mediators (SPMs)",
+    "Docosahexaenoic Acid (DHA): Phospholipid constituent maintaining retinal rod outer segment flexibility and neural membrane fluid dynamics",
+    "Biomarker Target: Red blood cell membrane Omega-3 Index > 8% (values < 4% carry highest cardiovascular risk)"
+  ]
+}
+
+^["zinc_copper_and_thyroid_mineral_axes"]{
+  interactions: .{
+    zinc_copper_ratio: "Excessive isolated zinc supplementation (> 40 mg/day) induces intestinal metallothionein, causing dangerous copper deficiency and neutropenia"
+    iodine_and_selenium: "Thyroid gland requires iodine for T4 hormone synthesis and selenium-dependent iodothyronine deiodinases (Dio1/Dio2) to convert T4 into active T3"
+    selenium_protective_role: "Selenium protects thyroid follicular cells from hydrogen peroxide oxidative damage produced during hormone synthesis"
+  }[reg=facet]
+}
+
+^["taste"]{
+  ~#taste: "A subclinical deficiency is an invisible thief that steals twenty percent of a human being's vitality without ever giving itself a diagnostic name."
+  ~#wonder: "Why does modern medicine wait for anemia or rickets before acknowledging the profound cellular exhaustion caused by low ferritin or vitamin D?"
+
+  principles: #[
+    "Reference ranges are not optimal ranges: Standard laboratory reference intervals reflect population averages, which are largely metabolically unwell.",
+    "Nutrient networks over silver bullets: Minerals and vitamins operate in interconnected webs of mutual dependency and competitive absorption.",
+    "Food first, surgical supplementation second: Whole food matrices deliver co-factors that synthetic isolated vitamins cannot duplicate."
+  ]
+}
+
+^"invariants"{
+  "High-dose Vitamin D supplementation must be paired with adequate Vitamin K2 and dietary Magnesium to ensure safe calcium routing.",
+  "Iron supplementation should only proceed after lab confirmation of depleted ferritin to avoid dangerous Fenton-reaction oxidative toxicity.",
+  "Zinc and copper levels must be evaluated together to maintain the optimal 10:1 to 12:1 physiological serum balance.",
+}
+
+#>wonder_physio_deficiencies_1
+?["How does raising serum ferritin from 20 ng/mL to 75 ng/mL affect VO2 max, mood scores, and thyroid output in non-anemic adult females?"]{
+  #:depth #!biological ~#lens(cellular_energetics)
+  ~#hypothesis: "Remediating tissue iron deficiency in non-anemic women improves VO2 peak by 8-12%, reduces depressive symptoms by 25%, and normalizes free T3 without any changes in hemoglobin concentration."
+  !probe{ "Conduct randomized double-blind placebo-controlled trial of intravenous iron isomaltoside vs oral chelate in non-anemic fatigued females with ferritin < 25 ng/mL." }
+  $%[energetics.vo2_peak_ml_kg_min, endocrine.free_t3_pmol_l, affect.bdi_depression_score]
+}

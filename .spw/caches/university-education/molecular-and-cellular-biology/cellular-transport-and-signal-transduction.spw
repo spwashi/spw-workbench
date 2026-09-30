@@ -1,0 +1,44 @@
+# Cellular Transport & Signal Transduction Curriculum Cache
+#
+# Vesicular coat mechanics (COPI/COPII/clathrin), SNARE fusion, GPCR/RTK signaling cascades, and apoptosome activation.
+
+#>spw_cache_univ_mcb_cell_systems
+#:cache #!cellular_transport_and_signal_transduction
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model lipid membrane transport biophysics, COPII/COPI/clathrin vesicular trafficking, Rab/SNARE fusion, GPCR/MAPK signal cascades, and intrinsic mitochondrial apoptosis."
+  ~#protocol: "cache.layer/1"
+}
+
+^"membrane_trafficking_and_vesicular_fusion"{
+  "vesicle_budding_and_coat_proteins": .{
+    co-translational_translocation: "Signal Recognition Particle (SRP) pausing translation at ribosome, docking at ER Sec61 translocon channel; signal peptidase cleaving hydrophobic leader sequence",
+    vesicle_coat_taxonomy: "COPII coats (Sar1 GTPase, Sec23/Sec24, Sec13/Sec31) driving anterograde transport from ER to cis-Golgi; COPI coats mediating retrograde retrieval of KDEL-tagged ER resident proteins; Clathrin coats (AP-2 adaptors, triskelion lattices) pinched off by dynamin GTPase at plasma membrane",
+  }[reg=facet],
+  "targeting_and_snare_membrane_fusion": .{
+    rab_gtpases_and_tethering: "Rab GTPases cycling between active GTP-bound membrane state and inactive GDP-bound cytosolic state with GDI; recruiting specific fibrous tethering complexes to target acceptor membrane",
+    snarepin_mechanical_zippering: "v-SNARE on transport vesicle pairing with t-SNAREs on target organelle to form an ultra-stable four-alpha-helix trans-SNARE bundle, generating mechanical force that overcomes electrostatic water repulsion to fuse lipid bilayers; NSF and alpha-SNAP disassembling cis-SNARE complexes using ATP",
+  }[reg=facet],
+}
+
+^"signal_transduction_cascades_and_programmed_cell_death"{
+  "gpcr_and_receptor_tyrosine_kinase_pathways": .{
+    gpcr_heptahelical_signaling: "Seven-transmembrane receptors; heterotrimeric G-proteins (G_alpha, G_beta_gamma); G_alpha_s stimulating adenylate cyclase -> cAMP -> PKA; G_alpha_q activating Phospholipase C-beta -> cleaving PIP2 into IP3 (releasing ER Ca2+) and DAG (activating PKC); beta-arrestin desensitization",
+    rtk_mapk_growth_factor_cascade: "Ligand-induced dimerization and trans-autophosphorylation of tyrosine residues; Grb2 SH2-domain binding -> Sos guanine nucleotide exchange factor -> Ras-GTP activation -> Raf (MAPKKK) -> MEK (MAPKK) -> ERK (MAPK) translocating to nucleus to activate Myc/Fos transcription",
+  }[reg=facet],
+  "mitochondrial_intrinsic_apoptosis": .{
+    bcl2_family_checkpoint: "Pro-survival Bcl-2/Bcl-xL opposing pro-apoptotic executioners Bax and Bak; BH3-only sensors (Bid, Bim, Puma) triggered by DNA damage or growth factor withdrawal",
+    cytochrome_c_and_apoptosome: "Bax/Bak oligomerization permeabilizing outer mitochondrial membrane (MOMP); Cytochrome c release into cytosol binding Apaf-1 in presence of dATP, assembling heptameric wheel-of-death apoptosome that recruits and activates initiator Caspase-9 -> executioner Caspase-3/7 cleaving structural ICAD and lamin proteins",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_mcb_cell_systems_1
+  ?["How does the nuclear pore complex (NPC) permit passive diffusion of water and ions while simultaneously transporting massive 25-megadalton ribonucleoprotein complexes with absolute selectivity?"]{
+    #:depth #!cellular ~#lens(hydrogel_phase_separation_in_nuclear_pores)
+    ~#hypothesis: "The central channel of the nuclear pore complex is filled with an unstructured, liquid-liquid phase-separated hydrogel woven from phenylalanine-glycine (FG) repeat nucleoporin domains. Small molecules permeate through transient thermal gaps, while large cargo is blocked unless escorted by importin/exportin nuclear transport receptors, whose hydrophobic surface pockets melt through the FG meshwork via multivalent low-affinity interactions."
+    !probe{ "Measure single-molecule nuclear transport receptor dwell times and permeability barriers across synthetic FG-repeat hydrogels using fluorescence correlation spectroscopy." }
+    $%[nuclear_pore.fg_hydrogel_mesh_cutoff_nm, transport.importin_translocation_velocity_um_s]
+  }
+}

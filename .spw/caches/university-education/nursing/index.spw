@@ -1,0 +1,50 @@
+# University Nursing Curriculum Cache Index
+#
+# Root cache index for clinical nursing process, pathophysiology, pharmacology, critical care titration, and therapeutic presence.
+
+#>spw_cache_univ_nursing_index
+#:cache #!nursing
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model professional university nursing science (BSN/MSN/DNP): clinical physical assessment, pharmacotherapeutics, ICU hemodynamics, evidence-based nursing informatics, and relational ethics of care."
+  ~#domains: "Clinical nursing, pathophysiology, clinical pharmacology, critical care hemodynamics, and nursing ethics"
+  ~#protocol: "cache.layer/1"
+}
+
+^"roots"{
+  @clinical_foundations: ~"./foundations-of-clinical-nursing-and-assessment.spw"
+  @patho_pharmacology: ~"./pathophysiology-and-pharmacology-in-nursing.spw"
+  @critical_care_informatics: ~"./critical-care-and-evidence-based-informatics.spw"
+  @ethical_presence: ~"./ethical-care-and-therapeutic-presence.spw"
+  @taste: ~"./taste.spw"
+}
+
+^"dispatch"{
+  foundations_of_clinical_nursing_and_assessment: @clinical_foundations
+  pathophysiology_and_pharmacology_in_nursing: @patho_pharmacology
+  critical_care_and_evidence_based_informatics: @critical_care_informatics
+  ethical_care_and_therapeutic_presence: @ethical_presence
+  taste_considerations: @taste
+}
+
+^"taste"{
+  ~#taste: "Nursing is the vigilant crucible of human healthcare: where rigorous pathophysiological science meets unconditional bedside presence."
+  ~#wonder: "How does an experienced bedside nurse detect the subtle clinical deterioration of a septic patient hours before laboratory blood panels flag abnormal values?"
+}
+
+^"invariants"{
+  "Clinical assessments must adhere to the standardized five-phase Nursing Process (ADPIE: Assessment, Diagnosis, Planning, Implementation, Evaluation).",
+  "Pharmacological protocols must enforce medication safety rights, therapeutic drug monitoring, and dual-independent verification for high-alert drugs.",
+  "Critical care interventions must comply with surviving sepsis guidelines, hemodynamic titration boundaries, and rapid response team triggers.",
+}
+
+^"wonder_probes"{
+  #>wonder_univ_nursing_index_1
+  ?["What constitutes 'nursing clinical intuition' in the rapid detection of occult physiological collapse?"]{
+    #:depth #!clinical ~#lens(expert_tacit_pattern_recognition)
+    ~#hypothesis: "Nursing intuition (Benner's novice-to-expert model) is not mysticism; it is rapid, non-conscious perceptual pattern matching across multimodal subliminal cues: micro-changes in skin perfusion, altered respiratory rhythm, subtle restless agitation, and pupil tracking that precede overt hemodynamic collapse."
+    !probe{ "Track physiological early warning scores (NEWS2) alongside experienced nurse subjective gut-feeling alert timestamps in acute medical-surgical wards." }
+    $%[clinical.nurse_intuitive_lead_time_minutes, monitoring.vital_sign_threshold_delay_minutes]
+  }
+}

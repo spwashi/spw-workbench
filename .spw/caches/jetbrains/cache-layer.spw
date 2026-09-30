@@ -1,0 +1,76 @@
+# JetBrains Cache Layer Representation
+#
+# Cache of cache.layer/1 representation, plane mappings, and inspection cards for JetBrains.
+
+#>spw_cache_jetbrains_cache_layer
+#:cache #!jetbrains
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Document how the JetBrains host reflects cache.layer/1 planes without inventing private caches of semantic truth."
+  ~#protocol: "cache.layer/1"
+  ~#seed_reference: ~"../../../packages/spw-seed/src/ir/cache-layer.ts"
+  ~#theory: ~"../../../docs/theory/spw/cache-field.spw"
+}
+
+^["protocol_card"]{
+  surface: "cache.layer/1"
+  host: #intellij_webstorm
+  transport: #saved_file_cli
+  inspection_action: "Spw.InspectCache (Tools | Spw Instruments)"
+  command: "spw inspect cache <surface> --json"
+}
+
+^["plane_breakdown"]{
+  editor_probe_cache: .{
+    plane: "editor_probe_cache"
+    present: false
+    source: "editor-local TTL probe cache"
+    omission: "this host does not keep an editor probe cache"
+    note: "Unlike VS Code, JetBrains does not maintain an in-memory TTL probe cache; it defers to CLI truth."
+  }[reg=facet]
+
+  lsp_session_reflection: .{
+    plane: "lsp_session_reflection"
+    present: true
+    source: "language-server session reflection"
+    detail: "Available when Spw LSP server is active for the current project session."
+  }[reg=facet]
+
+  runtime_cache: .{
+    plane: "runtime_cache"
+    present: true
+    source: "hot-session evaluate/inspect cache"
+    stats: "Reports beat number, tier sizes (hot/warm/cold), hits, misses, expired, and evicted."
+  }[reg=facet]
+
+  corpus_memo: .{
+    plane: "corpus_memo"
+    present: false
+    source: "corpus product memo"
+    omission: "corpus memo not sampled here"
+    next: "spw census --json"
+  }[reg=facet]
+}
+
+^["inspection_recipe"]{
+  trigger: "User executes 'Inspect Spw Cache' from Tools menu or Action search"
+  file_validation: "Verify file is saved to disk; if unsaved, notify user to save"
+  execution: "SpwCliRunner executes `spw inspect cache <relative-file> --json`"
+  display: "Opens a read-only LightVirtualFile with the JSON receipt for developer inspection"
+}
+
+^["parity_contour"]{
+  rule: "Name the cache layer; do not flatten distinct caches into one hit/miss claim. Absent planes stay on the card as omissions."
+  peer_comparison: .{
+    vscode: "Maintains an explicit editor-local TTL probe cache reporting entries, hits, misses, and expirations."
+    neovim: "Emphasizes LSP session reflection and terminal command flow."
+    intellij: "Saved-file CLI cache JSON stays reusable as a read-only intermediate document."
+  }
+}
+
+^["invariants"]{
+  "IntelliJ never claims ownership of runtime or LSP caches that it does not manage.",
+  "Omitted cache planes are explicitly declared rather than silently omitted from the card.",
+  "Cache inspection products remain inspectable read-only text documents in the editor workspace.",
+}

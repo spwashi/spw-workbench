@@ -1,0 +1,44 @@
+# Nucleic Acid Mechanics & Structural Genomics Curriculum Cache
+#
+# Replisome trombone dynamics, RNA Pol II CTD code, nucleosome epigenetics, and CRISPR-Cas9 cleavage.
+
+#>spw_cache_univ_mcb_genomics
+#:cache #!nucleic_acid_mechanics_and_genomics
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model nucleic acid biophysics, replisome coordination, RNA Pol II transcription cycles, chromatin TAD loop extrusion, and CRISPR-Cas9 genome editing mechanics."
+  ~#protocol: "cache.layer/1"
+}
+
+^"dna_replication_and_repair_machinery"{
+  "replisome_architecture_and_proofreading": .{
+    dna_duplex_thermodynamics: "B-form right-handed helix (10.5 bp/turn, 3.4nm pitch); Watson-Crick A-T (two H-bonds) and G-C (three H-bonds); pi-pi aromatic base stacking thermodynamics driving duplex stability",
+    replisome_complex_components: "DnaB/MCM hexameric helicase unwinding duplex; Single-Stranded Binding proteins (SSB/RPA); DNA Polymerase III/delta-epsilon synthesizing 5' to 3' with 3' to 5' exonuclease proofreading error rate <10^-7; beta/PCNA sliding clamp tethering polymerase",
+    okazaki_fragment_processing: "Lagging strand looping ('trombone model'); Primase depositing RNA primers; DNA Polymerase I nick translation removing RNA; DNA Ligase catalyzing phosphodiester bond formation via AMP intermediate",
+    topoisomerases_and_telomerase: "Type I (single-strand cut) and Type II (double-strand cut, ATP-dependent) topoisomerases relieving positive supercoiling ahead of fork; Telomerase ribonucleoprotein (TERT/TERC) extending 3' telomeric repeats to overcome end-replication problem",
+  }[reg=facet],
+}
+
+^"transcription_cycle_and_chromatin_epigenetics"{
+  "rna_polymerase_ii_and_pre_mrna_processing": .{
+    initiation_and_mediator: "General transcription factors (TFIID/TBP binding TATA box, TFIIH kinase/helicase melting promoter); Mediator complex integrating distal enhancer signals; RNA Pol II CTD heptapeptide (YSPTSPS) repeat",
+    ctd_phosphorylation_code: "Ser5 phosphorylation triggers promoter escape and recruits 5' 7-methylguanosine capping enzymes; Ser2 phosphorylation drives productive elongation and recruits splicing and polyadenylation machinery",
+    spliceosome_assembly_and_catalysis: "Major spliceosome (U1 snRNP binding 5' splice site, U2 binding branch-point adenosine); two sequential transesterification reactions forming intron lariat and ligating exons; CPSF directing 3' cleavage and poly(A) polymerase tail addition",
+  }[reg=facet],
+  "chromatin_organization_and_crispr_technologies": .{
+    nucleosome_and_epigenetic_histone_code: "147 bp DNA wrapped 1.65 turns around histone octamer (two each H2A, H2B, H3, H4); Acetylation (HATs) neutralizing lysine positive charges to relax chromatin; Methylation (H3K4me3 active promoters vs H3K9me3/H3K27me3 repressive heterochromatin)",
+    topologically_associating_domains_tads: "Hi-C chromosome conformation capture revealing TADs structured by cohesin ring extrusion stalled at convergent CTCF boundary sites",
+    crispr_cas9_molecular_cleavage: "Streptococcus pyogenes Cas9 guided by single-guide RNA (sgRNA); recognition of 5'-NGG-3' Protospacer Adjacent Motif (PAM); RuvC and HNH endonuclease domains generating blunt double-strand breaks repaired by NHEJ (knockouts) or HDR (precision knock-ins)",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_mcb_genomics_1
+  ?["How does the RNA-guided CRISPR-Cas9 endonuclease scan through three billion base pairs of genomic DNA in a living nucleus to find its target site in seconds?"]{
+    #:depth #!molecular ~#lens(three_dimensional_diffusion_and_one_dimensional_sliding)
+    ~#hypothesis: "Cas9 does not search via slow three-dimensional diffusion alone. It combines 3D collision with rapid one-dimensional sliding along the DNA phosphate backbone, interrogating solely for the 5'-NGG PAM trinucleotide. Only upon encountering a PAM does Cas9 halt to melt the adjacent DNA duplex and test for guide-RNA complementarity."
+    !probe{ "Track single-molecule Cas9 fluorescent trajectories in living mammalian nuclei using stroboscopic super-resolution imaging to measure PAM interrogation residence times." }
+    $%[crispr.one_dimensional_sliding_length_bp, cas9.pam_interrogation_residence_ms]
+  }
+}

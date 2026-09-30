@@ -1,0 +1,48 @@
+# Publishing Platforms & Business Models Cache
+#
+# KDP Select vs Wide distribution, print-on-demand economics, direct sales, and Kickstarter crowdfunding.
+
+#>spw_cache_indie_author_platforms
+#:cache #!publishing_platforms_and_business_models
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the digital distribution channels, exclusivity economics, print-on-demand wholesale structures, direct-to-consumer sales, and crowdfunding models of indie publishing."
+  ~#protocol: "cache.layer/1"
+}
+
+^"digital_distribution_and_exclusivity_economics"{
+  "amazon_kdp_and_kindle_unlimited": .{
+    royalty_tiers: "Standard 70% ebook royalty on titles priced between $2.99 and $9.99 (minus nominal Amazon delivery delivery fee based on MB file size); 35% on titles below $2.99 or above $9.99",
+    kdp_select_exclusivity: "Enrolling in KDP Select requires strict digital exclusivity with Amazon; zero digital sales permitted on author website or other storefronts for 90-day renewable periods",
+    kenpc_payout_pool: "Kindle Edition Normalized Page Count (KENPC) pays authors from a global monthly fund (approx $0.0040 to $0.0048 per page read); heavily subsidizes high-word-count fantasy, sci-fi, and romance serials",
+    algorithmic_momentum: "High borrow rates in Kindle Unlimited feed the Amazon store algorithm, boosting overall visibility, category rankings, and organic retail purchases",
+  }[reg=facet],
+  "wide_multi_channel_distribution": .{
+    platform_diversity: "Distributing non-exclusively across Apple Books, Kobo Writing Life, Barnes & Noble Press, Google Play Books, and Smashwords / Draft2Digital aggregators",
+    global_and_library_reach: "Kobo's dominance in Canada, Australia, and European territories; OverDrive / Libby integration distributing indie ebooks directly into global public library lending catalogs",
+    platform_resilience: "Inoculates author businesses against sudden Amazon account audits, bot false-positives, or category algorithm shifts; builds sustainable, multi-revenue stream longevity",
+  }[reg=facet],
+}
+
+^"print_on_demand_and_direct_sales_revolution"{
+  "print_on_demand_wholesale_mechanics": .{
+    kdp_print_vs_ingramspark: "KDP Print optimizes Amazon buy-box prime delivery and low setup costs; IngramSpark provides industry-standard global catalog distribution accessible to brick-and-mortar bookstores and libraries",
+    wholesale_discounts_and_returns: "IngramSpark requires setting trade discounts (30% to 55%) and returnability options (non-returnable, returnable-destroy, or returnable-deliver); traditional bookstores refuse to stock non-returnable titles",
+  }[reg=facet],
+  "direct_to_consumer_sales_and_crowdfunding": .{
+    shopify_and_bookfunnel_delivery: "Authors host dedicated storefronts (Shopify, WooCommerce) selling ebooks, audio files, and signed paperbacks directly to readers; authors retain 90-95% net margin and control customer email data",
+    subscription_fiction_platforms: "Ream and Patreon platforms enabling readers to subscribe for monthly serialized chapters, exclusive bonus epilogues, and early book releases",
+    kickstarter_luxury_special_editions: "Pioneered at scale by Brandon Sanderson ($41M campaign) and Will Wight: crowdfunding premium collector hardcovers with faux-leather covers, custom foil stamping, full-color endpapers, and digitally sprayed edges",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_indie_author_platforms_1
+  ?["Why do high-end fantasy readers willingly pledge $100+ for a Kickstarter deluxe hardcover edition of a book they already read for free on Kindle Unlimited?"]{
+    #:depth #!sociological ~#lens(fetishization_of_tangible_craft)
+    ~#hypothesis: "In an era of disposable, ephemeral digital media streams, the physical book transcends its utilitarian function as an information carrier and becomes a sacred talisman of personal identity and community belonging. Readers invest in sprayed edges, ribbon bookmarks, and tactile debossing as an act of aesthetic devotion to the world the author built."
+    !probe{ "Survey backer motivations and discretionary spending patterns across major indie fantasy and romance Kickstarter deluxe edition campaigns." }
+    $%[consumer.identity_signaling_index, crowdfunding.backer_retention_rate]
+  }
+}

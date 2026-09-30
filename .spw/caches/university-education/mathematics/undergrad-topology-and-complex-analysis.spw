@@ -1,0 +1,50 @@
+# Undergraduate Topology & Complex Analysis Curriculum Cache
+#
+# Point-set separation axioms, Tychonoff compactness, Cauchy integral theorems, and residue calculus.
+
+#>spw_cache_univ_undergrad_top_complex
+#:cache #!undergrad_topology_and_complex_analysis
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model undergraduate point-set general topology (Hausdorff spaces, Urysohn lemma, Tychonoff compactness) and complex analysis (Cauchy integral formula, residue theorem, conformal maps)."
+  ~#protocol: "cache.layer/1"
+}
+
+^"point_set_general_topology"{
+  "topological_spaces_and_separation_axioms": .{
+    axioms_and_bases: "Topological space (X, T) closed under arbitrary unions and finite intersections; Basis B generating T; Subspace, quotient, and product topologies",
+    separation_hierarchy: "T_0 (Kolmogorov) -> T_1 (points closed) -> T_2 (Hausdorff: distinct points have disjoint neighborhoods, ensuring unique sequence limits) -> T_3 (Regular) -> T_4 (Normal: disjoint closed sets have disjoint open neighborhoods)",
+    urysohns_lemma_and_tietze: "Urysohn's Lemma: In a normal space, any two disjoint closed sets A and B can be functionally separated by continuous f: X -> [0, 1] with f(A)=0, f(B)=1; Tietze extension extending continuous functions to whole space",
+  }[reg=facet],
+  "compactness_and_connectedness": .{
+    topological_compactness: "Every open cover has a finite subcover; equivalent to finite intersection property of closed sets; continuous images of compact spaces are compact",
+    tychonoffs_theorem: "Arbitrary (including uncountable) Cartesian products of compact topological spaces are compact under the product topology; equivalent to the Axiom of Choice",
+    connectedness_and_path_connectedness: "Space cannot be partitioned into two disjoint non-empty open sets; path-connected implies connected; intermediate value theorem as continuous map from connected domain",
+  }[reg=facet],
+}
+
+^"complex_analysis_and_residue_theory"{
+  "holomorphic_functions_and_cauchy_theorems": .{
+    cauchy_riemann_equations: "Complex derivative f'(z) exists if and only if partial derivatives satisfy u_x = v_y and u_y = -v_x; implies u and v are harmonic functions (Delta u = 0) and f is conformal (angle-preserving)",
+    cauchy_integral_theorem: "Contour integral contour_int_gamma f(z) dz = 0 for any closed contour gamma in a simply connected domain where f is holomorphic",
+    cauchy_integral_formula: "f^(n)(z_0) = (n! / (2*pi*i)) * contour_int_gamma (f(z) / (z - z_0)^(n+1)) dz; proves that complex differentiability once implies infinite differentiability and analyticity",
+    liouvilles_theorem_and_algebra: "Every bounded entire function on C is constant; immediately proves the Fundamental Theorem of Algebra (every non-constant polynomial has a root in C)",
+  }[reg=facet],
+  "singularities_laurent_series_and_residues": .{
+    singularity_classification: "Removable (finite limit), Poles of order m (lim |f(z)| = infinity), and Essential (Picard's Great Theorem: f assumes every complex value infinitely often in any neighborhood, with at most one exception)",
+    laurent_series_expansion: "f(z) = sum_(n=-infinity)^infinity a_n * (z - z_0)^n in an annulus; coefficient a_(-1) defined as the Residue Res(f, z_0)",
+    the_residue_theorem: "contour_int_gamma f(z) dz = 2*pi*i * sum_k Res(f, z_k) inside gamma; evaluates intractable real definite integrals along semicircle or keyhole contours in the upper half-plane",
+    rouches_theorem_and_argument_principle: "Argument principle: (1 / (2*pi*i)) * contour_int (f'/f) dz = Z - P; Rouche's theorem counting roots of perturbed polynomials |f(z) - g(z)| < |f(z)|",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_undergrad_top_complex_1
+  ?["Why does requiring a function of two real variables (u, v) to have a single complex derivative f'(z) suddenly force it to be infinitely differentiable and analytic?"]{
+    #:depth #!analytic ~#lens(the_rigidity_of_complex_geometry)
+    ~#hypothesis: "In real multivariable calculus, directional derivatives can exist without forcing smoothness. But the existence of the complex derivative requires the limit quotient to be invariant from all 360-degree directions in the complex plane, imposing the Cauchy-Riemann conformal constraints that bind the real and imaginary parts into a rigid harmonic system governed entirely by boundary contour integrals."
+    !probe{ "Trace the radius of convergence of 1 / (1 + x^2) on the real line vs the complex plane to demonstrate how hidden complex poles at +/- i dictate real smoothness." }
+    $%[complex.real_taylor_breakdown_radius, analysis.conformal_rigidity_index]
+  }
+}

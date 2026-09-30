@@ -1,0 +1,50 @@
+# University Library & Information Sciences Curriculum Cache Index
+#
+# Root cache index for bibliographic taxonomy, Dublin Core/MARC21 metadata, BM25 retrieval, OAIS digital archiving, and intellectual freedom.
+
+#>spw_cache_univ_lis_index
+#:cache #!library_and_information_sciences
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model Master of Library and Information Science (MLIS) curriculum: bibliographic classification ontologies, Dublin Core and RDA metadata schemas, vector/probabilistic information retrieval, OAIS archival preservation, and intellectual freedom ethics."
+  ~#domains: "Library science, information retrieval, knowledge organization, archival science, and information ethics"
+  ~#protocol: "cache.layer/1"
+}
+
+^"roots"{
+  @knowledge_organization: ~"./knowledge-organization-and-metadata-schemas.spw"
+  @information_retrieval: ~"./information-retrieval-and-search-systems.spw"
+  @archival_preservation: ~"./archival-science-and-digital-preservation.spw"
+  @policy_intellectual_freedom: ~"./information-policy-intellectual-freedom-and-literacy.spw"
+  @taste: ~"./taste.spw"
+}
+
+^"dispatch"{
+  knowledge_organization_and_metadata_schemas: @knowledge_organization
+  information_retrieval_and_search_systems: @information_retrieval
+  archival_science_and_digital_preservation: @archival_preservation
+  information_policy_intellectual_freedom_and_literacy: @policy_intellectual_freedom
+  taste_considerations: @taste
+}
+
+^"taste"{
+  ~#taste: "The library is the memory architecture of civilization: the quiet citadel where all of human thought is preserved, indexed, and defended against the darkness of forgetting."
+  ~#wonder: "How does a librarian's taxonomic schema construct the conceptual lenses through which entire generations discover, debate, and inherit knowledge?"
+}
+
+^"invariants"{
+  "Bibliographic metadata frameworks must adhere to standardized entity relationships (FRBR/LRM: Work, Expression, Manifestation, Item).",
+  "Information retrieval algorithms must benchmark precision, recall, and MAP metrics against standardized Cranfield evaluation criteria.",
+  "Digital preservation workflows must comply with the ISO 14721 Open Archival Information System (OAIS) reference model.",
+}
+
+^"wonder_probes"{
+  #>wonder_univ_lis_index_1
+  ?["How does the structural choice of a library classification system (e.g., Dewey Decimal vs Library of Congress vs Ranganathan Colon Classification) secretly encode cultural hegemony and ideological worldview?"]{
+    #:depth #!epistemological ~#lens(taxonomic_ideological_bias)
+    ~#hypothesis: "Classification schemes are never neutral epistemological containers. Melvil Dewey's decimal system relegated all non-Christian religions to 290 and non-Western history to geographic appendices, baking a 19th-century colonial white-supremacist worldview directly into the physical geography of library bookshelves."
+    !probe{ "Map call-number spatial allocations and subject heading hierarchies for indigenous and postcolonial histories across Dewey Decimal vs Brian Deer classification systems." }
+    $%[taxonomy.indigenous_knowledge_marginalization_index, classification.call_number_distance_ratio]
+  }
+}

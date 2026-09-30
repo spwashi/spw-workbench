@@ -1,0 +1,50 @@
+# University Molecular & Cellular Biology Curriculum Cache Index
+#
+# Root cache index for DNA replication, chromatin mechanics, enzymology, vesicular trafficking, and stem cell differentiation.
+
+#>spw_cache_univ_mcb_index
+#:cache #!molecular_and_cellular_biology
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model undergraduate and doctoral molecular and cell biology: nucleic acid mechanics and CRISPR editing, protein folding kinetics and enzymology, endomembrane trafficking, and cell cycle checkpoints."
+  ~#domains: "Molecular biology, biochemistry, cell biology, structural genomics, and developmental cytology"
+  ~#protocol: "cache.layer/1"
+}
+
+^"roots"{
+  @genomics_nucleic_acids: ~"./nucleic-acid-mechanics-and-genomics.spw"
+  @enzymology_proteins: ~"./protein-structure-and-enzymology.spw"
+  @transport_signaling: ~"./cellular-transport-and-signal-transduction.spw"
+  @cell_cycle_stem_cells: ~"./cell-cycle-and-stem-cell-differentiation.spw"
+  @taste: ~"./taste.spw"
+}
+
+^"dispatch"{
+  nucleic_acid_mechanics_and_genomics: @genomics_nucleic_acids
+  protein_structure_and_enzymology: @enzymology_proteins
+  cellular_transport_and_signal_transduction: @transport_signaling
+  cell_cycle_and_stem_cell_differentiation: @cell_cycle_stem_cells
+  taste_considerations: @taste
+}
+
+^"taste"{
+  ~#taste: "Molecular biology is the nanotechnology of life: self-assembling macromolecular machines operating with atomic precision on Brownian chaos."
+  ~#wonder: "How does a single strand of two-meter-long DNA fold perfectly inside a microscopic six-micron nucleus without tangling, and faithfully duplicate three billion base pairs with less than one error per billion?"
+}
+
+^"invariants"{
+  "Nucleic acid replication and transcription mechanisms must respect 5'-to-3' directionality and Watson-Crick base-pairing thermodynamics.",
+  "Enzyme kinetics must adhere to Michaelis-Menten steady-state assumptions and transition-state stabilization energetics.",
+  "Cell cycle and checkpoint models must specify cyclin-CDK phosphorylation targets and ubiquitin-proteasome degradation pathways.",
+}
+
+^"wonder_probes"{
+  #>wonder_univ_mcb_index_1
+  ?["How does the DNA replication replisome synthesize both the leading and lagging strands concurrently at 1,000 nucleotides per second without tangling the DNA duplex?"]{
+    #:depth #!molecular ~#lens(trombone_model_replisome_coordination)
+    ~#hypothesis: "The replisome coordinates leading and lagging synthesis via the 'trombone model': the lagging strand template is looped back through the second catalytic core of DNA Polymerase III, allowing both polymerases to travel together in the same physical direction while synthesizing antiparallel DNA strands in discrete Okazaki fragments."
+    !probe{ "Perform single-molecule total internal reflection fluorescence (TIRF) microscopy tracking fluorescently tagged replisome sliding clamps during active replication fork progression." }
+    $%[replisome.fork_velocity_bp_per_sec, replication.trombone_loop_release_frequency]
+  }
+}

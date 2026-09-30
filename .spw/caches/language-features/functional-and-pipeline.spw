@@ -1,0 +1,71 @@
+# Functional & Pipeline Paradigms: Elixir, OCaml, and Erlang
+#
+# Analysis of beloved functional features: the pipe operator, function head matching, and actor fault-tolerance.
+
+#>spw_cache_lang_functional_pipeline
+#:cache #!languages
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Analyze the functional programming constructs that transform code readability, asynchronous concurrency, and system resilience."
+  ~#focus: "The pipe operator, multi-clause pattern matching, and supervision hierarchies"
+}
+
+^["elixir_pipe_operator"]{
+  ~#feature: "The Pipe Operator (|>) and Linear Flow"
+  language: "Elixir / OCaml / F#"
+  syntax: "data |> clean() |> validate() |> transform() |> persist()"
+  why_developers_love_it: #[
+    "Eliminates nesting vertigo: Replaces inside-out nested calls 'persist(transform(validate(clean(data))))' with natural top-to-bottom reading order.",
+    "Eliminates disposable intermediate variables: No need to invent 'temp1', 'temp2', 'cleaned_data', 'validated_data' just to pass a value down.",
+    "Data transformation as a pipeline: Models software as a flowing assembly line of immutable transformations."
+  ]
+  contrast: "Turns tangled, right-to-left procedural code into self-documenting linear data transformations."
+}
+
+^["pattern_matching_in_heads"]{
+  ~#feature: "Pattern Matching in Function Signatures (Multi-Clause Functions)"
+  language: "Elixir / Erlang / Haskell"
+  syntax: "def handle({:ok, data}), do: ... \\n def handle({:error, :not_found}), do: ..."
+  why_developers_love_it: #[
+    "Eliminates conditional branching: Banishes nested if/else and switch statements; function dispatch directly expresses domain cases.",
+    "Declarative guards: 'when is_integer(x) and x > 0' encodes validation directly into the dispatch mechanism.",
+    "Symmetric destructuring: Extracts tuple fields, map keys, and list heads/tails ([head | tail]) directly in the parameter list."
+  ]
+}
+
+^["actor_model_and_otp"]{
+  ~#feature: "Actor Model, Preemptive BEAM Scheduling & Supervision Trees"
+  language: "Erlang / Elixir"
+  why_developers_love_it: #[
+    "True process isolation: Millions of micro-processes each with their own private heap; a crash in one process never corrupts another.",
+    "'Let It Crash' philosophy: Instead of defensive try/catch paranoia, processes crash cleanly and are restarted by a Supervisor in a known good state.",
+    "Soft real-time preemption: Long-running computational loops cannot starve I/O processes; the scheduler shares reductions fairly."
+  ]
+  contrast: "Replaces precarious shared-memory multithreading with message-passing actor concurrency."
+}
+
+^["taste"]{
+  ~#taste: "Code should read like a stream of water shaping stone, moving steadily in one direction."
+  ~#wonder: "Why does the pipe operator (|>) feel so intuitively aligned with human narrative reasoning?"
+
+  principles: #[
+    "Linearity over nesting: Human cognition processes sequential steps far more effortlessly than nested scopes.",
+    "Failure is normal: Systems that plan for failure through supervision trees are far more robust than systems that pretend bugs do not exist.",
+    "Data purity: Functions that accept data and return new data without hidden mutation create serene, predictable codebases."
+  ]
+}
+
+^["invariants"]{
+  "Pipe operator expressions always pass the preceding result as the first argument to the succeeding function.",
+  "Function head matching checks clauses in textual order, falling through until a match or badmatch occurs.",
+  "Supervision tree policies (one_for_one, one_for_all) strictly govern process restart cascades.",
+}
+
+#>wonder_lang_functional_pipeline_1
+?["Why did the pipe operator spread across Elixir, OCaml, F#, Hack, and JavaScript proposals?"]{
+  #:depth #!philosophical ~#lens(syntactic_gravity)
+  ~#hypothesis: "The pipe operator aligns code syntax with the visual timeline of data processing, reversing the historical accident of prefix function notation."
+  !probe{ "Present developers with identical logic written in nested prefix form vs piped infix form; measure comprehension latency and error detection rate." }
+  $%[comprehension.latency_seconds, error.detection_accuracy_percentage]
+}

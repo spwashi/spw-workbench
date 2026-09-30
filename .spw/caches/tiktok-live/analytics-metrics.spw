@@ -1,0 +1,75 @@
+# TikTok LIVE Analytics & Performance Metrics
+#
+# Quantitative instrumentation of viewer retention, algorithmic feedback loops, and creator analytics.
+
+#>spw_cache_tiktok_live_analytics
+#:cache #!tiktok_live
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the quantitative feedback signals governing creator optimization and algorithmic FYP push distribution."
+  ~#source: "TikTok LIVE Creator Center telemetry and real-time broadcast dashboards"
+}
+
+^["core_kpis"]{
+  peak_concurrent_viewers: .{
+    metric: "PCV (Peak Concurrent Viewers)"
+    significance: "Maximum simultaneous audience size achieved during the broadcast"
+    scaling_role: "Unlocks algorithmic tier thresholds and priority edge bandwidth allocations"
+  }[reg=facet]
+
+  diamond_conversion_rate: .{
+    metric: "Diamonds per Viewer Minute (D/VM)"
+    formula: "Total Diamonds Earned / (Average Concurrent Viewers * Broadcast Duration in Minutes)"
+    benchmark: "Healthy monetization benchmark ranges from 0.05 to 0.50 D/VM depending on vertical"
+  }[reg=facet]
+
+  average_watch_duration: .{
+    metric: "AWD (Average Watch Duration)"
+    formula: "Total Cumulative Watch Time / Total Unique Viewers"
+    typical_range: "35 seconds (for casual swipe-throughs) to 12 minutes (for dedicated fan communities)"
+  }[reg=facet]
+
+  engagement_rate: .{
+    metric: "Interactions per Impression"
+    components: #[likes_sent, comments_posted, gifts_triggered, shares_to_dms, profile_follows]
+  }[reg=facet]
+}
+
+^["retention_modeling"]{
+  the_2_second_shelf: "50-70% of viewers swiping into a stream bounce within 2 seconds; hook mechanics must engage instantly."
+  the_plateau_phase: "Viewers who cross the 60-second threshold exhibit a 6x higher probability of commenting or following."
+  the_closing_cliff: "Announcing 'I am wrapping up the stream soon' triggers an immediate 40% concurrency drop."
+}
+
+^["algorithmic_distribution_signals"]{
+  tier_1_exploration: "The algorithm injects the live stream to 100-500 test viewers on the FYP"
+  scoring_function: "Score = (Like Velocity * 0.2) + (Comment Velocity * 0.3) + (Gift Velocity * 0.4) + (Watch Duration * 0.5)"
+  tier_2_escalation: "If score exceeds category threshold, stream is promoted to 5,000-20,000 viewer pool"
+  tier_3_viral_wave: "Top 0.1% streams with extreme velocity achieve hundreds of thousands of concurrent viewers"
+}
+
+^["taste"]{
+  ~#taste: "Metrics measure attention velocity; they do not measure artistic worth or human depth."
+  ~#wonder: "When a creator optimizes solely for retention algorithms, what part of their authentic self is surrendered?"
+
+  principles: #[
+    "Dashboard discipline: Checking live analytics every 30 seconds induces anxiety and disrupts conversational rhythm.",
+    "Post-stream reflection: Reviewing retention graphs after the broadcast uncovers structural lulls without ruining present connection.",
+    "Quality over raw concurrency: A community of 100 deeply invested viewers consistently out-monetizes an untargeted mob of 5,000 passerby."
+  ]
+}
+
+^["invariants"]{
+  "Real-time analytics graphs update with at most a 5-second telemetry lag.",
+  "Viewer data complies with privacy anonymization; individual identities cannot be unmasked from aggregated graphs.",
+  "Algorithmic score equations re-evaluate eligibility every 30 seconds throughout the active stream.",
+}
+
+#>wonder_tiktok_live_analytics_1
+?["How does real-time concurrency feedback in the creator's peripheral vision distort speech cadence?"]{
+  #:depth #!experiential ~#lens(telemetric_panopticon)
+  ~#hypothesis: "Watching the live viewer counter tick down by 50 people induces micro-panic, causing the broadcaster to speak faster, increase pitch, and make desperate pleas for engagement."
+  !probe{ "Conduct A/B test: creators streaming with viewer counter visible vs blinded with physical tape; measure vocal pitch stability and linguistic richness." }
+  $%[vocal.pitch_variance_hz, lexical.unique_word_ratio]
+}

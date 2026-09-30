@@ -1,0 +1,80 @@
+# Year 2 Curriculum: Systems Programming, Memory & Hardware
+#
+# Complete 52-week daily curriculum exploring low-level systems, CPU architectures, memory physics, and compilers.
+
+#>spw_cache_podcast_year2
+#:cache #!podcasting
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Detail the 365 daily episodes of Year 2 descending to the bare metal: C, Rust, Zig, assembly, memory hierarchies, OS kernels, and compilers."
+  ~#timeline: "Episodes 366 - 730 (Weeks 53 - 104)"
+}
+
+^["quarter_1_the_metal"]{
+  theme: "Machine Architecture, Assembly, and the C Memory Model (Weeks 53 - 65 · Episodes 366 - 456)"
+  weekly_modules: #[
+    .{ week: "53-54", topic: "The Von Neumann Architecture & CPU Pipeline", spec: "Fetch-decode-execute; superscalar execution; branch predictors; speculative execution & Spectre" },
+    .{ week: "55-57", topic: "x86_64 vs ARM64 Assembly & Calling Conventions", spec: "Registers, ALU instructions, condition flags; System V AMD64 ABI vs ARM AAPCS64; stack frames" },
+    .{ week: "58-60", topic: "Pointer Physics & Struct Memory Layout in C23", spec: "Pointer arithmetic; size_t vs uintptr_t; struct padding, alignment, and cache-line packing" },
+    .{ week: "61-62", topic: "CPU Cache Topography: L1, L2, L3 & Coherence", spec: "Cache line size (64 bytes); cache associativity; MESI protocol; false sharing; prefetchers" },
+    .{ week: "63-65", topic: "The Hardware Memory Model: Memory Ordering & Barriers", spec: "Total Store Order (TSO) on x86 vs weakly ordered ARM; acquire-release semantics; memory fences" }
+  ]
+}
+
+^["quarter_2_memory_and_os"]{
+  theme: "Virtual Memory, Kernel Subsystems, and Allocators (Weeks 66 - 78 · Episodes 457 - 547)"
+  weekly_modules: #[
+    .{ week: "66-68", topic: "Virtual Memory & Memory Management Unit (MMU)", spec: "Multi-level page tables (4-level / 5-level paging); Translation Lookaside Buffer (TLB); page faults" },
+    .{ week: "69-71", topic: "Anatomy of a Custom Memory Allocator", spec: "Arena allocators; bump allocators; slab allocators; free lists; deep dive into jemalloc and mimalloc" },
+    .{ week: "72-74", topic: "Linux Kernel Internals & System Call Mechanics", spec: "User-space to kernel-space transition; interrupt descriptors; syscall dispatch table; errno handling" },
+    .{ week: "75-76", topic: "Processes, Threads & CFS CPU Scheduling", spec: "task_struct; fork, execve, clone; Completely Fair Scheduler (CFS); context switch cost" },
+    .{ week: "77-78", topic: "Modern Linux High-Performance I/O: epoll to io_uring", spec: "Select/poll limits; edge-triggered epoll; io_uring submission/completion rings; zero-copy networking" }
+  ]
+}
+
+^["quarter_3_modern_systems_languages"]{
+  theme: "Type-Safe Systems, Safe Concurrency, and Metaprogramming (Weeks 79 - 91 · Episodes 548 - 638)"
+  weekly_modules: #[
+    .{ week: "79-82", topic: "The Rust Ownership & Borrowing Engine", spec: "Affine type systems; lifetime parameters; non-lexical lifetimes (NLL); drop semantics & RAII" },
+    .{ week: "83-85", topic: "Unsafe Rust & Soundness Invariants", spec: "Raw pointers; undefined behavior (UB); Miri interpreter; building safe abstractions over raw memory" },
+    .{ week: "86-88", topic: "Zig: Comptime, Explicit Allocators & No Hidden Control Flow", spec: "Comptime code execution; error return traces; std.mem.Allocator interface; C interoperability" },
+    .{ week: "89-91", topic: "Lock-Free Concurrency & Atomic Primitives", spec: "Compare-and-swap (CAS); atomic load/store; lock-free single-producer single-consumer (SPSC) queues" }
+  ]
+}
+
+^["quarter_4_compilers_and_hardware_acceleration"]{
+  theme: "Compiler Backends, Optimization Passes, and SIMD/GPU Acceleration (Weeks 92 - 104 · Episodes 639 - 730)"
+  weekly_modules: #[
+    .{ week: "92-94", topic: "Building a Compiler: AST to Static Single Assignment (SSA)", spec: "Dominance frontiers; phi nodes; basic blocks; control flow graphs (CFGs)" },
+    .{ week: "95-97", topic: "Optimization Passes in LLVM IR", spec: "Dead code elimination (DCE); constant folding; loop unrolling; inlining heuristics; autovectorization" },
+    .{ week: "98-100", topic: "Machine Code Generation & Register Allocation", spec: "Chaitin-Briggs graph coloring register allocation; linear scan; instruction selection; peephole passes" },
+    .{ week: "101-102", topic: "Data-Parallel Acceleration: SIMD Vectorization", spec: "x86 AVX2/AVX-512; ARM Neon; auto-vectorization pitfalls; writing explicit vector intrinsics" },
+    .{ week: "103-104", topic: "Capstoning Year 2: Compilers as Mathematical Abstract Interpreters", spec: "Tracing how compiler dataflow analysis is formally isomorphic to abstract interpretation, bridging to Year 3" }
+  ]
+}
+
+^["taste"]{
+  ~#taste: "The metal does not care about your aesthetic preferences; it only understands physics and electrons."
+  ~#wonder: "How does a sequence of silicon transistors switching between zero and five volts give rise to human thought and global civilization?"
+
+  principles: #[
+    "Mechanical sympathy: Code written with awareness of cache lines and branch predictors out-performs blind optimization by orders of magnitude.",
+    "Zero magic: Never say 'the OS handles it'; look up the exact assembly instruction and the kernel C function.",
+    "Soundness above all: In systems programming, undefined behavior is a moral hazard; verify memory invariants with rigor."
+  ]
+}
+
+^["invariants"]{
+  "Every systems concept is demonstrated by inspecting compiled disassembly and executing memory profilers (Valgrind, perf, eBPF).",
+  "Zero reliance on synthetic toy examples; benchmarks run on real hardware architectures (x86_64, ARM64).",
+  "Memory allocation is tracked down to the exact byte offset and page alignment boundary.",
+}
+
+#>wonder_podcast_year2_1
+?["Why does writing a custom bump allocator permanently alter how a developer views garbage collection?"]{
+  #:depth #!experiential ~#lens(allocation_enlightenment)
+  ~#hypothesis: "Once an engineer implements allocation by simply advancing a 64-bit integer pointer, they realize that memory management is not magic—it is bookkeeping with different latency tradeoffs."
+  !probe{ "Benchmark a bump allocator against malloc for 1,000,000 short-lived structs; measure allocation latency and CPU instruction count." }
+  $%[allocator.instructions_per_alloc, memory.cache_miss_rate]
+}

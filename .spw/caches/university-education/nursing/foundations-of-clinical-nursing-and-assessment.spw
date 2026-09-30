@@ -1,0 +1,47 @@
+# Foundations of Clinical Nursing & Assessment Curriculum Cache
+#
+# The ADPIE nursing process, head-to-toe physical assessment, Glasgow Coma Scale, and medication rights.
+
+#>spw_cache_univ_nursing_foundations
+#:cache #!foundations_of_clinical_nursing_and_assessment
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model foundational clinical nursing methodology: the ADPIE nursing process, head-to-toe diagnostic assessment, infection control, wound staging, and high-alert medication safety protocols."
+  ~#protocol: "cache.layer/1"
+}
+
+^"the_nursing_process_and_clinical_reasoning"{
+  "adpie_systematic_framework": .{
+    assessment_data_collection: "Subjective patient history paired with objective clinical measurements (vital signs, laboratory panels, physical examination findings)",
+    nanda_i_nursing_diagnoses: "Clinical judgment concerning human response to health conditions or life processes (Problem-Etiology-Symptom PES format; distinguishing nursing diagnosis from medical pathology)",
+    planning_outcomes_and_interventions: "Formulating SMART patient-centered goals (Nursing Outcomes Classification NOC) and evidence-based interventions (Nursing Interventions Classification NIC)",
+    implementation_and_evaluation: "Executing collaborative and independent nursing actions; continuous iterative reassessment of patient progress toward defined outcome benchmarks",
+  }[reg=facet],
+  "systematic_physical_assessment_methodology": .{
+    assessment_sequence: "Inspection, Palpation, Percussion, Auscultation (inverted for abdominal assessment: auscultation precedes palpation to prevent artifactual bowel sound stimulation)",
+    neurological_evaluation_gcs: "Glasgow Coma Scale evaluating Eye opening (1-4), Verbal response (1-5), and Motor response (1-6); score <= 8 indicating severe neurological injury requiring airway protection; PERRLA pupil dynamics",
+    cardiopulmonary_auscultation: "Cardiac auscultation across five landmarks (Aortic, Pulmonic, Erb's point, Tricuspid, Mitral/Apex); identification of normal S1/S2 and pathological S3 (ventricular gallop/fluid overload) and S4; Adventitious lung sounds (crackles, wheezes, rhonchi, stridor)",
+  }[reg=facet],
+}
+
+^"patient_safety_infection_control_and_medications"{
+  "infection_control_and_wound_care": .{
+    transmission_based_precautions: "Contact precautions (gloves/gown for MRSA, VRE; mandatory soap and water washing for Clostridioides difficile spores); Droplet precautions (surgical mask within 6 feet); Airborne precautions (N95 respirator and negative-pressure airborne infection isolation room AIIR for tuberculosis, measles, varicella)",
+    pressure_injury_staging: "Braden scale risk stratification; Staging: Stage 1 (non-blanchable erythema), Stage 2 (partial-thickness skin loss with exposed dermis), Stage 3 (full-thickness skin loss to subcutaneous fat), Stage 4 (exposed bone, tendon, or muscle), Unstageable (obscured by slough or eschar)",
+  }[reg=facet],
+  "pharmacological_administration_safety": .{
+    the_rights_of_medication_administration: "Right Patient (two unique identifiers), Right Drug, Right Dose, Right Route, Right Time, Right Reason, and Right Documentation; point-of-care barcode scanning",
+    high_alert_medication_safeguards: "PINCH protocols (Potassium, Insulin, Narcotics, Chemotherapy, Heparin/Anticoagulants) requiring independent dual-nurse verification of dosage calculations and pump channel infusion rates",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_nursing_foundations_1
+  ?["Why does auscultating an S3 heart sound at the cardiac apex in an elderly patient provide immediate actionable evidence of heart failure before pulmonary crackles become audible?"]{
+    #:depth #!pathophysiological ~#lens(ventricular_compliance_and_diastolic_impact)
+    ~#hypothesis: "The S3 heart sound is produced during early rapid ventricular filling as blood rushes from the atrium into an already over-distended, non-compliant left ventricle, causing violent deceleration and resonant wall vibration. This acoustic signal directly reflects elevated left ventricular end-diastolic pressure (LVEDP) that will subsequently back up into the pulmonary venous system hours before fluid transudation creates audible alveolar crackles."
+    !probe{ "Correlate nursing S3 auscultation findings with point-of-care cardiac ultrasound B-lines and B-type natriuretic peptide (BNP) levels in acute dyspneic admissions." }
+    $%[cardiology.s3_gallop_diagnostic_specificity, hemodynamics.lvedp_elevation_mmhg]
+  }
+}

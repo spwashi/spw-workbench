@@ -1,0 +1,81 @@
+# Expressive Type Systems & Ergonomics: TypeScript, Kotlin, Swift
+#
+# Analysis of discriminated unions, control-flow narrowing, satisfies, and pragmatic type ergonomics.
+
+#>spw_cache_lang_type_ergonomics
+#:cache #!languages
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Analyze the ergonomic type system features that allow developers to model domain invariants with precision while avoiding academic rigidity."
+  ~#focus: "Discriminated unions, type narrowing, the satisfies operator, extension functions, and optional chaining"
+}
+
+^["discriminated_unions_and_narrowing"]{
+  ~#feature: "Discriminated Unions & Control Flow Type Narrowing"
+  language: "TypeScript / Swift / Kotlin"
+  syntax: "type Result = { kind: 'success', data: string } | { kind: 'error', code: number }"
+  why_developers_love_it: #[
+    "Natural modeling of domain states: A value is either Loaded with data, or Loading, or Errored; impossible states (e.g. data present while loading) cannot be expressed.",
+    "Automatic narrowing: Checking 'if (result.kind === \"success\")' automatically narrows result to the success type within the block without type casting.",
+    "Exhaustive switch checks: Assigning the default branch to 'const _exhaustive: never = result' causes the compiler to flag missed variants."
+  ]
+}
+
+^["the_satisfies_operator"]{
+  ~#feature: "The 'satisfies' Operator (Type Validation Without Widening)"
+  language: "TypeScript 4.9+"
+  syntax: "const palette = { primary: '#007ACC', secondary: '#F0F0F0' } satisfies Record<string, string>"
+  why_developers_love_it: #[
+    "Preserves exact literal types: Unlike 'const palette: Record<string, string>', 'satisfies' retains the exact keys 'primary' and 'secondary' for autocompletion.",
+    "Catches type mismatches early: Validates that all values are valid hex strings while preventing accidental spelling mistakes in property accesses.",
+    "Zero runtime artifact: Completely erased during compilation; pure static verification."
+  ]
+}
+
+^["extension_functions"]{
+  ~#feature: "Extension Functions & Methods"
+  language: "Kotlin / Swift / C#"
+  syntax: "fun String.toSnakeCase(): String = ..."
+  why_developers_love_it: #[
+    "Fluent API design: Enables dot-chaining 'user.name.toSnakeCase()' without forcing the method into the original class definition.",
+    "Zero prototype pollution: Resolved statically at compile time; does not mutate global prototypes or affect external libraries.",
+    "Cleaner than static utility classes: Banishes ugly utility wrappers like 'StringUtils.toSnakeCase(user.name)'."
+  ]
+}
+
+^["optional_chaining_and_null_coalescing"]{
+  ~#feature: "Optional Chaining (?.) and Null Coalescing (??)"
+  language: "TypeScript / JavaScript / Swift / C#"
+  syntax: "const avatar = user?.profile?.settings?.avatar ?? defaultAvatar"
+  why_developers_love_it: #[
+    "Extinguishes null-pointer exceptions: Safely navigates deeply nested, optional object graphs without defensive 'if (user && user.profile)' ladders.",
+    "Short-circuiting semantics: Halts navigation immediately at the first null or undefined link.",
+    "Expressive defaults: Provides clean fallback values when an optional property is absent."
+  ]
+}
+
+^["taste"]{
+  ~#taste: "Types should serve as guardrails for creativity, not handcuffs that force ceremonial paperwork."
+  ~#wonder: "Why did TypeScript become the most popular typing system in the world despite being deliberately unsound?"
+
+  principles: #[
+    "Pragmatism over purity: Modeling real-world JavaScript idioms was more valuable than academic completeness.",
+    "Types as documentation: Reading a well-crafted type signature explains the entire contract of a function without looking at its body.",
+    "Zero runtime penalty: Types exist to protect the developer during authoring, then completely vanish at runtime."
+  ]
+}
+
+^["invariants"]{
+  "Discriminated union narrowing preserves type narrowing across nested condition scopes.",
+  "The satisfies operator never widens property keys or value literal types.",
+  "Extension functions compile to static method dispatches without runtime lookup overhead.",
+}
+
+#>wonder_lang_type_ergonomics_1
+?["How does 'making impossible states untypeable' change an engineering team's bug triage burden?"]{
+  #:depth #!philosophical ~#lens(defensive_elimination)
+  ~#hypothesis: "When domain models use discriminated unions rather than multiple optional booleans, entire categories of edge-case bugs vanish before code review."
+  !probe{ "Audit 50 production frontend bugs; count how many were caused by invalid state combinations (e.g., isLoading=true but error=true) that a union would have prevented." }
+  $%[bugs.impossible_state_ratio, developer.debugging_time_reduction]
+}

@@ -1,0 +1,50 @@
+# University Economics Curriculum Cache Index
+#
+# Root cache index for undergraduate and graduate microeconomics, macroeconomics, causal econometrics, and game theory.
+
+#>spw_cache_univ_econ_index
+#:cache #!university_economics
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model undergraduate and doctoral university economics: consumer and producer theory, causal econometric identification, general equilibrium, DSGE macroeconomics, and mechanism design."
+  ~#domains: "Microeconomic theory, macroeconomic dynamics, econometrics, game theory, and mechanism design"
+  ~#protocol: "cache.layer/1"
+}
+
+^"roots"{
+  @undergrad_micro_macro: ~"./undergrad-micro-and-macroeconomics.spw"
+  @undergrad_econometrics: ~"./undergrad-econometrics-and-data-methods.spw"
+  @graduate_micro: ~"./graduate-advanced-microeconomic-theory.spw"
+  @graduate_macro_metrics: ~"./graduate-macroeconomics-and-econometrics.spw"
+  @taste: ~"./taste.spw"
+}
+
+^"dispatch"{
+  undergrad_micro_and_macroeconomics: @undergrad_micro_macro
+  undergrad_econometrics_and_data_methods: @undergrad_econometrics
+  graduate_advanced_microeconomic_theory: @graduate_micro
+  graduate_macroeconomics_and_econometrics: @graduate_macro_metrics
+  taste_considerations: @taste
+}
+
+^"taste"{
+  ~#taste: "Economics is moral philosophy translated into the calculus of constraints: tracing how finite resources and human incentives shape justice, wealth, and freedom."
+  ~#wonder: "Why do decentralized markets of self-interested individuals coordinate complex global supply chains with astonishing efficiency, yet spontaneously produce catastrophic climate externalities and speculative financial collapses?"
+}
+
+^"invariants"{
+  "Microeconomic formulations must respect optimization first-order conditions, envelope theorems, and duality relations.",
+  "Econometric models must explicitly state identification assumptions (parallel trends, exclusion restrictions, continuity).",
+  "Macroeconomic dynamic systems must satisfy transversality conditions and intertemporal Euler equations.",
+}
+
+^"wonder_probes"{
+  #>wonder_univ_econ_index_1
+  ?["How does the mathematical proof of the First Fundamental Welfare Theorem conceal the normative ethical assumptions underlying Pareto efficiency?"]{
+    #:depth #!philosophical ~#lens(axiomatic_welfare_and_distributive_justice)
+    ~#hypothesis: "Pareto efficiency mathematically guarantees only that no agent can be made better off without harming another; an allocation where a single tyrant holds 99.9% of society's wealth while the populace starves can be strictly Pareto efficient. Economists who equate efficiency with social optimality unconsciously smuggle in an extreme status-quo distributional conservatism."
+    !probe{ "Simulate Arrow-Debreu general equilibrium equilibria across varying initial wealth endowments to demonstrate the divergence between Pareto frontiers and Rawlsian maximin social welfare functions." }
+    $%[welfare.pareto_optimal_gini_coefficient, ethics.rawlsian_welfare_distance]
+  }
+}

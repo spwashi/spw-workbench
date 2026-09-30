@@ -1,0 +1,77 @@
+# JetBrains LSP Client Integration
+#
+# Cache of Language Server Protocol support provider, launcher, discovery ladder, and settings.
+
+#>spw_cache_jetbrains_lsp_client
+#:cache #!jetbrains
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Cache LSP client startup mechanics, discovery order, and configuration for JetBrains IDEs."
+  ~#provider_class: "com.spwashi.spw.SpwLspServerSupportProvider"
+  ~#launcher_class: "com.spwashi.spw.SpwLspLauncher"
+  ~#settings_class: "com.spwashi.spw.settings.SpwLspConfigurable"
+}
+
+^["server_support_provider"]{
+  interface: "LspServerSupportProvider"
+  descriptor: "SpwLspServerDescriptor"
+  file_checker: "isSupportedFile(file) returns true for .spw"
+  notification_group: "Spw LSP (BALLOON display)"
+}
+
+^["server_discovery_ladder"]{
+  priority_1: .{
+    source: "Project package.json"
+    rule: "Check if open project contains package.json with an 'lsp' script"
+    command: "npm run --silent lsp"
+  }[reg=facet]
+
+  priority_2: .{
+    source: "Mounted workbench"
+    rule: "Check if project contains mounted .spw/_workbench with package.json"
+    command: "npm --prefix .spw/_workbench run --silent lsp"
+  }[reg=facet]
+
+  priority_3: .{
+    source: "Environment variable override"
+    rule: "Check SPW_LSP_SERVER_PATH environment variable"
+    command: "node <SPW_LSP_SERVER_PATH>"
+  }[reg=facet]
+
+  priority_4: .{
+    source: "Local source checkouts"
+    rule: "Check local packages/spw-lsp/src/stdio-server.ts or scripts/lsp/stdio-server.ts"
+    command: "node --import tsx packages/spw-lsp/src/stdio-server.ts"
+  }[reg=facet]
+}
+
+^["settings_and_configuration"]{
+  ui_location: "Settings | Tools | Spw LSP"
+  configurable_class: "SpwLspConfigurable"
+  settings_state: "SpwLspSettings (PersistentStateComponent)"
+  options: #[
+    .{ name: "customCommand", description: "Explicit command line to launch LSP server" },
+    .{ name: "customWorkingDirectory", description: "Explicit working directory to run server command" },
+    .{ name: "autoStart", description: "Whether to auto-start LSP server when opening Spw file" }
+  ]
+}
+
+^["stdio_bridge"]{
+  bridge_script: "scripts/lsp/stdio-upstream-bridge.ts"
+  flag_rule: "--silent must be passed to npm run so npm does not emit banner logs on stdio"
+  channel: "Standard input / output (stdio) JSON-RPC communication"
+}
+
+^["native_vs_lsp4ij"]{
+  current_adapter: "Native JetBrains com.intellij.modules.lsp adapter"
+  status_262: "Verified functional on 2026.2.0.1 and 2026.2.1 with deprecation warnings"
+  future_horizon: "LSP4IJ evaluation planned before 263 compatibility claim"
+  decision_rule: "Keep native adapter while it remains stable and verified; avoid speculative dependency churn"
+}
+
+^["invariants"]{
+  "LSP server is started with --silent to prevent presentation noise from corrupting JSON-RPC frames.",
+  "Working directory defaults to the consumer project root to preserve relative document resolution.",
+  "LSP connection failures emit actionable balloon notifications with guidance on npm script readiness.",
+}

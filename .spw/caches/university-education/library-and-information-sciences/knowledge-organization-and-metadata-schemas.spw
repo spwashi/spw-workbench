@@ -1,0 +1,47 @@
+# Knowledge Organization & Metadata Schemas Curriculum Cache
+#
+# Ranganathan's Five Laws, FRBR/LRM WEMI model, MARC21/BIBFRAME, Dublin Core, and controlled authority vocabularies.
+
+#>spw_cache_univ_lis_metadata
+#:cache #!knowledge_organization_and_metadata_schemas
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model bibliographic knowledge organization, Ranganathan faceted taxonomies, FRBR/LRM conceptual entities (WEMI), MARC21 and Dublin Core metadata schemas, and Linked Open Data ontologies."
+  ~#protocol: "cache.layer/1"
+}
+
+^"bibliographic_classification_and_taxonomic_foundations"{
+  "ranganathan_laws_and_faceted_classification": .{
+    five_laws_of_library_science: "1) Books are for use, 2) Every reader his/her book, 3) Every book its reader, 4) Save the time of the reader, 5) The library is a growing organism",
+    pmest_faceted_colon_classification: "Analyzing complex subjects into five fundamental facets: Personality (the focal subject), Matter (substance/property), Energy (action/process), Space (geographic locus), Time (chronological period); synthesized via Colon notation rather than rigid enumerative pigeonholes",
+  }[reg=facet],
+  "enumerative_and_hierarchical_classification_systems": .{
+    dewey_decimal_classification_ddc: "Ten base classes (000-900); pure decimal numeric notation with relative location; hierarchical expansion allowing infinite subtopic decimal nesting",
+    library_of_congress_classification_lcc: "Alphanumeric notation (Classes A-Z, sub-classes, cutter numbers) engineered specifically for the research scale of the U.S. National Library and academic university collections",
+  }[reg=facet],
+}
+
+^"metadata_standards_and_conceptual_models"{
+  "the_frbr_lrm_conceptual_hierarchy_wemi": .{
+    work_level_abstraction: "Work: Distinct intellectual or artistic creation (e.g., Shakespeare's Hamlet as an abstract dramatic conception)",
+    expression_level_realization: "Expression: Intellectual or artistic realization of a work (e.g., the original 1603 First Quarto text, or a modern French translation)",
+    manifestation_level_embodiment: "Manifestation: Physical or digital embodiment of an expression (e.g., the 2024 Oxford University Press paperback edition, ISBN 978-019...)",
+    item_level_exemplar: "Item: Single physical exemplar or copy held by a library (e.g., the specific volume with barcode #39088012345678 sitting on Shelf 4)",
+  }[reg=facet],
+  "machine_readable_schemas_and_linked_data": .{
+    marc21_to_bibframe_evolution: "MARC21 flat field architecture (Leader, 100 Main Entry Author, 245 Title/Statement of Responsibility, 260/264 Imprint, 650 Topical Subject) transitioning to Library of Congress BIBFRAME RDF graph triples",
+    dublin_core_metadata_element_set_dcmes: "Fifteen core semantic elements (Title, Creator, Subject, Description, Publisher, Contributor, Date, Type, Format, Identifier, Source, Language, Relation, Coverage, Rights); ISO 15836 interoperability benchmark",
+    controlled_vocabularies_and_authority_control: "Eliminating linguistic ambiguity through authority files: Library of Congress Subject Headings (LCSH), Medical Subject Headings (MeSH), and Virtual International Authority File (VIAF) URIs linking global identities",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_lis_metadata_1
+  ?["Why did the library community transition from 50 years of MARC21 cataloging to the WEMI entity-relationship model and BIBFRAME linked data?"]{
+    #:depth #!ontological ~#lens(web_of_strings_to_web_of_things)
+    ~#hypothesis: "MARC21 was designed in the 1960s to print 3x5 physical paper catalog cards; its records are isolated text silos that web search engines and semantic crawlers cannot parse. The WEMI/BIBFRAME model deconstructs flat records into linked RDF graph nodes (Work, Instance, Item), transforming library catalogs from closed institutional databases into discoverable nodes on the global semantic web."
+    !probe{ "Measure search engine crawler indexing rates and SPARQL query resolution speeds across MARC21 records vs serialized BIBFRAME RDF graphs." }
+    $%[metadata.bibframe_rdf_triples_per_record, semantic_web.search_crawler_indexing_percentage]
+  }
+}

@@ -1,0 +1,44 @@
+# Cell Cycle & Stem Cell Differentiation Curriculum Cache
+#
+# Cyclin-CDK oscillator circuits, p53/Rb restriction points, APC/C spindle checkpoints, and Yamanaka iPSC pluripotency.
+
+#>spw_cache_univ_mcb_development
+#:cache #!cell_cycle_and_stem_cell_differentiation
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model eukaryotic cell cycle engines, restriction point Rb/E2F mechanics, spindle assembly checkpoints, and Yamanaka factor pluripotency gene networks."
+  ~#protocol: "cache.layer/1"
+}
+
+^"cell_cycle_oscillators_and_surveillance_checkpoints"{
+  "cyclin_cdk_biochemical_oscillator": .{
+    cyclin_cdk_complex_succession: "G1 phase: Cyclin D-CDK4/6; G1/S transition: Cyclin E-CDK2; S phase: Cyclin A-CDK2; Mitosis entry: Cyclin B-CDK1 (Mitosis Promoting Factor MPF); periodic synthesis and ubiquitin-mediated destruction by SCF and APC/C",
+    restriction_point_and_rb_pathway: "Restriction point (R-point) in late G1: hypophosphorylated Retinoblastoma protein (pRb) binds and silences E2F transcription factors; progressive phosphorylation by Cyclin D-CDK4/6 and Cyclin E-CDK2 releases free E2F, irreversibly committing cell to autonomous DNA replication",
+  }[reg=facet],
+  "dna_damage_and_spindle_assembly_checkpoints": .{
+    p53_p21_dna_damage_arrest: "Double-strand breaks activate ATM/ATR serine/threonine kinases -> Chk1/Chk2 phosphorylation -> stabilizing transcription factor p53 from Mdm2 degradation -> transactivating p21 (CIP1/WAF1) CDK inhibitor, halting cell cycle at G1/S",
+    spindle_assembly_checkpoint_sac: "Unattached kinetochores recruit Mad2 and BubR1 to form Mitotic Checkpoint Complex (MCC); MCC inhibits Anaphase Promoting Complex/Cyclosome (APC/C) coactivator Cdc20; upon bi-oriented amphitelic microtubule attachment and tension, MCC disassembles -> APC/C degrades Securin -> releasing Separase protease to cleave Scc1 cohesin rings, triggering sister chromatid separation",
+  }[reg=facet],
+}
+
+^"stem_cell_potency_and_developmental_plasticity"{
+  "pluripotency_transcriptional_circuits": .{
+    potency_hierarchy: "Totipotent (zygote capable of forming embryonic and extraembryonic trophoblast) -> Pluripotent (inner cell mass ESCs forming all three germ layers: ectoderm, mesoderm, endoderm) -> Multipotent adult somatic stem cells",
+    core_pluripotency_triad: "Oct4 (Pou5f1), Sox2, and Nanog forming an auto-regulatory feedforward loop that maintains open euchromatin at pluripotency loci while recruiting Polycomb Repressive Complexes (PRC1/PRC2) to bivalent promoters of developmental lineage genes",
+  }[reg=facet],
+  "cellular_reprogramming_and_morphogen_gradients": .{
+    yamanaka_ipsc_reprogramming: "Forced ectopic expression of four transcription factors (Oct4, Sox2, Klf4, c-Myc) resets terminal somatic fibroblasts into induced Pluripotent Stem Cells (iPSCs), resetting epigenetic DNA methylation and histone marks",
+    morphogen_concentration_gradients: "French flag model: extracellular concentration gradients of Sonic Hedgehog (Shh), BMP4, and Wnt generating differential threshold gene expression to pattern tissue axes (e.g., neural tube dorsoventral floor/roof plate specification)",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_mcb_development_1
+  ?["How does the spindle assembly checkpoint detect a single unattached kinetochore out of ninety-two in a human cell and instantly halt whole-cell anaphase onset?"]{
+    #:depth #!cellular ~#lens(catalytic_checkpoint_amplification)
+    ~#hypothesis: "A single unattached kinetochore functions as a continuous biochemical catalytic factory. The kinetochore-bound protein Mad1 recruits and cyclically converts inactive open-Mad2 into active closed-Mad2 at rates of hundreds of molecules per second, rapidly flooding the entire cell volume with diffusible inhibitory Mitotic Checkpoint Complex (MCC) to inhibit every APC/C molecule until mechanical microtubule tension is achieved."
+    !probe{ "Measure fluorescence recovery after photobleaching (FRAP) of GFP-Mad2 at isolated unattached kinetochores vs cytosolic MCC diffusion times during prometaphase." }
+    $%[mitosis.mad2_catalytic_turnover_rate_per_sec, sac.anaphase_delay_fidelity_percentage]
+  }
+}

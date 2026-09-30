@@ -1,0 +1,69 @@
+# TikTok LIVE Commerce & In-Stream Shopping
+#
+# Integration of TikTok Shop, interactive product showcases, flash promotions, and zero-friction checkout.
+
+#>spw_cache_tiktok_live_commerce
+#:cache #!tiktok_live
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the e-commerce architecture powering frictionless in-stream product purchase and live merchandising."
+  ~#subsystem: "TikTok Shop integration, product pin engine, real-time inventory synchronization"
+}
+
+^["shopping_architecture"]{
+  yellow_shopping_bag: .{
+    position: "Bottom-left persistent widget displaying product catalog and current deal count"
+    interaction: "Tapping expands a bottom sheet product list while live video continues playing in a top floating thumbnail"
+  }[reg=facet]
+
+  pinned_product_card: .{
+    role: "Highlighted product currently being pitched by the creator"
+    ui: "Floating pop-up card with thumbnail, title, discounted price, and one-tap 'Buy Now' button"
+    host_control: "Creator or co-host assistant pushes product pins on cue using the merchant console"
+  }[reg=facet]
+
+  flash_sale_coupons: .{
+    countdown_timer: "Limited-time voucher (e.g. 50% off for the next 10 minutes or first 100 buyers)"
+    claim_mechanic: "One-tap claim injected into user checkout basket automatically"
+  }[reg=facet]
+}
+
+^["creator_merchant_integration"]{
+  commission_affiliate: "Creators select merchant products from the Creator Marketplace, earning 5% to 25% GMV commission"
+  direct_merchant: "Brands broadcast directly from warehouses or studios with direct inventory management"
+  sample_request_flow: "Free product samples shipped to qualified creators based on historical GMV tiers"
+}
+
+^["conversion_funnel"]{
+  step_1_impression: "Live stream FYP preview with highlighted product badge"
+  step_2_demonstration: "Creator physically demonstrates or reviews product live on camera"
+  step_3_pin_trigger: "Creator pins product card; screen UI animates to draw attention"
+  step_4_in_app_checkout: "Native checkout bottom sheet pre-filled with saved Apple Pay / Google Pay / card details"
+  step_5_social_proof: "Real-time chat notification: 'User @alex just purchased Item #3!'"
+}
+
+^["taste"]{
+  ~#taste: "Live shopping replaces glossy catalog detachment with energetic, tactile social proof."
+  ~#wonder: "Why does seeing someone touch, test, and answer questions about a product live convert 4x higher than standard e-commerce pages?"
+
+  principles: #[
+    "Tactile honesty: Dropping, stretching, tasting, or wearing the product live establishes credibility that photos cannot fake.",
+    "Real-time customer service: Answering sizing questions in real-time eliminates the cart-abandonment hesitation phase.",
+    "Synchronous FOMO: Displaying live inventory counters ticking down from 50 to 0 triggers collective buying rushes."
+  ]
+}
+
+^["invariants"]{
+  "Video and audio play continuously without interruption during the in-app checkout flow.",
+  "Inventory counts decrement atomically across all live viewer sessions upon payment authorization.",
+  "Purchases are tracked with unique live-session attribution IDs for creator commission settlement.",
+}
+
+#>wonder_tiktok_live_commerce_1
+?["How does in-stream purchase without leaving the broadcast alter the buyer's regret curve?"]{
+  #:depth #!philosophical ~#lens(frictionless_impulse)
+  ~#hypothesis: "Removing app-switching friction merges entertainment and transaction, making purchasing feel like audience participation rather than monetary loss."
+  !probe{ "Compare 30-day return rates between in-stream live impulse purchases and deliberate web store purchases of the same SKU." }
+  $%[commerce.live_conversion_rate, order.return_rate_percentage]
+}

@@ -1,0 +1,62 @@
+# Set Operations & Crew Hierarchy Cache
+#
+# Production logistics, departmental command chains, call sheets, turnarounds, and set protocol.
+
+#>spw_cache_film_prod_set_ops
+#:cache #!set_operations_and_crew_hierarchy
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the operational command hierarchy, departmental responsibilities, scheduling mechanics, and union labor regulations governing motion picture sets."
+  ~#protocol: "cache.layer/1"
+}
+
+^"command_hierarchy_and_departmental_roles"{
+  "production_and_assistant_directors": .{
+    line_producer_and_upm: "Unit Production Manager (UPM) and Line Producer execute the budget, approve daily expenditures, sign off on union timecards, and oversee physical production logistics",
+    first_assistant_director_1ad: "The general of the set: maintains schedule, runs the floor, calls roll and cut cues, enforces safety protocols, and coordinates departmental readiness before each take",
+    second_assistant_director_2ad: "Operates basecamp, tracks actor arrivals, manages hair/makeup/wardrobe schedule, and drafts the next day's call sheet with precise crew and cast call times",
+    second_second_ad_and_pas: "Direct background extras, enforce perimeter sound lockups ('rolling! quiet on set!'), escort talent to set, and facilitate communication between basecamp and set",
+  }[reg=facet],
+  "camera_and_imaging_technicians": .{
+    director_of_photography_dp: "Collaborates with the director to establish visual language, oversees lighting design, selects lenses/apertures, and directs camera movement",
+    camera_operator_and_steadicam: "Physically operates the camera rig (dolly, handheld, Steadicam, Trinity), framing action with fluid composition and actor pacing",
+    first_assistant_camera_1ac_focus_puller: "Maintains critical focus using wireless follow-focus systems (Preston, ARRI Hi-5) by estimating distance and reading laser rangefinders without looking at monitors",
+    second_assistant_camera_2ac_clapper_loader: "Marks actors with tape, slates each take with synchronized timecode clapper board, swaps lenses and batteries, and compiles camera log sheets",
+    digital_imaging_technician_dit: "Manages on-set digital negative offload with verified checksums (Silverstack), monitors exposure via waveform monitors, and applies live CDL and LUT color grades",
+  }[reg=facet],
+  "grip_and_electric_ge": .{
+    gaffer_chief_lighting_technician: "Designs electrical distribution, plans lighting fixtures (HMIs, LEDs, tungsten), and works hand-in-hand with the DP to sculpt the light quality",
+    best_boy_electric_bbe: "Manages electric equipment inventory, generator logistics, cable runs, and electrical crew staffing and payroll timecards",
+    key_grip: "Heads the grip department responsible for camera mounting rigs (cranes, car mounts, dollies) and light modification (flags, nets, silks, diffusions)",
+    best_boy_grip_and_dolly_grip: "Best Boy Grip manages grip staging and rigging trucks; Dolly Grip precisely executes hydraulic dolly movements on leveled steel track in sync with actor movements",
+  }[reg=facet],
+  "production_sound_and_art_department": .{
+    production_sound_mixer: "Monitors and mixes multi-channel audio (dialogue lavaliers and boom channels) to ensure clean signal-to-noise ratio free of ambient set contamination",
+    boom_operator: "Suspends microphone on carbon fiber pole inches above actors' heads just out of camera frame, avoiding casting mic shadows on lit walls",
+    production_designer_and_prop_master: "Designer architects physical world aesthetic; Prop Master handles all items touched by actors, ensuring continuity, safety, and operational readiness",
+  }[reg=facet],
+}
+
+^"scheduling_logistics_and_union_protocols"{
+  "call_sheets_and_daily_production_reports": .{
+    call_sheet_architecture: "Daily operational master document detailing day/night exterior/interior scenes, cast call times, hair/makeup schedules, advanced equipment needs, and nearest emergency hospital",
+    stripboard_scheduling: "Color-coded scene strips arranged across shooting days optimized for location consolidation, cast availability, sun angles, and company turnaround limits",
+    daily_production_report_dpr: "Legal production log recording exact times of crew call, first shot, meal breaks, wrap, scenes/pages completed, film/card footage shot, and explanation of delay codes",
+  }[reg=facet],
+  "union_turnaround_and_labor_penalties": .{
+    rest_period_turnaround: "Mandatory 12-hour rest period between wrap and next crew call; minimum 54-hour continuous rest period over a 2-day weekend; violations trigger severe financial turnaround penalties",
+    meal_penalties: "First meal break must occur no later than 6 hours after crew call (or grace period of 12 minutes if camera is actively rolling on a setup); penalty fines compound every 30 minutes thereafter",
+    overtime_tiers: "Standard 8-hour day -> 1.5x pay up to 12 hours -> 2.0x pay ('double time') beyond 12 hours -> 3.0x 'golden time' beyond 14 or 16 hours depending on IATSE local agreement",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_film_prod_set_ops_1
+  ?["How does the first assistant camera (1st AC) maintain razor-sharp focus on an actor sprinting toward a 50mm T1.3 wide-open lens with a depth of field under two inches?"]{
+    #:depth #!craft ~#lens(proprioceptive_spatial_calibration)
+    ~#hypothesis: "Elite focus pullers do not rely primarily on monitor peaking; they develop internalized proprioceptive spatial estimation, converting visual parallax, floor distance marks, and actor rhythmic cadence into subconscious muscle memory on the wireless follow-focus handwheel."
+    !probe{ "Record eye-tracking gaze fixation of master 1st ACs during high-speed tracking shots to correlate attention allocation between the physical actor, focus handwheel witness marks, and monitor." }
+    $%[cinematography.focus_accuracy_percentage, psychomotor.depth_estimation_latency]
+  }
+}

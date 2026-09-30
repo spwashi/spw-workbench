@@ -1,0 +1,90 @@
+# VS Code Language Client & Custom Protocols
+#
+# Cache of LanguageClient lifecycle, custom RPC protocols, and mounted-workbench resolution in VS Code.
+
+#>spw_cache_vscode_lsp_client
+#:cache #!vscode
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Cache the VS Code LanguageClient configuration, custom spw/* protocol endpoints, and resolution ladders."
+  ~#source: "extensions/vscode-spw/src/lsp/"
+  ~#client_library: "vscode-languageclient (v9.0.1)"
+}
+
+^["client_lifecycle"]{
+  transport: "stdio (child_process.spawn with stdio piping)"
+  server_binary: "dist/server/spw-lsp.cjs or packages/spw-lsp/src/stdio-server.ts via node"
+  activation_events: #[
+    "onLanguage:spw",
+    "onView:spwConcepts",
+    "onView:spwWorkspace"
+  ]
+  restart_command: "spw.restartLanguageServer"
+  trace_setting: "spw.trace.server (off, messages, verbose)"
+}
+
+^["custom_protocols"]{
+  workspace_manifest: .{
+    method: "spw/workspaceManifest/v1"
+    payload: "Returns root map, active dials, and file classification"
+    consumer: "SpwWorkspaceAtlasTreeDataProvider"
+  }[reg=facet]
+
+  annotations_index: .{
+    method: "spw/annotations"
+    payload: "Returns full workspace annotation index with positions and axes"
+    consumer: "SpwConceptsTreeDataProvider"
+  }[reg=facet]
+
+  geometry_probe: .{
+    method: "spw/geometry"
+    payload: "Returns live brace counts, operator distributions, and resonance metrics for active buffer"
+    consumer: "SpwInspectGeometryCommand"
+  }[reg=facet]
+
+  surface_profile: .{
+    method: "spw/surfaceProfile"
+    payload: "Returns active dialect stack, format settings, and lint rules"
+    consumer: "SpwShowSurfaceProfileCommand"
+  }[reg=facet]
+
+  cache_reflection: .{
+    method: "spw/cacheReflection"
+    payload: "Returns LSP session reflection metrics and cache layer status"
+    consumer: "SpwInspectCacheCommand"
+  }[reg=facet]
+}
+
+^["mounted_workbench_resolution"]{
+  priority_1: "Check config setting 'spw.cli.toolRoot'"
+  priority_2: "Check workspace folder root for packages/spw-lsp"
+  priority_3: "Check mounted .spw/_workbench within the consumer workspace"
+  priority_4: "Check global npm-installed @spwashi/spw-lsp package"
+  priority_5: "Fallback to bundled extension-relative dist/server/spw-lsp.cjs"
+}
+
+^["taste"]{
+  ~#taste: "Custom protocols must carry verified data, not speculative UI state."
+  ~#wonder: "Why does the VS Code extension require typed custom requests instead of generic LSP extensions?"
+
+  principles: #[
+    "Protocol typedness: Every custom method is declared with TypeScript interfaces matching packages/spw-lsp/src/workspace-protocol.ts.",
+    "Per-workspace isolation: Multi-root workspaces run isolated LSP instances to prevent cross-project scope bleeding.",
+    "Quiet recovery: If the server crashes, it restarts cleanly with backoff and posts a discreet notification with restart option."
+  ]
+}
+
+^["invariants"]{
+  "Standard LSP requests (definition, completion, rename) take precedence over custom methods.",
+  "Custom request failures degrade gracefully without crashing the extension.",
+  "Server stdio channel is dedicated solely to JSON-RPC frames; debug logs route to stderr.",
+}
+
+#>wonder_vscode_lsp_1
+?["How does the custom protocol spw/workspaceManifest/v1 anchor the client in workspace reality?"]{
+  #:depth #!computational ~#lens(protocol_grounding)
+  ~#hypothesis: "By providing a single authoritative snapshot of roots and dials, the client avoids guessing workspace topology from raw file globbing."
+  !probe{ "Measure the time to first manifest resolution on a project with 500 .spw files; compare with a client-side recursive file traversal." }
+  $%[manifest.load_time_ms, fs.stat_call_count]
+}

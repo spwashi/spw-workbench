@@ -1,0 +1,75 @@
+# TikTok LIVE Interactive Mechanics & PK Battles
+#
+# Mechanics of competitive PK battles, multi-guest hosting, and audience participatory rituals.
+
+#>spw_cache_tiktok_live_interactive
+#:cache #!tiktok_live
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Analyze the game-theoretic and social mechanics of PK Battles, co-hosting, and crowd coordination."
+  ~#format: "Synchronous peer-to-peer competition and cooperative crowd dynamics"
+}
+
+^["pk_battles"]{
+  structure: .{
+    duration: "5 minutes standard round duration"
+    split_screen: "Screen splits horizontally (50/50 vertical division between creator A and creator B)"
+    progress_bar: "Dynamic tug-of-war point bar at the top displaying percentage of gifts received"
+    point_formula: "Points = 1 Coin = 1 Point (with multipliers during speed challenges)"
+  }[reg=facet]
+
+  phases: #[
+    .{ phase: "Matching", description: "Matchmaking queue pairing creators via MMR (Matchmaking Rating) or friend invite" },
+    .{ phase: "Battle", description: "Creators rally their audiences to tap screen (likes) and send high-velocity gifts" },
+    .{ phase: "Speed Challenge", description: "Mid-round 30-second sprint multiplying all gift points by 2x or 3x" },
+    .{ phase: "Final 30 Seconds", description: "Snipe window where high-roller gifters drop massive prestige gifts to flip the score" },
+    .{ phase: "Punishment Game", description: "Loser performs agreed-upon humorous forfeit (e.g. silly dance, ice challenge, pushups)" }
+  ]
+}
+
+^["multi_guest_panels"]{
+  modes: #[
+    .{ mode: "Grid View", capacity: "Up to 8 video guests displayed in symmetrical mobile grid" },
+    .{ mode: "Panel View", capacity: "Host remains primary full-screen stream; guests occupy small side overlays" },
+    .{ mode: "Audio Seats", capacity: "Voice-only round table with speaking indicator halos" }
+  ]
+  host_controls: #[
+    "Mute guest audio",
+    "Disable guest video",
+    "Transfer host authority",
+    "Approve queue requests"
+  ]
+}
+
+^["audience_involvement"]{
+  screen_tapping: "Tapping the screen sends free heart reactions, incrementing the room's global like counter"
+  treasure_boxes: "Viewers or creators deposit coin bundles in a digital chest that unlocks after a countdown timer"
+  pinned_questions: "Q&A module allowing viewers to submit text questions that the creator can pin to the video overlay"
+  subscription_chat: "Host can switch chat to subscriber-only mode during high spam or raid events"
+}
+
+^["taste"]{
+  ~#taste: "PK Battles are modern coliseums where viewer spending is converted into tribal victory."
+  ~#wonder: "How does the split-screen tug-of-war bar tap into the ancient human psychology of athletic rivalry?"
+
+  principles: #[
+    "Manufactured urgency: The ticking 5-minute clock transforms passive observation into frantic agency.",
+    "The 'Snipe' drama: Saving a major gift for the final 5 seconds creates narrative tension akin to a buzzer-beater shot.",
+    "Affectionate rivalry: The best battles maintain playful camaraderie between creators rather than genuine hostility."
+  ]
+}
+
+^["invariants"]{
+  "PK Battle scores reconcile synchronously; latency differences between hosts are compensated via server timestamps.",
+  "Treasure box distributions are cryptographically randomized among viewers claiming within the open window.",
+  "Multi-guest video feeds adjust layout dynamically without interrupting the primary audio stream.",
+}
+
+#>wonder_tiktok_live_interactive_1
+?["Why is the 5-minute PK Battle the most profitable monetization format per viewer minute in live streaming?"]{
+  #:depth #!philosophical ~#lens(gamified_rivalry)
+  ~#hypothesis: "Traditional tipping is altruistic and solitary; PK Battles weaponize social comparison, tribal loyalty, and immediate competitive stakes."
+  !probe{ "Compare average gift expenditure during a relaxed Q&A hour versus a 5-minute PK Battle in the same creator channel." }
+  $%[gift.velocity_coins_per_minute, viewer.conversion_percentage]
+}

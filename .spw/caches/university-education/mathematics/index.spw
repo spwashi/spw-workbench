@@ -1,0 +1,50 @@
+# University Mathematics Curriculum Cache Index
+#
+# Root cache index for undergraduate and doctoral pure mathematics: linear algebra, analysis, abstract algebra, topology, differential geometry, and algebraic topology.
+
+#>spw_cache_univ_math_index
+#:cache #!university_mathematics
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model undergraduate and graduate university mathematics: abstract algebra, real and complex analysis, point-set and algebraic topology, measure theory, functional analysis, and differential geometry."
+  ~#domains: "Pure mathematics, algebra, analysis, topology, differential geometry, and category theory"
+  ~#protocol: "cache.layer/1"
+}
+
+^"roots"{
+  @undergrad_pure_applied: ~"./undergrad-pure-and-applied-mathematics.spw"
+  @undergrad_topology_complex: ~"./undergrad-topology-and-complex-analysis.spw"
+  @graduate_analysis_geometry: ~"./graduate-analysis-and-differential-geometry.spw"
+  @graduate_algebra_topology: ~"./graduate-algebra-and-algebraic-topology.spw"
+  @taste: ~"./taste.spw"
+}
+
+^"dispatch"{
+  undergrad_pure_and_applied_mathematics: @undergrad_pure_applied
+  undergrad_topology_and_complex_analysis: @undergrad_topology_complex
+  graduate_analysis_and_differential_geometry: @graduate_analysis_geometry
+  graduate_algebra_and_algebraic_topology: @graduate_algebra_topology
+  taste_considerations: @taste
+}
+
+^"taste"{
+  ~#taste: "Mathematics is the architecture of eternal truth: the only human discipline where what is proven today will remain immutably true ten billion years from now."
+  ~#wonder: "Why does the human mind, evolving for survival on an African savanna, possess the cognitive apparatus to formulate and prove the existence of infinite-dimensional Hilbert spaces and non-Euclidean manifolds?"
+}
+
+^"invariants"{
+  "All algebraic and analytic structures must satisfy standard foundational axioms (ZFC, group/ring/field axioms, metric space topologies).",
+  "Theorems must cite formal proof mechanics (Baire category, Heine-Borel, Residue theorem, Stokes theorem, Poincaré duality).",
+  "Distinctions between pure structural proofs and numerical/applied approximations must remain rigorous.",
+}
+
+^"wonder_probes"{
+  #>wonder_univ_math_index_1
+  ?["Why do the non-trivial zeros of the Riemann zeta function appear to align identically with the eigenvalue energy spectra of random Hermitian matrices in quantum chaos (Montgomery-Odlyzko law)?"]{
+    #:depth #!foundational ~#lens(arithmetic_quantum_duality)
+    ~#hypothesis: "The distribution of prime numbers is governed by the Riemann zeta zeros, which reflect the spectrum of an unknown self-adjoint quantum Hamiltonian operator. Number theory and quantum chaotic dynamics share a deep, undiscovered unified geometric substrate."
+    !probe{ "Compute the pair-correlation function of the first 100,000 non-trivial zeros of zeta(s) against the Gaussian Unitary Ensemble (GUE) random matrix eigenvalue statistics." }
+    $%[number_theory.zeta_zero_gue_correlation, mathematics.riemann_hypothesis_spectral_gap]
+  }
+}

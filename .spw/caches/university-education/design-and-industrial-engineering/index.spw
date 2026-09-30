@@ -1,0 +1,46 @@
+# Design & Industrial Engineering Curricular Hub
+#
+# Root cache index for undergraduate and master's degree programs across industrial design, operations research, human factors, and manufacturing systems.
+
+#>spw_cache_univ_design_ie_index
+#:cache #!design_and_industrial_engineering
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the full pedagogical continuum from human-centered industrial design, physical ergonomics, and form-giving to mathematical operations research, stochastic queueing, and global supply chain systems."
+  ~#accreditation: "IDSA (Industrial Designers Society of America), ABET Engineering Accreditation Commission Criteria for Industrial Engineering"
+  ~#protocol: "cache.layer/1"
+}
+
+^"roots"{
+  @undergrad_industrial_design: ~"./undergrad-industrial-design.spw"
+  @undergrad_industrial_engineering: ~"./undergrad-industrial-engineering.spw"
+  @masters_design_systems: ~"./masters-design-and-industrial-systems.spw"
+  @taste: ~"./taste.spw"
+}
+
+^"dispatch"{
+  undergrad_industrial_design: @undergrad_industrial_design
+  undergrad_industrial_engineering: @undergrad_industrial_engineering
+  masters_design_and_industrial_systems: @masters_design_systems
+  taste_considerations: @taste
+}
+
+^"taste"{
+  ~#taste: "Design gives products a human heart; industrial engineering builds the circulatory system that brings them to billions of people without waste."
+  ~#wonder: "Why does shaving ten seconds off a worker's repetitive assembly movement prevent chronic musculoskeletal injury while saving a factory millions of dollars a year?"
+}
+
+^"invariants"{
+  "Industrial design curricula balance aesthetic form-giving with empirical anthropometric testing and manufacturing viability.",
+  "Industrial engineering operations research models must demonstrate formal mathematical optimality and proof of convergence.",
+  "System optimization must prioritize the physical safety, cognitive load, and human dignity of workers over raw throughput.",
+}
+
+#>wonder_design_ie_index_1
+?["How does the early pedagogical integration of ergonomic physical mockups into industrial design studios reduce upper-limb repetitive strain injuries in consumer tools?"]{
+  #:depth #!ergonomic ~#lens(haptic_anthropometrics)
+  ~#hypothesis: "Industrial design students who sculpt and user-test high-density foam handles with electromyographic (EMG) forearm feedback design garden and culinary tools that reduce carpal tunnel wrist deviation by 35% compared to students designing purely in 3D CAD on screens."
+  !probe{ "Measure surface EMG muscle activation and wrist flexion/extension angles in users testing hand tools designed via tactile foam vs CAD-only design workflows." }
+  $%[ergonomics.carpal_angle_deviation_degrees, biomechanics.forearm_emg_peak_microvolts]
+}

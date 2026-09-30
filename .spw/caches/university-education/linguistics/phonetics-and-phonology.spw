@@ -1,0 +1,50 @@
+# Phonetics & Phonology Curriculum Cache
+#
+# Articulatory anatomy, acoustic formant spectrograms, distinctive features, and Optimality Theory.
+
+#>spw_cache_univ_ling_phonetics
+#:cache #!phonetics_and_phonology
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model articulatory vocal tract mechanics, International Phonetic Alphabet (IPA) taxonomy, acoustic formant spectrogram physics, and generative phonological constraint systems."
+  ~#protocol: "cache.layer/1"
+}
+
+^"articulatory_and_acoustic_phonetics"{
+  "articulatory_mechanics_and_ipa_taxonomy": .{
+    vocal_tract_anatomy: "Active articulators (tongue tip, blade, body, root; lower lip) contracting against passive articulators (upper lip, teeth, alveolar ridge, hard palate, soft palate/velum, uvula, pharynx wall)",
+    places_and_manners_of_articulation: "Places: bilabial, labiodental, interdental, alveolar, post-alveolar, retroflex, palatal, velar, uvular, pharyngeal, glottal; Manners: plosives, nasals, trills, taps/flaps, fricatives, affricates, approximants, lateral approximants",
+    airstream_mechanisms_and_phonation: "Pulmonic egressive (standard); Non-pulmonic: ejectives (glottalic egressive), implosives (glottalic ingressive), clicks (velaric ingressive); Voice Onset Time (VOT) quantifying voicing and aspiration",
+    vowel_quadrilateral: "Cardinal vowels defined by height (F1 inverse relation), backness (F2 direct relation), lip rounding, and ATR (Advanced Tongue Root / tenseness)",
+  }[reg=facet],
+  "acoustic_spectrogram_physics": .{
+    source_filter_theory: "Glottal pulse vibration acts as broadband harmonic acoustic source; supraglottal vocal tract geometries act as acoustic acoustic filter (transfer function) shaping resonant frequency peaks (formants)",
+    formant_acoustics_f1_f2_f3: "F1 inversely tracks oral cavity constriction height; F2 tracks tongue anterior-posterior position; F3 sharply drops in retroflex rhotic vowels and American English bunched /r/",
+    acoustic_consonant_cues: "Stop silent gaps followed by transient release bursts; Voice Onset Time (VOT); locus equations of F2/F3 formant transitions revealing consonant place of articulation",
+    praat_computational_analysis: "Pitch tracking (F0 autotranscription), spectral tilt measurement for breathy/creaky phonation, and intensity envelope contouring",
+  }[reg=facet],
+}
+
+^"phonological_theory_and_constraint_grammars"{
+  "phonemes_allophones_and_distinctive_features": .{
+    contrastive_distribution: "Phonemes established through minimal pairs demonstrating meaning contrast; allophones exist in predictable complementary distribution governed by structural environment",
+    binary_distinctive_features: "SPE feature matrix: major class features ([+/-syllabic], [+/-consonantal], [+/-sonorant]), cavity features ([+/-continuant], [+/-delayed release], [+/-lateral], [+/-nasal]), and place nodes (Coronal [+/-anterior, +/-distributed], Labial, Dorsal [+/-high, +/-low, +/-back])",
+    natural_classes_and_processes: "Phonological rules operate over natural classes sharing feature subsets: assimilation, dissimilation, epenthesis, syncope, and word-final devoicing",
+  }[reg=facet],
+  "syllable_structure_and_optimality_theory": .{
+    syllable_architecture: "Sigma node dominating Onset and Rhyme (Rhyme branching into Nucleus and Coda); weight-sensitive moras (mu); Sonority Sequencing Principle requiring sonority to peak at nucleus",
+    optimality_theory_ot_framework: "Prince and Smolensky constraint-based grammar: universal input transformed by GEN into candidate set, evaluated by ranked EVAL constraints",
+    markedness_vs_faithfulness: "Markedness constraints (NOCODA, *COMPLEX, ONSET) penalize phonetically difficult structures; Faithfulness constraints (MAX, DEP, IDENT) penalize deviations from underlying lexical input; rankings generate cross-linguistic typologies",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_ling_phonetics_1
+  ?["How does the human brain continuously perceive categorical phonemic boundaries (such as /b/ vs /p/) when acoustic Voice Onset Time (VOT) varies across a completely smooth, continuous physical continuum?"]{
+    #:depth #!neurolinguistic ~#lens(categorical_perception_attractor_basins)
+    ~#hypothesis: "The auditory cortex does not represent raw acoustic duration linearly; it maps acoustic signals into discrete nonlinear attractor basins conditioned during the critical period of first-language acquisition, snapping continuous milliseconds of VOT into discrete perceptual tokens."
+    !probe{ "Measure mismatch negativity (MMN) event-related potentials during synthetic VOT acoustic sweeps across native speakers of English vs Spanish." }
+    $%[neuroscience.mmn_categorical_amplitude, phonetics.perceptual_boundary_vot_ms]
+  }
+}

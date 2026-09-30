@@ -1,0 +1,48 @@
+# Undergraduate Microeconomics & Macroeconomics Curriculum Cache
+#
+# Consumer optimization, Slutsky decomposition, market power, IS-LM aggregate demand, and Solow growth.
+
+#>spw_cache_univ_undergrad_econ
+#:cache #!undergrad_micro_and_macroeconomics
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model undergraduate intermediate microeconomic optimization, producer theory, market structures, IS-LM macroeconomic equilibrium, and neoclassical Solow growth dynamics."
+  ~#protocol: "cache.layer/1"
+}
+
+^"intermediate_microeconomic_theory"{
+  "consumer_optimization_and_duality": .{
+    utility_maximization_problem_ump: "max u(x) subject to p * x <= m; Lagrangian L = u(x) + lambda * (m - p * x); First Order Conditions equate Marginal Rate of Substitution (MRS = MU_1 / MU_2) to price ratio (p_1 / p_2)",
+    indirect_utility_and_expenditure_functions: "Indirect utility v(p, m) = u(x*(p, m)); Expenditure Minimization Problem (EMP): min p * x subject to u(x) >= u_bar yielding Hicksian compensated demand h(p, u) and expenditure e(p, u)",
+    slutsky_equation_decomposition: "Total price effect decomposed into substitution effect and income effect: dx_i / dp_j = dh_i / dp_j - x_j * (dx_i / dm); substitution effect is strictly non-positive (own-price compensated demand slopes down)",
+  }[reg=facet],
+  "producer_theory_and_market_structures": .{
+    production_and_cost_functions: "Cobb-Douglas Y = A * K^alpha * L^beta; Returns to scale (constant if alpha+beta=1, increasing if >1, decreasing if <1); Cost minimization yields conditional factor demands and Marginal Cost MC = dC/dq",
+    competitive_firm_vs_monopoly: "Competitive firm: P = MC with zero economic profit in long run; Monopoly: MR = MC sets price above marginal cost; Lerner index (P - MC) / P = 1 / |elasticity_d| generating deadweight loss triangle",
+    oligopolistic_competition_models: "Cournot simultaneous quantity choice with reaction curves intersecting at Nash equilibrium; Bertrand price competition driving price to marginal cost; Stackelberg sequential quantity leadership",
+  }[reg=facet],
+}
+
+^"intermediate_macroeconomics_and_growth"{
+  "short_run_and_medium_run_macroeconomics": .{
+    is_lm_goods_and_money_equilibrium: "IS curve: Y = C(Y - T) + I(Y, r) + G (downward sloping in r); LM curve: M / P = L(Y, i) (upward sloping in r); intersection determines equilibrium output Y and interest rate r",
+    mundell_fleming_open_economy: "IS-LM extended to open economies with Uncovered Interest Parity (UIP): monetary policy potent under floating exchange rates; fiscal policy potent under fixed exchange rates",
+    ad_as_and_phillips_curve_dynamics: "Aggregate Supply (AS) derived from labor market wage-setting and price-setting; Expectations-augmented Phillips Curve: pi = pi_expected - beta * (u - u_natural) + supply_shocks",
+  }[reg=facet],
+  "solow_swan_neoclassical_growth_model": .{
+    capital_accumulation_dynamics: "dk/dt = s * f(k) - (n + g + delta) * k; k = capital per effective unit of labor; s = savings rate; delta = depreciation; n = population growth; g = technological progress",
+    steady_state_and_golden_rule: "Steady state occurs where s * f(k*) = (n + g + delta) * k*; Golden Rule savings rate maximizes steady-state consumption per worker: f'(k_gold) = n + g + delta",
+    growth_accounting_and_solow_residual: "Decomposing GDP growth: Delta Y / Y = alpha * (Delta K / K) + (1 - alpha) * (Delta L / L) + Delta A / A; Solow residual (Total Factor Productivity TFP) driving sustained long-run growth",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_undergrad_econ_1
+  ?["Why does the Solow growth model predict that technological progress is the sole driver of long-run per capita income growth, yet treat technology as an exogenous black box?"]{
+    #:depth #!theoretical ~#lens(endogenous_growth_necessity)
+    ~#hypothesis: "Neoclassical production functions assume diminishing returns to capital accumulation; therefore, capital deepening alone cannot sustain perpetual exponential per capita growth. Solow was forced to introduce exogenous technological progress (A) to reconcile theory with empirical data, setting the stage for Romer and Aghion-Howitt endogenous growth models that endogenize ideas via patent monopolies."
+    !probe{ "Simulate capital-output ratios and TFP trajectories for OECD economies from 1950 to 2025 against Solow steady-state predictions." }
+    $%[growth.tfp_contribution_share, macro.capital_deepening_diminishing_returns]
+  }
+}

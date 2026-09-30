@@ -1,0 +1,105 @@
+# Advanced Materials Characterization & Computational Modeling
+#
+# Aberration-corrected STEM, synchrotron X-ray spectroscopy, Density Functional Theory (DFT), and ML interatomic potentials.
+
+#>spw_cache_univ_mse_char_comp
+#:cache #!materials_science
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the advanced experimental instrumentation and multi-scale computational simulation suites that drive modern materials characterization and inverse materials design."
+  ~#domains: "Sub-Angstrom electron microscopy, synchrotron X-ray scattering, first-principles DFT, and machine-learning-accelerated molecular dynamics"
+}
+
+^["aberration_corrected_electron_microscopy"]{
+  state_of_the_art: "Probing atomic columns and chemical bonding states at sub-50-picometer resolution."
+  microscopy_modalities: .{
+    tem_foundations: #[
+      "Field Emission Guns (Cold-FEG vs Schottky) delivering high-brightness, coherent electron beams",
+      "Lens Aberrations: Spherical aberration (Cs) and chromatic aberration (Cc) limiting classical spatial resolution",
+      "Diffraction Modes: Selected Area Electron Diffraction (SAED) and Convergent Beam Electron Diffraction (CBED) measuring crystal point/space groups and local specimen thickness"
+    ]
+    stem_and_z_contrast: #[
+      "High-Angle Annular Dark-Field (HAADF) STEM: Incoherent Rutherford scattering where pixel intensity scales directly with atomic number squared (~Z^1.7)",
+      "Spherical Aberration Correctors: Multi-pole (hexapole/octupole) electromagnetic correctors canceling positive lens Cs, enabling true sub-Angstrom electron probes",
+      "Electron Energy Loss Spectroscopy (EELS): Core-loss ionization edges revealing elemental identity, oxidation states, and local coordination geometry with atomic-column resolution"
+    ]
+    sem_and_ebsd: #[
+      "Secondary (SE) and Backscattered Electron (BSE) imaging for surface topography and atomic number contrast",
+      "Electron Backscatter Diffraction (EBSD): Kikuchi band indexing for whole-surface crystallographic grain orientation mapping, misorientation distributions, and pole figures",
+      "Energy-Dispersive X-ray Spectroscopy (EDS): Silicon Drift Detectors (SDD) for rapid multi-element chemical mapping"
+    ]
+  }[reg=facet]
+}
+
+^["surface_spectroscopy_and_scanning_probes"]{
+  surface_chemistry: "Nanometer-depth elemental and functional state determination."
+  techniques: #[
+    "X-ray Photoelectron Spectroscopy (XPS/ESCA): Monochromatic Al K-alpha photons ejecting core-level photoelectrons, measuring chemical shifts to determine elemental oxidation states",
+    "Time-of-Flight Secondary Ion Mass Spectrometry (ToF-SIMS): Primary ion beam sputtering surface monolayers, detecting trace isotopes and organic fragments with sub-ppm sensitivity",
+    "Atomic Force Microscopy (AFM): Contact, intermittent-contact (tapping), and non-contact modes measuring surface topography and mechanical elasticity",
+    "Advanced Probe Modes: Kelvin Probe Force Microscopy (KPFM) mapping local work function, and Piezoresponse Force Microscopy (PFM) imaging nanoscale ferroelectric domains"
+  ]
+}
+
+^["synchrotron_x_ray_and_neutron_scattering"]{
+  large_scale_facilities: "High-flux national synchrotron and neutron user facilities."
+  scattering_methods: .{
+    synchrotron_diffraction: "High-resolution powder diffraction and single-crystal micro-diffraction resolving subtle monoclinic/triclinic lattice distortions"
+    small_and_wide_angle_scattering: "SAXS and WAXS quantifying nanoscale particle size distributions, polymer lamellar spacing, and pore networks"
+    x_ray_absorption_spectroscopy: #[
+      "X-ray Absorption Near-Edge Structure (XANES): Probing electronic transitions to unoccupied states, determining local valence and coordination symmetry",
+      "Extended X-ray Absorption Fine Structure (EXAFS): Interferences of backscattered photoelectrons quantifying coordination numbers and interatomic bond distances"
+    ]
+    neutron_diffraction: "Scattering from atomic nuclei (rather than electron clouds), enabling precise tracking of light elements (hydrogen, lithium) and magnetic spin structures"
+  }[reg=facet]
+}
+
+^["first_principles_density_functional_theory"]{
+  ab_initio_simulation: "Solving the quantum electronic ground state of crystalline materials (VASP, Quantum ESPRESSO)."
+  dft_framework: #[
+    "Hohenberg-Kohn Theorems: Ground-state electron density uniquely determines the external potential and all physical ground-state properties",
+    "Kohn-Sham Equations: Mapping the interacting electron system onto an equivalent fictitious system of non-interacting electrons moving in an effective local potential",
+    "Exchange-Correlation Approximations: Local Density Approximation (LDA), Generalized Gradient Approximation (GGA-PBE), and screened hybrid functionals (HSE06)",
+    "Hubbard U Corrections (DFT+U): Correcting self-interaction errors in localized d and f orbitals (transition metal oxides, actinides)",
+    "Key Predictive Outputs: Equilibrium volume, bulk moduli, formation enthalpies, electronic band diagrams, density of states (DOS), and phonon dispersion spectra"
+  ]
+}
+
+^["molecular_dynamics_and_machine_learning_potentials"]{
+  atomistic_scaling: "Simulating tens of millions of atoms across nanosecond to microsecond trajectories."
+  simulation_suite: .{
+    classical_potentials: "Embedded Atom Method (EAM) for metals, Stillinger-Weber for semiconductors, and ReaxFF for chemical bond breaking/forming"
+    machine_learning_interatomic_potentials: #[
+      "Neural Network Potentials (Behler-Parrinello) and Gaussian Approximation Potentials (GAP)",
+      "Universal ML Potentials (M3GNet, CHGNet) trained on vast DFT materials databases, delivering near-DFT quantum accuracy at classical MD speeds",
+      "Application Domains: Dislocation nucleation, shock wave propagation, grain boundary sliding, and solid-electrolyte ion diffusion"
+    ]
+    mesoscale_phase_field: "Simulating dendritic solidification microstructures, spinodal decomposition morphologies, and ferroelectric domain evolution"
+  }[reg=facet]
+}
+
+^["taste"]{
+  ~#taste: "To image an individual atom with an aberration-corrected electron beam, and then predict its exact vibrational frequency with quantum density functional theory, is the ultimate triumph of human curiosity over matter."
+  ~#wonder: "Why does the beam of relativistic 300 keV electrons in a TEM not simply vaporize the single monolayer of atoms it is imaging, but instead gently scatters to reveal their positions?"
+
+  principles: #[
+    "Instrumental rigor: Every electron microscope image is a convolution of the true specimen structure and the instrument's contrast transfer function; never mistake an aberration artifact for an atom.",
+    "Theory-experiment convergence: A computational material predicted by DFT is merely a mathematical fiction until synthesized in an oven and verified by X-ray diffraction.",
+    "Multi-scale fidelity: A predictive model must connect DFT quantum bonding (Angstroms) to MD dislocations (nanometers) to phase-field grains (microns) to macro-scale yield strength (meters)."
+  ]
+}
+
+^"invariants"{
+  "Reported electron microscope micrographs must include scale bars, accelerating voltage, and objective aperture/defocus conditions.",
+  "DFT computational studies must declare explicit k-point mesh density, plane-wave cutoff energy convergence, and functional parametrization.",
+  "Machine learning interatomic potentials must be validated against unseen DFT configurations (energies, forces, and elastic constants) before production MD runs.",
+}
+
+#>wonder_mse_char_comp_1
+?["How does the integration of active-learning DFT into machine-learning potentials improve the discovery speed of high-entropy ceramic thermoelectrics?"]{
+  #:depth #!computational ~#lens(inverse_materials_design)
+  ~#hypothesis: "Active-learning Bayesian optimization running on ML interatomic potentials explores compositional space 10,000x faster than brute-force DFT, discovering five-component rock-salt entropy-stabilized oxides with thermal conductivities below the amorphous glass limit (< 0.5 W/m-K)."
+  !probe{ "Benchmark thermal conductivity and thermoelectric figure of merit (zT) in AI-predicted vs traditionally synthesized high-entropy ceramic compositions." }
+  $%[computation.compositional_screening_rate, materials.thermal_conductivity_w_m_k]
+}

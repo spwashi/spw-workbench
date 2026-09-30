@@ -1,0 +1,103 @@
+# JetBrains Structure View & Navigation
+#
+# Cache of Structure View, gutter icons, line markers, symbol indexing, and navigation taste in JetBrains.
+
+#>spw_cache_jetbrains_navigation
+#:cache #!jetbrains
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Cache AST indexing, visual navigation landmarks, and navigation taste implemented in the JetBrains Spw plugin."
+  ~#factory: "com.spwashi.spw.SpwStructureViewFactory"
+  ~#markers: "com.spwashi.spw.SpwAnnotationLineMarkerProvider"
+  ~#keybinding: "Cmd+7 (macOS) / Alt+7 (Linux/Windows) for Structure View"
+}
+
+^["structure_view"]{
+  implementation: "TreeBasedStructureViewBuilder with StructureViewModel"
+  element_factory: "SpwStructureViewElement"
+  line_parser: "SpwLineParsers.parseStructureLine"
+  scannable_patterns: #[
+    "frames: ^['name']{...}, ^[\"name\"]{...}, ^[Class]['name']{...}",
+    "subroots: ^subroot[name]{...}",
+    "headings: # Title",
+    "anchors: #>anchor_id",
+    "claims: ^claim[...]{...}",
+    "properties: key: value"
+  ]
+  features: .{
+    jump_to_source: true
+    autoscroll_from_source: true
+    autoscroll_to_source: true
+    alphabetic_sorting: true
+    filter_by_kind: true
+  }
+}
+
+^["gutter_markers"]{
+  provider: "SpwAnnotationLineMarkerProvider"
+  target_elements: #[
+    .{ marker: #anchor, syntax: "#>anchor_name", tooltip: "Spw Anchor: #>anchor_name" },
+    .{ marker: #frame, syntax: "^[\"frame_name\"]", tooltip: "Spw Frame: frame_name" },
+    .{ marker: #claim, syntax: "^claim[...]", tooltip: "Spw Claim Candidate" },
+    .{ marker: #subroot, syntax: "^subroot[...]", tooltip: "Spw Subroot" }
+  ]
+  line_budget: "Fast single-pass line scan on background daemon thread"
+}
+
+^["landmark_taxonomy"]{
+  frames: .{
+    role: "Primary container units organizing intentions, configurations, and assertions"
+    icon: "AllIcons.Nodes.Class or Spw frame glyph"
+    presentation: "Frame label with optional qualification"
+  }[reg=facet]
+
+  subroots: .{
+    role: "Subsystem boundaries declaring subtrees and agent ownership"
+    icon: "AllIcons.Nodes.Package"
+    presentation: "subroot[name]"
+  }[reg=facet]
+
+  headings: .{
+    role: "Human-authored narrative milestones and section anchors"
+    icon: "AllIcons.Nodes.Tag"
+    presentation: "Heading text stripped of #"
+  }[reg=facet]
+
+  anchors: .{
+    role: "Unique addressable coordinates within the Spw corpus"
+    icon: "AllIcons.Nodes.Bookmark"
+    presentation: "#>anchor"
+  }[reg=facet]
+
+  properties: .{
+    role: "Key-value attributes and facet registers"
+    icon: "AllIcons.Nodes.Property"
+    presentation: "key: value"
+  }[reg=facet]
+}
+
+^["taste"]{
+  ~#taste: "A gutter marker is only navigation if it exposes a working target action; otherwise it is mere decoration."
+  ~#wonder: "Can an outline view become so intuitive that the file text itself is read as secondary commentary?"
+
+  principles: #[
+    "Icon parsimony: Only anchor coordinates (#>), frames (^[\"\"]), and claims warrant gutter glyphs; generic properties must remain unadorned.",
+    "Landmark scannability: Headings and frames form an outline skeleton that should read like a table of contents.",
+    "Immediate focus: Clicking an outline entry scrolls and places the caret directly on the structural opener."
+  ]
+}
+
+^["invariants"]{
+  "Structure View reflects file syntax without triggering eager whole-project re-indexes.",
+  "Line markers only highlight actionable anchors and primary structural boundaries.",
+  "Navigation elements preserve exact line offsets to ensure accurate jump-to-source tracking.",
+}
+
+#>wonder_jetbrains_navigation_1
+?["When does a gutter marker earn its visual weight in the editor margin?"]{
+  #:depth #!experiential ~#lens(visual_quietness)
+  ~#hypothesis: "A gutter marker earns its cost when it acts as an orientation waypoint for long-range navigation; it loses value when every line is marked."
+  !probe{ "Count gutter icons on a 200-line file; if more than 15% of lines have markers, test whether eye fatigue increases during continuous reading." }
+  $%[margin.marker_density, editor.visual_noise_ratio]
+}

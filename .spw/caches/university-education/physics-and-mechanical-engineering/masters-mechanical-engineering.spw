@@ -1,0 +1,95 @@
+# Graduate Master's Mechanical Engineering Curricular Architecture
+#
+# Master of Science (M.S.) & Master of Engineering (M.Eng.) in Mechanical Engineering: continuum mechanics, CFD, nonlinear FEA, and robotics.
+
+#>spw_cache_univ_masters_meche
+#:cache #!mechanical_engineering
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the graduate Master of Science (M.S.) and Master of Engineering (M.Eng.) curricula in Mechanical Engineering, articulating continuum mechanics, turbulent computational fluids, nonlinear FEA, and Lie-group robotics."
+  ~#tracks: "M.S. Research Thesis Track and M.Eng. Advanced Professional Practice Track"
+}
+
+^["continuum_mechanics_and_nonlinear_solid_mechanics"]{
+  graduate_depth: "Tensor analysis and finite strain constitutive theories for advanced materials."
+  continuum_formulations: #[
+    "Kinematics of Continuous Media: Deformation gradient tensor F, polar decomposition (F = R*U), right/left Cauchy-Green tensors, and Green-Lagrange finite strain",
+    "Stress Tensors & Balance Laws: First and second Piola-Kirchhoff stress tensors, Cauchy stress, and spatial/material configurations of momentum balance",
+    "Hyperelastic Constitutive Laws: Strain energy density functions W(C) for rubber-like materials (Neo-Hookean, Mooney-Rivlin, Ogden models)",
+    "Finite-Strain Plasticity: Yield surfaces, Drucker's postulate, associative flow rules, isotropic and kinematic hardening, and return-mapping algorithms",
+    "Viscoelasticity & Creep: Boltzmann superposition integral, Prony series relaxation, and temperature-time superposition (WLF equation)"
+  ]
+}
+
+^["computational_fluid_dynamics_and_turbulence_modeling"]{
+  graduate_fluids: "High-order discretization and numerical solution of the Navier-Stokes equations."
+  cfd_methodologies: .{
+    finite_volume_discretization: #[
+      "Incompressible solvers: Pressure-velocity coupling algorithms (SIMPLE, PISO, fractional step methods) on unstructured polyhedral meshes",
+      "Convective flux schemes: Upwind differencing, central differencing with artificial dissipation, TVD (Total Variation Diminishing), and flux limiters",
+      "Compressible flow algorithms: Roe's approximate Riemann solver, AUSM schemes, and shock-capturing formulations for transonic and supersonic shocks"
+    ]
+    turbulence_paradigms: #[
+      "RANS Formulations: Two-equation models (Menter k-omega SST, standard k-epsilon) and turbulent wall functions (y+ meshing criteria)",
+      "Large Eddy Simulation (LES): Spatial filtering, Smagorinsky and dynamic subgrid-scale (SGS) stress models, and hybrid RANS-LES (DES)",
+      "Direct Numerical Simulation (DNS): Resolving Kolmogorov dissipation length and time scales for fundamental turbulence research"
+    ]
+  }[reg=facet]
+}
+
+^["advanced_finite_element_analysis_and_structural_dynamics"]{
+  computational_mechanics: "Nonlinear boundary value solutions for solid structures under dynamic loads."
+  fea_specializations: #[
+    "Isoparametric Elements & Numerical Quadrature: Shape functions, Gauss quadrature integration, and shear/volumetric locking remedies",
+    "Geometric & Material Nonlinearities: Newton-Raphson tangent stiffness matrix iterations, arc-length continuation methods, and large deflection bucking",
+    "Contact Mechanics Algorithms: Node-to-segment and surface-to-surface penalty formulations, augmented Lagrange multipliers, and friction stick-slip models",
+    "Dynamic Impact & Crashworthiness: Explicit central-difference time integration for high-rate deformation, blast loading, and metal tearing"
+  ]
+}
+
+^["robotics_lie_group_kinematics_and_optimal_control"]{
+  mechatronic_frontiers: "Geometric mechanics of spatial kinematic chains and optimal autonomous motion."
+  robotics_foundations: .{
+    geometric_kinematics: "Special Euclidean group SE(3) and Special Orthogonal group SO(3), Lie brackets, screw theory, and Product of Exponentials (PoE) formula"
+    manipulator_dynamics: "Euler-Lagrange multi-body dynamics, recursive Newton-Euler algorithm, and operational space inertia matrices"
+    optimal_control_algorithms: #[
+      "Linear Quadratic Regulator (LQR) and Model Predictive Control (MPC) with state and input inequality constraints",
+      "State Estimation: Extended Kalman Filter (EKF), Unscented Kalman Filter (UKF), and particle filtering for robot localization and SLAM",
+      "Trajectory Optimization: Direct collocation, sequential quadratic programming (SQP), and collision-free path planning (RRT*, CHOMP)"
+    ]
+  }[reg=facet]
+}
+
+^["advanced_additive_manufacturing_and_laser_processing"]{
+  manufacturing_frontiers: #[
+    "Laser Powder Bed Fusion (LPBF): Laser-material absorption, thermal melt-pool hydrodynamics (Marangoni convection), and vapor recoil depression (keyhole mode)",
+    "Residual Stress & Distortion: Thermomechanical transient modeling, heat dissipation in thin supports, and mitigation via laser scan strategies",
+    "Microstructure Evolution: High cooling rates (10^6 K/s) in metal additive manufacturing, cellular-dendritic solidification, and epitaxial grain growth"
+  ]
+}
+
+^["taste"]{
+  ~#taste: "Master's-level mechanical engineering is the union of abstract mathematical geometry with the raw physical power of rotating, flying, and colliding machinery."
+  ~#wonder: "Why does formulating robot kinematics in Lie groups completely eliminate the mathematical singularities that plague traditional Euler angles?"
+
+  principles: #[
+    "Mesh convergence is mandatory: Never present an FEA or CFD result without proving that refining the grid leaves the solution unchanged.",
+    "Dynamics over statics: Real machines do not live in equilibrium; design for the shock loads and vibration resonances that destroy structures in milliseconds.",
+    "Physical intuition guides the algorithm: A numerical solver will cheerfully output nonsense with eight significant digits if your boundary conditions are unphysical."
+  ]
+}
+
+^"invariants"{
+  "Nonlinear FEA and CFD thesis projects must provide explicit mesh convergence and residual tolerance validation.",
+  "Robotic control algorithms must demonstrate mathematical stability via Lyapunov functions or verified contraction metrics.",
+  "Laser additive manufacturing process models must balance laser power, scan speed, and hatch spacing against the keyhole porosity threshold.",
+}
+
+#>wonder_masters_meche_1
+?["How does the integration of physics-informed neural networks (PINNs) into real-time CFD solvers alter hypersonic thermal protection sizing?"]{
+  #:depth #!engineering ~#lens(physics_informed_ai)
+  ~#hypothesis: "PINNs trained with Navier-Stokes boundary layer invariants accelerate aero-thermal heat flux predictions by 1,000x compared to full volume mesh solvers, enabling real-time adaptive trajectory cooling for reusable spaceplanes."
+  !probe{ "Benchmark aero-thermal heat flux accuracy and latency of PINN solvers against Mach 7 wind tunnel heat transfer measurements." }
+  $%[computation.heat_flux_prediction_latency_ms, aero.hypersonic_temperature_error_percent]
+}

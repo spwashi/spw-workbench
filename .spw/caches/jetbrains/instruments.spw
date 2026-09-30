@@ -1,0 +1,139 @@
+# JetBrains Workbench Instruments
+#
+# Detailed cache of Workbench Instrument actions, runner architecture, execution guards, and wonder taste.
+
+#>spw_cache_jetbrains_instruments
+#:cache #!jetbrains
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Cache the operational mechanics, action declarations, execution lifecycle, and taste of Spw Instruments in IntelliJ/WebStorm."
+  ~#source_class: "com.spwashi.spw.SpwInstrumentActions"
+  ~#runner_class: "com.spwashi.spw.SpwCliRunner"
+  ~#contract: ~"../../tooling/editor-instruments.spw"
+}
+
+^["actions"]{
+  form_inspection: .{
+    action_class: "SpwInspectFormAction"
+    menu_label: "Inspect Spw Form"
+    action_id: "Spw.InspectForm"
+    description: "Measure the saved surface's brace geometry and resonance through the canonical Spw CLI"
+    cli_command: "spw form <relative-surface> --resonance --spw"
+    result_view: "Virtual light-file buffer (.spw preview)"
+    semantic_focus: #brace_geometry_and_resonance
+  }[reg=facet]
+
+  stack_inspection: .{
+    action_class: "SpwInspectStackAction"
+    menu_label: "Inspect Spw Surface Stack"
+    action_id: "Spw.InspectStack"
+    description: "Profile the saved surface through the canonical Spw stack command"
+    cli_command: "spw stack <relative-surface> --json"
+    result_view: "Virtual light-file buffer (.json profile)"
+    semantic_focus: #syntax_profile_and_event_stack
+  }[reg=facet]
+
+  cache_inspection: .{
+    action_class: "SpwInspectCacheAction"
+    menu_label: "Inspect Spw Cache"
+    action_id: "Spw.InspectCache"
+    description: "Read cache tier, hit state, and parser statistics for the saved surface"
+    cli_command: "spw inspect cache <relative-surface> --json"
+    result_view: "Virtual light-file buffer (.json receipt)"
+    semantic_focus: #cache_layer_and_beat_clock
+  }[reg=facet]
+
+  symbol_rename: .{
+    action_class: "SpwRenameAction"
+    menu_label: "Rename Spw Symbol"
+    action_id: "Spw.Rename"
+    description: "Delegate a caret rename to the standard IntelliJ LSP rename action"
+    delegates_to: "ActionManager.getInstance().getAction(IdeActions.ACTION_RENAME)"
+    prerequisite: "Active editor caret positioned on a valid Spw symbol"
+    semantic_focus: #lsp_prepare_rename
+  }[reg=facet]
+
+  corpus_refactor_plan: .{
+    action_class: "SpwPlanCorpusRefactorAction"
+    menu_label: "Plan Spw Corpus Refactor..."
+    action_id: "Spw.PlanCorpusRefactor"
+    description: "Preview a mark, anchor, case, or mood rename across the consumer corpus without writing"
+    dialog_prompt: "Enter kind:from=to. Kinds: mark, anchor, case, mood. This opens a read-only corpus plan and never applies edits."
+    cli_command: "spw refactor . --rename <spec> --json"
+    result_view: "Virtual light-file buffer (.json plan)"
+    semantic_focus: #read_only_corpus_plan
+  }[reg=facet]
+}
+
+^["execution_engine"]{
+  runner: "SpwCliRunner (ProjectService)"
+  threading: "ActionUpdateThread.BGT (Background Thread) for update and execution"
+  background_task: "Task.Backgroundable with cancellable ProgressIndicator"
+  process_launcher: "GeneralCommandLine with processHandler and output capture"
+  tool_resolution: .{
+    step_1: "Check open project root for package.json with spw script"
+    step_2: "Check mounted .spw/_workbench in project directory"
+    step_3: "Fallback to PATH-resolved spw binary or npm prefix invocation"
+  }
+  buffer_materialization: "LightVirtualFile opened in FileEditorManager with read-only flag"
+}
+
+^["guards_and_safety"]{
+  dirty_buffer_guard: .{
+    condition: "FileDocumentManager.getInstance().isDocumentUnsaved(document)"
+    dialog_title: "Spw Instrument"
+    message: "This instrument reads the saved file through the Spw CLI. Save the buffer, then run it again."
+    outcome: "Action aborts immediately; no stale disk execution"
+  }
+
+  extension_guard: .{
+    condition: "file?.extension == 'spw'"
+    outcome: "Action disabled in menus and shortcuts when active file is not .spw"
+  }
+
+  write_prohibition_guard: .{
+    rule: "Editor instruments NEVER include --write or mutating flags"
+    corpus_refactor: "Only --json preview is emitted; user must manually review and apply outside editor"
+  }
+
+  privacy_guard: .{
+    scope: #local_process_only
+    telemetry: 0
+    person_level_tracking: false
+  }
+}
+
+^["taste"]{
+  ~#taste: "Instruments disclose underlying physics without taking custody of editing authority."
+  ~#sequence: "form → stack → cache → rename → plan"
+  ~#rhythm: "Move from geometry (form), to profile consensus (stack), to retention planes (cache), to localized change (rename), to wide consequence (refactor plan)."
+
+  considerations: #[
+    "Buffer reverence: An editor should not guess what an unsaved change might mean to a whole workspace.",
+    "Non-possessive UI: Avoid pinned custom tool windows that demand screen real estate when an ephemeral editor tab suffices.",
+    "Read-only serenity: The refactor plan action yields confidence precisely because it lacks the ability to destroy data."
+  ]
+}
+
+^["invariants"]{
+  "Workbench Instruments always execute against disk state to match CLI truth.",
+  "Results open in ordinary editor tabs so developers can search, copy, and compare without tool window bloat.",
+  "Corpus refactor planning remains strictly read-only; mutation requires an explicit human-authorized CLI step.",
+}
+
+#>wonder_jetbrains_instruments_1
+?["What does the lyrical sequence form → stack → cache reveal about software mass?"]{
+  #:depth #!philosophical ~#lens(material_density)
+  ~#hypothesis: "Form measures shape, stack measures which laws apply, and cache measures the price paid to remember both."
+  !probe{ "Trace one file through Form, then Stack, then Cache; note where cognitive surprise occurs. Was it the operator distribution, the winning dialect, or the retention tier?" }
+  $%[form.brace_count, stack.winning_profile, cache.tier]
+}
+
+#>wonder_jetbrains_instruments_2
+?["Why is a read-only LightVirtualFile editor tab superior to a dedicated tool window for instrument results?"]{
+  #:depth #!experiential ~#lens(quiet_affordance)
+  ~#hypothesis: "Tool windows crowd the workspace and invite proprietary UI controls; editor tabs invite standard text search, side-by-side split, and git diffing."
+  !probe{ "Compare inspecting a cache card in an editor tab vs a tree widget; measure how quickly the developer copies the receipt into a test or notes surface." }
+  $%[ui.dock_fatigue, editor.tab_reusability]
+}

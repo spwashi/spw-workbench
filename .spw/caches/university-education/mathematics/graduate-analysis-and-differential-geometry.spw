@@ -1,0 +1,50 @@
+# Graduate Analysis & Differential Geometry Curriculum Cache
+#
+# Lebesgue integration, Banach/Hilbert functional analysis, smooth manifolds, differential forms, and Stokes theorem.
+
+#>spw_cache_univ_grad_analysis_geom
+#:cache #!graduate_analysis_and_differential_geometry
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model doctoral real analysis (Lebesgue measure, Dominated Convergence), functional analysis (Banach/Hilbert spaces, Hahn-Banach, spectral theorem), and differential geometry (smooth manifolds, differential forms, Riemannian curvature)."
+  ~#protocol: "cache.layer/1"
+}
+
+^"measure_theory_and_functional_analysis"{
+  "lebesgue_measure_and_limit_theorems": .{
+    sigma_algebras_and_caratheodory: "Sigma-algebra of measurable sets; Caratheodory extension constructing Lebesgue measure on R^n from outer measure; existence of non-measurable Vitali sets under Axiom of Choice",
+    monotone_and_dominated_convergence: "Fatou's Lemma: integral liminf f_n <= liminf integral f_n; Monotone Convergence Theorem (MCT) for non-negative sequences; Dominated Convergence Theorem (DCT): |f_n| <= g in L^1 implies limit and integral commute",
+    product_measures_and_radon_nikodym: "Fubini-Tonelli theorem establishing equality of iterated integrals for non-negative or L^1 functions; Radon-Nikodym theorem: If nu << mu (absolute continuity), there exists unique density f = dnu/dmu",
+  }[reg=facet],
+  "banach_spaces_and_hilbert_operator_theory": .{
+    lp_spaces_and_duality: "L^p spaces complete under norm ||f||_p = (integral |f|^p)^(1/p); Holder's and Minkowski's inequalities; Dual space (L^p)* ~= L^q where 1/p + 1/q = 1 (for 1 <= p < infinity)",
+    hilbert_spaces_and_riesz_representation: "Complete inner product spaces; Orthogonal projection theorem; Riesz Representation: every continuous linear functional on Hilbert space H corresponds uniquely to inner product <x, y>",
+    four_pillars_of_functional_analysis: "1) Hahn-Banach (functional extension), 2) Baire Category Theorem, 3) Open Mapping / Closed Graph Theorem, 4) Banach-Steinhaus Uniform Boundedness Principle",
+    weak_star_topologies_and_banach_alaoglu: "Banach-Alaoglu Theorem: The closed unit ball of the dual space X* is compact in the weak-* topology; Spectral Theorem for compact self-adjoint operators yielding orthonormal eigenbasis",
+  }[reg=facet],
+}
+
+^"smooth_manifolds_and_riemannian_geometry"{
+  "smooth_manifolds_and_exterior_calculus": .{
+    manifold_architecture: "Topological manifold with smooth C^infinity atlas; Tangent spaces T_p M defined as derivations on smooth germ functions; Tangent bundle TM and Cotangent bundle T*M; Lie bracket of vector fields [X, Y]",
+    differential_forms_and_wedge_product: "k-forms in Omega^k(M); Alternating wedge product omega ^ eta = (-1)^(k*l) * (eta ^ omega); Exterior derivative d: Omega^k -> Omega^(k+1) satisfying d^2 = 0; Closed forms (d omega = 0) vs Exact forms (omega = d eta)",
+    de_rham_cohomology: "H^k_dR(M) = ker(d_k) / im(d_k-1); topological invariant measuring differential topology holes, isomorphic to singular cohomology with real coefficients (de Rham's Theorem)",
+    generalized_stokes_theorem: "integral_M d(omega) = integral_(partial M) omega; profound master formula subsuming Fundamental Theorem of Calculus, Green's Theorem, Divergence Theorem, and classical Stokes' Theorem into single line",
+  }[reg=facet],
+  "riemannian_metrics_and_curvature": .{
+    levi_civita_connection: "Riemannian metric g = <*, *>; Levi-Civita connection nabla is the unique affine connection that is torsion-free and metric-compatible (nabla g = 0); Geodesics satisfying nabla_(gamma_dot) gamma_dot = 0",
+    riemann_curvature_tensor: "R(X, Y)Z = nabla_X nabla_Y Z - nabla_Y nabla_X Z - nabla_[X,Y] Z; measures failure of second covariant derivatives to commute; Ricci curvature tensor Ric(X, Y) and scalar curvature S",
+    gauss_bonnet_theorem: "For compact oriented 2D Riemannian surface M: integral_M K dA + integral_(partial M) k_g ds = 2*pi * chi(M); bridges local Gaussian curvature K with global topological Euler characteristic chi(M)",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_grad_analysis_geom_1
+  ?["Why does the Generalized Stokes' Theorem integral_M d(omega) = integral_(partial M) omega encapsulate all of classical multivariable calculus in six symbols?"]{
+    #:depth #!geometric ~#lens(boundary_operator_exterior_derivative_duality)
+    ~#hypothesis: "Stokes' theorem reflects an adjoint duality between the topological boundary operator partial (which reduces manifold dimension by 1) and the exterior derivative d (which increases differential form degree by 1). Because partial(partial M) = 0 (the boundary of a boundary is empty) and d(d omega) = 0 (exterior derivative applied twice is identically zero), analysis and topology are revealed as exact mirror reflections of each other."
+    !probe{ "Evaluate differential form pullbacks across boundary inclusions partial M -> M for smooth 3-manifolds with non-trivial boundary." }
+    $%[geometry.stokes_boundary_exterior_duality, topology.boundary_nilpotency_verification]
+  }
+}

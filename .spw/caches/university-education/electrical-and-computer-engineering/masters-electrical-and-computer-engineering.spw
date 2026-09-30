@@ -1,0 +1,94 @@
+# Graduate Master's Electrical & Computer Engineering Architecture
+#
+# Master of Science (M.S.) in ECE: nanoscale FinFET VLSI, out-of-order superscalar CPUs, massive MIMO, and mixed-signal RFICs.
+
+#>spw_cache_univ_masters_ece
+#:cache #!electrical_and_computer_engineering
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model the graduate Master of Science (M.S.) curriculum in Electrical and Computer Engineering, articulating sub-3nm semiconductor VLSI, out-of-order microarchitectures, statistical wireless communications, and mixed-signal integrated circuits."
+  ~#tracks: "M.S. Research Thesis Track and M.Eng. Advanced Systems Practice Track"
+}
+
+^["nanoscale_cmos_and_vlsi_design"]{
+  graduate_depth: "Physical design and sub-micron circuit topologies (FinFET and Gate-All-Around Nanosheet)."
+  device_and_circuit_physics: #[
+    "Short-Channel Effects: Drain-Induced Barrier Lowering (DIBL), subthreshold slope degradation, band-to-band tunneling, and quantum confinement in thin silicon fins",
+    "Logical Effort & Delay Optimization: Path effort calculation, transistor sizing, and optimal stage count determination for critical delay minimization",
+    "Low-Power Architecture: Dynamic Voltage and Frequency Scaling (DVFS), multi-Vt transistor assignment, power gating with sleep transistors, and clock mesh distribution",
+    "Physical Design Automation: Automated standard cell placement, Clock Tree Synthesis (CTS) for zero-skew balance, and parasitic extraction (RC netlists)"
+  ]
+}
+
+^["advanced_computer_architecture_and_hardware_accelerators"]{
+  systems_frontiers: "Microarchitecture for high-throughput computation and deep learning."
+  architecture_domains: .{
+    speculative_superscalar_cores: #[
+      "Dynamic Instruction Scheduling: Tomasulo's algorithm, Reservation Stations, Register Renaming (RAT), and precise exception handling via Reorder Buffers (ROB)",
+      "Advanced Branch Prediction: TAGE (TAgged GEometric history length) branch predictors, return address stacks, and speculative memory disambiguation",
+      "Memory System Coherence: Snooping and directory-based MESI/MOESI cache coherence protocols, and memory consistency models (TSO vs Weak Ordering)"
+    ]
+    domain_specific_accelerators: #[
+      "Systolic Arrays: 2D processing element grids performing dense matrix multiplication (GEMM) for deep neural network tensor cores",
+      "GPU SIMT Architecture: Streaming multiprocessors, warp divergence mitigation, coalesced global memory access, and shared memory bank conflict avoidance",
+      "Low-Precision Arithmetic: FP8, BF16, and INT8 mixed-precision quantization error analysis and hardware tensor arithmetic units"
+    ]
+  }[reg=facet]
+}
+
+^["statistical_dsp_and_modern_wireless_communications"]{
+  communication_theory: "Information theory and multi-antenna signal processing."
+  signal_and_rf_systems: #[
+    "Shannon Channel Capacity: Continuous-time Gaussian channel bound (C = B * log2(1 + SNR)), water-filling power allocation, and spectral efficiency",
+    "Massive MIMO & Beamforming: Channel State Information (CSI) estimation, zero-forcing and MMSE precoding, and spatial multiplexing in Rayleigh fading",
+    "Modulation & Multiplexing: Orthogonal Frequency-Division Multiplexing (OFDM), cyclic prefix design, peak-to-average power ratio (PAPR) reduction",
+    "Modern Channel Coding: Low-Density Parity-Check (LDPC) sparse parity check matrices, Polar code successive cancellation list decoding (5G NR standard)"
+  ]
+}
+
+^["rf_and_mixed_signal_integrated_circuits"]{
+  analog_rf_ic: "Design of gigahertz-frequency front-ends and high-speed data converters."
+  integrated_subsystems: .{
+    rf_front_ends: "Low-Noise Amplifiers (LNA) with inductive source degeneration, Gilbert cell active mixers, and LC-tank Voltage-Controlled Oscillators (VCOs)"
+    phase_locked_loops: "Charge-pump PLLs, phase frequency detectors (PFD), second/third-order loop filters, and phase noise jitter integration"
+    data_converters: #[
+      "High-speed Flash and Pipelined ADCs with digital error correction",
+      "Successive Approximation Register (SAR) ADCs utilizing binary-weighted capacitive DACs",
+      "Delta-Sigma (Delta-Sigma) Oversampling Converters: Noise shaping, decimation filtering, and high-dynamic-range audio/sensor resolution"
+    ]
+  }[reg=facet]
+}
+
+^["photonic_integrated_circuits_and_quantum_hardware"]{
+  emerging_frontiers: #[
+    "Silicon Photonics: Sub-micron silicon waveguides, Mach-Zehnder electro-optic interferometers, and high-speed optical transceivers for data centers",
+    "Superconducting Quantum Computing: Circuit QED, Josephson junction non-linear inductance, transmon qubit dispersive readout, and microwave control lines",
+    "Cryogenic Electronics: Sub-4 Kelvin CMOS amplifier design and noise characterization for scalable quantum processor control interfaces"
+  ]
+}
+
+^["taste"]{
+  ~#taste: "Master's-level ECE is the triumph of abstraction: holding billions of microscopic quantum interactions in check so that pure logic can think at gigahertz speeds."
+  ~#wonder: "Why does the Shannon limit prove mathematically that there is an absolute maximum rate at which information can be transmitted through noisy air, regardless of human ingenuity?"
+
+  principles: #[
+    "Parasitics are real circuits: At 10 GHz, every bond wire is an inductor, every solder pad is a capacitor, and every PCB trace is a transmission line.",
+    "Hardware and software are continuous: You cannot design an optimal neural accelerator without understanding the software compiler; you cannot write high-performance kernels without understanding the cache.",
+    "Power density is the ultimate limiter: The processor frequency race ended not because we could not switch transistors faster, but because we could not remove the heat from the silicon die."
+  ]
+}
+
+^"invariants"{
+  "Integrated circuit layouts must pass 100% clean DRC (Design Rule Check) and LVS (Layout Versus Schematic) verification before tape-out.",
+  "Memory consistency models must guarantee deterministic synchronization semantics across all shared-memory cores.",
+  "Wireless link budget calculations must include thermal noise floors, receiver noise figures, and minimum required SINR margins.",
+}
+
+#>wonder_masters_ece_1
+?["Can photonic interconnects replace copper on-chip interconnects to overcome the memory wall in exascale tensor accelerators?"]{
+  #:depth #!engineering ~#lens(photonic_memory_interconnects)
+  ~#hypothesis: "Integrating monolithic silicon photonic ring-resonator networks directly onto multi-chiplet accelerator dies reduces memory transit energy from 5 pJ/bit (copper) to 0.4 pJ/bit while providing 10x higher bisection bandwidth for trillion-parameter model training."
+  !probe{ "Simulate optical crossbar latency, thermal drift sensitivity, and bit-error-rates across 256-chiplet photonic mesh networks." }
+  $%[interconnect.photonic_energy_per_bit_pj, computation.memory_bisection_bandwidth_tb_s]
+}

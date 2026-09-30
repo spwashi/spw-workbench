@@ -1,0 +1,44 @@
+# Biomaterials & Tissue Engineering Curriculum Cache
+#
+# Hydrogel transport, PLGA degradation, mechanotransduction (YAP/TAZ), and 3D vascular bioprinting.
+
+#>spw_cache_univ_bioeng_tissue
+#:cache #!biomaterials_and_tissue_engineering
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model biodegradable scaffold kinetics, hydrogel network physics, foreign body immunobiology, mechanotransductive stem cell differentiation, and 3D vascularized bioprinting."
+  ~#protocol: "cache.layer/1"
+}
+
+^"biomaterial_scaffolds_and_hydrogel_physics"{
+  "biodegradable_polymers_and_degradation_kinetics": .{
+    aliphatic_polyesters: "Poly(lactic acid) PLA, Poly(glycolic acid) PGA, and their copolymer PLGA; hydrolytic cleavage of ester backbones into non-toxic lactic and glycolic acid monomers; degradation rate tunable from 2 weeks to 2 years by altering glycolic:lactic monomer ratios and crystallinity",
+    bulk_vs_surface_erosion: "Bulk erosion (water diffuses faster than polymer hydrolysis rate, e.g., PLGA, risking sudden structural collapse) vs Surface erosion (hydrophobic polyanhydrides eroding layer-by-layer, maintaining predictable zero-order drug release)",
+  }[reg=facet],
+  "hydrogel_networks_and_foreign_body_response": .{
+    hydrogel_mesh_size_and_diffusive_transport: "Hydrophilic crosslinked polymer networks (alginate, PEG, gelatin methacryloyl GelMA); Flory-Rehner swelling theory; mesh size xi (5-50nm) governing diffusion of oxygen, glucose, and therapeutic proteins",
+    host_immune_response_and_vroman_effect: "Instantaneous adsorption of blood proteins (albumin, fibrinogen); Vroman effect displacing low-affinity proteins with high-affinity kininogens; macrophage polarization from M1 cytotoxic to M2 pro-regenerative; minimizing fibrous capsule formation",
+  }[reg=facet],
+}
+
+^"tissue_regeneration_and_mechanotransduction"{
+  "matrix_stiffness_and_stem_cell_lineage_specification": .{
+    discher_mechanotransduction_paradigm: "Mesenchymal stem cell differentiation dictated by extracellular matrix Young's modulus E: soft hydrogels (E ~ 0.1-1 kPa, mimicking brain) induce neurogenesis; intermediate matrices (E ~ 10-15 kPa, mimicking striated muscle) induce myogenesis; rigid substrates (E ~ 30-40 kPa, mimicking osteoid) induce osteogenesis",
+    integrin_focal_adhesion_signaling: "Extracellular RGD peptides engaging alpha_v_beta_3 integrins -> focal adhesion kinase (FAK) phosphorylation -> RhoA/ROCK actomyosin tension pulling open nuclear pores, driving nuclear translocation of YAP/TAZ transcriptional co-activators",
+  }[reg=facet],
+  "vascularization_and_3d_bioprinting_architectures": .{
+    the_oxygen_diffusion_limit: "Tissue viability strictly constrained by ~200 micrometer oxygen diffusion limit from nearest capillary; engineered tissues thicker than 1mm require integrated, perfusable vascular networks to prevent necrotic core formation",
+    sacrificial_bioink_printing: "Extruding fugitive inks (Pluronic F-127, gelatin) within GelMA matrices; thermal liquefaction and evacuation yielding hollow tubular lumens endothelialized with HUVECs under pulsatile shear stress",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_bioeng_tissue_1
+  ?["How do stem cells physically sense the nanoscale stiffness of an extracellular matrix before transcribing lineage-specific genes?"]{
+    #:depth #!biomechanical ~#lens(molecular_clutch_and_force_dependent_unfolding)
+    ~#hypothesis: "Cells use a dynamic 'molecular clutch' mechanism. Myosin II motors pull retrograde actin filaments across talin and vinculin adapter proteins connected to integrins. On stiff substrates, the matrix resists cell traction, generating mechanical tension (>12 piconewtons) that physically unfolds talin's rod domains, exposing hidden cryptic binding sites for vinculin, which locks focal adhesions and triggers nuclear YAP translocation."
+    !probe{ "Measure single-molecule talin unfolding forces in living mesenchymal stem cells cultured on calibrated polyacrylamide hydrogels using FRET tension sensors." }
+    $%[mechanobiology.talin_unfolding_tension_pn, stem_cell.yap_nuclear_localization_ratio]
+  }
+}

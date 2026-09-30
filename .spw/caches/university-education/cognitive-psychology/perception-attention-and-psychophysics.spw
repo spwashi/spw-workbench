@@ -1,0 +1,48 @@
+# Perception, Attention & Psychophysics Curriculum Cache
+#
+# Signal detection theory, psychophysical scaling, Gestalt grouping, and attentional bottleneck architectures.
+
+#>spw_cache_univ_cog_psych_perception
+#:cache #!perception_attention_and_psychophysics
+#:layer #!pragmatics
+
+^"intent"{
+  ~#goal: "Model sensory psychophysics, mathematical signal detection theory (d-prime and criterion), Gestalt perceptual organization, and selective attention bottleneck architectures."
+  ~#protocol: "cache.layer/1"
+}
+
+^"psychophysical_scaling_and_signal_detection"{
+  "sensory_scaling_laws": .{
+    weber_fechner_law: "Weber's fraction Delta I / I = k (constant just-noticeable-difference ratio); Fechner's logarithmic integration S = c * ln(I / I_0) relating physical stimulus intensity to perceived sensation",
+    stevens_power_law: "Perceived sensation scales as a power function: S = k * I^a; exponents vary by sensory modality (brightness a ~ 0.33, line length a ~ 1.0, electric shock pain a ~ 3.5)",
+    absolute_and_differential_thresholds: "Method of limits, method of constant stimuli, and adaptive staircase procedures determining the 50% detection boundary",
+  }[reg=facet],
+  "signal_detection_theory_sdt": .{
+    four_response_outcomes: "Hits (signal present, response yes), Misses (signal present, response no), False Alarms (noise only, response yes), Correct Rejections (noise only, response no)",
+    sensitivity_index_d_prime: "d' = z(Hit_rate) - z(False_Alarm_rate); measures physical sensory discriminability independent of psychological motivation or strategy",
+    response_criterion_bias: "Criterion c = -0.5 * [z(Hit_rate) + z(False_Alarm_rate)]; c > 0 indicates conservative bias; c < 0 indicates liberal bias; beta likelihood ratio",
+    roc_curves: "Receiver Operating Characteristic plotting Hit Rate vs False Alarm Rate; area under the curve (AUC) quantifying classification power across varying decision thresholds",
+  }[reg=facet],
+}
+
+^"perceptual_organization_and_selective_attention"{
+  "gestalt_grouping_and_binding": .{
+    gestalt_principles: "Proximity, Similarity, Good Continuation, Closure, Common Fate, and Pragnanz (simplicity); parsing visual scenes into figure and ground",
+    treismans_feature_integration_theory: "Pre-attentive stage extracts low-level features (color, orientation) in parallel with zero search slope; Attentional stage binds features via focused spatial spotlight; conjunction search exhibits linear RT increase with set size; illusory conjunctions occur under cognitive load",
+  }[reg=facet],
+  "attentional_selection_and_bottlenecks": .{
+    early_vs_late_filter_debates: "Broadbent's early filter model (selection strictly by physical sensory cues before semantic analysis) vs Treisman's Attenuation model (unattended signals attenuated, primed words like own name breakthrough) vs Deutsch-Deutsch late selection",
+    posner_spatial_cueing_paradigm: "Endogenous (central, voluntary, top-down) vs Exogenous (peripheral, involuntary, bottom-up) attentional orienting; reaction time benefits for valid spatial cues and inhibition of return (IOR)",
+    attentional_capture_and_stroop: "Automaticity and cognitive control: Stroop effect demonstrating involuntary semantic reading interfering with color-naming latencies; inattentional blindness and attentional blink",
+  }[reg=facet],
+}
+
+^"wonder_probes"{
+  #>wonder_univ_cog_psych_perception_1
+  ?["Why does the human visual system routinely generate illusory conjunctions (binding the red color of one shape to the circular form of an adjacent shape) when attention is overloaded?"]{
+    #:depth #!perceptual ~#lens(feature_binding_temporal_asynchrony)
+    ~#hypothesis: "The visual cortex computes spatial color (V4) and geometric orientation (V1/V2) along anatomically segregated parallel streams. Conscious bound perception requires an oscillatory gamma-band attentional synchronization signal across parietal and frontal cortex; when cognitive resources are depleted, unbound free-floating features are randomly glued together by post-hoc perceptual heuristics."
+    !probe{ "Measure illusory conjunction error rates and parietal EEG gamma-band phase locking during tachistoscopic 50ms multi-feature displays." }
+    $%[attention.illusory_conjunction_error_percentage, eeg.parietal_gamma_phase_synchrony]
+  }
+}
