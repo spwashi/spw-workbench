@@ -102,6 +102,23 @@ function frameBody(code: string, raw: string, name: string): { text: string; lin
   return null
 }
 
+/** [start, end) of the innermost {…} body containing index, on code-only text. */
+function enclosingBody(code: string, index: number): [number, number] | null {
+  let depth = 0
+  let start = -1
+  for (let i = index; i >= 0; i--) {
+    if (code[i] === '}') depth++
+    else if (code[i] === '{') { if (depth === 0) { start = i + 1; break } depth-- }
+  }
+  if (start < 0) return null
+  depth = 0
+  for (let i = start; i < code.length; i++) {
+    if (code[i] === '{') depth++
+    else if (code[i] === '}') { if (depth === 0) return [start, i]; depth-- }
+  }
+  return null
+}
+
 function lineOf(src: string, index: number): number {
   return src.slice(0, index).split('\n').length
 }
@@ -274,6 +291,21 @@ function main(): void {
     for (const m of code.matchAll(/#:depth\s+#!([A-Za-z0-9_-]+)/g)) if (!inVocab('depth', m[1])) add(file, 'fail', lineOf(src, m.index!), `#:depth #!${m[1]} is not in vocabulary.spw`)
     for (const m of code.matchAll(/#:claim\s+#!([A-Za-z0-9_-]+)/g)) if (!inVocab('claim', m[1])) add(file, 'fail', lineOf(src, m.index!), `#:claim #!${m[1]} is not in vocabulary.spw`)
     for (const m of code.matchAll(/=kind\[([A-Za-z0-9_-]+)\]/g)) if (!inVocab('probe_kind', m[1])) add(file, 'fail', lineOf(src, m.index!), `probe kind ${m[1]} is not in vocabulary.spw`)
+
+    // ethics: a factual claim names its source inside its own frame
+    const sourcedSurface = ['sourced', 'adversarial_checked', 'expert_reviewed'].includes(axes.get('review') ?? '')
+    for (const m of code.matchAll(/#:claim\s+#!([A-Za-z0-9_-]+)/g)) {
+      if (['speculative', 'interpretive'].includes(m[1])) continue
+      const span = enclosingBody(code, m.index!)
+      if (span && !/\bsources?:/.test(src.slice(span[0], span[1]))) {
+        add(file, sourcedSurface ? 'fail' : 'warn', lineOf(src, m.index!), `#:claim #!${m[1]} has no source: link in its frame`)
+      }
+    }
+    // ethics: provenance discloses how the surface was made
+    const provenance = frameBody(code, src, 'provenance')
+    if (provenance) for (const key of ['as_of', 'generator', 'lineage']) {
+      if (!new RegExp(`^\\s*${key}:`, 'm').test(provenance.text)) add(file, 'fail', provenance.line, `^"provenance" missing ${key}:`)
+    }
 
     // AST walk: lenses and links
     if (ast) walk(ast, (n) => {
