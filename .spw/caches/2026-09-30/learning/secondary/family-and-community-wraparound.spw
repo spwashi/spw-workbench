@@ -1,0 +1,183 @@
+# Family and Community Wraparound
+#
+# How schools meet needs outside the classroom: McKinney-Vento enrollment rights, school meals, language access, school-based health and the FERPA and HIPAA boundary, community schools, and restorative practice.
+
+#>secondary_schooling_wraparound
+#:layer #!pragmatics
+#:domain #!secondary_schooling
+#:form #!protocol
+#:level #!intro
+#:review #!sourced
+#:valence #!boon
+#:era #!current
+
+^"emit"{
+ ~#title: "Family and Community Wraparound"
+ ~#claim: "Federal law gives students without stable housing immediate enrollment and a path to stay in their school, while records law draws a line between education records and health records."
+ ~#proof: "The McKinney-Vento Act and Department of Education guidance; the 2019 joint FERPA and HIPAA guidance; the 2023 USDA community eligibility rule."
+ ~#door: "Follow the protocol from need to support, then read the records boundary before any health service."
+ ~#audience: "families, school staff, and community partners"
+ continuity: "Family and Community Wraparound | immediate enrollment"
+ cold_open: "A student without a stable home gets immediate enrollment, a ride to school, and meals, with records kept under the right law."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/secondary-education/family-and-community-wraparound.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "HIPAA and FERPA interoperability guidelines: replaced by the boundary in the 2019 joint guidance; a record falls under one law or the other",
+  "automatic waiver of all course fees, caps, and gowns: restated as the statutory duty to remove barriers from fees and fines; specific waivers vary by district",
+  "school health center reduces chronic absenteeism by over 30 percent: invented; replaced by a direction-only question",
+  "clinical service menu removed; this surface describes structures and rights, not care"
+ ]
+}
+
+^["scope"]{
+ what: "educational reference on school structures that support students and families"
+ not_care: "health services are named as school structures only; no clinical guidance appears here"
+ not_advice: "general information on federal law, not legal advice; states and districts add rules"
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/learning-and-generations.spw#q_learn_secondary" ]
+ see: [ ~"./student-support.spw#secondary_schooling_support_records" ]
+}
+
+^["concepts"]{
+ primary: [ #wraparound, #confidentiality ]
+ transfers: [ #access ]
+ tensions: [ #discipline ]
+}
+
+^["protocol"]{
+ steps: <<
+  "notice a need: housing, food, language, health, or safety" ;
+  "enroll or keep enrolled without waiting for records" ;
+  "connect the family to the district liaison" ;
+  "arrange meals and transportation" ;
+  "refer to health or social services with consent" ;
+  "keep records under the law that governs them" ;
+  "review with the family"
+ >>
+
+ #>secondary_schooling_wraparound_housing
+ ^["housing"]{
+  #>secondary_schooling_wraparound_definition
+  ^["who_qualifies"]{
+   #:claim #!settled
+   statement: "McKinney-Vento covers children lacking a fixed, regular, adequate nighttime residence, including those sharing housing after losing their own, or living in motels, shelters, or cars."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_mckinney_vento"
+  }
+
+  #>secondary_schooling_wraparound_enrollment
+  ^["immediate_enrollment"]{
+   #:claim #!settled
+   statement: "A school must enroll a homeless student immediately, even when records, proof of residency, or immunization documents are missing."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_mckinney_vento"
+   ?match[@records]{
+    "present" => ![enroll],
+    "missing" => ![enroll_then_request],
+    _ => ![enroll_then_liaison]
+   }
+  }
+
+  #>secondary_schooling_wraparound_origin
+  ^["school_of_origin"]{
+   #:claim #!settled
+   statement: "A student may stay in the school of origin when that is in the student interest, and the district must arrange transportation there."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_mckinney_vento"
+  }
+
+  #>secondary_schooling_wraparound_barriers
+  ^["barriers"]{
+   #:claim #!settled
+   statement: "Every district designates a homeless liaison, and states and districts must review and remove barriers to enrollment and retention, including fees and fines."
+   sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_mckinney_vento", ~"../../registries/sources/learning-and-generations.spw#src_learn_ehcy_guidance" ]
+  }
+ }
+
+ #>secondary_schooling_wraparound_meals
+ ^["meals"]{
+  #>secondary_schooling_wraparound_cep
+  ^["community_eligibility"]{
+   #:claim #!settled
+   statement: "Since a 2023 USDA rule, schools or districts whose identified student percentage is at least 25 may elect to serve all meals free."
+   reads: %[learn.cep.isp_min_percent]
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_usda_cep_2023"
+   as_of: "2026-10-01"
+  }
+  categorical: "students identified as homeless are categorically eligible for free school meals"
+ }
+
+ #>secondary_schooling_wraparound_language
+ ^["language_access"]{
+  #:claim #!settled
+  statement: "Under Title VI, schools must communicate essential information to parents with limited English proficiency in a language they understand."
+  sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_title_vi_2015", ~"../../registries/sources/learning-and-generations.spw#src_learn_civil_rights_1964" ]
+ }
+
+ #>secondary_schooling_wraparound_records
+ ^["records_boundary"]{
+  #:claim #!settled
+  statement: "Health records kept by a school or its agents are education records under FERPA and outside HIPAA; an outside clinic not acting for the school keeps HIPAA records."
+  sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_ferpa_hipaa_2019", ~"../../registries/sources/learning-and-generations.spw#src_learn_ferpa" ]
+  ^["limits"]{
+   holds: "K-12 schools that receive federal education funds"
+   fails: "state minor-consent and confidentiality laws add rules that vary by service and age"
+  }
+ }
+}
+
+^["community_schools"]{
+ #>secondary_schooling_wraparound_community_schools
+ ^["evidence"]{
+  #:claim #!emerging
+  statement: "A 2017 review found well-implemented community schools, with integrated supports and family engagement, associated with better attendance and achievement; results vary with implementation."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_maier_2017"
+ }
+}
+
+^["discipline"]{
+ #>secondary_schooling_wraparound_restorative
+ ^["restorative_practices"]{
+  #:claim #!contested
+  statement: "In a randomized Pittsburgh trial, restorative practices cut suspensions, mostly in elementary grades, while middle school academic outcomes worsened."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_augustine_2018"
+  disagreement: "advocates weigh fewer exclusions most; critics weigh classroom order and achievement"
+ }
+}
+
+^["try"]{
+ #>secondary_schooling_try_liaison
+ ^["find_the_liaison"]{
+  materials: [
+   "your state education agency website",
+   "your district website"
+  ]
+  steps: <<
+   "search the state site for its homeless education coordinator page" ;
+   "find how the state lists district liaisons" ;
+   "find your district liaison contact on the district site" ;
+   "note which office handles meal eligibility"
+  >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "look up public contacts only; keep any family details private"
+  shows: ~"./family-and-community-wraparound.spw#secondary_schooling_wraparound_barriers"
+ }
+}
+
+#>secondary_schooling_wraparound_clinic_q
+?["Does a health center inside a school change how often students miss school?"]{
+ #:depth #!social ~#lens(living system)
+ #:claim #!speculative
+ ~#hypothesis: "Students with on-site access miss fewer full days for routine appointments than similar students who must leave campus."
+ !probe{ "compare attendance before and after a school health center opens against matched schools" =id[p_learn_wraparound_clinic] =kind[census] }
+ ~"./family-and-community-wraparound.spw#secondary_schooling_wraparound_records" ~#neighbor(nearest)
+}

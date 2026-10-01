@@ -1,0 +1,140 @@
+# Broadcast Cadence
+#
+# Daily, weekly, and annual rhythms for a long daily show, with the thirteen-hour team budget kept and rest days reconciled with the episode count.
+
+#>broadcast_cadence
+#:layer #!pragmatics
+#:domain #!broadcast
+#:form #!calendar
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!bane
+#:season #!reflection
+
+^"emit"{
+ ~#title: "Broadcast Cadence"
+ ~#claim: "A daily three-hour show cannot give its one host a silent day each month and still record every day, so the cadence names who carries the rest days."
+ ~#proof: "The daily blocks sum to thirteen team hours; thirty-six silent days in three years leave fewer live days than calendar days, and three ways to close the gap are compared."
+ ~#door: "Pair this with the run sheet, then with the season cadence for the quarter."
+ ~#audience: "producers and hosts planning a long run"
+ continuity: "Broadcast Cadence | rest days"
+ cold_open: "A daily show needs a plan for who speaks on the host rest days."
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/podcasting/long-form-cadence.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "one silent host day per month contradicts 1,095 consecutive recorded days; the reconciliation below names who carries those days",
+  "the eleven-to-thirteen-hour range is replaced by the thirteen hours the listed blocks actually sum to",
+  "food and electrolyte advice is dropped; this surface schedules rest and gives no health guidance",
+  "32-bit float recording protects the converter-to-file stage, not an overloaded microphone or preamp",
+  "the thirty-million-word figure assumed an unsourced speaking rate and is dropped"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./episode-run-sheet.spw#broadcast_run_sheet" ]
+ analog: [ ~"../../season/fiscal-and-academic-years.spw#season_fiscal_academic" ]
+ see: [ ~"../../season/season-arc.spw#season_arc" ]
+}
+
+^["concepts"]{
+ primary: [ #rest_cadence, #season_cadence ]
+ transfers: [ #run_sheet ]
+ tensions: [ #critical_path ]
+}
+
+^["scope"]{
+ frame: "educational reference on production scheduling; rest days here are a scheduling practice, not medical advice"
+ voice_health: "anyone with voice concerns should rely on a clinician, not on this surface"
+}
+
+^["daily"]{
+ #>broadcast_cadence_daily
+ ^["team_budget"]{
+  blocks: << "research and source reading, 4.0 h" ; "code verification and spec tracing, 2.5 h" ; "live recording, 3.0 h" ; "edit, chapters, and show notes, 1.5 h" ; "recovery and reset, 2.0 h" >>
+  sum: "13.0 team hours per episode, spread across host and staff"
+  note: "recovery is budgeted as work time so it is not cut first"
+ }
+}
+
+^["weekly"]{
+ rhythm: << "Monday plan the week" ; "Tuesday to Saturday record" ; "Sunday dossier prep for the next week" >>
+ review: "one weekly listen-back to a chapter that ran over"
+}
+
+^["annual"]{
+ quarterly: "a quarterly review of the attention stance and the zero-padding test"
+ year_end: "a retrospective episode in late December built from the open questions of the year"
+ holidays: "schedule archive episodes on fixed holidays; dates per region verify"
+}
+
+^["reconcile"]{
+ #>broadcast_cadence_arithmetic
+ ^["arithmetic"]{
+  span: "three calendar years: 1,095 days, or 1,096 when the span holds a leap day"
+  silent_days: "one per month for thirty-six months: 36 days"
+  live_days: "1,095 minus 36 leaves 1,059 days on which the lead host can record"
+  conclusion: "a daily release of 1,095 new episodes needs another voice or banked episodes on 36 days"
+ }
+ #>broadcast_cadence_options
+ ^["options"]{
+  rotate: .{ plan: "the co-host leads on the host silent days", keeps: "daily new episodes", costs: "a second lead voice to train" }
+  archive: .{ plan: "release a remastered archive episode on silent days", keeps: "daily releases", costs: "36 releases are not new" }
+  bank: .{ plan: "record one extra episode in each month", keeps: "one voice", costs: "a double session each month, which works against the rest it buys" }
+ }
+ #>broadcast_cadence_choice
+ ^["choice"]{
+  #:claim #!interpretive
+  statement: "Rotation keeps both the rest day and the daily promise; banking defeats its own purpose because the extra session adds the load the silent day removes."
+ }
+}
+
+^["voice"]{
+ #>broadcast_cadence_vocal_dose
+ ^["vocal_dose"]{
+  #:claim #!settled
+  statement: "Voice scientists quantify accumulated voice use as vocal dose, counting time voiced, vibration cycles, and the distance the vocal folds travel."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_titze_svec_popolo_2003"
+  context: ~"../../registries/sources/creators-and-platforms.spw#src_creator_titze_2012"
+  ^["limits"]{
+   holds: "dose as a measurement concept"
+   fails: "as a personal limit or a clinical threshold; this surface sets none"
+  }
+ }
+}
+
+^["kit"]{
+ status: "practice notes; product names verify"
+ microphones: "broadcast dynamic microphones are common for long talk sessions in untreated rooms"
+ float_recording: "32-bit float files avoid clipping in the recorder file, not in an overloaded microphone or preamp"
+ backup: "record on two independent media at once"
+ publishing: "nightly build of audio, transcript, chapters, and the RSS feed"
+}
+
+#>broadcast_cadence_fluency_q
+?["Does explaining a new idea on air get faster across a long run?"]{
+ #:depth #!experiential ~#lens(bodily rhythm)
+ #:claim #!speculative
+ ~#hypothesis: "Time from first mention to a working analogy shortens over the first year and then levels off."
+ !probe{ "time the model segment of matched-difficulty topics in month one and month twelve" =id[p_creator_cadence_fluency] =kind[field] }
+ ~"./broadcast-cadence.spw#broadcast_cadence_daily" ~#neighbor(nearest)
+}
+
+#>broadcast_cadence_fallow_q
+?["Is a monthly silent day the fallow field of a broadcast?"]{
+ #:depth #!experiential ~#lens(living system)
+ #:claim #!speculative
+ ~#hypothesis: "A planned rest day restores more than an unplanned one, because the work around it can be arranged in advance."
+ breaks: "a fallow field rebuilds soil on its own; a rest day restores a person only if the rest of the month leaves room"
+ !probe{ "compare host self-reports in months with planned and unplanned rest days" =id[p_creator_cadence_fallow] =kind[field] }
+ ~"./broadcast-cadence.spw#broadcast_cadence_choice" ~#neighbor(nearest)
+}

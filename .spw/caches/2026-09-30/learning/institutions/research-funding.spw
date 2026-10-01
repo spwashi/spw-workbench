@@ -1,0 +1,229 @@
+# Research Funding
+#
+# How federal research money reaches US universities: funders and mechanisms side by side, indirect costs, origins in law, and the states a grant passes through.
+
+#>institutions_research_funding
+#:layer #!reference
+#:domain #!institutions
+#:form #!comparison
+#:level #!advanced
+#:review #!sourced
+#:valence #!bone
+#:era #!current
+
+^"emit"{
+ ~#title: "Research Funding"
+ ~#claim: "Federal research money reaches universities through agency mechanisms with their own review rules, indirect costs at negotiated rates, and calendars set by due dates and the federal fiscal year."
+ ~#proof: "NSF budget pages, NIH review and due-date policy, 2 CFR 200 Appendix III, and the Bayh-Dole Act; budgets after FY2025 are left as verify cells."
+ ~#door: "Read the matrix by column, then follow one grant through its states."
+ ~#audience: "graduate students, new investigators, and readers of science-policy news"
+ continuity: "Research Funding | indirect costs"
+ cold_open: "Every research grant arrives with a review rule, a deadline, and indirect costs that keep the building running."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/university-education/research-and-funding.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "NSF budget of 10 billion dollars or more replaced by enacted FY2024 and FY2025 cells; FY2026 left as a verify cell",
+  "NIH review criteria restated for the Simplified Review Framework used from 2025 due dates",
+  "typical F and A range of 50 to 65 percent removed as unsourced; the 26 percent administrative cap kept with its regulation",
+  "60 percent overhead figure in the wonder replaced by a direction-only hypothesis"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/learning-and-generations.spw#q_learn_funding" ]
+ feeds: [ ~"./academic-year-cadence.spw#institutions_academic_year" ]
+ see: [ ~"../../season/fiscal-and-academic-years.spw#season_fiscal_academic" ]
+}
+
+^["concepts"]{
+ primary: [ #indirect_costs, #grant_cycle ]
+ transfers: [ #academic_calendar ]
+ tensions: [ #academic_freedom ]
+}
+
+^["matrix"]{
+ columns: #[ mechanism, review, indirect_costs, cadence, budget ]
+
+ #>institutions_research_funding_nih
+ ^["nih"]{
+  mechanism: "research project grants such as the R01, mostly investigator-initiated"
+
+  #>institutions_research_funding_nih_review
+  ^["review"]{
+   #:claim #!settled
+   statement: "From January 2025 due dates, NIH reviewers score importance and rigor, and rate investigator expertise and environment as sufficient or not."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_nih_simplified_review"
+   as_of: "2026-10-01"
+  }
+  #>institutions_research_funding_nih_cap
+  ^["indirect_cap"]{
+   #:claim #!contested
+   statement: "A February 2025 NIH notice set a flat 15 percent indirect rate in place of negotiated rates; a federal court enjoined it in 2025, and its current status needs checking."
+   reads: %[learn.fund.nih_indirect_cap_2025_percent]
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_nih_indirect_2025"
+   counter: ~"../../registries/sources/learning-and-generations.spw#src_learn_mass_v_nih_2025"
+   as_of: "2026-10-01"
+  }
+  #>institutions_research_funding_nih_dates
+  ^["cadence"]{
+   #:claim #!settled
+   statement: "NIH standard due dates for new R01 applications fall on February 5, June 5, and October 5."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_nih_due_dates"
+   as_of: "2026-10-01"
+  }
+  budget: %[learn.fund.nih_fy2026_usd_b]
+ }
+ #>institutions_research_funding_nsf
+ ^["nsf"]{
+  mechanism: "standard and continuing grants awarded through program solicitations and open calls"
+
+  #>institutions_research_funding_nsf_merit
+  ^["review"]{
+   #:claim #!settled
+   statement: "NSF merit review weighs two criteria, Intellectual Merit and Broader Impacts, as set out in the Proposal and Award Policies and Procedures Guide."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_nsf_pappg"
+  }
+  #>institutions_research_funding_nsf_budget
+  ^["budget"]{
+   #:claim #!settled
+   statement: "NSF reports an enacted FY2024 budget of 9.06 billion dollars, 5 percent below FY2023, and 8.826 billion dollars in FY2025 appropriations."
+   reads: %[learn.fund.nsf_fy2024_usd_b, learn.fund.nsf_fy2025_usd_b]
+   next: %[learn.fund.nsf_fy2026_usd_b]
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_nsf_budget"
+   as_of: "2026-10-01"
+  }
+  cadence: "solicitation target dates, deadlines, or windows that accept proposals any time; read each solicitation"
+ }
+ ^["mission_agencies"]{
+  who: "DOD, DOE, NASA, USDA, and others fund research tied to their missions"
+  mechanism: "program officers shape portfolios through solicitations and broad agency announcements"
+ }
+ ^["foundations_and_industry"]{
+  who: "private foundations, companies, and states"
+  indirect_costs: "each funder sets its own indirect cost policy, often below federal negotiated rates"
+ }
+}
+
+^["indirect_costs"]{
+ #>institutions_research_funding_fa
+ ^["negotiated"]{
+  #:claim #!settled
+  statement: "Universities negotiate facilities and administrative rates with a cognizant federal agency; the administrative component is capped at 26 percent of modified total direct costs."
+  reads: %[learn.fund.fa_admin_cap_percent]
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_uniform_guidance"
+  ^["limits"]{
+   holds: "federal awards to institutions of higher education under 2 CFR 200"
+   fails: "agency-specific caps, training grants, and non-federal sponsors follow their own rules"
+  }
+ }
+ pays_for: [
+  "buildings, utilities, and maintenance",
+  "libraries and research computing",
+  "compliance offices, safety, and grant administration"
+ ]
+}
+
+^["origins"]{
+ #>institutions_research_funding_bush
+ ^["endless_frontier"]{
+  #:claim #!settled
+  statement: "Vannevar Bush argued in 1945 for federal support of basic research in universities; Congress created NSF in 1950."
+  sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_bush_1945", ~"../../registries/sources/learning-and-generations.spw#src_learn_nsf_act_1950" ]
+ }
+ #>institutions_research_funding_bayh_dole
+ ^["bayh_dole"]{
+  #:claim #!settled
+  statement: "The Bayh-Dole Act of 1980 lets universities elect title to inventions from federally funded research, with duties to disclose, patent, share royalties with inventors, and license the government."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_bayh_dole_1980"
+  tension: "licensing income can pull against open publication of publicly funded results"
+ }
+}
+
+^["compliance"]{
+ #>institutions_research_funding_irb
+ ^["human_and_animal"]{
+  #:claim #!settled
+  statement: "Human subjects research under Common Rule agencies needs IRB review, and PHS-funded animal work needs IACUC oversight, before the work begins."
+  sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_common_rule", ~"../../registries/sources/learning-and-generations.spw#src_learn_phs_policy" ]
+ }
+}
+
+^["grant_states"]{
+ #:claim #!interpretive
+ shape: "the usual life of a federal grant; agency names for each stage differ"
+ path: <<
+  "idea and specific aims" ;
+  "routing through the sponsored programs office" ;
+  "submission by the institution" ;
+  "peer review" ;
+  "program or council decision" ;
+  "award" ;
+  "annual progress reports" ;
+  "closeout"
+ >>
+
+ #>institutions_research_funding_decision
+ ^["decision"]{
+  ?match[@decision]{
+   "funded" => ~"./research-funding.spw#institutions_research_funding_fa",
+   "not funded" => ![revise_and_resubmit],
+   _ => ![hold]
+  }
+ }
+ lab_roles: [
+  "principal investigator: direction, funding, mentoring",
+  "postdoctoral researchers: independent projects and mentoring",
+  "doctoral students: dissertation research and teaching",
+  "undergraduate and master's researchers: supervised projects"
+ ]
+}
+
+^["try"]{
+ #>institutions_research_funding_try_abstracts
+ ^["read_funded_abstracts"]{
+  materials: [
+   "NSF Award Search or NIH RePORTER in a browser",
+   "a notes file with two columns"
+  ]
+  steps: <<
+   "search a topic you care about" ;
+   "open three funded awards" ;
+   "copy one sentence of intellectual merit and one of broader impact from each" ;
+   "note the award dates and the institution that holds each grant"
+  >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "none worth naming"
+  shows: ~"./research-funding.spw#institutions_research_funding_nsf_merit"
+ }
+}
+
+#>institutions_research_funding_space_q
+?["Do indirect cost flows shape which buildings a campus raises?"]{
+ #:depth #!social ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "Fields that bring in federal indirect costs gain new research space faster than fields that rarely carry federal grants."
+ !probe{ "compare decades of campus space inventories by field against sponsored research totals" =id[p_learn_funding_space] =kind[census] }
+ $%[learn.fund.fa_admin_cap_percent]
+ ~"./research-funding.spw#institutions_research_funding_fa" ~#neighbor(nearest)
+}
+
+#>institutions_research_funding_commons_q
+?["Is basic research a commons like a fishery, overused when no one pays to restock it?"]{
+ #:depth #!social ~#lens(ecological zone)
+ #:claim #!speculative
+ ~#hypothesis: "Private firms underinvest in basic research because its results spread to rivals, so public funding restocks a shared pool."
+ breaks: "fish are rival goods, while a published result can be used by everyone without being used up"
+ !probe{ "trace patents that cite federally funded papers in one field across two decades" =id[p_learn_funding_commons] =kind[lit] }
+ $%[learn.fund.nsf_fy2024_usd_b]
+ ~"./research-funding.spw#institutions_research_funding_bush" ~#neighbor(nearest)
+}

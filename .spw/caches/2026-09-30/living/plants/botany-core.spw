@@ -1,0 +1,194 @@
+# Botany Core
+#
+# Plant anatomy and physiology as a claim ledger: tissues, water and sugar transport, carbon fixation, hormones, systematics, and symbioses, with the forest-network debate kept in view.
+
+#>plant_science_botany
+#:layer #!reference
+#:domain #!plant_science
+#:form #!ledger
+#:level #!foundation
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Botany Core"
+ ~#claim: "A plant pulls water up by cohesion-tension, filters it at a lignin Casparian strip, fixes carbon by three routes, and steers growth with mobile hormones."
+ ~#proof: "Physiology from Taiz and Zeiger; Casparian strip chemistry from Naseer and colleagues 2012; the network debate from Karst and colleagues 2023."
+ ~#door: "Start at the root barrier, follow water up the xylem, then read the contested forest network last."
+ ~#audience: "readers with high-school biology"
+ continuity: "Botany Core | Casparian strip"
+ cold_open: "Water enters a root through living cells, because a lignin seal called the Casparian strip closes the gaps between them."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/horticulture-and-botany/undergrad-botany-and-plant-biology.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the Casparian strip is a lignin polymer, not suberin; suberin lamellae form later as a separate barrier (raw line 20)",
+  "a forest as a cooperative fungal super-organism trading warning signals is contested, not settled (raw line 71)",
+  "oxygen comes from all photosynthesizers; close to half of global primary production is marine (raw line 66)",
+  "an invented 25 percent stomatal effect size in the raw wonder was dropped"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/plants-ecology-care.spw#q_eco_soil" ]
+ needs: [ ~"../../physical/materials/water.spw#materials_water_hbond_network" ]
+ feeds: [ ~"./horticultural-science.spw#plant_science_horticulture" ]
+}
+
+^["concepts"]{
+ primary: [ #cohesion_tension, #casparian_strip, #carbon_fixation ]
+ transfers: [ #gradient, #symbiosis ]
+ tensions: [ #wood_wide_web ]
+}
+
+^["anatomy"]{
+ #>plant_science_botany_meristems
+ ^["meristems"]{
+  #:claim #!settled
+  statement: "Apical meristems at shoot and root tips add length and lateral cambia add girth, so a plant keeps building new organs throughout its life."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_taiz_2015"
+ }
+ #>plant_science_botany_casparian
+ ^["casparian_strip"]{
+  #:claim #!settled
+  statement: "The endodermal Casparian strip is a lignin band in radial and transverse cell walls; it blocks the wall pathway, so water and ions cross a living membrane to reach the xylem."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_naseer_2012"
+  ~#say(a lignin seal makes water pass through a living membrane)
+  ^["limits"]{
+   holds: "Arabidopsis roots, where the polymer was identified by chemistry and genetics"
+   fails: "suberin lamellae laid down later on endodermal surfaces are a second, separate barrier; root anatomy varies across species"
+  }
+ }
+ #>plant_science_botany_stomata
+ ^["stomata"]{
+  #:claim #!settled
+  statement: "Guard cells open a stoma when blue light drives a proton pump, potassium and counter-ions enter, and water follows; abscisic acid closes it under drought."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_taiz_2015"
+ }
+}
+
+^["transport"]{
+ ^["water"]{
+  #>plant_science_botany_cohesion_tension
+  ^["cohesion_tension"]{
+   #:claim #!settled
+   statement: "Evaporation from leaves pulls a continuous water column up the xylem under tension; hydrogen bonding keeps the column cohesive from root to leaf."
+   sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_dixon_joly_1895", ~"../../registries/sources/plants-ecology-care.spw#src_eco_taiz_2015" ]
+   reads: %[eco.soil.pwp_mpa, eco.soil.fc_mpa]
+   ^["limits"]{
+    holds: "a continuous column with soil water above the wilting point"
+    fails: "drought tension can cavitate vessels; how embolized vessels refill is still argued"
+   }
+  }
+ }
+ ^["sugar"]{
+  #>plant_science_botany_pressure_flow
+  ^["pressure_flow"]{
+   #:claim #!settled
+   statement: "Phloem sap moves by pressure flow: sugar loading at a source draws in water osmotically, and the pressure pushes sap toward sinks such as roots and fruit."
+   sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_munch_1930", ~"../../registries/sources/plants-ecology-care.spw#src_eco_taiz_2015" ]
+  }
+ }
+}
+
+^["carbon"]{
+ #>plant_science_botany_light_reactions
+ ^["light_reactions"]{
+  #:claim #!settled
+  statement: "Two photosystems in series split water, release oxygen, and build a proton gradient that drives ATP synthesis in the thylakoid."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_taiz_2015"
+ }
+ #>plant_science_botany_c4_cam
+ ^["c4_and_cam"]{
+  #:claim #!settled
+  statement: "C4 plants such as maize fix carbon first with PEP carboxylase and hand it to Rubisco in another cell; CAM plants split the same steps between night and day."
+  sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_hatch_slack_1966", ~"../../registries/sources/plants-ecology-care.spw#src_eco_taiz_2015" ]
+ }
+ #>plant_science_botany_oxygen_share
+ ^["oxygen_share"]{
+  #:claim #!settled
+  statement: "Land plants supply only part of the oxygen we breathe; marine phytoplankton carry out close to half of global net primary production."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_field_1998"
+ }
+}
+
+^["hormones"]{
+ #>plant_science_botany_auxin
+ ^["polar_auxin"]{
+  #:claim #!settled
+  statement: "Auxin moves cell to cell in one direction through PIN efflux carriers, and that polar flow patterns apical dominance, phototropic bending, and vascular strands."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_galweiler_1998"
+ }
+ #>plant_science_botany_hormone_set
+ ^["hormone_set"]{
+  #:claim #!settled
+  statement: "Cytokinins drive shoot initiation, gibberellins drive stem elongation and germination, abscisic acid signals drought, and ethylene drives ripening and abscission."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_taiz_2015"
+ }
+}
+
+^["systematics"]{
+ #>plant_science_botany_apg
+ ^["apg_iv"]{
+  #:claim #!settled
+  statement: "APG IV, published in 2016, orders flowering plants into clades supported by molecular phylogenies rather than by artificial keys of single traits."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_apg_2016"
+  herbarium: "a voucher specimen with collector, date, place, and habitat lets a later reader check the name"
+ }
+}
+
+^["symbioses"]{
+ #>plant_science_botany_mycorrhiza
+ ^["mycorrhiza"]{
+  #:claim #!settled
+  statement: "Most land plants form mycorrhizae, trading carbon to fungi whose hyphae extend the root system and return phosphorus and other nutrients."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_smith_read_2008"
+ }
+ #>plant_science_botany_nodules
+ ^["nodules"]{
+  #:claim #!settled
+  statement: "Legume roots release flavonoids, rhizobia answer with Nod factors, and the nodule that forms buffers oxygen with leghemoglobin so nitrogenase can fix nitrogen."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_taiz_2015"
+ }
+ #>plant_science_botany_network
+ ^["wood_wide_web"]{
+  #:claim #!contested
+  statement: "Claims that shared fungal networks move meaningful carbon and warning signals between trees, and that mother trees favor kin, outrun the few field studies behind them."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_karst_2023"
+  counter: ~"../../registries/sources/plants-ecology-care.spw#src_eco_simard_1997"
+  ^["limits"]{
+   holds: "mycorrhizal links between trees exist and some labeled carbon crosses them"
+   fails: "the size, direction, and benefit of transfer in mature forests remain unmeasured at scale"
+  }
+ }
+}
+
+^["try"]{
+ #>plant_science_botany_try_xylem
+ ^["dyed_celery"]{
+  materials: [ "one celery stalk with leaves", "a clear glass", "water", "dark food coloring", "a kitchen knife" ]
+  steps: << "trim the stalk base under water" ; "stand it in deeply colored water" ; "wait in a warm bright room" ; "cut a thin cross-section and find the colored dots" >>
+  time: .{ n: 60, unit: "minutes" }
+  safety: "use the knife on a board and cut away from your hand"
+  shows: ~"./botany-core.spw#plant_science_botany_cohesion_tension"
+ }
+}
+
+#>plant_science_botany_wilting_q
+?["As soil dries toward the wilting point, where does the water column break first?"]{
+ #:depth #!physical ~#lens(material grain)
+ #:claim #!speculative
+ ~#hypothesis: "Columns fail first in the widest vessels of the most exposed leaves, because wide conduits cavitate at lower tension than narrow ones."
+ !probe{ "acoustic emission count on a drying potted shrub, wide and narrow conduits" =id[p_eco_botany_wilting] =kind[field] }
+ $%[eco.soil.pwp_mpa, eco.soil.fc_mpa]
+ ~"./botany-core.spw#plant_science_botany_cohesion_tension" ~#neighbor(nearest)
+}

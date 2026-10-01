@@ -1,0 +1,145 @@
+# Intimacy Coordination
+#
+# Consent checkpoints for scenes with nudity or simulated sex: disclosure, rider, boundary talk, choreography, closed set, check-ins, and post.
+
+#>film_intimacy
+#:layer #!pragmatics
+#:domain #!film
+#:form #!protocol
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!bane
+
+^"emit"{
+ ~#title: "Intimacy Coordination"
+ ~#claim: "An intimate scene passes each consent checkpoint in order: disclosure before hiring, written agreement, choreography rehearsed like a stunt, and a closed set where any performer can pause."
+ ~#proof: "SAG-AFTRA terms on nudity and its 2020 standards for intimacy coordinators; Chelsea Pace on choreography and consent practice."
+ ~#door: "Walk the checkpoints in order, then try the hug drill with a partner."
+ ~#audience: "directors, performers, students, and crews preparing an intimate scene"
+ cold_open: "An intimate scene is safe to shoot when every consent checkpoint is passed in order and anyone can still pause."
+ continuity: "Intimacy Coordination | consent checkpoint"
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/film-production-and-industry/intimacy-coordination-and-consent.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: [
+  "SAG-AFTRA publishes standards for intimacy coordinators; the raw claim that the guild certifies them is removed pending a source",
+  "the closed set holds the personnel agreed in advance, not a fixed list of five roles",
+  "barrier claims of zero contact are softened to barriers and modesty garments chosen with the performer",
+  "the raw ban on all digital alteration is replaced by the 2023 consent and compensation terms for digital replicas"
+ ]
+}
+
+^["edges"]{
+ see: [ ~"./set-operations-and-crew.spw#film_set_operations" ]
+ analog: [ ~"../theatre/theatre-core.spw#theatre_core" ]
+}
+
+^["concepts"]{
+ primary: [ #consent, #closed_set ]
+ transfers: [ #choreography, #state_machine, #attention ]
+ tensions: [ #schedule_pressure, #digital_replica ]
+}
+
+^["role"]{
+ #>film_intimacy_role
+ ^["coordinator"]{
+  #:claim #!settled
+  statement: "SAG-AFTRA published Standards and Protocols for the Use of Intimacy Coordinators in 2020, framing the coordinator as an advocate and liaison between performers and production."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_sagaftra_ic_2020"
+  currency: "check for later revisions of the standards"
+ }
+ #>film_intimacy_origins
+ ^["origins"]{
+  #:claim #!settled
+  statement: "Intimacy coordination grew out of theatre intimacy direction and stage combat practice; Chelsea Pace sets out one such method in Staging Sex (2020)."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_pace_2020"
+ }
+}
+
+^["checkpoints"]{
+ order: <<
+  "disclosure" ;
+  "rider" ;
+  "boundary talk" ;
+  "choreography" ;
+  "closed set" ;
+  "take with check-ins" ;
+  "cut and cover" ;
+  "post and use"
+ >>
+
+ #>film_intimacy_disclosure
+ ^["disclosure"]{
+  #:claim #!settled
+  statement: "Under SAG-AFTRA terms, producers tell a performer about nudity or simulated sex before engagement and obtain written consent."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_sagaftra_tvth_2023"
+  exits: "a rider that names what is agreed"
+ }
+ #>film_intimacy_boundaries
+ ^["boundary_talk"]{
+  does: "the coordinator meets each performer, separately when asked, to map what touch and exposure they agree to"
+  exits: "a boundary map the director and coordinator choreograph within"
+ }
+ #>film_intimacy_choreography
+ ^["choreography"]{
+  #:claim #!settled
+  statement: "Intimate contact is choreographed and rehearsed like fight work, with agreed contact points, counts, and a pause cue."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_pace_2020"
+ }
+ #>film_intimacy_closed_set
+ ^["closed_set"]{
+  #:claim #!settled
+  statement: "Scenes with nudity or simulated sex are shot on a closed set limited to essential personnel, with monitors and photography controlled."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_sagaftra_ic_2020"
+ }
+ #>film_intimacy_check_in
+ ^["take_with_check_ins"]{
+  on_check_in: ?match[@performer]{
+   "yes" => "proceed at the rehearsed tempo",
+   "pause" => "stop, cover, and talk off camera",
+   "no" => "stop; director and coordinator revise within the boundary map"
+  }
+  ~#(consent given in rehearsal can be withdrawn on the day)
+ }
+ #>film_intimacy_post
+ ^["post_and_use"]{
+  #:claim #!settled
+  statement: "The 2023 SAG-AFTRA agreement added consent and compensation terms for digital replicas of performers."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_sagaftra_tvth_2023"
+ }
+}
+
+^["try"]{
+ #>film_intimacy_try_hug
+ ^["hug_drill"]{
+  materials: [ "a partner", "a quiet room", "a timer" ]
+  steps: <<
+   "agree two contact points" ;
+   "agree a pause word" ;
+   "run the hug at half speed on a count" ;
+   "check in and adjust" ;
+   "run it at full speed"
+  >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "use only contact both partners agree to; either partner may stop at any time"
+  shows: ~"./intimacy-coordination.spw#film_intimacy_choreography"
+ }
+}
+
+#>film_intimacy_attention_q
+?["Does fixed choreography free a performer's attention for the scene?"]{
+ #:depth #!ethical ~#lens(craft practice)
+ #:claim #!speculative
+ ~#hypothesis: "When contact is agreed and rehearsed, performers spend less attention guarding boundaries and more on the scene."
+ !probe{ "interview performers who have worked with and without coordinators about where their attention went" =id[p_film_intimacy_attention] =kind[interview] }
+ ~"./intimacy-coordination.spw#film_intimacy_choreography" ~#neighbor(nearest)
+}

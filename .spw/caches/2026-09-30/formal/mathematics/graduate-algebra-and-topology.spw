@@ -1,0 +1,178 @@
+# Graduate Algebra and Topology
+#
+# A theorem ledger for modules, categories, homological algebra, fundamental groups, covering spaces, and homology, with van Kampen and covering-space hypotheses restored.
+
+#>mathematics_grad_algebra
+#:layer #!reference
+#:domain #!mathematics
+#:form #!ledger
+#:level #!graduate
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Graduate Algebra and Topology"
+ ~#claim: "Van Kampen needs open path-connected pieces with a path-connected overlap, and the covering-space correspondence needs a locally nice base."
+ ~#proof: "Hatcher states both with these hypotheses; Mac Lane, Riehl, Lang, and Weibel ground the algebra."
+ ~#door: "Read the structure theorem, then Yoneda, then van Kampen and the covering correspondence."
+ ~#audience: "first-year graduate students and strong undergraduates"
+ continuity: "Graduate Algebra and Topology | path-connected overlap"
+ cold_open: "Gluing two spaces gives a computable fundamental group only when the pieces are open and share a path-connected overlap."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/mathematics/graduate-algebra-and-algebraic-topology.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "van Kampen now requires open, path-connected pieces with a nonempty path-connected intersection containing the basepoint",
+  "the covering-space correspondence now requires a path-connected, locally path-connected, semilocally simply connected base",
+  "Yoneda now pairs the covariant lemma with covariant functors to sets and the embedding with contravariant hom functors",
+  "objects are determined up to unique isomorphism, not absolutely; the raw relational ontology is kept as an interpretive note",
+  "Poincare duality with integer coefficients requires orientability; Z mod 2 coefficients cover every closed manifold"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./analysis-and-algebra-core.spw#mathematics_core", ~"./topology-and-complex-core.spw#mathematics_topology_complex" ]
+ feeds: [ ~"../computing/abstract-computation.spw#computing_abstract" ]
+}
+
+^["concepts"]{
+ primary: [ #structure, #morphism, #homology ]
+ transfers: [ #invariant, #duality ]
+ tensions: [ #hypothesis_drop ]
+}
+
+^["ledger"]{
+ ^["modules_and_categories"]{
+  #>mathematics_ga_structure_theorem
+  ^["structure_theorem"]{
+   #:claim #!settled
+   statement: "A finitely generated module over a principal ideal domain is a free part plus cyclic torsion parts with invariant factors dividing in a chain, unique up to units."
+   source: ~"../../registries/sources/formal.spw#src_formal_dummit_foote_2004"
+   ~#(the same theorem yields Jordan form and the classification of finite abelian groups)
+  }
+  #>mathematics_ga_exactness
+  ^["projective_injective_flat"]{
+   #:claim #!settled
+   statement: "P is projective when Hom from P preserves exact sequences, I is injective when Hom into I does, and M is flat when tensoring with M does."
+   source: ~"../../registries/sources/formal.spw#src_formal_weibel_1994"
+  }
+  #>mathematics_ga_adjunction
+  ^["adjunction"]{
+   #:claim #!settled
+   statement: "F is left adjoint to G when maps from F a to b correspond to maps from a to G b, naturally in both a and b."
+   source: ~"../../registries/sources/formal.spw#src_formal_maclane_1998"
+   ^["limits"]{
+    holds: "the bijection must be natural; a family of bijections that ignores composition is not an adjunction"
+    fails: "free and forgetful pairs are adjoint; most pairs of functors are not"
+   }
+  }
+  #>mathematics_ga_yoneda
+  ^["yoneda"]{
+   #:claim #!settled
+   statement: "For a functor F from a locally small category to sets, natural transformations from Hom of A to F match elements of F of A; so A goes to Hom into A fully faithfully."
+   sources: [ ~"../../registries/sources/formal.spw#src_formal_maclane_1998", ~"../../registries/sources/formal.spw#src_formal_riehl_2016" ]
+   ^["limits"]{
+    holds: "objects are determined up to unique isomorphism by the maps into them"
+    fails: "the lemma fixes objects only up to isomorphism, never as bare sets"
+   }
+  }
+  #>mathematics_ga_yoneda_reading
+  ^["relational_reading"]{
+   #:claim #!interpretive
+   statement: "The raw cache read Yoneda as proof that identity is purely relational; it is a theorem about categories, and its philosophical reading stays a reading."
+  }
+  #>mathematics_ga_derived
+  ^["derived_functors"]{
+   #:claim #!settled
+   statement: "A short exact sequence of chain complexes gives a long exact sequence in homology by the snake lemma, and Ext and Tor measure how Hom and tensor fail to be exact."
+   source: ~"../../registries/sources/formal.spw#src_formal_weibel_1994"
+  }
+  #>mathematics_ga_categories_origin
+  ^["categories_origin"]{
+   #:claim #!settled
+   statement: "Eilenberg and Mac Lane introduced categories, functors, and natural transformations in 1945 to say precisely what natural means in algebraic topology."
+   source: ~"../../registries/sources/formal.spw#src_formal_eilenberg_maclane_1945"
+  }
+ }
+ ^["algebraic_topology"]{
+  #>mathematics_ga_circle
+  ^["circle_group"]{
+   #:claim #!settled
+   statement: "The fundamental group of the circle is the integers, counted by winding number."
+   source: ~"../../registries/sources/formal.spw#src_formal_hatcher_2002"
+  }
+  #>mathematics_ga_van_kampen
+  ^["van_kampen"]{
+   #:claim #!settled
+   statement: "If X is a union of open path-connected sets U and V whose intersection is nonempty and path-connected, the fundamental group of X is the amalgamated free product over the intersection."
+   sources: [ ~"../../registries/sources/formal.spw#src_formal_hatcher_2002", ~"../../registries/sources/formal.spw#src_formal_vankampen_1933" ]
+   ^["limits"]{
+    holds: "open pieces, each path-connected, with a path-connected overlap containing the basepoint"
+    fails: "two closed arcs meeting in two points cover the circle but have a disconnected overlap, and the formula would wrongly give the trivial group"
+   }
+  }
+  #>mathematics_ga_coverings
+  ^["covering_correspondence"]{
+   #:claim #!settled
+   statement: "For a path-connected, locally path-connected, semilocally simply connected base, connected based coverings correspond to subgroups of its fundamental group, and unbased ones to conjugacy classes."
+   source: ~"../../registries/sources/formal.spw#src_formal_hatcher_2002"
+   ^["limits"]{
+    holds: "bases such as manifolds and CW complexes"
+    fails: "the Hawaiian earring is not semilocally simply connected and has no universal cover"
+   }
+  }
+  #>mathematics_ga_homology
+  ^["singular_homology"]{
+   #:claim #!settled
+   statement: "Singular homology is a homotopy invariant that satisfies the Eilenberg-Steenrod axioms, with Mayer-Vietoris and excision as working tools."
+   sources: [ ~"../../registries/sources/formal.spw#src_formal_hatcher_2002", ~"../../registries/sources/formal.spw#src_formal_eilenberg_steenrod_1952" ]
+  }
+  #>mathematics_ga_cup
+  ^["cup_product"]{
+   #:claim #!settled
+   statement: "With a commutative coefficient ring, cup product makes cohomology a graded-commutative ring: swapping classes of degrees k and l multiplies by minus one to the kl."
+   source: ~"../../registries/sources/formal.spw#src_formal_hatcher_2002"
+  }
+  #>mathematics_ga_poincare
+  ^["poincare_duality"]{
+   #:claim #!settled
+   statement: "For a closed R-orientable n-manifold, capping with the fundamental class gives isomorphisms from degree k cohomology to degree n minus k homology with R coefficients."
+   source: ~"../../registries/sources/formal.spw#src_formal_hatcher_2002"
+   ^["limits"]{
+    holds: "integer coefficients for orientable closed manifolds; Z mod 2 coefficients for every closed manifold"
+    fails: "integer duality on the real projective plane, which is not orientable"
+   }
+  }
+ }
+}
+
+^["try"]{
+ #>mathematics_ga_try_van_kampen
+ ^["break_the_overlap"]{
+  materials: [ "a rubber band or string loop", "two strips of paper", "pencil" ]
+  steps: << "lay the loop flat and cover it with two overlapping strips" ; "note that the overlap is two separate pieces" ; "slide the strips so the overlap becomes one piece and see that one strip no longer covers a loop part" ; "write why the formula needs a connected overlap" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./graduate-algebra-and-topology.spw#mathematics_ga_van_kampen"
+ }
+}
+
+#>mathematics_ga_interfaces_q
+?["Do programmers who type values by their operations rediscover the Yoneda view?"]{
+ #:depth #!computational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Codebases that identify values only through the operations they support will treat two implementations with the same operations as interchangeable more often than nominally typed codebases do."
+ !probe{ "pick paired structural and nominal codebases and count substitutions of one implementation for another" =id[p_formal_ga_yoneda_interfaces] =kind[census] }
+ breaks: "Yoneda quantifies over every map into an object; an interface lists a few chosen operations, so behavioral equivalence is far weaker"
+ $%[graph.out_degree]
+ ~"./graduate-algebra-and-topology.spw#mathematics_ga_yoneda" ~#neighbor(nearest)
+}

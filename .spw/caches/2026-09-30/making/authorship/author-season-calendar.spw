@@ -1,0 +1,128 @@
+# Author Season Calendar
+#
+# October to early January for independent authors: preorders, November drafting, holiday promotions, gift reading, and the January reset.
+
+#>authorship_season_calendar
+#:layer #!pragmatics
+#:domain #!authorship
+#:form #!calendar
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!bone
+#:season #!crescendo
+
+^"emit"{
+ ~#title: "Author Season Calendar"
+ ~#claim: "For authors the fourth quarter runs from preorder setup through November drafting and holiday promotions to a January reset, with each cell marked fixed, typical, or verify."
+ ~#proof: "Holiday dates are computed for 2026; the National Novel Writing Month history is on the public record; promotion habits are typical, not rules."
+ ~#door: "Line this calendar up with the season cadence and the broadcast cadence."
+ ~#audience: "independent authors planning a quarter"
+ continuity: "Author Season Calendar | November drafting"
+ cold_open: "The author year bends around November drafting and the holidays that follow."
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "claude-opus-5.5"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ see: [ ~"../../season/calendar-2026q4.spw#season_calendar_2026q4" ]
+ analog: [ ~"../film/film-season-calendar.spw#film_season_calendar" ]
+ grounds: [ ~"../../registries/quantities/creators-and-platforms.spw#q_creator_books" ]
+}
+
+^["concepts"]{
+ primary: [ #season_cadence, #backlist ]
+ transfers: [ #critical_path ]
+ tensions: [ #rest_cadence ]
+}
+
+^["legend"]{
+ fixed: "a date set by a calendar or law"
+ typical: "a common practice; individual authors vary"
+ verify: "a date or term to check before relying on it"
+}
+
+^["months"]{
+ #>authorship_season_october
+ ^["october"]{
+  phase: "reflection"
+  preorders: .{ what: "list preorders for November to January releases", kind: "typical" }
+  january_launch: .{ what: "lock covers and metadata for January launches", kind: "typical" }
+  store_windows: .{ what: "preorder windows and file deadlines per store", kind: "verify" }
+ }
+ #>authorship_season_november
+ ^["november"]{
+  phase: "crescendo"
+  drafting: .{ what: "a month of daily drafting toward a word goal", kind: "typical" }
+  goal: %[creator.nanowrimo.goal_words]
+  thanksgiving: .{ date: "2026-11-26", what: "US Thanksgiving", kind: "fixed" }
+  black_friday: .{ date: "2026-11-27", what: "retail promotions begin", kind: "fixed" }
+  cyber_monday: .{ date: "2026-11-30", what: "online promotions", kind: "fixed" }
+  box_sets: .{ what: "discounted series bundles for holiday shoppers", kind: "typical" }
+ }
+ #>authorship_season_december
+ ^["december"]{
+  phase: "celebration"
+  gifts: .{ what: "print copies and gift cards bought as presents", kind: "typical" }
+  quiet_weeks: .{ what: "slower production in the last two weeks", kind: "typical" }
+  retrospective: .{ what: "a year-end review of titles, sales, and craft", kind: "typical" }
+ }
+ #>authorship_season_january
+ ^["january"]{
+  phase: "reset"
+  public_domain: .{ date: "2027-01-01", what: "US works first published in 1931 enter the public domain", kind: "fixed" }
+  launches: .{ what: "new-year releases and series starts", kind: "typical" }
+  tax_forms: .{ what: "royalty tax documents from stores", kind: "verify" }
+  season_end: .{ date: "2027-01-04", what: "the cut season closes", kind: "fixed" }
+ }
+}
+
+^["november_drafting"]{
+ #>authorship_season_nanowrimo_origin
+ ^["origin"]{
+  #:claim #!settled
+  statement: "Chris Baty started National Novel Writing Month in July 1999 with 21 participants in the San Francisco Bay Area; it later settled in November with a fifty-thousand-word goal."
+  reads: %[creator.nanowrimo.goal_words]
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_nanowrimo"
+ }
+ #>authorship_season_nanowrimo_closure
+ ^["closure"]{
+  #:claim #!settled
+  statement: "The nonprofit that ran National Novel Writing Month announced its shutdown on 2025-03-31, citing financial problems after a period of community conflict."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_nanowrimo"
+ }
+ #>authorship_season_practice
+ ^["practice_continues"]{
+  #:claim #!interpretive
+  statement: "November drafting outlived the organization as a community practice: writing groups, libraries, and forums keep the month and the goal without a central host."
+ }
+}
+
+^["try"]{
+ #>authorship_season_try
+ ^["sprint_log"]{
+  materials: [ "a plain text file", "a timer" ]
+  steps: << "set one daily word target for seven days" ; "log each day as one line with date and words" ; "note what blocked you on any short day" ; "on day seven, read the log and set the next week target" >>
+  time: .{ n: 30, unit: "minutes per day" }
+  safety: "long typing sessions strain hands and wrists; schedule breaks"
+  shows: ~"./author-season-calendar.spw#authorship_season_practice"
+ }
+}
+
+#>authorship_season_persist_q
+?["Does November drafting keep its size without a central organization?"]{
+ #:depth #!social ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "Without a central site the month fragments into local groups, so total participation falls while local completion rates hold."
+ !probe{ "count November 2026 drafting events listed by libraries and writing groups" =id[p_creator_season_persist] =kind[census] }
+ $%[creator.nanowrimo.goal_words]
+ ~"./author-season-calendar.spw#authorship_season_nanowrimo_closure" ~#neighbor(nearest)
+}

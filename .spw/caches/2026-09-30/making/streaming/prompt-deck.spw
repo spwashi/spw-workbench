@@ -1,0 +1,120 @@
+# Prompt Deck
+#
+# Wonder prompts for a live room, drawn like a Llull wheel from chat lane, depth, and lens, with framing rules that keep the room safe.
+
+#>streaming_prompt_deck
+#:layer #!creative
+#:domain #!streaming
+#:form #!probe_battery
+#:level #!intro
+#:review #!spot_checked
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Prompt Deck"
+ ~#claim: "A host can turn any chat lane into a good question by turning three wheels: the lane, a depth, and a lens from the closed sets."
+ ~#proof: "The combinatorial wheel follows Ramon Llull; the depth and lens values come from the cut vocabulary; every prompt is speculative until a logged session uses it."
+ ~#door: "Shuffle the three card stacks in the try kit, then carry one prompt into the show file."
+ ~#audience: "live hosts and moderators at any level"
+ continuity: "Prompt Deck | three wheels"
+ cold_open: "Turn three wheels, lane and depth and lens, and chat becomes a question."
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "claude-opus-5.5"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ extends: [ ~"../../panels/llull-wheel.spw#panel_llull_wheel" ]
+ feeds: [ ~"./spw-for-streamers.spw#streaming_spw_for_streamers_prompts" ]
+ grounds: [ ~"../../vocabulary.spw#cut_vocabulary" ]
+}
+
+^["concepts"]{
+ primary: [ #wonder_prompt, #chat_lane ]
+ transfers: [ #audience_participation ]
+ tensions: [ #crowd_noise ]
+}
+
+^["wheel"]{
+ #>streaming_prompt_deck_llull
+ ^["llull"]{
+  #:claim #!settled
+  statement: "Ramon Llull built combinatorial figures in the late thirteenth century, including concentric rotating wheels that pair terms to generate questions and arguments."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_bonner_2007"
+ }
+ ^["rings"]{
+  lanes: #[ questions, stories, disagreements, requests, jokes, off_topic ]
+  depth: "the nine depth values in the cut vocabulary"
+  lens: "the sixteen lens phrases in the cut vocabulary"
+  turn: "pick the lane the chat is in, then turn depth and lens until the stem fits the room"
+ }
+}
+
+^["framing"]{
+ #>streaming_prompt_deck_safety
+ ^["safe_frames"]{
+  #:claim #!interpretive
+  statement: "A safe live prompt asks about ideas, places, and things, and leaves out personal data, money, dares, and requests for medical, legal, or financial advice."
+ }
+ minors: "assume minors may be watching; prompts stay suitable for a general room"
+ consent: "read a story aloud only from someone who offered it for the stream"
+}
+
+^["cards"]{
+ #>streaming_prompt_deck_card_questions
+ ^["questions_history"]{ lane: "questions", depth: "historical", lens: "historical layer", stem: "who first needed this, and what did they use before it existed" }
+ #>streaming_prompt_deck_card_stories
+ ^["stories_social"]{ lane: "stories", depth: "social", lens: "social fabric", stem: "who else was in that story, and what did they need from it" }
+ #>streaming_prompt_deck_card_disagree
+ ^["disagreements_formal"]{ lane: "disagreements", depth: "mathematical", lens: "formal structure", stem: "what would have to be true for both of you to be right" }
+ #>streaming_prompt_deck_card_requests
+ ^["requests_craft"]{ lane: "requests", depth: "experiential", lens: "craft practice", stem: "if we made this together on stream, what is the first step we could show" }
+ #>streaming_prompt_deck_card_jokes
+ ^["jokes_semiotic"]{ lane: "jokes", depth: "stylistic", lens: "semiotic charge", stem: "why is that word funny here, and would it be funny anywhere else" }
+ #>streaming_prompt_deck_card_off_topic
+ ^["off_topic_living"]{ lane: "off_topic", depth: "physical", lens: "living system", stem: "what is the smallest living thing within reach of you right now" }
+ #>streaming_prompt_deck_card_signal
+ ^["questions_signal"]{ lane: "questions", depth: "computational", lens: "signal path", stem: "trace this message from your keyboard to my screen; where could it get lost" }
+ #>streaming_prompt_deck_card_cadence
+ ^["stories_cadence"]{ lane: "stories", depth: "educational", lens: "production cadence", stem: "what do you do every week that you would teach someone first" }
+ #>streaming_prompt_deck_card_market
+ ^["requests_market"]{ lane: "requests", depth: "ethical", lens: "market flow", stem: "who pays for the thing you asked for, and who should" }
+}
+
+^["try"]{
+ #>streaming_prompt_deck_try
+ ^["three_stacks"]{
+  materials: [ "index cards in three colors", "a marker", "a timer" ]
+  steps: << "write the six lanes on one color, the nine depths on another, the sixteen lenses on the third" ; "shuffle each stack" ; "draw one card from each and write a question stem in two minutes" ; "check it against the safe frames" ; "repeat five times and keep the two best" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "none worth naming; check each stem against the safe frames before it goes on air"
+  shows: ~"./prompt-deck.spw#streaming_prompt_deck_safety"
+ }
+}
+
+#>streaming_prompt_deck_lane_q
+?["Do prompts drawn for the current lane keep chat on topic longer than open questions?"]{
+ #:depth #!social ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "A lane-matched prompt produces more replies on the same theme than an open question asked at the same moment."
+ !probe{ "alternate lane prompts and open questions across one logged session and count on-theme replies" =id[p_creator_deck_lane] =kind[field] }
+ ~"./prompt-deck.spw#streaming_prompt_deck_card_questions" ~#neighbor(nearest)
+}
+
+#>streaming_prompt_deck_wheel_q
+?["Is a prompt deck still a Llull wheel when its goal is talk rather than proof?"]{
+ #:depth #!historical ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "The combinatorial device survives the change of purpose: crossing fixed rings still yields more varied questions than free invention."
+ breaks: "Llull meant his figures to demonstrate truths to any reader; the deck only aims to start a good conversation"
+ !probe{ "compare variety of stems written with and without the three stacks" =id[p_creator_deck_wheel] =kind[build] }
+ ~"./prompt-deck.spw#streaming_prompt_deck_llull" ~#neighbor(nearest)
+}

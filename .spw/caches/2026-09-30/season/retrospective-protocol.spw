@@ -1,0 +1,205 @@
+# Retrospective Protocol
+#
+# Reflection to celebration to reset as six states a solo maker or a crew can walk in under an hour, with credit to the practices it borrows.
+
+#>season_retrospective
+#:layer #!pragmatics
+#:domain #!season
+#:form #!protocol
+#:level #!intro
+#:review #!sourced
+#:valence #!boon
+#:season #!reset
+
+^"emit"{
+ ~#title: "Retrospective Protocol"
+ ~#claim: "A retrospective moves through set states, from opening and gathering facts through celebration to a few owned choices and a clean reset."
+ ~#proof: "Stages after Derby and Larsen, the Prime Directive after Kerth, the after-action questions of the US Army, and hansei as Liker describes Toyota practice."
+ ~#door: "Run the solo kit in thirty minutes, or the crew kit in an hour."
+ ~#audience: "solo makers and crews closing a season"
+ continuity: "Retrospective Protocol | celebration"
+ cold_open: "A retrospective walks from what happened, through celebration, to a few owned choices and a clean reset."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+ }
+}
+
+^["edges"]{
+ feeds: [ ~"./season-journal.spw#season_journal" ]
+ see: [ ~"../living/development-and-ecology/succession-and-resilience.spw#development_ecology_resilience" ]
+}
+
+^["concepts"]{
+ primary: [ #retrospective, #new_year_reset ]
+ transfers: [ #production_season, #weekly_rung ]
+ tensions: [ #blame ]
+}
+
+^["scope"]{
+ what: "a reflection practice for creative and production work, solo or in a crew"
+ outside: "performance reviews, therapy, and any ranking of people"
+}
+
+^["arc"]{
+ clock: #hour
+ archetype: "a session that opens safely, looks back, celebrates, chooses, and closes"
+ steps: << "open" ; "gather" ; "understand" ; "celebrate" ; "choose" ; "reset" >>
+ predict: ?{ "which state will run long today" } ~<prediction>
+ counts: "a tool can count states visited, minutes per state, and choices owned; it cannot count trust or learning"
+ limit: "the protocol never ranks, scores, or logs a person"
+ exit: ~"./season-journal.spw#season_journal"
+}
+
+^["lineage"]{
+ #>season_retro_stages
+ ^["stages"]{
+  #:claim #!settled
+  statement: "Derby and Larsen describe five retrospective stages: set the stage, gather data, generate insights, decide what to do, and close the retrospective."
+  source: ~"../registries/sources/season.spw#src_season_derby_larsen_2006"
+ }
+ #>season_retro_prime_directive
+ ^["prime_directive"]{
+  #:claim #!settled
+  statement: "Kerth's Prime Directive asks a team to believe that everyone did the best job they could, given what they knew, their skills, the resources, and the situation."
+  source: ~"../registries/sources/season.spw#src_season_kerth_2001"
+  ~#say(assume good work, then look closely)
+ }
+ #>season_retro_aar
+ ^["after_action"]{
+  #:claim #!settled
+  statement: "US Army after-action reviews ask what was supposed to happen, what happened, why the two differed, and what to sustain or improve."
+  source: ~"../registries/sources/season.spw#src_season_army_tc25_20"
+ }
+ #>season_retro_hansei
+ ^["hansei"]{
+  #:claim #!settled
+  statement: "Liker describes hansei, structured self-reflection, as a Toyota practice paired with kaizen, continuous improvement."
+  source: ~"../registries/sources/season.spw#src_season_liker_2004"
+ }
+ #>season_retro_safety
+ ^["psychological_safety"]{
+  #:claim #!emerging
+  statement: "Edmondson found that work teams with higher psychological safety reported more learning behavior, such as asking for help and discussing errors."
+  source: ~"../registries/sources/season.spw#src_season_edmondson_1999"
+  ^["limits"]{
+   holds: "teams in one manufacturing company, measured at one time"
+   fails: "the design shows association, not which way the effect runs"
+  }
+ }
+}
+
+^["states"]{
+ #>season_retro_open
+ ^["open"]{
+  after: "set the stage, after Derby and Larsen"
+  do: "set a time box, read the Prime Directive aloud, and agree what is out of scope"
+  done_when: "everyone, or the solo maker, has said one word about how they arrive"
+ }
+ #>season_retro_gather
+ ^["gather"]{
+  after: "gather data, after Derby and Larsen; the first two after-action questions"
+  do: "list what happened rung by rung from the journal pages, facts before feelings"
+  done_when: "the season timeline has no empty rung"
+ }
+ #>season_retro_understand
+ ^["understand"]{
+  after: "generate insights, after Derby and Larsen; the third after-action question"
+  do: "ask why plans and outcomes differed and look for patterns across lanes"
+  done_when: "two or three patterns are named in plain words"
+ }
+ #>season_retro_celebrate
+ ^["celebrate"]{
+  after: "an appreciation round added to the five stages"
+  do: "name what shipped and thank who helped, aloud and in the room"
+  done_when: "every person has given or received one thanks, or chosen to pass"
+ }
+ #>season_retro_choose
+ ^["choose"]{
+  after: "decide what to do, after Derby and Larsen; sustain or improve, after the Army"
+  do: "pick at most three changes, each with an owner and a first rung"
+  done_when: "each change fits on one line of the next journal page"
+ }
+ #>season_retro_reset
+ ^["reset"]{
+  after: "close the retrospective, after Derby and Larsen; hansei closes into kaizen"
+  do: "archive the season notes, clear the board, and write the first page of the next season"
+  done_when: "the board is empty and the next rung has a date"
+ }
+ #>season_retro_transitions
+ ^["transitions"]{
+  ?match[@signal]{
+   "time box set" => { next: "gather" }
+   "timeline complete" => { next: "understand" }
+   "patterns named" => { next: "celebrate" }
+   "thanks given" => { next: "choose" }
+   "changes owned" => { next: "reset" }
+   "blame appears" => { next: "open", why: "restate the Prime Directive before going on" }
+   "time box spent" => { next: "choose", why: "choose one change rather than none" }
+   _ => { next: "gather" }
+  }
+ }
+}
+
+^["try"]{
+ #>season_retro_try_solo
+ ^["solo"]{
+  materials: [
+   "the season journal",
+   "a pen",
+   "a timer"
+  ]
+  steps: <<
+   "set a thirty-minute timer" ;
+   "write what was supposed to happen this season" ;
+   "write what happened" ;
+   "circle one difference and ask why" ;
+   "list three things to celebrate" ;
+   "choose one change and give it a first rung"
+  >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "low hazard; if the review turns into self-blame, stop and reread the Prime Directive"
+  shows: ~"./retrospective-protocol.spw#season_retro_aar"
+ }
+ #>season_retro_try_crew
+ ^["crew"]{
+  materials: [
+   "sticky notes and markers",
+   "a wall or a shared board",
+   "a timer",
+   "a facilitator who did not lead the work"
+  ]
+  steps: <<
+   "open with the Prime Directive" ;
+   "build the season timeline together, rung by rung" ;
+   "group notes into patterns" ;
+   "go round with thanks" ;
+   "agree on at most three changes" ;
+   "close with one word each"
+  >>
+  time: .{ n: 60, unit: "minutes" }
+  safety: "interpersonal: keep it blameless, let anyone pass, keep names off the notes, and keep the output out of performance reviews"
+  shows: ~"./retrospective-protocol.spw#season_retro_stages"
+ }
+}
+
+#>season_retro_release_q
+?["Is a year-end reset like the release phase of an adaptive cycle?"]{
+ #:depth #!social ~#lens(living system)
+ #:claim #!speculative
+ ~#hypothesis: "A crew that deliberately releases old commitments at the reset should reorganize faster in January than a crew that carries every commitment forward."
+ !probe{ "ask crews with and without an explicit release step how long January start-up took" =id[p_season_retro_release] =kind[interview] }
+ $%[season.arc.week_count]
+ frame: ~"../registries/sources/season.spw#src_season_gunderson_holling_2002"
+ breaks: "release in the Gunderson and Holling adaptive cycle is often destructive and unchosen; a retrospective chooses what to release and keeps a written memory"
+ ~"./retrospective-protocol.spw#season_retro_reset" ~#neighbor(nearest)
+}

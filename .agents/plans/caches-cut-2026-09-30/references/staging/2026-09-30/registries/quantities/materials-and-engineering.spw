@@ -1,0 +1,98 @@
+# Quantities: Materials and Engineering
+#
+# World metric cells for the matter branch. A handle names one cell; files read it instead of restating the number.
+
+#>q_mateng_registry
+#:layer #!reference
+#:domain #!registry
+#:form #!registry
+#:level #!mixed
+#:review #!sourced
+#:valence #!bone
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "claude-opus-5.5"
+ lineage: #[ "new" ]
+ method: #authored
+}
+
+^["family"]{
+ id: mateng_water
+ operator: "%"
+ identifier: mateng.water
+ plane: world
+ scope: corpus
+ keys: #[ cp_j_per_g_k, t_rho_max_c, rho_ice_g_cm3, rho_liquid_max_g_cm3, epsilon_r, dipole_debye, hoh_angle_deg, dh_vap_kj_per_mol ]
+ scheme: tol
+ algorithm: world.registry_lookup
+ form: scalar
+}
+
+#>q_mateng_water
+^"water"{
+ %mateng.water.cp_j_per_g_k{
+  value: 4.181
+  unit: "J/(g K)"
+  at: "liquid water, 25 C, 1 atm"
+  rel: 0.001
+  src: ~"../sources/materials-and-engineering.spw#src_mateng_crc_handbook"
+  status: #settled
+ }
+ %mateng.water.t_rho_max_c{
+  value: 3.98
+  unit: "C"
+  at: "liquid water, 1 atm"
+  abs: 0.01
+  src: ~"../sources/materials-and-engineering.spw#src_mateng_crc_handbook"
+  status: #settled
+ }
+ %mateng.water.rho_ice_g_cm3{
+  value: 0.9167
+  unit: "g/cm^3"
+  at: "ice Ih, 0 C, 1 atm"
+  rel: 0.001
+  src: ~"../sources/materials-and-engineering.spw#src_mateng_crc_handbook"
+  status: #settled
+ }
+ %mateng.water.rho_liquid_max_g_cm3{
+  value: 0.99997
+  unit: "g/cm^3"
+  at: "liquid water at its density maximum, 1 atm"
+  rel: 0.0001
+  src: ~"../sources/materials-and-engineering.spw#src_mateng_crc_handbook"
+  status: #settled
+ }
+ %mateng.water.epsilon_r{
+  value: 78.4
+  unit: "1"
+  at: "static relative permittivity, liquid, 25 C"
+  rel: 0.005
+  src: ~"../sources/materials-and-engineering.spw#src_mateng_crc_handbook"
+  status: #settled
+ }
+ %mateng.water.dipole_debye{
+  value: 1.85
+  unit: "D"
+  at: "isolated molecule, gas phase"
+  rel: 0.01
+  src: ~"../sources/materials-and-engineering.spw#src_mateng_crc_handbook"
+  status: #settled
+ }
+ %mateng.water.hoh_angle_deg{
+  value: 104.5
+  unit: "degree"
+  at: "isolated molecule, gas phase"
+  abs: 0.1
+  src: ~"../sources/materials-and-engineering.spw#src_mateng_eisenberg_kauzmann"
+  status: #settled
+ }
+ %mateng.water.dh_vap_kj_per_mol{
+  value: 40.65
+  unit: "kJ/mol"
+  at: "normal boiling point, 100 C, 1 atm"
+  rel: 0.002
+  src: ~"../sources/materials-and-engineering.spw#src_mateng_crc_handbook"
+  status: #settled
+ }
+}

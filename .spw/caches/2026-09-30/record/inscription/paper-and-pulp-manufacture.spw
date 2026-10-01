@@ -1,0 +1,144 @@
+# Paper and Pulp Manufacture
+#
+# How paper went from one sheet per dip of a hand mould to continuous machines fed by wood pulp, why that paper turned acidic, and what a permanence standard asks for.
+
+#>inscription_paper
+#:layer #!reference
+#:domain #!inscription
+#:form #!comparison
+#:level #!foundation
+#:review #!sourced
+#:valence #!bone
+#:era #!industrial
+
+^"emit"{
+ ~#title: "Paper and Pulp Manufacture"
+ ~#claim: "Machines and wood pulp made paper cheap after 1800, and acidic sizing made much of it brittle until alkaline papermaking and permanence standards."
+ ~#proof: "Hunter on hand and machine papermaking; Smook on pulping; Barrow on acid decay; ISO 9706 on permanence."
+ ~#door: "Read the decay ledger next to see acid paper beside the other failing carriers."
+ ~#audience: "readers who handle old books, print, or make paper by hand"
+ continuity: "Paper and Pulp Manufacture | wood pulp"
+ cold_open: "Machines and wood pulp made paper cheap, and acid sizing quietly made a century of it brittle."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ needs: [ ~"./inks-and-inscription.spw#inscription_paper_andalus", ~"../../physical/materials/fibers-and-textiles.spw#materials_fibers" ]
+ feeds: [ ~"./print-and-press.spw#inscription_print", ~"../carriers/carrier-decay-and-fixity.spw#media_carriers_decay" ]
+}
+
+^["concepts"]{
+ primary: [ #wood_pulp, #sizing ]
+ transfers: [ #acid_hydrolysis, #continuous_process ]
+ tensions: [ #permanence ]
+}
+
+^["process_matrix"]{
+ columns: #[ step, input, action, output, era ]
+ ^["sheet_forming"]{
+  #>inscription_paper_hand_mould
+  ^["hand_mould"]{
+   #:era #!medieval
+   #:claim #!settled
+   statement: "A papermaker dips a screened mould into a vat of beaten fiber and lifts one wet sheet, couches it onto felt, presses, and dries it."
+   input: "linen and cotton rags beaten to pulp"
+   output: "one sheet per dip"
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_hunter_1947"
+  }
+  #>inscription_paper_laid_wove
+  ^["laid_and_wove"]{
+   #:claim #!settled
+   statement: "Laid moulds leave chain and laid lines visible against light; the smooth wove mould appeared in England in the 1750s and was used for Baskerville's 1757 Virgil."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_hunter_1947"
+  }
+  #>inscription_paper_hollander
+  ^["hollander"]{
+   #:era #!early_modern
+   #:claim #!settled
+   statement: "The Hollander beater, a bladed roll turning in an oval tub, appeared in the Netherlands in the late seventeenth century and pulped rags faster than stamping hammers."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_hunter_1947"
+  }
+ }
+ ^["machines"]{
+  #>inscription_paper_fourdrinier
+  ^["fourdrinier"]{
+   #:era #!industrial
+   #:claim #!settled
+   statement: "Nicolas-Louis Robert patented a continuous paper machine in France in 1799; Henry and Sealy Fourdrinier, with engineer Bryan Donkin, developed it in England in the 1800s."
+   input: "pulp suspension flowing onto a moving wire screen"
+   output: "a continuous web wound on reels"
+   sources: [ ~"../../registries/sources/record-and-carriers.spw#src_media_hunter_1947", ~"../../registries/sources/record-and-carriers.spw#src_media_enc_history_of_paper" ]
+  }
+ }
+ ^["pulps"]{
+  #>inscription_paper_groundwood
+  ^["groundwood"]{
+   #:claim #!settled
+   statement: "Friedrich Gottlob Keller in Saxony and Charles Fenerty in Nova Scotia independently made paper from ground wood in the 1840s, keeping the lignin in the sheet."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_enc_history_of_paper"
+  }
+  #>inscription_paper_chemical_pulp
+  ^["chemical_pulp"]{
+   #:claim #!settled
+   statement: "Chemical pulping cooks wood to dissolve lignin: the acid sulfite process from the 1860s and 1870s, then the alkaline kraft process, which yields stronger fiber and now dominates."
+   sources: [ ~"../../registries/sources/record-and-carriers.spw#src_media_smook_2002", ~"../../registries/sources/record-and-carriers.spw#src_media_hunter_1947" ]
+   as_of: "2026-10-01"
+   credits: "Benjamin Tilghman and Carl Daniel Ekman for sulfite; Carl F. Dahl for kraft"
+  }
+ }
+ ^["sizing_and_acid"]{
+  #>inscription_paper_acid
+  ^["acid_paper"]{
+   #:claim #!settled
+   statement: "Alum-rosin sizing and residual lignin left much paper made between the mid nineteenth and late twentieth centuries acidic, and acid hydrolysis of cellulose made it brown and brittle."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_barrow_1959"
+   ~#say(the paper is slowly eating itself)
+   ^["limits"]{
+    holds: "machine-made wood-pulp papers with alum-rosin sizing"
+    fails: "rag papers and alkaline papers can stay flexible for centuries"
+   }
+  }
+  #>inscription_paper_permanence
+  ^["permanence_standard"]{
+   #:claim #!settled
+   statement: "ISO 9706 permanent paper keeps a near-neutral to alkaline extract, carries an alkali reserve to neutralize future acid, and limits oxidizable lignin."
+   reads: %[media.paper.iso9706_ph_min, media.paper.iso9706_ph_max, media.paper.iso9706_alkali_reserve_mol_per_kg, media.paper.iso9706_kappa_max]
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_iso_9706_1994"
+   edition: "ISO 9706:1994; the American counterpart is ANSI/NISO Z39.48-1992"
+   as_of: "2026-10-01"
+  }
+ }
+}
+
+^["try"]{
+ #>inscription_try_pull_sheet
+ ^["pull_a_sheet"]{
+  materials: [ "a stack of scrap paper torn small", "a kitchen blender", "a wooden picture frame with window screen stapled across it", "a basin wider than the frame", "a sponge", "old towels" ]
+  steps: << "soak the scraps for an hour" ; "blend with plenty of water to a thin pulp" ; "pour the pulp into the basin and stir" ; "dip the frame flat, lift it level, and let it drain" ; "flip the sheet onto a towel, sponge it, and dry it flat" ; "hold the dry sheet to a window and look for the screen pattern" >>
+  time: .{ n: 60, unit: "minutes" }
+  safety: "blender blades are sharp; unplug the blender before reaching in"
+  shows: ~"./paper-and-pulp-manufacture.spw#inscription_paper_hand_mould"
+ }
+}
+
+#>inscription_paper_alkaline_q
+?["Did mills switch to alkaline papermaking for permanence or for cost?"]{
+ #:depth #!social ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "Mills adopted alkaline sizing with chalk filler mainly for process economics, so permanence arrived as a side effect rather than as the goal."
+ !probe{ "read trade-journal accounts of the 1980s alkaline conversion and code the reasons mills gave" =id[p_media_paper_alkaline] =kind[lit] }
+ $%[media.paper.iso9706_ph_min, media.paper.iso9706_alkali_reserve_mol_per_kg]
+ ~"./paper-and-pulp-manufacture.spw#inscription_paper_permanence" ~#neighbor(nearest)
+}

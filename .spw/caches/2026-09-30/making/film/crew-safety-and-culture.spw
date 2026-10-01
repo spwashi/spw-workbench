@@ -1,0 +1,183 @@
+# Crew Safety and Culture
+#
+# The industry safety bulletins, fatigue and rest, and two fatal cases read from public findings, kept as a ledger of claims with sources.
+
+#>film_crew_safety
+#:layer #!pragmatics
+#:domain #!film
+#:form #!ledger
+#:level #!practitioner
+#:review #!sourced
+#:valence #!honk
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Crew Safety and Culture"
+ ~#claim: "Film set safety rests on written bulletins, rest rules, and clear authority to stop work; the Midnight Rider and Rust deaths show what happens when those fail."
+ ~#proof: "Industry Safety Bulletins 1 and 28, the OSHA and New Mexico findings, and court outcomes reported in the trade and national press."
+ ~#door: "Start with the firearms bulletin, then read both case frames before the culture claims."
+ ~#audience: "crew, students, and producers responsible for a set"
+ cold_open: "Safety bulletins set the rules for dangerous work on set, and two fatal cases show why each line in them matters."
+ continuity: "Crew Safety and Culture | safety bulletins"
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/film-production-and-industry/crew-morale-safety-and-culture.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: [
+  "the three-point clearance ceremony was invented by the generator and is removed",
+  "stunts are Safety Bulletin 4, not Bulletin 38",
+  "the 10:1 rigging safety factor is removed pending a sourced bulletin text",
+  "crew turnaround under the IATSE Basic Agreement is 10 hours, not 12",
+  "Bulletin 1 bars live ammunition except as Bulletin 2 specifies; the raw absolute ban is qualified"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/film-stage-visual.spw#q_film_labor" ]
+ see: [ ~"./set-operations-and-crew.spw#film_set_turnaround" ]
+}
+
+^["concepts"]{
+ primary: [ #safety_bulletin, #fatigue ]
+ transfers: [ #turnaround, #call_sheet, #strike, #mistake_proofing ]
+ tensions: [ #schedule_pressure ]
+}
+
+^["bulletins"]{
+ #>film_safety_firearms
+ ^["firearms"]{
+  #:claim #!settled
+  statement: "Safety Bulletin 1, revised April 2024, says live ammunition is never used on set or brought to any work location except as Bulletin 2 allows."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_csatf_bulletin_1"
+  ^["custody"]{
+   #:claim #!settled
+   statement: "The bulletin places obtaining, maintaining, and handling all production firearms with the property master, assistant property master, or armorer."
+   source: ~"../../registries/sources/film-stage-visual.spw#src_film_csatf_bulletin_1"
+  }
+  ^["limits"]{
+   holds: "productions that adopt the Industry-Wide Labor-Management Safety Committee guidelines"
+   fails: "the bulletins are recommended guidelines; local law and each production set the binding rules"
+  }
+ }
+ #>film_safety_rail
+ ^["railroad"]{
+  #:claim #!settled
+  statement: "Safety Bulletin 28 asks for a safety meeting with the railroad representative before rail work and warns that equipment may move without warning on any track."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_csatf_bulletin_28"
+ }
+ #>film_safety_stunts
+ ^["stunts"]{
+  bulletin: "Safety Bulletin 4, Stunts, revised March 2025, with an addendum on specialized activities"
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_csatf_bulletin_4"
+ }
+}
+
+^["fatigue"]{
+ #>film_safety_fatigue_campaign
+ ^["long_days"]{
+  #:claim #!settled
+  statement: "Haskell Wexler's documentary Who Needs Sleep? (2006) follows the campaign for shorter shooting days after a camera assistant died driving home from a long day."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_wexler_2006"
+ }
+ #>film_safety_turnaround_2021
+ ^["rest_won_2021"]{
+  #:claim #!settled
+  statement: "The 2021 IATSE deal set a 10-hour turnaround and a 54-hour weekend rest after members authorized a strike."
+  reads: %[film.iatse.turnaround_h, film.iatse.weekend_rest_h]
+  sources: [ ~"../../registries/sources/film-stage-visual.spw#src_film_variety_iatse_vote_2021", ~"../../registries/sources/film-stage-visual.spw#src_film_variety_iatse_deal_2021" ]
+ }
+}
+
+^["cases"]{
+ #>film_safety_case_midnight_rider
+ ^["midnight_rider_2014"]{
+  #:claim #!settled
+  statement: "On February 20, 2014, a freight train struck the Midnight Rider crew on a railroad trestle in Wayne County, Georgia, killing second camera assistant Sarah Jones and injuring others."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_osha_midnight_rider_2014"
+  ^["osha"]{
+   #:claim #!settled
+   statement: "In August 2014 OSHA cited the production company for willful and serious safety violations."
+   source: ~"../../registries/sources/film-stage-visual.spw#src_film_osha_midnight_rider_2014"
+  }
+  ^["court"]{
+   #:claim #!settled
+   statement: "In March 2015 the director pleaded guilty to involuntary manslaughter and criminal trespass."
+   source: ~"../../registries/sources/film-stage-visual.spw#src_film_variety_midnight_rider_2015"
+  }
+  lesson: ~"./crew-safety-and-culture.spw#film_safety_rail"
+ }
+ #>film_safety_case_rust
+ ^["rust_2021"]{
+  #:claim #!settled
+  statement: "On October 21, 2021, a live round fired from a revolver during a rehearsal of Rust in New Mexico killed cinematographer Halyna Hutchins and wounded director Joel Souza."
+  sources: [ ~"../../registries/sources/film-stage-visual.spw#src_film_nmed_rust_2022", ~"../../registries/sources/film-stage-visual.spw#src_film_deadline_rust_verdict_2024" ]
+  ^["regulator"]{
+   #:claim #!settled
+   statement: "In April 2022 the New Mexico Occupational Health and Safety Bureau issued its investigation summary and citation against the production company."
+   source: ~"../../registries/sources/film-stage-visual.spw#src_film_nmed_rust_2022"
+  }
+  ^["verdict"]{
+   #:claim #!settled
+   statement: "On March 6, 2024, a jury convicted the armorer of involuntary manslaughter."
+   source: ~"../../registries/sources/film-stage-visual.spw#src_film_deadline_rust_verdict_2024"
+  }
+  ^["dismissal"]{
+   #:claim #!settled
+   statement: "On July 12, 2024, the case against the actor holding the revolver was dismissed with prejudice over withheld evidence."
+   source: ~"../../registries/sources/film-stage-visual.spw#src_film_nyt_rust_dismissal_2024"
+  }
+  lesson: ~"./crew-safety-and-culture.spw#film_safety_firearms"
+ }
+ ^["limits"]{
+  holds: "these frames record public findings by regulators, courts, and the press"
+  fails: "they assign no motive and add no judgment about any person beyond those findings"
+ }
+}
+
+^["culture"]{
+ #>film_safety_stop_authority
+ ^["stop_authority"]{
+  #:claim #!interpretive
+  statement: "A set is safer when anyone can call a safety stop and leadership treats the stop as normal work rather than delay."
+ }
+ #>film_safety_care_stance
+ ^["care"]{
+  #:claim #!interpretive
+  statement: "Calm leadership, meals on time, and rest kept intact read here as safety measures, because tired and rushed crews make the mistakes the bulletins describe."
+ }
+}
+
+^["try"]{
+ #>film_safety_try_hazard_walk
+ ^["hazard_walk"]{
+  materials: [ "the location", "a notebook", "a call sheet template" ]
+  steps: <<
+   "walk the location in daylight" ;
+   "list each hazard and who controls it" ;
+   "mark exits and the nearest hospital" ;
+   "write the safety note for the call sheet" ;
+   "brief the crew before the first setup"
+  >>
+  time: .{ n: 40, unit: "minutes" }
+  safety: "walk with a partner and stay off rail property, roadways, and roofs"
+  shows: ~"./crew-safety-and-culture.spw#film_safety_rail"
+ }
+}
+
+#>film_safety_week_q
+?["Do near misses cluster late in a long shooting week?"]{
+ #:depth #!social ~#lens(bodily rhythm)
+ #:claim #!speculative
+ ~#hypothesis: "Accumulated short sleep across a week raises the rate of near misses on later days, and a full weekend rest resets it."
+ !probe{ "tabulate near-miss reports by day of the shooting week across several productions" =id[p_film_safety_week_near_miss] =kind[census] }
+ $%[film.iatse.turnaround_h, film.iatse.weekend_rest_h]
+ ~"./crew-safety-and-culture.spw#film_safety_turnaround_2021" ~#neighbor(nearest)
+}

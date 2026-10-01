@@ -1,0 +1,189 @@
+# Micro and Macro Core
+#
+# The intermediate core as a prerequisite graph: consumers and firms, market structure and price discrimination, then IS-LM, expectations, and Solow growth.
+
+#>economics_core
+#:layer #!reference
+#:domain #!economics
+#:form #!curriculum
+#:level #!foundation
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Micro and Macro Core"
+ ~#claim: "Intermediate economics is a graph: duality and market structure feed price discrimination, while IS-LM, expectations, and Solow growth build the macro side."
+ ~#proof: "Each node cites its originator, from Slutsky and Cournot to Hicks, Friedman, Phelps, Solow, and Swan."
+ ~#door: "Walk the nodes in order, run the Solow kit, then cross to revenue management for price discrimination in practice."
+ ~#audience: "students in intermediate micro and macro"
+ continuity: "Micro and Macro Core | price discrimination"
+ cold_open: "Learn how one firm prices, how a whole economy grows, and why price discrimination links the two halves of the course."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/university-education/economics/undergrad-micro-and-macroeconomics.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "Mundell-Fleming policy potency is scoped to a small open economy with perfect capital mobility",
+  "the raw growth wonder cast Solow as forced; exogenous technology is restated as a modeling choice later endogenized",
+  "the price discrimination bridge to revenue management is added; the raw file had none",
+  "invented metric handles are dropped"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../../formal/mathematics/engineering-core/calculus-and-linear-algebra.spw#mathematics_calc_linalg" ]
+ feeds: [ ~"../management/revenue-management.spw#management_revenue", ~"./econometrics-and-data.spw#economics_econometrics" ]
+ contrasts: [ ~"../../language-and-mind/cognition/reasoning-and-decision.spw#cognition_reasoning" ]
+ extends: [ ~"../society-glossary.spw#society_term_price_discrimination" ]
+}
+
+^["concepts"]{
+ primary: [ #price_discrimination, #general_equilibrium, #steady_state ]
+ transfers: [ #network_effects, #queueing ]
+ tensions: [ #bounded_rationality ]
+}
+
+^["micro"]{
+ #>economics_core_consumer
+ ^["consumer"]{
+  #:claim #!settled
+  statement: "Maximizing utility under a budget and minimizing spending for a utility target are dual problems; the Slutsky equation splits a price effect into substitution and income parts."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_slutsky_1915", ~"../../registries/sources/economy-and-markets.spw#src_econ_mwg_1995" ]
+  sign: "the compensated own-price effect is never positive"
+ }
+ #>economics_core_producer
+ ^["producer"]{
+  #:claim #!settled
+  statement: "A firm choosing inputs to minimize cost yields conditional factor demands and a cost curve; a Cobb-Douglas technology has constant returns when its exponents sum to one."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_mwg_1995"
+  needs: [ ~"./micro-and-macro-core.spw#economics_core_consumer" ]
+ }
+ #>economics_core_structure
+ ^["market_structure"]{
+  #:claim #!settled
+  statement: "A competitive firm sets price at marginal cost; a monopolist sets marginal revenue equal to marginal cost, and its price-cost margin as a share of price equals one over the absolute demand elasticity."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_lerner_1934", ~"../../registries/sources/economy-and-markets.spw#src_econ_mwg_1995" ]
+  needs: [ ~"./micro-and-macro-core.spw#economics_core_producer" ]
+  oligopoly: "Cournot competes in quantities, Bertrand in prices, Stackelberg with a leader who moves first"
+  ~#(Lerner index: price minus marginal cost, over price)
+ }
+ #>economics_core_oligopoly
+ ^["oligopoly"]{
+  #:claim #!settled
+  statement: "With identical costs and no capacity limits, Bertrand price competition drives price to marginal cost even with two firms; Cournot quantity competition leaves a markup that shrinks as firms are added."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_cournot_1838", ~"../../registries/sources/economy-and-markets.spw#src_econ_mwg_1995" ]
+  needs: [ ~"./micro-and-macro-core.spw#economics_core_structure" ]
+  ^["limits"]{
+   holds: "homogeneous goods, constant equal marginal cost, one-shot play"
+   fails: "capacity limits, differentiated goods, or repeated play let prices rise above cost"
+  }
+ }
+ #>economics_core_price_discrimination
+ ^["price_discrimination"]{
+  #:claim #!settled
+  statement: "A seller with market power who can sort buyers and block resale earns more by charging different prices; Pigou named three degrees and Varian surveyed their welfare effects."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_pigou_1920", ~"../../registries/sources/economy-and-markets.spw#src_econ_varian_1989" ]
+  needs: [ ~"./micro-and-macro-core.spw#economics_core_structure" ]
+  bridge: ~"../management/revenue-management.spw#management_revenue"
+  ^["limits"]{
+   holds: "resale is blocked and buyer types can be sorted by fences or observables"
+   fails: "the welfare sign is ambiguous; output must rise for discrimination to raise total surplus"
+  }
+ }
+ #>economics_core_network
+ ^["network_effects"]{
+  #:claim #!settled
+  statement: "When a product is worth more as more people use it, expectations about adoption can decide which standard wins, and compatibility becomes a strategic choice."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_katz_shapiro_1985"
+  needs: [ ~"./micro-and-macro-core.spw#economics_core_structure" ]
+ }
+}
+
+^["macro"]{
+ #>economics_core_is_lm
+ ^["is_lm"]{
+  #:claim #!settled
+  statement: "Hicks condensed Keynes into goods-market and money-market curves whose crossing fixes output and the interest rate when prices are sticky."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_hicks_1937"
+  needs: [ ~"./micro-and-macro-core.spw#economics_core_consumer" ]
+ }
+ #>economics_core_mundell_fleming
+ ^["mundell_fleming"]{
+  #:claim #!settled
+  statement: "In a small open economy with perfect capital mobility, monetary policy moves output under floating rates and fiscal policy moves it under fixed rates."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_mundell_1963", ~"../../registries/sources/economy-and-markets.spw#src_econ_fleming_1962" ]
+  needs: [ ~"./micro-and-macro-core.spw#economics_core_is_lm" ]
+  ^["limits"]{
+   holds: "small economy, perfect capital mobility, static expectations"
+   fails: "large economies, capital controls, and forward-looking exchange rates"
+  }
+ }
+ #>economics_core_phillips
+ ^["phillips"]{
+  #:claim #!settled
+  statement: "Phillips found an inverse wage-inflation and unemployment relation in UK data; Friedman and Phelps argued it shifts with expected inflation, leaving no lasting trade-off at the natural rate."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_phillips_1958", ~"../../registries/sources/economy-and-markets.spw#src_econ_friedman_1968", ~"../../registries/sources/economy-and-markets.spw#src_econ_phelps_1967" ]
+  needs: [ ~"./micro-and-macro-core.spw#economics_core_is_lm" ]
+ }
+ #>economics_core_solow
+ ^["solow"]{
+  #:claim #!settled
+  statement: "With diminishing returns to capital, saving, population growth, and depreciation settle capital per effective worker at a steady state; lasting growth per person then comes from technology."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_solow_1956", ~"../../registries/sources/economy-and-markets.spw#src_econ_swan_1956" ]
+  needs: [ ~"./micro-and-macro-core.spw#economics_core_producer" ]
+  law: "k grows at s f(k) minus (n plus g plus delta) k; the golden rule sets the marginal product of capital to n plus g plus delta"
+ }
+ #>economics_core_residual
+ ^["growth_accounting"]{
+  #:claim #!settled
+  statement: "Solow measured the growth not explained by capital and labor as a residual, later called total factor productivity; Mankiw, Romer, and Weil showed human capital narrows that gap."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_solow_1957", ~"../../registries/sources/economy-and-markets.spw#src_econ_mankiw_romer_weil_1992" ]
+  needs: [ ~"./micro-and-macro-core.spw#economics_core_solow" ]
+ }
+ #>economics_core_endogenous
+ ^["endogenous_growth"]{
+  #:claim #!settled
+  statement: "Romer modeled ideas as nonrival goods produced by profit-seeking research, and Aghion and Howitt as quality ladders where new firms displace old ones."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_romer_1990", ~"../../registries/sources/economy-and-markets.spw#src_econ_aghion_howitt_1992" ]
+  needs: [ ~"./micro-and-macro-core.spw#economics_core_residual" ]
+ }
+}
+
+^["try"]{
+ #>economics_core_try_solow
+ ^["solow_sheet"]{
+  materials: [ "a spreadsheet", "one column per year", "paper for the steady-state formula" ]
+  steps: << "set s to 0.25, n to 0.01, g to 0.02, delta to 0.05, alpha to 0.33" ; "start k at half its steady state" ; "add s times k to the alpha minus n plus g plus delta times k each row" ; "compare the last rows with the formula" ; "double s and watch the level move but not the long-run growth" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "none worth naming"
+  shows: ~"./micro-and-macro-core.spw#economics_core_solow"
+ }
+}
+
+#>economics_core_fence_q
+?["Is a hotel rate fence a price discrimination device that also rations a perishable stock?"]{
+ #:depth #!social ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "Fences earn more than a single price mainly on nights when capacity binds, and less of their gain comes from sorting buyers when rooms sit empty."
+ !probe{ "toy model with two buyer types, a capacity limit, and nightly demand draws; compare single price and fenced revenue by load" =id[p_econ_core_fence] =kind[sim] }
+ breaks: "the textbook monopolist can always make another unit; a hotel room unsold tonight is gone"
+ ~"./micro-and-macro-core.spw#economics_core_price_discrimination" ~#neighbor(nearest)
+}
+
+#>economics_core_bertrand_q
+?["Why do two sellers sometimes compete a price all the way down, and when do they not?"]{
+ #:depth #!mathematical ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Live sellers who must announce a price on camera behave closer to Bertrand than sellers who post prices quietly, because undercutting is seen at once."
+ !probe{ "log announced prices across competing livestream sellers of one product during a sales festival" =id[p_econ_core_bertrand] =kind[field] }
+ breaks: "a stream adds attention and trust as goods; the Bertrand model prices one homogeneous good"
+ ~"./micro-and-macro-core.spw#economics_core_oligopoly" ~#neighbor(nearest)
+}

@@ -1,0 +1,110 @@
+# Serial 2014
+#
+# A weekly investigative podcast that premiered on October 3, 2014 showed serialized long-form audio could hold a mass audience, before anyone agreed on how to count it.
+
+#>broadcast_serial_case
+#:layer #!reference
+#:domain #!broadcast
+#:form #!dossier
+#:level #!intro
+#:review #!sourced
+#:valence #!bonk
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Serial 2014"
+ ~#claim: "Serial premiered on 2014-10-03 as weekly serialized nonfiction audio, and its record audience arrived before the industry shared a rule for counting downloads."
+ ~#proof: "Premiere, makers, release model, and the 2015 Peabody are on the public record; IAB Tech Lab published common podcast measurement rules in 2016 and 2017."
+ ~#door: "Set the release model beside the run sheet, and the counting problem beside the market receipts."
+ ~#audience: "readers new to podcast history and anyone citing an audience number"
+ continuity: "Serial 2014 | weekly serialized"
+ cold_open: "A weekly serialized story showed audio could hold a mass audience."
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "claude-opus-5.5"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ contrasts: [ ~"../../spw/history/curriculum-plans.spw#workbench_history_curriculum_plans" ]
+ analog: [ ~"../authorship/martian-serial-to-screen.spw#authorship_martian_case" ]
+ see: [ ~"../../society/markets/media-market-receipts.spw#markets_media_receipts" ]
+}
+
+^["concepts"]{
+ primary: [ #serialization, #audience_measurement ]
+ transfers: [ #season_cadence ]
+ tensions: [ #true_crime_ethics ]
+}
+
+^["dossier"]{
+ #>broadcast_serial_case_premiere
+ ^["premiere"]{
+  #:claim #!settled
+  statement: "Serial premiered on 2014-10-03, hosted by Sarah Koenig and created by Koenig and Julie Snyder, developed by This American Life with WBEZ."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_serial"
+ }
+ #>broadcast_serial_case_release
+ ^["release_model"]{
+  #:claim #!settled
+  statement: "The first season released weekly episodes that followed one investigation, so listeners waited between chapters the way readers of a serial novel do."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_serial"
+ }
+ #>broadcast_serial_case_peabody
+ ^["peabody"]{
+  #:claim #!settled
+  statement: "Serial won a Peabody Award in April 2015, cited for innovative telling of a long-form nonfiction story."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_serial"
+ }
+ #>broadcast_serial_case_downloads
+ ^["record_downloads"]{
+  #:claim #!settled
+  statement: "Press at the time reported Serial as the fastest podcast to reach five million downloads on iTunes."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_serial"
+  ^["limits"]{
+   holds: "as a report of the counts in use in late 2014"
+   fails: "as a figure comparable to counts made under later shared measurement rules"
+  }
+ }
+}
+
+^["measurement"]{
+ #>broadcast_serial_case_iab
+ ^["iab_rules"]{
+  #:claim #!settled
+  statement: "IAB Tech Lab published podcast measurement guidelines in September 2016 and a version 2.0 in December 2017, giving publishers a shared way to count downloads from server logs."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_iab_podcast"
+  later_versions: "the guidelines page lists later versions; their dates are verify"
+ }
+ #>broadcast_serial_case_comparability
+ ^["comparability"]{
+  #:claim #!interpretive
+  statement: "A 2014 download record and a post-2017 download count are different instruments, so a chart joining them needs a footnote at the break."
+ }
+}
+
+^["ethics"]{
+ #>broadcast_serial_case_ethics
+ ^["true_crime"]{
+  #:claim #!interpretive
+  statement: "Serialized true crime turns a real family loss into weekly suspense; the form owes the people inside the story care that a novel does not."
+ }
+ subject: "season one examined a real homicide case and a conviction; the people involved are not named here"
+ record: "the legal case continued long after the series; court records, not this dossier, are the place to follow it"
+}
+
+#>broadcast_serial_case_weekly_q
+?["Does weekly release make more conversation than releasing a whole season at once?"]{
+ #:depth #!social ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "Weekly gaps concentrate discussion into the days after each episode, so total discussion exceeds a single binge release of the same season."
+ !probe{ "compare forum post counts per day for a weekly series and a full-drop series of similar size" =id[p_creator_serial_weekly] =kind[census] }
+ ~"./serial-2014-case.spw#broadcast_serial_case_release" ~#neighbor(nearest)
+}

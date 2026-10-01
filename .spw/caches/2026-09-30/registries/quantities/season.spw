@@ -1,0 +1,176 @@
+# Quantities: Season
+#
+# World metric cells for the production season hub. Season span, calendar constants, copyright terms, and fiscal counts live here once and are read many times.
+
+#>q_season_registry
+#:layer #!reference
+#:domain #!registry
+#:form #!registry
+#:level #!mixed
+#:review #!sourced
+#:valence #!bone
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["family"]{
+ operator: "%"
+ plane: world
+ scope: corpus
+ scheme: tol
+ algorithm: world.registry_lookup
+ form: scalar
+ ^["season_span"]{
+  id: season_arc
+  identifier: season.arc
+  keys: #[ length_days, week_count ]
+ }
+ ^["season_sky"]{
+  id: season_calendar
+  identifier: season.calendar
+  keys: #[ tropical_year_days, synodic_month_days, lunar_year_days, metonic_cycle_years, metonic_cycle_months, gregorian_cycle_years, gregorian_cycle_days ]
+ }
+ ^["season_rights"]{
+  id: season_copyright
+  identifier: season.copyright
+  keys: #[ us_published_term_years, us_recording_term_years ]
+ }
+ ^["season_books"]{
+  id: season_fiscal
+  identifier: season.fiscal
+  keys: #[ us_states_july_start_count, retail_quarter_weeks ]
+ }
+}
+
+#>q_season_arc
+^"arc"{
+ %season.arc.length_days{
+  value: 96
+  unit: "day"
+  at: "Thu 2026-10-01 through Mon 2027-01-04 inclusive, Gregorian calendar"
+  abs: 0
+  src: ~"../sources/season.spw#src_season_reingold_dershowitz_2018"
+  status: #settled
+ }
+ %season.arc.week_count{
+  value: 14
+  unit: "week"
+  at: "13 full Thursday-start rungs plus a five-day reset rung"
+  abs: 0
+  src: ~"../sources/season.spw#src_season_reingold_dershowitz_2018"
+  status: #settled
+ }
+}
+
+#>q_season_calendar
+^"calendar"{
+ %season.calendar.tropical_year_days{
+  value: 365.24219
+  unit: "day"
+  at: "mean tropical year near epoch J2000"
+  abs: 0.00001
+  src: ~"../sources/season.spw#src_season_meeus_1998"
+  status: #settled
+ }
+ %season.calendar.synodic_month_days{
+  value: 29.530589
+  unit: "day"
+  at: "mean synodic month, new moon to new moon, near epoch J2000"
+  abs: 0.000001
+  src: ~"../sources/season.spw#src_season_meeus_1998"
+  status: #settled
+ }
+ %season.calendar.lunar_year_days{
+  value: 354.367
+  unit: "day"
+  at: "twelve mean synodic months, the length of a purely lunar year"
+  abs: 0.001
+  src: ~"../sources/season.spw#src_season_reingold_dershowitz_2018"
+  status: #settled
+ }
+ %season.calendar.metonic_cycle_years{
+  value: 19
+  unit: "year"
+  at: "Metonic cycle used by the fixed Hebrew calendar"
+  abs: 0
+  src: ~"../sources/season.spw#src_season_reingold_dershowitz_2018"
+  status: #settled
+ }
+ %season.calendar.metonic_cycle_months{
+  value: 235
+  unit: "month"
+  at: "lunar months in one Metonic cycle, seven of the 19 years carrying a leap month"
+  abs: 0
+  src: ~"../sources/season.spw#src_season_reingold_dershowitz_2018"
+  status: #settled
+ }
+ %season.calendar.gregorian_cycle_years{
+  value: 400
+  unit: "year"
+  at: "Gregorian leap-year cycle after which dates and weekdays repeat"
+  abs: 0
+  src: ~"../sources/season.spw#src_season_reingold_dershowitz_2018"
+  status: #settled
+ }
+ %season.calendar.gregorian_cycle_days{
+  value: 146097
+  unit: "day"
+  at: "days in one 400-year Gregorian cycle, exactly 20871 weeks"
+  abs: 0
+  src: ~"../sources/season.spw#src_season_reingold_dershowitz_2018"
+  status: #settled
+ }
+}
+
+#>q_season_copyright
+^"copyright"{
+ %season.copyright.us_published_term_years{
+  value: 95
+  unit: "year"
+  at: "US works published 1923 to 1977 with notice and renewal, counted to the end of the calendar year"
+  abs: 0
+  src: ~"../sources/season.spw#src_season_usc17_copyright"
+  status: #settled
+  as_of: "2026-10-01"
+ }
+ %season.copyright.us_recording_term_years{
+  value: 100
+  unit: "year"
+  at: "US sound recordings first published 1923 to 1946, under the 2018 Music Modernization Act"
+  abs: 0
+  src: ~"../sources/season.spw#src_season_mma_2018"
+  status: #settled
+  as_of: "2026-10-01"
+ }
+}
+
+#>q_season_fiscal
+^"fiscal"{
+ %season.fiscal.us_states_july_start_count{
+  value: 46
+  unit: "state"
+  at: "US states whose fiscal year 2026 began on 1 July 2025"
+  abs: 0
+  src: ~"../sources/season.spw#src_season_ncsl_fy2026"
+  status: #settled
+  as_of: "2026-10-01"
+ }
+ %season.fiscal.retail_quarter_weeks{
+  value: 13
+  unit: "week"
+  at: "one quarter of the NRF 4-5-4 retail calendar in a 52-week year"
+  abs: 0
+  src: ~"../sources/season.spw#src_season_nrf_454"
+  status: #settled
+ }
+}

@@ -1,0 +1,35 @@
+#>dim_base
+^["base"]{
+ dims: #[ M, L, T, Theta, I, N, J ]
+}
+#>dim_one
+^["dimensionless"]{
+ up: .{ }
+ down: .{ }
+}
+#>q_mech
+^"mech"{
+ %mech.rho{ value: 1000, unit: "kg/m^3", up: .{ M: 1 }, down: .{ L: 3 } }
+ %mech.mu{ value: 0.001, unit: "Pa s", up: .{ M: 1 }, down: .{ L: 1, T: 1 } }
+ %mech.v{ value: 1, unit: "m/s", up: .{ L: 1 }, down: .{ T: 1 } }
+ %mech.d{ value: 0.05, unit: "m", up: .{ L: 1 } }
+}
+#>pi_reynolds
+^["reynolds"]{
+ #:claim #!settled
+ num: .{ rho: 1, v: 1, d: 1 }
+ den: .{ mu: 1 }
+ reduces_to: ~"./dimension-bench.spw#dim_one"
+}
+#>rxn_methane
+^["methane_combustion"]{
+ scheme: CH4 + O2 -> CO2 + H2O
+ coefficients: #[ _, _, _, _ ]
+ written: "CH4 + 2 O2 -> CO2 + 2 H2O"
+}
+#>bench_q
+?["Does one kernel computation balance a reaction and find a dimensionless group?"]{
+ #:depth #!mathematical ~#lens(formal structure)
+ !probe{ "build the element-by-species and dimension-by-quantity matrices and report the integer kernel" =id[p_bench_kernel] =kind[calc] }
+ breaks: "a balanced equation needs a positive kernel vector and nullity one; Pi exponents may take any sign; torque and energy share dimensions"
+}

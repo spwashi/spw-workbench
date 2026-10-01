@@ -1,0 +1,194 @@
+# Topology and Complex Core
+#
+# A theorem ledger for point-set topology and complex analysis, with each hypothesis written as a qualifier and one raw error kept as refuted.
+
+#>mathematics_topology_complex
+#:layer #!reference
+#:domain #!mathematics
+#:form #!ledger
+#:level #!advanced
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Topology and Complex Core"
+ ~#claim: "Complex differentiability needs real differentiability plus the Cauchy-Riemann equations, and that one condition makes holomorphic functions rigid."
+ ~#proof: "Ahlfors and Stein and Shakarchi give the theorems; Gray and Morris give the counterexample that the raw cache missed."
+ ~#door: "Read the Cauchy-Riemann frame, then the integral formula, then try the series that stops at radius one."
+ ~#audience: "undergraduates after real analysis, and engineers who use poles and residues"
+ continuity: "Topology and Complex Core | real differentiability"
+ cold_open: "A complex derivative needs real differentiability first; with it, one equation pair forces a function to be smooth forever."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/mathematics/undergrad-topology-and-complex-analysis.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "Cauchy-Riemann stated as if and only if on partial derivatives alone; it now requires real differentiability, and the raw form is kept as refuted",
+  "harmonic and conformal consequences now hold on open sets and, for angles, only where the derivative is nonzero",
+  "Cauchy integral theorem and formula now state open sets, closed piecewise smooth curves, and Goursat",
+  "contour methods for real integrals now name the decay condition on the closing arc",
+  "Tychonoff now names the product topology; the box topology fails"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./analysis-and-algebra-core.spw#mathematics_core" ]
+ feeds: [ ~"./engineering-core/transforms-and-complex-methods.spw#mathematics_transforms", ~"./graduate-algebra-and-topology.spw#mathematics_grad_algebra", ~"./graduate-analysis-and-geometry.spw#mathematics_grad_analysis" ]
+}
+
+^["concepts"]{
+ primary: [ #compactness, #holomorphy, #hypothesis_drop ]
+ transfers: [ #residue, #invariant ]
+}
+
+^["ledger"]{
+ ^["point_set"]{
+  #>mathematics_tc_separation
+  ^["separation_axioms"]{
+   #:claim #!settled
+   statement: "The separation ladder runs T0, T1 with closed points, Hausdorff with disjoint neighborhoods and unique sequence limits, regular, and normal."
+   source: ~"../../registries/sources/formal.spw#src_formal_munkres_2000"
+   ^["limits"]{
+    holds: "with points closed built into regular and normal, as Munkres defines them"
+    fails: "without T1 a normal space need not be Hausdorff; textbooks differ on these names"
+   }
+  }
+  #>mathematics_tc_urysohn
+  ^["urysohn_tietze"]{
+   #:claim #!settled
+   statement: "In a normal space, disjoint closed sets are separated by a continuous map to the unit interval, and Tietze extends continuous real functions from closed subsets."
+   source: ~"../../registries/sources/formal.spw#src_formal_munkres_2000"
+  }
+  #>mathematics_tc_compactness
+  ^["compactness"]{
+   #:claim #!settled
+   statement: "A space is compact when every open cover has a finite subcover, equivalently when closed families with the finite intersection property meet; continuous images of compact spaces are compact."
+   source: ~"../../registries/sources/formal.spw#src_formal_munkres_2000"
+  }
+  #>mathematics_tc_tychonoff
+  ^["tychonoff"]{
+   #:claim #!settled
+   statement: "Every product of compact spaces is compact in the product topology, and Kelley showed in 1950 that this theorem implies the axiom of choice."
+   sources: [ ~"../../registries/sources/formal.spw#src_formal_munkres_2000", ~"../../registries/sources/formal.spw#src_formal_kelley_1950" ]
+   ^["limits"]{
+    holds: "the product topology, for any index set"
+    fails: "the box topology: infinitely many copies of a two-point discrete space form an infinite discrete space"
+   }
+  }
+  #>mathematics_tc_connectedness
+  ^["connectedness"]{
+   #:claim #!settled
+   statement: "Path-connected spaces are connected but not conversely, as the topologist sine curve shows; connected images give the intermediate value theorem."
+   source: ~"../../registries/sources/formal.spw#src_formal_munkres_2000"
+  }
+ }
+ ^["complex"]{
+  #>mathematics_tc_cauchy_riemann
+  ^["cauchy_riemann"]{
+   #:claim #!settled
+   statement: "A function u plus i v is complex differentiable at a point exactly when u and v are real differentiable there and satisfy u_x equals v_y and u_y equals minus v_x."
+   source: ~"../../registries/sources/formal.spw#src_formal_ahlfors_1979"
+   ~#say(complex derivative means real derivative plus the equation pair)
+   ^["limits"]{
+    holds: "pointwise, with real differentiability at that point"
+    fails: "partials alone are not enough; on an open set, continuity plus the equations everywhere suffices by the Looman-Menchoff theorem"
+   }
+  }
+  #>mathematics_tc_cauchy_riemann_raw
+  ^["cauchy_riemann_raw"]{
+   #:claim #!refuted
+   statement: "The raw cache said the equations on the partial derivatives alone give a complex derivative; the square root of the absolute value of xy satisfies them at the origin and has none."
+   source: ~"../../registries/sources/formal.spw#src_formal_gray_morris_1978"
+  }
+  #>mathematics_tc_harmonic_conformal
+  ^["harmonic_conformal"]{
+   #:claim #!settled
+   statement: "On an open set where f is holomorphic, u and v are harmonic, and f preserves angles at every point where its derivative is nonzero."
+   source: ~"../../registries/sources/formal.spw#src_formal_ahlfors_1979"
+   ^["limits"]{
+    holds: "points where f prime is not zero"
+    fails: "z squared at the origin doubles angles"
+   }
+  }
+  #>mathematics_tc_cauchy_goursat
+  ^["cauchy_goursat"]{
+   #:claim #!settled
+   statement: "For f holomorphic on a simply connected open set, the integral around any closed piecewise smooth curve in it is zero; Goursat dropped the assumption that f prime is continuous."
+   sources: [ ~"../../registries/sources/formal.spw#src_formal_ahlfors_1979", ~"../../registries/sources/formal.spw#src_formal_goursat_1900" ]
+  }
+  #>mathematics_tc_integral_formula
+  ^["integral_formula"]{
+   #:claim #!settled
+   statement: "For f holomorphic near a closed disk, f and all its derivatives inside are contour integrals over the boundary circle, so holomorphic functions are infinitely differentiable and analytic."
+   source: ~"../../registries/sources/formal.spw#src_formal_stein_shakarchi_2003"
+  }
+  #>mathematics_tc_radius
+  ^["radius_of_convergence"]{
+   #:claim #!settled
+   statement: "A Taylor series of a holomorphic function converges on the largest disk free of singularities, so 1 over 1 plus x squared at 0 has radius 1 because of poles at plus and minus i."
+   source: ~"../../registries/sources/formal.spw#src_formal_stein_shakarchi_2003"
+  }
+  #>mathematics_tc_liouville
+  ^["liouville_fta"]{
+   #:claim #!settled
+   statement: "A bounded entire function is constant, which yields the fundamental theorem of algebra: every nonconstant complex polynomial has a complex root."
+   source: ~"../../registries/sources/formal.spw#src_formal_ahlfors_1979"
+  }
+  #>mathematics_tc_picard
+  ^["big_picard"]{
+   #:claim #!settled
+   statement: "In every punctured neighborhood of an essential singularity, f takes every complex value infinitely often, with at most one exception."
+   source: ~"../../registries/sources/formal.spw#src_formal_stein_shakarchi_2003"
+  }
+  #>mathematics_tc_residue
+  ^["residue_theorem"]{
+   #:claim #!settled
+   statement: "For f holomorphic on an open set except isolated singularities, a closed curve avoiding them integrates f to 2 pi i times the residues weighted by winding number."
+   source: ~"../../registries/sources/formal.spw#src_formal_ahlfors_1979"
+   ^["limits"]{
+    holds: "curves inside the open set that avoid every singularity"
+    fails: "real integrals by semicircle or keyhole contours also need the closing arc to vanish, for example by Jordan lemma or decay faster than one over R"
+   }
+  }
+  #>mathematics_tc_argument_rouche
+  ^["argument_principle_rouche"]{
+   #:claim #!settled
+   statement: "For f meromorphic inside and on a simple closed contour with no zeros or poles on it, the integral of f prime over f counts zeros minus poles; Rouche compares zero counts."
+   source: ~"../../registries/sources/formal.spw#src_formal_stein_shakarchi_2003"
+   ^["limits"]{
+    holds: "Rouche needs the absolute value of f minus g below the absolute value of f at every point of the contour"
+    fails: "equality anywhere on the contour voids the comparison"
+   }
+  }
+ }
+}
+
+^["try"]{
+ #>mathematics_tc_try_radius
+ ^["series_that_stops"]{
+  materials: [ "a calculator or Python", "paper" ]
+  steps: << "write the series 1 minus x squared plus x to the fourth and so on" ; "sum 20 terms at x equal 0.5, 0.9, and 1.1" ; "compare each sum with 1 over 1 plus x squared" ; "mark plus and minus i on the complex plane and measure their distance from 0" >>
+  time: .{ n: 25, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./topology-and-complex-core.spw#mathematics_tc_radius"
+ }
+}
+
+#>mathematics_tc_poles_q
+?["Why do engineers meet poles a year before they meet holomorphic functions?"]{
+ #:depth #!educational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "Teaching residues beside inverse Laplace transforms would make stability arguments feel derived instead of memorized."
+ !probe{ "compare five accredited electrical engineering programs: term of Laplace transforms versus term of complex analysis" =id[p_formal_tc_poles_first] =kind[lookup] }
+ breaks: "transfer functions are rational, the easy case; residue calculus also handles essential singularities that control work rarely meets"
+ $%[formal.dated.abet_math_science_credits]
+ ~"./topology-and-complex-core.spw#mathematics_tc_residue" ~#neighbor(nearest)
+}

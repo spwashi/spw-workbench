@@ -1,0 +1,424 @@
+diff --git a/packages/spw-cli/src/corpus-scan.test.ts b/packages/spw-cli/src/corpus-scan.test.ts
+index 38ea8486..08ed3714 100644
+--- a/packages/spw-cli/src/corpus-scan.test.ts
++++ b/packages/spw-cli/src/corpus-scan.test.ts
+@@ -196,3 +196,116 @@ describe('scanCorpus (end-to-end against real .spw files)', () => {
+     }
+   })
+ })
++
++describe('scanCorpus link resolution (file is the node)', () => {
++  let root: string
++  let previousCwd: string
++
++  async function write(rel: string, body: string): Promise<void> {
++    await fs.mkdir(path.dirname(path.join(root, rel)), { recursive: true })
++    await fs.writeFile(path.join(root, rel), body, 'utf8')
++  }
++
++  beforeEach(async () => {
++    root = await fs.mkdtemp(path.join(os.tmpdir(), 'spw-corpus-links-test-'))
++    await write('.spw/mount.spw', '')
++    await write('canon/target.spw', '#>claim\n^"claim"{\n  "held"\n}\n')
++    previousCwd = process.cwd()
++    process.chdir(root)
++  })
++
++  afterEach(async () => {
++    process.chdir(previousCwd)
++    await fs.rm(root, { recursive: true, force: true })
++  })
++
++  it('splits the fragment off, tries the citing file then the consumer root, and still breaks a wrong file', async () => {
++    await write(
++      'notes/deep/cite.spw',
++      [
++        '^"refs"{',
++        '  ~"../../canon/target.spw#claim"',
++        '  ~"canon/target.spw#claim"',
++        '  ~"canon/nope.spw#claim"',
++        '  ~"#local"',
++        '  ~"https://example.com/x"',
++        '}',
++        '',
++      ].join('\n'),
++    )
++
++    const result = await scanCorpus({ roots: ['notes', 'canon'], noMemo: true })
++    const fromCite = result.links.filter(l => l.from === 'notes/deep/cite.spw')
++
++    expect(fromCite.map(l => [l.to, l.anchor])).toEqual([
++      ['canon/target.spw', 'claim'],
++      ['canon/target.spw', 'claim'],
++      ['notes/deep/canon/nope.spw', 'claim'],
++    ])
++    expect(fromCite.map(l => l.label)).toContain('canon/target.spw#claim')
++    expect(result.topography.graph.nodes.filter(n => n.includes('#'))).toEqual([])
++    expect(result.topography.brokenTargets).toEqual(['notes/deep/canon/nope.spw'])
++    expect(result.signals.find(s => s.file === 'notes/deep/cite.spw')?.pathRefCount).toBe(5)
++    expect(result.inventory.find(r => r.file === 'canon/target.spw')?.inDegree).toBe(2)
++  })
++
++  it('prefers the file-relative target when both bases exist', async () => {
++    await write('notes/shadow/canon/target.spw', '^"shadow"{\n  "local"\n}\n')
++    await write('notes/shadow/cite.spw', '^"refs"{\n  ~"canon/target.spw#claim"\n}\n')
++
++    const result = await scanCorpus({ roots: ['notes'], noMemo: true })
++    const link = result.links.find(l => l.from === 'notes/shadow/cite.spw')
++
++    expect(link?.to).toBe('notes/shadow/canon/target.spw')
++    expect(result.topography.brokenTargets).toEqual([])
++  })
++
++  it('follows roots the file declares, and makes no node for declarations or undeclared aliases', async () => {
++    await write('hub/leaf.spw', '^"leaf"{\n  "text"\n}\n')
++    await write(
++      'hub/index.spw',
++      [
++        '^"roots"{',
++        '  @leaf: ~"./leaf.spw"',
++        '  @canon: ~"../canon"',
++        '}',
++        '^"dispatch"{',
++        '  leaf: @leaf',
++        '  target: @canon/target.spw',
++        '  gone: @canon/gone.spw',
++        '  far: @elsewhere/x.spw',
++        '}',
++        '',
++      ].join('\n'),
++    )
++
++    const result = await scanCorpus({ roots: ['hub', 'canon'], noMemo: true })
++    const fromHub = result.links.filter(l => l.from === 'hub/index.spw')
++
++    expect(fromHub.filter(l => l.kind === 'root').map(l => [l.to, l.label])).toEqual([
++      ['hub/leaf.spw', '@leaf'],
++      ['canon/target.spw', '@canon/target.spw'],
++    ])
++    expect(fromHub.filter(l => l.kind === 'path').map(l => l.to)).toEqual(['hub/leaf.spw', 'canon'])
++    for (const pseudo of ['leaf', 'canon/gone.spw', 'hub/canon/gone.spw', 'elsewhere/x.spw']) {
++      expect(result.topography.graph.nodes).not.toContain(pseudo)
++    }
++    expect(result.topography.hubs.map(h => h.id)).not.toContain('leaf')
++    expect(result.topography.brokenTargets).toEqual([])
++    expect(result.signals.find(s => s.file === 'hub/index.spw')?.rootRefCount).toBe(6)
++    const shelves = result.topography.strands.find(s => s.id === 'root_shelves')?.detail ?? ''
++    expect(shelves).toContain('@leaf×1')
++    expect(shelves).toContain('@canon×1')
++  })
++
++  it('keeps the fragment off the node even when paths are left unresolved', async () => {
++    await write('notes/cite.spw', '^"refs"{\n  ~"../canon/target.spw#claim"\n}\n')
++
++    const result = await scanCorpus({ roots: ['notes'], resolvePaths: false, noMemo: true })
++    const link = result.links.find(l => l.from === 'notes/cite.spw')
++
++    expect(link?.to).toBe('../canon/target.spw')
++    expect(link?.anchor).toBe('claim')
++    expect(link?.label).toBe('../canon/target.spw#claim')
++  })
++})
+diff --git a/packages/spw-cli/src/corpus-scan.ts b/packages/spw-cli/src/corpus-scan.ts
+index b7165c0d..25dd711d 100644
+--- a/packages/spw-cli/src/corpus-scan.ts
++++ b/packages/spw-cli/src/corpus-scan.ts
+@@ -9,7 +9,7 @@
+ import { promises as fs } from 'node:fs'
+ import path from 'node:path'
+ import process from 'node:process'
+-import { spwq } from '@spwashi/spw-seed'
++import { classifyCitation, parse, spwq, type SpwMatch } from '@spwashi/spw-seed'
+ import {
+   analyzeTopography,
+   buildCorpusProduct,
+@@ -45,6 +45,16 @@ import { resolveWorkspacePath, tryDiscoverSpwWorkspace, type SpwWorkspace } from
+ 
+ export const CORPUS_IGNORED = new Set([...DEFAULT_IGNORED_DIRS, '_workbench', '.agents'])
+ 
++/**
++ * Revision of how citations become edges, folded into the memo fingerprint so a
++ * disk memo written under an older link model is not served back. Bump it when
++ * link resolution changes. (2: file nodes without `#anchor`, file-then-root
++ * resolution, `@name:` declarations make no node.)
++ */
++const LINK_MODEL = 'spw.corpus.links/2'
++/** A fileStats key no relative path can take (paths never contain NUL). */
++const LINK_MODEL_KEY = '\u0000link-model'
++
+ /** @deprecated Prefer PopulationRole from seed */
+ export type InventoryRole = PopulationRole
+ /** @deprecated Prefer PopulationRow from seed */
+@@ -114,6 +124,8 @@ export async function scanCorpus(opts: ScanOptions): Promise<CorpusScanResult> {
+     }),
+   )
+ 
++  fileStats[LINK_MODEL_KEY] = LINK_MODEL
++
+   const keyParts: CorpusMemoKeyParts = {
+     cwd,
+     roots: absRoots.map(r => normalizeRel(path.relative(cwd, r) || r)),
+@@ -173,6 +185,7 @@ export async function scanCorpus(opts: ScanOptions): Promise<CorpusScanResult> {
+   const signals: CorpusFileSignals[] = []
+   const knownRel = new Set<string>()
+   const sources = new Map<string, string>()
++  const resolver = createTargetResolver(cwd, resolvePaths, filesAbs)
+ 
+   const perFile = await Promise.all(
+     filesAbs.map(async abs => {
+@@ -189,44 +202,53 @@ export async function scanCorpus(opts: ScanOptions): Promise<CorpusScanResult> {
+       let pathRefCount = 0
+       let rootRefCount = 0
+ 
++      let pathMatches: SpwMatch[] = []
++      let refMatches: SpwMatch[] = []
+       try {
+-        const pathMatches = spwq.fromSource(source, PATH_REFS)
+-        for (const match of pathMatches) {
+-          pathRefCount++
+-          const raw =
+-            (match.node as { path?: { token?: { value?: string } } }).path?.token?.value ?? ''
+-          const targetRaw = unquote(raw)
+-          const resolved = resolvePaths
+-            ? normalizeRel(path.relative(cwd, path.resolve(path.dirname(abs), targetRaw)))
+-            : targetRaw
+-          fileLinks.push({
+-            from: rel,
+-            to: resolved,
+-            kind: 'path',
+-            line: match.span.startLine + 1,
+-            label: targetRaw,
+-          })
++        const ast = parse(source).ast
++        if (ast) {
++          pathMatches = spwq(ast, PATH_REFS)
++          refMatches = spwq(ast, REFERENCES)
+         }
+       } catch {
+         /* parse-partial OK */
+       }
+ 
+-      try {
+-        const refMatches = spwq.fromSource(source, REFERENCES)
+-        for (const match of refMatches) {
+-          const raw = (match.node as { raw?: string }).raw ?? ''
+-          if (!raw) continue
+-          rootRefCount++
+-          fileLinks.push({
+-            from: rel,
+-            to: raw,
+-            kind: 'root',
+-            line: match.span.startLine + 1,
+-            label: `@${raw}`,
+-          })
++      for (const match of pathMatches) {
++        pathRefCount++
++        const written = unquote(pathRefValue(match.node))
++        const target = await resolver.resolve(abs, written)
++        if (!target) continue
++        fileLinks.push({
++          from: rel,
++          to: target.to,
++          kind: 'path',
++          line: match.span.startLine + 1,
++          label: written,
++          ...(target.anchor ? { anchor: target.anchor } : {}),
++        })
++      }
++
++      const localRoots = collectLocalRoots(refMatches)
++      for (const match of refMatches) {
++        const raw = (match.node as { raw?: string }).raw ?? ''
++        if (!raw) continue
++        rootRefCount++
++        // `@name: ~"…"` declares a root; the PathRef in its value is already an edge.
++        if (isRootDeclaration(match)) continue
++        const line = match.span.startLine + 1
++        const label = `@${raw}`
++        if (!resolvePaths) {
++          fileLinks.push({ from: rel, to: raw, kind: 'root', line, label })
++          continue
+         }
+-      } catch {
+-        /* ignore */
++        // Only roots this file declares are followed; one declared elsewhere
++        // (manifest, shelves, a parent index) or naming nothing on disk is not a
++        // file, so it makes no node — it would only rank as a pseudo-hub.
++        const declared = expandLocalRoot(raw, localRoots)
++        const target = declared === null ? null : await resolver.resolve(abs, declared)
++        if (!target?.exists) continue
++        fileLinks.push({ from: rel, to: target.to, kind: 'root', line, label })
+       }
+ 
+       const signal: CorpusFileSignals = {
+@@ -316,6 +338,112 @@ export function buildInventory(
+   return buildPopulation(signals, topo)
+ }
+ 
++interface ResolvedTarget {
++  /** Consumer-relative node id: the file alone, never `file#anchor`. */
++  to: string
++  anchor: string | null
++  /** Whether the target is on disk; null when paths are left unresolved. */
++  exists: boolean | null
++}
++
++interface TargetResolver {
++  resolve(citingAbs: string, written: string): Promise<ResolvedTarget | null>
++}
++
++/**
++ * Resolve citation targets in the order `spw resolve` uses (resolve.ts,
++ * `resolveOne`): split the fragment off, then try the citing file's directory
++ * before the consumer root. A target found under neither keeps its
++ * file-relative form, so the break is reported where the author wrote it.
++ * Returns null for citations that name no corpus file: same-file fragments
++ * (`#x`), external URIs, and malformed text.
++ */
++function createTargetResolver(
++  consumerRoot: string,
++  resolvePaths: boolean,
++  filesAbs: readonly string[],
++): TargetResolver {
++  const scanned = new Set(filesAbs)
++  const statCache = new Map<string, Promise<boolean>>()
++  const exists = (abs: string): Promise<boolean> => {
++    if (scanned.has(abs)) return Promise.resolve(true)
++    let hit = statCache.get(abs)
++    if (!hit) {
++      hit = fs.stat(abs).then(() => true, () => false)
++      statCache.set(abs, hit)
++    }
++    return hit
++  }
++  const toRel = (abs: string): string => normalizeRel(path.relative(consumerRoot, abs)) || '.'
++
++  return {
++    async resolve(citingAbs, written) {
++      const citation = classifyCitation(written)
++      if (citation.kind === 'malformed' || citation.kind === 'external') return null
++      const anchor = citation.fragment
++      if (!resolvePaths) return { to: citation.targetPath, anchor, exists: null }
++      const candidates = citation.kind === 'route'
++        ? [path.resolve(consumerRoot, citation.targetPath.replace(/^\/+/, ''))]
++        : [
++            path.resolve(path.dirname(citingAbs), citation.targetPath),
++            path.resolve(consumerRoot, citation.targetPath),
++          ]
++      for (const candidate of candidates) {
++        if (await exists(candidate)) return { to: toRel(candidate), anchor, exists: true }
++      }
++      return { to: toRel(candidates[0]!), anchor, exists: false }
++    },
++  }
++}
++
++interface BindingLike {
++  type?: string
++  key?: unknown
++  value?: unknown
++}
++
++function pathRefValue(node: unknown): string {
++  return (node as { path?: { token?: { value?: string } } }).path?.token?.value ?? ''
++}
++
++/** `@name: value` — a Reference in a Binding's key slot declares a root; it cites nothing. */
++function isRootDeclaration(match: SpwMatch): boolean {
++  const parent = match.path[match.path.length - 1] as BindingLike | undefined
++  return parent?.type === 'Binding' && parent.key === match.node
++}
++
++/**
++ * The file's own root table: `@name: ~"path"` declarations, the scope
++ * reference-conventions.spw gives `^[roots]{}`. Roots are not inherited from a
++ * parent index. The first declaration of a name wins.
++ */
++function collectLocalRoots(refMatches: readonly SpwMatch[]): Map<string, string> {
++  const roots = new Map<string, string>()
++  for (const match of refMatches) {
++    if (!isRootDeclaration(match)) continue
++    const name = (match.node as { raw?: string }).raw
++    if (!name || roots.has(name)) continue
++    const binding = match.path[match.path.length - 1] as BindingLike
++    const value = binding.value as { type?: string; terms?: unknown[] } | undefined
++    const pathRef = value?.type === 'PathRef'
++      ? value
++      : value?.terms?.find(term => (term as { type?: string }).type === 'PathRef')
++    if (pathRef) roots.set(name, unquote(pathRefValue(pathRef)))
++  }
++  return roots
++}
++
++/** `@name/rest` → the declared path joined with `rest`; null when `name` is not declared in this file. */
++function expandLocalRoot(raw: string, localRoots: ReadonlyMap<string, string>): string | null {
++  const slash = raw.indexOf('/')
++  const name = slash < 0 ? raw : raw.slice(0, slash)
++  const declared = localRoots.get(name)
++  if (declared === undefined) return null
++  const rest = slash < 0 ? '' : raw.slice(slash + 1)
++  if (!rest) return declared
++  return path.posix.join(classifyCitation(declared).targetPath || declared, rest)
++}
++
+ export function unquote(value: string): string {
+   if (
+     (value.startsWith('"') && value.endsWith('"')) ||
+diff --git a/packages/spw-seed/src/math/corpus.test.ts b/packages/spw-seed/src/math/corpus.test.ts
+index 6a6be288..b3a790f9 100644
+--- a/packages/spw-seed/src/math/corpus.test.ts
++++ b/packages/spw-seed/src/math/corpus.test.ts
+@@ -158,6 +158,17 @@ describe('corpus topography', () => {
+     expect(cmp.cosineSigils).toBeGreaterThan(0.5)
+     expect(cmp.sharedStrands.length).toBeGreaterThan(0)
+   })
++
++  it('names root shelves from the written citation when a root link lands on a file', () => {
++    const r = analyzeTopography([
++      { from: 'a.spw', to: 'lib/shelf/x.spw', kind: 'root', label: '@shelf/x.spw' },
++      { from: 'b.spw', to: 'shared', kind: 'root' },
++    ])
++    const shelves = r.strands.find(s => s.id === 'root_shelves')
++    expect(shelves?.detail).toContain('@shelf×1')
++    expect(shelves?.detail).toContain('@shared×1')
++    expect(shelves?.detail).not.toContain('@lib')
++  })
+ })
+ 
+ describe('heuristics', () => {
+diff --git a/packages/spw-seed/src/math/corpus.ts b/packages/spw-seed/src/math/corpus.ts
+index c2e49f49..66b93bee 100644
+--- a/packages/spw-seed/src/math/corpus.ts
++++ b/packages/spw-seed/src/math/corpus.ts
+@@ -19,11 +19,15 @@ export type RelationKind = 'path' | 'root' | 'frame' | 'other'
+ 
+ export interface CorpusLink {
+   from: string
++  /** Target node. For file citations this is the file alone — never `file#anchor`. */
+   to: string
+   kind: RelationKind
+   /** Optional line for navigation */
+   line?: number
++  /** The citation as written (`./x.spw#a`, `@root/path`). */
+   label?: string
++  /** Fragment the citation names inside `to`, kept off the node id. */
++  anchor?: string
+ }
+ 
+ export interface CorpusFileSignals {
+@@ -285,11 +289,13 @@ function buildStrands(
+     })
+   }
+ 
+-  // Root ref names as shelves
++  // Root ref names as shelves. A resolved root link points at a file, so the
++  // shelf name comes from the citation as written (`@shelf/…`) when present.
+   const roots = new Map<string, number>()
+   for (const l of links) {
+     if (l.kind !== 'root') continue
+-    const root = l.to.split('/')[0] || l.to
++    const written = l.label?.startsWith('@') ? l.label.slice(1) : l.to
++    const root = written.split('/')[0] || written
+     roots.set(root, (roots.get(root) ?? 0) + 1)
+   }
+   if (roots.size) {

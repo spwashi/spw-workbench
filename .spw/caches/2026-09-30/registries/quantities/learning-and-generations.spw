@@ -1,0 +1,276 @@
+# Quantities: Learning and Generations
+#
+# World metric cells for the learning class. Rules, ratios, budgets, and survey readings live here once; a cell with status verify stays empty until a reader fills it from the named source.
+
+#>registry_qty_learning_and_generations
+#:layer #!reference
+#:domain #!registry
+#:form #!registry
+#:level #!mixed
+#:review #!spot_checked
+#:valence #!bone
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #partial }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ checked_online: #[ counsel, fund, faculty, naep ]
+ verify_rule: "a cell with status verify has no value; fill it from its src and set as_of"
+}
+
+^["family"]{
+ id: learn
+ operator: "%"
+ identifier: learn
+ plane: world
+ scope: corpus
+ groups: #[ counsel, idea, aaup, faculty, fund, credit, carnegie, active, ib, transfer, cep, naep, poll, policy ]
+ scheme: tol
+ algorithm: world.registry_lookup
+ form: scalar
+}
+
+#>q_learn_counseling
+^["counseling"]{
+ %learn.counsel.asca_ratio_students{
+  value: 250, abs: 0, unit: "students per school counselor"
+  at: "ASCA recommended caseload", as_of: "2026-10-01"
+  src: ~"../sources/learning-and-generations.spw#src_learn_asca_ratios"
+  status: #settled
+ }
+ %learn.counsel.us_ratio_students{
+  value: 372, abs: 0, unit: "students per school counselor"
+  at: "US national average, 2024-25 school year", as_of: "2026-10-01"
+  src: ~"../sources/learning-and-generations.spw#src_learn_asca_ratios"
+  status: #settled
+ }
+}
+
+#>q_learn_idea
+^["idea"]{
+ %learn.idea.initial_eval_days{
+  value: 60, abs: 0, unit: "days"
+  at: "parental consent to completed initial evaluation, unless the state sets its own timeframe; 34 CFR 300.301(c)"
+  src: ~"../sources/learning-and-generations.spw#src_learn_idea_regs"
+  status: #settled
+ }
+ %learn.idea.iep_meeting_days{
+  value: 30, abs: 0, unit: "days"
+  at: "eligibility determination to the meeting that develops the IEP; 34 CFR 300.323(c)(1)"
+  src: ~"../sources/learning-and-generations.spw#src_learn_idea_regs"
+  status: #settled
+ }
+ %learn.idea.iep_review_months{
+  value: 12, abs: 0, unit: "months"
+  at: "the IEP team reviews the IEP periodically and not less than annually; 34 CFR 300.324(b)"
+  src: ~"../sources/learning-and-generations.spw#src_learn_idea_regs"
+  status: #settled
+ }
+ %learn.idea.reeval_years{
+  value: 3, abs: 0, unit: "years"
+  at: "reevaluation at least this often unless parent and agency agree it is unnecessary; 34 CFR 300.303(b)"
+  src: ~"../sources/learning-and-generations.spw#src_learn_idea_regs"
+  status: #settled
+ }
+}
+
+#>q_learn_faculty
+^["faculty"]{
+ %learn.aaup.probation_max_years{
+  value: 7, abs: 0, unit: "years"
+  at: "maximum full-time probationary period recommended by the 1940 Statement"
+  src: ~"../sources/learning-and-generations.spw#src_learn_aaup_1940"
+  status: #settled
+ }
+ %learn.faculty.contingent_2021_percent{
+  value: 68, abs: 1, unit: "percent of US faculty appointments"
+  at: "part-time plus full-time non-tenure-track, fall 2021", as_of: "2023"
+  src: ~"../sources/learning-and-generations.spw#src_learn_colby_2023"
+  status: #settled
+ }
+ %learn.faculty.contingent_1987_percent{
+  value: 47, abs: 1, unit: "percent of US faculty appointments"
+  at: "part-time plus full-time non-tenure-track, fall 1987, as reported in 2023", as_of: "2023"
+  src: ~"../sources/learning-and-generations.spw#src_learn_colby_2023"
+  status: #settled
+ }
+}
+
+#>q_learn_funding
+^["funding"]{
+ %learn.fund.nsf_fy2024_usd_b{
+  value: 9.06, rel: 0.005, unit: "billion USD"
+  at: "NSF enacted appropriation, federal FY2024", as_of: "2026-10-01"
+  src: ~"../sources/learning-and-generations.spw#src_learn_nsf_budget"
+  status: #settled
+ }
+ %learn.fund.nsf_fy2025_usd_b{
+  value: 8.826, rel: 0.005, unit: "billion USD"
+  at: "NSF appropriation, federal FY2025, as the agency reports it", as_of: "2026-10-01"
+  src: ~"../sources/learning-and-generations.spw#src_learn_nsf_budget"
+  status: #settled
+ }
+ %learn.fund.nsf_fy2026_usd_b{
+  unit: "billion USD"
+  at: "NSF enacted appropriation, federal FY2026", as_of: "2026-10-01"
+  src: ~"../sources/learning-and-generations.spw#src_learn_nsf_budget"
+  status: #verify
+ }
+ %learn.fund.nih_fy2026_usd_b{
+  unit: "billion USD"
+  at: "NIH program level, federal FY2026", as_of: "2026-10-01"
+  src: ~"../sources/learning-and-generations.spw#src_learn_nih_budget"
+  status: #verify
+ }
+ %learn.fund.fa_admin_cap_percent{
+  value: 26, abs: 0, unit: "percent of modified total direct costs"
+  at: "cap on the administrative component of university F and A rates; 2 CFR 200 Appendix III"
+  src: ~"../sources/learning-and-generations.spw#src_learn_uniform_guidance"
+  status: #settled
+ }
+ %learn.fund.nih_indirect_cap_2025_percent{
+  value: 15, abs: 0, unit: "percent of direct costs"
+  at: "NIH notice of 2025-02-07 replacing negotiated rates; enjoined in federal court in 2025; current status verify", as_of: "2026-10-01"
+  src: ~"../sources/learning-and-generations.spw#src_learn_nih_indirect_2025"
+  status: #contested
+ }
+}
+
+#>q_learn_credit
+^["credit"]{
+ %learn.credit.semester_weeks{
+  value: 15, abs: 0, unit: "weeks"
+  at: "approximate length of a semester in the federal credit hour definition; 34 CFR 600.2"
+  src: ~"../sources/learning-and-generations.spw#src_learn_credit_hour_cfr"
+  status: #settled
+ }
+ %learn.credit.outside_hours_per_class_hour{
+  value: 2, abs: 0, unit: "hours of out-of-class work per hour of instruction, minimum"
+  at: "federal credit hour definition; 34 CFR 600.2"
+  src: ~"../sources/learning-and-generations.spw#src_learn_credit_hour_cfr"
+  status: #settled
+ }
+ %learn.carnegie.unit_contact_hours{
+  value: 120, abs: 0, unit: "hours of instruction in one high school subject over a year"
+  at: "Carnegie Unit as defined in the early twentieth century"
+  src: ~"../sources/learning-and-generations.spw#src_learn_silva_2015"
+  status: #settled
+ }
+ %learn.credit.bachelor_typical_semester_credits{
+  unit: "semester credit hours"
+  at: "common total for a US bachelor degree; set by each institution, state system, and accreditor", as_of: "2026-10-01"
+  src: ~"../sources/learning-and-generations.spw#src_learn_shedd_2003"
+  status: #verify
+ }
+}
+
+#>q_learn_active
+^["active_learning"]{
+ %learn.active.fail_risk_ratio{
+  value: 1.5, rel: 0.05, unit: "ratio of failure risk, lecture to active learning"
+  at: "meta-analysis of 225 STEM course studies"
+  src: ~"../sources/learning-and-generations.spw#src_learn_freeman_2014"
+  status: #settled
+ }
+ %learn.active.exam_effect_sd{
+  value: 0.47, rel: 0.05, unit: "standard deviations"
+  at: "weighted mean effect of active learning on exam scores in the same meta-analysis"
+  src: ~"../sources/learning-and-generations.spw#src_learn_freeman_2014"
+  status: #settled
+ }
+}
+
+#>q_learn_secondary
+^["secondary"]{
+ %learn.ib.ee_words_max{
+  value: 4000, abs: 0, unit: "words"
+  at: "upper limit for the IB Diploma Programme Extended Essay"
+  src: ~"../sources/learning-and-generations.spw#src_learn_ib_dp"
+  status: #settled
+ }
+ %learn.ib.dp_points_max{
+  value: 45, abs: 0, unit: "points"
+  at: "maximum Diploma Programme total: six subjects at 7 points plus 3 core points"
+  src: ~"../sources/learning-and-generations.spw#src_learn_ib_dp"
+  status: #settled
+ }
+ %learn.transfer.credit_loss_percent{
+  value: 43, abs: 1, unit: "percent of credits earned"
+  at: "estimated average credits lost by students who transferred between 2004 and 2009"
+  src: ~"../sources/learning-and-generations.spw#src_learn_gao_2017"
+  status: #settled
+ }
+ %learn.cep.isp_min_percent{
+  value: 25, abs: 0, unit: "percent identified student percentage"
+  at: "minimum to elect the Community Eligibility Provision, lowered from 40 by the 2023 final rule", as_of: "2023-10-26"
+  src: ~"../sources/learning-and-generations.spw#src_learn_usda_cep_2023"
+  status: #settled
+ }
+}
+
+#>q_learn_naep
+^["naep"]{
+ %learn.naep.ltt_age9_reading_drop_pts{
+  value: 5, abs: 0, unit: "NAEP scale points of decline"
+  at: "age 9 long-term trend reading, 2020 to 2022"
+  src: ~"../sources/learning-and-generations.spw#src_learn_naep_ltt_2022"
+  status: #settled
+ }
+ %learn.naep.ltt_age9_math_drop_pts{
+  value: 7, abs: 0, unit: "NAEP scale points of decline"
+  at: "age 9 long-term trend mathematics, 2020 to 2022, the first decline in the series"
+  src: ~"../sources/learning-and-generations.spw#src_learn_naep_ltt_2022"
+  status: #settled
+ }
+}
+
+#>q_learn_polls
+^["polls"]{
+ %learn.poll.gallup_k12_satisfied_percent{
+  unit: "percent of US adults satisfied with the quality of K-12 education"
+  at: "latest annual Gallup Work and Education release", as_of: "2026-10-01"
+  src: ~"../sources/learning-and-generations.spw#src_learn_gallup_education"
+  status: #verify
+ }
+ %learn.poll.pdk_local_a_b_percent{
+  unit: "percent of US adults grading their local public schools A or B"
+  at: "latest annual PDK Poll release", as_of: "2026-10-01"
+  src: ~"../sources/learning-and-generations.spw#src_learn_pdk_poll"
+  status: #verify
+ }
+ %learn.poll.ednext_ccss_support_percent{
+  unit: "percent of US adults supporting common standards across states"
+  at: "latest Education Next survey wave that asks the question", as_of: "2026-10-01"
+  src: ~"../sources/learning-and-generations.spw#src_learn_ednext_poll"
+  status: #verify
+ }
+ %learn.poll.pew_teacher_satisfied_percent{
+  unit: "percent of US public K-12 teachers satisfied with their job"
+  at: "latest Pew Research Center teacher survey", as_of: "2026-10-01"
+  src: ~"../sources/learning-and-generations.spw#src_learn_pew_education"
+  status: #verify
+ }
+}
+
+#>q_learn_policy
+^["policy"]{
+ %learn.policy.states_reading_laws_count{
+  unit: "US states"
+  at: "states with laws requiring evidence-based early reading instruction, by a named tracker", as_of: "2026-10-01"
+  src: ~"../sources/learning-and-generations.spw#src_learn_ecs_tracking"
+  status: #verify
+ }
+ %learn.policy.states_phone_limits_count{
+  unit: "US states"
+  at: "states with laws or rules restricting student phone use during the school day, by a named tracker", as_of: "2026-10-01"
+  src: ~"../sources/learning-and-generations.spw#src_learn_ecs_tracking"
+  status: #verify
+ }
+}

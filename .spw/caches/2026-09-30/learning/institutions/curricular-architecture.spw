@@ -1,0 +1,215 @@
+# Curricular Architecture
+#
+# How a US degree is assembled: the credit hour and where it came from, general education models, and course levels as a prerequisite graph with real edges.
+
+#>institutions_curricular_architecture
+#:layer #!reference
+#:domain #!institutions
+#:form #!curriculum
+#:level #!foundation
+#:review #!sourced
+#:valence #!bone
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Curricular Architecture"
+ ~#claim: "A US degree is a prerequisite graph priced in credit hours, a unit federal rules now define by instruction time plus outside work."
+ ~#proof: "34 CFR 600.2 defines the credit hour; the Carnegie Foundation and Shedd trace its history; Columbia, Harvard, and Brown sources describe the three general education models."
+ ~#door: "Draw your own degree as a graph with the kit below, then follow a major into its class."
+ ~#audience: "students choosing courses and advisors explaining requirements"
+ continuity: "Curricular Architecture | prerequisite graph"
+ cold_open: "A degree is a prerequisite graph you pay for in credit hours, one semester at a time."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/university-education/curricular-architecture.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "Carnegie Unit credit-hour standard split in two: the Carnegie Unit measures high school seat time; the college credit hour has a federal definition since 2010",
+  "discipline references buried in strings lifted into real links to each class index",
+  "the claimed prerequisite DAG is now filled with level nodes and needs edges",
+  "invariant that majors require half their courses at the 300 level removed as unsourced",
+  "credit ranges for general education, major, and electives removed as unsourced"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/learning-and-generations.spw#q_learn_credit" ]
+ see: [ ~"../learning-glossary.spw#learning_term_credit_hour" ]
+}
+
+^["concepts"]{
+ primary: [ #credit_hour, #prerequisite ]
+ transfers: [ #credit_portability ]
+ tensions: [ #general_education ]
+}
+
+^["units"]{
+ #>institutions_curric_credit_hour
+ ^["credit_hour"]{
+  #:claim #!settled
+  statement: "Federal rules define a semester credit hour as one hour of instruction plus at least two hours of outside work weekly for about fifteen weeks, or equivalent work."
+  reads: %[learn.credit.semester_weeks, learn.credit.outside_hours_per_class_hour]
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_credit_hour_cfr"
+  ^["limits"]{
+   holds: "institutions participating in federal student aid, since the 2010 Program Integrity rule"
+   fails: "competency-based programs may measure equivalent work instead of seat time"
+  }
+ }
+ #>institutions_curric_carnegie
+ ^["carnegie_unit"]{
+  #:claim #!settled
+  statement: "The Carnegie Unit, set in the early twentieth century, counts about 120 hours of high school instruction in one subject; the college credit hour grew up beside it."
+  reads: %[learn.carnegie.unit_contact_hours]
+  sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_silva_2015", ~"../../registries/sources/learning-and-generations.spw#src_learn_shedd_2003" ]
+ }
+ degree_total: %[learn.credit.bachelor_typical_semester_credits]
+ partition: [
+  "general education for breadth",
+  "a major or concentration for depth",
+  "electives or a minor for exploration"
+ ]
+}
+
+^["general_education"]{
+ #>institutions_curric_core
+ ^["core"]{
+  #:claim #!settled
+  statement: "Columbia College built a required core around Contemporary Civilization, first taught in 1919, and later Literature Humanities, read by all students in small sections."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_cross_1995"
+ }
+ #>institutions_curric_distribution
+ ^["distribution"]{
+  #:claim #!settled
+  statement: "The 1945 Harvard report General Education in a Free Society argued every student needs a shared general education beside specialization."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_harvard_1945"
+  practice: "many colleges meet that aim with menus of approved courses across categories"
+ }
+ #>institutions_curric_open
+ ^["open"]{
+  #:claim #!settled
+  statement: "Brown adopted an open curriculum in 1969 after a student working paper by Ira Magaziner and Elliot Maxwell; students still complete a concentration and show writing competence."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_brown_open"
+ }
+}
+
+^["dag"]{
+ #:claim #!interpretive
+ convention: "course numbers signal level by local convention; the edges below are the typical shape, and each catalog states its own"
+ acyclic: "a cycle of prerequisites would leave every course in it impossible to start, so catalogs form a directed acyclic graph"
+
+ #>institutions_curric_level_100
+ ^["level_100"]{
+  role: "introductory surveys, vocabulary, and large lectures"
+ }
+
+ #>institutions_curric_level_200
+ ^["level_200"]{
+  role: "methods, laboratory technique, and first proofs"
+  needs: [ ~"./curricular-architecture.spw#institutions_curric_level_100" ]
+ }
+
+ #>institutions_curric_level_300
+ ^["level_300"]{
+  role: "primary literature, subfields, and debate"
+  needs: [ ~"./curricular-architecture.spw#institutions_curric_level_200" ]
+ }
+
+ #>institutions_curric_level_400
+ ^["level_400"]{
+  role: "seminars, independent study, and graduate preparation"
+  needs: [ ~"./curricular-architecture.spw#institutions_curric_level_300" ]
+ }
+
+ #>institutions_curric_capstone
+ ^["capstone"]{
+  role: "a senior thesis with a defense, or a team project for a real client"
+  needs: [ ~"./curricular-architecture.spw#institutions_curric_level_400" ]
+ }
+
+ #>institutions_curric_gateway
+ ^["gateway"]{
+  role: "a course whose grade controls entry to a major, such as organic chemistry or real analysis"
+  needs: [ ~"./curricular-architecture.spw#institutions_curric_level_200" ]
+ }
+
+ #>institutions_curric_math_chain
+ ^["math_chain"]{
+  example: <<
+   "single-variable calculus" ;
+   "multivariable calculus" ;
+   "linear algebra" ;
+   "real analysis"
+  >>
+  feeds: [ ~"../../formal/mathematics/engineering-core/calculus-and-linear-algebra.spw#mathematics_calc_linalg" ]
+ }
+}
+
+^["majors"]{
+ ~#(each major points at its class in this cut instead of a path hidden in a string)
+ mathematics: ~"../../formal/mathematics/index.spw#mathematics_index"
+ computing: ~"../../formal/computing/index.spw#computing_index"
+ physics: ~"../../physical/physics/index.spw#physics_index"
+ chemistry: ~"../../physical/chemistry/index.spw#chemistry_index"
+ materials: ~"../../physical/materials/index.spw#materials_index"
+ engineering: ~"../../physical/engineering/index.spw#engineering_index"
+ cells: ~"../../living/cells/index.spw#cell_biology_index"
+ neuroscience: ~"../../living/neuroscience/index.spw#neuroscience_index"
+ bioengineering: ~"../../living/bioengineering/index.spw#bioengineering_index"
+ plants: ~"../../living/plants/index.spw#plant_science_index"
+ nursing: ~"../../living/nursing/index.spw#nursing_index"
+ cognition: ~"../../language-and-mind/cognition/index.spw#cognition_index"
+ linguistics: ~"../../language-and-mind/linguistics/index.spw#linguistics_index"
+ economics: ~"../../society/economics/index.spw#economics_index"
+ management: ~"../../society/management/index.spw#management_index"
+ film: ~"../../making/film/index.spw#film_index"
+ theatre: ~"../../making/theatre/index.spw#theatre_index"
+ visual_arts: ~"../../making/visual/index.spw#visual_arts_index"
+ information: ~"../../record/information/index.spw#information_science_index"
+}
+
+^["try"]{
+ #>institutions_curric_try_dag
+ ^["draw_your_degree"]{
+  materials: [
+   "a course catalog for one major",
+   "paper and pencil, or a whiteboard"
+  ]
+  steps: <<
+   "write each required course in a box" ;
+   "draw an arrow from each prerequisite to the course that needs it" ;
+   "find the longest chain of arrows" ;
+   "count its courses: that is the fewest terms the major can take"
+  >>
+  time: .{ n: 40, unit: "minutes" }
+  safety: "none worth naming"
+  shows: ~"./curricular-architecture.spw#institutions_curric_level_200"
+ }
+}
+
+#>institutions_curric_critical_path_q
+?["Is the longest prerequisite chain the critical path of a degree?"]{
+ #:depth #!mathematical ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Students whose majors have longer prerequisite chains graduate later on average, because one missed course delays every course after it."
+ breaks: "project tasks can start whenever inputs are ready, while courses run only in certain terms and have seat limits"
+ !probe{ "compute the longest chain for several majors in one catalog and compare with time to degree" =id[p_learn_curric_critical_path] =kind[calc] }
+ $%[learn.credit.semester_weeks]
+ ~"./curricular-architecture.spw#institutions_curric_capstone" ~#neighbor(nearest)
+}
+
+#>institutions_curric_core_q
+?["Does a shared core change what students talk about outside class?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Campuses with a common required core produce more cross-major conversation about shared texts than campuses with open curricula."
+ !probe{ "survey students at a core campus and an open-curriculum campus about texts discussed outside class" =id[p_learn_curric_core_talk] =kind[field] }
+ ~"./curricular-architecture.spw#institutions_curric_core" ~#neighbor(nearest)
+}

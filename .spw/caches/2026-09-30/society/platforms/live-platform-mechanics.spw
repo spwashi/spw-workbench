@@ -1,0 +1,148 @@
+# Live Platform Mechanics
+#
+# The room lifecycle of a TikTok LIVE stream as a state machine: go live, add guests, match, battle, final window, end, replay.
+
+#>live_platforms_mechanics
+#:layer #!reference
+#:domain #!live_platforms
+#:form #!protocol
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!bone
+#:era #!current
+
+^"emit"{
+ ~#title: "Live Platform Mechanics"
+ ~#claim: "A live room is a small state machine: gates decide who may go live, and matches and guests are states the host enters and leaves."
+ ~#proof: "State names and transitions read from the app as described in the dated cells; gate values stay verify until a current platform page confirms them."
+ ~#door: "Take the states into the session craft surface, or read the monetization receipt for what gifts carry."
+ ~#audience: "hosts, moderators, and researchers who need the room as states"
+ continuity: "Live Platform Mechanics | state machine"
+ cold_open: "Every live room runs a small state machine from gate to replay."
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/tiktok-live/features.spw", ".spw/caches/tiktok-live/interactive-mechanics.spw", ".spw/caches/tiktok-live/streaming-pipeline.spw", ".spw/caches/tiktok-live/analytics-metrics.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the weighted LIVE ranking formula is dropped; no public TikTok source documents it",
+  "retention figures for bounce, plateau, and closing drop are dropped as unsourced",
+  "the diamonds per viewer minute benchmark range is dropped as unsourced",
+  "internal ingest, transcoding, and chat throughput figures are dropped; delivery protocols live in the carriers node",
+  "host age and follower gates are added as dated verify cells",
+  "speed challenge multipliers and rating-based matchmaking are kept only as verify notes"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"../../making/streaming/live-session-craft.spw#streaming_live_session" ]
+ needs: [ ~"../../record/carriers/digital/streaming-and-files.spw#media_carriers_streaming" ]
+ grounds: [ ~"../../registries/quantities/creators-and-platforms.spw#q_creator_live" ]
+ see: [ ~"./moderation-and-eligibility.spw#live_platforms_moderation" ]
+}
+
+^["concepts"]{
+ primary: [ #room_state, #virtual_gift ]
+ transfers: [ #dated_receipt, #audience_participation ]
+ tensions: [ #platform_dependence ]
+}
+
+^["scope"]{
+ platform: "TikTok LIVE, as described on 2026-09-30"
+ region: "values vary by region; every value cell carries a region qualifier"
+ method: "states and names only; the platform does not document its internals, so this surface does not describe them"
+}
+
+^["machine"]{
+ #>live_platforms_mechanics_states
+ ^["states"]{
+  offline: "no stream; the host account exists"
+  gate_check: "the app checks age, follower count, and account standing before allowing LIVE"
+  live_solo: "one host on air; chat, likes, and gifts arrive"
+  multi_guest: "the host admits guests into video or audio boxes and can mute or remove them"
+  match_invite: "the host invites or is paired with another host for a timed round"
+  match_battle: "two rooms share a split screen and a score bar fed by gifts"
+  final_window: "the last seconds of a round, when late gifts can flip the bar"
+  match_result: "the round ends; the bar names a winner and the rooms may part or rematch"
+  ending: "the host ends the stream or the platform ends it"
+  replay: "the stream becomes a replay, clips, and analytics where the platform keeps them"
+ }
+ #>live_platforms_mechanics_transitions
+ ?match[@room]{
+  @offline => ^["go_live"]{ next: "gate_check", trigger: "host starts LIVE" }
+  @gate_check => ^["admit"]{ next: "live_solo", guard: "gates pass for this region" }
+  @live_solo => ^["branch"]{ next: "multi_guest or match_invite or ending", trigger: "host choice" }
+  @multi_guest => ^["return"]{ next: "live_solo", trigger: "host clears the guest boxes" }
+  @match_invite => ^["pair"]{ next: "match_battle", guard: "both hosts accept" }
+  @match_battle => ^["closing"]{ next: "final_window", trigger: "round clock near zero" }
+  @final_window => ^["score"]{ next: "match_result", trigger: "round clock ends" }
+  @match_result => ^["part"]{ next: "live_solo", trigger: "hosts leave the match" }
+  @ending => ^["archive"]{ next: "replay", trigger: "stream closes" }
+  _ => "stay in the current state"
+ }
+}
+
+^["gates"]{
+ #>live_platforms_mechanics_gates
+ ^["host_gate"]{
+  #:claim #!settled
+  statement: "Hosting and gifting sit behind age gates; buying Coins and sending or receiving Gifts with value requires 18 or the local age of majority."
+  reads: %[creator.live.gift_min_age_years, creator.live.host_min_age_years]
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_tiktok_virtual_items"
+  follower_gate: "a follower threshold to host is widely documented; the value is a verify cell"
+  ^["limits"]{
+   holds: "the global policy page as read on 2026-10-01"
+   fails: "regional programs and later policy changes; check the live help page before relying on a value"
+  }
+ }
+}
+
+^["ingest"]{
+ status: "verify; product names and availability change"
+ in_app: "the phone camera inside the app, with effects and a portrait frame"
+ desktop: "a desktop studio app for scenes, screen capture, and audio routing"
+ stream_key: "a server address and key for third-party encoders, granted to some accounts"
+ protocols: "the delivery chain behind these options is described in the carriers node, not here"
+}
+
+^["match"]{
+ #>live_platforms_mechanics_match
+ ^["round"]{
+  round_length: %[creator.live.match_round_min]
+  score: "gift value sent to each host during the round fills a shared bar"
+  late_gifts: "hosts call the closing seconds a snipe window; treat timing lore as verify"
+  naming: "the app calls it LIVE Match; viewers often say PK, a gaming term for player kill used in Chinese live streaming; origin verify"
+  guests: %[creator.live.multiguest_max]
+ }
+}
+
+^["metrics"]{
+ #>live_platforms_mechanics_metrics
+ ^["names"]{
+  rule: "names and definitions only; benchmarks need a dated source and none is carried"
+  concurrent_viewers: "viewers present at one moment; dashboards may smooth it"
+  total_viewers: "distinct viewers over the stream"
+  average_watch_time: "total watch time divided by viewers"
+  new_followers: "follows gained during the stream"
+  comments: "chat messages posted"
+  gifters: "distinct viewers who sent a gift"
+  diamonds: "creator-side credit from gifts, as defined in the monetization receipt"
+ }
+}
+
+#>live_platforms_mechanics_bar_q
+?["Does a visible score bar change what viewers send in the final window?"]{
+ #:depth #!social ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "A shared bar near zero concentrates gifts into the closing seconds more than an open tip jar does."
+ !probe{ "log gift timestamps across matched rounds and solo hours on one channel" =id[p_creator_mechanics_bar] =kind[field] }
+ $%[creator.live.match_round_min]
+ ~"./live-platform-mechanics.spw#live_platforms_mechanics_match" ~#neighbor(nearest)
+}

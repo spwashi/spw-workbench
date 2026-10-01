@@ -1,0 +1,300 @@
+# Quantities: Film, Stage, and Visual Arts
+#
+# World cells for the making branch: rest rules, contract terms, copyright years, frame and loudness standards, craft counts, and one adaptation case.
+
+#>registry_qty_film_stage_visual
+#:layer #!reference
+#:domain #!registry
+#:form #!registry
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!bone
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #sourced, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #partial }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ note: "cells marked verify hold a value the writer could not confirm against the current edition"
+}
+
+^["families"]{
+ labor: #[ iatse.turnaround_h, iatse.weekend_rest_h, sagaftra.rest_period_h, meal.first_meal_h ]
+ terms: #[ iatse.ba_2021_term, iatse.ba_2024_expiry, wga.mba_2023_expiry, sagaftra.tvth_2023_expiry, dga.ba_2023_expiry ]
+ strikes: #[ iatse.strike_vote_2021_pct, wga.strike_2023_window, sagaftra.strike_2023_window, guilds.cycle_2026_status ]
+ rights: #[ us_copyright.term_years, us_pd.through_pub_year, us_pd.next_pub_year ]
+ image: #[ aspect.silent_ratio, aspect.academy_ratio, aspect.scope_ratio, frame.sound_fps ]
+ loudness: #[ loudness.ebu_r128_lufs, loudness.atsc_a85_lkfs, loudness.netflix_dialog_lkfs, loudness.cinema_ref_dbc ]
+ craft: #[ animation.principles_count, animation.on_twos_drawings_s, comics.transition_types, viewpoints.overlie_count, viewpoints.physical_count ]
+ case: #[ martian.serial_start_year, martian.kindle_price_usd, martian.kindle_copies_3mo, martian.rights_month, martian.crown_pub_month, martian.us_release, martian.worldwide_gross_usd, martian.oscar_noms ]
+ design: #[ eu_battery.removable_from ]
+ operator: "%"
+ plane: world
+ scope: corpus
+ algorithm: world.registry_lookup
+}
+
+#>q_film_labor
+^"labor"{
+ %film.iatse.turnaround_h{
+  value: 10, unit: "h", abs: 0
+  at: "rest from wrap to next call for covered crew, Basic Agreement of 2021, carried into 2024"
+  src: ~"../sources/film-stage-visual.spw#src_film_iatse_ba_2021"
+  status: #settled
+ }
+ %film.iatse.weekend_rest_h{
+  value: 54, unit: "h", abs: 0
+  at: "weekend rest on a five-day week, 2021 Basic Agreement; 32 hours on a six-day week"
+  src: ~"../sources/film-stage-visual.spw#src_film_variety_iatse_deal_2021"
+  status: #settled
+ }
+ %film.sagaftra.rest_period_h{
+  value: 12, unit: "h", abs: 0
+  at: "performer rest between work days, SAG-AFTRA TV and theatrical terms, before stated reductions"
+  src: ~"../sources/film-stage-visual.spw#src_film_sagaftra_tvth_2023"
+  status: #settled
+ }
+ %film.meal.first_meal_h{
+  value: 6, unit: "h", abs: 0
+  at: "first meal period due within six hours of call under SAG-AFTRA and IATSE terms"
+  src: ~"../sources/film-stage-visual.spw#src_film_sagaftra_tvth_2023"
+  status: #settled
+ }
+}
+
+#>q_film_terms
+^"terms"{
+ %film.iatse.ba_2021_term{
+  value: "2021-08-01 to 2024-07-31", unit: "date range"
+  at: "term of the Producer-IATSE Basic Agreement of 2021"
+  src: ~"../sources/film-stage-visual.spw#src_film_iatse_ba_2021"
+  status: #settled
+ }
+ %film.iatse.ba_2024_expiry{
+  value: "2027-07-31", unit: "date"
+  at: "expiry of the successor Basic Agreement of 2024"
+  src: ~"../sources/film-stage-visual.spw#src_film_iatse_ba_2024"
+  status: #verify
+ }
+ %film.wga.mba_2023_expiry{
+  value: "2026-05-01", unit: "date"
+  at: "expiry of the 2023 WGA Minimum Basic Agreement"
+  src: ~"../sources/film-stage-visual.spw#src_film_wga_mba_2023"
+  status: #settled
+ }
+ %film.sagaftra.tvth_2023_expiry{
+  value: "2026-06-30", unit: "date"
+  at: "expiry of the 2023 SAG-AFTRA TV and theatrical contracts"
+  src: ~"../sources/film-stage-visual.spw#src_film_sagaftra_tvth_2023"
+  status: #settled
+ }
+ %film.dga.ba_2023_expiry{
+  value: "2026-06-30", unit: "date"
+  at: "expiry of the DGA Basic Agreement of 2023"
+  src: ~"../sources/film-stage-visual.spw#src_film_dga_ba_2023"
+  status: #settled
+ }
+}
+
+#>q_film_strikes
+^"strikes"{
+ %film.iatse.strike_vote_2021_pct{
+  value: "98.68 percent", unit: "share of ballots cast"
+  at: "IATSE strike authorization vote, October 1 to 3, 2021"
+  src: ~"../sources/film-stage-visual.spw#src_film_variety_iatse_vote_2021"
+  status: #settled
+ }
+ %film.wga.strike_2023_window{
+  value: "2023-05-02 to 2023-09-27", unit: "date range"
+  at: "WGA strike against the AMPTP"
+  src: [ ~"../sources/film-stage-visual.spw#src_film_thr_wga_start_2023", ~"../sources/film-stage-visual.spw#src_film_thr_wga_end_2023" ]
+  status: #settled
+ }
+ %film.sagaftra.strike_2023_window{
+  value: "2023-07-14 to 2023-11-09", unit: "date range"
+  at: "SAG-AFTRA TV and theatrical strike against the AMPTP"
+  src: [ ~"../sources/film-stage-visual.spw#src_film_deadline_sag_start_2023", ~"../sources/film-stage-visual.spw#src_film_deadline_sag_end_2023" ]
+  status: #settled
+ }
+ %film.guilds.cycle_2026_status{
+  value: "", unit: "outcome"
+  at: "successor WGA, DGA, and SAG-AFTRA agreements after the 2026 expiries"
+  src: ~"../sources/film-stage-visual.spw#src_film_wga_mba_2023"
+  status: #verify
+ }
+}
+
+#>q_film_rights
+^"rights"{
+ %film.us_copyright.term_years{
+  value: 95, unit: "years", abs: 0
+  at: "US term from publication for works published 1927 to 1977 with formalities met"
+  src: ~"../sources/film-stage-visual.spw#src_film_usc_302_304"
+  status: #settled
+ }
+ %film.us_pd.through_pub_year{
+  value: 1930, unit: "publication year", abs: 0
+  at: "latest US publication year in the public domain from 2026-01-01"
+  src: ~"../sources/film-stage-visual.spw#src_film_duke_pdd_2026"
+  status: #settled
+ }
+ %film.us_pd.next_pub_year{
+  value: 1931, unit: "publication year", abs: 0
+  at: "US publication year whose works enter the public domain on 2027-01-01"
+  src: ~"../sources/film-stage-visual.spw#src_film_usc_302_304"
+  status: #settled
+ }
+}
+
+#>q_film_image
+^"image_and_sound"{
+ %film.aspect.silent_ratio{
+  value: 1.33, unit: "width over height", abs: 0.01
+  at: "silent full-aperture 35mm frame, four units wide by three high"
+  src: ~"../sources/film-stage-visual.spw#src_film_asc_manual"
+  status: #settled
+ }
+ %film.aspect.academy_ratio{
+  value: 1.37, unit: "width over height", abs: 0.01
+  at: "Academy ratio for sound film, adopted 1932"
+  src: ~"../sources/film-stage-visual.spw#src_film_asc_manual"
+  status: #settled
+ }
+ %film.aspect.scope_ratio{
+  value: 2.39, unit: "width over height", abs: 0.01
+  at: "anamorphic scope projection ratio after the 1970 SMPTE revision from 2.35"
+  src: ~"../sources/film-stage-visual.spw#src_film_asc_manual"
+  status: #settled
+ }
+ %film.frame.sound_fps{
+  value: 24, unit: "frames per second", abs: 0
+  at: "standard sound film projection rate"
+  src: ~"../sources/film-stage-visual.spw#src_film_asc_manual"
+  status: #settled
+ }
+ %film.loudness.ebu_r128_lufs{
+  value: "-23", unit: "LUFS integrated", abs: 0.5
+  at: "programme loudness target, EBU R 128 version 4.0, 2020"
+  src: ~"../sources/film-stage-visual.spw#src_film_ebu_r128"
+  status: #settled
+ }
+ %film.loudness.atsc_a85_lkfs{
+  value: "-24", unit: "LKFS integrated", abs: 2
+  at: "US broadcast target, ATSC A/85:2013"
+  src: ~"../sources/film-stage-visual.spw#src_film_atsc_a85"
+  status: #settled
+ }
+ %film.loudness.netflix_dialog_lkfs{
+  value: "-27", unit: "LKFS dialogue-gated", abs: 2
+  at: "streaming delivery target in the Netflix sound mix specification; check the current version"
+  src: ~"../sources/film-stage-visual.spw#src_film_netflix_mix_spec"
+  status: #verify
+ }
+ %film.loudness.cinema_ref_dbc{
+  value: 85, unit: "dBC SPL per screen channel", abs: 0
+  at: "cinema reference playback level for calibrated pink noise"
+  src: ~"../sources/film-stage-visual.spw#src_film_holman_2010"
+  status: #settled
+ }
+}
+
+#>q_film_craft
+^"craft"{
+ %film.animation.principles_count{
+  value: 12, unit: "principles", abs: 0
+  at: "principles named in The Illusion of Life, 1981"
+  src: ~"../sources/film-stage-visual.spw#src_film_thomas_johnston_1981"
+  status: #settled
+ }
+ %film.animation.on_twos_drawings_s{
+  value: 12, unit: "drawings per second", abs: 0
+  at: "animating on twos at 24 frames per second"
+  src: ~"../sources/film-stage-visual.spw#src_film_williams_2001"
+  status: #settled
+ }
+ %film.comics.transition_types{
+  value: 6, unit: "transition types", abs: 0
+  at: "panel-to-panel transitions named in Understanding Comics, 1993"
+  src: ~"../sources/film-stage-visual.spw#src_film_mccloud_1993"
+  status: #settled
+ }
+ %film.viewpoints.overlie_count{
+  value: 6, unit: "viewpoints", abs: 0
+  at: "Mary Overlie: space, shape, time, emotion, movement, story"
+  src: ~"../sources/film-stage-visual.spw#src_film_overlie_2016"
+  status: #settled
+ }
+ %film.viewpoints.physical_count{
+  value: 9, unit: "viewpoints", abs: 0
+  at: "physical viewpoints in the Bogart and Landau adaptation"
+  src: ~"../sources/film-stage-visual.spw#src_film_bogart_landau_2005"
+  status: #settled
+ }
+}
+
+#>q_film_martian
+^"martian_case"{
+ %film.martian.serial_start_year{
+  value: 2009, unit: "year", abs: 0
+  at: "year Andy Weir began the web serial, as commonly reported"
+  src: ~"../sources/film-stage-visual.spw#src_film_alter_wsj_2014"
+  status: #verify
+ }
+ %film.martian.kindle_price_usd{
+  value: 0.99, unit: "US dollars", abs: 0
+  at: "launch price of the self-published Kindle edition, 2011"
+  src: ~"../sources/film-stage-visual.spw#src_film_alter_wsj_2014"
+  status: #settled
+ }
+ %film.martian.kindle_copies_3mo{
+  value: 35000, unit: "copies", rel: 0.05
+  at: "Kindle copies sold in the first three months, as reported"
+  src: ~"../sources/film-stage-visual.spw#src_film_alter_wsj_2014"
+  status: #settled
+ }
+ %film.martian.rights_month{
+  value: "2013-03", unit: "month"
+  at: "Crown bought print rights and Twentieth Century Fox optioned film rights"
+  src: ~"../sources/film-stage-visual.spw#src_film_alter_wsj_2014"
+  status: #settled
+ }
+ %film.martian.crown_pub_month{
+  value: "2014-02", unit: "month"
+  at: "Crown hardcover publication"
+  src: ~"../sources/film-stage-visual.spw#src_film_alter_wsj_2014"
+  status: #settled
+ }
+ %film.martian.us_release{
+  value: "2015-10-02", unit: "date"
+  at: "US theatrical release of the film"
+  src: ~"../sources/film-stage-visual.spw#src_film_bom_martian"
+  status: #settled
+ }
+ %film.martian.worldwide_gross_usd{
+  value: 630621406, unit: "US dollars", rel: 0.001
+  at: "worldwide theatrical gross as listed on 2026-10-01"
+  src: ~"../sources/film-stage-visual.spw#src_film_bom_martian"
+  status: #settled
+ }
+ %film.martian.oscar_noms{
+  value: 7, unit: "nominations", abs: 0
+  at: "88th Academy Awards, 2016, including adapted screenplay; no wins"
+  src: ~"../sources/film-stage-visual.spw#src_film_oscars_2016"
+  status: #settled
+ }
+}
+
+#>q_film_design
+^"design"{
+ %film.eu_battery.removable_from{
+  value: "2027-02-18", unit: "date"
+  at: "date from which EU Regulation 2023/1542 Article 11 requires end-user removable portable batteries"
+  src: ~"../sources/film-stage-visual.spw#src_film_eu_batteries_2023"
+  status: #verify
+ }
+}

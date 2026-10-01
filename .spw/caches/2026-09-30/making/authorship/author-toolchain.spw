@@ -1,0 +1,136 @@
+# Author Toolchain
+#
+# Drafting, editing, formatting, validation, and delivery tools crossed with the file formats a book must reach, with MOBI marked retired.
+
+#>authorship_toolchain
+#:layer #!pragmatics
+#:domain #!authorship
+#:form #!comparison
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!bone
+#:era #!current
+
+^"emit"{
+ ~#title: "Author Toolchain"
+ ~#claim: "A book reaches readers as EPUB 3, KPF, or a print PDF; MOBI is retired at KDP, and every tool is a path to one of those formats."
+ ~#proof: "Format rules come from the W3C EPUB 3.3 Recommendation and KDP help pages read on 2026-10-01; tool rows are dated and verify."
+ ~#door: "Validate one EPUB with the try kit, then place formatting in the manuscript DAG."
+ ~#audience: "authors and small presses choosing tools"
+ continuity: "Author Toolchain | every tool is a path"
+ cold_open: "Every tool is a path to a format, and the format is what readers receive."
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/indie-author-ecosystem/author-software-and-production-tools.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "MOBI is retired at KDP: reflowable uploads ended 2021-08-01 and fixed-layout uploads ended 2025-03-18",
+  "the raw listed Kindle mobi sideloading as current; delivery tools now hand readers EPUB or Kindle-ready files",
+  "the claim that two tools raised indie presentation to parity with a large publisher is reframed as a question",
+  "beat-sheet templates are credited to their authors"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"./manuscript-to-market-dag.spw#authorship_manuscript_dag" ]
+ see: [ ~"../../record/carriers/digital/streaming-and-files.spw#media_carriers_streaming" ]
+}
+
+^["concepts"]{
+ primary: [ #file_format, #backlist ]
+ transfers: [ #dated_receipt ]
+ tensions: [ #platform_dependence ]
+}
+
+^["formats"]{
+ #>authorship_toolchain_epub
+ ^["epub3"]{
+  #:claim #!settled
+  statement: "EPUB 3.3 is a W3C Recommendation that packages HTML, CSS, SVG, and other resources in one container; EPUB began at the IDPF, and EPUB 3.0 dates from 2011."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_epub33"
+  as_of: "version of 2026-01-13"
+ }
+ #>authorship_toolchain_kpf
+ ^["kpf"]{
+  #:claim #!settled
+  statement: "KDP accepts DOC and DOCX, EPUB that meets Kindle guidelines, and Kindle Package Format files produced by Kindle Create."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_kdp_formats"
+  as_of: "2026-10-01"
+ }
+ #>authorship_toolchain_mobi
+ ^["mobi_retired"]{
+  #:claim #!settled
+  statement: "KDP stopped accepting MOBI for reflowable eBooks on 2021-08-01 and for fixed-layout eBooks on 2025-03-18, pointing authors to EPUB, DOCX, or KPF."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_kdp_mobi"
+  superseded_practice: "upload a MOBI built with a converter"
+ }
+ print_pdf: "print interiors go to print services as PDF; trim, bleed, and font embedding rules verify per service"
+}
+
+^["matrix"]{
+ rule: "tool rows are dated; features and platforms change, so each row is verify past its as_of"
+ ^["drafting"]{
+  scrivener: .{ maker: "Literature and Latte", stage: "drafting and structure", outputs: "compile to DOCX, EPUB, PDF" }
+  plottr: .{ maker: "Plottr", stage: "outlining with beat templates", outputs: "outline exports" }
+  web_editors: .{ examples: "Dabble, Novlr, Ulysses", stage: "drafting with sync", outputs: "DOCX and text" }
+  as_of: "2026-09-30"
+ }
+ ^["editing"]{
+  sequence: << "developmental edit" ; "line edit" ; "copy edit" ; "proofread" >>
+  checkers: "grammar and style checkers flag patterns; they do not replace a copy editor"
+  as_of: "2026-09-30"
+ }
+ ^["formatting"]{
+  vellum: .{ platform: "macOS", outputs: "EPUB and print PDF from one source" }
+  atticus: .{ platform: "web, Windows, macOS", outputs: "EPUB and print PDF" }
+  kindle_create: .{ maker: "Amazon", outputs: "KPF for KDP" }
+  indesign: .{ maker: "Adobe", use: "complex layout, illustrated and collector editions", outputs: "print PDF, fixed-layout EPUB" }
+  open_source: .{ tools: "Sigil for editing EPUB, Calibre for conversion and library management", credit: "Calibre by Kovid Goyal" }
+  as_of: "2026-09-30"
+ }
+ ^["validation"]{
+  epubcheck: "EPUBCheck is the conformance checker for EPUB files; stores run similar checks on upload"
+  as_of: "2026-09-30"
+ }
+ ^["delivery"]{
+  reader_delivery: "services such as BookFunnel send review copies and reader magnets and handle device help"
+  watermarking: "review copies can carry a reader identifier to discourage leaks"
+  as_of: "2026-09-30"
+ }
+}
+
+^["credits"]{
+ hero_journey: "Joseph Campbell, The Hero with a Thousand Faces, 1949"
+ save_the_cat: "Blake Snyder, Save the Cat, 2005"
+ romancing_the_beat: "Gwen Hayes, Romancing the Beat"
+ story_circle: "Dan Harmon, the story circle"
+ note: "beat templates in plotting tools carry these authors names; credit them when teaching a template"
+}
+
+^["try"]{
+ #>authorship_toolchain_try
+ ^["validate_epub"]{
+  materials: [ "a computer with Java", "the current EPUBCheck release", "an EPUB exported from any tool" ]
+  steps: << "export one chapter as EPUB" ; "run EPUBCheck on the file" ; "read the first error and find its line" ; "fix it in the source tool" ; "export and check again" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "none worth naming; work on a copy of the manuscript"
+  shows: ~"./author-toolchain.spw#authorship_toolchain_epub"
+ }
+}
+
+#>authorship_toolchain_parity_q
+?["Did one-source formatting tools move reader complaints from layout to story?"]{
+ #:depth #!stylistic ~#lens(craft practice)
+ #:claim #!speculative
+ ~#hypothesis: "As template formatting spread, the share of reader reviews that mention layout defects fell."
+ !probe{ "code a sample of one-star reviews for layout complaints by publication year" =id[p_creator_toolchain_parity] =kind[census] }
+ ~"./author-toolchain.spw#authorship_toolchain_kpf" ~#neighbor(nearest)
+}

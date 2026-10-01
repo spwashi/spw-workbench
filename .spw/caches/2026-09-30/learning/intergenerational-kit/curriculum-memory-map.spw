@@ -1,0 +1,126 @@
+# Curriculum Memory Map
+#
+# A family grid that places each person schooling against the generations timeline, so every difference between rows becomes a question to ask.
+
+#>generations_kit_memory_map
+#:layer #!creative
+#:domain #!generations
+#:form #!story_kit
+#:level #!intro
+#:review #!spot_checked
+#:valence #!boon
+#:era #!current
+
+^"emit"{
+ ~#title: "Curriculum Memory Map"
+ ~#claim: "A grid with one row per family member and one column per school topic, placed on the generations timeline, turns scattered memories into comparable answers and each difference into a prompt."
+ ~#proof: "Rows come from the interview protocol with consent; columns match the difference probes; each row links a rung on the curricula ladder."
+ ~#door: "Fill one row for yourself first, then interview one relative and fill a second row."
+ ~#audience: "families and classrooms mapping school across generations"
+ continuity: "Curriculum Memory Map | each difference"
+ cold_open: "One row per person, one column per topic, and each difference becomes the next question."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["scope"]{
+ keeps: "the filled map stays with the family; this surface holds only the empty template"
+ consent: "each person agrees before their row is filled, and can ask for it to be removed"
+ names: "shared copies use roles such as elder, parent, and child in place of names"
+}
+
+^["edges"]{
+ needs: [ ~"../generations/us-curricula-by-generation.spw#generations_us_curricula", ~"./difference-probes.spw#generations_kit_probes" ]
+ see: [ ~"./artifact-dossier-template.spw#generations_kit_artifact_template" ]
+}
+
+^["concepts"]{
+ primary: [ #curriculum_memory, #consent ]
+ transfers: [ #cohort ]
+ tensions: [ #grammar_of_schooling ]
+}
+
+^["grid"]{
+ columns: #[ rung, reading, math, homework, rules, classmates, language, tools, tests, grades ]
+
+ #>generations_kit_map_template
+ ^["template"]{
+  rows: #[
+   .{ role: "elder", born: "?", rung: "?", reading: "?", math: "?", tools: "?" },
+   .{ role: "parent", born: "?", rung: "?", reading: "?", math: "?", tools: "?" },
+   .{ role: "you", born: "?", rung: "?", reading: "?", math: "?", tools: "?" },
+   .{ role: "child", born: "?", rung: "?", reading: "?", math: "?", tools: "?" }
+  ]
+  cell_rule: "write a short phrase in the person own words, then a dash and where it came from: memory, artifact, or document"
+ }
+
+ #>generations_kit_map_rungs
+ ^["placing_rows"]{
+  rule: "school years run roughly from birth year plus five to birth year plus eighteen"
+  ladder: ~"../generations/us-curricula-by-generation.spw#generations_curricula_try_window"
+  caution: ~"../generations/us-curricula-by-generation.spw#generations_curricula_caution"
+ }
+}
+
+^["difference_to_prompt"]{
+ #:claim #!interpretive
+ reading: "a difference between two rows is a question about history, place, or family, and the map stays useful only if it never ranks a row"
+
+ #>generations_kit_map_turn
+ ^["turning"]{
+  steps: <<
+   "circle any column where two rows differ" ;
+   "write the difference as a plain sentence" ;
+   "turn it into a question that starts with how or why" ;
+   "link the question to the ledger landmark that may explain it"
+  >>
+  example: "elder memorized whole words, child sounds out letters: ask how each was taught and look at the reading rows in the curriculum wars matrix"
+  explains: ~"../generations/curriculum-wars-matrix.spw#generations_wars_phonics"
+ }
+
+ #>generations_kit_map_same
+ ^["sameness"]{
+  rule: "circle the columns where every row matches too; persistence is a finding worth a question"
+  explains: ~"../generations/continuities-matrix.spw#generations_cont_grammar"
+ }
+}
+
+^["try"]{
+ #>generations_kit_try_map
+ ^["two_row_map"]{
+  materials: [
+   "a large sheet of paper or a spreadsheet",
+   "this template",
+   "one willing relative"
+  ]
+  steps: <<
+   "fill your own row from memory" ;
+   "place your row on the curricula ladder" ;
+   "interview your relative with the consent list and fill their row" ;
+   "circle two differences and write a question for each"
+  >>
+  time: .{ n: 55, unit: "minutes" }
+  safety: "keep the filled map private unless every person on it agrees to share"
+  shows: ~"./curriculum-memory-map.spw#generations_kit_map_turn"
+ }
+}
+
+#>generations_kit_map_timeline_q
+?["Does seeing their row beside a timeline change what people remember about school?"]{
+ #:depth #!experiential ~#lens(historical layer)
+ #:claim #!speculative
+ ~#hypothesis: "Narrators shown the landmarks of their school years recall more specific methods and events than narrators asked without the timeline."
+ !probe{ "interview matched relatives with and without the ladder on the table and count specific recalled details" =id[p_learn_kit_map_timeline] =kind[interview] }
+ ~"./curriculum-memory-map.spw#generations_kit_map_rungs" ~#neighbor(nearest)
+}

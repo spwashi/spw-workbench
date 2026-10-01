@@ -1,0 +1,212 @@
+# Carrier Form-Factor Ladder
+#
+# The master timeline of record carriers from clay tablet to streaming, with era rungs aligned to inscription and supersedes edges that say which carrier displaced which.
+
+#>media_carriers_ladder
+#:layer #!reference
+#:domain #!media_carriers
+#:form #!timeline
+#:level #!intro
+#:review #!sourced
+#:valence #!bonk
+
+^"emit"{
+ ~#title: "Carrier Form-Factor Ladder"
+ ~#claim: "Each new carrier displaced an older one for its main use while the older one lingered, from roll to codex to disc to file."
+ ~#proof: "Each rung links a dated source in the record and carriers registry and a deeper leaf."
+ ~#door: "Pick a rung and follow its detail link, or read the playback DAG to see what each carrier needs."
+ ~#audience: "readers who want one timeline of books, records, tapes, discs, and streams"
+ continuity: "Carrier Form-Factor Ladder | main use"
+ cold_open: "Each new carrier took over the main use of an older one, and the older one rarely vanished."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ grounds: [ ~"./playback-dependency-dag.spw#media_carriers_playback_dag" ]
+ see: [ ~"../inscription/surfaces-tablet-scroll-codex.spw#inscription_surfaces" ]
+}
+
+^["concepts"]{
+ primary: [ #carrier, #supersession ]
+ transfers: [ #format, #random_access ]
+ tensions: [ #obsolescence ]
+}
+
+^["reading_rule"]{
+ #>media_carriers_supersedes_rule
+ ^["supersedes_meaning"]{
+  #:claim #!interpretive
+  statement: "Here supersedes means a carrier displaced another as the main mode for one use; the older carrier usually survives in niches, archives, or revivals."
+  ^["limits"]{
+   holds: "mass-market use in the regions the sources cover, mostly Europe, East Asia, and North America"
+   fails: "local timing varies widely, and some older carriers stayed dominant elsewhere for decades"
+  }
+ }
+}
+
+^["ladder"]{
+ ^["hand_era"]{
+  #>media_carriers_rung_clay
+  ^["clay_tablet"]{
+   #:era #!ancient
+   #:claim #!settled
+   statement: "Clay tablets carried the earliest known writing at Uruk in the late fourth millennium BCE."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_nissen_damerow_englund_1993"
+   detail: ~"../inscription/surfaces-tablet-scroll-codex.spw#inscription_rung_tablets"
+  }
+  #>media_carriers_rung_roll
+  ^["roll"]{
+   #:era #!ancient
+   #:claim #!settled
+   statement: "The papyrus roll was the standard Egyptian and later Greek and Roman book for about three thousand years."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_parkinson_quirke_1995"
+   detail: ~"../inscription/surfaces-tablet-scroll-codex.spw#inscription_rung_papyrus"
+  }
+  #>media_carriers_rung_codex
+  ^["codex"]{
+   #:era #!classical
+   #:claim #!settled
+   statement: "The codex reached parity with the roll around 300 CE in surviving Greek texts and then displaced it."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_roberts_skeat_1983"
+   supersedes: [ ~"./form-factor-ladder.spw#media_carriers_rung_roll" ]
+   detail: ~"../inscription/surfaces-tablet-scroll-codex.spw#inscription_codex_parity"
+  }
+  #>media_carriers_rung_paper
+  ^["paper_book"]{
+   #:era #!medieval
+   #:claim #!settled
+   statement: "Paper replaced papyrus and parchment for most writing in the Islamic world by the tenth century and spread to Europe through al-Andalus."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_bloom_2001"
+   detail: ~"../inscription/inks-and-inscription.spw#inscription_paper_baghdad"
+  }
+  #>media_carriers_rung_printed_book
+  ^["printed_book"]{
+   #:era #!early_modern
+   #:claim #!settled
+   statement: "Printed codices from movable type spread across Europe after the Mainz 42-line Bible of about 1455, following earlier East Asian printing."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_kapr_1996"
+   detail: ~"../inscription/print-and-press.spw#inscription_print_gutenberg"
+  }
+ }
+ ^["machine_era"]{
+  #>media_carriers_rung_cylinder
+  ^["cylinder"]{
+   #:era #!industrial
+   #:claim #!settled
+   statement: "Edison recorded and replayed sound on a tinfoil cylinder in 1877; wax cylinders followed in the 1880s."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_millard_2005"
+   detail: ~"./sound/phonograph-shellac-and-vinyl.spw#media_carriers_edison"
+  }
+  #>media_carriers_rung_disc78
+  ^["disc_78"]{
+   #:era #!industrial
+   #:claim #!settled
+   statement: "Berliner's flat disc of 1887 could be stamped from a master, and discs displaced cylinders as the main record format in the early twentieth century."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_millard_2005"
+   supersedes: [ ~"./form-factor-ladder.spw#media_carriers_rung_cylinder" ]
+   detail: ~"./sound/phonograph-shellac-and-vinyl.spw#media_carriers_berliner"
+  }
+  #>media_carriers_rung_film
+  ^["film_base"]{
+   #:era #!industrial
+   #:claim #!settled
+   statement: "Flexible cellulose nitrate film carried motion pictures from the 1890s until acetate safety film replaced it around 1950."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_nfpf_2004"
+   detail: ~"./moving-image/film-stock-and-bases.spw#media_carriers_film_stock"
+  }
+  #>media_carriers_rung_tape
+  ^["magnetic_tape"]{
+   #:era #!modern
+   #:claim #!settled
+   statement: "Coated magnetic tape appeared in the 1935 Magnetophon and became the studio master medium after Ampex machines arrived in 1948."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_daniel_mee_clark_1999"
+   detail: ~"./sound/magnetic-tape-and-cassette.spw#media_carriers_magnetophon"
+  }
+  #>media_carriers_rung_microgroove
+  ^["microgroove"]{
+   #:era #!modern
+   #:claim #!settled
+   statement: "The vinyl LP of 1948 and the 45 of 1949 replaced shellac 78s, whose mass production in the United States ended in 1958."
+   sources: [ ~"../../registries/sources/record-and-carriers.spw#src_media_millard_2005", ~"../../registries/sources/record-and-carriers.spw#src_media_enc_phonograph_record" ]
+   supersedes: [ ~"./form-factor-ladder.spw#media_carriers_rung_disc78" ]
+   detail: ~"./sound/phonograph-shellac-and-vinyl.spw#media_carriers_lp"
+  }
+  #>media_carriers_rung_cassette
+  ^["cassette"]{
+   #:era #!modern
+   #:claim #!settled
+   statement: "Philips introduced the compact cassette in 1963; it was the best-selling format for new music in the United States from 1983 to 1991."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_enc_cassette"
+   detail: ~"./sound/magnetic-tape-and-cassette.spw#media_carriers_cassette"
+  }
+  #>media_carriers_rung_videotape
+  ^["home_videotape"]{
+   #:era #!contemporary
+   #:claim #!settled
+   statement: "Sony Betamax launched in 1975 and JVC VHS in 1976; VHS became the dominant home video format by the mid-1980s."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_cusumano_1992"
+   detail: ~"./format-wars.spw#media_carriers_war_vhs_beta"
+  }
+ }
+ ^["digital_era"]{
+  #>media_carriers_rung_cd
+  ^["compact_disc"]{
+   #:era #!contemporary
+   #:claim #!settled
+   statement: "The Compact Disc launched in Japan in 1982 and overtook the LP as the main album format in the late 1980s."
+   sources: [ ~"../../registries/sources/record-and-carriers.spw#src_media_pohlmann_1992", ~"../../registries/sources/record-and-carriers.spw#src_media_millard_2005" ]
+   supersedes: [ ~"./form-factor-ladder.spw#media_carriers_rung_microgroove" ]
+   detail: ~"./digital/optical-discs.spw#media_carriers_optical_cd"
+  }
+  #>media_carriers_rung_dvd
+  ^["dvd"]{
+   #:era #!contemporary
+   #:claim #!settled
+   statement: "DVD launched in Japan in 1996 and replaced VHS for home video; Blu-ray followed in 2006."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_taylor_2006"
+   supersedes: [ ~"./form-factor-ladder.spw#media_carriers_rung_videotape" ]
+   detail: ~"./digital/optical-discs.spw#media_carriers_optical_dvd"
+  }
+  #>media_carriers_rung_e_reader
+  ^["e_reader"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "E Ink readers such as the Sony Librie of 2004 and the Kindle of 2007 put the codex page on a reflective screen."
+   sources: [ ~"../../registries/sources/record-and-carriers.spw#src_media_enc_librie", ~"../../registries/sources/record-and-carriers.spw#src_media_enc_kindle" ]
+   extends: [ ~"./form-factor-ladder.spw#media_carriers_rung_printed_book" ]
+   detail: ~"./digital/reading-devices.spw#media_carriers_reading_kindle"
+  }
+  #>media_carriers_rung_streaming
+  ^["streaming"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "In the United States, streaming became the largest source of recorded-music revenue in 2016, displacing owned copies with licensed access."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_riaa_2016"
+   supersedes: [ ~"./form-factor-ladder.spw#media_carriers_rung_cd" ]
+   detail: ~"./digital/streaming-and-files.spw#media_carriers_streaming_access"
+   as_of: "2026-10-01"
+  }
+ }
+}
+
+#>media_carriers_ladder_density_q
+?["Does each denser carrier stay readable for less time without migration?"]{
+ #:depth #!historical ~#lens(material grain)
+ #:claim #!speculative
+ ~#hypothesis: "As capacity per carrier rises, the span a carrier stays readable without copying to a new format shrinks, because each generation depends on more machines and standards."
+ !probe{ "tabulate published life-expectancy estimates and last-player-manufacture dates for each rung" =id[p_media_ladder_density] =kind[lit] }
+ $%[media.optical.cd_capacity_mib, media.optical.dvd_capacity_gb, media.optical.bd_capacity_gb]
+ ~"./form-factor-ladder.spw#media_carriers_supersedes_rule" ~#neighbor(nearest)
+}

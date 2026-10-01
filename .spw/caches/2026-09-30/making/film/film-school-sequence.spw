@@ -1,0 +1,204 @@
+# Film School Sequence
+#
+# A prerequisite graph from film history and screenwriting through directing, image, cutting, and sound to the MFA thesis in live action or animation.
+
+#>film_school
+#:layer #!pragmatics
+#:domain #!film
+#:form #!curriculum
+#:level #!advanced
+#:review #!spot_checked
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Film School Sequence"
+ ~#claim: "Film training climbs a prerequisite graph from history and story structure to directing, image, cutting, and sound, and ends in a thesis film delivered to a loudness target."
+ ~#proof: "Film Art for the continuity system; Field and Snyder for structure; Murch for the cut; EBU R 128, ATSC A/85, and Holman for loudness."
+ ~#door: "Pick a node, read what it needs, then try the Kuleshov cut at home."
+ ~#audience: "film students, teachers, and self-taught filmmakers"
+ cold_open: "A film school sequence is a prerequisite graph, and every node in it teaches one more way to shape what an audience sees."
+ continuity: "Film School Sequence | prerequisite graph"
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[
+  ".spw/caches/university-education/film-and-theatre/undergrad-film-studies-and-production.spw",
+  ".spw/caches/university-education/film-and-theatre/graduate-film-directing-and-cinema-mfa.spw",
+  ".spw/caches/university-education/illustration-and-animation/masters-animation-and-visual-direction.spw"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+ }
+ corrections: [
+  "the plot points come from Syd Field; the All Is Lost beat comes from Blake Snyder, and the raw paradigm mixed the two",
+  "1.33:1 is a landscape frame, wider than tall; the raw called it portrait",
+  "-24 LKFS is the US broadcast target in ATSC A/85, not a theatrical standard; cinemas calibrate playback level",
+  "cine primes are not telecentric; large-format spherical primes replace the raw phrase",
+  "the 12-hour turnaround invariant is replaced by agreement-specific rest rules",
+  "invented effect sizes in the raw hypotheses (25 and 30 percent) are removed"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../../physical/optics/cine-lenses-and-formats.spw#optics_cine_formats" ]
+ grounds: [ ~"../../registries/quantities/film-stage-visual.spw#q_film_image" ]
+ feeds: [ ~"../visual/animation-principles.spw#visual_arts_animation" ]
+ see: [ ~"./set-operations-and-crew.spw#film_set_turnaround" ]
+}
+
+^["concepts"]{
+ primary: [ #continuity_editing, #loudness ]
+ transfers: [ #timing, #closure ]
+ tensions: [ #fidelity ]
+}
+
+^["graph"]{
+ #>film_school_history
+ ^["history_and_analysis"]{
+  level: #foundation
+  teaches: "montage, expressionism, the continuity system, neorealism, new waves, and world cinemas"
+ }
+ #>film_school_screenwriting
+ ^["screenwriting"]{
+  level: #foundation
+  teaches: "scene goals, structure, and master scene format"
+  needs: [ ~"./film-school-sequence.spw#film_school_history" ]
+ }
+ #>film_school_directing
+ ^["directing_actors"]{
+  level: #advanced
+  teaches: "playable actions over result notes, blocking for coverage, and rehearsal"
+  needs: [ ~"./film-school-sequence.spw#film_school_screenwriting" ]
+ }
+ #>film_school_image
+ ^["cinematography"]{
+  level: #advanced
+  teaches: "exposure, shutter angle, focal length, lighting ratios, and aspect ratio choice"
+  needs: [ ~"./film-school-sequence.spw#film_school_history" ]
+ }
+ #>film_school_cutting
+ ^["editing"]{
+  level: #advanced
+  teaches: "assembly to picture lock, continuity cutting, and when to break it"
+  needs: [ ~"./film-school-sequence.spw#film_school_directing", ~"./film-school-sequence.spw#film_school_image" ]
+ }
+ #>film_school_sound
+ ^["sound"]{
+  level: #advanced
+  teaches: "production dialogue, Foley, mix, and delivery loudness"
+  needs: [ ~"./film-school-sequence.spw#film_school_cutting" ]
+ }
+ #>film_school_thesis
+ ^["mfa_thesis"]{
+  level: #graduate
+  teaches: "a short film led from casting to a delivered master"
+  needs: [ ~"./film-school-sequence.spw#film_school_sound" ]
+ }
+ #>film_school_animation_direction
+ ^["mfa_animation_direction"]{
+  level: #graduate
+  teaches: "directing performance through animators, color scripts, and pipelines"
+  needs: [ ~"./film-school-sequence.spw#film_school_cutting", ~"../visual/animation-principles.spw#visual_arts_animation" ]
+ }
+}
+
+^["keystones"]{
+ #>film_school_kuleshov
+ ^["kuleshov"]{
+  #:claim #!contested
+  statement: "Kuleshov reported that cutting one neutral face against different shots changed what viewers read in it; a 1992 replication failed, while later studies found context effects."
+  sources: [ ~"../../registries/sources/film-stage-visual.spw#src_film_mobbs_2006", ~"../../registries/sources/film-stage-visual.spw#src_film_barratt_2016" ]
+  counter: ~"../../registries/sources/film-stage-visual.spw#src_film_prince_hensley_1992"
+ }
+ #>film_school_structure
+ ^["structure"]{
+  #:claim #!settled
+  statement: "Syd Field's paradigm (1979) turns a three-act screenplay on two plot points; the All Is Lost beat belongs to Blake Snyder's beat sheet (2005)."
+  sources: [ ~"../../registries/sources/film-stage-visual.spw#src_film_field_1979", ~"../../registries/sources/film-stage-visual.spw#src_film_snyder_2005" ]
+ }
+ #>film_school_continuity
+ ^["continuity_system"]{
+  #:claim #!settled
+  statement: "Classical continuity editing keeps the camera on one side of the axis of action and matches eyelines and movement across cuts."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_bordwell_film_art_2019"
+ }
+ #>film_school_third_cinema
+ ^["third_cinema"]{
+  #:claim #!settled
+  statement: "Fernando Solanas and Octavio Getino named Third Cinema in their 1969 manifesto, a Latin American cinema set against both Hollywood and European auteur models."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_solanas_getino_1969"
+ }
+ #>film_school_murch
+ ^["rule_of_six"]{
+  #:claim #!settled
+  statement: "Walter Murch ranks emotion first among six criteria for a cut, ahead of story, rhythm, eye-trace, the screen plane, and three-dimensional space."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_murch_2001"
+ }
+ #>film_school_aspect
+ ^["aspect_ratio"]{
+  #:claim #!settled
+  statement: "Every common theatrical frame is wider than tall: silent full aperture near 1.33, Academy 1.37, and anamorphic scope 2.39."
+  reads: %[film.aspect.silent_ratio, film.aspect.academy_ratio, film.aspect.scope_ratio]
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_asc_manual"
+ }
+ #>film_school_loudness
+ ^["loudness"]{
+  #:claim #!settled
+  statement: "Loudness targets depend on destination: EBU R 128 sets -23 LUFS, ATSC A/85 sets -24 LKFS for US broadcast, and cinemas calibrate playback level instead of normalizing."
+  reads: %[
+   film.loudness.ebu_r128_lufs,
+   film.loudness.atsc_a85_lkfs,
+   film.loudness.cinema_ref_dbc
+  ]
+  sources: [ ~"../../registries/sources/film-stage-visual.spw#src_film_ebu_r128", ~"../../registries/sources/film-stage-visual.spw#src_film_atsc_a85", ~"../../registries/sources/film-stage-visual.spw#src_film_holman_2010" ]
+  ^["streaming"]{
+   #:claim #!settled
+   statement: "Netflix has published a dialogue-gated delivery target of -27 LKFS; check the current specification version before delivery."
+   reads: %[film.loudness.netflix_dialog_lkfs]
+   source: ~"../../registries/sources/film-stage-visual.spw#src_film_netflix_mix_spec"
+   as_of: "2026-10-01"
+  }
+ }
+}
+
+^["try"]{
+ #>film_school_try_kuleshov
+ ^["kuleshov_at_home"]{
+  materials: [ "a phone camera", "free editing software", "three friends as viewers" ]
+  steps: <<
+   "film a friend holding a neutral face" ;
+   "film a bowl of soup, a coffin, and a child" ;
+   "cut the face after each insert" ;
+   "show each version to a different viewer" ;
+   "ask what the face feels"
+  >>
+  time: .{ n: 50, unit: "minutes" }
+  safety: "ask consent before filming or showing anyone"
+  shows: ~"./film-school-sequence.spw#film_school_kuleshov"
+ }
+}
+
+#>film_school_frame_q
+?["Does a narrower frame hold a viewer's gaze on a close-up longer?"]{
+ #:depth #!stylistic ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "A narrower frame leaves less image area around a face, so gaze may dwell on the face longer at 1.37 than at 2.39."
+ !probe{ "eye-track viewers on one close-up framed at Academy and at scope ratios" =id[p_film_school_frame_gaze] =kind[field] }
+ $%[film.aspect.academy_ratio, film.aspect.scope_ratio]
+ ~"./film-school-sequence.spw#film_school_aspect" ~#neighbor(nearest)
+}
+
+#>film_school_dialogue_q
+?["Why does a theatrical mix often sound quiet in dialogue at home?"]{
+ #:depth #!physical ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "A mix balanced in a calibrated cinema leaves dialogue low against effects on home speakers, which is why streaming specs gate loudness on dialogue."
+ !probe{ "measure dialogue and full-mix loudness of one feature in its cinema and streaming versions" =id[p_film_school_dialogue_gap] =kind[calc] }
+ $%[film.loudness.cinema_ref_dbc, film.loudness.netflix_dialog_lkfs]
+ ~"./film-school-sequence.spw#film_school_loudness" ~#neighbor(nearest)
+}

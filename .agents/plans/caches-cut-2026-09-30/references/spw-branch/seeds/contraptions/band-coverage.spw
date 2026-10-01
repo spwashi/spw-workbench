@@ -1,0 +1,12 @@
+#>band_temperature
+^["temperature"]{
+ unit: "degrees C"
+ resolution: 0.1
+ floor: .{ up_to: 35.0, points: 3 }
+ low: .{ span: 35.1..36.0, points: 1 }
+ normal: .{ span: 36.1..38.0, points: 0 }
+ high: .{ span: 38.1..39.0, points: 1 }
+ ceiling: .{ from: 39.1, points: 2 }
+ finer_readings: "Fahrenheit conversion gives values such as 36.06"
+}
+route: ?match[total_band]{ "low" => ward_routine  "low_medium" => urgent_ward_review  "medium" => urgent_review  "high" => emergency_response }

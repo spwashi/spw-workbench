@@ -1,0 +1,153 @@
+# The Martian: Serial to Screen
+#
+# A case dossier: a novel posted free as a web serial, sold as a self-published Kindle edition, bought by Crown, optioned by Fox, and released as a film in October 2015.
+
+#>authorship_martian_case
+#:layer #!reference
+#:domain #!authorship
+#:form #!dossier
+#:level #!intro
+#:review #!sourced
+#:valence #!bonk
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "The Martian: Serial to Screen"
+ ~#claim: "Andy Weir's The Martian went from a free web serial to a 99-cent Kindle edition in 2011, a Crown hardcover in 2014, and a Ridley Scott film in October 2015."
+ ~#proof: "The Wall Street Journal on the serial, Kindle sales, and the 2013 deals; Box Office Mojo and the Academy for the film."
+ ~#door: "Read the rungs in order, then trace a rights chain from a copyright page of your own."
+ ~#audience: "new writers, readers, and anyone curious how a self-published book reaches a studio"
+ cold_open: "A novel posted free online found readers first, then a publisher, then a studio, and the timeline shows each handoff from serial to screen."
+ continuity: "The Martian: Serial to Screen | serial to screen"
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #fact_checked, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ checked: "Kindle price and sales, 2013 deals, US release, gross, and nominations checked against the cited pages on 2026-10-01; the serial start year stays verify"
+}
+
+^["edges"]{
+ case_of: [ ~"../film/adaptation-and-rights.spw#film_adaptation" ]
+ contrasts: [ ~"./kindle-unlimited-case.spw#authorship_kindle_unlimited" ]
+ grounds: [ ~"../../registries/quantities/film-stage-visual.spw#q_film_martian" ]
+}
+
+^["concepts"]{
+ primary: [ #serialization, #rights_chain ]
+ transfers: [ #option, #self_publishing ]
+ tensions: [ #fidelity ]
+}
+
+^["timeline"]{
+ order: <<
+  "web serial" ;
+  "Kindle edition" ;
+  "rights deals" ;
+  "Crown hardcover" ;
+  "film release" ;
+  "reception"
+ >>
+
+ #>authorship_martian_serial
+ ^["web_serial"]{
+  #:claim #!settled
+  statement: "Andy Weir posted The Martian free on his website a chapter at a time, and readers asked him for an ebook."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_alter_wsj_2014"
+  start_year: %[film.martian.serial_start_year]
+  start_cell: #verify
+ }
+ #>authorship_martian_kindle
+ ^["kindle_edition"]{
+  #:claim #!settled
+  statement: "In 2011 Weir self-published a Kindle edition at 99 cents, the lowest price Amazon allowed, and it sold 35,000 copies in three months."
+  reads: %[film.martian.kindle_price_usd, film.martian.kindle_copies_3mo]
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_alter_wsj_2014"
+ }
+ #>authorship_martian_rights
+ ^["rights_deals"]{
+  #:claim #!settled
+  statement: "In March 2013 Crown bought print rights and Twentieth Century Fox optioned the film rights."
+  reads: %[film.martian.rights_month]
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_alter_wsj_2014"
+ }
+ #>authorship_martian_crown
+ ^["crown_hardcover"]{
+  #:claim #!settled
+  statement: "Crown published The Martian in hardcover in February 2014."
+  reads: %[film.martian.crown_pub_month]
+  sources: [ ~"../../registries/sources/film-stage-visual.spw#src_film_weir_2014", ~"../../registries/sources/film-stage-visual.spw#src_film_alter_wsj_2014" ]
+ }
+ #>authorship_martian_film
+ ^["film_release"]{
+  #:claim #!settled
+  statement: "Ridley Scott directed the film from a screenplay by Drew Goddard, and it opened in US theaters on October 2, 2015."
+  reads: %[film.martian.us_release]
+  sources: [ ~"../../registries/sources/film-stage-visual.spw#src_film_martian_film_2015", ~"../../registries/sources/film-stage-visual.spw#src_film_bom_martian" ]
+ }
+ #>authorship_martian_reception
+ ^["reception"]{
+  #:claim #!settled
+  statement: "The film grossed about 631 million US dollars worldwide and received seven Academy Award nominations, including adapted screenplay, without a win."
+  reads: %[film.martian.worldwide_gross_usd, film.martian.oscar_noms]
+  sources: [ ~"../../registries/sources/film-stage-visual.spw#src_film_bom_martian", ~"../../registries/sources/film-stage-visual.spw#src_film_oscars_2016" ]
+  as_of: "2026-10-01"
+ }
+}
+
+^["readings"]{
+ #>authorship_martian_audience_reading
+ ^["audience_first"]{
+  #:claim #!interpretive
+  statement: "The serial built a readership before any gatekeeper saw the book, and the Kindle sales gave publishers and studios evidence of demand."
+ }
+ #>authorship_martian_rights_reading
+ ^["rights_stayed_home"]{
+  #:claim #!interpretive
+  statement: "Because Weir held his own rights, the print and film deals could be made separately, which is the rights chain at its simplest."
+  see: ~"../film/adaptation-and-rights.spw#film_rights_chain"
+ }
+}
+
+^["try"]{
+ #>authorship_martian_try_rights
+ ^["read_a_copyright_page"]{
+  materials: [ "three books you own", "a notebook" ]
+  steps: <<
+   "find each copyright page" ;
+   "note the copyright holder and year" ;
+   "note the publisher and any earlier edition" ;
+   "look for a film or translation credit" ;
+   "sketch who holds which right"
+  >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./martian-serial-to-screen.spw#authorship_martian_rights"
+ }
+}
+
+#>authorship_martian_signal_q
+?["Did visible Kindle sales lower the risk a publisher saw in a self-published novel?"]{
+ #:depth #!social ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "Public sales ranks and reader reviews let publishers see demand before buying, so self-published books with strong early sales reach traditional deals more often than unsold manuscripts."
+ !probe{ "compare later traditional deals for self-published novels by their early ebook sales rank" =id[p_film_martian_sales_signal] =kind[census] }
+ $%[film.martian.kindle_copies_3mo, film.martian.kindle_price_usd]
+ ~"./martian-serial-to-screen.spw#authorship_martian_kindle" ~#neighbor(nearest)
+}
+
+#>authorship_martian_feedback_q
+?["Does serial publication make technical fiction more accurate?"]{
+ #:depth #!educational ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "Chapter-by-chapter posting invites expert readers to catch errors early, so serialized technical fiction carries fewer factual errors at book stage."
+ !probe{ "compare author-acknowledged corrections between serial and book editions of serialized technical novels" =id[p_film_martian_serial_feedback] =kind[lit] }
+ ~"./martian-serial-to-screen.spw#authorship_martian_serial" ~#neighbor(nearest)
+}

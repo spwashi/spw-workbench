@@ -1,0 +1,217 @@
+# Interview Protocol
+#
+# How to interview a relative or elder about their schooling: consent first, prompts keyed to their school years, artifacts, and keeping the recording safe with checksums and copies in more than one place.
+
+#>generations_kit_interview
+#:layer #!pragmatics
+#:domain #!generations
+#:form #!protocol
+#:level #!intro
+#:review #!sourced
+#:valence #!boon
+#:era #!current
+
+^"emit"{
+ ~#title: "Interview Protocol"
+ ~#claim: "A school-memory interview runs from consent through prompts keyed to the narrator school years, then keeps the recording with checksums and copies in two places, shared only as the narrator allows."
+ ~#proof: "Oral History Association principles 2018 and archiving guidance 2019; Library of Congress fieldwork guide; NDSA preservation levels; credit to Vansina, griot traditions, and Foxfire."
+ ~#door: "Read the consent state twice, run the practice interview, then pick prompts from the difference probes."
+ ~#audience: "family members and students collecting school memories"
+ continuity: "Interview Protocol | consent"
+ cold_open: "Begin with consent, ask about the school they knew, and keep the recording safe and shared only as they allow."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/community-roles/intergenerational-and-cultural-custodians.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "storytelling cuts adolescent depression 35 percent and elder loneliness 40 percent: invented effect sizes; removed",
+  "gendered and neighborhood stereotypes in the custodian roles removed; roles moved to society communities custodian roles",
+  "oral memory salons kept only as the practice of recording elders, now with consent and keeping steps"
+ ]
+}
+
+^["scope"]{
+ what: "a method for families; the corpus holds the method, never a recording, a transcript, or a name"
+ people: "every narrator is a private person; their words stay with the family unless they choose otherwise"
+ feeds: "the kit feeds a story about shared curricula and is never that story"
+}
+
+^["edges"]{
+ needs: [ ~"../../record/information/archives-and-preservation.spw#information_science_archives" ]
+ see: [ ~"../generations/us-curricula-by-generation.spw#generations_us_curricula" ]
+}
+
+^["concepts"]{
+ primary: [ #oral_history, #consent ]
+ transfers: [ #fixity ]
+ tensions: [ #curriculum_memory ]
+}
+
+^["origins"]{
+ #>generations_kit_origin_vansina
+ ^["oral_tradition"]{
+  #:claim #!settled
+  statement: "Jan Vansina, working from fieldwork in Central Africa, set out methods for treating oral traditions as historical sources with their own critique."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_vansina_1985"
+ }
+ #>generations_kit_origin_griots
+ ^["griots"]{
+  #:claim #!settled
+  statement: "In West African societies, griots have long carried genealogies, histories, and praise in words and music across generations."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_hale_1998"
+ }
+ #>generations_kit_origin_foxfire
+ ^["foxfire"]{
+  #:claim #!settled
+  statement: "Students in Rabun Gap, Georgia, interviewed Appalachian elders about crafts and customs for Foxfire, gathered in The Foxfire Book of 1972."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_wigginton_1972"
+ }
+ #>generations_kit_origin_care
+ ^["indigenous_data"]{
+  #:claim #!settled
+  statement: "The CARE principles ask that data about Indigenous peoples serve collective benefit and respect their authority to control it, with responsibility and ethics."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_carroll_2020"
+ }
+ also: [
+  ~"../../registries/sources/learning-and-generations.spw#src_learn_terkel_1970",
+  ~"../../registries/sources/learning-and-generations.spw#src_learn_storycorps"
+ ]
+}
+
+^["standards"]{
+ #>generations_kit_oha
+ ^["oral_history_principles"]{
+  #:claim #!settled
+  statement: "The Oral History Association principles center informed consent, respect for narrators and their communities, and care about power between interviewer and narrator."
+  sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_oha_2018", ~"../../registries/sources/learning-and-generations.spw#src_learn_winick_bartis_2016" ]
+  as_of: "2026-10-01"
+ }
+ #>generations_kit_memory
+ ^["memory_is_reconstructive"]{
+  #:claim #!settled
+  statement: "Bartlett showed that people rebuild a remembered story each time they tell it, shaping it to their own expectations."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_bartlett_1932"
+  use: "treat a recalled school day as testimony about how it is remembered, and check dates against the ledger"
+ }
+}
+
+^["states"]{
+ path: <<
+  "prepare" ;
+  "consent" ;
+  "warm up" ;
+  "era-keyed prompts" ;
+  "artifacts" ;
+  "close" ;
+  "keep" ;
+  "share" ;
+  "return a copy"
+ >>
+
+ #>generations_kit_interview_prepare
+ ^["prepare"]{
+  steps: [
+   "find the narrator rung on the curricula ladder",
+   "choose five prompts from the difference probes",
+   "test the recorder for two minutes and listen back"
+  ]
+ }
+
+ #>generations_kit_interview_consent
+ ^["consent"]{
+  explain: [
+   "why you are asking and what you will make",
+   "that the talk will be recorded, and who will hear it",
+   "where copies will be kept and for how long",
+   "that they may skip any question, pause, or stop",
+   "that they may restrict parts or withdraw later"
+  ]
+  record_it: "say the date and ask for consent at the start of the recording"
+  scope: "family only, named people, or public: the narrator chooses, and can narrow it later"
+  ?match[@consent]{
+   "yes" => ~"./interview-protocol.spw#generations_kit_interview_prompts",
+   "yes with limits" => ![note_limits_then_continue],
+   _ => ![thank_and_stop]
+  }
+ }
+
+ #>generations_kit_interview_prompts
+ ^["prompts"]{
+  open: "Where did you go to school, and how did you get there each day?"
+  by_era: ~"./difference-probes.spw#generations_kit_probes"
+  follow: "ask for one specific day, room, or teacher before asking what it meant"
+ }
+
+ #>generations_kit_interview_artifacts
+ ^["artifacts"]{
+  ask: "Do you still have a report card, a textbook, a yearbook, or a photo from then?"
+  record: ~"./artifact-dossier-template.spw#generations_kit_artifact_template"
+ }
+
+ #>generations_kit_interview_close
+ ^["close"]{
+  steps: [
+   "thank the narrator",
+   "ask if anything said should be left out",
+   "confirm the sharing scope again"
+  ]
+ }
+
+ #>generations_kit_interview_keep
+ ^["keep"]{
+  #:claim #!settled
+  statement: "Preservation practice keeps several copies in separate places and checks their checksums over time; the 3-2-1 rule keeps three copies on two media, one offsite."
+  sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_ndsa_2019", ~"../../registries/sources/learning-and-generations.spw#src_learn_krogh_2005" ]
+  steps: <<
+   "name the file with the date and a short topic, using initials" ;
+   "compute a SHA-256 checksum and save it beside the file" ;
+   "store three copies: a computer, an external drive, and a second place outside the home" ;
+   "recheck the checksums once a year and replace any copy that fails"
+  >>
+  hash: ~"../../registries/sources/learning-and-generations.spw#src_learn_fips_180_4"
+  archive_guidance: ~"../../registries/sources/learning-and-generations.spw#src_learn_oha_archiving_2019"
+ }
+
+ #>generations_kit_interview_withdraw
+ ^["withdraw"]{
+  rule: "if the narrator withdraws, delete every copy and note the date of deletion in the family log"
+ }
+}
+
+^["try"]{
+ #>generations_kit_try_practice
+ ^["practice_interview"]{
+  materials: [
+   "a phone or recorder",
+   "this consent list on a card",
+   "three prompts from the difference probes"
+  ]
+  steps: <<
+   "ask a willing adult for twenty minutes" ;
+   "read the consent list aloud and record their answer" ;
+   "ask the three prompts and one follow-up for each" ;
+   "play back one minute together and ask if anything should be cut"
+  >>
+  time: .{ n: 45, unit: "minutes" }
+  safety: "school memories can include hard experiences such as segregation, punishment, or boarding schools; offer pauses and let the narrator steer"
+  shows: ~"./interview-protocol.spw#generations_kit_interview_consent"
+ }
+}
+
+#>generations_kit_interview_retell_q
+?["Does recording a school memory fix it, or keep changing it?"]{
+ #:depth #!social ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "A narrator who hears their recorded account will retell it closer to the recording later, so the archive copy begins to shape the memory."
+ breaks: "a checksum proves the file is unchanged, while nothing fixes the memory it came from"
+ !probe{ "with consent, interview the same narrator twice a year apart, once after hearing the first recording" =id[p_learn_kit_retell] =kind[interview] }
+ ~"./interview-protocol.spw#generations_kit_memory" ~#neighbor(nearest)
+}

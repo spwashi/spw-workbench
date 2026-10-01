@@ -1,0 +1,165 @@
+# Public Worry Hooks
+#
+# The survey and assessment series behind public worry about US schools, each with its publisher, cadence, the empty cell it fills, the caveats to read first, and the anchor that changes when it moves.
+
+#>generations_worry_hooks
+#:layer #!pragmatics
+#:domain #!generations
+#:form #!registry
+#:level #!foundation
+#:review #!sourced
+#:valence #!honk
+#:era #!current
+
+^"emit"{
+ ~#title: "Public Worry Hooks"
+ ~#claim: "Public worry about schools is measured by a few long series, Gallup, PDK, Education Next, Pew, and NAEP long-term trend; read each with its sample and wording before quoting a number."
+ ~#proof: "Each series names its publisher and cadence; opinion cells stay empty with status verify until filled from a dated release; NAEP cells cite NCES."
+ ~#door: "Run one lookup probe, fill its cell with a date, then follow the hook to the anchor it moves."
+ ~#audience: "writers, parents, and teachers who quote school polls"
+ continuity: "Public Worry Hooks | sample and wording"
+ cold_open: "Before you quote a school poll, read its sample and wording, then date the number."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ number_rule: "no poll percentage appears here; opinion cells are verify cells until a reader fills them from a named release"
+}
+
+^["edges"]{
+ needs: [ ~"../../society/markets/reading-market-reports.spw#markets_reading_reports" ]
+ grounds: [ ~"../../registries/quantities/learning-and-generations.spw#q_learn_polls" ]
+ see: [ ~"../../registries/quantities/learning-and-generations.spw#q_learn_naep" ]
+}
+
+^["concepts"]{
+ primary: [ #accountability, #cohort ]
+ transfers: [ #standards ]
+ tensions: [ #curriculum_memory ]
+}
+
+^["series"]{
+ #>generations_worry_gallup
+ ^["gallup"]{
+  publisher: ~"../../registries/sources/learning-and-generations.spw#src_learn_gallup_education"
+  cadence: "fielded each August"
+  cell: %[learn.poll.gallup_k12_satisfied_percent]
+  caveat: "national adults; compare only releases that ask the same question the same way"
+ }
+
+ #>generations_worry_pdk
+ ^["pdk"]{
+  publisher: ~"../../registries/sources/learning-and-generations.spw#src_learn_pdk_poll"
+  cadence: "annual since 1969, usually released in late summer"
+  cell: %[learn.poll.pdk_local_a_b_percent]
+
+  #>generations_worry_local_gap
+  ^["local_versus_nation"]{
+   #:claim #!settled
+   statement: "Across decades of the PDK poll, Americans have graded their local public schools higher than the nation's public schools as a whole."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_pdk_poll"
+   ^["limits"]{
+    holds: "the long-running PDK question pair on local and national grades"
+    fails: "check the latest release before restating it; wording and sampling changed over the series"
+   }
+  }
+ }
+
+ #>generations_worry_ednext
+ ^["education_next"]{
+  publisher: ~"../../registries/sources/learning-and-generations.spw#src_learn_ednext_poll"
+  cadence: "annual since 2007"
+  cell: %[learn.poll.ednext_ccss_support_percent]
+  caveat: "support for common standards drops when the question names Common Core; quote the exact wording"
+ }
+
+ #>generations_worry_pew
+ ^["pew"]{
+  publisher: ~"../../registries/sources/learning-and-generations.spw#src_learn_pew_education"
+  cadence: "irregular surveys of teachers, parents, and the public"
+  cell: %[learn.poll.pew_teacher_satisfied_percent]
+  caveat: "teacher samples and public samples answer different questions; label which one you quote"
+ }
+
+ #>generations_worry_naep
+ ^["naep_long_term_trend"]{
+  #:claim #!settled
+  statement: "NAEP long-term trend scores for 9-year-olds fell 5 points in reading and 7 in math from 2020 to 2022."
+  reads: %[learn.naep.ltt_age9_reading_drop_pts, learn.naep.ltt_age9_math_drop_pts]
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_naep_ltt_2022"
+  kind: "an assessment series, not an opinion poll; it often starts the worry the polls then measure"
+ }
+}
+
+^["qualify"]{
+ checks: [
+  "who was asked: adults, parents, teachers, or students",
+  "how they were reached: phone, web panel, or mail",
+  "the exact question wording and answer options",
+  "the field dates and the release date",
+  "who paid for the survey"
+ ]
+}
+
+^["hooks"]{
+ #>generations_worry_hook_naep
+ ^["naep_moves"]{
+  when: "a new NAEP long-term trend or main NAEP release"
+  updates: ~"./us-curricula-by-generation.spw#generations_rung_pandemic"
+ }
+
+ #>generations_worry_hook_standards
+ ^["standards_support_moves"]{
+  when: "a new Education Next wave asks about common standards"
+  updates: ~"./curriculum-wars-matrix.spw#generations_wars_ccss_algorithms"
+ }
+
+ #>generations_worry_hook_reading_laws
+ ^["reading_laws_move"]{
+  when: "a state passes or amends an early reading law"
+  updates: ~"./curriculum-wars-matrix.spw#generations_wars_phonics"
+ }
+
+ #>generations_worry_hook_phones
+ ^["phone_limits_move"]{
+  when: "a state adopts limits on student phones during school"
+  updates: ~"./continuities-matrix.spw#generations_cont_media"
+ }
+}
+
+^["probes"]{
+ ^["gallup_lookup"]{
+  !probe{ "fill the Gallup K-12 satisfaction cell from the latest August release, with its date" =id[p_learn_worry_gallup] =kind[lookup] }
+ }
+ ^["pdk_lookup"]{
+  !probe{ "fill the PDK local A or B cell from the latest PDK Poll, with field dates" =id[p_learn_worry_pdk] =kind[lookup] }
+ }
+ ^["ednext_lookup"]{
+  !probe{ "fill the Education Next standards cell, copying the exact question wording" =id[p_learn_worry_ednext] =kind[lookup] }
+ }
+ ^["pew_lookup"]{
+  !probe{ "fill the Pew teacher satisfaction cell from the latest teacher survey" =id[p_learn_worry_pew] =kind[lookup] }
+ }
+ ^["laws_census"]{
+  !probe{ "count state early reading and phone laws from one dated tracker" =id[p_learn_worry_laws] =kind[census] }
+ }
+}
+
+#>generations_worry_track_q
+?["Does public worry about schools follow test scores or headlines?"]{
+ #:depth #!social ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "National ratings of schools move with news coverage of school crises more than with NAEP releases, while local ratings move with neither."
+ !probe{ "correlate yearly national and local school grades with NAEP releases and with counts of school news stories" =id[p_learn_worry_track] =kind[calc] }
+ $%[learn.poll.pdk_local_a_b_percent, learn.naep.ltt_age9_math_drop_pts]
+ ~"./public-worry-hooks.spw#generations_worry_local_gap" ~#neighbor(nearest)
+}

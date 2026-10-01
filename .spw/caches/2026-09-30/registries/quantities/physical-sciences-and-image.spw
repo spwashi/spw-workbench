@@ -1,0 +1,430 @@
+# Quantities: Physical Sciences and Image
+#
+# World metric cells for physics, chemistry, optics, and moving-image carriers. A handle names one cell; files read it instead of restating the number.
+
+#>registry_qty_physical_sciences_and_image
+#:layer #!reference
+#:domain #!registry
+#:form #!registry
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!bone
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5 writer"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[ "derived cells were recomputed by hand: Landauer bound, kT at 300 K, Fresnel reflectance, diffraction cutoff, format diagonals", "process cells checked 2026-10-01 against Wikipedia summaries of Kodak publications; E-6 tolerance left verify" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["families"]{
+ ^["const"]{
+  id: phys_const, operator: "%", identifier: phys.const, plane: world, scope: corpus
+  keys: #[ c_m_per_s, k_b_mev_per_k, r_j_per_mol_k, g_n_m_per_s2, e_charge_zc, z0_ohm ]
+ }
+ ^["thermal"]{
+  id: phys_thermal, operator: "%", identifier: phys.thermo, plane: world, scope: corpus
+  keys: #[ water_triple_point_k, kt_300k_mev, ice_residual_entropy_j_per_mol_k ]
+ }
+ ^["information"]{
+  id: phys_info, operator: "%", identifier: phys.info, plane: world, scope: corpus
+  keys: #[ landauer_300k_zj, landauer_300k_mev ]
+ }
+ ^["statistical"]{
+  id: phys_statmech, operator: "%", identifier: phys.statmech, plane: world, scope: corpus
+  keys: #[ sun_teff_k, earth_teff_k, photon_mean_energy_kt, ising2d_tc_j_per_kb ]
+ }
+ ^["critical"]{
+  id: phys_critical, operator: "%", identifier: phys.critical, plane: world, scope: corpus
+  keys: #[ ising3d_nu, heisenberg3d_nu, water_tc_k, water_pc_mpa, iron_curie_k ]
+ }
+ ^["image"]{
+  id: phys_image, operator: "%", identifier: phys.optics, plane: world, scope: corpus
+  keys: #[ line_d_nm, line_f_nm, line_c_nm, crown_abbe_min, fresnel_r_n152, mgf2_n, cutoff_f16_lp_per_mm ]
+ }
+ ^["carriers"]{
+  id: phys_carriers, operator: "%", identifier: phys.cine, plane: world, scope: corpus
+  keys: #[ s16_diag_mm, s35_diag_mm, ff_diag_mm, lf_diag_mm, a65_diag_mm, full_gate_scope_ratio, cinemascope_1953_ratio ]
+ }
+ ^["process"]{
+  id: phys_process, operator: "%", identifier: phys.process, plane: world, scope: corpus
+  keys: #[ ecn2_dev_c, ecn2_dev_min, c41_dev_c, c41_dev_min, e6_fd_c, e6_fd_min ]
+ }
+ ^["film"]{
+  id: phys_film, operator: "%", identifier: phys.film, plane: world, scope: corpus
+  keys: #[ frames_per_ft_35mm, frames_per_ft_16mm ]
+ }
+ ^["video"]{
+  id: phys_video, operator: "%", identifier: phys.video, plane: world, scope: corpus
+  keys: #[ quad_width_mm, umatic_width_mm, half_inch_width_mm, dv_width_mm, dv_video_mbps ]
+ }
+ ^["safety"]{
+  id: phys_safety, operator: "%", identifier: phys.safety, plane: world, scope: corpus
+  keys: #[ flixborough_deaths, texas_city_2005_deaths ]
+ }
+ ^["lab"]{
+  id: phys_lab, operator: "%", identifier: phys.lab, plane: world, scope: corpus
+  keys: #[ muon_tau_us ]
+ }
+ ^["nmr"]{
+  id: phys_nmr, operator: "%", identifier: phys.nmr, plane: world, scope: corpus
+  keys: #[ noe_range_nm ]
+ }
+}
+
+#>q_phys_const
+^"constants"{
+ %phys.const.c_m_per_s{
+  value: 299792458, unit: "m/s", abs: 0
+  at: "speed of light in vacuum; exact since the 1983 metre definition"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_bipm_si_2019"
+  status: #settled
+ }
+ %phys.const.k_b_mev_per_k{
+  value: 0.08617333262, unit: "meV/K", rel: 0.000000001
+  at: "Boltzmann constant, exactly 1.380649e-23 J/K in the 2019 SI, shown in meV per kelvin"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_bipm_si_2019"
+  status: #settled
+ }
+ %phys.const.r_j_per_mol_k{
+  value: 8.314462618, unit: "J/(mol K)", rel: 0.000000001
+  at: "molar gas constant, the product of the defined Avogadro and Boltzmann constants"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_codata_2018"
+  status: #settled
+ }
+ %phys.const.g_n_m_per_s2{
+  value: 9.80665, unit: "m/s^2", abs: 0
+  at: "standard acceleration of gravity, a conventional value, not local gravity"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_codata_2018"
+  status: #settled
+ }
+ %phys.const.e_charge_zc{
+  value: 160.2176634, unit: "zC", abs: 0
+  at: "elementary charge, exactly 1.602176634e-19 C in the 2019 SI; 1 zC is 1e-21 C"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_bipm_si_2019"
+  status: #settled
+ }
+ %phys.const.z0_ohm{
+  value: 376.730313668, unit: "ohm", rel: 0.0000000002
+  at: "characteristic impedance of vacuum; measured, not exact, since 2019"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_codata_2018"
+  status: #settled
+ }
+}
+
+#>q_phys_thermal
+^"thermal"{
+ %phys.thermo.water_triple_point_k{
+  value: 273.16, unit: "K", abs: 0.0001
+  at: "triple point of water; exact by definition before 2019, now a measured value"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_bipm_si_2019"
+  status: #settled
+ }
+ %phys.thermo.kt_300k_mev{
+  value: 25.852, unit: "meV", abs: 0.001
+  at: "thermal energy k_B T at 300 K, derived from the exact Boltzmann constant"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_bipm_si_2019"
+  status: #settled
+ }
+ %phys.thermo.ice_residual_entropy_j_per_mol_k{
+  value: 3.37, unit: "J/(mol K)", abs: 0.01
+  at: "Pauling estimate R ln(3/2) for proton disorder in ice Ih at absolute zero"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_pauling_1935"
+  status: #settled
+ }
+}
+
+#>q_phys_information
+^"information"{
+ %phys.info.landauer_300k_zj{
+  value: 2.871, unit: "zJ", abs: 0.001
+  at: "k_B T ln 2 at 300 K, about 2.9e-21 J; 1 zJ is 1e-21 J"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_landauer_1961"
+  status: #settled
+ }
+ %phys.info.landauer_300k_mev{
+  value: 17.92, unit: "meV", abs: 0.01
+  at: "k_B T ln 2 at 300 K in millielectronvolts"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_landauer_1961"
+  status: #settled
+ }
+}
+
+#>q_phys_statistical
+^"statistical"{
+ %phys.statmech.sun_teff_k{
+  value: 5772, unit: "K", abs: 1
+  at: "nominal solar effective temperature, IAU 2015 Resolution B3"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_iau_2015_b3"
+  status: #settled
+ }
+ %phys.statmech.earth_teff_k{
+  value: 255, unit: "K", abs: 2
+  at: "Earth effective emission temperature for a planetary albedo near 0.3"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_pierrehumbert_2010"
+  status: #settled
+ }
+ %phys.statmech.photon_mean_energy_kt{
+  value: 2.701, unit: "k_B T", abs: 0.001
+  at: "mean energy per photon of blackbody radiation, pi^4 over 30 zeta(3)"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_schroeder_2000"
+  status: #settled
+ }
+ %phys.statmech.ising2d_tc_j_per_kb{
+  value: 2.269, unit: "J/k_B", abs: 0.001
+  at: "square-lattice Ising critical temperature, 2 over ln(1 + sqrt 2)"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_onsager_1944"
+  status: #settled
+ }
+}
+
+#>q_phys_critical
+^"critical"{
+ %phys.critical.ising3d_nu{
+  value: 0.6301, unit: "1", abs: 0.0004
+  at: "correlation-length exponent of the 3D Ising class: liquid-gas points and uniaxial magnets"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_pelissetto_vicari_2002"
+  status: #settled
+ }
+ %phys.critical.heisenberg3d_nu{
+  value: 0.7112, unit: "1", abs: 0.0005
+  at: "correlation-length exponent of the 3D Heisenberg class: isotropic magnets"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_pelissetto_vicari_2002"
+  status: #settled
+ }
+ %phys.critical.water_tc_k{
+  value: 647.096, unit: "K", abs: 0.001
+  at: "critical temperature of ordinary water, IAPWS-95"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_wagner_pruss_2002"
+  status: #settled
+ }
+ %phys.critical.water_pc_mpa{
+  value: 22.064, unit: "MPa", abs: 0.001
+  at: "critical pressure of ordinary water, IAPWS-95"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_wagner_pruss_2002"
+  status: #settled
+ }
+ %phys.critical.iron_curie_k{
+  value: 1043, unit: "K", abs: 1
+  at: "Curie temperature of iron, ferromagnet to paramagnet"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_kittel_2005"
+  status: #settled
+ }
+}
+
+#>q_phys_optics
+^"optics"{
+ %phys.optics.line_d_nm{
+  value: 587.56, unit: "nm", abs: 0.01
+  at: "helium d line, the reference wavelength for n_d and the Abbe number"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_smith_2008"
+  status: #settled
+ }
+ %phys.optics.line_f_nm{
+  value: 486.13, unit: "nm", abs: 0.01
+  at: "hydrogen F line, blue end of the Abbe number"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_smith_2008"
+  status: #settled
+ }
+ %phys.optics.line_c_nm{
+  value: 656.27, unit: "nm", abs: 0.01
+  at: "hydrogen C line, red end of the Abbe number"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_smith_2008"
+  status: #settled
+ }
+ %phys.optics.crown_abbe_min{
+  value: 50, unit: "1", abs: 0
+  at: "glass-map convention: crowns have V_d above 50 when n_d is below 1.60, above 55 otherwise"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_smith_2008"
+  status: #settled
+ }
+ %phys.optics.fresnel_r_n152{
+  value: 0.0426, unit: "fraction per surface", abs: 0.0001
+  at: "normal incidence from air onto glass with n = 1.52, ((n - 1)/(n + 1))^2"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_hecht_2017"
+  status: #settled
+ }
+ %phys.optics.mgf2_n{
+  value: 1.38, unit: "1", abs: 0.01
+  at: "magnesium fluoride near 550 nm, the classic single-layer coating"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_hecht_2017"
+  status: #settled
+ }
+ %phys.optics.cutoff_f16_lp_per_mm{
+  value: 113.6, unit: "line pairs per mm", abs: 0.1
+  at: "incoherent diffraction cutoff 1/(lambda N) at 550 nm and f/16"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_smith_2008"
+  status: #settled
+ }
+}
+
+#>q_phys_cine
+^"cine_formats"{
+ %phys.cine.s16_diag_mm{
+  value: 14.55, unit: "mm", abs: 0.02
+  at: "Super 16 camera aperture about 12.52 by 7.41 mm"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_asc_manual_2013"
+  status: #settled
+ }
+ %phys.cine.s35_diag_mm{
+  value: 31.11, unit: "mm", abs: 0.02
+  at: "Super 35 four-perf full aperture about 24.89 by 18.66 mm"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_asc_manual_2013"
+  status: #settled
+ }
+ %phys.cine.ff_diag_mm{
+  value: 43.27, unit: "mm", abs: 0.02
+  at: "36 by 24 mm still full frame, close to the eight-perf VistaVision frame"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_asc_manual_2013"
+  status: #settled
+ }
+ %phys.cine.lf_diag_mm{
+  value: 44.71, unit: "mm", abs: 0.02
+  at: "ALEXA LF sensor 36.70 by 25.54 mm, manufacturer spec as of 2026-10-01"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_wiki_arri_alexa"
+  status: #verify
+ }
+ %phys.cine.a65_diag_mm{
+  value: 59.86, unit: "mm", abs: 0.02
+  at: "ALEXA 65 sensor about 54.12 by 25.58 mm; published heights differ in the last digit"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_wiki_arri_alexa"
+  status: #verify
+ }
+ %phys.cine.full_gate_scope_ratio{
+  value: 2.67, unit: "width over height", abs: 0.01
+  at: "a 4:3 gate de-squeezed by a 2x lens before any crop, often quoted as 2.66"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_asc_manual_2013"
+  status: #settled
+ }
+ %phys.cine.cinemascope_1953_ratio{
+  value: 2.55, unit: "width over height", abs: 0.01
+  at: "first CinemaScope prints with four-track magnetic sound, 1953"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_belton_1992"
+  status: #settled
+ }
+}
+
+#>q_phys_process
+^"process"{
+ %phys.process.ecn2_dev_c{
+  value: 41.1, unit: "C", abs: 0.1
+  at: "Process ECN-2 color developer temperature"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_kodak_h2407"
+  status: #settled
+ }
+ %phys.process.ecn2_dev_min{
+  value: 3, unit: "minute", abs: 0
+  at: "Process ECN-2 color developer time"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_kodak_h2407"
+  status: #settled
+ }
+ %phys.process.c41_dev_c{
+  value: 37.8, unit: "C", abs: 0.15
+  at: "Process C-41 developer temperature"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_kodak_z131"
+  status: #settled
+ }
+ %phys.process.c41_dev_min{
+  value: 3.25, unit: "minute", abs: 0
+  at: "Process C-41 developer time, 3 min 15 s"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_kodak_z131"
+  status: #settled
+ }
+ %phys.process.e6_fd_c{
+  value: 38.0, unit: "C", abs: 0.3
+  at: "Process E-6 first developer temperature; tolerance differs by processor type"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_kodak_z119"
+  status: #verify
+ }
+ %phys.process.e6_fd_min{
+  value: 6, unit: "minute", abs: 0
+  at: "Process E-6 first developer time at normal speed"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_kodak_z119"
+  status: #settled
+ }
+}
+
+#>q_phys_carriers
+^"carriers"{
+ %phys.film.frames_per_ft_35mm{
+  value: 16, unit: "frames per foot", abs: 0
+  at: "35 mm film, four perforations per frame"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_asc_manual_2013"
+  status: #settled
+ }
+ %phys.film.frames_per_ft_16mm{
+  value: 40, unit: "frames per foot", abs: 0
+  at: "16 mm film, one perforation per frame"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_asc_manual_2013"
+  status: #settled
+ }
+ %phys.video.quad_width_mm{
+  value: 50.8, unit: "mm", abs: 0
+  at: "two-inch quadruplex broadcast tape, 1956"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_abramson_2003"
+  status: #settled
+ }
+ %phys.video.umatic_width_mm{
+  value: 19.05, unit: "mm", abs: 0
+  at: "three-quarter-inch U-matic cassette tape, 1971"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_abramson_2003"
+  status: #settled
+ }
+ %phys.video.half_inch_width_mm{
+  value: 12.7, unit: "mm", abs: 0
+  at: "half-inch tape shared by Betamax 1975 and VHS 1976"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_lardner_1987"
+  status: #settled
+ }
+ %phys.video.dv_width_mm{
+  value: 6.35, unit: "mm", abs: 0
+  at: "quarter-inch DV cassette tape, 1995"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_iec_61834"
+  status: #settled
+ }
+ %phys.video.dv_video_mbps{
+  value: 25, unit: "Mbit/s", abs: 0
+  at: "DV intraframe video data rate, audio excluded"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_iec_61834"
+  status: #settled
+ }
+}
+
+#>q_phys_safety
+^"process_safety"{
+ %phys.safety.flixborough_deaths{
+  value: 28, unit: "people", abs: 0
+  at: "deaths at the Nypro cyclohexane plant, Flixborough, 1 June 1974"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_flixborough_1975"
+  status: #settled
+ }
+ %phys.safety.texas_city_2005_deaths{
+  value: 15, unit: "people", abs: 0
+  at: "deaths in the BP Texas City isomerization unit explosion, 23 March 2005"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_csb_2007"
+  status: #settled
+ }
+}
+
+#>q_phys_lab
+^"lab_and_spectroscopy"{
+ %phys.nmr.noe_range_nm{
+  value: 0.5, unit: "nm", abs: 0.1
+  at: "typical upper proton-proton distance for an observable nuclear Overhauser effect"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_claridge_2016"
+  status: #settled
+ }
+ %phys.lab.muon_tau_us{
+  value: 2.1969811, unit: "microsecond", abs: 0.0000022
+  at: "muon mean life at rest"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_pdg_2024"
+  status: #settled
+ }
+}

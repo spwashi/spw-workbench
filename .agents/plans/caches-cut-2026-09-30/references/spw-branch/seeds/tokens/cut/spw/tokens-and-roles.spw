@@ -1,0 +1,74 @@
+# Tokens and Roles
+#
+# What a Spw token and AST node carry, which roles a reader can see without color, and how editors derive one role stream from the parse.
+
+#>spw_tokens_roles
+#:layer #!semantics
+#:domain #!meta
+#:form #!field_guide
+#:level #!practitioner
+#:review #!unreviewed
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Tokens and Roles"
+ ~#claim: "Glyphs carry kinds; color may add only relations the parser derives, such as binding, reach, resolution, and degradation."
+ ~#proof: "Four highlighting layers disagree with the seed lexer on comments, appositions, connectors, and valences; one parse-derived role stream removes the disagreement."
+ ~#door: "Read the plain-text floor first, then the derived relations, then the practice modes."
+ ~#audience: "Spw readers, LSP and plugin authors"
+ continuity: "Tokens and Roles | plain-text floor"
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5", care: #read, outcome: #raw }
+ }
+}
+
+^["edges"]{
+ grounds: [ ~"../registries/sources/spw.spw#src_spw_seed_token_types" ]
+ see: [ ~"../registries/sources/spw.spw#src_spw_lsp_semantic_tokens" ]
+}
+
+^["concepts"]{
+ primary: [ #role_stream, #plain_text_floor, #derived_relation ]
+ transfers: [ #secondary_notation ]
+ tensions: [ #editor_only_semantics ]
+}
+
+^["floor"]{
+ #>spw_roles_floor
+ ^["visible_without_color"]{
+  #:claim #!interpretive
+  statement: "Operator kind, particle aim, datum versus reading, container shape, comment, and string are carried by glyphs and survive monochrome."
+  source: ~"../registries/sources/spw.spw#src_spw_seed_token_types"
+  ^["limits"]{
+   holds: "core Spw.b surfaces"
+   fails: "bare valence words, sigil-initial connectors, and line-break capture are not visible in plain text"
+  }
+ }
+}
+
+^["try"]{
+ #>spw_roles_try_predict
+ ^["predict_then_reveal"]{
+  materials: [ "one .spw surface with particles", "an editor with semantic highlighting turned off" ]
+  steps: << "read the surface aloud once" ; "for each particle run, write the line it binds to" ; "check with spw query or the LSP particles probe" ; "note which misses came from line breaks" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "none worth naming"
+  shows: ~"./tokens-and-roles.spw#spw_roles_floor"
+ }
+}
+
+#>spw_roles_wonder_q
+?["Which roles do readers recover from glyphs alone, and which only from color?"]{
+ #:depth #!educational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Particle binding across line breaks is the role most often missed without color."
+ !probe{ "predict-then-reveal log over ten surfaces, scored against the parse" =id[p_spw_roles_binding] =kind[field] }
+ ~"./tokens-and-roles.spw#spw_roles_floor" ~#neighbor(nearest)
+}

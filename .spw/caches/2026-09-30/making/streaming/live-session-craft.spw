@@ -1,0 +1,125 @@
+# Live Session Craft
+#
+# A live session as host-side states: pre-show, opener, segment loop, chat waves, co-host and match rounds, raid or wrap, then replay and clips captured into Spw.
+
+#>streaming_live_session
+#:layer #!pragmatics
+#:domain #!streaming
+#:form #!protocol
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!boon
+#:era #!current
+
+^"emit"{
+ ~#title: "Live Session Craft"
+ ~#claim: "A host can run a live session as a loop of named states, and each state leaves one small Spw frame behind for the post-show digest."
+ ~#proof: "The states follow room mechanics documented for live platforms; the capture habit is a proposal that a logged session would confirm or reject."
+ ~#door: "Read the protocol for brace-first show notes, then draw a prompt from the deck."
+ ~#audience: "live hosts, co-hosts, and moderators"
+ continuity: "Live Session Craft | named states"
+ cold_open: "Run the stream as named states and let each one leave a note."
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/tiktok-live/interactive-mechanics.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the coliseum framing and manufactured urgency as a principle are dropped; pressure to gift is treated as a risk",
+  "speed-challenge multipliers, rating-based matchmaking, and cryptographic treasure boxes are not carried as facts",
+  "forfeit games keep a safety rule: no dares that break platform rules on dangerous acts",
+  "the profitability ranking of matches per viewer minute is reframed as a question"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../../society/platforms/live-platform-mechanics.spw#live_platforms_mechanics" ]
+ feeds: [ ~"./spw-for-streamers.spw#streaming_spw_for_streamers" ]
+ see: [ ~"../../society/platforms/moderation-and-eligibility.spw#live_platforms_moderation" ]
+}
+
+^["concepts"]{
+ primary: [ #room_state, #chat_lane ]
+ transfers: [ #run_sheet, #audience_participation ]
+ tensions: [ #crowd_noise ]
+}
+
+^["status"]{
+ #>streaming_live_session_status
+ ^["bench_status"]{
+  #:claim #!speculative
+  statement: "No host session has been logged against these states yet; each capture habit below is a proposal until a session log records it."
+  test: "a session log with a pre-show file, timestamps per state change, and a digest within a day"
+ }
+}
+
+^["machine"]{
+ #>streaming_live_session_states
+ ^["states"]{
+  pre_show: "outline open, moderators briefed, one recurring bit ready"
+  opener: "say who you are and what tonight is for, every few minutes for newcomers"
+  segment_loop: "one topic at a time, each with a start line and a close line"
+  chat_wave: "a burst of messages on one theme; pick a lane and answer it"
+  co_host_round: "a guest joins; hand over the floor and take it back on cue"
+  match_round: "a timed round against another host; keep it playful and gift-neutral"
+  raid_or_wrap: "send viewers to a peer stream or close with the open question"
+  replay_and_clips: "mark clip times and the questions worth keeping"
+  digest: "turn the night into one Spw file the next show can read"
+ }
+ #>streaming_live_session_transitions
+ ?match[@session]{
+  @pre_show => ^["go"]{ next: "opener", capture: "the outline file with segment frames" }
+  @opener => ^["settle"]{ next: "segment_loop", capture: "tonight in one line" }
+  @segment_loop => ^["listen"]{ next: "chat_wave or co_host_round or match_round or raid_or_wrap", capture: "segment start and close times" }
+  @chat_wave => ^["lane"]{ next: "segment_loop", capture: "the lane name and the question answered" }
+  @co_host_round => ^["hand_back"]{ next: "segment_loop", capture: "guest name only if the guest agreed" }
+  @match_round => ^["part"]{ next: "segment_loop", capture: "result and one moment worth a clip" }
+  @raid_or_wrap => ^["close"]{ next: "replay_and_clips", capture: "the open question carried forward" }
+  @replay_and_clips => ^["file"]{ next: "digest", capture: "clip times with anchors" }
+  _ => "stay in the loop"
+ }
+}
+
+^["craft"]{
+ #>streaming_live_session_reentry
+ ^["re_entry"]{
+  #:claim #!speculative
+  statement: "Because viewers arrive mid-stream, a host who restates the topic on a fixed rhythm keeps more newcomers than one who restates only when asked."
+  test: "session logs with restatement times beside viewer counts"
+ }
+ #>streaming_live_session_match_ethics
+ ^["match_ethics"]{
+  #:claim #!interpretive
+  statement: "A match round stays healthy when the host names a fun stake and never bargains for gifts; minors cannot gift, and the host does not ask them to."
+ }
+ safety: "forfeits stay within platform rules on dangerous acts; no stunts, no food dares, nothing that hurts"
+ moderators: "brief moderators on the lanes before the show so they can steer chat into them"
+}
+
+^["try"]{
+ #>streaming_live_session_try
+ ^["dry_run"]{
+  materials: [ "a timer", "a text file", "a printed list of the states" ]
+  steps: << "start the timer and say the opener to an empty room" ; "run two segments and log each state change with a time" ; "invent one chat wave and answer it as a lane" ; "wrap with an open question" ; "write the digest from your log" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "none worth naming; practice offline before going live"
+  shows: ~"./live-session-craft.spw#streaming_live_session_transitions"
+ }
+}
+
+#>streaming_live_session_waves_q
+?["Do chat waves arrive in bursts a host could schedule around?"]{
+ #:depth #!social ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "Chat bursts cluster just after segment changes and match results, so a host who pauses there answers more of the room."
+ !probe{ "timestamp chat messages against logged state changes for three sessions" =id[p_creator_session_waves] =kind[field] }
+ $%[creator.live.match_round_min]
+ ~"./live-session-craft.spw#streaming_live_session_states" ~#neighbor(nearest)
+}

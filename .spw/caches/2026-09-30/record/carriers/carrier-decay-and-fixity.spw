@@ -1,0 +1,173 @@
+# Carrier Decay and Fixity
+#
+# How each carrier fails, from nitrate and vinegar syndrome to sticky tape, disc rot, iron-gall corrosion, and acid paper, and how checksums and copies keep digital records fixed.
+
+#>media_carriers_decay
+#:layer #!reference
+#:domain #!media_carriers
+#:form #!ledger
+#:level #!foundation
+#:review #!sourced
+#:valence #!bane
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Carrier Decay and Fixity"
+ ~#claim: "Every carrier decays by its own chemistry, so preservation slows the chemistry with cool dry storage and checks digital copies with checksums."
+ ~#proof: "Reilly and the NFPF guide on film bases; Van Bogart on tape; Byers on discs; Kolar and Barrow on ink and paper; PREMIS and LOCKSS on fixity."
+ ~#door: "Read the playback DAG next, since a sound carrier is useless without its reader."
+ ~#audience: "readers who keep family archives, small collections, or digital files they care about"
+ continuity: "Carrier Decay and Fixity | own chemistry"
+ cold_open: "Every carrier decays by its own chemistry, and a checksum is how a digital copy proves it has not drifted."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ grounds: [ ~"../information/archives-and-preservation.spw#information_science_archives" ]
+ needs: [ ~"./carrier-manufacturing.spw#media_carriers_manufacturing" ]
+ see: [ ~"./moving-image/film-stock-and-bases.spw#media_carriers_film_stock" ]
+}
+
+^["concepts"]{
+ primary: [ #fixity, #acid_hydrolysis ]
+ transfers: [ #obsolescence, #redundancy ]
+ tensions: [ #generation_loss ]
+}
+
+^["ledger"]{
+ ^["film_bases"]{
+  #>media_carriers_decay_nitrate
+  ^["nitrate"]{
+   #:claim #!settled
+   statement: "Cellulose nitrate film decomposes and gives off nitrogen oxides that speed its own decay; it is highly flammable and can ignite in poor storage."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_nfpf_2004"
+   ~#say(old nitrate film is a fire risk as well as a loss risk)
+  }
+  #>media_carriers_decay_vinegar
+  ^["vinegar_syndrome"]{
+   #:claim #!settled
+   statement: "Cellulose acetate film hydrolyzes and releases acetic acid, which catalyzes further decay once it starts; the vinegar smell is the warning."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_reilly_1993"
+  }
+ }
+ ^["magnetic"]{
+  #>media_carriers_decay_sticky_shed
+  ^["sticky_shed"]{
+   #:claim #!settled
+   statement: "Some polyester-urethane tape binders absorb moisture and hydrolyze, so the tape squeals, sheds oxide, and clogs heads during playback."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_van_bogart_1995"
+   treatment: "archives may bake affected reels at low temperature to allow one careful transfer; this is a professional procedure, not storage"
+  }
+ }
+ ^["discs"]{
+  #>media_carriers_decay_shellac
+  ^["shellac_breakage"]{
+   #:claim #!settled
+   statement: "Shellac discs are brittle and crack when dropped, stacked flat under weight, or stored in heat."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_iasa_tc05_2014"
+  }
+  #>media_carriers_decay_disc_rot
+  ^["disc_rot"]{
+   #:claim #!settled
+   statement: "Pressed optical discs fail when the thin reflective layer corrodes through scratches or edge damage; recordable discs also fail as their dye degrades under light and heat."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_byers_2003"
+  }
+ }
+ ^["paper_and_ink"]{
+  #>media_carriers_decay_iron_gall
+  ^["iron_gall"]{
+   #:claim #!settled
+   statement: "Iron-gall ink corrodes its own page through acid and iron-catalyzed oxidation, leaving lace-like holes where strokes were heaviest."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_kolar_strlic_2006"
+   detail: ~"../inscription/inks-and-inscription.spw#inscription_inks_corrosion"
+  }
+  #>media_carriers_decay_acid_paper
+  ^["acid_paper"]{
+   #:claim #!settled
+   statement: "Acidic wood-pulp paper browns and embrittles as acid cuts cellulose chains; an alkaline reserve buffers paper against this."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_barrow_1959"
+   reads: %[media.paper.iso9706_alkali_reserve_mol_per_kg]
+   detail: ~"../inscription/paper-and-pulp-manufacture.spw#inscription_paper_acid"
+  }
+ }
+ ^["storage"]{
+  #>media_carriers_decay_cool_dry
+  ^["cool_and_dry"]{
+   #:claim #!settled
+   statement: "For chemically unstable carriers such as acetate film, lower temperature and lower relative humidity slow decay, which is why archives use cool dry vaults."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_reilly_1993"
+  }
+ }
+}
+
+^["decay_states"]{
+ #>media_carriers_decay_triage
+ ^["triage"]{
+  #:claim #!interpretive
+  statement: "A first look sorts a carrier by its symptom, and each symptom points to the claim that explains it."
+  ?match[symptom]{
+   "vinegar odor" => ![acetate_active],
+   "brown brittle edges" => ![acid_paper],
+   "squeal or shedding" => ![sticky_shed],
+   "pinholes or clouding" => ![disc_rot],
+   "holes along strokes" => ![ink_corrosion],
+   _ => ![monitor]
+  }
+  explains: [ ~"./carrier-decay-and-fixity.spw#media_carriers_decay_vinegar", ~"./carrier-decay-and-fixity.spw#media_carriers_decay_sticky_shed", ~"./carrier-decay-and-fixity.spw#media_carriers_decay_disc_rot" ]
+ }
+}
+
+^["fixity"]{
+ #>media_carriers_fixity_checksum
+ ^["checksums"]{
+  #:claim #!settled
+  statement: "Digital fixity is checked by storing a cryptographic digest of a file and later recomputing it; any change to the bits changes the digest."
+  source: ~"../../registries/sources/record-and-carriers.spw#src_media_premis_2015"
+ }
+ #>media_carriers_fixity_copies
+ ^["many_copies"]{
+  #:claim #!settled
+  statement: "LOCKSS keeps many independent copies that compare themselves and repair damage; NDSA levels likewise ask for multiple copies in separate places plus fixity checks."
+  sources: [ ~"../../registries/sources/record-and-carriers.spw#src_media_reich_rosenthal_2001", ~"../../registries/sources/record-and-carriers.spw#src_media_ndsa_levels_2019" ]
+ }
+ #>media_carriers_fixity_cliff
+ ^["analog_slope_digital_cliff"]{
+  #:claim #!interpretive
+  statement: "Analog carriers lose quality gradually and each copy adds noise; verified digital copies stay exact until a failure makes the file unreadable at once."
+  see: [ ~"../../registries/sources/record-and-carriers.spw#src_media_iasa_tc04_2009" ]
+ }
+}
+
+^["try"]{
+ #>media_carriers_try_checksum
+ ^["check_a_file"]{
+  materials: [ "a computer", "any photo or document", "a terminal window" ]
+  steps: << "copy the file to a new name" ; "compute a SHA-256 digest of both, with shasum -a 256 on macOS, sha256sum on Linux, or certutil -hashfile on Windows" ; "confirm the digests match" ; "change one letter in a copy of a text file and compute again" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "work on copies so the original stays untouched; no other hazard worth naming"
+  shows: ~"./carrier-decay-and-fixity.spw#media_carriers_fixity_checksum"
+ }
+}
+
+#>media_carriers_decay_buffer_q
+?["Is an alkaline reserve in paper the chemical cousin of an extra digital copy?"]{
+ #:depth #!physical ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "Both buy time by holding spare capacity that absorbs damage, so collections with more buffer of either kind should lose fewer items per decade."
+ !probe{ "compare loss records for buffered and unbuffered paper with loss records for single-copy and multi-copy digital collections" =id[p_media_decay_buffer] =kind[thought] }
+ $%[media.paper.iso9706_alkali_reserve_mol_per_kg]
+ breaks: "an alkaline reserve is used up and cannot restore lost strength, while a verified copy can fully replace a corrupted one"
+ ~"./carrier-decay-and-fixity.spw#media_carriers_fixity_copies" ~#neighbor(nearest)
+}

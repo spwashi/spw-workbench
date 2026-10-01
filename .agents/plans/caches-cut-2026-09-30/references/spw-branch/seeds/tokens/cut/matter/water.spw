@@ -1,0 +1,153 @@
+# Water
+#
+# Why a small bent molecule runs climates, dissolves salts, floats its own solid, and shaped the first states and the sanitary city.
+
+#>matter_water
+#:layer #!reference
+#:domain #!matter
+#:form #!field_guide
+#:level #!foundation
+#:review #!sourced
+#:valence #!bone
+#:era #!deep_time
+
+^"emit"{
+ ~#title: "Water"
+ ~#claim: "Hydrogen bonding gives water a density maximum near 4 C, a large heat capacity, and a high permittivity."
+ ~#proof: "Measured constants in the CRC Handbook; structural account in Eisenberg and Kauzmann."
+ ~#door: "Follow the phase diagram next, then the history of who controlled water."
+ ~#audience: "curious readers with high-school chemistry"
+ continuity: "Water | density maximum"
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ "caches/materials-matter-and-history/water-the-universal-matrix.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-09-30", agent: "claude-opus-5.5", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-09-30", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[ "Watt separate condenser is 1769; rotary output came with sun-and-planet gearing in 1781", "Wittfogel thesis marked contested; Grand Canal and Indus removed as supporting cases", "sanitation effect restated from Cutler and Miller 2005 instead of doubling life expectancy" ]
+}
+
+^["edges"]{
+ grounds: [ ~"../registries/quantities/matter.spw#q_water" ]
+}
+
+^["concepts"]{
+ primary: [ #hydrogen_bond, #density_anomaly, #dielectric_screening ]
+ transfers: [ #phase_diagram, #hydraulic_state ]
+ tensions: [ #iceberg_model ]
+}
+
+^["molecule"]{
+ ^["geometry"]{
+  #>water_geometry
+  ^["bent_polar"]{
+   #:claim #!settled
+   statement: "An isolated water molecule is bent, with an H-O-H angle near 104.5 degrees and a dipole near 1.85 D."
+   reads: %[water.hoh_angle_deg, water.dipole_debye]
+   source: ~"../registries/sources/matter.spw#src_eisenberg_kauzmann"
+  }
+ }
+ ^["hydrogen_bonds"]{
+  #>water_hbond_network
+  ^["network"]{
+   #:claim #!settled
+   statement: "Each molecule can donate two and accept two hydrogen bonds, so the liquid forms a fluctuating, roughly tetrahedral network whose bonds rearrange on picosecond timescales."
+   source: ~"../registries/sources/matter.spw#src_eisenberg_kauzmann"
+   ^["limits"]{
+    holds: "bulk liquid near room temperature"
+    fails: "confined water, interfaces, and supercooled water need separate models"
+   }
+  }
+ }
+}
+
+^["anomalies"]{
+ #>water_density_max
+ ^["density_maximum"]{
+  #:claim #!settled
+  statement: "Liquid water is densest near 3.98 C; ice Ih is about 8 percent less dense than that liquid, so ice floats and lakes freeze from the top."
+  reads: %[water.t_rho_max_c, water.rho_ice_g_cm3, water.rho_liquid_max_g_cm3]
+  source: ~"../registries/sources/matter.spw#src_crc_handbook"
+ }
+ #>water_heat_capacity
+ ^["heat_capacity"]{
+  #:claim #!settled
+  statement: "Water stores about 4.18 J per gram per kelvin, several times more than rock, which is why oceans buffer climate and coasts swing less than interiors."
+  reads: %[water.cp_j_per_g_k]
+  source: ~"../registries/sources/matter.spw#src_crc_handbook"
+ }
+ #>water_permittivity
+ ^["permittivity"]{
+  #:claim #!settled
+  statement: "A relative permittivity near 78 at 25 C weakens the attraction between dissolved ions by that factor, so many salts dissolve."
+  reads: %[water.epsilon_r]
+  source: ~"../registries/sources/matter.spw#src_crc_handbook"
+ }
+ #>water_hydrophobic
+ ^["hydrophobic_effect"]{
+  #:claim #!contested
+  statement: "Nonpolar solutes cluster in water because separating them costs the surrounding network entropy; the older iceberg picture of ordered cages overstates that ordering."
+  source: ~"../registries/sources/matter.spw#src_eisenberg_kauzmann"
+ }
+}
+
+^["uses"]{
+ ^["steam"]{
+  engine: "the large enthalpy of vaporization lets a Rankine cycle move much heat per kilogram of working fluid"
+  reads: %[water.dh_vap_kj_per_mol]
+ }
+ ^["desalination"]{
+  reverse_osmosis: "seawater has an osmotic pressure near 27 bar; reverse-osmosis plants push harder than that across polyamide membranes"
+ }
+}
+
+^["history"]{
+ #>water_hydraulic_hypothesis
+ ^["hydraulic_states"]{
+  #:claim #!contested
+  statement: "Wittfogel argued that managing large irrigation works produced centralized despotic states; later archaeology finds many large water systems built and run by local or community institutions."
+  source: ~"../registries/sources/matter.spw#src_wittfogel_1957"
+  counter: ~"../registries/sources/matter.spw#src_scarborough_2003"
+ }
+ #>water_steam_engines
+ ^["steam_engines"]{
+  #:claim #!settled
+  statement: "Newcomen engines pumped mine water from 1712; Watt patented the separate condenser in 1769 and added rotary output with sun-and-planet gearing in 1781."
+  source: ~"../registries/sources/matter.spw#src_hills_1989"
+  era: 1712..1781
+ }
+ #>water_sanitation
+ ^["sanitation"]{
+  #:claim #!settled
+  statement: "Snow traced the 1854 Broad Street cholera cluster to a water pump; filtration and chlorination later account for a large share of the early twentieth-century fall in US urban mortality."
+  sources: [ ~"../registries/sources/matter.spw#src_snow_1855", ~"../registries/sources/matter.spw#src_cutler_miller_2005" ]
+  ~#(Cutler and Miller estimate about half of the 1900 to 1936 decline in major US cities)
+ }
+}
+
+^["try"]{
+ #>water_try_density
+ ^["layered_glass"]{
+  materials: [ "two clear cups", "ice cubes", "warm tap water", "cold tap water", "food coloring" ]
+  steps: << "color the warm water" ; "pour it gently over cold water" ; "watch the layers hold" ; "drop in an ice cube and watch where it sits" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "use warm tap water, not boiling water"
+  shows: ~"./water.spw#water_density_max"
+ }
+}
+
+#>matter_water_ice_sink_q
+?["If ice sank, would lakes freeze from the bottom up?"]{
+ #:depth #!physical ~#lens(material grain)
+ #:claim #!speculative
+ ~#hypothesis: "With ice denser than the liquid, winter ice would settle below the summer mixed layer and could accumulate from year to year."
+ !probe{ "1-D lake column, ice 5 percent denser, 100 winters" =id[p_matter_water_ice_sink] =kind[sim] }
+ $%[water.rho_ice_g_cm3, water.t_rho_max_c]
+ ~"./water.spw#water_density_max" ~#neighbor(nearest)
+}

@@ -1,0 +1,192 @@
+# Econometrics and Data
+#
+# The identification matrix: each design beside the assumption it needs, the way it fails, and the check that catches the failure, with the weak-instrument rule dated.
+
+#>economics_econometrics
+#:layer #!reference
+#:domain #!economics
+#:form #!comparison
+#:level #!advanced
+#:review #!sourced
+#:valence #!bane
+
+^"emit"{
+ ~#title: "Econometrics and Data"
+ ~#claim: "Every causal design buys identification with one assumption, so the useful table pairs each design with its assumption, its failure, and its diagnostic."
+ ~#proof: "Rows cite Rubin, Imbens and Angrist, Card and Krueger, Goodman-Bacon, Thistlethwaite and Campbell, and Abadie; the instrument row cites Lee and coauthors 2022."
+ ~#door: "Read one row, run the omitted-variable kit, then take the matrix into the report-reading protocol."
+ ~#audience: "students who have met regression and want to read causal claims critically"
+ continuity: "Econometrics and Data | one assumption"
+ cold_open: "Each causal design buys its answer with one assumption, and this table shows the assumption, the failure, and the check."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/university-education/economics/undergrad-econometrics-and-data-methods.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the first-stage F above 10 rule is dated: it screens for weak instruments, and valid t-inference needs far more or an adjusted critical value",
+  "fixed effects remove only time-invariant additive confounders; the raw said all confounders",
+  "the credibility-revolution wonder no longer claims structural models allow any conclusion",
+  "synthetic control is added as a row; the raw file omitted it"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../../formal/mathematics/engineering-core/probability-and-statistics.spw#mathematics_probstat" ]
+ feeds: [ ~"./graduate-econometrics.spw#economics_grad_econometrics", ~"../markets/reading-market-reports.spw#markets_reading_reports" ]
+ grounds: [ ~"../../registries/quantities/economy-and-markets.spw#q_econ_iv" ]
+}
+
+^["concepts"]{
+ primary: [ #identification, #potential_outcomes, #weak_instruments ]
+ transfers: [ #sampling_frame, #replication ]
+ tensions: [ #structural_vs_reduced_form ]
+}
+
+^["foundations"]{
+ #>economics_econometrics_potential_outcomes
+ ^["potential_outcomes"]{
+  #:claim #!settled
+  statement: "Each unit has an outcome with and without treatment but only one is observed, so causal effects are averages identified by assumptions about who got treated."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_rubin_1974", ~"../../registries/sources/economy-and-markets.spw#src_econ_holland_1986" ]
+ }
+ #>economics_econometrics_ovb
+ ^["omitted_variable_bias"]{
+  #:claim #!settled
+  statement: "Leaving out a regressor that affects the outcome and correlates with an included one biases the included slope by the omitted effect times their regression slope."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_wooldridge_2010"
+  sign: "the bias sign is the product of the two signs"
+ }
+ #>economics_econometrics_attenuation
+ ^["attenuation"]{
+  #:claim #!settled
+  statement: "Classical noise in a regressor shrinks its estimated slope toward zero by the share of the regressor variance that is signal."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_wooldridge_2010"
+ }
+ #>economics_econometrics_robust_se
+ ^["standard_errors"]{
+  #:claim #!settled
+  statement: "White made standard errors robust to heteroskedasticity; when treatment is assigned to groups, errors are clustered at the level of assignment, and few clusters need extra care."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_white_1980", ~"../../registries/sources/economy-and-markets.spw#src_econ_cameron_miller_2015" ]
+ }
+}
+
+^["matrix"]{
+ #>economics_econometrics_row_ols
+ ^["ols"]{
+  #:claim #!settled
+  statement: "OLS identifies a causal slope only when the error is mean independent of the regressors given the controls; Gauss-Markov then makes it the best linear unbiased estimator."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_wooldridge_2010"
+  fails: "omitted confounders, reverse causality, measurement error"
+  check: "sensitivity of the slope to added controls, and a design-based alternative"
+ }
+ #>economics_econometrics_row_fe
+ ^["fixed_effects"]{
+  #:claim #!settled
+  statement: "Within estimators remove confounders that are constant over time and enter additively; anything that varies over time stays a threat."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_wooldridge_2010"
+  fails: "time-varying confounders, feedback from past outcomes to treatment"
+  check: "event-study leads and placebo outcomes"
+ }
+ #>economics_econometrics_row_iv
+ ^["iv_late"]{
+  #:claim #!settled
+  statement: "A relevant instrument that moves the outcome only through treatment, with no defiers, identifies the average effect for compliers, the local average treatment effect."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_imbens_angrist_1994"
+  fails: "exclusion violations, defiers, and weak first stages"
+  check: "first-stage strength, overidentification where available, and weak-robust intervals"
+  ~#(compliers are the units whose treatment the instrument actually moves)
+ }
+ #>economics_econometrics_weak_iv
+ ^["weak_iv_rule"]{
+  #:claim #!superseded
+  statement: "The rule of thumb that a first-stage F above 10 makes 2SLS t-tests reliable is dated; with one instrument, a true 5 percent t-test needs F above 104.7."
+  reads: %[econ.iv.staiger_stock_rule_f, econ.iv.lmmp_t5_f]
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_staiger_stock_1997", ~"../../registries/sources/economy-and-markets.spw#src_econ_lee_mccrary_moreira_porter_2022" ]
+  as_of: "2026-10-01, after Lee, McCrary, Moreira, and Porter, AER 2022"
+  practice: "report the effective F of Montiel Olea and Pflueger, and use tF critical values or Anderson-Rubin intervals"
+  also: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_montiel_olea_pflueger_2013", ~"../../registries/sources/economy-and-markets.spw#src_econ_anderson_rubin_1949", ~"../../registries/sources/economy-and-markets.spw#src_econ_andrews_stock_sun_2019" ]
+ }
+ #>economics_econometrics_row_did
+ ^["did_two_by_two"]{
+  #:claim #!settled
+  statement: "Comparing the change in a treated group with the change in an untreated one identifies the effect if, absent treatment, both would have moved in parallel."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_card_krueger_1994"
+  fails: "diverging pre-trends and anticipation"
+  check: "pre-period leads in an event study"
+ }
+ #>economics_econometrics_row_staggered
+ ^["did_staggered"]{
+  #:claim #!settled
+  statement: "When units adopt at different dates and effects vary, two-way fixed effects mixes comparisons and can even flip sign; newer estimators compare each cohort only with clean controls."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_goodman_bacon_2021", ~"../../registries/sources/economy-and-markets.spw#src_econ_de_chaisemartin_dhaultfoeuille_2020", ~"../../registries/sources/economy-and-markets.spw#src_econ_callaway_santanna_2021" ]
+  review: ~"../../registries/sources/economy-and-markets.spw#src_econ_roth_2023"
+  check: "Goodman-Bacon decomposition weights, cohort-by-time estimates"
+ }
+ #>economics_econometrics_row_rdd
+ ^["rdd"]{
+  #:claim #!settled
+  statement: "When treatment switches at a cutoff in a running variable, outcomes just either side identify a local effect if potential outcomes are continuous at the cutoff."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_thistlethwaite_campbell_1960", ~"../../registries/sources/economy-and-markets.spw#src_econ_lee_lemieux_2010" ]
+  fails: "sorting around the cutoff and other policies that switch at the same point"
+  check: "a density test at the cutoff and covariate balance"
+  density: ~"../../registries/sources/economy-and-markets.spw#src_econ_mccrary_2008"
+ }
+ #>economics_econometrics_row_synth
+ ^["synthetic_control"]{
+  #:claim #!settled
+  statement: "With one treated unit, a weighted blend of untreated units that tracks it before treatment stands in for its untreated path afterward."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_abadie_gardeazabal_2003", ~"../../registries/sources/economy-and-markets.spw#src_econ_abadie_diamond_hainmueller_2010" ]
+  fails: "poor pre-period fit, spillovers to donors, and long horizons"
+  check: "placebo runs on each donor"
+  guide: ~"../../registries/sources/economy-and-markets.spw#src_econ_abadie_2021"
+ }
+}
+
+^["credit"]{
+ #>economics_econometrics_credit
+ ^["nobel_2021"]{
+  #:claim #!settled
+  statement: "The 2021 economics prize went half to David Card for empirical labor work and half jointly to Joshua Angrist and Guido Imbens for methods of causal analysis."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_nobel_2021"
+ }
+ lineage: "regression discontinuity began in educational psychology, with Thistlethwaite and Campbell in 1960"
+}
+
+^["try"]{
+ #>economics_econometrics_try_ovb
+ ^["omitted_variable_sheet"]{
+  materials: [ "a spreadsheet with a random number function" ]
+  steps: << "draw ability for 500 rows" ; "make schooling depend on ability plus noise" ; "make wages depend on schooling and ability" ; "regress wages on schooling alone, then on both" ; "compare the gap with the bias formula" >>
+  time: .{ n: 40, unit: "minutes" }
+  safety: "none worth naming"
+  shows: ~"./econometrics-and-data.spw#economics_econometrics_ovb"
+ }
+}
+
+#>economics_econometrics_credibility_q
+?["Did the design turn trade external validity for internal validity?"]{
+ #:depth #!historical ~#lens(historical layer)
+ #:claim #!speculative
+ ~#hypothesis: "Papers using quasi-experimental designs report effects for narrower populations than structural papers, and later replications vary more across sites than within them."
+ !probe{ "code population scope and replication outcomes for a sample of design-based and structural labor papers" =id[p_econ_metrics_credibility] =kind[lit] }
+ counter: ~"../../registries/sources/economy-and-markets.spw#src_econ_keane_2010"
+ ~"./econometrics-and-data.spw#economics_econometrics_row_iv" ~#neighbor(nearest)
+}
+
+#>economics_econometrics_weak_q
+?["How many published instrument results survive the stricter F threshold?"]{
+ #:depth #!computational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "Results from fields with naturally strong first stages, such as lotteries, survive the stricter threshold more often than results from geographic or historical instruments."
+ !probe{ "recompute tF intervals for single-instrument papers in two fields and compare survival" =id[p_econ_metrics_weak] =kind[calc] }
+ $%[econ.iv.lmmp_t5_f, econ.iv.staiger_stock_rule_f]
+ ~"./econometrics-and-data.spw#economics_econometrics_weak_iv" ~#neighbor(nearest)
+}

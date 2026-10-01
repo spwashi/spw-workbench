@@ -24,6 +24,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { spawnSync } from 'node:child_process'
 import { deixisTable, parse, particleBindings } from '@spwashi/spw-seed'
+import { checkArcs, checkLegibility, checkReadings, checkVoice, type Add } from './spw-cut-voice'
 
 type Level = 'fail' | 'warn'
 interface Finding { level: Level; line: number; message: string }
@@ -49,6 +50,7 @@ const BANNED: Array<[RegExp, string, 'code' | 'strings' | 'slash']> = [
   [/\[reg=facet\]/, '.{} already produces a facet; drop [reg=facet]', 'code'],
   [/:\s*\$%\[/, '$% inside a binding leaves the value as bare $; use reads: %[...]', 'code'],
   [/~#[A-Za-z_][\w-]*:\s+(~"|@|#[A-Za-z_\[])/, 'spaced ~#k: ref/tag detaches its value; use a plain key: binding', 'code'],
+  [/:\s*#[A-Za-z_][\w-]*\s+[A-Za-z_][\w-]*\s*:/, 'a #tag value followed by another key on one line nests that key; separate with a comma', 'code'],
 ]
 
 // ── helpers ────────────────────────────────────────────────────────────
@@ -196,18 +198,22 @@ function main(): void {
       for (const b of particleBindings(out.ast) as any[]) {
         if (b.particle.aim !== '>') continue
         const name = b.particle.name.value
-        const line = (b.particle.span?.start?.line ?? 0) + 1
+        const line = b.particle.span?.start?.line ?? 0
         if (!b.bound) add(file, 'fail', line, `anchor #>${name} binds nothing (inside a set/facet, or trailing)`)
         if (anchorHome.has(name) && anchorHome.get(name) !== file) add(file, 'fail', line, `anchor #>${name} duplicates ${path.relative(cut, anchorHome.get(name)!)}`)
         else anchorHome.set(name, file)
         anchors.add(name)
       }
+      // an anchor inside #[ ] never reaches particleBindings; find it in the text instead
+      for (const m of code.matchAll(/#>([A-Za-z_][\w-]*)/g)) {
+        if (!anchors.has(m[1])) add(file, 'fail', lineOf(src, m.index!), `anchor #>${m[1]} does not bind (inside a set or facet); put it before a frame or binding`)
+      }
       walk(out.ast, (n) => {
         if (n.type === 'Capsule' && n.placement === 'medial' && n.right && n.right.span.start.line !== n.open?.span?.start?.line) {
-          add(file, 'fail', n.open.span.start.line + 1, 'medial capsule swallows the next line')
+          add(file, 'fail', n.open.span.start.line, 'medial capsule swallows the next line')
         }
         if (n.type === 'Binding' && n.value && n.key?.span && n.value.span.start.line > n.key.span.end.line && n.value.terms?.[0]?.type !== 'ProseChunk') {
-          add(file, 'fail', n.key.span.start.line + 1, 'binding value starts on a later line (empty value swallows the next line)')
+          add(file, 'fail', n.key.span.start.line, 'binding value starts on a later line (empty value swallows the next line)')
         }
       })
     }
@@ -258,6 +264,13 @@ function main(): void {
     // banned forms, each read through its own view
     const views = { code: code.split('\n'), strings: codeOnly(src, { strings: true }).split('\n'), slash: codeOnly(src, { slash: true }).split('\n') }
     for (const [re, why, view] of BANNED) views[view].forEach((line, i) => { if (re.test(line)) add(file, 'fail', i + 1, why) })
+
+    // legibility, voice, readings, and arcs (spw-cut-voice.ts)
+    const here: Add = (level, line, message) => add(file, level, line, message)
+    checkLegibility(src, code, here)
+    if (!isRegistry && !isProvenanceDir) checkVoice(src, code, here)
+    if (ast) checkReadings(ast, here, vocab.get('reading'), walk)
+    if (!isRegistry) checkArcs(code, src, here, vocab.get('clock'))
     lines.forEach((line, i) => {
       if (/^\s*#\s.*'/.test(line)) add(file, 'warn', i + 1, 'apostrophe in a # comment line blanks VS Code decorations (B9)')
     })
@@ -292,6 +305,13 @@ function main(): void {
     for (const m of code.matchAll(/#:claim\s+#!([A-Za-z0-9_-]+)/g)) if (!inVocab('claim', m[1])) add(file, 'fail', lineOf(src, m.index!), `#:claim #!${m[1]} is not in vocabulary.spw`)
     for (const m of code.matchAll(/=kind\[([A-Za-z0-9_-]+)\]/g)) if (!inVocab('probe_kind', m[1])) add(file, 'fail', lineOf(src, m.index!), `probe kind ${m[1]} is not in vocabulary.spw`)
 
+    // inspection receipts: event, care, and outcome come from the vocabulary
+    for (const [key, vocabKey] of [['event', 'event'], ['care', 'care'], ['outcome', 'outcome']] as const) {
+      for (const m of code.matchAll(new RegExp(`\\b${key}:\\s*#([A-Za-z0-9_-]+)`, 'g'))) {
+        if (!inVocab(vocabKey, m[1])) add(file, 'fail', lineOf(src, m.index!), `${key} #${m[1]} is not in vocabulary.spw`)
+      }
+    }
+
     // ethics: a factual claim names its source inside its own frame
     const sourcedSurface = ['sourced', 'adversarial_checked', 'expert_reviewed'].includes(axes.get('review') ?? '')
     for (const m of code.matchAll(/#:claim\s+#!([A-Za-z0-9_-]+)/g)) {
@@ -309,7 +329,7 @@ function main(): void {
 
     // AST walk: lenses and links
     if (ast) walk(ast, (n) => {
-      const line = (n.span?.start?.line ?? 0) + 1
+      const line = n.span?.start?.line ?? 0
       if (n.type === 'Annotation' && n.apposition && n.name?.value === 'lens') {
         const lens = normalizeLens(n.apposition.body ?? '')
         if (!inVocab('lens', lens)) add(file, 'fail', line, `~#lens(${lens}) is not in vocabulary.spw`)

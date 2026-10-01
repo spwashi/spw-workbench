@@ -1,0 +1,66 @@
+# Institutions
+#
+# Universities as institutions: who governs them, how research is paid for, how degrees are built, how teaching works, and how the year moves.
+
+#>institutions_index
+#:layer #!reference
+#:domain #!institutions
+#:form #!index
+#:level #!foundation
+#:review #!spot_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Institutions"
+ ~#claim: "A US university runs on shared governance, federal research funding, a credit-hour degree graph, evidence-based teaching, and a seasonal calendar."
+ ~#proof: "Each leaf cites its statute, policy statement, or study in the learning sources registry."
+ ~#door: "Start with curricular architecture if you are a student, governance if you work there, funding if you do research."
+ ~#audience: "students, families, staff, and new faculty"
+ continuity: "Institutions | shared governance"
+ cold_open: "A university is shared governance, research money, a degree graph, teaching that works, and a calendar that keeps time."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #woven, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #pass }
+  ^["r2"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["tree"]{
+ governance: ~"./governance-and-tenure.spw"
+ funding: ~"./research-funding.spw"
+ curriculum: ~"./curricular-architecture.spw"
+ pedagogy: ~"./pedagogical-scaffolding.spw"
+ calendar: ~"./academic-year-cadence.spw"
+}
+
+^["bundle"]{
+ ={ ~"./curricular-architecture.spw#institutions_curricular_architecture" }
+ ={ ~"./pedagogical-scaffolding.spw#institutions_pedagogy" }
+ ={ ~"./governance-and-tenure.spw#institutions_governance" }
+ ={ ~"./research-funding.spw#institutions_research_funding" }
+ ={ ~"./academic-year-cadence.spw#institutions_academic_year" }
+}
+
+^["facets"]{
+ order: "leaves by matter, then form, then level"
+ rows: #[
+  .{ leaf: "curricular-architecture", matter: "credit hour, prerequisite", form: "curriculum", level: "foundation" },
+  .{ leaf: "pedagogical-scaffolding", matter: "scaffolding, retrieval", form: "ledger", level: "foundation" },
+  .{ leaf: "governance-and-tenure", matter: "shared governance, tenure", form: "ledger", level: "advanced" },
+  .{ leaf: "research-funding", matter: "indirect costs, grant cycle", form: "comparison", level: "advanced" },
+  .{ leaf: "academic-year-cadence", matter: "academic calendar", form: "calendar", level: "intro" }
+ ]
+}
+
+^["doors"]{
+ student: "curricular architecture, then pedagogy, then the calendar"
+ new_faculty: "governance, then funding, then pedagogy"
+ parent: "the calendar, then curricular architecture"
+}

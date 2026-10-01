@@ -1,0 +1,188 @@
+# Inks and Inscription
+#
+# Carbon and iron-gall inks, how ink enters paper, the oil varnish of the printing press, and the route paper took from China through the Islamic world to Europe.
+
+#>inscription_inks
+#:layer #!reference
+#:domain #!inscription
+#:form #!ledger
+#:level #!foundation
+#:review #!sourced
+#:valence #!bone
+#:era #!medieval
+
+^"emit"{
+ ~#title: "Inks and Inscription"
+ ~#claim: "Carbon ink sits on the surface while iron-gall ink darkens as it oxidizes and bites into the page, which is why it lasts and why it corrodes."
+ ~#proof: "Kolar and Strlic on iron-gall chemistry and decay; Tsien on Chinese ink and paper; Bloom on the paper route through the Islamic world."
+ ~#door: "Read the paper matrix next, then the decay ledger."
+ ~#audience: "readers with high-school chemistry who handle old documents or write with dip pens"
+ continuity: "Inks and Inscription | bites into the page"
+ cold_open: "Soot ink rests on top, while iron-gall ink darkens in air and bites into the page it marks."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/materials-matter-and-history/ink-and-inscriptional-technologies.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "ferric pyrogallate replaced: the black of iron-gall ink is an iron(III) complex of gallic acid and tannins",
+  "the public sphere is credited to Habermas 1962; Anderson 1983 is credited for print-capitalism and imagined national communities",
+  "the Islamic paper route is added: paper reached Europe through Abbasid Baghdad and al-Andalus",
+  "the claim that Gutenberg stalled completely until he found oil ink is unsupported; oil varnish is one part of a system",
+  "iron-gall ink as the legal standard for treaties is an overclaim and is not carried",
+  "carbon black as completely inert is softened to chemically stable and lightfast",
+  "inkjet droplet sizes, firing rates, and toner fusing temperatures were unsourced and are not carried",
+  "the ballpoint RAF anecdote was unsourced and is not carried",
+  "monastic scriptoria as the sole keepers of literacy is replaced by copying traditions in many centers"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./surfaces-tablet-scroll-codex.spw#inscription_surfaces" ]
+ feeds: [ ~"./print-and-press.spw#inscription_print", ~"./paper-and-pulp-manufacture.spw#inscription_paper" ]
+ grounds: [ ~"../carriers/carrier-decay-and-fixity.spw#media_carriers_decay" ]
+ see: [ ~"../../physical/materials/pigments-and-binders.spw#materials_pigments" ]
+}
+
+^["concepts"]{
+ primary: [ #ink, #oxidation, #capillarity ]
+ transfers: [ #acid_hydrolysis, #paper_route ]
+ tensions: [ #print_culture ]
+}
+
+^["chemistry"]{
+ #>inscription_inks_carbon
+ ^["carbon_ink"]{
+  #:claim #!settled
+  statement: "Carbon inks disperse soot in water with a binder, gum arabic in the Mediterranean and animal glue in Chinese inksticks; the carbon is chemically stable and lightfast."
+  sources: [ ~"../../registries/sources/record-and-carriers.spw#src_media_tsien_1985", ~"../../registries/sources/record-and-carriers.spw#src_media_kolar_strlic_2006" ]
+  ^["limits"]{
+   holds: "paper and silk that absorb the binder"
+   fails: "on parchment the carbon rests on the surface and can be washed or scraped away"
+  }
+ }
+ #>inscription_inks_iron_gall
+ ^["iron_gall_ink"]{
+  #:claim #!settled
+  statement: "Iron-gall ink mixes tannins from oak galls with iron(II) sulfate and gum arabic; it writes pale and darkens as iron(II) oxidizes to a dark iron(III) gallate complex."
+  source: ~"../../registries/sources/record-and-carriers.spw#src_media_kolar_strlic_2006"
+  ~#say(the ink turns black after it touches the page)
+ }
+ #>inscription_inks_pyrogallate_error
+ ^["pyrogallate_error"]{
+  #:claim #!refuted
+  statement: "The black of iron-gall ink is ferric pyrogallate."
+  source: ~"../../registries/sources/record-and-carriers.spw#src_media_kolar_strlic_2006"
+  correction: "the pigment is an iron(III) complex with gallic acid and tannins; pyrogallol is a different compound"
+ }
+ #>inscription_inks_corrosion
+ ^["ink_corrosion"]{
+  #:claim #!settled
+  statement: "Iron-gall ink can eat through paper: excess acid hydrolyzes cellulose, and free iron(II) catalyzes oxidative breakdown through Fenton-type radicals."
+  source: ~"../../registries/sources/record-and-carriers.spw#src_media_kolar_strlic_2006"
+  ^["limits"]{
+   holds: "inks rich in iron sulfate relative to tannin, kept warm and humid"
+   fails: "balanced recipes on well-sized paper in cool storage can stay sound for centuries"
+  }
+ }
+}
+
+^["flow"]{
+ #>inscription_inks_washburn
+ ^["capillary_penetration"]{
+  #:claim #!settled
+  statement: "In the Lucas-Washburn model, liquid enters a capillary to a depth that grows with the square root of time, faster for lower viscosity and better wetting."
+  formula: "L^2 = gamma r t cos(theta) / (2 mu)"
+  sources: [ ~"../../registries/sources/record-and-carriers.spw#src_media_lucas_1918", ~"../../registries/sources/record-and-carriers.spw#src_media_washburn_1921" ]
+  reads: %[media.print.ink_water_surface_tension_mn_m]
+  ^["limits"]{
+   holds: "a single uniform capillary with a stable contact angle"
+   fails: "paper fibers swell and sizing changes the contact angle, so real feathering departs from the square-root law"
+  }
+ }
+ #>inscription_inks_oil_varnish
+ ^["oil_varnish"]{
+  #:claim #!settled
+  statement: "Hand-press printing ink was lampblack ground into a varnish of boiled linseed oil, sticky enough to coat metal type evenly and transfer under pressure."
+  source: ~"../../registries/sources/record-and-carriers.spw#src_media_gaskell_1972"
+ }
+ #>inscription_inks_b42_metals
+ ^["b42_ink_metals"]{
+  #:claim #!settled
+  statement: "Cyclotron analysis of the 42-line Bible found unusually high copper and lead in its ink, and the metal profile has been used to study how the edition was printed."
+  source: ~"../../registries/sources/record-and-carriers.spw#src_media_schwab_1983"
+ }
+}
+
+^["route"]{
+ #>inscription_paper_origin
+ ^["origin"]{
+  #:era #!classical
+  #:claim #!settled
+  statement: "Paper fragments from western Han sites predate Cai Lun, who reported an improved paper of bark, hemp, rags, and old nets to the court in 105 CE."
+  sources: [ ~"../../registries/sources/record-and-carriers.spw#src_media_tsien_1985", ~"../../registries/sources/record-and-carriers.spw#src_media_enc_history_of_paper" ]
+  ~#say(Cai Lun is the tradition, not the first sheet)
+ }
+ #>inscription_samarkand_legend
+ ^["samarkand_legend"]{
+  #:claim #!contested
+  statement: "The story that Chinese prisoners taken at Talas in 751 taught papermaking at Samarkand is a later legend; Bloom argues paper was already known in Central Asia."
+  source: ~"../../registries/sources/record-and-carriers.spw#src_media_bloom_2001"
+ }
+ #>inscription_paper_baghdad
+ ^["baghdad"]{
+  #:era #!medieval
+  #:claim #!settled
+  statement: "Paper was made in Abbasid Baghdad by the 790s, and across the ninth and tenth centuries it replaced papyrus and parchment for most writing in the Islamic world."
+  source: ~"../../registries/sources/record-and-carriers.spw#src_media_bloom_2001"
+ }
+ #>inscription_paper_andalus
+ ^["al_andalus_to_italy"]{
+  #:claim #!settled
+  statement: "Paper reached Europe through al-Andalus, with mills at Xativa by the twelfth century; Italian mills such as Fabriano added stamping hammers, gelatin sizing, and watermarks."
+  sources: [ ~"../../registries/sources/record-and-carriers.spw#src_media_bloom_2001", ~"../../registries/sources/record-and-carriers.spw#src_media_hunter_1947" ]
+ }
+}
+
+^["readings_of_print"]{
+ #>inscription_inks_print_capitalism
+ ^["print_capitalism"]{
+  #:claim #!interpretive
+  statement: "Anderson argued that print-capitalism, selling vernacular books and newspapers to large reading publics, let people imagine themselves as members of one nation."
+  source: ~"../../registries/sources/record-and-carriers.spw#src_media_anderson_1983"
+ }
+ #>inscription_inks_public_sphere
+ ^["public_sphere"]{
+  #:claim #!interpretive
+  statement: "Habermas described an eighteenth-century public sphere of coffeehouses, salons, and periodicals where private people debated public matters; the raw text credited this to Anderson."
+  source: ~"../../registries/sources/record-and-carriers.spw#src_media_habermas_1962"
+ }
+}
+
+^["try"]{
+ #>inscription_try_iron_gall
+ ^["brew_iron_gall"]{
+  materials: [ "a handful of oak galls or six bags of strong black tea", "a teaspoon of iron(II) sulfate from a garden store", "a pinch of gum arabic", "a glass jar", "a dip pen", "gloves and eye protection" ]
+  steps: << "crush the galls or steep the tea in a cup of hot water for an hour" ; "strain and stir in the iron sulfate" ; "add gum arabic to thicken" ; "write a line and watch it darken over a day" >>
+  time: .{ n: 75, unit: "minutes" }
+  safety: "iron(II) sulfate is harmful if swallowed and irritates eyes; wear gloves and eye protection, label the jar, and keep it away from children and food containers"
+  shows: ~"./inks-and-inscription.spw#inscription_inks_iron_gall"
+ }
+}
+
+#>inscription_inks_wetting_q
+?["Was oil varnish needed because water-borne ink wets type metal poorly?"]{
+ #:depth #!physical ~#lens(molecular binding)
+ #:claim #!speculative
+ ~#hypothesis: "A water-borne ink beads on a cast lead-alloy face while an oil varnish spreads evenly, so oil ink should give more even impressions from metal type."
+ !probe{ "compare contact angle and print evenness of a gum ink and a linseed varnish on a type-metal slug" =id[p_media_ink_wetting] =kind[build] }
+ $%[media.print.ink_water_surface_tension_mn_m]
+ ~"./inks-and-inscription.spw#inscription_inks_oil_varnish" ~#neighbor(nearest)
+}

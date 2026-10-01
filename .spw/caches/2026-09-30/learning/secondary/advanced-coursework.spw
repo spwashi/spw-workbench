@@ -1,0 +1,152 @@
+# Advanced Coursework
+#
+# AP, IB, dual enrollment, and honors side by side: who sets the standard, how work is assessed, and how credit travels to college.
+
+#>secondary_schooling_advanced
+#:layer #!reference
+#:domain #!secondary_schooling
+#:form #!comparison
+#:level #!intro
+#:review #!sourced
+#:valence #!bone
+#:era #!current
+
+^"emit"{
+ ~#title: "Advanced Coursework"
+ ~#claim: "AP, IB, dual enrollment, and honors differ in who sets the standard and how work is judged; for each, the receiving college decides how credit travels."
+ ~#proof: "College Board AP Course Audit and Capstone rules, the IB Diploma Programme guide, and a 2017 GAO study of transfer credit loss."
+ ~#door: "Read the portability column first, then try the credit-policy kit with two colleges you know."
+ ~#audience: "high school students, families, and counselors comparing options"
+ continuity: "Advanced Coursework | credit travels"
+ cold_open: "Advanced courses can earn college credit, yet each college decides how far that credit travels."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/secondary-education/advanced-curricula.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "dual enrollment guaranteed credit transfer: refuted; acceptance depends on the receiving college and state policy",
+  "up to two years of debt-free credits removed as unsourced; cost varies by state and program",
+  "accreditation of the offering college restated as necessary for transfer but never sufficient",
+  "count of 38 or more AP courses removed; the catalog changes yearly",
+  "exam school list removed; selective admissions belong to a separate surface"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/learning-and-generations.spw#q_learn_secondary" ]
+ see: [ ~"../institutions/curricular-architecture.spw#institutions_curric_credit_hour" ]
+}
+
+^["concepts"]{
+ primary: [ #dual_enrollment, #credit_portability ]
+ transfers: [ #acceleration ]
+ tensions: [ #standards ]
+}
+
+^["matrix"]{
+ columns: #[ standard_setter, assessment, credit_route ]
+ rows: #[
+  .{ program: "AP", standard_setter: "College Board", assessment: "May exam scored 1 to 5", credit_route: "college score policy" },
+  .{ program: "IB DP", standard_setter: "IB Organization", assessment: "external exams plus internal work", credit_route: "college IB policy" },
+  .{ program: "dual enrollment", standard_setter: "the college", assessment: "college course grade", credit_route: "college transcript" },
+  .{ program: "honors", standard_setter: "school or district", assessment: "local", credit_route: "high school only" }
+ ]
+}
+
+^["programs"]{
+ #>secondary_schooling_ap_audit
+ ^["ap"]{
+  #:claim #!settled
+  statement: "A school may label a course AP only after the College Board authorizes its syllabus through the annual AP Course Audit."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_ap_course_audit"
+  as_of: "2026-10-01"
+ }
+
+ #>secondary_schooling_ap_capstone
+ ^["ap_capstone"]{
+  #:claim #!settled
+  statement: "AP Capstone pairs AP Seminar with AP Research, whose academic paper runs 4,000 to 5,000 words; the diploma also needs four other AP exams scored 3 or higher."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_ap_capstone"
+  as_of: "2026-10-01"
+ }
+
+ #>secondary_schooling_ib_core
+ ^["ib"]{
+  #:claim #!settled
+  statement: "The IB Diploma Programme runs two years: six subjects, usually three at higher level, plus Theory of Knowledge, an Extended Essay of up to 4,000 words, and Creativity, Activity, Service."
+  reads: %[learn.ib.ee_words_max, learn.ib.dp_points_max]
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_ib_dp"
+  origin: "the IB began in Geneva in 1968 to serve internationally mobile families"
+ }
+
+ #>secondary_schooling_dual
+ ^["dual_enrollment"]{
+  #:claim #!settled
+  statement: "Dual enrollment students take college courses while in high school and earn a college transcript; outcomes and access vary widely by state."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_fink_2017"
+ }
+
+ ^["honors"]{
+  standard: "set by the school or district; no outside body audits it"
+  weighting: "grade weighting for honors and AP is a local rule"
+ }
+}
+
+^["portability"]{
+ #>secondary_schooling_transfer_loss
+ ^["transfer_loss"]{
+  #:claim #!settled
+  statement: "Students who transferred between 2004 and 2009 lost an estimated 43 percent of their college credits on average."
+  reads: %[learn.transfer.credit_loss_percent]
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_gao_2017"
+  ^["limits"]{
+   holds: "college-to-college transfer in the 2004 to 2009 cohort the GAO studied"
+   fails: "dual enrollment credit under a state guarantee or an articulation agreement can fare better"
+  }
+ }
+
+ #>secondary_schooling_dual_guaranteed
+ ^["guaranteed_transfer"]{
+  #:claim #!refuted
+  statement: "Dual enrollment guarantees that credit transfers to any college."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_gao_2017"
+  finding: "each receiving college decides whether a course counts, and for which requirement"
+ }
+}
+
+^["try"]{
+ #>secondary_schooling_try_credit_policy
+ ^["read_credit_policies"]{
+  materials: [
+   "the AP and IB credit pages of two colleges",
+   "the transfer page of one community college"
+  ]
+  steps: <<
+   "pick one subject, such as calculus" ;
+   "write the AP score and IB level each college accepts" ;
+   "write which course or requirement the credit replaces" ;
+   "note whether the community college course would count at both"
+  >>
+  time: .{ n: 25, unit: "minutes" }
+  safety: "none worth naming"
+  shows: ~"./advanced-coursework.spw#secondary_schooling_dual_guaranteed"
+ }
+}
+
+#>secondary_schooling_advanced_format_q
+?["Does a single May exam reward different habits than two years of graded coursework?"]{
+ #:depth #!educational ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "Single high-stakes exams favor fast recall under time pressure, while cumulative coursework favors revision and sustained projects."
+ !probe{ "compare first-year college writing and calculus outcomes for matched AP and IB students" =id[p_learn_advanced_format] =kind[lit] }
+ $%[learn.ib.ee_words_max]
+ ~"./advanced-coursework.spw#secondary_schooling_ib_core" ~#neighbor(nearest)
+}

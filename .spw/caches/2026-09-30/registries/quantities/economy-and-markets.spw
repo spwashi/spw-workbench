@@ -1,0 +1,301 @@
+# Quantities: Economy and Markets
+#
+# World metric cells for economics, management, and market reading. A dated market number lives here once with its publisher and as_of; files read the handle.
+
+#>registry_qty_economy_and_markets
+#:layer #!reference
+#:domain #!registry
+#:form #!registry
+#:level #!mixed
+#:review #!spot_checked
+#:valence #!bone
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ rule: "a market cell names its publisher, period, and as_of; a value nobody has read from its source stays unset with status verify"
+}
+
+^["families"]{
+ ^["iv"]{
+  id: econ_iv, operator: "%", identifier: econ.iv, plane: world, scope: corpus
+  scheme: tol, algorithm: world.registry_lookup, form: scalar
+  keys: #[ staiger_stock_rule_f, lmmp_t5_f ]
+ }
+ ^["taylor"]{
+  id: econ_taylor, operator: "%", identifier: econ.taylor, plane: world, scope: corpus
+  scheme: tol, algorithm: world.registry_lookup, form: scalar
+  keys: #[ inflation_coeff, output_gap_coeff ]
+ }
+ ^["food"]{
+  id: econ_food, operator: "%", identifier: econ.food, plane: world, scope: corpus
+  scheme: tol, algorithm: world.registry_lookup, form: scalar
+  keys: #[ cold_hold_max_c, hot_hold_min_c, cool_stage_one_h, cool_total_h, haccp_principles, menu_popularity_factor ]
+ }
+ ^["hotel"]{
+  id: econ_hotel, operator: "%", identifier: econ.hotel, plane: world, scope: corpus
+  scheme: tol, algorithm: world.registry_lookup, form: scalar
+  keys: #[ ota_commission_pct, lodging_separation_rate_pct, flsa_tipped_cash_wage_usd, dma_max_fine_pct ]
+ }
+ ^["podcast"]{
+  id: econ_podcast, operator: "%", identifier: econ.podcast, plane: world, scope: corpus
+  scheme: tol, algorithm: world.registry_lookup, form: scalar
+  keys: #[ edison_2024_youtube_pct, edison_2024_spotify_pct, edison_2024_apple_pct, edison_latest_youtube_pct, pew_2022_sample_n ]
+ }
+ ^["tv"]{
+  id: econ_tv, operator: "%", identifier: econ.tv, plane: world, scope: corpus
+  scheme: tol, algorithm: world.registry_lookup, form: scalar
+  keys: #[ gauge_2025_05_streaming_pct, gauge_2025_05_cable_pct, gauge_2025_05_broadcast_pct, gauge_2025_05_youtube_pct, gauge_latest_youtube_pct ]
+ }
+ ^["ads"]{
+  id: econ_ads, operator: "%", identifier: econ.ads, plane: world, scope: corpus
+  scheme: tol, algorithm: world.registry_lookup, form: scalar
+  keys: #[ iab_us_internet_2024_busd, iab_us_internet_2025_growth_pct ]
+ }
+ ^["media"]{
+  id: econ_media, operator: "%", identifier: econ.media, plane: world, scope: corpus
+  scheme: tol, algorithm: world.registry_lookup, form: scalar
+  keys: #[ us_print_units_latest_m, us_publishing_revenue_latest_busd, us_box_office_latest_busd, window_2019_home_video_days, window_wb_regal_2022_days ]
+ }
+ ^["singles"]{
+  id: econ_singles, operator: "%", identifier: econ.singles, plane: world, scope: corpus
+  scheme: tol, algorithm: world.registry_lookup, form: scalar
+  keys: #[ alibaba_gmv_2019_byuan, alibaba_gmv_2020_byuan, alibaba_fine_2021_busd, viya_fine_2021_byuan ]
+ }
+}
+
+#>q_econ_iv
+^"iv"{
+ %econ.iv.staiger_stock_rule_f{
+  value: 10, unit: "first-stage F statistic", abs: 0, status: #superseded
+  at: "rule of thumb for one endogenous regressor, from Staiger and Stock 1997"
+  src: ~"../sources/economy-and-markets.spw#src_econ_staiger_stock_1997"
+ }
+ %econ.iv.lmmp_t5_f{
+  value: 104.7, unit: "first-stage F statistic", abs: 0.1, status: #settled
+  at: "F needed for a conventional 2SLS t-test to have a true 5 percent level, one instrument"
+  src: ~"../sources/economy-and-markets.spw#src_econ_lee_mccrary_moreira_porter_2022"
+ }
+}
+
+#>q_econ_taylor
+^"taylor"{
+ %econ.taylor.inflation_coeff{
+  value: 1.5, unit: "1", abs: 0, status: #settled
+  at: "implied response of the policy rate to inflation in the Taylor 1993 rule"
+  src: ~"../sources/economy-and-markets.spw#src_econ_taylor_1993"
+ }
+ %econ.taylor.output_gap_coeff{
+  value: 0.5, unit: "1", abs: 0, status: #settled
+  at: "response of the policy rate to the output gap in the Taylor 1993 rule"
+  src: ~"../sources/economy-and-markets.spw#src_econ_taylor_1993"
+ }
+}
+
+#>q_econ_food
+^"food"{
+ %econ.food.cold_hold_max_c{
+  value: 5, unit: "C, 41 F", abs: 0, status: #settled
+  at: "cold holding limit for time and temperature control for safety food, FDA Food Code 2022"
+  src: ~"../sources/economy-and-markets.spw#src_econ_fda_food_code_2022"
+ }
+ %econ.food.hot_hold_min_c{
+  value: 57, unit: "C, 135 F", abs: 0, status: #settled
+  at: "hot holding limit, FDA Food Code 2022"
+  src: ~"../sources/economy-and-markets.spw#src_econ_fda_food_code_2022"
+ }
+ %econ.food.cool_stage_one_h{
+  value: 2, unit: "hours", abs: 0, status: #settled
+  at: "cooling from 57 C to 21 C, FDA Food Code 2022 section 3-501.14"
+  src: ~"../sources/economy-and-markets.spw#src_econ_fda_food_code_2022"
+ }
+ %econ.food.cool_total_h{
+  value: 6, unit: "hours", abs: 0, status: #settled
+  at: "total cooling from 57 C to 5 C, FDA Food Code 2022 section 3-501.14"
+  src: ~"../sources/economy-and-markets.spw#src_econ_fda_food_code_2022"
+ }
+ %econ.food.haccp_principles{
+  value: 7, unit: "principles", abs: 0, status: #settled
+  at: "HACCP principles as adopted by NACMCF in 1997"
+  src: ~"../sources/economy-and-markets.spw#src_econ_nacmcf_1998"
+ }
+ %econ.food.menu_popularity_factor{
+  value: 0.7, unit: "fraction of an equal menu-mix share", abs: 0, status: #settled
+  at: "Kasavana and Smith popularity cut: an item is popular at or above 0.7 times 1 over the item count"
+  src: ~"../sources/economy-and-markets.spw#src_econ_kasavana_smith_1982"
+ }
+}
+
+#>q_econ_hotel
+^"hotel"{
+ %econ.hotel.ota_commission_pct{
+  value: "unset", unit: "percent of room revenue", status: #verify
+  at: "online travel agency commission; the raw range of 15 to 25 had no source"
+  as_of: "2026-10-01"
+  src: "unsourced"
+ }
+ %econ.hotel.lodging_separation_rate_pct{
+  value: "unset", unit: "percent of employment per year", status: #verify
+  at: "annual total separations, accommodation and food services, BLS JOLTS; the raw 70 percent had no source"
+  as_of: "2026-10-01"
+  src: ~"../sources/economy-and-markets.spw#src_econ_bls_jolts"
+ }
+ %econ.hotel.flsa_tipped_cash_wage_usd{
+  value: 2.13, unit: "USD per hour", abs: 0, status: #settled
+  at: "federal minimum cash wage for a tipped employee under 29 U.S.C. 203(m); many states set more"
+  as_of: "2026-10-01"
+  src: ~"../sources/economy-and-markets.spw#src_econ_dol_fs15"
+ }
+ %econ.hotel.dma_max_fine_pct{
+  value: 10, unit: "percent of worldwide turnover", abs: 0, status: #settled
+  at: "ceiling for a first infringement under the Digital Markets Act; repeat infringement 20"
+  src: ~"../sources/economy-and-markets.spw#src_econ_wiki_dma"
+ }
+}
+
+#>q_econ_podcast
+^"podcast"{
+ %econ.podcast.edison_2024_youtube_pct{
+  value: 31, unit: "percent of weekly podcast listeners 13+", abs: 0.5, status: #settled
+  at: "service used most to listen to podcasts, Edison Podcast Metrics, published 2024-10-23"
+  as_of: "2024-10-23"
+  src: ~"../sources/economy-and-markets.spw#src_econ_edison_2024_platforms"
+ }
+ %econ.podcast.edison_2024_spotify_pct{
+  value: 27, unit: "percent of weekly podcast listeners 13+", abs: 0.5, status: #settled
+  at: "service used most to listen to podcasts, Edison Podcast Metrics, published 2024-10-23"
+  as_of: "2024-10-23"
+  src: ~"../sources/economy-and-markets.spw#src_econ_edison_2024_platforms"
+ }
+ %econ.podcast.edison_2024_apple_pct{
+  value: 15, unit: "percent of weekly podcast listeners 13+", abs: 0.5, status: #settled
+  at: "service used most to listen to podcasts, Edison Podcast Metrics, published 2024-10-23"
+  as_of: "2024-10-23"
+  src: ~"../sources/economy-and-markets.spw#src_econ_edison_2024_platforms"
+ }
+ %econ.podcast.edison_latest_youtube_pct{
+  value: "unset", unit: "percent of weekly podcast listeners 13+", status: #verify
+  at: "latest Edison quarter; fieldwork quarter and wording must be copied from the report"
+  as_of: "2026-10-01"
+  src: "unsourced"
+ }
+ %econ.podcast.pew_2022_sample_n{
+  value: 5132, unit: "US adults", abs: 0, status: #settled
+  at: "Pew American Trends Panel wave fielded 2022-12-05 to 2022-12-11"
+  src: ~"../sources/economy-and-markets.spw#src_econ_pew_2023_podcasts"
+ }
+}
+
+#>q_econ_tv
+^"tv"{
+ %econ.tv.gauge_2025_05_streaming_pct{
+  value: 44.8, unit: "percent of US TV usage", abs: 0.05, status: #settled
+  at: "Nielsen The Gauge, May 2025, released 2025-06-17"
+  as_of: "2025-06-17"
+  src: ~"../sources/economy-and-markets.spw#src_econ_nielsen_2025_milestone"
+ }
+ %econ.tv.gauge_2025_05_cable_pct{
+  value: 24.1, unit: "percent of US TV usage", abs: 0.05, status: #settled
+  at: "Nielsen The Gauge, May 2025"
+  as_of: "2025-06-17"
+  src: ~"../sources/economy-and-markets.spw#src_econ_nielsen_2025_milestone"
+ }
+ %econ.tv.gauge_2025_05_broadcast_pct{
+  value: 20.1, unit: "percent of US TV usage", abs: 0.05, status: #settled
+  at: "Nielsen The Gauge, May 2025"
+  as_of: "2025-06-17"
+  src: ~"../sources/economy-and-markets.spw#src_econ_nielsen_2025_milestone"
+ }
+ %econ.tv.gauge_2025_05_youtube_pct{
+  value: 12.5, unit: "percent of US TV usage", abs: 0.05, status: #settled
+  at: "Nielsen The Gauge, May 2025, YouTube on the TV set"
+  as_of: "2025-06-17"
+  src: ~"../sources/economy-and-markets.spw#src_econ_nielsen_2025_milestone"
+ }
+ %econ.tv.gauge_latest_youtube_pct{
+  value: "unset", unit: "percent of US TV usage", status: #verify
+  at: "latest Gauge month seen on 2026-10-01 was July 2026; figures sit in images, so the value is unread"
+  as_of: "2026-10-01"
+  src: ~"../sources/economy-and-markets.spw#src_econ_nielsen_gauge"
+ }
+}
+
+#>q_econ_ads
+^"ads"{
+ %econ.ads.iab_us_internet_2024_busd{
+  value: 258, unit: "billion USD", rel: 0.005, status: #settled
+  at: "US internet advertising revenue, full year 2024; the report page truncates the decimal"
+  as_of: "2025-04-17"
+  src: ~"../sources/economy-and-markets.spw#src_econ_iab_2024"
+ }
+ %econ.ads.iab_us_internet_2025_growth_pct{
+  value: 13.9, unit: "percent year over year", abs: 0.05, status: #settled
+  at: "US internet advertising revenue growth, full year 2025; total described as nearly 300 billion USD"
+  as_of: "2026-04-16"
+  src: ~"../sources/economy-and-markets.spw#src_econ_iab_2025"
+ }
+}
+
+#>q_econ_media
+^"media"{
+ %econ.media.us_print_units_latest_m{
+  value: "unset", unit: "million print units", status: #verify
+  at: "US print book units, latest full year, Circana BookScan point of sale"
+  as_of: "2026-10-01"
+  src: "unsourced"
+ }
+ %econ.media.us_publishing_revenue_latest_busd{
+  value: "unset", unit: "billion USD", status: #verify
+  at: "US publisher revenue, latest full year, AAP StatShot"
+  as_of: "2026-10-01"
+  src: ~"../sources/economy-and-markets.spw#src_econ_aap_statshot"
+ }
+ %econ.media.us_box_office_latest_busd{
+  value: "unset", unit: "billion USD", status: #verify
+  at: "US and Canada box office, latest full year, Comscore"
+  as_of: "2026-10-01"
+  src: "unsourced"
+ }
+ %econ.media.window_2019_home_video_days{
+  value: 90, unit: "days", abs: 0, status: #superseded
+  at: "exclusive theatrical window before physical home video required by major US chains, 2019"
+  src: ~"../sources/economy-and-markets.spw#src_econ_wiki_release_window"
+ }
+ %econ.media.window_wb_regal_2022_days{
+  value: 45, unit: "days", abs: 0, status: #settled
+  at: "exclusive window in the Warner Bros. and Cineworld Regal agreement announced March 2021 for 2022"
+  src: ~"../sources/economy-and-markets.spw#src_econ_wiki_release_window"
+ }
+}
+
+#>q_econ_singles
+^"singles"{
+ %econ.singles.alibaba_gmv_2019_byuan{
+  value: 268.4, unit: "billion CNY", abs: 0.05, status: #settled
+  at: "Alibaba reported Singles Day gross merchandise volume, one-day event, 2019"
+  src: ~"../sources/economy-and-markets.spw#src_econ_wiki_singles_day"
+ }
+ %econ.singles.alibaba_gmv_2020_byuan{
+  value: 498.2, unit: "billion CNY", abs: 0.05, status: #settled
+  at: "Alibaba reported GMV over a widened 1 to 11 November window, 2020"
+  src: ~"../sources/economy-and-markets.spw#src_econ_wiki_singles_day"
+ }
+ %econ.singles.alibaba_fine_2021_busd{
+  value: 2.8, unit: "billion USD", rel: 0.02, status: #settled
+  at: "SAMR antitrust fine on Alibaba, April 2021"
+  src: ~"../sources/economy-and-markets.spw#src_econ_wiki_alibaba"
+ }
+ %econ.singles.viya_fine_2021_byuan{
+  value: 1.34, unit: "billion CNY", rel: 0.01, status: #settled
+  at: "tax penalty and back taxes assessed on the livestreamer Viya, December 2021"
+  src: ~"../sources/economy-and-markets.spw#src_econ_wiki_viya"
+ }
+}

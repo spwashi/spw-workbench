@@ -1,0 +1,133 @@
+# Carrier Manufacturing
+#
+# How mass carriers are made: the lacquer-to-stamper chain behind records and discs, the pressing of shellac and vinyl, the coating of tape and film, and the molding and sputtering of optical discs.
+
+#>media_carriers_manufacturing
+#:layer #!reference
+#:domain #!media_carriers
+#:form #!comparison
+#:level #!foundation
+#:review #!sourced
+#:valence #!bone
+#:era #!modern
+
+^"emit"{
+ ~#title: "Carrier Manufacturing"
+ ~#claim: "Records and optical discs are both copied from a negative metal stamper grown from a master, while tape and film are coated webs slit to width."
+ ~#proof: "Copeland on disc matrices; Van Bogart and Daniel on tape coating; Pohlmann and Taylor on disc mastering and molding."
+ ~#door: "Read the decay ledger next to see how each material fails."
+ ~#audience: "readers who want to know how a record, a tape, or a disc is physically made"
+ continuity: "Carrier Manufacturing | metal stamper"
+ cold_open: "A record and a compact disc are both pressed from a metal stamper grown on a single master."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ needs: [ ~"../../physical/materials/pigments-and-binders.spw#materials_pigments" ]
+ feeds: [ ~"./carrier-decay-and-fixity.spw#media_carriers_decay", ~"./media-object-dating.spw#media_carriers_object_dating" ]
+ see: [ ~"./moving-image/film-stock-and-bases.spw#media_carriers_film_stock" ]
+}
+
+^["concepts"]{
+ primary: [ #stamper, #coating ]
+ transfers: [ #mass_copy, #binder ]
+ tensions: [ #generation_loss ]
+}
+
+^["matrix"]{
+ columns: #[ carrier, master, copy_tool, material, finishing ]
+ ^["grooved_discs"]{
+  #>media_carriers_mfg_disc
+  ^["matrix_chain"]{
+   #:claim #!settled
+   statement: "A groove cut into a lacquer master is silvered and nickel-plated to make a negative father, which yields positive mothers and from them negative stampers."
+   steps: << "cut lacquer on a lathe" ; "silver and electroplate" ; "peel the father" ; "grow mothers" ; "grow stampers" ; "press" >>
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_copeland_2008"
+   ~#say(one cut groove becomes thousands of pressings)
+  }
+  #>media_carriers_mfg_shellac
+  ^["shellac_pressing"]{
+   #:era #!industrial
+   #:claim #!settled
+   statement: "Shellac records were pressed hot from a compound of lac resin with mineral fillers and carbon black, which made them hard, heavy, and brittle."
+   sources: [ ~"../../registries/sources/record-and-carriers.spw#src_media_copeland_2008", ~"../../registries/sources/record-and-carriers.spw#src_media_enc_shellac" ]
+   origin: "lac is the secretion of the lac insect Kerria lacca, gathered from forest trees in India and Thailand"
+  }
+  #>media_carriers_mfg_vinyl
+  ^["vinyl_pressing"]{
+   #:era #!modern
+   #:claim #!settled
+   statement: "Microgroove records are pressed from a vinyl chloride and vinyl acetate compound, softer and quieter than shellac, so finer grooves survive play."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_millard_2005"
+  }
+ }
+ ^["coated_webs"]{
+  #>media_carriers_mfg_tape
+  ^["tape_coating"]{
+   #:claim #!settled
+   statement: "Tape is made by dispersing magnetic particles in a polymer binder, coating it onto a base film, orienting the particles in a field, then drying, calendering, and slitting."
+   sources: [ ~"../../registries/sources/record-and-carriers.spw#src_media_van_bogart_1995", ~"../../registries/sources/record-and-carriers.spw#src_media_daniel_mee_clark_1999" ]
+   bases: "cellulose acetate in early tape, then polyester"
+   particles: "iron oxide first, later chromium dioxide, cobalt-modified oxide, and metal particles"
+  }
+  #>media_carriers_mfg_film
+  ^["film_coating"]{
+   #:claim #!settled
+   statement: "Motion-picture film is a light-sensitive gelatin emulsion coated onto a flexible base of nitrate, then acetate, then polyester."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_nfpf_2004"
+  }
+ }
+ ^["optical_discs"]{
+  #>media_carriers_mfg_optical
+  ^["disc_molding"]{
+   #:era #!contemporary
+   #:claim #!settled
+   statement: "A laser exposes pits in photoresist on a glass master; nickel electroforming makes a stamper, which shapes molten polycarbonate in an injection mold."
+   steps: << "coat glass with photoresist" ; "expose with a laser beam recorder" ; "develop" ; "electroform nickel" ; "mold polycarbonate" ; "sputter aluminum" ; "lacquer and print" >>
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_pohlmann_1992"
+  }
+  #>media_carriers_mfg_layers
+  ^["layer_geometry"]{
+   #:claim #!settled
+   statement: "A CD is read through about 1.2 mm of polycarbonate, a DVD bonds two 0.6 mm halves, and a Blu-ray reads through a 0.1 mm cover layer."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_taylor_2006"
+   why: "a thinner cover layer tolerates the higher numerical aperture that shorter wavelengths need"
+   reads: %[media.optical.cd_na, media.optical.dvd_na, media.optical.bd_na]
+  }
+  #>media_carriers_mfg_recordable
+  ^["recordable_dye"]{
+   #:claim #!settled
+   statement: "Recordable discs are molded blanks with a pregroove, coated with an organic dye that the writing laser marks, under a thin metal reflector."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_byers_2003"
+  }
+ }
+ #>media_carriers_mfg_shared_pattern
+ ^["shared_pattern"]{
+  #:claim #!interpretive
+  statement: "Grooved and optical discs share one copying logic: a single master, a negative metal tool, and fast hot forming, so unit cost falls with run length."
+  see: [ ~"../inscription/print-and-press.spw#inscription_print_gutenberg" ]
+ }
+}
+
+#>media_carriers_mfg_stamper_q
+?["Is the metal stamper the shared ancestor of type founding, record pressing, and disc molding?"]{
+ #:depth #!historical ~#lens(craft practice)
+ #:claim #!speculative
+ ~#hypothesis: "Each mass carrier gets cheap by making one negative tool from a master and stamping many positives, so their cost curves should share a shape."
+ !probe{ "compare per-unit cost against run length for type, records, and discs from industry histories" =id[p_media_mfg_stamper] =kind[lit] }
+ $%[media.optical.cd_track_pitch_um, media.disc.lp_speed_rpm]
+ breaks: "a type punch makes reusable sorts that are rearranged, while a disc stamper copies one fixed program"
+ ~"./carrier-manufacturing.spw#media_carriers_mfg_shared_pattern" ~#neighbor(nearest)
+}

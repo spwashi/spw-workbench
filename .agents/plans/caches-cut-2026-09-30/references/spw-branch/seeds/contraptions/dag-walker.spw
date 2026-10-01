@@ -1,0 +1,18 @@
+#>bdw_qob
+#:role #!instrument
+^["quarter_of_birth"]{ gloss: "quarter of birth" }
+#>bdw_school
+#:role #!treatment
+^["schooling"]{ gloss: "years of schooling" }
+#>bdw_ability
+#:role #!unobserved
+^["ability"]{ gloss: "unmeasured ability" }
+#>bdw_wage
+#:role #!outcome
+^["log_wage"]{ gloss: "log weekly wage" }
+^["arrows"]{
+ =~"./dag-walker.spw#bdw_qob"[causes]{ ~"./dag-walker.spw#bdw_school" }
+ =~"./dag-walker.spw#bdw_ability"[causes]{ ~"./dag-walker.spw#bdw_school" }
+ =~"./dag-walker.spw#bdw_ability"[causes]{ ~"./dag-walker.spw#bdw_wage" }
+ =~"./dag-walker.spw#bdw_school"[causes]{ ~"./dag-walker.spw#bdw_wage" }
+}

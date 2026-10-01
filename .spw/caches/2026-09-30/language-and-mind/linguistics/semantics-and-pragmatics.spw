@@ -1,0 +1,179 @@
+# Semantics and Pragmatics
+#
+# A lattice of terms for how sentence meaning is composed from typed parts and how speakers mean more than they say.
+
+#>linguistics_semantics
+#:layer #!reference
+#:domain #!linguistics
+#:form #!glossary
+#:level #!advanced
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Semantics and Pragmatics"
+ ~#claim: "Typed composition explains what sentences say, and implicature and presupposition explain what speakers convey beyond it."
+ ~#proof: "Types from Montague and Heim and Kratzer; implicature from Grice and Horn; presupposition from Karttunen, Stalnaker, and Lewis."
+ ~#door: "Start at composition, follow the lattice down to the determiner type, then cross to implicature."
+ ~#audience: "readers comfortable with sets, functions, and introductory syntax"
+ continuity: "Semantics and Pragmatics | typed composition"
+ cold_open: "Typed composition tells you what a sentence says, and pragmatics tells you what the speaker meant by saying it."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/linguistics/semantics-pragmatics-and-discourse.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: [
+  "the raw file typed the determiners every, some, and most as the generalized quantifier type; a determiner is a relation between two sets, and the noun phrase it heads is the generalized quantifier",
+  "the raw file reduced the locutionary act to phonetic articulation; Austin includes uttering words with sense and reference",
+  "the raw wonder stated Rational Speech Act inference as how humans work; it is credited to Frank and Goodman and kept as an emerging model"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./morphology-and-syntax.spw#linguistics_syntax_c_command" ]
+ analog: [ ~"../../formal/computing/abstract-computation.spw#computing_abstract" ]
+}
+
+^["concepts"]{
+ primary: [ #compositionality, #semantic_type, #implicature ]
+ transfers: [ #lambda_calculus, #common_ground ]
+ tensions: [ #default_inference ]
+}
+
+^["meaning"]{
+ #>linguistics_semantics_composition
+ ^["composition"]{
+  #:claim #!settled
+  statement: "The meaning of a complex expression is a function of the meanings of its parts and the way they are combined."
+  credit: "attributed to Frege, whose 1892 essay separates sense from reference; the principle is named for him later"
+  narrower: [ ~"./semantics-and-pragmatics.spw#linguistics_semantics_types", ~"./semantics-and-pragmatics.spw#linguistics_semantics_intension" ]
+  sources: [ ~"../../registries/sources/language-and-communities.spw#src_lang_frege_1892", ~"../../registries/sources/language-and-communities.spw#src_lang_heim_kratzer_1998" ]
+ }
+ #>linguistics_semantics_types
+ ^["semantic_types"]{
+  #:claim #!settled
+  statement: "Type e denotes entities, type t truth values, and a pair of types a and b names functions from a to b; meanings combine by functional application."
+  broader: [ ~"./semantics-and-pragmatics.spw#linguistics_semantics_composition" ]
+  narrower: [ ~"./semantics-and-pragmatics.spw#linguistics_semantics_determiner", ~"./semantics-and-pragmatics.spw#linguistics_semantics_gq" ]
+  example: "an intransitive verb such as sleeps has type e to t: it maps an entity to a truth value"
+  sources: [ ~"../../registries/sources/language-and-communities.spw#src_lang_montague_1973", ~"../../registries/sources/language-and-communities.spw#src_lang_heim_kratzer_1998" ]
+ }
+ #>linguistics_semantics_gq
+ ^["generalized_quantifier"]{
+  #:claim #!settled
+  statement: "A quantified noun phrase such as every student denotes a set of sets, type from e-to-t to t, true of a predicate that holds of every student."
+  broader: [ ~"./semantics-and-pragmatics.spw#linguistics_semantics_types" ]
+  source: ~"../../registries/sources/language-and-communities.spw#src_lang_barwise_cooper_1981"
+ }
+ #>linguistics_semantics_determiner
+ ^["determiner_type"]{
+  #:claim #!settled
+  statement: "A determiner such as every, some, or most relates two sets, so it takes a noun meaning and returns a generalized quantifier: type from e-to-t to the quantifier type."
+  notation: "every : <<e,t>,<<e,t>,t>>; every student : <<e,t>,t>"
+  broader: [ ~"./semantics-and-pragmatics.spw#linguistics_semantics_types" ]
+  sources: [ ~"../../registries/sources/language-and-communities.spw#src_lang_barwise_cooper_1981", ~"../../registries/sources/language-and-communities.spw#src_lang_heim_kratzer_1998" ]
+ }
+ #>linguistics_semantics_scope
+ ^["quantifier_scope"]{
+  #:claim #!contested
+  statement: "Every student read a book has a reading with one book for all and a reading with a book per student; covert movement to Logical Form is one account of the second."
+  broader: [ ~"./semantics-and-pragmatics.spw#linguistics_semantics_gq" ]
+  source: ~"../../registries/sources/language-and-communities.spw#src_lang_may_1977"
+  ~#counter(type-shifting and in-situ accounts derive inverse scope without movement)
+ }
+ #>linguistics_semantics_intension
+ ^["intension"]{
+  #:claim #!settled
+  statement: "An intension maps each possible world to an extension, so a proposition is a function from worlds to truth values and necessity is truth in all accessible worlds."
+  broader: [ ~"./semantics-and-pragmatics.spw#linguistics_semantics_composition" ]
+  narrower: [ ~"./semantics-and-pragmatics.spw#linguistics_semantics_modality" ]
+  source: ~"../../registries/sources/language-and-communities.spw#src_lang_montague_1973"
+ }
+ #>linguistics_semantics_modality
+ ^["modality"]{
+  #:claim #!settled
+  statement: "Modals quantify over worlds picked out by a modal base and ranked by an ordering source, which separates epistemic must from deontic must."
+  broader: [ ~"./semantics-and-pragmatics.spw#linguistics_semantics_intension" ]
+  source: ~"../../registries/sources/language-and-communities.spw#src_lang_kratzer_2012"
+ }
+}
+
+^["use"]{
+ #>linguistics_semantics_implicature
+ ^["implicature"]{
+  #:claim #!settled
+  statement: "A conversational implicature is meaning a hearer infers by assuming the speaker is cooperative; unlike entailment, it can be cancelled."
+  maxims: #[ quantity, quality, relation, manner ]
+  narrower: [ ~"./semantics-and-pragmatics.spw#linguistics_semantics_scalar" ]
+  source: ~"../../registries/sources/language-and-communities.spw#src_lang_grice_1975"
+ }
+ #>linguistics_semantics_scalar
+ ^["scalar_implicature"]{
+  #:claim #!settled
+  statement: "Saying some on a scale with all usually conveys not all, because a speaker who knew all would have said it; the inference can be cancelled."
+  example: "some of the cookies are gone, in fact all of them are"
+  broader: [ ~"./semantics-and-pragmatics.spw#linguistics_semantics_implicature" ]
+  source: ~"../../registries/sources/language-and-communities.spw#src_lang_horn_1972"
+ }
+ #>linguistics_semantics_presupposition
+ ^["presupposition"]{
+  #:claim #!settled
+  statement: "Triggers such as know, stop, and clefts take content for granted; it survives negation and questions, and compound sentences filter it by predictable rules."
+  example: "Kim stopped smoking and Kim did not stop smoking both take for granted that Kim smoked"
+  narrower: [ ~"./semantics-and-pragmatics.spw#linguistics_semantics_common_ground" ]
+  source: ~"../../registries/sources/language-and-communities.spw#src_lang_karttunen_1973"
+ }
+ #>linguistics_semantics_common_ground
+ ^["common_ground_and_accommodation"]{
+  #:claim #!settled
+  statement: "Assertions update the common ground shared by speakers, and a hearer can accommodate an unshared presupposition by quietly adding it."
+  broader: [ ~"./semantics-and-pragmatics.spw#linguistics_semantics_presupposition" ]
+  sources: [ ~"../../registries/sources/language-and-communities.spw#src_lang_stalnaker_1978", ~"../../registries/sources/language-and-communities.spw#src_lang_lewis_1979" ]
+ }
+ #>linguistics_semantics_speech_acts
+ ^["speech_acts"]{
+  #:claim #!settled
+  statement: "Austin separates the locution, saying words with sense and reference, from its illocutionary force and its perlocutionary effect; performatives succeed or misfire by felicity conditions."
+  example: "I hereby adjourn the meeting succeeds only when said by someone entitled to adjourn it"
+  sources: [ ~"../../registries/sources/language-and-communities.spw#src_lang_austin_1962", ~"../../registries/sources/language-and-communities.spw#src_lang_searle_1969" ]
+ }
+ #>linguistics_semantics_rsa
+ ^["rational_speech_act"]{
+  #:claim #!emerging
+  statement: "The Rational Speech Act model treats a listener as reasoning about a speaker who chooses informative words, and predicts choices in simple reference games."
+  broader: [ ~"./semantics-and-pragmatics.spw#linguistics_semantics_implicature" ]
+  source: ~"../../registries/sources/language-and-communities.spw#src_lang_frank_goodman_2012"
+  ^["limits"]{
+   holds: "reference games with small, known sets of objects and words"
+   fails: "open conversation with unknown alternatives has not been modeled at that precision"
+  }
+ }
+}
+
+#>linguistics_semantics_default_q
+?["Does a hearer compute not all by default, or only when context asks for it?"]{
+ #:depth #!experiential ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "The not-all reading arrives later than the literal reading and only when the stronger alternative is relevant, so pragmatic judgments of some take longer."
+ !probe{ "time true or false judgments of some-sentences under literal and pragmatic instructions, after Bott and Noveck" =id[p_lang_semantics_scalar_timing] =kind[lit] }
+ cites: ~"../../registries/sources/language-and-communities.spw#src_lang_bott_noveck_2004"
+ ~"./semantics-and-pragmatics.spw#linguistics_semantics_scalar" ~#neighbor(nearest)
+}
+
+#>linguistics_semantics_types_q
+?["Is a semantic type checker the same machine as a programming type checker?"]{
+ #:depth #!computational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Montague-style composition is close to a typed lambda calculus, so a small type checker can reject ill-formed meanings that hearers also reject."
+ breaks: "linguists assign types to fit human judgments, and hearers repair mismatches by coercion; a compiler rejects what its declared types forbid"
+ !probe{ "type-check ten sentence meanings with a toy checker and compare its rejections with native judgments" =id[p_lang_semantics_type_checker] =kind[build] }
+ ~"./semantics-and-pragmatics.spw#linguistics_semantics_types" ~#neighbor(nearest)
+}

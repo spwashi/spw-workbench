@@ -1,0 +1,179 @@
+# Governance and Tenure
+#
+# Who decides what in a US university, what tenure protects, and how the faculty workforce shifted toward contingent appointments.
+
+#>institutions_governance
+#:layer #!reference
+#:domain #!institutions
+#:form #!ledger
+#:level #!advanced
+#:review #!sourced
+#:valence #!bone
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Governance and Tenure"
+ ~#claim: "Governing boards hold final legal authority; faculty hold primary responsibility for curriculum and faculty status by shared-governance norms, and senates mostly advise."
+ ~#proof: "The 1966 AAUP, ACE, and AGB statement on government; the 1940 Statement on tenure; AAUP workforce data for 2021."
+ ~#door: "Walk the tenure states next, then read the contingency claim beside the funding matrix."
+ ~#audience: "students, new faculty, and staff learning how a university decides"
+ continuity: "Governance and Tenure | final legal authority"
+ cold_open: "Boards keep final legal authority, faculty guide curriculum, and tenure protects inquiry for a shrinking share of teachers."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/university-education/governance-and-tenure.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "faculty senate resolutions described as binding; the 1966 Statement makes boards final and senates mostly advisory",
+  "75 percent tenure-line in 1970 to over 70 percent contingent replaced by AAUP figures: 47 percent contingent in 1987, 68 percent in 2021",
+  "mandatory terminal year after denial restated as the 1940 Statement notice standard, binding only where adopted",
+  "six to ten blind external letters restated: letter counts vary and the candidate is known to reviewers",
+  "board members as lacking academic background removed as a stereotype"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/learning-and-generations.spw#q_learn_faculty" ]
+ see: [ ~"./research-funding.spw#institutions_research_funding" ]
+}
+
+^["concepts"]{
+ primary: [ #shared_governance, #tenure ]
+ transfers: [ #academic_freedom ]
+ tensions: [ #contingent_faculty ]
+}
+
+^["ledger"]{
+ ^["authority"]{
+  #>institutions_governance_boards_final
+  ^["boards_final"]{
+   #:claim #!settled
+   statement: "A governing board holds final institutional authority under charter or state law; the 1966 Statement asks it to delegate academic matters and rarely override faculty judgment there."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_aaup_1966"
+   ^["limits"]{
+    holds: "the 1966 joint statement as a professional norm adopted by many institutions"
+    fails: "state law, collective bargaining contracts, and system boards change who decides at a given campus"
+   }
+  }
+  #>institutions_governance_faculty_primary
+  ^["faculty_primary"]{
+   #:claim #!settled
+   statement: "The 1966 Statement assigns faculty primary responsibility for curriculum, methods of instruction, research, faculty status, and related student life."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_aaup_1966"
+   ~#say(faculty lead on what is taught and who teaches it)
+  }
+  #>institutions_governance_senate_advisory
+  ^["senate_advisory"]{
+   #:claim #!interpretive
+   statement: "Most faculty senates advise rather than bind; their weight comes from the board concurring with faculty judgment, which the 1966 Statement expects except for compelling stated reasons."
+   counter: ~"../../registries/sources/learning-and-generations.spw#src_learn_aaup_1966"
+  }
+ }
+ ^["tenure"]{
+  #>institutions_governance_statement_1940
+  ^["statement_1940"]{
+   #:claim #!settled
+   statement: "The 1940 Statement protects freedom in research, in teaching, and in extramural speech, and caps full-time probation at seven years before tenure."
+   reads: %[learn.aaup.probation_max_years]
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_aaup_1940"
+  }
+  #>institutions_governance_notice
+  ^["notice"]{
+   #:claim #!settled
+   statement: "The 1940 Statement asks for at least one year of notice before probation ends when a teacher will not be continued."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_aaup_1940"
+   ^["limits"]{
+    holds: "institutions whose handbooks or contracts adopt the AAUP standards"
+    fails: "AAUP statements are norms, so a terminal year is owed only where policy or contract says so"
+   }
+  }
+  #>institutions_governance_due_process
+  ^["due_process"]{
+   #:claim #!settled
+   statement: "At a public institution, tenure can create a property interest that triggers constitutional due process before dismissal; a one-year contract alone does not."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_roth_1972"
+  }
+ }
+ ^["workforce"]{
+  #>institutions_governance_contingency
+  ^["contingency"]{
+   #:claim #!settled
+   statement: "Contingent appointments, part-time plus full-time off the tenure track, rose from about 47 percent of US faculty in 1987 to 68 percent in 2021."
+   reads: %[learn.faculty.contingent_1987_percent, learn.faculty.contingent_2021_percent]
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_colby_2023"
+   ^["context"]{
+    long_view: "Schuster and Finkelstein trace the restructuring of academic appointments across the late twentieth century"
+    sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_schuster_finkelstein_2006" ]
+   }
+  }
+ }
+}
+
+^["tenure_states"]{
+ #:claim #!interpretive
+ shape: "a typical US research-university sequence; titles, votes, and clocks vary by institution and union contract"
+ path: <<
+  "hire on the tenure track" ;
+  "annual or midpoint review" ;
+  "dossier with research, teaching, and service" ;
+  "external letters" ;
+  "department vote" ;
+  "college committee" ;
+  "provost and president" ;
+  "board action"
+ >>
+
+ #>institutions_governance_decision
+ ^["decision"]{
+  ?match[@outcome]{
+   "granted" => ~"./governance-and-tenure.spw#institutions_governance_statement_1940",
+   "denied" => ~"./governance-and-tenure.spw#institutions_governance_notice",
+   _ => ![appeal_or_extension]
+  }
+  after_tenure: "promotion to full professor and periodic post-tenure review where policy requires it"
+ }
+ ^["dossier"]{
+  research: "publications, grants, and work in progress, judged by peers in the field"
+  teaching: "course materials, peer observation, and student evaluations"
+  service: "committee, editorial, and community work"
+  letters: "external reviewers are chosen partly by the department; their identities are usually kept from the candidate"
+ }
+}
+
+^["try"]{
+ #>institutions_governance_try_handbook
+ ^["read_the_handbook"]{
+  materials: [
+   "a public faculty handbook or governance bylaws from any college website",
+   "a highlighter or a notes file"
+  ]
+  steps: <<
+   "find the section on the governing board" ;
+   "find the faculty senate charge" ;
+   "mark each verb: approves, recommends, consults, advises" ;
+   "list which body has the last word on curriculum and on tenure"
+  >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "none worth naming"
+  shows: ~"./governance-and-tenure.spw#institutions_governance_boards_final"
+ }
+}
+
+#>institutions_governance_horizon_q
+?["Does job security lengthen the questions researchers dare to ask?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Scholars with long security and tolerance for early failure choose riskier, longer projects than scholars on short renewable contracts."
+ !probe{ "compare novelty and citation spread of work by tenured and fixed-term researchers in one field" =id[p_learn_governance_horizon] =kind[lit] }
+ $%[learn.faculty.contingent_2021_percent]
+ literature: ~"../../registries/sources/learning-and-generations.spw#src_learn_azoulay_2011"
+ ~"./governance-and-tenure.spw#institutions_governance_contingency" ~#neighbor(nearest)
+}

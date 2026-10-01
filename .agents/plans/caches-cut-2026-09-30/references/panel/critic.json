@@ -1,0 +1,425 @@
+{
+ "ok": false,
+ "problems": [
+  {
+   "kind": "verified_pass",
+   "severity": "info",
+   "detail": "Checks (1), (3), (4), (5) and (7) pass when run against the plan JSON, which is byte-identical to panel/final2/final.min.json. Migration has 208 rows for the 208 generated files, each once. The tarball holds 208 files including caches/index.spw, and 207 of them are byte-identical to HEAD. The 209th file on disk, resume/2026-09-30-direction.spw, is out of scope as intended. All 372 tree paths are unique and all 372 file anchors are unique within the cut. No path contains query|expr|ops|algos|experiments|style|phase. Every directory has an index.spw. No sibling directory name is a string prefix of another. Every migration target and every cross_link endpoint is a tree path, and no cross_link points up to an index. All 18 trails exist in the tree and every stop resolves to a planned anchor. Each of the 16 packages owns its files exactly once: no tree path is unowned or owned twice, owned counts equal new_files, and sizes run from 2505 to 3420 lines. Raw inputs are consistent with migration targets. All 16 forms and 52 domains are used, each on at least 2 files and at most N/3. Spot checks of source and calendar facts: 22 VS Code commands, 14 settings, Kotlin 2.4.10, Java 21, Gradle 9.5.0, builds 242 to 262.*, 513 commits at 229aedcf since 2026-01-08. Weekdays Thu Oct 1, Mon Oct 12, Thu Nov 26, Mon Dec 21, Fri Jan 1 and Mon Jan 4 are correct. Handle namespaces avoid the gate's REFLEXIVE_HANDLES prefixes.",
+   "fix": "none"
+  },
+  {
+   "kind": "anchor_collision_repo_wide",
+   "severity": "high",
+   "detail": "Planned anchor spw_index (2026-09-30/spw/index.spw) duplicates #>spw_index in the canon root .spw/index.spw and in packages/spw-cli/templates/init/base/.spw/index.spw. The cut lives under .spw/, so LSP deixis, spw resolve and spw graph will see two homes. The cut gate checks anchor uniqueness only inside the cut dir, so it will not catch this. A second, smaller case: cut_contract and cut_vocabulary also exist in .agents/plans/caches-cut-2026-09-30/references/staging/ and will be duplicated repo-wide once the cut opens.",
+   "fix": "Rename the spw class index anchor, e.g. spw_class_index, and update the root bundle and any trail or bundle refs. Add a repo-wide anchor scan over .spw/, lib/ and .agents/ to the writer checklist or the gate. After the cut opens, remove the staging copies or mark them superseded."
+  },
+  {
+   "kind": "stale_staging_source",
+   "severity": "high",
+   "detail": "The root and materials-and-engineering notes point writers to scratchpad/cut-staging/2026-09-30, but the plan stream (2026-10-01 06:22) says .agents/plans/caches-cut-2026-09-30/references/staging is the source of truth. Its contract.spw is newer and adds five hazards the scratchpad copy lacks: silent_errors, prefix_path, valence_capture, fragment_quotes, path_dialects. The scratchpad copy also still holds the tarball. vocabulary.spw, water.spw and the matter registries are identical in both copies.",
+   "fix": "Repoint every staged-file reference in the root and materials-and-engineering notes to .agents/plans/caches-cut-2026-09-30/references/staging/2026-09-30/. Root reconciles the domain, form and relation sets and the scope line from that newer contract."
+  },
+  {
+   "kind": "harm_quarantine_labeling",
+   "severity": "high",
+   "detail": "The owner's shelf ^[\"quarantine\"] (229aedcf) names nine files as do-not-cite. Migration marks only three as quarantine (common-deficiencies, nutritional-support-strategies, physiological taste). The other six are marked reframe: developmental-stages, circadian-and-metabolic-resilience, the three nursing files (pathophysiology, critical-care, ethical-care) and ecological-and-spatial-stewards. Those six appear as tree 'sources' (defined as 'draws on') and in the raw_inputs of plants-ecology-care and language-and-communities. The manifest action column would then contradict the owner's quarantine, and 'reframe' invites writers to import content.",
+   "fix": "Set action quarantine for all nine, with to = [provenance/harm-register.spw, successor file]. In the successor tree entries (development-as-succession, biological-clocks, nursing/pathophysiology-and-pharmacology, nursing/critical-care, nursing/ethics-and-presence, communities/commons-roles), list these raws as lineage_only, used for topic names only. Copy the nine-file list into contract.spw and add a grep or gate rule: no .spw/caches/ path inside any ~ ref or source: binding."
+  },
+  {
+   "kind": "harm_review_ownership_and_scope",
+   "severity": "medium",
+   "detail": "No package owns the post-write harm sweep. The risks section says only 'reviewers grep living/ and society/communities/'. That scope misses other health-adjacent surfaces: spw/perspectives/life-and-clinical-scientists.spw (form protocol, with example scripts), learning/secondary/family-and-community-wraparound.spw, making/broadcast/broadcast-cadence.spw (voice care), living/bioengineering/, spw/contraptions.spw and season/season-journal.spw. The spw-branch notes carry no harm-firewall line.",
+   "fix": "Make the whole-cut sweep a final stage owned by provenance-and-reference. It checks for imperatives, dose units, supplement and diet names, and remediation verbs, and logs hits to the harm register. Add to the spw-branch notes: example protocols in perspectives are non-clinical (lab bench or guideline-ledger shape), with no patient-care steps."
+  },
+  {
+   "kind": "harm_rule_ambiguity",
+   "severity": "medium",
+   "detail": "The 'no doses' rule collides with content the plan itself asks for. limiting-nutrients.spw tells iodization and folate-fortification history, which invites ppm and µg/100 g figures. guideline-currency-ledger.spw names vancomycin AUC 2020, which invites the 400-600 target. Writers will not know whether population policy parameters or guideline targets are allowed.",
+   "fix": "Add one rule to contract.spw. Population policy parameters are allowed only as sourced registry cells with as_of and framed as history or policy. Individual doses and therapeutic targets are never stated: name the guideline body and year only."
+  },
+  {
+   "kind": "errata_routing_gap",
+   "severity": "medium",
+   "detail": "Four migration rows say errors go to errata, but their 'to' lists no errata file. The errata 'sources' lists and the provenance-and-reference raw_inputs also omit them, so the errata writer is never handed these raws. The four are: electrical-and-computer-engineering/taste (EUV, die size), materials-science/taste (mineral count, Si), physics-and-mechanical-engineering/taste (fatigue, viscosity) and neuroscience/taste (split-brain, neurogenesis, energy). errata-life-and-mind lists sources 'new'.",
+   "fix": "Add provenance/errata-technical.spw to the first three rows and provenance/errata-life-and-mind.spw to the neuroscience row. Add the four raws to those ledgers' sources and to the provenance-and-reference raw_inputs."
+  },
+  {
+   "kind": "sequencing_weave_stage",
+   "severity": "medium",
+   "detail": "There is no explicit weave stage, and several pieces depend on files other packages have not written yet. Root writes first, but season/production-cadence links branch calendars owned by four packages. The errata and harm-register 'corrected-in anchor' columns need branch claim anchors. The 80 cross_links span packages. $%[] handles that read another package's namespace fail the gate until that cell exists. Only trails are given a finalize-later rule.",
+   "fix": "Wave 1: writers link only to the frozen file-level anchors in this tree and read only their own-namespace handles. A weave stage owned by root and provenance-and-reference then adds claim-level renvois, corrected-in anchors, cross-namespace handle reads, cross-package bundles, trail finals and the production-cadence links, and runs the gate last."
+  },
+  {
+   "kind": "manifest_pin_commit",
+   "severity": "low",
+   "detail": "The manifest pins sha256 at 5acc5545, but .spw/caches/index.spw changed at 229aedcf (+30 lines adding the disclosure and quarantine frames), and it also differs from the generated tarball copy. The other 207 raw files are identical across the tarball, 5acc5545 and HEAD.",
+   "fix": "Pin at 229aedcf (HEAD). For index.spw, record three hashes: the generated tarball copy, 5acc5545 and 229aedcf."
+  },
+  {
+   "kind": "target_conflict_record",
+   "severity": "low",
+   "detail": "The computed TARGET says to archive the raw dirs as a tarball and remove them. The plan keeps the shelf in place, which matches the owner: the resume note says 'A selection pins a coordinate and leaves the source in place', and plan-stream entries at 17:06 and 17:30 say the shelf stays as provenance and the owner confirmed the cut lives at .spw/caches/2026-09-30. Risk #1 still reads as an open authority question.",
+   "fix": "Record the decision in provenance/index.spw, citing the 17:06 and 17:30 stream entries as quoted strings. Reword risk #1 as resolved for location. Keep the owner check only for mounting or deploying elsewhere."
+  },
+  {
+   "kind": "domain_prefix_nesting",
+   "severity": "low",
+   "detail": "The domain slug spw is a string prefix of spw_theory and spw_perspectives. The anchor spw_theory_questions (domain spw, on spw/theory-questions.spw) reads as spw_theory's namespace, and its keystone anchors (spw_theory_questions_*) can clash with keystones in spw/theory/*.spw.",
+   "fix": "Rename it to spw_open_questions. Add a contract rule that anchors in domain spw never begin with spw_theory_ or spw_perspectives_, or make the domain slugs prefix-free."
+  },
+  {
+   "kind": "archive_pattern_coverage",
+   "severity": "low",
+   "detail": "Two archive patterns in the directive have no working mechanism. Luhmann's stable branching IDs: the contract has no rule that published anchors stay permanent, and the plan renames staged anchors (matter_water to materials_water), which is fine before opening but not after. Whole Earth 'access to tools': it appears only as history in reference-works-lineage, with no access field on kits or toolchain surfaces.",
+   "fix": "Contract adds an anchor-permanence rule: after the cut opens, anchors are never renamed or reused, and a rename leaves a stub anchor with a supersedes edge. Kits and author-toolchain gain an access: line (where to obtain the tool or record). archive-patterns-matrix states what is borrowed and what is declined."
+  },
+  {
+   "kind": "trail_class_crossing",
+   "severity": "low",
+   "detail": "The plan's principle says every trail crosses at least two classes. editor-truth crosses only spw plus the provenance apparatus. reference-library-lineage crosses only record plus panels and root files.",
+   "fix": "Insert computing_spec_lineage (formal) after editor_hosts_lsp in editor-truth. Insert spw_graph_idioms (spw) or generations_kit_interview (learning, Foxfire) before cut_vocabulary in reference-library-lineage."
+  },
+  {
+   "kind": "bundle_rule_contradiction",
+   "severity": "low",
+   "detail": "The principle says 'bundles transclude only children's keystone anchors', yet each trail's ^bundle expands into a chapbook of cross-class anchors.",
+   "fix": "In contract.spw, exempt form trail from the child-only rule, or keep trail stops in a ^[\"stops\"] frame and leave ^bundle child-only."
+  },
+  {
+   "kind": "promotion_queue_missing",
+   "severity": "low",
+   "detail": "Scorecard PROMOTE verdicts have no landing surface for the owner. They are: jetbrains/instruments; jetbrains/lsp-client bits to .spw/tooling/intellij-plugin.spw; vscode/taste anti-echo to vscode-spw.spw quality_bar; podcasting year rows to a CS curriculum; and spw-resonance REGEN to docs/design/spw/design-research.spw. The plan correctly forbids canon edits, but nothing records these candidates.",
+   "fix": "Add a ^[\"promote\"] queue to spw/plugin-theory.spw (host items) and spw/theory-questions.spw (design items). Each row names the source anchor, the target canon path and an owner question."
+  },
+  {
+   "kind": "size_watch",
+   "severity": "low",
+   "detail": "spw/hosts/vscode-commands-and-views.spw merges about 350 raw lines (features 124, instruments 117, views 109), the largest raw intake of any planned file, but it is missing from the plan's split-watch list. The gate warns at 320 lines.",
+   "fix": "Add it to the split watch, with a pre-planned split into commands-and-settings and views-and-instruments if it passes 300 lines."
+  },
+  {
+   "kind": "host_fact_wording",
+   "severity": "low",
+   "detail": "The vscode-commands-and-views purpose says 'views (You Are Here, Roots, Memory, Spirit)'. Those are sections of the Workspace view (extensions/vscode-spw/src/views/workspace-tree.ts:455-470). package.json contributes two views, Workspace and Concepts. Concepts is omitted, and it is where the unapplied lens-visibility worktree lands.",
+   "fix": "Reword to: 'two views: Workspace (sections You Are Here, Roots, Memory, Spirit) and Concepts'."
+  },
+  {
+   "kind": "ref_convention_and_shelf_door",
+   "severity": "low",
+   "detail": "Host and history rows cite file:line in extensions/, packages/ and .agents/plans/. The gate only warns when a ~ ref fragment points at a non-.spw target, and such refs make the graph hub on source files. Separately, the cut root index's door to the shelf scrutiny frame would be an up-link in spirit if written as a ~ ref: the gate exempts index files, and the owner reserves the shelf-to-cut route for themselves. The plan states no convention for either.",
+   "fix": "Contract rule: repo-source citations are quoted 'path:line' strings in source: or cites: bindings. ~ refs stay inside the cut. The shelf door is a quoted string, not a ~ ref."
+  },
+  {
+   "kind": "vocabulary_leftovers",
+   "severity": "low",
+   "detail": "The staged vocabulary keeps level 'mixed' (and vocabulary.spw itself declares #:level #!mixed, while the plan tree says practitioner), season 'off_season', era 'deep_time' and relation 'see'. Root's notes drop 'see' but not the others, and unused declared values will break the recurrence rule.",
+   "fix": "Root drops 'mixed', or keeps it only if two files use it, and sets vocabulary.spw to #:level #!practitioner. It audits the era and season values against planned use."
+  },
+  {
+   "kind": "ownership_encoding",
+   "severity": "low",
+   "detail": "creators-and-platforms puts 'except ...' strings inside owns_dirs, so a tool that reads owns_dirs as paths will misparse them. Separately, migration labels tiktok-live/moderation-safety as keep, but the scorecard verdict is DROP (tree fit 1) and the content is regenerated with region and date qualifiers.",
+   "fix": "Move the exclusions to an excludes field. Relabel moderation-safety as reframe."
+  }
+ ],
+ "directive_map": [
+  {
+   "directive": "Dated compartment for reference use; accurate, structurally explorable claims; scientific integrity",
+   "files": [
+    "2026-09-30/index.spw",
+    "2026-09-30/vocabulary.spw",
+    "2026-09-30/contract.spw",
+    "2026-09-30/provenance/manifest.spw",
+    "2026-09-30/provenance/review-scorecard.spw",
+    "2026-09-30/provenance/errata-technical.spw",
+    "2026-09-30/provenance/errata-life-and-mind.spw",
+    "2026-09-30/provenance/errata-culture-and-society.spw",
+    "2026-09-30/trails/corrections.spw",
+    "2026-09-30/registries/index.spw"
+   ]
+  },
+  {
+   "directive": "Tree improvements, revised ontology, deep nesting where relevant",
+   "files": [
+    "2026-09-30/formal/mathematics/engineering-core/index.spw",
+    "2026-09-30/record/carriers/sound/index.spw",
+    "2026-09-30/record/carriers/moving-image/index.spw",
+    "2026-09-30/record/carriers/digital/index.spw",
+    "2026-09-30/learning/intergenerational-kit/index.spw",
+    "2026-09-30/spw/perspectives/index.spw",
+    "2026-09-30/panels/gap-table.spw"
+   ]
+  },
+  {
+   "directive": "Diverse script architectures (timeline ladder, DAG, matrix, state machine, cadence, ledger, glossary lattice, dossier, probe battery, registry, trail, calendar)",
+   "files": [
+    "2026-09-30/record/carriers/form-factor-ladder.spw",
+    "2026-09-30/formal/computing/curriculum-dag.spw",
+    "2026-09-30/season/fiscal-and-academic-years.spw",
+    "2026-09-30/making/film/production-state-machine.spw",
+    "2026-09-30/season/production-cadence.spw",
+    "2026-09-30/language-and-mind/cognition/replication-ledger.spw",
+    "2026-09-30/panels/concept-lattice.spw",
+    "2026-09-30/society/platforms/twitch-plays-pokemon.spw",
+    "2026-09-30/formal/mathematics/engineering-core/numerical-methods.spw",
+    "2026-09-30/spw/design-research/script-architectures.spw",
+    "2026-09-30/trails/scroll-to-stream.spw",
+    "2026-09-30/season/calendar-2026q4.spw",
+    "2026-09-30/living/development-and-ecology/forms-for-scripts.spw"
+   ]
+  },
+  {
+   "directive": "Capacitance toward novel discovery",
+   "files": [
+    "2026-09-30/panels/gap-table.spw",
+    "2026-09-30/panels/llull-wheel.spw",
+    "2026-09-30/panels/computed-kin.spw",
+    "2026-09-30/spw/theory-questions.spw",
+    "2026-09-30/spw/contraptions.spw"
+   ]
+  },
+  {
+   "directive": "Per-script publishing value; references that improve bundling resonance",
+   "files": [
+    "2026-09-30/contract.spw",
+    "2026-09-30/index.spw",
+    "2026-09-30/season/index.spw",
+    "2026-09-30/trails/index.spw",
+    "2026-09-30/panels/affinity-atlas.spw"
+   ]
+  },
+  {
+   "directive": "Hooks to process market research",
+   "files": [
+    "2026-09-30/society/markets/reading-market-reports.spw",
+    "2026-09-30/society/markets/market-probe-battery.spw",
+    "2026-09-30/society/markets/market-hooks.spw",
+    "2026-09-30/society/markets/media-market-receipts.spw",
+    "2026-09-30/learning/generations/public-worry-hooks.spw",
+    "2026-09-30/trails/market-reading.spw"
+   ]
+  },
+  {
+   "directive": "Well-known case studies",
+   "files": [
+    "2026-09-30/society/platforms/twitch-plays-pokemon.spw",
+    "2026-09-30/making/authorship/martian-serial-to-screen.spw",
+    "2026-09-30/making/authorship/kindle-unlimited-case.spw",
+    "2026-09-30/making/broadcast/serial-2014-case.spw",
+    "2026-09-30/society/markets/singles-day-live-commerce.spw",
+    "2026-09-30/record/carriers/format-wars.spw",
+    "2026-09-30/making/film/labor-agreements-ledger.spw",
+    "2026-09-30/making/film/crew-safety-and-culture.spw"
+   ]
+  },
+  {
+   "directive": "Internal case studies (plans, git episodes, extensions, CLI)",
+   "files": [
+    "2026-09-30/spw/history/episode-timeline.spw",
+    "2026-09-30/spw/history/plan-ecology.spw",
+    "2026-09-30/spw/history/editor-extension-arcs.spw",
+    "2026-09-30/spw/history/cli-arcs.spw",
+    "2026-09-30/spw/history/commit-gate.spw",
+    "2026-09-30/spw/history/curriculum-plans.spw",
+    "2026-09-30/spw/history/this-cut.spw",
+    "2026-09-30/trails/paired-cases.spw"
+   ]
+  },
+  {
+   "directive": "Production season Oct 1 to Jan 4: reflection to celebration and reset; fiscal years matured, academic years gathering momentum",
+   "files": [
+    "2026-09-30/season/season-arc.spw",
+    "2026-09-30/season/calendar-2026q4.spw",
+    "2026-09-30/season/fiscal-and-academic-years.spw",
+    "2026-09-30/season/production-cadence.spw",
+    "2026-09-30/season/festivals-and-resets.spw",
+    "2026-09-30/season/retrospective-protocol.spw",
+    "2026-09-30/season/season-journal.spw",
+    "2026-09-30/learning/institutions/academic-year-cadence.spw",
+    "2026-09-30/trails/season-2026-q4.spw"
+   ]
+  },
+  {
+   "directive": "Film production and indie author surfaces prime the season",
+   "files": [
+    "2026-09-30/making/film/film-season-calendar.spw",
+    "2026-09-30/making/film/production-state-machine.spw",
+    "2026-09-30/making/authorship/author-season-calendar.spw",
+    "2026-09-30/making/authorship/manuscript-to-market-dag.spw",
+    "2026-09-30/trails/novel-to-screen.spw"
+   ]
+  },
+  {
+   "directive": "TikTok LIVE; streamers as likely first Spw users; chat torrent needing parallel processing",
+   "files": [
+    "2026-09-30/society/platforms/live-platform-mechanics.spw",
+    "2026-09-30/society/platforms/monetization-receipt.spw",
+    "2026-09-30/society/platforms/moderation-and-eligibility.spw",
+    "2026-09-30/society/platforms/platform-lineage.spw",
+    "2026-09-30/making/streaming/spw-for-streamers.spw",
+    "2026-09-30/making/streaming/live-session-craft.spw",
+    "2026-09-30/making/streaming/chat-torrent-pipeline.spw",
+    "2026-09-30/making/streaming/prompt-deck.spw",
+    "2026-09-30/formal/computing/stream-processing-models.spw",
+    "2026-09-30/spw/perspectives/creators-and-streamers.spw",
+    "2026-09-30/trails/streamer-first-contact.spw"
+   ]
+  },
+  {
+   "directive": "Community roles as clustered meaning and longitudinal semiotic charge",
+   "files": [
+    "2026-09-30/society/communities/roles-lattice.spw",
+    "2026-09-30/society/communities/semiotic-charge.spw",
+    "2026-09-30/society/communities/crew-crosswalk.spw",
+    "2026-09-30/society/communities/care-roles.spw",
+    "2026-09-30/society/communities/civic-roles.spw",
+    "2026-09-30/society/communities/commons-roles.spw",
+    "2026-09-30/society/communities/custodian-roles.spw",
+    "2026-09-30/trails/role-words-over-time.spw"
+   ]
+  },
+  {
+   "directive": "Physiological development reclustered with ecological and biological models; harmful content reframed, never advice",
+   "files": [
+    "2026-09-30/living/development-and-ecology/development-as-succession.spw",
+    "2026-09-30/living/development-and-ecology/succession-and-resilience.spw",
+    "2026-09-30/living/development-and-ecology/sensitive-periods.spw",
+    "2026-09-30/living/development-and-ecology/biological-clocks.spw",
+    "2026-09-30/living/development-and-ecology/limiting-nutrients.spw",
+    "2026-09-30/living/development-and-ecology/life-history-and-scaling.spw",
+    "2026-09-30/living/development-and-ecology/forms-for-scripts.spw",
+    "2026-09-30/provenance/harm-register.spw",
+    "2026-09-30/living/nursing/guideline-currency-ledger.spw",
+    "2026-09-30/trails/clocks-and-cadences.spw"
+   ]
+  },
+  {
+   "directive": "Histories of literate and playback form factors and their manufacturing",
+   "files": [
+    "2026-09-30/record/inscription/surfaces-tablet-scroll-codex.spw",
+    "2026-09-30/record/inscription/paper-and-pulp-manufacture.spw",
+    "2026-09-30/record/inscription/print-and-press.spw",
+    "2026-09-30/record/carriers/sound/phonograph-shellac-and-vinyl.spw",
+    "2026-09-30/record/carriers/sound/magnetic-tape-and-cassette.spw",
+    "2026-09-30/record/carriers/moving-image/film-stock-and-bases.spw",
+    "2026-09-30/record/carriers/moving-image/videotape.spw",
+    "2026-09-30/record/carriers/format-wars.spw",
+    "2026-09-30/record/carriers/digital/optical-discs.spw",
+    "2026-09-30/record/carriers/digital/streaming-and-files.spw",
+    "2026-09-30/record/carriers/digital/reading-devices.spw",
+    "2026-09-30/record/carriers/carrier-manufacturing.spw",
+    "2026-09-30/record/carriers/carrier-decay-and-fixity.spw",
+    "2026-09-30/trails/scroll-to-stream.spw"
+   ]
+  },
+  {
+   "directive": "VS Code and JetBrains plugin theory and feature awareness (source-grounded; known defects)",
+   "files": [
+    "2026-09-30/spw/hosts/lsp-surface.spw",
+    "2026-09-30/spw/hosts/vscode-commands-and-views.spw",
+    "2026-09-30/spw/hosts/vscode-rendering.spw",
+    "2026-09-30/spw/hosts/vscode-lsp-and-cache.spw",
+    "2026-09-30/spw/hosts/jetbrains-platform.spw",
+    "2026-09-30/spw/hosts/jetbrains-native-features.spw",
+    "2026-09-30/spw/hosts/jetbrains-instruments.spw",
+    "2026-09-30/spw/hosts/host-parity-matrix.spw",
+    "2026-09-30/spw/hosts/known-defects.spw",
+    "2026-09-30/spw/hosts/feature-radar.spw",
+    "2026-09-30/spw/plugin-theory.spw",
+    "2026-09-30/trails/editor-truth.spw"
+   ]
+  },
+  {
+   "directive": "Spw theory refinements as questions; revisit particle physics",
+   "files": [
+    "2026-09-30/spw/theory/particle-lattice.spw",
+    "2026-09-30/spw/theory/address-and-linking.spw",
+    "2026-09-30/spw/theory/valence-and-charge.spw",
+    "2026-09-30/spw/theory/measures-and-handles.spw",
+    "2026-09-30/spw/theory/epistemic-status.spw",
+    "2026-09-30/spw/theory-questions.spw",
+    "2026-09-30/trails/particle-physics-revisit.spw"
+   ]
+  },
+  {
+   "directive": "Language-features comparisons belong with design research",
+   "files": [
+    "2026-09-30/spw/design-research/macros-and-homoiconicity.spw",
+    "2026-09-30/spw/design-research/memory-and-systems.spw",
+    "2026-09-30/spw/design-research/type-systems.spw",
+    "2026-09-30/spw/design-research/pipelines-and-stacks.spw",
+    "2026-09-30/spw/design-research/spw-position-matrix.spw",
+    "2026-09-30/spw/design-research/feature-lineage.spw"
+   ]
+  },
+  {
+   "directive": "Clustering hybrid as possible successor to the ocean biome (proposal, computed clusters as prompts)",
+   "files": [
+    "2026-09-30/spw/theory/clustering-hybrid.spw",
+    "2026-09-30/panels/computed-kin.spw",
+    "2026-09-30/panels/facet-census.spw",
+    "2026-09-30/spw/history/plan-ecology.spw",
+    "2026-09-30/record/information/taxonomy-cautions.spw"
+   ]
+  },
+  {
+   "directive": "Shared-curricula kit for the owner's site story (US curricula by generation, intergenerational interview protocol), not the story",
+   "files": [
+    "2026-09-30/learning/generations/us-curricula-by-generation.spw",
+    "2026-09-30/learning/generations/policy-landmarks-ledger.spw",
+    "2026-09-30/learning/generations/curriculum-wars-matrix.spw",
+    "2026-09-30/learning/generations/continuities-matrix.spw",
+    "2026-09-30/learning/intergenerational-kit/interview-protocol.spw",
+    "2026-09-30/learning/intergenerational-kit/difference-probes.spw",
+    "2026-09-30/learning/intergenerational-kit/curriculum-memory-map.spw",
+    "2026-09-30/learning/intergenerational-kit/artifact-dossier-template.spw",
+    "2026-09-30/trails/shared-curricula-kit.spw"
+   ]
+  },
+  {
+   "directive": "Stewardship-style reference-library patterns (Encyclopedie, Colon, Wikidata, Mendeleev, Llull, Memex, Propaedia, Mnemosyne, Zettelkasten, leishu, Whole Earth, Foxfire, OAIS/LOCKSS; Borges caution). The Zettelkasten stable-ID and Whole Earth access-to-tools mechanisms are missing (see problems).",
+   "files": [
+    "2026-09-30/record/information/reference-works-lineage.spw",
+    "2026-09-30/record/information/archive-patterns-matrix.spw",
+    "2026-09-30/record/information/knowledge-organization.spw",
+    "2026-09-30/record/information/archives-and-preservation.spw",
+    "2026-09-30/record/information/taxonomy-cautions.spw",
+    "2026-09-30/panels/affinity-atlas.spw",
+    "2026-09-30/panels/gap-table.spw",
+    "2026-09-30/panels/llull-wheel.spw",
+    "2026-09-30/panels/concept-lattice.spw",
+    "2026-09-30/provenance/manifest.spw",
+    "2026-09-30/trails/reference-library-lineage.spw"
+   ]
+  },
+  {
+   "directive": "File contract (axes, emit, provenance, edges, concepts, claims, try, wonder; index tree and bundle; registries; no up-links)",
+   "files": [
+    "2026-09-30/contract.spw",
+    "2026-09-30/vocabulary.spw",
+    "2026-09-30/registries/index.spw",
+    "2026-09-30/registries/quantities/index.spw",
+    "2026-09-30/registries/sources/index.spw"
+   ]
+  },
+  {
+   "directive": "Academic development (ladders by rung; engineering math core)",
+   "files": [
+    "2026-09-30/formal/mathematics/engineering-math-bridge.spw",
+    "2026-09-30/formal/mathematics/engineering-core/calculus-and-linear-algebra.spw",
+    "2026-09-30/learning/institutions/curricular-architecture.spw",
+    "2026-09-30/trails/math-to-control.spw"
+   ]
+  },
+  {
+   "directive": "Value for creative expansion",
+   "files": [
+    "2026-09-30/spw/contraptions.spw",
+    "2026-09-30/making/streaming/prompt-deck.spw",
+    "2026-09-30/season/season-journal.spw",
+    "2026-09-30/record/carriers/media-object-dating.spw",
+    "2026-09-30/spw/perspectives/index.spw"
+   ]
+  }
+ ]
+}

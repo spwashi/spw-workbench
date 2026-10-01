@@ -1,0 +1,310 @@
+# Quantities: Provenance and Reference
+#
+# World metric cells for provenance, review, plan, and reference-library surfaces. Each handle names one counted or sourced value; files read it instead of restating it.
+
+#>registry_qty_provenance_and_reference
+#:layer #!reference
+#:domain #!registry
+#:form #!registry
+#:level #!practitioner
+#:review #!sourced
+#:valence #!bone
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[ "raw counts computed with git show at commit 229aedcf and sha256 per path", "migration counts tallied from the plan v2 migration rows" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["family"]{
+ operator: "%"
+ plane: world
+ scope: corpus
+ scheme: tol
+ algorithm: world.registry_lookup
+ form: scalar
+ ^["raw"]{ id: prov_raw, identifiers: #[ prov.raw ] }
+ ^["migration"]{ id: prov_migration, identifiers: #[ prov.migration ] }
+ ^["review"]{ id: prov_review, identifiers: #[ prov.review ] }
+ ^["plan"]{ id: prov_plan, identifiers: #[ prov.plan ] }
+ ^["reference"]{
+  id: prov_reference
+  identifiers: #[ prov.yongle, prov.encyclopedie, prov.luhmann, prov.mendeleev, prov.dcmes, prov.oais, prov.bm25, prov.oa ]
+ }
+}
+
+#>q_prov_raw
+^"raw"{
+ %prov.raw.file_count{
+  value: 208
+  unit: "file"
+  at: "paths under .spw/caches in migration scope at commit 229aedcf, the shelf index included and resume/ excluded"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_raw_shelf"
+  status: #settled
+ }
+ %prov.raw.line_count{
+  value: 14266
+  unit: "line"
+  at: "newline count summed over the 208 paths at commit 229aedcf"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_raw_shelf"
+  status: #settled
+ }
+ %prov.raw.quarantine_file_count{
+  value: 9
+  unit: "file"
+  at: "files the shelf index lists as do-not-cite at commit 229aedcf"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_shelf_index"
+  status: #settled
+ }
+}
+
+#>q_prov_migration
+^"migration"{
+ %prov.migration.keep_count{
+  value: 83
+  unit: "file"
+  at: "raw paths the plan keeps under a new home, the shelf index row included"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_plan_v2"
+  status: #settled
+ }
+ %prov.migration.merge_count{
+  value: 47
+  unit: "file"
+  at: "raw paths the plan folds into another surface"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_plan_v2"
+  status: #settled
+ }
+ %prov.migration.drop_count{
+  value: 42
+  unit: "file"
+  at: "raw paths dropped from the authored tree and recorded only in the manifest"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_plan_v2"
+  status: #settled
+ }
+ %prov.migration.split_count{
+  value: 16
+  unit: "file"
+  at: "raw paths split across two or more surfaces"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_plan_v2"
+  status: #settled
+ }
+ %prov.migration.reframe_count{
+  value: 11
+  unit: "file"
+  at: "raw paths rewritten under a new frame"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_plan_v2"
+  status: #settled
+ }
+ %prov.migration.quarantine_count{
+  value: 9
+  unit: "file"
+  at: "raw paths quarantined by the owner; successors are written from sources"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_plan_v2"
+  status: #settled
+ }
+}
+
+#>q_prov_review
+^"review"{
+ %prov.review.r1_file_count{
+  value: 152
+  unit: "file"
+  at: "files scored in review round one, 2026-09-30"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_scorecard"
+  status: #settled
+ }
+ %prov.review.r1_line_count{
+  value: 11672
+  unit: "line"
+  at: "lines in the round-one snapshot"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_scorecard"
+  status: #settled
+ }
+ %prov.review.r1_sourced_file_count{
+  value: 11
+  unit: "file"
+  at: "round-one files that declared any source"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_scorecard"
+  status: #settled
+ }
+ %prov.review.r1_metric_handle_count{
+  value: 337
+  unit: "handle"
+  at: "metric handles in round one; every one unique, none reused"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_scorecard"
+  status: #settled
+ }
+ %prov.review.r1_lens_value_count{
+  value: 165
+  unit: "value"
+  at: "distinct lens values in round one"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_scorecard"
+  status: #settled
+ }
+ %prov.review.r1_lens_use_count{
+  value: 167
+  unit: "use"
+  at: "lens uses in round one"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_scorecard"
+  status: #settled
+ }
+ %prov.review.r1_invented_effect_count{
+  value: 49
+  unit: "claim"
+  at: "invented effect sizes in round-one wonder hypotheses, reviewer estimate"
+  abs: 5
+  src: ~"../sources/provenance-and-reference.spw#src_prov_scorecard"
+  status: #settled
+ }
+ %prov.review.r2_file_count{
+  value: 52
+  unit: "file"
+  at: "new files reviewed in round two, live snapshot at 13:28"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_scorecard"
+  status: #settled
+ }
+}
+
+#>q_prov_plan
+^"plan"{
+ %prov.plan.tree_file_count{
+  value: 372
+  unit: "file"
+  at: "planned paths in the plan v2 tree"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_plan_v2"
+  status: #settled
+ }
+ %prov.plan.authored_gap_count{
+  value: 21
+  unit: "gap"
+  at: "declared gaps in the plan v2 gaps list"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_plan_v2"
+  status: #settled
+ }
+}
+
+#>q_prov_reference
+^"reference"{
+ %prov.yongle.volume_count{
+  value: 11095
+  unit: "volume"
+  at: "Yongle Encyclopedia as completed in 1408"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_tsai_2001"
+  status: #settled
+ }
+ %prov.encyclopedie.text_volume_count{
+  value: 17
+  unit: "volume"
+  at: "Encyclopedie text volumes, 1751 to 1765"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_darnton_1979"
+  status: #settled
+ }
+ %prov.encyclopedie.plate_volume_count{
+  value: 11
+  unit: "volume"
+  at: "Encyclopedie plate volumes, 1762 to 1772"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_darnton_1979"
+  status: #settled
+ }
+ %prov.luhmann.card_count{
+  value: 90000
+  unit: "card"
+  at: "Luhmann card index, begun around 1952, approximate"
+  rel: 0.05
+  src: ~"../sources/provenance-and-reference.spw#src_prov_schmidt_2016"
+  status: #settled
+ }
+ %prov.mendeleev.confirmed_prediction_count{
+  value: 3
+  unit: "element"
+  at: "gaps of the 1869 table later filled by gallium, scandium, and germanium"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_scerri_2007"
+  status: #settled
+ }
+ %prov.dcmes.element_count{
+  value: 15
+  unit: "element"
+  at: "Dublin Core core elements, ISO 15836-1:2017"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_iso_15836_2017"
+  status: #settled
+ }
+ %prov.oais.functional_entity_count{
+  value: 6
+  unit: "entity"
+  at: "OAIS functional entities, CCSDS 650.0-M-3"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_ccsds_2024"
+  status: #settled
+ }
+ %prov.bm25.k1_low{
+  value: 1.2
+  unit: "1"
+  at: "lower end of the usual BM25 k1 range"
+  abs: 0.1
+  src: ~"../sources/provenance-and-reference.spw#src_prov_manning_2008"
+  status: #settled
+ }
+ %prov.bm25.k1_high{
+  value: 2.0
+  unit: "1"
+  at: "upper end of the usual BM25 k1 range"
+  abs: 0.1
+  src: ~"../sources/provenance-and-reference.spw#src_prov_manning_2008"
+  status: #settled
+ }
+ %prov.bm25.b_typical{
+  value: 0.75
+  unit: "1"
+  at: "usual BM25 length-normalization b"
+  abs: 0.05
+  src: ~"../sources/provenance-and-reference.spw#src_prov_manning_2008"
+  status: #settled
+ }
+ %prov.oa.doaj_diamond_journal_count{
+  value: 10194
+  unit: "journal"
+  at: "DOAJ journals charging no APC, September 2020 snapshot"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_bosman_2021"
+  status: #settled
+ }
+ %prov.oa.doaj_journal_count{
+  value: 14020
+  unit: "journal"
+  at: "DOAJ journals in the same September 2020 snapshot"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_bosman_2021"
+  status: #settled
+ }
+}

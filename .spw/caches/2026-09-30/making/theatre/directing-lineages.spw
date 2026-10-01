@@ -1,0 +1,185 @@
+# Directing Lineages
+#
+# A teacher-to-student ladder of modern theatre directing and actor training, from the Moscow Art Theatre to devised and documentary theatre, with branches in Japan, Brazil, Poland, and France.
+
+#>theatre_directing
+#:layer #!reference
+#:domain #!theatre
+#:form #!timeline
+#:level #!advanced
+#:review #!sourced
+#:valence #!boon
+#:era #!modern
+
+^"emit"{
+ ~#title: "Directing Lineages"
+ ~#claim: "Modern directing grew along teacher-to-student lines from the Moscow Art Theatre through the Group Theatre, and branched through Grotowski, Brook, Lecoq, Boal, Suzuki, and Viewpoints."
+ ~#proof: "Benedetti, Clurman, and the practitioners' own books, each cited on its rung."
+ ~#door: "Climb the ladder in time order, then follow a feeds link to see who taught whom."
+ ~#audience: "directing students and theatre makers tracing where a practice came from"
+ cold_open: "Most directing practice passed along teacher-to-student lines, and the lineage shows who carried each idea where."
+ continuity: "Directing Lineages | teacher-to-student"
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/film-and-theatre/graduate-theatre-and-directing-mfa.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: [
+  "the raw 60 percent cortisol recovery figure for the psychological gesture is removed as invented",
+  "the curriculum list is restructured as a dated teacher-to-student ladder with a source on each rung",
+  "Boal, Suzuki, and documentary theatre are added so the lineage is not only European and American"
+ ]
+}
+
+^["edges"]{
+ extends: [ ~"./theatre-core.spw#theatre_core" ]
+ contrasts: [ ~"../film/film-school-sequence.spw#film_school_directing" ]
+}
+
+^["concepts"]{
+ primary: [ #lineage, #given_circumstances ]
+ transfers: [ #blocking, #ensemble ]
+ tensions: [ #emotional_memory ]
+}
+
+^["ladder"]{
+ order: <<
+  "Moscow Art Theatre" ;
+  "First Studio" ;
+  "American Laboratory Theatre" ;
+  "Group Theatre" ;
+  "Actors Studio" ;
+  "Chekhov technique" ;
+  "poor theatre and empty space" ;
+  "Lecoq" ;
+  "Theatre of the Oppressed" ;
+  "Suzuki and SITI" ;
+  "documentary and devised theatre"
+ >>
+
+ #>theatre_dir_mat
+ ^["moscow_art_theatre"]{
+  #:claim #!settled
+  statement: "Stanislavski and Nemirovich-Danchenko opened the Moscow Art Theatre in 1898 as an ensemble company with long rehearsal."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_benedetti_1999"
+  feeds: [ ~"./directing-lineages.spw#theatre_dir_first_studio" ]
+ }
+ #>theatre_dir_first_studio
+ ^["first_studio"]{
+  #:claim #!settled
+  statement: "The theatre's First Studio, opened in 1912, trained Yevgeny Vakhtangov, Michael Chekhov, and Richard Boleslavsky in the system."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_benedetti_1999"
+  feeds: [ ~"./directing-lineages.spw#theatre_dir_lab", ~"./directing-lineages.spw#theatre_dir_chekhov" ]
+ }
+ #>theatre_dir_lab
+ ^["american_laboratory_theatre"]{
+  #:claim #!settled
+  statement: "Boleslavsky taught the system in New York at the American Laboratory Theatre in the 1920s, where Lee Strasberg and Harold Clurman studied."
+  sources: [ ~"../../registries/sources/film-stage-visual.spw#src_film_clurman_1945", ~"../../registries/sources/film-stage-visual.spw#src_film_boleslavsky_1933" ]
+  feeds: [ ~"./directing-lineages.spw#theatre_dir_group" ]
+ }
+ #>theatre_dir_group
+ ^["group_theatre"]{
+  #:claim #!settled
+  statement: "Harold Clurman, Cheryl Crawford, and Lee Strasberg founded the Group Theatre in 1931; Stella Adler and Sanford Meisner were among its actors."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_clurman_1945"
+  feeds: [ ~"./directing-lineages.spw#theatre_dir_studio", ~"./theatre-core.spw#theatre_core_adler", ~"./theatre-core.spw#theatre_core_meisner" ]
+  ^["split"]{
+   #:claim #!settled
+   statement: "After working with Stanislavski in Paris in 1934, Adler challenged the group's reliance on emotional memory."
+   sources: [ ~"../../registries/sources/film-stage-visual.spw#src_film_clurman_1945", ~"../../registries/sources/film-stage-visual.spw#src_film_adler_2000" ]
+  }
+ }
+ #>theatre_dir_studio
+ ^["actors_studio"]{
+  #:claim #!settled
+  statement: "Lee Strasberg led the Actors Studio in New York from the early 1950s and taught his Method there."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_strasberg_1987"
+ }
+ #>theatre_dir_chekhov
+ ^["chekhov_technique"]{
+  #:claim #!settled
+  statement: "Michael Chekhov's To the Actor (1953) teaches the psychological gesture, a whole-body movement that carries a character's want."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_chekhov_1953"
+ }
+ #>theatre_dir_poor_theatre
+ ^["poor_theatre"]{
+  #:claim #!settled
+  statement: "Jerzy Grotowski's Towards a Poor Theatre (1968) strips theatre to the actor and spectator and trains by removing blocks, a via negativa."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_grotowski_1968"
+  ^["empty_space"]{
+   #:claim #!settled
+   statement: "Peter Brook's The Empty Space (1968) opens with the claim that any empty space can become a bare stage when someone walks across it watched."
+   source: ~"../../registries/sources/film-stage-visual.spw#src_film_brook_1968"
+  }
+ }
+ #>theatre_dir_lecoq
+ ^["lecoq"]{
+  #:claim #!settled
+  statement: "Jacques Lecoq's Paris school, founded in 1956, trains movement through the neutral mask, then larval masks, clown, and devised work."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_lecoq_2000"
+ }
+ #>theatre_dir_boal
+ ^["theatre_of_the_oppressed"]{
+  #:claim #!settled
+  statement: "Augusto Boal developed the Theatre of the Oppressed in Brazil and Latin America, turning spectators into spect-actors who rehearse change on stage."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_boal_1979"
+ }
+ #>theatre_dir_suzuki
+ ^["suzuki_and_siti"]{
+  #:claim #!settled
+  statement: "Tadashi Suzuki's company trains actors in Toga, Japan; Anne Bogart and Suzuki founded SITI Company in 1992, pairing Suzuki training with Viewpoints."
+  sources: [ ~"../../registries/sources/film-stage-visual.spw#src_film_suzuki_1986", ~"../../registries/sources/film-stage-visual.spw#src_film_bogart_landau_2005" ]
+ }
+ #>theatre_dir_documentary
+ ^["documentary_and_devised"]{
+  #:claim #!settled
+  statement: "Anna Deavere Smith built Fires in the Mirror (1992) from her interviews, and Tectonic Theater Project devised The Laramie Project from interviews in Laramie, Wyoming."
+  sources: [ ~"../../registries/sources/film-stage-visual.spw#src_film_smith_1993", ~"../../registries/sources/film-stage-visual.spw#src_film_kaufman_2001" ]
+ }
+}
+
+^["practice"]{
+ #>theatre_dir_new_plays
+ ^["new_play_development"]{
+  #:claim #!interpretive
+  statement: "New plays usually move through table reads, staged readings, and workshops before a premiere, with the director protecting the writer's voice."
+ }
+ #>theatre_dir_site
+ ^["site_and_immersive"]{
+  #:claim #!interpretive
+  statement: "Site-specific and immersive work moves the audience through a space, so the director plans paths and sightlines as much as stage pictures."
+ }
+}
+
+^["try"]{
+ #>theatre_dir_try_three_stages
+ ^["three_stagings"]{
+  materials: [ "an empty room", "two actors", "a two-line scene", "tape" ]
+  steps: <<
+   "stage it with the audience on one side" ;
+   "stage it as a thrust with three sides" ;
+   "stage it in the round" ;
+   "ask watchers which version told the story best"
+  >>
+  time: .{ n: 45, unit: "minutes" }
+  safety: "clear the floor of trip hazards before moving the audience"
+  shows: ~"./directing-lineages.spw#theatre_dir_poor_theatre"
+ }
+}
+
+#>theatre_dir_memory_q
+?["Do lineages tend to split over emotional memory?"]{
+ #:depth #!historical ~#lens(historical layer)
+ #:claim #!speculative
+ ~#hypothesis: "The main breaks in this ladder cluster around how actors should reach emotion, from personal memory to imagination, action, or the body."
+ !probe{ "code each rung by its stated route to emotion and count where the lineage forks" =id[p_film_theatre_lineage_forks] =kind[lit] }
+ ~"./directing-lineages.spw#theatre_dir_group" ~#neighbor(nearest)
+}

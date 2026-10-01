@@ -1,0 +1,160 @@
+# Academic Year Cadence
+#
+# October to January on a US campus: midterms, advising and registration, application deadlines, finals, winter break, and the January reset, each row marked fixed, typical, or verify.
+
+#>institutions_academic_year
+#:layer #!pragmatics
+#:domain #!institutions
+#:form #!calendar
+#:level #!intro
+#:review #!sourced
+#:valence #!bonk
+#:era #!current
+#:season #!crescendo
+
+^"emit"{
+ ~#title: "Academic Year Cadence"
+ ~#claim: "On a semester campus, October brings midterms and advising, November brings registration and early applications, December brings finals, and January resets the term."
+ ~#proof: "Federal holidays by statute, NIH due dates by policy, term lengths by the federal credit hour rule; campus dates are typical and must be checked."
+ ~#door: "Backward-plan a term with the kit, then compare this rhythm with the fiscal year in the season hub."
+ ~#audience: "students, families, and staff planning the fall term"
+ continuity: "Academic Year Cadence | finals"
+ cold_open: "Midterms in October, registration in November, finals in December, and a fresh term in January."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ date_rule: "fixed rows follow statute or a published rule; typical rows follow common campus practice; verify rows need the current year source"
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/learning-and-generations.spw#q_learn_credit" ]
+ see: [ ~"../../season/calendar-2026q4.spw#season_calendar_2026q4" ]
+}
+
+^["concepts"]{
+ primary: [ #academic_calendar, #grant_cycle ]
+ transfers: [ #credit_hour ]
+ tensions: [ #acceleration ]
+}
+
+^["terms"]{
+ #>institutions_academic_year_terms
+ ^["term_lengths"]{
+  #:claim #!settled
+  statement: "The federal credit hour rule assumes about fifteen weeks for a semester and ten to twelve weeks for a quarter."
+  reads: %[learn.credit.semester_weeks]
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_credit_hour_cfr"
+ }
+ systems: [
+  "semester: two terms, fall and spring, often with a short winter or summer session",
+  "quarter: fall, winter, and spring terms, with winter starting in early January",
+  "trimester: three terms of similar length"
+ ]
+}
+
+^["schedule"]{
+ arc: <<
+  "October: midterms and advising" ;
+  "November: registration and early applications" ;
+  "December: finals and grading" ;
+  "January: break ends and the spring term starts"
+ >>
+
+ #>institutions_academic_year_october
+ ^["october"]{
+  rows: #[
+   .{ when: "Thu 2026-10-01", what: "federal fiscal year 2027 begins", status: "fixed" },
+   .{ when: "2026-10-01", what: "FAFSA for 2027-28 expected to open", status: "verify" },
+   .{ when: "Mon 2026-10-05", what: "NIH standard due date for new R01 applications", status: "fixed" },
+   .{ when: "Mon 2026-10-12", what: "Columbus Day federal holiday; many states and campuses observe Indigenous Peoples Day", status: "fixed" },
+   .{ when: "mid October", what: "midterm exams and midterm grades", status: "typical" },
+   .{ when: "October", what: "PSAT and NMSQT testing for high school juniors", status: "verify" }
+  ]
+
+  #>institutions_academic_year_nih_oct
+  ^["nih_round"]{
+   #:claim #!settled
+   statement: "October 5 is one of three NIH standard due dates for new R01 applications."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_nih_due_dates"
+   as_of: "2026-10-01"
+  }
+ }
+
+ #>institutions_academic_year_november
+ ^["november"]{
+  rows: #[
+   .{ when: "Nov 1 and Nov 15", what: "common early decision and early action deadlines", status: "typical" },
+   .{ when: "November", what: "advising holds lift and spring registration opens", status: "typical" },
+   .{ when: "Wed 2026-11-11", what: "Veterans Day federal holiday", status: "fixed" },
+   .{ when: "Thu 2026-11-26", what: "Thanksgiving, fourth Thursday of November", status: "fixed" }
+  ]
+ }
+
+ #>institutions_academic_year_december
+ ^["december"]{
+  rows: #[
+   .{ when: "early to mid December", what: "last classes, reading days, and final exams", status: "typical" },
+   .{ when: "mid to late December", what: "final grades due and early decisions released", status: "typical" },
+   .{ when: "Fri 2026-12-25", what: "Christmas Day federal holiday", status: "fixed" }
+  ]
+ }
+
+ #>institutions_academic_year_january
+ ^["january"]{
+  rows: #[
+   .{ when: "Fri 2027-01-01", what: "New Year federal holiday and a common regular decision deadline", status: "typical" },
+   .{ when: "Mon 2027-01-04", what: "season reset; many quarter campuses begin winter term this week", status: "typical" },
+   .{ when: "Mon 2027-01-18", what: "Birthday of Martin Luther King Jr. federal holiday", status: "fixed" },
+   .{ when: "mid January", what: "spring semester classes begin", status: "typical" }
+  ]
+
+  #>institutions_academic_year_holidays
+  ^["holidays"]{
+   #:claim #!settled
+   statement: "Federal law fixes Veterans Day on November 11, Thanksgiving on the fourth Thursday of November, and the King holiday on the third Monday of January."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_federal_holidays"
+  }
+ }
+}
+
+^["try"]{
+ #>institutions_academic_year_try_backward
+ ^["backward_plan"]{
+  materials: [
+   "your campus academic calendar",
+   "a syllabus with exam and paper dates",
+   "a paper calendar or a spreadsheet"
+  ]
+  steps: <<
+   "mark the final exam and the last day of class" ;
+   "mark every graded deadline from each syllabus" ;
+   "count back two weeks from each big deadline and mark a start date" ;
+   "find the weeks where three or more start dates collide and move one earlier"
+  >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "none worth naming"
+  shows: ~"./academic-year-cadence.spw#institutions_academic_year_december"
+ }
+}
+
+#>institutions_academic_year_reset_q
+?["Does the January term start reset students the way a new fiscal year resets a ledger?"]{
+ #:depth #!social ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "A fresh term start lowers the carryover of a bad fall for many students, as a fresh-start date does for other goals."
+ breaks: "a ledger closes its balances at year end, while knowledge and transcripts carry over into the new term"
+ !probe{ "compare course withdrawal and first-exam scores for students with weak and strong fall terms" =id[p_learn_calendar_reset] =kind[census] }
+ literature: ~"../../registries/sources/learning-and-generations.spw#src_learn_dai_2014"
+ $%[learn.credit.semester_weeks]
+ ~"./academic-year-cadence.spw#institutions_academic_year_january" ~#neighbor(nearest)
+}

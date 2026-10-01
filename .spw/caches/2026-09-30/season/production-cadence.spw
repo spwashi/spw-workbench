@@ -1,0 +1,200 @@
+# Production Cadence
+#
+# A fourteen-week cadence that lets film, authorship, broadcast, live, study, and garden lanes share one weekly beat while each keeps its own branch calendar.
+
+#>season_production_cadence
+#:layer #!pragmatics
+#:domain #!season
+#:form #!calendar
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!bone
+#:season #!crescendo
+
+^"emit"{
+ ~#title: "Production Cadence"
+ ~#claim: "One fourteen-week cadence gives film, authorship, broadcast, live, and study lanes the same weekly beat, while each lane reads its own branch calendar."
+ ~#proof: "Lanes link the branch calendars by anchor; the weekly beat follows the Thursday rungs of the season arc."
+ ~#door: "Choose your lane, read its branch calendar, then set the weekly beat."
+ ~#audience: "solo makers and small crews"
+ continuity: "Production Cadence | weekly beat"
+ cold_open: "The production cadence gives every lane the same weekly beat, so films, books, shows, streams, and study share one season."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+ }
+}
+
+^["edges"]{
+ needs: [
+  ~"../making/film/film-season-calendar.spw#film_season_calendar",
+  ~"../making/authorship/author-season-calendar.spw#authorship_season_calendar",
+  ~"../making/broadcast/broadcast-cadence.spw#broadcast_cadence"
+ ]
+ feeds: [ ~"./retrospective-protocol.spw#season_retrospective" ]
+ see: [
+  ~"../learning/institutions/academic-year-cadence.spw#institutions_academic_year",
+  ~"../making/streaming/live-session-craft.spw#streaming_live_session",
+  ~"../living/plants/horticultural-science.spw#plant_science_horticulture",
+  ~"./fiscal-and-academic-years.spw#season_fiscal_academic"
+ ]
+}
+
+^["concepts"]{
+ primary: [ #production_season, #weekly_rung ]
+ transfers: [ #academic_term, #retrospective ]
+ tensions: [ #lane_collision ]
+}
+
+^["design"]{
+ #>season_cadence_design
+ ^["shared_beat"]{
+  #:claim #!interpretive
+  statement: "A shared weekly beat across lanes is this cut's proposal for small crews; each branch calendar keeps the authoritative dates for its own field."
+ }
+}
+
+^["beat"]{
+ #>season_cadence_beat
+ ^["weekly"]{
+  rung: "Thursday to Wednesday, matching the season arc"
+  steps: <<
+   "Thursday: open the rung and read its dated cells" ;
+   "Friday: name one deliverable for the rung" ;
+   "Saturday and Sunday: rest, or catch up by choice" ;
+   "Monday and Tuesday: make" ;
+   "Wednesday: ship, then write the journal page"
+  >>
+  shows: ~"./season-arc.spw#season_arc_thursday_rungs"
+ }
+ #>season_cadence_blocks
+ ^["season"]{
+  steps: <<
+   "reflection: rungs one to three" ;
+   "gathering: rungs four to six" ;
+   "crescendo: rungs seven to eleven" ;
+   "celebration: rungs twelve and thirteen" ;
+   "reset: rung fourteen"
+  >>
+  reads: %[season.arc.week_count]
+  shows: ~"./season-arc.spw#season_arc"
+ }
+}
+
+^["lanes"]{
+ #>season_cadence_film
+ ^["film"]{
+  calendar: ~"../making/film/film-season-calendar.spw#film_season_calendar"
+  gathering: "autumn festivals and awards campaigns"
+  celebration: "holiday releases; the crew stands down"
+  reset: "January festival lead-in"
+  status: #typical
+ }
+ #>season_cadence_authorship
+ ^["authorship"]{
+  calendar: ~"../making/authorship/author-season-calendar.spw#authorship_season_calendar"
+  gathering: "research, outlines, and preorders"
+  crescendo: "a November drafting month"
+  celebration: "gift-season sales"
+  reset: "January launches"
+  status: #typical
+ }
+ #>season_cadence_broadcast
+ ^["broadcast"]{
+  calendar: ~"../making/broadcast/broadcast-cadence.spw#broadcast_cadence"
+  run_sheet: ~"../making/broadcast/episode-run-sheet.spw#broadcast_run_sheet"
+  crescendo: "bank holiday episodes before the travel week"
+  celebration: "a year-end retrospective episode"
+  status: #typical
+ }
+ #>season_cadence_live
+ ^["live"]{
+  calendar: ~"../making/streaming/live-session-craft.spw#streaming_live_session"
+  gathering: "rehearse formats and chat rules"
+  celebration: "event streams with rest days announced in advance"
+  status: #typical
+ }
+ #>season_cadence_study
+ ^["study"]{
+  calendar: ~"../learning/institutions/academic-year-cadence.spw#institutions_academic_year"
+  reflection: "midterms and advising"
+  crescendo: "finals"
+  celebration: "winter break"
+  reset: "a January term or the spring start"
+  status: #typical
+ }
+ #>season_cadence_garden
+ ^["garden"]{
+  calendar: ~"../living/plants/horticultural-science.spw#plant_science_horticulture"
+  reflection: "short-day forcing begun near 1 October for December bloom"
+  celebration: "forced plants in bloom"
+  status: #typical
+ }
+ #>season_cadence_books
+ ^["books"]{
+  calendar: ~"./fiscal-and-academic-years.spw#season_fiscal_academic"
+  celebration: "calendar-year books close on 31 December"
+  reset: "new budgets and new fiscal quarters open in January"
+  status: #typical
+ }
+}
+
+^["collisions"]{
+ #>season_cadence_collisions
+ ^["crescendo_stack"]{
+  #:claim #!interpretive
+  statement: "The crescendo stacks November drafting, finals, banked holiday episodes, and the retail holiday stretch; a crew working two lanes can stagger peaks by one rung."
+ }
+}
+
+^["retros"]{
+ #>season_cadence_retros
+ ^["runs"]{
+  steps: <<
+   "rung three: close the summer and the third quarter" ;
+   "rung ten: a short mid-crescendo check" ;
+   "rung fourteen: the year and the season"
+  >>
+  protocol: ~"./retrospective-protocol.spw#season_retrospective"
+ }
+}
+
+^["try"]{
+ #>season_cadence_try_lane_card
+ ^["lane_card"]{
+  materials: [
+   "one sheet per lane you work",
+   "the branch calendar for each lane",
+   "a pencil"
+  ]
+  steps: <<
+   "draw fourteen boxes, one per rung" ;
+   "copy each lane peak into its rung" ;
+   "mark rest rungs before anything else" ;
+   "find any rung with two peaks" ;
+   "move one peak by a rung"
+  >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "no physical hazard; plan rest as firmly as output"
+  shows: ~"./production-cadence.spw#season_cadence_collisions"
+ }
+}
+
+#>season_cadence_stacked_q
+?["Do stacked peaks cost crews their rest?"]{
+ #:depth #!social ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "Crews whose lane peaks share a rung should keep fewer of their planned rest days than crews who stagger peaks by a rung."
+ !probe{ "tally planned and kept rest days from journal pages, stacked versus staggered" =id[p_season_cadence_stacked_peaks] =kind[field] }
+ $%[season.arc.week_count]
+ ~"./production-cadence.spw#season_cadence_collisions" ~#neighbor(nearest)
+}

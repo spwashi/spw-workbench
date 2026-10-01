@@ -1,0 +1,304 @@
+# Quantities: Formal
+#
+# World metric cells for mathematics and computing. A handle names one cell; surfaces read it instead of restating the number.
+
+#>q_formal_registry
+#:layer #!reference
+#:domain #!registry
+#:form #!registry
+#:level #!mixed
+#:review #!sourced
+#:valence #!bone
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[ "binary64 epsilon, normal quantiles, birthday probability, and log2 of 10 recomputed with Python 3 on 2026-10-01", "Hilbert matrix condition number recomputed on 2026-10-01 from the exact rational inverse and power iteration", "Ecma-262 edition list, Maglev post, ABET criteria, and GAO Patriot summary read on 2026-10-01" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ status_legend: "settled cells were checked against the linked source or recomputed on the access date; dated cells carry as_of"
+}
+
+^["families"]{
+ ^["fp"]{
+  id: formal_fp, operator: "%", identifier: formal.fp
+  keys: #[ binary64_precision_bits, binary64_epsilon, binary32_precision_bits ]
+  plane: world, scope: corpus, scheme: tol, algorithm: world.registry_lookup, form: scalar
+ }
+ ^["numerics"]{
+  id: formal_numerics, operator: "%", identifier: formal.numerics
+  keys: #[ hilbert10_cond2, bisection_steps_per_digit, newton_order, rk4_order, patriot_clock_error_s_100h ]
+  plane: world, scope: corpus, scheme: tol, algorithm: world.registry_lookup, form: scalar
+ }
+ ^["stats"]{
+  id: formal_stats, operator: "%", identifier: formal.stats
+  keys: #[ normal_two_sided_95_z, normal_within_1sd, normal_within_2sd, birthday_23_shared ]
+  plane: world, scope: corpus, scheme: tol, algorithm: world.registry_lookup, form: scalar
+ }
+ ^["transforms"]{
+  id: formal_transforms, operator: "%", identifier: formal.transforms
+  keys: #[ nyquist_rate_factor, gibbs_overshoot_fraction ]
+  plane: world, scope: corpus, scheme: tol, algorithm: world.registry_lookup, form: scalar
+ }
+ ^["structures"]{
+  id: formal_structures, operator: "%", identifier: formal.structures
+  keys: #[ a5_order, sphere_euler_characteristic ]
+  plane: world, scope: corpus, scheme: tol, algorithm: world.registry_lookup, form: scalar
+ }
+ ^["consensus"]{
+  id: formal_consensus, operator: "%", identifier: formal.consensus
+  keys: #[ crash_replicas_f1, bft_replicas_f1 ]
+  plane: world, scope: corpus, scheme: tol, algorithm: world.registry_lookup, form: scalar
+ }
+ ^["memory"]{
+  id: formal_memory, operator: "%", identifier: formal.memory
+  keys: #[ cache_line_bytes, page_bytes, va_bits_4level, va_bits_5level ]
+  plane: world, scope: corpus, scheme: tol, algorithm: world.registry_lookup, form: scalar
+ }
+ ^["dated"]{
+  id: formal_dated, operator: "%", identifier: formal.dated
+  keys: #[ ecma262_edition_2026, maglev_chrome_major, abet_math_science_credits ]
+  plane: world, scope: corpus, scheme: tol, algorithm: world.registry_lookup, form: scalar
+ }
+}
+
+#>q_formal_fp
+^"fp"{
+ %formal.fp.binary64_precision_bits{
+  value: 53
+  unit: "bit"
+  at: "IEEE 754 binary64 significand precision, 52 stored bits plus the implicit leading bit"
+  abs: 0
+  src: ~"../sources/formal.spw#src_formal_ieee754_2019"
+  status: #settled
+ }
+ %formal.fp.binary64_epsilon{
+  value: 0.0000000000000002220446
+  unit: "1"
+  at: "machine epsilon of binary64, the gap from 1 to the next double, 2 to the minus 52"
+  rel: 0.0000001
+  src: ~"../sources/formal.spw#src_formal_higham_2002"
+  status: #settled
+ }
+ %formal.fp.binary32_precision_bits{
+  value: 24
+  unit: "bit"
+  at: "IEEE 754 binary32 significand precision, 23 stored bits plus the implicit leading bit"
+  abs: 0
+  src: ~"../sources/formal.spw#src_formal_ieee754_2019"
+  status: #settled
+ }
+}
+
+#>q_formal_numerics
+^"numerics"{
+ %formal.numerics.hilbert10_cond2{
+  value: 16026000000000
+  unit: "1"
+  at: "2-norm condition number of the 10 by 10 Hilbert matrix, recomputed 2026-10-01 from its exact inverse"
+  rel: 0.001
+  src: ~"../sources/formal.spw#src_formal_higham_2002"
+  status: #settled
+ }
+ %formal.numerics.bisection_steps_per_digit{
+  value: 3.3219
+  unit: "iteration per decimal digit"
+  at: "bisection halves the bracket each step, so one decimal digit costs log2 of 10 steps"
+  abs: 0.0001
+  src: ~"../sources/formal.spw#src_formal_higham_2002"
+  status: #settled
+ }
+ %formal.numerics.newton_order{
+  value: 2
+  unit: "order"
+  at: "local convergence order of Newton iteration near a simple root of a twice-differentiable function"
+  abs: 0
+  src: ~"../sources/formal.spw#src_formal_nocedal_wright_2006"
+  status: #settled
+ }
+ %formal.numerics.rk4_order{
+  value: 4
+  unit: "order"
+  at: "global error order of the classical four-stage Runge-Kutta method on smooth problems"
+  abs: 0
+  src: ~"../sources/formal.spw#src_formal_hairer_1993"
+  status: #settled
+ }
+ %formal.numerics.patriot_clock_error_s_100h{
+  value: 0.34
+  unit: "s"
+  at: "Patriot battery clock error after about 100 hours of continuous operation, Dhahran, 25 February 1991"
+  abs: 0.01
+  src: ~"../sources/formal.spw#src_formal_gao_1992"
+  status: #settled
+ }
+}
+
+#>q_formal_stats
+^"stats"{
+ %formal.stats.normal_two_sided_95_z{
+  value: 1.96
+  unit: "standard deviation"
+  at: "standard normal quantile leaving 2.5 percent in each tail"
+  abs: 0.0001
+  src: ~"../sources/formal.spw#src_formal_casella_berger_2002"
+  status: #settled
+ }
+ %formal.stats.normal_within_1sd{
+  value: 0.6827
+  unit: "probability"
+  at: "mass of a normal distribution within one standard deviation of its mean"
+  abs: 0.0001
+  src: ~"../sources/formal.spw#src_formal_casella_berger_2002"
+  status: #settled
+ }
+ %formal.stats.normal_within_2sd{
+  value: 0.9545
+  unit: "probability"
+  at: "mass of a normal distribution within two standard deviations of its mean"
+  abs: 0.0001
+  src: ~"../sources/formal.spw#src_formal_casella_berger_2002"
+  status: #settled
+ }
+ %formal.stats.birthday_23_shared{
+  value: 0.5073
+  unit: "probability"
+  at: "chance that at least two of 23 people share a birthday, with 365 equally likely days and no leap day"
+  abs: 0.0001
+  src: ~"../sources/formal.spw#src_formal_blitzstein_hwang_2019"
+  status: #settled
+ }
+}
+
+#>q_formal_transforms
+^"transforms"{
+ %formal.transforms.nyquist_rate_factor{
+  value: 2
+  unit: "times bandwidth"
+  at: "uniform sampling recovers a signal bandlimited below B hertz when the sample rate exceeds 2B"
+  abs: 0
+  src: ~"../sources/formal.spw#src_formal_shannon_1949"
+  status: #settled
+ }
+ %formal.transforms.gibbs_overshoot_fraction{
+  value: 0.0895
+  unit: "fraction of the jump"
+  at: "limiting overshoot of Fourier partial sums at a jump discontinuity, beside each side of the jump"
+  abs: 0.0001
+  src: ~"../sources/formal.spw#src_formal_oppenheim_willsky_1997"
+  status: #settled
+ }
+}
+
+#>q_formal_structures
+^"structures"{
+ %formal.structures.a5_order{
+  value: 60
+  unit: "element"
+  at: "order of the alternating group on five letters, the smallest nonabelian simple group"
+  abs: 0
+  src: ~"../sources/formal.spw#src_formal_dummit_foote_2004"
+  status: #settled
+ }
+ %formal.structures.sphere_euler_characteristic{
+  value: 2
+  unit: "1"
+  at: "Euler characteristic of the 2-sphere, so its total Gaussian curvature is 4 pi"
+  abs: 0
+  src: ~"../sources/formal.spw#src_formal_lee_2018"
+  status: #settled
+ }
+}
+
+#>q_formal_consensus
+^"consensus"{
+ %formal.consensus.crash_replicas_f1{
+  value: 3
+  unit: "replica"
+  at: "majority quorums tolerating f crash faults need 2f+1 replicas; here f is 1"
+  abs: 0
+  src: ~"../sources/formal.spw#src_formal_lynch_1996"
+  status: #settled
+ }
+ %formal.consensus.bft_replicas_f1{
+  value: 4
+  unit: "replica"
+  at: "Byzantine agreement with oral messages needs at least 3f+1 replicas; PBFT uses exactly that; here f is 1"
+  abs: 0
+  src: ~"../sources/formal.spw#src_formal_lsp_1982"
+  status: #settled
+ }
+}
+
+#>q_formal_memory
+^"memory"{
+ %formal.memory.cache_line_bytes{
+  value: 64
+  unit: "byte"
+  at: "cache line size on current mainstream x86-64 cores; other architectures and some ARM designs differ"
+  abs: 0
+  src: ~"../sources/formal.spw#src_formal_hennessy_patterson_2017"
+  status: #settled
+ }
+ %formal.memory.page_bytes{
+  value: 4096
+  unit: "byte"
+  at: "base page size on x86-64; larger pages of 2 MiB and 1 GiB also exist"
+  abs: 0
+  src: ~"../sources/formal.spw#src_formal_bryant_ohallaron_2015"
+  status: #settled
+ }
+ %formal.memory.va_bits_4level{
+  value: 48
+  unit: "bit"
+  at: "x86-64 virtual address width with four-level page tables"
+  abs: 0
+  src: ~"../sources/formal.spw#src_formal_bryant_ohallaron_2015"
+  status: #settled
+ }
+ %formal.memory.va_bits_5level{
+  value: 57
+  unit: "bit"
+  at: "x86-64 virtual address width with five-level page tables on processors that support them"
+  abs: 0
+  src: ~"../sources/formal.spw#src_formal_intel_2017"
+  status: #settled
+ }
+}
+
+#>q_formal_dated
+^"dated"{
+ %formal.dated.ecma262_edition_2026{
+  value: 17
+  unit: "edition"
+  at: "ECMA-262 edition approved June 2026, known as ES2026"
+  as_of: "2026-10-01"
+  abs: 0
+  src: ~"../sources/formal.spw#src_formal_ecma262"
+  status: #settled
+ }
+ %formal.dated.maglev_chrome_major{
+  value: 117
+  unit: "Chrome major version"
+  at: "first Chrome release to ship the Maglev mid-tier optimizing compiler"
+  as_of: "2026-10-01"
+  abs: 0
+  src: ~"../sources/formal.spw#src_formal_v8_2023"
+  status: #settled
+ }
+ %formal.dated.abet_math_science_credits{
+  value: 30
+  unit: "semester credit hour"
+  at: "minimum combined college-level mathematics and basic sciences in ABET Criterion 5, 2025-2026 cycle"
+  as_of: "2026-10-01"
+  abs: 0
+  src: ~"../sources/formal.spw#src_formal_abet_2025"
+  status: #settled
+ }
+}

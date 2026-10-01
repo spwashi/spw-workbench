@@ -1,0 +1,136 @@
+# Formal Glossary
+#
+# The Micropaedia for mathematics and computing: seven core terms, how they nest, and which files put each one to work.
+
+#>formal_glossary
+#:layer #!reference
+#:domain #!formal
+#:form #!glossary
+#:level #!foundation
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Formal Glossary"
+ ~#claim: "Seven terms carry most formal work: structure, map, invariant, proof, complexity class, protocol, and specification."
+ ~#proof: "Glosses follow Mac Lane, Hatcher, Sipser, Lynch, and Lamport; each term names the files that use it."
+ ~#door: "Start with structure and map, then follow invariant into proof and specification."
+ ~#audience: "readers entering mathematics or computing from any direction"
+ continuity: "Formal Glossary | structure and map"
+ cold_open: "Most formal ideas begin as a structure and map, then ask what the map keeps unchanged."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ see: [ ~"./mathematics/analysis-and-algebra-core.spw#mathematics_core", ~"./computing/abstract-computation.spw#computing_abstract" ]
+}
+
+^["concepts"]{
+ primary: [ #structure, #morphism, #invariant ]
+ transfers: [ #proof, #protocol, #specification ]
+ tensions: [ #fault_model ]
+}
+
+^["lattice"]{
+ #>formal_term_structure
+ ^["structure"]{
+  gloss: "a set with operations or relations that obey stated axioms, such as a group, a vector space, a topology, or a graph"
+  example: "the integers under addition form a group; the same integers ordered by size form a total order"
+  used_in: [ ~"./mathematics/analysis-and-algebra-core.spw#mathematics_core", ~"./mathematics/graduate-algebra-and-topology.spw#mathematics_grad_algebra" ]
+  source: ~"../registries/sources/formal.spw#src_formal_dummit_foote_2004"
+ }
+ #>formal_term_map
+ ^["map"]{
+  gloss: "a function between structures that preserves their operations, also called a morphism or homomorphism"
+  example: "a linear map preserves sums and scalar multiples; a continuous map preserves nearness"
+  needs: [ ~"./formal-glossary.spw#formal_term_structure" ]
+  extends: "category theory studies a kind of structure through its maps and their composition"
+  used_in: [ ~"./mathematics/graduate-algebra-and-topology.spw#mathematics_grad_algebra" ]
+  source: ~"../registries/sources/formal.spw#src_formal_maclane_1998"
+ }
+ #>formal_term_invariant
+ ^["invariant"]{
+  gloss: "a property or number that stays fixed under a class of maps or steps"
+  example: "Euler characteristic under homeomorphism; a loop invariant under each iteration; total charge under a conserving protocol"
+  needs: [ ~"./formal-glossary.spw#formal_term_map" ]
+  used_in: [ ~"./mathematics/graduate-analysis-and-geometry.spw#mathematics_grad_analysis", ~"./computing/systems-programming.spw#computing_systems" ]
+  source: ~"../registries/sources/formal.spw#src_formal_hatcher_2002"
+ }
+ #>formal_term_proof
+ ^["proof"]{
+  gloss: "a finite derivation of a statement from axioms and earlier results by accepted rules of inference"
+  example: "a proof assistant kernel accepts a proof term only when it type-checks against the stated proposition"
+  needs: [ ~"./formal-glossary.spw#formal_term_invariant" ]
+  analog: "under the Curry-Howard correspondence a proof in intuitionistic logic is a typed program"
+  used_in: [ ~"./computing/abstract-computation.spw#computing_abstract" ]
+  source: ~"../registries/sources/formal.spw#src_formal_sipser_2012"
+ }
+ #>formal_term_specification
+ ^["specification"]{
+  gloss: "a precise statement of the behaviors a system may show, which an implementation must refine"
+  example: "a TLA+ specification is a temporal formula over sequences of states"
+  needs: [ ~"./formal-glossary.spw#formal_term_invariant" ]
+  used_in: [ ~"./computing/spec-lineage.spw#computing_spec_lineage" ]
+  source: ~"../registries/sources/formal.spw#src_formal_lamport_2002"
+ }
+ #>formal_term_protocol
+ ^["protocol"]{
+  gloss: "rules for messages between parties, with states and allowed transitions, that guarantee a property such as agreement or ordering under a stated fault model"
+  example: "Raft keeps at most one leader per term even when messages are lost or delayed, and makes progress while a majority of servers can talk"
+  needs: [ ~"./formal-glossary.spw#formal_term_specification" ]
+  contrasts: "a protocol without its fault model is not yet a claim, because every guarantee is relative to the faults allowed"
+  used_in: [ ~"./computing/stream-processing-models.spw#computing_stream_models" ]
+  source: ~"../registries/sources/formal.spw#src_formal_lynch_1996"
+ }
+ #>formal_term_complexity_class
+ ^["complexity_class"]{
+  gloss: "the set of decision problems a machine model solves within a resource bound, such as P for polynomial time on a deterministic Turing machine"
+  example: "SAT is in NP and every NP problem reduces to it in polynomial time"
+  needs: [ ~"./formal-glossary.spw#formal_term_map" ]
+  extends: "polynomial-time reductions are the maps that organize complexity classes"
+  used_in: [ ~"./computing/abstract-computation.spw#computing_abstract" ]
+  source: ~"../registries/sources/formal.spw#src_formal_sipser_2012"
+ }
+ order: << "structure" ; "map" ; "invariant" ; "proof" ; "specification" ; "protocol" ; "complexity class" >>
+}
+
+^["origins"]{
+ #>formal_term_algorithm_origin
+ ^["algorithm_and_algebra"]{
+  #:claim #!settled
+  statement: "The word algorithm comes from the Latin rendering of al-Khwarizmi, a ninth-century Baghdad scholar, and algebra comes from al-jabr in the title of his book on calculation."
+  source: ~"../registries/sources/formal.spw#src_formal_katz_2009"
+ }
+ #>formal_term_grammar_origin
+ ^["grammar_as_rules"]{
+  #:claim #!settled
+  statement: "Panini grammar of Sanskrit used ordered rewrite rules centuries BCE; Ingerman in 1967 proposed naming the Backus notation Panini-Backus form to credit that lineage."
+  sources: [ ~"../registries/sources/formal.spw#src_formal_ingerman_1967", ~"../registries/sources/formal.spw#src_formal_plofker_2009" ]
+  ^["limits"]{
+   holds: "the structural parallel between Panini rules and context-free productions"
+   fails: "the name credits a structural parallel; it does not show that Backus drew on Panini"
+  }
+ }
+}
+
+#>formal_glossary_protocol_q
+?["Is every protocol in this branch a specification plus a fault model?"]{
+ #:depth #!mathematical ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Each protocol named in the computing leaves can be restated as a specification plus a fault model, and the fault model is the part most often left implicit."
+ !probe{ "list every protocol named under formal/computing and mark whether its fault model is stated" =id[p_formal_glossary_fault_model] =kind[census] }
+ $%[graph.out_degree]
+ ~"./formal-glossary.spw#formal_term_protocol" ~#neighbor(nearest)
+}

@@ -1,0 +1,255 @@
+# Materials Core
+#
+# The undergraduate materials sequence as a prerequisite graph, from crystal structure through defects, phase diagrams, and kinetics to properties.
+
+#>materials_core
+#:layer #!reference
+#:domain #!materials
+#:form #!curriculum
+#:level #!foundation
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Materials Core"
+ ~#claim: "Structure, defects, and processing set the properties of a solid; a flaw-free crystal is strong, and mobile dislocations let real metals bend."
+ ~#proof: "Brenner measured near-ideal strength in iron whiskers; Griffith tied brittle strength to cracks; Hull and Bacon trace ductility to dislocation glide."
+ ~#door: "Start at crystal structure, then follow the defect branch to strength and the phase branch to steel."
+ ~#audience: "first- and second-year engineering students and self-learners with high-school chemistry"
+ continuity: "Materials Core | defects"
+ cold_open: "A perfect crystal is strong, and its defects decide whether a real solid bends, breaks, or conducts."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/university-education/materials-science/undergrad-materials-science.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the raw wonder called a flawless crystal brittle; dislocation-free whiskers are strong, near the ideal estimate, and ductility comes from mobile dislocations",
+  "the invented 35 percent haptic-model accuracy gain is removed; the question survives as a speculative wonder without a magnitude",
+  "accreditation and course names are kept as typical structure, not as a rule any program must follow"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../physics/classical-thermodynamics.spw#physics_thermo_classical", ~"../../formal/mathematics/engineering-core/differential-equations.spw#mathematics_diffeq" ]
+ feeds: [ ~"./materials-advanced.spw#materials_advanced", ~"./steel-and-iron.spw#materials_steel" ]
+ see: [ ~"./bonding-and-states-of-matter.spw#materials_bonding" ]
+}
+
+^["concepts"]{
+ primary: [ #crystal_structure, #defect, #dislocation, #phase_diagram ]
+ transfers: [ #diffusion, #microstructure ]
+ tensions: [ #ideal_strength ]
+}
+
+^["dag"]{
+ =~"./materials-core.spw#materials_core_defects"[needs]{ ~"./materials-core.spw#materials_core_structure" }
+ =~"./materials-core.spw#materials_core_phases"[needs]{ ~"./materials-core.spw#materials_core_structure" }
+ =~"./materials-core.spw#materials_core_kinetics"[needs]{ ~"./materials-core.spw#materials_core_phases" ; ~"./materials-core.spw#materials_core_defects" }
+ =~"./materials-core.spw#materials_core_mechanical"[needs]{ ~"./materials-core.spw#materials_core_defects" ; ~"./materials-core.spw#materials_core_kinetics" }
+ =~"./materials-core.spw#materials_core_functional"[needs]{ ~"./materials-core.spw#materials_core_structure" }
+ =~"./materials-core.spw#materials_core_classes"[needs]{ ~"./materials-core.spw#materials_core_mechanical" ; ~"./materials-core.spw#materials_core_functional" }
+ order: << "structure" ; "defects" ; "phases" ; "kinetics" ; "mechanical" ; "functional" ; "classes" >>
+}
+
+#>materials_core_structure
+^["structure"]{
+ course: "Structure of Materials, with an X-ray diffraction laboratory"
+ year: "sophomore"
+ topics: [
+  "Bravais lattices, crystal systems, point and space groups, close packing in FCC, HCP, and BCC",
+  "Miller indices for directions and planes, zone axes, reciprocal lattice, interplanar spacing",
+  "powder diffraction indexing, lattice parameters, Scherrer crystallite size, texture"
+ ]
+
+ #>materials_core_lattices
+ ^["lattices"]{
+  #:claim #!settled
+  statement: "Three-dimensional crystals fall into 7 crystal systems and 14 Bravais lattices; combining lattice and motif symmetry gives exactly 230 space groups."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_itc_vol_a_2016"
+ }
+ #>materials_core_bragg
+ ^["bragg"]{
+  #:claim #!settled
+  statement: "X-rays scattered by planes spaced d apart reinforce when n times the wavelength equals 2d sin theta, the condition W. H. and W. L. Bragg stated in 1913."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_cullity_stock_2001"
+ }
+}
+
+#>materials_core_defects
+^["defects"]{
+ course: "Defects and Mechanical Behavior, first half"
+ year: "junior"
+ topics: [
+  "vacancies, interstitials, and substitutional solutes",
+  "edge and screw dislocations, Burgers vector, slip systems, Schmid law",
+  "grain boundaries, stacking faults, twins"
+ ]
+
+ #>materials_core_ideal_strength
+ ^["ideal_strength"]{
+  #:claim #!settled
+  statement: "Nearly dislocation-free iron whiskers reached tensile strengths approaching the theoretical estimate, far above bulk iron; perfection makes a crystal strong, not brittle."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_brenner_1956"
+  ^["limits"]{
+   holds: "micrometre-scale whiskers with few mobile dislocations and smooth surfaces"
+   fails: "strength falls as diameter grows and surface steps or internal sources appear"
+  }
+ }
+ #>materials_core_dislocation_glide
+ ^["dislocation_glide"]{
+  #:claim #!settled
+  statement: "Bulk metals yield far below their ideal strength because dislocations glide at low stress; that same glide lets them deform plastically instead of cracking."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_hull_bacon_2011"
+  ~#(Taylor, Orowan, and Polanyi proposed the dislocation independently in 1934)
+ }
+ #>materials_core_griffith
+ ^["griffith"]{
+  #:claim #!settled
+  statement: "A brittle solid fails at a stress set by its largest crack, where released elastic energy pays for new crack surface, as Griffith argued in 1921."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_griffith_1921"
+ }
+}
+
+#>materials_core_phases
+^["phases"]{
+ course: "Thermodynamics of Materials and Phase Diagrams"
+ year: "sophomore to junior"
+ topics: [
+  "free energy of mixing, regular solutions, chemical potential",
+  "isomorphous, eutectic, peritectic, and eutectoid diagrams; lever rule",
+  "spinodal decomposition where the free-energy curve bends downward"
+ ]
+
+ #>materials_core_phase_rule
+ ^["phase_rule"]{
+  #:claim #!settled
+  statement: "At equilibrium the degrees of freedom equal components minus phases plus two, the phase rule Gibbs published in 1876 to 1878."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_gibbs_1878"
+ }
+ #>materials_core_eutectoid
+ ^["eutectoid"]{
+  #:claim #!settled
+  statement: "On the iron to iron-carbide diagram, austenite near 0.76 weight percent carbon transforms at 727 C into pearlite, interleaved plates of ferrite and cementite."
+  reads: %[mateng.fe_c.eutectoid_t_c, mateng.fe_c.eutectoid_c_wt_pct]
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_callister_rethwisch_2018"
+ }
+}
+
+#>materials_core_kinetics
+^["kinetics"]{
+ course: "Diffusion and Solid-State Phase Transformations"
+ year: "junior"
+ topics: [
+  "Fick laws, vacancy and interstitial diffusion, Arrhenius temperature dependence, Kirkendall effect",
+  "homogeneous and heterogeneous nucleation, critical radius and barrier",
+  "Johnson-Mehl-Avrami-Kolmogorov kinetics, TTT and CCT diagrams, martensite"
+ ]
+
+ #>materials_core_processing
+ ^["processing"]{
+  #:claim #!settled
+  statement: "Processing sets microstructure: one plain-carbon steel becomes soft pearlite when cooled slowly and hard martensite when quenched, as TTT and CCT diagrams map."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_porter_easterling_2009"
+ }
+}
+
+#>materials_core_mechanical
+^["mechanical"]{
+ course: "Defects and Mechanical Behavior, second half"
+ year: "junior"
+ topics: [
+  "Hall-Petch grain-size strengthening, solid-solution and precipitation hardening, work hardening",
+  "fracture toughness, ductile-to-brittle transition, power-law creep"
+ ]
+
+ #>materials_core_strengthening
+ ^["strengthening"]{
+  #:claim #!settled
+  statement: "Every classic strengthening route obstructs dislocation glide: grain boundaries, solute atmospheres, precipitates, or tangles of other dislocations."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_hull_bacon_2011"
+  ~#(Hall in 1951 and Petch in 1953 gave the grain-size law that carries their names)
+ }
+ #>materials_core_yield_point
+ ^["yield_point"]{
+  #:claim #!settled
+  statement: "Carbon and nitrogen atoms gather around dislocations in mild steel and pin them, which explains its sharp yield point and strain ageing."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_cottrell_bilby_1949"
+ }
+}
+
+#>materials_core_functional
+^["functional"]{
+ course: "Physical Properties of Materials"
+ year: "senior"
+ topics: [
+  "free-electron and periodic-potential models, band gaps, effective mass",
+  "direct and indirect gaps, dopants, p-n junctions",
+  "dielectrics and ferroelectrics, magnetic order and domains"
+ ]
+
+ #>materials_core_silicon
+ ^["silicon"]{
+  #:claim #!settled
+  statement: "Pure silicon is an intrinsic semiconductor with a band gap near 1.12 eV at room temperature; parts-per-million dopants raise its conductivity by orders of magnitude."
+  reads: %[mateng.silicon.bandgap_ev]
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_sze_ng_2007"
+ }
+}
+
+#>materials_core_classes
+^["classes"]{
+ course: "Polymers, Ceramics, and Biomaterials"
+ year: "senior"
+ topics: [
+  "polymer topology, glass transition, crystallinity, rubber elasticity",
+  "rock salt, zinc blende, fluorite, and perovskite structures; Schottky and Frenkel defects; sintering",
+  "biocompatibility, osseointegration, resorbable polymers"
+ ]
+
+ #>materials_core_glass_transition
+ ^["glass_transition"]{
+  #:claim #!settled
+  statement: "An amorphous polymer turns from rigid glass to rubbery solid over a range around its glass transition; atactic PMMA sits near 105 C."
+  reads: %[mateng.polymer.pmma_tg_c]
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_brandrup_1999"
+ }
+}
+
+^["try"]{
+ #>materials_core_try_paperclip
+ ^["paperclip_hardening"]{
+  materials: [ "two plain steel paper clips", "safety glasses" ]
+  steps: << "straighten one clip" ; "bend it once at the middle and feel the force" ; "bend the same spot back and forth ten times" ; "compare with a fresh bend on the second clip" ; "keep going until the first clip snaps" >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "wear glasses; the wire end can whip, and the snapped ends are sharp"
+  shows: ~"./materials-core.spw#materials_core_strengthening"
+ }
+}
+
+#>materials_core_alloy_whisker_q
+?["Would a whisker grown from carbon steel keep the near-ideal strength of a pure iron whisker?"]{
+ #:depth #!physical ~#lens(material grain)
+ #:claim #!speculative
+ ~#hypothesis: "Carbon and carbide particles add stress concentrators and dislocation sources, so an alloy whisker should yield below a pure iron whisker of the same diameter."
+ !probe{ "compare reported whisker strengths for pure iron and iron alloys at matched diameter" =id[p_mateng_core_alloy_whisker] =kind[lit] }
+ $%[mateng.fe_c.ferrite_c_max_wt_pct]
+ ~"./materials-core.spw#materials_core_ideal_strength" ~#neighbor(nearest)
+}
+
+#>materials_core_haptic_q
+?["Do students who build slip systems from hard-sphere models find active slip planes more reliably than students who only rotate screen models?"]{
+ #:depth #!educational ~#lens(craft practice)
+ #:claim #!speculative
+ ~#hypothesis: "Handling close-packed models should help students locate slip planes, with the advantage shrinking once they can read stereographic projections."
+ !probe{ "pair a model-building section with a screen-only section and score the same Schmid-factor quiz" =id[p_mateng_core_haptic_slip] =kind[field] }
+ $%[file.frame_count]
+ ~"./materials-core.spw#materials_core_dislocation_glide" ~#neighbor(nearest)
+}

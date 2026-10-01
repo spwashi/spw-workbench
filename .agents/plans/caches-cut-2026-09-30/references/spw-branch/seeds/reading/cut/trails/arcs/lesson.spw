@@ -1,0 +1,48 @@
+# Lesson Arc
+#
+# One lesson as an arc: retrieve the last door, forecast, probe, explain aloud, check, and open the next door.
+
+#>trail_lesson
+#:layer #!pragmatics
+#:domain #!meta
+#:form #!trail
+#:level #!mixed
+#:review #!unreviewed
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Lesson Arc"
+ ~#claim: "A lesson opens by retrieving the last door, asks for a forecast before the probe, has each learner explain aloud, and closes on the next door."
+ ~#proof: "Retrieval practice, prediction before feedback, and self-explanation each have classroom evidence; the order is the wonder arc."
+ ~#door: "Open the family conversation arc to carry the lesson home."
+ ~#audience: "teachers and self-directed learners"
+ cold_open: "Remember last time, guess, try, say why, check, and open the next door."
+ continuity: "Lesson Arc | door"
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "claude-opus-5.5"
+ lineage: #[ "new" ]
+ method: #authored
+}
+
+^["edges"]{
+ case_of: [ ~"./wonder.spw#arc_wonder_order" ]
+ feeds: [ ~"./family.spw#arc_family_order" ]
+}
+
+#>arc_lesson
+^["arc"]{
+ clock: #minute
+ archetype: ~".spw/surfaces/surface-archetypes.spw#spw_surface_archetypes"
+ steps: << retrieve ; forecast ; probe ; explain ; check ; door >>
+ retrieve: "say the last lesson in one breath before looking at notes"
+ forecast: ?{ where will the colored warm water settle } ~<prediction>
+ probe: ~"../../matter/water.spw#water_try_density"
+ explain: "each learner says why the result happened, aloud, in their own words"
+ check: "compare the forecast with the result and mark hit or miss"
+ door: "Why does a lake not freeze solid in winter?"
+ counts: "forecasts written and hits marked, by the learner, on paper"
+ limit: "a hit count measures one guess, not the learner; nothing is kept past the lesson"
+}

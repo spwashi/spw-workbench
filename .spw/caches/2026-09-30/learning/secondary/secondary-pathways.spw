@@ -1,0 +1,166 @@
+# Secondary Pathways
+#
+# Grade-by-grade course sequences as records with prerequisite edges, discussion-centered classrooms, and the competitions that give high school research a public stage.
+
+#>secondary_schooling_pathways
+#:layer #!reference
+#:domain #!secondary_schooling
+#:form #!curriculum
+#:level #!intro
+#:review #!sourced
+#:valence #!bone
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Secondary Pathways"
+ ~#claim: "An accelerated math sequence is a prerequisite chain set by grade, and who should accelerate is contested; discussion-centered classrooms trace to the Harkness gift of 1930."
+ ~#proof: "District studies of eighth-grade algebra by Clotfelter, Ladd, and Vigdor and by Domina and colleagues; Phillips Exeter on Harkness; NSDA and CEDA on debate."
+ ~#door: "Read the math rows as a graph, then run the Harkness kit with a short text."
+ ~#audience: "students, families, and teachers planning four years of courses"
+ continuity: "Secondary Pathways | prerequisite chain"
+ cold_open: "High school math is a prerequisite chain, and when to start it early is still argued."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/secondary-education/stem-and-humanities-pathways.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "Cross-Examination Debate Association listed as a high school track: CEDA is intercollegiate; high school policy debate runs through the NSDA and state associations",
+  "grade sequence strings recast as grade and course records with needs edges",
+  "Harkness as eliminating lecturing restated as a discussion method credited to the 1930 gift",
+  "CRISPR assays and biosafety hood access removed as typical high school practice"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"../../formal/mathematics/engineering-core/calculus-and-linear-algebra.spw#mathematics_calc_linalg" ]
+ see: [ ~"./advanced-coursework.spw#secondary_schooling_ap_audit" ]
+}
+
+^["concepts"]{
+ primary: [ #prerequisite, #acceleration ]
+ transfers: [ #active_learning ]
+ tensions: [ #standards ]
+}
+
+^["math_track"]{
+ #:claim #!interpretive
+ note: "one accelerated sequence, common in US districts that offer algebra in grade 8; many students follow the same chain a year later"
+ rows: #[
+  .{ grade: 8, course: "Algebra I" },
+  .{ grade: 9, course: "Geometry with proof" },
+  .{ grade: 10, course: "Algebra II and trigonometry" },
+  .{ grade: 11, course: "Precalculus or AP Calculus" },
+  .{ grade: 12, course: "AP Calculus, statistics, or college linear algebra" }
+ ]
+
+ #>secondary_schooling_algebra
+ ^["algebra_one"]{
+  role: "symbolic manipulation, linear and quadratic functions"
+ }
+
+ #>secondary_schooling_geometry
+ ^["geometry"]{
+  role: "Euclidean proof and measurement"
+  needs: [ ~"./secondary-pathways.spw#secondary_schooling_algebra" ]
+ }
+
+ #>secondary_schooling_algebra_two
+ ^["algebra_two"]{
+  role: "polynomial, rational, exponential, and trigonometric functions"
+  needs: [ ~"./secondary-pathways.spw#secondary_schooling_algebra" ]
+ }
+
+ #>secondary_schooling_precalc
+ ^["precalculus"]{
+  role: "functions as objects, limits previewed"
+  needs: [ ~"./secondary-pathways.spw#secondary_schooling_algebra_two", ~"./secondary-pathways.spw#secondary_schooling_geometry" ]
+ }
+
+ #>secondary_schooling_calculus
+ ^["calculus"]{
+  role: "derivatives, integrals, and series"
+  needs: [ ~"./secondary-pathways.spw#secondary_schooling_precalc" ]
+ }
+}
+
+^["acceleration"]{
+ #>secondary_schooling_algebra_eight
+ ^["algebra_in_eighth"]{
+  #:claim #!contested
+  statement: "Placing nearly all students in eighth-grade algebra lowered later math outcomes for lower-achieving students in district studies; who should accelerate stays disputed."
+  sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_clotfelter_2015", ~"../../registries/sources/learning-and-generations.spw#src_learn_domina_2015" ]
+  counter: ~"../../registries/sources/learning-and-generations.spw#src_learn_colangelo_2004"
+  disagreement: "universal policies can hurt students placed early without preparation, while ready students can be held back by late access"
+ }
+}
+
+^["discussion"]{
+ #>secondary_schooling_harkness
+ ^["harkness"]{
+  #:claim #!settled
+  statement: "Edward Harkness gave Phillips Exeter Academy a gift in 1930 for classes of about twelve students and a teacher around an oval table."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_exeter_harkness"
+ }
+
+ #>secondary_schooling_paideia
+ ^["socratic_seminar"]{
+  #:claim #!settled
+  statement: "Mortimer Adler proposed seminar discussion of texts as one of three modes of teaching in The Paideia Proposal of 1982."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_adler_1982"
+ }
+
+ #>secondary_schooling_debate
+ ^["debate"]{
+  #:claim #!settled
+  statement: "High school policy debate runs through the National Speech and Debate Association, founded in 1925, and state associations; CEDA, founded in 1971, is intercollegiate."
+  sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_nsda", ~"../../registries/sources/learning-and-generations.spw#src_learn_ceda" ]
+ }
+}
+
+^["research_stages"]{
+ #>secondary_schooling_competitions
+ ^["competitions"]{
+  #:claim #!settled
+  statement: "National History Day began in 1974, and Society for Science runs the Regeneron Science Talent Search and the International Science and Engineering Fair."
+  sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_nhd", ~"../../registries/sources/learning-and-generations.spw#src_learn_society_for_science" ]
+  as_of: "2026-10-01"
+ }
+ mentorship: "some schools partner with nearby colleges or hospitals for supervised research; access varies widely"
+}
+
+^["try"]{
+ #>secondary_schooling_try_harkness
+ ^["harkness_hour"]{
+  materials: [
+   "a one-page text everyone can read in five minutes",
+   "a table where everyone can see everyone",
+   "a sheet of paper for a discussion map"
+  ]
+  steps: <<
+   "read the text silently" ;
+   "one person asks an opening question and then stays quiet" ;
+   "on the map, draw a line from each speaker to whoever speaks next" ;
+   "after twenty minutes, look at the map together and ask who has not yet been heard"
+  >>
+  time: .{ n: 35, unit: "minutes" }
+  safety: "none worth naming; let anyone pass on speaking"
+  shows: ~"./secondary-pathways.spw#secondary_schooling_harkness"
+ }
+}
+
+#>secondary_schooling_proof_q
+?["Does learning to write proofs carry over to arguing about public questions?"]{
+ #:depth #!educational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Students who practice proof spot unsupported steps in civic arguments more often than students who practice only computation."
+ !probe{ "give matched students a flawed op-ed and score which gaps each group names" =id[p_learn_pathways_proof] =kind[field] }
+ ~"./secondary-pathways.spw#secondary_schooling_geometry" ~#neighbor(nearest)
+}

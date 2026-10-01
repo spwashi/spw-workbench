@@ -1,0 +1,37 @@
+#>lab_false_friends
+^["rows"]{
+ #>ff_ternary
+ ^["ternary"]{
+  habit: "C and JavaScript"
+  source: 'x: a ? b : c'
+  observed: "complete parse; x binds a, and a second binding keyed on the ? operation takes c"
+  loudness: #restructures
+ }
+ #>ff_breadcrumb
+ ^["breadcrumb"]{
+  habit: "design and information architecture"
+  source: 'crumb: Home > Shop'
+  observed: "the whole surface degrades to prose"
+  loudness: #degrades
+ }
+ #>ff_negative
+ ^["negative"]{
+  habit: "physiology, physics, finance"
+  source: 'vm: -70'
+  observed: "binds 70 with a hidden lexer error; the cut gate fails it, the validator prints a pass"
+  loudness: #hidden_error
+ }
+ #>ff_generic
+ ^["generic"]{
+  habit: "C++, Rust, TypeScript"
+  source: 't: Vec<i32>'
+  observed: "a medial capsule whose right arm is the key on the next line"
+  loudness: #swallows
+ }
+}
+#>lab_false_friends_q
+?["Which habits move from quiet restructuring to a loud failure after a fix?"]{
+ #:depth #!computational ~#lens(formal structure)
+ !probe{ "assert one expected fingerprint signature per row and rerun after each parser change" =id[p_ff_signatures] =kind[census] }
+ breaks: "a row records one parse of one string; it does not measure how strongly a reader's habit pulls"
+}

@@ -1,0 +1,118 @@
+# Kindle Unlimited
+#
+# A subscription launched in 2014 changed how independent books are paid for, and a 2015 switch to pages read changed what pays.
+
+#>authorship_kindle_unlimited
+#:layer #!reference
+#:domain #!authorship
+#:form #!dossier
+#:level #!foundation
+#:review #!sourced
+#:valence #!bonk
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Kindle Unlimited"
+ ~#claim: "Kindle Unlimited began in 2014 as a reading subscription, switched in 2015 to paying authors by pages read, and binds enrolled eBooks to Kindle exclusivity."
+ ~#proof: "Launch and payment history from contemporary reporting; exclusivity and content-quality rules from KDP help pages read on 2026-10-01."
+ ~#door: "Compare the exclusive route with the wide route in the platforms matrix."
+ ~#audience: "authors and media historians"
+ continuity: "Kindle Unlimited | pages read"
+ cold_open: "Kindle Unlimited began paying authors by pages read, and writing changed shape."
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "claude-opus-5.5"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[ "the raw per-page range of 0.0040 to 0.0048 USD is not carried; the monthly rate is a verify cell" ]
+}
+
+^["edges"]{
+ case_of: [ ~"./platforms-and-business-models.spw#authorship_platforms_select" ]
+ contrasts: [ ~"../../spw/history/plan-ecology.spw#workbench_history_plans" ]
+ grounds: [ ~"../../registries/quantities/creators-and-platforms.spw#q_creator_kdp" ]
+}
+
+^["concepts"]{
+ primary: [ #exclusivity, #serialization ]
+ transfers: [ #platform_dependence ]
+ tensions: [ #trope_packaging ]
+}
+
+^["timeline"]{
+ #>authorship_kindle_unlimited_launch
+ ^["launch_2014"]{
+  #:claim #!settled
+  statement: "Amazon launched Kindle Unlimited in July 2014 as a reading subscription priced at 9.99 USD a month in the US."
+  reads: %[creator.ku.launch_price_usd_month]
+  sources: [ ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_ku", ~"../../registries/sources/creators-and-platforms.spw#src_creator_owen_2014" ]
+ }
+ #>authorship_kindle_unlimited_borrow_rule
+ ^["borrow_rule"]{
+  #:claim #!superseded
+  statement: "At first KDP Select paid a set fee per borrowed book once a reader passed ten percent of it, so short books earned as much as long ones."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_kdp"
+ }
+ #>authorship_kindle_unlimited_pages
+ ^["pages_2015"]{
+  #:claim #!settled
+  statement: "In July 2015 Amazon switched Select payments to pages read, measured with normalized page counts and paid from a monthly fund."
+  reads: %[creator.ku.kenp_rate_usd_per_page]
+  sources: [ ~"../../registries/sources/creators-and-platforms.spw#src_creator_wayner_2015", ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_kdp" ]
+ }
+ #>authorship_kindle_unlimited_exclusive
+ ^["exclusivity"]{
+  #:claim #!settled
+  statement: "A Kindle eBook enrolled in Select must be exclusive to the Kindle Store for each 90-day term, which keeps enrolled books out of other eBook stores."
+  reads: %[creator.kdp.select_term_days]
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_kdp_select"
+ }
+ #>authorship_kindle_unlimited_stuffing
+ ^["stuffing_rules"]{
+  #:claim #!settled
+  statement: "KDP content rules bar bonus material placed before the main book and links that pull readers to the end, practices that inflate pages read."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_kdp_quality"
+  consequence: "titles may be removed and accounts terminated for practices that inflate sales or pages read"
+  as_of: "2026-10-01"
+ }
+}
+
+^["debates"]{
+ #>authorship_kindle_unlimited_wide_debate
+ ^["select_or_wide"]{
+  #:claim #!interpretive
+  statement: "Whether Select pays more than wide distribution stays a live debate among authors; the answer turns on genre, read-through, and the monthly page rate."
+  sides: "wide authors cite library reach and store independence; Select authors cite borrow income and promotion tools"
+ }
+ #>authorship_kindle_unlimited_shape
+ ^["shape_of_writing"]{
+  #:claim #!interpretive
+  statement: "Paying by pages rewards long books and long series that keep subscribers reading, which suits serial genres such as LitRPG and romance."
+ }
+}
+
+#>authorship_kindle_unlimited_length_q
+?["Did pay by pages read make enrolled books longer?"]{
+ #:depth #!social ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "Median length of newly enrolled genre titles rose after July 2015 relative to titles sold only wide."
+ !probe{ "compare page counts of enrolled and wide titles in two genres before and after July 2015" =id[p_creator_ku_length] =kind[census] }
+ $%[creator.ku.kenp_rate_usd_per_page]
+ ~"./kindle-unlimited-case.spw#authorship_kindle_unlimited_pages" ~#neighbor(nearest)
+}
+
+#>authorship_kindle_unlimited_stream_q
+?["Is a page read the book world version of a song stream?"]{
+ #:depth #!historical ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "Both pool subscription money and split it by consumption, so both favor works that hold attention over works that are bought once and shelved."
+ breaks: "a stream counts a play after a short listen; a page read counts reading through text, and books have no replay habit like songs"
+ !probe{ "set the two payout rules side by side and compute payouts for a long and a short work" =id[p_creator_ku_stream] =kind[calc] }
+ ~"./kindle-unlimited-case.spw#authorship_kindle_unlimited_pages" ~#neighbor(nearest)
+}

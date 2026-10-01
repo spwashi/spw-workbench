@@ -1,0 +1,139 @@
+# Spw for Streamers
+#
+# A protocol for brace-first show notes: a pre-show outline, anchored recurring bits, a live topic board, wonder prompts, and a post-show digest.
+
+#>streaming_spw_for_streamers
+#:layer #!pragmatics
+#:domain #!streaming
+#:form #!protocol
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Spw for Streamers"
+ ~#claim: "A live host may be among the first everyday Spw users, because a show already has frames, recurring bits, and questions that a brace-first file can hold."
+ ~#proof: "The protocol uses commands the repository ships today; whether hosts adopt it is a hypothesis that one logged session would test."
+ ~#door: "Write the twenty-line show file in the try kit, then run one practice stream with it."
+ ~#audience: "live hosts and the people who help them prepare"
+ continuity: "Spw for Streamers | brace-first file"
+ cold_open: "A live show already has frames, so a brace-first file may fit it."
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "claude-opus-5.5"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ needs: [ ~"../../panels/llull-wheel.spw#panel_llull_wheel", ~"./prompt-deck.spw#streaming_prompt_deck" ]
+ extends: [ ~"./live-session-craft.spw#streaming_live_session" ]
+ see: [ ~"../../spw/perspectives/creators-and-streamers.spw#spw_perspectives_creators" ]
+}
+
+^["concepts"]{
+ primary: [ #chat_lane, #wonder_prompt ]
+ transfers: [ #run_sheet, #room_state ]
+ tensions: [ #crowd_noise ]
+}
+
+^["hypothesis"]{
+ #>streaming_spw_for_streamers_first_users
+ ^["first_users"]{
+  #:claim #!speculative
+  statement: "Live hosts already think in segments, recurring bits, and audience questions, so they may adopt a brace-first notes file sooner than most writers."
+  test: "one host keeps a show file through three streams and the session log records which frames they edited live"
+ }
+ #>streaming_spw_for_streamers_digest_value
+ ^["digest_value"]{
+  #:claim #!speculative
+  statement: "A digest written from the show file within a day makes the next opener faster to write than notes kept in a plain list."
+  test: "time the next-show opener with and without a digest across a logged pair of streams"
+ }
+}
+
+^["protocol"]{
+ #>streaming_spw_for_streamers_preshow
+ ^["pre_show"]{
+  file: "one show file per stream, with a segment frame per planned topic"
+  bits: "each recurring bit gets an anchor so later shows can link to it"
+  orient: "spw outline on the show file gives frame landmarks; it hides anchors and wonders, so read those by eye"
+  cites: "packages/spw-cli/src/commands.ts:338"
+ }
+ #>streaming_spw_for_streamers_board
+ ^["topic_board"]{
+  lanes: "chat is sorted into a few named lanes, each a frame the host or a moderator appends to"
+  privacy: "write topics, never viewer handles or personal details"
+  pipeline: "at scale the lanes come from the chat-torrent pipeline instead of a moderator"
+ }
+ #>streaming_spw_for_streamers_prompts
+ ^["wonder_prompts"]{
+  source: "draw prompts from the prompt deck by lane, depth, and lens"
+  framing: "a prompt asks the room a question; it never asks for personal data, money, or a dare"
+ }
+ #>streaming_spw_for_streamers_digest
+ ^["post_show"]{
+  card: "spw emit pack with the brief host reduces the show file to title, audience, claim, proof, and door"
+  drops: "the brief card drops status, provenance, as_of, and limits, so keep the full file as the record"
+  cites: "packages/spw-cli/src/emit.ts:357"
+  find: "spw select pulls frames by selector when a later show needs an old bit"
+  find_cites: "packages/spw-cli/src/commands.ts:330"
+ }
+ phases: << "pre-show outline" ; "live topic board" ; "wonder prompts" ; "post-show digest" >>
+}
+
+^["example_show"]{
+ #>streaming_spw_for_streamers_example
+ ^["show"]{
+  title: "Night Shift Notes, a sample episode"
+  tonight: "how a city decides where buses go"
+  ^["segments"]{
+   opener: .{ say: "who I am and what tonight is for", minutes: 5 }
+   map_talk: .{ say: "read one transit map together", minutes: 20 }
+   chat_lanes: .{ say: "questions, stories, and requests", minutes: 15 }
+   wrap: .{ say: "one open question for next time", minutes: 5 }
+  }
+  #>streaming_spw_for_streamers_example_bit
+  ^["bit_mailbag"]{
+   recurs: "every show, after the first segment"
+   cue: "a chime and the line: mailbag time"
+   rule: "read topics, not names"
+  }
+  ^["board"]{
+   questions: [ "why do some routes loop", "who pays for a new line" ]
+   stories: [ "a missed last bus and the walk home" ]
+   requests: [ "do airports next" ]
+  }
+  ^["digest"]{
+   shipped: "the map segment ran long; the mailbag ran short"
+   open_question: "would you ride a slower bus that comes twice as often"
+   next_bit: ~"./spw-for-streamers.spw#streaming_spw_for_streamers_example_bit"
+  }
+ }
+}
+
+^["try"]{
+ #>streaming_spw_for_streamers_try
+ ^["twenty_lines"]{
+  materials: [ "a text editor", "this repository with its CLI", "a practice stream or a recorded rehearsal" ]
+  steps: << "copy the example show and change the topic" ; "run spw outline on it and check the segments read in order" ; "rehearse for twenty minutes and append chat topics to the board" ; "write the digest frame" ; "reduce it with spw emit pack and the brief host" >>
+  time: .{ n: 45, unit: "minutes" }
+  safety: "privacy is the hazard: keep viewer handles and personal details out of the file"
+  shows: ~"./spw-for-streamers.spw#streaming_spw_for_streamers_first_users"
+ }
+}
+
+#>streaming_spw_for_streamers_live_q
+?["Will a host keep a show file open while live, or only before and after?"]{
+ #:depth #!experiential ~#lens(craft practice)
+ #:claim #!speculative
+ ~#hypothesis: "Hosts edit the file before and after the stream far more than during it, so the live board falls to a moderator."
+ !probe{ "log file edit times against stream start and end for one host over three streams" =id[p_creator_streamers_live_edit] =kind[field] }
+ ~"./spw-for-streamers.spw#streaming_spw_for_streamers_first_users" ~#neighbor(nearest)
+}

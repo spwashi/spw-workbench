@@ -1,0 +1,224 @@
+# Nucleic Acids and Genomes
+#
+# How DNA is copied, read, packed, and cut, from the double helix of 1953 to the first gapless human genome of 2022.
+
+#>cell_biology_nucleic
+#:layer #!reference
+#:domain #!cell_biology
+#:form #!ledger
+#:level #!advanced
+#:review #!sourced
+#:valence #!bonk
+#:era #!modern
+
+^"emit"{
+ ~#title: "Nucleic Acids and Genomes"
+ ~#claim: "DNA is copied semiconservatively with layered proofreading, packed on nucleosomes into looped domains, and cut by Cas9 only after a PAM-first search."
+ ~#proof: "Meselson and Stahl, Kunkel on fidelity, Luger and Rao on chromatin, Sternberg and Jones on Cas9 search, and the T2T assembly of Nurk and colleagues."
+ ~#door: "Follow the timeline rungs first, then the CRISPR search claims."
+ ~#audience: "readers who know what a gene and a protein are"
+ continuity: "Nucleic Acids and Genomes | PAM first"
+ cold_open: "Cas9 does not slide along the genome; it bumps into DNA, checks PAM first, and only then opens the helix."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/molecular-and-cellular-biology/nucleic-acid-mechanics-and-genomics.spw" ]
+ evidence: #[ "Crossref and PubMed checks 2026-10-01 for Sternberg 2014, Globyte 2019, Jones 2017, and Nurk 2022 abstracts" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "Cas9 search restated: mainly three-dimensional diffusion with PAM sampling, not one-dimensional sliding that finds a target in seconds",
+  "a single dCas9 in living E. coli needs hours, not seconds, to find one target",
+  "duplex stability credited mainly to base stacking, with pairing setting specificity",
+  "the single proofreading error rate replaced by the three-stage fidelity account"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./protein-structure-and-enzymes.spw#cell_biology_proteins" ]
+ feeds: [
+  ~"./cell-cycle-and-stem-cells.spw#cell_biology_cell_cycle",
+  ~"../plants/plant-genomics.spw#plant_science_genomics"
+ ]
+ see: [ ~"../bioengineering/synthetic-and-metabolic.spw#bioengineering_synthetic" ]
+}
+
+^["concepts"]{
+ primary: [ #gene, #replication_fidelity, #chromatin_loop, #pam_search ]
+ transfers: [ #provenance, #search ]
+ tensions: [ #lateral_diffusion ]
+}
+
+^["timeline"]{
+ order: << "double helix" ; "semiconservative copying" ; "chain-termination sequencing" ; "telomerase" ; "nucleosome structure" ; "draft human genome" ; "programmable Cas9" ; "loop map" ; "gapless genome" >>
+ #>cell_biology_nucleic_helix_1953
+ ^["double_helix"]{
+  #:claim #!settled
+  statement: "Watson and Crick proposed the antiparallel double helix in 1953, built on X-ray data from Rosalind Franklin and Raymond Gosling and from Maurice Wilkins."
+  sources: [ ~"SRC#src_life_watson_crick_1953", ~"SRC#src_life_franklin_gosling_1953" ]
+  era: 1953
+ }
+ #>cell_biology_nucleic_semiconservative
+ ^["semiconservative"]{
+  #:claim #!settled
+  statement: "Meselson and Stahl showed with heavy nitrogen that each daughter duplex keeps one parental strand."
+  source: ~"SRC#src_life_meselson_stahl_1958"
+  era: 1958
+ }
+ #>cell_biology_nucleic_sanger
+ ^["sanger_sequencing"]{
+  #:claim #!settled
+  statement: "Sanger, Nicklen, and Coulson read DNA by stopping synthesis with chain-terminating dideoxynucleotides."
+  source: ~"SRC#src_life_sanger_1977"
+  era: 1977
+ }
+ #>cell_biology_nucleic_telomerase
+ ^["telomerase"]{
+  #:claim #!settled
+  statement: "Greider and Blackburn found an enzyme in Tetrahymena that adds telomeric repeats, answering the end-replication problem."
+  source: ~"SRC#src_life_greider_blackburn_1985"
+  era: 1985
+ }
+ #>cell_biology_nucleic_nucleosome
+ ^["nucleosome"]{
+  #:claim #!settled
+  statement: "The nucleosome core wraps about 147 base pairs in 1.65 left-handed turns around an octamer of histones H2A, H2B, H3, and H4."
+  source: ~"SRC#src_life_luger_1997"
+  era: 1997
+ }
+ #>cell_biology_nucleic_draft_genome
+ ^["draft_genome"]{
+  #:claim #!settled
+  statement: "A public consortium and Celera Genomics published draft human genome sequences in February 2001."
+  sources: [ ~"SRC#src_life_ihgsc_2001", ~"SRC#src_life_venter_2001" ]
+  era: 2001
+ }
+ #>cell_biology_nucleic_cas9_2012
+ ^["programmable_cas9"]{
+  #:claim #!settled
+  statement: "In 2012 two groups showed that Cas9 with a guide RNA cuts chosen DNA; earlier work had tied CRISPR spacers to viral DNA and to acquired immunity."
+  sources: [ ~"SRC#src_life_jinek_2012", ~"SRC#src_life_gasiunas_2012", ~"SRC#src_life_mojica_2005", ~"SRC#src_life_barrangou_2007" ]
+  credit: "Charpentier and Doudna, Siksnys, Mojica in Alicante, and Barrangou, Horvath, and colleagues at Danisco"
+  era: 2012
+ }
+ #>cell_biology_nucleic_loops
+ ^["loop_map"]{
+  #:claim #!settled
+  statement: "Kilobase-resolution Hi-C maps show most loops anchored at CTCF sites in convergent orientation; purified cohesin extrudes DNA loops."
+  sources: [ ~"SRC#src_life_rao_2014", ~"SRC#src_life_davidson_2019" ]
+  era: 2014..2019
+ }
+ #>cell_biology_nucleic_t2t
+ ^["gapless_genome"]{
+  #:claim #!settled
+  statement: "The T2T consortium assembled a 3.055 billion base pair human genome, CHM13, gapless for every chromosome except Y, closing the 8 percent the old reference lacked."
+  reads: %[life.genome.t2t_length_gbp]
+  source: ~"SRC#src_life_nurk_2022"
+  era: 2022
+  ^["limits"]{
+   holds: "one essentially haploid cell line"
+   fails: "human variation needs pangenome references; the Y chromosome was finished separately in 2023"
+  }
+ }
+ =~"./nucleic-acids-and-genomes.spw#cell_biology_nucleic_t2t"[supersedes]{ ~"./nucleic-acids-and-genomes.spw#cell_biology_nucleic_draft_genome" }
+}
+
+^["ledger"]{
+ ^["duplex"]{
+  #>cell_biology_nucleic_stacking
+  ^["stacking_and_pairing"]{
+   #:claim #!settled
+   statement: "Base stacking supplies most of the duplex free energy; Watson-Crick pairing mainly sets which strands match."
+   source: ~"SRC#src_life_yakovchuk_2006"
+  }
+ }
+ ^["replication"]{
+  #>cell_biology_nucleic_fidelity
+  ^["fidelity"]{
+   #:claim #!settled
+   statement: "Replication fidelity multiplies three filters: nucleotide selection by the polymerase, exonuclease proofreading, and post-replication mismatch repair."
+   source: ~"SRC#src_life_kunkel_2004"
+  }
+  #>cell_biology_nucleic_lagging
+  ^["lagging_strand"]{
+   #:claim #!settled
+   statement: "Polymerases extend only 5 to 3, so the lagging strand is made in primed Okazaki fragments, later joined by ligase; looping lets both strands be copied by one replisome."
+   source: ~"SRC#src_life_alberts_2022"
+  }
+ }
+ ^["transcription"]{
+  #>cell_biology_nucleic_ctd
+  ^["ctd_code"]{
+   #:claim #!settled
+   statement: "RNA polymerase II carries heptad repeats YSPTSPS; Ser5 phosphorylation marks initiation and capping, Ser2 phosphorylation marks elongation and 3-prime processing."
+   source: ~"SRC#src_life_alberts_2022"
+  }
+  #>cell_biology_nucleic_splicing
+  ^["splicing"]{
+   #:claim #!settled
+   statement: "The spliceosome removes introns by two transesterifications, releasing a lariat and joining exons; U1 marks the 5-prime site and U2 the branch point."
+   source: ~"SRC#src_life_alberts_2022"
+  }
+ }
+ ^["crispr_search"]{
+  #>cell_biology_nucleic_cas9_search
+  ^["pam_first"]{
+   #:claim #!settled
+   statement: "Cas9 binds and releases DNA by three-dimensional diffusion, pauses at PAM sites, and unwinds DNA only next to a PAM; a matching sequence without a PAM is ignored."
+   source: ~"SRC#src_life_sternberg_2014"
+   ~#say(check the doorbell before opening the door)
+  }
+  #>cell_biology_nucleic_cas9_in_vivo
+  ^["search_time"]{
+   #:claim #!settled
+   statement: "In living E. coli one dCas9 needs about six hours to find one target, sampling each candidate site for under 30 ms, so fast editing needs many copies."
+   reads: %[life.cas9.dcas9_search_hours, life.cas9.site_probe_ms_max]
+   source: ~"SRC#src_life_jones_2017"
+  }
+  #>cell_biology_nucleic_cas9_lateral
+  ^["lateral_diffusion"]{
+   #:claim #!contested
+   statement: "Single-molecule FRET suggests Cas9 can also diffuse short distances along DNA between nearby PAMs, which would aid search in PAM-dense regions."
+   source: ~"SRC#src_life_globyte_2019"
+   counter: ~"SRC#src_life_sternberg_2014"
+  }
+  #>cell_biology_nucleic_cas9_raw_claim
+  ^["sliding_in_seconds"]{
+   #:claim #!refuted
+   statement: "The raw claim that Cas9 finds its genomic target in seconds by one-dimensional sliding is wrong on both counts."
+   sources: [ ~"SRC#src_life_sternberg_2014", ~"SRC#src_life_jones_2017" ]
+  }
+  #>cell_biology_nucleic_cut_and_repair
+  ^["cut_and_repair"]{
+   #:claim #!settled
+   statement: "SpCas9 needs the PAM NGG; its HNH domain cuts the guide-paired strand and RuvC the other, leaving a mostly blunt break repaired by end joining or, with a template, homology-directed repair."
+   source: ~"SRC#src_life_jinek_2012"
+  }
+ }
+}
+
+#>cell_biology_nucleic_copy_number_q
+?["Why does editing work in hours when one Cas9 needs hours to find one site?"]{
+ #:depth #!computational ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "Delivered Cas9 is present in hundreds to thousands of copies, so the first arrival comes far sooner than any single search finishes."
+ !probe{ "simulate first-passage times for N independent searchers with a six-hour mean search" =id[p_life_nucleic_first_passage] =kind[sim] }
+ $%[life.cas9.dcas9_search_hours, life.cas9.site_probe_ms_max]
+ ~"./nucleic-acids-and-genomes.spw#cell_biology_nucleic_cas9_in_vivo" ~#neighbor(nearest)
+}
+
+#>cell_biology_nucleic_catalog_q
+?["Is a PAM like a call number on a library shelf?"]{
+ #:depth #!educational ~#lens(curated collection)
+ #:claim #!speculative
+ ~#hypothesis: "Both cut search cost by checking a short cheap tag before reading the long full record."
+ breaks: "a call number orders the shelf so neighbors are related; PAMs are scattered with no ordering, and the reader moves at random"
+ !probe{ "count PAM sites per kilobase in human and E. coli genomes and compare with candidate checks per Cas9 search" =id[p_life_nucleic_pam_density] =kind[calc] }
+ ~"./nucleic-acids-and-genomes.spw#cell_biology_nucleic_cas9_search" ~#neighbor(nearest)
+}

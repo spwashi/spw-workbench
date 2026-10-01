@@ -1,0 +1,160 @@
+# Authorship Platforms and Business Models
+#
+# Exclusive, wide, print on demand, direct, and crowdfunded routes for an independent book, compared on the same columns with dated terms.
+
+#>authorship_platforms
+#:layer #!reference
+#:domain #!authorship
+#:form #!comparison
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!bone
+#:era #!current
+
+^"emit"{
+ ~#title: "Authorship Platforms and Business Models"
+ ~#claim: "An independent author chooses among exclusive, wide, print, direct, and crowdfunded routes, and each route trades reach for control on dated terms."
+ ~#proof: "KDP royalty bands, Select terms, and the Smashwords merger are read from platform pages and the public record with as_of stamps."
+ ~#door: "Read the Kindle Unlimited case for how one route reshaped writing, then the manuscript DAG for the steps before any route."
+ ~#audience: "authors and readers comparing publishing routes"
+ continuity: "Authorship Platforms and Business Models | reach for control"
+ cold_open: "Every publishing route trades reach for control on dated terms."
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/indie-author-ecosystem/publishing-platforms-and-business-models.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "Smashwords is no longer a separate aggregator; Draft2Digital acquired it, announced February 2022 and completed March 2022",
+  "the 70 percent band on Amazon.com now runs to 12.99 USD, effective 2026-07-07; the 9.99 ceiling is kept as superseded",
+  "the per-page rate range is not carried; the monthly rate is a verify cell",
+  "the 90 to 95 percent direct-sales margin and the 30 to 55 percent trade discount range are not carried as facts",
+  "Sanderson did not pioneer crowdfunded special editions; his 2022 campaign set a Kickstarter record"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/creators-and-platforms.spw#q_creator_kdp" ]
+ feeds: [ ~"./manuscript-to-market-dag.spw#authorship_manuscript_dag" ]
+ see: [ ~"./kindle-unlimited-case.spw#authorship_kindle_unlimited" ]
+}
+
+^["concepts"]{
+ primary: [ #exclusivity, #backlist ]
+ transfers: [ #dated_receipt, #serialization ]
+ tensions: [ #platform_dependence ]
+}
+
+^["columns"]{
+ exclusivity: "what the route forbids elsewhere"
+ reach: "where readers can find the book"
+ pay_basis: "how money reaches the author"
+ control: "price, data, and file ownership the author keeps"
+ as_of: "the date the terms were read"
+}
+
+^["matrix"]{
+ ^["exclusive_kdp_select"]{
+  #>authorship_platforms_select
+  ^["select_terms"]{
+   #:claim #!settled
+   statement: "KDP Select runs in 90-day terms; during a term the Kindle eBook must be exclusive to the Kindle Store, while print and audio may be sold elsewhere."
+   reads: %[creator.kdp.select_term_days]
+   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_kdp_select"
+  }
+  reach: "Amazon stores plus Kindle Unlimited borrowers"
+  pay_basis: "sales royalties plus a share of a monthly fund by pages read"
+  pages_rate: %[creator.ku.kenp_rate_usd_per_page]
+  control: "price and files stay with the author; reader contact data does not"
+  as_of: "2026-10-01"
+ }
+ ^["kdp_royalties"]{
+  #>authorship_platforms_royalty
+  ^["royalty_options"]{
+   #:claim #!settled
+   statement: "KDP pays either 35 percent of list price or 70 percent less delivery costs, and the 70 percent option applies only inside a list-price band."
+   reads: %[creator.kdp.royalty_high_pct, creator.kdp.royalty_low_pct]
+   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_kdp_royalty"
+  }
+  #>authorship_platforms_band
+  ^["band_2026"]{
+   #:claim #!settled
+   statement: "On Amazon.com the 70 percent band runs from 2.99 to 12.99 USD effective 2026-07-07, widened from a 9.99 ceiling."
+   reads: %[creator.kdp.band70_min_usd, creator.kdp.band70_max_usd]
+   prior: %[creator.kdp.band70_max_prior_usd]
+   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_kdp_price"
+   ^["limits"]{
+    holds: "Amazon.com list prices in USD as read on 2026-10-01"
+    fails: "other marketplaces have their own bands; older guides quote the 9.99 ceiling"
+   }
+  }
+ }
+ ^["wide"]{
+  #>authorship_platforms_d2d
+  ^["aggregator_merge"]{
+   #:claim #!settled
+   statement: "Smashwords, founded by Mark Coker and public since 2008, was acquired by Draft2Digital in a deal announced in February 2022 and completed in March 2022."
+   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_smashwords"
+  }
+  exclusivity: "none; the eBook may sit in every store at once"
+  reach: "Apple Books, Kobo, Barnes and Noble, Google Play, and library distributors, directly or through an aggregator"
+  pay_basis: "store royalties, less an aggregator fee where one is used; rates verify"
+  control: "the author keeps price and files and can leave any one store"
+  as_of: "2026-10-01"
+ }
+ ^["print_on_demand"]{
+  exclusivity: "none for print"
+  reach: "Amazon print listings through KDP Print; wider bookstore and library catalogs through a wholesaler such as IngramSpark"
+  pay_basis: "list price less print cost and the wholesale discount the publisher sets"
+  control: "the publisher sets discount and returnability; bookstore stocking depends on both; values verify"
+  as_of: "2026-10-01"
+ }
+ ^["direct"]{
+  exclusivity: "none, unless the same eBook is enrolled in Select"
+  reach: "the author's own audience, usually through a newsletter"
+  pay_basis: "store price less payment and delivery fees; margins verify per provider"
+  control: "the author holds the customer list and the files"
+  conflict: "direct eBook sales break Select exclusivity for that title"
+  as_of: "2026-10-01"
+ }
+ ^["crowdfunding"]{
+  #>authorship_platforms_kickstarter
+  ^["sanderson_2022"]{
+   #:claim #!settled
+   statement: "A 2022 Kickstarter for four Brandon Sanderson novels raised the most of any Kickstarter campaign to that date."
+   reads: %[creator.kickstarter.sanderson_2022_usd]
+   backers: %[creator.kickstarter.sanderson_2022_backers]
+   sources: [ ~"../../registries/sources/creators-and-platforms.spw#src_creator_sanderson_kickstarter", ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_sanderson" ]
+   ^["limits"]{
+    holds: "one author with an existing large readership"
+    fails: "as a forecast for a debut author; the record says nothing about typical campaigns"
+   }
+  }
+  reach: "backers who already know the author"
+  pay_basis: "pledges before production, less platform and payment fees"
+  control: "the author designs the edition and holds backer data"
+ }
+ ^["serial_subscription"]{
+  reach: "readers who pay monthly for chapters ahead of release"
+  pay_basis: "recurring pledges on a membership platform"
+  conflict: "chapters later enrolled in Select must leave the free web first"
+  as_of: "2026-10-01"
+ }
+}
+
+#>authorship_platforms_band_q
+?["Did widening the 70 percent band pull eBook list prices upward?"]{
+ #:depth #!social ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "Titles priced just under the old ceiling drift upward within a year, while low-priced series openers stay put."
+ !probe{ "sample list prices of the same titles before and after 2026-07-07" =id[p_creator_platforms_band] =kind[census] }
+ $%[creator.kdp.band70_max_usd, creator.kdp.band70_max_prior_usd]
+ ~"./platforms-and-business-models.spw#authorship_platforms_band" ~#neighbor(nearest)
+}

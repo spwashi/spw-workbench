@@ -1,0 +1,174 @@
+# Horticultural Science
+#
+# Working numbers, propagation, photoperiod control, and pest thresholds, set on a growing calendar from 1 October 2026 to early January 2027.
+
+#>plant_science_horticulture
+#:layer #!pragmatics
+#:domain #!plant_science
+#:form #!calendar
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!boon
+#:season #!reflection
+
+^"emit"{
+ ~#title: "Horticultural Science"
+ ~#claim: "Autumn is short-day season: lengthening nights set poinsettia and holiday cactus flowers, while soil water, compost, and propagation run on a few working numbers."
+ ~#proof: "Photoperiodism from Garner and Allard 1920; far-red elongation from Kasperbauer 1971; soil and compost values from Weil and Brady and the NRAES handbook."
+ ~#door: "Read the calendar from 1 October, then the photoperiod claims, then try a germination test."
+ ~#audience: "home growers and horticulture students"
+ continuity: "Horticultural Science | short-day season"
+ cold_open: "October opens short-day season, when long nights quietly tell poinsettias and holiday cacti to set their flowers."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/horticulture-and-botany/undergrad-horticultural-science.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "an end-of-day far-red pulse lengthens internodes; the raw wonder said it accelerates flowering without stretching stems (raw line 98)",
+  "the raw wonder's 10-day flowering gain and its phenology metrics were invented and dropped",
+  "the claim that heirloom flavor requires living soil is a stance, not a finding, and was dropped",
+  "the raw VPD and CO2 setpoints were unsourced and left out; numbers here are registry cells"
+ ]
+ review_note: "spot_checked because the poinsettia night length is a verify cell"
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/plants-ecology-care.spw#q_eco_photo" ]
+ analog: [ ~"../development-and-ecology/biological-clocks.spw#development_ecology_clocks" ]
+}
+
+^["concepts"]{
+ primary: [ #photoperiodism, #propagation, #limiting_factor ]
+ transfers: [ #cadence, #phenology ]
+ tensions: [ #shade_avoidance ]
+}
+
+^["working_numbers"]{
+ #>plant_science_horticulture_soil_water
+ ^["soil_water"]{
+  #:claim #!settled
+  statement: "Plant-available water lies between field capacity and the permanent wilting point; texture and organic matter set how much water fits between them."
+  reads: %[eco.soil.fc_mpa, eco.soil.pwp_mpa]
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_weil_brady_2017"
+ }
+ #>plant_science_horticulture_compost
+ ^["compost_blend"]{
+  #:claim #!settled
+  statement: "A hot compost pile starts best near a carbon to nitrogen ratio of about thirty, mixing browns such as leaves with greens such as fresh clippings."
+  reads: %[eco.soil.compost_c_n_ratio]
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_rynk_1992"
+ }
+}
+
+^["propagation"]{
+ #>plant_science_horticulture_ms_medium
+ ^["tissue_culture"]{
+  #:claim #!settled
+  statement: "Murashige and Skoog published the basal medium in 1962 that most plant tissue culture still starts from: salts, vitamins, sucrose, and a gelling agent."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_murashige_skoog_1962"
+ }
+ #>plant_science_horticulture_hormone_ratio
+ ^["hormone_ratio"]{
+  #:claim #!settled
+  statement: "Skoog and Miller showed that a high cytokinin to auxin ratio favors shoots and a high auxin to cytokinin ratio favors roots in cultured tissue."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_skoog_miller_1957"
+ }
+ grafting: "scion and rootstock cambia must touch so callus can bridge them and new vascular tissue can join"
+ cuttings: "auxins such as IBA are applied to cutting bases to encourage adventitious roots"
+}
+
+^["photoperiod"]{
+ #>plant_science_horticulture_photoperiodism
+ ^["discovery"]{
+  #:claim #!settled
+  statement: "Garner and Allard found in 1920 that Maryland Mammoth tobacco flowered only as days shortened, and named the response photoperiodism."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_garner_allard_1920"
+ }
+ #>plant_science_horticulture_night_length
+ ^["night_length"]{
+  #:claim #!settled
+  statement: "Short-day plants measure the night: a brief light break in a long night can prevent flowering, while a short dark break in the day changes little."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_taiz_2015"
+ }
+ #>plant_science_horticulture_phytochrome
+ ^["phytochrome"]{
+  #:claim #!settled
+  statement: "Phytochrome flips between a red-absorbing form and a far-red-absorbing active form; red light and far-red light reverse each other, as lettuce seed germination first showed."
+  reads: %[eco.photo.pr_peak_nm, eco.photo.pfr_peak_nm]
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_borthwick_1952"
+ }
+ #>plant_science_horticulture_eod_far_red
+ ^["end_of_day_far_red"]{
+  #:claim #!settled
+  statement: "An end-of-day far-red pulse lowers active phytochrome through the night and lengthens stems and internodes, part of the shade avoidance response."
+  sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_kasperbauer_1971", ~"../../registries/sources/plants-ecology-care.spw#src_eco_franklin_2008" ]
+  ^["limits"]{
+   holds: "stem elongation across many species, including tobacco in the field"
+   fails: "effects on flowering time differ by species and by long-day or short-day habit"
+  }
+ }
+}
+
+^["protection"]{
+ #>plant_science_horticulture_ipm
+ ^["economic_threshold"]{
+  #:claim #!settled
+  statement: "Stern and colleagues set out integrated control in 1959: scout pests, act at an economic threshold, and protect natural enemies that keep pests below it."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_stern_1959"
+ }
+ #>plant_science_horticulture_chilling
+ ^["chilling_models"]{
+  #:claim #!settled
+  statement: "Temperate fruit trees need winter chilling to break rest; the Utah model counts weighted chill units by temperature band, and other models weigh temperatures differently."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_richardson_1974"
+ }
+}
+
+^["calendar"]{
+ window: "Thu 2026-10-01 to Mon 2027-01-04, temperate Northern Hemisphere"
+ status_key: "fixed has a set date; typical follows climate and varies by region and year; verify needs a local check"
+ #>plant_science_horticulture_short_days
+ ^["short_day_forcing"]{
+  when: "from about 1 October"
+  task: "give poinsettias and holiday cacti long uninterrupted nights so bracts color and buds set by December"
+  reads: %[eco.photo.poinsettia_dark_h]
+  status: "typical; night length and weeks of response are cultivar dependent and a verify cell"
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_ecke_2004"
+ }
+ ^["seed_lots"]{ when: "October", task: "dry, clean, label, and store saved seed in cool dry jars", status: "typical" }
+ ^["bulbs"]{ when: "October to November", task: "plant spring bulbs before the ground freezes; pot bulbs for forcing and start their cold period", status: "typical" }
+ ^["first_frost"]{ when: "regional", task: "move tender plants in and note the first frost in the season journal", status: "verify" }
+ ^["chill_count"]{ when: "after leaf fall", task: "chill accumulation for fruit trees begins; track it with a model", status: "typical" }
+ ^["holiday_color"]{ when: "late November to December", task: "poinsettia bracts color; keep plants away from cold drafts and night light", status: "typical" }
+ ^["planning"]{ when: "late December to early January", task: "test old seed, read catalogs, and plan rotations", status: "typical" }
+ cadence: << "long nights begin" ; "seed lots stored" ; "bulbs in" ; "first frost" ; "chill counting" ; "holiday color" ; "seed tests and planning" >>
+}
+
+^["try"]{
+ #>plant_science_horticulture_try_germination
+ ^["germination_test"]{
+  materials: [ "ten seeds from one saved or leftover packet", "a paper towel", "a zip bag", "a marker" ]
+  steps: << "dampen the towel" ; "space ten seeds on it and fold" ; "seal and date the bag" ; "keep it warm and check daily" ; "count sprouts after one week" >>
+  time: .{ n: 15, unit: "minutes of setup, then a week of waiting" }
+  safety: "treated seed is often dyed; wash hands after handling it and keep it from children"
+  shows: ~"./horticultural-science.spw#plant_science_horticulture_soil_water"
+ }
+}
+
+#>plant_science_horticulture_far_red_q
+?["In a short-day crop, does an end-of-day far-red pulse move the flowering date at all?"]{
+ #:depth #!physical ~#lens(living system)
+ #:claim #!speculative
+ ~#hypothesis: "In short-day crops the pulse lengthens internodes more reliably than it shifts flowering, so growers trade height for little gain in timing."
+ !probe{ "greenhouse trial, two short-day cultivars, end-of-day far-red versus none, height and flowering date" =id[p_eco_hort_far_red] =kind[field] }
+ $%[eco.photo.pfr_peak_nm, eco.photo.pr_peak_nm]
+ ~"./horticultural-science.spw#plant_science_horticulture_eod_far_red" ~#neighbor(nearest)
+}

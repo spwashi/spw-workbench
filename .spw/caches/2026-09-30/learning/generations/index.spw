@@ -1,0 +1,70 @@
+# Generations
+#
+# What each US generation learned in school and how to compare those schoolings across a family: a comparison that informs, never a verdict on any cohort.
+
+#>generations_index
+#:layer #!reference
+#:domain #!generations
+#:form #!index
+#:level #!intro
+#:review #!spot_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Generations"
+ ~#claim: "Each generation met different landmarks, methods, and worries in school; set side by side with sources, the differences become questions to ask each other."
+ ~#proof: "Landmarks cite statutes, rulings, and reports; method fights cite research reviews; cohort lines follow Pew with its own cautions."
+ ~#door: "Start at the curricula ladder, check a landmark in the ledger, then take a difference to the kit."
+ ~#audience: "families, teachers, and writers comparing school across generations"
+ continuity: "Generations | questions to ask each other"
+ cold_open: "School changed with every generation, and each change is one of the questions to ask each other."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #woven, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #pass }
+  ^["r2"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["tree"]{
+ curricula: ~"./us-curricula-by-generation.spw"
+ ledger: ~"./policy-landmarks-ledger.spw"
+ wars: ~"./curriculum-wars-matrix.spw"
+ continuities: ~"./continuities-matrix.spw"
+ worry: ~"./public-worry-hooks.spw"
+}
+
+^["bundle"]{
+ ={ ~"./us-curricula-by-generation.spw#generations_us_curricula" }
+ ={ ~"./policy-landmarks-ledger.spw#generations_policy_ledger" }
+ ={ ~"./continuities-matrix.spw#generations_continuities" }
+ ={ ~"./curriculum-wars-matrix.spw#generations_curriculum_wars" }
+ ={ ~"./public-worry-hooks.spw#generations_worry_hooks" }
+}
+
+^["facets"]{
+ order: "leaves by matter, then form, then level"
+ rows: #[
+  .{ leaf: "us-curricula-by-generation", matter: "cohort, curriculum memory", form: "timeline", level: "intro" },
+  .{ leaf: "policy-landmarks-ledger", matter: "standards, accountability", form: "ledger", level: "foundation" },
+  .{ leaf: "continuities-matrix", matter: "grammar of schooling", form: "comparison", level: "intro" },
+  .{ leaf: "curriculum-wars-matrix", matter: "phonics, standards", form: "comparison", level: "advanced" },
+  .{ leaf: "public-worry-hooks", matter: "accountability, polls", form: "registry", level: "foundation" }
+ ]
+}
+
+^["stance"]{
+ #>generations_index_stance
+ ^["comparison_not_verdict"]{
+  #:claim #!interpretive
+  statement: "Generational labels describe when people were born, not who they are; this branch compares schoolings and leaves judgment of people out."
+  counter: ~"../../registries/sources/learning-and-generations.spw#src_learn_parker_2023"
+ }
+ scope: "US schooling only; other systems are a named gap in the class index"
+}

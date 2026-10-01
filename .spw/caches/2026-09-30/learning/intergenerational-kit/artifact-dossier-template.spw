@@ -1,0 +1,138 @@
+# Artifact Dossier Template
+#
+# A template for treating report cards, textbooks, and yearbooks as sources: what the object is, who kept it, who agreed to share it, how it was captured, and what it can show.
+
+#>generations_kit_artifact_template
+#:layer #!creative
+#:domain #!generations
+#:form #!dossier
+#:level #!intro
+#:review #!sourced
+#:valence #!bone
+#:era #!current
+
+^"emit"{
+ ~#title: "Artifact Dossier Template"
+ ~#claim: "A school artifact becomes a source when it carries its custody chain, the owner consent, a careful scan with a checksum, and a note on what it can and cannot show."
+ ~#proof: "Handling advice from the Northeast Document Conservation Center; scanning quality from the federal digitization guidelines; fixity from NIST and NDSA."
+ ~#door: "Fill one dossier for one object, then link it to its row in the memory map."
+ ~#audience: "families and students working with school keepsakes"
+ continuity: "Artifact Dossier Template | custody chain"
+ cold_open: "A report card becomes a source once you write its custody chain, ask consent, scan it, and say what it shows."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["scope"]{
+ keeps: "filled dossiers stay with the family; this surface is the empty template"
+ third_parties: "yearbooks and class photos show classmates who never agreed to be studied; keep their names and faces out of any shared copy"
+}
+
+^["edges"]{
+ needs: [ ~"./interview-protocol.spw#generations_kit_interview_keep" ]
+ see: [ ~"./curriculum-memory-map.spw#generations_kit_map_template" ]
+}
+
+^["concepts"]{
+ primary: [ #fixity, #consent ]
+ transfers: [ #curriculum_memory ]
+ tensions: [ #confidentiality ]
+}
+
+^["template"]{
+ ^["identity"]{
+  kind: #[ report_card, textbook, workbook, yearbook, photo, certificate ]
+  label: "?"
+  date_or_range: "?"
+  school: "optional, named only with the owner consent"
+ }
+
+ ^["custody"]{
+  custodian_role: "?"
+  chain: "who kept it, where, and since when"
+  came_by: "how it reached the family"
+ }
+
+ #>generations_kit_artifact_consent
+ ^["consent"]{
+  owner_agrees: "yes, no, or with limits"
+  people_shown: "who appears besides the owner"
+  share_scope: "family only, named people, or public"
+  restrictions: "?"
+ }
+
+ #>generations_kit_artifact_condition
+ ^["condition"]{
+  material: "paper, photo, binding, or other"
+  state: "sound, brittle, torn, stained, or damp"
+
+  #>generations_kit_artifact_storage
+  ^["storage"]{
+   #:claim #!settled
+   statement: "Paper and photographs last longest kept cool, dry, and dark at steady temperature and humidity, away from attics and basements."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_nedcc_leaflets"
+  }
+ }
+
+ #>generations_kit_artifact_capture
+ ^["capture"]{
+  #:claim #!settled
+  statement: "Federal digitization guidelines set quality levels for scanning heritage materials, including resolution and color accuracy targets."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_fadgi_2023"
+  steps: <<
+   "scan or photograph flat under even light" ;
+   "save an uncompressed master and a smaller copy for sharing" ;
+   "record a SHA-256 checksum for the master" ;
+   "store the master in three copies as the interview protocol keeps recordings"
+  >>
+  hash: ~"../../registries/sources/learning-and-generations.spw#src_learn_fips_180_4"
+ }
+
+ #>generations_kit_artifact_evidence
+ ^["evidence"]{
+  rung: "which rung of the curricula ladder it belongs to"
+  shows: "what it can show: subjects, grading scale, textbook content, who was in the class"
+  cannot_show: "what it cannot show: how teaching felt, what was skipped, who was absent"
+  transcription: "copy the few lines that matter, word for word"
+ }
+}
+
+^["try"]{
+ #>generations_kit_try_dossier
+ ^["one_object"]{
+  materials: [
+   "one school object from a family shelf",
+   "a phone camera",
+   "this template on paper or in a file"
+  ]
+  steps: <<
+   "ask the owner for permission and the sharing scope" ;
+   "fill identity and custody from what the owner remembers" ;
+   "photograph it flat in daylight and record a checksum of the file" ;
+   "write one thing it shows and one thing it cannot"
+  >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "handle brittle paper gently with clean, dry hands; if you see mold, set the item aside in a closed bag and leave cleaning to a conservator"
+  shows: ~"./artifact-dossier-template.spw#generations_kit_artifact_evidence"
+ }
+}
+
+#>generations_kit_artifact_which_q
+?["Which keepsake shows most about what was taught: the report card, the textbook, or the yearbook?"]{
+ #:depth #!historical ~#lens(curated collection)
+ #:claim #!speculative
+ ~#hypothesis: "Textbooks show the intended curriculum best, report cards show what was graded, and yearbooks show who was in school, so no single object is enough."
+ !probe{ "dossier one of each from the same school year and list which ledger landmarks each can confirm" =id[p_learn_kit_artifact_which] =kind[field] }
+ ~"./artifact-dossier-template.spw#generations_kit_artifact_evidence" ~#neighbor(nearest)
+}

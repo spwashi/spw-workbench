@@ -1,0 +1,141 @@
+# Labor Agreements Ledger
+#
+# The agreements that set pay, rest, and protections for Hollywood crews, writers, directors, and performers, with the 2021 and 2023 disputes as dossiers and the 2026 cycle left as a verify cell.
+
+#>film_labor_ledger
+#:layer #!reference
+#:domain #!film
+#:form #!ledger
+#:level #!practitioner
+#:review #!sourced
+#:valence #!bonk
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Labor Agreements Ledger"
+ ~#claim: "Hollywood labor runs on three-year agreements; in 2021 IATSE won a 10-hour turnaround under a strike threat, and in 2023 writers and actors both struck before settling."
+ ~#proof: "Agreement terms from the guild agreements; dates from Variety, The Hollywood Reporter, and Deadline coverage."
+ ~#door: "Read the term cells first, then the two 2023 strike dossiers, then the open 2026 cell."
+ ~#audience: "crew, writers, performers, students, and readers of labor history"
+ cold_open: "The Hollywood guilds bargain three-year agreements, and the ledger shows what each round won and when it expires."
+ continuity: "Labor Agreements Ledger | three-year agreements"
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #fact_checked, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #partial }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ checked: "strike dates and 2021 terms were checked against press citations on 2026-10-01; the 2024 IATSE expiry and the 2026 successor agreements were not"
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/film-stage-visual.spw#q_film_terms", ~"../../registries/quantities/film-stage-visual.spw#q_film_strikes" ]
+ see: [ ~"./set-operations-and-crew.spw#film_set_turnaround", ~"./careers-and-representation.spw#film_careers_guild_rows" ]
+}
+
+^["concepts"]{
+ primary: [ #strike, #turnaround ]
+ transfers: [ #guild_floor ]
+ tensions: [ #digital_replica, #generative_ai ]
+}
+
+^["agreements"]{
+ #>film_labor_iatse_2021
+ ^["iatse_2021"]{
+  #:claim #!settled
+  statement: "IATSE members authorized a strike in October 2021; the October 16 tentative deal set a 10-hour turnaround and a 54-hour weekend rest, and members ratified it on November 15."
+  reads: %[
+   film.iatse.strike_vote_2021_pct,
+   film.iatse.turnaround_h,
+   film.iatse.weekend_rest_h
+  ]
+  sources: [ ~"../../registries/sources/film-stage-visual.spw#src_film_variety_iatse_vote_2021", ~"../../registries/sources/film-stage-visual.spw#src_film_variety_iatse_deal_2021", ~"../../registries/sources/film-stage-visual.spw#src_film_variety_iatse_ratify_2021" ]
+  term: %[film.iatse.ba_2021_term]
+  ~#(ratified through the union delegate system after a close member vote)
+ }
+ #>film_labor_iatse_2024
+ ^["iatse_2024"]{
+  what: "the successor Producer-IATSE Basic Agreement of 2024"
+  expiry: %[film.iatse.ba_2024_expiry]
+  cell: #verify
+ }
+ #>film_labor_wga_2023_term
+ ^["wga_2023"]{
+  #:claim #!settled
+  statement: "The 2023 WGA Minimum Basic Agreement ran until May 1, 2026."
+  reads: %[film.wga.mba_2023_expiry]
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_wga_mba_2023"
+ }
+ #>film_labor_sag_2023_term
+ ^["sag_aftra_2023"]{
+  #:claim #!settled
+  statement: "The 2023 SAG-AFTRA TV and theatrical contracts ran until June 30, 2026."
+  reads: %[film.sagaftra.tvth_2023_expiry]
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_sagaftra_tvth_2023"
+ }
+ #>film_labor_dga_2023
+ ^["dga_2023"]{
+  #:claim #!settled
+  statement: "The DGA Basic Agreement of 2023 ran until June 30, 2026."
+  reads: %[film.dga.ba_2023_expiry]
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_dga_ba_2023"
+ }
+}
+
+^["dossiers"]{
+ #>film_labor_wga_strike_2023
+ ^["wga_strike_2023"]{
+  #:claim #!settled
+  statement: "The Writers Guild of America struck the studios from May 2 to September 27, 2023, its first strike in fifteen years."
+  reads: %[film.wga.strike_2023_window]
+  sources: [ ~"../../registries/sources/film-stage-visual.spw#src_film_thr_wga_start_2023", ~"../../registries/sources/film-stage-visual.spw#src_film_thr_wga_end_2023" ]
+  ^["terms_won"]{
+   #:claim #!settled
+   statement: "The 2023 MBA provides that AI-generated material is not literary or source material and cannot be used to undermine a writer's credit or separated rights."
+   source: ~"../../registries/sources/film-stage-visual.spw#src_film_wga_mba_2023"
+  }
+ }
+ #>film_labor_sag_strike_2023
+ ^["sag_aftra_strike_2023"]{
+  #:claim #!settled
+  statement: "SAG-AFTRA struck from July 14 to November 9, 2023, its first film and television walkout since 1980, and members ratified the deal on December 5, 2023."
+  reads: %[film.sagaftra.strike_2023_window]
+  sources: [ ~"../../registries/sources/film-stage-visual.spw#src_film_deadline_sag_start_2023", ~"../../registries/sources/film-stage-visual.spw#src_film_deadline_sag_end_2023", ~"../../registries/sources/film-stage-visual.spw#src_film_deadline_sag_ratify_2023" ]
+  ^["terms_won"]{
+   #:claim #!settled
+   statement: "The 2023 contracts added consent and compensation terms for digital replicas of performers."
+   source: ~"../../registries/sources/film-stage-visual.spw#src_film_sagaftra_tvth_2023"
+  }
+ }
+}
+
+^["open_cells"]{
+ #>film_labor_cycle_2026
+ ^["cycle_2026"]{
+  what: "successor WGA, DGA, and SAG-AFTRA agreements after the May and June 2026 expiries"
+  outcome: %[film.guilds.cycle_2026_status]
+  cell: #verify
+  ~#(this cut records no outcome for the 2026 cycle until a source is checked)
+ }
+}
+
+^["gaps"]{
+ earlier_strikes: "the 1960 actor and writer strikes and the 2007 to 2008 writers strike wait for sourced rungs"
+ other_unions: "Teamsters Local 399 and the Basic Crafts agreements wait for sourced terms"
+}
+
+#>film_labor_alignment_q
+?["Does the alignment of guild expiries in one season raise the odds of simultaneous strikes?"]{
+ #:depth #!historical ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "When several guild agreements expire within weeks, a strike by one guild raises the leverage and likelihood of the next."
+ !probe{ "list guild expiry dates and strike starts across contract cycles since 1960" =id[p_film_labor_alignment] =kind[lit] }
+ $%[film.wga.mba_2023_expiry, film.sagaftra.tvth_2023_expiry, film.dga.ba_2023_expiry]
+ ~"./labor-agreements-ledger.spw#film_labor_sag_strike_2023" ~#neighbor(nearest)
+}

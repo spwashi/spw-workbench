@@ -1,0 +1,162 @@
+# Playback Dependency DAG
+#
+# What each carrier needs before anyone can read it: eyes, a device, parts, power, a standard, a codec, keys, a network, or a service, and the ways each need can fail.
+
+#>media_carriers_playback_dag
+#:layer #!reference
+#:domain #!media_carriers
+#:form #!catalog
+#:level #!advanced
+#:review #!sourced
+#:valence #!bane
+#:era #!current
+
+^"emit"{
+ ~#title: "Playback Dependency DAG"
+ ~#claim: "A codex needs eyes and light, while a stream needs a device, power, a codec, a key, a network, and a service that stays open."
+ ~#proof: "Rothenberg on digital dependence; Copeland on disc equalization; Taylor on disc keys; Perzanowski and Schultz on licensed access."
+ ~#door: "Do the shelf map below, then read the decay ledger for the chemistry side."
+ ~#audience: "readers deciding what to keep, copy, or convert in a home or small archive"
+ continuity: "Playback Dependency DAG | eyes and light"
+ cold_open: "A book needs eyes and light; a stream needs a whole chain of machines, keys, and companies to stay alive."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ needs: [ ~"./form-factor-ladder.spw#media_carriers_ladder" ]
+ feeds: [ ~"./carrier-decay-and-fixity.spw#media_carriers_decay" ]
+ see: [ ~"./digital/streaming-and-files.spw#media_carriers_streaming" ]
+}
+
+^["concepts"]{
+ primary: [ #obsolescence, #format ]
+ transfers: [ #dependency, #emulation ]
+ tensions: [ #licensed_access ]
+}
+
+^["bias_legend"]{
+ hard: "the carrier cannot be read at all without this"
+ soft: "reading works without it but loses quality or convenience"
+}
+
+^["needs"]{
+ #>media_carriers_dep_eyes
+ ^["eyes_and_script"]{ what: "light and a reader who knows the script and language" }
+ #>media_carriers_dep_device
+ ^["device"]{ what: "a working player, reader, or computer" }
+ #>media_carriers_dep_parts
+ ^["parts"]{ what: "consumables and spares such as styli, heads, belts, and laser pickups" }
+ #>media_carriers_dep_power
+ ^["power"]{ what: "electric power of the right voltage, and for some motors the right mains frequency" }
+ #>media_carriers_dep_standard
+ ^["standard"]{ what: "a published format: speed and equalization, track layout, television system, or file container" }
+ #>media_carriers_dep_codec
+ ^["codec"]{ what: "software that parses the container and decodes the compressed streams" }
+ #>media_carriers_dep_keys
+ ^["keys"]{ what: "decryption keys or a license the player must obtain" }
+ #>media_carriers_dep_network
+ ^["network"]{ what: "a working network path to the files" }
+ #>media_carriers_dep_service
+ ^["service"]{ what: "a company that keeps the service open and the title licensed" }
+}
+
+^["formats"]{
+ #>media_carriers_dag_codex
+ ^["codex"]{
+  needs: [ =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_eyes" ]
+ }
+ #>media_carriers_dag_disc78
+ ^["disc_78"]{
+  needs: [ =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_device", =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_parts", =~[soft] ~"./playback-dependency-dag.spw#media_carriers_dep_standard" ]
+  #:claim #!settled
+  statement: "Before the 1950s, labels recorded with many different equalization curves and speeds, so faithful playback means choosing the curve and speed for each disc."
+  source: ~"../../registries/sources/record-and-carriers.spw#src_media_copeland_2008"
+ }
+ #>media_carriers_dag_lp
+ ^["lp"]{
+  needs: [ =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_device", =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_parts", =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_power", =~[soft] ~"./playback-dependency-dag.spw#media_carriers_dep_standard" ]
+  #:claim #!settled
+  statement: "LPs from the mid-1950s on are cut with the RIAA equalization curve, so a phono preamp must apply the matching inverse curve."
+  source: ~"../../registries/sources/record-and-carriers.spw#src_media_copeland_2008"
+ }
+ #>media_carriers_dag_cassette
+ ^["cassette"]{
+  needs: [ =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_device", =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_parts", =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_power", =~[soft] ~"./playback-dependency-dag.spw#media_carriers_dep_standard" ]
+  soft_note: "noise-reduction decoding such as Dolby B improves playback but is not required to hear the tape"
+ }
+ #>media_carriers_dag_cd
+ ^["cd"]{
+  needs: [ =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_device", =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_power", =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_standard" ]
+  reads: %[media.optical.cd_laser_nm, media.optical.cd_sample_rate_hz]
+ }
+ #>media_carriers_dag_dvd
+ ^["dvd_and_bluray"]{
+  needs: [ =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_device", =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_power", =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_standard", =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_keys" ]
+  #:claim #!settled
+  statement: "Commercial DVDs use CSS encryption and region codes, and Blu-ray discs use AACS, so a licensed player holding valid keys is part of reading them."
+  source: ~"../../registries/sources/record-and-carriers.spw#src_media_taylor_2006"
+ }
+ #>media_carriers_dag_file
+ ^["file"]{
+  needs: [ =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_device", =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_power", =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_codec" ]
+  #:claim #!settled
+  statement: "Rothenberg argued that a digital document is readable only through the software and hardware that interpret it, and proposed emulating obsolete systems to keep it readable."
+  source: ~"../../registries/sources/record-and-carriers.spw#src_media_rothenberg_1995"
+ }
+ #>media_carriers_dag_stream
+ ^["stream"]{
+  needs: [ =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_device", =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_codec", =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_network", =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_keys", =~[hard] ~"./playback-dependency-dag.spw#media_carriers_dep_service" ]
+  #:claim #!settled
+  statement: "Perzanowski and Schultz document licensed digital purchases that stopped working or were withdrawn when a vendor changed course."
+  source: ~"../../registries/sources/record-and-carriers.spw#src_media_perzanowski_schultz_2016"
+ }
+}
+
+^["obsolescence_paths"]{
+ #>media_carriers_dag_equipment
+ ^["equipment_extinction"]{
+  #:claim #!settled
+  statement: "For audio carriers, the disappearance of working players and spare parts is itself a preservation threat, so archives transfer content to digital files while machines remain."
+  source: ~"../../registries/sources/record-and-carriers.spw#src_media_iasa_tc04_2009"
+ }
+ #>media_carriers_dag_paths
+ ^["paths"]{
+  #:claim #!interpretive
+  statement: "Each hard need is a path to unreadability: devices stop being made, parts run out, standards are forgotten, keys are revoked, networks change, and services close."
+  order: << "device" ; "parts" ; "standard" ; "codec" ; "keys" ; "network" ; "service" >>
+ }
+}
+
+^["try"]{
+ #>media_carriers_try_shelf_map
+ ^["map_your_shelf"]{
+  materials: [ "five carriers from home, such as a book, a record, a tape, a disc, and a purchased download or stream", "paper and pencil" ]
+  steps: << "list each carrier across the top" ; "under each, write every need from the needs frame" ; "mark hard needs and soft needs" ; "circle needs only a company can supply" ; "rank which carrier you could still read in twenty years" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "no hazard worth naming; handle shellac discs flat with two hands"
+  shows: ~"./playback-dependency-dag.spw#media_carriers_dag_paths"
+  draws_on: [ ~"./carrier-decay-and-fixity.spw#media_carriers_decay", ~"./form-factor-ladder.spw#media_carriers_ladder" ]
+ }
+}
+
+#>media_carriers_dag_first_break_q
+?["Which need breaks first for a carrier you own?"]{
+ #:depth #!computational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "Carriers whose hard needs include keys or a remote service become unreadable sooner than carriers needing only a device and power."
+ !probe{ "for each format list the dates of last new player, last key update, and service closure, then compare spans" =id[p_media_dag_first_break] =kind[census] }
+ $%[graph.out_degree]
+ ~"./playback-dependency-dag.spw#media_carriers_dag_paths" ~#neighbor(nearest)
+}

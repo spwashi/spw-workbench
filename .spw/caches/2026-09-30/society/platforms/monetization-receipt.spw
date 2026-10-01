@@ -1,0 +1,145 @@
+# Live Monetization Receipt
+#
+# Coins, Gifts, Diamonds, subscriptions, and shop on TikTok LIVE as a dated receipt: what the policy says, what stays verify, and what the raw table got wrong.
+
+#>live_platforms_monetization
+#:layer #!reference
+#:domain #!live_platforms
+#:form #!registry
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!honk
+#:era #!current
+
+^"emit"{
+ ~#title: "Live Monetization Receipt"
+ ~#claim: "Viewers buy Coins, spend them as Gifts, and hosts accrue Diamonds at a rate the platform sets, so every gift value is a dated receipt."
+ ~#proof: "The Virtual Items Policy defines the chain and reserves the conversion rate; gift prices and shares stay verify cells with region and date."
+ ~#door: "Compare the plates in the affinity atlas, or read the Singles Day case for live selling at scale."
+ ~#audience: "hosts, researchers, and readers checking a gift figure before repeating it"
+ continuity: "Live Monetization Receipt | dated receipt"
+ cold_open: "A gift price on a live stream is a dated receipt, never a constant."
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/tiktok-live/virtual-economy.spw", ".spw/caches/tiktok-live/live-commerce.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the payout share is applied once; the raw halved Coins into Diamonds and then took a second half at cashout",
+  "no fiat value is attached to a gift; the raw priced the Lion at both 450 and 500 USD",
+  "the web recharge yield advantage, combo multipliers, and gifter badge levels are dropped as unsourced",
+  "affiliate commission ranges and the four-times conversion figure are dropped as unsourced"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"../../panels/affinity-atlas.spw#panel_affinity_atlas" ]
+ grounds: [ ~"../../registries/quantities/creators-and-platforms.spw#q_creator_live" ]
+ see: [ ~"../markets/singles-day-live-commerce.spw#markets_singles_day" ]
+}
+
+^["concepts"]{
+ primary: [ #virtual_gift, #dated_receipt ]
+ transfers: [ #audience_participation ]
+ tensions: [ #platform_dependence ]
+}
+
+^["chain"]{
+ #>live_platforms_monetization_chain
+ ^["coins_gifts_diamonds"]{
+  #:claim #!settled
+  statement: "Viewers buy Coins, exchange them for Gifts sent to a host, and the host accrues Diamonds that can be withdrawn for money through approved payment channels."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_tiktok_virtual_items"
+  ^["limits"]{
+   holds: "the global Virtual Items Policy as read on 2026-10-01"
+   fails: "regional programs may rename the creator-side credit or change withdrawal rules"
+  }
+ }
+ #>live_platforms_monetization_rate
+ ^["rate_reserved"]{
+  #:claim #!settled
+  statement: "The policy sets Diamonds from Gifts received at a conversion rate the platform determines from time to time, so no fixed rate can be quoted."
+  reads: %[creator.live.coin_to_diamond, creator.live.coins_per_usd]
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_tiktok_virtual_items"
+ }
+ #>live_platforms_monetization_age
+ ^["age_gate"]{
+  #:claim #!settled
+  statement: "Buying Coins and sending or receiving Gifts with value requires age 18 or the local age of majority."
+  reads: %[creator.live.gift_min_age_years]
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_tiktok_virtual_items"
+ }
+}
+
+^["errata"]{
+ #>live_platforms_monetization_double_count
+ ^["double_count"]{
+  #:claim #!refuted
+  statement: "The raw table halved each Coin into Diamonds and then applied a second 50 percent revenue share at cashout, counting one platform share twice."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_tiktok_virtual_items"
+  fix: "one share sits between Coin spend and Diamond value; the policy describes one conversion, not two"
+  reads: %[creator.live.creator_share_pct]
+ }
+}
+
+^["gift_table"]{
+ #>live_platforms_monetization_gifts
+ ^["catalog"]{
+  rule: "gift prices in Coins rotate by region and season; each is a verify cell and none carries a fiat price"
+  rose: %[creator.live.gift_rose_coins]
+  lion: %[creator.live.gift_lion_coins]
+  universe: %[creator.live.gift_universe_coins]
+  as_of: "2026-09-30"
+ }
+}
+
+^["other_streams"]{
+ subscriptions: "monthly LIVE subscriptions with badges and subscriber-only chat; terms verify"
+ shop: "TikTok Shop showcases products in a stream with in-app checkout; commissions and terms verify"
+ shop_context: "livestream selling grew first on Chinese platforms; the Singles Day case carries that history"
+}
+
+^["contrasts"]{
+ #>live_platforms_monetization_bits
+ ^["twitch_bits"]{
+  #:claim #!settled
+  statement: "Twitch sells Bits, an in-site currency spent as animated Cheers, introduced in June 2016."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_twitch"
+ }
+ youtube: "YouTube paid chat features belong in this row; dates and shares verify"
+ afreeca: "AfreecaTV tipping currency belongs in this row; launch year verify"
+ gap: "a full Twitch, YouTube Live, and Kick comparison stays a declared gap until sourced"
+}
+
+^["ethics"]{
+ minors: "the receipt states the age gate and gives no spending advice"
+ pressure: "interpretive: match rounds and leaderboards add social pressure to gift; the wonder below asks whether they do"
+ distance: "each currency layer puts distance between a tap and its price; the wonder below asks how much"
+}
+
+#>live_platforms_monetization_distance_q
+?["Do Coins make a gift feel cheaper than its price in money?"]{
+ #:depth #!ethical ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "Pricing gifts in Coins rather than money lowers hesitation before a large gift."
+ !probe{ "survey literature on token currencies and spending hesitation in games and streams" =id[p_creator_monetization_distance] =kind[lit] }
+ $%[creator.live.coins_per_usd, creator.live.gift_universe_coins]
+ ~"./monetization-receipt.spw#live_platforms_monetization_chain" ~#neighbor(nearest)
+}
+
+#>live_platforms_monetization_hat_q
+?["Is a live gift the busker hat with a scoreboard attached?"]{
+ #:depth #!historical ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Public, ranked gifting turns a private tip into a status display, so gift size tracks visibility more than thanks."
+ breaks: "a hat holds coins no one else counts; a gift is announced, ranked, and taken by the platform before the host sees it"
+ !probe{ "compare busking ethnographies with leaderboard screenshots from public streams" =id[p_creator_monetization_hat] =kind[lit] }
+ ~"./monetization-receipt.spw#live_platforms_monetization_gifts" ~#neighbor(nearest)
+}

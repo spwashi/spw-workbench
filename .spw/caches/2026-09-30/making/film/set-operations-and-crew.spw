@@ -1,0 +1,222 @@
+# Set Operations and Crew
+#
+# How a shooting day moves from crew call to wrap, who runs each department, and which rest and meal rules bind which workers.
+
+#>film_set_operations
+#:layer #!pragmatics
+#:domain #!film
+#:form #!protocol
+#:level #!practitioner
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Set Operations and Crew"
+ ~#claim: "A shooting day is a loop of block, light, rehearse, roll and cut, run by the first AD, while rest rules differ by agreement: crew turnaround and performer rest are separate clocks."
+ ~#proof: "The 2021 IATSE Basic Agreement and the SAG-AFTRA TV and theatrical terms; crew roles per The Filmmaker's Handbook."
+ ~#door: "Read the turnaround frame, then follow the safety ledger and the labor ledger."
+ ~#audience: "film students, new crew, and producers planning a first shoot"
+ cold_open: "Every setup on a film set runs the same loop, and every worker on it carries a turnaround clock set by their own agreement."
+ continuity: "Set Operations and Crew | turnaround"
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/film-production-and-industry/set-operations-and-crew-hierarchy.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+ }
+ corrections: [
+  "IATSE crew turnaround is 10 hours under the 2021 Basic Agreement; 12 hours is the SAG-AFTRA performer rest period",
+  "the director calls action and cut; the first AD calls for quiet and roll and runs the floor",
+  "the single overtime ladder with 3x golden time after 14 or 16 hours is removed; multipliers and thresholds vary by agreement",
+  "the 12-minute meal grace and 30-minute penalty increments are removed pending the governing agreement text"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../../physical/optics/cine-lenses-and-formats.spw#optics_cine_formats" ]
+ grounds: [ ~"../../registries/quantities/film-stage-visual.spw#q_film_labor" ]
+ see: [ ~"./crew-safety-and-culture.spw#film_crew_safety", ~"./labor-agreements-ledger.spw#film_labor_ledger" ]
+}
+
+^["concepts"]{
+ primary: [ #call_sheet, #turnaround ]
+ transfers: [ #state_machine, #stripboard, #safety_bulletin ]
+ tensions: [ #fatigue ]
+}
+
+^["roles"]{
+ #>film_set_roles_production
+ ^["production"]{
+  upm: "unit production manager: runs the budget and physical production for the producers"
+  first_ad: "first assistant director: builds the schedule, runs the floor, calls for quiet and roll"
+  second_ad: "second assistant director: base camp, cast arrivals, and the next call sheet"
+  pas: "production assistants: lockups, background, and walkie relays"
+ }
+ #>film_set_roles_camera
+ ^["camera"]{
+  dp: "director of photography: lighting and camera design with the director"
+  operator: "camera operator: frames and moves the shot"
+  first_ac: "first assistant camera: pulls focus and keeps the camera build"
+  second_ac: "second assistant camera: slates, marks actors, keeps camera reports"
+  dit: "digital imaging technician: verified media offload and on-set color and exposure checks"
+ }
+ #>film_set_roles_grip_electric
+ ^["grip_and_electric"]{
+  gaffer: "chief lighting technician: lighting plan and power with the DP"
+  best_boy_electric: "second in electric: crew, cable, and equipment"
+  key_grip: "head grip: rigging, dollies, cranes, and light shaping"
+  dolly_grip: "moves the dolly on cue and on marks"
+ }
+ #>film_set_roles_sound_art
+ ^["sound_and_art"]{
+  mixer: "production sound mixer: records and mixes dialogue on set"
+  boom: "boom operator: places the microphone just outside frame"
+  production_designer: "designs the physical world of the film"
+  prop_master: "handles every object an actor touches; with the armorer, holds firearms"
+ }
+ #>film_set_cut_call
+ ^["who_calls_cut"]{
+  #:claim #!settled
+  statement: "The director calls action and cut; the first assistant director runs the floor, calls for quiet and roll, and keeps the day on schedule."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_ascher_pincus_2012"
+  ^["limits"]{
+   holds: "scripted drama on a conventional set"
+   fails: "a second unit, a stunt, or a safety stop: any crew member may call a halt for safety"
+  }
+ }
+}
+
+^["shooting_day"]{
+ #>film_set_day_machine
+ ^["machine"]{
+  day: <<
+   "crew call" ;
+   "blocking rehearsal" ;
+   "lighting with second team" ;
+   "final rehearsal" ;
+   "roll and action" ;
+   "cut" ;
+   "reset or next setup" ;
+   "meal" ;
+   "wrap" ;
+   "production report"
+  >>
+  after_cut: ?match[@take]{
+   "keeper" => "director prints it and the AD moves to the next setup",
+   "flawed" => "back to first positions for another take",
+   "last setup" => "wrap, then the second AD files the report"
+  }
+ }
+ #>film_set_state_block
+ ^["blocking"]{
+  enters: "cast and key crew watch a rehearsal on set"
+  does: "the director and actors set movement; the second AC lays marks"
+  exits: "first team leaves for makeup; second team stands in for lighting"
+ }
+ #>film_set_state_roll
+ ^["rolling"]{
+  enters: "the first AD calls for quiet and roll"
+  does: "sound speeds, camera rolls, the slate marks the take, and the director calls action"
+  exits: "the director calls cut"
+ }
+ #>film_set_state_wrap
+ ^["wrap"]{
+  enters: "the last setup is complete or the day hits its hour limit"
+  does: "departments strike and secure gear; media is verified and backed up"
+  exits: "the turnaround clock starts for every worker"
+ }
+}
+
+^["paperwork"]{
+ #>film_set_call_sheet
+ ^["call_sheet"]{
+  #:claim #!settled
+  statement: "The call sheet lists the next day's scenes, cast and crew call times, locations, and the nearest hospital; the production report records what the day actually did."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_ascher_pincus_2012"
+ }
+ #>film_set_stripboard
+ ^["stripboard"]{
+  #:claim #!settled
+  statement: "A stripboard turns breakdown sheets into strips that the AD orders across days by location, cast availability, and daylight."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_ascher_pincus_2012"
+ }
+}
+
+^["rest_and_meals"]{
+ #>film_set_turnaround
+ ^["turnaround"]{
+  #:claim #!settled
+  statement: "Turnaround differs by agreement: covered IATSE crew get 10 hours from wrap to next call, while SAG-AFTRA performers get a 12-hour rest period."
+  reads: %[film.iatse.turnaround_h, film.sagaftra.rest_period_h]
+  sources: [ ~"../../registries/sources/film-stage-visual.spw#src_film_iatse_ba_2021", ~"../../registries/sources/film-stage-visual.spw#src_film_sagaftra_tvth_2023" ]
+  ^["limits"]{
+   holds: "productions under these agreements in their stated terms"
+   fails: "nonunion shoots, other countries, and the stated exceptions in each agreement"
+   currency: "the 2021 crew terms carried into the 2024 Basic Agreement; check the agreement in force"
+  }
+ }
+ #>film_set_weekend_rest
+ ^["weekend_rest"]{
+  #:claim #!settled
+  statement: "The 2021 IATSE deal set a 54-hour weekend rest on a five-day week and 32 hours on a six-day week."
+  reads: %[film.iatse.weekend_rest_h]
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_variety_iatse_deal_2021"
+ }
+ #>film_set_meal
+ ^["first_meal"]{
+  #:claim #!settled
+  statement: "The first meal period is due within six hours of call; meal penalties accrue past that point on a schedule set by each agreement."
+  reads: %[film.meal.first_meal_h]
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_sagaftra_tvth_2023"
+ }
+ #>film_set_golden_time
+ ^["golden_time"]{
+  #:claim #!settled
+  statement: "Golden time names premium pay after a long elapsed day; its threshold and multiplier differ by agreement, local, and contract year."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_iatse_ba_2021"
+  ~#(read the governing agreement before quoting a multiplier)
+ }
+}
+
+^["try"]{
+ #>film_set_try_call_sheet
+ ^["one_scene_call_sheet"]{
+  materials: [ "a one-page scene", "a blank call sheet template", "a map app" ]
+  steps: <<
+   "break the scene into cast, props, and setups" ;
+   "set crew call and shooting call" ;
+   "plan a meal before six hours" ;
+   "find the nearest hospital" ;
+   "count the turnaround to the next call"
+  >>
+  time: .{ n: 45, unit: "minutes" }
+  safety: "paper exercise; no hazard worth naming"
+  shows: ~"./set-operations-and-crew.spw#film_set_call_sheet"
+ }
+}
+
+#>film_set_turnaround_q
+?["Does the same turnaround protect a crew member with a long commute as well as one who lives near set?"]{
+ #:depth #!social ~#lens(bodily rhythm)
+ #:claim #!speculative
+ ~#hypothesis: "Sleep opportunity inside a turnaround shrinks with commute and wind-down time, so a fixed turnaround protects nearby crew more than long-commute crew."
+ !probe{ "log door-to-door commute against turnaround for one production week" =id[p_film_set_turnaround_commute] =kind[field] }
+ $%[film.iatse.turnaround_h, film.sagaftra.rest_period_h]
+ ~"./set-operations-and-crew.spw#film_set_turnaround" ~#neighbor(nearest)
+}
+
+#>film_set_cue_q
+?["Is a shooting day a state machine in the way a stage manager calling cues is?"]{
+ #:depth #!educational ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "Both run a named sequence with explicit calls, so crews trained in one should read the other quickly."
+ breaks: "a film take repeats until it is kept; a live cue happens once in front of an audience"
+ !probe{ "ask stage managers and first ADs to map each other's calls onto their own" =id[p_film_set_cue_map] =kind[interview] }
+ ~"./set-operations-and-crew.spw#film_set_cut_call" ~#neighbor(nearest)
+}

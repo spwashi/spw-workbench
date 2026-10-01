@@ -1,0 +1,187 @@
+# Phonetics and Phonology
+#
+# How a tongue and a pair of lips shape the formants a spectrogram shows, and how three frameworks state the sound patterns languages build from them.
+
+#>linguistics_phonology
+#:layer #!reference
+#:domain #!linguistics
+#:form #!comparison
+#:level #!advanced
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Phonetics and Phonology"
+ ~#claim: "A higher tongue lowers the first formant and a backer tongue lowers the second formant; frameworks differ in how they state the patterns built on such contrasts."
+ ~#proof: "Formant means from Peterson and Barney; frameworks compared from Chomsky and Halle, Clements, and Prince and Smolensky."
+ ~#door: "Record heed and who'd, then watch the second formant fall on a spectrogram."
+ ~#audience: "readers who have taken an introductory linguistics course"
+ continuity: "Phonetics and Phonology | second formant"
+ cold_open: "Say heed, then who'd, and watch the second formant fall as your tongue moves back."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/linguistics/phonetics-and-phonology.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: [
+  "the raw file tied F2 directly to backness; F2 is highest for front vowels and falls as the tongue backs",
+  "the raw file placed Coronal, Labial, and Dorsal place nodes inside SPE; SPE matrices are flat, and class nodes come from feature geometry",
+  "the raw file gave Optimality Theory a universal input; the constraint set is universal, inputs are language-particular lexical forms",
+  "the raw wonder asserted attractor basins fixed in a critical period; it is replaced by a probe on adult second-language boundary shift"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"./historical-linguistics.spw#linguistics_historical_sound_laws" ]
+ grounds: [ ~"./sociolinguistics-and-documentation.spw#linguistics_sociolinguistics_variable" ]
+}
+
+^["concepts"]{
+ primary: [ #formant, #distinctive_feature, #constraint_ranking ]
+ transfers: [ #source_filter, #categorical_perception ]
+ tensions: [ #universal_input ]
+}
+
+^["acoustics"]{
+ #>linguistics_phonology_source_filter
+ ^["source_filter"]{
+  #:claim #!settled
+  statement: "Voiced speech is modeled as a glottal source filtered by the vocal tract above it; the tract resonances show on a spectrogram as dark bands called formants."
+  source: ~"../../registries/sources/language-and-communities.spw#src_lang_fant_1960"
+  ~#say(the throat buzzes and the mouth tunes the buzz)
+ }
+ #>linguistics_phonology_vowel_formants
+ ^["vowel_formants"]{
+  #:claim #!settled
+  statement: "A higher tongue body lowers the first formant and a backer tongue body lowers the second; the vowel of heed sits high in F2 and the vowel of who'd sits low."
+  reads: %[lang.vowel.i_f1_hz, lang.vowel.a_f1_hz, lang.vowel.i_f2_hz, lang.vowel.u_f2_hz]
+  sources: [ ~"../../registries/sources/language-and-communities.spw#src_lang_ladefoged_johnson_2015", ~"../../registries/sources/language-and-communities.spw#src_lang_peterson_barney_1952" ]
+  ^["limits"]{
+   holds: "relative positions within one speaker; lip rounding lowers formants further"
+   fails: "absolute values scale with vocal tract length, so compare a child and an adult by pattern, not by hertz"
+  }
+ }
+ #>linguistics_phonology_rhotic_f3
+ ^["rhotic_f3"]{
+  #:claim #!settled
+  statement: "The rhotic vowel of American English heard shows a markedly low third formant compared with the vowel of heed."
+  reads: %[lang.vowel.er_f3_hz, lang.vowel.i_f3_hz]
+  source: ~"../../registries/sources/language-and-communities.spw#src_lang_peterson_barney_1952"
+ }
+ #>linguistics_phonology_vot
+ ^["voice_onset_time"]{
+  #:claim #!settled
+  statement: "Voice onset time, the lag between a stop release and the start of voicing, separates voicing categories, and languages divide that continuum at different points."
+  source: ~"../../registries/sources/language-and-communities.spw#src_lang_lisker_abramson_1964"
+ }
+ #>linguistics_phonology_categorical
+ ^["categorical_perception"]{
+  #:claim #!settled
+  statement: "Listeners discriminate pairs on a synthetic consonant continuum best when the pair straddles their category boundary."
+  source: ~"../../registries/sources/language-and-communities.spw#src_lang_liberman_1957"
+  ^["limits"]{
+   holds: "consonant continua such as place and voicing in identification and discrimination tasks"
+   fails: "vowels are perceived far less categorically, and the boundary moves with speaking rate and context"
+  }
+ }
+}
+
+^["phonology"]{
+ #>linguistics_phonology_phoneme
+ ^["phoneme_and_allophone"]{
+  #:claim #!settled
+  statement: "Minimal pairs show which sound differences contrast meaning; allophones of one phoneme fall in complementary distribution set by their environment."
+  source: ~"../../registries/sources/language-and-communities.spw#src_lang_ladefoged_johnson_2015"
+  example: "English aspirated stop in pin and unaspirated stop in spin are allophones of one phoneme"
+ }
+ #>linguistics_phonology_sonority
+ ^["syllable_and_sonority"]{
+  #:claim #!settled
+  statement: "A syllable groups an onset with a rhyme of nucleus and coda, and sonority tends to rise toward the nucleus and fall after it."
+  source: ~"../../registries/sources/language-and-communities.spw#src_lang_ladefoged_johnson_2015"
+  ^["limits"]{
+   holds: "as a strong cross-linguistic tendency"
+   fails: "s plus stop onsets such as English stop and spring break the rising slope"
+  }
+ }
+}
+
+^["frameworks"]{
+ axes: #[ unit, structure, mechanism, variation, input ]
+
+ #>linguistics_phonology_spe
+ ^["spe"]{
+  #:claim #!settled
+  statement: "The Sound Pattern of English represents segments as bundles of binary features and derives surface forms by ordered rewrite rules."
+  unit: "segment as a bundle of binary features"
+  structure: "a flat feature matrix with no grouping of features into nodes"
+  mechanism: "ordered rewrite rules applied to an underlying form"
+  variation: "languages differ in their rules and rule order"
+  input: "an underlying form stored in the lexicon"
+  source: ~"../../registries/sources/language-and-communities.spw#src_lang_chomsky_halle_1968"
+ }
+ #>linguistics_phonology_geometry
+ ^["feature_geometry"]{
+  #:claim #!settled
+  statement: "Feature geometry groups features under class nodes such as Place, with Labial, Coronal, and Dorsal articulator nodes, so one rule can spread a whole node in assimilation."
+  unit: "a tree of features under class and articulator nodes"
+  structure: "hierarchical; nodes dominate the features that pattern together"
+  mechanism: "spreading and delinking of nodes on autosegmental tiers"
+  variation: "languages differ in which nodes their rules spread"
+  input: "an underlying form stored in the lexicon"
+  sources: [ ~"../../registries/sources/language-and-communities.spw#src_lang_clements_1985", ~"../../registries/sources/language-and-communities.spw#src_lang_sagey_1986" ]
+ }
+ #>linguistics_phonology_ot
+ ^["optimality_theory"]{
+  #:claim #!settled
+  statement: "In Optimality Theory, GEN offers candidate outputs and a language-particular ranking of universal constraints picks the winner; the input is a language-particular lexical form."
+  unit: "a candidate output form"
+  structure: "markedness constraints against marked structure and faithfulness constraints against changing the input"
+  mechanism: "strict domination: a higher constraint outranks any number of lower violations"
+  variation: "languages differ only in how they rank the shared constraints"
+  input: "a lexical form learned for each language; richness of the base keeps the grammar from restricting the set of possible inputs"
+  source: ~"../../registries/sources/language-and-communities.spw#src_lang_prince_smolensky_2004"
+  ^["limits"]{
+   holds: "typology: each ranking predicts a possible language"
+   fails: "opaque rule interactions that ordered rules state directly need extensions such as stratal or serial versions"
+  }
+ }
+}
+
+^["try"]{
+ #>linguistics_phonology_try_spectrogram
+ ^["spectrogram"]{
+  materials: [ "a computer or phone with a microphone", "Praat by Paul Boersma and David Weenink, or any free spectrogram app", "a quiet room" ]
+  steps: << "record heed, hid, head, had, hod, hawed, hood, who'd" ; "open each word as a spectrogram" ; "mark the two lowest dark bands in each vowel" ; "compare heed with who'd for the second band" ; "compare heed with hod for the first band" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "no hazard worth naming; record other people only with their consent"
+  cites: ~"../../registries/sources/language-and-communities.spw#src_lang_praat"
+  shows: ~"./phonetics-and-phonology.spw#linguistics_phonology_vowel_formants"
+ }
+}
+
+#>linguistics_phonology_boundary_q
+?["Does an adult learner's voicing boundary move toward a second language?"]{
+ #:depth #!experiential ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "Adults who study a language that splits voice onset time at a different point shift their identification boundary toward it, more for stops they produce often."
+ !probe{ "identification curves on one synthetic voice onset continuum before and after a term of language study" =id[p_lang_phonology_boundary_shift] =kind[field] }
+ ~"./phonetics-and-phonology.spw#linguistics_phonology_vot" ~#neighbor(nearest)
+}
+
+#>linguistics_phonology_normalize_q
+?["If formants scale with tract length, how do a child and an adult both say heed?"]{
+ #:depth #!physical ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "Listeners rely on ratios among formants and on the voice pitch more than on absolute formant values when they match vowels across speakers."
+ !probe{ "compute F2 over F1 for heed and who'd from the registry, then repeat for a child recording" =id[p_lang_phonology_formant_ratio] =kind[calc] }
+ $%[lang.vowel.i_f1_hz, lang.vowel.i_f2_hz, lang.vowel.u_f2_hz]
+ ~"./phonetics-and-phonology.spw#linguistics_phonology_vowel_formants" ~#neighbor(nearest)
+}

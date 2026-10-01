@@ -1,0 +1,23 @@
+^["schedules"]{
+ #>sched_lie
+ lie_trotter: << drift ; kick >>
+ #>sched_position_verlet
+ position_verlet: << half_drift ; kick ; half_drift >>
+ #>sched_explicit_euler
+ explicit_euler: << drift || kick >>
+}
+^["transform_stack"]{
+ turn_then_move: << rotate ; translate >>
+ move_then_turn: << translate ; rotate >>
+ ~#(order here is the transform stack or parent order; exposure-sheet rows are frames in time)
+}
+^["language_laws"]{
+ #>law_collapse_defer
+ ^["collapse_after_defer"]{
+  #:claim #!refuted
+  canon: "wonder-calculus.spw:29-31 says collapse after defer returns X"
+  left: `*{ ~{ x } }`
+  observed: "returns a deferred wrapper, not x"
+  verdict: .{ value: "fails", writes: "fails", trace: "fails" }
+ }
+}

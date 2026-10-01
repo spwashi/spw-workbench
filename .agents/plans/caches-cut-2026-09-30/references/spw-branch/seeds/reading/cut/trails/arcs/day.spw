@@ -1,0 +1,58 @@
+# Production Day
+#
+# One working day as an arc: warm up by reading, plan one question, make, go live, cut, and log one surprise.
+
+#>trail_production_day
+#:layer #!pragmatics
+#:domain #!meta
+#:form #!trail
+#:level #!practitioner
+#:review #!unreviewed
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Production Day"
+ ~#claim: "A production day opens by rereading yesterday, plans one question, makes and goes live, and closes by logging one surprise."
+ ~#proof: "The close reuses the plan stream surprise entry, which records where a forecast missed."
+ ~#door: "Open the live session arc for the middle of the day."
+ ~#audience: "the owner on a production day"
+ cold_open: "Read back, pick one question, make, go live, cut, and write down one surprise."
+ continuity: "Production Day | surprise"
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "claude-opus-5.5"
+ lineage: #[ "new" ]
+ method: #authored
+}
+
+^["edges"]{
+ feeds: [ ~"./live.spw#arc_live_order" ]
+ grounds: [ ~".agents/plans/_schema/wip.spw" ]
+}
+
+^["archetype"]{
+ of: ~".spw/surfaces/surface-archetypes.spw#spw_surface_archetypes"
+ name: #reflective_feedback
+ cadence: #reflective_latency
+}
+
+#>arc_day_order
+^["order"]{
+ clock: "hour"
+ schedule: << warm ; plan ; make ; live ; cut ; log >>
+ warm: "reread the last resume note and one reading aloud"
+ plan: "write one question and one forecast for the day"
+ make: "produce against the question"
+ live: "run the live session arc"
+ cut: "keep one take, retire the rest"
+ log: "one surprise entry: what the forecast missed, in one line"
+}
+
+#>arc_day_close
+^["close"]{
+ entry: "surprise: forecast said the chat would ask about salt; it asked about fish"
+ resume: "one line the next day reads first"
+ hands_off: ~"./season.spw#season_2026_crescendo"
+}

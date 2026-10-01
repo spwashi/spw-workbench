@@ -1,0 +1,242 @@
+# Festivals and Resets
+#
+# Year-end celebrations and new-year resets sorted by calendar type, solar, lunar, lunisolar, and stellar, with 2026 dates marked fixed or verify and no ranking.
+
+#>season_resets
+#:layer #!reference
+#:domain #!season
+#:form #!comparison
+#:level #!intro
+#:review #!spot_checked
+#:valence #!bonk
+#:season #!reset
+
+^"emit"{
+ ~#title: "Festivals and Resets"
+ ~#claim: "Solar, lunar, and lunisolar calendars place celebrations and new-year resets at different points, so this season holds some resets and misses others."
+ ~#proof: "Calendar arithmetic from Reingold and Dershowitz; festival records from UNESCO, Hebcal, Karenga, Hutton, and the New Zealand Matariki Act."
+ ~#door: "Find your own calendar type in the matrix, then follow its reset."
+ ~#audience: "anyone planning a season across cultures and calendars"
+ continuity: "Festivals and Resets | calendar type"
+ cold_open: "Which festivals and resets fall in this season depends on calendar type: solar, lunar, lunisolar, or set by the stars."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[ "fetched 2026-10-01: Hebcal 5787 holiday list", "secondary checks 2026-10-01: Diwali 2026, Lunar New Year 2027, Yalda inscription, Matariki Act, Samhain scholarship" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ grounds: [ ~"../registries/quantities/season.spw#q_season_calendar" ]
+ feeds: [ ~"./retrospective-protocol.spw#season_retrospective" ]
+ see: [ ~"./calendar-2026q4.spw#season_calendar_2026q4" ]
+}
+
+^["concepts"]{
+ primary: [ #calendar_type, #new_year_reset ]
+ transfers: [ #solstice, #phenology ]
+ tensions: [ #southern_hemisphere ]
+}
+
+^["order"]{
+ rule: "rows run by calendar type, then by date; no festival outranks another"
+ voice: "each row is described as its own community describes it, with origins credited"
+}
+
+^["types"]{
+ #>season_resets_solar
+ ^["solar"]{
+  #:claim #!settled
+  statement: "Solar calendars hold festivals to the seasons, so Gregorian 1 January and the March-equinox Nowruz of the Solar Hijri calendar stay put from year to year."
+  source: ~"../registries/sources/season.spw#src_season_reingold_dershowitz_2018"
+ }
+ #>season_resets_lunar_drift
+ ^["lunar"]{
+  #:claim #!settled
+  statement: "Twelve lunar months make a year about 11 days shorter than the solar year, so purely lunar dates such as the Hijri new year move earlier each solar year."
+  reads: %[
+   season.calendar.lunar_year_days,
+   season.calendar.tropical_year_days,
+   season.calendar.synodic_month_days
+  ]
+  source: ~"../registries/sources/season.spw#src_season_reingold_dershowitz_2018"
+ }
+ #>season_resets_lunisolar
+ ^["lunisolar"]{
+  #:claim #!settled
+  statement: "Lunisolar calendars add a leap month about seven times in 19 years, which keeps festivals such as Hanukkah and Lunar New Year near the same season."
+  reads: %[season.calendar.metonic_cycle_years, season.calendar.metonic_cycle_months]
+  source: ~"../registries/sources/season.spw#src_season_reingold_dershowitz_2018"
+  ^["limits"]{
+   holds: "the Hebrew calendar, which fixes the 19-year cycle by arithmetic"
+   fails: "the Chinese calendar places its leap months by astronomical rule, so the count per 19 years only averages seven"
+  }
+ }
+}
+
+^["matrix"]{
+ ^["solar"]{
+  #>season_resets_dia_muertos
+  ^["dia_muertos"]{
+   #:claim #!settled
+   kind: "remembrance"
+   dates: "1 and 2 November, fixed"
+   statement: "UNESCO inscribed Mexico's Indigenous festivity dedicated to the dead, held on 1 and 2 November, on its Representative List in 2008."
+   source: ~"../registries/sources/season.spw#src_season_unesco_dia_muertos"
+  }
+  #>season_resets_samhain
+  ^["samhain"]{
+   #:claim #!contested
+   kind: "harvest end and the dark half of the year"
+   dates: "31 October to 1 November, fixed"
+   statement: "Rhys and Frazer called Samhain the Celtic new year; Hutton finds the medieval evidence for a pan-Celtic new year festival on 1 November thin."
+   source: ~"../registries/sources/season.spw#src_season_hutton_1996"
+   ~#counter(the new year reading survives in modern Celtic and neopagan calendars)
+  }
+  #>season_resets_yalda
+  ^["yalda"]{
+   #:claim #!settled
+   kind: "the longest night, kept awake with family, fruit, and poetry"
+   dates: "night of 20 or 21 December; 2026 verify"
+   statement: "Yalda, or Chelleh Night, marks the longest night of the year in Iran and Afghanistan; UNESCO inscribed it in 2022."
+   source: ~"../registries/sources/season.spw#src_season_unesco_yalda_2022"
+  }
+  #>season_resets_dongzhi
+  ^["dongzhi"]{
+   #:claim #!settled
+   kind: "winter solstice festival"
+   dates: "22 December 2026 in China time, computed from the solstice instant"
+   statement: "Dongzhi, the winter solstice, is one of the twenty-four solar terms that UNESCO inscribed in 2016 as Chinese knowledge of time from observing the sun."
+   source: ~"../registries/sources/season.spw#src_season_unesco_solar_terms_2016"
+  }
+  #>season_resets_kwanzaa
+  ^["kwanzaa"]{
+   #:claim #!settled
+   kind: "celebration of family, community, and culture"
+   dates: "26 December to 1 January, fixed"
+   statement: "Maulana Karenga created Kwanzaa in 1966 as an African American celebration held over seven days from 26 December to 1 January."
+   source: ~"../registries/sources/season.spw#src_season_karenga_1998"
+  }
+  ^["gregorian_new_year"]{
+   kind: "reset"
+   dates: "1 January, fixed"
+   customs: "Hogmanay in Scotland; Omisoka on 31 December and Shogatsu from 1 January in Japan, with bonenkai year-end gatherings and a year-end cleaning"
+   status: #typical
+  }
+  ^["christmas"]{
+   kind: "celebration"
+   dates: "25 December in the Gregorian count; 7 January for churches on the Julian calendar"
+   status: #typical
+  }
+ }
+ ^["lunar"]{
+  ^["hijri"]{
+   kind: "reset and devotion"
+   dates: "no Hijri new year or Ramadan start falls inside this season; 2026 to 2027 dates verify"
+   note: "dates can differ by a day between communities that sight the new moon and those that calculate it"
+   status: #verify
+  }
+ }
+ ^["lunisolar"]{
+  ^["hebrew"]{
+   kind: "reset of the reading cycle, and a festival of lights"
+   simchat_torah: ~"./calendar-2026q4.spw#season_cal_simchat_torah"
+   hanukkah: ~"./calendar-2026q4.spw#season_cal_hanukkah"
+   note: "Rosh Hashanah 5787 began at sunset on 11 September 2026, just before the season opened"
+   status: #typical
+  }
+  #>season_resets_diwali
+  ^["diwali"]{
+   kind: "festival of lights; a new year in Gujarat and some northern Hindu communities"
+   dates: "8 November 2026 expected; verify against a regional almanac"
+   observed_by: [
+    "Hindu communities across South Asia and the diaspora",
+    "Jain communities, marking the nirvana of Mahavira",
+    "Sikh communities, as Bandi Chhor Divas",
+    "Newar Buddhists in Nepal"
+   ]
+   status: #verify
+  }
+  #>season_resets_lunar_new_year
+  ^["lunar_new_year"]{
+   kind: "reset"
+   dates: "6 February 2027 expected, after the season closes; verify"
+   observed_by: [
+    "Chinese communities, as Spring Festival",
+    "Korean communities, as Seollal",
+    "Vietnamese communities, as Tet"
+   ]
+   status: #verify
+  }
+ }
+ ^["stellar"]{
+  #>season_resets_matariki
+  ^["matariki"]{
+   #:claim #!settled
+   kind: "mid-winter new year in the south"
+   dates: "late June or July, set each year by the Māori lunar calendar"
+   statement: "New Zealand made Matariki, the Māori new year marked by the rising of the Matariki star cluster, a public holiday from 2022."
+   source: ~"../registries/sources/season.spw#src_season_nz_matariki_2022"
+  }
+ }
+}
+
+^["southern"]{
+ #>season_resets_southern
+ ^["framing"]{
+  #:claim #!interpretive
+  statement: "South of the equator this season runs from spring into summer; Christmas and 1 January open the long summer holidays, and Matariki brings a new year at mid-winter."
+ }
+}
+
+^["try"]{
+ #>season_resets_try_drift
+ ^["lunar_drift_by_hand"]{
+  materials: [
+   "a calendar for 2026 and 2027",
+   "the published date of one lunar or lunisolar festival this year"
+  ]
+  steps: <<
+   "write down this year's date" ;
+   "subtract eleven days for a lunar festival, or check for a leap month in a lunisolar one" ;
+   "compare your estimate with next year's published date" ;
+   "explain any one-day difference"
+  >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "no hazard; treat published religious dates as the community's own, since sighting and calculation can differ"
+  shows: ~"./festivals-and-resets.spw#season_resets_lunar_drift"
+ }
+}
+
+#>season_resets_kind_q
+?["Does a festival's calendar type shape whether it feels like a reset?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Festivals pinned to solar dates may carry more fresh-start language than lunar festivals that drift through the seasons."
+ !probe{ "compare new-year vocabulary in descriptions of solar, lunar, and lunisolar festivals" =id[p_season_resets_reset_language] =kind[lit] }
+ $%[season.calendar.lunar_year_days, season.calendar.tropical_year_days]
+ ~"./festivals-and-resets.spw#season_resets_lunar_drift" ~#neighbor(nearest)
+}
+
+#>season_resets_metonic_q
+?["How fast does a fixed 19-year cycle slip against the sun?"]{
+ #:depth #!mathematical ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Because 235 mean lunar months run slightly longer than 19 tropical years, a fixed Metonic calendar should drift slowly later against the equinox."
+ !probe{ "compute the drift per cycle and per century from the three cells" =id[p_season_resets_metonic_drift] =kind[calc] }
+ $%[
+  season.calendar.metonic_cycle_months,
+  season.calendar.synodic_month_days,
+  season.calendar.tropical_year_days
+ ]
+ ~"./festivals-and-resets.spw#season_resets_lunisolar" ~#neighbor(nearest)
+}

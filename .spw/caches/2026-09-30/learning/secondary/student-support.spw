@@ -1,0 +1,220 @@
+# Student Support
+#
+# The special education cycle under federal law as a state machine, the rights parents hold at each step, Section 504, tiered supports, and counselor caseloads as dated cells.
+
+#>secondary_schooling_support
+#:layer #!pragmatics
+#:domain #!secondary_schooling
+#:form #!protocol
+#:level #!intro
+#:review #!sourced
+#:valence #!bane
+#:era #!current
+
+^"emit"{
+ ~#title: "Student Support"
+ ~#claim: "Under IDEA, a child moves from referral through consent, evaluation, eligibility, an IEP meeting, services, and review, and parents hold participation rights at each step."
+ ~#proof: "IDEA regulations at 34 CFR Part 300 set the consent rules, timelines, team members, and the duty to secure parent participation; ASCA reports counselor ratios."
+ ~#door: "Walk the states in order, then read your own state procedural safeguards notice with the kit."
+ ~#audience: "parents, students, and new teachers meeting special education for the first time"
+ continuity: "Student Support | participation rights"
+ cold_open: "Special education is a cycle of consent, evaluation, planning, and review, with parent participation rights at every step."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/secondary-education/student-support-services.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "IEP meetings require mandatory parent participation: restated as a duty on the school to secure participation, with documented attempts if parents cannot attend",
+  "counselor ratios of 150 to 1 and 400 to 1 replaced by ASCA cells: 250 recommended, 372 national average for 2024-25",
+  "MTSS tier percentages restated as a planning heuristic, not a measured rule",
+  "504 accommodations binding without exception restated: the plan is how the school meets its legal duty"
+ ]
+}
+
+^["scope"]{
+ what: "educational reference on how federal special education law is organized"
+ not_advice: "this surface is general information, not legal advice; states add rules and timelines of their own"
+ where_to_ask: "each state education agency publishes a procedural safeguards notice and a parent training and information center"
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/learning-and-generations.spw#q_learn_idea" ]
+ see: [ ~"../learning-glossary.spw#learning_term_iep" ]
+ extends: [ ~"../generations/policy-landmarks-ledger.spw#generations_policy_eha" ]
+}
+
+^["concepts"]{
+ primary: [ #iep, #section_504 ]
+ transfers: [ #confidentiality ]
+ tensions: [ #wraparound ]
+}
+
+^["iep_cycle"]{
+ path: <<
+  "referral" ;
+  "consent to evaluate" ;
+  "evaluation" ;
+  "eligibility" ;
+  "IEP meeting" ;
+  "consent to services" ;
+  "services" ;
+  "annual review" ;
+  "reevaluation"
+ >>
+
+ #>secondary_schooling_support_referral
+ ^["referral"]{
+  who: "a parent or the school may ask for an initial evaluation; districts must also find children who may need services"
+  next: ~"./student-support.spw#secondary_schooling_support_consent"
+ }
+
+ #>secondary_schooling_support_consent
+ ^["consent"]{
+  #:claim #!settled
+  statement: "The school must obtain informed written parental consent before an initial evaluation, and separate consent before first providing services."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_idea_regs"
+  ?match[@consent]{
+   "given" => ~"./student-support.spw#secondary_schooling_support_evaluation",
+   "refused" => ![no_services_under_idea],
+   _ => ![prior_written_notice]
+  }
+ }
+
+ #>secondary_schooling_support_evaluation
+ ^["evaluation"]{
+  #:claim #!settled
+  statement: "The initial evaluation must finish within 60 days of consent unless the state sets its own timeframe."
+  reads: %[learn.idea.initial_eval_days]
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_idea_regs"
+  ^["limits"]{
+   holds: "federal default timeline"
+   fails: "states may set a different timeline, and some count school days"
+  }
+ }
+
+ #>secondary_schooling_support_rti
+ ^["no_delay"]{
+  #:claim #!settled
+  statement: "A response-to-intervention process cannot be used to delay or deny an evaluation a parent requests."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_osep_11_07"
+ }
+
+ #>secondary_schooling_support_eligibility
+ ^["eligibility"]{
+  who: "a group of qualified professionals and the parent decides whether the child has a disability and needs special education"
+  next: ~"./student-support.spw#secondary_schooling_support_meeting"
+ }
+
+ #>secondary_schooling_support_meeting
+ ^["iep_meeting"]{
+  #:claim #!settled
+  statement: "A meeting to develop the IEP must be held within 30 days of the eligibility decision."
+  reads: %[learn.idea.iep_meeting_days]
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_idea_regs"
+  team: [
+   "the parents",
+   "at least one regular education teacher if the child is or may be in regular classes",
+   "at least one special education teacher or provider",
+   "a district representative who can commit resources",
+   "someone who can interpret evaluation results",
+   "the child, when appropriate"
+  ]
+ }
+
+ #>secondary_schooling_support_participation
+ ^["parent_participation"]{
+  #:claim #!settled
+  statement: "The school must take steps to ensure parents can attend or take part by phone or video; it may meet without them only after documented attempts."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_idea_regs"
+  excusal: "another team member may be excused only with written agreement of the parent and the school"
+ }
+
+ #>secondary_schooling_support_review
+ ^["review"]{
+  #:claim #!settled
+  statement: "The team reviews the IEP at least once a year, and the child is reevaluated at least every three years unless parent and school agree it is unnecessary."
+  reads: %[learn.idea.iep_review_months, learn.idea.reeval_years]
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_idea_regs"
+ }
+
+ ^["disputes"]{
+  routes: [
+   "prior written notice explaining a proposal or refusal",
+   "mediation",
+   "a due process complaint",
+   "a state complaint"
+  ]
+ }
+}
+
+^["section_504"]{
+ #>secondary_schooling_support_504
+ ^["plan"]{
+  #:claim #!settled
+  statement: "Section 504 bars disability discrimination in federally funded schools and requires a free appropriate public education, often through a written 504 plan of accommodations."
+  sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_section_504", ~"../../registries/sources/learning-and-generations.spw#src_learn_adaaa_2008" ]
+  scope: "covers students whose impairment substantially limits a major life activity, a definition the ADA Amendments Act of 2008 broadened"
+ }
+}
+
+^["tiers"]{
+ #:claim #!interpretive
+ model: "multi-tiered systems of support: universal instruction for all, targeted small-group help for some, intensive individual help for a few"
+ heuristic: "the often-quoted 80, 15, and 5 percent split is a planning heuristic borrowed from public-health prevention, not a measured rule"
+}
+
+^["counseling"]{
+ #>secondary_schooling_support_ratio
+ ^["caseload"]{
+  #:claim #!settled
+  statement: "ASCA recommends at most 250 students per school counselor; the US average was 372 in the 2024-25 school year."
+  reads: %[learn.counsel.asca_ratio_students, learn.counsel.us_ratio_students]
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_asca_ratios"
+  as_of: "2026-10-01"
+ }
+
+ #>secondary_schooling_support_records
+ ^["records"]{
+  #:claim #!settled
+  statement: "Counseling records kept by a school are education records under FERPA, except notes kept in the sole possession of their maker as a memory aid."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_ferpa"
+ }
+ framework: ~"../../registries/sources/learning-and-generations.spw#src_learn_asca_model"
+}
+
+^["try"]{
+ #>secondary_schooling_try_safeguards
+ ^["read_the_safeguards"]{
+  materials: [
+   "your state procedural safeguards notice, published by the state education agency",
+   "a notes file"
+  ]
+  steps: <<
+   "find the section on parent participation in meetings" ;
+   "find the evaluation timeline your state uses" ;
+   "find how to request mediation" ;
+   "write each answer in one sentence"
+  >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "keep any child records out of shared notes"
+  shows: ~"./student-support.spw#secondary_schooling_support_participation"
+ }
+}
+
+#>secondary_schooling_support_ratio_q
+?["Do smaller counselor caseloads change who applies to college?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Lower caseloads raise application and aid-filing rates most among first-generation students, whose families have fewer other guides."
+ !probe{ "find causal studies of counselor caseload and college enrollment by family background" =id[p_learn_support_ratio] =kind[lit] }
+ $%[learn.counsel.asca_ratio_students, learn.counsel.us_ratio_students]
+ ~"./student-support.spw#secondary_schooling_support_ratio" ~#neighbor(nearest)
+}

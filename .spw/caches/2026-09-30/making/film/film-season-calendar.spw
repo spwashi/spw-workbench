@@ -1,0 +1,138 @@
+# Film Season Calendar
+#
+# The film year from the autumn festivals through awards qualifying, holiday releases, Public Domain Day, and the January festival lead-in, with every date marked fixed, typical, or verify.
+
+#>film_season_calendar
+#:layer #!pragmatics
+#:domain #!film
+#:form #!calendar
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!boon
+#:era #!current
+#:season #!crescendo
+
+^"emit"{
+ ~#title: "Film Season Calendar"
+ ~#claim: "From October to January the film year runs from autumn festivals to awards qualifying, holiday releases, and the January festivals, and most dates move each year."
+ ~#proof: "Festival and Academy announcements as reported for 2026 and 2027, each marked verify until checked against the organizer."
+ ~#door: "Find this week on the schedule, then check each verify cell against its organizer."
+ ~#audience: "filmmakers planning submissions and releases, and readers following awards season"
+ cold_open: "The film year gathers in autumn festivals and crests in awards season, and the calendar says which dates are firm."
+ continuity: "Film Season Calendar | awards season"
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #skim, outcome: #partial }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ checked: "2026 festival dates and 2027 Academy dates were read from an encyclopedia summary on 2026-10-01, not from the organizers; they stay verify"
+}
+
+^["edges"]{
+ see: [ ~"./production-state-machine.spw#film_production_release", ~"./adaptation-and-rights.spw#film_rights_public_domain" ]
+}
+
+^["concepts"]{
+ primary: [ #festival_circuit ]
+ transfers: [ #public_domain ]
+ tensions: [ #schedule_pressure ]
+}
+
+^["legend"]{
+ fixed: "set by law or a fixed calendar rule"
+ typical: "the usual window; check the year"
+ verify: "a reported date for this cycle, unconfirmed against the organizer"
+}
+
+^["schedule"]{
+ season: <<
+  "autumn festivals" ;
+  "New York and fall festivals" ;
+  "markets and screeners" ;
+  "holiday releases" ;
+  "Public Domain Day" ;
+  "January festivals" ;
+  "nominations" ;
+  "ceremonies"
+ >>
+}
+
+^["calendar"]{
+ #>film_cal_autumn_festivals
+ ^["autumn_festivals"]{
+  when: "late August to mid September"
+  what: "Venice, Telluride, and Toronto premiere many awards contenders"
+  cell: #typical
+  venice_2026: "reported 2 to 12 September 2026", cell_venice: #verify
+  toronto_2026: "reported 10 to 20 September 2026", cell_toronto: #verify
+ }
+ #>film_cal_nyff
+ ^["new_york"]{
+  when: "late September to mid October"
+  what: "the New York Film Festival, run by Film at Lincoln Center"
+  dates_2026: "reported 25 September to 12 October 2026"
+  cell: #verify
+ }
+ #>film_cal_markets
+ ^["markets_and_screeners"]{
+  when: "October to December"
+  what: "sales markets, guild screenings, and screener season for awards voters"
+  cell: #typical
+ }
+ #>film_cal_holidays
+ ^["holiday_releases"]{
+  thanksgiving_2026: "Thursday 26 November 2026, the fourth Thursday of November"
+  christmas_2026: "Friday 25 December 2026"
+  cell: #fixed
+  corridor: "studios cluster family and prestige releases around both dates"
+  corridor_cell: #typical
+ }
+ #>film_cal_qualifying
+ ^["awards_qualifying"]{
+  when: "a calendar-year release window closing 31 December 2026"
+  what: "films released in 2026 compete for the 99th Academy Awards under that year's rules"
+  cell: #verify
+ }
+ #>film_cal_public_domain_day
+ ^["public_domain_day"]{
+  date: "Friday 1 January 2027"
+  what: "US works published in 1931 enter the public domain"
+  reads: %[film.us_pd.next_pub_year]
+  cell: #fixed
+  dossier: ~"./adaptation-and-rights.spw#film_rights_public_domain"
+ }
+ #>film_cal_january
+ ^["january_festivals"]{
+  when: "late January"
+  what: "Sundance holds its first edition in Boulder, Colorado, in 2027 after leaving Park City, Utah"
+  cell: #verify
+ }
+ #>film_cal_nominations
+ ^["nominations"]{
+  oscars_noms_2027: "reported Thursday 21 January 2027"
+  guild_awards: "guild and critics awards run from January into March"
+  cell: #verify
+ }
+ #>film_cal_ceremonies
+ ^["ceremonies"]{
+  oscars_2027: "reported Sunday 14 March 2027, the 99th Academy Awards"
+  berlinale: "February, in Berlin"
+  cell: #verify
+ }
+}
+
+#>film_cal_corridor_q
+?["Does a crowded autumn festival corridor push smaller films toward January premieres?"]{
+ #:depth #!social ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "When autumn slots fill with awards contenders, smaller films without distributors premiere more often at January festivals."
+ !probe{ "compare premiere venues of distributor-less features across autumn and January festivals for several years" =id[p_film_cal_corridor] =kind[census] }
+ ~"./film-season-calendar.spw#film_cal_january" ~#neighbor(nearest)
+}

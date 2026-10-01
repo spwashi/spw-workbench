@@ -1,0 +1,16 @@
+#>h2o_liquid
+^["liquid"]{ phase: "liquid" }
+#>h2o_vapor
+^["vapor"]{ phase: "vapor" }
+#>h2o_supercritical
+^["supercritical"]{ phase: "supercritical fluid", at: .{ t_k: 647.096, p_megapa: 22.064 } }
+^["transitions"]{
+ =~"./state-walker.spw#h2o_liquid"[boils]{ ~"./state-walker.spw#h2o_vapor" }
+ =~"./state-walker.spw#h2o_liquid"[passes_critical]{ ~"./state-walker.spw#h2o_supercritical" }
+ =~"./state-walker.spw#h2o_supercritical"[passes_critical]{ ~"./state-walker.spw#h2o_vapor" }
+ boiling_line: <>[h2o_liquid, h2o_vapor]
+}
+^["limits"]{
+ holds: "which regions touch which"
+ fails: "no pressure coordinate, so the walker cannot tell when freeze-then-sublime is physical; only ice Ih is modelled"
+}

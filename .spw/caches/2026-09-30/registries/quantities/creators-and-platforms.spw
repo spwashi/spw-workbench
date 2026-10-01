@@ -1,0 +1,277 @@
+# Quantities: Creators and Platforms
+#
+# Dated cells for publishing terms, live-platform gates and gifts, and public case figures. A cell with status verify is a question, not a fact.
+
+#>registry_qty_creators_and_platforms
+#:layer #!reference
+#:domain #!registry
+#:form #!registry
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!bone
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "claude-opus-5.5"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ status_legend: "settled cells were read from the linked source on the access date; verify cells hold a reported value or unset and must be checked before use; superseded cells keep an old value for history"
+ corrections: #[ "TikTok payout share applied once: the raw table halved coins into diamonds and then took a second 50 percent share at cashout", "no fiat value is attached to any gift; the raw gave the Lion as both 450 and 500 USD" ]
+}
+
+^["family"]{
+ id: creator
+ operator: "%"
+ identifier: creator
+ plane: world
+ scope: corpus
+ keys: #[ kdp, ku, kickstarter, nanowrimo, live, tpp, twitch ]
+ scheme: dated
+ algorithm: world.registry_lookup
+ form: scalar
+}
+
+#>q_creator_kdp
+^"kdp"{
+ %creator.kdp.royalty_high_pct{
+  value: 70
+  unit: "percent of list price without VAT, less delivery costs"
+  at: "KDP eBook 70 percent royalty option, eligible territories"
+  as_of: "2026-10-01"
+  src: ~"../sources/creators-and-platforms.spw#src_creator_kdp_royalty"
+  status: #settled
+ }
+ %creator.kdp.royalty_low_pct{
+  value: 35
+  unit: "percent of list price without VAT"
+  at: "KDP eBook 35 percent royalty option"
+  as_of: "2026-10-01"
+  src: ~"../sources/creators-and-platforms.spw#src_creator_kdp_royalty"
+  status: #settled
+ }
+ %creator.kdp.band70_min_usd{
+  value: 2.99
+  unit: "USD list price"
+  at: "Amazon.com, lowest list price for the 70 percent option"
+  as_of: "2026-10-01"
+  src: ~"../sources/creators-and-platforms.spw#src_creator_kdp_price"
+  status: #settled
+ }
+ %creator.kdp.band70_max_usd{
+  value: 12.99
+  unit: "USD list price"
+  at: "Amazon.com, highest list price for the 70 percent option, effective 2026-07-07"
+  as_of: "2026-10-01"
+  src: ~"../sources/creators-and-platforms.spw#src_creator_kdp_price"
+  status: #settled
+ }
+ %creator.kdp.band70_max_prior_usd{
+  value: 9.99
+  unit: "USD list price"
+  at: "Amazon.com, highest list price for the 70 percent option before 2026-07-07"
+  as_of: "2026-10-01"
+  src: ~"../sources/creators-and-platforms.spw#src_creator_kdp_price"
+  status: #superseded
+ }
+ %creator.kdp.select_term_days{
+  value: 90
+  unit: "days per enrollment term"
+  at: "KDP Select, Kindle eBook only, renews automatically unless cancelled"
+  as_of: "2026-10-01"
+  src: ~"../sources/creators-and-platforms.spw#src_creator_kdp_select"
+  status: #settled
+ }
+ %creator.ku.launch_price_usd_month{
+  value: 9.99
+  unit: "USD per month"
+  at: "Kindle Unlimited reader subscription, US launch, July 2014"
+  as_of: "2014-07"
+  src: ~"../sources/creators-and-platforms.spw#src_creator_wiki_ku"
+  status: #settled
+ }
+ %creator.ku.kenp_rate_usd_per_page{
+  value: "unset"
+  unit: "USD per KENP page read"
+  at: "set monthly from the KDP Select Global Fund; press estimates near half a cent per page date from 2015"
+  as_of: "2026-10-01"
+  src: ~"../sources/creators-and-platforms.spw#src_creator_wayner_2015"
+  status: #verify
+ }
+}
+
+#>q_creator_books
+^"books"{
+ %creator.kickstarter.sanderson_2022_usd{
+  value: 41754153
+  unit: "USD pledged"
+  at: "Surprise! Four Secret Novels campaign, closed 2022-03-31"
+  as_of: "2022-03-31"
+  src: ~"../sources/creators-and-platforms.spw#src_creator_sanderson_kickstarter"
+  status: #settled
+ }
+ %creator.kickstarter.sanderson_2022_backers{
+  value: 185341
+  unit: "backers"
+  at: "same campaign"
+  as_of: "2022-03-31"
+  src: ~"../sources/creators-and-platforms.spw#src_creator_sanderson_kickstarter"
+  status: #settled
+ }
+ %creator.nanowrimo.goal_words{
+  value: 50000
+  unit: "words drafted in November"
+  at: "the National Novel Writing Month challenge, 1999 to the 2025 closure of the organization; continued informally"
+  as_of: "2025-03-31"
+  src: ~"../sources/creators-and-platforms.spw#src_creator_wiki_nanowrimo"
+  status: #settled
+ }
+}
+
+#>q_creator_live
+^"live"{
+ %creator.live.host_min_age_years{
+  value: 18
+  unit: "years"
+  at: "minimum age to host TikTok LIVE; older documentation says 16; region qualifiers apply"
+  region: "varies"
+  as_of: "2026-10-01"
+  src: ~"../sources/creators-and-platforms.spw#src_creator_wiki_tiktok"
+  status: #verify
+ }
+ %creator.live.host_min_followers{
+  value: 1000
+  unit: "followers"
+  at: "follower gate to host TikTok LIVE as widely documented; regions and programs vary"
+  region: "varies"
+  as_of: "2026-10-01"
+  src: ~"../sources/creators-and-platforms.spw#src_creator_wiki_tiktok"
+  status: #verify
+ }
+ %creator.live.gift_min_age_years{
+  value: 18
+  unit: "years, or the age of majority where higher"
+  at: "minimum age to buy Coins and to send or receive Gifts with value"
+  region: "global policy page"
+  as_of: "2026-10-01"
+  src: ~"../sources/creators-and-platforms.spw#src_creator_tiktok_virtual_items"
+  status: #settled
+ }
+ %creator.live.coins_per_usd{
+  value: "unset"
+  unit: "Coins per USD"
+  at: "varies by package size, payment rail, and region"
+  region: "varies"
+  as_of: "2026-10-01"
+  src: "unsourced"
+  status: #verify
+ }
+ %creator.live.coin_to_diamond{
+  value: "unset"
+  unit: "Diamonds per Coin gifted"
+  at: "set by the platform from time to time at its discretion, per the Virtual Items Policy"
+  region: "varies"
+  as_of: "2026-10-01"
+  src: ~"../sources/creators-and-platforms.spw#src_creator_tiktok_virtual_items"
+  status: #verify
+ }
+ %creator.live.creator_share_pct{
+  value: "unset"
+  unit: "percent of gift spend reaching the creator"
+  at: "a single platform share applies between Coin spend and Diamond value; the raw table applied it twice"
+  region: "varies"
+  as_of: "2026-10-01"
+  src: "unsourced"
+  status: #verify
+ }
+ %creator.live.gift_rose_coins{
+  value: 1
+  unit: "Coins"
+  at: "Rose gift, reported in the raw generation"
+  region: "varies"
+  as_of: "2026-09-30"
+  src: "unsourced"
+  seen_in: ".spw/caches/tiktok-live/virtual-economy.spw"
+  status: #verify
+ }
+ %creator.live.gift_lion_coins{
+  value: 29999
+  unit: "Coins"
+  at: "Lion gift, reported in the raw generation; gift catalogs rotate"
+  region: "varies"
+  as_of: "2026-09-30"
+  src: "unsourced"
+  seen_in: ".spw/caches/tiktok-live/virtual-economy.spw"
+  status: #verify
+ }
+ %creator.live.gift_universe_coins{
+  value: 34999
+  unit: "Coins"
+  at: "TikTok Universe gift, reported in the raw generation; gift catalogs rotate"
+  region: "varies"
+  as_of: "2026-09-30"
+  src: "unsourced"
+  seen_in: ".spw/caches/tiktok-live/virtual-economy.spw"
+  status: #verify
+ }
+ %creator.live.match_round_min{
+  value: 5
+  unit: "minutes"
+  at: "standard LIVE Match (popularly PK) round, reported in the raw generation"
+  region: "varies"
+  as_of: "2026-09-30"
+  src: "unsourced"
+  seen_in: ".spw/caches/tiktok-live/interactive-mechanics.spw"
+  status: #verify
+ }
+ %creator.live.multiguest_max{
+  value: 8
+  unit: "guests"
+  at: "multi-guest LIVE guest boxes, reported in the raw generation"
+  region: "varies"
+  as_of: "2026-09-30"
+  src: "unsourced"
+  seen_in: ".spw/caches/tiktok-live/features.spw"
+  status: #verify
+ }
+ %creator.live.moderators_max{
+  value: "unset"
+  unit: "moderators per host"
+  at: "a cap exists in the app; the raw value of 50 was not checked"
+  region: "varies"
+  as_of: "2026-10-01"
+  src: "unsourced"
+  status: #verify
+ }
+}
+
+#>q_creator_cases
+^"cases"{
+ %creator.tpp.participants{
+  value: 1165140
+  unit: "users who entered at least one command"
+  at: "Twitch Plays Pokemon Red run, 2014-02-12 to 2014-03-01, Guinness World Records figure"
+  as_of: "2014-03"
+  src: ~"../sources/creators-and-platforms.spw#src_creator_wiki_tpp"
+  status: #settled
+ }
+ %creator.tpp.peak_viewers{
+  value: 121000
+  unit: "concurrent viewers"
+  at: "peak during the Pokemon Red run"
+  as_of: "2014-03"
+  src: ~"../sources/creators-and-platforms.spw#src_creator_wiki_tpp"
+  status: #settled
+ }
+ %creator.twitch.amazon_price_musd{
+  value: 970
+  unit: "million USD, all cash"
+  at: "Amazon acquisition of Twitch Interactive, 2014-08-25"
+  as_of: "2014-08-25"
+  src: ~"../sources/creators-and-platforms.spw#src_creator_wiki_twitch"
+  status: #settled
+ }
+}

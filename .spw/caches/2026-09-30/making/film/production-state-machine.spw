@@ -1,0 +1,135 @@
+# Production State Machine
+#
+# The life of a feature film as states and transitions, from development and packaging through financing, shooting, post, delivery, festivals, and release.
+
+#>film_production_states
+#:layer #!pragmatics
+#:domain #!film
+#:form #!protocol
+#:level #!intro
+#:review #!spot_checked
+#:valence #!bonk
+
+^"emit"{
+ ~#title: "Production State Machine"
+ ~#claim: "A feature moves through development, packaging, financing, preparation, shooting, post, delivery, and release, and each state has its own exit test."
+ ~#proof: "Film Art lays out the production phases; Clearance and Copyright covers delivery paperwork and chain of title."
+ ~#door: "Follow one project through each state, then compare The Martian timeline."
+ ~#audience: "newcomers to film production and readers of trade news"
+ cold_open: "A film changes state many times on its way to an audience, from development to release, and each state has an exit test."
+ continuity: "Production State Machine | development"
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #sourced, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ needs: [ ~"./adaptation-and-rights.spw#film_rights_chain" ]
+ feeds: [ ~"./film-season-calendar.spw#film_season_calendar", ~"./set-operations-and-crew.spw#film_set_day_machine" ]
+ see: [ ~"../making-glossary.spw#making_glossary" ]
+}
+
+^["concepts"]{
+ primary: [ #state_machine, #packaging ]
+ transfers: [ #option, #festival_circuit ]
+ tensions: [ #turnaround ]
+}
+
+^["phases"]{
+ #>film_production_phases_claim
+ ^["textbook_phases"]{
+  #:claim #!settled
+  statement: "Film Art describes production in phases: scriptwriting and funding, preparation for filming, shooting, and assembly, followed by distribution and exhibition."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_bordwell_film_art_2019"
+ }
+ path: <<
+  "development" ;
+  "packaging" ;
+  "financing" ;
+  "pre-production" ;
+  "principal photography" ;
+  "post-production" ;
+  "delivery" ;
+  "festivals and markets" ;
+  "distribution"
+ >>
+}
+
+^["states"]{
+ #>film_production_development
+ ^["development"]{
+  enters: "an idea, a spec script, or optioned underlying rights"
+  work: "drafts and notes until a script can attract talent and money"
+  exits: "a script ready to package"
+  stalls_to: "a lapsed option or a studio turnaround"
+ }
+ #>film_production_packaging
+ ^["packaging"]{
+  enters: "a script with a producer"
+  work: "attach a director and lead cast whose names help raise money"
+  exits: "a package financiers can value"
+ }
+ #>film_production_financing
+ ^["financing"]{
+  enters: "a package and a budget"
+  work: "studio money, presales, equity, gap loans, or incentives"
+  exits: "a greenlight and closed financing"
+  on_decision: ?match[@financier]{
+   "greenlight" => "move to pre-production",
+   "pass" => "return to packaging or development",
+   "partial" => "add co-financiers or presales and ask again"
+  }
+ }
+ #>film_production_prep
+ ^["pre_production"]{
+  enters: "closed financing"
+  work: "hire department heads, scout, cast, break down, schedule, and budget to the day"
+  exits: "a locked schedule and a first call sheet"
+ }
+ #>film_production_shoot
+ ^["principal_photography"]{
+  enters: "day one of the schedule"
+  work: "the shooting-day loop, repeated until the schedule is shot"
+  exits: "wrap of principal photography"
+  day: ~"./set-operations-and-crew.spw#film_set_day_machine"
+ }
+ #>film_production_post
+ ^["post_production"]{
+  enters: "footage and sound from the shoot"
+  work: "edit to picture lock, then sound, music, visual effects, and color"
+  exits: "a finished master"
+ }
+ #>film_production_delivery
+ ^["delivery"]{
+  #:claim #!settled
+  statement: "Delivery hands a distributor picture and sound masters with paperwork that includes chain of title and errors and omissions insurance."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_donaldson_callif_2014"
+  exits: "an accepted delivery"
+ }
+ #>film_production_release
+ ^["festivals_and_distribution"]{
+  enters: "a finished film with or without a distributor"
+  work: "festival premieres and market screenings seek buyers; distributors set release windows"
+  exits: "release, then library life"
+  calendar: ~"./film-season-calendar.spw#film_season_calendar"
+ }
+}
+
+#>film_production_stall_q
+?["How long does an adapted novel sit between option and release?"]{
+ #:depth #!historical ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "Adaptations with a finished, selling book move from option to release faster than those optioned from a manuscript or proposal."
+ !probe{ "tabulate option and release dates for adapted novels announced in trade press" =id[p_film_production_option_gap] =kind[census] }
+ $%[film.martian.rights_month, film.martian.us_release]
+ ~"./production-state-machine.spw#film_production_development" ~#neighbor(nearest)
+}

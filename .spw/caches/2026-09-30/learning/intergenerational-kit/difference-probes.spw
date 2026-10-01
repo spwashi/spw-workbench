@@ -1,0 +1,171 @@
+# Difference Probes
+#
+# Paired prompts that ask two generations the same question about school, so each difference in the answers becomes a reason to explore together rather than a verdict.
+
+#>generations_kit_probes
+#:layer #!creative
+#:domain #!generations
+#:form #!probe_battery
+#:level #!intro
+#:review #!sourced
+#:valence #!boon
+#:era #!current
+
+^"emit"{
+ ~#title: "Difference Probes"
+ ~#claim: "Asking an elder and a younger relative the same school question surfaces differences in method, rules, and tools that the timeline can explain."
+ ~#proof: "Each probe links the curricula ladder, the policy ledger, or the curriculum wars row that may account for a difference."
+ ~#door: "Pick two probes, ask both people, then look up the landmark behind the biggest difference."
+ ~#audience: "families, classes, and anyone interviewing across generations"
+ continuity: "Difference Probes | same school question"
+ cold_open: "Ask two generations the same school question, and let each difference send you to the timeline together."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ needs: [ ~"./interview-protocol.spw#generations_kit_interview_consent" ]
+ feeds: [ ~"./curriculum-memory-map.spw#generations_kit_memory_map" ]
+}
+
+^["concepts"]{
+ primary: [ #curriculum_memory, #oral_history ]
+ transfers: [ #phonics ]
+ tensions: [ #discipline ]
+}
+
+^["rules"]{
+ pairing: "ask both people the same words, separately, before either hears the other answer"
+ difference: "when answers differ, ask what might explain it and check the timeline; skip deciding whose school was better"
+ hard_topics: "some prompts touch exclusion, punishment, or language loss; ask them only when trust is built, and accept a pass"
+}
+
+^["method"]{
+ #>generations_kit_probe_reading
+ ^["reading"]{
+  ask: "How were you taught to read a word you had never seen before?"
+  listen_for: "sounding out letters, memorizing whole words, guessing from pictures or context"
+  explains: ~"../generations/curriculum-wars-matrix.spw#generations_wars_cueing"
+  !probe{ "ask an elder and a younger relative how they read an unfamiliar word" =id[p_learn_kit_reading] =kind[interview] }
+ }
+
+ #>generations_kit_probe_fractions
+ ^["fractions"]{
+  ask: "Show me on paper how you would add one third and one fourth."
+  listen_for: "common denominators by rule, area models, number lines, a calculator"
+  explains: ~"../generations/curriculum-wars-matrix.spw#generations_wars_nctm"
+  !probe{ "have two generations add one third and one fourth on paper and explain each step" =id[p_learn_kit_fractions] =kind[interview] }
+ }
+
+ #>generations_kit_probe_homework
+ ^["homework"]{
+  ask: "How much homework did you have at twelve, and who helped you with it?"
+  listen_for: "time spent, who could help, what was checked"
+  explains: ~"../generations/continuities-matrix.spw#generations_cont_grammar"
+  !probe{ "compare homework load and helpers at age twelve across the family" =id[p_learn_kit_homework] =kind[interview] }
+ }
+}
+
+^["rules_and_rooms"]{
+ #>generations_kit_probe_discipline
+ ^["discipline"]{
+  ask: "What happened at your school when someone broke a rule?"
+  listen_for: "detention, paddling, suspension, talking circles"
+
+  #>generations_kit_paddling
+  ^["paddling_law"]{
+   #:claim #!settled
+   statement: "In 1977 the Supreme Court held that paddling in public schools does not violate the Eighth Amendment, leaving its use to state law."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_ingraham_1977"
+  }
+  !probe{ "ask each generation what followed a broken school rule" =id[p_learn_kit_discipline] =kind[interview] }
+ }
+
+ #>generations_kit_probe_classmates
+ ^["classmates"]{
+  ask: "Who went to school with you, and who did not?"
+  listen_for: "segregation and desegregation, students with disabilities in or out of the room, girls and boys in different courses"
+  explains: [
+   ~"../generations/policy-landmarks-ledger.spw#generations_policy_brown",
+   ~"../generations/policy-landmarks-ledger.spw#generations_policy_eha",
+   ~"../generations/policy-landmarks-ledger.spw#generations_policy_title_ix"
+  ]
+  !probe{ "ask who shared the classroom and who was kept out of it" =id[p_learn_kit_classmates] =kind[interview] }
+ }
+
+ #>generations_kit_probe_language
+ ^["language"]{
+  ask: "Which languages could you speak at school, and which did you have to leave at home?"
+  listen_for: "English-only rules, bilingual classes, punishment for a home language"
+  explains: [
+   ~"../generations/policy-landmarks-ledger.spw#generations_policy_lau",
+   ~"../generations/policy-landmarks-ledger.spw#generations_policy_boarding_schools"
+  ]
+  !probe{ "ask which home languages were welcome at school in each generation" =id[p_learn_kit_language] =kind[interview] }
+ }
+}
+
+^["tools_and_marks"]{
+ #>generations_kit_probe_technology
+ ^["technology"]{
+  ask: "What was at the front of your classroom, and what did you write with?"
+  listen_for: "chalkboard, overhead projector, interactive board, slate, pencil, laptop"
+  explains: ~"../generations/continuities-matrix.spw#generations_cont_media"
+  !probe{ "name the tools at the front of the room and on the desk in each generation" =id[p_learn_kit_technology] =kind[interview] }
+ }
+
+ #>generations_kit_probe_tests
+ ^["tests"]{
+  ask: "Which big tests do you remember, and what rode on them?"
+  listen_for: "college admissions tests, state tests, exit exams"
+  explains: ~"../generations/policy-landmarks-ledger.spw#generations_policy_nclb"
+  !probe{ "list the high-stakes tests each person took and what depended on them" =id[p_learn_kit_tests] =kind[interview] }
+ }
+
+ #>generations_kit_probe_grades
+ ^["grades"]{
+  ask: "What mark did you most fear on a report card, and what did it mean at home?"
+  listen_for: "letters, percentages, comments, standards-based marks"
+  explains: ~"../generations/continuities-matrix.spw#generations_cont_grading"
+  !probe{ "ask which report card mark each person feared and why" =id[p_learn_kit_grades] =kind[interview] }
+ }
+}
+
+^["try"]{
+ #>generations_kit_try_dinner
+ ^["one_probe_at_dinner"]{
+  materials: [
+   "one probe from this battery",
+   "two people from different generations who agree to answer"
+  ]
+  steps: <<
+   "ask the older person first while the younger listens" ;
+   "ask the younger person the same words" ;
+   "name one difference out loud" ;
+   "look up the landmark linked to that probe together"
+  >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "let either person pass; hard memories need no explanation"
+  shows: ~"./difference-probes.spw#generations_kit_probe_reading"
+ }
+}
+
+#>generations_kit_agreement_q
+?["Do generations agree more about how school felt than about how it worked?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Paired answers will differ most on methods and tools and least on feelings about teachers, fairness, and belonging."
+ !probe{ "code paired answers as method, tool, or feeling and count where pairs differ" =id[p_learn_kit_agreement] =kind[interview] }
+ ~"./difference-probes.spw#generations_kit_probe_homework" ~#neighbor(nearest)
+}

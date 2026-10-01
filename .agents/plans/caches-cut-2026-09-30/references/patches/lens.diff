@@ -1,0 +1,1111 @@
+diff --git a/extensions/vscode-spw/src/lsp/custom-requests.test.ts b/extensions/vscode-spw/src/lsp/custom-requests.test.ts
+index eb479b9d..378ccd51 100644
+--- a/extensions/vscode-spw/src/lsp/custom-requests.test.ts
++++ b/extensions/vscode-spw/src/lsp/custom-requests.test.ts
+@@ -46,6 +46,41 @@ describe('VS Code workspace request client', () => {
+     expect(calls).toEqual([{ method: 'spw/workspaceManifest/v1', params: {} }])
+   })
+ 
++  it('accepts apposition records with their reading and skips kinds it does not know', async () => {
++    const annotation = (kind: string, extra: Record<string, unknown> = {}) => ({
++      uri: 'file:///workspace/a.spw',
++      line: 2,
++      kind,
++      name: 'lens',
++      framePath: ['wonders'],
++      ...extra,
++    })
++    const transport: SpwRequestTransport = {
++      async sendRequest<R>(): Promise<R> {
++        return [
++          annotation('lens'),
++          annotation('apposition', { body: 'bandwidth symmetry', sectionLabel: 'wonders' }),
++          annotation('aspect-from-the-future'),
++        ] as R
++      },
++    }
++
++    const records = await createSpwCustomRequestClient(transport).annotations()
++    expect(records.map((record) => record.kind)).toEqual(['lens', 'apposition'])
++    expect(records[1]).toMatchObject({ kind: 'apposition', name: 'lens', body: 'bandwidth symmetry' })
++  })
++
++  it('still rejects a malformed annotation record', async () => {
++    const transport: SpwRequestTransport = {
++      async sendRequest<R>(): Promise<R> {
++        return [{ uri: 'file:///workspace/a.spw', line: 2, kind: 'apposition', name: 'lens', body: 7, framePath: [] }] as R
++      },
++    }
++
++    await expect(createSpwCustomRequestClient(transport).annotations())
++      .rejects.toThrow('spw/annotations returned an invalid annotation entry')
++  })
++
+   it('rejects the path-bearing legacy response instead of adapting it locally', async () => {
+     const transport: SpwRequestTransport = {
+       async sendRequest<R>(): Promise<R> {
+diff --git a/extensions/vscode-spw/src/lsp/custom-requests.ts b/extensions/vscode-spw/src/lsp/custom-requests.ts
+index a9d53eee..bcaac38c 100644
+--- a/extensions/vscode-spw/src/lsp/custom-requests.ts
++++ b/extensions/vscode-spw/src/lsp/custom-requests.ts
+@@ -10,7 +10,9 @@ export type SpwWorkspaceManifest = SpwWorkspaceManifestV1
+ export type SpwWorkspaceRootEntry = SpwWorkspaceRootEvidence
+ export type { SpwWorkspaceRootSource }
+ 
+-export type SpwAnnotationKind = 'topic' | 'lens' | 'intent' | 'anchor' | 'prompt_root'
++/** Kinds this client can draw. `apposition` is a named `~#name(reading)`; `lens` is the `#:` particle. */
++const SPW_ANNOTATION_KINDS = ['topic', 'lens', 'intent', 'anchor', 'prompt_root', 'apposition'] as const
++export type SpwAnnotationKind = typeof SPW_ANNOTATION_KINDS[number]
+ export type SpwMaterializationState = 'priming' | 'concept' | 'frame' | 'body'
+ 
+ export interface SpwAnnotationRecord {
+@@ -18,6 +20,8 @@ export interface SpwAnnotationRecord {
+   line: number
+   kind: SpwAnnotationKind
+   name: string
++  /** The reading an `apposition` carries. */
++  body?: string
+   sectionLabel?: string
+   framePath: string[]
+ }
+@@ -286,20 +290,27 @@ function isRecord(value: unknown): value is Record<string, unknown> {
+ }
+ 
+ function isAnnotationKind(value: unknown): value is SpwAnnotationKind {
+-  return value === 'topic' || value === 'lens' || value === 'intent' || value === 'anchor' || value === 'prompt_root'
++  return (SPW_ANNOTATION_KINDS as readonly unknown[]).includes(value)
+ }
+ 
+-function isAnnotationRecord(value: unknown): value is SpwAnnotationRecord {
++/** A well-formed record whose kind may be one this client does not know yet. */
++function isAnnotationShape(value: unknown): value is Omit<SpwAnnotationRecord, 'kind'> & { kind: string } {
+   if (!isRecord(value)) return false
+   return typeof value.uri === 'string'
+     && typeof value.line === 'number'
+-    && isAnnotationKind(value.kind)
++    && typeof value.kind === 'string'
+     && typeof value.name === 'string'
++    && (typeof value.body === 'undefined' || typeof value.body === 'string')
+     && (typeof value.sectionLabel === 'undefined' || typeof value.sectionLabel === 'string')
+     && Array.isArray(value.framePath)
+     && value.framePath.every((segment) => typeof segment === 'string')
+ }
+ 
++/**
++ * A malformed entry still fails the whole payload. An entry of an unknown kind
++ * is skipped: a newer server that indexes a new kind should cost this client
++ * that kind, not every annotation in the Concepts tree.
++ */
+ function parseAnnotationRecords(value: unknown): SpwAnnotationRecord[] {
+   if (!Array.isArray(value)) {
+     throw new Error('spw/annotations returned a non-array payload')
+@@ -307,10 +318,12 @@ function parseAnnotationRecords(value: unknown): SpwAnnotationRecord[] {
+ 
+   const records: SpwAnnotationRecord[] = []
+   for (const entry of value) {
+-    if (!isAnnotationRecord(entry)) {
++    if (!isAnnotationShape(entry)) {
+       throw new Error('spw/annotations returned an invalid annotation entry')
+     }
+-    records.push(entry)
++    const { kind } = entry
++    if (!isAnnotationKind(kind)) continue
++    records.push({ ...entry, kind })
+   }
+ 
+   return records
+diff --git a/extensions/vscode-spw/src/views/concepts-tree.ts b/extensions/vscode-spw/src/views/concepts-tree.ts
+index 81bda788..ec736883 100644
+--- a/extensions/vscode-spw/src/views/concepts-tree.ts
++++ b/extensions/vscode-spw/src/views/concepts-tree.ts
+@@ -65,6 +65,7 @@ const KIND_GROUP_LABELS: Record<AnnotationKind, string> = {
+   intent: 'Intents',
+   anchor: 'Anchors',
+   prompt_root: 'Prompt Roots',
++  apposition: 'Appositions',
+ }
+ 
+ const KIND_ICONS: Record<AnnotationKind, string> = {
+@@ -73,6 +74,7 @@ const KIND_ICONS: Record<AnnotationKind, string> = {
+   intent: 'zap',
+   anchor: 'link',
+   prompt_root: 'compass',
++  apposition: 'quote',
+ }
+ 
+ /** Maps annotation kinds to extension-contributed ThemeColor IDs */
+@@ -82,6 +84,8 @@ const KIND_COLORS: Record<AnnotationKind, string> = {
+   intent: 'spw.intent',
+   anchor: 'spw.anchor',
+   prompt_root: 'spw.promptRoot',
++  // No color of its own is contributed yet; it shares the `~#` family's.
++  apposition: 'spw.topic',
+ }
+ 
+ const KIND_NOUNS: Record<AnnotationKind, { singular: string; plural: string }> = {
+@@ -90,6 +94,7 @@ const KIND_NOUNS: Record<AnnotationKind, { singular: string; plural: string }> =
+   intent: { singular: 'intent', plural: 'intents' },
+   anchor: { singular: 'anchor', plural: 'anchors' },
+   prompt_root: { singular: 'prompt root', plural: 'prompt roots' },
++  apposition: { singular: 'apposition', plural: 'appositions' },
+ }
+ 
+ const KIND_PREFIX: Record<AnnotationKind, string> = {
+@@ -98,9 +103,10 @@ const KIND_PREFIX: Record<AnnotationKind, string> = {
+   intent: '#!',
+   anchor: '#>',
+   prompt_root: '##>',
++  apposition: '~#',
+ }
+ 
+-const ANNOTATION_KIND_ORDER: AnnotationKind[] = ['lens', 'intent', 'anchor', 'prompt_root', 'topic']
++const ANNOTATION_KIND_ORDER: AnnotationKind[] = ['lens', 'intent', 'anchor', 'prompt_root', 'apposition', 'topic']
+ 
+ /**
+  * Spirit-sequence phase mapping for annotation kinds.
+@@ -110,13 +116,16 @@ const ANNOTATION_KIND_ORDER: AnnotationKind[] = ['lens', 'intent', 'anchor', 'pr
+  *   - intent (#!)  → ! action (injection, effect)
+  *   - anchor (#>)  → ^ integration (framing, binding)
+  *   - prompt_root (##>) → @ observer (navigation landmark, perspective)
++ *   - apposition (~#name(…)) → @ observer (a reading held from outside; its parens are the @ container)
+  *   - topic (#)    → ~ potential (naming, superposition)
++ * Kinds that share a phase share its group.
+  */
+ const KIND_PHASE: Record<AnnotationKind, { sigil: string; label: string; color: string }> = {
+   lens:        { sigil: '?', label: 'Wonder',      color: 'spw.phaseWonder' },
+   intent:      { sigil: '!', label: 'Action',       color: 'spw.phaseAction' },
+   anchor:      { sigil: '^', label: 'Integration',  color: 'spw.phaseIntegration' },
+   prompt_root: { sigil: '@', label: 'Observer',     color: 'spw.phaseMeta' },
++  apposition:  { sigil: '@', label: 'Observer',     color: 'spw.phaseMeta' },
+   topic:       { sigil: '~', label: 'Potential',    color: 'spw.phaseWonder' },
+ }
+ 
+@@ -467,20 +476,26 @@ class ConceptsTreeDataProvider implements vscode.TreeDataProvider<ConceptNode> {
+    */
+   private groupByPhase(entries: AnnotationEntry[]): ConceptGroupNode[] {
+     // Phase order follows the spirit sequence
+-    const phaseOrder: AnnotationKind[] = ['lens', 'topic', 'prompt_root', 'intent', 'anchor']
+-
+-    return phaseOrder
+-      .map((kind) => {
+-        const phase = KIND_PHASE[kind]
+-        return {
+-          kind: 'group' as const,
+-          groupKind: 'phase' as const,
+-          key: phase.sigil,
+-          label: phase.label,
+-          entries: entries.filter((e) => e.kind === kind),
+-        }
++    const phaseOrder: AnnotationKind[] = ['lens', 'topic', 'prompt_root', 'apposition', 'intent', 'anchor']
++
++    const groups = new Map<string, ConceptGroupNode>()
++    for (const kind of phaseOrder) {
++      const phase = KIND_PHASE[kind]
++      const matching = entries.filter((e) => e.kind === kind)
++      const group = groups.get(phase.sigil)
++      if (group) {
++        group.entries.push(...matching)
++        continue
++      }
++      groups.set(phase.sigil, {
++        kind: 'group',
++        groupKind: 'phase',
++        key: phase.sigil,
++        label: phase.label,
++        entries: matching,
+       })
+-      .filter((group) => group.entries.length > 0)
++    }
++    return [...groups.values()].filter((group) => group.entries.length > 0)
+   }
+ 
+   private kindGroups(entries: AnnotationEntry[], groupKind: Extract<GroupNodeKind, 'kind' | 'concept-kind'>): ConceptGroupNode[] {
+@@ -664,7 +679,7 @@ export function registerConceptsTreeView(spw: SpwContext): vscode.Disposable[] {
+ // ── Utility functions ───────────────────────────────────────────
+ 
+ function isAnnotationKind(value: string): value is AnnotationKind {
+-  return value === 'topic' || value === 'lens' || value === 'intent' || value === 'anchor' || value === 'prompt_root'
++  return Object.hasOwn(KIND_ICONS, value)
+ }
+ 
+ function entryNodes(entries: AnnotationEntry[]): ConceptEntryNode[] {
+diff --git a/packages/spw-lsp/src/__tests__/display.test.ts b/packages/spw-lsp/src/__tests__/display.test.ts
+index b73cb659..75bb266c 100644
+--- a/packages/spw-lsp/src/__tests__/display.test.ts
++++ b/packages/spw-lsp/src/__tests__/display.test.ts
+@@ -1,15 +1,24 @@
+ import { describe, expect, it } from 'vitest'
+-import { documentHighlight, hover, inlayHints } from '../handlers/display'
++import { documentHighlight, hover, inlayHints, workspaceSymbols } from '../handlers/display'
++import { formContextHover } from '../handlers/form-context'
+ import { ServerIndex } from '../server-index'
+ import { DEFAULT_CONFIG, type HandlerDeps } from '../types'
+ 
+ const TEST_URI = 'file:///workspace/test.spw'
+ const TEST_PATH = '/workspace/test.spw'
+ 
+-function makeDeps(text: string): HandlerDeps {
++/** Other workspace files, indexed as if saved, so cross-file counts have something to count. */
++interface SiblingFile { path: string; text: string }
++
++function makeDeps(text: string, siblings: SiblingFile[] = []): HandlerDeps {
+   const serverIndex = new ServerIndex('/workspace')
+   serverIndex.openDocument(TEST_URI, TEST_PATH, text, 1)
+   serverIndex.saveDocument(TEST_URI)
++  for (const sibling of siblings) {
++    const uri = `file://${sibling.path}`
++    serverIndex.openDocument(uri, sibling.path, sibling.text, 1)
++    serverIndex.saveDocument(uri)
++  }
+ 
+   return {
+     serverIndex,
+@@ -122,3 +131,160 @@ describe('display handlers', () => {
+     ])
+   })
+ })
++
++/** A wonder block on line 1 whose body opens with `lensLines`. */
++function wonderText(lensLines: string[]): string {
++  return [
++    '^["outer"]{',
++    '  ?["How does the field settle?"]{',
++    ...lensLines.map((line) => `    ${line}`),
++    '    ~<@here> // nearest neighbor',
++    '    !probe{ "measure the drift" }',
++    '    $%[file.frame_count, file.annotation_density]',
++    '  }',
++    '}',
++  ].join('\n')
++}
++
++const WONDER_LINE = 1
++/** Inside the question text, past the `?["` glyphs. */
++const QUESTION_COLUMN = 5
++
++async function wonderHoverText(text: string, siblings: SiblingFile[] = []): Promise<string> {
++  const result = await hover({
++    textDocument: { uri: TEST_URI },
++    position: { line: WONDER_LINE, character: QUESTION_COLUMN },
++  }, makeDeps(text, siblings))
++  return result?.contents.value ?? ''
++}
++
++describe('wonder lens', () => {
++  it('answers inside the question with the wonder, not the form-geometry boundary', async () => {
++    const text = wonderText(['#:depth #!computational ~#lens(living system)'])
++    const deps = makeDeps(text)
++
++    // The form-geometry hover does claim this column, so the ordering is what decides.
++    const doc = deps.serverIndex.getDocument(TEST_URI)!
++    expect(formContextHover(doc, { line: WONDER_LINE, character: QUESTION_COLUMN })).not.toBeNull()
++
++    const result = await hover({
++      textDocument: { uri: TEST_URI },
++      position: { line: WONDER_LINE, character: QUESTION_COLUMN },
++    }, deps)
++    expect(result?.contents.value).toContain('Wonder')
++    expect(result?.contents.value).not.toContain('Form coupling')
++    expect(result?.range?.start.character).toBe(2)
++  })
++
++  it.each([
++    ['apposition', ['#:depth #!computational ~#lens(living system)']],
++    ['datum', ['#:depth #!computational', '~#lens: "living system"']],
++    ['comment', ['#:depth #!computational // lens: living system']],
++  ])('reads the %s form as the same lens, with the same inlay digest', async (_form, lensLines) => {
++    const text = wonderText(lensLines)
++    expect(await wonderHoverText(text)).toContain('**Depth axis:** computational · **Lens:** living system')
++
++    const hints = await inlayHints({
++      textDocument: { uri: TEST_URI },
++      range: { start: { line: 0, character: 0 }, end: { line: 10, character: 1 } },
++    }, makeDeps(text))
++    const wonderHints = hints
++      .filter((hint) => hint.position.line === WONDER_LINE && hint.label.startsWith(' [?'))
++      .map((hint) => hint.label)
++    expect(wonderHints).toEqual([' [? 2 metrics · neighbor]'])
++  })
++
++  it('prefers the apposition over a legacy comment in the same block', async () => {
++    const text = wonderText(['#:depth #!computational // lens: material grain', '~#lens(living system)'])
++    const value = await wonderHoverText(text)
++    expect(value).toContain('**Lens:** living system')
++    expect(value).not.toContain('material grain')
++  })
++
++  it('finds an apposition on its own line, away from #:depth', async () => {
++    const text = wonderText(['#:depth #!computational', '~#hypothesis: "drift settles"', '~#lens(formal structure)'])
++    expect(await wonderHoverText(text)).toContain('**Lens:** formal structure')
++  })
++
++  it('reads no lens from a commented-out apposition or one quoted inside a string', async () => {
++    const text = wonderText(['#:depth #!computational // ~#lens(living system)', '~#hypothesis: "see ~#lens(material grain)"'])
++    const value = await wonderHoverText(text)
++    expect(value).toContain('**Depth axis:** computational')
++    expect(value).not.toContain('Lens')
++  })
++
++  it('keeps prose punctuation inside the reading', async () => {
++    const text = wonderText(["#:depth #!computational ~#lens(it's the root map, 50% done)"])
++    expect(await wonderHoverText(text)).toContain("**Lens:** it's the root map, 50% done")
++  })
++
++  it('counts how often the lens recurs, folding case and underscores', async () => {
++    const text = wonderText(['#:depth #!computational ~#lens(living system)'])
++    const value = await wonderHoverText(text, [
++      { path: '/workspace/other.spw', text: '?["q"]{\n  #:depth #!stylistic ~#lens(Living_System)\n}' },
++    ])
++    expect(value).toContain('`~#lens(living system)` recurs **2**× in **2** file(s)')
++  })
++
++  it('flags a comment-form lens as absent from the AST', async () => {
++    const commentValue = await wonderHoverText(wonderText(['#:depth #!computational // lens: living system']))
++    expect(commentValue).toContain('the parser drops')
++    const appositionValue = await wonderHoverText(wonderText(['#:depth #!computational ~#lens(living system)']))
++    expect(appositionValue).not.toContain('the parser drops')
++  })
++})
++
++describe('apposition hover and symbols', () => {
++  const text = [
++    '^["claims"]{',
++    '  #:depth #!computational ~#lens(bandwidth symmetry)',
++    '  ~#lens: "bandwidth symmetry"',
++    '}',
++  ].join('\n')
++  const siblings: SiblingFile[] = [
++    { path: '/workspace/a.spw', text: '~#lens(bandwidth_symmetry)\n~#lens(ecological zone)' },
++  ]
++
++  it('reads ~#lens( as an apposition, not the #lens topic', async () => {
++    const deps = makeDeps(text, siblings)
++    const column = '  #:depth #!computational ~#l'.length
++    const result = await hover({ textDocument: { uri: TEST_URI }, position: { line: 1, character: column } }, deps)
++    const value = result?.contents.value ?? ''
++
++    expect(value).toContain('*apposition (named reading)*')
++    expect(value).not.toContain('*topic*')
++    expect(value).toContain('This reading: **2** occurrence(s) in **2** file(s)')
++    expect(value).toContain('`~#lens(…)` readings: **3** in **2** file(s)')
++    expect(value).toContain('Other readings: `ecological zone`')
++    expect(result?.range).toEqual({
++      start: { line: 1, character: '  #:depth #!computational '.length },
++      end: { line: 1, character: '  #:depth #!computational ~#lens(bandwidth symmetry)'.length },
++    })
++  })
++
++  it('leaves the ~#lens: datum on the topic hover, now counting appositions too', async () => {
++    const deps = makeDeps(text, siblings)
++    const result = await hover({ textDocument: { uri: TEST_URI }, position: { line: 2, character: 4 } }, deps)
++    // 1 datum + 3 appositions, all keyed by the name `lens`.
++    expect(result?.contents.value).toContain('**#lens** — *topic*')
++    expect(result?.contents.value).toContain('**4** occurrence(s)')
++  })
++
++  it('describes an anonymous apposition without indexing it', async () => {
++    const deps = makeDeps('^["x"]{\n  ~#(nearest neighbor)\n}')
++    const result = await hover({ textDocument: { uri: TEST_URI }, position: { line: 1, character: 6 } }, deps)
++    expect(result?.contents.value).toContain('*apposition (anonymous reading)*')
++    expect(deps.serverIndex.allAnnotations().some((entry) => entry.kind === 'apposition')).toBe(false)
++  })
++
++  it('finds an apposition by its reading in workspace symbols', () => {
++    const deps = makeDeps(text, siblings)
++    const symbols = workspaceSymbols({ query: 'bandwidth' }, deps)
++    const names = symbols.map((symbol) => symbol.name)
++    expect(names).toContain('~#lens(bandwidth symmetry)')
++    expect(names).toContain('~#lens(bandwidth_symmetry)')
++    const own = symbols.find((symbol) => symbol.location.uri === TEST_URI)
++    // 15 = LSP SymbolKind.String
++    expect(own).toMatchObject({ kind: 15, containerName: 'claims' })
++  })
++})
+diff --git a/packages/spw-lsp/src/__tests__/semantic-tokens.test.ts b/packages/spw-lsp/src/__tests__/semantic-tokens.test.ts
+index 76614954..d840015c 100644
+--- a/packages/spw-lsp/src/__tests__/semantic-tokens.test.ts
++++ b/packages/spw-lsp/src/__tests__/semantic-tokens.test.ts
+@@ -181,6 +181,41 @@ describe('compound patterns', () => {
+     })
+   })
+ 
++  it('~#name(reading) → property head, paren operators, one string body', () => {
++    const tokens = tokenize('~#lens(living system)')
++    expect(tokens).toEqual([
++      { line: 0, char: 0, length: 6, type: TT.property, modifiers: TM.declaration },  // ~#lens
++      { line: 0, char: 6, length: 1, type: TT.operator, modifiers: TM.declaration },  // (
++      { line: 0, char: 7, length: 13, type: TT.string, modifiers: 0 },                // living system
++      { line: 0, char: 20, length: 1, type: TT.operator, modifiers: 0 },              // )
++    ])
++  })
++
++  it('apposition body is prose: no number, keyword or string spill inside it', () => {
++    const line = "#:depth #!computational ~#lens(it's the root map, 50% (half) done) $%[x]"
++    const tokens = tokenize(line)
++    const bodyStart = line.indexOf('(') + 1
++    const bodyEnd = line.indexOf(') $%')
++    const inside = tokens.filter((t) => t.char >= bodyStart && t.char < bodyEnd)
++    expect(inside).toEqual([
++      { line: 0, char: bodyStart, length: bodyEnd - bodyStart, type: TT.string, modifiers: 0 },
++    ])
++    // Painting resumes after the closing paren.
++    expect(tokens.find((t) => t.char === bodyEnd + 2)).toMatchObject({ type: TT.keyword, length: 3 })
++  })
++
++  it('anonymous ~#(reading) paints its ~# head too', () => {
++    const tokens = tokenize('~#(nearest neighbor)')
++    expect(tokens[0]).toMatchObject({ char: 0, length: 2, type: TT.property, modifiers: TM.declaration })
++    expect(tokens[2]).toMatchObject({ char: 3, length: 16, type: TT.string })
++  })
++
++  it('unterminated ~#name( falls back to the trait painter', () => {
++    const tokens = tokenize('~#lens(open')
++    expect(tokens[0]).toMatchObject({ char: 0, length: 6, type: TT.property, modifiers: TM.declaration })
++    expect(tokens.some((t) => t.type === TT.string)).toBe(false)
++  })
++
+   it('#annotation → type', () => {
+     const tokens = tokenize('#layer')
+     expect(tokens).toHaveLength(1)
+diff --git a/packages/spw-lsp/src/__tests__/server-index.test.ts b/packages/spw-lsp/src/__tests__/server-index.test.ts
+index 420f8786..6bd36c4f 100644
+--- a/packages/spw-lsp/src/__tests__/server-index.test.ts
++++ b/packages/spw-lsp/src/__tests__/server-index.test.ts
+@@ -1,5 +1,66 @@
+ import { describe, it, expect } from 'vitest'
+-import { ServerIndex } from '../server-index'
++import { ServerIndex, normalizeReading } from '../server-index'
++
++describe('ServerIndex appositions', () => {
++  const text = [
++    '^["wonders"]{',
++    '  ?["Why mix at the edge?"]{',
++    '    #:depth #!computational ~#lens(bandwidth symmetry)',
++    '    ~#lens: "bandwidth symmetry"',
++    '    ~"../net.spw" ~#(nearest)',
++    '    ~#hypothesis: "see ~#lens(not a reading)" // ~#lens(nor this)',
++    '    ~#lens(unclosed',
++    '  }',
++    '}',
++  ].join('\n')
++
++  function indexed(): ServerIndex {
++    const index = new ServerIndex('/workspace')
++    index.openDocument('file:///workspace/test.spw', '/workspace/test.spw', text, 1)
++    index.saveDocument('file:///workspace/test.spw')
++    return index
++  }
++
++  it('indexes a named apposition with its reading and frame path', () => {
++    const appositions = indexed().allAnnotations().filter((entry) => entry.kind === 'apposition')
++    expect(appositions).toEqual([{
++      file: '/workspace/test.spw',
++      line: 2,
++      kind: 'apposition',
++      name: 'lens',
++      body: 'bandwidth symmetry',
++      sectionLabel: 'wonders',
++      framePath: ['wonders'],
++    }])
++  })
++
++  it('skips anonymous, quoted, commented and unterminated appositions, and keeps ~#lens: a topic', () => {
++    const lens = indexed().lookupAnnotation('lens')
++    expect(lens.map((entry) => `${entry.line}:${entry.kind}`)).toEqual(['2:apposition', '3:topic'])
++  })
++
++  it('keeps appositions out of the line braids', () => {
++    const index = indexed()
++    expect(index.getContextAtPosition('file:///workspace/test.spw', { line: 2, character: 0 })?.localBraids)
++      .toEqual(['#:depth', '#!computational'])
++  })
++
++  it('searches appositions by their reading', () => {
++    const hits = indexed().searchAnnotations('bandwidth')
++    expect(hits.map((entry) => entry.kind)).toEqual(['apposition'])
++  })
++
++  it('groups readings that differ only in case, underscores or spacing', () => {
++    const index = indexed()
++    index.openDocument('file:///workspace/b.spw', '/workspace/b.spw', '~#lens(Bandwidth_Symmetry)\n~#lens(bandwidth)', 1)
++    index.saveDocument('file:///workspace/b.spw')
++
++    expect(normalizeReading('  Bandwidth_ \tSymmetry ')).toBe('bandwidth symmetry')
++    expect(index.lookupReading('lens', 'bandwidth  symmetry').map((entry) => entry.file))
++      .toEqual(['/workspace/test.spw', '/workspace/b.spw'])
++    expect(index.lookupReading('neighbor', 'bandwidth symmetry')).toEqual([])
++  })
++})
+ 
+ describe('ServerIndex semantic context', () => {
+   it('records nested frame paths on extracted annotations', () => {
+diff --git a/packages/spw-lsp/src/handlers/display.ts b/packages/spw-lsp/src/handlers/display.ts
+index 859def71..3b7404a3 100644
+--- a/packages/spw-lsp/src/handlers/display.ts
++++ b/packages/spw-lsp/src/handlers/display.ts
+@@ -7,7 +7,7 @@
+ 
+ import { promises as fs } from 'node:fs'
+ import path from 'node:path'
+-import { SIGIL_SEMANTICS } from '../server-index'
++import { SIGIL_SEMANTICS, normalizeReading, type AnnotationEntry, type AnnotationKind } from '../server-index'
+ import { findPathRefAtPosition } from '../spw-selector'
+ import { statKind } from '../helpers'
+ import type {
+@@ -34,13 +34,26 @@ type DisplayAnnotationKind = 'topic' | 'lens' | 'intent' | 'anchor'
+ 
+ const ANNOTATION_RE = /(##>|#!|#:|#>|#)([a-zA-Z_][a-zA-Z0-9_]*)/g
+ const ANCHOR_RE = /##?>([a-zA-Z_][a-zA-Z0-9_]*)/
+-const PREFIX_BY_KIND: Record<DisplayAnnotationKind, string> = {
++const PREFIX_BY_KIND: Record<AnnotationKind, string> = {
+     topic: '#',
+     lens: '#:',
+     intent: '#!',
+     anchor: '#>',
++    prompt_root: '##>',
++    apposition: '~#',
+ }
+ 
++/** LSP SymbolKind.String — an apposition is a reading, and the shared SK table has no entry for it. */
++const SYMBOL_KIND_STRING = 15
++
++/** Mirrors the apposition matcher's name class: `~#` + these + `(`. */
++const APPOSITION_NAME_CHAR = /[a-zA-Z0-9_-]/
++const LEGACY_LENS_COMMENT = /^\/\/\s*lens:\s*(.+)$/
++const WONDER_OPEN = /^\s*\?\[/
++
++/** Where a wonder's lens was written — only the apposition is canon; the comment never reaches the AST. */
++type LensForm = 'apposition' | 'datum' | 'comment'
++
+ type VisibleStringDelimiter = '"' | "'" | '`' | null
+ 
+ interface DisplayLineContext {
+@@ -64,6 +77,7 @@ interface WonderBlockSummary {
+     question: string
+     depth: string | null
+     lens: string | null
++    lensForm: LensForm | null
+     probe: string | null
+     metrics: string[]
+     neighbor: string | null
+@@ -301,7 +315,7 @@ function parseWonderBlock(lines: string[], startLine: number): WonderBlockSummar
+     const bodyText = bodyLines.join('\n')
+     const depthLine = bodyLines.find((entry) => entry.includes('#:depth'))
+     const depth = depthLine?.match(/#!([a-z][a-z0-9_]*)/)?.[1] ?? null
+-    const lens = depthLine?.match(/\/\/\s*lens:\s*(.+)/)?.[1]?.trim() ?? null
++    const lens = readLens(bodyLines)
+     const probe = bodyText.match(/!probe\{\s*"([^"]+)"/s)?.[1] ?? null
+     const metrics = [...bodyText.matchAll(/\$%\[([^\]]+)\]/g)]
+         .flatMap((match) => match[1].split(',').map((value) => value.trim()).filter(Boolean))
+@@ -310,7 +324,8 @@ function parseWonderBlock(lines: string[], startLine: number): WonderBlockSummar
+     return {
+         question: wonderMatch[1],
+         depth,
+-        lens,
++        lens: lens?.lens ?? null,
++        lensForm: lens?.form ?? null,
+         probe,
+         metrics,
+         neighbor,
+@@ -318,6 +333,128 @@ function parseWonderBlock(lines: string[], startLine: number): WonderBlockSummar
+     }
+ }
+ 
++/**
++ * The wonder's lens, in canon's order of preference: the `~#lens(…)`
++ * apposition, then a `~#lens: "…"` datum, then the legacy `// lens:` comment.
++ * The whole body is read — the reading needn't share the `#:depth` line — up
++ * to a nested wonder, whose lens is its own.
++ */
++function readLens(bodyLines: string[]): { lens: string; form: LensForm } | null {
++    let datum: string | null = null
++    let comment: string | null = null
++    for (const line of bodyLines) {
++        if (WONDER_OPEN.test(line)) break
++        const scan = scanLineAppositions(line)
++        for (const cell of scan.cells) {
++            const reading = cell.body.trim()
++            if (cell.name !== 'lens' || !reading) continue
++            if (cell.form === 'paren') return { lens: reading, form: 'apposition' }
++            if (datum === null) datum = reading
++        }
++        if (comment === null) comment = scan.comment?.match(LEGACY_LENS_COMMENT)?.[1]?.trim() || null
++    }
++    if (datum !== null) return { lens: datum, form: 'datum' }
++    if (comment !== null) return { lens: comment, form: 'comment' }
++    return null
++}
++
++/** One `~#name(…)` or `~#name: …` reading on a line. */
++interface LineApposition {
++    /** `null` for an anonymous `~#(…)`. */
++    name: string | null
++    /** The paren body, raw; for a datum, its value with any quotes removed. */
++    body: string
++    form: 'paren' | 'colon'
++    /** Column of `~`. */
++    start: number
++    /** Column just past `)` (paren) or `:` (colon). */
++    end: number
++}
++
++/**
++ * Walk one line the way the lexer does. An apposition is taken raw to its
++ * balancing paren, so an apostrophe inside it is prose rather than a string;
++ * quoted strings are skipped whole; `//` ends the code. So `// ~#lens(x)` and
++ * `"see ~#lens(x)"` carry no reading.
++ */
++function scanLineAppositions(line: string): { cells: LineApposition[]; comment: string | null } {
++    const cells: LineApposition[] = []
++    let i = 0
++    while (i < line.length) {
++        const ch = line[i]
++        if (ch === '/' && line[i + 1] === '/') return { cells, comment: line.slice(i) }
++        if (ch === '"' || ch === "'" || ch === '`') {
++            i = skipQuoted(line, i)
++            continue
++        }
++        const cell = ch === '~' && line[i + 1] === '#' ? readAppositionAt(line, i) : null
++        if (cell) {
++            cells.push(cell)
++            // A datum's quoted value is still a string to skip, so resume after the colon.
++            i = cell.end
++            continue
++        }
++        i += 1
++    }
++    return { cells, comment: null }
++}
++
++function readAppositionAt(line: string, start: number): LineApposition | null {
++    let ahead = start + 2
++    while (ahead < line.length && APPOSITION_NAME_CHAR.test(line[ahead])) ahead += 1
++    const name = line.slice(start + 2, ahead) || null
++    if (line[ahead] === '(') {
++        let depth = 0
++        for (let i = ahead; i < line.length; i += 1) {
++            if (line[i] === '(') depth += 1
++            else if (line[i] === ')' && --depth === 0) {
++                return { name, body: line.slice(ahead + 1, i), form: 'paren', start, end: i + 1 }
++            }
++        }
++        return null // unterminated: the lexer reports it, and there is no reading to show
++    }
++    if (line[ahead] === ':' && name) {
++        return { name, body: datumValue(line.slice(ahead + 1)), form: 'colon', start, end: ahead + 1 }
++    }
++    return null
++}
++
++/** A datum's value: a quoted string's content, or the bare text before any comment. */
++function datumValue(rest: string): string {
++    const text = rest.trimStart()
++    const quote = text[0]
++    if (quote === '"' || quote === "'" || quote === '`') {
++        const close = skipQuoted(text, 0)
++        const closed = close > 1 && text[close - 1] === quote
++        return text.slice(1, closed ? close - 1 : close).trim()
++    }
++    const comment = text.indexOf('//')
++    return (comment >= 0 ? text.slice(0, comment) : text).trim()
++}
++
++/** Index just past the string opening at `start`, honouring backslash escapes; the line's end when unclosed. */
++function skipQuoted(text: string, start: number): number {
++    const quote = text[start]
++    for (let i = start + 1; i < text.length; i += 1) {
++        if (text[i] === '\\') {
++            i += 1
++            continue
++        }
++        if (text[i] === quote) return i + 1
++    }
++    return text.length
++}
++
++/** An index entry as it reads in source: `#:depth`, `##>root`, `~#lens(living system)`. */
++function annotationLabel(entry: Pick<AnnotationEntry, 'kind' | 'name' | 'body'>): string {
++    if (entry.kind === 'apposition') return `~#${entry.name}(${entry.body ?? ''})`
++    return `${PREFIX_BY_KIND[entry.kind] ?? '#'}${entry.name}`
++}
++
++function fileCountOf(entries: Array<{ file: string }>): number {
++    return new Set(entries.map((entry) => entry.file)).size
++}
++
+ function countVisibleBraceDelta(line: string): number {
+     let depth = 0
+     let delimiter: VisibleStringDelimiter = null
+@@ -457,6 +594,106 @@ function hoverExperimentalOrDialect(
+     return null
+ }
+ 
++/**
++ * Hover for a `~#name(…)` apposition under the caret. Without it the caret on
++ * `~#lens(` falls to the annotation hover, which misreads it as the `#lens`
++ * topic and counts unrelated `#:lens` particles.
++ */
++function hoverApposition(line: string, pos: LspPosition, uri: string, deps: HandlerDeps): LspHover | null {
++    const cell = scanLineAppositions(line).cells.find((entry) =>
++        entry.form === 'paren' && pos.character >= entry.start && pos.character < entry.end,
++    )
++    if (!cell) return null
++
++    const reading = cell.body.trim()
++    const context = deps.serverIndex.getContextAtPosition(uri, { line: pos.line, character: cell.start }) as DisplayLineContext | null
++    const range = { start: { line: pos.line, character: cell.start }, end: { line: pos.line, character: cell.end } }
++
++    if (!cell.name) {
++        let md = `**\`~#(${reading})\`** \u2014 *apposition (anonymous reading)*\n\n`
++        md += buildContextMarkdown(context)
++        md += 'A one-off reading: with no name it has no key to recur under, so it is not indexed. Name it (`~#name(…)`) once it recurs.\n'
++        return { contents: { kind: 'markdown', value: md }, range }
++    }
++
++    const named = deps.serverIndex.lookupAnnotation(cell.name).filter((entry) => entry.kind === 'apposition')
++    const same = deps.serverIndex.lookupReading(cell.name, reading)
++    const key = normalizeReading(reading)
++
++    let md = `**\`~#${cell.name}(${reading})\`** \u2014 *apposition (named reading)*\n\n`
++    md += buildContextMarkdown(context)
++    md += `This reading: **${same.length}** occurrence(s) in **${fileCountOf(same)}** file(s)  \n`
++    md += `\`~#${cell.name}(…)\` readings: **${named.length}** in **${fileCountOf(named)}** file(s)\n\n`
++
++    const others = new Map<string, { body: string; count: number }>()
++    for (const entry of named) {
++        const otherKey = normalizeReading(entry.body ?? '')
++        if (!otherKey || otherKey === key) continue
++        const seen = others.get(otherKey)
++        if (seen) seen.count += 1
++        else others.set(otherKey, { body: entry.body ?? '', count: 1 })
++    }
++    const topOthers = [...others.values()]
++        .sort((a, b) => b.count - a.count || a.body.localeCompare(b.body))
++        .slice(0, 5)
++    if (topOthers.length > 0) {
++        md += `Other readings: ${topOthers.map((entry) => `\`${entry.body}\`\u00a0(${entry.count}\u00d7)`).join(', ')}\n\n`
++    }
++
++    const seenFiles = new Set<string>()
++    for (const entry of same) {
++        const rel = path.relative(deps.workspaceRoot, entry.file)
++        if (seenFiles.has(rel) || seenFiles.size >= 5) continue
++        seenFiles.add(rel)
++        md += `- \`${rel}\`:${entry.line + 1}${entry.sectionLabel ? ` (${entry.sectionLabel})` : ''}\n`
++    }
++
++    return { contents: { kind: 'markdown', value: md }, range }
++}
++
++/**
++ * Hover for the `?["…"]` of a wonder block. It runs ahead of the form-geometry
++ * hover, which otherwise claims every column of the question as a boundary.
++ */
++function hoverWonder(source: string, line: string, pos: LspPosition, uri: string, deps: HandlerDeps): LspHover | null {
++    const wonderMatch = line.match(/\?\["([^"]+)"\]/)
++    if (!wonderMatch || wonderMatch.index === undefined) return null
++    const wStart = wonderMatch.index
++    const wEnd = wStart + wonderMatch[0].length
++    if (pos.character < wStart || pos.character >= wEnd) return null
++
++    const summary = parseWonderBlock(source.split('\n'), pos.line)
++    if (!summary) return null
++    const context = deps.serverIndex.getContextAtPosition(uri, { line: pos.line, character: wStart }) as DisplayLineContext | null
++
++    let md = `**\u2753 Wonder**\n\n`
++    md += buildContextMarkdown(context)
++    md += `> ${summary.question}\n\n`
++    const axes: string[] = []
++    if (summary.depth) axes.push(`**Depth axis:** ${summary.depth}`)
++    if (summary.lens) axes.push(`**Lens:** ${summary.lens}`)
++    if (axes.length > 0) md += axes.join(' \u00b7 ') + '\n\n'
++    if (summary.lens) {
++        const shared = deps.serverIndex.lookupReading('lens', summary.lens)
++        if (shared.length > 0) {
++            md += `\`~#lens(${summary.lens})\` recurs **${shared.length}**\u00d7 in **${fileCountOf(shared)}** file(s)\n\n`
++        }
++        if (summary.lensForm === 'comment') {
++            md += `*This lens is a \`// lens:\` comment, which the parser drops; write \`~#lens(${summary.lens})\` to put it in the AST.*\n\n`
++        }
++    }
++    if (summary.metrics.length > 0) {
++        md += `**Metrics:** \`${summary.metrics.join(', ')}\`\n\n`
++    }
++    if (summary.neighbor) md += `**Neighbor:** \`${summary.neighbor}\`\n\n`
++    if (summary.probe) md += `**Probe:** ${summary.probe}\n`
++
++    return {
++        contents: { kind: 'markdown', value: md },
++        range: { start: { line: pos.line, character: wStart }, end: { line: pos.line, character: wEnd } },
++    }
++}
++
+ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<LspHover | null> {
+     const uri = params?.textDocument?.uri
+     const pos = params?.position as LspPosition | undefined
+@@ -473,6 +710,10 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
+     const expHover = hoverExperimentalOrDialect(source, line, pos, docPath, deps.workspaceRoot)
+     if (expHover) return expHover
+ 
++    // 0.5 Apposition — before the annotation regex reads `~#lens(` as `#lens`
++    const appositionHover = hoverApposition(line, pos, uri, deps)
++    if (appositionHover) return appositionHover
++
+     // 1. Annotation hover
+     const annotationMatches = collectAnnotationMatches(line)
+     for (const annotation of annotationMatches) {
+@@ -541,6 +782,10 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
+         }
+     }
+ 
++    // 1.2 Wonder block — before form geometry claims the question as a boundary
++    const wonderHover = hoverWonder(source, line, pos, uri, deps)
++    if (wonderHover) return wonderHover
++
+     // 1.5 Form geometry — coupling packet + label site (seed-owned)
+     {
+         const doc = deps.serverIndex.getDocument(uri)
+@@ -586,7 +831,7 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
+             let md = `**^["${frameName}"]** \u2014 *frame*\n\n`
+             md += buildContextMarkdown(context)
+             if (inSection.length > 0) {
+-                md += 'Annotations: ' + inSection.map(e => `\`${PREFIX_BY_KIND[e.kind as DisplayAnnotationKind] ?? '#'}${e.name}\``).join(', ') + '\n\n'
++                md += 'Annotations: ' + inSection.map(e => `\`${annotationLabel(e)}\``).join(', ') + '\n\n'
+             }
+             if (opCounts) md += `Operators: ${opCounts}\n\n`
+             md += `Cache tier: ${cacheTier}\n`
+@@ -625,35 +870,6 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
+         }
+     }
+ 
+-    // 4. Wonder block hover
+-    const wonderSummary = parseWonderBlock(source.split('\n'), pos.line)
+-    const wonderRe = /\?\["([^"]+)"\]/
+-    const wonderMatch = line.match(wonderRe)
+-    if (wonderMatch && wonderSummary) {
+-        const wStart = line.indexOf(wonderMatch[0])
+-        const wEnd = wStart + wonderMatch[0].length
+-        if (pos.character >= wStart && pos.character < wEnd) {
+-            const context = deps.serverIndex.getContextAtPosition(uri, { line: pos.line, character: wStart }) as DisplayLineContext | null
+-
+-            let md = `**\u2753 Wonder**\n\n`
+-            md += buildContextMarkdown(context)
+-            md += `> ${wonderSummary.question}\n\n`
+-            if (wonderSummary.depth) md += `**Depth axis:** ${wonderSummary.depth}`
+-            if (wonderSummary.lens) md += ` \u00b7 **Lens:** ${wonderSummary.lens}`
+-            if (wonderSummary.depth || wonderSummary.lens) md += '\n\n'
+-            if (wonderSummary.metrics.length > 0) {
+-                md += `**Metrics:** \`${wonderSummary.metrics.join(', ')}\`\n\n`
+-            }
+-            if (wonderSummary.neighbor) md += `**Neighbor:** \`${wonderSummary.neighbor}\`\n\n`
+-            if (wonderSummary.probe) md += `**Probe:** ${wonderSummary.probe}\n`
+-
+-            return {
+-                contents: { kind: 'markdown', value: md },
+-                range: { start: { line: pos.line, character: wStart }, end: { line: pos.line, character: wEnd } },
+-            }
+-        }
+-    }
+-
+     // 5. Layer hover
+     const layerRe = /#:layer\s+#!([a-z]+)/
+     const layerMatch = line.match(layerRe)
+@@ -1037,11 +1253,13 @@ export function workspaceSymbols(params: { query?: string }, deps: HandlerDeps):
+ 
+     // Annotations
+     const annotEntries = deps.serverIndex.searchAnnotations(query)
+-    const kindMap: Record<string, number> = { topic: SK.Key, lens: SK.Enum, intent: SK.Event, anchor: SK.Interface, prompt_root: SK.Interface }
+-    const prefixMap: Record<string, string> = { topic: '#', lens: '#:', intent: '#!', anchor: '#>', prompt_root: '##>' }
++    const kindMap: Record<AnnotationKind, number> = {
++        topic: SK.Key, lens: SK.Enum, intent: SK.Event, anchor: SK.Interface, prompt_root: SK.Interface,
++        apposition: SYMBOL_KIND_STRING,
++    }
+     for (const entry of annotEntries.slice(0, 40)) {
+         results.push({
+-            name: `${prefixMap[entry.kind] ?? '#'}${entry.name}`,
++            name: annotationLabel(entry),
+             kind: kindMap[entry.kind] ?? SK.Key,
+             location: {
+                 uri: deps.uriFromPath(entry.file),
+diff --git a/packages/spw-lsp/src/handlers/semantic-tokens.ts b/packages/spw-lsp/src/handlers/semantic-tokens.ts
+index 63b3bf51..71e297ae 100644
+--- a/packages/spw-lsp/src/handlers/semantic-tokens.ts
++++ b/packages/spw-lsp/src/handlers/semantic-tokens.ts
+@@ -9,9 +9,9 @@
+  *   0  operator    — braces, &, <<>>, <>, generic operators
+  *   1  type        — #-annotations, type-like constructs
+  *   2  variable    — @-roots, $, navigable path refs (~"…", ~<path>, @root/path)
+- *   3  property    — ~#traits, =-config, =exp[
++ *   3  property    — ~#traits, ~#name( apposition heads, =-config, =exp[
+  *   4  function    — !-actions, !charge, ?-probes, #!intent
+- *   5  string      — quoted strings
++ *   5  string      — quoted strings, apposition bodies
+  *   6  keyword     — ^-framing, *, %, $%[, @dialect, ##>-anchors
+  *   7  comment     — //-comments
+  *   8  number      — numerics, times, fractions
+@@ -64,6 +64,23 @@ function isAnglePathLike(inner: string): boolean {
+     return false
+ }
+ 
++/**
++ * `~#name(` (name optional, as the apposition matcher allows) with a body that
++ * balances on this line. Returns the `~#name` length and the body length, or
++ * null when the paren never closes — that falls through to the trait painter.
++ */
++function appositionAt(rest: string): { head: number; body: number } | null {
++    const open = rest.match(/^~#[a-zA-Z0-9_-]*\(/)
++    if (!open) return null
++    const head = open[0].length - 1
++    let depth = 0
++    for (let i = head; i < rest.length; i++) {
++        if (rest[i] === '(') depth++
++        else if (rest[i] === ')' && --depth === 0) return { head, body: i - head - 1 }
++    }
++    return null
++}
++
+ // ── Result type ─────────────────────────────────────────────────
+ 
+ export interface LspSemanticTokens {
+@@ -177,6 +194,20 @@ export function semanticTokens(params: DocumentParams, deps: HandlerDeps): LspSe
+                 continue
+             }
+ 
++            // ~#name(reading) / ~#(reading) — apposition. The body is prose taken raw
++            // to the balancing paren, so it paints as one string: an apostrophe,
++            // a digit or a % inside it is not code.
++            const apposition = appositionAt(rest)
++            if (apposition) {
++                const bodyStart = col + apposition.head + 1
++                push(lineIndex, col, apposition.head, TT.property, TM.declaration)
++                push(lineIndex, bodyStart - 1, 1, TT.operator, TM.declaration)
++                push(lineIndex, bodyStart, apposition.body, TT.string, 0)
++                push(lineIndex, bodyStart + apposition.body, 1, TT.operator, 0)
++                col += apposition.head + apposition.body + 2
++                continue
++            }
++
+             // ~#trait — concise trait annotation
+             const traitMatch = rest.match(/^~#[a-zA-Z_][a-zA-Z0-9_-]*/)
+             if (traitMatch) {
+diff --git a/packages/spw-lsp/src/server-index.ts b/packages/spw-lsp/src/server-index.ts
+index 58e3269a..f9ae8af9 100644
+--- a/packages/spw-lsp/src/server-index.ts
++++ b/packages/spw-lsp/src/server-index.ts
+@@ -15,6 +15,7 @@
+ import { promises as fs } from 'node:fs'
+ import path from 'node:path'
+ import {
++  appositionParts,
+   parse,
+   canonicalize,
+   hashString,
+@@ -28,13 +29,20 @@ import { selectPathRefs, type SpwSelectorHit } from './spw-selector'
+ 
+ // ── Types ───────────────────────────────────────────────────────
+ 
+-export type AnnotationKind = 'topic' | 'lens' | 'intent' | 'anchor' | 'prompt_root'
++/**
++ * `lens` is the `#:` particle (the seed calls it case); `apposition` is a named
++ * `~#name(reading)` — a reading laid beside a form. They share a word only by
++ * accident, so they stay distinct kinds.
++ */
++export type AnnotationKind = 'topic' | 'lens' | 'intent' | 'anchor' | 'prompt_root' | 'apposition'
+ 
+ export interface AnnotationEntry {
+   file: string
+   line: number       // 0-indexed
+   kind: AnnotationKind
+   name: string
++  /** The reading an `apposition` carries — its paren body, trimmed. */
++  body?: string
+   sectionLabel?: string
+   framePath: string[]
+ }
+@@ -680,9 +688,24 @@ export class ServerIndex {
+     return this.annotationsByName.get(name) || []
+   }
+ 
++  /** Match on the name, or on an apposition's reading, so a phrase finds the `~#name(…)` that carries it. */
+   searchAnnotations(query: string): AnnotationEntry[] {
+     const q = query.toLowerCase()
+-    return this.workspaceAnnotations.filter(e => e.name.toLowerCase().includes(q))
++    return this.workspaceAnnotations.filter(e =>
++      e.name.toLowerCase().includes(q) || (e.body?.toLowerCase().includes(q) ?? false),
++    )
++  }
++
++  /**
++   * Every `~#name(…)` apposition that states the same reading. Readings are
++   * compared through `normalizeReading`, so `living_system` and `Living System`
++   * count as one recurring lens rather than two one-offs.
++   */
++  lookupReading(name: string, body: string): AnnotationEntry[] {
++    const key = normalizeReading(body)
++    return this.lookupAnnotation(name).filter(e =>
++      e.kind === 'apposition' && e.body !== undefined && normalizeReading(e.body) === key,
++    )
+   }
+ 
+   annotationsForFile(filePath: string): AnnotationEntry[] {
+@@ -1039,6 +1062,36 @@ const BRAID_PREFIX: Record<AnnotationKind, string> = {
+   intent: '#!',
+   anchor: '#>',
+   prompt_root: '##>',
++  apposition: '~#',
++}
++
++/**
++ * The comparison key for an apposition reading: case, `_` versus space, and
++ * runs of whitespace don't make two readings different.
++ */
++export function normalizeReading(body: string): string {
++  return body.toLowerCase().replace(/_/g, ' ').replace(/\s+/g, ' ').trim()
++}
++
++/**
++ * Read an APPOSITION token as an index entry. Only a named, closed apposition
++ * earns one: an anonymous `~#(…)` is a one-off reading with no key to recur
++ * under, and an unterminated one is a parse error whose body is not the author's.
++ */
++function annotationFromApposition(tok: Token): { name: string; body: string } | null {
++  if (!isClosedApposition(tok.value)) return null
++  const parts = appositionParts(tok.value)
++  return parts.name ? { name: parts.name, body: parts.body.trim() } : null
++}
++
++/** The lexer stops an apposition at the paren that balances its opener, or at the newline when none does. */
++function isClosedApposition(value: string): boolean {
++  let depth = 0
++  for (let i = value.indexOf('('); i >= 0 && i < value.length; i++) {
++    if (value[i] === '(') depth++
++    else if (value[i] === ')' && --depth === 0) return true
++  }
++  return false
+ }
+ 
+ /** Particle sigil → the annotation kind it declares. */
+@@ -1165,6 +1218,23 @@ function analyzeFromTokens(
+     // Extract annotations from this line's tokens
+     for (let j = 0; j < sig.length; j++) {
+       const tok = sig[j]
++      // ~#name(reading) — one APPOSITION token. Indexed for lookup and search,
++      // but kept out of the line's braids: a reading describes the form beside
++      // it, not the field that the following lines inherit.
++      if (tok.type === 'APPOSITION') {
++        const apposition = annotationFromApposition(tok)
++        if (!apposition) continue
++        annotations.push({
++          file: filePath,
++          line: i,
++          kind: 'apposition',
++          name: apposition.name,
++          body: apposition.body,
++          sectionLabel: framePath[framePath.length - 1],
++          framePath,
++        })
++        continue
++      }
+       // ~#name — produced as ANNOTATION token (value = '~#identifier')
+       if (tok.type === 'ANNOTATION') {
+         const name = tok.value.startsWith('~#') ? tok.value.slice(2) : tok.value

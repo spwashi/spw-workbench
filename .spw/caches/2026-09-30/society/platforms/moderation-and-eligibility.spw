@@ -1,0 +1,128 @@
+# Live Moderation and Eligibility
+#
+# Who may host and gift, what tools hosts and moderators hold, and how enforcement escalates, each with a region and a date.
+
+#>live_platforms_moderation
+#:layer #!reference
+#:domain #!live_platforms
+#:form #!ledger
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!bane
+#:era #!current
+
+^"emit"{
+ ~#title: "Live Moderation and Eligibility"
+ ~#claim: "Eligibility gates and moderator tools are dated rules with regional qualifiers, and escalation is best read as a ladder of states."
+ ~#proof: "Gift age gates come from the Virtual Items Policy; host gates and tool limits are verify cells; moderation effects cite a CSCW study of Twitch."
+ ~#door: "Read the session craft surface for how a host uses these tools in the room."
+ ~#audience: "hosts, moderators, and researchers of live platform governance"
+ continuity: "Live Moderation and Eligibility | regional qualifiers"
+ cold_open: "Live platform rules are dated rules with regional qualifiers attached."
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/tiktok-live/moderation-safety.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the raw omitted the age and follower gates; they are added as dated cells",
+  "the moderator cap of 50 and keyword cap of 500 are not carried; the moderator cap is a verify cell",
+  "the raw four-level enforcement ladder is kept as an interpretive model, not as documented platform procedure",
+  "the five-second severance, cryptographic audit receipts, and embedding-table matching are dropped as unsourced"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/creators-and-platforms.spw#q_creator_live" ]
+ feeds: [ ~"../../making/streaming/live-session-craft.spw#streaming_live_session" ]
+ analog: [ ~"./platform-lineage.spw#live_platforms_lineage_call_in" ]
+}
+
+^["concepts"]{
+ primary: [ #moderation_ladder, #room_state ]
+ transfers: [ #dated_receipt ]
+ tensions: [ #platform_dependence ]
+}
+
+^["ledger"]{
+ ^["eligibility"]{
+  #>live_platforms_moderation_gift_age
+  ^["gift_age"]{
+   #:claim #!settled
+   statement: "Buying Coins and sending or receiving Gifts with value requires age 18 or the local age of majority."
+   reads: %[creator.live.gift_min_age_years]
+   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_tiktok_virtual_items"
+   region: "global policy page"
+   as_of: "2026-10-01"
+  }
+  #>live_platforms_moderation_host_age
+  ^["host_age"]{
+   #:claim #!contested
+   statement: "The minimum age to host LIVE is reported as 18, while older documentation still says 16; the cell stays verify until a current help page is read."
+   reads: %[creator.live.host_min_age_years]
+   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_tiktok"
+   counter: "a TikTok newsroom post of late 2022 is reported to raise the host age to 18; not read for this cut"
+   region: "varies"
+   as_of: "2026-10-01"
+  }
+  #>live_platforms_moderation_followers
+  ^["follower_gate"]{
+   #:claim #!emerging
+   statement: "A follower threshold gates hosting in many regions; the commonly documented value is a verify cell."
+   reads: %[creator.live.host_min_followers]
+   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_tiktok"
+   region: "varies"
+   as_of: "2026-10-01"
+  }
+ }
+ ^["host_tools"]{
+  status: "verify; tool names and limits change with app versions"
+  moderators: %[creator.live.moderators_max]
+  delegation: "a host can name trusted viewers as moderators who mute, remove, and pin"
+  filters: "a host can add keyword filters that hold or hide matching comments"
+  slow_mode: "a host can slow or restrict chat during spam or a raid"
+  guests: "in multi-guest mode the host mutes, removes, and admits guests"
+ }
+ #>live_platforms_moderation_example_setting
+ ^["example_setting"]{
+  #:claim #!emerging
+  statement: "On Twitch, moderator actions and visible example-setting by other viewers both shaped later chat behavior in an observational study."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_seering_2017"
+  ^["limits"]{
+   holds: "Twitch chat in the study period and channels sampled"
+   fails: "other platforms, other moderation tools, and causal claims beyond the design"
+  }
+ }
+}
+
+^["escalation"]{
+ #>live_platforms_moderation_ladder
+ ^["ladder_model"]{
+  #:claim #!interpretive
+  statement: "Enforcement reads well as a ladder: a warning, reduced distribution, a paused stream under review, then ending the stream and suspending access."
+  basis: "a reading of the raw ladder and of published platform guidelines in general; TikTok procedure is not documented at this grain"
+ }
+ ?match[@stream]{
+  @flagged => ^["warn"]{ next: "restricted or clear", actor: "automated system or reviewer" }
+  @restricted => ^["review"]{ next: "paused or clear", actor: "reviewer" }
+  @paused => ^["decide"]{ next: "ended or clear", actor: "reviewer" }
+  @ended => ^["appeal"]{ next: "suspended or restored", actor: "host appeal" }
+  _ => "clear"
+ }
+}
+
+#>live_platforms_moderation_algospeak_q
+?["Does live speech moderation teach hosts a coded vocabulary?"]{
+ #:depth #!social ~#lens(semiotic charge)
+ #:claim #!speculative
+ ~#hypothesis: "Hosts who are moderated by speech recognition adopt substitute words for flagged topics more than hosts moderated only by chat filters."
+ !probe{ "compare word substitutions in transcripts of health and politics streams before and after a filter change" =id[p_creator_moderation_algospeak] =kind[census] }
+ ~"./moderation-and-eligibility.spw#live_platforms_moderation_ladder" ~#neighbor(nearest)
+}

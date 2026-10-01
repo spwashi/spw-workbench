@@ -1,0 +1,207 @@
+# Quantities: Plants, Ecology, and Care
+#
+# World metric cells for plant science, development and ecology, and nursing. Population and scale parameters only; no individual doses, targets, or diets live here.
+
+#>q_eco_registry
+#:layer #!reference
+#:domain #!registry
+#:form #!registry
+#:level #!mixed
+#:review #!sourced
+#:valence #!bone
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ boundary: "clinical cells are scale definitions only; drug targets and protocol thresholds stay out by the contract health_numbers rule"
+}
+
+^["families"]{
+ ^["soil"]{
+  id: eco_soil, operator: "%", identifier: eco.soil, plane: world, scope: corpus
+  keys: #[ pwp_mpa, fc_mpa, compost_c_n_ratio ]
+  scheme: tol, algorithm: world.registry_lookup, form: scalar
+ }
+ ^["photo"]{
+  id: eco_photo, operator: "%", identifier: eco.photo, plane: world, scope: corpus
+  keys: #[ pr_peak_nm, pfr_peak_nm, poinsettia_dark_h ]
+  scheme: tol, algorithm: world.registry_lookup, form: scalar
+ }
+ ^["ecosystem"]{
+  id: eco_ecosystem, operator: "%", identifier: eco.ecosystem, plane: world, scope: corpus
+  keys: #[ transfer_eff, redfield_c_per_p, redfield_n_per_p ]
+  scheme: tol, algorithm: world.registry_lookup, form: scalar
+ }
+ ^["scaling"]{
+  id: eco_scaling, operator: "%", identifier: eco.scaling, plane: world, scope: corpus
+  keys: #[ kleiber_exp, geometric_exp ]
+  scheme: tol, algorithm: world.registry_lookup, form: scalar
+ }
+ ^["clock"]{
+  id: eco_clock, operator: "%", identifier: eco.clock, plane: world, scope: corpus
+  keys: #[ m2_tide_h, human_tau_h ]
+  scheme: tol, algorithm: world.registry_lookup, form: scalar
+ }
+ ^["gcs"]{
+  id: eco_gcs, operator: "%", identifier: eco.gcs, plane: world, scope: corpus
+  keys: #[ total_min, total_max ]
+  scheme: tol, algorithm: world.registry_lookup, form: scalar
+ }
+ reused: #[ "season.calendar.synodic_month_days", "season.calendar.tropical_year_days" ]
+}
+
+#>q_eco_soil
+^"soil"{
+ %eco.soil.pwp_mpa{
+  value: "-1.5"
+  unit: "MPa"
+  at: "soil water potential conventionally taken as the permanent wilting point, the raw file's -15 bar"
+  abs: 0
+  src: ~"../sources/plants-ecology-care.spw#src_eco_weil_brady_2017"
+  status: #settled
+ }
+ %eco.soil.fc_mpa{
+  value: "-0.033"
+  unit: "MPa"
+  at: "soil water potential conventionally taken as field capacity, about one third of a bar; coarse soils drain to wetter values"
+  rel: 0.5
+  src: ~"../sources/plants-ecology-care.spw#src_eco_weil_brady_2017"
+  status: #settled
+ }
+ %eco.soil.compost_c_n_ratio{
+  value: 30
+  unit: "mass ratio of carbon to nitrogen, to 1"
+  at: "upper end of the starting blend commonly recommended for hot composting; acceptable blends span a wider range"
+  rel: 0.2
+  src: ~"../sources/plants-ecology-care.spw#src_eco_rynk_1992"
+  status: #settled
+ }
+}
+
+#>q_eco_photo
+^"photo"{
+ %eco.photo.pr_peak_nm{
+  value: 660
+  unit: "nm"
+  at: "approximate red absorption peak of phytochrome in its Pr form"
+  abs: 10
+  src: ~"../sources/plants-ecology-care.spw#src_eco_taiz_2015"
+  status: #settled
+ }
+ %eco.photo.pfr_peak_nm{
+  value: 730
+  unit: "nm"
+  at: "approximate far-red absorption peak of phytochrome in its Pfr form"
+  abs: 10
+  src: ~"../sources/plants-ecology-care.spw#src_eco_taiz_2015"
+  status: #settled
+ }
+ %eco.photo.poinsettia_dark_h{
+  value: "unset"
+  unit: "hours of uninterrupted darkness per night"
+  at: "night length used in home reblooming guidance; extension pages commonly give about 14 hours, and commercial critical night length is shorter and cultivar dependent"
+  as_of: "2026-10-01"
+  src: ~"../sources/plants-ecology-care.spw#src_eco_ecke_2004"
+  status: #verify
+ }
+}
+
+#>q_eco_ecosystem
+^"ecosystem"{
+ %eco.ecosystem.transfer_eff{
+  value: 0.1
+  unit: "fraction of production passed up one trophic level"
+  at: "mean transfer efficiency used for aquatic food webs; measured values range widely around it"
+  rel: 0.5
+  src: ~"../sources/plants-ecology-care.spw#src_eco_pauly_christensen_1995"
+  status: #settled
+ }
+ %eco.ecosystem.redfield_c_per_p{
+  value: 106
+  unit: "atoms of carbon per atom of phosphorus"
+  at: "Redfield ratio for marine plankton, a global average"
+  abs: 0
+  src: ~"../sources/plants-ecology-care.spw#src_eco_redfield_1958"
+  status: #contested
+  counter: ~"../sources/plants-ecology-care.spw#src_eco_martiny_2013"
+ }
+ %eco.ecosystem.redfield_n_per_p{
+  value: 16
+  unit: "atoms of nitrogen per atom of phosphorus"
+  at: "Redfield ratio for marine plankton, a global average; varies with latitude and nutrient supply"
+  abs: 0
+  src: ~"../sources/plants-ecology-care.spw#src_eco_redfield_1958"
+  status: #contested
+  counter: ~"../sources/plants-ecology-care.spw#src_eco_martiny_2013"
+ }
+}
+
+#>q_eco_scaling
+^"scaling"{
+ %eco.scaling.kleiber_exp{
+  value: 0.75
+  unit: "1"
+  at: "exponent b in metabolic rate proportional to body mass to the b, as fitted across mammals by Kleiber"
+  abs: 0
+  src: ~"../sources/plants-ecology-care.spw#src_eco_kleiber_1932"
+  status: #contested
+  counter: ~"../sources/plants-ecology-care.spw#src_eco_white_seymour_2003"
+ }
+ %eco.scaling.geometric_exp{
+  value: 0.667
+  unit: "1"
+  at: "surface-law exponent two thirds, supported for mammalian basal rate across 619 species after correcting for temperature, digestive state, and phylogeny"
+  abs: 0.001
+  src: ~"../sources/plants-ecology-care.spw#src_eco_white_seymour_2003"
+  status: #contested
+  counter: ~"../sources/plants-ecology-care.spw#src_eco_west_1997"
+ }
+}
+
+#>q_eco_clock
+^"clock"{
+ %eco.clock.m2_tide_h{
+  value: 12.42
+  unit: "h"
+  at: "period of the principal lunar semidiurnal tide, M2"
+  abs: 0.01
+  src: ~"../sources/plants-ecology-care.spw#src_eco_pugh_1987"
+  status: #settled
+ }
+ %eco.clock.human_tau_h{
+  value: 24.18
+  unit: "h"
+  at: "mean intrinsic period of the human circadian pacemaker measured under controlled dim light, young and older adults"
+  abs: 0.01
+  src: ~"../sources/plants-ecology-care.spw#src_eco_czeisler_1999"
+  status: #settled
+ }
+}
+
+#>q_eco_gcs
+^"gcs"{
+ %eco.gcs.total_min{
+  value: 3
+  unit: "points"
+  at: "lowest Glasgow Coma Scale total, eyes 1 plus verbal 1 plus motor 1"
+  abs: 0
+  src: ~"../sources/plants-ecology-care.spw#src_eco_teasdale_2014"
+  status: #settled
+ }
+ %eco.gcs.total_max{
+  value: 15
+  unit: "points"
+  at: "highest total on the 15-point scale in use since the motor response gained a sixth level; the 1974 original totalled 14"
+  abs: 0
+  src: ~"../sources/plants-ecology-care.spw#src_eco_teasdale_2014"
+  status: #settled
+ }
+}

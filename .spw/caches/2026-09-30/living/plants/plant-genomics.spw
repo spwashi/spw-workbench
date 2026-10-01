@@ -1,0 +1,192 @@
+# Plant Genomics
+#
+# Graduate plant genetics as a claim ledger: mapping and genomic selection, genome editing and what each editor can write, plant immunity and the independent origin of NLRs, ripening, and stress.
+
+#>plant_science_genomics
+#:layer #!reference
+#:domain #!plant_science
+#:form #!ledger
+#:level #!graduate
+#:review #!sourced
+#:valence #!bonk
+
+^"emit"{
+ ~#title: "Plant Genomics"
+ ~#claim: "Breeders now predict breeding values from genome-wide markers and edit single bases, and base editors make transitions while prime editing reaches transversions."
+ ~#proof: "Genomic selection from Meuwissen and colleagues 2001; base editors from Komor 2016 and Gaudelli 2017; prime editing from Anzalone 2019; NLR origins from Urbach and Ausubel 2017."
+ ~#door: "Read the editing ledger first, then the immunity claims, then the stress pathways."
+ ~#audience: "graduate students in plant science"
+ continuity: "Plant Genomics | base editors"
+ cold_open: "Classic base editors swap one letter for its chemical cousin, a transition, and other tools were built for the rest."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/horticulture-and-botany/masters-horticulture-and-plant-genomics.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "cytosine and adenine base editors install transitions, not transversions (raw line 33)",
+  "plant NLRs and animal NOD-like receptors evolved their shared domain plan independently; no common ancestor receptor (raw line 70)",
+  "edited lines are not uniformly classed non-GMO; regulation differs by jurisdiction and changes (raw line 32)",
+  "the raw wonder claimed complete non-host resistance without yield penalty from SWEET promoter edits; the study reports broad-spectrum resistance to bacterial blight"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./botany-core.spw#plant_science_botany" ]
+}
+
+^["concepts"]{
+ primary: [ #genomic_selection, #base_editing, #plant_immunity ]
+ transfers: [ #selection, #feedback ]
+ tensions: [ #edit_regulation ]
+}
+
+^["selection"]{
+ #>plant_science_genomics_qtl
+ ^["interval_mapping"]{
+  #:claim #!settled
+  statement: "Lander and Botstein introduced interval mapping in 1989, scanning between linked markers to locate loci behind quantitative traits."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_lander_botstein_1989"
+ }
+ #>plant_science_genomics_gs
+ ^["genomic_selection"]{
+  #:claim #!settled
+  statement: "Genomic selection fits all genome-wide markers at once to predict breeding values, skipping the search for individual significant loci."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_meuwissen_2001"
+  ^["limits"]{
+   holds: "a training population related to the candidates and grown in similar environments"
+   fails: "accuracy decays across generations and environments, so models are retrained and validated in multi-environment trials"
+  }
+ }
+ hybrids: "cytoplasmic male sterility with nuclear restorer genes lets seed companies make F1 hybrid seed at scale"
+ doubled_haploids: "doubled haploids give fully homozygous lines in one generation instead of several rounds of selfing"
+}
+
+^["editing"]{
+ ^["delivery"]{
+  #>plant_science_genomics_rnp
+  ^["ribonucleoprotein"]{
+   #:claim #!settled
+   statement: "Preassembled Cas9 ribonucleoproteins can edit plant protoplasts without delivering DNA, so no transgene must be bred out afterward."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_woo_2015"
+  }
+  agrobacterium: "binary Ti-plasmid vectors carry T-DNA into the plant genome; acetosyringone induces the vir genes"
+  biolistics: "gold particles carry DNA or protein into tissues that resist Agrobacterium, including many monocots"
+ }
+ ^["what_editors_write"]{
+  #>plant_science_genomics_base_editors
+  ^["base_editors"]{
+   #:claim #!settled
+   statement: "Cytosine base editors convert C-G to T-A and adenine base editors convert A-T to G-C; both changes are transitions, made without a double-strand break."
+   sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_komor_2016", ~"../../registries/sources/plants-ecology-care.spw#src_eco_gaudelli_2017" ]
+   ~#say(base editors swap a letter for its chemical cousin)
+  }
+  #>plant_science_genomics_transversions
+  ^["transversions"]{
+   #:claim #!emerging
+   statement: "Transversions arrived later: glycosylase-based editors make C-to-G changes, and prime editing can write all twelve substitutions plus small insertions and deletions."
+   sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_kurt_2021", ~"../../registries/sources/plants-ecology-care.spw#src_eco_anzalone_2019" ]
+   ^["limits"]{
+    holds: "the cell systems in which each editor was first shown"
+    fails: "efficiency in crop species varies widely and is still being raised"
+   }
+  }
+  #>plant_science_genomics_cis_tuning
+  ^["cis_tuning"]{
+   #:claim #!settled
+   statement: "Editing the tomato CLV3 promoter with many guides produced a graded series of locule numbers and fruit sizes, tuning a trait rather than knocking it out."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_rodriguez_leal_2017"
+  }
+ }
+ regulation: "edited crops are regulated differently by jurisdiction and the rules have changed in recent years; treat any statement of status as verify as of 2026-10-01"
+}
+
+^["immunity"]{
+ #>plant_science_genomics_two_tiers
+ ^["two_tiers"]{
+  #:claim #!settled
+  statement: "Plants detect conserved microbial patterns with surface receptors and specific pathogen effectors with intracellular NLR receptors, the two tiers Jones and Dangl described in 2006."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_jones_dangl_2006"
+  ^["limits"]{
+   holds: "as a map of recognition"
+   fails: "the tiers potentiate each other rather than acting in a strict sequence"
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_ngou_2021"
+  }
+ }
+ #>plant_science_genomics_resistosome
+ ^["resistosome"]{
+  #:claim #!settled
+  statement: "An activated ZAR1 NLR assembles into a wheel-shaped resistosome, a structure solved in 2019 that links recognition to cell death at the membrane."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_wang_2019"
+ }
+ ^["nlr_origins"]{
+  #>plant_science_genomics_nlr_raw
+  ^["common_ancestor"]{
+   #:claim #!refuted
+   statement: "Plant and animal NLRs descend from a shared ancestral immune receptor about a billion years old."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_urbach_ausubel_2017"
+  }
+  #>plant_science_genomics_nlr_convergent
+  ^["convergent"]{
+   #:claim #!settled
+   statement: "The nucleotide-binding plus leucine-rich-repeat architecture arose independently in plant and animal lineages; the resemblance is convergence."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_urbach_ausubel_2017"
+  }
+ }
+ #>plant_science_genomics_sweet
+ ^["sweet_promoters"]{
+  #:claim #!settled
+  statement: "Editing effector-binding elements in rice SWEET promoters stopped bacterial TAL effectors from switching on sugar export and gave broad-spectrum blight resistance."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_oliva_2019"
+ }
+}
+
+^["postharvest"]{
+ #>plant_science_genomics_ethylene
+ ^["ethylene_path"]{
+  #:claim #!settled
+  statement: "Plants make ethylene from methionine through S-adenosylmethionine and ACC; ACC synthase and ACC oxidase are the committed steps."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_adams_yang_1979"
+ }
+ #>plant_science_genomics_mcp
+ ^["receptor_block"]{
+  #:claim #!settled
+  statement: "1-Methylcyclopropene binds ethylene receptors and blocks the ripening response, which slows climacteric fruit such as apples in storage."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_sisler_serek_1997"
+ }
+}
+
+^["stress"]{
+ #>plant_science_genomics_sos
+ ^["salt_pathway"]{
+  #:claim #!settled
+  statement: "In the SOS pathway a calcium sensor activates the SOS2 kinase, which activates the SOS1 sodium-proton antiporter to push sodium out of root cells."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_zhu_2002"
+ }
+ #>plant_science_genomics_vavilov
+ ^["centers_of_origin"]{
+  #:claim #!settled
+  statement: "Vavilov proposed in 1926 that crop diversity clusters in a few centers of origin; wild relatives there still supply resistance genes to breeders."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_vavilov_1926"
+  ^["limits"]{
+   holds: "as the founding map of crop genetic resources"
+   fails: "later work found diffuse and multiple domestication areas that his centers do not cover"
+  }
+ }
+}
+
+#>plant_science_genomics_stacking_q
+?["Does stacking promoter edits for disease resistance cost yield in the field?"]{
+ #:depth #!computational ~#lens(molecular binding)
+ #:claim #!speculative
+ ~#hypothesis: "Promoter edits that block one pathogen's switch cost less yield than knockouts, because the host still expresses the transporter for its own sugar needs."
+ !probe{ "multi-site field trial of promoter-edited and knockout lines, disease pressure and yield" =id[p_eco_genomics_stacking] =kind[field] }
+ ~"./plant-genomics.spw#plant_science_genomics_sweet" ~#neighbor(nearest)
+}

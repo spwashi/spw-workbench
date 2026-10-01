@@ -1,0 +1,17 @@
+^["odometer"]{
+ digits: << hours ; minutes ; seconds ; frames >>
+ radix: .{ hours: 24, minutes: 60, seconds: 60, frames: 30 }
+ skip: .{ labels: 2, at: "the start of each minute", except: "minutes divisible by ten", applies_to: "30000/1001 only" }
+ ~#(write timecode as a string and keep an integer frame count beside it)
+}
+#>q_tc
+^"tc"{
+ %tc.rate_2997_fps{
+  value: 29.97003
+  unit: "frames/s"
+  at: "NTSC-derived video"
+  derivation: "30000/1001"
+  rel: 0.000001
+  status: #settled
+ }
+}

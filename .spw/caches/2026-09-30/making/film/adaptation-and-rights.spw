@@ -1,0 +1,170 @@
+# Adaptation and Rights
+#
+# How a book becomes a film: the rights states a property passes through, the US public domain line, and adaptation cases read with their sources.
+
+#>film_adaptation
+#:layer #!reference
+#:domain #!film
+#:form #!dossier
+#:level #!practitioner
+#:review #!sourced
+#:valence #!bonk
+
+^"emit"{
+ ~#title: "Adaptation and Rights"
+ ~#claim: "A book reaches the screen through a rights chain of option, purchase, and clean title, unless it is in the public domain, which in the US now runs through 1930 publications."
+ ~#proof: "Clearance and Copyright on options and chain of title; 17 U.S.C. 302 to 304 and Public Domain Day 2026 on the term."
+ ~#door: "Walk the rights states, then read the cases and The Martian dossier."
+ ~#audience: "writers, producers, and readers curious how novels become films"
+ cold_open: "Before anyone adapts a novel, someone has to own the right to, and the rights chain records who does."
+ continuity: "Adaptation and Rights | rights chain"
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/film-production-and-industry/novel-adaptations-and-literary-translation.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: [
+  "the US public domain covers works published through 1930 as of January 1, 2026, and 1931 works from January 1, 2027; the raw before-1929 line is out of date",
+  "the 400-page and 80 percent compression figures are removed as unsourced",
+  "option windows and price percentages are removed as unsourced",
+  "the eight-sequence structure is credited to Frank Daniel as presented by Paul Gulino",
+  "the unsourced Annihilation anecdote is removed"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/film-stage-visual.spw#q_film_rights" ]
+ case_of: [ ~"../authorship/martian-serial-to-screen.spw#authorship_martian_case" ]
+ feeds: [ ~"./production-state-machine.spw#film_production_states" ]
+}
+
+^["concepts"]{
+ primary: [ #rights_chain, #option ]
+ transfers: [ #public_domain, #state_machine ]
+ tensions: [ #fidelity ]
+}
+
+^["rights_states"]{
+ path: <<
+  "work exists" ;
+  "public domain or under copyright" ;
+  "shopping agreement" ;
+  "option" ;
+  "exercise and purchase" ;
+  "chain of title cleared" ;
+  "production and delivery"
+ >>
+ on_option_end: ?match[@option]{
+  "exercised" => "producer buys the rights and owns them per the purchase terms",
+  "extended" => "producer pays again for more time if the contract allows",
+  "lapsed" => "rights stay with the author and can be optioned again"
+ }
+
+ #>film_rights_option
+ ^["option"]{
+  #:claim #!settled
+  statement: "An option buys a producer the exclusive right, for a set period, to purchase film rights in a work; exercising it pays the purchase price and transfers the rights."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_donaldson_callif_2014"
+ }
+ #>film_rights_shopping
+ ^["shopping_agreement"]{
+  definition: "permission to pitch a property to buyers without buying an option; the author keeps the rights"
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_donaldson_callif_2014"
+ }
+ #>film_rights_chain
+ ^["chain_of_title"]{
+  #:claim #!settled
+  statement: "Distributors and insurers ask for a clean chain of title, the documents showing who owns each right the film uses."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_donaldson_callif_2014"
+ }
+ #>film_rights_public_domain
+ ^["public_domain"]{
+  #:claim #!settled
+  statement: "On January 1, 2026, US copyright expired for works published in 1930; works published in 1931 follow on January 1, 2027."
+  reads: %[
+   film.us_pd.through_pub_year,
+   film.us_pd.next_pub_year,
+   film.us_copyright.term_years
+  ]
+  sources: [ ~"../../registries/sources/film-stage-visual.spw#src_film_duke_pdd_2026", ~"../../registries/sources/film-stage-visual.spw#src_film_usc_302_304" ]
+  ^["limits"]{
+   holds: "works published in the US whose formalities were met"
+   fails: "foreign terms differ; sound recordings follow their own schedule; later editions, translations, and films carry their own copyrights; trademarks are separate"
+   as_of: "2026-10-01"
+  }
+ }
+}
+
+^["dramaturgy"]{
+ #>film_adapt_sequences
+ ^["sequences"]{
+  #:claim #!settled
+  statement: "Paul Gulino's Screenwriting: The Sequence Approach (2004) sets out the eight-sequence structure taught by Frank Daniel."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_gulino_2004"
+ }
+ #>film_adapt_externalize
+ ^["externalize"]{
+  #:claim #!interpretive
+  statement: "Prose can state a thought; a film has to show it through behavior, objects, sound, or a cut, so adapters turn interior lines into actions."
+ }
+ #>film_adapt_compress
+ ^["compress"]{
+  #:claim #!interpretive
+  statement: "A feature screenplay holds far fewer words than a novel, so adapters merge characters and cut subplots to keep the central conflict."
+ }
+}
+
+^["cases"]{
+ #>film_adapt_case_godfather
+ ^["the_godfather"]{
+  #:claim #!settled
+  statement: "Mario Puzo and Francis Ford Coppola shared the Academy Award for adapted screenplay for The Godfather at the 45th Academy Awards."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_oscars_1973"
+  reading: "the novelist co-wrote the script, so pruning was done with the author at the table"
+ }
+ #>film_adapt_case_no_country
+ ^["no_country_for_old_men"]{
+  #:claim #!settled
+  statement: "Joel and Ethan Coen won the adapted screenplay award at the 80th Academy Awards for No Country for Old Men, from the Cormac McCarthy novel."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_oscars_2008"
+  reading: "a close adaptation that keeps much of the dialogue and lets landscape and silence carry the rest"
+ }
+ #>film_adapt_case_martian
+ ^["the_martian"]{
+  dossier: ~"../authorship/martian-serial-to-screen.spw#authorship_martian_case"
+  reading: "a self-published serial optioned within two years of its Kindle release"
+ }
+}
+
+^["try"]{
+ #>film_adapt_try_externalize
+ ^["externalize_a_page"]{
+  materials: [ "one page of a novel you own", "paper", "a pen" ]
+  steps: <<
+   "underline every thought or feeling stated in prose" ;
+   "for each, write one visible action or sound" ;
+   "write the page as a scene with no voiceover" ;
+   "read it aloud and cut what the action already shows"
+  >>
+  time: .{ n: 40, unit: "minutes" }
+  safety: "writing exercise; no hazard worth naming"
+  shows: ~"./adaptation-and-rights.spw#film_adapt_externalize"
+ }
+}
+
+#>film_adapt_public_domain_q
+?["Does each Public Domain Day raise the number of new adaptations of the works it frees?"]{
+ #:depth #!historical ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "Newly free works with recognized characters draw more announced adaptations in the following years than they drew in the years just before."
+ !probe{ "count announced adaptations of works published in 1928 to 1930 before and after each entered the public domain" =id[p_film_adapt_pd_slate] =kind[census] }
+ $%[film.us_pd.through_pub_year, film.us_pd.next_pub_year]
+ ~"./adaptation-and-rights.spw#film_rights_public_domain" ~#neighbor(nearest)
+}

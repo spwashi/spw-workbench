@@ -1,0 +1,31 @@
+# Notation probe
+#
+# Transform requests, an arc, an overlay, and a practice card written in current Spw.
+
+#>notation_probe
+^"algebra"{
+ #>req_expand
+ =ref{ ~"./basin.spw#basin_resonance" }
+ #>req_comprehend
+ =~"./wheel.spw#wonder_tpl"[comprehend]{ ~"./wheel.spw#lens_disc" ; ~"./wheel.spw#era_disc" }
+ #>req_reduce
+ !reduce[say]{ ~"./tide.spw#wonder_tide_1" }
+ #>req_range
+ ![indent]{ ~"./tide.spw#:L12-L18" }
+ #>req_project
+ =~"./tide.spw#wonder_tide_1"[reading]{ ~"./sam.spw#sam_tide_1" }
+}
+
+#>arc_flow_default
+^"arc"{
+ beats: << ~["hold"]{ ~"./tide.spw#tide" } ; ?["wonder"]{ ~"./tide.spw#wonder_tide_1" } ; %["measure"]{ ~"./tide.spw#tide_claim" } || @["whose view"]{ ~"./sam.spw#sam_tide_1" } ; ^["say it whole"]{ ~"./tide.spw#tide" } >>
+}
+
+#>practice_sam
+#:overlay #!personal
+^"practice"{
+ mode: #aims
+ predict: #[ particle, bound ]
+ reveal: #on_check
+ ~#say(cover the color, name the aim, then look)
+}

@@ -1,0 +1,120 @@
+# Episode Run Sheet
+#
+# A minute-level run sheet for a three-hour technical episode: intuition, mechanism, edge cases, and wonder, with roles and diagram rules.
+
+#>broadcast_run_sheet
+#:layer #!pragmatics
+#:domain #!broadcast
+#:form #!protocol
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Episode Run Sheet"
+ ~#claim: "A three-hour episode holds together when each hour has one job: intuition first, then mechanism, then the edge cases and an open question."
+ ~#proof: "Segment windows, roles, and diagram rules form a run sheet a producer can mark live; the order is a design choice, and its effect on recall is a probe."
+ ~#door: "Try the one-sixth scale run, then read the cadence that sustains it."
+ ~#audience: "producers and hosts of long-form technical shows"
+ continuity: "Episode Run Sheet | one job"
+ cold_open: "Give each hour of a long episode one job, and the hours hold."
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/podcasting/episode-architecture.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the rule of three was misnamed; it is a define-on-first-use rule and is renamed",
+  "fixed minute windows and the let-it-take-forty-minutes principle conflicted; windows are now targets with an overflow rule",
+  "the sacred temple framing is dropped from the card; the attention stance lives in the branch index",
+  "the claimed retention benefit of the three-hour order is a speculative probe, not a finding"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"./broadcast-cadence.spw#broadcast_cadence" ]
+ see: [ ~"../../formal/computing/curriculum-dag.spw#computing_curriculum_dag" ]
+ analog: [ ~"../streaming/live-session-craft.spw#streaming_live_session" ]
+}
+
+^["concepts"]{
+ primary: [ #run_sheet, #season_cadence ]
+ transfers: [ #critical_path ]
+ tensions: [ #rest_cadence ]
+}
+
+^["run_sheet"]{
+ ^["hour_one"]{
+  #>broadcast_run_sheet_intuition
+  ^["intuition"]{
+   job: "build a mental model before any code"
+   segments: << "00 to 10 cold open: the failure that forced the idea" ; "10 to 25 history: who built it, when, and against what limits" ; "25 to 45 model: one spatial or physical analogy" ; "45 to 60 spec: read the governing definition aloud" >>
+  }
+ }
+ ^["hour_two"]{
+  #>broadcast_run_sheet_mechanism
+  ^["mechanism"]{
+   job: "trace the real implementation"
+   segments: << "60 to 80 walkthrough of a reference implementation" ; "80 to 100 layout: memory, IR, or AST on the whiteboard" ; "100 to 120 measure: profile or benchmark live" >>
+  }
+ }
+ ^["hour_three"]{
+  #>broadcast_run_sheet_edges
+  ^["edges_and_wonder"]{
+   job: "break the model and leave a question"
+   segments: << "120 to 145 break it: where the abstraction fails" ; "145 to 165 case: a public incident caused by misreading this layer" ; "165 to 180 wonder and bridge: one open question and tomorrow" >>
+  }
+ }
+ #>broadcast_run_sheet_overflow
+ ^["overflow"]{
+  #:claim #!interpretive
+  statement: "Windows are targets, not walls: a segment that needs more time takes it from the next window in the same hour, and anything left becomes the bridge."
+ }
+}
+
+^["roles"]{
+ lead_host: "holds the arc, leads derivations, keeps chapter pacing"
+ co_host: "stands in for the listener, interrupts skipped steps, argues the other side"
+ producer: "marks chapters live, watches levels, cues diagrams"
+ researcher: "prepares the dossier: spec, implementation pointer, history, three falsification tests"
+ define_on_first_use: "a term not introduced in an earlier episode gets a definition the first time it is said"
+}
+
+^["diagrams"]{
+ memory: "byte addresses, endianness, and padding drawn explicitly"
+ state_machines: "every transition labeled with its trigger; illegal states marked"
+ categories: "objects as nodes and morphisms as arrows, never mixed"
+}
+
+^["outputs"]{
+ chapters: "timestamps and titles that match the three hours"
+ code: "every artifact shown in hour two published in a companion repository"
+ open_question: "at least one unanswered question carried into the next episode"
+}
+
+^["try"]{
+ #>broadcast_run_sheet_try
+ ^["sixth_scale"]{
+  materials: [ "a phone recorder", "a partner", "a topic you know", "a kitchen timer" ]
+  steps: << "scale every window by one sixth so the run lasts thirty minutes" ; "run the three hours as three ten-minute blocks" ; "let your partner interrupt once per block as the listener" ; "mark chapter times on paper as you go" ; "listen back and note which block ran over" >>
+  time: .{ n: 45, unit: "minutes" }
+  safety: "rest your voice between takes; stop if your throat hurts"
+  shows: ~"./episode-run-sheet.spw#broadcast_run_sheet_overflow"
+ }
+}
+
+#>broadcast_run_sheet_order_q
+?["Does intuition before mechanism improve what listeners can explain a month later?"]{
+ #:depth #!educational ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "Listeners who hear the model hour before the trace hour explain the mechanism better at thirty days than listeners who hear the trace alone."
+ !probe{ "give two listener groups the same trace with and without hour one and test explanations a month later" =id[p_creator_runsheet_order] =kind[field] }
+ ~"./episode-run-sheet.spw#broadcast_run_sheet_intuition" ~#neighbor(nearest)
+}

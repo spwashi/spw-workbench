@@ -1,0 +1,23 @@
+#>lic_101
+^["lic_101"]{ role: "level indicating controller", action: "direct" }
+#>lv_101
+^["lv_101"]{ role: "outlet control valve", valve_action: "air_to_open", fails: "closed" }
+#>tk_101
+^["tk_101"]{ role: "tank" }
+#>lt_101
+^["lt_101"]{ role: "level transmitter" }
+^["signal_edges"]{
+ =~"./sign-walker.spw#tk_101"[feeds]{ ~"./sign-walker.spw#lt_101" }
+ =~"./sign-walker.spw#lt_101"[feeds]{ ~"./sign-walker.spw#lic_101" }
+ =~"./sign-walker.spw#lic_101"[feeds]{ ~"./sign-walker.spw#lv_101" }
+ =bane~"./sign-walker.spw#lv_101"[feeds]{ ~"./sign-walker.spw#tk_101" }
+}
+^["coverage"]{
+ #>setup_12a
+ #:side #!near
+ ^["setup_12a"]{ frame: #wide, ada_faces: #screen_right }
+ #>setup_12d
+ #:side #!far
+ ^["setup_12d"]{ frame: #single, ada_faces: #screen_left }
+ line_cross: << setup_12a ; setup_12d >>
+}

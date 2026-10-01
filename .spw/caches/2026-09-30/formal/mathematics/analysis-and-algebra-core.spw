@@ -1,0 +1,227 @@
+# Analysis and Algebra Core
+#
+# The undergraduate pure core as a prerequisite graph: linear algebra, groups to Galois, real analysis, and a first look at the Lebesgue integral, each theorem with its hypotheses.
+
+#>mathematics_core
+#:layer #!reference
+#:domain #!mathematics
+#:form #!curriculum
+#:level #!foundation
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Analysis and Algebra Core"
+ ~#claim: "The pure core is a prerequisite graph whose theorems each state their scope, from finite dimension to nonnegative functions."
+ ~#proof: "Statements follow Axler, Dummit and Foote, Rudin, and Folland; each frame states where the theorem stops holding."
+ ~#door: "Read the linear algebra node first, then choose algebra or analysis."
+ ~#audience: "undergraduates moving from calculus into proof-based mathematics"
+ continuity: "Analysis and Algebra Core | scope"
+ cold_open: "In the pure core every theorem states its scope, because the hypothesis is where the proof does its work."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/mathematics/undergrad-pure-and-applied-mathematics.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "completeness was glossed as Banach spaces; a complete metric space is a Banach space only when it is also a normed vector space",
+  "Jordan form now requires a split characteristic polynomial, as over the complex numbers",
+  "Lagrange and Sylow now say finite groups; the Galois correspondence now says finite Galois extension",
+  "Heine-Borel is scoped to Euclidean space; general metric spaces need complete and totally bounded",
+  "the Lebesgue first look states Fatou for nonnegative functions and Tonelli for sigma-finite factors",
+  "the ODE and PDE material moved to the engineering core differential equations leaf"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./engineering-core/calculus-and-linear-algebra.spw#mathematics_calc_linalg" ]
+ feeds: [ ~"./topology-and-complex-core.spw#mathematics_topology_complex", ~"./graduate-algebra-and-topology.spw#mathematics_grad_algebra", ~"./graduate-analysis-and-geometry.spw#mathematics_grad_analysis", ~"./engineering-core/differential-equations.spw#mathematics_diffeq" ]
+}
+
+^["concepts"]{
+ primary: [ #structure, #invariant, #compactness ]
+ transfers: [ #spectral_decomposition, #convergence ]
+ tensions: [ #hypothesis_drop ]
+}
+
+^["dag"]{
+ #>mathematics_core_logic
+ ^["logic_and_proof"]{
+  topics: "sets and functions, quantifiers, induction, contradiction and contrapositive"
+  feeds: [ ~"./analysis-and-algebra-core.spw#mathematics_core_linear", ~"./analysis-and-algebra-core.spw#mathematics_core_real" ]
+ }
+ #>mathematics_core_linear
+ ^["linear_algebra"]{
+  topics: "vector spaces, linear maps, rank and nullity, inner products, Gram-Schmidt, eigenvalues, canonical forms"
+  needs: [ ~"./analysis-and-algebra-core.spw#mathematics_core_logic", ~"./engineering-core/calculus-and-linear-algebra.spw#mathematics_calc_linalg" ]
+  feeds: [ ~"./analysis-and-algebra-core.spw#mathematics_core_algebra" ]
+
+  #>mathematics_core_rank_nullity
+  ^["rank_nullity"]{
+   #:claim #!settled
+   statement: "For a linear map T on a finite-dimensional space V, the dimension of V equals the dimension of the kernel of T plus the dimension of its range."
+   source: ~"../../registries/sources/formal.spw#src_formal_axler_2024"
+   ^["limits"]{
+    holds: "finite-dimensional domain over any field"
+    fails: "infinite-dimensional domains, where both sides can be infinite and the equation says nothing"
+   }
+  }
+  #>mathematics_core_spectral
+  ^["spectral_theorem"]{
+   #:claim #!settled
+   statement: "A real symmetric matrix has real eigenvalues and an orthonormal basis of eigenvectors; over the complex numbers, exactly the normal matrices are unitarily diagonalizable."
+   source: ~"../../registries/sources/formal.spw#src_formal_axler_2024"
+  }
+  #>mathematics_core_jordan
+  ^["jordan_form"]{
+   #:claim #!settled
+   statement: "A square matrix whose characteristic polynomial splits into linear factors, as always over the complex numbers, is similar to a Jordan form that is unique up to block order."
+   source: ~"../../registries/sources/formal.spw#src_formal_dummit_foote_2004"
+   ^["limits"]{
+    holds: "algebraically closed fields, or any field once the characteristic polynomial splits"
+    fails: "a real rotation by 90 degrees has no real eigenvalues and no real Jordan form; rational canonical form covers that case"
+   }
+  }
+ }
+ #>mathematics_core_algebra
+ ^["abstract_algebra"]{
+  topics: "groups, quotients, isomorphism theorems, rings and ideals, fields and extensions, Galois theory"
+  needs: [ ~"./analysis-and-algebra-core.spw#mathematics_core_linear" ]
+
+  #>mathematics_core_lagrange
+  ^["lagrange"]{
+   #:claim #!settled
+   statement: "In a finite group the order of every subgroup divides the order of the group."
+   source: ~"../../registries/sources/formal.spw#src_formal_dummit_foote_2004"
+   ^["limits"]{
+    holds: "finite groups"
+    fails: "the converse: the alternating group on four letters has order 12 and no subgroup of order 6"
+   }
+  }
+  #>mathematics_core_domains
+  ^["domain_chain"]{
+   #:claim #!settled
+   statement: "Every Euclidean domain is a principal ideal domain and every principal ideal domain is a unique factorization domain; the integer polynomial ring is a UFD that is not a PID."
+   source: ~"../../registries/sources/formal.spw#src_formal_dummit_foote_2004"
+  }
+  #>mathematics_core_galois
+  ^["galois_correspondence"]{
+   #:claim #!settled
+   statement: "For a finite Galois extension, meaning finite, normal, and separable, intermediate fields correspond one to one and order-reversingly to subgroups of the Galois group."
+   source: ~"../../registries/sources/formal.spw#src_formal_dummit_foote_2004"
+  }
+  #>mathematics_core_quintic
+  ^["abel_ruffini"]{
+   #:claim #!settled
+   statement: "The general quintic and higher are not solvable by radicals because the symmetric group on five letters is not solvable; Ruffini gave a gapped proof, Abel a full one, Galois the criterion."
+   reads: %[formal.structures.a5_order]
+   sources: [ ~"../../registries/sources/formal.spw#src_formal_dummit_foote_2004", ~"../../registries/sources/formal.spw#src_formal_katz_2009" ]
+  }
+  #>mathematics_core_trisection
+  ^["trisection"]{
+   #:claim #!settled
+   statement: "Straightedge and compass reach only numbers in field towers of degree a power of two, so a general angle such as 60 degrees cannot be trisected, as Wantzel showed in 1837."
+   source: ~"../../registries/sources/formal.spw#src_formal_wantzel_1837"
+  }
+ }
+ #>mathematics_core_real
+ ^["real_analysis"]{
+  topics: "completeness of the reals, metric spaces, compactness, continuity, uniform convergence, function spaces"
+  needs: [ ~"./analysis-and-algebra-core.spw#mathematics_core_logic", ~"./engineering-core/calculus-and-linear-algebra.spw#mathematics_calc_linalg" ]
+  feeds: [ ~"./analysis-and-algebra-core.spw#mathematics_core_lebesgue" ]
+
+  #>mathematics_core_completeness
+  ^["completeness"]{
+   #:claim #!settled
+   statement: "Every Cauchy sequence of real numbers converges; a complete normed vector space is a Banach space, so completeness alone does not make a metric space Banach."
+   source: ~"../../registries/sources/formal.spw#src_formal_rudin_1976"
+  }
+  #>mathematics_core_heine_borel
+  ^["heine_borel"]{
+   #:claim #!settled
+   statement: "A subset of Euclidean space is compact exactly when it is closed and bounded; in a general metric space compact means complete and totally bounded."
+   source: ~"../../registries/sources/formal.spw#src_formal_rudin_1976"
+   ^["limits"]{
+    holds: "finite-dimensional Euclidean space"
+    fails: "the closed unit ball of an infinite-dimensional Hilbert space is closed and bounded but not compact"
+   }
+  }
+  #>mathematics_core_uniform_limit
+  ^["uniform_limit"]{
+   #:claim #!settled
+   statement: "A uniform limit of continuous functions is continuous, while a pointwise limit need not be: x to the n on the unit interval converges pointwise to a jump."
+   source: ~"../../registries/sources/formal.spw#src_formal_rudin_1976"
+  }
+  #>mathematics_core_arzela_ascoli
+  ^["arzela_ascoli"]{
+   #:claim #!settled
+   statement: "On a compact metric space, a family of continuous functions has compact closure in the sup norm exactly when it is equicontinuous and pointwise bounded."
+   source: ~"../../registries/sources/formal.spw#src_formal_rudin_1976"
+  }
+  #>mathematics_core_stone_weierstrass
+  ^["stone_weierstrass"]{
+   #:claim #!settled
+   statement: "Polynomials are uniformly dense in continuous functions on a closed interval; Stone extended this to real subalgebras on compact Hausdorff spaces that contain constants and separate points."
+   source: ~"../../registries/sources/formal.spw#src_formal_rudin_1976"
+   ^["limits"]{
+    holds: "real-valued algebras; complex-valued algebras when also closed under conjugation"
+    fails: "complex polynomials in z alone are not dense in continuous functions on the unit circle"
+   }
+  }
+ }
+ #>mathematics_core_lebesgue
+ ^["lebesgue_first_look"]{
+  topics: "measure, measurable functions, the Lebesgue integral, limit theorems, product measures"
+  needs: [ ~"./analysis-and-algebra-core.spw#mathematics_core_real" ]
+  feeds: [ ~"./graduate-analysis-and-geometry.spw#mathematics_grad_analysis_fatou" ]
+
+  #>mathematics_core_fatou
+  ^["fatou_first_look"]{
+   #:claim #!settled
+   statement: "For nonnegative measurable functions, the integral of the lim inf is at most the lim inf of the integrals."
+   source: ~"../../registries/sources/formal.spw#src_formal_folland_1999"
+   ^["limits"]{
+    holds: "nonnegative measurable functions on any measure space"
+    fails: "f_n equal to minus one over n on the interval from 0 to n gives lim inf zero but integrals equal to minus one"
+   }
+  }
+  #>mathematics_core_tonelli
+  ^["tonelli_first_look"]{
+   #:claim #!settled
+   statement: "For nonnegative measurable functions on a product of sigma-finite measure spaces, both iterated integrals equal the double integral."
+   source: ~"../../registries/sources/formal.spw#src_formal_folland_1999"
+   ^["limits"]{
+    holds: "sigma-finite factors such as Lebesgue measure on the line"
+    fails: "the diagonal of the unit square under Lebesgue measure times counting measure gives iterated integrals 0 and 1"
+   }
+  }
+ }
+}
+
+^["try"]{
+ #>mathematics_core_try_lagrange
+ ^["subgroups_of_z12"]{
+  materials: [ "paper", "pencil" ]
+  steps: << "write the integers 0 to 11 with addition mod 12" ; "for each element, add it to itself until you return to 0" ; "record each generated subgroup and its size" ; "check that every size divides 12" ; "look for a size that divides 12 but never appears" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./analysis-and-algebra-core.spw#mathematics_core_lagrange"
+ }
+}
+
+#>mathematics_core_trisection_q
+?["Does meeting trisection first make the quintic proof easier to follow?"]{
+ #:depth #!educational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Learners who first see degree counting in the trisection proof will follow the quintic argument with fewer stalls, since both reduce to which field towers a construction can reach."
+ !probe{ "two seminar groups, one starting with Wantzel and one with Galois groups; log where each stalls" =id[p_formal_core_trisection_first] =kind[interview] }
+ $%[formal.structures.a5_order]
+ ~"./analysis-and-algebra-core.spw#mathematics_core_trisection" ~#neighbor(nearest)
+}

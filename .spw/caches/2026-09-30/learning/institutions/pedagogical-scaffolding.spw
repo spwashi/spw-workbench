@@ -1,0 +1,194 @@
+# Pedagogical Scaffolding
+#
+# What the evidence says about how university teaching helps people learn: settled techniques, a live debate about guidance, a refuted favorite, and the active learning meta-analysis.
+
+#>institutions_pedagogy
+#:layer #!reference
+#:domain #!institutions
+#:form #!ledger
+#:level #!foundation
+#:review #!sourced
+#:valence #!boon
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Pedagogical Scaffolding"
+ ~#claim: "Retrieval practice, spacing, worked examples, and active learning have strong evidence; matching teaching to learning styles does not."
+ ~#proof: "Dunlosky and colleagues 2013, Roediger and Karpicke 2006, Cepeda and colleagues 2006, Sweller and Cooper 1985, Pashler and colleagues 2008, Freeman and colleagues 2014."
+ ~#door: "Try the retrieval kit on yourself, then read the memory ledger in cognition for the mechanisms."
+ ~#audience: "instructors, teaching assistants, and students who want to study well"
+ continuity: "Pedagogical Scaffolding | retrieval practice"
+ cold_open: "Retrieval practice and spacing beat rereading, active classes beat pure lecture, and learning styles fail the test."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/university-education/pedagogical-scaffolding.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "speaking aloud internalizes a concept five times faster: invented; replaced by Freeman and colleagues 2014",
+  "national GPA from 2.5 in 1960 to 3.2 removed as unsourced; grade rise kept as a direction with Rojstaczer and Healy 2012",
+  "forced grading curve percentages and class-size ranges removed as unsourced",
+  "a 12-person seminar leaves a lifelong imprint recast as a question"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/learning-and-generations.spw#q_learn_active" ]
+ needs: [ ~"../../language-and-mind/cognition/memory-and-representation.spw#cognition_memory" ]
+ see: [ ~"../learning-glossary.spw#learning_term_scaffolding" ]
+}
+
+^["concepts"]{
+ primary: [ #scaffolding, #retrieval_practice ]
+ transfers: [ #active_learning ]
+ tensions: [ #learning_styles ]
+}
+
+^["ledger"]{
+ ^["support"]{
+  #>institutions_pedagogy_zpd
+  ^["zone_of_proximal_development"]{
+   #:claim #!settled
+   statement: "Vygotsky described the zone of proximal development as the gap between what a learner does alone and what the same learner does with guidance."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_vygotsky_1978"
+  }
+  #>institutions_pedagogy_scaffolding
+  ^["scaffolding"]{
+   #:claim #!settled
+   statement: "Wood, Bruner, and Ross named tutoring support scaffolding in 1976: the tutor handles what the learner cannot yet manage and withdraws as competence grows."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_wood_1976"
+   ~#say(help that comes down as skill goes up)
+  }
+  #>institutions_pedagogy_worked_examples
+  ^["worked_examples"]{
+   #:claim #!settled
+   statement: "Novices learn algebra procedures faster from studying worked examples than from solving equivalent problems unaided."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_sweller_cooper_1985"
+   ^["limits"]{
+    holds: "novices meeting a new procedure"
+    fails: "for learners with more expertise the benefit shrinks or reverses, the expertise reversal effect"
+    sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_kalyuga_2003" ]
+   }
+  }
+  #>institutions_pedagogy_guidance_debate
+  ^["guidance_debate"]{
+   #:claim #!contested
+   statement: "Kirschner, Sweller, and Clark argue minimal guidance fails novices; Hmelo-Silver, Duncan, and Chinn reply that problem-based and inquiry learning are heavily scaffolded."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_kirschner_2006"
+   counter: ~"../../registries/sources/learning-and-generations.spw#src_learn_hmelo_silver_2007"
+  }
+ }
+ ^["memory"]{
+  #>institutions_pedagogy_retrieval
+  ^["retrieval_practice"]{
+   #:claim #!settled
+   statement: "Taking a practice test improves long-term retention more than restudying the same material for the same time."
+   sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_roediger_karpicke_2006", ~"../../registries/sources/learning-and-generations.spw#src_learn_dunlosky_2013" ]
+  }
+  #>institutions_pedagogy_spacing
+  ^["spacing"]{
+   #:claim #!settled
+   statement: "Spreading study sessions over time yields better delayed recall than massing the same study into one session."
+   sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_cepeda_2006", ~"../../registries/sources/learning-and-generations.spw#src_learn_dunlosky_2013" ]
+   ^["limits"]{
+    holds: "verbal and factual recall across many lab and classroom studies"
+    fails: "the best gap depends on how long the learner must remember, so no single interval fits every goal"
+   }
+  }
+  #>institutions_pedagogy_learning_styles
+  ^["learning_styles"]{
+   #:claim #!refuted
+   statement: "Matching instruction to a learner preferred style, such as visual or auditory, improves learning."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_pashler_2008"
+   finding: "properly designed tests of the matching idea are rare, and the few that exist contradict it"
+  }
+ }
+ ^["classrooms"]{
+  #>institutions_pedagogy_active_learning
+  ^["active_learning"]{
+   #:claim #!settled
+   statement: "Across 225 STEM course studies, students in traditional lectures were about 1.5 times as likely to fail as students in active learning sections, and exam scores rose about 0.47 standard deviations."
+   reads: %[learn.active.fail_risk_ratio, learn.active.exam_effect_sd]
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_freeman_2014"
+  }
+  #>institutions_pedagogy_five_times
+  ^["five_times"]{
+   #:claim #!refuted
+   statement: "A student who speaks aloud in class internalizes a concept five times faster than one who only takes notes."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_freeman_2014"
+   finding: "no study supplies the fivefold figure; the measured effects are in the active learning claim"
+  }
+  #>institutions_pedagogy_feeling
+  ^["feeling_of_learning"]{
+   #:claim #!emerging
+   statement: "In a Harvard physics study, students in active sessions learned more yet felt they had learned less than students in polished lectures."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_deslauriers_2019"
+  }
+  #>institutions_pedagogy_grades
+  ^["grade_rise"]{
+   #:claim #!settled
+   statement: "Average grades at US colleges rose over decades, and by the late 2000s A had become the most common grade."
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_rojstaczer_healy_2012"
+  }
+ }
+}
+
+^["modalities"]{
+ columns: #[ talk, practice, feedback ]
+ lecture: .{ talk: "instructor exposition", practice: "polls or think-pair-share when added", feedback: "low unless designed in" }
+ recitation: .{ talk: "teaching assistant and students", practice: "problem sets", feedback: "same week" }
+ lab_or_studio: .{ talk: "at the bench or easel", practice: "hands-on technique", feedback: "immediate" }
+ seminar: .{ talk: "students lead", practice: "argument from texts", feedback: "spoken, from peers and instructor" }
+}
+
+^["grading"]{
+ norm_referenced: "grades ranked against classmates, so one student gains only when another loses ground"
+ criterion_referenced: "grades against a stated standard, so every student can reach the top mark"
+ accommodations: ~"../learning-glossary.spw#learning_term_section_504"
+}
+
+^["try"]{
+ #>institutions_pedagogy_try_retrieval
+ ^["test_yourself"]{
+  materials: [
+   "a short article you have not read",
+   "blank paper",
+   "a timer"
+  ]
+  steps: <<
+   "read the article once for ten minutes" ;
+   "close it and write everything you remember" ;
+   "check against the article and mark what you missed" ;
+   "two days later, write again from memory before rereading"
+  >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "none worth naming"
+  shows: ~"./pedagogical-scaffolding.spw#institutions_pedagogy_retrieval"
+ }
+}
+
+#>institutions_pedagogy_feeling_q
+?["Why do students rate the teaching that helps them less as the teaching they prefer?"]{
+ #:depth #!educational ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "Fluent lectures feel easy, and students read that ease as learning, while effortful practice feels like failing even as it builds memory."
+ !probe{ "ask a class to predict and then measure learning after a polished lecture and an active session on matched topics" =id[p_learn_pedagogy_feeling] =kind[field] }
+ $%[learn.active.exam_effect_sd]
+ ~"./pedagogical-scaffolding.spw#institutions_pedagogy_feeling" ~#neighbor(nearest)
+}
+
+#>institutions_pedagogy_room_q
+?["Does the shape of a room change who speaks in it?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Students speak more often and to each other more in rooms where they face one another than in tiered halls facing a podium."
+ !probe{ "count student turns and who they address in the same course taught in a tiered hall and a flat room" =id[p_learn_pedagogy_room] =kind[field] }
+ ~"./pedagogical-scaffolding.spw#institutions_pedagogy_active_learning" ~#neighbor(nearest)
+}

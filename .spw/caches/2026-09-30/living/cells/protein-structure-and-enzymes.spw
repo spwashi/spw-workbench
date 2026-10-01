@@ -1,0 +1,197 @@
+# Protein Structure and Enzymes
+#
+# How a chain of amino acids finds its fold, and how a folded enzyme makes slow chemistry fast by holding the transition state.
+
+#>cell_biology_proteins
+#:layer #!reference
+#:domain #!cell_biology
+#:form #!ledger
+#:level #!advanced
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Protein Structure and Enzymes"
+ ~#claim: "Sequence sets the fold under cellular conditions, and enzymes speed reactions mainly by binding the transition state more tightly than the substrate."
+ ~#proof: "Anfinsen refolding experiments, the Michaelis and Menten rate law, and catalytic proficiencies measured by Radzicka and Wolfenden."
+ ~#door: "Read nucleic acids and genomes next, then transport and signaling."
+ ~#audience: "readers with introductory chemistry"
+ continuity: "Protein Structure and Enzymes | transition state"
+ cold_open: "An enzyme grips the transition state harder than the substrate, so a reaction that would take ages happens in a blink."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/molecular-and-cellular-biology/protein-structure-and-enzymology.spw" ]
+ evidence: #[ "bibliographic checks 2026-10-01 against Crossref records for every cited article" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "hydrophobic collapse no longer explained by ordered clathrate water; that molecular picture is contested",
+  "the 10^70 conformation count and millisecond folding claim dropped as unsourced",
+  "triosephosphate isomerase loop timing and its k_cat/K_m figure dropped; diffusion control credited to Albery and Knowles",
+  "noncompetitive inhibition scoped to the pure case and mixed inhibition named",
+  "the steady-state form of K_m credited to Briggs and Haldane, the rate law to Michaelis and Menten"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../../physical/materials/water.spw#materials_water_hydrophobic" ]
+ feeds: [ ~"./transport-and-signaling.spw#cell_biology_signaling" ]
+ see: [ ~"./nucleic-acids-and-genomes.spw#cell_biology_nucleic" ]
+}
+
+^["concepts"]{
+ primary: [ #protein_fold, #transition_state, #michaelis_menten ]
+ transfers: [ #free_energy_landscape, #equilibrium, #feedback ]
+ tensions: [ #iceberg_model ]
+}
+
+^["ledger"]{
+ ^["structure"]{
+  #>cell_biology_proteins_backbone
+  ^["peptide_plane"]{
+   #:claim #!settled
+   statement: "Partial double-bond character keeps each peptide bond planar and usually trans, so backbone freedom lies in two torsions, phi and psi."
+   source: ~"SRC#src_life_ramachandran_1963"
+   credit: "G. N. Ramachandran, C. Ramakrishnan, and V. Sasisekharan mapped the allowed phi and psi regions in Madras in 1963"
+   ^["limits"]{
+    holds: "most peptide bonds in folded proteins"
+    fails: "bonds before proline adopt cis more often, and cis-trans switching can limit folding speed"
+   }
+  }
+  #>cell_biology_proteins_helix
+  ^["alpha_helix"]{
+   #:claim #!settled
+   statement: "An alpha helix has 3.6 residues and a 0.54 nm rise per turn, with each backbone C=O hydrogen-bonded to the N-H four residues along."
+   source: ~"SRC#src_life_pauling_1951"
+   credit: "Pauling, Corey, and Branson predicted the helix from bond geometry before any protein structure was solved"
+  }
+ }
+ ^["folding"]{
+  #>cell_biology_proteins_anfinsen
+  ^["sequence_sets_fold"]{
+   #:claim #!settled
+   statement: "Ribonuclease unfolded in urea and reductant regains activity when both are removed, so its sequence encodes the native fold under those conditions."
+   source: ~"SRC#src_life_anfinsen_1973"
+   ^["limits"]{
+    holds: "small single-domain proteins refolded in dilute solution"
+    fails: "crowded cells, large multidomain chains, intrinsically disordered proteins, and prions with more than one stable state"
+   }
+  }
+  #>cell_biology_proteins_funnel
+  ^["energy_funnel"]{
+   #:claim #!settled
+   statement: "A random search of every conformation would never finish; folding is fast because a funnel-shaped energy landscape rewards partial native contacts along many routes."
+   source: ~"SRC#src_life_dill_chan_1997"
+   credit: "Cyrus Levinthal posed the search paradox in 1969"
+  }
+  #>cell_biology_proteins_burial
+  ^["hydrophobic_burial"]{
+   #:claim #!settled
+   statement: "Burying nonpolar side chains away from water is a dominant driving force of folding."
+   source: ~"SRC#src_life_dill_1990"
+   ^["limits"]{
+    holds: "the free-energy bookkeeping of folding"
+    fails: "the molecular picture of ordered water cages around nonpolar groups is contested; see the water surface"
+   }
+  }
+  #>cell_biology_proteins_chaperonin
+  ^["chaperonin_cage"]{
+   #:claim #!settled
+   statement: "GroEL and its GroES lid enclose a non-native chain for one ATP-driven cycle, letting it fold without aggregating; only a subset of proteins needs this help."
+   source: ~"SRC#src_life_hartl_2002"
+  }
+ }
+ ^["catalysis"]{
+  #>cell_biology_proteins_transition_state
+  ^["transition_state_binding"]{
+   #:claim #!settled
+   statement: "Enzymes lower activation free energy chiefly by binding the transition state more tightly than the ground-state substrate."
+   source: ~"SRC#src_life_alberts_2022"
+   credit: "Linus Pauling proposed transition-state complementarity in the 1940s"
+   ~#say(the enzyme fits the moment of change, not the starting molecule)
+  }
+  #>cell_biology_proteins_proficiency
+  ^["rate_enhancement"]{
+   #:claim #!settled
+   statement: "Orotidine 5-prime-phosphate decarboxylase speeds its reaction about 10^17-fold over the uncatalyzed rate in water."
+   reads: %[life.enzyme.ompdc_rate_enhancement_log10]
+   source: ~"SRC#src_life_radzicka_wolfenden_1995"
+  }
+  #>cell_biology_proteins_triad
+  ^["catalytic_triad"]{
+   #:claim #!settled
+   statement: "In chymotrypsin, Asp102 orients His57, which takes a proton from Ser195 so the serine attacks the peptide carbonyl; an oxyanion hole stabilizes the tetrahedral intermediate."
+   source: ~"SRC#src_life_alberts_2022"
+  }
+  #>cell_biology_proteins_diffusion_limit
+  ^["diffusion_control"]{
+   #:claim #!settled
+   statement: "Triosephosphate isomerase works as fast as substrate can diffuse to it, so further chemical improvement would not raise its overall rate."
+   source: ~"SRC#src_life_albery_knowles_1976"
+   ~#(Albery and Knowles called this evolutionary perfection)
+  }
+ }
+ ^["kinetics"]{
+  #>cell_biology_proteins_michaelis_menten
+  ^["rate_law"]{
+   #:claim #!settled
+   statement: "Initial velocity follows v0 = Vmax [S] / (Km + [S]); under the steady-state assumption Km = (k-1 + k2) / k1."
+   sources: [ ~"SRC#src_life_michaelis_menten_1913", ~"SRC#src_life_briggs_haldane_1925" ]
+   credit: "Leonor Michaelis and Maud Menten fit the rate law in 1913; Briggs and Haldane gave the steady-state derivation in 1925"
+   ^["limits"]{
+    holds: "initial rates, one substrate, enzyme far below substrate"
+    fails: "tight-binding inhibitors, enzyme at substrate-like concentration, and multi-substrate mechanisms"
+   }
+  }
+  #>cell_biology_proteins_inhibition
+  ^["inhibition_patterns"]{
+   #:claim #!settled
+   statement: "A competitive inhibitor raises apparent Km and leaves Vmax; an uncompetitive one lowers both; a pure noncompetitive one lowers Vmax only; mixed inhibition shifts both unequally."
+   source: ~"SRC#src_life_cornish_bowden_2012"
+  }
+  #>cell_biology_proteins_allostery
+  ^["allostery"]{
+   #:claim #!settled
+   statement: "The concerted model flips all subunits between two states together; the sequential model lets each subunit change on binding; both yield cooperative curves with Hill coefficients above one."
+   sources: [ ~"SRC#src_life_mwc_1965", ~"SRC#src_life_knf_1966" ]
+   ^["limits"]{
+    holds: "symmetric oligomers such as hemoglobin"
+    fails: "neither model captures every allosteric protein; many fall between them"
+   }
+  }
+ }
+}
+
+^["try"]{
+ #>cell_biology_proteins_try_catalase
+ ^["potato_catalase"]{
+  materials: [
+   "two thin slices of raw potato",
+   "two slices of the same potato boiled for five minutes and cooled",
+   "household 3 percent hydrogen peroxide",
+   "two clear cups",
+   "safety glasses"
+  ]
+  steps: << "pour a little peroxide in each cup" ; "drop raw slices in one cup" ; "drop boiled slices in the other" ; "compare the foam after one minute" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "wear glasses; peroxide stings eyes and skin, so rinse with water on contact; let boiled potato cool first"
+  shows: ~"./protein-structure-and-enzymes.spw#cell_biology_proteins_anfinsen"
+ }
+}
+
+#>cell_biology_proteins_perfection_q
+?["Once an enzyme is diffusion-limited, where does selection act on it next?"]{
+ #:depth #!physical ~#lens(molecular binding)
+ #:claim #!speculative
+ ~#hypothesis: "After chemistry outruns encounter, selection shifts from the active site toward expression level, localization, and handing substrate directly between enzymes."
+ !probe{ "compare active-site substitution rates of diffusion-limited and slower enzymes across bacterial genomes" =id[p_life_proteins_perfection] =kind[lit] }
+ $%[life.enzyme.ompdc_rate_enhancement_log10]
+ ~"./protein-structure-and-enzymes.spw#cell_biology_proteins_diffusion_limit" ~#neighbor(nearest)
+}

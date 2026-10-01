@@ -1,0 +1,137 @@
+# Continuities Matrix
+#
+# What stayed the same across US school generations and what changed: subjects, tests, grading, and classroom media from slate to laptop, read against the grammar of schooling.
+
+#>generations_continuities
+#:layer #!reference
+#:domain #!generations
+#:form #!comparison
+#:level #!intro
+#:review #!sourced
+#:valence #!bone
+#:era #!modern
+
+^"emit"{
+ ~#title: "Continuities Matrix"
+ ~#claim: "Across generations, the grammar of schooling held steady, age-graded rooms, subjects by period, letter grades, and admissions tests, while classroom media changed fastest."
+ ~#proof: "Tyack and Tobin 1994 on the grammar of schooling; Cuban 1986 and 2001 on classroom technology; Durm 1993 on grades; Lemann 1999 on the SAT and ACT."
+ ~#door: "Read a row for each cohort, then compare two textbooks with the kit."
+ ~#audience: "families comparing their school memories, and teachers explaining why school feels familiar"
+ continuity: "Continuities Matrix | grammar of schooling"
+ cold_open: "The grammar of schooling barely moved; the screens at the front of the room changed every generation."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ needs: [ ~"../../record/carriers/form-factor-ladder.spw#media_carriers_ladder" ]
+ extends: [ ~"./us-curricula-by-generation.spw#generations_us_curricula" ]
+}
+
+^["concepts"]{
+ primary: [ #grammar_of_schooling, #cohort ]
+ transfers: [ #curriculum_memory ]
+ tensions: [ #standards ]
+}
+
+^["persisted"]{
+ #>generations_cont_grammar
+ ^["grammar_of_schooling"]{
+  #:claim #!interpretive
+  statement: "Tyack and Tobin call the stable forms of schooling, age-graded classes, one teacher per room, subjects by period, and Carnegie units, a grammar that reforms rarely change."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_tyack_tobin_1994"
+  also: ~"../../registries/sources/learning-and-generations.spw#src_learn_tyack_cuban_1995"
+ }
+
+ #>generations_cont_subjects
+ ^["subjects"]{
+  #:claim #!settled
+  statement: "The Committee of Ten organized high school study around English, other languages, mathematics, sciences, and history, the families of subjects later diplomas still require."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_committee_of_ten"
+ }
+
+ #>generations_cont_tests
+ ^["admissions_tests"]{
+  #:claim #!settled
+  statement: "The College Board first gave the SAT in 1926, and the ACT began in 1959 as a rival college admissions test."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_lemann_1999"
+ }
+
+ #>generations_cont_grading
+ ^["letter_grades"]{
+  #:claim #!settled
+  statement: "Letter grades spread in the early twentieth century; Mount Holyoke used a lettered scale by 1897, while percentage and pass systems competed with letters."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_durm_1993"
+ }
+}
+
+^["changed"]{
+ #>generations_cont_media
+ ^["classroom_media"]{
+  #:claim #!interpretive
+  statement: "Film, radio, television, and computers each arrived with forecasts of transformed classrooms, and teachers adopted each only in part, fitting it to existing routines."
+  sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_cuban_1986", ~"../../registries/sources/learning-and-generations.spw#src_learn_cuban_2001" ]
+ }
+ ladder: <<
+  "slate and chalkboard" ;
+  "film and radio" ;
+  "television and overhead projector" ;
+  "microcomputer lab" ;
+  "classroom internet and interactive board" ;
+  "a laptop or tablet for each student" ;
+  "phones, then limits on phones"
+ >>
+}
+
+^["matrix"]{
+ #:claim #!interpretive
+ reading: "typical rows, not universal ones; place, income, and school type shifted every cell"
+ rows: #[
+  .{ cohort: "Silent", tests: "local exams, early SAT", grading: "letters or percentages", media: "slate, chalkboard, radio" },
+  .{ cohort: "Boomers", tests: "SAT and ACT, first NAEP", grading: "letters", media: "film, television, overhead" },
+  .{ cohort: "Generation X", tests: "minimum competency tests", grading: "letters", media: "overhead, first computers" },
+  .{ cohort: "Millennials", tests: "state standards tests", grading: "letters, some rubrics", media: "computer lab, internet" },
+  .{ cohort: "Generation Z", tests: "yearly NCLB and ESSA tests", grading: "online gradebooks", media: "laptops, video calls" },
+  .{ cohort: "Generation Alpha", tests: "yearly state tests", grading: "some standards-based", media: "tablets, phone limits" }
+ ]
+}
+
+^["try"]{
+ #>generations_cont_try_textbooks
+ ^["two_textbooks"]{
+  materials: [
+   "two textbooks in one subject from decades at least twenty years apart, from a library or a family shelf",
+   "a sheet with two columns"
+  ]
+  steps: <<
+   "copy each table of contents" ;
+   "mark chapters that appear in both" ;
+   "mark what only the older book has and what only the newer book has" ;
+   "pick one difference to ask an elder about"
+  >>
+  time: .{ n: 45, unit: "minutes" }
+  safety: "old books can be fragile and dusty; handle gently with clean, dry hands"
+  shows: ~"./continuities-matrix.spw#generations_cont_grammar"
+ }
+}
+
+#>generations_cont_media_q
+?["Which classroom media changed what was taught, rather than how it looked?"]{
+ #:depth #!historical ~#lens(material grain)
+ #:claim #!speculative
+ ~#hypothesis: "Media that let students produce work, such as calculators and word processors, changed curricula more than media that only displayed lessons."
+ breaks: "unlike a record carrier, classroom media rarely preserves what passed through it, so evidence comes from textbooks and memory"
+ !probe{ "compare math and writing standards before and after calculators and word processors became common" =id[p_learn_cont_media] =kind[lit] }
+ ~"./continuities-matrix.spw#generations_cont_media" ~#neighbor(nearest)
+}

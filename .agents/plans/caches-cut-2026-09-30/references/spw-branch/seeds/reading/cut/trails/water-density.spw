@@ -1,0 +1,46 @@
+# Water Density Trail
+#
+# A five-stop trail through the water surface that asks for a prediction before each claim is opened.
+
+#>trail_water_density
+#:layer #!pragmatics
+#:domain #!meta
+#:form #!trail
+#:level #!foundation
+#:review #!unreviewed
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Water Density Trail"
+ ~#claim: "A reader who predicts what ice does before opening the density claim has something to check the claim against."
+ ~#proof: "Each stop links an anchor in the water surface; each prediction is written before the next stop."
+ ~#door: "Open the lesson arc to run this trail with a group."
+ ~#audience: "self-directed readers and teachers"
+ cold_open: "Predict what the ice will do, then check the claim."
+ continuity: "Water Density Trail | predict"
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ lineage: #[ "new" ]
+ method: #authored
+}
+
+^["edges"]{
+ feeds: [ ~"./arcs/lesson.spw#arc_lesson" ]
+}
+
+#>trail_water_density_stops
+^["trail"]{
+ stops: <<
+  ~"../matter/water.spw#water_density_max" ;
+  ?{ what happens to a lake if ice sinks } ~<prediction> ;
+  ~"../matter/water.spw#water_try_density" ;
+  ?{ where will the ice cube sit } ~<prediction> ;
+  ~"../matter/water.spw#matter_water_ice_sink_q"
+ >>
+ dwell: .{ n: 45, unit: "seconds" }
+ counts: "stops visited and predictions written"
+ limit: "a written prediction shows a guess was made, not whether it was understood"
+}

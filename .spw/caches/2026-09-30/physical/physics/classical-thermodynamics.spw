@@ -1,0 +1,196 @@
+# Classical Thermodynamics
+#
+# The canonical home for the laws, the state postulate, the potentials, Maxwell relations, and equations of state that engineering, chemistry, materials, and ecology cite.
+
+#>physics_thermo_classical
+#:layer #!reference
+#:domain #!physics
+#:form #!ledger
+#:level #!foundation
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Classical Thermodynamics"
+ ~#claim: "Four laws, a state postulate, and a family of potentials decide what any process may do, before atoms enter the story."
+ ~#proof: "Callen for the postulates and potentials, Gibbs for the phase rule, Carnot for the efficiency bound; each keystone links its source."
+ ~#door: "Stretch a rubber band, then follow entropy into statistical mechanics."
+ ~#audience: "students meeting thermodynamics in physics, chemistry, or engineering"
+ continuity: "Classical Thermodynamics | four laws"
+ cold_open: "Four laws and a handful of potentials decide what any engine, cell, or kitchen can do, and atoms never have to appear."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/thermodynamics/classical-and-engineering-thermodynamics.spw", ".spw/caches/university-education/physics-and-mechanical-engineering/undergrad-physics.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "third law: residual entropy of glasses and ice added as a limit; the raw stated the zero-entropy limit with no exceptions",
+  "state postulate scoped to single-phase simple compressible systems; the raw omitted the two-phase caveat",
+  "the Einstein remark is now quoted with its source, the 1949 Autobiographical Notes",
+  "power cycles, exergy, psychrometrics, and combustion point to the mechanical engineering node instead of being restated",
+  "the Allam-cycle hypothesis with invented efficiency and capture figures was dropped"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/physical-sciences-and-image.spw#q_phys_thermal" ]
+ feeds: [ ~"../engineering/mechanical-core.spw#engineering_mechanical", ~"../materials/materials-core.spw#materials_core", ~"../materials/water.spw#materials_water" ]
+}
+
+^["concepts"]{
+ primary: [ #entropy, #free_energy, #temperature ]
+ transfers: [ #phase_diagram, #exergy ]
+ tensions: [ #arrow_of_time ]
+}
+
+^["laws"]{
+ #>physics_thermo_zeroth
+ ^["zeroth"]{
+  #:claim #!settled
+  statement: "If two systems are each in thermal equilibrium with a third, they are in equilibrium with each other; that transitivity lets a thermometer define temperature."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_callen_1985"
+ }
+ #>physics_thermo_first
+ ^["first"]{
+  #:claim #!settled
+  statement: "Internal energy is a state function; heat and work are transfers across a boundary that depend on the path, and together they equal the change in internal energy."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_callen_1985"
+ }
+ #>physics_thermo_second
+ ^["second"]{
+  #:claim #!settled
+  statement: "No cycle turns heat from one reservoir wholly into work, and heat does not flow unaided from cold to hot; both statements define entropy, which an isolated system never loses."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_callen_1985"
+  ~#(Clausius 1850 and 1865, Kelvin 1851)
+  ^["limits"]{
+   holds: "macroscopic systems close enough to equilibrium that temperature and entropy are defined"
+   fails: "small systems over short times, where fluctuation theorems give the odds of a transient entropy decrease"
+  }
+  feeds: [ ~"./nonequilibrium-and-information.spw#physics_noneq_ecm_1993" ]
+ }
+ #>physics_thermo_third
+ ^["third"]{
+  #:claim #!settled
+  statement: "As temperature approaches absolute zero, the entropy of a perfect crystal approaches a constant, conventionally zero, as Nernst found in 1906 and Planck sharpened in 1911."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_callen_1985"
+  reads: %[phys.thermo.ice_residual_entropy_j_per_mol_k]
+  counter: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_pauling_1935"
+  ^["limits"]{
+   holds: "perfectly ordered crystals in internal equilibrium"
+   fails: "glasses and crystals with frozen disorder keep residual entropy; Pauling estimated R ln(3/2) per mole for ice"
+  }
+ }
+}
+
+^["state_and_potentials"]{
+ #>physics_thermo_state_postulate
+ ^["state_postulate"]{
+  #:claim #!settled
+  statement: "The equilibrium state of a simple compressible substance of fixed composition is fixed by two independent intensive properties."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_callen_1985"
+  ^["limits"]{
+   holds: "single-phase systems with no electric, magnetic, surface, or elastic work"
+   fails: "in a two-phase region pressure and temperature are coupled, so quality or specific volume must join them; each extra work mode adds a variable"
+  }
+ }
+ #>physics_thermo_potentials
+ ^["potentials"]{
+  #:claim #!settled
+  statement: "Legendre transforms of internal energy give enthalpy, Helmholtz free energy, and Gibbs free energy, each minimized at equilibrium under its own natural constraints."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_callen_1985"
+  ^["table"]{
+   internal_energy: "U with natural variables S, V, N; minimized at fixed S and V"
+   enthalpy: "H = U + PV with natural variables S, P, N; the heat of a constant-pressure process"
+   helmholtz: "F = U - TS; minimized at fixed T and V"
+   gibbs: "G = U - TS + PV; minimized at fixed T and P, the potential chemists use most"
+  }
+ }
+ #>physics_thermo_maxwell_relations
+ ^["maxwell_relations"]{
+  #:claim #!settled
+  statement: "Equal mixed second derivatives of the potentials give Maxwell relations, such as dS/dV at fixed T equals dP/dT at fixed V, trading entropy derivatives for measurable ones."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_callen_1985"
+ }
+}
+
+^["equations_of_state"]{
+ #>physics_thermo_eos
+ ^["ideal_and_cubic"]{
+  #:claim #!settled
+  statement: "The ideal gas law PV = nRT holds at low density; van der Waals added attraction and excluded volume in 1873, and the 1976 Peng-Robinson cubic is a workhorse for hydrocarbons."
+  reads: %[phys.const.r_j_per_mol_k]
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_callen_1985", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_peng_robinson_1976" ]
+  ^["limits"]{
+   holds: "vapor-liquid behavior of nonpolar fluids"
+   fails: "strongly associating fluids such as water need association models or reference formulations such as IAPWS-95"
+  }
+ }
+ #>physics_thermo_phase_rule
+ ^["phase_rule"]{
+  #:claim #!settled
+  statement: "Gibbs phase rule gives C - P + 2 free intensive variables for C components in P phases, so pure water at its triple point has none free."
+  reads: %[phys.thermo.water_triple_point_k]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_gibbs_1878"
+ }
+}
+
+^["cycles"]{
+ #>physics_thermo_carnot_bound
+ ^["carnot_bound"]{
+  #:claim #!settled
+  statement: "No engine between reservoirs at T_hot and T_cold can beat the efficiency 1 - T_cold/T_hot, a bound Carnot reached in 1824 before entropy had a name."
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_carnot_1824", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_callen_1985" ]
+  ~#(power cycles, exergy, and the Gouy Stodola theorem live in the mechanical engineering node)
+ }
+}
+
+^["standing"]{
+ #>physics_thermo_einstein
+ ^["einstein_reading"]{
+  #:claim #!settled
+  statement: "Einstein wrote that classical thermodynamics is the one physical theory of universal content he was convinced would never be overthrown within the reach of its basic concepts."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_einstein_1949"
+  ~#say(the theory Einstein trusted most)
+ }
+ #>physics_thermo_rubber
+ ^["rubber_elasticity"]{
+  #:claim #!settled
+  statement: "A stretched rubber band pulls back mostly because stretching aligns its chains and lowers their entropy; stretched quickly it warms, as Gough noticed in 1805 and Joule measured in 1859."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_treloar_1975"
+ }
+}
+
+^["try"]{
+ #>physics_thermo_try_rubber_band
+ ^["rubber_band_heat"]{
+  materials: [ "a wide rubber band", "your upper lip or forehead as a thermometer" ]
+  steps: <<
+   "touch the relaxed band to your lip" ;
+   "stretch it fast and touch it again" ;
+   "hold it stretched until it feels cool" ;
+   "let it contract fast and touch it again" ;
+   "say which step moved entropy and which moved heat"
+  >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "point a possible snap away from your eyes; skip it with a latex allergy"
+  shows: ~"./classical-thermodynamics.spw#physics_thermo_rubber"
+ }
+}
+
+#>physics_thermo_arrow_q
+?["Why does a scrambled egg not unscramble when the microscopic laws run both ways?"]{
+ #:depth #!physical ~#lens(energy budget)
+ #:claim #!speculative
+ ~#hypothesis: "Everyday irreversibility traces to a low-entropy initial state of the universe rather than to any time-asymmetric microscopic law, the Past Hypothesis that David Albert named."
+ !probe{ "trace one kitchen process from its entropy increase back to the boundary condition it requires" =id[p_phys_thermo_past_hypothesis] =kind[lit] }
+ source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_albert_2000"
+ ~"./classical-thermodynamics.spw#physics_thermo_second" ~#neighbor(nearest)
+}

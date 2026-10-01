@@ -1,0 +1,190 @@
+# Season Journal
+#
+# One page a week for fourteen weeks: what shipped, what the season outside is doing, what to celebrate, and what to reset.
+
+#>season_journal
+#:layer #!creative
+#:domain #!season
+#:form #!story_kit
+#:level #!intro
+#:review #!sourced
+#:valence #!boon
+#:season #!reflection
+
+^"emit"{
+ ~#title: "Season Journal"
+ ~#claim: "One page a week records what shipped, what the season outside is doing, what to celebrate, and what to reset."
+ ~#proof: "Phenology practice from Leopold and Jones, the Kyoto bloom records, and the USA National Phenology Network; monthly migration after Carroll."
+ ~#door: "Start this week's page with the four headings, then step outside for one sky or leaf note."
+ ~#audience: "makers, students, and families"
+ continuity: "Season Journal | what shipped"
+ cold_open: "Each week the season journal asks what shipped, what the world outside is doing, what to celebrate, and what to reset."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+ }
+}
+
+^["edges"]{
+ feeds: [ ~"./retrospective-protocol.spw#season_retrospective" ]
+ grounds: [ ~"../registries/quantities/season.spw#q_season_arc" ]
+ see: [
+  ~"../living/plants/horticultural-science.spw#plant_science_horticulture",
+  ~"../living/development-and-ecology/biological-clocks.spw#development_ecology_clocks"
+ ]
+}
+
+^["concepts"]{
+ primary: [ #phenology, #weekly_rung ]
+ transfers: [ #retrospective, #solstice ]
+ tensions: [ #southern_hemisphere, #blame ]
+}
+
+^["arc"]{
+ clock: #week
+ archetype: "a page a week that turns attention outward and then back to the work"
+ steps: << "shipped" ; "outside" ; "celebrate" ; "reset" >>
+ predict: ?{ "when will the first frost come where you live" } ~<prediction>
+ counts: "a tool can count pages, notes, and dated observations; it cannot count attention or meaning"
+ limit: "private by default; a family or class shares only what each writer chooses, and nobody is graded"
+ exit: ~"./retrospective-protocol.spw#season_retrospective"
+}
+
+^["page"]{
+ #>season_journal_page
+ ^["headings"]{
+  ^["shipped"]{
+   prompts: [
+    "what left your hands this week",
+    "what stalled, in one line"
+   ]
+  }
+  ^["outside"]{
+   prompts: [
+    "sunrise and sunset from a published table for your town",
+    "the color of one tree you pass every day",
+    "first frost, or the lowest overnight temperature you noticed",
+    "one bird, insect, or plant still active"
+   ]
+  }
+  ^["celebrate"]{
+   prompts: [
+    "one thing to thank someone for",
+    "one small joy"
+   ]
+  }
+  ^["reset"]{
+   prompts: [
+    "one task to drop",
+    "one task to carry forward, and why it still matters"
+   ]
+  }
+ }
+ #>season_journal_special_pages
+ ^["special_pages"]{
+  steps: <<
+   "rung one: a baseline sky and tree" ;
+   "rung three: notes for the first retrospective" ;
+   "rung twelve: the longest-night page" ;
+   "rung fourteen: the reset page, then the first page of the new season"
+  >>
+  reads: %[season.arc.week_count]
+ }
+}
+
+^["outside_notes"]{
+ #>season_journal_day_length
+ ^["day_length"]{
+  #:claim #!settled
+  statement: "Away from the equator, day length changes fastest near the equinoxes and barely at the solstices, so October days shorten quickly while late December days hold still."
+  source: ~"../registries/sources/season.spw#src_season_meeus_1998"
+  ^["limits"]{
+   holds: "middle and high latitudes"
+   fails: "near the equator day length barely varies; south of it the pattern runs mirrored"
+  }
+ }
+ #>season_journal_leaf_color
+ ^["leaf_color"]{
+  #:claim #!contested
+  statement: "Autumn yellows appear as chlorophyll breaks down and reveals carotenoids; why many trees make new red anthocyanins in autumn is still debated."
+  source: ~"../registries/sources/season.spw#src_season_archetti_2009"
+  ~#counter(photoprotection and signaling to insects remain the main competing accounts)
+ }
+ #>season_journal_records
+ ^["long_records"]{
+  #:claim #!settled
+  statement: "Long phenology records come from patient notebooks: Kyoto cherry-bloom dates reach back to the ninth century, and Leopold kept a decade of Wisconsin notes."
+  sources: [
+   ~"../registries/sources/season.spw#src_season_aono_kazui_2008",
+   ~"../registries/sources/season.spw#src_season_leopold_jones_1947"
+  ]
+ }
+ #>season_journal_community
+ ^["community_science"]{
+  #:claim #!settled
+  statement: "The USA National Phenology Network gathers volunteer observations through its Nature's Notebook program, building on earlier lilac observation networks."
+  source: ~"../registries/sources/season.spw#src_season_schwartz_2012"
+ }
+ #>season_journal_solar_terms
+ ^["solar_terms"]{
+  #:claim #!settled
+  statement: "China's twenty-four solar terms name the year by the sun's motion, a practice of seasonal noticing that UNESCO inscribed in 2016."
+  source: ~"../registries/sources/season.spw#src_season_unesco_solar_terms_2016"
+ }
+ #>season_journal_migration
+ ^["migration"]{
+  #:claim #!settled
+  statement: "Carroll's Bullet Journal method closes each month by migrating unfinished tasks forward only if they still matter, a small monthly reset."
+  source: ~"../registries/sources/season.spw#src_season_carroll_2018"
+ }
+}
+
+^["try"]{
+ #>season_journal_try_first_page
+ ^["first_page"]{
+  materials: [
+   "a notebook",
+   "a pencil",
+   "a sunrise and sunset table for your town from the US Naval Observatory or a national weather service"
+  ]
+  steps: <<
+   "write the four headings" ;
+   "fill shipped from memory" ;
+   "step outside for ten minutes and fill outside" ;
+   "write one celebration" ;
+   "write one reset"
+  >>
+  time: .{ n: 25, unit: "minutes" }
+  safety: "outdoors: dress for the weather, watch footing and traffic at dusk, and observe plants and fungi without tasting them"
+  shows: ~"./season-journal.spw#season_journal_day_length"
+ }
+}
+
+#>season_journal_noticing_q
+?["Does writing outside notes beside work notes change what a maker notices?"]{
+ #:depth #!experiential ~#lens(bodily rhythm)
+ #:claim #!speculative
+ ~#hypothesis: "Makers who keep both headings for the whole season should name more seasonal cues in their final retrospective than makers who log work alone."
+ !probe{ "count seasonal cues named in year-end retrospectives, both headings versus work only" =id[p_season_journal_noticing] =kind[field] }
+ $%[season.arc.week_count]
+ ~"./season-journal.spw#season_journal_page" ~#neighbor(nearest)
+}
+
+#>season_journal_frost_q
+?["Will your first frost come earlier or later than your local normal?"]{
+ #:depth #!physical ~#lens(ecological zone)
+ #:claim #!speculative
+ ~#hypothesis: "Where growing seasons have lengthened, this year's first autumn freeze is more likely to fall after the station's older normal date than before it."
+ !probe{ "compare this year's first freeze with the 1991 to 2020 normal for the nearest NOAA station" =id[p_season_journal_first_frost] =kind[lookup] }
+ $%[season.arc.length_days]
+ ~"./season-journal.spw#season_journal_day_length" ~#neighbor(nearest)
+}

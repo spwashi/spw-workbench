@@ -1,0 +1,127 @@
+# Readers and Marketing
+#
+# A claim ledger for newsletters, review copies, BookTok, and launch lore, with disclosure rules and the contested thirty-day cliff.
+
+#>authorship_marketing
+#:layer #!reference
+#:domain #!authorship
+#:form #!ledger
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!honk
+#:era #!current
+
+^"emit"{
+ ~#title: "Readers and Marketing"
+ ~#claim: "Free review copies create a material connection that reviewers disclose, and the thirty-day visibility cliff is community lore that Amazon does not document."
+ ~#proof: "FTC Endorsement Guides and the 2024 reviews rule; KDP describes rank as recent activity weighted more heavily, with no fixed cutoff."
+ ~#door: "Write a disclosure line with the try kit, then see where launches sit in the season calendar."
+ ~#audience: "authors planning a launch and readers who review"
+ continuity: "Readers and Marketing | material connection"
+ cold_open: "A free review copy is a material connection, so the review says so."
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/indie-author-ecosystem/marketing-readers-and-community-traditions.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the thirty-day hot new release cliff is marked contested; the raw stated it as an Amazon rule",
+  "review copy teams now carry the disclosure duty the raw omitted",
+  "the raw goal of reviews within hours of launch to signal algorithms is reframed; incentives tied to sentiment are prohibited",
+  "team sizes of 50 to 500 and deal surges of thousands of sales in 48 hours are dropped as unsourced"
+ ]
+}
+
+^["edges"]{
+ see: [ ~"./author-season-calendar.spw#authorship_season_calendar" ]
+ contrasts: [ ~"./genre-conventions.spw#authorship_genres_tropes" ]
+}
+
+^["concepts"]{
+ primary: [ #disclosure, #backlist ]
+ transfers: [ #reader_promise ]
+ tensions: [ #trope_packaging ]
+}
+
+^["ledger"]{
+ ^["disclosure"]{
+  #>authorship_marketing_arc_disclosure
+  ^["review_copies"]{
+   #:claim #!settled
+   statement: "A reviewer who receives a free copy has a material connection that should be disclosed clearly, because it can affect how readers weigh the review."
+   sources: [ ~"../../registries/sources/creators-and-platforms.spw#src_creator_ftc_endorsement_guides", ~"../../registries/sources/creators-and-platforms.spw#src_creator_ftc_faq" ]
+   as_of: "Endorsement Guides as revised in 2023"
+   ^["limits"]{
+    holds: "US advertising law and US reviewers"
+    fails: "other jurisdictions have their own rules; store review policies add separate terms"
+   }
+  }
+  #>authorship_marketing_sentiment_rule
+  ^["no_sentiment_incentive"]{
+   #:claim #!settled
+   statement: "The FTC rule on consumer reviews prohibits offering compensation or incentives conditioned on a review expressing a particular sentiment."
+   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_ftc_reviews_rule"
+   as_of: "final rule announced 2024-08-14"
+  }
+ }
+ ^["visibility"]{
+  #>authorship_marketing_cliff
+  ^["thirty_day_cliff"]{
+   #:claim #!contested
+   statement: "Authors widely repeat that store visibility drops at day thirty; KDP documents only that rank weights recent activity more heavily and updates at least daily."
+   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_kdp_sales_rank"
+   counter: "the cliff is community lore from author forums; no published Amazon rule names a thirty-day cutoff"
+   ^["limits"]{
+    holds: "a steady decline after launch is consistent with recency weighting"
+    fails: "a fixed cutoff date is not documented"
+   }
+  }
+ }
+ ^["discovery"]{
+  #>authorship_marketing_booktok
+  ^["booktok"]{
+   #:claim #!settled
+   statement: "BookTok emerged on TikTok in late 2019, grew during 2020, and by 2021 publishers were sending books to its creators for promotion."
+   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_booktok"
+   example: "The Atlas Six, self-published in 2020, was acquired by Tor Books in 2021"
+  }
+  newsletters: "an author newsletter is the one channel the author owns; reader magnets trade a free story for a subscription"
+  swaps: "authors in the same subgenre feature each other in newsletters"
+  paid: "store ads, social ads, and curated deal newsletters; costs and returns verify"
+ }
+ ^["community"]{
+  #>authorship_marketing_sharing
+  ^["open_numbers"]{
+   #:claim #!interpretive
+   statement: "Indie authors share sales and ad data more openly than traditionally published authors historically shared contract terms, likely because readers of fast genres buy many authors."
+  }
+  twenty_books: "the 20BooksTo50K community taught backlist building and open sharing of sales data; founders and current status verify"
+ }
+}
+
+^["try"]{
+ #>authorship_marketing_try
+ ^["disclosure_line"]{
+  materials: [ "a draft review-copy email", "the FTC Endorsement Guides FAQ" ]
+  steps: << "write one sentence the reviewer can paste, such as I received a free copy from the author" ; "remove any wording that asks for a positive or a fast review" ; "ask a friend to read the email cold" ; "keep the version they found clear" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "none worth naming; this teaches disclosure, not legal advice"
+  shows: ~"./readers-and-marketing.spw#authorship_marketing_arc_disclosure"
+ }
+}
+
+#>authorship_marketing_sharing_q
+?["Does open sharing of sales data spread fastest in genres whose readers binge series?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Where readers finish a book in days and look for the next, authors gain more from recommending peers, so data sharing is more common."
+ !probe{ "interview authors across genres about what they share and why" =id[p_creator_marketing_sharing] =kind[interview] }
+ ~"./readers-and-marketing.spw#authorship_marketing_sharing" ~#neighbor(nearest)
+}

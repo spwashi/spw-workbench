@@ -1,0 +1,130 @@
+# Twitch Plays Pokemon
+#
+# February 2014: a stream turned its chat into a shared game controller, and the crowd voted on how to vote.
+
+#>live_platforms_twitch_plays
+#:layer #!reference
+#:domain #!live_platforms
+#:form #!dossier
+#:level #!foundation
+#:review #!sourced
+#:valence #!bonk
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Twitch Plays Pokemon"
+ ~#claim: "In 2014 a Twitch stream let chat commands drive Pokemon Red, and a vote between anarchy and democracy decided how a crowd becomes one controller."
+ ~#proof: "Dates, participant counts, and the mode change come from the public record; the run finished in about seventeen days."
+ ~#door: "Follow the case into the chat-torrent pipeline, where chat becomes lanes instead of button presses."
+ ~#audience: "anyone designing for a live crowd"
+ continuity: "Twitch Plays Pokemon | one controller"
+ cold_open: "A whole chat once shared one controller and finished a game."
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "claude-opus-5.5"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ case_of: [ ~"../../making/streaming/chat-torrent-pipeline.spw#streaming_chat_torrent" ]
+ contrasts: [ ~"../../spw/history/commit-gate.spw#workbench_history_commit_gate" ]
+ grounds: [ ~"../../registries/quantities/creators-and-platforms.spw#q_creator_cases" ]
+}
+
+^["concepts"]{
+ primary: [ #parallel_input, #audience_participation ]
+ transfers: [ #chat_lane ]
+ tensions: [ #crowd_noise ]
+}
+
+^["dossier"]{
+ #>live_platforms_twitch_plays_run
+ ^["the_run"]{
+  #:claim #!settled
+  statement: "An anonymous Australian programmer started the stream on 2014-02-12; chat commands such as up, down, a, and b were fed to an emulator running Pokemon Red."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_tpp"
+ }
+ #>live_platforms_twitch_plays_finish
+ ^["finish"]{
+  #:claim #!settled
+  statement: "The crowd finished Pokemon Red on 2014-03-01 with over a million participants and a peak above one hundred thousand concurrent viewers."
+  reads: %[creator.tpp.participants, creator.tpp.peak_viewers]
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_tpp"
+  record: "Guinness World Records lists the participant count as the most users to input a command to play a live streamed videogame"
+ }
+ #>live_platforms_twitch_plays_modes
+ ^["modes_added"]{
+  #:claim #!settled
+  statement: "On 2014-02-18 the operator added two input modes, anarchy and democracy, and let chat vote on which one ran."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_tpp"
+ }
+ #>live_platforms_twitch_plays_lore
+ ^["lore"]{
+  #:claim #!settled
+  statement: "Viewers built a shared mythology around in-game items and accidents, and scholars later read it as communal narrative and religious play."
+  sources: [ ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_tpp", ~"../../registries/sources/creators-and-platforms.spw#src_creator_lindsey_2015" ]
+ }
+ #>live_platforms_twitch_plays_crowd
+ ^["crowd_study"]{
+  #:claim #!emerging
+  statement: "Researchers analyzed the run as mass synchronous crowd collaboration, a crowd acting at once on one shared object."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_kyriakou_nickerson_2016"
+ }
+}
+
+^["machine"]{
+ #>live_platforms_twitch_plays_input
+ ^["input_modes"]{
+  anarchy: "every command executes in arrival order, so the controller follows the stream of chat"
+  democracy: "commands are tallied over a short window and the most voted command executes"
+  meter: "a chat vote moves a meter between the modes; thresholds are not carried here"
+ }
+ ?match[@mode]{
+  @anarchy => ^["execute_all"]{ effect: "fast and noisy; contradictory presses cancel or wander" }
+  @democracy => ^["execute_majority"]{ effect: "slow and precise; menus and mazes become possible" }
+  _ => "the meter decides the next mode"
+ }
+ #>live_platforms_twitch_plays_reading
+ ^["reading"]{
+  #:claim #!interpretive
+  statement: "The two modes are two parallel-input designs: one samples every message, one aggregates a window, and the crowd chose between them by voting."
+ }
+}
+
+^["try"]{
+ #>live_platforms_twitch_plays_try
+ ^["paper_maze"]{
+  materials: [ "a printed maze", "a pencil", "a timer", "four or more people" ]
+  steps: << "one person holds the pencil and only obeys called directions" ; "everyone calls directions at once for two minutes" ; "switch to a vote every ten seconds for two minutes" ; "compare how far the pencil got and how many walls it crossed" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "none worth naming; keep the room friendly when calls collide"
+  shows: ~"./twitch-plays-pokemon.spw#live_platforms_twitch_plays_input"
+ }
+}
+
+#>live_platforms_twitch_plays_noise_q
+?["Is anarchy mode a controller or a noisy average of controllers?"]{
+ #:depth #!computational ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "As participants grow, anarchy behaves like a random walk biased toward the majority, so progress slows unless the map is forgiving."
+ !probe{ "simulate a grid maze driven by sampled commands with a majority bias" =id[p_creator_tpp_noise] =kind[sim] }
+ $%[creator.tpp.participants, creator.tpp.peak_viewers]
+ ~"./twitch-plays-pokemon.spw#live_platforms_twitch_plays_input" ~#neighbor(nearest)
+}
+
+#>live_platforms_twitch_plays_gate_q
+?["Is a human commit gate the democracy mode of a repository?"]{
+ #:depth #!social ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Both trade speed for a single accountable decision per step, and both invite workarounds when the wait feels long."
+ breaks: "the commit gate has one human authorizer; democracy mode aggregates thousands of anonymous votes"
+ !probe{ "compare gate wait logs with democracy-mode pacing reports" =id[p_creator_tpp_gate] =kind[thought] }
+ ~"./twitch-plays-pokemon.spw#live_platforms_twitch_plays_modes" ~#neighbor(nearest)
+}

@@ -1,0 +1,170 @@
+# US Curricula by Generation
+#
+# A ladder of US birth cohorts and the schooling each met, from Sputnik and New Math through Common Core, remote school, and new reading laws, with cohort lines marked as interpretive.
+
+#>generations_us_curricula
+#:layer #!reference
+#:domain #!generations
+#:form #!timeline
+#:level #!intro
+#:review #!sourced
+#:valence #!bonk
+#:era #!modern
+
+^"emit"{
+ ~#title: "US Curricula by Generation"
+ ~#claim: "Each US birth cohort met a different school: New Math after Sputnik, back to basics and A Nation at Risk, standards and testing, Common Core and remote school, then new reading laws."
+ ~#proof: "Landmarks link to the policy ledger and its primary sources; cohort lines follow Pew Research Center usage and Pew cautions on generational labels."
+ ~#door: "Find the rung for each person in your family, then carry the differences into the memory map kit."
+ ~#audience: "families and readers comparing what parents, grandparents, and children were taught"
+ continuity: "US Curricula by Generation | different school"
+ cold_open: "Every generation went to a different school, even when the building and the bell stayed the same."
+}
+
+^"provenance"{
+ as_of: "2026-10-01"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ school_years_rule: "school years are computed as birth year plus five through birth year plus eighteen, so each window is approximate"
+}
+
+^["edges"]{
+ needs: [ ~"./policy-landmarks-ledger.spw#generations_policy_ledger" ]
+ feeds: [ ~"../intergenerational-kit/curriculum-memory-map.spw#generations_kit_memory_map" ]
+ see: [ ~"./continuities-matrix.spw#generations_continuities" ]
+}
+
+^["concepts"]{
+ primary: [ #cohort, #curriculum_memory ]
+ transfers: [ #accountability ]
+ tensions: [ #grammar_of_schooling ]
+}
+
+^["cohorts"]{
+ #>generations_curricula_boundaries
+ ^["boundaries"]{
+  #:claim #!settled
+  statement: "Pew Research Center places Baby Boomers at births 1946 to 1964, Generation X at 1965 to 1980, Millennials at 1981 to 1996, and Generation Z from 1997."
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_dimock_2019"
+ }
+ #>generations_curricula_caution
+ ^["caution"]{
+  #:claim #!interpretive
+  statement: "Cohort lines are tools, not findings; Pew now warns that age, period, and cohort effects blur together and that labels invite stereotypes."
+  counter: ~"../../registries/sources/learning-and-generations.spw#src_learn_parker_2023"
+ }
+ order: <<
+  "Silent" ;
+  "Boomers" ;
+  "Generation X" ;
+  "Millennials" ;
+  "Generation Z" ;
+  "Generation Alpha"
+ >>
+}
+
+^["ladder"]{
+ #:claim #!interpretive
+ reading: "each rung pairs a cohort with landmarks that touched it in school; families differed by place, race, language, disability, and income"
+
+ #>generations_rung_silent
+ ^["silent"]{
+  born: "about 1928 to 1945, in common usage"
+  in_school: "about 1933 to 1963"
+  landmarks: [ ~"./policy-landmarks-ledger.spw#generations_policy_brown", ~"./policy-landmarks-ledger.spw#generations_policy_boarding_schools" ]
+  classroom: "slates and chalkboards, recitation, segregated schools across much of the country"
+ }
+
+ #>generations_rung_boomers
+ ^["boomers"]{
+  born: "1946 to 1964"
+  in_school: "about 1951 to 1982"
+  landmarks: [ ~"./policy-landmarks-ledger.spw#generations_policy_ndea", ~"./policy-landmarks-ledger.spw#generations_policy_esea", ~"./policy-landmarks-ledger.spw#generations_policy_civil_rights" ]
+  classroom: "New Math sets and number bases, new science courses, desegregation fights"
+
+  #>generations_rung_new_math
+  ^["new_math"]{
+   #:claim #!settled
+   statement: "The School Mathematics Study Group, formed in 1958, wrote New Math materials stressing sets and structure; Morris Kline attacked the movement in 1973."
+   sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_schoenfeld_2004", ~"../../registries/sources/learning-and-generations.spw#src_learn_kline_1973" ]
+  }
+ }
+
+ #>generations_rung_gen_x
+ ^["gen_x"]{
+  born: "1965 to 1980"
+  in_school: "about 1970 to 1998"
+  landmarks: [ ~"./policy-landmarks-ledger.spw#generations_policy_eha", ~"./policy-landmarks-ledger.spw#generations_policy_title_ix", ~"./policy-landmarks-ledger.spw#generations_policy_nation_at_risk" ]
+  classroom: "back to basics, minimum competency tests, the first classroom microcomputers"
+ }
+
+ #>generations_rung_millennials
+ ^["millennials"]{
+  born: "1981 to 1996"
+  in_school: "about 1986 to 2014"
+  landmarks: [ ~"./policy-landmarks-ledger.spw#generations_policy_nclb" ]
+  classroom: "state standards, the 1989 NCTM standards, whole language and then phonics, the classroom internet"
+  standards: ~"./curriculum-wars-matrix.spw#generations_wars_nctm"
+ }
+
+ #>generations_rung_gen_z
+ ^["gen_z"]{
+  born: "1997 to about 2012"
+  in_school: "about 2002 to 2030"
+  landmarks: [ ~"./policy-landmarks-ledger.spw#generations_policy_ccss", ~"./policy-landmarks-ledger.spw#generations_policy_essa" ]
+  classroom: "yearly state tests, Common Core math, laptops for each student, remote school in 2020"
+
+  #>generations_rung_pandemic
+  ^["pandemic"]{
+   #:claim #!settled
+   statement: "Age 9 scores on the NAEP long-term trend fell 5 points in reading and 7 in math from 2020 to 2022, the first math decline in the series."
+   reads: %[learn.naep.ltt_age9_reading_drop_pts, learn.naep.ltt_age9_math_drop_pts]
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_naep_ltt_2022"
+  }
+ }
+
+ #>generations_rung_gen_alpha
+ ^["gen_alpha"]{
+  born: "from about 2013, in common usage"
+  in_school: "from about 2018"
+  landmarks: [ ~"./policy-landmarks-ledger.spw#generations_policy_essa" ]
+  classroom: "post-pandemic recovery, state reading laws, limits on phones during the school day"
+  reading_laws: %[learn.policy.states_reading_laws_count]
+  phone_limits: %[learn.policy.states_phone_limits_count]
+ }
+}
+
+^["try"]{
+ #>generations_curricula_try_window
+ ^["find_your_rung"]{
+  materials: [
+   "a birth year, yours or a willing relative",
+   "this ladder"
+  ]
+  steps: <<
+   "add five to the birth year for the first school year" ;
+   "add eighteen for the last" ;
+   "find the rung whose window overlaps most" ;
+   "list two landmarks from that rung to ask about"
+  >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "ask before writing down anyone else's birth year"
+  shows: ~"./us-curricula-by-generation.spw#generations_curricula_caution"
+ }
+}
+
+#>generations_curricula_new_math_q
+?["Did children of the New Math become the parents most puzzled by Common Core math?"]{
+ #:depth #!historical ~#lens(historical layer)
+ #:claim #!speculative
+ ~#hypothesis: "Parents who met an abstract reform as children trust procedure-first methods more and read new strategy-based homework as a repeat."
+ !probe{ "ask parents from two cohorts to explain a Common Core subtraction worksheet and how they were taught" =id[p_learn_curricula_new_math] =kind[interview] }
+ ~"./us-curricula-by-generation.spw#generations_rung_new_math" ~#neighbor(nearest)
+}

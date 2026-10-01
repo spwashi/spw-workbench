@@ -1,0 +1,130 @@
+# Manuscript to Market
+#
+# The steps between a finished draft and a launch day as a prerequisite graph, with each dependency written as a typed bias edge.
+
+#>authorship_manuscript_dag
+#:layer #!pragmatics
+#:domain #!authorship
+#:form #!protocol
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Manuscript to Market"
+ ~#claim: "Publishing a book is a prerequisite graph: edits, cover, metadata, identifiers, and files converge on upload, and the longest chain sets the launch date."
+ ~#proof: "Each step is an anchored node and each dependency a needs edge, so the critical path can be read off the graph."
+ ~#door: "Lay the graph out on cards with the try kit, then pick a route in the platforms matrix."
+ ~#audience: "first-time and returning independent authors"
+ continuity: "Manuscript to Market | longest chain"
+ cold_open: "A book launches when its longest chain of steps is done."
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "claude-opus-5.5"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ needs: [ ~"./author-toolchain.spw#authorship_toolchain", ~"./platforms-and-business-models.spw#authorship_platforms" ]
+ feeds: [ ~"./author-season-calendar.spw#authorship_season_calendar" ]
+}
+
+^["concepts"]{
+ primary: [ #critical_path, #file_format ]
+ transfers: [ #exclusivity, #disclosure ]
+ tensions: [ #platform_dependence ]
+}
+
+^["nodes"]{
+ ^["text"]{
+  #>authorship_dag_manuscript
+  ^["manuscript"]{ step: "a complete draft the author will stand behind", output: "draft file" }
+  #>authorship_dag_dev_edit
+  ^["developmental_edit"]{ step: "structure, pacing, character, and genre promise", output: "revision plan and revised draft" }
+  #>authorship_dag_line_copy
+  ^["line_and_copy"]{ step: "sentences first, then grammar, consistency, and continuity", output: "clean manuscript" }
+  #>authorship_dag_proof
+  ^["proofread"]{ step: "read the formatted proof, not the manuscript", output: "corrected final files" }
+ }
+ ^["package"]{
+  #>authorship_dag_cover_brief
+  ^["cover_brief"]{ step: "genre signals, comparable covers, title treatment", output: "brief for the designer" }
+  #>authorship_dag_cover
+  ^["cover"]{ step: "front cover for eBook; full wrap for print once page count is known", output: "cover files" }
+  #>authorship_dag_metadata
+  ^["metadata"]{ step: "title, subtitle, series, description, categories, keywords", output: "metadata sheet" }
+  #>authorship_dag_isbn
+  ^["identifiers"]{ step: "ISBN per format where required; rules differ by store and country, verify", output: "identifier list" }
+ }
+ ^["files"]{
+  #>authorship_dag_formatting
+  ^["formatting"]{ step: "EPUB or KPF for eBook, PDF interior for print", output: "validated files" }
+  #>authorship_dag_route
+  ^["route"]{ step: "choose Select exclusivity or wide distribution per title", output: "route decision" }
+ }
+ ^["release"]{
+  #>authorship_dag_upload
+  ^["upload"]{ step: "files, cover, metadata, price, and rights in each store", output: "live or scheduled listings" }
+  #>authorship_dag_preorder
+  ^["preorder"]{ step: "optional listing before release; store windows and penalties verify", output: "preorder page" }
+  #>authorship_dag_arcs
+  ^["review_copies"]{ step: "send review copies with a disclosure request and no sentiment condition", output: "early reviews" }
+  #>authorship_dag_launch
+  ^["launch"]{ step: "release day: newsletter, store pages checked, links shared", output: "a book readers can buy" }
+ }
+}
+
+^["dependencies"]{
+ =~"./manuscript-to-market-dag.spw#authorship_dag_dev_edit"[needs]{ ~"./manuscript-to-market-dag.spw#authorship_dag_manuscript" }
+ =~"./manuscript-to-market-dag.spw#authorship_dag_line_copy"[needs]{ ~"./manuscript-to-market-dag.spw#authorship_dag_dev_edit" }
+ =~"./manuscript-to-market-dag.spw#authorship_dag_cover_brief"[needs]{ ~"./manuscript-to-market-dag.spw#authorship_dag_manuscript" }
+ =~"./manuscript-to-market-dag.spw#authorship_dag_metadata"[needs]{ ~"./manuscript-to-market-dag.spw#authorship_dag_dev_edit" }
+ =~"./manuscript-to-market-dag.spw#authorship_dag_cover"[needs]{ ~"./manuscript-to-market-dag.spw#authorship_dag_cover_brief", ~"./manuscript-to-market-dag.spw#authorship_dag_metadata" }
+ =~"./manuscript-to-market-dag.spw#authorship_dag_isbn"[needs]{ ~"./manuscript-to-market-dag.spw#authorship_dag_metadata" }
+ =~"./manuscript-to-market-dag.spw#authorship_dag_formatting"[needs]{ ~"./manuscript-to-market-dag.spw#authorship_dag_line_copy" }
+ =~"./manuscript-to-market-dag.spw#authorship_dag_proof"[needs]{ ~"./manuscript-to-market-dag.spw#authorship_dag_formatting" }
+ =~"./manuscript-to-market-dag.spw#authorship_dag_route"[needs]{ ~"./manuscript-to-market-dag.spw#authorship_dag_metadata" }
+ =~"./manuscript-to-market-dag.spw#authorship_dag_upload"[needs]{ ~"./manuscript-to-market-dag.spw#authorship_dag_proof", ~"./manuscript-to-market-dag.spw#authorship_dag_cover", ~"./manuscript-to-market-dag.spw#authorship_dag_isbn", ~"./manuscript-to-market-dag.spw#authorship_dag_route" }
+ =~"./manuscript-to-market-dag.spw#authorship_dag_preorder"[needs]{ ~"./manuscript-to-market-dag.spw#authorship_dag_cover", ~"./manuscript-to-market-dag.spw#authorship_dag_metadata", ~"./manuscript-to-market-dag.spw#authorship_dag_route" }
+ =~"./manuscript-to-market-dag.spw#authorship_dag_arcs"[needs]{ ~"./manuscript-to-market-dag.spw#authorship_dag_proof" }
+ =~"./manuscript-to-market-dag.spw#authorship_dag_launch"[needs]{ ~"./manuscript-to-market-dag.spw#authorship_dag_upload", ~"./manuscript-to-market-dag.spw#authorship_dag_arcs" }
+}
+
+^["reading"]{
+ #>authorship_dag_critical_path
+ ^["critical_path"]{
+  #:claim #!interpretive
+  statement: "The text chain usually sets the date: draft, developmental edit, line and copy, formatting, proof, upload, launch; cover and metadata run beside it."
+  ~#counter(a slow cover designer can move the cover onto the critical path)
+ }
+ route_coupling: "choosing Select couples the route to exclusivity for 90-day terms; see the platforms matrix"
+ disclosure_coupling: "review copies carry the disclosure rule from the marketing ledger"
+}
+
+^["try"]{
+ #>authorship_dag_try
+ ^["card_graph"]{
+  materials: [ "fourteen index cards", "a marker", "string or a long table", "a calendar" ]
+  steps: << "write one node per card" ; "lay cards left to right so every card sits after what it needs" ; "write a duration estimate on each card" ; "trace the longest chain and circle it" ; "count back from a launch date along that chain" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "none worth naming"
+  shows: ~"./manuscript-to-market-dag.spw#authorship_dag_critical_path"
+ }
+}
+
+#>authorship_dag_path_q
+?["Which edge most often moves a first book off its planned date?"]{
+ #:depth #!computational ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "For first books the developmental edit, not formatting or cover, is the edge that slips most."
+ !probe{ "ask first-time authors which step slipped and by how much relative to plan" =id[p_creator_dag_slip] =kind[interview] }
+ $%[graph.out_degree]
+ ~"./manuscript-to-market-dag.spw#authorship_dag_critical_path" ~#neighbor(nearest)
+}

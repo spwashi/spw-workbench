@@ -1,0 +1,21 @@
+#>dim_one
+^["dimensionless"]{
+ up: .{ }
+ down: .{ }
+}
+#>q_mech
+^"mech"{
+ %mech.rho{ value: 1000, unit: "kg/m^3", up: .{ M: 1 }, down: .{ L: 3 } }
+ %mech.mu{ value: 0.001, unit: "Pa s", up: .{ M: 1 }, down: .{ L: 1, T: 1 } }
+}
+#>pi_reynolds
+^["reynolds"]{
+ num: .{ rho: 1, v: 1, d: 1 }
+ den: .{ mu: 1 }
+ reduces_to: ~"./dimension-bench.spw#dim_one"
+}
+#>rxn_methane
+^["methane_combustion"]{
+ scheme: CH4 + O2 -> CO2 + H2O
+ coefficients: #[ _, _, _, _ ]
+}

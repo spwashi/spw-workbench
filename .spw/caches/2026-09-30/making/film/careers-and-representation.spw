@@ -1,0 +1,132 @@
+# Careers and Representation
+#
+# Agents, managers, and lawyers compared by license, procurement, and role; the guilds and locals a film career passes through.
+
+#>film_careers
+#:layer #!reference
+#:domain #!film
+#:form #!comparison
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Careers and Representation"
+ ~#claim: "In California only a licensed talent agency may procure work for an artist; managers advise and develop, lawyers paper the deal, and the guilds set the floors."
+ ~#proof: "The Talent Agencies Act in the California Labor Code and Marathon Entertainment v. Blasi (2008)."
+ ~#door: "Read the procurement claims first, then the matrix rows, then the guilds."
+ ~#audience: "writers, directors, actors, and crew starting a career in US film and television"
+ cold_open: "Who may find you work in California is a legal question, and procurement is the line that separates an agent from a manager."
+ continuity: "Careers and Representation | procurement"
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/film-production-and-industry/hollywood-careers-and-industry-navigation.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: [
+  "managers are not free of procurement law in California: unlicensed procurement falls under the Talent Agencies Act (Marathon v. Blasi, 2008)",
+  "the lawyer fee figures and hourly rates are removed as unsourced",
+  "option windows and price percentages are removed as unsourced; see the adaptation dossier for option mechanics",
+  "the DGA claim of sole authority over acting notes is removed pending the agreement text"
+ ]
+}
+
+^["edges"]{
+ see: [ ~"./labor-agreements-ledger.spw#film_labor_ledger", ~"./adaptation-and-rights.spw#film_rights_option" ]
+}
+
+^["concepts"]{
+ primary: [ #procurement, #guild_floor ]
+ transfers: [ #option, #rights_chain ]
+ tensions: [ #packaging ]
+}
+
+^["procurement"]{
+ #>film_careers_taa
+ ^["license_rule"]{
+  #:claim #!settled
+  statement: "California's Talent Agencies Act bars anyone without a talent agency license from procuring employment for an artist, with an exemption for recording contracts."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_cal_taa"
+ }
+ #>film_careers_exception
+ ^["agent_request"]{
+  #:claim #!settled
+  statement: "An unlicensed person may negotiate an employment contract in conjunction with, and at the request of, a licensed talent agency."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_cal_taa"
+ }
+ #>film_careers_marathon
+ ^["marathon_v_blasi"]{
+  #:claim #!settled
+  statement: "In Marathon Entertainment v. Blasi (2008) the California Supreme Court held that the Act reaches managers who procure, and that the Labor Commissioner may sever unlawful procurement from lawful services."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_marathon_blasi_2008"
+  ^["limits"]{
+   holds: "artists and representatives under California law"
+   fails: "New York and other states use different licensing rules"
+  }
+ }
+}
+
+^["matrix"]{
+ columns: #[ license, may_procure, main_work, paid_by, oversight ]
+
+ #>film_careers_agents
+ ^["agents"]{
+  license: "California talent agency license"
+  may_procure: "yes"
+  main_work: "find and negotiate employment"
+  paid_by: "commission on covered work, capped by guild franchise rules"
+  oversight: "Labor Commissioner and guild franchise agreements"
+ }
+ #>film_careers_managers
+ ^["managers"]{
+  license: "none required to advise"
+  may_procure: "only alongside a licensed agent and at its request"
+  main_work: "career strategy, material development, relationships"
+  paid_by: "commission set by contract"
+  oversight: "the Talent Agencies Act when they procure"
+ }
+ #>film_careers_lawyers
+ ^["lawyers"]{
+  license: "state bar"
+  may_procure: "treated case by case under the Act"
+  main_work: "draft and negotiate contracts, chain of title, and clearances"
+  paid_by: "hourly or a percentage, set by engagement"
+  oversight: "state bar rules"
+ }
+}
+
+^["guilds"]{
+ #>film_careers_guild_rows
+ ^["rows"]{
+  wga: "writers; the Minimum Basic Agreement sets script and residual floors"
+  dga: "directors, assistant directors, and unit production managers; the Basic Agreement"
+  sag_aftra: "performers; the TV and theatrical contracts"
+  iatse: "crafts and technicians through locals, such as Local 600 cinematographers and Local 700 editors"
+  teamsters_399: "drivers, casting directors, and location managers in Los Angeles"
+ }
+ ledger: ~"./labor-agreements-ledger.spw#film_labor_ledger"
+}
+
+^["meetings"]{
+ #>film_careers_generals
+ ^["generals_and_pitches"]{
+  #:claim #!interpretive
+  statement: "General meetings build relationships before any job exists; a pitch then sells one project, often with a lookbook for tone."
+ }
+}
+
+#>film_careers_producing_q
+?["Does the procurement line push managers toward producing credits on client projects?"]{
+ #:depth #!social ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "Because managers may not procure alone but may produce, more manager income shifts into producing roles where the law is clearer."
+ !probe{ "read published Labor Commissioner Talent Agencies Act determinations for producing arrangements" =id[p_film_careers_producing] =kind[lit] }
+ ~"./careers-and-representation.spw#film_careers_marathon" ~#neighbor(nearest)
+}
