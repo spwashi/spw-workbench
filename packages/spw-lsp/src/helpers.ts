@@ -199,13 +199,7 @@ export async function resolveReferencePath(
     if (hit.kind === 'pathRef') {
         if (hit.target.includes('*')) return null
 
-        let cleanTarget = hit.target
-        let hash = ''
-        const hashIdx = cleanTarget.indexOf('#')
-        if (hashIdx >= 0) {
-            hash = cleanTarget.slice(hashIdx)
-            cleanTarget = cleanTarget.slice(0, hashIdx)
-        }
+        const { path: cleanTarget, hash } = splitAnchor(hit.target)
 
         const target = cleanTarget ? path.resolve(docDir, cleanTarget) : docPath
         const resolved = await resolveCandidate(target)
@@ -241,13 +235,7 @@ export async function resolveReferencePath(
     }
     if (!rootBase || hit.target.includes('*')) return null
 
-    let cleanTarget = hit.target
-    let hash = ''
-    const hashIdx = cleanTarget.indexOf('#')
-    if (hashIdx >= 0) {
-        hash = cleanTarget.slice(hashIdx)
-        cleanTarget = cleanTarget.slice(0, hashIdx)
-    }
+    const { path: cleanTarget, hash } = splitAnchor(hit.target)
 
     const target = cleanTarget ? path.resolve(rootBase, cleanTarget) : docPath
     const resolved = await resolveCandidate(target)
@@ -321,9 +309,21 @@ export async function mapWithConcurrency<T, R>(
 
 // ── String utilities ────────────────────────────────────────────
 
-export function stripAnchor(target: string): string {
+/**
+ * Split a reference target at its first `#`: the path the resolver walks, and
+ * the `#fragment` (hash included, or '') that addresses a node inside it.
+ * Applies to a raw target only — a resolved path may carry a `#` of its own
+ * in a directory name above the target.
+ */
+export function splitAnchor(target: string): { path: string; hash: string } {
     const hashIdx = target.indexOf('#')
-    return hashIdx >= 0 ? target.slice(0, hashIdx) : target
+    return hashIdx >= 0
+        ? { path: target.slice(0, hashIdx), hash: target.slice(hashIdx) }
+        : { path: target, hash: '' }
+}
+
+export function stripAnchor(target: string): string {
+    return splitAnchor(target).path
 }
 
 export function normalizeRelPath(value: string): string {

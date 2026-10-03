@@ -6,16 +6,15 @@
  */
 
 import path from 'node:path'
-import { promises as fs } from 'node:fs'
-import { parse, resolveFragment } from '@spwashi/spw-seed'
 import { selectPathRefs, findPathRefAtPosition } from '../spw-selector'
+import { anchorLineReader, type AnchorLineReader } from '../anchor-lines'
 import type {
     LspLocation, LspRange, LspTextEdit, LspPosition,
     LspPrepareRenameResult, LspWorkspaceEdit,
     DefinitionParams, DocumentParams, ReferencesParams, RenameParams,
     HandlerDeps,
 } from '../types'
-import { escapeRegex, stripAnchor } from '../helpers'
+import { escapeRegex, splitAnchor, stripAnchor } from '../helpers'
 
 function referenceSearchNeedles(hit: { kind: string; root?: string; target: string }, targetPath: string): string[] {
     const needles = new Set<string>()
@@ -39,10 +38,23 @@ function referenceSearchNeedles(hit: { kind: string; root?: string; target: stri
 
 /** The `#anchor` half of a reference target, when it names one. */
 function fragmentOf(target: string): string | null {
-    const hash = target.indexOf('#')
-    if (hash < 0) return null
-    const fragment = target.slice(hash + 1).trim()
+    const fragment = splitAnchor(target).hash.slice(1).trim()
     return fragment.length > 0 ? fragment : null
+}
+
+/**
+ * The file a resolved reference lands in. `resolveReferencePath` re-attaches
+ * the target's `#fragment` to the path it resolves, but the fragment addresses
+ * a node inside the file — the filesystem and the URI want the file alone.
+ *
+ * Only the exact suffix the target carried is removed, so a `#` elsewhere in
+ * the resolved path (a `c#` directory above the citing file, say) survives
+ * where a first-`#` split would truncate it.
+ */
+function fileOf(resolved: string, target: string): string {
+    const { hash } = splitAnchor(target)
+    if (!hash) return resolved
+    return resolved.endsWith(hash) ? resolved.slice(0, resolved.length - hash.length) : resolved
 }
 
 /** The whole file, when a reference names no finer address. */
@@ -56,28 +68,19 @@ const FILE_START: LspRange = {
  * surface and return the line it marks.
  *
  * A fragment addresses a node, not a file, so `~"spec.spw#registry"` should
- * land on the registry rather than the top of the page. Falls back to the
- * file start whenever the anchor is missing or the file cannot be read — a
- * stale fragment should still navigate somewhere useful.
+ * land on the registry rather than the top of the page. The line comes from
+ * the server's anchor index (see anchor-lines.ts); go to definition parses
+ * only when the index cannot settle the name, and a link listing never
+ * parses. Falls back to the file start whenever the
+ * anchor is missing or the file cannot be read — a stale fragment should
+ * still navigate somewhere useful.
  */
-async function fragmentRange(targetPath: string, fragment: string): Promise<LspRange> {
-    try {
-        const text = await fs.readFile(targetPath, 'utf8')
-        const ast = parse(text).ast
-        if (!ast) return FILE_START
-
-        const resolved = resolveFragment(ast, fragment)
-        const particle = resolved.binding?.particle
-        if (!particle) return FILE_START
-
-        // Spans are 1-indexed at the seed; LSP positions are 0-indexed.
-        const line = Math.max(0, particle.span.start.line - 1)
-        return {
-            start: { line, character: 0 },
-            end: { line, character: 0 },
-        }
-    } catch {
-        return FILE_START
+async function fragmentRange(anchorLine: AnchorLineReader, targetPath: string, fragment: string): Promise<LspRange> {
+    const line = await anchorLine(targetPath, fragment)
+    if (line === null) return FILE_START
+    return {
+        start: { line, character: 0 },
+        end: { line, character: 0 },
     }
 }
 
@@ -101,10 +104,11 @@ export async function definition(params: DefinitionParams, deps: HandlerDeps): P
     const resolved = await deps.resolveReferencePath(hit, source, docPath, { allowDirectory: true })
     if (!resolved) return null
 
+    const targetPath = fileOf(resolved, hit.target)
     const fragment = fragmentOf(hit.target)
     return [{
-        uri: deps.uriFromPath(resolved),
-        range: fragment ? await fragmentRange(resolved, fragment) : FILE_START,
+        uri: deps.uriFromPath(targetPath),
+        range: fragment ? await fragmentRange(anchorLineReader(deps), targetPath, fragment) : FILE_START,
     }]
 }
 
@@ -125,15 +129,20 @@ export async function documentLinks(
     const doc = deps.serverIndex.getDocument(uri)
     const hits = doc?.selectorHits ?? selectPathRefs(source)
     const links: Array<{ range: LspRange; target: string }> = []
+    // One reader per request: refs that share a target share its lookup.
+    // Index only: a listing runs on every edit and must not parse its targets.
+    const anchorLine = anchorLineReader(deps, { parse: false })
 
     for (const hit of hits) {
         const resolved = await deps.resolveReferencePath(hit, source, docPath, { allowDirectory: true })
         if (!resolved) continue
 
-        // A fragment rides along as `#L<n>`, the line address editors honour
-        // when opening a link target.
+        // A fragment rides along as `#L<n>` (1-based), the line address
+        // editors honour when opening a link target; the raw `#anchor` means
+        // nothing to them, so it never reaches the URI.
+        const targetPath = fileOf(resolved, hit.target)
         const fragment = fragmentOf(hit.target)
-        const anchored = fragment ? await fragmentRange(resolved, fragment) : null
+        const anchored = fragment ? await fragmentRange(anchorLine, targetPath, fragment) : null
         const suffix = anchored && anchored.start.line > 0 ? `#L${anchored.start.line + 1}` : ''
 
         links.push({
@@ -141,7 +150,7 @@ export async function documentLinks(
                 start: { line: hit.span.startLine, character: hit.span.startCharacter },
                 end: { line: hit.span.endLine, character: hit.span.endCharacter },
             },
-            target: `${deps.uriFromPath(resolved)}${suffix}`,
+            target: `${deps.uriFromPath(targetPath)}${suffix}`,
         })
     }
 
@@ -169,7 +178,9 @@ export async function references(params: ReferencesParams, deps: HandlerDeps): P
         if (hit) {
             const resolved = await deps.resolveReferencePath(hit, source, docPath, { allowDirectory: true })
             if (resolved) {
-                const targetPath = stripAnchor(resolved)
+                // References are file-level: citations into any node of the
+                // same file count. Each side drops only its own fragment.
+                const targetPath = fileOf(resolved, hit.target)
                 const files = await deps.getWorkspaceSpwFiles()
                 const basenameNeedle = path.basename(targetPath)
                 const needles = referenceSearchNeedles(hit, targetPath)
@@ -199,7 +210,7 @@ export async function references(params: ReferencesParams, deps: HandlerDeps): P
                     for (const candidate of candidateHits) {
                         const candidateResolved = await deps.resolveReferencePath(candidate, fileText, filePath, { allowDirectory: true })
                         if (!candidateResolved) continue
-                        if (stripAnchor(candidateResolved) !== targetPath) continue
+                        if (fileOf(candidateResolved, candidate.target) !== targetPath) continue
                         matches.push({
                             uri: fileUri,
                             range: {

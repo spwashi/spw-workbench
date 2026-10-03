@@ -2,8 +2,9 @@
 #
 # A specimen for software engineers. Each decision keeps its journal entry,
 # its claim, its measurement, its state, and its commit, and every number
-# names where it was read. Two landed, one is held for cost, one claim was
-# retracted, and the commit history itself is measured as a corpus.
+# names where it was read. Three landed, one of them only after it was held
+# for its cost; one claim was retracted; and the commit history itself is
+# measured as a corpus.
 #
 # @see docs/design/product/engineering-door.spw
 # @see docs/design/product/time-paths.spw
@@ -21,6 +22,8 @@
  @corpus_scan: ~"../../../packages/spw-cli/src/corpus-scan.ts"
  @candidates: ~"../../../packages/spw-cli/src/citation-candidates.ts"
  @apposition: ~"../../../packages/spw-lsp/src/apposition.ts"
+ @anchor_lines: ~"../../../packages/spw-lsp/src/anchor-lines.ts"
+ @citation_stream: ~"../../../.agents/plans/citation-navigation/wip.spw"
  @wonder: ~"../../../packages/spw-lsp/src/handlers/wonder.ts"
  @episodes: ~"../../../scripts/analyzers/spw-episode-corpus.ts"
  @hook: ~"../../../scripts/commit-review/validate-commit-message.sh"
@@ -29,11 +32,11 @@
 ^"emit"{
  ~#title: "Decision trail"
  ~#claim: "Four decisions from one week keep their journal entry, measurement, state, and commit, so each can be followed from the note that started it to the code that settled it."
- ~#proof: "Commit bodies c79a096a and 6690d686, the caches-cut plan stream, and the patch hardening notes; the episode measure is a script anyone can rerun."
- ~#door: "Start at the held decision; it shows a cost measured before it was paid."
+ ~#proof: "Commit bodies c79a096a and 6690d686, the caches-cut and citation-navigation plan streams, and the patch reviews; the episode measure is a script anyone can rerun."
+ ~#door: "Start at anchor navigation; it was held for a measured cost, fixed, reviewed, and landed."
  ~#audience: "software engineers and the leads who decide what lands"
  continuity: "decision trail | measured"
- cold_open: "This decision trail shows a patch that worked, measured too slow, and held back until its cost comes down."
+ cold_open: "This decision trail shows a patch that worked, measured too slow, waited for its cost to come down, and then landed."
 }
 
 ^["states"]{
@@ -80,23 +83,27 @@
 
 #>trail_anchor_navigation
 ^["anchor_navigation"]{
- #:decision #!held
+ #:decision #!landed
  journal: "go to definition on ~\"file#anchor\" lands on line 1 of the file instead of the anchor line"
- claim: "documentLinks should carry the anchor line so a click lands where the fragment points"
- worked: "the patch passed two hardening reviews; the jump is correct"
- cost: %[trail.nav.links_main_ms, trail.nav.links_patched_ms]
- cause: "each request parses every anchored target file again"
- fix_under_way: #[
-  "read anchor lines from the server index the LSP already keeps",
-  "memoize per target version",
-  "read open buffers instead of disk"
+ claim: "documentLinks and definition should carry the anchor line so a click lands where the fragment points"
+ history: << "worked: two hardening reviews found the jump correct" ; "held: each request parsed every anchored target again" ; "fixed: lines come from the server anchor index, open buffers first, parses memoized" ; "reviewed: approved with nits; a link listing now never parses" ; "landed" >>
+ cost_when_held: %[trail.nav.links_main_ms, trail.nav.links_patched_ms]
+ cost_landed: %[trail.nav.dag_links_main_ms, trail.nav.dag_links_landed_ms, trail.nav.manifest_cold_ms]
+ wire: #[
+  "textDocument/definition and textDocument/documentLink through navigation.ts",
+  "ServerIndex anchor entries fed by the workspace scan, save, and watched-file refresh"
  ]
- patch: ~"../../../.agents/plans/caches-cut-2026-09-30/references/patches/fragnav-hardened.diff"
- why_held: "a correct feature that turns a 7 ms request into a 600 ms one makes every file with links feel slow"
+ code: ~"../../../packages/spw-lsp/src/anchor-lines.ts"
+ why_it_was_held: "a correct feature that turned a 7 ms request into a 600 ms one would make every file with links feel slow"
+ receipt: ~"../../../.agents/plans/citation-navigation/wip.spw"
  ^["limits"]{
-  holds: "measured on one 3-ref file under the review harness"
-  fails: "a larger workspace may cost more; the retained sample is still owed"
+  holds: "once the first workspace scan has indexed the target"
+  fails: "before that scan reaches a target, a link opens the file rather than the line; go to definition still lands it"
  }
+ follow_ups: #[
+  "hover path-peek and inlay hints still read x.spw#anchor as a file path",
+  "an indexed file edited outside the editor with no watch event keeps a stale line"
+ ]
 }
 
 #>trail_parse_time_retraction
@@ -170,7 +177,19 @@
  }
  %trail.nav.links_patched_ms{
   value: 600, unit: "ms, about"
-  at: "same request, anchor-line patch", src: ~"../../../.agents/plans/caches-cut-2026-09-30/PLAN.md", status: #measured
+  at: "same request, round-2 anchor-line patch, the one that was held", src: ~"../../../.agents/plans/caches-cut-2026-09-30/PLAN.md", status: #measured
+ }
+ %trail.nav.dag_links_main_ms{
+  value: 28.23, unit: "ms median"
+  at: "documentLink on curriculum-dag.spw, 167 anchored refs, main, load 5 to 15", src: ~"../../../.agents/plans/citation-navigation/wip.spw", status: #measured
+ }
+ %trail.nav.dag_links_landed_ms{
+  value: 16.87, unit: "ms median"
+  at: "same file and load, targets indexed, landed reader; a reviewer reproduced the ratio at load 51", src: ~"../../../.agents/plans/citation-navigation/wip.spw", status: #measured
+ }
+ %trail.nav.manifest_cold_ms{
+  value: 152, unit: "ms median"
+  at: "documentLink on manifest.spw, 255 refs, before any scan, landed reader, load 32 to 51; about 29 s before the review fix", src: ~"../../../.agents/plans/citation-navigation/wip.spw", status: #measured
  }
  %trail.parse.snapshot_ms{
   value: 880, unit: "ms"
