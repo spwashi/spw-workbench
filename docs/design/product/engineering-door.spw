@@ -1,0 +1,168 @@
+# Spw for software engineers — the latent value
+#
+# The value is not a new syntax for code. It is a notation in which the note,
+# the number, the reason, the commit, and the page share addresses, so the
+# trail behind a change can be followed and checked like code. Each claim
+# below says whether it is implemented or proposed.
+#
+# @see docs/design/product/decision-trail.spw
+# @see docs/design/product/time-paths.spw
+
+#>product_engineering_door
+#:layer #!pragmatics
+#:status #!proposed
+
+^["roots"]{
+ @trail: ~"./decision-trail.spw"
+ @paths: ~"./time-paths.spw"
+ @resolve: ~"../../../packages/spw-cli/src/resolve.ts"
+ @corpus_scan: ~"../../../packages/spw-cli/src/corpus-scan.ts"
+ @apposition: ~"../../../packages/spw-lsp/src/apposition.ts"
+ @gate: ~"../../../scripts/analyzers/spw-cut-gate.ts"
+ @episodes: ~"../../../scripts/analyzers/spw-episode-corpus.ts"
+ @persona: ~"../../../.agents/plans/caches-cut-2026-09-30/references/studies/persona.md"
+}
+
+^"emit"{
+ ~#title: "Spw for software engineers"
+ ~#claim: "Spw keeps the reason behind a change addressable: claims, measured costs, decisions, and commits link by anchor and are checked by tools."
+ ~#proof: "This repository: four decisions traced with wire and cost, and 424 of 517 commits carrying an episode block, 379 of which parse clean."
+ ~#door: "Open the decision trail and follow the held decision to its measurement."
+ ~#audience: "software engineers and the leads who pay for their time"
+ continuity: "software engineers | reason behind a change"
+ cold_open: "Software engineers spend hours rebuilding the reason behind a change; here that reason has an address."
+}
+
+#>product_engineering_door_problem
+^["problem"]{
+ ~#claim: "The reason behind a change usually lives where no tool can check it: a review thread, a chat log, a commit message, a memory."
+ symptoms: #[
+  "a regression is measured twice because the first measurement was not kept",
+  "a decision to hold a patch is lost, and the patch lands later without its cost",
+  "a wrong claim is corrected in conversation and survives in the doc"
+ ]
+}
+
+#>product_engineering_door_value
+^["value"]{
+ #>product_value_addressable
+ ^["addressable_reasons"]{
+  #:claim #!implemented
+  statement: "A claim, a measurement, or a decision gets an anchor, and any file links to it with a path and a fragment."
+  tools: #[
+   "spw resolve classifies every path ref as file, route, directory, or external",
+   "the LSP indexes anchors and readings, hovers wonders, and lists workspace symbols"
+  ]
+  evidence: ~"./decision-trail.spw#trail_lens_visibility"
+  ^["limits"]{
+   holds: "go to definition lands on the target file today"
+   fails: "landing on the anchor line is held until its cost is fixed"
+  }
+ }
+ #>product_value_checkable
+ ^["checkable_trail"]{
+  #:claim #!implemented
+  statement: "Links, anchors, sources, and quantity handles are checked by tools, so a broken reason fails like a broken import."
+  tools: #[ "spw lint", "spw resolve --warn", "spw graph and spw census", "the cut gate as a CI step" ]
+  evidence: ~"./decision-trail.spw#trail_graph_fragments"
+ }
+ #>product_value_costed
+ ^["costed_decisions"]{
+  #:claim #!implemented
+  statement: "A change names its wire, the surfaces it touches, and its cost, measured before and after."
+  evidence: ~"./decision-trail.spw#trail_anchor_navigation"
+  ^["limits"]{
+   holds: "when the measurement is kept beside the decision"
+   fails: "the convention is social today; no tool refuses a change that names no cost"
+  }
+ }
+ #>product_value_history
+ ^["history_corpus"]{
+  #:claim #!measured
+  statement: "Commit bodies carry an episode block, so history can be parsed and queried as a corpus."
+  evidence: ~"./decision-trail.spw#trail_episode_corpus"
+  ^["limits"]{
+   holds: "for commits written under the episode convention"
+   fails: "the hook checks that a block exists, not that it parses; 45 blocks do not parse clean"
+  }
+ }
+ #>product_value_retraction
+ ^["honest_retraction"]{
+  #:claim #!implemented
+  statement: "A wrong claim changes state with a receipt instead of vanishing, so a reader sees what was believed and why it changed."
+  evidence: ~"./decision-trail.spw#trail_parse_time_retraction"
+ }
+ #>product_value_two_readers
+ ^["two_readers"]{
+  #:claim #!implemented
+  statement: "One surface with an emit card projects to an engineer note and to a plain brief, so the same trail serves the engineer and the sponsor."
+  evidence: ~"../../../packages/spw-cli/src/emit.ts"
+  ^["limits"]{
+   holds: "for the fields the emit card names"
+   fails: "the brief reads the card, not the body; a card that oversells is projected faithfully"
+  }
+ }
+}
+
+#>product_engineering_door_false_friends
+^["false_friends"]{
+ ~#note: "C-family habits that misread Spw, verified in the persona study; read these before a first edit."
+ hash: "# plus a space is a comment; #word is a tag, #>name is an anchor, #[ ] is a set, not an attribute list"
+ equals: "= is named configuration, not assignment; =~\"a#x\"[axis]{ } is a bias edge"
+ compare: "== and < > parse as a comparison token no rule accepts; the surface degrades"
+ caret: "^[\"name\"]{ } is a named frame the LSP indexes, not xor"
+ percent: "%[ns.key] is a measure handle, not modulo"
+ star_bang: "* is value and ! is action; neither is a pointer or a negation"
+ braces: "braces hold definitions and do not scope names; anchors are found workspace-wide"
+ source: ~"../../../.agents/plans/caches-cut-2026-09-30/references/studies/persona.md"
+}
+
+#>product_engineering_door_market
+^["market"]{
+ ~#note: "Practices engineers already spend time on; what Spw adds is that the record is linked and checked."
+ decision_records: .{
+  known: "architecture decision records, proposed by Michael Nygard in 2011"
+  spw_adds: "a decision links to its measurement and its commit by anchor, and a state change keeps its receipt"
+ }
+ literate_programming: .{
+  known: "literate programming, Donald Knuth, 1984"
+  spw_adds: "prose and structure stay in one parseable surface that tools can query"
+ }
+ request_for_comments: .{
+  known: "the IETF RFC series since 1969, and language RFC processes"
+  spw_adds: "a proposal carries its wonders, probes, and limits as addressable parts"
+ }
+ typed_commits: .{
+  known: "typed commit subjects such as Conventional Commits"
+  spw_adds: "the body is structured too: scene, change, verify"
+ }
+ lab_notebooks: .{
+  known: "dated, append-only research notebooks"
+  spw_adds: "plan streams are dated and typed, and plan cards and the plan index derive from them"
+ }
+ ^["limits"]{
+  holds: "as positioning against known practice"
+  fails: "no market size is claimed; demand is untested"
+ }
+}
+
+#>product_engineering_door_next
+^["proposed"]{
+ #:claim #!proposed
+ moves: #[
+  "land anchor-line navigation once documentLinks reads the server anchor index",
+  "a trail view that follows one decision from stream entry to commit",
+  "a cost cell convention for tool changes, so wire and cost leave commit prose",
+  "a commit hook that parses the episode block instead of only finding it",
+  "an emit ir that writes a relative sourcePath, so no IR carries a home path"
+ ]
+}
+
+^["try"]{
+ #>product_engineering_door_try
+ ^["follow_a_decision"]{
+  steps: << "npm run spw -- resolve docs/design/product --warn" ; "npm run spw -- emit pack docs/design/product/decision-trail.spw --hosts brief,eng_note" ; "node --import tsx scripts/analyzers/spw-episode-corpus.ts --failing" >>
+  time: .{ n: 2, unit: "minutes" }
+  shows: ~"./decision-trail.spw#trail_episode_corpus"
+ }
+}

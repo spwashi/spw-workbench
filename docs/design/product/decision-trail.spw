@@ -1,0 +1,202 @@
+# Decision trail — one week of engineering decisions, with wire and cost
+#
+# A specimen for software engineers. Each decision keeps its journal entry,
+# its claim, its measurement, its state, and its commit, and every number
+# names where it was read. Two landed, one is held for cost, one claim was
+# retracted, and the commit history itself is measured as a corpus.
+#
+# @see docs/design/product/engineering-door.spw
+# @see docs/design/product/time-paths.spw
+
+#>product_decision_trail
+#:layer #!pragmatics
+#:status #!measured
+
+^["roots"]{
+ @door: ~"./engineering-door.spw"
+ @paths: ~"./time-paths.spw"
+ @cut_stream: ~"../../../.agents/plans/caches-cut-2026-09-30/wip.spw"
+ @cut_plan: ~"../../../.agents/plans/caches-cut-2026-09-30/PLAN.md"
+ @patches: ~"../../../.agents/plans/caches-cut-2026-09-30/references/patches"
+ @corpus_scan: ~"../../../packages/spw-cli/src/corpus-scan.ts"
+ @candidates: ~"../../../packages/spw-cli/src/citation-candidates.ts"
+ @apposition: ~"../../../packages/spw-lsp/src/apposition.ts"
+ @wonder: ~"../../../packages/spw-lsp/src/handlers/wonder.ts"
+ @episodes: ~"../../../scripts/analyzers/spw-episode-corpus.ts"
+ @hook: ~"../../../scripts/commit-review/validate-commit-message.sh"
+}
+
+^"emit"{
+ ~#title: "Decision trail"
+ ~#claim: "Four decisions from one week keep their journal entry, measurement, state, and commit, so each can be followed from the note that started it to the code that settled it."
+ ~#proof: "Commit bodies c79a096a and 6690d686, the caches-cut plan stream, and the patch hardening notes; the episode measure is a script anyone can rerun."
+ ~#door: "Start at the held decision; it shows a cost measured before it was paid."
+ ~#audience: "software engineers and the leads who decide what lands"
+ continuity: "decision trail | measured"
+ cold_open: "This decision trail shows a patch that worked, measured too slow, and held back until its cost comes down."
+}
+
+^["states"]{
+ landed: "on main, with wire, cost, and verification in the commit body"
+ held: "measured and reviewed, kept off main until its cost is paid down"
+ retracted: "a claim withdrawn, with the receipt that refuted it kept beside it"
+ wire: "every caller, protocol method, or product a change touches"
+ cost: "the same measure taken before and after, on the same input"
+}
+
+#>trail_graph_fragments
+^["graph_fragments"]{
+ #:decision #!landed
+ commit: "c79a096a"
+ journal: "graph and census reported valid path#anchor links as broken while spw resolve accepted them"
+ claim: "graph and census should treat files as nodes and resolve roots the way resolve does"
+ wire: #[
+  "every scanCorpus caller: census, graph, analyze, formula, lattice, taste, inspect corpus",
+  "the CorpusProduct JSON, versioned spw.corpus/2 so stale disk memos are not served"
+ ]
+ cost: %[trail.graph.census_cpu_main_s, trail.graph.census_cpu_patched_s]
+ effect: %[trail.graph.broken_main, trail.graph.broken_patched, trail.graph.fragment_nodes_main]
+ meaning_change: "orphans on a wide corpus rise from 1 to 21; each new orphan cites no file, only deixis, declarations, or markers"
+ code: ~"../../../packages/spw-cli/src/corpus-scan.ts"
+ verify: "two hardening rounds; CLI suite 265 of 265; seed suite 793 of 793; a reviewer reproduced the counts on a frozen corpus"
+ ^["limits"]{
+  holds: "for the corpus and options measured"
+  fails: "one A/B pair is a sample, not a benchmark; the ratio is not a promise for other corpora"
+ }
+}
+
+#>trail_lens_visibility
+^["lens_visibility"]{
+ #:decision #!landed
+ commit: "6690d686"
+ journal: "the cut writes every wonder lens as ~#lens(phrase) and the editor could not see any of them"
+ claim: "the LSP should index apposition readings as their own kind and show them where wonders are read"
+ wire: #[ "workspace/symbol", "textDocument/hover", "textDocument/inlayHint", "textDocument/semanticTokens", "spw/annotations" ]
+ cost: %[trail.lens.hover_main_ms, trail.lens.hover_patched_ms, trail.lens.symbol_main_ms, trail.lens.symbol_patched_ms]
+ code: ~"../../../packages/spw-lsp/src/apposition.ts"
+ verify: "three review rounds; mutation checks fail the new tests when the ranking, the body boundary, or the co-occurrence filter is removed"
+ left_on_purpose: "references, rename, documentHighlight, and spw-probes still read ~#lens( by regex"
+}
+
+#>trail_anchor_navigation
+^["anchor_navigation"]{
+ #:decision #!held
+ journal: "go to definition on ~\"file#anchor\" lands on line 1 of the file instead of the anchor line"
+ claim: "documentLinks should carry the anchor line so a click lands where the fragment points"
+ worked: "the patch passed two hardening reviews; the jump is correct"
+ cost: %[trail.nav.links_main_ms, trail.nav.links_patched_ms]
+ cause: "each request parses every anchored target file again"
+ fix_under_way: #[
+  "read anchor lines from the server index the LSP already keeps",
+  "memoize per target version",
+  "read open buffers instead of disk"
+ ]
+ patch: ~"../../../.agents/plans/caches-cut-2026-09-30/references/patches/fragnav-hardened.diff"
+ why_held: "a correct feature that turns a 7 ms request into a 600 ms one makes every file with links feel slow"
+ ^["limits"]{
+  holds: "measured on one 3-ref file under the review harness"
+  fails: "a larger workspace may cost more; the retained sample is still owed"
+ }
+}
+
+#>trail_parse_time_retraction
+^["parse_time_retraction"]{
+ #:decision #!retracted
+ journal: ~"../../../.agents/plans/caches-cut-2026-09-30/wip.spw"
+ claim_was: "two cut files took 45 to 60 minutes each to parse, so the parser has a pathological input"
+ refuted_by: "the 3634 s and 2728 s timings match two macOS sleep intervals in the power log to within 20 s"
+ cost: %[trail.parse.snapshot_ms]
+ cause: "the timing script read wall-clock Date.now, which counts time the machine was asleep"
+ lesson: #[
+  "time parses with process.cpuUsage or a monotonic clock, and record wall time beside it",
+  "keep the machine awake during long runs"
+ ]
+ kept: "the original surprise entry stays in the stream; the revise entry follows it"
+}
+
+#>trail_episode_corpus
+^["episode_corpus"]{
+ #:decision #!measured
+ claim: "commit bodies carry a Spw episode block, so history can be parsed and queried as a corpus"
+ measure: ~"../../../scripts/analyzers/spw-episode-corpus.ts"
+ reads: %[trail.history.commits, trail.history.with_episode, trail.history.parse_clean, trail.history.three_parts]
+ failures: "most unclean blocks hold unquoted prose punctuation: hyphen bullets in 34, em dashes in 7, arrows in 2"
+ finding: "the commit hook finds the block with a regex and never parses it"
+ hook: ~"../../../scripts/commit-review/validate-commit-message.sh"
+ next: "parse the block in the hook, and quote prose inside scene, change, and verify"
+}
+
+#>trail_quantities
+^["quantities"]{
+ %trail.graph.census_cpu_main_s{
+  value: 91, unit: "s user CPU"
+  at: "spw census over .spw and docs/theory, main before c79a096a", src: "commit c79a096a body", status: #measured
+ }
+ %trail.graph.census_cpu_patched_s{
+  value: 47, unit: "s user CPU"
+  at: "same census, patched; one A/B pair", src: "commit c79a096a body", status: #measured
+ }
+ %trail.graph.broken_main{
+  value: 1607, unit: "links reported broken"
+  at: "a main snapshot before the fix", src: "commit c79a096a body", status: #measured
+ }
+ %trail.graph.broken_patched{
+  value: 393, unit: "links reported broken"
+  at: "same snapshot, patched; path and root ref totals unchanged", src: "commit c79a096a body", status: #measured
+ }
+ %trail.graph.fragment_nodes_main{
+  value: 1416, unit: "file#anchor pseudo-nodes"
+  at: "a main snapshot before the fix; zero after", src: "commit c79a096a body", status: #measured
+ }
+ %trail.lens.hover_main_ms{
+  value: 0.15, unit: "ms median"
+  at: "wonder hover under heavy load, main", src: "commit 6690d686 body", status: #measured
+ }
+ %trail.lens.hover_patched_ms{
+  value: 0.92, unit: "ms median"
+  at: "wonder hover under heavy load, patched", src: "commit 6690d686 body", status: #measured
+ }
+ %trail.lens.symbol_main_ms{
+  value: 10.5, unit: "ms median"
+  at: "workspace symbol lookup, main", src: "commit 6690d686 body", status: #measured
+ }
+ %trail.lens.symbol_patched_ms{
+  value: 15, unit: "ms median"
+  at: "workspace symbol lookup, patched", src: "commit 6690d686 body", status: #measured
+ }
+ %trail.nav.links_main_ms{
+  value: 7, unit: "ms, about"
+  at: "textDocument/documentLink on a 3-ref file, main", src: ~"../../../.agents/plans/caches-cut-2026-09-30/PLAN.md", status: #measured
+ }
+ %trail.nav.links_patched_ms{
+  value: 600, unit: "ms, about"
+  at: "same request, anchor-line patch", src: ~"../../../.agents/plans/caches-cut-2026-09-30/PLAN.md", status: #measured
+ }
+ %trail.parse.snapshot_ms{
+  value: 880, unit: "ms"
+  at: "parse of the snapshot taken during the slow window", src: ~"../../../.agents/plans/caches-cut-2026-09-30/wip.spw", status: #measured
+ }
+ %trail.history.commits{
+  value: 517, unit: "commits"
+  at: "main, 2026-01-08 to 2026-10-03, before this commit", src: ~"../../../scripts/analyzers/spw-episode-corpus.ts", status: #measured
+ }
+ %trail.history.with_episode{
+  value: 424, unit: "commits with an episode block"
+  at: "same range", src: ~"../../../scripts/analyzers/spw-episode-corpus.ts", status: #measured
+ }
+ %trail.history.parse_clean{
+  value: 379, unit: "blocks with no error, warning, or prose fallback"
+  at: "same range, seed parser at 651b535b", src: ~"../../../scripts/analyzers/spw-episode-corpus.ts", status: #measured
+ }
+ %trail.history.three_parts{
+  value: 210, unit: "clean blocks with scene, change, and verify"
+  at: "same range", src: ~"../../../scripts/analyzers/spw-episode-corpus.ts", status: #measured
+ }
+}
+
+#>trail_wonder_next
+?["What would it take for a tool to refuse a change that names no cost?"]{
+ #:depth #!practical ~#lens(cost receipt)
+ #:claim #!speculative
+ !probe{ "add a cost cell check to the commit hook for changes under packages/, and count how many of the last fifty landed commits would pass" =id[p_product_cost_gate] =kind[measure] }
+}

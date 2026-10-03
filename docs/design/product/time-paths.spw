@@ -1,0 +1,200 @@
+# Valuable paths of time — journaling through publishing, with nourishment
+#
+# Product frame for the workbench and the projects that mount it. An hour is
+# spent once. A path of time is valuable when the hour leaves something that
+# compounds, can be found, can be exchanged, and feeds the next hour and the
+# people who carried it. This file traces that path through six verticals
+# and names where hours leak today.
+#
+# @see docs/design/product/engineering-door.spw
+# @see docs/design/product/decision-trail.spw
+# @see .agents/plans/index.spw
+
+#>product_time_paths
+#:layer #!pragmatics
+#:status #!proposed
+
+^["roots"]{
+ @door: ~"./engineering-door.spw"
+ @trail: ~"./decision-trail.spw"
+ @plans: ~"../../../.agents/plans/index.spw"
+ @plan_schema: ~"../../../.agents/plans/_schema/wip-template.spw"
+ @plan_index: ~"../../../scripts/plans/plan-index.ts"
+ @emit: ~"../../../packages/spw-cli/src/emit.ts"
+ @gate: ~"../../../scripts/analyzers/spw-cut-gate.ts"
+ @shelf: ~"../../../.spw/caches/index.spw"
+ @resume: ~"../../../.spw/caches/resume/2026-09-30-direction.spw"
+}
+
+^"emit"{
+ ~#title: "Valuable paths of time"
+ ~#claim: "An hour of work is worth what it leaves behind: something that compounds, can be found, can be exchanged, and feeds the next hour and the people who carried it."
+ ~#proof: "Traced on this workbench, where plan streams, receipts, episode commits, and emitted briefs already carry one hour from a journal entry to a published surface."
+ ~#door: "Pick one vertical and follow a single hour from journal to publication; then read where it leaks."
+ ~#audience: "patrons, collaborators, and engineers deciding where the next hour goes"
+ continuity: "paths of time | hour"
+ cold_open: "Every hour here leaves a trail, and the work now is choosing paths of time where that trail pays back the hour."
+}
+
+#>product_time_paths_test
+^["test"]{
+ ~#law: "A path of time is valuable when the hour leaves something that passes all four tests."
+ compounds: "later work reuses, cites, or links it instead of redoing it"
+ findable: "a reader can land on it alone, through one door, without a tour"
+ exchangeable: "someone can fund it, buy it, commission it, or hire for it"
+ nourishing: "it returns material to the shared pool and pay to the people who carried it"
+ ^["limits"]{
+  holds: "for work whose output can be stored and addressed"
+  fails: "for presence that matters because it is not stored; a live room is more than a content source"
+ }
+}
+
+#>product_time_paths_spine
+^["spine"]{
+ ~#note: "Six stages every vertical shares. today names what already carries the stage in this repository."
+ journal: .{
+  act: "write down what happened while it is cheap to remember"
+  today: "spw plan stream appends a dated, typed entry to a wip.spw stream"
+  returns: "an entry later work can cite instead of recall"
+ }
+ distill: .{
+  act: "turn entries into claims with limits and named quantities"
+  today: "plan cards, claim frames with ^[limits], registry cells, the plan index"
+  returns: "a baseline the next decision starts from"
+ }
+ check: .{
+  act: "let a tool and a skeptic try to break it"
+  today: "spw lint, spw resolve, the cut gate, adversarial fact-check passes"
+  returns: "a review standing a stranger can trust or discount"
+ }
+ compose: .{
+  act: "bundle checked surfaces for one reader"
+  today: "spw expand bundles and spw emit pack, one source read by many hosts"
+  returns: "one source that serves several readers without forking"
+ }
+ publish: .{
+  act: "release an addressable revision"
+  today: "episode commits behind a human gate, docs, mounted consumer sites"
+  returns: "a revision anyone can point at"
+ }
+ return: .{
+  act: "feed what was learned back into the pool"
+  today: "resume notes, errata, quarantine frames, retractions kept with receipts"
+  returns: "compost the next season grows from"
+ }
+}
+
+#>product_time_paths_verticals
+^["verticals"]{
+ #>vertical_engineering
+ engineering: .{
+  clock: "commit"
+  path: << "plan stream entry" ; "claim with a measured cost" ; "review and suite" ; "decision held or landed" ; "episode commit" ; "release note" >>
+  exchange: "teams pay for fewer hours spent rebuilding why code changed: tools, audits, and hires"
+  leak: "costs live in commit prose, not in cells a tool can read"
+  specimen: ~"./decision-trail.spw#trail_anchor_navigation"
+ }
+ #>vertical_live_room
+ live_room: .{
+  clock: "live hour"
+  path: << "chat torrent and the host readings" ; "named readings and recurring questions" ; "the room itself: who returns, which reading lands" ; "clips and stitch prompts" ; "a room card per session" ; "the room gets its own vocabulary back" >>
+  exchange: "gifts and subscriptions in the room; commissions, courses, and sponsorship once a trail exists"
+  leak: "most of a live hour leaves no addressable trace"
+ }
+ #>vertical_video_corpus
+ video_corpus: .{
+  clock: "stitchable video"
+  path: << "a back catalog" ; "transcripts, tags, and named readings" ; "dedupe and sequence" ; "trails through the catalog" ; "a course, a season, or an archive door" ; "stitches from others feed the next trail" >>
+  exchange: "curated trails, courses, licensing, and archive access"
+  leak: "a feed ranks by recency, so time already spent sinks; a trail ranks by sequence and keeps it working"
+ }
+ #>vertical_research_cache
+ research_cache: .{
+  clock: "wave"
+  path: << "wonder probe" ; "sourced claim with limits" ; "adversarial fact-check" ; "dated cut" ; "emitted reference pack" ; "errata and quarantine" >>
+  exchange: "curricula, reference packs, and teaching"
+  leak: "an unreviewed surface reads as authority unless its standing is disclosed"
+  shelf: ~"../../../.spw/caches/index.spw"
+ }
+ #>vertical_author_season
+ author_season: .{
+  clock: "production season, October to early January"
+  path: << "September reflection" ; "treatment" ; "draft and table read" ; "season arc" ; "a book, a film, or a season page" ; "the January reset seeds the next season" >>
+  exchange: "the work itself: readers, screenings, and rights"
+  leak: "drafts without an arc stall at the treatment"
+ }
+ #>vertical_mounted_site
+ mounted_site: .{
+  clock: "mount revision"
+  path: << "workbench revision" ; "consumer reads its own canon first" ; "spw doctor and mount check" ; "one slice becomes a fragment door" ; "site page" ; "findings return as resume notes, not doctrine" >>
+  exchange: "a public face that patrons and clients can read without the notation"
+  leak: "a mount that copies workbench doctrine instead of owning its canon"
+  resume: ~"../../../.spw/caches/resume/2026-09-30-direction.spw"
+ }
+}
+
+#>product_time_paths_nourishment
+^["nourishment"]{
+ ~#claim: "A healthy pool cycles: growth is matched by decomposition, and what decomposes feeds the roots."
+ producers: "journal entries, live readings, videos, measurements"
+ consumers: "readers, viewers, patrons, engineers, the next wave of writers"
+ decomposers: "review, errata, consolidation, retraction with a receipt, quarantine"
+ pool: #[ "anchors", "source cells", "quantity cells", "probes", "named readings", "vocabulary" ]
+ roots: "the people who carry the work; nourishment that never reaches them is extraction, not cycling"
+ ^["limits"]{
+  holds: "as a check that every stage returns something to the pool and to the people"
+  fails: "as a measure; the metaphor names a flow and does not size it"
+ }
+}
+
+#>product_time_paths_ledger
+^["ledger"]{
+ ~#note: "One reading of the agent session meter that produced the dated cut, its studies, and its tool fixes; read by the owner on 2026-10-03."
+ api_time: "2d 19h 35m"
+ wall_time: "3d 3h 44m"
+ lines_added: 93599
+ lines_removed: 1562
+ growth_to_compost: "about 60 to 1"
+ reading: "growth outran decomposition; the next season opens by composting: review, consolidate, and retire before adding"
+ disclosure: "money figures stay with the owner until the owner chooses to show them"
+}
+
+#>product_time_paths_spectators
+^["spectators"]{
+ ~#claim: "A spectator should not have to learn the notation to see where an hour went and what it returned."
+ reads: #[
+  "the plan index: one card per live plan, with its phase and gist",
+  "commit subjects and episode blocks: scene, change, verify",
+  "emitted briefs: spw emit pack --host brief turns any surface with an emit card into plain prose",
+  "the ledger: hours in, artifacts out, what was composted"
+ ]
+ not_to_infer: #[
+  "an unreviewed surface is not endorsed",
+  "a large line count is not value",
+  "a held decision is not a failure; it is a cost measured before it was paid"
+ ]
+ ask: "support paths rather than single outputs; an hour that compounds outlasts an hour that is watched once"
+}
+
+#>product_time_paths_first
+^["first_path"]{
+ #:claim #!proposed
+ statement: "The fastest path from hours to income runs through engineers, because they already pay to spend less time rebuilding why code changed."
+ why: #[
+  "the proof is on disk: this repository keeps decisions, costs, and retractions as linked, checkable surfaces",
+  "the offer needs no new product: a decision-trail audit of a team repository is a service that can start now",
+  "that income buys time for the slower paths: the video catalog, the live room, and the season"
+ ]
+ then: << "index the stitchable back catalog into trails" ; "emit a monthly plain brief for patrons" ; "pay the carriers named in receipts" >>
+ ^["limits"]{
+  holds: "while engineering judgment can be sold directly"
+  fails: "if the service eats the hours the catalog and the season need; cap it"
+ }
+}
+
+#>product_time_paths_wonder
+?["What would a live hour leave behind if the room could write to the trail?"]{
+ #:depth #!practical ~#lens(nutrient cycle)
+ #:claim #!speculative
+ !probe{ "for one live session, keep only named readings and recurring questions as a room card, and count how many reappear in the next three sessions" =id[p_product_room_card] =kind[measure] }
+}
