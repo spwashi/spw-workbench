@@ -7,6 +7,7 @@ import process from 'node:process'
 import { formatCorpusProductSpw, formatPopulationSpw } from '@spwashi/spw-seed'
 import { printHelpPage } from './help'
 import {
+  externalRefTotal,
   filterInventory,
   inventoryStats,
   scanCorpus,
@@ -241,6 +242,7 @@ export async function runSpwInventCli(argv: string[] = process.argv): Promise<vo
   const limited = rows.slice(0, args.limit)
   const stats = inventoryStats(scan.inventory)
   const broken = scan.topography.brokenTargets.length
+  const external = externalRefTotal(scan.signals)
 
   setMetaQuiet(args.quiet)
 
@@ -258,6 +260,7 @@ export async function runSpwInventCli(argv: string[] = process.argv): Promise<vo
           cyclic: scan.topography.cyclic,
           layers: scan.topography.layers.length,
           brokenTargets: broken,
+          externalRefs: external,
           links: scan.topography.links,
         },
         returned: limited.length,
@@ -278,7 +281,8 @@ export async function runSpwInventCli(argv: string[] = process.argv): Promise<vo
     index_depth: indexDepth,
   })
   emitDetail(
-    `refs path=${stats.pathRefs} root=${stats.rootRefs}  frames=${stats.frames}  broken=${broken}`,
+    `refs path=${stats.pathRefs} root=${stats.rootRefs}  frames=${stats.frames}  broken=${broken}` +
+      (external ? `  external=${external}` : ''),
   )
   const roleCounts = Object.entries(stats.byRole)
     .sort((a, b) => b[1] - a[1])

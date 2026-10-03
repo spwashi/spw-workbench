@@ -5,16 +5,21 @@
  *   memory — process-local full scan (sources + product)
  *   disk   — CorpusProduct only under .spw/gen/session/corpus-memo/
  *
- * Fingerprint = options + per-file mtime/size (not full content hash).
- * Invalidation is deterministic: any mtime/size change forces fresh scan.
+ * Fingerprint = options + product version + root registry + per-file
+ * mtime/size (not full content hash). Invalidation is deterministic: any
+ * mtime/size change, link-model bump, or root table edit forces a fresh scan.
  */
 
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import type { CorpusProduct } from '@spwashi/spw-seed'
-import { formatCorpusProductSpw } from '@spwashi/spw-seed'
+import {
+  CORPUS_PRODUCT_SCHEMA,
+  CORPUS_PRODUCT_VERSION,
+  formatCorpusProductSpw,
+  type CorpusProduct,
+} from '@spwashi/spw-seed'
 import type { CorpusScanResult } from './corpus-scan'
 
 export const CORPUS_MEMO_SCHEMA = 'spw.corpus_memo/1' as const
@@ -26,6 +31,13 @@ export interface CorpusMemoKeyParts {
   resolvePaths: boolean
   indexDepth: string
   maxFiles: number
+  /**
+   * CORPUS_PRODUCT_VERSION — bumped when citations become edges differently, so
+   * a disk memo written under an older link model is not served back.
+   */
+  productVersion: string
+  /** Root name → consumer-relative bases the scan follows `@name/…` through. */
+  rootRegistry: Array<[string, string[]]>
   /** rel → "mtimeMs:size" */
   fileStats: Record<string, string>
 }
@@ -70,6 +82,8 @@ export function fingerprintCorpusKey(parts: CorpusMemoKeyParts): string {
     resolvePaths: parts.resolvePaths,
     indexDepth: parts.indexDepth,
     maxFiles: parts.maxFiles,
+    productVersion: parts.productVersion,
+    rootRegistry: parts.rootRegistry,
     files: Object.keys(parts.fileStats)
       .sort()
       .map(k => [k, parts.fileStats[k]]),
@@ -157,7 +171,11 @@ export function getDiskCorpusProduct(
   }
   try {
     const raw = JSON.parse(readFileSync(p, 'utf8')) as CorpusProduct
-    if (raw.fingerprint !== fingerprint || raw.schema !== 'spw.corpus/1') {
+    if (
+      raw.fingerprint !== fingerprint ||
+      raw.schema !== CORPUS_PRODUCT_SCHEMA ||
+      raw.version !== CORPUS_PRODUCT_VERSION
+    ) {
       stats.diskMisses += 1
       return undefined
     }

@@ -19,11 +19,15 @@ export type RelationKind = 'path' | 'root' | 'frame' | 'other'
 
 export interface CorpusLink {
   from: string
+  /** Target node. For file citations this is the file alone — never `file#anchor`. */
   to: string
   kind: RelationKind
   /** Optional line for navigation */
   line?: number
+  /** The citation as written (`./x.spw#a`, `@root/path`). */
   label?: string
+  /** Fragment the citation names inside `to`, kept off the node id. */
+  anchor?: string
 }
 
 export interface CorpusFileSignals {
@@ -32,6 +36,12 @@ export interface CorpusFileSignals {
   sigils: Record<string, number>
   pathRefCount: number
   rootRefCount: number
+  /**
+   * Path refs that name no corpus file because they classify as external
+   * (a URI scheme — or prose such as `~"Note: …"` that reads as one). Counted so
+   * they stay visible though they make no edge. Absent when zero.
+   */
+  externalRefCount?: number
   frameCount: number
   annotationHints: number
   lineCount: number
@@ -162,6 +172,12 @@ export function analyzeTopography(
     knownFiles?: Set<string>
     signals?: CorpusFileSignals[]
     hubTop?: number
+    /**
+     * Root shelf usage (`@shelf/…` name → count) tallied from every root ref as
+     * written, including refs that made no edge. Without it the root_shelves
+     * strand is read from the root links alone.
+     */
+    rootShelves?: Readonly<Record<string, number>>
   } = {},
 ): TopographyReport {
   const known = opts.knownFiles
@@ -217,7 +233,7 @@ export function analyzeTopography(
     }
   }
 
-  const strands = buildStrands(links, opts.signals ?? [], sigilHistogram)
+  const strands = buildStrands(links, opts.signals ?? [], sigilHistogram, opts.rootShelves)
 
   return {
     files: known?.size ?? new Set(links.map(l => l.from)).size,
@@ -238,6 +254,7 @@ function buildStrands(
   links: CorpusLink[],
   signals: CorpusFileSignals[],
   sigils: Record<string, number>,
+  rootShelves?: Readonly<Record<string, number>>,
 ): FamiliarityStrand[] {
   const strands: FamiliarityStrand[] = []
 
@@ -285,23 +302,35 @@ function buildStrands(
     })
   }
 
-  // Root ref names as shelves
-  const roots = new Map<string, number>()
-  for (const l of links) {
-    if (l.kind !== 'root') continue
-    const root = l.to.split('/')[0] || l.to
-    roots.set(root, (roots.get(root) ?? 0) + 1)
+  // Root ref names as shelves. A resolved root link points at a file, so the
+  // shelf name comes from the citation as written (`@shelf/…`) when present.
+  const roots = new Map<string, number>(rootShelves ? Object.entries(rootShelves) : [])
+  if (!rootShelves) {
+    for (const l of links) {
+      if (l.kind !== 'root') continue
+      const written = l.label?.startsWith('@') ? l.label.slice(1) : l.to
+      const root = rootShelfName(written)
+      roots.set(root, (roots.get(root) ?? 0) + 1)
+    }
   }
   if (roots.size) {
     const top = [...roots.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6)
+    // A tally can hold refs that made no link; keep the score a share (≤ 1).
+    let tallied = 0
+    for (const count of roots.values()) tallied += count
     strands.push({
       id: 'root_shelves',
-      score: top[0]![1] / Math.max(1, links.length),
+      score: top[0]![1] / Math.max(1, links.length, tallied),
       detail: top.map(([r, c]) => `@${r}×${c}`).join(', '),
     })
   }
 
   return strands
+}
+
+/** The shelf a root ref names: `biome/query/hot.spw` → `biome`. */
+export function rootShelfName(written: string): string {
+  return written.split('/')[0] || written
 }
 
 /** Compare two corpora for shared familiarity strands. */
@@ -400,7 +429,12 @@ export function heuristicAnnotationHints(source: string): number {
 // ── Population product (census IR) + corpus product envelope ────
 // Portable: no filesystem. CLI walk + memo attaches fingerprint/roots.
 
-export const CORPUS_PRODUCT_VERSION = 'spw.corpus/1' as const
+/**
+ * Revision of the product's meaning. 2: a citation's node is the file alone
+ * (`anchor` holds the fragment), relative targets try the citing file then the
+ * consumer root, root refs resolve through declared roots or make no node.
+ */
+export const CORPUS_PRODUCT_VERSION = 'spw.corpus/2' as const
 export const CORPUS_PRODUCT_SCHEMA = 'spw.corpus/1' as const
 
 export type PopulationRole = 'hub' | 'orphan' | 'leaf' | 'source' | 'node' | 'broken-target'

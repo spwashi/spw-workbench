@@ -9,7 +9,7 @@ import {
   formatTopographySpw,
   type TopographyReport,
 } from '@spwashi/spw-seed'
-import { scanCorpus } from './corpus-scan'
+import { externalRefTotal, scanCorpus } from './corpus-scan'
 import {
   CORPUS_SPREAD_HELP_LINES,
   indexDepthForSpread,
@@ -240,6 +240,7 @@ export async function runSpwMapCli(argv: string[] = process.argv): Promise<void>
     links: primary.links,
     cyclic: primary.cyclic,
     hubs: primary.hubs.length,
+    external: externalRefTotal(primaryScan.signals) || undefined,
     memo: primaryScan.memoPlane,
     format: args.format,
     spread: args.spread,

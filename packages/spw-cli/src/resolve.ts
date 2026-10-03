@@ -13,6 +13,7 @@ import {
   spwq,
   type ClassifiedCitation,
 } from '@spwashi/spw-seed'
+import { citationCandidates, type ResolveBasis } from './citation-candidates'
 import { collectSpwFiles, DEFAULT_IGNORED_DIRS } from './fs-walk'
 import { formatJsonEnvelope } from './envelope'
 import { printHelpPage } from './help'
@@ -21,12 +22,7 @@ import { resolveWorkspacePath, tryDiscoverSpwWorkspace } from './workspace'
 
 export type ResolveVerdict = 'ok' | 'missing-file' | 'missing-anchor' | 'malformed' | 'external'
 
-/**
- * Which base a relative target resolved against. The citing file's directory is
- * tried first, then the consumer root — the same order the LSP follows, so a
- * `~"packages/…"` citation that navigates in the editor also resolves here.
- */
-export type ResolveBasis = 'file' | 'root'
+export type { ResolveBasis } from './citation-candidates'
 
 export interface ResolvedCitationRow extends ClassifiedCitation {
   file: string
@@ -129,9 +125,7 @@ export async function resolveOne(
   }
 
   const citingDir = path.dirname(path.resolve(consumerRoot, citingFile))
-  const candidates: Array<[ResolveBasis, string]> = classified.kind === 'route'
-    ? [['root', path.resolve(consumerRoot, classified.targetPath.replace(/^\/+/, ''))]]
-    : [['file', path.resolve(citingDir, classified.targetPath)], ['root', path.resolve(consumerRoot, classified.targetPath)]]
+  const candidates = citationCandidates(classified, citingDir, consumerRoot)
 
   let abs = candidates[0]![1]
   row.exists = false

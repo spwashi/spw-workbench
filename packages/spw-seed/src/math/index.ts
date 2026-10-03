@@ -70,6 +70,7 @@ export {
   heuristicAnnotationHints,
   CORPUS_PRODUCT_VERSION,
   CORPUS_PRODUCT_SCHEMA,
+  rootShelfName,
   topSigils,
   populationRoleOf,
   buildPopulation,

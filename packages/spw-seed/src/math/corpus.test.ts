@@ -158,6 +158,27 @@ describe('corpus topography', () => {
     expect(cmp.cosineSigils).toBeGreaterThan(0.5)
     expect(cmp.sharedStrands.length).toBeGreaterThan(0)
   })
+
+  it('names root shelves from the written citation when a root link lands on a file', () => {
+    const r = analyzeTopography([
+      { from: 'a.spw', to: 'lib/shelf/x.spw', kind: 'root', label: '@shelf/x.spw' },
+      { from: 'b.spw', to: 'shared', kind: 'root' },
+    ])
+    const shelves = r.strands.find(s => s.id === 'root_shelves')
+    expect(shelves?.detail).toContain('@shelf×1')
+    expect(shelves?.detail).toContain('@shared×1')
+    expect(shelves?.detail).not.toContain('@lib')
+  })
+
+  it('reads root shelves from the tally the scan passes, including refs that made no edge', () => {
+    const r = analyzeTopography(
+      [{ from: 'a.spw', to: 'lib/shelf/x.spw', kind: 'root', label: '@shelf/x.spw' }],
+      { rootShelves: { shelf: 1, here: 3 } },
+    )
+    const shelves = r.strands.find(s => s.id === 'root_shelves')
+    expect(shelves?.detail).toBe('@here×3, @shelf×1')
+    expect(shelves?.score).toBe(0.75)
+  })
 })
 
 describe('heuristics', () => {

@@ -70,13 +70,13 @@
  }
 
  corpus_scan_memo: .{
-  clock: "mtime+size fingerprint of scanned files + scan options"
+  clock: "mtime+size fingerprint of scanned files + scan options + product version + root registry"
   holds: "CorpusProduct — population rows + TopographyReport + links/signals"
   memory: "process-local full scan (sources + product), cap 16"
   disk: ".spw/gen/session/corpus-memo/<fp>.product.json + dual-read .spw"
-  invalidation: "any mtime/size change → new fingerprint → fresh scan"
+  invalidation: "any mtime/size change, product-version bump, or root-table edit → new fingerprint → fresh scan"
   hosts: #[cli_census, cli_graph, cli_density, cli_formula, cli_taste]
-  product: "spw.corpus/1 (seed: buildCorpusProduct / buildPopulation)"
+  product: "spw.corpus/2 on schema spw.corpus/1 (seed: buildCorpusProduct / buildPopulation)"
   inspect: "spw inspect corpus [roots]"
   law: "sources are not identity — disk memo drops text; re-read on disk hit"
  }
