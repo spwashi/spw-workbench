@@ -1,0 +1,193 @@
+# Editor Extension Arcs
+#
+# The VS Code, IntelliJ, and Neovim plugins and the Obsidian plan, read through their commits and plan cards from February to October 2026.
+
+#>workbench_history_extensions
+#:layer #!reference
+#:domain #!workbench_history
+#:form #!dossier
+#:level #!practitioner
+#:review #!sourced
+#:valence #!bonk
+#:era #!current
+
+^"emit"{
+ ~#title: "Editor Extension Arcs"
+ ~#claim: "Three editor plugins entered this history on 2026-02-26 and each later moved meaning toward the shared server, while the Obsidian plugin stayed a plan."
+ ~#proof: "Commit dates, subjects, and file stats from git log at commit 1aa1dc23, and the editor plan cards in .agents/plans."
+ ~#door: "Read the VS Code move first, then compare the IntelliJ and Neovim rungs, then open the feature radar for what is held."
+ ~#audience: "plugin maintainers and readers dating an editor behavior"
+ continuity: "Editor Extension Arcs | toward the shared server"
+ cold_open: "Three editor plugins arrived together and each grew thinner toward the shared server, while Obsidian stayed a plan."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ method_note: "git log per extension directory at 1aa1dc23 with author dates; subjects are paraphrased and no episode body is quoted"
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/spw-hosts-and-history.spw#q_hosts_history" ]
+ see: [ ~"../hosts/feature-radar.spw#editor_hosts_radar", ~"../hosts/known-defects.spw#editor_hosts_defects" ]
+ contrasts: [ ~"../hosts/host-parity-matrix.spw#editor_hosts_parity" ]
+}
+
+^["concepts"]{
+ primary: [ #thin_client, #plan_card, #sigil_arc ]
+ transfers: [ #parity_of_questions ]
+ tensions: [ #editor_chrome ]
+}
+
+^["case"]{
+ question: "How did three editor plugins written fast in one week come to share one language server?"
+ setting: "a single-owner workbench with a VS Code extension, an IntelliJ plugin, a Neovim plugin, and a planned Obsidian plugin"
+
+ #>workbench_history_extensions_scale
+ ^["scale"]{
+  #:claim #!settled
+  statement: "At 1aa1dc23, 61 commits touch the VS Code extension, 23 the IntelliJ plugin, and 21 the Neovim plugin, 82 distinct commits in all, so many changes cross hosts."
+  reads: %[
+   hosts.history.vscode_commit_count,
+   hosts.history.intellij_commit_count,
+   hosts.history.neovim_commit_count,
+   hosts.history.extension_commit_count
+  ]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log"
+ }
+ #>workbench_history_extensions_entry
+ ^["shared_entry"]{
+  #:claim #!settled
+  statement: "All three plugins enter this history in one commit on 2026-02-26 whose subject calls it a restore, so any earlier life of the plugins is outside this checkout."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log"
+  cites: "git log --reverse -- extensions at 1aa1dc23, first commit 5dc14d60"
+  ^["limits"]{
+   holds: "for the history as it stands after the February rewrite"
+   fails: "for the IntelliJ integration plan, whose stream begins on 2026-02-23, before the plugin entered this history"
+  }
+ }
+}
+
+^["vscode"]{
+ #>workbench_history_extensions_vscode_move
+ ^["providers_to_server"]{
+  #:claim #!settled
+  statement: "On 2026-03-26 one commit deleted the client semantic-token provider and added the server token handler, and a second moved the annotation index behind the server."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log"
+  cites: [ "commit f42a80fa: extensions/vscode-spw/src/providers/semantic-tokens.ts deleted, packages/spw-lsp/src/handlers/semantic-tokens.ts added", "commit 6e3c009c: annotation-index.ts shrinks as stdio-server.ts gains handlers" ]
+ }
+ ^["rungs"]{
+  #>workbench_history_extensions_vscode_burst
+  ^["burst_2026_02_27"]{ at: "2026-02-27", event: "most February VS Code commits land in one day: hover, code lens, symbols, a Concepts tree, then a first full LSP", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+  #>workbench_history_extensions_vscode_thin
+  ^["thin_2026_03_28"]{ at: "2026-03-28", event: "client requests are typed as a thin-client substrate, and marketplace claims narrow to the real startup path", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+  #>workbench_history_extensions_vscode_bundle
+  ^["bundle_2026_07_21"]{ at: "2026-07-21", event: "the extension bundles a URI-native thin client, the start of the bundled-server-only launch", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+  #>workbench_history_extensions_vscode_planes
+  ^["planes_2026_08_24"]{ at: "2026-08-24", event: "instruments read alike across hosts and the cache card names four planes; no VS Code commit follows before 1aa1dc23", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+ }
+ cards: .{
+  vscode_lsp_roadmap: "landed"
+  vscode_workspace_atlas: "landed"
+  vscode_plugin_performance: "dormant, waits on a retained sample"
+ }
+ cards_source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_cards_editors"
+}
+
+^["intellij"]{
+ #>workbench_history_extensions_jb_readers
+ ^["line_readers_early"]{
+  #:claim #!settled
+  statement: "Four of the seven plugin defects in the ledger sit in IntelliJ files first committed on 2026-02-27 or 2026-02-28: the fold builder, the gutter markers, the commenter, and the spellcheck strategy."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_review_scorecard" ]
+  cites: [ "SpwFoldingBuilder.kt and SpwAnnotationLineMarkerProvider.kt first in 8adb4b83", "SpwCommenter.kt first in 92991fd4", "SpwSpellcheckingStrategy.kt first in 307bb023" ]
+  ^["limits"]{
+   holds: "for where each file began"
+   fails: "for when each defect began; the fold builder changed again on 2026-08-24"
+  }
+ }
+ ^["rungs"]{
+  #>workbench_history_extensions_jb_bridge
+  ^["bridge_2026_02_26"]{ at: "2026-02-26", event: "the default launcher bridges to an npm lsp script", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+  #>workbench_history_extensions_jb_native
+  ^["native_2026_02_27"]{ at: "2026-02-27", event: "folding, a structure view, live templates, and gutter icons land as Kotlin features", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+  #>workbench_history_extensions_jb_range
+  ^["range_2026_07_20"]{ at: "2026-07-20", event: "claim anchors get a marker and the platform range widens", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+  #>workbench_history_extensions_jb_verify
+  ^["verify_2026_08_24"]{ at: "2026-08-24", event: "toolchain coordinates align, mounted launchers get tested diagnostics, and read-only instruments ship", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+ }
+ cards: .{
+  intellij_plugin_integration: "done"
+  webstorm_compatibility: "done"
+  intellij_lsp4ij: "planning, held on the 263 gate"
+ }
+ cards_source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_cards_editors"
+}
+
+^["neovim"]{
+ ^["rungs"]{
+  #>workbench_history_extensions_nvim_client
+  ^["client_2026_02_28"]{ at: "2026-02-28", event: "LSP client wiring, a filetype plugin, and path and anchor jumps on gf", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+  #>workbench_history_extensions_nvim_mount
+  ^["mount_2026_07_23"]{ at: "2026-07-23", event: "the server follows a mounted consumer from any working directory", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+  #>workbench_history_extensions_nvim_modules
+  ^["modules_2026_07_26"]{ at: "2026-07-26", event: "the Lua code splits into modules with tree-sitter queries, omni completion, and a health check", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+  #>workbench_history_extensions_nvim_probes
+  ^["probes_2026_08_24"]{ at: "2026-08-24", event: "live probes and refactor planning align with VS Code", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+ }
+ cards: .{ neovim_spw_surfaces: "planning, held to an evidence-state audit" }
+ cards_source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_cards_editors"
+}
+
+^["obsidian"]{
+ #>workbench_history_extensions_obsidian
+ ^["plan_only"]{
+  #:claim #!settled
+  statement: "The obsidian-spw card is dormant: its stream runs over two days in April 2026, its next step is to scaffold the plugin, and no Obsidian directory exists at 1aa1dc23."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_cards_editors"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" ]
+  cites: [ ".agents/plans/obsidian-spw/wip.spw:9-16", ".agents/plans/index.spw:153" ]
+ }
+}
+
+^["lessons"]{
+ #>workbench_history_extensions_one_day
+ ^["parity_in_a_day"]{
+  #:claim #!interpretive
+  statement: "Parity came late and fast: one card, opened and closed on 2026-08-24, made five instruments read alike in three editors and the CLI, after months of separate growth."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_cards_editors"
+  cites: ".agents/plans/editor-cli-instruments/wip.spw:8-15"
+  provenance_label: "a-cut reading of the editor-cli-instruments card"
+ }
+ quiet: "no extension commit is authored after 2026-04-04 and before 2026-07-20, matching the quiet spring of the whole repository"
+}
+
+^["try"]{
+ #>workbench_history_extensions_try_move
+ ^["watch_a_move"]{
+  materials: [ "a checkout of the workbench", "a terminal" ]
+  steps: << "list commits under extensions/vscode-spw with short dates" ; "find the 2026-03-26 commit whose subject names semantic tokens" ; "show its file stat" ; "note which file is deleted in the extension and which is added in the server" ; "open the server file and find the token legend" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "none worth naming; git log and git show only read history"
+  shows: ~"./editor-extension-arcs.spw#workbench_history_extensions_vscode_move"
+ }
+}
+
+#>workbench_history_extensions_q
+?["Would a host started after the server move carry fewer client-side readers?"]{
+ #:depth #!historical ~#lens(historical layer)
+ #:claim #!speculative
+ ~#hypothesis: "A host begun after 2026-03-26, such as the planned Obsidian view, should keep fewer regex readers of its own than the three plugins that predate the move."
+ !probe{ "count client-side line regexes per host and plot each count against the host start date and the date of the token move" =id[p_hosts_history_reader_age] =kind[census] }
+ $%[hosts.history.extension_commit_count, hosts.history.vscode_commit_count]
+ ~"./editor-extension-arcs.spw#workbench_history_extensions_vscode_move" ~#neighbor(nearest)
+}

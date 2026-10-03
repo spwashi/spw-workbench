@@ -7,7 +7,7 @@
 #:domain #!linguistics
 #:form #!dossier
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!honk
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-02"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/university-education/linguistics/sociolinguistics-and-language-documentation.spw", ".spw/caches/university-education/linguistics/taste.spw" ]
@@ -29,12 +29,18 @@
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: [
   "historical linguistics was buried here; it now lives in historical-linguistics.spw",
   "the copula pattern is credited to Labov 1969 and Green 2002 instead of stated without a source",
   "the raw evidentiality hypothesis is kept as a wonder with a counter-study instead of a cognitive fact",
-  "the raw taste file claimed signed languages evolved the exact same architecture as spoken ones; the Nicaraguan case is stated as emergence of shared core properties"
+  "the raw taste file claimed signed languages evolved the exact same architecture as spoken ones; the Nicaraguan case is stated as emergence of shared core properties",
+  "fact check: the language nest claim said Maori families began the movement; it began at the direction of kaumatua, early leaders are named, and Indigenous names now keep their macrons and okina inside strings"
  ]
 }
 
@@ -145,9 +151,14 @@
  #>linguistics_sociolinguistics_nests
  ^["language_nests"]{
   #:claim #!settled
-  statement: "Maori families began Te Kohanga Reo immersion preschools in 1982, and Hawaiian educators founded the Aha Punana Leo in 1983 on that model, opening the first school in 1984."
-  credit: "community-led movements; Hawaiian founders include Larry Kimura, Kauanoe Kamana, and William H. Wilson"
-  source: ~"../../registries/sources/language-and-communities.spw#src_lang_hinton_hale_2001"
+  statement: "Te Kōhanga Reo, begun at the direction of Māori elders, or kaumātua, opened its first language nest in Wainuiomata in 1982, and Hawaiian educators adapted the model from 1983."
+  hawaii: "the ʻAha Pūnana Leo, founded in 1983, opened the first Pūnana Leo preschool in Kekaha, Kauaʻi, in 1984, drawing on kōhanga reo and on Hawaiian-language schools of the nineteenth century"
+  credit: "movements led by their communities; early Māori leaders include Jean Puketapu and Iritana Tāwhiwhirangi, and ʻAha Pūnana Leo founders include Larry Kimura, Kauanoe Kamanā, and William H. Wilson"
+  sources: [
+   ~"../../registries/sources/language-and-communities.spw#src_lang_hinton_hale_2001",
+   ~"../../registries/sources/language-and-communities.spw#src_lang_wiki_kohanga_reo",
+   ~"../../registries/sources/language-and-communities.spw#src_lang_wiki_aha_punana_leo"
+  ]
  }
  #>linguistics_sociolinguistics_custody
  ^["community_custody"]{
@@ -171,7 +182,11 @@
  #:claim #!speculative
  ~#hypothesis: "Speakers of languages with obligatory evidentials attend more to their source of knowledge in speech, with little or no advantage in nonverbal source memory."
  !probe{ "compare source-memory tasks with and without speaking across evidential and non-evidential languages" =id[p_lang_socio_evidential_memory] =kind[lit] }
- sources: [ ~"../../registries/sources/language-and-communities.spw#src_lang_fleck_2007", ~"../../registries/sources/language-and-communities.spw#src_lang_papafragou_2007" ]
+ sources: [
+  ~"../../registries/sources/language-and-communities.spw#src_lang_aikhenvald_2004",
+  ~"../../registries/sources/language-and-communities.spw#src_lang_fleck_2007",
+  ~"../../registries/sources/language-and-communities.spw#src_lang_papafragou_2007"
+ ]
  ~"./sociolinguistics-and-documentation.spw#linguistics_sociolinguistics_documentary" ~#neighbor(nearest)
 }
 

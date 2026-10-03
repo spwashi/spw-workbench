@@ -7,7 +7,7 @@
 #:domain #!provenance
 #:form #!registry
 #:level #!practitioner
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-02"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/ (208 raw paths at commit 229aedcf, one row each below)" ]
@@ -29,8 +29,22 @@
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r3"]{
+   event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   note: "forward refs to planned files other packages had not written yet"
+  }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "all 208 checksums confirmed; keep-row count and the drop-row rule restated"
+  }
+  ^["r6"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   note: "forward refs to planned editor-hosts, design-research, and theory files remain"
+  }
  }
+ checked: "on 2026-10-02 all 208 checksums and line counts were recomputed at 229aedcf and at 1aa1dc23, and every action and target was compared with the plan migration rows; all matched except the shelf index row, which the plan keeps and this manifest records as out of scope by design"
 }
 
 ^["edges"]{
@@ -59,15 +73,22 @@
  #>provenance_manifest_actions
  ^["dispositions"]{
   #:claim #!settled
-  statement: "Actions and targets are copied from the cut plan migration: keep, merge, drop, split, reframe, or quarantine, each with its planned target anchors."
-  reads: %[prov.migration.keep_count, prov.migration.merge_count, prov.migration.drop_count, prov.migration.split_count, prov.migration.reframe_count, prov.migration.quarantine_count]
+  statement: "Actions and targets are copied from the plan migration; the plan's 83 keeps appear as 82 keep rows plus the shelf index, which this manifest records as out of scope."
+  reads: %[
+   prov.migration.keep_count,
+   prov.migration.merge_count,
+   prov.migration.drop_count,
+   prov.migration.split_count,
+   prov.migration.reframe_count,
+   prov.migration.quarantine_count
+  ]
   source: ~"../registries/sources/provenance-and-reference.spw#src_prov_plan_v2"
  }
  rules: [
   "no tarball is carried and no raw path is removed; the shelf stays where it is",
   "the shelf index row records its checksum and out-of-scope status only",
   "resume/ is owner-authored and is not listed",
-  "a drop row points back at this manifest, which is the only place that path is named"
+  "a drop row with no errata target is named only here; drop rows that also target an errata ledger are named there too"
  ]
 }
 
@@ -286,7 +307,7 @@
 ?["Which raw files will drift first if the shelf is left in place for years?"]{
  #:depth #!computational ~#lens(curated collection)
  #:claim #!speculative
- ~#hypothesis: "Rows whose action is drop drift least, because nothing points at them but this manifest; rows with many target anchors invite edits."
+ ~#hypothesis: "Rows whose action is drop drift least, because only this manifest and an errata ledger point at them; rows with many target anchors invite edits."
  !probe{ "rerun every checksum each quarter and count mismatches by action" =id[p_prov_manifest_drift] =kind[census] }
  $%[prov.raw.file_count, prov.migration.drop_count]
  ~"./manifest.spw#provenance_manifest_pin" ~#neighbor(nearest)

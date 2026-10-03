@@ -1,0 +1,106 @@
+# Door: Hash
+#
+# One mark, legible alone: a hash then a space drops the rest of its line, a hash touching a word is a tag, and a hash before square brackets opens a set.
+
+#>spw_door_hash
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!field_guide
+#:level #!intro
+#:review #!sourced
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Door: Hash"
+ ~#claim: "A hash followed by a space drops the rest of the line from the tree, even mid-line; a hash touching a word is a tag."
+ ~#proof: "The seed lexer reads hash plus whitespace as prose to end of line; a probe at commit 1aa1dc23 drops the subfield of a catalog-style line."
+ ~#door: "Write your guess for one catalog line first, then check it with spw inspect source."
+ ~#audience: "C programmers, catalogers, and creators who type a hash every day"
+ continuity: "Door: Hash | rest of the line"
+ cold_open: "A hash then a space drops the rest of the line, so keep data before it or in quotes."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "persona study false_friends_top rank 4 and its door text",
+  "lexer and parser probes run by the writer at commit 1aa1dc23 on 2026-10-02"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   note: "forward refs to planned files of other packages that were not yet written"
+  }
+  ^["r4"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the study said a hash before an apostrophe opens an unterminated string; at 1aa1dc23 the hash takes the word as a tag label and the apostrophe and the rest become a prose payload, with no lexer error",
+  "the study cited comments.ts:50-58; the hash-line matcher runs from comments.ts:52 to :96 at 1aa1dc23",
+  "the 2026-10-02 gate receipt said pass while forward refs to planned files failed; it now records partial, and the 2026-10-03 gate passed once those files existed"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"../glossary/false-friends.spw#spw_false_friends" ]
+}
+
+^["mark"]{
+ #>spw_door_hash_drop
+ ^["drop_to_line_end"]{
+  #:claim #!settled
+  statement: "A hash followed by a space or tab starts a comment that runs to the end of its line wherever it sits, so the words after it leave the tree."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_lexer"
+  cites: [ "packages/spw-seed/src/lexer/matchers/comments.ts:52-96" ]
+  probe_run: "the line field: 245 1# $a Water keeps the binding field: 245 and a loose 1; the hash and everything after it is one COMMENT token"
+  ~#spoken(hash space)
+  ^["limits"]{
+   holds: "a hash followed by a space, a tab, or the end of the line, outside strings, backtick phrases, and apposition bodies"
+   fails: "inside a double-quoted string or a backtick phrase the hash is plain text, and a hash touching a letter is a tag rather than a comment"
+  }
+ }
+ #>spw_door_hash_tag
+ ^["tag_and_set"]{
+  #:claim #!settled
+  statement: "A hash touching a word is a tag operation, a hash before square brackets opens a set, and a hash before a digit takes the rest as a prose payload."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+  probe_run: "color: #ff8800 gives a tag labeled ff8800; color: #3a3a3a gives a prose payload; cast: #1 gives a prose payload; tags: #[ a, b ] gives a set"
+  ~#spoken(hash word)
+ }
+}
+
+^["habits"]{
+ keep: "a hash then a space at the start of a line is a title or a note, as in shell and Python"
+ quote: [
+  "hex colours, written inside double quotes",
+  "hashtags meant as text",
+  "MARC blank indicators and the subfields after them",
+  "numbered items such as cast number one or a cue number"
+ ]
+ unlearn: "a hash then a space mid-line ends the line for the parser; data after it is gone without an error"
+}
+
+^["keyboard"]{
+ #>spw_door_hash_keys
+ ^["where_it_sits"]{
+  #:claim #!settled
+  statement: "On the Windows US layout the hash needs Shift with the 3 key; on the Windows UK layout it has its own unshifted key beside Enter."
+  reads: %[doors.key.hash_us_mods, doors.key.hash_uk_mods]
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_kbd_uk"
+ }
+}
+
+#>spw_door_hash_q
+?["What is left of a catalog line after a mid-line hash and a space?"]{
+ #:depth #!computational ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "A shell or Python habit predicts the drop, while a MARC or hashtag habit predicts a kept subfield, since only the first two notations end a line at a hash."
+ !probe{ "write a guess for field: 245 1# $a Water, then reveal it with spw inspect source --text and --through tokens" =id[p_doors_hash_midline] =kind[thought] }
+ breaks: "shell starts a comment at any word that begins with a hash, so a hash touching a word is a comment there and a tag here"
+ ~"./hash.spw#spw_door_hash_drop" ~#neighbor(nearest)
+}

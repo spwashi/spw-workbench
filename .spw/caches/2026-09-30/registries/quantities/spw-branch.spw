@@ -1,0 +1,311 @@
+# Quantities: Spw Branch
+#
+# Counts the reflexive spw class reads: code inventories pinned to a commit, study measurements still to recheck, persona verdict tallies, live cut receipts, and the research numbers the reading surfaces cite.
+
+#>q_spw_registry
+#:layer #!reference
+#:domain #!registry
+#:form #!registry
+#:level #!mixed
+#:review #!spot_checked
+#:valence #!bone
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ status_legend: "settled cells were counted by the writer at the named commit or read from the linked source; verify cells hold a study measurement or vendor fact that must be re-run or re-read before use"
+ recount: "code and cut counts are dated stills; recount with the command in at before citing them in a later revision"
+ corrections: #[
+  "the critic count of 1,091 receipts was itself a still; the live cut cells below were recounted at write time and will drift as wave 3 lands",
+  "the three editor cells moved from verify to settled after a recount of package.json and a recomputed contrast on 2026-10-03"
+ ]
+}
+
+^["families"]{
+ ^["shared"]{ operator: "%", plane: world, scope: corpus, scheme: tol, form: scalar }
+ ^["seed"]{ id: spw_seed, identifier: spw.seed }
+ ^["cli"]{ id: spw_cli, identifier: spw.cli }
+ ^["lsp"]{ id: spw_lsp, identifier: spw.lsp }
+ ^["editor"]{ id: spw_editor, identifier: spw.editor }
+ ^["corpus"]{ id: spw_corpus, identifier: spw.corpus }
+ ^["fam"]{ id: spw_fam, identifier: spw.fam }
+ ^["cut"]{ id: spw_cut, identifier: spw.cut }
+ ^["research"]{ id: spw_research, identifier: spw.research }
+ ^["keys"]{ id: spw_keys, identifier: spw.keys }
+}
+
+#>q_spw_seed
+^"seed"{
+ %spw.seed.token_types{
+  value: 32, unit: "token types", abs: 0
+  at: "TokenType union, packages/spw-seed/src/types/token.ts:39-71 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_seed_lexer", status: #settled
+ }
+ %spw.seed.ast_node_types{
+  value: 28, unit: "node types", abs: 0
+  at: "ASTNodeType union, packages/spw-seed/src/types/ast/index.ts:13-41 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_seed_ast", status: #settled
+ }
+ %spw.seed.ir_kinds{
+  value: 28, unit: "IR kinds", abs: 0
+  at: "IR_KINDS, packages/spw-seed/src/ir/kinds.ts:9-41 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_seed_ir", status: #settled
+ }
+ %spw.seed.ir_edge_kinds{
+  value: 9, unit: "edge kinds", abs: 0
+  at: "IR_EDGE_KINDS, packages/spw-seed/src/ir/kinds.ts:46-56 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_seed_ir", status: #settled
+ }
+ %spw.seed.granularity_depths{
+  value: 4, unit: "depths", abs: 0
+  at: "GranularityDepth skim, card, field, full, packages/spw-seed/src/ir/granularity.ts:14", src: ~"../sources/spw-branch.spw#src_spw_seed_ir", status: #settled
+ }
+ %spw.seed.ir_lens_levels{
+  value: 7, unit: "levels", abs: 0
+  at: "IrLensLevel file to corpus, packages/spw-seed/src/ir/ref.ts:26", src: ~"../sources/spw-branch.spw#src_spw_seed_ir", status: #settled
+ }
+}
+
+#>q_spw_cli
+^"cli"{
+ %spw.cli.commands{
+  value: 40, unit: "canonical commands", abs: 0
+  at: "name entries in packages/spw-cli/src/commands.ts at 1aa1dc23; aliases not counted", src: ~"../sources/spw-branch.spw#src_spw_cli_commands", status: #settled
+ }
+ %spw.cli.emit_hosts{
+  value: 9, unit: "hosts", abs: 0
+  at: "EMIT_HOSTS, packages/spw-cli/src/emit/types.ts:21-31 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_cli_emit", status: #settled
+ }
+}
+
+#>q_spw_lsp
+^"lsp"{
+ %spw.lsp.legend_types{
+  value: 9, unit: "token types", abs: 0
+  at: "SEMANTIC_TOKENS_LEGEND, packages/spw-lsp/src/handlers/semantic-tokens.ts:75-78 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_lsp", status: #settled
+ }
+ %spw.lsp.legend_modifiers{
+  value: 6, unit: "modifiers", abs: 0
+  at: "SEMANTIC_TOKENS_LEGEND, packages/spw-lsp/src/handlers/semantic-tokens.ts:75-78 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_lsp", status: #settled
+ }
+ %spw.lsp.wip_files{
+  value: 77, unit: "wip.spw files", abs: 0
+  at: "plan wip files parsed with and without a path, tokens study at 229aedcf", src: ~"../sources/spw-branch.spw#src_spw_study_tokens", status: #verify
+ }
+ %spw.lsp.wip_errors_pathless{
+  value: 71, unit: "files with lexer errors", abs: 0
+  at: "of the wip files, parsed without a path as the LSP does, tokens study at 229aedcf", src: ~"../sources/spw-branch.spw#src_spw_study_tokens", status: #verify
+ }
+}
+
+#>q_spw_editor
+^"editor"{
+ %spw.editor.color_ids{
+  value: 23, unit: "color ids", abs: 0
+  at: "spw color contributions in extensions/vscode-spw/package.json, recounted at 1aa1dc23 on 2026-10-03", src: ~"../sources/spw-branch.spw#src_spw_vscode", status: #settled
+ }
+ %spw.editor.distinct_hex_dark{
+  value: 13, unit: "hex values", abs: 0
+  at: "distinct dark-theme hex values behind the 23 color ids, recounted at 1aa1dc23 on 2026-10-03", src: ~"../sources/spw-branch.spw#src_spw_vscode", status: #settled
+ }
+ %spw.editor.contrast_bone_light{
+  value: 3.12, unit: "contrast ratio", abs: 0.01
+  at: "valenceBone light hex BF8803 on white, package.json:251, WCAG relative luminance recomputed on 2026-10-03", src: ~"../sources/spw-branch.spw#src_spw_wcag_22", status: #settled
+ }
+}
+
+#>q_spw_corpus
+^"corpus"{
+ %spw.corpus.hash_prose_canon{
+  value: 2557, unit: "hash-prose comments", abs: 0
+  at: "canon .spw files, tokens study at 229aedcf", src: ~"../sources/spw-branch.spw#src_spw_study_tokens", status: #verify
+ }
+ %spw.corpus.hash_prose_painted_canon{
+  value: 1149, unit: "comments with LSP paint inside", abs: 0
+  at: "canon .spw files, tokens study at 229aedcf", src: ~"../sources/spw-branch.spw#src_spw_study_tokens", status: #verify
+ }
+ %spw.corpus.wonder_anchors{
+  value: 631, unit: "wonder anchors", abs: 0
+  at: "#>wonder_ anchors outside the caches, tokens study at 229aedcf", src: ~"../sources/spw-branch.spw#src_spw_study_tokens", status: #verify
+ }
+ %spw.corpus.readaloud_templated{
+  value: 48, unit: "probe copies", abs: 0
+  at: "templated read-aloud probes in 48 canon files, three variants, render study", src: ~"../sources/spw-branch.spw#src_spw_study_render", status: #verify
+ }
+ %spw.corpus.onf_water_spanned{
+  value: 0, unit: "ONF nodes with source spans", abs: 0
+  at: "water.spw, of 376 ONF nodes, machine-empathy study at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_study_machine_empathy", status: #verify
+ }
+}
+
+#>q_spw_fam
+^"familiarity"{
+ %spw.fam.forms{
+  value: 32, unit: "forms", abs: 0
+  at: "rows of the persona familiarity matrix", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
+ }
+ %spw.fam.clusters{
+  value: 12, unit: "clusters", abs: 0
+  at: "columns of the persona familiarity matrix", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
+ }
+ %spw.fam.false_friend{
+  value: 119, unit: "cells", abs: 0
+  at: "false_friend verdicts of 384", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
+ }
+ %spw.fam.mixed{
+  value: 97, unit: "cells", abs: 0
+  at: "mixed verdicts of 384", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
+ }
+ %spw.fam.bridge{
+  value: 90, unit: "cells", abs: 0
+  at: "helpful_bridge verdicts of 384", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
+ }
+ %spw.fam.neutral{
+  value: 78, unit: "cells", abs: 0
+  at: "neutral verdicts of 384", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
+ }
+ ^["false_friends_by_cluster"]{
+  %spw.fam.ff_c_programmers{
+   value: 12, unit: "of 32 forms", abs: 0
+   at: "C-family programmers", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
+  }
+  %spw.fam.ff_physics{
+   value: 13, unit: "of 32 forms", abs: 0
+   at: "physics students and physicists", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
+  }
+  %spw.fam.ff_designers{
+   value: 9, unit: "of 32 forms", abs: 0
+   at: "designers", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
+  }
+  %spw.fam.ff_mathematicians{
+   value: 13, unit: "of 32 forms", abs: 0
+   at: "mathematicians", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
+  }
+  %spw.fam.ff_engineers_chemists{
+   value: 10, unit: "of 32 forms", abs: 0
+   at: "engineers and chemists", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
+  }
+  %spw.fam.ff_life_clinical{
+   value: 10, unit: "of 32 forms", abs: 0
+   at: "life and clinical scientists", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
+  }
+  %spw.fam.ff_linguists{
+   value: 8, unit: "of 32 forms", abs: 0
+   at: "linguists", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
+  }
+  %spw.fam.ff_social_scientists{
+   value: 9, unit: "of 32 forms", abs: 0
+   at: "social scientists", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
+  }
+  %spw.fam.ff_librarians{
+   value: 8, unit: "of 32 forms", abs: 0
+   at: "librarians and archivists", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
+  }
+  %spw.fam.ff_production_crews{
+   value: 6, unit: "of 32 forms", abs: 0
+   at: "production crews", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
+  }
+  %spw.fam.ff_creators{
+   value: 11, unit: "of 32 forms", abs: 0
+   at: "creators and streamers", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
+  }
+  %spw.fam.ff_educators{
+   value: 10, unit: "of 32 forms", abs: 0
+   at: "educators and community members", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
+  }
+ }
+}
+
+#>q_spw_cut
+^"cut"{
+ %spw.cut.files{
+  value: 268, unit: "surfaces", abs: 0
+  at: "find .spw/caches/2026-09-30 -name *.spw, working tree over 1aa1dc23 on 2026-10-02 mid wave 3", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled
+ }
+ %spw.cut.receipts{
+  value: 1136, unit: "receipts", abs: 0
+  at: "care bindings in the same working tree, before this package landed", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled
+ }
+ %spw.cut.receipts_glance{
+  value: 135, unit: "receipts", abs: 0
+  at: "care glance, same count", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled
+ }
+ %spw.cut.receipts_skim{
+  value: 390, unit: "receipts", abs: 0
+  at: "care skim, same count", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled
+ }
+ %spw.cut.receipts_read{
+  value: 115, unit: "receipts", abs: 0
+  at: "care read, same count", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled
+ }
+ %spw.cut.receipts_audit{
+  value: 277, unit: "receipts", abs: 0
+  at: "care audit, same count", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled
+ }
+ %spw.cut.receipts_adversarial{
+  value: 219, unit: "receipts", abs: 0
+  at: "care adversarial, same count", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled
+ }
+ %spw.cut.census_links_registries{
+  value: 556, unit: "path links", abs: 0
+  at: "spw census .spw/caches/2026-09-30/registries, 2026-10-02 at 1aa1dc23 plus the wave 3 working tree", src: ~"../sources/spw-branch.spw#src_spw_cli_commands", status: #settled
+ }
+ %spw.cut.census_broken_registries{
+  value: 283, unit: "links reported broken", abs: 0
+  at: "same census run; the cut gate reported no unresolved ref in those files, so the count is anchored links misread as broken", src: ~"../sources/spw-branch.spw#src_spw_cli_commands", status: #settled
+ }
+ %spw.cut.probe_ids{
+  value: 328, unit: "probe ids", abs: 0
+  at: "=id[p_ occurrences in the same working tree, before this package landed", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled
+ }
+}
+
+#>q_spw_research
+^"research"{
+ %spw.research.sarkar_n{
+  value: 10, unit: "participants", abs: 0
+  at: "syntax colouring study, Python tasks", src: ~"../sources/spw-branch.spw#src_spw_sarkar_2015", status: #settled
+ }
+ %spw.research.hannebauer_n{
+  value: 390, unit: "participants", abs: 0
+  at: "novice programmers, correctness outcome", src: ~"../sources/spw-branch.spw#src_spw_hannebauer_2018", status: #settled
+ }
+ %spw.research.meyer_experiments{
+  value: 17, unit: "experiments", abs: 0
+  at: "pooled tests of the disfluent-font effect on Cognitive Reflection Test problems, as reported by the render study", src: ~"../sources/spw-branch.spw#src_spw_meyer_2015", status: #verify
+ }
+ %spw.research.oral_wpm{
+  value: 183, unit: "words per minute", abs: 0
+  at: "adult oral reading rate in English, meta-analysis", src: ~"../sources/spw-branch.spw#src_spw_brysbaert_2019", status: #settled
+ }
+ %spw.research.cvd_men_pct{
+  value: 8, unit: "percent", abs: 0
+  at: "red-green colour deficiency, men of European descent", src: ~"../sources/spw-branch.spw#src_spw_birch_2012", status: #settled
+ }
+ %spw.research.wcag_text_contrast{
+  value: 4.5, unit: "contrast ratio", abs: 0
+  at: "WCAG 2.2 success criterion 1.4.3, normal-size text, level AA", src: ~"../sources/spw-branch.spw#src_spw_wcag_22", status: #settled
+ }
+}
+
+#>q_spw_keys
+^"keys"{
+ %spw.keys.operator_sigils{
+  value: 13, unit: "sigils", abs: 0
+  at: "the 12 single-sigil operators plus the couple pair, docs/theory/spw/operators.spw:28-42", src: ~"../sources/spw-branch.spw#src_spw_canon_operators", status: #settled
+ }
+ %spw.keys.us_shifted{
+  value: 11, unit: "sigils", abs: 0
+  at: "operator sigils that need Shift on a US ANSI layout, all but the period and the equals sign; check against the platform keyboard viewer", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #verify
+ }
+ %spw.keys.uk_shifted{
+  value: 10, unit: "sigils", abs: 0
+  at: "operator sigils that need Shift on the Windows United Kingdom layout, all but the period, equals, and hash; check against the platform keyboard viewer", src: ~"../sources/spw-branch.spw#src_spw_ms_keyboard_layouts", status: #verify
+ }
+}

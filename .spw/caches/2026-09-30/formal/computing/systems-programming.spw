@@ -1,0 +1,251 @@
+# Systems Programming
+#
+# Year two of the computing curriculum: 52 weeks from the pipeline and the cache to kernels, Rust and Zig, and compiler backends, reordered so every mechanism is taught before it is used.
+
+#>computing_systems
+#:layer #!reference
+#:domain #!computing
+#:form #!curriculum
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bone
+#:era #!current
+
+^"emit"{
+ ~#title: "Systems Programming"
+ ~#claim: "Year two descends to the metal in an order that teaches caches before Spectre and graph algorithms before the compilers that use them."
+ ~#proof: "Rows follow Hennessy and Patterson, Bryant and O Hallaron, and the compiler papers; dated facts cite Linux 6.6 notes, Rust 1.85, and Zig 0.14."
+ ~#door: "Read the metal quarter, then try the false-sharing kit, then follow the graph primer into SSA."
+ ~#audience: "programmers who finished year one or know one high-level language well"
+ continuity: "Systems Programming | caches before Spectre"
+ cold_open: "Year two teaches caches before Spectre and graphs before compilers, so no mechanism is ever taken on faith."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/podcasting/year2-systems-programming.spw" ]
+ evidence: #[ "kernelnewbies Linux 6.6 page read on 2026-10-02: released 2023-10-29, CFS replaced by EEVDF" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+ }
+ corrections: #[
+  "Spectre moved from week 53 to week 63, after caches, because the attack leaks through cache state",
+  "a graph primer at week 92 now precedes SSA and register allocation, which use dominators and coloring",
+  "CFS is marked superseded: Linux 6.6 replaced it with EEVDF in October 2023",
+  "Zig row notes the GeneralPurposeAllocator rename to DebugAllocator in 0.14",
+  "the capstone no longer says compiler optimization is isomorphic to abstract interpretation; dataflow analyses are instances of it",
+  "the orders-of-magnitude claim for mechanical sympathy, the five-volt transistor wonder, and the invented handles are dropped"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./web-and-browser-internals.spw#computing_web_w51", ~"../../physical/engineering/computer-engineering-core.spw#engineering_computer" ]
+ feeds: [ ~"./abstract-computation.spw#computing_abstract", ~"./curriculum-dag.spw#computing_curriculum_dag" ]
+}
+
+^["concepts"]{
+ primary: [ #weekly_rung, #invariant, #state_machine ]
+ transfers: [ #floating_point, #fault_model ]
+ tensions: [ #speculation, #ordering ]
+}
+
+^["cadence"]{
+ year: << "metal: weeks 53 to 65" ; "memory and kernel: weeks 66 to 78" ; "systems languages: weeks 79 to 91" ; "compilers and SIMD: weeks 92 to 104" >>
+ rhythm: "each block ends by reading disassembly or a profiler trace against the model it taught"
+}
+
+^["rows"]{
+ ^["q1_metal"]{
+  theme: "pipelines, assembly, C layout, caches, speculation, and memory models"
+
+  #>computing_systems_w053
+  w053: .{ week: "53-54", topic: "The stored-program machine and the pipeline", spec: "fetch, decode, execute; hazards; superscalar and out-of-order execution; branch prediction" }
+  #>computing_systems_w055
+  w055: .{ week: "55-57", topic: "x86-64 and AArch64 assembly", spec: "registers and flags; System V AMD64 ABI and AAPCS64 calling conventions; stack frames" }
+  #>computing_systems_w058
+  w058: .{ week: "58-60", topic: "C memory layout", spec: "C23 as ISO/IEC 9899:2024; pointer arithmetic; size_t and uintptr_t; padding, alignment, undefined behavior" }
+  #>computing_systems_w061
+  w061: .{ week: "61-62", topic: "Caches and coherence", spec: "cache lines, associativity, MESI, false sharing, prefetchers" }
+  #>computing_systems_w063
+  w063: .{ week: "63", topic: "Speculation and Spectre", spec: "speculative execution leaves cache footprints; bounds-check bypass and branch-target injection; mitigations" }
+  #>computing_systems_w064
+  w064: .{ week: "64-65", topic: "Hardware memory models", spec: "sequential consistency; x86-TSO versus weaker Arm ordering; acquire and release; fences" }
+ }
+ ^["q2_memory_and_kernel"]{
+  theme: "virtual memory, allocators, system calls, scheduling, and I/O"
+
+  #>computing_systems_w066
+  w066: .{ week: "66-68", topic: "Virtual memory and the MMU", spec: "four- and five-level page tables, TLBs, page faults, huge pages" }
+  #>computing_systems_w069
+  w069: .{ week: "69-71", topic: "Writing an allocator", spec: "bump and arena allocators, free lists, slab allocation, jemalloc and mimalloc" }
+  #>computing_systems_w072
+  w072: .{ week: "72-74", topic: "System calls", spec: "the syscall instruction and kernel entry path, the system call table, errno, the vDSO" }
+  #>computing_systems_w075
+  w075: .{ week: "75-76", topic: "Processes, threads, and scheduling", spec: "task_struct, fork, execve, clone; CFS and its replacement by EEVDF in Linux 6.6; context-switch cost" }
+  #>computing_systems_w077
+  w077: .{ week: "77-78", topic: "High-performance I/O", spec: "select and poll limits, edge-triggered epoll, io_uring submission and completion rings, zero-copy networking" }
+ }
+ ^["q3_languages"]{
+  theme: "ownership, soundness, explicit allocation, and lock-free code"
+
+  #>computing_systems_w079
+  w079: .{ week: "79-82", topic: "Rust ownership and borrowing", spec: "affine types, lifetimes, non-lexical lifetimes, Drop and RAII; the Rust 2024 edition" }
+  #>computing_systems_w083
+  w083: .{ week: "83-85", topic: "Unsafe Rust and soundness", spec: "raw pointers, undefined behavior, Miri, Stacked Borrows, RustBelt" }
+  #>computing_systems_w086
+  w086: .{ week: "86-88", topic: "Zig comptime and explicit allocators", spec: "comptime execution, std.mem.Allocator, error return traces, C interop; DebugAllocator in 0.14" }
+  #>computing_systems_w089
+  w089: .{ week: "89-91", topic: "Lock-free concurrency", spec: "compare-and-swap, atomic memory orders, SPSC queues, the ABA problem, consensus numbers" }
+ }
+ ^["q4_compilers"]{
+  theme: "graphs, SSA, optimization, register allocation, and SIMD"
+
+  #>computing_systems_w092
+  w092: .{ week: "92", topic: "Graph primer for compilers", spec: "depth-first search, strongly connected components, dominator trees, interference graphs and coloring" }
+  #>computing_systems_w093
+  w093: .{ week: "93-94", topic: "From AST to SSA", spec: "control-flow graphs, basic blocks, dominance frontiers, phi nodes" }
+  #>computing_systems_w095
+  w095: .{ week: "95-97", topic: "Optimization passes in LLVM IR", spec: "dead code elimination, constant folding, loop unrolling, inlining heuristics, autovectorization" }
+  #>computing_systems_w098
+  w098: .{ week: "98-100", topic: "Instruction selection and register allocation", spec: "Chaitin-Briggs coloring, linear scan, SSA-based allocation, peephole passes" }
+  #>computing_systems_w101
+  w101: .{ week: "101-102", topic: "SIMD vectorization", spec: "AVX2, AVX-512, Arm Neon and SVE; autovectorization pitfalls; intrinsics" }
+  #>computing_systems_w103
+  w103: .{ week: "103-104", topic: "Capstone: analyses as abstract interpretation", spec: "write a constant-propagation pass and recast it as a fixpoint over an abstract lattice, bridging to year three" }
+ }
+}
+
+^["ledger"]{
+ #>computing_systems_false_sharing
+ ^["false_sharing"]{
+  #:claim #!settled
+  statement: "Mainstream x86-64 cores move memory in 64-byte lines, so two threads writing different variables in one line still contend through coherence traffic."
+  reads: %[formal.memory.cache_line_bytes]
+  source: ~"../../registries/sources/formal.spw#src_formal_hennessy_patterson_2017"
+ }
+ #>computing_systems_mesi
+ ^["mesi"]{
+  #:claim #!settled
+  statement: "Papamarcos and Patel published in 1984 the invalidation protocol now called MESI, which keeps each cached line modified, exclusive, shared, or invalid."
+  source: ~"../../registries/sources/formal.spw#src_formal_papamarcos_patel_1984"
+ }
+ #>computing_systems_spectre
+ ^["spectre"]{
+  #:claim #!settled
+  statement: "Spectre steers a processor to speculatively run instructions that leave secret-dependent cache state, which a timing probe then reads, so it presumes caches and speculation."
+  source: ~"../../registries/sources/formal.spw#src_formal_kocher_2019"
+ }
+ #>computing_systems_tso
+ ^["x86_tso"]{
+  #:claim #!settled
+  statement: "x86 multiprocessors follow a total store order in which a store can wait in a buffer past later loads; Lamport defined the stronger sequential consistency in 1979."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_sewell_2010", ~"../../registries/sources/formal.spw#src_formal_lamport_1979" ]
+ }
+ #>computing_systems_paging
+ ^["paging"]{
+  #:claim #!settled
+  statement: "x86-64 four-level paging translates 48-bit virtual addresses over 4096-byte base pages, and five-level paging extends addresses to 57 bits where supported."
+  reads: %[
+   formal.memory.va_bits_4level,
+   formal.memory.va_bits_5level,
+   formal.memory.page_bytes
+  ]
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_bryant_ohallaron_2015", ~"../../registries/sources/formal.spw#src_formal_intel_2017" ]
+ }
+ #>computing_systems_slab
+ ^["slab"]{
+  #:claim #!settled
+  statement: "Bonwick slab allocator of 1994 caches constructed kernel objects of one size so frequent allocations skip both initialization and general free-list search."
+  source: ~"../../registries/sources/formal.spw#src_formal_bonwick_1994"
+ }
+ #>computing_systems_cfs_raw
+ ^["cfs_current"]{
+  #:claim #!superseded
+  statement: "The raw row taught CFS as the Linux scheduler; it was the default fair-class scheduler until Linux 6.6."
+  source: ~"../../registries/sources/formal.spw#src_formal_kernelnewbies_2023"
+ }
+ #>computing_systems_eevdf
+ ^["eevdf"]{
+  #:claim #!settled
+  statement: "Linux 6.6, released in October 2023, replaced CFS with an EEVDF scheduler built on the algorithm Stoica and Abdel-Wahab described in 1995."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_kernelnewbies_2023", ~"../../registries/sources/formal.spw#src_formal_corbet_2023", ~"../../registries/sources/formal.spw#src_formal_stoica_1995" ]
+  supersedes: [ ~"./systems-programming.spw#computing_systems_cfs_raw" ]
+  as_of: "2026-10-02"
+ }
+ #>computing_systems_rust_edition
+ ^["rust_2024"]{
+  #:claim #!settled
+  statement: "Rust 1.85, released in February 2025, stabilized the Rust 2024 edition."
+  source: ~"../../registries/sources/formal.spw#src_formal_rust_2025"
+  as_of: "2026-10-02"
+ }
+ #>computing_systems_rustbelt
+ ^["rustbelt"]{
+  #:claim #!settled
+  statement: "RustBelt gave a machine-checked safety proof for a core Rust calculus and showed that several standard libraries built on unsafe code are safe to call from safe code."
+  source: ~"../../registries/sources/formal.spw#src_formal_jung_2018"
+ }
+ #>computing_systems_zig
+ ^["zig_debug_allocator"]{
+  #:claim #!settled
+  statement: "Zig 0.14, released in March 2025, renamed GeneralPurposeAllocator to DebugAllocator."
+  source: ~"../../registries/sources/formal.spw#src_formal_zig_2025"
+  as_of: "2026-10-02"
+ }
+ #>computing_systems_herlihy
+ ^["consensus_number"]{
+  #:claim #!settled
+  statement: "Herlihy showed in 1991 that read-write registers have consensus number one while compare-and-swap has infinite consensus number, so a wait-free queue cannot be built from registers alone."
+  source: ~"../../registries/sources/formal.spw#src_formal_herlihy_1991"
+ }
+ #>computing_systems_ssa
+ ^["ssa"]{
+  #:claim #!settled
+  statement: "Cytron and colleagues placed phi nodes at iterated dominance frontiers in 1991, and Lengauer and Tarjan had already computed dominators in near-linear time."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_cytron_1991", ~"../../registries/sources/formal.spw#src_formal_lengauer_tarjan_1979" ]
+ }
+ #>computing_systems_chordal
+ ^["ssa_chordal"]{
+  #:claim #!settled
+  statement: "Interference graphs of programs in strict SSA form are chordal, so registers can be assigned optimally in polynomial time once spilling is decided."
+  source: ~"../../registries/sources/formal.spw#src_formal_hack_2006"
+  credits: [ ~"../../registries/sources/formal.spw#src_formal_chaitin_1982", ~"../../registries/sources/formal.spw#src_formal_briggs_1994" ]
+  ~#(Chaitin and Briggs shaped the coloring allocators this refines)
+ }
+ #>computing_systems_capstone_raw
+ ^["capstone_isomorphism"]{
+  #:claim #!refuted
+  statement: "The raw capstone said compiler dataflow analysis is formally isomorphic to abstract interpretation; analyses are instances of it, and transformations such as inlining are not analyses at all."
+  source: ~"../../registries/sources/formal.spw#src_formal_cousot_1977"
+ }
+}
+
+^["try"]{
+ #>computing_systems_try_false_sharing
+ ^["two_counters"]{
+  materials: [ "a computer with a C compiler and pthreads", "a terminal" ]
+  steps: << "write two threads that each increment their own counter a hundred million times" ; "declare the counters volatile or atomic so the compiler keeps every store" ; "put both counters in one struct, side by side" ; "compile with optimization and time the run" ; "pad the counters 64 bytes apart and time again" ; "explain the gap with cache lines and coherence" >>
+  time: .{ n: 45, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./systems-programming.spw#computing_systems_false_sharing"
+ }
+}
+
+#>computing_systems_bump_q
+?["Does writing a bump allocator change how a programmer thinks about garbage collection?"]{
+ #:depth #!experiential ~#lens(craft practice)
+ #:claim #!speculative
+ ~#hypothesis: "Programmers who build a bump allocator describe allocation as bookkeeping with latency tradeoffs and stop treating collectors as magic, more than peers who only read about them."
+ !probe{ "time a bump allocator against malloc for a million short-lived structs, then interview builders about how they now describe a collector" =id[p_formal_systems_bump_alloc] =kind[build] }
+ $%[formal.memory.cache_line_bytes, formal.memory.page_bytes]
+ ~"./systems-programming.spw#computing_systems_slab" ~#neighbor(nearest)
+}

@@ -1,0 +1,103 @@
+# Door: Tilde
+#
+# One mark, legible alone: the tilde is potential and the prefix of every path ref, so a formula or an approximation typed with a bare tilde splits.
+
+#>spw_door_tilde
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!field_guide
+#:level #!intro
+#:review #!sourced
+#:valence #!bonk
+
+^"emit"{
+ ~#title: "Door: Tilde"
+ ~#claim: "A tilde before a quoted path is a link, and a bare tilde is potential, a deferred wrapper; the formula tilde and approximately belong in strings."
+ ~#proof: "The grammar builds a path ref from a tilde and a string, and a probe at commit 1aa1dc23 splits y ~ x1 + x2 into siblings with x1 as a modifier."
+ ~#door: "Guess what a bare model formula becomes, then check it with spw inspect source."
+ ~#audience: "mathematicians and R or Stata users who read the tilde as a relation"
+ continuity: "Door: Tilde | quoted path"
+ cold_open: "A tilde before a quoted path is a link; put formulas and approximations in strings."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "persona study familiarity_matrix row for the tilde and metaphor_limits for mathematics and physics",
+  "formula and path probes run by the writer at commit 1aa1dc23 on 2026-10-02"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ feeds: [ ~"../glossary/operators.spw#spw_gloss_operators" ]
+}
+
+^["mark"]{
+ #>spw_door_tilde_link
+ ^["path_ref"]{
+  #:claim #!settled
+  statement: "A tilde followed by a double-quoted path is a path ref; the cut gate resolves it against the citing file, then the repository root, and checks the fragment names an anchor."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+  cites: [ "packages/spw-seed/src/grammar/references.ts:264-480", "scripts/analyzers/spw-cut-gate.ts:337-345" ]
+  ~#spoken(tilde quote)
+  ^["limits"]{
+   holds: "a tilde touching a double-quoted string"
+   fails: "a tilde before a capsule tag and then a string is an operation plus a capsule, not a link"
+  }
+ }
+ #>spw_door_tilde_potential
+ ^["potential"]{
+  #:claim #!settled
+  statement: "A bare tilde is the potential operator: canon names it potential, and the runtime returns a deferred wrapper around its first argument."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_runtime"
+  cites: [ "docs/theory/spw/operators.spw:29", "packages/spw-runtime/src/interpreter/interpreter.ts:293-295" ]
+  label: "a-canon reading name; the runtime row is code"
+ }
+ #>spw_door_tilde_split
+ ^["formula_split"]{
+  #:claim #!settled
+  statement: "Typed bare, y ~ x1 + x2 binds y alone, makes x1 the modifier of a tilde operation, and leaves x2 loose; count: ~20 binds a bare tilde and leaves 20 loose."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+  probe_run: "both lines parsed at 1aa1dc23 with no error and no warning, so nothing flags the split"
+ }
+}
+
+^["habits"]{
+ keep: "a link that resolves relative to the citing file, like a quoted include path in C or a relative import"
+ quote: [
+  "model formulas in the Wilkinson and Rogers notation that R uses",
+  "approximate counts and approximate dates",
+  "similarity, equivalence, and asymptotic relations"
+ ]
+ unlearn: "a bare tilde is neither NOT nor approximately; it defers what follows it"
+ origin_source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_wilkinson_rogers_1973"
+}
+
+^["keyboard"]{
+ #>spw_door_tilde_keys
+ ^["two_places"]{
+  #:claim #!settled
+  statement: "The tilde needs Shift on both Windows layouts, but on different keys: the backquote key on the US layout and the hash key beside Enter on the UK layout."
+  reads: %[doors.key.tilde_us_mods, doors.key.tilde_uk_mods]
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_kbd_uk"
+ }
+}
+
+#>spw_door_tilde_q
+?["What does a model formula typed as a bare value become?"]{
+ #:depth #!mathematical ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "An R or Stata habit predicts one relation between y and its predictors, so the silent split surprises it more than a loud error would."
+ !probe{ "guess first, then run spw inspect source --text on model: y ~ x1 + x2 with --through structure" =id[p_doors_tilde_formula] =kind[thought] }
+ breaks: "an R formula is an object a model function reads later, while a Spw tilde defers whatever single argument follows it"
+ ~"./tilde.spw#spw_door_tilde_split" ~#neighbor(nearest)
+}

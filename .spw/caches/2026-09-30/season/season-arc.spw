@@ -27,23 +27,27 @@
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
- evidence: #[ "weekday arithmetic checked against the Gregorian calendar for 2026-10-01 through 2027-01-04" ]
+ evidence: #[ "weekday arithmetic checked against the Gregorian calendar for 2026-10-01 through 2027-01-04", "rung boundaries and phase spans recomputed 2026-10-02" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #fail, note: "16 unresolved refs, all to planned files not yet written" }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #fail, note: "15 refs to the planned trails, not yet written; the markets bench now resolves" }
  }
+ corrections: #[
+  "rung eight said bank holiday episodes, which reads as a UK public holiday; it means recording episodes ahead of Thanksgiving travel",
+  "fact check 2026-10-02: r3 recorded a gate pass, but the gate failed this surface on refs to planned files not yet written; r3 now records the failure"
+ ]
+ pending: "re-gate once the trails are written; every trail ref matches its planned path and anchor"
 }
 
 ^["edges"]{
- grounds: [
-  ~"../registries/quantities/season.spw#q_season_arc",
-  ~"./calendar-2026q4.spw#season_calendar_2026q4"
- ]
- feeds: [
-  ~"./production-cadence.spw#season_production_cadence",
-  ~"./season-journal.spw#season_journal"
- ]
+ grounds: [ ~"../registries/quantities/season.spw#q_season_arc", ~"./calendar-2026q4.spw#season_calendar_2026q4" ]
+ feeds: [ ~"./production-cadence.spw#season_production_cadence", ~"./season-journal.spw#season_journal" ]
  see: [ ~"../trails/season-2026-q4.spw#trail_season_2026_q4" ]
 }
 
@@ -106,7 +110,8 @@
      ~"./calendar-2026q4.spw#season_cal_fy2027",
      ~"./calendar-2026q4.spw#season_cal_cd_1982",
      ~"./calendar-2026q4.spw#season_cal_serial_2014",
-     ~"./calendar-2026q4.spw#season_cal_simchat_torah"
+     ~"./calendar-2026q4.spw#season_cal_simchat_torah",
+     ~"./calendar-2026q4.spw#season_cal_nih_cycle3"
     ]
     trail: ~"../trails/scroll-to-stream.spw#trail_scroll_to_stream"
    }
@@ -179,7 +184,7 @@
    ^["w08"]{
     dates: "Thu 2026-11-19 to Wed 2026-11-25"
     bench: ~"../making/broadcast/episode-run-sheet.spw#broadcast_run_sheet"
-    emphasis: "bank holiday episodes before the travel week"
+    emphasis: "record episodes ahead and bank them before the Thanksgiving travel week"
     trail: ~"../trails/paired-cases.spw#trail_paired_cases"
    }
    #>season_arc_w09

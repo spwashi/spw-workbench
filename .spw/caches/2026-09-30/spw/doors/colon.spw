@@ -1,0 +1,110 @@
+# Door: Colon
+#
+# One mark, legible alone: the colon is the only binder, so a clock time, a timecode, a ratio, or a title of several words goes inside quotes.
+
+#>spw_door_colon
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!field_guide
+#:level #!intro
+#:review #!sourced
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Door: Colon"
+ ~#claim: "The colon always binds, so put a value in quotes when it holds a colon or a space; a key with nothing after it borrows the next line."
+ ~#proof: "A probe at commit 1aa1dc23 turns a call time into a nested binding and keeps only the first word of a title; the cut gate fails the borrowed line."
+ ~#door: "Guess what a call time typed bare becomes, then check it with spw inspect source."
+ ~#audience: "production crews and clinicians who write times, ratios, and labels with colons"
+ continuity: "Door: Colon | always binds"
+ cold_open: "The colon always binds, so quote any value that holds a colon or a space."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "persona study false_friends_top rank 3 and its door text",
+  "binding probes run by the writer at commit 1aa1dc23 on 2026-10-02"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the study used a medication dilution as its ratio example; this door uses a screen aspect ratio, so no medication concentration appears",
+  "the borrowed-line keystone cited spw-cut-gate.ts lines 214 to 217; the empty-binding check runs from line 215 to 217"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"../specimens/media-and-classroom.spw#spw_spec_media_classroom" ]
+}
+
+^["mark"]{
+ #>spw_door_colon_binds
+ ^["only_binder"]{
+  #:claim #!settled
+  statement: "A key, a colon, and a value make a binding node, and a colon inside the value makes another binding, so a bare call time becomes a key bound to a number."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+  cites: [ "packages/spw-seed/src/grammar/expressions.ts:922-928" ]
+  probe_run: "call: 06:30 binds call to a binding of 06 to 30, and aspect: 16:9 binds aspect to a binding of 16 to 9"
+  ~#spoken(colon)
+  ^["limits"]{
+   holds: "a colon outside strings, backtick phrases, and apposition bodies"
+   fails: "a colon right after a hash is a case particle, which is a different mark"
+  }
+ }
+ #>spw_door_colon_first_word
+ ^["first_word"]{
+  #:claim #!settled
+  statement: "An unquoted value of several words keeps only its first word: title: The Return binds The and leaves Return as a loose sibling."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+  probe_run: "parsed at 1aa1dc23 with no error and no warning"
+ }
+ #>spw_door_colon_borrow
+ ^["borrowed_line"]{
+  #:claim #!settled
+  statement: "A key with nothing after its colon takes the whole next line as its value; the parse reports success, and the cut gate fails the surface."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_gate"
+  cites: [ "scripts/analyzers/spw-cut-gate.ts:215-217" ]
+  probe_run: "a line transition: followed by next: 2 nests next: 2 inside transition"
+ }
+}
+
+^["habits"]{
+ keep: "the colon you write between a label and its value on a call sheet or a form"
+ quote: [
+  "clock times and timecode, with an integer frame count kept beside a timecode string",
+  "ratios, scene headings, and transitions that end in a colon",
+  "titles and any sentence a person typed"
+ ]
+ unlearn: "a colon inside a value is a second binding, not part of the value"
+ timecode_source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_smpte_12_1"
+}
+
+^["keyboard"]{
+ #>spw_door_colon_keys
+ ^["shift_semicolon"]{
+  #:claim #!settled
+  statement: "The colon needs Shift with the semicolon key on both the Windows US and the Windows UK layouts."
+  reads: %[doors.key.colon_us_mods, doors.key.colon_uk_mods]
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_kbd_us"
+ }
+}
+
+#>spw_door_colon_q
+?["What does a call time typed bare after its label become?"]{
+ #:depth #!experiential ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "A call-sheet habit predicts one time value, so a quoted time with an integer frame count beside it may serve crews better than a new time literal would."
+ !probe{ "guess first, then run spw inspect source --text on call: 06:30 and on call: \"06:30\" with --through structure" =id[p_doors_colon_call_time] =kind[thought] }
+ breaks: "on a call sheet the colon sits inside a time, while in Spw every colon is structure"
+ ~"./colon.spw#spw_door_colon_binds" ~#neighbor(nearest)
+}

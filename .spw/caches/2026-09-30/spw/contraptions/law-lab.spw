@@ -1,0 +1,168 @@
+# Law Lab
+#
+# Does order matter? Splitting schedules, transform stacks, and the operator laws canon states, each checked against value, register writes, and trace.
+
+#>spw_lab_law_lab
+#:layer #!semantics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!graduate
+#:review #!sourced
+#:valence #!bonk
+
+^"emit"{
+ ~#title: "Law Lab"
+ ~#claim: "Whether order matters is an observable: splitting schedules change their error order, transform stacks change the picture, and a stated operator law either holds on value, writes, and trace or it does not."
+ ~#proof: "Trotter and Strang give the splitting orders and Hairer, Lubich, and Wanner the long-time behaviour; the interpreter returns a deferred wrapper where canon says collapse after defer gives back x."
+ ~#door: "Run the collapse-after-defer row, read its three verdicts, then compare it with the canon line it tests."
+ ~#audience: "numerical analysts, animators, mathematicians, and Spw language designers"
+ continuity: "Law Lab | order matters"
+ cold_open: "Swap two steps and see whether order matters: in a physics schedule, in an animation rig, and in Spw itself."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "persona study contraption_catalog[7], references/studies/persona-synthesis.json", "sketch references/spw-branch/seeds/contraptions/law-lab.spw" ]
+ method: #authored
+ evidence: #[ "interpretSeed at commit 1aa1dc23 on 2026-10-02: x gives value x, no writes, three traces; the collapse-after-defer form gives a deferred x, one write, eight traces", "the two orders of action and defer gave the same value, no writes, and seven traces each on the input x" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the sketch wrote explicit Euler as a parallel schedule; it is now a separate row with its energy growth computed, since parallel means may commute and not simultaneous",
+  "the canon spelling of the complement law is tested as written, star then tilde then X, beside the braced spelling the sketch used"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../formal/mathematics/engineering-core/numerical-methods.spw#mathematics_numerics" ]
+ analog: [ ~"../../making/visual/animation-principles.spw#visual_arts_anim_pose_to_pose" ]
+ see: [ ~"./order-counter.spw#spw_lab_order_counter", ~"../../registries/symmetries.spw#registry_symmetries" ]
+}
+
+^["concepts"]{
+ primary: [ #commutation, #invariant ]
+ transfers: [ #ordering, #reflexive_mirror ]
+ tensions: [ #overclaim ]
+}
+
+^["tool"]{
+ status: #proposed
+ verb: "spw law LEFT RIGHT, which would diff parse, normal form, value, register writes, and trace order; not yet a command"
+ implemented: #[ "packages/spw-runtime/src/interpreter/interpreter.ts:363 interpretSeed returns ast, onf, value, registers, and traces" ]
+ standard: "canon names the comparison: parse, ONF, runtime value, register writes, and trace order"
+ sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_interpreter", ~"../../registries/sources/spw-contraptions.spw#src_contrap_canon_register_geometry" ]
+}
+
+^["schedules"]{
+ #>spw_lab_law_lab_lie
+ ^["lie_trotter"]{ steps: << drift ; kick >> }
+ #>spw_lab_law_lab_strang
+ ^["position_verlet"]{ steps: << half_drift ; kick ; half_drift >> }
+ #>spw_lab_law_lab_euler
+ ^["explicit_euler"]{ steps: "drift and kick both read the old state, then both write" }
+ #>spw_lab_law_lab_splitting
+ ^["splitting_order"]{
+  #:claim #!settled
+  statement: "Applying two flows one after the other has first-order error per unit time, and the symmetric half-full-half arrangement raises it to second order."
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_trotter_1959", ~"../../registries/sources/spw-contraptions.spw#src_contrap_strang_1968" ]
+ }
+ #>spw_lab_law_lab_symplectic
+ ^["long_time"]{
+  #:claim #!settled
+  statement: "On Hamiltonian problems with small steps, the Stoermer-Verlet scheme keeps the energy error bounded over very long times instead of letting it drift."
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_verlet_1967", ~"../../registries/sources/spw-contraptions.spw#src_contrap_hairer_lubich_wanner_2006" ]
+  ^["limits"]{
+   holds: "for Hamiltonian systems integrated with a fixed small step"
+   fails: "with adaptive steps, dissipation, or steps near the stability limit"
+  }
+ }
+}
+
+^["transform_stack"]{
+ #>spw_lab_law_lab_transforms
+ ^["noncommuting_transforms"]{
+  #:claim #!settled
+  statement: "Rotation and translation do not commute, so a rig that rotates then translates places a part somewhere other than one that translates then rotates."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_hughes_2013"
+ }
+ turn_then_move: << rotate ; translate >>
+ move_then_turn: << translate ; rotate >>
+ ~#(stack order is parent order; exposure-sheet rows are frames in time)
+}
+
+#>spw_lab_law_lab_ledger
+^["law_ledger"]{
+ #>spw_lab_law_lab_complement
+ ^["collapse_after_defer"]{
+  #:claim #!refuted
+  statement: "Canon states that collapsing a deferred X yields X; at commit 1aa1dc23 the braced form returns a deferred wrapper and differs from x on value, writes, and trace."
+  canon: "docs/library/spw/wonder-calculus.spw:31"
+  left: "*{ ~{ x } }"
+  right: "x"
+  verdict: .{ value: "differs", writes: "differs", trace: "differs" }
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_canon_wonder_calculus", ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_interpreter" ]
+  ~#(the unbraced spelling returned a pair of nulls on the same commit)
+ }
+ #>spw_lab_law_lab_confluence
+ ^["action_and_defer"]{
+  #:claim #!emerging
+  statement: "Canon lists action and defer as a pair that may not commute; on the input x both orders gave the same value, no writes, and the same trace length."
+  canon: "docs/theory/spw/register-geometry.spw:120-132"
+  left: "!{ ~{ x } }"
+  right: "~{ !{ x } }"
+  verdict: .{ value: "same", writes: "same", trace: "same length, order not diffed" }
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_canon_register_geometry", ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_interpreter" ]
+ }
+}
+
+^["battery"]{
+ #>spw_lab_law_lab_energy
+ ^["euler_energy"]{
+  !probe{ "take explicit Euler steps on x prime equals v, v prime equals minus x, and print the energy ratio per step" =id[p_contrap_law_lab_energy] =kind[calc] }
+  run: "python3 -c 'h=0.1; x,v=1.0,0.0; e0=(x*x+v*v)/2; x,v=x+h*v,v-h*x; print((x*x+v*v)/2/e0)'"
+  expect: "1.01, which is one plus h squared: explicit Euler pumps energy into the oscillator every step"
+  shows: ~"./law-lab.spw#spw_lab_law_lab_symplectic"
+ }
+ #>spw_lab_law_lab_rig
+ ^["rig_order"]{
+  !probe{ "rotate the point one, zero by a quarter turn then move it by one, zero; then do it in the other order" =id[p_contrap_law_lab_rig] =kind[calc] }
+  expect: "the point lands at one, one in the first order and at zero, two in the second"
+  shows: ~"./law-lab.spw#spw_lab_law_lab_transforms"
+ }
+ #>spw_lab_law_lab_run
+ ^["run_the_law"]{
+  !probe{ "interpret x and the collapse-after-defer form at a new commit and compare the three observables" =id[p_contrap_law_lab_run] =kind[calc] }
+  expect: "at 1aa1dc23 all three differ; a later commit that changes the interpreter or the law should change this row"
+  shows: ~"./law-lab.spw#spw_lab_law_lab_complement"
+ }
+}
+
+#>spw_lab_law_lab_mirror
+^["language_mirror"]{
+ question: "Which of the laws canon states for operators hold on value, writes, and trace?"
+ instrument: "one ledger row per canon law, each with left, right, and a verdict per observable"
+ standing: "a-canon: the laws and the comparison standard are canon text; a-cut: the verdicts are this bench observations at one commit"
+ promote: "the refuted row is a candidate for the open-questions promote queue against docs/library/spw/wonder-calculus.spw:29-31"
+ !probe{ "add one ledger row for every law in wonder-calculus and register-geometry" =id[p_contrap_law_lab_ledger] =kind[build] }
+}
+
+^["limits"]{
+ holds: "whether two spellings agree on the observables the interpreter exposes, at one commit and on one input"
+ fails: "agreement on one input proves no law, and the parser records order without applying any map; schedules here are names, not integrators"
+}
+
+#>spw_lab_law_lab_q
+?["Does the shape of a schedule predict the order of its error before any step is run?"]{
+ #:depth #!mathematical ~#lens(symmetry and invariance)
+ #:claim #!speculative
+ ~#hypothesis: "Palindromic schedules of flows should land on even error orders more often than lopsided schedules of the same length, because symmetric compositions cancel odd error terms."
+ !probe{ "enumerate short schedules of drift and kick, measure their error order numerically, and compare palindromes with the rest" =id[p_contrap_law_lab_q] =kind[sim] }
+ $%[op.distribution, form.deep_lines]
+ ~"./law-lab.spw#spw_lab_law_lab_splitting" ~#neighbor(nearest)
+ breaks: "error order also depends on the step weights, which a schedule of names does not carry"
+}

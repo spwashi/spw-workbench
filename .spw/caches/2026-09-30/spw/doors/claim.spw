@@ -1,0 +1,104 @@
+# Door: Claim
+#
+# One region, legible alone: a keystone frame carries an anchor, a status mood, one statement, a source link, and limits, and its status reads from glyphs and position.
+
+#>spw_door_claim
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!field_guide
+#:level #!intro
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Door: Claim"
+ ~#claim: "A keystone is one frame holding a status mood, one statement, a source link, and limits; its status reads from glyphs and position in plain print."
+ ~#proof: "The cut contract defines the keystone shape and the seven statuses, and the gate fails a sourced surface whose factual claim lacks a source link in its own frame."
+ ~#door: "Open the water density keystone and name each of its five parts before reading the statement."
+ ~#audience: "readers meeting a claim in this cut for the first time, and librarians who read sources first"
+ continuity: "Door: Claim | status mood"
+ cold_open: "A keystone holds a status mood, a statement, a source, and limits, all readable in plain print."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "contract.spw claims, legibility, and gate frames",
+  "the water exemplar density keystone, read only"
+ ]
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ feeds: [ ~"../inspection-and-ir.spw#spw_inspection_and_ir" ]
+}
+
+^["region"]{
+ #>spw_door_claim_shape
+ ^["keystone_shape"]{
+  #:claim #!settled
+  statement: "A keystone is an anchor line, then a named frame whose first line holds the claim case and a status mood, then a statement, a source link, and optional reads, counter, and limits."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_contract"
+  label: "a-cut rule from the contract claims frame, not repository canon"
+  example: ~"../../physical/materials/water.spw#materials_water_density_max"
+  ~#spoken(claim settled)
+  ^["limits"]{
+   holds: "surfaces in this dated cut"
+   fails: "repository canon outside the cut writes claims in other shapes, and the shape says nothing about whether the statement is true"
+  }
+ }
+ #>spw_door_claim_gate
+ ^["source_in_frame"]{
+  #:claim #!settled
+  statement: "The gate looks for a source binding inside the same frame as each claim mood, and fails a sourced surface whose factual claim has none; speculative and interpretive claims are exempt."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_gate"
+  cites: [ "scripts/analyzers/spw-cut-gate.ts:314-322" ]
+ }
+}
+
+^["statuses"]{
+ #>spw_door_claim_statuses
+ ^["seven_moods"]{
+  #:claim #!settled
+  statement: "A claim mood is one of seven words: settled, contested, emerging, speculative, refuted, interpretive, and superseded; a refuted claim stays in place to mark a known error."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_contract"
+  vocabulary: ~"../../vocabulary.spw#cut_vocabulary"
+ }
+ print: "the status is a word after hash-bang at the head of the frame, so it survives monochrome print, a screen reader, and a copy into plain text"
+ color: "an editor may color the mood, but the word carries the meaning; no status depends on a hue"
+}
+
+^["habits"]{
+ keep: "a citation that sits next to the sentence it supports, as a footnote or a catalog note does"
+ quote: [
+  "a source that is only a name and a year, written as an apposition beside the link",
+  "a quotation, kept brief and attributed"
+ ]
+ unlearn: "an apposition with an author and year adds context, while the source link is what the gate reads"
+}
+
+^["keyboard"]{
+ #>spw_door_claim_keys
+ ^["status_marks"]{
+  #:claim #!settled
+  statement: "On the Windows US layout the claim case needs Shift for its hash and its colon; on the Windows UK layout only the colon needs it."
+  reads: %[doors.key.hash_us_mods, doors.key.colon_us_mods, doors.key.hash_uk_mods]
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_kbd_uk"
+ }
+}
+
+#>spw_door_claim_q
+?["Can a reader tell a contested claim from a settled one on a monochrome printout?"]{
+ #:depth #!stylistic ~#lens(curated collection)
+ #:claim #!speculative
+ ~#hypothesis: "Status read from the mood word survives monochrome print, while a status carried by color alone would be lost on the page."
+ !probe{ "print the water surface in black and white and mark each claim status from the page alone, then compare with the file" =id[p_doors_claim_monochrome] =kind[field] }
+ ~"./claim.spw#spw_door_claim_shape" ~#neighbor(nearest)
+}

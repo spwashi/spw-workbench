@@ -7,7 +7,7 @@
 #:domain #!inscription
 #:form #!timeline
 #:level #!intro
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 #:era #!early_modern
 
@@ -31,7 +31,11 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
  }
+ rechecked: "2026-10-02: Wang Zhen count set to more than thirty thousand types, and his method placed in an essay printed with the 1313 agricultural treatise; Kapr is relabeled as the standard account the temporary-matrix finding challenges, since he wrote before it"
 }
 
 ^["edges"]{
@@ -72,7 +76,7 @@
   #>inscription_print_wang_zhen
   ^["wang_zhen"]{
    #:claim #!settled
-   statement: "Wang Zhen cut tens of thousands of wooden types around 1298 and sorted them on revolving tables, describing the method in a 1313 treatise."
+   statement: "Wang Zhen had more than thirty thousand wooden types cut around 1298, sorted them on revolving tables, and described the method in an essay printed with his 1313 agricultural treatise."
    sources: [ ~"../../registries/sources/record-and-carriers.spw#src_media_tsien_1985", ~"../../registries/sources/record-and-carriers.spw#src_media_enc_movable_type" ]
   }
   #>inscription_print_jikji
@@ -103,7 +107,8 @@
    #:claim #!contested
    statement: "Aguera y Arcas and Needham reported variation among early Mainz sorts suggesting temporary matrices built from smaller punches, challenging the single punch, matrix, and mould account."
    source: ~"../../registries/sources/record-and-carriers.spw#src_media_aguera_y_arcas_2003"
-   counter: ~"../../registries/sources/record-and-carriers.spw#src_media_kapr_1996"
+   standard_account: ~"../../registries/sources/record-and-carriers.spw#src_media_kapr_1996"
+   ~#(Kapr predates the finding and gives the account it challenges)
   }
   #>inscription_print_agent_of_change
   ^["agent_of_change"]{

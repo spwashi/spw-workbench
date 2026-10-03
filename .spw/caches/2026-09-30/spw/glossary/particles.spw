@@ -1,0 +1,203 @@
+# Particle Glossary
+#
+# The five particle aims, each with its lexer name, its LSP alias, a plain word, a spoken name, and the place where the grammatical name stops fitting.
+
+#>spw_gloss_particles
+#:layer #!semantics
+#:domain #!spw
+#:form #!glossary
+#:level #!foundation
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Particle Glossary"
+ ~#claim: "A particle is the word you write, such as a hash, an aim, and a name; the anchor is the bookmark it leaves on the node that follows."
+ ~#proof: "Lexer, binding, and LSP names are read from spw-seed and spw-lsp at commit 1aa1dc23; each linguistic limit cites a grammar of that category."
+ ~#door: "Read the word and bookmark row first, then the aim your own field already has a name for."
+ ~#audience: "readers meeting particles for the first time, and linguists checking the borrowed names"
+ continuity: "Particle Glossary | bookmark"
+ cold_open: "A particle is a word you write, and the bookmark it leaves sits on whatever comes next."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/studies/persona-synthesis.json tree_amendments and metaphor_limits for linguistics",
+  "lexer, binding, LSP display, and particleMix re-read and probed at commit 1aa1dc23 on 2026-10-03"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the persona amendment cited display.ts:304 and :1040-1041 for the LSP aliases; the kinds are declared at display.ts:33-41, and 1040-1041 maps them to symbol kinds",
+  "the persona amendment listed aspect beside the lexed aims; aspect lexes as an ANNOTATION token, and particleMix counts it from raw text, which also counts named appositions"
+ ]
+ labels: "a-canon names the five aims; a-cut adds the plain words; no row here is an owner hold"
+}
+
+^["edges"]{
+ grounds: [ ~"docs/theory/spw/apposition.spw#spw_apposition" ]
+ extends: [ ~"../voice.spw#spw_voice_spoken_names" ]
+ see: [ ~"../theory/particle-lattice.spw#spw_theory_particle_lattice", ~"../doors/particle.spw#spw_door_particle" ]
+}
+
+^["concepts"]{
+ primary: [ #particle, #deixis, #forward_binding ]
+ transfers: [ #grammatical_category ]
+}
+
+^["core"]{
+ #>spw_gloss_particle_word_bookmark
+ ^["word_and_bookmark"]{
+  #:claim #!settled
+  statement: "The particle is the mark as written; the anchor is the node a deixis particle binds, which a path ref naming the file and the anchor resolves to."
+  source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_seed_canonical"
+  cites: [ "packages/spw-seed/src/canonical/particles.ts:9-11", "packages/spw-seed/src/canonical/particles.ts:148-156" ]
+  ~#say(the word you write, the bookmark it leaves)
+ }
+ #>spw_gloss_particle_forward
+ ^["forward_binding"]{
+  #:claim #!settled
+  statement: "A run of particle-led lines binds to the first content node after the run, and a bare mood mark continues the run instead of ending it."
+  source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_seed_canonical"
+  cites: [ "packages/spw-seed/src/canonical/particles.ts:34-52", "packages/spw-seed/src/canonical/particles.ts:63-79" ]
+  pressures: ~"../theory/particle-lattice.spw#spw_theory_particle_forward"
+ }
+ #>spw_gloss_particle_names
+ ^["names"]{
+  #:claim #!settled
+  statement: "A particle name starts with a letter or underscore and may go on with letters, digits, underscores, and hyphens; the LSP display pattern stops at the first hyphen."
+  sources: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_seed_lexer", ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_lsp_display" ]
+  cites: [ "packages/spw-seed/src/lexer/matchers/particles.ts:33,39", "packages/spw-lsp/src/handlers/display.ts:35-36" ]
+  write_instead: "underscores, as in water_density_max, so lexer, gate, and hover read one name"
+  digits: ~"../theory/particle-lattice.spw#spw_theory_particle_digit_drop"
+ }
+ #>spw_gloss_particle_aliases
+ ^["aliases"]{
+  #:claim #!settled
+  statement: "Canon and the lexer say deixis, case, and mood; the LSP display calls the same three aims anchor, lens, and intent, and calls a bare hash tag topic."
+  sources: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_lsp_display", ~"../../registries/sources/spw-design-studies.spw#src_lab_canon_apposition" ]
+  cites: [ "docs/theory/spw/apposition.spw:33", "packages/spw-lsp/src/handlers/display.ts:33-41" ]
+  homonyms: ~"./terms.spw#spw_term_lens"
+ }
+}
+
+^["aims"]{
+ #>spw_gloss_particle_deixis
+ ^["deixis"]{
+  #:claim #!settled
+  statement: "A deixis particle, a hash, a greater-than sign, and a name, leaves an anchor on the next node; the lexer makes it a PARTICLE token of kind greater-than."
+  glyph: "#>", lexer: "PARTICLE, kind >", lsp: "anchor"
+  plain: "sets a bookmark" ~#spoken(hash greater)
+  source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_seed_lexer"
+  cites: [ "packages/spw-seed/src/lexer/matchers/particles.ts:20", "packages/spw-lsp/src/handlers/display.ts:41" ]
+  ^["limits"]{
+   holds: "discourse deixis where it binds: the mark points at the stretch of text that follows it"
+   fails: "cited from another file it works as a coindex label, and its referent never shifts with the speaker as here and this do"
+   source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_levinson_1983"
+  }
+ }
+ #>spw_gloss_particle_case
+ ^["case"]{
+  #:claim #!settled
+  statement: "A case particle, a hash, a colon, and a name, classifies the role of the node it binds, as the header axes do; the LSP calls this aim lens."
+  glyph: "#:", lexer: "PARTICLE, kind :", lsp: "lens"
+  plain: "names a column" ~#spoken(hash colon)
+  source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_seed_lexer"
+  cites: [ "packages/spw-seed/src/lexer/matchers/particles.ts:4-7,20", "packages/spw-lsp/src/handlers/display.ts:39" ]
+  ^["limits"]{
+   holds: "a closed set of role labels marked on a dependent, closer to Fillmore deep case than to a morphological case ending"
+   fails: "no head governs it; it binds forward, while Japanese and Korean case particles follow the noun they mark"
+   sources: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_blake_2001", ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_fillmore_1968" ]
+   compare: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_shibatani_1990", ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_sohn_1999" ]
+  }
+ }
+ #>spw_gloss_particle_mood
+ ^["mood"]{
+  #:claim #!settled
+  statement: "A mood particle, a hash, a bang, and a name, gives the value or force of what it binds; it moved off the operator path on 2026-07-23, and the LSP calls it intent."
+  glyph: "#!", lexer: "PARTICLE, kind !", lsp: "intent"
+  plain: "gives a value" ~#spoken(hash bang)
+  source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_seed_lexer"
+  cites: [ "packages/spw-seed/src/lexer/matchers/particles.ts:9-10", "packages/spw-lsp/src/handlers/display.ts:40" ]
+  ^["limits"]{
+   holds: "sentence mood: a small closed set that marks how an assertion is meant"
+   fails: "the values mix epistemic status, such as settled, with kind and genre, such as field_guide, which a grammar of mood keeps apart"
+   source: ~"../../registries/sources/spw-design-studies.spw#src_lab_palmer_2001"
+   pressures: ~"../theory/epistemic-status.spw#spw_theory_status_mood_slot"
+  }
+ }
+ #>spw_gloss_particle_aspect
+ ^["aspect"]{
+  #:claim #!settled
+  statement: "Aspect, a tilde, a hash, a name, and a colon, lexes as an ANNOTATION token rather than a particle, and particleMix counts it from raw text as volatility."
+  glyph: "~#", lexer: "ANNOTATION", lsp: "none of the four kinds"
+  plain: "keeps a side value" ~#spoken(tilde hash)
+  source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_seed_lexer"
+  cites: [ "packages/spw-seed/src/lexer/matchers/identifiers.ts:90-118", "packages/spw-seed/src/lexer/matchers/particles.ts:11-12", "packages/spw-seed/src/canonical/particles.ts:107-129" ]
+  reads: %[gloss.lexer.particle_aims_n, gloss.lexer.lattice_aims_n]
+  ^["limits"]{
+   holds: "a mark for content whose truth may lapse, which canon reads as deferred state"
+   fails: "grammatical aspect is the internal time of an event, such as perfective or progressive; content that expires sits closer to a stage-level predicate"
+   sources: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_comrie_1976", ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_carlson_1977" ]
+  }
+ }
+ #>spw_gloss_particle_apposition
+ ^["apposition"]{
+  #:claim #!settled
+  statement: "An apposition, a tilde, a hash, an optional name, and a body in parens, sets a reading beside its host; the body is read raw to the matching paren on one line."
+  glyph: "~#( )", lexer: "APPOSITION", lsp: "no display kind at 1aa1dc23"
+  since: "commit 6690d686 of 2026-10-03 gives readings their own apposition kind in the LSP index and hover"
+  plain: "reads it beside" ~#spoken(tilde hash paren)
+  sources: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_seed_lexer", ~"../../registries/sources/spw-design-studies.spw#src_lab_canon_apposition" ]
+  cites: [ "packages/spw-seed/src/lexer/matchers/apposition.ts:41-70", "docs/theory/spw/apposition.spw:21-26,43-47" ]
+  ^["limits"]{
+   holds: "a phrase set beside a thing to characterize it, as an appositive is"
+   fails: "most readings are supplements rather than coreferential appositives, and no tool checks the host; grammars of supplements call that host the anchor, a third sense of anchor"
+   sources: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_quirk_1985", ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_huddleston_pullum_2002" ]
+  }
+ }
+}
+
+^["counting"]{
+ #>spw_gloss_particle_mix_counts
+ ^["mix_counts"]{
+  #:claim #!settled
+  statement: "particleMix counts every tilde-hash mark followed by a letter as aspect, so a named apposition such as a lens reading adds one aspect, while an anonymous apposition adds none."
+  source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes"
+  cites: [ "packages/spw-seed/src/canonical/particles.ts:125,129" ]
+  ^["limits"]{
+   holds: "the reflexive particle.aspect handle reads this count"
+   fails: "it cannot tell a datum from a reading, so a surface dense in lens readings looks volatile"
+  }
+ }
+}
+
+^["try"]{
+ #>spw_gloss_particle_try
+ ^["token_hunt"]{
+  materials: [ "a scratch file outside the cut", "a terminal at the repository root" ]
+  steps: << "write an anchor particle, a case and mood line, and a frame holding one tilde-hash datum and one reading" ; "run npm run spw -- inspect source on the file with --through tokens" ; "find the PARTICLE, ANNOTATION, and APPOSITION rows" ; "say each spoken name aloud" >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "no hazard worth naming; keep scratch files outside the cut"
+  shows: ~"./particles.spw#spw_gloss_particle_aspect"
+ }
+}
+
+#>spw_gloss_particle_anchor_q
+?["Does the word anchor mislead readers who know grammars of supplements?"]{
+ #:depth #!educational ~#lens(semiotic charge)
+ #:claim #!speculative
+ ~#hypothesis: "Linguists who know supplement grammar will first read anchor as the host of a reading, so pairing anchor with bookmark in hovers should cut that misreading."
+ !probe{ "show linguists a frame with an anchor particle and a reading, ask which node the anchor names, then repeat with the word bookmark beside it" =id[p_gloss_particle_anchor_clash] =kind[interview] }
+ breaks: "a supplement anchor is fixed by syntax; a Spw anchor is a name chosen by the author and bound by adjacency"
+ $%[gloss.lexer.particle_aims_n, gloss.lexer.lattice_aims_n]
+ ~"./particles.spw#spw_gloss_particle_apposition" ~#neighbor(nearest)
+}

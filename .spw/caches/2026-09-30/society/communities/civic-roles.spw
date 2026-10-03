@@ -1,0 +1,177 @@
+# Civic Roles
+#
+# Role dossiers for block captains, mutual aid coordinators, assembly facilitators, and tenant organizers, with the traditions each draws on and the evidence about neighborhoods that hold together.
+
+#>communities_civic_roles
+#:layer #!reference
+#:domain #!communities
+#:form #!dossier
+#:level #!intro
+#:review #!adversarial_checked
+#:valence #!boon
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Civic Roles"
+ ~#claim: "Neighbors organize through block clubs, mutual aid, assemblies, and tenant unions, and neighborhoods where people trust each other and act together see less violence."
+ ~#proof: "Sampson, Raudenbush, and Earls 1997 on collective efficacy; Seligman on block clubs; Kropotkin and Spade on mutual aid; Robert, Sheeran, and Baiocchi on assemblies; Lawson on tenants."
+ ~#door: "Read collective efficacy first, then the dossier for the role you already play."
+ ~#audience: "neighbors, organizers, and students of local democracy"
+ continuity: "Civic Roles | act together"
+ cold_open: "Block clubs, mutual aid, assemblies, and tenant unions are how neighbors learn to trust each other and act together."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/community-roles/civic-and-organizing-roles.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: [
+  "the raw hypothesis that tenant unions cut pediatric asthma emergency visits by 45 percent was invented; it is replaced by a direction-only wonder about repairs",
+  "the raw claim that a potluck block is exponentially better at preventing violent crime than cameras had no source and is removed",
+  "the raw invariant that leadership must come from lived experience in the neighborhood is restated as one tradition, credited to Ella Baker",
+  "dispute mediation before police involvement is dropped as an unsourced role claim"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/language-and-communities.spw#q_lang_neighborhood" ]
+ see: [ ~"./crew-crosswalk.spw#communities_crosswalk_convener", ~"./roles-lattice.spw#communities_role_block_captain" ]
+}
+
+^["concepts"]{
+ primary: [ #collective_efficacy, #mutual_aid, #reciprocity ]
+ transfers: [ #deliberation, #tenure ]
+ tensions: [ #charity ]
+}
+
+^["evidence"]{
+ #>communities_civic_collective_efficacy
+ ^["collective_efficacy"]{
+  #:claim #!settled
+  statement: "Across Chicago neighborhoods surveyed in 1995, collective efficacy, trust among neighbors plus willingness to act for the common good, went with lower violence."
+  reads: %[
+   lang.neighborhood.efficacy_residents_count,
+   lang.neighborhood.efficacy_neighborhoods_count
+  ]
+  source: ~"../../registries/sources/language-and-communities.spw#src_lang_sampson_1997"
+  ^["limits"]{
+   holds: "Chicago neighborhood clusters in the mid-1990s, measured by resident survey"
+   fails: "a cross-sectional association; it does not show that starting a club or event raises efficacy"
+  }
+ }
+}
+
+^["dossiers"]{
+ ^["block_captains"]{
+  #>communities_civic_block_clubs
+  ^["block_clubs"]{
+   #:claim #!settled
+   statement: "Seligman traces Chicago block clubs through the twentieth century as residents organized street by street to maintain, watch over, and celebrate their blocks."
+   source: ~"../../registries/sources/language-and-communities.spw#src_lang_seligman_2016"
+   role: "a block captain keeps the contact list, knocks on doors before meetings, and checks on neighbors in heat or storms"
+  }
+ }
+ ^["mutual_aid"]{
+  #>communities_civic_kropotkin
+  ^["kropotkin"]{
+   #:claim #!settled
+   statement: "Kropotkin argued in 1902 that cooperation within species is a factor of evolution alongside competition, drawing on animal and human examples."
+   source: ~"../../registries/sources/language-and-communities.spw#src_lang_kropotkin_1902"
+  }
+  #>communities_civic_mutual_aid
+  ^["solidarity_not_charity"]{
+   #:claim #!settled
+   statement: "Spade defines mutual aid as people coordinating to meet each other's needs while building shared understanding of why those needs go unmet, distinct from charity given from above."
+   source: ~"../../registries/sources/language-and-communities.spw#src_lang_spade_2020"
+  }
+  #>communities_civic_breakfast
+  ^["free_breakfast"]{
+   #:claim #!settled
+   statement: "The Black Panther Party began its Free Breakfast for Children program in Oakland in 1969 and spread it to chapters in many cities."
+   source: ~"../../registries/sources/language-and-communities.spw#src_lang_bloom_martin_2013"
+   credit: "a community survival program run by Party members and neighborhood volunteers"
+  }
+ }
+ ^["assembly_facilitation"]{
+  #>communities_civic_roberts
+  ^["parliamentary_procedure"]{
+   #:claim #!settled
+   statement: "Henry Martyn Robert first published his rules of order in 1876; the twelfth edition of 2020 still runs meetings by motions, seconds, debate, and majority vote."
+   source: ~"../../registries/sources/language-and-communities.spw#src_lang_roberts_rules_2020"
+  }
+  #>communities_civic_sense_of_meeting
+  ^["sense_of_the_meeting"]{
+   #:claim #!settled
+   statement: "Quaker business meetings decide without voting: a clerk seeks the sense of the meeting, and members who disagree may stand aside rather than block."
+   source: ~"../../registries/sources/language-and-communities.spw#src_lang_sheeran_1983"
+  }
+  #>communities_civic_participatory_budget
+  ^["participatory_budgeting"]{
+   #:claim #!settled
+   statement: "Porto Alegre began participatory budgeting in 1989, with neighborhood assemblies and elected delegates setting priorities for part of the city capital budget."
+   source: ~"../../registries/sources/language-and-communities.spw#src_lang_baiocchi_2005"
+  }
+  language_access: "interpreting into every language in the room is part of facilitation, so that every resident can speak, not only listen"
+ }
+ ^["organizing_traditions"]{
+  #>communities_civic_alinsky
+  ^["alinsky"]{
+   #:claim #!settled
+   statement: "Saul Alinsky organized Chicago neighborhoods from the late 1930s and set out his method, building power through existing institutions, in Rules for Radicals in 1971."
+   source: ~"../../registries/sources/language-and-communities.spw#src_lang_alinsky_1971"
+  }
+  #>communities_civic_baker
+  ^["ella_baker"]{
+   #:claim #!settled
+   statement: "Ella Baker helped found the Student Nonviolent Coordinating Committee in 1960 and argued for group-centered leadership that develops many local leaders instead of one."
+   source: ~"../../registries/sources/language-and-communities.spw#src_lang_ransby_2003"
+  }
+ }
+ ^["tenant_organizing"]{
+  #>communities_civic_tenants
+  ^["tenant_movement"]{
+   #:claim #!settled
+   statement: "New York tenants organized rent strikes and building associations from 1904 onward, a movement documented across eighty years by Lawson and Naison."
+   source: ~"../../registries/sources/language-and-communities.spw#src_lang_lawson_1986"
+   role: "a building steward keeps the repair log, collects complaints, and speaks for the association with the landlord"
+  }
+ }
+}
+
+^["stance"]{
+ #>communities_civic_many_leaders
+ ^["many_leaders"]{
+  #:claim #!interpretive
+  statement: "A civic role lasts when its holder can leave without the group collapsing, which is why these traditions spread tasks across many neighbors."
+ }
+}
+
+#>communities_civic_efficacy_q
+?["Does a block club build collective efficacy, or do trusting blocks start clubs?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Starting a block club raises neighbors willingness to act together over the following years, beyond the trust the block already had."
+ !probe{ "compare survey waves for blocks before and after a club forms against matched blocks without one" =id[p_lang_communities_club_efficacy] =kind[lit] }
+ $%[lang.neighborhood.efficacy_neighborhoods_count]
+ ~"./civic-roles.spw#communities_civic_collective_efficacy" ~#neighbor(nearest)
+}
+
+#>communities_civic_repairs_q
+?["Do organized tenants get repairs sooner?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Housing code violations in buildings with an active tenant association are corrected sooner than in comparable unorganized buildings."
+ !probe{ "match public code enforcement records to buildings with and without a registered tenant association and compare time to cure" =id[p_lang_communities_tenant_repairs] =kind[census] }
+ ~"./civic-roles.spw#communities_civic_tenants" ~#neighbor(nearest)
+}

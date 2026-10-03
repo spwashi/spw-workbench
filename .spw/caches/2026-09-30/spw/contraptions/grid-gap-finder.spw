@@ -1,0 +1,180 @@
+# Grid Gap Finder
+#
+# A Mendeleev-style hole census on two-axis grids: mark the empty cells, count their filled neighbours along both axes, and read intrigue as holes over slots.
+
+#>spw_lab_grid_gap
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!foundation
+#:review #!sourced
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Grid Gap Finder"
+ ~#claim: "A hole with filled neighbours on both axes invites a draft its neighbours can predict, while an edge hole is an open question; neither is a discovery until something outside confirms it."
+ ~#proof: "Mendeleev predicted gallium, scandium, and germanium from their neighbours, as Scerri recounts; canon defines play intrigue as holes over slots."
+ ~#door: "Find the three holes in the teaching grid, then say which one its neighbours already describe."
+ ~#audience: "teachers mapping a curriculum, librarians mapping a shelf, linguists reading a paradigm, and Spw authors who leave holes"
+ continuity: "Grid Gap Finder | its neighbours"
+ cold_open: "An empty cell surrounded on every side is half written already, because its neighbours tell you what belongs there."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "persona study contraption_catalog[4], references/studies/persona-synthesis.json", "sketch references/spw-branch/seeds/contraptions/grid-gap-finder.spw" ]
+ method: #authored
+ evidence: #[ "the teaching grid below parsed with three Wildcard nodes at commit 1aa1dc23 on 2026-10-03", "spw select rejected --selector wildcard as an unknown selector on 2026-10-03" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the sketch grid looked like a published standard; it is a made-up teaching grid and says so",
+  "the sketch treated every hole as a prediction; edge holes are invitations, and a hole in a closed catalog marks missing coverage"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../record/information/archive-patterns-matrix.spw#information_science_patterns_mendeleev" ]
+ extends: [ ~"./opcode-map.spw#spw_lab_opcode_map" ]
+ see: [ ~"../theory/particle-lattice.spw#spw_theory_particle_lattice" ]
+}
+
+^["concepts"]{
+ primary: [ #hole, #periodic_table ]
+ transfers: [ #rule_table, #reflexive_mirror ]
+ tensions: [ #overclaim ]
+}
+
+^["tool"]{
+ status: #proposed
+ verb: "a hole selector and a two-axis neighbour census, perhaps spw select --selector hole; not yet a selector"
+ implemented: #[ "parse in packages/spw-seed emits a Wildcard node for each underscore, so a census can read holes from the tree" ]
+ observed: "spw select reports wildcard as an unknown selector at 1aa1dc23"
+ sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_parse_runs", ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_cli" ]
+}
+
+^["parameters"]{
+ row_order: << k2 ; g3_5 ; g6_8 ; g9_12 >>
+ columns: #[ properties, change, energy ]
+ sandwiched: "a hole with a filled cell on both sides along the row order"
+ edge: "a hole in the first or last row, or with an empty neighbour"
+ intrigue: "holes divided by slots, between zero and one"
+}
+
+#>spw_lab_grid_gap_grid
+^["teaching_grid"]{
+ note: "a made-up matter strand for a school science sequence, not any published standard"
+ ^["k2"]{
+  properties: .{ gist: "sort objects by colour, size, and texture" }
+  change: .{ gist: "water can freeze and melt" }
+  energy: _
+ }
+ ^["g3_5"]{
+  properties: .{ gist: "mass stays the same when ice melts" }
+  change: .{ gist: "mixing and dissolving" }
+  energy: .{ gist: "sunlight warms surfaces" }
+ }
+ ^["g6_8"]{
+  properties: .{ gist: "density as mass divided by volume" }
+  change: _
+  energy: .{ gist: "thermal energy moves from warmer to cooler objects" }
+ }
+ ^["g9_12"]{
+  properties: .{ gist: "bonding explains bulk properties" }
+  change: .{ gist: "reaction rates and equilibrium" }
+  energy: _
+ }
+}
+
+^["world"]{
+ #>spw_lab_grid_gap_mendeleev
+ ^["mendeleev"]{
+  #:claim #!settled
+  statement: "Mendeleev left gaps in his periodic tables and predicted properties of missing elements; gallium, scandium, and germanium, found between 1875 and 1886, matched closely."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_scerri_2007"
+  ~#(credit the finders: Lecoq de Boisbaudran, Nilson, and Winkler)
+ }
+ #>spw_lab_grid_gap_intrigue
+ ^["intrigue"]{
+  #:claim #!settled
+  statement: "Canon defines play intrigue as open holes divided by slots, a ratio between zero and one, meant to invite without humiliation."
+  canon: "docs/theory/spw/dimensional-axes.spw:136"
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_canon_dimensional_axes"
+ }
+ #>spw_lab_grid_gap_closed
+ ^["closed_catalog"]{
+  #:claim #!settled
+  statement: "Robinson and Goforth laid the strict ordinal two-by-two games out as a periodic table of fixed size, so an empty cell there marks missing coverage, not a new game."
+  reads: %[contrap.games.strict_ordinal_2x2_count]
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_robinson_goforth_2005", ~"../../registries/sources/spw-contraptions.spw#src_contrap_bruns_2015" ]
+ }
+ #>spw_lab_grid_gap_defective
+ ^["defective_paradigms"]{
+  #:claim #!settled
+  statement: "Linguists document paradigm gaps that are systematic rather than accidental, where a language lacks a form that its rules would seem to allow."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_baerman_2010"
+ }
+}
+
+^["battery"]{
+ #>spw_lab_grid_gap_census
+ ^["hole_census"]{
+  !probe{ "list each underscore in the teaching grid with its filled neighbours along the row order and across the columns" =id[p_contrap_grid_gap_census] =kind[calc] }
+  predict: ?{ "which hole can its neighbours already describe" } ~<guess>
+  expect: "three holes in twelve slots, intrigue one quarter; the grade 6 to 8 change hole is sandwiched, and the two energy holes sit on the first and last rows"
+  shows: ~"./grid-gap-finder.spw#spw_lab_grid_gap_grid"
+ }
+ #>spw_lab_grid_gap_draft
+ ^["draft_the_sandwich"]{
+  !probe{ "write a gist for the sandwiched hole from the cells above, below, and beside it" =id[p_contrap_grid_gap_draft] =kind[thought] }
+  expect: "a draft about physical and chemical change between dissolving and reaction rates; a teacher still decides whether it belongs"
+  shows: ~"./grid-gap-finder.spw#spw_lab_grid_gap_mendeleev"
+ }
+}
+
+#>spw_lab_grid_gap_mirror
+^["language_mirror"]{
+ #>spw_lab_grid_gap_particles
+ ^["particle_paradigm"]{
+  #:claim #!settled
+  statement: "Canon names more particle aims in its lattice list than the lexer emits as particle tokens, so the particle paradigm has holes that canon describes and the lexer leaves empty."
+  reads: %[gloss.lexer.particle_aims_n, gloss.lexer.lattice_aims_n]
+  sources: [ ~"../../registries/sources/spw-branch.spw#src_spw_seed_lexer", ~"../../registries/sources/spw-branch.spw#src_spw_canon_apposition" ]
+ }
+ operator_table: "measured against the form ladders, 36 of the 52 operator-by-bound cells have no named step, an intrigue near seven tenths"
+ question: "Where does Spw itself leave holes in its own grids?"
+ standing: "a-canon: the lattice list and the ladders are repository text; a-cut: holes over slots is the canon ratio applied here"
+ !probe{ "run the hole census on the opcode map and on the particle paradigm and report intrigue for each" =id[p_contrap_grid_gap_self] =kind[census] }
+}
+
+^["limits"]{
+ holds: "where the holes are, how many neighbours each has, and the ratio of holes to slots"
+ fails: "a grid gap predicts nothing measurable: a cell may be empty because it is unsafe, impossible, or simply not taught, and strands in a curriculum share a committee decision, not a periodic law"
+}
+
+^["try"]{
+ #>spw_lab_grid_gap_try
+ ^["own_grid"]{
+  materials: [ "a sheet of squared paper", "a pencil", "a list of topics from one course or one shelf" ]
+  steps: << "draw a grid with levels as rows and strands as columns" ; "write each topic in its cell" ; "mark empty cells with an underscore" ; "count filled neighbours for each hole" ; "draft one sandwiched hole from its neighbours" >>
+  time: .{ n: 25, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./grid-gap-finder.spw#spw_lab_grid_gap_census"
+ }
+}
+
+#>spw_lab_grid_gap_q
+?["When a grid is revised, do sandwiched holes fill before edge holes?"]{
+ #:depth #!educational ~#lens(curated collection)
+ #:claim #!speculative
+ ~#hypothesis: "Sandwiched holes should fill first, because their neighbours already constrain the draft, while edge holes wait for a decision about scope."
+ !probe{ "compare two dated revisions of a public curriculum or classification grid and record which holes filled, by position" =id[p_contrap_grid_gap_q] =kind[lit] }
+ $%[contrap.games.strict_ordinal_2x2_count]
+ ~"./grid-gap-finder.spw#spw_lab_grid_gap_mendeleev" ~#neighbor(nearest)
+ breaks: "Mendeleev had atomic weights to interpolate; a curriculum grid has no hidden quantity, so neighbour pressure is social, not physical"
+}

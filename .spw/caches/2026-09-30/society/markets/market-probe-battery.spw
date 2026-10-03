@@ -1,0 +1,165 @@
+# Market Probe Battery
+#
+# One probe per recurring market release: who publishes it, when it usually lands, what its method can and cannot say, and which registry cell a fresh reading would fill.
+
+#>markets_probe_battery
+#:layer #!pragmatics
+#:domain #!markets
+#:form #!probe_battery
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!boon
+#:era #!current
+
+^"emit"{
+ ~#title: "Market Probe Battery"
+ ~#claim: "Each recurring market release can be probed on a calendar, and each probe names its publisher, its usual release month, its method caveat, and the cell it fills."
+ ~#proof: "Publishers and series are Edison, Nielsen The Gauge, IAB with PwC, Pew, Circana BookScan, AAP StatShot, and Comscore; release months marked verify have not been read from a schedule."
+ ~#door: "Pick the next probe on the release calendar, run it through the report protocol, and fill or leave its cell."
+ ~#audience: "analysts and writers who keep market receipts current"
+ continuity: "Market Probe Battery | release calendar"
+ cold_open: "Follow the release calendar, run one probe per release, and fill a cell only when the report is in hand."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ needs: [ ~"./reading-market-reports.spw#markets_reading_states" ]
+ feeds: [ ~"./media-market-receipts.spw#markets_media_receipts", ~"./market-hooks.spw#markets_hooks" ]
+ grounds: [ ~"../../registries/quantities/economy-and-markets.spw#q_econ_media" ]
+}
+
+^["concepts"]{
+ primary: [ #dated_receipt, #audience_measurement ]
+ transfers: [ #season_cadence, #sampling_frame ]
+ tensions: [ #platform_dependence ]
+}
+
+^["rules"]{
+ one_cell: "each probe fills one named cell; a probe that fills nothing is dropped"
+ month: "a release month read from a past release is a pattern, not a promise; confirm on the publisher page"
+ empty: "an unread value stays unset with status verify, never estimated"
+}
+
+#>markets_probe_calendar
+^["release_calendar"]{
+ cadence: << "January: annual box office and annual print unit summaries" ; "March: The Infinite Dial" ; "April: IAB full-year advertising revenue" ; "every month: Nielsen The Gauge for the prior month" ; "each quarter: Edison Podcast Metrics waves" ; "irregular: Pew topic reports" >>
+ status: "the IAB April pattern is read from the 2025 and 2026 releases; the other months are verify"
+ season: ~"../../season/calendar-2026q4.spw#season_calendar_2026q4"
+}
+
+^["audio"]{
+ #>markets_probe_edison
+ ^["edison_platforms"]{
+  publisher: "Edison Research, pages now served from ssrs.com"
+  series: ~"../../registries/sources/economy-and-markets.spw#src_econ_edison_podcast_metrics"
+  release: "quarterly waves; the platform page read here was published 2024-10-23"
+  caveat: "share of weekly podcast listeners 13 and up naming a main service; the wave is not printed on that page"
+  fills: %[econ.podcast.edison_latest_youtube_pct]
+  !probe{ "read the newest Edison platform ranking and copy wave, base, and wording into the YouTube cell" =id[p_econ_probe_edison] =kind[lookup] }
+ }
+ #>markets_probe_infinite_dial
+ ^["infinite_dial"]{
+  publisher: "Edison Research"
+  series: ~"../../registries/sources/economy-and-markets.spw#src_econ_edison_infinite_dial"
+  release: "annual, usually March; verify"
+  caveat: "a share of people 12 and up who listened in the last month; it says nothing about hours"
+  fills: %[econ.podcast.infinite_dial_monthly_pct]
+  !probe{ "copy the monthly podcast listening share and its base from the newest Infinite Dial" =id[p_econ_probe_infinite_dial] =kind[lookup] }
+ }
+ #>markets_probe_pew
+ ^["pew_audio"]{
+  publisher: "Pew Research Center"
+  series: ~"../../registries/sources/economy-and-markets.spw#src_econ_pew_2023_podcasts"
+  release: "irregular topic reports"
+  caveat: "a probability panel of adults; strong on who listens to news, silent on platform share"
+  fills: %[econ.podcast.pew_2022_sample_n]
+  !probe{ "check whether Pew has fielded a newer podcast wave and, if so, record its sample size and dates" =id[p_econ_probe_pew] =kind[lookup] }
+ }
+}
+
+^["screen"]{
+ #>markets_probe_gauge
+ ^["nielsen_gauge"]{
+  publisher: "Nielsen"
+  series: ~"../../registries/sources/economy-and-markets.spw#src_econ_nielsen_gauge"
+  release: "monthly; the May 2025 figures were released on 2025-06-17"
+  caveat: "shares of TV usage on TV sets; the page shows figures in images, so copy values by hand"
+  fills: %[econ.tv.gauge_latest_youtube_pct]
+  !probe{ "copy the latest month YouTube share of TV usage with its month label" =id[p_econ_probe_gauge] =kind[lookup] }
+ }
+ #>markets_probe_comscore
+ ^["box_office"]{
+  publisher: "Comscore"
+  series: ~"../../registries/sources/economy-and-markets.spw#src_econ_comscore_box_office"
+  release: "weekend reports and a year-end total, usually early January; verify"
+  caveat: "ticket revenue for the US and Canada; not admissions, not streaming revenue"
+  fills: %[econ.media.us_box_office_latest_busd]
+  !probe{ "record the latest full-year domestic box office with its publisher and date" =id[p_econ_probe_comscore] =kind[lookup] }
+ }
+}
+
+^["print_and_ads"]{
+ #>markets_probe_bookscan
+ ^["bookscan"]{
+  publisher: "Circana"
+  series: ~"../../registries/sources/economy-and-markets.spw#src_econ_circana_bookscan"
+  release: "weekly point of sale with year-end summaries; verify"
+  caveat: "print units at reporting retailers; misses many ebooks, audiobooks, and direct sales"
+  fills: %[econ.media.us_print_units_latest_m]
+  !probe{ "record the latest full-year US print unit total and its coverage note" =id[p_econ_probe_bookscan] =kind[lookup] }
+ }
+ #>markets_probe_aap
+ ^["aap_statshot"]{
+  publisher: "Association of American Publishers"
+  series: ~"../../registries/sources/economy-and-markets.spw#src_econ_aap_statshot"
+  release: "monthly StatShot and an annual report; verify"
+  caveat: "publisher net revenue from reporting publishers; not retail sales"
+  fills: %[econ.media.us_publishing_revenue_latest_busd]
+  !probe{ "record the latest annual US publisher revenue and the share of publishers reporting" =id[p_econ_probe_aap] =kind[lookup] }
+ }
+ #>markets_probe_iab
+ ^["iab_revenue"]{
+  publisher: "IAB with PwC"
+  series: ~"../../registries/sources/economy-and-markets.spw#src_econ_iab_2025"
+  release: "April for the prior full year, read from the 2025 and 2026 releases"
+  caveat: "US internet advertising revenue; channel splits change definitions between editions"
+  fills: %[econ.ads.iab_us_internet_2025_growth_pct]
+  !probe{ "when the next full-year report lands, add a new dated cell rather than overwrite the 2025 one" =id[p_econ_probe_iab] =kind[lookup] }
+ }
+}
+
+^["try"]{
+ #>markets_probe_try_next
+ ^["next_release"]{
+  materials: [ "this battery", "a calendar", "a browser" ]
+  steps: << "find the next release on the calendar" ; "put a reminder on its expected week" ; "when it lands, run the report protocol" ; "fill the named cell or write why it stays empty" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "none worth naming"
+  shows: ~"./market-probe-battery.spw#markets_probe_calendar"
+ }
+}
+
+#>markets_probe_decay_q
+?["Which receipt goes stale fastest, and does staleness track the release cadence?"]{
+ #:depth #!computational ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "Cells fed by monthly releases fall out of date sooner than cells fed by annual releases, and quotes of them in the wild lag further behind."
+ !probe{ "for each cell, log the age of the newest release against the age of the figure most often quoted in news searches" =id[p_econ_probe_decay] =kind[census] }
+ $%[econ.tv.gauge_latest_youtube_pct, econ.media.us_print_units_latest_m]
+ ~"./market-probe-battery.spw#markets_probe_gauge" ~#neighbor(nearest)
+}

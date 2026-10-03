@@ -1,0 +1,182 @@
+# VS Code Server Lifecycle and Cache Planes
+#
+# How the VS Code client starts, configures, restarts, and stops the bundled language server, and how its cache card reports the four named cache planes.
+
+#>editor_hosts_vscode_lsp_cache
+#:layer #!pragmatics
+#:domain #!editor_hosts
+#:form #!state_machine
+#:level #!practitioner
+#:review #!sourced
+#:valence #!bone
+#:era #!current
+
+^"emit"{
+ ~#title: "VS Code Server Lifecycle and Cache Planes"
+ ~#claim: "VS Code starts only its bundled server over stdio, sends settings once at initialize, and its cache card drops the server's layers."
+ ~#proof: "States and transitions cite extension.ts, commands.ts, custom-requests.ts, and the stdio server at commit 1aa1dc23."
+ ~#door: "Walk the client states, then read why the cache card shows the server plane absent."
+ ~#audience: "maintainers debugging VS Code startup, settings, or the cache card"
+ continuity: "VS Code Server Lifecycle and Cache Planes | bundled server"
+ cold_open: "VS Code starts one bundled server, tells it the settings once, and its cache card loses the server plane on the way."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/vscode/lsp-client.spw", ".spw/caches/vscode/cache-layer.spw" ]
+ method: #corrected
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: [
+  "the raw lsp-client cache gave a five-step server ladder from tool root to installed package; startup uses only the bundled server, as README line 28 says",
+  "the raw lsp-client cache said multi-root workspaces run isolated servers and the server restarts with backoff; the code starts one client and restarts only on command",
+  "the raw cache-layer cache named stats expirations and disabled_reads; the snapshot fields are expired and disabled",
+  "the raw cache-layer cache described a background expiry timer; entries expire lazily when a read finds them old",
+  "the raw cache-layer cache said the card shows the LSP plane present when connected; the client drops the layers, so the card shows it absent"
+ ]
+ ^["stale_canon"]{
+  line: ".spw/tooling/vscode-spw.spw:22"
+  says: "startup resolves the server from a workbench root, a checkout, a mount, an installed package, or a fallback"
+  code: "extensions/vscode-spw/src/extension.ts:114-125 and README.md:28 use the bundled server only"
+  action: "recorded here; canon is not edited from the cut"
+ }
+}
+
+^["edges"]{
+ needs: [ ~"./lsp-surface.spw#editor_hosts_lsp" ]
+ feeds: [ ~"./known-defects.spw#editor_hosts_defects" ]
+ contrasts: [ ~"./jetbrains-instruments.spw#editor_hosts_jetbrains_instruments" ]
+ grounds: [ ~"../../registries/quantities/spw-hosts-and-history.spw#q_hosts_vscode" ]
+}
+
+^["concepts"]{
+ primary: [ #cache_plane, #initialize_only_settings, #thin_client ]
+ transfers: [ #parity_of_questions ]
+ tensions: [ #dropped_layers ]
+}
+
+^["client"]{
+ #>editor_hosts_vscode_lsp_cache_bundled
+ ^["bundled_only"]{
+  #:claim #!settled
+  statement: "The client reads one server path from the manifest, refuses any path that leaves the extension, and runs that bundled file over stdio as client spwLanguageServer."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_extension"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_readme", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_manifest" ]
+  cites: [ "extensions/vscode-spw/src/extension.ts:76-90", "extensions/vscode-spw/src/extension.ts:114-125", "extensions/vscode-spw/package.json:35-38", "extensions/vscode-spw/README.md:28" ]
+ }
+ ^["states"]{
+  #>editor_hosts_vscode_lsp_cache_s_inactive
+  ^["inactive"]{ enters: "VS Code start", exits: "an activation event: a spw file, the Concepts view, or the Workspace view", cites: "extensions/vscode-spw/package.json:27-31" }
+  #>editor_hosts_vscode_lsp_cache_s_activating
+  ^["activating"]{
+   enters: "activate"
+   work: "build the client, start it, then register views, decorations, and commands"
+   on_manifest: ?match[server_path]{
+    "a dot-slash path with no parent step" => "resolve it inside the extension and start over stdio",
+    "anything else" => "throw, so activation fails with a message about the bundled path"
+   }
+   cites: "extensions/vscode-spw/src/extension.ts:23-60"
+  }
+  #>editor_hosts_vscode_lsp_cache_s_initializing
+  ^["initializing"]{
+   enters: "the initialize request"
+   work: "find the consumer workspace root, read initializationOptions, build the index, answer capabilities, then scan the workspace in the background"
+   exits: "running"
+   cites: "packages/spw-lsp/src/stdio-server.ts:194-252"
+  }
+  #>editor_hosts_vscode_lsp_cache_s_running
+  ^["running"]{
+   enters: "the initialize result"
+   work: "track open, change, save, and close; publish diagnostics after a debounce"
+   on_setting_change: ?match[setting]{
+    "spw.surface or spw.compute" => "decorations reread it on the next pass",
+    "spw.cache.probeTtlMs" => "the probe cache is cleared and takes the new TTL",
+    "spw.inlayHints or spw.diagnostics" => "the server keeps the old value; see the restart claim",
+    "spw.trace.server" => "nothing reads it"
+   }
+   cites: [ "packages/spw-lsp/src/stdio-server.ts:172-179", "packages/spw-lsp/src/stdio-server.ts:418-475", "extensions/vscode-spw/src/surface-decorations.ts:463-465" ]
+  }
+  #>editor_hosts_vscode_lsp_cache_s_restarting
+  ^["restarting"]{ enters: "Spw: Restart Language Server", work: "client.restart, which sends initialize again", exits: "initializing", cites: "extensions/vscode-spw/src/commands.ts:165-168" }
+  #>editor_hosts_vscode_lsp_cache_s_stopped
+  ^["stopped"]{ enters: "deactivate or window close", work: "client.stop", cites: "extensions/vscode-spw/src/extension.ts:62-66" }
+ }
+ #>editor_hosts_vscode_lsp_cache_restart_options
+ ^["restart_reuses_options"]{
+  #:claim #!emerging
+  statement: "The client builds its initializationOptions once at activation as a plain object, so a restart sends the same inlay and diagnostic values and only a window reload sends new ones."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_extension"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_languageclient" ]
+  cites: [ "extensions/vscode-spw/src/extension.ts:25,92-111", "vscode-languageserver-node client.ts, initializationOptions evaluated from stored client options" ]
+  evidence: "read from the extension and library code on 2026-10-02; not yet run in an editor"
+ }
+ #>editor_hosts_vscode_lsp_cache_trace
+ ^["inert_trace_setting"]{
+  #:claim #!settled
+  statement: "The language client reads its trace level from the setting named after its id, spwLanguageServer.trace.server, so the contributed spw.trace.server changes nothing."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_languageclient"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_extension", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_manifest" ]
+  cites: [ "extensions/vscode-spw/src/extension.ts:77", "extensions/vscode-spw/package.json:175-180" ]
+ }
+}
+
+^["cache_planes"]{
+ #>editor_hosts_vscode_lsp_cache_planes
+ ^["four_planes"]{
+  #:claim #!settled
+  statement: "The seed names four cache planes, editor probe cache, LSP session reflection, runtime cache, and corpus memo, and a host that cannot fill one names it and says why."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_seed_cache_layer"
+  cites: [ "packages/spw-seed/src/ir/cache-layer.ts:1-15", "packages/spw-seed/src/ir/cache-layer.ts:36-56" ]
+ }
+ #>editor_hosts_vscode_lsp_cache_probe_cache
+ ^["editor_probe_cache"]{
+  #:claim #!settled
+  statement: "The VS Code probe cache serves Inspect Form only, keys on URI and document version, expires entries lazily on read, and has no size cap."
+  reads: %[hosts.vscode.probe_ttl_ms]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_probe_cache"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_instruments" ]
+  cites: [ "extensions/vscode-spw/src/instruments/probe-cache.ts:9-18", "extensions/vscode-spw/src/instruments/probe-cache.ts:22,46-51", "extensions/vscode-spw/src/instruments/commands.ts:97-103" ]
+  stats: #[ entries, ttlMs, hits, misses, expired, disabled, writes, clears ]
+ }
+ #>editor_hosts_vscode_lsp_cache_dropped_layers
+ ^["dropped_layers"]{
+  #:claim #!settled
+  statement: "The server sends layers with the LSP plane present, but the VS Code client keeps five other fields only, so the card falls back to defaults marking that plane absent."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_custom_requests"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_cache_reflection", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_instruments" ]
+  cites: [ "packages/spw-lsp/src/handlers/cache-reflection.ts:164-171", "extensions/vscode-spw/src/lsp/custom-requests.ts:377-387", "extensions/vscode-spw/src/instruments/commands.ts:33-44,165" ]
+  peer: "Neovim renders the server layers as sent, extensions/neovim-spw/lua/spw/instruments.lua:116-122"
+ }
+ ^["card_rows"]{
+  editor_probe_cache: .{ vscode_card: "present with snapshot stats when the cache exists", cites: "instruments/commands.ts:46-58" }
+  lsp_session_reflection: .{ vscode_card: "absent, omission no LSP session in this process", cites: "instruments/commands.ts:41" }
+  runtime_cache: .{ vscode_card: "absent, next spw inspect cache", cites: "instruments/commands.ts:42" }
+  corpus_memo: .{ vscode_card: "absent, next spw census --json", cites: "instruments/commands.ts:43" }
+ }
+}
+
+^["try"]{
+ #>editor_hosts_vscode_lsp_cache_try_card
+ ^["read_the_card"]{
+  materials: [ "VS Code with the Spw extension", "a scratch .spw file" ]
+  steps: << "open the scratch file" ; "run Spw: Inspect Form twice" ; "run Spw: Inspect Cache" ; "find one hit on the editor probe cache" ; "find the session plane marked absent while the server answers" >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "none worth naming; close the untitled result tabs without saving"
+  shows: ~"./vscode-lsp-and-cache.spw#editor_hosts_vscode_lsp_cache_dropped_layers"
+ }
+}
+
+#>editor_hosts_vscode_lsp_cache_q
+?["Would keeping the server layers make the VS Code and Neovim cache cards agree?"]{
+ #:depth #!computational ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "If the request client passed layers through, both cards should name the same present planes for the same session."
+ !probe{ "on a branch, keep layers in cacheReflection, open one file in each editor, and diff the two cards plane by plane" =id[p_hosts_vscode_cache_parity] =kind[build] }
+ $%[hosts.vscode.probe_ttl_ms, hosts.lsp.custom_method_count]
+ ~"./vscode-lsp-and-cache.spw#editor_hosts_vscode_lsp_cache_dropped_layers" ~#neighbor(nearest)
+}

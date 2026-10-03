@@ -1,0 +1,158 @@
+# DAG Walker
+#
+# Role-tagged nodes joined by causes or needs edges: enumerate paths, find open backdoors, test an instrument by d-separation, and walk prerequisite ladders the same way.
+
+#>spw_lab_dag_walker
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!advanced
+#:review #!sourced
+#:valence #!boon
+
+^"emit"{
+ ~#title: "DAG Walker"
+ ~#claim: "A directed graph with role-tagged nodes lets a walker list paths and close a backdoor, so identification questions and prerequisite questions run on one structure."
+ ~#proof: "Backdoor paths and d-separation follow Pearl; the quarter-of-birth design is Angrist and Krueger with the weak-instrument critique of Bound, Jaeger, and Baker; the seed graph sorts and walks."
+ ~#door: "Name the open backdoor from schooling to wages, then check why quarter of birth sits outside it."
+ ~#audience: "social scientists, curriculum designers, mathematicians writing proof posets, and Spw authors who write needs edges"
+ continuity: "DAG Walker | close a backdoor"
+ cold_open: "Draw the arrows, name each node by its role, and see which observed node would close a backdoor."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "persona study contraption_catalog[6], references/studies/persona-synthesis.json", "sketch references/spw-branch/seeds/contraptions/dag-walker.spw" ]
+ method: #authored
+ evidence: #[ "readBias returned four causes edges from the frame below at commit 1aa1dc23 on 2026-10-02", "a census on 2026-10-02 found 72 needs bias edges over 65 anchors in the cut outside this bench, acyclic, and 260 needs refs written as edge lists" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the sketch tagged roles with an undeclared role particle; roles are now plain bindings",
+  "the instrument row now carries the weak-instrument critique beside the design it questions"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../society/economics/econometrics-and-data.spw#economics_econometrics_row_iv" ]
+ extends: [ ~"../../formal/computing/curriculum-dag.spw#computing_curriculum_dag" ]
+ see: [ ~"../../society/economics/econometrics-and-data.spw#economics_econometrics_weak_iv", ~"./order-counter.spw#spw_lab_order_counter" ]
+}
+
+^["concepts"]{
+ primary: [ #identification, #prerequisite ]
+ transfers: [ #walk, #partial_order ]
+ tensions: [ #reflexive_mirror ]
+}
+
+^["tool"]{
+ status: #proposed
+ verb: "spw dag FILE --treatment ANCHOR --outcome ANCHOR, which would list paths, open backdoors, and d-separation; not yet a command"
+ implemented: #[
+  "packages/spw-seed/src/math/graph.ts:26 graphFromEdges",
+  "packages/spw-seed/src/math/graph.ts:76 detectCycle",
+  "packages/spw-seed/src/math/graph.ts:125 topologicalSort, Kahn order, throws on a cycle",
+  "packages/spw-seed/src/math/graph.ts:201 shortestPath"
+ ]
+ missing: "path enumeration, d-separation, and role-aware blocking sets that exclude descendants of the treatment"
+ source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_graph"
+}
+
+^["nodes"]{
+ #>spw_lab_dag_walker_qob
+ ^["quarter_of_birth"]{ role: "instrument", gloss: "calendar quarter of birth" }
+ #>spw_lab_dag_walker_school
+ ^["schooling"]{ role: "treatment", gloss: "years of schooling" }
+ #>spw_lab_dag_walker_ability
+ ^["ability"]{ role: "unobserved", gloss: "unmeasured ability and background" }
+ #>spw_lab_dag_walker_wage
+ ^["log_wage"]{ role: "outcome", gloss: "log weekly wage" }
+}
+
+#>spw_lab_dag_walker_arrows
+^["arrows"]{
+ =~"./dag-walker.spw#spw_lab_dag_walker_qob"[causes]{ ~"./dag-walker.spw#spw_lab_dag_walker_school" }
+ =~"./dag-walker.spw#spw_lab_dag_walker_ability"[causes]{ ~"./dag-walker.spw#spw_lab_dag_walker_school" }
+ =~"./dag-walker.spw#spw_lab_dag_walker_ability"[causes]{ ~"./dag-walker.spw#spw_lab_dag_walker_wage" }
+ =~"./dag-walker.spw#spw_lab_dag_walker_school"[causes]{ ~"./dag-walker.spw#spw_lab_dag_walker_wage" }
+}
+
+^["world"]{
+ #>spw_lab_dag_walker_backdoor
+ ^["backdoor_criterion"]{
+  #:claim #!settled
+  statement: "A set of observed variables identifies the effect of X on Y when it blocks every path into X that reaches Y and contains no descendant of X."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_pearl_2009"
+ }
+ #>spw_lab_dag_walker_qob_design
+ ^["quarter_of_birth_design"]{
+  #:claim #!settled
+  statement: "Angrist and Krueger used quarter of birth, which shifts schooling through compulsory attendance laws, as an instrument for the return to schooling."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_angrist_krueger_1991"
+ }
+ #>spw_lab_dag_walker_weak
+ ^["weak_instruments"]{
+  #:claim #!settled
+  statement: "Bound, Jaeger, and Baker showed that instruments weakly correlated with the treatment bias two-stage estimates toward ordinary least squares, and used the quarter-of-birth data as their case."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_bound_1995"
+ }
+ #>spw_lab_dag_walker_spiral
+ ^["spiral"]{
+  #:claim #!interpretive
+  statement: "Bruner proposed a spiral curriculum that returns to the same ideas at rising levels; read as a graph, a concept cycle becomes a path once each visit carries its level."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_bruner_1960"
+ }
+}
+
+^["battery"]{
+ #>spw_lab_dag_walker_paths
+ ^["paths"]{
+  !probe{ "list every path from schooling to log_wage, ignoring arrow direction" =id[p_contrap_dag_walker_paths] =kind[calc] }
+  predict: ?{ "how many paths, and which one enters schooling through an arrowhead" } ~<guess>
+  expect: "two: the direct arrow, and the backdoor through ability, which no observed node can block"
+  shows: ~"./dag-walker.spw#spw_lab_dag_walker_backdoor"
+ }
+ #>spw_lab_dag_walker_dsep
+ ^["instrument_test"]{
+  !probe{ "remove the arrow out of schooling, then ask whether quarter_of_birth and log_wage are d-separated" =id[p_contrap_dag_walker_dsep] =kind[calc] }
+  expect: "yes in this graph: the only path meets a collider at schooling; the graph assumes the exclusion restriction and cannot test it"
+  shows: ~"./dag-walker.spw#spw_lab_dag_walker_qob_design"
+ }
+ #>spw_lab_dag_walker_sort
+ ^["prerequisite_sort"]{
+  !probe{ "collect every needs bias edge in the cut and run topologicalSort" =id[p_contrap_dag_walker_sort] =kind[census] }
+  expect: "an order prints when the needs edges are acyclic; Kahn sort throws on the first cycle"
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_graph"
+ }
+}
+
+#>spw_lab_dag_walker_mirror
+^["language_mirror"]{
+ question: "Do the needs edges in this cut form a prerequisite poset, and does a walker see all of them?"
+ instrument: "read needs edges written as bias operations and as edge lists, build one graph, and sort it"
+ observed: "on 2026-10-02 the bias-form needs edges were acyclic, but edge-list needs refs outnumbered them by more than three to one and readBias reads only the bias form"
+ standing: "a-canon: canon asks selector graphs to stay acyclic; a-cut: needs edges are this cut ladders, and nothing in canon requires concept graphs to stay acyclic"
+ source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_canon_math_modeling"
+ !probe{ "teach the walker to read edge lists, then sort the whole needs graph" =id[p_contrap_dag_walker_lists] =kind[build] }
+}
+
+^["limits"]{
+ holds: "which paths exist and which sets block them, read from the arrows alone"
+ fails: "an edge carries direction and sign but no magnitude, standard error, or instrument strength; d-separation reads the graph, and effect sizes need data"
+}
+
+#>spw_lab_dag_walker_q
+?["Does adding one observed node close more backdoors in published causal diagrams than adding one arrow opens?"]{
+ #:depth #!mathematical ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "In sparse published diagrams, one added observed node should close more open backdoor paths than one added arrow opens, because sparse graphs have few colliders to unblock."
+ !probe{ "sample diagrams from published applied papers, add one node or one arrow at random, and count open backdoors" =id[p_contrap_dag_walker_q] =kind[sim] }
+ $%[graph.path_refs, graph.out_degree]
+ ~"./dag-walker.spw#spw_lab_dag_walker_backdoor" ~#neighbor(nearest)
+ breaks: "published diagrams are drawn to be identifiable, so a random edit tests the drawing habit more than the world"
+}

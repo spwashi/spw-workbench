@@ -7,7 +7,7 @@
 #:domain #!registry
 #:form #!registry
 #:level #!mixed
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"provenance"{
@@ -20,7 +20,13 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[ "fact check 2026-10-02: the 95-year term cell now says renewal was required for works from 1923 to 1963 and automatic for works from 1964 to 1977" ]
 }
 
 ^["family"]{
@@ -137,7 +143,7 @@
  %season.copyright.us_published_term_years{
   value: 95
   unit: "year"
-  at: "US works published 1923 to 1977 with notice and renewal, counted to the end of the calendar year"
+  at: "US works published 1923 to 1963 with notice and a timely renewal, or 1964 to 1977 with notice and automatic renewal; runs to 31 December of the 95th year"
   abs: 0
   src: ~"../sources/season.spw#src_season_usc17_copyright"
   status: #settled

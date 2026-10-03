@@ -1,0 +1,173 @@
+# Reading Devices
+#
+# The codex page carried onto screens: the Dynabook idea, Gyricon and E Ink electronic paper, the Librie and the Kindle, color e-paper, reflowable EPUB, and what licensing changed.
+
+#>media_carriers_reading
+#:layer #!reference
+#:domain #!media_carriers
+#:form #!timeline
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bonk
+#:era #!current
+
+^"emit"{
+ ~#title: "Reading Devices"
+ ~#claim: "Electronic paper reflects light and holds an image without power, which let reading devices imitate the printed page while the book itself became a license."
+ ~#proof: "Comiskey and colleagues on electrophoretic ink; Kay on the Dynabook; EPUB 3.3 on reflow; Perzanowski and Schultz on licensed books."
+ ~#door: "Try the reflow exercise, then compare the codex rung in the carrier ladder."
+ ~#audience: "readers who use an e-reader or wonder whether to"
+ continuity: "Reading Devices | printed page"
+ cold_open: "Electronic paper holds its image without power, so a screen could finally imitate the printed page."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #pass }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ reverified: "2026-10-03: the W3C page still lists EPUB 3.3 as a Recommendation dated 13 January 2026; no change"
+ checked: "E Ink, Librie, Kindle, and Colorsoft dates were read against encyclopedia entries, and EPUB 3.3 against the W3C page, on 2026-10-02"
+}
+
+^["edges"]{
+ extends: [ ~"../../inscription/surfaces-tablet-scroll-codex.spw#inscription_codex_parity" ]
+ needs: [ ~"../playback-dependency-dag.spw#media_carriers_dep_device" ]
+ see: [ ~"../../../making/authorship/platforms-and-business-models.spw#authorship_platforms" ]
+}
+
+^["concepts"]{
+ primary: [ #codex, #carrier ]
+ transfers: [ #random_access, #licensed_access ]
+ tensions: [ #obsolescence ]
+}
+
+^["ladder"]{
+ ^["ideas"]{
+  #>media_carriers_reading_dynabook
+  ^["dynabook"]{
+   #:era #!contemporary
+   #:claim #!settled
+   statement: "Alan Kay described the Dynabook in 1972, a notebook-sized personal computer for children that could hold and display books among other media."
+   source: ~"../../../registries/sources/record-and-carriers.spw#src_media_kay_1972"
+  }
+  #>media_carriers_reading_gyricon
+  ^["gyricon"]{
+   #:claim #!settled
+   statement: "Nick Sheridon at Xerox PARC developed Gyricon, a paper-like display of tiny two-colored balls that rotate in an electric field, from an idea first pursued in the 1970s."
+   sources: [ ~"../../../registries/sources/record-and-carriers.spw#src_media_sheridon_1999", ~"../../../registries/sources/record-and-carriers.spw#src_media_enc_e_ink" ]
+  }
+ }
+ ^["electronic_ink"]{
+  #>media_carriers_reading_e_ink
+  ^["e_ink"]{
+   #:claim #!settled
+   statement: "E Ink was founded in 1997 by MIT students JD Albert and Barrett Comiskey with Media Lab professor Joseph Jacobson, Jerome Rubin, and Russ Wilcox."
+   source: ~"../../../registries/sources/record-and-carriers.spw#src_media_enc_e_ink"
+  }
+  #>media_carriers_reading_microcapsules
+  ^["microcapsules"]{
+   #:claim #!settled
+   statement: "Comiskey and colleagues reported in 1998 an ink of microcapsules holding charged white particles in dark fluid; a field pulls particles up or down, and the image stays when power stops."
+   source: ~"../../../registries/sources/record-and-carriers.spw#src_media_comiskey_1998"
+   ~#say(the page holds its picture with the power off)
+  }
+ }
+ ^["devices"]{
+  #>media_carriers_reading_librie
+  ^["librie"]{
+   #:claim #!settled
+   statement: "Sony launched the Librie EBR-1000EP in Japan in April 2004, the first commercial E Ink reader; its Reader PRS-500 reached the United States in September 2006."
+   source: ~"../../../registries/sources/record-and-carriers.spw#src_media_enc_librie"
+  }
+  #>media_carriers_reading_kindle
+  ^["kindle"]{
+   #:claim #!settled
+   statement: "Amazon released the first Kindle on 19 November 2007 with a six-inch grayscale E Ink screen and a built-in wireless connection to its own store."
+   reads: %[media.reading.kindle_launch_price_usd]
+   source: ~"../../../registries/sources/record-and-carriers.spw#src_media_enc_kindle"
+  }
+  #>media_carriers_reading_color
+  ^["color_e_paper"]{
+   #:claim #!settled
+   statement: "E Ink added color through Triton in 2010 and the color-filter Kaleido in 2019; Amazon released the Kaleido-type Kindle Colorsoft on 30 October 2024."
+   sources: [ ~"../../../registries/sources/record-and-carriers.spw#src_media_enc_e_ink", ~"../../../registries/sources/record-and-carriers.spw#src_media_enc_kindle" ]
+   as_of: "2026-10-02"
+  }
+ }
+}
+
+^["screen_matrix"]{
+ columns: #[ light, holding_power, refresh, color ]
+ ^["electrophoretic"]{ light: "reflects room light like paper", holding_power: "none between page changes", refresh: "slow, with visible flashing on full refresh", color: "grayscale first, color filters later" }
+ ^["backlit_or_emissive"]{ light: "emits its own light", holding_power: "continuous", refresh: "fast enough for video", color: "full color" }
+ #>media_carriers_reading_bistable
+ ^["bistability"]{
+  #:claim #!settled
+  statement: "Electrophoretic displays are bistable: they keep an image without continuous power and draw energy mainly when the content changes, which suits battery devices read for hours."
+  sources: [ ~"../../../registries/sources/record-and-carriers.spw#src_media_comiskey_1998", ~"../../../registries/sources/record-and-carriers.spw#src_media_enc_e_ink" ]
+ }
+}
+
+^["the_page_on_screens"]{
+ #>media_carriers_reading_epub
+ ^["reflow"]{
+  #:claim #!settled
+  statement: "EPUB 3.3, a W3C Recommendation, packages web content as a book and supports both reflowable layouts that adapt to the screen and fixed, pre-paginated layouts."
+  source: ~"../../../registries/sources/record-and-carriers.spw#src_media_w3c_epub_33"
+  as_of: "2026-10-02"
+ }
+ #>media_carriers_reading_page
+ ^["page_metaphor"]{
+  #:claim #!interpretive
+  statement: "E-readers keep the codex page as the unit of reading, with turns and bookmarks, but in reflowable text a page number no longer names a fixed place."
+  codex: ~"../../inscription/surfaces-tablet-scroll-codex.spw#inscription_codex_parity"
+ }
+ #>media_carriers_reading_comprehension
+ ^["paper_or_screen"]{
+  #:claim #!emerging
+  statement: "A 2018 meta-analysis found readers understood informational texts somewhat better on paper than on screens, especially under time limits, with no clear gap for narrative texts."
+  source: ~"../../../registries/sources/record-and-carriers.spw#src_media_delgado_2018"
+  ^["limits"]{
+   holds: "studies through 2017, mostly comparing paper with computers and tablets"
+   fails: "few studies isolate e-ink readers, so the finding may not transfer to them"
+  }
+ }
+ #>media_carriers_reading_license
+ ^["licensed_books"]{
+  #:claim #!settled
+  statement: "In 2009 Amazon remotely deleted purchased Kindle copies of two Orwell novels after a rights problem, a case Perzanowski and Schultz use to show what licensed books allow sellers to do."
+  source: ~"../../../registries/sources/record-and-carriers.spw#src_media_perzanowski_schultz_2016"
+  access: ~"./streaming-and-files.spw#media_carriers_streaming_ownership"
+ }
+}
+
+^["try"]{
+ #>media_carriers_try_reflow
+ ^["where_is_page_forty"]{
+  materials: [ "an e-reader or a phone reading app", "a public-domain EPUB from a free library", "a printed copy of the same book if you have one" ]
+  steps: << "open the EPUB and note the page or location of a memorable line" ; "double the font size and find the line again" ; "note how its page number changed" ; "search for the line by its words instead" ; "compare with the fixed page in print" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./reading-devices.spw#media_carriers_reading_page"
+ }
+}
+
+#>media_carriers_reading_gap_q
+?["Is the paper advantage about the screen or about how people read on screens?"]{
+ #:depth #!experiential ~#lens(bodily rhythm)
+ #:claim #!speculative
+ ~#hypothesis: "If the gap comes from skimming habits rather than light or glare, e-ink readers should show about the same comprehension gap as tablets for the same informational text."
+ !probe{ "give matched informational passages on paper, an e-ink reader, and a tablet under one time limit and compare comprehension scores" =id[p_media_reading_gap] =kind[field] }
+ $%[particle.mood]
+ ~"./reading-devices.spw#media_carriers_reading_comprehension" ~#neighbor(nearest)
+}

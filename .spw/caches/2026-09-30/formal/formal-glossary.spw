@@ -7,7 +7,7 @@
 #:domain #!formal
 #:form #!glossary
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -30,7 +30,15 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
  }
+ corrections: #[
+  "the Raft example now cites Ongaro and Ousterhout 2014 instead of Lynch 1996, and its liveness half names the election-timeout assumption",
+  "the Panini parallel is now with the rewrite-rule metalanguage of Backus notation, not with context-free productions; many Panini rules carry left and right contexts"
+ ]
 }
 
 ^["edges"]{
@@ -88,7 +96,8 @@
  #>formal_term_protocol
  ^["protocol"]{
   gloss: "rules for messages between parties, with states and allowed transitions, that guarantee a property such as agreement or ordering under a stated fault model"
-  example: "Raft keeps at most one leader per term even when messages are lost or delayed, and makes progress while a majority of servers can talk"
+  example: "Raft keeps at most one leader per term even when messages are lost or delayed, and makes progress while a majority of servers can communicate within the election-timeout bound"
+  example_source: ~"../registries/sources/formal.spw#src_formal_ongaro_ousterhout_2014"
   needs: [ ~"./formal-glossary.spw#formal_term_specification" ]
   contrasts: "a protocol without its fault model is not yet a claim, because every guarantee is relative to the faults allowed"
   used_in: [ ~"./computing/stream-processing-models.spw#computing_stream_models" ]
@@ -117,10 +126,14 @@
  ^["grammar_as_rules"]{
   #:claim #!settled
   statement: "Panini grammar of Sanskrit used ordered rewrite rules centuries BCE; Ingerman in 1967 proposed naming the Backus notation Panini-Backus form to credit that lineage."
-  sources: [ ~"../registries/sources/formal.spw#src_formal_ingerman_1967", ~"../registries/sources/formal.spw#src_formal_plofker_2009" ]
+  sources: [ ~"../registries/sources/formal.spw#src_formal_ingerman_1967", ~"../registries/sources/formal.spw#src_formal_plofker_2009", ~"../registries/sources/formal.spw#src_formal_penn_kiparsky_2012" ]
   ^["limits"]{
-   holds: "the structural parallel between Panini rules and context-free productions"
-   fails: "the name credits a structural parallel; it does not show that Backus drew on Panini"
+   holds: "the structural parallel between the Paninian rewrite-rule metalanguage and Backus notation as compact rule systems"
+   fails: [
+    "many Panini rules rewrite a segment in a stated left or right context, as when i becomes y before a vowel, so they are not context-free productions",
+    "Penn and Kiparsky show the unconstrained formalism exceeds context-free power, though Panini grammar itself stays tractable",
+    "the name credits a structural parallel; it does not show that Backus drew on Panini"
+   ]
   }
  }
 }

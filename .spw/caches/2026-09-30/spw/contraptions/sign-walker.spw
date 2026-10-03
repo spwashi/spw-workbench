@@ -1,0 +1,188 @@
+# Sign Walker
+#
+# Multiply the signs along a cycle or a stream: loop polarity in a level loop, switches and clocks in gene circuits, and the line cross of continuity editing read as parity.
+
+#>spw_lab_sign_walker
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!advanced
+#:review #!sourced
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Sign Walker"
+ ~#claim: "The product of signs around a cycle names its polarity: an odd count of inverse links balances, an even count reinforces, and a polarity is necessary but never sufficient for a behaviour."
+ ~#proof: "Loop polarity follows Sterman; the circuit rules are Thomas conjectures proved by Snoussi, Gouze, and Soule; readBias reports a bane lean as an inverse sign."
+ ~#door: "Trace the level loop, count the inverse links, and say whether it balances before you run the product."
+ ~#audience: "control and process engineers, systems biologists, editors, and Spw authors who write leaning edges"
+ continuity: "Sign Walker | odd count"
+ cold_open: "Count the inverse links around a loop: an odd count balances it, and an even count makes it reinforce."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "persona study contraption_catalog[3], references/studies/persona-synthesis.json", "sketch references/spw-branch/seeds/contraptions/sign-walker.spw" ]
+ method: #authored
+ evidence: #[ "readBias over the loop below returned three forward edges and one inverse edge at commit 1aa1dc23 on 2026-10-02", "a census of this cut on 2026-10-02, outside this bench, found 258 bias operations and none with an inverse sign" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the sketch tagged shots with an undeclared side particle; sides are now plain bindings",
+  "Thomas rules are stated as necessary conditions only, with the proofs credited, since the sketch read them as recipes"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../physical/engineering/control-and-signals.spw#engineering_control_signals_pid" ]
+ analog: [ ~"../../making/film/film-school-sequence.spw#film_school_continuity", ~"../../living/development-and-ecology/succession-and-resilience.spw#development_ecology_resilience" ]
+ see: [ ~"./state-walker.spw#spw_lab_state_walker" ]
+}
+
+^["concepts"]{
+ primary: [ #feedback, #walk ]
+ transfers: [ #oscillator, #reflexive_mirror ]
+ tensions: [ #overclaim ]
+}
+
+^["tool"]{
+ status: #proposed
+ verb: "spw loops FILE, which would enumerate elementary cycles and print each sign product; not yet a command"
+ implemented: #[
+  "packages/spw-seed/src/canonical/read-bias.ts:102 readBias, sign inverse for a bane lean",
+  "packages/spw-seed/src/math/graph.ts:76 detectCycle, one witness cycle only"
+ ]
+ missing: "elementary cycle enumeration such as the Johnson algorithm, and a sign table per axis"
+ sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_graph", ~"../../registries/sources/spw-contraptions.spw#src_contrap_johnson_1975" ]
+}
+
+^["parameters"]{
+ sign_rule: "a link is forward unless written with a bane lean; a cycle balances when its count of inverse links is odd"
+ controller: "LIC-101 is direct acting: its output rises as the level rises"
+ valve: "LV-101 is air to open, so it fails closed when the air supply is lost"
+}
+
+^["level_loop"]{
+ #>spw_lab_sign_walker_tank
+ ^["tank"]{ tag: "TK-101", role: "tank whose level is controlled" }
+ #>spw_lab_sign_walker_transmitter
+ ^["transmitter"]{ tag: "LT-101", role: "level transmitter" }
+ #>spw_lab_sign_walker_controller
+ ^["controller"]{ tag: "LIC-101", role: "level indicating controller, direct acting" }
+ #>spw_lab_sign_walker_valve
+ ^["valve"]{ tag: "LV-101", role: "outlet control valve, air to open" }
+ #>spw_lab_sign_walker_links
+ ^["links"]{
+  =~"./sign-walker.spw#spw_lab_sign_walker_tank"[measured_by]{ ~"./sign-walker.spw#spw_lab_sign_walker_transmitter" }
+  =~"./sign-walker.spw#spw_lab_sign_walker_transmitter"[signals]{ ~"./sign-walker.spw#spw_lab_sign_walker_controller" }
+  =~"./sign-walker.spw#spw_lab_sign_walker_controller"[opens]{ ~"./sign-walker.spw#spw_lab_sign_walker_valve" }
+  =bane~"./sign-walker.spw#spw_lab_sign_walker_valve"[drains]{ ~"./sign-walker.spw#spw_lab_sign_walker_tank" }
+  ~#(bane is the inverse lean of the bias product, a sign and not a judgment)
+ }
+}
+
+^["world"]{
+ #>spw_lab_sign_walker_polarity
+ ^["loop_polarity"]{
+  #:claim #!settled
+  statement: "The polarity of a feedback loop is the product of its link signs: an odd number of negative links gives a balancing loop, an even number a reinforcing one."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_sterman_2000"
+ }
+ #>spw_lab_sign_walker_fail_safe
+ ^["fail_safe"]{
+  #:claim #!settled
+  statement: "An air-to-open valve closes when its air fails, and the controller action is chosen so the whole loop stays negative for that valve."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_seborg_2016"
+ }
+ #>spw_lab_sign_walker_thomas
+ ^["circuit_rules"]{
+  #:claim #!settled
+  statement: "Thomas conjectured, and later proofs confirmed under stated conditions, that a positive circuit is necessary for several stable states and a negative circuit for sustained oscillation."
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_thomas_1981", ~"../../registries/sources/spw-contraptions.spw#src_contrap_snoussi_1998", ~"../../registries/sources/spw-contraptions.spw#src_contrap_gouze_1998", ~"../../registries/sources/spw-contraptions.spw#src_contrap_soule_2003" ]
+  ^["limits"]{
+   holds: "as a necessary condition on the interaction graph"
+   fails: "as a sufficient one: gain, delay, and nonlinearity decide whether a circuit actually switches or oscillates"
+  }
+ }
+ #>spw_lab_sign_walker_circuits
+ ^["built_circuits"]{
+  #:claim #!settled
+  statement: "Two mutually repressing genes made a bistable toggle switch in bacteria, and a ring of three repressors made an oscillator, matching the even and odd inverse counts."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_gardner_2000", ~"../../registries/sources/life-and-mind.spw#src_life_elowitz_leibler_2000" ]
+ }
+ #>spw_lab_sign_walker_line
+ ^["axis_of_action"]{
+  #:claim #!settled
+  statement: "Continuity editing keeps the camera on one side of the axis of action, because a cut across it reverses screen direction."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_arijon_1976"
+ }
+}
+
+^["coverage"]{
+ #>spw_lab_sign_walker_setup_a
+ ^["setup_a"]{ frame: "wide", side: "near", subject_faces: "screen right" }
+ #>spw_lab_sign_walker_setup_b
+ ^["setup_b"]{ frame: "single", side: "near", subject_faces: "screen right" }
+ #>spw_lab_sign_walker_setup_c
+ ^["setup_c"]{ frame: "single", side: "far", subject_faces: "screen left" }
+ #>spw_lab_sign_walker_parity
+ ^["parity_reading"]{
+  #:claim #!interpretive
+  statement: "Read as parity, each side change between consecutive shots multiplies screen direction by an inverse sign, so an odd count of crossings flips it."
+  ~#(an interpretive bridge from the edit room to the loop rule)
+ }
+ cut_order: << setup_a ; setup_b ; setup_c >>
+}
+
+^["battery"]{
+ #>spw_lab_sign_walker_level
+ ^["level_loop_sign"]{
+  !probe{ "multiply the four link signs of the level loop" =id[p_contrap_sign_walker_level] =kind[calc] }
+  predict: ?{ "does the loop balance or reinforce" } ~<guess>
+  expect: "three forward links and one inverse link: an odd count, so the loop balances"
+  shows: ~"./sign-walker.spw#spw_lab_sign_walker_polarity"
+ }
+ #>spw_lab_sign_walker_flip
+ ^["flip_the_valve"]{
+  !probe{ "swap LV-101 to air to close and keep the controller direct acting" =id[p_contrap_sign_walker_flip] =kind[thought] }
+  expect: "a second inverse link appears, the count turns even, and the loop reinforces until the controller action is reversed"
+  shows: ~"./sign-walker.spw#spw_lab_sign_walker_fail_safe"
+ }
+ #>spw_lab_sign_walker_cut
+ ^["cut_order"]{
+  !probe{ "count side changes along the cut order setup_a, setup_b, setup_c" =id[p_contrap_sign_walker_cut] =kind[calc] }
+  expect: "one change, between setup_b and setup_c, so screen direction flips once"
+  shows: ~"./sign-walker.spw#spw_lab_sign_walker_line"
+ }
+}
+
+#>spw_lab_sign_walker_mirror
+^["language_mirror"]{
+ question: "Where in this cut do edges lean inverse, and do any of them close a loop?"
+ instrument: "read every bias operation in the cut, keep those with a bane lean, and multiply signs around each cycle they close"
+ observed: "on 2026-10-02, while the cut was still being written, no bias operation outside this bench leaned inverse, so every cycle in the cut graph reads as reinforcing by default"
+ standing: "a-canon: bane as the inverse lean is the bias product slot rule"
+ source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_canon_bias_product"
+ !probe{ "rerun the inverse-lean census when the cut closes and list each loop sign" =id[p_contrap_sign_walker_census] =kind[census] }
+}
+
+^["limits"]{
+ holds: "the sign of each cycle and the parity of each stream, read from the graph alone"
+ fails: "polarity is not stability: gain, dead time, and phase margin are absent, and the edit-room reading has no inverse for an on-line shot, so it is a monoid and not a group"
+}
+
+#>spw_lab_sign_walker_q
+?["Do mapped gene networks carry more balancing short loops than sign-shuffled copies of themselves?"]{
+ #:depth #!computational ~#lens(living system)
+ #:claim #!speculative
+ ~#hypothesis: "If homeostasis shapes regulation, short loops in a mapped network should balance more often than the same loops after the edge signs are shuffled."
+ !probe{ "count balancing loops up to length four in a published signed network and in shuffled copies" =id[p_contrap_sign_walker_q] =kind[sim] }
+ $%[graph.out_degree, graph.in_degree]
+ ~"./sign-walker.spw#spw_lab_sign_walker_thomas" ~#neighbor(nearest)
+ breaks: "a sign census ignores weights, delays, and context; a loop that balances on paper may never act in the cell"
+}

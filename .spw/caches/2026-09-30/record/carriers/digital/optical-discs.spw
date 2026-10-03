@@ -1,0 +1,209 @@
+# Optical Discs
+#
+# LaserDisc, Compact Disc, DVD, and Blu-ray side by side: what each laser can resolve, how the discs are molded from a stamper, and why the same diameter kept holding more.
+
+#>media_carriers_optical
+#:layer #!reference
+#:domain #!media_carriers
+#:form #!comparison
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bone
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Optical Discs"
+ ~#claim: "Optical discs kept one diameter while shorter lasers and stronger lenses shrank the reading spot, so each generation packed pits closer and held more."
+ ~#proof: "Pohlmann for the Compact Disc; Taylor, Johnson, and Crawford for DVD and Blu-ray; Byers for care and decay."
+ ~#door: "Do the rainbow test below, then read the manufacturing matrix for how a stamper is grown."
+ ~#audience: "readers who own discs or want the physics behind them in plain terms"
+ continuity: "Optical Discs | reading spot"
+ cold_open: "Each disc generation kept the same size, but a bluer laser and a stronger lens shrank the reading spot."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #pass }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ reverified: "2026-10-03: the 11 December 1978 Atlanta test launch, the 300 mm disc, and the July 2009 end of Pioneer players were reread in the LaserDisc entry; no change"
+ rechecked: "2026-10-02: the first consumer Blu-ray device, a 2003 recorder sold in Japan, is added so the dating key can split recordable from prerecorded discs"
+ checked: "LaserDisc and Blu-ray launch dates were read against encyclopedia entries on 2026-10-02"
+}
+
+^["edges"]{
+ needs: [ ~"../carrier-manufacturing.spw#media_carriers_mfg_optical" ]
+ feeds: [ ~"../carrier-decay-and-fixity.spw#media_carriers_decay_disc_rot" ]
+ extends: [ ~"../sound/phonograph-shellac-and-vinyl.spw#media_carriers_disc_sound" ]
+}
+
+^["concepts"]{
+ primary: [ #stamper, #format ]
+ transfers: [ #mass_copy, #coating ]
+ tensions: [ #obsolescence ]
+}
+
+^["matrix"]{
+ columns: #[ format, launch, laser, aperture, pitch, capacity, signal ]
+ ^["laserdisc"]{
+  #>media_carriers_optical_laserdisc
+  ^["laserdisc_row"]{
+   #:era #!contemporary
+   #:claim #!settled
+   statement: "MCA DiscoVision test-launched the LaserDisc in Atlanta on 11 December 1978; its 30 cm disc held analog video, and it found far more homes in Japan than in the United States."
+   reads: %[media.optical.ld_diameter_mm]
+   source: ~"../../../registries/sources/record-and-carriers.spw#src_media_enc_laserdisc"
+   note: "Pioneer stopped making LaserDisc players in July 2009"
+  }
+ }
+ ^["compact_disc"]{
+  #>media_carriers_optical_cd
+  ^["cd_row"]{
+   #:claim #!settled
+   statement: "Philips and Sony fixed the Compact Disc Digital Audio standard in 1980, and players and discs went on sale in Japan in October 1982."
+   reads: %[
+    media.optical.cd_laser_nm,
+    media.optical.cd_na,
+    media.optical.cd_track_pitch_um
+   ]
+   source: ~"../../../registries/sources/record-and-carriers.spw#src_media_pohlmann_1992"
+  }
+  #>media_carriers_optical_pcm
+  ^["cd_signal"]{
+   #:claim #!settled
+   statement: "A Compact Disc stores two channels of linear PCM sampled 44,100 times a second at 16 bits, protected by interleaved Reed-Solomon error correction."
+   reads: %[media.optical.cd_sample_rate_hz, media.optical.cd_bit_depth_bits]
+   source: ~"../../../registries/sources/record-and-carriers.spw#src_media_pohlmann_1992"
+  }
+ }
+ ^["dvd"]{
+  #>media_carriers_optical_dvd
+  ^["dvd_row"]{
+   #:claim #!settled
+   statement: "DVD merged two rival proposals into one format in 1995 and launched in Japan in November 1996, using a red laser, a stronger lens, and tighter tracks."
+   reads: %[
+    media.optical.dvd_laser_nm,
+    media.optical.dvd_na,
+    media.optical.dvd_capacity_gb
+   ]
+   source: ~"../../../registries/sources/record-and-carriers.spw#src_media_taylor_2006"
+   ~#say(the industry settled a format war before it started)
+  }
+ }
+ ^["blu_ray"]{
+  #>media_carriers_optical_bd
+  ^["bd_row"]{
+   #:claim #!settled
+   statement: "Blu-ray titles reached US stores on 20 June 2006, read by a blue-violet laser through a thin cover layer with a high-aperture lens."
+   reads: %[
+    media.optical.bd_laser_nm,
+    media.optical.bd_na,
+    media.optical.bd_capacity_gb
+   ]
+   sources: [ ~"../../../registries/sources/record-and-carriers.spw#src_media_taylor_2006", ~"../../../registries/sources/record-and-carriers.spw#src_media_enc_hd_war" ]
+   war: ~"../format-wars.spw#media_carriers_war_hd"
+  }
+  #>media_carriers_optical_bd_recorder
+  ^["bd_recorder"]{
+   #:claim #!settled
+   statement: "The first consumer Blu-ray device was a recorder: Sony sold the BDZ-S77, which wrote rewritable BD-RE discs, only in Japan from 10 April 2003, three years before prerecorded titles."
+   source: ~"../../../registries/sources/record-and-carriers.spw#src_media_enc_blu_ray"
+  }
+ }
+ #>media_carriers_optical_scaling
+ ^["spot_scaling"]{
+  #:claim #!settled
+  statement: "The focused spot shrinks roughly with wavelength divided by numerical aperture, so a bluer laser and a stronger lens let pits and tracks pack closer on the same disc."
+  reads: %[
+   media.optical.disc_diameter_mm,
+   media.optical.cd_track_pitch_um,
+   media.optical.bd_track_pitch_um
+  ]
+  source: ~"../../../registries/sources/record-and-carriers.spw#src_media_taylor_2006"
+  ^["limits"]{
+   holds: "read-only discs whose pit geometry follows the optics"
+   fails: "capacity also rose through better modulation and error-correcting codes, so optics alone undercount the gain"
+  }
+ }
+}
+
+^["manufacturing_dag"]{
+ #>media_carriers_optical_step_master
+ ^["glass_master"]{
+  what: "coat polished glass with photoresist and expose the pit spiral with a laser beam recorder, then develop"
+ }
+ #>media_carriers_optical_step_father
+ ^["father"]{
+  what: "metallize the developed master and electroform a nickel father"
+  needs: [ =~[hard] ~"./optical-discs.spw#media_carriers_optical_step_master" ]
+ }
+ #>media_carriers_optical_step_stamper
+ ^["stamper"]{
+  what: "grow mothers and stampers from the father for long runs"
+  needs: [ =~[soft] ~"./optical-discs.spw#media_carriers_optical_step_father" ]
+  soft_note: "a short run can mold from the father itself"
+ }
+ #>media_carriers_optical_step_mold
+ ^["mold"]{
+  what: "inject molten polycarbonate against the stamper; the pits are now in plastic"
+  needs: [ =~[hard] ~"./optical-discs.spw#media_carriers_optical_step_stamper" ]
+ }
+ #>media_carriers_optical_step_metal
+ ^["metallize_and_seal"]{
+  what: "sputter a thin reflector, then lacquer a CD, bond two DVD halves, or add a Blu-ray cover layer"
+  needs: [ =~[hard] ~"./optical-discs.spw#media_carriers_optical_step_mold" ]
+  detail: ~"../carrier-manufacturing.spw#media_carriers_mfg_layers"
+ }
+ source: ~"../../../registries/sources/record-and-carriers.spw#src_media_pohlmann_1992"
+}
+
+^["care"]{
+ #>media_carriers_optical_care
+ ^["handling"]{
+  #:claim #!settled
+  statement: "Byers advises handling discs by the edge, keeping them cool, dark, and dry, and avoiding scratches on the label side, where a CD reflector sits just under the lacquer."
+  source: ~"../../../registries/sources/record-and-carriers.spw#src_media_byers_2003"
+  decay: ~"../carrier-decay-and-fixity.spw#media_carriers_decay_disc_rot"
+ }
+}
+
+^["try"]{
+ #>media_carriers_try_disc_rainbow
+ ^["rainbow_angles"]{
+  materials: [ "one CD and one DVD", "a ceiling light or a desk lamp", "a protractor or a phone level app" ]
+  steps: << "hold the CD flat under the light and tilt it until the first rainbow band appears" ; "note the tilt angle" ; "repeat with the DVD" ; "compare which disc throws its colors at a steeper angle" >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "use ordinary room light, not a laser pointer; discard a cracked disc, whose edges can be sharp"
+  shows: ~"./optical-discs.spw#media_carriers_optical_scaling"
+ }
+}
+
+#>media_carriers_optical_grating_q
+?["How much steeper should a DVD throw green light than a CD?"]{
+ #:depth #!physical ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "Treating each spiral as a diffraction grating, the finer DVD pitch should send first-order green light out at a clearly steeper angle than the CD pitch."
+ !probe{ "compute first-order angles from the grating equation for both pitches, then measure them with a phone camera and a protractor" =id[p_media_optical_grating] =kind[calc] }
+ $%[media.optical.cd_track_pitch_um, media.optical.dvd_track_pitch_um]
+ ~"./optical-discs.spw#media_carriers_optical_scaling" ~#neighbor(nearest)
+}
+
+#>media_carriers_optical_capacity_q
+?["Did disc capacity grow faster than the optics alone allow?"]{
+ #:depth #!mathematical ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "Capacity from CD to Blu-ray rose more than the square of the spot shrink predicts, with the excess coming from denser codes and leaner error correction."
+ !probe{ "compare the ratio of single-layer capacities with the squared ratio of wavelength over aperture for CD and Blu-ray" =id[p_media_optical_capacity] =kind[calc] }
+ $%[media.optical.cd_capacity_mib, media.optical.bd_capacity_gb, media.optical.bd_na]
+ ~"./optical-discs.spw#media_carriers_optical_scaling" ~#neighbor(nearest)
+}

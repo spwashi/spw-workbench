@@ -1,0 +1,97 @@
+# Chemistry
+#
+# The chemistry branch: an ACS-shaped core, a graduate technique matrix, and chemical engineering from balances to process safety, with the ethics of scale kept as a reading.
+
+#>chemistry_index
+#:layer #!reference
+#:domain #!chemistry
+#:form #!index
+#:level #!foundation
+#:review #!spot_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Chemistry"
+ ~#claim: "Chemistry runs from mechanisms and spectra at the bench to reactors and separations at plant scale, where a calculation error can reach a town."
+ ~#proof: "The core cites the 2015 ACS guidelines and standard texts; the technique matrix cites the original method papers; Flixborough and Texas City cite their official inquiries, Bhopal a peer-reviewed review."
+ ~#door: "Start with the core, choose the technique matrix or chemical engineering, and read the safety cases either way."
+ ~#audience: "chemistry and chemical engineering students and the curious who want the map first"
+ continuity: "Chemistry | plant scale"
+ cold_open: "Chemistry starts with arrows on paper and ends at plant scale, where getting it wrong reaches a whole town."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/chemistry-and-chemical-engineering/taste.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "re-run after the 2026-10-03 fact-check fixes; no failing lines" }
+ }
+ corrections: #[
+  "the image of a rhodium atom turning over ten thousand molecules without fatigue was dropped; real catalysts deactivate",
+  "the claim that a table is 99.9999999 percent empty space was dropped from the wonder as an unsourced figure",
+  "the nitrogen-fixation hypothesis naming a 200-bar plant replacement was replaced by the decarbonization note in chemical engineering",
+  "fact-check: the card no longer says every safety case cites an official inquiry; Bhopal cites a peer-reviewed review",
+  "fact-check 2026-10-03: the r4 fact-check receipt was dated 2026-10-01, before the receipts it followed; it is re-dated 2026-10-02, the day that pass ran"
+ ]
+}
+
+^["tree"]{
+ core: ~"./chemistry-core.spw"
+ advanced: ~"./chemistry-advanced.spw"
+ chemical_engineering: ~"./chemical-engineering.spw"
+}
+
+^["order"]{
+ citation: "PMEST: domain, then primary concept, then form, then era"
+ leaves: << "chemistry, equilibrium, curriculum" ; "chemistry, spectroscopy, comparison, contemporary" ; "chemistry, scale-up, curriculum" >>
+}
+
+^["ladder"]{
+ ^["foundation"]{ rungs: [ ~"./chemistry-core.spw#chemistry_core" ] }
+ ^["advanced"]{ rungs: [ ~"./chemical-engineering.spw#chemistry_chemeng" ] }
+ ^["graduate"]{ rungs: [ ~"./chemistry-advanced.spw#chemistry_advanced" ] }
+}
+
+^["bundle"]{
+ ={ ~"./chemistry-core.spw#chemistry_core" }
+ ={ ~"./chemistry-advanced.spw#chemistry_advanced" }
+ ={ ~"./chemical-engineering.spw#chemistry_chemeng" }
+}
+
+^["stance"]{
+ #>chemistry_stance_scale
+ ^["ethics_of_scale"]{
+  #:claim #!interpretive
+  statement: "Leaving the bench changes the ethics: at plant scale, the people living downwind and downstream become stakeholders in every calculation, and process safety is a duty to them."
+  ~#(kept from the raw chemistry taste file and rewritten without its inflated figures)
+  cases: [ ~"./chemical-engineering.spw#chemistry_chemeng_flixborough", ~"./chemical-engineering.spw#chemistry_chemeng_bhopal", ~"./chemical-engineering.spw#chemistry_chemeng_texas_city" ]
+ }
+ #>chemistry_stance_chirality
+ ^["chirality"]{
+  #:claim #!settled
+  statement: "Mirror-image molecules can act differently on the body because receptors are chiral: one carvone enantiomer smells of spearmint and the other of caraway."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_clayden_2012"
+ }
+}
+
+^["gaps"]{
+ practitioner: "no practitioner rung yet for analytical, industrial, or regulatory chemistry practice"
+ biochemistry: "biochemistry is only an entry node here; molecules of life live in the living class"
+ environmental: "environmental and atmospheric chemistry, including persistent compounds such as PFAS, have no leaf"
+ nuclear: "radiochemistry and nuclear chemistry are absent"
+ history: "alchemy, the chemical revolution, and the periodic table as history have no timeline"
+}

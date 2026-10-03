@@ -28,14 +28,22 @@
  lineage: #[ ".spw/caches/indie-author-ecosystem/author-software-and-production-tools.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ checked: "the EPUB 3.3 Recommendation date of 2026-01-13 re-read on the W3C page on 2026-10-02"
  corrections: #[
   "MOBI is retired at KDP: reflowable uploads ended 2021-08-01 and fixed-layout uploads ended 2025-03-18",
   "the raw listed Kindle mobi sideloading as current; delivery tools now hand readers EPUB or Kindle-ready files",
   "the claim that two tools raised indie presentation to parity with a large publisher is reframed as a question",
-  "beat-sheet templates are credited to their authors"
+  "beat-sheet templates are credited to their authors",
+  "fact check 2026-10-02: the EPUB 3.0 date now cites the IDPF page, which gives approval effective 2011-10-11"
  ]
 }
 
@@ -54,16 +62,20 @@
  #>authorship_toolchain_epub
  ^["epub3"]{
   #:claim #!settled
-  statement: "EPUB 3.3 is a W3C Recommendation that packages HTML, CSS, SVG, and other resources in one container; EPUB began at the IDPF, and EPUB 3.0 dates from 2011."
-  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_epub33"
-  as_of: "version of 2026-01-13"
+  statement: "EPUB 3.3 is a W3C Recommendation that packages HTML, CSS, SVG, and other resources in one container; EPUB began at the IDPF, which approved EPUB 3.0 in October 2011."
+  sources: [ ~"../../registries/sources/creators-and-platforms.spw#src_creator_epub33", ~"../../registries/sources/creators-and-platforms.spw#src_creator_idpf_epub30" ]
+  as_of: "Recommendation version of 2026-01-13, read on 2026-10-02"
  }
  #>authorship_toolchain_kpf
  ^["kpf"]{
   #:claim #!settled
-  statement: "KDP accepts DOC and DOCX, EPUB that meets Kindle guidelines, and Kindle Package Format files produced by Kindle Create."
+  statement: "KDP accepts DOC and DOCX, EPUB, and Kindle Package Format files from Kindle Create among its eBook manuscript formats."
   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_kdp_formats"
-  as_of: "2026-10-01"
+  as_of: "2026-10-02"
+  ^["limits"]{
+   holds: "the KDP formats page as read on 2026-10-02"
+   fails: "that page still lists MOBI beside its fixed-layout cutoff note; the MOBI FAQ below governs"
+  }
  }
  #>authorship_toolchain_mobi
  ^["mobi_retired"]{

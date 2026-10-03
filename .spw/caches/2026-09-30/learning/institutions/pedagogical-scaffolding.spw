@@ -28,10 +28,13 @@
  lineage: #[ ".spw/caches/university-education/pedagogical-scaffolding.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
  }
  corrections: #[
+  "fact check: refuted rows named the refuting work as their source, which could credit Freeman and colleagues with the invented fivefold figure; each refuted row now says where the claim came from and holds the refuting work under checked_against",
   "speaking aloud internalizes a concept five times faster: invented; replaced by Freeman and colleagues 2014",
   "national GPA from 2.5 in 1960 to 3.2 removed as unsourced; grade rise kept as a direction with Rojstaczer and Healy 2012",
   "forced grading curve percentages and class-size ranges removed as unsourced",
@@ -105,9 +108,12 @@
   #>institutions_pedagogy_learning_styles
   ^["learning_styles"]{
    #:claim #!refuted
-   statement: "Matching instruction to a learner preferred style, such as visual or auditory, improves learning."
-   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_pashler_2008"
-   finding: "properly designed tests of the matching idea are rare, and the few that exist contradict it"
+   statement: "Matching instruction to a learner's preferred style, such as visual or auditory, improves learning."
+   claimed_in: "popular teaching belief, which Pashler and colleagues call the meshing hypothesis"
+   ^["checked_against"]{
+    source: ~"../../registries/sources/learning-and-generations.spw#src_learn_pashler_2008"
+    finding: "properly designed tests of the matching idea are rare, and the few that exist contradict it"
+   }
   }
  }
  ^["classrooms"]{
@@ -122,8 +128,11 @@
   ^["five_times"]{
    #:claim #!refuted
    statement: "A student who speaks aloud in class internalizes a concept five times faster than one who only takes notes."
-   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_freeman_2014"
-   finding: "no study supplies the fivefold figure; the measured effects are in the active learning claim"
+   claimed_in: ".spw/caches/university-education/pedagogical-scaffolding.spw:68"
+   ^["checked_against"]{
+    source: ~"../../registries/sources/learning-and-generations.spw#src_learn_freeman_2014"
+    finding: "no study supplies the fivefold figure, which appeared only in the raw generation; Freeman and colleagues measured failure risk and exam scores, not a speed of internalizing, and never made this claim"
+   }
   }
   #>institutions_pedagogy_feeling
   ^["feeling_of_learning"]{
@@ -151,7 +160,9 @@
 ^["grading"]{
  norm_referenced: "grades ranked against classmates, so one student gains only when another loses ground"
  criterion_referenced: "grades against a stated standard, so every student can reach the top mark"
- accommodations: ~"../learning-glossary.spw#learning_term_section_504"
+ accommodations: "colleges arrange disability accommodations through a disability services office under Section 504 and the ADA; no IEP follows a student to college"
+ source: ~"../../registries/sources/learning-and-generations.spw#src_learn_section_504"
+ see: ~"../learning-glossary.spw#learning_term_section_504"
 }
 
 ^["try"]{

@@ -1,0 +1,193 @@
+# Symmetries Registry
+#
+# Continuous symmetries paired with what they conserve, the discrete remnants that give only selection rules, crystallographic group counts, and Spw container conversions held to the four group tests.
+
+#>registry_symmetries
+#:layer #!reference
+#:domain #!registry
+#:form #!registry
+#:level #!advanced
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Symmetries Registry"
+ ~#claim: "Only continuous symmetries of an action give conserved quantities; discrete symmetries give selection rules, and a proposed Spw conversion is a symmetry only after it passes closure, identity, inverse, and composition."
+ ~#proof: "Noether 1918 for the pairs, Sakurai for the discrete cases, the International Tables for the counts, and canon register geometry for the four tests."
+ ~#door: "Read one Noether pair, then the bracket-swap row, and say which of the four tests it fails on parse trees."
+ ~#audience: "physics and mathematics students, crystallographers, and Spw designers proposing container laws"
+ continuity: "Symmetries Registry | four tests"
+ cold_open: "A symmetry earns its name by passing four tests; only the continuous ones also hand you something conserved."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "persona study tree_amendments[17], references/studies/persona-synthesis.json" ]
+ method: #authored
+ evidence: #[
+  "node types for each container spelling were read from parse at commit 1aa1dc23 on 2026-10-03",
+  "the Alhambra count was read from the fetched Grunbaum article on 2026-10-03"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the persona amendment listed a Galilean boost pair; it is left out until a source on this bench states its conserved quantity",
+  "group counts live as cells in the contraptions quantities registry under q_lab_sym; rows here read them instead of restating them"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"./quantities/spw-contraptions.spw#q_lab_sym" ]
+ extends: [ ~"../physical/physics/core-sequence.spw#physics_core_noether" ]
+ see: [ ~"../physical/materials/materials-core.spw#materials_core_lattices" ]
+}
+
+^["concepts"]{
+ primary: [ #invariant, #closure ]
+ transfers: [ #conservation, #commutation ]
+ tensions: [ #overclaim ]
+}
+
+^["continuous"]{
+ #>registry_sym_noether
+ ^["noether_theorem"]{
+  #:claim #!settled
+  statement: "Emmy Noether proved in 1918 that each continuous symmetry of an action yields a conserved quantity."
+  source: ~"./sources/physical-sciences-and-image.spw#src_phys_noether_1918"
+  ^["limits"]{
+   holds: "for systems derived from an action whose symmetry is a continuous group"
+   fails: "for dissipative systems without an action; local gauge symmetries give identities between equations, her second theorem, rather than new conserved quantities"
+   source: ~"./sources/spw-contraptions.spw#src_contrap_kosmann_schwarzbach_2011"
+  }
+ }
+ #>registry_sym_time_translation
+ ^["time_translation"]{
+  #:claim #!settled
+  pair: <>[time_translation, energy]
+  statement: "Invariance under a shift in time conserves energy."
+  sources: [ ~"./sources/physical-sciences-and-image.spw#src_phys_noether_1918", ~"./sources/physical-sciences-and-image.spw#src_phys_goldstein_2002" ]
+ }
+ #>registry_sym_space_translation
+ ^["space_translation"]{
+  #:claim #!settled
+  pair: <>[space_translation, linear_momentum]
+  statement: "Invariance under a shift in space conserves linear momentum."
+  sources: [ ~"./sources/physical-sciences-and-image.spw#src_phys_noether_1918", ~"./sources/physical-sciences-and-image.spw#src_phys_goldstein_2002" ]
+ }
+ #>registry_sym_rotation
+ ^["rotation"]{
+  #:claim #!settled
+  pair: <>[rotation, angular_momentum]
+  statement: "Invariance under rotation conserves angular momentum."
+  sources: [ ~"./sources/physical-sciences-and-image.spw#src_phys_noether_1918", ~"./sources/physical-sciences-and-image.spw#src_phys_goldstein_2002" ]
+ }
+ #>registry_sym_phase
+ ^["global_phase"]{
+  #:claim #!settled
+  pair: <>[global_phase, charge]
+  statement: "In field theory, invariance of the action under a global change of phase gives a conserved current, whose integral, the charge, stays constant."
+  source: ~"./sources/physical-sciences-and-image.spw#src_phys_peskin_schroeder_1995"
+ }
+}
+
+^["discrete"]{
+ #>registry_sym_parity
+ ^["parity"]{
+  #:claim #!settled
+  statement: "Parity is a discrete reflection, so it yields a multiplicative quantum number and selection rules, never a Noether current."
+  source: ~"./sources/physical-sciences-and-image.spw#src_phys_sakurai_2020"
+ }
+ #>registry_sym_parity_violation
+ ^["parity_violation"]{
+  #:claim #!settled
+  statement: "Lee and Yang asked in 1956 whether weak interactions conserve parity; Chien-Shiung Wu and colleagues found in 1957 that cobalt-60 beta decay does not."
+  sources: [ ~"./sources/spw-contraptions.spw#src_contrap_lee_yang_1956", ~"./sources/spw-contraptions.spw#src_contrap_wu_1957" ]
+ }
+ #>registry_sym_time_reversal
+ ^["time_reversal"]{
+  #:claim #!settled
+  statement: "Time reversal is antiunitary in quantum mechanics, so it gives no conserved quantum number; for an odd count of electrons it still forces Kramers degeneracy."
+  source: ~"./sources/physical-sciences-and-image.spw#src_phys_sakurai_2020"
+ }
+}
+
+^["crystallographic"]{
+ #>registry_sym_point_groups
+ ^["point_groups"]{
+  #:claim #!settled
+  statement: "Three-dimensional crystals fall into a fixed number of point groups and Bravais lattice types, because only some rotation orders fit a lattice."
+  reads: %[contrap.sym.point_groups_3d, contrap.sym.bravais_3d]
+  source: ~"./sources/materials-and-engineering.spw#src_mateng_itc_vol_a_2016"
+ }
+ #>registry_sym_space_groups
+ ^["space_groups"]{
+  #:claim #!settled
+  statement: "Combining point operations with lattice translations, screw axes, and glide planes gives the space group types of three-dimensional crystals."
+  reads: %[contrap.sym.space_groups_3d]
+  source: ~"./sources/materials-and-engineering.spw#src_mateng_itc_vol_a_2016"
+ }
+ #>registry_sym_plane_groups
+ ^["plane_groups"]{
+  #:claim #!settled
+  statement: "Patterns periodic in two directions fall into the plane groups, and patterns periodic in one direction into the frieze groups."
+  reads: %[contrap.sym.plane_groups, contrap.sym.frieze_groups]
+  sources: [ ~"./sources/materials-and-engineering.spw#src_mateng_itc_vol_a_2016", ~"./sources/spw-contraptions.spw#src_contrap_itc_vol_e_2010", ~"./sources/spw-contraptions.spw#src_contrap_polya_1924" ]
+ }
+ #>registry_sym_alhambra
+ ^["alhambra"]{
+  #:claim #!contested
+  statement: "Grunbaum found thirteen plane groups in the Alhambra under stated criteria, against claims that all seventeen appear; he adds that its artisans worked centuries before symmetry groups were defined."
+  reads: %[contrap.sym.alhambra_plane_groups_n]
+  source: ~"./sources/spw-contraptions.spw#src_contrap_grunbaum_2006"
+  counter: ~"./sources/spw-contraptions.spw#src_contrap_montesinos_1987"
+  ~#(the count turns on how colour and interlace are read)
+ }
+}
+
+#>registry_sym_spw
+^["spw_conversions"]{
+ status: #proposed
+ standard: "canon asks closure, identity, inverses, and composition before a container view is called a group action"
+ cites: [ "docs/theory/spw/register-geometry.spw:103-115" ]
+ source: ~"./sources/spw-contraptions.spw#src_contrap_canon_register_geometry"
+ ^["rows"]{
+  #>registry_sym_bracket_swap
+  ^["bracket_swap"]{
+   #:claim #!settled
+   statement: "Swapping square with curly brackets and angle with round ones forms a four-element group on spellings, but each swap changes the parse tree, so it is no symmetry of meaning."
+   on_spellings: .{ closure: "pass", identity: "pass", inverse: "pass", composition: "pass" }
+   on_trees: "a hash with square brackets parses as a frame of parameters, and with curly brackets as a body"
+   source: ~"./sources/spw-contraptions.spw#src_contrap_parse_runs"
+  }
+  #>registry_sym_set_to_stream
+  ^["set_to_stream"]{
+   #:claim #!settled
+   statement: "Turning a category set into a stream must choose an order and turning it back forgets it; canon rules out any conversion that changes ordering."
+   tests: .{ closure: "untested", identity: "untested", inverse: "fails", composition: "untested" }
+   source: ~"./sources/spw-contraptions.spw#src_contrap_canon_register_geometry"
+  }
+  #>registry_sym_set_to_facet
+  ^["set_to_facet"]{
+   #:claim #!settled
+   statement: "Turning a two-member set into a one-pair facet changes arity, which canon names as the counterexample that rules a conversion out."
+   tests: .{ closure: "untested", identity: "untested", inverse: "fails", composition: "untested" }
+   source: ~"./sources/spw-contraptions.spw#src_contrap_canon_register_geometry"
+  }
+ }
+}
+
+#>registry_sym_q
+?["Does any container conversion in Spw keep the parse tree and still change the reading?"]{
+ #:depth #!mathematical ~#lens(symmetry and invariance)
+ #:claim #!speculative
+ ~#hypothesis: "If a conversion keeps node types but changes the runtime register it writes, it is a symmetry of syntax and not of meaning, the reverse of the bracket swap."
+ !probe{ "for each pair of container spellings, compare node types and interpreter writes on the same arguments" =id[p_contrap_sym_tree_vs_writes] =kind[calc] }
+ $%[contrap.sym.plane_groups, op.distribution]
+ ~"./symmetries.spw#registry_sym_bracket_swap" ~#neighbor(nearest)
+ breaks: "a group on spellings is a fact about strings; meaning needs a stated observable before a symmetry claim can be tested"
+}

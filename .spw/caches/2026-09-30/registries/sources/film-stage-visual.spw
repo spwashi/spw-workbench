@@ -11,17 +11,29 @@
 #:valence #!bone
 
 ^"provenance"{
- as_of: "2026-09-30"
+ as_of: "2026-10-02"
  generator: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #fact_checked, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #partial }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #partial }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-01", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
  }
  checked: "press titles and dates, Safety Bulletins 1 and 28, Public Domain Day 2026, box office, and Academy nominations were checked against the publisher pages on 2026-10-01"
+ rechecked: "the 2026 WGA and DGA memoranda were read on the guild sites, and the Rust citation date and the Wall Street Journal title were matched against encyclopedia citations on 2026-10-02"
  unchecked: "book editions and agreement titles are cited from the writer knowledge and await a library check"
+ corrections: [
+  "To the Actor (1953) was published by Harper and Brothers, not Harper and Row",
+  "the Rust bureau citation is dated April 20, 2022 and carries a descriptive title",
+  "the Barratt et al. 2016 title is given in full, with pages 847 to 874 and its DOI",
+  "the Rust bureau note now records that the penalty was later reduced to 100,000 US dollars in a 2023 settlement",
+  "a Labor Commissioner determination on attorneys under the Talent Agencies Act is added for the lawyers row"
+ ]
 }
 
 ^["labor_agreements"]{
@@ -35,6 +47,17 @@
  ^["wga_mba_2023"]{ title: "2023 WGA Theatrical and Television Basic Agreement Memorandum of Agreement", by: "WGA West; WGA East; AMPTP", year: 2023, kind: #agreement }
  #>src_film_dga_ba_2023
  ^["dga_ba_2023"]{ title: "DGA Basic Agreement of 2023", by: "Directors Guild of America; AMPTP", year: 2023, kind: #agreement }
+ #>src_film_wga_mba_2026
+ ^["wga_mba_2026"]{
+  title: "Memorandum of Agreement for the 2026 WGA Theatrical and Television Basic Agreement"
+  by: "WGA West; WGA East; AMPTP", year: 2026, venue: "wga.org, with the guild summary and contract changes FAQ", kind: #agreement
+ }
+ #>src_film_dga_moa_2026
+ ^["dga_moa_2026"]{
+  title: "2026 Memorandum of Agreement, DGA Basic Agreement and Freelance Live and Tape Television Agreement"
+  by: "Directors Guild of America; AMPTP", year: 2026, venue: "dga.org", kind: #agreement
+  title_note: "descriptive title for the dga.org listing MOA - 2026 BA/FLTTA, changes to the 2023 agreements for the term beginning July 1, 2026"
+ }
 }
 
 ^["labor_press"]{
@@ -69,8 +92,16 @@
  ^["variety_midnight_rider_2015"]{ title: "'Midnight Rider' Trial: Executive Producer Jay Sedrish Won't Serve Jail Time", by: "Ted Johnson", date: "2015-03-09", venue: "Variety", kind: #press }
  #>src_film_nmed_rust_2022
  ^["nmed_rust_2022"]{
-  title: "Summary of Investigation, Rust Movie Productions"
-  by: "New Mexico Environment Department, Occupational Health and Safety Bureau", date: "2022-04-19", kind: #report
+  title: "Citation and summary of investigation, Rust Movie Productions, LLC"
+  by: "New Mexico Environment Department, Occupational Health and Safety Bureau", date: "2022-04-20", kind: #report
+  title_note: "descriptive title for the bureau release that fined the production 136,793 US dollars"
+  later: "the penalty was later reduced to 100,000 US dollars in a settlement reported in February 2023; see the Variety report below"
+ }
+ #>src_film_variety_rust_osha_2023
+ ^["variety_rust_osha_2023"]{
+  title: "'Rust' Producers to Pay Reduced $100,000 Penalty in OSHA Settlement (Exclusive)"
+  by: "Gene Maddaus", date: "2023-02-24", venue: "Variety", kind: #press
+  title_note: "title, author, and date matched against an encyclopedia citation on 2026-10-02; the article body was not read"
  }
  #>src_film_deadline_rust_verdict_2024
  ^["deadline_rust_verdict_2024"]{ title: "'Rust' Armorer Guilty Of Involuntary Manslaughter In Fatal Shooting Of Cinematographer Halyna Hutchins; Defendant Not Guilty Of Evidence Tampering, Jury Says", by: "Dominic Patten", date: "2024-03-06", venue: "Deadline", kind: #press }
@@ -90,6 +121,12 @@
 ^["law_and_rights"]{
  #>src_film_cal_taa
  ^["cal_taa"]{ title: "California Labor Code sections 1700 to 1700.47 (Talent Agencies Act)", by: "State of California", kind: #statute }
+ #>src_film_solis_blancarte_2013
+ ^["solis_blancarte_2013"]{
+  title: "Solis v. Blancarte, TAC-27089, determination of the Labor Commissioner"
+  by: "California Labor Commissioner", date: "2013-09-30", venue: "Division of Labor Standards Enforcement, Talent Agencies Act determinations", kind: #case
+  title_note: "the holding that an unlicensed attorney who procures employment violates the Act was read from secondary summaries on 2026-10-02; the posted determination did not render as text"
+ }
  #>src_film_marathon_blasi_2008
  ^["marathon_blasi_2008"]{ title: "Marathon Entertainment, Inc. v. Blasi, 42 Cal.4th 974", by: "Supreme Court of California", year: 2008, kind: #case }
  #>src_film_usc_302_304
@@ -103,20 +140,14 @@
  #>src_film_usco_ai_2025
  ^["usco_ai_2025"]{ title: "Copyright and Artificial Intelligence, Part 2: Copyrightability", by: "US Copyright Office", year: 2025, kind: #report }
  #>src_film_eu_batteries_2023
- ^["eu_batteries_2023"]{
-  title: "Regulation (EU) 2023/1542 concerning batteries and waste batteries"
-  by: "European Parliament; Council of the EU", year: 2023, venue: "Official Journal L 191", kind: #statute
- }
+ ^["eu_batteries_2023"]{ title: "Regulation (EU) 2023/1542 concerning batteries and waste batteries", by: "European Parliament; Council of the EU", year: 2023, venue: "Official Journal L 191", kind: #statute }
 }
 
 ^["film_craft"]{
  #>src_film_ascher_pincus_2012
  ^["ascher_pincus_2012"]{ title: "The Filmmaker's Handbook, 4th ed.", by: "Steven Ascher; Edward Pincus", year: 2012, venue: "Plume", kind: #monograph }
  #>src_film_bordwell_film_art_2019
- ^["bordwell_film_art_2019"]{
-  title: "Film Art: An Introduction, 12th ed."
-  by: "David Bordwell; Kristin Thompson; Jeff Smith", year: 2019, venue: "McGraw-Hill Education", kind: #monograph
- }
+ ^["bordwell_film_art_2019"]{ title: "Film Art: An Introduction, 12th ed.", by: "David Bordwell; Kristin Thompson; Jeff Smith", year: 2019, venue: "McGraw-Hill Education", kind: #monograph }
  #>src_film_field_1979
  ^["field_1979"]{ title: "Screenplay: The Foundations of Screenwriting", by: "Syd Field", year: 1979, venue: "Dell", kind: #monograph }
  #>src_film_snyder_2005
@@ -126,19 +157,16 @@
  #>src_film_murch_2001
  ^["murch_2001"]{ title: "In the Blink of an Eye, 2nd ed.", by: "Walter Murch", year: 2001, venue: "Silman-James Press", kind: #monograph }
  #>src_film_eisenstein_1949
- ^["eisenstein_1949"]{
-  title: "Film Form: Essays in Film Theory"
-  by: "Sergei Eisenstein; ed. and trans. Jay Leyda", year: 1949, venue: "Harcourt, Brace", kind: #monograph
- }
+ ^["eisenstein_1949"]{ title: "Film Form: Essays in Film Theory", by: "Sergei Eisenstein; ed. and trans. Jay Leyda", year: 1949, venue: "Harcourt, Brace", kind: #monograph }
  #>src_film_prince_hensley_1992
  ^["prince_hensley_1992"]{ title: "The Kuleshov effect: Recreating the classic experiment", by: "Stephen Prince; Wayne E. Hensley", year: 1992, venue: "Cinema Journal 31(2)", kind: #article }
  #>src_film_mobbs_2006
- ^["mobbs_2006"]{
-  title: "The Kuleshov Effect: the influence of contextual framing on emotional attributions"
-  by: "Dean Mobbs; et al.", year: 2006, venue: "Social Cognitive and Affective Neuroscience 1(2)", kind: #article
- }
+ ^["mobbs_2006"]{ title: "The Kuleshov Effect: the influence of contextual framing on emotional attributions", by: "Dean Mobbs; et al.", year: 2006, venue: "Social Cognitive and Affective Neuroscience 1(2)", kind: #article }
  #>src_film_barratt_2016
- ^["barratt_2016"]{ title: "Does the Kuleshov effect really exist? Revisiting a classic film experiment", by: "Daniel Barratt; et al.", year: 2016, venue: "Perception 45(8)", kind: #article }
+ ^["barratt_2016"]{
+  title: "Does the Kuleshov effect really exist? Revisiting a classic film experiment on facial expressions and emotional contexts"
+  by: "Daniel Barratt; et al.", year: 2016, venue: "Perception 45(8): 847-874", doi: "10.1177/0301006616638595", kind: #article
+ }
  #>src_film_solanas_getino_1969
  ^["solanas_getino_1969"]{ title: "Towards a Third Cinema (Hacia un tercer cine)", by: "Fernando Solanas; Octavio Getino", year: 1969, venue: "Tricontinental", kind: #article }
  #>src_film_asc_manual
@@ -152,20 +180,11 @@
  #>src_film_holman_2010
  ^["holman_2010"]{ title: "Sound for Film and Television, 3rd ed.", by: "Tomlinson Holman", year: 2010, venue: "Focal Press", kind: #monograph }
  #>src_film_oscars_1973
- ^["oscars_1973"]{
-  title: "The 45th Academy Awards (1973) Nominees and Winners"
-  by: "Academy of Motion Picture Arts and Sciences", kind: #database
- }
+ ^["oscars_1973"]{ title: "The 45th Academy Awards (1973) Nominees and Winners", by: "Academy of Motion Picture Arts and Sciences", kind: #database }
  #>src_film_oscars_2008
- ^["oscars_2008"]{
-  title: "The 80th Academy Awards (2008) Nominees and Winners"
-  by: "Academy of Motion Picture Arts and Sciences", kind: #database
- }
+ ^["oscars_2008"]{ title: "The 80th Academy Awards (2008) Nominees and Winners", by: "Academy of Motion Picture Arts and Sciences", kind: #database }
  #>src_film_oscars_2016
- ^["oscars_2016"]{
-  title: "The 88th Academy Awards (2016) Nominees and Winners"
-  by: "Academy of Motion Picture Arts and Sciences", kind: #database
- }
+ ^["oscars_2016"]{ title: "The 88th Academy Awards (2016) Nominees and Winners", by: "Academy of Motion Picture Arts and Sciences", kind: #database }
 }
 
 ^["theatre"]{
@@ -184,32 +203,23 @@
  #>src_film_boleslavsky_1933
  ^["boleslavsky_1933"]{ title: "Acting: The First Six Lessons", by: "Richard Boleslavsky", year: 1933, venue: "Theatre Arts", kind: #monograph }
  #>src_film_chekhov_1953
- ^["chekhov_1953"]{ title: "To the Actor: On the Technique of Acting", by: "Michael Chekhov", year: 1953, venue: "Harper and Row", kind: #monograph }
+ ^["chekhov_1953"]{ title: "To the Actor: On the Technique of Acting", by: "Michael Chekhov", year: 1953, venue: "Harper and Brothers", kind: #monograph }
  #>src_film_overlie_2016
  ^["overlie_2016"]{ title: "Standing in Space: The Six Viewpoints Theory and Practice", by: "Mary Overlie", year: 2016, venue: "Fallon Press", kind: #monograph }
  #>src_film_bogart_landau_2005
  ^["bogart_landau_2005"]{ title: "The Viewpoints Book: A Practical Guide to Viewpoints and Composition", by: "Anne Bogart; Tina Landau", year: 2005, venue: "Theatre Communications Group", kind: #monograph }
  #>src_film_suzuki_1986
- ^["suzuki_1986"]{
-  title: "The Way of Acting: The Theatre Writings of Tadashi Suzuki"
-  by: "Tadashi Suzuki; trans. J. Thomas Rimer", year: 1986, venue: "Theatre Communications Group", kind: #monograph
- }
+ ^["suzuki_1986"]{ title: "The Way of Acting: The Theatre Writings of Tadashi Suzuki", by: "Tadashi Suzuki; trans. J. Thomas Rimer", year: 1986, venue: "Theatre Communications Group", kind: #monograph }
  #>src_film_linklater_1976
  ^["linklater_1976"]{ title: "Freeing the Natural Voice", by: "Kristin Linklater", year: 1976, venue: "Drama Book Specialists", kind: #monograph }
  #>src_film_brecht_willett_1964
- ^["brecht_willett_1964"]{
-  title: "Brecht on Theatre: The Development of an Aesthetic"
-  by: "Bertolt Brecht; ed. and trans. John Willett", year: 1964, venue: "Hill and Wang", kind: #monograph
- }
+ ^["brecht_willett_1964"]{ title: "Brecht on Theatre: The Development of an Aesthetic", by: "Bertolt Brecht; ed. and trans. John Willett", year: 1964, venue: "Hill and Wang", kind: #monograph }
  #>src_film_ball_1983
  ^["ball_1983"]{ title: "Backwards and Forwards: A Technical Manual for Reading Plays", by: "David Ball", year: 1983, venue: "Southern Illinois University Press", kind: #monograph }
  #>src_film_ghosh_1950
  ^["ghosh_1950"]{ title: "The Natyasastra, ascribed to Bharata-Muni, vol. 1", by: "trans. Manomohan Ghosh", year: 1950, venue: "Royal Asiatic Society of Bengal", kind: #primary }
  #>src_film_zeami_1984
- ^["zeami_1984"]{
-  title: "On the Art of the No Drama: The Major Treatises of Zeami"
-  by: "trans. J. Thomas Rimer; Yamazaki Masakazu", year: 1984, venue: "Princeton University Press", kind: #primary
- }
+ ^["zeami_1984"]{ title: "On the Art of the No Drama: The Major Treatises of Zeami", by: "trans. J. Thomas Rimer; Yamazaki Masakazu", year: 1984, venue: "Princeton University Press", kind: #primary }
  #>src_film_grotowski_1968
  ^["grotowski_1968"]{ title: "Towards a Poor Theatre", by: "Jerzy Grotowski; ed. Eugenio Barba", year: 1968, venue: "Odin Teatrets Forlag", kind: #monograph }
  #>src_film_lecoq_2000
@@ -252,30 +262,25 @@
  #>src_film_dreyfuss_1955
  ^["dreyfuss_1955"]{ title: "Designing for People", by: "Henry Dreyfuss", year: 1955, venue: "Simon and Schuster", kind: #monograph }
  #>src_film_norman_2013
- ^["norman_2013"]{ title: "The Design of Everyday Things, revised and expanded ed.", by: "Don Norman", year: 2013, venue: "Basic Books", kind: #monograph }
+ ^["norman_2013"]{
+  title: "The Design of Everyday Things, revised and expanded ed."
+  by: "Don Norman", year: 2013, venue: "Basic Books", kind: #monograph
+  title_note: "first published in 1988 as The Psychology of Everyday Things"
+ }
  #>src_film_papanek_1971
  ^["papanek_1971"]{ title: "Design for the Real World: Human Ecology and Social Change", by: "Victor Papanek", year: 1971, venue: "Pantheon Books", kind: #monograph }
  #>src_film_yanagi_1972
- ^["yanagi_1972"]{
-  title: "The Unknown Craftsman: A Japanese Insight into Beauty"
-  by: "Soetsu Yanagi; adapted by Bernard Leach", year: 1972, venue: "Kodansha International", kind: #monograph
- }
+ ^["yanagi_1972"]{ title: "The Unknown Craftsman: A Japanese Insight into Beauty", by: "Soetsu Yanagi; adapted by Bernard Leach", year: 1972, venue: "Kodansha International", kind: #monograph }
  #>src_film_whitford_1984
  ^["whitford_1984"]{ title: "Bauhaus", by: "Frank Whitford", year: 1984, venue: "Thames and Hudson", kind: #monograph }
  #>src_film_klemp_2009
  ^["klemp_2009"]{ title: "Less and More: The Design Ethos of Dieter Rams", by: "Klaus Klemp; Keiko Ueki-Polet, editors", year: 2009, venue: "Gestalten", kind: #monograph }
  #>src_film_ncsu_ud_1997
- ^["ncsu_ud_1997"]{
-  title: "The Principles of Universal Design, Version 2.0"
-  by: "Center for Universal Design, NC State University", year: 1997, kind: #guideline
- }
+ ^["ncsu_ud_1997"]{ title: "The Principles of Universal Design, Version 2.0", by: "Center for Universal Design, NC State University", year: 1997, kind: #guideline }
  #>src_film_farin_2002
  ^["farin_2002"]{ title: "Curves and Surfaces for CAGD: A Practical Guide, 5th ed.", by: "Gerald Farin", year: 2002, venue: "Morgan Kaufmann", kind: #monograph }
  #>src_film_barsky_derose_1989
- ^["barsky_derose_1989"]{
-  title: "Geometric Continuity of Parametric Curves: Three Equivalent Characterizations"
-  by: "Brian A. Barsky; Tony D. DeRose", year: 1989, venue: "IEEE Computer Graphics and Applications 9(6)", kind: #article
- }
+ ^["barsky_derose_1989"]{ title: "Geometric Continuity of Parametric Curves: Three Equivalent Characterizations", by: "Brian A. Barsky; Tony D. DeRose", year: 1989, venue: "IEEE Computer Graphics and Applications 9(6)", kind: #article }
  #>src_film_shingo_1986
  ^["shingo_1986"]{ title: "Zero Quality Control: Source Inspection and the Poka-yoke System", by: "Shigeo Shingo", year: 1986, venue: "Productivity Press", kind: #monograph }
 }

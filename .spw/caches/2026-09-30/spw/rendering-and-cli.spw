@@ -1,0 +1,268 @@
+# Rendering and the CLI
+#
+# How Spw stays legible in plain text, a terminal, and an editor, and how the spw command line can be talked about: canonical names, honest errors, and a predict, check, compare, reflect loop.
+
+#>spw_rendering_and_cli
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!protocol
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!bane
+
+^"emit"{
+ ~#title: "Rendering and the CLI"
+ ~#claim: "The command line is how people talk about Spw, so every command, card, and error should use one canonical name and say what it left out."
+ ~#proof: "Probes at 1aa1dc23 on 2026-10-03 show alias names in outline help and errors, a vacuous pass in resolve, and a renamed flag still taught in root help."
+ ~#door: "Misspell one flag on spw census, read the error, then write the line you wish it had printed."
+ ~#audience: "CLI authors, plugin authors, and readers who share Spw output in chat"
+ continuity: "Rendering and the CLI | canonical name"
+ cold_open: "Call every command by its canonical name, and let each card and error say plainly what it left out."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/studies/render-synthesis.md sections 1.2, 4, and 5",
+  "error probes re-run by the writer at 1aa1dc23 on 2026-10-03: census, resolve, outline, fingerprint, pulse, format, doctor, and an unknown command"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the render study recorded a doubled prefix on spw doctor errors; at 1aa1dc23 doctor prints one prefix, so that row is dropped",
+  "the render study filed CLI readings under editor hosts; the dated probes are folded here and into inspection and IR, because the CLI is how people talk about Spw",
+  "homonym meanings have one home in the glossary terms surface; this surface keeps only the CLI facts that make them",
+  "every command, card, and message quoted here is a dated still, never the longitudinal product"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~".spw/conventions/cli.spw#spw_cli_conventions" ]
+ extends: [ ~"./inspection-and-ir.spw#spw_ir_tool_trust" ]
+ see: [ ~"./hosts/vscode-rendering.spw#editor_hosts_vscode_rendering", ~"./glossary/terms.spw#spw_gloss_terms" ]
+ feeds: [ ~"./practice-modes.spw#spw_practice_modes" ]
+}
+
+^["concepts"]{
+ primary: [ #canonical_name, #omission ]
+ transfers: [ #dated_still ], tensions: [ #alias ]
+}
+
+^["stills"]{
+ #>spw_rcli_stills
+ ^["dated_stills"]{
+  #:claim #!interpretive
+  statement: "Command names, cards, tables, and JSON envelopes are stills for this revision, so every observation here carries a commit and a date."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_owner_resume"
+  label: "owner hold for this revision, not site doctrine"
+  cites: [ ".spw/caches/resume/2026-09-30-direction.spw:31" ]
+ }
+}
+
+^["legibility"]{
+ home: "the plain-text rules live in the cut contract legibility frame; this frame records where tools misread that layout"
+ see: [ ~"../contract.spw#cut_contract", ~"./inspection-and-ir.spw#spw_ir_trust_outline" ]
+
+ #>spw_rcli_format_layout
+ ^["format_layout"]{
+  #:claim #!settled
+  statement: "The formatter treats a hash after whitespace as a trailing comment unless a particle mark follows, so a set or tag value is padded like a comment."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_seed_canonical"
+  cites: [ "packages/spw-seed/src/canonical/canonicalize.ts:257-265" ]
+ }
+ #>spw_rcli_format_diff
+ ^["format_diff"]{
+  #:claim #!settled
+  statement: "spw format with --check --diff pairs old and new lines by index, so one wrapped line shows every later line as changed."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_cli_commands"
+  cites: [ "packages/spw-cli/src/format.ts:394-410" ]
+ }
+}
+
+^["terminal"]{
+ #>spw_rcli_omission_law
+ ^["omission_law"]{
+  #:claim #!settled
+  statement: "CLI canon requires every bounded product to state the rows, tokens, events, or fields it omitted."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_canon_cli"
+  cites: [ ".spw/conventions/cli.spw:100" ]
+  label: "a-canon"
+ }
+ #>spw_rcli_no_color
+ ^["no_color"]{
+  #:claim #!settled
+  statement: "With NO_COLOR set, the syntax validator still printed ANSI color codes around its pass line."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_validator"
+  probe_run: "NO_COLOR=1 spw-syntax-validate on spw/voice.spw at 1aa1dc23, 2026-10-03"
+ }
+ ^["rules"]{
+  status: #proposed
+  one_card: "one card per product; stderr and stdout never restate the same facts under different keys"
+  limits: "every card states what it cannot see in a limits frame"
+  width: "truncate in the middle so the anchor fragment of a path survives"
+  plain: "honor NO_COLOR and a non-terminal stdout, with an ASCII glyph fallback"
+  compact: "a short card by default and the long card behind a flag"
+  stable: "no timestamps or memo facets on stdout, so two runs on the same tree print the same card"
+ }
+}
+
+^["editor"]{
+ home: "what each VS Code layer paints, its palette, and its contrast live in the hosts rendering surface"
+
+ #>spw_rcli_contrast
+ ^["bone_contrast"]{
+  #:claim #!settled
+  statement: "The light-theme bone color reaches about 3.1 to 1 against white, below the WCAG AA minimum for normal text."
+  reads: %[spw.editor.contrast_bone_light, spw.research.wcag_text_contrast]
+  source: ~"../registries/sources/spw-branch.spw#src_spw_wcag_22"
+  cites: [ "extensions/vscode-spw/package.json:251" ]
+ }
+ #>spw_rcli_color_alone
+ ^["color_alone"]{
+  #:claim #!settled
+  statement: "Red-green color deficiency is common among men of European descent, so status shown only by hue is lost for a sizable share of readers."
+  reads: %[spw.research.cvd_men_pct]
+  source: ~"../registries/sources/spw-branch.spw#src_spw_birch_2012"
+  see: [ ~"../registries/sources/spw-branch.spw#src_spw_wcag_22" ]
+ }
+ ^["rules"]{
+  status: #proposed
+  family: "color carries sigil family only, in five or six muted families"
+  aim: "particle aim is shown by typography: anchor bold with a ruler, case regular, mood italic"
+  prose: "strings, questions, and apposition bodies keep the default foreground as one prose scope"
+  claim_status: "claim status appears only in an opt-in mode, as glyph inlays or a lightness ramp, never red against green"
+  valence: "valence appears only in a valence mode, in a palette with no good or bad connotation"
+  feedback: "color marks where the reader prediction differs from the parse"
+ }
+}
+
+^["talk"]{
+ #>spw_rcli_alias_leak
+ ^["alias_leak"]{
+  #:claim #!settled
+  statement: "outline is registered with the aliases skim and read, yet its help title, usage line, and error prefix still say skim."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_cli_commands"
+  cites: [ "packages/spw-cli/src/commands.ts:338-339", "packages/spw-cli/src/skim.ts:32", "packages/spw-cli/src/skim.ts:100-102" ]
+  probe_run: "spw outline --help and spw outline on a directory, 1aa1dc23, 2026-10-03"
+ }
+ #>spw_rcli_suggest_alias
+ ^["suggests_alias"]{
+  #:claim #!settled
+  statement: "For the unknown command tour, the CLI printed the full root help on stdout and suggested topo, an alias of graph, before canonical names."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_cli_commands"
+  cites: [ "packages/spw-cli/src/run.ts:26" ]
+  probe_run: "spw tour at 1aa1dc23, 2026-10-03, exit 2"
+ }
+ #>spw_rcli_canon_list
+ ^["canon_list"]{
+  #:claim #!settled
+  statement: "CLI canon lists public commands without fingerprint, lint, and resolve, all three registered in the command table."
+  reads: %[spw.cli.commands]
+  source: ~"../registries/sources/spw-branch.spw#src_spw_canon_cli"
+  cites: [ ".spw/conventions/cli.spw:12", "packages/spw-cli/src/commands.ts:284-323" ]
+ }
+ #>spw_rcli_questions
+ ^["question_path"]{
+  #:claim #!interpretive
+  statement: "Root help pairs commands with the question each answers, such as what is present and where to read, which is the most talkable part of the CLI."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_cli_commands"
+  cites: [ "packages/spw-cli/src/commands.ts:509-517" ]
+ }
+ #>spw_rcli_vocabulary
+ ^["vocabulary_problem"]{
+  #:claim #!settled
+  statement: "People rarely choose the same word for the same function, so a system that accepts many aliases is found more often than one that accepts a single name."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_furnas_1987"
+  ~#(aliases are for finding; one canonical name is for talking)
+ }
+ ^["homonyms"]{
+  home: ~"./glossary/terms.spw#spw_gloss_terms"
+  words: #[ cut, expand, hub, lens, readings, skim, read ]
+  rule: "a-canon: an alias is a temporary route to one implementation, not a second semantic surface"
+  cites: [ ".spw/conventions/cli.spw:114" ]
+ }
+ #>spw_rcli_w_flag
+ ^["flags"]{
+  #:claim #!settled
+  statement: "The short flag -w means width in spw format and write in spw pulse."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_cli_commands"
+  cites: [ "packages/spw-cli/src/format.ts:153", "packages/spw-cli/src/pulse.ts:244" ]
+ }
+}
+
+^["errors"]{
+ as_of: "1aa1dc23, 2026-10-03; before lines are observed, after lines are proposed"
+ basis: ~"../registries/sources/spw-branch.spw#src_spw_marceau_2011"
+
+ #>spw_rcli_err_flag
+ ^["unknown_flag"]{
+  before: "spw census: unknown flag --jsn, exit 1"
+  after: "spw census: unknown flag --jsn. Did you mean --json? See spw census --help. Exit 2"
+  status: #proposed
+ }
+ #>spw_rcli_err_vacuous
+ ^["vacuous_pass"]{
+  before: "spw resolve --from nope printed all citations resolve with a total of zero, exit 0"
+  after: "spw resolve: nothing to check; nope does not exist. Exit 3"
+  status: #proposed
+ }
+ #>spw_rcli_err_directory
+ ^["directory"]{
+  before: "spw outline on a directory printed spw skim: cannot read, exit 1; spw fingerprint printed a raw EISDIR, exit 3"
+  after: "spw outline: spw/ is a directory; outline reads one file. Try spw tree spw"
+  status: #proposed
+ }
+ #>spw_rcli_err_renamed
+ ^["renamed_flag"]{
+  before: "root help still shows spw pulse a.spw --stamp, and pulse answers spw-pulse: unknown option --stamp"
+  after: "spw pulse: --stamp is now --cut"
+  cites: [ "packages/spw-cli/src/commands.ts:528" ]
+  status: #proposed
+ }
+ #>spw_rcli_err_summary
+ ^["format_summary"]{
+  before: "spw-format: 1 file(s) scanned, 0 need."
+  after: "spw format: 1 file checked, 0 would change"
+  cites: [ "packages/spw-cli/src/format.ts:611" ]
+  status: #proposed
+ }
+}
+
+^["loop"]{
+ steps: << "predict: write the card you expect, by hand" ; "check: run spw census or spw outline" ; "compare: plain diff or spw delta, which reports labels and counts" ; "reflect: write one reading in your own root" >>
+ standing: "tools write nothing about readers; the prediction and the tally stay on the reader side"
+ standing_cites: [ ".spw/conventions/cli.spw:118-121" ]
+ metaphor: "a-canon: the schedule aids memory only beside an observable mapping and a stated limit"
+ metaphor_cites: [ ".spw/conventions/cli.spw:49" ]
+ not_a_tour: "owner hold: no command tour serves as onboarding; a newcomer lands on one fragment door"
+ not_a_tour_cites: [ ".spw/caches/resume/2026-09-30-direction.spw:73" ]
+ see: [ ~"./recipes.spw#spw_recipes", ~"./practice-modes.spw#spw_practice_spw_claim" ]
+}
+
+^["try"]{
+ #>spw_rcli_try_rewrite
+ ^["rewrite_one_error"]{
+  materials: [ "a terminal in the workbench", "a notebook you keep" ]
+  steps: << "run spw census with a misspelled flag" ; "copy the error exactly" ; "write the after line: canonical name, what went wrong, one next command" ; "check the next command really exists with spw --help" >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "none worth naming; census reads files and writes nothing"
+  shows: ~"./rendering-and-cli.spw#spw_rcli_err_flag"
+ }
+}
+
+#>spw_rcli_recovery_q
+?["Does an error that names the canonical command and one next step shorten recovery?"]{
+ #:depth #!educational ~#lens(applied attention)
+ #:claim #!speculative
+ ~#hypothesis: "Readers recover from a usage error sooner when the message names the canonical command and one runnable next step."
+ !probe{ "paired volunteers fix seeded usage errors under the before and after messages and report which message they acted on" =id[p_spw_rcli_recovery] =kind[field] }
+ $%[spw.cli.commands]
+ ~"./rendering-and-cli.spw#spw_rcli_alias_leak" ~#neighbor(nearest)
+}

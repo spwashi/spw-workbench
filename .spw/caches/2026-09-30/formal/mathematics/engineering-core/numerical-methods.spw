@@ -1,0 +1,195 @@
+# Numerical Methods
+#
+# A runnable probe battery for floating point, root finding, linear solvers, ODE integrators, and conditioning, with two failures that cost lives and money.
+
+#>mathematics_numerics
+#:layer #!reference
+#:domain #!mathematics
+#:form #!probe_battery
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Numerical Methods"
+ ~#claim: "A computed answer is the exact answer to a nearby problem, so its error is the condition number times the rounding unit, not the rounding unit alone."
+ ~#proof: "Higham and Trefethen and Bau state backward stability and conditioning; IEEE 754 fixes the rounding unit; GAO and the Ariane inquiry record two failures."
+ ~#door: "Run the first probe in any Python shell, then the Hilbert solve, then read the Patriot case."
+ ~#audience: "engineers and scientists who compute, and programmers who touch floating point"
+ continuity: "Numerical Methods | nearby problem"
+ cold_open: "Your computer solves a nearby problem exactly; how far its answer lands depends on how sensitive the problem is."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[ "probe outputs for float addition, cancellation, Newton square root, and explicit Euler recomputed with Python 3 on 2026-10-02", "a pure-Python partially pivoted solve of the 10 by 10 Hilbert system gave a largest error near 0.0007 on 2026-10-02" ]
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ needs: [ ~"./calculus-and-linear-algebra.spw#mathematics_calc_lu", ~"./differential-equations.spw#mathematics_diffeq_linear" ]
+ feeds: [ ~"../../../physical/engineering/mechanical-advanced.spw#engineering_mechanical_advanced", ~"../../computing/systems-programming.spw#computing_systems" ]
+ see: [ ~"./transforms-and-complex-methods.spw#mathematics_transforms_fft" ]
+}
+
+^["concepts"]{
+ primary: [ #conditioning, #stiffness, #convergence ]
+ transfers: [ #floating_point, #invariant ]
+ tensions: [ #cancellation ]
+}
+
+^["principle"]{
+ #>mathematics_numerics_backward
+ ^["backward_stability"]{
+  #:claim #!settled
+  statement: "A backward-stable algorithm returns the exact answer to a slightly perturbed input, so its relative error is at most about the condition number times the rounding unit."
+  source: ~"../../../registries/sources/formal.spw#src_formal_trefethen_bau_1997"
+  ~#say(stable algorithms cannot fix sensitive problems)
+ }
+}
+
+^["battery"]{
+ ^["floating_point"]{
+  #>mathematics_numerics_binary64
+  ^["binary64"]{
+   #:claim #!settled
+   statement: "IEEE 754 binary64 carries a 53-bit significand, so the gap from 1 to the next double is 2 to the minus 52, about 2.2 times 10 to the minus 16."
+   reads: %[formal.fp.binary64_precision_bits, formal.fp.binary64_epsilon]
+   source: ~"../../../registries/sources/formal.spw#src_formal_ieee754_2019"
+  }
+  #>mathematics_numerics_probe_tenths
+  ^["tenths"]{
+   !probe{ "add 0.1 and 0.2 in binary64 and compare with 0.3" =id[p_formal_numerics_tenths] =kind[calc] }
+   run: "python3 -c 'print(0.1 + 0.2, 0.1 + 0.2 == 0.3)'"
+   expect: "0.30000000000000004 False, because none of the three decimals is a finite binary fraction"
+   shows: ~"./numerical-methods.spw#mathematics_numerics_binary64"
+  }
+  #>mathematics_numerics_cancellation
+  ^["cancellation"]{
+   #:claim #!settled
+   statement: "Subtracting nearly equal rounded numbers keeps their absolute error but destroys their relative accuracy, so rewriting a formula can save every digit."
+   source: ~"../../../registries/sources/formal.spw#src_formal_goldberg_1991"
+  }
+  #>mathematics_numerics_probe_cancel
+  ^["one_minus_cosine"]{
+   !probe{ "evaluate one minus cosine of x over x squared at x equal 1e-8, then the half-angle form" =id[p_formal_numerics_cancel] =kind[calc] }
+   run: "python3 -c 'import math; x=1e-8; print((1-math.cos(x))/x**2, 2*math.sin(x/2)**2/x**2)'"
+   expect: "0.0 from the naive form and 0.5 from the half-angle form"
+   shows: ~"./numerical-methods.spw#mathematics_numerics_cancellation"
+  }
+ }
+ ^["roots"]{
+  #>mathematics_numerics_bisection_newton
+  ^["bisection_and_newton"]{
+   #:claim #!settled
+   statement: "Bisection gains one decimal digit per log2 of 10 steps from any sign change; Newton doubles correct digits per step near a simple root but can diverge from a poor start."
+   reads: %[formal.numerics.bisection_steps_per_digit, formal.numerics.newton_order]
+   source: ~"../../../registries/sources/formal.spw#src_formal_nocedal_wright_2006"
+  }
+  #>mathematics_numerics_probe_newton
+  ^["newton_root_two"]{
+   !probe{ "run five Newton steps on x squared minus 2 from x equal 1" =id[p_formal_numerics_newton] =kind[calc] }
+   run: "python3 -c 'x=1.0; print([x:=x-(x*x-2)/(2*x) for i in range(5)])'"
+   expect: "1.5, 1.4166666666666667, 1.4142156862745099, 1.4142135623746899, 1.4142135623730951"
+   shows: ~"./numerical-methods.spw#mathematics_numerics_bisection_newton"
+  }
+ }
+ ^["linear_systems"]{
+  #>mathematics_numerics_hilbert
+  ^["hilbert_conditioning"]{
+   #:claim #!settled
+   statement: "The 10 by 10 Hilbert matrix has condition number near 1.6 times 10 to the 13, so a stable double-precision solve keeps only about three correct digits."
+   reads: %[formal.numerics.hilbert10_cond2, formal.fp.binary64_epsilon]
+   source: ~"../../../registries/sources/formal.spw#src_formal_higham_2002"
+  }
+  #>mathematics_numerics_probe_hilbert
+  ^["hilbert_solve"]{
+   !probe{ "build the 10 by 10 Hilbert matrix, set b to its row sums so the answer is all ones, solve with partial pivoting, and print the largest error" =id[p_formal_numerics_hilbert] =kind[calc] }
+   run: "python3 -c 'import numpy as np; n=10; H=1/(np.arange(n)[:,None]+np.arange(n)+1); print(abs(np.linalg.solve(H, H.sum(1))-1).max())'"
+   expect: "an error between about 0.0001 and 0.001, depending on the library"
+   shows: ~"./numerical-methods.spw#mathematics_numerics_hilbert"
+  }
+ }
+ ^["integrators"]{
+  #>mathematics_numerics_rk4
+  ^["order"]{
+   #:claim #!settled
+   statement: "On smooth nonstiff problems, halving the step cuts global error by about 2 for Euler and 16 for classical fourth-order Runge-Kutta."
+   reads: %[formal.numerics.rk4_order]
+   source: ~"../../../registries/sources/formal.spw#src_formal_hairer_1993"
+  }
+  #>mathematics_numerics_stiffness
+  ^["stiffness"]{
+   #:claim #!settled
+   statement: "On a stiff decay explicit methods need tiny steps to stay stable, and Dahlquist showed no A-stable linear multistep method exceeds order two."
+   sources: [ ~"../../../registries/sources/formal.spw#src_formal_dahlquist_1963", ~"../../../registries/sources/formal.spw#src_formal_hairer_1993" ]
+  }
+  #>mathematics_numerics_probe_stiff
+  ^["stiff_decay"]{
+   !probe{ "take ten steps of size 0.003 on y prime equals minus 1000 y from 1 with explicit and implicit Euler" =id[p_formal_numerics_stiff] =kind[calc] }
+   run: "python3 -c 'print((1-3.0)**10, (1/(1+3.0))**10)'"
+   expect: "explicit Euler gives 1024.0 and grows; implicit Euler gives about 9.5e-07 and decays as the true solution does"
+   shows: ~"./numerical-methods.spw#mathematics_numerics_stiffness"
+  }
+  #>mathematics_numerics_cfl
+  ^["cfl"]{
+   #:claim #!settled
+   statement: "Courant, Friedrichs, and Lewy showed in 1928 that an explicit scheme for a wave equation converges only if its numerical domain of dependence contains the true one."
+   source: ~"../../../registries/sources/formal.spw#src_formal_cfl_1928"
+   ^["limits"]{
+    holds: "explicit schemes for hyperbolic problems; for the simplest wave scheme this reads c times the time step over the grid step at most one"
+    fails: "implicit schemes escape this bound and trade it for a linear solve per step"
+   }
+  }
+ }
+}
+
+^["cases"]{
+ #>mathematics_numerics_patriot
+ ^["patriot_1991"]{
+  #:claim #!settled
+  statement: "At Dhahran in 1991 a Patriot battery scaled its tenth-of-a-second clock count by a 24-bit fixed-point copy of 1 over 10; after about 100 hours the drift shifted its tracking gate."
+  reads: %[formal.numerics.patriot_clock_error_s_100h]
+  source: ~"../../../registries/sources/formal.spw#src_formal_gao_1992"
+  ~#(a Scud then struck a barracks and killed 28 American soldiers, per the GAO report)
+ }
+ #>mathematics_numerics_ariane
+ ^["ariane_501"]{
+  #:claim #!settled
+  statement: "Ariane 5 flight 501 was lost in 1996 when inertial-reference software reused from Ariane 4 converted a 64-bit float to a 16-bit signed integer and overflowed."
+  source: ~"../../../registries/sources/formal.spw#src_formal_lions_1996"
+ }
+}
+
+^["try"]{
+ #>mathematics_numerics_try_tenth
+ ^["binary_tenth"]{
+  materials: [ "paper", "pencil" ]
+  steps: << "write 0.1" ; "double it and record the digit before the point, then drop that digit" ; "repeat twelve times" ; "find where the pattern of recorded digits starts to repeat" ; "explain why a register with a fixed number of bits must round 0.1" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./numerical-methods.spw#mathematics_numerics_patriot"
+ }
+}
+
+#>mathematics_numerics_failure_q
+?["Do real numerical failures come more from conversions and long accumulations than from single roundings?"]{
+ #:depth #!historical ~#lens(historical layer)
+ #:claim #!speculative
+ ~#hypothesis: "Documented numerical failures trace more often to unit conversions, range overflow, and long accumulations than to one rounding in a single operation."
+ !probe{ "classify the numerical causes in public failure inquiries since 1990 by conversion, overflow, accumulation, or single rounding" =id[p_formal_numerics_failure_census] =kind[lit] }
+ $%[formal.numerics.patriot_clock_error_s_100h, formal.fp.binary64_epsilon]
+ ~"./numerical-methods.spw#mathematics_numerics_ariane" ~#neighbor(nearest)
+}

@@ -13,25 +13,20 @@
 ^"provenance"{
  as_of: "2026-10-01"
  generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
  ^["receipts"]{
   ^["r1"]{ event: #sourced, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #pass }
   ^["r2"]{ event: #fact_checked, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #partial }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
  }
- checked_online: #[ src_learn_asca_ratios, src_learn_nsf_budget, src_learn_colby_2023, src_learn_naep_ltt_2022, src_learn_nih_simplified_review, src_learn_gao_2017, src_learn_exeter_harkness, src_learn_dimock_2019, src_learn_parker_2023, src_learn_ferpa_hipaa_2019, src_learn_oha_2018, src_learn_ceda, src_learn_nsda ]
- note: "web entries carry an accessed date; statutes and regulations name the citation a reader can look up"
-}
-
-^["kinds"]{
- tiers: <<
-  "statute, regulation, or court case" ;
-  "official report or policy statement" ;
-  "peer-reviewed article or scholarly book" ;
-  "dated web page or survey series" ;
-  "journalism"
- >>
+ corrections: #[ "fact check: NSDA rename year was 2013; the association timeline gives 2014", "fact check: federal holidays were anchored to the 1968 Monday act; Veterans Day returned to November 11 in 1975 and the King holiday came in 1983, so the entry now cites 5 U.S.C. 6103 as amended", "fact check: the Massachusetts v. NIH entry gained its docket number and the April 2025 vacatur; the appeal stays unverified", "fact check: the Brown open curriculum page carries none of the 1969 history; Brown timeline, College requirements page, and Widmer 2015 added", "fact check: OHA archiving manual title given in full" ]
+ checked_online: #[ src_learn_asca_ratios, src_learn_nsf_budget, src_learn_colby_2023, src_learn_naep_ltt_2022, src_learn_nih_simplified_review, src_learn_gao_2017, src_learn_exeter_harkness, src_learn_dimock_2019, src_learn_parker_2023, src_learn_ferpa_hipaa_2019, src_learn_oha_2018, src_learn_oha_archiving_2019, src_learn_ceda, src_learn_nsda, src_learn_brown_timeline, src_learn_brown_college_open, src_learn_nih_due_dates, src_learn_ap_capstone ]
+ note: "web entries carry an accessed date; statutes and regulations name the citation a reader can look up; nedcc.org, federalregister.gov, and the First Circuit docket refused or failed automated fetches on 2026-10-02; journal, monograph, statute, and case entries were checked from reviewer knowledge"
+ tiers: "statute, regulation, or case first; then official reports, peer-reviewed work, dated web pages and survey series, and journalism last"
 }
 
 ^["institutions"]{
@@ -60,7 +55,7 @@
  #>src_learn_nih_indirect_2025
  ^["nih_indirect_2025"]{ title: "Supplemental Guidance to the 2024 NIH Grants Policy Statement: Indirect Cost Rates", citation: "NOT-OD-25-068, 2025-02-07", publisher: "National Institutes of Health", kind: #policy }
  #>src_learn_mass_v_nih_2025
- ^["mass_v_nih_2025"]{ title: "Commonwealth of Massachusetts v. National Institutes of Health", court: "US District Court for the District of Massachusetts", year: 2025, kind: #case }
+ ^["mass_v_nih_2025"]{ title: "Commonwealth of Massachusetts v. National Institutes of Health", citation: "No. 1:25-cv-10338 (D. Mass.)", court: "US District Court for the District of Massachusetts", year: 2025, note: "final judgment of April 2025 vacated NOT-OD-25-068 under the Administrative Procedure Act and permanently enjoined it, relying on the Labor-HHS appropriations rider that bars NIH from changing indirect-cost provisions; appellate outcome in the First Circuit not verified for this cut", kind: #case }
  #>src_learn_phs_policy
  ^["phs_policy"]{ title: "Public Health Service Policy on Humane Care and Use of Laboratory Animals", publisher: "NIH Office of Laboratory Animal Welfare", edition: "revised 2015", year: 2015, kind: #policy }
  #>src_learn_nsf_budget
@@ -74,7 +69,7 @@
  #>src_learn_nih_due_dates
  ^["nih_due_dates"]{ title: "Standard Due Dates for Competing Applications", publisher: "National Institutes of Health, Office of Extramural Research", url: "https://grants.nih.gov/grants-process/submit/submission-policies/standard-due-dates", accessed: "2026-10-01", kind: #web }
  #>src_learn_federal_holidays
- ^["federal_holidays"]{ title: "Holidays", citation: "5 U.S.C. 6103", year: 1968, note: "Uniform Monday Holiday Act of 1968 set the Monday rules", kind: #statute }
+ ^["federal_holidays"]{ title: "Holidays", citation: "5 U.S.C. 6103, as amended", edition: "current codification", note: "Thanksgiving on the fourth Thursday since 1941; the Uniform Monday Holiday Act of 1968 moved Veterans Day to an October Monday, and Pub. L. 94-97 (1975, effective 1978) returned it to November 11; the King holiday was added by Pub. L. 98-144 (1983)", kind: #statute }
  #>src_learn_credit_hour_cfr
  ^["credit_hour_cfr"]{ title: "Program Integrity Issues; Final Rule (definition of credit hour at 34 CFR 600.2)", publisher: "US Department of Education", citation: "75 FR 66832", year: 2010, kind: #regulation }
  #>src_learn_silva_2015
@@ -86,7 +81,13 @@
  #>src_learn_cross_1995
  ^["cross_1995"]{ title: "An Oasis of Order: The Core Curriculum at Columbia College", authors: "Timothy P. Cross", year: 1995, publisher: "Columbia College, Office of the Dean", kind: #monograph }
  #>src_learn_brown_open
- ^["brown_open"]{ title: "The Open Curriculum", publisher: "Brown University", url: "https://www.brown.edu/academics/undergraduate/open-curriculum", accessed: "2026-10-01", kind: #web }
+ ^["brown_open"]{ title: "The Open Curriculum", publisher: "Brown University", url: "https://www.brown.edu/academics/undergraduate/open-curriculum", accessed: "2026-10-01", note: "describes the curriculum today; carries no history or graduation requirements", kind: #web }
+ #>src_learn_brown_college_open
+ ^["brown_college_open"]{ title: "Explore the Open Curriculum", publisher: "Brown University, The College", url: "https://college.brown.edu/design-your-education/explore-open-curriculum", accessed: "2026-10-02", note: "graduation needs at least 30 courses, at least one concentration, demonstrated writing competence, and eight full-time semesters", kind: #web }
+ #>src_learn_brown_timeline
+ ^["brown_timeline"]{ title: "Brown's History: A Timeline", publisher: "Brown University", url: "https://history-timeline.brown.edu/", accessed: "2026-10-02", note: "dates the adoption of the New Curriculum, now the Open Curriculum, to 1969", kind: #web }
+ #>src_learn_widmer_2015
+ ^["widmer_2015"]{ title: "Brown: The History of an Idea", authors: "Ted Widmer", year: 2015, publisher: "Thames and Hudson", note: "ISBN 978-0-500-25216-1; recounts the 1969 New Curriculum and the student report by Ira Magaziner and Elliot Maxwell", kind: #monograph }
 }
 
 ^["pedagogy"]{
@@ -146,7 +147,7 @@
  #>src_learn_ceda
  ^["ceda"]{ title: "Cross Examination Debate Association", publisher: "CEDA", url: "https://www.cedadebate.org", accessed: "2026-10-01", note: "intercollegiate policy debate association founded 1971", kind: #web }
  #>src_learn_nsda
- ^["nsda"]{ title: "National Speech and Debate Association", publisher: "NSDA", url: "https://www.speechanddebate.org", accessed: "2026-10-01", note: "founded 1925 as the National Forensic League; renamed 2013", kind: #web }
+ ^["nsda"]{ title: "National Speech and Debate Association", publisher: "NSDA", url: "https://www.speechanddebate.org", accessed: "2026-10-01", note: "founded 1925 as the National Forensic League by Bruno E. Jacob of Ripon College; renamed 2014, per the association history timeline at speechanddebate.org/history", kind: #web }
  #>src_learn_nhd
  ^["nhd"]{ title: "National History Day", publisher: "National History Day", url: "https://www.nhd.org", accessed: "2026-10-01", note: "founded 1974 at Case Western Reserve University", kind: #web }
  #>src_learn_society_for_science
@@ -173,6 +174,8 @@
  ^["mckinney_vento"]{ title: "McKinney-Vento Homeless Assistance Act, Title VII Subtitle B, Education for Homeless Children and Youths", citation: "42 U.S.C. 11431-11435, as amended by Pub. L. 114-95", year: 2015, kind: #statute }
  #>src_learn_ehcy_guidance
  ^["ehcy_guidance"]{ title: "Education for Homeless Children and Youths Program Non-Regulatory Guidance", publisher: "US Department of Education", year: 2016, edition: "July 2016, updated August 2018", kind: #policy }
+ #>src_learn_cnr_2004
+ ^["cnr_2004"]{ title: "Child Nutrition and WIC Reauthorization Act of 2004", citation: "Pub. L. 108-265", year: 2004, note: "made homeless, runaway, and migrant children categorically eligible for free school meals", kind: #statute }
  #>src_learn_usda_cep_2023
  ^["usda_cep_2023"]{ title: "Child Nutrition Programs: Community Eligibility Provision, Increasing Options for Schools (final rule)", publisher: "US Department of Agriculture, Food and Nutrition Service", citation: "Federal Register document 2023-20807, published 2023-09-26", year: 2023, kind: #regulation }
  #>src_learn_title_vi_2015
@@ -269,7 +272,6 @@
  #>src_learn_parker_2023
  ^["parker_2023"]{ title: "How Pew Research Center will report on generations moving forward", authors: "Kim Parker", year: 2023, publisher: "Pew Research Center, 2023-05-22", kind: #web }
 }
-
 ^["surveys"]{
  #>src_learn_naep_ltt_2022
  ^["naep_ltt_2022"]{ title: "NAEP Long-Term Trend Assessment Results: Reading and Mathematics, 2022 (age 9 highlights)", publisher: "National Center for Education Statistics", url: "https://www.nationsreportcard.gov/highlights/ltt/2022/", accessed: "2026-10-01", kind: #report }
@@ -287,7 +289,7 @@
  #>src_learn_oha_2018
  ^["oha_2018"]{ title: "OHA Principles and Best Practices", publisher: "Oral History Association", year: 2018, edition: "adopted October 2018", kind: #policy }
  #>src_learn_oha_archiving_2019
- ^["oha_archiving_2019"]{ title: "Archiving Oral History", publisher: "Oral History Association", year: 2019, edition: "adopted October 2019", kind: #policy }
+ ^["oha_archiving_2019"]{ title: "Archiving Oral History: Manual of Best Practices", publisher: "Oral History Association", year: 2019, edition: "adopted October 2019", kind: #policy }
  #>src_learn_winick_bartis_2016
  ^["winick_bartis_2016"]{ title: "Folklife and Fieldwork: An Introduction to Cultural Documentation", authors: "Stephen Winick; Peter Bartis", year: 2016, publisher: "American Folklife Center, Library of Congress", kind: #guide }
  #>src_learn_wigginton_1972
@@ -311,7 +313,7 @@
  #>src_learn_fadgi_2023
  ^["fadgi_2023"]{ title: "Technical Guidelines for Digitizing Cultural Heritage Materials", authors: "Federal Agencies Digital Guidelines Initiative", edition: "third edition", year: 2023, kind: #guide }
  #>src_learn_nedcc_leaflets
- ^["nedcc_leaflets"]{ title: "Preservation Leaflets", publisher: "Northeast Document Conservation Center", url: "https://www.nedcc.org/free-resources/preservation-leaflets/overview", accessed: "2026-10-01", kind: #web }
+ ^["nedcc_leaflets"]{ title: "Preservation Leaflets", publisher: "Northeast Document Conservation Center", url: "https://www.nedcc.org/free-resources/preservation-leaflets/overview", accessed: "2026-10-01", note: "the series includes Leaflet 3.8, Emergency Salvage of Moldy Books and Paper, which puts the health hazard of mold first; the site refused automated fetches on 2026-10-02, so the leaflet text was not re-read", kind: #web }
  #>src_learn_storycorps
  ^["storycorps"]{ title: "StoryCorps", publisher: "StoryCorps, with an archive at the American Folklife Center, Library of Congress", url: "https://storycorps.org", accessed: "2026-10-01", note: "founded 2003 by Dave Isay", kind: #web }
 }

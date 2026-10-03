@@ -1,0 +1,121 @@
+# Quantities: Spw Design Studies
+#
+# Cells for the theory pressure surfaces and the chat pipeline study: hash collision bounds, drift counts on the raw shelf, ocean constants in code, and palette contrast.
+
+#>q_lab_registry
+#:layer #!reference
+#:domain #!registry
+#:form #!registry
+#:level #!mixed
+#:review #!sourced
+#:valence #!bone
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ derivations: #[
+  "half-collision counts use the birthday approximation n = sqrt(2 ln 2 x 2^b) for a uniform b-bit hash; the writer computed 301.4 for b = 16 and 5.06e9 for b = 64",
+  "the contrast ratio uses the WCAG 2.1 relative-luminance formula for #BF8803 against #FFFFFF; the writer computed 3.12",
+  "shelf counts come from a regex recount of $%[...] and ~#lens(...) over 208 raw files at 1aa1dc23"
+ ]
+ status_legend: "settled cells were computed or read from the linked source at the stated commit; code cells change when the code changes, so each names its commit"
+}
+
+^["families"]{
+ ^["shared"]{ operator: "%", plane: world, scope: corpus, scheme: tol, form: scalar }
+ ^["lookup"]{ algorithm: world.registry_lookup }
+ ^["chat"]{ id: lab_chat, identifier: lab.chat }
+ ^["drift"]{ id: lab_drift, identifier: lab.drift }
+ ^["ocean"]{ id: lab_ocean, identifier: lab.ocean }
+ ^["palette"]{ id: lab_palette, identifier: lab.palette }
+}
+
+^["keys"]{
+ chat: #[ half_collision_16bit_handles, half_collision_64bit_handles ]
+ drift: #[ round1_handles_n, round1_lens_distinct_n, round1_lens_uses_n, shelf_handles_n, shelf_handles_distinct_n, shelf_lens_distinct_n, shelf_lens_uses_n ]
+ ocean: #[ channel_volatility, hot_ttl_beats, warm_ttl_beats, cold_ttl_beats ]
+ palette: #[ bone_light_contrast_ratio, wcag_aa_text_min_ratio ]
+}
+
+#>q_lab_chat
+^"chat"{
+ %lab.chat.half_collision_16bit_handles{
+  value: 301, unit: "handles", rel: 0.01
+  at: "distinct handles at which a uniform 16-bit hash reaches a 50 percent chance of one collision, birthday approximation", src: ~"../sources/spw-design-studies.spw#src_lab_feller_1968", status: #settled
+ }
+ %lab.chat.half_collision_64bit_handles{
+  value: 5060000000, unit: "handles", rel: 0.01
+  at: "the same bound for a uniform 64-bit keyed hash, birthday approximation", src: ~"../sources/spw-design-studies.spw#src_lab_feller_1968", status: #settled
+ }
+}
+
+#>q_lab_drift
+^"drift"{
+ %lab.drift.round1_handles_n{
+  value: 337, unit: "handles", abs: 0
+  at: "round-one scorecard snapshot of 152 raw files, 2026-09-30; every handle used once", src: ~"../sources/spw-design-studies.spw#src_lab_study_scorecard", status: #settled
+ }
+ %lab.drift.round1_lens_distinct_n{
+  value: 165, unit: "lens values", abs: 0
+  at: "round-one scorecard snapshot of 152 raw files, 2026-09-30", src: ~"../sources/spw-design-studies.spw#src_lab_study_scorecard", status: #settled
+ }
+ %lab.drift.round1_lens_uses_n{
+  value: 167, unit: "uses", abs: 0
+  at: "round-one scorecard snapshot of 152 raw files, 2026-09-30", src: ~"../sources/spw-design-studies.spw#src_lab_study_scorecard", status: #settled
+ }
+ %lab.drift.shelf_handles_n{
+  value: 469, unit: "handle uses", abs: 0
+  at: "raw shelf of 208 files at 1aa1dc23, recount 2026-10-02", src: ~"../sources/spw-design-studies.spw#src_lab_recount_shelf", status: #settled
+ }
+ %lab.drift.shelf_handles_distinct_n{
+  value: 469, unit: "handles", abs: 0
+  at: "raw shelf of 208 files at 1aa1dc23, recount 2026-10-02; no handle recurs", src: ~"../sources/spw-design-studies.spw#src_lab_recount_shelf", status: #settled
+ }
+ %lab.drift.shelf_lens_distinct_n{
+  value: 231, unit: "lens values", abs: 0
+  at: "raw shelf of 208 files at 1aa1dc23, recount 2026-10-02", src: ~"../sources/spw-design-studies.spw#src_lab_recount_shelf", status: #settled
+ }
+ %lab.drift.shelf_lens_uses_n{
+  value: 232, unit: "uses", abs: 0
+  at: "raw shelf of 208 files at 1aa1dc23, recount 2026-10-02", src: ~"../sources/spw-design-studies.spw#src_lab_recount_shelf", status: #settled
+ }
+}
+
+#>q_lab_ocean
+^"ocean"{
+ %lab.ocean.channel_volatility{
+  value: 0.8, unit: "1", abs: 0
+  at: "CHANNEL_VOLATILITY.ocean at 1aa1dc23; the fallback for an unknown channel is 0.3", src: ~"../sources/spw-design-studies.spw#src_lab_code_granularity", status: #settled
+ }
+ %lab.ocean.hot_ttl_beats{
+  value: 8, unit: "beats", abs: 0
+  at: "beat_evaluate plane, hot tier", src: ~"../sources/spw-design-studies.spw#src_lab_canon_cache_field", status: #settled
+ }
+ %lab.ocean.warm_ttl_beats{
+  value: 64, unit: "beats", abs: 0
+  at: "beat_evaluate plane, warm tier", src: ~"../sources/spw-design-studies.spw#src_lab_canon_cache_field", status: #settled
+ }
+ %lab.ocean.cold_ttl_beats{
+  value: 256, unit: "beats", abs: 0
+  at: "beat_evaluate plane, cold tier", src: ~"../sources/spw-design-studies.spw#src_lab_canon_cache_field", status: #settled
+ }
+}
+
+#>q_lab_palette
+^"palette"{
+ %lab.palette.bone_light_contrast_ratio{
+  value: 3.12, unit: "ratio to 1", abs: 0.01
+  at: "spw.valenceBone light default #BF8803 against white, WCAG 2.1 formula, at 1aa1dc23", src: ~"../sources/spw-design-studies.spw#src_lab_code_vscode_palette", status: #settled
+ }
+ %lab.palette.wcag_aa_text_min_ratio{
+  value: 4.5, unit: "ratio to 1", abs: 0
+  at: "WCAG 2.1 success criterion 1.4.3, normal-size text, level AA", src: ~"../sources/spw-design-studies.spw#src_lab_wcag_21", status: #settled
+ }
+}

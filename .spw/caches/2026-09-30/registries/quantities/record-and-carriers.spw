@@ -7,7 +7,7 @@
 #:domain #!registry
 #:form #!registry
 #:level #!mixed
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"provenance"{
@@ -20,47 +20,34 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r5"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #pass }
+  ^["r6"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r7"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #pass }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ rechecked: "2026-10-02: family header reshaped to the shared, lookup, and keys layout of the exemplar registry; no cell changed"
  nominal_note: "format parameters are nominal values fixed by a specification, so their tolerance is written abs 0"
 }
 
-^["family"]{
- operator: "%"
- plane: world
- scope: corpus
- scheme: tol
- algorithm: world.registry_lookup
- form: scalar
- ^["optical"]{
-  id: media_optical
-  identifier: media.optical
-  keys: #[ cd_laser_nm, dvd_laser_nm, bd_laser_nm, cd_na, dvd_na, bd_na, cd_track_pitch_um, dvd_track_pitch_um, bd_track_pitch_um, cd_sample_rate_hz, cd_bit_depth_bits, cd_capacity_mib, dvd_capacity_gb, bd_capacity_gb ]
- }
- ^["disc"]{
-  id: media_disc
-  identifier: media.disc
-  keys: #[ speed_78_rpm_60hz, speed_78_rpm_50hz, lp_speed_rpm, single_speed_rpm ]
- }
- ^["tape"]{
-  id: media_tape
-  identifier: media.tape
-  keys: #[ cassette_speed_cm_s, cassette_width_mm, studio_speed_cm_s ]
- }
- ^["paper"]{
-  id: media_paper
-  identifier: media.paper
-  keys: #[ iso9706_ph_min, iso9706_ph_max, iso9706_alkali_reserve_mol_per_kg, iso9706_kappa_max ]
- }
- ^["print_and_ink"]{
-  id: media_print
-  identifier: media.print
-  keys: #[ b42_sort_count, ink_water_surface_tension_mn_m ]
- }
- ^["reading"]{
-  id: media_reading
-  identifier: media.reading
-  keys: #[ kindle_launch_price_usd ]
- }
+^["families"]{
+ ^["shared"]{ operator: "%", plane: world, scope: corpus, scheme: tol, form: scalar }
+ ^["lookup"]{ algorithm: world.registry_lookup }
+ ^["optical"]{ id: media_optical, identifier: media.optical }
+ ^["disc"]{ id: media_disc, identifier: media.disc }
+ ^["tape"]{ id: media_tape, identifier: media.tape }
+ ^["paper"]{ id: media_paper, identifier: media.paper }
+ ^["print"]{ id: media_print, identifier: media.print }
+ ^["reading"]{ id: media_reading, identifier: media.reading }
+}
+
+^["keys"]{
+ optical: #[ cd_laser_nm, dvd_laser_nm, bd_laser_nm, cd_na, dvd_na, bd_na, cd_track_pitch_um, dvd_track_pitch_um, bd_track_pitch_um, cd_sample_rate_hz, cd_bit_depth_bits, cd_capacity_mib, dvd_capacity_gb, bd_capacity_gb, disc_diameter_mm, ld_diameter_mm ]
+ disc: #[ speed_78_rpm_60hz, speed_78_rpm_50hz, lp_speed_rpm, single_speed_rpm ]
+ tape: #[ cassette_speed_cm_s, cassette_width_mm, studio_speed_cm_s ]
+ paper: #[ iso9706_ph_min, iso9706_ph_max, iso9706_alkali_reserve_mol_per_kg, iso9706_kappa_max ]
+ print: #[ b42_sort_count, ink_water_surface_tension_mn_m ]
+ reading: #[ kindle_launch_price_usd ]
 }
 
 #>q_media_optical
@@ -175,6 +162,22 @@
   at: "single-layer Blu-ray Disc"
   abs: 0
   src: ~"../sources/record-and-carriers.spw#src_media_taylor_2006"
+  status: #settled
+ }
+ %media.optical.disc_diameter_mm{
+  value: 120
+  unit: "mm"
+  at: "standard Compact Disc, DVD, and Blu-ray Disc outer diameter"
+  abs: 0
+  src: ~"../sources/record-and-carriers.spw#src_media_taylor_2006"
+  status: #settled
+ }
+ %media.optical.ld_diameter_mm{
+  value: 300
+  unit: "mm"
+  at: "standard LaserDisc outer diameter, close to a twelve-inch record"
+  abs: 0
+  src: ~"../sources/record-and-carriers.spw#src_media_enc_laserdisc"
   status: #settled
  }
 }

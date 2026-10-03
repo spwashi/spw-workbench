@@ -1,0 +1,169 @@
+# Epistemic Status
+#
+# The life of a claim status in this cut as a state machine: what evidence moves a claim from one status to the next, which receipt records the move, and whether mood is the right aim for it.
+
+#>spw_theory_epistemic_status
+#:layer #!semantics
+#:domain #!spw_theory
+#:form #!state_machine
+#:level #!advanced
+#:review #!sourced
+#:valence #!bonk
+
+^"emit"{
+ ~#title: "Epistemic Status"
+ ~#claim: "A claim status should move only when evidence and a receipt move it, so the review axis can stay a summary of receipts rather than an author's confidence."
+ ~#proof: "The statuses and receipt rules come from the cut contract and vocabulary; the questions about mood and evidentiality cite Palmer and Aikhenvald."
+ ~#door: "Walk the transitions first, then the receipt rule, then the open question about evidentials."
+ ~#audience: "the Spw owner, writers, and fact-checkers of this cut"
+ continuity: "Epistemic Status | a summary of receipts"
+ cold_open: "A status moves only when evidence moves it, and the review axis stays a summary of receipts."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/studies/persona-synthesis.json theory questions on what #! asserts and on an illustrative status",
+  ".agents/plans/caches-cut-2026-09-30/references/studies/tokens-synthesis.md section 7, question 16 on evidentiality",
+  "contract.spw claims and inspection frames"
+ ]
+ standing: "pressure surface for the owner; the machine describes this cut's practice and proposes nothing for canon"
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ grounds: [ ~"../../contract.spw#cut_contract", ~"../../vocabulary.spw#cut_vocabulary" ]
+ see: [ ~"./measures-and-handles.spw#spw_theory_measures" ]
+}
+
+^["concepts"]{
+ primary: [ #claim_status, #receipt, #evidentiality ]
+ transfers: [ #state_machine, #evidence_grading ]
+ tensions: [ #illustrative_number ]
+}
+
+^["rules"]{
+ #>spw_theory_status_set
+ ^["status_set"]{
+  #:claim #!settled
+  statement: "This cut closes claim status to seven values: settled, contested, emerging, speculative, refuted, interpretive, and superseded, and the gate rejects any other."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_cut_vocabulary"
+  label: "a-cut"
+ }
+ #>spw_theory_status_review_summary
+ ^["review_summarizes"]{
+  #:claim #!settled
+  statement: "The review axis summarizes the highest care any receipt reports with a passing outcome, and each receipt names the care applied, not the care intended."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_cut_contract"
+  label: "a-cut"
+ }
+ #>spw_theory_status_kept
+ ^["errors_kept"]{
+  #:claim #!settled
+  statement: "A refuted or contested claim keeps its counter-source in view, and a known error is recorded as refuted rather than deleted."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_cut_contract"
+  label: "a-cut"
+ }
+}
+
+^["machine"]{
+ #>spw_theory_status_states
+ ^["states"]{
+  speculative: "a hypothesis with a direction and no magnitude; it names the probe that would test it"
+  emerging: "early evidence from a named study or a logged probe"
+  settled: "consensus in reference works or reviews, linked to a registry source"
+  contested: "live disagreement; both sides linked as source and counter"
+  refuted: "a known error, kept to mark it"
+  superseded: "an older consensus, kept beside the newer claim"
+  interpretive: "a reading, not a fact; it changes by rereading, not by evidence"
+ }
+ ^["usual_life"]{
+  order: << "speculative" ; "emerging" ; "settled" ; "superseded" >>
+ }
+ #>spw_theory_status_transitions
+ ?match[@status]{
+  @speculative => ^["evidence_arrives"]{ next: "emerging", guard: "a study or a logged probe result is linked", receipt: "sourced, care read" }
+  @emerging => ^["consensus_found"]{ next: "settled", guard: "a review or reference work agrees", receipt: "fact_checked, care audit" }
+  @settled => ^["challenged"]{ next: "contested or superseded", guard: "a credible counter-source, or a newer consensus with a supersedes edge", receipt: "fact_checked, counter or edge linked" }
+  @contested => ^["resolved"]{ next: "settled or refuted", guard: "the disagreement closes in a cited source", receipt: "fact_checked, care audit" }
+  @interpretive => ^["reread"]{ next: "a newer dated reading", guard: "a later reading supersedes it without deleting it", receipt: "revised" }
+  _ => "stay; no status moves without a receipt"
+ }
+ #>spw_theory_status_no_shortcut
+ ^["no_shortcut"]{
+  #:claim #!interpretive
+  statement: "No arm leads from speculative straight to settled; a hypothesis that skips emerging has borrowed its confidence from the author."
+  grounds: [ ~"./epistemic-status.spw#spw_theory_status_review_summary" ]
+ }
+}
+
+^["aims"]{
+ #>spw_theory_status_mood_slot
+ ^["one_slot_many_jobs"]{
+  #:claim #!settled
+  statement: "In this cut the mood particle carries claim status, axis values such as a form or a level, and wonder depth, so one aim does three jobs."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_cut_contract"
+  see: [ ~"./particle-lattice.spw#spw_theory_particle_three_names" ]
+ }
+ #>spw_theory_status_modality
+ ^["modality_grammar"]{
+  #:claim #!settled
+  statement: "Palmer treats mood and modality as one grammatical domain and groups epistemic and evidential meanings together as propositional modality."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_palmer_2001"
+ }
+ #>spw_theory_status_evidentiality
+ ^["evidentiality_apart"]{
+  #:claim #!contested
+  statement: "Aikhenvald argues that evidentiality, marking how the speaker knows, is a grammatical category of its own and not a subtype of epistemic modality, against accounts like Palmer's."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_aikhenvald_2004"
+  counter: ~"../../registries/sources/spw-design-studies.spw#src_lab_palmer_2001"
+  ~#say(how you know is not how sure you are)
+ }
+ #>spw_theory_status_grade
+ ^["quality_and_strength"]{
+  #:claim #!settled
+  statement: "GRADE rates the quality of a body of evidence separately from the strength of a recommendation drawn from it."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_guyatt_2008"
+ }
+ #>spw_theory_status_events
+ ^["receipts_as_events"]{
+  #:claim #!settled
+  statement: "PREMIS records preservation actions as events with a type, a time, an outcome, and a linked agent, the shape this cut gives its inspection receipts."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_premis_2015"
+ }
+}
+
+^["questions"]{
+ mood_or_case: "Should epistemic status keep riding the mood aim, or get its own case so #! can stay illocutionary force?"
+ evidence_aim: "Is evidentiality a new aim, or a closed value set under mood, and how would it relate to claim status?"
+ illustrative: "Should a teaching number that asserts nothing about the world be a status, given the rule that a number without a source belongs in a wonder?"
+ why_question: "Illustrative stays a question because a number marked illustrative can be copied into a say line or a cell without its mark, and then it reads as fact."
+}
+
+#>spw_theory_status_drift_q
+?["Do statuses ever move without a receipt that explains the move?"]{
+ #:depth #!computational ~#lens(historical layer)
+ #:claim #!speculative
+ ~#hypothesis: "Across revisions of this cut, some claims change status with no new source or receipt, most often from speculative to settled."
+ !probe{ "diff claim statuses between dated revisions of the cut and list every change that adds no source and no receipt" =id[p_lab_status_drift] =kind[census] }
+ $%[particle.mood, probe.wonder_count]
+ ~"./epistemic-status.spw#spw_theory_status_transitions" ~#neighbor(nearest)
+}
+
+#>spw_theory_status_strength_q
+?["Should a claim carry strength apart from status, as GRADE separates quality from strength?"]{
+ #:depth #!ethical ~#lens(applied attention)
+ #:claim #!speculative
+ ~#hypothesis: "A separate basis and strength pair would let a settled but narrow claim say so, and readers would overread fewer settled claims."
+ !probe{ "rewrite ten settled claims with a basis and a strength field and ask two fact-checkers which version they misread less" =id[p_lab_status_strength] =kind[interview] }
+ breaks: "GRADE guides clinical action through a panel; a cut claim guides reading, and nobody acts on it as a recommendation"
+ $%[particle.case]
+ ~"./epistemic-status.spw#spw_theory_status_grade" ~#neighbor(nearest)
+}

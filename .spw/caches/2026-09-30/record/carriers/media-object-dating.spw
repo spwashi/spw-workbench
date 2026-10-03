@@ -1,0 +1,187 @@
+# Dating a Media Object
+#
+# A dichotomous key for giving a household book, record, cassette, tape reel, or disc an earliest possible date from the way it was made, with each tell linked to the claim behind it.
+
+#>media_carriers_object_dating
+#:layer #!pragmatics
+#:domain #!media_carriers
+#:form #!field_guide
+#:level #!intro
+#:review #!adversarial_checked
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Dating a Media Object"
+ ~#claim: "Manufacturing tells such as ISBN length, disc material and speed, cassette notches, and disc logos give a household object an earliest possible date."
+ ~#proof: "Each tell links a sourced rung in the inscription and carrier leaves; the ISBN tell cites the ISBN Users Manual."
+ ~#door: "Pick one object from a shelf and start at the first question."
+ ~#audience: "families sorting a shelf, students, and anyone holding an unlabeled record or tape"
+ continuity: "Dating a Media Object | earliest possible date"
+ cold_open: "The way a thing was made tells you its earliest possible date, even when nobody wrote one down."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+ }
+ rechecked: "2026-10-02: the thirteen-digit ISBN floor moved from 2007 to 2005 and a barcode-only 978 number now dates only to the 1980s; the Blu-ray floor splits prerecorded 2006 from recordable 2003"
+}
+
+^["edges"]{
+ needs: [ ~"./form-factor-ladder.spw#media_carriers_ladder", ~"./carrier-manufacturing.spw#media_carriers_manufacturing" ]
+ see: [ ~"./carrier-decay-and-fixity.spw#media_carriers_decay_triage" ]
+}
+
+^["concepts"]{
+ primary: [ #carrier, #supersession ]
+ transfers: [ #wood_pulp, #stamper ]
+ tensions: [ #generation_loss ]
+}
+
+^["reading_rule"]{
+ #>media_carriers_dating_floor
+ ^["floor_not_date"]{
+  #:claim #!interpretive
+  statement: "Each tell gives a floor: the object cannot be older than the first year that feature existed, but it may be much younger."
+  ^["limits"]{
+   holds: "first pressings and first printings with their original packaging"
+   fails: "reissues, later printings, and replaced sleeves inherit or mix features from other years"
+  }
+ }
+}
+
+^["key"]{
+ #>media_carriers_dating_start
+ ^["start"]{
+  ask: "what kind of object is it?"
+  route: ?match[@object]{
+   "printed book" => "go to book",
+   "grooved disc" => "go to grooved disc",
+   "small tape in a plastic shell" => "go to cassette",
+   "tape on an open reel" => "go to reel",
+   "shiny disc read by a laser" => "go to optical disc",
+   _ => "outside this key; see the gaps in the record index"
+  }
+ }
+ ^["book"]{
+  #>media_carriers_dating_isbn
+  ^["isbn"]{
+   #:claim #!settled
+   statement: "The ten-digit ISBN grew from the British Standard Book Number of 1967 and became ISO 2108 in 1970; the move to thirteen digits began on 1 January 2005 and was complete by 1 January 2007."
+   sources: [ ~"../../registries/sources/record-and-carriers.spw#src_media_isbn_manual_2017", ~"../../registries/sources/record-and-carriers.spw#src_media_enc_isbn" ]
+   ask: "read the ISBN printed on the copyright page, not the number under the barcode"
+   tell: ?match[@isbn]{
+    "thirteen digits beginning 978 or 979" => "2005 or later; every new ISBN has had thirteen digits since 2007",
+    "ten digits" => "1970 or later",
+    "nine-digit SBN" => "1967 or later, likely British",
+    _ => "go to barcode"
+   }
+  }
+  #>media_carriers_dating_bookland
+  ^["barcode"]{
+   #:claim #!settled
+   statement: "From the 1980s, book barcodes carried a Bookland EAN: 978, the first nine ISBN digits, and a new check digit; the barcode used 978 long before ISBNs themselves had thirteen digits."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_enc_bookland"
+   tell: ?match[@barcode]{
+    "a 978 number only under the barcode" => "1980s or later; on its own it dates little",
+    "no barcode on the cover" => "no floor from this tell",
+    _ => "go to paper"
+   }
+  }
+  #>media_carriers_dating_paper
+  ^["paper"]{
+   ask: "hold a page to the light and check its edges"
+   tell: ?match[@page]{
+    "chain and laid lines" => "laid paper: a hand mould or a machine imitating one",
+    "brown, brittle edges" => "acidic wood-pulp paper, mid nineteenth century or later",
+    _ => "wove paper; it existed from the 1750s, so this alone dates little"
+   }
+   draws_on: [ ~"../inscription/paper-and-pulp-manufacture.spw#inscription_paper_laid_wove", ~"../inscription/paper-and-pulp-manufacture.spw#inscription_paper_acid" ]
+  }
+ }
+ ^["grooved_disc"]{
+  #>media_carriers_dating_disc
+  ^["material_and_speed"]{
+   ask: "is it heavy and brittle, or light and flexible, and what speed is printed?"
+   tell: ?match[@disc]{
+    "heavy, brittle, marked 78" => "shellac; in the United States almost always before 1959, elsewhere possibly later",
+    "seven-inch vinyl with a large hole, 45" => "1949 or later",
+    "twelve-inch vinyl, 33 and a third" => "1948 or later",
+    "vinyl marked stereo" => "1957 or later",
+    _ => "check the label for a speed and a catalog number"
+   }
+   draws_on: [ ~"./sound/phonograph-shellac-and-vinyl.spw#media_carriers_78_end", ~"./sound/phonograph-shellac-and-vinyl.spw#media_carriers_lp", ~"./sound/phonograph-shellac-and-vinyl.spw#media_carriers_45", ~"./sound/phonograph-shellac-and-vinyl.spw#media_carriers_stereo_disc" ]
+  }
+ }
+ ^["cassette"]{
+  #>media_carriers_dating_cassette
+  ^["shell"]{
+   ask: "look along the back edge of the shell"
+   tell: ?match[@notches]{
+    "only write-protect notches" => "Type I ferric tape; any year from 1963",
+    "a second pair beside them" => "Type II high-bias tape; chromium dioxide arrived in 1970",
+    "a third set near the middle" => "Type IV metal tape; a later, premium shell",
+    _ => "read the label for ferric, chrome, or metal"
+   }
+   draws_on: [ ~"./sound/magnetic-tape-and-cassette.spw#media_carriers_cassette", ~"./sound/magnetic-tape-and-cassette.spw#media_carriers_cassette_types" ]
+  }
+ }
+ ^["reel"]{
+  #>media_carriers_dating_reel
+  ^["base"]{
+   ask: "what does the box or the leader say about the base film?"
+   tell: ?match[@base]{
+    "acetate" => "an earlier tape; acetate preceded polyester as a base",
+    "polyester or mylar" => "a later tape; check for sticky playback before use",
+    _ => "do not play it to find out; ask an archive"
+   }
+   draws_on: [ ~"./carrier-manufacturing.spw#media_carriers_mfg_tape", ~"./carrier-decay-and-fixity.spw#media_carriers_decay_sticky_shed" ]
+  }
+ }
+ ^["optical_disc"]{
+  #>media_carriers_dating_optical
+  ^["logo_and_dye"]{
+   ask: "which logo is printed on it, and is the readable side silver or tinted?"
+   tell: ?match[@logo]{
+    "Compact Disc" => "1982 or later",
+    "DVD" => "1996 or later",
+    "Blu-ray Disc on a prerecorded movie" => "2006 or later",
+    "Blu-ray Disc on a rewritable BD-RE" => "2003 or later, at first mostly in Japan",
+    "tinted readable side" => "a recordable disc burned at home or in a small run",
+    _ => "a thirty-centimeter disc may be a LaserDisc, 1978 or later"
+   }
+   draws_on: [ ~"./digital/optical-discs.spw#media_carriers_optical_cd", ~"./digital/optical-discs.spw#media_carriers_optical_dvd", ~"./digital/optical-discs.spw#media_carriers_optical_bd", ~"./digital/optical-discs.spw#media_carriers_optical_bd_recorder", ~"./carrier-manufacturing.spw#media_carriers_mfg_recordable" ]
+  }
+ }
+}
+
+^["try"]{
+ #>media_carriers_try_date_shelf
+ ^["date_three_things"]{
+  materials: [ "three media objects from home, ideally of different kinds", "this key", "paper and pencil" ]
+  steps: << "start at the first question for one object" ; "follow each answer to its tell" ; "write down the earliest possible year" ; "repeat for the other two" ; "check each floor against any printed date or catalog number you find" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "hold shellac discs flat with two hands; do not play an unknown tape that squeals, since sticky tape can damage both tape and player"
+  shows: ~"./media-object-dating.spw#media_carriers_dating_floor"
+  draws_on: [ ~"./media-object-dating.spw#media_carriers_dating_start", ~"./form-factor-ladder.spw#media_carriers_ladder" ]
+ }
+}
+
+#>media_carriers_dating_tells_q
+?["How tight a date range can three independent tells give?"]{
+ #:depth #!experiential ~#lens(historical layer)
+ #:claim #!speculative
+ ~#hypothesis: "Combining tells from the carrier, the label, and the packaging should narrow a date range more than any single tell, though reissues will often fool the key."
+ !probe{ "date twenty household objects with the key, then compare each floor with printed dates or catalog numbers" =id[p_media_dating_tells] =kind[field] }
+ $%[graph.out_degree]
+ ~"./media-object-dating.spw#media_carriers_dating_floor" ~#neighbor(nearest)
+}

@@ -7,7 +7,7 @@
 #:domain #!media_carriers
 #:form #!timeline
 #:level #!intro
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 
 ^"emit"{
@@ -30,7 +30,14 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r6"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #pass }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ rechecked: "2026-10-02: the tape rung now credits Pfleumer 1928 coated tape before the 1935 Magnetophon; the streaming rung now dates US revenue leadership to 2015 and majority to 2016"
+ reverified: "2026-10-03: the cassette rung, 1963 launch and US best-selling format from 1983 to 1991, was reread in the cassette entry; no change"
 }
 
 ^["edges"]{
@@ -130,7 +137,7 @@
   ^["magnetic_tape"]{
    #:era #!modern
    #:claim #!settled
-   statement: "Coated magnetic tape appeared in the 1935 Magnetophon and became the studio master medium after Ampex machines arrived in 1948."
+   statement: "Pfleumer patented coated tape in 1928, the Magnetophon made it a practical recorder in 1935, and tape became the studio master medium after Ampex machines arrived in 1948."
    source: ~"../../registries/sources/record-and-carriers.spw#src_media_daniel_mee_clark_1999"
    detail: ~"./sound/magnetic-tape-and-cassette.spw#media_carriers_magnetophon"
   }
@@ -192,8 +199,8 @@
   ^["streaming"]{
    #:era #!current
    #:claim #!settled
-   statement: "In the United States, streaming became the largest source of recorded-music revenue in 2016, displacing owned copies with licensed access."
-   source: ~"../../registries/sources/record-and-carriers.spw#src_media_riaa_2016"
+   statement: "In the United States, streaming became the largest source of recorded-music revenue in 2015 and a majority of it in 2016, displacing owned copies with licensed access."
+   sources: [ ~"../../registries/sources/record-and-carriers.spw#src_media_riaa_2015", ~"../../registries/sources/record-and-carriers.spw#src_media_riaa_2016" ]
    supersedes: [ ~"./form-factor-ladder.spw#media_carriers_rung_cd" ]
    detail: ~"./digital/streaming-and-files.spw#media_carriers_streaming_access"
    as_of: "2026-10-01"
@@ -207,6 +214,6 @@
  #:claim #!speculative
  ~#hypothesis: "As capacity per carrier rises, the span a carrier stays readable without copying to a new format shrinks, because each generation depends on more machines and standards."
  !probe{ "tabulate published life-expectancy estimates and last-player-manufacture dates for each rung" =id[p_media_ladder_density] =kind[lit] }
- $%[media.optical.cd_capacity_mib, media.optical.dvd_capacity_gb, media.optical.bd_capacity_gb]
+ $%[media.optical.cd_capacity_mib, media.optical.bd_capacity_gb]
  ~"./form-factor-ladder.spw#media_carriers_supersedes_rule" ~#neighbor(nearest)
 }

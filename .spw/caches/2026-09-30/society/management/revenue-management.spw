@@ -1,0 +1,206 @@
+# Revenue Management
+#
+# Pricing a perishable room or seat: the measures, the capacity rules from Littlewood onward, rate fences and their fairness, channels and rate parity after the Digital Markets Act, and the derivations still owed.
+
+#>management_revenue
+#:layer #!pragmatics
+#:domain #!management
+#:form #!comparison
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bane
+
+^"emit"{
+ ~#title: "Revenue Management"
+ ~#claim: "Revenue management sells perishable capacity by protecting stock for later high-fare demand and fencing prices by segment; in the EU, gatekeeper platforms may no longer impose rate parity."
+ ~#proof: "Littlewood and Belobaba give the protection rules; Kimes and Wirtz test fence fairness; the Digital Markets Act and the 2024 designation of Booking set the parity rule."
+ ~#door: "Read the measures, run the two-fare kit, then compare the method rows and their gap cells."
+ ~#audience: "hospitality and airline pricing students and analysts"
+ continuity: "Revenue Management | perishable capacity"
+ cold_open: "An empty room tonight is gone forever, so revenue management prices perishable capacity before demand arrives."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/university-education/hospitality-and-management/revenue-management-and-dynamic-pricing.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "rate parity is dated: the Digital Markets Act bars gatekeepers from parity clauses, and Booking was designated a gatekeeper in May 2024",
+  "the raw OTA commission range of 15 to 25 percent had no source; it is a verify cell",
+  "the raw shoulder-night wonder claimed a minimum stay maximizes revenue; it is a speculative direction with a simulation probe",
+  "EMSR-b and overbooking are named as gap cells instead of being implied by the raw text",
+  "business travelers are not described as price inelastic by nature; elasticity is a segment estimate",
+  "fact check: the DMA limits said European Economic Area in one line and EU in the next; the regulation reaches users in the Union, and EEA reach depends on incorporation",
+  "fact check: American Airlines gains were dated to the 1980s; the 1992 paper estimated 1.4 billion dollars over the previous three years",
+  "fact check follow-up: the 1992 abstract dates the research to the early 1960s and does not mention deregulation; that context now cites Talluri and van Ryzin"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../economics/micro-and-macro-core.spw#economics_core_price_discrimination", ~"../../formal/mathematics/engineering-core/optimization.spw#mathematics_optimization" ]
+ extends: [ ~"../society-glossary.spw#society_term_price_discrimination" ]
+ grounds: [ ~"../../registries/quantities/economy-and-markets.spw#q_econ_hotel" ]
+ see: [ ~"./service-operations.spw#management_service_ops_states" ]
+}
+
+^["concepts"]{
+ primary: [ #perishable_inventory, #rate_fence, #rate_parity ]
+ transfers: [ #price_discrimination, #queueing ]
+ tensions: [ #fairness ]
+}
+
+^["measures"]{
+ #>management_revenue_kpis
+ ^["kpis"]{
+  #:claim #!settled
+  statement: "Occupancy is rooms sold over rooms available, ADR is room revenue over rooms sold, and RevPAR is room revenue over rooms available, which equals ADR times occupancy."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_wiki_revpar", ~"../../registries/sources/economy-and-markets.spw#src_econ_talluri_van_ryzin_2004" ]
+  goppar: "gross operating profit per available room adds cost to the picture"
+  indexes: "a property measure over its competitive set, times 100, so 100 means a fair share; RGI for RevPAR"
+ }
+ #>management_revenue_conditions
+ ^["when_it_fits"]{
+  #:claim #!settled
+  statement: "Kimes listed the conditions where yield management pays: fixed capacity, perishable inventory, demand that can be segmented and sold in advance, and low marginal cost."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_kimes_1989"
+ }
+ #>management_revenue_origins
+ ^["origins"]{
+  #:claim #!settled
+  statement: "American Airlines began research on managing seat revenue in the early 1960s and built yield management after US deregulation; its analysts reported in 1992 a benefit of 1.4 billion dollars over the prior three years."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_smith_leimkuhler_darrow_1992", ~"../../registries/sources/economy-and-markets.spw#src_econ_talluri_van_ryzin_2004" ]
+  earlier: "Littlewood framed the two-fare protection rule at BOAC in 1972"
+ }
+}
+
+^["methods"]{
+ #>management_revenue_littlewood
+ ^["littlewood_rule"]{
+  #:claim #!settled
+  statement: "With two fares, keep protecting seats for the high fare while the high fare times the chance high-fare demand exceeds the protected amount is at least the low fare."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_littlewood_1972"
+  assumes: "low-fare demand books first, demands are independent, no cancellations"
+  fails: "when high-fare buyers buy down into open low fares"
+ }
+ #>management_revenue_emsr
+ ^["emsr"]{
+  #:claim #!settled
+  statement: "Belobaba extended the rule to many nested fare classes with expected marginal seat revenue, a heuristic that is not exactly optimal but works well in practice."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_belobaba_1989", ~"../../registries/sources/economy-and-markets.spw#src_econ_talluri_van_ryzin_2004" ]
+ }
+ #>management_revenue_fences
+ ^["rate_fences"]{
+  #:claim #!settled
+  statement: "Fences such as advance purchase, refundability, and minimum stay let a seller offer lower prices to price-sensitive buyers without opening them to everyone."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_talluri_van_ryzin_2004", ~"../../registries/sources/economy-and-markets.spw#src_econ_pigou_1920" ]
+  controls: "minimum length of stay and closed to arrival protect peak nights by shaping which stays can book"
+  bridge: ~"../economics/micro-and-macro-core.spw#economics_core_price_discrimination"
+ }
+ #>management_revenue_fairness
+ ^["fairness"]{
+  #:claim #!settled
+  statement: "Buyers judge price rises that exploit a demand surge as unfair; fences tied to clear conditions are judged fairer than unexplained price differences."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_kahneman_knetsch_thaler_1986", ~"../../registries/sources/economy-and-markets.spw#src_econ_kimes_wirtz_2003" ]
+  ^["limits"]{
+   holds: "survey and vignette evidence across several countries"
+   fails: "fairness norms shift with exposure and differ by market"
+  }
+ }
+ #>management_revenue_unconstraining
+ ^["unconstraining"]{
+  #:claim #!settled
+  statement: "Bookings recorded after a class closes understate demand, so forecasts must estimate the demand that was turned away before they set protection levels."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_talluri_van_ryzin_2004"
+ }
+}
+
+^["channels"]{
+ #>management_revenue_channels
+ ^["channel_mix"]{
+  #:claim #!settled
+  statement: "Rooms sell through the hotel site, global distribution systems used by travel agents, and online travel agencies that charge a commission on each stay."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_talluri_van_ryzin_2004"
+  commission: %[econ.hotel.ota_commission_pct]
+  commission_note: "no sourced commission is carried; contracts differ and are rarely public"
+ }
+ #>management_revenue_parity_history
+ ^["parity_history"]{
+  #:claim #!settled
+  statement: "In April 2015 French, Swedish, and Italian competition authorities accepted Booking commitments to drop wide rate parity, while hotels were still barred from undercutting on their own sites."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_wiki_booking"
+  wide: "the hotel may not sell cheaper on any other channel"
+  narrow: "the hotel may not sell cheaper on its own website"
+ }
+ #>management_revenue_parity_dma
+ ^["parity_after_dma"]{
+  #:claim #!settled
+  statement: "The Digital Markets Act bars a gatekeeper from stopping business users offering different prices elsewhere, including on their own sites; Booking was designated a gatekeeper in May 2024."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_dma_2022", ~"../../registries/sources/economy-and-markets.spw#src_econ_wiki_dma" ]
+  reads: %[econ.hotel.dma_max_fine_pct]
+  as_of: "2026-10-02"
+  court: "the Court of Justice held in September 2024 that parity clauses are not ancillary restraints under EU competition law"
+  court_source: ~"../../registries/sources/economy-and-markets.spw#src_econ_cjeu_2024_booking"
+  ^["limits"]{
+   holds: "gatekeeper platforms serving business users and end users in the EU"
+   fails: "outside the EU, and for platforms not designated; national rules and contracts still vary, so check the date"
+   eea: "reach into Norway, Iceland, and Liechtenstein depends on incorporation into the EEA Agreement, which this surface has not checked"
+  }
+ }
+}
+
+^["gap_cells"]{
+ #>management_revenue_gap_emsrb
+ ^["emsr_b"]{
+  status: "gap"
+  owed: "the EMSR-b protection formula, its aggregation of higher classes into one virtual class, and a worked three-class example"
+  source_to_use: ~"../../registries/sources/economy-and-markets.spw#src_econ_belobaba_1992"
+  why_empty: "the writer has not checked a derivation against the paper, so none is printed"
+ }
+ #>management_revenue_gap_overbooking
+ ^["overbooking"]{
+  status: "gap"
+  idea: "accept bookings above capacity until the expected revenue of one more booking no longer covers the expected cost of turning a guest away"
+  owed: "a no-show model, the denied-service cost including goodwill, and a worked example"
+  source_to_use: ~"../../registries/sources/economy-and-markets.spw#src_econ_rothstein_1971"
+  why_empty: "walk costs and no-show rates are property data; no sourced values are carried"
+ }
+}
+
+^["try"]{
+ #>management_revenue_try_two_fare
+ ^["two_fare_sheet"]{
+  materials: [ "a spreadsheet", "one die" ]
+  steps: << "set the high fare to twice the low fare and capacity to ten" ; "roll the die twice and add to get high-fare demand" ; "try protection levels from zero to ten over thirty nights" ; "compare the best level with the Littlewood rule" >>
+  time: .{ n: 40, unit: "minutes" }
+  safety: "none worth naming"
+  shows: ~"./revenue-management.spw#management_revenue_littlewood"
+ }
+}
+
+#>management_revenue_shoulder_q
+?["Does a minimum stay over a sold-out Saturday earn more than cutting the Saturday rate?"]{
+ #:depth #!computational ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "When Saturday sells out and Friday and Sunday do not, a two-night minimum through Saturday raises total weekend room revenue compared with a lower Saturday rate."
+ !probe{ "simulate weekend booking curves under a minimum-stay rule and under a Saturday discount at several demand levels" =id[p_econ_revenue_shoulder] =kind[sim] }
+ ~"./revenue-management.spw#management_revenue_fences" ~#neighbor(nearest)
+}
+
+#>management_revenue_parity_q
+?["Did direct hotel prices fall below platform prices once parity clauses ended?"]{
+ #:depth #!social ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "After parity clauses ended in a market, hotels more often posted direct prices below platform prices than before."
+ !probe{ "sample the same room and night on a hotel site and a platform in one EU city monthly, before and after November 2024" =id[p_econ_revenue_parity] =kind[field] }
+ $%[econ.hotel.dma_max_fine_pct]
+ ~"./revenue-management.spw#management_revenue_parity_dma" ~#neighbor(nearest)
+}

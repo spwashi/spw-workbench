@@ -7,13 +7,13 @@
 #:domain #!physics
 #:form #!ledger
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
  ~#title: "Classical Thermodynamics"
  ~#claim: "Four laws, a state postulate, and a family of potentials decide what any process may do, before atoms enter the story."
- ~#proof: "Callen for the postulates and potentials, Gibbs for the phase rule, Carnot for the efficiency bound; each keystone links its source."
+ ~#proof: "Callen for the postulates and potentials, Gibbs for the phase rule, Carnot for the reservoir-only limit, Clausius 1850 and the 1854 Joule and Thomson absolute scale for its explicit form; each keystone links its source."
  ~#door: "Stretch a rubber band, then follow entropy into statistical mechanics."
  ~#audience: "students meeting thermodynamics in physics, chemistry, or engineering"
  continuity: "Classical Thermodynamics | four laws"
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/university-education/thermodynamics/classical-and-engineering-thermodynamics.spw", ".spw/caches/university-education/physics-and-mechanical-engineering/undergrad-physics.spw" ]
@@ -29,20 +29,37 @@
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial, note: "one unresolved ref to the planned engineering/mechanical-core.spw leaf of a sibling package" }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "re-run after the sibling mechanical engineering leaf landed; every ref resolves" }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "re-run after the 2026-10-03 fact-check fixes; no failing lines" }
  }
  corrections: #[
   "third law: residual entropy of glasses and ice added as a limit; the raw stated the zero-entropy limit with no exceptions",
   "state postulate scoped to single-phase simple compressible systems; the raw omitted the two-phase caveat",
   "the Einstein remark is now quoted with its source, the 1949 Autobiographical Notes",
   "power cycles, exergy, psychrometrics, and combustion point to the mechanical engineering node instead of being restated",
-  "the Allam-cycle hypothesis with invented efficiency and capture figures was dropped"
+  "the Allam-cycle hypothesis with invented efficiency and capture figures was dropped",
+  "the rubber-band claim now links Treloar, which the first draft cited without a registry entry",
+  "fact-check: Carnot 1824 showed the limit depends only on the reservoir temperatures; the explicit 1 - T_cold/T_hot needs Clausius 1850 and the absolute scale Thomson set out with Joule in 1854",
+  "fact-check 2026-10-03: the earlier fix credited the explicit form to Kelvin 1848, but that first absolute scale was logarithmic in modern temperature, so the formula does not hold on it; Joule and Thomson 1854 is now the source and Kelvin 1848 stays as context",
+  "fact-check: the r3 gate receipt now reads partial until the mechanical engineering leaf lands",
+  "fact-check 2026-10-03: the r4 fact-check receipt was dated 2026-10-01, before the receipts it followed; it is re-dated 2026-10-02, the day that pass ran"
  ]
+ note: "the feeds edge to the mechanical engineering leaf, written by a sibling package, now resolves"
 }
 
 ^["edges"]{
  grounds: [ ~"../../registries/quantities/physical-sciences-and-image.spw#q_phys_thermal" ]
- feeds: [ ~"../engineering/mechanical-core.spw#engineering_mechanical", ~"../materials/materials-core.spw#materials_core", ~"../materials/water.spw#materials_water" ]
+ feeds: [ ~"../engineering/mechanical-core.spw#engineering_mechanical", ~"../materials/materials-core.spw#materials_core", ~"../materials/water.spw#materials_water", ~"./statistical-mechanics.spw#physics_statmech" ]
+ see: [ ~"../physical-glossary.spw#physical_term_entropy" ]
 }
 
 ^["concepts"]{
@@ -69,6 +86,7 @@
   #:claim #!settled
   statement: "No cycle turns heat from one reservoir wholly into work, and heat does not flow unaided from cold to hot; both statements define entropy, which an isolated system never loses."
   source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_callen_1985"
+  context: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_clausius_1850"
   ~#(Clausius 1850 and 1865, Kelvin 1851)
   ^["limits"]{
    holds: "macroscopic systems close enough to equilibrium that temperature and entropy are defined"
@@ -146,9 +164,12 @@
  #>physics_thermo_carnot_bound
  ^["carnot_bound"]{
   #:claim #!settled
-  statement: "No engine between reservoirs at T_hot and T_cold can beat the efficiency 1 - T_cold/T_hot, a bound Carnot reached in 1824 before entropy had a name."
-  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_carnot_1824", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_callen_1985" ]
-  ~#(power cycles, exergy, and the Gouy Stodola theorem live in the mechanical engineering node)
+  statement: "No engine between reservoirs at T_hot and T_cold beats 1 - T_cold/T_hot; Carnot showed in 1824 that the limit depends only on those temperatures, and Clausius in 1850 and the absolute scale Thomson set out with Joule in 1854 gave it this explicit form."
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_carnot_1824", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_clausius_1850", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_joule_thomson_1854", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_callen_1985" ]
+  context: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_kelvin_1848"
+  ~#(the first absolute scale Thomson proposed, in 1848, was logarithmic in modern temperature, so the formula does not hold on it; he later abandoned it)
+  ~#(Carnot argued within caloric theory, before the absolute scale existed)
+  ~#(cycles, exergy, and Gouy Stodola live in the mechanical node)
  }
 }
 
@@ -191,6 +212,7 @@
  #:claim #!speculative
  ~#hypothesis: "Everyday irreversibility traces to a low-entropy initial state of the universe rather than to any time-asymmetric microscopic law, the Past Hypothesis that David Albert named."
  !probe{ "trace one kitchen process from its entropy increase back to the boundary condition it requires" =id[p_phys_thermo_past_hypothesis] =kind[lit] }
+ $%[phys.statmech.sun_teff_k, phys.statmech.earth_teff_k]
  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_albert_2000"
  ~"./classical-thermodynamics.spw#physics_thermo_second" ~#neighbor(nearest)
 }

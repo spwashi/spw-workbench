@@ -1,0 +1,238 @@
+# Cell Cycle and Stem Cells
+#
+# The cyclin-CDK oscillator and its checkpoints as a state machine, then pluripotency, reprogramming, and morphogen gradients that decide what a dividing cell becomes.
+
+#>cell_biology_cell_cycle
+#:layer #!reference
+#:domain #!cell_biology
+#:form #!state_machine
+#:level #!advanced
+#:review #!sourced
+#:valence #!bonk
+
+^"emit"{
+ ~#title: "Cell Cycle and Stem Cells"
+ ~#claim: "Rising and falling cyclin-CDK activity drives a cell from growth to copying to division, checkpoints hold it until damage is fixed and every chromosome is attached, and stem cells keep other fates open."
+ ~#proof: "Cyclin of Hunt, cdc2 of Nurse, checkpoints of Hartwell and Weinert, the unattached-kinetochore signal of Rieder, and the reprogramming factors of Takahashi and Yamanaka."
+ ~#door: "Walk the cycle states, read each checkpoint as a guard on one transition, then turn to potency and gradients."
+ ~#audience: "advanced students who know replication and signaling"
+ continuity: "Cell Cycle and Stem Cells | every chromosome is attached"
+ cold_open: "A cell will not split its chromosomes until every chromosome is attached, and one loose kinetochore is enough to make it wait."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/molecular-and-cellular-biology/cell-cycle-and-stem-cell-differentiation.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #fail }
+  ^["r4"]{ event: #sourced, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ receipt_note: "r3 was first written as a pass while every source link pointed at a registry not yet written; r4 wrote and checked that registry, and r5 is the passing run after it"
+ corrections: #[
+  "the raw line had double-strand breaks activate ATM and ATR alike; ATM answers double-strand breaks and ATR answers single-stranded DNA at stalled forks (raw line 20)",
+  "the restriction point is kept as a bistable Rb-E2F switch, with live-cell evidence that many cells decide at the end of the previous mitosis (raw line 17)",
+  "the raw checkpoint wonder gave Mad2 conversion as hundreds of molecules per second and said anaphase halts instantly; both had no source and were dropped (raw line 40)",
+  "credit added for Gurdon nuclear transfer beside Yamanaka reprogramming, and for Turing and Wolpert on pattern",
+  "2026-10-03: the donor nuclei in Gurdon 1962 came from intestinal cells of feeding tadpoles, not adult frogs, and the form axis now reads state_machine"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./nucleic-acids-and-genomes.spw#cell_biology_nucleic", ~"./transport-and-signaling.spw#cell_biology_signaling" ]
+ grounds: [ ~"../../registries/quantities/life-and-mind.spw#q_life_cells" ]
+ analog: [ ~"../development-and-ecology/development-as-succession.spw#development_ecology_parallels" ]
+ see: [ ~"../bioengineering/biomaterials-and-tissue.spw#bioengineering_biomaterials" ]
+}
+
+^["concepts"]{
+ primary: [ #cell_cycle, #checkpoint, #pluripotency ]
+ transfers: [ #state_machine, #oscillator, #morphogen_gradient ]
+ tensions: [ #restriction_point ]
+}
+
+^["scope"]{
+ #>cell_biology_cell_cycle_guard
+ ^["guard"]{
+  #:valence #!honk
+  warning: "stem cell biology here is laboratory science; clinics that sell unapproved stem cell treatments directly to patients are not described or endorsed by anything below"
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_turner_knoepfler_2016"
+ }
+ what: "how cells time division and how stem cells keep or lose their options"
+ not_advice: "educational reference only; nothing here describes a treatment, a therapy, or whether one is suitable for anyone"
+ governance: "human embryo and stem cell research is regulated and ethically debated; the ISSCR guidelines are one international reference, checked as of 2026-10-02"
+ governance_source: ~"../../registries/sources/life-and-mind.spw#src_life_isscr_2021"
+}
+
+^["engine"]{
+ #>cell_biology_cell_cycle_cyclin
+ ^["cyclin_oscillator"]{
+  #:claim #!settled
+  statement: "Cyclins rise and are destroyed each cycle; with their kinases they relay from cyclin D with CDK4 and 6, to cyclin E and then A with CDK2, to cyclin B with CDK1 for mitosis."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_evans_1983", ~"../../registries/sources/life-and-mind.spw#src_life_nurse_1990", ~"../../registries/sources/life-and-mind.spw#src_life_alberts_2022" ]
+  credit: "Tim Hunt found cyclin in sea urchin eggs; Paul Nurse and Leland Hartwell found the cell division kinase genes in yeast; Masui and Markert first described maturation-promoting factor in frog oocytes"
+  credit_source: ~"../../registries/sources/life-and-mind.spw#src_life_masui_markert_1971"
+ }
+ #>cell_biology_cell_cycle_bistable
+ ^["bistable_switch"]{
+  #:claim #!settled
+  statement: "Positive feedback on CDK1 activation makes mitotic entry bistable and hysteretic in frog egg extracts, so the oscillator snaps between states instead of drifting."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_pomerening_2003"
+ }
+ #>cell_biology_cell_cycle_restriction
+ ^["restriction_point"]{
+  #:claim #!contested
+  statement: "Pardee placed a commitment point in late G1 where Rb release of E2F becomes self-sustaining; live-cell imaging shows many cells instead decide at the end of the previous mitosis."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_pardee_1974", ~"../../registries/sources/life-and-mind.spw#src_life_yao_2008", ~"../../registries/sources/life-and-mind.spw#src_life_weinberg_1995" ]
+  counter: ~"../../registries/sources/life-and-mind.spw#src_life_spencer_2013"
+  ^["limits"]{
+   holds: "cultured mammalian cells whose mitogen exposure is controlled"
+   fails: "the two pictures may describe different cells in one population rather than rival mechanisms"
+  }
+ }
+}
+
+^["checkpoints"]{
+ #>cell_biology_cell_cycle_checkpoint_idea
+ ^["checkpoint_idea"]{
+  #:claim #!settled
+  statement: "Hartwell and Weinert argued that cells order their events with surveillance controls that halt the cycle until a prior step is complete."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_hartwell_weinert_1989"
+ }
+ #>cell_biology_cell_cycle_damage
+ ^["dna_damage"]{
+  #:claim #!settled
+  statement: "ATM answers double-strand breaks and ATR answers single-stranded DNA at stalled forks; through Chk2 and Chk1 they stabilize p53, whose target p21 inhibits CDKs and halts the cycle."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_alberts_2022"
+ }
+ #>cell_biology_cell_cycle_sac
+ ^["spindle_checkpoint"]{
+  #:claim #!settled
+  statement: "One unattached kinetochore makes an inhibitor that delays anaphase; destroying it releases the cell, so the signal comes from the unattached kinetochore itself."
+  reads: %[life.sac.anaphase_lag_min, life.sac.kinetochores_human_mitosis]
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_rieder_1995"
+ }
+ #>cell_biology_cell_cycle_mcc
+ ^["mcc_template"]{
+  #:claim #!settled
+  statement: "At unattached kinetochores a Mad1-Mad2 template converts open Mad2 to closed Mad2, which joins BubR1 and Bub3 to sequester Cdc20 and hold the anaphase-promoting complex off."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_de_antoni_2005", ~"../../registries/sources/life-and-mind.spw#src_life_musacchio_salmon_2007" ]
+ }
+ #>cell_biology_cell_cycle_attachment_tension
+ ^["attachment_or_tension"]{
+  #:claim #!contested
+  statement: "Whether the checkpoint reads attachment alone, or tension across sister kinetochores through error correction that detaches wrong attachments, is still argued."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_musacchio_salmon_2007"
+ }
+}
+
+^["states"]{
+ #>cell_biology_cell_cycle_g1
+ ^["g1"]{ does: "the cell grows and reads mitogen signals", done_when: "Rb is phosphorylated and E2F turns on S-phase genes" }
+ #>cell_biology_cell_cycle_s
+ ^["s"]{ does: "every chromosome is copied once", done_when: "replication finishes without unrepaired damage" }
+ #>cell_biology_cell_cycle_g2
+ ^["g2"]{ does: "the cell checks the copy and builds cyclin B", done_when: "CDK1 switches on" }
+ #>cell_biology_cell_cycle_m
+ ^["m"]{ does: "chromosomes condense and attach to the spindle", done_when: "every kinetochore is attached and the checkpoint goes silent" }
+ #>cell_biology_cell_cycle_anaphase
+ ^["anaphase"]{ does: "the APC with Cdc20 destroys securin and cyclin B; separase cuts cohesin and sisters part", done_when: "two nuclei re-form" }
+ #>cell_biology_cell_cycle_g0
+ ^["g0"]{ does: "the cell rests outside the cycle with low CDK2 activity", done_when: "mitogens return" }
+ #>cell_biology_cell_cycle_transitions
+ ^["transitions"]{
+  ?match[@signal]{
+   "mitogens and Rb released" => { next: "s" }
+   "replication complete" => { next: "g2" }
+   "cdk1 active" => { next: "m" }
+   "all kinetochores attached" => { next: "anaphase" }
+   "division done and cdk2 high" => { next: "g1" }
+   "division done and cdk2 low" => { next: "g0", why: "the p21-controlled bifurcation at mitotic exit" }
+   "dna damage" => { next: "stay", why: "p53 and p21 hold the current phase" }
+   "unattached kinetochore" => { next: "stay", why: "the checkpoint holds metaphase" }
+   _ => { next: "stay", why: "no signal; the phase continues" }
+  }
+ }
+}
+
+^["potency"]{
+ #>cell_biology_cell_cycle_nuclear_transfer
+ ^["nuclear_transfer"]{
+  #:claim #!settled
+  statement: "Gurdon showed in 1962 that a nucleus from a tadpole intestinal cell, placed in an egg whose own nucleus was destroyed, could support development to a feeding tadpole, so differentiated nuclei keep their genes."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_gurdon_1962"
+ }
+ #>cell_biology_cell_cycle_es_cells
+ ^["embryonic_stem_cells"]{
+  #:claim #!settled
+  statement: "Pluripotent stem cell lines were derived from mouse embryos in 1981 and from human blastocysts in 1998; they can form all three germ layers."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_evans_kaufman_1981", ~"../../registries/sources/life-and-mind.spw#src_life_martin_1981", ~"../../registries/sources/life-and-mind.spw#src_life_thomson_1998" ]
+ }
+ #>cell_biology_cell_cycle_core_circuit
+ ^["core_circuit"]{
+  #:claim #!settled
+  statement: "Oct4, Sox2, and Nanog bind many of the same promoters in human embryonic stem cells, including their own, forming an autoregulatory core circuit."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_boyer_2005"
+ }
+ #>cell_biology_cell_cycle_bivalent
+ ^["bivalent_promoters"]{
+  #:claim #!settled
+  statement: "Many developmental genes in embryonic stem cells carry both activating and repressive histone marks, holding them silent but poised."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_bernstein_2006"
+ }
+ #>cell_biology_cell_cycle_ipsc
+ ^["reprogramming"]{
+  #:claim #!settled
+  statement: "Takahashi and Yamanaka turned mouse fibroblasts into induced pluripotent stem cells with four factors, Oct4, Sox2, Klf4, and c-Myc, in 2006."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_takahashi_yamanaka_2006"
+  credit: "Gurdon and Yamanaka shared the 2012 Nobel Prize for showing that mature cells can be reprogrammed"
+ }
+}
+
+^["pattern"]{
+ #>cell_biology_cell_cycle_turing
+ ^["reaction_diffusion"]{
+  #:claim #!settled
+  statement: "Turing showed in 1952 that two diffusing, reacting chemicals can break symmetry and form spots or stripes from a nearly uniform start."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_turing_1952"
+ }
+ #>cell_biology_cell_cycle_french_flag
+ ^["positional_information"]{
+  #:claim #!settled
+  statement: "Wolpert proposed that cells read their position from a morphogen concentration and choose a fate by thresholds, the French flag model."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_wolpert_1969"
+ }
+ #>cell_biology_cell_cycle_shh
+ ^["shh_duration"]{
+  #:claim #!settled
+  statement: "Neural tube cells read Sonic hedgehog by both concentration and duration of exposure, adapting as signaling goes on, so a threshold alone does not set ventral fates."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_dessaud_2007"
+ }
+ =~"./cell-cycle-and-stem-cells.spw#cell_biology_cell_cycle_shh"[extends]{ ~"./cell-cycle-and-stem-cells.spw#cell_biology_cell_cycle_french_flag" }
+}
+
+#>cell_biology_cell_cycle_kinetochore_q
+?["How can one loose kinetochore out of many hold back a whole cell?"]{
+ #:depth #!computational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "A catalytic template keeps making inhibitor faster than the cytoplasm clears it, so a single source can keep the inhibitor above the level that blocks anaphase."
+ !probe{ "model one kinetochore source and uniform first-order decay in a sphere the size of a human cell and find the source rate that holds anaphase" =id[p_life_cell_cycle_one_source] =kind[sim] }
+ $%[life.sac.kinetochores_human_mitosis, life.sac.anaphase_lag_min]
+ ~"./cell-cycle-and-stem-cells.spw#cell_biology_cell_cycle_mcc" ~#neighbor(nearest)
+}
+
+#>cell_biology_cell_cycle_gate_q
+?["Is a checkpoint like a quality gate in a build pipeline?"]{
+ #:depth #!educational ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "Both hold a release until an upstream step reports done, and both fail open when the reporting signal is lost rather than when the work is bad."
+ breaks: "a cell cannot roll back a division once anaphase starts, while a build can always be rerun"
+ !probe{ "list checkpoint mutants that divide with damage and compare with gates that pass when a check is skipped" =id[p_life_cell_cycle_gate] =kind[thought] }
+ ~"./cell-cycle-and-stem-cells.spw#cell_biology_cell_cycle_checkpoint_idea" ~#neighbor(nearest)
+}

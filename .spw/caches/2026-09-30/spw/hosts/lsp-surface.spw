@@ -1,0 +1,216 @@
+# Language Server Surface
+#
+# Every capability and spw request method the shared language server answers, which host calls which, and what the server reads only once at initialize.
+
+#>editor_hosts_lsp
+#:layer #!reference
+#:domain #!editor_hosts
+#:form #!registry
+#:level #!practitioner
+#:review #!sourced
+#:valence #!bone
+#:era #!current
+
+^"emit"{
+ ~#title: "Language Server Surface"
+ ~#claim: "One server, spw-lsp, advertises seventeen standard providers and answers twenty-three spw methods; VS Code calls fourteen, Neovim eight, JetBrains none."
+ ~#proof: "Rows cite the dispatcher and handlers in packages/spw-lsp and the call sites in each extension at commit 1aa1dc23."
+ ~#door: "Read the custom method rows, then follow a caller into the VS Code cache machine."
+ ~#audience: "plugin maintainers wiring a new host to spw-lsp"
+ continuity: "Language Server Surface | one server"
+ cold_open: "One server answers every editor, and this page lists what it answers, who asks, and what it reads only once."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #corrected
+   note: "providers, methods, callers, legend, diagnostics gate, and lens commands reread at 1aa1dc23"
+  }
+ }
+ recount: "capabilities, methods, and call sites recounted at commit 1aa1dc23 by reading the dispatcher and grepping each extension"
+ corrections: [ "referenceGraph and corpus share one dispatcher case, so the method count now says eight answered directly, two sharing a case" ]
+ refutes: "the raw syntax-highlighting cache said the server sends full and delta semantic tokens; it advertises full only, as the errata ledger records"
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/spw-hosts-and-history.spw#q_hosts_lsp" ]
+ feeds: [ ~"./vscode-lsp-and-cache.spw#editor_hosts_vscode_lsp_cache", ~"./host-parity-matrix.spw#editor_hosts_parity" ]
+ see: [ ~"../../provenance/errata-technical.spw#provenance_errata_technical" ]
+}
+
+^["concepts"]{
+ primary: [ #thin_client, #semantic_tokens, #custom_request ]
+ transfers: [ #parity_of_questions ]
+ tensions: [ #initialize_only_settings ]
+}
+
+^["as_of"]{
+ commit: "1aa1dc23"
+ recounted: "2026-10-02"
+ server: "packages/spw-lsp/src/stdio-server.ts, serverInfo spw-lsp 0.3.0 at line 208"
+ ^["abbreviations"]{
+  stdio_server: "stdio-server.ts is packages/spw-lsp/src/stdio-server.ts"
+  vscode_requests: "custom-requests.ts is extensions/vscode-spw/src/lsp/custom-requests.ts"
+  vscode_commands: "commands.ts is extensions/vscode-spw/src/commands.ts"
+  vscode_instruments: "instruments/commands.ts is extensions/vscode-spw/src/instruments/commands.ts"
+  neovim: "commands.lua, init.lua, and instruments.lua live in extensions/neovim-spw/lua/spw"
+ }
+}
+
+^["providers"]{
+ #>editor_hosts_lsp_providers
+ ^["count"]{
+  #:claim #!settled
+  statement: "The initialize result advertises full text sync and seventeen provider capabilities, from definition to semantic tokens."
+  reads: %[hosts.lsp.provider_capability_count]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_server"
+  cites: "packages/spw-lsp/src/stdio-server.ts:207-246"
+ }
+ ^["rows"]{
+  definition: .{ methods: "textDocument/definition, textDocument/declaration", cites: "stdio-server.ts:211-212,259-262", status: #implemented }
+  references: .{ methods: "textDocument/references", cites: "stdio-server.ts:213,308-310", status: #implemented }
+  rename: .{ methods: "textDocument/prepareRename, textDocument/rename", cites: "stdio-server.ts:214,312-318", status: #implemented }
+  links: .{ methods: "textDocument/documentLink, resolve off", cites: "stdio-server.ts:215,264-266", status: #implemented }
+  hover: .{ methods: "textDocument/hover", cites: "stdio-server.ts:216,268-270", status: #implemented }
+  symbols: .{ methods: "textDocument/documentSymbol, workspace/symbol", cites: "stdio-server.ts:217-218,272-278", status: #implemented }
+  code_action: .{ methods: "textDocument/codeAction", cites: "stdio-server.ts:219,288-290", status: #implemented }
+  completion: .{ methods: "textDocument/completion, triggers on at, tilde, slash, hash, dollar", cites: "stdio-server.ts:220,280-282", status: #implemented }
+  code_lens: .{ methods: "textDocument/codeLens, resolve off", cites: "stdio-server.ts:221,284-286", status: #implemented }
+  formatting: .{ methods: "textDocument/formatting, textDocument/rangeFormatting", cites: "stdio-server.ts:222-223,292-298", status: #implemented }
+  highlight: .{ methods: "textDocument/documentHighlight", cites: "stdio-server.ts:224,300-302", status: #implemented }
+  inlay: .{ methods: "textDocument/inlayHint", cites: "stdio-server.ts:225,304-306", status: #implemented }
+  folding: .{ methods: "textDocument/foldingRange", cites: "stdio-server.ts:226,320-322", status: #implemented }
+  tokens: .{ methods: "textDocument/semanticTokens/full", cites: "stdio-server.ts:227-231,324-326", status: #implemented }
+ }
+ #>editor_hosts_lsp_tokens_full
+ ^["semantic_tokens_full_only"]{
+  #:claim #!settled
+  statement: "Semantic tokens are served whole on every request: full is true, range is false, and no result id or delta exists."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_server"
+  cites: "packages/spw-lsp/src/stdio-server.ts:227-230"
+  counter: "the raw cache .spw/caches/vscode/syntax-highlighting.spw:31 claimed full and delta"
+ }
+ #>editor_hosts_lsp_tokens_scanner
+ ^["token_scanner"]{
+  #:claim #!settled
+  statement: "The token handler is a line regex scanner with a legend of nine types and six modifiers; it imports nothing from the seed parser."
+  reads: %[hosts.lsp.token_type_count, hosts.lsp.token_modifier_count]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_semantic_tokens"
+  cites: [ "packages/spw-lsp/src/handlers/semantic-tokens.ts:31", "packages/spw-lsp/src/handlers/semantic-tokens.ts:75-78" ]
+  ^["limits"]{
+   holds: "for color: the scanner paints from line text"
+   fails: "for meaning: a token here is a regex hit, so it can disagree with the parse, as the rendering matrix shows"
+  }
+ }
+}
+
+^["custom_methods"]{
+ #>editor_hosts_lsp_methods
+ ^["count"]{
+  #:claim #!settled
+  statement: "The dispatcher answers twenty-three spw methods: eight answered directly, two of them sharing one case, and fifteen routed through one probe handler."
+  reads: %[hosts.lsp.custom_method_count]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_server"
+  cites: "packages/spw-lsp/src/stdio-server.ts:328-392"
+ }
+ ^["rows"]{
+  select: .{ callers: "none in repo", cites: "stdio-server.ts:328", status: #implemented }
+  annotations: .{ callers: "VS Code", cites: "stdio-server.ts:335; custom-requests.ts:359", status: #implemented }
+  context_at_position: .{ callers: "VS Code", cites: "stdio-server.ts:345; custom-requests.ts:364", status: #implemented }
+  workspace_manifest_v1: .{ callers: "VS Code", cites: "stdio-server.ts:238,357; custom-requests.ts:368", status: #implemented }
+  workspace_temperature: .{ callers: "VS Code, Neovim", cites: "stdio-server.ts:362; commands.lua:143", status: #implemented }
+  cache_reflection: .{ callers: "VS Code, Neovim", cites: "stdio-server.ts:367; custom-requests.ts:378; instruments.lua:116", status: #implemented }
+  reference_graph: .{ callers: "VS Code", cites: "stdio-server.ts:372; custom-requests.ts:390", status: #implemented }
+  corpus: .{ callers: "none in repo; same handler as referenceGraph", cites: "stdio-server.ts:373", status: #implemented }
+  operator_frequency: .{ callers: "VS Code, Neovim", cites: "stdio-server.ts:378; commands.ts:25; commands.lua:77", status: #implemented }
+  phase_context: .{ callers: "VS Code, Neovim", cites: "stdio-server.ts:379; commands.ts:52; commands.lua:98", status: #implemented }
+  resonance: .{ callers: "none in repo", cites: "stdio-server.ts:380", status: #implemented }
+  register_snapshot: .{ callers: "none in repo", cites: "stdio-server.ts:381", status: #implemented }
+  form_sequence: .{ callers: "VS Code, Neovim", cites: "stdio-server.ts:382; commands.ts:84; commands.lua:122", status: #implemented }
+  geometry: .{ callers: "VS Code, Neovim", cites: "stdio-server.ts:383; instruments/commands.ts:101; instruments.lua:51", status: #implemented }
+  particles: .{ callers: "none in repo", cites: "stdio-server.ts:384", status: #implemented }
+  form_context: .{ callers: "none in repo", cites: "stdio-server.ts:385", status: #implemented }
+  activity: .{ callers: "Neovim", cites: "stdio-server.ts:386; commands.lua:184; init.lua:43", status: #implemented }
+  surface_profile: .{ callers: "VS Code, Neovim", cites: "stdio-server.ts:387; instruments/commands.ts:129; instruments.lua:74", status: #implemented }
+  phrase_scan: .{ callers: "none in repo", cites: "stdio-server.ts:388", status: #implemented }
+  channel_policy: .{ callers: "none in repo", cites: "stdio-server.ts:389", status: #implemented }
+  flow_protocol: .{ callers: "VS Code", cites: "stdio-server.ts:390; commands.ts:183", status: #implemented }
+  geometric_resonance: .{ callers: "VS Code", cites: "stdio-server.ts:391; commands.ts:221", status: #implemented }
+  probe_measure: .{ callers: "VS Code", cites: "stdio-server.ts:392; commands.ts:254", status: #implemented }
+ }
+ #>editor_hosts_lsp_callers
+ ^["who_calls"]{
+  #:claim #!settled
+  statement: "VS Code sends fourteen distinct spw methods, Neovim eight, and the JetBrains plugin none; eight methods have no caller in this repository."
+  reads: %[hosts.vscode.custom_methods_called]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_custom_requests"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_nvim_instruments", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_lsp_provider" ]
+  method: "grep for spw method strings across extensions/vscode-spw/src, extensions/neovim-spw/lua, and extensions/intellij-spw/src at 1aa1dc23"
+  ^["limits"]{
+   holds: "for callers inside this repository"
+   fails: "for mounted consumers or scripts outside it, which may call the uncalled methods"
+  }
+ }
+}
+
+^["initialize_only"]{
+ #>editor_hosts_lsp_config_once
+ ^["settings_at_initialize"]{
+  #:claim #!settled
+  statement: "The server reads inlay and diagnostic settings from initializationOptions once; it handles no didChangeConfiguration, so a changed setting waits for the next initialize."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_server"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_extension" ]
+  cites: [ "packages/spw-lsp/src/stdio-server.ts:198", "packages/spw-lsp/src/stdio-server.ts:418-475", "extensions/vscode-spw/src/extension.ts:96-109" ]
+  ~#(the VS Code client syncs the spw section to a server that never listens for it)
+ }
+ notifications: #[ initialized, exit, didOpen, didChange, didSave, didClose, didChangeWatchedFiles, cancelRequest ]
+}
+
+^["diagnostics"]{
+ #>editor_hosts_lsp_diagnostics_gate
+ ^["published_on_failure_only"]{
+  #:claim #!settled
+  statement: "Parse errors are published only when the parse result reports failure, so lexer errors that leave success true reach no editor."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_analysis"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_tokens_study" ]
+  cites: [ "packages/spw-lsp/src/handlers/analysis.ts:51-52", "packages/spw-lsp/src/server-index.ts:371" ]
+  ~#(the server parses without a path, so path-scoped dialects stay off)
+ }
+ #>editor_hosts_lsp_lens_labels
+ ^["code_lens_labels"]{
+  #:claim #!settled
+  statement: "Every code lens carries an empty command string and the server offers no executeCommandProvider, so lenses are labels a click cannot act on."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_display"
+  cites: "packages/spw-lsp/src/handlers/display.ts:1085-1194"
+ }
+}
+
+^["try"]{
+ #>editor_hosts_lsp_try_wire
+ ^["watch_the_wire"]{
+  materials: [ "VS Code with the Spw extension", "a scratch .spw file", "the Output panel" ]
+  steps: << "set spwLanguageServer.trace.server to messages in workspace settings" ; "open the scratch file" ; "find the initialize result in the Output panel" ; "read semanticTokensProvider and note full true and range false" ; "type one line and watch a full token request go out" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "none worth naming; use a scratch file in a throwaway folder"
+  shows: ~"./lsp-surface.spw#editor_hosts_lsp_tokens_full"
+ }
+}
+
+#>editor_hosts_lsp_q
+?["Would publishing lexer errors change what authors fix first?"]{
+ #:depth #!computational ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "Once silent lexer errors reach the editor, authors should fix stray characters before structural warnings, because the squiggle sits where they type."
+ !probe{ "publish errors whatever success says on a branch, then compare the order of fixes in a week of commits against the week before" =id[p_hosts_lsp_lexer_errors] =kind[field] }
+ $%[hosts.lsp.custom_method_count, hosts.lsp.provider_capability_count]
+ ~"./lsp-surface.spw#editor_hosts_lsp_diagnostics_gate" ~#neighbor(nearest)
+}

@@ -1,0 +1,136 @@
+# Bioengineering
+#
+# Biomaterials and tissue, instruments and biomechanics, and synthetic and metabolic design, with the biomimetic stance kept as an interpretive note and the governance of genome editing kept as dated fact.
+
+#>bioengineering_index
+#:layer #!reference
+#:domain #!bioengineering
+#:form #!index
+#:level #!advanced
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Bioengineering"
+ ~#claim: "Bioengineering builds with matter that grows, adapts, and mutates, so its designs are judged by how the living host responds, not by the part alone."
+ ~#proof: "Leaves cite Engler and Discher on matrix stiffness, Tzima and Schwartz on shear sensing, and Gardner and Elowitz on the first synthetic circuits; governance cites Asilomar, the National Academies, and the World Health Organization."
+ ~#door: "Materials and tissue first, then instruments and biomechanics, then synthetic and metabolic design."
+ ~#audience: "advanced students in engineering or biology"
+ continuity: "Bioengineering | how the living host responds"
+ cold_open: "In bioengineering a part is never judged alone; what matters is how the living host responds to it."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/bioengineering/taste.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #fail }
+  ^["r4"]{ event: #sourced, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ receipt_note: "r3 was first written as a pass while every source link pointed at a registry not yet written; r4 wrote and checked that registry, and r5 is the passing run after it"
+ corrections: #[
+  "the raw promise of diabetics freed from insulin by engineered islets was a therapeutic claim with no source and was dropped (raw line 21)",
+  "the raw stewardship line demanded unconditional commitments; it is restated as the governance actually adopted, with dates (raw line 20)",
+  "the raw synthetic-operon wonder moved to the synthetic and metabolic leaf as a speculative question (raw line 30)",
+  "the raw decellularized heart wonder moved to the biomaterials leaf and is tied to Ott and colleagues (raw line 38)"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../cells/index.spw#cell_biology_index" ]
+ see: [ ~"../../physical/materials/materials-advanced.spw#materials_advanced" ]
+}
+
+^["concepts"]{
+ primary: [ #host_response, #mechanotransduction, #genetic_circuit ]
+ transfers: [ #biomimetics, #feedback ]
+ tensions: [ #germline_editing ]
+}
+
+^["tree"]{
+ biomaterials: ~"./biomaterials-and-tissue.spw"
+ instrumentation: ~"./instrumentation-and-biomechanics.spw"
+ synthetic: ~"./synthetic-and-metabolic.spw"
+}
+
+^["bundle"]{
+ ={ ~"./biomaterials-and-tissue.spw#bioengineering_biomaterials" }
+ ={ ~"./instrumentation-and-biomechanics.spw#bioengineering_instrumentation" }
+ ={ ~"./synthetic-and-metabolic.spw#bioengineering_synthetic" }
+}
+
+^["ladder"]{
+ rungs: << "advanced: biomaterials and tissue" ; "advanced: instrumentation and biomechanics" ; "advanced: synthetic and metabolic" >>
+ ^["prerequisites"]{
+  materials_before_tissue: "bulk polymers, metals, and ceramics are defined in physical materials, so read those before host response"
+  signals_before_circuits: "gene circuits reuse transcription and signaling, so cell biology comes before synthetic design"
+  flow_before_shear: "shear stress on vessel walls is a transport result before it is a biology result"
+ }
+}
+
+^["facets"]{
+ order: "leaves by matter, then form, then level"
+ rows: #[
+  .{ leaf: "biomaterials-and-tissue", matter: "polymers, hydrogels, stiffness, vascular channels", form: "comparison", level: "advanced" },
+  .{ leaf: "instrumentation-and-biomechanics", matter: "biopotentials, sensors, microfluidics, shear", form: "ledger", level: "advanced" },
+  .{ leaf: "synthetic-and-metabolic", matter: "switches, oscillators, burden, flux", form: "timeline", level: "advanced" }
+ ]
+}
+
+^["stance"]{
+ #>bioengineering_index_biomimetic
+ ^["biomimetic_stance"]{
+  #:claim #!interpretive
+  statement: "Evolution has already tested many solutions to transport, strength, and sensing, so the craft of bioengineering is often to read a living design closely before borrowing it."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_vincent_2006"
+  ^["limits"]{
+   holds: "as a design habit with many documented transfers"
+   fails: "evolved designs carry history and tradeoffs, so a natural solution is not automatically the best engineering one"
+  }
+ }
+ #>bioengineering_index_asilomar
+ ^["asilomar"]{
+  #:claim #!settled
+  statement: "In 1975 scientists at Asilomar set voluntary containment levels for recombinant DNA work, matched to the estimated risk of each experiment."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_berg_1975"
+ }
+ #>bioengineering_index_germline
+ ^["germline_editing"]{
+  #:claim #!settled
+  statement: "After a 2018 claim of genome-edited babies drew international condemnation, the World Health Organization issued a 2021 governance framework; heritable editing is not an approved clinical practice."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_cyranoski_ledford_2018", ~"../../registries/sources/life-and-mind.spw#src_life_who_2021", ~"../../registries/sources/life-and-mind.spw#src_life_nasem_2017" ]
+  as_of: "2026-10-02"
+  ^["limits"]{
+   holds: "the international governance picture as of the as_of date"
+   fails: "national laws differ and change; check the current law of a jurisdiction rather than this summary"
+  }
+ }
+}
+
+^["gaps"]{
+ predicted: #[
+  "medical imaging physics, expected beside instrumentation",
+  "prosthetics and neural interfaces, expected between instrumentation and neuroscience",
+  "regulatory science for devices and biologics, expected beside the governance stance"
+ ]
+}
+
+^["doors"]{
+ materials_person: "biomaterials and tissue, after physical materials"
+ electrical_person: "instrumentation and biomechanics"
+ biologist: "synthetic and metabolic, after cell biology"
+}
+
+#>bioengineering_index_borrow_q
+?["When does copying a living design help, and when does it mislead?"]{
+ #:depth #!historical ~#lens(craft practice)
+ #:claim #!speculative
+ ~#hypothesis: "Borrowing helps most when the engineer copies the principle, such as a gradient or a feedback loop, and misleads most when the engineer copies the shape alone."
+ !probe{ "list ten documented biomimetic products and tag each as principle-copied or shape-copied, then note which reached use" =id[p_life_bioeng_borrow] =kind[census] }
+ ~"./index.spw#bioengineering_index_biomimetic" ~#neighbor(nearest)
+}

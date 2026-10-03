@@ -1,0 +1,293 @@
+# Errata: Technical
+#
+# Raw claims about editors, physical sciences, engineering, and computing that the review found wrong or dated, each with its correction, its source, and the surface that now carries it.
+
+#>provenance_errata_technical
+#:layer #!reference
+#:domain #!provenance
+#:form #!ledger
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bane
+
+^"emit"{
+ ~#title: "Errata: Technical"
+ ~#claim: "Editor caches invented features the code lacks, and the science files mixed up a handful of laws, names, and orders of magnitude."
+ ~#proof: "Editor rows cite the extension source by path and line; science rows cite textbooks, papers, and standards in the registry."
+ ~#door: "Search this ledger for a raw path, read the row at its line, then open the surface that carries the correction."
+ ~#audience: "readers who met a raw editor or engineering claim and want the corrected version"
+ continuity: "Errata: Technical | corrected"
+ cold_open: "Line-level technical errors from the raw shelf are corrected here beside their sources, and rows kept elsewhere or still unsourced are named."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/jetbrains/folding.spw", ".spw/caches/jetbrains/live-templates.spw", ".spw/caches/jetbrains/navigation.spw", ".spw/caches/jetbrains/syntax-highlighting.spw", ".spw/caches/vscode/navigation.spw", ".spw/caches/vscode/probe-cache.spw", ".spw/caches/materials-matter-and-history/taste.spw" ]
+ method: #corrected
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   note: "forward refs to planned editor-hosts files another package had not written yet"
+  }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "every cited source line confirmed; the anno template row now uses the template's own lens and intent wording"
+  }
+  ^["r5"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   note: "only forward refs to two planned editor-hosts surfaces remain"
+  }
+ }
+ checked: "every editor row was re-read against the extension source on 2026-10-02; science rows were transcribed from the scorecard and matched to the cited works"
+ pinned: "editor citations carry the commit 1aa1dc23 because the working tree moves; read one with git show 1aa1dc23:PATH and count to the line"
+}
+
+^["edges"]{
+ grounds: [ ~"./review-scorecard.spw#provenance_scorecard" ]
+ see: [ ~"./manifest.spw#provenance_manifest" ]
+}
+
+^["concepts"]{
+ primary: [ #correction, #review_record ]
+ transfers: [ #fixity ]
+ tensions: [ #overclaim ]
+}
+
+^["ranks"]{
+ refuted: "the raw line is wrong and the source says what is true"
+ superseded: "the raw line was true of an older version and the tool or text has since changed"
+ contested: "the raw line states as settled something sources still dispute"
+ speculative: "the raw line states a number or effect no source supports"
+ row: "each row gives the raw path and line, what the raw said, what is true, and where that is shown"
+}
+
+^["editors"]{
+ #>provenance_errata_jb_folding
+ ^["jetbrains_folding"]{
+  #:claim #!refuted
+  statement: "The raw folding cache gave the IntelliJ fold builder a comment rule, frame pattern, placeholders, and speed budget it does not have."
+  corrected_in: ~"../spw/hosts/jetbrains-native-features.spw#editor_hosts_jetbrains_native"
+  ^["l44"]{ at: ".spw/caches/jetbrains/folding.spw:44", rank: #refuted, was: "a // line comment stops brace counting", now: "a # character starts the skipped comment, so a brace after # on a line is ignored", source: "1aa1dc23:extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwFoldingBuilder.kt:121" }
+  ^["l17"]{ at: ".spw/caches/jetbrains/folding.spw:17", rank: #refuted, was: "frames match a quoted name at line start", now: "frames match a ^ sigil with a bracketed, quoted, or typed name", source: "1aa1dc23:extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwLineParsers.kt:95" }
+  ^["l19"]{ at: ".spw/caches/jetbrains/folding.spw:19", rank: #refuted, was: "collapsed frames read as a brace and three dots", now: "collapsed frames show the frame name between ellipses", source: "1aa1dc23:extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwFoldingBuilder.kt:40" }
+  ^["l46"]{ at: ".spw/caches/jetbrains/folding.spw:46", rank: #speculative, was: "sub-millisecond folding on ten-thousand-line files", now: "no benchmark of the fold builder exists in the repository" }
+ }
+ #>provenance_errata_jb_templates
+ ^["jetbrains_live_templates"]{
+  #:claim #!refuted
+  statement: "Five of seven raw live templates differ from the bundled template file, and the commenter and spellchecker work the opposite way."
+  corrected_in: ~"../spw/hosts/jetbrains-native-features.spw#editor_hosts_jetbrains_native"
+  ^["l35"]{ at: ".spw/caches/jetbrains/live-templates.spw:35", rank: #refuted, was: "anno inserts an axis and mood pair", now: "anno inserts an anchor line, then a lens and intent pair", source: "1aa1dc23:extensions/intellij-spw/src/main/resources/liveTemplates/spwTemplates.xml:16" }
+  ^["l42"]{ at: ".spw/caches/jetbrains/live-templates.spw:42", rank: #refuted, was: "subroot holds a path and the cursor", now: "subroot holds a path and a subtree list", source: "1aa1dc23:extensions/intellij-spw/src/main/resources/liveTemplates/spwTemplates.xml:25" }
+  ^["l49"]{ at: ".spw/caches/jetbrains/live-templates.spw:49", rank: #refuted, was: "prop inserts a key and value", now: "prop inserts a property frame with meaning and measure", source: "1aa1dc23:extensions/intellij-spw/src/main/resources/liveTemplates/spwTemplates.xml:33" }
+  ^["l56"]{ at: ".spw/caches/jetbrains/live-templates.spw:56", rank: #refuted, was: "episode has scene, change, and verify", now: "episode has scene and change only", source: "1aa1dc23:extensions/intellij-spw/src/main/resources/liveTemplates/spwTemplates.xml:41" }
+  ^["l63"]{ at: ".spw/caches/jetbrains/live-templates.spw:63", rank: #refuted, was: "stream takes a free date and status", now: "stream fills the date by expression and picks a verb from a fixed list", source: "1aa1dc23:extensions/intellij-spw/src/main/resources/liveTemplates/spwTemplates.xml:49" }
+  ^["l78"]{ at: ".spw/caches/jetbrains/live-templates.spw:78", rank: #refuted, was: "the commenter uses // and has no block form", now: "the commenter uses # and a slash-star block, while the TextMate config says //", source: "1aa1dc23:extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwCommenter.kt:6" }
+  ^["l86"]{ at: ".spw/caches/jetbrains/live-templates.spw:86", rank: #refuted, was: "spellcheck reads comments and strings", now: "spellcheck returns an empty tokenizer, so it is off", source: "1aa1dc23:extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwSpellcheckingStrategy.kt:9" }
+ }
+ #>provenance_errata_jb_navigation
+ ^["jetbrains_navigation"]{
+  #:claim #!refuted
+  statement: "The raw navigation cache invented a parser method, sorting, filters, per-kind icons, and working gutter navigation."
+  corrected_in: ~"../spw/hosts/jetbrains-native-features.spw#editor_hosts_jetbrains_native"
+  ^["l19"]{ at: ".spw/caches/jetbrains/navigation.spw:19", rank: #refuted, was: "one structure-line parser", now: "four line parsers for headings, frames, anchors, and claims", source: "1aa1dc23:extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwStructureViewFactory.kt:54" }
+  ^["l32"]{ at: ".spw/caches/jetbrains/navigation.spw:32", rank: #refuted, was: "alphabetic sorting and kind filters", now: "the view model declares no sorter and no filter", source: "1aa1dc23:extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwStructureViewFactory.kt:23" }
+  ^["l51"]{ at: ".spw/caches/jetbrains/navigation.spw:51", rank: #refuted, was: "a distinct icon per node kind", now: "every structure node uses the file icon", source: "1aa1dc23:extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwStructureViewFactory.kt:133" }
+  ^["l26"]{ at: ".spw/caches/jetbrains/navigation.spw:26", rank: #refuted, was: "properties appear in the outline", now: "no property parser runs in the structure scan", source: "1aa1dc23:extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwStructureViewFactory.kt:41" }
+  ^["l40"]{ at: ".spw/caches/jetbrains/navigation.spw:40", rank: #refuted, was: "gutter markers navigate to targets", now: "gutter markers pass a null navigation handler, so a click does nothing", source: "1aa1dc23:extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwAnnotationLineMarkerProvider.kt:33" }
+ }
+ #>provenance_errata_jb_highlighting
+ ^["jetbrains_highlighting"]{
+  #:claim #!refuted
+  statement: "Six of the seven raw TextMate scope names do not appear in the bundled grammar."
+  corrected_in: ~"../spw/hosts/jetbrains-native-features.spw#editor_hosts_jetbrains_native"
+  ^["l32"]{ at: ".spw/caches/jetbrains/syntax-highlighting.spw:32", rank: #refuted, was: "one operator scope", now: "one scope per sigil role", source: "1aa1dc23:extensions/intellij-spw/src/main/resources/textmate/spw.tmLanguage.json:435" }
+  ^["l38"]{ at: ".spw/caches/jetbrains/syntax-highlighting.spw:38", rank: #refuted, was: "a valence tag scope", now: "one keyword.valence scope per valence", source: "1aa1dc23:extensions/intellij-spw/src/main/resources/textmate/spw.tmLanguage.json:233" }
+  ^["l44"]{ at: ".spw/caches/jetbrains/syntax-highlighting.spw:44", rank: #refuted, was: "markup.heading.spw", now: "markup.heading.section.spw", source: "1aa1dc23:extensions/intellij-spw/src/main/resources/textmate/spw.tmLanguage.json:371" }
+  ^["l50"]{ at: ".spw/caches/jetbrains/syntax-highlighting.spw:50", rank: #refuted, was: "an anchor label scope", now: "entity.name.tag.annotation.anchor.spw", source: "1aa1dc23:extensions/intellij-spw/src/main/resources/textmate/spw.tmLanguage.json:332" }
+  ^["l56"]{ at: ".spw/caches/jetbrains/syntax-highlighting.spw:56", rank: #refuted, was: "keyword.other.annotation.spw", now: "entity.name.tag.annotation.spw", source: "1aa1dc23:extensions/intellij-spw/src/main/resources/textmate/spw.tmLanguage.json:327" }
+  ^["l62"]{ at: ".spw/caches/jetbrains/syntax-highlighting.spw:62", rank: #refuted, was: "an interpolated-string path scope", now: "entity.name.type.path-ref.spw", source: "1aa1dc23:extensions/intellij-spw/src/main/resources/textmate/spw.tmLanguage.json:137" }
+ }
+ #>provenance_errata_vscode
+ ^["vscode_navigation_and_probe_cache"]{
+  #:claim #!refuted
+  statement: "The raw VS Code caches invented quick-pick sections, cache keys, eviction rules, and a server delta mode."
+  corrected_in: ~"../spw/hosts/vscode-lsp-and-cache.spw#editor_hosts_vscode_lsp_cache"
+  ^["nav_l19"]{ at: ".spw/caches/vscode/navigation.spw:19", rank: #refuted, was: "four sections including frames and plans", now: "two sections, workspace roots and indexed landmarks", source: "1aa1dc23:extensions/vscode-spw/src/navigation.ts:75" }
+  ^["probe_l17"]{ at: ".spw/caches/vscode/probe-cache.spw:17", rank: #refuted, was: "keys hash content, request, and parameters", now: "keys join the word geometry, the URI, and the document version", source: "1aa1dc23:extensions/vscode-spw/src/instruments/commands.ts:97" }
+  ^["probe_l40"]{ at: ".spw/caches/vscode/probe-cache.spw:40", rank: #refuted, was: "expirations and disabled_reads counters", now: "the counters are named expired and disabled", source: "1aa1dc23:extensions/vscode-spw/src/instruments/probe-cache.ts:14" }
+  ^["probe_l51"]{ at: ".spw/caches/vscode/probe-cache.spw:51", rank: #refuted, was: "a background timer sweeps old entries", now: "an entry expires lazily when a read finds it too old", source: "1aa1dc23:extensions/vscode-spw/src/instruments/probe-cache.ts:46" }
+  ^["probe_l67"]{ at: ".spw/caches/vscode/probe-cache.spw:67", rank: #refuted, was: "a 256-entry LRU cap", now: "an unbounded map with no eviction policy", source: "1aa1dc23:extensions/vscode-spw/src/instruments/probe-cache.ts:22" }
+  ^["probe_l50"]{ at: ".spw/caches/vscode/probe-cache.spw:50", rank: #refuted, was: "closing a tab purges its entries", now: "no close handler exists; a settings change clears the cache", source: "1aa1dc23:extensions/vscode-spw/src/surface-decorations.ts:464" }
+  ^["syntax_l31"]{ at: ".spw/caches/vscode/syntax-highlighting.spw:31", rank: #refuted, was: "semantic tokens full and delta", now: "the server advertises full tokens only", source: "1aa1dc23:packages/spw-lsp/src/stdio-server.ts:229" }
+ }
+ ^["review_only"]{
+  rows: "jetbrains compatibility, instruments, cache-layer, and features rows and the vscode cache-layer, decorations, instruments, lsp-client, views, and features rows"
+  note: "the reviewers verified these against the code; they are corrected in their host surfaces from the scorecard notes and are not re-listed here line by line"
+  homes: [
+   ~"../spw/hosts/jetbrains-platform.spw#editor_hosts_jetbrains_platform",
+   ~"../spw/hosts/jetbrains-instruments.spw#editor_hosts_jetbrains_instruments",
+   ~"../spw/hosts/jetbrains-native-features.spw#editor_hosts_jetbrains_native",
+   ~"../spw/hosts/vscode-lsp-and-cache.spw#editor_hosts_vscode_lsp_cache",
+   ~"../spw/hosts/vscode-rendering.spw#editor_hosts_vscode_rendering",
+   ~"../spw/hosts/vscode-commands-and-views.spw#editor_hosts_vscode_commands"
+  ]
+ }
+}
+
+^["physical_sciences"]{
+ #>provenance_errata_thermo
+ ^["thermodynamics"]{
+  #:claim #!refuted
+  statement: "The raw thermodynamics files put the Landauer bound fifteen orders of magnitude too high and inverted the definition of temperature."
+  corrected_in: ~"../physical/physics/statistical-mechanics.spw#physics_statmech"
+  ^["landauer"]{
+   at: ".spw/caches/university-education/thermodynamics/non-equilibrium-and-information-thermodynamics.spw:65"
+   rank: #refuted
+   was: "erasing a bit costs micro-joules"
+   now: "the bound is kT ln 2, a few zeptojoules at room temperature"
+   reads: %[phys.info.landauer_300k_zj]
+   source: ~"../registries/sources/provenance-and-reference.spw#src_prov_landauer_1961"
+  }
+  ^["temperature"]{ at: ".spw/caches/university-education/thermodynamics/statistical-and-molecular-thermodynamics.spw:71", rank: #refuted, was: "temperature is the rate of entropy increase with energy", now: "inverse temperature is that rate; temperature is energy gained per unit entropy", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_kittel_kroemer_1980" }
+ }
+ #>provenance_errata_physics
+ ^["physics_and_electrical"]{
+  #:claim #!refuted
+  statement: "The raw physics and electrical files merged two universality classes, two topological invariants, two physicists, and two meanings of matching."
+  corrected_in: ~"../physical/physics/graduate-topics.spw#physics_graduate"
+  ^["universality"]{ at: ".spw/caches/university-education/physics-and-mechanical-engineering/masters-physics.spw:78", rank: #refuted, was: "boiling water and magnetizing iron share critical exponents", now: "the liquid-gas point is in the 3D Ising class; an isotropic magnet like iron is in the 3D Heisenberg class", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_chaikin_lubensky_1995" }
+  ^["invariants"]{ at: ".spw/caches/university-education/physics-and-mechanical-engineering/masters-physics.spw:92", rank: #refuted, was: "Z2 Chern numbers", now: "Chern numbers are integers; the Z2 invariant is a separate index for time-reversal-invariant insulators", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_hasan_kane_2010" }
+  ^["gauge"]{ at: ".spw/caches/university-education/electrical-and-computer-engineering/undergrad-electrical-engineering.spw:55", rank: #refuted, was: "Lorentz gauge", now: "Lorenz gauge, after Ludvig Lorenz, whose 1867 paper predates H. A. Lorentz", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_jackson_okun_2001" }
+  ^["matching"]{ at: ".spw/caches/university-education/electrical-and-computer-engineering/undergrad-electrical-engineering.spw:80", rank: #refuted, was: "maximum power needs equal impedances", now: "maximum power needs a conjugate match, which caps efficiency at half", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_pozar_2012" }
+  ^["phase_margin"]{ at: ".spw/caches/university-education/electrical-and-computer-engineering/undergrad-electrical-engineering.spw:87", rank: #refuted, was: "a phase margin above 45 degrees guarantees stability", now: "stability follows from the Nyquist criterion; a 45 to 60 degree margin is a robustness and overshoot target", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_franklin_2019" }
+ }
+ #>provenance_errata_chemistry
+ ^["chemistry_and_transport"]{
+  #:claim #!refuted
+  statement: "The raw chemistry files misexpanded an NMR acronym, filed a powder method under single crystals, and stated one pumping regime as universal."
+  corrected_in: ~"../physical/chemistry/chemistry-advanced.spw#chemistry_advanced"
+  ^["hmbc"]{ at: ".spw/caches/university-education/chemistry-and-chemical-engineering/masters-chemistry.spw:53", rank: #refuted, was: "Heteronuclear Multiple Bond Coherence", now: "Heteronuclear Multiple Bond Correlation, introduced by Bax and Summers", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_bax_summers_1986" }
+  ^["rietveld"]{ at: ".spw/caches/university-education/chemistry-and-chemical-engineering/masters-chemistry.spw:43", rank: #refuted, was: "Rietveld refinement in single-crystal work", now: "Rietveld refinement fits whole powder diffraction profiles", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_rietveld_1969" }
+  ^["pumping"]{
+   at: ".spw/caches/university-education/chemistry-and-chemical-engineering/undergrad-chemical-engineering.spw:91"
+   rank: #refuted
+   was: "pumping energy falls with the fifth power of radius"
+   now: "the exponent is four for laminar flow, near 4.75 for smooth turbulent flow, and five only when fully rough"
+   reads: %[
+    mateng.transport.pump_power_d_exp_laminar,
+    mateng.transport.pump_power_d_exp_blasius,
+    mateng.transport.pump_power_d_exp_rough
+   ]
+   source: ~"../registries/sources/materials-and-engineering.spw#src_mateng_bsl_2002"
+  }
+ }
+ #>provenance_errata_materials_science
+ ^["materials_science"]{
+  #:claim #!refuted
+  statement: "The raw materials files called silicon an insulator, perfect crystals brittle, and high-entropy alloys superior in creep."
+  corrected_in: ~"../physical/materials/materials-core.spw#materials_core"
+  ^["silicon"]{
+   at: ".spw/caches/university-education/materials-science/taste.spw:27"
+   rank: #refuted
+   was: "pure silicon is an insulator"
+   now: "intrinsic silicon is a semiconductor with a gap near 1.1 eV"
+   reads: %[mateng.silicon.bandgap_ev]
+   source: ~"../registries/sources/materials-and-engineering.spw#src_mateng_sze_ng_2007"
+  }
+  ^["perfect_crystal"]{ at: ".spw/caches/university-education/materials-science/undergrad-materials-science.spw:86", rank: #refuted, was: "a flawless crystal is brittle", now: "dislocation-free whiskers approach theoretical strength; ductility comes from mobile dislocations", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_hull_bacon_2011" }
+  ^["hea_creep"]{ at: ".spw/caches/university-education/materials-science/masters-materials-science.spw:99", rank: #contested, was: "high-entropy alloys creep two orders slower than nickel superalloys", now: "sluggish diffusion is disputed as a general effect, and no such creep advantage is established", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_miracle_senkov_2017" }
+ }
+ #>provenance_errata_mechanical
+ ^["mechanical_and_systems"]{
+  #:claim #!refuted
+  statement: "The raw mechanical and systems files overclaimed Lie groups, inverted fatigue, required viscosity for pumping, and misfiled queues and curves."
+  corrected_in: ~"../physical/engineering/mechanical-advanced.spw#engineering_mechanical_advanced"
+  ^["lie_groups"]{ at: ".spw/caches/university-education/physics-and-mechanical-engineering/masters-mechanical-engineering.spw:74", rank: #contested, was: "Lie groups remove all singularities", now: "working on the group removes coordinate singularities; kinematic singularities of the mechanism remain", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_lynch_park_2017" }
+  ^["fatigue"]{ at: ".spw/caches/university-education/physics-and-mechanical-engineering/taste.spw:19", rank: #refuted, was: "fatigue cracks inevitably break a shaft after ten million cycles", now: "ten million cycles is the usual runout count; steels stressed below their endurance limit can survive beyond it", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_suresh_1998" }
+  ^["pumps"]{ at: ".spw/caches/university-education/physics-and-mechanical-engineering/taste.spw:17", rank: #refuted, was: "no pump can move water without viscosity", now: "a pump adds head through the inviscid Euler turbomachine balance; viscosity adds losses", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_dixon_hall_2014" }
+  ^["blocking"]{ at: ".spw/caches/university-education/design-and-industrial-engineering/undergrad-industrial-engineering.spw:34", rank: #refuted, was: "M/M/c/K models balking", now: "a full buffer blocks arrivals; balking is a customer choice", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_kleinrock_1975" }
+  ^["jackson"]{ at: ".spw/caches/university-education/design-and-industrial-engineering/undergrad-industrial-engineering.spw:35", rank: #refuted, was: "Jackson networks listed as non-Markovian", now: "Jackson networks assume Poisson arrivals and exponential service", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_kleinrock_1975" }
+  ^["g3"]{ at: ".spw/caches/university-education/design-and-industrial-engineering/undergrad-industrial-design.spw:43", rank: #refuted, was: "G3 is torsion-rate continuity", now: "G3 matches the rate of change of curvature across the joint", source: ~"../registries/sources/film-stage-visual.spw#src_film_farin_2002" }
+ }
+ #>provenance_errata_ece
+ ^["computer_engineering"]{
+  #:claim #!refuted
+  statement: "The raw computer engineering files gave pipelining a free fivefold gain and drew EUV features narrower than DNA."
+  corrected_in: ~"../physical/engineering/computer-engineering-core.spw#engineering_computer"
+  ^["pipelining"]{ at: ".spw/caches/university-education/electrical-and-computer-engineering/undergrad-computer-engineering.spw:76", rank: #refuted, was: "five stages give five times the throughput at the same clock", now: "pipelining overlaps stages and shortens the cycle; hazards and stalls keep the gain below the stage count", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_hennessy_patterson_2017" }
+  ^["euv"]{ at: ".spw/caches/university-education/electrical-and-computer-engineering/taste.spw:17", rank: #refuted, was: "EUV patterns are narrower than a strand of DNA", now: "single-exposure EUV features stay several times wider than the two-nanometer double helix", sources: [ ~"../registries/sources/provenance-and-reference.spw#src_prov_mack_2007", ~"../registries/sources/provenance-and-reference.spw#src_prov_alberts_2022" ] }
+ }
+ #>provenance_errata_optics
+ ^["optics_and_film_chemistry"]{
+  #:claim #!refuted
+  statement: "The raw optics files wrote the Petzval sum with radii, called a double-Gauss lens a Petzval, doubled 4:3 into 2.39, and misnumbered a density standard."
+  corrected_in: ~"../physical/optics/aberrations-and-lens-design.spw#optics_aberrations"
+  ^["petzval"]{ at: ".spw/caches/film-chemistry-and-camera-optics/geometric-optics-and-aberrations.spw:53", rank: #refuted, was: "Petzval sum of 1 over n r", now: "for thin lenses the sum is 1 over n f, summed over elements", source: ~"../registries/sources/physical-sciences-and-image.spw#src_phys_kingslake_johnson_2010" }
+  ^["helios"]{ at: ".spw/caches/film-chemistry-and-camera-optics/geometric-optics-and-aberrations.spw:55", rank: #refuted, was: "the Helios 44-2 is a Petzval design", now: "the Helios 44 descends from the Zeiss Biotar, a double-Gauss design", sources: [ ~"../registries/sources/physical-sciences-and-image.spw#src_phys_kingslake_1989", ~"../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_double_gauss" ] }
+  ^["squeeze"]{ at: ".spw/caches/film-chemistry-and-camera-optics/cinematographic-lens-design-and-formats.spw:38", rank: #refuted, was: "a 1.33 gate with a 2x squeeze gives 2.39", now: "1.33 times 2 is 2.66; scope extractions use a narrower gate area", source: ~"../registries/sources/film-stage-visual.spw#src_film_asc_manual" }
+  ^["density"]{ at: ".spw/caches/film-chemistry-and-camera-optics/photographic-processing-and-development.spw:11", rank: #refuted, was: "ISO 5-4 for diffuse density of film", now: "ISO 5-2 covers transmittance density; 5-4 covers reflection", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_iso_5_2_2009" }
+ }
+}
+
+^["computing"]{
+ #>provenance_errata_computing
+ ^["curricula_and_languages"]{
+  #:claim #!superseded
+  statement: "Several raw computing rows describe tools as they stood before 2025, and the language catalog misread four languages."
+  corrected_in: ~"../formal/computing/systems-programming.spw#computing_systems"
+  ^["eevdf"]{ at: ".spw/caches/podcasting/year2-systems-programming.spw:31", rank: #superseded, was: "Linux schedules with CFS", now: "Linux 6.6 replaced CFS with EEVDF, an algorithm Stoica and Abdel-Wahab described in 1995", sources: [ ~"../registries/sources/provenance-and-reference.spw#src_prov_kernelnewbies_66", ~"../registries/sources/provenance-and-reference.spw#src_prov_stoica_1995" ] }
+  ^["spectre_order"]{ at: ".spw/caches/podcasting/year2-systems-programming.spw:17", rank: #contested, was: "Spectre taught in weeks 53 to 54", now: "Spectre leaks through caches, which the plan teaches later in weeks 61 to 62", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_scorecard" }
+  ^["sea_of_nodes"]{ at: ".spw/caches/podcasting/year1-web-development.spw:31", rank: #superseded, was: "TurboFan optimizes on a Sea of Nodes", now: "V8 is replacing Sea of Nodes with the Turboshaft control-flow-graph IR", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_v8_2025" }
+  ^["rocq"]{ at: ".spw/caches/podcasting/year3-abstract-computation.spw:32", rank: #superseded, was: "proofs in Coq", now: "Coq is now the Rocq Prover", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_rocq_site" }
+  ^["hygiene"]{ at: ".spw/caches/language-features/structural-and-homoiconic.spw:19", rank: #refuted, was: "Lisp and Clojure macros are hygienic", now: "defmacro in Common Lisp and Clojure is unhygienic; Scheme syntax-rules is the hygienic line from Kohlbecker", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_kohlbecker_1986" }
+  ^["zig_allocator"]{ at: ".spw/caches/language-features/systems-and-memory.spw:31", rank: #superseded, was: "GeneralPurposeAllocator reports leaks", now: "Zig 0.14.0 rewrote it and renamed it DebugAllocator", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_zig_014" }
+  ^["satisfies"]{ at: ".spw/caches/language-features/type-systems-and-ergonomics.spw:31", rank: #refuted, was: "satisfies validates hex strings", now: "satisfies checks assignability at compile time; it cannot see string contents a type does not encode", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_ts_49" }
+  ^["pipe"]{ at: ".spw/caches/language-features/functional-and-pipeline.spw:60", rank: #refuted, was: "pipes always fill the first argument", now: "the OCaml pipe applies the function to the value, so it fills the last curried parameter; Elixir fills the first", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_minsky_2022" }
+  ^["uiua"]{ at: ".spw/caches/language-features/array-and-concatenative.spw:41", rank: #refuted, was: "Uiua evaluates left to right", now: "Uiua code runs right to left, top to bottom", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_uiua_tour" }
+ }
+}
+
+^["material_history"]{
+ #>provenance_errata_material_taste
+ ^["materials_taste"]{
+  #:claim #!refuted
+  statement: "The raw materials taste file dated the punched card to Jacquard, gave Hollerith one inspiration, and let oil paint dry in minutes."
+  corrected_in: ~"../physical/materials/pigments-and-binders.spw#materials_pigments"
+  ^["punched_card"]{ at: ".spw/caches/materials-matter-and-history/taste.spw:30", rank: #refuted, was: "a French weaver invented the punched card in 1804", now: "Bouchon used punched paper in 1725 and Falcon used cards by 1728; Jacquard built on them", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_essinger_2004" }
+  ^["hollerith"]{ at: ".spw/caches/materials-matter-and-history/taste.spw:32", rank: #contested, was: "Hollerith took the idea from Jacquard cards", now: "Hollerith credited a railway conductor punching tickets; a loom link is argued, not shown", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_essinger_2004" }
+  ^["oil_paint"]{ at: ".spw/caches/materials-matter-and-history/taste.spw:40", rank: #refuted, was: "oil paint dried in minutes before tubes", now: "drying oils cure by oxidation over days; bladders kept ground paint from skinning", source: ~"../registries/sources/provenance-and-reference.spw#src_prov_mayer_1991" }
+ }
+ ^["elsewhere"]{
+  note: "steel, ink, paint, acrylic, fiber, and water corrections live in the provenance corrections of the surfaces that absorbed those raw files"
+  homes: [
+   ~"../physical/materials/steel-and-iron.spw#materials_steel",
+   ~"../record/inscription/inks-and-inscription.spw#inscription_inks",
+   ~"../physical/materials/pigments-and-binders.spw#materials_pigments",
+   ~"../physical/materials/fibers-and-textiles.spw#materials_fibers",
+   ~"../physical/materials/water.spw#materials_water"
+  ]
+ }
+}
+
+^["flagged"]{
+ basis: "the review flagged these lines; no correction source was checked in this pass, so the raw line is dropped rather than corrected"
+ ^["minerals"]{ at: ".spw/caches/university-education/materials-science/taste.spw:17", gist: "millions of distinct minerals" }
+ ^["transistors"]{ at: ".spw/caches/university-education/electrical-and-computer-engineering/taste.spw:18", gist: "a trillion transistors on a thumbnail-sized die" }
+ ^["gradle"]{ at: ".spw/caches/jetbrains/compatibility.spw:46", gist: "Gradle task paths for a standalone root project" }
+}
+
+#>provenance_errata_technical_q
+?["Do invented editor features cluster in the parts of a host the generator could not read?"]{
+ #:depth #!computational ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "Features declared in plugin.xml or package.json came out right, while behavior hidden in method bodies was invented more often."
+ !probe{ "tag each editor row by whether the true answer sits in a manifest or in code, then compare error rates" =id[p_prov_errata_editor_visibility] =kind[census] }
+ $%[prov.review.r1_file_count, prov.migration.drop_count]
+ ~"./errata-technical.spw#provenance_errata_jb_navigation" ~#neighbor(nearest)
+}

@@ -7,7 +7,7 @@
 #:domain #!institutions
 #:form #!calendar
 #:level #!intro
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 #:era #!current
 #:season #!crescendo
@@ -32,7 +32,13 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
  }
+ corrections: #[
+  "fact check: the January 1 row merged the statutory New Year holiday with a typical admissions deadline under one typical status; split into a fixed row and a typical row",
+  "fact check: the holiday source no longer dates every rule to 1968; it cites 5 U.S.C. 6103 as amended, with the 1941, 1975, and 1983 changes"
+ ]
  date_rule: "fixed rows follow statute or a published rule; typical rows follow common campus practice; verify rows need the current year source"
 }
 
@@ -112,7 +118,8 @@
  #>institutions_academic_year_january
  ^["january"]{
   rows: #[
-   .{ when: "Fri 2027-01-01", what: "New Year federal holiday and a common regular decision deadline", status: "typical" },
+   .{ when: "Fri 2027-01-01", what: "New Year's Day federal holiday", status: "fixed" },
+   .{ when: "Jan 1", what: "common regular decision deadline", status: "typical" },
    .{ when: "Mon 2027-01-04", what: "season reset; many quarter campuses begin winter term this week", status: "typical" },
    .{ when: "Mon 2027-01-18", what: "Birthday of Martin Luther King Jr. federal holiday", status: "fixed" },
    .{ when: "mid January", what: "spring semester classes begin", status: "typical" }

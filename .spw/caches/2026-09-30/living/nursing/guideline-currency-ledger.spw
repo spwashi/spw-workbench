@@ -1,0 +1,294 @@
+# Guideline Currency Ledger
+#
+# Which guideline governs each clinical topic in this branch, with body, year, and status, and supersession edges that keep the replaced version visible.
+
+#>nursing_guideline_ledger
+#:layer #!reference
+#:domain #!nursing
+#:form #!ledger
+#:level #!practitioner
+#:review #!adversarial_checked
+#:valence #!bonk
+
+^"emit"{
+ ~#title: "Guideline Currency Ledger"
+ ~#claim: "Clinical guidelines replace one another, so each topic here names the body, year, and status of the version in force and keeps the replaced version beside it."
+ ~#proof: "Entries cite the guidelines themselves, from the 2009 and 2020 vancomycin consensus statements to the 2026 Surviving Sepsis Campaign guidelines, each checked on the as_of date."
+ ~#door: "Find your topic, read the current entry, then follow the supersedes edge back to see what changed."
+ ~#audience: "nursing students, educators, and anyone checking a clinical claim"
+ continuity: "Guideline Currency Ledger | the version in force"
+ cold_open: "Before you trust a clinical rule, check that it is still the version in force and who replaced the old one."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #partial }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ revision_2026_10_03: "r6 redated the r4 fact-check to 2026-10-02, the day its sources were read"
+ checked: "bibliographic records for the 2026 sepsis guidelines, their dissent, and later commentary were read in Europe PMC on 2026-10-02; the content of the 2026 fluid recommendations was not read and stays a verify item"
+ checked_fix: "Europe PMC records for the 2025 PADIS focused update, the 2020 and 2026 pediatric sepsis guidelines, and the 2026 publisher correction were read on 2026-10-02"
+ corrections: #[
+  "the 2025 SCCM PADIS focused update was missing; it is added as current, and the 2018 entry is marked amended in part",
+  "the 2026 sepsis entry did not say it covers adults; it is labelled adults, its publisher correction is noted, and the 2026 pediatric guideline is added over the 2020 pediatric one",
+  "the 2009 vancomycin entry said troughs guided dosing; the 2009 review named an AUC/MIC target and used troughs as the practical surrogate"
+ ]
+}
+
+^["edges"]{
+ see: [ ~"./pathophysiology-and-pharmacology.spw#nursing_pathophysiology", ~"./critical-care.spw#nursing_critical_care" ]
+ analog: [ ~"../development-and-ecology/forms-for-scripts.spw#development_ecology_script_forms_succ_map" ]
+}
+
+^["concepts"]{
+ primary: [ #supersession, #guideline_drift, #drug_monitoring ]
+ transfers: [ #dated_receipt, #provenance ]
+ tensions: [ #fluid_responsiveness ]
+}
+
+^["scope"]{
+ #>nursing_guideline_ledger_guard
+ ^["guard"]{
+  #:valence #!honk
+  warning: "a ledger entry says which document governs, not what to do; read the guideline itself and follow local policy and the prescriber"
+ }
+ what: "a currency ledger of the guidelines behind this branch"
+ not_advice: "general information, not clinical instruction"
+ statuses: "current means in force when checked on the as_of date; superseded means replaced; verify means check the issuing body before use"
+}
+
+^["supersession"]{
+ =~"./guideline-currency-ledger.spw#nursing_guideline_vanc_2020"[supersedes]{ ~"./guideline-currency-ledger.spw#nursing_guideline_vanc_2009" }
+ =~"./guideline-currency-ledger.spw#nursing_guideline_ssc_2026"[supersedes]{ ~"./guideline-currency-ledger.spw#nursing_guideline_ssc_2021" }
+ =~"./guideline-currency-ledger.spw#nursing_guideline_dka_2024"[supersedes]{ ~"./guideline-currency-ledger.spw#nursing_guideline_dka_2009" }
+ =~"./guideline-currency-ledger.spw#nursing_guideline_shea_2022"[supersedes]{ ~"./guideline-currency-ledger.spw#nursing_guideline_chx_bundle" }
+ =~"./guideline-currency-ledger.spw#nursing_guideline_ssc_peds_2026"[supersedes]{ ~"./guideline-currency-ledger.spw#nursing_guideline_ssc_peds_2020" }
+ =~"./guideline-currency-ledger.spw#nursing_guideline_padis_2025"[supersedes]{ ~"./guideline-currency-ledger.spw#nursing_guideline_padis" }
+ partial: "the 2025 PADIS focused update supersedes the 2018 guideline only on the questions it re-examined"
+}
+
+^["ledger"]{
+ ^["vancomycin"]{
+  #>nursing_guideline_vanc_2009
+  ^["consensus_2009"]{
+   #:claim #!superseded
+   statement: "The 2009 ASHP, IDSA, and SIDP review named an AUC/MIC target for vancomycin but recommended trough concentrations as the practical way to monitor it."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_rybak_2009"
+   year: 2009
+  }
+  #>nursing_guideline_vanc_2020
+  ^["consensus_2020"]{
+   #:claim #!settled
+   statement: "The 2020 revision by ASHP, IDSA, PIDS, and SIDP recommends AUC-guided monitoring for serious MRSA infections and drops trough-only targeting."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_rybak_2020"
+   year: 2020
+   status: "current as of 2026-10-02"
+  }
+ }
+ ^["sepsis"]{
+  #>nursing_guideline_sepsis3
+  ^["definitions_2016"]{
+   #:claim #!settled
+   statement: "Sepsis-3 of 2016 defines sepsis by organ dysfunction from a dysregulated response to infection, replacing definitions built on inflammatory response criteria."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_singer_2016"
+   year: 2016
+   status: "current as of 2026-10-02"
+  }
+  #>nursing_guideline_hour_one
+  ^["hour_one_bundle"]{
+   #:claim #!settled
+   statement: "The Surviving Sepsis Campaign 2018 update compressed its first bundle of care into one hour."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_levy_2018"
+   year: 2018
+   status: "a performance bundle rather than a guideline; its standing under the 2026 guidelines is a verify item"
+  }
+  #>nursing_guideline_ssc_2021
+  ^["ssc_2021"]{
+   #:claim #!superseded
+   statement: "SSC 2021 made a fixed weight-based initial crystalloid volume a weak recommendation on low-quality evidence and favored dynamic measures to guide further fluid."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_evans_2021"
+   year: 2021
+  }
+  #>nursing_guideline_ssc_2026
+  ^["ssc_2026"]{
+   #:claim #!settled
+   statement: "The Surviving Sepsis Campaign published new adult guidelines in 2026 in Critical Care Medicine and Intensive Care Medicine, replacing the 2021 adult edition."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_prescott_2026"
+   counter: ~"../../registries/sources/plants-ecology-care.spw#src_eco_spiegel_2026"
+   population: "adults"
+   correction: "a publisher correction to the Intensive Care Medicine version appeared in 52(6):1411-1413"
+   year: 2026
+   status: "current as of 2026-10-02; the wording of its fluid and vasopressor recommendations is a verify item in this cut"
+  }
+  #>nursing_guideline_ssc_peds_2020
+  ^["ssc_peds_2020"]{
+   #:claim #!superseded
+   statement: "The 2020 Surviving Sepsis Campaign guidelines for children covered septic shock and sepsis-associated organ dysfunction."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_weiss_2020"
+   year: 2020
+  }
+  #>nursing_guideline_ssc_peds_2026
+  ^["ssc_peds_2026"]{
+   #:claim #!settled
+   statement: "Separate 2026 Surviving Sepsis Campaign guidelines for children replaced the 2020 pediatric guidelines."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_weiss_2026"
+   population: "children"
+   year: 2026
+   status: "current as of 2026-10-02; its recommendations were not read for this cut and are a verify item"
+  }
+ }
+ ^["dka"]{
+  #>nursing_guideline_dka_2009
+  ^["adults_2009"]{
+   #:claim #!superseded
+   statement: "The 2009 ADA consensus statement on hyperglycemic crises guided adult DKA care for fifteen years."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_kitabchi_2009"
+   year: 2009
+  }
+  #>nursing_guideline_dka_2024
+  ^["adults_2024"]{
+   #:claim #!settled
+   statement: "A 2024 consensus report from ADA, EASD, JBDS, AACE, and DTS replaced the 2009 statement for adults with DKA and hyperglycemic hyperosmolar state."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_umpierrez_2024"
+   year: 2024
+   status: "current as of 2026-10-02"
+  }
+  #>nursing_guideline_dka_peds
+  ^["children_2022"]{
+   #:claim #!settled
+   statement: "Children with DKA follow the ISPAD 2022 clinical practice consensus guideline."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_glaser_2022"
+   year: 2022
+   status: "current as of 2026-10-02; ISPAD revises on a cycle, verify"
+  }
+ }
+ ^["oral_care"]{
+  #>nursing_guideline_chx_bundle
+  ^["chlorhexidine_bundle"]{
+   #:claim #!superseded
+   statement: "Ventilator bundles once included routine chlorhexidine mouth care for adults, until a 2014 meta-analysis found no benefit outside cardiac surgery and a possible mortality signal."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_klompas_2014"
+   year: 2014
+  }
+  #>nursing_guideline_shea_2022
+  ^["shea_2022"]{
+   #:claim #!settled
+   statement: "The 2022 SHEA compendium lists daily toothbrushing without chlorhexidine as essential and chlorhexidine oral care as generally not recommended for ventilated adults."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_klompas_2022"
+   year: 2022
+   status: "current as of 2026-10-02"
+  }
+ }
+ ^["cardiac"]{
+  #>nursing_guideline_acs_2025
+  ^["acs_2025"]{
+   #:claim #!settled
+   statement: "The 2025 ACC, AHA, ACEP, NAEMSP, and SCAI guideline for acute coronary syndromes replaced the separate 2013 STEMI and 2014 non-ST-elevation guidelines."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_rao_2025"
+   year: 2025
+   status: "current as of 2026-10-02"
+  }
+  #>nursing_guideline_af_2023
+  ^["af_2023"]{
+   #:claim #!settled
+   statement: "The 2023 ACC, AHA, ACCP, and HRS guideline governs atrial fibrillation care, including rate-control cautions for pre-excitation and reduced ejection fraction."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_joglar_2023"
+   year: 2023
+   status: "current as of 2026-10-02"
+  }
+  #>nursing_guideline_aha_2025
+  ^["resuscitation_2025"]{
+   #:claim #!settled
+   statement: "The American Heart Association published new guidelines for CPR and emergency cardiovascular care in 2025, replacing the 2020 guidelines."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_del_rios_2025"
+   year: 2025
+   status: "current as of 2026-10-02"
+  }
+ }
+ ^["critical_care"]{
+  #>nursing_guideline_ards_2024
+  ^["ards_2024"]{
+   #:claim #!settled
+   statement: "The 2024 ATS clinical practice guideline updated adult ARDS management with conditional recommendations on corticosteroids, ECMO, neuromuscular blockade, and PEEP."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_qadir_2024"
+   year: 2024
+   status: "current as of 2026-10-02"
+  }
+  #>nursing_guideline_padis
+  ^["padis_2018"]{
+   #:claim #!settled
+   statement: "The 2018 SCCM PADIS guideline covers pain, agitation and sedation, delirium, immobility, and sleep disruption in adult intensive care."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_devlin_2018"
+   year: 2018
+   status: "current; amended in part by the 2025 focused update, which left the questions it did not re-examine, such as light sedation, standing"
+  }
+  #>nursing_guideline_padis_2025
+  ^["padis_2025"]{
+   #:claim #!settled
+   statement: "A 2025 SCCM focused update added anxiety and made conditional recommendations for dexmedetomidine over propofol, enhanced mobilization, and melatonin, with none possible on benzodiazepines for anxiety or antipsychotics for delirium."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_lewis_2025"
+   year: 2025
+   status: "current as of 2026-10-02"
+   contraindications: "the conditions and cautions for each recommendation live in the guideline text and the product labels"
+  }
+ }
+ ^["foundations"]{
+  #>nursing_guideline_isolation
+  ^["isolation_2007"]{
+   #:claim #!settled
+   statement: "The 2007 CDC HICPAC isolation guideline, which updated the 1996 guideline, sets standard and transmission-based precautions for US health care."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_siegel_2007"
+   year: 2007
+   status: "verify; CDC has updated parts of this guideline since 2007"
+  }
+  #>nursing_guideline_pressure_injury
+  ^["pressure_injury_2016"]{
+   #:claim #!settled
+   statement: "The 2016 staging system of the National Pressure Ulcer Advisory Panel, renamed NPIAP in 2019, sets the US terms for pressure injury."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_edsberg_2016"
+   year: 2016
+   status: "verify against the newest international pressure injury guideline"
+  }
+  #>nursing_guideline_ana_code
+  ^["ana_code_2025"]{
+   #:claim #!settled
+   statement: "The American Nurses Association revised its Code of Ethics for Nurses in 2025, replacing the 2015 edition."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_ana_2025"
+   year: 2025
+   status: "current as of 2026-10-02"
+  }
+ }
+}
+
+^["try"]{
+ #>nursing_guideline_ledger_try_check
+ ^["check_one_entry"]{
+  materials: [ "a browser", "this ledger" ]
+  steps: << "pick one entry marked current or verify" ; "open the issuing body's guideline page" ; "look for a newer version or a focused update" ; "write the date you checked beside the entry in your own notes" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "none worth naming; checking a date changes no one's care"
+  shows: ~"./guideline-currency-ledger.spw#nursing_guideline_ssc_2026"
+ }
+}
+
+#>nursing_guideline_ledger_lag_q
+?["How long does a bedside practice outlive the guideline that dropped it?"]{
+ #:depth #!historical ~#lens(historical layer)
+ #:claim #!speculative
+ ~#hypothesis: "Practices built into order sets and bundles outlast their guidelines longer than practices taught only in textbooks, because each order set must be edited by hand."
+ !probe{ "track chlorhexidine and trough-only orders in published audits before and after each guideline change" =id[p_eco_ledger_lag] =kind[lit] }
+ ~"./guideline-currency-ledger.spw#nursing_guideline_shea_2022" ~#neighbor(nearest)
+}

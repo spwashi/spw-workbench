@@ -1,0 +1,153 @@
+# Order Counter
+#
+# A schedule is a partial order: count the orders it allows, treat one spoken GO as one event, and permute sound-change rules to see feeding and bleeding fall out of sign and order.
+
+#>spw_lab_order_counter
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!advanced
+#:review #!sourced
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Order Counter"
+ ~#claim: "A schedule allows a countable set of orders; grouping cues under one GO shrinks that set, and the order of two rules decides whether one feeds or bleeds the other."
+ ~#proof: "Counting linear extensions is a classic hard problem in order theory; the feeding and bleeding vocabulary is Kiparsky; the Grimm, Verner, and stress-shift order follows standard historical linguistics."
+ ~#door: "Count the legal orders of the three parallel cues, then group two under one GO and count again."
+ ~#audience: "stage managers, assistant directors, historical linguists, and Spw authors who write parallel bars"
+ continuity: "Order Counter | one GO"
+ cold_open: "Three cues that may fire in any order allow six sequences; call two on one GO and only two remain."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "persona study contraption_catalog[5], references/studies/persona-synthesis.json", "sketch references/spw-branch/seeds/contraptions/order-counter.spw" ]
+ method: #authored
+ evidence: #[ "permutation counts below were computed by brute force on 2026-10-02", "readBias over the rule frame returned one forward and one inverse edge at commit 1aa1dc23" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the clinical bundle audit in the persona catalog is removed: precedence checks on care protocols belong to clinicians, not to this bench",
+  "the sketch counted a page from a real prompt book; the page here is a made-up teaching page"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../language-and-mind/linguistics/historical-linguistics.spw#linguistics_historical_verner" ]
+ analog: [ ~"../../making/broadcast/episode-run-sheet.spw#broadcast_run_sheet", ~"../../making/theatre/theatre-core.spw#theatre_core" ]
+ see: [ ~"./dag-walker.spw#spw_lab_dag_walker", ~"./law-lab.spw#spw_lab_law_lab" ]
+}
+
+^["concepts"]{
+ primary: [ #partial_order, #ordering ]
+ transfers: [ #commutation, #run_sheet ]
+ tensions: [ #reflexive_mirror ]
+}
+
+^["tool"]{
+ status: #proposed
+ verb: "spw orders FILE, which would count the linear extensions of each schedule and treat a declared GO group as one event; not yet a command"
+ implemented: #[
+  "packages/spw-seed/src/canonical/read-bias.ts:102 readBias for the rule edges",
+  "the parser keeps schedule separators, so a counter can read them from the Stream node"
+ ]
+ sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_read_bias", ~"../../registries/sources/spw-contraptions.spw#src_contrap_parse_runs" ]
+}
+
+^["parameters"]{
+ page: "a made-up teaching page with one standby and three cues"
+ go_group: "lx_45 and sq_12 are called on one spoken GO"
+ counting: "a GO group counts as one event; cues joined by a parallel bar may commute"
+}
+
+#>spw_lab_order_counter_page
+^["calling"]{
+ page_parallel: << standby ; lx_45 || sq_12 || fly_3 ; lx_46 >>
+ page_grouped: << standby ; go_a || fly_3 ; lx_46 >>
+ go_a: #[ lx_45, sq_12 ]
+ ~#(one GO word fires lx_45 and sq_12 together, so count that GO as one event)
+}
+
+^["world"]{
+ #>spw_lab_order_counter_hard
+ ^["counting_is_hard"]{
+  #:claim #!settled
+  statement: "Counting the linear extensions of a finite partial order is #P-complete, so exact counts get expensive as schedules grow, though small pages count instantly."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_brightwell_winkler_1991"
+ }
+ #>spw_lab_order_counter_kiparsky
+ ^["feeding_and_bleeding"]{
+  #:claim #!settled
+  statement: "Kiparsky named rule interactions by order: a rule feeds another when it creates inputs for it, and bleeds it when it removes them; the reversed orders are counterfeeding and counterbleeding."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_kiparsky_1968"
+ }
+ #>spw_lab_order_counter_germanic
+ ^["germanic_order"]{
+  #:claim #!settled
+  statement: "Grimm turned voiceless stops into fricatives; Verner voiced those fricatives unless the accent fell just before them; the later shift of accent to the root removed that conditioning."
+  sources: [ ~"../../registries/sources/language-and-communities.spw#src_lang_grimm_1822", ~"../../registries/sources/language-and-communities.spw#src_lang_verner_1877", ~"../../registries/sources/language-and-communities.spw#src_lang_campbell_2013" ]
+ }
+}
+
+^["rules"]{
+ #>spw_lab_order_counter_grimm
+ ^["grimm"]{ gist: "voiceless stops became fricatives" }
+ #>spw_lab_order_counter_verner
+ ^["verner"]{ gist: "a voiceless fricative became voiced unless the immediately preceding syllable carried the accent" }
+ #>spw_lab_order_counter_stress
+ ^["stress"]{ gist: "the accent moved to the first syllable of the root" }
+ #>spw_lab_order_counter_interactions
+ ^["interactions"]{
+  =~"./order-counter.spw#spw_lab_order_counter_grimm"[feeding]{ ~"./order-counter.spw#spw_lab_order_counter_verner" }
+  =bane~"./order-counter.spw#spw_lab_order_counter_stress"[bleeding]{ ~"./order-counter.spw#spw_lab_order_counter_verner" }
+  attested: << grimm ; verner ; stress >>
+ }
+}
+
+^["battery"]{
+ #>spw_lab_order_counter_cues
+ ^["cue_orders"]{
+  !probe{ "count the orders of page_parallel, then of page_grouped" =id[p_contrap_order_counter_cues] =kind[calc] }
+  predict: ?{ "how many orders before and after grouping" } ~<guess>
+  expect: "six orders for three free cues; two once lx_45 and sq_12 share one GO; one if all three share it"
+  shows: ~"./order-counter.spw#spw_lab_order_counter_page"
+ }
+ #>spw_lab_order_counter_rules
+ ^["rule_orders"]{
+  !probe{ "list all six orders of grimm, verner, and stress, and keep those where grimm feeds verner and stress follows verner" =id[p_contrap_order_counter_rules] =kind[calc] }
+  expect: "exactly one survives, the attested order; stress after verner is the counterbleeding order"
+  shows: ~"./order-counter.spw#spw_lab_order_counter_kiparsky"
+ }
+}
+
+#>spw_lab_order_counter_mirror
+^["language_mirror"]{
+ question: "What does a parallel bar inside a schedule promise?"
+ instrument: "count the orders each Spw schedule allows and compare with what its author meant"
+ reading: "canon reads the semicolon as sequential and the parallel bar as parallel inside a schedule; nothing in the parser executes either"
+ standing: "a-canon: flow protocol sigils name the separators; a-cut: may commute is this bench reading of parallel"
+ source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_canon_flow_sigils"
+ !probe{ "count orders for every schedule in the cut and flag those that allow more than ten" =id[p_contrap_order_counter_census] =kind[census] }
+}
+
+^["limits"]{
+ holds: "how many orders a written schedule allows, and which rule orders give which interaction"
+ fails: "a parallel bar means may commute, not at the same instant; nothing executes a schedule, and parallel rule systems such as Optimality Theory have no order to permute"
+}
+
+#>spw_lab_order_counter_q
+?["Do experienced callers group more cues under one GO than new callers on the same page?"]{
+ #:depth #!social ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "Experience should shrink the count of legal orders on a page, because practised callers group cues that must land together."
+ !probe{ "ask volunteer callers to mark GO groups on one teaching page and compare counts by years of calling, reporting groups and never individuals" =id[p_contrap_order_counter_q] =kind[interview] }
+ $%[probe.wonder_count]
+ ~"./order-counter.spw#spw_lab_order_counter_page" ~#neighbor(nearest)
+ breaks: "a teaching page lacks the actors, the house, and the director, which decide most real grouping"
+}

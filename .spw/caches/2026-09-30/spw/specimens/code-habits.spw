@@ -1,0 +1,290 @@
+# Code Habit Specimens
+#
+# C-family, shell, HDL, and MATLAB habits fed to the Spw parser one line at a time, each with the verdict, loudness, and fingerprint signature it produced.
+
+#>spw_spec_code
+#:layer #!semantics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!foundation
+#:review #!sourced
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Code Habit Specimens"
+ ~#claim: "A C-family habit can parse without a single warning into a tree the programmer did not mean, a quiet restructuring."
+ ~#proof: "Each row was run through the parser at commit 1aa1dc23 and records the signature, verdict, and loudness it produced."
+ ~#door: "Start with the ternary row, then read the false-friend card it points to."
+ ~#audience: "programmers pasting C, JavaScript, Rust, shell, Verilog, or MATLAB into Spw"
+ continuity: "Code Habit Specimens | quiet restructuring"
+ cold_open: "Code you know by heart can parse cleanly into the wrong tree, a quiet restructuring that no tool reports."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/studies/persona-synthesis.json false_friends_top and contraption_catalog",
+  "writer probe run of every habit and every write_instead form at commit 1aa1dc23 on 2026-10-02",
+  "replay of every row and write_instead form against the parser on 2026-10-03, signatures, lexer errors, and loudness unchanged"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the persona sketches kept habits in single-quoted strings, which the cut bans outside double quotes; rows use double-quoted strings with backslash escapes",
+  "the persona lab named spw fingerprint --expr as the probe, but --expr reports zero lexer errors for x: -3 while --stdin --json reports one, so rows use surface parsing",
+  "with a final newline the apostrophe in 1'000 and 8'hFF opens an unterminated string, a lexer error, where a one-line probe without the newline reported none",
+  "the emit card claim lacked its continuity phrase, so the brief emit gate failed on 2026-10-03; the claim now names the quiet restructuring"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes" ]
+ feeds: [ ~"../glossary/false-friends.spw#spw_false_friends" ]
+}
+
+#>spw_spec_code_observed
+^["observed"]{
+ #:claim #!settled
+ statement: "Each row was parsed at commit 1aa1dc23 as its habit line, any following line, and a final newline; signature, verdict, and loudness are what the tools then reported."
+ source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes"
+ cites: [ "packages/spw-seed/src/canonical/fingerprint.ts:49-70", "scripts/analyzers/spw-cut-gate.ts:193-217" ]
+}
+
+^["fixture"]{
+ status: #proposed
+ runner: "no repository code replays these rows as regression fixtures at 1aa1dc23; the writer probe script was scratch"
+}
+
+^["c_family"]{
+ #>spw_spec_code_ternary
+ ^["ternary"]{
+  habit: "x: a ? b : c"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=2 Expression=4 Identifier=3 ModifierChain=1 Operation=1 Seed=1 Sequence=1"
+  observed: "x binds a; a second binding, keyed on a ? operation that takes b as a modifier, binds c"
+  write_instead: "x: \"a ? b : c\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_infix"
+ }
+ #>spw_spec_code_logical_and
+ ^["logical_and"]{
+  habit: "ok: a && b"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=4 Identifier=2 ModifierChain=1 Operation=2 Seed=1 Sequence=1"
+  observed: "ok binds a; two & operations follow, the second taking b as a modifier"
+  write_instead: "ok: \"a && b\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_infix"
+ }
+ #>spw_spec_code_generic
+ ^["generic"]{
+  habit: "t: Vec<i32>", followed_by: "next: 1"
+  verdict: #swallows, loudness: #gate
+  signature: "Binding=2 Capsule=1 Expression=3 Identifier=4 Literal=1 Seed=1 Sequence=1"
+  observed: "Vec<i32> is a medial capsule with no right arm on its line, so it takes the key next from the following line"
+  write_instead: "t: \"Vec<i32>\","
+  case_of: ~"../glossary/false-friends.spw#spw_ff_swallow"
+ }
+ #>spw_spec_code_hex
+ ^["hex"]{
+  habit: "mask: 0xFF"
+  verdict: #splits, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=2 Literal=1 Seed=1 Sequence=1"
+  observed: "mask binds 0, and xFF becomes a separate identifier"
+  write_instead: "mask: \"0xFF\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_code_exponent
+ ^["exponent"]{
+  habit: "n: 1e3"
+  verdict: #splits, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=2 Literal=1 Seed=1 Sequence=1"
+  observed: "n binds 1, and e3 becomes a separate identifier"
+  write_instead: "n: 1000"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_code_negative
+ ^["negative"]{
+  habit: "x: -3"
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 1
+  signature: "Binding=1 Expression=2 Identifier=1 Literal=1 Seed=1 Sequence=1"
+  observed: "the minus sign is a lexer error and is dropped, so x binds 3"
+  write_instead: "x: \"-3\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_code_digit_separator
+ ^["digit_separator"]{
+  habit: "n: 1'000"
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 1
+  signature: "Binding=1 Expression=3 Identifier=1 Literal=2 Seed=1 Sequence=1"
+  observed: "n binds 1, and the apostrophe opens a single-quoted string that never closes"
+  write_instead: "n: 1000"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_code_suffix
+ ^["suffix"]{
+  habit: "b: 3u8"
+  verdict: #splits, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=2 Literal=1 Seed=1 Sequence=1"
+  observed: "b binds 3, and u8 becomes a separate identifier"
+  write_instead: "b: .{ n: 3, type: u8 }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_code_leading_dot
+ ^["leading_dot"]{
+  habit: "x: .5"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=1 Literal=1 Operation=1 Seed=1 Sequence=1"
+  observed: "x binds a bare . operation, and 5 follows as a separate literal"
+  write_instead: "x: 0.5"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_code_logical_not
+ ^["logical_not"]{
+  habit: "t: !done"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=1 Operation=1 Seed=1 Sequence=1"
+  observed: "t binds a ! action operation named done; nothing is negated"
+  write_instead: "t: \"not done\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_infix"
+ }
+ #>spw_spec_code_block_comment
+ ^["block_comment"]{
+  habit: "x: 1 /* note */", followed_by: "y: 2"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=2 Expression=5 Identifier=2 Literal=2 ModifierChain=1 Operation=2 Seed=1 Sequence=1"
+  observed: "no comment opens: the slashes become connectors, the stars become operations, and note becomes a modifier"
+  write_instead: "x: 1 // note"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_infix"
+ }
+ #>spw_spec_code_line_comment
+ ^["line_comment"]{
+  habit: "x: 1 // note", followed_by: "y: 2"
+  verdict: #clean, loudness: #silent
+  signature: "Binding=2 Expression=4 Identifier=2 Literal=2 Seed=1 Sequence=1"
+  observed: "two slashes start a line comment, as in C, and both bindings survive"
+ }
+ #>spw_spec_code_scope_resolution
+ ^["scope_resolution"]{
+  habit: "v: std::vector"
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 1
+  signature: "Binding=2 Expression=3 Identifier=3 Seed=1 Sequence=1"
+  observed: "the second colon is a lexer error, and std becomes a nested key that binds vector"
+  write_instead: "v: \"std::vector\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_colon"
+ }
+ #>spw_spec_code_member_arrow
+ ^["member_arrow"]{
+  habit: "p: s->x"
+  verdict: #degrades, loudness: #validator
+  signature: "Prose=1 ProseChunk=1 Seed=1"
+  observed: "the > closes a capsule that never opened, and the whole surface becomes prose"
+  write_instead: "p: \"s->x\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_comparison"
+ }
+ refs: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_kr_1988", ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_cpp14", ~"../../registries/sources/spw-design-studies.spw#src_lab_klabnik_nichols_2023", ~"../../registries/sources/spw-design-studies.spw#src_lab_ecma262_2020" ]
+}
+
+^["shell"]{
+ #>spw_spec_code_env_var
+ ^["env_var"]{
+  habit: "home: $HOME"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=1 Operation=1 Seed=1 Sequence=1"
+  observed: "home binds a $ substrate operation named HOME; no environment is read"
+  write_instead: "home: \"$HOME\""
+ }
+ #>spw_spec_code_pipe
+ ^["pipe"]{
+  habit: "cmd: a | b"
+  verdict: #clean, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=3 Seed=1 Sequence=1"
+  observed: "a and b stay in one expression joined by a | connector; nothing runs"
+ }
+ #>spw_spec_code_home_path
+ ^["home_path"]{
+  habit: "dir: ~/bin"
+  verdict: #degrades, loudness: #validator
+  signature: "Prose=1 ProseChunk=2 Seed=1"
+  observed: "the parse stops at the ~ operator, and the whole surface becomes prose"
+  write_instead: "dir: \"~/bin\""
+ }
+ refs: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_posix_2017" ]
+}
+
+^["hdl_and_matlab"]{
+ #>spw_spec_code_bit_range
+ ^["bit_range"]{
+  habit: "bus: data[7:0]"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=2 Expression=4 Frame=1 Identifier=2 Literal=2 Parameter=1 Seed=1 Sequence=1"
+  observed: "data takes a [ ] frame whose single parameter binds 7 to 0"
+  write_instead: "bus: .{ name: data, msb: 7, lsb: 0 }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_colon"
+ }
+ #>spw_spec_code_sized_literal
+ ^["sized_literal"]{
+  habit: "w: 8'hFF"
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 1
+  signature: "Binding=1 Expression=3 Identifier=1 Literal=2 Seed=1 Sequence=1"
+  observed: "w binds 8, and the apostrophe opens a single-quoted string that never closes"
+  write_instead: "w: \"8'hFF\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_code_colon_range
+ ^["colon_range"]{
+  habit: "r: 1:10"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=2 Expression=3 Identifier=1 Literal=2 Seed=1 Sequence=1"
+  observed: "r binds a nested binding of 1 to 10"
+  write_instead: "r: .{ from: 1, to: 10 }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_colon"
+ }
+ #>spw_spec_code_not_equal
+ ^["not_equal"]{
+  habit: "t: a ~= b"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=4 Identifier=2 ModifierChain=1 Operation=2 Seed=1 Sequence=1"
+  observed: "t binds a; a bare ~ operation and an = operation with modifier b follow"
+  write_instead: "t: \"a ~= b\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_equals"
+ }
+ #>spw_spec_code_preprocessor
+ ^["preprocessor"]{
+  habit: "#if 0", followed_by: "x: 1"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=1 Literal=1 Operation=1 ProseChunk=1 Seed=1 Sequence=1"
+  observed: "#if becomes a tag operation with 0 as a prose payload, and the next line still parses, so nothing is switched off"
+  write_instead: "disabled: \"x: 1\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_hash"
+ }
+ refs: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_ieee1364_2005" ]
+}
+
+^["try"]{
+ #>spw_spec_code_try
+ ^["ternary_drill"]{
+  materials: [ "a terminal at the repository root", "a scratch file outside the cut" ]
+  steps: << "pipe the ternary habit into npm run spw -- fingerprint --stdin --json" ; "compare signature and errorCount with the row" ; "pipe the write_instead form the same way" ; "note which fields changed" >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "no hazard worth naming; keep scratch files outside the cut"
+  shows: ~"./code-habits.spw#spw_spec_code_ternary"
+ }
+}
+
+#>spw_spec_code_quiet_q
+?["Would a programmer predict the code rows before running them?"]{
+ #:depth #!computational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Programmers predict the degrading rows more often than the restructuring rows, because a broken parse matches compiler habits and a quiet restructuring does not."
+ !probe{ "ask programmers to write a predicted verdict for each code row before piping it, then tally predictions per row and never per person" =id[p_gloss_code_predict] =kind[interview] }
+ $%[gloss.spec.silent_n, gloss.spec.rows_n]
+ ~"./code-habits.spw#spw_spec_code_observed" ~#neighbor(nearest)
+}

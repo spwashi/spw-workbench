@@ -1,0 +1,224 @@
+# Transport and Signaling
+#
+# Proteins sorted into membranes and vesicles, SNARE fusion in its single home, receptors that switch states, and the apoptosis program, written as state machines.
+
+#>cell_biology_signaling
+#:layer #!reference
+#:domain #!cell_biology
+#:form #!state_machine
+#:level #!advanced
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Transport and Signaling"
+ ~#claim: "Vesicles bud, tether, and fuse through coat proteins, Rab switches, and zippering SNAREs, while receptors and caspases move between discrete states that a cell reads as signals."
+ ~#proof: "Signal hypothesis of Blobel, sec genes of Schekman, the SNARE hypothesis of Sollner and Rothman, G proteins of Gilman, the receptor structure of Kobilka, and the apoptosome of Wang and Akey."
+ ~#door: "Walk the vesicle machine first, then the receptor machine, then the apoptosis machine."
+ ~#audience: "advanced students who know what a protein fold is"
+ continuity: "Transport and Signaling | zippering SNAREs"
+ cold_open: "Vesicles bud, tether, and fuse when zippering SNAREs pull two membranes together, and receptors switch states a cell can read."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/molecular-and-cellular-biology/cellular-transport-and-signal-transduction.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #fail }
+  ^["r4"]{ event: #sourced, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ receipt_note: "r3 was first written as a pass while every source link pointed at a registry not yet written; r4 wrote and checked that registry, and r5 is the passing run after it"
+ corrections: #[
+  "SNARE fusion now lives only here; the neuroscience branch links to this surface instead of restating it (raw line 21 and the neurobiology raw line 29)",
+  "the raw nuclear pore wonder claimed absolute selectivity and stated the FG hydrogel as settled; the selective-phase and virtual-gate models are kept as a contest (raw line 40)",
+  "the raw apoptosome line used the nickname wheel of death; the structure is described as a wheel-shaped heptamer (raw line 32)",
+  "credits added for the signal hypothesis, the sec genes, the SNARE hypothesis, G proteins, and receptor desensitization",
+  "2026-10-03: the form axis now reads state_machine, the architecture the plan assigns and the vesicle, receptor, and apoptosis machines use"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./protein-structure-and-enzymes.spw#cell_biology_proteins" ]
+ feeds: [ ~"./cell-cycle-and-stem-cells.spw#cell_biology_cell_cycle", ~"../neuroscience/cellular-neurobiology.spw#neuroscience_cellular" ]
+ see: [ ~"../bioengineering/biomaterials-and-tissue.spw#bioengineering_biomaterials" ]
+}
+
+^["concepts"]{
+ primary: [ #signal_transduction, #vesicle_fusion, #apoptosis ]
+ transfers: [ #state_machine, #amplification ]
+ tensions: [ #phase_separation ]
+}
+
+^["ledger"]{
+ ^["sorting"]{
+  #>cell_biology_signaling_signal_peptide
+  ^["signal_hypothesis"]{
+   #:claim #!settled
+   statement: "Secreted and membrane proteins carry an N-terminal signal sequence; the signal recognition particle pauses translation and docks the ribosome at the ER translocon."
+   sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_blobel_dobberstein_1975", ~"../../registries/sources/life-and-mind.spw#src_life_walter_blobel_1981" ]
+   credit: "Gunter Blobel and colleagues proposed and tested the signal hypothesis; George Palade mapped the secretory pathway it feeds"
+   credit_source: ~"../../registries/sources/life-and-mind.spw#src_life_palade_1975"
+  }
+  #>cell_biology_signaling_coats
+  ^["coats"]{
+   #:claim #!settled
+   statement: "COPII coats bud cargo from the ER toward the Golgi, COPI coats return escaped ER residents, and clathrin coats bud vesicles from the plasma membrane, pinched off by dynamin."
+   sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_barlowe_1994", ~"../../registries/sources/life-and-mind.spw#src_life_pearse_1976", ~"../../registries/sources/life-and-mind.spw#src_life_alberts_2022" ]
+   credit: "Novick, Field, and Schekman found the yeast sec genes behind these steps in 1980"
+   credit_source: ~"../../registries/sources/life-and-mind.spw#src_life_novick_1980"
+  }
+ }
+ ^["fusion"]{
+  #>cell_biology_signaling_rab
+  ^["rab_switch"]{
+   #:claim #!settled
+   statement: "Rab GTPases are active when GTP-bound on a membrane and inactive when GDP-bound in the cytosol; active Rabs recruit tethers that bring a vesicle to its target."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_stenmark_2009"
+  }
+  #>cell_biology_signaling_snare
+  ^["snare_zipper"]{
+   #:claim #!settled
+   statement: "A vesicle SNARE and target-membrane SNAREs zipper into a four-helix bundle that pulls the two bilayers together and fuses them; NSF with alpha-SNAP spends ATP to pull spent complexes apart."
+   sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_sollner_1993", ~"../../registries/sources/life-and-mind.spw#src_life_weber_1998" ]
+   credit: "James Rothman and colleagues proposed the SNARE hypothesis and reconstituted fusion with SNAREs alone"
+   home: "this is the single home for SNARE fusion; synaptic release in the neuroscience branch adds calcium sensing on top of it"
+   ~#say(two zippers close and the membranes have no choice but to merge)
+  }
+ }
+ ^["receptors"]{
+  #>cell_biology_signaling_g_proteins
+  ^["g_protein_cycle"]{
+   #:claim #!settled
+   statement: "An activated seven-transmembrane receptor makes its G protein swap GDP for GTP; the alpha subunit and the beta-gamma pair then act on effectors until GTP is hydrolyzed."
+   sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_gilman_1987", ~"../../registries/sources/life-and-mind.spw#src_life_rasmussen_2011" ]
+   credit: "Alfred Gilman and Martin Rodbell for G proteins; Brian Kobilka and colleagues for the first receptor-G protein complex structure"
+  }
+  #>cell_biology_signaling_second_messengers
+  ^["second_messengers"]{
+   #:claim #!settled
+   statement: "Gs stimulates adenylyl cyclase to make cAMP, which activates PKA; Gq activates phospholipase C-beta, which cuts PIP2 into IP3, releasing ER calcium, and DAG, activating PKC."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_alberts_2022"
+  }
+  #>cell_biology_signaling_arrestin
+  ^["desensitization"]{
+   #:claim #!settled
+   statement: "Phosphorylated receptors bind arrestin, which blocks further G protein coupling and leads the receptor into endocytosis."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_lohse_1990"
+   credit: "Robert Lefkowitz and colleagues"
+  }
+  #>cell_biology_signaling_rtk
+  ^["rtk_cascade"]{
+   #:claim #!settled
+   statement: "Ligand-bound receptor tyrosine kinases dimerize and phosphorylate each other; Grb2 and Sos then activate Ras, which starts the Raf, MEK, ERK kinase cascade into the nucleus."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_lemmon_schlessinger_2010"
+  }
+  #>cell_biology_signaling_ultrasensitive
+  ^["ultrasensitivity"]{
+   #:claim #!settled
+   statement: "Modelled and measured in frog oocyte extracts, the three-tier MAPK cascade converts a graded input into a steep, switch-like output."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_huang_ferrell_1996"
+   ^["limits"]{
+    holds: "the oocyte extract system and models with similar kinetics"
+    fails: "in many cell types the same cascade responds in a graded way, depending on scaffolds and feedback"
+   }
+  }
+ }
+ ^["death"]{
+  #>cell_biology_signaling_apoptosis_term
+  ^["apoptosis_named"]{
+   #:claim #!settled
+   statement: "Kerr, Wyllie, and Currie named apoptosis in 1972 as a controlled form of cell death with shrinkage and fragmentation, distinct from necrosis."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_kerr_1972"
+  }
+  #>cell_biology_signaling_apoptosome
+  ^["apoptosome"]{
+   #:claim #!settled
+   statement: "When Bax and Bak permeabilize the outer mitochondrial membrane, cytochrome c joins Apaf-1 with dATP to form a wheel-shaped heptamer that activates caspase-9, then caspases 3 and 7."
+   sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_liu_1996", ~"../../registries/sources/life-and-mind.spw#src_life_zou_1997", ~"../../registries/sources/life-and-mind.spw#src_life_acehan_2002" ]
+   credit: "Xiaodong Wang and colleagues for the cytochrome c and Apaf-1 steps; Christopher Akey and colleagues for the structure"
+  }
+ }
+ ^["nucleus"]{
+  #>cell_biology_signaling_pore
+  ^["nuclear_pore_barrier"]{
+   #:claim #!contested
+   statement: "Nuclear pores pass small molecules freely and large cargo only with transport receptors; whether the FG-repeat barrier works as a cohesive gel or as a brush of mobile chains is debated."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_frey_gorlich_2007"
+   counter: ~"../../registries/sources/life-and-mind.spw#src_life_rout_2003"
+  }
+ }
+}
+
+^["machines"]{
+ #>cell_biology_signaling_vesicle_machine
+ ^["vesicle"]{
+  ^["budding"]{ does: "a coat bends the donor membrane around selected cargo", done_when: "the bud is pinched off" }
+  ^["uncoated"]{ does: "the coat falls away so the vesicle can meet its target", done_when: "an active Rab is exposed" }
+  ^["tethered"]{ does: "a Rab-recruited tether holds the vesicle near the target membrane", done_when: "SNAREs from both membranes meet" }
+  ^["docked"]{ does: "trans-SNARE complexes begin to zipper across the gap", done_when: "zippering completes" }
+  ^["fused"]{ does: "membranes merge and cargo is released; SNAREs now sit in one membrane", done_when: "NSF and alpha-SNAP pull the complex apart" }
+  ^["recycled"]{ does: "free SNAREs return for another round", done_when: "the next bud forms" }
+  ?match[@event]{
+   "coat assembled" => { next: "budding" }
+   "scission" => { next: "uncoated" }
+   "rab active" => { next: "tethered" }
+   "snares pair" => { next: "docked" }
+   "zipper closes" => { next: "fused" }
+   "nsf disassembly" => { next: "recycled" }
+   _ => { next: "stay", why: "no event; the vesicle holds its state" }
+  }
+ }
+ #>cell_biology_signaling_receptor_machine
+ ^["receptor"]{
+  ^["resting"]{ does: "receptor empty, G protein holds GDP", done_when: "ligand binds" }
+  ^["active"]{ does: "receptor catalyzes GDP for GTP exchange", done_when: "G protein splits from the receptor" }
+  ^["signaling"]{ does: "alpha-GTP and beta-gamma act on effectors such as adenylyl cyclase", done_when: "alpha hydrolyzes its GTP" }
+  ^["desensitized"]{ does: "kinase-phosphorylated receptor binds arrestin", done_when: "the receptor is internalized and recycled or degraded" }
+  ?match[@event]{
+   "ligand binds" => { next: "active" }
+   "gtp loaded" => { next: "signaling" }
+   "gtp hydrolyzed" => { next: "resting" }
+   "prolonged stimulation" => { next: "desensitized" }
+   _ => { next: "stay", why: "no ligand; the receptor rests" }
+  }
+ }
+ #>cell_biology_signaling_death_machine
+ ^["apoptosis"]{
+  ^["intact"]{ does: "pro-survival Bcl-2 proteins restrain Bax and Bak", done_when: "BH3-only sensors tip the balance" }
+  ^["permeabilized"]{ does: "Bax and Bak open the outer mitochondrial membrane", done_when: "cytochrome c reaches the cytosol" }
+  ^["apoptosome"]{ does: "Apaf-1 assembles and activates caspase-9", done_when: "executioner caspases are cut and active" }
+  ^["dismantled"]{ does: "caspases cleave structural and nuclear proteins; the cell is packaged for removal", done_when: "neighbors or phagocytes engulf the fragments" }
+  ?match[@event]{
+   "bh3 signal exceeds survival signal" => { next: "permeabilized" }
+   "cytochrome c released" => { next: "apoptosome" }
+   "caspase-3 active" => { next: "dismantled" }
+   _ => { next: "stay", why: "survival signals hold; the cell lives" }
+  }
+ }
+}
+
+#>cell_biology_signaling_cascade_q
+?["Why does a cell pass one signal through three kinases instead of one?"]{
+ #:depth #!computational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "Each added tier lets the cascade sharpen a graded input and adds a point where scaffolds and feedback can tune the output, at the cost of delay."
+ !probe{ "simulate one-, two-, and three-tier kinase chains with equal total enzyme and compare steepness and delay" =id[p_life_signaling_tiers] =kind[sim] }
+ ~"./transport-and-signaling.spw#cell_biology_signaling_ultrasensitive" ~#neighbor(nearest)
+}
+
+#>cell_biology_signaling_pore_q
+?["Is a nuclear pore more like a sieve, a turnstile, or a crowd?"]{
+ #:depth #!physical ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "The gel model behaves like a sieve that receptors dissolve through, the brush model like a crowd that pushes cargo back, and single-pore imaging could tell them apart."
+ breaks: "a turnstile admits one at a time in order, while pores pass many cargoes at once in both directions"
+ !probe{ "list single-pore tracking studies and note which model each result favors" =id[p_life_signaling_pore_models] =kind[lit] }
+ ~"./transport-and-signaling.spw#cell_biology_signaling_pore" ~#neighbor(nearest)
+}

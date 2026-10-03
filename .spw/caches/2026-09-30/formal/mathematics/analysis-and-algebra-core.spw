@@ -7,7 +7,7 @@
 #:domain #!mathematics
 #:form #!curriculum
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -21,14 +21,19 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-02"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/university-education/mathematics/undergrad-pure-and-applied-mathematics.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
  }
  corrections: #[
   "completeness was glossed as Banach spaces; a complete metric space is a Banach space only when it is also a normed vector space",
@@ -36,7 +41,9 @@
   "Lagrange and Sylow now say finite groups; the Galois correspondence now says finite Galois extension",
   "Heine-Borel is scoped to Euclidean space; general metric spaces need complete and totally bounded",
   "the Lebesgue first look states Fatou for nonnegative functions and Tonelli for sigma-finite factors",
-  "the ODE and PDE material moved to the engineering core differential equations leaf"
+  "the ODE and PDE material moved to the engineering core differential equations leaf",
+  "the Jordan limit now says the rotation has no Jordan form over the reals, while the real Jordan form with 2-by-2 blocks exists",
+  "the rank-nullity limit now says the cardinal equation survives infinite dimension but cannot be solved for the kernel by subtraction"
  ]
 }
 
@@ -70,7 +77,7 @@
    source: ~"../../registries/sources/formal.spw#src_formal_axler_2024"
    ^["limits"]{
     holds: "finite-dimensional domain over any field"
-    fails: "infinite-dimensional domains, where both sides can be infinite and the equation says nothing"
+    fails: "in infinite dimensions the equation still holds for cardinals, using a basis, but the kernel dimension can no longer be found by subtracting the rank"
    }
   }
   #>mathematics_core_spectral
@@ -86,7 +93,7 @@
    source: ~"../../registries/sources/formal.spw#src_formal_dummit_foote_2004"
    ^["limits"]{
     holds: "algebraically closed fields, or any field once the characteristic polynomial splits"
-    fails: "a real rotation by 90 degrees has no real eigenvalues and no real Jordan form; rational canonical form covers that case"
+    fails: "a real rotation by 90 degrees has no real eigenvalues, so no Jordan form over the reals; the real Jordan form with 2-by-2 blocks, or the rational canonical form, covers it"
    }
   }
  }
@@ -209,7 +216,7 @@
  #>mathematics_core_try_lagrange
  ^["subgroups_of_z12"]{
   materials: [ "paper", "pencil" ]
-  steps: << "write the integers 0 to 11 with addition mod 12" ; "for each element, add it to itself until you return to 0" ; "record each generated subgroup and its size" ; "check that every size divides 12" ; "look for a size that divides 12 but never appears" >>
+  steps: << "write the integers 0 to 11 with addition mod 12" ; "for each element, add it to itself until you return to 0" ; "record each generated subgroup and its size" ; "check that every size divides 12" ; "notice that every divisor of 12 appears, because a cyclic group meets the converse that the alternating group fails" >>
   time: .{ n: 20, unit: "minutes" }
   safety: "no hazard worth naming"
   shows: ~"./analysis-and-algebra-core.spw#mathematics_core_lagrange"

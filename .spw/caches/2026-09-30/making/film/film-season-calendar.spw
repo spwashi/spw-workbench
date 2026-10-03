@@ -14,7 +14,7 @@
 
 ^"emit"{
  ~#title: "Film Season Calendar"
- ~#claim: "From October to January the film year runs from autumn festivals to awards qualifying, holiday releases, and the January festivals, and most dates move each year."
+ ~#claim: "From late August to January the film year runs from autumn festivals to awards qualifying, holiday releases, and the January festivals, and most dates move each year."
  ~#proof: "Festival and Academy announcements as reported for 2026 and 2027, each marked verify until checked against the organizer."
  ~#door: "Find this week on the schedule, then check each verify cell against its organizer."
  ~#audience: "filmmakers planning submissions and releases, and readers following awards season"
@@ -29,9 +29,16 @@
  method: #authored
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #skim, outcome: #partial }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #partial }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-01", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
  }
+ corrections: [
+  "the card claim now starts the film year in late August, matching the autumn festival window, instead of October"
+ ]
  checked: "2026 festival dates and 2027 Academy dates were read from an encyclopedia summary on 2026-10-01, not from the organizers; they stay verify"
 }
 

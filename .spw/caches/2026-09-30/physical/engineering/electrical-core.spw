@@ -1,0 +1,264 @@
+# Electrical Core
+#
+# The undergraduate electrical sequence as a prerequisite graph: circuits, devices, amplifiers, lines, noise, and power, each resting on the canonical electromagnetism node.
+
+#>engineering_electrical
+#:layer #!reference
+#:domain #!engineering
+#:form #!curriculum
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Electrical Core"
+ ~#claim: "Lumped circuits are electromagnetism made small, and most design rules, like matching, hold only for the goal they were written for."
+ ~#proof: "Johnson traces the equivalent-circuit theorems, Pozar separates conjugate matching from line matching, Shockley gives the diode, and Johnson and Nyquist give thermal noise."
+ ~#door: "Start with circuits, then measure a battery to find its Thevenin equivalent."
+ ~#audience: "first- and second-year electrical engineering students and hobbyists"
+ continuity: "Electrical Core | the goal"
+ cold_open: "A circuit is electromagnetism made small, and every matching rule only holds for the goal it was written for."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/electrical-and-computer-engineering/undergrad-electrical-engineering.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #fail }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ gate_note: "r3 first recorded a pass; that run failed on links to the computer engineering and ECE advanced surfaces not yet written, and r5 records the run after they landed"
+ corrections: #[
+  "the raw said maximum power transfers only when impedances match; conjugate matching maximizes load power from a fixed source at half efficiency, and line matching to Z0 is a different goal",
+  "the raw invariant that a phase margin above 45 degrees guarantees stability moves to control and signals, restated as a heuristic",
+  "Maxwell equations and gauge choice move to the canonical electromagnetism node; the gauge the raw called Lorentz is the Lorenz gauge, after Ludvig Lorenz",
+  "the 50 percent faster RF-prototyping wonder had no source and is restated without a magnitude",
+  "signals and transforms move to control and signals so the material lives once",
+  "the battery try used a bare AA cell whose internal resistance sits far below every load, so it could never show a power peak, and its 2 ohm load overran a half-watt rating; the cell now drives loads through a known series resistor"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../physics/electromagnetism.spw#physics_em", ~"../../formal/mathematics/engineering-core/differential-equations.spw#mathematics_diffeq" ]
+ feeds: [ ~"./control-and-signals.spw#engineering_control_signals", ~"./computer-engineering-core.spw#engineering_computer", ~"./ece-advanced.spw#engineering_ece_advanced" ]
+ grounds: [ ~"../materials/materials-core.spw#materials_core_silicon" ]
+}
+
+^["concepts"]{
+ primary: [ #circuit, #impedance, #feedback ]
+ transfers: [ #noise, #transmission_line ]
+ tensions: [ #matching_goal ]
+}
+
+^["dag"]{
+ =~"./electrical-core.spw#engineering_electrical_ac"[needs]{ ~"./electrical-core.spw#engineering_electrical_circuits" }
+ =~"./electrical-core.spw#engineering_electrical_devices"[needs]{ ~"./electrical-core.spw#engineering_electrical_circuits" }
+ =~"./electrical-core.spw#engineering_electrical_amplifiers"[needs]{ ~"./electrical-core.spw#engineering_electrical_devices" ; ~"./electrical-core.spw#engineering_electrical_ac" }
+ =~"./electrical-core.spw#engineering_electrical_lines"[needs]{ ~"./electrical-core.spw#engineering_electrical_ac" }
+ =~"./electrical-core.spw#engineering_electrical_noise"[needs]{ ~"./electrical-core.spw#engineering_electrical_amplifiers" }
+ =~"./electrical-core.spw#engineering_electrical_power"[needs]{ ~"./electrical-core.spw#engineering_electrical_ac" ; ~"./electrical-core.spw#engineering_electrical_devices" }
+ order: << "circuits" ; "ac" ; "devices" ; "amplifiers" ; "lines" ; "noise" ; "power" >>
+}
+
+#>engineering_electrical_circuits
+^["circuits"]{
+ course: "Circuits I with a prototyping laboratory"
+ topics: [
+  "Kirchhoff current and voltage laws, nodal and mesh analysis",
+  "Thevenin and Norton equivalents, superposition",
+  "first- and second-order transients, damping ratio"
+ ]
+
+ #>engineering_electrical_lumped
+ ^["lumped_limit"]{
+  #:claim #!settled
+  statement: "Kirchhoff laws treat parts as points joined by ideal wires; that lumped picture holds when the circuit is much smaller than the wavelength of its signals."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_sedra_smith_2014"
+  ^["limits"]{
+   holds: "audio and low-frequency circuits on a bench"
+   fails: "fast edges on long traces, where the wire becomes a transmission line"
+  }
+ }
+ #>engineering_electrical_thevenin
+ ^["thevenin_norton"]{
+  #:claim #!settled
+  statement: "At its terminals any linear network acts as a source with one impedance; Helmholtz in 1853 and Thevenin in 1883 gave the voltage form, Mayer and Norton the current form in 1926."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_johnson_2003"
+ }
+}
+
+#>engineering_electrical_ac
+^["ac"]{
+ course: "Circuits II: sinusoidal steady state"
+ topics: [
+  "phasors, impedance, admittance",
+  "real, reactive, and apparent power, power factor",
+  "resonance, quality factor, bandwidth"
+ ]
+
+ #>engineering_electrical_conjugate_match
+ ^["conjugate_match"]{
+  #:claim #!settled
+  statement: "A fixed source delivers the most power to a load equal to the complex conjugate of its own impedance, and at that point only half the power reaches the load."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_pozar_2012"
+  ^["limits"]{
+   holds: "the source impedance is fixed and only the load can be chosen, as in antennas and sensor front ends"
+   fails: "grids and power supplies, which keep source impedance low to maximize efficiency instead"
+  }
+ }
+}
+
+#>engineering_electrical_devices
+^["devices"]{
+ course: "Electronic devices and circuits"
+ topics: [
+  "p-n junctions, depletion, Zener breakdown",
+  "MOSFET threshold, triode and saturation, channel-length modulation",
+  "bipolar transistors and small-signal models"
+ ]
+
+ #>engineering_electrical_diode
+ ^["diode"]{
+  #:claim #!settled
+  statement: "Shockley derived in 1949 that junction current rises exponentially with forward voltage and saturates at a small reverse current."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_shockley_1949"
+  ^["limits"]{
+   holds: "an ideal junction at moderate current"
+   fails: "high injection, series resistance, and reverse breakdown"
+  }
+ }
+ #>engineering_electrical_mosfet
+ ^["mosfet"]{
+  #:claim #!settled
+  statement: "In the long-channel square-law model, a saturated MOSFET passes drain current proportional to the square of gate overdrive; short channels depart from that law."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_sedra_smith_2014"
+ }
+}
+
+#>engineering_electrical_amplifiers
+^["amplifiers"]{
+ course: "Analog circuits"
+ topics: [
+  "common-source, common-drain, and common-gate stages",
+  "differential pairs and current mirrors",
+  "op-amp configurations, Miller effect, frequency response"
+ ]
+
+ #>engineering_electrical_opamp_rules
+ ^["opamp_rules"]{
+  #:claim #!settled
+  statement: "The op-amp rules of no input current and equal input voltages hold only while large open-loop gain sits inside a negative feedback loop and the output stays unsaturated."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_sedra_smith_2014"
+  see: [ ~"./control-and-signals.spw#engineering_control_signals_black" ]
+ }
+}
+
+#>engineering_electrical_lines
+^["lines"]{
+ course: "Fields, waves, and transmission lines"
+ topics: [
+  "telegrapher equations and characteristic impedance",
+  "reflection coefficient, standing waves, Smith chart",
+  "waveguides and antennas"
+ ]
+ heuristic: "treat a trace as a line once its delay is a sizable fraction of the signal rise time; the exact fraction is a rule of thumb"
+
+ #>engineering_electrical_line_match
+ ^["line_match"]{
+  #:claim #!settled
+  statement: "A line terminated in its characteristic impedance reflects nothing; that reflection-free match is a different condition from the conjugate match for maximum power."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_pozar_2012"
+ }
+}
+
+#>engineering_electrical_noise
+^["noise"]{
+ course: "Noise and measurement, taught inside analog and communications courses"
+ topics: [
+  "thermal, shot, and flicker noise",
+  "noise bandwidth and noise figure"
+ ]
+
+ #>engineering_electrical_johnson_noise
+ ^["thermal_noise"]{
+  #:claim #!settled
+  statement: "Johnson measured and Nyquist derived in 1928 that any resistor makes a noise voltage whose mean square is 4kTR per unit bandwidth, setting a floor no circuit escapes."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_johnson_1928", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_nyquist_1928" ]
+  ^["limits"]{
+   holds: "frequencies well below kT over Planck constant"
+   fails: "very high frequencies or very low temperatures, where the quantum form applies"
+  }
+ }
+}
+
+#>engineering_electrical_power
+^["power"]{
+ course: "Energy conversion and power electronics"
+ topics: [
+  "balanced three-phase circuits and per-unit analysis",
+  "transformers, induction and synchronous machines",
+  "buck and boost converters, pulse-width modulation, inverters"
+ ]
+
+ #>engineering_electrical_switching
+ ^["switch_mode"]{
+  #:claim #!settled
+  statement: "Switch-mode converters stay efficient because their transistors are either fully on or fully off; pulse-width modulation sets the average output."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_mohan_2003"
+ }
+}
+
+^["try"]{
+ #>engineering_electrical_try_battery
+ ^["battery_thevenin"]{
+  materials: [
+   "one alkaline AA cell in a holder",
+   "a 4.7 ohm resistor to act as the source resistance",
+   "load resistors of 2.2, 3.3, 4.7, 6.8, 10, and 22 ohms",
+   "every resistor rated 2 watts",
+   "a multimeter",
+   "clip leads"
+  ]
+  steps: <<
+   "wire the cell in series with the 4.7 ohm resistor and treat the pair as the source" ;
+   "measure the open-circuit voltage of the pair" ;
+   "connect each load across the pair for a few seconds and measure the voltage across the load" ;
+   "compute load current, load power, and the fraction of total power the load receives" ;
+   "plot load power against load resistance and find the peak" ;
+   "compare the peak with the source resistance and read the efficiency there"
+  >>
+  time: .{ n: 40, unit: "minutes" }
+  safety: "keep the 4.7 ohm resistor in every circuit and never short the bare cell; with 2 watt parts no resistor exceeds its rating even if wired straight across the cell, but warm resistors can still burn fingers"
+  shows: ~"./electrical-core.spw#engineering_electrical_conjugate_match"
+ }
+}
+
+#>engineering_electrical_harvest_q
+?["Should a tiny solar harvester match its load for most power or for best efficiency?"]{
+ #:depth #!physical ~#lens(energy budget)
+ #:claim #!speculative
+ ~#hypothesis: "When the source is free but weak, as ambient light is, tracking the maximum-power point wins; when each joule costs fuel, efficiency wins and matching loses."
+ !probe{ "log stored energy for a small panel charging a capacitor through a fixed resistor versus a maximum-power tracker" =id[p_mateng_electrical_harvest] =kind[build] }
+ $%[file.frame_count]
+ ~"./electrical-core.spw#engineering_electrical_conjugate_match" ~#neighbor(nearest)
+}
+
+#>engineering_electrical_brownian_q
+?["Is resistor noise the electrical cousin of a pollen grain jittering in water?"]{
+ #:depth #!physical ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "Both are thermal agitation read through a dissipative channel, so the same temperature that sets the jitter sets the noise, and cooling a resistor quiets it."
+ breaks: "the grain is one visible particle; Johnson noise sums countless carriers and turns quantum at high frequency"
+ !probe{ "measure amplifier output noise with the input resistor at room temperature and in ice water" =id[p_mateng_electrical_brownian] =kind[build] }
+ $%[graph.out_degree]
+ ~"./electrical-core.spw#engineering_electrical_johnson_noise" ~#neighbor(nearest)
+}

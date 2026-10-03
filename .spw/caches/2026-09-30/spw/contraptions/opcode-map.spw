@@ -1,0 +1,177 @@
+# Opcode Map
+#
+# Thirteen operators by four bounds, each cell sorted by how the parser takes it at line start and in binding position; cells no table names are gaps, and cells where canon and parser disagree are walls.
+
+#>spw_lab_opcode_map
+#:layer #!semantics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!advanced
+#:review #!sourced
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Opcode Map"
+ ~#claim: "Of the fifty-two operator-by-bound cells, the angle column holds every line-swallowing cell, and the one angle cell canon gives a reading turns to prose."
+ ~#proof: "A parse census of every cell at commit 1aa1dc23, checked against the canonical containers in the operator atlas and the steps in the form ladders."
+ ~#door: "Predict the angle column before you read it, then find the single wall."
+ ~#audience: "C programmers reading an opcode table, mathematicians, designers, and Spw language designers"
+ continuity: "Opcode Map | angle column"
+ cold_open: "Most operator cells parse cleanly; the angle column is where lines get swallowed and where canon meets a wall."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "persona study contraption_catalog[8], references/studies/persona-synthesis.json", "sketch references/spw-branch/seeds/contraptions/opcode-map.spw" ]
+ method: #authored
+ evidence: #[
+  "a scratch census parsed every cell, written with a and b inside its bound and followed by the line next: 1, at commit 1aa1dc23 on 2026-10-03",
+  "named forms were read from the form ladder steps at packages/spw-seed/src/canonical/form-ladders.ts:302-562"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the sketch called star with square brackets unnamed without saying unnamed where; gaps here are measured against the atlas and the form ladders only",
+  "the sketch counted the binding position without its swallowing cells; the angle column swallows eleven there"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../glossary/operators.spw#spw_gloss_operators" ]
+ feeds: [ ~"./grid-gap-finder.spw#spw_lab_grid_gap" ]
+ see: [ ~"./false-friend-lab.spw#spw_lab_false_friend" ]
+}
+
+^["concepts"]{
+ primary: [ #periodic_table, #hole ]
+ transfers: [ #notation, #reflexive_mirror ]
+ tensions: [ #overclaim ]
+}
+
+^["tool"]{
+ status: #proposed
+ verb: "spw cells, which would parse every operator-by-bound cell and print the map; not yet a command"
+ implemented: #[ "packages/spw-cli/src/commands.ts:284 spw fingerprint, which classifies one cell at a time" ]
+ scratch: "the census that filled this map ran from a scratch script over parse(); no command in the repository tabulates the cells at 1aa1dc23 that this bench found"
+ sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_cli", ~"../../registries/sources/spw-contraptions.spw#src_contrap_parse_runs" ]
+}
+
+^["parameters"]{
+ operators: #[ "~", "#", ".", "?", "!", "*", "&", "@", "^", "$", "%", "=", "<>" ]
+ bounds: #[ bracket, brace, paren, angle ]
+ positions: #[ line_start, binding ]
+ classes: #[ clean, prose, swallows ]
+ swallow_test: "a cell swallows when the expression it begins on line one reaches into the next line"
+ named_by: "the canonical containers of the operator atlas and the steps of the form ladders"
+}
+
+^["map"]{
+ #>spw_lab_opcode_map_line_start
+ ^["line_start"]{
+  #:claim #!settled
+  statement: "At line start, 40 of 52 cells parse cleanly, 3 turn to prose, and 9 swallow the next line; every swallowing cell sits in the angle column."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_parse_runs"
+  ^["angle_column"]{
+   clean: #[ "~", "^" ]
+   prose: #[ "#", "?" ]
+   swallows: #[ ".", "!", "*", "&", "@", "$", "%", "=", "<>" ]
+  }
+  other_prose: "the hash with round brackets"
+ }
+ #>spw_lab_opcode_map_binding
+ ^["binding"]{
+  #:claim #!settled
+  statement: "After a key and colon, the angle column swallows 11 of 13 cells, and the hash with round brackets is the only cell that turns to prose."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_parse_runs"
+ }
+}
+
+^["walls"]{
+ #>spw_lab_opcode_map_wall
+ ^["question_angle"]{
+  #:claim #!settled
+  statement: "The operator atlas gives the question mark the angle container, yet at line start the parser makes that cell prose, and after a key it swallows the next line."
+  canon: "docs/theory/spw/operator-atlas.spw:29"
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_canon_operator_atlas", ~"../../registries/sources/spw-contraptions.spw#src_contrap_parse_runs" ]
+ }
+ #>spw_lab_opcode_map_open_doors
+ ^["canon_agrees"]{
+  #:claim #!settled
+  statement: "The other three canonical containers, the hash with square brackets, the dot with curly brackets, and the at sign with round ones, all parse cleanly."
+  canon: "docs/theory/spw/operator-atlas.spw:27-30"
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_canon_operator_atlas", ~"../../registries/sources/spw-contraptions.spw#src_contrap_parse_runs" ]
+ }
+}
+
+^["gaps"]{
+ #>spw_lab_opcode_map_gaps
+ ^["unnamed_clean"]{
+  #:claim #!settled
+  statement: "Sixteen cells have a step in the form ladders; of the forty clean cells, twenty-four have a form in neither the ladders nor the atlas container table."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_parse_runs"
+  cites: [ "packages/spw-seed/src/canonical/form-ladders.ts:302-562", "docs/theory/spw/operator-atlas.spw:25-30" ]
+  examples: #[ "*[a, b]", "$[a, b]", "@{a, b}", "%(a, b)" ]
+ }
+ #>spw_lab_opcode_map_in_use
+ ^["table_gap_not_language_gap"]{
+  #:claim #!interpretive
+  statement: "Some table gaps are in daily use, such as the wonder bracket and the defer brace, so a gap in two tables is not yet a gap in the language."
+  see: [ ~"../../contract.spw#cut_contract" ]
+ }
+}
+
+^["battery"]{
+ #>spw_lab_opcode_map_predict
+ ^["predict_angle"]{
+  !probe{ "before reading the map, guess the class of each angle cell at line start, then parse all thirteen" =id[p_contrap_opcode_map_angle] =kind[calc] }
+  predict: ?{ "how many angle cells swallow the next line" } ~<guess>
+  expect: "nine swallow, two become prose, and only the tilde and the caret parse cleanly"
+  shows: ~"./opcode-map.spw#spw_lab_opcode_map_line_start"
+ }
+ #>spw_lab_opcode_map_comma
+ ^["end_the_line"]{
+  !probe{ "rewrite each swallowing cell with a trailing comma and parse again" =id[p_contrap_opcode_map_comma] =kind[calc] }
+  expect: "a closing comma keeps the next line out, the same fix the contract gives for a medial capsule"
+  see: [ ~"../../contract.spw#cut_contract" ]
+ }
+}
+
+#>spw_lab_opcode_map_mirror
+^["language_mirror"]{
+ question: "Is the operator-by-bound grid a periodic table with a law behind it, or only a table?"
+ reading: "the map is its own mirror: it reads the syntax the cut is written in, so every wall is a place where canon and parser have not yet decided together"
+ standing: "a-canon: the containers are atlas text; a-cut: the classes are this bench reading at one commit"
+ !probe{ "count how often each clean cell appears in this cut and in canon, and mark gaps that are used but unnamed" =id[p_contrap_opcode_map_usage] =kind[census] }
+}
+
+^["limits"]{
+ holds: "how one spelling of each cell parses at one commit, in two positions"
+ fails: "a clean parse means nothing until canon adopts a reading, a wall may be a parser bug rather than a design choice, and no law is known that would make the grid periodic"
+}
+
+^["try"]{
+ #>spw_lab_opcode_map_try
+ ^["fill_a_row"]{
+  materials: [ "a terminal at the repository root", "a sheet ruled into four columns" ]
+  steps: << "pick one operator" ; "write it before each of the four bounds, each followed by the line next: 1" ; "pipe each into npm run spw -- fingerprint --stdin" ; "mark each cell clean, prose, or swallows" ; "compare your row with the map" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./opcode-map.spw#spw_lab_opcode_map_line_start"
+ }
+}
+
+#>spw_lab_opcode_map_q
+?["Can a cell row and column predict the reading of a cell no table names?"]{
+ #:depth #!mathematical ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Where the operator and the container both carry settled readings, the cut should already use the cell with the combined reading; where either is unsettled, its uses should scatter."
+ !probe{ "for each unnamed clean cell, write a predicted reading from its row and column, then read its uses in the cut" =id[p_contrap_opcode_map_q] =kind[census] }
+ $%[op.distribution, form.brace_frame]
+ ~"./opcode-map.spw#spw_lab_opcode_map_gaps" ~#neighbor(nearest)
+ breaks: "Mendeleev predicted measurable properties that later measurement confirmed; a predicted reading can only be adopted or declined by the owner"
+}

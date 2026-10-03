@@ -7,7 +7,7 @@
 #:domain #!season
 #:form #!protocol
 #:level #!intro
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!boon
 #:season #!reset
 
@@ -29,9 +29,18 @@
  method: #authored
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #fail, note: "one unresolved ref to a planned file not yet written" }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "the resilience ref resolves now that its file is written" }
  }
+ corrections: #[
+  "Edmondson 1999 is reported as a settled finding of one study, with its design limits kept in view",
+  "fact check 2026-10-02: r3 recorded a gate pass, but the gate failed this surface on one ref to a file not yet written; r3 now records the failure"
+ ]
 }
 
 ^["edges"]{
@@ -88,7 +97,7 @@
  }
  #>season_retro_safety
  ^["psychological_safety"]{
-  #:claim #!emerging
+  #:claim #!settled
   statement: "Edmondson found that work teams with higher psychological safety reported more learning behavior, such as asking for help and discussing errors."
   source: ~"../registries/sources/season.spw#src_season_edmondson_1999"
   ^["limits"]{

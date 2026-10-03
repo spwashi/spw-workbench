@@ -7,11 +7,11 @@
 #:domain #!registry
 #:form #!registry
 #:level #!mixed
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-02"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -19,7 +19,18 @@
  ^["receipts"]{
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ rechecked: "labor_support cells against the Bohren 2017 abstract on 2026-10-02; vacant-lot cells against the Branas 2018 full text, Table 2 and the CA-ITT paragraph, on 2026-10-02"
+ corrections: [
+  "the r4 recheck read only the Branas abstract and labeled 29.1 as greening alone over a 38-month window; it is the complier-adjusted estimate for any lot treatment, greening or cleanup, over an 18-month follow-up",
+  "the misnamed handle greening_gun_violence_decrease_pct is kept as superseded; intention-to-treat cells now sit beside the complier-adjusted one"
+ ]
  note: "few cells on purpose: the raw shelf minted one invented handle per wonder; these are measured values with named sources"
 }
 
@@ -35,7 +46,9 @@
  ^["neighborhood"]{
   id: lang_neighborhood, operator: "%", identifier: lang.neighborhood, plane: world
   keys: #[ efficacy_residents_count, efficacy_neighborhoods_count, greening_lots_count ]
-  more_keys: #[ greening_gun_violence_decrease_pct ]
+  trial_keys: #[ lot_gun_assault_caitt_drop_pct, lot_gun_assault_itt_drop_pct ]
+  arm_keys: #[ greening_gun_assault_itt_drop_pct ]
+  superseded_keys: #[ greening_gun_violence_decrease_pct ]
  }
  scheme: tol
  algorithm: world.registry_lookup
@@ -180,12 +193,36 @@
   src: ~"../sources/language-and-communities.spw#src_lang_branas_2018"
   status: #settled
  }
- %lang.neighborhood.greening_gun_violence_decrease_pct{
+ %lang.neighborhood.lot_gun_assault_caitt_drop_pct{
   value: 29.1
   unit: "percent decrease"
-  at: "gun violence near greened lots in neighborhoods below the poverty line, 38-month window"
+  at: "gun assaults near lots given any treatment, greening or trash cleanup, vs none; neighborhoods below the poverty line; contamination-adjusted intention-to-treat; 18-month follow-up"
   abs: 0.1
   src: ~"../sources/language-and-communities.spw#src_lang_branas_2018"
   status: #settled
+ }
+ %lang.neighborhood.lot_gun_assault_itt_drop_pct{
+  value: 10.3
+  unit: "percent decrease"
+  at: "gun assaults near lots given any treatment vs none; neighborhoods below the poverty line; intention-to-treat, Table 2, interval 6.6 to 14.0; 18-month follow-up"
+  abs: 0.1
+  src: ~"../sources/language-and-communities.spw#src_lang_branas_2018"
+  status: #settled
+ }
+ %lang.neighborhood.greening_gun_assault_itt_drop_pct{
+  value: 9.1
+  unit: "percent decrease"
+  at: "gun assaults near greened lots vs untreated lots; neighborhoods below the poverty line; intention-to-treat, Table 2, interval 5.0 to 13.2; 18-month follow-up"
+  abs: 0.1
+  src: ~"../sources/language-and-communities.spw#src_lang_branas_2018"
+  status: #settled
+ }
+ %lang.neighborhood.greening_gun_violence_decrease_pct{
+  value: 29.1
+  unit: "percent decrease"
+  at: "superseded: this handle mislabeled the complier-adjusted any-treatment estimate as greening alone over 38 months; read lot_gun_assault_caitt_drop_pct"
+  abs: 0.1
+  src: ~"../sources/language-and-communities.spw#src_lang_branas_2018"
+  status: #superseded
  }
 }

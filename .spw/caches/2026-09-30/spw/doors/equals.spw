@@ -1,0 +1,101 @@
+# Door: Equals
+#
+# One mark, legible alone: the equals sign configures or opens a bias edge, the colon binds, and a spaced k = v inside a facet leaves no binding at all.
+
+#>spw_door_equals
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!field_guide
+#:level #!intro
+#:review #!sourced
+#:valence #!bonk
+
+^"emit"{
+ ~#title: "Door: Equals"
+ ~#claim: "Write name: value to bind; the equals sign configures a register or opens a bias edge, so k = v leaves a flat list with no binding."
+ ~#proof: "A probe at commit 1aa1dc23 parses k = v inside a facet as a lone name and an equals mark carrying v as a label; k: v gives one binding."
+ ~#door: "Guess what a Property=Value pair becomes, then check it with spw inspect source."
+ ~#audience: "designers who type Property=Value and programmers who type assignments"
+ continuity: "Door: Equals | name: value"
+ cold_open: "Write name: value to bind; keep the equals sign for configuration and edges."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "persona study false_friends_top rank 5 and its door text",
+  "facet and assignment probes run by the writer at commit 1aa1dc23 on 2026-10-02"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the study said k = v leaves three flat siblings; at 1aa1dc23 it leaves two, the name k and an equals operation that carries v as a modifier"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"../glossary/operators.spw#spw_gloss_operators" ]
+}
+
+^["mark"]{
+ #>spw_door_equals_flat
+ ^["no_binding"]{
+  #:claim #!settled
+  statement: "Inside a facet, k = v forms no binding: k stands alone and v becomes the modifier of a bare equals operation, while k: v forms one binding."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+  cites: [ "packages/spw-seed/src/grammar/expressions.ts:922-928" ]
+  probe_run: "size: .{ k = v } gives the name k and an equals operation with modifier v; Size=Large gives the name Size and an equals operation labeled Large"
+  ~#spoken(equals)
+  ^["limits"]{
+   holds: "an equals sign with spaces or a tight Property=Value pair in ordinary value position"
+   fails: "an equals sign followed by a subject, an axis in brackets, and a body is a bias edge, which a reader tool does pick up"
+  }
+ }
+ #>spw_door_equals_reading
+ ^["configuration"]{
+  #:claim #!settled
+  statement: "Canon names the equals sign configuration, and the runtime writes its first argument into a register and returns it."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_canon_operators"
+  cites: [ "docs/theory/spw/operators.spw:40", "packages/spw-runtime/src/interpreter/interpreter.ts:236-245" ]
+  label: "a-canon reading name; the runtime row is code"
+ }
+}
+
+^["habits"]{
+ keep: "the colon you already use in YAML, JSON, and CSS declarations is the Spw binder"
+ quote: [
+  "equations, kept in backtick phrases next to unit-bearing registry cells",
+  "reaction lines and gradebook formulas",
+  "design-tool variant names such as Size=Large"
+ ]
+ unlearn: "an equals sign in Spw names no value; it configures or it starts an edge"
+ origin: "Robert Recorde introduced the equals sign in The Whetstone of Witte of 1557 for two things that are equal"
+ origin_source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_recorde_1557"
+}
+
+^["keyboard"]{
+ #>spw_door_equals_keys
+ ^["no_shift"]{
+  #:claim #!settled
+  statement: "The equals sign needs no Shift on either the Windows US layout or the Windows UK layout, unlike the colon that binds."
+  reads: %[doors.key.equals_us_mods, doors.key.equals_uk_mods, doors.key.colon_us_mods]
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_kbd_us"
+ }
+}
+
+#>spw_door_equals_q
+?["What does a design-tool pair such as Size=Large become?"]{
+ #:depth #!stylistic ~#lens(craft practice)
+ #:claim #!speculative
+ ~#hypothesis: "Design-tool and TOML habits predict a property with a value and C habits predict an assignment; the cheaper keystroke may keep the equals habit alive."
+ !probe{ "guess first, then run spw inspect source --text on Size=Large and on size: Large with --through structure" =id[p_doors_equals_pair] =kind[thought] }
+ breaks: "a variant property in a design tool selects one of several components, while a Spw binding selects nothing"
+ ~"./equals.spw#spw_door_equals_flat" ~#neighbor(nearest)
+}

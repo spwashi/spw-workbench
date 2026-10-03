@@ -1,0 +1,199 @@
+# Perception and Attention
+#
+# A battery of classic probes, from Weber fractions and signal detection to visual search, selective listening, Stroop interference, and the things people fail to see, with two demonstrations to run yourself.
+
+#>cognition_perception
+#:layer #!reference
+#:domain #!cognition
+#:form #!probe_battery
+#:level #!foundation
+#:review #!sourced
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Perception and Attention"
+ ~#claim: "Perception scales intensity by ratios, separates sensitivity from bias, and depends on attention so heavily that people miss large unexpected objects and changes they are not looking for."
+ ~#proof: "Stevens on power laws, signal detection theory in Wolfe and colleagues, Treisman and Gelade on search, Broadbent and Treisman on selection, Stroop, Simons and Chabris, and Rensink and colleagues."
+ ~#door: "Run the Stroop and flicker demonstrations first, then read each probe and the claim it tests."
+ ~#audience: "first-year psychology students and curious readers"
+ continuity: "Perception and Attention | not looking for"
+ cold_open: "People can miss a gorilla walking through a game when it is something they are not looking for."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/cognitive-psychology/perception-attention-and-psychophysics.spw" ]
+ evidence: #[ "Europe PMC or Crossref abstracts read 2026-10-02 for Conway 2001, Simons and Chabris 1999, Rensink 1997, and Wolfe 1994" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the raw feature search was said to have zero search slope; flat slopes hold for some features only, and guided search treats slopes as a continuum (raw line 31)",
+  "the raw illusory-conjunction wonder stated gamma-band binding as the mechanism; it is now a speculative question (raw line 44)",
+  "the Stevens exponents are kept as registry cells marked verify, read only in the wonder below (raw line 17)",
+  "predictive processing is not restated here; the neuroscience branch holds it once"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../../living/neuroscience/systems-and-sensory-circuits.spw#neuroscience_systems" ]
+ feeds: [ ~"./memory-and-representation.spw#cognition_memory" ]
+ contrasts: [ ~"../../living/neuroscience/cognitive-and-computational.spw#neuroscience_computational_predictive" ]
+ see: [ ~"../linguistics/phonetics-and-phonology.spw#linguistics_phonology" ]
+}
+
+^["concepts"]{
+ primary: [ #signal_detection, #selective_attention, #feature_binding ]
+ transfers: [ #signal_path, #filter_bank ]
+ tensions: [ #early_or_late_selection ]
+}
+
+^["battery"]{
+ ^["scaling"]{
+  #>cognition_perception_weber
+  ^["weber_fraction"]{
+   #:claim #!settled
+   statement: "Over a middle range of intensities the smallest change a person can detect is a roughly constant fraction of the starting intensity, Weber's law; the fraction grows near threshold."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_wolfe_2021"
+   credit: "Ernst Heinrich Weber measured it with lifted weights in the 1830s; Gustav Fechner named it and built psychophysics on it in 1860"
+   !probe{ "find the smallest added coin a hand can detect in a light and in a heavy envelope" =id[p_life_cog_weber_coins] =kind[field] }
+  }
+  #>cognition_perception_power_law
+  ^["power_law"]{
+   #:claim #!settled
+   statement: "Fechner turned Weber's law into a logarithmic scale of sensation; Stevens's magnitude estimates instead fit power functions, compressive for brightness and expansive for electric shock."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_stevens_1961"
+   ^["limits"]{
+    holds: "average magnitude estimates across observers"
+    fails: "exponents shift with instructions, stimulus range, and the observer"
+   }
+  }
+ }
+ ^["decision"]{
+  #>cognition_perception_sdt
+  ^["signal_detection"]{
+   #:claim #!settled
+   statement: "Signal detection theory separates sensitivity, the distance between noise and signal-plus-noise distributions, from the criterion an observer sets, so hits and false alarms together reveal both."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_wolfe_2021"
+   formula: "d' = z(hit rate) - z(false alarm rate); c = -0.5 [z(hit rate) + z(false alarm rate)]"
+   credit: "Wilson Tanner, John Swets, and David Green carried the theory from radar engineering into psychophysics in the 1950s and 1960s"
+   ^["limits"]{
+    holds: "when both distributions are normal with equal variance"
+    fails: "many receiver operating characteristic curves show unequal variance, which changes the right index"
+   }
+   !probe{ "count hits and false alarms for a faint tone at two payoffs and see the criterion move while d prime stays" =id[p_life_cog_sdt_payoff] =kind[field] }
+  }
+ }
+ ^["grouping_and_search"]{
+  #>cognition_perception_gestalt
+  ^["gestalt_grouping"]{
+   #:claim #!settled
+   statement: "Elements that are near, similar, aligned along a smooth path, closed, or moving together tend to be seen as one group; the Gestalt principles describe tendencies that can compete."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_wolfe_2021"
+   credit: "Max Wertheimer set out the grouping principles in 1923, working with Wolfgang Kohler and Kurt Koffka"
+  }
+  #>cognition_perception_search
+  ^["visual_search"]{
+   #:claim #!settled
+   statement: "Treisman and Gelade found that a target differing by one feature, such as color, is found as fast in large displays as in small, while a conjunction target takes longer with each added item."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_treisman_gelade_1980"
+   !probe{ "time a search for a red X among green Xs and red Os at two display sizes" =id[p_life_cog_conjunction_search] =kind[field] }
+  }
+  #>cognition_perception_fit
+  ^["binding_theory"]{
+   #:claim #!contested
+   statement: "Feature integration theory says attention binds features at a location; guided search says parallel feature maps steer attention, so search slopes form a continuum rather than two classes."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_treisman_gelade_1980"
+   counter: ~"../../registries/sources/life-and-mind.spw#src_life_wolfe_1994"
+  }
+ }
+ ^["selection"]{
+  #>cognition_perception_selection
+  ^["early_or_late"]{
+   #:claim #!contested
+   statement: "Broadbent proposed a filter that selects by physical features before meaning; Treisman found meaning from the ignored ear still intrudes, so she proposed attenuation, and later accounts move selection later still."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_broadbent_1958"
+   counter: ~"../../registries/sources/life-and-mind.spw#src_life_treisman_1960"
+  }
+  #>cognition_perception_own_name
+  ^["own_name"]{
+   #:claim #!settled
+   statement: "About a third of listeners notice their own name in an ear they were told to ignore, and in one study those who noticed had lower working-memory capacity."
+   reads: %[life.memory.own_name_notice_pct]
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_conway_2001"
+   credit: "Neville Moray first reported the effect in 1959; Noelle Wood and Nelson Cowan replicated it in 1995"
+  }
+  #>cognition_perception_cueing
+  ^["spatial_cueing"]{
+   #:claim #!settled
+   statement: "A cue that correctly predicts a target's place speeds responses and a misleading cue slows them; a sudden peripheral cue captures attention, and soon after, responses there slow, called inhibition of return."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_wolfe_2021"
+   credit: "Michael Posner developed the cueing paradigm around 1980; Posner and Yoav Cohen described inhibition of return in 1984"
+  }
+ }
+ ^["automaticity"]{
+  #>cognition_perception_stroop
+  ^["stroop"]{
+   #:claim #!settled
+   statement: "Naming the ink color of a printed color word takes longer when the word names a different color, because practiced reading runs whether or not it is wanted."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_stroop_1935"
+  }
+ }
+ ^["blindness"]{
+  #>cognition_perception_inattentional
+  ^["inattentional_blindness"]{
+   #:claim #!settled
+   statement: "Observers counting basketball passes often failed to notice a person in a gorilla suit crossing the scene; noticing depended on the task difficulty and on how much the unexpected object resembled attended ones."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_simons_chabris_1999"
+  }
+  #>cognition_perception_change
+  ^["change_blindness"]{
+   #:claim #!settled
+   statement: "When brief blanks separate an original and an altered picture, people struggle to find even large repeated changes; a verbal hint removes the difficulty, so the limit is attention, not visibility."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_rensink_1997"
+  }
+  =~"./perception-and-attention.spw#cognition_perception_change"[analog]{ ~"./perception-and-attention.spw#cognition_perception_inattentional" }
+ }
+}
+
+^["try"]{
+ #>cognition_perception_try_stroop
+ ^["stroop_cards"]{
+  materials: [ "paper", "four colored pens", "a timer", "a partner" ]
+  steps: << "write a column of color names each in a matching ink" ; "write a second column in clashing inks" ; "time the partner naming only the ink colors of each column" ; "swap roles and compare the two times" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "no hazard worth naming; readers who tell some inks apart poorly should pick inks they can distinguish"
+  shows: ~"./perception-and-attention.spw#cognition_perception_stroop"
+ }
+ #>cognition_perception_try_flicker
+ ^["flicker_change"]{
+  materials: [ "a photo of a busy scene", "a copy of it with one object removed", "a slideshow app", "a partner" ]
+  steps: << "set slides to cycle original, blank, edited, blank" ; "show each slide for under a second" ; "time how long the partner takes to name the change" ; "repeat with a new pair after a spoken hint about where to look" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "no hazard worth naming; skip rapid flicker for anyone sensitive to flashing images"
+  shows: ~"./perception-and-attention.spw#cognition_perception_change"
+ }
+}
+
+#>cognition_perception_binding_q
+?["Why do features of nearby objects swap when attention is stretched?"]{
+ #:depth #!computational ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "Without focused attention, where each feature sits may be coded only coarsely, so features of nearby objects should be swapped more often than features of distant ones."
+ !probe{ "find illusory conjunction studies that varied the distance between objects and compare swap rates by distance" =id[p_life_cog_conjunction_distance] =kind[lit] }
+ ~"./perception-and-attention.spw#cognition_perception_fit" ~#neighbor(nearest)
+}
+
+#>cognition_perception_scaling_q
+?["Why would brightness be compressed while shock is expanded?"]{
+ #:depth #!physical ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "Compressing a stimulus that spans a vast range keeps it within limited firing rates, while expanding one tied to harm makes small increases loud, so exponents may track range and danger."
+ !probe{ "tabulate published exponents beside each stimulus's usable dynamic range and note whether harmful stimuli cluster above one" =id[p_life_cog_exponent_range] =kind[lit] }
+ $%[life.psychophysics.stevens_shock_exponent]
+ ~"./perception-and-attention.spw#cognition_perception_power_law" ~#neighbor(nearest)
+}

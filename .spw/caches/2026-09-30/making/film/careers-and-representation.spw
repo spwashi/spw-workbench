@@ -27,14 +27,19 @@
  lineage: #[ ".spw/caches/film-production-and-industry/hollywood-careers-and-industry-navigation.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-01", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
  }
  corrections: [
   "managers are not free of procurement law in California: unlicensed procurement falls under the Talent Agencies Act (Marathon v. Blasi, 2008)",
   "the lawyer fee figures and hourly rates are removed as unsourced",
   "option windows and price percentages are removed as unsourced; see the adaptation dossier for option mechanics",
-  "the DGA claim of sole authority over acting notes is removed pending the agreement text"
+  "the DGA claim of sole authority over acting notes is removed pending the agreement text",
+  "the lawyers row said procurement was treated case by case; the Act has no attorney exemption, and a 2013 Labor Commissioner determination applied it to an attorney who procured"
  ]
 }
 
@@ -64,11 +69,21 @@
  #>film_careers_marathon
  ^["marathon_v_blasi"]{
   #:claim #!settled
-  statement: "In Marathon Entertainment v. Blasi (2008) the California Supreme Court held that the Act reaches managers who procure, and that the Labor Commissioner may sever unlawful procurement from lawful services."
+  statement: "In Marathon Entertainment v. Blasi (2008) the California Supreme Court held that the Act reaches managers who procure, and that unlawful procurement may be severed from lawful services."
   source: ~"../../registries/sources/film-stage-visual.spw#src_film_marathon_blasi_2008"
   ^["limits"]{
    holds: "artists and representatives under California law"
    fails: "New York and other states use different licensing rules"
+  }
+ }
+ #>film_careers_attorneys
+ ^["attorneys"]{
+  #:claim #!settled
+  statement: "The Act has no attorney exemption; in a 2013 determination the Labor Commissioner held that an attorney who negotiated a client's employment without a license had violated it."
+  sources: [ ~"../../registries/sources/film-stage-visual.spw#src_film_cal_taa", ~"../../registries/sources/film-stage-visual.spw#src_film_solis_blancarte_2013" ]
+  ^["limits"]{
+   holds: "attorneys who procure employment for artists under California law"
+   fails: "negotiating in conjunction with, and at the request of, a licensed talent agency falls under the agent-request exception"
   }
  }
 }
@@ -95,10 +110,12 @@
  #>film_careers_lawyers
  ^["lawyers"]{
   license: "state bar"
-  may_procure: "treated case by case under the Act"
+  may_procure: "no statutory exemption; an attorney who procures without a license falls under the Act"
   main_work: "draft and negotiate contracts, chain of title, and clearances"
   paid_by: "hourly or a percentage, set by engagement"
-  oversight: "state bar rules"
+  oversight: "state bar rules, and the Talent Agencies Act when they procure"
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_solis_blancarte_2013"
+  see: ~"./careers-and-representation.spw#film_careers_attorneys"
  }
 }
 

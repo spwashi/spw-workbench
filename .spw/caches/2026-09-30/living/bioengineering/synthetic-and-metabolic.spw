@@ -1,0 +1,194 @@
+# Synthetic and Metabolic
+#
+# From the lac operon to the first synthetic switch and oscillator of 2000, then the assembly methods, the hidden costs of connecting parts, and the flux models used to design metabolism.
+
+#>bioengineering_synthetic
+#:layer #!reference
+#:domain #!bioengineering
+#:form #!timeline
+#:level #!advanced
+#:review #!sourced
+#:valence #!boon
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Synthetic and Metabolic"
+ ~#claim: "Synthetic biology began in 2000 with a toggle switch and an oscillator built from repressors, and it learned that parts load each other and burden the host cell they share."
+ ~#proof: "Jacob and Monod for repression, Gardner and Elowitz for the first circuits, Engler and Gibson for assembly, Del Vecchio and Ceroni for loading and burden, Orth for flux balance, Ro and Tu for artemisinin."
+ ~#door: "Climb the timeline rungs in order, then read the dependency edges, then try the switch in a spreadsheet."
+ ~#audience: "advanced students who know transcription and enzymes"
+ continuity: "Synthetic and Metabolic | the host cell they share"
+ cold_open: "Engineered gene circuits work, but every part they add draws on the host cell they share with everything else."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/bioengineering/synthetic-biology-and-metabolic-engineering.spw" ]
+ evidence: #[ "Europe PMC abstracts read 2026-10-02 for Gardner 2000, Elowitz and Leibler 2000, Engler 2008, Gibson 2009, Del Vecchio 2008, Ceroni 2015, and Ro 2006" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the raw repressilator period of about 150 minutes is replaced by the abstract wording, periods of hours slower than the cell cycle (raw line 17)",
+  "the raw claim that Golden Gate joins ten or more fragments had no source here and was dropped (raw line 21)",
+  "the raw noise wonder stated five to ten mRNA molecules and Poisson noise as fact; it is now a speculative question (raw line 42)",
+  "artemisinin is credited to Tu Youyou and Project 523 before the engineered-yeast precursor of Keasling and colleagues (raw line 34)",
+  "carbon-13 flux analysis, toehold switches, and named industrial products moved to the gaps list until sources are entered (raw lines 18, 30, and 34)"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../cells/nucleic-acids-and-genomes.spw#cell_biology_nucleic", ~"../cells/transport-and-signaling.spw#cell_biology_signaling_ultrasensitive" ]
+ analog: [ ~"../../physical/engineering/electrical-core.spw#engineering_electrical" ]
+ see: [ ~"../plants/plant-genomics.spw#plant_science_genomics" ]
+}
+
+^["concepts"]{
+ primary: [ #genetic_circuit, #retroactivity, #flux_balance ]
+ transfers: [ #feedback, #oscillator, #state_machine ]
+ tensions: [ #modularity ]
+}
+
+^["scope"]{
+ what: "published designs and the ideas behind them"
+ not_a_protocol: "nothing here is a protocol for building, growing, or releasing an organism; such work runs under institutional biosafety review and the governance named in the bioengineering index"
+}
+
+^["timeline"]{
+ #>bioengineering_synthetic_operon
+ ^["operon"]{
+  #:claim #!settled
+  statement: "Jacob and Monod proposed that a repressor acting at an operator blocks transcription of the lac genes until an inducer inactivates it, a switch built from one regulator and one site."
+  credit: "Walter Gilbert and Benno Muller-Hill isolated the lac repressor in 1966 and showed it is a protein"
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_jacob_monod_1961"
+  era: 1961
+ }
+ #>bioengineering_synthetic_toggle
+ ^["toggle_switch"]{
+  #:claim #!settled
+  statement: "Gardner, Cantor, and Collins arranged two repressible promoters to repress each other in E. coli; a brief chemical or heat pulse flips the switch, and it then holds its state."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_gardner_2000"
+  era: 2000
+  ~#say(two genes that each silence the other remember which one won)
+ }
+ #>bioengineering_synthetic_repressilator
+ ^["repressilator"]{
+  #:claim #!settled
+  statement: "Elowitz and Leibler joined three repressors in a ring, LacI, TetR, and lambda cI, each repressing the next; cells oscillated with periods of hours, slower than division, and noisily."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_elowitz_leibler_2000"
+  era: 2000
+ }
+ #>bioengineering_synthetic_retroactivity
+ ^["retroactivity"]{
+  #:claim #!settled
+  statement: "Connecting a downstream module changes the upstream one, retroactivity, much as output impedance loads a circuit; it grows when binding sites rival the transcription factor in number."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_del_vecchio_2008"
+  era: 2008
+  ^["limits"]{
+   holds: "transcriptional modules that share a regulator"
+   fails: "a fast phosphorylation cycle placed between modules can insulate them, which the same authors propose"
+  }
+ }
+ #>bioengineering_synthetic_golden_gate
+ ^["golden_gate"]{
+  #:claim #!settled
+  statement: "Golden Gate cloning uses type IIS enzymes that cut outside their recognition sites, so designed overhangs join fragments in one tube into a product that no longer carries those sites."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_engler_2008"
+  era: 2008
+ }
+ #>bioengineering_synthetic_gibson
+ ^["gibson_assembly"]{
+  #:claim #!settled
+  statement: "Gibson assembly joins overlapping DNA fragments in one isothermal reaction: a 5-prime exonuclease exposes single strands that anneal, a polymerase fills gaps, and a ligase seals them."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_gibson_2009"
+  era: 2009
+ }
+ #>bioengineering_synthetic_artemisinin
+ ^["artemisinic_acid"]{
+  #:claim #!settled
+  statement: "Yeast engineered with a modified mevalonate pathway, amorphadiene synthase, and a cytochrome P450 from sweet wormwood made artemisinic acid, the immediate precursor of artemisinin."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_ro_2006"
+  credit: "Tu Youyou and colleagues in China's Project 523 isolated artemisinin around 1972, guided by a fourth-century remedy in Ge Hong's emergency handbook; she shared the 2015 Nobel Prize"
+  credit_source: ~"../../registries/sources/life-and-mind.spw#src_life_tu_2011"
+  era: 2006
+  ^["limits"]{
+   holds: "production of the precursor in yeast"
+   fails: "the drug itself still needs a chemical step from artemisinic acid to artemisinin"
+  }
+ }
+ #>bioengineering_synthetic_fba
+ ^["flux_balance"]{
+  #:claim #!settled
+  statement: "Flux balance analysis writes a metabolic network as a stoichiometric matrix S, assumes steady state, S v = 0, and uses linear programming within flux bounds to find fluxes maximizing an objective such as growth."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_orth_2010"
+  era: 2010
+  ^["limits"]{
+   holds: "genome-scale networks whose reactions and bounds are known"
+   fails: "it predicts fluxes, not concentrations or regulation, and the objective is an assumption the cell need not share"
+  }
+ }
+ #>bioengineering_synthetic_burden
+ ^["burden"]{
+  #:claim #!settled
+  statement: "Synthetic constructs draw on capacity the whole cell shares; an in vivo capacity monitor in E. coli picked out designs that imposed less burden for the same output."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_ceroni_2015"
+  era: 2015
+ }
+ order: << "operon" ; "toggle switch" ; "repressilator" ; "retroactivity" ; "Golden Gate" ; "Gibson assembly" ; "artemisinic acid" ; "flux balance review" ; "burden monitor" >>
+}
+
+^["dependencies"]{
+ =~"./synthetic-and-metabolic.spw#bioengineering_synthetic_toggle"[needs]{ ~"./synthetic-and-metabolic.spw#bioengineering_synthetic_operon" }
+ =~"./synthetic-and-metabolic.spw#bioengineering_synthetic_repressilator"[needs]{ ~"./synthetic-and-metabolic.spw#bioengineering_synthetic_operon" }
+ =~"./synthetic-and-metabolic.spw#bioengineering_synthetic_retroactivity"[contrasts]{ ~"./synthetic-and-metabolic.spw#bioengineering_synthetic_toggle" }
+ =~"./synthetic-and-metabolic.spw#bioengineering_synthetic_burden"[extends]{ ~"./synthetic-and-metabolic.spw#bioengineering_synthetic_retroactivity" }
+ =~"./synthetic-and-metabolic.spw#bioengineering_synthetic_gibson"[contrasts]{ ~"./synthetic-and-metabolic.spw#bioengineering_synthetic_golden_gate" }
+ why: #[
+  "both first circuits reuse repressors and operators first described for lac",
+  "retroactivity contrasts the toggle because the toggle was designed as if its parts were modular",
+  "burden extends retroactivity from one shared regulator to the whole shared cell",
+  "the two assembly methods join DNA by opposite means, cutting at designed sites or chewing back overlaps"
+ ]
+}
+
+^["gaps"]{
+ predicted: #[
+  "carbon-13 metabolic flux analysis, expected beside flux balance",
+  "RNA toehold switches and genetic logic gates, expected after the repressilator",
+  "named industrial products such as 1,4-butanediol, expected beside artemisinic acid once sourced"
+ ]
+}
+
+^["try"]{
+ #>bioengineering_synthetic_try_toggle
+ ^["spreadsheet_toggle"]{
+  materials: [ "a spreadsheet program", "the two-gene model: each protein made at a rate divided by one plus the other protein raised to a power, minus its own decay" ]
+  steps: << "make columns for time, u, and v" ; "step each forward by its synthesis term minus decay" ; "start u high and v low, then the reverse, and see both hold" ; "add a brief pulse that lowers u and watch the switch flip and stay" >>
+  time: .{ n: 45, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./synthetic-and-metabolic.spw#bioengineering_synthetic_toggle"
+ }
+}
+
+#>bioengineering_synthetic_noise_q
+?["Why do identical cells running the same circuit drift apart?"]{
+ #:depth #!computational ~#lens(molecular binding)
+ #:claim #!speculative
+ ~#hypothesis: "With few copies of each repressor, the random timing of single synthesis events could desynchronize cells, so noise should fall as copy numbers rise."
+ !probe{ "run a stochastic simulation of the repressilator at several copy-number scales and measure how fast cell phases decorrelate" =id[p_life_bioeng_repressilator_noise] =kind[sim] }
+ ~"./synthetic-and-metabolic.spw#bioengineering_synthetic_repressilator" ~#neighbor(nearest)
+}
+
+#>bioengineering_synthetic_loading_q
+?["Is retroactivity the same as loading an electronic circuit?"]{
+ #:depth #!computational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "Both slow and distort an upstream signal when a downstream stage draws on it, so a buffer stage with fast internal dynamics should help in both."
+ breaks: "a loaded electrical stage draws current from its source alone, while a loaded gene circuit also drains ribosomes and polymerases the whole cell shares"
+ !probe{ "model one transcription factor driving zero, ten, and a hundred downstream binding sites and compare its response time" =id[p_life_bioeng_retro_load] =kind[sim] }
+ ~"./synthetic-and-metabolic.spw#bioengineering_synthetic_retroactivity" ~#neighbor(nearest)
+}

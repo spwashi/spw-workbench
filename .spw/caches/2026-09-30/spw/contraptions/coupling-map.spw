@@ -1,0 +1,164 @@
+# Coupling Map
+#
+# A claim-by-source table built from source, sources, counter, and see bindings: claims that share a source are coupled, sources cited together are cocited, and every computed cluster is a prompt, never a claim.
+
+#>spw_lab_coupling_map
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!advanced
+#:review #!sourced
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Coupling Map"
+ ~#claim: "One claim-by-source table gives two maps: claims coupled by a shared source and sources cocited by a claim, and on a small surface both maps mostly echo which handbook was open."
+ ~#proof: "Kessler defined bibliographic coupling in 1963 and Small co-citation in 1973; Salton gave the cosine; the water surface was tabulated on 2026-10-03."
+ ~#door: "Tabulate the water surface by hand, then ask what its coupled pairs share besides a book."
+ ~#audience: "librarians, information scientists, editors of reference works, and Spw authors who bind sources"
+ continuity: "Coupling Map | shared source"
+ cold_open: "Two claims that lean on a shared source are coupled; whether they share anything else is the question the map hands you."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "persona study contraption_catalog[10], references/studies/persona-synthesis.json", "sketch references/spw-branch/seeds/contraptions/coupling-map.spw" ]
+ method: #authored
+ evidence: #[ "a scratch script read the claim frames of physical/materials/water.spw on 2026-10-03 and built the table from their source, sources, counter, and see bindings" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the persona study counted 9 claims, 7 sources, 6 coupled pairs, and 2 cocited pairs on an earlier water surface; the revised surface gives the counts below",
+  "the sketch invented local source anchors; this map reads the registry anchors the water surface already binds"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../physical/materials/water.spw#materials_water" ]
+ extends: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_registry" ]
+ see: [ ~"./fixity-walker.spw#spw_lab_fixity_walker" ]
+}
+
+^["concepts"]{
+ primary: [ #citation, #walk ]
+ transfers: [ #provenance, #reflexive_mirror ]
+ tensions: [ #overclaim ]
+}
+
+^["tool"]{
+ status: #proposed
+ verb: "spw couple FILE, which would print coupled claims and cocited sources with cosine strengths; not yet a command"
+ implemented: #[
+  "packages/spw-seed/src/math/graph.ts:47 adjacencyMatrix",
+  "packages/spw-seed/src/math/equation.ts:140 cosineSimilarity"
+ ]
+ scratch: "the water table below came from a scratch script outside the repository"
+ sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_graph", ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_equation" ]
+}
+
+^["parameters"]{
+ table: "rows are claim anchors, columns are source anchors, and a cell is one when the claim frame names that source in source, sources, counter, or see"
+ coupling: "the table times its transpose: two claims are coupled by every source they share"
+ cocitation: "the transpose times the table: two sources are cocited by every claim that names both"
+ strength: "cosine, the shared count over the square root of the two row counts, between zero and one"
+}
+
+^["world"]{
+ #>spw_lab_coupling_map_kessler
+ ^["coupling"]{
+  #:claim #!settled
+  statement: "Kessler defined bibliographic coupling in 1963: two papers are coupled when they cite the same reference, more strongly the more they share."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_kessler_1963"
+ }
+ #>spw_lab_coupling_map_small
+ ^["cocitation"]{
+  #:claim #!settled
+  statement: "Small proposed co-citation in 1973: two documents are related when later papers cite them together, a relation that can change as citing grows."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_small_1973"
+ }
+ #>spw_lab_coupling_map_cosine
+ ^["cosine"]{
+  #:claim #!settled
+  statement: "Salton, Wong, and Yang measured document similarity as the cosine between term vectors, the measure this map borrows for claims and sources."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_salton_1975"
+ }
+}
+
+#>spw_lab_coupling_map_water
+^["water_table"]{
+ #:claim #!settled
+ statement: "The water surface has ten sourced claims over nine sources, giving six coupled claim pairs and four cocited source pairs, every one at cosine one."
+ source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_parse_runs"
+ observed: "on 2026-10-03, from the claim frames of physical/materials/water.spw"
+ ^["coupled_by"]{
+  handbook: "density maximum, heat capacity, and permittivity share the CRC Handbook"
+  monograph: "geometry, hydrogen bonding, and the hydrophobic effect share Eisenberg and Kauzmann"
+ }
+ ^["cocited_by"]{
+  hydraulic: "Wittfogel and Scarborough, named by one claim as source and counter"
+  purification: "Cutler and Miller twice and Anderson, Charles, and Rees, named by one contested claim"
+ }
+}
+
+^["battery"]{
+ #>spw_lab_coupling_map_hand
+ ^["hand_table"]{
+  !probe{ "write the water claims as rows and their sources as columns, then count shared columns for each pair of rows" =id[p_contrap_coupling_map_hand] =kind[calc] }
+  predict: ?{ "how many claim pairs share a source" } ~<guess>
+  expect: "six pairs in two clusters of three, one around the handbook and one around the monograph"
+  shows: ~"./coupling-map.spw#spw_lab_coupling_map_water"
+ }
+ #>spw_lab_coupling_map_degenerate
+ ^["why_all_ones"]{
+  !probe{ "compute the cosine for each coupled pair and explain the result" =id[p_contrap_coupling_map_cosine] =kind[thought] }
+  expect: "every pair scores one because each coupled claim cites a single source, so strength cannot rank pairs until claims cite more than one work"
+  shows: ~"./coupling-map.spw#spw_lab_coupling_map_cosine"
+ }
+}
+
+#>spw_lab_coupling_map_mirror
+^["language_mirror"]{
+ #>spw_lab_coupling_map_counter
+ ^["counter_as_companion"]{
+  #:claim #!interpretive
+  statement: "Counting a counter binding as cocitation pairs a claim with the work that disputes it, so in this cut a cocited pair can mark a disagreement rather than an affinity."
+  see: [ ~"../../physical/materials/water.spw#materials_water_hydraulic_hypothesis" ]
+ }
+ question: "What do this cut source bindings couple, and does a shared source mean a shared idea?"
+ rule: "the contract says computed clusters are prompts to compare, never claims"
+ contract: ~"../../contract.spw#cut_contract"
+ standing: "a-cut: the bindings and the cluster rule are this cut conventions"
+ !probe{ "build the table for every branch registry and list cross-branch coupled pairs as prompts, never as edges" =id[p_contrap_coupling_map_cut] =kind[census] }
+}
+
+^["limits"]{
+ holds: "which claims share a bound source and which sources a claim binds together"
+ fails: "a shared handbook is shared provenance, not a shared mechanism; a couple operator in Spw is a register edge, not bibliographic coupling; and clusters computed here are prompts, never claims"
+}
+
+^["try"]{
+ #>spw_lab_coupling_map_try
+ ^["index_cards"]{
+  materials: [ "index cards", "two colours of pen", "one surface from this cut with at least six claims" ]
+  steps: << "write each claim on a card in one colour" ; "write its sources on the back in the other colour" ; "lay cards together when their backs share a source" ; "write one sentence on what each pile shares besides the source" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./coupling-map.spw#spw_lab_coupling_map_water"
+ }
+}
+
+#>spw_lab_coupling_map_q
+?["When a physics claim and a nursing claim cite the same handbook, do they share a mechanism?"]{
+ #:depth #!social ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "Cross-branch pairs coupled by a general handbook should share a mechanism less often than pairs coupled by a specialist monograph, because handbooks gather unrelated tables."
+ !probe{ "list cross-branch coupled pairs in the cut, label each by whether the two claims share a mechanism, and compare handbook and monograph couplings" =id[p_contrap_coupling_map_q] =kind[census] }
+ $%[graph.path_refs, graph.in_degree]
+ ~"./coupling-map.spw#spw_lab_coupling_map_kessler" ~#neighbor(nearest)
+ breaks: "bibliographic coupling assumed authors cite what they use; in this cut one writer chose most sources, so coupling partly records that writer habits"
+}

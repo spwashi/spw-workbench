@@ -1,0 +1,221 @@
+# Web and Browser Internals
+#
+# Year one of the computing curriculum: 52 weeks from HTML tokenization to WebRTC and WebAssembly, in weekly rows with every dated engine and protocol name stamped.
+
+#>computing_web
+#:layer #!reference
+#:domain #!computing
+#:form #!curriculum
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bone
+#:era #!current
+
+^"emit"{
+ ~#title: "Web and Browser Internals"
+ ~#claim: "A year of weekly rows traces a page from tokenizer to GPU, a script from bytecode to optimized code, and a request from TCP to QUIC."
+ ~#proof: "Rows follow the WHATWG and IETF specifications; dated engine facts cite V8 posts, and protocol facts cite RFC 9000, 9114, 9113, and 6455."
+ ~#door: "Pick a quarter, read its rows, then run the event-loop kit in any browser."
+ ~#audience: "working web developers who want to see under the framework"
+ continuity: "Web and Browser Internals | tokenizer to GPU"
+ cold_open: "Year one follows a page from tokenizer to GPU, then follows a request from TCP all the way to QUIC."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/podcasting/year1-web-development.spw" ]
+ evidence: #[ "V8 Sea of Nodes post of 2025-03-25, V8 Maglev post, Wasm 3.0 announcement, and W3C and WHATWG memorandum read on 2026-10-02" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+ }
+ corrections: #[
+  "Sea of Nodes is dated: by 2025 the Turbofan JavaScript backend and the whole Wasm pipeline use the Turboshaft CFG IR",
+  "Maglev is its own mid-tier optimizing compiler from Chrome 117, not a mode of Turbofan",
+  "HTTP/2 stream dependency trees are deprecated by RFC 9113, which replaced RFC 7540; RFC 9218 priorities replace them",
+  "Bun runs on JavaScriptCore with its own event loop; the raw grouped it with V8 and libuv",
+  "the WebAssembly row now notes Wasm 3.0, completed in September 2025, beside Core 2.0",
+  "TCP now cites RFC 9293, which obsoletes RFC 793",
+  "the daily-episode framing, the blur-filter shader count, and the invented wonder handles are dropped"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"./systems-programming.spw#computing_systems", ~"./curriculum-dag.spw#computing_curriculum_dag" ]
+ see: [ ~"./spec-lineage.spw#computing_spec_lineage" ]
+}
+
+^["concepts"]{
+ primary: [ #standards, #state_machine, #weekly_rung ]
+ transfers: [ #protocol, #supersession, #backpressure ]
+ tensions: [ #dated_receipt, #speculation ]
+}
+
+^["cadence"]{
+ year: << "surface: weeks 1 to 13" ; "runtime: weeks 14 to 26" ; "network: weeks 27 to 39" ; "distributed web: weeks 40 to 52" >>
+ rhythm: "each row is a block of weeks; each block ends with a measurement against the model it taught"
+}
+
+^["rows"]{
+ ^["q1_surface"]{
+  theme: "DOM, CSSOM, layout, paint, and compositing"
+
+  #>computing_web_w01
+  w01: .{ week: "01-02", topic: "HTML tokenization and tree construction", spec: "WHATWG HTML Living Standard tokenizer state machine, tree builder, and error recovery" }
+  #>computing_web_w03
+  w03: .{ week: "03-04", topic: "CSSOM and selector matching", spec: "CSS Syntax Level 3; specificity; right-to-left matching with Bloom filters in Blink and WebKit" }
+  #>computing_web_w05
+  w05: .{ week: "05-06", topic: "Layout tree and the box model", spec: "block and inline formatting contexts, margin collapsing, intrinsic sizing" }
+  #>computing_web_w07
+  w07: .{ week: "07-08", topic: "Flexbox and Grid algorithms", spec: "CSS Flexible Box Layout Level 1; CSS Grid Layout Level 2 with subgrid; track sizing passes" }
+  #>computing_web_w09
+  w09: .{ week: "09-10", topic: "Painting and stacking contexts", spec: "display lists, stacking order, clip paths, paint invalidation, rasterization" }
+  #>computing_web_w11
+  w11: .{ week: "11-13", topic: "Compositing and GPU layers", spec: "layer trees, tiling, GPU raster, off-main-thread scrolling and animation" }
+ }
+ ^["q2_runtime"]{
+  theme: "JavaScript engines from parse to optimized code"
+
+  #>computing_web_w14
+  w14: .{ week: "14-16", topic: "Parsing, ASTs, and bytecode", spec: "ECMA-262 grammar; V8 Ignition register machine with an accumulator; Sparkplug baseline compiler" }
+  #>computing_web_w17
+  w17: .{ week: "17-19", topic: "Inline caches and hidden classes", spec: "monomorphic, polymorphic, and megamorphic ICs; V8 maps, also called shapes or hidden classes" }
+  #>computing_web_w20
+  w20: .{ week: "20-22", topic: "Optimizing tiers and deoptimization", spec: "Maglev and Turbofan; speculation, escape analysis, deopt; Sea of Nodes giving way to the Turboshaft CFG IR" }
+  #>computing_web_w23
+  w23: .{ week: "23-24", topic: "Garbage collection", spec: "generational hypothesis; scavenger semi-spaces; Orinoco parallel and concurrent marking; compaction" }
+  #>computing_web_w25
+  w25: .{ week: "25-26", topic: "The event loop", spec: "HTML event loop; tasks and microtasks; rendering steps and requestAnimationFrame; postMessage and workers" }
+ }
+ ^["q3_network"]{
+  theme: "transport, security, and real-time data"
+
+  #>computing_web_w27
+  w27: .{ week: "27-28", topic: "TCP handshakes, congestion, and retransmission", spec: "RFC 9293; sliding window, slow start, loss recovery; CUBIC in RFC 9438 and BBR" }
+  #>computing_web_w29
+  w29: .{ week: "29-30", topic: "TLS 1.3 handshake and certificates", spec: "RFC 8446; ephemeral Diffie-Hellman, AEAD ciphers such as AES-GCM, ALPN, 0-RTT replay risk" }
+  #>computing_web_w31
+  w31: .{ week: "31-33", topic: "HTTP/1.1 to HTTP/2", spec: "head-of-line blocking, binary framing, HPACK in RFC 7541; RFC 9113 priorities deprecated for RFC 9218" }
+  #>computing_web_w34
+  w34: .{ week: "34-36", topic: "QUIC and HTTP/3", spec: "RFC 9000 and RFC 9114; connection IDs, migration across networks, QPACK in RFC 9204" }
+  #>computing_web_w37
+  w37: .{ week: "37-39", topic: "WebSockets and WebRTC data channels", spec: "RFC 6455 framing and client masking; RFC 8831 SCTP over DTLS; ICE in RFC 8445 with STUN and TURN" }
+ }
+ ^["q4_distributed"]{
+  theme: "WebAssembly, server runtimes, storage, and the edge"
+
+  #>computing_web_w40
+  w40: .{ week: "40-42", topic: "WebAssembly core", spec: "binary format, stack-machine validation, linear memory, WAT; Core 2.0 SIMD; Wasm 3.0 GC and 64-bit memory" }
+  #>computing_web_w43
+  w43: .{ week: "43-44", topic: "Server runtimes", spec: "Node.js on V8 and libuv; Bun on JavaScriptCore with its own event loop; non-blocking POSIX I/O" }
+  #>computing_web_w45
+  w45: .{ week: "45-47", topic: "Storage and indexing", spec: "B-tree pages, write-ahead logging, ACID transactions and MVCC in PostgreSQL, query planning" }
+  #>computing_web_w48
+  w48: .{ week: "48-50", topic: "Edge computing and distributed caches", spec: "isolates at the edge, CDN invalidation, stale-while-revalidate, CRDT synchronization" }
+  #>computing_web_w51
+  w51: .{ week: "51-52", topic: "Capstone: under the sandbox", spec: "hand-write a WAT module that reads its own linear memory and trace it to the machine code the engine emits" }
+ }
+}
+
+^["ledger"]{
+ #>computing_web_whatwg
+ ^["html_authority"]{
+  #:claim #!settled
+  statement: "Under the 2019 W3C and WHATWG memorandum, HTML and DOM are developed principally as WHATWG Living Standards, which W3C specifications reference."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_mou_2019", ~"../../registries/sources/formal.spw#src_formal_whatwg_html" ]
+  as_of: "2026-10-02"
+ }
+ #>computing_web_event_loop
+ ^["microtasks_first"]{
+  #:claim #!settled
+  statement: "In the HTML event loop, the microtask queue drains after each task, so a resolved promise callback runs before the next timer callback."
+  source: ~"../../registries/sources/formal.spw#src_formal_whatwg_html"
+ }
+ #>computing_web_ic_origin
+ ^["inline_cache_origin"]{
+  #:claim #!settled
+  statement: "Inline caches come from Deutsch and Schiffman for Smalltalk-80 in 1984; polymorphic inline caches from Hoelzle, Chambers, and Ungar for Self in 1991."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_deutsch_schiffman_1984", ~"../../registries/sources/formal.spw#src_formal_holzle_1991" ]
+ }
+ #>computing_web_generational
+ ^["generational_gc"]{
+  #:claim #!settled
+  statement: "Ungar generation scavenging of 1984 collects young objects often and copies the survivors, betting that most objects die young."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_ungar_1984", ~"../../registries/sources/formal.spw#src_formal_jones_2023" ]
+ }
+ #>computing_web_sea_of_nodes_raw
+ ^["sea_of_nodes_current"]{
+  #:claim #!superseded
+  statement: "The raw row named Sea of Nodes as the IR of V8 optimized code; that held for Turbofan for years, and by 2025 only its builtin pipeline and JavaScript frontend kept it."
+  source: ~"../../registries/sources/formal.spw#src_formal_click_paleczny_1995"
+ }
+ #>computing_web_turboshaft
+ ^["turboshaft"]{
+  #:claim #!settled
+  statement: "By March 2025 the Turbofan JavaScript backend and the whole Wasm pipeline used the Turboshaft CFG IR, while V8 was still replacing the Sea of Nodes JavaScript frontend with Maglev."
+  source: ~"../../registries/sources/formal.spw#src_formal_v8_2025"
+  supersedes: [ ~"./web-and-browser-internals.spw#computing_web_sea_of_nodes_raw" ]
+  as_of: "2025-03-25"
+ }
+ #>computing_web_maglev
+ ^["maglev"]{
+  #:claim #!settled
+  statement: "Maglev, a mid-tier optimizing compiler between Sparkplug and Turbofan, first shipped in Chrome 117."
+  reads: %[formal.dated.maglev_chrome_major]
+  source: ~"../../registries/sources/formal.spw#src_formal_v8_2023"
+ }
+ #>computing_web_quic
+ ^["quic_http3"]{
+  #:claim #!settled
+  statement: "QUIC was published as RFC 9000 in 2021 and HTTP/3 over it as RFC 9114 in 2022, moving reliable multiplexed transport onto UDP with TLS 1.3 woven into the handshake."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_rfc9000", ~"../../registries/sources/formal.spw#src_formal_rfc9114" ]
+ }
+ #>computing_web_h2_priority
+ ^["http2_priority"]{
+  #:claim #!settled
+  statement: "RFC 9113 replaced RFC 7540 in 2022 and deprecated its stream-dependency priority tree; RFC 9218 defines the extensible priority scheme that replaces it."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_rfc9113", ~"../../registries/sources/formal.spw#src_formal_rfc9218" ]
+ }
+ #>computing_web_websocket
+ ^["websocket"]{
+  #:claim #!settled
+  statement: "RFC 6455 of 2011 defines WebSocket framing over an HTTP upgrade and requires clients to mask every frame they send to the server."
+  source: ~"../../registries/sources/formal.spw#src_formal_rfc6455"
+ }
+ #>computing_web_wasm3
+ ^["wasm3"]{
+  #:claim #!settled
+  statement: "Wasm 3.0 was announced complete in September 2025 with garbage collection, 64-bit memory, multiple memories, exception handling, and tail calls."
+  source: ~"../../registries/sources/formal.spw#src_formal_wasm_2025"
+  as_of: "2026-10-02"
+ }
+}
+
+^["try"]{
+ #>computing_web_try_event_loop
+ ^["order_of_callbacks"]{
+  materials: [ "any desktop browser with developer tools" ]
+  steps: << "open the console on a blank tab" ; "type: setTimeout(() => console.log('timer')); Promise.resolve().then(() => console.log('micro')); console.log('sync')" ; "write down the order you expect" ; "run it and compare" ; "explain the order with tasks and the microtask queue" >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "paste only code you have read yourself; a console runs scripts with your logged-in session"
+  shows: ~"./web-and-browser-internals.spw#computing_web_event_loop"
+ }
+}
+
+#>computing_web_shapes_q
+?["Does keeping object shapes stable still pay off in a tiered engine?"]{
+ #:depth #!computational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "Objects built with one fixed property order stay monomorphic at hot call sites and run faster than objects whose properties are added in varying orders."
+ !probe{ "in Node.js, build a million objects with fixed versus shuffled property order and time a hot loop that reads one property" =id[p_formal_web_shape_stability] =kind[calc] }
+ $%[formal.dated.maglev_chrome_major]
+ ~"./web-and-browser-internals.spw#computing_web_ic_origin" ~#neighbor(nearest)
+}

@@ -1,0 +1,282 @@
+# Industrial and Systems Engineering
+#
+# Operations research, queueing, quality, lean production, supply chains, human factors, and simulation, laid out as a queueing matrix and a finite-buffer state machine.
+
+#>engineering_ise
+#:layer #!reference
+#:domain #!engineering
+#:form #!comparison
+#:level #!advanced
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Industrial and Systems Engineering"
+ ~#claim: "Flow through a system is set by utilization and variability: queues explode as servers near full load, and variability, not effort, is what spare capacity must absorb."
+ ~#proof: "Kendall, Little, Jackson, and Kingman give the queueing results; Hopp and Spearman turn them into factory physics; Shewhart, Ohno, and Lee and coworkers cover quality, lean, and the bullwhip."
+ ~#door: "Read across the queueing matrix, then time a real counter line and check Little's law."
+ ~#audience: "industrial engineering students, operations managers, and anyone who designs a line people wait in"
+ continuity: "Industrial and Systems Engineering | variability"
+ cold_open: "Queues explode as servers fill up, and variability, not effort, is what spare capacity is really for."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/design-and-industrial-engineering/undergrad-industrial-engineering.spw", ".spw/caches/university-education/design-and-industrial-engineering/masters-design-and-industrial-systems.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the raw called M/M/c/K a balking model; a full buffer blocks and loses arrivals, while balking is a customer choice that needs its own model",
+  "the raw filed Jackson networks under non-Markovian queues; Jackson networks assume Poisson outside arrivals and exponential service",
+  "the CONWIP wonder claimed 32 and 55 percent reductions without a source; it survives as a direction-only question",
+  "the air-traffic pupillometry wonder claimed a 45 percent error reduction without a source and is dropped",
+  "the emergency department versus MRI wonder had no source and is dropped; healthcare appears only as a queueing application",
+  "the masters design and industrial systems file had no design content and is merged here, as the review advised; engineering economics moves to its own node",
+  "on 2026-10-03 the Jackson rung was tightened: the product form makes each node's queue-length marginal match an isolated M/M/c queue, while internal flows with feedback are not Poisson"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../../formal/mathematics/engineering-core/probability-and-statistics.spw#mathematics_probstat" ]
+ feeds: [ ~"./engineering-economics.spw#engineering_economics" ]
+ see: [ ~"./control-and-signals.spw#engineering_control_signals_economy_q", ~"./computer-engineering-core.spw#engineering_computer_kitchen_q" ]
+}
+
+^["concepts"]{
+ primary: [ #queue, #variability, #utilization ]
+ transfers: [ #feedback, #optimization ]
+ tensions: [ #human_in_the_loop ]
+}
+
+^["queueing_matrix"]{
+ #>engineering_ise_kendall
+ ^["notation"]{
+  #:claim #!settled
+  statement: "Kendall in 1953 named queues by arrival process, service distribution, and server count, as in M/M/1, where M marks memoryless, exponential timing."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_kendall_1953"
+ }
+ #>engineering_ise_little
+ ^["little"]{
+  #:claim #!settled
+  statement: "Little proved in 1961 that the long-run average number in a stable system equals the arrival rate times the average time spent there, whatever the distributions."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_little_1961"
+  see: [ ~"../../formal/mathematics/engineering-core/probability-and-statistics.spw#mathematics_probstat_little" ]
+ }
+ #>engineering_ise_stability
+ ^["stability"]{
+  #:claim #!settled
+  statement: "A queue reaches a steady state only when arrivals come slower than total service capacity; at or above full utilization the line grows without bound."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_gross_2018"
+ }
+ #>engineering_ise_mmck
+ ^["mmck"]{
+  #:claim #!settled
+  statement: "In an M/M/c/K queue an arrival that finds K customers present is blocked and lost; balking, where a customer sees the line and leaves, is a separate choice model."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_gross_2018"
+  ~#counter(the raw called M/M/c/K a balking model)
+ }
+ #>engineering_ise_pollaczek_khinchine
+ ^["mg1"]{
+  #:claim #!settled
+  statement: "For an M/G/1 queue the Pollaczek-Khinchine formula gives the mean wait, which grows with the variance of service time, not only its mean."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_gross_2018"
+ }
+ #>engineering_ise_jackson
+ ^["jackson"]{
+  #:claim #!settled
+  statement: "Jackson showed in 1957 that open networks of exponential servers with Poisson outside arrivals and probabilistic routing have a product-form steady state: each node's queue length is distributed as in an isolated M/M/c queue."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_jackson_1957"
+  ~#counter(the raw filed Jackson networks as non-Markovian)
+  ^["limits"]{
+   holds: "exponential service, probabilistic routing, and unlimited buffers"
+   fails: "general service times or blocking between nodes, where the product form breaks; with feedback, flows between nodes are not Poisson even though each marginal matches M/M/c"
+  }
+ }
+ #>engineering_ise_kingman
+ ^["kingman"]{
+  #:claim #!settled
+  statement: "Kingman showed in 1961 that near full load single-server waiting grows as one over one minus utilization, scaled by arrival and service variability; Hopp and Spearman write it as the VUT equation."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_kingman_1961", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_hopp_spearman_2008" ]
+  ^["limits"]{
+   holds: "heavy traffic, with utilization approaching one"
+   fails: "light load, where the approximation is loose"
+  }
+ }
+}
+
+^["machine"]{
+ #>engineering_ise_buffer_states
+ ^["states"]{
+  empty: "no customers are present and the server idles"
+  serving: "the server is busy and the buffer still has room"
+  full: "K customers are present and a new arrival is blocked and lost"
+ }
+ #>engineering_ise_buffer_transitions
+ ?match[@buffer]{
+  @empty => ^["first_arrival"]{ next: "serving", trigger: "an arrival starts service at once" }
+  @serving => ^["join"]{ next: "serving or full", trigger: "an arrival waits; the system is full once K are present" }
+  @serving => ^["finish"]{ next: "serving or empty", trigger: "a service ends; the system empties if no one waits" }
+  @full => ^["block"]{ next: "full", trigger: "an arrival is refused and counted as lost" }
+  @full => ^["free_place"]{ next: "serving", trigger: "a service ends and frees one place" }
+  _ => "stay in the current state"
+ }
+}
+
+^["operations_research"]{
+ topics: [
+  "simplex, duality, shadow prices, and sensitivity analysis",
+  "integer programming with branch and bound and cutting planes",
+  "shortest paths, spanning trees, and transportation and assignment problems",
+  "discrete- and continuous-time Markov chains and birth-death processes"
+ ]
+
+ #>engineering_ise_lp_origin
+ ^["lp_origin"]{
+  #:claim #!settled
+  statement: "Kantorovich formulated production planning as linear programs in 1939, and Dantzig devised the simplex method in 1947, which walks between corner points of the feasible region."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_kantorovich_1960", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_dantzig_1963" ]
+  see: [ ~"../../formal/mathematics/engineering-core/optimization.spw#mathematics_opt_lp_origin" ]
+ }
+ #>engineering_ise_max_flow
+ ^["max_flow"]{
+  #:claim #!settled
+  statement: "Ford and Fulkerson proved in 1956 that the most flow a network can carry equals the capacity of its smallest cut."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_ford_fulkerson_1956"
+ }
+}
+
+^["quality_and_lean"]{
+ topics: [
+  "X-bar, R, s, p, and c control charts with sensitizing rules",
+  "process capability Cp and Cpk",
+  "factorial and fractional factorial experiments, ANOVA, and response surfaces",
+  "takt time, line balancing, cells, and value stream maps"
+ ]
+
+ #>engineering_ise_shewhart
+ ^["control_charts"]{
+  #:claim #!settled
+  statement: "Shewhart control charts, set out in his 1931 book, separate common-cause variation from assignable causes using limits three standard deviations from the center line."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_shewhart_1931"
+ }
+ #>engineering_ise_six_sigma
+ ^["six_sigma"]{
+  #:claim #!settled
+  statement: "The six sigma target of 3.4 defects per million opportunities assumes the process mean drifts 1.5 standard deviations; a centered six sigma process would make far fewer."
+  reads: %[mateng.quality.six_sigma_dpmo]
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_montgomery_2020"
+ }
+ #>engineering_ise_toyota
+ ^["toyota_production"]{
+  #:claim #!settled
+  statement: "Ohno built the Toyota Production System on just-in-time flow and kanban pull signals, and Shingo made poka-yoke devices that stop a defect at its source instead of inspecting it out."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_ohno_1988", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_shingo_1986" ]
+ }
+ #>engineering_ise_conwip
+ ^["conwip"]{
+  #:claim #!settled
+  statement: "Spearman, Woodruff, and Hopp in 1990 proposed CONWIP, a pull system that caps total work in process across a line instead of at each station as kanban does."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_spearman_1990"
+ }
+}
+
+^["supply_chains"]{
+ topics: [
+  "vehicle routing with time windows",
+  "facility location under uncertainty with sample average approximation",
+  "life cycle assessment under ISO 14040 and 14044",
+  "reverse logistics and remanufacturing"
+ ]
+
+ #>engineering_ise_multi_echelon
+ ^["multi_echelon"]{
+  #:claim #!settled
+  statement: "Clark and Scarf showed in 1960 that a serial multi-echelon inventory system can be optimized stage by stage with echelon base-stock policies."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_clark_scarf_1960"
+ }
+ #>engineering_ise_bullwhip
+ ^["bullwhip"]{
+  #:claim #!settled
+  statement: "Lee, Padmanabhan, and Whang traced the bullwhip effect, order swings that grow upstream, to demand signal processing, rationing games, order batching, and price variation."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_lee_1997"
+ }
+}
+
+^["human_systems"]{
+ norm: "safety-critical alarms stay distinguishable in more than one sense, such as sight and sound"
+
+ #>engineering_ise_situation_awareness
+ ^["situation_awareness"]{
+  #:claim #!settled
+  statement: "Endsley in 1995 described situation awareness in three levels: perceiving cues, comprehending what they mean, and projecting what happens next."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_endsley_1995"
+ }
+ #>engineering_ise_automation_levels
+ ^["automation_levels"]{
+  #:claim #!settled
+  statement: "Sheridan and Verplank ranked levels of automation in 1978; Parasuraman, Sheridan, and Wickens in 2000 applied levels separately to sensing, analysis, decision, and action."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_sheridan_verplank_1978", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_parasuraman_2000" ]
+ }
+}
+
+^["simulation"]{
+ topics: [
+  "input modeling with Kolmogorov-Smirnov and Anderson-Darling tests",
+  "next-event time advance and process-interaction views",
+  "common random numbers and antithetic variates",
+  "digital twins fed by live sensor data"
+ ]
+
+ #>engineering_ise_warm_up
+ ^["warm_up"]{
+  #:claim #!settled
+  statement: "Steady-state simulation output must drop a warm-up period, found for example by Welch's graphical method, and estimate variance with batch means or replications."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_law_2014"
+ }
+}
+
+^["try"]{
+ #>engineering_ise_try_little
+ ^["counter_line_little"]{
+  materials: [ "a notebook or a phone timer", "a public place with one visible line, such as a cafe counter" ]
+  steps: <<
+   "for twenty minutes, note the time each person joins the line, counting people and recording nothing about them" ;
+   "every two minutes, count how many are waiting or being served" ;
+   "compute the arrival rate and the average count" ;
+   "time a few people from joining to leaving and average those times" ;
+   "check whether the average count is close to arrival rate times average time"
+  >>
+  time: .{ n: 40, unit: "minutes" }
+  safety: "observe without photographing, recording, or following anyone; count people, never identify them"
+  shows: ~"./industrial-and-systems-engineering.spw#engineering_ise_little"
+ }
+}
+
+#>engineering_ise_conwip_q
+?["Would a capped work-in-process line beat push scheduling in a wafer fab with frequent breakdowns?"]{
+ #:depth #!computational ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "Capping total work in process should cut mean cycle time and its spread, because breakdowns then cannot pile inventory in front of the bottleneck."
+ !probe{ "simulate a reentrant fab line under CONWIP and under push release with the same random breakdowns and compare cycle times" =id[p_mateng_ise_conwip] =kind[sim] }
+ $%[file.frame_count]
+ ~"./industrial-and-systems-engineering.spw#engineering_ise_conwip" ~#neighbor(nearest)
+}
+
+#>engineering_ise_second_server_q
+?["Why does adding a second server to a busy line cut waiting by far more than half?"]{
+ #:depth #!mathematical ~#lens(production cadence)
+ #:claim #!settled
+ ~#hypothesis: "Waiting grows like one over one minus utilization, so halving utilization from near full load removes most of the wait, a far larger cut than doubling capacity suggests."
+ sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_gross_2018", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_kingman_1961" ]
+ !probe{ "compute the mean wait for M/M/1 at utilization 0.9 and for M/M/2 with the same arrivals and per-server rate" =id[p_mateng_ise_second_server] =kind[calc] }
+ $%[graph.out_degree]
+ ~"./industrial-and-systems-engineering.spw#engineering_ise_kingman" ~#neighbor(nearest)
+}

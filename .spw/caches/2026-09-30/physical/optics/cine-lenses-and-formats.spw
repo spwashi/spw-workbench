@@ -1,0 +1,211 @@
+# Cine Lenses and Formats
+#
+# Motion-picture formats compared by gate size, diagonal, squeeze, and delivered ratio, with the arithmetic that turns a 4:3 gate and a 2x anamorphic into 2.66 before the crop to 2.39.
+
+#>optics_cine_formats
+#:layer #!pragmatics
+#:domain #!optics
+#:form #!comparison
+#:level #!practitioner
+#:review #!adversarial_checked
+#:valence #!bone
+#:era #!modern
+
+^"emit"{
+ ~#title: "Cine Lenses and Formats"
+ ~#claim: "A 4:3 gate de-squeezed by a 2x anamorphic is about 2.66 wide, so 4:3 digital modes reach the 2.39 scope ratio only after cropping."
+ ~#proof: "The American Cinematographer Manual for gates, frame counts, and T-stops; Belton for CinemaScope history; manufacturer figures as verify cells."
+ ~#door: "Squeeze a photo by half and stretch it back, then read the format matrix row for your camera."
+ ~#audience: "camera assistants, cinematographers, film students, and editors"
+ continuity: "Cine Lenses and Formats | after cropping"
+ cold_open: "An anamorphic lens squeezes a wide world onto a squarer gate, and the scope ratio appears only after cropping."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/film-chemistry-and-camera-optics/cinematographic-lens-design-and-formats.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "re-run after the 2026-10-03 fact-check fixes; no failing lines" }
+ }
+ corrections: #[
+  "a 4:3 gate with 2x squeeze de-squeezes to about 2.66, not 2.39; 2.39 is the cropped projection standard",
+  "ALEXA LF and ALEXA 65 dimensions are marked verify cells taken from manufacturer figures",
+  "circle-of-confusion values were dropped as conventions that vary with format and viewing distance",
+  "product praise for specific prime lineages was dropped or kept only as readings",
+  "the anamorphic portrait-perspective claim is now a wonder, since depth-of-field comparisons depend on what is held equal",
+  "fact-check: Super 35 is shot with spherical lenses and extracted to 1.85 flat or 2.39 scope; the row no longer lists anamorphic or the redundant flat-or-spherical",
+  "fact-check: the 2.66-then-crop route belongs to 4:3 digital modes; film-era 2x anamorphic used a narrower camera aperture near 1.18:1",
+  "fact-check 2026-10-03: the r4 fact-check receipt was dated 2026-10-01, before the receipts it followed; it is re-dated 2026-10-02, the day that pass ran"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./aberrations-and-lens-design.spw#optics_aberrations" ]
+ feeds: [ ~"../../record/carriers/moving-image/emulsion-chemistry.spw#media_carriers_emulsion" ]
+ grounds: [ ~"../../registries/quantities/physical-sciences-and-image.spw#q_phys_cine" ]
+ see: [ ~"../../making/film/set-operations-and-crew.spw#film_set_operations" ]
+}
+
+^["concepts"]{
+ primary: [ #image_circle, #squeeze, #format ]
+ transfers: [ #aberration, #standards ]
+ tensions: [ #character_vs_correction ]
+}
+
+^["formats"]{
+ columns: #[ gate, diagonal, squeeze, delivered ]
+
+ #>optics_cine_super16
+ ^["super16"]{
+  #:claim #!settled
+  statement: "Super 16 widens the 16 mm frame into the old soundtrack area, a 12.52 by 7.41 mm gate with a diagonal near 14.5 mm; Rune Ericson devised it in Sweden in 1969."
+  reads: %[phys.cine.s16_diag_mm]
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_asc_manual_2013", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_film_gauges" ]
+  squeeze: "spherical", delivered: "about 1.69 native, usually framed for 1.78 or 1.85"
+ }
+ #>optics_cine_super35
+ ^["super35_4perf"]{
+  #:claim #!settled
+  statement: "Super 35 four-perf uses the full 24.89 by 18.66 mm aperture, diagonal about 31.1 mm, is shot with spherical lenses, and is extracted to 1.85 flat or 2.39 scope for release."
+  reads: %[phys.cine.s35_diag_mm]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_asc_manual_2013"
+  squeeze: "spherical", delivered: "1.85 flat or 2.39 scope after extraction"
+ }
+ #>optics_cine_full_frame
+ ^["full_frame"]{
+  #:claim #!settled
+  statement: "A 36 by 24 mm frame, close to eight-perf horizontal VistaVision, has a diagonal near 43.3 mm, so many Super 35 lenses vignette on it."
+  reads: %[phys.cine.ff_diag_mm]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_asc_manual_2013"
+  squeeze: "spherical, sometimes 1.5x or 1.8x anamorphic", delivered: "cropped to taste"
+ }
+ #>optics_cine_large_format
+ ^["large_format"]{
+  #:claim #!settled
+  statement: "Large-format digital sensors such as the ALEXA LF and ALEXA 65 exceed full frame, near 44.7 and 59.9 mm diagonals, and need lenses whose image circles cover them."
+  reads: %[phys.cine.lf_diag_mm, phys.cine.a65_diag_mm]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_arri_alexa"
+  as_of: "manufacturer figures read 2026-10-01; registry cells are verify"
+ }
+ #>optics_cine_image_circle
+ ^["coverage_rule"]{
+  #:claim #!settled
+  statement: "A lens covers a format only if its image circle is at least the format diagonal; past that edge, illumination falls off and aberrations rise."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_asc_manual_2013"
+ }
+}
+
+^["anamorphic"]{
+ #>optics_cine_hypergonar
+ ^["origins"]{
+  #:claim #!settled
+  statement: "Henri Chretien developed the Hypergonar anamorphic attachment from a wide-angle device for tank crews; Fox licensed it for CinemaScope, which opened with The Robe in 1953."
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_belton_1992", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_anamorphic" ]
+ }
+ #>optics_cine_scope_ratios
+ ^["scope_ratios"]{
+  #:claim #!settled
+  statement: "Early CinemaScope prints ran 2.55 with magnetic sound; optical tracks cut it to 2.35 in a 1957 standard, and a 1971 revision of the projection aperture gave about 2.39."
+  reads: %[phys.cine.cinemascope_1953_ratio, phys.cine.scope_delivered_ratio]
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_belton_1992", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_anamorphic" ]
+ }
+ #>optics_cine_scope_math
+ ^["squeeze_arithmetic"]{
+  #:claim #!settled
+  statement: "De-squeezing a 4:3 gate by a 2x anamorphic gives 8/3, about 2.66 to 2.67, before any crop; 4:3 digital sensor modes are then cropped to the 2.39 release frame."
+  reads: %[phys.cine.full_gate_scope_ratio, phys.cine.scope_delivered_ratio]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_asc_manual_2013"
+  ^["limits"]{
+   holds: "4:3 digital sensor modes and any 4:3 gate behind a 2x anamorphic"
+   fails: "film-era 2x anamorphic shot the narrower 0.864 by 0.732 inch camera aperture, about 1.18:1, which de-squeezes near 2.36 with no 2.66 stage"
+  }
+  ~#say(squeeze, stretch, then crop)
+ }
+ #>optics_cine_raw_scope
+ ^["raw_scope_ratio"]{
+  #:claim #!refuted
+  statement: "The raw generation said a 4:3 Super 35 gate with a 2x squeeze de-squeezes to 2.39; the full gate de-squeezes to about 2.66 and must be cropped."
+  reads: %[phys.cine.full_gate_scope_ratio]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_asc_manual_2013"
+ }
+ #>optics_cine_mumps
+ ^["anamorphic_mumps"]{
+  #:claim #!settled
+  statement: "Early anamorphics lost squeeze at close focus and widened faces, the anamorphic mumps; Panavision introduced compensating optics in the late 1950s."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_anamorphic"
+ }
+}
+
+^["exposure_and_focus"]{
+ #>optics_cine_t_stop
+ ^["t_stop"]{
+  #:claim #!settled
+  statement: "The f-number is focal length over entrance pupil diameter; the T-stop divides it by the square root of the lens transmittance, so equal T-stops give equal exposure across lenses."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_asc_manual_2013"
+ }
+ #>optics_cine_breathing
+ ^["breathing"]{
+  #:claim #!settled
+  statement: "Focus breathing is the change in field of view as focus moves; floating or internal focus groups reduce it, which matters for visible focus pulls."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_asc_manual_2013"
+ }
+ #>optics_cine_diffraction
+ ^["diffraction_cutoff"]{
+  #:claim #!settled
+  statement: "No lens passes detail finer than the diffraction cutoff 1/(lambda N); at f/16 in green light that is about 114 line pairs per millimeter, below what small dense sensors resolve."
+  reads: %[phys.optics.cutoff_f16_lp_per_mm]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_smith_2008"
+ }
+ #>optics_cine_frames_per_foot
+ ^["frames_per_foot"]{
+  #:claim #!settled
+  statement: "Four-perf 35 mm runs 16 frames per foot and 16 mm runs 40, so at 24 fps a 400-foot load lasts about four and a half minutes in 35 mm and eleven in 16 mm."
+  reads: %[phys.film.frames_per_ft_35mm, phys.film.frames_per_ft_16mm]
+  rate: %[phys.film.sound_speed_fps]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_asc_manual_2013"
+ }
+}
+
+^["readings"]{
+ #>optics_cine_character_reading
+ ^["character"]{
+  #:claim #!interpretive
+  statement: "Many cinematographers choose older or less corrected lenses for flare, falloff, and softness that read as warmth; that is a choice of look, not a defect to be removed."
+  ~#(kept from the raw taste file as a reading)
+ }
+}
+
+^["try"]{
+ #>optics_cine_try_squeeze
+ ^["squeeze_a_photo"]{
+  materials: [ "any photo editor or phone editing app", "a landscape photo" ]
+  steps: << "crop the photo to 4:3" ; "resize its width to half while keeping its height" ; "look at round objects in the squeezed frame" ; "stretch the width back to double" ; "crop the stretched frame to 2.39 and compare what was lost" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "work on a copy of the photo; no other hazard worth naming"
+  shows: ~"./cine-lenses-and-formats.spw#optics_cine_scope_math"
+ }
+}
+
+#>optics_cine_anamorphic_view_q
+?["Why does an anamorphic 50 feel like a portrait lens with a wide view?"]{
+ #:depth #!physical ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Horizontal field should match a spherical lens of about half the focal length while vertical framing and blur follow the full focal length, so viewers read faces as longer-lens and backgrounds as wide."
+ !probe{ "compute horizontal and vertical field angles for a 2x anamorphic and matched spherical lenses on Super 35" =id[p_phys_cine_anamorphic_view] =kind[calc] }
+ $%[phys.cine.s35_diag_mm, phys.cine.full_gate_scope_ratio]
+ ~"./cine-lenses-and-formats.spw#optics_cine_scope_math" ~#neighbor(nearest)
+}

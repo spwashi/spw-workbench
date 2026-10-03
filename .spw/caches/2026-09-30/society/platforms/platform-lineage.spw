@@ -7,7 +7,7 @@
 #:domain #!live_platforms
 #:form #!timeline
 #:level #!intro
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 #:era #!modern
 
@@ -24,12 +24,28 @@
 ^"provenance"{
  as_of: "2026-09-30"
  generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
  ^["receipts"]{
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ checked: "Musical.ly, Periscope, Douyin, and TikTok rungs re-read against their encyclopedia entries on 2026-10-02"
+ corrections: #[
+  "public access credit now names the National Film Board of Canada link the source records, instead of leaving the Canadian root as a verify note",
+  "the TikTok LIVE rung now cites the encyclopedia entry for the host gate beside the policy page for gifts",
+  "fact check 2026-10-02: Live.ly opened during VidCon in June 2016, not on 2016-07-24, a slip copied from the encyclopedia",
+  "fact check 2026-10-02: Amazon announced the Twitch deal on 2014-08-25 and closed it on 2014-09-25",
+  "fact check 2026-10-02: the 1972 FCC order covered cable systems in the top 100 US television markets, not ranked cable markets"
+ ]
 }
 
 ^["edges"]{
@@ -56,9 +72,9 @@
   #>live_platforms_lineage_public_access
   ^["public_access"]{
    #:claim #!settled
-   statement: "US public access television began with local experiments in 1968, and a 1972 FCC order required access channels in the top 100 cable markets."
+   statement: "US public access television began with local experiments in 1968, and a 1972 FCC order required cable systems in the top 100 US television markets to offer public, educational, and government access channels."
    source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_public_access"
-   credit: "George Stoney, Red Burns, and Sidney Dean built much of the practice; Canadian community media is a further root to verify"
+   credit: "George Stoney and Red Burns, filmmakers who had worked with the National Film Board of Canada, and Sidney Dean of the City Club of New York built much of the practice"
   }
   #>live_platforms_lineage_cable_act
   ^["cable_act"]{
@@ -82,7 +98,7 @@
   #>live_platforms_lineage_justin_tv
   ^["justin_tv_to_twitch"]{
    #:claim #!settled
-   statement: "Justin.tv launched in 2007; its gaming section spun off as TwitchTV in public beta on 2011-06-06; Justin.tv closed on 2014-08-05 and Amazon bought Twitch on 2014-08-25."
+   statement: "Justin.tv launched in 2007; its gaming section spun off as TwitchTV in public beta on 2011-06-06; Justin.tv closed on 2014-08-05; Amazon agreed to buy Twitch on 2014-08-25 and closed on 2014-09-25."
    reads: %[creator.twitch.amazon_price_musd]
    sources: [ ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_twitch", ~"../../registries/sources/creators-and-platforms.spw#src_creator_taylor_2018" ]
   }
@@ -109,8 +125,9 @@
   #>live_platforms_lineage_musically
   ^["musically"]{
    #:claim #!settled
-   statement: "Musical.ly, founded in Shanghai by Alex Zhu and Luyu Yang, launched in August 2014 and opened the Live.ly streaming app at VidCon on 2016-07-24."
-   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_musically"
+   statement: "Musical.ly, founded in Shanghai by Alex Zhu and Luyu Yang, launched in August 2014 and opened the Live.ly streaming app during VidCon in June 2016."
+   sources: [ ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_musically", ~"../../registries/sources/creators-and-platforms.spw#src_creator_variety_lively_2016", ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_vidcon" ]
+   dating: "VidCon 2016 ran June 23 to 25 and Variety reported the launch on 2016-06-24; the encyclopedia sentence giving 2016-07-24 conflicts with both"
   }
   #>live_platforms_lineage_merger
   ^["merger"]{
@@ -129,7 +146,7 @@
    #:claim #!settled
    statement: "TikTok LIVE pairs a host gate on age and followers with a gift economy in which viewers buy Coins, send Gifts, and hosts accrue Diamonds they can withdraw."
    reads: %[creator.live.host_min_age_years, creator.live.gift_min_age_years]
-   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_tiktok_virtual_items"
+   sources: [ ~"../../registries/sources/creators-and-platforms.spw#src_creator_tiktok_virtual_items", ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_tiktok" ]
    ^["limits"]{
     holds: "the policy page as read on 2026-10-01"
     fails: "gate values vary by region and change; the host cells stay verify"

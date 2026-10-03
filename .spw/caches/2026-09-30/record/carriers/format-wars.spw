@@ -1,0 +1,184 @@
+# Format Wars
+#
+# Three contests between incompatible carriers, the war of the speeds, VHS against Betamax, and HD DVD against Blu-ray, with the popular explanations ranked by the evidence behind them.
+
+#>media_carriers_format_wars
+#:layer #!reference
+#:domain #!media_carriers
+#:form #!dossier
+#:level #!intro
+#:review #!adversarial_checked
+#:valence #!honk
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Format Wars"
+ ~#claim: "Format wars are usually won by alliances and complements and by fit to buyer needs, more than by picture quality; the adult-video explanation for VHS has the weakest evidence."
+ ~#proof: "Cusumano and colleagues on VHS alliances; Liebowitz and Margolis on recording time; Arthur and Katz and Shapiro on lock-in; Toshiba on the end of HD DVD."
+ ~#door: "Read the war model first, then each case, then the ranked explanations for VHS."
+ ~#audience: "readers who have heard that the better format lost and want to check"
+ continuity: "Format Wars | alliances and complements"
+ cold_open: "Most format wars are settled by alliances and complements, and the better picture often has little to do with it."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+ }
+ rechecked: "2026-10-02: the better-format-lost story now cites the encyclopedia entry that tells it, since Arthur 1989 could not be confirmed to discuss Betamax; Arthur stays on the lock-in model"
+ checked: "HD DVD and videotape dates and the status of the adult-video claim were read against encyclopedia entries on 2026-10-02"
+}
+
+^["edges"]{
+ case_of: [ ~"../../society/economics/micro-and-macro-core.spw#economics_core_network" ]
+ needs: [ ~"./form-factor-ladder.spw#media_carriers_ladder" ]
+ see: [ ~"./digital/optical-discs.spw#media_carriers_optical_dvd" ]
+}
+
+^["concepts"]{
+ primary: [ #network_effects, #format ]
+ transfers: [ #supersession, #licensed_access ]
+ tensions: [ #obsolescence ]
+}
+
+^["war_model"]{
+ #>media_carriers_war_network
+ ^["network_effects"]{
+  #:claim #!settled
+  statement: "Katz and Shapiro showed that when a product gains value as others adopt it, expectations about who will win can decide the standard, and compatibility becomes a strategic choice."
+  source: ~"../../registries/sources/record-and-carriers.spw#src_media_katz_shapiro_1985"
+ }
+ #>media_carriers_war_lockin
+ ^["lock_in"]{
+  #:claim #!contested
+  statement: "Arthur modeled how increasing returns let small early events lock a market into one technology; Liebowitz and Margolis argue that real cases of locking into an inferior one are rare."
+  source: ~"../../registries/sources/record-and-carriers.spw#src_media_arthur_1989"
+  counter: ~"../../registries/sources/record-and-carriers.spw#src_media_liebowitz_margolis_1995"
+ }
+ #>media_carriers_war_states
+ ^["states"]{
+  ^["launch"]{ work: "each sponsor ships hardware and a first catalog", exits: "rival installed bases" }
+  ^["alliances"]{ work: "license makers and court retailers to grow volume", exits: "a lead in players sold" }
+  ^["complements"]{ work: "win studios, labels, rental stores, or a console that ships the drive", exits: "a lead in titles" }
+  ^["tipping"]{
+   work: "buyers and content owners read the lead as the future"
+   on_signal: ?match[@market]{
+    "a major content owner goes exclusive" => "the leader wins",
+    "uses split cleanly" => "both survive in separate niches",
+    _ => "the contest continues"
+   }
+  }
+  ^["exit"]{ work: "the loser stops making hardware; owners keep players or migrate", exits: "an orphaned format" }
+ }
+ path: << "launch" ; "alliances" ; "complements" ; "tipping" ; "exit or coexistence" >>
+}
+
+^["cases"]{
+ ^["speeds"]{
+  #>media_carriers_war_speeds
+  ^["lp_versus_45"]{
+   #:era #!modern
+   #:claim #!settled
+   statement: "Columbia launched the LP in 1948 and RCA Victor the 45 in 1949; RCA began issuing LPs in 1950, and the war ended with albums on LPs and singles on 45s."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_millard_2005"
+   outcome: "coexistence by use"
+   detail: ~"./sound/phonograph-shellac-and-vinyl.spw#media_carriers_45"
+  }
+ }
+ ^["home_video"]{
+  #>media_carriers_war_vhs_beta
+  ^["vhs_versus_betamax"]{
+   #:era #!contemporary
+   #:claim #!settled
+   statement: "Sony launched Betamax in 1975 and JVC launched VHS in Japan in 1976 and the United States in 1977; VHS led home video by the mid-1980s and Sony made its last Betamax recorder in 2002."
+   sources: [ ~"../../registries/sources/record-and-carriers.spw#src_media_cusumano_1992", ~"../../registries/sources/record-and-carriers.spw#src_media_enc_videotape_war" ]
+   outcome: "VHS won"
+  }
+  #>media_carriers_war_sony_universal
+  ^["sony_v_universal"]{
+   #:claim #!settled
+   statement: "In Sony v. Universal, decided 17 January 1984, the US Supreme Court held five to four that home time-shifting was fair use and the recorder maker was not liable for contributory infringement."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_sony_universal_1984"
+   ~#say(taping a show to watch later was ruled fair use)
+   why: "a device capable of substantial noninfringing uses does not make its seller liable"
+  }
+  ^["explanations_ranked"]{
+   #>media_carriers_war_vhs_alliances
+   ^["alliances"]{
+    #:claim #!settled
+    statement: "Cusumano, Mylonadis, and Rosenbloom attribute VHS victory mainly to JVC licensing many makers and to Matsushita production, which built volume and rental-store support."
+    source: ~"../../registries/sources/record-and-carriers.spw#src_media_cusumano_1992"
+    evidence: "strongest: a business history built from company records and interviews"
+   }
+   #>media_carriers_war_vhs_playtime
+   ^["recording_time"]{
+    #:claim #!settled
+    statement: "VHS recorded two hours at launch against one for Betamax; Liebowitz and Margolis argue buyers valued that over small picture differences."
+    source: ~"../../registries/sources/record-and-carriers.spw#src_media_liebowitz_margolis_1995"
+    evidence: "strong: consistent with both formats later racing to longer play"
+   }
+   #>media_carriers_war_vhs_better_lost
+   ^["better_format_lost"]{
+    #:claim #!contested
+    statement: "The story that the technically better Betamax lost through lock-in is often told as a path-dependence example; Liebowitz and Margolis find the quality gap small and the choice reasonable."
+    source: ~"../../registries/sources/record-and-carriers.spw#src_media_enc_videotape_war"
+    counter: ~"../../registries/sources/record-and-carriers.spw#src_media_liebowitz_margolis_1995"
+    evidence: "weak as stated: it needs a quality gap buyers cared about"
+   }
+   #>media_carriers_war_vhs_adult
+   ^["adult_video"]{
+    #:claim #!contested
+    statement: "The claim that adult films decided the VHS victory circulates in press accounts and is disputed; the business histories explain the outcome without it."
+    source: ~"../../registries/sources/record-and-carriers.spw#src_media_enc_videotape_war"
+    counter: ~"../../registries/sources/record-and-carriers.spw#src_media_cusumano_1992"
+    evidence: "weakest: anecdote, with no sales data separating it from licensing and recording time"
+   }
+   order: << "licensing alliances and volume" ; "recording time" ; "a better format locked out" ; "adult video" >>
+  }
+ }
+ ^["high_definition"]{
+  #>media_carriers_war_hd
+  ^["hd_dvd_versus_blu_ray"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "HD DVD reached US stores on 18 April 2006 and Blu-ray on 20 June 2006; the PlayStation 3 carried a Blu-ray drive, and on 4 January 2008 Warner said it would leave HD DVD."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_enc_hd_war"
+  }
+  #>media_carriers_war_hd_end
+  ^["toshiba_exit"]{
+   #:claim #!settled
+   statement: "Toshiba announced on 19 February 2008 that it would stop developing, making, and marketing HD DVD players and recorders."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_toshiba_2008"
+   outcome: "Blu-ray won"
+  }
+ }
+ ^["avoided"]{
+  #>media_carriers_war_dvd_avoided
+  ^["dvd_unification"]{
+   #:claim #!settled
+   statement: "Before DVD, two industry camps proposed rival high-density discs and agreed on one format in 1995, avoiding a repeat of the videotape war."
+   source: ~"../../registries/sources/record-and-carriers.spw#src_media_taylor_2006"
+   detail: ~"./digital/optical-discs.spw#media_carriers_optical_dvd"
+  }
+ }
+}
+
+#>media_carriers_war_complements_q
+?["Did each winner hold more of the complements at the tipping point than its rival?"]{
+ #:depth #!social ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "In each war the format that won had more hardware licensees or exclusive content at the tipping point, while specification differences predicted little."
+ !probe{ "for each case tabulate licensees, exclusive studios or labels, and headline specifications at the tipping date" =id[p_media_war_complements] =kind[lit] }
+ $%[media.disc.lp_speed_rpm, media.disc.single_speed_rpm]
+ breaks: "the speeds war ended in coexistence, and network models that predict a single winner miss contests where uses split"
+ ~"./format-wars.spw#media_carriers_war_vhs_alliances" ~#neighbor(nearest)
+}

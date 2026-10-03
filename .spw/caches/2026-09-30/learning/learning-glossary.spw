@@ -7,7 +7,7 @@
 #:domain #!learning
 #:form #!glossary
 #:level #!intro
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -28,8 +28,10 @@
  method: #authored
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
  }
 }
 
@@ -98,7 +100,7 @@
   }
   #>learning_term_tenure
   ^["tenure"]{
-   means: "continuous appointment after a probationary period, ended only for cause or financial exigency under AAUP standards"
+   means: "continuous appointment after a probationary period, ended under AAUP standards only for adequate cause, retirement, or financial exigency"
    broader: [ ~"./learning-glossary.spw#learning_term_shared_governance" ]
    home: ~"./institutions/governance-and-tenure.spw#institutions_governance_statement_1940"
   }
@@ -119,8 +121,8 @@
   #>learning_term_fape
   ^["fape"]{
    #:claim #!settled
-   statement: "A free appropriate public education is special education and related services at public expense, meeting state standards, under an IEP."
-   source: ~"../registries/sources/learning-and-generations.spw#src_learn_idea_regs"
+   statement: "Under IDEA, a free appropriate public education is special education and related services at public expense, meeting state standards, under an IEP; Section 504 rules set their own FAPE duty."
+   sources: [ ~"../registries/sources/learning-and-generations.spw#src_learn_idea_regs", ~"../registries/sources/learning-and-generations.spw#src_learn_section_504" ]
    narrower: [ ~"./learning-glossary.spw#learning_term_iep", ~"./learning-glossary.spw#learning_term_section_504" ]
   }
   #>learning_term_iep

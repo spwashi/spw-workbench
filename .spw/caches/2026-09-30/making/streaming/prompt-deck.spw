@@ -23,12 +23,24 @@
 ^"provenance"{
  as_of: "2026-09-30"
  generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
  ^["receipts"]{
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   pending: "unresolved refs to planned files of other packages: panels/llull-wheel.spw#panel_llull_wheel"
+  }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "fact check 2026-10-02: the r3 gate receipt said pass while refs to planned files of other packages failed; it now records partial and names them"
+ ]
 }
 
 ^["edges"]{

@@ -1,0 +1,123 @@
+# Panels
+#
+# Ways to see the whole cut at once: authored panels that make claims or readings, and computed panels that only prompt; this index draws the line between them.
+
+#>panel_index
+#:layer #!reference
+#:domain #!panel
+#:form #!index
+#:level #!intro
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Panels"
+ ~#claim: "Authored panels carry claims and readings a writer defends, while computed panels are generated prompts that never count as claims."
+ ~#proof: "The plan separates authored edges, trails, and affinity plates from generated clusters and censuses, following the plan index the repository already runs."
+ ~#door: "Pick an authored door to read an argument, or a computed door to find a question."
+ ~#audience: "readers who want an overview before choosing a class, and writers looking for gaps"
+ continuity: "Panels | never count as claims"
+ cold_open: "Some panels here argue and some only prompt, and the prompts never count as claims."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   note: "forward refs to planned panels another package had not written yet"
+  }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "gate receipt corrected from pass to partial; routing confirmed"
+  }
+  ^["r5"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   note: "only forward refs to the planned concept lattice, computed kin, and facet census remain"
+  }
+ }
+}
+
+^["edges"]{
+ grounds: [ ~"../contract.spw#cut_contract" ]
+}
+
+^["concepts"]{
+ primary: [ #affinity_plate, #visible_gap ]
+ transfers: [ #combinatorial_prompt ]
+ tensions: [ #false_analogy ]
+}
+
+^["tree"]{
+ affinity_atlas: ~"./affinity-atlas.spw"
+ gap_table: ~"./gap-table.spw"
+ llull_wheel: ~"./llull-wheel.spw"
+ concept_lattice: ~"./concept-lattice.spw"
+ computed_kin: ~"./computed-kin.spw"
+ facet_census: ~"./facet-census.spw"
+}
+
+^["bundle"]{
+ ={ ~"./affinity-atlas.spw#panel_affinity_atlas" }
+ ={ ~"./gap-table.spw#panel_gap_table" }
+ ={ ~"./llull-wheel.spw#panel_llull_wheel" }
+ ={ ~"./concept-lattice.spw#panel_concept_lattice" }
+ ={ ~"./computed-kin.spw#panel_computed_kin" }
+ ={ ~"./facet-census.spw#panel_facet_census" }
+}
+
+^["leaves"]{
+ affinity_atlas: .{ concept: #affinity_plate, form: #comparison, kind: #authored }
+ gap_table: .{ concept: #visible_gap, form: #comparison, kind: #authored }
+ llull_wheel: .{ concept: #combinatorial_prompt, form: #probe_battery, kind: #authored }
+ concept_lattice: .{ concept: #transfer_concept, form: #glossary, kind: #authored }
+ computed_kin: .{ concept: #cluster, form: #registry, kind: #computed }
+ facet_census: .{ concept: #facet_count, form: #registry, kind: #computed }
+}
+
+^["doors"]{
+ authored: "the atlas sets eras side by side, the gap table names what is missing, the wheel turns out questions, and the lattice traces concepts across classes"
+ computed: "computed kin lists generated clusters and the facet census counts tag use; both are regenerated, never edited by hand"
+}
+
+^["boundary"]{
+ #>panel_index_boundary
+ ^["claim_prompt_line"]{
+  #:claim #!settled
+  statement: "The cut plan keeps authored edges, trails, and affinity panels as claims, and keeps generated clusters and censuses as fingerprinted prompts, never claims."
+  source: ~"../registries/sources/provenance-and-reference.spw#src_prov_plan_v2"
+ }
+ #>panel_index_kinds
+ ^["what_each_panel_may_say"]{
+  #:claim #!interpretive
+  statement: "Plates may claim a resemblance and must name where it breaks; gap cells may count and predict; wheel turns may only ask."
+  ^["ladder"]{
+   counts: "settled when computed from a named source and date"
+   readings: "interpretive, with a breaks line"
+   questions: "speculative, until a wonder block probes them"
+   clusters: "prompts only; a cluster never changes a claim status"
+  }
+ }
+}
+
+^["gaps"]{
+ live_counts: "the gap table counts the plan, not the written cut; live counts wait for the facet census generator"
+ reader_panels: "no panel yet shows which anchors readers actually visit; reading data would live outside the cut"
+}
+
+#>panel_index_overview_q
+?["Does a reader who starts at a panel find a second class sooner than one who starts at a class index?"]{
+ #:depth #!educational ~#lens(curated collection)
+ #:claim #!speculative
+ ~#hypothesis: "Panels cross classes by design, so a reader starting here should open a second class sooner than one who starts inside a class."
+ !probe{ "ask two small groups to explore for twenty minutes from a panel or from a class index and note when each first opens a second class" =id[p_prov_panel_crossing] =kind[field] }
+ $%[prov.plan.tree_file_count]
+ ~"./index.spw#panel_index_boundary" ~#neighbor(nearest)
+}

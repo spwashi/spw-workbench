@@ -1,0 +1,173 @@
+# Perspective: Librarians and Archivists
+#
+# Cataloging, authority files, facets, provenance, and fixity set against anchors, closed vocabularies, receipts, and the raw shelf manifest, with a punctuation crosswalk for the schemes this cluster types every day.
+
+#>spw_perspectives_librarians
+#:layer #!pragmatics
+#:domain #!spw_perspectives
+#:form #!comparison
+#:level #!intro
+#:review #!unreviewed
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Perspective: Librarians and Archivists"
+ ~#claim: "The cut already behaves like a small catalog, with permanent anchors, closed vocabularies, event receipts, and checksums, but catalog punctuation typed bare loses data without a word."
+ ~#proof: "The contract fixes anchor permanence, the manifest pins every raw path by sha256, and probes at commit 1aa1dc23 drop a MARC subfield after a blank indicator."
+ ~#door: "Read the punctuation crosswalk first, then the authority row."
+ ~#audience: "catalogers, metadata librarians, archivists, and digital preservation staff"
+ continuity: "Perspective: Librarians and Archivists | a small catalog"
+ cold_open: "The cut keeps itself like a small catalog, but catalog punctuation typed bare loses data, so quote it."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "persona study doors entry librarians and metaphor_limits for library, archives, and information science",
+  "CLI help for spw authority and spw cite read by the writer at commit 1aa1dc23 on 2026-10-03"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ needs: [ ~"../../record/information/knowledge-organization.spw#information_science_knowledge_org" ]
+ feeds: [ ~"../doors/claim.spw#spw_door_claim", ~"../doors/hash.spw#spw_door_hash" ]
+ see: [ ~"../specimens/language-and-library.spw#spw_spec_language_library", ~"../../provenance/manifest.spw#provenance_manifest" ]
+}
+
+^["standing"]{
+ #>spw_perspectives_librarians_standing
+ ^["hypothesis"]{
+  #:claim #!interpretive
+  statement: "These rows were written by an agent outside the cluster; they stay unreviewed until a cataloger or archivist checks each correspondence against the standard it names."
+  member_probe: "a cataloger describes this cut as a collection, using their own standard, and lists which rows below helped and which misled"
+ }
+}
+
+^["crosswalk"]{
+ #>spw_perspectives_librarians_crosswalk
+ ^["quote_first"]{
+  #:claim #!settled
+  statement: "A MARC blank indicator written as a hash followed by a space ends the line for the parser, so every subfield after it is dropped without an error."
+  see: ~"../specimens/language-and-library.spw#spw_spec_language_library_blank_indicator"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_lexer"
+  standard: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_marc21_bib"
+ }
+ marc_subfields: .{ scheme: "MARC 21", mark: "dollar-sign subfield codes", spw: "substrate operations", see: ~"../specimens/language-and-library.spw#spw_spec_language_library_subfields" }
+ isbd: .{ scheme: "ISBD", mark: "colon, slash, and period-dash area separators", spw: "bindings and lexer errors", see: ~"../specimens/language-and-library.spw#spw_spec_language_library_isbd_areas" }
+ dewey: .{ scheme: "Dewey Decimal", mark: "a decimal class number", spw: "one decimal literal, a rare clean row", see: ~"../specimens/language-and-library.spw#spw_spec_language_library_dewey" }
+ lc_call: .{ scheme: "LC call number", mark: "dotted cutters", spw: "a name, a bare dot, and loose parts", see: ~"../specimens/language-and-library.spw#spw_spec_language_library_lc_call" }
+ edtf_approx: .{ scheme: "EDTF", mark: "a trailing tilde for approximate", spw: "a loose tilde operation", see: ~"../specimens/language-and-library.spw#spw_spec_language_library_approximate" }
+ edtf_unspec: .{ scheme: "EDTF", mark: "X for an unspecified digit", spw: "a split name", see: ~"../specimens/language-and-library.spw#spw_spec_language_library_unspecified" }
+ iso_date: .{ scheme: "ISO 8601 and EDTF", mark: "hyphenated calendar dates", spw: "lexer errors and loose parts", see: ~"../specimens/language-and-library.spw#spw_spec_language_library_iso_date" }
+ rule: "every catalog string goes in double quotes; a facet with one quoted field per subfield keeps the structure readable"
+ edtf_source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_edtf_2019"
+ isbd_source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_isbd_2011"
+}
+
+^["rows"]{
+ #>spw_perspectives_librarians_authority
+ ^["authority"]{
+  #:claim #!interpretive
+  practice: "an authority record fixes one heading and keeps variant forms as see-references"
+  spw: "an anchor is never renamed or reused once the cut opens; a rename leaves the old anchor on a stub with a supersedes edge"
+  holds: "one stable heading per thing, with old forms still reachable"
+  fails: "no variant-name field exists, and the stub must be written by hand"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_contract"
+ }
+ #>spw_perspectives_librarians_authority_command
+ ^["authority_command"]{
+  #:claim #!settled
+  statement: "The spw authority command compares declared writes and joins with observed runtime behavior; it does no authority control over names."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cli"
+  cites: [ "packages/spw-cli/src/commands.ts:240-245" ]
+ }
+ #>spw_perspectives_librarians_vocabulary
+ ^["controlled_vocabulary"]{
+  #:claim #!interpretive
+  practice: "a thesaurus lists preferred terms with scope notes and broader, narrower, related, use, and used-for relations"
+  spw: "the cut vocabulary lists closed sets per axis with one gloss per axis, and the gate rejects values outside them"
+  holds: "a closed list with scope notes, enforced at write time"
+  fails: "no relations between terms, no entry vocabulary, and scope notes exist per axis rather than per term"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_vocabulary"
+ }
+ #>spw_perspectives_librarians_facets
+ ^["facets"]{
+  #:claim #!interpretive
+  practice: "a faceted scheme builds a subject from isolates drawn from separate trains of characteristics, as Ranganathan set out in Colon Classification"
+  spw: "the axis stack of each surface gives one value per axis from a closed set, and the axes cut across the tree"
+  holds: "independent axes combined per item, closer to a facet than the facet block written with a dot and braces"
+  fails: "no filing order or citation order among axes, so the stack cannot produce a class number"
+  example: ~"../../record/information/knowledge-organization.spw#information_science_ko_colon"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_ranganathan_1933"
+ }
+ #>spw_perspectives_librarians_level
+ ^["level_of_description"]{
+  #:claim #!interpretive
+  practice: "archival description works at levels such as collection, series, file, and item"
+  spw: "the level axis names the reader a surface is written for, such as intro or practitioner"
+  fails: "the same word names a different thing; the tree holds the arrangement, and the level axis holds the audience"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_vocabulary"
+ }
+ #>spw_perspectives_librarians_events
+ ^["preservation_events"]{
+  #:claim #!interpretive
+  practice: "a preservation record logs events with a type, a date, an agent, and an outcome"
+  spw: "each surface keeps receipts with event, at, agent, care, and outcome from closed sets"
+  holds: "event-shaped provenance a reader can audit"
+  fails: "receipts record the care applied to text, not the state of a file on storage"
+  example: ~"../theory/epistemic-status.spw#spw_theory_status_events"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_premis_3"
+ }
+ #>spw_perspectives_librarians_fixity
+ ^["fixity"]{
+  #:claim #!settled
+  statement: "The raw shelf manifest pins each raw path by the sha256 of its bytes at one commit, so any later change to a raw file can be detected."
+  example: ~"../../provenance/manifest.spw#provenance_manifest_pin"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_contract"
+ }
+ #>spw_perspectives_librarians_cite
+ ^["cite_command"]{
+  #:claim #!settled
+  statement: "The spw cite command prints a pointer to prepared form bytecode with a content hash; it is not a checksum of the file bytes and does not replace fixity."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cli"
+  cites: [ "packages/spw-cli/src/commands.ts:299-304" ]
+ }
+ collection: "the cut is an artificial collection assembled by its makers; describe its arrangement as processing information, not as original order"
+}
+
+^["tools"]{
+ resolve: .{ command: "spw resolve", use: "classify where each path ref lands", status: #implemented, cites: "packages/spw-cli/src/commands.ts:323-328" }
+ gate: .{ command: "the cut gate", use: "reject values outside the closed sets", status: #implemented, cites: "scripts/analyzers/spw-cut-gate.ts:285-288" }
+ fixity_walker: .{ contraption: "fixity-walker", use: "recompute manifest checksums and log each check as an event", status: #proposed }
+ operator_authority: .{ contraption: "operator-authority", use: "tabulate each mark name with its sources", status: #proposed }
+}
+
+^["try"]{
+ #>spw_perspectives_librarians_try
+ ^["recompute_one_row"]{
+  materials: [ "a terminal at the repository root", "the raw shelf manifest" ]
+  steps: << "pick one row of the manifest" ; "recompute the sha256 of that raw file at the pinned commit with git show and a hash tool" ; "compare it with the pinned value" ; "write what you did as a receipt with event, at, agent, care, and outcome" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "read-only; do not edit raw files or the manifest"
+  shows: ~"./librarians-and-archivists.spw#spw_perspectives_librarians_fixity"
+ }
+}
+
+#>spw_perspectives_librarians_q
+?["Would a variant-name field on anchors make the cut easier to search?"]{
+ #:depth #!computational ~#lens(curated collection)
+ #:claim #!speculative
+ ~#hypothesis: "A used-for field listing old and informal names for each anchor would help readers who arrive with the wrong term, at the cost of one more thing to keep current."
+ !probe{ "list ten terms a newcomer might search for, then count how many reach the right anchor by name alone" =id[p_doors_librarians_variant_names] =kind[census] }
+ breaks: "an authority file serves many catalogs that share it, while a cut serves its own readers"
+ ~"./librarians-and-archivists.spw#spw_perspectives_librarians_authority" ~#neighbor(nearest)
+}

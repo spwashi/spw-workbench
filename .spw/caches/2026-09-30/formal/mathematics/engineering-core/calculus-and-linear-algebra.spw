@@ -1,0 +1,207 @@
+# Calculus and Linear Algebra
+#
+# The root of the engineering mathematics graph: rates and accumulation, fields and fluxes, and matrices read through their eigenvectors and singular values.
+
+#>mathematics_calc_linalg
+#:layer #!reference
+#:domain #!mathematics
+#:form #!curriculum
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Calculus and Linear Algebra"
+ ~#claim: "Calculus linearizes a system near a point, and linear algebra then solves the linear system through elimination, eigenvectors, and least squares."
+ ~#proof: "Statements follow Stewart, Marsden and Tromba, Strang, and Trefethen and Bau; history follows Hart and Stigler."
+ ~#door: "Start with the derivative as a local linear map, then read eigenvectors as modes, then fit a line with your hands."
+ ~#audience: "first and second year engineering, physics, and economics students"
+ continuity: "Calculus and Linear Algebra | local linear map"
+ cold_open: "Every derivative is a local linear map, so most engineering begins with calculus and ends in a matrix."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+ }
+ corrections: #[
+  "the normal-equations probe now fits 50 points and compares coefficients, since ten points make degree 9 an interpolation with near-zero residuals for both methods"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"../analysis-and-algebra-core.spw#mathematics_core", ~"./differential-equations.spw#mathematics_diffeq", ~"./probability-and-statistics.spw#mathematics_probstat", ~"./optimization.spw#mathematics_optimization", ~"./numerical-methods.spw#mathematics_numerics" ]
+ see: [ ~"../../../physical/physics/core-sequence.spw#physics_core", ~"../../../physical/engineering/mechanical-core.spw#engineering_mechanical" ]
+}
+
+^["concepts"]{
+ primary: [ #gradient, #linearization, #spectral_decomposition ]
+ transfers: [ #least_squares, #invariant, #estimation ]
+ tensions: [ #conditioning, #cancellation ]
+}
+
+^["dag"]{
+ #>mathematics_calc_single
+ ^["single_variable"]{
+  topics: "limits, derivatives, integrals, the fundamental theorem, Taylor polynomials, improper integrals, series"
+  feeds: [ ~"./calculus-and-linear-algebra.spw#mathematics_calc_multi" ]
+
+  #>mathematics_calc_ftc
+  ^["fundamental_theorem"]{
+   #:claim #!settled
+   statement: "If f is continuous on an interval, the running integral of f is differentiable with derivative f, and any antiderivative evaluates the definite integral."
+   source: ~"../../../registries/sources/formal.spw#src_formal_stewart_2020"
+   ~#say(accumulation and rate undo each other)
+  }
+  #>mathematics_calc_taylor
+  ^["taylor_linearization"]{
+   #:claim #!settled
+   statement: "A function n plus 1 times differentiable near a point equals its degree n Taylor polynomial plus a remainder bounded by the next derivative, so small-angle sine is close to the angle."
+   source: ~"../../../registries/sources/formal.spw#src_formal_stewart_2020"
+   ^["limits"]{
+    holds: "inside the interval where the derivative bound is known"
+    fails: "exp of minus one over x squared is smooth at 0 with every Taylor coefficient zero, yet is not the zero function"
+   }
+  }
+ }
+ #>mathematics_calc_multi
+ ^["multivariable"]{
+  topics: "partial derivatives, the gradient, the chain rule, Jacobians and Hessians, multiple integrals, change of variables"
+  feeds: [ ~"./calculus-and-linear-algebra.spw#mathematics_calc_vector" ]
+
+  #>mathematics_calc_gradient
+  ^["gradient"]{
+   #:claim #!settled
+   statement: "Where f is differentiable, the gradient points in the direction of fastest increase and its length is that rate; level sets cross it at right angles."
+   source: ~"../../../registries/sources/formal.spw#src_formal_stewart_2020"
+   ^["limits"]{
+    holds: "differentiable points"
+    fails: "partial derivatives can exist at a point where f is not even continuous, and then the gradient says nothing about directions"
+   }
+  }
+  #>mathematics_calc_jacobian
+  ^["change_of_variables"]{
+   #:claim #!settled
+   statement: "Changing variables in a multiple integral multiplies the integrand by the absolute Jacobian determinant, the local factor by which the map scales volume."
+   source: ~"../../../registries/sources/formal.spw#src_formal_marsden_tromba_2012"
+  }
+ }
+ #>mathematics_calc_vector
+ ^["vector_calculus"]{
+  topics: "line and surface integrals, divergence and curl, conservative fields, Green, Stokes, and divergence theorems"
+  feeds: [ ~"./differential-equations.spw#mathematics_diffeq_pde" ]
+
+  #>mathematics_calc_divergence
+  ^["divergence_theorem"]{
+   #:claim #!settled
+   statement: "For a continuously differentiable field on a bounded region with piecewise smooth boundary, total divergence inside equals outward flux through the boundary."
+   source: ~"../../../registries/sources/formal.spw#src_formal_marsden_tromba_2012"
+   ^["limits"]{
+    holds: "fields smooth on the closed region"
+    fails: "a point source inside, such as an inverse-square field, needs the singularity cut out first"
+   }
+  }
+  #>mathematics_calc_conservation
+  ^["conservation_form"]{
+   #:claim #!settled
+   statement: "Applying the divergence theorem to a small control volume turns a balance of inflow, outflow, and sources into a partial differential equation, the form of every transport law."
+   source: ~"../../../registries/sources/formal.spw#src_formal_kreyszig_2011"
+  }
+ }
+ #>mathematics_calc_matrices
+ ^["matrices"]{
+  topics: "Gaussian elimination, LU factorization, rank, determinants, inverses, vector spaces of solutions"
+  feeds: [ ~"./calculus-and-linear-algebra.spw#mathematics_calc_eigen" ]
+
+  #>mathematics_calc_fangcheng
+  ^["fangcheng"]{
+   #:claim #!settled
+   statement: "Chapter eight of the Nine Chapters on the Mathematical Art, compiled in Han China by about the first century CE, solves linear systems by elimination on counting boards."
+   source: ~"../../../registries/sources/formal.spw#src_formal_hart_2011"
+   ~#(the European name Gaussian elimination arrived much later)
+  }
+  #>mathematics_calc_lu
+  ^["lu_with_pivoting"]{
+   #:claim #!settled
+   statement: "Elimination with partial pivoting factors a square matrix as a row permutation times lower times upper triangular, in about two thirds n cubed operations."
+   source: ~"../../../registries/sources/formal.spw#src_formal_trefethen_bau_1997"
+  }
+ }
+ #>mathematics_calc_eigen
+ ^["eigen"]{
+  topics: "eigenvalues and eigenvectors, diagonalization, symmetric matrices, normal modes, matrix exponentials"
+  needs: [ ~"./calculus-and-linear-algebra.spw#mathematics_calc_matrices" ]
+  feeds: [ ~"./differential-equations.spw#mathematics_diffeq_linear" ]
+
+  #>mathematics_calc_modes
+  ^["normal_modes"]{
+   #:claim #!settled
+   statement: "For an undamped system with symmetric positive definite mass and stiffness matrices, generalized eigenvectors give normal modes that vibrate independently at frequencies set by the eigenvalues."
+   source: ~"../../../registries/sources/formal.spw#src_formal_strang_2023"
+   ^["limits"]{
+    holds: "linear, undamped, symmetric systems"
+    fails: "general damping couples the modes unless the damping matrix is diagonalized by the same eigenvectors"
+   }
+  }
+ }
+ #>mathematics_calc_svd
+ ^["svd_and_least_squares"]{
+  topics: "orthogonality, projections, QR, the singular value decomposition, least squares, low-rank approximation"
+  needs: [ ~"./calculus-and-linear-algebra.spw#mathematics_calc_eigen" ]
+  feeds: [ ~"./probability-and-statistics.spw#mathematics_probstat_regression" ]
+
+  #>mathematics_calc_svd_exists
+  ^["svd"]{
+   #:claim #!settled
+   statement: "Every real matrix, square or not, factors as orthogonal times nonnegative diagonal times orthogonal; the diagonal entries are its singular values."
+   source: ~"../../../registries/sources/formal.spw#src_formal_trefethen_bau_1997"
+  }
+  #>mathematics_calc_least_squares
+  ^["least_squares"]{
+   #:claim #!settled
+   statement: "The least-squares solution of an overdetermined system solves the normal equations, but forming A transpose A squares the condition number, so QR or the SVD is safer."
+   source: ~"../../../registries/sources/formal.spw#src_formal_trefethen_bau_1997"
+   ^["limits"]{
+    holds: "full column rank"
+    fails: "rank-deficient A has many least-squares solutions; the SVD picks the one of smallest norm"
+   }
+  }
+  #>mathematics_calc_least_squares_origin
+  ^["least_squares_origin"]{
+   #:claim #!settled
+   statement: "Legendre published least squares in 1805 and Gauss in 1809, with a claim of use since 1795; Stigler surveys the priority question."
+   source: ~"../../../registries/sources/formal.spw#src_formal_stigler_1981"
+  }
+ }
+}
+
+^["try"]{
+ #>mathematics_calc_try_hooke
+ ^["fit_a_spring"]{
+  materials: [ "a rubber band or soft spring", "a small bag", "ten identical coins", "a ruler", "paper or a spreadsheet" ]
+  steps: << "hang the bag from the band and measure its length" ; "add coins one at a time and record the length each time" ; "write each row as length equals a plus b times coins" ; "solve the two normal equations for a and b" ; "draw the fitted line and the points and mark the largest miss" >>
+  time: .{ n: 40, unit: "minutes" }
+  safety: "a stretched band can snap; keep your face clear of it"
+  shows: ~"./calculus-and-linear-algebra.spw#mathematics_calc_least_squares"
+ }
+}
+
+#>mathematics_calc_normal_eq_q
+?["Why do engineers still form normal equations when QR is safer?"]{
+ #:depth #!computational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Normal equations persist because they are taught first and fit hand computation, and they fail visibly only on badly conditioned data such as high-degree polynomial fits."
+ !probe{ "sample 50 points from a known degree 9 polynomial, fit degree 9 by normal equations and by QR in double precision, and compare each recovered coefficient vector with the known one" =id[p_formal_calc_normal_vs_qr] =kind[calc] }
+ $%[formal.numerics.hilbert10_cond2, formal.fp.binary64_epsilon]
+ ~"./calculus-and-linear-algebra.spw#mathematics_calc_least_squares" ~#neighbor(nearest)
+}

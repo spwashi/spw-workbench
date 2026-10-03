@@ -1,0 +1,290 @@
+# Mechanical Core
+#
+# The undergraduate mechanical sequence as a prerequisite graph, from statics and solids through dynamics and vibration to power cycles, exergy, machine design, and a capstone.
+
+#>engineering_mechanical
+#:layer #!reference
+#:domain #!engineering
+#:form #!curriculum
+#:level #!foundation
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Mechanical Core"
+ ~#claim: "Mechanical design follows every load path into the ground, keeps forcing away from resonance, and counts exergy, the work a system could still deliver, as a cost."
+ ~#proof: "Shigley for failure, fatigue, and fasteners; Rao for vibration; Carnot, Gouy, and Bejan for cycles and exergy; Junker for loosening; ASME Y14.5 for tolerances."
+ ~#door: "Start at statics, then twang a ruler off a table edge to hear a natural frequency move."
+ ~#audience: "first- and second-year mechanical engineering students and makers who build machines"
+ continuity: "Mechanical Core | load path"
+ cold_open: "A mechanical engineer follows every load path into the ground and treats lost work as a cost, not a rounding error."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/physics-and-mechanical-engineering/undergrad-mechanical-engineering.spw", ".spw/caches/university-education/thermodynamics/classical-and-engineering-thermodynamics.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the topology-optimization wonder claimed 30 percent lighter brackets without a source; the question survives without a magnitude",
+  "thermo-fluids appeared in three raw files; this node keeps power cycles and exergy and points to the canonical thermodynamics and transport nodes",
+  "the classical thermodynamics raw is split: laws and the state postulate go to the physics node, while cycles and exergy stay here",
+  "the bolt wonder said an unpreloaded bolt snaps almost immediately; the mechanism is restated without a time",
+  "control loop design moves to control and signals so the material lives once",
+  "on 2026-10-03 the capstone gained needs edges to the shared transport, control, and economics cores, so the discipline names the cores it leans on instead of only pointing at them"
+ ]
+ gate_note: "the brief emit gate failed because the card claim lacked its continuity phrase load path; the claim now says it, and the emit gate passes"
+}
+
+^["edges"]{
+ needs: [ ~"../physics/classical-thermodynamics.spw#physics_thermo_classical", ~"../../formal/mathematics/engineering-core/differential-equations.spw#mathematics_diffeq" ]
+ feeds: [ ~"./control-and-signals.spw#engineering_control_signals", ~"./mechanical-advanced.spw#engineering_mechanical_advanced" ]
+ grounds: [ ~"../materials/materials-core.spw#materials_core_mechanical" ]
+ see: [ ~"./transport-phenomena.spw#engineering_transport" ]
+}
+
+^["concepts"]{
+ primary: [ #load_path, #resonance, #exergy ]
+ transfers: [ #fatigue, #feedback ]
+ tensions: [ #regime_limit ]
+}
+
+^["dag"]{
+ =~"./mechanical-core.spw#engineering_mechanical_solids"[needs]{ ~"./mechanical-core.spw#engineering_mechanical_statics" }
+ =~"./mechanical-core.spw#engineering_mechanical_dynamics"[needs]{ ~"./mechanical-core.spw#engineering_mechanical_statics" }
+ =~"./mechanical-core.spw#engineering_mechanical_vibration"[needs]{ ~"./mechanical-core.spw#engineering_mechanical_dynamics" }
+ =~"./mechanical-core.spw#engineering_mechanical_cycles"[needs]{ ~"../physics/classical-thermodynamics.spw#physics_thermo_second" }
+ =~"./mechanical-core.spw#engineering_mechanical_exergy"[needs]{ ~"./mechanical-core.spw#engineering_mechanical_cycles" }
+ =~"./mechanical-core.spw#engineering_mechanical_design"[needs]{ ~"./mechanical-core.spw#engineering_mechanical_solids" ; ~"./mechanical-core.spw#engineering_mechanical_vibration" }
+ =~"./mechanical-core.spw#engineering_mechanical_capstone"[needs]{ ~"./mechanical-core.spw#engineering_mechanical_design" ; ~"./mechanical-core.spw#engineering_mechanical_exergy" }
+ =~"./mechanical-core.spw#engineering_mechanical_capstone"[needs]{ ~"./transport-phenomena.spw#engineering_transport" ; ~"./control-and-signals.spw#engineering_control_signals" ; ~"./engineering-economics.spw#engineering_economics" }
+ shared: "fluids, heat transfer, control, and cost are taught once in the shared cores; the capstone needs them from there"
+ order: << "statics" ; "solids" ; "dynamics" ; "vibration" ; "cycles" ; "exergy" ; "design" ; "capstone" >>
+}
+
+#>engineering_mechanical_statics
+^["statics"]{
+ course: "Statics"
+ year: "sophomore"
+ topics: [
+  "free-body diagrams and particle and rigid-body equilibrium",
+  "trusses by joints and sections, frames, and dry friction"
+ ]
+ norm: "every analysis starts from a free-body diagram that shows where each load enters and leaves"
+}
+
+#>engineering_mechanical_solids
+^["solids"]{
+ course: "Mechanics of materials, with a materials testing laboratory"
+ year: "sophomore"
+ topics: [
+  "normal, shear, torsional, and bending stress; shear and moment diagrams",
+  "Euler-Bernoulli beam deflection and statically indeterminate beams",
+  "plane stress, principal stresses, Mohr circle, and strain-gauge rosettes"
+ ]
+
+ #>engineering_mechanical_yield_criteria
+ ^["yield_criteria"]{
+  #:claim #!settled
+  statement: "Ductile metals are judged against yield by distortion energy, the von Mises criterion, or by maximum shear stress, the Tresca criterion, which is the more conservative of the two."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_shigley_2014"
+ }
+ #>engineering_mechanical_buckling
+ ^["buckling"]{
+  #:claim #!settled
+  statement: "A slender column fails by buckling at a load that rises with its bending stiffness and falls with the square of its length, the Euler formula; stubby columns yield before they buckle."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_shigley_2014"
+ }
+}
+
+#>engineering_mechanical_dynamics
+^["dynamics"]{
+ course: "Dynamics"
+ year: "sophomore or junior"
+ topics: [
+  "particle and rigid-body kinematics in rotating frames, including Coriolis terms",
+  "work-energy and impulse-momentum methods",
+  "planar rigid-body kinetics and mass moments of inertia"
+ ]
+
+ #>engineering_mechanical_resonance
+ ^["resonance"]{
+  #:claim #!settled
+  statement: "A spring-mass-damper forced near its natural frequency responds with an amplitude that only damping limits, so a lightly damped structure can shake far more than its static load suggests."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_rao_2017"
+ }
+}
+
+#>engineering_mechanical_vibration
+^["vibration"]{
+ course: "Mechanical vibrations"
+ year: "junior"
+ topics: [
+  "free and viscously damped single-degree-of-freedom response and logarithmic decrement",
+  "base excitation, force transmissibility, and isolation mounts",
+  "mass and stiffness matrices, natural frequencies, mode shapes, and tuned mass dampers"
+ ]
+
+ #>engineering_mechanical_isolation
+ ^["isolation"]{
+  #:claim #!settled
+  statement: "An isolation mount reduces the force passed to its base only when the forcing frequency exceeds the square root of two times its natural frequency; below that it amplifies the force."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_rao_2017"
+ }
+}
+
+#>engineering_mechanical_cycles
+^["power_cycles"]{
+ course: "Applied thermodynamics"
+ year: "junior"
+ topics: [
+  "Rankine cycles with superheat, reheat, and feedwater heating",
+  "Brayton cycles with regeneration, intercooling, and reheat",
+  "air-standard Otto and Diesel cycles",
+  "vapor-compression refrigeration and coefficient of performance",
+  "psychrometrics and combustion with excess air"
+ ]
+
+ #>engineering_mechanical_carnot
+ ^["carnot_limit"]{
+  #:claim #!settled
+  statement: "No engine running between two temperatures beats a reversible one, as Carnot argued in 1824; real cycles fall short through friction, heat transfer across finite differences, and mixing."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_carnot_1824", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_cengel_boles_2015" ]
+  see: [ ~"../physics/classical-thermodynamics.spw#physics_thermo_carnot_bound" ]
+ }
+}
+
+#>engineering_mechanical_exergy
+^["exergy"]{
+ course: "Exergy analysis, taught inside thermodynamics and energy-systems courses"
+ year: "junior or senior"
+ topics: [
+  "dead state at ambient temperature and pressure",
+  "flow exergy balances for turbines, compressors, and exchangers",
+  "second-law efficiency as recovered over supplied exergy"
+ ]
+
+ #>engineering_mechanical_gouy_stodola
+ ^["gouy_stodola"]{
+  #:claim #!settled
+  statement: "Work lost to irreversibility equals the ambient temperature times the entropy generated; Gouy stated this in 1889, and every real process pays it."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_gouy_1889", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_bejan_2016" ]
+  ~#(Stodola reached it independently for steam turbines, so both names travel together)
+ }
+}
+
+#>engineering_mechanical_design
+^["machine_design"]{
+ course: "Design of machine elements and manufacturing"
+ year: "junior or senior"
+ topics: [
+  "fatigue: S-N curves, endurance limits, and Goodman and Gerber lines",
+  "Hertzian contact stress in bearings and gear teeth",
+  "shafts and keys, gears with AGMA ratings, and rolling-bearing L10 life",
+  "bolted joints, preload, and welds",
+  "milling, turning, stamping, sheet-metal bending, and injection molding"
+ ]
+
+ #>engineering_mechanical_endurance
+ ^["endurance_limit"]{
+  #:claim #!settled
+  statement: "Many steels show an endurance limit, a stress amplitude below which test specimens survive to the test runout; aluminum alloys show no such limit and keep weakening with cycles."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_shigley_2014"
+  ^["limits"]{
+   holds: "polished laboratory specimens tested in air"
+   fails: "corrosive service and rough or notched surfaces, which lower the limit or erase it"
+  }
+ }
+ #>engineering_mechanical_preload
+ ^["bolt_preload"]{
+  #:claim #!settled
+  statement: "In a preloaded joint the clamped parts carry most of a fluctuating external load, so the bolt sees only a fraction of the alternating stress and lasts far longer in fatigue."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_shigley_2014"
+ }
+ #>engineering_mechanical_self_loosening
+ ^["self_loosening"]{
+  #:claim #!settled
+  statement: "Junker showed in 1969 that transverse vibration loosens bolts when the joint slips sideways, so preload high enough to stop that slip is the main defense."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_junker_1969"
+ }
+ #>engineering_mechanical_gdt
+ ^["gdt"]{
+  #:claim #!settled
+  statement: "ASME Y14.5 ties each geometric tolerance to datums, so where a feature may sit is defined relative to how the part is located and inspected."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_asme_y14_5_2018"
+  as_of: "2018 edition"
+ }
+}
+
+#>engineering_mechanical_capstone
+^["capstone"]{
+ course: "Two-semester design project"
+ year: "senior"
+ topics: [
+  "customer needs, engineering specifications, and functional decomposition",
+  "morphological charts and concept selection",
+  "parametric CAD, finite element checks, and design for manufacture and assembly",
+  "prototype build, instrumentation, and test"
+ ]
+ norm: "prototypes with rotating parts carry guards and an emergency stop"
+
+ #>engineering_mechanical_qfd
+ ^["qfd"]{
+  #:claim #!settled
+  statement: "Quality function deployment, developed by Yoji Akao in Japan, maps what customers ask for onto measurable engineering characteristics before concepts are chosen."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_akao_1990"
+ }
+ #>engineering_mechanical_pugh
+ ^["pugh_matrix"]{
+  #:claim #!settled
+  statement: "Pugh concept selection scores each candidate as better, same, or worse than a datum concept on every criterion, then iterates by combining the strongest ideas."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_pugh_1991"
+ }
+}
+
+^["try"]{
+ #>engineering_mechanical_try_ruler
+ ^["ruler_twang"]{
+  materials: [ "a 30 cm ruler", "a table edge", "a phone with a slow-motion camera or a stopwatch" ]
+  steps: <<
+   "press the ruler to the table with your palm, half of it hanging free" ;
+   "flick the free end and film or count the vibrations" ;
+   "shorten the overhang and flick again" ;
+   "compare the pitch and vibration rate at each length" ;
+   "explain why a shorter, stiffer cantilever rings faster"
+  >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "keep faces clear of the free end; a snapping ruler can sting"
+  shows: ~"./mechanical-core.spw#engineering_mechanical_resonance"
+ }
+}
+
+#>engineering_mechanical_preload_q
+?["Why does a properly preloaded bolt survive vibration that shakes a loose one apart?"]{
+ #:depth #!physical ~#lens(material grain)
+ #:claim #!settled
+ ~#hypothesis: "Preload keeps the joint from slipping and moves most of the alternating load into the clamped parts, so loosening and bolt fatigue are starved at once."
+ sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_shigley_2014", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_junker_1969" ]
+ !probe{ "compute the bolt share of an alternating load for two joint stiffness ratios using the joint constant" =id[p_mateng_mechanical_preload] =kind[calc] }
+ $%[file.frame_count]
+ ~"./mechanical-core.spw#engineering_mechanical_preload" ~#neighbor(nearest)
+}
+
+#>engineering_mechanical_bone_q
+?["Is a bone a bracket that topology optimization would have drawn?"]{
+ #:depth #!physical ~#lens(living system)
+ #:claim #!speculative
+ ~#hypothesis: "Spongy bone aligns its struts with principal stress directions, so an optimizer given the same loads should draw similar struts, differing where bone must also grow, heal, and store minerals."
+ breaks: "bone remodels throughout life and also makes blood and stores minerals; an optimizer sees one load case and one material"
+ !probe{ "run a free topology optimizer on a femoral-head load case and compare its struts with a published trabecular map" =id[p_mateng_mechanical_bone] =kind[sim] }
+ $%[graph.out_degree]
+ ~"./mechanical-core.spw#engineering_mechanical_yield_criteria" ~#neighbor(nearest)
+}

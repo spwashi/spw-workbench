@@ -1,0 +1,235 @@
+# False Friends
+#
+# A paste-safety card: ten habits from other fields that change meaning in Spw, each with the probe that shows it, the form to write instead, the message a tool prints or should print, and a line of door text.
+
+#>spw_false_friends
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!glossary
+#:level #!intro
+#:review #!sourced
+#:valence #!honk
+
+^"emit"{
+ ~#title: "False Friends"
+ ~#claim: "Ten habits from other fields change meaning in Spw; five of them parse with no word from any tool, and each has a quoted or faceted form that parses clean."
+ ~#proof: "Every probe and every write_instead form was run through the parser at commit 1aa1dc23 and again on 2026-10-03; the specimen batteries hold the field-by-field evidence."
+ ~#door: "For paste safety, find the habit your field ranks first, read its door line, then paste a line of your own and check it."
+ ~#audience: "anyone pasting notes, code, or chat from another field into Spw"
+ continuity: "False Friends | paste safety"
+ cold_open: "Ten habits you already type change meaning here, and paste safety starts with quoting them."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/studies/persona-synthesis.json false_friends_top, ranks 1 to 10",
+  "writer probes of each habit and each write_instead form at commit 1aa1dc23 on 2026-10-03"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the persona study said a hex colour with a digit, such as #3a3a3a, turns the surface to prose; it is a hash operation carrying a prose payload, and the surface keeps its structure",
+  "the persona study cited spw-cut-gate.ts:191-194 and :207-211; at 1aa1dc23 the prose check is at :195 and the swallow checks at :212-216",
+  "the persona study wrote habits in single-quoted strings, which the cut bans outside double quotes; habits here sit in double-quoted strings or are named by codepoint"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes" ]
+ extends: [ ~"./operators.spw#spw_gloss_operators" ]
+ see: [ ~"../specimens/index.spw#spw_specimens" ]
+}
+
+^["loudness"]{
+ #>spw_ff_loudness
+ ^["scale"]{
+  #:claim #!settled
+  statement: "Loudness names which tool reports a habit: silent rows pass every tool, gate rows fail only the cut gate, and validator rows raise a parse warning that the gate also fails."
+  sources: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_diagnostics", ~"../../registries/sources/spw-branch.spw#src_spw_validator" ]
+  cites: [ "scripts/analyzers/spw-cut-gate.ts:193-216", "scripts/analyzers/spw-syntax-validate.ts:133,236-242" ]
+  reads: %[gloss.spec.silent_n, gloss.spec.gate_n, gloss.spec.validator_n]
+ }
+ order: "rows follow the persona rank, which counts the reader clusters that carry each habit; loudness is a separate column"
+ silent: [ "colon", "hash", "equals", "infix", "at" ]
+ gate: [ "numbers", "swallow", "typography" ]
+ validator: [ "comparison", "valence" ]
+}
+
+^["rows"]{
+ #>spw_ff_comparison
+ ^["comparison"]{
+  #:claim #!settled
+  statement: "A comparison glyph, or an angle with no partner, outside a string stops the structured parse and turns the whole surface to prose; inside a frame, the warning names the frame rather than the glyph."
+  rank: 1, loudness: #validator, verdict: #degrades
+  probe: "sig: p < 0.05"
+  write_instead: "sig: \"p < 0.05\""
+  lint: .{ text: "comparison at L:C sits outside a string and turns the surface into prose; quote it or move the threshold into a ?match arm", status: #proposed }
+  reported: .{ text: "Structured parse stopped at CAPSULE_OPEN \"<\"; surface degraded to prose.", status: #implemented, cite: "packages/spw-seed/src/grammar/seed.ts:88" }
+  door: "One stray greater-than or less-than sign turns the whole file into prose. Quote anything you would read aloud as greater than."
+  source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes"
+  specimens: [ ~"../specimens/lab-and-data.spw#spw_spec_lab_data_p_threshold", ~"../specimens/math-physics-notation.spw#spw_spec_math_physics_ket", ~"../specimens/media-and-classroom.spw#spw_spec_media_classroom_blockquote" ]
+ }
+ #>spw_ff_numbers
+ ^["numbers"]{
+  #:claim #!settled
+  statement: "Only integers and point decimals lex as numbers; a leading minus is a hidden lexer error that drops the sign, and exponents, suffixes, and percents split silently."
+  rank: 2, loudness: #gate, verdict: #hidden_error
+  probe: "x: -3"
+  observed: "one lexer error, and x binds 3; the probe n: 1e3 splits into 1 and e3 with no error"
+  write_instead: "x: \"-3\""
+  lint: .{ text: "a leading minus loses its sign; write the value in quotes or in a registry cell", status: #proposed }
+  reported: .{ text: "parse error: Unexpected character: -", status: #implemented, cite: "scripts/analyzers/spw-cut-gate.ts:193" }
+  door: "A bare number is an integer or a decimal with a point. Signs, exponents, percents, units, dates, and currency go in quotes."
+  sources: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes", ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_seed_lexer" ]
+  cites: [ "packages/spw-seed/src/lexer/matchers/literals.ts:93-95", "packages/spw-seed/src/lexer/tokenize.ts:149" ]
+  specimens: [ ~"../specimens/code-habits.spw#spw_spec_code_negative", ~"../specimens/math-physics-notation.spw#spw_spec_math_physics_decimal_comma", ~"../specimens/design-tokens.spw#spw_spec_design_percent" ]
+ }
+ #>spw_ff_colon
+ ^["colon"]{
+  #:claim #!settled
+  statement: "The colon always binds, so a clock time, a timecode, a ratio, or a CSS state becomes a nested binding, and an unquoted multi-word value keeps only its first word."
+  rank: 3, loudness: #silent, verdict: #restructures
+  probe: "call: 06:30"
+  observed: "call binds a nested binding of 06 to 30; no tool reports it"
+  write_instead: "call: \"06:30\""
+  lint: .{ text: "a value holding a colon parses as a nested binding; quote clock times, timecode, and ratios", status: #proposed }
+  reported: .{ text: "binding value starts on a later line", status: #implemented, cite: "scripts/analyzers/spw-cut-gate.ts:216", scope: "only a trailing colon that takes the next line" }
+  door: "The colon is how Spw names things. If your value holds a colon or a space, put it in quotes."
+  source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes"
+  specimens: [ ~"../specimens/media-and-classroom.spw#spw_spec_media_classroom_timecode", ~"../specimens/design-tokens.spw#spw_spec_design_hover", ~"../specimens/code-habits.spw#spw_spec_code_bit_range" ]
+ }
+ #>spw_ff_hash
+ ^["hash"]{
+  #:claim #!settled
+  statement: "A hash followed by a space starts a dropped note even mid-line, and a hash touching a word makes a tag, so blank indicators and hex colours change meaning silently."
+  rank: 4, loudness: #silent, verdict: #drops
+  probe: "f100: 100 1# $a Author, An"
+  observed: "f100 binds 100, the literal 1 stands alone, and everything from the subfield onward leaves the tree"
+  write_instead: "f100: .{ tag: \"100\", ind: \"1#\", a: \"Author, An\" }"
+  lint: .{ text: "a hash and a space drop the rest of line N from the tree; move the data before it or into a string", status: #proposed }
+  door: "A hash followed by a space starts a note the parser ignores, even mid-line. A hash touching a word makes a tag."
+  source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes"
+  specimens: [ ~"../specimens/language-and-library.spw#spw_spec_language_library_blank_indicator", ~"../specimens/design-tokens.spw#spw_spec_design_hex_digit", ~"../specimens/media-and-classroom.spw#spw_spec_media_classroom_heading" ]
+ }
+ #>spw_ff_equals
+ ^["equals"]{
+  #:claim #!settled
+  statement: "The equals sign configures a register or opens a bias edge and binds nothing, so k = v leaves three flat siblings and an equation splits apart."
+  rank: 5, loudness: #silent, verdict: #restructures
+  probe: "n = 120"
+  observed: "three siblings, n, a bare equals operation, and 120, with no binding"
+  write_instead: "n: 120"
+  lint: .{ text: "k = v forms no binding; write k: v, and keep equations in backtick phrases", status: #proposed }
+  door: "Write name: value. Keep equations in backtick phrases; Spw keeps them intact and computes nothing."
+  source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes"
+  specimens: [ ~"../specimens/lab-and-data.spw#spw_spec_lab_data_sample_size", ~"../specimens/design-tokens.spw#spw_spec_design_variant_property", ~"../specimens/language-and-library.spw#spw_spec_language_library_clitic_boundary" ]
+ }
+ #>spw_ff_infix
+ ^["infix"]{
+  #:claim #!settled
+  statement: "Spw operators are prefixes, so a spaced operator takes the next word as its modifier and a caret at line end takes the next key; the parse completes with no warning."
+  rank: 6, loudness: #silent, verdict: #restructures
+  probe: "x: a ? b : c"
+  observed: "x binds a, and a second binding keyed on a wonder operation with modifier b binds c"
+  write_instead: "x: `a ? b : c`"
+  lint: .{ text: "an operator at the end of line N takes the next key as its subject; a formula belongs in a backtick phrase", status: #proposed }
+  door: "Spw operators come before what they act on. Write formulas in backticks, and the tree keeps them whole."
+  source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes"
+  specimens: [ ~"../specimens/code-habits.spw#spw_spec_code_ternary", ~"../specimens/math-physics-notation.spw#spw_spec_math_physics_caret_line_end", ~"../specimens/lab-and-data.spw#spw_spec_lab_data_model_formula" ]
+ }
+ #>spw_ff_swallow
+ ^["swallow"]{
+  #:claim #!settled
+  statement: "A capsule that ends its line on a closing angle, a key with no value, or a URL whose slashes open a comment takes the next line as part of itself."
+  rank: 7, loudness: #gate, verdict: #swallows
+  probe: "t: Vec<i32>", followed_by: "next: 1"
+  observed: "the capsule takes the key next from the following line as its right arm"
+  write_instead: "t: \"Vec<i32>\","
+  lint: .{ text: "a value ending line N on a closing angle swallows line N+1; end it with a comma or use .{ n, unit }", status: #proposed }
+  reported: .{ text: "medial capsule swallows the next line", status: #implemented, cite: "scripts/analyzers/spw-cut-gate.ts:213" }
+  door: "A value that ends in a closing angle or a colon borrows the next line. Give it a comma, or use the .{ n, unit } form."
+  source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes"
+  specimens: [ ~"../specimens/code-habits.spw#spw_spec_code_generic", ~"../specimens/language-and-library.spw#spw_spec_language_library_infix_line_end", ~"../specimens/media-and-classroom.spw#spw_spec_media_classroom_url" ]
+ }
+ #>spw_ff_valence
+ ^["valence"]{
+  #:claim #!settled
+  statement: "The five valence words name material quality, not merit; as a binding key one turns the whole surface to prose, and as a bare value one captures the next line."
+  rank: 8, loudness: #validator, verdict: #degrades
+  probe: "honk: 1", followed_by: "next: 2"
+  observed: "a parse warning stops the structured parse at the colon; as a value, x: honk binds the next line"
+  write_instead: "honk_cue: 1"
+  lint: .{ text: "a valence word used as a key degrades the surface; rename the key or quote the word", status: #proposed }
+  reported: .{ text: "Structured parse stopped at COLON \":\"; surface degraded to prose.", status: #implemented, cite: "packages/spw-seed/src/grammar/seed.ts:88" }
+  door: "These five words describe how a material behaves, and bane is a useful constraint. Your field may use valence for something else."
+  sources: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes", ~"../../registries/sources/spw-design-studies.spw#src_lab_canon_valence" ]
+  cites: [ "docs/theory/spw/valence-architecture.spw:38-39,115" ]
+  term: ~"./terms.spw#spw_term_valence"
+ }
+ #>spw_ff_at
+ ^["at"]{
+  #:claim #!settled
+  statement: "An at sign names a perspective or a root and notifies no one, so a chat line keyed on a handle becomes a reference that binds only the next word."
+  rank: 9, loudness: #silent, verdict: #restructures
+  probe: "@viewer_a: is this live?"
+  observed: "viewer_a becomes a reference key binding is; the other words split off, and the question mark becomes an operation"
+  write_instead: "line: .{ role: \"viewer\", text: \"is this live?\" }"
+  lint: .{ text: "an at-name is a perspective reference, not a mention; name people by role in a string", status: #proposed }
+  door: "An at sign notifies no one and cites nothing. Write roles, not names, and put times in quotes."
+  handles: "every handle in this cut is synthetic; pseudonymization is a protocol for live notes, and no real handle is stored"
+  source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes"
+  specimens: [ ~"../specimens/media-and-classroom.spw#spw_spec_media_classroom_chat_line", ~"../specimens/design-tokens.spw#spw_spec_design_media_query" ]
+ }
+ #>spw_ff_typography
+ ^["typography"]{
+  #:claim #!settled
+  statement: "Curly quotes, dashes, accents, Greek, emoji, and other non-ASCII characters outside strings are lexer errors; keys truncate, and an empty binding can swallow the next line."
+  rank: 10, loudness: #gate, verdict: #hidden_error
+  probe: "q: “hello”", codepoints: "U+201C and U+201D"
+  observed: "two lexer errors, and q binds hello as a bare identifier"
+  write_instead: "q: \"hello\""
+  lint: .{ text: "U+201C at L:C is a curly quote; replace it with a straight quote", status: #proposed }
+  reported: .{ text: "apostrophe or non-ASCII outside a double-quoted string", status: #implemented, cite: "scripts/analyzers/spw-cut-voice.ts:57" }
+  door: "Turn off smart punctuation, or paste through a code editor. Keys are plain ASCII; words in your own language go inside quotes."
+  sources: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes", ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_unicode_18" ]
+  specimens: [ ~"../specimens/media-and-classroom.spw#spw_spec_media_classroom_curly_quotes", ~"../specimens/math-physics-notation.spw#spw_spec_math_physics_greek_value", ~"../specimens/media-and-classroom.spw#spw_spec_media_classroom_accented_key" ]
+ }
+}
+
+^["fields"]{
+ code: ~"../specimens/code-habits.spw#spw_spec_code"
+ math_physics: ~"../specimens/math-physics-notation.spw#spw_spec_math_physics"
+ design: ~"../specimens/design-tokens.spw#spw_spec_design"
+ lab_data: ~"../specimens/lab-and-data.spw#spw_spec_lab_data"
+ language_library: ~"../specimens/language-and-library.spw#spw_spec_language_library"
+ media_classroom: ~"../specimens/media-and-classroom.spw#spw_spec_media_classroom"
+}
+
+^["try"]{
+ #>spw_ff_try
+ ^["paste_check"]{
+  materials: [ "three lines from your own notes", "a terminal at the repository root" ]
+  steps: << "find the row your field ranks first" ; "pipe each line into npm run spw -- fingerprint --stdin --json" ; "rewrite any line whose signature surprises you with the write_instead form" ; "pipe it again and compare" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "no hazard worth naming; use your own notes and synthetic names"
+  shows: ~"./false-friends.spw#spw_ff_loudness"
+ }
+}
+
+#>spw_ff_lint_q
+?["Would a lint that names the line move silent rows toward loud ones?"]{
+ #:depth #!computational ~#lens(applied attention)
+ #:claim #!speculative
+ ~#hypothesis: "Implementing the proposed messages for the five silent rows would catch more pasted habits before review than any change to door text alone."
+ !probe{ "write a scratch lint for the silent rows, run it over the specimen batteries, and count rows it reports against rows the gate reports" =id[p_gloss_ff_lint] =kind[build] }
+ $%[gloss.spec.silent_n, gloss.spec.rows_n]
+ ~"./false-friends.spw#spw_ff_loudness" ~#neighbor(nearest)
+}

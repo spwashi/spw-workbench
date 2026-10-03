@@ -1,0 +1,184 @@
+# Closure Atlas
+#
+# Properties as atoms, theorems as Horn rules, and examples as has and lacks rows; forward chaining sorts every pair of properties into implied, separated by a witness, or undecided by this atlas.
+
+#>spw_lab_closure_atlas
+#:layer #!semantics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!graduate
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Closure Atlas"
+ ~#claim: "Run the rules forward and back over a few examples and every pair of properties is implied, separated by a witness, or undecided, and each undecided pair names a missing example or a missing theorem."
+ ~#proof: "Horn closure runs in linear time after Dowling and Gallier; the rules are standard separation and countability theorems under the convention in Munkres; Sorgenfrey supplied the non-normal square."
+ ~#door: "State one lack for the Sorgenfrey plane, then watch the atlas derive four more."
+ ~#audience: "topology students, mathematicians keeping counterexample tables, and Spw authors writing vocabularies with implications"
+ continuity: "Closure Atlas | missing example"
+ cold_open: "Every pair the atlas cannot decide is a missing example or a missing theorem, and the atlas tells you which pairs those are."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "persona study contraption_catalog[15], references/studies/persona-synthesis.json", "sketch references/spw-branch/seeds/contraptions/closure-atlas.spw" ]
+ method: #authored
+ evidence: #[ "the closure over the rules and rows below was computed by a scratch script on 2026-10-03, with one-premise-missing unit resolution for contrapositives" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the persona study reported 42 undecided pairs for an unstated rule set; the counts here belong to the twelve rules and three rows written below",
+  "the sketch stated every lack of the Sorgenfrey plane by hand; here one stated lack derives the rest, which is the point of the atlas"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../formal/mathematics/topology-and-complex-core.spw#mathematics_tc_separation" ]
+ analog: [ ~"./grid-gap-finder.spw#spw_lab_grid_gap" ]
+ see: [ ~"./dag-walker.spw#spw_lab_dag_walker" ]
+}
+
+^["concepts"]{
+ primary: [ #closure, #hole ]
+ transfers: [ #partial_order, #reflexive_mirror ]
+ tensions: [ #overclaim ]
+}
+
+^["tool"]{
+ status: #proposed
+ verb: "spw closure FILE, which would read if, then, has, and lacks frames and print every pair with its verdict; not yet a command"
+ scratch: "the counts below came from a scratch script outside the repository"
+ prior_art: ~"../../registries/sources/spw-contraptions.spw#src_contrap_pi_base"
+ source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_dowling_gallier_1984"
+}
+
+^["parameters"]{
+ #>spw_lab_closure_atlas_convention
+ ^["convention"]{
+  separation: "regular and normal both include T1, so normal implies regular and regular implies Hausdorff"
+  source: ~"../../registries/sources/formal.spw#src_formal_munkres_2000"
+ }
+ atoms: #[ hausdorff, regular, normal, first_countable, second_countable, separable, lindelof, compact, metrizable ]
+ forward: "add the conclusion of any rule whose premises all hold"
+ back: "when a conclusion is lacked and all premises but one hold, mark the remaining premise lacked"
+}
+
+#>spw_lab_closure_atlas_rules
+^["rules"]{
+ #:claim #!settled
+ statement: "Each rule below is a standard theorem of point-set topology under the stated convention."
+ sources: [ ~"../../registries/sources/formal.spw#src_formal_munkres_2000", ~"../../registries/sources/spw-contraptions.spw#src_contrap_steen_seebach_1978" ]
+ ^["r_regular"]{ if: #[ regular ], then: #[ hausdorff ] }
+ ^["r_normal"]{ if: #[ normal ], then: #[ regular ] }
+ ^["r_metric_normal"]{ if: #[ metrizable ], then: #[ normal ] }
+ ^["r_metric_countable"]{ if: #[ metrizable ], then: #[ first_countable ] }
+ ^["r_second_first"]{ if: #[ second_countable ], then: #[ first_countable ] }
+ ^["r_second_separable"]{ if: #[ second_countable ], then: #[ separable ] }
+ ^["r_second_lindelof"]{ if: #[ second_countable ], then: #[ lindelof ] }
+ ^["r_compact"]{ if: #[ compact ], then: #[ lindelof ] }
+ ^["r_compact_hausdorff"]{ if: #[ compact, hausdorff ], then: #[ normal ] }
+ ^["r_regular_lindelof"]{ if: #[ regular, lindelof ], then: #[ normal ] }
+ ^["r_separable_metric"]{ if: #[ metrizable, separable ], then: #[ second_countable ] }
+ ^["r_urysohn"]{ if: #[ regular, second_countable ], then: #[ metrizable ] }
+}
+
+^["rows"]{
+ #>spw_lab_closure_atlas_real_line
+ ^["real_line"]{ has: #[ metrizable, separable ], lacks: #[ compact ] }
+ #>spw_lab_closure_atlas_sorgenfrey_line
+ ^["sorgenfrey_line"]{
+  has: #[ regular, lindelof, first_countable, separable ]
+  lacks: #[ second_countable, compact ]
+ }
+ #>spw_lab_closure_atlas_sorgenfrey_plane
+ ^["sorgenfrey_plane"]{
+  has: #[ regular, first_countable, separable ]
+  lacks: #[ normal ]
+ }
+}
+
+^["world"]{
+ #>spw_lab_closure_atlas_sorgenfrey
+ ^["sorgenfrey_square"]{
+  #:claim #!settled
+  statement: "Sorgenfrey showed in 1947 that the product of the Sorgenfrey line with itself is not normal, although the line itself is normal and Lindelof."
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_sorgenfrey_1947", ~"../../registries/sources/spw-contraptions.spw#src_contrap_steen_seebach_1978" ]
+ }
+ #>spw_lab_closure_atlas_horn
+ ^["horn_closure"]{
+  #:claim #!settled
+  statement: "Dowling and Gallier gave linear-time algorithms for satisfiability of propositional Horn formulas, whose clauses each carry at most one positive literal."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_dowling_gallier_1984"
+ }
+ #>spw_lab_closure_atlas_pi_base
+ ^["prior_art"]{
+  #:claim #!settled
+  statement: "pi-Base is a community database of topological spaces, properties, and theorems that derives which properties follow for each recorded space."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_pi_base"
+ }
+}
+
+^["battery"]{
+ #>spw_lab_closure_atlas_derive
+ ^["derive_the_plane"]{
+  !probe{ "close the Sorgenfrey plane row from its one stated lack" =id[p_contrap_closure_atlas_plane] =kind[calc] }
+  predict: ?{ "how many more lacks follow from lacks normal" } ~<guess>
+  expect: "four: lindelof by the regular-Lindelof rule, metrizable, compact, and then second countable through the Urysohn rule"
+  shows: ~"./closure-atlas.spw#spw_lab_closure_atlas_sorgenfrey"
+ }
+ #>spw_lab_closure_atlas_pairs
+ ^["sort_the_pairs"]{
+  !probe{ "for each ordered pair of the nine atoms, decide implied, separated by a row, or undecided" =id[p_contrap_closure_atlas_pairs] =kind[calc] }
+  expect: "of 72 ordered pairs, 11 are implied, 28 are separated by one of the three rows, and 33 stay undecided"
+  shows: ~"./closure-atlas.spw#spw_lab_closure_atlas_rules"
+ }
+}
+
+#>spw_lab_closure_atlas_mirror
+^["language_mirror"]{
+ #>spw_lab_closure_atlas_gate_rule
+ ^["one_rule"]{
+  #:claim #!settled
+  statement: "One cut gate rule is already Horn over vocabulary values: a claim neither speculative nor interpretive, on a surface reviewed as sourced or higher, must carry a source link."
+  cites: [ "scripts/analyzers/spw-cut-gate.ts:316-322" ]
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_gate"
+ }
+ question: "Which pairs of vocabulary values does the cut contract decide, and which does it leave open?"
+ instrument: "write axis values as atoms, contract and gate rules as Horn rules, and each surface header as a has row"
+ standing: "a-cut: the vocabulary and the gate rule belong to this cut, not to canon"
+ !probe{ "encode the contract rules as Horn rules over vocabulary atoms and list the undecided pairs" =id[p_contrap_closure_atlas_vocab] =kind[build] }
+ vocabulary: ~"../../vocabulary.spw#cut_vocabulary"
+}
+
+^["limits"]{
+ holds: "which pairs the stated rules and rows decide, and a witness for each separation"
+ fails: "every undecided pair here is settled in the textbooks, so the count measures this atlas coverage, not open mathematics; a contrapositive of a two-premise rule is not itself Horn and fires only when the other premise is known"
+}
+
+^["try"]{
+ #>spw_lab_closure_atlas_try
+ ^["paper_closure"]{
+  materials: [ "index cards", "a pencil" ]
+  steps: << "write each rule on its own card" ; "write the Sorgenfrey plane row on a card" ; "apply rules backward from lacks normal until no card fires" ; "list every lack you derived" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./closure-atlas.spw#spw_lab_closure_atlas_derive"
+ }
+}
+
+#>spw_lab_closure_atlas_q
+?["Would a few classic counterexamples close most of the undecided pairs?"]{
+ #:depth #!mathematical ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Adding a handful of textbook spaces, such as a Hausdorff space that is not regular and a compact Hausdorff space that is not first countable, should decide most undecided pairs."
+ !probe{ "add one textbook counterexample at a time and recount undecided pairs after each" =id[p_contrap_closure_atlas_q] =kind[calc] }
+ $%[graph.out_degree]
+ ~"./closure-atlas.spw#spw_lab_closure_atlas_pairs" ~#neighbor(nearest)
+ breaks: "closing pairs in a finished field measures bookkeeping; in an open field an undecided pair can be a real theorem nobody has proved"
+}

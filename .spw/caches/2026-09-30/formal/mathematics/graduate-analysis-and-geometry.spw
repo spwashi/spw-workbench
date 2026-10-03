@@ -1,0 +1,236 @@
+# Graduate Analysis and Geometry
+#
+# A theorem ledger for measure, functional analysis, smooth manifolds, and curvature, with every sigma-finite, compactness, and orientation condition written beside its theorem.
+
+#>mathematics_grad_analysis
+#:layer #!reference
+#:domain #!mathematics
+#:form #!ledger
+#:level #!graduate
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Graduate Analysis and Geometry"
+ ~#claim: "Fubini, Radon-Nikodym, and the dual of L1 are stated for sigma-finite measures and can fail without them, and Stokes needs compact support and an orientation."
+ ~#proof: "Folland and Brezis state the measure and operator theorems with these hypotheses; Lee states Stokes and Gauss-Bonnet."
+ ~#door: "Read Fatou and the convergence pair, then the four pillars, then Stokes and Gauss-Bonnet."
+ ~#audience: "first-year graduate students in analysis or geometry"
+ continuity: "Graduate Analysis and Geometry | sigma-finite"
+ cold_open: "Three big measure theorems quietly assume sigma-finite spaces, and Stokes needs an orientation; this ledger writes those conditions down."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/mathematics/graduate-analysis-and-differential-geometry.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+ }
+ corrections: #[
+  "Fatou now says nonnegative measurable functions; the raw stated it with no sign condition",
+  "Fubini-Tonelli and Radon-Nikodym now require sigma-finite measures",
+  "the dual of Lp is Lq for 1 below p below infinity on any measure space; for p equal to 1, sigma-finiteness is stated as sufficient, not necessary",
+  "Vitali sets need the axiom of choice, and Solovay shows ZF with dependent choice is consistent with every set of reals measurable, given an inaccessible cardinal",
+  "Stokes now names an oriented smooth manifold with boundary and a compactly supported form",
+  "the boundary-derivative duality wonder is kept as a pairing under integration, not as an adjunction",
+  "the cache.layer protocol line and the invented geometry handles are dropped",
+  "the Vitali headline now states Solovay as relative consistency from an inaccessible cardinal, which Shelah showed is needed; it had read as an unconditional theorem"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./analysis-and-algebra-core.spw#mathematics_core_lebesgue", ~"./topology-and-complex-core.spw#mathematics_topology_complex" ]
+ feeds: [ ~"../../physical/physics/graduate-topics.spw#physics_graduate", ~"../../physical/physics/electromagnetism.spw#physics_em" ]
+ see: [ ~"./graduate-algebra-and-topology.spw#mathematics_ga_homology" ]
+}
+
+^["concepts"]{
+ primary: [ #measure, #duality, #curvature ]
+ transfers: [ #invariant, #compactness, #convergence, #homology ]
+ tensions: [ #hypothesis_drop ]
+}
+
+^["ledger"]{
+ ^["measure"]{
+  #>mathematics_grad_analysis_caratheodory
+  ^["caratheodory"]{
+   #:claim #!settled
+   statement: "Caratheodory extension builds Lebesgue measure on Euclidean space from outer measure, and its measurable sets form a sigma-algebra containing the Borel sets."
+   source: ~"../../registries/sources/formal.spw#src_formal_folland_1999"
+  }
+  #>mathematics_grad_analysis_vitali
+  ^["vitali_and_choice"]{
+   #:claim #!settled
+   statement: "Using the axiom of choice, Vitali built a non-measurable set of reals; Solovay showed that, if an inaccessible cardinal is consistent, ZF with dependent choice cannot prove such a set exists."
+   sources: [ ~"../../registries/sources/formal.spw#src_formal_folland_1999", ~"../../registries/sources/formal.spw#src_formal_solovay_1970", ~"../../registries/sources/formal.spw#src_formal_shelah_1984" ]
+   ^["limits"]{
+    holds: "ZFC proves a non-measurable set exists"
+    fails: "Solovay gives a model of ZF with dependent choice, assuming an inaccessible cardinal, where every set of reals is measurable; Shelah showed in 1984 that the inaccessible cannot be dropped"
+   }
+  }
+  #>mathematics_grad_analysis_fatou
+  ^["fatou"]{
+   #:claim #!settled
+   statement: "For nonnegative measurable functions on any measure space, the integral of the lim inf is at most the lim inf of the integrals."
+   source: ~"../../registries/sources/formal.spw#src_formal_folland_1999"
+   ^["limits"]{
+    holds: "nonnegative functions, or functions bounded below by one fixed integrable function"
+    fails: "minus the indicator of the interval from n to n plus 1 has lim inf zero but every integral equal to minus one"
+   }
+  }
+  #>mathematics_grad_analysis_mct_dct
+  ^["convergence_pair"]{
+   #:claim #!settled
+   statement: "Monotone convergence passes limits through integrals for increasing nonnegative functions; dominated convergence does so when one integrable g bounds every absolute value."
+   source: ~"../../registries/sources/formal.spw#src_formal_folland_1999"
+   ^["limits"]{
+    holds: "pointwise almost-everywhere limits with a single dominating integrable function"
+    fails: "n times the indicator of the interval from 0 to 1 over n tends to 0 pointwise while each integral equals 1"
+   }
+  }
+  #>mathematics_grad_analysis_fubini
+  ^["fubini_tonelli"]{
+   #:claim #!settled
+   statement: "On a product of sigma-finite spaces, Tonelli swaps the order of integration for nonnegative functions, and Fubini does so for functions integrable on the product."
+   source: ~"../../registries/sources/formal.spw#src_formal_folland_1999"
+   ^["limits"]{
+    holds: "sigma-finite factors"
+    fails: "Lebesgue times counting measure on the diagonal of the unit square gives iterated integrals 0 and 1"
+   }
+  }
+  #>mathematics_grad_analysis_radon_nikodym
+  ^["radon_nikodym"]{
+   #:claim #!settled
+   statement: "If nu and mu are sigma-finite and nu is absolutely continuous with respect to mu, then nu has a density with respect to mu, unique almost everywhere."
+   source: ~"../../registries/sources/formal.spw#src_formal_folland_1999"
+   ^["limits"]{
+    holds: "sigma-finite mu and nu"
+    fails: "Lebesgue measure on the unit interval is absolutely continuous with respect to counting measure there and has no density"
+   }
+  }
+ }
+ ^["functional_analysis"]{
+  #>mathematics_grad_analysis_lp_dual
+  ^["lp_duality"]{
+   #:claim #!settled
+   statement: "For 1 below p below infinity, the dual of Lp is Lq, where 1 over p plus 1 over q is 1; for p equal to 1 it is L-infinity when the measure is sigma-finite."
+   source: ~"../../registries/sources/formal.spw#src_formal_folland_1999"
+   ^["limits"]{
+    holds: "1 below p below infinity on any measure space; p equal to 1 on sigma-finite spaces, and more generally on localizable measures"
+    fails: "p equal to 1 can fail for some measures that are not sigma-finite; the dual of L-infinity is strictly larger than L1 for Lebesgue measure"
+   }
+  }
+  #>mathematics_grad_analysis_riesz
+  ^["riesz_representation"]{
+   #:claim #!settled
+   statement: "Every continuous linear functional on a Hilbert space is the inner product with exactly one vector, whose norm equals the functional norm."
+   source: ~"../../registries/sources/formal.spw#src_formal_brezis_2011"
+  }
+  #>mathematics_grad_analysis_pillars
+  ^["four_pillars"]{
+   #:claim #!settled
+   statement: "Hahn-Banach extends bounded functionals; Baire powers uniform boundedness, open mapping, and closed graph, each of which needs complete spaces to hold."
+   source: ~"../../registries/sources/formal.spw#src_formal_brezis_2011"
+   ^["limits"]{
+    holds: "Banach spaces for the three Baire theorems; Hahn-Banach in any normed space, using choice in general"
+    fails: "on incomplete normed spaces the uniform boundedness principle can fail"
+   }
+  }
+  #>mathematics_grad_analysis_alaoglu
+  ^["banach_alaoglu"]{
+   #:claim #!settled
+   statement: "The closed unit ball of the dual of a normed space is compact in the weak-star topology, though not in the norm topology when the space is infinite-dimensional."
+   source: ~"../../registries/sources/formal.spw#src_formal_brezis_2011"
+  }
+  #>mathematics_grad_analysis_compact_spectral
+  ^["compact_spectral"]{
+   #:claim #!settled
+   statement: "A compact self-adjoint operator on a separable Hilbert space has an orthonormal basis of eigenvectors, with real eigenvalues accumulating only at zero."
+   source: ~"../../registries/sources/formal.spw#src_formal_brezis_2011"
+   ^["limits"]{
+    holds: "compact and self-adjoint together"
+    fails: "the multiplication operator by x on L2 of the unit interval is self-adjoint and bounded but has no eigenvectors"
+   }
+  }
+ }
+ ^["geometry"]{
+  #>mathematics_grad_analysis_tangent
+  ^["tangent_spaces"]{
+   #:claim #!settled
+   statement: "On a smooth manifold the tangent space at p can be defined as derivations of smooth functions at p, and it has the dimension of the manifold."
+   source: ~"../../registries/sources/formal.spw#src_formal_lee_2013"
+  }
+  #>mathematics_grad_analysis_de_rham
+  ^["de_rham"]{
+   #:claim #!settled
+   statement: "The exterior derivative squares to zero, so closed forms modulo exact forms give de Rham cohomology, which de Rham proved isomorphic to singular cohomology with real coefficients."
+   source: ~"../../registries/sources/formal.spw#src_formal_lee_2013"
+  }
+  #>mathematics_grad_analysis_stokes
+  ^["stokes"]{
+   #:claim #!settled
+   statement: "For a compactly supported smooth form of top degree minus one on an oriented smooth manifold with boundary, integrating its exterior derivative equals integrating it over the boundary."
+   source: ~"../../registries/sources/formal.spw#src_formal_lee_2013"
+   ~#say(the change inside equals the flux across the edge)
+   ^["limits"]{
+    holds: "oriented manifolds with boundary, compact support, the induced boundary orientation"
+    fails: "without compact support the integrals can diverge or differ; without orientation the integral of a form is undefined"
+   }
+  }
+  #>mathematics_grad_analysis_levi_civita
+  ^["levi_civita"]{
+   #:claim #!settled
+   statement: "A Riemannian metric has exactly one connection that is torsion-free and compatible with the metric, and its geodesics are the curves with zero acceleration."
+   source: ~"../../registries/sources/formal.spw#src_formal_lee_2018"
+  }
+  #>mathematics_grad_analysis_gauss_bonnet
+  ^["gauss_bonnet"]{
+   #:claim #!settled
+   statement: "For a compact Riemannian 2-manifold with boundary, total Gaussian curvature plus total boundary geodesic curvature equals 2 pi times the Euler characteristic."
+   reads: %[formal.structures.sphere_euler_characteristic]
+   source: ~"../../registries/sources/formal.spw#src_formal_lee_2018"
+   ^["limits"]{
+    holds: "compact surfaces, with exterior angles added at corners of a piecewise smooth boundary"
+    fails: "noncompact surfaces such as the plane need decay conditions before any such identity holds"
+   }
+  }
+ }
+}
+
+^["readings"]{
+ #>mathematics_grad_analysis_boundary_reading
+ ^["boundary_pairing"]{
+  #:claim #!interpretive
+  statement: "Stokes reads as a pairing: integration matches the boundary of chains with the exterior derivative of forms, and both square to zero, so homology and cohomology mirror each other."
+ }
+}
+
+^["try"]{
+ #>mathematics_grad_analysis_try_escape
+ ^["mass_that_escapes"]{
+  materials: [ "paper", "pencil", "a calculator or Python" ]
+  steps: << "draw n times the indicator of the interval from 0 to 1 over n for n equal 1, 2, 4, 8" ; "check that each area is 1" ; "check that at every x above 0 the values fall to 0" ; "write which hypothesis of dominated convergence fails" ; "find the smallest function above every curve and show its integral is infinite" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./graduate-analysis-and-geometry.spw#mathematics_grad_analysis_mct_dct"
+ }
+}
+
+#>mathematics_grad_analysis_sigma_q
+?["Why do textbook summaries drop sigma-finiteness more often than other hypotheses?"]{
+ #:depth #!educational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Summaries drop sigma-finiteness because every measure a student meets early is sigma-finite, so the condition never bites until counting measure on an uncountable set appears."
+ !probe{ "sample lecture notes and course summaries online and count which hypotheses of Fubini and Radon-Nikodym each states" =id[p_formal_grad_analysis_sigma_drop] =kind[census] }
+ $%[graph.out_degree]
+ ~"./graduate-analysis-and-geometry.spw#mathematics_grad_analysis_fubini" ~#neighbor(nearest)
+}

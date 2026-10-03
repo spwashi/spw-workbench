@@ -7,14 +7,14 @@
 #:domain #!live_platforms
 #:form #!dossier
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 #:era #!contemporary
 
 ^"emit"{
  ~#title: "Twitch Plays Pokemon"
  ~#claim: "In 2014 a Twitch stream let chat commands drive Pokemon Red, and a vote between anarchy and democracy decided how a crowd becomes one controller."
- ~#proof: "Dates, participant counts, and the mode change come from the public record; the run finished in about seventeen days."
+ ~#proof: "Dates, participant counts, and the mode change come from the public record; the run finished in just over sixteen days."
  ~#door: "Follow the case into the chat-torrent pipeline, where chat becomes lanes instead of button presses."
  ~#audience: "anyone designing for a live crowd"
  continuity: "Twitch Plays Pokemon | one controller"
@@ -24,12 +24,32 @@
 ^"provenance"{
  as_of: "2026-09-30"
  generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
  ^["receipts"]{
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   pending: "unresolved refs to planned files of other packages: making/streaming/chat-torrent-pipeline.spw#streaming_chat_torrent, spw/history/commit-gate.spw#workbench_history_commit_gate"
+  }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   pending: "unresolved refs to planned files of other packages: making/streaming/chat-torrent-pipeline.spw#streaming_chat_torrent, spw/history/commit-gate.spw#workbench_history_commit_gate"
+  }
  }
+ checked: "start date, democracy mode date, finish date, participant count, peak participation, and the two cited papers re-read against the encyclopedia entry on 2026-10-02"
+ corrections: #[
+  "the peak of 121,000 is simultaneous participation in the source, not concurrent viewers",
+  "democracy mode was added beside the default anarchy on 2014-02-18; both modes were not new that day",
+  "the run took just over sixteen days, not about seventeen",
+  "fact check 2026-10-02: the r3 gate receipt said pass while refs to planned files of other packages failed; it now records partial and names them"
+ ]
 }
 
 ^["edges"]{
@@ -54,15 +74,15 @@
  #>live_platforms_twitch_plays_finish
  ^["finish"]{
   #:claim #!settled
-  statement: "The crowd finished Pokemon Red on 2014-03-01 with over a million participants and a peak above one hundred thousand concurrent viewers."
-  reads: %[creator.tpp.participants, creator.tpp.peak_viewers]
+  statement: "The crowd finished Pokemon Red on 2014-03-01 with over a million participants and a peak above one hundred thousand people taking part at once."
+  reads: %[creator.tpp.participants, creator.tpp.peak_participants]
   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_tpp"
   record: "Guinness World Records lists the participant count as the most users to input a command to play a live streamed videogame"
  }
  #>live_platforms_twitch_plays_modes
  ^["modes_added"]{
   #:claim #!settled
-  statement: "On 2014-02-18 the operator added two input modes, anarchy and democracy, and let chat vote on which one ran."
+  statement: "On 2014-02-18, after the crowd stalled on a puzzle, the operator added democracy mode beside the default anarchy and soon let chat vote on which one ran."
   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_tpp"
  }
  #>live_platforms_twitch_plays_lore
@@ -115,7 +135,7 @@
  #:claim #!speculative
  ~#hypothesis: "As participants grow, anarchy behaves like a random walk biased toward the majority, so progress slows unless the map is forgiving."
  !probe{ "simulate a grid maze driven by sampled commands with a majority bias" =id[p_creator_tpp_noise] =kind[sim] }
- $%[creator.tpp.participants, creator.tpp.peak_viewers]
+ $%[creator.tpp.participants, creator.tpp.peak_participants]
  ~"./twitch-plays-pokemon.spw#live_platforms_twitch_plays_input" ~#neighbor(nearest)
 }
 

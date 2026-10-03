@@ -1,0 +1,112 @@
+# Door: Particle
+#
+# One mark family, legible alone: hash-greater, hash-colon, and hash-bang mark deixis, case, and mood, and each binds forward to the next node.
+
+#>spw_door_particle
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!field_guide
+#:level #!intro
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Door: Particle"
+ ~#claim: "A particle binds forward to the next node: the particle is the word you write, and the anchor is the bookmark it leaves on that node."
+ ~#proof: "The seed lexer reads three aims after a hash, and the canonical reader binds each particle run to the first content node after it."
+ ~#door: "Guess which node a case particle on the first line of a frame labels, then check it with spw inspect source."
+ ~#audience: "linguists and catalogers who already read small marks as grammar"
+ continuity: "Door: Particle | binds forward"
+ cold_open: "A particle binds forward to the next node; the particle is the word, the anchor is the bookmark."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "persona study familiarity_matrix rows for the three particles and theory_questions group particles",
+  "particle binding probes run by the writer at commit 1aa1dc23 on 2026-10-02"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   note: "forward refs to planned files of other packages that were not yet written"
+  }
+  ^["r4"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the 2026-10-02 gate receipt said pass while forward refs to planned files failed; it now records partial, and the 2026-10-03 gate passed once those files existed"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"../glossary/particles.spw#spw_gloss_particles" ]
+}
+
+^["words"]{
+ particle: "the mark as written: a hash, an aim, and a name, such as hash-greater water_density"
+ anchor: "the bookmark a deixis particle leaves: the node it binds, which a path ref with that name after the hash reaches"
+ aims: "greater-than for deixis, colon for case, bang for mood; aspect, written tilde-hash, still lexes on an older annotation path"
+}
+
+^["mark"]{
+ #>spw_door_particle_aims
+ ^["three_aims"]{
+  #:claim #!settled
+  statement: "The lexer reads a hash followed by a greater-than sign, a colon, or a bang, and then a letter or underscore, as one particle token."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_lexer"
+  cites: [ "packages/spw-seed/src/lexer/matchers/particles.ts:19-42" ]
+  ~#spoken(hash greater, hash colon, hash bang)
+  ^["limits"]{
+   holds: "an aim followed at once by a letter or underscore, then letters, digits, underscores, or hyphens"
+   fails: "a digit right after the aim leaves the mark to other matchers, so a name such as 3a cannot be a particle"
+  }
+ }
+ #>spw_door_particle_forward
+ ^["binds_forward"]{
+  #:claim #!settled
+  statement: "A run of particle-led lines binds to the first content node after the run, so a case and a mood on the first line of a frame label the binding below them."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_canonical"
+  cites: [ "packages/spw-seed/src/canonical/particles.ts:1-11", "packages/spw-seed/src/canonical/particles.ts:63-79" ]
+  probe_run: "a frame whose first line is a claim case and a settled mood binds both particles to the statement binding; a deixis particle at the end of a line binds nothing"
+  ^["limits"]{
+   holds: "inside one sequence: a file, a frame body, or a prose run"
+   fails: "an anchor inside a set or facet never binds, and the gate fails it; the header stack at the top of a file binds to the emit card, not to the file"
+  }
+ }
+}
+
+^["habits"]{
+ keep: "a small mark that changes how the next word is read, as a case ending or a cataloging indicator does"
+ quote: [
+  "glossing labels that start with a digit, such as person and number codes",
+  "judgment marks used in linguistics, such as the asterisk and the hash before an example"
+ ]
+ unlearn: "a particle labels the node after it, not the frame around it and not the word before it"
+}
+
+^["keyboard"]{
+ #>spw_door_particle_keys
+ ^["two_shifts"]{
+  #:claim #!settled
+  statement: "On the Windows US layout a case particle needs Shift twice, once for the hash and once for the colon; on the Windows UK layout the hash needs none."
+  reads: %[doors.key.hash_us_mods, doors.key.colon_us_mods, doors.key.hash_uk_mods]
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_kbd_us"
+ }
+}
+
+#>spw_door_particle_q
+?["Which node does a case particle on the first line of a frame label?"]{
+ #:depth #!educational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "A cataloging habit predicts the whole frame, because an indicator labels its whole field, while a linguistics habit predicts the next word, because a clitic leans on its host."
+ !probe{ "guess first, then run spw inspect source --text on a two-line frame with --through structure and find the bound node" =id[p_doors_particle_first_line] =kind[thought] }
+ $%[particle.deixis, particle.case, particle.mood]
+ breaks: "a clitic needs a phonological host and cannot cross a pause, while a particle run binds across newlines"
+ ~"./particle.spw#spw_door_particle_forward" ~#neighbor(nearest)
+}

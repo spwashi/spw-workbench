@@ -1,0 +1,183 @@
+# Chemistry Core
+#
+# The undergraduate chemistry major as a prerequisite graph shaped by the ACS approval guidelines: general, analytical, organic, physical, inorganic, biochemistry, instrumental analysis, and safe bench practice.
+
+#>chemistry_core
+#:layer #!reference
+#:domain #!chemistry
+#:form #!curriculum
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Chemistry Core"
+ ~#claim: "A chemistry degree shaped by the 2015 ACS guidelines builds foundation courses in analytical, biochemistry, inorganic, organic, and physical chemistry, then in-depth courses, lab hours, and research."
+ ~#proof: "the 2015 ACS Committee on Professional Training guidelines for program shape; Harris, Clayden, Atkins, and Miessler for the core; the OSHA laboratory standard for bench safety."
+ ~#door: "Make a cabbage indicator, then follow the acid-base node up to physical chemistry."
+ ~#audience: "chemistry majors, advisors, and readers mapping what a chemistry degree contains"
+ continuity: "Chemistry Core | foundation courses"
+ cold_open: "A chemistry degree stacks foundation courses in five areas, then trades recipes for mechanisms and spectra."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/chemistry-and-chemical-engineering/undergrad-chemistry.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "re-run after the 2026-10-03 fact-check fixes; no failing lines" }
+ }
+ corrections: #[
+  "biochemistry added as a foundation area; the raw outline omitted it although the 2015 ACS guidelines list it",
+  "thermodynamics points to the canonical physics node instead of being restated",
+  "the rule that a structure needs unanimous NMR, IR, and MS evidence is softened: crystallography and other evidence also establish structure",
+  "the Schlenk-line hypothesis with an invented threefold figure was replaced by a direction-only wonder",
+  "fact-check: an indicator changes color across roughly pKa plus or minus one, about two pH units, not one",
+  "fact-check: the OSHA laboratory standard binds covered employers for laboratory-scale use by employees; public labs outside State Plans, students as such, and production-scale work fall outside it",
+  "fact-check 2026-10-03: the ACS program claim was stated in the present tense on a 2015 source with an open verify flag; it now describes the 2015 edition, and whether a later edition governs 2026 programs is a verify line",
+  "fact-check 2026-10-03: the r4 fact-check receipt was dated 2026-10-01, before the receipts it followed; it is re-dated 2026-10-02, the day that pass ran"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../physics/classical-thermodynamics.spw#physics_thermo_classical" ]
+ feeds: [ ~"./chemistry-advanced.spw#chemistry_advanced", ~"./chemical-engineering.spw#chemistry_chemeng" ]
+ grounds: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_acs_cpt_2015" ]
+ see: [ ~"../physical-glossary.spw#physical_term_bond" ]
+}
+
+^["concepts"]{
+ primary: [ #equilibrium, #mechanism, #spectroscopy ]
+ transfers: [ #free_energy, #prerequisite ]
+ tensions: [ #scale_up ]
+}
+
+^["program"]{
+ #>chemistry_core_acs
+ ^["acs_shape"]{
+  #:claim #!settled
+  statement: "The 2015 ACS guidelines for approved bachelor's programs asked for foundation coursework in analytical, biochemistry, inorganic, organic, and physical chemistry, followed by in-depth courses and substantial lab work."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_acs_cpt_2015"
+  as_of: "2015 edition"
+  verify: "whether a later edition has replaced the 2015 guidelines for 2026 programs, and what it requires, is unchecked; acs.org guideline pages did not render on 2026-10-03"
+ }
+}
+
+^["dag"]{
+ order: << "general chemistry" ; "analytical" ; "organic" ; "physical" ; "inorganic" ; "biochemistry" ; "instrumental analysis" ; "research" >>
+
+ #>chemistry_core_general
+ ^["general"]{
+  #:claim #!settled
+  statement: "General chemistry covers stoichiometry, gases, thermochemistry with Hess's law, equilibrium constants, and redox, with the Gibbs energy deciding which way a reaction runs."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_atkins_2018"
+  canonical_thermo: ~"../physics/classical-thermodynamics.spw#physics_thermo_potentials"
+ }
+ #>chemistry_core_acid_base
+ ^["acid_base"]{
+  #:claim #!settled
+  statement: "An acid-base indicator is a weak acid whose protonated and deprotonated forms differ in color, so its color shifts across roughly pKa plus or minus one, about two pH units."
+  needs: [ ~"./chemistry-core.spw#chemistry_core_general" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_harris_2015"
+ }
+ #>chemistry_core_analytical
+ ^["analytical"]{
+  #:claim #!settled
+  statement: "Quantitative analysis teaches calibrated measurement: primary standards, titration, gravimetry, and propagation of uncertainty through every reported number."
+  needs: [ ~"./chemistry-core.spw#chemistry_core_general" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_harris_2015"
+ }
+ #>chemistry_core_organic
+ ^["organic"]{
+  #:claim #!settled
+  statement: "Organic chemistry is taught through mechanism: curved arrows track electron pairs through substitutions, eliminations, aromatic substitutions, and carbonyl chemistry."
+  needs: [ ~"./chemistry-core.spw#chemistry_core_general" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_clayden_2012"
+  ^["bench"]{
+   skills: "multistep synthesis, distillation, flash chromatography, recrystallization, and TLC monitoring"
+   aromaticity: "Hueckel's rule: planar cyclic conjugated rings with 4n + 2 pi electrons are aromatic"
+  }
+ }
+ #>chemistry_core_physical
+ ^["physical"]{
+  #:claim #!settled
+  statement: "Physical chemistry gives kinetics with Arrhenius and Eyring temperature laws, and quantum models from the particle in a box to hydrogen and molecular orbitals."
+  needs: [ ~"./chemistry-core.spw#chemistry_core_general", ~"../physics/statistical-mechanics.spw#physics_statmech" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_atkins_2018"
+ }
+ #>chemistry_core_inorganic
+ ^["inorganic"]{
+  #:claim #!settled
+  statement: "Inorganic chemistry uses point groups and character tables, ligand field splitting of d orbitals, and electron counting such as the 18-electron rule for organometallics."
+  needs: [ ~"./chemistry-core.spw#chemistry_core_physical" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_miessler_2014"
+ }
+ #>chemistry_core_biochem_link
+ ^["biochemistry"]{
+  covers: "biomolecular structure, enzyme kinetics, and metabolism"
+  home: "the living class holds cells and molecules; this node is the chemistry-side entry"
+  needs: [ ~"./chemistry-core.spw#chemistry_core_organic" ]
+ }
+ #>chemistry_core_instrumental
+ ^["instrumental"]{
+  #:claim #!settled
+  statement: "Instrumental analysis pairs NMR, infrared, mass spectrometry, UV-visible absorption, and atomic absorption, each answering a different question about a sample."
+  needs: [ ~"./chemistry-core.spw#chemistry_core_analytical", ~"./chemistry-core.spw#chemistry_core_organic" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_harris_2015"
+  next: ~"./chemistry-advanced.spw#chemistry_advanced"
+ }
+}
+
+^["safety"]{
+ #>chemistry_core_lab_standard
+ ^["chemical_hygiene"]{
+  #:claim #!settled
+  statement: "The OSHA laboratory standard covers employees who use hazardous chemicals at laboratory scale and requires a written chemical hygiene plan, exposure controls, training, and access to safety data sheets."
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_osha_1910_1450", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_osh_act_1970" ]
+  as_of: "29 CFR 1910.1450 as published 1990; current text to verify"
+  ^["limits"]{
+   holds: "employees of private employers under federal OSHA, and of public employers in states whose OSHA State Plan adopts the standard"
+   fails: "public labs in states without a State Plan, students who are not employees, and production-scale work, which the Hazard Communication standard covers instead"
+  }
+ }
+ #>chemistry_core_green
+ ^["green_chemistry"]{
+  #:claim #!settled
+  statement: "Anastas and Warner set out twelve principles of green chemistry, including preventing waste, maximizing atom economy, and choosing safer solvents and reagents."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_anastas_warner_1998"
+ }
+}
+
+^["try"]{
+ #>chemistry_core_try_cabbage
+ ^["cabbage_indicator"]{
+  materials: [ "a quarter of a red cabbage", "hot tap water", "clear cups", "white vinegar", "baking soda", "lemon juice" ]
+  steps: << "chop the cabbage and steep it in hot water for ten minutes" ; "strain the purple liquid into cups" ; "add vinegar to one, lemon juice to another, baking soda to a third" ; "line the cups up from red to green" ; "guess where pure water belongs, then check" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "use only food-grade acids and bases; never mix household cleaners, since bleach with acid releases chlorine gas"
+  shows: ~"./chemistry-core.spw#chemistry_core_acid_base"
+ }
+}
+
+#>chemistry_core_warm_indicator_q
+?["Does a cabbage indicator change hue as it cools, even at fixed pH?"]{
+ #:depth #!physical ~#lens(molecular binding)
+ #:claim #!speculative
+ ~#hypothesis: "Because the indicator equilibrium shifts with temperature by the van 't Hoff relation, a cup poised near its color change should drift in hue as it cools."
+ !probe{ "photograph one near-neutral cup every five minutes as it cools and compare hue" =id[p_phys_chem_warm_indicator] =kind[build] }
+ $%[phys.const.r_j_per_mol_k]
+ ~"./chemistry-core.spw#chemistry_core_acid_base" ~#neighbor(nearest)
+}

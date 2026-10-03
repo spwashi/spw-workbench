@@ -7,7 +7,7 @@
 #:domain #!economics
 #:form #!comparison
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bane
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-02"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5"
  lineage: #[ ".spw/caches/university-education/economics/undergrad-econometrics-and-data-methods.spw" ]
@@ -29,12 +29,16 @@
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the first-stage F above 10 rule is dated: it screens for weak instruments, and valid t-inference needs far more or an adjusted critical value",
   "fixed effects remove only time-invariant additive confounders; the raw said all confounders",
   "the credibility-revolution wonder no longer claims structural models allow any conclusion",
-  "synthetic control is added as a row; the raw file omitted it"
+  "synthetic control is added as a row; the raw file omitted it",
+  "fact check: the OLS row let mean independence alone deliver Gauss-Markov; best linear unbiased also needs homoskedastic, uncorrelated errors"
  ]
 }
 
@@ -46,7 +50,7 @@
 
 ^["concepts"]{
  primary: [ #identification, #potential_outcomes, #weak_instruments ]
- transfers: [ #sampling_frame, #replication ]
+ transfers: [ #sampling_frame, #moment_conditions ]
  tensions: [ #structural_vs_reduced_form ]
 }
 
@@ -82,7 +86,7 @@
  #>economics_econometrics_row_ols
  ^["ols"]{
   #:claim #!settled
-  statement: "OLS identifies a causal slope only when the error is mean independent of the regressors given the controls; Gauss-Markov then makes it the best linear unbiased estimator."
+  statement: "OLS identifies a causal slope only when the error is mean independent of the regressors given the controls; if errors are also homoskedastic and uncorrelated, Gauss-Markov makes it best linear unbiased."
   source: ~"../../registries/sources/economy-and-markets.spw#src_econ_wooldridge_2010"
   fails: "omitted confounders, reverse causality, measurement error"
   check: "sensitivity of the slope to added controls, and a design-based alternative"
@@ -106,13 +110,22 @@
  }
  #>economics_econometrics_weak_iv
  ^["weak_iv_rule"]{
-  #:claim #!superseded
-  statement: "The rule of thumb that a first-stage F above 10 makes 2SLS t-tests reliable is dated; with one instrument, a true 5 percent t-test needs F above 104.7."
-  reads: %[econ.iv.staiger_stock_rule_f, econ.iv.lmmp_t5_f]
-  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_staiger_stock_1997", ~"../../registries/sources/economy-and-markets.spw#src_econ_lee_mccrary_moreira_porter_2022" ]
-  as_of: "2026-10-01, after Lee, McCrary, Moreira, and Porter, AER 2022"
+  #:claim #!settled
+  statement: "With one instrument, a conventional 2SLS t-test has a true 5 percent level only when the first-stage F exceeds 104.7, so passing F above 10 no longer licenses the usual t-test."
+  reads: %[econ.iv.lmmp_t5_f]
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_lee_mccrary_moreira_porter_2022"
+  as_of: "2026-10-02, after Lee, McCrary, Moreira, and Porter, AER 2022"
   practice: "report the effective F of Montiel Olea and Pflueger, and use tF critical values or Anderson-Rubin intervals"
   also: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_montiel_olea_pflueger_2013", ~"../../registries/sources/economy-and-markets.spw#src_econ_anderson_rubin_1949", ~"../../registries/sources/economy-and-markets.spw#src_econ_andrews_stock_sun_2019" ]
+ }
+ #>economics_econometrics_weak_iv_thumb
+ ^["weak_iv_rule_of_thumb"]{
+  #:claim #!superseded
+  statement: "A first-stage F above 10, following Staiger and Stock, was long read as enough for reliable 2SLS inference with one instrument."
+  reads: %[econ.iv.staiger_stock_rule_f]
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_staiger_stock_1997"
+  superseded_by: ~"./econometrics-and-data.spw#economics_econometrics_weak_iv"
+  kept_as: "a screen for badly weak instruments, not a license for the conventional t-test"
  }
  #>economics_econometrics_row_did
  ^["did_two_by_two"]{

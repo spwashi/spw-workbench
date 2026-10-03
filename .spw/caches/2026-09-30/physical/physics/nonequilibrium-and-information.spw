@@ -1,0 +1,249 @@
+# Nonequilibrium and Information
+#
+# From the demon Maxwell imagined in 1867 to the single-bit erasures measured in 2012, and the fluctuation theorems that let small systems break the second law for a moment.
+
+#>physics_nonequilibrium
+#:layer #!reference
+#:domain #!physics
+#:form #!timeline
+#:level #!graduate
+#:review #!adversarial_checked
+#:valence #!bonk
+#:era #!modern
+
+^"emit"{
+ ~#title: "Nonequilibrium and Information"
+ ~#claim: "Erasing a bit costs at least kT ln 2 of heat, about 2.9e-21 J at 300 K; on the Landauer-Bennett account, that cost is what saves the second law from Maxwell's demon."
+ ~#proof: "Landauer 1961 and Bennett 1982 for the argument, Norton 2005 for the dispute over it; Berut and colleagues 2012 and Jun and colleagues 2014 for the measurements."
+ ~#door: "Walk the ladder from the demon to the colloid bead, then ask what a living cell pays per error."
+ ~#audience: "graduate students and curious engineers who have met entropy and want its price in bits"
+ continuity: "Nonequilibrium and Information | erasing a bit"
+ cold_open: "Erasing a bit always warms the room a little, and on one leading account that tiny heat keeps Maxwell's demon honest."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/thermodynamics/non-equilibrium-and-information-thermodynamics.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "re-run after the 2026-10-03 fact-check fixes; no failing lines" }
+ }
+ corrections: #[
+  "Landauer bound restated as about 2.9e-21 J at 300 K; the raw said micro-joules, about fifteen orders of magnitude too large",
+  "minimum entropy production scoped to the linear regime near equilibrium, as Glansdorff and Prigogine state it",
+  "the near-100-percent ATP synthase efficiency line was dropped as unsourced",
+  "the reversible-computing hypothesis with an invented three-orders-of-magnitude figure was replaced by a direction-only wonder",
+  "black-hole entropy moved to the astronomy gap instead of being asserted here",
+  "fact-check: Belousov found his oscillating reaction in 1951, before Turing 1952; only Zhabotinsky came later",
+  "fact-check: the minimum entropy production theorem is Prigogine 1945 alone; Glansdorff and Prigogine 1971 extended the analysis",
+  "fact-check: the mutual-information second law is Sagawa and Ueda 2008; their 2010 paper is the generalized Jarzynski equality",
+  "fact-check: the Landauer-Bennett exorcism of the demon is now marked contested in the rung and scoped on the card, with Norton as counter",
+  "fact-check 2026-10-03: the r4 fact-check receipt was dated 2026-10-01, before the receipts it followed; it is re-dated 2026-10-02, the day that pass ran"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./classical-thermodynamics.spw#physics_thermo_second", ~"./statistical-mechanics.spw#physics_statmech" ]
+ feeds: [ ~"../../formal/computing/abstract-computation.spw#computing_abstract" ]
+ grounds: [ ~"../../registries/quantities/physical-sciences-and-image.spw#q_phys_information" ]
+}
+
+^["concepts"]{
+ primary: [ #entropy, #information, #fluctuation ]
+ transfers: [ #feedback, #free_energy ]
+ tensions: [ #arrow_of_time ]
+}
+
+^["ladder"]{
+ order: << "demon" ; "engine" ; "reciprocity" ; "patterns" ; "erasure" ; "structures" ; "reversibility" ; "fluctuations" ; "measurement" ; "feedback" ; "single bits" >>
+
+ #>physics_noneq_demon_1867
+ ^["demon"]{
+  #:claim #!settled
+  statement: "Maxwell imagined a being that sorts fast from slow molecules through a trapdoor, making heat flow from cold to hot with no work; he described it to Tait in 1867 and in print in 1871."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_maxwell_1871"
+  context: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_leff_rex_2003"
+  era: 1867..1871
+ }
+ #>physics_noneq_thomson_1874
+ ^["named"]{
+  #:claim #!settled
+  statement: "William Thomson, later Lord Kelvin, gave the sorting being the name demon in an 1874 essay on the dissipation of energy."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_thomson_1874"
+ }
+ #>physics_noneq_szilard_1929
+ ^["engine"]{
+  #:claim #!settled
+  statement: "Szilard reduced the demon to one molecule in a box: learning which half it occupies lets an engine extract kT ln 2 of work, so information and entropy must be booked together."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_szilard_1929"
+ }
+ #>physics_noneq_onsager_1931
+ ^["reciprocity"]{
+  #:claim #!settled
+  statement: "Near equilibrium, fluxes are linear in forces and the cross coefficients are symmetric, L_ik = L_ki, which links effects such as Seebeck and Peltier; Onsager derived this from microscopic reversibility."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_onsager_1931"
+  ^["limits"]{
+   holds: "small gradients where local equilibrium holds"
+   fails: "far from equilibrium, where response is nonlinear"
+  }
+ }
+ #>physics_noneq_turing_1952
+ ^["patterns"]{
+  #:claim #!settled
+  statement: "Turing showed in 1952 that two reacting, diffusing chemicals can turn a uniform state into spots or stripes; Belousov had found an oscillating reaction in 1951, which Zhabotinsky extended in the 1960s."
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_turing_1952", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_winfree_1984" ]
+  ~#(Belousov could not publish his oscillator in a major journal in the nineteen fifties)
+ }
+ #>physics_noneq_landauer_1961
+ ^["erasure"]{
+  #:claim #!settled
+  statement: "Landauer argued in 1961 that erasing one bit is logically irreversible and must release at least kT ln 2 of heat to the surroundings."
+  reads: %[phys.info.landauer_300k_zj, phys.info.landauer_300k_mev]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_landauer_1961"
+  context: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_landauer_1991"
+ }
+ #>physics_noneq_prigogine_1971
+ ^["structures"]{
+  #:claim #!settled
+  statement: "Prigogine's 1945 minimum entropy production theorem holds only in the linear regime near equilibrium; Glansdorff and Prigogine's 1971 book extended the analysis to dissipative structures far from it."
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_prigogine_1945", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_glansdorff_prigogine_1971" ]
+  era: 1945..1971
+ }
+ #>physics_noneq_bennett_1982
+ ^["reversibility"]{
+  #:claim #!contested
+  statement: "Bennett showed that computation and measurement can in principle be done reversibly; on the Landauer-Bennett account the demon then pays only when it erases its memory, a resolution Norton disputes."
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_bennett_1973", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_bennett_1982" ]
+  counter: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_norton_2005"
+  context: ~"./nonequilibrium-and-information.spw#physics_noneq_landauer_foundations"
+  era: 1973..1982
+ }
+ #>physics_noneq_ecm_1993
+ ^["fluctuations"]{
+  #:claim #!settled
+  statement: "Evans, Cohen, and Morriss found that in small sheared systems, trajectories that lower entropy occur, but exponentially less often than those that raise it by the same amount."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_evans_cohen_morriss_1993"
+  context: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_seifert_2012"
+ }
+ #>physics_noneq_jarzynski_1997
+ ^["work_relations"]{
+  #:claim #!settled
+  statement: "Jarzynski showed that an exponential average of work done in fast, irreversible pulls recovers the equilibrium free-energy difference; Crooks related forward and reverse work distributions."
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_jarzynski_1997", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_crooks_1999" ]
+  era: 1997..1999
+ }
+ #>physics_noneq_rna_tests
+ ^["measurement"]{
+  #:claim #!settled
+  statement: "Optical-tweezer pulls on single RNA hairpins tested the Jarzynski relation in 2002 and the Crooks theorem in 2005, recovering folding free energies from irreversible work."
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_liphardt_2002", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_collin_2005" ]
+ }
+ #>physics_noneq_feedback_2010
+ ^["feedback"]{
+  #:claim #!settled
+  statement: "Sagawa and Ueda put mutual information into the second law for feedback in 2008 and into the Jarzynski equality in 2010, which Toyabe and colleagues tested with a rotating colloidal bead."
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_sagawa_ueda_2008", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_sagawa_ueda_2010", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_toyabe_2010" ]
+  era: 2008..2010
+ }
+ #>physics_noneq_berut_2012
+ ^["single_bits"]{
+  #:claim #!settled
+  statement: "Berut and colleagues erased a one-bit memory made of a colloidal bead in a double-well trap and saw mean heat approach kT ln 2 as erasure slowed; Jun and colleagues sharpened the test in 2014."
+  reads: %[phys.info.landauer_300k_zj]
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_berut_2012", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_jun_2014" ]
+  era: 2012..2014
+ }
+}
+
+^["ledger"]{
+ #>physics_noneq_landauer_bound
+ ^["landauer_bound"]{
+  #:claim #!settled
+  statement: "At 300 K the Landauer bound is about 2.9e-21 J, or about 18 meV, per erased bit."
+  reads: %[phys.info.landauer_300k_zj, phys.info.landauer_300k_mev]
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_landauer_1961", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_landauer" ]
+  ~#say(a bit costs a whisper of heat, not a shout)
+  ^["limits"]{
+   holds: "logically irreversible erasure into a bath at one temperature, done slowly"
+   fails: "logically reversible steps have no such floor; real logic gates today dissipate far more than the bound for reasons of speed and reliability"
+  }
+ }
+ #>physics_noneq_landauer_foundations
+ ^["foundations_dispute"]{
+  #:claim #!contested
+  statement: "Whether Landauer's principle follows from the second law or is an extra assumption is disputed; Norton argues common proofs are circular, while information-thermodynamics derivations defend it."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_norton_2005"
+  counter: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_sagawa_ueda_2008", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_sagawa_ueda_2010" ]
+ }
+ #>physics_noneq_raw_microjoule
+ ^["raw_microjoule"]{
+  #:claim #!refuted
+  statement: "The raw generation said erasing one bit costs micro-joules of heat; the bound at room temperature is about 2.9e-21 J."
+  reads: %[phys.info.landauer_300k_zj]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_landauer_1961"
+ }
+ #>physics_noneq_entropy_production
+ ^["local_entropy_production"]{
+  #:claim #!settled
+  statement: "In a continuous medium near equilibrium, the local entropy production is a sum of fluxes times their conjugate forces, and it is never negative."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_glansdorff_prigogine_1971"
+ }
+ #>physics_noneq_proofreading
+ ^["kinetic_proofreading"]{
+  #:claim #!settled
+  statement: "Hopfield showed that a cell can copy molecules with fewer errors than equilibrium binding allows by spending free energy on an extra, irreversible checking step."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_hopfield_1974"
+ }
+ #>physics_noneq_life_reading
+ ^["life_reading"]{
+  #:claim #!interpretive
+  statement: "Living order does not defy the second law; it is held in place by a steady throughput of free energy, the way a whirlpool keeps its shape while water passes through."
+  ~#(a stance kept from the raw generation, written as a reading)
+ }
+}
+
+^["try"]{
+ #>physics_noneq_try_bit_price
+ ^["price_a_bit"]{
+  materials: [ "a calculator", "the Boltzmann constant from the registry" ]
+  steps: << "multiply k_B by 300 K and by ln 2" ; "convert the joules to electronvolts" ; "repeat at 4.2 K for liquid helium" ; "say how much cheaper a cold bit is and why" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "arithmetic only; no hazard worth naming"
+  shows: ~"./nonequilibrium-and-information.spw#physics_noneq_landauer_bound"
+ }
+}
+
+#>physics_noneq_reversible_q
+?["Could reversible logic make a computer that warms the room less per useful step?"]{
+ #:depth #!computational ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "Adiabatic and reversible circuits should lose less heat per operation as they run slower, so their advantage should appear first where speed matters least."
+ !probe{ "compare published energy-per-operation figures for adiabatic, reversible, and conventional logic at matched clock rates" =id[p_phys_noneq_reversible] =kind[lit] }
+ $%[phys.info.landauer_300k_zj, phys.thermo.kt_300k_mev]
+ breaks: "Landauer bounds erasure only; wires, leakage, and error correction cost energy that no bound on bits describes"
+ ~"./nonequilibrium-and-information.spw#physics_noneq_bennett_1982" ~#neighbor(nearest)
+}
+
+#>physics_noneq_cell_demon_q
+?["Is a cell that proofreads its proteins a Maxwell demon that pays its bill?"]{
+ #:depth #!physical ~#lens(living system)
+ #:claim #!speculative
+ ~#hypothesis: "If proofreading spends free energy to sort right from wrong, then copying fidelity should rise with the free energy spent per step, until speed costs dominate."
+ !probe{ "tabulate error rates against energy spent per monomer for polymerases and ribosomes with and without proofreading" =id[p_phys_noneq_cell_demon] =kind[lit] }
+ $%[phys.info.landauer_300k_mev]
+ breaks: "a cell does not erase a memory register; its bits are molecular identities, and its costs are mostly kinetic"
+ ~"./nonequilibrium-and-information.spw#physics_noneq_proofreading" ~#neighbor(nearest)
+}

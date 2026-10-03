@@ -1,0 +1,214 @@
+# Tokens and Roles
+#
+# Highlighting as a projection of parse roles: what glyphs carry in plain text, where four color layers part ways with the parser, and the role stream that could replace them.
+
+#>spw_tokens_and_roles
+#:layer #!semantics
+#:domain #!spw
+#:form #!field_guide
+#:level #!advanced
+#:review #!spot_checked
+#:valence #!bonk
+
+^"emit"{
+ ~#title: "Tokens and Roles"
+ ~#claim: "Glyphs carry the kinds; color may add only relations the parser derives, so one role stream from the parse should feed every editor layer."
+ ~#proof: "At 1aa1dc23 four color layers read text with their own regexes, and each disagrees with the seed lexer on comments, appositions, connectors, or valences."
+ ~#door: "Read the plain-text floor first, then one divergence row, then try the binding prediction."
+ ~#audience: "Spw readers, LSP authors, and plugin authors"
+ continuity: "Tokens and Roles | role stream"
+ cold_open: "Read the glyphs first; color should only add what the parser knows, drawn from one role stream."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/studies/tokens-synthesis.md sections 1, 2, and 6",
+  ".agents/plans/caches-cut-2026-09-30/references/studies/render-synthesis.md sections 1.1 and 5.3",
+  "lexer probes re-run by the writer at 1aa1dc23 on 2026-10-02"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the study draft used domain meta and anchor spw_tokens_roles; this surface uses domain spw and the planned anchor spw_tokens_and_roles",
+  "role stream, RoleSpan, and the wire legend are proposals with status proposed; no canonical/roles.ts exists at 1aa1dc23"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./hosts/vscode-rendering.spw#editor_hosts_vscode_rendering" ]
+ grounds: [ ~"docs/theory/spw/representational-disclosure.spw#representational_disclosure", ~".spw/tooling/vscode-spw.spw#spw_tooling_vscode" ]
+ feeds: [ ~"./practice-modes.spw#spw_practice_modes" ]
+}
+
+^["concepts"]{
+ primary: [ #role_stream, #plain_text_floor ]
+ transfers: [ #predict_then_reveal ]
+ tensions: [ #editor_only_semantics ]
+}
+
+^["floor"]{
+ #>spw_tokens_floor
+ ^["visible_without_color"]{
+  #:claim #!interpretive
+  statement: "Operator sigil, particle aim, datum versus reading, container shape, comment, and string are carried by glyphs and survive monochrome print."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_seed_lexer"
+  reads: %[spw.seed.token_types]
+  label: "a-canon principle: plain text first; disclosure never renames identity"
+  cites: [ "docs/theory/spw/representational-disclosure.spw:45", ".spw/tooling/vscode-spw.spw:108" ]
+  ^["limits"]{
+   holds: "core Spw.b surfaces with ASCII outside strings"
+   fails: "bare valence words, line-break capture, and compounds such as $% look alike in plain text and parse differently"
+  }
+ }
+ #>spw_tokens_color_may_add
+ ^["color_may_add"]{
+  #:claim #!interpretive
+  statement: "Color may add only relations the parser derives: what a particle run binds, an operator reach, whether a link resolves, prose fallback, unlexed characters, and errors."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_tokens"
+  status: #proposed
+ }
+}
+
+^["divergence"]{
+ #>spw_tokens_div_lexer_errors
+ ^["lexer_errors"]{
+  #:claim #!settled
+  statement: "A lexer error leaves parse success true, so the LSP publishes no diagnostic and the syntax validator passes the file."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_seed_lexer"
+  cites: [ "packages/spw-lsp/src/handlers/analysis.ts:51-52", "scripts/analyzers/spw-syntax-validate.ts:209,227" ]
+  probe_run: "parse of a cafe key with an accented e and of vm: -70 at 1aa1dc23: one error each, success true"
+ }
+ #>spw_tokens_div_inline_hash
+ ^["inline_hash"]{
+  #:claim #!settled
+  statement: "The seed drops an inline hash followed by a space to end of line, while the LSP scanner still paints braces and digits inside that comment."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_tokens"
+  reads: %[spw.corpus.hash_prose_canon, spw.corpus.hash_prose_painted_canon]
+  cites: [ "packages/spw-seed/src/lexer/matchers/comments.ts:50-58" ]
+  as_of: "229aedcf, per the tokens study"
+ }
+ #>spw_tokens_div_apposition
+ ^["apposition_body"]{
+  #:claim #!settled
+  statement: "An apposition body is one raw token to the matching paren, yet the TextMate and LSP layers paint digits and percent signs inside it."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_tokens"
+  cites: [ "docs/theory/spw/apposition.spw:44" ]
+ }
+ #>spw_tokens_div_valence
+ ^["bare_valence"]{
+  #:claim #!settled
+  statement: "Bare valence words lex as reserved modifiers, so a valence word as a binding key degrades the surface, and no color layer paints bare valences."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_tokens"
+  see: [ ~"../contract.spw#cut_contract" ]
+ }
+ #>spw_tokens_div_connectors
+ ^["connectors"]{
+  #:claim #!settled
+  statement: "The lexer reads the tilde-arrow and equals-arrow connectors as single tokens, while the LSP paints the equals as configuration and decorations call it a constraint."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_tokens"
+ }
+ #>spw_tokens_div_tagged_path
+ ^["tagged_path"]{
+  #:claim #!settled
+  statement: "A tilde with a capsule tag before a quoted path parses as an operation plus a capsule and a literal, not a path ref, yet three layers paint it as a jumpable link."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_tokens"
+ }
+ #>spw_tokens_div_palette
+ ^["palette"]{
+  #:claim #!settled
+  statement: "The VS Code color ids collapse to fewer distinct hexes, and status tiers reuse valence colors, so deprecated looks like bane against charge-neutral canon."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_render"
+  reads: %[spw.editor.color_ids, spw.editor.distinct_hex_dark]
+  cites: [ "docs/theory/spw/valence-architecture.spw:38-39" ]
+ }
+}
+
+^["legend"]{
+ #>spw_tokens_legend_today
+ ^["today"]{
+  #:claim #!settled
+  statement: "The LSP legend declares a small fixed set of standard types and modifiers, built by a line-regex scanner that imports only types from the seed."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_lsp"
+  reads: %[spw.lsp.legend_types, spw.lsp.legend_modifiers]
+  cites: [ "packages/spw-lsp/src/handlers/semantic-tokens.ts:75-78" ]
+ }
+ #>spw_tokens_rolespan
+ ^["role_span"]{
+  #:claim #!speculative
+  statement: "A seed function tokenRoles would emit one RoleSpan per non-trivia token, carrying type, reader name, aim, valence, ref part, and flags for bound, degraded, unlexed, and error."
+  status: #proposed
+  home: "packages/spw-seed/src/canonical/roles.ts, which does not exist at 1aa1dc23"
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_tokens"
+ }
+ #>spw_tokens_wire_legend
+ ^["wire_legend"]{
+  #:claim #!speculative
+  statement: "The wire legend would spend thirteen operator, three aim, five valence, and six flag modifiers, leaving five bits of the thirty-two for dialect packs."
+  status: #proposed
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_tokens"
+  names: "operators use canon reader names: potential, vibration, ground, wonder, action, value, subject, perspective, ascension, substrate, measure, configuration, coupling"
+  cites: [ "docs/theory/spw/operators.spw:28-42" ]
+  ^["types"]{
+   sigil: "superType operator"
+   particle: "superType decorator"
+   apposition: "superType decorator"
+   reference: "superType variable"
+   key: "superType property"
+   op_label: "superType macro, since label is already a standard VS Code type"
+   valence: "superType enumMember, so older themes still color it"
+  }
+ }
+}
+
+^["same_line"]{
+ #>spw_tokens_same_line
+ ^["four_rules"]{
+  #:claim #!settled
+  statement: "Four constructs read a line break differently: a medial capsule, an empty binding, an inline hash comment, and a valence-only value each reach across or stop at the break."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_tokens"
+  see: [ ~"../contract.spw#cut_contract" ]
+ }
+ #>spw_tokens_same_line_law
+ ^["one_law"]{
+  #:claim #!speculative
+  statement: "One same-line law for all four would let a reader predict reach from the line alone."
+  status: #proposed
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_tokens"
+ }
+}
+
+^["hazards"]{
+ dollar_percent: "a dollar sign then percent reads as one unit and parses as two operations"
+ double_hash: "a doubled hash before an anchor lexes as an anchor particle while the AST holds an operator and prose"
+ prefix_path: "a question mark directly before a path ref demotes the path to prose"
+ color_only: "status, valence, anchors, and links must stay legible from glyph and position, never from hue alone"
+}
+
+^["try"]{
+ #>spw_tokens_try_binding
+ ^["predict_binding"]{
+  materials: [ "the water exemplar surface", "an editor with semantic highlighting off", "paper and pencil" ]
+  steps: << "pick ten particle lines" ; "write the line each one binds to" ; "check each guess with spw select or the LSP hover" ; "mark which misses came from line breaks" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "none worth naming; keep your guesses on your own paper"
+  shows: ~"./tokens-and-roles.spw#spw_tokens_floor"
+ }
+}
+
+#>spw_tokens_binding_q
+?["Which roles do readers recover from glyphs alone, and which only from color?"]{
+ #:depth #!computational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Particle binding across a line break is the role readers miss most often without color."
+ !probe{ "ten surfaces, binding guesses kept by the reader, compared against the parse" =id[p_spw_tokens_binding] =kind[field] }
+ $%[spw.seed.token_types, spw.seed.ast_node_types]
+ ~"./tokens-and-roles.spw#spw_tokens_same_line" ~#neighbor(nearest)
+}

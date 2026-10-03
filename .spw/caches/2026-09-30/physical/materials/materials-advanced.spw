@@ -1,0 +1,263 @@
+# Materials Advanced
+#
+# The graduate layer as two tables: a technique matrix of what each instrument sees and misses, and a ledger of scaling laws with the conditions under which they hold.
+
+#>materials_advanced
+#:layer #!reference
+#:domain #!materials
+#:form #!comparison
+#:level #!graduate
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Materials Advanced"
+ ~#claim: "Graduate materials science pairs instruments that each see one length scale with scaling laws that each hold in one regime."
+ ~#proof: "Technique rows cite Cullity, Williams and Carter, Pennycook, Goldstein, and Sivia; each law cites its originating paper and carries its limits."
+ ~#door: "Pick a question, find the technique row that can see it, then check the law that predicts it."
+ ~#audience: "graduate students and engineers moving into materials research"
+ continuity: "Materials Advanced | one regime"
+ cold_open: "Every instrument sees one length scale, and every scaling law holds in one regime, so name both before you trust a result."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/materials-science/masters-materials-science.spw", ".spw/caches/university-education/materials-science/characterization-and-computation.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #fail }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ gate_note: "r3 first recorded a pass; that run failed on a see link to the planned biomaterials surface, and the link is dropped because that surface already plans a needs edge here"
+ corrections: #[
+  "the raw hypothesized that high-entropy alloys creep two orders of magnitude slower than nickel superalloys; no measurement supports that, and sluggish diffusion itself is contested",
+  "HAADF intensity is stated as Z to a power below two that depends on detector angles; the raw said Z squared and Z to the 1.7 in one line",
+  "the 10,000-fold active-learning speedup and the sub-0.5 W per m K conductivity target had no source and are dropped",
+  "beam damage is restored as a limit; the raw wonder implied a 300 keV beam leaves a monolayer untouched",
+  "the characterization file is merged here; its reporting invariants are kept as norms",
+  "de Gennes in 1971 modeled one chain reptating through a fixed network, with diffusion as molar mass to the minus two; the melt viscosity prediction came from the later tube model of melts",
+  "the Tsai, Tsai, and Yeh measurements were interdiffusion in quasi-binary diffusion couples, not tracer diffusion; the critique by Paul is added beside Miracle and Senkov"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./materials-core.spw#materials_core", ~"./bonding-and-states-of-matter.spw#materials_bonding" ]
+ extends: [ ~"./materials-core.spw#materials_core_strengthening" ]
+}
+
+^["concepts"]{
+ primary: [ #characterization, #scaling_law, #microstructure ]
+ transfers: [ #polymer, #dislocation ]
+ tensions: [ #regime_limit ]
+}
+
+^["technique_matrix"]{
+ #>materials_advanced_xrd
+ ^["xrd"]{
+  #:claim #!settled
+  statement: "X-ray diffraction averages over many grains to give lattice parameters, phases, crystallite size, and texture; it says little about where individual defects sit."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_cullity_stock_2001"
+  probe: "X-ray photons"
+  sees: "long-range order averaged over the illuminated volume"
+ }
+ #>materials_advanced_tem
+ ^["tem_eels"]{
+  #:claim #!settled
+  statement: "Transmission electron microscopy images thin foils at near-atomic resolution and, with energy-loss spectroscopy, reads composition and bonding; specimens must be thin and may be damaged by the beam."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_williams_carter_2009"
+  probe: "electrons transmitted through a foil tens of nanometres thick"
+  sees: "defects, interfaces, and local chemistry"
+ }
+ #>materials_advanced_haadf
+ ^["stem_haadf"]{
+  #:claim #!settled
+  statement: "In high-angle annular dark-field STEM, intensity rises steeply with atomic number, as Z to a power somewhat below two set by the detector angles, so heavy columns stand out."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_pennycook_jesson_1991"
+ }
+ #>materials_advanced_aberration
+ ^["aberration_correction"]{
+  #:claim #!settled
+  statement: "Scherzer proved in 1936 that round static electron lenses always have positive spherical aberration; multipole correctors from 1998 cancel it, and probes below 50 pm followed by 2009."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_scherzer_1936", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_haider_1998", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_erni_2009" ]
+  reads: %[mateng.nano.stem_probe_pm]
+ }
+ #>materials_advanced_sem
+ ^["sem_ebsd_eds"]{
+  #:claim #!settled
+  statement: "Scanning electron microscopy images bulk surfaces; backscatter diffraction maps grain orientations and X-ray spectroscopy maps elements, at resolutions set by the interaction volume."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_goldstein_2018"
+ }
+ #>materials_advanced_neutron
+ ^["neutron"]{
+  #:claim #!settled
+  statement: "Neutrons scatter from nuclei and carry a magnetic moment, so they locate light atoms such as hydrogen and lithium and reveal magnetic order that X-rays barely see."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_sivia_2011"
+ }
+}
+
+^["computation"]{
+ #>materials_advanced_dft
+ ^["dft"]{
+  #:claim #!settled
+  statement: "Hohenberg and Kohn showed in 1964 that ground-state density fixes all ground-state properties; Kohn and Sham in 1965 made that usable with orbitals in an effective potential."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_hohenberg_kohn_1964", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_kohn_sham_1965" ]
+  ^["limits"]{
+   holds: "ground-state properties, given an exchange-correlation approximation"
+   fails: "band gaps and strongly correlated d and f electrons depend heavily on that approximation"
+  }
+ }
+ #>materials_advanced_dft_reproducibility
+ ^["code_agreement"]{
+  #:claim #!settled
+  statement: "A 2016 comparison of many DFT codes found well-converged calculations of elemental crystals agree closely, so differences between studies usually trace to settings, not codes."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_lejaeghere_2016"
+ }
+ #>materials_advanced_ml_potentials
+ ^["ml_potentials"]{
+  #:claim #!settled
+  statement: "Behler and Parrinello in 2007 fit neural networks to DFT energies as sums of atomic contributions, letting molecular dynamics approach DFT accuracy at far lower cost."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_behler_parrinello_2007"
+  ^["limits"]{
+   holds: "configurations resembling the training set"
+   fails: "structures or chemistries the training data never sampled"
+  }
+ }
+}
+
+^["scaling_ledger"]{
+ #>materials_advanced_hall_petch
+ ^["hall_petch"]{
+  #:claim #!settled
+  statement: "Yield strength rises with the inverse square root of grain size, the relation Hall and Petch reported in 1951 and 1953."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_hall_1951", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_petch_1953" ]
+ }
+ #>materials_advanced_inverse_hall_petch
+ ^["inverse_hall_petch"]{
+  #:claim #!contested
+  statement: "Simulated nanocrystalline copper with grains a few nanometres across gets weaker as grains shrink, as boundary sliding takes over; where the reversal sets in for real metals is debated."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_schiotz_1998"
+ }
+ #>materials_advanced_lsw
+ ^["ostwald_ripening"]{
+  #:claim #!settled
+  statement: "In diffusion-controlled coarsening the cube of the mean particle radius grows linearly with time, the Lifshitz-Slyozov-Wagner result of 1961."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_lifshitz_slyozov_1961", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_wagner_1961" ]
+  ^["limits"]{
+   holds: "dilute precipitates late in coarsening"
+   fails: "large volume fractions, elastic misfit, or interface-controlled growth change the kinetics"
+  }
+ }
+ #>materials_advanced_phase_field
+ ^["phase_field"]{
+  #:claim #!settled
+  statement: "Cahn and Hilliard in 1958 modeled a conserved composition field with a fourth-order equation; Allen and Cahn in 1979 modeled a non-conserved order parameter with a second-order one."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_cahn_hilliard_1958", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_allen_cahn_1979" ]
+ }
+ #>materials_advanced_critical_thickness
+ ^["critical_thickness"]{
+  #:claim #!settled
+  statement: "A strained epitaxial film stays coherent up to a critical thickness that shrinks as lattice mismatch grows; beyond it misfit dislocations relax the strain."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_matthews_blakeslee_1974"
+ }
+ #>materials_advanced_flory
+ ^["chain_size"]{
+  #:claim #!settled
+  statement: "A self-avoiding polymer in good solvent grows as chain length to the power 0.588 in three dimensions; the Flory estimate of three fifths is close."
+  reads: %[mateng.polymer.flory_nu_3d]
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_rubinstein_colby_2003"
+ }
+ #>materials_advanced_reptation
+ ^["reptation"]{
+  #:claim #!settled
+  statement: "De Gennes in 1971 modeled a chain reptating, snake-like, through a fixed network of obstacles and found its diffusion coefficient falling as molar mass to the minus two."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_de_gennes_1971"
+ }
+ #>materials_advanced_tube_viscosity
+ ^["tube_viscosity"]{
+  #:claim #!settled
+  statement: "Extended to melts by de Gennes and by Doi and Edwards, the tube model predicts zero-shear viscosity rising as molar mass cubed, while measured entangled melts show about 3.4."
+  reads: %[mateng.polymer.eta_mw_exponent]
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_doi_edwards_1986", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_rubinstein_colby_2003" ]
+  ^["limits"]{
+   holds: "linear chains far above the entanglement molar mass"
+   fails: "branched chains and short chains; contour fluctuations and constraint release explain much of the gap to 3.4"
+  }
+ }
+ #>materials_advanced_magic_angle
+ ^["magic_angle"]{
+  #:claim #!settled
+  statement: "Bistritzer and MacDonald predicted flat bands in twisted bilayer graphene near 1.1 degrees in 2011; Cao and coworkers found correlated insulating and superconducting states there in 2018."
+  reads: %[mateng.nano.tbg_magic_angle_deg]
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_bistritzer_macdonald_2011", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_cao_2018" ]
+ }
+ #>materials_advanced_superalloys
+ ^["superalloys"]{
+  #:claim #!settled
+  statement: "Nickel superalloys resist creep through coherent gamma-prime Ni3Al precipitates, and single-crystal turbine blades remove the grain boundaries where creep damage starts."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_reed_2006"
+ }
+ #>materials_advanced_hea
+ ^["high_entropy_alloys"]{
+  #:claim #!settled
+  statement: "Yeh and Cantor in 2004 independently reported alloys of five or more principal elements in near-equal amounts, launching high-entropy alloy research."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_yeh_2004", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_cantor_2004" ]
+ }
+ #>materials_advanced_sluggish_diffusion
+ ^["sluggish_diffusion"]{
+  #:claim #!contested
+  statement: "Tsai and coworkers measured slower diffusion in CoCrFeMnNi than in simpler alloys; Miracle and Senkov find the evidence too thin to call sluggish diffusion a general core effect."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_tsai_2013"
+  counter: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_miracle_senkov_2017", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_paul_2017" ]
+  ^["limits"]{
+   holds: "interdiffusion measured with quasi-binary diffusion couples in CoCrFeMnNi, compared at matched homologous temperature"
+   fails: "claims that high-entropy alloys out-creep nickel superalloys; creep data are sparse and no such comparison is sourced here"
+  }
+ }
+}
+
+^["reporting_norms"]{
+ micrographs: "every micrograph carries a scale bar, accelerating voltage, and imaging conditions"
+ dft: "every DFT study states its functional, plane-wave cutoff, k-point mesh, and convergence tests"
+ ml_potentials: "every machine-learned potential is validated on held-out energies, forces, and elastic constants"
+ thin_films: "every epitaxial film report states thickness, substrate mismatch, and how strain relaxed"
+ phase_field: "every phase-field run shows total free energy falling monotonically"
+}
+
+^["try"]{
+ #>materials_advanced_try_cd_grating
+ ^["cd_diffraction"]{
+  materials: [ "a red laser pointer of class 2 or lower", "an old CD", "a tape measure", "a white wall", "a calculator" ]
+  steps: << "shine the pointer onto the CD at a steep angle so spots land on the wall" ; "measure the distance to the wall and from the central spot to the first-order spot" ; "compute the angle and the track spacing from the grating equation" ; "compare with the spacing printed for CD audio" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "never look into the beam or its mirror reflection; keep the pointer below eye level of everyone in the room"
+  shows: ~"./materials-advanced.spw#materials_advanced_xrd"
+ }
+}
+
+#>materials_advanced_hea_creep_q
+?["If diffusion in high-entropy alloys is only modestly slower, what would make one resist creep?"]{
+ #:depth #!physical ~#lens(material grain)
+ #:claim #!speculative
+ ~#hypothesis: "Creep resistance should track coherent precipitates and stable grain structure, as in superalloys, more than configurational entropy itself."
+ !probe{ "tabulate published creep rates for precipitate-strengthened and single-phase high-entropy alloys at matched homologous temperature" =id[p_mateng_advanced_hea_creep] =kind[lit] }
+ $%[file.frame_count]
+ ~"./materials-advanced.spw#materials_advanced_sluggish_diffusion" ~#neighbor(nearest)
+}
+
+#>materials_advanced_beam_damage_q
+?["When does an electron probe that resolves single atoms start moving them?"]{
+ #:depth #!physical ~#lens(energy budget)
+ #:claim #!speculative
+ ~#hypothesis: "Light atoms receive more energy from each collision, so knock-on damage starts at lower beam voltage for carbon sheets than for heavy oxides, favoring lower voltages for two-dimensional materials."
+ !probe{ "compare reported knock-on thresholds for graphene and a heavy oxide against the voltages used to image them" =id[p_mateng_advanced_beam_damage] =kind[lit] }
+ $%[mateng.nano.stem_probe_pm]
+ ~"./materials-advanced.spw#materials_advanced_tem" ~#neighbor(nearest)
+}

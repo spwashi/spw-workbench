@@ -1,37 +1,44 @@
 # Labor Agreements Ledger
 #
-# The agreements that set pay, rest, and protections for Hollywood crews, writers, directors, and performers, with the 2021 and 2023 disputes as dossiers and the 2026 cycle left as a verify cell.
+# The agreements that set pay, rest, and protections for Hollywood crews, writers, directors, and performers, with the 2021 and 2023 disputes as dossiers and the 2026 cycle partly read.
 
 #>film_labor_ledger
 #:layer #!reference
 #:domain #!film
 #:form #!ledger
 #:level #!practitioner
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 #:era #!contemporary
 
 ^"emit"{
  ~#title: "Labor Agreements Ledger"
- ~#claim: "Hollywood labor runs on three-year agreements; in 2021 IATSE won a 10-hour turnaround under a strike threat, and in 2023 writers and actors both struck before settling."
- ~#proof: "Agreement terms from the guild agreements; dates from Variety, The Hollywood Reporter, and Deadline coverage."
- ~#door: "Read the term cells first, then the two 2023 strike dossiers, then the open 2026 cell."
+ ~#claim: "Hollywood labor runs on multi-year agreements; in 2021 IATSE won a 10-hour turnaround under a strike threat, and in 2023 writers and actors both struck before settling."
+ ~#proof: "Agreement terms from the guild agreements and memoranda; dates from Variety, The Hollywood Reporter, and Deadline coverage."
+ ~#door: "Read the term cells first, then the two 2023 strike dossiers, then the 2026 round."
  ~#audience: "crew, writers, performers, students, and readers of labor history"
- cold_open: "The Hollywood guilds bargain three-year agreements, and the ledger shows what each round won and when it expires."
- continuity: "Labor Agreements Ledger | three-year agreements"
+ cold_open: "The Hollywood guilds bargain multi-year agreements, and the ledger shows what each round won and when it expires."
+ continuity: "Labor Agreements Ledger | multi-year agreements"
 }
 
 ^"provenance"{
- as_of: "2026-09-30"
+ as_of: "2026-10-02"
  generator: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #fact_checked, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #partial }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-01", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
  }
- checked: "strike dates and 2021 terms were checked against press citations on 2026-10-01; the 2024 IATSE expiry and the 2026 successor agreements were not"
+ checked: "strike dates and 2021 terms were checked against press citations on 2026-10-01; the WGA and DGA 2026 memoranda were read on the guild sites on 2026-10-02; the 2024 IATSE expiry and the SAG-AFTRA 2026 successor were not"
+ corrections: [
+  "the claim that every round runs three years is dropped; the 2026 WGA agreement runs four years"
+ ]
 }
 
 ^["edges"]{
@@ -88,6 +95,27 @@
  }
 }
 
+^["round_2026"]{
+ #>film_labor_wga_2026
+ ^["wga_2026"]{
+  #:claim #!settled
+  statement: "The 2026 WGA Minimum Basic Agreement runs from May 2, 2026 to May 1, 2030; the guild says it agreed to a four-year term to secure health fund contributions."
+  reads: %[film.wga.mba_2026_term]
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_wga_mba_2026"
+  ^["limits"]{
+   holds: "terms as summarized by the guild on wga.org"
+   fails: "the summary is not the full agreement text; read the memorandum before quoting a rate"
+  }
+ }
+ #>film_labor_dga_2026
+ ^["dga_2026"]{
+  #:claim #!settled
+  statement: "The DGA and the studios reached a 2026 memorandum of agreement amending the 2023 agreements for a term beginning July 1, 2026."
+  reads: %[film.dga.ba_2026_start]
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_dga_moa_2026"
+ }
+}
+
 ^["dossiers"]{
  #>film_labor_wga_strike_2023
  ^["wga_strike_2023"]{
@@ -118,10 +146,10 @@
 ^["open_cells"]{
  #>film_labor_cycle_2026
  ^["cycle_2026"]{
-  what: "successor WGA, DGA, and SAG-AFTRA agreements after the May and June 2026 expiries"
+  what: "the SAG-AFTRA successor to the TV and theatrical contracts that expired June 30, 2026"
   outcome: %[film.guilds.cycle_2026_status]
   cell: #verify
-  ~#(this cut records no outcome for the 2026 cycle until a source is checked)
+  ~#(this cut records no SAG-AFTRA outcome for 2026 until a source is checked)
  }
 }
 

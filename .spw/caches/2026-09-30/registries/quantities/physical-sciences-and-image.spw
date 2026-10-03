@@ -11,7 +11,7 @@
 #:valence #!bone
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5 writer"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -20,14 +20,29 @@
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "re-run after the 2026-10-03 fact-check fixes; no failing lines" }
  }
+ corrections: #[
+  "fact-check: the crown Abbe thresholds were swapped; crowns need V_d above 55 below n_d 1.60 and above 50 only past it, and a cell for the 55 bound was added",
+  "fact-check: the vacuum impedance cell held the superseded CODATA 2018 value; it now holds CODATA 2022, checked against the NIST constants database",
+  "fact-check 2026-10-03: the muon cell now says it is the free mean life measured with positive muons, so a scintillator lab with captured negative muons is not read against it uncaveated",
+  "fact-check 2026-10-03: the r4 fact-check receipt was dated 2026-10-01, before the receipts it followed; it is re-dated 2026-10-02, the day that pass ran"
+ ]
 }
 
 ^["families"]{
  ^["const"]{
   id: phys_const, operator: "%", identifier: phys.const, plane: world, scope: corpus
-  keys: #[ c_m_per_s, k_b_mev_per_k, r_j_per_mol_k, g_n_m_per_s2, e_charge_zc, z0_ohm ]
+  keys: #[ c_m_per_s, k_b_mev_per_k, r_j_per_mol_k, g_n_m_per_s2, e_charge_zc, z0_ohm, von_klitzing_ohm ]
  }
  ^["thermal"]{
   id: phys_thermal, operator: "%", identifier: phys.thermo, plane: world, scope: corpus
@@ -47,11 +62,11 @@
  }
  ^["image"]{
   id: phys_image, operator: "%", identifier: phys.optics, plane: world, scope: corpus
-  keys: #[ line_d_nm, line_f_nm, line_c_nm, crown_abbe_min, fresnel_r_n152, mgf2_n, cutoff_f16_lp_per_mm ]
+  keys: #[ line_d_nm, line_f_nm, line_c_nm, crown_abbe_min, crown_abbe_ordinary_min, fresnel_r_n152, mgf2_n, cutoff_f16_lp_per_mm ]
  }
  ^["carriers"]{
   id: phys_carriers, operator: "%", identifier: phys.cine, plane: world, scope: corpus
-  keys: #[ s16_diag_mm, s35_diag_mm, ff_diag_mm, lf_diag_mm, a65_diag_mm, full_gate_scope_ratio, cinemascope_1953_ratio ]
+  keys: #[ s16_diag_mm, s35_diag_mm, ff_diag_mm, lf_diag_mm, a65_diag_mm, full_gate_scope_ratio, cinemascope_1953_ratio, scope_delivered_ratio ]
  }
  ^["process"]{
   id: phys_process, operator: "%", identifier: phys.process, plane: world, scope: corpus
@@ -59,7 +74,7 @@
  }
  ^["film"]{
   id: phys_film, operator: "%", identifier: phys.film, plane: world, scope: corpus
-  keys: #[ frames_per_ft_35mm, frames_per_ft_16mm ]
+  keys: #[ frames_per_ft_35mm, frames_per_ft_16mm, sound_speed_fps ]
  }
  ^["video"]{
   id: phys_video, operator: "%", identifier: phys.video, plane: world, scope: corpus
@@ -112,9 +127,15 @@
   status: #settled
  }
  %phys.const.z0_ohm{
-  value: 376.730313668, unit: "ohm", rel: 0.0000000002
-  at: "characteristic impedance of vacuum; measured, not exact, since 2019"
-  src: ~"../sources/physical-sciences-and-image.spw#src_phys_codata_2018"
+  value: 376.730313412, unit: "ohm", abs: 0.000000059
+  at: "characteristic impedance of vacuum, CODATA 2022, read 2026-10-02; measured, not exact, since 2019; the CODATA 2018 value 376.730313668 is superseded"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_codata_2022"
+  status: #settled
+ }
+ %phys.const.von_klitzing_ohm{
+  value: 25812.80745, unit: "ohm", abs: 0.00001
+  at: "von Klitzing constant h over e squared, exact in the 2019 SI; the integer quantum Hall plateaus sit at this value over an integer"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_bipm_si_2019"
   status: #settled
  }
 }
@@ -241,8 +262,14 @@
  }
  %phys.optics.crown_abbe_min{
   value: 50, unit: "1", abs: 0
-  at: "glass-map convention: crowns have V_d above 50 when n_d is below 1.60, above 55 otherwise"
-  src: ~"../sources/physical-sciences-and-image.spw#src_phys_smith_2008"
+  at: "glass-map convention: the lowest V_d a crown may have, allowed only for dense crowns with n_d above 1.60"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_wiki_abbe_zahl"
+  status: #settled
+ }
+ %phys.optics.crown_abbe_ordinary_min{
+  value: 55, unit: "1", abs: 0
+  at: "glass-map convention: crowns with n_d below 1.60 need V_d above 55; glasses below the line are flints"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_wiki_abbe_zahl"
   status: #settled
  }
  %phys.optics.fresnel_r_n152{
@@ -309,6 +336,12 @@
   src: ~"../sources/physical-sciences-and-image.spw#src_phys_belton_1992"
   status: #settled
  }
+ %phys.cine.scope_delivered_ratio{
+  value: 2.39, unit: "width over height", abs: 0.01
+  at: "anamorphic 35 mm projection after the 1971 SMPTE revision of 2.35; often marketed as 2.40"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_asc_manual_2013"
+  status: #settled
+ }
 }
 
 #>q_phys_process
@@ -362,6 +395,12 @@
  %phys.film.frames_per_ft_16mm{
   value: 40, unit: "frames per foot", abs: 0
   at: "16 mm film, one perforation per frame"
+  src: ~"../sources/physical-sciences-and-image.spw#src_phys_asc_manual_2013"
+  status: #settled
+ }
+ %phys.film.sound_speed_fps{
+  value: 24, unit: "frames per second", abs: 0
+  at: "standard sound-film camera and projection speed"
   src: ~"../sources/physical-sciences-and-image.spw#src_phys_asc_manual_2013"
   status: #settled
  }
@@ -423,7 +462,7 @@
  }
  %phys.lab.muon_tau_us{
   value: 2.1969811, unit: "microsecond", abs: 0.0000022
-  at: "muon mean life at rest"
+  at: "free muon mean life at rest, measured with positive muons; stopped negative muons in matter live shorter because of nuclear capture"
   src: ~"../sources/physical-sciences-and-image.spw#src_phys_pdg_2024"
   status: #settled
  }

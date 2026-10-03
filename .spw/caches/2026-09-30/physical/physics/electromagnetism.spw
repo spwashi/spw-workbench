@@ -1,0 +1,204 @@
+# Electromagnetism
+#
+# The canonical home for the Maxwell equations, potentials and the Lorenz gauge, waves, transmission lines, and radiation, with circuits as the quasi-static limit that engineering builds on.
+
+#>physics_em
+#:layer #!reference
+#:domain #!physics
+#:form #!curriculum
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Electromagnetism"
+ ~#claim: "Four Maxwell equations and the Lorentz force describe every electric, magnetic, and optical effect outside quantum theory; lumped circuits are their limit when parts are small next to a wavelength."
+ ~#proof: "Griffiths and Jackson for the field theory, Pozar for lines and matching, Jackson and Okun for the history of gauges and the Lorenz name."
+ ~#door: "Follow the prerequisite chain from statics to waves, then measure the speed of light with a microwave oven."
+ ~#audience: "physics and electrical engineering students in their junior year"
+ continuity: "Electromagnetism | small next to a wavelength"
+ cold_open: "Circuits are just Maxwell's equations when every wire is small next to a wavelength, and a microwave oven shows you that wavelength."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/physics-and-mechanical-engineering/undergrad-physics.spw", ".spw/caches/university-education/electrical-and-computer-engineering/undergrad-electrical-engineering.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "re-run after the 2026-10-03 fact-check fixes; no failing lines" }
+ }
+ corrections: #[
+  "Lorentz gauge spelled Lorenz gauge, after Ludvig Lorenz 1867, not Hendrik Lorentz",
+  "maximum power transfer needs a conjugate match and delivers half the power to the load; the raw said matched impedances maximize power everywhere",
+  "the phase-margin rule is left to the control-and-signals node, where it is a robustness heuristic, not a stability guarantee",
+  "the FR-4 filter hypothesis with an invented 50 percent figure was replaced by a direction-only wonder",
+  "fact-check: the vacuum impedance node now cites CODATA 2022; its registry cell had held the superseded CODATA 2018 value",
+  "fact-check 2026-10-03: the r4 fact-check receipt was dated 2026-10-01, before the receipts it followed; it is re-dated 2026-10-02, the day that pass ran"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../../formal/mathematics/engineering-core/calculus-and-linear-algebra.spw#mathematics_calc_linalg" ]
+ feeds: [ ~"../engineering/electrical-core.spw#engineering_electrical", ~"../optics/aberrations-and-lens-design.spw#optics_aberrations" ]
+ grounds: [ ~"../../registries/quantities/physical-sciences-and-image.spw#q_phys_const" ]
+ see: [ ~"./graduate-topics.spw#physics_graduate_covariant" ]
+}
+
+^["concepts"]{
+ primary: [ #field, #gauge, #quasi_static ]
+ transfers: [ #impedance, #symmetry ]
+ tensions: [ #action_at_a_distance ]
+}
+
+^["dag"]{
+ order: << "statics" ; "magnetostatics" ; "matter" ; "induction" ; "maxwell" ; "potentials" ; "waves" ; "lines" ; "radiation" ; "quasi-static limit" >>
+
+ #>physics_em_electrostatics
+ ^["statics"]{
+  #:claim #!settled
+  statement: "Static charges produce a field obeying Gauss's law; with the scalar potential, it reduces to Poisson's equation, solved by images, separation of variables, and multipole expansion."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_griffiths_em_2017"
+ }
+ #>physics_em_magnetostatics
+ ^["magnetostatics"]{
+  #:claim #!settled
+  statement: "Steady currents produce magnetic fields given by the Biot-Savart law; Ampere's law and the vector potential A organize them, and magnetic field lines never end."
+  needs: [ ~"./electromagnetism.spw#physics_em_electrostatics" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_griffiths_em_2017"
+ }
+ #>physics_em_matter
+ ^["fields_in_matter"]{
+  #:claim #!settled
+  statement: "Bound charges and currents in materials are summarized by polarization P and magnetization M, giving the auxiliary fields D and H with free sources only."
+  needs: [ ~"./electromagnetism.spw#physics_em_magnetostatics" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_griffiths_em_2017"
+ }
+ #>physics_em_induction
+ ^["induction"]{
+  #:claim #!settled
+  statement: "A changing magnetic flux induces an electromotive force, Faraday's law; Maxwell added the displacement current so that charge conservation holds in Ampere's law."
+  needs: [ ~"./electromagnetism.spw#physics_em_magnetostatics" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_griffiths_em_2017"
+ }
+ #>physics_em_maxwell
+ ^["maxwell"]{
+  #:claim #!settled
+  statement: "Maxwell's 1865 theory joined these laws and predicted waves travelling at the speed of light; the four vector equations used today were condensed later, chiefly by Heaviside."
+  reads: %[phys.const.c_m_per_s]
+  needs: [ ~"./electromagnetism.spw#physics_em_induction", ~"./electromagnetism.spw#physics_em_matter" ]
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_maxwell_1865", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_jackson_1999" ]
+ }
+ #>physics_em_gauges
+ ^["potentials_and_gauges"]{
+  #:claim #!settled
+  statement: "The potentials phi and A are fixed only up to a gauge; the Lorenz gauge sets div A + (1/c^2) d(phi)/dt = 0, while the Coulomb gauge sets div A = 0."
+  needs: [ ~"./electromagnetism.spw#physics_em_maxwell" ]
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_jackson_okun_2001", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_lorenz_1867" ]
+  ~#say(Lorenz without a t, the Danish physicist)
+  ^["naming"]{
+   #:claim #!refuted
+   statement: "The raw generation called it the Lorentz gauge; the condition is due to Ludvig Lorenz in 1867, and the misattribution to Hendrik Lorentz is common in textbooks."
+   source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_jackson_okun_2001"
+  }
+ }
+ #>physics_em_waves
+ ^["waves"]{
+  #:claim #!settled
+  statement: "In vacuum the fields satisfy wave equations with speed c = 1 over the square root of mu_0 epsilon_0; the Poynting vector carries their energy flux."
+  reads: %[phys.const.c_m_per_s]
+  needs: [ ~"./electromagnetism.spw#physics_em_maxwell" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_griffiths_em_2017"
+  ^["in_matter"]{
+   conductors: "fields decay over a skin depth that shrinks as frequency and conductivity rise"
+   interfaces: "Fresnel equations set reflection; at Brewster's angle p-polarized reflection vanishes"
+  }
+ }
+ #>physics_em_lines
+ ^["transmission_lines"]{
+  #:claim #!settled
+  statement: "A transmission line is a distributed circuit obeying the telegrapher's equations; a load Z_L on a line of impedance Z_0 reflects the fraction (Z_L - Z_0)/(Z_L + Z_0)."
+  needs: [ ~"./electromagnetism.spw#physics_em_waves" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_pozar_2012"
+  ^["tools"]{
+   standing_waves: "the voltage standing wave ratio grows with the reflection magnitude"
+   smith_chart: "Phillip Smith published his impedance chart in 1939; it maps reflection coefficients for graphical matching"
+   quarter_wave: "a quarter-wave section of impedance sqrt(Z_0 Z_L) matches two real impedances at one frequency"
+  }
+ }
+ #>physics_em_conjugate_match
+ ^["conjugate_match"]{
+  #:claim #!settled
+  statement: "A source delivers maximum power to a load whose impedance is the complex conjugate of its own, and at that point only half the power reaches the load."
+  needs: [ ~"./electromagnetism.spw#physics_em_lines" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_pozar_2012"
+  ^["limits"]{
+   holds: "antennas, receivers, and RF stages where available power is scarce"
+   fails: "power grids and audio amplifiers deliberately avoid it, since efficiency matters more; reflectionless and conjugate matching differ when the source impedance is complex"
+  }
+ }
+ #>physics_em_raw_matching
+ ^["raw_matching"]{
+  #:claim #!refuted
+  statement: "The raw generation said maximum power transfers only when source and load impedances match, from microwave lines to audio amplifiers; the condition is conjugate, and audio stages avoid it."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_pozar_2012"
+ }
+ #>physics_em_radiation
+ ^["radiation"]{
+  #:claim #!settled
+  statement: "Accelerated charges radiate; retarded potentials give dipole radiation and the Larmor power, and waveguides pass only modes above their cutoff frequencies."
+  needs: [ ~"./electromagnetism.spw#physics_em_gauges", ~"./electromagnetism.spw#physics_em_waves" ]
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_griffiths_em_2017", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_pozar_2012" ]
+ }
+ #>physics_em_quasi_static
+ ^["quasi_static_limit"]{
+  #:claim #!settled
+  statement: "When a circuit is much smaller than the wavelength at its highest frequency, propagation delay is negligible and Kirchhoff's laws follow from Maxwell's equations."
+  needs: [ ~"./electromagnetism.spw#physics_em_maxwell" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_pozar_2012"
+  ^["limits"]{
+   holds: "lumped parts and short traces relative to the signal wavelength or rise-time length"
+   fails: "long cables, fast edges, and RF layouts, where the line model takes over"
+  }
+ }
+ #>physics_em_vacuum
+ ^["vacuum_impedance"]{
+  #:claim #!settled
+  statement: "Free space has a characteristic impedance near 376.73 ohm, the ratio of electric to magnetic field in a plane wave; since 2019 it is measured rather than exact."
+  reads: %[phys.const.z0_ohm]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_codata_2022"
+ }
+}
+
+^["try"]{
+ #>physics_em_try_microwave
+ ^["chocolate_speed_of_light"]{
+  materials: [ "a microwave oven with its turntable removed", "a plate", "a bar of chocolate or a layer of marshmallows", "a ruler" ]
+  steps: << "remove the turntable so nothing rotates" ; "heat the plate for about twenty seconds" ; "measure the distance between melted spots" ; "double it to get a wavelength" ; "multiply by the frequency printed on the oven label" ; "compare with c" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "never run the oven empty or with metal inside; melted chocolate and the plate can burn; adults supervise children"
+  shows: ~"./electromagnetism.spw#physics_em_waves"
+ }
+}
+
+#>physics_em_lines_first_q
+?["Would students who meet transmission lines before lumped circuits reason better about fast digital signals?"]{
+ #:depth #!educational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "Students who learn lines first should spot reflection and termination problems sooner, at some cost in early circuit fluency."
+ !probe{ "compare reasoning on a ringing-edge problem between cohorts taught lines first and lines last" =id[p_phys_em_lines_first] =kind[interview] }
+ $%[phys.const.c_m_per_s, phys.const.z0_ohm]
+ ~"./electromagnetism.spw#physics_em_quasi_static" ~#neighbor(nearest)
+}

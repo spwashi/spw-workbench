@@ -1,0 +1,175 @@
+# Videotape
+#
+# Magnetic tape for pictures, from two-inch quadruplex in 1956 through U-matic, Betamax, VHS, Video8, and DV, and the helical scan that let small cassettes hold television.
+
+#>media_carriers_videotape
+#:layer #!reference
+#:domain #!media_carriers
+#:form #!timeline
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bonk
+#:era #!modern
+
+^"emit"{
+ ~#title: "Videotape"
+ ~#claim: "Video needs far more bandwidth than audio, so recorders spin heads across the tape; helical scan made that small enough for cassettes, from U-matic in 1971 to DV in 1995."
+ ~#proof: "Abramson for broadcast and industrial machines; Lardner for the home VCR; IEC 61834 for DV; a Wikipedia cross-check for helical scan origins."
+ ~#door: "Wrap paper around a can to see a helical track, then climb the ladder from quad to DV."
+ ~#audience: "readers with boxes of old tapes, media history students, and archivists"
+ continuity: "Videotape | spin heads across the tape"
+ cold_open: "Pictures need so much bandwidth that video recorders spin heads across the tape, and helical scan shrank that into a cassette."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5 writer"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "re-run after the 2026-10-03 fact-check fixes; no failing lines" }
+ }
+ corrections: #[
+  "fact-check: Video8 launched in 1984 with Kodak Kodavision camcorders; Sony CCD-V8 followed in 1985, so the rung no longer says 1985",
+  "fact-check: Sawazaki is named without a given name, since Wikipedia articles differ between Kenichi in 1954 and Norikazu in 1953",
+  "fact-check 2026-10-03: the r4 fact-check receipt was dated 2026-10-01, before the receipts it followed; it is re-dated 2026-10-02, the day that pass ran"
+ ]
+}
+
+^["edges"]{
+ see: [ ~"../carrier-decay-and-fixity.spw#media_carriers_decay_sticky_shed", ~"../format-wars.spw#media_carriers_format_wars" ]
+ contrasts: [ ~"./film-stock-and-bases.spw#media_carriers_film_stock" ]
+ grounds: [ ~"../../../registries/quantities/physical-sciences-and-image.spw#q_phys_carriers" ]
+}
+
+^["concepts"]{
+ primary: [ #helical_scan, #carrier, #format ]
+ transfers: [ #obsolescence, #generation_loss ]
+ tensions: [ #platform_dependence ]
+}
+
+^["principle"]{
+ #>media_carriers_videotape_bandwidth
+ ^["head_speed"]{
+  #:claim #!settled
+  statement: "A television signal needs megahertz of bandwidth, far beyond audio tape, so video recorders move the heads fast across slowly moving tape instead of pulling tape fast past a fixed head."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_abramson_2003"
+ }
+ #>media_carriers_videotape_helical
+ ^["helical_scan"]{
+  #:claim #!settled
+  statement: "In helical scan, heads on a drum tilted to the tape lay long diagonal tracks, each holding a field or segment, which allows narrow tape, still frames, and variable-speed playback."
+  sources: [ ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_abramson_2003", ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_helical_scan" ]
+  ~#say(tilt the drum and the track gets long)
+ }
+}
+
+^["ladder"]{
+ order: << "helical patents" ; "quadruplex" ; "first helical machines" ; "U-matic" ; "Betamax" ; "VHS" ; "Video8" ; "DV" >>
+
+ #>media_carriers_videotape_rung_patents
+ ^["helical_patents"]{
+  #:claim #!settled
+  statement: "Earl Masterson of RCA patented a helical method in 1950, Eduard Schueller at AEG in Germany developed another in 1953, and Sawazaki built a prototype in Japan around 1954."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_helical_scan"
+  ~#(sources differ on his given name and on 1953 or 1954)
+  era: 1950..1954
+ }
+ #>media_carriers_videotape_rung_quad
+ ^["quadruplex_1956"]{
+  #:claim #!settled
+  statement: "Ampex showed the first practical broadcast videotape recorder in 1956: four heads on a spinning wheel swept across two-inch tape, and networks adopted it for time-zone delay."
+  reads: %[phys.video.quad_width_mm]
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_abramson_2003"
+  ~#(the Ampex team under Charles Ginsburg included a young Ray Dolby)
+ }
+ #>media_carriers_videotape_rung_toshiba
+ ^["helical_1959"]{
+  #:claim #!settled
+  statement: "Toshiba demonstrated helical-scan machines in 1959; recording one field per track, they were the first to pause on a still picture and play at other than real-time speed."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_helical_scan"
+ }
+ #>media_carriers_videotape_rung_umatic
+ ^["umatic_1971"]{
+  #:claim #!settled
+  statement: "Sony's U-matic of 1971 put three-quarter-inch tape in a cassette; it served schools, businesses, and then electronic newsgathering."
+  reads: %[phys.video.umatic_width_mm]
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_abramson_2003"
+ }
+ #>media_carriers_videotape_rung_betamax
+ ^["betamax_1975"]{
+  #:claim #!settled
+  statement: "Sony launched Betamax for the home in 1975 on half-inch tape, making time-shifted television viewing an everyday practice."
+  reads: %[phys.video.half_inch_width_mm]
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_lardner_1987"
+ }
+ #>media_carriers_videotape_rung_vhs
+ ^["vhs_1976"]{
+  #:claim #!settled
+  statement: "JVC introduced VHS in Japan in 1976 on the same tape width with longer recording time, and it went on to outsell Betamax worldwide."
+  reads: %[phys.video.half_inch_width_mm]
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_lardner_1987"
+  ~#(Yuma Shiraishi and Shizuo Takano led the JVC VHS project)
+ }
+ #>media_carriers_videotape_rung_video8
+ ^["video8_1984"]{
+  #:claim #!settled
+  statement: "Video8 launched in 1984 with Kodak's Kodavision camcorders on 8 mm tape; Sony's CCD-V8 followed in 1985, and the small cassette let camcorders shrink toward one-hand size."
+  sources: [ ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_abramson_2003", ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_video8" ]
+ }
+ #>media_carriers_videotape_rung_dv
+ ^["dv_1995"]{
+  #:claim #!settled
+  statement: "DV, standardized by a consortium of manufacturers in IEC 61834, recorded digital video at 25 Mbit/s on quarter-inch tape from 1995, so copies no longer lost generations."
+  reads: %[phys.video.dv_width_mm, phys.video.dv_video_mbps]
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_iec_61834"
+ }
+}
+
+^["ledger"]{
+ #>media_carriers_videotape_generation_loss
+ ^["analog_generations"]{
+  #:claim #!settled
+  statement: "Each analog videotape copy adds noise and timing error, so editing by dubbing degraded pictures generation by generation until digital tape formats ended that loss."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_abramson_2003"
+ }
+ #>media_carriers_videotape_playback
+ ^["needs_a_deck"]{
+  #:claim #!interpretive
+  statement: "A videotape is unreadable without a working deck of its own format, so the survival of the machines matters as much as the survival of the tape."
+  dag: ~"../playback-dependency-dag.spw#media_carriers_playback_dag"
+ }
+}
+
+^["try"]{
+ #>media_carriers_videotape_try_helix
+ ^["paper_helix"]{
+  materials: [ "a strip of paper about five centimeters wide", "a tin can or jar", "a marker", "tape" ]
+  steps: << "wrap the strip around the can at a slant and tape it" ; "hold the marker still and turn the can once to draw a ring" ; "unwrap the strip" ; "measure the diagonal line and compare it with the strip width" ; "say why a tilted drum gives long tracks on narrow tape" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "watch for sharp can rims; no other hazard worth naming"
+  shows: ~"./videotape.spw#media_carriers_videotape_helical"
+ }
+}
+
+#>media_carriers_videotape_pause_q
+?["Did helical scan spread first where a paused picture mattered more than broadcast quality?"]{
+ #:depth #!historical ~#lens(historical layer)
+ #:claim #!speculative
+ ~#hypothesis: "Early helical machines should appear first in schools, hospitals, sports coaching, and industry, where still frames and cheap tape outweighed the picture quality broadcasters demanded."
+ !probe{ "tabulate early helical recorder sales and trade-press uses by sector, 1959 to 1975" =id[p_phys_videotape_pause] =kind[lit] }
+ $%[phys.video.quad_width_mm, phys.video.half_inch_width_mm]
+ ~"./videotape.spw#media_carriers_videotape_rung_toshiba" ~#neighbor(nearest)
+}

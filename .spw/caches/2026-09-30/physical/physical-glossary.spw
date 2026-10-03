@@ -1,0 +1,170 @@
+# Physical Glossary
+#
+# The short-entry tier for the physical class: state, phase transition, entropy, temperature, free energy, exergy, bond, stability margin, aberration, dispersion, gauge, and latent image, each with a home leaf.
+
+#>physical_glossary
+#:layer #!reference
+#:domain #!physical
+#:form #!glossary
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Physical Glossary"
+ ~#claim: "Twelve terms carry most of the physical class; each has a sourced definition, a place among broader and narrower terms, and one home leaf where it does its work."
+ ~#proof: "Definitions cite Callen, Schroeder, Kardar, Bejan, Pauling, Seborg, Smith, Hecht, Jackson and Okun, and James through the registry."
+ ~#door: "Pick a word, read its line, and follow its home link when a leaf leans on it."
+ ~#audience: "newcomers to physics, chemistry, optics, and engineering"
+ continuity: "Physical Glossary | home leaf"
+ cold_open: "Each word here gets one sourced line, a family of related words, and a home leaf where it does real work."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5 writer"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial, note: "one unresolved ref to the planned engineering/mechanical-core.spw leaf of a sibling package" }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "re-run after the sibling mechanical engineering leaf landed; every ref resolves" }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "re-run after the 2026-10-03 fact-check fixes; no failing lines" }
+ }
+ corrections: #[
+  "fact-check: the r3 gate receipt read pass while the exergy home link was unresolved; it now reads partial until the mechanical engineering leaf lands",
+  "fact-check 2026-10-03: the r4 fact-check receipt was dated 2026-10-01, before the receipts it followed; it is re-dated 2026-10-02, the day that pass ran"
+ ]
+ note: "the exergy home link points at the mechanical engineering leaf, which a sibling package writes and which now resolves"
+}
+
+^["edges"]{
+ grounds: [ ~"../registries/sources/physical-sciences-and-image.spw#registry_src_physical_sciences_and_image" ]
+}
+
+^["concepts"]{
+ primary: [ #entropy, #free_energy, #aberration ]
+ transfers: [ #exergy, #phase_diagram, #universality ]
+ tensions: [ #arrow_of_time ]
+}
+
+^["lattice"]{
+ ^["thermal"]{
+  #>physical_term_state
+  ^["state"]{
+   #:claim #!settled
+   statement: "A thermodynamic state is fixed by a few macroscopic variables; for a simple compressible substance of fixed composition, two independent intensive properties fix it."
+   source: ~"../registries/sources/physical-sciences-and-image.spw#src_phys_callen_1985"
+   narrower: [ ~"./physical-glossary.spw#physical_term_phase_transition" ]
+   home: ~"./physics/classical-thermodynamics.spw#physics_thermo_state_postulate"
+  }
+  #>physical_term_entropy
+  ^["entropy"]{
+   #:claim #!settled
+   statement: "Entropy is the state function that an isolated system never loses; statistically it is k_B times the log of the number of microstates consistent with the macrostate."
+   sources: [ ~"../registries/sources/physical-sciences-and-image.spw#src_phys_callen_1985", ~"../registries/sources/physical-sciences-and-image.spw#src_phys_schroeder_2000" ]
+   related: [ ~"./physical-glossary.spw#physical_term_temperature", ~"./physical-glossary.spw#physical_term_exergy" ]
+   home: ~"./physics/classical-thermodynamics.spw#physics_thermo_second"
+  }
+  #>physical_term_temperature
+  ^["temperature"]{
+   #:claim #!settled
+   statement: "Temperature is what two bodies share at thermal equilibrium; statistically, its inverse is the rate at which entropy rises with energy."
+   source: ~"../registries/sources/physical-sciences-and-image.spw#src_phys_schroeder_2000"
+   broader: [ ~"./physical-glossary.spw#physical_term_state" ]
+   home: ~"./physics/statistical-mechanics.spw#physics_statmech_temperature"
+  }
+  #>physical_term_free_energy
+  ^["free_energy"]{
+   #:claim #!settled
+   statement: "A free energy is a thermodynamic potential minimized at equilibrium under its natural constraints: Helmholtz at fixed temperature and volume, Gibbs at fixed temperature and pressure."
+   source: ~"../registries/sources/physical-sciences-and-image.spw#src_phys_callen_1985"
+   narrower: [ ~"./physical-glossary.spw#physical_term_exergy" ]
+   home: ~"./physics/classical-thermodynamics.spw#physics_thermo_potentials"
+  }
+  #>physical_term_exergy
+  ^["exergy"]{
+   #:claim #!settled
+   statement: "Exergy is the most work obtainable as a system comes to equilibrium with a stated environment; irreversibility destroys it in proportion to the entropy generated."
+   source: ~"../registries/sources/physical-sciences-and-image.spw#src_phys_bejan_2016"
+   broader: [ ~"./physical-glossary.spw#physical_term_free_energy" ]
+   home: ~"./engineering/mechanical-core.spw#engineering_mechanical"
+  }
+  #>physical_term_phase_transition
+  ^["phase_transition"]{
+   #:claim #!settled
+   statement: "A phase transition is a change of state where some property jumps or diverges: first-order transitions carry latent heat, continuous ones show diverging correlation lengths and universal exponents."
+   source: ~"../registries/sources/physical-sciences-and-image.spw#src_phys_kardar_2007"
+   broader: [ ~"./physical-glossary.spw#physical_term_state" ]
+   home: ~"./physics/graduate-topics.spw#physics_graduate_universality"
+  }
+ }
+ ^["matter_and_control"]{
+  #>physical_term_bond
+  ^["bond"]{
+   #:claim #!settled
+   statement: "A chemical bond is the attraction that holds atoms together in a stable arrangement; Pauling used electronegativity differences to estimate how far a bond lies between covalent and ionic."
+   source: ~"../registries/sources/physical-sciences-and-image.spw#src_phys_pauling_1960"
+   home: ~"./materials/bonding-and-states-of-matter.spw#materials_bonding"
+  }
+  #>physical_term_stability_margin
+  ^["stability_margin"]{
+   #:claim #!settled
+   statement: "Gain and phase margins measure how much extra loop gain or phase lag a feedback system tolerates before instability; they are robustness heuristics, not guarantees."
+   source: ~"../registries/sources/physical-sciences-and-image.spw#src_phys_seborg_2016"
+   home: ~"./engineering/control-and-signals.spw#engineering_control_signals"
+  }
+ }
+ ^["light_and_fields"]{
+  #>physical_term_aberration
+  ^["aberration"]{
+   #:claim #!settled
+   statement: "An aberration is any departure of a real optical system from ideal point-to-point imaging; Seidel sorted the third-order monochromatic ones into five kinds."
+   source: ~"../registries/sources/physical-sciences-and-image.spw#src_phys_smith_2008"
+   related: [ ~"./physical-glossary.spw#physical_term_dispersion" ]
+   home: ~"./optics/aberrations-and-lens-design.spw#optics_aberrations"
+  }
+  #>physical_term_dispersion
+  ^["dispersion"]{
+   #:claim #!settled
+   statement: "Dispersion is the change of refractive index with wavelength; it splits white light in a prism and causes chromatic aberration in lenses."
+   source: ~"../registries/sources/physical-sciences-and-image.spw#src_phys_hecht_2017"
+   related: [ ~"./physical-glossary.spw#physical_term_aberration" ]
+   home: ~"./optics/aberrations-and-lens-design.spw#optics_aberrations_abbe"
+  }
+  #>physical_term_gauge
+  ^["gauge"]{
+   #:claim #!settled
+   statement: "A gauge is a choice among potentials that give the same fields; physics cannot depend on it, and the Lorenz and Coulomb gauges are the common choices."
+   source: ~"../registries/sources/physical-sciences-and-image.spw#src_phys_jackson_okun_2001"
+   home: ~"./physics/electromagnetism.spw#physics_em_gauges"
+  }
+  #>physical_term_latent_image
+  ^["latent_image"]{
+   #:claim #!settled
+   statement: "A latent image is the invisible pattern of tiny silver clusters that light leaves in exposed grains, which development amplifies into a visible image."
+   source: ~"../registries/sources/physical-sciences-and-image.spw#src_phys_james_1977"
+   home: ~"../record/carriers/moving-image/emulsion-chemistry.spw#media_carriers_emulsion_latent_image"
+  }
+ }
+}
+
+#>physical_glossary_hubs_q
+?["Which of these words do the most leaves lean on?"]{
+ #:depth #!computational ~#lens(curated collection)
+ #:claim #!speculative
+ ~#hypothesis: "Entropy and state should draw the most incoming links, since engineering, chemistry, materials, and ecology all reach the canonical thermodynamics node."
+ !probe{ "count path refs into each glossary anchor and its home leaf across the cut" =id[p_phys_glossary_hubs] =kind[census] }
+ $%[graph.in_degree]
+ ~"./physical-glossary.spw#physical_term_entropy" ~#neighbor(nearest)
+}

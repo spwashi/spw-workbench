@@ -29,9 +29,20 @@
  method: #authored
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ evidence: #[ "fetched 2026-10-02: Clemson Home and Garden Information Center poinsettia factsheet for short-day timing" ]
+ corrections: #[
+  "the broadcast lane said bank holiday episodes, which reads as a UK public holiday; it means recording episodes ahead",
+  "the stacked-peaks probe now compares a crew with itself across seasons instead of tallying people",
+  "fact check 2026-10-02: the garden lane short-day timing was unsourced; it now cites the Clemson extension factsheet in this package registry and names poinsettias only"
+ ]
 }
 
 ^["edges"]{
@@ -103,7 +114,7 @@
  ^["authorship"]{
   calendar: ~"../making/authorship/author-season-calendar.spw#authorship_season_calendar"
   gathering: "research, outlines, and preorders"
-  crescendo: "a November drafting month"
+  crescendo: "a self-set November drafting month"
   celebration: "gift-season sales"
   reset: "January launches"
   status: #typical
@@ -112,7 +123,7 @@
  ^["broadcast"]{
   calendar: ~"../making/broadcast/broadcast-cadence.spw#broadcast_cadence"
   run_sheet: ~"../making/broadcast/episode-run-sheet.spw#broadcast_run_sheet"
-  crescendo: "bank holiday episodes before the travel week"
+  crescendo: "record and bank episodes ahead of the holiday travel week"
   celebration: "a year-end retrospective episode"
   status: #typical
  }
@@ -135,9 +146,12 @@
  #>season_cadence_garden
  ^["garden"]{
   calendar: ~"../living/plants/horticultural-science.spw#plant_science_horticulture"
-  reflection: "short-day forcing begun near 1 October for December bloom"
+  reflection: "short-day treatment of poinsettias, with long unbroken nights from the first week of October, so bracts color by December"
   celebration: "forced plants in bloom"
   status: #typical
+  source: ~"../registries/sources/season.spw#src_season_clemson_poinsettia_2015"
+  shows: ~"../living/plants/horticultural-science.spw#plant_science_horticulture_short_days"
+  verify: "night length and weeks of treatment depend on the cultivar; read the grower guide for yours"
  }
  #>season_cadence_books
  ^["books"]{
@@ -193,8 +207,8 @@
 ?["Do stacked peaks cost crews their rest?"]{
  #:depth #!social ~#lens(production cadence)
  #:claim #!speculative
- ~#hypothesis: "Crews whose lane peaks share a rung should keep fewer of their planned rest days than crews who stagger peaks by a rung."
- !probe{ "tally planned and kept rest days from journal pages, stacked versus staggered" =id[p_season_cadence_stacked_peaks] =kind[field] }
+ ~#hypothesis: "A crew whose lane peaks share a rung should keep fewer of its planned rest days than the same crew in a season with peaks staggered by a rung."
+ !probe{ "a crew compares its own planned and kept rest days across a stacked season and a staggered one" =id[p_season_cadence_stacked_peaks] =kind[field] }
  $%[season.arc.week_count]
  ~"./production-cadence.spw#season_cadence_collisions" ~#neighbor(nearest)
 }

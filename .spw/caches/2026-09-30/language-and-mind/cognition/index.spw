@@ -1,0 +1,121 @@
+# Cognition
+#
+# How minds perceive, attend, remember, reason, and develop, studied by experiment, with a ledger that records which famous findings held up when they were repeated.
+
+#>cognition_index
+#:layer #!reference
+#:domain #!cognition
+#:form #!index
+#:level #!foundation
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Cognition"
+ ~#claim: "Cognitive psychology studies perception, memory, reasoning, and development by experiment, and each famous finding carries a replication status and a sample as well as a result."
+ ~#proof: "Leaves cite primary experiments and large replications; this index cites the critique of samples drawn from Western, educated, industrialized, rich, and democratic societies."
+ ~#door: "Start with perception and attention, then memory, then reasoning; read the replication ledger before quoting any famous effect."
+ ~#audience: "students and curious readers entering psychology"
+ continuity: "Cognition | replication status"
+ cold_open: "Every famous finding about the mind should arrive with its replication status and its sample, not just its result."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ contrasts: [ ~"../../living/neuroscience/index.spw#neuroscience_index" ]
+ see: [ ~"../linguistics/index.spw#linguistics_index", ~"../../provenance/errata-life-and-mind.spw#provenance_errata_cognition" ]
+}
+
+^["concepts"]{
+ primary: [ #representation, #replication, #heuristic ]
+ transfers: [ #signal_detection, #sampling ]
+ tensions: [ #weird_samples ]
+}
+
+^["scope"]{
+ what: "how minds work in general, as experimental science"
+ not_assessment: "educational reference under the living class rule; nothing here assesses a person, diagnoses a condition, or sets a standard a particular child or adult should meet"
+}
+
+^["tree"]{
+ perception: ~"./perception-and-attention.spw"
+ memory: ~"./memory-and-representation.spw"
+ reasoning: ~"./reasoning-and-decision.spw"
+ development: ~"./cognitive-development.spw"
+ replication: ~"./replication-ledger.spw"
+}
+
+^["bundle"]{
+ ={ ~"./perception-and-attention.spw#cognition_perception" }
+ ={ ~"./memory-and-representation.spw#cognition_memory" }
+ ={ ~"./reasoning-and-decision.spw#cognition_reasoning" }
+ ={ ~"./cognitive-development.spw#cognition_development" }
+ ={ ~"./replication-ledger.spw#cognition_replication_ledger" }
+}
+
+^["ladder"]{
+ rungs: << "foundation: perception and attention" ; "foundation: memory and representation" ; "foundation: cognitive development" ; "advanced: reasoning and decision" ; "advanced: replication ledger" >>
+ ^["prerequisites"]{
+  perception_before_memory: "what is not attended is rarely stored, so perception and attention come before memory"
+  memory_before_reasoning: "judgment draws on what comes to mind, so memory comes before reasoning"
+  ledger_last: "the ledger grades findings from every other leaf, so it is read after them"
+ }
+ neural_level: "the neuroscience branch studies the same functions in cells and circuits; the two meet by a contrasts edge, not by repeated text"
+}
+
+^["stance"]{
+ #>cognition_index_weird
+ ^["weird_samples"]{
+  #:claim #!settled
+  statement: "Henrich, Heine, and Norenzayan found that people from Western, educated, industrialized, rich, and democratic societies are often outliers in cross-cultural comparisons, so their results cannot stand in for humanity by default."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_henrich_2010"
+  ^["limits"]{
+   holds: "as a warning about generalizing from narrow samples"
+   fails: "it does not show that any particular finding fails elsewhere; that takes a test in the other population"
+  }
+ }
+ #>cognition_index_founding
+ ^["named_field"]{
+  credit: "Ulric Neisser gave the field its name with his 1967 book Cognitive Psychology; Wilhelm Wundt opened an experimental psychology laboratory in Leipzig in 1879"
+  reading: "a credit note, not a keystone claim"
+ }
+}
+
+^["gaps"]{
+ predicted: #[
+  "language acquisition, declared as a gap between cognitive development and phonology in the language-and-mind index",
+  "social psychology beyond the replication ledger",
+  "emotion and motivation",
+  "psychometrics and intelligence testing",
+  "clinical psychology, deliberately absent under the class rule"
+ ]
+}
+
+^["doors"]{
+ student: "perception and attention, then memory and representation"
+ skeptic: "the replication ledger, then the errata surface"
+ parent_or_teacher: "cognitive development, read with its scope frame: ages are population tendencies, not standards"
+ economist: "reasoning and decision, then the economics core it contrasts"
+}
+
+#>cognition_index_generalize_q
+?["Which findings in this branch would survive a sample from somewhere else?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Effects close to sensory physiology should vary less across populations than effects shaped by schooling and custom, though the weird-samples review found that even some visual illusions vary."
+ !probe{ "tag each keystone claim in the cognition leaves with the populations its source sampled and count how many were tested outside Europe and North America" =id[p_life_cog_sample_census] =kind[census] }
+ $%[life.replication.osc_replication_sig_pct, life.replication.osc_original_sig_pct]
+ ~"./index.spw#cognition_index_weird" ~#neighbor(nearest)
+}

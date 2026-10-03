@@ -7,7 +7,7 @@
 #:domain #!media_carriers
 #:form #!ledger
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bane
 #:era #!contemporary
 
@@ -31,7 +31,11 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #pass }
  }
+ rechecked: "2026-10-02: the analog slope claim now cites IASA-TC 04 as its source instead of a see edge to the registry; after the fact check it gains limits, since not every damaged file fails outright"
 }
 
 ^["edges"]{
@@ -146,7 +150,11 @@
  ^["analog_slope_digital_cliff"]{
   #:claim #!interpretive
   statement: "Analog carriers lose quality gradually and each copy adds noise; verified digital copies stay exact until a failure makes the file unreadable at once."
-  see: [ ~"../../registries/sources/record-and-carriers.spw#src_media_iasa_tc04_2009" ]
+  source: ~"../../registries/sources/record-and-carriers.spw#src_media_iasa_tc04_2009"
+  ^["limits"]{
+   holds: "formats whose decoders reject damaged data instead of playing past it"
+   fails: "many formats tolerate local damage, so a corrupted file may play with glitches rather than fail outright"
+  }
  }
 }
 

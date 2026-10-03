@@ -1,0 +1,226 @@
+# Instrumentation and Biomechanics
+#
+# How instruments read the body without loading it, how small channels make flow orderly, how tissues creep and relax, and how blood flow and wall shear reach the cells that line arteries.
+
+#>bioengineering_instrumentation
+#:layer #!reference
+#:domain #!bioengineering
+#:form #!ledger
+#:level #!advanced
+#:review #!sourced
+#:valence #!bonk
+
+^"emit"{
+ ~#title: "Instrumentation and Biomechanics"
+ ~#claim: "Good biomedical instruments subtract interference the body shares with both electrodes, and the endothelium reads the pattern of blood flow through a PECAM-1 sensor that drives inflammation where flow is disturbed."
+ ~#proof: "Webster for amplifiers and biosensors, Purcell for low Reynolds number flow, Fung for tissue mechanics, Womersley and Westerhof for pulsatile flow, Malek, Tzima, and Harry for shear sensing."
+ ~#door: "Read the amplifier claims, then the microfluidics claims, then follow the shear claims to the corrected PECAM-1 entry."
+ ~#audience: "advanced engineering and biology students"
+ continuity: "Instrumentation and Biomechanics | where flow is disturbed"
+ cold_open: "The cells lining an artery feel the pattern of blood flow, and a single sensor drives inflammation where flow is disturbed."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/bioengineering/biomedical-instrumentation-and-biomechanics.spw" ]
+ evidence: #[ "Europe PMC abstracts read 2026-10-02 for Malek 1999, Tzima 2005, Harry 2008, Huh 2010, and Westerhof 2009" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the raw wonder said disturbed flow fails to activate the PECAM-1 complex; the complex is needed for the inflammatory NF-kB response where flow is disturbed, so the raw claim is recorded as refuted (raw line 40)",
+  "the raw amplifier figures, an input impedance above ten gigaohms and a rejection ratio above 100 dB, had no source here and were dropped (raw line 16)",
+  "the raw electrode potential of 0.7 V for peroxide oxidation had no source here and was dropped (raw line 20)",
+  "surface plasmon resonance moved to the gaps list, since no source for it is entered yet (raw line 21)",
+  "the first enzyme electrode is credited to Clark and Lyons, who read oxygen use rather than peroxide"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../../physical/engineering/transport-phenomena.spw#engineering_transport_reynolds", ~"../cells/transport-and-signaling.spw#cell_biology_signaling" ]
+ analog: [ ~"../../physical/engineering/electrical-core.spw#engineering_electrical" ]
+ see: [ ~"../../physical/engineering/control-and-signals.spw#engineering_control_signals", ~"../neuroscience/cellular-neurobiology.spw#neuroscience_cellular" ]
+ grounds: [ ~"../../registries/quantities/life-and-mind.spw#q_life_shear" ]
+}
+
+^["concepts"]{
+ primary: [ #mechanotransduction, #common_mode_rejection, #shear_stress ]
+ transfers: [ #rc_circuit, #signal_path ]
+ tensions: [ #organ_chip_validity ]
+}
+
+^["scope"]{
+ what: "how instruments and tissues work, as engineering science"
+ not_advice: "educational reference under the class rule; nothing here is device guidance, a diagnostic method, or advice about any person's heart, blood vessels, or blood glucose"
+}
+
+^["ledger"]{
+ ^["biopotentials"]{
+  #>bioengineering_instrumentation_inamp
+  ^["instrumentation_amplifier"]{
+   #:claim #!settled
+   statement: "A biopotential amplifier takes the difference between two electrodes through a very high input impedance, so it barely loads the skin, while a high common-mode rejection ratio cancels mains hum present on both."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_webster_2010"
+  }
+  #>bioengineering_instrumentation_drl
+  ^["driven_right_leg"]{
+   #:claim #!settled
+   statement: "A driven-right-leg circuit senses the common-mode voltage, inverts and amplifies it, and feeds it back to the body through a third electrode, lowering the interference the amplifier must reject."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_webster_2010"
+   credit: "Bruce Winter and John Webster set out the design of the circuit in 1983"
+  }
+  #>bioengineering_instrumentation_ecg
+  ^["ecg_leads"]{
+   #:claim #!settled
+   statement: "The electrocardiogram traces each heartbeat as P, QRS, and T waves; in Einthoven's three limb leads, the lead II voltage equals lead I plus lead III."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_webster_2010"
+   credit: "Willem Einthoven recorded the ECG with a string galvanometer and received the 1924 Nobel Prize for it"
+  }
+  #>bioengineering_instrumentation_sampling
+  ^["sampling"]{
+   #:claim #!settled
+   statement: "A digitized biosignal must be sampled at more than twice its highest frequency component, after an analog filter removes higher frequencies, or those frequencies fold into false low ones."
+   sources: [ ~"../../registries/sources/formal.spw#src_formal_shannon_1949", ~"../../registries/sources/life-and-mind.spw#src_life_webster_2010" ]
+  }
+ }
+ ^["biosensors"]{
+  #>bioengineering_instrumentation_glucose
+  ^["enzyme_electrode"]{
+   #:claim #!settled
+   statement: "Glucose oxidase turns glucose and oxygen into gluconolactone and hydrogen peroxide, so an electrode can read glucose from the oxygen used or from the peroxide oxidized at its surface."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_webster_2010"
+   credit: "Leland Clark and Champ Lyons described the first enzyme electrode in 1962, glucose oxidase held over an oxygen electrode"
+   credit_source: ~"../../registries/sources/life-and-mind.spw#src_life_clark_lyons_1962"
+   ^["limits"]{
+    holds: "the chemistry of the sensing layer"
+    fails: "oxygen supply, other molecules oxidized at the electrode, and drift all distort readings, which is why device behavior is a regulatory and clinical matter outside this surface"
+   }
+  }
+ }
+ ^["microfluidics"]{
+  #>bioengineering_instrumentation_low_re
+  ^["low_reynolds"]{
+   #:claim #!settled
+   statement: "At the scale of cells and microchannels the Reynolds number is far below one, so viscosity dominates inertia, flow is laminar and reversible, and diffusion rather than stirring moves molecules."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_purcell_1977"
+   ~#say(at this scale water behaves like honey)
+  }
+  #>bioengineering_instrumentation_lung_chip
+  ^["lung_on_chip"]{
+   #:claim #!settled
+   statement: "Huh, Ingber, and colleagues built a silicone chip with lung epithelium and capillary endothelium on two sides of a porous membrane; breathing-like stretch raised nanoparticle uptake and inflammatory responses."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_huh_2010"
+   ^["limits"]{
+    holds: "the tissue interface and the forces the device reproduces"
+    fails: "a chip carries few cell types and no whole-body circulation or metabolism, so it complements rather than replaces animal and clinical studies"
+   }
+  }
+ }
+ ^["tissue_mechanics"]{
+  #>bioengineering_instrumentation_viscoelastic
+  ^["viscoelastic_models"]{
+   #:claim #!settled
+   statement: "A spring and dashpot in series, the Maxwell model, relaxes stress but creeps without limit; in parallel, the Kelvin-Voigt model, creeps to a limit but cannot relax stress; the standard linear solid does both."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_fung_1993"
+  }
+  #>bioengineering_instrumentation_tissue_creep
+  ^["tissue_creep"]{
+   #:claim #!settled
+   statement: "Cartilage, tendon, and artery wall creep under constant load and relax under constant stretch, so how stiff they seem depends on how fast they are loaded."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_fung_1993"
+  }
+ }
+ ^["hemodynamics"]{
+  #>bioengineering_instrumentation_womersley
+  ^["womersley_number"]{
+   #:claim #!settled
+   statement: "The Womersley number, vessel radius times the square root of angular frequency times density over viscosity, compares pulsatile inertia with viscous drag; when it is large, the velocity profile flattens."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_womersley_1955"
+   formula: "alpha = R * sqrt(omega * rho / mu)"
+  }
+  #>bioengineering_instrumentation_windkessel
+  ^["windkessel"]{
+   #:claim #!settled
+   statement: "Frank's two-element Windkessel treats the arteries as a compliance draining through a peripheral resistance, which explains how aortic pressure decays in diastole but not its shape in systole."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_westerhof_2009"
+   credit: "Otto Frank formalized the model in 1899; Stephen Hales had compared the arteries to the air chamber of a fire engine"
+   ^["limits"]{
+    holds: "as a lumped load on the heart"
+    fails: "wave travel and reflection need a third element, characteristic impedance, or a distributed model"
+   }
+  }
+  #>bioengineering_instrumentation_shear_levels
+  ^["shear_levels"]{
+   #:claim #!settled
+   statement: "Arterial-level wall shear stress keeps the endothelium quiet and atheroprotective, while low shear at the outer walls of branches favors an atherogenic phenotype where plaques gather."
+   reads: %[life.shear.atheroprotective_dyn_cm2_min, life.shear.atheroprone_dyn_cm2_max]
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_malek_1999"
+  }
+  #>bioengineering_instrumentation_pecam
+  ^["mechanosensory_complex"]{
+   #:claim #!settled
+   statement: "PECAM-1 transmits force, VE-cadherin acts as an adaptor, and VEGFR2 activates PI3K; together the three form a complex sufficient to make cells respond to flow."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_tzima_2005"
+   credit: "Ellie Tzima, Martin Schwartz, and colleagues"
+  }
+  #>bioengineering_instrumentation_pecam_disturbed
+  ^["disturbed_flow"]{
+   #:claim #!settled
+   statement: "Where flow is disturbed the complex drives inflammation: mice lacking PECAM-1 show less NF-kB activity, less VCAM-1, and smaller lesions in the inner curve of the aortic arch."
+   sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_tzima_2005", ~"../../registries/sources/life-and-mind.spw#src_life_harry_2008" ]
+   ^["limits"]{
+    holds: "mouse models, including mice also lacking apolipoprotein E"
+    fails: "in the abdominal aorta, PECAM-1 on blood cells rather than endothelium mattered more, so the role depends on site"
+   }
+  }
+  #>bioengineering_instrumentation_pecam_raw
+  ^["raw_claim"]{
+   #:claim #!refuted
+   statement: "The raw claim that disturbed flow fails to activate the PECAM-1 sensor is backwards: the sensor responds to flow, and in disturbed-flow regions it is required for inflammatory signaling."
+   sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_tzima_2005", ~"../../registries/sources/life-and-mind.spw#src_life_harry_2008" ]
+  }
+  =~"./instrumentation-and-biomechanics.spw#bioengineering_instrumentation_pecam_disturbed"[extends]{ ~"./instrumentation-and-biomechanics.spw#bioengineering_instrumentation_pecam" }
+  =~"./instrumentation-and-biomechanics.spw#bioengineering_instrumentation_pecam_raw"[contrasts]{ ~"./instrumentation-and-biomechanics.spw#bioengineering_instrumentation_pecam_disturbed" }
+ }
+}
+
+^["try"]{
+ #>bioengineering_instrumentation_try_unmixing
+ ^["unmixing_syrup"]{
+  materials: [
+   "light corn syrup",
+   "two clear cylindrical cups, one able to sit inside the other with a gap",
+   "food coloring and a dropper",
+   "a steady hand or a partner"
+  ]
+  steps: << "fill the gap between the cups with syrup" ; "place a few drops of color in the syrup" ; "turn the inner cup slowly three times" ; "turn it back slowly three times" ; "watch the smeared color gather back into drops" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "no hazard worth naming; syrup is sticky, so work over a tray"
+  shows: ~"./instrumentation-and-biomechanics.spw#bioengineering_instrumentation_low_re"
+  reads_as: "viscous flow at low Reynolds number is reversible, so undoing the motion undoes the mixing; with water the same trick fails"
+ }
+}
+
+#>bioengineering_instrumentation_flow_pattern_q
+?["How does one sensor tell steady flow from disturbed flow?"]{
+ #:depth #!physical ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "Endothelium may adapt to force that keeps one direction and strength but be triggered again by force that keeps reversing, so the time pattern, not the force alone, sets the response."
+ !probe{ "compare reports of NF-kB activity in cultured endothelium under steady, pulsatile, and reversing shear of equal mean magnitude" =id[p_life_bioeng_flow_pattern] =kind[lit] }
+ $%[life.shear.atheroprotective_dyn_cm2_min, life.shear.atheroprone_dyn_cm2_max]
+ ~"./instrumentation-and-biomechanics.spw#bioengineering_instrumentation_pecam_disturbed" ~#neighbor(nearest)
+}
+
+#>bioengineering_instrumentation_rc_q
+?["Is the arterial tree an RC circuit?"]{
+ #:depth #!mathematical ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Pressure behaves like voltage on a capacitor draining through a resistor, so diastolic pressure should fall exponentially with a time constant of resistance times compliance."
+ breaks: "real arteries carry reflected waves, stiffen as pressure rises, and taper, none of which one resistor and one capacitor capture"
+ !probe{ "fit an exponential to a published aortic diastolic pressure trace and compare its time constant with resistance times compliance" =id[p_life_bioeng_rc_decay] =kind[calc] }
+ ~"./instrumentation-and-biomechanics.spw#bioengineering_instrumentation_windkessel" ~#neighbor(nearest)
+}

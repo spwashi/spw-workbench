@@ -1,0 +1,179 @@
+# Film Stock and Bases
+#
+# Motion-picture film as a carrier: celluloid roll film, the 35 mm gauge, narrower amateur gauges, and the slow move from flammable nitrate to acetate safety film to polyester.
+
+#>media_carriers_film_stock
+#:layer #!reference
+#:domain #!media_carriers
+#:form #!timeline
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bonk
+#:era #!industrial
+
+^"emit"{
+ ~#title: "Film Stock and Bases"
+ ~#claim: "Film moved from nitrate, which burns, to triacetate, which turns to vinegar, to polyester, which is stable; Kodak moved camera and print stocks to triacetate between its 1948 announcement and the 1952 completion."
+ ~#proof: "Coe and Enticknap for the gauge history; the NFPF guide and Reilly for the bases and their decay; the Kodak film chronology for the safety-base dates, with Wikipedia cross-checks."
+ ~#door: "Read an old film edge for its base, then follow vinegar syndrome into the decay ledger."
+ ~#audience: "film students, archivists, and families holding old home movies"
+ continuity: "Film Stock and Bases | turns to vinegar"
+ cold_open: "Film began as a base that burns, moved to one that turns to vinegar, and settled on polyester that lasts."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/film-chemistry-and-camera-optics/photochemical-emulsion-chemistry.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "re-run after the 2026-10-03 fact-check fixes; no failing lines" }
+ }
+ corrections: #[
+  "the nitrate flash-point figure was dropped as unsourced; nitrate is described as highly flammable and self-oxidizing",
+  "the raw range of 1948 to present for triacetate safety film stands; the rung adds the 1952 completion of the changeover",
+  "fact-check 2026-10-03: an earlier revision moved the start to 1949 and called the raw 1948 an error; Kodak dates its 35 mm triacetate announcement to 1948, so 1948 is restored and the 1949 to 1951 steps are marked contested between sources",
+  "the cold-vault temperature and humidity figures were not carried; the decay ledger and IPI guidance hold storage advice",
+  "gauges, Goodwin, Ericson, and Fujifilm Single-8 were added to make the carrier history complete",
+  "fact-check 2026-10-03: the r4 fact-check receipt was dated 2026-10-01, before the receipts it followed; it is re-dated 2026-10-02, the day that pass ran"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"./emulsion-chemistry.spw#media_carriers_emulsion" ]
+ see: [ ~"../carrier-decay-and-fixity.spw#media_carriers_decay_vinegar", ~"../carrier-decay-and-fixity.spw#media_carriers_decay_nitrate" ]
+ grounds: [ ~"../../../registries/quantities/physical-sciences-and-image.spw#q_phys_carriers" ]
+}
+
+^["concepts"]{
+ primary: [ #carrier, #acid_hydrolysis, #format ]
+ transfers: [ #standards, #obsolescence ]
+ tensions: [ #permanence ]
+}
+
+^["ladder"]{
+ order: << "celluloid" ; "35 mm" ; "gauge agreement" ; "home gauges" ; "16 mm" ; "safety base" ; "polyester" ; "Super 8" ; "Super 16" >>
+
+ #>media_carriers_film_rung_celluloid
+ ^["celluloid_1887"]{
+  #:claim #!settled
+  statement: "Hannibal Goodwin applied in 1887 for a transparent, flexible nitrocellulose film base; Eastman began mass-producing celluloid roll film in 1889, and Goodwin's patent later prevailed in court."
+  sources: [ ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_coe_1981", ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_film_gauges" ]
+  era: 1887..1889
+ }
+ #>media_carriers_film_rung_35mm
+ ^["dickson_35mm"]{
+  #:claim #!settled
+  statement: "William Kennedy Laurie Dickson, working for Edison, cut Eastman stock into 35 mm strips with four perforations on each side of each frame."
+  sources: [ ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_enticknap_2005", ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_film_gauges" ]
+ }
+ #>media_carriers_film_rung_1909
+ ^["gauge_agreement_1909"]{
+  #:claim #!settled
+  statement: "In 1909 producers agreed on 35 mm with Edison perforations and a 4:3 frame, which is why four-perf 35 mm runs 16 frames per foot."
+  reads: %[phys.film.frames_per_ft_35mm]
+  sources: [ ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_film_gauges", ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_asc_manual_2013" ]
+ }
+ #>media_carriers_film_rung_home
+ ^["home_gauges"]{
+  #:claim #!settled
+  statement: "Narrow gauges opened filmmaking to homes and clubs: Pathe's 9.5 mm in France in 1922 and Kodak's 8 mm in 1932 used safety stock and reversal processing."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_coe_1981"
+ }
+ #>media_carriers_film_rung_16mm
+ ^["kodak_16mm_1923"]{
+  #:claim #!settled
+  statement: "Kodak launched 16 mm in 1923 for amateurs on acetate safety base and never sold it on nitrate; it runs 40 frames per foot."
+  reads: %[phys.film.frames_per_ft_16mm]
+  sources: [ ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_coe_1981", ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_film_gauges" ]
+ }
+ #>media_carriers_film_rung_safety
+ ^["triacetate_safety_base"]{
+  #:claim #!settled
+  statement: "Kodak announced a 35 mm cellulose triacetate safety base for motion pictures in 1948 and records its conversion from nitrate as complete in 1952."
+  sources: [ ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_kodak_chronology", ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_nfpf_2004" ]
+  era: 1948..1952
+  ^["dates"]{
+   #:claim #!contested
+   statement: "Tertiary accounts date the steps between differently: one has replacement beginning in 1949, another has Kodak ending nitrate roll films in 1950 and 35 mm nitrate motion-picture film in 1951."
+   sources: [ ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_film_gauges", ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_nitrocellulose" ]
+   counter: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_kodak_chronology"
+  }
+ }
+ #>media_carriers_film_rung_polyester
+ ^["polyester"]{
+  #:claim #!settled
+  statement: "Polyester bases resist hydrolysis far better than acetate; they spread to intermediates and, from the early 1990s, to release prints."
+  sources: [ ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_nfpf_2004", ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_film_gauges" ]
+ }
+ #>media_carriers_film_rung_super8
+ ^["super8_1965"]{
+  #:claim #!settled
+  statement: "Kodak released Super 8 in 1965 in a drop-in cartridge; Fujifilm in Japan released the rival Single-8 the same year on a thinner polyester base."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_film_gauges"
+ }
+ #>media_carriers_film_rung_super16
+ ^["super16_1969"]{
+  #:claim #!settled
+  statement: "Swedish cinematographer Rune Ericson devised Super 16 in 1969 by using single-perforation stock and widening the frame into the soundtrack area."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_film_gauges"
+  matrix: ~"../../../physical/optics/cine-lenses-and-formats.spw#optics_cine_super16"
+ }
+}
+
+^["bases"]{
+ #>media_carriers_film_base_nitrate
+ ^["nitrate"]{
+  #:claim #!settled
+  statement: "Nitrate film is highly flammable and carries its own oxidizer, so a burning roll cannot be smothered; decaying nitrate gives off gases that speed its own decay."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_nfpf_2004"
+  ~#say(nitrate burns even without air)
+ }
+ #>media_carriers_film_base_acetate
+ ^["acetate"]{
+  #:claim #!settled
+  statement: "Acetate film hydrolyzes and releases acetic acid, which catalyzes more decay; shrinkage, curl, and the smell of vinegar mark vinegar syndrome."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_reilly_1993"
+  decay: ~"../carrier-decay-and-fixity.spw#media_carriers_decay_vinegar"
+ }
+ #>media_carriers_film_safety_base
+ ^["edge_print"]{
+  #:claim #!settled
+  statement: "Manufacturers printed words such as SAFETY or NITRATE along film edges, so the base of an old strip can often be read from its margin."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_nfpf_2004"
+ }
+}
+
+^["try"]{
+ #>media_carriers_film_try_edge
+ ^["read_a_film_edge"]{
+  materials: [ "an old film strip or home-movie reel", "a magnifier or phone camera", "cotton gloves" ]
+  steps: << "wear gloves and unwind a short length over a clean table" ; "look along the edge for SAFETY or NITRATE" ; "count perforations beside one frame" ; "note any vinegar smell" ; "write down gauge, base, and condition" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "if the edge says NITRATE or the film is sticky or powdery, stop, keep it away from heat and flame, and contact a film archive"
+  shows: ~"./film-stock-and-bases.spw#media_carriers_film_safety_base"
+ }
+}
+
+#>media_carriers_film_gauge_access_q
+?["Did each narrower gauge widen who could make films?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Each cheaper gauge should show up in archives as a wider spread of makers, including families, clubs, and community filmmakers who left no studio records."
+ !probe{ "sample home and amateur film archives by gauge and decade and record who made each film" =id[p_phys_film_gauge_access] =kind[census] }
+ $%[phys.film.frames_per_ft_35mm, phys.film.frames_per_ft_16mm]
+ breaks: "price is only one gate; leisure time, processing access, and projectors also decided who filmed"
+ ~"./film-stock-and-bases.spw#media_carriers_film_rung_home" ~#neighbor(nearest)
+}

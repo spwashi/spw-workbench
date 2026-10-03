@@ -1,0 +1,167 @@
+# Neuroscience
+#
+# Ion channels, sensory circuits, and neural computation, with three popular overclaims about the brain moved to the errata and kept here only with their counter-sources.
+
+#>neuroscience_index
+#:layer #!reference
+#:domain #!neuroscience
+#:form #!index
+#:level #!advanced
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Neuroscience"
+ ~#claim: "Neuroscience runs from ion channels to circuits to population codes, and its most quoted popular claims about energy, split brains, and new neurons are less settled than they sound."
+ ~#proof: "Leaves cite Hodgkin and Huxley, Hubel and Wiesel, and the replay and grid-cell work; the stance cites Raichle, Pinto, Sorrells, and Boldrini."
+ ~#door: "Start with cellular neurobiology, then systems and sensory circuits, then cognitive and computational neuroscience."
+ ~#audience: "advanced students and readers who already know what a neuron is"
+ continuity: "Neuroscience | less settled than they sound"
+ cold_open: "Neuroscience runs from channels to circuits to codes, and its favorite popular claims are less settled than they sound."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/neuroscience/taste.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #fail }
+  ^["r4"]{ event: #sourced, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ receipt_note: "r3 was first written as a pass while every source link pointed at a registry not yet written; r4 wrote and checked that registry, and r5 is the passing run after it"
+ corrections: #[
+  "split-brain surgery is no longer said to create two independent conscious streams; perception splits, and whether awareness does is contested (raw line 38)",
+  "adult neurogenesis until the final breath is now a contest between 2018 and 2019 studies with opposite results (raw line 24)",
+  "the raw claim that resting activity uses over 80 percent of brain energy had no source; the sourced share is the whole brain against the whole body, and intrinsic activity is described as the largest part (raw line 30)",
+  "the raw claim that over 99 percent of neurons are silent each millisecond is replaced by Lennie's energy-budget estimate and its limits (raw index line 44)",
+  "the 86 billion neuron count is kept and sourced to Azevedo and colleagues; the tenfold glia figure it is often quoted with is refuted by the same count",
+  "2026-10-03: the facet row gives cellular neurobiology the state_machine form its leaf declares; the Pinto, Lennie, and Attwell and Laughlin abstracts were reread against the stance claims"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/life-and-mind.spw#q_life_brain" ]
+ see: [ ~"../../provenance/errata-life-and-mind.spw#provenance_errata_cells_neuro", ~"../../language-and-mind/cognition/index.spw#cognition_index" ]
+}
+
+^["concepts"]{
+ primary: [ #action_potential, #receptive_field, #population_code ]
+ transfers: [ #energy_budget, #state_machine ]
+ tensions: [ #unity_of_consciousness ]
+}
+
+^["tree"]{
+ cellular: ~"./cellular-neurobiology.spw"
+ systems: ~"./systems-and-sensory-circuits.spw"
+ computational: ~"./cognitive-and-computational.spw"
+}
+
+^["bundle"]{
+ ={ ~"./cellular-neurobiology.spw#neuroscience_cellular" }
+ ={ ~"./systems-and-sensory-circuits.spw#neuroscience_systems" }
+ ={ ~"./cognitive-and-computational.spw#neuroscience_computational" }
+}
+
+^["ladder"]{
+ rungs: << "advanced: cellular neurobiology" ; "advanced: systems and sensory circuits" ; "graduate: cognitive and computational neuroscience" >>
+ ^["prerequisites"]{
+  channel_before_circuit: "receptive fields are built from spikes and synapses, so cellular neurobiology comes first"
+  circuit_before_code: "population codes and attractors read activity across mapped circuits, so systems come before computation"
+  cells_before_neurons: "synaptic vesicle fusion is a cell biology mechanism with its single home in transport and signaling"
+ }
+}
+
+^["facets"]{
+ order: "leaves by matter, then form, then level"
+ rows: #[
+  .{ leaf: "cellular-neurobiology", matter: "channels, action potentials, synapses, LTP", form: "state_machine", level: "advanced" },
+  .{ leaf: "systems-and-sensory-circuits", matter: "receptors, pathways, cortical maps", form: "comparison", level: "advanced" },
+  .{ leaf: "cognitive-and-computational", matter: "population codes, attractors, replay", form: "ledger", level: "graduate" }
+ ]
+}
+
+^["stance"]{
+ #>neuroscience_index_neuron_doctrine
+ ^["neuron_doctrine"]{
+  #:claim #!settled
+  statement: "Ramon y Cajal argued from Golgi-stained tissue that the nervous system is built of separate cells that contact one another, the neuron doctrine; Cajal and Golgi shared the 1906 Nobel Prize."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_shepherd_1991"
+  ~#(DeFelipe took a book title from the Cajal phrase butterflies of the soul)
+  reading: ~"../../registries/sources/life-and-mind.spw#src_life_defelipe_2010"
+ }
+ #>neuroscience_index_count
+ ^["neuron_count"]{
+  #:claim #!settled
+  statement: "An adult human brain holds about 86 billion neurons and a similar number of other cells, so the quoted tenfold excess of glia does not hold."
+  reads: %[life.brain.neurons_e9, life.brain.nonneuronal_e9]
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_azevedo_2009"
+ }
+ #>neuroscience_index_energy
+ ^["energy_budget"]{
+  #:claim #!settled
+  statement: "The adult brain is about 2 percent of body weight but uses about 20 percent of the body's oxygen and calories, and ongoing intrinsic activity likely takes more of it than task-evoked changes."
+  reads: %[life.brain.mass_share_pct, life.brain.energy_share_pct]
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_raichle_gusnard_2002", ~"../../registries/sources/life-and-mind.spw#src_life_raichle_mintun_2006" ]
+ }
+ #>neuroscience_index_sparse
+ ^["sparse_activity"]{
+  #:claim #!settled
+  statement: "Energy budgets limit how many neurons can fire hard at once; Lennie estimated possibly fewer than 1 percent of human cortical neurons, and Attwell and Laughlin favored codes with at most 15 percent active."
+  reads: %[life.brain.active_neurons_pct_max, life.brain.ap_energy_share_pct]
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_lennie_2003", ~"../../registries/sources/life-and-mind.spw#src_life_attwell_laughlin_2001" ]
+  ^["limits"]{
+   holds: "as an upper bound derived from energy cost per spike"
+   fails: "it is an estimate from a budget, not a count of silent neurons at any moment"
+  }
+ }
+ #>neuroscience_index_split_brain
+ ^["split_brain"]{
+  #:claim #!contested
+  statement: "Cutting the corpus callosum splits visual perception between hemispheres; whether it splits awareness into two agents is disputed, since two patients reported stimuli across the whole field."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_gazzaniga_1962"
+  counter: ~"../../registries/sources/life-and-mind.spw#src_life_pinto_2017"
+ }
+ #>neuroscience_index_neurogenesis
+ ^["adult_neurogenesis"]{
+  #:claim #!contested
+  statement: "Whether new neurons keep forming in the adult human hippocampus is unresolved; postmortem studies with different tissue handling and markers reached opposite answers."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_boldrini_2018", ~"../../registries/sources/life-and-mind.spw#src_life_moreno_jimenez_2019" ]
+  counter: ~"../../registries/sources/life-and-mind.spw#src_life_sorrells_2018"
+ }
+ #>neuroscience_index_hard_problem
+ ^["hard_problem"]{
+  #:claim #!interpretive
+  statement: "Chalmers argued that explaining every function of the brain would still leave open why any of it is felt; this branch treats that as a live philosophical question, not a finding."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_chalmers_1995"
+ }
+}
+
+^["gaps"]{
+ predicted: #[
+  "glia as active partners, expected beside cellular neurobiology",
+  "developmental neuroscience, expected beside the sensitive-periods leaf in development and ecology",
+  "neurology and psychiatry as clinical fields, deliberately absent; this branch is not clinical reference"
+ ]
+}
+
+^["doors"]{
+ student: "cellular neurobiology, then systems and sensory circuits"
+ modeler: "cognitive and computational, after the channel state machine"
+ skeptic: "the stance frame above, then the errata surface"
+}
+
+#>neuroscience_index_watts_q
+?["How many watts does a resting brain draw?"]{
+ #:depth #!mathematical ~#lens(energy budget)
+ #:claim #!speculative
+ ~#hypothesis: "Multiplying the brain share by a resting whole-body metabolic rate gives a power near that of a dim light bulb, below the draw of hardware used for comparable perception tasks."
+ !probe{ "take a sourced adult resting metabolic rate in watts, multiply by the brain share, and compare with a cited GPU power draw" =id[p_life_neuro_watts] =kind[calc] }
+ $%[life.brain.energy_share_pct, life.brain.mass_share_pct]
+ ~"./index.spw#neuroscience_index_energy" ~#neighbor(nearest)
+}

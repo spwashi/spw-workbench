@@ -1,0 +1,159 @@
+# Quantities: Spw Contraptions
+#
+# World cells the contraptions bench reads: base dimensions, symmetry group counts, derived rates with their derivations, and a few counts from number theory and automata.
+
+#>registry_qty_spw_contraptions
+#:layer #!reference
+#:domain #!registry
+#:form #!registry
+#:level #!mixed
+#:review #!sourced
+#:valence #!bone
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #partial }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ status_legend: "settled cells were read from the linked source or follow from a stated exact derivation; verify cells hold a reported value no one on this bench has read in its source yet"
+ derivations: "a cell with a derivation field states how its value follows from definitions; the derivation checker contraption reads these fields, and no gate evaluates them yet"
+ review_note: "every cell links a source; the 2x2 game count now carries its derivation and is settled"
+ corrections: #[
+  "the strict ordinal 2x2 game count was a verify cell; it follows exactly from four-factorial squared over four, since swapping either player strategies fixes no strict game, so it is settled"
+ ]
+ added: "on 2026-10-03 four cells were added: the Beaufort metres-per-second shared edges, the prime count below one hundred, the Collatz run from 27, and the Alhambra plane-group count Grunbaum reports, which is contested"
+ folded: "the plan named topic registries for dimensions and symmetries; their cells live here under q_lab_dim and q_lab_sym, and registries/symmetries.spw holds the symmetry rows"
+}
+
+^["families"]{
+ ^["shared"]{ operator: "%", plane: world, scope: corpus, scheme: tol, form: scalar }
+ ^["lookup"]{ algorithm: world.registry_lookup }
+ ^["dim"]{ id: contrap_dim, identifier: contrap.dim }
+ ^["sym"]{ id: contrap_sym, identifier: contrap.sym }
+ ^["rate"]{ id: contrap_rate, identifier: contrap.rate }
+ ^["num"]{ id: contrap_num, identifier: contrap.num }
+ ^["games"]{ id: contrap_games, identifier: contrap.games }
+ ^["band"]{ id: contrap_band, identifier: contrap.band }
+}
+
+^["keys"]{
+ dim: #[ si_base_count, knot_m_per_s ]
+ sym: #[ point_groups_3d, space_groups_3d, bravais_3d, plane_groups, frieze_groups, alhambra_plane_groups_n ]
+ rate: #[ ntsc_fps, df_labels_per_hour, gregorian_leaps_per_400y, mired_at_3200k ]
+ num: #[ collatz_verified_log2, eca_rule_count, primes_below_100, collatz_27_steps ]
+ games: #[ strict_ordinal_2x2_count ]
+ band: #[ beaufort_force_count, beaufort_mps_shared_n ]
+}
+
+#>q_lab_dim
+^"dimensions"{
+ ^["base_symbols"]{
+  symbols: #[ L, M, T, I, Theta, N, J ]
+  names: "length, mass, time, electric current, thermodynamic temperature, amount of substance, luminous intensity"
+ }
+ %contrap.dim.si_base_count{
+  value: 7, unit: "base quantities", abs: 0
+  at: "SI base quantities, 9th edition", src: ~"../sources/physical-sciences-and-image.spw#src_phys_bipm_si_2019", status: #settled
+ }
+ %contrap.dim.knot_m_per_s{
+  value: 0.514444, unit: "m/s", rel: 0.000001, derivation: "1852/3600"
+  at: "one knot: one international nautical mile of 1852 m per hour", src: ~"../sources/spw-contraptions.spw#src_contrap_nist_sp811_2008", status: #settled
+ }
+}
+
+#>q_lab_sym
+^"symmetry_counts"{
+ %contrap.sym.point_groups_3d{
+  value: 32, unit: "groups", abs: 0
+  at: "crystallographic point groups in three dimensions", src: ~"../sources/materials-and-engineering.spw#src_mateng_itc_vol_a_2016", status: #settled
+ }
+ %contrap.sym.space_groups_3d{
+  value: 230, unit: "groups", abs: 0
+  at: "space group types in three dimensions, counting enantiomorphic pairs separately", src: ~"../sources/materials-and-engineering.spw#src_mateng_itc_vol_a_2016", status: #settled
+ }
+ %contrap.sym.bravais_3d{
+  value: 14, unit: "lattice types", abs: 0
+  at: "Bravais lattice types in three dimensions", src: ~"../sources/materials-and-engineering.spw#src_mateng_itc_vol_a_2016", status: #settled
+ }
+ %contrap.sym.plane_groups{
+  value: 17, unit: "groups", abs: 0
+  at: "plane groups, also called wallpaper groups", src: ~"../sources/materials-and-engineering.spw#src_mateng_itc_vol_a_2016", status: #settled
+ }
+ %contrap.sym.frieze_groups{
+  value: 7, unit: "groups", abs: 0
+  at: "frieze groups, one-direction periodic patterns in the plane", src: ~"../sources/spw-contraptions.spw#src_contrap_itc_vol_e_2010", status: #settled
+ }
+ %contrap.sym.alhambra_plane_groups_n{
+  value: 13, unit: "plane groups", abs: 0
+  at: "plane groups Grunbaum found in the Alhambra in 1983: the twelve Mueller listed and one more; others claim all seventeen", src: ~"../sources/spw-contraptions.spw#src_contrap_grunbaum_2006", status: #contested
+ }
+}
+
+#>q_contrap_rate
+^"rates"{
+ %contrap.rate.ntsc_fps{
+  value: 29.97003, unit: "frames/s", rel: 0.000001, derivation: "30000/1001"
+  at: "NTSC-derived video frame rate", src: ~"../sources/spw-contraptions.spw#src_contrap_smpte_12_1_2014", status: #settled
+ }
+ %contrap.rate.df_labels_per_hour{
+  value: 108, unit: "frame labels per hour", abs: 0, derivation: "2 x (60 - 6)"
+  at: "drop-frame timecode skips labels 00 and 01 each minute except minutes divisible by ten", src: ~"../sources/spw-contraptions.spw#src_contrap_smpte_12_1_2014", status: #settled
+ }
+ %contrap.rate.gregorian_leaps_per_400y{
+  value: 97, unit: "leap years", abs: 0, derivation: "100 - 3"
+  at: "Gregorian rule: every fourth year, except centuries not divisible by 400", src: ~"../sources/spw-contraptions.spw#src_contrap_richards_1998", status: #settled
+ }
+ %contrap.rate.mired_at_3200k{
+  value: 312.5, unit: "mired", abs: 0.05, derivation: "1000000/3200"
+  at: "micro reciprocal degree of a 3200 K tungsten source", src: ~"../sources/spw-contraptions.spw#src_contrap_priest_1933", status: #settled
+ }
+}
+
+#>q_contrap_num
+^"numbers"{
+ %contrap.num.collatz_verified_log2{
+  value: 71, unit: "log2 of the verified bound", abs: 0
+  at: "every start below 2 to the 71 reaches 1, reported 2025", src: ~"../sources/spw-contraptions.spw#src_contrap_barina_2025", status: #settled
+ }
+ %contrap.num.eca_rule_count{
+  value: 256, unit: "rules", abs: 0, derivation: "2^8"
+  at: "elementary cellular automata: two states, radius one", src: ~"../sources/spw-contraptions.spw#src_contrap_wolfram_1983", status: #settled
+ }
+ %contrap.num.primes_below_100{
+  value: 25, unit: "primes", abs: 0, derivation: "sieve 2 to 99, striking multiples of 2, 3, 5, and 7"
+  at: "primes less than one hundred", src: ~"../sources/spw-contraptions.spw#src_contrap_hardy_wright_2008", status: #settled
+ }
+ %contrap.num.collatz_27_steps{
+  value: 111, unit: "steps", abs: 0, derivation: "iterate n to n/2 when even and to 3n + 1 when odd, from 27 until 1"
+  at: "the run from 27, whose largest value is 9232", src: ~"../sources/spw-contraptions.spw#src_contrap_lagarias_1985", status: #settled
+ }
+}
+
+#>q_contrap_games
+^"games"{
+ %contrap.games.strict_ordinal_2x2_count{
+  value: 144, unit: "games", abs: 0, derivation: "(4! x 4!) / 4"
+  value_note: "the derivation is exact; the table itself was not re-read on this bench"
+  at: "strict ordinal 2x2 games in the Robinson-Goforth table", src: ~"../sources/spw-contraptions.spw#src_contrap_robinson_goforth_2005", status: #settled
+ }
+}
+
+#>q_contrap_band
+^"bands"{
+ %contrap.band.beaufort_force_count{
+  value: 13, unit: "forces", abs: 0
+  at: "Beaufort forces 0 to 12 in the Met Office table", src: ~"../sources/spw-contraptions.spw#src_contrap_metoffice_beaufort", status: #settled
+ }
+ %contrap.band.beaufort_mps_shared_n{
+  value: 5, unit: "whole m/s readings listed under two forces", abs: 0
+  at: "Met Office limits in m/s, read 2026-10-03: 2, 11, 14, 17, and 21 each close one band and open the next", src: ~"../sources/spw-contraptions.spw#src_contrap_metoffice_beaufort", status: #settled
+ }
+}

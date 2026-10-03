@@ -1,0 +1,354 @@
+# Harm Register
+#
+# Pointers to raw lines whose errors could hurt a reader who acted on them: the harm class, the raw path and line, who could be hurt, and the source that corrects it, without repeating the harmful content.
+
+#>provenance_harm_register
+#:layer #!reference
+#:domain #!provenance
+#:form #!ledger
+#:level #!practitioner
+#:review #!sourced
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Harm Register"
+ ~#claim: "Twenty-two pointers cover twenty-five raw lines in health, nursing, and community files that could hurt a reader who acted on them; each is pointed at, never repeated."
+ ~#proof: "Each pointer names the guideline, trial, or review that corrects it, with its body and year."
+ ~#door: "Read the scope frame first, then follow a pointer to its correcting source, not to the raw line."
+ ~#audience: "reviewers, educators, and anyone deciding whether a raw health line can be trusted"
+ continuity: "Harm Register | pointed at"
+ cold_open: "Raw health lines that could hurt someone are pointed at here and never repeated, each beside the source that corrects it."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/physiological-development/common-deficiencies.spw", ".spw/caches/physiological-development/nutritional-support-strategies.spw", ".spw/caches/physiological-development/taste.spw", ".spw/caches/physiological-development/circadian-and-metabolic-resilience.spw", ".spw/caches/physiological-development/developmental-stages.spw", ".spw/caches/university-education/nursing/pathophysiology-and-pharmacology-in-nursing.spw", ".spw/caches/university-education/nursing/critical-care-and-evidence-based-informatics.spw", ".spw/caches/university-education/nursing/ethical-care-and-therapeutic-presence.spw", ".spw/caches/community-roles/care-and-health-stewards.spw", ".spw/caches/community-roles/ecological-and-spatial-stewards.spw", ".spw/caches/community-roles/intergenerational-and-cultural-custodians.spw" ]
+ method: #pointer_only
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "four correcting guidelines had newer editions; pointers re-sourced and the unread 2026 sepsis text marked verify"
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ checked: "each raw line was located at its path and line on 2026-10-02 and described here without its dose, diet, protocol, or remediation content"
+ currency: "correcting guidelines were checked for newer editions on 2026-10-02; a replaced edition stays named as the one read, beside its successor"
+}
+
+^["scope"]{
+ frame: "educational reference about errors in generated text; not clinical, nutritional, or environmental advice"
+ rule: "a pointer names the harm class, the raw line, who could be hurt, and the correcting source; it never restates the harmful content"
+ quarantine: "the shelf index quarantines nine of these raw files; none of them is a source for any claim in this cut"
+ care: "anyone weighing a health decision should talk with a qualified clinician; this register does not replace that conversation"
+ quarantine_count: %[prov.raw.quarantine_file_count]
+}
+
+^["edges"]{
+ grounds: [ ~"./review-scorecard.spw#provenance_scorecard" ]
+ see: [ ~"../living/nursing/guideline-currency-ledger.spw#nursing_guideline_ledger" ]
+}
+
+^["concepts"]{
+ primary: [ #guideline_drift, #correction ]
+ transfers: [ #provenance ]
+ tensions: [ #overclaim ]
+}
+
+^["classes"]{
+ guideline_contradiction: "the raw line contradicts a current population recommendation"
+ guideline_superseded: "the raw line describes practice a newer guideline replaced"
+ contraindication_omitted: "the raw line names an intervention without its principal contraindications or interactions"
+ teratogen_omitted: "the raw line omits a pregnancy warning"
+ infection_risk: "the raw line recommends something with a known infection risk and no warning"
+ risk_recast: "the raw line recasts a treatable risk factor as harmless or adaptive"
+ child_manipulation: "the raw line invites changing a child's development"
+ misinformation: "the raw line states a false mechanism that could change behavior"
+ undertreatment: "the raw line could be read as withholding relief"
+ stereotype: "the raw line describes a group by stereotype"
+ protocol_wording: "a line in the cut, not the raw shelf, whose wording sits close to a clinical step"
+}
+
+^["physiology"]{
+ #>provenance_harm_folate
+ ^["folate_steering"]{
+  #:claim #!refuted
+  at: ".spw/caches/physiological-development/common-deficiencies.spw:47"
+  harm: #guideline_contradiction
+  statement: "The raw line steers a common genetic subgroup away from the population recommendation for preventing neural tube defects."
+  who: "people who could become pregnant, and their future children"
+  source: ~"../registries/sources/provenance-and-reference.spw#src_prov_uspstf_2023"
+ }
+ #>provenance_harm_anticoagulant
+ ^["interaction_rule"]{
+  #:claim #!refuted
+  at: ".spw/caches/physiological-development/common-deficiencies.spw:80"
+  harm: #contraindication_omitted
+  statement: "The raw line presents a nutrient pairing as a safety rule and omits a well-documented interaction with an anticoagulant class."
+  who: "people taking vitamin K antagonist anticoagulants"
+  source: ~"../registries/sources/provenance-and-reference.spw#src_prov_holbrook_2005"
+ }
+ #>provenance_harm_ratio
+ ^["invented_target"]{
+  #:claim #!refuted
+  at: ".spw/caches/physiological-development/common-deficiencies.spw:82"
+  harm: #misinformation
+  statement: "The raw line states a fixed blood ratio between two minerals as a target that no reference intake report sets."
+  who: "readers adjusting their own intake to hit the stated ratio"
+  source: ~"../registries/sources/provenance-and-reference.spw#src_prov_iom_2001"
+ }
+ #>provenance_harm_pregnancy
+ ^["pregnancy_warning"]{
+  #:claim #!refuted
+  at: ".spw/caches/physiological-development/nutritional-support-strategies.spw:45"
+  harm: #teratogen_omitted
+  statement: "The raw line recommends a food very high in preformed vitamin A with no warning about high intake in pregnancy."
+  who: "pregnant readers and people who could become pregnant"
+  sources: [ ~"../registries/sources/provenance-and-reference.spw#src_prov_rothman_1995", ~"../registries/sources/provenance-and-reference.spw#src_prov_iom_2001" ]
+ }
+ #>provenance_harm_unpasteurized
+ ^["unpasteurized"]{
+  #:claim #!refuted
+  at: ".spw/caches/physiological-development/nutritional-support-strategies.spw:29"
+  harm: #infection_risk
+  statement: "The raw line recommends daily unpasteurized foods with no mention of outbreak risk."
+  who: "pregnant people, young children, older adults, and people with weakened immunity"
+  source: ~"../registries/sources/provenance-and-reference.spw#src_prov_langer_2012"
+ }
+ #>provenance_harm_whole_food_rule
+ ^["whole_food_rule"]{
+  #:claim #!refuted
+  at: ".spw/caches/physiological-development/nutritional-support-strategies.spw:72"
+  harm: #guideline_contradiction
+  statement: "The raw invariant ranks unfortified foods above every isolated nutrient, which conflicts with the population recommendation for pregnancy planning."
+  who: "people who could become pregnant"
+  source: ~"../registries/sources/provenance-and-reference.spw#src_prov_uspstf_2023"
+ }
+ #>provenance_harm_risk_recast
+ ^["risk_factors_recast"]{
+  #:claim #!refuted
+  at: ".spw/caches/physiological-development/taste.spw:27"
+  harm: #risk_recast
+  statement: "Lines 27 and 28 recast high cholesterol and high blood pressure as adaptive responses rather than treatable cardiovascular risk factors."
+  who: "readers with those conditions who might delay or stop care"
+  sources: [ ~"../registries/sources/provenance-and-reference.spw#src_prov_jones_2025", ~"../registries/sources/provenance-and-reference.spw#src_prov_blumenthal_2026" ]
+  superseded_sources: [ ~"../registries/sources/provenance-and-reference.spw#src_prov_whelton_2018", ~"../registries/sources/provenance-and-reference.spw#src_prov_grundy_2019" ]
+  as_of: "2026-10-02"
+ }
+ #>provenance_harm_puberty
+ ^["puberty_timing"]{
+  #:claim #!refuted
+  at: ".spw/caches/physiological-development/developmental-stages.spw:81"
+  harm: #child_manipulation
+  statement: "The raw hypothesis invites delaying puberty through diet, and its bone claim runs backwards: later puberty predicts lower young-adult bone mass."
+  who: "children and adolescents, and the adults feeding them"
+  source: ~"../registries/sources/provenance-and-reference.spw#src_prov_gilsanz_2011"
+ }
+ #>provenance_harm_hydration
+ ^["hydration"]{
+  #:claim #!refuted
+  at: ".spw/caches/physiological-development/circadian-and-metabolic-resilience.spw:55"
+  harm: #misinformation
+  statement: "The raw line says plain water fails to hydrate; a controlled comparison found water hydrates, with some drinks retained somewhat longer."
+  who: "general readers, and older adults during heat"
+  source: ~"../registries/sources/provenance-and-reference.spw#src_prov_maughan_2016"
+ }
+ #>provenance_harm_light_wording
+ ^["light_wording"]{
+  #:claim #!interpretive
+  at: ".spw/caches/physiological-development/circadian-and-metabolic-resilience.spw:62"
+  harm: #misinformation
+  statement: "Lines 17 and 62 can be read as advice to look toward the sun; the successor surface describes light exposure without that wording."
+  who: "any reader, through eye injury"
+  corrected_in: ~"../living/development-and-ecology/biological-clocks.spw#development_ecology_clocks"
+ }
+}
+
+^["nursing"]{
+ #>provenance_harm_vancomycin
+ ^["drug_monitoring"]{
+  #:claim #!superseded
+  at: ".spw/caches/university-education/nursing/pathophysiology-and-pharmacology-in-nursing.spw:20"
+  harm: #guideline_superseded
+  statement: "The raw line describes trough-based monitoring as preventing kidney injury; the 2020 consensus guideline moved serious infections to exposure-based monitoring."
+  who: "patients on that antibiotic, and students learning its monitoring"
+  source: ~"../registries/sources/provenance-and-reference.spw#src_prov_rybak_2020"
+  corrected_in: ~"../living/nursing/pathophysiology-and-pharmacology.spw#nursing_pathophysiology"
+ }
+ #>provenance_harm_nitrate
+ ^["chest_pain_contraindications"]{
+  #:claim #!refuted
+  at: ".spw/caches/university-education/nursing/pathophysiology-and-pharmacology-in-nursing.spw:26"
+  harm: #contraindication_omitted
+  statement: "The raw line lists one contraindication for a nitrate, omits low blood pressure and right ventricular infarction, and calls prescriber orders nursing interventions."
+  who: "patients with acute coronary syndromes"
+  source: ~"../registries/sources/provenance-and-reference.spw#src_prov_rao_2025"
+  read_edition: ~"../registries/sources/provenance-and-reference.spw#src_prov_ogara_2013"
+  currency: "the 2025 acute coronary syndromes guideline replaced the 2013 STEMI guideline; the contraindications named here were read in the 2013 edition"
+  as_of: "2026-10-02"
+  corrected_in: ~"../living/nursing/pathophysiology-and-pharmacology.spw#nursing_pathophysiology"
+ }
+ #>provenance_harm_af
+ ^["rate_control_caveats"]{
+  #:claim #!refuted
+  at: ".spw/caches/university-education/nursing/pathophysiology-and-pharmacology-in-nursing.spw:27"
+  harm: #contraindication_omitted
+  statement: "The raw line names rate-control drugs for rapid atrial fibrillation without the pre-excitation, instability, and reduced ejection fraction cautions in the guideline."
+  who: "patients with atrial fibrillation"
+  source: ~"../registries/sources/provenance-and-reference.spw#src_prov_joglar_2024"
+ }
+ #>provenance_harm_sepsis_fluids
+ ^["sepsis_fluids"]{
+  #:claim #!superseded
+  at: ".spw/caches/university-education/nursing/pathophysiology-and-pharmacology-in-nursing.spw:30"
+  harm: #guideline_superseded
+  statement: "The raw line presents a fixed weight-based fluid bolus as a required step once either of two bundle triggers is met, without the 2021 guideline's weak grading or its call to reassess volume."
+  who: "patients with sepsis, especially those with heart or kidney failure"
+  fixed: "an earlier wording called the raw line unconditional; it does name its triggers, and what it drops is the grading and the reassessment"
+  sources: [ ~"../registries/sources/provenance-and-reference.spw#src_prov_evans_2021", ~"../registries/sources/provenance-and-reference.spw#src_prov_prescott_2026" ]
+  verify: "the 2026 adult guideline replaced the 2021 edition; its fluid recommendation was not read, so this register does not describe current guidance"
+  as_of: "2026-10-02"
+ }
+ #>provenance_harm_dka
+ ^["dka_protocol"]{
+  #:claim #!superseded
+  at: ".spw/caches/university-education/nursing/pathophysiology-and-pharmacology-in-nursing.spw:31"
+  harm: #guideline_superseded
+  statement: "The raw line follows the 2009 adult consensus, misstates the reason for adding dextrose, and gives no pediatric caveat; a 2024 adult consensus replaced it, and pediatric DKA has its own ISPAD 2022 guideline."
+  who: "adults and children in diabetic ketoacidosis"
+  sources: [ ~"../registries/sources/provenance-and-reference.spw#src_prov_umpierrez_2024", ~"../registries/sources/plants-ecology-care.spw#src_eco_glaser_2022" ]
+  read_edition: ~"../registries/sources/plants-ecology-care.spw#src_eco_kitabchi_2009"
+  currency: "PubMed showed no ISPAD DKA chapter newer than 2022 on 2026-10-03"
+  as_of: "2026-10-03"
+ }
+ #>provenance_harm_cvp
+ ^["cvp_responsiveness"]{
+  #:claim #!refuted
+  at: ".spw/caches/university-education/nursing/critical-care-and-evidence-based-informatics.spw:17"
+  harm: #guideline_superseded
+  statement: "The raw line uses central venous pressure to judge fluid responsiveness, which a systematic review found it does not predict."
+  who: "critically ill patients"
+  sources: [ ~"../registries/sources/provenance-and-reference.spw#src_prov_marik_2008", ~"../registries/sources/provenance-and-reference.spw#src_prov_prescott_2026" ]
+  read_edition: ~"../registries/sources/provenance-and-reference.spw#src_prov_evans_2021"
+  verify: "the refutation rests on the systematic review; what the 2026 guideline says on fluid responsiveness was not read"
+  corrected_in: ~"../living/nursing/critical-care.spw#nursing_critical_care"
+ }
+ #>provenance_harm_oral_care
+ ^["oral_care"]{
+  #:claim #!superseded
+  at: ".spw/caches/university-education/nursing/critical-care-and-evidence-based-informatics.spw:32"
+  harm: #guideline_superseded
+  statement: "The raw line presents an antiseptic oral-care practice as a current protocol; the 2022 compendium generally does not recommend it."
+  who: "ventilated patients"
+  source: ~"../registries/sources/provenance-and-reference.spw#src_prov_klompas_2022"
+ }
+ #>provenance_harm_dyspnea
+ ^["terminal_dyspnea"]{
+  #:claim #!refuted
+  at: ".spw/caches/university-education/nursing/ethical-care-and-therapeutic-presence.spw:39"
+  harm: #undertreatment
+  statement: "The raw line can be read as calm presence replacing medication at ventilator withdrawal; dyspnea guidance treats breathlessness with both."
+  who: "dying patients and their families"
+  source: ~"../registries/sources/provenance-and-reference.spw#src_prov_parshall_2012"
+  corrected_in: ~"../living/nursing/ethics-and-presence.spw#nursing_ethics"
+ }
+}
+
+^["community"]{
+ #>provenance_harm_lead
+ ^["lead_and_produce"]{
+  #:claim #!refuted
+  at: ".spw/caches/community-roles/ecological-and-spatial-stewards.spw:17"
+  harm: #misinformation
+  statement: "The raw lines 17 and 20 present a plant as removing lead from soil and pair it with free produce; plants take up little lead unaided."
+  who: "families eating food grown on urban lots, and children most of all"
+  source: ~"../registries/sources/provenance-and-reference.spw#src_prov_huang_1997"
+  corrected_in: ~"../society/communities/commons-roles.spw#communities_commons_roles"
+ }
+ #>provenance_harm_test_strips
+ ^["test_strips"]{
+  #:claim #!refuted
+  at: ".spw/caches/community-roles/care-and-health-stewards.spw:57"
+  harm: #misinformation
+  statement: "The raw line calls drug test strips spectroscopic; they are immunoassay strips, and misreading how they work can lead to false reassurance."
+  who: "people who use drugs and the workers who support them"
+  source: ~"../registries/sources/provenance-and-reference.spw#src_prov_peiper_2019"
+  corrected_in: ~"../society/communities/care-roles.spw#communities_care_roles"
+ }
+ #>provenance_harm_doula
+ ^["doula_benefit"]{
+  #:claim #!refuted
+  at: ".spw/caches/community-roles/care-and-health-stewards.spw:65"
+  harm: #misinformation
+  statement: "The raw line doubles the cesarean reduction a Cochrane review attributes to continuous labor support."
+  who: "pregnant readers weighing support options"
+  source: ~"../registries/sources/provenance-and-reference.spw#src_prov_bohren_2017"
+ }
+ #>provenance_harm_stereotype
+ ^["youth_stereotype"]{
+  #:claim #!interpretive
+  at: ".spw/caches/community-roles/intergenerational-and-cultural-custodians.spw:35"
+  harm: #stereotype
+  statement: "The raw line frames neighborhood courts and gyms mainly as an alternative to gangs and despair, which stereotypes the young people who use them."
+  who: "young people in the neighborhoods described"
+  cites: ~"../contract.spw#cut_contract"
+  corrected_in: ~"../society/communities/custodian-roles.spw#communities_custodian_roles"
+ }
+}
+
+^["cut_sweep"]{
+ #>provenance_harm_cut_sweep
+ ^["sweep_2026_10_02"]{
+  at: "2026-10-02", agent: "claude-opus-5.5 writer"
+  scope: [ "living/", "society/communities/", "learning/" ]
+  files_scanned: "63 surfaces in the cut, not the raw shelf, on the rerun of 2026-10-02"
+  superseded_by: "the sweep of 2026-10-03, after the life and clinical perspective landed"
+  fixed: "this sweep named its pending file as spw/perspectives/life-and-clinical.spw, a path the plan tree never had, so a rerun keyed to it could not have fired"
+ }
+ ^["sweep_2026_10_03"]{
+  at: "2026-10-03", agent: "claude-opus-5.5 writer"
+  scope: [ "living/", "society/communities/", "learning/", "spw/perspectives/life-and-clinical-scientists.spw" ]
+  trigger: "spw/perspectives/life-and-clinical-scientists.spw, the planned path, which landed on 2026-10-03"
+  files_scanned: "68 surfaces in the cut as of 2026-10-03: 67 in the three directories and the perspective file"
+  rerun: "before each publish, and whenever a surface lands in the scope"
+  patterns: "dose units, dose words, supplement and diet names, remediation verbs, and imperative openings inside strings"
+  ^["results"]{
+   dose_units: "none found; dose words appear only in refusal frames and in mechanism statements without amounts"
+   supplements_and_diets: "named only in refusal frames, in folate trial and fortification history beside a not-advice warning, in one guideline row, and as ions in chemistry"
+   remediation: "named only in refusal frames and in a refuted soil row beside its correction; flush and cure appear in other senses"
+   imperatives: "only in reader doors, kit say lines, probe descriptions, try-kit steps and safety lines, and two plant-care tasks"
+  }
+  ^["review_pointers"]{
+   ^["dka_transition"]{
+    points_at: ~"../living/nursing/pathophysiology-and-pharmacology.spw#nursing_pathophysiology_dka_overlap"
+    harm: #protocol_wording
+    who: "students who might read a guideline step as an instruction"
+    note: "a sourced mechanism statement that reads close to a protocol step; left for the nursing writer to confirm"
+    source: ~"../registries/sources/provenance-and-reference.spw#src_prov_umpierrez_2024"
+   }
+   ^["padis_melatonin"]{
+    points_at: ~"../living/nursing/guideline-currency-ledger.spw#nursing_guideline_padis_2025"
+    harm: #protocol_wording
+    who: "readers who might take a guideline summary as a personal suggestion"
+    note: "names a supplement only as a conditional ICU recommendation, with body, year, and a contraindication pointer and no dose; left as is"
+    source: ~"../registries/sources/plants-ecology-care.spw#src_eco_lewis_2025"
+   }
+  }
+ }
+}
+
+#>provenance_harm_register_q
+?["Do harms in generated health text cluster where advice voice meets missing caveats?"]{
+ #:depth #!ethical ~#lens(bodily rhythm)
+ #:claim #!speculative
+ ~#hypothesis: "Pointers will cluster on lines written as invariants or interventions, because that voice drops the conditions a guideline attaches."
+ !probe{ "tag each raw line here by voice, invariant or description, and compare with lines of the same files that were not flagged" =id[p_prov_harm_voice] =kind[census] }
+ $%[prov.raw.quarantine_file_count]
+ ~"./harm-register.spw#provenance_harm_register" ~#neighbor(nearest)
+}

@@ -1,0 +1,164 @@
+# Perspective: Production Crews
+#
+# Call sheets, run sheets, breakdowns, and continuity logs read as schedules and states, entered role first: each crew role starts from the paper it already keeps, never from a sigil.
+
+#>spw_perspectives_crews
+#:layer #!pragmatics
+#:domain #!spw_perspectives
+#:form #!calendar
+#:level #!intro
+#:review #!unreviewed
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Perspective: Production Crews"
+ ~#claim: "A crew member enters through the paper their role already keeps: the call sheet becomes a calendar frame, the cue stack a schedule, and every time or timecode a quoted string."
+ ~#proof: "Probes at commit 1aa1dc23 nest a bare timecode into four bindings and turn a forced Fountain transition into prose; a schedule of quoted steps parses as one ordered stream."
+ ~#door: "Find your role in the roles frame and open only the artifact it names."
+ ~#audience: "stage managers, assistant directors, script supervisors, editors, and camera and lighting crews"
+ continuity: "Perspective: Production Crews | the paper their role already keeps"
+ cold_open: "Start from the paper their role already keeps, and quote every time before it becomes structure."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "persona study doors entry production_crews and metaphor_limits for film, theatre, and production",
+  "schedule, timecode, and Fountain probes run by the writer at commit 1aa1dc23 on 2026-10-03",
+  "the Fountain syntax page read on 2026-10-03"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the study gave rest-period hours for cast and crew; rest rules differ by agreement and are kept, sourced, in the set operations surface, so no hour count appears here"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../../making/film/set-operations-and-crew.spw#film_set_operations" ]
+ feeds: [ ~"../doors/colon.spw#spw_door_colon", ~"../contraptions/order-counter.spw#spw_lab_order_counter" ]
+ see: [ ~"../specimens/media-and-classroom.spw#spw_spec_media_classroom" ]
+}
+
+^["standing"]{
+ #>spw_perspectives_crews_standing
+ ^["hypothesis"]{
+  #:claim #!interpretive
+  statement: "This calendar was written by an agent outside the cluster; it stays unreviewed until a working crew member rewrites one real page of their own paperwork through it."
+  member_probe: "a crew member picks their role row, converts one synthetic page of their paperwork, and marks what the shape lost"
+ }
+}
+
+^["roles"]{
+ #>spw_perspectives_crews_role_first
+ ^["role_first"]{
+  #:claim #!interpretive
+  statement: "A crew member reads by role, so each row names the artifact a role keeps before it names any mark, and the mark arrives only where the artifact needs it."
+  see: ~"../../making/film/set-operations-and-crew.spw#film_set_roles_production"
+ }
+ first_ad: .{ keeps: "the call sheet and the day schedule", shape: "a calendar frame with quoted times", see: ~"../../making/film/set-operations-and-crew.spw#film_set_call_sheet" }
+ stage_manager: .{ keeps: "the calling script and cue stack", shape: "a schedule of standby and go steps", see: ~"../contraptions/order-counter.spw#spw_lab_order_counter_cues" }
+ script_supervisor: .{ keeps: "the continuity log and lined script", shape: "one anchored frame per take" }
+ editor: .{ keeps: "the edit decision list", shape: "timecode strings with an integer frame count beside them" }
+ camera: .{ keeps: "the camera report and slate numbers", shape: "quoted scene, shot, and take labels" }
+ lighting: .{ keeps: "the gel and fixture schedule", shape: "registry cells for each color filter value, with source" }
+}
+
+^["calendar"]{
+ #>spw_perspectives_crews_schedule
+ ^["ordered_steps"]{
+  #:claim #!settled
+  statement: "A schedule written as quoted steps between double angle brackets parses as one ordered stream, and nothing in the parser or runtime keeps time for it."
+  probe_run: "day: with call, block, and light as quoted steps parsed as one Stream node with three items at 1aa1dc23"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+  ^["limits"]{
+   holds: "order: which step comes before which"
+   fails: "no clock, no duration, no pre-wait, and no grouping of several cues under one go"
+  }
+ }
+ ^["prep_week"]{
+  cadence: << "script breakdown" ; "stripboard" ; "location scout" ; "technical scout" ; "production meeting" >>
+  note: "a template of order only; each production sets its own"
+ }
+ ^["shoot_day"]{
+  cadence: << "crew call" ; "block" ; "light" ; "rehearse" ; "roll" ; "cut" ; "next setup" ; "wrap" >>
+  loop: ~"../../making/film/set-operations-and-crew.spw#film_set_day_machine"
+  rest: ~"../../making/film/set-operations-and-crew.spw#film_set_turnaround"
+ }
+ ^["show_night"]{
+  cadence: << "half hour" ; "places" ; "standby" ; "go" ; "intermission" ; "places" ; "curtain" ; "show report" >>
+ }
+}
+
+^["marks"]{
+ #>spw_perspectives_crews_timecode
+ ^["timecode"]{
+  #:claim #!settled
+  habit: "a timecode in hours, minutes, seconds, and frames"
+  statement: "A bare timecode nests: each colon binds again, so four fields become four nested bindings with no error or warning."
+  probe_run: "t: 06:30:00:12 at 1aa1dc23 bound t to 06, bound to 30, bound to 00, bound to 12"
+  write_instead: "the timecode as a quoted string with an integer frame count beside it"
+  sources: [ ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_smpte_12_1", ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar" ]
+  see: ~"../specimens/media-and-classroom.spw#spw_spec_media_classroom_timecode"
+ }
+ #>spw_perspectives_crews_cues
+ ^["standby_and_go"]{
+  #:claim #!settled
+  statement: "At runtime the question mark returns its second argument, or true, when its first is truthy, and the bang returns its first, so standby and go written with them neither wait nor fire."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_canon_operators"
+  cites: [ "docs/theory/spw/operators.spw:54-55" ]
+  breaks: "a called standby waits for a reply from the operator, and a go fires on the spoken word"
+ }
+ #>spw_perspectives_crews_fountain
+ ^["screenplay_markup"]{
+  #:claim #!settled
+  statement: "Fountain screenplay markup gives Spw marks other jobs: a hash for sections, an equals sign for synopses, an at sign to force a character, and a greater-than sign to force a transition."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_fountain_2012"
+  probe_run: "a forced transition line turned a three-line file to prose at 1aa1dc23; a forced character became a reference node; a synopsis became a bare equals operation"
+  write_instead: "keep the script in a Fountain file and link it; quote any line you need inside a surface"
+ }
+ #>spw_perspectives_crews_continuity
+ ^["continuity_word"]{
+  #:claim #!settled
+  statement: "In this cut, continuity names an emit card field whose phrases the spoken cold open must repeat, which the gate checks; it never means matching across takes."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_contract"
+  label: "a-cut rule from the contract voice frame"
+  breaks: "a script supervisor tracks continuity between takes of a scene, while the card field tracks a phrase between two lines of one file"
+ }
+ shot_numbers: .{ habit: "a shot or cast number written with a hash", see: ~"../specimens/media-and-classroom.spw#spw_spec_media_classroom_shot_number" }
+ call_times: .{ habit: "a call time typed bare", see: ~"../doors/colon.spw#spw_door_colon_binds" }
+}
+
+^["tools"]{
+ inspect: .{ command: "spw inspect source", use: "predict and reveal one line of a call sheet", status: #implemented, cites: "packages/spw-cli/src/commands.ts:277-282" }
+ order_counter: .{ contraption: "order-counter", use: "count the orders a cue list allows", status: #proposed }
+ derivation_checker: .{ contraption: "derivation-checker", use: "check registry cells against stated derivations such as drop-frame timecode", status: #proposed }
+}
+
+^["try"]{
+ #>spw_perspectives_crews_try
+ ^["synthetic_call_sheet"]{
+  materials: [ "a synthetic call sheet with invented roles and times, never a real crew list", "a scratch file outside the cut", "the spw CLI in this repository" ]
+  steps: << "write the call times bare, as on paper" ; "predict what each line becomes" ; "reveal them with spw inspect source" ; "rewrite the times as quoted strings and the day as a schedule" ; "reveal again and note what the shape still cannot hold" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "no real names, phone numbers, or addresses; a call sheet carries private contact details"
+  shows: ~"./production-crews.spw#spw_perspectives_crews_timecode"
+ }
+}
+
+#>spw_perspectives_crews_q
+?["Does writing standby and go as separate steps help a new caller keep the warning before the action?"]{
+ #:depth #!experiential ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "Seeing each standby as its own step before its go would help a new caller keep the warning first, even though the file keeps no time."
+ !probe{ "a stage manager rewrites one page of a synthetic calling script as a schedule and notes which cues lost their timing" =id[p_doors_crews_standby_go] =kind[field] }
+ breaks: "a called cue depends on a human reply and a spoken word, while a schedule step depends on nothing"
+ ~"./production-crews.spw#spw_perspectives_crews_cues" ~#neighbor(nearest)
+}

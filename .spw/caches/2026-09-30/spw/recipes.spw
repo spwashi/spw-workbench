@@ -1,0 +1,175 @@
+# Recipes
+#
+# One recipe per surface kind in this cut: the transform kind, the canonical command, what it keeps, what it drops, and the check that follows, each run on a dated commit.
+
+#>spw_recipes
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!protocol
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Recipes"
+ ~#claim: "Each recipe names its command, what it keeps, what it drops, and the check to run after, so a reader knows what a tool output hides."
+ ~#proof: "Every command below was run on this cut at commit 1aa1dc23 on 2026-10-02, and each uses its canonical name from the CLI registry."
+ ~#door: "Run the card recipe on the water surface, then read the surface beside the card."
+ ~#audience: "readers and writers of this cut working in a terminal"
+ continuity: "Recipes | keeps"
+ cold_open: "Each recipe says what the command keeps and what it drops, then hands you a check."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/studies/render-synthesis.md sections 2.1 and 3",
+  "commands re-run by the writer at 1aa1dc23 on 2026-10-02: emit pack, expand, select, census, resolve, outline"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the study wonder recipe used spw emit expand with --bind; emit expand fills templates and is not a wonder view, and the rename to emit fill is only a proposal",
+  "recipes name outline, never its aliases skim and read"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./transforms.spw#spw_transforms" ]
+ grounds: [ ~"../contract.spw#cut_contract" ]
+ case_of: [ ~"../physical/materials/water.spw#materials_water" ]
+}
+
+^["concepts"]{
+ primary: [ #recipe, #canonical_name ]
+ transfers: [ #omission ]
+ tensions: [ #alias ]
+}
+
+^["names"]{
+ #>spw_recipes_canonical
+ ^["canonical_only"]{
+  #:claim #!settled
+  statement: "The CLI registers outline with the aliases skim and read, so a recipe that says read names a different, smaller view than the read rung of the care ladder."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_cli_commands"
+  cites: [ "packages/spw-cli/src/commands.ts:338-339" ]
+  reads: %[spw.cli.commands]
+ }
+ rule: "a recipe uses canonical command names only, never an alias and never a placeholder"
+}
+
+^["recipe"]{
+ #>spw_recipes_card
+ ^["card"]{
+  kind: #reduction
+  command: "spw emit pack .spw/caches/2026-09-30/physical/materials/water.spw --host brief"
+  keeps: #[ title, audience, claim, proof, door ]
+  drops: #[ claim_status, provenance, as_of, limits, wonders ]
+  check: "spw emit pack with --host brief --strict-continuity --strict-positive exits zero, then read every claim mood by eye"
+  as_of: "1aa1dc23, 2026-10-02"
+ }
+ #>spw_recipes_index
+ ^["index"]{
+  kind: #expansion
+  command: "spw expand .spw/caches/2026-09-30/physical/materials/index.spw"
+  keeps: #[ child_cards, bundle_order ]
+  drops: #[ child_anchor_lines, link_rebasing ]
+  check: "spw resolve --from .spw/caches/2026-09-30/physical/materials --warn, and resolve again on any digest you copy elsewhere"
+  provenance: "each digest opens with a comment naming its source, which no selector can count"
+  as_of: "1aa1dc23, 2026-10-02"
+ }
+ #>spw_recipes_wonder
+ ^["wonder"]{
+  kind: #reduction
+  command: "spw select .spw/caches/2026-09-30/physical/materials/water.spw --selector probes --skim"
+  keeps: #[ line, question_head ]
+  drops: #[ depth, lens, hypothesis, probe_id, neighbor ]
+  check: "open the wonder block at the reported line and read its lens and probe by eye"
+  as_of: "1aa1dc23, 2026-10-02"
+ }
+ #>spw_recipes_registry
+ ^["registry"]{
+  kind: #reduction
+  command: "spw census .spw/caches/2026-09-30/registries"
+  keeps: #[ files, lines, links, roles ]
+  drops: #[ values, units, status, sources ]
+  check: "census counts anchored links as broken, so trust spw resolve or the cut gate for link health"
+  as_of: "1aa1dc23, 2026-10-02"
+  see: [ ~"./inspection-and-ir.spw#spw_ir_tool_trust" ]
+ }
+ #>spw_recipes_outline
+ ^["outline"]{
+  kind: #reduction
+  command: "spw outline .spw/caches/2026-09-30/physical/materials/water.spw"
+  keeps: #[ frames, key_traits, paths ]
+  drops: #[ anchors, particles, claim_moods, wonders, cold_open ]
+  check: "read every claim line and the closing wonder by eye; the outline skips lines that start with a hash"
+  cites: [ "packages/spw-cli/src/view.ts:231" ]
+  as_of: "1aa1dc23, 2026-10-02"
+ }
+ #>spw_recipes_arc
+ ^["arc_surface"]{
+  kind: #reduction
+  command: "spw emit pack --host audio --strict-continuity"
+  target: "an arc surface in the trails class, once written"
+  status: #proposed
+  keeps: #[ title, door ]
+  drops: #[ claim, steps, predictions ]
+  check: "the cut gate checks clock, archetype, steps, counts, limit, and the feeds edge; audio does not speak the claim"
+  pending: "the arc surfaces are written later in the trails class; the command is recorded here without a target, so the recipe stays proposed"
+ }
+ #>spw_recipes_trail
+ ^["trail"]{
+  kind: #comparison
+  command: "spw resolve --from .spw/caches/2026-09-30 --warn"
+  keeps: #[ link_targets, anchor_hits ]
+  drops: #[ stop_order, predictions ]
+  check: "walk the stops schedule in order and confirm each stop is an anchor that exists"
+  as_of: "1aa1dc23, 2026-10-02"
+ }
+}
+
+^["observed"]{
+ #>spw_recipes_card_drops_status
+ ^["brief_drops_status"]{
+  #:claim #!settled
+  statement: "Run on a surface whose claims carry moods, the brief card printed title, audience, claim, proof, and door and showed no claim mood."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_cli_emit"
+  probe_run: "spw emit pack on spw/tokens-and-roles.spw with --host brief at 1aa1dc23, 2026-10-02"
+ }
+ #>spw_recipes_expand_comment
+ ^["expand_comment"]{
+  #:claim #!settled
+  statement: "spw expand on the materials index framed each digest in a stream whose first line is a comment naming the source, and dropped each child anchor line."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_cli_commands"
+  cites: [ "packages/spw-cli/src/expand.ts:79", "packages/spw-cli/src/expand.ts:88-96" ]
+ }
+}
+
+^["try"]{
+ #>spw_recipes_try_card
+ ^["card_beside_surface"]{
+  materials: [ "a terminal in the workbench", "the water exemplar surface open beside it" ]
+  steps: << "run the card recipe" ; "list each field it kept" ; "find three things in the surface the card dropped" ; "write which dropped item would change a decision" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "none worth naming; every command here reads and prints only"
+  shows: ~"./recipes.spw#spw_recipes_card"
+ }
+}
+
+#>spw_recipes_loss_q
+?["Which dropped field do readers miss first when they read only the card?"]{
+ #:depth #!educational ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "Readers miss the claim status before the limits, because the card states the claim as if it were settled."
+ !probe{ "readers answer one question from the brief card, then from the full surface, and note which field changed their answer" =id[p_spw_recipes_loss] =kind[interview] }
+ $%[spw.cli.emit_hosts]
+ ~"./recipes.spw#spw_recipes_card_drops_status" ~#neighbor(nearest)
+}

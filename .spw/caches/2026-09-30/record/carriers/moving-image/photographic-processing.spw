@@ -1,0 +1,192 @@
+# Photographic Processing
+#
+# Black-and-white, C-41, ECN-2, and E-6 as sequences of bath states with registry-held temperatures and times, plus the density curve that tells a lab whether its chemistry is in control.
+
+#>media_carriers_processing
+#:layer #!pragmatics
+#:domain #!media_carriers
+#:form #!protocol
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bone
+#:era #!modern
+
+^"emit"{
+ ~#title: "Photographic Processing"
+ ~#claim: "Each process is a fixed sequence of baths; ECN-2 develops at 41.1 C for 3 minutes, C-41 at 37.8 C, and densities are read by ISO 5-2 geometry to keep it in control."
+ ~#proof: "Kodak process manuals H-24.07, Z-131, and Z-119 for the baths; Hurter and Driffield 1890 and ISO 5-2 for density; James for development chemistry."
+ ~#door: "Stack tracing paper to see why density adds, then walk one process from first bath to last."
+ ~#audience: "lab technicians, cinematographers, film students, and home developers"
+ continuity: "Photographic Processing | fixed sequence of baths"
+ cold_open: "Every film process is a fixed sequence of baths, and a strip of known exposures tells the lab when the chemistry drifts."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/film-chemistry-and-camera-optics/photographic-processing-and-development.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "re-run after the 2026-10-03 fact-check fixes; no failing lines" }
+ }
+ corrections: #[
+  "C-41 written out; the raw promised it in its title and never described it",
+  "density standard corrected to ISO 5-2, transmittance geometry; the raw cited ISO 5-4, which covers reflection density",
+  "the fourfold superadditivity figure and the three-second stop claim were dropped as unsourced",
+  "bleach chemistry left generic by process; the raw named one bleach for ECN-2 without a source",
+  "the municipal silver discharge figure was dropped; limits vary by jurisdiction",
+  "fact-check 2026-10-03: the r4 fact-check receipt was dated 2026-10-01, before the receipts it followed; it is re-dated 2026-10-02, the day that pass ran"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./emulsion-chemistry.spw#media_carriers_emulsion" ]
+ grounds: [ ~"../../../registries/quantities/physical-sciences-and-image.spw#q_phys_process" ]
+ see: [ ~"../../../physical/chemistry/chemistry-core.spw#chemistry_core_general" ]
+}
+
+^["concepts"]{
+ primary: [ #state_machine, #sensitometry, #silver_halide ]
+ transfers: [ #standards, #feedback ]
+ tensions: [ #fidelity ]
+}
+
+^["development"]{
+ #>media_carriers_processing_redox
+ ^["selective_reduction"]{
+  #:claim #!settled
+  statement: "A developer reduces silver halide to metallic silver far faster in grains that carry a latent image, so exposure decides which grains turn black."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_james_1977"
+ }
+ #>media_carriers_processing_superadditive
+ ^["superadditivity"]{
+  #:claim #!settled
+  statement: "Pairs such as metol or phenidone with hydroquinone develop faster together than the sum of each alone; sulfite protects the developer, alkali activates it, and bromide restrains fog."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_james_1977"
+ }
+ #>media_carriers_processing_temperature
+ ^["temperature_control"]{
+  #:claim #!settled
+  statement: "Color processes hold developer temperature to a tight tolerance because the three dye layers respond differently to drift, shifting color balance as well as density."
+  sources: [ ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_kodak_h2407", ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_kodak_z131" ]
+ }
+}
+
+^["processes"]{
+ #>media_carriers_processing_bw
+ ^["bw_negative"]{
+  path: << "develop" ; "stop" ; "fix" ; "wash" ; "dry" >>
+  on_fix: ?match[clearing]{
+   "film clear" => ![wash],
+   "milky" => ![fix_longer],
+   _ => ![check_fixer]
+  }
+  note: "fixer dissolves the undeveloped halide; washing removes fixer that would later stain"
+ }
+ #>media_carriers_processing_c41
+ ^["c41"]{
+  #:claim #!settled
+  statement: "C-41 color negative processing runs developer, bleach, wash, fixer, wash, and stabilizer, with the developer at 37.8 C for 3 minutes 15 seconds."
+  reads: %[phys.process.c41_dev_c, phys.process.c41_dev_min]
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_kodak_z131"
+  path: << "developer" ; "bleach" ; "wash" ; "fixer" ; "wash" ; "stabilizer" >>
+ }
+ #>media_carriers_processing_ecn2
+ ^["ecn2"]{
+  #:claim #!settled
+  statement: "ECN-2 motion-picture negative processing starts with a prebath and remjet removal, then develops at 41.1 C for 3 minutes before stop, bleach, fix, and final rinse."
+  reads: %[phys.process.ecn2_dev_c, phys.process.ecn2_dev_min]
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_kodak_h2407"
+  path: << "prebath" ; "remjet removal and rinse" ; "developer" ; "stop" ; "wash" ; "bleach" ; "wash" ; "fixer" ; "wash" ; "final rinse" >>
+  ~#say(strip the black backing first, then develop warm)
+ }
+ #>media_carriers_processing_e6
+ ^["e6"]{
+  #:claim #!settled
+  statement: "E-6 reversal starts with a black-and-white first developer near 38 C for 6 minutes, then a reversal bath and color developer form positive dyes before bleach and fix."
+  reads: %[phys.process.e6_fd_c, phys.process.e6_fd_min]
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_kodak_z119"
+  path: << "first developer" ; "wash" ; "reversal bath" ; "color developer" ; "pre-bleach" ; "bleach" ; "fixer" ; "wash" ; "final rinse" >>
+  as_of: "first-developer tolerance is a verify cell; it differs by processor type"
+ }
+ #>media_carriers_processing_bw_reversal
+ ^["bw_reversal"]{
+  #:claim #!settled
+  statement: "Black-and-white reversal develops a negative, bleaches that silver away, fogs the remaining halide by light or chemistry, and develops it into a positive."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_james_1977"
+  path: << "first developer" ; "bleach" ; "clear" ; "re-expose" ; "second developer" ; "wash" >>
+ }
+}
+
+^["control"]{
+ #>media_carriers_processing_density
+ ^["optical_density"]{
+  #:claim #!settled
+  statement: "Optical density is the base-ten logarithm of incident over transmitted light, so densities of stacked layers add; Hurter and Driffield plotted density against log exposure in 1890."
+  sources: [ ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_hurter_driffield_1890", ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_james_1977" ]
+ }
+ #>media_carriers_processing_iso52
+ ^["iso_5_2"]{
+  #:claim #!settled
+  statement: "Transmittance density depends on how light is collected, so ISO 5-2 fixes the geometric conditions for diffuse transmission density; ISO 5-4 covers reflection."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_iso_5_2"
+  as_of: "2009 edition; later revisions to verify"
+ }
+ #>media_carriers_processing_curve
+ ^["characteristic_curve"]{
+  #:claim #!settled
+  statement: "The characteristic curve rises from base plus fog through a toe, a straight portion whose slope is gamma, and a shoulder where highlights compress."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_james_1977"
+ }
+ #>media_carriers_processing_control_strip
+ ^["control_strips"]{
+  #:claim #!interpretive
+  statement: "A lab reads pre-exposed control strips each shift and acts on the drift it sees, so the process is a feedback loop around a chemical machine."
+  on_strip: ?match[control_strip]{
+   "in tolerance" => ![run],
+   "density high" => ![check_temperature_and_time],
+   "density low" => ![check_replenishment],
+   "color shifted" => ![check_developer_balance],
+   _ => ![hold_production]
+  }
+ }
+ #>media_carriers_processing_push
+ ^["push_and_pull"]{
+  #:claim #!settled
+  statement: "Pushing extends development to raise midtone density and contrast for underexposed film, with more grain and little gain in deep shadows; pulling does the reverse."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_james_1977"
+ }
+}
+
+^["try"]{
+ #>media_carriers_processing_try_density
+ ^["tracing_paper_wedge"]{
+  materials: [ "a pad of tracing paper", "a phone flashlight", "a second phone or camera with a light meter app" ]
+  steps: << "stack zero to eight sheets in a staircase" ; "shine the flashlight through each step" ; "read the light behind each step" ; "plot the log of the readings against sheet count" ; "check that each sheet subtracts about the same log amount" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "do not stare into the flashlight; no other hazard worth naming"
+  shows: ~"./photographic-processing.spw#media_carriers_processing_density"
+ }
+}
+
+#>media_carriers_processing_drift_q
+?["Why do color processes run at fixed warm temperatures, each its own?"]{
+ #:depth #!physical ~#lens(molecular binding)
+ #:claim #!speculative
+ ~#hypothesis: "If each layer's development has its own activation energy, a small temperature error should tilt color balance, and the warmer processes should trade tighter tolerance for shorter times."
+ !probe{ "fit Arrhenius rates to published time and temperature tables for each process and compare layer by layer" =id[p_phys_processing_drift] =kind[calc] }
+ $%[phys.process.ecn2_dev_c, phys.process.c41_dev_c, phys.process.e6_fd_c]
+ ~"./photographic-processing.spw#media_carriers_processing_temperature" ~#neighbor(nearest)
+}

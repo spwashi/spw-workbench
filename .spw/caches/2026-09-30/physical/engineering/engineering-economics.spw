@@ -1,0 +1,257 @@
+# Engineering Economics
+#
+# A battery of worked problems on the time value of money, present worth, rate of return, depreciation, and capital budgeting, each with a check a reader can run by hand.
+
+#>engineering_economics
+#:layer #!pragmatics
+#:domain #!engineering
+#:form #!probe_battery
+#:level #!foundation
+#:review #!sourced
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Engineering Economics"
+ ~#claim: "A cash flow is worth less the later it arrives, so engineers compare alternatives by moving every flow to one moment at a stated interest rate."
+ ~#proof: "Fisher set out interest as the price of time, Grant and Newnan give the standard comparisons, and Hirshleifer shows where the internal rate of return misleads."
+ ~#door: "Work the capital recovery problem by hand, then check it by discounting the payments back."
+ ~#audience: "engineering students and anyone weighing a purchase that pays back over years"
+ continuity: "Engineering Economics | worth less"
+ cold_open: "Money that arrives later is worth less, so every engineering choice is weighed at one moment and one rate."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/design-and-industrial-engineering/undergrad-industrial-engineering.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ note: "the raw gave three topic lines on time value, project metrics, and MACRS with no problems or sources; nothing in them was wrong, and every claim, problem, and source here is new"
+ checked: "Goetzmann, Grant, Wellington, Sigler, Weingartner, Lorie and Savage, and Hirshleifer were matched against NBER, Open Library, or Crossref records on 2026-10-02"
+ split: "the raw industrial engineering file is split; queueing, quality, and operations research live in the industrial and systems engineering node"
+ recheck: "on 2026-10-03 every worked answer was recomputed by hand and matched; the payback wonder no longer reads the MACRS cell, which it never used"
+}
+
+^["edges"]{
+ needs: [ ~"../../formal/mathematics/engineering-core/numerical-methods.spw#mathematics_numerics_bisection_newton" ]
+ see: [ ~"./industrial-and-systems-engineering.spw#engineering_ise_lp_origin", ~"../../formal/mathematics/engineering-core/optimization.spw#mathematics_opt_lp_origin" ]
+}
+
+^["concepts"]{
+ primary: [ #time_value, #capital_budgeting, #depreciation ]
+ transfers: [ #optimization, #duality ]
+ tensions: [ #trade_off ]
+}
+
+^["principles"]{
+ #>engineering_economics_time_value
+ ^["time_value"]{
+  #:claim #!settled
+  statement: "Fisher explained interest as the price linking goods now with goods later, set by impatience on one side and by the returns investment offers on the other."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_fisher_1930"
+ }
+ #>engineering_economics_factors
+ ^["equivalence_factors"]{
+  #:claim #!settled
+  statement: "At rate i a sum F due in n periods is worth F divided by one plus i to the n today; capital recovery spreads a present sum into equal payments of equal worth."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_newnan_2017"
+  ^["limits"]{
+   holds: "a known rate that stays constant over the study period, with cash flows placed at period ends"
+   fails: "rates that change over time or cash flows spread within a period, which need other factors"
+  }
+ }
+ #>engineering_economics_npv_rule
+ ^["present_worth_rule"]{
+  #:claim #!settled
+  statement: "At a stated minimum attractive rate, accept an independent project whose net present worth is positive, and among exclusive projects over a common horizon choose the largest."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_newnan_2017", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_hirshleifer_1958" ]
+  ^["limits"]{
+   holds: "one borrowing and lending rate, a common study period, and risks the rate already prices"
+   fails: "a capped budget, unequal lives with no common horizon, or risks that one rate cannot carry"
+  }
+ }
+ #>engineering_economics_irr
+ ^["internal_rate"]{
+  #:claim #!settled
+  statement: "The internal rate of return is the rate that sets net present worth to zero; a cash flow whose sign changes more than once can have several such rates, or none."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_newnan_2017", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_hirshleifer_1958" ]
+  see: [ ~"../../formal/mathematics/engineering-core/numerical-methods.spw#mathematics_numerics_bisection_newton" ]
+ }
+ #>engineering_economics_irr_ranking
+ ^["ranking_by_rate"]{
+  #:claim #!settled
+  statement: "Ranking exclusive projects by internal rate of return can favor the smaller one; testing the increment between them against the minimum rate agrees with net present worth."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_newnan_2017", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_hirshleifer_1958" ]
+ }
+ #>engineering_economics_fisher_relation
+ ^["real_and_nominal"]{
+  #:claim #!settled
+  statement: "One plus the nominal rate equals one plus the real rate times one plus inflation, so nominal cash flows are discounted at nominal rates and real flows at real rates."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_fisher_1930", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_newnan_2017" ]
+ }
+ #>engineering_economics_tax_shield
+ ^["tax_shield"]{
+  #:claim #!settled
+  statement: "Depreciation is not a cash flow, but it lowers taxable income, so each deduction saves the tax rate times its size, and earlier deductions are worth more today."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_newnan_2017"
+ }
+ #>engineering_economics_macrs
+ ^["macrs"]{
+  #:claim #!settled
+  statement: "IRS Publication 946 lists 20 percent of basis as the first-year MACRS deduction for 5-year property under the half-year convention."
+  reads: %[mateng.econ.macrs_5yr_y1_pct]
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_irs_pub_946"
+  as_of: "the edition for 2025 returns, read 2026-10-01; the registry cell is a verify cell"
+  ^["limits"]{
+   holds: "US federal tax, general depreciation system, property placed in service after 1986"
+   fails: "bonus depreciation, expensing elections, other countries, and later changes in law"
+  }
+ }
+ #>engineering_economics_rationing
+ ^["capital_rationing"]{
+  #:claim #!settled
+  statement: "When a budget caps spending, Lorie and Savage showed in 1955 that ranking projects one at a time can fail, and Weingartner in 1963 posed the choice as a mathematical program."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_lorie_savage_1955", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_weingartner_1963" ]
+  see: [ ~"./industrial-and-systems-engineering.spw#engineering_ise_lp_origin" ]
+ }
+}
+
+^["lineage"]{
+ order: << "Pisa" ; "Antwerp" ; "railway location" ; "the textbook" >>
+
+ #>engineering_economics_fibonacci
+ ^["liber_abaci"]{
+  #:claim #!settled
+  statement: "Goetzmann argues that Leonardo of Pisa, who learned Hindu-Arabic reckoning in North Africa, developed present-value comparison of contract cash flows in his Liber Abaci of 1202."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_goetzmann_2004", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_sigler_2002" ]
+ }
+ #>engineering_economics_stevin
+ ^["stevin_tables"]{
+  #:claim #!settled
+  statement: "Simon Stevin published printed tables of interest and present values in his Tafelen van Interest at Antwerp in 1582."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_stevin_1582"
+ }
+ #>engineering_economics_wellington
+ ^["railway_location"]{
+  #:claim #!settled
+  statement: "Wellington argued in his railway location treatise that a route should be chosen by weighing construction cost against the operating costs it fixes for the life of the line."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_wellington_1887"
+ }
+ #>engineering_economics_grant
+ ^["grant_textbook"]{
+  #:claim #!settled
+  statement: "Grant gave engineering economy its standard textbook in 1930, comparing alternatives by equivalent annual cost and present worth at a stated interest rate."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_grant_1930"
+ }
+}
+
+^["try"]{
+ order: << "capital recovery" ; "ranking" ; "several roots" ; "tax timing" ; "real and nominal" >>
+
+ #>engineering_economics_try_recovery
+ ^["capital_recovery"]{
+  problem: "A 50,000 dollar machine lasts 8 years with no salvage value. At 8 percent, what equal yearly amount recovers its cost with interest?"
+  materials: [ "a calculator or spreadsheet", "pencil and paper" ]
+  steps: <<
+   "write the capital recovery factor, i times one plus i to the n, over one plus i to the n minus one" ;
+   "evaluate it for 8 percent and 8 years" ;
+   "multiply by 50,000" ;
+   "check by discounting all eight payments back to today"
+  >>
+  answer: "the factor is about 0.17401, so about 8,701 dollars a year; the eight payments discount back to 50,000"
+  time: .{ n: 15, unit: "minutes" }
+  safety: "no hazard worth naming; the dollar figures are made up for practice"
+  shows: ~"./engineering-economics.spw#engineering_economics_factors"
+  !probe{ "recompute the recovery payment for a 12-year life and explain why it falls less than in proportion" =id[p_mateng_econ_recovery] =kind[calc] }
+ }
+ #>engineering_economics_try_ranking
+ ^["ranking"]{
+  problem: "Project A costs 1,000 dollars and returns 1,500 in a year; B costs 10,000 and returns 12,000. Only one can be funded, and the minimum rate is 10 percent."
+  materials: [ "a calculator or spreadsheet", "pencil and paper" ]
+  steps: <<
+   "find each internal rate of return" ;
+   "find each net present worth at 10 percent" ;
+   "form the increment B minus A and find its rate" ;
+   "choose, and name the rule you trusted"
+  >>
+  answer: "A earns 50 percent and B 20, but B adds about 909 dollars of present worth against 364; the increment earns about 16.7 percent, above 10, so choose B"
+  time: .{ n: 20, unit: "minutes" }
+  safety: "no hazard worth naming; the dollar figures are made up for practice"
+  shows: ~"./engineering-economics.spw#engineering_economics_irr_ranking"
+  !probe{ "find the minimum rate at which A and B have equal net present worth" =id[p_mateng_econ_ranking] =kind[calc] }
+ }
+ #>engineering_economics_try_roots
+ ^["several_roots"]{
+  problem: "A project pays out 1,600 dollars now, receives 10,000 next year, and pays out 10,000 the year after. What is its rate of return?"
+  materials: [ "a calculator or spreadsheet", "pencil and paper" ]
+  steps: <<
+   "write net present worth as a function of the rate" ;
+   "set x to one over one plus the rate and solve the quadratic in x" ;
+   "evaluate net present worth at 10 and at 100 percent" ;
+   "say why no single rate of return describes this project"
+  >>
+  answer: "the rates are 25 and 400 percent; net present worth is about minus 774 dollars at 10 percent and positive only between the two roots"
+  time: .{ n: 25, unit: "minutes" }
+  safety: "no hazard worth naming; the dollar figures are made up for practice"
+  shows: ~"./engineering-economics.spw#engineering_economics_irr"
+  !probe{ "count sign changes in the cash flow and compare with the number of positive roots found" =id[p_mateng_econ_roots] =kind[calc] }
+ }
+ #>engineering_economics_try_tax_timing
+ ^["tax_timing"]{
+  problem: "Two made-up schedules each deduct 100,000 dollars over four years, one as 40, 30, 20, and 10 percent, the other as 25 percent a year. At a 25 percent tax rate and 10 percent interest, which savings are worth more today?"
+  materials: [ "a calculator or spreadsheet", "pencil and paper" ]
+  steps: <<
+   "list each yearly tax saving as the tax rate times that year of deduction" ;
+   "discount each saving to today at 10 percent" ;
+   "add the present worths and compare the totals"
+  >>
+  answer: "both save 25,000 dollars in all, but the front-loaded schedule is worth about 20,753 today against about 19,812 for the even one"
+  time: .{ n: 20, unit: "minutes" }
+  safety: "no hazard worth naming; the dollar figures are made up for practice"
+  shows: ~"./engineering-economics.spw#engineering_economics_tax_shield"
+  !probe{ "repeat with the first-year MACRS rate from the registry and say what changes" =id[p_mateng_econ_tax_timing] =kind[calc] }
+ }
+ #>engineering_economics_try_real_rate
+ ^["real_and_nominal"]{
+  problem: "A loan charges 8 percent a year while prices rise 3 percent a year. What real rate does the lender earn?"
+  materials: [ "a calculator or spreadsheet", "pencil and paper" ]
+  steps: <<
+   "write one plus nominal equals one plus real times one plus inflation" ;
+   "solve for the real rate" ;
+   "compare with simply subtracting inflation from the nominal rate"
+  >>
+  answer: "about 4.85 percent, a little below the 5 percent that subtraction gives"
+  time: .{ n: 10, unit: "minutes" }
+  safety: "no hazard worth naming; the dollar figures are made up for practice"
+  shows: ~"./engineering-economics.spw#engineering_economics_fisher_relation"
+  !probe{ "find how large both rates must be before subtraction misses by a full point" =id[p_mateng_econ_real_rate] =kind[calc] }
+ }
+}
+
+#>engineering_economics_payback_q
+?["Does the payback rule steer choices toward quick projects over better long ones?"]{
+ #:depth #!educational ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "Payback ignores cash after the cutoff and timing before it, so ranking by payback should pick short-lived projects more often than ranking by net present worth."
+ !probe{ "rank a set of made-up projects by payback and by net present worth and count how often the top choice differs" =id[p_mateng_econ_payback] =kind[calc] }
+ $%[graph.out_degree]
+ ~"./engineering-economics.spw#engineering_economics_npv_rule" ~#neighbor(nearest)
+}
+
+#>engineering_economics_half_life_q
+?["Would discounting be easier to learn as the half-life of money?"]{
+ #:depth #!educational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Students who already know radioactive half-life should read discount factors faster when a rate is restated as the years for a future sum to lose half its present worth."
+ breaks: "a decay constant belongs to a nucleus; a discount rate is chosen by people, moves with markets, and is argued over"
+ !probe{ "restate rates of 3, 6, and 12 percent as halving times and compare with the rule of 72" =id[p_mateng_econ_half_life] =kind[thought] }
+ $%[graph.in_degree]
+ ~"./engineering-economics.spw#engineering_economics_factors" ~#neighbor(nearest)
+}

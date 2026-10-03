@@ -14,7 +14,7 @@
 ^"emit"{
  ~#title: "Live Monetization Receipt"
  ~#claim: "Viewers buy Coins, spend them as Gifts, and hosts accrue Diamonds at a rate the platform sets, so every gift value is a dated receipt."
- ~#proof: "The Virtual Items Policy defines the chain and reserves the conversion rate; gift prices and shares stay verify cells with region and date."
+ ~#proof: "The Virtual Items Policy defines the chain and reserves both conversion rates; gift prices and shares stay verify cells with region and date."
  ~#door: "Compare the plates in the affinity atlas, or read the Singles Day case for live selling at scale."
  ~#audience: "hosts, researchers, and readers checking a gift figure before repeating it"
  continuity: "Live Monetization Receipt | dated receipt"
@@ -28,11 +28,17 @@
  lineage: #[ ".spw/caches/tiktok-live/virtual-economy.spw", ".spw/caches/tiktok-live/live-commerce.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
-  "the payout share is applied once; the raw halved Coins into Diamonds and then took a second half at cashout",
+  "the raw halved Coins into Diamonds and took a second half at cashout; the policy names both conversions but publishes neither rate, so both halvings are dropped as unverified",
+  "fact check 2026-10-02: an earlier revision called the raw a double count and said the policy describes one conversion; the policy describes two, so that refutation is withdrawn",
   "no fiat value is attached to a gift; the raw priced the Lion at both 450 and 500 USD",
   "the web recharge yield advantage, combo multipliers, and gifter badge levels are dropped as unsourced",
   "affiliate commission ranges and the four-times conversion figure are dropped as unsourced"
@@ -65,8 +71,8 @@
  #>live_platforms_monetization_rate
  ^["rate_reserved"]{
   #:claim #!settled
-  statement: "The policy sets Diamonds from Gifts received at a conversion rate the platform determines from time to time, so no fixed rate can be quoted."
-  reads: %[creator.live.coin_to_diamond, creator.live.coins_per_usd]
+  statement: "The policy sets the Gift-to-Diamond rate from time to time and calculates the Diamond-to-money withdrawal from various factors, so neither rate can be quoted."
+  reads: %[creator.live.coin_to_diamond, creator.live.diamond_to_usd]
   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_tiktok_virtual_items"
  }
  #>live_platforms_monetization_age
@@ -80,12 +86,25 @@
 
 ^["errata"]{
  #>live_platforms_monetization_double_count
- ^["double_count"]{
-  #:claim #!refuted
-  statement: "The raw table halved each Coin into Diamonds and then applied a second 50 percent revenue share at cashout, counting one platform share twice."
+ ^["two_halvings"]{
+  #:claim #!settled
+  statement: "The policy describes two platform-set conversions, Gift to Diamond and Diamond to cash, and publishes neither rate, so the net creator share is not public."
   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_tiktok_virtual_items"
-  fix: "one share sits between Coin spend and Diamond value; the policy describes one conversion, not two"
+  raw: "the raw table halved each Coin into Diamonds, then took a second 50 percent share at cashout"
+  verdict: "unverified, not refuted: the policy can neither confirm nor refute either halving, so neither is carried"
   reads: %[creator.live.creator_share_pct]
+  rates: %[creator.live.coin_to_diamond, creator.live.diamond_to_usd]
+  ^["limits"]{
+   holds: "the global Virtual Items Policy, last updated December 2019, as read on 2026-10-02"
+   fails: "a regional page or creator program that publishes either rate would let the raw arithmetic be checked"
+  }
+ }
+ #>live_platforms_monetization_one_conversion
+ ^["one_conversion"]{
+  #:claim #!refuted
+  statement: "An earlier revision of this receipt said the policy describes one conversion and one platform share; the policy describes two conversions, each at a platform-set rate."
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_tiktok_virtual_items"
+  caught: "fact check of 2026-10-02"
  }
 }
 
@@ -139,7 +158,7 @@
  #:depth #!historical ~#lens(social fabric)
  #:claim #!speculative
  ~#hypothesis: "Public, ranked gifting turns a private tip into a status display, so gift size tracks visibility more than thanks."
- breaks: "a hat holds coins no one else counts; a gift is announced, ranked, and taken by the platform before the host sees it"
+ breaks: "a hat holds coins no one else counts; a gift is announced, ranked, and converted twice at platform-set rates before the host can withdraw it"
  !probe{ "compare busking ethnographies with leaderboard screenshots from public streams" =id[p_creator_monetization_hat] =kind[lit] }
  ~"./monetization-receipt.spw#live_platforms_monetization_gifts" ~#neighbor(nearest)
 }

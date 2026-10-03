@@ -1,0 +1,160 @@
+# Physical
+#
+# The physical class: physics, chemistry, optics, materials, and engineering, with a glossary, a rung ladder, the canonical homes other classes borrow, and the gaps still open.
+
+#>physical_index
+#:layer #!reference
+#:domain #!physical
+#:form #!index
+#:level #!intro
+#:review #!spot_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Physical"
+ ~#claim: "The physical class holds the sciences of matter, energy, and light and the engineering built on them, with one canonical node for each shared core."
+ ~#proof: "Each branch index cites its leaves; each leaf links keystone claims to the physical-sciences or materials-and-engineering registries."
+ ~#door: "Start with the glossary or the branch you work in, then climb the rung ladder."
+ ~#audience: "students, makers, and curious readers entering the sciences of matter and energy"
+ continuity: "Physical | matter, energy, and light"
+ cold_open: "The physical class gathers matter, energy, and light, and the engineering that puts them to work."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5 writer"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial, note: "nine unresolved refs to planned engineering leaves of a sibling package: index, engineering-economics, computer-engineering-core, mechanical-core, industrial-and-systems-engineering, ece-advanced, mechanical-advanced" }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial, note: "re-run after the sibling engineering leaves landed; two refs to the planned engineering/engineering-economics.spw leaf remain unresolved" }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "every ref resolves, including engineering-economics" }
+ }
+ corrections: #[
+  "fact-check: the r3 gate receipt read pass while nine engineering refs were unresolved; it now reads partial until those leaves land and the gate is re-run",
+  "fact-check 2026-10-03: the r5 receipt and the note still said the engineering economics leaf was missing; it exists, and r7 records the gate run that resolves it",
+  "fact-check 2026-10-03: the r4 fact-check receipt was dated 2026-10-01, before the receipts it followed; it is re-dated 2026-10-02, the day that pass ran"
+ ]
+ note: "engineering leaves are written by a sibling package; the 2026-10-03 gate run resolves every engineering rung, including the engineering economics leaf"
+}
+
+^["tree"]{
+ glossary: ~"./physical-glossary.spw"
+ physics: ~"./physics/index.spw"
+ chemistry: ~"./chemistry/index.spw"
+ optics: ~"./optics/index.spw"
+ materials: ~"./materials/index.spw"
+ engineering: ~"./engineering/index.spw"
+}
+
+^["bundle"]{
+ ={ ~"./physical-glossary.spw#physical_glossary" }
+ ={ ~"./physics/index.spw#physics_index" }
+ ={ ~"./chemistry/index.spw#chemistry_index" }
+ ={ ~"./optics/index.spw#optics_index" }
+ ={ ~"./materials/index.spw#materials_index" }
+ ={ ~"./engineering/index.spw#engineering_index" }
+}
+
+^["facets"]{
+ domains: #[ physics, chemistry, optics, materials, engineering ]
+ forms: #[ index, glossary, curriculum, ledger, timeline, comparison, protocol, probe_battery ]
+ order: "PMEST: domain, then primary concept, then form, then era"
+ space: "no region axis; curricula describe US programs and say so where accreditation is named"
+}
+
+^["canonical"]{
+ #>physical_canonical_homes
+ ^["homes"]{
+  thermodynamics: ~"./physics/classical-thermodynamics.spw#physics_thermo_classical"
+  statistical_mechanics: ~"./physics/statistical-mechanics.spw#physics_statmech"
+  electromagnetism: ~"./physics/electromagnetism.spw#physics_em"
+  transport: ~"./engineering/transport-phenomena.spw#engineering_transport"
+  control_and_signals: ~"./engineering/control-and-signals.spw#engineering_control_signals"
+  engineering_economics: ~"./engineering/engineering-economics.spw#engineering_economics"
+  rule: "a discipline that needs one of these cores links it with a needs edge and keeps only a short frame of its own"
+ }
+}
+
+^["ladder"]{
+ order: <<
+  "intro" ;
+  "foundation" ;
+  "advanced" ;
+  "graduate" ;
+  "practitioner"
+ >>
+
+ #>physical_ladder_intro
+ ^["intro"]{
+  rungs: [
+   ~"./materials/water.spw#materials_water",
+   ~"./materials/steel-and-iron.spw#materials_steel",
+   ~"./materials/pigments-and-binders.spw#materials_pigments",
+   ~"./materials/fibers-and-textiles.spw#materials_fibers"
+  ]
+ }
+ #>physical_ladder_foundation
+ ^["foundation"]{
+  rungs: [
+   ~"./physical-glossary.spw#physical_glossary",
+   ~"./physics/core-sequence.spw#physics_core",
+   ~"./physics/classical-thermodynamics.spw#physics_thermo_classical",
+   ~"./chemistry/chemistry-core.spw#chemistry_core",
+   ~"./materials/materials-core.spw#materials_core",
+   ~"./materials/bonding-and-states-of-matter.spw#materials_bonding",
+   ~"./engineering/electrical-core.spw#engineering_electrical",
+   ~"./engineering/computer-engineering-core.spw#engineering_computer",
+   ~"./engineering/mechanical-core.spw#engineering_mechanical",
+   ~"./engineering/engineering-economics.spw#engineering_economics"
+  ]
+ }
+ #>physical_ladder_advanced
+ ^["advanced"]{
+  rungs: [
+   ~"./physics/electromagnetism.spw#physics_em",
+   ~"./physics/statistical-mechanics.spw#physics_statmech",
+   ~"./chemistry/chemical-engineering.spw#chemistry_chemeng",
+   ~"./optics/aberrations-and-lens-design.spw#optics_aberrations",
+   ~"./engineering/control-and-signals.spw#engineering_control_signals",
+   ~"./engineering/transport-phenomena.spw#engineering_transport",
+   ~"./engineering/industrial-and-systems-engineering.spw#engineering_ise"
+  ]
+ }
+ #>physical_ladder_graduate
+ ^["graduate"]{
+  rungs: [
+   ~"./physics/graduate-topics.spw#physics_graduate",
+   ~"./physics/nonequilibrium-and-information.spw#physics_nonequilibrium",
+   ~"./chemistry/chemistry-advanced.spw#chemistry_advanced",
+   ~"./materials/materials-advanced.spw#materials_advanced",
+   ~"./engineering/ece-advanced.spw#engineering_ece_advanced",
+   ~"./engineering/mechanical-advanced.spw#engineering_mechanical_advanced"
+  ]
+ }
+ #>physical_ladder_practitioner
+ ^["practitioner"]{
+  rungs: [ ~"./optics/cine-lenses-and-formats.spw#optics_cine_formats" ]
+  note: "chemistry and mathematics have no practitioner rung yet"
+ }
+}
+
+^["gaps"]{
+ earth_sciences: "earth sciences and climate are missing; water and ecology foundations both need them"
+ astronomy: "astronomy and cosmology are missing, including the low-entropy past that the thermodynamics wonder asks about"
+ acoustics: "acoustics and loudness standards are missing; broadcast, streaming, and film school need them"
+ ceramics_and_glass: "ceramics, glass, and concrete histories have no materials leaf"
+ practitioner_chemistry: "analytical, industrial, and regulatory chemistry practice has no rung"
+ nuclear: "nuclear physics, radiochemistry, and energy systems have no leaf"
+}

@@ -1,0 +1,108 @@
+# Door: At
+#
+# One mark, legible alone: the at sign names a perspective or a root, notifies no one, and puts a name into the graph, so people appear as roles inside strings.
+
+#>spw_door_at
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!field_guide
+#:level #!intro
+#:review #!sourced
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Door: At"
+ ~#claim: "An at sign names a perspective or a root and puts that name into the graph; write people as roles inside strings."
+ ~#proof: "The grammar builds a reference node from an at sign and a name, and the runtime only observes a value through a named observer."
+ ~#door: "Guess what a chat line that starts with a handle becomes, then check it with spw inspect source."
+ ~#audience: "creators and educators who type an at sign to mention someone"
+ continuity: "Door: At | roles inside strings"
+ cold_open: "An at sign names a perspective and reaches no one, so write people as roles inside strings."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "persona study false_friends_top rank 9 and its door text",
+  "reference probes run by the writer at commit 1aa1dc23 on 2026-10-02 with synthetic handles only"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   note: "forward refs to planned files of other packages that were not yet written"
+  }
+  ^["r4"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the 2026-10-02 gate receipt said pass while forward refs to planned files failed; it now records partial, and the 2026-10-03 gate passed once those files existed"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"../glossary/false-friends.spw#spw_false_friends" ]
+}
+
+^["mark"]{
+ #>spw_door_at_reference
+ ^["perspective"]{
+  #:claim #!settled
+  statement: "An at sign followed by a name parses as a reference node, and the runtime observes a value through an observer of that name; no message goes anywhere."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+  cites: [ "packages/spw-seed/src/grammar/references.ts:188-262", "packages/spw-runtime/src/interpreter/interpreter.ts:216-223", "docs/theory/spw/operators.spw:36" ]
+  ~#spoken(at)
+  ^["limits"]{
+   holds: "an at sign touching a name, a dotted path, or a number"
+   fails: "inside a string the at sign is text, which is where a role or an email-like string belongs"
+  }
+ }
+ #>spw_door_at_chat
+ ^["chat_line"]{
+  #:claim #!settled
+  statement: "A chat line written @viewer_a: is this live? becomes a binding keyed by a reference that keeps only the word is; this, live, and a bare question mark are left loose."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+  probe_run: "parsed at 1aa1dc23 with the synthetic handle viewer_a; level: lx @ 70 likewise gives a reference named 70"
+ }
+ #>spw_door_at_people
+ ^["roles_not_names"]{
+  #:claim #!settled
+  statement: "This cut names public figures and published authors only and writes everyone else as a role inside a string, so a private handle never becomes a graph node."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_contract"
+  label: "a-cut rule from the contract ethics frame, not repository canon"
+ }
+}
+
+^["habits"]{
+ keep: "an at sign that marks whose view this is, as a perspective or a root"
+ quote: [
+  "everything a person typed, with synthetic handles such as viewer_a in place of real ones",
+  "clock times and levels, such as a level written as 0.7 instead of at 70",
+  "citation keys and email addresses"
+ ]
+ unlearn: "an at sign here mentions no one and pings no one; it adds a name to the tree"
+}
+
+^["keyboard"]{
+ #>spw_door_at_keys
+ ^["two_places"]{
+  #:claim #!settled
+  statement: "The at sign needs Shift on both Windows layouts: with the 2 key on the US layout and with the apostrophe key on the UK layout."
+  reads: %[doors.key.at_us_mods, doors.key.at_uk_mods]
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_kbd_uk"
+ }
+}
+
+#>spw_door_at_q
+?["What does a chat line that opens with a handle become?"]{
+ #:depth #!ethical ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "A streaming habit predicts a message addressed to someone; the reveal that the handle became a graph node is what makes pseudonyms feel necessary."
+ !probe{ "guess first, then run spw inspect source --text on a chat line with the synthetic handle viewer_a and --through structure" =id[p_doors_at_chat_line] =kind[thought] }
+ breaks: "a platform mention notifies a person, while a Spw reference only names a node, which is why the privacy rule lives in the contract and not in the syntax"
+ ~"./at.spw#spw_door_at_chat" ~#neighbor(nearest)
+}

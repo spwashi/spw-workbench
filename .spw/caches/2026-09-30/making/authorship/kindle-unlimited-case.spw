@@ -7,14 +7,14 @@
 #:domain #!authorship
 #:form #!dossier
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 #:era #!contemporary
 
 ^"emit"{
  ~#title: "Kindle Unlimited"
  ~#claim: "Kindle Unlimited began in 2014 as a reading subscription, switched in 2015 to paying authors by pages read, and binds enrolled eBooks to Kindle exclusivity."
- ~#proof: "Launch and payment history from contemporary reporting; exclusivity and content-quality rules from KDP help pages read on 2026-10-01."
+ ~#proof: "Launch and payment history from encyclopedia summaries; exclusivity and content-quality rules from KDP help pages read on 2026-10-01 and 2026-10-02."
  ~#door: "Compare the exclusive route with the wide route in the platforms matrix."
  ~#audience: "authors and media historians"
  continuity: "Kindle Unlimited | pages read"
@@ -24,13 +24,29 @@
 ^"provenance"{
  as_of: "2026-09-30"
  generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
  ^["receipts"]{
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   pending: "unresolved refs to planned files of other packages: spw/history/plan-ecology.spw#workbench_history_plans"
+  }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   pending: "unresolved refs to planned files of other packages: spw/history/plan-ecology.spw#workbench_history_plans"
+  }
  }
- corrections: #[ "the raw per-page range of 0.0040 to 0.0048 USD is not carried; the monthly rate is a verify cell" ]
+ corrections: #[
+  "the raw per-page range of 0.0040 to 0.0048 USD is not carried; the monthly rate is a verify cell",
+  "launch and page-pay claims now cite the encyclopedia entries re-read on 2026-10-02; the two press pieces could not be fetched and are flagged verify",
+  "fact check 2026-10-02: the r3 gate receipt said pass while refs to planned files of other packages failed; it now records partial and names them"
+ ]
 }
 
 ^["edges"]{
@@ -51,7 +67,7 @@
   #:claim #!settled
   statement: "Amazon launched Kindle Unlimited in July 2014 as a reading subscription priced at 9.99 USD a month in the US."
   reads: %[creator.ku.launch_price_usd_month]
-  sources: [ ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_ku", ~"../../registries/sources/creators-and-platforms.spw#src_creator_owen_2014" ]
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_ku"
  }
  #>authorship_kindle_unlimited_borrow_rule
  ^["borrow_rule"]{
@@ -64,7 +80,7 @@
   #:claim #!settled
   statement: "In July 2015 Amazon switched Select payments to pages read, measured with normalized page counts and paid from a monthly fund."
   reads: %[creator.ku.kenp_rate_usd_per_page]
-  sources: [ ~"../../registries/sources/creators-and-platforms.spw#src_creator_wayner_2015", ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_kdp" ]
+  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_kdp"
  }
  #>authorship_kindle_unlimited_exclusive
  ^["exclusivity"]{

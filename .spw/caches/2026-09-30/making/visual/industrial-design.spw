@@ -7,7 +7,7 @@
 #:domain #!visual_arts
 #:form #!timeline
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 #:era #!modern
 
@@ -28,13 +28,18 @@
  lineage: #[ ".spw/caches/university-education/design-and-industrial-engineering/undergrad-industrial-design.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-01", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
  }
  corrections: [
   "G3 continuity matches the rate of change of curvature; the raw called it torsion rate continuity",
   "the raw 28 percent surgical-handle fatigue figure is removed as invented",
-  "the raw curriculum list is restructured as a dated timeline with a glossary"
+  "the raw curriculum list is restructured as a dated timeline with a glossary",
+  "the timeline is reordered by origin year: mingei (1926) before human factors (1955), mistake-proofing (1960s) before responsible design (1971), and usability (1988) before universal design (1997)"
  ]
 }
 
@@ -44,21 +49,22 @@
 }
 
 ^["concepts"]{
- primary: [ #continuity_class, #affordance ]
- transfers: [ #mistake_proofing, #repairability ]
- tensions: [ #planned_obsolescence ]
+ primary: [ #continuity_class, #mistake_proofing ]
+ transfers: [ #composition, #standards ]
+ tensions: [ #obsolescence ]
 }
 
 ^["timeline"]{
+ order_by: "the year each idea took shape, with the year of the cited work beside it where the two differ"
  order: <<
   "Bauhaus" ;
-  "human factors" ;
   "mingei" ;
-  "responsible design" ;
+  "human factors" ;
   "mistake-proofing" ;
+  "responsible design" ;
   "less but better" ;
-  "universal design" ;
   "usability" ;
+  "universal design" ;
   "repairability law"
  >>
 
@@ -68,48 +74,56 @@
   statement: "The Bauhaus, founded by Walter Gropius in Weimar in 1919 and closed in 1933, joined art, craft, and industrial production in one school."
   source: ~"../../registries/sources/film-stage-visual.spw#src_film_whitford_1984"
   era: 1919..1933
+  origin: "1919"
+ }
+ #>visual_arts_id_mingei
+ ^["mingei"]{
+  #:claim #!settled
+  statement: "Soetsu Yanagi, with the potters Kawai Kanjiro and Hamada Shoji, launched the mingei movement in Japan in 1926 to prize anonymous everyday folk craft."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_yanagi_1972"
+  origin: "1926; The Unknown Craftsman carried it to English readers in 1972"
  }
  #>visual_arts_id_dreyfuss
  ^["human_factors"]{
   #:claim #!settled
   statement: "Henry Dreyfuss's Designing for People (1955) made body measurements and human factors a working basis for product design."
   source: ~"../../registries/sources/film-stage-visual.spw#src_film_dreyfuss_1955"
+  origin: "1955"
  }
- #>visual_arts_id_mingei
- ^["mingei"]{
+ #>visual_arts_id_poka_yoke
+ ^["mistake_proofing"]{
   #:claim #!settled
-  statement: "Soetsu Yanagi's mingei movement in Japan prized anonymous, everyday folk craft; The Unknown Craftsman (1972) carried it to English readers."
-  source: ~"../../registries/sources/film-stage-visual.spw#src_film_yanagi_1972"
+  statement: "Shigeo Shingo developed poka-yoke in factory practice in the 1960s, devices that make a wrong action impossible or obvious, and described it in Zero Quality Control (1986)."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_shingo_1986"
+  origin: "1960s in practice; the English book appeared in 1986"
  }
  #>visual_arts_id_papanek
  ^["responsible_design"]{
   #:claim #!settled
   statement: "Victor Papanek's Design for the Real World (1971) argued that designers answer for social and environmental harm as well as form."
   source: ~"../../registries/sources/film-stage-visual.spw#src_film_papanek_1971"
- }
- #>visual_arts_id_poka_yoke
- ^["mistake_proofing"]{
-  #:claim #!settled
-  statement: "Shigeo Shingo described poka-yoke, devices that make a wrong action impossible or obvious, in Zero Quality Control (1986)."
-  source: ~"../../registries/sources/film-stage-visual.spw#src_film_shingo_1986"
+  origin: "1971"
  }
  #>visual_arts_id_rams
  ^["less_but_better"]{
   #:claim #!settled
-  statement: "Dieter Rams set out ten principles of good design from his work at Braun, summed up as less but better."
+  statement: "Dieter Rams set out ten principles of good design from his work at Braun around 1980, summed up as less but better."
   source: ~"../../registries/sources/film-stage-visual.spw#src_film_klemp_2009"
+  origin: "late 1970s to early 1980s"
+ }
+ #>visual_arts_id_norman
+ ^["usability"]{
+  #:claim #!settled
+  statement: "Don Norman's The Design of Everyday Things (first ed. 1988, revised 2013) made usability central; the revision separates affordances, what an object allows, from signifiers, what tells a user how to act."
+  source: ~"../../registries/sources/film-stage-visual.spw#src_film_norman_2013"
+  origin: "1988, as The Psychology of Everyday Things; revised 2013"
  }
  #>visual_arts_id_universal
  ^["universal_design"]{
   #:claim #!settled
   statement: "The Center for Universal Design at NC State published seven Principles of Universal Design in 1997, aiming at use by as many people as possible without adaptation."
   source: ~"../../registries/sources/film-stage-visual.spw#src_film_ncsu_ud_1997"
- }
- #>visual_arts_id_norman
- ^["usability"]{
-  #:claim #!settled
-  statement: "Don Norman's The Design of Everyday Things (revised 2013) separates affordances, what an object allows, from signifiers, what tells a user how to act."
-  source: ~"../../registries/sources/film-stage-visual.spw#src_film_norman_2013"
+  origin: "1997"
  }
  #>visual_arts_id_batteries
  ^["repairability_law"]{
@@ -118,6 +132,7 @@
   reads: %[film.eu_battery.removable_from]
   source: ~"../../registries/sources/film-stage-visual.spw#src_film_eu_batteries_2023"
   as_of: "2026-10-01"
+  origin: "2023"
  }
 }
 

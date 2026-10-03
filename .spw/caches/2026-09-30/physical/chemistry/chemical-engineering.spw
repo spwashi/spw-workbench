@@ -1,0 +1,198 @@
+# Chemical Engineering
+#
+# Balances, molecular thermodynamics, reactors, separations, process systems, and process safety as a prerequisite graph, with transport and control borrowed from their canonical engineering nodes.
+
+#>chemistry_chemeng
+#:layer #!reference
+#:domain #!chemistry
+#:form #!curriculum
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Chemical Engineering"
+ ~#claim: "Chemical engineering turns a reaction into a plant by closing mass and energy balances, sizing reactors and separations, and designing out the hazards that scale-up creates."
+ ~#proof: "Felder, Fogler, Seader, and Prausnitz for the core; Linnhoff for pinch analysis; the Flixborough inquiry and the CSB Texas City report for process safety."
+ ~#door: "Build the sugar-cube reactor, then read the safety cases before the unit-operation matrix."
+ ~#audience: "chemical engineering students and chemists moving from flask to plant"
+ continuity: "Chemical Engineering | scale-up"
+ cold_open: "A reaction that behaves in a flask can run away in a tank, so chemical engineering is the craft of scale-up done safely."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/chemistry-and-chemical-engineering/undergrad-chemical-engineering.spw", ".spw/caches/university-education/chemistry-and-chemical-engineering/masters-chemical-engineering.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial, note: "one unresolved ref to the planned engineering/engineering-economics.spw leaf of a sibling package" }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "every ref resolves, including engineering-economics" }
+ }
+ corrections: #[
+  "transport and heat-exchanger content points to the canonical engineering transport node instead of a third copy",
+  "pumping energy falling with the fifth power of radius holds only in fully rough turbulent flow at fixed flow rate; the transport node carries the regime table",
+  "the claim that reaction rate is almost always governed by mass transfer was scoped: it holds for fast heterogeneous or multiphase reactions",
+  "process control points to the canonical control-and-signals node",
+  "the digital-twin and Neural-ODE hypotheses with invented 50 and 18 percent figures were dropped",
+  "fact-check: the undated survivors-still-seek-remedy line is replaced by the dated 2023 dismissal of the curative petition, with its own source",
+  "fact-check: the r3 gate receipt now reads partial until the engineering economics leaf lands",
+  "fact-check 2026-10-03: the note still said the engineering economics leaf was unwritten; it exists, and r6 records the gate run that resolves it",
+  "fact-check 2026-10-03: the Bhopal as_of read as if nothing followed the 2023 dismissal; a verify line now flags the 2024 to 2025 waste-removal orders and the Pithampur incineration",
+  "fact-check 2026-10-03: the r4 fact-check receipt was dated 2026-10-01, before the receipts it followed; it is re-dated 2026-10-02, the day that pass ran"
+ ]
+ note: "the see edge to the engineering economics leaf, written by a sibling package, resolves in the 2026-10-03 gate run"
+}
+
+^["edges"]{
+ needs: [ ~"./chemistry-core.spw#chemistry_core", ~"../engineering/transport-phenomena.spw#engineering_transport", ~"../engineering/control-and-signals.spw#engineering_control_signals", ~"../physics/classical-thermodynamics.spw#physics_thermo_classical" ]
+ grounds: [ ~"../../registries/quantities/physical-sciences-and-image.spw#q_phys_safety" ]
+ see: [ ~"../engineering/engineering-economics.spw#engineering_economics" ]
+}
+
+^["concepts"]{
+ primary: [ #scale_up, #equilibrium, #process_safety ]
+ transfers: [ #feedback, #exergy ]
+ tensions: [ #schedule_pressure ]
+}
+
+^["dag"]{
+ order: << "balances" ; "molecular thermodynamics" ; "reaction engineering" ; "separations" ; "process systems" ; "design and safety" >>
+
+ #>chemistry_chemeng_balances
+ ^["balances"]{
+  #:claim #!settled
+  statement: "Every flowsheet starts with mass and energy balances and a degrees-of-freedom count; recycle streams need purges, or inert species accumulate without limit."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_felder_2016"
+ }
+ #>chemistry_chemeng_molecular_thermo
+ ^["molecular_thermodynamics"]{
+  #:claim #!settled
+  statement: "Phase-equilibrium design rests on cubic equations of state for gases and hydrocarbons and on activity-coefficient models such as NRTL, UNIQUAC, and UNIFAC for nonideal liquids."
+  needs: [ ~"../physics/classical-thermodynamics.spw#physics_thermo_eos", ~"./chemical-engineering.spw#chemistry_chemeng_balances" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_prausnitz_1999"
+ }
+ #>chemistry_chemeng_reactors
+ ^["reaction_engineering"]{
+  #:claim #!settled
+  statement: "Batch, continuous stirred-tank, and plug-flow reactors are sized from design equations; residence time distributions and Thiele moduli correct for mixing and pore diffusion."
+  needs: [ ~"./chemical-engineering.spw#chemistry_chemeng_balances" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_fogler_2016"
+ }
+ #>chemistry_chemeng_scale_up
+ ^["scale_up"]{
+  #:claim #!settled
+  statement: "Heat released by a reaction grows with vessel volume while cooling grows with wall area, so an exothermic reaction safe in a flask can run away in a large tank."
+  needs: [ ~"./chemical-engineering.spw#chemistry_chemeng_reactors" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_fogler_2016"
+  ~#say(volume makes heat, surface sheds it)
+ }
+ #>chemistry_chemeng_separations
+ ^["separations"]{
+  #:claim #!settled
+  statement: "Staged separations exploit a difference between phases; McCabe and Thiele gave the graphical stage count for binary distillation in 1925, and shortcut methods extend to many components."
+  needs: [ ~"./chemical-engineering.spw#chemistry_chemeng_molecular_thermo" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_seader_2011"
+ }
+ #>chemistry_chemeng_pinch
+ ^["process_systems"]{
+  #:claim #!settled
+  statement: "Pinch analysis, developed by Linnhoff and colleagues, sets minimum hot and cold utility targets for a heat-exchanger network before any exchanger is drawn."
+  needs: [ ~"./chemical-engineering.spw#chemistry_chemeng_balances" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_linnhoff_1982"
+  ^["optimization"]{
+   programs: "flowsheet synthesis uses mixed-integer linear and nonlinear programming"
+   control: "model predictive control lives in the canonical control node"
+  }
+ }
+ #>chemistry_chemeng_hazop
+ ^["design_and_safety"]{
+  #:claim #!settled
+  statement: "HAZOP, developed at ICI in the 1960s and spread by Kletz, walks each line of a design with guide words such as no, more, and reverse to find deviations and their safeguards."
+  needs: [ ~"./chemical-engineering.spw#chemistry_chemeng_scale_up", ~"./chemical-engineering.spw#chemistry_chemeng_pinch" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_kletz_1999"
+ }
+ #>chemistry_chemeng_psm
+ ^["psm_rule"]{
+  #:claim #!settled
+  statement: "In the United States, plants holding highly hazardous chemicals above threshold quantities fall under OSHA process safety management, which requires hazard analysis, management of change, and incident investigation."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_osha_1910_119"
+  as_of: "29 CFR 1910.119 as promulgated 1992; current text to verify"
+ }
+}
+
+^["unit_operations"]{
+ columns: #[ exploits, workhorse, limits ]
+ ^["distillation"]{ exploits: "differences in volatility", workhorse: "trayed or packed columns with reflux", limits: "azeotropes and close boilers" }
+ ^["absorption"]{ exploits: "gas solubility in a liquid", workhorse: "packed towers sized by transfer units", limits: "solvent regeneration energy" }
+ ^["extraction"]{ exploits: "partition between immiscible liquids", workhorse: "countercurrent stages or columns", limits: "solvent recovery and emulsions" }
+ ^["membranes"]{ exploits: "permeability differences", workhorse: "reverse osmosis and gas permeation modules", limits: "fouling and concentration polarization" }
+ ^["crystallization"]{ exploits: "solubility change with temperature or solvent", workhorse: "cooling and evaporative crystallizers", limits: "polymorphs and fines" }
+ source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_seader_2011"
+}
+
+^["cases"]{
+ #>chemistry_chemeng_flixborough
+ ^["flixborough_1974"]{
+  #:claim #!settled
+  statement: "At Flixborough in June 1974 a temporary bypass pipe, installed without proper design, failed and released cyclohexane, and the vapor cloud explosion killed 28 people."
+  reads: %[phys.safety.flixborough_deaths]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_flixborough_1975"
+  lesson: "a modification is a design change and needs the same review"
+ }
+ #>chemistry_chemeng_bhopal
+ ^["bhopal_1984"]{
+  #:claim #!settled
+  statement: "In December 1984 methyl isocyanate escaped from a Union Carbide pesticide plant in Bhopal, killing thousands and injuring many more; in 2023 India's Supreme Court dismissed the government's curative petition for more compensation."
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_broughton_2005", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_bhopal" ]
+  as_of: "2026-10-03; the compensation record here ends at the 14 March 2023 dismissal of the curative petition"
+  verify: "court-driven cleanup of the factory site went on after 2023: by writer knowledge the Madhya Pradesh High Court ordered the site waste removed in December 2024 and it went to Pithampur for incineration in 2025; no court order or dated report could be fetched in this pass, so check before citing"
+  lesson: "storage of a toxic intermediate near a city, with disabled safety systems, turned a leak into a catastrophe"
+ }
+ #>chemistry_chemeng_texas_city
+ ^["texas_city_2005"]{
+  #:claim #!settled
+  statement: "In March 2005 a raffinate splitter overfilled during startup at BP Texas City, and the vapor released from a blowdown stack exploded, killing 15 workers."
+  reads: %[phys.safety.texas_city_2005_deaths]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_csb_2007"
+  lesson: "startups are transient states; occupied trailers near the unit put people in the blast zone"
+ }
+ #>chemistry_chemeng_haber_bosch
+ ^["haber_bosch"]{
+  #:claim #!settled
+  statement: "Smil argues that synthetic ammonia from the Haber-Bosch process feeds a large share of humanity, which makes decarbonizing it one of chemical engineering's central tasks."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_smil_2001"
+ }
+}
+
+^["try"]{
+ #>chemistry_chemeng_try_sugar_cubes
+ ^["sugar_cube_reactor"]{
+  materials: [ "twenty-seven sugar cubes", "paper and pencil" ]
+  steps: << "count the exposed faces of one cube" ; "stack eight into a two-by-two cube and count faces again" ; "stack all twenty-seven and count" ; "divide faces by cubes each time" ; "say what happens to cooling per unit of heat as the tank grows" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./chemical-engineering.spw#chemistry_chemeng_scale_up"
+ }
+}
+
+#>chemistry_chemeng_transient_q
+?["Do major process accidents cluster in startups, shutdowns, and modifications rather than steady running?"]{
+ #:depth #!social ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "Transient operations and unreviewed changes should account for a larger share of major incidents than their share of operating hours."
+ !probe{ "code CSB investigation reports by operating mode at the time of the incident" =id[p_phys_chemeng_transients] =kind[census] }
+ $%[phys.safety.flixborough_deaths, phys.safety.texas_city_2005_deaths]
+ ~"./chemical-engineering.spw#chemistry_chemeng_texas_city" ~#neighbor(nearest)
+}

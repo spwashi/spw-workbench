@@ -1,0 +1,227 @@
+# VS Code Rendering
+#
+# The four layers that color a Spw file in VS Code, compared construct by construct against what the seed lexer reads, with the scope map, the palette, and the apostrophe spill.
+
+#>editor_hosts_vscode_rendering
+#:layer #!reference
+#:domain #!editor_hosts
+#:form #!comparison
+#:level #!practitioner
+#:review #!sourced
+#:valence #!bane
+#:era #!current
+
+^"emit"{
+ ~#title: "VS Code Rendering"
+ ~#claim: "TextMate, server tokens, decorations, and inlay hints each color Spw from their own regexes or token index, so they can disagree with the parse."
+ ~#proof: "Each matrix cell cites the grammar, the token scanner, the decoration pass, or the seed lexer by file and line at commit 1aa1dc23."
+ ~#door: "Read the inline comment row, then try the apostrophe spill in a scratch file."
+ ~#audience: "VS Code users puzzled by colors and maintainers of the grammar and decorations"
+ continuity: "VS Code Rendering | own regexes"
+ cold_open: "Four layers paint a Spw file in VS Code, each with its own regexes, so a color can say something the parse does not."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/vscode/syntax-highlighting.spw", ".spw/caches/vscode/decorations.spw" ]
+ method: #corrected
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: [
+  "the raw syntax cache said semantic tokens arrive full and delta; the server sends full only",
+  "the raw syntax cache said tokens come after AST analysis; the scanner reads line text and imports nothing from the seed",
+  "the raw decorations cache cited extensions/vscode-spw/src/surface/, which does not exist; the pass lives in src/surface-decorations.ts",
+  "the raw decorations cache mapped tilde to the wonder phase and listed hash as a phase color; the code paints tilde with phasePotential and leaves hash to the annotation layer",
+  "the raw decorations cache said decorations cover the visible range plus a hundred lines; the pass reads the whole document text",
+  "the raw decorations cache gave valences moral meanings such as verified truth; this surface records the manifest wording and the canon disagreement"
+ ]
+ kept: "the token scope map in the raw syntax cache matches semanticTokenScopes in the manifest and is kept with its line numbers"
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/spw-hosts-and-history.spw#q_hosts_palette" ]
+ needs: [ ~"./lsp-surface.spw#editor_hosts_lsp" ]
+ contrasts: [ ~"./jetbrains-native-features.spw#editor_hosts_jetbrains_native" ]
+ see: [ ~"../theory/valence-and-charge.spw#spw_theory_valence", ~"../../vocabulary.spw#cut_vocabulary" ]
+}
+
+^["concepts"]{
+ primary: [ #color_layer, #semantic_tokens, #line_regex ]
+ transfers: [ #apostrophe_spill ]
+ tensions: [ #editor_only_semantics ]
+}
+
+^["layers"]{
+ #>editor_hosts_vscode_rendering_layers
+ ^["four_layers"]{
+  #:claim #!settled
+  statement: "No coloring layer reads the parse tree: the grammar, the token scanner, and the decoration pass run their own regexes, and inlay hints read the server's token index and regex path hits."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_grammar"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_semantic_tokens", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_decorations", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_display", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_render_study" ]
+  cites: [ "packages/spw-lsp/src/handlers/semantic-tokens.ts:31", "extensions/vscode-spw/src/surface-decorations.ts:264-404", "packages/spw-lsp/src/handlers/display.ts:1203-1290", "packages/spw-lsp/src/spw-selector.ts:300-304" ]
+  correction_of_study: "the render study said none of the four reads the parser; inlay hints do read lexer tokens through the server index, though never the AST"
+ }
+ ^["rows"]{
+  textmate: .{ owner: "client", file: "extensions/vscode-spw/syntaxes/spw.tmLanguage.json", speed: "on open, no server" }
+  semantic_tokens: .{ owner: "server", file: "packages/spw-lsp/src/handlers/semantic-tokens.ts", speed: "full document per request" }
+  decorations: .{ owner: "client", file: "extensions/vscode-spw/src/surface-decorations.ts", speed: "whole text after a 120 ms throttle" }
+  inlay_hints: .{ owner: "server", file: "packages/spw-lsp/src/handlers/display.ts", speed: "per request, settings fixed at initialize" }
+ }
+ reads: %[hosts.vscode.decoration_refresh_ms]
+}
+
+^["matrix"]{
+ #>editor_hosts_vscode_rendering_inline_hash
+ ^["inline_hash_comment"]{
+  #:claim #!settled
+  statement: "After a hash and a space mid-line, the seed lexes a comment to end of line, while the grammar, the token scanner, and decorations keep painting what follows."
+  construct: "a: 1 # note {x} 42"
+  seed: "COMMENT hash-prose to end of line; packages/spw-seed/src/lexer/matchers/comments.ts:52-75"
+  textmate: "comment only when the hash starts the line; syntaxes/spw.tmLanguage.json:84-86"
+  semantic_tokens: "the hash-space branch is empty, so braces and digits after it are painted; semantic-tokens.ts:122-125"
+  decorations: "the mask covers strings and slash comments only, so sigils in hash prose are painted; surface-decorations.ts:89-109"
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_seed_comments"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_semantic_tokens", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_decorations" ]
+ }
+ #>editor_hosts_vscode_rendering_apostrophe
+ ^["apostrophe_spill"]{
+  #:claim #!settled
+  statement: "A lone apostrophe opens a masked string in the decoration pass that runs across lines to the next apostrophe, so decorations vanish below it."
+  construct: "a title comment that contains an apostrophe"
+  seed: "a stray apostrophe raises an unterminated-string error while success stays true"
+  textmate: "VS Code opens a single-quoted string only when no word character precedes it; syntaxes/spw.tmLanguage.json:174-177"
+  decorations: "any apostrophe outside a mask starts a string that crosses newlines; surface-decorations.ts:94-101"
+  intellij_textmate: "the IntelliJ copy opens a string at every apostrophe; textmate/spw.tmLanguage.json:171-173"
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_decorations"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_grammar", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_grammar", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_render_study" ]
+  in_this_cut: "the contract keeps apostrophes inside double-quoted strings for this reason; the fix belongs in the tools"
+ }
+ #>editor_hosts_vscode_rendering_valence
+ ^["bare_valence"]{
+  #:claim #!settled
+  statement: "The seed lexes bare valence words as modifiers, but the grammar and decorations paint a valence only after a bang, so boon.honk in a value stays plain."
+  construct: "mood: boon.honk"
+  seed: "MODIFIER boon, OPERATOR dot, MODIFIER honk"
+  textmate: "keyword.valence rules match bang plus the word; syntaxes/spw.tmLanguage.json:233-256"
+  decorations: "valence regex requires a leading bang; surface-decorations.ts:358-372"
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_decorations"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_grammar" ]
+ }
+ #>editor_hosts_vscode_rendering_equals
+ ^["equals_as_constraint"]{
+  #:claim #!settled
+  statement: "Decorations paint every equals sign as a warm constraint color, and the manifest calls it constraint, while canon reads equals as bias and the seed lexes the double arrow apart."
+  construct: "a ~> b => c, and =axis[x]{ y }"
+  seed: "CONNECTOR for the tilde arrow, ARROW for the double arrow"
+  decorations: "equals maps to tierWarm; surface-decorations.ts:219,339"
+  manifest: "highlightOperators description says equals is constraint; package.json:199"
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_decorations"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_manifest", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_tokens_study" ]
+ }
+ #>editor_hosts_vscode_rendering_status
+ ^["claim_status_unpainted"]{
+  #:claim #!settled
+  statement: "Claim moods such as settled and contested look the same in every layer; the decoration status tiers key on implemented, partial, proposed, and deprecated instead."
+  decorations: "status tiers; surface-decorations.ts:145-154,391-403"
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_decorations"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_render_study" ]
+ }
+ #>editor_hosts_vscode_rendering_tilde_hash
+ ^["tilde_hash_ignores_setting"]{
+  #:claim #!settled
+  statement: "The tilde-hash key compound is painted even when highlightSemantics is off, though the setting description says it controls that compound."
+  decorations: "compound mask built unconditionally and applied; surface-decorations.ts:272,424"
+  manifest: "highlightSemantics description; package.json:201-205"
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_decorations"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_manifest" ]
+ }
+}
+
+^["scope_map"]{
+ #>editor_hosts_vscode_rendering_scopes
+ ^["semantic_token_scopes"]{
+  #:claim #!settled
+  statement: "The manifest maps each server token type and modifier pair to TextMate scopes, so a theme without semantic rules still colors server tokens."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_manifest"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_semantic_guide" ]
+  cites: "extensions/vscode-spw/package.json:281-307"
+ }
+ ^["rows"]{
+  operator_declaration: "punctuation.section.block.begin.spw, keyword.operator.brace.open.spw"
+  operator_definition: "keyword.operator.couple.spw, keyword.operator.confluence.spw"
+  operator_async: "keyword.operator.stream.spw"
+  type_definition: "entity.name.type.lens.spw"
+  variable_definition: "entity.name.type.path-ref.spw"
+  property_declaration: "entity.name.tag.exp.spw, variable.other.property.exp.spw"
+  property_readonly: "variable.other.constant.spw, keyword.operator.config.spw"
+  function_modification: "entity.name.function.action.spw, markup.bold.spw"
+  function_async: "entity.name.function.probe.spw"
+  keyword_declaration: "keyword.control.frame.spw, entity.name.function.frame.spw"
+  keyword_definition: "keyword.control.dialect.spw, entity.name.tag.dialect.spw"
+  keyword_readonly: "keyword.operator.collapse.spw"
+ }
+ no_custom_types: "the extension contributes no semanticTokenTypes, so every server role must fit the nine standard types"
+}
+
+^["palette"]{
+ #>editor_hosts_vscode_rendering_palette_size
+ ^["small_palette"]{
+  #:claim #!settled
+  statement: "Twenty-three contributed color ids resolve to thirteen distinct dark hex values and fourteen light ones, so several roles share a color."
+  reads: %[hosts.vscode.color_id_count, hosts.palette.distinct_dark_hex_count]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_manifest"
+  cites: "extensions/vscode-spw/package.json:230-253"
+ }
+ #>editor_hosts_vscode_rendering_merit
+ ^["palette_merit"]{
+  #:claim #!contested
+  statement: "The manifest describes boon as growth and implemented state and bane as hazard and error in red, while canon calls the pentad charge-neutral material, not merit."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_manifest"
+  counter: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_valence_canon"
+  cites: [ "extensions/vscode-spw/package.json:249-253", "docs/theory/spw/valence-architecture.spw:38-39", "extensions/vscode-spw/src/surface-decorations.ts:236-239" ]
+  disagreement: "code says bane is an error state; canon and this cut say valence is material quality; the status tiers reuse the valence colors, so deprecated looks like bane"
+ }
+ #>editor_hosts_vscode_rendering_contrast
+ ^["light_contrast"]{
+  #:claim #!settled
+  statement: "On a white background the light bone color reaches about 3.1 to 1 and the light potential color about 4.1 to 1, both under the 4.5 to 1 WCAG minimum for normal text."
+  reads: %[
+   hosts.palette.bone_light_contrast,
+   hosts.palette.potential_light_contrast,
+   hosts.palette.wcag_aa_text_ratio
+  ]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_wcag_22"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_manifest" ]
+  method: "relative luminance of BF8803 and 1B8F6A against FFFFFF by the WCAG formula, computed on 2026-10-02"
+  ^["limits"]{
+   holds: "for text drawn in these colors on a white editor background"
+   fails: "for dark themes, high-contrast themes, and bold weights, which change the threshold or the background"
+  }
+ }
+}
+
+^["try"]{
+ #>editor_hosts_vscode_rendering_try_spill
+ ^["watch_the_spill"]{
+  materials: [ "VS Code with the Spw extension", "a scratch .spw file" ]
+  steps: << "write a hash title line that contains an apostrophe" ; "below it write two frames with bang and caret sigils" ; "see the sigils lose their decoration color" ; "add a second apostrophe on a later comment line" ; "see the colors return after it" >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "none worth naming; use a scratch file"
+  shows: ~"./vscode-rendering.spw#editor_hosts_vscode_rendering_apostrophe"
+ }
+}
+
+#>editor_hosts_vscode_rendering_q
+?["Would a palette with no red for bane change how readers judge a bane surface?"]{
+ #:depth #!ethical ~#lens(semiotic charge)
+ #:claim #!speculative
+ ~#hypothesis: "Readers shown bane in a neutral hue should rate a limits frame as less of a failure than readers shown it in error red."
+ !probe{ "show two consenting groups the same contraindications frame, one with bane in red and one in a neutral hue, and ask each to describe it" =id[p_hosts_rendering_bane_hue] =kind[interview] }
+ $%[hosts.palette.distinct_dark_hex_count, hosts.vscode.color_id_count]
+ ~"./vscode-rendering.spw#editor_hosts_vscode_rendering_merit" ~#neighbor(nearest)
+}

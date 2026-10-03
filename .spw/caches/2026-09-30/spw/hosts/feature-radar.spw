@@ -1,0 +1,191 @@
+# Host Feature Radar
+#
+# Protocol features the server leaves unused, the JetBrains substrate choice, and editor APIs the hosts could adopt, each mapped to the plan card that holds it and its standing.
+
+#>editor_hosts_radar
+#:layer #!pragmatics
+#:domain #!editor_hosts
+#:form #!registry
+#:level #!advanced
+#:review #!sourced
+#:valence #!boon
+#:era #!current
+
+^"emit"{
+ ~#title: "Host Feature Radar"
+ ~#claim: "The server leaves several LSP features unused, and each candidate here names its plan card and whether the owner holds it, keeps it dormant, or has no card."
+ ~#proof: "Rows cite the LSP 3.17 specification, the JetBrains LSP feature table, LSP4IJ, the VS Code semantic highlight guide, and plan cards at commit 1aa1dc23."
+ ~#door: "Read the hold rule first, then pick a row and open its card."
+ ~#audience: "maintainers and the owner weighing what the hosts adopt next"
+ continuity: "Host Feature Radar | names its plan card"
+ cold_open: "Each feature the hosts could adopt next names its plan card and says whether the owner holds it or lets it rest."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ standing_words: "lead, held, and dormant are the owner hold words of the resume note; no card means no plan names the item yet"
+}
+
+^["edges"]{
+ needs: [ ~"./lsp-surface.spw#editor_hosts_lsp", ~"./host-parity-matrix.spw#editor_hosts_parity" ]
+ grounds: [ ~"../../registries/quantities/spw-hosts-and-history.spw#q_hosts_jb" ]
+}
+
+^["concepts"]{
+ primary: [ #capability_gap, #native_lsp, #plan_card ]
+ transfers: [ #parity_of_questions ]
+ tensions: [ #editor_chrome ]
+}
+
+^["hold_rule"]{
+ #>editor_hosts_radar_hold
+ ^["owner_hold"]{
+  #:claim #!settled
+  statement: "The owner holds the method matrix, the LSP4IJ comparison, and citation journeys, and keeps VS Code performance dormant until a retained sample names a cost."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_resume_note"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_cards_editors" ]
+  cites: [ ".spw/caches/resume/2026-09-30-direction.spw:43-54", ".spw/caches/resume/2026-09-30-direction.spw:72-77" ]
+  provenance_label: "owner hold"
+  ^["limits"]{
+   holds: "as a record of standing on 2026-09-30"
+   fails: "as a ranking of merit; a held row may be the right next step once its sample exists"
+  }
+ }
+}
+
+^["protocol_rows"]{
+ #>editor_hosts_radar_tokens_delta
+ ^["tokens_delta_range"]{
+  #:claim #!settled
+  statement: "The server sends full semantic tokens only; result ids, deltas, and range requests are defined by the protocol and unused."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_spec_317"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_server", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_tokens_study" ]
+  cites: "packages/spw-lsp/src/stdio-server.ts:227-230"
+  card: "vscode-plugin-performance"
+  standing: "dormant"
+  status: #proposed
+ }
+ #>editor_hosts_radar_config
+ ^["config_and_refresh"]{
+  #:claim #!settled
+  statement: "workspace/didChangeConfiguration and the semantic token and inlay hint refresh requests would let settings apply without a new initialize; the server handles none of them."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_spec_317"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_server" ]
+  cites: "packages/spw-lsp/src/stdio-server.ts:418-475"
+  card: "none; tokens study proposal 7"
+  standing: "no card"
+  status: #proposed
+ }
+ #>editor_hosts_radar_execute
+ ^["execute_command"]{
+  #:claim #!settled
+  statement: "An executeCommandProvider would give code lenses an action in every host, and JetBrains lists Execute Command from 2024.1; today every lens command is empty."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jetbrains_lsp_docs"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_display", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_tokens_study" ]
+  cites: "packages/spw-lsp/src/handlers/display.ts:1085-1194"
+  card: "lsp-custom-request-completions"
+  standing: "held"
+  status: #proposed
+ }
+ #>editor_hosts_radar_pull_diagnostics
+ ^["pull_diagnostics"]{
+  #:claim #!settled
+  statement: "Pull diagnostics arrived in protocol 3.17 and JetBrains lists them from 2025.1; the server only pushes diagnostics after a debounce."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jetbrains_lsp_docs"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_spec_317", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_server" ]
+  cites: "packages/spw-lsp/src/stdio-server.ts:172-179"
+  card: "none"
+  standing: "no card"
+  status: #proposed
+ }
+ #>editor_hosts_radar_folders
+ ^["workspace_folders"]{
+  #:claim #!settled
+  statement: "The server declares workspace folders unsupported, so a multi-root window sees one consumer root."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_server"
+  cites: "packages/spw-lsp/src/stdio-server.ts:232-234"
+  card: "none"
+  standing: "no card"
+  status: #proposed
+ }
+ #>editor_hosts_radar_uncalled
+ ^["uncalled_methods"]{
+  #:claim #!settled
+  statement: "The server already answers resonance, register snapshots, particles, and form context with no in-repo caller; three dormant or held cards name them as next wiring."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_cards_editors"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_server" ]
+  cites: "packages/spw-lsp/src/stdio-server.ts:380-385"
+  cards: [ "vscode-workspace-atlas, landed, next wires spw/resonance after splitting workspace-tree.ts", "vscode-register-explorer, dormant, asks whether the regex-backed snapshot is honest", "lsp-custom-request-completions, held, keeps formContext out" ]
+  status: #implemented
+ }
+}
+
+^["jetbrains_substrate"]{
+ #>editor_hosts_radar_substrate
+ ^["native_or_lsp4ij"]{
+  #:claim #!settled
+  statement: "The plugin uses the JetBrains native LSP API, found only in commercial IDEs; LSP4IJ is a Red Hat client under EPL-2.0 for all IntelliJ flavors from 2024.2."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jetbrains_lsp_docs"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp4ij", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_plugin_xml" ]
+  cites: "extensions/intellij-spw/src/main/resources/META-INF/plugin.xml:30,40"
+  as_of: "documentation read 2026-10-02"
+ }
+ #>editor_hosts_radar_263_gate
+ ^["gate_263"]{
+  #:claim #!settled
+  statement: "IntelliJ canon records that the 262 verifier marks the native LSP APIs deprecated, and the intellij-lsp4ij card stays on the 263 gate without starting LSP4IJ for parity."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_tooling_intellij"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_cards_editors", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_resume_note" ]
+  cites: [ ".spw/tooling/intellij-plugin.spw:20", ".spw/caches/resume/2026-09-30-direction.spw:48" ]
+  card: "intellij-lsp4ij"
+  standing: "held"
+  provenance_label: "a-canon for the verifier note; owner hold for the gate"
+  verify: "the deprecation status of the native LSP API on 263 builds has not been checked against JetBrains release notes"
+ }
+ ^["rows"]{
+  token_colors: .{ need: "an lspCustomization or a color settings page for server token types", card: "intellij-lsp4ij", standing: "held", status: #proposed }
+  gutter_targets: .{ need: "a navigation handler for anchor markers", card: "none", standing: "no card", status: #proposed }
+  spellcheck: .{ need: "a tokenizer for strings and hash prose", card: "none", standing: "no card", status: #proposed }
+ }
+}
+
+^["vscode_rows"]{
+ #>editor_hosts_radar_custom_types
+ ^["custom_token_types"]{
+  #:claim #!settled
+  statement: "VS Code lets an extension declare new semantic token types and modifiers with fallback scopes; the Spw extension declares none and fits every role into the standard nine."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_semantic_guide"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_manifest" ]
+  cites: "extensions/vscode-spw/package.json:281-307"
+  card: "none; tokens study proposal 8"
+  standing: "no card"
+  status: #proposed
+ }
+ ^["rows"]{
+  readonly_views: .{ need: "a content provider so receipts open read-only, closing defect seven", card: "vscode-editor-contract", standing: "dormant", status: #proposed }
+  lean_start: .{ need: "incremental annotation sync and fewer duplicate calls", card: "vscode-plugin-performance", standing: "dormant", status: #proposed }
+  orientation: .{ need: "a few orientation questions answered through shared reading profiles", card: "vscode-cognitive-surface", standing: "dormant", status: #proposed }
+  citations: .{ need: "a crop-scale fragment door for unfamiliar workspaces", card: "citation-navigation", standing: "held", status: #proposed }
+  neovim_peer: .{ need: "honest Spw wrappers and an evidence-state audit", card: "neovim-spw-surfaces", standing: "held", status: #proposed }
+  cache_granules: .{ need: "per-apposition invalidation after a leak test", card: "apposition-cache-granules", standing: "held", status: #proposed }
+ }
+}
+
+#>editor_hosts_radar_q
+?["Would one executeCommand route make lenses act alike in all three editors?"]{
+ #:depth #!computational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "Because every listed client honors workspace/executeCommand, one server command per lens should behave the same in VS Code, JetBrains, and Neovim."
+ !probe{ "add one executeCommand for the anchor lens on a branch, then click it in each editor on the same file and record what opens" =id[p_hosts_radar_execute] =kind[build] }
+ $%[hosts.lsp.custom_method_count, hosts.vscode.custom_methods_called]
+ ~"./feature-radar.spw#editor_hosts_radar_execute" ~#neighbor(nearest)
+}

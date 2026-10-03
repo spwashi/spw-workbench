@@ -1,13 +1,13 @@
 # Plant Genomics
 #
-# Graduate plant genetics as a claim ledger: mapping and genomic selection, genome editing and what each editor can write, plant immunity and the independent origin of NLRs, ripening, and stress.
+# Graduate plant genetics as a claim ledger: mapping and genomic selection, genome editing and what each editor can write, plant immunity and the contested origin of NLRs, ripening, and stress.
 
 #>plant_science_genomics
 #:layer #!reference
 #:domain #!plant_science
 #:form #!ledger
 #:level #!graduate
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 
 ^"emit"{
@@ -21,20 +21,31 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-02"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/university-education/horticulture-and-botany/masters-horticulture-and-plant-genomics.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ revision_2026_10_03: "r6 redated the r4 fact-check to 2026-10-02, the day its sources were read; the NLR correction line now matches the contested grade of the claim it records"
  corrections: #[
   "cytosine and adenine base editors install transitions, not transversions (raw line 33)",
-  "plant NLRs and animal NOD-like receptors evolved their shared domain plan independently; no common ancestor receptor (raw line 70)",
+  "the raw stated as fact that plant and animal NLRs descend from one ancestral receptor; the main phylogenetic test finds the joined architecture arose independently (raw line 70)",
   "edited lines are not uniformly classed non-GMO; regulation differs by jurisdiction and changes (raw line 32)",
-  "the raw wonder claimed complete non-host resistance without yield penalty from SWEET promoter edits; the study reports broad-spectrum resistance to bacterial blight"
+  "the raw wonder claimed complete non-host resistance without yield penalty from SWEET promoter edits; the study reports broad-spectrum resistance to bacterial blight",
+  "fact-check: the NLR convergence was marked settled and the shared-ancestor claim refuted on one 2017 analysis; the NTPase domains share an ancestor, the joined architecture is argued to be independent, and the grades are now emerging and contested",
+  "fact-check: ACC synthase alone is the committed step; ACC oxidase makes ethylene from ACC",
+  "fact-check: hybrid seed, doubled haploid, Agrobacterium, and biolistic fields were unsourced; each is now a sourced claim"
  ]
 }
 
@@ -46,6 +57,15 @@
  primary: [ #genomic_selection, #base_editing, #plant_immunity ]
  transfers: [ #selection, #feedback ]
  tensions: [ #edit_regulation ]
+}
+
+^["scope"]{
+ #>plant_science_genomics_guard
+ ^["guard"]{
+  #:valence #!honk
+  warning: "edited and engineered crops are regulated differently in each jurisdiction and the rules change; nothing here states the legal status of a product"
+ }
+ what: "graduate plant genetics as a claim ledger"
 }
 
 ^["selection"]{
@@ -65,8 +85,18 @@
    fails: "accuracy decays across generations and environments, so models are retrained and validated in multi-environment trials"
   }
  }
- hybrids: "cytoplasmic male sterility with nuclear restorer genes lets seed companies make F1 hybrid seed at scale"
- doubled_haploids: "doubled haploids give fully homozygous lines in one generation instead of several rounds of selfing"
+ #>plant_science_genomics_hybrid_seed
+ ^["hybrid_seed"]{
+  #:claim #!settled
+  statement: "Cytoplasmic male sterility paired with nuclear restorer genes lets seed companies make F1 hybrid seed at scale."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_acquaah_2012"
+ }
+ #>plant_science_genomics_doubled_haploids
+ ^["doubled_haploids"]{
+  #:claim #!settled
+  statement: "Doubled haploids give fully homozygous lines in one generation instead of several rounds of selfing."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_acquaah_2012"
+ }
 }
 
 ^["editing"]{
@@ -77,8 +107,18 @@
    statement: "Preassembled Cas9 ribonucleoproteins can edit plant protoplasts without delivering DNA, so no transgene must be bred out afterward."
    source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_woo_2015"
   }
-  agrobacterium: "binary Ti-plasmid vectors carry T-DNA into the plant genome; acetosyringone induces the vir genes"
-  biolistics: "gold particles carry DNA or protein into tissues that resist Agrobacterium, including many monocots"
+  #>plant_science_genomics_agrobacterium
+  ^["agrobacterium"]{
+   #:claim #!settled
+   statement: "Agrobacterium moves T-DNA from its Ti plasmid into the plant genome; Stachel and colleagues found that acetosyringone from wounded plant cells switches on the vir genes that drive the transfer."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_stachel_1985"
+  }
+  #>plant_science_genomics_biolistics
+  ^["biolistics"]{
+   #:claim #!settled
+   statement: "Klein and colleagues fired DNA-coated microprojectiles into living plant cells in 1987 and into maize cells in 1988, a route into cereals that Agrobacterium then reached poorly."
+   sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_klein_1987", ~"../../registries/sources/plants-ecology-care.spw#src_eco_klein_1988" ]
+  }
  }
  ^["what_editors_write"]{
   #>plant_science_genomics_base_editors
@@ -129,15 +169,21 @@
  ^["nlr_origins"]{
   #>plant_science_genomics_nlr_raw
   ^["common_ancestor"]{
-   #:claim #!refuted
-   statement: "Plant and animal NLRs descend from a shared ancestral immune receptor about a billion years old."
+   #:claim #!contested
+   statement: "Plant and animal NLRs inherited their nucleotide-binding plus leucine-rich-repeat plan from one shared ancestral receptor; the main phylogenetic test, Urbach and Ausubel 2017, does not support this."
    source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_urbach_ausubel_2017"
+   note: "the raw generation stated this as fact with an unsourced age; it rests against one analysis, so it is graded contested rather than refuted"
   }
   #>plant_science_genomics_nlr_convergent
   ^["convergent"]{
-   #:claim #!settled
-   statement: "The nucleotide-binding plus leucine-rich-repeat architecture arose independently in plant and animal lineages; the resemblance is convergence."
-   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_urbach_ausubel_2017"
+   #:claim #!emerging
+   statement: "Plant R-proteins carry the NB-ARC domain also found in animal APAF-1 and CED-4, and their NTPase domains share an ancestor with animal NLRs, but pairing them with leucine-rich repeats evolved at least twice."
+   sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_urbach_ausubel_2017", ~"../../registries/sources/plants-ecology-care.spw#src_eco_van_der_biezen_1998" ]
+   ^["limits"]{
+    holds: "the domain phylogeny in one 2017 analysis"
+    fails: "bacteria carry NACHT immune proteins with NLR-like domain plans, and whether plants or animals took theirs by horizontal transfer is open"
+    source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_kibby_2023"
+   }
   }
  }
  #>plant_science_genomics_sweet
@@ -152,8 +198,8 @@
  #>plant_science_genomics_ethylene
  ^["ethylene_path"]{
   #:claim #!settled
-  statement: "Plants make ethylene from methionine through S-adenosylmethionine and ACC; ACC synthase and ACC oxidase are the committed steps."
-  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_adams_yang_1979"
+  statement: "Plants make ethylene from methionine through S-adenosylmethionine and ACC; ACC synthase is the committed and usually rate-limiting step, and ACC oxidase converts ACC to ethylene."
+  sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_adams_yang_1979", ~"../../registries/sources/plants-ecology-care.spw#src_eco_taiz_2015" ]
  }
  #>plant_science_genomics_mcp
  ^["receptor_block"]{

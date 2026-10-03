@@ -1,0 +1,112 @@
+# Door: Angle
+#
+# One glyph pair, legible alone: angle brackets bound a capsule, a comparison outside a string turns the whole surface to prose, and thresholds go in quoted match arms.
+
+#>spw_door_angle
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!field_guide
+#:level #!intro
+#:review #!sourced
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Door: Angle"
+ ~#claim: "One comparison outside a string turns the whole surface to prose; quote thresholds or write them as quoted match arms, and keep angle brackets for capsules."
+ ~#proof: "The seed grammar falls back to prose when structured parsing stops at a comparison token; the parse still reports success, and the cut gate fails the surface."
+ ~#door: "Guess how much of a three-line file survives one greater-or-equal sign, then check it with spw inspect source."
+ ~#audience: "clinicians, C programmers, and CSS writers who type comparisons and generics"
+ continuity: "Door: Angle | whole surface to prose"
+ cold_open: "One comparison outside a string turns the whole surface to prose, so quote every threshold."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "persona study false_friends_top ranks 1 and 7 and their door text",
+  "comparison and capsule probes run by the writer at commit 1aa1dc23 on 2026-10-02"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   note: "forward refs to planned files of other packages that were not yet written"
+  }
+  ^["r4"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the study framed thresholds with a clinical early-warning score; this door uses a generic band, so no clinical routing appears",
+  "the 2026-10-02 gate receipt said pass while forward refs to planned files failed; it now records partial, and the 2026-10-03 gate passed once those files existed"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"../contraptions/false-friend-lab.spw#spw_lab_false_friend" ]
+}
+
+^["mark"]{
+ #>spw_door_angle_prose
+ ^["prose_fallback"]{
+  #:claim #!settled
+  statement: "When structured parsing stops at a comparison token, the whole surface degrades to one prose node with a warning, and the parse still reports success."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+  cites: [ "packages/spw-seed/src/grammar/seed.ts:75-88", "packages/spw-seed/src/types/token.ts:69", "scripts/analyzers/spw-cut-gate.ts:195" ]
+  probe_run: "a three-line file whose middle line is band: x >= 5 became one prose chunk at 1aa1dc23; with the comparison quoted, all three bindings survived"
+  ~#spoken(angle, greater or equal)
+  ^["limits"]{
+   holds: "double equals, not equals, and the four angle comparisons outside strings"
+   fails: "inside a string or a backtick phrase a comparison is text, and the warning names the enclosing top-level frame rather than the offending line"
+  }
+ }
+ #>spw_door_angle_capsule
+ ^["capsule_swallow"]{
+  #:claim #!settled
+  statement: "Angle brackets around a tag bound a capsule; a value such as 12<hours> that ends its line on the closing bracket takes the next line's key as its right arm."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+  cites: [ "packages/spw-seed/src/grammar/expressions.ts:886", "scripts/analyzers/spw-cut-gate.ts:211-213" ]
+  probe_run: "span: 12<hours> then next: 2 nests next inside the capsule; a trailing comma or the facet form with n and unit keeps the lines apart"
+ }
+ #>spw_door_angle_match
+ ^["thresholds"]{
+  #:claim #!interpretive
+  statement: "A threshold reads best as a quoted band name in a match arm, with the comparison kept inside the string that names the band."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_contract"
+  example: "on_result: ?match[band]{ \"calm\" => \"below force 4\", \"strong\" => \"force 4 or above\" }"
+  label: "a-cut practice from the contract hazards frame"
+ }
+}
+
+^["habits"]{
+ keep: "angle brackets that wrap a tag, as a capsule"
+ quote: [
+  "every comparison, generic type, arrow, and blockquote mark",
+  "emoticons and spoiler bars typed in chat",
+  "durations, written as a facet with n and unit or ended with a comma"
+ ]
+ unlearn: "a single greater-than sign is enough to turn a whole file into prose"
+}
+
+^["keyboard"]{
+ #>spw_door_angle_keys
+ ^["shift_comma"]{
+  #:claim #!settled
+  statement: "The opening angle bracket needs Shift with the comma key on both the Windows US and the Windows UK layouts."
+  reads: %[doors.key.langle_us_mods, doors.key.langle_uk_mods]
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_kbd_us"
+ }
+}
+
+#>spw_door_angle_q
+?["How much of a three-line file survives one greater-or-equal sign?"]{
+ #:depth #!computational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "A C or spreadsheet habit predicts a local error on one line, so a whole-file fallback is the hardest of the false friends to guess before seeing it."
+ !probe{ "guess first, then run spw inspect source --text on three bindings with x >= 5 in the middle and --through structure" =id[p_doors_angle_fallback] =kind[thought] }
+ breaks: "a compiler stops at the first error and names its line, while this parser keeps going as prose and names the frame"
+ ~"./angle.spw#spw_door_angle_prose" ~#neighbor(nearest)
+}

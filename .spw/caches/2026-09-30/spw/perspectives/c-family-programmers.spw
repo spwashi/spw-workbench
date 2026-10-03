@@ -1,0 +1,186 @@
+# Perspective: C-Family Programmers
+#
+# How C, Java, JavaScript, and Rust habits meet frames, bias edges, and particles, written as a hypothesis about the cluster until one of its members reviews it.
+
+#>spw_perspectives_c_family
+#:layer #!pragmatics
+#:domain #!spw_perspectives
+#:form #!comparison
+#:level #!intro
+#:review #!unreviewed
+#:valence #!bonk
+
+^"emit"{
+ ~#title: "Perspective: C-Family Programmers"
+ ~#claim: "Most C-family habits fail here in silence: a directive becomes a tag, an assignment leaves no binding, and a generic type takes the next line, so bring the lint pass you already trust."
+ ~#proof: "Each row pairs a habit with a probe run at commit 1aa1dc23; the cluster already answers silent misparses with compiler warning flags."
+ ~#door: "Run the angle row first, since it is the one loud failure, then read the lint row."
+ ~#audience: "programmers fluent in C, Java, JavaScript, or Rust"
+ continuity: "Perspective: C-Family Programmers | lint pass"
+ cold_open: "C habits mostly fail here in silence, so bring the lint pass you already trust."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "persona study doors entry c_programmers and metaphor_limits for computing",
+  "habit probes run by the writer at commit 1aa1dc23 on 2026-10-02"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   note: "forward refs to planned files of other packages that were not yet written"
+  }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the 2026-10-02 gate receipt said pass while forward refs to planned files failed; it now records partial, and the 2026-10-03 gate passed once those files existed",
+  "the keyboard keystone carried an interpretive clause about C habits inside a settled statement; the clause now sits in its own habit_reading binding"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"../doors/hash.spw#spw_door_hash", ~"../specimens/code-habits.spw#spw_spec_code", ~"../contraptions/opcode-map.spw#spw_lab_opcode_map" ]
+}
+
+^["standing"]{
+ #>spw_perspectives_c_family_standing
+ ^["hypothesis"]{
+  #:claim #!interpretive
+  statement: "This reading of C-family habits was written by an agent outside the cluster; it stays unreviewed until a working C, Java, JavaScript, or Rust programmer runs the rows."
+  member_probe: "a programmer from the cluster types each habit from memory, predicts the parse, and marks each row as true to practice or not"
+ }
+}
+
+^["rows"]{
+ #>spw_perspectives_c_family_directive
+ ^["directive_hash"]{
+  #:claim #!interpretive
+  habit: "a hash at line start opens a preprocessor directive in C, an attribute in Rust, and a private name in JavaScript"
+  spw: "a hash touching a word is a tag, so the directive name becomes a tag label and the rest of the line a prose payload"
+  probe_run: "#include with stdio.h in angle brackets gives a tag labeled include with the bracketed header as payload; #if 0 gives a tag labeled if"
+  sources: [ ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_iso_c_2018", ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_ecma_262_2022" ]
+  breaks: "nothing is included, compiled out, or made private"
+ }
+ #>spw_perspectives_c_family_assign
+ ^["assignment"]{
+  #:claim #!interpretive
+  habit: "x = 1 assigns, and a designated initializer writes .x = 1 inside braces"
+  spw: "an equals sign configures; inside a facet the pair leaves a dotted label, a bare equals mark, and a loose number"
+  probe_run: "init: .{ .x = 1 } gives a ground operation labeled x, a bare equals operation, and the literal 1, with no binding"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+ }
+ #>spw_perspectives_c_family_generic
+ ^["generic_type"]{
+  #:claim #!interpretive
+  habit: "Vec<i32> and List<String> name a type with a parameter"
+  spw: "angle brackets around a tag form a capsule, and a capsule that ends its line takes the next line's key as its right arm"
+  probe_run: "t: Vec<i32> followed by next: 2 nests next inside the capsule; the cut gate fails it and the parse does not"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+ }
+ #>spw_perspectives_c_family_compare
+ ^["comparison"]{
+  #:claim #!interpretive
+  habit: "a >= b is an expression, and an error in it is reported on its own line"
+  spw: "one comparison outside a string turns the whole surface into prose, and the parse still reports success"
+  probe_run: "see the angle door keystone for the three-line probe"
+  example: ~"../doors/angle.spw#spw_door_angle_prose"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+ }
+ #>spw_perspectives_c_family_ternary
+ ^["ternary"]{
+  #:claim #!interpretive
+  habit: "x = a ? b : c chooses between two values"
+  spw: "the colon binds twice: x takes a, and a question-mark operation that carries b as a modifier becomes a key bound to c"
+  probe_run: "x: a ? b : c at 1aa1dc23, success with no warning"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+ }
+ #>spw_perspectives_c_family_literals
+ ^["literals"]{
+  #:claim #!interpretive
+  habit: "0xFF, 1e-3, -70, and 1_000 are numbers"
+  spw: "only integers and point decimals are numbers; 0xFF becomes 0 and the name xFF, and a leading minus is a lexer error that drops the sign"
+  probe_run: "mask: 0xFF splits with no error; temp: -70 keeps 70 and reports one lexer error while success stays true"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_lexer"
+  cites: [ "packages/spw-seed/src/lexer/matchers/literals.ts:95-120", "scripts/analyzers/spw-cut-gate.ts:193" ]
+ }
+ #>spw_perspectives_c_family_ops
+ ^["unary_operators"]{
+  #:claim #!interpretive
+  habit: "a tilde is bitwise NOT and a star dereferences a pointer"
+  spw: "a tilde defers its argument and a star writes and returns its first argument; neither negates nor follows an address"
+  cites: [ "packages/spw-runtime/src/interpreter/interpreter.ts:293-308" ]
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_runtime"
+ }
+ #>spw_perspectives_c_family_comments
+ ^["comments"]{
+  #:claim #!interpretive
+  habit: "a double slash starts a line comment and a slash-star pair opens a block comment"
+  spw: "the double slash carries over as a line comment; the slash-star pair opens nothing, and the star becomes an operation"
+  probe_run: "x: 1 // note keeps x: 1; a: 1 /* note */ leaves star operations in the tree"
+  cites: [ "packages/spw-seed/src/lexer/matchers/comments.ts:1-9" ]
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_lexer"
+ }
+ #>spw_perspectives_c_family_include
+ ^["include_path"]{
+  #:claim #!interpretive
+  habit: "a quoted include path or a relative import resolves against the citing file"
+  spw: "a tilde before a quoted path is a link resolved against the citing file, then the repository root"
+  example: ~"../doors/tilde.spw#spw_door_tilde_link"
+  bridge: "this is the closest friend in the row set: the quoted include already behaves like a path ref"
+  breaks: "nothing is included; only an expand pass inlines a reflexive bundle"
+ }
+ #>spw_perspectives_c_family_frames
+ ^["frames_and_particles"]{
+  #:claim #!interpretive
+  habit: "a struct or namespace scopes names, and a decorator or attribute applies to what follows"
+  spw: "a frame names a region without scoping anything, and a particle binds forward to the next node without transforming it"
+  example: ~"../doors/particle.spw#spw_door_particle_forward"
+  breaks: "anchors are unique across the whole cut, not per frame"
+ }
+}
+
+^["lint"]{
+ #>spw_perspectives_c_family_lint
+ ^["warning_flags"]{
+  #:claim #!interpretive
+  statement: "This cluster already answers silent constructs with warning flags such as -Wall and -Wextra, so a habit lint that warns without changing the parse would meet it on familiar ground."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_gcc_manual"
+ }
+ lint_today: .{ command: "spw lint", checks: "axis annotations and unique anchors", status: #implemented, cites: "packages/spw-cli/src/commands.ts:292-297" }
+ habit_warnings: .{ checks: "the rows above, one warning per silent habit", status: #proposed }
+ gate: .{ command: "the cut gate", checks: "parse errors, prose fallback, capsule and empty-binding swallows", status: #implemented, cites: "scripts/analyzers/spw-cut-gate.ts:193-217" }
+}
+
+^["keyboard"]{
+ #>spw_perspectives_c_family_keys
+ ^["ansi_shift"]{
+  #:claim #!settled
+  statement: "On the Windows US layout the hash, the colon, and the double quote each need Shift, while the equals sign needs none."
+  reads: %[
+   doors.key.hash_us_mods,
+   doors.key.colon_us_mods,
+   doors.key.dquote_us_mods,
+   doors.key.equals_us_mods
+  ]
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_kbd_us"
+ }
+ habit_reading: "the one unshifted mark is the one C programmers type most, which may keep the assignment habit cheap"
+}
+
+#>spw_perspectives_c_family_q
+?["Would a C-habits warning profile catch the silent rows before the gate does?"]{
+ #:depth #!computational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "A profile that warns on directive hashes, spaced equals pairs, and line-end capsules would catch most rows here at write time, while literals still need the gate."
+ !probe{ "list the rows that parse with success and no warning, and draft the one warning line each would need" =id[p_doors_c_family_profile] =kind[build] }
+ breaks: "a compiler can refuse a program, while this parser always returns a tree and leaves refusal to the gate"
+ ~"./c-family-programmers.spw#spw_perspectives_c_family_lint" ~#neighbor(nearest)
+}

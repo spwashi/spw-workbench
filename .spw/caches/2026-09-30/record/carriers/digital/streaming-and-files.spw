@@ -1,0 +1,205 @@
+# Streaming and Files
+#
+# A media file as codec plus container, and a stream as a state machine: encode, ingest, transcode to a ladder, package, deliver, select, license, decode. The carrier becomes a service.
+
+#>media_carriers_streaming
+#:layer #!reference
+#:domain #!media_carriers
+#:form #!protocol
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bonk
+#:era #!current
+
+^"emit"{
+ ~#title: "Streaming and Files"
+ ~#claim: "A stream is a file cut into short segments at several qualities, delivered over ordinary web servers, chosen by the player moment to moment, and unlocked by a license."
+ ~#proof: "RFC 8216 and ISO/IEC 23009-1 for adaptive streaming; ITU-T and AOM for codecs; W3C for WebRTC and EME; RIAA and Perzanowski and Schultz on access."
+ ~#door: "Walk the states below in order, then do the throttling exercise to watch the player change rungs."
+ ~#audience: "readers who stream every day and want to know what the player is doing"
+ continuity: "Streaming and Files | moment to moment"
+ cold_open: "A stream is a file cut into pieces, and your player picks the next piece moment to moment."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/tiktok-live/streaming-pipeline.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+ }
+ rechecked: "2026-10-02: streaming became the largest US revenue source in 2015 and a majority in 2016; AV1 licensing is now marked contested; RTMP is credited to Macromedia"
+ corrections: #[
+  "the raw pipeline was one platform in one voice; this surface describes the open standards any platform builds on",
+  "platform bitrate ladders, latency targets, chunk sizes, and chat message rates were unsourced and are not carried",
+  "sub-second glass-to-glass latency for standard CDN delivery contradicted its own 800 to 1500 ms figure and is not carried",
+  "client mesh does not need N-squared upload per device: each device uploads one stream per peer, so only the total grows quadratically",
+  "the invariant that every segment uses TLS 1.3 or DTLS-SRTP is a platform claim with no source and is not carried",
+  "FPGA and GPU transcode clusters and server-side co-host muxing are platform claims with no source and are not carried"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../playback-dependency-dag.spw#media_carriers_dag_stream" ]
+ supersedes: [ ~"./optical-discs.spw#media_carriers_optical" ]
+ see: [ ~"../../../society/platforms/platform-lineage.spw#live_platforms_lineage" ]
+}
+
+^["concepts"]{
+ primary: [ #licensed_access, #format ]
+ transfers: [ #dependency, #mass_copy ]
+ tensions: [ #obsolescence ]
+}
+
+^["file_anatomy"]{
+ #>media_carriers_streaming_codec
+ ^["codec"]{
+  #:claim #!settled
+  statement: "A codec compresses pictures or sound by discarding what is predictable or hard to perceive; H.264 dates from 2003, H.265 from 2013, and AV1 from 2018."
+  sources: [ ~"../../../registries/sources/record-and-carriers.spw#src_media_itu_h264_2003", ~"../../../registries/sources/record-and-carriers.spw#src_media_itu_h265_2013", ~"../../../registries/sources/record-and-carriers.spw#src_media_aom_av1_2018" ]
+  ~#say(the codec decides what can be thrown away)
+ }
+ #>media_carriers_streaming_av1_licence
+ ^["av1_licence"]{
+  #:claim #!contested
+  statement: "Whether AV1 is royalty-free in practice is disputed: the Alliance for Open Media licenses it without charge, while a Sisvel patent pool formed in 2019 claims essential patents and seeks royalties."
+  source: ~"../../../registries/sources/record-and-carriers.spw#src_media_enc_av1"
+  counter: ~"../../../registries/sources/record-and-carriers.spw#src_media_aom_patent_license"
+  ^["limits"]{
+   holds: "the alliance licence binds the alliance members and implementers it names as licensors"
+   fails: "it cannot bind patent holders outside the alliance; the European Commission opened an antitrust inquiry into AOMedia licensing in July 2022 and closed it in May 2023 without a finding either way"
+  }
+ }
+ #>media_carriers_streaming_container
+ ^["container"]{
+  #:claim #!settled
+  statement: "A container wraps coded audio, video, subtitles, and timing into one file; the ISO base media file format underlies MP4 and the fragments that adaptive streams use."
+  source: ~"../../../registries/sources/record-and-carriers.spw#src_media_iso_14496_12"
+ }
+}
+
+^["states"]{
+ #>media_carriers_streaming_encode
+ ^["encode"]{
+  enters: "camera and microphone signals"
+  work: "compress with a codec and wrap the result for sending"
+  exits: "a single high-quality contribution stream"
+ }
+ #>media_carriers_streaming_ingest
+ ^["ingest"]{
+  #:claim #!settled
+  statement: "Encoders send live streams over RTMP, a Macromedia protocol whose 1.0 specification Adobe published in December 2012, or over SRT, a Haivision UDP protocol that resends lost packets, open-sourced in 2017."
+  sources: [ ~"../../../registries/sources/record-and-carriers.spw#src_media_adobe_rtmp_2012", ~"../../../registries/sources/record-and-carriers.spw#src_media_enc_rtmp", ~"../../../registries/sources/record-and-carriers.spw#src_media_enc_srt", ~"../../../registries/sources/record-and-carriers.spw#src_media_srt_draft" ]
+  exits: "the stream arrives at an ingest server"
+ }
+ #>media_carriers_streaming_transcode
+ ^["transcode"]{
+  enters: "one contribution stream"
+  work: "re-encode into a ladder of renditions, each a resolution and bitrate pair, with aligned keyframes so the player can switch between them"
+  exits: "several renditions of the same moment"
+ }
+ #>media_carriers_streaming_package
+ ^["package"]{
+  #:claim #!settled
+  statement: "Apple released HTTP Live Streaming in 2009 and RFC 8216 documented it in 2017; DASH became ISO/IEC 23009-1 in 2012; both cut renditions into segments listed in a manifest."
+  sources: [ ~"../../../registries/sources/record-and-carriers.spw#src_media_rfc8216", ~"../../../registries/sources/record-and-carriers.spw#src_media_enc_hls", ~"../../../registries/sources/record-and-carriers.spw#src_media_iso_23009_1_2012" ]
+  exits: "a manifest and a stack of short segment files"
+ }
+ #>media_carriers_streaming_deliver
+ ^["deliver"]{
+  enters: "segments and manifests"
+  work: "serve them as ordinary HTTP files, so web caches and content delivery networks near viewers can hold copies"
+  exits: "segments within reach of each player"
+ }
+ #>media_carriers_streaming_select
+ ^["select"]{
+  #:claim #!settled
+  statement: "The player reads a master playlist of variant streams and switches among them during playback as network conditions change."
+  source: ~"../../../registries/sources/record-and-carriers.spw#src_media_rfc8216"
+  on_segment: ?match[@buffer]{
+   "falling" => "request the next segment from a lower rung",
+   "full and fast" => "request the next segment from a higher rung",
+   _ => "stay on the current rung"
+  }
+ }
+ #>media_carriers_streaming_license
+ ^["license"]{
+  #:claim #!settled
+  statement: "Encrypted Media Extensions, a W3C Recommendation since September 2017, let a web page hand encrypted media to a content decryption module that holds the keys."
+  source: ~"../../../registries/sources/record-and-carriers.spw#src_media_w3c_eme_2017"
+  needs: [ =~[hard] ~"../playback-dependency-dag.spw#media_carriers_dep_keys" ]
+ }
+ #>media_carriers_streaming_eme_dispute
+ ^["eme_dispute"]{
+  #:claim #!contested
+  statement: "The Electronic Frontier Foundation opposed standardizing DRM at the W3C without protection for security researchers and left the consortium when EME was approved."
+  source: ~"../../../registries/sources/record-and-carriers.spw#src_media_eff_2017"
+  counter: ~"../../../registries/sources/record-and-carriers.spw#src_media_w3c_eme_2017"
+ }
+ #>media_carriers_streaming_decode
+ ^["decode"]{
+  enters: "decrypted segments"
+  work: "parse the container, decode audio and video, and keep them in sync on screen"
+  exits: "pictures and sound, or a stall that sends the player back to select"
+ }
+ #>media_carriers_streaming_realtime
+ ^["realtime_branch"]{
+  #:claim #!settled
+  statement: "For two-way calls and co-hosting, WebRTC, a W3C Recommendation since January 2021, sends media peer to peer or through a relay server instead of through segments."
+  source: ~"../../../registries/sources/record-and-carriers.spw#src_media_w3c_webrtc_2021"
+ }
+ path: << "encode" ; "ingest" ; "transcode" ; "package" ; "deliver" ; "select" ; "license" ; "decode" >>
+}
+
+^["ownership_to_access"]{
+ #>media_carriers_streaming_access
+ ^["access"]{
+  #:era #!current
+  #:claim #!settled
+  statement: "In the United States, streaming became the largest source of recorded-music revenue in 2015, at 34.3 percent, and a majority, 51 percent, in 2016; listeners increasingly rent access instead of owning copies."
+  sources: [ ~"../../../registries/sources/record-and-carriers.spw#src_media_riaa_2015", ~"../../../registries/sources/record-and-carriers.spw#src_media_riaa_2016" ]
+  as_of: "2026-10-02"
+ }
+ #>media_carriers_streaming_ownership
+ ^["what_ownership_was"]{
+  #:claim #!interpretive
+  statement: "Perzanowski and Schultz argue that licensed digital goods drop rights owners of copies held, such as resale, lending, and keeping a copy after the seller changes course."
+  source: ~"../../../registries/sources/record-and-carriers.spw#src_media_perzanowski_schultz_2016"
+ }
+}
+
+^["try"]{
+ #>media_carriers_try_throttle
+ ^["watch_the_ladder"]{
+  materials: [ "a laptop with a desktop browser", "a public video on a player that offers a playback statistics overlay" ]
+  steps: << "start the video and open the statistics overlay" ; "open the browser developer tools and find network throttling" ; "switch to a slow preset and watch resolution and buffer change" ; "remove the throttle and watch the player climb back" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "no hazard worth naming; keep account details out of any screenshots you share"
+  shows: ~"./streaming-and-files.spw#media_carriers_streaming_select"
+ }
+}
+
+#>media_carriers_streaming_mesh_q
+?["Does a forwarding server save a phone more power as guests join a call?"]{
+ #:depth #!computational ~#lens(energy budget)
+ #:claim #!speculative
+ ~#hypothesis: "In a full mesh each phone encodes or uploads one stream per peer, so moving to a forwarding server should cut phone power more as guest count rises."
+ !probe{ "measure battery drain and upload rate on two phones in mesh and server-forwarded calls with two, four, and eight guests" =id[p_media_stream_mesh] =kind[field] }
+ $%[graph.out_degree]
+ ~"./streaming-and-files.spw#media_carriers_streaming_realtime" ~#neighbor(nearest)
+}
+
+#>media_carriers_streaming_heard_q
+?["How much delay can a live chat absorb before a viewer stops feeling heard?"]{
+ #:depth #!social ~#lens(bodily rhythm)
+ #:claim #!speculative
+ ~#hypothesis: "Viewers rate a host reply as more responsive when stream delay is shorter, with the effect weakening once delay falls below ordinary conversational turn gaps."
+ !probe{ "run a paired session where a host answers chat under two delay settings and ask viewers to rate responsiveness" =id[p_media_stream_heard] =kind[interview] }
+ $%[particle.mood]
+ ~"./streaming-and-files.spw#media_carriers_streaming_select" ~#neighbor(nearest)
+}

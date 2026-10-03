@@ -1,0 +1,175 @@
+# Provenance
+#
+# The raw shelf stays in place as provenance; this branch pins it, records every correction, and shows how to trace a cut anchor back to a raw path and line.
+
+#>provenance_index
+#:layer #!reference
+#:domain #!provenance
+#:form #!index
+#:level #!practitioner
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Provenance"
+ ~#claim: "The generated shelf stays in place beside the cut, pinned by checksum, with every correction and harm recorded against its raw path and line."
+ ~#proof: "Checksums come from git at commit 229aedcf; corrections come from the two review rounds and the sources each ledger row names."
+ ~#door: "Open the manifest, pick one row, and follow it to its corrected surface and its errata row."
+ ~#audience: "reviewers, archivists, and readers who met a raw claim elsewhere"
+ continuity: "Provenance | stays in place"
+ cold_open: "The raw shelf stays in place beside the cut, so every corrected claim can still point back to where it started."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "the 17:06 stream entry is an observation, not a decision; wording fixed"
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ checked: "every manifest checksum and line count was recomputed at 229aedcf and at 1aa1dc23 on 2026-10-02 and matched"
+}
+
+^["edges"]{
+ grounds: [ ~"../registries/quantities/provenance-and-reference.spw#q_prov_raw", ~"../contract.spw#cut_contract" ]
+}
+
+^["concepts"]{
+ primary: [ #fixity, #provenance ]
+ transfers: [ #respect_des_fonds ]
+ tensions: [ #shelf_drift ]
+}
+
+^["tree"]{
+ manifest: ~"./manifest.spw"
+ review_scorecard: ~"./review-scorecard.spw"
+ errata_technical: ~"./errata-technical.spw"
+ errata_life_mind: ~"./errata-life-and-mind.spw"
+ errata_culture: ~"./errata-culture-and-society.spw"
+ harm_register: ~"./harm-register.spw"
+}
+
+^["bundle"]{
+ ={ ~"./manifest.spw#provenance_manifest" }
+ ={ ~"./review-scorecard.spw#provenance_scorecard" }
+ ={ ~"./errata-technical.spw#provenance_errata_technical" }
+ ={ ~"./errata-life-and-mind.spw#provenance_errata_life_mind" }
+ ={ ~"./errata-culture-and-society.spw#provenance_errata_culture" }
+ ={ ~"./harm-register.spw#provenance_harm_register" }
+}
+
+^["leaves"]{
+ manifest: .{ concept: #fixity, form: #registry }
+ review_scorecard: .{ concept: #review_record, form: #registry }
+ errata_technical: .{ concept: #correction, form: #ledger }
+ errata_life_mind: .{ concept: #correction, form: #ledger }
+ errata_culture: .{ concept: #correction, form: #ledger }
+ harm_register: .{ concept: #harm_pointer, form: #ledger }
+}
+
+^["fixity"]{
+ #>provenance_index_shelf_in_place
+ ^["shelf_in_place"]{
+  #:claim #!settled
+  statement: "The raw shelf under .spw/caches stays where it is: the cut copies no raw file, carries no tarball, and removes no raw path."
+  reads: %[prov.raw.file_count, prov.raw.line_count]
+  sources: [ ~"../registries/sources/provenance-and-reference.spw#src_prov_plan_stream", ~"../registries/sources/provenance-and-reference.spw#src_prov_plan_v2" ]
+  ^["limits"]{
+   holds: "the 208 raw paths at commit 229aedcf, unchanged at 1aa1dc23"
+   fails: "an owner edit to a raw file; the manifest then reports drift instead of hiding it"
+  }
+ }
+ #>provenance_index_owner_decisions
+ ^["owner_decisions"]{
+  #:claim #!settled
+  statement: "Two plan stream entries record the owner committing the shelf, logged as an observation, and the owner deciding where the cut lives, logged as a decision."
+  source: ~"../registries/sources/provenance-and-reference.spw#src_prov_plan_stream"
+  ^["entry_2026_09_30_1706"]{
+   at: "2026-09-30 17:06"
+   kind: "observe"
+   quote: "The owner committed the raw shelf and a resume note; the shelf stays as provenance and the resume note is out of migration scope."
+   cites: ".agents/plans/caches-cut-2026-09-30/wip.spw:47"
+  }
+  ^["entry_2026_09_30_1730"]{
+   at: "2026-09-30 17:30"
+   kind: "decide"
+   quote: "The owner confirmed the cut lives in the workbench at .spw/caches/2026-09-30 and asked to name wire and cost for each tool fix, then apply them uncommitted."
+   cites: ".agents/plans/caches-cut-2026-09-30/wip.spw:48"
+  }
+  ~#(the quotes are stream entries written for the owner, not the owner verbatim)
+ }
+ #>provenance_index_selection_rule
+ ^["selection_rule"]{
+  #:claim #!interpretive
+  statement: "The manifest follows the owner resume note: a selection pins a coordinate and leaves the source in place."
+  cites: ".spw/caches/resume/2026-09-30-direction.spw:29"
+ }
+}
+
+^["scope"]{
+ #>provenance_index_out_of_scope
+ ^["out_of_migration_scope"]{
+  #:claim #!settled
+  statement: "The owner resume note under resume/ is not listed, and the owner-authored shelf index gets a checksum row with no action and no target."
+  sources: [ ~"../registries/sources/provenance-and-reference.spw#src_prov_resume_note", ~"../registries/sources/provenance-and-reference.spw#src_prov_shelf_index" ]
+ }
+ quarantine: "nine health and remediation files are quarantined by the shelf index; they are pointed at by the harm register and never cited as a source"
+ quarantine_count: %[prov.raw.quarantine_file_count]
+}
+
+^["trace"]{
+ #>provenance_index_trace
+ ^["anchor_to_raw"]{
+  purpose: "walk from any anchor in the cut back to the raw path and line it came from"
+  steps: << "read the surface provenance lineage" ; "find that raw path as a manifest row" ; "recompute its checksum" ; "open the errata or harm row that names the raw line" ; "read the correction and follow its source" >>
+  stops_when: "the lineage says new; the surface was written from sources, and no raw line stands behind it"
+ }
+ ^["raw_to_anchor"]{
+  purpose: "walk from a raw claim met elsewhere to the surface that replaced it"
+  steps: << "find the raw path as a manifest row" ; "read its action" ; "follow its target anchors" ; "search the errata ledgers for the raw path and line" >>
+ }
+}
+
+^["try"]{
+ #>provenance_index_try_checksum
+ ^["recompute_a_row"]{
+  materials: [ "a terminal in a clone of the workbench", "git", "shasum" ]
+  steps: << "pick one manifest row" ; "run git show 229aedcf:PATH and pipe it to shasum -a 256" ; "compare the hash with the row" ; "count the lines with wc -l and compare" >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "read-only commands; nothing in the repository is written"
+  shows: ~"./manifest.spw#provenance_manifest_pin"
+ }
+}
+
+^["stance"]{
+ #>provenance_index_dissent_stance
+ ^["errors_stay_visible"]{
+  #:claim #!interpretive
+  statement: "A known error is recorded as refuted beside its correction, so a reader who met it elsewhere can find it fixed instead of finding it gone."
+ }
+}
+
+^["gaps"]{
+ drift_watch: "no scheduled job recomputes the checksums yet; a reader recomputes them by hand"
+ receipts_for_raw: "raw files carry no receipts of their own; the manifest and the ledgers stand in for them"
+}
+
+#>provenance_index_orphan_q
+?["Which cut anchors would lose their only trace if the raw shelf were moved?"]{
+ #:depth #!historical ~#lens(curated collection)
+ #:claim #!speculative
+ ~#hypothesis: "Anchors whose surfaces merged several raw files would lose the most, because no single successor names every raw line they absorbed."
+ !probe{ "list lineage paths per surface and count surfaces whose only trace is a merge row" =id[p_prov_index_orphans] =kind[census] }
+ $%[prov.raw.file_count, prov.migration.merge_count]
+ ~"./index.spw#provenance_index_trace" ~#neighbor(nearest)
+}

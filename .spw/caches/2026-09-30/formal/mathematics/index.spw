@@ -7,7 +7,7 @@
 #:domain #!mathematics
 #:form #!index
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-02"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/university-education/mathematics/taste.spw" ]
@@ -29,12 +29,17 @@
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
  }
  corrections: #[
   "Goedel first incompleteness now requires an effectively axiomatized consistent theory; the raw stated it for any consistent system capable of arithmetic",
   "the claim that Goedel proves human intuition transcends algorithms is moved to a contested Lucas-Penrose frame with its critics",
   "Euclid proof called the only contact with absolute immortality is dropped as rhetoric",
-  "a valid deduction true across all possible universes is restated as validity relative to axioms and rules"
+  "a valid deduction true across all possible universes is restated as validity relative to axioms and rules",
+  "Riemannian geometry in general relativity is removed from the Wigner examples; he names it only to contrast relativity with quantum theory"
  ]
 }
 
@@ -58,8 +63,8 @@
 
 ^["ladder"]{
  rungs: << "foundation" ; "advanced" ; "graduate" ; "practitioner" >>
- foundation: [ ~"./engineering-core/calculus-and-linear-algebra.spw#mathematics_calc_linalg", ~"./analysis-and-algebra-core.spw#mathematics_core", ~"./engineering-math-bridge.spw#mathematics_bridge" ]
- advanced: [ ~"./topology-and-complex-core.spw#mathematics_topology_complex", ~"./engineering-core/transforms-and-complex-methods.spw#mathematics_transforms" ]
+ foundation: [ ~"./engineering-core/calculus-and-linear-algebra.spw#mathematics_calc_linalg", ~"./engineering-core/differential-equations.spw#mathematics_diffeq", ~"./engineering-core/probability-and-statistics.spw#mathematics_probstat", ~"./analysis-and-algebra-core.spw#mathematics_core", ~"./engineering-math-bridge.spw#mathematics_bridge" ]
+ advanced: [ ~"./topology-and-complex-core.spw#mathematics_topology_complex", ~"./engineering-core/transforms-and-complex-methods.spw#mathematics_transforms", ~"./engineering-core/numerical-methods.spw#mathematics_numerics", ~"./engineering-core/optimization.spw#mathematics_optimization" ]
  graduate: [ ~"./graduate-algebra-and-topology.spw#mathematics_grad_algebra", ~"./graduate-analysis-and-geometry.spw#mathematics_grad_analysis" ]
  practitioner: "empty rung; see gaps"
 }
@@ -104,7 +109,7 @@
  #>mathematics_wigner
  ^["unreasonable_effectiveness"]{
   #:claim #!interpretive
-  statement: "Wigner called the fit between mathematics built for its own sake and later physics unreasonable; the examples include Riemannian geometry in general relativity and Hilbert spaces in quantum mechanics."
+  statement: "Wigner called the fit between mathematics built for its own sake and later physics unreasonable; his examples include Newton gravitation, matrix mechanics with the helium ground state, the Lamb shift, and complex Hilbert space."
   source: ~"../../registries/sources/formal.spw#src_formal_wigner_1960"
  }
  #>mathematics_euclid_primes

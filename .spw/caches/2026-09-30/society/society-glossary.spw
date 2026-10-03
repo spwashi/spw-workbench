@@ -7,21 +7,21 @@
 #:domain #!society
 #:form #!glossary
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
  ~#title: "Society Glossary"
- ~#claim: "Eleven terms carry most of the society class; each has a sourced definition, a place in a broader and narrower lattice, and one home leaf."
+ ~#claim: "Eleven terms carry most of the society class; ten cite a registry source, each links related terms in the lattice, and nine name a home leaf."
  ~#proof: "Definitions cite North, Linton, Rochet and Tirole, Pigou, Coase, Koopmans, Manski, Ostrom, and Titmuss through the registry."
  ~#door: "Pick a term, follow its home link, and come back when the leaf uses a word you have not met."
  ~#audience: "newcomers to economics, management, and platform studies"
  continuity: "Society Glossary | home leaf"
- cold_open: "Each word here has a short meaning, a family of related words, and one home leaf where it does real work."
+ cold_open: "Each word here has a short meaning, a family of related words, and most have a home leaf where they do real work."
 }
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-02"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -30,7 +30,14 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "fact check: Pigou was credited with versions in the second degree; his second degree is pricing by quantity, and versions come from later screening work",
+  "fact check: the card said every term has a source, a home, and lattice links; receipt is interpretive and unsourced, and institution and crowding out have no home leaf; pareto now links externality"
+ ]
 }
 
 ^["edges"]{
@@ -39,7 +46,7 @@
 }
 
 ^["concepts"]{
- primary: [ #institution, #externality, #identification ]
+ primary: [ #institution, #role, #externality, #identification ]
  transfers: [ #dated_receipt, #two_sided_market ]
  tensions: [ #pareto_efficiency ]
 }
@@ -82,8 +89,10 @@
  #>society_term_price_discrimination
  ^["price_discrimination"]{
   #:claim #!settled
-  statement: "Pigou sorted price discrimination into three degrees: a price per unit tuned to each buyer, prices that vary with quantity or version, and prices set by observable group."
+  statement: "Pigou sorted price discrimination into three degrees: a price for each unit tuned to each buyer, prices that vary with the quantity bought, and prices set by observable group."
   source: ~"../registries/sources/economy-and-markets.spw#src_econ_pigou_1920"
+  later: "later screening work, surveyed by Varian, extends the second degree to versions and quality menus that buyers sort themselves into"
+  later_source: ~"../registries/sources/economy-and-markets.spw#src_econ_varian_1989"
   broader: [ ~"./society-glossary.spw#society_term_market" ]
   home: ~"./management/revenue-management.spw#management_revenue"
  }
@@ -109,6 +118,7 @@
   #:claim #!settled
   statement: "An allocation is Pareto efficient when no one can be made better off without making someone worse off; the definition is silent on how unequal the allocation is."
   source: ~"../registries/sources/economy-and-markets.spw#src_econ_mwg_1995"
+  related: [ ~"./society-glossary.spw#society_term_externality" ]
   home: ~"./economics/graduate-micro-theory.spw#economics_grad_micro"
  }
  #>society_term_identification
@@ -129,12 +139,12 @@
  #>society_term_crowding_out
  ^["crowding_out"]{
   #:claim #!contested
-  statement: "Paying for a civic act can lower its supply in some settings: Titmuss argued it for blood, and later field experiments found such effects in a daycare and a donor drive."
+  statement: "Pricing a civic or moral act can backfire: Titmuss argued paid blood lowers supply, a daycare fine raised late pickups, and small payments cut blood donor sign-ups among women."
   sources: [ ~"../registries/sources/economy-and-markets.spw#src_econ_titmuss_1970", ~"../registries/sources/economy-and-markets.spw#src_econ_gneezy_rustichini_2000", ~"../registries/sources/economy-and-markets.spw#src_econ_mellstrom_johannesson_2008" ]
   related: [ ~"./society-glossary.spw#society_term_market" ]
   ^["limits"]{
-   holds: "small payments for acts people read as civic or moral"
-   fails: "large payments, framed as reimbursement or donatable to charity, often raise supply"
+   holds: "small payments or fines attached to acts people read as civic or moral"
+   fails: "in the Swedish blood experiment, letting donors give the payment to charity removed the drop"
   }
  }
 }

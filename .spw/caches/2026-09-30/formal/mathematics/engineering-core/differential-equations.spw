@@ -1,0 +1,181 @@
+# Differential Equations
+#
+# Ordinary and partial differential equations as engineering tools: when solutions exist, when equilibria are stable, and how heat, waves, and potentials separate into modes.
+
+#>mathematics_diffeq
+#:layer #!reference
+#:domain #!mathematics
+#:form #!curriculum
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Differential Equations"
+ ~#claim: "Linear systems are stable exactly when every eigenvalue has negative real part, and linearization predicts nonlinear behavior only near hyperbolic equilibria."
+ ~#proof: "Boyce and DiPrima and Strogatz state the ODE results with these conditions; Evans gives the heat, wave, and Laplace equations."
+ ~#door: "Read existence and uniqueness, then stability, then cool a mug and fit the curve."
+ ~#audience: "engineering and science students after calculus and matrices"
+ continuity: "Differential Equations | negative real part"
+ cold_open: "A linear system settles down when every eigenvalue has negative real part; the hard part is knowing when linear is honest."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/mathematics/undergrad-pure-and-applied-mathematics.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+ }
+ corrections: #[
+  "Picard-Lindelof is now stated as local; y prime equals y squared shows solutions can blow up in finite time",
+  "phase-plane classification from linearization now requires hyperbolic equilibria; linear centers can become spirals in the nonlinear system",
+  "Fourier series for boundary data now converge in mean square for square-integrable data, with pointwise convergence needing more",
+  "the ODE and PDE rows moved here from the pure core so the pure ladder and the engineering ladder each have one home",
+  "Fourier no longer introduces trigonometric series; Bernoulli and Euler used them first, and his heat work dates from the 1807 memoir"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./calculus-and-linear-algebra.spw#mathematics_calc_eigen" ]
+ feeds: [ ~"./transforms-and-complex-methods.spw#mathematics_transforms", ~"./numerical-methods.spw#mathematics_numerics", ~"../../../physical/engineering/transport-phenomena.spw#engineering_transport", ~"../../../physical/engineering/control-and-signals.spw#engineering_control_signals" ]
+ see: [ ~"../../../physical/physics/classical-thermodynamics.spw#physics_thermo_classical" ]
+}
+
+^["concepts"]{
+ primary: [ #equilibrium, #linearization, #diffusion ]
+ transfers: [ #spectral_decomposition, #steady_state ]
+ tensions: [ #stiffness ]
+}
+
+^["dag"]{
+ #>mathematics_diffeq_first_order
+ ^["first_order"]{
+  topics: "separable and linear equations, integrating factors, direction fields, existence and uniqueness"
+  feeds: [ ~"./differential-equations.spw#mathematics_diffeq_linear" ]
+
+  #>mathematics_diffeq_picard
+  ^["picard_lindelof"]{
+   #:claim #!settled
+   statement: "If f is continuous and Lipschitz in y near the initial point, y prime equals f of t and y has exactly one solution on some interval around the initial time."
+   source: ~"../../../registries/sources/formal.spw#src_formal_boyce_diprima_2017"
+   ^["limits"]{
+    holds: "a local interval, whose length depends on the bounds of f"
+    fails: "y prime equals the square root of the absolute value of y from y equal 0 has two solutions; y prime equals y squared from 1 blows up at t equal 1"
+   }
+  }
+  #>mathematics_diffeq_cooling
+  ^["exponential_approach"]{
+   #:claim #!settled
+   statement: "The linear equation T prime equals minus k times T minus the ambient temperature has the solution that decays exponentially toward ambient at rate k."
+   source: ~"../../../registries/sources/formal.spw#src_formal_boyce_diprima_2017"
+   ^["limits"]{
+    holds: "a well-mixed body with a constant heat-transfer coefficient"
+    fails: "large temperature gaps, where radiation and natural convection make k depend on temperature"
+   }
+  }
+ }
+ #>mathematics_diffeq_linear
+ ^["linear_systems"]{
+  topics: "x prime equals A x, the matrix exponential, second-order oscillators, damping, resonance, forcing"
+  needs: [ ~"./calculus-and-linear-algebra.spw#mathematics_calc_eigen" ]
+  feeds: [ ~"./differential-equations.spw#mathematics_diffeq_nonlinear", ~"./transforms-and-complex-methods.spw#mathematics_transforms_laplace" ]
+
+  #>mathematics_diffeq_stability
+  ^["eigen_stability"]{
+   #:claim #!settled
+   statement: "The solution of x prime equals A x is the matrix exponential applied to the start, and the origin is asymptotically stable exactly when every eigenvalue of A has negative real part."
+   source: ~"../../../registries/sources/formal.spw#src_formal_boyce_diprima_2017"
+  }
+  #>mathematics_diffeq_resonance
+  ^["resonance"]{
+   #:claim #!settled
+   statement: "An undamped oscillator forced at its natural frequency grows linearly in time; damping caps the response, and the peak sits near the natural frequency when damping is light."
+   source: ~"../../../registries/sources/formal.spw#src_formal_boyce_diprima_2017"
+  }
+ }
+ #>mathematics_diffeq_nonlinear
+ ^["nonlinear"]{
+  topics: "phase planes, linearization, Lyapunov functions, limit cycles, bifurcations, chaos"
+  needs: [ ~"./differential-equations.spw#mathematics_diffeq_linear" ]
+
+  #>mathematics_diffeq_hartman_grobman
+  ^["linearization_honesty"]{
+   #:claim #!settled
+   statement: "Near a hyperbolic equilibrium, where no eigenvalue of the Jacobian has zero real part, the nonlinear flow looks like its linearization up to a continuous change of coordinates."
+   source: ~"../../../registries/sources/formal.spw#src_formal_strogatz_2015"
+   ^["limits"]{
+    holds: "hyperbolic equilibria"
+    fails: "a linear center can become a stable or unstable spiral once nonlinear terms are added"
+   }
+  }
+  #>mathematics_diffeq_lyapunov
+  ^["lyapunov"]{
+   #:claim #!settled
+   statement: "If a function is positive away from an equilibrium and strictly decreases along every nearby trajectory, the equilibrium is asymptotically stable, with no explicit solution needed."
+   source: ~"../../../registries/sources/formal.spw#src_formal_strogatz_2015"
+  }
+  #>mathematics_diffeq_poincare_bendixson
+  ^["planar_limit"]{
+   #:claim #!settled
+   statement: "In the plane, a bounded trajectory staying away from equilibria approaches a closed orbit, so autonomous flows need at least three dimensions for chaos."
+   source: ~"../../../registries/sources/formal.spw#src_formal_strogatz_2015"
+  }
+ }
+ #>mathematics_diffeq_pde
+ ^["pdes"]{
+  topics: "elliptic, parabolic, and hyperbolic types; heat, wave, and Laplace equations; separation of variables; Fourier series; boundary conditions"
+  needs: [ ~"./differential-equations.spw#mathematics_diffeq_linear", ~"./calculus-and-linear-algebra.spw#mathematics_calc_vector" ]
+
+  #>mathematics_diffeq_fourier_origin
+  ^["fourier_heat"]{
+   #:claim #!settled
+   statement: "Fourier, from his 1807 memoir to the 1822 Theorie analytique de la chaleur, claimed arbitrary functions have trigonometric series and used them with separation of variables to solve heat conduction."
+   sources: [ ~"../../../registries/sources/formal.spw#src_formal_fourier_1822", ~"../../../registries/sources/formal.spw#src_formal_katz_2009" ]
+   earlier: "Daniel Bernoulli and Euler had already used trigonometric series and standing-wave separation for the vibrating string in the eighteenth century"
+  }
+  #>mathematics_diffeq_three_types
+  ^["three_types"]{
+   #:claim #!settled
+   statement: "Heat smooths its data instantly and obeys a maximum principle; waves carry data at finite speed c; Laplace solutions equal their average over every ball inside the domain."
+   source: ~"../../../registries/sources/formal.spw#src_formal_evans_2010"
+  }
+  #>mathematics_diffeq_fourier_convergence
+  ^["fourier_convergence"]{
+   #:claim #!settled
+   statement: "The Fourier series of square-integrable boundary data converges in mean square; pointwise convergence needs more, such as piecewise smoothness, and jumps keep a Gibbs overshoot."
+   reads: %[formal.transforms.gibbs_overshoot_fraction]
+   source: ~"../../../registries/sources/formal.spw#src_formal_oppenheim_willsky_1997"
+  }
+ }
+}
+
+^["try"]{
+ #>mathematics_diffeq_try_cooling
+ ^["cool_a_mug"]{
+  materials: [ "a mug", "hot tap water", "a kitchen thermometer", "a timer", "paper or a spreadsheet" ]
+  steps: << "note the room temperature" ; "fill the mug and read the water temperature every two minutes for thirty minutes" ; "subtract room temperature from each reading" ; "plot the logarithm of the differences against time" ; "fit a line, read k from its slope, and mark where the points bend away" >>
+  time: .{ n: 45, unit: "minutes" }
+  safety: "hot water scalds; use hot tap water, not boiling water, and hold the mug by its handle"
+  shows: ~"./differential-equations.spw#mathematics_diffeq_cooling"
+ }
+}
+
+#>mathematics_diffeq_rumor_q
+?["Does a rumor in a chat spread like heat or like a wave?"]{
+ #:depth #!social ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "A rumor in a fast chat advances as a front closer to a traveling wave than to diffusion, because reposting copies a message instead of averaging neighbors."
+ !probe{ "simulate copy-on-contact and average-with-neighbors rules on the same contact graph and compare front shapes" =id[p_formal_diffeq_rumor_front] =kind[sim] }
+ breaks: "heat conserves energy and averages; a repost creates new copies, so nothing is conserved and the analogy fails at the source term"
+ $%[graph.out_degree]
+ ~"./differential-equations.spw#mathematics_diffeq_three_types" ~#neighbor(nearest)
+}

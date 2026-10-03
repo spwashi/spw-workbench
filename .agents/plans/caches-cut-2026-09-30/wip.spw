@@ -11,7 +11,7 @@
  gist: "Turn the generated caches shelf into a dated, sourced, addressable reference cut that teaches how to structure a Spw graph."
  touches: [~".spw/caches", ~"scripts/analyzers/spw-cut-gate.ts", ~"packages/spw-lsp/src/handlers", ~"packages/spw-cli/src/corpus-scan.ts"]
  entry: ~"./PLAN.md"
- next: "After the usage reset, resume waves 1 and 2 and the spw synthesis from their run ids (see the 13:06 stream entry)."
+ next: "Wave 4 with plan v3: concepts and trails, then weave, root apparatus, and sweep. Anchor-line navigation stays held until its cost fix lands."
 }
 
 ^["edges"]{
@@ -64,6 +64,20 @@
  >>[2026-10-01 12:55] implement — Launched the spw branch synthesis (run wf_691aebc2-7bf): machine empathy, tunable complexity, and IR inspection across the three studies, producing the wave 3 spw tree.
  >>[2026-10-01 13:05] blocked — Owner reported 93 percent of the session used; paused wave 1 (wf_adcc6c3b-5de, one package fully done), wave 2 (wf_61afdc2c-769), and the spw synthesis (wf_691aebc2-7bf). 135 files are on disk under .spw/caches/2026-09-30; the wave prompt now tells resumed writers to complete existing files instead of rewriting them.
  >>[2026-10-01 13:06] note — Resume after the reset: Workflow scriptPath cut-writers-wave with resumeFromRunId wf_adcc6c3b-5de, then wf_61afdc2c-769; spw-branch-synthesis with resumeFromRunId wf_691aebc2-7bf; then wave 3, the held lens and graph hardening (wf_228ff782-851, wf_20b810df-d9c), and wave 4. Without this session, rerun references/workflows/cut-writers-wave.js with the args recorded in PLAN.md.
+ >>[2026-10-02 00:35] implement — Resumed wave 1 (wf_adcc6c3b-5de), wave 2 (wf_61afdc2c-769), and the spw branch synthesis (wf_691aebc2-7bf, script now kept at references/workflows/spw-branch-synthesis.js) after the commit 1aa1dc23 and the owner push.
+ >>[2026-10-02 17:15] surprise — The spw synthesizer died when the machine slept; its critic still ran on the live tree and found preconditions: 21 frozen inbound spw targets, a form vocabulary mismatch between plan v2 and the live set, transform and lens gaps, canon anchor prefixes, and paths owned by waves 1 and 2. Saved to references/spw-branch/preconditions.json and folded into the synthesizer prompt; rerun launched. Waves 1 and 2 kept running; 245 files on disk.
+ >>[2026-10-02 17:40] verify — Wave 1 complete: season, creators-and-platforms, film-stage-visual, learning-and-generations (82 files, 115 registry cells, 342 sources, 36 fact-check corrections applied); zero gate failures in wave 1 files beyond refs to unwritten files. Report saved to references/waves/wave1.json. Cut: 267 files, 5162 anchors.
+ >>[2026-10-02 17:42] implement — Resumed the held lens hardening (wf_228ff782-851) and graph hardening (wf_20b810df-d9c).
+ >>[2026-10-02 18:30] observe — Spw branch synthesis landed: machine empathy as a declared reader context (care, habit, practice) that never scores a person; 160 planned surfaces; critic found 17 problems. Saved to references/spw-branch/ (machine-empathy.md, spw-plan.json, critic.json).
+ >>[2026-10-02 18:45] revise — Plan v3 (references/panel/final-plan-v3.json): wave 3 split into spw-design-studies, spw-contraptions, spw-hosts-and-history, spw-doors-perspectives, spw-glossary-specimens, spw-branch; concepts and trails moved to wave 4; 49 frozen inbound targets from a live gate scan; critic fixes as package notes; cli-readings folded into inspection-and-ir; trail_streamer_first_contact kept. Vocabulary appended: forms state_machine and panel, domain concepts, transform projection, readings spoken and gloss, three lenses.
+ >>[2026-10-02 18:50] implement — Wave 3 launched (run wf_aa75ff5c-2ad) with plan v3.
+ >>[2026-10-02 19:10] verify — Lens hardening round 2: approve with nits; 261 LSP tests pass and mutation checks catch every break; one medium regression (readings crowd #:lens out of the 40-symbol cap) plus a braceless-wonder leak and craft growth in server-index.ts. Final fix round launched (wf_a5fc62d6-0d8).
+ >>[2026-10-02 19:12] surprise — Anchor-line navigation is correct but costly: documentLinks parses each anchored target serially per request (7 ms to about 600 ms on a 3-ref file); the cut has thousands of anchored refs. Held from main; cost fix launched (wf_cb5589cd-deb) to read anchors from the server index, memoize, and read open buffers. Reviews saved in references/patches/*-round2.md.
+ >>[2026-10-02 19:40] verify — Wave 2 landed for nine packages (195 files, 290 registry cells, about 1700 source anchors, 150 fact-check corrections); the materials-and-engineering and life-and-mind writers died when the machine slept and are resuming in the same run. Report saved to references/waves/wave2.json. The provenance writer re-verified all 208 manifest rows against 229aedcf and recorded a whole-cut harm sweep in provenance/harm-register.
+ >>[2026-10-02 19:42] surprise — Two cut files once took 45 to 60 minutes each to parse (an earlier succession-and-resilience.spw and registries/sources/economy-and-markets.spw); both were rewritten and now parse in seconds. The parser has a pathological input shape, likely backtracking; recorded as a tooling item.
+ >>[2026-10-03 10:20] revise — Retracted the parser pathology. The 3634 s and 2728 s parse times match two macOS sleep intervals to within 20 seconds (pmset log: 14:09:24 to 15:10:16, 3652 s; 15:10:32 to 15:56:16, 2744 s, on battery at 0 percent); the timing script used wall-clock Date.now, which counts sleep. The snapshot of the file taken during the slow window parses in 880 ms. Lesson: time parses with process.cpuUsage or a monotonic clock and record wall time beside it; keep the machine awake (caffeinate) during waves.
+ >>[2026-10-03 10:40] implement — Applied the lens patch (recorded in apposition-cache-granules) and the graph patch to the working tree, uncommitted. Graph WIRE: every scanCorpus caller (census, graph, analyze, formula, lattice, taste, inspect corpus) now treats files as nodes with anchors on links, falls back to the root registry (manifest roots, shelves) for undeclared aliases, reports declared-root breaks once, shares citation candidates with resolve, and emits product spw.corpus/2 (old memos rescan). Graph COST: census of .spw and docs/theory uses about 1.9 times less user CPU (91 s to 47 s on one pair under load); on a main snapshot broken links drop from 1607 to 393 and fragment nodes from 1416 to 0. Orphans rise from 1 to 21 because 20 files cite no file at all (deixis and markers only); that meaning change belongs in the commit episode. Suites: LSP 263 plus 1 known failure, VS Code 14, CLI 265, seed 793, extension tsc clean, build only the 8 known errors. Anchor-line navigation stays held for its cost fix (wf_cb5589cd-deb).
+ >>[2026-10-03 12:10] note — Session ran out. Waves 1 through 3 are on disk: 394 cut surfaces, 262 with a fact_checked receipt, spw class 101 surfaces and 12 fact-checked. Lens and graph patches are already on main (6690d686, c79a096a). Anchor-line navigation stays held. Next is wave 4 from plan v3.
 }
 
 ^["open"]{
@@ -83,11 +97,11 @@
 }
 
 ^["cache"]{
- ~#status: "active; synthesis interrupted by usage limits and resuming"
+ ~#status: "active; waves 1-3 on disk, wave 4 not started"
  ~#base_ref: "main@229aedcf9b6fb82be2d679f863be497378065d42"
  ~#hygiene_split: "none"
  ~#files_hot: "scripts/analyzers/spw-cut-gate.ts"
  ~#next_commit: "1"
  ~#open_count: "5"
- ~#last_stream: "2026-10-01 13:06"
+ ~#last_stream: "2026-10-03 12:10"
 }

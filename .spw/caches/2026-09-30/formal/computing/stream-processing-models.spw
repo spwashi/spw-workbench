@@ -1,0 +1,230 @@
+# Stream Processing Models
+#
+# Batch, micro-batch, streaming dataflow, logs, and actors compared on windows, watermarks, backpressure, and recovery, then mapped onto a live chat torrent.
+
+#>computing_stream_models
+#:layer #!reference
+#:domain #!computing
+#:form #!comparison
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Stream Processing Models"
+ ~#claim: "Stream systems differ in how they cut time into windows, decide when data is late, push back on fast producers, and recover state after a crash."
+ ~#proof: "MapReduce, D-Streams, MillWheel, the Dataflow model, Flink snapshots, Kafka, and the actor papers each define one row."
+ ~#door: "Read the matrix, then the watermark frame, then window a pile of chat cards by hand."
+ ~#audience: "engineers building live pipelines, including chat tools for streamers"
+ continuity: "Stream Processing Models | when data is late"
+ cold_open: "A stream system is defined by how it decides when data is late, and by what it does with the stragglers."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+ }
+ corrections: #[
+  "the Lambda architecture is credited to Marz alone in his 2011 essay; the 2015 book with Warren came after the 2014 Kreps reply, which the row had read as answering it"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./abstract-computation.spw#computing_abstract_w134" ]
+ feeds: [ ~"../../making/streaming/chat-torrent-pipeline.spw#streaming_chat_torrent" ]
+ see: [ ~"./web-and-browser-internals.spw#computing_web_w37" ]
+}
+
+^["concepts"]{
+ primary: [ #chat_lane, #backpressure, #ordering ]
+ transfers: [ #fault_model, #replication, #state_machine ]
+ tensions: [ #redundancy, #aliasing ]
+}
+
+^["matrix"]{
+ axes: #[ unit, time, windows, lateness, backpressure, recovery, latency ]
+
+ #>computing_stream_row_batch
+ ^["batch"]{
+  unit: "a bounded input split into map and reduce tasks"
+  time: "time is just a field; the job sees all data at once"
+  windows: "group by a time key in the reduce"
+  lateness: "late data waits for the next run"
+  backpressure: "none needed; the input is already stored"
+  recovery: "rerun failed deterministic tasks"
+  latency: "minutes to hours"
+ }
+ #>computing_stream_row_micro
+ ^["micro_batch"]{
+  unit: "small deterministic batches cut from the stream at a fixed interval"
+  time: "processing time by default; event time added by later APIs"
+  windows: "multiples of the batch interval"
+  lateness: "bounded by the interval unless event-time handling is added"
+  backpressure: "batch sizing and rate limits"
+  recovery: "recompute lost partitions from lineage"
+  latency: "seconds"
+ }
+ #>computing_stream_row_dataflow
+ ^["streaming_dataflow"]{
+  unit: "one record at a time through stateful operators"
+  time: "event time separated from processing time"
+  windows: "fixed, sliding, and session windows in event time"
+  lateness: "watermarks plus triggers and allowed lateness"
+  backpressure: "bounded buffers between operators slow the upstream"
+  recovery: "consistent snapshots of operator state plus source replay"
+  latency: "milliseconds to seconds"
+ }
+ #>computing_stream_row_log
+ ^["replayable_log"]{
+  unit: "partitioned append-only logs read by offset"
+  time: "append order within a partition"
+  windows: "left to the consumer"
+  lateness: "left to the consumer"
+  backpressure: "consumers pull at their own pace"
+  recovery: "rewind the offset and reread"
+  latency: "as fast as consumers poll"
+ }
+ #>computing_stream_row_actors
+ ^["actors"]{
+  unit: "one message at a time from a mailbox"
+  time: "arrival order per mailbox; no global clock"
+  windows: "none built in"
+  lateness: "none built in"
+  backpressure: "absent by default, since mailboxes can grow without bound"
+  recovery: "supervisors restart failed actors"
+  latency: "microseconds to milliseconds per hop"
+ }
+}
+
+^["claims"]{
+ #>computing_stream_mapreduce
+ ^["mapreduce"]{
+  #:claim #!settled
+  statement: "Dean and Ghemawat described MapReduce in 2004: a bounded input mapped to key-value pairs, grouped by key, and reduced, with failed tasks simply re-executed."
+  source: ~"../../registries/sources/formal.spw#src_formal_dean_ghemawat_2004"
+ }
+ #>computing_stream_dstreams
+ ^["discretized_streams"]{
+  #:claim #!settled
+  statement: "Discretized streams run a stream as a series of small deterministic batch jobs and recover lost partitions by recomputing them from lineage."
+  source: ~"../../registries/sources/formal.spw#src_formal_zaharia_2013"
+ }
+ #>computing_stream_event_time
+ ^["event_time"]{
+  #:claim #!settled
+  statement: "The Dataflow model separates what is computed, where in event time it is grouped, when in processing time results fire, and how later refinements relate."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_akidau_2015", ~"../../registries/sources/formal.spw#src_formal_akidau_2018" ]
+ }
+ #>computing_stream_watermark
+ ^["watermarks"]{
+  #:claim #!settled
+  statement: "A watermark asserts that no more data older than some event time is expected; MillWheel tracked low watermarks, and data arriving behind one is late and needs a stated policy."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_akidau_2013", ~"../../registries/sources/formal.spw#src_formal_akidau_2018" ]
+  ~#say(a watermark is a promise about the past)
+  ^["limits"]{
+   holds: "sources whose event-time progress can be tracked or estimated"
+   fails: "a heuristic watermark can run ahead of reality, so some data is dropped or must update results already sent"
+  }
+ }
+ #>computing_stream_snapshots
+ ^["barrier_snapshots"]{
+  #:claim #!settled
+  statement: "Flink checkpoints with barriers that flow with the data, an asynchronous variant of the Chandy-Lamport snapshot, so recovery restores consistent state and replays the source."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_carbone_abs_2015", ~"../../registries/sources/formal.spw#src_formal_chandy_lamport_1985", ~"../../registries/sources/formal.spw#src_formal_carbone_2015" ]
+ }
+ #>computing_stream_exactly_once
+ ^["exactly_once"]{
+  #:claim #!settled
+  statement: "Exactly-once in a stream processor means each record affects operator state once after recovery; end to end it also needs idempotent or transactional sinks."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_carbone_abs_2015", ~"../../registries/sources/formal.spw#src_formal_kleppmann_2017" ]
+  ^["limits"]{
+   holds: "deterministic operators, a replayable source, and sinks that tolerate replay"
+   fails: "a side effect such as sending a chat message or a payment can repeat after recovery unless the sink deduplicates"
+  }
+ }
+ #>computing_stream_backpressure
+ ^["demand_signals"]{
+  #:claim #!settled
+  statement: "In Reactive Streams a subscriber requests n elements at a time, so a slow consumer bounds how much a fast producer may send."
+  source: ~"../../registries/sources/formal.spw#src_formal_reactive_streams_2015"
+ }
+ #>computing_stream_kafka
+ ^["log"]{
+  #:claim #!settled
+  statement: "Kafka stores each topic as partitioned append-only logs that consumers read by offset, so any consumer can replay from an earlier point."
+  source: ~"../../registries/sources/formal.spw#src_formal_kreps_2011"
+ }
+ #>computing_stream_lambda_kappa
+ ^["lambda_or_kappa"]{
+  #:claim #!contested
+  statement: "Marz set out batch and realtime layers in 2011, the design his later book with Warren calls the Lambda architecture; in 2014 Kreps argued one replayable log with one streaming path suffices."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_marz_2011", ~"../../registries/sources/formal.spw#src_formal_marz_warren_2015" ]
+  counter: ~"../../registries/sources/formal.spw#src_formal_kreps_2014"
+  ^["limits"]{
+   holds: "the order of events: Marz described the design in October 2011, Kreps replied in July 2014, and the Manning book followed in 2015"
+   fails: "the design choice itself stays contested: two code paths buy recomputation from raw data, one path buys a single codebase"
+  }
+ }
+ #>computing_stream_kahn
+ ^["kahn_networks"]{
+  #:claim #!settled
+  statement: "Kahn showed in 1974 that deterministic processes joined by unbounded FIFO channels compute the same outputs under any scheduling."
+  source: ~"../../registries/sources/formal.spw#src_formal_kahn_1974"
+ }
+ #>computing_stream_actors
+ ^["actors"]{
+  #:claim #!settled
+  statement: "Actors, from Hewitt, Bishop, and Steiger in 1973 and formalized by Agha, handle one message at a time and interact only by sending messages."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_hewitt_1973", ~"../../registries/sources/formal.spw#src_formal_agha_1986" ]
+ }
+ #>computing_stream_let_it_crash
+ ^["supervision"]{
+  #:claim #!settled
+  statement: "Erlang supervision trees restart failed processes rather than defending every one, a design Armstrong set out in his 2003 thesis."
+  source: ~"../../registries/sources/formal.spw#src_formal_armstrong_2003"
+ }
+}
+
+^["chat_torrent_mapping"]{
+ #>computing_stream_chat_mapping
+ ^["stage_to_model"]{
+  #:claim #!interpretive
+  statement: "A live chat pipeline is a streaming dataflow: partitioned ingest, keyed dedupe, stateless classify, event-time session lanes, triggered ranking, and a bounded surface."
+ }
+ ingest: "a replayable log partitioned by channel, so a crash rewinds instead of losing messages"
+ dedupe: "keyed state with a short time-to-live; idempotent so replay does not double-count"
+ classify: "a stateless map; the safest place to run moderation filters"
+ lanes: "session windows in event time, so a topic lane closes after a gap"
+ rank: "windowed counts with early triggers for a live board and a final count at the watermark"
+ surface: "a bounded queue to the overlay that drops or samples under load instead of lagging"
+}
+
+^["try"]{
+ #>computing_stream_try_cards
+ ^["window_the_cards"]{
+  materials: [ "30 index cards", "a pen", "a watch" ]
+  steps: << "write a minute and second on each card as its event time, spread over five minutes" ; "shuffle the cards to make the arrival order" ; "deal them one by one into one-minute windows by event time" ; "after each dealt card, set the watermark to the oldest time you still expect" ; "count cards that arrive behind the watermark and decide drop or update" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./stream-processing-models.spw#computing_stream_watermark"
+ }
+}
+
+#>computing_stream_moderator_q
+?["Does a moderator under load behave like a bounded buffer?"]{
+ #:depth #!social ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "Past some queue length, human moderators skip messages rather than slow down, and the skipped messages cluster in bursts as dropped items do in a full buffer."
+ !probe{ "with consent, log moderator actions during busy live streams and compare skipped-message timing with a bounded-queue drop model" =id[p_formal_stream_moderator_buffer] =kind[field] }
+ breaks: "a moderator judges content and reorders by urgency; a buffer only orders by arrival"
+ $%[graph.out_degree]
+ ~"./stream-processing-models.spw#computing_stream_backpressure" ~#neighbor(nearest)
+}

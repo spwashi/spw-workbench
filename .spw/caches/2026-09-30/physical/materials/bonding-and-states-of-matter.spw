@@ -1,0 +1,256 @@
+# Bonding and States of Matter
+#
+# A glossary lattice of the bonds that hold matter together and the states and flows that bonding allows, from ionic salt to supercritical carbon dioxide.
+
+#>materials_bonding
+#:layer #!reference
+#:domain #!materials
+#:form #!glossary
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Bonding and States of Matter"
+ ~#claim: "Five kinds of attraction, from ionic to dispersion, set whether matter is a salt, a metal, a glass, a liquid, or a colloid."
+ ~#proof: "Bond definitions follow Pauling, Atkins, and the 2011 IUPAC hydrogen-bond definition; phase points come from the IAPWS and Span-Wagner equations of state."
+ ~#door: "Read the bond terms, then the phase diagrams, then try the spoon test for paint and honey."
+ ~#audience: "students and makers with high-school chemistry"
+ continuity: "Bonding and States of Matter | phase diagram"
+ cold_open: "How atoms hold hands decides what a substance is, and a phase diagram maps where it changes."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/materials-matter-and-history/phases-of-matter-and-chemical-bonding.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "fountain pen ink is a dilute water-based solution close to Newtonian; the raw used it as the example of shear thinning",
+  "coordinate bonds and pi bonds are added; the raw taxonomy had neither",
+  "phase diagrams for water and carbon dioxide are added with sourced triple and critical points",
+  "thixotropy is separated from yield stress; the raw treated a Bingham yield stress as part of thixotropy",
+  "the 10 to 40 kJ per mol hydrogen-bond range and the 30 mV zeta rule are dropped as unsourced bands",
+  "the electron-sea wonder is restated: metals bend because dislocations glide, which nondirectional bonding allows"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"./water.spw#materials_water_hbond_network", ~"./materials-core.spw#materials_core_dislocation_glide" ]
+ feeds: [ ~"./pigments-and-binders.spw#materials_pigments", ~"./fibers-and-textiles.spw#materials_fibers" ]
+ needs: [ ~"../physics/classical-thermodynamics.spw#physics_thermo_classical" ]
+}
+
+^["concepts"]{
+ primary: [ #chemical_bond, #hydrogen_bond, #phase_diagram ]
+ transfers: [ #rheology, #colloid ]
+ tensions: [ #ductility ]
+}
+
+^["lattice"]{
+ =~"./bonding-and-states-of-matter.spw#materials_bonding_pi"[extends]{ ~"./bonding-and-states-of-matter.spw#materials_bonding_covalent" }
+ =~"./bonding-and-states-of-matter.spw#materials_bonding_coordinate"[case_of]{ ~"./bonding-and-states-of-matter.spw#materials_bonding_covalent" }
+ =~"./bonding-and-states-of-matter.spw#materials_bonding_metallic"[contrasts]{ ~"./bonding-and-states-of-matter.spw#materials_bonding_ionic" }
+ =~"./bonding-and-states-of-matter.spw#materials_bonding_dlvo"[needs]{ ~"./bonding-and-states-of-matter.spw#materials_bonding_dispersion" }
+ =~"./bonding-and-states-of-matter.spw#materials_bonding_thixotropy"[contrasts]{ ~"./bonding-and-states-of-matter.spw#materials_bonding_shear_thinning" }
+ order: << "primary bonds" ; "secondary forces" ; "states" ; "phase diagrams" ; "flow" ; "colloids" >>
+}
+
+^["primary_bonds"]{
+ #>materials_bonding_ionic
+ ^["ionic"]{
+  #:claim #!settled
+  statement: "An ionic bond is the electrostatic attraction between ions made by electron transfer, as in sodium chloride; ionic solids are hard and brittle and conduct only when molten or dissolved."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_atkins_2018"
+ }
+ #>materials_bonding_covalent
+ ^["covalent"]{
+  #:claim #!settled
+  statement: "A covalent bond shares an electron pair between two atoms; because it points in fixed directions it sets molecular shapes and the rigid networks of diamond and silicon."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_pauling_1960"
+ }
+ #>materials_bonding_pi
+ ^["sigma_and_pi"]{
+  #:claim #!settled
+  statement: "A sigma bond overlaps orbitals along the bond axis; a pi bond overlaps p orbitals side by side, so a double bond is one sigma plus one pi and resists twisting."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_atkins_2018"
+ }
+ #>materials_bonding_coordinate
+ ^["coordinate"]{
+  #:claim #!settled
+  statement: "In a coordinate, or dative, bond one partner supplies both shared electrons, as when ammonia gives its lone pair to a proton or to a metal ion in a complex."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_atkins_2018"
+ }
+ #>materials_bonding_metallic
+ ^["metallic"]{
+  #:claim #!settled
+  statement: "Metallic bonding holds cation cores in a shared sea of delocalized electrons; it is nondirectional, so metals conduct, reflect light, and let close-packed planes slip."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_callister_rethwisch_2018"
+  ^["limits"]{
+   holds: "nondirectional bonding lowers the lattice resistance to dislocation glide"
+   fails: "ductility itself comes from mobile dislocations; some intermetallics are metallic and still brittle"
+  }
+ }
+}
+
+^["secondary_forces"]{
+ #>materials_bonding_hydrogen
+ ^["hydrogen_bond"]{
+  #:claim #!settled
+  statement: "IUPAC in 2011 defined the hydrogen bond as an attraction between an X-H group, with X more electronegative than hydrogen, and an atom or group showing evidence of bond formation."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_arunan_2011"
+  ^["limits"]{
+   holds: "O-H and N-H donors in water, cellulose, wool keratin, and nylon"
+   fails: "the textbook rule that only N, O, and F take part is too narrow; weaker C-H donors meet the 2011 definition"
+  }
+ }
+ #>materials_bonding_dispersion
+ ^["dispersion"]{
+  #:claim #!settled
+  statement: "London dispersion forces arise from correlated fluctuating dipoles and act between all atoms; between two small molecules their energy falls as the inverse sixth power of distance."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_israelachvili_2011"
+  ~#(London gave the quantum account in 1930 and 1937)
+ }
+}
+
+^["states"]{
+ #>materials_bonding_crystal_glass
+ ^["crystal_and_glass"]{
+  #:claim #!settled
+  statement: "A crystal has long-range periodic order and melts at a sharp temperature; a glass lacks that order and softens over a glass transition range instead."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_callister_rethwisch_2018"
+ }
+ #>materials_bonding_supercritical
+ ^["supercritical"]{
+  #:claim #!settled
+  statement: "Above its critical temperature and pressure a fluid has no liquid-vapor boundary, so its density can be tuned continuously from gas-like to liquid-like."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_atkins_2018"
+ }
+ #>materials_bonding_plasma
+ ^["plasma"]{
+  #:claim #!settled
+  statement: "A plasma is an ionized gas that stays electrically neutral over lengths larger than its Debye length, so its charges respond to fields collectively."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_chen_2016"
+ }
+}
+
+^["phase_diagrams"]{
+ #>materials_bonding_water_diagram
+ ^["water"]{
+  #:claim #!settled
+  statement: "Water has its triple point at 273.16 K and 611.657 Pa and its critical point at 647.096 K and 22.064 MPa; its ice Ih melting line slopes backward because ice is less dense."
+  reads: %[
+   mateng.water.triple_point_k,
+   mateng.water.triple_point_pa,
+   mateng.water.critical_t_k
+  ]
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_wagner_pruss_2002"
+  ^["limits"]{
+   holds: "ordinary water substance in equilibrium"
+   fails: "the backward slope is small, so pressure melting does not by itself explain why skates glide"
+  }
+ }
+ #>materials_bonding_co2_diagram
+ ^["carbon_dioxide"]{
+  #:claim #!settled
+  statement: "Carbon dioxide has its triple point near 5.2 bar, above room pressure, so dry ice sublimes instead of melting; its critical point lies near 31 C and 7.38 MPa."
+  reads: %[
+   mateng.co2.triple_point_mpa,
+   mateng.co2.critical_t_k,
+   mateng.co2.critical_p_mpa
+  ]
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_span_wagner_1996"
+ }
+ #>materials_bonding_phase_rule
+ ^["phase_rule_link"]{
+  #:claim #!settled
+  statement: "A triple point is invariant because one component in three phases leaves zero degrees of freedom under the Gibbs phase rule."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_gibbs_1878"
+  see: [ ~"./materials-core.spw#materials_core_phase_rule" ]
+ }
+}
+
+^["flow"]{
+ #>materials_bonding_newtonian
+ ^["newtonian"]{
+  #:claim #!settled
+  statement: "A Newtonian liquid such as water or honey has one viscosity at every shear rate at a given temperature."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_barnes_1989"
+ }
+ #>materials_bonding_shear_thinning
+ ^["shear_thinning"]{
+  #:claim #!settled
+  statement: "A shear-thinning fluid loses viscosity as shear rate rises; house paint thins under the brush and thickens again at rest, which resists sagging."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_barnes_1989"
+  ^["limits"]{
+   holds: "polymer solutions, latex paints, and particle-filled gel inks"
+   fails: "dilute water-based dye inks, including most fountain pen inks, stay close to Newtonian"
+  }
+ }
+ #>materials_bonding_thixotropy
+ ^["thixotropy"]{
+  #:claim #!settled
+  statement: "Thixotropy is a time-dependent drop in viscosity under steady shear with slow recovery at rest; a yield stress is a separate property, though many paints show both."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_barnes_1989"
+ }
+}
+
+^["colloids"]{
+ #>materials_bonding_colloid_kinds
+ ^["kinds"]{
+  #:claim #!settled
+  statement: "A colloid disperses one phase in another at roughly nanometre to micrometre scale: sols, emulsions, foams, gels, and aerosols."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_israelachvili_2011"
+ }
+ #>materials_bonding_dlvo
+ ^["dlvo"]{
+  #:claim #!settled
+  statement: "DLVO theory adds van der Waals attraction to electric double-layer repulsion; added salt thins the double layer and can let charged particles coagulate."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_derjaguin_landau_1941", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_verwey_overbeek_1948" ]
+  ~#(Derjaguin and Landau in 1941 and Verwey and Overbeek in 1948 built it independently)
+  ^["limits"]{
+   holds: "dilute charge-stabilized dispersions in simple electrolytes"
+   fails: "polymer-coated, hydration-dominated, or crowded dispersions; any single zeta-potential cutoff is a rule of thumb"
+  }
+ }
+}
+
+^["try"]{
+ #>materials_bonding_try_spoons
+ ^["spoon_test"]{
+  materials: [ "honey", "latex wall paint or ketchup", "cornstarch", "water", "three spoons", "a plate" ]
+  steps: << "lift a spoon of honey and watch it pour at one steady rate" ; "stir the paint fast, then lift the spoon and watch it run thin" ; "leave the paint still for a minute and see it stand up" ; "mix cornstarch with a little water and punch it" ; "name which one thins, which one holds, and which one stiffens" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "keep paint off skin and food surfaces; scrape the cornstarch mix into the trash, since it clogs drains"
+  shows: ~"./bonding-and-states-of-matter.spw#materials_bonding_shear_thinning"
+ }
+}
+
+#>materials_bonding_dry_ice_q
+?["Why is carbon dioxide liquid inside a fire extinguisher but never in a dry-ice cooler?"]{
+ #:depth #!physical ~#lens(material grain)
+ #:claim #!speculative
+ ~#hypothesis: "A sealed cylinder at room temperature holds pressure far above the triple point, so liquid can exist; an open cooler stays near one bar, below it, so the solid only sublimes."
+ !probe{ "plot both states on the carbon dioxide diagram and mark the pressure each container allows" =id[p_mateng_bonding_dry_ice] =kind[thought] }
+ $%[mateng.co2.triple_point_mpa, mateng.co2.critical_t_k]
+ ~"./bonding-and-states-of-matter.spw#materials_bonding_co2_diagram" ~#neighbor(nearest)
+}
+
+#>materials_bonding_crowd_q
+?["Is salt-triggered coagulation like a crowd that loses its personal space?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Raising salt shrinks the repulsive halo around each particle much as crowding shrinks the space people keep, and both systems tip into clumps past a threshold."
+ breaks: "particles feel additive pairwise forces and no intention; people read faces, norms, and exits"
+ !probe{ "sketch the DLVO energy curve at low and high salt beside a crowd-density diagram and list where the shapes diverge" =id[p_mateng_bonding_crowd] =kind[thought] }
+ $%[graph.out_degree]
+ ~"./bonding-and-states-of-matter.spw#materials_bonding_dlvo" ~#neighbor(nearest)
+}

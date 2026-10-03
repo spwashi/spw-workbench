@@ -27,12 +27,18 @@
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
- evidence: #[ "fetched 2026-10-01: Hebcal 5787 holiday list, USNO 2026 seasons table, Duke CSPD Public Domain Day 2026", "secondary checks 2026-10-01: Serial premiere date, CD launch date, Diwali 2026 date" ]
+ evidence: #[ "fetched 2026-10-01: Hebcal 5787 holiday list, USNO 2026 seasons table, Duke CSPD Public Domain Day 2026", "secondary checks 2026-10-01: Serial premiere date, CD launch date, Diwali 2026 date", "fetched 2026-10-02: Hebcal 5787 dates, USNO 2026 solstice, Hong Kong Observatory 2027 table, Drik Panchang Diwali 2026, NIH standard due dates", "weekday of every date recomputed 2026-10-02", "fix pass 2026-10-02: Hong Kong Observatory 2026 table lists the Winter Solstice term on 22 December" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[ "Diwali and Lunar New Year verify cells now name the published table they were checked against", "the reset Monday cell is restated as this cut reading, not a claim about offices and schools", "fact check 2026-10-02: Public Domain Day limits now include foreign works restored under 17 U.S.C. 104A and note that unrenewed 1931 US works are already public domain", "fix pass 2026-10-02: the Dongzhi and Yalda cell cites the Hong Kong Observatory 2026 table and the UNESCO Yalda/Chella element" ]
 }
 
 ^["edges"]{
@@ -93,6 +99,16 @@
   statement: "Simchat Torah begins at sunset on 3 October 2026 outside Israel, a day earlier in Israel; the yearly cycle of Torah readings ends and begins again."
   source: ~"../registries/sources/season.spw#src_season_hebcal_5787"
  }
+ #>season_cal_nih_cycle3
+ ^["nih_cycle3"]{
+  #:claim #!settled
+  date: "Mon 2026-10-05"
+  status: #fixed
+  statement: "NIH standard due dates put new R01 applications in three cycles a year; the third falls on 5 October, a Monday in 2026."
+  source: ~"../registries/sources/season.spw#src_season_nih_due_dates"
+  as_of: "2026-10-02"
+  see: ~"./fiscal-and-academic-years.spw#season_fiscal_grant_cycles"
+ }
  #>season_cal_thanksgiving_ca
  ^["thanksgiving_ca"]{
   date: "Mon 2026-10-12"
@@ -148,7 +164,8 @@
  ^["diwali"]{
   date: "Sun 2026-11-08, expected"
   status: #verify
-  check: "published Hindu calendars give 8 November for Lakshmi Puja; regional almanacs can differ by a day"
+  check: "Drik Panchang gives 8 November for Lakshmi Puja at its default location, Washington DC; regional almanacs and communities can differ by a day"
+  source: ~"../registries/sources/season.spw#src_season_drik_panchang_2026"
   see: ~"./festivals-and-resets.spw#season_resets_diwali"
  }
  #>season_cal_thanksgiving_us
@@ -190,6 +207,10 @@
   date: "Mon 2026-12-21 to Tue 2026-12-22"
   status: #verify
   check: "Dongzhi follows the solstice in China time, so 22 December; Yalda is the night before the first day of Dey in the Iranian calendar"
+  sources: [
+   ~"../registries/sources/season.spw#src_season_hko_2026",
+   ~"../registries/sources/season.spw#src_season_unesco_yalda_2022"
+  ]
   see: ~"./festivals-and-resets.spw#season_resets_yalda"
  }
  #>season_cal_christmas
@@ -218,20 +239,23 @@
   #:claim #!settled
   date: "Fri 2027-01-01"
   status: #fixed
-  statement: "On 1 January 2027, US works published in 1931 and sound recordings published in 1926 enter the public domain, because terms run to the end of the calendar year."
+  statement: "On 1 January 2027, works published in 1931 and sound recordings published in 1926 enter the US public domain, because terms run to the end of the calendar year."
   reads: %[
    season.copyright.us_published_term_years,
    season.copyright.us_recording_term_years
   ]
   sources: [
    ~"../registries/sources/season.spw#src_season_usc17_copyright",
+   ~"../registries/sources/season.spw#src_season_ctea_1998",
+   ~"../registries/sources/season.spw#src_season_renewal_act_1992",
    ~"../registries/sources/season.spw#src_season_duke_pdd_2026"
   ]
   verify: "the 2027 headline titles; check the Duke list for 2027 before citing any one work"
-  corrects: "the raw film-adaptation file said works before 1929; the line is 1931 as of 2026 and 1932 from 1 January 2027"
+  line: "through 2026 works published before 1931 are in the US public domain; from 1 January 2027 the line moves to 1932"
+  history: "the 1998 term extension added twenty years, so no published US work entered the public domain by age from 1999 through 2018"
   ^["limits"]{
-   holds: "works first published in the US in 1931 whose copyright was renewed"
-   fails: "later versions, translations, trademarks, and unpublished works keep their own terms; other countries follow their own laws"
+   holds: "1931 works still under US copyright: US works with notice and renewal, and foreign works restored under 17 U.S.C. 104A"
+   fails: "unrenewed US works from 1931 have been public domain since 1959; later versions, translations, trademarks, and unpublished works keep their own terms; other countries follow their own laws"
   }
  }
  #>season_cal_reset_monday
@@ -239,7 +263,7 @@
   #:claim #!interpretive
   date: "Mon 2027-01-04"
   status: #fixed
-  statement: "The season closes on the first Monday of 2027, when most offices and many schools resume."
+  statement: "This cut closes the season on Monday 4 January 2027, the first Monday of the new year, as a shared return date; local returns vary."
  }
  #>season_cal_julian_christmas
  ^["julian_christmas"]{
@@ -254,7 +278,8 @@
  ^["lunar_new_year_2027"]{
   date: "Sat 2027-02-06, expected"
   status: #verify
-  check: "published Chinese calendar tables give 6 February 2027, a month after the season closes"
+  check: "the Hong Kong Observatory table gives 6 February 2027, a month after the season closes; Korean and Vietnamese calendars compute in their own time zones"
+  source: ~"../registries/sources/season.spw#src_season_hko_2027"
   see: ~"./festivals-and-resets.spw#season_resets_lunar_new_year"
  }
 }

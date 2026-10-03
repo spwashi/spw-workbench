@@ -1,0 +1,226 @@
+# Probability and Statistics
+#
+# From Kolmogorov axioms to regression and queues, with a runnable probe battery that checks the famous numbers instead of repeating them.
+
+#>mathematics_probstat
+#:layer #!reference
+#:domain #!mathematics
+#:form #!curriculum
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Probability and Statistics"
+ ~#claim: "Probability is a measure of total mass one; statistics turns samples into estimates whose error you can state, and every stated error has a model behind it."
+ ~#proof: "Kolmogorov, Fisher, and Neyman founded the pieces; Casella and Berger and Wasserman state them; the ASA statement fixes what a p-value means."
+ ~#door: "Run the birthday probe first, then read the confidence frame, then the Berkeley case."
+ ~#audience: "engineering, economics, and science students, and readers of survey and market reports"
+ continuity: "Probability and Statistics | model behind it"
+ cold_open: "Every error bar has a model behind it; statistics is the habit of asking which model and whether it fits."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ needs: [ ~"./calculus-and-linear-algebra.spw#mathematics_calc_multi" ]
+ feeds: [ ~"../../../society/economics/econometrics-and-data.spw#economics_econometrics", ~"../../../physical/engineering/industrial-and-systems-engineering.spw#engineering_ise", ~"../../../society/markets/reading-market-reports.spw#markets_reading_reports", ~"../../../society/management/service-operations.spw#management_service_operations" ]
+ see: [ ~"../graduate-analysis-and-geometry.spw#mathematics_grad_analysis_caratheodory" ]
+}
+
+^["concepts"]{
+ primary: [ #measure, #sampling_frame, #estimation ]
+ transfers: [ #queueing, #potential_outcomes, #least_squares, #convolution ]
+ tensions: [ #replication ]
+}
+
+^["dag"]{
+ #>mathematics_probstat_axioms
+ ^["axioms"]{
+  topics: "sample spaces, events, conditional probability, independence, Bayes rule"
+  feeds: [ ~"./probability-and-statistics.spw#mathematics_probstat_variables" ]
+
+  #>mathematics_probstat_kolmogorov
+  ^["kolmogorov"]{
+   #:claim #!settled
+   statement: "Kolmogorov in 1933 axiomatized probability as a countably additive measure of total mass one on a sigma-algebra of events."
+   source: ~"../../../registries/sources/formal.spw#src_formal_kolmogorov_1933"
+  }
+ }
+ #>mathematics_probstat_variables
+ ^["random_variables"]{
+  topics: "distributions, expectation, variance, binomial, Poisson, exponential, normal, joint distributions"
+  feeds: [ ~"./probability-and-statistics.spw#mathematics_probstat_limits" ]
+
+  #>mathematics_probstat_birthday
+  ^["birthday"]{
+   #:claim #!settled
+   statement: "Among 23 people with 365 equally likely birthdays, the chance that two share a birthday is just above one half."
+   reads: %[formal.stats.birthday_23_shared]
+   source: ~"../../../registries/sources/formal.spw#src_formal_blitzstein_hwang_2019"
+  }
+  #>mathematics_probstat_normal_mass
+  ^["normal_mass"]{
+   #:claim #!settled
+   statement: "A normal variable lies within one standard deviation of its mean with probability near 0.68 and within two with probability near 0.95."
+   reads: %[formal.stats.normal_within_1sd, formal.stats.normal_within_2sd]
+   source: ~"../../../registries/sources/formal.spw#src_formal_casella_berger_2002"
+  }
+ }
+ #>mathematics_probstat_limits
+ ^["limit_theorems"]{
+  topics: "law of large numbers, central limit theorem, convergence in distribution"
+  feeds: [ ~"./probability-and-statistics.spw#mathematics_probstat_estimation" ]
+
+  #>mathematics_probstat_clt
+  ^["central_limit"]{
+   #:claim #!settled
+   statement: "For independent, identically distributed variables with finite variance, the standardized sample mean converges in distribution to the standard normal."
+   source: ~"../../../registries/sources/formal.spw#src_formal_wasserman_2004"
+   ^["limits"]{
+    holds: "finite variance and independence or weak dependence"
+    fails: "Cauchy draws have no mean, and their sample mean is again Cauchy however many you average"
+   }
+  }
+ }
+ #>mathematics_probstat_estimation
+ ^["estimation"]{
+  topics: "bias and variance, maximum likelihood, Fisher information, confidence intervals, Bayesian posteriors"
+  feeds: [ ~"./probability-and-statistics.spw#mathematics_probstat_testing", ~"./probability-and-statistics.spw#mathematics_probstat_regression" ]
+
+  #>mathematics_probstat_mle
+  ^["maximum_likelihood"]{
+   #:claim #!settled
+   statement: "Under regularity conditions the maximum likelihood estimator, which Fisher set out in 1922, is consistent and asymptotically normal with variance from the inverse Fisher information."
+   sources: [ ~"../../../registries/sources/formal.spw#src_formal_fisher_1922", ~"../../../registries/sources/formal.spw#src_formal_casella_berger_2002" ]
+   ^["limits"]{
+    holds: "smooth likelihoods whose support does not depend on the parameter"
+    fails: "for a uniform distribution on the interval from 0 to theta the estimator converges faster and is not asymptotically normal"
+   }
+  }
+  #>mathematics_probstat_confidence
+  ^["confidence"]{
+   #:claim #!settled
+   statement: "A 95 percent confidence procedure covers the true value in 95 percent of repeated samples; one computed interval either contains it or does not."
+   reads: %[formal.stats.normal_two_sided_95_z]
+   source: ~"../../../registries/sources/formal.spw#src_formal_neyman_1937"
+   ^["limits"]{
+    holds: "random sampling from the stated population under the stated model"
+    fails: "frame error, nonresponse, and model error sit outside the interval and are often larger"
+   }
+  }
+ }
+ #>mathematics_probstat_testing
+ ^["testing"]{
+  topics: "null and alternative, size and power, likelihood ratios, p-values, multiple comparisons"
+
+  #>mathematics_probstat_neyman_pearson
+  ^["neyman_pearson"]{
+   #:claim #!settled
+   statement: "For one simple hypothesis against another at a fixed size, the likelihood-ratio test has the greatest power."
+   source: ~"../../../registries/sources/formal.spw#src_formal_neyman_pearson_1933"
+  }
+  #>mathematics_probstat_p_value
+  ^["p_value_meaning"]{
+   #:claim #!settled
+   statement: "The 2016 ASA statement says a p-value measures how incompatible data are with a model; it is not the probability the hypothesis is true or a measure of effect size."
+   source: ~"../../../registries/sources/formal.spw#src_formal_asa_2016"
+  }
+ }
+ #>mathematics_probstat_regression
+ ^["regression"]{
+  topics: "least squares, residuals, confounding, interaction, potential outcomes, Simpson reversal"
+  needs: [ ~"./calculus-and-linear-algebra.spw#mathematics_calc_least_squares" ]
+
+  #>mathematics_probstat_simpson
+  ^["berkeley_reversal"]{
+   #:claim #!settled
+   statement: "Berkeley pooled 1973 graduate admissions favored men, yet department rates showed no bias against women, who applied more to departments that admitted few applicants."
+   reads: %[formal.stats.berkeley_1973_men_admit, formal.stats.berkeley_1973_women_admit]
+   source: ~"../../../registries/sources/formal.spw#src_formal_bickel_1975"
+   ~#(the authors note this does not rule out bias earlier in the pipeline)
+   credits: [ ~"../../../registries/sources/formal.spw#src_formal_yule_1903", ~"../../../registries/sources/formal.spw#src_formal_simpson_1951" ]
+  }
+ }
+ #>mathematics_probstat_processes
+ ^["processes_and_quality"]{
+  topics: "Poisson processes, Markov chains, queues, control charts"
+  needs: [ ~"./probability-and-statistics.spw#mathematics_probstat_variables" ]
+
+  #>mathematics_probstat_little
+  ^["little_law"]{
+   #:claim #!settled
+   statement: "In a stable queue at steady state, the average number in the system equals the arrival rate times the average time in system, whatever the distributions."
+   source: ~"../../../registries/sources/formal.spw#src_formal_little_1961"
+  }
+  #>mathematics_probstat_shewhart
+  ^["control_charts"]{
+   #:claim #!settled
+   statement: "Shewhart control charts, set out in his 1931 book, separate common-cause variation from assignable causes by plotting a statistic against limits estimated from the process."
+   source: ~"../../../registries/sources/formal.spw#src_formal_shewhart_1931"
+  }
+ }
+}
+
+^["battery"]{
+ #>mathematics_probstat_probe_birthday
+ ^["birthday_sim"]{
+  !probe{ "draw 23 birthdays uniformly from 365 days, repeat 100000 times, and count trials with a shared day" =id[p_formal_probstat_birthday_sim] =kind[sim] }
+  expect: "a fraction close to the registry cell, within about one percent"
+  shows: ~"./probability-and-statistics.spw#mathematics_probstat_birthday"
+ }
+ #>mathematics_probstat_probe_cauchy
+ ^["cauchy_running_mean"]{
+  !probe{ "plot the running mean of 10000 standard normal draws and of 10000 Cauchy draws" =id[p_formal_probstat_cauchy_mean] =kind[sim] }
+  expect: "the normal mean settles toward zero; the Cauchy mean keeps jumping"
+  shows: ~"./probability-and-statistics.spw#mathematics_probstat_clt"
+ }
+ #>mathematics_probstat_probe_coverage
+ ^["interval_coverage"]{
+  !probe{ "draw 1000 samples of size 30 from a normal with known sigma, form mean plus or minus 1.96 sigma over root n, and count intervals covering the mean" =id[p_formal_probstat_coverage] =kind[sim] }
+  expect: "close to 950 of 1000 intervals cover the true mean"
+  shows: ~"./probability-and-statistics.spw#mathematics_probstat_confidence"
+ }
+ #>mathematics_probstat_probe_simpson
+ ^["berkeley_table"]{
+  !probe{ "copy the six-department table from Bickel, Hammel, and O Connell and recompute pooled and per-department admission rates" =id[p_formal_probstat_berkeley_table] =kind[lookup] }
+  expect: "pooled rates favor men while most department rates do not"
+  shows: ~"./probability-and-statistics.spw#mathematics_probstat_simpson"
+ }
+}
+
+^["try"]{
+ #>mathematics_probstat_try_coins
+ ^["ten_coin_bell"]{
+  materials: [ "ten coins", "a cup", "paper for a tally" ]
+  steps: << "shake the ten coins in the cup and pour them out" ; "tally the number of heads" ; "repeat forty times" ; "draw the histogram of head counts" ; "compare its shape and center with the binomial with ten trials and one half" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./probability-and-statistics.spw#mathematics_probstat_clt"
+ }
+}
+
+#>mathematics_probstat_margin_q
+?["Do readers of market reports read a margin of error as total error?"]{
+ #:depth #!social ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "Readers treat a stated margin of error as the whole uncertainty, though it covers only sampling error under random sampling and omits frame, nonresponse, and question effects."
+ !probe{ "show readers one survey chart with its margin of error and ask what range the true value could take and why" =id[p_formal_probstat_margin_reading] =kind[interview] }
+ $%[formal.stats.normal_two_sided_95_z]
+ ~"./probability-and-statistics.spw#mathematics_probstat_confidence" ~#neighbor(nearest)
+}

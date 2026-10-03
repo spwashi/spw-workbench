@@ -1,0 +1,123 @@
+# Information Science
+#
+# How libraries and archives organize, find, keep, and share records: classification, retrieval, preservation, policy, the reference works that came before, and the patterns this cut borrows from them.
+
+#>information_science_index
+#:layer #!reference
+#:domain #!information_science
+#:form #!index
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Information Science"
+ ~#claim: "Library and information science organizes records so they can be found, trusted, and kept, and its working patterns are the ancestors of this cut."
+ ~#proof: "Leaves cite classification schemes, retrieval papers, the OAIS standard, statutes, and histories of reference works."
+ ~#door: "Start with the reference-works lineage, then read the patterns matrix to see what this cut borrows."
+ ~#audience: "library and archives students, catalogers, and readers curious about how reference works are built"
+ continuity: "Information Science | found, trusted, and kept"
+ cold_open: "Libraries and archives arrange records so they can be found, trusted, and kept, and this cut borrows their habits."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/library-and-information-sciences/taste.spw" ]
+ method: #corrected
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+   note: "routing and bundle anchors confirmed"
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: [
+  "the raw taste frame cast librarians as front-line soldiers and every catalog entry as defiance against oblivion; this index keeps the stewardship and drops the alarm",
+  "the claim that one burning of Alexandria set science back a millennium is marked contested; the library declined over centuries",
+  "the browsing-versus-search hypothesis keeps its direction and loses its implied certainty"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/provenance-and-reference.spw#q_prov_reference" ]
+}
+
+^["concepts"]{
+ primary: [ #faceted_classification, #fixity, #provenance ]
+ transfers: [ #respect_des_fonds, #authority_control ]
+ tensions: [ #ossified_taxonomy ]
+}
+
+^["tree"]{
+ reference_lineage: ~"./reference-works-lineage.spw"
+ knowledge_organization: ~"./knowledge-organization.spw"
+ retrieval: ~"./retrieval-systems.spw"
+ archives: ~"./archives-and-preservation.spw"
+ policy: ~"./information-policy.spw"
+ patterns: ~"./archive-patterns-matrix.spw"
+ cautions: ~"./taxonomy-cautions.spw"
+}
+
+^["bundle"]{
+ ={ ~"./reference-works-lineage.spw#information_science_reference_lineage" }
+ ={ ~"./knowledge-organization.spw#information_science_knowledge_org" }
+ ={ ~"./retrieval-systems.spw#information_science_retrieval" }
+ ={ ~"./archives-and-preservation.spw#information_science_archives" }
+ ={ ~"./information-policy.spw#information_science_policy" }
+ ={ ~"./archive-patterns-matrix.spw#information_science_patterns" }
+ ={ ~"./taxonomy-cautions.spw#information_science_cautions" }
+}
+
+^["leaves"]{
+ reference_lineage: .{ concept: #reference_work, form: #timeline }
+ knowledge_organization: .{ concept: #faceted_classification, form: #comparison }
+ retrieval: .{ concept: #ranking, form: #timeline }
+ archives: .{ concept: #fixity, form: #protocol }
+ policy: .{ concept: #intellectual_freedom, form: #ledger }
+ patterns: .{ concept: #renvoi, form: #comparison }
+ cautions: .{ concept: #ossified_taxonomy, form: #ledger }
+}
+
+^["stance"]{
+ #>information_science_index_stewardship
+ ^["stewardship_without_alarm"]{
+  #:claim #!interpretive
+  statement: "Keeping records findable and intact is ordinary, skilled maintenance; this branch describes it as practice, not as a last stand against oblivion."
+ }
+ #>information_science_index_old_books
+ ^["old_book_smell"]{
+  #:claim #!settled
+  statement: "The smell of aging paper comes from volatile compounds released as cellulose and lignin degrade, and those compounds can be read to judge a book's condition."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_strlic_2009"
+ }
+ #>information_science_index_alexandria
+ ^["alexandria"]{
+  #:claim #!contested
+  statement: "The Library of Alexandria declined over centuries of reduced funding and political turmoil; a single catastrophic fire is largely a later legend."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_bagnall_2002"
+  ~#(the raw claim of a millennium-long setback has no source and is dropped)
+ }
+}
+
+^["gaps"]{
+ rda: "Resource Description and Access, the current cataloging content standard, has no leaf yet"
+ bibframe: "BIBFRAME, the Library of Congress linked-data successor to MARC, is named in the knowledge organization matrix but has no leaf"
+ non_us_policy: "information policy is US-centered; GDPR and other national library laws wait for a leaf"
+ oral_archives: "community and oral archives are reached through the intergenerational kit, not through a leaf here"
+}
+
+#>information_science_index_browse_q
+?["Does browsing a shelf lead readers to different books than a keyword search does?"]{
+ #:depth #!experiential ~#lens(curated collection)
+ #:claim #!speculative
+ ~#hypothesis: "Shelf order places neighbors by subject, so browsing should surface more books the reader had no words for than a search box does."
+ !probe{ "give two groups the same question, one with open stacks and one with the catalog only, and compare the call-number spread of what they choose" =id[p_prov_info_browse] =kind[field] }
+ $%[prov.dcmes.element_count]
+ ~"./index.spw#information_science_index_stewardship" ~#neighbor(nearest)
+}

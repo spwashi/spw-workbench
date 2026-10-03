@@ -1,0 +1,197 @@
+# Machine Empathy
+#
+# Machine empathy as a declared reader context that chooses what a tool discloses while the product stays the same: three coordinates, three ladders kept apart, the ethics that bound it, and a ranked path.
+
+#>spw_machine_empathy
+#:layer #!semantics
+#:domain #!spw
+#:form #!field_guide
+#:level #!advanced
+#:review #!spot_checked
+#:valence #!bane
+
+^"emit"{
+ ~#title: "Machine Empathy"
+ ~#claim: "A tool shows empathy by honoring a context the reader declares, such as care, habit, and practice, and by stating what it left out, while product identity stays fixed."
+ ~#proof: "Canon says context is a declared stack and that disclosure never renames identity; CLI canon forbids inferring a person-level trait from inspection."
+ ~#door: "Declare one care rung for your next read, then check what the tool omitted at that rung."
+ ~#audience: "tool authors, reviewers, and readers who tune how much a tool shows"
+ continuity: "Machine Empathy | declared"
+ cold_open: "A kind tool honors the context you declared, tells you what it left out, and never guesses who you are."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/spw-branch/machine-empathy.md",
+  ".agents/plans/caches-cut-2026-09-30/references/spw-branch/critic.json, provenance labels and logging",
+  "canon lines re-read at 1aa1dc23: representational-disclosure.spw:45,96,111-116,296 and cli.spw:100,118-121"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the study labeled cut rules and the owner note as canon; here a-canon means repository canon, a-cut means this dated cut, and owner hold means the resume note",
+  "the study said practice logs accuracy to a reader-owned file; tools write nothing about readers, and a reader may keep a tally by hand",
+  "the path ranks path-aware parsing before the honesty floor, since publishing lexer errors first would flood wip files",
+  "the care ladder and receipts have one home in inspection and IR; this surface links there"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./inspection-and-ir.spw#spw_inspection_and_ir", ~"./familiarity-matrix.spw#spw_familiarity_matrix" ]
+ grounds: [ ~"docs/theory/spw/representational-disclosure.spw#representational_disclosure", ~".spw/conventions/cli.spw#spw_cli_conventions" ]
+ feeds: [ ~"./practice-modes.spw#spw_practice_modes" ]
+}
+
+^["concepts"]{
+ primary: [ #declared_context, #disclosure ]
+ transfers: [ #care_ladder ]
+ tensions: [ #reader_modeling ]
+}
+
+^["model"]{
+ #>spw_empathy_declared
+ ^["declared_stack"]{
+  #:claim #!settled
+  statement: "Canon treats context as a declared stack of dialect, mode, grain, and channel, and holds that disclosure never renames identity."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_canon_disclosure"
+  cites: [ "docs/theory/spw/representational-disclosure.spw:45", "docs/theory/spw/representational-disclosure.spw:96-122" ]
+  label: "a-canon"
+ }
+ #>spw_empathy_three_coordinates
+ ^["three_coordinates"]{
+  #:claim #!interpretive
+  statement: "Empathy adds three declared coordinates: care, how much attention a pass spends; habit, which prior notation pulls the eye; and practice, whether to predict before seeing."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_machine_empathy"
+  status: #proposed
+  care_home: ~"./inspection-and-ir.spw#spw_ir_care_descends"
+  habit_home: ~"./familiarity-matrix.spw#spw_familiarity_matrix"
+  practice_home: ~"./practice-modes.spw#spw_practice_modes"
+ }
+ knowable: #[
+  "what the tool omitted, from shipped omission shapes",
+  "where a habit will mislead, from parse probes on familiar notations",
+  "what care was already applied, from receipts"
+ ]
+
+ #>spw_empathy_habit_probe
+ ^["habit_probe"]{
+  #:claim #!settled
+  statement: "A negative number after a colon and an accented letter in a key each leave one lexer error with success true, while a C-style ternary parses with no error and a different meaning."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_seed_lexer"
+  probe_run: "parse of vm: -70, a cafe key with an accented e, and x: a ? b : c at 1aa1dc23 on 2026-10-02"
+ }
+}
+
+^["ladders"]{
+ #>spw_empathy_three_ladders
+ ^["kept_apart"]{
+  #:claim #!interpretive
+  statement: "Care, level, and grain are three ladders: care is attention spent, level is who a surface is written for, and grain is how much the tool materializes."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_canon_disclosure"
+  cites: [ "docs/theory/spw/representational-disclosure.spw:111-116", "packages/spw-seed/src/ir/granularity.ts:14" ]
+ }
+ ^["care"]{ label: "a-cut", values: "glance, skim, read, audit, adversarial", home: ~"./inspection-and-ir.spw#spw_inspection_and_ir" }
+ ^["level"]{ label: "a-cut", values: "intro, foundation, advanced, graduate, practitioner", use: "picks default vocabulary and glossary links" }
+ ^["grain"]{ label: "a-canon and code", values: "skim, card, field, full", use: "how the tool materializes a choice" }
+ #>spw_empathy_not_stage
+ ^["not_a_stage"]{
+  #:claim #!settled
+  statement: "Canon says form-ladder rungs are not a developmental stage, so a ladder rung never ranks a reader."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_canon_form_ladders"
+  cites: [ "docs/theory/spw/form-ladders.spw:81" ]
+ }
+ orthogonal: "an intro reader may audit a graduate surface, and a practitioner may glance at an intro door"
+}
+
+^["ethics"]{
+ #>spw_empathy_no_trait
+ ^["no_person_trait"]{
+  #:claim #!settled
+  statement: "CLI canon keeps inspection local, explicit, and read-only, keeps no hidden activity log, and forbids inferring a person-level trait or an authority-facing score."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_canon_cli"
+  cites: [ ".spw/conventions/cli.spw:118-121" ]
+  label: "a-canon"
+ }
+ tools_write_nothing: "a-cut: no tool writes, stores, or scores what a reader predicted or missed; a reader may keep a tally by hand"
+
+ #>spw_empathy_no_escalation
+ ^["no_escalation"]{
+  #:claim #!settled
+  statement: "Canon defers weight-driven automatic grain without an explicit user or agent choice, so empathy never raises disclosure on its own."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_canon_disclosure"
+  cites: [ "docs/theory/spw/representational-disclosure.spw:296" ]
+ }
+ #>spw_empathy_owner_holds
+ ^["owner_holds"]{
+  #:claim #!interpretive
+  statement: "For this revision a newcomer lands on one fragment door with no command tour, and charge stays off the visit arc."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_owner_resume"
+  label: "owner hold, not site doctrine"
+  cites: [ ".spw/caches/resume/2026-09-30-direction.spw:30", ".spw/caches/resume/2026-09-30-direction.spw:67", ".spw/caches/resume/2026-09-30-direction.spw:73" ]
+ }
+}
+
+^["failures"]{
+ note: "each failure has one home; this frame links to it"
+ lexer_errors: ~"./tokens-and-roles.spw#spw_tokens_div_lexer_errors"
+ brief_drops_status: ~"./inspection-and-ir.spw#spw_ir_trust_emit"
+ outline_hides: ~"./inspection-and-ir.spw#spw_ir_trust_outline"
+
+ #>spw_empathy_read_mismatch
+ ^["read_mismatch"]{
+  #:claim #!settled
+  statement: "The command alias read delivers an outline, which shows less than the care rung named read, so the same word promises two different apertures."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_cli_commands"
+  cites: [ "packages/spw-cli/src/commands.ts:338-339" ]
+ }
+}
+
+^["path"]{
+ label: "ranked proposals; tooling lands outside this cut"
+ ^["r1_path_aware_parse"]{
+  change: "parse with the document path and a diagnostics-only event policy in the LSP"
+  cites: [ "packages/spw-lsp/src/server-index.ts:371" ]
+  status: #proposed, effort: "small"
+  reads: %[spw.lsp.wip_files, spw.lsp.wip_errors_pathless]
+ }
+ ^["r2_honesty_floor"]{
+  change: "publish lexer errors whatever success says, and fail the validator when any error is present"
+  cites: [ "packages/spw-lsp/src/handlers/analysis.ts:51-52", "scripts/analyzers/spw-syntax-validate.ts:209,227" ]
+  status: #proposed, effort: "small"
+ }
+ ^["r3_receipt_honesty"]{ change: "a gate check that review never exceeds the best passing receipt care", status: #proposed, effort: "small" }
+ ^["r4_outline_discloses"]{ change: "outline shows anchors, moods, wonders, and cold_open, and prints what it omitted", status: #proposed, effort: "small to medium" }
+ ^["r5_glance_keeps_status"]{ change: "the brief card carries a status glyph and audio speaks the claim", status: #proposed, effort: "small to medium" }
+ ^["r6_declared_care"]{ change: "a care flag on outline, emit, and inspect, after the care ladder lands in CLI canon", status: #proposed, effort: "small to medium" }
+ ^["r7_role_stream"]{ change: "one parse-derived role stream feeding tokens and practice modes", status: #proposed, effort: "medium" }
+ ^["r8_habit_profiles"]{ change: "a new habits option on spw lint that warns on familiar-but-wrong readings without changing the parse", status: #proposed, effort: "medium" }
+}
+
+^["try"]{
+ #>spw_empathy_try_declare
+ ^["declare_then_read"]{
+  materials: [ "a terminal in the workbench", "one cut surface you have not read", "a notebook you keep" ]
+  steps: << "write the care rung you will spend" ; "read only what that rung shows" ; "write what you think it left out" ; "climb one rung and compare" >>
+  time: .{ n: 25, unit: "minutes" }
+  safety: "none worth naming; the notebook is yours"
+  shows: ~"./machine-empathy.spw#spw_empathy_three_ladders"
+ }
+}
+
+#>spw_empathy_declare_q
+?["Does declaring a care rung before a review change which errors the reviewer catches?"]{
+ #:depth #!ethical ~#lens(applied attention)
+ #:claim #!speculative
+ ~#hypothesis: "Reviewers who declare care first catch more of the errors that sit below their declared rung, because they plan where care runs out."
+ !probe{ "paired review of seeded surfaces, half declaring care first; reviewers report their own catches" =id[p_spw_empathy_declare] =kind[field] }
+ $%[spw.cut.receipts_audit, spw.cut.receipts_adversarial]
+ ~"./machine-empathy.spw#spw_empathy_three_coordinates" ~#neighbor(nearest)
+}

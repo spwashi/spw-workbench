@@ -1,0 +1,319 @@
+# Familiarity Matrix
+#
+# Thirty-two Spw forms read against twelve fields of prior notation: what each field already means by the glyph, what the parser does with it, and which fields it misleads.
+
+#>spw_familiarity_matrix
+#:layer #!semantics
+#:domain #!spw
+#:form #!comparison
+#:level #!intro
+#:review #!spot_checked
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Familiarity Matrix"
+ ~#claim: "Most Spw glyphs already mean something in some field, and misleading readings outnumber helpful ones, so a habit is a guess to check against the parse."
+ ~#proof: "A persona study scored thirty-two forms against twelve fields, and parse probes at 1aa1dc23 confirm the observable rows marked as rerun."
+ ~#door: "Find your field in the legend, read the rows that list it as a false friend, then parse one of them."
+ ~#audience: "newcomers who already write code, mathematics, markup, or field notation"
+ continuity: "Familiarity Matrix | false friend"
+ cold_open: "A glyph you already know can be a false friend here, so check what the parser does before you trust the habit."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/studies/persona-synthesis.json familiarity_matrix",
+  "twenty familiar notations parsed with the seed at 1aa1dc23, and NVDA symbols.dic read, on 2026-10-03"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the persona keyboard note said the period is unshifted on every layout; French AZERTY types it with Shift on the semicolon key",
+  "the persona bias row said the spaced form yields no edge; at 1aa1dc23 the canon form with the anchor after the frame yields none, while a spaced form with the anchor first yields one"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./design-research/spw-position-matrix.spw#lang_design_spw_position" ]
+ grounds: [ ~"../registries/quantities/spw-branch.spw#q_spw_fam" ]
+ feeds: [ ~"./machine-empathy.spw#spw_machine_empathy" ]
+ see: [ ~"./glossary/false-friends.spw#spw_false_friends" ]
+}
+
+^["concepts"]{
+ primary: [ #false_friend, #prior_notation ]
+ transfers: [ #habit ], tensions: [ #silent_failure ]
+}
+
+^["legend"]{
+ clusters: #[ c_family, physics, design, math, eng_chem, clinical, linguist, social, library, crew, creator, educator ]
+ names: "c_family is C, shell, Python, and Rust programmers; eng_chem is engineers and chemists; clinical is life and clinical scientists; crew is production crews"
+ verdicts: #[ helpful_bridge, neutral, mixed, false_friend ]
+ lean: "the most frequent verdict across the twelve fields; a tie goes to the riskier verdict"
+ rows: "ff lists the fields where the form is a false friend; bridge lists the fields where the habit helps"
+ priors: "a prior is what a field already means by a glyph, read from its notation references; it describes a notation, never a person"
+}
+
+^["claims"]{
+ #>spw_fam_counts
+ ^["counts"]{
+  #:claim #!settled
+  statement: "Of 384 cells, false friends are the largest verdict; physics readers and mathematicians meet the most, and production crews the fewest, at six."
+  reads: %[spw.fam.false_friend, spw.fam.ff_physics, spw.fam.ff_production_crews]
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_persona"
+ }
+ #>spw_fam_observables
+ ^["quiet_splits"]{
+  #:claim #!settled
+  statement: "A leading .5, $5, 50%, Q&A, and a numbered list item each split into a sigil operation and a remainder, with no error and no warning."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_seed_ast"
+  probe_run: "seed parse of twenty familiar notations at 1aa1dc23 on 2026-10-03"
+  see: [ ~"./tokens-and-roles.spw#spw_tokens_div_lexer_errors" ]
+ }
+}
+
+^["sigils"]{
+ #>spw_fam_tilde
+ ^["tilde"]{
+  form: "~", lean: #false_friend, prior: "approximately or of order; NOT in C and MATLAB; the R formula y ~ x"
+  observable: "in y ~ x the x becomes a modifier of the tilde, not a partner of y; rerun at 1aa1dc23"
+  ff: #[ physics, design, math, eng_chem, clinical, linguist, social, creator, educator ]
+ }
+ #>spw_fam_hash
+ ^["hash"]{
+  form: "#", lean: #false_friend, prior: "a comment in shell and Python; the number sign; a CSS id; a hashtag"
+  observable: "a hash and a space drop the rest of the line even mid-line, and #!3 becomes a hash with prose; rerun"
+  ff: #[ c_family, physics, design, math, eng_chem, clinical, linguist, library, crew ]
+ }
+ #>spw_fam_dot
+ ^["dot"]{
+  form: ".", lean: #mixed, prior: "a decimal point, member access, a CSS class, a Leipzig category joint"
+  observable: "a free dot is the ground operator, so .5 binds a bare dot and leaves 5; rerun"
+  ff: #[ clinical, library, creator, educator ]
+ }
+ #>spw_fam_amp
+ ^["ampersand"]{
+  form: "&", lean: #neutral, prior: "address-of and logical AND; and in titles such as Q&A"
+  observable: "Q&A becomes Q plus an ampersand operation labeled A; rerun"
+  ff: #[ c_family, clinical, educator ]
+ }
+ #>spw_fam_caret
+ ^["caret"]{
+  form: "^", lean: #false_friend, prior: "an exponent or superscript; XOR; the proofreading insert mark"
+  observable: "a caret at line end takes the next line key as its subject with no warning; rerun"
+  ff: #[ c_family, physics, math, eng_chem, clinical, social, creator ]
+ }
+ #>spw_fam_dollar
+ ^["dollar"]{
+  form: "$", lean: #false_friend, prior: "a shell or Sass variable, LaTeX math mode, money, an Excel absolute reference"
+  observable: "$5 becomes a dollar operation plus 5, and $% parses as two sibling operations; rerun"
+  ff: #[ c_family, physics, design, math, eng_chem, social, library, crew, creator, educator ]
+ }
+ #>spw_fam_equals
+ ^["equals"]{
+  form: "=", lean: #false_friend, prior: "assignment or equality; key=value in TOML and INI; a spreadsheet formula prefix"
+  observable: "k = v inside a facet stays a flat list and binds nothing; only the colon makes a Binding; rerun"
+  ff: #[ c_family, physics, design, math, eng_chem, linguist, social, library, educator ]
+ }
+ #>spw_fam_at
+ ^["at"]{
+  form: "@", lean: #false_friend, prior: "an email or social handle, a decorator, a CSS at-rule, evaluated at"
+  observable: "@name lexes as a Reference, and @the.author becomes a dotted path, never the perspective operator; rerun"
+  ff: #[ math, clinical, library, crew, creator, educator ]
+ }
+ #>spw_fam_question
+ ^["question"]{
+  form: "?", lean: #mixed, prior: "a question mark; the C ternary; an optional element in a regex"
+  observable: "a ? b : c parses with no error into a different structure; a question block is a wonder; rerun"
+  ff: #[ linguist ], bridge: #[ educator ]
+ }
+ #>spw_fam_bang
+ ^["bang"]{
+  form: "!", lean: #false_friend, prior: "logical NOT, a factorial, emphasis, a chat bot command"
+  observable: "the action operator returns its first argument; a probe block is never executed"
+  ff: #[ c_family, physics, design, math, clinical, social, creator ], bridge: #[ crew ]
+ }
+ #>spw_fam_star
+ ^["star"]{
+  form: "*", lean: #false_friend, prior: "multiplication, a pointer, a glob, Markdown emphasis, a footnote mark"
+  observable: "the value operator writes and returns its first argument; it does not multiply"
+  ff: #[ c_family, physics, design, math, eng_chem, clinical, linguist, social, crew, creator, educator ]
+ }
+ #>spw_fam_percent
+ ^["percent"]{
+  form: "%", lean: #false_friend, prior: "a percentage, modulo, a printf format, a LaTeX comment"
+  observable: "50% parses as 50 plus a loose percent operation; canon bounds a measure to the unit interval; rerun"
+  ff: #[ c_family, design, math, clinical, crew, educator ]
+ }
+ #>spw_fam_couple
+ ^["couple"]{
+  form: "<>", lean: #false_friend, prior: "not-equal in SQL and BASIC, an HTML tag, a generic type, a diamond"
+  observable: "the prefix pair couples two string keys; infix a <> b turns b into a modifier"
+  ff: #[ c_family, physics, eng_chem, social, library ], bridge: #[ linguist ]
+ }
+}
+
+^["forms"]{
+ #>spw_fam_braces
+ ^["braces"]{
+  form: "{ }", lean: #neutral, prior: "a code block or JSON object; set-builder notation"
+  observable: "a body container; a JSON object parses as Bindings, and braces scope no names"
+  ff: #[ physics, math ], bridge: #[ c_family, design ]
+ }
+ #>spw_fam_brackets
+ ^["brackets"]{
+  form: "[ ]", lean: #false_friend, prior: "an array index, a citation, an optional part, an editorial insertion"
+  observable: "a frame of parts or params; a comparison inside brackets degrades the whole surface"
+  ff: #[ physics, design, math, eng_chem, library, creator, educator ]
+ }
+ #>spw_fam_parens
+ ^["parens"]{
+  form: "( )", lean: #mixed, prior: "a function call, grouping, an aside"
+  observable: "f(x) attaches a scene whose first key becomes its name; parentheses become an aside only after ~#"
+  ff: #[ physics, linguist, educator ], bridge: #[ library, crew ]
+ }
+ #>spw_fam_stream
+ ^["stream"]{
+  form: "<< >>", lean: #helpful_bridge, prior: "C++ stream insertion, a bit shift, French guillemets"
+  observable: "an ordered stream that nothing runs; typed guillemets are lexer errors; rerun"
+  ff: #[ physics ], bridge: #[ design, clinical, linguist, social, crew, educator ]
+ }
+ #>spw_fam_facet
+ ^["facet"]{
+  form: ".{ }", lean: #helpful_bridge, prior: "a record, an object literal, a style rule"
+  observable: "k: v makes Bindings while k = v stays flat; rerun"
+  ff: #[ library ], bridge: #[ c_family, physics, design, eng_chem, clinical, linguist, social, creator, educator ]
+ }
+ #>spw_fam_set
+ ^["set"]{
+  form: "#[ ]", lean: #helpful_bridge, prior: "a Rust attribute, a tag list, a set of categories"
+  observable: "order and duplicates survive in the AST but carry no meaning, and an anchor inside binds nothing"
+  ff: #[ c_family ], bridge: #[ physics, design, eng_chem, clinical, linguist, social, crew ]
+ }
+ #>spw_fam_frame
+ ^["frame"]{
+  form: "^[ ]", lean: #helpful_bridge, prior: "a named section, heading, or record"
+  observable: "a named frame the LSP outlines; it nests deeply and scopes no names"
+  bridge: #[ physics, design, math, eng_chem, clinical, linguist, social, library, creator, educator ]
+ }
+ #>spw_fam_anchor
+ ^["anchor"]{
+  form: "#>", lean: #helpful_bridge, prior: "a bookmark, a label, a citation key"
+  observable: "the deixis particle binds forward to the next node, and a path ending in its name resolves to it"
+  bridge: #[ physics, design, math, eng_chem, library, crew, creator, educator ]
+ }
+ #>spw_fam_case
+ ^["case"]{
+  form: "#:", lean: #helpful_bridge, prior: "a field label or category marker"
+  observable: "the case particle; the LSP labels it lens, and with a mood on its line it forms a key and value"
+  ff: #[ math, linguist ], bridge: #[ physics, design, eng_chem, library, crew, creator ]
+ }
+ #>spw_fam_mood
+ ^["mood"]{
+  form: "#!", lean: #mixed, prior: "a shebang line; a status flag"
+  observable: "a mood value must start with a letter or underscore, so #!3 shatters; rerun"
+  ff: #[ c_family, creator ], bridge: #[ design, eng_chem, library, crew ]
+ }
+ #>spw_fam_aspect
+ ^["aspect"]{
+  form: "~#", lean: #neutral, prior: "few fields read this pair at all"
+  observable: "an aspect annotation; a spaced ~#k: before a path detaches the value from its key"
+  ff: #[ linguist ]
+ }
+ #>spw_fam_apposition
+ ^["apposition"]{
+  form: "~#name( )", lean: #helpful_bridge, prior: "a gloss, a footnote, a margin note"
+  observable: "the body is raw text to the matching paren, the name stays ASCII, and spw lattice counts it"
+  bridge: #[ c_family, design, math, eng_chem, clinical, linguist, library, crew, creator ]
+ }
+ #>spw_fam_pathref
+ ^["pathref"]{
+  form: `~"path#anchor"`, lean: #helpful_bridge, prior: "a relative link, an include, a cross-reference"
+  observable: "resolved relative to the citing file; spw resolve checks the file and the anchor"
+  bridge: #[ c_family, physics, design, math, eng_chem, clinical, linguist, social, library, crew, creator, educator ]
+ }
+ #>spw_fam_bias
+ ^["bias"]{
+  form: "=~", lean: #mixed, prior: "a regex match in bash and Perl; an arrow in a diagram"
+  observable: "the tight form yields a ranked edge; the canon form with the anchor after the frame yields none; rerun"
+  bridge: #[ math, linguist, educator ]
+  cites: [ "docs/theory/spw/flow-protocol-sigils.spw:66", "packages/spw-seed/src/canonical/read-bias.ts:102" ]
+ }
+ #>spw_fam_arrow
+ ^["arrow"]{
+  form: "->", lean: #neutral, prior: "pointer member access, implication, a mapping"
+  observable: "a chain connector; tight a->b degrades the whole surface to prose; rerun"
+  ff: #[ social ], bridge: #[ math, eng_chem ]
+ }
+ #>spw_fam_leads
+ ^["leads_to"]{
+  form: "~>", lean: #neutral, prior: "a rarely used leads-to arrow"
+  observable: "a connector that no tool reads"
+ }
+ #>spw_fam_fat_arrow
+ ^["fat_arrow"]{
+  form: "=>", lean: #neutral, prior: "a lambda arrow; implies"
+  observable: "a sequence-step separator; in x: a => b only a is bound; rerun"
+  ff: #[ c_family, math, eng_chem, creator ], bridge: #[ crew ]
+ }
+ #>spw_fam_colon
+ ^["colon"]{
+  form: ":", lean: #false_friend, prior: "a label, a ratio, a time of day, a YAML key"
+  observable: "the only form that makes a Binding; 06:30 nests a Binding inside a Binding; rerun"
+  ff: #[ physics, design, eng_chem, clinical, social, crew, creator ], bridge: #[ c_family ]
+ }
+ #>spw_fam_hole
+ ^["hole"]{
+  form: "_", lean: #neutral, prior: "a blank to fill, a placeholder, a wildcard"
+  observable: "a single underscore becomes a Wildcard node, and nothing unifies it"
+  bridge: #[ c_family, physics, math, linguist, educator ]
+ }
+}
+
+^["keyboard"]{
+ #>spw_fam_screen_reader
+ ^["screen_reader"]{
+  #:claim #!settled
+  statement: "At the NVDA symbol level some, the hash is spoken as number, the caret and tilde need level most, and the question and exclamation marks need level all."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_nvda_symbols"
+  as_of: "nvaccess nvda master, source/locale/en/symbols.dic, read 2026-10-03"
+ }
+ status: #verify, reference: ~"../registries/sources/spw-branch.spw#src_spw_ms_keyboard_layouts"
+ check: "open the system keyboard viewer for your layout before trusting a layout row"
+ reads: %[spw.keys.operator_sigils, spw.keys.us_shifted, spw.keys.uk_shifted]
+ ansi_us: "every operator sigil except the period and the equals sign needs Shift"
+ iso_uk: "the hash has its own key beside Enter, Shift and 3 gives the pound sign, and the at sign is Shift and the apostrophe key"
+ de: "the hash has its own unshifted key, the tilde and at sign need AltGr, and the caret is a dead key left of 1"
+ fr_azerty: "tilde, hash, at sign, and braces need AltGr, the period needs Shift, and the ampersand, dollar, and exclamation mark are unshifted"
+ us_international: "tilde, caret, and the double quote are dead keys, so a caret typed before a quote can compose an accented letter"
+ ios: "the at sign, ampersand, dollar, question mark, and exclamation mark sit on the first symbol page; hash, caret, tilde, and braces on the second"
+}
+
+^["try"]{
+ #>spw_fam_try_three_rows
+ ^["three_rows"]{
+  materials: [ "a terminal in the workbench", "this matrix", "paper for your guesses" ]
+  steps: << "pick three rows that list your field" ; "write what you expect the parser to do with each" ; "run spw inspect source with --through structure on each form" ; "mark which guesses held" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "none worth naming; your guesses stay on your paper"
+  shows: ~"./familiarity-matrix.spw#spw_fam_observables"
+ }
+}
+
+#>spw_fam_keystroke_q
+?["Do sigils that cost more keystrokes on a reader layout get skipped or mistyped more often?"]{
+ #:depth #!experiential ~#lens(craft practice)
+ #:claim #!speculative
+ ~#hypothesis: "Readers on layouts where a sigil needs AltGr or a dead key mistype it more often than readers who type it with Shift alone."
+ !probe{ "volunteers on four layouts copy one cut surface and report their own mistyped sigils by layout, never by name" =id[p_spw_fam_keystroke] =kind[field] }
+ $%[spw.keys.us_shifted, spw.keys.uk_shifted]
+ ~"./familiarity-matrix.spw#spw_fam_tilde" ~#neighbor(nearest)
+}

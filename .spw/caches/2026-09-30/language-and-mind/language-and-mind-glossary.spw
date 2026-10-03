@@ -7,7 +7,7 @@
 #:domain #!language_and_mind
 #:form #!glossary
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -21,15 +21,25 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
  ^["receipts"]{
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ gate_note: "r3 and r5 failed only on a forward ref to the planned cognition leaf reasoning-and-decision, owned by another package; that leaf has landed and r6 passes"
+ corrections: [
+  "fact check: register sat under variable as a narrower term; a register is a situational variety and a variable is a set of variants, so the two now link as see"
+ ]
 }
 
 ^["edges"]{
@@ -87,7 +97,8 @@
   gloss: "in sociolinguistics, a set of alternative ways of saying the same thing whose rates shift with speaker, group, and setting"
   example: "pronouncing or dropping r after a vowel in New York City English"
   distinct_from: "a variable in mathematics or code names a value; a sociolinguistic variable names a choice among variants"
-  narrower: [ ~"./language-and-mind-glossary.spw#language_and_mind_term_register" ]
+  see: [ ~"./language-and-mind-glossary.spw#language_and_mind_term_register" ]
+  relation_note: "variables shift across registers, and a register is marked by co-occurring variants; neither term is narrower than the other"
   used_in: [ ~"./linguistics/sociolinguistics-and-documentation.spw#linguistics_sociolinguistics_variable" ]
   source: ~"../registries/sources/language-and-communities.spw#src_lang_labov_1966"
  }
@@ -95,7 +106,7 @@
  ^["register"]{
   gloss: "a variety defined by its situation of use, such as a lecture, a text message, or a sports commentary, rather than by who is speaking"
   distinct_from: "a dialect varies with the speaker group; a register varies with the situation, and one speaker commands many"
-  broader: [ ~"./language-and-mind-glossary.spw#language_and_mind_term_variable" ]
+  see: [ ~"./language-and-mind-glossary.spw#language_and_mind_term_variable" ]
   source: ~"../registries/sources/language-and-communities.spw#src_lang_biber_conrad_2009"
  }
 }

@@ -1,0 +1,200 @@
+# Dialects and Play
+#
+# Six proposed play packs that let chat, glossed text, units, layout grids, verse, and the why-questions of children lower into core Spw, each with a parsed sample and the line where its metaphor breaks.
+
+#>spw_dialects_and_play
+#:layer #!creative
+#:domain #!spw
+#:form #!comparison
+#:level #!advanced
+#:review #!spot_checked
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Dialects and Play"
+ ~#claim: "A play pack may own its raw text at the lexer, but it must lower to existing Spw nodes with a span map, or it fragments the language."
+ ~#proof: "Every lowered sample below parsed with no errors at 1aa1dc23; the enhancements that landed in Spw history followed the same lexer-owns, lowers-to-existing pattern."
+ ~#door: "Read the kin sample aloud, then find which line each evidential particle binds to."
+ ~#audience: "dialect designers, teachers, streamers, and linguists curious about Spw"
+ continuity: "Dialects and Play | lowers"
+ cold_open: "A play dialect can speak its own way at the surface, as long as it lowers to plain Spw underneath."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/studies/tokens-synthesis.md section 4 and tokens.md section 3",
+  "six lowered samples, two doubled heads, and one raw chat line parsed by the writer at 1aa1dc23 on 2026-10-03"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the study said an apostrophe in a raw chat line opens an unterminated string; at 1aa1dc23 it parses with no error into a stray quoted literal",
+  "pack rows are anchored spw_play_<pack>, never spw_dialect_<pack>, because canon owns spw_dialect_registry",
+  "the chat sample carries a synthetic handle only, and pseudonymization is written as protocol, never as data",
+  "the gloss sample uses an ASCII Turkish form, ev-ler-imiz, so the sample stays inside the cut ASCII rule"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./history/episode-timeline.spw#workbench_history_episodes" ]
+ grounds: [ ~".spw/registries/dialect-spec.spw#spw_dialect_registry" ]
+ see: [ ~"./lineage.spw#spw_lineage" ]
+ contrasts: [ ~"docs/theory/spw/apposition.spw#spw_apposition" ]
+}
+
+^["concepts"]{
+ primary: [ #play_pack, #lowering ]
+ transfers: [ #span_map ], tensions: [ #fragmentation ]
+}
+
+^["today"]{
+ #>spw_play_one_dialect
+ ^["one_per_file"]{
+  #:claim #!settled
+  statement: "Canon allows exactly one active dialect per file, chosen by header, then path, then the block default, and forbids switching mid-file."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_canon_dialects"
+  cites: [ ".spw/registries/dialect-spec.spw:13-23", ".spw/registries/dialect-spec.spw:30-37" ]
+  label: "a-canon"
+ }
+ #>spw_play_id_flags
+ ^["id_and_flags"]{
+  #:claim #!settled
+  statement: "In code a dialect is one of eight ids plus a few flags, so no pack can add a lexer rule or a lowering today."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_seed_dialect"
+  cites: [ "packages/spw-seed/src/dialect/types.ts:11-20" ]
+ }
+ #>spw_play_raw_chat
+ ^["raw_chat"]{
+  #:claim #!settled
+  statement: "A raw chat line with a timestamp, a handle, and an apostrophe parses with no error into nested Bindings, a handle Binding, and a stray quoted literal."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_seed_ast"
+  probe_run: "seed parse of a synthetic chat line at 1aa1dc23 on 2026-10-03"
+ }
+}
+
+^["packs"]{
+ status: #proposed
+ law: "a pack owns its raw text at the lexer, emits existing token types, and lowers to existing nodes plus a span map back to its source lines"
+ check: "each sample below is quoted so it binds nothing here; each parsed alone with no errors and no prose fallback at 1aa1dc23 on 2026-10-03"
+
+ #>spw_play_chat
+ ^["chat"]{
+  audience: "streamers and their chat"
+  lexer: "a line owner turns a timestamped chat line into one utterance token; commands, mentions, and tags become span metadata"
+  lowers_to: `u0001: .{ at: "00:14:05", by: "viewer_a", cmd: #none, tags: #[ bass ], said: "why does bass feel like it is in my chest" }`
+  anchor: "each lowered utterance is anchored utt_ and its number, and an order stream lists them"
+  breaks: "a mention is a person, not a perspective; a hashtag is not vibration; a bot command such as raid is not an action"
+  ceiling: "ingest on the draft channel, whose effect ceiling is none"
+  cites: [ "packages/spw-runtime/src/session/channels.ts:84-91" ]
+ }
+ #>spw_play_gloss
+ ^["gloss"]{
+  audience: "linguists writing interlinear glossed text"
+  lexer: "tier lines for the text, the gloss, and the translation; cells split on hyphens, with a diagnostic when morpheme and gloss counts differ"
+  lowers_to: `^["igt_1"]{ line: "ev-ler-imiz", gloss: "house-PL-1PL.POSS", free: "our houses", cells: [ .{ m: "ev", g: "house" } ] }`
+  credit: "the hyphen-count rule is rule 2 of the Leipzig Glossing Rules by Comrie, Haspelmath, and Bickel; tier markers follow the Toolbox convention"
+  source: ~"../registries/sources/spw-branch.spw#src_spw_leipzig_glossing"
+  breaks: "a gloss must not lower to an apposition, because canon holds that a gloss explains where an apposition asserts"
+  cites: [ "docs/theory/spw/apposition.spw:52" ]
+ }
+ #>spw_play_unit
+ ^["unit"]{
+  audience: "physics students"
+  lexer: "a number grammar with sign and exponent, and a tight quantity form whose capsule binds to its number with no right arm"
+  lowers_to: `g: .{ value: 9.81, unit: "m/s^2" }`
+  derivation: `=~"./physics.spw#q_h"[derives]{ ~"./physics.spw#q_g" ; ~"./physics.spw#q_t" }`
+  breaks: "Spw has no dimensional algebra; checked units would be a type system in the style Kennedy describes, which Spw does not have"
+  source: ~"../registries/sources/spw-branch.spw#src_spw_kennedy_2010"
+ }
+ #>spw_play_grid
+ ^["grid"]{
+  audience: "graphic designers"
+  lexer: "dimension literals and hex colors become string-kind tokens"
+  lowers_to: `^["layer_hero"]{ z: 2, cols: 1..6, fill: "#ff6600" }`
+  breaks: "a hex color is not vibration; the inclusive span here differs from the exclusive CSS grid end line; layer collides with the layer axis"
+ }
+ #>spw_play_verse
+ ^["verse"]{
+  audience: "poets and authors"
+  lexer: "each line is owned as a verse line, and a blank line ends a stanza"
+  lowers_to: `lines: << "the tide goes out" ; "the gulls come in" >> ~#volta(turn at the second line)`
+  breaks: "a caesura cannot be a double slash or a bar; nothing in verse maps cleanly to the parallel bar"
+ }
+ #>spw_play_kin
+ ^["kin"]{
+  audience: "children asking why with a parent"
+  lexer: "a line ending in a question mark opens a wonder, and I saw, I heard, and I guess become evidential moods"
+  lowers_to: `?["Why is the sky blue?"]{ #:evidence #!heard because: "light bounces off the air" #:evidence #!saw noticed: "at sunset it turns orange" }`
+  bound: "parsed on separate lines, each evidential particle bound to its own claim line"
+  breaks: "evidentials are obligatory where a language grammaticalizes them; here they are optional, so a missing mark does not mean no source"
+  source: ~"../registries/sources/spw-branch.spw#src_spw_aikhenvald_2004"
+  privacy: "a kin surface stays on the family device; the sample holds no child data"
+ }
+}
+
+^["guards"]{
+ #>spw_play_fragmentation
+ ^["fragmentation_guard"]{
+  #:claim #!interpretive
+  statement: "A pack that adds node types splits the language; one that lowers to existing nodes keeps every selector, gate, and LSP feature working, as Racket languages lower to a shared core."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_tobin_hochstadt_2011"
+  graduation: "a new node type needs canon graduation, never a pack"
+ }
+ #>spw_play_doubled
+ ^["doubled_heads"]{
+  #:claim #!settled
+  statement: "A doubled question head degrades to a question with a prose payload, and a doubled bang splits into two operations, both with no warning."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_seed_ast"
+  probe_run: "seed parse of doubled question and bang heads at 1aa1dc23 on 2026-10-03"
+ }
+ #>spw_play_reservation
+ ^["reservation"]{
+  #:claim #!interpretive
+  statement: "Doubled heads are free in the corpus, so any meaning given to them should be one closed rule, as reduplication in natural languages follows morphological conditions."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_inkelas_zoll_2005"
+  status: #proposed
+ }
+}
+
+^["chat_privacy"]{
+ protocol: "synthetic handles in every sample; real handles never enter a cut, a span map, or a pack fixture"
+ pseudonyms: "if a host pseudonymizes, it keys a hash of at least 64 bits with a salt it keeps, and stores only the pseudonym"
+ status: #proposed
+
+ #>spw_play_collision
+ ^["short_hash"]{
+  #:claim #!settled
+  statement: "The study prototype kept sixteen bits of hash, which by the birthday bound collides often once a chat holds a few hundred handles."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_tokens"
+ }
+ open: "whether a salt is per session or per channel is an open question"
+ see: [ ~"./open-questions.spw#spw_open_questions" ]
+}
+
+^["try"]{
+ #>spw_play_try_lower
+ ^["lower_one_line"]{
+  materials: [ "a terminal in the workbench", "one invented chat line with the handle viewer_a" ]
+  steps: << "write the chat line" ; "write its lowered facet by hand" ; "run spw inspect source with --through structure on your facet" ; "mark which parts of the line had no field to go to" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "use an invented handle; never paste a real person's chat"
+  shows: ~"./dialects-and-play.spw#spw_play_chat"
+ }
+}
+
+#>spw_play_lowering_q
+?["Which pack loses the most meaning when it lowers to core Spw?"]{
+ #:depth #!stylistic ~#lens(semiotic charge)
+ #:claim #!speculative
+ ~#hypothesis: "Verse loses the most, because its meaning rides on line breaks and sound that the lowering keeps only as strings."
+ !probe{ "lower one sample per pack, read only the lowered form aloud to a member of each audience, and record what they say is missing" =id[p_spw_play_loss] =kind[interview] }
+ ~"./dialects-and-play.spw#spw_play_verse" ~#neighbor(nearest)
+}

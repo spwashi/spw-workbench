@@ -1,0 +1,178 @@
+# Perspective: Engineers and Chemists
+#
+# Process and state notation, P and ID tags, block diagrams, and unit operations read as state machines, with registries read as data sheets and silent sign and exponent loss named first.
+
+#>spw_perspectives_engineers
+#:layer #!pragmatics
+#:domain #!spw_perspectives
+#:form #!state_machine
+#:level #!intro
+#:review #!unreviewed
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Perspective: Engineers and Chemists"
+ ~#claim: "A unit operation reads as named states with guarded transitions and a registry cell as a data sheet row, but every sign and exponent typed bare can drop without a word."
+ ~#proof: "Probes at commit 1aa1dc23 drop the sign of -40 and split 1e-3 with success still true; a quoted match arm and a cell with a unit string survive whole."
+ ~#door: "Run the two hazard rows first, then read the tank states as a statechart."
+ ~#audience: "process, chemical, mechanical, and control engineers, and chemists who keep lab and plant notes"
+ continuity: "Perspective: Engineers and Chemists | every sign and exponent"
+ cold_open: "Read a process as states and signed edges, and quote every sign and exponent before it silently drops."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "persona study doors entry engineers_chemists and metaphor_limits for chemistry and engineering",
+  "number, tag, and match probes run by the writer at commit 1aa1dc23 on 2026-10-03"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the study read the rel and abs slots of a cell as measurement uncertainties; the contract does not say whether they are tolerances or uncertainties, so this file names the ambiguity instead of resolving it"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"../doors/percent.spw#spw_door_percent", ~"../doors/cell.spw#spw_door_cell" ]
+ see: [ ~"../specimens/lab-and-data.spw#spw_spec_lab_data", ~"../contraptions/state-walker.spw#spw_lab_state_walker", ~"../contraptions/sign-walker.spw#spw_lab_sign_walker" ]
+}
+
+^["standing"]{
+ #>spw_perspectives_engineers_standing
+ ^["hypothesis"]{
+  #:claim #!interpretive
+  statement: "This reading was written by an agent outside the cluster; it stays unreviewed until a practicing engineer or chemist runs the hazard rows on lines from their own logs."
+  member_probe: "an engineer types ten lines from a data sheet or log from memory, predicts each parse, and marks which hazard rows matched practice"
+ }
+}
+
+^["hazards"]{
+ #>spw_perspectives_engineers_sign
+ ^["dropped_sign"]{
+  #:claim #!settled
+  habit: "a setpoint, a vacuum reading, or a temperature below zero, typed with a leading minus"
+  statement: "A leading minus is a lexer error that drops the sign and keeps the magnitude, and the parse still reports success."
+  probe_run: "T: -40 bound T to 40 with one lexer error at 1aa1dc23; the cut gate fails the file, the parse result does not"
+  write_instead: "a string such as minus forty written in quotes, or a cell whose value string carries the sign"
+  see: ~"../specimens/code-habits.spw#spw_spec_code_negative"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_lexer"
+ }
+ #>spw_perspectives_engineers_exponent
+ ^["split_exponent"]{
+  #:claim #!settled
+  habit: "a rate constant or a concentration in e-notation"
+  statement: "E-notation splits silently: 1e-3 binds the 1 and leaves e-3 as a loose name, with no error and no warning."
+  probe_run: "k: 1e-3 at 1aa1dc23 gave the binding k: 1 and a sibling identifier e-3"
+  write_instead: "the number in a string, or a decimal such as 0.001"
+  see: ~"../specimens/math-physics-notation.spw#spw_spec_math_physics_scientific"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_lexer"
+ }
+ #>spw_perspectives_engineers_unit
+ ^["detached_unit"]{
+  #:claim #!settled
+  habit: "a pressure drop or a flow written with its unit after a space"
+  statement: "A unit after a space leaves the binding: dp: 2.5 kPa binds 2.5 and leaves kPa as a sibling name."
+  probe_run: "parsed at 1aa1dc23 with no error and no warning"
+  write_instead: "a facet with n and unit, or a registry cell with a unit string"
+  see: ~"../specimens/math-physics-notation.spw#spw_spec_math_physics_unit_suffix"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+ }
+ #>spw_perspectives_engineers_smiles
+ ^["line_notation"]{
+  #:claim #!settled
+  habit: "a SMILES string for acetic acid, CC(=O)O, typed as a bare value"
+  statement: "A bare SMILES string splits: the branch in parentheses becomes a scope holding an equals operation, and the last atom is left loose."
+  probe_run: "s: CC(=O)O at 1aa1dc23 bound s to CC with a scope around =O and left O as a sibling"
+  write_instead: "the SMILES string in double quotes"
+  sources: [ ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_weininger_1988", ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar" ]
+ }
+ equilibrium: .{ habit: "a reversible reaction arrow", see: ~"../specimens/lab-and-data.spw#spw_spec_lab_data_equilibrium" }
+ coefficients: .{ habit: "a spaced stoichiometric coefficient", see: ~"../specimens/lab-and-data.spw#spw_spec_lab_data_coefficients" }
+}
+
+^["bridges"]{
+ #>spw_perspectives_engineers_tags
+ ^["instrument_tags"]{
+  #:claim #!settled
+  habit: "an instrument tag such as FIC-101, letters for the measured variable and function, then a loop number"
+  statement: "A hyphenated instrument tag stays one name, because Spw names may carry hyphens after a leading letter."
+  probe_run: "tag: FIC-101 at 1aa1dc23 bound tag to one identifier"
+  sources: [ ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_isa_5_1_2009", ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_lexer" ]
+  limits: "a tag that starts with a digit, or carries a slash or a space, splits like any other value"
+ }
+ #>spw_perspectives_engineers_data_sheet
+ ^["data_sheet_row"]{
+  #:claim #!interpretive
+  statement: "A registry cell reads as one data sheet row, a named value with unit, conditions, a stated spread, a source, and a status, cited by every claim that needs it."
+  example: ~"../../registries/quantities/materials-and-engineering.spw#q_mateng_water"
+  reads: %[mateng.water.cp_j_per_g_k]
+  breaks: "a data sheet separates a tolerance from a measurement uncertainty, while a cell has one rel or abs slot and does not say which it holds"
+  sources: [ ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_jcgm_100_2008", ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_iupac_green_2007" ]
+ }
+ block_diagram: "blocks become frames and arrows become connectors or bias edges; no transfer function, gain, or dead time travels with them"
+}
+
+^["state_machine"]{
+ #>spw_perspectives_engineers_states
+ ^["tank_states"]{
+  #:claim #!interpretive
+  statement: "A unit operation reads as named states, transitions between them, and a guard that picks the next state from a quoted band, the shape Harel statecharts give reactive systems."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_harel_1987"
+  ^["states"]{
+   ^["filling"]{ enters_on: "low band", leaves_to: "running" }
+   ^["running"]{ enters_on: "normal band", leaves_to: "high alarm" }
+   ^["high_alarm"]{ enters_on: "high band", leaves_to: "running or tripped" }
+   ^["tripped"]{ enters_on: "high-high band", leaves_to: "filling, only after a manual reset" }
+  }
+  on_level: ?match[band]{ "low" => "filling", "normal" => "running", "high" => "high alarm", "high-high" => "tripped" }
+  probe_run: "the match arm above parsed at 1aa1dc23 as one Match node with four arms and no warning"
+  ^["limits"]{
+   holds: "naming states and the guard that selects among them, readable in print"
+   fails: "nothing runs the machine, holds a state, or times a transition; the reset rule is prose"
+  }
+ }
+ #>spw_perspectives_engineers_signs
+ ^["signed_edges"]{
+  #:claim #!interpretive
+  statement: "A control loop reads as a cycle of signed edges, and the product of the signs gives its polarity, which the sign walker computes as a proposed contraption."
+  example: ~"../contraptions/sign-walker.spw#spw_lab_sign_walker_polarity"
+  breaks: "polarity says nothing about gain, dead time, or phase margin, so a balancing loop can still oscillate"
+ }
+}
+
+^["tools"]{
+ inspect: .{ command: "spw inspect source", use: "predict a line, then reveal it", status: #implemented, cites: "packages/spw-cli/src/commands.ts:277-282" }
+ dimension_bench: .{ contraption: "dimension-bench", use: "balance a reaction or find a dimensionless group", status: #proposed }
+ state_walker: .{ contraption: "state-walker", use: "walk a phase diagram by labelled crossings", status: #proposed }
+ sign_walker: .{ contraption: "sign-walker", use: "multiply signs around a loop", status: #proposed }
+}
+
+^["try"]{
+ #>spw_perspectives_engineers_try
+ ^["data_sheet_line"]{
+  materials: [ "one line from a data sheet or a log you are allowed to share", "the spw CLI in this repository" ]
+  steps: << "write the line exactly as you would on paper" ; "predict which parts survive the parse" ; "reveal it with spw inspect source and --through structure" ; "rewrite it with quoted signs and a unit string" ; "reveal it again and compare" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "no physical hazard; do not paste proprietary or plant-sensitive values into a shared file"
+  shows: ~"./engineers-and-chemists.spw#spw_perspectives_engineers_sign"
+ }
+}
+
+#>spw_perspectives_engineers_q
+?["Which silent loss would cost a process engineer most: the sign, the exponent, or the unit?"]{
+ #:depth #!computational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "The dropped sign would cost most, because the surviving magnitude still looks plausible, while a split exponent or unit leaves a visibly stray sibling."
+ !probe{ "type ten log lines bare, note which loss each suffers, and rank the survivors by how plausible they look" =id[p_doors_engineers_silent_loss] =kind[thought] }
+ $%[mateng.water.cp_j_per_g_k]
+ breaks: "a numeric entry field on an operator screen usually refuses a malformed number, while this parser keeps every surviving piece"
+ ~"./engineers-and-chemists.spw#spw_perspectives_engineers_sign" ~#neighbor(nearest)
+}

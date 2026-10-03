@@ -1,0 +1,134 @@
+# Record Glossary
+#
+# The short-entry tier for the record class: carrier, codex, format, fixity, surrogate, provenance, facet, and renvoi, each with a sourced sense, its neighbors in the lattice, and one home leaf.
+
+#>record_glossary
+#:layer #!reference
+#:domain #!record
+#:form #!glossary
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Record Glossary"
+ ~#claim: "Eight words carry most of the record class: three name objects, two name integrity, and three name order, and each has a sourced sense and a home leaf."
+ ~#proof: "Senses cite the Society of American Archivists dictionary, Roberts and Skeat, PREMIS, Muller, Feith, and Fruin, Ranganathan, and Diderot."
+ ~#door: "Pick a word, follow its home link, and return when a leaf uses a word you have not met."
+ ~#audience: "newcomers to book history, archives, and library science"
+ continuity: "Record Glossary | eight words"
+ cold_open: "Eight words do most of the work here, naming objects, integrity, and order in how records are kept."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+ }
+ rechecked: "2026-10-02: the see edge to the archive-patterns matrix now resolves since that leaf was written; PMEST is dated to the 1952 fourth edition of Colon Classification and cited to Satija"
+ checked: "carrier, format, fixity, digital surrogate, and provenance were read in the SAA dictionary on 2026-10-02"
+}
+
+^["edges"]{
+ see: [ ~"./information/archive-patterns-matrix.spw#information_science_patterns" ]
+}
+
+^["concepts"]{
+ primary: [ #carrier, #codex, #fixity ]
+ transfers: [ #format, #respect_des_fonds ]
+ tensions: [ #obsolescence ]
+}
+
+^["lattice"]{
+ ^["objects"]{
+  #>record_term_carrier
+  ^["carrier"]{
+   #:claim #!settled
+   statement: "The SAA dictionary defines a carrier as a mechanism by which information is transported over distance or time; here it names the material a record rides on."
+   source: ~"../registries/sources/record-and-carriers.spw#src_media_saa_dictionary"
+   narrower: [ ~"./record-glossary.spw#record_term_codex" ]
+   contrasts: [ ~"./record-glossary.spw#record_term_format" ]
+   home: ~"./carriers/form-factor-ladder.spw#media_carriers_ladder"
+  }
+  #>record_term_codex
+  ^["codex"]{
+   #:claim #!settled
+   statement: "A codex is a book of leaves folded and bound at one edge rather than rolled; Roberts and Skeat trace its rise to parity with the roll around 300 CE."
+   source: ~"../registries/sources/record-and-carriers.spw#src_media_roberts_skeat_1983"
+   broader: [ ~"./record-glossary.spw#record_term_carrier" ]
+   home: ~"./inscription/surfaces-tablet-scroll-codex.spw#inscription_codex_parity"
+  }
+  #>record_term_format
+  ^["format"]{
+   #:claim #!settled
+   statement: "The SAA dictionary gives format as a standard size or configuration: in computing a structure for storing or exchanging data, and for a book the folds in its printed sheet."
+   source: ~"../registries/sources/record-and-carriers.spw#src_media_saa_dictionary"
+   contrasts: [ ~"./record-glossary.spw#record_term_carrier" ]
+   home: ~"./carriers/playback-dependency-dag.spw#media_carriers_dep_standard"
+   ~#say(the same format can ride many carriers)
+  }
+ }
+ ^["integrity"]{
+  #>record_term_fixity
+  ^["fixity"]{
+   #:claim #!settled
+   statement: "Fixity is the property of being unchanged; digital preservation checks it by recomputing a stored digest of a file and comparing the two."
+   sources: [ ~"../registries/sources/record-and-carriers.spw#src_media_saa_dictionary", ~"../registries/sources/record-and-carriers.spw#src_media_premis_2015" ]
+   contrasts: [ ~"./inscription/print-and-press.spw#inscription_print_agent_of_change" ]
+   home: ~"./carriers/carrier-decay-and-fixity.spw#media_carriers_fixity_checksum"
+  }
+  #>record_term_surrogate
+  ^["surrogate"]{
+   #:claim #!settled
+   statement: "A surrogate stands in for an original; the SAA dictionary defines a digital surrogate as a digital copy of an analog record, made to protect it or widen access, as microfilm did before."
+   source: ~"../registries/sources/record-and-carriers.spw#src_media_saa_dictionary"
+   broader: [ ~"./record-glossary.spw#record_term_carrier" ]
+   home: ~"./carriers/playback-dependency-dag.spw#media_carriers_dag_equipment"
+  }
+ }
+ ^["order"]{
+  #>record_term_provenance
+  ^["provenance"]{
+   #:claim #!settled
+   statement: "Provenance is the origin and custody of records; the archival principle keeps records of one creator together, apart from others, and in their original order."
+   sources: [ ~"../registries/sources/record-and-carriers.spw#src_media_saa_dictionary", ~"../registries/sources/record-and-carriers.spw#src_media_muller_feith_fruin_1898" ]
+   see: [ ~"./record-glossary.spw#record_term_fixity" ]
+   home: ~"./information/archives-and-preservation.spw#information_science_archives"
+  }
+  #>record_term_facet
+  ^["facet"]{
+   #:claim #!settled
+   statement: "Ranganathan built classification from facets, independent aspects of a subject combined in a fixed citation order; in the fourth edition of Colon Classification, 1952, he generalized them as personality, matter, energy, space, and time."
+   sources: [ ~"../registries/sources/record-and-carriers.spw#src_media_ranganathan_1933", ~"../registries/sources/record-and-carriers.spw#src_media_ranganathan_1937", ~"../registries/sources/record-and-carriers.spw#src_media_satija_2017" ]
+   contrasts: [ ~"./record-glossary.spw#record_term_renvoi" ]
+   home: ~"./information/knowledge-organization.spw#information_science_knowledge_org"
+  }
+  #>record_term_renvoi
+  ^["renvoi"]{
+   #:claim #!settled
+   statement: "In the Encyclopedie, Diderot described renvois, cross-references that tie articles together across the alphabetical order and can also carry a critical point indirectly."
+   source: ~"../registries/sources/record-and-carriers.spw#src_media_diderot_1755"
+   contrasts: [ ~"./record-glossary.spw#record_term_facet" ]
+   home: ~"./information/reference-works-lineage.spw#information_science_reference_lineage"
+  }
+ }
+}
+
+#>record_glossary_carrier_words_q
+?["Do words for carriers outlive the carriers they named?"]{
+ #:depth #!social ~#lens(semiotic charge)
+ #:claim #!speculative
+ ~#hypothesis: "Words such as album, footage, and page stay in use after their carrier fades because they name a unit of use rather than a material."
+ !probe{ "count album, footage, and page in a dated text corpus by decade and set the counts beside sales of the matching carrier" =id[p_media_glossary_carrier_words] =kind[census] }
+ $%[graph.in_degree]
+ breaks: "a word can also persist because law, interfaces, or habit keep it, so persistence alone does not show readers think in that unit"
+ ~"./record-glossary.spw#record_term_carrier" ~#neighbor(nearest)
+}

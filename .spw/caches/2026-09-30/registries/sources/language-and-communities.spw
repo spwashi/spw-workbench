@@ -11,20 +11,30 @@
 #:valence #!bone
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-02"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
  ^["receipts"]{
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r3"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r4"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
- checked: "abstracts and bibliographic records for Bohren 2017, Sampson 1997, Branas 2018, Saifullah 2009, Sisco 2024, Papafragou 2007, Purnell 1999, Senghas 2004 were read on 2026-10-01"
- accessed_note: "web pages carry accessed dates; dictionary and platform pages change without notice"
+ checked: "abstracts and bibliographic records for Bohren 2017, Sampson 1997, Branas 2018, Saifullah 2009, Sisco 2024, Papafragou 2007, Purnell 1999, Senghas 2004 were read on 2026-10-01; on 2026-10-02 the Bohren 2017 and Branas 2018 abstracts, Sisco 2024 Crossref metadata, Seligman 2016 Open Library record, eight etymology entries, four Wiktionary entries, and the Death Cafe, Repair Cafe, tool library, and EPA lead pages were read; web pages carry accessed dates and change without notice"
+ fact_checked: "the r5 pass checked every record against Crossref, Europe PMC, Open Library, or a known record and found none fabricated; Branas 2018 was read in full text (PMC5866574, Table 2 and the CA-ITT paragraph) and the OHA core principles, Sosa 1980 abstract, and Wikipedia doula, kohanga reo, and Aha Punana Leo pages on 2026-10-02; the remaining bibliography was checked from bibliographic knowledge, not re-fetched one by one"
+ corrections: [
+  "Sisco 2024 third author is Elise M. Pyfrom, not Elizabeth; the full author list replaces et al.",
+  "Gladwell 2000 is context for the influencer date, not an attestation of the word; the dated sense rests on the Online Etymology Dictionary"
+ ]
 }
 
-^["phonetics"]{
+^["sound"]{
  #>src_lang_ladefoged_johnson_2015
  ^["ladefoged_johnson_2015"]{ title: "A Course in Phonetics", authors: "Peter Ladefoged; Keith Johnson", edition: "7th", year: 2015, publisher: "Cengage Learning", kind: #textbook }
  #>src_lang_peterson_barney_1952
@@ -39,9 +49,6 @@
  ^["praat"]{ title: "Praat: Doing Phonetics by Computer", authors: "Paul Boersma; David Weenink", url: "https://www.praat.org", accessed: "2026-10-01", kind: #software }
  #>src_lang_ipa_handbook_1999
  ^["ipa_handbook_1999"]{ title: "Handbook of the International Phonetic Association", authors: "International Phonetic Association", year: 1999, publisher: "Cambridge University Press", kind: #handbook }
-}
-
-^["phonology"]{
  #>src_lang_chomsky_halle_1968
  ^["chomsky_halle_1968"]{ title: "The Sound Pattern of English", authors: "Noam Chomsky; Morris Halle", year: 1968, publisher: "Harper and Row, New York", kind: #monograph }
  #>src_lang_clements_1985
@@ -93,7 +100,7 @@
  ^["mccoy_2020"]{ title: "Does Syntax Need to Grow on Trees? Sources of Hierarchical Inductive Bias in Sequence-to-Sequence Networks", authors: "R. Thomas McCoy; Robert Frank; Tal Linzen", year: 2020, venue: "Transactions of the Association for Computational Linguistics 8: 125-140", kind: #article }
 }
 
-^["semantics"]{
+^["meaning_and_mind"]{
  #>src_lang_frege_1892
  ^["frege_1892"]{ title: "Über Sinn und Bedeutung", authors: "Gottlob Frege", year: 1892, venue: "Zeitschrift für Philosophie und philosophische Kritik 100: 25-50", kind: #article }
  #>src_lang_montague_1973
@@ -126,6 +133,12 @@
  ^["bott_noveck_2004"]{ title: "Some Utterances Are Underinformative: The Onset and Time Course of Scalar Inferences", authors: "Lewis Bott; Ira A. Noveck", year: 2004, venue: "Journal of Memory and Language 51(3): 437-457", kind: #article }
  #>src_lang_kutas_hillyard_1980
  ^["kutas_hillyard_1980"]{ title: "Reading Senseless Sentences: Brain Potentials Reflect Semantic Incongruity", authors: "Marta Kutas; Steven A. Hillyard", year: 1980, venue: "Science 207(4427): 203-205", kind: #article }
+ #>src_lang_marr_1982
+ ^["marr_1982"]{ title: "Vision: A Computational Investigation into the Human Representation and Processing of Visual Information", authors: "David Marr", year: 1982, publisher: "W. H. Freeman", kind: #monograph }
+ #>src_lang_tversky_kahneman_1974
+ ^["tversky_kahneman_1974"]{ title: "Judgment under Uncertainty: Heuristics and Biases", authors: "Amos Tversky; Daniel Kahneman", year: 1974, venue: "Science 185(4157): 1124-1131", kind: #article }
+ #>src_lang_biber_conrad_2009
+ ^["biber_conrad_2009"]{ title: "Register, Genre, and Style", authors: "Douglas Biber; Susan Conrad", year: 2009, publisher: "Cambridge University Press", kind: #textbook }
 }
 
 ^["variation_and_documentation"]{
@@ -151,10 +164,12 @@
  ^["hale_1992"]{ title: "Endangered Languages", authors: "Ken Hale; Michael Krauss; Lucille J. Watahomigie; Akira Y. Yamamoto; Colette Craig; LaVerne Masayesva Jeanne; Nora C. England", year: 1992, venue: "Language 68(1): 1-42", kind: #article }
  #>src_lang_hinton_hale_2001
  ^["hinton_hale_2001"]{
-  title: "The Green Book of Language Revitalization in Practice", authors: "Leanne Hinton; Ken Hale (eds.)"
-  year: 2001, publisher: "Academic Press, San Diego", kind: #edited_volume
-  note: "includes chapters on Te Kohanga Reo and on the Aha Punana Leo by practitioners from those movements"
+  title: "The Green Book of Language Revitalization in Practice", authors: "Leanne Hinton; Ken Hale (eds.)", year: 2001, publisher: "Academic Press, San Diego", kind: #edited_volume, note: "includes chapters on Te Kōhanga Reo and on the ʻAha Pūnana Leo by practitioners from those movements"
  }
+ #>src_lang_wiki_kohanga_reo
+ ^["wiki_kohanga_reo"]{ title: "Kōhanga reo", publisher: "Wikipedia", url: "https://en.wikipedia.org/wiki/K%C5%8Dhanga_reo", accessed: "2026-10-02", kind: #encyclopedia }
+ #>src_lang_wiki_aha_punana_leo
+ ^["wiki_aha_punana_leo"]{ title: "ʻAha Pūnana Leo", publisher: "Wikipedia", url: "https://en.wikipedia.org/wiki/%CA%BBAha_P%C5%ABnana_Leo", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_lang_carroll_2020
  ^["carroll_2020"]{ title: "The CARE Principles for Indigenous Data Governance", authors: "Stephanie Russo Carroll et al.", year: 2020, venue: "Data Science Journal 19: 43", kind: #article }
  #>src_lang_wittenburg_2006
@@ -196,25 +211,15 @@
  ^["traugott_dasher_2002"]{ title: "Regularity in Semantic Change", authors: "Elizabeth Closs Traugott; Richard B. Dasher", year: 2002, publisher: "Cambridge University Press", kind: #monograph }
 }
 
-^["mind"]{
- #>src_lang_marr_1982
- ^["marr_1982"]{ title: "Vision: A Computational Investigation into the Human Representation and Processing of Visual Information", authors: "David Marr", year: 1982, publisher: "W. H. Freeman", kind: #monograph }
- #>src_lang_tversky_kahneman_1974
- ^["tversky_kahneman_1974"]{ title: "Judgment under Uncertainty: Heuristics and Biases", authors: "Amos Tversky; Daniel Kahneman", year: 1974, venue: "Science 185(4157): 1124-1131", kind: #article }
- #>src_lang_biber_conrad_2009
- ^["biber_conrad_2009"]{ title: "Register, Genre, and Style", authors: "Douglas Biber; Susan Conrad", year: 2009, publisher: "Cambridge University Press", kind: #textbook }
-}
-
-^["care"]{
+^["communities"]{
  #>src_lang_bohren_2017
  ^["bohren_2017"]{
-  title: "Continuous Support for Women during Childbirth", year: 2017
-  authors: "Meghan A. Bohren; G. Justus Hofmeyr; Carol Sakala; Rieko K. Fukuzawa; Anna Cuthbert"
-  venue: "Cochrane Database of Systematic Reviews, Issue 7, CD003766", kind: #systematic_review
-  version: "2017 update of review CD003766, read on 2026-10-01; check the Cochrane Library for a later version"
+  title: "Continuous Support for Women during Childbirth", year: 2017, authors: "Meghan A. Bohren; G. Justus Hofmeyr; Carol Sakala; Rieko K. Fukuzawa; Anna Cuthbert", venue: "Cochrane Database of Systematic Reviews, Issue 7, CD003766", kind: #systematic_review, version: "2017 update of review CD003766, read on 2026-10-01; check the Cochrane Library for a later version"
  }
  #>src_lang_sosa_1980
  ^["sosa_1980"]{ title: "The Effect of a Supportive Companion on Perinatal Problems, Length of Labor, and Mother-Infant Interaction", authors: "Roberto Sosa; John Kennell; Marshall Klaus; Steven Robertson; Juan Urrutia", year: 1980, venue: "New England Journal of Medicine 303(11): 597-600", kind: #article }
+ #>src_lang_wiki_doula
+ ^["wiki_doula"]{ title: "Doula", publisher: "Wikipedia", url: "https://en.wikipedia.org/wiki/Doula", accessed: "2026-10-02", note: "Raphael 1969 first English use cites Sam Roberts, The New York Times obituary of Dana Raphael, 2016; also Klaus and Kennell, and DONA 1992", kind: #encyclopedia }
  #>src_lang_raphael_1973
  ^["raphael_1973"]{ title: "The Tender Gift: Breastfeeding", authors: "Dana Raphael", year: 1973, publisher: "Prentice-Hall, Englewood Cliffs NJ", kind: #monograph }
  #>src_lang_who_chw_2018
@@ -228,12 +233,9 @@
  #>src_lang_cms_peer_2007
  ^["cms_peer_2007"]{ title: "State Medicaid Director Letter SMDL 07-011: Peer Support Services", authors: "Centers for Medicare and Medicaid Services", year: 2007, date: "2007-08-15", kind: #guideline }
  #>src_lang_sisco_2024
- ^["sisco_2024"]{ title: "Beyond Fentanyl Test Strips: Investigating Other Urine Drug Test Strips for Drug Checking Applications", authors: "Edward Sisco; Meghan G. Appley; Elizabeth M. Pyfrom; Caleb J. Banta-Green; Chelsea L. Shover; et al.", year: 2024, venue: "Forensic Chemistry 40: 100594", kind: #article }
+ ^["sisco_2024"]{ title: "Beyond Fentanyl Test Strips: Investigating Other Urine Drug Test Strips for Drug Checking Applications", authors: "Edward Sisco; Meghan G. Appley; Elise M. Pyfrom; Caleb J. Banta-Green; Chelsea L. Shover; Caitlin A. Molina; Ben Biamont; Elizabeth L. Robinson", year: 2024, venue: "Forensic Chemistry 40: 100594", kind: #article }
  #>src_lang_deathcafe_model
  ^["deathcafe_model"]{ title: "What is Death Cafe?", publisher: "Death Cafe", url: "https://deathcafe.com/what/", accessed: "2026-10-01", kind: #web_page }
-}
-
-^["civic"]{
  #>src_lang_alinsky_1971
  ^["alinsky_1971"]{ title: "Rules for Radicals: A Pragmatic Primer for Realistic Radicals", authors: "Saul D. Alinsky", year: 1971, publisher: "Random House", kind: #monograph }
  #>src_lang_ransby_2003
@@ -252,11 +254,10 @@
  ^["roberts_rules_2020"]{ title: "Robert's Rules of Order Newly Revised", authors: "Henry M. Robert III et al.", edition: "12th", year: 2020, publisher: "PublicAffairs", kind: #handbook }
  #>src_lang_sheeran_1983
  ^["sheeran_1983"]{ title: "Beyond Majority Rule: Voteless Decisions in the Religious Society of Friends", authors: "Michael J. Sheeran", year: 1983, publisher: "Philadelphia Yearly Meeting of the Religious Society of Friends", kind: #monograph }
+ #>src_lang_seligman_2016
+ ^["seligman_2016"]{ title: "Chicago's Block Clubs: How Neighbors Shape the City", authors: "Amanda I. Seligman", year: 2016, publisher: "University of Chicago Press", kind: #monograph }
  #>src_lang_sampson_1997
  ^["sampson_1997"]{ title: "Neighborhoods and Violent Crime: A Multilevel Study of Collective Efficacy", authors: "Robert J. Sampson; Stephen W. Raudenbush; Felton Earls", year: 1997, venue: "Science 277(5328): 918-924", kind: #article }
-}
-
-^["commons"]{
  #>src_lang_ostrom_1990
  ^["ostrom_1990"]{ title: "Governing the Commons: The Evolution of Institutions for Collective Action", authors: "Elinor Ostrom", year: 1990, publisher: "Cambridge University Press", kind: #monograph }
  #>src_lang_lawson_2005
@@ -269,20 +270,19 @@
  ^["branas_2018"]{ title: "Citywide Cluster Randomized Trial to Restore Blighted Vacant Land and Its Effects on Violence, Crime, and Fear", authors: "Charles C. Branas; Eugenia South; Michelle C. Kondo; Bernadette C. Hohl; Philippe Bourgois; Douglas J. Wiebe; John M. MacDonald", year: 2018, venue: "Proceedings of the National Academy of Sciences 115(12): 2946-2951", kind: #article }
  #>src_lang_hoffman_2020
  ^["hoffman_2020"]{ title: "The Effects of Historical Housing Policies on Resident Exposure to Intra-Urban Heat: A Study of 108 US Urban Areas", authors: "Jeremy S. Hoffman; Vivek Shandas; Nicholas Pendleton", year: 2020, venue: "Climate 8(1): 12", kind: #article }
+ #>src_lang_epa_lead_home
+ ^["epa_lead_home"]{
+  title: "Reduce the Risk of Lead Exposure at Home", publisher: "United States Environmental Protection Agency", url: "https://www.epa.gov/lead/protect-your-family-sources-lead", accessed: "2026-10-02", version: "page last updated 2026-08-19", kind: #web_page
+ }
  #>src_lang_kimmerer_2013
  ^["kimmerer_2013"]{ title: "Braiding Sweetgrass: Indigenous Wisdom, Scientific Knowledge, and the Teachings of Plants", authors: "Robin Wall Kimmerer", year: 2013, publisher: "Milkweed Editions", kind: #monograph }
  #>src_lang_repaircafe_about
  ^["repaircafe_about"]{ title: "About Repair Café", publisher: "Repair Café International Foundation", url: "https://www.repaircafe.org/en/about/", accessed: "2026-10-01", kind: #web_page }
  #>src_lang_wiki_tool_library
  ^["wiki_tool_library"]{ title: "Tool library", publisher: "Wikipedia", url: "https://en.wikipedia.org/wiki/Tool_library", accessed: "2026-10-01", kind: #encyclopedia }
-}
-
-^["custodians"]{
  #>src_lang_oha_2018
  ^["oha_2018"]{
-  title: "OHA Principles and Best Practices", authors: "Oral History Association", year: 2018
-  url: "https://oralhistory.org/principles-and-best-practices/", accessed: "2026-10-01"
-  version: "adopted October 2018, replacing the 2009 principles", kind: #guideline
+  title: "OHA Principles and Best Practices", authors: "Oral History Association", year: 2018, url: "https://oralhistory.org/principles-and-best-practices/", accessed: "2026-10-01", version: "adopted October 2018, replacing the 2009 principles; core principles at https://oralhistory.org/oha-core-principles/ read 2026-10-02", kind: #guideline
  }
  #>src_lang_hale_griots_1998
  ^["hale_griots_1998"]{ title: "Griots and Griottes: Masters of Words and Music", authors: "Thomas A. Hale", year: 1998, publisher: "Indiana University Press", kind: #monograph }
@@ -301,16 +301,19 @@
 ^["words_and_crews"]{
  #>src_lang_etymonline
  ^["etymonline"]{
-  title: "Online Etymology Dictionary", authors: "Douglas Harper", kind: #dictionary
-  url: "https://www.etymonline.com", accessed: "2026-10-01"
+  title: "Online Etymology Dictionary", authors: "Douglas Harper", kind: #dictionary, url: "https://www.etymonline.com", accessed: "2026-10-02"
   entries: #[ steward, organizer, moderator, influencer, streamer, clipper, elder, doula ]
  }
  #>src_lang_wiktionary_streamer
  ^["wiktionary_streamer"]{ title: "streamer", publisher: "Wiktionary", url: "https://en.wiktionary.org/wiki/streamer", accessed: "2026-10-01", note: "Internet sense quoted from Taylor Lorenz, The New York Times, 2020-12-18", kind: #dictionary }
+ #>src_lang_wiktionary_moderator
+ ^["wiktionary_moderator"]{ title: "moderator", publisher: "Wiktionary", url: "https://en.wiktionary.org/wiki/moderator", accessed: "2026-10-02", note: "forum-enforcer sense quoted from The Atlantic, 2019", kind: #dictionary }
+ #>src_lang_wiktionary_influencer
+ ^["wiktionary_influencer"]{ title: "influencer", publisher: "Wiktionary", url: "https://en.wiktionary.org/wiki/influencer", accessed: "2026-10-02", note: "social-media sense quoted from Sapna Maheshwari, The New York Times, 2018", kind: #dictionary }
  #>src_lang_wiktionary_clipper
  ^["wiktionary_clipper"]{ title: "clipper", publisher: "Wiktionary", url: "https://en.wiktionary.org/wiki/clipper", accessed: "2026-10-01", note: "no sense for a person who cuts stream highlights as of the access date", kind: #dictionary }
  #>src_lang_gladwell_2000
- ^["gladwell_2000"]{ title: "The Tipping Point: How Little Things Can Make a Big Difference", authors: "Malcolm Gladwell", year: 2000, publisher: "Little, Brown", kind: #monograph }
+ ^["gladwell_2000"]{ title: "The Tipping Point: How Little Things Can Make a Big Difference", authors: "Malcolm Gladwell", year: 2000, publisher: "Little, Brown", kind: #monograph, use: "context only; not cited as an attestation of the word influencer" }
  #>src_lang_miller_1999
  ^["miller_1999"]{ title: "Script Supervising and Film Continuity", authors: "Pat P. Miller", edition: "3rd", year: 1999, publisher: "Focal Press", kind: #handbook }
 }

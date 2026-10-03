@@ -1,0 +1,249 @@
+# Computer Engineering Core
+#
+# The undergraduate computer engineering sequence as a prerequisite graph, from logic and timing through a pipelined RISC-V core to firmware, FPGAs, and a capstone, with a lab battery.
+
+#>engineering_computer
+#:layer #!reference
+#:domain #!engineering
+#:form #!curriculum
+#:level #!foundation
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Computer Engineering Core"
+ ~#claim: "A processor is logic that meets timing, and a pipeline overlaps instructions so throughput rises, though hazards keep the gain below the number of stages."
+ ~#proof: "Patterson and Hennessy for the pipelined RISC-V datapath, the RISC-V manual for encodings, Chaney and Molnar for metastability, Sha and coworkers for priority inheritance."
+ ~#door: "Start at logic and timing, then push index cards through a paper pipeline to feel a stall."
+ ~#audience: "first- and second-year computer engineering students and makers moving from hobby boards to real-time firmware"
+ continuity: "Computer Engineering Core | meets timing"
+ cold_open: "A processor is logic that meets timing, and a pipeline overlaps work without ever running as many times faster as it has stages."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/electrical-and-computer-engineering/undergrad-computer-engineering.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the raw wonder said five pipeline stages give five times the throughput at the same clock; pipelining shortens the cycle by splitting work, and hazards, stalls, and unequal stages keep speedup below the stage count",
+  "the ILA debugging wonder claimed a threefold speedup without a source; the question survives without a magnitude",
+  "the rule that a trace becomes a transmission line above 50 megahertz is restated in electrical core: what matters is trace delay against edge rise time",
+  "metastability MTBF is restated: synchronizers make failure rare, not impossible",
+  "physically unclonable functions and bit-banding are dropped from the topic lists as device-specific details the raw did not source"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./electrical-core.spw#engineering_electrical_devices" ]
+ feeds: [ ~"./ece-advanced.spw#engineering_ece_advanced" ]
+ see: [ ~"./electrical-core.spw#engineering_electrical_lines", ~"./control-and-signals.spw#engineering_control_signals_sampling" ]
+}
+
+^["concepts"]{
+ primary: [ #pipeline, #timing, #interrupt ]
+ transfers: [ #cache, #state_machine ]
+ tensions: [ #hazard ]
+}
+
+^["dag"]{
+ =~"./computer-engineering-core.spw#engineering_computer_architecture"[needs]{ ~"./computer-engineering-core.spw#engineering_computer_logic" }
+ =~"./computer-engineering-core.spw#engineering_computer_embedded"[needs]{ ~"./computer-engineering-core.spw#engineering_computer_architecture" }
+ =~"./computer-engineering-core.spw#engineering_computer_fpga"[needs]{ ~"./computer-engineering-core.spw#engineering_computer_logic" ; ~"./computer-engineering-core.spw#engineering_computer_architecture" }
+ =~"./computer-engineering-core.spw#engineering_computer_capstone"[needs]{ ~"./computer-engineering-core.spw#engineering_computer_embedded" ; ~"./computer-engineering-core.spw#engineering_computer_fpga" }
+ order: << "logic" ; "architecture" ; "embedded" ; "fpga" ; "capstone" >>
+}
+
+#>engineering_computer_logic
+^["logic"]{
+ course: "Digital systems design with an FPGA laboratory"
+ year: "sophomore"
+ topics: [
+  "Boolean algebra, Karnaugh maps, and hazard-free minimization",
+  "multiplexers, decoders, comparators, and carry-lookahead adders",
+  "flip-flops, setup and hold time, and clock-to-q delay",
+  "Mealy and Moore machines, one-hot encoding, and state minimization",
+  "SystemVerilog RTL, nonblocking assignment, and self-checking testbenches"
+ ]
+
+ #>engineering_computer_metastability
+ ^["metastability"]{
+  #:claim #!settled
+  statement: "A flip-flop whose input changes too near the clock edge can hang between states for an unbounded time; Chaney and Molnar showed this in 1973, so synchronizers make failure rare, not impossible."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_chaney_molnar_1973"
+  ^["limits"]{
+   holds: "signals crossing between unrelated clocks or arriving from outside the chip"
+   fails: "fully synchronous paths that meet setup and hold, where the problem does not arise"
+  }
+ }
+ #>engineering_computer_setup_hold
+ ^["setup_hold"]{
+  #:claim #!settled
+  statement: "A synchronous design works only if every register-to-register path meets setup and hold time at every process, voltage, and temperature corner; static timing analysis checks this without simulating inputs."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_weste_harris_2011"
+ }
+}
+
+#>engineering_computer_architecture
+^["architecture"]{
+ course: "Computer organization and microarchitecture"
+ year: "junior"
+ topics: [
+  "RISC-V RV32I and RV64I registers, encodings, and calling convention",
+  "single-cycle and five-stage pipelined datapaths",
+  "forwarding, hazard detection, stalls, and branch prediction",
+  "direct-mapped, set-associative, and fully associative caches; write-back and write-through",
+  "page tables, translation lookaside buffers, and page faults"
+ ]
+
+ #>engineering_computer_riscv
+ ^["riscv_formats"]{
+  #:claim #!settled
+  statement: "The RISC-V base integer ISA uses fixed 32-bit instructions in four core formats, R, I, S, and U, plus B and J variants; every format keeps the immediate sign in bit 31."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_riscv_unpriv_2019"
+ }
+ #>engineering_computer_pipeline
+ ^["pipeline_speedup"]{
+  #:claim #!settled
+  statement: "A five-stage pipeline overlaps fetch, decode, execute, memory, and write-back so ideal throughput nears one instruction per cycle; hazards, stalls, and unequal stage delays keep speedup below the stage count."
+  reads: %[mateng.cpu.classic_pipeline_stages]
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_patterson_hennessy_2017"
+  ~#counter(the raw said five stages give five times the throughput at the same clock)
+  ^["limits"]{
+   holds: "a long run of independent instructions through balanced stages"
+   fails: "dependent loads, mispredicted branches, cache misses, and the register overhead each stage adds"
+  }
+ }
+ #>engineering_computer_load_use
+ ^["load_use"]{
+  #:claim #!settled
+  statement: "Forwarding sends a result from a later stage straight to the ALU, but in the classic pipeline a load followed at once by an instruction using its value still costs one stall."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_patterson_hennessy_2017"
+ }
+ #>engineering_computer_amdahl
+ ^["amdahl"]{
+  #:claim #!settled
+  statement: "Amdahl argued in 1967 that the fraction of work an improvement cannot touch bounds the overall speedup, however much the improved part accelerates."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_amdahl_1967"
+ }
+ #>engineering_computer_three_c
+ ^["three_c"]{
+  #:claim #!settled
+  statement: "Cache misses sort into compulsory, capacity, and conflict misses, the three-C model Hennessy and Patterson credit to Mark Hill; each kind answers to a different fix."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_hennessy_patterson_2019"
+ }
+}
+
+#>engineering_computer_embedded
+^["embedded"]{
+ course: "Microcontroller interfacing and real-time systems"
+ year: "junior or senior"
+ topics: [
+  "memory-mapped I/O, linker scripts, vector tables, and startup code on Arm Cortex-M parts",
+  "timers, pulse-width modulation, successive-approximation ADCs, and DMA",
+  "UART framing, SPI shift registers, and I2C open-drain arbitration with pull-ups",
+  "RTOS tasks, preemptive priority scheduling, semaphores, mutexes, and queues"
+ ]
+ norm: "interrupt handlers finish in bounded time and never block or allocate memory"
+
+ #>engineering_computer_nvic
+ ^["nvic"]{
+  #:claim #!settled
+  statement: "On Cortex-M3 and M4 parts the core stacks registers in hardware on interrupt entry, so handlers can be plain C functions, and the NVIC tail-chains back-to-back interrupts without restacking."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_yiu_2014"
+ }
+ #>engineering_computer_priority_inheritance
+ ^["priority_inheritance"]{
+  #:claim #!settled
+  statement: "Sha, Rajkumar, and Lehoczky in 1990 bounded priority inversion with priority inheritance: a task holding a lock runs at the priority of the highest task blocked on it."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_sha_1990"
+  ^["limits"]{
+   holds: "a single processor where tasks block on shared locks"
+   fails: "chained blocking and deadlock, which the priority ceiling protocol in the same paper prevents"
+  }
+ }
+}
+
+#>engineering_computer_fpga
+^["fpga"]{
+ course: "Advanced digital design and reconfigurable computing"
+ year: "senior"
+ topics: [
+  "lookup tables, carry chains, DSP slices, and block RAM in SRAM-based FPGAs",
+  "synthesis, technology mapping, placement, and routing",
+  "timing constraints, clock skew, and multicycle paths",
+  "hard processor cores joined to programmable fabric over AXI interconnect"
+ ]
+}
+
+#>engineering_computer_capstone
+^["capstone"]{
+ course: "Two-semester embedded hardware and software project"
+ year: "senior"
+ topics: [
+  "multilayer board design with differential pairs, ground planes, and design-rule checks",
+  "embedded Linux images built with Yocto or Buildroot, device trees, and kernel drivers",
+  "secure boot chains and cryptographic accelerators",
+  "logic-analyzer, JTAG boundary-scan, and hardware-in-the-loop regression tests"
+ ]
+ norm: "boards pass electrical and manufacturing design-rule checks before fabrication"
+}
+
+^["labs"]{
+ #>engineering_computer_lab_battery
+ ^["battery"]{
+  blink: "drive a pin from a timer interrupt, then measure interrupt latency on an oscilloscope"
+  pipeline: "grow a single-cycle RV32I core on an FPGA into five stages and log every stall"
+  analyzer: "capture a seeded forwarding bug with an on-chip logic analyzer and compare it with a simulator trace"
+  inversion: "build a priority inversion with three tasks and one mutex, then switch on priority inheritance"
+  shows: [ ~"./computer-engineering-core.spw#engineering_computer_pipeline", ~"./computer-engineering-core.spw#engineering_computer_priority_inheritance" ]
+ }
+}
+
+^["try"]{
+ #>engineering_computer_try_card_pipeline
+ ^["card_pipeline"]{
+  materials: [
+   "a sheet of paper ruled into five columns named fetch, decode, execute, memory, and write-back",
+   "eight index cards and a few blank cards",
+   "a pen"
+  ]
+  steps: <<
+   "write one instruction on each card, making the fourth card use the value the third card loads" ;
+   "each tick, move every card one column right and feed a new card into fetch" ;
+   "when a card needs a value that is not ready, hold it and slide a blank bubble card in behind" ;
+   "count the ticks until all eight cards leave write-back" ;
+   "compare with running each card through all five columns alone, one after another"
+  >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./computer-engineering-core.spw#engineering_computer_pipeline"
+ }
+}
+
+#>engineering_computer_ila_q
+?["Do students find pipeline bugs faster with an on-chip logic analyzer than in a software simulator?"]{
+ #:depth #!educational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "Seeing real signals should speed diagnosis of timing and reset bugs, while a simulator that replays every cycle exactly should win on pure logic errors."
+ !probe{ "time two lab sections finding the same seeded forwarding bug, one with an on-chip analyzer and one with a simulator" =id[p_mateng_computer_ila] =kind[field] }
+ $%[file.frame_count]
+ ~"./computer-engineering-core.spw#engineering_computer_lab_battery" ~#neighbor(nearest)
+}
+
+#>engineering_computer_kitchen_q
+?["Is a restaurant kitchen line a pipeline with hazards?"]{
+ #:depth #!social ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "Stations overlap orders the way stages overlap instructions, and a dish waiting on another station stalls the line much as a load-use hazard does."
+ breaks: "cooks can reorder, share, and improvise; pipeline stages are fixed wiring that cannot help one another"
+ !probe{ "map one dinner service onto five stages and mark every stall and its cause" =id[p_mateng_computer_kitchen] =kind[thought] }
+ $%[graph.out_degree]
+ ~"./computer-engineering-core.spw#engineering_computer_load_use" ~#neighbor(nearest)
+}

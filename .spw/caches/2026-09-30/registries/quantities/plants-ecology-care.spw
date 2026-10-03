@@ -2,25 +2,34 @@
 #
 # World metric cells for plant science, development and ecology, and nursing. Population and scale parameters only; no individual doses, targets, or diets live here.
 
-#>q_eco_registry
+#>registry_qty_plants_ecology_care
 #:layer #!reference
 #:domain #!registry
 #:form #!registry
 #:level #!mixed
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-02"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ revision_2026_10_03: "r6 redated the r4 fact-check to 2026-10-02, the day its sources were read"
+ corrections: #[ "the file anchor q_eco_registry became registry_qty_plants_ecology_care to match the plan; the old anchor stays on a stub frame", "the Kleiber cell now names the three-quarter law he proposed instead of an exact 1932 fit" ]
  boundary: "clinical cells are scale definitions only; drug targets and protocol thresholds stay out by the contract health_numbers rule"
 }
 
@@ -56,6 +65,12 @@
   scheme: tol, algorithm: world.registry_lookup, form: scalar
  }
  reused: #[ "season.calendar.synodic_month_days", "season.calendar.tropical_year_days" ]
+}
+
+#>q_eco_registry
+^["stub"]{
+ note: "earlier file anchor of this registry, kept so that any old link still lands"
+ see: [ ~"./plants-ecology-care.spw#registry_qty_plants_ecology_care" ]
 }
 
 #>q_eco_soil
@@ -149,7 +164,7 @@
  %eco.scaling.kleiber_exp{
   value: 0.75
   unit: "1"
-  at: "exponent b in metabolic rate proportional to body mass to the b, as fitted across mammals by Kleiber"
+  at: "exponent b in metabolic rate proportional to body mass to the b; the three-quarter law Kleiber proposed from animals of widely different size"
   abs: 0
   src: ~"../sources/plants-ecology-care.spw#src_eco_kleiber_1932"
   status: #contested

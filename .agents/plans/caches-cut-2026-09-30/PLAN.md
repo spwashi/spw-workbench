@@ -142,9 +142,10 @@ The synthesizer prompt now also plans a `spw/` branch written after the studies 
    - Move `matter/water.spw` and the matter registries to their planned paths, fixing relative refs.
    - Run the gate.
 3. **Writers, in waves.** Use `references/workflows/cut-writers-wave.js` (supersedes `cut-writers.js`). Args: `{ repo, cut: ".spw/caches/2026-09-30", planPath: ".agents/plans/caches-cut-2026-09-30/references/panel/final-plan-v2.json", scorecard, packageIds, stages, wave }`. Agents read their package spec from the plan file.
-   - Wave 1 (launched 2026-10-01 11:30, stages write/check/fix): `season`, `creators-and-platforms`, `film-stage-visual`, `learning-and-generations`.
+   - Wave 1 (launched 2026-10-01 11:30, stages write/check/fix): `season`, `creators-and-platforms`, `film-stage-visual`, `learning-and-generations`. **Done 2026-10-02**; report `references/waves/wave1.json`.
    - Wave 2 (write/check/fix): `provenance-and-reference`, `formal`, `physical-sciences-and-image`, `materials-and-engineering`, `life-and-mind`, `plants-ecology-care`, `language-and-communities`, `economy-and-markets`, `record-and-carriers`.
-   - Wave 3 (write/check/fix, after the persona and rendering syntheses land): `spw-design-studies`, `spw-hosts-and-history`, `spw-branch`.
+   - Wave 3 (launched 2026-10-02 18:50 with `final-plan-v3.json`): `spw-design-studies`, `spw-contraptions`, `spw-hosts-and-history`, `spw-doors-perspectives`, `spw-glossary-specimens`, `spw-branch`.
+   - Wave 4a (write/check/fix with plan v3): `concepts`, `trails`. Then stage `weave` over every package, `apparatus` (root), and `sweep`. Use plan v3 from here on.
    - Wave 4: stage `weave` over all branch packages, then `apparatus` (root), then `sweep` (harm sweep and completeness critic).
    - A wave interrupted by limits resumes from its run ID; files already written stay on disk, so a rerun's writer should extend, not overwrite.
 4. **Writers (original single-run form).**

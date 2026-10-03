@@ -1,0 +1,206 @@
+# JetBrains Native Features
+#
+# The IntelliJ plugin actions, folding, structure view, gutter markers, live templates, commenter, and spellchecker, each re-read from the Kotlin source and resources.
+
+#>editor_hosts_jetbrains_native
+#:layer #!reference
+#:domain #!editor_hosts
+#:form #!registry
+#:level #!practitioner
+#:review #!sourced
+#:valence #!bone
+#:era #!current
+
+^"emit"{
+ ~#title: "JetBrains Native Features"
+ ~#claim: "The IntelliJ plugin adds five Tools actions and reads folding, structure, and gutter markers from Kotlin line regexes, apart from the language server."
+ ~#proof: "Rows cite plugin.xml, the Kotlin classes, and the bundled template and grammar files at commit 1aa1dc23."
+ ~#door: "Read the line reader claim, then try the fold with a tilde-hash key, then open the defect ledger."
+ ~#audience: "JetBrains users and maintainers of the IntelliJ plugin"
+ continuity: "JetBrains Native Features | Kotlin line regexes"
+ cold_open: "The JetBrains plugin reads folds, outline, and gutter marks with Kotlin line regexes, beside the server rather than through it."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/jetbrains/features.spw" ]
+ method: #corrected
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #skim, outcome: #pass
+   note: "commenter, spellcheck, gutter handler, and the fold hash branch reread in the Kotlin source"
+  }
+ }
+ corrections: [
+  "the raw features cache said the commenter toggles double-slash comments; SpwCommenter returns a hash and a space, and a slash-star block",
+  "the raw features cache said spellcheck skips sigils and inspects comments and strings; the strategy returns an empty tokenizer for every element, so it is off",
+  "the raw features cache said the structure view indexes AST landmarks into a hierarchy; it is a flat list from four line parsers with no children",
+  "the raw features cache said gutter markers navigate; they pass a null navigation handler",
+  "the raw features cache said the plugin delegates all reasoning to LSP and CLI; folding, structure, and gutter are Kotlin line reads"
+ ]
+ kept: "the five action ids, texts, and CLI forms in the raw features cache match plugin.xml and SpwCliInvocation.kt exactly"
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/spw-hosts-and-history.spw#q_hosts_jb" ]
+ feeds: [ ~"./known-defects.spw#editor_hosts_defects" ]
+ contrasts: [ ~"./vscode-rendering.spw#editor_hosts_vscode_rendering" ]
+ see: [ ~"../../provenance/errata-technical.spw#provenance_errata_technical" ]
+}
+
+^["concepts"]{
+ primary: [ #line_regex, #saved_file_truth, #native_action ]
+ transfers: [ #thin_client ]
+ tensions: [ #second_reader ]
+}
+
+^["abbreviation"]{
+ kotlin: "Kotlin paths are under extensions/intellij-spw/src/main/kotlin/com/spwashi/spw"
+ resources: "resource paths are under extensions/intellij-spw/src/main/resources"
+}
+
+^["actions"]{
+ #>editor_hosts_jetbrains_native_actions
+ ^["registry"]{
+  #:claim #!settled
+  statement: "Five actions sit in a Spw Instruments group appended to the Tools menu: three CLI inspections, a rename that hands off to the platform, and a plan-only refactor."
+  reads: %[hosts.jb.action_count]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_plugin_xml"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_instruments" ]
+  cites: [ "META-INF/plugin.xml:75-100", "SpwCliInvocation.kt:27-52", "SpwInstrumentActions.kt:67-79" ]
+ }
+ ^["rows"]{
+  inspect_form: .{ id: "Spw.InspectForm", runs: "spw form <file> --resonance --spw", status: #implemented }
+  inspect_stack: .{ id: "Spw.InspectStack", runs: "spw stack <file> --json", status: #implemented }
+  inspect_cache: .{ id: "Spw.InspectCache", runs: "spw inspect cache <file> --json", status: #implemented }
+  rename: .{ id: "Spw.Rename", runs: "IdeActions.ACTION_RENAME through tryToExecute", status: #implemented }
+  plan_refactor: .{ id: "Spw.PlanCorpusRefactor", runs: "spw refactor . --rename kind:from=to --json", status: #implemented }
+ }
+ handoff: "instrument execution and the dirty-buffer guard live in the instruments state machine"
+}
+
+^["line_reader"]{
+ #>editor_hosts_jetbrains_native_line_reader
+ ^["second_reader"]{
+  #:claim #!settled
+  statement: "Folding, the structure view, and gutter markers each scan the file with four Kotlin line patterns for headings, frames, anchors, and claims; none asks the server."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_structure"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_folding", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_gutter" ]
+  cites: [ "SpwLineParsers.kt:22-100", "SpwFoldingBuilder.kt:24,49", "SpwStructureViewFactory.kt:54,69,85,101", "SpwAnnotationLineMarkerProvider.kt:23,41,59" ]
+  ^["limits"]{
+   holds: "on every admitted build, whether or not the server runs"
+   fails: "as a parse: any hash and space line counts as a heading, and anchors match by regex"
+  }
+ }
+ #>editor_hosts_jetbrains_native_headings
+ ^["comment_headings"]{
+  #:claim #!settled
+  statement: "The heading pattern accepts one to three hashes and a space at line start, so every title comment and hash note becomes a heading in folding and in the outline."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_structure"
+  cites: "SpwLineParsers.kt:87"
+ }
+}
+
+^["folding"]{
+ #>editor_hosts_jetbrains_native_folding
+ ^["hash_skips_braces"]{
+  #:claim #!settled
+  statement: "When the fold builder matches braces it treats any hash as the start of a line comment, so a brace after a hash on that line is skipped and the fold can close early."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_folding"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_seed_comments" ]
+  cites: [ "SpwFoldingBuilder.kt:95-131", "SpwFoldingBuilder.kt:121" ]
+  ^["limits"]{
+   holds: "for lines such as a tilde-hash key that opens a facet brace"
+   fails: "for set lines and particle lines that carry no braces, which fold correctly"
+  }
+  seed_differs: "the seed treats a hash as a comment only when a space or line end follows it"
+ }
+ ^["rows"]{
+  frame_fold: .{ rule: "the open brace must sit within 200 characters and one newline of the frame head", cites: "SpwFoldingBuilder.kt:80-93" }
+  placeholder: .{ rule: "a folded frame shows its name between ellipses", cites: "SpwFoldingBuilder.kt:40" }
+  heading_fold: .{ rule: "a heading folds until the next heading of the same or higher level", cites: "SpwFoldingBuilder.kt:48-66,133-142" }
+  default: .{ rule: "nothing is collapsed by default", cites: "SpwFoldingBuilder.kt:78" }
+  quotes: .{ rule: "a single or double quote opens a skipped string", cites: "SpwFoldingBuilder.kt:122" }
+ }
+}
+
+^["outline_and_gutter"]{
+ #>editor_hosts_jetbrains_native_structure
+ ^["flat_outline"]{
+  #:claim #!settled
+  statement: "The structure view lists matching lines in file order with a kind and line number; every node uses the file icon and has no children."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_structure"
+  cites: [ "SpwStructureViewFactory.kt:41-125", "SpwStructureViewFactory.kt:129-138" ]
+ }
+ #>editor_hosts_jetbrains_native_gutter
+ ^["gutter_null_navigation"]{
+  #:claim #!settled
+  statement: "Anchor markers say navigate to references in their tooltip but pass a null navigation handler, so a click does nothing."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_gutter"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_tooling_intellij" ]
+  cites: [ "SpwAnnotationLineMarkerProvider.kt:28-36", ".spw/tooling/intellij-plugin.spw:50" ]
+  canon_says: "A gutter marker is not navigation unless it exposes a working target action."
+ }
+}
+
+^["editing_aids"]{
+ #>editor_hosts_jetbrains_native_templates
+ ^["live_templates"]{
+  #:claim #!settled
+  statement: "Seven live templates ship: frame, intent, anno, subroot, prop, episode, and stream; episode writes scene and change but no verify block."
+  reads: %[hosts.jb.live_template_count]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_templates"
+  cites: [ "liveTemplates/spwTemplates.xml:2-54", "liveTemplates/spwTemplates.xml:41", "liveTemplates/spwTemplates.xml:49-52" ]
+  stream_note: "stream fills the date by expression and picks a verb from observe, decide, revise, pause, done"
+ }
+ #>editor_hosts_jetbrains_native_commenter
+ ^["commenter_split"]{
+  #:claim #!settled
+  statement: "The commenter toggles a hash and a space, the bundled TextMate configuration names double slash, and Neovim uses a hash; the seed lexes both forms as comments."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_commenter"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_nvim_ftplugin", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_seed_comments", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_langconfig" ]
+  cites: [ "SpwCommenter.kt:6-8", "textmate/language-configuration.json:3", "extensions/vscode-spw/language-configuration.json:3", "extensions/neovim-spw/ftplugin/spw.vim:5" ]
+ }
+ #>editor_hosts_jetbrains_native_spellcheck
+ ^["spellcheck_off"]{
+  #:claim #!settled
+  statement: "The plugin depends on the spellchecker module and registers a strategy that returns an empty tokenizer for every element, so Spw text is never spellchecked."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_spellcheck"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_plugin_xml" ]
+  cites: [ "SpwSpellcheckingStrategy.kt:8-9", "META-INF/plugin.xml:31,68" ]
+ }
+ #>editor_hosts_jetbrains_native_grammar
+ ^["grammar_copy"]{
+  #:claim #!settled
+  statement: "The bundled TextMate grammar is a drifted copy of the VS Code one: it lacks the dialect-exp rules and opens a single-quoted string at any apostrophe."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_grammar"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_grammar" ]
+  cites: [ "textmate/spw.tmLanguage.json:171-173", "extensions/vscode-spw/syntaxes/spw.tmLanguage.json:174-177" ]
+ }
+}
+
+^["try"]{
+ #>editor_hosts_jetbrains_native_try_fold
+ ^["fold_early"]{
+  materials: [ "WebStorm or another supported IDE with the Spw plugin", "a scratch .spw file" ]
+  steps: << "write a frame whose second line is a tilde-hash key opening a facet brace" ; "put two bindings inside the facet and close both braces on their own lines" ; "fold the outer frame from the gutter" ; "see the fold end at the inner closing brace" >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "none worth naming; use a scratch file"
+  shows: ~"./jetbrains-native-features.spw#editor_hosts_jetbrains_native_folding"
+ }
+}
+
+#>editor_hosts_jetbrains_native_q
+?["Would server folding ranges replace the Kotlin fold builder without loss?"]{
+ #:depth #!computational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "On builds that show LSP folding, server ranges should match the Kotlin folds on frames and beat them on facet braces after a tilde-hash key."
+ !probe{ "on a 2025.2 or later IDE, disable the fold builder, fold every frame in ten cut files, and count mismatches against the Kotlin folds" =id[p_hosts_jb_fold_source] =kind[build] }
+ $%[hosts.jb.live_template_count, hosts.jb.action_count]
+ ~"./jetbrains-native-features.spw#editor_hosts_jetbrains_native_folding" ~#neighbor(nearest)
+}

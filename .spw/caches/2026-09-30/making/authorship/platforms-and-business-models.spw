@@ -28,15 +28,23 @@
  lineage: #[ ".spw/caches/indie-author-ecosystem/publishing-platforms-and-business-models.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ checked: "the 2026-07-07 band change re-read on the KDP list price page on 2026-10-02"
  corrections: #[
   "Smashwords is no longer a separate aggregator; Draft2Digital acquired it, announced February 2022 and completed March 2022",
   "the 70 percent band on Amazon.com now runs to 12.99 USD, effective 2026-07-07; the 9.99 ceiling is kept as superseded",
   "the per-page rate range is not carried; the monthly rate is a verify cell",
   "the 90 to 95 percent direct-sales margin and the 30 to 55 percent trade discount range are not carried as facts",
-  "Sanderson did not pioneer crowdfunded special editions; his 2022 campaign set a Kickstarter record"
+  "Sanderson did not pioneer crowdfunded special editions; his 2022 campaign set a Kickstarter record",
+  "fact check 2026-10-02: the royalty claim now says both rates use list price without VAT and the 70 percent rate also requires a sale in a 70 percent territory"
  ]
 }
 
@@ -79,9 +87,13 @@
   #>authorship_platforms_royalty
   ^["royalty_options"]{
    #:claim #!settled
-   statement: "KDP pays either 35 percent of list price or 70 percent less delivery costs, and the 70 percent option applies only inside a list-price band."
+   statement: "KDP pays 35 percent of list price without VAT, or 70 percent of that price less delivery costs on sales to 70 percent territories, and only inside a list-price band."
    reads: %[creator.kdp.royalty_high_pct, creator.kdp.royalty_low_pct]
    source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_kdp_royalty"
+   ^["limits"]{
+    holds: "eBook sales under the royalty options page as read on 2026-10-01"
+    fails: "a 70 percent title sold outside the 70 percent territories earns 35 percent on that sale"
+   }
   }
   #>authorship_platforms_band
   ^["band_2026"]{
@@ -91,7 +103,7 @@
    prior: %[creator.kdp.band70_max_prior_usd]
    source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_kdp_price"
    ^["limits"]{
-    holds: "Amazon.com list prices in USD as read on 2026-10-01"
+    holds: "Amazon.com list prices in USD as read on 2026-10-01 and again on 2026-10-02"
     fails: "other marketplaces have their own bands; older guides quote the 9.99 ceiling"
    }
   }
@@ -100,7 +112,7 @@
   #>authorship_platforms_d2d
   ^["aggregator_merge"]{
    #:claim #!settled
-   statement: "Smashwords, founded by Mark Coker and public since 2008, was acquired by Draft2Digital in a deal announced in February 2022 and completed in March 2022."
+   statement: "Smashwords, founded by Mark Coker and launched in May 2008, was acquired by Draft2Digital in a deal announced in February 2022 and completed in March 2022."
    source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_smashwords"
   }
   exclusivity: "none; the eBook may sit in every store at once"

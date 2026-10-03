@@ -11,17 +11,32 @@
 #:valence #!bone
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
- evidence: #[ "web checks 2026-10-01: TREC-COVID arXiv record, OAIS edition history, PREMIS 3.0 date, Yongle Encyclopedia, Brian Deer scheme, Wikidata launch, Hachette v. Internet Archive, OA Diamond study, Library Bill of Rights, Doe v. Gonzales, Luhmann card index, Foxfire" ]
+ evidence: #[ "fix-pass reads 2026-10-03: PubMed efetch for PMIDs 30190309, 36250645, and 19564476, and for 41869847, which carries no abstract; ARTFL Encyclopedie home page; Wikipedia Open Archival Information System page", "fix-pass reads 2026-10-02: PubMed esummary for PMIDs 41869847, 41870560, 40014670, 40811497, 41824552, 32690970, and 30573670; Cornell LII 18 U.S.C. 2709 amendment notes; rssboard.org RSS history; National Archives Thanksgiving page; Wikipedia LitRPG, Federal holidays, Phonograph cylinder, and IATSE pages", "web checks 2026-10-02: Zig 0.14.0 release notes, V8 Sea of Nodes post, Linux 6.6 KernelNewbies page, TypeScript 4.9 notes, RSS 2.0.11 page, Uiua tour source, Rocq site, Spotify Wrapped and infinite scrolling articles", "web checks 2026-10-01: TREC-COVID arXiv record, OAIS edition history, PREMIS 3.0 date, Yongle Encyclopedia, Brian Deer scheme, Wikidata launch, Hachette v. Internet Archive, OA Diamond study, Library Bill of Rights, Doe v. Gonzales, Luhmann card index, Foxfire" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #partial }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "usc18_2709 and rss_2003 misattributed; four guideline rows superseded; eight rows added"
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r7"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "folio volume counts moved from Darnton to the ARTFL project; Pan 2018 and the OAIS edition page added; editor locators pinned to 1aa1dc23"
+  }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ checked: "entries added on 2026-10-02 were matched against a publisher or project page where a check is named in evidence; the rest come from the writer and keep the registry at spot_checked"
+ superseded_rule: "a guideline replaced by a newer edition keeps its row and anchor, with superseded_by pointing at the successor"
 }
 
 ^["repository"]{
@@ -38,9 +53,9 @@
  #>src_prov_resume_note
  ^["resume_note"]{ title: "Owner resume note of 2026-09-30", authors: "repository owner", year: 2026, locator: ".spw/caches/resume/2026-09-30-direction.spw:29 at 229aedcf", kind: #repository }
  #>src_prov_intellij_sources
- ^["intellij_sources"]{ title: "IntelliJ Spw plugin sources", authors: "spw-workbench", year: 2026, locator: "extensions/intellij-spw/src/main/", kind: #repository }
+ ^["intellij_sources"]{ title: "IntelliJ Spw plugin sources", authors: "spw-workbench", year: 2026, locator: "extensions/intellij-spw/src/main/", pinned_at: "1aa1dc23", note: "ledger line citations carry the commit prefix because the working tree moves", kind: #repository }
  #>src_prov_vscode_sources
- ^["vscode_sources"]{ title: "VS Code Spw extension sources", authors: "spw-workbench", year: 2026, locator: "extensions/vscode-spw/", kind: #repository }
+ ^["vscode_sources"]{ title: "VS Code Spw extension sources", authors: "spw-workbench", year: 2026, locator: "extensions/vscode-spw/", pinned_at: "1aa1dc23", note: "ledger line citations carry the commit prefix because the working tree moves", kind: #repository }
  #>src_prov_fips_180_4
  ^["fips_180_4"]{ title: "Secure Hash Standard (SHS), FIPS PUB 180-4", authors: "National Institute of Standards and Technology", year: 2015, venue: "NIST, August 2015", kind: #standard }
 }
@@ -56,6 +71,8 @@
  ^["blair_2010"]{ title: "Too Much to Know: Managing Scholarly Information before the Modern Age", authors: "Ann M. Blair", year: 2010, venue: "Yale University Press", kind: #monograph }
  #>src_prov_darnton_1979
  ^["darnton_1979"]{ title: "The Business of Enlightenment: A Publishing History of the Encyclopédie, 1775-1800", authors: "Robert Darnton", year: 1979, venue: "Belknap Press of Harvard University Press", kind: #monograph }
+ #>src_prov_artfl_encyclopedie
+ ^["artfl_encyclopedie"]{ title: "The ARTFL Encyclopédie", authors: "ARTFL Project, University of Chicago", venue: "encyclopedie.uchicago.edu, read 2026-10-03", note: "the folio Encyclopédie appeared under Diderot and d'Alembert in 17 volumes of text and 11 volumes of plates between 1751 and 1772", kind: #project }
  #>src_prov_diderot_1755
  ^["diderot_1755"]{ title: "Encyclopédie (article)", authors: "Denis Diderot", year: 1755, venue: "Encyclopédie, ou dictionnaire raisonné des sciences, des arts et des métiers, vol. 5", kind: #primary }
  #>src_prov_propaedia_1974
@@ -78,6 +95,8 @@
  ^["wigginton_1972"]{ title: "The Foxfire Book", authors: "Eliot Wigginton (ed.) with Rabun Gap-Nacoochee School students", year: 1972, venue: "Anchor Books, Doubleday", kind: #monograph }
  #>src_prov_ccsds_2024
  ^["ccsds_2024"]{ title: "Reference Model for an Open Archival Information System (OAIS), CCSDS 650.0-M-3", authors: "Consultative Committee for Space Data Systems", year: 2024, venue: "Recommended Practice, Magenta Book, December 2024", kind: #standard }
+ #>src_prov_wiki_oais
+ ^["wiki_oais"]{ title: "Open Archival Information System", venue: "Wikipedia, read 2026-10-03", note: "states that CCSDS 650.0-M-3 of December 2024 is identical in text to ISO 14721:2025, and lists six functional entities", kind: #encyclopedia }
  #>src_prov_reich_rosenthal_2001
  ^["reich_rosenthal_2001"]{ title: "LOCKSS: A Permanent Web Publishing and Access System", authors: "Vicky Reich; David S. H. Rosenthal", year: 2001, venue: "D-Lib Magazine 7(6)", kind: #article }
  #>src_prov_vrandecic_2014
@@ -179,7 +198,7 @@
  #>src_prov_us_v_ala_2003
  ^["us_v_ala_2003"]{ title: "United States v. American Library Association", authors: "Supreme Court of the United States", year: 2003, locator: "539 U.S. 194", kind: #case }
  #>src_prov_usc18_2709
- ^["usc18_2709"]{ title: "Counterintelligence access to telephone toll and transactional records", authors: "US Congress", year: 2001, locator: "18 U.S.C. 2709, as amended by the USA PATRIOT Act section 505", kind: #statute }
+ ^["usc18_2709"]{ title: "Counterintelligence access to telephone toll and transactional records", authors: "US Congress", year: 2015, locator: "18 U.S.C. 2709 (current text); library provision at (g), added as (f) by Pub. L. 109-178 sec. 5 (2006) and redesignated by Pub. L. 114-23 sec. 503(a) (2015); judicial review at (d), added by Pub. L. 114-23 (2015), and at 18 U.S.C. 3511", kind: #statute }
  #>src_prov_doe_v_gonzales_2005
  ^["doe_v_gonzales_2005"]{ title: "Doe v. Gonzales", authors: "US District Court for the District of Connecticut", year: 2005, locator: "386 F. Supp. 2d 66", kind: #case }
  #>src_prov_usc17_copyright
@@ -238,6 +257,8 @@
  ^["sternberg_2014"]{ title: "DNA Interrogation by the CRISPR RNA-Guided Endonuclease Cas9", authors: "Samuel H. Sternberg; Sy Redding; Martin Jinek; Eric C. Greene; Jennifer A. Doudna", year: 2014, venue: "Nature 507", kind: #article }
  #>src_prov_west_1992
  ^["west_1992"]{ title: "A Cluster of Hydrophobic Amino Acid Residues Required for Fast Na+-Channel Inactivation", authors: "J. W. West et al.", year: 1992, venue: "PNAS 89(22)", kind: #article }
+ #>src_prov_pan_2018
+ ^["pan_2018"]{ title: "Structure of the human voltage-gated sodium channel Nav1.4 in complex with beta1", authors: "Pan X; Li Z; Zhou Q; Shen H; Wu K; Huang X; et al.; Yan N", year: 2018, venue: "Science 362(6412):eaau2486", doi: "10.1126/science.aau2486", note: "PubMed 30190309, read 2026-10-03; the abstract says the structure corroborates an allosteric blocking mechanism for fast inactivation", kind: #article }
  #>src_prov_pinto_2017
  ^["pinto_2017"]{ title: "Split Brain: Divided Perception but Undivided Consciousness", authors: "Yair Pinto et al.", year: 2017, venue: "Brain 140(5)", kind: #article }
  #>src_prov_sorrells_2018
@@ -290,13 +311,29 @@
  #>src_prov_umpierrez_2024
  ^["umpierrez_2024"]{ title: "Hyperglycemic Crises in Adults With Diabetes: A Consensus Report", authors: "Guillermo E. Umpierrez et al.", year: 2024, venue: "Diabetes Care 47(8)", kind: #guideline }
  #>src_prov_ogara_2013
- ^["ogara_2013"]{ title: "2013 ACCF/AHA Guideline for the Management of ST-Elevation Myocardial Infarction", authors: "Patrick T. O'Gara et al.", year: 2013, venue: "Circulation 127(4)", kind: #guideline }
+ ^["ogara_2013"]{
+  title: "2013 ACCF/AHA Guideline for the Management of ST-Elevation Myocardial Infarction"
+  authors: "Patrick T. O'Gara et al."
+  year: 2013
+  venue: "Circulation 127(4)"
+  currency: "superseded in 2025; kept as the edition whose nitrate contraindications this register read"
+  superseded_by: ~"./provenance-and-reference.spw#src_prov_rao_2025"
+  kind: #guideline
+ }
  #>src_prov_joglar_2024
  ^["joglar_2024"]{ title: "2023 ACC/AHA/ACCP/HRS Guideline for the Diagnosis and Management of Atrial Fibrillation", authors: "José A. Joglar et al.", year: 2024, venue: "Circulation 149(1)", kind: #guideline }
  #>src_prov_marik_2008
  ^["marik_2008"]{ title: "Does Central Venous Pressure Predict Fluid Responsiveness? A Systematic Review of the Literature and the Tale of Seven Mares", authors: "Paul E. Marik; Michael Baram; Bobbak Vahid", year: 2008, venue: "Chest 134(1)", kind: #article }
  #>src_prov_evans_2021
- ^["evans_2021"]{ title: "Surviving Sepsis Campaign: International Guidelines for Management of Sepsis and Septic Shock 2021", authors: "Laura Evans et al.", year: 2021, venue: "Critical Care Medicine 49(11)", kind: #guideline }
+ ^["evans_2021"]{
+  title: "Surviving Sepsis Campaign: International Guidelines for Management of Sepsis and Septic Shock 2021"
+  authors: "Laura Evans et al."
+  year: 2021
+  venue: "Critical Care Medicine 49(11)"
+  currency: "superseded for adults in 2026; kept as the edition this register read"
+  superseded_by: ~"./provenance-and-reference.spw#src_prov_prescott_2026"
+  kind: #guideline
+ }
  #>src_prov_parshall_2012
  ^["parshall_2012"]{ title: "An Official American Thoracic Society Statement: Update on the Mechanisms, Assessment, and Management of Dyspnea", authors: "Mark B. Parshall et al.", year: 2012, venue: "American Journal of Respiratory and Critical Care Medicine 185(4)", kind: #guideline }
  #>src_prov_iom_2001
@@ -310,9 +347,25 @@
  #>src_prov_langer_2012
  ^["langer_2012"]{ title: "Nonpasteurized Dairy Products, Disease Outbreaks, and State Laws, United States, 1993-2006", authors: "Adam J. Langer et al.", year: 2012, venue: "Emerging Infectious Diseases 18(3)", kind: #article }
  #>src_prov_whelton_2018
- ^["whelton_2018"]{ title: "2017 ACC/AHA Guideline for the Prevention, Detection, Evaluation, and Management of High Blood Pressure in Adults", authors: "Paul K. Whelton et al.", year: 2018, venue: "Hypertension 71(6)", kind: #guideline }
+ ^["whelton_2018"]{
+  title: "2017 ACC/AHA Guideline for the Prevention, Detection, Evaluation, and Management of High Blood Pressure in Adults"
+  authors: "Paul K. Whelton et al."
+  year: 2018
+  venue: "Hypertension 71(6)"
+  currency: "superseded in 2025"
+  superseded_by: ~"./provenance-and-reference.spw#src_prov_jones_2025"
+  kind: #guideline
+ }
  #>src_prov_grundy_2019
- ^["grundy_2019"]{ title: "2018 AHA/ACC Guideline on the Management of Blood Cholesterol", authors: "Scott M. Grundy et al.", year: 2019, venue: "Circulation 139(25)", kind: #guideline }
+ ^["grundy_2019"]{
+  title: "2018 AHA/ACC Guideline on the Management of Blood Cholesterol"
+  authors: "Scott M. Grundy et al."
+  year: 2019
+  venue: "Circulation 139(25)"
+  currency: "superseded in 2026"
+  superseded_by: ~"./provenance-and-reference.spw#src_prov_blumenthal_2026"
+  kind: #guideline
+ }
  #>src_prov_gilsanz_2011
  ^["gilsanz_2011"]{ title: "Age at Onset of Puberty Predicts Bone Mass in Young Adulthood", authors: "Vicente Gilsanz et al.", year: 2011, venue: "Journal of Pediatrics 158(1)", kind: #article }
  #>src_prov_maughan_2016
@@ -323,4 +376,87 @@
  ^["peiper_2019"]{ title: "Fentanyl Test Strips as an Opioid Overdose Prevention Strategy: Findings from a Syringe Services Program in the Southeastern United States", authors: "Nicholas C. Peiper et al.", year: 2019, venue: "International Journal of Drug Policy 63", kind: #article }
  #>src_prov_bohren_2017
  ^["bohren_2017"]{ title: "Continuous Support for Women during Childbirth", authors: "Meghan A. Bohren; G. Justus Hofmeyr; Carol Sakala; Rieko K. Fukuzawa; Anna Cuthbert", year: 2017, venue: "Cochrane Database of Systematic Reviews, CD003766", kind: #review }
+ #>src_prov_prescott_2026
+ ^["prescott_2026"]{ title: "Surviving Sepsis Campaign: International Guidelines for Management of Sepsis and Septic Shock 2026", authors: "Prescott HC; Antonelli M; Alhazzani W; Moller MH; Alshamsi F; et al.", year: 2026, venue: "Critical Care Medicine 54(4):725-812, PMID 41869847; also Intensive Care Medicine 52(5):863-936, PMID 41870560", checked: "PubMed record only; the recommendation text was not read", kind: #guideline }
+ #>src_prov_rao_2025
+ ^["rao_2025"]{ title: "2025 ACC/AHA/ACEP/NAEMSP/SCAI Guideline for the Management of Patients With Acute Coronary Syndromes", authors: "Rao SV; O'Donoghue ML; Ruel M; Rab T; Tamis-Holland JE; et al.", year: 2025, venue: "Circulation 151(13):e771-e862, PMID 40014670; also JACC 85(22):2135-2237", checked: "PubMed record only; the nitrate text was not read", kind: #guideline }
+ #>src_prov_jones_2025
+ ^["jones_2025"]{ title: "2025 AHA/ACC/AANP/AAPA/ABC/ACCP/ACPM/AGS/AMA/ASPC/NMA/PCNA/SGIM Guideline for the Prevention, Detection, Evaluation and Management of High Blood Pressure in Adults", authors: "Jones DW; Ferdinand KC; Taler SJ; Johnson HM; Shimbo D; et al.", year: 2025, venue: "Circulation 152(11):e114-e218, PMID 40811497", checked: "PubMed record only", kind: #guideline }
+ #>src_prov_blumenthal_2026
+ ^["blumenthal_2026"]{ title: "2026 ACC/AHA/AACVPR/ABC/ACPM/ADA/AGS/APhA/ASPC/NLA/PCNA Guideline on the Management of Dyslipidemia", authors: "Blumenthal RS; Morris PB; Gaudino M; Johnson HM; Anderson TS; et al.", year: 2026, venue: "Circulation 153(17):e1154-e1276, PMID 41824552", checked: "PubMed record only", kind: #guideline }
+}
+
+^["errata_sources"]{
+ #>src_prov_hasan_kane_2010
+ ^["hasan_kane_2010"]{ title: "Colloquium: Topological Insulators", authors: "M. Z. Hasan; C. L. Kane", year: 2010, venue: "Reviews of Modern Physics 82(4)", kind: #article }
+ #>src_prov_franklin_2019
+ ^["franklin_2019"]{ title: "Feedback Control of Dynamic Systems, 8th ed.", authors: "Gene F. Franklin; J. David Powell; Abbas Emami-Naeini", year: 2019, venue: "Pearson", kind: #handbook }
+ #>src_prov_bax_summers_1986
+ ^["bax_summers_1986"]{ title: "1H and 13C Assignments from Sensitivity-Enhanced Detection of Heteronuclear Multiple-Bond Connectivity by 2D Multiple Quantum NMR", authors: "Ad Bax; Michael F. Summers", year: 1986, venue: "Journal of the American Chemical Society 108(8)", kind: #article }
+ #>src_prov_hull_bacon_2011
+ ^["hull_bacon_2011"]{ title: "Introduction to Dislocations, 5th ed.", authors: "Derek Hull; D. J. Bacon", year: 2011, venue: "Butterworth-Heinemann", kind: #handbook }
+ #>src_prov_miracle_senkov_2017
+ ^["miracle_senkov_2017"]{ title: "A Critical Review of High Entropy Alloys and Related Concepts", authors: "D. B. Miracle; O. N. Senkov", year: 2017, venue: "Acta Materialia 122", kind: #article }
+ #>src_prov_lynch_park_2017
+ ^["lynch_park_2017"]{ title: "Modern Robotics: Mechanics, Planning, and Control", authors: "Kevin M. Lynch; Frank C. Park", year: 2017, venue: "Cambridge University Press", kind: #handbook }
+ #>src_prov_suresh_1998
+ ^["suresh_1998"]{ title: "Fatigue of Materials, 2nd ed.", authors: "S. Suresh", year: 1998, venue: "Cambridge University Press", kind: #handbook }
+ #>src_prov_dixon_hall_2014
+ ^["dixon_hall_2014"]{ title: "Fluid Mechanics and Thermodynamics of Turbomachinery, 7th ed.", authors: "S. L. Dixon; C. A. Hall", year: 2014, venue: "Butterworth-Heinemann", kind: #handbook }
+ #>src_prov_kleinrock_1975
+ ^["kleinrock_1975"]{ title: "Queueing Systems, Volume 1: Theory", authors: "Leonard Kleinrock", year: 1975, venue: "Wiley", kind: #handbook }
+ #>src_prov_mack_2007
+ ^["mack_2007"]{ title: "Fundamental Principles of Optical Lithography: The Science of Microfabrication", authors: "Chris Mack", year: 2007, venue: "Wiley", kind: #handbook }
+ #>src_prov_alberts_2022
+ ^["alberts_2022"]{ title: "Molecular Biology of the Cell, 7th ed.", authors: "Bruce Alberts et al.", year: 2022, venue: "W. W. Norton", kind: #handbook }
+ #>src_prov_iso_5_2_2009
+ ^["iso_5_2_2009"]{ title: "ISO 5-2:2009 Photography and graphic technology, Density measurements, Part 2: Geometric conditions for transmittance density", authors: "ISO TC 42", year: 2009, venue: "International Organization for Standardization", kind: #standard }
+ #>src_prov_kernelnewbies_66
+ ^["kernelnewbies_66"]{ title: "Linux 6.6", authors: "KernelNewbies editors", year: 2023, venue: "kernelnewbies.org, release of 29 October 2023, read 2026-10-02", kind: #release_notes }
+ #>src_prov_v8_2025
+ ^["v8_2025"]{ title: "Land ahoy: leaving the Sea of Nodes", authors: "Darius Mercadier", year: 2025, venue: "V8 blog, 25 March 2025", kind: #release_notes }
+ #>src_prov_rocq_site
+ ^["rocq_site"]{ title: "The Rocq Prover, formerly the Coq Proof Assistant", authors: "Rocq development team", year: 2025, venue: "rocq-prover.org, read 2026-10-02", kind: #project_page }
+ #>src_prov_zig_014
+ ^["zig_014"]{ title: "Zig 0.14.0 Release Notes", authors: "Zig Software Foundation", year: 2025, venue: "ziglang.org, read 2026-10-02", kind: #release_notes }
+ #>src_prov_ts_49
+ ^["ts_49"]{ title: "TypeScript 4.9 release notes: the satisfies operator", authors: "Microsoft TypeScript team", year: 2022, venue: "typescriptlang.org handbook, read 2026-10-02", kind: #release_notes }
+ #>src_prov_minsky_2022
+ ^["minsky_2022"]{ title: "Real World OCaml: Functional Programming for the Masses, 2nd ed.", authors: "Yaron Minsky; Anil Madhavapeddy", year: 2022, venue: "Cambridge University Press", kind: #handbook }
+ #>src_prov_uiua_tour
+ ^["uiua_tour"]{ title: "Uiua Language Tour", authors: "Uiua contributors", year: 2026, venue: "uiua.org tour, source site/text/tour.md line 17, read 2026-10-02", kind: #project_page }
+ #>src_prov_mayer_1991
+ ^["mayer_1991"]{ title: "The Artist's Handbook of Materials and Techniques, 5th ed., revised by Steven Sheehan", authors: "Ralph Mayer", year: 1991, venue: "Viking", kind: #handbook }
+ #>src_prov_murre_dros_2015
+ ^["murre_dros_2015"]{ title: "Replication and Analysis of Ebbinghaus' Forgetting Curve", authors: "Jaap M. J. Murre; Joeri Dros", year: 2015, venue: "PLoS ONE 10(7)", kind: #article }
+ #>src_prov_zhao_2021
+ ^["zhao_2021"]{ title: "Glycosylase Base Editors Enable C-to-A and C-to-G Base Changes", authors: "Zhao D; Li J; Li S; Xin X; Hu M; et al.", year: 2021, venue: "Nature Biotechnology 39(1):35-40, PMID 32690970", kind: #article }
+ #>src_prov_vaswani_2017
+ ^["vaswani_2017"]{ title: "Attention Is All You Need", authors: "Ashish Vaswani et al.", year: 2017, venue: "Advances in Neural Information Processing Systems 30, NeurIPS 2017", kind: #article }
+ #>src_prov_rss_2003
+ ^["rss_2003"]{ title: "RSS 2.0 Specification", authors: "Dave Winer", year: 2002, venue: "first published by Dave Winer at UserLand in August 2002; version 2.0.1 republished by the Berkman Center at Harvard Law School in July 2003; maintained by the RSS Advisory Board, current version 2.0.11 of 30 March 2009 at rssboard.org", note: "anchor keeps its 2003 name under the permanence rule; dates per the rssboard.org history page, read 2026-10-02", kind: #standard }
+}
+
+^["libraries_and_cautions"]{
+ #>src_prov_bagnall_2002
+ ^["bagnall_2002"]{ title: "Alexandria: Library of Dreams", authors: "Roger S. Bagnall", year: 2002, venue: "Proceedings of the American Philosophical Society 146(4)", kind: #article }
+ #>src_prov_eco_1995
+ ^["eco_1995"]{ title: "The Search for the Perfect Language", authors: "Umberto Eco; translated by James Fentress", year: 1995, venue: "Blackwell; Italian original Laterza, 1993", kind: #monograph }
+ #>src_prov_svenonius_2000
+ ^["svenonius_2000"]{ title: "The Intellectual Foundation of Information Organization", authors: "Elaine Svenonius", year: 2000, venue: "MIT Press", kind: #monograph }
+ #>src_prov_drabinski_2013
+ ^["drabinski_2013"]{ title: "Queering the Catalog: Queer Theory and the Politics of Correction", authors: "Emily Drabinski", year: 2013, venue: "The Library Quarterly 83(2)", kind: #article }
+}
+
+^["panel_sources"]{
+ #>src_prov_wiki_spotify_wrapped
+ ^["wiki_spotify_wrapped"]{ title: "Spotify Wrapped", venue: "Wikipedia, read 2026-10-02", note: "campaign began December 2016 after a 2015 Year in Music campaign; released late November or early December", kind: #encyclopedia }
+ #>src_prov_wiki_infinite_scroll
+ ^["wiki_infinite_scroll"]{ title: "Infinite scrolling", venue: "Wikipedia, read 2026-10-02", note: "records a 2006 patent application by a Microsoft image-search team; other accounts credit other designers", kind: #encyclopedia }
+ #>src_prov_nara_thanksgiving
+ ^["nara_thanksgiving"]{ title: "Congress Establishes Thanksgiving", authors: "US National Archives, Center for Legislative Archives", venue: "archives.gov/legislative/features/thanksgiving, read 2026-10-02", note: "H.J. Res. 41 fixed the fourth Thursday in November; Roosevelt signed it on 26 December 1941", kind: #archive_page }
+ #>src_prov_wiki_federal_holidays
+ ^["wiki_federal_holidays"]{ title: "Federal holidays in the United States", venue: "Wikipedia, read 2026-10-02", note: "an act of 28 June 1870 created the first four federal holidays, Thanksgiving among them, at first for federal employees in Washington", kind: #encyclopedia }
+ #>src_prov_wiki_phonograph_cylinder
+ ^["wiki_phonograph_cylinder"]{ title: "Phonograph cylinder", venue: "Wikipedia, read 2026-10-02", note: "wax-cylinder machines commercialized in 1888; prerecorded cylinders marketed from 1889, first mainly to coin-slot operators; home buying grew within a few years", kind: #encyclopedia }
 }

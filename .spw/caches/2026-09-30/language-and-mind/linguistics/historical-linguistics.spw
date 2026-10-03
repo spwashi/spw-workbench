@@ -7,7 +7,7 @@
 #:domain #!linguistics
 #:form #!timeline
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 
 ^"emit"{
@@ -21,19 +21,26 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-02"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/university-education/linguistics/sociolinguistics-and-language-documentation.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ gate_note: "r3 was first recorded as a pass while the planned panels gap-table was unwritten; that forward ref now resolves"
  corrections: [
   "split out of the raw sociolinguistics file, where comparative method and sound laws sat in one facet",
   "Grimm Law is credited to Rask 1818 as well as Grimm 1822",
-  "Greenberg word-order correlations are stated as statistical tendencies, not laws"
+  "Greenberg word-order correlations are stated as statistical tendencies, not laws",
+  "fact check: the comparative method was dated from the 1870s; correspondences and reconstruction began in the 1810s, and the 1870s brought exceptionless laws"
  ]
 }
 
@@ -59,6 +66,14 @@
    holds: "as the widely quoted statement that launched comparative work"
    fails: "earlier observers had noted the resemblances, and Jones also grouped languages wrongly"
   }
+ }
+ #>linguistics_historical_sound_laws
+ ^["comparative_method"]{
+  #:claim #!settled
+  at: "from the 1810s; made rigorous by the Neogrammarians in the 1870s"
+  statement: "The comparative method reconstructs a proto-language by aligning cognates, finding regular correspondences, and positing the fewest changes that yield every daughter form."
+  credit: "Bopp in 1816, Rask in 1818, and Grimm in 1822 set up correspondences; Schleicher reconstructed Proto-Indo-European forms in the 1860s; the Neogrammarians made sound laws exceptionless"
+  sources: [ ~"../../registries/sources/language-and-communities.spw#src_lang_campbell_2013", ~"../../registries/sources/language-and-communities.spw#src_lang_fortson_2010" ]
  }
  #>linguistics_historical_grimm
  ^["rask_grimm_1818_1822"]{
@@ -86,13 +101,6 @@
    holds: "as a working method that makes reconstruction testable"
    fails: "some changes spread word by word through the lexicon, as later studies of lexical diffusion showed"
   }
- }
- #>linguistics_historical_sound_laws
- ^["comparative_method"]{
-  #:claim #!settled
-  at: "from the 1870s"
-  statement: "The comparative method reconstructs a proto-language by aligning cognates, finding regular correspondences, and positing the fewest changes that yield every daughter form."
-  sources: [ ~"../../registries/sources/language-and-communities.spw#src_lang_campbell_2013", ~"../../registries/sources/language-and-communities.spw#src_lang_fortson_2010" ]
  }
  #>linguistics_historical_laryngeal_prediction
  ^["saussure_1879"]{

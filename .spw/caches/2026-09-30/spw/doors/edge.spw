@@ -1,0 +1,118 @@
+# Door: Edge
+#
+# One region, legible alone: a bias edge names an anchor, an axis, and ranked targets with a sign, and readers report it without acting on it.
+
+#>spw_door_edge
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!field_guide
+#:level #!intro
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Door: Edge"
+ ~#claim: "A bias edge names an anchor, an axis, and targets ranked by order, with a sign; written subject first it is read, and the frame-first form canon prints yields no edge."
+ ~#proof: "readBias reports anchor, axis, ranked targets, and sign without acting on them; probes at commit 1aa1dc23 read the subject-first form and find nothing in the frame-first form."
+ ~#door: "Write one edge subject first and one frame first, guess which one a reader sees, then check both."
+ ~#audience: "engineers, social scientists, and pathway readers who draw arrows between things"
+ continuity: "Door: Edge | subject first"
+ cold_open: "A bias edge is read when you write it subject first: anchor, axis, then ranked targets."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "persona study familiarity_matrix row for the bias edge and theory_questions 18 and 19",
+  "readBias probes run by the writer at commit 1aa1dc23 on 2026-10-02"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   note: "forward refs to planned files of other packages that were not yet written"
+  }
+  ^["r4"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the plan said the spaced form yields no edge; at 1aa1dc23 spacing is not the cause: the subject-first form yields an edge with or without spaces, and the frame-first form with the axis before the anchor yields none",
+  "the 2026-10-02 gate receipt said pass while forward refs to planned files failed; it now records partial, and the 2026-10-03 gate passed once those files existed"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"../contraptions/kerning.spw#spw_lab_kerning" ]
+}
+
+^["region"]{
+ #>spw_door_edge_read
+ ^["what_is_read"]{
+  #:claim #!settled
+  statement: "readBias reads an equals operation with a body as an edge: subject as anchor, bracket frame as axis, body terms as targets with the first strongest, and a bane modifier flipping the sign."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_canonical"
+  cites: [ "packages/spw-seed/src/canonical/read-bias.ts:38-53", "packages/spw-seed/src/canonical/read-bias.ts:102-117" ]
+  form: `=~"./a.spw#x"[needs]{ ~"./b.spw#y" }`
+  ~#spoken(equals tilde)
+  ^["limits"]{
+   holds: "an equals sign with a subject, an axis frame, and a body"
+   fails: "an edge records a direction and a rank only; it carries no magnitude, no standard error, and no identification assumption"
+  }
+ }
+ #>spw_door_edge_frame_first
+ ^["frame_first"]{
+  #:claim #!settled
+  statement: "The frame-first form that canon documents, with the axis in brackets before the anchor, yields no edge from readBias at this commit, while the subject-first form yields one with or without spaces."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_canonical"
+  cites: [ "packages/spw-seed/src/canonical/read-bias.ts:4", "docs/theory/spw/flow-protocol-sigils.spw:37", "docs/theory/spw/flow-protocol-sigils.spw:66" ]
+  probe_run: "four forms read at 1aa1dc23: subject first tight, subject first spaced, and subject first with bane each gave one edge; frame first gave none"
+ }
+ #>spw_door_edge_verbs
+ ^["reader_not_actor"]{
+  #:claim #!settled
+  statement: "readBias reports an edge and never acts on it; the CLI consumers decide the verb, so mount resolves, expand templates, and mutate rewrites from the same reading."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_canonical"
+  cites: [ "packages/spw-seed/src/canonical/read-bias.ts:1-9", "packages/spw-cli/src/bias-edges.ts:1-9" ]
+ }
+ #>spw_door_edge_typed
+ ^["typed_pointers"]{
+  #:claim #!settled
+  statement: "This cut writes its typed pointers in an edges frame whose relation keys come from a closed set, and the gate checks those keys; a bias edge is a separate reading."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_gate"
+  cites: [ "scripts/analyzers/spw-cut-gate.ts:297-301" ]
+  label: "a-cut rule"
+ }
+}
+
+^["habits"]{
+ keep: "an arrow from a cause to an effect, or from a prerequisite to what it unlocks, with the strongest target first"
+ quote: [
+  "regression coefficients, standard errors, and any magnitude, kept in registry cells or strings",
+  "pathway arrows with inhibition marks, written in strings until the axis names the sign"
+ ]
+ unlearn: "an edge is not a patch to apply; only a consumer that chooses a verb changes any file"
+}
+
+^["keyboard"]{
+ #>spw_door_edge_keys
+ ^["equals_tilde"]{
+  #:claim #!settled
+  statement: "The subject-first edge opens with an equals sign and a tilde: no Shift for the equals sign and Shift for the tilde on both Windows layouts."
+  reads: %[doors.key.equals_us_mods, doors.key.tilde_us_mods, doors.key.tilde_uk_mods]
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_kbd_us"
+ }
+}
+
+#>spw_door_edge_q
+?["What would a causal diagram lose if each arrow became a bias edge?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Direction and rank survive the move, while magnitude and the independence assumptions an analyst needs do not, so each edge stays a claim rather than an estimate."
+ !probe{ "write a three-node diagram you know as subject-first edges and list what had no place to go" =id[p_doors_edge_dag] =kind[build] }
+ breaks: "a causal arrow licenses an intervention under stated assumptions, while a bias edge only ranks a lean along one axis"
+ ~"./edge.spw#spw_door_edge_read" ~#neighbor(nearest)
+}

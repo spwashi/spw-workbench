@@ -1,0 +1,200 @@
+# Biological Clocks
+#
+# A period ladder of living clocks, from tides to days to months to years, described as biology and kept free of any timing advice.
+
+#>development_ecology_clocks
+#:layer #!reference
+#:domain #!development_ecology
+#:form #!calendar
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bone
+#:season #!reflection
+
+^"emit"{
+ ~#title: "Biological Clocks"
+ ~#claim: "Living things keep time with internal oscillators that run near a day, a tide, or a year, and the world outside resets them."
+ ~#proof: "A three-protein clock running in a test tube from Nakajima and colleagues 2005; the period gene from Konopka and Benzer 1971; the human pacemaker period from Czeisler and colleagues 1999."
+ ~#door: "Climb the ladder from tide to year, then watch a bean plant fold its leaves at night."
+ ~#audience: "curious readers and biology students"
+ continuity: "Biological Clocks | run near a day"
+ cold_open: "Inside cells, small clocks run near a day, near a tide, or near a year, and the world keeps nudging them true."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/physiological-development/circadian-and-metabolic-resilience.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ revision_2026_10_03: "r6 redated the r4 fact-check to 2026-10-02, the day its sources were read; a singleton concept tag was swapped for a recurring one where the fit is real: circadian_clock became oscillator"
+ corrections: #[
+  "the raw claim that plain water fails to hydrate is false and was dropped (raw line 55)",
+  "raw guidance on morning sunlight and evening light was ambiguous and was advice; this surface gives no light, sleep, or meal timing guidance (raw lines 17 and 62)",
+  "raw metabolic, mitochondrial, and sleep-clearance claims were outside this ladder and unsourced, and were dropped",
+  "the raw file is quarantined; only its circadian topic informed this ladder, and every claim here comes from a named source",
+  "fact-check: the SCN transplant result was attributed to rats; Ralph and colleagues did it in golden hamsters with the short-period tau mutant"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/plants-ecology-care.spw#q_eco_clock" ]
+ analog: [ ~"../../season/season-arc.spw#season_arc" ]
+ see: [ ~"../plants/horticultural-science.spw#plant_science_horticulture_night_length", ~"./sensitive-periods.spw#development_ecology_sensitive_periods" ]
+}
+
+^["concepts"]{
+ primary: [ #oscillator, #photoperiodism, #entrainment ]
+ transfers: [ #cadence, #phenology ]
+ tensions: [ #free_running_period ]
+}
+
+^["scope"]{
+ #>development_ecology_clocks_guard
+ ^["guard"]{
+  #:valence #!honk
+  warning: "clock biology here describes organisms; it is no guide to when a person should sleep, eat, drink, or seek light"
+ }
+ what: "how organisms keep time, described at the level of experiments and mechanisms"
+ not_advice: "nothing here is guidance on sleep, light exposure, meal timing, shift work, or jet lag"
+ where_to_ask: "persistent sleep trouble belongs with a physician or a sleep clinic"
+}
+
+^["ladder"]{
+ #>development_ecology_clocks_tidal
+ ^["circatidal"]{
+  #>development_ecology_clocks_eurydice
+  ^["separate_tidal_clock"]{
+   #:claim #!emerging
+   statement: "In the shore isopod Eurydice pulchra, treatments that disrupted the circadian clock left the tidal swimming rhythm running, so the two clocks can be separated."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_zhang_2013"
+   ^["limits"]{
+    holds: "one crustacean species in the laboratory"
+    fails: "the molecular parts of tidal clocks are still being identified across species"
+   }
+  }
+  period: "about 12.4 hours, the principal lunar tide"
+  reads: %[eco.clock.m2_tide_h]
+ }
+ #>development_ecology_clocks_daily
+ ^["circadian"]{
+  #>development_ecology_clocks_kai
+  ^["test_tube_clock"]{
+   #:claim #!settled
+   statement: "Three cyanobacterial proteins, KaiA, KaiB, and KaiC, mixed with ATP in a test tube cycle KaiC phosphorylation with a period near one day."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_nakajima_2005"
+   ~#say(a clock made of three proteins and fuel)
+  }
+  #>development_ecology_clocks_period_gene
+  ^["period_gene"]{
+   #:claim #!settled
+   statement: "Konopka and Benzer found fruit fly mutants with short, long, and absent daily rhythms, all mapping to one gene they named period."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_konopka_benzer_1971"
+  }
+  #>development_ecology_clocks_scn
+  ^["master_pacemaker"]{
+   #:claim #!settled
+   statement: "Lesions of the suprachiasmatic nucleus abolish daily rhythms in rats, and in hamsters, transplanted SCN tissue restores rhythms that run at the donor's period."
+   sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_stephan_zucker_1972", ~"../../registries/sources/plants-ecology-care.spw#src_eco_moore_eichler_1972", ~"../../registries/sources/plants-ecology-care.spw#src_eco_ralph_1990" ]
+  }
+  #>development_ecology_clocks_human_tau
+  ^["human_period"]{
+   #:claim #!settled
+   statement: "Measured away from daily light cues, the human pacemaker runs slightly longer than a day on average, so light each day resets it."
+   reads: %[eco.clock.human_tau_h]
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_czeisler_1999"
+  }
+  #>development_ecology_clocks_leaves
+  ^["sleeping_leaves"]{
+   #:claim #!settled
+   statement: "Bean and Mimosa leaves rise and fold on a daily rhythm that continues for days in constant conditions, a classic sign that the clock is internal."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_taiz_2015"
+   ~#(de Mairan reported the persisting Mimosa rhythm in darkness in 1729)
+  }
+  period: "near 24 hours, set daily by light and temperature"
+ }
+ #>development_ecology_clocks_fortnight
+ ^["spring_neap"]{
+  #>development_ecology_clocks_spring_tides
+  ^["spring_tides"]{
+   #:claim #!settled
+   statement: "Spring tides come twice each lunar month, when sun and moon pull in line; shore organisms that spawn or feed by the tide meet this fortnightly beat."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_pugh_1987"
+  }
+  period: "about half a synodic month"
+  reads: %[season.calendar.synodic_month_days]
+ }
+ #>development_ecology_clocks_yearly
+ ^["circannual"]{
+  #>development_ecology_clocks_photoperiodism
+  ^["photoperiodism"]{
+   #:claim #!settled
+   statement: "Garner and Allard showed in 1920 that plants time flowering by day length; many birds and mammals also time breeding and molt by photoperiod."
+   sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_garner_allard_1920", ~"../../registries/sources/plants-ecology-care.spw#src_eco_gwinner_1986" ]
+  }
+  #>development_ecology_clocks_gwinner
+  ^["endogenous_year"]{
+   #:claim #!settled
+   statement: "Warblers kept for years under unchanging day length still cycled through molt and migratory restlessness, with periods drifting away from exactly one year."
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_gwinner_1986"
+  }
+  period: "near one year"
+  reads: %[season.calendar.tropical_year_days]
+ }
+ cadence: << "tide, about half a day" ; "day" ; "spring and neap tides, about a fortnight" ; "month" ; "year" >>
+}
+
+^["calendar"]{
+ #>development_ecology_clocks_october
+ ^["lengthening_nights"]{
+  when: "from about 1 October to the winter solstice"
+  what: "nights lengthen; short-day plants set flowers and many temperate animals shift toward winter states"
+  status: "typical; the date of each response varies by species, latitude, and year"
+  link: ~"../plants/horticultural-science.spw#plant_science_horticulture_short_days"
+ }
+ ^["solstice"]{ when: "21 or 22 December", what: "longest night; day length begins to grow again", status: "fixed by astronomy, verify the exact instant" }
+ window: "Thu 2026-10-01 to Mon 2027-01-04, temperate Northern Hemisphere"
+}
+
+^["try"]{
+ #>development_ecology_clocks_try_leaves
+ ^["bean_leaf_diary"]{
+  materials: [ "a bean seedling or a prayer plant", "a phone camera", "a notebook" ]
+  steps: << "photograph the leaves at morning, noon, evening, and night" ; "note the angle of one leaf each time" ; "repeat for three days" ; "move the plant to a dim room with steady light and keep watching" >>
+  time: .{ n: 5, unit: "minutes per check over three days" }
+  safety: "none worth naming beyond keeping houseplants away from pets that chew them"
+  shows: ~"./biological-clocks.spw#development_ecology_clocks_leaves"
+ }
+}
+
+#>development_ecology_clocks_tidal_q
+?["Why would a tidal clock use different parts from the daily clock?"]{
+ #:depth #!physical ~#lens(bodily rhythm)
+ #:claim #!speculative
+ ~#hypothesis: "Tides drift against the solar day by about fifty minutes each day, so a separate oscillator should track them better than any gearing of the daily clock."
+ !probe{ "compare tidal and daily rhythm persistence under shifted tide tables in shore animals" =id[p_eco_clocks_tidal] =kind[lit] }
+ $%[eco.clock.m2_tide_h]
+ ~"./biological-clocks.spw#development_ecology_clocks_eurydice" ~#neighbor(nearest)
+}
+
+#>development_ecology_clocks_season_q
+?["Does a production season have anything like a free-running period?"]{
+ #:depth #!social ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "Without outside deadlines, a maker's cycle of start, push, and rest drifts longer than its calendar slot, the way a free-running clock drifts longer than a day."
+ !probe{ "a maker keeps their own start and rest log across one season without fixed deadlines" =id[p_eco_clocks_season] =kind[field] }
+ $%[eco.clock.human_tau_h, season.calendar.tropical_year_days]
+ breaks: "a production calendar is set by institutions and choice, while a free-running clock is an oscillator in cells"
+ ~"../../season/season-arc.spw#season_arc" ~#neighbor(nearest)
+}

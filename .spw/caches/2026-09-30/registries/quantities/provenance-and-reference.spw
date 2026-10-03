@@ -11,17 +11,31 @@
 #:valence #!bone
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
- evidence: #[ "raw counts computed with git show at commit 229aedcf and sha256 per path", "migration counts tallied from the plan v2 migration rows" ]
+ evidence: #[ "raw counts computed with git show at commit 229aedcf and sha256 per path", "migration counts tallied from the plan v2 migration rows", "gap cells counted from the plan v2 tree on 2026-10-02 with the form mapping stated in the gap table" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "invented-effect count moved to verify; round-two and keep cells reworded to match the record"
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r7"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "Encyclopedie volume cells now cite the ARTFL project for the folio; Darnton covers the later quarto and octavo editions"
+  }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ status_legend: "settled cells were counted or read from the linked source; verify cells hold a reported value that must be checked against the source table before use"
 }
 
 ^["family"]{
@@ -35,9 +49,10 @@
  ^["migration"]{ id: prov_migration, identifiers: #[ prov.migration ] }
  ^["review"]{ id: prov_review, identifiers: #[ prov.review ] }
  ^["plan"]{ id: prov_plan, identifiers: #[ prov.plan ] }
+ ^["gap"]{ id: prov_gap, identifiers: #[ prov.gap ] }
  ^["reference"]{
   id: prov_reference
-  identifiers: #[ prov.yongle, prov.encyclopedie, prov.luhmann, prov.mendeleev, prov.dcmes, prov.oais, prov.bm25, prov.oa ]
+  identifiers: #[ prov.yongle, prov.encyclopedie, prov.luhmann, prov.mendeleev, prov.dcmes, prov.oais, prov.bm25, prov.oa, prov.ddc, prov.wilkins, prov.llull ]
  }
 }
 
@@ -74,7 +89,7 @@
  %prov.migration.keep_count{
   value: 83
   unit: "file"
-  at: "raw paths the plan keeps under a new home, the shelf index row included"
+  at: "raw paths the plan migration marks keep, the shelf index included; the manifest writes that row as out of scope, so 82 keep rows appear there"
   abs: 0
   src: ~"../sources/provenance-and-reference.spw#src_prov_plan_v2"
   status: #settled
@@ -174,15 +189,15 @@
  %prov.review.r1_invented_effect_count{
   value: 49
   unit: "claim"
-  at: "invented effect sizes in round-one wonder hypotheses, reviewer estimate"
+  at: "invented effect sizes in round-one wonder hypotheses; the scorecard writes about 49, a reviewer estimate, not a recount"
   abs: 5
   src: ~"../sources/provenance-and-reference.spw#src_prov_scorecard"
-  status: #settled
+  status: #verify
  }
  %prov.review.r2_file_count{
   value: 52
   unit: "file"
-  at: "new files reviewed in round two, live snapshot at 13:28"
+  at: "files the 13:28 round-two snapshot held beyond round one, as the scorecard header counts them; the shelf at 229aedcf holds 55 paths in the round-two folders"
   abs: 0
   src: ~"../sources/provenance-and-reference.spw#src_prov_scorecard"
   status: #settled
@@ -209,6 +224,42 @@
  }
 }
 
+#>q_prov_gap
+^"gap"{
+ %prov.gap.class_form_cell_count{
+  value: 90
+  unit: "cell"
+  at: "nine subject classes times ten content forms in the plan v2 tree; index, registry, trail, and panel forms left out"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_plan_v2"
+  status: #settled
+ }
+ %prov.gap.class_form_empty_count{
+  value: 17
+  unit: "cell"
+  at: "class and form cells with no planned file in the plan v2 tree"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_plan_v2"
+  status: #settled
+ }
+ %prov.gap.class_level_cell_count{
+  value: 45
+  unit: "cell"
+  at: "nine subject classes times five rungs in the plan v2 tree"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_plan_v2"
+  status: #settled
+ }
+ %prov.gap.class_level_empty_count{
+  value: 8
+  unit: "cell"
+  at: "class and rung cells with no planned file in the plan v2 tree"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_plan_v2"
+  status: #settled
+ }
+}
+
 #>q_prov_reference
 ^"reference"{
  %prov.yongle.volume_count{
@@ -222,17 +273,17 @@
  %prov.encyclopedie.text_volume_count{
   value: 17
   unit: "volume"
-  at: "Encyclopedie text volumes, 1751 to 1765"
+  at: "text volumes of the folio Encyclopedie, which appeared with its plates between 1751 and 1772"
   abs: 0
-  src: ~"../sources/provenance-and-reference.spw#src_prov_darnton_1979"
+  src: ~"../sources/provenance-and-reference.spw#src_prov_artfl_encyclopedie"
   status: #settled
  }
  %prov.encyclopedie.plate_volume_count{
   value: 11
   unit: "volume"
-  at: "Encyclopedie plate volumes, 1762 to 1772"
+  at: "plate volumes of the folio Encyclopedie, which appeared with its text between 1751 and 1772"
   abs: 0
-  src: ~"../sources/provenance-and-reference.spw#src_prov_darnton_1979"
+  src: ~"../sources/provenance-and-reference.spw#src_prov_artfl_encyclopedie"
   status: #settled
  }
  %prov.luhmann.card_count{
@@ -297,7 +348,7 @@
   at: "DOAJ journals charging no APC, September 2020 snapshot"
   abs: 0
   src: ~"../sources/provenance-and-reference.spw#src_prov_bosman_2021"
-  status: #settled
+  status: #verify
  }
  %prov.oa.doaj_journal_count{
   value: 14020
@@ -305,6 +356,30 @@
   at: "DOAJ journals in the same September 2020 snapshot"
   abs: 0
   src: ~"../sources/provenance-and-reference.spw#src_prov_bosman_2021"
+  status: #verify
+ }
+ %prov.ddc.main_class_count{
+  value: 10
+  unit: "class"
+  at: "Dewey Decimal Classification main classes, 000 to 900, since the 1876 edition"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_dewey_1876"
+  status: #settled
+ }
+ %prov.wilkins.genus_count{
+  value: 40
+  unit: "genus"
+  at: "top divisions of the tables in the 1668 Essay towards a Real Character"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_wilkins_1668"
+  status: #settled
+ }
+ %prov.llull.alphabet_letter_count{
+  value: 9
+  unit: "letter"
+  at: "letters B to K of the alphabet in the ternary phase of the Art, from the Ars brevis of 1308"
+  abs: 0
+  src: ~"../sources/provenance-and-reference.spw#src_prov_bonner_2007"
   status: #settled
  }
 }

@@ -1,0 +1,295 @@
+# Sources: Spw Contraptions
+#
+# Bibliography anchors for the contraptions bench: repository code and canon pinned to a commit, and the published works each instrument borrows its method from.
+
+#>registry_src_spw_contraptions
+#:layer #!reference
+#:domain #!registry
+#:form #!bibliography
+#:level #!mixed
+#:review #!spot_checked
+#:valence #!bone
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #partial }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ checked: "journal entries marked crossref were matched against Crossref metadata on 2026-10-02; web entries were fetched that day; books marked writer come from the writer and keep this registry at spot_checked"
+ code_pin: "code and canon entries quote path:line at commit 1aa1dc23; line numbers drift with edits, so recheck them against that commit"
+ reuse: "works already held by another registry are cited there, not copied: Noether, the SI Brochure, International Tables volume A, Reynolds, Scerri, Grimm, Verner, Munkres, Plofker, PREMIS, FIPS 180-4, Salton, Sakurai, Goldstein, Seborg"
+ added: "on 2026-10-03 eleven works were added for the second wave of contraptions; journal entries were matched against Crossref and books against Open Library before entry"
+ corrections: #[
+  "the Leipzig Glossing Rules entry now records that the rules are the February 2008 revision inside a document last changed 31 May 2015, and that the Tagalog infix gloss there is ACTFOC",
+  "the Grunbaum entry now carries its pages and the count it reports, read from the fetched article text on 2026-10-03",
+  "the Met Office, Media Queries, and CGPM entries were fetched again on 2026-10-03 and their quoted contents rechecked"
+ ]
+ groups: #[ repository, dimension_and_symmetry, graphs_and_order, notation_and_reference, numbers_and_automata ]
+}
+
+^["repository"]{
+ #>src_contrap_code_graph
+ ^["code_graph"]{ title: "Seed directed-graph probes", cites: "packages/spw-seed/src/math/graph.ts:26,47,76,125,201", commit: "1aa1dc23", kind: #code }
+ #>src_contrap_code_equation
+ ^["code_equation"]{ title: "Seed equation probes", cites: "packages/spw-seed/src/math/equation.ts:71,104,140", commit: "1aa1dc23", kind: #code }
+ #>src_contrap_code_field
+ ^["code_field"]{ title: "Seed field model", cites: "packages/spw-seed/src/math/field.ts:56,64,75,250,274", commit: "1aa1dc23", kind: #code }
+ #>src_contrap_code_loop
+ ^["code_loop"]{ title: "Seed loop and orbit probes", cites: "packages/spw-seed/src/math/loop.ts:94,107,122", commit: "1aa1dc23", kind: #code }
+ #>src_contrap_code_read_bias
+ ^["code_read_bias"]{ title: "Bias edge reader", cites: "packages/spw-seed/src/canonical/read-bias.ts:102-117", commit: "1aa1dc23", kind: #code }
+ #>src_contrap_code_gaps
+ ^["code_gaps"]{ title: "Lexical gap classes", cites: "packages/spw-seed/src/lexer/gaps.ts:11-17", commit: "1aa1dc23", kind: #code }
+ #>src_contrap_code_cli
+ ^["code_cli"]{ title: "Command registry for inspect, fingerprint, select, and beat", cites: "packages/spw-cli/src/commands.ts:277,284,330,420", commit: "1aa1dc23", kind: #code }
+ #>src_contrap_code_gate
+ ^["code_gate"]{ title: "Cut gate handle checks", cites: "scripts/analyzers/spw-cut-gate.ts:220-225,360", commit: "1aa1dc23", kind: #code }
+ #>src_contrap_code_measure
+ ^["code_measure"]{ title: "Measure context loader", cites: "packages/spw-seed/src/canonical/measure-protocol.ts:441", commit: "1aa1dc23", kind: #code }
+ #>src_contrap_code_interpreter
+ ^["code_interpreter"]{
+  title: "Runtime interpreter entry", cites: "packages/spw-runtime/src/interpreter/interpreter.ts:363-395"
+  commit: "1aa1dc23", kind: #code
+ }
+ #>src_contrap_parse_runs
+ ^["parse_runs"]{
+  title: "Parser observations for the contraptions bench"
+  cites: "parse() from packages/spw-seed/src/index.ts, rerunnable with spw fingerprint --expr"
+  commit: "1aa1dc23", at: "2026-10-02", kind: #observation
+  note: "each observation names its input string; rerun it before trusting it at a later commit"
+ }
+ #>src_contrap_canon_register_geometry
+ ^["canon_register_geometry"]{ title: "Register geometry: group views and confluence", cites: "docs/theory/spw/register-geometry.spw:104-132", commit: "1aa1dc23", kind: #canon }
+ #>src_contrap_canon_wonder_calculus
+ ^["canon_wonder_calculus"]{ title: "Wonder calculus: complement law", cites: "docs/library/spw/wonder-calculus.spw:28-32", commit: "1aa1dc23", kind: #canon }
+ #>src_contrap_canon_operator_atlas
+ ^["canon_operator_atlas"]{ title: "Operator atlas: containers and transformers", cites: "docs/theory/spw/operator-atlas.spw:25-41", commit: "1aa1dc23", kind: #canon }
+ #>src_contrap_canon_operators
+ ^["canon_operators"]{ title: "Interpretive operator names", cites: "docs/theory/spw/operators.spw:28-42", commit: "1aa1dc23", kind: #canon }
+ #>src_contrap_canon_flow_sigils
+ ^["canon_flow_sigils"]{ title: "Flow protocol sigils: bias role, tight and spaced composition, schedule separators", cites: "docs/theory/spw/flow-protocol-sigils.spw:37,46-48,66", commit: "1aa1dc23", kind: #canon }
+ #>src_contrap_canon_bias_product
+ ^["canon_bias_product"]{ title: "Bias product slots: valence as sign", cites: ".spw/registries/bias-product.spw:19", commit: "1aa1dc23", kind: #canon }
+ #>src_contrap_canon_dimensional_axes
+ ^["canon_dimensional_axes"]{ title: "Dimensional axes: play intrigue as holes over slots", cites: "docs/theory/spw/dimensional-axes.spw:136", commit: "1aa1dc23", kind: #canon }
+ #>src_contrap_canon_math_modeling
+ ^["canon_math_modeling"]{ title: "Math modeling notation bridge: cycle law", cites: "docs/theory/spw/math-modeling.spw:62", commit: "1aa1dc23", kind: #canon }
+ #>src_contrap_canon_operational_field
+ ^["canon_operational_field"]{ title: "Operational field law: subjective may rank and disclose only", cites: "docs/theory/spw/operational-field.spw:71", commit: "1aa1dc23", kind: #canon }
+}
+
+^["dimension_and_symmetry"]{
+ #>src_contrap_buckingham_1914
+ ^["buckingham_1914"]{ title: "On Physically Similar Systems; Illustrations of the Use of Dimensional Equations", authors: "E. Buckingham", year: 1914, venue: "Physical Review 4(4):345-376", checked: "crossref", kind: #article }
+ #>src_contrap_bridgman_1922
+ ^["bridgman_1922"]{
+  title: "Dimensional Analysis", authors: "P. W. Bridgman", year: 1922, publisher: "Yale University Press", checked: "writer", kind: #monograph
+ }
+ #>src_contrap_blakley_1982
+ ^["blakley_1982"]{ title: "Chemical equation balancing: A general method which is quick, simple, and has unexpected applications", authors: "G. R. Blakley", year: 1982, venue: "Journal of Chemical Education 59(9):728", checked: "crossref", kind: #article }
+ #>src_contrap_nist_sp811_2008
+ ^["nist_sp811_2008"]{ title: "Guide for the Use of the International System of Units (SI), NIST Special Publication 811", authors: "Ambler Thompson; Barry N. Taylor", year: 2008, publisher: "National Institute of Standards and Technology", checked: "writer", kind: #standard }
+ #>src_contrap_kosmann_schwarzbach_2011
+ ^["kosmann_schwarzbach_2011"]{
+  title: "The Noether Theorems: Invariance and Conservation Laws in the Twentieth Century", authors: "Yvette Kosmann-Schwarzbach", year: 2011, publisher: "Springer", checked: "writer", kind: #monograph
+ }
+ #>src_contrap_itc_vol_e_2010
+ ^["itc_vol_e_2010"]{
+  title: "International Tables for Crystallography, Volume E: Subperiodic Groups", editor: "V. Kopsky; D. B. Litvin", edition: "2nd", year: 2010, publisher: "International Union of Crystallography; Wiley", checked: "writer"
+  kind: #handbook
+ }
+ #>src_contrap_polya_1924
+ ^["polya_1924"]{ title: "Ueber die Analogie der Kristallsymmetrie in der Ebene", authors: "G. Polya", year: 1924, venue: "Zeitschrift fuer Kristallographie 60:278-282", checked: "crossref", kind: #article }
+ #>src_contrap_grunbaum_2006
+ ^["grunbaum_2006"]{
+  title: "What Symmetry Groups Are Present in the Alhambra?", authors: "Branko Grunbaum", year: 2006, venue: "Notices of the American Mathematical Society 53(6):670-673"
+  checked: "fetched and read 2026-10-03: the author found the twelve plane groups Mueller listed and one she missed", kind: #article
+ }
+ #>src_contrap_montesinos_1987
+ ^["montesinos_1987"]{
+  title: "Classical Tessellations and Three-Manifolds", authors: "Jose Maria Montesinos-Amilibia", year: 1987, publisher: "Springer, Universitext"
+  checked: "crossref chapter records", kind: #monograph
+ }
+ #>src_contrap_wu_1957
+ ^["wu_1957"]{ title: "Experimental Test of Parity Conservation in Beta Decay", authors: "C. S. Wu; E. Ambler; R. W. Hayward; D. D. Hoppes; R. P. Hudson", year: 1957, venue: "Physical Review 105(4):1413-1415", checked: "crossref", kind: #article }
+ #>src_contrap_lee_yang_1956
+ ^["lee_yang_1956"]{ title: "Question of Parity Conservation in Weak Interactions", authors: "T. D. Lee; C. N. Yang", year: 1956, venue: "Physical Review 104(1):254-258", checked: "crossref", kind: #article }
+}
+
+^["graphs_and_order"]{
+ #>src_contrap_thomas_1981
+ ^["thomas_1981"]{ title: "On the Relation Between the Logical Structure of Systems and Their Ability to Generate Multiple Steady States or Sustained Oscillations", authors: "R. Thomas", year: 1981, venue: "Springer Series in Synergetics 9:180-193", checked: "crossref", kind: #chapter }
+ #>src_contrap_snoussi_1998
+ ^["snoussi_1998"]{ title: "Necessary Conditions for Multistationarity and Stable Periodicity", authors: "El Houssine Snoussi", year: 1998, venue: "Journal of Biological Systems 6(1):3-9", checked: "crossref", kind: #article }
+ #>src_contrap_gouze_1998
+ ^["gouze_1998"]{ title: "Positive and Negative Circuits in Dynamical Systems", authors: "Jean-Luc Gouze", year: 1998, venue: "Journal of Biological Systems 6(1):11-15", checked: "crossref", kind: #article }
+ #>src_contrap_soule_2003
+ ^["soule_2003"]{ title: "Graphic Requirements for Multistationarity", authors: "Christophe Soule", year: 2003, venue: "ComPlexUs 1(3):123-133", checked: "crossref", kind: #article }
+ #>src_contrap_johnson_1975
+ ^["johnson_1975"]{ title: "Finding All the Elementary Circuits of a Directed Graph", authors: "Donald B. Johnson", year: 1975, venue: "SIAM Journal on Computing 4(1):77-84", checked: "crossref", kind: #article }
+ #>src_contrap_sterman_2000
+ ^["sterman_2000"]{ title: "Business Dynamics: Systems Thinking and Modeling for a Complex World", authors: "John D. Sterman", year: 2000, publisher: "Irwin McGraw-Hill", checked: "writer", kind: #textbook }
+ #>src_contrap_arijon_1976
+ ^["arijon_1976"]{
+  title: "Grammar of the Film Language", authors: "Daniel Arijon", year: 1976, publisher: "Focal Press", checked: "writer", kind: #monograph
+ }
+ #>src_contrap_brightwell_winkler_1991
+ ^["brightwell_winkler_1991"]{ title: "Counting linear extensions", authors: "Graham Brightwell; Peter Winkler", year: 1991, venue: "Order 8(3):225-242", checked: "crossref", kind: #article }
+ #>src_contrap_kiparsky_1968
+ ^["kiparsky_1968"]{ title: "Linguistic Universals and Linguistic Change", authors: "Paul Kiparsky", year: 1968, venue: "In E. Bach and R. T. Harms (eds.), Universals in Linguistic Theory, Holt Rinehart and Winston, 170-202", checked: "writer", kind: #chapter }
+ #>src_contrap_pearl_2009
+ ^["pearl_2009"]{
+  title: "Causality: Models, Reasoning, and Inference", authors: "Judea Pearl", edition: "2nd", year: 2009, publisher: "Cambridge University Press", checked: "writer"
+  kind: #monograph
+ }
+ #>src_contrap_angrist_krueger_1991
+ ^["angrist_krueger_1991"]{ title: "Does Compulsory School Attendance Affect Schooling and Earnings?", authors: "Joshua D. Angrist; Alan B. Krueger", year: 1991, venue: "Quarterly Journal of Economics 106(4):979-1014", checked: "crossref", kind: #article }
+ #>src_contrap_bound_1995
+ ^["bound_1995"]{ title: "Problems with Instrumental Variables Estimation when the Correlation between the Instruments and the Endogenous Explanatory Variable is Weak", authors: "John Bound; David A. Jaeger; Regina M. Baker", year: 1995, venue: "Journal of the American Statistical Association 90(430):443-450", checked: "crossref", kind: #article }
+ #>src_contrap_bruner_1960
+ ^["bruner_1960"]{
+  title: "The Process of Education", authors: "Jerome S. Bruner", year: 1960, publisher: "Harvard University Press", checked: "writer", kind: #monograph
+ }
+ #>src_contrap_trotter_1959
+ ^["trotter_1959"]{ title: "On the product of semi-groups of operators", authors: "H. F. Trotter", year: 1959, venue: "Proceedings of the American Mathematical Society 10(4):545-551", checked: "crossref", kind: #article }
+ #>src_contrap_strang_1968
+ ^["strang_1968"]{ title: "On the Construction and Comparison of Difference Schemes", authors: "Gilbert Strang", year: 1968, venue: "SIAM Journal on Numerical Analysis 5(3):506-517", checked: "crossref", kind: #article }
+ #>src_contrap_verlet_1967
+ ^["verlet_1967"]{ title: "Computer Experiments on Classical Fluids. I. Thermodynamical Properties of Lennard-Jones Molecules", authors: "Loup Verlet", year: 1967, venue: "Physical Review 159(1):98-103", checked: "crossref", kind: #article }
+ #>src_contrap_hairer_lubich_wanner_2006
+ ^["hairer_lubich_wanner_2006"]{
+  title: "Geometric Numerical Integration: Structure-Preserving Algorithms for Ordinary Differential Equations", authors: "Ernst Hairer; Christian Lubich; Gerhard Wanner", edition: "2nd", year: 2006, publisher: "Springer", checked: "writer"
+  kind: #monograph
+ }
+ #>src_contrap_hughes_2013
+ ^["hughes_2013"]{
+  title: "Computer Graphics: Principles and Practice", authors: "John F. Hughes; Andries van Dam; Morgan McGuire; David F. Sklar; James D. Foley; Steven K. Feiner; Kurt Akeley", edition: "3rd", year: 2013, publisher: "Addison-Wesley", checked: "writer"
+  kind: #textbook
+ }
+ #>src_contrap_steen_seebach_1978
+ ^["steen_seebach_1978"]{
+  title: "Counterexamples in Topology", authors: "Lynn Arthur Steen; J. Arthur Seebach Jr.", edition: "2nd", year: 1978, publisher: "Springer-Verlag", checked: "writer"
+  kind: #monograph
+ }
+ #>src_contrap_sorgenfrey_1947
+ ^["sorgenfrey_1947"]{ title: "On the topological product of paracompact spaces", authors: "R. H. Sorgenfrey", year: 1947, venue: "Bulletin of the American Mathematical Society 53(6):631-632", checked: "crossref", kind: #article }
+ #>src_contrap_dowling_gallier_1984
+ ^["dowling_gallier_1984"]{ title: "Linear-time algorithms for testing the satisfiability of propositional Horn formulae", authors: "William F. Dowling; Jean H. Gallier", year: 1984, venue: "Journal of Logic Programming 1(3):267-284", checked: "crossref", kind: #article }
+ #>src_contrap_pi_base
+ ^["pi_base"]{ title: "pi-Base: a community database of topological counterexamples", publisher: "the pi-Base project", url: "https://topology.pi-base.org", accessed: "2026-10-02", checked: "writer", kind: #web }
+}
+
+^["notation_and_reference"]{
+ #>src_contrap_wertheimer_1923
+ ^["wertheimer_1923"]{ title: "Untersuchungen zur Lehre von der Gestalt II", authors: "Max Wertheimer", year: 1923, venue: "Psychologische Forschung 4(1):301-350", checked: "crossref", kind: #article }
+ #>src_contrap_kessler_1963
+ ^["kessler_1963"]{ title: "Bibliographic coupling between scientific papers", authors: "M. M. Kessler", year: 1963, venue: "American Documentation 14(1):10-25", checked: "crossref", kind: #article }
+ #>src_contrap_small_1973
+ ^["small_1973"]{ title: "Co-citation in the scientific literature: A new measure of the relationship between two documents", authors: "Henry Small", year: 1973, venue: "Journal of the American Society for Information Science 24(4):265-269", checked: "crossref", kind: #article }
+ #>src_contrap_marc_authority
+ ^["marc_authority"]{ title: "MARC 21 Format for Authority Data", publisher: "Library of Congress, Network Development and MARC Standards Office", edition: "1999 edition with later updates", year: 1999, checked: "writer", kind: #standard }
+ #>src_contrap_smpte_12_1_2014
+ ^["smpte_12_1_2014"]{ title: "Time and Control Code, ST 12-1:2014", publisher: "Society of Motion Picture and Television Engineers", year: 2014, checked: "writer", kind: #standard }
+ #>src_contrap_priest_1933
+ ^["priest_1933"]{ title: "A Proposed Scale for Use in Specifying the Chromaticity of Incandescent Illuminants and Various Phases of Daylight", authors: "Irwin G. Priest", year: 1933, venue: "Journal of the Optical Society of America 23(2):41", checked: "crossref", kind: #article }
+ #>src_contrap_richards_1998
+ ^["richards_1998"]{
+  title: "Mapping Time: The Calendar and its History", authors: "E. G. Richards", year: 1998, publisher: "Oxford University Press", checked: "writer", kind: #monograph
+ }
+ #>src_contrap_cgpm_2022_res4
+ ^["cgpm_2022_res4"]{
+  title: "Resolution 4 of the 27th CGPM: On the use and future development of UTC", publisher: "Bureau International des Poids et Mesures", year: 2022, url: "https://www.bipm.org/en/cgpm-2022/resolution-4"
+  accessed: "2026-10-03", checked: "fetched: the maximum value for UT1 minus UTC will be increased in, or before, 2035", kind: #resolution
+ }
+ #>src_contrap_metoffice_beaufort
+ ^["metoffice_beaufort"]{ title: "Beaufort wind force scale", publisher: "Met Office", url: "https://weather.metoffice.gov.uk/guides/coast-and-sea/beaufort-scale", accessed: "2026-10-03", checked: "fetched; limits columns read in knots and in metres per second", kind: #web }
+ #>src_contrap_w3c_mq4
+ ^["w3c_mq4"]{
+  title: "Media Queries Level 4", publisher: "W3C", edition: "Candidate Recommendation Draft, 19 February 2026", year: 2026, url: "https://www.w3.org/TR/mediaqueries-4/", accessed: "2026-10-03"
+  checked: "fetched: the range section warns that fractional viewport widths can fall between min- and max- breakpoints", kind: #standard
+ }
+ #>src_contrap_stevens_1946
+ ^["stevens_1946"]{ title: "On the Theory of Scales of Measurement", authors: "S. S. Stevens", year: 1946, venue: "Science 103(2684):677-680", checked: "crossref", kind: #article }
+ #>src_contrap_einhorn_1970
+ ^["einhorn_1970"]{ title: "The use of nonlinear, noncompensatory models in decision making", authors: "Hillel J. Einhorn", year: 1970, venue: "Psychological Bulletin 73(3):221-230", checked: "crossref", kind: #article }
+ #>src_contrap_leipzig_2008
+ ^["leipzig_2008"]{
+  title: "The Leipzig Glossing Rules: Conventions for interlinear morpheme-by-morpheme glosses", authors: "Bernard Comrie; Martin Haspelmath; Balthasar Bickel", edition: "revised version of February 2008", year: 2008, publisher: "Max Planck Institute for Evolutionary Anthropology and University of Leipzig", url: "https://www.eva.mpg.de/lingua/pdf/Glossing-Rules.pdf"
+  accessed: "2026-10-03", checked: "fetched and read: rules 1 to 10 with optional 2A, 4A to 4E, and 5A; document last changed 31 May 2015", kind: #standard
+ }
+ #>src_contrap_lehmann_1982
+ ^["lehmann_1982"]{ title: "Directions for interlinear morphemic translations", authors: "Christian Lehmann", year: 1982, venue: "Folia Linguistica 16(1-4):199-224", checked: "crossref", kind: #article }
+ #>src_contrap_koessler_1928
+ ^["koessler_1928"]{
+  title: "Les faux amis, ou, Les trahisons du vocabulaire anglais: conseils aux traducteurs", authors: "Maxime Koessler; Jules Derocquigny", year: 1928, publisher: "Vuibert, Paris"
+  checked: "open library lists Koessler and Vuibert 1928; the co-author is from the writer", kind: #book
+ }
+ #>src_contrap_iso_c_2018
+ ^["iso_c_2018"]{
+  title: "ISO/IEC 9899:2018 Information technology, Programming languages, C", publisher: "International Organization for Standardization", year: 2018
+  locator: "section 6.10, where lparen is a left parenthesis not immediately preceded by white space", checked: "writer", kind: #standard
+ }
+ #>src_contrap_greenberg_1960
+ ^["greenberg_1960"]{ title: "A Quantitative Approach to the Morphological Typology of Language", authors: "Joseph H. Greenberg", year: 1960, venue: "International Journal of American Linguistics 26(3):178-194", checked: "crossref", kind: #article }
+ #>src_contrap_goksel_kerslake_2005
+ ^["goksel_kerslake_2005"]{
+  title: "Turkish: A Comprehensive Grammar", authors: "Asli Goksel; Celia Kerslake", year: 2005, publisher: "Routledge", checked: "writer"
+  kind: #reference_grammar
+ }
+ #>src_contrap_baerman_2010
+ ^["baerman_2010"]{
+  title: "Defective Paradigms: Missing Forms and What They Tell Us", editor: "Matthew Baerman; Greville G. Corbett; Dunstan Brown", year: 2010, publisher: "Oxford University Press for the British Academy", checked: "writer"
+  kind: #edited_volume
+ }
+ #>src_contrap_wilson_korn_2007
+ ^["wilson_korn_2007"]{ title: "Attention during Lectures: Beyond Ten Minutes", authors: "Karen Wilson; James H. Korn", year: 2007, venue: "Teaching of Psychology 34(2):85-89", checked: "crossref", kind: #article }
+ #>src_contrap_bradbury_2016
+ ^["bradbury_2016"]{ title: "Attention span during lectures: 8 seconds, 10 minutes, or more?", authors: "Neil A. Bradbury", year: 2016, venue: "Advances in Physiology Education 40(4):509-513", checked: "crossref", kind: #article }
+ #>src_contrap_robinson_goforth_2005
+ ^["robinson_goforth_2005"]{
+  title: "The Topology of the 2x2 Games: A New Periodic Table", authors: "David Robinson; David Goforth", year: 2005, publisher: "Routledge", checked: "crossref lists the Routledge record under 2004", kind: #monograph
+ }
+ #>src_contrap_bruns_2015
+ ^["bruns_2015"]{ title: "Names for Games: Locating 2 x 2 Games", authors: "Bryan Randolph Bruns", year: 2015, venue: "Games 6(4):495-520", checked: "crossref", kind: #article }
+}
+
+^["numbers_and_automata"]{
+ #>src_contrap_hardy_wright_2008
+ ^["hardy_wright_2008"]{
+  title: "An Introduction to the Theory of Numbers", authors: "G. H. Hardy; E. M. Wright; revised by D. R. Heath-Brown and J. H. Silverman", edition: "6th", year: 2008, publisher: "Oxford University Press", checked: "writer"
+  kind: #textbook
+ }
+ #>src_contrap_nicomachus_1926
+ ^["nicomachus_1926"]{ title: "Nicomachus of Gerasa: Introduction to Arithmetic", authors: "Nicomachus of Gerasa; translated by Martin Luther D'Ooge", year: 1926, publisher: "Macmillan", checked: "writer", kind: #primary }
+ #>src_contrap_martzloff_1997
+ ^["martzloff_1997"]{
+  title: "A History of Chinese Mathematics", authors: "Jean-Claude Martzloff", year: 1997, publisher: "Springer"
+  checked: "open library lists the Springer English edition; first published in French by Masson in 1988", kind: #monograph
+ }
+ #>src_contrap_lagarias_1985
+ ^["lagarias_1985"]{ title: "The 3x + 1 Problem and Its Generalizations", authors: "Jeffrey C. Lagarias", year: 1985, venue: "American Mathematical Monthly 92(1):3-23", checked: "crossref", kind: #article }
+ #>src_contrap_tao_2022
+ ^["tao_2022"]{ title: "Almost all orbits of the Collatz map attain almost bounded values", authors: "Terence Tao", year: 2022, venue: "Forum of Mathematics, Pi 10:e12", checked: "crossref", kind: #article }
+ #>src_contrap_barina_2025
+ ^["barina_2025"]{ title: "Improved verification limit for the convergence of the Collatz conjecture", authors: "David Barina", year: 2025, venue: "The Journal of Supercomputing 81(7):810", checked: "crossref, abstract read", kind: #article }
+ #>src_contrap_wolfram_1983
+ ^["wolfram_1983"]{ title: "Statistical mechanics of cellular automata", authors: "Stephen Wolfram", year: 1983, venue: "Reviews of Modern Physics 55(3):601-644", checked: "crossref", kind: #article }
+ #>src_contrap_martin_odlyzko_wolfram_1984
+ ^["martin_odlyzko_wolfram_1984"]{ title: "Algebraic properties of cellular automata", authors: "Olivier Martin; Andrew M. Odlyzko; Stephen Wolfram", year: 1984, venue: "Communications in Mathematical Physics 93(2):219-258", checked: "crossref", kind: #article }
+ #>src_contrap_wolfram_1986
+ ^["wolfram_1986"]{ title: "Random sequence generation by cellular automata", authors: "Stephen Wolfram", year: 1986, venue: "Advances in Applied Mathematics 7(2):123-169", checked: "crossref", kind: #article }
+ #>src_contrap_cook_2004
+ ^["cook_2004"]{ title: "Universality in Elementary Cellular Automata", authors: "Matthew Cook", year: 2004, venue: "Complex Systems 15(1):1-40", checked: "crossref", kind: #article }
+ #>src_contrap_von_neumann_1966
+ ^["von_neumann_1966"]{
+  title: "Theory of Self-Reproducing Automata", authors: "John von Neumann; edited and completed by Arthur W. Burks", year: 1966, publisher: "University of Illinois Press", checked: "writer", kind: #monograph
+ }
+}

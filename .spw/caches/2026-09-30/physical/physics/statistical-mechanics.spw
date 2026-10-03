@@ -1,0 +1,224 @@
+# Statistical Mechanics
+#
+# The canonical home for ensembles, partition functions, quantum gases, fluctuations, and simulation: how counting microscopic states yields temperature, pressure, and phase.
+
+#>physics_statmech
+#:layer #!reference
+#:domain #!physics
+#:form #!ledger
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Statistical Mechanics"
+ ~#claim: "By counting states, a partition function yields every equilibrium property, and temperature is defined by how entropy changes with energy, 1/T = dS/dE."
+ ~#proof: "Gibbs 1902 for the ensembles; Schroeder and Pathria for the derivations; Onsager 1944 and Metropolis 1953 for the exact and sampled results."
+ ~#door: "Do the photon arithmetic, then follow fluctuations into critical phenomena on the graduate ledger."
+ ~#audience: "upper-division students in physics, chemistry, and engineering"
+ continuity: "Statistical Mechanics | counting states"
+ cold_open: "Statistical mechanics gets temperature, pressure, and boiling points by counting states, and the sun pays for it in photons."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/thermodynamics/statistical-and-molecular-thermodynamics.spw", ".spw/caches/university-education/thermodynamics/taste.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "re-run after the 2026-10-03 fact-check fixes; no failing lines" }
+ }
+ corrections: #[
+  "1/T = dS/dE restored; the raw called temperature the rate of entropy increase with energy, which inverts the derivative",
+  "the Bose gas condition is mu at or below the lowest single-particle energy, which is zero only when that level is set to zero",
+  "the Kirkwood-Buff hypothesis claiming parameter-free accuracy was dropped; Kirkwood-Buff theory stays as a claim",
+  "the photon arithmetic from the raw taste file is kept as a try kit that reads registry cells",
+  "taste lines on entropy as a deity and on love and thought were dropped",
+  "fact-check 2026-10-03: the r4 fact-check receipt was dated 2026-10-01, before the receipts it followed; it is re-dated 2026-10-02, the day that pass ran"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./classical-thermodynamics.spw#physics_thermo_classical" ]
+ feeds: [ ~"./graduate-topics.spw#physics_graduate_universality", ~"./nonequilibrium-and-information.spw#physics_nonequilibrium" ]
+ grounds: [ ~"../../registries/quantities/physical-sciences-and-image.spw#q_phys_statistical" ]
+ see: [ ~"../physical-glossary.spw#physical_term_phase_transition" ]
+}
+
+^["concepts"]{
+ primary: [ #entropy, #temperature, #partition_function ]
+ transfers: [ #fluctuation, #phase_diagram ]
+ tensions: [ #arrow_of_time ]
+}
+
+^["ensembles"]{
+ ^["microcanonical"]{
+  #>physics_statmech_boltzmann_entropy
+  ^["boltzmann_entropy"]{
+   #:claim #!settled
+   statement: "For an isolated system with fixed energy, volume, and particle number, entropy is S = k_B ln Omega, where Omega counts the accessible microstates."
+   reads: %[phys.const.k_b_mev_per_k]
+   source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_schroeder_2000"
+  }
+  #>physics_statmech_temperature
+  ^["temperature"]{
+   #:claim #!settled
+   statement: "Temperature is defined by 1/T = dS/dE at fixed volume and particle number, so a system whose entropy rises steeply with energy is cold."
+   source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_schroeder_2000"
+   ~#say(cold things gain the most entropy per joule)
+   ^["limits"]{
+    holds: "systems whose entropy rises with energy"
+    fails: "bounded spectra such as nuclear spins can reach states where entropy falls with energy, giving negative absolute temperatures"
+   }
+  }
+ }
+ ^["canonical"]{
+  #>physics_statmech_canonical
+  ^["boltzmann_factor"]{
+   #:claim #!settled
+   statement: "A system in contact with a reservoir at T occupies state i with probability exp(-E_i/k_B T)/Z, and the Helmholtz free energy is F = -k_B T ln Z."
+   source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_gibbs_1902"
+   detail: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_pathria_2011"
+  }
+ }
+ ^["grand_canonical"]{
+  #>physics_statmech_grand
+  ^["open_systems"]{
+   #:claim #!settled
+   statement: "When particles as well as energy can cross the boundary, the grand partition function sums over particle numbers too, and its logarithm times -k_B T is the grand potential, equal to -PV."
+   source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_pathria_2011"
+  }
+ }
+ #>physics_statmech_gibbs_paradox
+ ^["gibbs_paradox"]{
+  #:claim #!settled
+  statement: "Counting identical particles as distinguishable makes mixing two samples of the same gas raise entropy; dividing the count by N factorial removes that spurious entropy."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_pathria_2011"
+ }
+}
+
+^["molecules"]{
+ #>physics_statmech_factorization
+ ^["mode_factorization"]{
+  #:claim #!settled
+  statement: "For an ideal gas of molecules, the single-molecule partition function factors into translational, rotational, vibrational, and electronic parts, each with its own characteristic temperature."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_atkins_2018"
+  ^["parts"]{
+   translation: "q_trans = V over the cube of the thermal de Broglie wavelength"
+   rotation: "rigid rotor with a symmetry number; nuclear spin statistics split hydrogen into ortho and para forms"
+   vibration: "harmonic oscillator with zero-point energy; its heat capacity freezes out below the vibrational temperature"
+   electronic: "ground-state degeneracy plus any low-lying levels"
+  }
+ }
+}
+
+^["quantum_gases"]{
+ #>physics_statmech_quantum_statistics
+ ^["fermi_and_bose"]{
+  #:claim #!settled
+  statement: "Fermions obey Pauli exclusion and fill states up to the Fermi energy; bosons can share states, giving the Planck spectrum, the Debye T cubed heat capacity, and Bose-Einstein condensation."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_pathria_2011"
+  ^["limits"]{
+   holds: "ideal, non-interacting quantum gases"
+   fails: "for bosons the chemical potential must stay at or below the lowest single-particle energy, or occupations turn negative"
+  }
+ }
+ #>physics_statmech_photon_energy
+ ^["photon_mean_energy"]{
+  #:claim #!settled
+  statement: "In blackbody radiation the mean energy per photon is about 2.70 k_B T, so photon energy tracks the temperature of the emitter."
+  reads: %[phys.statmech.photon_mean_energy_kt]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_schroeder_2000"
+ }
+ #>physics_statmech_photon_budget
+ ^["earth_photon_budget"]{
+  #:claim #!settled
+  statement: "Sunlight arrives as photons set by a 5772 K surface and Earth sheds the same energy at about 255 K, so it emits roughly twenty infrared photons per absorbed solar photon."
+  reads: %[phys.statmech.sun_teff_k, phys.statmech.earth_teff_k]
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_schroeder_2000", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_pierrehumbert_2010" ]
+  ~#say(one warm photon in, about twenty cold ones out)
+  ^["limits"]{
+   holds: "as an order-of-magnitude budget using mean photon energies"
+   fails: "neither the absorbed sunlight nor Earth's emission is an exact blackbody, and part of the sunlight is reflected unchanged"
+  }
+ }
+}
+
+^["fluctuations"]{
+ #>physics_statmech_fluctuation_response
+ ^["fluctuation_response"]{
+  #:claim #!settled
+  statement: "In the canonical ensemble the energy variance equals k_B T squared times the heat capacity, and density fluctuations scale with the isothermal compressibility."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_pathria_2011"
+ }
+ #>physics_statmech_opalescence
+ ^["critical_opalescence"]{
+  #:claim #!settled
+  statement: "Near a liquid-gas critical point, density fluctuations grow to the scale of light wavelengths, and the fluid turns milky by scattering."
+  reads: %[phys.critical.water_tc_k, phys.critical.water_pc_mpa]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_kardar_2007"
+ }
+ #>physics_statmech_ising
+ ^["ising"]{
+  #:claim #!settled
+  statement: "The one-dimensional Ising chain has no ordered phase above zero temperature; Onsager solved the square lattice exactly in 1944, with a transition at about 2.269 J/k_B."
+  reads: %[phys.statmech.ising2d_tc_j_per_kb]
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_onsager_1944", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_pathria_2011" ]
+ }
+}
+
+^["liquids_and_simulation"]{
+ #>physics_statmech_metropolis
+ ^["metropolis"]{
+  #:claim #!settled
+  statement: "Metropolis, the two Rosenbluths, and the two Tellers showed in 1953 that sampling states with acceptance by the Boltzmann factor computes equilibrium averages without enumerating every state."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_metropolis_1953"
+  ~#(Arianna Rosenbluth wrote the first implementation of the algorithm)
+ }
+ #>physics_statmech_md
+ ^["molecular_dynamics"]{
+  #:claim #!settled
+  statement: "Molecular dynamics integrates Newton's equations, usually with velocity Verlet steps, and thermostats such as Nose-Hoover hold the temperature of the sampled ensemble."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_frenkel_smit_2002"
+ }
+ #>physics_statmech_kirkwood_buff
+ ^["kirkwood_buff"]{
+  #:claim #!settled
+  statement: "Kirkwood and Buff related integrals of pair correlation functions to compressibility and partial molar volumes, linking scattering or simulation data to solution thermodynamics."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_kirkwood_buff_1951"
+ }
+}
+
+^["try"]{
+ #>physics_statmech_try_photon_count
+ ^["photon_arithmetic"]{
+  materials: [ "a calculator", "the solar and Earth effective temperatures from the registry" ]
+  steps: << "divide the solar effective temperature by Earth's" ; "note that mean photon energy is the same multiple of k_B T for both" ; "read the ratio as infrared photons out per solar photon in" ; "say why more photons out means more entropy out" >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "arithmetic only; never look at the sun to check its temperature"
+  shows: ~"./statistical-mechanics.spw#physics_statmech_photon_budget"
+ }
+}
+
+#>physics_statmech_biosphere_q
+?["Does the entropy Earth exports set a ceiling on how much order life can build?"]{
+ #:depth #!physical ~#lens(energy budget)
+ #:claim #!speculative
+ ~#hypothesis: "The entropy export allowed by sunlight should exceed what the biosphere uses by a wide margin, so nutrients and capture efficiency, not the export, should limit living order."
+ !probe{ "compare Earth's radiative entropy export with estimates of biological free-energy capture" =id[p_phys_statmech_biosphere] =kind[calc] }
+ $%[phys.statmech.sun_teff_k, phys.statmech.earth_teff_k]
+ breaks: "an entropy budget bounds what is possible, not what organisms do; ecology needs rates, nutrients, and history"
+ ~"./statistical-mechanics.spw#physics_statmech_photon_budget" ~#neighbor(nearest)
+}

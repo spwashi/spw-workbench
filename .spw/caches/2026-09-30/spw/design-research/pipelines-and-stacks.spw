@@ -1,0 +1,243 @@
+# Pipelines and Stacks
+#
+# Where the value lands in the next step: pipe operators that fill the first or the last argument, array languages read right to left, Forth postfix, Unix pipes, and Spw marks read against them.
+
+#>lang_design_pipelines
+#:layer #!reference
+#:domain #!lang_design
+#:form #!comparison
+#:level #!advanced
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Pipelines and Stacks"
+ ~#claim: "Pipelines differ in where the value lands: OCaml and F# pipes fill the last argument, Elixir the first, APL, BQN, and Uiua read right to left, and Forth is postfix."
+ ~#proof: "Rows cite the OCaml Stdlib, the F# operator reference, the Elixir Kernel docs, Iverson, the BQN and Uiua documents, the Forth history paper, and POSIX; Spw rows cite parser probes at 1aa1dc23."
+ ~#door: "Read the lands column across the matrix, then the two corrections, then the Spw rows."
+ ~#audience: "language designers and Spw readers who write pipelines in a shell, Elixir, or an array language"
+ continuity: "Pipelines and Stacks | where the value lands"
+ cold_open: "Every pipeline answers one question before any other: where the value lands in the next step."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[
+  ".spw/caches/language-features/functional-and-pipeline.spw",
+  ".spw/caches/language-features/array-and-concatenative.spw"
+ ]
+ lineage_note: "the raw files are kept as drift evidence only; no claim here uses them as a source"
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the raw file said a pipe always passes the result as the first argument; that holds for Elixir, while OCaml and F# apply the function to the value, so a curried call receives it last",
+  "the raw file said Uiua evaluates left to right; its design document says functions execute right to left",
+  "the raw file called Uiua a stack language; its design document says the stack terminology was removed and values are read as function arguments",
+  "claims that a whole Forth system fits in 4 kilobytes, that five characters compute the Game of Life or eigenvalues, and that array code maps directly to SIMD registers had no source and are dropped",
+  "pattern matching in function heads and OTP supervision are not carried; this surface covers flow direction only, and Julia dispatch moved to the type systems surface"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"docs/theory/spw/flow-protocol-sigils.spw" ]
+ see: [
+  ~"./feature-lineage.spw#lang_design_lineage",
+  ~"../../formal/computing/stream-processing-models.spw#computing_stream_models",
+  ~"../contraptions/order-counter.spw#spw_lab_order_counter"
+ ]
+}
+
+^["concepts"]{
+ primary: [ #pipe_operator, #evaluation_order, #postfix ]
+ transfers: [ #partial_order ]
+ tensions: [ #argument_position ]
+}
+
+^["matrix"]{
+ ^["legend"]{
+  columns: #[ carries, lands, reads, grouping ]
+  as_of: "documentation read 2026-10-02 and 2026-10-03; Spw rows probed at commit 1aa1dc23"
+ }
+ #>lang_design_pipelines_row_unix
+ ^["unix_pipe"]{
+  carries: "a byte stream between processes"
+  lands: "standard input of the next command"
+  reads: "left to right"
+  grouping: "none inside a stage; each stage is a whole command"
+ }
+ #>lang_design_pipelines_row_ocaml
+ ^["ocaml_and_fsharp"]{
+  carries: "one value"
+  lands: "the last argument of a curried call, since x |> f a means f a x"
+  reads: "left to right, left-associative"
+  grouping: "ordinary parentheses"
+ }
+ #>lang_design_pipelines_row_elixir
+ ^["elixir"]{
+  carries: "one value"
+  lands: "the first argument of the call on the right"
+  reads: "left to right"
+  grouping: "ordinary parentheses; the right side must be a call"
+ }
+ #>lang_design_pipelines_row_apl
+ ^["apl"]{
+  carries: "whole arrays"
+  lands: "the right argument of each function, which takes everything to its right"
+  reads: "right to left, with no precedence among functions"
+  grouping: "parentheses"
+ }
+ #>lang_design_pipelines_row_bqn
+ ^["bqn"]{
+  carries: "whole arrays"
+  lands: "as in APL for functions"
+  reads: "functions right to left; modifiers bind tighter and associate left to right"
+  grouping: "parentheses"
+ }
+ #>lang_design_pipelines_row_uiua
+ ^["uiua"]{
+  carries: "arrays passed as function arguments"
+  lands: "the next function to the left"
+  reads: "right to left"
+  grouping: "none required; parentheses make inline functions"
+ }
+ #>lang_design_pipelines_row_forth
+ ^["forth"]{
+  carries: "values on a data stack"
+  lands: "the top of the stack, read by the next word"
+  reads: "left to right, operands before operators"
+  grouping: "none; the stack is the grouping"
+ }
+ #>lang_design_pipelines_row_spw
+ ^["spw_marks"]{
+  carries: "nothing between steps in the parser"
+  lands: "a mark takes the adjacent word as its label, as in !x"
+  reads: "left to right as a sequence of steps"
+  grouping: "braces and brackets bound bodies; semicolons inside << >> and the => arrow separate steps"
+  status: #implemented
+ }
+}
+
+^["claims"]{
+ #>lang_design_pipelines_elixir_first
+ ^["elixir_first_argument"]{
+  #:claim #!settled
+  statement: "The Elixir pipe introduces the expression on its left as the first argument to the function call on its right."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_elixir_kernel"
+  as_of: "Elixir Kernel documentation read 2026-10-03"
+ }
+ #>lang_design_pipelines_ocaml_last
+ ^["ocaml_last_argument"]{
+  #:claim #!settled
+  statement: "OCaml defines x |> f |> g as g (f x) since 4.01, and F# has the same forward pipe, so x |> f a calls f a x and the value lands last."
+  sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_ocaml_stdlib", ~"../../registries/sources/spw-design-studies.spw#src_lab_fsharp_ops" ]
+  as_of: "OCaml manual and F# reference read 2026-10-03"
+  ~#say(in OCaml the value lands last)
+ }
+ #>lang_design_pipelines_apl
+ ^["apl_right_to_left"]{
+  #:claim #!settled
+  statement: "Iverson notation applies functions from right to left with no precedence among them, so each function takes the whole expression to its right as its right argument."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_iverson_1980"
+  see: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_iverson_1962" ]
+ }
+ #>lang_design_pipelines_bqn
+ ^["bqn_associativity"]{
+  #:claim #!settled
+  statement: "In BQN, modifier applications bind more tightly than functions and associate left to right, while functions associate right to left."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_bqn_expression"
+  credit: ~"../../registries/sources/spw-design-studies.spw#src_lab_bqn_history"
+ }
+ #>lang_design_pipelines_uiua
+ ^["uiua_right_to_left"]{
+  #:claim #!settled
+  statement: "The Uiua design document says functions execute right to left, no expression needs explicit grouping, and the old stack terminology gave way to moving function arguments."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_uiua_design"
+  as_of: "design document read 2026-10-03"
+  ~#say(Uiua reads right to left)
+ }
+ #>lang_design_pipelines_forth
+ ^["forth_postfix"]{
+  #:claim #!settled
+  statement: "Rather, Colburn, and Moore write that Forth stacks lead to postfix notation, operands before operators, and that results left on the stack let operations string together without named variables."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_rather_1993"
+ }
+ #>lang_design_pipelines_unix
+ ^["unix_pipeline"]{
+  #:claim #!settled
+  statement: "A POSIX pipeline connects the standard output of each command to the standard input of the next, so stages share a byte stream and nothing about argument position."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_posix_2017"
+  as_of: "IEEE Std 1003.1-2017; a 2024 edition exists"
+ }
+}
+
+^["spw_rows"]{
+ #>lang_design_pipelines_spw_label
+ ^["mark_takes_label"]{
+  #:claim #!settled
+  statement: "The Spw parser reads !x as one operation whose label is x, so a mark names the word beside it rather than taking an operand as C negation does."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_probe_flow"
+  status: #implemented
+ }
+ #>lang_design_pipelines_spw_postfix
+ ^["postfix_detaches"]{
+  #:claim #!settled
+  statement: "Canon lists postfix composition such as data~, but the parser at 1aa1dc23 reads data~ as a word followed by a separate operation with no operand."
+  sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_canon_flow_sigils", ~"../../registries/sources/spw-design-studies.spw#src_lab_probe_flow" ]
+  cites: [ "docs/theory/spw/flow-protocol-sigils.spw:44-45" ]
+  label: "a-canon against code"
+  ^["limits"]{
+   holds: "the default parse at commit 1aa1dc23"
+   fails: "a later dialect or parser change that attaches a trailing mark to the word before it"
+  }
+ }
+ #>lang_design_pipelines_spw_sequence
+ ^["steps_carry_nothing"]{
+  #:claim #!settled
+  statement: "The => arrow and the semicolons inside << >> separate the steps of a sequence; the parser records their order and passes no value from one step to the next."
+  sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_probe_flow", ~"../../registries/sources/spw-design-studies.spw#src_lab_cut_contract" ]
+  cites: [ "docs/theory/spw/flow-protocol-sigils.spw:48" ]
+ }
+ #>lang_design_pipelines_spw_reading
+ ^["spw_between_families"]{
+  #:claim #!interpretive
+  statement: "Spw orders whole steps the way a Unix pipeline orders commands, yet unlike every pipe in the matrix, no Spw form says where the result of one step lands in the next."
+  limit: "a reading of the rows above; the runtime evaluates ONF arguments eagerly and has no pipe"
+ }
+}
+
+^["try"]{
+ #>lang_design_pipelines_try_three_ways
+ ^["three_directions"]{
+  materials: [ "paper", "a pencil" ]
+  steps: << "write a nested call with three steps, such as trim, split, and count applied to a sentence" ; "rewrite it as an Elixir pipe, filling the first argument" ; "rewrite it as an OCaml pipe, filling the last argument" ; "rewrite it right to left as an APL line would read" ; "read each version aloud and mark where the value lands" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./pipelines-and-stacks.spw#lang_design_pipelines_ocaml_last"
+ }
+}
+
+#>lang_design_pipelines_slot_q
+?["Would a Spw schedule need to say where each result lands?"]{
+ #:depth #!computational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "A schedule step that names its input slot would let a tool thread a value through the steps and check it, at the cost of one more binding per step."
+ !probe{ "add an input slot binding to the steps of three cut schedules and test whether a small script can thread one value through each" =id[p_lab_pipelines_slot] =kind[build] }
+ $%[op.distribution]
+ ~"./pipelines-and-stacks.spw#lang_design_pipelines_spw_sequence" ~#neighbor(nearest)
+}
+
+#>lang_design_pipelines_direction_q
+?["Do readers trained on right-to-left array code read a Spw line differently?"]{
+ #:depth #!educational ~#lens(applied attention)
+ #:claim #!speculative
+ ~#hypothesis: "Readers fluent in APL or Uiua will scan a Spw line from the right more often than shell users, and will misplace which word a mark labels."
+ !probe{ "show APL, Uiua, and shell users five short Spw lines and ask which word each mark names" =id[p_lab_pipelines_direction] =kind[interview] }
+ breaks: "an array line is one expression evaluated as a whole; a Spw line is often a sequence of separate steps, so reading direction matters less than grouping"
+ $%[op.distribution, particle.case]
+ ~"./pipelines-and-stacks.spw#lang_design_pipelines_spw_label" ~#neighbor(nearest)
+}

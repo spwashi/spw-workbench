@@ -1,0 +1,210 @@
+# Control and Signals
+#
+# The canonical node for linear systems, sampling, feedback, PID, and state space, shared by electrical, mechanical, and chemical engineering, with a state machine for a working loop.
+
+#>engineering_control_signals
+#:layer #!reference
+#:domain #!engineering
+#:form #!protocol
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Control and Signals"
+ ~#claim: "Feedback lets an imperfect machine track a goal, and stability margins are heuristics about how far the model can be wrong, not guarantees."
+ ~#proof: "Black, Nyquist, and Bode built the frequency-domain theory; Minorsky and Ziegler and Nichols gave PID; Kalman gave state estimation; Astrom and Murray state the margins as robustness measures."
+ ~#door: "Read the survey, follow the loop machine from manual to auto, then balance a broom."
+ ~#audience: "engineering students who meet control in any department"
+ continuity: "Control and Signals | heuristics"
+ cold_open: "Feedback lets a sloppy machine hit its target, and its safety margins are heuristics, so read them as warnings."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/electrical-and-computer-engineering/undergrad-electrical-engineering.spw", ".spw/caches/university-education/physics-and-mechanical-engineering/undergrad-mechanical-engineering.spw", ".spw/caches/university-education/chemistry-and-chemical-engineering/undergrad-chemical-engineering.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #fail }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ gate_note: "r3 first recorded a pass; that run failed on links to mechanical, mechanical advanced, and ECE advanced surfaces not yet written, and r5 records the run after they landed"
+ corrections: #[
+  "the raw invariant that a phase margin above 45 degrees guarantees loop stability is restated: phase margin is a robustness heuristic for a nominal linear model",
+  "three departments taught signals and control separately in the raw; this node is the one home and the department files point here",
+  "Whittaker and Kotelnikov are credited beside Shannon for the sampling theorem",
+  "Ziegler-Nichols rules are marked as aggressive starting points, not tuned answers",
+  "the 50 percent faster shutdown wonder from the chemical engineering raw had no source and is dropped",
+  "the Nyquist rung credited the 1932 paper with counting open-loop unstable poles; Nyquist treated a loop around a stable amplifier, and the general count came later"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../../formal/mathematics/engineering-core/transforms-and-complex-methods.spw#mathematics_transforms", ~"../../formal/mathematics/engineering-core/differential-equations.spw#mathematics_diffeq" ]
+ grounds: [ ~"./electrical-core.spw#engineering_electrical_opamp_rules", ~"./mechanical-core.spw#engineering_mechanical_dynamics" ]
+ feeds: [ ~"./mechanical-advanced.spw#engineering_mechanical_advanced_estimation", ~"./ece-advanced.spw#engineering_ece_advanced_pll" ]
+ see: [ ~"../chemistry/chemical-engineering.spw#chemistry_chemeng" ]
+}
+
+^["concepts"]{
+ primary: [ #feedback, #stability, #sampling ]
+ transfers: [ #transfer_function, #state_space ]
+ tensions: [ #robustness_margin ]
+}
+
+^["survey"]{
+ ^["signals"]{
+  #>engineering_control_signals_lti
+  ^["lti"]{
+   #:claim #!settled
+   statement: "A linear time-invariant system is fully described by its impulse response; its output is the input convolved with that response, and transforms turn convolution into multiplication."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_oppenheim_willsky_1997"
+  }
+  #>engineering_control_signals_bibo
+  ^["pole_stability"]{
+   #:claim #!settled
+   statement: "A continuous rational LTI system is input-output stable when its poles lie in the open left half-plane; a discrete one when its poles lie inside the unit circle."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_oppenheim_willsky_1997"
+  }
+  #>engineering_control_signals_sampling
+  ^["sampling"]{
+   #:claim #!settled
+   statement: "A signal with no content above B hertz can be rebuilt from samples taken faster than 2B per second; slower sampling folds high frequencies into false low ones."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_shannon_1949"
+   ~#(Whittaker in 1915 and Kotelnikov in 1933 reached the same result)
+   ^["limits"]{
+    holds: "ideal band-limited signals and ideal reconstruction"
+    fails: "real signals are never perfectly band-limited, so an anti-alias filter must come before the sampler"
+   }
+  }
+ }
+ ^["feedback"]{
+  #>engineering_control_signals_black
+  ^["black"]{
+   #:claim #!settled
+   statement: "Black published in 1934 the negative-feedback amplifier, trading surplus gain for low distortion and insensitivity to drifting vacuum tubes."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_black_1934"
+  }
+  #>engineering_control_signals_nyquist
+  ^["nyquist"]{
+   #:claim #!settled
+   statement: "Nyquist showed in 1932 that a loop built around a stable amplifier is stable when its open-loop plot does not encircle minus one; later work extended the count to open-loop unstable poles."
+   sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_nyquist_1932", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_astrom_murray_2021" ]
+  }
+  #>engineering_control_signals_bode
+  ^["bode"]{
+   #:claim #!settled
+   statement: "Bode in 1945 tied gain and phase together for minimum-phase systems and showed that pushing sensitivity down at some frequencies pushes it up at others."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_bode_1945"
+  }
+  #>engineering_control_signals_phase_margin
+  ^["phase_margin"]{
+   #:claim #!settled
+   statement: "Phase margin is how far loop phase sits above minus 180 degrees where loop gain is one; it measures robustness of a nominal linear model and guarantees nothing by itself."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_astrom_murray_2021"
+   ~#counter(the raw invariant said 45 degrees guarantees stability)
+   ^["limits"]{
+    holds: "a single gain crossover, a trustworthy linear model, and adequate gain margin"
+    fails: "several crossovers, conditionally stable loops, saturation, unmodeled delay, or a model that drifts with operating point"
+   }
+  }
+ }
+ ^["controllers"]{
+  #>engineering_control_signals_pid
+  ^["pid"]{
+   #:claim #!settled
+   statement: "Minorsky analyzed proportional, integral, and derivative action for automatic ship steering in 1922, the first theoretical account of the PID controller."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_minorsky_1922"
+  }
+  #>engineering_control_signals_ziegler_nichols
+  ^["ziegler_nichols"]{
+   #:claim #!settled
+   statement: "Ziegler and Nichols in 1942 gave PID settings from an ultimate gain and period; the loops they give are often poorly damped, so the rules are a starting point."
+   sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_ziegler_nichols_1942", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_astrom_murray_2021" ]
+  }
+  #>engineering_control_signals_windup
+  ^["windup"]{
+   #:claim #!settled
+   statement: "When an actuator saturates, an integrator keeps accumulating error and causes large overshoot later; anti-windup logic stops or bleeds the integrator while saturated."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_astrom_murray_2021"
+  }
+  #>engineering_control_signals_smith
+  ^["smith_predictor"]{
+   #:claim #!settled
+   statement: "Otto Smith in 1957 placed a process model inside the loop to remove known dead time from the feedback path, which helps only while the delay estimate is right."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_smith_1957"
+  }
+ }
+ ^["state_space"]{
+  #>engineering_control_signals_kalman
+  ^["kalman"]{
+   #:claim #!settled
+   statement: "Kalman in 1960 gave a recursive filter that estimates a linear system state from noisy measurements, optimal in mean square for Gaussian noise."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_kalman_1960"
+  }
+ }
+}
+
+^["machine"]{
+ #>engineering_control_signals_states
+ ^["states"]{
+  manual: "an operator sets the actuator directly; the controller tracks the output without acting"
+  auto: "the controller closes the loop and drives error toward the setpoint"
+  saturated: "the actuator sits at a limit and further controller output does nothing"
+  recovering: "the actuator leaves its limit while anti-windup unwinds stored integral error"
+  retune: "the loop is opened or detuned while gains are changed"
+  fallback: "a sensor or actuator fault hands control back to a safe manual setting"
+ }
+ #>engineering_control_signals_transitions
+ ?match[@loop]{
+  @manual => ^["engage"]{ next: "auto", guard: "setpoint tracks the present output so the switch is bumpless" }
+  @auto => ^["hit_limit"]{ next: "saturated", trigger: "controller output exceeds the actuator range" }
+  @saturated => ^["release"]{ next: "recovering", trigger: "error changes sign or the limit clears" }
+  @recovering => ^["settle"]{ next: "auto", guard: "integrator back inside its normal range" }
+  @auto => ^["detune"]{ next: "retune", trigger: "sustained oscillation or a changed process" }
+  @retune => ^["reclose"]{ next: "auto", guard: "new gains checked against margins on the current model" }
+  @auto => ^["fault"]{ next: "fallback", trigger: "sensor out of range or actuator not responding" }
+  @fallback => ^["restore"]{ next: "manual", guard: "fault cleared and an operator present" }
+  _ => "stay in the current state"
+ }
+}
+
+^["try"]{
+ #>engineering_control_signals_try_broom
+ ^["broom_balance"]{
+  materials: [ "a broom", "a ruler", "a pencil", "open floor space" ]
+  steps: << "balance the broom upright on your palm" ; "balance the ruler the same way" ; "try the pencil" ; "notice which falls before you can react" ; "relate the falling speed to your reaction delay" >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "clear the space around you; a falling broom handle can hit people or lamps"
+  shows: ~"./control-and-signals.spw#engineering_control_signals_phase_margin"
+ }
+}
+
+#>engineering_control_signals_disk_margin_q
+?["Would students design sturdier loops if they learned disk margins before phase margin?"]{
+ #:depth #!educational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "A margin that varies gain and phase together resists the habit of reading 45 degrees as safe, so those students should over-trust single numbers less often."
+ !probe{ "give two sections the same plant with a small gain margin and compare how many call the loop robust" =id[p_mateng_control_disk_margin] =kind[field] }
+ $%[file.frame_count]
+ ~"./control-and-signals.spw#engineering_control_signals_phase_margin" ~#neighbor(nearest)
+}
+
+#>engineering_control_signals_economy_q
+?["Is a boom-and-bust cycle a feedback loop with too much delay?"]{
+ #:depth #!social ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "When orders respond to stale information, a delayed correction overshoots in both directions, much as phase lag makes a tight loop ring."
+ breaks: "an economy is neither linear nor time-invariant, its actors anticipate, and its setpoint is contested"
+ !probe{ "simulate a stock-and-flow model with and without information delay and compare the oscillation" =id[p_mateng_control_economy] =kind[sim] }
+ $%[graph.out_degree]
+ ~"./control-and-signals.spw#engineering_control_signals_nyquist" ~#neighbor(nearest)
+}

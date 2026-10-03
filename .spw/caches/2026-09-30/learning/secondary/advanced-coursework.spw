@@ -7,7 +7,7 @@
 #:domain #!secondary_schooling
 #:form #!comparison
 #:level #!intro
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 #:era #!current
 
@@ -28,10 +28,13 @@
  lineage: #[ ".spw/caches/secondary-education/advanced-curricula.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
  }
  corrections: #[
+  "fact check: the refuted guaranteed-transfer row named the GAO report as its source; it now says the claim came from the raw generation and holds GAO under checked_against",
   "dual enrollment guaranteed credit transfer: refuted; acceptance depends on the receiving college and state policy",
   "up to two years of debt-free credits removed as unsourced; cost varies by state and program",
   "accreditation of the offering college restated as necessary for transfer but never sufficient",
@@ -73,7 +76,7 @@
  #>secondary_schooling_ap_capstone
  ^["ap_capstone"]{
   #:claim #!settled
-  statement: "AP Capstone pairs AP Seminar with AP Research, whose academic paper runs 4,000 to 5,000 words; the diploma also needs four other AP exams scored 3 or higher."
+  statement: "AP Capstone pairs AP Seminar with AP Research, whose paper runs 4,000 to 5,000 words; the diploma needs scores of 3 or higher in both and on four other AP exams."
   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_ap_capstone"
   as_of: "2026-10-01"
  }
@@ -117,8 +120,15 @@
  ^["guaranteed_transfer"]{
   #:claim #!refuted
   statement: "Dual enrollment guarantees that credit transfers to any college."
-  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_gao_2017"
-  finding: "each receiving college decides whether a course counts, and for which requirement"
+  claimed_in: ".spw/caches/secondary-education/advanced-curricula.spw:41"
+  ^["checked_against"]{
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_gao_2017"
+   finding: "each receiving college decides whether a course counts, and for which requirement"
+  }
+  ^["limits"]{
+   holds: "credit moving between institutions without a binding agreement"
+   fails: "state guaranteed-transfer laws and articulation agreements can require acceptance within a public system"
+  }
  }
 }
 

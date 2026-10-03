@@ -1,0 +1,142 @@
+# Nursing
+#
+# A knowledge map of nursing as a discipline, with a guideline-currency rule for every clinical claim and advocacy as the stance; educational reference, not clinical guidance.
+
+#>nursing_index
+#:layer #!reference
+#:domain #!nursing
+#:form #!index
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Nursing"
+ ~#claim: "Nursing joins assessment, mechanism-level science, and ethics, and every clinical claim in this branch names its guideline body, year, and status."
+ ~#proof: "Curriculum claims cite the ANA scope and standards, NANDA International, and Bates; guideline claims link the currency ledger; the advocacy stance cites the ANA and ICN codes."
+ ~#door: "Students start with clinical foundations; anyone checking a guideline starts with the currency ledger."
+ ~#audience: "nursing students, curious readers, and families learning the vocabulary of care"
+ continuity: "Nursing | body, year, and status"
+ cold_open: "In this branch every clinical claim carries its guideline body, year, and status, because care changes."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/nursing/taste.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ revision_2026_10_03: "r6 redated the r4 fact-check to 2026-10-02, the day its sources were read"
+ corrections: #[
+  "the raw wonder on moral distress and burnout carried invented hazard ratios and was dropped (raw line 33)",
+  "the raw back-rub wonder asserted endorphin and cortisol effects without sources and was dropped (raw line 39)",
+  "the raw stance cast the nurse as the final line of defense against other clinicians; it is restated as advocacy grounded in the nursing codes",
+  "three nursing raw files are quarantined for harm; their topics live in the leaves below, rewritten from named guidelines",
+  "fact-check: Mary Seacole was called a nurse in a settled claim; she called herself a doctress, ran the British Hotel with Thomas Day, and whether to call her a nurse is debated"
+ ]
+}
+
+^["edges"]{
+ see: [ ~"../../provenance/harm-register.spw#provenance_harm_register" ]
+}
+
+^["scope"]{
+ #>nursing_index_guard
+ ^["guard"]{
+  #:valence #!honk
+  warning: "this branch is a map for learning; it gives no doses, rates, thresholds, or protocols, and no one should act on it in place of current local policy and a prescriber order"
+ }
+ what: "educational reference: a map of nursing knowledge for students and readers"
+ not_advice: "general information, not clinical instruction or medical advice"
+ practice: "care follows the guideline in force, local policy, the scope of practice where care happens, and the order of a licensed prescriber"
+ where_to_ask: "a licensed nurse, physician, pharmacist, or the institution that delivers care"
+}
+
+^["tree"]{
+ foundations: ~"./clinical-foundations.spw"
+ pathophysiology: ~"./pathophysiology-and-pharmacology.spw"
+ critical_care: ~"./critical-care.spw"
+ ethics: ~"./ethics-and-presence.spw"
+ guideline_ledger: ~"./guideline-currency-ledger.spw"
+}
+
+^["bundle"]{
+ ={ ~"./clinical-foundations.spw#nursing_foundations" }
+ ={ ~"./pathophysiology-and-pharmacology.spw#nursing_pathophysiology" }
+ ={ ~"./critical-care.spw#nursing_critical_care" }
+ ={ ~"./ethics-and-presence.spw#nursing_ethics" }
+ ={ ~"./guideline-currency-ledger.spw#nursing_guideline_ledger" }
+}
+
+^["currency_rule"]{
+ rule: "a claim drawn from a guideline names its body, version or year, and status, and links the matching ledger entry"
+ statuses: "current means in force when the writer checked on the as_of date; superseded means replaced; verify means check the issuing body before use"
+ as_of: "2026-10-02"
+ ledger: ~"./guideline-currency-ledger.spw#nursing_guideline_ledger"
+}
+
+^["ladder"]{
+ rungs: << "foundation: clinical foundations" ; "advanced: pathophysiology and pharmacology" ; "advanced: critical care" ; "advanced: ethics and presence" ; "practitioner: guideline currency ledger" >>
+ note: "ethics can be read first by anyone; the ledger sits last because it assumes the vocabulary of the others"
+}
+
+^["origins"]{
+ #>nursing_index_nightingale
+ ^["nightingale"]{
+  #:claim #!settled
+  statement: "Florence Nightingale's Notes on Nursing of 1860 set out fresh air, cleanliness, light, quiet, diet, and close observation as the work of nursing."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_nightingale_1860"
+ }
+ #>nursing_index_seacole
+ ^["seacole"]{
+  #:claim #!settled
+  statement: "Mary Seacole, a Jamaican doctress who learned Creole medicine from her mother, ran the British Hotel near Balaclava with Thomas Day and treated soldiers there and in the field, as her 1857 memoir records."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_seacole_1857"
+  ^["limits"]{
+   holds: "what her memoir records of her own work in the Crimea"
+   fails: "whether to call her a nurse is debated by historians, Lynn McDonald among them"
+   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_mcdonald_2014"
+  }
+ }
+}
+
+^["stance"]{
+ #>nursing_index_advocacy
+ ^["advocacy"]{
+  #:claim #!settled
+  statement: "Nursing codes make the patient the primary commitment and charge nurses to protect patient rights, health, and safety, including by questioning an order they judge unsafe."
+  sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_ana_2025", ~"../../registries/sources/plants-ecology-care.spw#src_eco_icn_2021" ]
+  ~#say(the patient comes first, so the nurse speaks up)
+ }
+ #>nursing_index_presence
+ ^["presence"]{
+  #:claim #!interpretive
+  statement: "Nurses are often the most continuous professional presence at the bedside, which makes them the first to notice change and the natural voice for the patient."
+ }
+}
+
+^["gaps"]{
+ predicted: #[
+  "midwifery and maternal care, expected beside clinical foundations",
+  "community and public health nursing, expected beside the communities branch",
+  "nursing outside the United States, where scope and titles differ",
+  "pharmacy and dietetics as their own disciplines"
+ ]
+}
+
+^["doors"]{
+ student: "clinical foundations, then pathophysiology and pharmacology"
+ family_member: "ethics and presence, for advance directives and comfort care"
+ checker: "the guideline currency ledger, entry by entry"
+}

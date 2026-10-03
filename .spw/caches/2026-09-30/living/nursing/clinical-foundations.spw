@@ -1,0 +1,205 @@
+# Clinical Foundations
+#
+# The nursing process, physical assessment, neurological and skin scales, infection control, and medication safety, laid out as a prerequisite graph for study.
+
+#>nursing_foundations
+#:layer #!reference
+#:domain #!nursing
+#:form #!curriculum
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Clinical Foundations"
+ ~#claim: "Foundational nursing study runs from the nursing process through assessment and standard scales to infection control and medication safety, each step resting on the one before."
+ ~#proof: "Process and standards from Orlando and the ANA scope and standards; diagnoses from NANDA International; assessment from Bates; scales from Teasdale and Jennett, Braden, and the NPIAP; precautions from CDC HICPAC and WHO."
+ ~#door: "Walk the graph from the nursing process to medication safety, then try the hand-washing spot test."
+ ~#audience: "nursing students and readers learning clinical vocabulary"
+ continuity: "Clinical Foundations | the nursing process"
+ cold_open: "Everything a nurse does at the bedside starts with the nursing process: assess, diagnose, plan, act, and check."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/nursing/foundations-of-clinical-nursing-and-assessment.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ revision_2026_10_03: "r6 redated the r4 fact-check to 2026-10-02, the day its sources were read; a singleton concept tag was swapped for a recurring one where the fit is real: double_check became mistake_proofing"
+ corrections: #[
+  "pressure injury staging now uses the 2016 NPIAP terms and includes deep tissue pressure injury, which the raw list omitted (raw line 31)",
+  "the Glasgow Coma Scale is reported by component as its authors recommend; the raw airway threshold was a protocol number and was removed (raw line 23)",
+  "the raw droplet distance and dual-check mnemonic were protocol details; the surface now says what double checks are known to do (raw lines 30 and 35)",
+  "the raw S3 wonder carried invented diagnostic metrics and was dropped (raw line 45)",
+  "fact-check: airborne infections were said to need negative-pressure rooms; CDC 2007 calls for an airborne infection isolation room where available and allows interim measures"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/plants-ecology-care.spw#q_eco_gcs" ]
+ feeds: [ ~"./pathophysiology-and-pharmacology.spw#nursing_pathophysiology", ~"./critical-care.spw#nursing_critical_care" ]
+ see: [ ~"./guideline-currency-ledger.spw#nursing_guideline_ledger" ]
+}
+
+^["concepts"]{
+ primary: [ #nursing_process, #assessment, #standard_precautions ]
+ transfers: [ #prerequisite, #protocol ]
+ tensions: [ #mistake_proofing ]
+}
+
+^["scope"]{
+ #>nursing_foundations_guard
+ ^["guard"]{
+  #:valence #!honk
+  warning: "scales and precautions are named here so they can be learned; using them on a patient takes supervised training and current local policy"
+ }
+ what: "a study map of foundational nursing knowledge"
+ not_advice: "general information, not clinical instruction"
+ where_to_ask: "a nursing instructor, a licensed nurse, or the institution infection prevention team"
+}
+
+^["dag"]{
+ =~"./clinical-foundations.spw#nursing_foundations_assessment"[needs]{ ~"./clinical-foundations.spw#nursing_foundations_process" }
+ =~"./clinical-foundations.spw#nursing_foundations_scales"[needs]{ ~"./clinical-foundations.spw#nursing_foundations_assessment" }
+ =~"./clinical-foundations.spw#nursing_foundations_infection"[needs]{ ~"./clinical-foundations.spw#nursing_foundations_process" }
+ =~"./clinical-foundations.spw#nursing_foundations_medication"[needs]{ ~"./clinical-foundations.spw#nursing_foundations_assessment" ; ~"./clinical-foundations.spw#nursing_foundations_scope_of_practice" }
+ order: << "nursing process" ; "scope of practice" ; "assessment" ; "scales" ; "infection control" ; "medication safety" >>
+}
+
+#>nursing_foundations_process
+^["nursing_process"]{
+ #>nursing_foundations_orlando
+ ^["standards"]{
+  #:claim #!settled
+  statement: "Ida Jean Orlando described a deliberative nursing process in 1961; the ANA standards now set six steps: assessment, diagnosis, outcomes identification, planning, implementation, and evaluation."
+  sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_orlando_1961", ~"../../registries/sources/plants-ecology-care.spw#src_eco_ana_scope_2021" ]
+  version: "ANA Nursing: Scope and Standards of Practice, 4th edition, 2021"
+ }
+ #>nursing_foundations_diagnosis
+ ^["nursing_diagnosis"]{
+  #:claim #!settled
+  statement: "A nursing diagnosis is a clinical judgment about a person's response to a health condition or life process, distinct from the medical diagnosis of a disease."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_nanda_2024"
+  version: "NANDA International 2024 to 2026, 13th edition"
+ }
+}
+
+#>nursing_foundations_scope_of_practice
+^["scope_of_practice"]{
+ #>nursing_foundations_orders
+ ^["orders_and_actions"]{
+  #:claim #!settled
+  statement: "Nurses act on their own judgment to assess, monitor, teach, and escalate, and give medications under a prescriber order or an approved protocol; each jurisdiction's practice act sets the boundary."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_ana_scope_2021"
+ }
+}
+
+#>nursing_foundations_assessment
+^["assessment"]{
+ #>nursing_foundations_sequence
+ ^["exam_sequence"]{
+  #:claim #!settled
+  statement: "Physical examination proceeds by inspection, palpation, percussion, and auscultation; for the abdomen, examiners listen before they palpate."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_bickley_2021"
+  ^["limits"]{
+   holds: "as the teaching order in standard examination texts"
+   fails: "skilled examiners adapt the order to the patient and the question"
+  }
+ }
+}
+
+#>nursing_foundations_scales
+^["scales"]{
+ #>nursing_foundations_gcs
+ ^["glasgow_coma_scale"]{
+  #:claim #!settled
+  statement: "The Glasgow Coma Scale scores eye, verbal, and motor responses; its authors recommend reporting each component, since the same total can hide different patterns."
+  reads: %[eco.gcs.total_min, eco.gcs.total_max]
+  sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_teasdale_jennett_1974", ~"../../registries/sources/plants-ecology-care.spw#src_eco_teasdale_2014" ]
+ }
+ #>nursing_foundations_braden
+ ^["braden_scale"]{
+  #:claim #!settled
+  statement: "The Braden Scale rates pressure injury risk on six subscales: sensory perception, moisture, activity, mobility, nutrition, and friction and shear."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_bergstrom_1987"
+ }
+ #>nursing_foundations_npiap
+ ^["pressure_injury_stages"]{
+  #:claim #!settled
+  statement: "The 2016 staging system of the National Pressure Ulcer Advisory Panel, now NPIAP, replaced pressure ulcer with pressure injury and names stages 1 through 4, unstageable, and deep tissue pressure injury."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_edsberg_2016"
+  status: "current terms as of 2026-10-02; verify against the newest international guideline"
+ }
+}
+
+#>nursing_foundations_infection
+^["infection_control"]{
+ #>nursing_foundations_precautions
+ ^["precautions"]{
+  #:claim #!settled
+  statement: "Standard precautions apply to every patient; contact, droplet, and airborne precautions add barriers by route, and airborne precautions call for a negative-pressure airborne infection isolation room where one is available."
+  interim: "where no such room exists, local policy sets the interim measures until transfer"
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_siegel_2007"
+  status: "CDC HICPAC guideline of 2007 with later updates; verify the current CDC version"
+ }
+ #>nursing_foundations_hand_hygiene
+ ^["hand_hygiene"]{
+  #:claim #!settled
+  statement: "WHO names five moments for hand hygiene, and prefers soap and water when hands are visibly soiled or spore-forming organisms such as Clostridioides difficile are suspected, since alcohol does not kill spores."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_who_2009"
+  moments: << "before touching a patient" ; "before a clean or aseptic procedure" ; "after body fluid exposure risk" ; "after touching a patient" ; "after touching patient surroundings" >>
+ }
+}
+
+#>nursing_foundations_medication
+^["medication_safety"]{
+ #>nursing_foundations_barcode
+ ^["barcode"]{
+  #:claim #!settled
+  statement: "In a study at a large academic hospital, bar-code scanning with an electronic administration record reduced medication administration errors and potential drug harms."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_poon_2010"
+ }
+ #>nursing_foundations_double_check
+ ^["double_checks"]{
+  #:claim #!emerging
+  statement: "A systematic review found too little evidence to show that a second nurse's double check reduces administration errors, though many policies require it for high-alert drugs."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_koyama_2020"
+  ^["limits"]{
+   holds: "studies available up to the review"
+   fails: "absence of evidence is not evidence of no effect; local policy still governs"
+  }
+ }
+}
+
+^["try"]{
+ #>nursing_foundations_try_glow
+ ^["hand_wash_glow"]{
+  materials: [ "a spoon of cooking oil", "ground cinnamon or washable paint", "a sink with soap and water", "a towel" ]
+  steps: << "rub oil over both hands" ; "dust them with cinnamon, or coat them with washable paint" ; "close your eyes and wash as you usually would" ; "open your eyes and find the spots you missed" >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "skip it with broken skin or a cinnamon or paint allergy; use only skin-safe washable paint"
+  shows: ~"./clinical-foundations.spw#nursing_foundations_hand_hygiene"
+ }
+}
+
+#>nursing_foundations_gcs_q
+?["How many different patients hide behind one Glasgow Coma Scale total?"]{
+ #:depth #!computational ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "Middle totals are reached by the most combinations of eye, verbal, and motor scores, so a total in the middle hides the most information about which response is impaired."
+ !probe{ "enumerate all eye, verbal, and motor combinations and count them by total" =id[p_eco_foundations_gcs] =kind[calc] }
+ $%[eco.gcs.total_min, eco.gcs.total_max]
+ ~"./clinical-foundations.spw#nursing_foundations_gcs" ~#neighbor(nearest)
+}

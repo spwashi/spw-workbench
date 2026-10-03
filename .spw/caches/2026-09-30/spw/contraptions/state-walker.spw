@@ -1,0 +1,178 @@
+# State Walker
+#
+# Phase regions written as anchors and crossings written as axis-labelled bias edges; drop one axis and the walk reroutes around the critical point.
+
+#>spw_lab_state_walker
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!foundation
+#:review #!sourced
+#:valence #!boon
+
+^"emit"{
+ ~#title: "State Walker"
+ ~#claim: "With regions as anchors and crossings as labelled bias edges, a shortest-path walk shows how a route reroutes around a removed kind of crossing."
+ ~#proof: "readBias reads each crossing and the seed graph functions walk them; the water critical and triple points come from IAPWS-95 through the materials registry."
+ ~#door: "Read the four regions, predict the liquid-to-vapour route with boiling removed, then run the walk."
+ ~#audience: "students meeting phase diagrams, protocol designers, and Spw authors who write edges"
+ continuity: "State Walker | reroutes around"
+ cold_open: "Take boiling away and the walk from liquid to vapour reroutes around the critical point, or through the ice."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "persona study contraption_catalog[2], references/studies/persona-synthesis.json", "sketch references/spw-branch/seeds/contraptions/state-walker.spw" ]
+ method: #authored
+ evidence: #[ "readBias over this surface returned the ten crossing edges below at commit 1aa1dc23 on 2026-10-02", "graphFromEdges and shortestPath were run on those edges by a scratch adapter that is not in the repository" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the sketch modelled liquid, vapour, and supercritical only; ice and the sublimation crossings are added so the tie between two detours shows",
+  "sketch anchors h2o_* are re-anchored under spw_lab_state_walker_ and the critical point is read from registry cells instead of inline numbers"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../physical/materials/bonding-and-states-of-matter.spw#materials_bonding_water_diagram", ~"../../physical/materials/water.spw#materials_water" ]
+ extends: [ ~"../../physical/materials/bonding-and-states-of-matter.spw#materials_bonding_phase_rule" ]
+ analog: [ ~"../../physical/engineering/control-and-signals.spw#engineering_control_signals_states" ]
+}
+
+^["concepts"]{
+ primary: [ #phase_diagram, #state_machine ]
+ transfers: [ #walk, #reflexive_mirror ]
+ tensions: [ #overclaim ]
+}
+
+^["tool"]{
+ status: #proposed
+ verb: "spw walk FILE --from ANCHOR --to ANCHOR --without AXIS, not yet a command"
+ implemented: #[
+  "packages/spw-seed/src/canonical/read-bias.ts:102 readBias",
+  "packages/spw-seed/src/math/graph.ts:26 graphFromEdges",
+  "packages/spw-seed/src/math/graph.ts:76 detectCycle",
+  "packages/spw-seed/src/math/graph.ts:201 shortestPath",
+  "packages/spw-cli/src/commands.ts:330 spw select, which lists the edges with --selector bias"
+ ]
+ run_today: "spw select .spw/caches/2026-09-30/spw/contraptions/state-walker.spw --selector bias"
+ sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_read_bias", ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_graph" ]
+}
+
+^["parameters"]{
+ weight: "every crossing costs one step; no pressure or temperature enters the walk"
+ regions: #[ ice, liquid, vapor, supercritical ]
+ axes: #[ melts, freezes, boils, condenses, sublimes, deposits, passes_critical ]
+}
+
+^["regions"]{
+ #>spw_lab_state_walker_ice
+ ^["ice"]{ phase: "solid, ice Ih only" }
+ #>spw_lab_state_walker_liquid
+ ^["liquid"]{ phase: "liquid water" }
+ #>spw_lab_state_walker_vapor
+ ^["vapor"]{ phase: "water vapour" }
+ #>spw_lab_state_walker_supercritical
+ ^["supercritical"]{ phase: "supercritical fluid, beyond the critical point" }
+}
+
+#>spw_lab_state_walker_crossings
+^["crossings"]{
+ =~"./state-walker.spw#spw_lab_state_walker_ice"[melts]{ ~"./state-walker.spw#spw_lab_state_walker_liquid" }
+ =~"./state-walker.spw#spw_lab_state_walker_liquid"[freezes]{ ~"./state-walker.spw#spw_lab_state_walker_ice" }
+ =~"./state-walker.spw#spw_lab_state_walker_liquid"[boils]{ ~"./state-walker.spw#spw_lab_state_walker_vapor" }
+ =~"./state-walker.spw#spw_lab_state_walker_vapor"[condenses]{ ~"./state-walker.spw#spw_lab_state_walker_liquid" }
+ =~"./state-walker.spw#spw_lab_state_walker_ice"[sublimes]{ ~"./state-walker.spw#spw_lab_state_walker_vapor" }
+ =~"./state-walker.spw#spw_lab_state_walker_vapor"[deposits]{ ~"./state-walker.spw#spw_lab_state_walker_ice" }
+ =~"./state-walker.spw#spw_lab_state_walker_liquid"[passes_critical]{ ~"./state-walker.spw#spw_lab_state_walker_supercritical" }
+ =~"./state-walker.spw#spw_lab_state_walker_supercritical"[passes_critical]{ ~"./state-walker.spw#spw_lab_state_walker_vapor" }
+ =~"./state-walker.spw#spw_lab_state_walker_vapor"[passes_critical]{ ~"./state-walker.spw#spw_lab_state_walker_supercritical" }
+ =~"./state-walker.spw#spw_lab_state_walker_supercritical"[passes_critical]{ ~"./state-walker.spw#spw_lab_state_walker_liquid" }
+ ~#(one tight bias edge per crossing; the axis names a kind of crossing)
+}
+
+^["world"]{
+ #>spw_lab_state_walker_critical
+ ^["critical_point"]{
+  #:claim #!settled
+  statement: "Above the critical point of water liquid and vapour are no longer distinct phases, so a path around that point joins them without crossing a boiling line."
+  reads: %[mateng.water.critical_t_k, mateng.water.critical_p_mpa]
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_wagner_pruss_2002", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_atkins_2018" ]
+ }
+ #>spw_lab_state_walker_triple
+ ^["triple_point"]{
+  #:claim #!settled
+  statement: "Below the triple-point pressure ice turns directly to vapour, so the freeze-then-sublime route is physical only at low pressure."
+  reads: %[mateng.water.triple_point_k, mateng.water.triple_point_pa]
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_wagner_pruss_2002", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_atkins_2018" ]
+ }
+ #>spw_lab_state_walker_reader
+ ^["edge_reader"]{
+  #:claim #!settled
+  statement: "readBias reports a tight bias operation as an edge with anchor, axis, ranked targets, and a sign, and acts on nothing it reads."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_read_bias"
+ }
+}
+
+^["battery"]{
+ #>spw_lab_state_walker_reroute
+ ^["reroute"]{
+  !probe{ "walk liquid to vapor, then again with every boils edge removed" =id[p_contrap_state_walker_reroute] =kind[calc] }
+  predict: ?{ "how many steps once boiling is gone, and through which region" } ~<guess>
+  expect: "one step with boiling; two without it, where routes through ice and through supercritical tie and shortestPath returns the ice route because ties break by node order"
+  shows: ~"./state-walker.spw#spw_lab_state_walker_critical"
+ }
+ #>spw_lab_state_walker_tie
+ ^["tie_break"]{
+  !probe{ "remove sublimes as well and walk again" =id[p_contrap_state_walker_tie] =kind[calc] }
+  expect: "the only two-step route left passes the critical point; the walker cannot say which detour a real sample takes"
+  shows: ~"./state-walker.spw#spw_lab_state_walker_triple"
+ }
+ #>spw_lab_state_walker_cycles
+ ^["cycles"]{
+  !probe{ "run detectCycle on the crossings and list the witness" =id[p_contrap_state_walker_cycles] =kind[calc] }
+  expect: "cyclic, with the witness ice, liquid, ice; detectCycle returns one witness, not every cycle"
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_graph"
+ }
+}
+
+#>spw_lab_state_walker_mirror
+^["language_mirror"]{
+ question: "Which claim statuses can a claim reach from speculative without passing through contested?"
+ instrument: "write the seven claim statuses of the vocabulary as anchors and the allowed moves between them as bias edges, then walk"
+ standing: "a-cut: the statuses come from this cut vocabulary; no canon rule yet says which moves are allowed"
+ !probe{ "draft status anchors and move edges, then run the walk with contested removed" =id[p_contrap_state_walker_status] =kind[build] }
+ vocabulary: ~"../../vocabulary.spw#cut_vocabulary"
+}
+
+^["limits"]{
+ holds: "which regions touch which, and which routes survive when one kind of crossing is removed"
+ fails: "adjacency is not geometry: without pressure and temperature coordinates the walker treats both detours as equally short and cannot apply the Gibbs phase rule"
+}
+
+^["try"]{
+ #>spw_lab_state_walker_try
+ ^["paper_walk"]{
+  materials: [ "a sheet of paper", "a pencil", "scissors" ]
+  steps: << "write ice, liquid, vapor, and supercritical in four corners" ; "draw one arrow per crossing and label it" ; "cut out the boils arrows" ; "count the steps from liquid to vapor" ; "cut out sublimes and count again" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "scissors only; nothing hot or pressurised is involved"
+  shows: ~"./state-walker.spw#spw_lab_state_walker_crossings"
+ }
+}
+
+#>spw_lab_state_walker_q
+?["Would giving each crossing a pressure range break the tie between the two detours?"]{
+ #:depth #!physical ~#lens(scale and dimension)
+ #:claim #!speculative
+ ~#hypothesis: "If crossings carry pressure ranges, the ice detour survives only below the triple-point pressure and the critical detour only above the critical pressure, so the tie disappears at any stated pressure."
+ !probe{ "attach a pressure facet to each crossing and filter the graph before walking" =id[p_contrap_state_walker_pressure] =kind[sim] }
+ $%[mateng.water.triple_point_pa, mateng.water.critical_p_mpa]
+ ~"./state-walker.spw#spw_lab_state_walker_triple" ~#neighbor(nearest)
+ breaks: "a pressure filter still has no temperature path and no metastable states, so supercooled liquid stays invisible"
+}

@@ -1,0 +1,242 @@
+# Address and Linking
+#
+# Link forms read by six tools at one commit: the parser, the LSP, graph, resolve, mount, and expand. Where a fragment lands, where it splits, and where it silently means something else.
+
+#>spw_theory_address
+#:layer #!semantics
+#:domain #!spw_theory
+#:form #!comparison
+#:level #!advanced
+#:review #!sourced
+#:valence #!bonk
+
+^"emit"{
+ ~#title: "Address and Linking"
+ ~#claim: "One anchored link is read six ways: the parser and resolve accept it, mount and expand follow it only inside a bias edge, graph splits it, and the LSP lands on line one."
+ ~#proof: "Cells were verified at commit 1aa1dc23 by writer probes on a scratch corpus and by reading the LSP and seed code; older cells name the understand pass."
+ ~#door: "Read one row of the matrix, then the fragment identity question at the end."
+ ~#audience: "the Spw owner, LSP and CLI authors, and anyone linking claims across this cut"
+ continuity: "Address and Linking | read six ways"
+ cold_open: "One link to an anchor is read six ways by six tools, and only some of them land where you meant."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/understand/linking.md at 229aedcf",
+  ".agents/plans/caches-cut-2026-09-30/references/studies/tokens-synthesis.md section 3, range notation",
+  "link and parser probes run by the writer at 1aa1dc23 on 2026-10-02"
+ ]
+ standing: "pressure surface for the owner; the matrix records behavior and edits nothing"
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ needs: [ ~"./particle-lattice.spw#spw_theory_particle_first_wins" ]
+ grounds: [ ~".spw/registries/bias-product.spw#spw_bias_product", ~"docs/theory/spw/range-transform.spw#range_transform" ]
+ see: [ ~"../../contract.spw#cut_contract" ]
+}
+
+^["concepts"]{
+ primary: [ #fragment, #anchor, #path_ref ]
+ transfers: [ #media_type ]
+ tensions: [ #tool_disagreement ]
+}
+
+^["matrix"]{
+ ^["legend"]{
+  as_of: "commit 1aa1dc23, probes run 2026-10-02"
+  tools: #[ parser, lsp, graph, resolve, mount, expand ]
+  basis: "P marks a writer probe, C a code reading at 1aa1dc23, U the understand pass at 229aedcf"
+ }
+ #>spw_theory_address_row_plain
+ ^["plain_path"]{
+  form: "~\"./x.spw\""
+  parser: "PathRef (P)"
+  lsp: "link to the file (C)"
+  graph: "edge to the file node (P)"
+  resolve: "ok (P)"
+  mount: "not read; mount resolve reads bias edges only (P)"
+  expand: "not inlined; expand follows bias edges (P)"
+ }
+ #>spw_theory_address_row_anchor
+ ^["anchored_path"]{
+  form: "~\"./x.spw#name\""
+  parser: "PathRef; the fragment stays inside the string (P)"
+  lsp: "opens the file at line one (C)"
+  graph: "a separate node for x.spw#name beside the file node (P)"
+  resolve: "ok, anchor checked by regex (P)"
+  mount: "not read (P)"
+  expand: "not inlined (P)"
+ }
+ #>spw_theory_address_row_subdir
+ ^["anchored_subdirectory"]{
+  form: "~\"./sub/x.spw#name\""
+  parser: "PathRef (P)"
+  lsp: "opens the file at line one (C)"
+  graph: "reported broken although file and anchor exist (P)"
+  resolve: "ok (P)"
+  mount: "not read (P)"
+  expand: "not inlined (P)"
+ }
+ #>spw_theory_address_row_frame
+ ^["frame_name_fragment"]{
+  form: "~\"./x.spw#frame_name\" where frame_name names a frame, not an anchor"
+  parser: "PathRef; resolveFragment finds no binding (P)"
+  lsp: "line one even with the anchor fix (C)"
+  graph: "a separate node (P)"
+  resolve: "ok, because the regex also accepts frame names (P)"
+  mount: "missing anchor inside a bias edge (U)"
+  expand: "missing anchor inside a bias edge (U)"
+ }
+ #>spw_theory_address_row_bias
+ ^["bias_edge"]{
+  form: "=ref{ ~\"./x.spw#name\" }"
+  parser: "an = operation whose body holds the PathRef (P)"
+  lsp: "as its inner PathRef, so line one (C)"
+  graph: "as its inner PathRef (P)"
+  resolve: "as its inner PathRef (P)"
+  mount: "checked, anchor verified (P)"
+  expand: "inlines the anchored region with a provenance comment (P)"
+ }
+ #>spw_theory_address_row_root
+ ^["root_with_fragment"]{
+  form: "@root/x.spw#name"
+  parser: "a Reference that stops at the hash, then a detached # mark (P)"
+  lsp: "the file only, when the root is known (U)"
+  graph: "a root pseudo-node, never resolved (P)"
+  resolve: "not counted; resolve reads path refs (P)"
+  mount: "not read (P)"
+  expand: "not read (P)"
+ }
+ #>spw_theory_address_row_outside
+ ^["range_outside_quotes"]{
+  form: "~\"doc.spw\"#:L12-L28"
+  parser: "a PathRef, then a detached #: particle that binds the next node (P)"
+  lsp: "the file only; the regex pass stops at the closing quote (C)"
+  graph: "the file only (P)"
+  resolve: "the file only (P)"
+  mount: "not read (P)"
+  expand: "not read (P)"
+ }
+ #>spw_theory_address_row_inside
+ ^["range_inside_quotes"]{
+  form: "~\"doc.spw#:L12-L28\""
+  parser: "one PathRef (P)"
+  lsp: "line one; resolveFragment has no line-range branch (P)"
+  graph: "a separate node (P)"
+  resolve: "missing anchor (P)"
+  mount: "missing anchor inside a bias edge (P)"
+  expand: "missing anchor inside a bias edge, noted in a comment (P)"
+ }
+ #>spw_theory_address_row_tagged
+ ^["tagged_angle"]{
+  form: "~<tag>\"./x.spw\""
+  parser: "a ~ operation over a capsule and a separate literal, not a PathRef (P)"
+  lsp: "linked by the LSP regex pass, which runs before the parser (C)"
+  graph: "no edge (U)"
+  resolve: "no citation (U)"
+  mount: "not read (U)"
+  expand: "not read (U)"
+  cut_rule: "banned in this cut by the contract"
+ }
+}
+
+^["findings"]{
+ #>spw_theory_address_line_one
+ ^["line_one"]{
+  #:claim #!settled
+  statement: "The LSP resolver returns the path with its fragment still attached, so fragmentRange tries to read a file named x.spw#name, fails, and returns the top of the file."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_code_lsp_navigation"
+  cites: [ "packages/spw-lsp/src/helpers.ts:203-212", "packages/spw-lsp/src/handlers/navigation.ts:63-82", "packages/spw-lsp/src/handlers/navigation.ts:104-108" ]
+  ^["limits"]{
+   holds: "commit 1aa1dc23; a fragment-navigation patch exists in a local worktree and was unapplied when the resume note was written"
+   fails: "after a fix that strips the fragment before reading, anchor rows move to the anchor line and frame rows stay at line one"
+  }
+ }
+ #>spw_theory_address_graph_split
+ ^["graph_split"]{
+  #:claim #!settled
+  statement: "Corpus scan keeps the fragment in the link target, so graph makes x.spw#name its own node and checks its existence as a file, which fails once the path has a directory."
+  sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_code_corpus_scan", ~"../../registries/sources/spw-design-studies.spw#src_lab_probe_links" ]
+  cites: [ "packages/spw-cli/src/corpus-scan.ts:196-206" ]
+ }
+ #>spw_theory_address_resolve_loose
+ ^["resolve_loose"]{
+  #:claim #!settled
+  statement: "spw resolve checks anchors with a regex that also accepts frame names and binding keys, so it passes fragments that the seed and mount reject."
+  sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_code_resolve_citation", ~"../../registries/sources/spw-design-studies.spw#src_lab_probe_links" ]
+  cites: [ "packages/spw-seed/src/canonical/resolve-citation.ts:76-87" ]
+ }
+ #>spw_theory_address_root_no_fragment
+ ^["root_no_fragment"]{
+  #:claim #!settled
+  statement: "A reference path accepts identifiers, text, numbers, dots, and slashes only, so @root/x.spw#name ends at the hash and cannot carry an anchor."
+  sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_code_references", ~"../../registries/sources/spw-design-studies.spw#src_lab_probe_parser" ]
+  cites: [ "packages/spw-seed/src/grammar/references.ts:32-43" ]
+ }
+ #>spw_theory_address_range_quotes
+ ^["range_inside_quotes"]{
+  #:claim #!settled
+  statement: "Canon marks line-range fragments proposed; written outside the quotes they become a stray particle on the next node, so a range belongs inside the path string."
+  sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_canon_range_transform", ~"../../registries/sources/spw-design-studies.spw#src_lab_probe_parser" ]
+  cites: [ "docs/theory/spw/range-transform.spw:78-90" ]
+ }
+ #>spw_theory_address_regex_first
+ ^["regex_first"]{
+  #:claim #!settled
+  statement: "The LSP selects quoted tilde refs with a regex pass before it asks the parser, so it links the tagged angle form that the parser, graph, and resolve do not see as a path."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_code_lsp_selector"
+  cites: [ "packages/spw-lsp/src/spw-selector.ts:121-131", "packages/spw-lsp/src/spw-selector.ts:300-304" ]
+ }
+ #>spw_theory_address_media_type
+ ^["fragment_by_media_type"]{
+  #:claim #!settled
+  statement: "In the URI standard a fragment means whatever the media type of the target says it means, so Spw may define its own fragment grammar for .spw files."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_rfc3986"
+  see: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_rfc5147" ]
+  ~#(the text/plain line fragment is a precedent for ranges, not a rule for Spw)
+ }
+ #>spw_theory_address_location_range
+ ^["location_has_range"]{
+  #:claim #!settled
+  statement: "An LSP definition result is a Location with a range, so a server can land on the anchor line without encoding the line in the URI."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_lsp_3_17"
+ }
+}
+
+^["questions"]{
+ root_fragment: "Should a root-qualified path carry a fragment, and in what form, given that #name after a path lexes as a particle?"
+ anchors_only: "Should anchors be the only addresses, with resolve dropping frame names, or should frames get implicit anchors?"
+ duplicates: "Should a duplicate or trailing anchor produce a diagnostic instead of first-wins silence?"
+ inbound_count: "Should a tool count links into each anchor, as a measure of how much a claim is leaned on?"
+}
+
+#>spw_theory_address_identity_q
+?["Is an anchor a place in one file or an identity across dated editions?"]{
+ #:depth #!historical ~#lens(curated collection)
+ #:claim #!speculative
+ ~#hypothesis: "Treating anchors as identities with supersedes stubs would keep old links alive across editions better than per-file uniqueness, as authority files keep headings stable while records move."
+ !probe{ "rename three anchors in a copy of the cut with supersedes stubs and record which tools still follow old links" =id[p_lab_address_identity] =kind[build] }
+ breaks: "an authority file has a human cataloger behind each change; a cut anchor is renamed by one owner with a refactor tool"
+ raised_by: #[ librarians, engineers_chemists ]
+ $%[graph.in_degree, graph.path_refs]
+ ~"./address-and-linking.spw#spw_theory_address_media_type" ~#neighbor(nearest)
+}
+
+#>spw_theory_address_agree_q
+?["How many of the six tools agree on a link once the line-one fix lands?"]{
+ #:depth #!computational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "The fragment fix moves the LSP into agreement on anchor rows, but graph and resolve still disagree on subdirectory and frame rows until their own fixes land."
+ !probe{ "rerun the nine-row matrix after each pending link patch and record which cells change" =id[p_lab_address_matrix_rerun] =kind[build] }
+ $%[graph.out_degree]
+ ~"./address-and-linking.spw#spw_theory_address_line_one" ~#neighbor(nearest)
+}

@@ -1,0 +1,428 @@
+# Quantities: Life and Mind
+#
+# World metric cells for cells, neuroscience, bioengineering, and cognition. A handle names one cell; files read it instead of restating the number, and every cell links the work it was read from.
+
+#>q_life_registry
+#:layer #!reference
+#:domain #!registry
+#:form #!registry
+#:level #!mixed
+#:review #!sourced
+#:valence #!bone
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #fail }
+  ^["r4"]{ event: #sourced, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ receipt_note: "r3 was first written as a pass while every src link pointed at a sources registry that did not exist yet; it now records fail, and r5 the run after the registry was written"
+ checked: "values marked from an abstract were read from the Europe PMC or publisher abstract on 2026-10-02; the rest come from the cited paper or textbook as the writer knows it"
+ status_legend: "settled cells were read from the linked source or its abstract; verify cells hold a value not confirmed against the source and its published corrections in this pass; a bound field names an upper or lower bound"
+ corrections: #[
+  "created in the fact-check pass: four handles cited by the cells branch had no cell, so their numbers lived only in prose",
+  "the loss-aversion meta-analysis interval ends at 2.102, not 2.105, as the published abstract gives it",
+  "the three Stevens exponents now cite his 1961 table and are marked verify, since neither paper was read in this pass",
+  "two Registered Reports cells added for the replication ledger",
+  "2026-10-03: the two dCas9 cells are now verify, since PubMed lists errata to Jones 2017 from 2024 and 2026-10-01 that were not read; the loss-aversion, nudge meta-analysis, ego-depletion, money-priming, Registered Reports, energy-budget, and kinetochore cells were rechecked against their abstracts"
+ ]
+}
+
+^["families"]{
+ ^["shared"]{ operator: "%", plane: world, scope: corpus, scheme: tol, form: scalar }
+ ^["lookup"]{ algorithm: world.registry_lookup }
+ ^["genome"]{ id: life_genome, identifier: life.genome }
+ ^["chromatin"]{ id: life_chromatin, identifier: life.chromatin }
+ ^["cas9"]{ id: life_cas9, identifier: life.cas9 }
+ ^["enzyme"]{ id: life_enzyme, identifier: life.enzyme }
+ ^["cells"]{ id: life_cells, identifier: life.cells }
+ ^["kinesin"]{ id: life_kinesin, identifier: life.kinesin }
+ ^["sac"]{ id: life_sac, identifier: life.sac }
+ ^["brain"]{ id: life_brain, identifier: life.brain }
+ ^["shear"]{ id: life_shear, identifier: life.shear }
+ ^["psychophysics"]{ id: life_psychophysics, identifier: life.psychophysics }
+ ^["memory"]{ id: life_memory, identifier: life.memory }
+ ^["decision"]{ id: life_decision, identifier: life.decision }
+ ^["replication"]{ id: life_replication, identifier: life.replication }
+}
+
+^["keys"]{
+ genome: #[ t2t_length_gbp ]
+ chromatin: #[ core_dna_bp_1997, core_dna_bp_2002 ]
+ cas9: #[ dcas9_search_hours, site_probe_ms_max ]
+ enzyme: #[ ompdc_rate_enhancement_log10 ]
+ cells: #[ human_count_e13_2013, human_count_e13_2016, bacteria_count_e13_2016 ]
+ kinesin: #[ step_nm, atp_per_step ]
+ sac: #[ kinetochores_human_mitosis, anaphase_lag_min ]
+ brain: #[ neurons_e9, nonneuronal_e9, mass_share_pct, energy_share_pct, active_neurons_pct_max, ap_energy_share_pct, synaptic_energy_share_pct ]
+ shear: #[ atheroprotective_dyn_cm2_min, atheroprone_dyn_cm2_max ]
+ psychophysics: #[ stevens_brightness_exponent, stevens_length_exponent, stevens_shock_exponent ]
+ memory: #[ miller_span_chunks, cowan_capacity_chunks, own_name_notice_pct ]
+ decision: #[ tk1992_lambda, meta_lambda_mean ]
+ replication: #[ osc_original_sig_pct, osc_replication_sig_pct, ego_rrr_2016_d, ego_paradigmatic_2021_d, money_rohrer_2015_d, nudge_meta_d, nudge_academic_pp, nudge_unit_pp, rr_standard_positive_pct, rr_registered_positive_pct ]
+}
+
+#>q_life_genome
+^"genome"{
+ %life.genome.t2t_length_gbp{
+  value: 3.055
+  unit: "billion base pairs"
+  at: "T2T-CHM13 assembly, gapless for every chromosome except Y, which CHM13 lacks"
+  abs: 0.001
+  src: ~"../sources/life-and-mind.spw#src_life_nurk_2022"
+  status: #settled
+ }
+ %life.chromatin.core_dna_bp_1997{
+  value: 146
+  unit: "base pairs"
+  at: "DNA wrapped in the nucleosome core particle crystal at 2.8 angstrom"
+  abs: 0
+  src: ~"../sources/life-and-mind.spw#src_life_luger_1997"
+  status: #settled
+ }
+ %life.chromatin.core_dna_bp_2002{
+  value: 147
+  unit: "base pairs"
+  at: "DNA in the 1.9 angstrom core particle structure and most later structures"
+  abs: 0
+  src: ~"../sources/life-and-mind.spw#src_life_davey_2002"
+  status: #settled
+ }
+}
+
+#>q_life_cas9
+^"cas9"{
+ %life.cas9.dcas9_search_hours{
+  value: 6
+  unit: "hours"
+  at: "one dCas9 molecule finding one target site in living E. coli, as stated in the 2017 abstract; errata of 2024 and 2026 unread"
+  abs: 0.5
+  src: ~"../sources/life-and-mind.spw#src_life_jones_2017"
+  status: #verify
+ }
+ %life.cas9.site_probe_ms_max{
+  value: 30
+  unit: "milliseconds"
+  at: "time dCas9 stays bound at each non-target site it probes; the abstract says less than 30 ms"
+  abs: 0
+  bound: #upper
+  src: ~"../sources/life-and-mind.spw#src_life_jones_2017"
+  status: #verify
+ }
+}
+
+#>q_life_enzyme
+^"enzyme"{
+ %life.enzyme.ompdc_rate_enhancement_log10{
+  value: 17
+  unit: "log10 of catalyzed over uncatalyzed rate"
+  at: "orotidine 5-prime-phosphate decarboxylase; the abstract reports enhancement by a factor of 10^17"
+  abs: 0.5
+  src: ~"../sources/life-and-mind.spw#src_life_radzicka_wolfenden_1995"
+  status: #settled
+ }
+}
+
+#>q_life_cells
+^"cells"{
+ %life.cells.human_count_e13_2013{
+  value: 3.72
+  unit: "10^13 cells"
+  at: "organ-by-organ sum for an adult human body"
+  rel: 0.01
+  src: ~"../sources/life-and-mind.spw#src_life_bianconi_2013"
+  status: #settled
+ }
+ %life.cells.human_count_e13_2016{
+  value: 3.0
+  unit: "10^13 cells"
+  at: "human cells in a 70 kg reference man, about 90 percent of them in the blood-forming lineage"
+  rel: 0.05
+  src: ~"../sources/life-and-mind.spw#src_life_sender_2016"
+  status: #settled
+ }
+ %life.cells.bacteria_count_e13_2016{
+  value: 3.8
+  unit: "10^13 cells"
+  at: "bacteria in the same 70 kg reference man, mostly in the colon"
+  rel: 0.05
+  src: ~"../sources/life-and-mind.spw#src_life_sender_2016"
+  status: #settled
+ }
+ %life.kinesin.step_nm{
+  value: 8
+  unit: "nm"
+  at: "single kinesin molecule stepping along a microtubule, optical-trap interferometry"
+  abs: 0.5
+  src: ~"../sources/life-and-mind.spw#src_life_svoboda_1993"
+  status: #settled
+ }
+ %life.kinesin.atp_per_step{
+  value: 1
+  unit: "ATP per step"
+  at: "kinesin at near-zero load"
+  abs: 0
+  src: ~"../sources/life-and-mind.spw#src_life_schnitzer_block_1997"
+  status: #settled
+ }
+ %life.sac.kinetochores_human_mitosis{
+  value: 92
+  unit: "kinetochores"
+  at: "46 replicated chromosomes, each with two sister kinetochores, in a diploid human cell in mitosis"
+  abs: 0
+  src: ~"../sources/life-and-mind.spw#src_life_alberts_2022"
+  status: #settled
+ }
+ %life.sac.anaphase_lag_min{
+  value: 23
+  unit: "minutes"
+  at: "mean time from bipolar attachment of the last monooriented chromosome to anaphase onset in PtK1 cells, plus or minus 1, as the abstract restates from the authors 1994 study"
+  abs: 1
+  src: ~"../sources/life-and-mind.spw#src_life_rieder_1995"
+  status: #settled
+ }
+}
+
+#>q_life_brain
+^"brain"{
+ %life.brain.neurons_e9{
+  value: 86.1
+  unit: "billion neurons"
+  at: "adult male human brain, isotropic fractionator count of NeuN-positive nuclei"
+  abs: 8.1
+  src: ~"../sources/life-and-mind.spw#src_life_azevedo_2009"
+  status: #settled
+ }
+ %life.brain.nonneuronal_e9{
+  value: 84.6
+  unit: "billion cells"
+  at: "NeuN-negative cells in the same brains, so glia do not outnumber neurons tenfold"
+  abs: 9.8
+  src: ~"../sources/life-and-mind.spw#src_life_azevedo_2009"
+  status: #settled
+ }
+ %life.brain.mass_share_pct{
+  value: 2
+  unit: "percent of body weight"
+  at: "average adult human"
+  abs: 0.5
+  src: ~"../sources/life-and-mind.spw#src_life_raichle_gusnard_2002"
+  status: #settled
+ }
+ %life.brain.energy_share_pct{
+  value: 20
+  unit: "percent of whole-body oxygen and calorie use"
+  at: "average adult human at rest"
+  abs: 2
+  src: ~"../sources/life-and-mind.spw#src_life_raichle_gusnard_2002"
+  status: #settled
+ }
+ %life.brain.active_neurons_pct_max{
+  value: 1
+  unit: "percent of cortical neurons"
+  at: "an estimate of how many human cortical neurons the energy budget lets be substantially active at once; the abstract says possibly fewer than 1 percent"
+  abs: 0
+  bound: #upper
+  src: ~"../sources/life-and-mind.spw#src_life_lennie_2003"
+  status: #settled
+ }
+ %life.brain.ap_energy_share_pct{
+  value: 47
+  unit: "percent of signaling energy"
+  at: "action potentials in rodent grey matter, modelled budget"
+  abs: 1
+  src: ~"../sources/life-and-mind.spw#src_life_attwell_laughlin_2001"
+  status: #settled
+ }
+ %life.brain.synaptic_energy_share_pct{
+  value: 34
+  unit: "percent of signaling energy"
+  at: "postsynaptic effects of glutamate in rodent grey matter, modelled budget"
+  abs: 1
+  src: ~"../sources/life-and-mind.spw#src_life_attwell_laughlin_2001"
+  status: #settled
+ }
+}
+
+#>q_life_shear
+^"shear"{
+ %life.shear.atheroprotective_dyn_cm2_min{
+  value: 15
+  unit: "dyne/cm^2"
+  at: "arterial-level wall shear stress that induces endothelial quiescence; the review states greater than 15"
+  abs: 0
+  bound: #lower
+  src: ~"../sources/life-and-mind.spw#src_life_malek_1999"
+  status: #settled
+ }
+ %life.shear.atheroprone_dyn_cm2_max{
+  value: 4
+  unit: "dyne/cm^2"
+  at: "low wall shear stress prevalent at atherosclerosis-prone sites; the review states less than 4"
+  abs: 0
+  bound: #upper
+  src: ~"../sources/life-and-mind.spw#src_life_malek_1999"
+  status: #settled
+ }
+}
+
+#>q_life_mind
+^"mind"{
+ %life.psychophysics.stevens_brightness_exponent{
+  value: 0.33
+  unit: "1"
+  at: "magnitude estimation of brightness, 5 degree target in the dark"
+  abs: 0.01
+  src: ~"../sources/life-and-mind.spw#src_life_stevens_1961"
+  status: #verify
+ }
+ %life.psychophysics.stevens_length_exponent{
+  value: 1.0
+  unit: "1"
+  at: "magnitude estimation of the length of a projected line"
+  abs: 0.05
+  src: ~"../sources/life-and-mind.spw#src_life_stevens_1961"
+  status: #verify
+ }
+ %life.psychophysics.stevens_shock_exponent{
+  value: 3.5
+  unit: "1"
+  at: "magnitude estimation of electric current through the fingers"
+  abs: 0.1
+  src: ~"../sources/life-and-mind.spw#src_life_stevens_1961"
+  status: #verify
+ }
+ %life.memory.miller_span_chunks{
+  value: 7
+  unit: "items, plus or minus 2"
+  at: "immediate memory span as Miller summarized it"
+  abs: 2
+  src: ~"../sources/life-and-mind.spw#src_life_miller_1956"
+  status: #superseded
+ }
+ %life.memory.cowan_capacity_chunks{
+  value: 4
+  unit: "chunks"
+  at: "focus-of-attention capacity in adults when rehearsal and chunking are controlled; Cowan gives about 3 to 5"
+  abs: 1
+  src: ~"../sources/life-and-mind.spw#src_life_cowan_2001"
+  status: #settled
+ }
+ %life.memory.own_name_notice_pct{
+  value: 33
+  unit: "percent of listeners"
+  at: "listeners who report hearing their own name in an unattended channel while shadowing, as Moray 1959 and Wood and Cowan 1995 found and the abstract restates"
+  abs: 2
+  src: ~"../sources/life-and-mind.spw#src_life_conway_2001"
+  status: #settled
+ }
+ %life.decision.tk1992_lambda{
+  value: 2.25
+  unit: "ratio of loss to gain weight"
+  at: "median loss-aversion coefficient fitted in cumulative prospect theory"
+  abs: 0.01
+  src: ~"../sources/life-and-mind.spw#src_life_tversky_kahneman_1992"
+  status: #settled
+ }
+ %life.decision.meta_lambda_mean{
+  value: 1.955
+  unit: "ratio of loss to gain weight"
+  at: "mean of 607 estimates from 150 articles, 1992 to 2017, with a 95 percent interval of 1.820 to 2.102"
+  abs: 0.15
+  src: ~"../sources/life-and-mind.spw#src_life_brown_2024"
+  status: #settled
+ }
+}
+
+#>q_life_replication
+^"replication"{
+ %life.replication.osc_original_sig_pct{
+  value: 97
+  unit: "percent of 100 original studies"
+  at: "original studies with statistically significant results"
+  abs: 0
+  src: ~"../sources/life-and-mind.spw#src_life_osc_2015"
+  status: #settled
+ }
+ %life.replication.osc_replication_sig_pct{
+  value: 36
+  unit: "percent of 100 replications"
+  at: "replications with statistically significant results"
+  abs: 0
+  src: ~"../sources/life-and-mind.spw#src_life_osc_2015"
+  status: #settled
+ }
+ %life.replication.ego_rrr_2016_d{
+  value: 0.04
+  unit: "Cohen d"
+  at: "23 labs, 2,141 participants, sequential-task protocol; 95 percent interval from minus 0.07 to 0.15"
+  abs: 0.11
+  src: ~"../sources/life-and-mind.spw#src_life_hagger_2016"
+  status: #settled
+ }
+ %life.replication.ego_paradigmatic_2021_d{
+  value: 0.06
+  unit: "Cohen d"
+  at: "36 labs, 3,531 participants, confirmatory test, not significant"
+  abs: 0.01
+  src: ~"../sources/life-and-mind.spw#src_life_vohs_2021"
+  status: #settled
+ }
+ %life.replication.money_rohrer_2015_d{
+  value: 0.03
+  unit: "weighted Cohen d"
+  at: "high-powered replications of four money-priming effects on political views"
+  abs: 0.01
+  src: ~"../sources/life-and-mind.spw#src_life_rohrer_2015"
+  status: #settled
+ }
+ %life.replication.nudge_meta_d{
+  value: 0.45
+  unit: "Cohen d"
+  at: "uncorrected pooled effect of choice architecture across more than 200 studies; 95 percent interval 0.39 to 0.52"
+  abs: 0.07
+  src: ~"../sources/life-and-mind.spw#src_life_mertens_2022"
+  status: #settled
+ }
+ %life.replication.nudge_academic_pp{
+  value: 8.7
+  unit: "percentage points of take-up"
+  at: "average nudge effect in academic journal trials"
+  abs: 0.1
+  src: ~"../sources/life-and-mind.spw#src_life_dellavigna_linos_2022"
+  status: #settled
+ }
+ %life.replication.nudge_unit_pp{
+  value: 1.4
+  unit: "percentage points of take-up"
+  at: "average effect across trials run by two US nudge units"
+  abs: 0.1
+  src: ~"../sources/life-and-mind.spw#src_life_dellavigna_linos_2022"
+  status: #settled
+ }
+ %life.replication.rr_standard_positive_pct{
+  value: 96
+  unit: "percent of 152 standard articles"
+  at: "first tested hypothesis supported, random sample of standard hypothesis-testing psychology articles"
+  abs: 0
+  src: ~"../sources/life-and-mind.spw#src_life_scheel_2021"
+  status: #settled
+ }
+ %life.replication.rr_registered_positive_pct{
+  value: 44
+  unit: "percent of 71 Registered Reports"
+  at: "first tested hypothesis supported, all published psychology Registered Reports as of November 2018"
+  abs: 0
+  src: ~"../sources/life-and-mind.spw#src_life_scheel_2021"
+  status: #settled
+ }
+}

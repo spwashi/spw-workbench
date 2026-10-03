@@ -7,7 +7,7 @@
 #:domain #!mathematics
 #:form #!ledger
 #:level #!graduate
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -21,14 +21,19 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-02"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/university-education/mathematics/graduate-algebra-and-algebraic-topology.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
  }
  corrections: #[
   "van Kampen now requires open, path-connected pieces with a nonempty path-connected intersection containing the basepoint",
@@ -117,7 +122,7 @@
    sources: [ ~"../../registries/sources/formal.spw#src_formal_hatcher_2002", ~"../../registries/sources/formal.spw#src_formal_vankampen_1933" ]
    ^["limits"]{
     holds: "open pieces, each path-connected, with a path-connected overlap containing the basepoint"
-    fails: "two closed arcs meeting in two points cover the circle but have a disconnected overlap, and the formula would wrongly give the trivial group"
+    fails: "two open arcs can cover the circle only by overlapping in two separate pieces, and with that disconnected overlap the formula would wrongly give the trivial group"
    }
   }
   #>mathematics_ga_coverings
@@ -159,7 +164,7 @@
  #>mathematics_ga_try_van_kampen
  ^["break_the_overlap"]{
   materials: [ "a rubber band or string loop", "two strips of paper", "pencil" ]
-  steps: << "lay the loop flat and cover it with two overlapping strips" ; "note that the overlap is two separate pieces" ; "slide the strips so the overlap becomes one piece and see that one strip no longer covers a loop part" ; "write why the formula needs a connected overlap" >>
+  steps: << "lay the loop flat and cover it with two overlapping strips" ; "note that the overlap is two separate pieces" ; "slide the strips so the overlap becomes one piece and see that the strips no longer cover the whole loop" ; "write why the formula needs a connected overlap" >>
   time: .{ n: 15, unit: "minutes" }
   safety: "no hazard worth naming"
   shows: ~"./graduate-algebra-and-topology.spw#mathematics_ga_van_kampen"

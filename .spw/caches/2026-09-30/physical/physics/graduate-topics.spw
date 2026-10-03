@@ -1,0 +1,239 @@
+# Graduate Physics Topics
+#
+# The graduate core from canonical mechanics to field-theory preparation, with critical phenomena and topological matter stated precisely enough to keep water and iron apart.
+
+#>physics_graduate
+#:layer #!reference
+#:domain #!physics
+#:form #!ledger
+#:level #!graduate
+#:review #!adversarial_checked
+#:valence #!bone
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Graduate Physics Topics"
+ ~#claim: "Universality classes depend on dimension and order-parameter symmetry, so water's critical point and iron's Curie point fall in different classes."
+ ~#proof: "Pelissetto and Vicari for critical exponents; TKNN, Haldane, and Kane and Mele for Chern and Z2 invariants; Goldstein, Jackson, and Sakurai for the core."
+ ~#door: "Start with the universality claim, then read the Chern and Z2 pair before the quantum Hall rung."
+ ~#audience: "first-year graduate students and advanced undergraduates preparing for qualifying exams"
+ continuity: "Graduate Physics Topics | different classes"
+ cold_open: "Boiling water and magnetizing iron both go critical, but they belong to different classes, and the symmetry of what orders tells you which."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/physics-and-mechanical-engineering/masters-physics.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "re-run after the 2026-10-03 fact-check fixes; no failing lines" }
+ }
+ corrections: #[
+  "water and iron are not one universality class: the liquid-gas point is 3D Ising, the isotropic magnet is close to 3D Heisenberg",
+  "Z2 Chern number split into a Chern number for broken time-reversal symmetry and a Z2 invariant for time-reversal-invariant insulators",
+  "the claim that a particle literally explores every path is kept as a reading of the path integral, not a measured fact",
+  "the ARPES hypothesis about entanglement topology outranking symmetry was replaced by a direction-only wonder",
+  "fact-check 2026-10-03: the r4 fact-check receipt was dated 2026-10-01, before the receipts it followed; it is re-dated 2026-10-02, the day that pass ran"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./core-sequence.spw#physics_core", ~"./statistical-mechanics.spw#physics_statmech" ]
+ extends: [ ~"./electromagnetism.spw#physics_em" ]
+ grounds: [ ~"../../registries/quantities/physical-sciences-and-image.spw#q_phys_critical" ]
+ see: [ ~"../physical-glossary.spw#physical_term_phase_transition" ]
+}
+
+^["concepts"]{
+ primary: [ #universality, #symmetry, #gauge ]
+ transfers: [ #phase_diagram, #fluctuation ]
+ tensions: [ #topology ]
+}
+
+^["mechanics"]{
+ #>physics_graduate_liouville
+ ^["phase_space"]{
+  #:claim #!settled
+  statement: "Hamiltonian flow preserves phase-space volume, which is Liouville's theorem, and canonical transformations are exactly the changes of variables that keep that structure."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_goldstein_2002"
+ }
+ #>physics_graduate_kam
+ ^["kam"]{
+  #:claim #!settled
+  statement: "Kolmogorov, Arnold, and Moser showed that most invariant tori of an integrable system survive small perturbations, while resonant ones break into chaotic layers."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_arnold_1989"
+  era: 1954..1963
+ }
+}
+
+^["electrodynamics"]{
+ #>physics_graduate_covariant
+ ^["covariant_form"]{
+  #:claim #!settled
+  statement: "Written with the field tensor F_mu_nu, Maxwell's equations take a manifestly Lorentz-covariant form, and E squared minus c squared B squared and E dot B are invariants."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_jackson_1999"
+ }
+ #>physics_graduate_radiation_reaction
+ ^["radiation_reaction"]{
+  #:claim #!settled
+  statement: "The Abraham-Lorentz-Dirac equation for a radiating point charge admits runaway and pre-accelerating solutions, a known defect of classical point-particle electrodynamics."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_jackson_1999"
+ }
+}
+
+^["quantum"]{
+ #>physics_graduate_path_integral
+ ^["path_integral"]{
+  #:claim #!settled
+  statement: "Feynman wrote the transition amplitude as a sum over paths weighted by exp(iS/hbar); stationary-action paths dominate as hbar shrinks, recovering classical mechanics."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_feynman_1948"
+  ^["reading"]{
+   #:claim #!interpretive
+   statement: "Saying a particle explores every path is a reading of the calculation; the formalism sums amplitudes and does not report trajectories."
+  }
+ }
+ #>physics_graduate_second_quantization
+ ^["second_quantization"]{
+  #:claim #!settled
+  statement: "Fock space with creation and annihilation operators handles variable particle number and builds in boson symmetry or fermion antisymmetry from the operator algebra."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_sakurai_2020"
+  context: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_wen_2004"
+ }
+ #>physics_graduate_dirac
+ ^["relativistic_waves"]{
+  #:claim #!settled
+  statement: "The Klein-Gordon equation has no positive-definite probability density; the Dirac equation fixes that for spin one-half and forced the prediction of antiparticles."
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_sakurai_2020", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_peskin_schroeder_1995" ]
+ }
+}
+
+^["critical_phenomena"]{
+ #>physics_graduate_universality
+ ^["universality"]{
+  #:claim #!settled
+  statement: "Critical exponents depend on dimension and order-parameter symmetry, not microscopic detail: liquid-gas points fall in the 3D Ising class, isotropic magnets near 3D Heisenberg."
+  reads: %[phys.critical.ising3d_nu, phys.critical.heisenberg3d_nu]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_pelissetto_vicari_2002"
+  ~#say(what orders decides the class, not what it is made of)
+  ^["limits"]{
+   holds: "short-range interactions near a continuous transition"
+   fails: "long-range forces, quenched disorder, and crossover regions shift the effective exponents"
+  }
+ }
+ #>physics_graduate_raw_universality
+ ^["raw_water_iron"]{
+  #:claim #!refuted
+  statement: "The raw generation said boiling water and magnetizing iron share identical critical exponents; a scalar density and a three-component magnetization order differently."
+  reads: %[phys.critical.water_tc_k, phys.critical.iron_curie_k]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_pelissetto_vicari_2002"
+ }
+ #>physics_graduate_mermin_wagner
+ ^["mermin_wagner"]{
+  #:claim #!settled
+  statement: "With short-range interactions, a continuous symmetry cannot break spontaneously at nonzero temperature in one or two dimensions."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_mermin_wagner_1966"
+ }
+ #>physics_graduate_bkt
+ ^["bkt"]{
+  #:claim #!settled
+  statement: "The 2D XY model still has a transition, driven by the binding and unbinding of vortex pairs, found by Berezinskii and by Kosterlitz and Thouless."
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_berezinskii_1971", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_kosterlitz_thouless_1973" ]
+  era: 1971..1973
+ }
+ #>physics_graduate_rg
+ ^["renormalization_group"]{
+  #:claim #!settled
+  statement: "Wilson's renormalization group explains universality: coarse-graining flows many microscopic models to one fixed point, whose linearized flow sets the exponents."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_wilson_1971"
+  text: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_kardar_2007"
+ }
+}
+
+^["condensed_matter"]{
+ #>physics_graduate_bloch
+ ^["bands"]{
+  #:claim #!settled
+  statement: "In a periodic crystal, electron states are Bloch waves labeled by crystal momentum, and gaps between bands decide whether a material conducts."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_ashcroft_mermin_1976"
+ }
+ #>physics_graduate_bcs
+ ^["superconductivity"]{
+  #:claim #!settled
+  statement: "Bardeen, Cooper, and Schrieffer explained conventional superconductivity by phonon-mediated pairing of electrons into a condensate with an energy gap."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_bcs_1957"
+ }
+ ^["topology"]{
+  #>physics_graduate_qhe
+  ^["quantum_hall"]{
+   #:claim #!settled
+   statement: "Von Klitzing found Hall resistance plateaus quantized to h over integer times e squared; TKNN tied the integer to a topological Chern number of the filled bands."
+   reads: %[phys.const.von_klitzing_ohm]
+   sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_von_klitzing_1980", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_tknn_1982" ]
+  }
+  #>physics_graduate_chern_vs_z2
+  ^["chern_vs_z2"]{
+   #:claim #!settled
+   statement: "A Chern number is an integer invariant of bands that break time-reversal symmetry; time-reversal-invariant insulators carry a separate Z2 invariant, as Kane and Mele showed."
+   sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_haldane_1988", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_kane_mele_2005" ]
+   review: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_hasan_kane_2010"
+   ^["limits"]{
+    holds: "noninteracting band insulators with a gap"
+    fails: "strongly interacting topological phases need invariants beyond band topology"
+   }
+  }
+  #>physics_graduate_raw_z2_chern
+  ^["raw_z2_chern"]{
+   #:claim #!refuted
+   statement: "The raw generation wrote Z2 Chern numbers as one invariant; Chern numbers and Z2 indices classify different symmetry classes."
+   source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_hasan_kane_2010"
+  }
+  #>physics_graduate_qsh_2007
+  ^["quantum_spin_hall"]{
+   #:claim #!settled
+   statement: "Koenig and colleagues observed the quantum spin Hall state in HgTe quantum wells in 2007, the first two-dimensional Z2 topological insulator."
+   source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_konig_2007"
+  }
+ }
+}
+
+^["standing"]{
+ #>physics_graduate_gauge_reading
+ ^["gauge_principle"]{
+  #:claim #!interpretive
+  statement: "Demanding local phase invariance and then finding that it requires the electromagnetic field is a powerful reading of gauge theory; historically the field came first."
+  context: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_jackson_okun_2001"
+ }
+}
+
+#>physics_graduate_blind_class_q
+?["Could exponents measured blind tell a fluid critical point from a magnet?"]{
+ #:depth #!mathematical ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Finite-size scaling fits from simulations of modest size should already separate the Ising and Heisenberg values of nu, so a blind fit should name the class."
+ !probe{ "simulate 3D Ising and Heisenberg lattices at several sizes and fit nu without labels" =id[p_phys_graduate_blind_class] =kind[sim] }
+ $%[phys.critical.ising3d_nu, phys.critical.heisenberg3d_nu]
+ ~"./graduate-topics.spw#physics_graduate_universality" ~#neighbor(nearest)
+}
+
+#>physics_graduate_topology_q
+?["Does topology replace symmetry as the way phases of matter are sorted?"]{
+ #:depth #!physical ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Topological classifications should extend rather than replace symmetry, because each topological invariant is defined only within a stated symmetry class."
+ !probe{ "list the topological phases in recent reviews and record which symmetry each invariant assumes" =id[p_phys_graduate_topology] =kind[lit] }
+ $%[phys.const.von_klitzing_ohm]
+ ~"./graduate-topics.spw#physics_graduate_chern_vs_z2" ~#neighbor(nearest)
+}

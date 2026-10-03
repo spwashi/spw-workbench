@@ -7,7 +7,7 @@
 #:domain #!generations
 #:form #!comparison
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!honk
 #:era #!modern
 
@@ -29,9 +29,12 @@
  method: #authored
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
  }
+ corrections: #[ "fact check: the refuted natural-reading row named the refuting review as its source and Goodman as its counter; it now says where the claim came from and holds Castles and colleagues under checked_against" ]
 }
 
 ^["edges"]{
@@ -58,6 +61,7 @@
   statement: "The National Reading Panel found systematic phonics instruction helped children from kindergarten through grade 6, and struggling readers, more than instruction without it."
   sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_nrp_2000", ~"../../registries/sources/learning-and-generations.spw#src_learn_chall_1967" ]
   lineage: "Flesch made the popular case in 1955; Chall reviewed the research in 1967"
+  popular_case: ~"../../registries/sources/learning-and-generations.spw#src_learn_flesch_1955"
   era: 1955..2000
  }
 
@@ -65,9 +69,12 @@
  ^["natural_reading"]{
   #:claim #!refuted
   statement: "Children learn to read naturally, as they learn to speak, by immersion in meaningful text."
-  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_castles_2018"
-  counter: ~"../../registries/sources/learning-and-generations.spw#src_learn_goodman_1967"
-  finding: "writing is a recent invention, so the letter-to-sound code must be taught; immersion alone leaves many children without it"
+  claimed_in: "whole language teaching, which drew on Goodman's account of reading as a psycholinguistic guessing game"
+  background: ~"../../registries/sources/learning-and-generations.spw#src_learn_goodman_1967"
+  ^["checked_against"]{
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_castles_2018"
+   finding: "writing is a recent invention, so the letter-to-sound code must be taught; immersion alone leaves many children without it"
+  }
  }
 
  #>generations_wars_cueing
@@ -76,7 +83,7 @@
   statement: "Balanced literacy taught readers to identify words from meaning, sentence structure, and visual cues; critics say this trains guessing in place of decoding."
   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_castles_2018"
   counter: ~"../../registries/sources/learning-and-generations.spw#src_learn_clay_2005"
-  origin: "the cueing systems trace to Marie Clay in New Zealand, whose Reading Recovery spread internationally"
+  origin: "the cueing model draws on Goodman psycholinguistic theory and on Marie Clay running records from New Zealand, whose Reading Recovery spread internationally"
   public: ~"../../registries/sources/learning-and-generations.spw#src_learn_hanford_2022"
  }
 
@@ -113,8 +120,8 @@
  ^["nctm_standards"]{
   #:claim #!contested
   statement: "The 1989 NCTM standards stressed problem solving, reasoning, and calculator use; opponents argued they neglected skills and algorithms, starting the 1990s math wars."
-  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_nctm_1989"
-  counter: ~"../../registries/sources/learning-and-generations.spw#src_learn_schoenfeld_2004"
+  sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_nctm_1989", ~"../../registries/sources/learning-and-generations.spw#src_learn_schoenfeld_2004" ]
+  disagreement: "reformers weighed understanding and reasoning; critics weighed fluent procedures; the 2008 panel later asked for both"
  }
 
  #>generations_wars_nmap
@@ -169,6 +176,7 @@
  #:claim #!speculative
  ~#hypothesis: "Each reform is resisted most by parents who learned under the reform before it, so debates recur as cohorts become parents."
  !probe{ "date the peaks of press coverage for reading and math fights and compare with cohort parenting ages" =id[p_learn_wars_pendulum] =kind[census] }
+ $%[learn.policy.states_reading_laws_count]
  ~"./curriculum-wars-matrix.spw#generations_wars_nctm" ~#neighbor(nearest)
 }
 

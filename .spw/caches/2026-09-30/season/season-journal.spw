@@ -7,7 +7,7 @@
 #:domain #!season
 #:form #!story_kit
 #:level #!intro
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!boon
 #:season #!reflection
 
@@ -29,9 +29,19 @@
  method: #authored
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #fail, note: "one unresolved ref to a planned file not yet written" }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "the biological clocks ref resolves now that its file is written" }
  }
+ corrections: #[
+  "the Wisconsin record is credited to Leopold and Jones together",
+  "the noticing probe now compares a maker with their own earlier season instead of counting across people",
+  "fact check 2026-10-02: r3 recorded a gate pass, but the gate failed this surface on one ref to a file not yet written; r3 now records the failure"
+ ]
 }
 
 ^["edges"]{
@@ -122,7 +132,7 @@
  #>season_journal_records
  ^["long_records"]{
   #:claim #!settled
-  statement: "Long phenology records come from patient notebooks: Kyoto cherry-bloom dates reach back to the ninth century, and Leopold kept a decade of Wisconsin notes."
+  statement: "Long phenology records come from patient notebooks: Kyoto cherry-bloom dates reach back to the ninth century, and Leopold and Jones published a decade of Wisconsin records."
   sources: [
    ~"../registries/sources/season.spw#src_season_aono_kazui_2008",
    ~"../registries/sources/season.spw#src_season_leopold_jones_1947"
@@ -173,8 +183,8 @@
 ?["Does writing outside notes beside work notes change what a maker notices?"]{
  #:depth #!experiential ~#lens(bodily rhythm)
  #:claim #!speculative
- ~#hypothesis: "Makers who keep both headings for the whole season should name more seasonal cues in their final retrospective than makers who log work alone."
- !probe{ "count seasonal cues named in year-end retrospectives, both headings versus work only" =id[p_season_journal_noticing] =kind[field] }
+ ~#hypothesis: "A maker who keeps both headings for a whole season should name more seasonal cues in that year-end retrospective than in an earlier season logged as work alone."
+ !probe{ "a maker rereads two of their own year-end retrospectives, one with outside notes and one without" =id[p_season_journal_noticing] =kind[field] }
  $%[season.arc.week_count]
  ~"./season-journal.spw#season_journal_page" ~#neighbor(nearest)
 }

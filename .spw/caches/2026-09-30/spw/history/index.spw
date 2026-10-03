@@ -1,0 +1,111 @@
+# Workbench History
+#
+# This repository read as evidence: its commit episodes, plan cards, commit gate, editor and command-line arcs, curriculum plans, and the cut that contains this page.
+
+#>workbench_history_index
+#:layer #!reference
+#:domain #!workbench_history
+#:form #!index
+#:level #!intro
+#:review #!sourced
+#:valence #!bone
+#:era #!current
+
+^"emit"{
+ ~#title: "Workbench History"
+ ~#claim: "The repository's own record, from its first commit on 2026-01-08 to this cut, is evidence a reader can check like any other case."
+ ~#proof: "Leaves cite git history at commit 1aa1dc23, plan cards, hooks, and the cut's own provenance by path."
+ ~#door: "Start with the episode timeline, then pick the arc closest to your work."
+ ~#audience: "newcomers to the workbench and readers comparing internal cases with outside ones"
+ continuity: "Workbench History | evidence"
+ cold_open: "This workbench keeps its own history as evidence, and each page here shows where to check it."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ privacy: "people appear as roles, the owner and an outside contributor; no episode body is quoted and no local path appears"
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/spw-hosts-and-history.spw#q_hosts_history" ]
+ contrasts: [ ~"../../making/authorship/kindle-unlimited-case.spw#authorship_kindle_unlimited", ~"../../society/platforms/twitch-plays-pokemon.spw#live_platforms_twitch_plays", ~"../../making/broadcast/serial-2014-case.spw#broadcast_serial_case" ]
+}
+
+^["concepts"]{
+ primary: [ #episode_block, #plan_card, #commit_gate ]
+ transfers: [ #code_verified ]
+ tensions: [ #rewritten_history ]
+}
+
+^["tree"]{
+ episodes: ~"./episode-timeline.spw"
+ plans: ~"./plan-ecology.spw"
+ editors: ~"./editor-extension-arcs.spw"
+ cli: ~"./cli-arcs.spw"
+ commit_gate: ~"./commit-gate.spw"
+ curriculum: ~"./curriculum-plans.spw"
+ this_cut: ~"./this-cut.spw"
+}
+
+^["bundle"]{
+ ={ ~"./episode-timeline.spw#workbench_history_episodes" }
+ ={ ~"./plan-ecology.spw#workbench_history_plans" }
+ ={ ~"./commit-gate.spw#workbench_history_commit_gate" }
+}
+
+^["leaves"]{
+ episodes: .{ concept: #episode_block, form: #timeline }
+ plans: .{ concept: #plan_card, form: #dossier }
+ editors: .{ concept: #thin_client, form: #dossier }
+ cli: .{ concept: #command_surface, form: #dossier }
+ commit_gate: .{ concept: #commit_gate, form: #state_machine }
+ curriculum: .{ concept: #learning_ladder, form: #dossier }
+ this_cut: .{ concept: #receipt, form: #dossier }
+}
+
+^["stance"]{
+ #>workbench_history_index_scale
+ ^["scale"]{
+  #:claim #!settled
+  statement: "At commit 1aa1dc23 the history holds 514 commits from a root commit authored on 2026-01-08."
+  reads: %[hosts.history.commit_count, hosts.history.first_commit_date]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log"
+ }
+ #>workbench_history_index_equal_footing
+ ^["equal_footing"]{
+  #:claim #!interpretive
+  statement: "Internal history sits beside outside cases on equal footing: each dossier here pairs with a well-known case elsewhere in the cut."
+  provenance_label: "a-cut principle from the final plan"
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_cut_plan"
+ }
+ ^["pairs"]{
+  plans: .{ with: "Kindle Unlimited, where a payment rule changed what a book is shaped to do" }
+  commit_gate: .{ with: "Twitch Plays Pokemon, where a crowd shared one controller; here many agents share one human key" }
+  curriculum: .{ with: "Serial, a season released weekly; here three curricula authored ahead and none yet scaffolded" }
+ }
+}
+
+^["gaps"]{
+ before_2026: "nothing from before 2026-01-08 is in this checkout; earlier versions survive only as dated spec files under lib"
+ people: "contributors other than the owner appear only as roles, and two merged pull requests are counted, not named"
+ obsidian: "the Obsidian plugin exists only as a dormant plan card"
+}
+
+#>workbench_history_index_q
+?["Does reading a repository as a case change what a newcomer asks first?"]{
+ #:depth #!historical ~#lens(historical layer)
+ #:claim #!speculative
+ ~#hypothesis: "Newcomers who start from the episode timeline should ask why a thing changed before asking how to run it."
+ !probe{ "ask two consenting newcomer groups to write their first three questions, one after the timeline and one after the README" =id[p_hosts_history_first_question] =kind[interview] }
+ $%[hosts.history.commit_count, hosts.history.episode_commit_count]
+ ~"./index.spw#workbench_history_index_scale" ~#neighbor(nearest)
+}

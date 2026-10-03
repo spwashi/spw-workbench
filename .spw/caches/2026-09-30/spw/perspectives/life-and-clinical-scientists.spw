@@ -1,0 +1,170 @@
+# Perspective: Life and Clinical Scientists
+#
+# Lab notation, pathway arrows, reference intervals, and evidence grades set against claim status, with the harm firewall written as a design requirement and no dose or medication concentration anywhere.
+
+#>spw_perspectives_life_clinical
+#:layer #!pragmatics
+#:domain #!spw_perspectives
+#:form #!protocol
+#:level #!intro
+#:review #!unreviewed
+#:valence #!bane
+
+^"emit"{
+ ~#title: "Perspective: Life and Clinical Scientists"
+ ~#claim: "Safety-culture readers already keep a list of marks that must not be written; Spw adds its own silent drops, so a note moves in only after its scope is fixed and its ranges are quoted."
+ ~#proof: "Probes at commit 1aa1dc23 split a bare range, drop a leading decimal point, and turn a variant description to prose; quoted forms survive."
+ ~#door: "Read the scope frame first, then the leading-decimal row beside the Do Not Use list."
+ ~#audience: "biologists, lab scientists, clinicians, and nurses who read notation for safety first"
+ continuity: "Perspective: Life and Clinical Scientists | scope is fixed"
+ cold_open: "A clinical note moves into Spw only after its scope is fixed and every range sits in quotes."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "persona study doors entry life_clinical, filtered, and metaphor_limits for life science and clinical",
+  "notation probes run by the writer at commit 1aa1dc23 on 2026-10-03 with generic values only"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the study door listed a medication dilution ratio, a saline concentration, and an early-warning score vignette; all three are removed, and the rows use generic bands and identifiers only",
+  "the study proposed hand-scoring an early-warning vignette as a try kit; a scoring exercise reads as clinical practice, so the kit here audits notation instead"
+ ]
+}
+
+^["scope"]{
+ #>spw_perspectives_life_clinical_scope
+ ^["educational_only"]{
+  #:claim #!settled
+  statement: "This surface is educational reference about notation; it gives no clinical instruction, no dose, no medication concentration, no score threshold for care, and no remediation."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_contract"
+  label: "a-cut rule from the contract integrity and ethics frames"
+ }
+ guidelines: "clinical guidelines, each with its body, version, and year, live in the nursing guideline ledger; this surface names notation standards only"
+ guideline_home: ~"../../living/nursing/guideline-currency-ledger.spw#nursing_guideline_ledger"
+ values: "every number below is a generic placeholder chosen to show a parse, never a reference value for any analyte"
+}
+
+^["edges"]{
+ feeds: [ ~"../doors/angle.spw#spw_door_angle", ~"../doors/edge.spw#spw_door_edge" ]
+ see: [ ~"../specimens/lab-and-data.spw#spw_spec_lab_data", ~"../theory/epistemic-status.spw#spw_theory_status_grade" ]
+}
+
+^["standing"]{
+ #>spw_perspectives_life_clinical_standing
+ ^["hypothesis"]{
+  #:claim #!interpretive
+  statement: "This protocol was written by an agent outside the cluster; it stays unreviewed until a lab scientist or clinician checks that each row reads true to how their notation is used."
+  member_probe: "a member checks each row against their own lab or ward notation, never patient records, and marks which rows matched"
+ }
+}
+
+^["firewall"]{
+ #>spw_perspectives_life_clinical_firewall
+ ^["design_requirement"]{
+  #:claim #!interpretive
+  statement: "A harm firewall is a design requirement here, not a disclaimer: the surface must stay useless as an order, so no dose, concentration, or care threshold may be written at all."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_contract"
+  ~#(the persona study reads this cluster as trusting surfaces that name hazards first)
+ }
+ #>spw_perspectives_life_clinical_do_not_use
+ ^["do_not_use"]{
+  #:claim #!settled
+  statement: "The Joint Commission keeps an official Do Not Use list of abbreviations and number forms, including a trailing zero and a missing leading zero, because each has been misread in orders."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_tjc_do_not_use"
+  as_of: "list in force since 2004; read the current fact sheet before quoting its wording"
+ }
+ #>spw_perspectives_life_clinical_leading_dot
+ ^["leading_decimal"]{
+  #:claim #!settled
+  statement: "A missing leading zero fails in Spw too: x: .5 binds a bare dot operation and leaves 5 loose, while a trailing zero such as 5.0 stays one literal."
+  probe_run: "both lines parsed at 1aa1dc23 with no error and no warning"
+  see: ~"../specimens/code-habits.spw#spw_spec_code_leading_dot"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+  breaks: "the list bans the trailing zero for human readers, while the parser keeps it; the two hazards overlap only on the leading zero"
+ }
+}
+
+^["protocol"]{
+ #>spw_perspectives_life_clinical_ranges
+ ^["reference_bands"]{
+  #:claim #!settled
+  habit: "a reference interval typed as a bare range such as 12.5-20.0"
+  statement: "A bare range splits: the hyphen is a lexer error, the first number binds, and the second is left loose, while the parse still reports success."
+  probe_run: "band: 12.5-20.0 at 1aa1dc23 bound band to 12.5 and left 20.0 as a sibling"
+  write_instead: "a facet with low and high strings beside the population, the method, and the laboratory"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_lexer"
+ }
+ #>spw_perspectives_life_clinical_population
+ ^["population_band"]{
+  #:claim #!settled
+  statement: "A reference interval is established for a defined reference population with a stated method, so it describes that population and method rather than a constant of nature."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_clsi_ep28_2010"
+  breaks: "a registry cell holds one value with a tolerance, while a reference band needs a population and a method beside it"
+ }
+ #>spw_perspectives_life_clinical_variants
+ ^["variant_names"]{
+  #:claim #!settled
+  habit: "a sequence variant in HGVS form, or a star-allele name, typed bare"
+  statement: "An HGVS substitution carries a greater-than sign, so typed bare it turns the whole surface to prose; a bare star-allele name splits at the star."
+  probe_run: "v: c.76A>T degraded to prose at 1aa1dc23; allele: CYP2D6*4 split into a name, a bare star operation, and 4; both survived in quotes"
+  sources: [ ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_den_dunnen_2016", ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar" ]
+ }
+ #>spw_perspectives_life_clinical_pathways
+ ^["pathway_arrows"]{
+  #:claim #!interpretive
+  habit: "an inhibition arrow such as mdm2 -| p53, and the activation and inhibition glyphs of a pathway diagram"
+  spw: "typed bare, the hyphen is a lexer error and the bar joins the two names; sign belongs in the axis of a bias edge"
+  probe_run: "edge: mdm2 -| p53 at 1aa1dc23 reported one lexer error and joined mdm2 and p53 with a bar connector"
+  standard: "the Systems Biology Graphical Notation defines three languages: Process Description, Entity Relationship, and Activity Flow"
+  breaks: "a pathway edge holds in one cell type and condition, while a bias edge carries no context unless the author writes one"
+  see: ~"../specimens/lab-and-data.spw#spw_spec_lab_data_inhibition"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_le_novere_2009"
+ }
+ #>spw_perspectives_life_clinical_grade
+ ^["evidence_and_status"]{
+  #:claim #!interpretive
+  statement: "GRADE certainty and a Spw claim status answer different questions: one rates a body of evidence for one outcome, the other records agreement among the sources a surface cites."
+  example: ~"../theory/epistemic-status.spw#spw_theory_status_grade"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_guyatt_2008"
+  breaks: "a settled claim may rest on low-certainty evidence that everyone repeats, so status never stands in for a grade"
+ }
+ times: .{ habit: "a draw time written with an at sign", observed: "drawn: @0800 gave a reference node named 0800", see: ~"../doors/at.spw#spw_door_at_reference" }
+ steps: << "fix the scope frame first" ; "strip every dose, concentration, and care threshold" ; "quote each range, allele, and variant description" ; "name the notation standard each row follows" ; "keep evidence grade apart from claim status" ; "run the cut gate before sharing" >>
+}
+
+^["tools"]{
+ gate: .{ command: "the cut gate", use: "fails lexer errors, prose fallback, and swallowed lines", status: #implemented, cites: "scripts/analyzers/spw-cut-gate.ts:193-217" }
+ sign_walker: .{ contraption: "sign-walker", use: "multiply signs around a feedback loop", status: #proposed }
+ band_coverage: .{ contraption: "band-coverage", use: "check that quoted bands cover a range without gaps", status: #proposed }
+}
+
+^["try"]{
+ #>spw_perspectives_life_clinical_try
+ ^["notation_audit"]{
+  materials: [ "one page of your own lab notation or a published methods section", "a printed copy of the Do Not Use list", "the specimen rows linked above" ]
+  steps: << "mark each item the Do Not Use list would flag" ; "mark each item a Spw hazard row would flag" ; "circle the items both lists flag" ; "write the quoted form for every marked item" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "use lab notation or published text only, never patient records, and write no dose or concentration"
+  shows: ~"./life-and-clinical-scientists.spw#spw_perspectives_life_clinical_leading_dot"
+ }
+}
+
+#>spw_perspectives_life_clinical_q
+?["Do the silent Spw drops fall on the marks the Do Not Use list already bans?"]{
+ #:depth #!ethical ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "The overlap is partial: the missing leading zero fails in both, while sign loss and split exponents are lexer hazards the list never needed to name."
+ !probe{ "line up each Do Not Use entry against the specimen rows and mark where the two lists name the same mark" =id[p_doors_life_clinical_overlap] =kind[lookup] }
+ breaks: "the list protects a human reader of an order, while the Spw hazards come from a lexer, so one mark can fail for two unrelated reasons"
+ ~"./life-and-clinical-scientists.spw#spw_perspectives_life_clinical_leading_dot" ~#neighbor(nearest)
+}

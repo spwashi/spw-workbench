@@ -1,0 +1,207 @@
+# Cellular Neurobiology
+#
+# Membrane potentials from ion gradients, the Hodgkin-Huxley action potential as a cycle of channel states, fast sodium inactivation by the IFM motif, synaptic release, and long-term potentiation.
+
+#>neuroscience_cellular
+#:layer #!reference
+#:domain #!neuroscience
+#:form #!state_machine
+#:level #!advanced
+#:review #!sourced
+#:valence #!bonk
+
+^"emit"{
+ ~#title: "Cellular Neurobiology"
+ ~#claim: "Ion gradients and selective permeability set the membrane voltage; voltage-gated sodium channels open, inactivate through an IFM motif, and recover, and that cycle shapes every action potential."
+ ~#proof: "Goldman, Hodgkin, and Katz for resting potentials; Hodgkin and Huxley for the action potential; West and colleagues for the IFM motif; Bliss and Lomo for LTP."
+ ~#door: "Read the resting potential, walk the sodium channel states, then follow the synapse into plasticity."
+ ~#audience: "advanced students with some physics and cell biology"
+ continuity: "Cellular Neurobiology | open, inactivate, and recover"
+ cold_open: "Every nerve impulse rides on sodium channels that open, inactivate, and recover, a tiny cycle repeated along the whole axon."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/neuroscience/cellular-and-molecular-neurobiology.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #fail }
+  ^["r4"]{ event: #sourced, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ receipt_note: "r3 was first written as a pass while every source link pointed at a registry not yet written; r4 wrote and checked that registry, and r5 is the passing run after it"
+ corrections: #[
+  "fast sodium inactivation is not a ball-and-chain peptide; it uses an IFM motif in the III-IV linker, and the ball-and-chain mechanism belongs to Shaker potassium channels (raw line 22)",
+  "SNARE fusion moved to its single home in transport and signaling; this surface keeps only calcium triggering by synaptotagmin (raw line 29)",
+  "the raw fusion time under 200 microseconds and conduction speed over 100 m/s had no source here and were dropped (raw lines 23 and 29)",
+  "saltatory conduction credited to Tasaki in 1939 as well as Huxley and Stampfli in 1949",
+  "the raw CaMKII wonder stated a self-sustaining memory switch as settled; LTP maintenance is kept as a contest between CaMKII and PKMzeta accounts (raw line 43)",
+  "2026-10-03: the form axis now reads state_machine, matching the channel-gating machines; the IFM pocket claim was rechecked against the Yan 2017 abstract"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../cells/transport-and-signaling.spw#cell_biology_signaling", ~"../../formal/mathematics/engineering-core/differential-equations.spw#mathematics_diffeq" ]
+ feeds: [ ~"./systems-and-sensory-circuits.spw#neuroscience_systems", ~"./cognitive-and-computational.spw#neuroscience_computational" ]
+ analog: [ ~"../../physical/engineering/electrical-core.spw#engineering_electrical" ]
+}
+
+^["concepts"]{
+ primary: [ #action_potential, #ion_channel, #synaptic_plasticity ]
+ transfers: [ #state_machine, #rc_circuit ]
+ tensions: [ #memory_maintenance ]
+}
+
+^["membrane"]{
+ #>neuroscience_cellular_ghk
+ ^["resting_potential"]{
+  #:claim #!settled
+  statement: "Each ion pulls the membrane toward its Nernst potential, and the resting voltage is a permeability-weighted mix given by the Goldman-Hodgkin-Katz equation, dominated at rest by potassium."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_goldman_1943", ~"../../registries/sources/life-and-mind.spw#src_life_hodgkin_katz_1949", ~"../../registries/sources/life-and-mind.spw#src_life_hille_2001" ]
+ }
+ #>neuroscience_cellular_hh
+ ^["hodgkin_huxley"]{
+  #:claim #!settled
+  statement: "Hodgkin and Huxley fit voltage-clamp currents in the squid giant axon with a sodium conductance gated by m cubed times h and a potassium conductance gated by n to the fourth, reproducing the spike."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_hodgkin_huxley_1952"
+  ^["limits"]{
+   holds: "the squid axon and, with refitted channels, many other excitable membranes"
+   fails: "gating variables are not one-to-one molecular gates, and many neurons need more channel types than two"
+  }
+ }
+ #>neuroscience_cellular_patch
+ ^["patch_clamp"]{
+  #:claim #!settled
+  statement: "Neher and Sakmann recorded currents through single ion channels in 1976, and the gigaseal methods of 1981 added whole-cell and excised-patch recordings."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_neher_sakmann_1976", ~"../../registries/sources/life-and-mind.spw#src_life_hamill_1981" ]
+ }
+ #>neuroscience_cellular_saltatory
+ ^["saltatory_conduction"]{
+  #:claim #!settled
+  statement: "In myelinated axons the impulse is regenerated at nodes of Ranvier and jumps between them, which speeds conduction for a given diameter."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_tasaki_1939", ~"../../registries/sources/life-and-mind.spw#src_life_huxley_stampfli_1949" ]
+  credit: "Ichiji Tasaki in Japan in 1939, then Huxley and Stampfli in 1949"
+ }
+}
+
+^["inactivation"]{
+ #>neuroscience_cellular_ball_and_chain
+ ^["ball_and_chain"]{
+  #:claim #!settled
+  statement: "In Shaker potassium channels an N-terminal peptide swings in and plugs the open pore, the ball-and-chain mechanism first proposed for sodium channels by Armstrong and Bezanilla."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_hoshi_1990", ~"../../registries/sources/life-and-mind.spw#src_life_armstrong_bezanilla_1977" ]
+ }
+ #>neuroscience_cellular_ifm
+ ^["ifm_motif"]{
+  #:claim #!settled
+  statement: "Fast sodium-channel inactivation needs three hydrophobic residues, isoleucine, phenylalanine, and methionine, in the linker between domains III and IV; mutating them removes fast inactivation."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_west_1992"
+  ~#say(a latch on the inside of the door, not a ball on a chain)
+ }
+ #>neuroscience_cellular_ifm_structure
+ ^["ifm_pocket"]{
+  #:claim #!emerging
+  statement: "Cryo-EM structures place the IFM motif in a pocket beside the inner pore gate rather than inside the pore, which suggests it closes the gate allosterically."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_yan_2017"
+ }
+ #>neuroscience_cellular_raw_ball
+ ^["raw_claim"]{
+  #:claim #!refuted
+  statement: "The raw claim that the sodium h gate is a ball-and-chain peptide is wrong for sodium channels; that mechanism is the potassium-channel case."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_west_1992", ~"../../registries/sources/life-and-mind.spw#src_life_hoshi_1990" ]
+ }
+ =~"./cellular-neurobiology.spw#neuroscience_cellular_ifm"[contrasts]{ ~"./cellular-neurobiology.spw#neuroscience_cellular_ball_and_chain" }
+}
+
+^["channel_machine"]{
+ #>neuroscience_cellular_nav_states
+ ^["sodium_channel"]{
+  ^["resting"]{ does: "activation gate closed, inactivation latch free; the channel can open", done_when: "the membrane depolarizes past threshold" }
+  ^["open"]{ does: "sodium flows in and drives the rising phase", done_when: "the IFM latch docks, soon after opening" }
+  ^["inactivated"]{ does: "the pore is closed by the latch and cannot reopen, the absolute refractory period", done_when: "the membrane repolarizes" }
+  ^["recovering"]{ does: "the latch releases and the activation gate closes", done_when: "the channel is resting again" }
+  ?match[@voltage]{
+   "depolarized past threshold" => { next: "open" }
+   "held depolarized" => { next: "inactivated" }
+   "repolarized" => { next: "recovering" }
+   "recovered" => { next: "resting" }
+   _ => { next: "stay", why: "no voltage change; the state holds" }
+  }
+ }
+ #>neuroscience_cellular_kv_states
+ ^["potassium_channel"]{
+  ^["closed"]{ does: "delayed rectifier waits", done_when: "depolarization opens it, more slowly than sodium" }
+  ^["open"]{ does: "potassium flows out and drives repolarization and the undershoot", done_when: "the membrane returns below rest" }
+  ?match[@voltage]{
+   "depolarized" => { next: "open" }
+   "repolarized" => { next: "closed" }
+   _ => { next: "stay", why: "the gate tracks voltage slowly" }
+  }
+ }
+}
+
+^["synapse"]{
+ #>neuroscience_cellular_synaptotagmin
+ ^["calcium_trigger"]{
+  #:claim #!settled
+  statement: "Calcium entering the terminal binds synaptotagmin 1, the fast sensor that triggers SNARE-driven fusion of docked vesicles at central synapses."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_geppert_1994"
+  home: ~"../cells/transport-and-signaling.spw#cell_biology_signaling_snare"
+ }
+ #>neuroscience_cellular_receptors
+ ^["transmitter_receptors"]{
+  #:claim #!settled
+  statement: "Glutamate excites through AMPA and NMDA channels and metabotropic receptors; GABA inhibits through GABA-A chloride channels and G protein-coupled GABA-B receptors that open potassium channels."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_kandel_2021"
+ }
+ #>neuroscience_cellular_nmda
+ ^["nmda_coincidence"]{
+  #:claim #!settled
+  statement: "Magnesium blocks the NMDA channel at rest, so it passes calcium only when glutamate is bound and the cell is depolarized, making it a coincidence detector."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_nowak_1984", ~"../../registries/sources/life-and-mind.spw#src_life_mayer_1984" ]
+ }
+ #>neuroscience_cellular_ltp
+ ^["long_term_potentiation"]{
+  #:claim #!settled
+  statement: "Brief high-frequency stimulation of the perforant path strengthened hippocampal synapses for hours or longer in rabbits, the first report of long-term potentiation."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_bliss_lomo_1973"
+ }
+ #>neuroscience_cellular_camkii
+ ^["camkii_switch"]{
+  #:claim #!settled
+  statement: "Calcium-calmodulin activates CaMKII, which autophosphorylates at threonine 286 and stays active after calcium falls; it helps insert AMPA receptors during LTP induction."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_lisman_2002"
+ }
+ #>neuroscience_cellular_maintenance
+ ^["maintenance"]{
+  #:claim #!contested
+  statement: "What keeps LTP and memory going for weeks while proteins turn over is unresolved: a self-renewing CaMKII switch, a persistent kinase PKMzeta, or both."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_lisman_1985", ~"../../registries/sources/life-and-mind.spw#src_life_sacktor_2011" ]
+  counter: [ ~"../../registries/sources/life-and-mind.spw#src_life_volk_2013", ~"../../registries/sources/life-and-mind.spw#src_life_lee_2013" ]
+ }
+}
+
+#>neuroscience_cellular_turnover_q
+?["Can a memory outlast every molecule that first stored it?"]{
+ #:depth #!computational ~#lens(molecular binding)
+ #:claim #!speculative
+ ~#hypothesis: "If active subunits phosphorylate the fresh subunits that replace them, a ring of kinase could keep its state through turnover, the way a relay keeps a message after each runner leaves."
+ !probe{ "simulate a twelve-subunit ring with subunit exchange and neighbor phosphorylation and measure how long the on state lasts against turnover rate" =id[p_life_neuro_camkii_ring] =kind[sim] }
+ breaks: "a relay message is copied whole by each runner, while a kinase ring loses state when too many subunits turn over at once"
+ ~"./cellular-neurobiology.spw#neuroscience_cellular_maintenance" ~#neighbor(nearest)
+}
+
+#>neuroscience_cellular_debounce_q
+?["Is the refractory period a debounce?"]{
+ #:depth #!computational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "Inactivation stops a spike from re-triggering itself and sets a ceiling on firing rate, much as a debounce interval stops one key press from registering twice."
+ breaks: "a debounce ignores input by design, while a refractory axon also keeps the spike moving in one direction"
+ !probe{ "list maximum firing rates reported for several neuron types beside their sodium recovery times" =id[p_life_neuro_refractory] =kind[lit] }
+ ~"./cellular-neurobiology.spw#neuroscience_cellular_nav_states" ~#neighbor(nearest)
+}

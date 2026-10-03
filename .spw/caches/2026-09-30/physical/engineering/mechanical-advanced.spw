@@ -1,0 +1,217 @@
+# Mechanical Advanced
+#
+# Graduate mechanical engineering as a claim ledger: continuum and computational mechanics, robot kinematics on Lie groups, state estimation, and laser processing, each claim with its limits.
+
+#>engineering_mechanical_advanced
+#:layer #!reference
+#:domain #!engineering
+#:form #!ledger
+#:level #!graduate
+#:review #!sourced
+#:valence #!bane
+
+^"emit"{
+ ~#title: "Mechanical Advanced"
+ ~#claim: "Graduate mechanical engineering runs on models whose limits matter more than their pictures: meshes must converge, filters can diverge, and coordinates can fail where mechanisms do not."
+ ~#proof: "Holzapfel and Hughes for continuum and finite elements, Roache for grid convergence, Brockett and Lynch and Park for exponential coordinates, Thrun for estimation, Cunningham for keyholes."
+ ~#door: "Read the ledger by its limits, then turn a book through two quarter turns in both orders."
+ ~#audience: "graduate students in mechanical engineering and robotics"
+ continuity: "Mechanical Advanced | limits"
+ cold_open: "Every graduate model here comes with its limits, and a converged mesh or a singularity-free chart is earned, not assumed."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/physics-and-mechanical-engineering/masters-mechanical-engineering.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the raw asked why Lie groups completely eliminate singularities; working on the rotation group removes the coordinate singularities of Euler angles, while kinematic singularities of the mechanism remain",
+  "the physics-informed network wonder claimed a 1,000-fold speedup without a source; it survives as a direction-only question",
+  "the additive cooling rate of 10^6 K per second was unsourced and is dropped; DebRoy and coworkers review the thermal histories",
+  "the Lyapunov invariant is kept as a reporting norm, since stability can also be shown by contraction arguments or tested margins"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./mechanical-core.spw#engineering_mechanical", ~"../../formal/mathematics/engineering-core/numerical-methods.spw#mathematics_numerics" ]
+ extends: [ ~"./control-and-signals.spw#engineering_control_signals_kalman" ]
+ see: [ ~"../materials/materials-core.spw#materials_core", ~"../../formal/mathematics/engineering-core/differential-equations.spw#mathematics_diffeq_lyapunov" ]
+}
+
+^["concepts"]{
+ primary: [ #continuum, #finite_element, #lie_group ]
+ transfers: [ #feedback, #microstructure ]
+ tensions: [ #regime_limit ]
+}
+
+^["continuum"]{
+ topics: [
+  "first and second Piola-Kirchhoff and Cauchy stress",
+  "finite-strain plasticity with return-mapping algorithms",
+  "viscoelasticity with Prony series and time-temperature superposition"
+ ]
+
+ #>engineering_mechanical_advanced_polar
+ ^["polar_decomposition"]{
+  #:claim #!settled
+  statement: "Any deformation gradient with positive determinant factors uniquely into a rotation times a stretch, F equals RU, separating rigid rotation from strain in finite deformation."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_holzapfel_2000"
+ }
+ #>engineering_mechanical_advanced_hyperelastic
+ ^["hyperelastic"]{
+  #:claim #!settled
+  statement: "Hyperelastic models such as neo-Hookean, Mooney-Rivlin, and Ogden derive stress from a stored-energy function of deformation, so loading and unloading follow one path."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_holzapfel_2000"
+  ^["limits"]{
+   holds: "rubber-like solids loaded slowly and without damage"
+   fails: "rate-dependent response and the softening of filled rubbers after first loading"
+  }
+ }
+}
+
+^["computation"]{
+ topics: [
+  "isoparametric elements and Gauss quadrature",
+  "Newton-Raphson and arc-length continuation for nonlinear problems",
+  "penalty and augmented Lagrangian contact",
+  "explicit time integration for impact and crash",
+  "upwind, TVD, and Riemann-solver flux schemes; RANS, LES, and DNS"
+ ]
+
+ #>engineering_mechanical_advanced_fem_origin
+ ^["fem_origin"]{
+  #:claim #!settled
+  statement: "Turner, Clough, Martin, and Topp in 1956 assembled aircraft structures from triangular elements with stiffness matrices, a founding paper of the finite element method."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_turner_1956"
+ }
+ #>engineering_mechanical_advanced_locking
+ ^["locking"]{
+  #:claim #!settled
+  statement: "Low-order elements can lock in bending or near incompressibility and return answers far too stiff; reduced integration and mixed formulations relieve it."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_hughes_2000"
+ }
+ #>engineering_mechanical_advanced_grid_convergence
+ ^["grid_convergence"]{
+  #:claim #!settled
+  statement: "Roache in 1994 proposed the grid convergence index, which estimates discretization error from solutions on systematically refined meshes."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_roache_1994"
+ }
+ #>engineering_mechanical_advanced_simple
+ ^["simple"]{
+  #:claim #!settled
+  statement: "Patankar and Spalding in 1972 coupled pressure and velocity by guessing a pressure field and correcting it until continuity holds, the origin of the SIMPLE family of solvers."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_patankar_spalding_1972"
+ }
+ #>engineering_mechanical_advanced_sst
+ ^["sst"]{
+  #:claim #!settled
+  statement: "Menter in 1994 blended a k-omega model near walls with k-epsilon in the free stream and limited eddy viscosity in adverse pressure gradients, the shear-stress transport model."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_menter_1994"
+  ^["limits"]{
+   holds: "attached and mildly separated boundary layers"
+   fails: "massive separation and strongly unsteady flow, where scale-resolving simulation is needed"
+  }
+ }
+}
+
+^["robotics"]{
+ topics: [
+  "recursive Newton-Euler dynamics and operational-space inertia",
+  "LQR and model predictive control with constraints",
+  "particle filters and simultaneous localization and mapping",
+  "direct collocation, sequential quadratic programming, and sampling planners"
+ ]
+
+ #>engineering_mechanical_advanced_poe
+ ^["product_of_exponentials"]{
+  #:claim #!settled
+  statement: "Brockett in 1984 wrote manipulator forward kinematics as a product of matrix exponentials of joint twists, needing only a base frame and a tool frame."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_brockett_1984", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_lynch_park_2017" ]
+ }
+ #>engineering_mechanical_advanced_lie_scope
+ ^["lie_group_scope"]{
+  #:claim #!settled
+  statement: "Treating rotations as elements of the group SO(3) removes the coordinate singularities of Euler angles, but kinematic singularities, where a mechanism loses a direction of motion, remain."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_lynch_park_2017", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_murray_li_sastry_1994" ]
+  ~#counter(the raw said Lie groups eliminate all singularities)
+ }
+ #>engineering_mechanical_advanced_estimation
+ ^["estimation"]{
+  #:claim #!settled
+  statement: "Extended and unscented Kalman filters carry the Kalman update to nonlinear robots by linearizing or by sampling; neither is optimal, and both can diverge when the model or noise guesses are poor."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_thrun_2005"
+  see: [ ~"./control-and-signals.spw#engineering_control_signals_kalman" ]
+ }
+}
+
+^["laser_processing"]{
+ topics: [
+  "laser powder bed fusion: absorption, Marangoni flow, and recoil pressure",
+  "residual stress and distortion, and scan strategies that reduce them",
+  "cellular and dendritic solidification and epitaxial grain growth"
+ ]
+
+ #>engineering_mechanical_advanced_keyhole
+ ^["keyhole"]{
+  #:claim #!settled
+  statement: "Ultrahigh-speed X-ray imaging by Cunningham and coworkers in 2019 showed the vapor depression under a melting laser deepening into a keyhole once power density passes a threshold."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_cunningham_2019"
+ }
+ #>engineering_mechanical_advanced_am_microstructure
+ ^["am_microstructure"]{
+  #:claim #!settled
+  statement: "Steep thermal gradients and fast cooling in metal additive manufacturing favor fine, often columnar grains grown epitaxially from the layer below, along with residual stress."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_debroy_2018"
+ }
+}
+
+^["reporting_norms"]{
+ meshes: "every FEA or CFD result shows mesh convergence and residual tolerances"
+ controllers: "every robot controller states how stability was shown: a Lyapunov function, a contraction argument, or tested margins"
+ additive: "every laser process window states power, scan speed, and hatch spacing against the keyhole porosity boundary"
+}
+
+^["try"]{
+ #>engineering_mechanical_advanced_try_book
+ ^["book_rotations"]{
+  materials: [ "a hardcover book", "a sticky note on the front cover" ]
+  steps: <<
+   "hold the book flat, cover up, spine toward you" ;
+   "turn it a quarter turn about the spine axis, then a quarter turn about the vertical" ;
+   "note which way the sticky note faces" ;
+   "reset and make the same two turns in the other order" ;
+   "compare the two final poses"
+  >>
+  time: .{ n: 5, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./mechanical-advanced.spw#engineering_mechanical_advanced_lie_scope"
+ }
+}
+
+#>engineering_mechanical_advanced_pinn_q
+?["Can physics-informed neural networks size heat shields fast enough to adjust a trajectory in flight?"]{
+ #:depth #!computational ~#lens(energy budget)
+ #:claim #!speculative
+ ~#hypothesis: "A network trained with the flow equations should answer far faster than a full solver near its training conditions and fail most where shocks and chemistry leave that range."
+ !probe{ "compare a physics-informed network and a full solver on heating rates inside and outside the training envelope" =id[p_mateng_mechanical_advanced_pinn] =kind[sim] }
+ $%[file.frame_count]
+ ~"./mechanical-advanced.spw#engineering_mechanical_advanced_grid_convergence" ~#neighbor(nearest)
+}
+
+#>engineering_mechanical_advanced_gimbal_q
+?["Is gimbal lock the same kind of problem as a map that cannot show the poles?"]{
+ #:depth #!mathematical ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Both come from the chart, not the space: three angles cannot cover all rotations without a bad spot, as latitude and longitude cannot cover the sphere, so changing charts removes them."
+ breaks: "a mechanical gimbal really loses a freedom at lock, while the North Pole is an ordinary place mislabeled by the map"
+ !probe{ "list which robot failures vanish when a controller switches to quaternions and which remain" =id[p_mateng_mechanical_advanced_gimbal] =kind[thought] }
+ $%[graph.out_degree]
+ ~"./mechanical-advanced.spw#engineering_mechanical_advanced_lie_scope" ~#neighbor(nearest)
+}

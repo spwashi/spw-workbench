@@ -28,14 +28,21 @@
  lineage: #[ ".spw/caches/tiktok-live/moderation-safety.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the raw omitted the age and follower gates; they are added as dated cells",
   "the moderator cap of 50 and keyword cap of 500 are not carried; the moderator cap is a verify cell",
   "the raw four-level enforcement ladder is kept as an interpretive model, not as documented platform procedure",
-  "the five-second severance, cryptographic audit receipts, and embedding-table matching are dropped as unsourced"
+  "the five-second severance, cryptographic audit receipts, and embedding-table matching are dropped as unsourced",
+  "the host age claim now says what its source says: the encyclopedia entry gives over 16, and 18 is the reported later rule",
+  "fact check 2026-10-02: 16 is marked superseded, the pre-2022-11-23 rule, instead of contested; the 18 rule cites the 2022 newsroom post with an access caveat"
  ]
 }
 
@@ -64,22 +71,22 @@
   }
   #>live_platforms_moderation_host_age
   ^["host_age"]{
-   #:claim #!contested
-   statement: "The minimum age to host LIVE is reported as 18, while older documentation still says 16; the cell stays verify until a current help page is read."
-   reads: %[creator.live.host_min_age_years]
-   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_tiktok"
-   counter: "a TikTok newsroom post of late 2022 is reported to raise the host age to 18; not read for this cut"
+   #:claim #!superseded
+   statement: "Age 16 to host LIVE, which the encyclopedia entry still gives, was the rule until TikTok raised it to 18 from 2022-11-23; the 18 cell stays verify until a current help page is read."
+   reads: %[creator.live.host_min_age_prior_years, creator.live.host_min_age_years]
+   sources: [ ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_tiktok", ~"../../registries/sources/creators-and-platforms.spw#src_creator_tiktok_live_2022" ]
+   access: "the TikTok newsroom post of 2022-10-18 and the help pages could not be read on 2026-10-02; the change date rests on the recall of two checkers"
    region: "varies"
-   as_of: "2026-10-01"
+   as_of: "2026-10-02"
   }
   #>live_platforms_moderation_followers
   ^["follower_gate"]{
    #:claim #!emerging
-   statement: "A follower threshold gates hosting in many regions; the commonly documented value is a verify cell."
+   statement: "A follower threshold gates hosting; the encyclopedia entry gives one thousand followers, and the cell stays verify because programs and regions vary."
    reads: %[creator.live.host_min_followers]
    source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_tiktok"
    region: "varies"
-   as_of: "2026-10-01"
+   as_of: "2026-10-02"
   }
  }
  ^["host_tools"]{

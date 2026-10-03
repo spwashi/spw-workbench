@@ -1,0 +1,251 @@
+# Aberrations and Lens Design
+#
+# Refraction, dispersion, the five Seidel aberrations, and coatings as sourced claims, and the photographic lens from Petzval in 1840 through the double-Gauss line that includes the Helios 44-2.
+
+#>optics_aberrations
+#:layer #!reference
+#:domain #!optics
+#:form #!ledger
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bone
+#:era #!industrial
+
+^"emit"{
+ ~#title: "Aberrations and Lens Design"
+ ~#claim: "A lens trades five monochromatic aberrations and two chromatic ones against each other; field curvature is set by the Petzval sum of 1/(n f), which bending cannot change."
+ ~#proof: "Smith and Born and Wolf for the aberration theory; Hecht for refraction and coatings; Kingslake for the design history; Rashed for Ibn Sahl."
+ ~#door: "Image a window with a magnifying glass to see field curvature, then read the Petzval claim."
+ ~#audience: "photographers, cinematographers, and physics students who want to know why lenses look the way they do"
+ continuity: "Aberrations and Lens Design | Petzval sum"
+ cold_open: "Every lens is a negotiated truce among its aberrations, and the Petzval sum decides how flat its focus can be."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/film-chemistry-and-camera-optics/geometric-optics-and-aberrations.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "re-run after the 2026-10-03 fact-check fixes; no failing lines" }
+ }
+ corrections: #[
+  "Petzval sum restated as the sum of 1/(n f) over thin elements, or (n' - n)/(n n' r) per surface; the raw wrote 1/(n r)",
+  "Helios 44-2 is a double-Gauss lens derived from the Zeiss Biotar, not a Petzval design; its swirl comes from field curvature, astigmatism, and optical vignetting",
+  "spherical aberration scaling restated: transverse blur grows as the cube of aperture; the raw said quadratically and cubically at once",
+  "Ibn Sahl added as the first known statement of the sine law of refraction, before Snell and Descartes",
+  "the unsourced claim that broadband coatings reach a stated residual reflectance was dropped",
+  "fact-check: the crown boundary is V_d 55 for n_d below 1.60 and 50 only for dense crowns above it; the first revision had the thresholds swapped",
+  "fact-check: the inverted telephoto began with Taylor-Hobson for Technicolor in the 1930s; Angenieux named the type and, beside the Zeiss Jena Flektogon, made it the SLR standard, and is not the ancestor of cine wide-angles",
+  "fact-check 2026-10-03: the r4 fact-check receipt was dated 2026-10-01, before the receipts it followed; it is re-dated 2026-10-02, the day that pass ran"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../physics/electromagnetism.spw#physics_em_waves" ]
+ feeds: [ ~"./cine-lenses-and-formats.spw#optics_cine_formats" ]
+ grounds: [ ~"../../registries/quantities/physical-sciences-and-image.spw#q_phys_optics" ]
+ see: [ ~"../physical-glossary.spw#physical_term_aberration" ]
+}
+
+^["concepts"]{
+ primary: [ #aberration, #refraction, #dispersion ]
+ transfers: [ #coating, #curvature ]
+ tensions: [ #character_vs_correction ]
+}
+
+^["refraction"]{
+ #>optics_aberrations_sine_law
+ ^["sine_law"]{
+  #:claim #!settled
+  statement: "Ibn Sahl stated the sine law of refraction in Baghdad around 984; Snell found it again in 1621 and Descartes published it in 1637."
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_rashed_1990", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_hecht_2017" ]
+  form: "n_1 sin(theta_1) = n_2 sin(theta_2)"
+ }
+ #>optics_aberrations_paraxial
+ ^["paraxial"]{
+  #:claim #!settled
+  statement: "For rays close to the axis, sines become angles and a lens system reduces to ray-transfer matrices with cardinal points; aberrations are the departures from that ideal."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_smith_2008"
+ }
+}
+
+^["dispersion"]{
+ #>optics_aberrations_abbe
+ ^["abbe_number"]{
+  #:claim #!settled
+  statement: "The Abbe number V_d = (n_d - 1)/(n_F - n_C) measures dispersion with the helium d line and hydrogen F and C lines; a higher V_d means weaker dispersion."
+  reads: %[phys.optics.line_d_nm, phys.optics.line_f_nm, phys.optics.line_c_nm]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_smith_2008"
+ }
+ #>optics_aberrations_glass_map
+ ^["crown_flint_line"]{
+  #:claim #!settled
+  statement: "On the Schott glass map, crowns have V_d above 55 when n_d is below 1.60 and above 50 when n_d is higher; every other glass is a flint."
+  reads: %[phys.optics.crown_abbe_ordinary_min, phys.optics.crown_abbe_min]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_abbe_zahl"
+  ~#(the convention dates to the Schott catalogue of the nineteen thirties)
+ }
+ #>optics_aberrations_achromat
+ ^["achromat"]{
+  #:claim #!settled
+  statement: "Cementing a positive crown to a negative flint brings two wavelengths to one focus; anomalous-dispersion glasses and fluorite are needed to correct the leftover secondary spectrum."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_kingslake_johnson_2010"
+ }
+}
+
+^["seidel"]{
+ order: << "spherical" ; "coma" ; "astigmatism" ; "field curvature" ; "distortion" >>
+
+ #>optics_aberrations_spherical
+ ^["spherical"]{
+  #:claim #!settled
+  statement: "Spherical aberration focuses marginal rays at a different depth than central rays; its transverse blur grows as the cube of aperture, so stopping down shrinks it quickly."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_smith_2008"
+  wavefront: "W_040 rho^4"
+ }
+ #>optics_aberrations_coma
+ ^["coma"]{
+  #:claim #!settled
+  statement: "Coma smears off-axis points into comet shapes because magnification varies across the pupil; in third order the tangential flare is three times the sagittal."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_born_wolf_1999"
+  wavefront: "W_131 h rho^3 cos(theta)"
+  aplanat: "a system meeting the Abbe sine condition and free of spherical aberration is aplanatic"
+ }
+ #>optics_aberrations_astigmatism
+ ^["astigmatism"]{
+  #:claim #!settled
+  statement: "Astigmatism focuses tangential and sagittal fans of an off-axis point on two separate surfaces, so points become short lines oriented two ways."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_smith_2008"
+  wavefront: "W_222 h^2 rho^2 cos^2(theta)"
+ }
+ #>optics_aberrations_petzval
+ ^["field_curvature"]{
+  #:claim #!settled
+  statement: "With astigmatism removed, the image lies on a curved Petzval surface whose curvature is set by the sum of 1/(n f) over thin elements, independent of how each element is bent."
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_smith_2008", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_born_wolf_1999" ]
+  per_surface: "(n' - n)/(n n' r) summed over surfaces; sign conventions vary between texts"
+  ~#say(only spacing and glass choice can flatten the field)
+  ^["limits"]{
+   holds: "third-order theory for rotationally symmetric systems"
+   fails: "real fields also carry astigmatism and higher-order terms, so the best focus surface differs from the Petzval surface"
+  }
+ }
+ #>optics_aberrations_raw_petzval
+ ^["raw_petzval_sum"]{
+  #:claim #!refuted
+  statement: "The raw generation wrote the Petzval sum as the sum of 1/(n r); that drops the index difference across each surface."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_smith_2008"
+ }
+ #>optics_aberrations_distortion
+ ^["distortion"]{
+  #:claim #!settled
+  statement: "Distortion changes magnification with field height without blurring: barrel when it falls toward the edge, pincushion when it rises, and mixed mustache forms in some wide designs."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_smith_2008"
+ }
+ #>optics_aberrations_lateral_color
+ ^["lateral_color"]{
+  #:claim #!settled
+  statement: "Lateral color changes magnification with wavelength and fringes edges toward the corners; unlike axial color, it does not shrink when the lens is stopped down."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_smith_2008"
+ }
+}
+
+^["coatings"]{
+ #>optics_aberrations_fresnel
+ ^["fresnel_loss"]{
+  #:claim #!settled
+  statement: "At normal incidence an uncoated air-glass surface with n = 1.52 reflects about 4.3 percent, so a lens with many surfaces loses much of its light and gains veiling glare."
+  reads: %[phys.optics.fresnel_r_n152]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_hecht_2017"
+ }
+ #>optics_aberrations_quarter_wave
+ ^["quarter_wave"]{
+  #:claim #!settled
+  statement: "A quarter-wave film whose index is near the square root of the glass index cancels reflection at one wavelength; magnesium fluoride is the classic single layer."
+  reads: %[phys.optics.mgf2_n]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_hecht_2017"
+  history: "Alexander Smakula developed antireflection coating at Zeiss in 1935"
+ }
+}
+
+^["timeline"]{
+ #>optics_aberrations_rung_petzval
+ ^["petzval_1840"]{
+  #:claim #!settled
+  statement: "Joseph Petzval computed a fast portrait lens in 1840, built by Voigtlaender, cutting exposure times for daguerreotype portraits; its sharp center and curved field became a look."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_kingslake_1989"
+ }
+ #>optics_aberrations_rung_triplet
+ ^["cooke_triplet_1893"]{
+  #:claim #!settled
+  statement: "H. Dennis Taylor's Cooke triplet of 1893 balanced positive and negative elements to flatten the field, the first anastigmat built from only three separated elements."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_kingslake_1989"
+ }
+ #>optics_aberrations_rung_planar
+ ^["double_gauss"]{
+  #:claim #!settled
+  statement: "Gauss proposed a two-meniscus objective in 1817; Clark paired two in 1888, Rudolph made the Zeiss Planar in 1896, Lee refined it in 1920, and Zeiss made the Biotar."
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_kingslake_1989", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_double_gauss" ]
+  era: 1817..1927
+ }
+ #>optics_aberrations_rung_tessar
+ ^["tessar_1902"]{
+  #:claim #!settled
+  statement: "Paul Rudolph's Tessar of 1902 cemented the rear pair of a triplet-like design and became one of the most copied photographic lenses."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_kingslake_1989"
+ }
+ #>optics_aberrations_rung_helios
+ ^["helios_44"]{
+  #:claim #!settled
+  statement: "The Soviet Helios-44 family, including the 44-2, is a 58 mm f/2 double-Gauss derived from the Zeiss Biotar; its swirling backgrounds come from field curvature, astigmatism, and vignetting."
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_double_gauss", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_smith_2008" ]
+ }
+ #>optics_aberrations_raw_helios
+ ^["raw_helios_petzval"]{
+  #:claim #!refuted
+  statement: "The raw generation grouped the Helios 44-2 with Petzval's 1840 design as uncorrected Petzval curvature; the Helios is a double-Gauss."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_double_gauss"
+ }
+ #>optics_aberrations_rung_retrofocus
+ ^["retrofocus_1950"]{
+  #:claim #!settled
+  statement: "Taylor-Hobson first put a negative group in front of a short lens in the 1930s to clear Technicolor beam splitters; Angenieux's 1950 Retrofocus, beside Zeiss Jena's Flektogon, made the type standard for SLR wide-angles."
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_kingslake_1989", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_retrofocus" ]
+  ~#(Lee designed the Taylor-Hobson lens; Angenieux gave the type its common name)
+ }
+}
+
+^["try"]{
+ #>optics_aberrations_try_field_curvature
+ ^["magnifier_field"]{
+  materials: [ "a magnifying glass", "a sheet of white card", "a bright window across a dim room" ]
+  steps: << "hold the card opposite the window" ; "move the magnifier until the window frame is sharp in the center" ; "note that the frame edges blur" ; "move the card closer until the edges sharpen" ; "say which way the sharp surface curves" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "never aim the magnifier at the sun or look at the sun through it; focused sunlight burns skin and starts fires"
+  shows: ~"./aberrations-and-lens-design.spw#optics_aberrations_petzval"
+ }
+}
+
+#>optics_aberrations_glow_q
+?["Does a little leftover spherical aberration make skin glow while lashes stay sharp?"]{
+ #:depth #!stylistic ~#lens(material grain)
+ #:claim #!speculative
+ ~#hypothesis: "Undercorrected spherical aberration should lower contrast at middle spatial frequencies more than at the highest, softening skin texture while a sharp core keeps fine edges."
+ !probe{ "compute MTF curves for a few W_040 values and compare middle and high spatial frequencies" =id[p_phys_optics_glow] =kind[calc] }
+ $%[phys.optics.cutoff_f16_lp_per_mm]
+ breaks: "an MTF curve measures contrast, not how viewers judge faces; makeup, light, and grading change the look more"
+ ~"./aberrations-and-lens-design.spw#optics_aberrations_spherical" ~#neighbor(nearest)
+}

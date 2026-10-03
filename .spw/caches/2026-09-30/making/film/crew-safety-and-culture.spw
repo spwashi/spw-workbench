@@ -7,7 +7,7 @@
 #:domain #!film
 #:form #!ledger
 #:level #!practitioner
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!honk
 #:era #!contemporary
 
@@ -28,8 +28,12 @@
  lineage: #[ ".spw/caches/film-production-and-industry/crew-morale-safety-and-culture.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-01", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
  }
  corrections: [
   "the three-point clearance ceremony was invented by the generator and is removed",
@@ -38,6 +42,7 @@
   "crew turnaround under the IATSE Basic Agreement is 10 hours, not 12",
   "Bulletin 1 bars live ammunition except as Bulletin 2 specifies; the raw absolute ban is qualified"
  ]
+ rechecked: "2026-10-02: a settlement rung records that the 2022 Rust penalty was later reduced in a settlement reported in February 2023"
 }
 
 ^["edges"]{
@@ -123,6 +128,11 @@
    #:claim #!settled
    statement: "In April 2022 the New Mexico Occupational Health and Safety Bureau issued its investigation summary and citation against the production company."
    source: ~"../../registries/sources/film-stage-visual.spw#src_film_nmed_rust_2022"
+  }
+  ^["settlement"]{
+   #:claim #!settled
+   statement: "In February 2023 the production company was reported to have agreed to a reduced penalty to settle the bureau citation."
+   source: ~"../../registries/sources/film-stage-visual.spw#src_film_variety_rust_osha_2023"
   }
   ^["verdict"]{
    #:claim #!settled

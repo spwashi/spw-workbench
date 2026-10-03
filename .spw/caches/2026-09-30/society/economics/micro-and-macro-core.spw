@@ -28,13 +28,19 @@
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ gate_note: "on 2026-10-02 the gate failed only on the ref to the reasoning and decision file, then unwritten; on 2026-10-03 that ref resolves and the gate passes"
  corrections: #[
   "Mundell-Fleming policy potency is scoped to a small open economy with perfect capital mobility",
   "the raw growth wonder cast Solow as forced; exogenous technology is restated as a modeling choice later endogenized",
   "the price discrimination bridge to revenue management is added; the raw file had none",
-  "invented metric handles are dropped"
+  "invented metric handles are dropped",
+  "fact check: r3 recorded a gate pass while the ref to a planned cognition file did not resolve; r3 is now partial"
  ]
 }
 
@@ -46,8 +52,8 @@
 }
 
 ^["concepts"]{
- primary: [ #price_discrimination, #general_equilibrium, #steady_state ]
- transfers: [ #network_effects, #queueing ]
+ primary: [ #price_discrimination, #nominal_rigidity, #steady_state ]
+ transfers: [ #network_effects, #queueing, #rate_fence ]
  tensions: [ #bounded_rationality ]
 }
 
@@ -161,7 +167,7 @@
  #>economics_core_try_solow
  ^["solow_sheet"]{
   materials: [ "a spreadsheet", "one column per year", "paper for the steady-state formula" ]
-  steps: << "set s to 0.25, n to 0.01, g to 0.02, delta to 0.05, alpha to 0.33" ; "start k at half its steady state" ; "add s times k to the alpha minus n plus g plus delta times k each row" ; "compare the last rows with the formula" ; "double s and watch the level move but not the long-run growth" >>
+  steps: << "set s to 0.25, n to 0.01, g to 0.02, delta to 0.05, alpha to 0.33" ; "start k at half its steady state" ; "each row, add s times k to the alpha and subtract n plus g plus delta times k" ; "compare the last rows with the formula" ; "double s and watch the level move but not the long-run growth" >>
   time: .{ n: 30, unit: "minutes" }
   safety: "none worth naming"
   shows: ~"./micro-and-macro-core.spw#economics_core_solow"

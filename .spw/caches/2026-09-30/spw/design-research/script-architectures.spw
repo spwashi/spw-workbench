@@ -1,0 +1,240 @@
+# Script Architectures
+#
+# A registry of the script architectures this cut uses: the form each one takes, the Spw constructs it stresses, exemplar anchors to copy from, what a tool checks today, and the gap a reviewer must cover.
+
+#>lang_design_script_architectures
+#:layer #!pragmatics
+#:domain #!lang_design
+#:form #!registry
+#:level #!advanced
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Script Architectures"
+ ~#claim: "This cut writes in fifteen architectures, and the gate checks only some of them, so state machines, matrices, and kits rely on readers."
+ ~#proof: "Each row names exemplar anchors in the cut and cites the gate lines at commit 1aa1dc23 that check it, or says that nothing does."
+ ~#door: "Pick the architecture closest to the surface you are writing, copy its exemplar, then cover its gap by hand."
+ ~#audience: "writers and reviewers of Spw surfaces, and tool authors choosing what to check next"
+ continuity: "Script Architectures | rely on readers"
+ cold_open: "Some architectures here are checked by the gate, and the rest rely on readers to catch what slips."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "exemplar anchors read in the working tree of the cut on 2026-10-03, mid-wave",
+  "gate and voice checks read at commit 1aa1dc23"
+ ]
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ grounds: [ ~"../../contract.spw#cut_contract" ]
+ see: [
+  ~"../contraptions/state-walker.spw#spw_lab_state_walker",
+  ~"../contraptions/dag-walker.spw#spw_lab_dag_walker",
+  ~"../contraptions/order-counter.spw#spw_lab_order_counter"
+ ]
+}
+
+^["concepts"]{
+ primary: [ #script_architecture, #checked_form ]
+ transfers: [ #state_machine, #supersession ]
+ tensions: [ #silent_failure ]
+}
+
+^["legend"]{
+ fields: #[ form, stresses, exemplars, living, checks, gap ]
+ checks_status: "implemented means a gate line at 1aa1dc23 rejects a malformed instance; proposed means a contraption describes a tool that does not exist yet"
+ living: "a living analog comes from the forms-for-scripts surface and is a reading, not a design rule"
+}
+
+^["architectures"]{
+ #>lang_design_arch_field_guide
+ ^["field_guide"]{
+  form: "field_guide"
+  stresses: "keystone frames with a claim status, a source, reads of registry cells, and limits"
+  exemplars: [ ~"../../physical/materials/water.spw#materials_water" ]
+  checks: "sourced surfaces fail a non-speculative claim without a source; every handle must resolve"
+  checks_status: #implemented
+  gap: "no tool compares the number in a statement with the cell it reads"
+ }
+ #>lang_design_arch_timeline
+ ^["timeline_ladder"]{
+  form: "timeline"
+  stresses: "one anchored rung per date, era particles inside rungs, and a << >> rung order"
+  exemplars: [ ~"../../physical/materials/fibers-and-textiles.spw#materials_fibers", ~"./feature-lineage.spw#lang_design_lineage" ]
+  checks: "era values are checked in the header stack only"
+  checks_status: #implemented
+  gap: "no tool checks that rungs run in date order or that each rung date has a source"
+ }
+ #>lang_design_arch_dag
+ ^["prerequisite_dag"]{
+  form: "curriculum"
+  stresses: "typed bias edges such as =~\"a\"[needs]{ ~\"b\" }, or needs lists in ^[edges]"
+  exemplars: [ ~"../../formal/computing/curriculum-dag.spw#computing_curriculum_dag", ~"../contraptions/dag-walker.spw#spw_lab_dag_walker_arrows" ]
+  checks: "spw graph runs cycle detection over every link between files"
+  checks_status: #implemented
+  gap: "a needs cycle and two mutual see links look alike to that check; a typed walker is proposed"
+ }
+ #>lang_design_arch_matrix
+ ^["comparison_matrix"]{
+  form: "comparison"
+  stresses: "a legend naming the columns, then one anchored frame per row with the same keys"
+  exemplars: [ ~"../theory/address-and-linking.spw#spw_theory_address", ~"./pipelines-and-stacks.spw#lang_design_pipelines" ]
+  checks: "none beyond parse and anchors"
+  gap: "no tool checks that each row carries every column the legend names"
+ }
+ #>lang_design_arch_state_machine
+ ^["state_machine"]{
+  form: "state_machine"
+  stresses: "a states frame, ?match[@state] arms with next and guard, a default arm, and a << >> happy path"
+  exemplars: [ ~"../../making/streaming/chat-torrent-pipeline.spw#streaming_chat_torrent_transitions", ~"../theory/epistemic-status.spw#spw_theory_status_transitions", ~"../../making/film/production-state-machine.spw#film_production_states" ]
+  living: ~"../../living/development-and-ecology/forms-for-scripts.spw#development_ecology_script_forms_meta_map"
+  checks: "none; the gate reads no ?match arms"
+  gap: "a next that names no state passes; the state walker contraption proposes a check"
+ }
+ #>lang_design_arch_cadence
+ ^["cadence_schedule"]{
+  form: "calendar"
+  stresses: "<< a ; b >> blocks, with || for parallel steps"
+  exemplars: [ ~"../../making/broadcast/broadcast-cadence.spw#broadcast_cadence_daily" ]
+  living: ~"../../living/development-and-ecology/forms-for-scripts.spw#development_ecology_script_forms_cycle_map"
+  checks: "a schedule is required only for steps inside an arc frame"
+  checks_status: #implemented
+  gap: "no tool runs a schedule or counts the orders it allows; the order counter is proposed"
+ }
+ #>lang_design_arch_ledger
+ ^["claim_ledger"]{
+  form: "ledger"
+  stresses: "one keystone per reading with an observable, a limit, and a status; refuted readings kept"
+  exemplars: [ ~"../theory/valence-and-charge.spw#spw_theory_valence", ~"../hosts/known-defects.spw#editor_hosts_defects" ]
+  living: ~"../../living/development-and-ecology/forms-for-scripts.spw#development_ecology_script_forms_succ_map"
+  checks: "claim values come from the vocabulary, and sourced surfaces need source links"
+  checks_status: #implemented
+  gap: "no tool checks that a refuted or contested claim keeps a counter in view"
+ }
+ #>lang_design_arch_glossary
+ ^["glossary_lattice"]{
+  form: "glossary"
+  stresses: "one anchored frame per term, typed edges between terms, homonyms named"
+  exemplars: [ ~"../../making/making-glossary.spw#making_glossary", ~"../glossary/operators.spw#spw_gloss_operators" ]
+  checks: "anchors are unique across the cut"
+  checks_status: #implemented
+  gap: "no tool finds orphan terms or cycles among broader and narrower links"
+ }
+ #>lang_design_arch_dossier
+ ^["case_dossier"]{
+  form: "dossier"
+  stresses: "dated events with sources, contested readings with counters, public figures only"
+  exemplars: [ ~"../../making/broadcast/serial-2014-case.spw#broadcast_serial_case", ~"../history/plan-ecology.spw#workbench_history_plans" ]
+  checks: "none beyond claim sources"
+  gap: "whether a named person is a public figure stays a reviewer judgment"
+ }
+ #>lang_design_arch_probe_battery
+ ^["probe_battery"]{
+  form: "probe_battery"
+  stresses: "one anchored ?[ ] per pressure, typed !probe ids, depth and lens from closed sets"
+  exemplars: [ ~"../theory/particle-lattice.spw#spw_theory_particle_lattice" ]
+  living: ~"../../living/development-and-ecology/forms-for-scripts.spw#development_ecology_script_forms_homeo_map"
+  checks: "probe ids are unique, and kinds, depths, and lenses come from the vocabulary"
+  checks_status: #implemented
+  gap: "no tool records a probe result against its id"
+ }
+ #>lang_design_arch_registry
+ ^["registry"]{
+  form: "registry"
+  stresses: "%ns.key cells with value, unit, at, src, and status, and anchored source entries"
+  exemplars: [ ~"../../registries/quantities/materials-and-engineering.spw#q_mateng_registry" ]
+  living: ~"../../living/development-and-ecology/forms-for-scripts.spw#development_ecology_script_forms_sym_map"
+  checks: "a handle is defined once and every read resolves to a cell"
+  checks_status: #implemented
+  gap: "no tool checks a cell against a stated derivation or tolerance"
+ }
+ #>lang_design_arch_calendar
+ ^["calendar"]{
+  form: "calendar"
+  stresses: "dated rows with as_of and links to the cadence they serve"
+  exemplars: [ ~"../../making/authorship/author-season-calendar.spw#authorship_season_calendar" ]
+  checks: "none"
+  gap: "no date arithmetic; a wrong weekday or interval needs a reviewer"
+ }
+ #>lang_design_arch_kit
+ ^["kit"]{
+  form: "story_kit, or a try frame inside any form"
+  stresses: "materials, steps as << >>, time as .{ n, unit }, safety, and a shows link"
+  exemplars: [ ~"../../physical/materials/water.spw#materials_water_try_density", ~"./feature-lineage.spw#lang_design_lineage_try_band" ]
+  checks: "none; the gate does not read try frames"
+  gap: "a kit with no safety line passes"
+ }
+ #>lang_design_arch_arc
+ ^["arc_frame"]{
+  form: "an arc frame in season or trail surfaces"
+  stresses: "clock, archetype, steps as << >>, counts, limit, and a feeds exit"
+  exemplars: [ ~"../../season/season-arc.spw#season_arc" ]
+  checks: "required keys, a clock from the vocabulary that reuses no system clock, and scheduled steps"
+  checks_status: #implemented
+  gap: "a missing feeds exit is only warned"
+ }
+ #>lang_design_arch_trail
+ ^["trail"]{
+  form: "trail"
+  stresses: "ordered stops across at least two classes, with a << >> schedule"
+  exemplars: "none found in the cut on 2026-10-03; trails are planned"
+  checks: "none"
+  gap: "nothing checks that stops cross two classes"
+ }
+}
+
+^["claims"]{
+ #>lang_design_arch_gate_scope
+ ^["gate_scope"]{
+  #:claim #!settled
+  statement: "The cut gate checks parse health, axes, anchors, links, lenses, depths, claim values, receipts, handles, and probe ids, and schedules only inside arc frames; it reads no ?match arms or try kits."
+  sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_code_cut_gate", ~"../../registries/sources/spw-design-studies.spw#src_lab_code_cut_voice" ]
+  cites: [ "scripts/analyzers/spw-cut-gate.ts:182-361", "scripts/analyzers/spw-cut-voice.ts:93-104" ]
+  ~#say(the gate cannot see a state machine)
+ }
+ #>lang_design_arch_graph_cycles
+ ^["graph_cycles"]{
+  #:claim #!settled
+  statement: "spw graph runs cycle detection and a topological sort over every path link between files, so it cannot tell a cycle of needs edges from a pair of mutual see links."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_code_graph"
+  cites: [ "packages/spw-seed/src/math/corpus.ts:176-181", "packages/spw-cli/src/corpus-scan.ts:254" ]
+ }
+ #>lang_design_arch_silent
+ ^["loud_and_silent"]{
+  #:claim #!interpretive
+  statement: "Registries and arcs fail loudly when malformed, while state machines, matrices, and kits fail silently, so their review falls to the next reader."
+  grounds: [ ~"./script-architectures.spw#lang_design_arch_gate_scope" ]
+ }
+}
+
+#>lang_design_arch_slips_q
+?["Do architectures the gate cannot read collect more structural slips?"]{
+ #:depth #!computational ~#lens(applied attention)
+ #:claim #!speculative
+ ~#hypothesis: "Corrections recorded in receipts will fall more often on state machines, matrices, and kits than on registries and arcs, which the gate rejects when malformed."
+ !probe{ "sort every correction in cut provenance by the architecture of its surface and compare rates for checked and unchecked architectures" =id[p_lab_arch_slips] =kind[census] }
+ $%[file.frame_count]
+ ~"./script-architectures.spw#lang_design_arch_silent" ~#neighbor(nearest)
+}
+
+#>lang_design_arch_homeostat_q
+?["Is the cut gate a homeostat for surfaces?"]{
+ #:depth #!stylistic ~#lens(living system)
+ #:claim #!speculative
+ ~#hypothesis: "The gate holds surfaces near the contract as a homeostat holds a set point, and like one it cannot respond to what it has no receptor for, such as ?match arms."
+ !probe{ "list each contract rule beside the gate line that senses it, and count rules with no sensor" =id[p_lab_arch_homeostat] =kind[thought] }
+ breaks: "a homeostat corrects its own deviation; the gate only reports, and a writer makes the correction"
+ $%[file.lines]
+ ~"./script-architectures.spw#lang_design_arch_gate_scope" ~#neighbor(nearest)
+}

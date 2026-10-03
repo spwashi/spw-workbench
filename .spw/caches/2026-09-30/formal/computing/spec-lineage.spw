@@ -1,0 +1,320 @@
+# Specification Lineage
+#
+# A timeline ladder of the specifications under the computing years, from RFC 791 to QUIC, HTML 2.0 to the WHATWG Living Standard, ECMAScript editions, WebAssembly, POSIX, and C.
+
+#>computing_spec_lineage
+#:layer #!reference
+#:domain #!computing
+#:form #!timeline
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bonk
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Specification Lineage"
+ ~#claim: "Protocol and language specifications evolve by numbered replacement, except HTML, which moved to a living standard that W3C now references."
+ ~#proof: "Each rung cites its RFC, standard, or edition list; supersedes edges follow the Obsoletes headers and the W3C and WHATWG memorandum."
+ ~#door: "Follow one family down its supersedes edges, then try reading an Obsoletes header yourself."
+ ~#audience: "developers and archivists who need to cite the right version of a spec"
+ continuity: "Specification Lineage | numbered replacement"
+ cold_open: "Most specs grow by numbered replacement, so citing the right number is half of reading them correctly."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[ "Ecma-262 edition list and the W3C and WHATWG memorandum read on 2026-10-02" ]
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+ }
+ corrections: #[ "RFC 2068 of 1997 is restored as the first HTTP/1.1 specification; RFC 2616 revised and obsoleted it" ]
+}
+
+^["edges"]{
+ grounds: [ ~"./web-and-browser-internals.spw#computing_web", ~"./systems-programming.spw#computing_systems_w058" ]
+}
+
+^["concepts"]{
+ primary: [ #standards, #supersession, #dated_receipt ]
+ transfers: [ #protocol, #specification ]
+ tensions: [ #permanence ]
+}
+
+^["reading_rule"]{
+ #>computing_spec_supersedes_rule
+ ^["supersedes_meaning"]{
+  #:claim #!interpretive
+  statement: "Here supersedes means the newer document replaces the older as the one to cite; extends means both stay current, as IPv4 and IPv6 do."
+ }
+}
+
+^["ladder"]{
+ ^["internet"]{
+  #>computing_spec_rfc791
+  ^["ipv4"]{
+   #:era #!contemporary
+   #:claim #!settled
+   statement: "RFC 791 of 1981 specifies the Internet Protocol, version 4, with 32-bit addresses."
+   source: ~"../../registries/sources/formal.spw#src_formal_rfc791"
+  }
+  #>computing_spec_rfc8200
+  ^["ipv6"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "RFC 8200 of 2017 is the IPv6 standard, with 128-bit addresses; it replaced RFC 2460 and runs beside IPv4 rather than replacing it."
+   source: ~"../../registries/sources/formal.spw#src_formal_rfc8200"
+   extends: [ ~"./spec-lineage.spw#computing_spec_rfc791" ]
+  }
+  #>computing_spec_rfc793
+  ^["tcp_1981"]{
+   #:era #!contemporary
+   #:claim #!settled
+   statement: "RFC 793 of 1981 specified the Transmission Control Protocol for four decades."
+   source: ~"../../registries/sources/formal.spw#src_formal_rfc793"
+  }
+  #>computing_spec_rfc9293
+  ^["tcp_2022"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "RFC 9293 of 2022 obsoletes RFC 793 and gathers decades of TCP updates into one document."
+   source: ~"../../registries/sources/formal.spw#src_formal_rfc9293"
+   supersedes: [ ~"./spec-lineage.spw#computing_spec_rfc793" ]
+  }
+ }
+ ^["web_markup"]{
+  #>computing_spec_proposal
+  ^["proposal"]{
+   #:era #!contemporary
+   #:claim #!settled
+   statement: "Berners-Lee proposed a hypertext information system at CERN in 1989."
+   source: ~"../../registries/sources/formal.spw#src_formal_bernerslee_1989"
+  }
+  #>computing_spec_rfc1866
+  ^["html2"]{
+   #:era #!contemporary
+   #:claim #!settled
+   statement: "RFC 1866 of 1995 defined HTML 2.0 at the IETF."
+   source: ~"../../registries/sources/formal.spw#src_formal_rfc1866"
+  }
+  #>computing_spec_html401
+  ^["html401"]{
+   #:era #!contemporary
+   #:claim #!settled
+   statement: "HTML 4.01 became a W3C Recommendation in 1999 and served as the reference HTML for more than a decade."
+   source: ~"../../registries/sources/formal.spw#src_formal_html401"
+   supersedes: [ ~"./spec-lineage.spw#computing_spec_rfc1866" ]
+  }
+  #>computing_spec_html5
+  ^["html5"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "HTML5 became a W3C Recommendation in October 2014, built largely from WHATWG work."
+   source: ~"../../registries/sources/formal.spw#src_formal_html5_2014"
+   supersedes: [ ~"./spec-lineage.spw#computing_spec_html401" ]
+  }
+  #>computing_spec_whatwg
+  ^["living_standard"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "Since the May 2019 memorandum, HTML and DOM are developed principally as WHATWG Living Standards, and W3C endorses review drafts instead of forking."
+   sources: [ ~"../../registries/sources/formal.spw#src_formal_mou_2019", ~"../../registries/sources/formal.spw#src_formal_whatwg_html" ]
+   supersedes: [ ~"./spec-lineage.spw#computing_spec_html5" ]
+   as_of: "2026-10-02"
+  }
+ }
+ ^["http_and_transport_security"]{
+  #>computing_spec_rfc1945
+  ^["http10"]{
+   #:era #!contemporary
+   #:claim #!settled
+   statement: "RFC 1945 of 1996 documented HTTP/1.0 as an informational RFC."
+   source: ~"../../registries/sources/formal.spw#src_formal_rfc1945"
+  }
+  #>computing_spec_rfc2068
+  ^["http11_1997"]{
+   #:era #!contemporary
+   #:claim #!settled
+   statement: "RFC 2068 of January 1997 first specified HTTP/1.1, with persistent connections and chunked transfer coding."
+   source: ~"../../registries/sources/formal.spw#src_formal_rfc2068"
+   extends: [ ~"./spec-lineage.spw#computing_spec_rfc1945" ]
+  }
+  #>computing_spec_rfc2616
+  ^["http11_1999"]{
+   #:era #!contemporary
+   #:claim #!settled
+   statement: "RFC 2616 of 1999 revised and obsoleted RFC 2068 and became the long-cited HTTP/1.1 text."
+   source: ~"../../registries/sources/formal.spw#src_formal_rfc2616"
+   supersedes: [ ~"./spec-lineage.spw#computing_spec_rfc2068" ]
+  }
+  #>computing_spec_rfc7230
+  ^["http11_2014"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "RFC 7230 and its companions of 2014 split HTTP/1.1 into six documents and obsoleted RFC 2616."
+   source: ~"../../registries/sources/formal.spw#src_formal_rfc7230"
+   supersedes: [ ~"./spec-lineage.spw#computing_spec_rfc2616" ]
+  }
+  #>computing_spec_rfc9110
+  ^["http_semantics"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "RFC 9110 of 2022 defines HTTP semantics for every version, with RFC 9112 for HTTP/1.1 messages, obsoleting the 2014 series."
+   sources: [ ~"../../registries/sources/formal.spw#src_formal_rfc9110", ~"../../registries/sources/formal.spw#src_formal_rfc9112" ]
+   supersedes: [ ~"./spec-lineage.spw#computing_spec_rfc7230" ]
+  }
+  #>computing_spec_rfc7540
+  ^["http2_2015"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "RFC 7540 of 2015 defined HTTP/2 with binary framing and stream multiplexing over one TCP connection."
+   source: ~"../../registries/sources/formal.spw#src_formal_rfc7540"
+  }
+  #>computing_spec_rfc9113
+  ^["http2_2022"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "RFC 9113 of 2022 obsoletes RFC 7540 and deprecates its priority tree."
+   source: ~"../../registries/sources/formal.spw#src_formal_rfc9113"
+   supersedes: [ ~"./spec-lineage.spw#computing_spec_rfc7540" ]
+  }
+  #>computing_spec_rfc8446
+  ^["tls13"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "RFC 8446 of 2018 defines TLS 1.3, which removes static RSA and static Diffie-Hellman key exchange, so every certificate-based handshake is forward secret."
+   source: ~"../../registries/sources/formal.spw#src_formal_rfc8446"
+  }
+  #>computing_spec_rfc9000
+  ^["quic"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "RFC 9000 of 2021 defines QUIC, a UDP-based transport with streams, connection IDs, and TLS 1.3 handshakes."
+   source: ~"../../registries/sources/formal.spw#src_formal_rfc9000"
+  }
+  #>computing_spec_rfc9114
+  ^["http3"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "RFC 9114 of 2022 maps HTTP onto QUIC as HTTP/3."
+   source: ~"../../registries/sources/formal.spw#src_formal_rfc9114"
+   extends: [ ~"./spec-lineage.spw#computing_spec_rfc9000" ]
+  }
+  #>computing_spec_rfc6455
+  ^["websocket"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "RFC 6455 of 2011 defines the WebSocket protocol, opened by an HTTP upgrade."
+   source: ~"../../registries/sources/formal.spw#src_formal_rfc6455"
+  }
+ }
+ ^["ecmascript"]{
+  #>computing_spec_es_early
+  ^["es1_to_es5"]{
+   #:era #!contemporary
+   #:claim #!settled
+   statement: "ECMA-262 editions 1 to 3 appeared from 1997 to 1999; edition 4 was abandoned unpublished, and edition 5 followed in December 2009."
+   source: ~"../../registries/sources/formal.spw#src_formal_ecma262"
+  }
+  #>computing_spec_es2015
+  ^["es2015"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "The sixth edition, ES2015, appeared in June 2015, and TC39 has published one edition each June since."
+   source: ~"../../registries/sources/formal.spw#src_formal_ecma262"
+   supersedes: [ ~"./spec-lineage.spw#computing_spec_es_early" ]
+  }
+  #>computing_spec_es2026
+  ^["es2026"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "ECMAScript 2026, the seventeenth edition, was approved in June 2026."
+   reads: %[formal.dated.ecma262_edition_2026]
+   source: ~"../../registries/sources/formal.spw#src_formal_ecma262"
+   supersedes: [ ~"./spec-lineage.spw#computing_spec_es2015" ]
+   as_of: "2026-10-02"
+  }
+ }
+ ^["webassembly"]{
+  #>computing_spec_wasm1
+  ^["wasm1"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "The WebAssembly Core Specification became a W3C Recommendation in December 2019."
+   source: ~"../../registries/sources/formal.spw#src_formal_wasm_2019"
+  }
+  #>computing_spec_wasm3
+  ^["wasm3"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "Wasm 3.0 became the live standard in September 2025, after a 2.0 release finished about three years earlier."
+   source: ~"../../registries/sources/formal.spw#src_formal_wasm_2025"
+   supersedes: [ ~"./spec-lineage.spw#computing_spec_wasm1" ]
+   as_of: "2026-10-02"
+  }
+ }
+ ^["posix_and_c"]{
+  #>computing_spec_posix1988
+  ^["posix1988"]{
+   #:era #!contemporary
+   #:claim #!settled
+   statement: "IEEE Std 1003.1-1988 was the first POSIX standard for a portable operating system interface."
+   source: ~"../../registries/sources/formal.spw#src_formal_posix_1988"
+  }
+  #>computing_spec_posix2024
+  ^["posix2024"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "POSIX.1-2024, Base Specifications Issue 8, is the current revision, published jointly by IEEE and The Open Group."
+   source: ~"../../registries/sources/formal.spw#src_formal_posix_2024"
+   supersedes: [ ~"./spec-lineage.spw#computing_spec_posix1988" ]
+   as_of: "2026-10-02"
+  }
+  #>computing_spec_c89
+  ^["ansi_c"]{
+   #:era #!contemporary
+   #:claim #!settled
+   statement: "ANSI X3.159-1989 standardized C in the United States, and ISO adopted it the next year."
+   source: ~"../../registries/sources/formal.spw#src_formal_ansi_c_1989"
+  }
+  #>computing_spec_c23
+  ^["c23"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "C23, published as ISO/IEC 9899:2024, is the current C standard after C99, C11, and C17."
+   source: ~"../../registries/sources/formal.spw#src_formal_c23"
+   supersedes: [ ~"./spec-lineage.spw#computing_spec_c89" ]
+   as_of: "2026-10-02"
+  }
+ }
+}
+
+^["try"]{
+ #>computing_spec_try_obsoletes
+ ^["follow_obsoletes"]{
+  materials: [ "a browser", "the RFC Editor site" ]
+  steps: << "open RFC 9293 and find the Obsoletes line in its header" ; "open RFC 793 and note its date and length" ; "pick one rule, such as the initial sequence number, and compare the two texts" ; "write one sentence on what a reader citing only RFC 793 would miss" >>
+  time: .{ n: 25, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./spec-lineage.spw#computing_spec_rfc9293"
+ }
+}
+
+#>computing_spec_living_q
+?["Do citations to a living standard rot faster than citations to numbered RFCs?"]{
+ #:depth #!historical ~#lens(curated collection)
+ #:claim #!speculative
+ ~#hypothesis: "Citations to a living standard more often point at text that has since changed, because the URL stays fixed while the text moves; numbered RFCs never change once published."
+ !probe{ "sample papers citing the HTML Living Standard and check whether each names a snapshot, commit, or access date" =id[p_formal_spec_living_citation] =kind[census] }
+ $%[graph.path_refs]
+ ~"./spec-lineage.spw#computing_spec_whatwg" ~#neighbor(nearest)
+}

@@ -1,0 +1,205 @@
+# Systems and Sensory Circuits
+#
+# A comparison of the senses by receptor, relay, and cortical target, then the motor loops, with ocular dominance as the anchor for sensitive periods.
+
+#>neuroscience_systems
+#:layer #!reference
+#:domain #!neuroscience
+#:form #!comparison
+#:level #!advanced
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Systems and Sensory Circuits"
+ ~#claim: "Each sense turns one kind of energy into spikes at a dedicated receptor, sorts them through relays into maps, and lands in its own area of cortex; smell alone skips the obligatory thalamic relay."
+ ~#proof: "Kuffler and Hubel and Wiesel for vision, von Bekesy for the cochlea, Penfield for the body map, Buck and Axel for smell, Zuker and Ryba for taste."
+ ~#door: "Read across the matrix by sense, then down the columns by stage, then try the blind spot."
+ ~#audience: "advanced students who know how a neuron fires"
+ continuity: "Systems and Sensory Circuits | receptor | relay | cortex"
+ cold_open: "Every sense follows the same route, receptor, relay, and cortex, except smell, which skips the usual relay."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/neuroscience/systems-neuroscience-and-sensory-circuits.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #fail }
+  ^["r4"]{ event: #sourced, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ receipt_note: "r3 was first written as a pass while every source link pointed at a registry not yet written; r4 wrote and checked that registry, and r5 is the passing run after it"
+ corrections: #[
+  "the raw ITD line stated Jeffress delay lines in the medial superior olive as settled; mammalian recordings contest the place map (raw line 28)",
+  "the raw basal ganglia wonder stated a clean brake-and-throttle split; recordings show both pathways active at action onset (raw line 42)",
+  "the raw hypercolumn area figure had no source and was dropped (raw line 21)",
+  "the body map is credited to Penfield and Boldrey with the note that its subjects and drawings centered men",
+  "olfaction and taste added so the comparison covers more than three senses"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./cellular-neurobiology.spw#neuroscience_cellular" ]
+ feeds: [ ~"./cognitive-and-computational.spw#neuroscience_computational" ]
+ grounds: [ ~"../development-and-ecology/sensitive-periods.spw#development_ecology_sensitive_periods_ocular" ]
+ see: [ ~"../../physical/optics/index.spw#optics_index" ]
+}
+
+^["concepts"]{
+ primary: [ #receptive_field, #topographic_map, #sensitive_period ]
+ transfers: [ #signal_path, #filter_bank ]
+ tensions: [ #labeled_line ]
+}
+
+^["axes"]{
+ receptor: "the cell that turns a physical or chemical stimulus into a voltage change"
+ relay: "the main subcortical stations, ending in a thalamic nucleus for most senses"
+ cortex: "the primary cortical area where the map arrives"
+ map: "the stimulus dimension laid out across the cortical surface"
+}
+
+^["matrix"]{
+ #>neuroscience_systems_vision
+ ^["vision"]{
+  #:claim #!settled
+  statement: "Rods and cones hyperpolarize to light; ganglion cells with center-surround fields project through the lateral geniculate nucleus to V1, where cells prefer oriented edges."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_kuffler_1953", ~"../../registries/sources/life-and-mind.spw#src_life_hubel_wiesel_1962" ]
+  receptor: "rods and cones", relay: "lateral geniculate nucleus", cortex: "V1 in the occipital lobe", map: "retinotopic"
+ }
+ #>neuroscience_systems_lgn
+ ^["lgn_layers"]{
+  #:claim #!settled
+  statement: "In primates the two ventral LGN layers are magnocellular, the four dorsal layers parvocellular, and koniocellular cells between them carry much of the blue-yellow signal."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_hendry_reid_2000"
+ }
+ #>neuroscience_systems_audition
+ ^["audition"]{
+  #:claim #!settled
+  statement: "Hair cells open transduction channels through tip links; the basilar membrane sorts frequency from high at the stiff base to low at the apex, and that order persists to auditory cortex."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_von_bekesy_1960", ~"../../registries/sources/life-and-mind.spw#src_life_pickles_1984" ]
+  receptor: "inner hair cells", relay: "cochlear nuclei, superior olive, inferior colliculus, medial geniculate", cortex: "A1 in the temporal lobe", map: "tonotopic"
+ }
+ #>neuroscience_systems_touch
+ ^["somatosensation"]{
+  #:claim #!settled
+  statement: "Skin mechanoreceptors project through the dorsal columns and the ventral posterior thalamus to the postcentral gyrus, where body parts are mapped in order and fingers and lips take outsized area."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_penfield_boldrey_1937"
+  receptor: "mechanoreceptors of skin, muscle, and joint", relay: "dorsal column nuclei, ventral posterior thalamus", cortex: "S1 on the postcentral gyrus", map: "somatotopic"
+  ^["limits"]{
+   holds: "the order and relative magnification of the body map"
+   fails: "the classic drawing was built mostly from male patients and omits much of the female body"
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_di_noto_2013"
+  }
+ }
+ #>neuroscience_systems_smell
+ ^["olfaction"]{
+  #:claim #!settled
+  statement: "Buck and Axel found a large family of odorant receptor genes; each olfactory neuron expresses one, and the bulb sends output to piriform cortex without an obligatory thalamic relay."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_buck_axel_1991", ~"../../registries/sources/life-and-mind.spw#src_life_kandel_2021" ]
+  receptor: "olfactory sensory neurons", relay: "olfactory bulb glomeruli", cortex: "piriform cortex", map: "a glomerular map of receptor types"
+ }
+ #>neuroscience_systems_taste
+ ^["gustation"]{
+  #:claim #!settled
+  statement: "Sweet, umami, bitter, salty, and sour are sensed by distinct receptor cells in taste buds, and signals reach gustatory cortex through the brainstem and thalamus."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_chandrashekar_2006"
+  receptor: "taste receptor cells", relay: "solitary nucleus, ventral posterior medial thalamus", cortex: "gustatory insula", map: "whether taste qualities form a spatial map in insula is debated"
+ }
+}
+
+^["comparison"]{
+ #>neuroscience_systems_streams
+ ^["two_streams"]{
+  #:claim #!settled
+  statement: "Beyond V1 a ventral stream toward temporal cortex supports recognizing objects and a dorsal stream toward parietal cortex supports locating them and guiding action."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_ungerleider_mishkin_1982", ~"../../registries/sources/life-and-mind.spw#src_life_goodale_milner_1992" ]
+  ^["limits"]{
+   holds: "as a first division of labor in primate visual cortex"
+   fails: "the streams talk to each other, and what versus where and perception versus action are rival framings"
+  }
+ }
+ #>neuroscience_systems_itd
+ ^["sound_location"]{
+  #:claim #!contested
+  statement: "Jeffress proposed delay lines and coincidence detectors that map interaural time differences; in mammals precisely timed inhibition shapes the code and a place map is not found."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_jeffress_1948"
+  counter: ~"../../registries/sources/life-and-mind.spw#src_life_brand_2002"
+ }
+ #>neuroscience_systems_ocular
+ ^["ocular_dominance_columns"]{
+  #:claim #!settled
+  statement: "Closing one eye early in a monkey's life shrinks that eye's ocular dominance columns in V1 and widens the open eye's; the same closure later has little effect."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_hubel_wiesel_levay_1977"
+  anchor_for: ~"../development-and-ecology/sensitive-periods.spw#development_ecology_sensitive_periods_ocular"
+ }
+ #>neuroscience_systems_remapping
+ ^["adult_remapping"]{
+  #:claim #!settled
+  statement: "After a digit was amputated in adult monkeys, its cortical territory came to respond to neighboring digits, so adult body maps can reorganize."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_merzenich_1984"
+ }
+ =~"./systems-and-sensory-circuits.spw#neuroscience_systems_remapping"[contrasts]{ ~"./systems-and-sensory-circuits.spw#neuroscience_systems_ocular" }
+}
+
+^["motor"]{
+ #>neuroscience_systems_basal_ganglia
+ ^["basal_ganglia"]{
+  #:claim #!contested
+  statement: "The classic model has a direct pathway that releases movement and an indirect pathway that suppresses it; imaging in mice shows both active together when an action starts."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_albin_1989"
+  counter: ~"../../registries/sources/life-and-mind.spw#src_life_cui_2013"
+ }
+ #>neuroscience_systems_cerebellum
+ ^["cerebellum"]{
+  #:claim #!settled
+  statement: "Marr and Albus proposed that climbing fibers teach Purkinje cells by adjusting parallel-fiber synapses, a learning rule later tied to cerebellar long-term depression."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_marr_1969", ~"../../registries/sources/life-and-mind.spw#src_life_albus_1971", ~"../../registries/sources/life-and-mind.spw#src_life_ito_kano_1982" ]
+  credit: "Masao Ito and Masanobu Kano reported parallel-fiber long-term depression in 1982"
+  ^["limits"]{
+   holds: "as the founding theory of cerebellar motor learning"
+   fails: "whether long-term depression is the main storage site is still argued"
+  }
+ }
+}
+
+^["try"]{
+ #>neuroscience_systems_try_blind_spot
+ ^["blind_spot"]{
+  materials: [ "an index card", "a pen" ]
+  steps: << "draw a dot and, a hand-width to its right, a cross" ; "hold the card at arm length and close your left eye" ; "look at the dot with your right eye" ; "move the card slowly toward you until the cross vanishes" >>
+  time: .{ n: 5, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./systems-and-sensory-circuits.spw#neuroscience_systems_vision"
+  reads_as: "where the optic nerve leaves the eye there are no rods or cones, and the brain fills the gap"
+ }
+ #>neuroscience_systems_try_two_point
+ ^["two_point"]{
+  materials: [ "a paper clip bent into a U", "a ruler", "a partner" ]
+  steps: << "partner closes eyes" ; "touch the skin lightly with one or both tips" ; "ask one or two" ; "narrow the gap until two feels like one, on fingertip and on forearm" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "touch lightly and never press the wire into skin; skip broken or sensitive skin"
+  shows: ~"./systems-and-sensory-circuits.spw#neuroscience_systems_touch"
+ }
+}
+
+#>neuroscience_systems_map_q
+?["Would a body map drawn from many kinds of bodies look like the classic one?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Maps built from women and men alike would keep the same order but would add regions the classic drawing omits."
+ !probe{ "count the sex of participants in somatosensory mapping studies by decade and list body regions each reports" =id[p_life_neuro_map_census] =kind[census] }
+ ~"./systems-and-sensory-circuits.spw#neuroscience_systems_touch" ~#neighbor(nearest)
+}
+
+#>neuroscience_systems_go_q
+?["If both pathways fire at once, what decides which action wins?"]{
+ #:depth #!computational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "The direct pathway may select one action while the indirect pathway suppresses its competitors at the same moment, so co-activation is selection rather than conflict."
+ !probe{ "find studies recording direct and indirect pathway cells during choices between two actions and note whether indirect activity tracks the unchosen one" =id[p_life_neuro_bg_selection] =kind[lit] }
+ ~"./systems-and-sensory-circuits.spw#neuroscience_systems_basal_ganglia" ~#neighbor(nearest)
+}

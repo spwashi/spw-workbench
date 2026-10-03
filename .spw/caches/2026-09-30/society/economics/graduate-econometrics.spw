@@ -1,0 +1,199 @@
+# Graduate Econometrics
+#
+# The estimator matrix of the graduate sequence: likelihood, moments, structural and reduced-form models, and time series, each beside the assumption it leans on and the test that checks it.
+
+#>economics_grad_econometrics
+#:layer #!reference
+#:domain #!economics
+#:form #!comparison
+#:level #!graduate
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Graduate Econometrics"
+ ~#claim: "Each graduate estimator trades an assumption for a property, so the matrix pairs likelihood, moments, structural models, and time series with the test that catches the broken assumption."
+ ~#proof: "Rows cite Fisher, Haavelmo, Sargan, Hansen, White, Newey and West, Heckman, Hausman, Sims, Engle and Granger, Johansen, Rust, and Berry, Levinsohn, and Pakes."
+ ~#door: "Pick an estimator, read its broken-assumption cell, run the random-walk kit, then read the structural debate."
+ ~#audience: "graduate students and applied researchers choosing an estimator"
+ continuity: "Graduate Econometrics | broken assumption"
+ cold_open: "Every estimator leans on one assumption, and each row here names the test that catches the broken assumption."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/university-education/economics/graduate-macroeconomics-and-econometrics.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the econometrics half of the raw macro file is split out here; its GMM, VAR, and cointegration content was correct and is kept with originators credited",
+  "the J test is scoped to valid moment conditions under the efficient weight; it cannot say which moment fails",
+  "maximum likelihood, selection, specification tests, structural estimation, and machine learning rows are added; the raw file had none"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./econometrics-and-data.spw#economics_econometrics", ~"../../formal/mathematics/engineering-core/probability-and-statistics.spw#mathematics_probstat" ]
+ extends: [ ~"./econometrics-and-data.spw#economics_econometrics_weak_iv" ]
+ grounds: [ ~"../society-glossary.spw#society_term_identification" ]
+ contrasts: [ ~"./graduate-macro.spw#economics_grad_macro_rung_critique" ]
+}
+
+^["concepts"]{
+ primary: [ #identification, #moment_conditions, #cointegration ]
+ transfers: [ #weak_instruments, #dynamic_programming ]
+ tensions: [ #structural_vs_reduced_form ]
+}
+
+^["likelihood_and_moments"]{
+ #>economics_grad_metrics_ml
+ ^["maximum_likelihood"]{
+  #:claim #!settled
+  statement: "Fisher set out maximum likelihood; under correct specification it is consistent and asymptotically efficient, and White showed that under misspecification it estimates the closest model in Kullback-Leibler distance."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_fisher_1922", ~"../../registries/sources/economy-and-markets.spw#src_econ_white_1982" ]
+  fails: "a wrong density makes the usual standard errors wrong"
+  check: "sandwich standard errors and an information matrix test"
+ }
+ #>economics_grad_metrics_gmm
+ ^["gmm"]{
+  #:claim #!settled
+  statement: "Hansen's generalized method of moments chooses parameters that set sample moment conditions as close to zero as a weighting matrix allows; the efficient weight is the inverse of the moment covariance."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_hansen_1982", ~"../../registries/sources/economy-and-markets.spw#src_econ_hansen_singleton_1982" ]
+  fails: "invalid moments, and weak identification when moments barely move with the parameter"
+  check: "the J test of overidentifying restrictions"
+ }
+ #>economics_grad_metrics_j_test
+ ^["j_test"]{
+  #:claim #!settled
+  statement: "With more valid moments than parameters and the efficient weight, the scaled minimized objective is chi-square with degrees of freedom equal to moments minus parameters; Sargan gave the instrumental variables case."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_hansen_1982", ~"../../registries/sources/economy-and-markets.spw#src_econ_sargan_1958" ]
+  ^["limits"]{
+   holds: "as a joint test that the overidentifying moments are compatible"
+   fails: "it cannot say which moment is wrong, and it has low power when all instruments share one flaw"
+  }
+ }
+ #>economics_grad_metrics_hac
+ ^["hac"]{
+  #:claim #!settled
+  statement: "Newey and West gave a covariance estimator robust to heteroskedasticity and autocorrelation that is positive semidefinite by construction."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_newey_west_1987"
+  check: "bandwidth choice shifts results; report it"
+ }
+}
+
+^["specification"]{
+ #>economics_grad_metrics_selection
+ ^["sample_selection"]{
+  #:claim #!settled
+  statement: "Heckman treated selection into a sample as an omitted variable and corrected it with a selection equation, which identifies best with a variable that shifts selection but not the outcome."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_heckman_1979"
+  fails: "without an exclusion, identification rests on the assumed normal shape"
+ }
+ #>economics_grad_metrics_hausman
+ ^["hausman_test"]{
+  #:claim #!settled
+  statement: "Hausman compared an estimator consistent under both hypotheses with one efficient under the null; a large gap rejects the null, as in fixed versus random effects."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_hausman_1978"
+ }
+}
+
+^["structural_and_reduced_form"]{
+ #>economics_grad_metrics_haavelmo
+ ^["probability_approach"]{
+  #:claim #!settled
+  statement: "Haavelmo argued that economic relations should be stated as probability models, which made simultaneity and identification problems statistical questions."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_haavelmo_1944", ~"../../registries/sources/economy-and-markets.spw#src_econ_koopmans_1949" ]
+ }
+ #>economics_grad_metrics_structural
+ ^["structural_estimation"]{
+  #:claim #!settled
+  statement: "Structural models estimate primitives such as tastes and costs so counterfactual policies can be simulated; Rust did this for bus engine replacement and Berry, Levinsohn, and Pakes for car demand."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_rust_1987", ~"../../registries/sources/economy-and-markets.spw#src_econ_blp_1995" ]
+  fails: "functional form and equilibrium assumptions carry the counterfactual"
+  check: "out-of-sample predictions against a policy change the model did not see"
+ }
+ #>economics_grad_metrics_debate
+ ^["structural_vs_design"]{
+  #:claim #!contested
+  statement: "Angrist and Pischke credit research design for credible estimates; Keane replies that design-based estimates still rest on assumptions and cannot simulate policies never tried."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_angrist_pischke_2010", ~"../../registries/sources/economy-and-markets.spw#src_econ_keane_2010" ]
+  reading: "many applied papers now pair a design-based estimate with a model that uses it as a target"
+ }
+ #>economics_grad_metrics_dml
+ ^["machine_learning"]{
+  #:claim #!emerging
+  statement: "Double machine learning uses flexible predictors for nuisance parts and orthogonal moments with cross-fitting, so a low-dimensional causal parameter keeps valid confidence intervals."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_chernozhukov_2018", ~"../../registries/sources/economy-and-markets.spw#src_econ_athey_imbens_2019" ]
+  fails: "prediction accuracy does not fix confounding the design leaves open"
+ }
+}
+
+^["time_series"]{
+ #>economics_grad_metrics_spurious
+ ^["spurious_regression"]{
+  #:claim #!settled
+  statement: "Granger and Newbold showed that regressing one independent random walk on another often yields large t statistics and high R squared that mean nothing."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_granger_newbold_1974"
+ }
+ #>economics_grad_metrics_unit_root
+ ^["unit_root"]{
+  #:claim #!settled
+  statement: "Dickey and Fuller derived the nonstandard distribution of the test that a series has a unit root, so ordinary t tables do not apply."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_dickey_fuller_1979"
+  fails: "low power against roots close to one and against breaks in trend"
+ }
+ #>economics_grad_metrics_cointegration
+ ^["cointegration"]{
+  #:claim #!settled
+  statement: "Two nonstationary series are cointegrated when a combination of them is stationary; Engle and Granger tied this to error correction, and Johansen tested the number of such relations."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_engle_granger_1987", ~"../../registries/sources/economy-and-markets.spw#src_econ_johansen_1991" ]
+  vecm: "changes respond to last period gap from the long-run relation at a speed the adjustment coefficient sets"
+  picture: ~"../../registries/sources/economy-and-markets.spw#src_econ_murray_1994"
+ }
+ #>economics_grad_metrics_var
+ ^["var_identification"]{
+  #:claim #!settled
+  statement: "Sims proposed vector autoregressions with few restrictions; shocks are then identified by ordering, long-run restrictions as in Blanchard and Quah, or sign restrictions as in Uhlig."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_sims_1980", ~"../../registries/sources/economy-and-markets.spw#src_econ_blanchard_quah_1989", ~"../../registries/sources/economy-and-markets.spw#src_econ_uhlig_2005" ]
+  fails: "each scheme is an assumption; results can flip when the ordering changes"
+  check: "report responses under more than one identification"
+ }
+}
+
+^["try"]{
+ #>economics_grad_metrics_try_walks
+ ^["two_random_walks"]{
+  materials: [ "a spreadsheet or any statistics package" ]
+  steps: << "draw two independent random walks of 200 steps" ; "regress one on the other and note the t statistic" ; "repeat twenty times and count large t values" ; "difference both series and regress again" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "none worth naming"
+  shows: ~"./graduate-econometrics.spw#economics_grad_metrics_spurious"
+ }
+}
+
+#>economics_grad_metrics_agree_q
+?["When a structural model and a design-based study estimate the same elasticity, do they agree?"]{
+ #:depth #!computational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "Where both exist, structural and design-based estimates of the same elasticity differ more when the design covers a narrow population than when it covers a broad one."
+ !probe{ "collect paired estimates of labor supply or demand elasticities from both traditions and compare gaps by design scope" =id[p_econ_grad_metrics_agree] =kind[lit] }
+ ~"./graduate-econometrics.spw#economics_grad_metrics_debate" ~#neighbor(nearest)
+}
+
+#>economics_grad_metrics_leash_q
+?["Is a cointegrated pair more like a walker and a dog on a leash than two strangers?"]{
+ #:depth #!educational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Students who simulate a walker and a leashed dog grasp error correction faster than students who start from the matrix form."
+ !probe{ "teach one section with the leash simulation and one with the matrix form; compare a common quiz" =id[p_econ_grad_metrics_leash] =kind[field] }
+ breaks: "a leash pulls both ways with a fixed length; error correction can run one way and the gap has no hard bound"
+ ~"./graduate-econometrics.spw#economics_grad_metrics_cointegration" ~#neighbor(nearest)
+}

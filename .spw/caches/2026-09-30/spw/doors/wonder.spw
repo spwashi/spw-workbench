@@ -1,0 +1,102 @@
+# Door: Wonder
+#
+# One region, legible alone: a wonder is a question in a question-mark block with a depth, a lens, a hypothesis that states direction, and a probe that names its instrument.
+
+#>spw_door_wonder
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!field_guide
+#:level #!intro
+#:review #!sourced
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Door: Wonder"
+ ~#claim: "A wonder is a question that names its instrument: a depth and lens line, a status, a hypothesis that states direction only, and a probe with its own id and kind."
+ ~#proof: "The cut contract defines the wonder block, and the gate checks its depth, lens, claim status, probe kind, and probe id against closed sets."
+ ~#door: "Read the water wonder about sinking ice and say which instrument would answer it."
+ ~#audience: "educators and creators who build lessons and shows around questions"
+ continuity: "Door: Wonder | names its instrument"
+ cold_open: "A wonder is a question that names its instrument, so you know how it would be answered."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "contract.spw wonder frame and the gate particle and probe checks",
+  "persona study familiarity_matrix row for the question mark, educators cell",
+  "the water exemplar wonder, read only"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ feeds: [ ~"../practice-modes.spw#spw_practice_modes" ]
+}
+
+^["region"]{
+ #>spw_door_wonder_shape
+ ^["wonder_shape"]{
+  #:claim #!settled
+  statement: "A wonder is an anchor, a question-mark block named by its question, a first line with depth and lens, a status, a hypothesis, and a probe with a unique id and kind."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_contract"
+  label: "a-cut rule from the contract wonder frame, not repository canon"
+  example: ~"../../physical/materials/water.spw#materials_water_ice_sink_q"
+  ~#spoken(wonder)
+  ^["limits"]{
+   holds: "wonder blocks in this dated cut"
+   fails: "no tool runs a probe; the id names an instrument a person would use, and the block records the question, not an answer"
+  }
+ }
+ #>spw_door_wonder_gate
+ ^["closed_sets"]{
+  #:claim #!settled
+  statement: "The gate checks a wonder depth, lens, claim status, and probe kind against the closed sets in the vocabulary, and fails a probe id used in two files."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_gate"
+  cites: [ "scripts/analyzers/spw-cut-gate.ts:227-230", "scripts/analyzers/spw-cut-gate.ts:303-306", "scripts/analyzers/spw-cut-gate.ts:333-336" ]
+ }
+ #>spw_door_wonder_runtime
+ ^["runtime_reading"]{
+  #:claim #!settled
+  statement: "At runtime the question mark returns its second argument, or true, when its first argument is truthy; the cut writes wonders for readers and never evaluates them."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_runtime"
+  cites: [ "packages/spw-runtime/src/interpreter/interpreter.ts:272-284", "docs/theory/spw/operators.spw:32" ]
+ }
+}
+
+^["habits"]{
+ keep: "an essential question at the top of a lesson, or a segment question in a run sheet"
+ quote: [
+  "the question itself, as the quoted block name",
+  "any number in a hypothesis, which belongs in a registry cell or stays out"
+ ]
+ unlearn: "a hypothesis here states a direction, not a size; a size without a source is a question for another wonder"
+}
+
+^["keyboard"]{
+ #>spw_door_wonder_keys
+ ^["shift_slash"]{
+  #:claim #!settled
+  statement: "The question mark needs Shift with the slash key on both the Windows US and the Windows UK layouts."
+  reads: %[doors.key.question_us_mods, doors.key.question_uk_mods]
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_kbd_us"
+ }
+}
+
+#>spw_door_wonder_q
+?["Does naming the instrument change which questions a class asks?"]{
+ #:depth #!educational ~#lens(applied attention)
+ #:claim #!speculative
+ ~#hypothesis: "Asking for an instrument up front shifts a class toward questions it can check, and away from questions that only an expert could settle."
+ !probe{ "in one lesson, collect unsigned questions before and after asking for an instrument, and sort the questions, never the people, by the kind of probe they name" =id[p_doors_wonder_instrument] =kind[field] }
+ breaks: "the probe kinds sort questions by instrument, not by worth; a question with no instrument yet may still be the best one"
+ ~"./wonder.spw#spw_door_wonder_shape" ~#neighbor(nearest)
+}

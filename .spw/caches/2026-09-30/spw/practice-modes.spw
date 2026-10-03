@@ -1,0 +1,205 @@
+# Practice Modes
+#
+# Practice modes as filters over one role stream, the predict-then-reveal habit, nine exercises with their commands and evidence, and why every tally stays on the reader side.
+
+#>spw_practice_modes
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!protocol
+#:level #!practitioner
+#:review #!spot_checked
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Practice Modes"
+ ~#claim: "A practice mode hides one derived relation, asks the reader to predict it, then reveals the parse, so color becomes feedback."
+ ~#proof: "Highlighting shows no correctness benefit for novices in Hannebauer and colleagues, while generation and expertise-reversal findings support fading aids."
+ ~#door: "Start with exercise one: ten lines, your guesses on paper, then the token view."
+ ~#audience: "Spw readers past their first week who want to read faster and check themselves"
+ continuity: "Practice Modes | predict"
+ cold_open: "Hide one thing the parser knows, predict it yourself, then look, and keep your own tally."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/studies/tokens-synthesis.md section 2",
+  ".agents/plans/caches-cut-2026-09-30/references/studies/render-synthesis.md sections 1.4 and 5.4",
+  "command names checked against packages/spw-cli/src/commands.ts at 1aa1dc23"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the study had practice log accuracy per role to a file; tools write nothing about readers here, and a reader may keep a tally by hand",
+  "exercise one used the alias read; it now uses the canonical outline command with a line window",
+  "presets in the study were scratch JSON never loaded in VS Code; they carry status scratch"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./tokens-and-roles.spw#spw_tokens_and_roles" ]
+ grounds: [ ~".spw/conventions/cli.spw#spw_cli_conventions" ]
+ feeds: [ ~"./inspection-and-ir.spw#spw_inspection_and_ir" ]
+}
+
+^["concepts"]{
+ primary: [ #predict_then_reveal, #fading ]
+ transfers: [ #role_stream ]
+ tensions: [ #fluency_illusion ]
+}
+
+^["modes"]{
+ law: "each mode is a predicate over one parse-derived role stream; a mode never changes the parse"
+ ^["full"]{ keep: "every role", status: #proposed }
+ ^["aims"]{ keep: "particles and the nodes they bind", status: #proposed }
+ ^["op"]{ keep: "one operator family, its sigil and brackets", status: #proposed }
+ ^["valence"]{ keep: "bare valence modifiers only, in a palette with no good or bad connotation", status: #proposed }
+ ^["structure"]{ keep: "containers, connectors, and degraded spans", status: #proposed }
+ ^["honesty"]{ keep: "degraded spans, prose fallback, unlexed characters, and errors", status: #proposed }
+ ^["plain"]{
+  keep: "no roles; strings and comments only"
+  status: #proposed
+  today: "VS Code shows TextMate color wherever no semantic token is emitted, so fully bare reading today means switching the language mode to plain text, which also drops the LSP"
+ }
+ presets: "the render study wrote five VS Code setting presets as scratch JSON; they were never loaded, so they carry status scratch"
+ preset_status: #scratch
+}
+
+^["predict_then_reveal"]{
+ steps: << "hide one derived relation, such as a binding target" ; "the reader writes a guess" ; "reveal the parser answer" ; "the reader marks hit or miss on their own paper" >>
+ tally: "a reader may keep a tally by hand; no tool writes, stores, or scores it"
+ cites: [ ".spw/conventions/cli.spw:120-121" ]
+ see: [ ~"../contract.spw#cut_contract" ]
+}
+
+^["evidence"]{
+ #>spw_practice_novice_correctness
+ ^["novice_correctness"]{
+  #:claim #!settled
+  statement: "In a study of novice programmers, syntax highlighting gave no evidence of better correctness."
+  reads: %[spw.research.hannebauer_n]
+  source: ~"../registries/sources/spw-branch.spw#src_spw_hannebauer_2018"
+  ^["limits"]{
+   holds: "novices, correctness outcomes, mainstream languages"
+   fails: "speed, preference, experts, and a sigil-first language were not tested"
+  }
+ }
+ #>spw_practice_speed
+ ^["speed"]{
+  #:claim #!emerging
+  statement: "A small eye-tracking study found lower task time with highlighting, with the benefit shrinking as experience grew."
+  reads: %[spw.research.sarkar_n]
+  source: ~"../registries/sources/spw-branch.spw#src_spw_sarkar_2015"
+ }
+ #>spw_practice_fluency
+ ^["fluency"]{
+  #:claim #!settled
+  statement: "Perceptual features such as font size raise judgments of learning without raising recall."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_rhodes_castel_2008"
+  counter: ~"../registries/sources/spw-branch.spw#src_spw_mueller_2014"
+  ~#(the effect holds; whether fluency or beliefs about memory drive it is contested)
+ }
+ #>spw_practice_color_confidence
+ ^["color_confidence"]{
+  #:claim #!speculative
+  statement: "Color may raise how well a reader feels they understand a surface without raising how well they do."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_koriat_1997"
+ }
+ #>spw_practice_disfluency
+ ^["disfluency"]{
+  #:claim #!refuted
+  statement: "Hard-to-read fonts improve problem solving on Cognitive Reflection Test items."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_meyer_2015"
+  counter: ~"../registries/sources/spw-branch.spw#src_spw_diemand_yauman_2011"
+  reads: %[spw.research.meyer_experiments]
+  ^["limits"]{
+   holds: "the refutation covers disfluent fonts on reasoning problems"
+   fails: "it does not test learning from text or code; this surface makes no claim that monochrome improves learning"
+  }
+ }
+ #>spw_practice_generation
+ ^["generation"]{
+  #:claim #!settled
+  statement: "Items people generate are remembered better than items they only read, and failed retrieval attempts can still aid later learning."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_slamecka_graf_1978"
+  see: [ ~"../registries/sources/spw-branch.spw#src_spw_kornell_2009" ]
+ }
+ #>spw_practice_fading
+ ^["fading"]{
+  #:claim #!settled
+  statement: "Aids that help novices can hinder more expert learners, which argues for per-reader aids that fade."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_kalyuga_2003"
+  see: [ ~"../registries/sources/spw-branch.spw#src_spw_renkl_2002" ]
+ }
+ #>spw_practice_spw_claim
+ ^["for_spw"]{
+  #:claim #!speculative
+  statement: "Predict-then-reveal may strengthen recall of particle binding for readers past the novice stage; it is unmeasured for Spw."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_tokens"
+ }
+}
+
+^["exercises"]{
+ ^["e1"]{
+  task: "read ten lines uncolored, write the role of each token, then reveal"
+  command: "spw outline .spw/caches/2026-09-30/physical/materials/water.spw --lines 58-80 --no-outline, then spw inspect source .spw/caches/2026-09-30/physical/materials/water.spw --through tokens"
+  command_status: #implemented, basis: "generation and pretesting"
+  cites: [ "packages/spw-cli/src/commands.ts:338", "packages/spw-cli/src/commands.ts:277" ]
+ }
+ ^["e2"]{ task: "one-axis day: particles colored, everything else plain", basis: "fading and expertise reversal", command_status: #scratch }
+ ^["e3"]{ task: "claim-status axis: moods shown as glyphs only", basis: "calibration", command_status: #proposed }
+ ^["e4"]{ task: "shape-only week, then plain reading", basis: "fluency lowers felt learning without lowering learning", command_status: #scratch }
+ ^["e5"]{
+  task: "write the census card you expect, run census, compare with plain diff, predict again the next day"
+  command: "spw census .spw/caches/2026-09-30, then diff against your own card"
+  command_status: #implemented, basis: "delayed judgments are more accurate; transfer to census is untested"
+  cites: [ "packages/spw-cli/src/commands.ts:170" ]
+ }
+ ^["e6"]{
+  task: "write one line per digest you expect, then expand the index"
+  command: "spw expand .spw/caches/2026-09-30/physical/materials/index.spw"
+  command_status: #implemented, basis: "explain before expanding, after Rozenblit and Keil"
+  cites: [ "packages/spw-cli/src/commands.ts:368" ]
+ }
+ ^["e7"]{
+  task: "read aloud for thirty seconds, mark pauses, write a reading, name it once it recurs"
+  command: "spw lattice .spw/caches/2026-09-30"
+  command_status: #implemented, basis: "say versus explain; production effect, hedged in voice"
+  cites: [ "packages/spw-cli/src/commands.ts:217" ]
+  see: [ ~"./voice.spw#spw_voice" ]
+ }
+ ^["e8"]{ task: "rate how sure you are that a source supports a statement as worded, then open the registry", basis: "calibration needs many judgments; one is an anecdote", command: "none; paper and the sources registry" }
+ ^["e9"]{
+  task: "predict which format rule changes which line, then check"
+  command: "spw format .spw/caches/2026-09-30/physical/materials/water.spw --profiles canonical,layout,pretty --diff"
+  command_status: #implemented, basis: "attribution of change"
+  cites: [ "packages/spw-cli/src/commands.ts:361" ]
+ }
+}
+
+^["try"]{
+ #>spw_practice_try_tally
+ ^["one_axis_hour"]{
+  materials: [ "one cut surface", "the token view from spw inspect source", "a notebook you keep" ]
+  steps: << "cover the token view" ; "write a role for twenty tokens" ; "uncover and mark each guess" ; "write one line on which role you missed most" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "none worth naming; the tally is yours and goes nowhere"
+  shows: ~"./practice-modes.spw#spw_practice_spw_claim"
+ }
+}
+
+#>spw_practice_fade_q
+?["After how many hits should a reader turn a mode off?"]{
+ #:depth #!educational ~#lens(applied attention)
+ #:claim #!speculative
+ ~#hypothesis: "Readers who fade a mode after steady hits keep their binding accuracy when color returns."
+ !probe{ "volunteers keep their own tallies for two weeks and share only a yes or no on fading" =id[p_spw_practice_fade] =kind[interview] }
+ ~"./practice-modes.spw#spw_practice_fading" ~#neighbor(nearest)
+}

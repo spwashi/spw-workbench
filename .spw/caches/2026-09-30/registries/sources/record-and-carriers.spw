@@ -20,9 +20,20 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #partial }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #partial }
+  ^["r6"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r7"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r8"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #skim, outcome: #pass }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ reverified: "2026-10-03: the W3C EPUB 3.3 status line and the cassette, LaserDisc, and phonograph record entries were reread against the claims that cite them; no entry changed"
+ rechecked: "2026-10-02: the cassette, LaserDisc, and LP encyclopedia entries and the W3C EPUB 3.3 status line were reread; the DASH edition list was widened"
  tiers: "monographs, standards, statutes, and primary documents first; encyclopedia entries are kind encyclopedia and carry accessed"
- accessed_note: "encyclopedia pages were read on 2026-10-01 to check dates; they are pointers, and the works they cite outrank them"
+ accessed_note: "encyclopedia pages were read on 2026-10-02 to check the dates cited from them; they are pointers, and the works they cite outrank them"
+ fact_check: "2026-10-02: the RIAA 2015 memo, Satija on Colon Classification, the AOMedia patent licence, and encyclopedia entries for AV1, RTMP, ISBN, Bookland, Blu-ray, and Blumlein were read online and added; the Blumlein entry now gives filing and acceptance dates"
+ checked: "on 2026-10-02 Maxfield and Harrison and the Gyricon paper were matched in Crossref, Kinnear and Sreberny-Mohammadi in Open Library, and the SAA dictionary and EPUB 3.3 entries were read online; other monographs come from the writer and keep the registry spot_checked; the adversarial pass fetched about twenty-five entries and checked the rest from knowledge only, so the registry stays spot_checked"
 }
 
 ^["surfaces"]{
@@ -110,11 +121,19 @@
  #>src_media_feaster_2012
  ^["feaster_2012"]{ title: "Pictures of Sound: One Thousand Years of Educed Audio, 980-1980", authors: "Patrick Feaster", year: 2012, publisher: "Dust-to-Digital", kind: #monograph }
  #>src_media_blumlein_1931
- ^["blumlein_1931"]{ title: "Improvements in and relating to Sound-transmission, Sound-recording and Sound-reproducing Systems, GB patent 394,325", authors: "Alan Dower Blumlein", year: 1931, kind: #patent }
+ ^["blumlein_1931"]{ title: "Improvements in and relating to Sound-transmission, Sound-recording and Sound-reproducing Systems, GB patent 394,325", authors: "Alan Dower Blumlein", year: 1933, filed: "14 December 1931", accepted: "14 June 1933", kind: #patent }
+ #>src_media_enc_blumlein
+ ^["enc_blumlein"]{ title: "Alan Blumlein", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_media_daniel_mee_clark_1999
  ^["daniel_1999"]{ title: "Magnetic Recording: The First 100 Years", editors: "Eric D. Daniel; C. Denis Mee; Mark H. Clark", year: 1999, publisher: "IEEE Press", kind: #monograph }
  #>src_media_du_gay_1997
  ^["du_gay_1997"]{ title: "Doing Cultural Studies: The Story of the Sony Walkman", authors: "Paul du Gay; Stuart Hall; Linda Janes; Hugh Mackay; Keith Negus", year: 1997, publisher: "Sage and The Open University", kind: #monograph }
+ #>src_media_maxfield_harrison_1926
+ ^["maxfield_harrison_1926"]{ title: "Methods of High Quality Recording and Reproducing of Music and Speech Based on Telephone Research", authors: "J. P. Maxfield; H. C. Harrison", year: 1926, venue: "Bell System Technical Journal 5(3):493-523", kind: #article }
+ #>src_media_kinnear_1994
+ ^["kinnear_1994"]{ title: "The Gramophone Company's First Indian Recordings, 1899-1908", authors: "Michael S. Kinnear", year: 1994, publisher: "Popular Prakashan, Bombay; distributed by Sangam Books", kind: #monograph }
+ #>src_media_sreberny_mohammadi_1994
+ ^["sreberny_1994"]{ title: "Small Media, Big Revolution: Communication, Culture, and the Iranian Revolution", authors: "Annabelle Sreberny-Mohammadi; Ali Mohammadi", year: 1994, publisher: "University of Minnesota Press", kind: #monograph }
  #>src_media_manuel_1993
  ^["manuel_1993"]{ title: "Cassette Culture: Popular Music and Technology in North India", authors: "Peter Manuel", year: 1993, publisher: "University of Chicago Press", kind: #monograph }
  #>src_media_ahra_1992
@@ -164,8 +183,12 @@
  ^["katz_shapiro_1985"]{ title: "Network Externalities, Competition, and Compatibility", authors: "Michael L. Katz; Carl Shapiro", year: 1985, venue: "American Economic Review 75(3)", kind: #article }
  #>src_media_sony_universal_1984
  ^["sony_universal_1984"]{ title: "Sony Corp. of America v. Universal City Studios, Inc., 464 U.S. 417", publisher: "Supreme Court of the United States, decided 17 January 1984", year: 1984, kind: #case_law }
+ #>src_media_enc_videotape_war
+ ^["enc_videotape_war"]{ title: "Videotape format war", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_media_toshiba_2008
  ^["toshiba_2008"]{ title: "Toshiba Announces Discontinuation of HD DVD Businesses", publisher: "Toshiba Corporation press release, 19 February 2008", year: 2008, kind: #press_release }
+ #>src_media_riaa_2015
+ ^["riaa_2015"]{ title: "News and Notes on 2015 RIAA Shipment and Revenue Statistics", authors: "Joshua P. Friedlander", year: 2016, publisher: "Recording Industry Association of America", kind: #report }
  #>src_media_riaa_2016
  ^["riaa_2016"]{ title: "News and Notes on 2016 RIAA Music Industry Shipment and Revenue Statistics", authors: "Joshua P. Friedlander", year: 2017, publisher: "Recording Industry Association of America", kind: #report }
  #>src_media_perzanowski_schultz_2016
@@ -178,7 +201,7 @@
  #>src_media_rfc8216
  ^["rfc8216"]{ title: "RFC 8216: HTTP Live Streaming", authors: "Roger Pantos; William May", year: 2017, publisher: "IETF, August 2017", kind: #standard }
  #>src_media_iso_23009_1_2012
- ^["iso_23009_1_2012"]{ title: "ISO/IEC 23009-1:2012 Dynamic adaptive streaming over HTTP, Part 1", publisher: "ISO/IEC, April 2012; later editions 2019 and 2022", year: 2012, kind: #standard }
+ ^["iso_23009_1_2012"]{ title: "ISO/IEC 23009-1:2012 Dynamic adaptive streaming over HTTP, Part 1", publisher: "ISO/IEC, April 2012; later editions include 2014, 2019, and 2022", year: 2012, kind: #standard }
  #>src_media_iso_14496_12
  ^["iso_14496_12"]{ title: "ISO/IEC 14496-12 ISO base media file format", publisher: "ISO/IEC", year: 2004, kind: #standard }
  #>src_media_itu_h264_2003
@@ -187,6 +210,8 @@
  ^["itu_h265_2013"]{ title: "Recommendation H.265: High efficiency video coding", publisher: "ITU-T, April 2013", year: 2013, kind: #standard }
  #>src_media_aom_av1_2018
  ^["aom_av1_2018"]{ title: "AV1 Bitstream and Decoding Process Specification, version 1.0.0", publisher: "Alliance for Open Media", year: 2018, kind: #standard }
+ #>src_media_aom_patent_license
+ ^["aom_patent_license"]{ title: "Alliance for Open Media Patent License 1.0", publisher: "Alliance for Open Media", accessed: "2026-10-02", kind: #licence }
  #>src_media_adobe_rtmp_2012
  ^["adobe_rtmp_2012"]{ title: "Adobe's Real Time Messaging Protocol", publisher: "Adobe Systems, 21 December 2012", year: 2012, kind: #specification }
  #>src_media_srt_draft
@@ -200,6 +225,12 @@
 ^["reading_and_order"]{
  #>src_media_comiskey_1998
  ^["comiskey_1998"]{ title: "An electrophoretic ink for all-printed reflective electronic displays", authors: "Barrett Comiskey; J. D. Albert; Hidekazu Yoshizawa; Joseph Jacobson", year: 1998, venue: "Nature 394", kind: #article }
+ #>src_media_sheridon_1999
+ ^["sheridon_1999"]{ title: "The Gyricon rotating ball display", authors: "N. K. Sheridon; E. A. Richley; J. C. Mikkelsen; D. Tsuda; J. M. Crowley; K. A. Oraha; M. E. Howard; M. A. Rodkin; R. Swidler; R. Sprague", year: 1999, venue: "Journal of the Society for Information Display 7(2):141-144", kind: #article }
+ #>src_media_w3c_epub_33
+ ^["w3c_epub_33"]{ title: "EPUB 3.3", publisher: "W3C Recommendation, version dated 13 January 2026", year: 2026, accessed: "2026-10-02", kind: #standard }
+ #>src_media_saa_dictionary
+ ^["saa_dictionary"]{ title: "Dictionary of Archives Terminology, online successor to Pearce-Moses, A Glossary of Archival and Records Terminology, 2005", publisher: "Society of American Archivists", year: 2026, accessed: "2026-10-02", kind: #reference }
  #>src_media_kay_1972
  ^["kay_1972"]{ title: "A Personal Computer for Children of All Ages", authors: "Alan C. Kay", year: 1972, venue: "Proceedings of the ACM National Conference, Boston", kind: #paper }
  #>src_media_delgado_2018
@@ -210,6 +241,8 @@
  ^["ranganathan_1933"]{ title: "Colon Classification", authors: "S. R. Ranganathan", year: 1933, publisher: "Madras Library Association", kind: #monograph }
  #>src_media_ranganathan_1937
  ^["ranganathan_1937"]{ title: "Prolegomena to Library Classification", authors: "S. R. Ranganathan", year: 1937, publisher: "Madras Library Association", kind: #monograph }
+ #>src_media_satija_2017
+ ^["satija_2017"]{ title: "Colon Classification (CC)", authors: "Mohinder P. Satija", year: 2017, venue: "Knowledge Organization 44(4): 291-307; also ISKO Encyclopedia of Knowledge Organization", kind: #article }
  #>src_media_diderot_1755
  ^["diderot_1755"]{ title: "Encyclopédie (article), in Encyclopédie, ou dictionnaire raisonné, vol. 5", authors: "Denis Diderot", year: 1755, kind: #primary }
  #>src_media_muller_feith_fruin_1898
@@ -218,35 +251,45 @@
 
 ^["encyclopedia"]{
  #>src_media_enc_movable_type
- ^["enc_movable_type"]{ title: "Movable type", venue: "Wikipedia", accessed: "2026-10-01", kind: #encyclopedia }
+ ^["enc_movable_type"]{ title: "Movable type", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_media_enc_gutenberg_bible
- ^["enc_gutenberg_bible"]{ title: "Gutenberg Bible", venue: "Wikipedia", accessed: "2026-10-01", kind: #encyclopedia }
+ ^["enc_gutenberg_bible"]{ title: "Gutenberg Bible", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_media_enc_offset
- ^["enc_offset"]{ title: "Offset printing", venue: "Wikipedia", accessed: "2026-10-01", kind: #encyclopedia }
+ ^["enc_offset"]{ title: "Offset printing", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_media_enc_print_on_demand
- ^["enc_print_on_demand"]{ title: "Print on demand", venue: "Wikipedia", accessed: "2026-10-01", kind: #encyclopedia }
+ ^["enc_print_on_demand"]{ title: "Print on demand", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_media_enc_history_of_paper
- ^["enc_history_of_paper"]{ title: "History of paper", venue: "Wikipedia", accessed: "2026-10-01", kind: #encyclopedia }
+ ^["enc_history_of_paper"]{ title: "History of paper", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_media_enc_shellac
- ^["enc_shellac"]{ title: "Shellac", venue: "Wikipedia", accessed: "2026-10-01", kind: #encyclopedia }
+ ^["enc_shellac"]{ title: "Shellac", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_media_enc_phonograph_record
- ^["enc_phonograph_record"]{ title: "Phonograph record", venue: "Wikipedia", accessed: "2026-10-01", kind: #encyclopedia }
+ ^["enc_phonograph_record"]{ title: "Phonograph record", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_media_enc_lp
- ^["enc_lp"]{ title: "LP record", venue: "Wikipedia", accessed: "2026-10-01", kind: #encyclopedia }
+ ^["enc_lp"]{ title: "LP record", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_media_enc_cassette
- ^["enc_cassette"]{ title: "Cassette tape", venue: "Wikipedia", accessed: "2026-10-01", kind: #encyclopedia }
+ ^["enc_cassette"]{ title: "Cassette tape", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_media_enc_laserdisc
- ^["enc_laserdisc"]{ title: "LaserDisc", venue: "Wikipedia", accessed: "2026-10-01", kind: #encyclopedia }
+ ^["enc_laserdisc"]{ title: "LaserDisc", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_media_enc_hd_war
- ^["enc_hd_war"]{ title: "High-definition optical disc format war", venue: "Wikipedia", accessed: "2026-10-01", kind: #encyclopedia }
+ ^["enc_hd_war"]{ title: "High-definition optical disc format war", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_media_enc_srt
- ^["enc_srt"]{ title: "Secure Reliable Transport", venue: "Wikipedia", accessed: "2026-10-01", kind: #encyclopedia }
+ ^["enc_srt"]{ title: "Secure Reliable Transport", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_media_enc_hls
- ^["enc_hls"]{ title: "HTTP Live Streaming", venue: "Wikipedia", accessed: "2026-10-01", kind: #encyclopedia }
+ ^["enc_hls"]{ title: "HTTP Live Streaming", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_media_enc_e_ink
- ^["enc_e_ink"]{ title: "E Ink", venue: "Wikipedia", accessed: "2026-10-01", kind: #encyclopedia }
+ ^["enc_e_ink"]{ title: "E Ink", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_media_enc_librie
- ^["enc_librie"]{ title: "Sony Librie", venue: "Wikipedia", accessed: "2026-10-01", kind: #encyclopedia }
+ ^["enc_librie"]{ title: "Sony Librie", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_media_enc_kindle
- ^["enc_kindle"]{ title: "Amazon Kindle", venue: "Wikipedia", accessed: "2026-10-01", kind: #encyclopedia }
+ ^["enc_kindle"]{ title: "Amazon Kindle", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
+ #>src_media_enc_av1
+ ^["enc_av1"]{ title: "AV1", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
+ #>src_media_enc_rtmp
+ ^["enc_rtmp"]{ title: "Real-Time Messaging Protocol", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
+ #>src_media_enc_isbn
+ ^["enc_isbn"]{ title: "ISBN", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
+ #>src_media_enc_bookland
+ ^["enc_bookland"]{ title: "Bookland", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
+ #>src_media_enc_blu_ray
+ ^["enc_blu_ray"]{ title: "Blu-ray", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
 }

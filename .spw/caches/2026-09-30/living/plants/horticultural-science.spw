@@ -7,37 +7,48 @@
 #:domain #!plant_science
 #:form #!calendar
 #:level #!practitioner
-#:review #!spot_checked
+#:review #!sourced
 #:valence #!boon
 #:season #!reflection
 
 ^"emit"{
  ~#title: "Horticultural Science"
- ~#claim: "Autumn is short-day season: lengthening nights set poinsettia and holiday cactus flowers, while soil water, compost, and propagation run on a few working numbers."
- ~#proof: "Photoperiodism from Garner and Allard 1920; far-red elongation from Kasperbauer 1971; soil and compost values from Weil and Brady and the NRAES handbook."
+ ~#claim: "Autumn is short-day season: lengthening nights set poinsettia flowers, long or cool nights set holiday cactus buds, and soil water, compost, and propagation run on a few working numbers."
+ ~#proof: "Photoperiodism from Garner and Allard 1920; far-red elongation from Kasperbauer 1971; soil and compost values from Weil and Brady and the NRAES handbook; seed storage from Ellis and Roberts 1980."
  ~#door: "Read the calendar from 1 October, then the photoperiod claims, then try a germination test."
  ~#audience: "home growers and horticulture students"
  continuity: "Horticultural Science | short-day season"
- cold_open: "October opens short-day season, when long nights quietly tell poinsettias and holiday cacti to set their flowers."
+ cold_open: "October opens short-day season, when long nights tell poinsettias to flower and long or cool nights set holiday cactus buds."
 }
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-02"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/university-education/horticulture-and-botany/undergrad-horticultural-science.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ revision_2026_10_03: "r6 redated the r4 fact-check to 2026-10-02, the day its sources were read"
  corrections: #[
   "an end-of-day far-red pulse lengthens internodes; the raw wonder said it accelerates flowering without stretching stems (raw line 98)",
   "the raw wonder's 10-day flowering gain and its phenology metrics were invented and dropped",
   "the claim that heirloom flavor requires living soil is a stance, not a finding, and was dropped",
-  "the raw VPD and CO2 setpoints were unsourced and left out; numbers here are registry cells"
+  "the raw VPD and CO2 setpoints were unsourced and left out; numbers here are registry cells",
+  "the germination test now demonstrates a sourced seed storage claim instead of the soil water claim it could not show",
+  "fact-check: holiday cactus buds were credited to night length alone; long nights or a run of cool nights set them",
+  "fact-check: the grafting and cutting fields were unsourced; each is now a sourced claim"
  ]
- review_note: "spot_checked because the poinsettia night length is a verify cell"
+ review_note: "sourced, not adversarial_checked: the poinsettia night length is a verify cell, and the holiday cactus source was added after the fact-check"
 }
 
 ^["edges"]{
@@ -49,6 +60,16 @@
  primary: [ #photoperiodism, #propagation, #limiting_factor ]
  transfers: [ #cadence, #phenology ]
  tensions: [ #shade_avoidance ]
+}
+
+^["scope"]{
+ #>plant_science_horticulture_guard
+ ^["guard"]{
+  #:valence #!honk
+  warning: "pesticides and growth regulators are used only as their label and local law direct; thresholds here are concepts, not application rates"
+ }
+ what: "working horticulture for home growers and students"
+ where_to_ask: "a local cooperative extension office or licensed pest control adviser"
 }
 
 ^["working_numbers"]{
@@ -81,8 +102,28 @@
   statement: "Skoog and Miller showed that a high cytokinin to auxin ratio favors shoots and a high auxin to cytokinin ratio favors roots in cultured tissue."
   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_skoog_miller_1957"
  }
- grafting: "scion and rootstock cambia must touch so callus can bridge them and new vascular tissue can join"
- cuttings: "auxins such as IBA are applied to cutting bases to encourage adventitious roots"
+ #>plant_science_horticulture_seed_storage
+ ^["seed_storage"]{
+  #:claim #!settled
+  statement: "Ellis and Roberts fitted viability equations in which stored seed loses viability faster as storage temperature and seed moisture content rise, so cool dry jars keep saved seed longest."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_ellis_roberts_1980"
+  ^["limits"]{
+   holds: "orthodox seeds that tolerate drying, such as most grains, legumes, and vegetables"
+   fails: "recalcitrant seeds, such as many tropical tree seeds and acorns, die when dried"
+  }
+ }
+ #>plant_science_horticulture_grafting
+ ^["grafting"]{
+  #:claim #!settled
+  statement: "A graft takes when scion and rootstock cambia touch, so callus can bridge the cut and new vascular tissue can join them."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_hartmann_kester_2017"
+ }
+ #>plant_science_horticulture_cuttings
+ ^["cuttings"]{
+  #:claim #!settled
+  statement: "Auxins such as indole-3-butyric acid, applied to the base of a cutting, encourage adventitious roots."
+  sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_hartmann_kester_2017", ~"../../registries/sources/plants-ecology-care.spw#src_eco_taiz_2015" ]
+ }
 }
 
 ^["photoperiod"]{
@@ -97,6 +138,13 @@
   #:claim #!settled
   statement: "Short-day plants measure the night: a brief light break in a long night can prevent flowering, while a short dark break in the day changes little."
   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_taiz_2015"
+ }
+ #>plant_science_horticulture_holiday_cactus
+ ^["holiday_cactus"]{
+  #:claim #!settled
+  statement: "Holiday cacti set flower buds under long uninterrupted nights or after a run of cool nights, so either cue can bring bloom."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_ncsu_schlumbergera"
+  as_of: "2026-10-02"
  }
  #>plant_science_horticulture_phytochrome
  ^["phytochrome"]{
@@ -133,15 +181,13 @@
 }
 
 ^["calendar"]{
- window: "Thu 2026-10-01 to Mon 2027-01-04, temperate Northern Hemisphere"
- status_key: "fixed has a set date; typical follows climate and varies by region and year; verify needs a local check"
  #>plant_science_horticulture_short_days
  ^["short_day_forcing"]{
   when: "from about 1 October"
-  task: "give poinsettias and holiday cacti long uninterrupted nights so bracts color and buds set by December"
+  task: "give poinsettias long uninterrupted nights so bracts color by December; holiday cacti set buds under long nights or a run of cool nights"
   reads: %[eco.photo.poinsettia_dark_h]
   status: "typical; night length and weeks of response are cultivar dependent and a verify cell"
-  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_ecke_2004"
+  sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_ecke_2004", ~"../../registries/sources/plants-ecology-care.spw#src_eco_ncsu_schlumbergera" ]
  }
  ^["seed_lots"]{ when: "October", task: "dry, clean, label, and store saved seed in cool dry jars", status: "typical" }
  ^["bulbs"]{ when: "October to November", task: "plant spring bulbs before the ground freezes; pot bulbs for forcing and start their cold period", status: "typical" }
@@ -149,6 +195,8 @@
  ^["chill_count"]{ when: "after leaf fall", task: "chill accumulation for fruit trees begins; track it with a model", status: "typical" }
  ^["holiday_color"]{ when: "late November to December", task: "poinsettia bracts color; keep plants away from cold drafts and night light", status: "typical" }
  ^["planning"]{ when: "late December to early January", task: "test old seed, read catalogs, and plan rotations", status: "typical" }
+ window: "Thu 2026-10-01 to Mon 2027-01-04, temperate Northern Hemisphere"
+ status_key: "fixed has a set date; typical follows climate and varies by region and year; verify needs a local check"
  cadence: << "long nights begin" ; "seed lots stored" ; "bulbs in" ; "first frost" ; "chill counting" ; "holiday color" ; "seed tests and planning" >>
 }
 
@@ -159,7 +207,7 @@
   steps: << "dampen the towel" ; "space ten seeds on it and fold" ; "seal and date the bag" ; "keep it warm and check daily" ; "count sprouts after one week" >>
   time: .{ n: 15, unit: "minutes of setup, then a week of waiting" }
   safety: "treated seed is often dyed; wash hands after handling it and keep it from children"
-  shows: ~"./horticultural-science.spw#plant_science_horticulture_soil_water"
+  shows: ~"./horticultural-science.spw#plant_science_horticulture_seed_storage"
  }
 }
 

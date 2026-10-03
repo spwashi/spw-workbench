@@ -1,0 +1,181 @@
+# Transport Phenomena
+#
+# The canonical node for momentum, heat, and mass transfer, laid out as an analogy matrix with the dimensionless groups and correlations that link the three.
+
+#>engineering_transport
+#:layer #!reference
+#:domain #!engineering
+#:form #!comparison
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Transport Phenomena"
+ ~#claim: "Momentum, heat, and mass all move down gradients through a diffusivity, so one set of balances and dimensionless groups serves all three."
+ ~#proof: "Bird, Stewart, and Lightfoot build the unified treatment; Reynolds, Moody, Colebrook, and Chilton and Colburn supply the experiments and analogies."
+ ~#door: "Read across one row of the matrix, then watch a tap stream turn from glassy to rough."
+ ~#audience: "chemical and mechanical engineering students and anyone sizing pipes or heat exchangers"
+ continuity: "Transport Phenomena | down gradients"
+ cold_open: "Momentum, heat, and mass all flow down gradients, so learning one flow teaches you the other two."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/chemistry-and-chemical-engineering/undergrad-chemical-engineering.spw", ".spw/caches/university-education/physics-and-mechanical-engineering/undergrad-mechanical-engineering.spw", ".spw/caches/university-education/chemistry-and-chemical-engineering/masters-chemical-engineering.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the raw said a wider pipe cuts pumping energy by the fifth power of radius; at fixed flow the exponent is 4 for laminar flow, about 4.75 for smooth turbulent flow, and 5 only for fully rough flow",
+  "thermo-fluids appeared three times in the raw, in mechanical, chemical, and thermodynamics files; this node is the one home",
+  "the masters transport pillars are kept as the graduate rows of the matrix"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../../formal/mathematics/engineering-core/differential-equations.spw#mathematics_diffeq" ]
+ grounds: [ ~"../../registries/quantities/materials-and-engineering.spw#q_mateng_transport" ]
+ see: [ ~"../chemistry/chemical-engineering.spw#chemistry_chemeng", ~"../materials/bonding-and-states-of-matter.spw#materials_bonding_newtonian" ]
+}
+
+^["concepts"]{
+ primary: [ #transport, #dimensionless_group, #boundary_layer ]
+ transfers: [ #diffusion, #turbulence ]
+ tensions: [ #regime_limit ]
+}
+
+^["analogy_matrix"]{
+ #>engineering_transport_analogy
+ ^["shared_form"]{
+  #:claim #!settled
+  statement: "Newton viscosity law, Fourier law, and Fick law each make a flux proportional to a gradient, so momentum, heat, and species balances share one mathematical form."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_bsl_2002"
+ }
+ ^["momentum"]{
+  flux_law: "shear stress equals viscosity times velocity gradient"
+  diffusivity: "kinematic viscosity"
+  groups: #[ Re, f ]
+ }
+ ^["heat"]{
+  flux_law: "heat flux equals conductivity times temperature gradient"
+  diffusivity: "thermal diffusivity"
+  groups: #[ Pr, Nu, Bi ]
+ }
+ ^["mass"]{
+  flux_law: "species flux equals diffusivity times concentration gradient, in dilute binary mixtures"
+  diffusivity: "mass diffusivity"
+  groups: #[ Sc, Sh ]
+ }
+ #>engineering_transport_prandtl
+ ^["prandtl_schmidt"]{
+  #:claim #!settled
+  statement: "The Prandtl number compares momentum and thermal diffusivity and the Schmidt number compares momentum and mass diffusivity, so each sets how thick one boundary layer is against another."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_incropera_2011"
+ }
+ #>engineering_transport_chilton_colburn
+ ^["chilton_colburn"]{
+  #:claim #!settled
+  statement: "Chilton and Colburn in 1934 equated the heat and mass transfer j-factors with half the friction factor, letting one measured quantity estimate the other two."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_chilton_colburn_1934"
+  ^["limits"]{
+   holds: "flows dominated by skin friction, such as flat plates and pipes"
+   fails: "bluff bodies, where form drag breaks the link between friction and transfer"
+  }
+ }
+}
+
+^["momentum_rows"]{
+ #>engineering_transport_reynolds
+ ^["reynolds_transition"]{
+  #:claim #!settled
+  statement: "Reynolds showed in 1883 with dye in glass pipes that flow turns from smooth to sinuous as one ratio of inertia to viscosity grows; pipe flow is reliably laminar below about 2100."
+  reads: %[mateng.transport.pipe_laminar_re_max]
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_reynolds_1883", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_bsl_2002" ]
+  ^["limits"]{
+   holds: "ordinary pipes with ordinary inlet disturbances"
+   fails: "carefully quiet inlets keep flow laminar far higher; the threshold is a convention"
+  }
+ }
+ #>engineering_transport_friction
+ ^["friction_factor"]{
+  #:claim #!settled
+  statement: "Colebrook in 1939 joined the smooth and rough pipe laws into one implicit friction formula, and Moody in 1944 charted it against Reynolds number and roughness."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_colebrook_1939", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_moody_1944" ]
+ }
+ #>engineering_transport_pumping_power
+ ^["pumping_power"]{
+  #:claim #!settled
+  statement: "At fixed volumetric flow, pumping power falls with diameter to the power 4 in laminar flow, about 4.75 in smooth turbulent flow, and 5 in fully rough flow."
+  reads: %[
+   mateng.transport.pump_power_d_exp_laminar,
+   mateng.transport.pump_power_d_exp_blasius,
+   mateng.transport.pump_power_d_exp_rough
+  ]
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_bsl_2002"
+  ~#counter(the raw gave the fifth power for every regime)
+ }
+}
+
+^["heat_rows"]{
+ #>engineering_transport_biot
+ ^["lumped_capacitance"]{
+  #:claim #!settled
+  statement: "A solid can be treated as one uniform temperature while its Biot number, surface convection over internal conduction, stays below about 0.1."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_incropera_2011"
+ }
+ #>engineering_transport_exchangers
+ ^["exchangers"]{
+  #:claim #!settled
+  statement: "The log-mean temperature difference method sizes an exchanger when end temperatures are known; the effectiveness-NTU method rates one when only inlets are known; both rest on the same balance."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_incropera_2011"
+ }
+}
+
+^["mass_rows"]{
+ #>engineering_transport_maxwell_stefan
+ ^["maxwell_stefan"]{
+  #:claim #!settled
+  statement: "In mixtures of three or more species, fluxes couple, so a species can diffuse against its own gradient; Maxwell-Stefan equations capture this where simple Fick law cannot."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_taylor_krishna_1993"
+ }
+}
+
+^["try"]{
+ #>engineering_transport_try_tap
+ ^["tap_stream"]{
+  materials: [ "a kitchen tap", "a clear glass", "food coloring", "a dropper" ]
+  steps: << "open the tap a little and see the glassy stream" ; "open it further until the stream turns rough" ; "fill the glass, let it settle, and drip in dye" ; "stir once gently and watch the dye stretch into sheets" ; "stir hard and watch it break into eddies" >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "no hazard worth naming; mop up spills so no one slips"
+  shows: ~"./transport-phenomena.spw#engineering_transport_reynolds"
+ }
+}
+
+#>engineering_transport_pipe_size_q
+?["Why do building engineers not simply oversize every pipe to save pump energy?"]{
+ #:depth #!computational ~#lens(energy budget)
+ #:claim #!speculative
+ ~#hypothesis: "Pump energy falls steeply with diameter but pipe cost rises with it, so total cost has a minimum, and that optimum shifts larger when energy prices rise."
+ !probe{ "sum pipe cost and lifetime pumping cost over diameter for one riser in laminar and turbulent regimes" =id[p_mateng_transport_pipe_size] =kind[calc] }
+ $%[mateng.transport.pump_power_d_exp_blasius, mateng.transport.pump_power_d_exp_laminar]
+ ~"./transport-phenomena.spw#engineering_transport_pumping_power" ~#neighbor(nearest)
+}
+
+#>engineering_transport_crowd_q
+?["Does a crowd leaving a stadium flow like a fluid through a pipe?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "At low density people stream like a laminar flow, and past a critical density stop-and-go waves appear, much as disturbances grow past a transition."
+ breaks: "people choose speeds, see exits, and push back; fluids have no intentions and no panic"
+ !probe{ "compare published pedestrian flow-density curves with a pipe friction curve and list where the shapes part" =id[p_mateng_transport_crowd] =kind[lit] }
+ $%[mateng.transport.pipe_laminar_re_max]
+ ~"./transport-phenomena.spw#engineering_transport_reynolds" ~#neighbor(nearest)
+}

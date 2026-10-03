@@ -7,7 +7,7 @@
 #:domain #!institutions
 #:form #!ledger
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 #:era #!contemporary
 
@@ -28,8 +28,10 @@
  lineage: #[ ".spw/caches/university-education/governance-and-tenure.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
  }
  corrections: #[
   "faculty senate resolutions described as binding; the 1966 Statement makes boards final and senates mostly advisory",
@@ -74,7 +76,11 @@
   ^["senate_advisory"]{
    #:claim #!interpretive
    statement: "Most faculty senates advise rather than bind; their weight comes from the board concurring with faculty judgment, which the 1966 Statement expects except for compelling stated reasons."
-   counter: ~"../../registries/sources/learning-and-generations.spw#src_learn_aaup_1966"
+   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_aaup_1966"
+   ^["limits"]{
+    holds: "campuses whose bylaws give the senate recommending power, the common pattern"
+    fails: "some bylaws, statutes, or contracts delegate final say on degree requirements to the faculty"
+   }
   }
  }
  ^["tenure"]{
@@ -98,7 +104,7 @@
   #>institutions_governance_due_process
   ^["due_process"]{
    #:claim #!settled
-   statement: "At a public institution, tenure can create a property interest that triggers constitutional due process before dismissal; a one-year contract alone does not."
+   statement: "At a public institution, tenure can create a property interest that triggers constitutional due process before dismissal; a one-year contract alone does not create one in renewal."
    source: ~"../../registries/sources/learning-and-generations.spw#src_learn_roth_1972"
   }
  }

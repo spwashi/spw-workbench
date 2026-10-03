@@ -1,0 +1,212 @@
+# Biomaterials and Tissue
+#
+# Material classes compared by how they degrade, how the host answers them, and what they are used for, then how cells feel stiffness and why thick tissue needs vessels; bulk materials science lives in physical materials.
+
+#>bioengineering_biomaterials
+#:layer #!reference
+#:domain #!bioengineering
+#:form #!comparison
+#:level #!advanced
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Biomaterials and Tissue"
+ ~#claim: "A biomaterial is chosen by how it degrades and how the host responds, from the first protein layer to the fibrous capsule, and cells read its stiffness through adhesions that pull."
+ ~#proof: "Anderson and Shive on PLGA, Tamada and Langer on erosion, Vroman on protein exchange, Anderson on the foreign body reaction, Engler and Discher on stiffness, Dupont on YAP and TAZ."
+ ~#door: "Read the matrix row by row, then the host response sequence, then the stiffness contest, then the vessel problem."
+ ~#audience: "advanced engineering and biology students"
+ continuity: "Biomaterials and Tissue | how the host responds"
+ cold_open: "A biomaterial is chosen less for its strength than for how it breaks down and how the host responds to it."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/bioengineering/biomaterials-and-tissue-engineering.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #fail }
+  ^["r4"]{ event: #sourced, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ receipt_note: "r3 was first written as a pass while every source link pointed at a registry not yet written; r4 wrote and checked that registry, and r5 is the passing run after it"
+ corrections: #[
+  "the raw stiffness ranges for neurogenic, myogenic, and osteogenic gels and the raw talin force threshold were dropped; directions are kept with their sources (raw lines 27 and 40)",
+  "the raw line said matrix stiffness dictates fate; a published contest over tethering and porosity is kept (raw line 27)",
+  "the M1 to M2 macrophage switch is marked as a simplification its own field has warned against (raw line 21)",
+  "the raw degradation range, mesh sizes, and oxygen diffusion distance had no source here and were dropped (raw lines 16, 20, and 31)",
+  "bulk polymer, metal, and ceramic science deferred to physical materials by a needs edge"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../../physical/materials/materials-advanced.spw#materials_advanced", ~"../cells/transport-and-signaling.spw#cell_biology_signaling" ]
+ feeds: [ ~"./instrumentation-and-biomechanics.spw#bioengineering_instrumentation" ]
+ see: [ ~"../cells/cell-cycle-and-stem-cells.spw#cell_biology_cell_cycle_es_cells" ]
+}
+
+^["concepts"]{
+ primary: [ #host_response, #mechanotransduction, #degradation ]
+ transfers: [ #biomimetics, #diffusion_limit ]
+ tensions: [ #stiffness_or_tethering ]
+}
+
+^["scope"]{
+ what: "how biomaterials degrade and how tissue responds, as engineering science"
+ not_advice: "educational reference; devices and materials named here are research examples, not recommendations for any implant or treatment"
+}
+
+^["axes"]{
+ degradation: "how and how fast the material breaks down in the body"
+ host_response: "what the tissue does at the interface, from protein adsorption to capsule"
+ application: "a representative research or clinical use"
+}
+
+^["matrix"]{
+ #>bioengineering_biomaterials_polyesters
+ ^["aliphatic_polyesters"]{
+  #:claim #!settled
+  statement: "PLA, PGA, and their copolymer PLGA hydrolyze at their ester bonds into lactic and glycolic acid; copolymer ratio and crystallinity tune the rate, and the bulk erodes throughout."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_anderson_shive_1997"
+  degradation: "bulk hydrolysis", host_response: "mild foreign body response; acidic products can inflame locally", application: "absorbable sutures, drug-release microspheres"
+ }
+ #>bioengineering_biomaterials_anhydrides
+ ^["polyanhydrides"]{
+  #:claim #!settled
+  statement: "Hydrophobic polyanhydrides erode mainly from the surface inward, because water reacts at the surface faster than it penetrates, so release can stay steady."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_tamada_langer_1993"
+  degradation: "surface erosion", host_response: "depends on monomer; studied mainly for local drug delivery", application: "implantable drug-release wafers"
+ }
+ #>bioengineering_biomaterials_hydrogels
+ ^["hydrogels"]{
+  #:claim #!settled
+  statement: "Crosslinked hydrophilic networks such as PEG, alginate, and gelatin methacryloyl swell to an equilibrium set by crosslink density, and their mesh size controls what diffuses through."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_flory_rehner_1943", ~"../../registries/sources/life-and-mind.spw#src_life_peppas_2000", ~"../../registries/sources/life-and-mind.spw#src_life_van_den_bulcke_2000" ]
+  degradation: "set by crosslink chemistry; alginate loses calcium crosslinks, GelMA is cut by enzymes", host_response: "soft and wet; often low protein adhesion", application: "cell encapsulation, wound dressings, bioinks"
+ }
+ #>bioengineering_biomaterials_titanium
+ ^["titanium"]{
+  #:claim #!settled
+  statement: "Branemark found that bone grows into close contact with titanium implants, osseointegration, which underlies modern dental implants."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_branemark_1969"
+  degradation: "essentially none", host_response: "direct bone apposition at the oxide surface", application: "dental and orthopedic implants"
+ }
+ #>bioengineering_biomaterials_bioglass
+ ^["bioactive_glass"]{
+  #:claim #!settled
+  statement: "Hench and colleagues showed that certain silicate glasses bond chemically to bone through a surface layer that forms in body fluid."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_hench_1971"
+  degradation: "slow surface reaction", host_response: "bonding to bone", application: "bone grafts and coatings"
+ }
+ #>bioengineering_biomaterials_decell
+ ^["decellularized_matrix"]{
+  #:claim #!settled
+  statement: "Perfusing a rat heart with detergent removed its cells but kept the matrix and vessel channels; reseeded with cardiac and endothelial cells, the construct contracted and pumped weakly."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_ott_2008"
+  degradation: "remodelled by host cells", host_response: "depends on residual cell material", application: "research scaffolds for whole organs"
+ }
+}
+
+^["host_response"]{
+ #>bioengineering_biomaterials_biocompatibility
+ ^["biocompatibility"]{
+  #:claim #!settled
+  statement: "Biocompatibility is not a property of a material alone but its ability to perform with an appropriate host response in a specific application."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_williams_2008"
+ }
+ #>bioengineering_biomaterials_vroman
+ ^["vroman_effect"]{
+  #:claim #!settled
+  statement: "Blood proteins coat a surface within moments, and abundant early proteins such as fibrinogen are later displaced by less abundant ones with higher affinity, such as high molecular weight kininogen."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_vroman_1980"
+ }
+ #>bioengineering_biomaterials_fbr
+ ^["foreign_body_reaction"]{
+  #:claim #!settled
+  statement: "An implant passes through protein adsorption, acute and chronic inflammation, fusion of macrophages into foreign body giant cells, and walling off by a fibrous capsule."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_anderson_2008"
+ }
+ #>bioengineering_biomaterials_m1_m2
+ ^["macrophage_states"]{
+  #:claim #!contested
+  statement: "Macrophages at implants are often described as switching from inflammatory M1 to reparative M2, but immunologists warn that activation is a spectrum and the two labels oversimplify it."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_murray_2014"
+ }
+}
+
+^["mechanobiology"]{
+ #>bioengineering_biomaterials_stiffness
+ ^["stiffness_directs_lineage"]{
+  #:claim #!settled
+  statement: "Mesenchymal stem cells on soft gels like brain tissue turn neuron-like, on stiffer gels like muscle turn muscle-like, and on rigid gels like bone matrix turn bone-like; blocking myosin II stops this."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_engler_2006"
+ }
+ #>bioengineering_biomaterials_tethering
+ ^["stiffness_or_tethering"]{
+  #:claim #!contested
+  statement: "One group argued that cells sense how densely matrix proteins are anchored rather than gel stiffness; a later study varied anchoring alone and found stiffness still decided fate."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_trappmann_2012"
+  counter: ~"../../registries/sources/life-and-mind.spw#src_life_wen_2014"
+ }
+ #>bioengineering_biomaterials_yap
+ ^["yap_taz"]{
+  #:claim #!settled
+  statement: "On stiff substrates YAP and TAZ move into the nucleus and act on genes; force carried to the nucleus flattens it and stretches nuclear pores, easing YAP import."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_dupont_2011", ~"../../registries/sources/life-and-mind.spw#src_life_elosegui_artola_2017" ]
+ }
+ #>bioengineering_biomaterials_clutch
+ ^["molecular_clutch"]{
+  #:claim #!settled
+  statement: "Actin flowing back over adhesion proteins acts like a slipping clutch, and stretching the talin rod under force exposes hidden binding sites for vinculin, strengthening the grip."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_chan_odde_2008", ~"../../registries/sources/life-and-mind.spw#src_life_del_rio_2009" ]
+ }
+}
+
+^["vessels"]{
+ #>bioengineering_biomaterials_perfusion
+ ^["diffusion_limit"]{
+  #:claim #!settled
+  statement: "Cells far from a perfused vessel starve of oxygen, so engineered tissue thicker than a thin layer fails in its core unless it is vascularized."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_rouwkema_2008"
+ }
+ #>bioengineering_biomaterials_sacrificial
+ ^["sacrificial_channels"]{
+  #:claim #!settled
+  statement: "Printing a lattice of sugar glass or a fugitive ink inside a gel and then dissolving it leaves open channels that can be lined with endothelial cells and perfused."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_miller_2012", ~"../../registries/sources/life-and-mind.spw#src_life_kolesky_2014" ]
+ }
+}
+
+^["try"]{
+ #>bioengineering_biomaterials_try_alginate
+ ^["alginate_beads"]{
+  materials: [ "food-grade sodium alginate", "food-grade calcium chloride or calcium lactate", "water", "a dropper or spoon", "two bowls", "food coloring" ]
+  steps: << "dissolve alginate in colored water and let bubbles settle" ; "dissolve the calcium salt in the second bowl" ; "drip the alginate into the calcium bath" ; "wait a minute and lift out the beads" ; "squeeze one and compare skin and core" >>
+  time: .{ n: 40, unit: "minutes" }
+  safety: "use food-grade salts only; calcium chloride irritates eyes and skin, so rinse on contact; do not eat lab-grade materials"
+  shows: ~"./biomaterials-and-tissue.spw#bioengineering_biomaterials_hydrogels"
+  reads_as: "calcium ions crosslink alginate chains from the outside in, so a gel skin forms first around a liquid core"
+ }
+}
+
+#>bioengineering_biomaterials_heart_q
+?["What does an emptied heart matrix still tell the cells seeded into it?"]{
+ #:depth #!physical ~#lens(material grain)
+ #:claim #!speculative
+ ~#hypothesis: "Fiber alignment and basement membrane left after decellularization could guide seeded cells to line up, so aligned matrix should yield more ordered beating than a random scaffold."
+ !probe{ "compare reports of sarcomere alignment in cells on decellularized heart matrix and on random electrospun fibers" =id[p_life_bioeng_heart_matrix] =kind[lit] }
+ ~"./biomaterials-and-tissue.spw#bioengineering_biomaterials_decell" ~#neighbor(nearest)
+}
+
+#>bioengineering_biomaterials_clutch_q
+?["Is the molecular clutch a car clutch?"]{
+ #:depth #!physical ~#lens(energy budget)
+ #:claim #!speculative
+ ~#hypothesis: "Both transmit force only as fast as the bonds engage, so on very soft matrix the clutch slips and the cell pulls weakly, as a car clutch slips on ice."
+ breaks: "a car clutch is engaged by a driver, while adhesion bonds form and break by thermal chance under load"
+ !probe{ "find traction-force measurements across substrate stiffness and check for the slip regime the clutch model predicts" =id[p_life_bioeng_clutch_slip] =kind[lit] }
+ ~"./biomaterials-and-tissue.spw#bioengineering_biomaterials_clutch" ~#neighbor(nearest)
+}

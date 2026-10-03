@@ -1,0 +1,114 @@
+# Door: Percent
+#
+# One mark, legible alone: the percent sign is the canon measure on a zero-to-one scale, registry cells hold world quantities, and a typed 50% splits in two.
+
+#>spw_door_percent
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!field_guide
+#:level #!intro
+#:review #!sourced
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Door: Percent"
+ ~#claim: "A typed 50% splits into the number 50 and a loose percent mark; write 0.5 or a string, and keep quantities in cells."
+ ~#proof: "The number matcher stops at the percent sign, and the runtime clamps a measured register to the unit interval; this cut keeps unit-bearing numbers in cells."
+ ~#door: "Guess what a rubric score typed with a percent sign becomes, then check it with spw inspect source."
+ ~#audience: "engineers and educators who write shares, scores, and tolerances"
+ continuity: "Door: Percent | keep quantities in cells"
+ cold_open: "A typed percent splits from its number, so write a decimal or a string and keep quantities in cells."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "persona study familiarity_matrix row for the percent sign and false_friends_top rank 2",
+  "number probes run by the writer at commit 1aa1dc23 on 2026-10-02"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   note: "forward refs to planned files of other packages that were not yet written"
+  }
+  ^["r4"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the 2026-10-02 gate receipt said pass while forward refs to planned files failed; it now records partial, and the 2026-10-03 gate passed once those files existed"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"../glossary/terms.spw#spw_gloss_terms" ]
+}
+
+^["mark"]{
+ #>spw_door_percent_split
+ ^["typed_percent"]{
+  #:claim #!settled
+  statement: "Only integers and decimals with a point are numbers, so 50% parses as the number 50 followed by a separate bare percent operation, while 0.5 stays one number."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_lexer"
+  cites: [ "packages/spw-seed/src/lexer/matchers/literals.ts:95-120" ]
+  probe_run: "share: 50% gives the binding share: 50 and a loose percent operation, with no error and no warning"
+  ~#spoken(percent)
+  ^["limits"]{
+   holds: "a percent sign typed after a number in value position"
+   fails: "inside a string the percent sign is text; a percent before a bracketed list or a dotted handle is a reading of registry cells"
+  }
+ }
+ #>spw_door_percent_measure
+ ^["unit_interval"]{
+  #:claim #!settled
+  statement: "Canon reads the percent sign as a measure on a zero-to-one scale, and the runtime divides a register value by its scale and clamps the result into that interval."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_runtime"
+  cites: [ "docs/theory/spw/operator-atlas.spw:37", "packages/spw-runtime/src/interpreter/interpreter.ts:247-254", "packages/spw-runtime/src/state/register-bank.ts:596-604" ]
+ }
+ #>spw_door_percent_cells
+ ^["world_cells"]{
+  #:claim #!settled
+  statement: "This cut also writes registry cells with the percent sign, and those hold unbounded world quantities with units, such as the specific heat of water."
+  reads: %[mateng.water.cp_j_per_g_k]
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_contract"
+  label: "a-cut rule, not repository canon"
+  ^["limits"]{
+   holds: "cells under registries/quantities in this cut"
+   fails: "the runtime measure and the registry cell share a sigil and nothing else; one is clamped, the other carries a unit"
+  }
+ }
+}
+
+^["habits"]{
+ keep: "a share between zero and one, written as a decimal with a leading zero"
+ quote: [
+  "percentages as people say them, such as 40 percent written in a string",
+  "tolerances with a plus-minus sign",
+  "negative, scientific, and comma-decimal numbers"
+ ]
+ unlearn: "a percent sign after a number is a separate mark here, and the number before it loses its meaning as a share"
+}
+
+^["keyboard"]{
+ #>spw_door_percent_keys
+ ^["shift_five"]{
+  #:claim #!settled
+  statement: "The percent sign needs Shift with the 5 key on both the Windows US and the Windows UK layouts."
+  reads: %[doors.key.percent_us_mods, doors.key.percent_uk_mods]
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_kbd_us"
+ }
+}
+
+#>spw_door_percent_q
+?["What does a rubric score typed as 75% become, and what would 0.75 claim?"]{
+ #:depth #!educational ~#lens(scale and dimension)
+ #:claim #!speculative
+ ~#hypothesis: "A gradebook habit predicts one score; the split surprises it, and the decimal fix quietly asserts equal spacing between rubric levels that may be only ordered."
+ !probe{ "guess first, then run spw inspect source --text on score: 75% and on score: 0.75 with --through structure" =id[p_doors_percent_score] =kind[thought] }
+ breaks: "rubric levels are ordinal, while a decimal on a zero-to-one scale reads as an interval measure"
+ ~"./percent.spw#spw_door_percent_split" ~#neighbor(nearest)
+}

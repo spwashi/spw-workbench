@@ -1,0 +1,184 @@
+# Voice
+#
+# Say lines and spoken names: the cold_open rules, one say reading per claim, a spoken name for each mark, the difference between saying and explaining, and one instrumented read-aloud probe.
+
+#>spw_voice
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!field_guide
+#:level #!foundation
+#:review #!spot_checked
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Voice"
+ ~#claim: "A say line is one breath that names what a claim is about, while the claim frame keeps its numbers, sources, and limits."
+ ~#proof: "Oral reading runs near a measured rate, and saying differs from explaining in Fox, Ericsson, and Best."
+ ~#door: "Read the water cold_open aloud once, then read its density claim and hear what the say line left out."
+ ~#audience: "writers of cut surfaces and readers who think aloud"
+ continuity: "Voice | one breath"
+ cold_open: "Say each claim in one breath, give each mark a name you can speak, and leave the numbers in the frame."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/studies/render-synthesis.md sections 1.4 and 2.1",
+  "contract.spw voice frame, read at the cut root on 2026-10-02"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the study cited the cut voice rules as canon; they are a-cut rules for this dated cut, not repository canon",
+  "spoken names are offered as readings for this cut; no canon line says how spw or its marks are pronounced"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../contract.spw#cut_contract", ~"docs/theory/spw/apposition.spw#spw_apposition" ]
+ feeds: [ ~"./arcs-and-readings.spw#spw_arcs_readings" ]
+ extends: [ ~"../physical/materials/water.spw#materials_water" ]
+}
+
+^["concepts"]{
+ primary: [ #say_line, #spoken_name ]
+ transfers: [ #intonation_unit ]
+ tensions: [ #say_versus_explain ]
+}
+
+^["cold_open"]{
+ label: "a-cut rules from contract.spw voice; the gate checks length, digits, and continuity phrases"
+ breath: "one spoken sentence a reader can say in one breath, at or under twenty-five words"
+ continuity: "the sentence carries every continuity phrase after the bar"
+ loss: "a say line drops numbers, sources, and limits; it never adds a fact the frame lacks"
+ cites: [ "scripts/analyzers/spw-cut-voice.ts:61-75" ]
+
+ #>spw_voice_rate
+ ^["rate"]{
+  #:claim #!settled
+  statement: "Adults read English aloud at a mean rate measured across many studies, so a twenty-five word line takes about eight seconds."
+  reads: %[spw.research.oral_wpm]
+  source: ~"../registries/sources/spw-branch.spw#src_spw_brysbaert_2019"
+  ~#say(a short line fits one breath)
+ }
+ #>spw_voice_idea_unit
+ ^["idea_unit"]{
+  #:claim #!interpretive
+  statement: "Chafe described speech as intonation units that each tend to introduce one new idea; the cut uses that as a heuristic, not a measured optimum."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_chafe_1994"
+ }
+}
+
+^["say"]{
+ rule: "a keystone may carry one say reading, the author reading of the claim in spoken words; emit ignores it and the gate fails digits inside it"
+ home: "personal say lines live in a reader root; the convention lives in arcs and readings"
+ cites: [ "scripts/analyzers/spw-cut-voice.ts:88" ]
+ example: "the water rate claim above carries one say reading"
+ status: #implemented
+}
+
+^["say_versus_explain"]{
+ #>spw_voice_say_explain
+ ^["reactivity"]{
+  #:claim #!settled
+  statement: "Thinking aloud in plain words leaves accuracy unchanged but slows people, while being asked to explain changes how they perform."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_fox_2011"
+  ~#say(saying is lighter than explaining)
+ }
+ #>spw_voice_self_explain
+ ^["self_explanation"]{
+  #:claim #!settled
+  statement: "Prompting learners to explain text to themselves improved their understanding in an experiment with a control group."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_chi_1994"
+ }
+ consequence: "a say prompt and an explain prompt are different interventions, so the cut asks for one kind at a time"
+}
+
+^["production"]{
+ #>spw_voice_production
+ ^["production_effect"]{
+  #:claim #!settled
+  statement: "Words read aloud are remembered better than words read silently, most strongly when both kinds are mixed in one list."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_macleod_2010"
+  see: [ ~"../registries/sources/spw-branch.spw#src_spw_fawcett_2013" ]
+  ^["limits"]{
+   holds: "word lists in laboratory memory tasks"
+   fails: "between-subject effects are smaller, and reading code aloud is untested"
+  }
+ }
+ #>spw_voice_inner_speech
+ ^["inner_speech"]{
+  #:claim #!settled
+  statement: "Silent reading carries a reader inner voice, even regional accent, and suppressing it costs comprehension."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_rayner_2016"
+  see: [ ~"../registries/sources/spw-branch.spw#src_spw_filik_barber_2011" ]
+ }
+}
+
+^["spoken"]{
+ #>spw_voice_spoken_names
+ ^["names"]{
+  #:claim #!interpretive
+  statement: "Each operator keeps its canon reader name, and the spoken name is the everyday name of the glyph, so a reader can say both."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_canon_operators"
+  cites: [ "docs/theory/spw/operators.spw:28-42" ]
+  reads: %[spw.keys.operator_sigils]
+ }
+ ^["tilde"]{ glyph: "~", reader: "potential" ~#spoken(tilde) }
+ ^["hash"]{ glyph: "#", reader: "vibration" ~#spoken(hash) }
+ ^["dot"]{ glyph: ".", reader: "ground" ~#spoken(dot) }
+ ^["question"]{ glyph: "?", reader: "wonder" ~#spoken(question) }
+ ^["bang"]{ glyph: "!", reader: "action" ~#spoken(bang) }
+ ^["star"]{ glyph: "*", reader: "value" ~#spoken(star) }
+ ^["amp"]{ glyph: "&", reader: "subject" ~#spoken(and) }
+ ^["at"]{ glyph: "@", reader: "perspective" ~#spoken(at) }
+ ^["caret"]{ glyph: "^", reader: "ascension" ~#spoken(caret) }
+ ^["dollar"]{ glyph: "$", reader: "substrate" ~#spoken(dollar) }
+ ^["percent"]{ glyph: "%", reader: "measure" ~#spoken(percent) }
+ ^["equals"]{ glyph: "=", reader: "configuration" ~#spoken(equals) }
+ ^["couple"]{ glyph: "<>", reader: "coupling" ~#spoken(couple) }
+ ^["anchor"]{ glyph: "#>", reader: "deixis particle" ~#spoken(anchor) }
+ ^["case"]{ glyph: "#:", reader: "case particle" ~#spoken(case) }
+ ^["mood"]{ glyph: "#!", reader: "mood particle" ~#spoken(mood) }
+ glossary: "definitions and false friends for each mark live in the glossary, which owns the homonyms"
+}
+
+^["readaloud_probe"]{
+ #>spw_voice_templated
+ ^["templated_copies"]{
+  #:claim #!settled
+  statement: "Canon carries one read-aloud probe copied across many files in three wordings, and no code reads any of them."
+  reads: %[spw.corpus.readaloud_templated]
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_render"
+ }
+ replacement: "one instrumented probe per surface: name the surface, ask for one pause, never repeat the probe string in another file"
+ status: #proposed
+}
+
+^["try"]{
+ #>spw_voice_try_aloud
+ ^["thirty_seconds"]{
+  materials: [ "the water exemplar surface", "a timer", "a pencil" ]
+  steps: << "read the cold_open aloud" ; "read the density claim aloud for thirty seconds" ; "mark each place you paused" ; "write one anonymous reading beside the pause that surprised you" >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "none worth naming; read where speaking aloud is welcome"
+  shows: ~"./voice.spw#spw_voice_production"
+ }
+}
+
+#>spw_voice_pause_q
+?["When the water density claim is read aloud, where does the reader pause first?"]{
+ #:depth #!experiential ~#lens(bodily rhythm)
+ #:claim #!speculative
+ ~#hypothesis: "Readers pause first at the number boundary, before the ice comparison, more than at any comma."
+ !probe{ "five readers mark one pause each on a printed copy of materials_water_density_max" =id[p_spw_voice_pause] =kind[field] }
+ $%[spw.research.oral_wpm]
+ ~"./voice.spw#spw_voice_rate" ~#neighbor(nearest)
+}

@@ -1,0 +1,213 @@
+# Replication Ledger
+#
+# The replication status of famous findings in psychology, each with its original source and the large replications or meta-analyses that tested it, written as a record of evidence, not a verdict on people.
+
+#>cognition_replication_ledger
+#:layer #!reference
+#:domain #!cognition
+#:form #!ledger
+#:level #!advanced
+#:review #!sourced
+#:valence #!honk
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Replication Ledger"
+ ~#claim: "Many famous psychology findings shrank or vanished in large preregistered replications, others held, and Registered Reports, accepted before results are known, report positive results less than half as often."
+ ~#proof: "The reproducibility project, Many Labs, multisite ego-depletion tests, money-priming replications and meta-analysis, a power-posing replication and its p-curve dispute, nudge meta-analyses and nudge-unit trials, and the Registered Reports comparison of Scheel and colleagues."
+ ~#door: "Read the system entries first, then each finding by its status, then the stance at the end."
+ ~#audience: "students, journalists, designers, and anyone about to quote a psychology finding"
+ continuity: "Replication Ledger | shrank or vanished"
+ cold_open: "Some famous psychology findings held up when repeated at scale, and others shrank or vanished; this page keeps the record."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[ "Europe PMC or Crossref abstracts read 2026-10-02 for every replication and meta-analysis cited below" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "2026-10-03: the felt-power row cited Ranehill and colleagues as its counter, though that study found a felt-power effect; the counter is now the p-curve of Simmons and Simonsohn",
+  "2026-10-03: the Rohrer, Lodder, Hagger, Vohs, Mertens, and Scheel abstracts were reread against each row and cell; the numbers stand"
+ ]
+ written_for: "the review asked for money priming, ego depletion, the marshmallow test, nudges, and power posing, each with status and replication sources and without scorn"
+}
+
+^["edges"]{
+ grounds: [ ~"../../society/management/food-and-beverage-systems.spw#management_food_beverage", ~"../../registries/quantities/life-and-mind.spw#q_life_replication" ]
+ see: [ ~"../../provenance/errata-life-and-mind.spw#provenance_errata_cognition", ~"./cognitive-development.spw#cognition_development_marshmallow" ]
+ feeds: [ ~"./reasoning-and-decision.spw#cognition_reasoning" ]
+}
+
+^["concepts"]{
+ primary: [ #replication, #publication_bias, #choice_architecture ]
+ transfers: [ #provenance, #sampling ]
+ tensions: [ #heuristic ]
+}
+
+^["status_key"]{
+ settled: "the finding held in large or preregistered tests"
+ contested: "tests disagree, or the effect shrank and its defenders dispute the tests"
+ refuted: "large preregistered tests found no effect where the original reported one; kept here so the error stays visible"
+}
+
+^["system"]{
+ #>cognition_replication_ledger_osc
+ ^["reproducibility_project"]{
+  #:claim #!settled
+  statement: "When 100 studies from three psychology journals were repeated with high power, 97 percent of originals but 36 percent of replications were significant, and replication effects averaged half the original size."
+  reads: %[
+   life.replication.osc_original_sig_pct,
+   life.replication.osc_replication_sig_pct
+  ]
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_osc_2015"
+  ^["limits"]{
+   holds: "the sampled journals and year"
+   fails: "a significance count is one of several replication criteria, and the authors report others"
+  }
+ }
+ #>cognition_replication_ledger_registered_reports
+ ^["registered_reports"]{
+  #:claim #!settled
+  statement: "In a sample of standard psychology articles 96 percent supported their first hypothesis, against 44 percent of Registered Reports, whose acceptance is decided before results are known."
+  reads: %[
+   life.replication.rr_standard_positive_pct,
+   life.replication.rr_registered_positive_pct
+  ]
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_scheel_2021"
+ }
+ #>cognition_replication_ledger_many_labs
+ ^["many_labs"]{
+  #:claim #!settled
+  statement: "Across 36 samples and 13 classic effects, ten replicated consistently, including anchoring and framing, one weakly, and two, flag priming and currency priming, did not."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_klein_2014"
+ }
+}
+
+^["findings"]{
+ ^["money_priming"]{
+  #>cognition_replication_ledger_money_views
+  ^["political_views"]{
+   #:claim #!refuted
+   statement: "Reminders of money did not raise support for free markets and inequality in high-powered replications, with a weighted d near zero, and only one of 36 Many Labs samples found the effect."
+   reads: %[life.replication.money_rohrer_2015_d]
+   sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_rohrer_2015", ~"../../registries/sources/economy-and-markets.spw#src_econ_klein_2014" ]
+   counter: ~"../../registries/sources/economy-and-markets.spw#src_econ_caruso_2013"
+  }
+  #>cognition_replication_ledger_money_meta
+  ^["paradigm"]{
+   #:claim #!contested
+   statement: "A meta-analysis of 246 money-priming experiments found an overall effect with strong signs of publication bias; the clearest effects came from lab studies in which people handled real money."
+   source: ~"../../registries/sources/economy-and-markets.spw#src_econ_lodder_2019"
+   counter: ~"../../registries/sources/economy-and-markets.spw#src_econ_vohs_mead_goode_2006"
+  }
+ }
+ ^["ego_depletion"]{
+  #>cognition_replication_ledger_ego_depletion
+  ^["self_control_resource"]{
+   #:claim #!contested
+   statement: "The idea that self-control draws on a limited resource met two preregistered multisite tests that found effects near zero, one of them run with original proponents among its authors."
+   reads: %[life.replication.ego_rrr_2016_d, life.replication.ego_paradigmatic_2021_d]
+   sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_hagger_2016", ~"../../registries/sources/life-and-mind.spw#src_life_vohs_2021" ]
+   counter: ~"../../registries/sources/life-and-mind.spw#src_life_baumeister_1998"
+  }
+ }
+ ^["delay_of_gratification"]{
+  #>cognition_replication_ledger_marshmallow
+  ^["marshmallow"]{
+   status: #contested
+   original: ~"../../registries/sources/life-and-mind.spw#src_life_mischel_1989"
+   replication: ~"../../registries/sources/provenance-and-reference.spw#src_prov_watts_2018"
+   entry: ~"./cognitive-development.spw#cognition_development_marshmallow"
+   held_once: "the claim and its numbers live in the cognitive development leaf; this row records status"
+  }
+ }
+ ^["nudges"]{
+  #>cognition_replication_ledger_nudge_meta
+  ^["average_effect"]{
+   #:claim #!contested
+   statement: "A meta-analysis of more than 200 choice-architecture studies estimated a small-to-medium average effect; adjusting for publication bias, a reanalysis found no evidence for an average effect."
+   reads: %[life.replication.nudge_meta_d]
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_mertens_2022"
+   counter: ~"../../registries/sources/provenance-and-reference.spw#src_prov_maier_2022"
+  }
+  #>cognition_replication_ledger_nudge_scale
+  ^["at_scale"]{
+   #:claim #!settled
+   statement: "Trials run by two US government nudge units raised take-up far less on average than nudge trials in academic journals, a gap explained mostly by selective publication and low power."
+   reads: %[life.replication.nudge_unit_pp, life.replication.nudge_academic_pp]
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_dellavigna_linos_2022"
+  }
+ }
+ ^["power_posing"]{
+  #>cognition_replication_ledger_power_hormones
+  ^["hormones_and_risk"]{
+   #:claim #!refuted
+   statement: "Expansive one-minute poses were reported to raise testosterone, lower cortisol, and increase risk taking; a larger replication found no effect on hormones or on risk tolerance."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_ranehill_2015"
+   counter: ~"../../registries/sources/life-and-mind.spw#src_life_carney_2010"
+  }
+  #>cognition_replication_ledger_power_feelings
+  ^["felt_power"]{
+   #:claim #!contested
+   statement: "Whether posture changes felt power is a smaller, separate claim; Ranehill and colleagues found such an effect, and p-curves by Cuddy and by Simmons and Simonsohn disagree on the wider evidence."
+   sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_cuddy_2018", ~"../../registries/sources/life-and-mind.spw#src_life_ranehill_2015" ]
+   counter: ~"../../registries/sources/life-and-mind.spw#src_life_simmons_simonsohn_2017"
+  }
+ }
+}
+
+^["table"]{
+ rows: #[
+  .{ finding: "reproducibility of 100 studies", status: "settled", entry: "reproducibility_project" },
+  .{ finding: "Registered Reports and positive results", status: "settled", entry: "registered_reports" },
+  .{ finding: "anchoring and framing", status: "settled", entry: "many_labs" },
+  .{ finding: "money priming of political views", status: "refuted", entry: "political_views" },
+  .{ finding: "money priming as a paradigm", status: "contested", entry: "paradigm" },
+  .{ finding: "ego depletion", status: "contested", entry: "self_control_resource" },
+  .{ finding: "marshmallow test as a predictor", status: "contested", entry: "marshmallow" },
+  .{ finding: "average nudge effect", status: "contested", entry: "average_effect" },
+  .{ finding: "nudges at scale", status: "settled", entry: "at_scale" },
+  .{ finding: "power posing, hormones and risk", status: "refuted", entry: "hormones_and_risk" },
+  .{ finding: "power posing, felt power", status: "contested", entry: "felt_power" }
+ ]
+}
+
+^["stance"]{
+ #>cognition_replication_ledger_stance
+ ^["without_scorn"]{
+  #:claim #!interpretive
+  statement: "A failed replication changes the status of a finding, not the standing of the people who made it; the 2021 ego-depletion test counted original proponents among its authors."
+  source: ~"../../registries/sources/life-and-mind.spw#src_life_vohs_2021"
+  use: "before quoting a famous effect, find its row here; before using one on customers, read the reasoning tension on exploiting it"
+ }
+}
+
+#>cognition_replication_ledger_predict_q
+?["What predicts whether a finding will replicate?"]{
+ #:depth #!social ~#lens(historical layer)
+ #:claim #!speculative
+ ~#hypothesis: "Findings with strong original evidence and simple, direct manipulations should replicate more often than findings resting on subtle primes tested in small samples."
+ !probe{ "code each row of this ledger for original sample size and manipulation type and compare with its status" =id[p_life_cog_replication_predictors] =kind[census] }
+ $%[life.replication.osc_replication_sig_pct, life.replication.osc_original_sig_pct]
+ ~"./replication-ledger.spw#cognition_replication_ledger_osc" ~#neighbor(nearest)
+}
+
+#>cognition_replication_ledger_textbook_q
+?["Would Registered Reports change what textbooks teach?"]{
+ #:depth #!educational ~#lens(curated collection)
+ #:claim #!speculative
+ ~#hypothesis: "If textbook examples were drawn from Registered Reports, fewer striking effects would appear and the ones that remained would be smaller and more durable."
+ !probe{ "list the famous effects in an introductory textbook and check which have a Registered Report or multisite test behind them" =id[p_life_cog_textbook_audit] =kind[lit] }
+ $%[life.replication.rr_registered_positive_pct]
+ ~"./replication-ledger.spw#cognition_replication_ledger_registered_reports" ~#neighbor(nearest)
+}

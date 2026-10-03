@@ -14,7 +14,7 @@
 ^"emit"{
  ~#title: "Live Platform Mechanics"
  ~#claim: "A live room is a small state machine: gates decide who may go live, and matches and guests are states the host enters and leaves."
- ~#proof: "State names and transitions read from the app as described in the dated cells; gate values stay verify until a current platform page confirms them."
+ ~#proof: "States use the platform public feature names and the transitions are a model; gate values stay verify cells until a current platform page confirms them."
  ~#door: "Take the states into the session craft surface, or read the monetization receipt for what gifts carry."
  ~#audience: "hosts, moderators, and researchers who need the room as states"
  continuity: "Live Platform Mechanics | state machine"
@@ -28,8 +28,15 @@
  lineage: #[ ".spw/caches/tiktok-live/features.spw", ".spw/caches/tiktok-live/interactive-mechanics.spw", ".spw/caches/tiktok-live/streaming-pipeline.spw", ".spw/caches/tiktok-live/analytics-metrics.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the weighted LIVE ranking formula is dropped; no public TikTok source documents it",
@@ -37,7 +44,10 @@
   "the diamonds per viewer minute benchmark range is dropped as unsourced",
   "internal ingest, transcoding, and chat throughput figures are dropped; delivery protocols live in the carriers node",
   "host age and follower gates are added as dated verify cells",
-  "speed challenge multipliers and rating-based matchmaking are kept only as verify notes"
+  "speed challenge multipliers and rating-based matchmaking are kept only as verify notes",
+  "the card no longer claims the states were read from the app; they are a model built on public feature names",
+  "the host gate now cites the encyclopedia entry for the hosting gates beside the policy page for the gifting gate",
+  "fact check 2026-10-02: the host age note no longer calls 16 versus 18 a dispute; 16 is the superseded pre-2022-11-23 rule"
  ]
 }
 
@@ -95,8 +105,9 @@
   #:claim #!settled
   statement: "Hosting and gifting sit behind age gates; buying Coins and sending or receiving Gifts with value requires 18 or the local age of majority."
   reads: %[creator.live.gift_min_age_years, creator.live.host_min_age_years]
-  source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_tiktok_virtual_items"
-  follower_gate: "a follower threshold to host is widely documented; the value is a verify cell"
+  sources: [ ~"../../registries/sources/creators-and-platforms.spw#src_creator_tiktok_virtual_items", ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_tiktok" ]
+  follower_gate: "the encyclopedia entry gives a follower threshold to host; the value is a verify cell"
+  host_age: "the same entry still gives over 16 to host, the rule before 2022-11-23; 18 since then is a verify cell, and the moderation ledger marks 16 superseded"
   ^["limits"]{
    holds: "the global policy page as read on 2026-10-01"
    fails: "regional programs and later policy changes; check the live help page before relying on a value"

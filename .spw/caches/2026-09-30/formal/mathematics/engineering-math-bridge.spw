@@ -1,0 +1,139 @@
+# Engineering Mathematics Bridge
+#
+# Which mathematics feeds which course in engineering, physics, economics, management, and computing, with each edge naming the tool that crosses.
+
+#>mathematics_bridge
+#:layer #!reference
+#:domain #!mathematics
+#:form #!curriculum
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Engineering Mathematics Bridge"
+ ~#claim: "Each mathematics node feeds named downstream courses, and each edge says which tool crosses, such as transfer functions into control or duality into flows."
+ ~#proof: "Edges point at planned anchors in physics, engineering, economics, management, and computing; the two keystone bridges cite Ford and Fulkerson and Little."
+ ~#door: "Find the course you need, read the tool on its incoming edge, then open that mathematics leaf."
+ ~#audience: "students and advisers planning which mathematics to take before a target course"
+ continuity: "Engineering Mathematics Bridge | which tool crosses"
+ cold_open: "Before a course, ask which tool crosses into it from mathematics; this bridge names that tool on every edge."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ grounds: [ ~"./engineering-core/calculus-and-linear-algebra.spw#mathematics_calc_linalg" ]
+ see: [ ~"./analysis-and-algebra-core.spw#mathematics_core" ]
+}
+
+^["concepts"]{
+ primary: [ #prerequisite, #linearization ]
+ transfers: [ #duality, #queueing, #spectral_decomposition, #convexity ]
+ tensions: [ #credit_hour ]
+}
+
+^["reading_rule"]{
+ #>mathematics_bridge_rule
+ ^["edge_meaning"]{
+  #:claim #!interpretive
+  statement: "A feeds edge here means the downstream course uses the named tool in its first weeks; it is a planning aid, not a mandate any program enforces."
+ }
+}
+
+^["dag"]{
+ #>mathematics_bridge_calc
+ ^["calculus_and_linear_algebra"]{
+  node: ~"./engineering-core/calculus-and-linear-algebra.spw#mathematics_calc_linalg"
+  feeds: [ ~"../../physical/physics/core-sequence.spw#physics_core", ~"../../physical/engineering/mechanical-core.spw#engineering_mechanical", ~"../../society/economics/micro-and-macro-core.spw#economics_core", ~"../../physical/materials/materials-core.spw#materials_core" ]
+  tool: "derivatives as marginal rates, vector fields as fluxes, matrices as coupled balances"
+ }
+ #>mathematics_bridge_diffeq
+ ^["differential_equations"]{
+  node: ~"./engineering-core/differential-equations.spw#mathematics_diffeq"
+  feeds: [ ~"../../physical/engineering/transport-phenomena.spw#engineering_transport", ~"../../physical/engineering/electrical-core.spw#engineering_electrical", ~"../../physical/physics/electromagnetism.spw#physics_em" ]
+  tool: "balance laws become PDEs; circuits and oscillators become linear ODE systems"
+ }
+ #>mathematics_bridge_probstat
+ ^["probability_and_statistics"]{
+  node: ~"./engineering-core/probability-and-statistics.spw#mathematics_probstat"
+  feeds: [ ~"../../society/economics/econometrics-and-data.spw#economics_econometrics", ~"../../physical/engineering/industrial-and-systems-engineering.spw#engineering_ise", ~"../../society/markets/reading-market-reports.spw#markets_reading_reports", ~"../../physical/physics/statistical-mechanics.spw#physics_statmech" ]
+  tool: "estimation and its error, control charts and queues, ensembles as probability distributions"
+ }
+ #>mathematics_bridge_transforms
+ ^["transforms"]{
+  node: ~"./engineering-core/transforms-and-complex-methods.spw#mathematics_transforms"
+  feeds: [ ~"../../physical/engineering/control-and-signals.spw#engineering_control_signals", ~"../../physical/engineering/ece-advanced.spw#engineering_ece_advanced" ]
+  tool: "transfer functions, poles and stability, sampling and the FFT"
+ }
+ #>mathematics_bridge_numerics
+ ^["numerics"]{
+  node: ~"./engineering-core/numerical-methods.spw#mathematics_numerics"
+  feeds: [ ~"../../physical/engineering/mechanical-advanced.spw#engineering_mechanical_advanced", ~"../computing/systems-programming.spw#computing_systems" ]
+  tool: "conditioning, stable solvers, and stiff integrators under FEA and CFD; floating point under every systems language"
+ }
+ #>mathematics_bridge_optimization
+ ^["optimization"]{
+  node: ~"./engineering-core/optimization.spw#mathematics_optimization"
+  feeds: [ ~"../../society/management/revenue-management.spw#management_revenue", ~"../../physical/engineering/industrial-and-systems-engineering.spw#engineering_ise", ~"../../society/economics/graduate-micro-theory.spw#economics_grad_micro", ~"../computing/abstract-computation.spw#computing_abstract_w139" ]
+  tool: "capacity control as constrained optimization, LP duality as max-flow min-cut, KKT as equilibrium conditions"
+ }
+ #>mathematics_bridge_pure
+ ^["pure_ladder"]{
+  node: ~"./analysis-and-algebra-core.spw#mathematics_core"
+  feeds: [ ~"./graduate-analysis-and-geometry.spw#mathematics_grad_analysis", ~"./graduate-algebra-and-topology.spw#mathematics_grad_algebra" ]
+  tool: "proof, compactness, and structure, which the graduate ledgers assume"
+ }
+ #>mathematics_bridge_functional
+ ^["functional_analysis"]{
+  node: ~"./graduate-analysis-and-geometry.spw#mathematics_grad_analysis_compact_spectral"
+  feeds: [ ~"../../physical/physics/graduate-topics.spw#physics_graduate" ]
+  tool: "Hilbert spaces and spectral theorems under quantum mechanics"
+ }
+ #>mathematics_bridge_categories
+ ^["categories"]{
+  node: ~"./graduate-algebra-and-topology.spw#mathematics_ga_adjunction"
+  feeds: [ ~"../computing/abstract-computation.spw#computing_abstract_w118" ]
+  tool: "functors, adjunctions, and monads as the vocabulary of typed functional programming"
+ }
+}
+
+^["keystones"]{
+ #>mathematics_bridge_maxflow
+ ^["flow_duality"]{
+  #:claim #!settled
+  statement: "Ford and Fulkerson proved in 1956 that the maximum flow through a network equals the capacity of its minimum cut, an instance of linear programming duality."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_ford_fulkerson_1956", ~"../../registries/sources/formal.spw#src_formal_schrijver_2002" ]
+ }
+ #>mathematics_bridge_little
+ ^["queue_bridge"]{
+  #:claim #!settled
+  statement: "Little proved in 1961 that average number in system equals arrival rate times average time in system, which links probability to service operations and manufacturing lines."
+  source: ~"../../registries/sources/formal.spw#src_formal_little_1961"
+ }
+}
+
+#>mathematics_bridge_hub_q
+?["Which mathematics node feeds the most downstream courses in this cut?"]{
+ #:depth #!educational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Once every planned downstream file exists, calculus and linear algebra will have the largest in-degree from other branches, with probability second."
+ !probe{ "run spw graph on the cut after every package lands and rank the engineering core leaves by incoming edges from outside formal" =id[p_formal_bridge_hub_rank] =kind[census] }
+ $%[graph.in_degree, graph.out_degree]
+ ~"./engineering-math-bridge.spw#mathematics_bridge_calc" ~#neighbor(nearest)
+}

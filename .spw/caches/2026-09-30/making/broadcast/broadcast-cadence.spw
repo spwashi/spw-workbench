@@ -28,15 +28,24 @@
  lineage: #[ ".spw/caches/podcasting/long-form-cadence.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "one silent host day per month contradicts 1,095 consecutive recorded days; the reconciliation below names who carries those days",
   "the eleven-to-thirteen-hour range is replaced by the thirteen hours the listed blocks actually sum to",
   "food and electrolyte advice is dropped; this surface schedules rest and gives no health guidance",
   "32-bit float recording protects the converter-to-file stage, not an overloaded microphone or preamp",
-  "the thirty-million-word figure assumed an unsourced speaking rate and is dropped"
+  "the thirty-million-word figure assumed an unsourced speaking rate and is dropped",
+  "fact check 2026-10-02: the weekly rhythm recorded only Tuesday to Saturday, about 782 days in three years, which broke the daily promise; the host now records daily and planning runs as parallel staff blocks",
+  "fact check follow-up 2026-10-02: holiday archive episodes would have added rest days beyond the 36 silent days; a holiday now serves as the silent day of its month"
  ]
 }
 
@@ -67,14 +76,19 @@
 }
 
 ^["weekly"]{
- rhythm: << "Monday plan the week" ; "Tuesday to Saturday record" ; "Sunday dossier prep for the next week" >>
- review: "one weekly listen-back to a chapter that ran over"
+ #>broadcast_cadence_weekly
+ ^["rhythm"]{
+  host: "the lead host records one episode every day, except the monthly silent day"
+  staff: << "Monday plan the week" ; "Tuesday to Saturday trace sources and code for coming episodes" ; "Sunday assemble the dossiers for the next week" >>
+  parallel: "planning and dossier prep are staff blocks that run beside the daily recording, not days without it"
+  review: "one weekly listen-back to a chapter that ran over"
+ }
 }
 
 ^["annual"]{
  quarterly: "a quarterly review of the attention stance and the zero-padding test"
  year_end: "a retrospective episode in late December built from the open questions of the year"
- holidays: "schedule archive episodes on fixed holidays; dates per region verify"
+ holidays: "a fixed holiday can serve as the silent day of its month, so holidays add no host rest days beyond the 36; dates per region verify"
 }
 
 ^["reconcile"]{
@@ -84,6 +98,7 @@
   silent_days: "one per month for thirty-six months: 36 days"
   live_days: "1,095 minus 36 leaves 1,059 days on which the lead host can record"
   conclusion: "a daily release of 1,095 new episodes needs another voice or banked episodes on 36 days"
+  five_day_check: "a five-day recording week would give about 782 recording days in three years, leaving about 313 days to cover before any silent day; so the host records daily and planning runs beside it"
  }
  #>broadcast_cadence_options
  ^["options"]{
@@ -118,6 +133,17 @@
  float_recording: "32-bit float files avoid clipping in the recorder file, not in an overloaded microphone or preamp"
  backup: "record on two independent media at once"
  publishing: "nightly build of audio, transcript, chapters, and the RSS feed"
+}
+
+^["try"]{
+ #>broadcast_cadence_try
+ ^["month_grid"]{
+  materials: [ "a paper calendar page for one month", "two colored pens", "the run sheet" ]
+  steps: << "mark every release day in one color" ; "circle one silent day for the lead host in the other color" ; "choose rotate, archive, or bank for that day and write who speaks" ; "count new episodes, archive releases, and rest days" ; "check that the counts keep the release promise" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "none worth naming"
+  shows: ~"./broadcast-cadence.spw#broadcast_cadence_arithmetic"
+ }
 }
 
 #>broadcast_cadence_fluency_q

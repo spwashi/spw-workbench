@@ -1,0 +1,213 @@
+# Physics Core Sequence
+#
+# The undergraduate physics major as a prerequisite graph, from mechanics and waves through quantum and modern physics, with the advanced-lab battery where students measure constants themselves.
+
+#>physics_core
+#:layer #!reference
+#:domain #!physics
+#:form #!curriculum
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Physics Core Sequence"
+ ~#claim: "An undergraduate physics major climbs mechanics, electromagnetism, quantum mechanics, and thermal physics, and in the advanced lab measures h, e, and the muon lifetime with its own hands."
+ ~#proof: "Phys21 for the program shape; Taylor, Griffiths, and Schroeder for the core; Melissinos and Napolitano for the lab battery; Noether 1918 for the symmetry theorem."
+ ~#door: "Time a pendulum first, then pick any lab rung and follow its needs back to the core."
+ ~#audience: "prospective and current physics majors, and anyone mapping what a physics degree contains"
+ continuity: "Physics Core Sequence | with its own hands"
+ cold_open: "A physics degree climbs from falling apples to quantum spin, and the last labs measure nature's constants with its own hands."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/physics-and-mechanical-engineering/undergrad-physics.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "re-run after the 2026-10-03 fact-check fixes; no failing lines" }
+ }
+ corrections: #[
+  "the AIP curricular framework named by the raw could not be identified; the Phys21 report is cited for program shape instead",
+  "electromagnetism and thermal physics now point to their canonical nodes instead of being restated",
+  "measurement collapse is one interpretation of the postulates, not a postulate every course adopts",
+  "the phase-space visualization hypothesis with an invented 45 percent figure was replaced by a direction-only wonder",
+  "fact-check 2026-10-03: the muon lab rung read the free-muon cell with no caveat; a limit now says nuclear capture of negative muons in carbon pulls a scintillator measurement to about 2.1 microseconds",
+  "fact-check 2026-10-03: the r4 fact-check receipt was dated 2026-10-01, before the receipts it followed; it is re-dated 2026-10-02, the day that pass ran"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../../formal/mathematics/engineering-core/calculus-and-linear-algebra.spw#mathematics_calc_linalg" ]
+ feeds: [ ~"./graduate-topics.spw#physics_graduate" ]
+ grounds: [ ~"../../registries/quantities/physical-sciences-and-image.spw#q_phys_lab" ]
+}
+
+^["concepts"]{
+ primary: [ #symmetry, #prerequisite ]
+ transfers: [ #measure, #invariant ]
+ tensions: [ #interpretation ]
+}
+
+^["program"]{
+ #>physics_core_phys21
+ ^["program_shape"]{
+  #:claim #!settled
+  statement: "The Phys21 report urges physics programs to pair the theory core with research, computation, communication, and teamwork skills that graduates use in many careers."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_phys21_2016"
+  as_of: "2016 report; later APS and AAPT guidance to verify"
+ }
+}
+
+^["dag"]{
+ order: << "introductory mechanics and fields" ; "modern physics" ; "mathematical methods" ; "classical mechanics" ; "electromagnetism" ; "quantum mechanics" ; "thermal physics" ; "advanced lab" ; "capstone" >>
+
+ #>physics_core_intro
+ ^["introductory"]{
+  covers: "calculus-based mechanics, then electricity, magnetism, waves, and optics"
+  context: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_feynman_lectures"
+  needs: [ ~"../../formal/mathematics/engineering-core/calculus-and-linear-algebra.spw#mathematics_calc_linalg" ]
+ }
+ #>physics_core_modern
+ ^["modern_physics"]{
+  covers: "special relativity, photons, the Bohr atom, de Broglie waves, and nuclear decay"
+  needs: [ ~"./core-sequence.spw#physics_core_intro" ]
+ }
+ #>physics_core_mechanics
+ ^["classical_mechanics"]{
+  #:claim #!settled
+  statement: "Hamilton's principle of stationary action yields the Euler-Lagrange equations in any generalized coordinates, which makes constraints and symmetries easier to handle than with forces."
+  needs: [ ~"./core-sequence.spw#physics_core_intro" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_taylor_2005"
+  topics: "central forces and orbits, coupled oscillators and normal modes, rigid bodies and the inertia tensor"
+ }
+ #>physics_core_noether
+ ^["noether"]{
+  #:claim #!settled
+  statement: "Emmy Noether proved in 1918 that each continuous symmetry of an action gives a conserved quantity: time shifts give energy, space shifts momentum, rotations angular momentum."
+  needs: [ ~"./core-sequence.spw#physics_core_mechanics" ]
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_noether_1918", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_taylor_2005" ]
+  ~#say(every symmetry pays out a conservation law)
+ }
+ #>physics_core_oscillator
+ ^["small_oscillations"]{
+  #:claim #!settled
+  statement: "For small swings a simple pendulum has period 2 pi times the square root of length over g, independent of its mass, and the damped driven oscillator models resonance everywhere."
+  reads: %[phys.const.g_n_m_per_s2]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_taylor_2005"
+ }
+ #>physics_core_em_link
+ ^["electromagnetism"]{
+  canonical: ~"./electromagnetism.spw#physics_em"
+  needs: [ ~"./core-sequence.spw#physics_core_intro" ]
+ }
+ #>physics_core_quantum
+ ^["quantum_mechanics"]{
+  #:claim #!settled
+  statement: "States are vectors in a Hilbert space, observables are Hermitian operators, and the Born rule gives measurement probabilities; how measurement ends in one outcome is interpreted differently."
+  needs: [ ~"./core-sequence.spw#physics_core_modern", ~"./core-sequence.spw#physics_core_mechanics" ]
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_griffiths_qm_2018"
+  topics: "square wells and tunneling, the ladder-operator oscillator, hydrogen, spin and angular momentum addition, perturbation theory"
+ }
+ #>physics_core_thermal_link
+ ^["thermal_physics"]{
+  classical: ~"./classical-thermodynamics.spw#physics_thermo_classical"
+  statistical: ~"./statistical-mechanics.spw#physics_statmech"
+  needs: [ ~"./core-sequence.spw#physics_core_quantum" ]
+ }
+ #>physics_core_habits
+ ^["habits"]{
+  #:claim #!interpretive
+  statement: "Good physics habits check every result for dimensions and for its limits as hbar goes to zero or c to infinity, and explain the mechanism in words before trusting the algebra."
+ }
+}
+
+^["labs"]{
+ #>physics_core_labs
+ ^["battery"]{
+  #:claim #!settled
+  statement: "The senior advanced lab repeats landmark measurements with modern instruments, so students meet systematic error, calibration, and noise on experiments whose answers are known."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_melissinos_2003"
+ }
+ ^["michelson"]{
+  measures: "laser wavelength and the refractive index of air by counting fringes"
+  origin: "Michelson built the interferometer in the 1880s"
+  !probe{ "count fringes while evacuating a gas cell" =id[p_phys_lab_michelson] =kind[build] }
+ }
+ ^["photoelectric"]{
+  measures: "Planck's constant from stopping voltage against light frequency"
+  origin: "Millikan's 1916 test of Einstein's photon equation"
+  !probe{ "fit stopping voltage against frequency for four mercury lines" =id[p_phys_lab_photoelectric] =kind[build] }
+ }
+ ^["oil_drop"]{
+  measures: "the elementary charge from drops balanced in an electric field"
+  reads: %[phys.const.e_charge_zc]
+  !probe{ "histogram the charges of thirty drops" =id[p_phys_lab_oil_drop] =kind[build] }
+ }
+ ^["franck_hertz"]{
+  measures: "quantized energy loss of electrons in mercury vapor"
+  origin: "Franck and Hertz, 1914"
+  !probe{ "read current dips against accelerating voltage" =id[p_phys_lab_franck_hertz] =kind[build] }
+ }
+ ^["muon_lifetime"]{
+  measures: "the mean life of stopped cosmic-ray muons in a scintillator"
+  reads: %[phys.lab.muon_tau_us]
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_pdg_2024", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_suzuki_1987" ]
+  ^["limits"]{
+   holds: "the registry cell is the free muon mean life, measured with positive muons"
+   fails: "stopped negative muons in the carbon of a plastic scintillator are also lost to nuclear capture, which cuts their lifetime to about 2.03 microseconds"
+   expect: "cosmic rays carry both charges, so a single-exponential fit gives an effective lifetime near 2.1 microseconds that sits below the free value without being an error"
+  }
+  !probe{ "fit an exponential to decay-time histograms" =id[p_phys_lab_muon] =kind[build] }
+ }
+ ^["johnson_noise"]{
+  measures: "Boltzmann's constant from resistor voltage noise with a lock-in or spectrum analyzer"
+  reads: %[phys.const.k_b_mev_per_k]
+  origin: "Johnson and Nyquist, 1928"
+  !probe{ "measure noise power against resistance and temperature" =id[p_phys_lab_johnson] =kind[build] }
+ }
+}
+
+^["try"]{
+ #>physics_core_try_pendulum
+ ^["pendulum_g"]{
+  materials: [ "a string about one meter long", "a heavy nut or washer", "a phone stopwatch", "a tape measure" ]
+  steps: << "hang the nut and measure string length to its center" ; "time ten small swings" ; "divide by ten for the period" ; "compute g from the period and length" ; "repeat with a second nut tied on" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "keep swings small and clear of faces; no other hazard worth naming"
+  shows: ~"./core-sequence.spw#physics_core_oscillator"
+ }
+}
+
+#>physics_core_muon_q
+?["Does counting muons in your own lab teach time dilation better than a train thought experiment?"]{
+ #:depth #!educational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Students who compute how few muons should survive the trip down without dilation, then count them, should keep time dilation longer than students taught by thought experiment alone."
+ !probe{ "compare delayed recall of time dilation between lab-first and lecture-first sections" =id[p_phys_core_muon_teach] =kind[interview] }
+ $%[phys.lab.muon_tau_us, phys.const.c_m_per_s]
+ ~"./core-sequence.spw#physics_core_labs" ~#neighbor(nearest)
+}
+
+#>physics_core_effectiveness_q
+?["Why does mathematics built for its own sake fit spectral lines so well?"]{
+ #:depth #!mathematical ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Part of the fit is selection: physicists kept the structures that matched spectra and discarded others, so effectiveness should look smaller when failed formalisms are counted."
+ !probe{ "list formalisms proposed for atomic spectra before 1930 and record which survived" =id[p_phys_core_effectiveness] =kind[lit] }
+ source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_wigner_1960"
+ ~"./core-sequence.spw#physics_core_quantum" ~#neighbor(nearest)
+}

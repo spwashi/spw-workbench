@@ -1,0 +1,180 @@
+# Lineage
+#
+# How the Spw dialect model moved from composable phases in v0.1 to one dialect id with flags in v0.3, which enhancements actually landed, and how single letters were reused along the way.
+
+#>spw_lineage
+#:layer #!reference
+#:domain #!spw
+#:form #!timeline
+#:level #!foundation
+#:review #!sourced
+#:valence #!bonk
+#:era #!current
+
+^"emit"{
+ ~#title: "Lineage"
+ ~#claim: "Each enhancement that landed let the lexer own its raw text, and most lowered to a node that already existed; ideas that stayed flags or prose did not land."
+ ~#proof: "The spec archives in lib/ and dated commits for particles, apposition, and plan-stream entries, read at 1aa1dc23."
+ ~#door: "Read the v0.1 rung, then the apposition rung, and ask what changed between a plan and a landing."
+ ~#audience: "readers who want to know where Spw came from before proposing where it goes"
+ continuity: "Lineage | raw text"
+ cold_open: "Every idea that landed gave the lexer its raw text, and most lowered to a node Spw already had."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/studies/tokens-synthesis.md section 4, lineage case study",
+  "lib/ archives, dialect types, and commit dates re-read by the writer at 1aa1dc23 on 2026-10-03"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the study gave v0.1 Spw.x as index only; v0.1 is itself split, index in its changelog and linkage in its phase notes",
+  "the study named the v0.1 phases surface, structure, domain, orientation, presentation; the phase table names projection where the dotted dialect name says domain",
+  "the v0.3 README lists six strata as carried from v0.2, not only dialects, and none of the six directories is present in lib/spw-v0.3.0",
+  "the study counted particles as lowering to an existing node; a Particle node kind was added the same day in commit 25ca2e29"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./history/episode-timeline.spw#workbench_history_episodes" ]
+ grounds: [ ~"../registries/sources/spw-branch.spw#src_spw_lib_archives" ]
+ feeds: [ ~"./dialects-and-play.spw#spw_dialects_and_play" ]
+}
+
+^["concepts"]{
+ primary: [ #lowering, #letter_reuse ]
+ transfers: [ #dated_still ], tensions: [ #phase_composition ]
+}
+
+^["dating"]{
+ #>spw_lineage_dating
+ ^["v01_dates"]{
+  #:claim #!contested
+  statement: "The v0.1 changelog is dated 2026-01-07, the first commit 2026-01-08, and the v0.1 archive entered lib/ on 2026-03-01, after an episodes-only history rewrite."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_git_history"
+  counter: ~"../registries/sources/spw-branch.spw#src_spw_lib_archives"
+  cites: [ "lib/spw-v0.1.0-alpha/CHANGELOG.md:3", "commit a1e509c6", "commit e35f98cc" ]
+  verify: "which date marks v0.1 needs a pre-rewrite backup; nothing from before 2026 is in this checkout"
+ }
+}
+
+^["rungs"]{
+ #>spw_lineage_v01
+ ^["v0_1"]{
+  #:claim #!settled
+  statement: "v0.1 proposed dialects composable along five phases, so one name could fix surface, structure, projection, orientation, and presentation together."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_lib_archives"
+  cites: [ "lib/spw-v0.1.0-alpha/dialects/PHASES.md:16-26", "lib/spw-v0.1.0-alpha/dialects/PHASES.md:145" ]
+  at: "2026-01-07, verify"
+  ^["presentation_rule"]{
+   #:claim #!settled
+   statement: "v0.1 held that presentation never affects canonical text or hashing; canon now says disclosure never renames identity."
+   source: ~"../registries/sources/spw-branch.spw#src_spw_lib_archives"
+   cites: [ "lib/spw-v0.1.0-alpha/dialects/PHASES.md:134", "docs/theory/spw/representational-disclosure.spw:45" ]
+  }
+  ^["inventory"]{
+   #:claim #!settled
+   statement: "The v0.1 changelog lists eight operators, five modifiers, three connectors including the ampersand, and four containers."
+   source: ~"../registries/sources/spw-branch.spw#src_spw_lib_archives"
+   cites: [ "lib/spw-v0.1.0-alpha/CHANGELOG.md:12-15" ]
+  }
+ }
+ #>spw_lineage_v02
+ ^["v0_2"]{
+  #:claim #!settled
+  statement: "v0.2 carried the phase model and marked phase lexing, domain binding, orientation, and the dialect annotation as not implemented."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_lib_archives"
+  cites: [ "lib/spw-v0.2.0-alpha/dialects/PHASES.md:125-131", "commit 9fe3b73c", "commit f6f62161" ]
+  at: "2026-02-26 to 2026-02-27"
+ }
+ #>spw_lineage_v03
+ ^["v0_3"]{
+  #:claim #!settled
+  statement: "v0.3 code holds one dialect id from a fixed list of eight plus flags, and its README says a dialects directory was carried forward that lib/spw-v0.3.0 does not contain."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_seed_dialect"
+  sources: [ ~"../registries/sources/spw-branch.spw#src_spw_lib_archives" ]
+  cites: [ "packages/spw-seed/src/dialect/types.ts:12-20", "lib/spw-v0.3.0/README.md:23-29", "commit 4763a29f" ]
+  at: "2026-03-26"
+ }
+ #>spw_lineage_particles
+ ^["particles"]{
+  #:claim #!settled
+  statement: "Particles landed as a lexer token family, and the same day a Particle node kind was added whose runs bind forward to the next expression."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_git_history"
+  cites: [ "commit 8cdaf2a9", "commit 25ca2e29", "packages/spw-seed/src/types/ast/index.ts:32" ]
+  at: "2026-07-23"
+ }
+ #>spw_lineage_apposition
+ ^["apposition"]{
+  #:claim #!settled
+  statement: "Gloss became apposition, whose body the lexer owns raw and which lowers to an Annotation node, so every existing selector counts it."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_canon_apposition"
+  cites: [ "commit 925e982e", "docs/theory/spw/apposition.spw:91" ]
+  at: "2026-07-26"
+ }
+ #>spw_lineage_plan_stream
+ ^["plan_stream"]{
+  #:claim #!settled
+  statement: "Plan-stream entries became lossless through the only dialect flag that branches the lexer, keeping the existing bullet node."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_seed_lexer"
+  cites: [ "commit c855e832", "packages/spw-seed/src/lexer/tokenize.ts:88" ]
+  at: "2026-09-08"
+ }
+}
+
+^["pattern"]{
+ #>spw_lineage_pattern
+ ^["lexer_owns_lowers"]{
+  #:claim #!interpretive
+  statement: "Each landing let the lexer own its raw text; apposition and plan entries lowered to existing nodes, while the natural surface, flow glyphs, and phase composition stayed flags or prose."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_tokens"
+  cites: [ "lib/spw-v0.1.0-alpha/dialects/PHASES.md:172", "packages/spw-seed/src/dialect/types.ts:95" ]
+  ^["limits"]{
+   holds: "for the three dated landings above"
+   fails: "particles added a node kind and still landed, so lowering to an existing node is a tendency, not a law"
+  }
+ }
+}
+
+^["letters"]{
+ #>spw_lineage_letters
+ ^["letter_reuse"]{
+  #:claim #!settled
+  statement: "The letter x meant index in the v0.1 changelog, linkage in the v0.1 phase notes, and executable in code; p meant prompting in v0.1 and plan streams in code."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_lib_archives"
+  sources: [ ~"../registries/sources/spw-branch.spw#src_spw_seed_dialect" ]
+  cites: [ "lib/spw-v0.1.0-alpha/CHANGELOG.md:25-26", "lib/spw-v0.1.0-alpha/dialects/PHASES.md:176", "lib/spw-v0.2.0-alpha/dialects/GEOMETRY.md:16", "packages/spw-seed/src/dialect/types.ts:16-18" ]
+ }
+ ladder: << "x as index" ; "x as linkage" ; "x as index again in v0.2" ; "x as executable" >>
+ consequence: "a single letter carries its history silently, which is one reason the play packs are named as words"
+ see: [ ~"./dialects-and-play.spw#spw_play_one_dialect" ]
+}
+
+^["try"]{
+ #>spw_lineage_try_archive
+ ^["read_three_archives"]{
+  materials: [ "a terminal in the workbench", "the three lib/ archives" ]
+  steps: << "open the v0.1 phase notes and find the dotted dialect name" ; "open the v0.2 phase notes and find what is not implemented" ; "open the v0.3 dialect types" ; "write one line on what survived" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "none worth naming; you only read files"
+  shows: ~"./lineage.spw#spw_lineage_pattern"
+ }
+}
+
+#>spw_lineage_next_q
+?["Would a play pack that adds no node kind land with less canon change than particles did?"]{
+ #:depth #!historical ~#lens(historical layer)
+ #:claim #!speculative
+ ~#hypothesis: "A pack that lowers to existing nodes lands with less canon change than one that adds a node kind."
+ !probe{ "after the next dialect change lands, count new node kinds and canon lines it touched, beside the three dated landings" =id[p_spw_lineage_next] =kind[lookup] }
+ ~"./lineage.spw#spw_lineage_pattern" ~#neighbor(nearest)
+}

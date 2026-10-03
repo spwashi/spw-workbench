@@ -1,0 +1,185 @@
+# Known Defects
+#
+# Seven verified plugin defects and two language server gaps, each keyed by file and line at one commit, plus the stale canon lines that describe the hosts wrongly.
+
+#>editor_hosts_defects
+#:layer #!reference
+#:domain #!editor_hosts
+#:form #!ledger
+#:level #!practitioner
+#:review #!sourced
+#:valence #!honk
+#:era #!current
+
+^"emit"{
+ ~#title: "Known Defects"
+ ~#claim: "Seven plugin defects and two server gaps are verified in code, each with a file and line, an effect, and the check that showed it."
+ ~#proof: "Every row cites source at commit 1aa1dc23; two rows add a probe run on 2026-10-02 and two point to unapplied patches."
+ ~#door: "Scan the keys, open the one that touches your editor, then read the stale canon lines at the end."
+ ~#audience: "plugin maintainers choosing what to fix next"
+ continuity: "Known Defects | file and line"
+ cold_open: "Each defect here has a file and line you can open, an effect you can see, and the check that showed it."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ basis: "the seven plugin defects come from the review scorecard; each was reopened and its lines recounted at 1aa1dc23, and some line numbers moved"
+ moved: "the dropped-layers lines were 372 to 381 in the scorecard and are 377 to 387 now"
+}
+
+^["edges"]{
+ needs: [ ~"./vscode-lsp-and-cache.spw#editor_hosts_vscode_lsp_cache", ~"./jetbrains-native-features.spw#editor_hosts_jetbrains_native" ]
+ see: [ ~"../../provenance/review-scorecard.spw#provenance_scorecard", ~"../../provenance/errata-technical.spw#provenance_errata_technical", ~"../theory/address-and-linking.spw#spw_theory_address" ]
+}
+
+^["concepts"]{
+ primary: [ #code_verified, #dropped_layers, #anchor_navigation ]
+ transfers: [ #cache_plane ]
+ tensions: [ #second_reader ]
+}
+
+^["plugin_defects"]{
+ #>editor_hosts_defects_d1
+ ^["d1_dropped_layers"]{
+  #:claim #!settled
+  key: "extensions/vscode-spw/src/lsp/custom-requests.ts:377-387"
+  statement: "The VS Code request client rebuilds the cache reflection without its layers, so Inspect Cache always marks the session plane absent."
+  effect: "the card contradicts the server it just queried"
+  check: "code read; the server sends layers at packages/spw-lsp/src/handlers/cache-reflection.ts:164-171"
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_custom_requests"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_review_scorecard" ]
+  home: ~"./vscode-lsp-and-cache.spw#editor_hosts_vscode_lsp_cache_dropped_layers"
+ }
+ #>editor_hosts_defects_d2
+ ^["d2_inert_trace"]{
+  #:claim #!settled
+  key: "extensions/vscode-spw/src/extension.ts:77"
+  statement: "The client id is spwLanguageServer, so the library reads spwLanguageServer.trace.server and the contributed spw.trace.server does nothing."
+  effect: "a user who turns tracing on sees no trace"
+  check: "code read in the extension and in vscode-languageserver-node at tag release/client/9.0.1"
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_languageclient"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_extension" ]
+  home: ~"./vscode-lsp-and-cache.spw#editor_hosts_vscode_lsp_cache_trace"
+ }
+ #>editor_hosts_defects_d3
+ ^["d3_fold_hash"]{
+  #:claim #!settled
+  key: "extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwFoldingBuilder.kt:121"
+  statement: "The fold builder treats every hash as a line comment, so a brace after a hash on the same line is skipped and the fold closes early."
+  effect: "narrower than every set line: only lines with a brace after a hash, such as a tilde-hash key opening a facet"
+  check: "code read"
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_folding"
+  home: ~"./jetbrains-native-features.spw#editor_hosts_jetbrains_native_folding"
+ }
+ #>editor_hosts_defects_d4
+ ^["d4_commenter_split"]{
+  #:claim #!settled
+  key: "extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwCommenter.kt:6"
+  statement: "The IntelliJ commenter writes a hash and a space while both language configurations name double slash, so toggling a comment differs by host."
+  effect: "a file commented in two editors mixes both forms; the seed reads both as comments"
+  check: "code read in SpwCommenter.kt and both language-configuration.json files"
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_commenter"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_langconfig" ]
+  home: ~"./jetbrains-native-features.spw#editor_hosts_jetbrains_native_commenter"
+ }
+ #>editor_hosts_defects_d5
+ ^["d5_spellcheck_off"]{
+  #:claim #!settled
+  key: "extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwSpellcheckingStrategy.kt:9"
+  statement: "The spellchecking strategy returns an empty tokenizer for every element, so prose in strings and comments is never checked."
+  effect: "typos in claims and titles pass silently in JetBrains IDEs"
+  check: "code read"
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_spellcheck"
+  home: ~"./jetbrains-native-features.spw#editor_hosts_jetbrains_native_spellcheck"
+ }
+ #>editor_hosts_defects_d6
+ ^["d6_gutter_null"]{
+  #:claim #!settled
+  key: "extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwAnnotationLineMarkerProvider.kt:33"
+  statement: "Anchor gutter markers promise navigation in the tooltip but pass a null handler, against the IntelliJ canon invariant that a marker must expose a working target."
+  effect: "a click on the anchor icon does nothing"
+  check: "code read; canon at .spw/tooling/intellij-plugin.spw:50"
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_gutter"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_tooling_intellij" ]
+  home: ~"./jetbrains-native-features.spw#editor_hosts_jetbrains_native_gutter"
+ }
+ #>editor_hosts_defects_d7
+ ^["d7_untitled_previews"]{
+  #:claim #!settled
+  key: "extensions/vscode-spw/src/instruments/commands.ts:270"
+  statement: "Instrument and probe results open as untitled documents made from text, so they are editable and VS Code asks to save them on close."
+  effect: "read-only receipts behave like drafts"
+  check: "code read; the save prompt was reported by the review and follows VS Code untitled-document behavior"
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_instruments"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_review_scorecard" ]
+  home: ~"./vscode-commands-and-views.spw#editor_hosts_vscode_untitled"
+ }
+}
+
+^["server_gaps"]{
+ #>editor_hosts_defects_anchor_line
+ ^["g1_anchor_line"]{
+  #:claim #!settled
+  key: "packages/spw-lsp/src/helpers.ts:212"
+  statement: "The resolver returns the path with its fragment attached, and definition uses that string as the target URI and the file to read, so anchored jumps land at line one."
+  effect: "go-to-definition on a path with an anchor opens the file top, or a URI ending in an encoded hash"
+  check: "code read at helpers.ts:212,220,254 and navigation.ts:104-107,136,144; the unit test mocks the resolver without the hash at fragment-navigation.test.ts:48"
+  repair: "a hardened patch with tests waits unapplied in a local worktree; its durable copy and review sit beside the cut plan"
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_helpers"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_navigation", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_fragnav_patch", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_resume_note" ]
+ }
+ #>editor_hosts_defects_lens_index
+ ^["g2_lens_index"]{
+  #:claim #!settled
+  key: "packages/spw-lsp/src/server-index.ts:1164-1195"
+  statement: "The annotation index reads annotation and particle tokens only, and a lens reading lexes as an apposition token, so no lens reaches the index or the Concepts view."
+  effect: "lens phrases written in this cut are invisible to editor search and grouping"
+  check: "code read, plus a tokenizer probe on 2026-10-02 that returned one APPOSITION token for a lens reading"
+  repair: "a patch that indexes named appositions waits unapplied in a local worktree"
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_server_index"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lens_patch", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_resume_note" ]
+ }
+ also: "silent lexer errors and initialize-only settings are server limits recorded in the language server surface"
+ also_see: ~"./lsp-surface.spw#editor_hosts_lsp_diagnostics_gate"
+}
+
+^["stale_canon"]{
+ #>editor_hosts_defects_stale_startup
+ ^["startup_ladder"]{
+  #:claim #!superseded
+  key: ".spw/tooling/vscode-spw.spw:22"
+  statement: "Canon says VS Code resolves its server from a workbench root, a checkout, a mount, a package, or a fallback; the extension now starts only its bundled server."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_tooling_vscode"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_readme" ]
+  cites: [ "extensions/vscode-spw/README.md:28", "extensions/vscode-spw/src/extension.ts:114-125" ]
+ }
+ #>editor_hosts_defects_stale_atlas
+ ^["atlas_projections"]{
+  #:claim #!superseded
+  key: ".spw/tooling/vscode-spw.spw:46"
+  statement: "Canon lists projections among the Workspace atlas sections; the view builds You Are Here, Roots, Memory, and Spirit."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_tooling_vscode"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_views" ]
+  cites: "extensions/vscode-spw/src/views/workspace-tree.ts:444-476"
+ }
+ rule: "stale lines are recorded here and never edited from the cut; amendments go to the promote queue of the plugin theory surface"
+}
+
+#>editor_hosts_defects_q
+?["Do defects gather where a host rereads text instead of asking the server?"]{
+ #:depth #!computational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "Rows whose code rereads lines with regexes, or rebuilds a server payload, should outnumber rows in code that only forwards server answers."
+ !probe{ "tag each ledger row by reader kind, server, client regex, or client glue, and count rows per kind against lines of code per kind" =id[p_hosts_defects_reader_kind] =kind[census] }
+ $%[hosts.lsp.custom_method_count, hosts.jb.action_count]
+ ~"./known-defects.spw#editor_hosts_defects_d3" ~#neighbor(nearest)
+}

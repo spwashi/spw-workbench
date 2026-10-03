@@ -1,0 +1,169 @@
+# Retrieval Systems
+#
+# How search learned to rank: test collections, Boolean queries, term weighting, vector space, BM25, link analysis, and dense retrieval, as a ladder of dated rungs with a ledger of corrected raw claims.
+
+#>information_science_retrieval
+#:layer #!reference
+#:domain #!information_science
+#:form #!timeline
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bonk
+#:era #!modern
+
+^"emit"{
+ ~#title: "Retrieval Systems"
+ ~#claim: "Ranking moved from exact Boolean matching to weighted terms, probabilistic BM25, link analysis, and learned dense vectors, and test collections judged each step."
+ ~#proof: "Cleverdon, Sparck Jones, Salton, Robertson, Brin and Page, Karpukhin, Thakur, and Voorhees, each cited at its rung."
+ ~#door: "Climb the ladder in order, then read the ledger for the TREC-COVID correction."
+ ~#audience: "library and computing students, and builders of search over notes and chats"
+ continuity: "Retrieval Systems | test collections judged each step"
+ cold_open: "Search learned to rank in steps, and shared test collections judged each step before the next one won."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/library-and-information-sciences/information-retrieval-and-search-systems.spw" ]
+ method: #corrected
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+   note: "retrieval sources checked against the bibliography; no error found"
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: [
+  "TREC-COVID was labeled a legal corpus; it is a biomedical test collection",
+  "PageRank and the BM25 lineage through Okapi were missing and are added",
+  "the claim that dense models suffer embedding hallucinations is dropped as unsourced; the BEIR zero-shot finding replaces it"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/provenance-and-reference.spw#q_prov_reference" ]
+ see: [ ~"./knowledge-organization.spw#information_science_knowledge_org" ]
+}
+
+^["concepts"]{
+ primary: [ #ranking, #search ]
+ transfers: [ #chat_lane ]
+ tensions: [ #supersession ]
+}
+
+^["ladder"]{
+ #>information_science_retrieval_cranfield
+ ^["r1_cranfield"]{
+  #:claim #!settled
+  era: "1958 to 1966"
+  statement: "Cyril Cleverdon's Cranfield tests compared indexing languages on a fixed set of documents, queries, and relevance judgments, the model every later test collection copies."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_cleverdon_1967"
+ }
+ #>information_science_retrieval_boolean
+ ^["r2_boolean"]{
+  #:claim #!settled
+  era: "1960s onward"
+  statement: "Boolean retrieval returns exactly the documents that satisfy AND, OR, and NOT over index terms, and leaves them unranked."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_manning_2008"
+ }
+ #>information_science_retrieval_idf
+ ^["r3_idf"]{
+  #:claim #!settled
+  era: "1972"
+  statement: "Karen Sparck Jones showed that weighting a term by how few documents contain it improves ranking; this inverse document frequency still underlies most lexical scoring."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_sparck_jones_1972"
+ }
+ #>information_science_retrieval_vector
+ ^["r4_vector_space"]{
+  #:claim #!settled
+  era: "1975"
+  statement: "Salton, Wong, and Yang represented documents and queries as weighted term vectors and ranked by the cosine of the angle between them."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_salton_1975"
+ }
+ #>information_science_retrieval_bm25
+ ^["r5_bm25"]{
+  #:claim #!settled
+  era: "1994"
+  statement: "Robertson and colleagues tuned the probabilistic model into Okapi BM25, which saturates repeated terms with k1 and normalizes for document length with b."
+  reads: %[prov.bm25.k1_low, prov.bm25.k1_high, prov.bm25.b_typical]
+  sources: [ ~"../../registries/sources/provenance-and-reference.spw#src_prov_robertson_1995", ~"../../registries/sources/provenance-and-reference.spw#src_prov_robertson_zaragoza_2009", ~"../../registries/sources/provenance-and-reference.spw#src_prov_manning_2008" ]
+  ^["limits"]{
+   holds: "the parameter range is a common default for English prose collections"
+   fails: "short texts such as chat lines or titles often need different settings, tuned on held-out judgments"
+  }
+ }
+ #>information_science_retrieval_pagerank
+ ^["r6_pagerank"]{
+  #:claim #!settled
+  era: "1998"
+  statement: "Brin and Page ranked web pages partly by PageRank, a score that treats each link as a vote weighted by the rank of the page that casts it."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_brin_page_1998"
+ }
+ #>information_science_retrieval_dense
+ ^["r7_dense"]{
+  #:claim #!settled
+  era: "2020"
+  statement: "Dense passage retrieval encodes questions and passages with trained encoders and ranks by vector similarity; trained per dataset, it beat BM25 on Natural Questions, TriviaQA, WebQuestions, and CuratedTREC, but not SQuAD."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_karpukhin_2020"
+  ^["limits"]{
+   holds: "top-20 and top-100 passage accuracy on the four sets in the paper's single-dataset results"
+   fails: "on SQuAD, where BM25 stayed ahead; the authors trace this to high word overlap between its questions and passages"
+  }
+ }
+ #>information_science_retrieval_beir
+ ^["r8_zero_shot"]{
+  #:claim #!settled
+  era: "2021"
+  statement: "On the BEIR zero-shot benchmark, BM25 stayed a strong baseline, and many dense retrievers trained on one dataset fell behind it on others."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_thakur_2021"
+  ^["limits"]{
+   holds: "models and datasets in the 2021 benchmark"
+   fails: "later dense and hybrid models trained on broader data narrow or reverse the gap; check a current leaderboard before relying on the ranking"
+  }
+ }
+}
+
+^["ledger"]{
+ #>information_science_retrieval_trec_covid
+ ^["trec_covid"]{
+  #:claim #!refuted
+  raw: ".spw/caches/university-education/library-and-information-sciences/information-retrieval-and-search-systems.spw:41"
+  statement: "TREC-COVID is a legal retrieval corpus."
+  correction: "TREC-COVID is a biomedical test collection built in 2020 over COVID-19 scientific literature, with rounds of judged topics."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_voorhees_2020"
+ }
+ #>information_science_retrieval_metrics
+ ^["metrics"]{
+  #:claim #!settled
+  statement: "Precision, recall, mean average precision, and normalized discounted cumulative gain each reward a different notion of a good ranking."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_manning_2008"
+  ^["kept_from_raw"]{ precision: "relevant retrieved over retrieved", recall: "relevant retrieved over all relevant", ndcg: "graded gain discounted by rank, divided by the ideal ordering" }
+ }
+}
+
+^["try"]{
+ #>information_science_retrieval_try_rank
+ ^["rank_by_hand"]{
+  materials: [ "six short notes on index cards", "a two-word query", "a pencil" ]
+  steps: << "mark which cards are relevant before ranking" ; "rank the cards by how often the query words appear" ; "rerank, counting rare words more than common ones" ; "compare the two rankings against your marks" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./retrieval-systems.spw#information_science_retrieval_idf"
+ }
+}
+
+#>information_science_retrieval_chat_q
+?["Would BM25 or dense retrieval sort a fast chat into topic lanes with fewer mistakes?"]{
+ #:depth #!computational ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "On short, slangy chat lines, BM25 tuned for short texts should hold up better than a dense model trained on long passages, until the dense model is tuned on chat."
+ !probe{ "label a few hundred chat lines by topic and compare lane accuracy for tuned BM25 and an off-the-shelf dense encoder" =id[p_prov_retrieval_chat_lanes] =kind[build] }
+ $%[prov.bm25.k1_low, prov.bm25.b_typical]
+ ~"./retrieval-systems.spw#information_science_retrieval_beir" ~#neighbor(nearest)
+ breaks: "a benchmark has fixed judged topics, while a live chat invents its topics as it goes"
+}

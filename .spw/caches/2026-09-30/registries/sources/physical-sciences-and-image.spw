@@ -11,22 +11,48 @@
 #:valence #!bone
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5 writer"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
- evidence: #[ "web checks 2026-10-01 against Wikipedia articles: C-41 process, E-6 process, ECN-2, Landauer principle, Arri Alexa, helical scan, quadruplex videotape, U-matic, Video8, DV, Betamax, Rietveld refinement, Lorenz gauge condition, two-dimensional NMR", "every other entry is named from writer knowledge; titles, authors, years, and venues were not web-verified this session" ]
+ evidence: #[
+  "web checks 2026-10-01 against Wikipedia articles: C-41 process, E-6 process, ECN-2, Landauer principle, Arri Alexa, helical scan, quadruplex videotape, U-matic, Video8, DV, Betamax, Rietveld refinement, Lorenz gauge condition, two-dimensional NMR",
+  "web checks 2026-10-02 against Wikipedia articles: Landauer principle, double-Gauss lens, Petzval field curvature, anamorphic format, 35 mm and 16 mm film, Super 8, Super 16, T-grain, helical scan, metal-organic framework",
+  "web checks 2026-10-02 in the fact-check fix pass: NIST constants database for the vacuum impedance, arXiv 2409.03787, German Wikipedia Abbe-Zahl, Angenieux retrofocus, extremal principles in non-equilibrium thermodynamics, fatigue limit, Bhopal disaster, helical scan, videotape",
+  "Crossref record 2026-10-02 for the CODATA 2022 journal version: Reviews of Modern Physics 97, 025002, published 30 April 2025",
+  "Crossref records 2026-10-03 for Joule and Thomson 1854, Rietveld 1967, the Ernst 1992 Nobel lecture, and Suzuki, Measday, and Roalsvig 1987; web checks 2026-10-03 against Wikipedia articles Kelvin, Two-dimensional NMR, Rietveld refinement, Nitrocellulose film, and Bhopal disaster, and the Kodak History of Film page",
+  "every other entry is named from writer knowledge; titles, authors, years, and venues were not web-verified, which keeps this registry at spot_checked"
+ ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #partial }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "re-run after the 2026-10-03 fact-check fixes; no failing lines" }
  }
+ corrections: #[
+  "fact-check: Gibbs, On the Equilibrium of Heterogeneous Substances, is dated to its two installments of 1876 and 1878; the phase rule is in the 1876 part",
+  "fact-check: added CODATA 2022, Prigogine 1945, Sagawa and Ueda 2008, Kelvin 1848, Clausius 1850, Bathias 1999, the OSH Act, Salmeron and Schloegl 2008, and dated web checks for the Abbe bounds, retrofocus, Video8, and Bhopal",
+  "fact-check 2026-10-03: added Joule and Thomson 1854 for the explicit Carnot form, Suzuki 1987 for negative-muon capture, the Ernst 1992 Nobel lecture for the Jeener credit, Rietveld 1967, the Kodak History of Film page, and Wikipedia Nitrocellulose film; Kelvin 1848 now says it is context only",
+  "fact-check 2026-10-03: the r4 fact-check receipt was dated 2026-10-01, before the receipts it followed; it is re-dated 2026-10-02, the day that pass ran"
+ ]
 }
 
 ^["standards"]{
  #>src_phys_bipm_si_2019
  ^["bipm_si_2019"]{ title: "The International System of Units (SI), 9th edition", publisher: "Bureau International des Poids et Mesures", year: 2019, kind: #standard }
+ #>src_phys_codata_2022
+ ^["codata_2022"]{ title: "CODATA Recommended Values of the Fundamental Physical Constants: 2022", authors: "Peter J. Mohr; David B. Newell; Barry N. Taylor; Eite Tiesinga", year: 2025, venue: "Reviews of Modern Physics 97, 025002, published 30 April 2025 per Crossref; preprint arXiv 2409.03787; values read from the NIST constants database 2026-10-02", kind: #article }
+ #>src_phys_osh_act_1970
+ ^["osh_act_1970"]{ title: "Occupational Safety and Health Act of 1970, Public Law 91-596", publisher: "US Congress", year: 1970, kind: #statute, note: "section 3(5) leaves states and their political subdivisions out of the employer definition; State Plans cover public employees" }
  #>src_phys_codata_2018
  ^["codata_2018"]{ title: "CODATA recommended values of the fundamental physical constants: 2018", authors: "Eite Tiesinga; Peter J. Mohr; David B. Newell; Barry N. Taylor", year: 2021, venue: "Reviews of Modern Physics 93, 025010", kind: #article }
  #>src_phys_pdg_2024
@@ -86,13 +112,27 @@
  ^["phys21_2016"]{ title: "Phys21: Preparing Physics Students for 21st-Century Careers", authors: "Joint Task Force on Undergraduate Physics Programs", year: 2016, publisher: "American Physical Society; American Association of Physics Teachers", kind: #report }
  #>src_phys_pierrehumbert_2010
  ^["pierrehumbert_2010"]{ title: "Principles of Planetary Climate", authors: "Raymond T. Pierrehumbert", year: 2010, publisher: "Cambridge University Press", kind: #textbook }
+ #>src_phys_treloar_1975
+ ^["treloar_1975"]{ title: "The Physics of Rubber Elasticity, 3rd edition", authors: "L. R. G. Treloar", year: 1975, publisher: "Clarendon Press, Oxford", kind: #monograph }
+ #>src_phys_bejan_2016
+ ^["bejan_2016"]{ title: "Advanced Engineering Thermodynamics, 4th edition", authors: "Adrian Bejan", year: 2016, publisher: "Wiley", kind: #textbook }
 }
 
 ^["physics_papers"]{
  #>src_phys_carnot_1824
  ^["carnot_1824"]{ title: "Reflexions sur la puissance motrice du feu", authors: "Sadi Carnot", year: 1824, publisher: "Bachelier, Paris", kind: #primary }
  #>src_phys_gibbs_1878
- ^["gibbs_1878"]{ title: "On the Equilibrium of Heterogeneous Substances", authors: "J. Willard Gibbs", year: 1878, venue: "Transactions of the Connecticut Academy of Arts and Sciences 3", kind: #primary }
+ ^["gibbs_1878"]{ title: "On the Equilibrium of Heterogeneous Substances", authors: "J. Willard Gibbs", year: 1876, venue: "Transactions of the Connecticut Academy of Arts and Sciences 3, 108-248 (1876) and 343-524 (1878)", kind: #primary, note: "two installments, 1876 to 1878; the phase rule is in the 1876 installment; the anchor keeps its first name" }
+ #>src_phys_kelvin_1848
+ ^["kelvin_1848"]{ title: "On an Absolute Thermometric Scale founded on Carnot's Theory of the Motive Power of Heat, and calculated from Regnault's Observations", authors: "William Thomson", year: 1848, venue: "Philosophical Magazine 33, 313", kind: #primary, note: "the first absolute scale, logarithmic in modern temperature and later abandoned; context for the Carnot bound, not the source of its explicit form" }
+ #>src_phys_clausius_1850
+ ^["clausius_1850"]{ title: "Über die bewegende Kraft der Wärme und die Gesetze, welche sich daraus für die Wärmelehre selbst ableiten lassen", authors: "Rudolf Clausius", year: 1850, venue: "Annalen der Physik und Chemie 79, 368 and 500", kind: #primary }
+ #>src_phys_joule_thomson_1854
+ ^["joule_thomson_1854"]{ title: "On the Thermal Effects of Fluids in Motion, Part II", authors: "J. P. Joule; William Thomson", year: 1854, venue: "Philosophical Transactions of the Royal Society of London 144, 321-364", kind: #primary, note: "sets out the second absolute scale, on which the Carnot efficiency is 1 - T_cold/T_hot; Crossref record checked 2026-10-03" }
+ #>src_phys_suzuki_1987
+ ^["suzuki_1987"]{ title: "Total nuclear capture rates for negative muons", authors: "T. Suzuki; D. F. Measday; J. P. Roalsvig", year: 1987, venue: "Physical Review C 35, 2212-2224", kind: #article, note: "negative-muon lifetimes element by element, carbon among them; Crossref record checked 2026-10-03" }
+ #>src_phys_bathias_1999
+ ^["bathias_1999"]{ title: "There is no infinite fatigue life in metallic materials", authors: "Claude Bathias", year: 1999, venue: "Fatigue and Fracture of Engineering Materials and Structures 22, 559", kind: #article }
  #>src_phys_gibbs_1902
  ^["gibbs_1902"]{ title: "Elementary Principles in Statistical Mechanics", authors: "J. Willard Gibbs", year: 1902, publisher: "Charles Scribner's Sons for Yale University", kind: #primary }
  #>src_phys_einstein_1949
@@ -127,6 +167,24 @@
  ^["kane_mele_2005"]{ title: "Z2 Topological Order and the Quantum Spin Hall Effect", authors: "C. L. Kane; E. J. Mele", year: 2005, venue: "Physical Review Letters 95, 146802", kind: #article }
  #>src_phys_hasan_kane_2010
  ^["hasan_kane_2010"]{ title: "Colloquium: Topological insulators", authors: "M. Z. Hasan; C. L. Kane", year: 2010, venue: "Reviews of Modern Physics 82, 3045", kind: #review }
+ #>src_phys_noether_1918
+ ^["noether_1918"]{ title: "Invariante Variationsprobleme", authors: "Emmy Noether", year: 1918, venue: "Nachrichten von der Gesellschaft der Wissenschaften zu Goettingen, Mathematisch-Physikalische Klasse, 235", kind: #primary }
+ #>src_phys_wigner_1960
+ ^["wigner_1960"]{ title: "The Unreasonable Effectiveness of Mathematics in the Natural Sciences", authors: "Eugene P. Wigner", year: 1960, venue: "Communications on Pure and Applied Mathematics 13, 1", kind: #article }
+ #>src_phys_lorenz_1867
+ ^["lorenz_1867"]{ title: "On the identity of the vibrations of light with electrical currents", authors: "L. Lorenz", year: 1867, venue: "Philosophical Magazine 34, 287", kind: #primary }
+ #>src_phys_mermin_wagner_1966
+ ^["mermin_wagner_1966"]{ title: "Absence of Ferromagnetism or Antiferromagnetism in One- or Two-Dimensional Isotropic Heisenberg Models", authors: "N. D. Mermin; H. Wagner", year: 1966, venue: "Physical Review Letters 17, 1133", kind: #article }
+ #>src_phys_wilson_1971
+ ^["wilson_1971"]{ title: "Renormalization Group and Critical Phenomena. I. Renormalization Group and the Kadanoff Scaling Picture", authors: "Kenneth G. Wilson", year: 1971, venue: "Physical Review B 4, 3174", kind: #article }
+ #>src_phys_bcs_1957
+ ^["bcs_1957"]{ title: "Theory of Superconductivity", authors: "J. Bardeen; L. N. Cooper; J. R. Schrieffer", year: 1957, venue: "Physical Review 108, 1175", kind: #article }
+ #>src_phys_von_klitzing_1980
+ ^["von_klitzing_1980"]{ title: "New Method for High-Accuracy Determination of the Fine-Structure Constant Based on Quantized Hall Resistance", authors: "K. v. Klitzing; G. Dorda; M. Pepper", year: 1980, venue: "Physical Review Letters 45, 494", kind: #article }
+ #>src_phys_haldane_1988
+ ^["haldane_1988"]{ title: "Model for a Quantum Hall Effect without Landau Levels: Condensed-Matter Realization of the Parity Anomaly", authors: "F. D. M. Haldane", year: 1988, venue: "Physical Review Letters 61, 2015", kind: #article }
+ #>src_phys_konig_2007
+ ^["konig_2007"]{ title: "Quantum Spin Hall Insulator State in HgTe Quantum Wells", authors: "Markus Koenig et al.", year: 2007, venue: "Science 318, 766", kind: #article }
 }
 
 ^["information_thermodynamics"]{
@@ -142,6 +200,8 @@
  ^["turing_1952"]{ title: "The Chemical Basis of Morphogenesis", authors: "A. M. Turing", year: 1952, venue: "Philosophical Transactions of the Royal Society of London B 237, 37", kind: #article }
  #>src_phys_winfree_1984
  ^["winfree_1984"]{ title: "The prehistory of the Belousov-Zhabotinsky oscillator", authors: "Arthur T. Winfree", year: 1984, venue: "Journal of Chemical Education 61, 661", kind: #article }
+ #>src_phys_prigogine_1945
+ ^["prigogine_1945"]{ title: "Moderation et transformations irreversibles des systemes ouverts", authors: "I. Prigogine", year: 1945, venue: "Bulletin de la Classe des Sciences, Academie Royale de Belgique 31, 600", kind: #primary, note: "the minimum entropy production theorem; accents dropped from the French title" }
  #>src_phys_glansdorff_prigogine_1971
  ^["glansdorff_prigogine_1971"]{ title: "Thermodynamic Theory of Structure, Stability and Fluctuations", authors: "P. Glansdorff; I. Prigogine", year: 1971, publisher: "Wiley-Interscience", kind: #monograph }
  #>src_phys_landauer_1961
@@ -162,6 +222,8 @@
  ^["liphardt_2002"]{ title: "Equilibrium information from nonequilibrium measurements in an experimental test of Jarzynski's equality", authors: "Jan Liphardt; Sophie Dumont; Steven B. Smith; Ignacio Tinoco Jr.; Carlos Bustamante", year: 2002, venue: "Science 296, 1832", kind: #article }
  #>src_phys_collin_2005
  ^["collin_2005"]{ title: "Verification of the Crooks fluctuation theorem and recovery of RNA folding free energies", authors: "D. Collin; F. Ritort; C. Jarzynski; S. B. Smith; I. Tinoco Jr.; C. Bustamante", year: 2005, venue: "Nature 437, 231", kind: #article }
+ #>src_phys_sagawa_ueda_2008
+ ^["sagawa_ueda_2008"]{ title: "Second Law of Thermodynamics with Discrete Quantum Feedback Control", authors: "Takahiro Sagawa; Masahito Ueda", year: 2008, venue: "Physical Review Letters 100, 080403", kind: #article }
  #>src_phys_sagawa_ueda_2010
  ^["sagawa_ueda_2010"]{ title: "Generalized Jarzynski Equality under Nonequilibrium Feedback Control", authors: "Takahiro Sagawa; Masahito Ueda", year: 2010, venue: "Physical Review Letters 104, 090602", kind: #article }
  #>src_phys_toyabe_2010
@@ -170,6 +232,16 @@
  ^["berut_2012"]{ title: "Experimental verification of Landauer's principle linking information and thermodynamics", authors: "Antoine Bérut; Artak Arakelyan; Artyom Petrosyan; Sergio Ciliberto; Raoul Dillenschneider; Eric Lutz", year: 2012, venue: "Nature 483, 187", kind: #article }
  #>src_phys_seifert_2012
  ^["seifert_2012"]{ title: "Stochastic thermodynamics, fluctuation theorems and molecular machines", authors: "Udo Seifert", year: 2012, venue: "Reports on Progress in Physics 75, 126001", kind: #review }
+ #>src_phys_bennett_1973
+ ^["bennett_1973"]{ title: "Logical Reversibility of Computation", authors: "Charles H. Bennett", year: 1973, venue: "IBM Journal of Research and Development 17, 525", kind: #article }
+ #>src_phys_hopfield_1974
+ ^["hopfield_1974"]{ title: "Kinetic Proofreading: A New Mechanism for Reducing Errors in Biosynthetic Processes Requiring High Specificity", authors: "J. J. Hopfield", year: 1974, venue: "Proceedings of the National Academy of Sciences 71, 4135", kind: #article }
+ #>src_phys_norton_2005
+ ^["norton_2005"]{ title: "Eaters of the lotus: Landauer's principle and the return of Maxwell's demon", authors: "John D. Norton", year: 2005, venue: "Studies in History and Philosophy of Modern Physics 36, 375", kind: #article }
+ #>src_phys_jun_2014
+ ^["jun_2014"]{ title: "High-Precision Test of Landauer's Principle in a Feedback Trap", authors: "Yonggun Jun; Momcilo Gavrilov; John Bechhoefer", year: 2014, venue: "Physical Review Letters 113, 190601", kind: #article }
+ #>src_phys_wiki_landauer
+ ^["wiki_landauer"]{ title: "Landauer's principle", publisher: "Wikipedia", as_of: "2026-10-02", kind: #web, note: "tertiary cross-check of the room-temperature bound and the list of experimental tests" }
 }
 
 ^["chemistry"]{
@@ -189,6 +261,10 @@
  ^["aue_1976"]{ title: "Two-dimensional spectroscopy. Application to nuclear magnetic resonance", authors: "W. P. Aue; E. Bartholdi; R. R. Ernst", year: 1976, venue: "Journal of Chemical Physics 64, 2229", kind: #article }
  #>src_phys_bax_summers_1986
  ^["bax_summers_1986"]{ title: "1H and 13C assignments from sensitivity-enhanced detection of heteronuclear multiple-bond connectivity by 2D multiple quantum NMR", authors: "Ad Bax; Michael F. Summers", year: 1986, venue: "Journal of the American Chemical Society 108, 2093", kind: #article }
+ #>src_phys_ernst_1992
+ ^["ernst_1992"]{ title: "Nuclear Magnetic Resonance Fourier Transform Spectroscopy (Nobel Lecture)", authors: "Richard R. Ernst", year: 1992, venue: "Angewandte Chemie International Edition in English 31, 805-823", kind: #article, note: "credits Jean Jeener with proposing two-dimensional NMR in 1971; Crossref record checked 2026-10-03" }
+ #>src_phys_rietveld_1967
+ ^["rietveld_1967"]{ title: "Line profiles of neutron powder-diffraction peaks for structure refinement", authors: "H. M. Rietveld", year: 1967, venue: "Acta Crystallographica 22, 151-152", kind: #article, note: "first publication of profile refinement; Crossref record checked 2026-10-03" }
  #>src_phys_rietveld_1969
  ^["rietveld_1969"]{ title: "A profile refinement method for nuclear and magnetic structures", authors: "H. M. Rietveld", year: 1969, venue: "Journal of Applied Crystallography 2, 65", kind: #article }
  #>src_phys_sheldrick_2015
@@ -201,6 +277,14 @@
  ^["nobel_chemistry"]{ title: "All Nobel Prizes in Chemistry", publisher: "NobelPrize.org, Nobel Prize Outreach", as_of: "2026-10-01", kind: #web }
  #>src_phys_anastas_warner_1998
  ^["anastas_warner_1998"]{ title: "Green Chemistry: Theory and Practice", authors: "Paul T. Anastas; John C. Warner", year: 1998, publisher: "Oxford University Press", kind: #monograph }
+ #>src_phys_pauling_1960
+ ^["pauling_1960"]{ title: "The Nature of the Chemical Bond, 3rd edition", authors: "Linus Pauling", year: 1960, publisher: "Cornell University Press", kind: #monograph }
+ #>src_phys_makarov_2000
+ ^["makarov_2000"]{ title: "Electrostatic Axially Harmonic Orbital Trapping: A High-Performance Technique of Mass Analysis", authors: "Alexander Makarov", year: 2000, venue: "Analytical Chemistry 72, 1156", kind: #article }
+ #>src_phys_salmeron_schloegl_2008
+ ^["salmeron_schloegl_2008"]{ title: "Ambient pressure photoelectron spectroscopy: A new tool for surface science and nanotechnology", authors: "Miquel Salmeron; Robert Schloegl", year: 2008, venue: "Surface Science Reports 63, 169", kind: #review }
+ #>src_phys_wiki_mof
+ ^["wiki_mof"]{ title: "Metal-organic framework", publisher: "Wikipedia", as_of: "2026-10-02", kind: #web, note: "tertiary cross-check of the 2025 Nobel Prize in Chemistry laureates; prefer NobelPrize.org" }
 }
 
 ^["chemical_engineering"]{
@@ -218,10 +302,18 @@
  ^["flixborough_1975"]{ title: "The Flixborough Disaster: Report of the Court of Inquiry", publisher: "Her Majesty's Stationery Office", year: 1975, kind: #report }
  #>src_phys_broughton_2005
  ^["broughton_2005"]{ title: "The Bhopal disaster and its aftermath: a review", authors: "Edward Broughton", year: 2005, venue: "Environmental Health 4, 6", kind: #review }
+ #>src_phys_wiki_bhopal
+ ^["wiki_bhopal"]{ title: "Bhopal disaster", publisher: "Wikipedia", as_of: "2026-10-02", kind: #web, note: "tertiary source for the 14 March 2023 dismissal of the curative petition for enhanced compensation; prefer the Supreme Court of India judgment" }
  #>src_phys_csb_2007
  ^["csb_2007"]{ title: "Investigation Report: Refinery Explosion and Fire, BP Texas City, Report No. 2005-04-I-TX", publisher: "US Chemical Safety and Hazard Investigation Board", year: 2007, kind: #report }
  #>src_phys_smil_2001
  ^["smil_2001"]{ title: "Enriching the Earth: Fritz Haber, Carl Bosch, and the Transformation of World Food Production", authors: "Vaclav Smil", year: 2001, publisher: "MIT Press", kind: #monograph }
+ #>src_phys_prausnitz_1999
+ ^["prausnitz_1999"]{ title: "Molecular Thermodynamics of Fluid-Phase Equilibria, 3rd edition", authors: "John M. Prausnitz; Ruediger N. Lichtenthaler; Edmundo Gomes de Azevedo", year: 1999, publisher: "Prentice Hall", kind: #textbook }
+ #>src_phys_kletz_1999
+ ^["kletz_1999"]{ title: "HAZOP and HAZAN: Identifying and Assessing Process Industry Hazards, 4th edition", authors: "Trevor Kletz", year: 1999, publisher: "Institution of Chemical Engineers", kind: #monograph }
+ #>src_phys_osha_1910_119
+ ^["osha_1910_119"]{ title: "Process safety management of highly hazardous chemicals, 29 CFR 1910.119", publisher: "US Occupational Safety and Health Administration", year: 1992, kind: #statute }
 }
 
 ^["optics"]{
@@ -241,6 +333,16 @@
  ^["belton_1992"]{ title: "Widescreen Cinema", authors: "John Belton", year: 1992, publisher: "Harvard University Press", kind: #monograph }
  #>src_phys_wiki_arri_alexa
  ^["wiki_arri_alexa"]{ title: "Arri Alexa", publisher: "Wikipedia", as_of: "2026-10-01", kind: #web, note: "tertiary cross-check of manufacturer sensor dimensions; prefer ARRI documentation" }
+ #>src_phys_rashed_1990
+ ^["rashed_1990"]{ title: "A Pioneer in Anaclastics: Ibn Sahl on Burning Mirrors and Lenses", authors: "Roshdi Rashed", year: 1990, venue: "Isis 81, 464", kind: #article }
+ #>src_phys_wiki_abbe_zahl
+ ^["wiki_abbe_zahl"]{ title: "Abbe-Zahl", publisher: "Wikipedia (German)", as_of: "2026-10-02", kind: #web, note: "tertiary source for the crown bounds of V_d 55 and 50; it cites Jenaer Glaswerk Schott und Gen., Jenaer Glas fuer die Optik, Katalog Nr. 5858, Jena, 1937" }
+ #>src_phys_wiki_retrofocus
+ ^["wiki_retrofocus"]{ title: "Angenieux retrofocus", publisher: "Wikipedia", as_of: "2026-10-02", kind: #web, note: "tertiary cross-check of the Taylor-Hobson inverted telephoto for Technicolor in the 1930s, the Zeiss Jena Flektogon of 1950, and the Angenieux patent of 1950" }
+ #>src_phys_wiki_double_gauss
+ ^["wiki_double_gauss"]{ title: "Double-Gauss lens", publisher: "Wikipedia", as_of: "2026-10-02", kind: #web, note: "tertiary cross-check of Gauss 1817, Clark 1888, Planar 1896, Lee Opic 1920, Biotar, and the Helios-44 lineage" }
+ #>src_phys_wiki_anamorphic
+ ^["wiki_anamorphic"]{ title: "Anamorphic format", publisher: "Wikipedia", as_of: "2026-10-02", kind: #web, note: "tertiary cross-check of Hypergonar, CinemaScope 2.55, SMPTE 2.35 in 1957, the 1971 revision near 2.39, and Panavision anti-mumps optics" }
 }
 
 ^["photochemistry_and_carriers"]{
@@ -268,4 +370,18 @@
  ^["abramson_2003"]{ title: "The History of Television, 1942 to 2000", authors: "Albert Abramson", year: 2003, publisher: "McFarland", kind: #monograph }
  #>src_phys_lardner_1987
  ^["lardner_1987"]{ title: "Fast Forward: Hollywood, the Japanese, and the Onslaught of the VCR", authors: "James Lardner", year: 1987, publisher: "W. W. Norton", kind: #monograph }
+ #>src_phys_enticknap_2005
+ ^["enticknap_2005"]{ title: "Moving Image Technology: From Zoetrope to Digital", authors: "Leo Enticknap", year: 2005, publisher: "Wallflower Press", kind: #monograph }
+ #>src_phys_wiki_film_gauges
+ ^["wiki_film_gauges"]{ title: "35 mm movie film; 16 mm film; Super 8 film; Super 16 mm", publisher: "Wikipedia", as_of: "2026-10-02", kind: #web, note: "tertiary cross-check of Goodwin 1887, Dickson 35 mm, the 1909 gauge agreement, Kodak 16 mm 1923, the 1949 to 1952 triacetate switch, Super 8 and Single-8 1965, and Ericson Super 16 1969" }
+ #>src_phys_wiki_helical_scan
+ ^["wiki_helical_scan"]{ title: "Helical scan", publisher: "Wikipedia", as_of: "2026-10-02", kind: #web, note: "tertiary cross-check of Masterson 1950, Schueller 1953, Sawazaki 1954, and Toshiba 1959" }
+ #>src_phys_wiki_video8
+ ^["wiki_video8"]{ title: "8 mm video format", publisher: "Wikipedia", as_of: "2026-10-02", kind: #web, note: "tertiary cross-check of the 1984 Video8 launch with Kodak Kodavision camcorders and the Sony CCD-V8 of 1985" }
+ #>src_phys_kodak_chronology
+ ^["kodak_chronology"]{ title: "History of Film", publisher: "Eastman Kodak Company", as_of: "2026-10-03", kind: #web, note: "manufacturer timeline: in 1948 Kodak announced a 35 mm triacetate safety base and began the conversion; in 1952 it records the conversion from nitrate complete" }
+ #>src_phys_wiki_nitrocellulose
+ ^["wiki_nitrocellulose"]{ title: "Nitrocellulose film", publisher: "Wikipedia", as_of: "2026-10-03", kind: #web, note: "tertiary: Kodak triacetate base in 1948, nitrate roll films ended in 1950, 35 mm nitrate motion-picture film ended in 1951" }
+ #>src_phys_wiki_t_grain
+ ^["wiki_t_grain"]{ title: "T-grain", publisher: "Wikipedia", as_of: "2026-10-02", kind: #web, note: "tertiary source for the timing of tabular-grain emulsions; prefer Kodak technical literature" }
 }

@@ -28,12 +28,16 @@
  lineage: #[ ".spw/caches/university-education/research-and-funding.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
  }
  corrections: #[
+  "fact check: the 2025 NIH indirect cap was described as enjoined; the April 2025 district court judgment vacated and permanently enjoined it on an appropriations-rider basis, and the appeal outcome is left to verify",
   "NSF budget of 10 billion dollars or more replaced by enacted FY2024 and FY2025 cells; FY2026 left as a verify cell",
   "NIH review criteria restated for the Simplified Review Framework used from 2025 due dates",
+  "the FY2024 NSF decline is measured against the FY2023 base appropriation, as NSF reports it",
   "typical F and A range of 50 to 65 percent removed as unsourced; the 26 percent administrative cap kept with its regulation",
   "60 percent overhead figure in the wonder replaced by a direction-only hypothesis"
  ]
@@ -67,11 +71,11 @@
   }
   #>institutions_research_funding_nih_cap
   ^["indirect_cap"]{
-   #:claim #!contested
-   statement: "A February 2025 NIH notice set a flat 15 percent indirect rate in place of negotiated rates; a federal court enjoined it in 2025, and its current status needs checking."
+   #:claim #!settled
+   statement: "A February 2025 NIH notice replaced negotiated indirect rates with a flat 15 percent; in April 2025 a federal court in Massachusetts vacated and permanently enjoined it, citing an appropriations rider barring such changes."
    reads: %[learn.fund.nih_indirect_cap_2025_percent]
-   source: ~"../../registries/sources/learning-and-generations.spw#src_learn_nih_indirect_2025"
-   counter: ~"../../registries/sources/learning-and-generations.spw#src_learn_mass_v_nih_2025"
+   sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_nih_indirect_2025", ~"../../registries/sources/learning-and-generations.spw#src_learn_mass_v_nih_2025" ]
+   appeal: "verify: the government appealed to the First Circuit; record the appellate outcome with its date from the docket before restating the rule as current"
    as_of: "2026-10-01"
   }
   #>institutions_research_funding_nih_dates
@@ -96,7 +100,7 @@
   #>institutions_research_funding_nsf_budget
   ^["budget"]{
    #:claim #!settled
-   statement: "NSF reports an enacted FY2024 budget of 9.06 billion dollars, 5 percent below FY2023, and 8.826 billion dollars in FY2025 appropriations."
+   statement: "NSF reports an enacted FY2024 budget of 9.06 billion dollars, 5 percent below its FY2023 base appropriation, and 8.826 billion dollars in FY2025 appropriations."
    reads: %[learn.fund.nsf_fy2024_usd_b, learn.fund.nsf_fy2025_usd_b]
    next: %[learn.fund.nsf_fy2026_usd_b]
    source: ~"../../registries/sources/learning-and-generations.spw#src_learn_nsf_budget"
@@ -153,7 +157,7 @@
  #>institutions_research_funding_irb
  ^["human_and_animal"]{
   #:claim #!settled
-  statement: "Human subjects research under Common Rule agencies needs IRB review, and PHS-funded animal work needs IACUC oversight, before the work begins."
+  statement: "Non-exempt human subjects research under Common Rule agencies needs IRB approval, and PHS-funded animal work needs IACUC approval, before the work begins."
   sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_common_rule", ~"../../registries/sources/learning-and-generations.spw#src_learn_phs_policy" ]
  }
 }

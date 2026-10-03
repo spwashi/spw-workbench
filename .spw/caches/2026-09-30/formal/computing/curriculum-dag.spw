@@ -1,0 +1,191 @@
+# Computing Curriculum DAG
+#
+# The three computing years as one prerequisite graph over week anchors: every needs edge resolves to a real week row and points to an earlier week.
+
+#>computing_curriculum_dag
+#:layer #!reference
+#:domain #!computing
+#:form #!curriculum
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Computing Curriculum DAG"
+ ~#claim: "Sixty-two week rows form one acyclic graph in which every prerequisite resolves to an earlier week anchor."
+ ~#proof: "Regenerated from the three year files on 2026-10-02 and checked by script: 89 needs edges, two roots, none pointing forward."
+ ~#door: "Find a week, follow its needs back to a root, then follow a year bridge across."
+ ~#audience: "learners planning a path, and tools that read prerequisite edges"
+ continuity: "Computing Curriculum DAG | earlier week"
+ cold_open: "Every prerequisite in this graph points to an earlier week, so nothing is ever taught on faith."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/podcasting/topical-index.spw", ".spw/caches/podcasting/curriculum-arc.spw" ]
+ evidence: #[ "a script over the node list on 2026-10-02 found 62 nodes, 89 edges, roots at weeks 1 and 27, no forward edge, and no unresolved prerequisite" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+ }
+ corrections: #[
+  "the topical index listed week numbers as episode numbers; nodes are now week anchors",
+  "only 5 of 36 raw prerequisites and 2 of 48 raw leads_to targets resolved; every edge is now a path ref the gate resolves",
+  "language-feature topics such as the Elixir pipe, Clojure HAMTs, Julia dispatch, and APL rank had no week row and are dropped here",
+  "the curriculum arc promised nothing on faith while teaching Spectre before caches and compilers before graph theory; both orders are fixed in the year files",
+  "the arc claim that compiler optimization is equivalent to abstract interpretation is narrowed to analyses as instances of it",
+  "the raw example spw select --query flag does not exist and is dropped"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"./web-and-browser-internals.spw#computing_web", ~"./systems-programming.spw#computing_systems", ~"./abstract-computation.spw#computing_abstract" ]
+ see: [ ~"../mathematics/engineering-math-bridge.spw#mathematics_bridge" ]
+}
+
+^["concepts"]{
+ primary: [ #prerequisite, #weekly_rung ]
+ transfers: [ #curriculum_memory ]
+ tensions: [ #ordering ]
+}
+
+^["stance"]{
+ #>computing_dag_thesis
+ ^["cost_and_law"]{
+  #:claim #!interpretive
+  statement: "The arc reads each abstraction through the physical cost it hides and each machine through the mathematics it obeys; that is a teaching stance, not a finding."
+ }
+ #>computing_dag_invariant
+ ^["no_forward_edges"]{
+  #:claim #!settled
+  statement: "Every needs edge in this file points to a week with a smaller number, and every target is a week anchor in one of the three year files."
+  source: ".spw/caches/2026-09-30/formal/computing/curriculum-dag.spw node list, computed by script on 2026-10-02; the cut gate rechecks resolution"
+ }
+}
+
+^["bridges"]{
+ #>computing_dag_bridge_one_two
+ ^["web_to_metal"]{
+  from: ~"./web-and-browser-internals.spw#computing_web_w51"
+  to: ~"./systems-programming.spw#computing_systems_w053"
+  climax: "a hand-written WAT module traced into the machine code the engine emits"
+ }
+ #>computing_dag_bridge_two_three
+ ^["metal_to_form"]{
+  from: ~"./systems-programming.spw#computing_systems_w103"
+  to: ~"./abstract-computation.spw#computing_abstract_w105"
+  climax: "a constant-propagation pass recast as a fixpoint over an abstract lattice"
+ }
+ #>computing_dag_bridge_graphs
+ ^["graphs_forward"]{
+  from: ~"./systems-programming.spw#computing_systems_w092"
+  to: [ ~"./systems-programming.spw#computing_systems_w093", ~"./abstract-computation.spw#computing_abstract_w139", ~"./abstract-computation.spw#computing_abstract_w142" ]
+  climax: "the graph primer serves the compilers first and returns at depth in year three"
+ }
+}
+
+^["dag"]{
+ ^["year_one"]{
+  ^["w01"]{ node: ~"./web-and-browser-internals.spw#computing_web_w01", root: "no prerequisite inside the curriculum" }
+  ^["w03"]{ node: ~"./web-and-browser-internals.spw#computing_web_w03", needs: [ ~"./web-and-browser-internals.spw#computing_web_w01" ] }
+  ^["w05"]{ node: ~"./web-and-browser-internals.spw#computing_web_w05", needs: [ ~"./web-and-browser-internals.spw#computing_web_w01", ~"./web-and-browser-internals.spw#computing_web_w03" ] }
+  ^["w07"]{ node: ~"./web-and-browser-internals.spw#computing_web_w07", needs: [ ~"./web-and-browser-internals.spw#computing_web_w05" ] }
+  ^["w09"]{ node: ~"./web-and-browser-internals.spw#computing_web_w09", needs: [ ~"./web-and-browser-internals.spw#computing_web_w05" ] }
+  ^["w11"]{ node: ~"./web-and-browser-internals.spw#computing_web_w11", needs: [ ~"./web-and-browser-internals.spw#computing_web_w09" ] }
+  ^["w14"]{ node: ~"./web-and-browser-internals.spw#computing_web_w14", needs: [ ~"./web-and-browser-internals.spw#computing_web_w01" ] }
+  ^["w17"]{ node: ~"./web-and-browser-internals.spw#computing_web_w17", needs: [ ~"./web-and-browser-internals.spw#computing_web_w14" ] }
+  ^["w20"]{ node: ~"./web-and-browser-internals.spw#computing_web_w20", needs: [ ~"./web-and-browser-internals.spw#computing_web_w17" ] }
+  ^["w23"]{ node: ~"./web-and-browser-internals.spw#computing_web_w23", needs: [ ~"./web-and-browser-internals.spw#computing_web_w14" ] }
+  ^["w25"]{ node: ~"./web-and-browser-internals.spw#computing_web_w25", needs: [ ~"./web-and-browser-internals.spw#computing_web_w01", ~"./web-and-browser-internals.spw#computing_web_w14" ] }
+  ^["w27"]{ node: ~"./web-and-browser-internals.spw#computing_web_w27", root: "no prerequisite inside the curriculum" }
+  ^["w29"]{ node: ~"./web-and-browser-internals.spw#computing_web_w29", needs: [ ~"./web-and-browser-internals.spw#computing_web_w27" ] }
+  ^["w31"]{ node: ~"./web-and-browser-internals.spw#computing_web_w31", needs: [ ~"./web-and-browser-internals.spw#computing_web_w27", ~"./web-and-browser-internals.spw#computing_web_w29" ] }
+  ^["w34"]{ node: ~"./web-and-browser-internals.spw#computing_web_w34", needs: [ ~"./web-and-browser-internals.spw#computing_web_w29", ~"./web-and-browser-internals.spw#computing_web_w31" ] }
+  ^["w37"]{ node: ~"./web-and-browser-internals.spw#computing_web_w37", needs: [ ~"./web-and-browser-internals.spw#computing_web_w25", ~"./web-and-browser-internals.spw#computing_web_w31" ] }
+  ^["w40"]{ node: ~"./web-and-browser-internals.spw#computing_web_w40", needs: [ ~"./web-and-browser-internals.spw#computing_web_w14", ~"./web-and-browser-internals.spw#computing_web_w20" ] }
+  ^["w43"]{ node: ~"./web-and-browser-internals.spw#computing_web_w43", needs: [ ~"./web-and-browser-internals.spw#computing_web_w25", ~"./web-and-browser-internals.spw#computing_web_w27" ] }
+  ^["w45"]{ node: ~"./web-and-browser-internals.spw#computing_web_w45", needs: [ ~"./web-and-browser-internals.spw#computing_web_w43" ] }
+  ^["w48"]{ node: ~"./web-and-browser-internals.spw#computing_web_w48", needs: [ ~"./web-and-browser-internals.spw#computing_web_w31", ~"./web-and-browser-internals.spw#computing_web_w43" ] }
+  ^["w51"]{ node: ~"./web-and-browser-internals.spw#computing_web_w51", needs: [ ~"./web-and-browser-internals.spw#computing_web_w40" ] }
+ }
+ ^["year_two"]{
+  ^["s053"]{ node: ~"./systems-programming.spw#computing_systems_w053", needs: [ ~"./web-and-browser-internals.spw#computing_web_w51" ] }
+  ^["s055"]{ node: ~"./systems-programming.spw#computing_systems_w055", needs: [ ~"./systems-programming.spw#computing_systems_w053" ] }
+  ^["s058"]{ node: ~"./systems-programming.spw#computing_systems_w058", needs: [ ~"./systems-programming.spw#computing_systems_w055" ] }
+  ^["s061"]{ node: ~"./systems-programming.spw#computing_systems_w061", needs: [ ~"./systems-programming.spw#computing_systems_w053", ~"./systems-programming.spw#computing_systems_w058" ] }
+  ^["s063"]{ node: ~"./systems-programming.spw#computing_systems_w063", needs: [ ~"./systems-programming.spw#computing_systems_w053", ~"./systems-programming.spw#computing_systems_w061" ] }
+  ^["s064"]{ node: ~"./systems-programming.spw#computing_systems_w064", needs: [ ~"./systems-programming.spw#computing_systems_w061" ] }
+  ^["s066"]{ node: ~"./systems-programming.spw#computing_systems_w066", needs: [ ~"./systems-programming.spw#computing_systems_w058", ~"./systems-programming.spw#computing_systems_w061" ] }
+  ^["s069"]{ node: ~"./systems-programming.spw#computing_systems_w069", needs: [ ~"./systems-programming.spw#computing_systems_w058", ~"./systems-programming.spw#computing_systems_w066", ~"./web-and-browser-internals.spw#computing_web_w23" ] }
+  ^["s072"]{ node: ~"./systems-programming.spw#computing_systems_w072", needs: [ ~"./systems-programming.spw#computing_systems_w055", ~"./systems-programming.spw#computing_systems_w066" ] }
+  ^["s075"]{ node: ~"./systems-programming.spw#computing_systems_w075", needs: [ ~"./systems-programming.spw#computing_systems_w072" ] }
+  ^["s077"]{ node: ~"./systems-programming.spw#computing_systems_w077", needs: [ ~"./systems-programming.spw#computing_systems_w072", ~"./web-and-browser-internals.spw#computing_web_w25", ~"./web-and-browser-internals.spw#computing_web_w43" ] }
+  ^["s079"]{ node: ~"./systems-programming.spw#computing_systems_w079", needs: [ ~"./systems-programming.spw#computing_systems_w058", ~"./systems-programming.spw#computing_systems_w069" ] }
+  ^["s083"]{ node: ~"./systems-programming.spw#computing_systems_w083", needs: [ ~"./systems-programming.spw#computing_systems_w064", ~"./systems-programming.spw#computing_systems_w079" ] }
+  ^["s086"]{ node: ~"./systems-programming.spw#computing_systems_w086", needs: [ ~"./systems-programming.spw#computing_systems_w069" ] }
+  ^["s089"]{ node: ~"./systems-programming.spw#computing_systems_w089", needs: [ ~"./systems-programming.spw#computing_systems_w064" ] }
+  ^["s092"]{ node: ~"./systems-programming.spw#computing_systems_w092", needs: [ ~"./web-and-browser-internals.spw#computing_web_w14" ] }
+  ^["s093"]{ node: ~"./systems-programming.spw#computing_systems_w093", needs: [ ~"./web-and-browser-internals.spw#computing_web_w14", ~"./systems-programming.spw#computing_systems_w092" ] }
+  ^["s095"]{ node: ~"./systems-programming.spw#computing_systems_w095", needs: [ ~"./systems-programming.spw#computing_systems_w093" ] }
+  ^["s098"]{ node: ~"./systems-programming.spw#computing_systems_w098", needs: [ ~"./systems-programming.spw#computing_systems_w055", ~"./systems-programming.spw#computing_systems_w092", ~"./systems-programming.spw#computing_systems_w093" ] }
+  ^["s101"]{ node: ~"./systems-programming.spw#computing_systems_w101", needs: [ ~"./systems-programming.spw#computing_systems_w055", ~"./systems-programming.spw#computing_systems_w095" ] }
+  ^["s103"]{ node: ~"./systems-programming.spw#computing_systems_w103", needs: [ ~"./systems-programming.spw#computing_systems_w095" ] }
+ }
+ ^["year_three"]{
+  ^["a105"]{ node: ~"./abstract-computation.spw#computing_abstract_w105", needs: [ ~"./systems-programming.spw#computing_systems_w103" ] }
+  ^["a108"]{ node: ~"./abstract-computation.spw#computing_abstract_w108", needs: [ ~"./abstract-computation.spw#computing_abstract_w105" ] }
+  ^["a111"]{ node: ~"./abstract-computation.spw#computing_abstract_w111", needs: [ ~"./abstract-computation.spw#computing_abstract_w108" ] }
+  ^["a114"]{ node: ~"./abstract-computation.spw#computing_abstract_w114", needs: [ ~"./abstract-computation.spw#computing_abstract_w108" ] }
+  ^["a116"]{ node: ~"./abstract-computation.spw#computing_abstract_w116", needs: [ ~"./abstract-computation.spw#computing_abstract_w111", ~"./abstract-computation.spw#computing_abstract_w114" ] }
+  ^["a118"]{ node: ~"./abstract-computation.spw#computing_abstract_w118", needs: [ ~"./abstract-computation.spw#computing_abstract_w108" ] }
+  ^["a121"]{ node: ~"./abstract-computation.spw#computing_abstract_w121", needs: [ ~"./abstract-computation.spw#computing_abstract_w118" ] }
+  ^["a124"]{ node: ~"./abstract-computation.spw#computing_abstract_w124", needs: [ ~"./abstract-computation.spw#computing_abstract_w121" ] }
+  ^["a126"]{ node: ~"./abstract-computation.spw#computing_abstract_w126", needs: [ ~"./abstract-computation.spw#computing_abstract_w111", ~"./systems-programming.spw#computing_systems_w089" ] }
+  ^["a129"]{ node: ~"./abstract-computation.spw#computing_abstract_w129", needs: [ ~"./abstract-computation.spw#computing_abstract_w111", ~"./abstract-computation.spw#computing_abstract_w116" ] }
+  ^["a131"]{ node: ~"./abstract-computation.spw#computing_abstract_w131", needs: [ ~"./systems-programming.spw#computing_systems_w089", ~"./abstract-computation.spw#computing_abstract_w126" ] }
+  ^["a134"]{ node: ~"./abstract-computation.spw#computing_abstract_w134", needs: [ ~"./abstract-computation.spw#computing_abstract_w131" ] }
+  ^["a137"]{ node: ~"./abstract-computation.spw#computing_abstract_w137", needs: [ ~"./abstract-computation.spw#computing_abstract_w134" ] }
+  ^["a139"]{ node: ~"./abstract-computation.spw#computing_abstract_w139", needs: [ ~"./systems-programming.spw#computing_systems_w092" ] }
+  ^["a142"]{ node: ~"./abstract-computation.spw#computing_abstract_w142", needs: [ ~"./systems-programming.spw#computing_systems_w092" ] }
+  ^["a144"]{ node: ~"./abstract-computation.spw#computing_abstract_w144", needs: [ ~"./abstract-computation.spw#computing_abstract_w105" ] }
+  ^["a147"]{ node: ~"./abstract-computation.spw#computing_abstract_w147", needs: [ ~"./abstract-computation.spw#computing_abstract_w144" ] }
+  ^["a150"]{ node: ~"./abstract-computation.spw#computing_abstract_w150", needs: [ ~"./web-and-browser-internals.spw#computing_web_w29", ~"./abstract-computation.spw#computing_abstract_w147" ] }
+  ^["a153"]{ node: ~"./abstract-computation.spw#computing_abstract_w153", needs: [ ~"./abstract-computation.spw#computing_abstract_w147" ] }
+  ^["a155"]{ node: ~"./abstract-computation.spw#computing_abstract_w155", needs: [ ~"./systems-programming.spw#computing_systems_w055", ~"./systems-programming.spw#computing_systems_w098", ~"./abstract-computation.spw#computing_abstract_w116" ] }
+ }
+}
+
+^["shape"]{
+ roots: [ ~"./web-and-browser-internals.spw#computing_web_w01", ~"./web-and-browser-internals.spw#computing_web_w27" ]
+ leaves: "20 weeks have no dependents, including Flexbox and Grid at week 7, Spectre at week 63, and the zero-knowledge and quantum weeks"
+ counts: "62 nodes and 89 needs edges, recounted by script on 2026-10-02"
+}
+
+^["try"]{
+ #>computing_dag_try_trace
+ ^["trace_a_week"]{
+  materials: [ "this file", "paper" ]
+  steps: << "pick one year-three week" ; "write its needs, then their needs, until you reach a root" ; "count the weeks on the longest chain" ; "mark which chain crosses each year bridge" ; "find one week you would add as a prerequisite and say why" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./curriculum-dag.spw#computing_dag_invariant"
+ }
+}
+
+#>computing_dag_layout_leaf_q
+?["Should the layout weeks feed anything later in the curriculum?"]{
+ #:depth #!educational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Layout weeks stay leaves because their constraint solving is never revisited; linking Grid track sizing to the optimization leaf would give year one a path into year three."
+ !probe{ "add one edge from week 7 to a year-three or optimization node and recount leaves and longest chains" =id[p_formal_dag_layout_leaf] =kind[census] }
+ $%[graph.in_degree, graph.out_degree]
+ ~"./curriculum-dag.spw#computing_dag_invariant" ~#neighbor(nearest)
+}

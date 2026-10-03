@@ -1,0 +1,170 @@
+# Host Parity Matrix
+#
+# VS Code, JetBrains, and Neovim compared on the four cache-layer questions and the few behaviors that change what a reader can trust, with unverified cells left empty.
+
+#>editor_hosts_parity
+#:layer #!reference
+#:domain #!editor_hosts
+#:form #!comparison
+#:level #!practitioner
+#:review #!sourced
+#:valence #!bone
+#:era #!current
+
+^"emit"{
+ ~#title: "Host Parity Matrix"
+ ~#claim: "Hosts reach parity when they answer the same four questions about cache planes honestly; on the session plane VS Code and JetBrains report it absent while Neovim shows what the server sends."
+ ~#proof: "Every filled cell cites a host file and line at commit 1aa1dc23; empty cells were not verified."
+ ~#door: "Read the four plane rows first, then the trust rows, then the empty cells as gaps."
+ ~#audience: "maintainers deciding what one host owes another"
+ continuity: "Host Parity Matrix | same four questions"
+ cold_open: "Hosts match when they answer the same four questions honestly, and each editor here differs on at least one of them."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ rule: "a cell is filled only after its host code was read at 1aa1dc23; an empty cell says unverified and is a gap, not a no"
+}
+
+^["edges"]{
+ needs: [ ~"./lsp-surface.spw#editor_hosts_lsp", ~"./vscode-lsp-and-cache.spw#editor_hosts_vscode_lsp_cache", ~"./jetbrains-instruments.spw#editor_hosts_jetbrains_instruments" ]
+ feeds: [ ~"./feature-radar.spw#editor_hosts_radar" ]
+ grounds: [ ~"../../registries/quantities/spw-hosts-and-history.spw#q_hosts_lsp" ]
+}
+
+^["concepts"]{
+ primary: [ #parity_of_questions, #cache_plane, #live_buffer ]
+ transfers: [ #saved_file_truth ]
+ tensions: [ #editor_chrome ]
+}
+
+^["rule"]{
+ #>editor_hosts_parity_questions
+ ^["questions_not_chrome"]{
+  #:claim #!settled
+  statement: "The seed defines parity as the same four cache questions answered by every host, each plane named even when absent, and canon refuses chrome that copies another host."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_seed_cache_layer"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_resume_note", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_caches_index" ]
+  cites: [ "packages/spw-seed/src/ir/cache-layer.ts:1-6", ".spw/caches/resume/2026-09-30-direction.spw:75", ".spw/caches/index.spw:133" ]
+  provenance_label: "a-canon for the seed and shelf index; owner hold for the resume note"
+ }
+}
+
+^["planes"]{
+ #>editor_hosts_parity_editor_plane
+ ^["editor_probe_cache"]{
+  #:claim #!settled
+  statement: "Only VS Code keeps an editor probe cache, for Inspect Form; JetBrains and Neovim keep none and say so."
+  vscode: "present with snapshot stats; extensions/vscode-spw/src/instruments/commands.ts:46-52"
+  jetbrains: "absent; no client cache class exists in the plugin"
+  neovim: "absent; probes print client cache none, extensions/neovim-spw/lua/spw/instruments.lua:42"
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_probe_cache"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_nvim_instruments" ]
+ }
+ #>editor_hosts_parity_session_plane
+ ^["lsp_session_reflection"]{
+  #:claim #!settled
+  statement: "The server reports its session plane present, Neovim prints it as sent, VS Code drops it and prints absent, and JetBrains never asks."
+  server: "assembleCacheLayers with the session plane filled; packages/spw-lsp/src/handlers/cache-reflection.ts:164-171"
+  vscode: "absent by fallback; extensions/vscode-spw/src/lsp/custom-requests.ts:377-387"
+  jetbrains: "absent; the native client sends no spw request"
+  neovim: "present as sent; extensions/neovim-spw/lua/spw/instruments.lua:116-122"
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_cache_reflection"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_custom_requests", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_nvim_instruments" ]
+ }
+ #>editor_hosts_parity_runtime_plane
+ ^["runtime_cache"]{
+  #:claim #!settled
+  statement: "Only the JetBrains cache action fills the runtime plane, because it runs the CLI; VS Code and Neovim name it absent and point to spw inspect cache."
+  vscode: "absent with next spw inspect cache; instruments/commands.ts:42"
+  jetbrains: "present from the CLI hot session; SpwCliInvocation.kt:39-43"
+  neovim: "absent with next spw inspect cache, as the server default sends it"
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_instruments"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_seed_cache_layer" ]
+ }
+ #>editor_hosts_parity_corpus_plane
+ ^["corpus_memo"]{
+  #:claim #!settled
+  statement: "No host fills the corpus memo plane; every card names it absent with next spw census --json."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_seed_cache_layer"
+  cites: "packages/spw-seed/src/ir/cache-layer.ts:51-55"
+ }
+}
+
+^["trust_rows"]{
+ ^["buffer_truth"]{
+  vscode: "live buffer through the server, unsaved text included"
+  jetbrains: "saved file through the CLI; a dirty buffer is refused"
+  neovim: "live buffer through the server, stamped with changedtick"
+  cites: [ "instruments/commands.ts:101,129", "SpwInstrumentActions.kt:26-33", "instruments.lua:31-48" ]
+ }
+ ^["corpus_plan"]{
+  vscode: "spw refactor plan, --json, no --write"
+  jetbrains: "spw refactor plan, --json, no --write"
+  neovim: "spw refactor plan through the CLI, read-only scratch buffer"
+  cites: [ "instruments/commands.ts:197-234", "SpwCliInvocation.kt:45-52", "instruments.lua:146-200" ]
+ }
+ ^["caret_rename"]{
+  vscode: "editor.action.rename to the server"
+  jetbrains: "platform rename; native LSP rename is listed from 2026.1, so older builds are unverified"
+  neovim: "vim.lsp.buf.rename to the server"
+  cites: [ "instruments/commands.ts:192-195", "SpwInstrumentActions.kt:75-78", "extensions/neovim-spw/lua/spw/commands.lua:46" ]
+ }
+ ^["server_launch"]{
+  vscode: "bundled server only"
+  jetbrains: "configured workDir or command, else project, else mounted workbench, then npm run --silent lsp"
+  neovim: "a configured command, else project, else mounted workbench, else a source checkout through npx tsx"
+  cites: [ "extensions/vscode-spw/src/extension.ts:114-125", "SpwLspLauncher.kt:18-41", "extensions/neovim-spw/lua/spw/lsp.lua:51-71" ]
+ }
+ ^["comment_toggle"]{
+  vscode: "double slash"
+  jetbrains: "hash and space"
+  neovim: "hash and space"
+  cites: [ "extensions/vscode-spw/language-configuration.json:3", "SpwCommenter.kt:6", "extensions/neovim-spw/ftplugin/spw.vim:5" ]
+ }
+ ^["spw_methods_called"]{
+  vscode: "fourteen"
+  jetbrains: "none"
+  neovim: "eight"
+  reads: %[hosts.vscode.custom_methods_called]
+  cites: "see the caller rows in the language server surface"
+ }
+ ^["folding"]{
+  vscode: "server folding ranges"
+  jetbrains: "Kotlin fold builder"
+  neovim: "foldmethod syntax from the vim syntax file"
+  cites: [ "packages/spw-lsp/src/stdio-server.ts:226", "SpwFoldingBuilder.kt:12-72", "extensions/neovim-spw/ftplugin/spw.vim:11" ]
+ }
+ ^["semantic_tokens"]{
+  vscode: "full tokens mapped through semanticTokenScopes"
+  jetbrains: "full tokens from 2024.2.2 with platform default colors; mapping unverified"
+  neovim: ""
+  gap: "the Neovim cell is empty until a session confirms whether the built-in client paints spw-lsp tokens"
+ }
+}
+
+^["gaps"]{
+ neovim_rendering: "Neovim semantic tokens, inlay hints, and code lens display are unverified and stay empty"
+ obsidian: "no Obsidian column: the plan is dormant and extensions/obsidian-spw does not exist"
+ jetbrains_old_builds: "rename, links, inlay hints, and folding from the server on builds before their listed JetBrains versions are unverified"
+ abbreviations: "instruments/commands.ts is extensions/vscode-spw/src/instruments/commands.ts; Kotlin files are under extensions/intellij-spw/src/main/kotlin/com/spwashi/spw; Lua files are under extensions/neovim-spw/lua/spw"
+}
+
+#>editor_hosts_parity_q
+?["Would one shared cache card renderer end the plane disagreements?"]{
+ #:depth #!computational ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "If every host printed the seed card formatter output as sent, the session plane rows should agree across the three editors."
+ !probe{ "render the server reflection through formatCacheLayerLines in each host on a branch and compare the cards for one open file" =id[p_hosts_parity_one_card] =kind[build] }
+ $%[hosts.vscode.custom_methods_called, hosts.lsp.custom_method_count]
+ ~"./host-parity-matrix.spw#editor_hosts_parity_session_plane" ~#neighbor(nearest)
+}

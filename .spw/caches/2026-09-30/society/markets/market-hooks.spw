@@ -1,0 +1,152 @@
+# Market Hooks
+#
+# A registry of hooks: when a market or policy signal moves, which anchor in which class must be rechecked, and which cell, if any, changes with it.
+
+#>markets_hooks
+#:layer #!pragmatics
+#:domain #!markets
+#:form #!registry
+#:level #!advanced
+#:review #!spot_checked
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Market Hooks"
+ ~#claim: "A moving signal should trigger a recheck of named anchors in other classes, so each hook pairs the signal anchor with the anchor and cell it changes."
+ ~#proof: "Hooks point into authorship, live platforms, film, broadcast, season, and management surfaces by anchor; each signal has a probe or a dated source."
+ ~#door: "When a release lands, find its signal here, follow the hook, and recheck the target before anything else quotes it."
+ ~#audience: "maintainers of this cut and analysts tracking how one number moves another"
+ continuity: "Market Hooks | signal anchor"
+ cold_open: "When a market number moves, follow its hook from the signal anchor to the claim it changes."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ needs: [ ~"./market-probe-battery.spw#markets_probe_battery" ]
+ feeds: [ ~"../../making/authorship/platforms-and-business-models.spw#authorship_platforms", ~"../platforms/monetization-receipt.spw#live_platforms_monetization" ]
+}
+
+^["concepts"]{
+ primary: [ #dated_receipt, #dependency ]
+ transfers: [ #season_cadence ]
+ tensions: [ #platform_dependence ]
+}
+
+#>markets_hooks_rule
+^["rule"]{
+ #:claim #!interpretive
+ statement: "A hook is directional and conservative: a moved signal reopens the target for checking, but never rewrites the target until its own source is read."
+ grammar: "signal names the anchor that moves; target names the anchor to recheck; cell names the handle that may change"
+}
+
+^["hooks"]{
+ ^["media"]{
+  #>markets_hook_podcast_share
+  ^["podcast_share"]{
+   signal: ~"./media-market-receipts.spw#markets_receipts_podcast"
+   target: ~"../../making/broadcast/broadcast-cadence.spw#broadcast_cadence"
+   cell: %[econ.podcast.edison_latest_youtube_pct]
+   when: "a new Edison wave changes the service most listeners name"
+   check: "whether the cadence surface assumes audio-only release"
+  }
+  #>markets_hook_tv_share
+  ^["tv_share"]{
+   signal: ~"./media-market-receipts.spw#markets_receipts_tv"
+   target: ~"../../making/streaming/index.spw#streaming_index"
+   cell: %[econ.tv.gauge_latest_youtube_pct]
+   when: "the Gauge shows a platform share moving for three months running"
+   check: "whether the streamers bench still names the right first platform"
+  }
+  #>markets_hook_windows
+  ^["theatrical_window"]{
+   signal: ~"./media-market-receipts.spw#markets_receipts_windows"
+   target: ~"../../making/film/production-state-machine.spw#film_production_release"
+   cell: %[econ.media.window_wb_regal_2022_days]
+   when: "a studio and exhibitor announce a new exclusive window"
+   check: "the release state text on how distributors set windows"
+  }
+  #>markets_hook_measurement
+  ^["podcast_measurement"]{
+   signal: ~"./reading-market-reports.spw#markets_reading_listeners_vs_listening"
+   target: ~"../../making/broadcast/serial-2014-case.spw#broadcast_serial_case_iab"
+   when: "IAB Tech Lab revises its podcast measurement guidelines"
+   check: "the version and date cited in the Serial case"
+  }
+ }
+ ^["creator_money"]{
+  #>markets_hook_kdp
+  ^["kdp_royalty"]{
+   signal: ~"../../making/authorship/kindle-unlimited-case.spw#authorship_kindle_unlimited_pages"
+   target: ~"../../making/authorship/platforms-and-business-models.spw#authorship_platforms_royalty"
+   when: "Amazon announces a monthly fund, a per-page rate, or a royalty tier change"
+   check: "the royalty and page-rate cells in the creators registry"
+  }
+  #>markets_hook_live_rate
+  ^["live_gift_rate"]{
+   signal: ~"./singles-day-live-commerce.spw#markets_singles_day_regulation"
+   target: ~"../platforms/monetization-receipt.spw#live_platforms_monetization_rate"
+   when: "a regulator or the platform changes live gifting or selling rules"
+   check: "the conversion and age cells and their as_of"
+  }
+ }
+ ^["policy"]{
+  #>markets_hook_parity
+  ^["rate_parity"]{
+   signal: ~"../management/revenue-management.spw#management_revenue_parity_dma"
+   target: ~"../management/revenue-management.spw#management_revenue_channels"
+   cell: %[econ.hotel.ota_commission_pct]
+   when: "the Commission issues a DMA decision on a travel gatekeeper"
+   check: "channel and commission text, and whether a sourced commission now exists"
+  }
+  #>markets_hook_food_code
+  ^["food_code_edition"]{
+   signal: ~"../management/food-and-beverage-systems.spw#management_fb_cooling"
+   target: ~"../management/food-and-beverage-systems.spw#management_fb_holding"
+   cell: %[econ.food.cool_total_h]
+   when: "a regulatory authority adopts the 2026 FDA Food Code"
+   check: "every holding and cooling cell against the adopted text"
+  }
+  #>markets_hook_tip_wage
+  ^["tip_wage"]{
+   signal: ~"../management/leadership-and-ethics.spw#management_leadership_gap_tips"
+   target: ~"../management/leadership-and-ethics.spw#management_leadership_turnover"
+   cell: %[econ.hotel.flsa_tipped_cash_wage_usd]
+   when: "federal or state tipped wage rules change"
+   check: "the federal floor cell and the state gap list"
+  }
+ }
+ ^["season"]{
+  #>markets_hook_retail_quarter
+  ^["retail_quarter"]{
+   signal: ~"./singles-day-live-commerce.spw#markets_singles_day_scale"
+   target: ~"../../season/calendar-2026q4.spw#season_cal_retail_weekend"
+   when: "a November sales festival reports or withholds its totals"
+   check: "the retail weekend note and its typical status"
+  }
+ }
+}
+
+#>markets_hooks_cluster_q
+?["Do hooks fire together in the weeks around year-end releases?"]{
+ #:depth #!computational ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "Hook triggers cluster in January and April, when annual box office, print, and advertising totals land, more than in other months."
+ !probe{ "log each hook trigger date for one year and count triggers by month" =id[p_econ_hooks_cluster] =kind[census] }
+ $%[graph.out_degree]
+ ~"./market-hooks.spw#markets_hooks_rule" ~#neighbor(nearest)
+}

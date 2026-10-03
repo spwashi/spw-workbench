@@ -7,7 +7,7 @@
 #:domain #!broadcast
 #:form #!dossier
 #:level #!intro
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 #:era #!contemporary
 
@@ -24,12 +24,31 @@
 ^"provenance"{
  as_of: "2026-09-30"
  generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
  ^["receipts"]{
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   pending: "unresolved refs to planned files of other packages: spw/history/curriculum-plans.spw#workbench_history_curriculum_plans"
+  }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   pending: "unresolved refs to planned files of other packages: spw/history/curriculum-plans.spw#workbench_history_curriculum_plans"
+  }
  }
+ checked: "the IAB version table re-read on 2026-10-02, including version 2.3 of September 2026"
+ corrections: #[
+  "the Peabody citation is paraphrased from its own words on innovations of form",
+  "later IAB guideline versions are dated from the version table instead of left as verify",
+  "fact check 2026-10-02: the r3 gate receipt said pass while refs to planned files of other packages failed; it now records partial and names them"
+ ]
 }
 
 ^["edges"]{
@@ -60,7 +79,7 @@
  #>broadcast_serial_case_peabody
  ^["peabody"]{
   #:claim #!settled
-  statement: "Serial won a Peabody Award in April 2015, cited for innovative telling of a long-form nonfiction story."
+  statement: "Serial won a Peabody Award in April 2015; the citation praised its innovations of form and said it rocketed podcasting into the cultural mainstream."
   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_serial"
  }
  #>broadcast_serial_case_downloads
@@ -81,7 +100,7 @@
   #:claim #!settled
   statement: "IAB Tech Lab published podcast measurement guidelines in September 2016 and a version 2.0 in December 2017, giving publishers a shared way to count downloads from server logs."
   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_iab_podcast"
-  later_versions: "the guidelines page lists later versions; their dates are verify"
+  later_versions: "version 2.1 in February 2021, 2.2 in May 2024, and 2.3 in September 2026, per the version table read on 2026-10-02"
  }
  #>broadcast_serial_case_comparability
  ^["comparability"]{

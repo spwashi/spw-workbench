@@ -1,0 +1,194 @@
+# Macros and Homoiconicity
+#
+# Macro systems compared by hygiene, phase, and quoting: Common Lisp, Scheme, Racket, Clojure, Elixir, Julia, Rust, and the C preprocessor, with Spw read against them.
+
+#>lang_design_macros
+#:layer #!reference
+#:domain #!lang_design
+#:form #!comparison
+#:level #!advanced
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Macros and Homoiconicity"
+ ~#claim: "Macro systems split on hygiene: Scheme, Racket, Elixir, and Julia keep macro names apart by default, while Common Lisp and Clojure leave capture to the author."
+ ~#proof: "Each row cites the language reference or the paper that defined its mechanism; Spw rows cite the seed at commit 1aa1dc23."
+ ~#door: "Read the hygiene column across the matrix, then the two Spw rows."
+ ~#audience: "language designers and Spw readers who know one Lisp or Rust"
+ continuity: "Macros and Homoiconicity | leave capture to the author"
+ cold_open: "Some macro systems keep names apart for you, and Common Lisp and Clojure leave capture to the author."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/language-features/structural-and-homoiconic.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the raw file called Common Lisp and Clojure macros hygienic; both are unhygienic, and Clojure avoids most accidental capture through syntax-quote and auto-gensym",
+  "the raw claims of four pointer updates per vector insert and two-millisecond re-evaluation had no source and are dropped",
+  "structural editors keep brackets balanced; the raw claim that they make syntax errors impossible overstated that",
+  "persistent data structures and live REPL claims are not carried; this surface covers macros only"
+ ]
+}
+
+^["edges"]{
+ see: [ ~"./feature-lineage.spw#lang_design_lineage", ~"./spw-position-matrix.spw#lang_design_spw_position" ]
+}
+
+^["concepts"]{
+ primary: [ #macro_hygiene, #homoiconicity, #quasiquote ]
+ transfers: [ #syntax_object ]
+ tensions: [ #variable_capture ]
+}
+
+^["matrix"]{
+ ^["legend"]{
+  columns: #[ hygiene, phase, quoting ]
+  as_of: "language references read 2026-10-02"
+ }
+ #>lang_design_macros_row_cl
+ ^["common_lisp"]{
+  hygiene: "none; authors avoid capture with gensym and package-qualified symbols"
+  phase: "macroexpansion before evaluation or compilation"
+  quoting: "backquote with comma and comma-at over lists"
+ }
+ #>lang_design_macros_row_scheme
+ ^["scheme"]{
+  hygiene: "syntax-rules is hygienic and referentially transparent"
+  phase: "expansion before evaluation"
+  quoting: "pattern and template, not list surgery"
+ }
+ #>lang_design_macros_row_racket
+ ^["racket"]{
+  hygiene: "hygienic by default; syntax objects carry scope sets"
+  phase: "explicit phases, with code for syntax time kept apart"
+  quoting: "syntax objects, quasisyntax, and patterns"
+ }
+ #>lang_design_macros_row_clojure
+ ^["clojure"]{
+  hygiene: "none in principle; syntax-quote qualifies symbols and x# makes a fresh name"
+  phase: "macroexpansion at compile time"
+  quoting: "syntax-quote with unquote and unquote-splicing"
+ }
+ #>lang_design_macros_row_elixir
+ ^["elixir"]{
+  hygiene: "variables are hygienic; var! reaches into the caller on purpose"
+  phase: "compile time over the quoted AST"
+  quoting: "quote and unquote over three-element tuples"
+ }
+ #>lang_design_macros_row_julia
+ ^["julia"]{
+  hygiene: "locals renamed by gensym; esc pastes caller code untouched"
+  phase: "parse time, before the code is compiled"
+  quoting: "Expr objects built by quote blocks and interpolation"
+ }
+ #>lang_design_macros_row_rust
+ ^["rust_macro_rules"]{
+  hygiene: "mixed-site: locals and labels resolve at the definition, other names at the call"
+  phase: "expansion during compilation over token trees"
+  quoting: "matchers and transcribers with fragment specifiers"
+ }
+ #>lang_design_macros_row_cpp
+ ^["c_preprocessor"]{
+  hygiene: "none; text substitution on tokens"
+  phase: "before compilation proper"
+  quoting: "no quoting; stringizing and token pasting"
+ }
+ #>lang_design_macros_row_spw
+ ^["spw_desugar"]{
+  hygiene: "none; regex rewrites on source text"
+  phase: "runtime pipeline only; the LSP and CLI parse without it"
+  quoting: "none; guillemets become backticks before parsing"
+  status: #implemented
+ }
+}
+
+^["claims"]{
+ #>lang_design_macros_cl
+ ^["common_lisp_capture"]{
+  #:claim #!settled
+  statement: "Common Lisp defmacro does no renaming, so a macro can capture or shadow a caller variable unless its author introduces fresh symbols with gensym."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_clhs_1996"
+ }
+ #>lang_design_macros_hygiene_origin
+ ^["hygiene_origin"]{
+  #:claim #!settled
+  statement: "Kohlbecker, Friedman, Felleisen, and Duba defined hygienic macro expansion in 1986, and Clinger and Rees gave a referentially transparent algorithm in 1991."
+  sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_kohlbecker_1986", ~"../../registries/sources/spw-design-studies.spw#src_lab_clinger_rees_1991" ]
+  ~#say(hygiene keeps macro names apart)
+ }
+ #>lang_design_macros_scopes
+ ^["sets_of_scopes"]{
+  #:claim #!settled
+  statement: "Racket represents binding as sets of scopes on syntax objects, so an identifier introduced by a macro refers to what it meant where the macro was written."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_flatt_2016"
+ }
+ #>lang_design_macros_clojure
+ ^["clojure_gensym"]{
+  #:claim #!settled
+  statement: "Clojure syntax-quote resolves a symbol to a namespace-qualified one, and a symbol ending in # becomes a generated name shared within that syntax-quote."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_clojure_reader"
+  as_of: "Clojure reference read 2026-10-02"
+  ^["limits"]{
+   holds: "symbols written inside syntax-quote"
+   fails: "an author who writes an unquoted quote of a bare symbol can still capture on purpose"
+  }
+ }
+ #>lang_design_macros_elixir_julia
+ ^["elixir_julia_defaults"]{
+  #:claim #!settled
+  statement: "Elixir keeps a variable defined in a quote from clashing with the caller unless var! is used, and Julia renames macro locals by gensym unless esc is used."
+  sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_elixir_macros", ~"../../registries/sources/spw-design-studies.spw#src_lab_julia_meta" ]
+  as_of: "documentation read 2026-10-02"
+ }
+ #>lang_design_macros_rust
+ ^["rust_mixed_site"]{
+  #:claim #!settled
+  statement: "Rust macro_rules has mixed-site hygiene: local variables, loop labels, and block labels resolve where the macro is defined, and other names where it is called."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_rust_mbe"
+  as_of: "Rust Reference read 2026-10-02"
+ }
+ #>lang_design_macros_lisp_data
+ ^["lisp_programs_as_data"]{
+  #:claim #!settled
+  statement: "McCarthy wrote Lisp programs as symbolic expressions, the same list structure the language manipulates, which is the root of the code-as-data idea."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_mccarthy_1960"
+ }
+ #>lang_design_macros_spw_desugar
+ ^["spw_desugar"]{
+  #:claim #!settled
+  statement: "Spw desugar rewrites source text with regular expressions before parsing, and only the runtime pipeline calls it, so editor and CLI parses never see the rewrite."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_code_normalize"
+  cites: [ "packages/spw-seed/src/normalize.ts:17-26", "packages/spw-runtime/src/pipeline/stages.ts:224-228" ]
+ }
+ #>lang_design_macros_spw_no_printer
+ ^["spw_no_printer"]{
+  #:claim #!settled
+  statement: "Spw parses to an AST and normalizes to ONF, but its ONF projection prints only sigil, register, and value, so code built as data cannot yet be printed back as source."
+  sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_code_onf_render", ~"../../registries/sources/spw-design-studies.spw#src_lab_study_tokens" ]
+  cites: [ "packages/spw-runtime/src/pipeline/stages.ts:440-467", "packages/spw-seed/src/types/ast/onf.ts:78-112" ]
+ }
+ #>lang_design_macros_spw_reading
+ ^["readable_not_writable"]{
+  #:claim #!interpretive
+  statement: "Spw is homoiconic in the reading direction only: frames read as data, but without a printer a transformation cannot return Spw text, so a macro layer would have to start there."
+ }
+}
+
+#>lang_design_macros_expand_q
+?["Is spw expand a hygienic or an unhygienic splice?"]{
+ #:depth #!computational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Because expand drops the anchors of a transcluded region, it cannot capture a host anchor, so it is safe in the way a hygienic macro is, at the cost of addressability."
+ !probe{ "expand a surface whose transcluded region holds an anchor named like one in the host, then read the deixis table of the output" =id[p_lab_macros_expand_splice] =kind[build] }
+ breaks: "a hygienic macro renames to keep a binding alive; expand removes the binding, so the analogy holds for safety and fails for reuse"
+ $%[particle.deixis, graph.path_refs]
+ ~"./macros-and-homoiconicity.spw#lang_design_macros_spw_reading" ~#neighbor(nearest)
+}

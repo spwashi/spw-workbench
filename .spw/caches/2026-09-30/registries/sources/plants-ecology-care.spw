@@ -2,7 +2,7 @@
 #
 # Bibliography anchors for plant science, development and ecology, and nursing. Claims link here; each entry names a work a reader can find.
 
-#>src_eco_registry
+#>registry_src_plants_ecology_care
 #:layer #!reference
 #:domain #!registry
 #:form #!bibliography
@@ -11,17 +11,40 @@
 #:valence #!bone
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-02"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
- evidence: #[ "Europe PMC and Crossref lookups 2026-10-01 for journal entries marked checked", "entries without a checked field were entered from the writer record and await a lookup" ]
+ evidence: #[ "Europe PMC and Crossref lookups 2026-10-01 for journal entries marked checked", "entries without a checked field were entered from the writer record and await a lookup", "Europe PMC lookups 2026-10-02 confirmed the 2026 Surviving Sepsis Campaign venues, the 2022 SHEA oral care categories, and the 2024 ATS ARDS recommendations", "Europe PMC and Crossref lookups 2026-10-02 confirmed the 2025 AHA resuscitation executive summary, published commentary on the 2025 ANA code, and the Ellis and Roberts 1980 record", "fix pass 2026-10-02: Europe PMC, Crossref, Open Library, DTIC, and publisher pages confirmed each entry added or corrected after the fact-check" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #partial }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ revision_2026_10_03: "r6 redated the r4 fact-check to 2026-10-02, the day its sources were read"
+ review_note: "spot_checked because some monographs and books were entered from the writer record and have not been looked up"
+ corrections: #[
+  "the file anchor src_eco_registry became registry_src_plants_ecology_care to match the plan; the old anchor stays on a stub frame",
+  "Stern 1959 carried only its subtitle; the full Hilgardia title and DOI are restored",
+  "Heald and Chapman now cite the 2012 University of Illinois Law Review version of record, with the 2011 SSRN paper as preprint",
+  "Mind over Machine 1986 is labelled the later book statement; the 1980 Dreyfus report is the model Benner applied",
+  "Frank 1877 is added as the coiner of the symbiosis term before de Bary",
+  "the 2025 PADIS focused update, the 2020 and 2026 pediatric sepsis guidelines, and sources for NLR domain history, plant transformation, breeding, propagation, holiday cactus bud set, and Seacole historiography are added"
+ ]
+}
+
+#>src_eco_registry
+^["stub"]{
+ note: "earlier file anchor of this registry, kept so that any old link still lands"
+ see: [ ~"./plants-ecology-care.spw#registry_src_plants_ecology_care" ]
 }
 
 ^["plants"]{
@@ -64,11 +87,33 @@
  #>src_eco_skoog_miller_1957
  ^["skoog_miller_1957"]{ title: "Chemical regulation of growth and organ formation in plant tissues cultured in vitro", authors: "Folke Skoog; Carlos O. Miller", year: 1957, venue: "Symposia of the Society for Experimental Biology 11:118-130", kind: #article }
  #>src_eco_stern_1959
- ^["stern_1959"]{ title: "The integrated control concept", authors: "Stern VM; Smith RF; van den Bosch R; Hagen KS", year: 1959, venue: "Hilgardia 29(2):81-101", kind: #article }
+ ^["stern_1959"]{
+  title: "The integration of chemical and biological control of the spotted alfalfa aphid: The integrated control concept"
+  authors: "Vernon M. Stern; Ray F. Smith; Robert van den Bosch; Kenneth S. Hagen"
+  year: 1959
+  venue: "Hilgardia 29(2):81-101"
+  doi: "10.3733/hilg.v29n02p081"
+  kind: #article
+  checked: "crossref"
+ }
  #>src_eco_ecke_2004
  ^["ecke_2004"]{ title: "The Ecke Poinsettia Manual", authors: "Paul Ecke III; James E. Faust; Andrew Higgins; Jack Williams", year: 2004, publisher: "Ball Publishing", kind: #handbook }
+ #>src_eco_ellis_roberts_1980
+ ^["ellis_roberts_1980"]{ title: "Improved equations for the prediction of seed longevity", authors: "Ellis RH; Roberts EH", year: 1980, venue: "Annals of Botany 45(1):13-30", kind: #article, checked: "crossref" }
  #>src_eco_richardson_1974
  ^["richardson_1974"]{ title: "A model for estimating the completion of rest for Redhaven and Elberta peach trees", authors: "Richardson EA; Seeley SD; Walker DR", year: 1974, venue: "HortScience 9(4):331-332", kind: #article }
+ #>src_eco_hartmann_kester_2017
+ ^["hartmann_kester_2017"]{ title: "Hartmann and Kester's Plant Propagation: Principles and Practices, 9th ed.", authors: "Fred T. Davies Jr.; Robert L. Geneve; Sandra B. Wilson; Hudson T. Hartmann; Dale E. Kester", year: 2017, publisher: "Pearson", kind: #textbook, checked: "openlibrary" }
+ #>src_eco_ncsu_schlumbergera
+ ^["ncsu_schlumbergera"]{
+  title: "Schlumbergera truncata"
+  authors: "North Carolina Extension Gardener Plant Toolbox, NC State Extension"
+  year: 2026
+  locator: "plants.ces.ncsu.edu/plants/schlumbergera-truncata"
+  as_of: "2026-10-02"
+  kind: #web
+  checked: "page read 2026-10-02: long uninterrupted nights or a run of cool nights bring bloom"
+ }
 }
 
 ^["genomics"]{
@@ -106,6 +151,18 @@
  ^["zhu_2002"]{ title: "Salt and drought stress signal transduction in plants", authors: "Zhu JK", year: 2002, venue: "Annual Review of Plant Biology 53:247-273", kind: #article, checked: "europepmc" }
  #>src_eco_vavilov_1926
  ^["vavilov_1926"]{ title: "Studies on the Origin of Cultivated Plants", authors: "Nikolai I. Vavilov", year: 1926, venue: "Bulletin of Applied Botany and Plant Breeding 16(2)", kind: #monograph }
+ #>src_eco_van_der_biezen_1998
+ ^["van_der_biezen_1998"]{ title: "The NB-ARC domain: a novel signalling motif shared by plant resistance gene products and regulators of cell death in animals", authors: "van der Biezen EA; Jones JD", year: 1998, venue: "Current Biology 8(7):R226-R227", kind: #article, checked: "europepmc" }
+ #>src_eco_kibby_2023
+ ^["kibby_2023"]{ title: "Bacterial NLR-related proteins protect against phage", authors: "Kibby EM; Conte AN; Burroughs AM; Nagy TA; Vargas JA; Whalen LA; Aravind L; Whiteley AT", year: 2023, venue: "Cell 186(11):2410-2424.e18", kind: #article, checked: "europepmc" }
+ #>src_eco_stachel_1985
+ ^["stachel_1985"]{ title: "Identification of the signal molecules produced by wounded plant cells that activate T-DNA transfer in Agrobacterium tumefaciens", authors: "Scott E. Stachel; Eric Messens; Marc Van Montagu; Patricia Zambryski", year: 1985, venue: "Nature 318(6047):624-629", kind: #article, checked: "crossref" }
+ #>src_eco_klein_1987
+ ^["klein_1987"]{ title: "High-velocity microprojectiles for delivering nucleic acids into living cells", authors: "T. M. Klein; E. D. Wolf; R. Wu; J. C. Sanford", year: 1987, venue: "Nature 327(6117):70-73", kind: #article, checked: "crossref" }
+ #>src_eco_klein_1988
+ ^["klein_1988"]{ title: "Transfer of foreign genes into intact maize cells with high-velocity microprojectiles", authors: "Klein TM; Fromm M; Weissinger A; et al.", year: 1988, venue: "PNAS 85(12):4305-4309", kind: #article, checked: "europepmc" }
+ #>src_eco_acquaah_2012
+ ^["acquaah_2012"]{ title: "Principles of Plant Genetics and Breeding, 2nd ed.", authors: "George Acquaah", year: 2012, publisher: "Wiley-Blackwell", kind: #textbook, checked: "openlibrary" }
 }
 
 ^["seed_and_stewardship"]{
@@ -117,10 +174,12 @@
  ^["heald_chapman_2011"]{
   title: "Veggie Tales: Pernicious Myths About Patents, Innovation, and Crop Diversity in the Twentieth Century"
   authors: "Paul J. Heald; Susannah Chapman"
-  year: 2011
-  venue: "SSRN working paper, doi 10.2139/ssrn.1928920"
-  kind: #working_paper
-  checked: "crossref"
+  year: 2012
+  venue: "University of Illinois Law Review 2012(4):1051"
+  preprint: "SSRN working paper 2011, doi 10.2139/ssrn.1928920"
+  kind: #article
+  checked: "crossref for the preprint; Illinois Law Review site for the version of record"
+  note: "the anchor keeps the 2011 preprint year it was first entered under"
  }
  #>src_eco_mt_pleasant_2011
  ^["mt_pleasant_2011"]{ title: "The paradox of plows and productivity: an agronomic comparison of cereal grain production under Iroquois hoe culture and European plow culture in the seventeenth and eighteenth centuries", authors: "Jane Mt. Pleasant", year: 2011, venue: "Agricultural History 85(4):460-492", kind: #article, checked: "europepmc" }
@@ -147,6 +206,8 @@
  ^["paine_1966"]{ title: "Food web complexity and species diversity", authors: "Robert T. Paine", year: 1966, venue: "American Naturalist 100(910):65-75", kind: #article }
  #>src_eco_hairston_1960
  ^["hairston_1960"]{ title: "Community structure, population control, and competition", authors: "Hairston NG; Smith FE; Slobodkin LB", year: 1960, venue: "American Naturalist 94(879):421-425", kind: #article }
+ #>src_eco_polis_1999
+ ^["polis_1999"]{ title: "Why are parts of the world green? Multiple factors control productivity and the distribution of biomass", authors: "Gary A. Polis", year: 1999, venue: "Oikos 86(1):3-15", kind: #article, checked: "crossref" }
  #>src_eco_begon_2006
  ^["begon_2006"]{ title: "Ecology: From Individuals to Ecosystems, 4th ed.", authors: "Michael Begon; Colin R. Townsend; John L. Harper", year: 2006, publisher: "Blackwell", kind: #textbook }
  #>src_eco_pauly_christensen_1995
@@ -250,6 +311,8 @@
  ^["kraut_2003"]{ title: "Goldberger's War: The Life and Work of a Public Health Crusader", authors: "Alan M. Kraut", year: 2003, publisher: "Hill and Wang", kind: #monograph }
  #>src_eco_zimmermann_2008
  ^["zimmermann_2008"]{ title: "Research on iodine deficiency and goiter in the 19th and early 20th centuries", authors: "Zimmermann MB", year: 2008, venue: "Journal of Nutrition 138(11):2060-2063", kind: #article, checked: "europepmc" }
+ #>src_eco_katz_1974
+ ^["katz_1974"]{ title: "Traditional maize processing techniques in the New World", authors: "Katz SH; Hediger ML; Valleroy LA", year: 1974, venue: "Science 184(4138):765-773", kind: #article, checked: "crossref" }
  #>src_eco_wills_1931
  ^["wills_1931"]{ title: "Treatment of pernicious anaemia of pregnancy and tropical anaemia", authors: "Lucy Wills", year: 1931, venue: "British Medical Journal 1(3676):1059-1064", kind: #article, checked: "europepmc" }
  #>src_eco_mrc_1991
@@ -301,7 +364,9 @@
  #>src_eco_sagan_1967
  ^["sagan_1967"]{ title: "On the origin of mitosing cells", authors: "Lynn Sagan (later Lynn Margulis)", year: 1967, venue: "Journal of Theoretical Biology 14(3):255-274", kind: #article, checked: "europepmc" }
  #>src_eco_de_bary_1879
- ^["de_bary_1879"]{ title: "Die Erscheinung der Symbiose", authors: "Anton de Bary", year: 1879, publisher: "Karl J. Trubner, Strassburg", kind: #monograph }
+ ^["de_bary_1879"]{ title: "Die Erscheinung der Symbiose", authors: "Anton de Bary", year: 1879, publisher: "Karl J. Trubner, Strassburg", note: "printed form of his 1878 Cassel lecture Ueber Symbiose", kind: #monograph }
+ #>src_eco_frank_1877
+ ^["frank_1877"]{ title: "Uber die biologischen Verhaltnisse des Thallus einiger Krustflechten", authors: "Albert Bernhard Frank", year: 1877, venue: "Beitrage zur Biologie der Pflanzen 2:123-200", kind: #article }
 }
 
 ^["nursing_foundations"]{
@@ -309,6 +374,15 @@
  ^["nightingale_1860"]{ title: "Notes on Nursing: What It Is, and What It Is Not", authors: "Florence Nightingale", year: 1860, publisher: "Harrison, London", kind: #primary }
  #>src_eco_seacole_1857
  ^["seacole_1857"]{ title: "Wonderful Adventures of Mrs. Seacole in Many Lands", authors: "Mary Seacole", year: 1857, publisher: "James Blackwood, London", kind: #primary }
+ #>src_eco_mcdonald_2014
+ ^["mcdonald_2014"]{
+  title: "Mary Seacole: The Making of the Myth"
+  authors: "Lynn McDonald"
+  year: 2014
+  publisher: "Iguana Books, Toronto"
+  kind: #monograph
+  checked: "openlibrary"
+ }
  #>src_eco_ana_2025
  ^["ana_2025"]{
   title: "Code of Ethics for Nurses"
@@ -341,6 +415,8 @@
  ^["who_2009"]{ title: "WHO Guidelines on Hand Hygiene in Health Care", authors: "World Health Organization", year: 2009, publisher: "World Health Organization, Geneva", kind: #guideline }
  #>src_eco_poon_2010
  ^["poon_2010"]{ title: "Effect of bar-code technology on the safety of medication administration", authors: "Poon EG; Keohane CA; Yoon CS; Ditmore M; Bane A; Levtzion-Korach O; Moniz T; Rothschild JM; Kachalia AB; Hayes J", year: 2010, venue: "New England Journal of Medicine 362(18):1698-1707", kind: #article, checked: "europepmc" }
+ #>src_eco_ana_scope_2021
+ ^["ana_scope_2021"]{ title: "Nursing: Scope and Standards of Practice, 4th ed.", authors: "American Nurses Association", year: 2021, publisher: "American Nurses Association", kind: #guideline }
  #>src_eco_koyama_2020
  ^["koyama_2020"]{ title: "Effectiveness of double checking to reduce medication administration errors: a systematic review", authors: "Koyama AK; Maddox CS; Li L; Bucknall T; Westbrook JI", year: 2020, venue: "BMJ Quality and Safety 29(7):595-603", kind: #article, checked: "europepmc" }
 }
@@ -369,7 +445,20 @@
  #>src_eco_evans_2021
  ^["evans_2021"]{ title: "Surviving Sepsis Campaign: International Guidelines for Management of Sepsis and Septic Shock 2021", authors: "Evans L; Rhodes A; Alhazzani W; Antonelli M; Coopersmith CM; French C; et al.", year: 2021, venue: "Critical Care Medicine 49(11):e1063-e1143", kind: #guideline, checked: "europepmc" }
  #>src_eco_prescott_2026
- ^["prescott_2026"]{ title: "Surviving Sepsis Campaign: International Guidelines for Management of Sepsis and Septic Shock 2026", authors: "Prescott HC; Antonelli M; Alhazzani W; Moller MH; Alshamsi F; Azevedo LCP; et al.", year: 2026, venue: "Critical Care Medicine 54(4):725-812; also Intensive Care Medicine 52(5):863-936", kind: #guideline, checked: "europepmc, title and venue only" }
+ ^["prescott_2026"]{
+  title: "Surviving Sepsis Campaign: International Guidelines for Management of Sepsis and Septic Shock 2026"
+  authors: "Prescott HC; Antonelli M; Alhazzani W; Moller MH; Alshamsi F; Azevedo LCP; et al."
+  year: 2026
+  venue: "Critical Care Medicine 54(4):725-812; also Intensive Care Medicine 52(5):863-936"
+  population: "adults"
+  correction: "Publisher Correction, Intensive Care Medicine 52(6):1411-1413"
+  kind: #guideline
+  checked: "europepmc, title and venue only"
+ }
+ #>src_eco_weiss_2020
+ ^["weiss_2020"]{ title: "Surviving Sepsis Campaign International Guidelines for the Management of Septic Shock and Sepsis-Associated Organ Dysfunction in Children", authors: "Weiss SL; Peters MJ; Alhazzani W; et al.", year: 2020, venue: "Pediatric Critical Care Medicine 21(2):e52-e106; also Intensive Care Medicine 46(Suppl 1):10-67", kind: #guideline, checked: "europepmc" }
+ #>src_eco_weiss_2026
+ ^["weiss_2026"]{ title: "Surviving Sepsis Campaign International Guidelines for the Management of Sepsis and Septic Shock in Children 2026", authors: "Weiss SL; Peters MJ; Oczkowski SJW; Belley-Cote E; Buysse C; Choong KLM; et al.", year: 2026, venue: "Intensive Care Medicine 52(5):937-983", kind: #guideline, checked: "europepmc, title and venue only" }
  #>src_eco_spiegel_2026
  ^["spiegel_2026"]{ title: "The 2026 Surviving Sepsis Campaign Guidelines: the dissenting opinion", authors: "Spiegel R; Haycock K; Miller A; Weingart S; Farkas J; Ajmo I; Rola P", year: 2026, venue: "American Journal of Emergency Medicine 110:411-415", kind: #article, checked: "europepmc" }
  #>src_eco_kitabchi_2009
@@ -405,6 +494,8 @@
  ^["ely_2001"]{ title: "Delirium in mechanically ventilated patients: validity and reliability of the confusion assessment method for the intensive care unit (CAM-ICU)", authors: "Ely EW; Inouye SK; Bernard GR; Gordon S; Francis J; May L; et al.", year: 2001, venue: "JAMA 286(21):2703-2710", kind: #article, checked: "europepmc" }
  #>src_eco_devlin_2018
  ^["devlin_2018"]{ title: "Clinical Practice Guidelines for the Prevention and Management of Pain, Agitation/Sedation, Delirium, Immobility, and Sleep Disruption in Adult Patients in the ICU", authors: "Devlin JW; Skrobik Y; Gelinas C; Needham DM; Slooter AJC; Pandharipande PP; et al.", year: 2018, venue: "Critical Care Medicine 46(9):e825-e873", kind: #guideline, checked: "europepmc" }
+ #>src_eco_lewis_2025
+ ^["lewis_2025"]{ title: "A Focused Update to the Clinical Practice Guidelines for the Prevention and Management of Pain, Anxiety, Agitation/Sedation, Delirium, Immobility, and Sleep Disruption in Adult Patients in the ICU", authors: "Lewis K; Balas MC; Stollings JL; McNett M; Girard TD; Chanques G; et al.", year: 2025, venue: "Critical Care Medicine 53(3):e711-e727; executive summary e701-e710", kind: #guideline, checked: "europepmc, abstract read 2026-10-02" }
  #>src_eco_richardson_1995
  ^["richardson_1995"]{ title: "The well-built clinical question: a key to evidence-based decisions", authors: "Richardson WS; Wilson MC; Nishikawa J; Hayward RS", year: 1995, venue: "ACP Journal Club 123(3):A12-A13", kind: #article, checked: "europepmc" }
 }
@@ -414,8 +505,18 @@
  ^["watson_1979"]{ title: "Nursing: The Philosophy and Science of Caring", authors: "Jean Watson", year: 1979, publisher: "Little, Brown", kind: #monograph }
  #>src_eco_benner_1984
  ^["benner_1984"]{ title: "From Novice to Expert: Excellence and Power in Clinical Nursing Practice", authors: "Patricia Benner", year: 1984, publisher: "Addison-Wesley", kind: #monograph }
+ #>src_eco_dreyfus_1980
+ ^["dreyfus_1980"]{
+  title: "A Five-Stage Model of the Mental Activities Involved in Directed Skill Acquisition"
+  authors: "Stuart E. Dreyfus; Hubert L. Dreyfus"
+  year: 1980
+  publisher: "Operations Research Center, University of California, Berkeley"
+  locator: "report ORC-80-2; DTIC ADA084551; doi 10.21236/ada084551"
+  kind: #report
+  checked: "crossref"
+ }
  #>src_eco_dreyfus_1986
- ^["dreyfus_1986"]{ title: "Mind over Machine: The Power of Human Intuition and Expertise in the Era of the Computer", authors: "Hubert L. Dreyfus; Stuart E. Dreyfus", year: 1986, publisher: "Free Press", kind: #monograph }
+ ^["dreyfus_1986"]{ title: "Mind over Machine: The Power of Human Intuition and Expertise in the Era of the Computer", authors: "Hubert L. Dreyfus; Stuart E. Dreyfus", year: 1986, publisher: "Free Press", note: "the later book-length statement of the 1980 five-stage model", kind: #monograph }
  #>src_eco_jameton_1984
  ^["jameton_1984"]{ title: "Nursing Practice: The Ethical Issues", authors: "Andrew Jameton", year: 1984, publisher: "Prentice-Hall", kind: #monograph }
  #>src_eco_truog_2008

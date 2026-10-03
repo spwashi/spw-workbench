@@ -1,0 +1,170 @@
+# JetBrains Instruments
+#
+# How an IntelliJ instrument action moves from a click to a read-only result tab: the saved-buffer guard, the tool root, the background task, and the cache receipt that only the CLI fills.
+
+#>editor_hosts_jetbrains_instruments
+#:layer #!pragmatics
+#:domain #!editor_hosts
+#:form #!state_machine
+#:level #!practitioner
+#:review #!sourced
+#:valence #!bone
+#:era #!current
+
+^"emit"{
+ ~#title: "JetBrains Instruments"
+ ~#claim: "IntelliJ instruments refuse a dirty buffer, run the CLI on the saved file in a cancellable background task, and open a read-only light file."
+ ~#proof: "States cite SpwInstrumentActions.kt, SpwCliRunner.kt, and SpwCliInvocation.kt at commit 1aa1dc23, and one CLI run of inspect cache."
+ ~#door: "Walk the states from click to result, then compare the cache receipt with the VS Code card."
+ ~#audience: "JetBrains users running Spw instruments and maintainers of the runner"
+ continuity: "JetBrains Instruments | the saved file"
+ cold_open: "A JetBrains instrument asks you to save first, then reads the saved file through the CLI and opens a tab you cannot edit."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/jetbrains/instruments.spw", ".spw/caches/jetbrains/cache-layer.spw" ]
+ method: #corrected
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: [
+  "the raw instruments cache added a third tool-resolution step, a PATH spw binary; the runner has no PATH fallback and requires an npm spw script",
+  "the raw cache-layer cache marked the LSP session plane present for IntelliJ; the plugin sends no spw request, so its receipt comes from the CLI alone",
+  "the raw instruments cache listed a privacy guard with a telemetry count of zero; no runner or action code reads or sends telemetry, so the row describes nothing and is dropped"
+ ]
+ kept: "the dirty-buffer dialog text, the background thread, the cancellable task, and the LightVirtualFile result were exact in the raw instruments cache"
+}
+
+^["edges"]{
+ needs: [ ~"./jetbrains-platform.spw#editor_hosts_jetbrains_platform" ]
+ contrasts: [ ~"./vscode-lsp-and-cache.spw#editor_hosts_vscode_lsp_cache", ~"./vscode-commands-and-views.spw#editor_hosts_vscode_commands" ]
+ grounds: [ ~"../../registries/quantities/spw-hosts-and-history.spw#q_hosts_jb" ]
+}
+
+^["concepts"]{
+ primary: [ #saved_file_truth, #instrument, #cache_plane ]
+ transfers: [ #tool_root ]
+ tensions: [ #live_buffer ]
+}
+
+^["abbreviation"]{
+ kotlin: "Kotlin paths are under extensions/intellij-spw/src/main/kotlin/com/spwashi/spw"
+}
+
+^["machine"]{
+ #>editor_hosts_jetbrains_instruments_guard
+ ^["dirty_guard"]{
+  #:claim #!settled
+  statement: "A file instrument whose editor holds unsaved text shows the dialog Spw Instrument and stops; the user saves and runs it again."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_instruments"
+  cites: "SpwInstrumentActions.kt:22-33"
+  dialog: "This instrument reads the saved file through the Spw CLI. Save the buffer, then run it again."
+ }
+ ^["states"]{
+  #>editor_hosts_jetbrains_instruments_s_enabled
+  ^["enabled"]{ enters: "a project with a .spw file in focus", work: "update on a background thread", cites: "SpwInstrumentActions.kt:14-20" }
+  #>editor_hosts_jetbrains_instruments_s_guarded
+  ^["guarded"]{
+   enters: "actionPerformed"
+   on_buffer: ?match[buffer]{
+    "unsaved" => "warning dialog, then idle",
+    "saved" => "build the invocation"
+   }
+   cites: "SpwInstrumentActions.kt:22-43"
+  }
+  #>editor_hosts_jetbrains_instruments_s_invocation
+  ^["invocation"]{
+   enters: "a saved file"
+   work: "make the path relative to the project; a file outside it raises an error dialog"
+   cites: [ "SpwInstrumentActions.kt:35-41", "SpwCliInvocation.kt:64-69" ]
+  }
+  #>editor_hosts_jetbrains_instruments_s_resolve
+  ^["resolve_host"]{
+   enters: "an invocation"
+   work: "take the project as consumer root and the LSP stage-one tool root as the CLI root"
+   on_root: ?match[tool_root]{
+    "no project folder" => "warn: instruments require an opened project folder",
+    "root missing" => "warn: could not resolve the project or mounted workbench",
+    "no npm spw script" => "warn: an npm spw script is required",
+    "spw script found" => "run"
+   }
+   cites: "SpwCliRunner.kt:62-86"
+  }
+  #>editor_hosts_jetbrains_instruments_s_run
+  ^["running"]{
+   enters: "a resolved host"
+   work: "npm --prefix the tool root run --silent spw, from the consumer root, in a cancellable background task with a two-minute limit"
+   on_result: ?match[process]{
+    "cancelled" => "information notice with the elapsed time",
+    "timed out" => "warning that suggests the terminal for a larger corpus",
+    "nonzero exit" => "error with the first stderr line, at most 240 characters",
+    "zero exit" => "present"
+   }
+   cites: [ "SpwCliInvocation.kt:15-23", "SpwCliRunner.kt:23-60,129" ]
+  }
+  #>editor_hosts_jetbrains_instruments_s_present
+  ^["present"]{
+   enters: "stdout from a zero exit"
+   work: "open a LightVirtualFile named for the instrument, marked not writable, then post completed, source CLI, effect read-only"
+   cites: "SpwCliRunner.kt:88-104"
+  }
+ }
+ #>editor_hosts_jetbrains_instruments_root_coupling
+ ^["root_coupling"]{
+  #:claim #!settled
+  statement: "The CLI root is the same tool root the LSP launcher picks by looking for an lsp script, and only then is it checked for an spw script."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_cli_runner"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_launcher" ]
+  cites: [ "SpwCliRunner.kt:69-84", "SpwLspLauncher.kt:18-41" ]
+  ^["limits"]{
+   holds: "for projects whose lsp and spw scripts live in the same package.json"
+   fails: "for a project that has an lsp script but keeps spw only in its mount; the runner stops with a warning"
+  }
+ }
+ rename_and_plan: "Rename Spw Symbol hands the caret to the platform rename with no save guard; Plan Spw Corpus Refactor asks for kind:from=to, prefilled mark:old=new, and validates it before running"
+ rename_cites: [ "SpwInstrumentActions.kt:67-107", "SpwCliInvocation.kt:45-71" ]
+}
+
+^["cache_receipt"]{
+ #>editor_hosts_jetbrains_instruments_cli_only
+ ^["cli_only_cache"]{
+  #:claim #!settled
+  statement: "Inspect Spw Cache runs spw inspect cache on the saved file; the receipt fills only the runtime plane and names the editor, session, and corpus planes absent."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_instruments"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_seed_cache_layer", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_lsp_provider" ]
+  cites: [ "SpwCliInvocation.kt:39-43", "packages/spw-seed/src/ir/cache-layer.ts:36-56" ]
+  evidence: "one run of the CLI command on vocabulary.spw on 2026-10-02 printed a clean JSON envelope on stdout with runtime_cache present and the other three planes absent; the IDE itself was not run"
+ }
+ ^["plane_rows"]{
+  editor_probe_cache: .{ intellij: "absent; the plugin keeps no client cache" }
+  lsp_session_reflection: .{ intellij: "absent; the native client sends no spw request" }
+  runtime_cache: .{ intellij: "present from the CLI hot session" }
+  corpus_memo: .{ intellij: "absent, next spw census --json" }
+ }
+}
+
+^["try"]{
+ #>editor_hosts_jetbrains_instruments_try_guard
+ ^["save_then_run"]{
+  materials: [ "a supported JetBrains IDE with the Spw plugin", "a project with an npm spw script", "a scratch .spw file" ]
+  steps: << "type one character into the scratch file without saving" ; "run Inspect Spw Form from Tools then Spw Instruments" ; "read the dialog and save" ; "run it again and open the result tab" ; "try to type in the result tab" >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "none worth naming; the instruments never write to the corpus"
+  shows: ~"./jetbrains-instruments.spw#editor_hosts_jetbrains_instruments_guard"
+ }
+}
+
+#>editor_hosts_jetbrains_instruments_q
+?["Does the save-first guard slow down the readers it protects?"]{
+ #:depth #!experiential ~#lens(applied attention)
+ #:claim #!speculative
+ ~#hypothesis: "Readers who must save before inspecting should run fewer instruments per hour but trust each result more than readers of live-buffer probes."
+ !probe{ "ask paired readers to answer the same structure question in VS Code and in WebStorm and describe, afterwards, how sure they felt" =id[p_hosts_jb_save_guard] =kind[interview] }
+ $%[hosts.jb.action_count]
+ ~"./jetbrains-instruments.spw#editor_hosts_jetbrains_instruments_guard" ~#neighbor(nearest)
+}

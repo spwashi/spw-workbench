@@ -1,0 +1,237 @@
+# Chat Torrent Pipeline
+#
+# Live chat read as a torrent of topics: a staged pipeline that ingests, dedupes, classifies, sorts into lanes, ranks, and surfaces, with shedding under load and a moderator lane held apart.
+
+#>streaming_chat_torrent
+#:layer #!pragmatics
+#:domain #!streaming
+#:form #!state_machine
+#:level #!advanced
+#:review #!sourced
+#:valence #!bone
+#:era #!current
+
+^"emit"{
+ ~#title: "Chat Torrent Pipeline"
+ ~#claim: "A busy live chat reads as lanes of topics when a staged pipeline ingests, dedupes, classifies, clusters, ranks, and surfaces messages, with a moderator lane held apart."
+ ~#proof: "Each stage borrows a stream technique with a published guarantee; throughput stays a named probe until a session is measured."
+ ~#door: "Walk the state machine, read the pseudonym protocol, then sort a pile of invented chat cards into lanes by hand."
+ ~#audience: "live hosts, moderators, and engineers building chat tools"
+ continuity: "Chat Torrent Pipeline | lanes of topics"
+ cold_open: "A busy chat turns into lanes of topics once a pipeline sorts it and moderators keep a lane of their own."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/studies/tokens-synthesis.md section 4, chat privacy and the Spw.chat pack",
+  ".agents/plans/caches-cut-2026-09-30/references/studies/persona-synthesis.json false friend rank 9, @ read as a mention",
+  "birthday bounds computed by the writer on 2026-10-02"
+ ]
+ data: "no chat was collected or read for this surface; every handle and message named here is invented"
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the tokens study prototype kept 16 bits of a salted hash and raw mentions in its span map; this protocol requires a keyed hash of 64 bits or more and no raw handle anywhere"
+ ]
+}
+
+^["edges"]{
+ needs: [
+  ~"../../formal/computing/stream-processing-models.spw#computing_stream_models",
+  ~"../../physical/engineering/industrial-and-systems-engineering.spw#engineering_ise",
+  ~"../../record/information/retrieval-systems.spw#information_science_retrieval"
+ ]
+ see: [
+  ~"./live-session-craft.spw#streaming_live_session_states",
+  ~"../../society/platforms/twitch-plays-pokemon.spw#live_platforms_twitch_plays_modes"
+ ]
+}
+
+^["concepts"]{
+ primary: [ #chat_lane, #backpressure, #pseudonym ]
+ transfers: [ #state_machine, #sampling ]
+ tensions: [ #crowd_noise ]
+}
+
+^["scope"]{
+ #>streaming_chat_torrent_status
+ ^["design_status"]{
+  #:claim #!speculative
+  statement: "No pipeline described here has run on a live chat; the stages are a design, and each Spw use of a lane is a proposal until a session log tests it."
+  test: "one replayed synthetic log and one consented live session, each with lane snapshots and a moderator note"
+ }
+ people: "lanes hold topics and pseudonyms; no stage ranks, scores, or profiles a viewer"
+}
+
+^["machine"]{
+ #>streaming_chat_torrent_states
+ ^["states"]{
+  ingest: "append each message to a replayable log partitioned by channel, stamped with event time"
+  pseudonymize: "replace the handle and every mention with a keyed-hash pseudonym before any other stage reads the text"
+  dedupe: "drop repeats of a recent message from the same pseudonym, exact or near"
+  classify: "label the message: question, reaction, command, topic words, or a filter flag"
+  lane: "attach the message to the open lane whose topic it fits, or open a new lane"
+  rank: "count lane activity in windows and order lanes for the host"
+  surface: "show the top lanes on a bounded overlay the host reads aloud from"
+  shed: "under overload, keep a uniform sample per lane instead of falling behind"
+  moderate: "hold a flagged message for a human who releases it to a lane or removes it"
+ }
+ ^["happy_path"]{
+  order: << "ingest" ; "pseudonymize" ; "dedupe" ; "classify" ; "lane" ; "rank" ; "surface" >>
+ }
+ #>streaming_chat_torrent_transitions
+ ?match[@stage]{
+  @ingest => ^["append"]{ next: "pseudonymize", guard: "message carries a channel and an event time" }
+  @pseudonymize => ^["mask"]{ next: "dedupe", guard: "no raw handle survives this step" }
+  @dedupe => ^["keep"]{ next: "classify or drop", guard: "drop when a near copy from the same pseudonym sits in the window" }
+  @classify => ^["route"]{ next: "lane or moderate", guard: "a filter flag goes to moderate before any lane sees it" }
+  @lane => ^["attach"]{ next: "rank", guard: "nearest open lane by topic words; a lane closes after a quiet gap" }
+  @rank => ^["order"]{ next: "surface or shed", guard: "shed when the overlay queue is full" }
+  @shed => ^["sample"]{ next: "rank", guard: "keep a fixed-size uniform sample for each lane" }
+  @surface => ^["show"]{ next: "ingest", guard: "the overlay shows a bounded number of lanes" }
+  @moderate => ^["hold"]{ next: "lane or removed", guard: "a person decides; the pipeline waits on that lane only" }
+  _ => "stay in ingest"
+ }
+ #>streaming_chat_torrent_stream_reading
+ ^["stream_reading"]{
+  #:claim #!interpretive
+  statement: "Read as stream processing, ingest is a replayable log, dedupe is keyed state, classify is a stateless map, lanes are session windows, and the overlay is a bounded sink."
+  grounds: [ ~"../../formal/computing/stream-processing-models.spw#computing_stream_chat_mapping" ]
+ }
+}
+
+^["techniques"]{
+ #>streaming_chat_torrent_near_duplicates
+ ^["near_duplicates"]{
+  #:claim #!settled
+  statement: "Similarity-preserving fingerprints such as SimHash map similar texts to fingerprints that differ in few bits, so near-duplicate messages can be found by comparing fingerprints."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_charikar_2002"
+  ^["limits"]{
+   holds: "messages long enough to carry several words or features"
+   fails: "single emotes and one-word cheers collide by design; an exact-match key per pseudonym serves them better"
+  }
+ }
+ #>streaming_chat_torrent_reservoir
+ ^["reservoir_sampling"]{
+  #:claim #!settled
+  statement: "Reservoir sampling keeps a uniform random sample of fixed size from a stream of unknown length in one pass, which is what the shed state needs per lane."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_vitter_1985"
+ }
+ #>streaming_chat_torrent_heavy_lanes
+ ^["heavy_lanes"]{
+  #:claim #!settled
+  statement: "A Count-Min sketch estimates item counts in fixed memory and never underestimates them, so a rank stage can order busy lanes without keeping every message."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_cormode_2005"
+  ^["limits"]{
+   holds: "counts of topic words or lane ids over a window"
+   fails: "hash collisions inflate rare items; a small lane can look busier than it is"
+  }
+ }
+ #>streaming_chat_torrent_backpressure
+ ^["lag_drop_or_sample"]{
+  #:claim #!interpretive
+  statement: "When the overlay cannot keep up, the pipeline chooses between lag, drop, and sample; sampling per lane keeps the screen current and every lane visible at the cost of completeness."
+  grounds: [ ~"../../formal/computing/stream-processing-models.spw#computing_stream_backpressure" ]
+ }
+ #>streaming_chat_torrent_workers
+ ^["worker_pool"]{
+  #:claim #!speculative
+  statement: "Parallel classify workers keyed by channel should keep lane order within a channel while raising throughput, until the lane state becomes the shared bottleneck."
+  grounds: [ ~"../../physical/engineering/industrial-and-systems-engineering.spw#engineering_ise_little" ]
+  test: "the saturation probe below, run with one, two, and four classify workers"
+ }
+}
+
+^["pseudonyms"]{
+ #>streaming_chat_torrent_keyed_hash
+ ^["keyed_hash"]{
+  #:claim #!settled
+  statement: "A keyed hash such as HMAC turns a handle into a pseudonym that cannot be recomputed without the key, unlike a plain hash that anyone can rerun on a guessed handle."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_rfc2104"
+ }
+ #>streaming_chat_torrent_hash_width
+ ^["hash_width"]{
+  #:claim #!settled
+  statement: "A 16-bit pseudonym has an even chance of one collision near three hundred handles; at 64 bits that point moves past five billion handles."
+  reads: %[lab.chat.half_collision_16bit_handles, lab.chat.half_collision_64bit_handles]
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_feller_1968"
+  ~#say(short pseudonyms merge strangers)
+ }
+ #>streaming_chat_torrent_still_personal
+ ^["still_personal"]{
+  #:claim #!settled
+  statement: "Under the GDPR a keyed-hash pseudonym is pseudonymised data and still personal data, because whoever holds the key can link it back to a person."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_gdpr_2016"
+  as_of: "Regulation (EU) 2016/679, applying since 2018-05-25"
+  ^["limits"]{
+   holds: "processing that falls under EU data protection law"
+   fails: "other jurisdictions define pseudonymous data differently; check the law where the stream runs"
+  }
+ }
+ #>streaming_chat_torrent_protocol
+ ^["protocol"]{
+  door: "the pseudonymize state runs before any stage reads the text, so lanes, logs, digests, and span maps see pseudonyms only"
+  width: "64 bits of keyed-hash output or more"
+  mentions: "a mention of another handle inside a message is masked with the same key"
+  key: "the key lives with the host, outside every Spw file and every log"
+  open_choice: "a per-session key keeps sessions unlinkable; a per-channel key lets a lane span sessions; the default is an open question"
+  examples: "handles in this cut are invented, such as viewer_a and viewer_b"
+ }
+}
+
+^["probes"]{
+ #>streaming_chat_torrent_probes
+ ^["throughput"]{
+  note: "these name what to measure; no throughput result is reported in this cut"
+  saturation: !probe{ "replay a synthetic log at rising message rates and record the rate where the overlay first sheds" =id[p_lab_chat_saturation] =kind[sim] }
+  dedupe_recall: !probe{ "seed a synthetic log with known near copies and count how many the fingerprint stage catches" =id[p_lab_chat_dedupe_recall] =kind[sim] }
+  lane_agreement: !probe{ "two moderators sort the same synthetic messages into lanes; compare with the pipeline lanes" =id[p_lab_chat_lane_agreement] =kind[field] }
+ }
+}
+
+^["limits"]{
+ #>streaming_chat_torrent_limits
+ ^["design_limits"]{
+  holds: "text chat with timestamps on one platform, read by one host and a few moderators"
+  fails: "voice rooms, merged multi-platform chat, and platforms whose terms forbid storing messages"
+ }
+}
+
+^["try"]{
+ #>streaming_chat_torrent_try
+ ^["card_lanes"]{
+  materials: [ "40 index cards", "a pen", "a timer", "a table with room for six piles" ]
+  steps: << "write an invented message and an invented handle such as viewer_c on each card" ; "shuffle and deal one card every two seconds" ; "set aside any card that repeats a recent card from the same handle" ; "place each card on the pile whose topic it fits, or start a pile" ; "every minute, read the biggest pile aloud as the host would" ; "count the cards you had no time to place" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "no hazard worth naming; use invented handles and messages only"
+  shows: ~"./chat-torrent-pipeline.spw#streaming_chat_torrent_transitions"
+ }
+}
+
+#>streaming_chat_torrent_lanes_q
+?["Does a host answer more topics from lanes than from the raw scroll?"]{
+ #:depth #!social ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "Past some message rate, a host reading ranked lanes answers more distinct topics than a host reading the raw scroll, while the lane reader misses more single jokes."
+ !probe{ "replay one synthetic log to two volunteer hosts, one with lanes and one with the scroll, and count distinct topics answered" =id[p_lab_chat_lanes_vs_scroll] =kind[field] }
+ breaks: "Twitch Plays aggregated button presses, which have no topics; a lane groups meaning, so the crowd-controller analogy stops at the vote"
+ $%[graph.out_degree]
+ ~"./chat-torrent-pipeline.spw#streaming_chat_torrent_states" ~#neighbor(nearest)
+}
+
+#>streaming_chat_torrent_collision_q
+?["When pseudonyms collide, does dedupe start dropping strangers?"]{
+ #:depth #!mathematical ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "With 16-bit pseudonyms, per-person dedupe wrongly drops messages from colliding viewers, and the loss grows with audience size."
+ !probe{ "simulate rising audiences with 16-bit and 64-bit pseudonyms and count messages dropped as false repeats" =id[p_lab_chat_collision_sim] =kind[sim] }
+ $%[lab.chat.half_collision_16bit_handles, lab.chat.half_collision_64bit_handles]
+ ~"./chat-torrent-pipeline.spw#streaming_chat_torrent_hash_width" ~#neighbor(nearest)
+}

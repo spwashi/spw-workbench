@@ -1,0 +1,170 @@
+# Perspective: Social Scientists
+#
+# Codebooks, coding schemes, survey instruments, and causal diagrams set against facets, tags, wonders, and bias edges, with the habits that turn a whole file to prose listed first.
+
+#>spw_perspectives_social
+#:layer #!pragmatics
+#:domain #!spw_perspectives
+#:form #!comparison
+#:level #!intro
+#:review #!unreviewed
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Perspective: Social Scientists"
+ ~#claim: "A codebook entry fits a facet and skip logic fits a match arm, but an R assignment arrow or a pipe turns the whole file to prose, and a negative missing code loses its sign."
+ ~#proof: "Probes at commit 1aa1dc23 degrade a three-line file holding one assignment arrow and drop the minus from -99; the quoted forms survive."
+ ~#door: "Run the degrader rows before writing a single codebook entry."
+ ~#audience: "economists, sociologists, political scientists, psychologists, and survey methodologists"
+ continuity: "Perspective: Social Scientists | the whole file to prose"
+ cold_open: "One assignment arrow or pipe turns the whole file to prose, so quote analysis code before you write a codebook."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "persona study doors entry social_scientists and metaphor_limits for economics, social science, and management",
+  "codebook, routing, and analysis-code probes run by the writer at commit 1aa1dc23 on 2026-10-03"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ feeds: [ ~"../doors/edge.spw#spw_door_edge", ~"../contraptions/dag-walker.spw#spw_lab_dag_walker" ]
+ see: [ ~"../specimens/lab-and-data.spw#spw_spec_lab_data", ~"../theory/measures-and-handles.spw#spw_theory_measures_scale_types" ]
+}
+
+^["standing"]{
+ #>spw_perspectives_social_standing
+ ^["hypothesis"]{
+  #:claim #!interpretive
+  statement: "These rows were written by an agent outside the cluster; they stay unreviewed until a working social scientist moves one real codebook page through them."
+  member_probe: "a researcher converts one page of a public codebook, marks each row as fitting or not, and lists any field with no home"
+ }
+}
+
+^["degraders"]{
+ #>spw_perspectives_social_assign
+ ^["assignment_arrow"]{
+  #:claim #!settled
+  habit: "an R assignment such as x <- y in a note"
+  statement: "An assignment arrow outside a string turns the whole surface to prose: the less-than sign stops structured parsing, and the hyphen is a lexer error."
+  probe_run: "a three-line file with b: x <- y between two plain bindings became prose at 1aa1dc23, and success stayed true"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+ }
+ #>spw_perspectives_social_pipes
+ ^["pipes"]{
+  #:claim #!settled
+  habit: "a magrittr pipe or a native R pipe between two steps"
+  statement: "Both pipe forms end in a greater-than sign, so either one outside a string turns the surface to prose."
+  probe_run: "d: a %>% b and d: a |> b each degraded to prose at 1aa1dc23"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+ }
+ #>spw_perspectives_social_missing
+ ^["missing_codes"]{
+  #:claim #!settled
+  habit: "a negative missing-value code such as -99"
+  statement: "A negative missing code loses its sign: the minus is a lexer error, so the code reads as 99, a value that may be a valid answer."
+  probe_run: "missing: -99 bound missing to 99 at 1aa1dc23; in quotes the code stayed whole"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_lexer"
+ }
+ thresholds: .{ habit: "a significance threshold typed as a comparison", see: ~"../specimens/lab-and-data.spw#spw_spec_lab_data_p_threshold" }
+ formulas: .{ habit: "a model formula with a tilde", see: ~"../doors/tilde.spw#spw_door_tilde_split" }
+ columns: .{ habit: "a column reference with a dollar sign", observed: "v: df$col binds df and leaves a dollar operation labeled col" }
+}
+
+^["rows"]{
+ #>spw_perspectives_social_codebook
+ ^["codebook_entry"]{
+  #:claim #!interpretive
+  practice: "a codebook entry names a variable, its label, its values, and its missing codes"
+  spw: "a facet with a quoted label, a tag for the scale, and missing codes as strings"
+  probe_run: "q1 as a facet with label, scale, and a quoted missing code parsed as three bindings at 1aa1dc23"
+  holds: "one named variable with named attributes, citable by anchor"
+  fails: "nothing checks types, ranges, or that each value label has a value"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+ }
+ #>spw_perspectives_social_coding
+ ^["coding_scheme"]{
+  #:claim #!interpretive
+  practice: "a qualitative coding scheme names codes, groups them into categories, and keeps analytic memos beside the data"
+  spw: "codes as tags, categories as sets or frames, and memos as readings inside the frame they comment on"
+  holds: "a closed list of codes reads like a closed vocabulary, and a memo can sit beside its excerpt"
+  fails: "tags are case-sensitive, and a tag followed by another key on one line nests that key inside the tag"
+  probe_run: "code: #trust note: hedged nested note inside the trust tag at 1aa1dc23; a comma between them kept two bindings"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_saldana_2021"
+ }
+ #>spw_perspectives_social_instrument
+ ^["survey_instrument"]{
+  #:claim #!interpretive
+  practice: "a survey instrument orders items, attaches a response scale, and routes respondents by their answers"
+  spw: "an item as a wonder block, the scale as a tag, and routing as a match arm on quoted answers"
+  probe_run: "route: ?match[q1] with two quoted arms parsed as one Match node at 1aa1dc23"
+  holds: "routing reads in print the way a skip pattern does"
+  fails: "no probe ever runs, so no one is routed; the file records the instrument, not the fieldwork"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+ }
+ #>spw_perspectives_social_scales
+ ^["ordinal_scales"]{
+  #:claim #!settled
+  statement: "Stevens distinguished nominal, ordinal, interval, and ratio scales by the transformations each permits, which is why a ranked agreement scale is not automatically an interval measure."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_stevens_1946"
+  origin: "Likert introduced summed agreement ratings for attitude measurement in 1932"
+  origin_source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_likert_1932"
+  spw_note: "a percent measure on the unit interval asserts more than an ordered scale holds; keep agreement levels as quoted labels"
+  example: ~"../doors/percent.spw#spw_door_percent_q"
+ }
+ #>spw_perspectives_social_dag
+ ^["causal_diagram"]{
+  #:claim #!interpretive
+  practice: "a causal diagram draws variables as nodes and direct causes as arrows, and reads identification from its paths"
+  spw: "a subject-first bias edge with an axis, or a needs edge between anchors"
+  holds: "direction and rank survive; the dag walker lists paths and backdoors as a proposed contraption"
+  fails: "no magnitude, no standard error, and no independence assumption travel with an edge"
+  example: ~"../doors/edge.spw#spw_door_edge_read"
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_pearl_2009"
+ }
+ #>spw_perspectives_social_dissent
+ ^["replication"]{
+  #:claim #!settled
+  statement: "This cut keeps a contested or refuted claim in place with its counter-source in view, so a failed replication is recorded rather than deleted."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_contract"
+  label: "a-cut rule from the contract ethics frame"
+  example: ~"../../physical/materials/water.spw#materials_water_purification_mortality"
+ }
+}
+
+^["tools"]{
+ inspect: .{ command: "spw inspect source", use: "predict and reveal one line of analysis notes", status: #implemented, cites: "packages/spw-cli/src/commands.ts:277-282" }
+ dag_walker: .{ contraption: "dag-walker", use: "list paths and close a backdoor", status: #proposed }
+ rubric_lens: .{ contraption: "rubric-lens", use: "compare compensatory and conjunctive scoring", status: #proposed }
+}
+
+^["try"]{
+ #>spw_perspectives_social_try
+ ^["codebook_page"]{
+  materials: [ "one page of a public codebook, such as a published survey documentation file", "a scratch file outside the cut", "the spw CLI in this repository" ]
+  steps: << "write three variables as facets with quoted labels and missing codes" ; "add one routing rule as a match arm" ; "predict which lines survive" ; "reveal them with spw inspect source" ; "list every codebook field that found no home" >>
+  time: .{ n: 25, unit: "minutes" }
+  safety: "use public documentation only, never respondent-level data"
+  shows: ~"./social-scientists.spw#spw_perspectives_social_codebook"
+ }
+}
+
+#>spw_perspectives_social_q
+?["Would researchers trust a codebook kept in Spw more if the cut gate ran on every commit?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Trust would rise for silent failures such as lost signs, which the gate catches, and not for meaning errors such as a mislabeled value, which no gate sees."
+ !probe{ "ask three researchers which codebook errors they fear most, then mark which of those the gate could catch" =id[p_doors_social_codebook_trust] =kind[interview] }
+ breaks: "a statistics package validates data against the codebook, while the gate validates only the file that describes it"
+ ~"./social-scientists.spw#spw_perspectives_social_missing" ~#neighbor(nearest)
+}

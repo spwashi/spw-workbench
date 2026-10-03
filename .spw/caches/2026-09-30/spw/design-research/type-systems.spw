@@ -1,0 +1,157 @@
+# Type Systems and Ergonomics
+#
+# Discriminated unions, the satisfies operator, extension functions, optional chaining, and multiple dispatch, each with what it checks and what it leaves alone.
+
+#>lang_design_types
+#:layer #!reference
+#:domain #!lang_design
+#:form #!comparison
+#:level #!advanced
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Type Systems and Ergonomics"
+ ~#claim: "Ergonomic type features each check one narrow thing: satisfies checks assignability only, narrowing follows a tag, extensions resolve statically, and optional chaining stops at null."
+ ~#proof: "Rows cite the TypeScript release notes and design goals, the Kotlin extension docs, ECMAScript 2020, Pierce, and the Julia paper."
+ ~#door: "Read the satisfies row first, since the raw generation got it wrong, then the gate question at the end."
+ ~#audience: "language designers and Spw readers who write TypeScript or Kotlin"
+ continuity: "Type Systems and Ergonomics | checks assignability only"
+ cold_open: "The satisfies operator checks assignability only, and each feature here checks one narrow thing and leaves the rest alone."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/language-features/type-systems-and-ergonomics.spw", ".spw/caches/language-features/array-and-concatenative.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the raw file said satisfies validates that palette values are hex strings; it checks only that the value is assignable to the type, and any string passes Record of string",
+  "the raw claim that TypeScript is the most popular type system had no source and is dropped",
+  "optional chaining short-circuits on null and undefined only; the raw claim that it ends null-pointer exceptions overstated it",
+  "Swift extensions add members to a type and are not resolved like Kotlin extensions, so Swift is dropped from that row",
+  "the Julia multiple dispatch row moves here from the raw array file; whether it solves the expression problem is marked interpretive"
+ ]
+}
+
+^["edges"]{
+ see: [ ~"./memory-and-systems.spw#lang_design_memory", ~"../../contract.spw#cut_contract" ]
+}
+
+^["concepts"]{
+ primary: [ #satisfies, #type_narrowing, #static_dispatch ]
+ transfers: [ #soundness ]
+ tensions: [ #expression_problem ]
+}
+
+^["matrix"]{
+ ^["legend"]{
+  columns: #[ checks, leaves_alone, introduced ]
+  as_of: "release notes and docs read 2026-10-02"
+ }
+ #>lang_design_types_row_unions
+ ^["discriminated_unions"]{
+  checks: "that a tag test narrows the value to the matching member"
+  leaves_alone: "values that arrive at run time without the declared shape"
+  introduced: "TypeScript 2.0, 2016"
+ }
+ #>lang_design_types_row_satisfies
+ ^["satisfies"]{
+  checks: "that an expression is assignable to a type, while keeping its inferred type"
+  leaves_alone: "string formats, ranges, and anything the type does not encode"
+  introduced: "TypeScript 4.9, 2022"
+ }
+ #>lang_design_types_row_extensions
+ ^["kotlin_extensions"]{
+  checks: "that the receiver type has the extension in scope, at compile time"
+  leaves_alone: "the extended class, which gains no member"
+  introduced: "Kotlin 1.0 era; C# has static extension methods of the same kind"
+ }
+ #>lang_design_types_row_chaining
+ ^["optional_chaining"]{
+  checks: "nothing statically by itself; at run time it stops at null or undefined"
+  leaves_alone: "other falsy values and errors thrown further along the chain"
+  introduced: "TypeScript 3.7 in 2019; ECMAScript 2020"
+ }
+ #>lang_design_types_row_dispatch
+ ^["multiple_dispatch"]{
+  checks: "at run time, which method best matches the types of all arguments"
+  leaves_alone: "static guarantees; Julia is dynamically typed"
+  introduced: "central to Julia from its first public release"
+ }
+}
+
+^["claims"]{
+ #>lang_design_types_satisfies
+ ^["satisfies_assignability"]{
+  #:claim #!settled
+  statement: "TypeScript 4.9 added satisfies to validate that an expression matches a type without changing the expression's resulting type."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_ts_4_9"
+  ~#say(satisfies checks fit, not format)
+  ^["limits"]{
+   holds: "anything the target type can express"
+   fails: "a hex color stored as a string; the check sees only that it is a string"
+  }
+ }
+ #>lang_design_types_narrowing
+ ^["tagged_unions"]{
+  #:claim #!settled
+  statement: "TypeScript narrows a union by a shared literal tag property, so inside a branch that tests the tag the value has the matching member type."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_ts_2_0"
+ }
+ #>lang_design_types_soundness
+ ^["soundness_non_goal"]{
+  #:claim #!settled
+  statement: "TypeScript lists a sound or provably correct type system as a non-goal and aims instead for a balance between correctness and productivity."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_ts_design_goals"
+  see: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_pierce_2002" ]
+  as_of: "design goals page read 2026-10-02"
+ }
+ #>lang_design_types_extensions
+ ^["static_extensions"]{
+  #:claim #!settled
+  statement: "Kotlin extensions are dispatched statically by the declared receiver type and add no members to the class they extend."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_kotlin_extensions"
+ }
+ #>lang_design_types_chaining
+ ^["optional_chaining"]{
+  #:claim #!settled
+  statement: "Optional chaining stops evaluating an expression when it meets null or undefined, and nullish coalescing falls back to a default only for those two values."
+  sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_ts_3_7", ~"../../registries/sources/spw-design-studies.spw#src_lab_ecma262_2020" ]
+ }
+ #>lang_design_types_dispatch
+ ^["julia_dispatch"]{
+  #:claim #!settled
+  statement: "Julia selects a method from the run-time types of all arguments, so new types and new functions can be added by separate packages."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_bezanson_2017"
+ }
+ #>lang_design_types_expression_problem
+ ^["expression_problem"]{
+  #:claim #!interpretive
+  statement: "Wadler framed the expression problem as adding cases and functions without recompiling and with static type safety; Julia meets the first part, and the static part does not apply."
+  see: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_wadler_1998" ]
+ }
+ #>lang_design_types_spw_reading
+ ^["spw_checks_surfaces"]{
+  #:claim #!interpretive
+  statement: "Spw has no static types; the cut gate plays the part of satisfies for whole surfaces, checking values against closed sets without changing them."
+  grounds: [ ~"../../contract.spw#cut_contract" ]
+  status: #implemented
+ }
+}
+
+#>lang_design_types_gate_q
+?["Is the cut gate a satisfies for surfaces?"]{
+ #:depth #!computational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Most gate failures in this cut were fixed by changing a value to fit the vocabulary, and few by amending the vocabulary, as most satisfies errors are fixed at the value."
+ !probe{ "sort gate failures recorded in receipts and corrections into fixed at the value and fixed by amending a set" =id[p_lab_types_gate_fixes] =kind[census] }
+ breaks: "satisfies checks one expression against a fixed type; the gate checks a tree against sets that writers may amend on purpose"
+ $%[file.frame_count, particle.case]
+ ~"./type-systems.spw#lang_design_types_spw_reading" ~#neighbor(nearest)
+}

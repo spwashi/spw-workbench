@@ -1,0 +1,252 @@
+# Math and Physics Notation Specimens
+#
+# TeX and physics notation fed to the Spw parser: carets, inline math, kets, uncertainty, units, and the symbols a physics keyboard types.
+
+#>spw_spec_math_physics
+#:layer #!semantics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!foundation
+#:review #!sourced
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Math and Physics Notation Specimens"
+ ~#claim: "Most math notation either splits silently or turns the whole surface into prose; a backtick phrase keeps a formula intact."
+ ~#proof: "Each row was run through the parser at commit 1aa1dc23; the backtick row is the only formula that parses as one literal."
+ ~#door: "Start with the caret row, then the backtick row that fixes it."
+ ~#audience: "physics and mathematics students writing notes in Spw"
+ continuity: "Math and Physics Notation Specimens | backtick phrase"
+ cold_open: "A formula typed as you would in a notebook breaks apart, but a backtick phrase keeps it whole."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/studies/persona-synthesis.json false_friends_top and contraption_catalog",
+  "writer probe run of every habit and every write_instead form at commit 1aa1dc23 on 2026-10-02",
+  "replay of every row and write_instead form against the parser on 2026-10-03, signatures, lexer errors, and loudness unchanged"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes" ]
+ feeds: [ ~"../glossary/false-friends.spw#spw_false_friends" ]
+}
+
+#>spw_spec_math_physics_observed
+^["observed"]{
+ #:claim #!settled
+ statement: "Each row was parsed at commit 1aa1dc23 as its habit line, any following line, and a final newline; signature, verdict, and loudness are what the tools then reported."
+ source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes"
+ cites: [ "packages/spw-seed/src/canonical/fingerprint.ts:49-70", "scripts/analyzers/spw-cut-gate.ts:193-217" ]
+}
+
+^["fixture"]{
+ status: #proposed
+ runner: "no repository code replays these rows as regression fixtures at 1aa1dc23; the writer probe script was scratch"
+}
+
+^["tex"]{
+ #>spw_spec_math_physics_caret_line_end
+ ^["caret_line_end"]{
+  habit: "H: H^", followed_by: "next: 1"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=2 Expression=4 Identifier=3 Literal=1 Operation=1 Seed=1 Sequence=1"
+  observed: "H binds H, and the caret at line end takes next from the following line as its subject"
+  write_instead: "H: .{ symbol: H, hat: true }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_infix"
+ }
+ #>spw_spec_math_physics_superscript
+ ^["superscript"]{
+  habit: "e: x^2"
+  verdict: #splits, loudness: #silent
+  signature: "Binding=1 Expression=4 Identifier=2 Literal=1 Operation=1 Seed=1 Sequence=1"
+  observed: "e binds x; a bare ^ operation and the literal 2 follow as siblings"
+  write_instead: "e: `x^2`"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_infix"
+ }
+ #>spw_spec_math_physics_inline_math
+ ^["inline_math"]{
+  habit: "e: $E = mc^2$"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=6 Identifier=1 Literal=1 ModifierChain=1 Operation=4 Seed=1 Sequence=1"
+  observed: "four operations appear: $E, an = with modifier mc, a bare ^, and a closing $"
+  write_instead: "e: `E = m c^2`"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_infix"
+ }
+ #>spw_spec_math_physics_backslash_macro
+ ^["backslash_macro"]{
+  habit: "h: \\hbar"
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 1
+  signature: "Binding=1 Expression=2 Identifier=2 Seed=1 Sequence=1"
+  observed: "the backslash is a lexer error, and h binds hbar"
+  write_instead: "h: `\\hbar`"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_typography"
+ }
+ #>spw_spec_math_physics_bra_ket
+ ^["bra_ket"]{
+  habit: "amp: <psi|phi>"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Capsule=1 Expression=3 Identifier=3 Seed=1 Sequence=2"
+  observed: "a shell capsule holds psi and phi joined by a | connector"
+  write_instead: "amp: `<psi|phi>`"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_comparison"
+ }
+ #>spw_spec_math_physics_ket
+ ^["ket"]{
+  habit: "psi: |0>"
+  verdict: #degrades, loudness: #validator
+  signature: "Prose=1 ProseChunk=1 Seed=1"
+  observed: "the parse stops at the leading | connector, and the whole surface becomes prose"
+  write_instead: "psi: `|0>`"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_comparison"
+ }
+ #>spw_spec_math_physics_backtick_phrase
+ ^["backtick_phrase"]{
+  habit: "e: `E = m c^2`"
+  verdict: #clean, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=1 Literal=1 Seed=1 Sequence=1"
+  observed: "the backtick phrase is one literal, and the formula survives intact"
+ }
+ refs: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_knuth_1984", ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_dirac_1939" ]
+}
+
+^["physics"]{
+ #>spw_spec_math_physics_plus_minus
+ ^["plus_minus"]{
+  habit: "g: 9.81 +- 0.01"
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 1
+  signature: "Binding=1 Expression=2 Identifier=1 Literal=2 Seed=1 Sequence=1"
+  observed: "the minus is a lexer error, and + joins 9.81 and 0.01 in one sum-shaped expression"
+  write_instead: "g: .{ value: 9.81, abs: 0.01 }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_math_physics_plus_minus_sign
+ ^["plus_minus_sign"]{
+  habit: "g: 9.81 ± 0.01"
+  codepoints: "U+00B1"
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 1
+  signature: "Binding=1 Expression=3 Identifier=1 Literal=2 Seed=1 Sequence=1"
+  observed: "the plus-minus sign is a lexer error, and 0.01 splits off as a sibling literal"
+  write_instead: "g: .{ value: 9.81, abs: 0.01 }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_typography"
+ }
+ #>spw_spec_math_physics_decimal_comma
+ ^["decimal_comma"]{
+  habit: "g: 9,81"
+  verdict: #splits, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=1 Literal=2 Seed=1 Sequence=1"
+  observed: "g binds 9, and the comma makes 81 a sibling"
+  write_instead: "g: 9.81"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_math_physics_concise_uncertainty
+ ^["concise_uncertainty"]{
+  habit: "G: 6.67430(15)"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=1 Literal=2 Scope=1 Seed=1 Sequence=2"
+  observed: "the parenthesized digits become a Scope beside the value"
+  write_instead: "G: \"6.67430(15)\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_math_physics_scientific
+ ^["scientific"]{
+  habit: "N: 6.022e23"
+  verdict: #splits, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=2 Literal=1 Seed=1 Sequence=1"
+  observed: "N binds 6.022, and e23 becomes a separate identifier"
+  write_instead: "N: \"6.022e23\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_math_physics_much_less
+ ^["much_less"]{
+  habit: "regime: v << c"
+  verdict: #degrades, loudness: #validator
+  signature: "Prose=1 ProseChunk=2 Seed=1"
+  observed: "<< opens a stream that never closes, and the whole surface becomes prose"
+  write_instead: "regime: \"v << c\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_comparison"
+ }
+ #>spw_spec_math_physics_order_of
+ ^["order_of"]{
+  habit: "n: ~10"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=1 Literal=1 Operation=1 Seed=1 Sequence=1"
+  observed: "n binds a bare ~ operation, and 10 follows as a separate literal"
+  write_instead: "n: \"~10\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_infix"
+ }
+ #>spw_spec_math_physics_unit_suffix
+ ^["unit_suffix"]{
+  habit: "g: 9.81 m/s^2"
+  verdict: #splits, loudness: #silent
+  signature: "Binding=1 Expression=5 Identifier=3 Literal=2 Operation=1 Seed=1 Sequence=1"
+  observed: "g binds 9.81; m/s and a bare ^ with 2 follow as siblings"
+  write_instead: "g: .{ n: 9.81, unit: \"m/s^2\" }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_math_physics_greek_value
+ ^["greek_value"]{
+  habit: "lambda: λ", followed_by: "next: 1"
+  codepoints: "U+03BB"
+  verdict: #swallows, loudness: #gate, lexer_errors: 1
+  signature: "Binding=2 Expression=3 Identifier=2 Literal=1 Seed=1 Sequence=1"
+  observed: "the Greek letter is a lexer error, which leaves lambda empty, so it binds the next line"
+  write_instead: "lambda: \"λ\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_typography"
+ }
+ #>spw_spec_math_physics_degree_sign
+ ^["degree_sign"]{
+  habit: "T: 20 °C"
+  codepoints: "U+00B0"
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 1
+  signature: "Binding=1 Expression=3 Identifier=2 Literal=1 Seed=1 Sequence=1"
+  observed: "the degree sign is a lexer error, and C splits off as an identifier"
+  write_instead: "T: .{ n: 20, unit: \"C\" }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_typography"
+ }
+ #>spw_spec_math_physics_times_sign
+ ^["times_sign"]{
+  habit: "a: 3 × 4"
+  codepoints: "U+00D7"
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 1
+  signature: "Binding=1 Expression=3 Identifier=1 Literal=2 Seed=1 Sequence=1"
+  observed: "the multiplication sign is a lexer error, and 4 splits off"
+  write_instead: "a: `3 x 4`"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_typography"
+ }
+ refs: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_gum_2008", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_si_brochure_2019" ]
+}
+
+^["try"]{
+ #>spw_spec_math_physics_try
+ ^["backtick_drill"]{
+  materials: [ "a terminal at the repository root", "one formula from your own notes" ]
+  steps: << "pipe the formula as e: and the formula into npm run spw -- fingerprint --stdin" ; "wrap the formula in backticks and pipe it again" ; "compare the two signatures" >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./math-physics-notation.spw#spw_spec_math_physics_backtick_phrase"
+ }
+}
+
+#>spw_spec_math_physics_backtick_q
+?["What does a formula lose when it moves into a backtick phrase?"]{
+ #:depth #!mathematical ~#lens(scale and dimension)
+ #:claim #!speculative
+ ~#hypothesis: "Every math row becomes clean inside backticks, and the cost is that the tree then sees no units, exponents, or uncertainty, so registry cells must carry them."
+ !probe{ "rewrite each row as a backtick phrase plus a registry-style cell and count which facts survive only in the cell" =id[p_gloss_math_backtick] =kind[build] }
+ $%[gloss.spec.rows_n, gloss.spec.validator_n]
+ ~"./math-physics-notation.spw#spw_spec_math_physics_observed" ~#neighbor(nearest)
+}

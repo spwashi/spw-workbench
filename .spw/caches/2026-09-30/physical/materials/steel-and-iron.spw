@@ -1,0 +1,262 @@
+# Steel and Iron
+#
+# A timeline ladder from meteoritic iron and the bloomery to crucible steel, the converter, and the electric furnace, with the iron-carbon facts each rung relied on.
+
+#>materials_steel
+#:layer #!reference
+#:domain #!materials
+#:form #!timeline
+#:level #!intro
+#:review #!adversarial_checked
+#:valence #!bonk
+
+^"emit"{
+ ~#title: "Steel and Iron"
+ ~#claim: "Steel is iron with a little carbon, and each step from the bloomery to the electric furnace changed who could make it and how cheaply."
+ ~#proof: "Tylecote and Wagner for the furnaces, Srinivasan and Kapp for crucible and Japanese steel, Callister for the iron-carbon diagram, the IEA for emissions."
+ ~#door: "Climb the ladder from the meteorite dagger, then harden a bobby pin to see martensite."
+ ~#audience: "curious readers, makers, and history students"
+ continuity: "Steel and Iron | little carbon"
+ cold_open: "Steel is iron with a little carbon, and each furnace that changed the recipe changed who could make steel and how cheaply."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/materials-matter-and-history/steel-and-ferrous-metallurgy.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #fail }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ gate_note: "r3 first recorded a pass; that run failed on a link to the mechanical core surface not yet written, and r5 records the run after it landed"
+ corrections: #[
+  "Japanese smiths did not fold steel thousands of times; layers double with each fold, so about a dozen folds give thousands of layers",
+  "the raw named the clay coating yakibare, a term the review flagged as naming a quench defect; the clay step is described in plain words",
+  "a Hittite monopoly on iron is marked refuted, and a tin shortage as the driver of iron is marked contested",
+  "the Damascus pattern is credited to carbide banding from trace impurities; the nanotube report is one sample, not the cause of the pattern",
+  "the wonder credited Cottrell atmospheres for most of the strength carbon adds; atmospheres explain the yield point, while microstructure carries most strength",
+  "the 85 percent cost drop and the 7 to 9 percent greenhouse share were unsourced; the share is now a verify cell from the IEA 2020 roadmap",
+  "Chinese cast iron and fining and South Asian crucible steel are added as rungs the raw left out",
+  "pure iron is austenite only from 912 to 1394 C and delta ferrite above that up to melting at 1538 C; the rung had said austenite above 912 C",
+  "the first LD converter ran at Linz in 1952 and Donawitz followed in 1953",
+  "the wootz rung drops its medieval era tag, since South Indian crucible steel began well before the medieval period and was traded long after",
+  "the cold open no longer claims every furnace changed who held power; it now says who could make steel and how cheaply, as the card claim does"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./materials-core.spw#materials_core_eutectoid" ]
+ grounds: [ ~"../../registries/quantities/materials-and-engineering.spw#q_mateng_fe_c" ]
+ see: [ ~"./materials-core.spw#materials_core_yield_point", ~"../engineering/mechanical-core.spw#engineering_mechanical" ]
+}
+
+^["concepts"]{
+ primary: [ #iron_carbon, #microstructure, #furnace ]
+ transfers: [ #martensite, #phase_diagram ]
+ tensions: [ #craft_myth ]
+}
+
+^["ladder"]{
+ order: << "sky iron" ; "bloomery" ; "cast iron" ; "crucible" ; "tatara" ; "converter" ; "oxygen" ; "electric" >>
+ ^["before_smelting"]{
+  #>materials_steel_meteoritic
+  ^["sky_iron"]{
+   #:era #!ancient
+   #:claim #!settled
+   statement: "The iron blade buried with Tutankhamun in the fourteenth century BCE is meteoritic; its nickel and cobalt match an iron meteorite, not smelted ore."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_comelli_2016"
+  }
+ }
+ ^["bloomery"]{
+  #>materials_steel_bloomery
+  ^["solid_state_reduction"]{
+   #:era #!ancient
+   #:claim #!settled
+   statement: "A bloomery reduces ore with charcoal below the melting point of iron, leaving a spongy bloom that smiths hammer to squeeze out slag, giving wrought iron."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_tylecote_1992"
+  }
+  #>materials_steel_hittite_myth
+  ^["hittite_monopoly"]{
+   #:claim #!refuted
+   statement: "The story that the Hittites held a guarded monopoly on ironmaking rests on a few letters; the archaeological record shows no such state-controlled iron industry."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_muhly_1985"
+  }
+  #>materials_steel_tin_shortage
+  ^["tin_shortage"]{
+   #:claim #!contested
+   statement: "Whether a tin shortage after about 1200 BCE pushed smiths from bronze to iron is debated; reviews find the adoption of iron gradual and regionally varied."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_erb_satullo_2019"
+  }
+ }
+ ^["cast_iron"]{
+  #>materials_steel_china_cast
+  ^["blast_furnace"]{
+   #:era #!classical
+   #:claim #!settled
+   statement: "Ironworkers in China made liquid cast iron in blast furnaces by the fifth century BCE and in the Han period fined it into steel by stirring it in air."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_wagner_2008"
+  }
+ }
+ ^["crucible"]{
+  #>materials_steel_wootz
+  ^["wootz"]{
+   #:claim #!settled
+   statement: "South Indian and Sri Lankan smiths sealed iron with carbon-bearing matter in crucibles to make high-carbon wootz steel, traded west as the stock for Damascus blades."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_srinivasan_ranganathan_2004"
+  }
+  #>materials_steel_damascus_pattern
+  ^["damascus_pattern"]{
+   #:claim #!settled
+   statement: "The watered pattern of Damascus blades comes from bands of cementite particles that form where trace carbide formers such as vanadium segregate during repeated forging."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_verhoeven_1998"
+  }
+  #>materials_steel_nanotubes
+  ^["nanotubes"]{
+   #:claim #!emerging
+   statement: "Electron microscopy of one seventeenth-century Damascus sabre found carbon nanotubes and cementite nanowires; whether such structures are general or matter for the pattern is unsettled."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_reibold_2006"
+  }
+ }
+ ^["tatara"]{
+  #>materials_steel_tamahagane
+  ^["tamahagane"]{
+   #:era #!medieval
+   #:claim #!settled
+   statement: "Japanese smelters reduce iron sand with charcoal in a clay tatara furnace; the best pieces of the resulting bloom, tamahagane, are sorted by carbon for swordmaking."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_kapp_1987"
+  }
+  #>materials_steel_folding
+  ^["folding"]{
+   #:claim #!settled
+   statement: "Smiths fold and forge-weld the billet to even out carbon and slag; layers double with each fold, so about a dozen folds already give thousands of layers."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_kapp_1987"
+  }
+  #>materials_steel_folding_myth
+  ^["thousands_of_folds"]{
+   #:claim #!refuted
+   statement: "The story that Japanese smiths folded a blade thousands of times confuses folds with layers; the thousands are layers, made by a modest number of doublings."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_kapp_1987"
+  }
+  #>materials_steel_hamon
+  ^["differential_hardening"]{
+   #:claim #!settled
+   statement: "Before quenching, the smith coats the blade with clay, thin at the edge and thick on the spine; the edge cools fast to martensite and the boundary shows as the hamon."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_kapp_1987"
+  }
+ }
+ ^["converter"]{
+  #>materials_steel_bessemer
+  ^["bessemer"]{
+   #:era #!industrial
+   #:claim #!settled
+   statement: "Bessemer announced in 1856 a converter that blows air through molten pig iron, burning out carbon and silicon with their own heat; Mushet added manganese to remove oxygen and sulfur."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_tylecote_1992"
+  }
+  #>materials_steel_basic_process
+  ^["basic_lining"]{
+   #:claim #!settled
+   statement: "Thomas and Gilchrist in 1878 lined the converter with basic material that captured phosphorus, opening the phosphoric ores of Lorraine and elsewhere to steelmaking."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_tylecote_1992"
+  }
+ }
+ ^["oxygen"]{
+  #>materials_steel_bof
+  ^["basic_oxygen"]{
+   #:era #!modern
+   #:claim #!settled
+   statement: "From 1952 at Linz and 1953 at Donawitz, blowing pure oxygen onto molten iron began replacing the slower open hearth; basic oxygen furnaces became the main route from blast-furnace iron."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_tylecote_1992"
+  }
+ }
+ ^["electric"]{
+  #>materials_steel_emissions
+  ^["emissions"]{
+   #:era #!current
+   #:claim #!settled
+   statement: "The IEA 2020 roadmap put iron and steel at about 7 percent of energy-system carbon dioxide, mostly from coke-fired blast furnaces."
+   reads: %[mateng.steel.co2_share_energy_pct]
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_iea_2020_steel"
+   as_of: "2020 edition; the registry cell is a verify cell"
+  }
+  #>materials_steel_hydrogen_dri
+  ^["hydrogen_reduction"]{
+   #:claim #!emerging
+   statement: "Reducing ore with hydrogen and melting the product in electric arc furnaces is the main proposed low-carbon route; the IEA roadmap treats it as a technology still being scaled."
+   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_iea_2020_steel"
+  }
+ }
+}
+
+^["iron_carbon"]{
+ #>materials_steel_allotropes
+ ^["allotropes"]{
+  #:claim #!settled
+  statement: "Pure iron is body-centred ferrite below 912 C, face-centred austenite from 912 to 1394 C, and body-centred delta ferrite again up to melting at 1538 C."
+  reads: %[
+   mateng.fe_c.alpha_gamma_t_c,
+   mateng.fe_c.gamma_delta_t_c,
+   mateng.fe_c.fe_melt_t_c
+  ]
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_callister_rethwisch_2018"
+ }
+ #>materials_steel_carbon_solubility
+ ^["carbon_solubility"]{
+  #:claim #!settled
+  statement: "Face-centred austenite dissolves up to 2.14 weight percent carbon, while body-centred ferrite holds at most 0.022, so cooling steel must push carbon out."
+  reads: %[mateng.fe_c.austenite_c_max_wt_pct, mateng.fe_c.ferrite_c_max_wt_pct]
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_callister_rethwisch_2018"
+ }
+ #>materials_steel_martensite
+ ^["martensite"]{
+  #:claim #!settled
+  statement: "Quenched fast enough, austenite cannot shed its carbon and shears into body-centred tetragonal martensite, hard and brittle until tempering lets carbides form."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_porter_easterling_2009"
+ }
+ #>materials_steel_stainless
+ ^["stainless"]{
+  #:claim #!settled
+  statement: "European standard EN 10088-1 defines stainless steel as at least 10.5 percent chromium, enough to form a thin self-repairing chromium oxide film."
+  reads: %[mateng.steel.stainless_cr_min_wt_pct]
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_en_10088_1"
+ }
+}
+
+^["try"]{
+ #>materials_steel_try_bobby_pin
+ ^["bobby_pin"]{
+  materials: [ "three steel bobby pins", "pliers with insulated handles", "a gas stove or candle", "a cup of cold water", "safety glasses" ]
+  steps: << "bend one untouched pin and feel it spring back" ; "heat a second pin to dull red and drop it in water" ; "bend it and watch it snap" ; "heat the third to red and let it cool in air" ; "bend it and feel it stay bent" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "hot metal and open flame; wear glasses, hold pins only with pliers, work with an adult, and keep water nearby"
+  shows: ~"./steel-and-iron.spw#materials_steel_martensite"
+ }
+}
+
+#>materials_steel_carbon_strength_q
+?["Why does less than one percent carbon make steel so much stronger than pure iron?"]{
+ #:depth #!physical ~#lens(material grain)
+ #:claim #!speculative
+ ~#hypothesis: "Most of the gain comes from microstructure, hard cementite in pearlite or trapped carbon in martensite; carbon atmospheres pinning dislocations matter more for the yield point than for strength."
+ !probe{ "compare yield and tensile strength for ferritic iron, pearlitic, and tempered martensitic steel at the same carbon content" =id[p_mateng_steel_carbon_strength] =kind[lit] }
+ $%[mateng.fe_c.eutectoid_c_wt_pct, mateng.fe_c.ferrite_c_max_wt_pct]
+ ~"./steel-and-iron.spw#materials_steel_martensite" ~#neighbor(nearest)
+}
+
+#>materials_steel_hamon_record_q
+?["Is a hamon a record of cooling, the way a tree ring records a season?"]{
+ #:depth #!historical ~#lens(craft practice)
+ #:claim #!speculative
+ ~#hypothesis: "The visible line marks where cooling outran carbon diffusion, so a skilled reader of the hamon reads the clay pattern and quench back from the steel."
+ breaks: "a ring adds a layer each year; a hamon records one quench and can be erased by reheating"
+ !probe{ "section a clay-quenched test bar and map hardness across the hamon line" =id[p_mateng_steel_hamon_map] =kind[build] }
+ $%[mateng.fe_c.eutectoid_t_c]
+ ~"./steel-and-iron.spw#materials_steel_hamon" ~#neighbor(nearest)
+}

@@ -1,0 +1,178 @@
+# Ecology Foundations
+#
+# Populations, communities, and ecosystems as a prerequisite graph, with energy thinning at each trophic step while nutrients cycle.
+
+#>development_ecology_foundations
+#:layer #!reference
+#:domain #!development_ecology
+#:form #!curriculum
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Ecology Foundations"
+ ~#claim: "Ecology climbs from populations to communities to ecosystems; nutrients cycle, while energy thins at each trophic step of its one-way flow."
+ ~#proof: "Ecosystem from Tansley 1935; trophic dynamics from Lindeman 1942; transfer efficiency near one tenth from Pauly and Christensen 1995; keystone predation from Paine 1966."
+ ~#door: "Walk the graph from populations to energy flow, then draw a food web from a park or garden."
+ ~#audience: "readers with high-school biology"
+ continuity: "Ecology Foundations | energy thins"
+ cold_open: "Energy thins at every step up a food chain, which is why there are few wolves and many rabbits."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ revision_2026_10_03: "r6 redated the r4 fact-check to 2026-10-02, the day its sources were read; a singleton concept tag was swapped for a recurring one where the fit is real: ecosystem became energy_budget"
+}
+
+^["edges"]{
+ needs: [ ~"../../physical/physics/classical-thermodynamics.spw#physics_thermo_classical" ]
+ grounds: [ ~"../../registries/quantities/plants-ecology-care.spw#q_eco_ecosystem" ]
+ feeds: [ ~"./limiting-nutrients.spw#development_ecology_limiting_nutrients", ~"./succession-and-resilience.spw#development_ecology_resilience" ]
+}
+
+^["concepts"]{
+ primary: [ #trophic_level, #niche, #energy_budget ]
+ transfers: [ #entropy, #feedback ]
+ tensions: [ #green_world ]
+}
+
+^["dag"]{
+ =~"./ecology-foundations.spw#development_ecology_foundations_communities"[needs]{ ~"./ecology-foundations.spw#development_ecology_foundations_populations" }
+ =~"./ecology-foundations.spw#development_ecology_foundations_ecosystems"[needs]{ ~"./ecology-foundations.spw#development_ecology_foundations_communities" }
+ =~"./ecology-foundations.spw#development_ecology_foundations_energy"[needs]{ ~"./ecology-foundations.spw#development_ecology_foundations_ecosystems" }
+ =~"./ecology-foundations.spw#development_ecology_foundations_trophic"[needs]{ ~"./ecology-foundations.spw#development_ecology_foundations_energy" ; ~"./ecology-foundations.spw#development_ecology_foundations_communities" }
+ order: << "populations" ; "communities" ; "ecosystems" ; "energy flow" ; "trophic levels" >>
+}
+
+#>development_ecology_foundations_populations
+^["populations"]{
+ #>development_ecology_foundations_logistic
+ ^["logistic_growth"]{
+  #:claim #!settled
+  statement: "A population growing without limits multiplies by a fixed rate; with limits, growth slows as numbers approach a carrying capacity, the logistic curve after Verhulst."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_begon_2006"
+  ^["limits"]{
+   holds: "as a first model of density dependence in one population"
+   fails: "real populations lag, cycle, and respond to age structure and weather that the curve ignores"
+  }
+ }
+ #>development_ecology_foundations_exclusion
+ ^["competitive_exclusion"]{
+  #:claim #!settled
+  statement: "Gause grew two Paramecium species together on one food supply and one drove the other out, the result later called competitive exclusion."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_gause_1934"
+  ^["limits"]{
+   holds: "simple laboratory settings with one shared limiting resource"
+   fails: "in the field, partitioned resources, disturbance, and predators let many competitors coexist"
+  }
+ }
+}
+
+#>development_ecology_foundations_communities
+^["communities"]{
+ #>development_ecology_foundations_niche
+ ^["niche"]{
+  #:claim #!settled
+  statement: "Hutchinson defined a niche as a region in a space of many environmental axes where a species can persist, separating the fundamental niche from the realized one."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_hutchinson_1957"
+ }
+ #>development_ecology_foundations_keystone
+ ^["keystone"]{
+  #:claim #!settled
+  statement: "Paine removed the predatory sea star Pisaster from rocky shore plots; mussels took over and the number of species fell, so one predator held the community open."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_paine_1966"
+ }
+ #>development_ecology_foundations_green_world
+ ^["green_world"]{
+  #:claim #!contested
+  statement: "Hairston, Smith, and Slobodkin argued the land is green because predators hold herbivores down; critics answer that plant defenses and nutrient limits also keep plants uneaten."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_hairston_1960"
+  counter: ~"../../registries/sources/plants-ecology-care.spw#src_eco_polis_1999"
+ }
+}
+
+#>development_ecology_foundations_ecosystems
+^["ecosystems"]{
+ #>development_ecology_foundations_tansley
+ ^["ecosystem_term"]{
+  #:claim #!settled
+  statement: "Tansley coined ecosystem in 1935 for organisms together with their physical environment, treated as one system."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_tansley_1935"
+ }
+ #>development_ecology_foundations_cycles
+ ^["flow_and_cycle"]{
+  #:claim #!settled
+  statement: "Energy enters ecosystems as light, passes through organisms, and leaves as heat; carbon, nitrogen, and phosphorus are reused in cycles."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_begon_2006"
+ }
+}
+
+#>development_ecology_foundations_energy
+^["energy_flow"]{
+ #>development_ecology_foundations_lindeman
+ ^["trophic_dynamics"]{
+  #:claim #!settled
+  statement: "Lindeman treated a lake as an energy budget and showed that each feeding level captures only a small part of the energy available from the level below."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_lindeman_1942"
+ }
+ #>development_ecology_foundations_second_law
+ ^["second_law"]{
+  #:claim #!settled
+  statement: "Respiration and waste turn most energy at each step into heat, as the second law of thermodynamics requires for any real conversion."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_begon_2006"
+ }
+}
+
+#>development_ecology_foundations_trophic
+^["trophic_levels"]{
+ #>development_ecology_foundations_transfer
+ ^["transfer_efficiency"]{
+  #:claim #!settled
+  statement: "Fisheries studies take about one tenth of production passing from one trophic level to the next as a working mean, so top predators need large production beneath them."
+  reads: %[eco.ecosystem.transfer_eff]
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_pauly_christensen_1995"
+  ^["limits"]{
+   holds: "as an average across aquatic food webs"
+   fails: "measured efficiencies vary widely by system, level, and organism, so one tenth is a rule of thumb"
+  }
+ }
+ levels: << "producers" ; "herbivores" ; "first carnivores" ; "top carnivores" ; "decomposers return nutrients to every level" >>
+}
+
+^["try"]{
+ #>development_ecology_foundations_try_web
+ ^["park_food_web"]{
+  materials: [ "a notebook", "a pencil", "a park, garden, or schoolyard you may visit" ]
+  steps: << "sit for ten minutes and list every living thing you see" ; "mark each as producer, consumer, or decomposer" ; "draw an arrow from food to eater" ; "circle the level with the most kinds and the level with the fewest" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "watch without touching unknown plants, fungi, or insects; wash hands afterward"
+  shows: ~"./ecology-foundations.spw#development_ecology_foundations_transfer"
+ }
+}
+
+#>development_ecology_foundations_chain_q
+?["Why are most food chains only four or five links long?"]{
+ #:depth #!physical ~#lens(energy budget)
+ #:claim #!speculative
+ ~#hypothesis: "If energy loss caps chain length, chains should run longer in more productive systems; if ecosystem size matters more, larger lakes should carry longer chains at equal productivity."
+ !probe{ "compare published chain lengths against productivity and lake volume" =id[p_eco_foundations_chain] =kind[lit] }
+ $%[eco.ecosystem.transfer_eff]
+ ~"./ecology-foundations.spw#development_ecology_foundations_transfer" ~#neighbor(nearest)
+}

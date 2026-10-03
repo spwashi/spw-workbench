@@ -1,0 +1,285 @@
+# Language and Library Specimens
+#
+# Leipzig glosses, judgment marks, rewrite rules, MARC and ISBD punctuation, EDTF dates, and call numbers fed to the Spw parser.
+
+#>spw_spec_language_library
+#:layer #!semantics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!foundation
+#:review #!sourced
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Language and Library Specimens"
+ ~#claim: "Interlinear glosses and catalog punctuation lose their boundaries in bindings, and survive verbatim inside a gloss apposition."
+ ~#proof: "Each row was run through the parser at commit 1aa1dc23; apposition bodies are read raw to the matching paren."
+ ~#door: "Start with the gloss rows and their apposition mirrors, then the blank indicator row."
+ ~#audience: "linguists, catalogers, and archivists writing records in Spw"
+ continuity: "Language and Library Specimens | gloss apposition"
+ cold_open: "A gloss line loses its boundaries in a binding but keeps every mark inside a gloss apposition."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/studies/persona-synthesis.json false_friends_top and contraption_catalog",
+  "writer probe run of every habit and every write_instead form at commit 1aa1dc23 on 2026-10-02",
+  "replay of every row and write_instead form against the parser on 2026-10-03, signatures, lexer errors, and loudness unchanged"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes" ]
+ feeds: [ ~"../glossary/false-friends.spw#spw_false_friends" ]
+}
+
+#>spw_spec_language_library_observed
+^["observed"]{
+ #:claim #!settled
+ statement: "Each row was parsed at commit 1aa1dc23 as its habit line, any following line, and a final newline; signature, verdict, and loudness are what the tools then reported."
+ source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes"
+ cites: [ "packages/spw-seed/src/canonical/fingerprint.ts:49-70", "scripts/analyzers/spw-cut-gate.ts:193-217" ]
+}
+
+^["fixture"]{
+ status: #proposed
+ runner: "no repository code replays these rows as regression fixtures at 1aa1dc23; the writer probe script was scratch"
+}
+
+^["leipzig"]{
+ #>spw_spec_language_library_morpheme_boundary
+ ^["morpheme_boundary"]{
+  habit: "gloss: dog-PL"
+  verdict: #clean, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=2 Seed=1 Sequence=1"
+  observed: "one identifier, because identifiers may contain hyphens; the boundary survives as text inside it"
+  ~#gloss(dog-PL)
+ }
+ #>spw_spec_language_library_category_period
+ ^["category_period"]{
+  habit: "gloss: 1SG.NOM"
+  verdict: #splits, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=2 Literal=1 Seed=1 Sequence=1"
+  observed: "gloss binds 1, and SG.NOM becomes a dotted identifier"
+  write_instead: "gloss: \"1SG.NOM\""
+  ~#gloss(1SG.NOM)
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_language_library_clitic_boundary
+ ^["clitic_boundary"]{
+  habit: "gloss: dog=DEF"
+  verdict: #splits, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=2 Operation=1 Seed=1 Sequence=1"
+  observed: "gloss binds dog, and =DEF becomes a separate = operation"
+  write_instead: "gloss: \"dog=DEF\""
+  ~#gloss(dog=DEF)
+  case_of: ~"../glossary/false-friends.spw#spw_ff_equals"
+ }
+ #>spw_spec_language_library_reduplication
+ ^["reduplication"]{
+  habit: "form: bi~bili"
+  verdict: #splits, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=2 Operation=1 Seed=1 Sequence=1"
+  observed: "form binds bi, and ~bili becomes a separate ~ operation"
+  write_instead: "form: \"bi~bili\""
+  ~#gloss(bi~bili)
+  case_of: ~"../glossary/false-friends.spw#spw_ff_infix"
+ }
+ #>spw_spec_language_library_infix
+ ^["infix"]{
+  habit: "form: b<um>ili"
+  verdict: #clean, loudness: #silent
+  signature: "Binding=1 Capsule=1 Expression=2 Identifier=4 Seed=1 Sequence=1"
+  observed: "a medial capsule with arms on both sides holds b, um, and ili on one line"
+  ~#gloss(b<um>ili)
+ }
+ #>spw_spec_language_library_infix_line_end
+ ^["infix_line_end"]{
+  habit: "form: b<um>", followed_by: "next: 1"
+  verdict: #swallows, loudness: #gate
+  signature: "Binding=2 Capsule=1 Expression=3 Identifier=4 Literal=1 Seed=1 Sequence=1"
+  observed: "with no right arm on its line, the capsule takes the key next from the following line"
+  write_instead: "form: \"b<um>\","
+  case_of: ~"../glossary/false-friends.spw#spw_ff_swallow"
+ }
+ refs: [ ~"../../registries/sources/spw-branch.spw#src_spw_leipzig_glossing" ]
+}
+
+^["judgments"]{
+ #>spw_spec_language_library_star
+ ^["star"]{
+  habit: "ex: *the cat slept the dog"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=5 Identifier=4 ModifierChain=1 Operation=1 Seed=1 Sequence=1"
+  observed: "* becomes a value operation on the with modifier cat, and the remaining words split into siblings"
+  write_instead: "ex: .{ judgment: \"*\", text: \"the cat slept the dog\" }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_infix"
+ }
+ #>spw_spec_language_library_question_mark
+ ^["question_mark"]{
+  habit: "ex: ?the cat seems sleeping"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=1 ModifierChain=1 Operation=1 ProseChunk=1 Seed=1 Sequence=1"
+  observed: "? becomes a wonder operation on the with modifier cat and a prose payload"
+  write_instead: "ex: .{ judgment: \"?\", text: \"the cat seems sleeping\" }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_infix"
+ }
+ #>spw_spec_language_library_hash_mark
+ ^["hash_mark"]{
+  habit: "ex: #colorless ideas"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=1 ModifierChain=1 Operation=1 Seed=1 Sequence=1"
+  observed: "# becomes a tag named colorless with the modifier ideas"
+  write_instead: "ex: .{ judgment: \"#\", text: \"colorless ideas\" }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_hash"
+ }
+ refs: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_schutze_1996" ]
+}
+
+^["phonology"]{
+ #>spw_spec_language_library_rewrite_rule
+ ^["rewrite_rule"]{
+  habit: "rule: V -> [+nasal] / _ N"
+  verdict: #degrades, loudness: #validator
+  signature: "Prose=1 ProseChunk=2 Seed=1"
+  observed: "the parse stops at the [ that opens the feature bundle, and the whole surface becomes prose"
+  write_instead: "rule: `V -> [+nasal] / _ N`"
+ }
+ #>spw_spec_language_library_feature_matrix
+ ^["feature_matrix"]{
+  habit: "seg: [+voice, -cont]"
+  verdict: #degrades, loudness: #validator, lexer_errors: 1
+  signature: "Prose=1 ProseChunk=2 Seed=1"
+  observed: "the minus is a lexer error, the parse stops at the [, and the whole surface becomes prose"
+  write_instead: "seg: .{ voice: true, cont: false }"
+ }
+ refs: [ ~"../../registries/sources/language-and-communities.spw#src_lang_chomsky_halle_1968" ]
+}
+
+^["cataloging"]{
+ #>spw_spec_language_library_blank_indicator
+ ^["blank_indicator"]{
+  habit: "f100: 100 1# $a Author, An"
+  verdict: #drops, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=1 Literal=2 Seed=1 Sequence=1"
+  observed: "the # after 1 is followed by a space, so the rest of the line, from $a onward, is a dropped note"
+  write_instead: "f100: .{ tag: \"100\", ind: \"1#\", a: \"Author, An\" }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_hash"
+ }
+ #>spw_spec_language_library_subfields
+ ^["subfields"]{
+  habit: "f245: 245 10 $a Water :$b a history /$c anon."
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=2 Expression=7 Identifier=2 Literal=2 ModifierChain=3 Operation=4 Seed=1 Sequence=1"
+  observed: "$a, $b, and $c become substrate operations, and a colon binds two of them"
+  write_instead: "f245: .{ tag: \"245\", a: \"Water\", b: \"a history\" }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_colon"
+ }
+ #>spw_spec_language_library_isbd_areas
+ ^["isbd_areas"]{
+  habit: "isbd: Water : a history / anon. -- 2nd ed."
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 2
+  signature: "Binding=2 Expression=9 Identifier=7 Literal=1 Operation=2 Seed=1 Sequence=1"
+  observed: "both hyphens of the area separator are lexer errors, and the title binds a nested pair"
+  write_instead: "isbd: \"Water : a history / anon. -- 2nd ed.\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_colon"
+ }
+ #>spw_spec_language_library_dewey
+ ^["dewey"]{
+  habit: "call: 005.133"
+  verdict: #clean, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=1 Literal=1 Seed=1 Sequence=1"
+  observed: "one decimal literal; the leading zeros stay in the token text"
+ }
+ #>spw_spec_language_library_lc_call
+ ^["lc_call"]{
+  habit: "call: QA76.73.S65"
+  verdict: #splits, loudness: #silent
+  signature: "Binding=1 Expression=5 Identifier=2 Literal=1 Operation=2 Seed=1 Sequence=1"
+  observed: "call binds QA76, then a bare . operation, 73, and a .S65 operation follow"
+  write_instead: "call: \"QA76.73.S65\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ refs: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_marc21_bib", ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_isbd_2011", ~"../../registries/sources/provenance-and-reference.spw#src_prov_dewey_1876" ]
+}
+
+^["dates"]{
+ #>spw_spec_language_library_approximate
+ ^["approximate"]{
+  habit: "d: 1950~"
+  verdict: #splits, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=1 Literal=1 Operation=1 Seed=1 Sequence=1"
+  observed: "d binds 1950, and the ~ becomes a loose operation, so the qualifier detaches"
+  write_instead: "d: \"1950~\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_language_library_unspecified
+ ^["unspecified"]{
+  habit: "d: 195X"
+  verdict: #splits, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=2 Literal=1 Seed=1 Sequence=1"
+  observed: "d binds 195, and X becomes a separate identifier"
+  write_instead: "d: \"195X\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_language_library_interval
+ ^["interval"]{
+  habit: "d: 1950/1960"
+  verdict: #clean, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=1 Literal=2 Seed=1 Sequence=1"
+  observed: "both years stay in one expression joined by a / connector"
+ }
+ #>spw_spec_language_library_iso_date
+ ^["iso_date"]{
+  habit: "d: 2026-09-30"
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 2
+  signature: "Binding=1 Expression=4 Identifier=1 Literal=3 Seed=1 Sequence=1"
+  observed: "both hyphens are lexer errors, and 09 and 30 split off as siblings"
+  write_instead: "d: \"2026-09-30\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_language_library_ipa_value
+ ^["ipa_value"]{
+  habit: "pron: ʃ", followed_by: "next: 1"
+  codepoints: "U+0283"
+  verdict: #swallows, loudness: #gate, lexer_errors: 1
+  signature: "Binding=2 Expression=3 Identifier=2 Literal=1 Seed=1 Sequence=1"
+  observed: "the IPA letter is a lexer error, which leaves pron empty, so it binds the next line"
+  write_instead: "pron: \"ʃ\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_typography"
+ }
+ refs: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_edtf_2019" ]
+}
+
+^["try"]{
+ #>spw_spec_language_library_try
+ ^["gloss_mirror_drill"]{
+  materials: [ "one glossed example from a grammar you use", "a scratch file outside the cut" ]
+  steps: << "write the gloss line as a binding" ; "write it again as a gloss apposition inside a frame" ; "run the cut gate on a scratch copy" ; "compare which marks survive" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "no hazard worth naming; use a published example, not a speaker you recorded"
+  shows: ~"./language-and-library.spw#spw_spec_language_library_morpheme_boundary"
+ }
+}
+
+#>spw_spec_language_library_mirror_q
+?["Does a gloss apposition keep every Leipzig boundary that a binding loses?"]{
+ #:depth #!educational ~#lens(curated collection)
+ #:claim #!speculative
+ ~#hypothesis: "Yes in direction: apposition bodies are taken raw to the matching paren, so hyphens, periods, equals signs, and angle brackets survive where bindings split them."
+ !probe{ "rewrite every Leipzig row as a gloss apposition and diff the body text against the habit" =id[p_gloss_language_mirror] =kind[build] }
+ $%[gloss.spec.rows_n, gloss.spec.silent_n]
+ ~"./language-and-library.spw#spw_spec_language_library_observed" ~#neighbor(nearest)
+}

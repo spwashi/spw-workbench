@@ -11,17 +11,30 @@
 #:valence #!bone
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "the DMA fine ceiling now cites the regulation instead of an encyclopedia page",
+  "Edison 2024 shares carry a note that the survey wave is not printed on the source page",
+  "the 2020 Singles Day cell no longer asserts a window the cited table does not state",
+  "fact check: the 2020 Singles Day cell still said the festival ran several days; that unsourced window is removed",
+  "fact check: IAB 2024 was 258 with a note that the page truncates; the report gives 258.6, and the page headline rounds to 259"
+ ]
  rule: "a market cell names its publisher, period, and as_of; a value nobody has read from its source stays unset with status verify"
+ recheck: "on 2026-10-03 the Edison 2024 shares, the four Gauge May 2025 shares, IAB 2025 growth, the Pew sample size, and the Alibaba fine were re-read at their sources and matched; verify cells stay unset"
 }
 
 ^["families"]{
@@ -43,12 +56,12 @@
  ^["hotel"]{
   id: econ_hotel, operator: "%", identifier: econ.hotel, plane: world, scope: corpus
   scheme: tol, algorithm: world.registry_lookup, form: scalar
-  keys: #[ ota_commission_pct, lodging_separation_rate_pct, flsa_tipped_cash_wage_usd, dma_max_fine_pct ]
+  keys: #[ ota_commission_pct, lodging_separation_rate_pct, flsa_tipped_cash_wage_usd, dma_max_fine_pct, ritz_empowerment_usd ]
  }
  ^["podcast"]{
   id: econ_podcast, operator: "%", identifier: econ.podcast, plane: world, scope: corpus
   scheme: tol, algorithm: world.registry_lookup, form: scalar
-  keys: #[ edison_2024_youtube_pct, edison_2024_spotify_pct, edison_2024_apple_pct, edison_latest_youtube_pct, pew_2022_sample_n ]
+  keys: #[ edison_2024_youtube_pct, edison_2024_spotify_pct, edison_2024_apple_pct, edison_latest_youtube_pct, infinite_dial_monthly_pct, pew_2022_sample_n ]
  }
  ^["tv"]{
   id: econ_tv, operator: "%", identifier: econ.tv, plane: world, scope: corpus
@@ -68,7 +81,7 @@
  ^["singles"]{
   id: econ_singles, operator: "%", identifier: econ.singles, plane: world, scope: corpus
   scheme: tol, algorithm: world.registry_lookup, form: scalar
-  keys: #[ alibaba_gmv_2019_byuan, alibaba_gmv_2020_byuan, alibaba_fine_2021_busd, viya_fine_2021_byuan ]
+  keys: #[ alibaba_gmv_2019_byuan, alibaba_gmv_2020_byuan, alibaba_fine_2021_busd, viya_fine_2021_byuan, viya_2021_sales_byuan ]
  }
 }
 
@@ -156,8 +169,14 @@
  }
  %econ.hotel.dma_max_fine_pct{
   value: 10, unit: "percent of worldwide turnover", abs: 0, status: #settled
-  at: "ceiling for a first infringement under the Digital Markets Act; repeat infringement 20"
-  src: ~"../sources/economy-and-markets.spw#src_econ_wiki_dma"
+  at: "ceiling for a first infringement under the Digital Markets Act, Article 30; repeat infringement 20"
+  src: ~"../sources/economy-and-markets.spw#src_econ_dma_2022"
+ }
+ %econ.hotel.ritz_empowerment_usd{
+  value: 2000, unit: "USD per guest per incident", abs: 0, status: #settled
+  at: "Ritz-Carlton employee authority to resolve a guest problem without approval, as described in 2008"
+  as_of: "2008"
+  src: ~"../sources/economy-and-markets.spw#src_econ_michelli_2008"
  }
 }
 
@@ -166,18 +185,21 @@
  %econ.podcast.edison_2024_youtube_pct{
   value: 31, unit: "percent of weekly podcast listeners 13+", abs: 0.5, status: #settled
   at: "service used most to listen to podcasts, Edison Podcast Metrics, published 2024-10-23"
+  quarter: "survey wave not printed on the page; copy it from the Edison report before reuse"
   as_of: "2024-10-23"
   src: ~"../sources/economy-and-markets.spw#src_econ_edison_2024_platforms"
  }
  %econ.podcast.edison_2024_spotify_pct{
   value: 27, unit: "percent of weekly podcast listeners 13+", abs: 0.5, status: #settled
   at: "service used most to listen to podcasts, Edison Podcast Metrics, published 2024-10-23"
+  quarter: "survey wave not printed on the page; copy it from the Edison report before reuse"
   as_of: "2024-10-23"
   src: ~"../sources/economy-and-markets.spw#src_econ_edison_2024_platforms"
  }
  %econ.podcast.edison_2024_apple_pct{
   value: 15, unit: "percent of weekly podcast listeners 13+", abs: 0.5, status: #settled
   at: "service used most to listen to podcasts, Edison Podcast Metrics, published 2024-10-23"
+  quarter: "survey wave not printed on the page; copy it from the Edison report before reuse"
   as_of: "2024-10-23"
   src: ~"../sources/economy-and-markets.spw#src_econ_edison_2024_platforms"
  }
@@ -185,7 +207,13 @@
   value: "unset", unit: "percent of weekly podcast listeners 13+", status: #verify
   at: "latest Edison quarter; fieldwork quarter and wording must be copied from the report"
   as_of: "2026-10-01"
-  src: "unsourced"
+  src: ~"../sources/economy-and-markets.spw#src_econ_edison_podcast_metrics"
+ }
+ %econ.podcast.infinite_dial_monthly_pct{
+  value: "unset", unit: "percent of US population 12+", status: #verify
+  at: "listened to a podcast in the last month, latest Infinite Dial; a share of people, not of listening time"
+  as_of: "2026-10-02"
+  src: ~"../sources/economy-and-markets.spw#src_econ_edison_infinite_dial"
  }
  %econ.podcast.pew_2022_sample_n{
   value: 5132, unit: "US adults", abs: 0, status: #settled
@@ -231,8 +259,8 @@
 #>q_econ_ads
 ^"ads"{
  %econ.ads.iab_us_internet_2024_busd{
-  value: 258, unit: "billion USD", rel: 0.005, status: #settled
-  at: "US internet advertising revenue, full year 2024; the report page truncates the decimal"
+  value: 258.6, unit: "billion USD", abs: 0.05, status: #settled
+  at: "US internet advertising revenue, full year 2024, 14.9 percent above 2023; the report gives 258,571 million and the web headline rounds to 259"
   as_of: "2025-04-17"
   src: ~"../sources/economy-and-markets.spw#src_econ_iab_2024"
  }
@@ -250,7 +278,7 @@
   value: "unset", unit: "million print units", status: #verify
   at: "US print book units, latest full year, Circana BookScan point of sale"
   as_of: "2026-10-01"
-  src: "unsourced"
+  src: ~"../sources/economy-and-markets.spw#src_econ_circana_bookscan"
  }
  %econ.media.us_publishing_revenue_latest_busd{
   value: "unset", unit: "billion USD", status: #verify
@@ -262,7 +290,7 @@
   value: "unset", unit: "billion USD", status: #verify
   at: "US and Canada box office, latest full year, Comscore"
   as_of: "2026-10-01"
-  src: "unsourced"
+  src: ~"../sources/economy-and-markets.spw#src_econ_comscore_box_office"
  }
  %econ.media.window_2019_home_video_days{
   value: 90, unit: "days", abs: 0, status: #superseded
@@ -285,7 +313,7 @@
  }
  %econ.singles.alibaba_gmv_2020_byuan{
   value: 498.2, unit: "billion CNY", abs: 0.05, status: #settled
-  at: "Alibaba reported GMV over a widened 1 to 11 November window, 2020"
+  at: "Alibaba reported Singles Day GMV, 2020, encyclopedia table value; the sale window it covers is not stated there"
   src: ~"../sources/economy-and-markets.spw#src_econ_wiki_singles_day"
  }
  %econ.singles.alibaba_fine_2021_busd{
@@ -296,6 +324,11 @@
  %econ.singles.viya_fine_2021_byuan{
   value: 1.34, unit: "billion CNY", rel: 0.01, status: #settled
   at: "tax penalty and back taxes assessed on the livestreamer Viya, December 2021"
+  src: ~"../sources/economy-and-markets.spw#src_econ_wiki_viya"
+ }
+ %econ.singles.viya_2021_sales_byuan{
+  value: 8.5, unit: "billion CNY", rel: 0.05, status: #verify
+  at: "goods sold through Viya livestreams around Singles Day 2021, as the encyclopedia reports it; the sale day needs a primary report"
   src: ~"../sources/economy-and-markets.spw#src_econ_wiki_viya"
  }
 }

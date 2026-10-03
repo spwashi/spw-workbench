@@ -1,0 +1,177 @@
+# Cognitive and Computational Neuroscience
+#
+# Population codes, spike-timing plasticity, attractor maps of space, replay, oscillations, and the tools that record them, with predictive processing held here once as a contested framework.
+
+#>neuroscience_computational
+#:layer #!reference
+#:domain #!neuroscience
+#:form #!ledger
+#:level #!graduate
+#:review #!sourced
+#:valence #!bonk
+
+^"emit"{
+ ~#title: "Cognitive and Computational Neuroscience"
+ ~#claim: "Brains represent direction, place, and value in the joint activity of many neurons, and attractor dynamics and replay let those codes persist and teach; predictive processing remains a contested frame."
+ ~#proof: "Georgopoulos on population vectors, O'Keefe and the Mosers on place and grid cells, Gardner on the grid torus, Foster and Wilson on reverse replay, Schultz on dopamine, Walsh on the evidence for predictive processing."
+ ~#door: "Read population codes first, then spatial attractors, then replay and reward, then the contested frame."
+ ~#audience: "graduate students and modelers"
+ continuity: "Cognitive and Computational Neuroscience | many neurons"
+ cold_open: "A brain stores where you are and what you want in the joint activity of many neurons, not in any single cell."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/neuroscience/cognitive-and-computational-neuroscience.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #fail }
+  ^["r4"]{ event: #sourced, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ receipt_note: "r3 was first written as a pass while every source link pointed at a registry not yet written; r4 wrote and checked that registry, and r5 is the passing run after it"
+ corrections: #[
+  "the population vector predicts movement direction; the raw line said it precisely predicts hand trajectories (raw line 16)",
+  "Neuropixels probes record hundreds of neurons at once per probe; the raw line said thousands (raw line 31)",
+  "optogenetics credited to Nagel, Hegemann, and Bamberg for channelrhodopsin-2 and to Miesenbock for earlier genetic photostimulation, beside Boyden, Zhang, and Deisseroth (raw line 32)",
+  "predictive processing restated as contested, with its evidence reviewed by Walsh and colleagues (raw line 28)",
+  "the raw replay wonder stated temporal-difference learning as the mechanism; it is kept as a speculative question (raw line 41)"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./systems-and-sensory-circuits.spw#neuroscience_systems", ~"../../formal/mathematics/engineering-core/probability-and-statistics.spw#mathematics_probstat" ]
+ contrasts: [ ~"../../language-and-mind/cognition/perception-and-attention.spw#cognition_perception" ]
+ analog: [ ~"../../physical/physics/statistical-mechanics.spw#physics_statmech" ]
+}
+
+^["concepts"]{
+ primary: [ #population_code, #attractor, #replay ]
+ transfers: [ #energy_landscape, #reinforcement_learning ]
+ tensions: [ #predictive_processing ]
+}
+
+^["ledger"]{
+ ^["codes"]{
+  #>neuroscience_computational_population
+  ^["population_vector"]{
+   #:claim #!settled
+   statement: "Motor cortex neurons are broadly tuned to reach direction, and a vector sum weighted by their firing points close to the direction of an upcoming arm movement."
+   sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_georgopoulos_1982", ~"../../registries/sources/life-and-mind.spw#src_life_georgopoulos_1986" ]
+   ^["limits"]{
+    holds: "reach direction in trained monkeys"
+    fails: "a vector readout does not show that motor cortex itself computes direction; dynamical accounts read the same data differently"
+   }
+  }
+  #>neuroscience_computational_stdp
+  ^["spike_timing"]{
+   #:claim #!settled
+   statement: "A synapse strengthens when the presynaptic spike comes shortly before the postsynaptic one and weakens when the order is reversed, within a window of tens of milliseconds."
+   sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_markram_1997", ~"../../registries/sources/life-and-mind.spw#src_life_bi_poo_1998" ]
+  }
+ }
+ ^["space"]{
+  #>neuroscience_computational_place
+  ^["place_cells"]{
+   #:claim #!settled
+   statement: "Hippocampal place cells fire when a rat is in a particular part of its environment, a map O'Keefe and Dostrovsky first reported in 1971."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_okeefe_dostrovsky_1971"
+  }
+  #>neuroscience_computational_grid
+  ^["grid_cells"]{
+   #:claim #!settled
+   statement: "Grid cells in medial entorhinal cortex fire at the vertices of a triangular lattice tiling the space an animal explores."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_hafting_2005"
+   credit: "May-Britt Moser and Edvard Moser shared the 2014 Nobel Prize with John O'Keefe"
+  }
+  #>neuroscience_computational_attractor
+  ^["attractors"]{
+   #:claim #!settled
+   statement: "Recurrent networks can store patterns as stable states they fall into; the joint activity of a grid module lies on a torus, and the fly heading circuit behaves as a ring attractor."
+   sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_hopfield_1982", ~"../../registries/sources/life-and-mind.spw#src_life_gardner_2022", ~"../../registries/sources/life-and-mind.spw#src_life_kim_2017" ]
+  }
+ }
+ ^["replay"]{
+  #>neuroscience_computational_sleep_replay
+  ^["sleep_replay"]{
+   #:claim #!settled
+   statement: "Place-cell pairs that fired together during exploration fire together again during later sleep."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_wilson_mcnaughton_1994"
+  }
+  #>neuroscience_computational_reverse
+  ^["reverse_replay"]{
+   #:claim #!settled
+   statement: "Awake rats pausing after a run replay the recent path in reverse order during sharp-wave ripples, and reward changes reverse replay more than forward replay."
+   sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_foster_wilson_2006", ~"../../registries/sources/life-and-mind.spw#src_life_ambrose_2016", ~"../../registries/sources/life-and-mind.spw#src_life_buzsaki_2015" ]
+  }
+  #>neuroscience_computational_dopamine
+  ^["reward_prediction_error"]{
+   #:claim #!settled
+   statement: "Midbrain dopamine neurons fire to unexpected rewards, shift to cues that predict reward, and dip when a predicted reward fails, matching a temporal-difference error."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_schultz_1997"
+  }
+  #>neuroscience_computational_theta_gamma
+  ^["theta_gamma"]{
+   #:claim #!contested
+   statement: "Lisman and Jensen propose that gamma cycles nested in each theta cycle carry an ordered list of items, a code for sequences and working memory."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_lisman_jensen_2013"
+  }
+ }
+ ^["frames"]{
+  #>neuroscience_computational_predictive
+  ^["predictive_processing"]{
+   #:claim #!contested
+   statement: "Predictive processing holds that cortex sends predictions down and prediction errors up; supporting recordings exist, but the distinct prediction and error neurons it requires are not yet clearly shown."
+   sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_rao_ballard_1999", ~"../../registries/sources/life-and-mind.spw#src_life_friston_2010" ]
+   counter: ~"../../registries/sources/life-and-mind.spw#src_life_walsh_2020"
+   held_once: "the cognition branch links here for this frame instead of restating it"
+  }
+ }
+ ^["tools"]{
+  #>neuroscience_computational_optogenetics
+  ^["optogenetics"]{
+   #:claim #!settled
+   statement: "Channelrhodopsin-2 from an alga is a light-gated cation channel; expressed in neurons it lets blue light drive spikes with millisecond precision."
+   sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_nagel_2003", ~"../../registries/sources/life-and-mind.spw#src_life_boyden_2005", ~"../../registries/sources/life-and-mind.spw#src_life_zemelman_2002" ]
+   credit: "Georg Nagel, Peter Hegemann, and Ernst Bamberg for the channel; Gero Miesenbock for earlier genetic photostimulation; Edward Boyden, Feng Zhang, and Karl Deisseroth for neurons"
+  }
+  #>neuroscience_computational_neuropixels
+  ^["dense_probes"]{
+   #:claim #!settled
+   statement: "Neuropixels silicon probes record hundreds of well-isolated neurons at once across several brain structures in behaving mice."
+   source: ~"../../registries/sources/life-and-mind.spw#src_life_jun_2017"
+  }
+  #>neuroscience_computational_bold
+  ^["bold_and_rest"]{
+   #:claim #!settled
+   statement: "fMRI reads blood oxygenation, because deoxyhemoglobin changes the magnetic signal; resting scans reveal networks such as the default mode network that quiet during focused tasks."
+   sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_ogawa_1990", ~"../../registries/sources/life-and-mind.spw#src_life_raichle_2001" ]
+   ^["limits"]{
+    holds: "relative changes in blood flow and oxygenation tied to neural activity"
+    fails: "BOLD lags activity by seconds and mixes synaptic input with spiking output"
+   }
+  }
+ }
+}
+
+#>neuroscience_computational_replay_q
+?["Does reverse replay assign credit to the choices that led to reward?"]{
+ #:depth #!computational ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "Replaying a path backward from the reward would let a value signal propagate to earlier places in one pass, as temporal-difference learning does over many steps."
+ !probe{ "compare a temporal-difference learner trained with and without backward sweeps on the same maze and count trials to a stable route" =id[p_life_neuro_reverse_td] =kind[sim] }
+ ~"./cognitive-and-computational.spw#neuroscience_computational_reverse" ~#neighbor(nearest)
+}
+
+#>neuroscience_computational_valley_q
+?["Is a memory in an attractor network a ball rolling into a valley?"]{
+ #:depth #!physical ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Hopfield gave his network an energy that every update lowers, so recall from a partial cue is a descent into the nearest stored minimum."
+ breaks: "a real ball has inertia and can roll past a valley, while network updates only go downhill and stop at the first minimum"
+ !probe{ "build a small Hopfield network, store three patterns, and track its energy as it recalls from a corrupted cue" =id[p_life_neuro_hopfield_energy] =kind[build] }
+ ~"./cognitive-and-computational.spw#neuroscience_computational_attractor" ~#neighbor(nearest)
+}

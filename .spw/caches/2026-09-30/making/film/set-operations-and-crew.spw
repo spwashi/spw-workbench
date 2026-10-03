@@ -7,7 +7,7 @@
 #:domain #!film
 #:form #!protocol
 #:level #!practitioner
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -27,8 +27,12 @@
  lineage: #[ ".spw/caches/film-production-and-industry/set-operations-and-crew-hierarchy.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-01", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
  }
  corrections: [
   "IATSE crew turnaround is 10 hours under the 2021 Basic Agreement; 12 hours is the SAG-AFTRA performer rest period",
@@ -158,7 +162,7 @@
   ^["limits"]{
    holds: "productions under these agreements in their stated terms"
    fails: "nonunion shoots, other countries, and the stated exceptions in each agreement"
-   currency: "the 2021 crew terms carried into the 2024 Basic Agreement; check the agreement in force"
+   currency: "the 2024 Basic Agreement succeeded the 2021 terms; check the agreement in force before quoting rest rules"
   }
  }
  #>film_set_weekend_rest

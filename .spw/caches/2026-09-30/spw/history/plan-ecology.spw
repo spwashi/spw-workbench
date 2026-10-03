@@ -1,0 +1,160 @@
+# Plan Ecology
+#
+# How this repository keeps its plans: a card at the top of each plan, a lane glyph for its kind of work, an index derived from the cards, and computed kin offered as a prompt.
+
+#>workbench_history_plans
+#:layer #!reference
+#:domain #!workbench_history
+#:form #!dossier
+#:level #!practitioner
+#:review #!sourced
+#:valence #!bone
+#:era #!current
+
+^"emit"{
+ ~#title: "Plan Ecology"
+ ~#claim: "Seventy-seven plan cards each carry a lane glyph and a phase, a script derives one flat index from them, and computed kin is labeled a prompt, not a claim."
+ ~#proof: "The plan index and its generator at commit 1aa1dc23, and the commit that carded every live plan on 2026-09-29."
+ ~#door: "Read the case, run the touch query on a file you hold, then compare with the clustering study."
+ ~#audience: "contributors resuming a plan and readers studying how a project keeps its intentions"
+ continuity: "Plan Ecology | a prompt, not a claim"
+ cold_open: "Each plan here wears a card, the index is read from the cards, and the computed kin is a prompt, not a claim."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   pending: "unresolved ref to a planned file of another package: spw/theory/clustering-hybrid.spw#spw_theory_clustering"
+  }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass
+   note: "card, lane, phase, and archive counts recounted from the plan index; the clustering ref now resolves"
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/spw-hosts-and-history.spw#q_hosts_plans", ~"../theory/clustering-hybrid.spw#spw_theory_clustering" ]
+ contrasts: [ ~"../../making/authorship/kindle-unlimited-case.spw#authorship_kindle_unlimited" ]
+ see: [ ~"./curriculum-plans.spw#workbench_history_curriculum_plans" ]
+}
+
+^["concepts"]{
+ primary: [ #plan_card, #lane_glyph, #computed_kin ]
+ transfers: [ #clustering_hybrid ]
+ tensions: [ #status_drift ]
+}
+
+^["case"]{
+ question: "How does a project with many concurrent plans keep each one resumable and the whole set legible?"
+ setting: "a single-owner repository where human and agent sessions open, pause, and resume plans in .agents/plans"
+
+ #>workbench_history_plans_cards
+ ^["cards"]{
+  #:claim #!settled
+  statement: "Each plan opens its wip.spw with a card whose operator is a lane glyph and whose first bindings are phase, gist, touches, entry, and next."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_index_script"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_claude_md" ]
+  cites: [ "scripts/plans/plan-index.ts:1-17", "scripts/plans/plan-index.ts:28-38" ]
+ }
+ ^["lanes"]{
+  execution: .{ glyph: "bang", asks: "what becomes truer?" }
+  projection: .{ glyph: "at-sign", asks: "what becomes discussable across hosts?" }
+  research: .{ glyph: "question mark", asks: "what is worth asking?" }
+  curriculum: .{ glyph: "tilde", asks: "what is learned?" }
+  principal: .{ glyph: "caret", asks: "what doctrine rises?" }
+  recovery: .{ glyph: "dot", asks: "what must be regrounded?" }
+  cites: ".agents/plans/index.spw:23-32"
+ }
+ #>workbench_history_plans_census
+ ^["census"]{
+  #:claim #!settled
+  statement: "At 1aa1dc23 the index lists 77 cards: 43 execution, 11 projection, 10 research, 6 curriculum, 5 principal, and 2 recovery, with 32 more plans archived."
+  reads: %[
+   hosts.plans.card_count,
+   hosts.plans.lane_execution_count,
+   hosts.plans.lane_projection_count,
+   hosts.plans.lane_curriculum_count,
+   hosts.plans.archived_count
+  ]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_index"
+  by_phase: "6 active, 23 landed, 9 planning, 18 dormant, 7 stranded, 14 done"
+ }
+ #>workbench_history_plans_derived
+ ^["derived_index"]{
+  #:claim #!settled
+  statement: "A script rewrites only the derived frames of the index, one per phase plus touches, kin, and drift, and keeps the authored legend and doors."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_index_script"
+  cites: [ "scripts/plans/plan-index.ts:11-13", "scripts/plans/plan-index.ts:41" ]
+  run: "npm run spw:plan:index -- --write, and --check to verify"
+  introduced: "commit da5189bb on 2026-09-29 carded every live plan and derived the index"
+ }
+ #>workbench_history_plans_kin
+ ^["computed_kin"]{
+  #:claim #!settled
+  statement: "Kin lists up to three live plans that overlap in touched code or name each other without a declared edge, and the index labels it a prompt to compare, not a claim."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_index_script"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_index" ]
+  cites: [ "scripts/plans/plan-index.ts:44-48", "scripts/plans/plan-index.ts:278-305", ".agents/plans/index.spw:265-266" ]
+  hub_rule: "a plan naming more than twelve siblings is a hub, and one named by more than a fifth of them is a reference point; neither counts as kin"
+ }
+ #>workbench_history_plans_drift
+ ^["drift"]{
+  #:claim #!settled
+  statement: "The drift frame flags cooling plans whose stream trails the newest entry by thirty days, cards whose status lags their phase, and map coverage of 44 of 77 cards."
+  reads: %[hosts.plans.plan_map_coverage]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_index"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_index_script" ]
+  cites: [ ".agents/plans/index.spw:321-327", "scripts/plans/plan-index.ts:43" ]
+ }
+ decision: "authored lanes and phases stay the tree a reader walks; computed kin and drift are regenerated and never edited by hand"
+ outcome: "a reader can ask which plans touch a file with --touch and get cards, not archaeology"
+}
+
+^["lessons"]{
+ #>workbench_history_plans_precedent
+ ^["clustering_precedent"]{
+  #:claim #!interpretive
+  statement: "The plan index is a working precedent for the clustering hybrid this cut adopts: authored facets for finding, computed neighbors for comparing, and only authored edges count as claims."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_cut_plan"
+  provenance_label: "a-cut reading; the hybrid itself stays a proposal"
+ }
+ #>workbench_history_plans_status_lag
+ ^["status_lag"]{
+  #:claim #!settled
+  statement: "Thirty-one cards show a status binding that names an earlier stage than their phase, so phase is the field to trust when the two disagree."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_index"
+  cites: ".agents/plans/index.spw:325"
+ }
+ pairing: "Kindle Unlimited shows a rule that pays by pages read changing what gets written; here a card that must name its phase changes how plans are kept"
+}
+
+^["try"]{
+ #>workbench_history_plans_try_touch
+ ^["which_plans_touch"]{
+  materials: [ "a checkout of the workbench", "a terminal" ]
+  steps: << "pick a file you are about to change" ; "run npm run spw:plan:index -- --touch with that path" ; "open the first card listed" ; "read its next binding before you start" >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "none worth naming; the touch query only reads"
+  shows: ~"./plan-ecology.spw#workbench_history_plans_derived"
+ }
+}
+
+#>workbench_history_plans_q
+?["Do computed kin lists lead readers to edges they then declare?"]{
+ #:depth #!social ~#lens(curated collection)
+ #:claim #!speculative
+ ~#hypothesis: "Plans that appear as each other's kin should gain declared edges more often than plans that never do."
+ !probe{ "diff kin frames across index regenerations and count how many kin pairs later gain a needs, feeds, or shares edge" =id[p_hosts_plans_kin_edges] =kind[census] }
+ $%[hosts.plans.card_count, hosts.plans.plan_map_coverage]
+ ~"./plan-ecology.spw#workbench_history_plans_kin" ~#neighbor(nearest)
+}

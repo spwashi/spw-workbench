@@ -7,7 +7,7 @@
 #:domain #!authorship
 #:form #!glossary
 #:level #!practitioner
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!boon
 #:era #!contemporary
 
@@ -28,14 +28,22 @@
  lineage: #[ ".spw/caches/indie-author-ecosystem/genre-conventions-and-cultural-trends.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "LitRPG is credited to Russian web fiction and publishing, where the term was coined in 2013, with Japanese, Taiwanese, and Korean parallels",
   "cultivation fiction is credited to Chinese xianxia and web fiction, not to a Western synthesis of Eastern sources",
   "the claim that New York editors were alienated from games is dropped as a stereotype without evidence",
-  "cozy fantasy is described as older than Legends and Lattes, which brought it wide attention"
+  "cozy fantasy is described as older than Legends and Lattes, which brought it wide attention",
+  "the Russian precursor is one 2012 web novel on samizdat.ru, not several; the Taiwanese and Korean parallels are named",
+  "fact check 2026-10-02: Cradle ran from Unsouled in 2016 through Waybound in 2023, with Threshold in 2025, not 2016 to 2023 for the whole series",
+  "fact check 2026-10-02: romantasy is no longer narrowed to secondary-world fantasy; the source says only romance combined with fantasy"
  ]
 }
 
@@ -60,19 +68,20 @@
   #>authorship_genres_litrpg
   ^["litrpg"]{
    #:claim #!settled
-   statement: "The term LitRPG was coined in Russia in late 2013 around an EKSMO book series, after Russian web novels of 2012 had put game interfaces into prose."
+   statement: "The term LitRPG was coined in Russia in late 2013 for an EKSMO book series, after a 2012 Russian web novel had set its story inside a game world."
    source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_litrpg"
    gloss: "game-world fiction with visible rules: levels, stats, skills, and loot the reader can audit"
-   credit: "Vasily Mahanenko, Dmitry Malkin, and Alex Bobl for the term; Dem Mikhailov for an early 2012 web novel"
+   credit: "Vasily Mahanenko, Dmitry Malkin, and Alex Bobl for the term; Dem Mikhailov for the 2012 web novel on samizdat.ru"
    broader: [ ~"./genre-conventions.spw#authorship_genres_gamelit" ]
    related: [ ~"./genre-conventions.spw#authorship_genres_progression" ]
   }
   #>authorship_genres_litrpg_parallels
   ^["parallels"]{
    #:claim #!settled
-   statement: "Game-world fiction has parallel roots in Japanese stories such as Sword Art Online, Taiwanese and Korean web novels, and English precursors such as Quag Keep and Dream Park."
+   statement: "Game-world fiction has parallel roots in Sword Art Online in Japan, Half Prince in Taiwan, The Legendary Moonlight Sculptor in Korea, and English precursors such as Quag Keep and Dream Park."
    source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_litrpg"
-   dates: "Quag Keep 1978; Dream Park 1981; Sword Art Online 2009"
+   dates: "Quag Keep 1978; Dream Park 1981; Half Prince from 2004; Sword Art Online 2009"
+   credit: "Andre Norton; Larry Niven and Steven Barnes; Yu Wo; Reki Kawahara"
   }
  }
  ^["advancement"]{
@@ -86,7 +95,7 @@
   #>authorship_genres_cultivation
   ^["cultivation"]{
    #:claim #!settled
-   statement: "Cultivation fiction comes from xianxia, a Chinese fantasy genre that grew from wuxia and draws on Daoist inner alchemy, in which characters train toward immortality through ranked stages."
+   statement: "Cultivation fiction comes from xianxia, a Chinese fantasy genre that grew from wuxia and draws on Daoist inner alchemy and Buddhist ideas, in which characters train toward immortality."
    source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_xianxia"
    first_novel: "Huanzhulouzhu, Legend of the Swordsmen of the Mountains of Shu, 1932, is widely called the first xianxia novel"
    broader: [ ~"./genre-conventions.spw#authorship_genres_wuxia" ]
@@ -101,8 +110,8 @@
   #>authorship_genres_progression
   ^["progression"]{
    #:claim #!settled
-   statement: "Progression fantasy centers measurable growth in power; Will Wight self-published the Cradle series from 2016 to 2023, drawing on cultivation stages."
-   source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wight_cradle"
+   statement: "Progression fantasy centers measurable growth in power; Will Wight self-published Cradle from Unsouled in 2016 through Waybound in 2023, with a further volume in 2025, drawing on cultivation stages."
+   sources: [ ~"../../registries/sources/creators-and-platforms.spw#src_creator_wight_cradle", ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_wight" ]
    related: [ ~"./genre-conventions.spw#authorship_genres_cultivation", ~"./genre-conventions.spw#authorship_genres_litrpg" ]
   }
  }
@@ -118,7 +127,7 @@
   #>authorship_genres_romantasy
   ^["romantasy"]{
    #:claim #!settled
-   statement: "Romantasy joins secondary-world fantasy to a central romance; A Court of Thorns and Roses and Fourth Wing are among the fantasy titles BookTok carried."
+   statement: "Romantasy combines fantasy with a central romance; A Court of Thorns and Roses and Fourth Wing are among the fantasy titles BookTok carried."
    source: ~"../../registries/sources/creators-and-platforms.spw#src_creator_wiki_booktok"
    related: [ ~"./genre-conventions.spw#authorship_genres_promise" ]
   }

@@ -1,0 +1,105 @@
+# Door: Caret
+#
+# One mark, legible alone: the caret integrates and names frames, a caret at the end of a line grabs the next key, and exponents live in backtick phrases.
+
+#>spw_door_caret
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!field_guide
+#:level #!intro
+#:review #!sourced
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Door: Caret"
+ ~#claim: "A caret names a frame, the unit every keystone here lives in; an exponent belongs in a backtick phrase, since x^2 splits and a line-end caret grabs the next key."
+ ~#proof: "Canon reads the caret as ascension and the runtime returns an integrated wrapper; probes at commit 1aa1dc23 split x^2 and nest the next line under a trailing caret."
+ ~#door: "Guess where a trailing caret finds its subject, then check it with spw inspect source."
+ ~#audience: "physics students who write exponents, hats, and daggers with a caret"
+ continuity: "Door: Caret | names a frame"
+ cold_open: "A caret names a frame; keep exponents in backtick phrases so nothing grabs the next line."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "persona study false_friends_top rank 6 and familiarity_matrix row for the caret",
+  "caret probes run by the writer at commit 1aa1dc23 on 2026-10-02"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ feeds: [ ~"../specimens/math-physics-notation.spw#spw_spec_math_physics" ]
+}
+
+^["mark"]{
+ #>spw_door_caret_frame
+ ^["names_a_frame"]{
+  #:claim #!settled
+  statement: "A caret before a quoted name in square brackets and a body names a frame; canon reads the caret as ascension, and the runtime returns a wrapper that integrates its arguments."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_canon_operators"
+  cites: [ "docs/theory/spw/operators.spw:37", "packages/spw-runtime/src/interpreter/interpreter.ts:289-291" ]
+  label: "a-canon reading name; the runtime row is code"
+  ~#spoken(caret)
+ }
+ #>spw_door_caret_line_end
+ ^["line_end_grab"]{
+  #:claim #!settled
+  statement: "A caret at the end of a line takes the next line's key as its subject, so op: H^ followed by next: 2 nests next under the caret with no warning."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+  cites: [ "packages/spw-seed/src/grammar/expressions.ts:175" ]
+  probe_run: "a caret label such as ^wbc at line end does the same; both parsed at 1aa1dc23 with success and no warning, and the cut gate does not flag them"
+  ^["limits"]{
+   holds: "a bare caret or a caret label as the last mark on its line"
+   fails: "a caret followed on the same line by a bracket, a brace, or a quoted name stays on its own line"
+  }
+ }
+ #>spw_door_caret_exponent
+ ^["exponent_split"]{
+  #:claim #!settled
+  statement: "Typed bare, x^2 becomes three siblings, the name x, a bare caret, and the number 2; inside a backtick phrase or a string the exponent stays whole."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
+  probe_run: "area: x^2 and law: with a backtick phrase holding E = m c^2, parsed at 1aa1dc23"
+ }
+}
+
+^["habits"]{
+ keep: "units with exponents written inside strings, as the water registry writes g/cm^3"
+ reads: %[mateng.water.rho_ice_g_cm3]
+ quote: [
+  "exponents, hats, daggers, and superscripts",
+  "operator hats such as H-hat, written as a word or a facet",
+  "scientific notation, which also splits at the e"
+ ]
+ unlearn: "a caret looks forward to what follows it, not back at the symbol before it"
+ units_source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_si_brochure_2019"
+}
+
+^["keyboard"]{
+ #>spw_door_caret_keys
+ ^["shift_six"]{
+  #:claim #!settled
+  statement: "The caret needs Shift with the 6 key on both the Windows US and the Windows UK layouts."
+  reads: %[doors.key.caret_us_mods, doors.key.caret_uk_mods]
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_kbd_us"
+ }
+}
+
+#>spw_door_caret_q
+?["Where does a caret at the end of a line find its subject?"]{
+ #:depth #!physical ~#lens(symmetry and invariance)
+ #:claim #!speculative
+ ~#hypothesis: "A physics habit of writing H-hat or x-squared predicts a mark on the symbol before the caret, so the forward grab reads as a silent change of subject."
+ !probe{ "guess first, then run spw inspect source --text on op: H^ with a second line next: 2 and --through structure" =id[p_doors_caret_line_end] =kind[thought] }
+ breaks: "a superscript decorates the symbol it follows, while a Spw caret is a prefix that acts on what comes after it"
+ ~"./caret.spw#spw_door_caret_line_end" ~#neighbor(nearest)
+}

@@ -1,0 +1,271 @@
+# Archive Patterns Matrix
+#
+# Fourteen working patterns from reference works and archives, compared on how they address, relate, facet, mark gaps, keep fixity, and grant access, with what this cut borrows and what it declines.
+
+#>information_science_patterns
+#:layer #!reference
+#:domain #!information_science
+#:form #!comparison
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Archive Patterns Matrix"
+ ~#claim: "Each reference pattern answers addressing, relation, facets, gaps, fixity, and access in its own way, and this cut borrows and declines those answers on purpose."
+ ~#proof: "Rows cite histories of leishu, Llull, the Encyclopedie, Mendeleev, Otlet, Warburg, Ranganathan, Bush, Luhmann, Foxfire, the Whole Earth Catalog, Britannica, OAIS, LOCKSS, and Wikidata."
+ ~#door: "Pick one column, read it down the rows, then check the borrow line against the contract."
+ ~#audience: "writers of this cut, catalogers, and anyone designing a note or reference system"
+ continuity: "Archive Patterns Matrix | borrows and declines"
+ cold_open: "Every reference system answers the same six questions, and this cut borrows and declines those answers on purpose."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   note: "forward ref to a planned trail another package had not written yet"
+  }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "pattern dates confirmed; gate receipt corrected from pass to partial"
+  }
+  ^["r5"]{
+   event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
+   note: "only the forward ref to the planned reference-library trail remains"
+  }
+ }
+ framing: "patterns are read as library practice later tools borrowed; the borrow and decline cells are the cut's own design choices, not claims about the originals"
+}
+
+^["edges"]{
+ grounds: [ ~"../../contract.spw#cut_contract", ~"../../vocabulary.spw#cut_vocabulary" ]
+ needs: [ ~"./reference-works-lineage.spw#information_science_reference_lineage" ]
+ feeds: [ ~"../../panels/gap-table.spw#panel_gap_table", ~"../../panels/llull-wheel.spw#panel_llull_wheel" ]
+}
+
+^["concepts"]{
+ primary: [ #renvoi, #faceted_classification ]
+ transfers: [ #fixity, #provenance ]
+ tensions: [ #ossified_taxonomy ]
+}
+
+^["columns"]{
+ addressing: "how one item is named so it can be found again"
+ relation: "how one item points at another"
+ facet: "which independent axes an item is filed under"
+ gap: "how an absence is shown"
+ fixity: "how a reader can tell the item has not changed"
+ access: "who could consult it"
+ cut: "borrows, adapts, or declines, with the place in this cut that shows it"
+}
+
+^["matrix"]{
+ #>information_science_patterns_leishu
+ ^["leishu"]{
+  #:claim #!settled
+  statement: "Leishu gathered quoted excerpts under fixed topical categories, so a reader looked up a subject and found earlier texts on it in one place."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_wilkinson_2012"
+  addressing: "category and subcategory heading"
+  relation: "co-location under one heading"
+  facet: "none; one hierarchy of categories"
+  gap: "a missing category is invisible"
+  fixity: "quotation keeps the source wording"
+  cut: .{ verdict: #adapts, where: ~"../../registries/quantities/provenance-and-reference.spw#registry_qty_provenance_and_reference" }
+  ~#(registries quote a value once and surfaces read it instead of copying it)
+ }
+ #>information_science_patterns_llull
+ ^["llull"]{
+  #:claim #!settled
+  statement: "Llull lettered his principles, listed every pair in a fixed figure, and combined them in threes on a figure of turning circles, so each combination could be read off as a question."
+  reads: %[prov.llull.alphabet_letter_count]
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_bonner_2007"
+  addressing: "a letter per principle"
+  relation: "every pair in the fixed Third Figure; triples on the turning Fourth Figure"
+  facet: "each letter stands for a principle, a relation, a question, and more, by the column of the alphabet it is read in"
+  gap: "none by design; the figures generate every combination"
+  cut: .{ verdict: #borrows, where: ~"../../panels/llull-wheel.spw#panel_llull_wheel" }
+ }
+ #>information_science_patterns_renvoi
+ ^["encyclopedie"]{
+  #:claim #!settled
+  statement: "The Encyclopedie filed articles alphabetically and tied them together with renvois, cross-references that Diderot also described as a way to question received views."
+  sources: [ ~"../../registries/sources/provenance-and-reference.spw#src_prov_diderot_1755", ~"../../registries/sources/provenance-and-reference.spw#src_prov_darnton_1979" ]
+  addressing: "alphabetical headword"
+  relation: "a renvoi from one article to another"
+  gap: "a missing article shows only as a dangling renvoi"
+  access: "subscribers first; cheaper quarto and octavo editions later"
+  cut: .{ verdict: #borrows, where: ~"../../contract.spw#cut_contract" }
+  ~#(typed edges in this cut are renvois with a relation name attached)
+ }
+ #>information_science_patterns_mendeleev
+ ^["mendeleev"]{
+  #:claim #!settled
+  statement: "Mendeleev arranged elements on two axes at once, left cells empty, and predicted the missing elements from the cells around them."
+  reads: %[prov.mendeleev.confirmed_prediction_count]
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_scerri_2007"
+  addressing: "row and column"
+  relation: "neighbors in period and group"
+  gap: "an empty cell that predicts its occupant"
+  cut: .{ verdict: #borrows, where: ~"../../panels/gap-table.spw#panel_gap_table" }
+ }
+ #>information_science_patterns_otlet
+ ^["otlet"]{
+  #:claim #!settled
+  statement: "Otlet and La Fontaine filed one reference per card under Universal Decimal Classification numbers that could be joined by signs to state a relation."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_rayward_1975"
+  addressing: "a UDC number on a standard card"
+  relation: "a colon or other sign joining two numbers"
+  facet: "auxiliary tables for place, time, form, and language"
+  cut: .{ verdict: #adapts, where: ~"./knowledge-organization.spw#information_science_ko_udc" }
+ }
+ #>information_science_patterns_warburg
+ ^["warburg"]{
+  #:claim #!settled
+  statement: "Warburg pinned photographs of images from distant eras to black panels and kept rearranging them to show gestures that recur."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_gombrich_1970"
+  addressing: "panel number"
+  relation: "adjacency on a panel"
+  facet: "none declared; the arrangement carries the argument"
+  fixity: "the panels survive as photographs of one moment of arrangement"
+  cut: .{ verdict: #adapts, where: ~"../../panels/affinity-atlas.spw#panel_affinity_atlas" }
+  ~#(the cut adds a breaks line to every plate, which the Atlas did not have)
+ }
+ #>information_science_patterns_colon
+ ^["colon"]{
+  #:claim #!settled
+  statement: "Ranganathan assembled class numbers from facets in a fixed citation order of personality, matter, energy, space, and time."
+  sources: [ ~"../../registries/sources/provenance-and-reference.spw#src_prov_ranganathan_1933", ~"../../registries/sources/provenance-and-reference.spw#src_prov_svenonius_2000" ]
+  addressing: "a class number built from facet values"
+  facet: "five fundamental categories"
+  gap: "an absent facet is left out of the number"
+  cut: .{ verdict: #borrows, where: ~"../../vocabulary.spw#cut_vocabulary" }
+  ~#(the cut header follows this order and declares space as an empty facet)
+ }
+ #>information_science_patterns_memex
+ ^["memex"]{
+  #:claim #!settled
+  statement: "Bush imagined a desk where a reader could tie any two documents together and build named trails to hand to a colleague."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_bush_1945"
+  relation: "a trail of tied items"
+  access: "the owner, and anyone handed a copy of a trail"
+  cut: .{ verdict: #borrows, where: ~"../../trails/reference-library-lineage.spw#trail_reference_lineage" }
+ }
+ #>information_science_patterns_luhmann
+ ^["zettelkasten"]{
+  #:claim #!settled
+  statement: "Luhmann gave each card a branching number so a new note could sit between old ones, and linked cards by writing other numbers on them."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_schmidt_2016"
+  addressing: "a branching number"
+  relation: "a number written on another card"
+  facet: "a keyword register pointing into the boxes"
+  access: "one owner"
+  cut: .{ verdict: #adapts, where: ~"../../contract.spw#cut_contract" }
+  ~#(anchors here are named for their subject instead of numbered by position)
+ }
+ #>information_science_patterns_foxfire
+ ^["foxfire"]{
+  #:claim #!settled
+  statement: "Foxfire students recorded Appalachian elders by interview and published each craft under the names of the people who held it."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_wigginton_1972"
+  relation: "a practice tied to the person who taught it"
+  facet: "craft, place, and person"
+  cut: .{ verdict: #borrows, where: ~"../../learning/intergenerational-kit/interview-protocol.spw#generations_kit_interview" }
+ }
+ #>information_science_patterns_whole_earth
+ ^["whole_earth"]{
+  #:claim #!settled
+  statement: "The Whole Earth Catalog grouped tools and books by use, with short reviews often sent in by readers, under the motto access to tools."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_turner_2006"
+  addressing: "a section named for a use"
+  relation: "a review pointing to a supplier"
+  fixity: "superseded by later editions"
+  cut: .{ verdict: #declines, where: ~"../../contract.spw#cut_contract" }
+  ~#(reader readings live in a reader root outside the cut, never inside it)
+ }
+ #>information_science_patterns_britannica
+ ^["britannica"]{
+  #:claim #!settled
+  statement: "The fifteenth Britannica set an outline of knowledge above a tier of short entries and a tier of long articles."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_propaedia_1974"
+  addressing: "outline section, short entry, or long article"
+  relation: "outline references down to entries and articles"
+  cut: .{ verdict: #borrows, where: ~"./reference-works-lineage.spw#information_science_lineage_britannica" }
+  ~#(class indexes are the outline; glossaries and leaves are the two tiers)
+ }
+ #>information_science_patterns_oais
+ ^["oais_lockss"]{
+  #:claim #!settled
+  statement: "OAIS packages carry fixity information with the content; LOCKSS keeps many independent copies that compare themselves and repair damage."
+  sources: [ ~"../../registries/sources/provenance-and-reference.spw#src_prov_ccsds_2024", ~"../../registries/sources/provenance-and-reference.spw#src_prov_reich_rosenthal_2001" ]
+  fixity: "a stored checksum, recomputed and compared"
+  access: "the designated community the archive serves"
+  cut: .{ verdict: #adapts, where: ~"../../provenance/manifest.spw#provenance_manifest_pin" }
+  ~#(the manifest pins checksums in place; the cut keeps no copies of its own)
+ }
+ #>information_science_patterns_wikidata
+ ^["wikidata"]{
+  #:claim #!settled
+  statement: "A Wikidata statement carries a value with qualifiers, references, and a rank, and a deprecated rank keeps a known error visible."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_vrandecic_2014"
+  addressing: "an item and property identifier"
+  relation: "a statement linking an item to a value"
+  gap: "a property with no statement"
+  cut: .{ verdict: #borrows, where: ~"../../contract.spw#cut_contract" }
+  ~#(a keystone carries status, limits, and source as a statement carries rank)
+ }
+}
+
+^["choices"]{
+ #>information_science_patterns_declined
+ ^["declined"]{
+  #:claim #!interpretive
+  statement: "The cut declines one hard hierarchy, private numbering, reader reviews inside the canon, and keeping its own copies."
+  ^["reasons"]{
+   one_hierarchy: "a single tree ossifies; facets and visible gaps carry what the tree cannot"
+   numbering: "named anchors survive moves that would renumber a branching scheme"
+   reviews: "readings rank and disclose but never change a claim status"
+   copies: "git already keeps history; the manifest checks it instead of duplicating it"
+  }
+ }
+ counterweight: ~"./taxonomy-cautions.spw#information_science_cautions"
+}
+
+^["try"]{
+ #>information_science_patterns_try_cards
+ ^["three_card_chain"]{
+  materials: [ "five index cards", "a pencil", "a short topic you know well" ]
+  steps: << "write one idea per card on four cards" ; "give each card a name you could say aloud" ; "write on each card the name of one other card and why" ; "leave the fifth card blank and write which two cards it should sit between" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./archive-patterns-matrix.spw#information_science_patterns_mendeleev"
+ }
+}
+
+#>information_science_patterns_scale_q
+?["Which borrowed pattern would strain first if this cut grew tenfold?"]{
+ #:depth #!computational ~#lens(curated collection)
+ #:claim #!speculative
+ ~#hypothesis: "Typed edges would strain first, because each is a hand-written claim and their number grows faster than the files they join."
+ !probe{ "count edges and files at each commit of the cut and fit how edges grow against files" =id[p_prov_patterns_edge_growth] =kind[census] }
+ $%[prov.plan.tree_file_count]
+ ~"./archive-patterns-matrix.spw#information_science_patterns_renvoi" ~#neighbor(nearest)
+}
+
+#>information_science_patterns_warburg_q
+?["Would a plate of images teach a pattern faster than a table of the same items?"]{
+ #:depth #!educational ~#lens(semiotic charge)
+ #:claim #!speculative
+ ~#hypothesis: "Side-by-side images should let readers spot a recurring gesture sooner, while a table should let them say what the gesture is more precisely."
+ !probe{ "show two reader groups the same six items as a plate or as a table and ask each to name what recurs" =id[p_prov_patterns_plate_vs_table] =kind[field] }
+ ~"./archive-patterns-matrix.spw#information_science_patterns_warburg" ~#neighbor(nearest)
+ breaks: "an image plate argues by resemblance, while a table argues by named columns a reader can check"
+}

@@ -1,0 +1,153 @@
+# Media Market Receipts
+#
+# Dated receipts for podcasts, television, advertising, books, box office, and theatrical windows: each value names its publisher, base, period, and as_of, and each unread value stays empty.
+
+#>markets_media_receipts
+#:layer #!reference
+#:domain #!markets
+#:form #!registry
+#:level #!practitioner
+#:review #!adversarial_checked
+#:valence #!bone
+#:era #!current
+
+^"emit"{
+ ~#title: "Media Market Receipts"
+ ~#claim: "Edison put YouTube first among podcast services in 2024, Nielsen showed streaming above broadcast and cable combined in May 2025, and unread book and box office cells stay empty."
+ ~#proof: "Values come from the Edison page of 2024-10-23, the Nielsen release of 2025-06-17, and the IAB reports of 2025 and 2026; windows from an encyclopedia page marked as such."
+ ~#door: "Read a receipt with its base and date, then run its probe before quoting it anywhere."
+ ~#audience: "writers, producers, and analysts quoting media numbers"
+ continuity: "Media Market Receipts | stay empty"
+ cold_open: "Each media number here carries its publisher and date, and the ones nobody has read stay empty."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ recheck: "on 2026-10-03 the writer re-read the Edison page of 2024-10-23, the Nielsen release of 2025-06-17, and the IAB 2025 page; every printed value matched, and a note on other Edison waves was added"
+ corrections: #[
+  "fact check: IAB 2024 was given as near 258 billion dollars; the report gives 258.6 billion, up 14.9 percent, and its web headline rounds to 259 and 15"
+ ]
+ rebuilt: "podcast platform shares are rebuilt from the Edison page, not from the dropped raw podcasting file, whose ranking was inverted"
+}
+
+^["edges"]{
+ needs: [ ~"./reading-market-reports.spw#markets_reading_listeners_vs_listening" ]
+ grounds: [ ~"../../registries/quantities/economy-and-markets.spw#q_econ_podcast", ~"../../registries/quantities/economy-and-markets.spw#q_econ_tv" ]
+ see: [ ~"../../making/film/production-state-machine.spw#film_production_release", ~"../../making/broadcast/serial-2014-case.spw#broadcast_serial_case" ]
+}
+
+^["concepts"]{
+ primary: [ #dated_receipt, #audience_measurement ]
+ transfers: [ #exclusivity, #platform_dependence ]
+ tensions: [ #sampling_frame ]
+}
+
+^["podcasts"]{
+ #>markets_receipts_podcast
+ ^["platform_share_2024"]{
+  #:claim #!settled
+  statement: "Edison reported that 31 percent of weekly podcast listeners aged 13 and up used YouTube most for podcasts, ahead of Spotify at 27 and Apple Podcasts at 15."
+  reads: %[econ.podcast.edison_2024_youtube_pct, econ.podcast.edison_2024_spotify_pct]
+  also_reads: %[econ.podcast.edison_2024_apple_pct]
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_edison_2024_platforms"
+  as_of: "2024-10-23"
+  ^["limits"]{
+   holds: "the wave behind the 2024-10-23 page, which does not print its fieldwork quarter"
+   fails: "as a current ranking; read the latest cell after its probe runs"
+   waves: "other Edison waves report other shares, so copy the wave label before comparing two figures"
+  }
+ }
+ #>markets_receipts_podcast_latest
+ ^["platform_share_latest"]{
+  value: %[econ.podcast.edison_latest_youtube_pct]
+  status: "verify; empty until the newest Edison wave is read"
+  probe: ~"./market-probe-battery.spw#markets_probe_edison"
+ }
+}
+
+^["television"]{
+ #>markets_receipts_tv
+ ^["gauge_may_2025"]{
+  #:claim #!settled
+  statement: "In May 2025 streaming took 44.8 percent of US TV usage, more than broadcast at 20.1 and cable at 24.1 combined, and YouTube alone took 12.5."
+  reads: %[econ.tv.gauge_2025_05_streaming_pct, econ.tv.gauge_2025_05_broadcast_pct]
+  also_reads: %[econ.tv.gauge_2025_05_cable_pct]
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_nielsen_2025_milestone"
+  youtube: %[econ.tv.gauge_2025_05_youtube_pct]
+  as_of: "2025-06-17"
+ }
+ #>markets_receipts_tv_latest
+ ^["gauge_latest"]{
+  value: %[econ.tv.gauge_latest_youtube_pct]
+  status: "verify; the latest month seen on 2026-10-01 was July 2026, with figures in images"
+  probe: ~"./market-probe-battery.spw#markets_probe_gauge"
+ }
+}
+
+^["advertising"]{
+ #>markets_receipts_ads
+ ^["iab_full_year"]{
+  #:claim #!settled
+  statement: "IAB and PwC put US internet advertising revenue at 258.6 billion dollars for 2024, up 14.9 percent, and reported growth of 13.9 percent for 2025."
+  reads: %[econ.ads.iab_us_internet_2024_busd, econ.ads.iab_us_internet_2025_growth_pct]
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_iab_2024", ~"../../registries/sources/economy-and-markets.spw#src_econ_iab_2025" ]
+  as_of: "2026-04-16"
+ }
+}
+
+^["books"]{
+ #>markets_receipts_books
+ ^["book_market"]{
+  units: %[econ.media.us_print_units_latest_m]
+  revenue: %[econ.media.us_publishing_revenue_latest_busd]
+  status: "verify; no book market value has been read for this cut"
+  probes: [ ~"./market-probe-battery.spw#markets_probe_bookscan", ~"./market-probe-battery.spw#markets_probe_aap" ]
+  bases: "print units at point of sale and publisher net revenue are different measures; never add or compare them directly"
+ }
+}
+
+^["film"]{
+ #>markets_receipts_box_office
+ ^["box_office"]{
+  value: %[econ.media.us_box_office_latest_busd]
+  status: "verify; no full-year total has been read for this cut"
+  probe: ~"./market-probe-battery.spw#markets_probe_comscore"
+ }
+ #>markets_receipts_windows
+ ^["theatrical_windows"]{
+  #:claim #!settled
+  statement: "Before 2020 major US chains held about 90 days of theatrical exclusivity; after the pandemic, deals shortened windows, including a 45-day window Warner Bros. agreed with Regal for 2022."
+  reads: %[econ.media.window_2019_home_video_days, econ.media.window_wb_regal_2022_days]
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_wiki_release_window"
+  tier: "encyclopedia; check the studio and exhibitor announcements before reuse"
+  ^["limits"]{
+   holds: "major US studio releases in wide theatrical distribution"
+   fails: "windows vary by title, studio, and country, and change by deal"
+  }
+ }
+}
+
+#>markets_receipts_youtube_q
+?["Is the YouTube lead in podcasts and on TV sets the same audience counted twice?"]{
+ #:depth #!social ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "Households that watch YouTube on TV sets account for a larger share of YouTube podcast listening than of Spotify podcast listening."
+ !probe{ "look for a cross-media study that reports podcast service by device, and compare TV-set use across services" =id[p_econ_receipts_youtube] =kind[lookup] }
+ breaks: "Nielsen counts minutes on TV sets; Edison counts people naming a main service; the two bases do not add"
+ $%[econ.podcast.edison_2024_youtube_pct, econ.tv.gauge_2025_05_youtube_pct]
+ ~"./media-market-receipts.spw#markets_receipts_podcast" ~#neighbor(nearest)
+}

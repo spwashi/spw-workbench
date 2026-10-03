@@ -1,0 +1,196 @@
+# Transforms and Complex Methods
+#
+# Fourier series, Fourier transform, DFT, Laplace, and z transforms side by side: what each eats, what it turns calculus into, and how residues bring you back.
+
+#>mathematics_transforms
+#:layer #!reference
+#:domain #!mathematics
+#:form #!comparison
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Transforms and Complex Methods"
+ ~#claim: "Every transform here turns convolution into multiplication; they differ in which signals they accept and where their poles must sit for stability."
+ ~#proof: "Oppenheim and Willsky give the shared table; Shannon gives sampling; Cooley and Tukey, and Heideman and colleagues, give the FFT and its history."
+ ~#door: "Read the matrix row for the transform you already use, then the convolution frame, then film a fan."
+ ~#audience: "engineering students between differential equations and signals or control"
+ continuity: "Transforms and Complex Methods | convolution into multiplication"
+ cold_open: "Every transform on this page turns convolution into multiplication; choose one by the signals it accepts."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+ }
+ corrections: #[
+  "the z-transform origin no longer reads as invention by Ragazzini and Zadeh; Laplace generating functions and Hurewicz 1947 come first, and 1952 is when they named it"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./differential-equations.spw#mathematics_diffeq_linear", ~"../topology-and-complex-core.spw#mathematics_tc_residue" ]
+ feeds: [ ~"../../../physical/engineering/control-and-signals.spw#engineering_control_signals", ~"../../../physical/engineering/electrical-core.spw#engineering_electrical" ]
+ see: [ ~"../../../physical/engineering/ece-advanced.spw#engineering_ece_advanced" ]
+}
+
+^["concepts"]{
+ primary: [ #convolution, #residue, #sampling ]
+ transfers: [ #holomorphy, #duality, #spectral_decomposition ]
+ tensions: [ #aliasing ]
+}
+
+^["matrix"]{
+ axes: #[ signal, kernel, converges, calculus_becomes, best_for, inverse ]
+
+ #>mathematics_transforms_fourier_series
+ ^["fourier_series"]{
+  signal: "periodic, continuous time"
+  kernel: "complex exponentials at whole multiples of the base frequency"
+  converges: "in mean square for square-integrable periods"
+  calculus_becomes: "a derivative becomes multiplication by i times the harmonic frequency"
+  best_for: "steady periodic response, strings, heat on a ring"
+  inverse: "sum the series"
+ }
+ #>mathematics_transforms_fourier_transform
+ ^["fourier_transform"]{
+  signal: "aperiodic, continuous time, finite energy"
+  kernel: "e to the minus i omega t over the whole line"
+  converges: "for integrable or square-integrable signals"
+  calculus_becomes: "a derivative becomes multiplication by i omega"
+  best_for: "spectra, filtering, steady-state frequency response"
+  inverse: "the same integral with the sign flipped and a 1 over 2 pi"
+ }
+ #>mathematics_transforms_dft
+ ^["dft_fft"]{
+  signal: "a finite block of samples, treated as one period"
+  kernel: "the n-th roots of unity"
+  converges: "always, being a finite sum"
+  calculus_becomes: "circular convolution becomes pointwise multiplication"
+  best_for: "computing spectra and fast convolution on sampled data"
+  inverse: "the same sum with conjugate roots and a 1 over n"
+ }
+ #>mathematics_transforms_laplace
+ ^["laplace"]{
+  signal: "one-sided, continuous time, possibly growing"
+  kernel: "e to the minus s t with s complex"
+  converges: "on the half-plane to the right of the rightmost pole"
+  calculus_becomes: "a derivative becomes s times the transform minus the initial value"
+  best_for: "transients with initial conditions, transfer functions, stability"
+  inverse: "partial fractions, which compute the residues of F of s times e to the s t"
+ }
+ #>mathematics_transforms_z
+ ^["z_transform"]{
+  signal: "one-sided or two-sided sequences, discrete time"
+  kernel: "z to the minus n with z complex"
+  converges: "on an annulus; outside the outermost pole for causal sequences"
+  calculus_becomes: "a one-step delay becomes multiplication by z to the minus one"
+  best_for: "sampled-data control, digital filters, difference equations"
+  inverse: "partial fractions or residues of F of z times z to the n minus one"
+ }
+}
+
+^["claims"]{
+ #>mathematics_transforms_convolution
+ ^["convolution_theorem"]{
+  #:claim #!settled
+  statement: "Each transform turns convolution into multiplication, so a linear time-invariant system multiplies the input transform by its transfer function."
+  source: ~"../../../registries/sources/formal.spw#src_formal_oppenheim_willsky_1997"
+  ~#say(filtering is multiplication in the other domain)
+ }
+ #>mathematics_transforms_initial_values
+ ^["initial_values"]{
+  #:claim #!settled
+  statement: "The one-sided Laplace transform turns a linear constant-coefficient ODE with initial conditions into algebra, with the initial values entering as polynomial terms."
+  source: ~"../../../registries/sources/formal.spw#src_formal_kreyszig_2011"
+ }
+ #>mathematics_transforms_stability
+ ^["pole_stability"]{
+  #:claim #!settled
+  statement: "A causal LTI system with rational transfer function is BIBO stable exactly when its poles lie in the open left half-plane, or inside the unit circle in discrete time."
+  source: ~"../../../registries/sources/formal.spw#src_formal_oppenheim_willsky_1997"
+  ^["limits"]{
+   holds: "causal systems with rational transfer functions and no pole-zero cancellation hiding an unstable mode"
+   fails: "a cancelled unstable pole stays unstable inside the system even when the transfer function looks stable"
+  }
+ }
+ #>mathematics_transforms_residue_inverse
+ ^["residue_inverse"]{
+  #:claim #!settled
+  statement: "For a rational Laplace transform, the inverse at time t is the sum of residues of F of s times e to the s t, which partial fractions compute term by term."
+  sources: [ ~"../../../registries/sources/formal.spw#src_formal_kreyszig_2011", ~"../../../registries/sources/formal.spw#src_formal_ahlfors_1979" ]
+ }
+ #>mathematics_transforms_sampling
+ ^["sampling_theorem"]{
+  #:claim #!settled
+  statement: "A signal with no content at or above B hertz is fixed exactly by samples taken faster than 2B per second; slower sampling folds high frequencies onto low ones."
+  reads: %[formal.transforms.nyquist_rate_factor]
+  source: ~"../../../registries/sources/formal.spw#src_formal_shannon_1949"
+  ~#(Whittaker in 1915 and Kotelnikov in 1933 reached the same theorem independently)
+ }
+ #>mathematics_transforms_gibbs
+ ^["gibbs"]{
+  #:claim #!settled
+  statement: "Partial Fourier sums overshoot a jump by about 9 percent of the jump on each side, and adding terms narrows the overshoot without shrinking it."
+  reads: %[formal.transforms.gibbs_overshoot_fraction]
+  source: ~"../../../registries/sources/formal.spw#src_formal_oppenheim_willsky_1997"
+ }
+ #>mathematics_transforms_fft
+ ^["fft"]{
+  #:claim #!settled
+  statement: "Cooley and Tukey in 1965 computed an n-point DFT in order n log n operations; Heideman, Johnson, and Burrus showed Gauss had used the idea around 1805."
+  sources: [ ~"../../../registries/sources/formal.spw#src_formal_cooley_tukey_1965", ~"../../../registries/sources/formal.spw#src_formal_heideman_1984" ]
+ }
+ #>mathematics_transforms_z_origin
+ ^["z_origin"]{
+  #:claim #!settled
+  statement: "The generating-function idea behind it appears in Laplace 1812; Hurewicz reintroduced it in 1947 for pulsed-data servos, and Ragazzini and Zadeh named it the z-transform in 1952."
+  sources: [ ~"../../../registries/sources/formal.spw#src_formal_laplace_1812", ~"../../../registries/sources/formal.spw#src_formal_hurewicz_1947", ~"../../../registries/sources/formal.spw#src_formal_ragazzini_zadeh_1952" ]
+  ^["limits"]{
+   holds: "the name z-transform and its development for sampled-data control at Columbia"
+   fails: "naming is not invention; summing a sequence against powers of a variable is the older generating-function method"
+  }
+ }
+}
+
+^["choose"]{
+ periodic_steady: ~"./transforms-and-complex-methods.spw#mathematics_transforms_fourier_series"
+ spectrum_of_a_pulse: ~"./transforms-and-complex-methods.spw#mathematics_transforms_fourier_transform"
+ samples_on_a_computer: ~"./transforms-and-complex-methods.spw#mathematics_transforms_dft"
+ transient_with_initial_state: ~"./transforms-and-complex-methods.spw#mathematics_transforms_laplace"
+ digital_filter_or_controller: ~"./transforms-and-complex-methods.spw#mathematics_transforms_z"
+}
+
+^["try"]{
+ #>mathematics_transforms_try_fan
+ ^["film_a_fan"]{
+  materials: [ "a desk fan with a speed switch", "a phone camera" ]
+  steps: << "film the fan at its lowest speed" ; "film it again at each higher speed" ; "watch the playback for blades that seem slow, frozen, or reversed" ; "count blades and estimate how far each turns between frames" ; "explain the apparent motion as sampling too slowly" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "keep fingers and loose cords away from the blades; leave the guard on"
+  shows: ~"./transforms-and-complex-methods.spw#mathematics_transforms_sampling"
+ }
+}
+
+#>mathematics_transforms_chat_alias_q
+?["Can a dashboard that polls a fast chat see trends that are not there?"]{
+ #:depth #!computational ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "Polling a chat topic count at a fixed interval will show slow phantom swings when topic bursts recur faster than half the polling rate."
+ !probe{ "replay a logged chat, poll topic counts at several intervals, and compare each series with the full-rate count" =id[p_formal_transforms_chat_alias] =kind[sim] }
+ breaks: "chat bursts are not bandlimited sinusoids, so the sampling theorem gives a warning about burst periods, not an exact recovery rule"
+ $%[formal.transforms.nyquist_rate_factor]
+ ~"./transforms-and-complex-methods.spw#mathematics_transforms_sampling" ~#neighbor(nearest)
+}

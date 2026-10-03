@@ -1,0 +1,213 @@
+# Chemistry Advanced
+#
+# Graduate chemistry as a technique matrix: what each method measures, what sample it needs, and where it stops, plus the synthesis and computation lineages behind them.
+
+#>chemistry_advanced
+#:layer #!reference
+#:domain #!chemistry
+#:form #!comparison
+#:level #!graduate
+#:review #!adversarial_checked
+#:valence #!bone
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Chemistry Advanced"
+ ~#claim: "Each structural technique answers one question: HMBC correlates protons with carbons two or three bonds away, and Rietveld refinement fits a whole powder diffraction pattern."
+ ~#proof: "Claridge and the original Aue, Bax, and Rietveld papers for the methods, with Ernst crediting Jeener for 2D NMR; Sheldrick for single-crystal refinement; Jensen for computation; NobelPrize.org for the lineages."
+ ~#door: "Pick the question you have about a sample, find its row, and read the limits column before trusting the answer."
+ ~#audience: "graduate students and advanced undergraduates choosing characterization methods"
+ continuity: "Chemistry Advanced | one question"
+ cold_open: "Every structural technique answers one question about a molecule, and the limits column says which question it cannot."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/chemistry-and-chemical-engineering/masters-chemistry.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "re-run after the 2026-10-03 fact-check fixes; no failing lines" }
+ }
+ corrections: #[
+  "HMBC expanded as Heteronuclear Multiple Bond Correlation; the raw wrote Coherence, which belongs to HSQC",
+  "Rietveld refinement moved from single-crystal work to powder diffraction, where Rietveld introduced it in 1967 and set out the full method in 1969",
+  "the claim that an unknown exchange-correlation functional predicts every drug molecule was dropped as an overclaim",
+  "the machine-learning retrosynthesis hypothesis with an invented 35 percent figure was replaced by a direction-only wonder",
+  "fact-check: the XPS limit no longer says vacuum is always needed; near-ambient-pressure instruments relax it",
+  "fact-check 2026-10-03: two-dimensional NMR now credits Jean Jeener, who proposed it in 1971, before Aue, Bartholdi, and Ernst worked it out in 1976",
+  "fact-check 2026-10-03: Rietveld first published profile refinement for neutron powder data in 1967; the 1969 paper is the full method",
+  "fact-check 2026-10-03: the r4 fact-check receipt was dated 2026-10-01, before the receipts it followed; it is re-dated 2026-10-02, the day that pass ran"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./chemistry-core.spw#chemistry_core_instrumental" ]
+ feeds: [ ~"../materials/materials-advanced.spw#materials_advanced" ]
+ grounds: [ ~"../../registries/quantities/physical-sciences-and-image.spw#q_phys_lab" ]
+}
+
+^["concepts"]{
+ primary: [ #spectroscopy, #crystal_structure ]
+ transfers: [ #mechanism, #transition_state ]
+ tensions: [ #model_dependence ]
+}
+
+^["matrix"]{
+ columns: #[ measures, sample, limits ]
+
+ ^["nmr"]{
+  #>chemistry_advanced_nmr_1d
+  ^["one_dimensional"]{
+   #:claim #!settled
+   statement: "One-dimensional proton and carbon NMR report chemical shifts, scalar couplings, and integrals that map local environments and neighbors."
+   sample: "milligrams dissolved in a deuterated solvent"
+   limits: "overlap in large molecules; quaternary carbons give weak signals"
+   source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_claridge_2016"
+  }
+  #>chemistry_advanced_cosy
+  ^["cosy_tocsy"]{
+   #:claim #!settled
+   statement: "COSY shows which protons couple through bonds, and TOCSY extends that to a whole coupled spin system; Jean Jeener proposed two-dimensional NMR in 1971, and Aue, Bartholdi, and Ernst worked out its theory and first applications in 1976."
+   limits: "small or zero couplings leave gaps in the network"
+   sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_aue_1976", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_ernst_1992", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_claridge_2016" ]
+   ~#(Jeener proposed it in a 1971 summer-school lecture; Ernst credits him in his Nobel lecture)
+  }
+  #>chemistry_advanced_hsqc
+  ^["hsqc"]{
+   #:claim #!settled
+   statement: "HSQC, Heteronuclear Single Quantum Coherence, pairs each proton with the carbon it is directly bonded to."
+   limits: "carbons without attached protons are invisible"
+   source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_claridge_2016"
+  }
+  #>chemistry_advanced_hmbc
+  ^["hmbc"]{
+   #:claim #!settled
+   statement: "HMBC, Heteronuclear Multiple Bond Correlation, links protons to carbons two or three bonds away, which places quaternary carbons and joins fragments."
+   limits: "a missing peak can mean a near-zero coupling, not a long distance; four-bond peaks occasionally appear"
+   sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_bax_summers_1986", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_claridge_2016" ]
+  }
+  #>chemistry_advanced_raw_hmbc
+  ^["raw_hmbc"]{
+   #:claim #!refuted
+   statement: "The raw generation expanded HMBC as Heteronuclear Multiple Bond Coherence; the C stands for Correlation."
+   source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_bax_summers_1986"
+  }
+  #>chemistry_advanced_noesy
+  ^["noesy"]{
+   #:claim #!settled
+   statement: "NOESY detects protons close in space through dipolar cross-relaxation, typically within about 0.5 nm, which fixes relative stereochemistry and conformation."
+   reads: %[phys.nmr.noe_range_nm]
+   limits: "the effect falls as distance to the inverse sixth power, so averages over conformers favor the closest contacts"
+   source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_claridge_2016"
+  }
+ }
+
+ ^["diffraction"]{
+  #>chemistry_advanced_single_crystal
+  ^["single_crystal"]{
+   #:claim #!settled
+   statement: "Single-crystal X-ray diffraction solves a structure from thousands of indexed reflections and refines atomic positions by least squares, as in SHELXL."
+   sample: "one well-ordered crystal, often a fraction of a millimeter"
+   limits: "needs a crystal; hydrogen positions and disorder are hard"
+   source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_sheldrick_2015"
+  }
+  #>chemistry_advanced_rietveld
+  ^["powder_rietveld"]{
+   #:claim #!settled
+   statement: "Rietveld refinement fits a calculated profile to an entire powder diffraction pattern, refining structure and peak-shape parameters together; Rietveld introduced it for neutron powder data in 1967 and gave the full method in 1969."
+   sample: "a polycrystalline powder"
+   limits: "needs a starting structural model; overlapping peaks limit how many parameters can be refined"
+   sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_rietveld_1967", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_rietveld_1969" ]
+  }
+  #>chemistry_advanced_raw_rietveld
+  ^["raw_rietveld"]{
+   #:claim #!refuted
+   statement: "The raw generation listed Rietveld refinement as a single-crystal method; it is a powder method."
+   source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_rietveld_1969"
+  }
+ }
+
+ ^["mass_and_surface"]{
+  #>chemistry_advanced_hrms
+  ^["high_resolution_ms"]{
+   #:claim #!settled
+   statement: "High-resolution mass spectrometers such as the Orbitrap, invented by Alexander Makarov, measure ion masses closely enough to propose elemental formulas."
+   limits: "isomers share a formula; fragmentation and separation are needed to tell them apart"
+   sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_makarov_2000", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_harris_2015" ]
+  }
+  #>chemistry_advanced_xps
+  ^["photoelectron"]{
+   #:claim #!settled
+   statement: "X-ray photoelectron spectroscopy reads core-level binding energies from the top few nanometers of a solid, reporting elements and their oxidation states."
+   limits: "surface only; conventional instruments need ultrahigh vacuum, though near-ambient-pressure XPS works at up to tens of millibar"
+   source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_atkins_2018"
+   context: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_salmeron_schloegl_2008"
+  }
+ }
+
+ ^["computation"]{
+  #>chemistry_advanced_electronic_structure
+  ^["electronic_structure"]{
+   #:claim #!settled
+   statement: "Hartree-Fock ignores electron correlation; MP2 and coupled cluster add it at rising cost, and CCSD(T) is the usual benchmark for well-behaved molecules."
+   limits: "cost grows steeply with size; multireference systems need other methods"
+   source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_jensen_2017"
+  }
+  #>chemistry_advanced_dft
+  ^["density_functional"]{
+   #:claim #!settled
+   statement: "Density functional theory rests on the Hohenberg-Kohn and Kohn-Sham results; its accuracy depends on an approximate exchange-correlation functional, so results must state functional, basis, and dispersion treatment."
+   limits: "no functional is reliable for every property; benchmark against experiment or higher theory"
+   source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_jensen_2017"
+  }
+ }
+}
+
+^["lineages"]{
+ #>chemistry_advanced_nobel_lineage
+ ^["prize_lineage"]{
+  #:claim #!settled
+  statement: "Nobel Prizes trace these tools: Corey for retrosynthesis in 1990, Ernst for NMR in 1991, Kohn and Pople in 1998, cross-coupling in 2010, and Kitagawa, Robson, and Yaghi for MOFs in 2025."
+  sources: [ ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_nobel_chemistry", ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_mof" ]
+  as_of: "2026-10-02"
+  ~#(cross coupling honored Heck, Negishi, and Suzuki, in the US and Japan)
+ }
+ #>chemistry_advanced_retrosynthesis
+ ^["retrosynthesis"]{
+  #:claim #!settled
+  statement: "Corey formalized retrosynthesis: work backward from a target by disconnections to simpler precursors, choosing transforms that real reactions can perform."
+  source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_corey_cheng_1989"
+ }
+}
+
+#>chemistry_advanced_noe_q
+?["Can NOE distances alone pin the shape of a flexible molecule?"]{
+ #:depth #!physical ~#lens(molecular binding)
+ #:claim #!speculative
+ ~#hypothesis: "Because NOE intensity weights the closest approach heavily, NOE-only structures of flexible molecules should come out more compact than their true conformer ensembles."
+ !probe{ "simulate a flexible molecule, compute averaged NOEs, refit a single structure, and compare its radius with the ensemble" =id[p_phys_chem_noe_compact] =kind[sim] }
+ $%[phys.nmr.noe_range_nm]
+ ~"./chemistry-advanced.spw#chemistry_advanced_noesy" ~#neighbor(nearest)
+}
+
+#>chemistry_advanced_route_q
+?["Do retrosynthesis programs change which routes graduate students try first?"]{
+ #:depth #!social ~#lens(craft practice)
+ #:claim #!speculative
+ ~#hypothesis: "Students using route-planning software should try more unconventional first disconnections, while expert review still prunes routes that the software rates highly."
+ !probe{ "interview synthesis groups about the first routes they attempted with and without planning software" =id[p_phys_chem_route_tools] =kind[interview] }
+ ~"./chemistry-advanced.spw#chemistry_advanced_retrosynthesis" ~#neighbor(nearest)
+}

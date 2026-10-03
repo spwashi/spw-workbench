@@ -1,0 +1,199 @@
+# Kerning
+#
+# Specimen pairs that differ by one space: some change the parse tree or the edge a reader sees, and some change nothing at all.
+
+#>spw_lab_kerning
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!intro
+#:review #!sourced
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Kerning"
+ ~#claim: "One space can change a Spw tree: the tight bias form yields an edge and the spaced canon form yields none, while a space before a rule body changes nothing."
+ ~#proof: "Fingerprint, inspect spacing, and readBias at commit 1aa1dc23; Wertheimer described grouping by proximity in 1923; the C standard ties a macro to a parenthesis it touches."
+ ~#door: "Read the four pairs, guess which space matters, then fingerprint both halves of each pair."
+ ~#audience: "designers, typographers, C programmers, and anyone meeting Spw spacing for the first time"
+ continuity: "Kerning | one space"
+ cold_open: "One space can change the tree and one space can change nothing; four pairs show which is which."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "persona study contraption_catalog[9], references/studies/persona-synthesis.json", "sketch references/spw-branch/seeds/contraptions/kerning.spw" ]
+ method: #authored
+ evidence: #[
+  "each pair below was parsed and its bias edges read at commit 1aa1dc23 on 2026-10-03",
+  "the tight bias row gave one edge and the spaced row none; the rule-body pair gave identical node counts"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the sketch wrote the detached apposition in code, which the cut gate bans; both apposition spellings now sit in strings",
+  "the sketch let the pairs suggest that a space means no relation; canon reads spacing as softer commitment, and the mirror says so"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../inspection-and-ir.spw#spw_ir_tokens" ]
+ analog: [ ~"../../language-and-mind/cognition/perception-and-attention.spw#cognition_perception_gestalt" ]
+ see: [ ~"./false-friend-lab.spw#spw_lab_false_friend" ]
+}
+
+^["concepts"]{
+ primary: [ #spacing, #false_friend ]
+ transfers: [ #notation, #reflexive_mirror ]
+ tensions: [ #overclaim ]
+}
+
+^["tool"]{
+ status: #implemented
+ implemented: #[
+  "packages/spw-cli/src/commands.ts:284 spw fingerprint, node counts per surface",
+  "packages/spw-cli/src/commands.ts:277 spw inspect spacing, the gap class of every lexical gap",
+  "packages/spw-cli/src/commands.ts:330 spw select with --selector bias, the edges readBias finds",
+  "packages/spw-seed/src/lexer/gaps.ts:11-17 classifyGap: tight, open, cadence, or episode"
+ ]
+ proposed: "a pairs mode that prints both halves of a pair side by side; not yet a flag"
+ run_today: "npm run spw -- select .spw/caches/2026-09-30/spw/contraptions/kerning.spw --selector bias"
+ sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_cli", ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_gaps" ]
+}
+
+^["parameters"]{
+ gap_classes: #[ tight, open, cadence, episode ]
+ reading: "tight means no space, open means spaces on one line, cadence one line break, and episode two or more"
+ pair_rule: "the two halves of a pair differ by exactly one gap"
+}
+
+^["pairs"]{
+ #>spw_lab_kerning_tight
+ ^["bias_tight"]{
+  =~"./kerning.spw#spw_lab_kerning_target"[near]{ ~"./kerning.spw#spw_lab_kerning_target" }
+ }
+ #>spw_lab_kerning_open
+ ^["bias_open"]{
+  =[near] ~"./kerning.spw#spw_lab_kerning_target" { ~"./kerning.spw#spw_lab_kerning_target" }
+ }
+ #>spw_lab_kerning_couple_pair
+ ^["couple"]{
+  tight: <>[figure, ground]
+  open: figure <> ground
+ }
+ #>spw_lab_kerning_rule_pair
+ ^["rule_body"]{
+  tight: .card{ radius: 8 }
+  open: .card { radius: 8 }
+ }
+ #>spw_lab_kerning_apposition_pair
+ ^["apposition"]{
+  tight: "~#see:~\"./x.spw\""
+  open: "~#see: ~\"./x.spw\""
+  ~#(held in strings because the cut gate bans the open spelling in code)
+ }
+ #>spw_lab_kerning_target
+ ^["target"]{ note: "the landing anchor for both bias rows" }
+}
+
+^["world"]{
+ #>spw_lab_kerning_edge
+ ^["edge_or_none"]{
+  #:claim #!settled
+  statement: "readBias reports the tight bias row as one edge and the spaced row as no edge, though both parse without error."
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_parse_runs", ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_read_bias" ]
+ }
+ #>spw_lab_kerning_couple
+ ^["prefix_or_infix"]{
+  #:claim #!settled
+  statement: "The prefix couple is one operation with two parameters; the infix spelling binds the left word and starts a separate couple operation that takes the right word as a modifier."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_parse_runs"
+ }
+ #>spw_lab_kerning_rule
+ ^["no_change"]{
+  #:claim #!settled
+  statement: "A space between a rule name and its brace changes nothing: both spellings give the same node counts."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_parse_runs"
+ }
+ #>spw_lab_kerning_apposition
+ ^["attached_or_detached"]{
+  #:claim #!settled
+  statement: "Written tight, a named reading keeps its path as its value; with one space the path detaches into a separate expression and the reading holds nothing."
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_parse_runs", ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_gate" ]
+ }
+ #>spw_lab_kerning_gestalt
+ ^["proximity"]{
+  #:claim #!settled
+  statement: "Wertheimer described grouping by proximity in 1923: elements set closer together tend to be seen as belonging together."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_wertheimer_1923"
+ }
+ #>spw_lab_kerning_c_macro
+ ^["c_macro"]{
+  #:claim #!settled
+  statement: "In C, a macro name touching its parenthesis defines a function-like macro; with a space between them it defines an object-like macro whose body begins with the parenthesis."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_iso_c_2018"
+ }
+}
+
+^["battery"]{
+ #>spw_lab_kerning_predict
+ ^["predict_the_pairs"]{
+  !probe{ "for each pair, guess whether the space changes the tree, then fingerprint both halves" =id[p_contrap_kerning_predict] =kind[calc] }
+  predict: ?{ "which of the four pairs come out identical" } ~<guess>
+  expect: "only the rule-body pair matches; the bias pair differs in edges, and the couple and apposition pairs differ in node counts"
+  shows: ~"./kerning.spw#spw_lab_kerning_rule"
+ }
+ #>spw_lab_kerning_spacing
+ ^["gap_classes"]{
+  !probe{ "run spw inspect spacing on this file and find the one gap that differs inside each pair" =id[p_contrap_kerning_spacing] =kind[calc] }
+  expect: "each pair differs by one gap that is tight in one half and open in the other"
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_gaps"
+ }
+}
+
+#>spw_lab_kerning_mirror
+^["language_mirror"]{
+ #>spw_lab_kerning_commitment
+ ^["commitment_reading"]{
+  #:claim #!settled
+  statement: "Canon reads a tight act and bound as high commitment and a spaced one as a softer aperture, not as the absence of a relation."
+  cites: [ "docs/theory/spw/flow-protocol-sigils.spw:46-47" ]
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_canon_flow_sigils"
+ }
+ question: "Does canon teach a spacing that its own edge reader ignores?"
+ observed: "canon writes the bias role spaced at docs/theory/spw/flow-protocol-sigils.spw:37 and :66, and readBias finds no edge in that form"
+ standing: "a-canon: the spaced form and the commitment reading are canon text; owner hold: whether readBias learns the spaced form or canon changes its example is the owner call"
+ !probe{ "count spaced bias forms in canon and in this cut, and how many readBias misses" =id[p_contrap_kerning_census] =kind[census] }
+}
+
+^["limits"]{
+ holds: "which single spaces change node counts or edges, at one commit"
+ fails: "proximity in perception is graded while Spw gaps are four discrete classes; the pairs must not teach that a space means no relation, since canon reads it as softer commitment"
+}
+
+^["try"]{
+ #>spw_lab_kerning_try
+ ^["four_pairs"]{
+  materials: [ "a terminal at the repository root", "a scratch file outside the cut" ]
+  steps: << "copy the tight half of one pair into the scratch file" ; "run npm run spw -- fingerprint on it" ; "add one space and run it again" ; "write down what changed, then do the next pair" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./kerning.spw#spw_lab_kerning_edge"
+ }
+}
+
+#>spw_lab_kerning_q
+?["Would readers who know typographic kerning predict the Spw pairs better than readers who know C?"]{
+ #:depth #!stylistic ~#lens(craft practice)
+ #:claim #!speculative
+ ~#hypothesis: "C readers should predict the bias and apposition pairs better, since their tools already punish a stray space, while typographers expect every space to matter."
+ !probe{ "ask volunteers to predict each pair before running it, then tally correct guesses per pair and per habit group, never per person" =id[p_contrap_kerning_q] =kind[interview] }
+ $%[op.distribution]
+ ~"./kerning.spw#spw_lab_kerning_c_macro" ~#neighbor(nearest)
+ breaks: "a typographer adjusts space for the eye, by degree; a parser classifies it, by kind, so the analogy holds only for the question of where space carries weight"
+}

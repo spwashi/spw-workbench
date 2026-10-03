@@ -1,0 +1,220 @@
+# Commit Gate
+#
+# How a commit in this workbench waits for a person: the review engine, Touch ID or a typed yes, the message validator, and the paths that never ask.
+
+#>workbench_history_commit_gate
+#:layer #!pragmatics
+#:domain #!workbench_history
+#:form #!state_machine
+#:level #!foundation
+#:review #!sourced
+#:valence #!bane
+#:era #!current
+
+^"emit"{
+ ~#title: "Commit Gate"
+ ~#claim: "Agents prepare commits and a human authorizes each reviewed one with Touch ID or a typed yes, though a few commit shapes never reach the prompt."
+ ~#proof: "States cite the pre-commit hook, the commit-review scripts, and the Touch ID helper at commit 1aa1dc23, plus two probes run in a throwaway repository on 2026-10-03."
+ ~#door: "Walk the states in order, then read the two claims about paths that never ask."
+ ~#audience: "newcomers making a first commit here and anyone designing a human-in-the-loop gate"
+ continuity: "Commit Gate | a human authorizes"
+ cold_open: "Most commits here wait until a human authorizes them, and this page also shows the paths that never ask."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ probes: "two probes ran on 2026-10-03 in a scratch directory outside the repository: a stub helper that exits 2, and a throwaway repository with staged deletions, a rename, and nothing staged"
+ installed: "in the checkout read on 2026-10-03 the installed pre-commit hook matched scripts/pre-commit byte for byte"
+}
+
+^["edges"]{
+ contrasts: [ ~"../../society/platforms/twitch-plays-pokemon.spw#live_platforms_twitch_plays" ]
+ see: [ ~"./episode-timeline.spw#workbench_history_episodes_blocks" ]
+}
+
+^["concepts"]{
+ primary: [ #commit_gate, #episode_block, #consent ]
+ transfers: [ #code_verified ]
+ tensions: [ #trust_vs_friction ]
+}
+
+^["as_of"]{
+ commit: "1aa1dc23"
+ read: "2026-10-03"
+ engine: "scripts/commit-review holds the run, render, authorize, and validate steps; scripts/pre-commit sources the first three"
+}
+
+^["roles"]{
+ #>workbench_history_commit_gate_roles
+ ^["agents_prepare"]{
+  #:claim #!settled
+  statement: "Repository canon splits the work: agents stage files and write messages, and a person authorizes the commit with Touch ID or, failing that, a typed yes."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_claude_md"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_commit_workflow", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_commit_skill" ]
+  cites: [ "CLAUDE.md:165-166", ".agents/workflows/commit-review.md:7-17", ".agents/skills/spw-commit-review/SKILL.md:33-36" ]
+  provenance_label: "a-canon"
+ }
+ #>workbench_history_commit_gate_engine
+ ^["one_engine"]{
+  #:claim #!settled
+  statement: "Since 2026-04-04 the hook and the poll-review loop call one review engine; the hook itself only runs the engine, renders its report, and asks for authorization."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_commit_gate_plan"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_commit_engine", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" ]
+  cites: [ "scripts/pre-commit:22-49", ".agents/skills/spw-commit-review/scripts/poll-review.sh:28,553" ]
+  card: "commit-gate-redesign, landed"
+ }
+ #>workbench_history_commit_gate_agent_label
+ ^["agent_label"]{
+  #:claim #!settled
+  statement: "The authorization prompt names the file count, the warning count, and the agent, read from an explicit variable, a local context file, or a heuristic over the environment."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_commit_engine"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_commit_skill" ]
+  cites: [ "scripts/pre-commit:49", "scripts/commit-review/run-review.sh:21-24", "scripts/commit-review/lib/agent-context.sh:27-45,147-176" ]
+ }
+}
+
+^["machine"]{
+ ^["states"]{
+  #>workbench_history_commit_gate_s_staged
+  ^["staged"]{ enters: "git commit runs", work: "git calls the pre-commit hook", status: #implemented, cites: "scripts/pre-commit:29" }
+  #>workbench_history_commit_gate_s_review
+  ^["review"]{
+   enters: "the hook runs the engine"
+   work: "list staged added, copied, and modified files; count layer errors and syntax warnings; run local checks"
+   on_staged: ?match[staged_files]{
+    "none added, copied, or modified" => "exit 0 with no report and no prompt",
+    "some, with a layer error" => "render the report and block",
+    "some, with no error" => "render the report and go to authorize"
+   }
+   status: #implemented
+   cites: [ "scripts/commit-review/run-review.sh:25-33", "scripts/pre-commit:37-47" ]
+  }
+  #>workbench_history_commit_gate_s_authorize
+  ^["authorize"]{
+   enters: "a report with no errors"
+   work: "run the Swift helper with a prompt naming files, warnings, and agent"
+   on_helper: ?match[helper_exit]{
+    "0, the owner authenticated" => "commit proceeds to the message check",
+    "1, denied or cancelled" => "the hook ends and the commit is blocked",
+    "2, owner authentication unavailable" => "documented as the y/N fallback; observed to end the hook first"
+   }
+   status: #implemented
+   cites: [ "scripts/commit-review/authorize-commit.sh:9-26", "scripts/touchid-authorize.swift:18-38" ]
+  }
+  #>workbench_history_commit_gate_s_fallback
+  ^["fallback"]{
+   enters: "the authorize step when no helper file exists"
+   on_terminal: ?match[stdin]{
+    "not a terminal" => "block and suggest git commit --no-verify",
+    "a terminal, answer y or yes" => "commit proceeds to the message check",
+    "a terminal, any other answer" => "commit aborted"
+   }
+   status: #implemented
+   cites: "scripts/commit-review/authorize-commit.sh:28-53"
+  }
+  #>workbench_history_commit_gate_s_message
+  ^["message"]{
+   enters: "an authorized pre-commit"
+   work: "the commit-msg hook sources the validator"
+   on_message: ?match[message]{
+    "a subject starting with Merge" => "pass",
+    "an absolute user path anywhere" => "reject",
+    "SPW_EPISODE_SKIP set to 1" => "pass without an episode block",
+    "no line opening an episode block" => "reject and print a template",
+    "an episode block" => "pass"
+   }
+   status: #implemented
+   cites: "scripts/commit-review/validate-commit-message.sh:16-48"
+  }
+  #>workbench_history_commit_gate_s_committed
+  ^["committed"]{ enters: "both hooks pass", work: "git writes the commit", status: #implemented }
+ }
+ bypass: "git commit --no-verify skips both hooks, and the workflow names it as the way to skip all checks"
+ bypass_cites: ".agents/workflows/commit-review.md:19"
+}
+
+^["findings"]{
+ #>workbench_history_commit_gate_fallback
+ ^["fallback_unreachable"]{
+  #:claim #!settled
+  statement: "The steps run under errexit, so a helper exit of 2 ends the hook before the documented y/N fallback; the commit is still blocked, so the gate fails closed."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_commit_authorize"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_commit_engine", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_touchid_helper", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_commit_workflow" ]
+  cites: [ "scripts/commit-review/run-review.sh:2", "scripts/commit-review/authorize-commit.sh:2,11-19", ".agents/workflows/commit-review.md:41-44" ]
+  evidence: "a stub helper exiting 2, run through the sourced step in a scratch shell, printed the Touch ID line and exited 2 with no fallback prompt"
+  ^["limits"]{
+   holds: "wherever the helper file exists and the helper returns non-zero"
+   fails: "as a common path: the helper asks for owner authentication, which also accepts the device password, so exit 2 should be rare; untested on a machine without one"
+  }
+ }
+ #>workbench_history_commit_gate_unasked
+ ^["paths_that_never_ask"]{
+  #:claim #!settled
+  statement: "The engine lists only added, copied, and modified files, so a commit of only deletions, only pure renames, or nothing staged passes the hook without a prompt."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_commit_engine"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_claude_md" ]
+  cites: [ "scripts/commit-review/run-review.sh:25-33", "scripts/pre-commit:37-39", "CLAUDE.md:166" ]
+  evidence: "in a throwaway repository a staged deletion plus a pure rename gave a total of zero, nothing staged gave zero, and one added file gave one"
+  canon_says: "the harness notes say the hook blocks all commits"
+  ^["limits"]{
+   holds: "for the pre-commit prompt; the message validator still runs on these commits"
+   fails: "as a security claim: the gate is a consent ceremony for a cooperating owner, and --no-verify already skips it"
+  }
+ }
+ #>workbench_history_commit_gate_install
+ ^["hook_install"]{
+  #:claim #!settled
+  statement: "The repository tracks the pre-commit script with its own install comment and the message validator, but no tracked file installs the commit-msg hook that calls the validator."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_commit_validator"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_commit_hooks" ]
+  cites: [ "scripts/pre-commit:12", "scripts/commit-review/validate-commit-message.sh:51-53" ]
+  evidence: "a search of scripts, the commit-review skill, and package.json for commit-msg found only the validator itself"
+  ^["limits"]{
+   holds: "for a fresh clone, which gets no hooks until someone copies them in"
+   fails: "for this checkout, where both hooks are installed"
+  }
+ }
+}
+
+^["lessons"]{
+ #>workbench_history_commit_gate_consent
+ ^["informed_consent"]{
+  #:claim #!interpretive
+  statement: "The redesign aimed to make authorization read as informed consent rather than a late interrupt, by showing what is staged before the sensor asks."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_commit_gate_plan"
+  cites: ".agents/plans/commit-gate-redesign/wip.spw:28-29"
+  provenance_label: "a-canon intent from the plan card; the reading is this cut"
+ }
+ pairing: "Twitch Plays Pokemon gave a crowd one controller; here many agent sessions share one human key, and the review report is what the key holder reads"
+}
+
+^["try"]{
+ #>workbench_history_commit_gate_try_count
+ ^["count_what_asks"]{
+  materials: [ "a checkout of the workbench", "a terminal", "a throwaway git repository with one committed file" ]
+  steps: << "in the throwaway repository, delete the file and stage the deletion" ; "in a bash -c subshell, source scripts/commit-review/run-review.sh from the workbench" ; "call spw_commit_review_run and print REVIEW_TOTAL" ; "stage one new file and run it again" ; "say which of the two commits would have asked a person" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "use a throwaway repository and a subshell; the engine only reads the index, and nothing is committed"
+  shows: ~"./commit-gate.spw#workbench_history_commit_gate_unasked"
+ }
+}
+
+#>workbench_history_commit_gate_q
+?["Does naming the agent in the prompt change what the person checks before authorizing?"]{
+ #:depth #!social ~#lens(applied attention)
+ #:claim #!speculative
+ ~#hypothesis: "A prompt that names agent, files, and warnings should send the person back to the report more often than a bare authorize prompt would."
+ breaks: "a crowd controller has no veto, while this key holder can refuse every commit; the analogy covers shared access, not shared authority"
+ !probe{ "after ten authorizations, the owner notes in their own words which prompt fields they read before touching the sensor" =id[p_hosts_commit_gate_prompt_fields] =kind[interview] }
+ $%[hosts.history.episode_commit_count, hosts.history.commit_count]
+ ~"./commit-gate.spw#workbench_history_commit_gate_engine" ~#neighbor(nearest)
+}

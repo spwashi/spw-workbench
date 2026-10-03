@@ -1,0 +1,173 @@
+# Information Policy
+#
+# The rules libraries work under in the United States: intellectual freedom, patron privacy and national security letters, filtering under CIPA, student records under FERPA, copyright and lending, open access, and information literacy.
+
+#>information_science_policy
+#:layer #!reference
+#:domain #!information_science
+#:form #!ledger
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bane
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Information Policy"
+ ~#claim: "US libraries defend open access to ideas and reader privacy inside limits set by statute and courts, and open access publishing is not the same as author fees."
+ ~#proof: "The Library Bill of Rights, 18 U.S.C. 2709 and Doe v. Gonzales, CIPA and United States v. ALA, FERPA, Title 17 cases, Suber, and the ACRL Framework."
+ ~#door: "Read the privacy row for the corrected national security letter framing, then the open access row."
+ ~#audience: "library and policy students, school staff, and readers asking what a library may share"
+ continuity: "Information Policy | inside limits set by statute"
+ cold_open: "Libraries defend reading and privacy inside limits set by statute and courts, and this ledger shows where those limits sit."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/library-and-information-sciences/information-policy-intellectual-freedom-and-literacy.spw" ]
+ method: #corrected
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "the 2709 source row was misattributed to the PATRIOT Act; locator corrected"
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: [
+  "national security letters were framed as warrant requests libraries refuse; they need no warrant, can be challenged in court, and the statute excludes most library service",
+  "gold open access was equated with author-paid fees; gold describes the journal, and many gold journals charge nothing",
+  "CIPA and FERPA were missing and are added",
+  "specific ebook license caps and markups had no source and are left as verify cells"
+ ]
+ jurisdiction: "United States unless a row says otherwise"
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/provenance-and-reference.spw#q_prov_reference" ]
+ see: [ ~"./archives-and-preservation.spw#information_science_archives" ]
+}
+
+^["concepts"]{
+ primary: [ #licensed_access, #consent ]
+ transfers: [ #public_domain ]
+ tensions: [ #accountability ]
+}
+
+^["freedom_and_privacy"]{
+ #>information_science_policy_lbor
+ ^["library_bill_of_rights"]{
+  #:claim #!settled
+  statement: "The ALA Council adopted the Library Bill of Rights in 1939 from a 1938 Des Moines draft by Forrest Spaulding, and added a privacy article in 2019."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_ala_lbor"
+  as_of: "2026-10-02"
+ }
+ #>information_science_policy_nsl
+ ^["national_security_letters"]{
+  #:claim #!settled
+  statement: "A national security letter is an FBI demand that needs no warrant; a recipient may challenge it and its gag order in court, as a Connecticut library consortium did in 2005."
+  sources: [ ~"../../registries/sources/provenance-and-reference.spw#src_prov_usc18_2709", ~"../../registries/sources/provenance-and-reference.spw#src_prov_doe_v_gonzales_2005" ]
+  ^["library_exclusion"]{
+   #:claim #!settled
+   statement: "The statute now says a library is not a covered communication service provider unless it provides electronic communication service as defined elsewhere in the code."
+   source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_usc18_2709"
+   cites: "18 U.S.C. 2709(g)"
+   history: "added as subsection (f) by Pub. L. 109-178 in 2006 and redesignated (g) by Pub. L. 114-23 in 2015"
+  }
+  replaces: ".spw/caches/university-education/library-and-information-sciences/information-policy-intellectual-freedom-and-literacy.spw:17"
+ }
+ #>information_science_policy_ferpa
+ ^["ferpa"]{
+  #:claim #!settled
+  statement: "FERPA protects the education records of students at schools that receive federal education funds, and student records a school library keeps can fall under it."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_ferpa_1974"
+ }
+}
+
+^["filtering"]{
+ #>information_science_policy_cipa
+ ^["cipa"]{
+  #:claim #!settled
+  statement: "CIPA conditions certain federal discounts and grants on schools and libraries filtering internet access; the Supreme Court upheld it for libraries in 2003."
+  sources: [ ~"../../registries/sources/provenance-and-reference.spw#src_prov_cipa_2000", ~"../../registries/sources/provenance-and-reference.spw#src_prov_us_v_ala_2003" ]
+  ^["limits"]{
+   holds: "libraries and schools that take the covered federal funds"
+   fails: "libraries that decline the funds; and an adult may ask a library to disable the filter"
+  }
+ }
+}
+
+^["copyright_and_lending"]{
+ #>information_science_policy_fair_use
+ ^["fair_use_and_first_sale"]{
+  #:claim #!settled
+  statement: "Fair use weighs four factors case by case; first sale lets a library lend a physical copy it owns but does not cover new copies made of a digital file."
+  sources: [ ~"../../registries/sources/provenance-and-reference.spw#src_prov_usc17_copyright", ~"../../registries/sources/provenance-and-reference.spw#src_prov_redigi_2018" ]
+ }
+ #>information_science_policy_cdl
+ ^["controlled_digital_lending"]{
+  #:claim #!settled
+  statement: "In 2024 the Second Circuit held that the Internet Archive's lending of scanned books was not fair use."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_hachette_2024"
+  as_of: "2026-10-02"
+ }
+ ^["ebook_licensing"]{
+  what: "loan caps, expiry periods, and library price multiples set by publishers for library ebooks"
+  cell: #verify
+  ~#(terms change often; no figure is recorded until a dated source is checked)
+ }
+}
+
+^["open_access"]{
+ #>information_science_policy_gold_oa
+ ^["gold_is_not_apc"]{
+  #:claim #!settled
+  statement: "Gold open access means the journal itself publishes the work openly; many gold journals charge authors nothing, and those are often called diamond."
+  sources: [ ~"../../registries/sources/provenance-and-reference.spw#src_prov_suber_2012", ~"../../registries/sources/provenance-and-reference.spw#src_prov_bosman_2021" ]
+  replaces: ".spw/caches/university-education/library-and-information-sciences/information-policy-intellectual-freedom-and-literacy.spw:29"
+ }
+ ^["diamond_counts"]{
+  what: "journals in DOAJ charging no fee, against all DOAJ journals, at the study snapshot"
+  reads: %[prov.oa.doaj_diamond_journal_count, prov.oa.doaj_journal_count]
+  ~#(both cells are marked verify until the study table is reread)
+ }
+ #>information_science_policy_green
+ ^["green"]{
+  #:claim #!settled
+  statement: "Green open access means the author deposits a version in a repository, whatever the journal does."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_suber_2012"
+ }
+}
+
+^["literacy"]{
+ #>information_science_policy_acrl
+ ^["acrl_framework"]{
+  #:claim #!settled
+  statement: "The ACRL Framework of 2016 names six frames, from authority is constructed and contextual to searching as strategic exploration."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_acrl_2016"
+ }
+ #>information_science_policy_lateral
+ ^["lateral_reading"]{
+  #:claim #!settled
+  statement: "Fact-checkers judge an unfamiliar site by leaving it to see what other sources say about it, a habit Wineburg and McGrew call lateral reading."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_wineburg_mcgrew_2019"
+ }
+}
+
+^["gaps"]{
+ outside_us: "GDPR, national library acts, and legal deposit laws wait for a leaf"
+ challenges_data: "counts of book challenges need a dated source and stay out of this ledger"
+}
+
+#>information_science_policy_third_place_q
+?["Do public libraries host a wider mix of people than paid indoor spaces on the same street?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Because staying costs nothing, a library should host more people who are not buying anything than a cafe or mall nearby."
+ !probe{ "count visitors by apparent activity for an hour in a branch and two nearby paid spaces, without recording anyone's identity" =id[p_prov_policy_third_place] =kind[field] }
+ ~"./information-policy.spw#information_science_policy_lbor" ~#neighbor(nearest)
+}

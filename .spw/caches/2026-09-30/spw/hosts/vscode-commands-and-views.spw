@@ -1,0 +1,200 @@
+# VS Code Commands and Views
+#
+# Every command the VS Code extension contributes, grouped by the task it serves, with the instruments, the Workspace and Concepts views, and the settings each part reads.
+
+#>editor_hosts_vscode_commands
+#:layer #!reference
+#:domain #!editor_hosts
+#:form #!registry
+#:level #!practitioner
+#:review #!sourced
+#:valence #!bone
+#:era #!current
+
+^"emit"{
+ ~#title: "VS Code Commands and Views"
+ ~#claim: "The VS Code extension contributes twenty-two commands, grouped by task here, and fourteen settings, and its instruments read the live buffer through the server."
+ ~#proof: "Counted from contributes in extensions/vscode-spw/package.json and matched to registerCommand sites at commit 1aa1dc23."
+ ~#door: "Find a command by task, then open the instrument rows to see where its answer comes from."
+ ~#audience: "VS Code users and maintainers of the Spw extension"
+ continuity: "VS Code Commands and Views | grouped by task"
+ cold_open: "Every VS Code command for Spw sits here grouped by task, beside the views and the settings it reads."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/vscode/features.spw", ".spw/caches/vscode/instruments.spw", ".spw/caches/vscode/views.spw" ]
+ method: #corrected
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #skim, outcome: #pass
+   note: "command ids, titles, and the setting keys recounted from package.json; other rows not reopened"
+  }
+ }
+ corrections: [
+  "the raw features cache listed fourteen command ids and missed eight of the twenty-two contributed",
+  "the raw instruments cache gave Form and Stack a CLI fallback; both send only an LSP request",
+  "the raw instruments cache opened results under spw-form and spw-stack URI schemes; results open as untitled documents",
+  "the raw instruments cache called previews read-only; untitled documents are editable",
+  "the raw views cache listed five Workspace sections including projection surfaces; the code builds You Are Here, Roots, Memory, and Spirit",
+  "the raw views cache invented grouping modes by axis, by modality, and flat; the Concepts modes are concept, kind, file, and phase"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/spw-hosts-and-history.spw#q_hosts_vscode" ]
+ needs: [ ~"./lsp-surface.spw#editor_hosts_lsp" ]
+ contrasts: [ ~"./jetbrains-instruments.spw#editor_hosts_jetbrains_instruments" ]
+}
+
+^["concepts"]{
+ primary: [ #command_surface, #live_buffer, #instrument ]
+ transfers: [ #thin_client ]
+ tensions: [ #editor_chrome ]
+}
+
+^["counts"]{
+ #>editor_hosts_vscode_command_count
+ ^["contributed"]{
+  #:claim #!settled
+  statement: "The manifest contributes twenty-two commands and fourteen settings; three more commands are registered in code for tree clicks and never listed."
+  reads: %[
+   hosts.vscode.command_count,
+   hosts.vscode.setting_count,
+   hosts.vscode.registered_only_command_count
+  ]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_manifest"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_views" ]
+  cites: [ "extensions/vscode-spw/package.json:61-149", "extensions/vscode-spw/package.json:153-227", "extensions/vscode-spw/src/views/workspace-tree.ts:699", "extensions/vscode-spw/src/views/concepts-tree.ts:607,654" ]
+ }
+}
+
+^["commands_by_task"]{
+ ^["navigate"]{
+  spw_navigate: .{ title: "Spw: Navigate Roots and Landmarks", cites: "extensions/vscode-spw/src/navigation.ts:23", status: #implemented }
+  spw_show_reference_hubs: .{ title: "Spw: Reference Hubs and Orphans", cites: "extensions/vscode-spw/src/commands.ts:111-163", status: #implemented }
+ }
+ ^["instruments"]{
+  spw_inspect_geometry: .{ title: "Spw: Inspect Form", cites: "extensions/vscode-spw/src/instruments/commands.ts:92-123", status: #implemented }
+  spw_show_surface_profile: .{ title: "Spw: Inspect Surface Stack", cites: "extensions/vscode-spw/src/instruments/commands.ts:125-158", status: #implemented }
+  spw_inspect_cache: .{ title: "Spw: Inspect Cache", cites: "extensions/vscode-spw/src/instruments/commands.ts:160-190", status: #implemented }
+  spw_rename_symbol: .{ title: "Spw: Rename Symbol", cites: "extensions/vscode-spw/src/instruments/commands.ts:192-195", status: #implemented }
+  spw_plan_corpus_refactor: .{ title: "Spw: Plan Corpus Refactor", cites: "extensions/vscode-spw/src/instruments/commands.ts:197-234", status: #implemented }
+  spw_clear_probe_cache: .{ title: "Spw: Clear Probe Cache", cites: "extensions/vscode-spw/src/instruments/commands.ts:236-239", status: #implemented }
+ }
+ ^["probes"]{
+  spw_show_operator_frequency: .{ method: "spw/operatorFrequency", cites: "extensions/vscode-spw/src/commands.ts:15-39", status: #implemented }
+  spw_show_phase_context: .{ method: "spw/phaseContext", cites: "extensions/vscode-spw/src/commands.ts:41-61", status: #implemented }
+  spw_show_flow_protocol: .{ method: "spw/flowProtocol", cites: "extensions/vscode-spw/src/commands.ts:170-209", status: #implemented }
+  spw_show_geometric_resonance: .{ method: "spw/geometricResonance", cites: "extensions/vscode-spw/src/commands.ts:211-239", status: #implemented }
+  spw_show_probe_measure: .{ method: "spw/probeMeasure", cites: "extensions/vscode-spw/src/commands.ts:241-267", status: #implemented }
+  spw_show_workspace_temperature: .{ method: "spw/workspaceTemperature", cites: "extensions/vscode-spw/src/commands.ts:98-109", status: #implemented }
+ }
+ ^["authoring"]{
+  spw_insert_form_sequence: .{ effect: "inserts a snippet chosen from four form sequences", cites: "extensions/vscode-spw/src/commands.ts:63-77", status: #implemented }
+  spw_show_form_sequence: .{ method: "spw/formSequence", cites: "extensions/vscode-spw/src/commands.ts:79-96", status: #implemented }
+ }
+ ^["server"]{
+  spw_restart_language_server: .{ effect: "client.restart", cites: "extensions/vscode-spw/src/commands.ts:165-168", status: #implemented }
+ }
+ ^["views"]{
+  spw_concepts_refresh: .{ cites: "extensions/vscode-spw/src/views/concepts-tree.ts:647", status: #implemented }
+  spw_concepts_set_grouping: .{ cites: "extensions/vscode-spw/src/views/concepts-tree.ts:615-628", status: #implemented }
+  spw_concepts_set_filter: .{ cites: "extensions/vscode-spw/src/views/concepts-tree.ts:630", status: #implemented }
+  spw_concepts_clear_filter: .{ cites: "extensions/vscode-spw/src/views/concepts-tree.ts:642", status: #implemented }
+  spw_workspace_refresh: .{ title: "Spw: Re-ground Workspace Atlas", cites: "extensions/vscode-spw/src/views/workspace-tree.ts:695", status: #implemented }
+ }
+ ids_note: "keys write each command id with underscores; the real ids use dots and camel case, such as spw.inspectGeometry and spwConcepts.setGrouping"
+}
+
+^["instruments"]{
+ #>editor_hosts_vscode_live_buffer
+ ^["live_buffer_probes"]{
+  #:claim #!settled
+  statement: "Inspect Form and Inspect Surface Stack send one LSP request about the open buffer, unsaved text included; neither shells out to the CLI."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_instruments"
+  cites: [ "extensions/vscode-spw/src/instruments/commands.ts:101", "extensions/vscode-spw/src/instruments/commands.ts:129-131" ]
+  counter: "the raw instruments cache claimed a CLI fallback for both"
+ }
+ #>editor_hosts_vscode_untitled
+ ^["untitled_results"]{
+  #:claim #!settled
+  statement: "Instrument and probe results open as untitled documents built from text, beside the source, so they are editable and carry no URI scheme of their own."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_instruments"
+  cites: [ "extensions/vscode-spw/src/instruments/commands.ts:265-275", "extensions/vscode-spw/src/commands.ts:29-38" ]
+  see: [ ~"./known-defects.spw#editor_hosts_defects" ]
+ }
+ #>editor_hosts_vscode_plan_only
+ ^["plan_only_refactor"]{
+  #:claim #!settled
+  statement: "Plan Corpus Refactor asks for a kind and two names, runs spw refactor with --json and no --write, and lets the user cancel within a two-minute limit."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_instruments"
+  cites: [ "extensions/vscode-spw/src/instruments/commands.ts:197-234", "extensions/vscode-spw/src/instruments/commands.ts:277-331" ]
+  tool_root: "the npm spw script is found in the workspace, a mounted .spw/_workbench, or spw.cli.toolRoot"
+ }
+}
+
+^["views"]{
+ #>editor_hosts_vscode_workspace_view
+ ^["workspace_view"]{
+  #:claim #!settled
+  statement: "The Workspace view shows You Are Here only while the cursor is in a .spw file, then Roots, Memory, and Spirit."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_views"
+  cites: "extensions/vscode-spw/src/views/workspace-tree.ts:444-476"
+ }
+ #>editor_hosts_vscode_spirit_kinds
+ ^["spirit_counts_annotations"]{
+  #:claim #!settled
+  statement: "The Spirit section counts annotation kinds and labels each with an operator sigil, so a case particle is tallied as wonder and an anchor as integration."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_views"
+  cites: "extensions/vscode-spw/src/views/workspace-tree.ts:100-106"
+  ^["limits"]{
+   holds: "for the counts the view shows"
+   fails: "as an operator census; no operator token is counted there"
+  }
+ }
+ #>editor_hosts_vscode_concepts_view
+ ^["concepts_view"]{
+  #:claim #!settled
+  statement: "The Concepts view groups indexed annotations by concept, kind, file, or phase, and its title states the grouping and any filter."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_views"
+  cites: [ "extensions/vscode-spw/src/views/concepts-tree.ts:27", "extensions/vscode-spw/src/views/concepts-tree.ts:183-188", "extensions/vscode-spw/src/views/concepts-tree.ts:615-628" ]
+ }
+ status_bar: "one status item, spw.context, from extensions/vscode-spw/src/context-strip.ts:9"
+}
+
+^["settings"]{
+ #>editor_hosts_vscode_settings
+ ^["who_reads"]{
+  #:claim #!settled
+  statement: "Inlay and diagnostic settings reach the server once at start, surface and compute settings are reread on each decoration pass, and spw.trace.server is read by nothing."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_extension"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_decorations", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_languageclient" ]
+  cites: [ "extensions/vscode-spw/src/extension.ts:77", "extensions/vscode-spw/src/extension.ts:100-108", "extensions/vscode-spw/src/surface-decorations.ts:70-82,256-262" ]
+ }
+ ^["rows"]{
+  inlay_hints: .{ keys: "spw.inlayHints.paths, annotations, frames", read: "at initialize only" }
+  diagnostics: .{ keys: "spw.diagnostics.unresolvedRefs", read: "at initialize only" }
+  trace: .{ keys: "spw.trace.server", read: "never; the client id is spwLanguageServer" }
+  surface: .{ keys: "spw.surface.highlightPathRefs, highlightAnnotations, highlightBraces, highlightOperators, highlightSemantics", read: "each decoration pass" }
+  compute: .{ keys: "spw.compute.decorationRefreshMs, geometryOnSave", read: "each pass; save runs Inspect Form when on" }
+  cache: .{ keys: "spw.cache.probeTtlMs", read: "each pass; any spw setting change clears the cache" }
+  cli: .{ keys: "spw.cli.toolRoot", read: "on each corpus plan" }
+ }
+ reads: %[hosts.vscode.decoration_refresh_ms, hosts.vscode.probe_ttl_ms]
+}
+
+#>editor_hosts_vscode_commands_q
+?["Does a long command palette work as a tour that newcomers skip?"]{
+ #:depth #!educational ~#lens(applied attention)
+ #:claim #!speculative
+ ~#hypothesis: "Newcomers who start from one instrument should return to the palette more often than those shown all twenty-two commands at once."
+ !probe{ "after one week, ask two consenting groups of new users which instrument they reach for first; show one group Inspect Form only" =id[p_hosts_vscode_palette_tour] =kind[interview] }
+ $%[hosts.vscode.command_count, hosts.vscode.setting_count]
+ ~"./vscode-commands-and-views.spw#editor_hosts_vscode_command_count" ~#neighbor(nearest)
+}

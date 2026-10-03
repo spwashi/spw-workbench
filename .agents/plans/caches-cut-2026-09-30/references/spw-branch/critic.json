@@ -1,0 +1,90 @@
+{
+ "ok": false,
+ "problems": [
+  {
+   "kind": "frozen_target_renamed",
+   "detail": "The plan renames trails/streamer-first-contact.spw (#trail_streamer_first_contact) to trails/streamer-circuit.spw (#trail_streamer_circuit). season/season-arc.spw:167, a wave 1-2 file owned by the season package, already links the old path and anchor, and season-arc.spw:45 says 'every trail ref matches its planned path and anchor'. Wave 3 cannot edit season-arc, so the rename leaves a gate failure that can never be fixed. It also breaks contract.spw ^[permanence].anchors. Renaming spw-first-contact to spw-circuit is safe, because nothing links it.",
+   "fix": "Keep trails/streamer-first-contact.spw with the anchor trail_streamer_first_contact. Change only its ^emit title and cold_open so it reads as a circuit, not a door. Drop the streamer-circuit row and update the trail_index tree and any trails that cite it."
+  },
+  {
+   "kind": "frozen_targets_incomplete",
+   "detail": "A live scan of unresolved refs in .spw/caches/2026-09-30 finds 41 frozen inbound targets. The plan lists 22. Missing: 15 trails linked from season/season-arc.spw (lines 51,116,124,131,146,159,167,181,188,199,207,214,232,243,262), with extra inbound links from record/information/archive-patterns-matrix.spw:148 (reference-library-lineage) and panels/affinity-atlas.spw:184 (scroll-to-stream). Also missing: panels/{concept-lattice#panel_concept_lattice, computed-kin#panel_computed_kin, facet-census#panel_facet_census}, linked from panels/index.spw:50-52,59-61, record/information/taxonomy-cautions.spw:132 and panels/gap-table.spw:40; and spw/graph-idioms.spw#spw_graph_idioms, linked from panels/llull-wheel.spw:122. clustering-hybrid has extra inbound links from taxonomy-cautions.spw:38,133. The planned anchors match, but several linked_from line numbers have drifted: twitch-plays-pokemon 42/43 is now 56/57, spw-for-streamers 38 is now 52, kindle-unlimited 42 is now 54, serial-2014 41 is now 55, roles-lattice 38 is now 48, and making/streaming/index 38,46 is now 52,60. fibers-and-textiles.spw:37 is a pending string, not a link.",
+   "fix": "Regenerate frozen_targets from a live scan stamped with the as_of commit (1aa1dc23 or later), covering all 41 path#anchor pairs. Drop line numbers or stamp each with as_of. After wave 3, have the gate confirm that all 41 resolve."
+  },
+  {
+   "kind": "forward_links_break_sequencing",
+   "detail": "The gate fails links to files that are not written yet. Three planned links point forward. (1) spw-design-studies writes spw-position-matrix with 'feeds spw/familiarity-matrix', but spw-branch writes familiarity-matrix later. (2) spw-branch batch D writes perspectives/physicists ('links concepts hubs') and perspectives/designers ('links concepts/plates'), but root writes concepts/ last. (3) Root's ^[tree] will link living/index.spw, which waves 1-2 have not written yet. language-and-mind/cognition/ is empty, and the attention lead's class lives there.",
+   "fix": "Reverse the edges. familiarity-matrix gets 'needs' pointing at lang_design_spw_position. The concept hubs and plates link perspectives and contraptions, and perspectives do not link concepts. Otherwise, move concepts/ into a root step that runs between branch batches C and D. In root final, check that every class index exists before linking it, and record living/index and cognition/* as dependencies on waves 1-2."
+  },
+  {
+   "kind": "package_imbalance",
+   "detail": "File counts: spw-design-studies 18, spw-hosts-and-history 22, spw-branch 82, root 38. The plan gives est_lines only for spw-branch (9-11k); v2 had spw-branch at 27 files and 3,205 lines. Average lines per form in the live cut are index 101, comparison 197, ledger 201, probe_battery 169, registry 264, glossary 181 and bibliography 378. At those averages, spw-design-studies comes to about 3.7k lines, spw-hosts-and-history about 4.6k, spw-branch 13-15k and root 5-7k. A second issue: spw-branch's contraption anchors use spw_lab_*, but the 'lab' namespace (%lab.*, src_lab_*, p_lab_*) belongs to spw-design-studies.",
+   "fix": "Move spw/contraptions/ (22 files), registries/quantities/dimensions.spw and registries/symmetries.spw to spw-design-studies. Optionally move spw/specimens/ (7 files) too, so false-friend-lab and its fixtures sit together. These files link only canon, code and their own registries; spw-branch's glossary, doors and perspectives link to them later. The result is roughly spw-design-studies at 49 files and about 9k lines, and spw-branch at 51 files and about 9.5k lines. Give every file an est_lines value."
+  },
+  {
+   "kind": "oversize_surfaces",
+   "detail": "contract.spw ^[shape].size says to aim under 300 lines and split before 600. Four planned surfaces will pass that. open-questions holds the plan's 63 theory questions plus 10 promote rows, about 550-600 lines. familiarity-matrix has 32 forms × 12 clusters plus 6 keyboard columns at one claim per line, about 450 lines or more. glossary/operators has 13 sigils plus compounds, each with about 9 fields and analog/breaks columns. registries/probes maps every probe id, and the live cut already holds 321 (=id[p_ count) before wave 3 adds more.",
+   "fix": "Split open-questions into open-questions/index plus one file per group, keeping the anchor spw_open_questions on the index. Split familiarity-matrix by cluster family, or keep only the verdict-count cells and move the per-cluster rows into perspectives. Scope registries/probes to the wave-3 namespaces (p_spw_, p_lab_, p_hosts_, p_cut_), or split it by namespace."
+  },
+  {
+   "kind": "doors_not_fragments",
+   "detail": "Two of the root ^[doors] are not single-fragment doors. Physics points to concepts/conservation, a foundation-level hub that compares across classes. Attention points to spw/practice-modes, a practitioner protocol with 7 modes and 9 exercises. Both conflict with direction.spw:30,66 ('one sigil or one region, legible alone'). The physics door also contradicts the plan's own ^[habits] mapping of physics students to spw/doors/caret. The shelf's attention lead is @cognitive_psychology (.spw/caches/index.spw:94), not a Spw practice surface. spw/doors/index lists all 13 sigils and regions, so if it ever becomes an arrival point it is the 'live gradient of every operator on arrival' the owner refuses (direction.spw:74).",
+   "fix": "Point each root door at one anchored keystone. Physics goes to a conservation keystone in physical/physics/classical-thermodynamics.spw, or to spw/doors/caret.spw#spw_door_caret. Attention goes to language-and-mind/cognition/perception-and-attention.spw#cognition_perception if waves 1-2 have written it by root final; otherwise to spw/doors/wonder.spw#spw_door_wonder. Never point a door at a hub, an index or a protocol. State in the plan that no door anywhere targets spw/doors/index."
+  },
+  {
+   "kind": "tooling_not_marked_proposed",
+   "detail": "Several surfaces describe tools that do not exist, without marking them proposed. practice-modes depends on a role stream and 7 modes; canonical/roles.ts does not exist, and no spw.reading.mode setting exists (extensions/vscode-spw/package.json has 22 commands and 14 settings, none for reading or mode). tokens-and-roles describes RoleSpan and a wire legend. glossary/false-friends gives each row a lint message, but spw lint has no --habits. specimens are called regression fixtures, but no test reads them. dialects-and-play describes six play packs with lowering, which does not exist. transforms covers comprehend and projection carriers, but canonical/projection.ts and comprehend.ts do not exist. rendering-and-cli has error rewrites, and panels/facet-census and computed-kin have no generator. contraptions/index promises that each contraption names its tool, but order-counter, dag-walker, law-lab, opcode-map, operator-authority, derivation-checker, fixity-walker, closure-atlas, band-coverage, rubric-lens, igt-aligner and automaton-loom state no tool status. The only checker today is the scratch file .agents/.../seeds/contraptions/check.mts.",
+   "fix": "Give every mode, verb, lint message, fixture, pack and contraption a status binding: implemented, proposed or scratch. Use 'implemented' only when it names a command registered in packages/spw-cli/src/commands.ts, or a seed function with its file:line. Record the same status in registries/probes."
+  },
+  {
+   "kind": "missed_ir_and_tools",
+   "detail": "The task lists ir/lens as an input, but the plan never cites packages/spw-seed/src/ir/lens.ts or IrLens/IrLensLevel (ref.ts:26-36: file|frame|body|reg|graph|session|corpus). It also skips three code features that bear directly on tunable complexity: TraversalEffect 'disclose', the OptChannel budget {beats,nodes,ms} and IrLens.biasAxis. It misses spw cycle ('Capture before/after receipts around one inspection', commands.ts:270-274; cycle.ts runs prepare/parse/inspect/interconnect), a receipt producer that already ships, and spw inspect's cache plane. The 'three ladders' leave out IrLensLevel, which is the natural carrier for the proposed receipt field 'scope', and IndexDepth minimal|standard|full (canonical/index-config.ts:11). glossary/terms is missing homonym rows: lens (the cut's lens set, the ~#lens apposition and IrLens traversal), reading (the cut's reading set, ReadingProfileId author|prompt|research|creative, and the disclosure sense), level (the vocabulary level and IrLensLevel), authority (the spw authority command and the operator-authority contraption) and lattice (spw lattice and the particle, concept and operator lattices).",
+   "fix": "Add ir/lens.ts and ref.ts:26-36 to the inspection-and-ir ^[irs] rows. Map care onto GranularityDepth, IrLensLevel and IndexDepth, mapping only and never renaming. Cite spw cycle under ^[receipts] as today's producer before proposing new fields. Add the five term rows, and give the contraption a name that does not collide with the spw authority command."
+  },
+  {
+   "kind": "provenance_labels_and_logging",
+   "detail": "machine_empathy labels rules local to this cut as '(a) canon says it'. The care ladder (vocabulary.spw:47) and contract ^[inspection]/^[marginalia] belong to this dated cut, and a grep finds no care ladder in .spw/conventions or docs/theory/spw. It also labels the owner holds from resume/2026-09-30-direction.spw as (a), although that note's own falsifier is 'This note is treated as site doctrine' (:82). It cites contract ^[arcs].people as support for 'predict-then-reveal logs accuracy only to a reader-owned file', but arcs.people says arcs 'never rank, score, or log a person', and cli.spw:118 rules out a hidden activity log. ranked_tooling #9, resolveGranularity({care}), would put a vocabulary local to the cut into the portable seed kernel.",
+   "fix": "Use three labels: a-canon, a-cut, and 'owner hold for this revision'. Rewrite the practice rule: tools write nothing, and a reader may keep their own tally by hand. Keep the calibration ledger as an open question. Queue a ^[promote] row that adds the care ladder to .spw/conventions/cli.spw, and note it as a precondition for any --care in seed, CLI or LSP."
+  },
+  {
+   "kind": "cli_filed_as_host_residue",
+   "detail": "spw/hosts/cli-readings.spw (domain editor_hosts) puts the CLI under host residue: hosts/index declares residue standing, valence bone and no root door. The owner says the CLI is how others talk about Spw. The file also duplicates inspection-and-ir #>spw_ir_tool_trust, where the plan already merged the persona tool matrix. Both cover fragment refs, @name nodes and $% parsing.",
+   "fix": "Drop cli-readings from spw-hosts-and-history, which leaves it with 21 files. Fold its dated probes into inspection-and-ir ^[tool_trust] or rendering-and-cli in spw-branch."
+  },
+  {
+   "kind": "stale_inputs",
+   "detail": "The plan says panels/index, llull-wheel, affinity-atlas and gap-table are not written yet. All four exist. affinity-atlas and gap-table use #:form #!comparison, so the 'panel' vocabulary_addition wrongly lists them under used_by; panel recurs in only two wave-3 files (plates and computed-kin). The 'verified this pass' counts have also drifted. The cut now has 267 files, not 245, and 6,175 unique #> anchors, not 5,741. It holds 1,091 receipts, not 768: glance 134, skim 368, read 115, audit 276, adversarial 198. The water.spw link failure no longer applies.",
+   "fix": "Correct the panel justification and remove the two used_by entries. The v2 'contraptions extends llull-wheel' edge can now be written. Keep counts out of prose: write them only as %spw.* or %cut.* cells, recomputed at write time and stamped with the as_of commit."
+  },
+  {
+   "kind": "root_step0_timing",
+   "detail": "The task says root is apparatus written last. The plan's root step 0 instead edits vocabulary.spw and contract.spw first, while waves 1-2 are writing against them. Vocabulary appends only widen the sets. New contract ^[hazards] rows, though, are rules that waves 1-2 have not been checked against. contract.spw and vocabulary.spw are both #:review spot_checked with no receipts, and the honesty heuristic flags them alongside the two promote targets; re-run this pass, it still flags all four.",
+   "fix": "Limit step 0 to single-line vocabulary appends plus the lens gloss count, and mark it as an explicit exception to 'root last'. Move the contract hazard rows to root final. While root has these two files open, add a receipt to each or set their review value honestly."
+  },
+  {
+   "kind": "duplicate_homes",
+   "detail": "Several topics are planned in more than one surface. Say lines appear in both voice and arcs-and-readings. The skim/read homonyms appear in glossary/terms, inspection-and-ir ^[homonyms], rendering-and-cli ^[homonyms] and machine-empathy. The care-by-IR ladder and the receipt fields appear in both machine-empathy and inspection-and-ir.",
+   "fix": "Give each topic one home and have the others link it. Say lines go in voice. Homonyms go in glossary/terms rows. The ladder and receipts go in inspection-and-ir, with machine-empathy linking to them."
+  },
+  {
+   "kind": "registry_shape",
+   "detail": "registries/quantities/dimensions.spw is a second %spw.* file named for a topic, which breaks contract ^[quantities] 'registries/quantities/<branch>.spw'. registries/symmetries.spw would hold point, space and wallpaper group counts, but numbers belong once in quantity cells. The plan says dimension exponents can be rational, but the contract keeps fractions and negatives out of bare numbers.",
+   "fix": "Either fold the dimensions into the package's own quantities file under #>q_<ns>_dim, or record the topic-registry exception in registries/index. Store the group counts as quantity cells that symmetries.spw cites. Write exponents as decimals or quoted strings in up/down facets."
+  },
+  {
+   "kind": "gate_trap_ancestor_index",
+   "detail": "spw-cut-gate.ts:348 fails any non-index file that links an index.spw whose directory contains the linking file. That includes .spw/caches/index.spw and .spw/index.spw, since every cut file sits under them. The plan cites .spw/caches/index.spw:92-95,135 as a source in clustering-hybrid and in host files.",
+   "fix": "Only index files may write ~\".spw/caches/index.spw#spw_caches_index\". Every other file cites it as a quoted path:line string."
+  },
+  {
+   "kind": "directive_partially_served",
+   "detail": "Every owner directive has at least one surface, but the 'ANSI keyboards' directive is served only by hedged #!interpretive notes: the familiarity-matrix keyboard column and the operators keyboard note. Nothing measures or probes it. Persona tree_amendments[21], course trails such as mechanics-first-year and geometric-to-wave-optics, has no adopt or reject disposition, although it serves physics students.",
+   "fix": "Add %spw.key_* cells for the shift state of each sigil on ANSI US and ISO layouts, sourced to ISO/IEC 9995 or vendor layout documentation. Add one contraption probe for keystroke cost per sigil × bound, for example in opcode-map. Record a disposition for amendment [21]; reject hour-one-bundle as a tour."
+  },
+  {
+   "kind": "minor_integrity",
+   "detail": "chat-torrent-pipeline's rule 'handles only as keyed-hash pseudonyms' implies processing real chat handles, and contract ^[ethics].privacy bans private individuals. Surfaces that use bias edges as relation types ([causes], [boils], [activates]) can be read by spw mutate --bias as rewrite patches, and they carry no hazard note. ~#gloss is added as a reading while open-questions still asks whether gloss should exist (persona q32). In ranked_tooling, rank 1 must land after rank 2, and #14 treats spw.reading.mode as an existing setting when it does not exist.",
+   "fix": "Use only synthetic handles, and describe pseudonymization as protocol rather than data. Add a hazard line about mutate --bias to every surface that uses bias edges. Mark the gloss reading provisional and link it to its open question. Swap ranks 1 and 2, and describe spw.reading.mode as a new setting."
+  }
+ ]
+}

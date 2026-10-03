@@ -11,21 +11,27 @@
 #:valence #!bone
 
 ^"provenance"{
- as_of: "2026-09-30"
+ as_of: "2026-10-02"
  generator: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #sourced, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #partial }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #sourced, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #partial }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-01", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
  }
+ corrections: [ "the 95-year term from publication covers works published 1923 to 1977, not 1927 to 1977; works from 1923 to 1963 also needed renewal, and by 2026 the term still runs only for 1931 to 1977 publications" ]
  note: "cells marked verify hold a value the writer could not confirm against the current edition"
+ rechecked: "the 2021 IATSE terms, the Martian timeline, and the worldwide gross were matched again on 2026-10-02; the WGA 2026 term was read on wga.org and the DGA 2026 start on dga.org"
 }
 
 ^["families"]{
  labor: #[ iatse.turnaround_h, iatse.weekend_rest_h, sagaftra.rest_period_h, meal.first_meal_h ]
- terms: #[ iatse.ba_2021_term, iatse.ba_2024_expiry, wga.mba_2023_expiry, sagaftra.tvth_2023_expiry, dga.ba_2023_expiry ]
+ terms: #[ iatse.ba_2021_term, iatse.ba_2024_expiry, wga.mba_2023_expiry, sagaftra.tvth_2023_expiry, dga.ba_2023_expiry, wga.mba_2026_term, dga.ba_2026_start ]
  strikes: #[ iatse.strike_vote_2021_pct, wga.strike_2023_window, sagaftra.strike_2023_window, guilds.cycle_2026_status ]
  rights: #[ us_copyright.term_years, us_pd.through_pub_year, us_pd.next_pub_year ]
  image: #[ aspect.silent_ratio, aspect.academy_ratio, aspect.scope_ratio, frame.sound_fps ]
@@ -43,7 +49,7 @@
 ^"labor"{
  %film.iatse.turnaround_h{
   value: 10, unit: "h", abs: 0
-  at: "rest from wrap to next call for covered crew, Basic Agreement of 2021, carried into 2024"
+  at: "rest from wrap to next call for covered crew, Basic Agreement of 2021; check the 2024 successor"
   src: ~"../sources/film-stage-visual.spw#src_film_iatse_ba_2021"
   status: #settled
  }
@@ -99,6 +105,18 @@
   src: ~"../sources/film-stage-visual.spw#src_film_dga_ba_2023"
   status: #settled
  }
+ %film.wga.mba_2026_term{
+  value: "2026-05-02 to 2030-05-01", unit: "date range"
+  at: "term of the 2026 WGA Minimum Basic Agreement, a four-year term"
+  src: ~"../sources/film-stage-visual.spw#src_film_wga_mba_2026"
+  status: #settled
+ }
+ %film.dga.ba_2026_start{
+  value: "2026-07-01", unit: "date"
+  at: "start of the term the 2026 DGA memorandum amends; its end date was not read"
+  src: ~"../sources/film-stage-visual.spw#src_film_dga_moa_2026"
+  status: #settled
+ }
 }
 
 #>q_film_strikes
@@ -122,9 +140,9 @@
   status: #settled
  }
  %film.guilds.cycle_2026_status{
-  value: "", unit: "outcome"
-  at: "successor WGA, DGA, and SAG-AFTRA agreements after the 2026 expiries"
-  src: ~"../sources/film-stage-visual.spw#src_film_wga_mba_2023"
+  value: "WGA and DGA successors reached; SAG-AFTRA unread", unit: "outcome"
+  at: "2026 cycle after the May and June expiries; the SAG-AFTRA successor stays unchecked"
+  src: [ ~"../sources/film-stage-visual.spw#src_film_wga_mba_2026", ~"../sources/film-stage-visual.spw#src_film_dga_moa_2026" ]
   status: #verify
  }
 }
@@ -133,7 +151,7 @@
 ^"rights"{
  %film.us_copyright.term_years{
   value: 95, unit: "years", abs: 0
-  at: "US term from publication for works published 1927 to 1977 with formalities met"
+  at: "US term from publication for works published 1923 to 1977 with notice, and renewal for 1923 to 1963; in 2026 it still runs only for works published 1931 to 1977"
   src: ~"../sources/film-stage-visual.spw#src_film_usc_302_304"
   status: #settled
  }
@@ -241,9 +259,9 @@
 ^"martian_case"{
  %film.martian.serial_start_year{
   value: 2009, unit: "year", abs: 0
-  at: "year Andy Weir began the web serial, as commonly reported"
+  at: "year Andy Weir began writing the novel he posted as a web serial"
   src: ~"../sources/film-stage-visual.spw#src_film_alter_wsj_2014"
-  status: #verify
+  status: #settled
  }
  %film.martian.kindle_price_usd{
   value: 0.99, unit: "US dollars", abs: 0

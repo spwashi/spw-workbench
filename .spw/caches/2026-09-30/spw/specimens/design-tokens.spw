@@ -1,0 +1,232 @@
+# Design Token Specimens
+#
+# CSS and Figma habits fed to the Spw parser: selectors, hex colours, media queries, units, and variant names, each with the shape it produced.
+
+#>spw_spec_design
+#:layer #!semantics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!foundation
+#:review #!sourced
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Design Token Specimens"
+ ~#claim: "A CSS rule block keeps its shape in Spw, while hex colours, units, and media ranges change meaning or break."
+ ~#proof: "Each row was run through the parser at commit 1aa1dc23; quoted colours and facet records are the forms that come back clean."
+ ~#door: "Start with the hex rows, then the quoted colour that fixes them."
+ ~#audience: "designers moving tokens between CSS, Figma, and Spw"
+ continuity: "Design Token Specimens | quoted colour"
+ cold_open: "A rule block survives the move into Spw, but a colour only stays a colour as a quoted colour."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/studies/persona-synthesis.json false_friends_top and contraption_catalog",
+  "writer probe run of every habit and every write_instead form at commit 1aa1dc23 on 2026-10-02",
+  "replay of every row and write_instead form against the parser on 2026-10-03, signatures, lexer errors, and loudness unchanged"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the persona design limits said #3a3a3a becomes prose; at 1aa1dc23 it is a # operation carrying the prose chunk 3a3a3a, and the surface does not degrade"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes" ]
+ feeds: [ ~"../glossary/false-friends.spw#spw_false_friends" ]
+}
+
+#>spw_spec_design_observed
+^["observed"]{
+ #:claim #!settled
+ statement: "Each row was parsed at commit 1aa1dc23 as its habit line, any following line, and a final newline; signature, verdict, and loudness are what the tools then reported."
+ source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes"
+ cites: [ "packages/spw-seed/src/canonical/fingerprint.ts:49-70", "scripts/analyzers/spw-cut-gate.ts:193-217" ]
+}
+
+^["fixture"]{
+ status: #proposed
+ runner: "no repository code replays these rows as regression fixtures at 1aa1dc23; the writer probe script was scratch"
+}
+
+^["css"]{
+ #>spw_spec_design_class_rule
+ ^["class_rule"]{
+  habit: ".button{ color: red }"
+  verdict: #clean, loudness: #silent
+  signature: "Binding=1 Body=1 Expression=3 Identifier=2 Operation=1 Seed=1 Sequence=2"
+  observed: "a . ground operation named button with a body; the shape holds, but nothing selects or cascades"
+ }
+ #>spw_spec_design_id_rule
+ ^["id_rule"]{
+  habit: "#header{ height: 64 }"
+  verdict: #clean, loudness: #silent
+  signature: "Binding=1 Body=1 Expression=3 Identifier=1 Literal=1 Operation=1 Seed=1 Sequence=2"
+  observed: "a # tag operation named header with a body; a tag is a label, and nothing makes it unique"
+ }
+ #>spw_spec_design_hex_letter
+ ^["hex_letter"]{
+  habit: "color: #ff8800"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=1 Operation=1 Seed=1 Sequence=1"
+  observed: "color binds a tag named ff8800; no colour is read"
+  write_instead: "color: \"#ff8800\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_hash"
+ }
+ #>spw_spec_design_hex_digit
+ ^["hex_digit"]{
+  habit: "color: #3a3a3a"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=1 Operation=1 ProseChunk=1 Seed=1 Sequence=1"
+  observed: "color binds a # operation whose payload is the prose chunk 3a3a3a"
+  write_instead: "color: \"#3a3a3a\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_hash"
+ }
+ #>spw_spec_design_hex_word
+ ^["hex_word"]{
+  habit: "color: #face"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=1 Operation=1 Seed=1 Sequence=1"
+  observed: "the colour face is a tag named face, the same shape as any word tag"
+  write_instead: "color: \"#face\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_hash"
+ }
+ #>spw_spec_design_hex_quoted
+ ^["hex_quoted"]{
+  habit: "color: \"#ff8800\""
+  verdict: #clean, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=1 Literal=1 Seed=1 Sequence=1"
+  observed: "a string literal; the colour survives as text"
+ }
+ #>spw_spec_design_hover
+ ^["hover"]{
+  habit: "sel: button:hover"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=2 Expression=3 Identifier=3 Seed=1 Sequence=1"
+  observed: "sel binds a nested binding of button to hover"
+  write_instead: "sel: \"button:hover\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_colon"
+ }
+ #>spw_spec_design_media_query
+ ^["media_query"]{
+  habit: "@media(min-width: 600px){ cols: 2 }"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Body=1 Expression=5 Identifier=2 Literal=2 Reference=1 Scope=1 Seed=1 Sequence=3"
+  observed: "media becomes a reference with a Scope and a Body, and 600px splits into 600 and px"
+  write_instead: "media: .{ min_width: \"600px\", cols: 2 }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_at"
+ }
+ #>spw_spec_design_media_range
+ ^["media_range"]{
+  habit: "@media(width >= 600px){ cols: 2 }"
+  verdict: #degrades, loudness: #validator
+  signature: "Binding=1 Body=1 Expression=3 Identifier=1 Literal=1 Prose=1 ProseChunk=1 Seed=1 Sequence=1"
+  observed: ">= is a comparison token no grammar rule reads, and the whole surface becomes prose"
+  write_instead: "media: .{ min_width: \"600px\", cols: 2 }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_comparison"
+ }
+ #>spw_spec_design_pixels
+ ^["pixels"]{
+  habit: "size: 24px"
+  verdict: #splits, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=2 Literal=1 Seed=1 Sequence=1"
+  observed: "size binds 24, and px becomes a separate identifier"
+  write_instead: "size: .{ n: 24, unit: px }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_design_font_shorthand
+ ^["font_shorthand"]{
+  habit: "font: 16px/1.5"
+  verdict: #splits, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=2 Literal=2 Seed=1 Sequence=1"
+  observed: "font binds 16; px and 1.5 follow joined by a / connector"
+  write_instead: "font: .{ size: \"16px\", line_height: 1.5 }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_design_percent
+ ^["percent"]{
+  habit: "w: 50%"
+  verdict: #splits, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=1 Literal=1 Operation=1 Seed=1 Sequence=1"
+  observed: "w binds 50, and a loose % operation follows"
+  write_instead: "w: 0.5"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_design_custom_property
+ ^["custom_property"]{
+  habit: "--space-4: 1rem"
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 2
+  signature: "Binding=1 Expression=3 Identifier=2 Literal=1 Seed=1 Sequence=1"
+  observed: "both leading hyphens are lexer errors; the key becomes space-4, and rem splits off"
+  write_instead: "space_4: \"1rem\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_design_important
+ ^["important"]{
+  habit: "c: red !important"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=2 Operation=1 Seed=1 Sequence=1"
+  observed: "c binds red, and !important becomes a separate ! action operation"
+  write_instead: "c: .{ value: red, important: true }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_infix"
+ }
+ #>spw_spec_design_rgba
+ ^["rgba"]{
+  habit: "c: rgba(0, 0, 0, 0.5)"
+  verdict: #clean, loudness: #silent
+  signature: "Binding=1 Expression=6 Identifier=2 Literal=4 Scope=1 Seed=1 Sequence=2"
+  observed: "rgba is followed by a Scope holding all four numbers"
+ }
+}
+
+^["figma"]{
+ #>spw_spec_design_variant_property
+ ^["variant_property"]{
+  habit: "variant: Size=Large"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=2 Operation=1 Seed=1 Sequence=1"
+  observed: "variant binds Size, and =Large becomes a separate = operation"
+  write_instead: "variant: .{ Size: Large }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_equals"
+ }
+ #>spw_spec_design_layer_path
+ ^["layer_path"]{
+  habit: "name: Button/Primary"
+  verdict: #clean, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=3 Seed=1 Sequence=1"
+  observed: "both names stay in one expression joined by a / connector"
+ }
+}
+
+^["try"]{
+ #>spw_spec_design_try
+ ^["token_round_trip"]{
+  materials: [ "three tokens from a design system you use", "a terminal at the repository root" ]
+  steps: << "write each token as name: value" ; "pipe each line into npm run spw -- fingerprint --stdin --json" ; "quote any value whose row is not clean" ; "pipe them again and compare" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./design-tokens.spw#spw_spec_design_hex_quoted"
+ }
+}
+
+#>spw_spec_design_round_trip_q
+?["Could a token file round-trip through Spw if every value were a string?"]{
+ #:depth #!stylistic ~#lens(craft practice)
+ #:claim #!speculative
+ ~#hypothesis: "Quoting every value makes each design row clean while property names stay keys, so a token set survives as bindings and loses only the unit and colour types."
+ !probe{ "convert one exported token set to name: quoted value lines and count rows that come back clean" =id[p_gloss_design_round_trip] =kind[build] }
+ $%[gloss.spec.silent_n, gloss.spec.gate_n]
+ ~"./design-tokens.spw#spw_spec_design_observed" ~#neighbor(nearest)
+}

@@ -1,0 +1,304 @@
+# Abstract Computation
+#
+# Year three of the computing curriculum: 52 weeks of lambda calculus, types, categories, formal methods, consensus, graphs, complexity, cryptography, and quantum models.
+
+#>computing_abstract
+#:layer #!reference
+#:domain #!computing
+#:form #!curriculum
+#:level #!graduate
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Abstract Computation"
+ ~#claim: "Year three studies what can be typed, proven, agreed on, and computed at all, with every impossibility result stated with its model."
+ ~#proof: "Rows follow Pierce, Mac Lane, Lamport, Lynch, Sipser, and Nielsen and Chuang; keystones cite the founding papers from Turing to Castro and Liskov."
+ ~#door: "Read the lambda quarter, encode numbers as functions with the kit, then read FLP beside Raft."
+ ~#audience: "programmers after years one and two, and mathematics students curious about computation"
+ continuity: "Abstract Computation | stated with its model"
+ cold_open: "Year three asks what can be typed, proven, agreed on, or computed, and every impossibility arrives stated with its model."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/podcasting/year3-abstract-computation.spw" ]
+ evidence: #[ "Rocq 9.0 release page read on 2026-10-02: released 2025-03-12, completing the rename from Coq" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+ }
+ corrections: #[
+  "Coq is now named Rocq; Rocq 9.0 completed the rename in March 2025",
+  "Lean 4 is described as a separate prover whose logic is a variant of the Calculus of Inductive Constructions, not as outside that family",
+  "graph foundations moved to a year-two primer at week 92, before the compilers that use dominators and coloring; weeks 142 and 143 now revisit them",
+  "PBFT 3f+1 kept; signatures lower the bound only in synchronous systems, and under partial synchrony 3f+1 holds even with signatures",
+  "Karp 1972 reduced SAT outward to 21 problems, SAT among them; the earlier row had the reductions running toward SAT",
+  "Hindley 1969 is credited with principal type-schemes for combinatory logic; let-polymorphism is credited to Milner 1978",
+  "undecidability of first-order validity now cites Church, A Note on the Entscheidungsproblem; the lambda and Turing equivalence is credited to Turing 1937",
+  "the claim that writing a program is identical to writing a proof is kept as refuted",
+  "the 3285-hour grand synthesis is renamed a capstone; the figure came from a daily episode budget",
+  "the wonder that programmers reinvent categories centuries later is dated: categories begin in 1945",
+  "the Byzantine limits no longer say signed synchrony is the only escape: the any-number result is for single-commander broadcast, replication there needs 2f plus 1, and trusted hybrids also go below 3f plus 1"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./systems-programming.spw#computing_systems_w103", ~"../mathematics/graduate-algebra-and-topology.spw#mathematics_ga_adjunction" ]
+ feeds: [ ~"./curriculum-dag.spw#computing_curriculum_dag" ]
+ see: [ ~"../../physical/physics/nonequilibrium-and-information.spw#physics_nonequilibrium", ~"../../language-and-mind/linguistics/semantics-and-pragmatics.spw#linguistics_semantics" ]
+}
+
+^["concepts"]{
+ primary: [ #lambda_calculus, #proof, #fault_model ]
+ transfers: [ #specification, #protocol, #weekly_rung ]
+ tensions: [ #redundancy ]
+}
+
+^["cadence"]{
+ year: << "types and lambda: weeks 105 to 117" ; "categories and formal methods: weeks 118 to 130" ; "consensus and graphs: weeks 131 to 143" ; "limits, cryptography, quantum: weeks 144 to 156" >>
+ rhythm: "each block pairs a theorem with a runnable artifact in Haskell, OCaml, Lean, Rocq, or TLA+"
+}
+
+^["rows"]{
+ ^["q1_types"]{
+  theme: "lambda calculus, type systems, and propositions as types"
+
+  #>computing_abstract_w105
+  w105: .{ week: "105-107", topic: "Untyped lambda calculus", spec: "alpha conversion, beta reduction, Church numerals and booleans, fixed-point combinators" }
+  #>computing_abstract_w108
+  w108: .{ week: "108-110", topic: "Simply typed lambda calculus", spec: "typing rules, progress and preservation, strong normalization" }
+  #>computing_abstract_w111
+  w111: .{ week: "111-113", topic: "Curry-Howard", spec: "intuitionistic natural deduction as typed terms: implication as function, conjunction as product, disjunction as sum" }
+  #>computing_abstract_w114
+  w114: .{ week: "114-115", topic: "Hindley-Milner inference", spec: "principal types, Robinson unification, let-polymorphism, Algorithm W" }
+  #>computing_abstract_w116
+  w116: .{ week: "116-117", topic: "System F and dependent types", spec: "universal and existential types; Pi and Sigma types" }
+ }
+ ^["q2_categories"]{
+  theme: "categories, effects, specification, and proof assistants"
+
+  #>computing_abstract_w118
+  w118: .{ week: "118-120", topic: "Categories", spec: "objects, morphisms, composition, identities, duality, monos and epis" }
+  #>computing_abstract_w121
+  w121: .{ week: "121-123", topic: "Functors, natural transformations, monads", spec: "covariant and contravariant functors, naturality squares, monads as effects" }
+  #>computing_abstract_w124
+  w124: .{ week: "124-125", topic: "Adjunctions, limits, colimits", spec: "universal properties, products and coproducts, pullbacks and pushouts" }
+  #>computing_abstract_w126
+  w126: .{ week: "126-128", topic: "TLA+ and model checking", spec: "temporal logic of actions, state machines, invariants, checking a replication protocol" }
+  #>computing_abstract_w129
+  w129: .{ week: "129-130", topic: "Proof assistants", spec: "Rocq, formerly Coq, on the Calculus of Inductive Constructions; Lean 4; machine-checked program proofs" }
+ }
+ ^["q3_consensus_graphs"]{
+  theme: "asynchrony, replication, Byzantine faults, and graph algorithms"
+
+  #>computing_abstract_w131
+  w131: .{ week: "131-133", topic: "FLP and asynchronous consensus", spec: "the FLP proof; partial synchrony; failure detectors" }
+  #>computing_abstract_w134
+  w134: .{ week: "134-136", topic: "Paxos and Raft", spec: "leader election, log matching, majority quorums, joint-consensus reconfiguration" }
+  #>computing_abstract_w137
+  w137: .{ week: "137-138", topic: "Byzantine fault tolerance", spec: "PBFT, view changes, state machine replication with malicious replicas, quorum intersection" }
+  #>computing_abstract_w139
+  w139: .{ week: "139-141", topic: "Network flows", spec: "Ford-Fulkerson, Edmonds-Karp, max-flow min-cut as LP duality, bipartite matching" }
+  #>computing_abstract_w142
+  w142: .{ week: "142-143", topic: "Graph structure revisited", spec: "topological sort, Tarjan and Kosaraju-Sharir SCCs, coloring, chordal graphs and SSA" }
+ }
+ ^["q4_limits"]{
+  theme: "computability, complexity, zero knowledge, and quantum models"
+
+  #>computing_abstract_w144
+  w144: .{ week: "144-146", topic: "Computability", spec: "Turing machines, universality, the halting problem, Rice theorem, Kolmogorov complexity" }
+  #>computing_abstract_w147
+  w147: .{ week: "147-149", topic: "Complexity", spec: "P, NP, PSPACE; Cook-Levin; Karp reductions; oracles and relativization" }
+  #>computing_abstract_w150
+  w150: .{ week: "150-152", topic: "Zero-knowledge proofs", spec: "interactive proofs, arithmetic circuits, QAPs, polynomial commitments, SNARKs and STARKs" }
+  #>computing_abstract_w153
+  w153: .{ week: "153-154", topic: "Quantum computation", spec: "qubits, unitaries, measurement, entanglement; Shor and Grover; reversible computing" }
+  #>computing_abstract_w155
+  w155: .{ week: "155-156", topic: "Capstone: one computation, every layer", spec: "trace one function through its type, its IR, its assembly, and the gates that run it" }
+ }
+}
+
+^["ledger"]{
+ #>computing_abstract_church_turing
+ ^["entscheidungsproblem"]{
+  #:claim #!settled
+  statement: "Church and Turing showed independently in 1936 that no algorithm decides first-order validity; Turing sketched in 1936 and proved in 1937 that lambda calculus and Turing machines compute the same functions."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_church_1936b", ~"../../registries/sources/formal.spw#src_formal_turing_1936", ~"../../registries/sources/formal.spw#src_formal_turing_1937", ~"../../registries/sources/formal.spw#src_formal_church_1936" ]
+  note: "the 1936 American Journal paper proves lambda normal form undecidable; the validity result is in the Journal of Symbolic Logic note"
+ }
+ #>computing_abstract_thesis
+ ^["church_turing_thesis"]{
+  #:claim #!interpretive
+  statement: "The Church-Turing thesis, that these models capture every effective procedure, is a thesis about a notion, not a theorem, and no proof could settle it."
+ }
+ #>computing_abstract_soundness
+ ^["type_soundness"]{
+  #:claim #!settled
+  statement: "Wright and Felleisen framed type soundness as progress, where a well-typed term is a value or can step, and preservation, where stepping keeps its type."
+  source: ~"../../registries/sources/formal.spw#src_formal_wright_felleisen_1994"
+ }
+ #>computing_abstract_curry_howard
+ ^["curry_howard"]{
+  #:claim #!settled
+  statement: "Howard, in notes from 1969 published in 1980, matched intuitionistic natural deduction proofs with simply typed lambda terms and proof normalization with evaluation."
+  source: ~"../../registries/sources/formal.spw#src_formal_howard_1980"
+ }
+ #>computing_abstract_program_proof_raw
+ ^["every_program_a_proof"]{
+  #:claim #!refuted
+  statement: "The raw wonder said writing any program is identical to writing a proof; general recursion inhabits every type, so only total programs in a consistent type theory read as proofs."
+  source: ~"../../registries/sources/formal.spw#src_formal_pierce_2002"
+ }
+ #>computing_abstract_hm
+ ^["hindley_milner"]{
+  #:claim #!settled
+  statement: "Hindley in 1969 proved principal type-schemes for combinatory logic; Milner in 1978 independently gave principal types with let-polymorphism for ML; Damas and Milner proved Algorithm W complete in 1982."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_hindley_1969", ~"../../registries/sources/formal.spw#src_formal_milner_1978", ~"../../registries/sources/formal.spw#src_formal_damas_milner_1982", ~"../../registries/sources/formal.spw#src_formal_robinson_1965" ]
+ }
+ #>computing_abstract_system_f
+ ^["system_f"]{
+  #:claim #!settled
+  statement: "Girard in 1972 and Reynolds in 1974 introduced System F independently, and Wells proved in 1999 that type inference for it is undecidable."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_girard_1972", ~"../../registries/sources/formal.spw#src_formal_reynolds_1974", ~"../../registries/sources/formal.spw#src_formal_wells_1999" ]
+ }
+ #>computing_abstract_monads
+ ^["monads"]{
+  #:claim #!settled
+  statement: "Moggi in 1991 modeled state, exceptions, continuations, and other effects as monads, so effectful programs compose by one law."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_moggi_1991", ~"../../registries/sources/formal.spw#src_formal_maclane_1998" ]
+ }
+ #>computing_abstract_coq_name
+ ^["coq_name"]{
+  #:claim #!superseded
+  statement: "The raw row named the proof assistant Coq; that name was retired when the project became the Rocq Prover."
+  source: ~"../../registries/sources/formal.spw#src_formal_rocq_2025"
+ }
+ #>computing_abstract_rocq
+ ^["rocq"]{
+  #:claim #!settled
+  statement: "Rocq 9.0, released in March 2025, completed the rename from the Coq Proof Assistant; its kernel checks the Calculus of Inductive Constructions."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_rocq_2025", ~"../../registries/sources/formal.spw#src_formal_coquand_huet_1988", ~"../../registries/sources/formal.spw#src_formal_coquand_paulin_1990" ]
+  supersedes: [ ~"./abstract-computation.spw#computing_abstract_coq_name" ]
+  as_of: "2026-10-02"
+  lean: "Lean 4 is a separate prover with a separate kernel; its logic is the Calculus of Constructions with non-cumulative universes and inductive types, a variant of the Calculus of Inductive Constructions"
+  lean_sources: [ ~"../../registries/sources/formal.spw#src_formal_lean4_2021", ~"../../registries/sources/formal.spw#src_formal_tpil4" ]
+ }
+ #>computing_abstract_tla
+ ^["tla"]{
+  #:claim #!settled
+  statement: "Lamport temporal logic of actions writes a system as one formula over behaviors, so an implementation refines a specification by logical implication."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_lamport_1994", ~"../../registries/sources/formal.spw#src_formal_lamport_2002" ]
+ }
+ #>computing_abstract_flp
+ ^["flp"]{
+  #:claim #!settled
+  statement: "Fischer, Lynch, and Paterson proved in 1985 that no deterministic protocol guarantees consensus in a fully asynchronous system if even one process may crash."
+  source: ~"../../registries/sources/formal.spw#src_formal_flp_1985"
+  ^["limits"]{
+   holds: "deterministic protocols, asynchronous messages, one crash"
+   fails: "partial synchrony, failure detectors, or randomization each restore termination"
+  }
+  escapes: [ ~"../../registries/sources/formal.spw#src_formal_dls_1988", ~"../../registries/sources/formal.spw#src_formal_chandra_toueg_1996" ]
+ }
+ #>computing_abstract_crash_quorum
+ ^["crash_replication"]{
+  #:claim #!settled
+  statement: "Paxos and Raft keep a replicated log safe under crash faults with majority quorums, so tolerating f crashes takes 2f plus 1 replicas."
+  reads: %[formal.consensus.crash_replicas_f1]
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_lamport_1998", ~"../../registries/sources/formal.spw#src_formal_ongaro_ousterhout_2014", ~"../../registries/sources/formal.spw#src_formal_lynch_1996" ]
+ }
+ #>computing_abstract_bft
+ ^["byzantine"]{
+  #:claim #!settled
+  statement: "With oral messages in synchronous systems, tolerating f Byzantine replicas needs at least 3f plus 1; under partial synchrony that bound holds even with signatures, and PBFT meets it."
+  reads: %[formal.consensus.bft_replicas_f1]
+  sources: [
+   ~"../../registries/sources/formal.spw#src_formal_lsp_1982",
+   ~"../../registries/sources/formal.spw#src_formal_dls_1988",
+   ~"../../registries/sources/formal.spw#src_formal_castro_liskov_1999",
+   ~"../../registries/sources/formal.spw#src_formal_dolev_strong_1983",
+   ~"../../registries/sources/formal.spw#src_formal_sync_hotstuff_2020",
+   ~"../../registries/sources/formal.spw#src_formal_a2m_2007",
+   ~"../../registries/sources/formal.spw#src_formal_minbft_2013"
+  ]
+  ^["limits"]{
+   holds: "oral messages in synchronous systems; Byzantine agreement under partial synchrony, signed or unsigned, without trusted components, including PBFT"
+   fails: [
+    "with unforgeable signatures in synchrony, the signed-message algorithm of Lamport, Shostak, and Pease solves single-commander broadcast for any number of traitors",
+    "replicated agreement in that setting still needs a majority of correct replicas, 2f plus 1, the resilience Sync HotStuff reaches",
+    "trusted components that prevent equivocation, as in A2M and MinBFT, let PBFT-style replication run with 2f plus 1 replicas"
+   ]
+  }
+ }
+ #>computing_abstract_flows
+ ^["max_flow"]{
+  #:claim #!settled
+  statement: "Ford and Fulkerson proved max-flow equals min-cut in 1956; Edmonds and Karp showed in 1972 that shortest augmenting paths bound the work polynomially."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_ford_fulkerson_1956", ~"../../registries/sources/formal.spw#src_formal_edmonds_karp_1972" ]
+ }
+ #>computing_abstract_scc
+ ^["strong_components"]{
+  #:claim #!settled
+  statement: "Tarjan found strongly connected components in linear time with one depth-first search in 1972; the two-pass method credited to Kosaraju was published by Sharir in 1981."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_tarjan_1972", ~"../../registries/sources/formal.spw#src_formal_sharir_1981" ]
+ }
+ #>computing_abstract_rice
+ ^["rice"]{
+  #:claim #!settled
+  statement: "Rice proved in 1953 that every nontrivial property of the function a program computes is undecidable, so static analyzers must approximate."
+  source: ~"../../registries/sources/formal.spw#src_formal_rice_1953"
+ }
+ #>computing_abstract_np
+ ^["np_completeness"]{
+  #:claim #!settled
+  statement: "Cook in 1971 and Levin in 1973 showed SAT NP-complete; in 1972 Karp proved 21 problems, SAT among them, NP-complete by chains of reductions from SAT; relativizing proofs cannot settle P versus NP."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_cook_1971", ~"../../registries/sources/formal.spw#src_formal_levin_1973", ~"../../registries/sources/formal.spw#src_formal_karp_1972", ~"../../registries/sources/formal.spw#src_formal_bgs_1975" ]
+ }
+ #>computing_abstract_zk
+ ^["zero_knowledge"]{
+  #:claim #!settled
+  statement: "Goldwasser, Micali, and Rackoff defined zero knowledge; QAP-based SNARKs give short proofs after a trusted setup, while STARKs rely on hashing and need none."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_gmr_1989", ~"../../registries/sources/formal.spw#src_formal_ggpr_2013", ~"../../registries/sources/formal.spw#src_formal_bensasson_2018" ]
+ }
+ #>computing_abstract_quantum
+ ^["quantum"]{
+  #:claim #!settled
+  statement: "Shor factors integers in polynomial time on a quantum computer, and Grover finds a marked item among n in about the square root of n queries."
+  sources: [ ~"../../registries/sources/formal.spw#src_formal_shor_1997", ~"../../registries/sources/formal.spw#src_formal_grover_1996", ~"../../registries/sources/formal.spw#src_formal_nielsen_chuang_2010" ]
+ }
+ #>computing_abstract_reversible
+ ^["reversible"]{
+  #:claim #!settled
+  statement: "Bennett showed in 1973 that any computation can be made logically reversible, so in principle it need not erase bits or pay the Landauer cost of erasure."
+  source: ~"../../registries/sources/formal.spw#src_formal_bennett_1973"
+ }
+}
+
+^["try"]{
+ #>computing_abstract_try_church
+ ^["numbers_as_functions"]{
+  materials: [ "Python 3 or any language with first-class functions" ]
+  steps: << "define zero as a function that takes f and returns x unchanged" ; "define successor to apply f once more" ; "define add by applying one numeral f-count on top of another" ; "convert a numeral to an integer by applying plus one to zero" ; "check that two plus three gives five" >>
+  time: .{ n: 25, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./abstract-computation.spw#computing_abstract_church_turing"
+ }
+}
+
+#>computing_abstract_reinvent_q
+?["Why do library designers converge on functor and monad shapes without reading category theory?"]{
+ #:depth #!computational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Libraries converge on map and flatMap shapes because composing effectful steps forces the same associativity and identity laws, whatever the designers read."
+ !probe{ "date the first lawful map and flatMap pairs in several standard libraries and record whether their designers cite Moggi or Haskell" =id[p_formal_abstract_monad_convergence] =kind[lit] }
+ $%[graph.out_degree]
+ ~"./abstract-computation.spw#computing_abstract_monads" ~#neighbor(nearest)
+}

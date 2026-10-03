@@ -1,0 +1,173 @@
+# Knowledge Organization
+#
+# How library schemes sort the world: Dewey, Library of Congress, UDC, Colon, thesauri, linked-data vocabularies, and an Indigenous scheme, compared on structure and on how well each welcomes a subject it never anticipated.
+
+#>information_science_knowledge_org
+#:layer #!reference
+#:domain #!information_science
+#:form #!comparison
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bone
+#:era #!modern
+
+^"emit"{
+ ~#title: "Knowledge Organization"
+ ~#claim: "Enumerative schemes list subjects in advance, while faceted schemes build a subject from parts, which makes them more hospitable to new topics."
+ ~#proof: "Dewey 1876, Ranganathan 1933, Otlet and La Fontaine through Rayward, ISO 25964, SKOS, IFLA LRM, and Cherry and Mukunda on the Brian Deer scheme."
+ ~#door: "Read the hospitality claim, then try placing one new subject in each scheme."
+ ~#audience: "catalogers, library students, and designers of tag vocabularies"
+ continuity: "Knowledge Organization | build a subject from parts"
+ cold_open: "Some library schemes list every subject in advance, and others build a subject from parts, which welcomes new topics."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/library-and-information-sciences/knowledge-organization-and-metadata-schemas.spw" ]
+ method: #corrected
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+   note: "Dewey, LCC, Colon Classification, and five-laws dates confirmed"
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: [
+  "the raw file said LCC runs A to Z; it uses 21 single-letter main classes and skips several letters",
+  "UDC, thesauri, SKOS, and the Brian Deer scheme were absent and are added",
+  "the MARC wonder claimed MARC records were built only to print cards; that motive is dropped as unsourced"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../vocabulary.spw#cut_vocabulary", ~"../../registries/quantities/provenance-and-reference.spw#q_prov_reference" ]
+ contrasts: [ ~"./taxonomy-cautions.spw#information_science_cautions" ]
+}
+
+^["concepts"]{
+ primary: [ #faceted_classification, #authority_control ]
+ transfers: [ #closed_vocabulary, #renvoi ]
+ tensions: [ #ossified_taxonomy ]
+}
+
+^["axes"]{
+ structure: "enumerative lists compound subjects in advance; analytico-synthetic or faceted schemes combine simple parts"
+ notation: "the call number or code a scheme assigns, which also fixes shelf order"
+ hospitality: "Ranganathan's word for how easily a scheme admits a subject it did not list"
+ governance: "who maintains the scheme and how a change is made"
+}
+
+^["matrix"]{
+ #>information_science_ko_ddc
+ ^["dewey_decimal"]{
+  #:claim #!settled
+  statement: "Melvil Dewey published his decimal scheme anonymously in 1876, with ten main classes and relative location, so books shelve by subject rather than by fixed position."
+  reads: %[prov.ddc.main_class_count]
+  sources: [ ~"../../registries/sources/provenance-and-reference.spw#src_prov_dewey_1876", ~"../../registries/sources/provenance-and-reference.spw#src_prov_chan_salaba_2016" ]
+  structure: #enumerative, notation: "decimal numbers", hospitality: "new subjects need a decimal slot; crowded classes grow long numbers"
+ }
+ #>information_science_ko_lcc
+ ^["library_of_congress"]{
+  #:claim #!settled
+  statement: "The Library of Congress Classification grew from 1897 for one large collection; it is enumerative, with 21 lettered main classes and notation gaps left for growth."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_chan_salaba_2016"
+  structure: #enumerative, notation: "letters then numbers", hospitality: "gaps in the number line absorb new subjects inside a class"
+ }
+ #>information_science_ko_udc
+ ^["universal_decimal"]{
+  #:claim #!settled
+  statement: "Paul Otlet and Henri La Fontaine extended Dewey into the Universal Decimal Classification, adding signs such as the colon to join subjects."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_rayward_1975"
+  structure: #analytico_synthetic, notation: "decimals joined by auxiliary signs", hospitality: "a new relation is written by joining two existing numbers"
+ }
+ #>information_science_ko_colon
+ ^["colon"]{
+  #:claim #!settled
+  statement: "S. R. Ranganathan published Colon Classification in 1933; subjects are built from facets, and later editions name five fundamental categories, PMEST."
+  sources: [ ~"../../registries/sources/provenance-and-reference.spw#src_prov_ranganathan_1933", ~"../../registries/sources/provenance-and-reference.spw#src_prov_chan_salaba_2016" ]
+  structure: #faceted, notation: "facet values joined by punctuation in a fixed citation order", hospitality: "any new combination of known facets is expressible at once"
+  ^["pmest"]{ personality: "the core subject", matter: "material or property", energy: "action or process", space: "place", time: "period" }
+ }
+ #>information_science_ko_five_laws
+ ^["five_laws"]{
+  #:claim #!settled
+  statement: "Ranganathan's five laws of 1931: books are for use, every reader his book, every book its reader, save the time of the reader, the library is a growing organism."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_ranganathan_1931"
+ }
+ #>information_science_ko_thesauri
+ ^["thesauri_and_skos"]{
+  #:claim #!settled
+  statement: "A thesaurus links preferred terms by broader, narrower, related, and use-for relations; SKOS publishes the same relations as linked data."
+  sources: [ ~"../../registries/sources/provenance-and-reference.spw#src_prov_iso_25964_2011", ~"../../registries/sources/provenance-and-reference.spw#src_prov_w3c_skos_2009" ]
+  structure: #relational, notation: "terms and URIs, not shelf order", hospitality: "a new term joins with one broader link"
+ }
+ #>information_science_ko_lrm
+ ^["entity_models"]{
+  #:claim #!settled
+  statement: "IFLA LRM separates a work from its expressions, manifestations, and items, so one record no longer has to stand for all four."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_ifla_lrm_2017"
+  ^["wemi"]{ work: "an abstract creation", expression: "a text, score, or translation of it", manifestation: "an edition or release", item: "one copy" }
+ }
+ #>information_science_ko_metadata
+ ^["metadata_sets"]{
+  #:claim #!settled
+  statement: "MARC made catalog records machine-readable from the 1960s; Dublin Core later offered a small cross-domain element set."
+  reads: %[prov.dcmes.element_count]
+  sources: [ ~"../../registries/sources/provenance-and-reference.spw#src_prov_avram_1975", ~"../../registries/sources/provenance-and-reference.spw#src_prov_iso_15836_2017" ]
+ }
+ #>information_science_ko_brian_deer
+ ^["brian_deer"]{
+  #:claim #!settled
+  statement: "A. Brian Deer, a Kahnawake Mohawk librarian, designed a classification for Indigenous collections in the 1970s; the Xwi7xwa Library at UBC adapted it."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_cherry_mukunda_2015"
+  structure: #relational, notation: "classes ordered by community relationships and place", hospitality: "built around the collection rather than around a universal outline"
+ }
+}
+
+^["comparison"]{
+ #>information_science_ko_hospitality
+ ^["hospitality"]{
+  #:claim #!settled
+  statement: "Faceted schemes are more hospitable to new compound subjects than enumerative ones, because they combine existing facets instead of waiting for a listed slot."
+  sources: [ ~"../../registries/sources/provenance-and-reference.spw#src_prov_ranganathan_1933", ~"../../registries/sources/provenance-and-reference.spw#src_prov_chan_salaba_2016" ]
+  ^["limits"]{
+   holds: "subjects that combine known kinds of thing, action, place, and time"
+   fails: "a truly new kind of thing still needs a new focus in some facet, and long facet strings are hard to shelve"
+  }
+ }
+ #>information_science_ko_bias
+ ^["naming_bias"]{
+  #:claim #!settled
+  statement: "Subject headings encode the outlook of whoever maintains them; Berman documented prejudicial headings about people, and Olson analyzed the limits of naming."
+  sources: [ ~"../../registries/sources/provenance-and-reference.spw#src_prov_berman_1971", ~"../../registries/sources/provenance-and-reference.spw#src_prov_olson_2002" ]
+ }
+ in_this_cut: "the cut uses closed facets in vocabulary.spw much as a thesaurus does, and a faceted header much as Colon does; it has no Space facet yet"
+}
+
+^["try"]{
+ #>information_science_ko_try_facets
+ ^["place_a_new_subject"]{
+  materials: [ "paper and pencil", "a short list of DDC main classes", "the PMEST facet names" ]
+  steps: << "pick a subject no scheme lists, such as podcast archives in Lagos" ; "find the single DDC main class it fits" ; "write it as personality, matter, energy, space, and time" ; "compare how much each version kept" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./knowledge-organization.spw#information_science_ko_hospitality"
+ }
+}
+
+#>information_science_ko_space_q
+?["Would adding a Space facet to this cut make regional gaps visible the way Colon makes them visible on a shelf?"]{
+ #:depth #!educational ~#lens(curated collection)
+ #:claim #!speculative
+ ~#hypothesis: "A declared region facet would expose how few surfaces describe practice outside the United States, which today stays hidden in prose."
+ !probe{ "tag each surface with a region by hand and count surfaces per region" =id[p_prov_ko_space_facet] =kind[census] }
+ $%[prov.ddc.main_class_count]
+ ~"./knowledge-organization.spw#information_science_ko_colon" ~#neighbor(nearest)
+ breaks: "a shelf can hold only one call number per book, while a surface can carry many facet values at once"
+}

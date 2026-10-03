@@ -1,0 +1,164 @@
+# Memory and Systems
+#
+# Who frees memory and when the rule is checked: Rust ownership, Zig allocators and comptime, defer in Zig and Go, C++ RAII, and arenas and regions.
+
+#>lang_design_memory
+#:layer #!reference
+#:domain #!lang_design
+#:form #!comparison
+#:level #!advanced
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Memory and Systems"
+ ~#claim: "Systems languages differ in who decides when memory is freed: the owner in Rust, the scope in C++ and Zig defer, the arena in region schemes, and the caller in Zig."
+ ~#proof: "Rows cite the Rust book, the Zig 0.14.0 reference and release notes, the Go specification, Stroustrup, Hanson, and Tofte and Talpin."
+ ~#door: "Read the who-frees column, then the Zig allocator correction, then the retention question at the end."
+ ~#audience: "language designers and Spw readers coming from systems programming"
+ continuity: "Memory and Systems | who decides when memory is freed"
+ cold_open: "Each systems language answers one question differently: who decides when memory is freed."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/language-features/systems-and-memory.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "Zig 0.14.0 renamed GeneralPurposeAllocator to DebugAllocator; the raw file used the old name",
+  "the raw file said a Zig function without an allocator parameter is guaranteed not to allocate; that is a convention, and code can still reach a global allocator",
+  "the raw invariant that explicit memory parameters guarantee zero heap allocation is refuted for the same reason",
+  "claims of output equal to hand-tuned C and of stack traces preserved by error values had no source and are dropped"
+ ]
+}
+
+^["edges"]{
+ see: [ ~"./type-systems.spw#lang_design_types", ~"docs/theory/spw/cache-field.spw#cache_field" ]
+}
+
+^["concepts"]{
+ primary: [ #ownership, #allocator, #arena ]
+ transfers: [ #lifetime, #retention_plane ]
+ tensions: [ #hidden_allocation ]
+}
+
+^["matrix"]{
+ ^["legend"]{
+  columns: #[ who_frees, checked, visible_cost ]
+  as_of: "Rust book 2nd ed., Zig 0.14.0, Go specification read 2026-10-02"
+ }
+ #>lang_design_memory_row_rust
+ ^["rust_ownership"]{
+  who_frees: "the single owner, when it goes out of scope"
+  checked: "compile time, by the borrow checker, for safe code"
+  visible_cost: "moves and borrows are written in types and signatures"
+ }
+ #>lang_design_memory_row_zig
+ ^["zig_allocators"]{
+  who_frees: "the caller, through the allocator it passed in"
+  checked: "at run time by a debug allocator in debug builds"
+  visible_cost: "an allocator parameter at the call site, by convention"
+ }
+ #>lang_design_memory_row_zig_defer
+ ^["zig_defer"]{
+  who_frees: "the block, at scope exit, in reverse order"
+  checked: "not checked; the author writes the defer"
+  visible_cost: "cleanup sits next to acquisition"
+ }
+ #>lang_design_memory_row_go_defer
+ ^["go_defer"]{
+  who_frees: "the surrounding function, when it returns"
+  checked: "garbage collection reclaims memory; defer handles other resources"
+  visible_cost: "a defer line, run at function exit rather than block exit"
+ }
+ #>lang_design_memory_row_cpp
+ ^["cpp_raii"]{
+  who_frees: "the destructor, when an object leaves scope"
+  checked: "by language rules for automatic objects"
+  visible_cost: "a wrapper type per resource"
+ }
+ #>lang_design_memory_row_arena
+ ^["arenas_and_regions"]{
+  who_frees: "the arena or region, all at once"
+  checked: "by the programmer for arenas; inferred at compile time for regions"
+  visible_cost: "lifetimes grouped by phase of work"
+ }
+}
+
+^["claims"]{
+ #>lang_design_memory_rust
+ ^["rust_ownership"]{
+  #:claim #!settled
+  statement: "In safe Rust each value has one owner and is dropped when the owner leaves scope, and borrow checking at compile time rules out use-after-free and data races."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_klabnik_nichols_2023"
+  ^["limits"]{
+   holds: "safe Rust"
+   fails: "unsafe blocks and foreign code, where the author upholds the rules"
+  }
+ }
+ #>lang_design_memory_zig_convention
+ ^["zig_allocator_convention"]{
+  #:claim #!settled
+  statement: "Zig standard library code that allocates takes an Allocator parameter, which makes allocation visible at the call site; the language does not forbid reaching a global allocator."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_zig_langref"
+  as_of: "Zig 0.14.0"
+ }
+ #>lang_design_memory_debug_allocator
+ ^["debug_allocator"]{
+  #:claim #!settled
+  statement: "Zig 0.14.0 rewrote GeneralPurposeAllocator to make fewer active mappings, renamed it DebugAllocator, and added SmpAllocator for multithreaded ReleaseFast builds."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_zig_0_14_notes"
+  as_of: "Zig 0.14.0 release notes, 2025"
+  ~#say(the debug allocator was renamed)
+ }
+ #>lang_design_memory_comptime
+ ^["comptime"]{
+  #:claim #!settled
+  statement: "Zig comptime runs ordinary Zig code during compilation and treats types as values, so a generic function is a function that takes a type as a comptime parameter."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_zig_langref"
+  as_of: "Zig 0.14.0"
+ }
+ #>lang_design_memory_defer
+ ^["defer_scope"]{
+  #:claim #!settled
+  statement: "Zig defer runs when control leaves the enclosing block, in reverse order, and errdefer only when the scope is left by an error; Go defer runs when the surrounding function returns."
+  sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_zig_langref", ~"../../registries/sources/spw-design-studies.spw#src_lab_go_spec" ]
+ }
+ #>lang_design_memory_raii
+ ^["raii"]{
+  #:claim #!settled
+  statement: "C++ ties release of a resource to the lifetime of an object whose destructor frees it, the idiom Stroustrup named resource acquisition is initialization."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_stroustrup_2013"
+ }
+ #>lang_design_memory_arenas
+ ^["arenas_and_regions"]{
+  #:claim #!settled
+  statement: "Hanson allocated objects with similar lifetimes from one arena freed at once, and Tofte and Talpin inferred such regions for an ML-like language at compile time."
+  sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_hanson_1990", ~"../../registries/sources/spw-design-studies.spw#src_lab_tofte_talpin_1997" ]
+ }
+ #>lang_design_memory_spw_reading
+ ^["spw_retention_reading"]{
+  #:claim #!interpretive
+  statement: "Spw canon names retention planes whose clock sets how long a product lives, which reads like an arena: the plane, not the product, decides the lifetime."
+  grounds: [ ~"docs/theory/spw/cache-field.spw#cache_field" ]
+  status: #implemented
+  ~#(the planes are code at 1aa1dc23; the arena reading belongs to this surface)
+ }
+}
+
+#>lang_design_memory_plane_q
+?["Is a retention plane an arena for cached products?"]{
+ #:depth #!computational ~#lens(energy budget)
+ #:claim #!speculative
+ ~#hypothesis: "Planes whose clock is a beat count behave like arenas freed by phase, while planes keyed by file fingerprints behave like caches that a miss refills."
+ !probe{ "classify each retention plane in cache-field by who decides its lifetime and what happens on a miss" =id[p_lab_memory_plane_arena] =kind[thought] }
+ breaks: "an arena frees memory the program no longer needs; a retention plane evicts products a reader may still want, and a miss recomputes instead of crashing"
+ $%[lab.ocean.hot_ttl_beats, lab.ocean.cold_ttl_beats]
+ ~"./memory-and-systems.spw#lang_design_memory_arenas" ~#neighbor(nearest)
+}

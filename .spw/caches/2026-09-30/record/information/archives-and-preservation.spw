@@ -1,0 +1,165 @@
+# Archives and Preservation
+#
+# How an archive keeps records trustworthy: provenance and original order on paper, then the OAIS packages, preservation metadata, and fixity checks that do the same work for files.
+
+#>information_science_archives
+#:layer #!pragmatics
+#:domain #!information_science
+#:form #!protocol
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bone
+#:era #!modern
+
+^"emit"{
+ ~#title: "Archives and Preservation"
+ ~#claim: "Archives keep records trustworthy by keeping each creator's records together in their original order and, for files, by packaging, describing, and checking them on a schedule."
+ ~#proof: "Duchein on respect des fonds, the Dutch manual of 1898, the OAIS reference model, PREMIS 3.0, the NDSA levels, and LOCKSS."
+ ~#door: "Walk the protocol from appraisal to access, then try a fixity check on a folder of your own files."
+ ~#audience: "archives students, family historians, and anyone keeping recordings or files for decades"
+ continuity: "Archives and Preservation | checking them on a schedule"
+ cold_open: "An archive keeps records trustworthy by keeping them together, describing them, and checking them on a schedule."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/library-and-information-sciences/archival-science-and-digital-preservation.spw" ]
+ method: #corrected
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+   note: "OAIS edition and entity count, respect des fonds, and the Dutch manual confirmed"
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: [
+  "the raw wonder said digital media become unreadable within 15 years; no source was given and the number is dropped",
+  "the OAIS text is now the CCSDS Magenta Book of December 2024; the raw file cited only the ISO number"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/provenance-and-reference.spw#q_prov_reference" ]
+ feeds: [ ~"../../provenance/manifest.spw#provenance_manifest" ]
+}
+
+^["concepts"]{
+ primary: [ #fixity, #provenance, #respect_des_fonds ]
+ transfers: [ #permanence ]
+ tensions: [ #obsolescence ]
+}
+
+^["principles"]{
+ #>information_science_archives_fonds
+ ^["respect_des_fonds"]{
+  #:claim #!settled
+  statement: "Respect des fonds keeps the records of one creator together and apart from other creators; it was first stated in an 1841 French circular."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_duchein_1983"
+ }
+ #>information_science_archives_original_order
+ ^["original_order"]{
+  #:claim #!settled
+  statement: "The Dutch manual of 1898 by Muller, Feith, and Fruin codified keeping records in the order their creator kept them, because that order is evidence too."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_muller_1898"
+ }
+ #>information_science_archives_appraisal
+ ^["appraisal"]{
+  #:claim #!settled
+  statement: "Schellenberg split record value into primary value for the creator and secondary value for later research; Cook later appraised the functions of institutions rather than single files."
+  sources: [ ~"../../registries/sources/provenance-and-reference.spw#src_prov_schellenberg_1956", ~"../../registries/sources/provenance-and-reference.spw#src_prov_cook_1992" ]
+  counter: ~"../../registries/sources/provenance-and-reference.spw#src_prov_jenkinson_1922"
+  ~#(Jenkinson left selection to the creating body and custody to archivists)
+ }
+}
+
+^["protocol"]{
+ #>information_science_archives_oais
+ ^["oais_model"]{
+  #:claim #!settled
+  statement: "The OAIS reference model moves content through submission, archival, and dissemination information packages, across six functional entities."
+  reads: %[prov.oais.functional_entity_count]
+  sources: [ ~"../../registries/sources/provenance-and-reference.spw#src_prov_ccsds_2024", ~"../../registries/sources/provenance-and-reference.spw#src_prov_wiki_oais" ]
+  edition: "CCSDS 650.0-M-3, December 2024; ISO 14721:2025 carries the identical text"
+  as_of: "2026-10-03"
+ }
+ ^["states"]{
+  #>information_science_archives_s_appraise
+  ^["appraise"]{ enters: "an offer of records", work: "decide what to keep and why", exits: "an accession decision" }
+  #>information_science_archives_s_accession
+  ^["accession"]{ enters: "a decision to keep", work: "record donor, rights, and custody; fingerprint every file on arrival", exits: "a submission package" }
+  #>information_science_archives_s_arrange
+  ^["arrange_and_describe"]{ enters: "a submission package", work: "keep the creator together and in order; describe from the whole down to the item", exits: "a finding aid", standard: "DACS, 2nd ed., 2013" }
+  #>information_science_archives_s_store
+  ^["store"]{ enters: "an archival package with preservation metadata", work: "keep several copies in different places", exits: "a scheduled fixity check" }
+  #>information_science_archives_s_check
+  ^["fixity_check"]{
+   enters: "a schedule or a copy event"
+   work: "recompute each checksum and compare it with the stored value"
+   on_result: ?match[fixity_result]{
+    "match" => "log a passing event and return to store",
+    "mismatch" => "log a failing event, restore from a good copy, and recheck",
+    "missing" => "log the loss and escalate to the custodian"
+   }
+  }
+  #>information_science_archives_s_migrate
+  ^["preserve_format"]{ enters: "a format-risk alert", work: "migrate to a documented format or keep an emulator", exits: "a new representation linked to the old by an event" }
+  #>information_science_archives_s_access
+  ^["access"]{ enters: "a request", work: "build a dissemination package within the rights recorded at accession", exits: "a delivered copy and a logged use" }
+ }
+}
+
+^["metadata_and_checks"]{
+ #>information_science_archives_premis
+ ^["premis"]{
+  #:claim #!settled
+  statement: "PREMIS 3.0 records objects, events, agents, and rights, so every fixity check and migration leaves a dated event tied to who did it."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_premis_2015"
+ }
+ #>information_science_archives_fixity
+ ^["fixity"]{
+  #:claim #!settled
+  statement: "A fixity check compares a freshly computed cryptographic hash with a stored one; the NDSA levels raise the bar from hashing on arrival to checking on a schedule."
+  sources: [ ~"../../registries/sources/provenance-and-reference.spw#src_prov_ndsa_2019", ~"../../registries/sources/provenance-and-reference.spw#src_prov_fips_180_4" ]
+ }
+ #>information_science_archives_lockss
+ ^["lockss"]{
+  #:claim #!settled
+  statement: "LOCKSS keeps many independent copies that compare themselves by polling and repair a damaged copy from agreeing peers."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_reich_rosenthal_2001"
+ }
+ #>information_science_archives_warc
+ ^["web_archives"]{
+  #:claim #!settled
+  statement: "Web archives store captured HTTP requests and responses in WARC files, standardized as ISO 28500."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_iso_28500_2017"
+ }
+ in_this_cut: "the provenance manifest applies the same idea to the raw shelf: the files stay in place, each pinned by a hash a reader can recompute"
+}
+
+^["try"]{
+ #>information_science_archives_try_fixity
+ ^["check_a_folder"]{
+  materials: [ "a copy of a folder of photos or recordings", "a terminal with shasum, or any checksum tool" ]
+  steps: << "hash every file in the copy and save the list" ; "write today's date and your name on the list" ; "a month later, hash again and compare" ; "note any file whose hash changed and find out why" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "work on a copy; never run cleanup commands on the only copy of a family archive"
+  shows: ~"./archives-and-preservation.spw#information_science_archives_fixity"
+ }
+}
+
+#>information_science_archives_shelf_q
+?["Would a scheduled fixity check catch more drift on this cut's raw shelf than on its authored surfaces?"]{
+ #:depth #!computational ~#lens(curated collection)
+ #:claim #!speculative
+ ~#hypothesis: "Raw files are meant to stay frozen, so any change there is drift, while authored surfaces change on purpose and need receipts instead of hashes."
+ !probe{ "recompute the manifest hashes after each commit for a season and count mismatches" =id[p_prov_archives_shelf_drift] =kind[census] }
+ $%[prov.raw.file_count, prov.oais.functional_entity_count]
+ ~"./archives-and-preservation.spw#information_science_archives_s_check" ~#neighbor(nearest)
+ breaks: "an archive guards records it did not write, while this cut also revises its own surfaces"
+}

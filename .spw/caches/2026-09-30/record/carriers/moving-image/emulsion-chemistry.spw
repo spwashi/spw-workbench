@@ -1,0 +1,166 @@
+# Emulsion Chemistry
+#
+# How silver halide crystals in gelatin record light: the latent image, chemical and dye sensitization, tabular grains, the color tripack with its couplers, and the orange mask of color negative.
+
+#>media_carriers_emulsion
+#:layer #!reference
+#:domain #!media_carriers
+#:form #!ledger
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bone
+#:era #!modern
+
+^"emit"{
+ ~#title: "Emulsion Chemistry"
+ ~#claim: "A few silver atoms formed by light make a grain developable, and color negative layers that record with couplers carry an orange mask that corrects their dyes' unwanted absorptions."
+ ~#proof: "James for the photographic process; Gurney and Mott 1938 for the latent image; Hunt for color reproduction and masking couplers."
+ ~#door: "Read the latent image claim, then the orange mask, then follow the film into the processing machine."
+ ~#audience: "cinematographers, photographers, film students, and chemistry readers curious about analog image capture"
+ continuity: "Emulsion Chemistry | orange mask"
+ cold_open: "A few silver atoms turn a crystal into a picture, and the orange mask on a color negative quietly corrects its imperfect dyes."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/film-chemistry-and-camera-optics/photochemical-emulsion-chemistry.spw", ".spw/caches/film-chemistry-and-camera-optics/taste.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass, note: "re-run after the 2026-10-03 fact-check fixes; no failing lines" }
+ }
+ corrections: #[
+  "the orange mask added: the raw described the color negative tripack without its masking couplers",
+  "the grain-feels-alive stance kept only as an interpretive reading and a wonder",
+  "the five-hundred-year polyester lifetime from the taste file was not carried as a fact",
+  "the core-shell iodide hypothesis with invented 40 percent and doubling figures was dropped",
+  "the minimum developable cluster is stated as a few atoms, about four, rather than an exact threshold",
+  "fact-check 2026-10-03: the r4 fact-check receipt was dated 2026-10-01, before the receipts it followed; it is re-dated 2026-10-02, the day that pass ran"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../../../physical/chemistry/chemistry-core.spw#chemistry_core" ]
+ feeds: [ ~"./photographic-processing.spw#media_carriers_processing" ]
+ see: [ ~"../../../physical/physical-glossary.spw#physical_term_latent_image" ]
+}
+
+^["concepts"]{
+ primary: [ #silver_halide, #latent_image, #coupler ]
+ transfers: [ #crystal_structure, #defect ]
+ tensions: [ #permanence ]
+}
+
+^["crystal"]{
+ #>media_carriers_emulsion_lattice
+ ^["silver_halide"]{
+  #:claim #!settled
+  statement: "Camera emulsions use silver bromide crystals with a small fraction of iodide, in the rock-salt structure, suspended in gelatin; interstitial silver ions move through the lattice."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_james_1977"
+ }
+ #>media_carriers_emulsion_latent_image
+ ^["latent_image"]{
+  #:claim #!settled
+  statement: "Light frees electrons that collect at sensitivity specks, mobile silver ions join them, and a cluster of a few silver atoms, about four, makes the grain developable."
+  sources: [ ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_gurney_mott_1938", ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_james_1977" ]
+  ~#say(a handful of atoms decides the whole grain)
+  ^["limits"]{
+   holds: "the Gurney-Mott picture of electron trapping then ionic neutralization"
+   fails: "later work refined nucleation, recombination, and low-intensity reciprocity failure beyond the original model"
+  }
+ }
+}
+
+^["sensitization"]{
+ #>media_carriers_emulsion_chemical_sens
+ ^["chemical"]{
+  #:claim #!settled
+  statement: "Sulfur and gold compounds on the grain surface form sensitivity specks that trap electrons, raising speed without changing the color the grain responds to."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_james_1977"
+ }
+ #>media_carriers_emulsion_dye_sens
+ ^["spectral"]{
+  #:claim #!settled
+  statement: "Bare silver halide responds to blue and ultraviolet; Hermann Vogel found in 1873 that adsorbed dyes extend it, and cyanine dyes now make emulsions green- and red-sensitive."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_james_1977"
+ }
+ #>media_carriers_emulsion_tabular
+ ^["tabular_grains"]{
+  #:claim #!settled
+  statement: "Flat tabular grains lie parallel to the film, offering more area for sensitizing dye per unit of silver and scattering less light; they entered production in the 1980s."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_wiki_t_grain"
+ }
+}
+
+^["color"]{
+ #>media_carriers_emulsion_tripack
+ ^["tripack"]{
+  #:claim #!settled
+  statement: "A color film stacks blue-, green-, and red-sensitive layers; a yellow filter layer of colloidal silver keeps blue light out of the lower layers and is removed in processing."
+  sources: [ ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_hunt_2004", ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_james_1977" ]
+  layers: << "overcoat" ; "blue-sensitive, yellow coupler" ; "yellow filter" ; "green-sensitive, magenta coupler" ; "red-sensitive, cyan coupler" ; "base" ; "antihalation backing" >>
+ }
+ #>media_carriers_emulsion_couplers
+ ^["couplers"]{
+  #:claim #!settled
+  statement: "Oxidized color developer reacts with couplers to form cyan, magenta, and yellow dyes where silver developed; Agfa built couplers into the layers, while Kodachrome added them during processing."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_hunt_2004"
+  era: 1935..1936
+ }
+ #>media_carriers_emulsion_orange_mask
+ ^["orange_mask"]{
+  #:claim #!settled
+  statement: "Color negative films use colored masking couplers: those left unreacted stay yellowish or pinkish, giving an orange base that cancels the unwanted blue and green absorption of the magenta and cyan dyes."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_hunt_2004"
+  ~#say(the orange is a correction, not a stain)
+  ^["limits"]{
+   holds: "color negative camera and intermediate stocks"
+   fails: "reversal films and print films carry no mask; scanners and printers must remove it with filtration or inversion"
+  }
+ }
+ #>media_carriers_emulsion_remjet
+ ^["remjet"]{
+  #:claim #!settled
+  statement: "Motion-picture color negative carries a carbon-black remjet backing that stops halation and static; it is softened and removed before development in ECN-2."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_kodak_h2407"
+  process: ~"./photographic-processing.spw#media_carriers_processing_ecn2"
+ }
+}
+
+^["grain"]{
+ #>media_carriers_emulsion_grain_random
+ ^["random_placement"]{
+  #:claim #!settled
+  statement: "Grains sit at random positions and sizes in each frame, so the grain pattern changes from frame to frame instead of staying fixed like a sensor grid."
+  source: ~"../../../registries/sources/physical-sciences-and-image.spw#src_phys_james_1977"
+ }
+ #>media_carriers_emulsion_grain_reading
+ ^["organic_reading"]{
+  #:claim #!interpretive
+  statement: "Many filmmakers describe moving film grain as alive or organic and its highlight shoulder as forgiving; that is an aesthetic reading of a real physical difference."
+  ~#(kept from the raw taste file as a reading, not a finding)
+ }
+}
+
+#>media_carriers_emulsion_dither_q
+?["Does grain that changes every frame let viewers see finer detail than any single frame holds?"]{
+ #:depth #!experiential ~#lens(material grain)
+ #:claim #!speculative
+ ~#hypothesis: "Frame-to-frame grain should act like temporal dither, so viewers should judge fine texture sharper with moving grain than with a frozen grain layer of equal strength."
+ !probe{ "show viewers matched clips with moving grain, frozen grain, and no grain, and ask which shows finer texture" =id[p_phys_emulsion_dither] =kind[field] }
+ $%[phys.film.sound_speed_fps]
+ breaks: "the eye has its own noise and adaptation; display dither does not map one to one onto vision"
+ ~"./emulsion-chemistry.spw#media_carriers_emulsion_grain_random" ~#neighbor(nearest)
+}

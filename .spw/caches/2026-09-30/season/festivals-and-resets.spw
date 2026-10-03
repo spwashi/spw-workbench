@@ -27,12 +27,18 @@
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
- evidence: #[ "fetched 2026-10-01: Hebcal 5787 holiday list", "secondary checks 2026-10-01: Diwali 2026, Lunar New Year 2027, Yalda inscription, Matariki Act, Samhain scholarship" ]
+ evidence: #[ "fetched 2026-10-01: Hebcal 5787 holiday list", "secondary checks 2026-10-01: Diwali 2026, Lunar New Year 2027, Yalda inscription, Matariki Act, Samhain scholarship", "fetched 2026-10-02: Hebcal Rosh Hashana 5787, Hong Kong Observatory 2027 table, Drik Panchang Diwali 2026" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[ "Christmas and the Gregorian new year are fixed dates, not typical ones", "Diwali as a new year is credited to Gujarat and to trading communities that open new account books, not to northern Hindus at large", "Diwali and Lunar New Year rows now cite the tables they were checked against", "fact check 2026-10-02: the Yalda row uses the UNESCO element title Yalda/Chella, inscribed for Iran and Afghanistan", "fact check 2026-10-02: the Diwali row names the six listed festival days and the five-day core instead of five days from 5 to 10 November", "fix pass 2026-10-02: the Dongzhi date cites the Hong Kong Observatory 2026 table" ]
 }
 
 ^["edges"]{
@@ -107,7 +113,7 @@
    #:claim #!settled
    kind: "the longest night, kept awake with family, fruit, and poetry"
    dates: "night of 20 or 21 December; 2026 verify"
-   statement: "Yalda, or Chelleh Night, marks the longest night of the year in Iran and Afghanistan; UNESCO inscribed it in 2022."
+   statement: "Yalda, also called Shab-e Chelleh, marks the longest night of the year in Iran and Afghanistan; UNESCO inscribed it as Yaldā/Chella in 2022."
    source: ~"../registries/sources/season.spw#src_season_unesco_yalda_2022"
   }
   #>season_resets_dongzhi
@@ -116,7 +122,10 @@
    kind: "winter solstice festival"
    dates: "22 December 2026 in China time, computed from the solstice instant"
    statement: "Dongzhi, the winter solstice, is one of the twenty-four solar terms that UNESCO inscribed in 2016 as Chinese knowledge of time from observing the sun."
-   source: ~"../registries/sources/season.spw#src_season_unesco_solar_terms_2016"
+   sources: [
+    ~"../registries/sources/season.spw#src_season_unesco_solar_terms_2016",
+    ~"../registries/sources/season.spw#src_season_hko_2026"
+   ]
   }
   #>season_resets_kwanzaa
   ^["kwanzaa"]{
@@ -130,12 +139,12 @@
    kind: "reset"
    dates: "1 January, fixed"
    customs: "Hogmanay in Scotland; Omisoka on 31 December and Shogatsu from 1 January in Japan, with bonenkai year-end gatherings and a year-end cleaning"
-   status: #typical
+   status: #fixed
   }
   ^["christmas"]{
    kind: "celebration"
    dates: "25 December in the Gregorian count; 7 January for churches on the Julian calendar"
-   status: #typical
+   status: #fixed
   }
  }
  ^["lunar"]{
@@ -152,12 +161,14 @@
    simchat_torah: ~"./calendar-2026q4.spw#season_cal_simchat_torah"
    hanukkah: ~"./calendar-2026q4.spw#season_cal_hanukkah"
    note: "Rosh Hashanah 5787 began at sunset on 11 September 2026, just before the season opened"
-   status: #typical
+   source: ~"../registries/sources/season.spw#src_season_hebcal_5787"
+   status: #fixed
   }
   #>season_resets_diwali
   ^["diwali"]{
-   kind: "festival of lights; a new year in Gujarat and some northern Hindu communities"
-   dates: "8 November 2026 expected; verify against a regional almanac"
+   kind: "festival of lights; the day after opens the new year in Gujarat, and many trading families open new account books"
+   dates: "Lakshmi Puja 8 November 2026 expected; for Washington DC Drik Panchang lists six days from 5 to 10 November, the five-day core from Dhanteras on 6 November; verify locally"
+   source: ~"../registries/sources/season.spw#src_season_drik_panchang_2026"
    observed_by: [
     "Hindu communities across South Asia and the diaspora",
     "Jain communities, marking the nirvana of Mahavira",
@@ -170,6 +181,7 @@
   ^["lunar_new_year"]{
    kind: "reset"
    dates: "6 February 2027 expected, after the season closes; verify"
+   source: ~"../registries/sources/season.spw#src_season_hko_2027"
    observed_by: [
     "Chinese communities, as Spring Festival",
     "Korean communities, as Seollal",

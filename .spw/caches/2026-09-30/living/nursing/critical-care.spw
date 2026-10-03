@@ -1,0 +1,192 @@
+# Critical Care
+#
+# Intensive care nursing knowledge as a claim ledger: hemodynamic monitoring, fluid responsiveness, lung-protective ventilation, oral care, sedation, and evidence questions, with refuted practice kept visible.
+
+#>nursing_critical_care
+#:layer #!reference
+#:domain #!nursing
+#:form #!ledger
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bane
+
+^"emit"{
+ ~#title: "Critical Care"
+ ~#claim: "Intensive care keeps changing its own practice: central venous pressure failed as a guide to fluid, and routine chlorhexidine mouth care gave way to toothbrushing."
+ ~#proof: "CVP from Marik and colleagues 2008; passive leg raising from Monnet and colleagues 2016; oral care from Klompas and colleagues 2014 and the 2022 SHEA compendium; ventilation from ARDSNet 2000 and the 2024 ATS guideline."
+ ~#door: "Read the refuted and superseded entries first, then what replaced them."
+ ~#audience: "nursing students and readers following intensive care evidence"
+ continuity: "Critical Care | changing its own practice"
+ cold_open: "Intensive care keeps changing its own practice, and the old habits stay listed here so you can see why."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/nursing/critical-care-and-evidence-based-informatics.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ revision_2026_10_03: "r6 redated the r4 fact-check to 2026-10-02, the day its sources were read"
+ corrections: #[
+  "central venous pressure was presented as guiding fluid responsiveness; it is refuted for that use (raw line 17)",
+  "chlorhexidine oral care was presented as a nurse-driven protocol; the 2022 SHEA compendium lists it as generally not recommended for adults (raw line 32)",
+  "vasopressor rates, ventilator volumes, pressure limits, and blood gas ranges were protocol numbers and were removed (raw lines 20, 27, and 28)",
+  "the raw titration wonder carried invented metrics and was dropped (raw line 42)",
+  "the raw file is quarantined; this surface was written from the named studies and guidelines",
+  "fact-check: the light-sedation entry cited only the 2018 PADIS guideline; it now names the 2025 focused update, which did not revisit light sedation"
+ ]
+ checked: "SHEA 2022 oral care categories and the ATS 2024 ARDS recommendations were read in their Europe PMC records on 2026-10-02"
+}
+
+^["edges"]{
+ needs: [ ~"./pathophysiology-and-pharmacology.spw#nursing_pathophysiology" ]
+ see: [ ~"./guideline-currency-ledger.spw#nursing_guideline_ledger" ]
+}
+
+^["concepts"]{
+ primary: [ #fluid_responsiveness, #lung_protection, #oral_care ]
+ transfers: [ #supersession, #signal_fidelity ]
+ tensions: [ #guideline_drift ]
+}
+
+^["scope"]{
+ #>nursing_critical_care_guard
+ ^["guard"]{
+  #:valence #!honk
+  warning: "intensive care is delivered by trained teams under orders and unit protocols; nothing here sets a rate, volume, pressure, or target"
+ }
+ what: "a ledger of what intensive care evidence says and how it changed"
+ not_advice: "general information, not clinical instruction or medical advice"
+ where_to_ask: "the critical care team and the unit protocol in force"
+}
+
+^["hemodynamics"]{
+ #>nursing_critical_care_cvp
+ ^["cvp_for_fluids"]{
+  #:claim #!refuted
+  statement: "Central venous pressure predicts whether a patient will raise cardiac output after a fluid bolus."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_marik_2008"
+  ~#say(the pressure in the big vein does not tell you who needs fluid)
+ }
+ #>nursing_critical_care_plr
+ ^["dynamic_tests"]{
+  #:claim #!settled
+  statement: "Raising the legs passively and measuring the change in cardiac output predicts fluid responsiveness well, and SSC 2021 suggested dynamic measures over static ones such as CVP."
+  sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_monnet_2016", ~"../../registries/sources/plants-ecology-care.spw#src_eco_evans_2021" ]
+  status: "SSC 2021 superseded by SSC 2026; verify the 2026 wording in the ledger"
+ }
+ #>nursing_critical_care_arterial
+ ^["arterial_line_fidelity"]{
+  #:claim #!settled
+  statement: "An arterial line reads true only if its tubing responds fast enough; a square-wave flush test shows whether the trace is overdamped or underdamped."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_gardner_1981"
+  practice: "the transducer is leveled to the phlebostatic axis per unit policy"
+ }
+}
+
+^["ventilation"]{
+ #>nursing_critical_care_ardsnet
+ ^["low_tidal_volume"]{
+  #:claim #!settled
+  statement: "The ARDS Network trial found that lower tidal volumes, scaled to predicted body weight, reduced deaths compared with traditional volumes in acute lung injury and ARDS."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_ardsnet_2000"
+ }
+ #>nursing_critical_care_ats_2024
+ ^["ats_2024"]{
+  #:claim #!settled
+  statement: "The 2024 ATS update suggests corticosteroids, venovenous ECMO for selected severe ARDS, early neuromuscular blockade in severe ARDS, and higher PEEP, and recommends against prolonged recruitment maneuvers."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_qadir_2024"
+  strength: "all conditional except the strong recommendation against prolonged recruitment maneuvers"
+  status: "current as of 2026-10-02"
+ }
+}
+
+^["oral_care"]{
+ #>nursing_critical_care_chx_old
+ ^["routine_chlorhexidine"]{
+  #:claim #!superseded
+  statement: "Routine chlorhexidine mouth care for ventilated adults was once a standard part of pneumonia-prevention bundles."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_klompas_2014"
+ }
+ #>nursing_critical_care_chx_evidence
+ ^["reappraisal"]{
+  #:claim #!settled
+  statement: "A 2014 meta-analysis found chlorhexidine mouth care did not lower pneumonia in non-cardiac-surgery patients and may have raised mortality."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_klompas_2014"
+ }
+ #>nursing_critical_care_shea_2022
+ ^["shea_2022"]{
+  #:claim #!settled
+  statement: "The 2022 SHEA compendium lists daily toothbrushing without chlorhexidine as an essential practice for ventilated adults and places chlorhexidine oral care among practices generally not recommended."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_klompas_2022"
+  body: "SHEA with IDSA, the American Hospital Association, APIC, and The Joint Commission"
+  status: "current as of 2026-10-02"
+ }
+ #>nursing_critical_care_toothbrushing
+ ^["toothbrushing"]{
+  #:claim #!emerging
+  statement: "A 2024 meta-analysis linked daily toothbrushing with less hospital-acquired pneumonia, especially in ventilated patients."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_ehrenzeller_2024"
+  ^["limits"]{
+   holds: "randomized trials pooled across hospitals"
+   fails: "trials differed in method and blinding was not possible"
+  }
+ }
+}
+
+^["sedation"]{
+ #>nursing_critical_care_scales
+ ^["scales"]{
+  #:claim #!settled
+  statement: "Nurses score sedation with the Richmond Agitation-Sedation Scale and screen for delirium with CAM-ICU, two tools validated in ventilated adults."
+  sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_sessler_2002", ~"../../registries/sources/plants-ecology-care.spw#src_eco_ely_2001" ]
+ }
+ #>nursing_critical_care_padis
+ ^["light_sedation"]{
+  #:claim #!settled
+  statement: "The 2018 SCCM PADIS guideline suggests light rather than deep sedation for ventilated adults, and the 2025 focused update did not revisit that suggestion."
+  sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_devlin_2018", ~"../../registries/sources/plants-ecology-care.spw#src_eco_lewis_2025" ]
+  status: "2018 guideline, amended in part by the 2025 focused update; current as of 2026-10-02"
+  ledger: ~"./guideline-currency-ledger.spw#nursing_guideline_padis_2025"
+ }
+}
+
+^["evidence"]{
+ #>nursing_critical_care_pico
+ ^["pico"]{
+  #:claim #!settled
+  statement: "Richardson and colleagues framed a well-built clinical question by population, intervention, comparison, and outcome, the PICO form used to search and appraise evidence."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_richardson_1995"
+ }
+}
+
+^["try"]{
+ #>nursing_critical_care_try_pico
+ ^["build_a_pico"]{
+  materials: [ "a news story about a medical treatment", "paper", "a browser with PubMed" ]
+  steps: << "name the population the story is about" ; "name the intervention and what it is compared with" ; "name the outcome that matters" ; "search PubMed with those four terms and read one abstract" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "the exercise frames a question; it answers nothing about anyone's own care"
+  shows: ~"./critical-care.spw#nursing_critical_care_pico"
+ }
+}
+
+#>nursing_critical_care_persistence_q
+?["Why did central venous pressure stay on the chart long after it failed as a fluid guide?"]{
+ #:depth #!historical ~#lens(historical layer)
+ #:claim #!speculative
+ ~#hypothesis: "A number on a monitor is easier to chart and hand over than a dynamic test, so practices tied to a displayed value outlast their evidence longer than practices that need a maneuver."
+ !probe{ "compare how long monitor-displayed and maneuver-based practices took to leave published bundles after contrary reviews" =id[p_eco_critical_cvp] =kind[lit] }
+ ~"./critical-care.spw#nursing_critical_care_cvp" ~#neighbor(nearest)
+}

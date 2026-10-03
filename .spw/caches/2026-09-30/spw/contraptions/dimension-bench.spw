@@ -1,0 +1,162 @@
+# Dimension Bench
+#
+# Balancing a reaction and finding a dimensionless group are one kernel computation under different admissibility rules; the bench shows both and where each stops.
+
+#>spw_lab_dimension_bench
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!advanced
+#:review #!sourced
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Dimension Bench"
+ ~#claim: "One kernel computation, A x = 0, balances a reaction when it admits a single positive integer vector and finds dimensionless groups when any rational exponents are allowed."
+ ~#proof: "Buckingham counted the groups as variables minus rank; Blakley balanced equations by linear algebra; exact rational null spaces reproduce methane, permanganate, Reynolds, and the pendulum."
+ ~#door: "Watch permanganate refuse to balance, add hydrogen ion and water, and watch the kernel appear."
+ ~#audience: "chemistry and engineering students, physicists, and Spw authors who write registry cells"
+ continuity: "Dimension Bench | one kernel"
+ cold_open: "One kernel balances a reaction and finds the Reynolds number; only the rules for an acceptable answer change."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "persona study contraption_catalog[1], references/studies/persona-synthesis.json", "sketch references/spw-branch/seeds/contraptions/dimension-bench.spw" ]
+ method: #authored
+ evidence: #[ "exact rational null spaces for the four matrices below were computed with Python fractions on 2026-10-02", "solveLinearSystem rejects non-square input at packages/spw-seed/src/math/equation.ts:71-77" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the sketch held inline percent cells for density and viscosity; exponents are definitions and stay as facets here, while world numbers stay in registries",
+  "the planned dimensions registry is folded into the contraptions registry under q_lab_dim"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../../formal/mathematics/analysis-and-algebra-core.spw#mathematics_core_rank_nullity" ]
+ grounds: [ ~"../../registries/quantities/spw-contraptions.spw#q_lab_dim" ]
+ feeds: [ ~"../../physical/engineering/transport-phenomena.spw#engineering_transport_reynolds", ~"../../physical/chemistry/chemistry-core.spw#chemistry_core_general" ]
+}
+
+^["concepts"]{
+ primary: [ #kernel, #invariant ]
+ transfers: [ #conservation, #reflexive_mirror ]
+ tensions: [ #overclaim ]
+}
+
+^["tool"]{
+ status: #proposed
+ verb: "spw balance FILE, which would read exponent facets and return an exact rational kernel; not yet a command"
+ implemented: #[ "packages/spw-seed/src/math/equation.ts:71 solveLinearSystem, square float systems only" ]
+ missing: "an exact rational nullSpace, and a gate rule tying each quantity cell to a dimension vector"
+ source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_equation"
+}
+
+^["parameters"]{
+ #>spw_lab_dimension_bench_exponents
+ ^["exponents"]{
+  density: .{ up: .{ M: 1 }, down: .{ L: 3 } }
+  speed: .{ up: .{ L: 1 }, down: .{ T: 1 } }
+  diameter: .{ up: .{ L: 1 } }
+  viscosity: .{ up: .{ M: 1 }, down: .{ L: 1, T: 1 } }
+  ~#(exponents are written up and down so every number stays non-negative)
+ }
+ base: "the seven SI base dimensions, symbols in the q_lab_dim frame"
+ reads: %[contrap.dim.si_base_count]
+ sign_rule: "products sit on the right of a scheme, so their columns enter with a minus sign"
+}
+
+^["world"]{
+ #>spw_lab_dimension_bench_pi
+ ^["pi_theorem"]{
+  #:claim #!settled
+  statement: "A physically meaningful relation among n quantities whose dimension matrix has rank r can be rewritten in n minus r independent dimensionless groups."
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_buckingham_1914", ~"../../registries/sources/spw-contraptions.spw#src_contrap_bridgman_1922" ]
+ }
+ #>spw_lab_dimension_bench_balance
+ ^["balancing"]{
+  #:claim #!settled
+  statement: "Balancing a chemical equation is finding a kernel vector of the element-by-species matrix, with charge added as one more row for ionic equations."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_blakley_1982"
+ }
+ #>spw_lab_dimension_bench_reynolds
+ ^["reynolds"]{
+  #:claim #!settled
+  statement: "Density, speed, diameter, and viscosity of a pipe flow combine into one dimensionless ratio, the Reynolds number, which separates laminar from sinuous flow."
+  reads: %[mateng.transport.pipe_laminar_re_max]
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_reynolds_1883"
+ }
+}
+
+^["battery"]{
+ #>spw_lab_dimension_bench_methane
+ ^["methane"]{
+  !probe{ "kernel of the C, H, O by CH4, O2, CO2, H2O matrix" =id[p_contrap_dimension_bench_methane] =kind[calc] }
+  scheme: "CH4 + O2 -> CO2 + H2O"
+  expect: "nullity one, kernel 1, 2, 1, 2: one methane and two oxygen give one carbon dioxide and two water"
+  shows: ~"./dimension-bench.spw#spw_lab_dimension_bench_balance"
+ }
+ #>spw_lab_dimension_bench_permanganate
+ ^["permanganate"]{
+  !probe{ "kernel of Mn, O, Fe, and charge by permanganate, iron two, manganese two, iron three; then add hydrogen ion and water columns" =id[p_contrap_dimension_bench_permanganate] =kind[calc] }
+  predict: ?{ "will the bare scheme balance" } ~<guess>
+  expect: "the bare scheme has nullity zero and cannot balance; with hydrogen ion and water the kernel is 1, 5, 8, 1, 5, 4"
+  shows: ~"./dimension-bench.spw#spw_lab_dimension_bench_balance"
+ }
+ #>spw_lab_dimension_bench_pipe
+ ^["pipe_flow"]{
+  !probe{ "kernel of the M, L, T by density, speed, diameter, viscosity matrix" =id[p_contrap_dimension_bench_pipe] =kind[calc] }
+  expect: "rank three, one group, kernel proportional to density, speed, diameter over viscosity, the Reynolds number"
+  shows: ~"./dimension-bench.spw#spw_lab_dimension_bench_pi"
+ }
+ #>spw_lab_dimension_bench_pendulum
+ ^["pendulum"]{
+  !probe{ "kernel of period, length, gravity, and mass" =id[p_contrap_dimension_bench_pendulum] =kind[calc] }
+  expect: "one group, period squared times gravity over length, and mass drops out with exponent zero"
+  shows: ~"./dimension-bench.spw#spw_lab_dimension_bench_pi"
+ }
+}
+
+#>spw_lab_dimension_bench_mirror
+^["language_mirror"]{
+ question: "Do the unit suffixes of registry handles balance when one claim reads two cells?"
+ instrument: "parse the unit suffix of each handle, such as j_per_g_k, into an exponent vector and check every reads list that combines cells"
+ arity_reading: "an operator that takes two operands and returns one is a small balance sheet; the bench can count operands in and out per sigil the same way"
+ standing: "a-cut: the handle grammar and its unit suffixes are this cut contract"
+ grammar: ~"../../contract.spw#cut_contract"
+ !probe{ "list every handle suffix in the cut and flag those no exponent table can read" =id[p_contrap_dimension_bench_suffix] =kind[census] }
+}
+
+^["limits"]{
+ holds: "which combinations are dimensionally homogeneous, and which reactions conserve every element and charge"
+ fails: "homogeneity is not correctness: torque and energy share dimensions, the radian is dimensionless, a balanced equation need not run, and affine or logarithmic units such as Celsius, decibels, and pH do not fit exponent vectors"
+ source: ~"../../registries/sources/physical-sciences-and-image.spw#src_phys_bipm_si_2019"
+}
+
+^["try"]{
+ #>spw_lab_dimension_bench_try
+ ^["pendulum_check"]{
+  materials: [ "a string about one metre long", "a small weight such as a key ring", "a phone stopwatch", "a ruler" ]
+  steps: << "time ten swings at one length" ; "quarter the length and time ten swings again" ; "change the weight and time again" ; "compare the ratios with the kernel" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "keep the swing clear of faces and hang the string from something that will not tip"
+  shows: ~"./dimension-bench.spw#spw_lab_dimension_bench_pendulum"
+ }
+}
+
+#>spw_lab_dimension_bench_q
+?["Does a units checker on registry handles catch more errors than a reviewer reading the same claims?"]{
+ #:depth #!computational ~#lens(scale and dimension)
+ #:claim #!speculative
+ ~#hypothesis: "A suffix-reading checker should flag mismatched combinations that reviewers pass, mostly where a claim mixes per-mole and per-gram cells."
+ !probe{ "seed known unit slips into a copy of one registry, run the checker, and compare with an unaided review of the same copy" =id[p_contrap_dimension_bench_q] =kind[sim] }
+ $%[contrap.dim.si_base_count, mateng.transport.pipe_laminar_re_max]
+ ~"./dimension-bench.spw#spw_lab_dimension_bench_pi" ~#neighbor(nearest)
+ breaks: "a checker reads names, not quantities; a handle with a wrong suffix passes, and dimensionless ratios hide their units entirely"
+}

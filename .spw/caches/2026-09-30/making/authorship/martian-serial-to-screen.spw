@@ -7,7 +7,7 @@
 #:domain #!authorship
 #:form #!dossier
 #:level #!intro
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 #:era #!contemporary
 
@@ -22,16 +22,20 @@
 }
 
 ^"provenance"{
- as_of: "2026-09-30"
+ as_of: "2026-10-02"
  generator: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #fact_checked, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-01", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
  }
- checked: "Kindle price and sales, 2013 deals, US release, gross, and nominations checked against the cited pages on 2026-10-01; the serial start year stays verify"
+ checked: "Kindle price and sales, 2013 deals, US release, gross, and nominations checked against the cited pages on 2026-10-01; the 2009 start and the worldwide gross rechecked on 2026-10-02"
 }
 
 ^["edges"]{
@@ -42,7 +46,7 @@
 
 ^["concepts"]{
  primary: [ #serialization, #rights_chain ]
- transfers: [ #option, #self_publishing ]
+ transfers: [ #option, #platform_dependence ]
  tensions: [ #fidelity ]
 }
 
@@ -59,10 +63,9 @@
  #>authorship_martian_serial
  ^["web_serial"]{
   #:claim #!settled
-  statement: "Andy Weir posted The Martian free on his website a chapter at a time, and readers asked him for an ebook."
+  statement: "Andy Weir began writing The Martian in 2009 and posted it free on his website a chapter at a time, and readers asked him for an ebook."
+  reads: %[film.martian.serial_start_year]
   source: ~"../../registries/sources/film-stage-visual.spw#src_film_alter_wsj_2014"
-  start_year: %[film.martian.serial_start_year]
-  start_cell: #verify
  }
  #>authorship_martian_kindle
  ^["kindle_edition"]{

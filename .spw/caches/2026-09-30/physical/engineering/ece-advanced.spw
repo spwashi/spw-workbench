@@ -1,0 +1,225 @@
+# ECE Advanced
+#
+# Graduate electrical and computer engineering as a prerequisite graph over five tracks: VLSI, architecture, communications, RF and mixed-signal circuits, and photonic and quantum hardware.
+
+#>engineering_ece_advanced
+#:layer #!reference
+#:domain #!engineering
+#:form #!curriculum
+#:level #!graduate
+#:review #!sourced
+#:valence #!bonk
+
+^"emit"{
+ ~#title: "ECE Advanced"
+ ~#claim: "Graduate electrical and computer engineering works against hard limits: power density ended easy clock scaling, and Shannon capacity bounds every link."
+ ~#proof: "Dennard and Esmaeilzadeh trace the power wall; Shannon gives capacity; Gallager, Arikan, and Marzetta show how codes and antennas approach it; Kocher shows speculation leaks."
+ ~#door: "Pick a track, check its needs edges, then read the PLL as a feedback loop on phase."
+ ~#audience: "graduate students and engineers choosing an ECE specialization"
+ continuity: "ECE Advanced | hard limits"
+ cold_open: "Graduate electrical engineering works against hard limits, heat on the chip and noise on the link, and designs right up to them."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/electrical-and-computer-engineering/masters-electrical-and-computer-engineering.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the photonic interconnect wonder claimed 5 versus 0.4 picojoules per bit and tenfold bisection bandwidth without a source; it survives as a direction-only question",
+  "the raw said the clock race ended because heat could not be removed; the cause is restated as supply and threshold voltages that stopped scaling, which raised power density",
+  "the invariant that memory consistency models guarantee deterministic synchronization is dropped; relaxed models order memory only where fences and atomics require it",
+  "the review scored this raw file accurate; it is kept with sources attached and its tracks wired to the core nodes they need"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./control-and-signals.spw#engineering_control_signals", ~"../physics/electromagnetism.spw#physics_em" ]
+ see: [ ~"./computer-engineering-core.spw#engineering_computer_amdahl" ]
+}
+
+^["concepts"]{
+ primary: [ #power_wall, #channel_capacity, #feedback ]
+ transfers: [ #pipeline, #cache ]
+ tensions: [ #side_channel ]
+}
+
+^["dag"]{
+ =~"./ece-advanced.spw#engineering_ece_advanced_vlsi"[needs]{ ~"./electrical-core.spw#engineering_electrical_devices" }
+ =~"./ece-advanced.spw#engineering_ece_advanced_architecture"[needs]{ ~"./computer-engineering-core.spw#engineering_computer_architecture" ; ~"./ece-advanced.spw#engineering_ece_advanced_vlsi" }
+ =~"./ece-advanced.spw#engineering_ece_advanced_communications"[needs]{ ~"./control-and-signals.spw#engineering_control_signals_sampling" }
+ =~"./ece-advanced.spw#engineering_ece_advanced_rf"[needs]{ ~"./electrical-core.spw#engineering_electrical_lines" ; ~"./ece-advanced.spw#engineering_ece_advanced_vlsi" }
+ =~"./ece-advanced.spw#engineering_ece_advanced_photonic_quantum"[needs]{ ~"../physics/electromagnetism.spw#physics_em_waves" }
+ order: << "vlsi" ; "architecture" ; "communications" ; "rf" ; "photonic and quantum" >>
+}
+
+#>engineering_ece_advanced_vlsi
+^["vlsi"]{
+ track: "Nanoscale CMOS and VLSI design"
+ topics: [
+  "short-channel effects: drain-induced barrier lowering and subthreshold slope",
+  "FinFET and gate-all-around nanosheet transistors",
+  "logical effort, transistor sizing, and stage count",
+  "dynamic voltage and frequency scaling, multi-threshold cells, and power gating",
+  "placement, clock-tree synthesis, and parasitic extraction"
+ ]
+ norm: "layouts pass design-rule and layout-versus-schematic checks before tape-out"
+
+ #>engineering_ece_advanced_dennard
+ ^["dennard_scaling"]{
+  #:claim #!settled
+  statement: "Dennard and coworkers showed in 1974 that shrinking MOSFET dimensions and voltages by one common factor keeps power density constant while circuits get faster."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_dennard_1974"
+ }
+ #>engineering_ece_advanced_power_wall
+ ^["power_wall"]{
+  #:claim #!settled
+  statement: "Once threshold and supply voltages stopped shrinking with dimensions, power density rose each generation, so power, not transistor count, now caps how much of a chip can switch at once."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_esmaeilzadeh_2011"
+ }
+ #>engineering_ece_advanced_logical_effort
+ ^["logical_effort"]{
+  #:claim #!settled
+  statement: "Sutherland, Sproull, and Harris showed that a path of gates is fastest when every stage bears equal effort, which, given the total path effort, also sets the best number of stages."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_sutherland_1999"
+ }
+}
+
+#>engineering_ece_advanced_architecture
+^["architecture"]{
+ track: "Advanced computer architecture and accelerators"
+ topics: [
+  "register renaming, reservation stations, and reorder buffers",
+  "TAGE-style branch predictors and memory disambiguation",
+  "snooping and directory coherence, MESI and MOESI, and memory consistency models",
+  "systolic arrays, GPU SIMT execution, and low-precision arithmetic"
+ ]
+
+ #>engineering_ece_advanced_tomasulo
+ ^["tomasulo"]{
+  #:claim #!settled
+  statement: "Tomasulo in 1967 let the IBM System/360 Model 91 floating-point unit run instructions out of order, holding them in reservation stations until tagged results arrived on a common bus."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_tomasulo_1967"
+ }
+ #>engineering_ece_advanced_spectre
+ ^["spectre"]{
+  #:claim #!settled
+  statement: "Kocher and coworkers showed that speculative execution leaves secret-dependent traces in caches after the processor discards the wrong path, so a correct instruction set can still leak."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_kocher_2019"
+  ^["limits"]{
+   holds: "processors that speculate past branches and share caches across security domains"
+   fails: "cores that do not speculate past branches"
+  }
+ }
+}
+
+#>engineering_ece_advanced_communications
+^["communications"]{
+ track: "Statistical signal processing and wireless communications"
+ topics: [
+  "channel capacity and water-filling power allocation",
+  "OFDM, cyclic prefix design, and peak-to-average power",
+  "MIMO estimation and precoding by zero-forcing and MMSE",
+  "LDPC and polar code decoding"
+ ]
+
+ #>engineering_ece_advanced_shannon
+ ^["capacity"]{
+  #:claim #!settled
+  statement: "Shannon showed in 1948 that a noisy channel has a capacity below which error rates can be made as small as desired; for a band-limited Gaussian channel it is B log2 of one plus SNR."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_shannon_1948", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_shannon_1949" ]
+ }
+ #>engineering_ece_advanced_codes
+ ^["capacity_codes"]{
+  #:claim #!settled
+  statement: "Gallager low-density parity-check codes of 1963 and Arikan polar codes of 2009 approach capacity; the 5G NR standard uses LDPC codes for data and polar codes for control channels."
+  sources: [
+   ~"../../registries/sources/materials-and-engineering.spw#src_mateng_gallager_1963",
+   ~"../../registries/sources/materials-and-engineering.spw#src_mateng_arikan_2009",
+   ~"../../registries/sources/materials-and-engineering.spw#src_mateng_3gpp_ts38212"
+  ]
+  as_of: "3GPP TS 38.212 Release 15; check the current release before relying on it"
+ }
+ #>engineering_ece_advanced_massive_mimo
+ ^["massive_mimo"]{
+  #:claim #!settled
+  statement: "Marzetta showed in 2010 that with far more base-station antennas than users, simple linear processing averages away fast fading and noise, leaving pilot contamination as the limit."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_marzetta_2010"
+ }
+ #>engineering_ece_advanced_ofdm
+ ^["ofdm"]{
+  #:claim #!settled
+  statement: "A cyclic prefix longer than the channel delay spread turns linear convolution with the channel into circular convolution, so each OFDM subcarrier sees one complex gain."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_tse_viswanath_2005"
+ }
+}
+
+#>engineering_ece_advanced_rf
+^["rf_mixed_signal"]{
+ track: "RF and mixed-signal integrated circuits"
+ topics: [
+  "low-noise amplifiers with inductive source degeneration",
+  "Gilbert-cell mixers and LC voltage-controlled oscillators",
+  "charge-pump PLLs, loop filters, and phase noise",
+  "flash, pipelined, successive-approximation, and delta-sigma converters"
+ ]
+ norm: "every link budget carries the thermal noise floor, receiver noise figure, and required signal-to-interference-plus-noise margin"
+
+ #>engineering_ece_advanced_pll
+ ^["pll"]{
+  #:claim #!settled
+  statement: "A phase-locked loop is feedback on phase: a detector compares phases, a loop filter shapes the error, and an oscillator follows; a wide loop suppresses oscillator noise and a narrow one filters reference noise."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_gardner_2005"
+  see: [ ~"./control-and-signals.spw#engineering_control_signals_phase_margin" ]
+ }
+ #>engineering_ece_advanced_delta_sigma
+ ^["delta_sigma"]{
+  #:claim #!settled
+  statement: "Inose, Yasuda, and Murakami in 1962 placed a quantizer inside an oversampled feedback loop, pushing quantization noise to high frequencies where a later filter removes it."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_inose_1962"
+ }
+}
+
+#>engineering_ece_advanced_photonic_quantum
+^["photonic_quantum"]{
+ track: "Photonic integrated circuits and quantum hardware"
+ topics: [
+  "silicon waveguides, Mach-Zehnder modulators, and optical transceivers",
+  "circuit QED, Josephson junctions, and dispersive readout",
+  "cryogenic CMOS for qubit control"
+ ]
+
+ #>engineering_ece_advanced_transmon
+ ^["transmon"]{
+  #:claim #!settled
+  statement: "Koch and coworkers in 2007 shunted a Josephson junction with a large capacitance, making the transmon qubit nearly insensitive to charge noise at the cost of weaker anharmonicity."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_koch_2007"
+ }
+}
+
+#>engineering_ece_advanced_optical_q
+?["Will on-chip optical links beat copper wires on energy per bit inside accelerators?"]{
+ #:depth #!physical ~#lens(energy budget)
+ #:claim #!speculative
+ ~#hypothesis: "Optics should win first on the longest on-package links, where copper loss grows with distance, and lose on short hops where lasers and conversion dominate the energy."
+ !probe{ "tabulate published energy per bit for electrical and optical links against link length" =id[p_mateng_ece_optical_links] =kind[lit] }
+ $%[file.frame_count]
+ ~"./ece-advanced.spw#engineering_ece_advanced_power_wall" ~#neighbor(nearest)
+}
+
+#>engineering_ece_advanced_drummer_q
+?["Is a phase-locked loop like a musician locking onto a drummer?"]{
+ #:depth #!experiential ~#lens(bodily rhythm)
+ #:claim #!speculative
+ ~#hypothesis: "A player corrects timing from each beat's phase error and smooths those corrections like a loop filter, so a jittery drummer should be followed loosely and a steady one tightly."
+ breaks: "a musician predicts the beat from the music and anticipates changes; a PLL only reacts to measured phase error"
+ !probe{ "tap along to a click track with added jitter and log how far each tap lands from the beat" =id[p_mateng_ece_drummer_pll] =kind[build] }
+ $%[graph.out_degree]
+ ~"./ece-advanced.spw#engineering_ece_advanced_pll" ~#neighbor(nearest)
+}

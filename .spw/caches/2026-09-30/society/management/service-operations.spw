@@ -1,0 +1,230 @@
+# Service Operations
+#
+# A guest stay as a service blueprint and a state machine: front stage and backstage, fail points and their guards, waits and queues, and recovery when something breaks.
+
+#>management_service_operations
+#:layer #!pragmatics
+#:domain #!management
+#:form #!protocol
+#:level #!foundation
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Service Operations"
+ ~#claim: "A service is a designed process with a visible front stage, a hidden backstage, and known fail points, and recovery after a failure rarely beats getting it right."
+ ~#proof: "Shostack named blueprints and fail points; Bitner, Hochschild, and Parasuraman, Zeithaml, and Berry framed setting, emotional labor, and quality gaps; McCollough and de Matos tested the recovery paradox."
+ ~#door: "Walk the journey states, blueprint a cafe visit with the kit, then cross to queueing in industrial engineering."
+ ~#audience: "hospitality and service design students, and anyone running a front desk"
+ continuity: "Service Operations | fail points"
+ cold_open: "Every stay runs through states with fail points, and fixing a failure rarely beats never having it."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/university-education/hospitality-and-management/service-operations-and-experience-design.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ gate_note: "on 2026-10-02 the gate failed only on the ref to the replication ledger, then unwritten; on 2026-10-03 it and the industrial and systems engineering refs resolve and the gate passes"
+ corrections: #[
+  "the service recovery paradox is contested: McCollough and coauthors found no paradox, and the de Matos meta-analysis found a satisfaction effect but none on repurchase intent",
+  "deep acting is no longer said to foster sustained fulfillment; the meta-analytic evidence links surface acting to strain and finds weaker, mixed effects for deep acting",
+  "lighting color temperatures, music tempo effects, and scent branding claims had no source and are dropped; Bitner three dimensions remain",
+  "the olfactory halo wonder asserted a thalamus bypass and a cleanliness effect without a source; it is dropped",
+  "poka-yoke is credited to Shigeo Shingo; the queueing bridge to industrial engineering is added",
+  "fact check: r3 recorded a gate pass while refs to planned engineering and cognition files did not resolve; r3 is now partial"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"../../physical/engineering/industrial-and-systems-engineering.spw#engineering_ise" ]
+ feeds: [ ~"./revenue-management.spw#management_revenue" ]
+ see: [ ~"./leadership-and-ethics.spw#management_leadership_ritz", ~"../../language-and-mind/cognition/replication-ledger.spw#cognition_replication_ledger" ]
+}
+
+^["concepts"]{
+ primary: [ #service_blueprint, #mistake_proofing, #emotional_labor ]
+ transfers: [ #queueing, #state_machine, #replication ]
+ tensions: [ #recovery_paradox ]
+}
+
+^["blueprint"]{
+ #>management_service_ops_blueprint
+ ^["lines"]{
+  #:claim #!settled
+  statement: "Shostack proposed mapping a service as a flowchart with a line of visibility and marked fail points; later blueprints add lines of interaction and internal interaction."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_shostack_1984", ~"../../registries/sources/economy-and-markets.spw#src_econ_bitner_ostrom_morgan_2008" ]
+  ^["layers"]{
+   customer_actions: "what the guest does"
+   front_stage: "staff actions the guest sees, above the line of visibility"
+   backstage: "staff actions the guest does not see"
+   support: "systems and other departments, below the line of internal interaction"
+  }
+ }
+ #>management_service_ops_poka_yoke
+ ^["fail_safing"]{
+  #:claim #!settled
+  statement: "Shingo built poka-yoke devices that make a mistake impossible or obvious at once; Chase and Stewart carried the idea to services for both staff and customers."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_shingo_1986", ~"../../registries/sources/economy-and-markets.spw#src_econ_chase_stewart_1994" ]
+  example: "a tray with one shaped slot per instrument shows at a glance that one is missing"
+ }
+ #>management_service_ops_servicescape
+ ^["servicescape"]{
+  #:claim #!settled
+  statement: "Bitner grouped the physical setting of a service into ambient conditions, space and function, and signs, symbols, and artifacts, and argued it shapes both customers and employees."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_bitner_1992"
+  ^["limits"]{
+   holds: "as a framework for what to observe"
+   fails: "it does not fix which light, music, or scent raises spending; those claims need their own studies"
+  }
+ }
+}
+
+^["journey"]{
+ #>management_service_ops_states
+ ^["states"]{
+  discover: "the guest finds and compares the property"
+  book: "a rate and room type are chosen under fences and channel rules"
+  arrive: "transport, parking, door, and first greeting"
+  check_in: "identity, payment, key, and room assignment"
+  stay: "room, food, requests, and housekeeping"
+  failure: "a fail point fires, such as a missing reservation or a broken key"
+  recovery: "staff acknowledge, fix, and compensate"
+  check_out: "folio, payment, and goodbye"
+  follow_up: "survey, review, and loyalty record"
+ }
+ #>management_service_ops_transitions
+ ?match[@journey]{
+  @discover => ^["choose"]{ next: "book", trigger: "the guest accepts a rate" }
+  @book => ^["travel"]{ next: "arrive", trigger: "arrival date" }
+  @arrive => ^["greet"]{ next: "check_in", guard: "a room is ready or a hold is offered" }
+  @check_in => ^["settle"]{ next: "stay", guard: "key works and room matches the booking" }
+  @stay => ^["fault"]{ next: "failure", trigger: "a fail point fires" }
+  @failure => ^["respond"]{ next: "recovery", guard: "a staff member owns the problem" }
+  @recovery => ^["resume"]{ next: "stay or check_out", trigger: "the guest accepts the fix" }
+  @check_out => ^["close"]{ next: "follow_up", trigger: "folio settled" }
+  _ => "stay in the current state"
+ }
+ fail_points: [
+  "reservation not found at check-in",
+  "room not ready at arrival",
+  "key card fails at the door",
+  "billing error at check-out"
+ ]
+}
+
+^["people"]{
+ #>management_service_ops_emotional_labor
+ ^["emotional_labor"]{
+  #:claim #!settled
+  statement: "Hochschild named emotional labor and split surface acting, showing a feeling, from deep acting, working to feel it; Grandey framed both as emotion regulation."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_hochschild_1983", ~"../../registries/sources/economy-and-markets.spw#src_econ_grandey_2000" ]
+ }
+ #>management_service_ops_acting_evidence
+ ^["acting_evidence"]{
+  #:claim #!settled
+  statement: "A meta-analysis found surface acting associated with emotional exhaustion and lower well-being, while deep acting showed weaker and mixed associations."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_hulsheger_schewe_2011"
+  ^["limits"]{
+   holds: "correlational studies, mostly self-report"
+   fails: "it does not show that training deep acting protects workers"
+  }
+ }
+}
+
+^["quality"]{
+ #>management_service_ops_gaps
+ ^["gap_model"]{
+  #:claim #!settled
+  statement: "Parasuraman, Zeithaml, and Berry traced poor service to four internal gaps that add up to a fifth, between what customers expect and what they perceive."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_pzb_1985"
+ }
+ #>management_service_ops_servqual
+ ^["servqual"]{
+  #:claim #!contested
+  statement: "SERVQUAL scores five dimensions as perception minus expectation; Cronin and Taylor argued perceptions alone predict better, and the measurement debate stayed open."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_pzb_1988", ~"../../registries/sources/economy-and-markets.spw#src_econ_cronin_taylor_1992" ]
+  dimensions: #[ reliability, assurance, tangibles, empathy, responsiveness ]
+ }
+ #>management_service_ops_experience
+ ^["experience_economy"]{
+  #:claim #!interpretive
+  statement: "Pine and Gilmore read staged experiences as an offering distinct from goods and services; it is a frame for design, not a measured law."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_pine_gilmore_1998"
+ }
+}
+
+^["waits"]{
+ #>management_service_ops_little
+ ^["littles_law"]{
+  #:claim #!settled
+  statement: "In a stable queue, the average number in the system equals the arrival rate times the average time in the system, whatever the arrival or service distribution."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_little_1961"
+  bridge: ~"../../physical/engineering/industrial-and-systems-engineering.spw#engineering_ise"
+ }
+ #>management_service_ops_waiting
+ ^["waiting_psychology"]{
+  #:claim #!interpretive
+  statement: "Maister proposed that unoccupied, uncertain, unexplained, and unfair waits feel longer; his propositions are a design checklist more than tested laws."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_maister_1985"
+ }
+}
+
+^["recovery"]{
+ #>management_service_ops_recovery
+ ^["recovery_practice"]{
+  #:claim #!settled
+  statement: "Hart, Heskett, and Sasser argued that firms should plan recovery: find failures fast, let frontline staff fix them, and learn from each one."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_hart_heskett_sasser_1990"
+ }
+ #>management_service_ops_paradox
+ ^["recovery_paradox"]{
+  #:claim #!contested
+  statement: "The claim that a recovered failure leaves guests more loyal than no failure is not settled; one study found no paradox, and a meta-analysis found a satisfaction effect only."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_mccollough_berry_yadav_2000", ~"../../registries/sources/economy-and-markets.spw#src_econ_de_matos_2007" ]
+  counter: ~"../../registries/sources/economy-and-markets.spw#src_econ_hart_heskett_sasser_1990"
+  ^["limits"]{
+   holds: "a strong recovery can restore satisfaction for some guests"
+   fails: "as a loyalty strategy; no one should design failures to recover from"
+  }
+ }
+}
+
+^["try"]{
+ #>management_service_ops_try_blueprint
+ ^["cafe_blueprint"]{
+  materials: [ "a notebook", "a watch", "a seat in a public cafe" ]
+  steps: << "draw five lanes: customer, front stage, backstage, support, and props" ; "log each step of three orders" ; "mark one likely fail point and its guard" ; "count people waiting and arrivals over ten minutes" ; "estimate average wait as people waiting over arrival rate" >>
+  time: .{ n: 40, unit: "minutes" }
+  safety: "observe from a public seat; do not photograph or record staff or customers"
+  shows: ~"./service-operations.spw#management_service_ops_little"
+ }
+}
+
+#>management_service_ops_mirror_q
+?["Does an occupied wait feel shorter even when the clock says it is the same?"]{
+ #:depth #!experiential ~#lens(bodily rhythm)
+ #:claim #!speculative
+ ~#hypothesis: "Guests waiting beside a screen or a mirror rate the same measured wait as shorter than guests waiting beside a blank wall."
+ !probe{ "alternate a screen and a blank wall at one elevator bank over two weeks; time waits and ask a one-item rating" =id[p_econ_service_wait] =kind[field] }
+ ~"./service-operations.spw#management_service_ops_waiting" ~#neighbor(nearest)
+}
+
+#>management_service_ops_stream_q
+?["Does a live stream that recovers on air from a failure keep its audience?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "A host who names a technical failure and fixes it on air keeps more viewers through the fault than a host who goes silent."
+ !probe{ "log viewer counts across on-air faults in archived streams and code whether the host narrated the fix" =id[p_econ_service_stream] =kind[field] }
+ breaks: "a hotel guest has paid and is present; a viewer has paid nothing and can leave with one swipe"
+ ~"./service-operations.spw#management_service_ops_paradox" ~#neighbor(nearest)
+}

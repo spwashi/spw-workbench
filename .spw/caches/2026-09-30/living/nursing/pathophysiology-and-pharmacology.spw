@@ -1,0 +1,247 @@
+# Pathophysiology and Pharmacology
+#
+# Drug classes and syndromes at the level of mechanism, with ordered therapies kept apart from nursing actions and every guideline named with its year; no doses, targets, or protocols.
+
+#>nursing_pathophysiology
+#:layer #!reference
+#:domain #!nursing
+#:form #!ledger
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bane
+
+^"emit"{
+ ~#title: "Pathophysiology and Pharmacology"
+ ~#claim: "Knowing why a drug works and when it harms lets a nurse watch for the right signs; the order, the dose, and the protocol belong to the prescriber and the current guideline."
+ ~#proof: "Mechanisms from Goodman and Gilman, 14th edition; vancomycin monitoring from the 2020 ASHP and IDSA consensus; ACS from the 2025 ACC and AHA guideline; DKA from the 2024 ADA and EASD consensus."
+ ~#door: "Read orders and actions first, then one syndrome at a time, checking each guideline in the currency ledger."
+ ~#audience: "nursing students who have finished clinical foundations"
+ continuity: "Pathophysiology and Pharmacology | why a drug works"
+ cold_open: "Knowing why a drug works and when it harms tells a nurse what to watch for at the bedside."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/nursing/pathophysiology-and-pharmacology-in-nursing.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ revision_2026_10_03: "r6 redated the r4 fact-check to 2026-10-02, the day its sources were read"
+ corrections: #[
+  "a high vancomycin trough was described as preventing kidney injury; high troughs track kidney injury, and the 2020 consensus moved to AUC-guided monitoring (raw line 20)",
+  "nitroglycerin contraindications were limited to PDE-5 inhibitors; hypotension and suspected right ventricular infarction are added (raw line 26)",
+  "antiplatelet drugs, nitrates, oxygen, and heparin were listed as nursing interventions; they are ordered therapies, and routine oxygen without low saturation is not supported (raw line 26)",
+  "rate-control drugs for atrial fibrillation now carry pre-excitation, instability, and reduced ejection fraction cautions (raw line 27)",
+  "the sepsis bundle presented a fixed fluid volume as unconditional; SSC 2021 made it a weak recommendation, and SSC 2026 now governs (raw line 30)",
+  "the DKA protocol followed the 2009 statement with doses and a wrong dextrose rationale; it now points to the 2024 adult consensus and the 2022 pediatric guideline without doses (raw line 31)",
+  "the raw potassium wonder gave thresholds; it is replaced by a mechanism claim without numbers (raw line 39)",
+  "the raw file is quarantined; this surface was written from the named guidelines",
+  "fact-check: the 2009 vancomycin review was said to use troughs alone; it named an AUC/MIC target and recommended troughs as the practical surrogate",
+  "fact-check: septic shock now follows the Sepsis-3 wording of profound circulatory, cellular, and metabolic abnormalities with higher risk of death"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./clinical-foundations.spw#nursing_foundations" ]
+ feeds: [ ~"./critical-care.spw#nursing_critical_care" ]
+ see: [ ~"./guideline-currency-ledger.spw#nursing_guideline_ledger", ~"../cells/protein-structure-and-enzymes.spw#cell_biology_proteins" ]
+}
+
+^["concepts"]{
+ primary: [ #orders_and_actions, #contraindication, #drug_monitoring ]
+ transfers: [ #supersession, #feedback ]
+ tensions: [ #guideline_drift ]
+}
+
+^["scope"]{
+ #>nursing_pathophysiology_guard
+ ^["guard"]{
+  #:valence #!honk
+  warning: "this surface names drug classes and mechanisms only; it gives no doses, targets, rates, thresholds, or protocols, and none should be inferred from it"
+ }
+ what: "mechanism-level pharmacology and pathophysiology for study"
+ not_advice: "general information, not clinical instruction or medical advice"
+ practice: "every therapy named here is given only on a prescriber order or approved protocol, under the guideline in force"
+ where_to_ask: "a pharmacist, prescriber, or the institution policy"
+}
+
+^["orders_and_actions"]{
+ #>nursing_pathophysiology_orders
+ ^["boundary"]{
+  #:claim #!settled
+  statement: "Antiplatelets, anticoagulants, nitrates, oxygen, antimicrobials, insulin, and vasopressors are ordered therapies; the nurse assesses, monitors, gives what is ordered, teaches, and escalates."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_ana_scope_2021"
+ }
+ ordered: [
+  "antiplatelet and anticoagulant drugs",
+  "nitrates and other vasodilators",
+  "supplemental oxygen",
+  "antimicrobials",
+  "insulin infusions and electrolyte replacement",
+  "vasopressors and inotropes"
+ ]
+ nursing: [
+  "assessment and reassessment",
+  "ECG acquisition and rhythm monitoring",
+  "early recognition and escalation",
+  "safe administration of what is ordered",
+  "patient teaching and advocacy"
+ ]
+}
+
+^["pharmacokinetics"]{
+ #>nursing_pathophysiology_cyp
+ ^["cyp3a4"]{
+  #:claim #!settled
+  statement: "Grapefruit furanocoumarins inhibit intestinal CYP3A4, which can raise blood levels of some oral drugs; inducers such as rifampin and St John's wort can lower them."
+  sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_bailey_2013", ~"../../registries/sources/plants-ecology-care.spw#src_eco_brunton_2023" ]
+ }
+ #>nursing_pathophysiology_binding
+ ^["binding_and_clearance"]{
+  #:claim #!settled
+  statement: "Only unbound drug acts, so low albumin can raise the active fraction of highly bound drugs, and reduced kidney function slows clearance of renally eliminated ones."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_brunton_2023"
+ }
+ #>nursing_pathophysiology_digoxin
+ ^["digoxin_potassium"]{
+  #:claim #!settled
+  statement: "Digoxin competes with potassium at the sodium-potassium pump, so low potassium makes digoxin toxicity more likely."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_brunton_2023"
+ }
+}
+
+^["drug_monitoring"]{
+ #>nursing_pathophysiology_vanc_trough
+ ^["vancomycin_troughs"]{
+  #:claim #!superseded
+  statement: "The 2009 consensus named an AUC/MIC target for vancomycin but recommended trough concentrations as the practical way to monitor it."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_rybak_2009"
+ }
+ #>nursing_pathophysiology_vanc_auc
+ ^["vancomycin_auc"]{
+  #:claim #!settled
+  statement: "The 2020 revised consensus recommends AUC-guided monitoring for serious MRSA infections, because trough-only targeting brought more kidney injury without better cure."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_rybak_2020"
+  body: "ASHP, IDSA, PIDS, and SIDP"
+  status: "current as of 2026-10-02"
+ }
+}
+
+^["cardiac"]{
+ #>nursing_pathophysiology_nitrates
+ ^["nitrates"]{
+  #:claim #!settled
+  statement: "Nitrates dilate veins and coronary arteries and lower preload; they are withheld in hypotension, suspected right ventricular infarction, and after recent PDE-5 inhibitor use."
+  sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_rao_2025", ~"../../registries/sources/plants-ecology-care.spw#src_eco_brunton_2023" ]
+  ^["contraindications"]{
+   principal: [ "hypotension", "suspected right ventricular infarction", "recent phosphodiesterase-5 inhibitor use" ]
+   full_list: "the 2025 ACC and AHA acute coronary syndromes guideline and the product label"
+  }
+ }
+ #>nursing_pathophysiology_oxygen
+ ^["oxygen"]{
+  #:claim #!settled
+  statement: "In a large trial of suspected heart attack without low oxygen saturation, routine supplemental oxygen did not reduce death, so guidelines reserve it for hypoxemia."
+  sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_hofmann_2017", ~"../../registries/sources/plants-ecology-care.spw#src_eco_rao_2025" ]
+ }
+ #>nursing_pathophysiology_af
+ ^["atrial_fibrillation_rate"]{
+  #:claim #!settled
+  statement: "Rate-control choices in atrial fibrillation depend on the patient: AV-nodal blockers can harm in pre-excitation, some are avoided in reduced ejection fraction, and instability calls for cardioversion."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_joglar_2023"
+  body: "ACC, AHA, ACCP, and HRS, 2023"
+ }
+ #>nursing_pathophysiology_arrest
+ ^["shockable_rhythms"]{
+  #:claim #!settled
+  statement: "Ventricular fibrillation and pulseless ventricular tachycardia are treated with prompt defibrillation alongside high-quality CPR under the current AHA guidelines."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_del_rios_2025"
+  body: "American Heart Association, 2025"
+ }
+}
+
+^["sepsis"]{
+ #>nursing_pathophysiology_sepsis3
+ ^["definition"]{
+  #:claim #!settled
+  statement: "Sepsis-3 defines sepsis as life-threatening organ dysfunction from a dysregulated host response to infection, and septic shock as a subset with profound circulatory, cellular, and metabolic abnormalities and higher risk of death."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_singer_2016"
+ }
+ #>nursing_pathophysiology_ssc_fluids
+ ^["initial_fluids"]{
+  #:claim #!superseded
+  statement: "SSC 2021 made a fixed weight-based initial crystalloid volume a weak recommendation on low-quality evidence and suggested dynamic measures to guide further fluid."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_evans_2021"
+  superseded_by: ~"./guideline-currency-ledger.spw#nursing_guideline_ssc_2026"
+ }
+ #>nursing_pathophysiology_norepinephrine
+ ^["vasopressor_mechanism"]{
+  #:claim #!settled
+  statement: "Norepinephrine raises vascular tone mainly through alpha-1 receptors, with a smaller beta-1 effect on the heart."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_brunton_2023"
+ }
+}
+
+^["dka"]{
+ #>nursing_pathophysiology_dka_mechanism
+ ^["mechanism"]{
+  #:claim #!settled
+  statement: "Insulin deficiency frees fatty acids that the liver turns into ketoacids; high glucose drives water and potassium loss, so total body potassium is low even when blood levels look normal."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_umpierrez_2024"
+ }
+ #>nursing_pathophysiology_dka_potassium
+ ^["insulin_potassium"]{
+  #:claim #!settled
+  statement: "Insulin moves potassium into cells, which is why potassium is checked before and during insulin treatment."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_umpierrez_2024"
+ }
+ #>nursing_pathophysiology_dka_dextrose
+ ^["dextrose"]{
+  #:claim #!settled
+  statement: "Dextrose is added as glucose falls so that insulin can continue until the ketoacidosis resolves, since ketones clear more slowly than glucose."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_umpierrez_2024"
+ }
+ #>nursing_pathophysiology_dka_overlap
+ ^["transition"]{
+  #:claim #!settled
+  statement: "Long-acting insulin is started before an insulin infusion stops, so that the overlap prevents a rebound into ketoacidosis."
+  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_umpierrez_2024"
+ }
+ #>nursing_pathophysiology_dka_children
+ ^["children"]{
+  #:claim #!settled
+  statement: "In a large pediatric trial, neither the rate nor the sodium content of fluids significantly changed neurologic outcomes in DKA; children follow the ISPAD 2022 guideline."
+  sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_kuppermann_2018", ~"../../registries/sources/plants-ecology-care.spw#src_eco_glaser_2022" ]
+ }
+}
+
+^["try"]{
+ #>nursing_pathophysiology_try_label
+ ^["read_a_label"]{
+  materials: [ "the Drug Facts label on any over-the-counter medicine package in your home" ]
+  steps: << "find the active ingredient and its purpose" ; "read the warnings and the section on who should not use it" ; "find when to ask a doctor or pharmacist" ; "write the contraindications in your own words" >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "read only; take nothing because of this activity, and keep medicines out of reach of children"
+  shows: ~"./pathophysiology-and-pharmacology.spw#nursing_pathophysiology_nitrates"
+ }
+}
+
+#>nursing_pathophysiology_auc_q
+?["Why does one trough sample mislead more than an area under the curve?"]{
+ #:depth #!mathematical ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "A trough samples one point of a curve whose whole area tracks both cure and kidney exposure, so aiming the trough high overshoots the area in many patients."
+ !probe{ "simulate one-compartment concentration curves across clearance values and compare trough with area" =id[p_eco_patho_auc] =kind[sim] }
+ ~"./pathophysiology-and-pharmacology.spw#nursing_pathophysiology_vanc_auc" ~#neighbor(nearest)
+}

@@ -1,0 +1,247 @@
+# Graduate Micro Theory
+#
+# The first-year doctoral core as a theorem ledger: each result beside the hypotheses it needs, so a reader can see what efficiency proves and what it leaves open.
+
+#>economics_grad_micro
+#:layer #!reference
+#:domain #!economics
+#:form #!ledger
+#:level #!graduate
+#:review #!adversarial_checked
+#:valence #!bane
+
+^"emit"{
+ ~#title: "Graduate Micro Theory"
+ ~#claim: "The welfare theorems hold only under stated hypotheses, and a Pareto efficient allocation can still be extremely unequal; mechanism design shows what private information costs."
+ ~#proof: "Entries cite Arrow, Debreu, Kakutani, Pratt, Akerlof, Spence, Gibbard, Satterthwaite, Myerson, Vickrey, Clarke, and Groves, with Mas-Colell, Whinston, and Green as the standard text."
+ ~#door: "Read a theorem with its hypotheses beside it, draw the Edgeworth box, then test one hypothesis against a market you know."
+ ~#audience: "first-year graduate students and readers of the welfare theorems"
+ continuity: "Graduate Micro Theory | hypotheses beside"
+ cold_open: "Keep the hypotheses beside every theorem, and you will see that an efficient allocation can still leave one person with almost nothing."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: #[ ".spw/caches/university-education/economics/graduate-advanced-microeconomic-theory.spw", ".spw/caches/university-education/economics/index.spw" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "rationality is completeness and transitivity; the raw list folded strict convexity into it, which is a separate assumption",
+  "the second welfare theorem also needs continuity and local nonsatiation, and its lump-sum transfers need information a planner rarely has",
+  "VCG truth-telling is scoped to quasilinear private values, and the mechanism generally runs a budget surplus or deficit",
+  "the raw bargaining wonder said information rents exhaust the whole surplus; the theorem says only that some efficient trades must be lost",
+  "the index figure of a 99.9 percent tyrant allocation is dropped; the corner allocation in the Edgeworth kit makes the same point without a number",
+  "invented metric handles such as an information rent integral are dropped"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./micro-and-macro-core.spw#economics_core_consumer" ]
+ extends: [ ~"../society-glossary.spw#society_term_pareto" ]
+ grounds: [ ~"../society-glossary.spw#society_term_externality" ]
+ see: [ ~"../../formal/mathematics/engineering-core/optimization.spw#mathematics_optimization" ]
+}
+
+^["concepts"]{
+ primary: [ #pareto_efficiency, #general_equilibrium, #mechanism_design ]
+ transfers: [ #externality, #duality ]
+ tensions: [ #fairness ]
+}
+
+^["choice"]{
+ #>economics_grad_micro_rational
+ ^["rational_preference"]{
+  #:claim #!settled
+  statement: "A preference relation is rational when it is complete and transitive; Debreu showed that a continuous rational preference has a continuous utility representation."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_mwg_1995", ~"../../registries/sources/economy-and-markets.spw#src_econ_debreu_1959" ]
+  separate: "convexity of preferences is an extra assumption used for existence and the second welfare theorem"
+ }
+ #>economics_grad_micro_expected_utility
+ ^["expected_utility"]{
+  #:claim #!settled
+  statement: "If preferences over lotteries are complete, transitive, continuous, and satisfy independence, they are represented by expected utility, unique up to a positive affine change."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_vnm_1944", ~"../../registries/sources/economy-and-markets.spw#src_econ_mwg_1995" ]
+  ^["limits"]{
+   holds: "a model of consistent choice under known probabilities"
+   fails: "Allais-type choices violate independence; the cognition branch carries the behavioral evidence"
+  }
+ }
+ #>economics_grad_micro_risk_aversion
+ ^["risk_aversion"]{
+  #:claim #!settled
+  statement: "Pratt measured local risk aversion as minus the ratio of the second to the first derivative of utility; more concave utility demands a larger premium for every small gamble."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_pratt_1964"
+  relative: "relative risk aversion multiplies the same ratio by wealth"
+ }
+ #>economics_grad_micro_duality
+ ^["duality"]{
+  #:claim #!settled
+  statement: "Roy's identity, Shephard's lemma, and Hotelling's lemma recover demands from value functions, and the Slutsky substitution matrix is symmetric and negative semidefinite."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_mwg_1995"
+  rank: "prices times the substitution matrix is zero, so its rank is at most the number of goods minus one"
+ }
+}
+
+^["equilibrium"]{
+ #>economics_grad_micro_existence
+ ^["existence"]{
+  #:claim #!settled
+  statement: "Arrow and Debreu proved that a competitive equilibrium exists under convexity, continuity, and survival conditions, using a fixed point argument of the kind Kakutani generalized from Brouwer."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_arrow_debreu_1954", ~"../../registries/sources/economy-and-markets.spw#src_econ_kakutani_1941" ]
+  walras: "the value of aggregate excess demand is zero at every price, so one market clears when the others do"
+ }
+ #>economics_grad_micro_smd
+ ^["anything_goes"]{
+  #:claim #!settled
+  statement: "Sonnenschein, later joined by Mantel and Debreu, showed that aggregate excess demand inherits little beyond continuity, homogeneity, and Walras law, so uniqueness and stability need extra structure."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_sonnenschein_1972"
+ }
+ #>economics_grad_micro_first_welfare
+ ^["first_welfare_theorem"]{
+  #:claim #!settled
+  statement: "If preferences are locally nonsatiated, markets are complete, and there are no externalities, every competitive equilibrium allocation is Pareto efficient."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_arrow_1951", ~"../../registries/sources/economy-and-markets.spw#src_econ_mwg_1995" ]
+  ^["hypotheses"]{
+   nonsatiation: "near any bundle there is a slightly better one"
+   complete_markets: "every good, date, and state has a price"
+   no_externalities: "no one consumption or production enters another utility or technology"
+   price_taking: "no trader can move prices"
+  }
+  ^["limits"]{
+   holds: "when each hypothesis holds"
+   fails: "externalities, public goods, missing markets, market power, and asymmetric information"
+  }
+ }
+ #>economics_grad_micro_constrained
+ ^["constrained_inefficiency"]{
+  #:claim #!settled
+  statement: "Greenwald and Stiglitz showed that with imperfect information or incomplete markets, competitive equilibria are generically not even constrained efficient, so some feasible intervention could help everyone."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_greenwald_stiglitz_1986"
+  caution: "a possible improvement is not a recipe; finding it needs information planners rarely have"
+ }
+ #>economics_grad_micro_second_welfare
+ ^["second_welfare_theorem"]{
+  #:claim #!settled
+  statement: "With convex preferences and technologies, plus continuity and local nonsatiation, any Pareto efficient allocation can be reached as a competitive equilibrium after suitable lump-sum transfers."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_arrow_1951", ~"../../registries/sources/economy-and-markets.spw#src_econ_mwg_1995" ]
+  ^["limits"]{
+   holds: "when transfers can be set from information about endowments that agents cannot change"
+   fails: "real transfers tax income or trade, which distorts the choices they depend on"
+  }
+ }
+ #>economics_grad_micro_unequal
+ ^["efficient_and_unequal"]{
+  #:claim #!settled
+  statement: "Pareto efficiency is silent on distribution: an allocation that gives one person nearly everything is efficient whenever no reallocation helps another without hurting that person."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_mwg_1995", ~"../../registries/sources/economy-and-markets.spw#src_econ_sen_1970" ]
+  ~#say(efficient is not the same as fair)
+  reading: "which efficient point to pursue is a question for welfare criteria, law, and politics"
+ }
+ #>economics_grad_micro_arrow_impossibility
+ ^["social_choice"]{
+  #:claim #!settled
+  statement: "Arrow proved that no rule ranking three or more options from individual rankings satisfies unrestricted domain, the Pareto condition, independence of irrelevant alternatives, and nondictatorship together."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_arrow_1951_social_choice"
+  sen: "Sen widened the frame with interpersonal comparisons and showed that minimal liberty can clash with the Pareto condition"
+  also: ~"../../registries/sources/economy-and-markets.spw#src_econ_sen_1970"
+ }
+}
+
+^["information"]{
+ #>economics_grad_micro_lemons
+ ^["adverse_selection"]{
+  #:claim #!settled
+  statement: "When sellers know quality and buyers do not, the price reflects average quality, better goods withdraw, and the market can unravel."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_akerlof_1970"
+ }
+ #>economics_grad_micro_signaling
+ ^["signaling"]{
+  #:claim #!settled
+  statement: "A costly action can separate types when it is cheaper for the high type, the single-crossing condition; Spence modeled schooling as such a signal."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_spence_1973"
+ }
+ #>economics_grad_micro_screening
+ ^["screening"]{
+  #:claim #!settled
+  statement: "Rothschild and Stiglitz showed that when insurers screen with a menu of contracts, a competitive equilibrium may fail to exist."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_rothschild_stiglitz_1976"
+ }
+ #>economics_grad_micro_moral_hazard
+ ^["moral_hazard"]{
+  #:claim #!settled
+  statement: "When effort is hidden, pay must trade insurance against incentives, and Holmstrom showed that any signal informative about effort should enter the contract."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_holmstrom_1979"
+ }
+}
+
+^["mechanism_design"]{
+ #>economics_grad_micro_revelation
+ ^["revelation_principle"]{
+  #:claim #!settled
+  statement: "Any outcome a mechanism reaches in equilibrium can also be reached by a direct mechanism in which agents report their types truthfully."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_gibbard_1973", ~"../../registries/sources/economy-and-markets.spw#src_econ_myerson_1979" ]
+ }
+ #>economics_grad_micro_gibbard_satterthwaite
+ ^["gibbard_satterthwaite"]{
+  #:claim #!settled
+  statement: "With three or more outcomes and unrestricted preferences, every strategy-proof voting rule that can reach each outcome is dictatorial."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_gibbard_1973", ~"../../registries/sources/economy-and-markets.spw#src_econ_satterthwaite_1975" ]
+ }
+ #>economics_grad_micro_vcg
+ ^["vcg"]{
+  #:claim #!settled
+  statement: "With quasilinear utility and private values, Vickrey-Clarke-Groves payments make truth-telling dominant and choose the efficient outcome, but generally fail to balance the budget."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_vickrey_1961", ~"../../registries/sources/economy-and-markets.spw#src_econ_clarke_1971", ~"../../registries/sources/economy-and-markets.spw#src_econ_groves_1973" ]
+ }
+ #>economics_grad_micro_optimal_auction
+ ^["optimal_auction"]{
+  #:claim #!settled
+  statement: "Myerson showed that a revenue-maximizing seller ranks bidders by virtual valuation and sets a reserve price, so some efficient sales are refused."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_myerson_1981"
+ }
+ #>economics_grad_micro_bilateral
+ ^["myerson_satterthwaite"]{
+  #:claim #!settled
+  statement: "No bilateral trade mechanism with independent private values and overlapping value ranges is efficient, incentive compatible, individually rational, and budget balanced at once."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_myerson_satterthwaite_1983"
+  ~#(information rents must be paid, so some mutually good trades fail)
+ }
+}
+
+^["try"]{
+ #>economics_grad_micro_try_box
+ ^["edgeworth_box"]{
+  materials: [ "graph paper", "two colored pencils", "a ruler" ]
+  steps: << "draw a ten by ten box for two people and two goods" ; "mark the corner where person A holds everything" ; "sketch an indifference curve for each person through that corner" ; "try a trade that helps B and check what it does to A" ; "mark one interior efficient point and compare" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "none worth naming"
+  shows: ~"./graduate-micro-theory.spw#economics_grad_micro_unequal"
+ }
+}
+
+#>economics_grad_micro_subsidy_q
+?["Is a platform subsidy a way to buy back the trades private bargaining loses?"]{
+ #:depth #!mathematical ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "Platforms that subsidize one side recover some trades that bilateral bargaining under private values would lose, because an outside budget relaxes the balance constraint."
+ !probe{ "solve the uniform bilateral case with and without an outside subsidy and compare the trade regions" =id[p_econ_grad_micro_subsidy] =kind[calc] }
+ breaks: "a platform also chooses who meets whom and keeps data, which the bilateral model leaves out"
+ ~"./graduate-micro-theory.spw#economics_grad_micro_bilateral" ~#neighbor(nearest)
+}
+
+#>economics_grad_micro_fairness_q
+?["Do readers stop treating efficient as fair once they draw the corner allocation?"]{
+ #:depth #!ethical ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Students who draw an efficient corner allocation in the Edgeworth box conflate efficiency with fairness less often than students who only read the definition."
+ !probe{ "two seminar groups, one draws the box and one reads the definition; ask both to judge four allocations" =id[p_econ_grad_micro_fairness] =kind[field] }
+ ~"./graduate-micro-theory.spw#economics_grad_micro_unequal" ~#neighbor(nearest)
+}

@@ -1,0 +1,260 @@
+# Lab and Data Notation Specimens
+#
+# Chemistry, engineering, statistics, and life-science notation fed to the Spw parser, with no medication concentrations anywhere.
+
+#>spw_spec_lab_data
+#:layer #!semantics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!foundation
+#:review #!sourced
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Lab and Data Notation Specimens"
+ ~#claim: "Reaction and pathway arrows parse as connectors, while equilibria, thresholds, and spaced coefficients degrade or split."
+ ~#proof: "Each row was run through the parser at commit 1aa1dc23; quoted thresholds and ?match arms come back clean."
+ ~#door: "Start with the coefficient row, then the threshold rows and the ?match arm."
+ ~#audience: "chemists, engineers, statisticians, and life scientists keeping notes in Spw"
+ continuity: "Lab and Data Notation Specimens | threshold"
+ cold_open: "Arrows survive the move into Spw, but a threshold or an equilibrium sign can turn your whole file into prose."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/studies/persona-synthesis.json false_friends_top and contraption_catalog",
+  "writer probe run of every habit and every write_instead form at commit 1aa1dc23 on 2026-10-02",
+  "replay of every row and write_instead form against the parser on 2026-10-03, signatures, lexer errors, and loudness unchanged"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes" ]
+ feeds: [ ~"../glossary/false-friends.spw#spw_false_friends" ]
+}
+
+#>spw_spec_lab_data_observed
+^["observed"]{
+ #:claim #!settled
+ statement: "Each row was parsed at commit 1aa1dc23 as its habit line, any following line, and a final newline; signature, verdict, and loudness are what the tools then reported."
+ source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes"
+ cites: [ "packages/spw-seed/src/canonical/fingerprint.ts:49-70", "scripts/analyzers/spw-cut-gate.ts:193-217" ]
+}
+
+^["fixture"]{
+ status: #proposed
+ runner: "no repository code replays these rows as regression fixtures at 1aa1dc23; the writer probe script was scratch"
+}
+
+^["chemistry_and_engineering"]{
+ #>spw_spec_lab_data_reaction
+ ^["reaction"]{
+  habit: "rx: A + B -> C"
+  verdict: #clean, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=4 Seed=1 Sequence=1"
+  observed: "rx binds one expression joining A, B, and C with + and -> connectors; nothing balances it"
+ }
+ #>spw_spec_lab_data_coefficients
+ ^["coefficients"]{
+  habit: "rx: 2 H2 + O2 -> 2 H2O"
+  verdict: #splits, loudness: #silent
+  signature: "Binding=1 Expression=4 Identifier=4 Literal=2 Seed=1 Sequence=1"
+  observed: "rx binds only the leading 2, and the rest of the reaction splits into sibling expressions"
+  write_instead: "rx: `2 H2 + O2 -> 2 H2O`"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_lab_data_equilibrium
+ ^["equilibrium"]{
+  habit: "eq: A <=> B"
+  verdict: #degrades, loudness: #validator
+  signature: "Prose=1 ProseChunk=1 Seed=1"
+  observed: "<= is a comparison token no grammar rule reads, and the whole surface becomes prose"
+  write_instead: "eq: `A <=> B`"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_comparison"
+ }
+ #>spw_spec_lab_data_chemkin_reversible
+ ^["chemkin_reversible"]{
+  habit: "r1: H2 + O2 = 2 OH"
+  verdict: #splits, loudness: #silent
+  signature: "Binding=1 Expression=5 Identifier=4 Literal=1 Operation=1 Seed=1 Sequence=1"
+  observed: "r1 binds H2 + O2; an = operation, the literal 2, and OH follow as siblings"
+  write_instead: "r1: `H2 + O2 = 2 OH`"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_equals"
+ }
+ #>spw_spec_lab_data_subscript_digit
+ ^["subscript_digit"]{
+  habit: "f: H₂O"
+  codepoints: "U+2082"
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 1
+  signature: "Binding=1 Expression=3 Identifier=3 Seed=1 Sequence=1"
+  observed: "the subscript two is a lexer error, and O splits off as an identifier"
+  write_instead: "f: H2O"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_typography"
+ }
+ #>spw_spec_lab_data_ion_charge
+ ^["ion_charge"]{
+  habit: "ion: Ca2+"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=2 Seed=1 Sequence=1"
+  observed: "ion binds Ca2 with a trailing + connector; the charge is not a number"
+  write_instead: "ion: .{ element: Ca, charge: 2 }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ refs: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_kee_1989" ]
+}
+
+^["statistics"]{
+ #>spw_spec_lab_data_model_formula
+ ^["model_formula"]{
+  habit: "model: y ~ x1 + x2"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=3 ModifierChain=1 Operation=1 Seed=1 Sequence=1"
+  observed: "model binds y; a ~ operation takes x1 as a modifier, and + joins x2"
+  write_instead: "model: `y ~ x1 + x2`"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_infix"
+ }
+ #>spw_spec_lab_data_p_threshold
+ ^["p_threshold"]{
+  habit: "sig: p < 0.05"
+  verdict: #degrades, loudness: #validator
+  signature: "Prose=1 ProseChunk=2 Seed=1"
+  observed: "the < opens a capsule that never closes, and the whole surface becomes prose"
+  write_instead: "sig: \"p < 0.05\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_comparison"
+ }
+ #>spw_spec_lab_data_p_threshold_quoted
+ ^["p_threshold_quoted"]{
+  habit: "sig: \"p < 0.05\""
+  verdict: #clean, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=1 Literal=1 Seed=1 Sequence=1"
+  observed: "a string literal; the threshold survives as text"
+ }
+ #>spw_spec_lab_data_subset_condition
+ ^["subset_condition"]{
+  habit: "cond: if age >= 18"
+  verdict: #degrades, loudness: #validator
+  signature: "Prose=1 ProseChunk=1 Seed=1"
+  observed: ">= is a comparison token no grammar rule reads, and the whole surface becomes prose"
+  write_instead: "cond: \"if age >= 18\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_comparison"
+ }
+ #>spw_spec_lab_data_sample_size
+ ^["sample_size"]{
+  habit: "n = 120"
+  verdict: #restructures, loudness: #silent
+  signature: "Expression=3 Identifier=1 Literal=1 Operation=1 Seed=1 Sequence=1"
+  observed: "three flat siblings appear, n, an = operation, and 120, and nothing binds"
+  write_instead: "n: 120"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_equals"
+ }
+ #>spw_spec_lab_data_interval
+ ^["interval"]{
+  habit: "ci: [1.2, 3.4]"
+  verdict: #clean, loudness: #silent
+  signature: "Binding=1 Expression=2 Frame=1 Identifier=1 Literal=2 Parameter=2 Seed=1 Sequence=1"
+  observed: "ci binds a [ ] frame with two parameters; the bounds survive, though nothing reads them as an interval"
+ }
+ #>spw_spec_lab_data_mean_sd
+ ^["mean_sd"]{
+  habit: "m: 4.2 (0.3)"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=1 Literal=2 Scope=1 Seed=1 Sequence=2"
+  observed: "the parenthesized value becomes a Scope beside 4.2"
+  write_instead: "m: .{ mean: 4.2, sd: 0.3 }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_lab_data_threshold_match
+ ^["threshold_match"]{
+  habit: "?match[band]{ \"high\" => alert, \"low\" => idle }"
+  verdict: #clean, loudness: #silent
+  signature: "Expression=4 Identifier=3 Literal=2 Match=1 MatchArm=2 Seed=1 Sequence=1"
+  observed: "a Match with two arms; the threshold names live in strings"
+ }
+ refs: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_wilkinson_rogers_1973" ]
+}
+
+^["life_science"]{
+ #>spw_spec_lab_data_activation
+ ^["activation"]{
+  habit: "path: EGF -> EGFR"
+  verdict: #clean, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=3 Seed=1 Sequence=1"
+  observed: "one expression joins EGF and EGFR with a -> connector; nothing reads it as activation"
+ }
+ #>spw_spec_lab_data_inhibition
+ ^["inhibition"]{
+  habit: "path: A -| B"
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 1
+  signature: "Binding=1 Expression=2 Identifier=3 Seed=1 Sequence=1"
+  observed: "the minus is a lexer error, so A and B are joined by a bare | and the inhibition is gone"
+  write_instead: "path: .{ from: A, to: B, effect: inhibits }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_lab_data_gene_symbol
+ ^["gene_symbol"]{
+  habit: "gene: TP53"
+  verdict: #clean, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=2 Seed=1 Sequence=1"
+  observed: "a single identifier; the gene symbol survives as written"
+ }
+ #>spw_spec_lab_data_gene_pair
+ ^["gene_pair"]{
+  habit: "gene: BRCA1/2"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=2 Literal=1 Seed=1 Sequence=1"
+  observed: "BRCA1 and the literal 2 are joined by a / connector, so the second gene name never forms"
+  write_instead: "genes: [ BRCA1, BRCA2 ]"
+ }
+ #>spw_spec_lab_data_assay_dilution
+ ^["assay_dilution"]{
+  habit: "dil: 1:10"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=2 Expression=3 Identifier=1 Literal=2 Seed=1 Sequence=1"
+  observed: "dil binds a nested binding of 1 to 10"
+  write_instead: "dil: \"1:10\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_colon"
+ }
+ #>spw_spec_lab_data_rate_exponent
+ ^["rate_exponent"]{
+  habit: "kd: 1e-9"
+  verdict: #splits, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=2 Literal=1 Seed=1 Sequence=1"
+  observed: "kd binds 1, and e-9 becomes one identifier, because identifiers may contain hyphens"
+  write_instead: "kd: \"1e-9\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ refs: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_le_novere_2009", ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_bruford_2020" ]
+}
+
+^["try"]{
+ #>spw_spec_lab_data_try
+ ^["threshold_drill"]{
+  materials: [ "a terminal at the repository root" ]
+  steps: << "pipe the p_threshold habit into npm run spw -- fingerprint --stdin --json" ; "pipe the quoted form" ; "pipe the ?match habit" ; "say which form a reviewer would read fastest" >>
+  time: .{ n: 10, unit: "minutes" }
+  safety: "no hazard worth naming; the rows carry no clinical values"
+  shows: ~"./lab-and-data.spw#spw_spec_lab_data_threshold_match"
+ }
+}
+
+#>spw_spec_lab_data_silent_q
+?["Which lab habit costs a reviewer more, the loud equilibrium arrow or the silent coefficient split?"]{
+ #:depth #!physical ~#lens(molecular binding)
+ #:claim #!speculative
+ ~#hypothesis: "The silent split costs more, because the reaction keeps parsing while its stoichiometry is gone, and nothing points a reviewer at the line."
+ !probe{ "seed one equilibrium row and one coefficient row into a scratch surface and ask two reviewers which fault they find first" =id[p_gloss_lab_silent_split] =kind[field] }
+ $%[gloss.spec.silent_n, gloss.spec.validator_n]
+ ~"./lab-and-data.spw#spw_spec_lab_data_coefficients" ~#neighbor(nearest)
+}

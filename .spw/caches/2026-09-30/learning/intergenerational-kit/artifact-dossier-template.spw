@@ -13,7 +13,7 @@
 
 ^"emit"{
  ~#title: "Artifact Dossier Template"
- ~#claim: "A school artifact becomes a source when it carries its custody chain, the owner consent, a careful scan with a checksum, and a note on what it can and cannot show."
+ ~#claim: "A school artifact becomes a source when it carries its custody chain, the consent of its owner, a careful scan with a checksum, and a note on what it can and cannot show."
  ~#proof: "Handling advice from the Northeast Document Conservation Center; scanning quality from the federal digitization guidelines; fixity from NIST and NDSA."
  ~#door: "Fill one dossier for one object, then link it to its row in the memory map."
  ~#audience: "families and students working with school keepsakes"
@@ -29,9 +29,14 @@
  method: #authored
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
  }
+ corrections: #[
+  "fact check: the mold safety line told readers to bag a moldy item with no personal precaution; it now keeps people with asthma, allergies, or weak immunity away, asks others for gloves and a mask, and warns that a closed bag can feed mold on a damp item"
+ ]
 }
 
 ^["scope"]{
@@ -55,7 +60,7 @@
   kind: #[ report_card, textbook, workbook, yearbook, photo, certificate ]
   label: "?"
   date_or_range: "?"
-  school: "optional, named only with the owner consent"
+  school: "optional, named only with consent of the owner"
  }
 
  ^["custody"]{
@@ -123,7 +128,8 @@
    "write one thing it shows and one thing it cannot"
   >>
   time: .{ n: 30, unit: "minutes" }
-  safety: "handle brittle paper gently with clean, dry hands; if you see mold, set the item aside in a closed bag and leave cleaning to a conservator"
+  safety: "handle brittle paper gently with clean, dry hands; if you see mold, do not handle it if you have asthma, allergies, or a weakened immune system; otherwise wear gloves and a mask, isolate the item away from other papers (a bag only briefly, or frozen if damp), and leave cleaning to a conservator"
+  safety_source: ~"../../registries/sources/learning-and-generations.spw#src_learn_nedcc_leaflets"
   shows: ~"./artifact-dossier-template.spw#generations_kit_artifact_evidence"
  }
 }

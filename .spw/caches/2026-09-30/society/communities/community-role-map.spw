@@ -1,0 +1,135 @@
+# Community Role Map
+#
+# A kit for mapping who convenes, leads, seconds, keeps, carries, and guards where you live, by role and never by name, with the empty rows read as questions.
+
+#>communities_role_map
+#:layer #!creative
+#:domain #!communities
+#:form #!story_kit
+#:level #!intro
+#:review #!spot_checked
+#:valence #!boon
+#:era #!current
+
+^"emit"{
+ ~#title: "Community Role Map"
+ ~#claim: "A one-page table of crew functions against local roles shows who keeps a place running and which functions nobody holds yet."
+ ~#proof: "Rows come from the crew crosswalk functions and columns from the roles lattice facets; the kit holds only the empty template."
+ ~#door: "Fill the convener and keeper rows from what you already know, then walk your block once and fill the rest."
+ ~#audience: "neighbors, new residents, students, and organizers"
+ continuity: "Community Role Map | nobody holds yet"
+ cold_open: "Map who convenes, keeps, and carries where you live, and the empty rows show what nobody holds yet."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["scope"]{
+ roles: "the map records roles and places, never names; a shared copy carries no private person"
+ keeps: "the filled map stays with whoever made it; this surface holds only the empty template"
+ never: "no health, soil, or remediation guidance; a health question goes to a clinic and a soil question to an accredited lab or public agency"
+ consent: "ask before writing down what a neighbor does, and leave them off the map if they say no"
+}
+
+^["edges"]{
+ needs: [ ~"./crew-crosswalk.spw#communities_crew_crosswalk", ~"./roles-lattice.spw#communities_lattice_facets" ]
+ see: [ ~"../../learning/intergenerational-kit/interview-protocol.spw#generations_kit_interview" ]
+}
+
+^["concepts"]{
+ primary: [ #crew_function, #role, #consent ]
+ transfers: [ #facet, #gap ]
+ tensions: [ #ranking ]
+}
+
+^["table"]{
+ columns: #[ function, role, scale, tenure, compensation, credential, reciprocity, met_at, missing ]
+
+ #>communities_map_template
+ ^["template"]{
+  rows: #[
+   .{ function: "convener", role: "?", scale: "?", tenure: "?", met_at: "?", missing: "?" },
+   .{ function: "lead", role: "?", scale: "?", tenure: "?", met_at: "?", missing: "?" },
+   .{ function: "second", role: "?", scale: "?", tenure: "?", met_at: "?", missing: "?" },
+   .{ function: "keeper", role: "?", scale: "?", tenure: "?", met_at: "?", missing: "?" },
+   .{ function: "carrier", role: "?", scale: "?", tenure: "?", met_at: "?", missing: "?" },
+   .{ function: "guardian", role: "?", scale: "?", tenure: "?", met_at: "?", missing: "?" }
+  ]
+  cell_rule: "write a role, never a name, then where you met it: meeting, porch, garden, clinic, stream, or flyer"
+  facet_rule: "take facet values from the closed sets in the roles lattice; write a question mark rather than guess"
+ }
+}
+
+^["reading_the_map"]{
+ #>communities_map_gaps
+ ^["empty_rows"]{
+  #:claim #!interpretive
+  statement: "An empty row is a question about who could hold that function, not a verdict on the neighborhood, and a crowded row may mean one person is holding too much."
+  ~#say(an empty row is a question, not a deficit)
+ }
+ #>communities_map_turn
+ ^["turning"]{
+  steps: <<
+   "circle every function with no role written in" ;
+   "circle every role you wrote in more than one row" ;
+   "for each circle, write one question that starts with who or how" ;
+   "check the question against the matching dossier before asking it aloud"
+  >>
+  dossiers: [
+   ~"./civic-roles.spw#communities_civic_roles",
+   ~"./care-roles.spw#communities_care_roles",
+   ~"./commons-roles.spw#communities_commons_roles",
+   ~"./custodian-roles.spw#communities_custodian_roles"
+  ]
+ }
+ #>communities_map_clusters
+ ^["clusters_as_prompts"]{
+  #:claim #!interpretive
+  statement: "Roles on your map that share facet values are a prompt to introduce their holders to each other, not proof they do the same work."
+  prompts: ~"./roles-lattice.spw#communities_lattice_clusters"
+ }
+}
+
+^["try"]{
+ #>communities_map_try_walk
+ ^["block_walk"]{
+  materials: [
+   "this template on one sheet of paper",
+   "a pencil",
+   "flyers, notice boards, and meeting posters you pass"
+  ]
+  steps: <<
+   "fill the rows you can from memory" ;
+   "walk your block or building once and read every notice" ;
+   "add each role a notice names to its function row" ;
+   "circle the empty and the crowded rows" ;
+   "write one question for each circle"
+  >>
+  time: .{ n: 45, unit: "minutes" }
+  safety: "walk in daylight on public paths; photograph notices, not people; keep the filled sheet private"
+  shows: ~"./community-role-map.spw#communities_map_gaps"
+ }
+}
+
+#>communities_map_first_gap_q
+?["Which function goes unheld first on a block that has lost its organizer?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "When a block loses its organizer, the keeper row empties next, because the organizer was quietly keeping the contact list."
+ !probe{ "ask long-time residents on blocks whose organizer moved away which tasks stopped first" =id[p_lang_communities_first_gap] =kind[interview] }
+ ~"./community-role-map.spw#communities_map_gaps" ~#neighbor(nearest)
+}

@@ -7,7 +7,7 @@
 #:domain #!inscription
 #:form #!comparison
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 #:era #!industrial
 
@@ -31,7 +31,10 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #pass }
  }
+ rechecked: "2026-10-02: Fourdrinier development narrowed to the first decade of the 1800s; permanence reads split one handle per line"
 }
 
 ^["edges"]{
@@ -76,7 +79,7 @@
   ^["fourdrinier"]{
    #:era #!industrial
    #:claim #!settled
-   statement: "Nicolas-Louis Robert patented a continuous paper machine in France in 1799; Henry and Sealy Fourdrinier, with engineer Bryan Donkin, developed it in England in the 1800s."
+   statement: "Nicolas-Louis Robert patented a continuous paper machine in France in 1799; Henry and Sealy Fourdrinier, with engineer Bryan Donkin, developed it in England in the first decade of the 1800s."
    input: "pulp suspension flowing onto a moving wire screen"
    output: "a continuous web wound on reels"
    sources: [ ~"../../registries/sources/record-and-carriers.spw#src_media_hunter_1947", ~"../../registries/sources/record-and-carriers.spw#src_media_enc_history_of_paper" ]
@@ -114,7 +117,12 @@
   ^["permanence_standard"]{
    #:claim #!settled
    statement: "ISO 9706 permanent paper keeps a near-neutral to alkaline extract, carries an alkali reserve to neutralize future acid, and limits oxidizable lignin."
-   reads: %[media.paper.iso9706_ph_min, media.paper.iso9706_ph_max, media.paper.iso9706_alkali_reserve_mol_per_kg, media.paper.iso9706_kappa_max]
+   reads: %[
+    media.paper.iso9706_ph_min,
+    media.paper.iso9706_ph_max,
+    media.paper.iso9706_alkali_reserve_mol_per_kg,
+    media.paper.iso9706_kappa_max
+   ]
    source: ~"../../registries/sources/record-and-carriers.spw#src_media_iso_9706_1994"
    edition: "ISO 9706:1994; the American counterpart is ANSI/NISO Z39.48-1992"
    as_of: "2026-10-01"

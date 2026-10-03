@@ -1,0 +1,169 @@
+# Reading Market Reports
+#
+# A protocol for turning a market report into a dated registry cell: intake, triage, extract, qualify, rank, and publish, with the sample frame and the unit of share checked before any number moves.
+
+#>markets_reading_reports
+#:layer #!pragmatics
+#:domain #!markets
+#:form #!protocol
+#:level #!practitioner
+#:review #!adversarial_checked
+#:valence #!bane
+
+^"emit"{
+ ~#title: "Reading Market Reports"
+ ~#claim: "A market number becomes usable only after six steps, and the step most often skipped is asking whose share it is: people, time, or money."
+ ~#proof: "Frames and error sources follow Kish, Groves, and Groves and Lyberg; the share distinction is read from how Edison, Nielsen, and Pew define their bases."
+ ~#door: "Walk one report through the six states with the kit, then publish one cell or leave it empty."
+ ~#audience: "anyone who quotes a media or market figure"
+ continuity: "Reading Market Reports | whose share"
+ cold_open: "Before you repeat a market number, ask whose share it is, who was asked, and when."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ needs: [ ~"../../formal/mathematics/engineering-core/probability-and-statistics.spw#mathematics_probstat", ~"../economics/econometrics-and-data.spw#economics_econometrics" ]
+ feeds: [ ~"./market-probe-battery.spw#markets_probe_battery", ~"./media-market-receipts.spw#markets_media_receipts" ]
+ see: [ ~"../../making/broadcast/serial-2014-case.spw#broadcast_serial_case_iab" ]
+}
+
+^["concepts"]{
+ primary: [ #sampling_frame, #dated_receipt, #audience_measurement ]
+ transfers: [ #identification, #replication ]
+ tensions: [ #platform_dependence ]
+}
+
+^["protocol"]{
+ #>markets_reading_states
+ ^["states"]{
+  intake: "find the primary release, record its title, publisher, release date, and address"
+  triage: "name the kind of source: probability survey, opt-in panel, meter panel, server logs, or model"
+  extract: "copy the figure with its exact wording, base, unit, and period"
+  qualify: "check frame, size, mode, weighting, sponsor, and the error the method allows"
+  rank: "prefer the full report over the press release, and either over news coverage"
+  publish: "write a registry cell with value, unit, at, as_of, source, and status, or leave it unset as verify"
+ }
+ #>markets_reading_transitions
+ ?match[@step]{
+  @intake => ^["found"]{ next: "triage", guard: "a primary release is in hand" }
+  @triage => ^["kind"]{ next: "extract", trigger: "source kind named" }
+  @extract => ^["copied"]{ next: "qualify", guard: "wording, base, and period copied verbatim" }
+  @qualify => ^["checked"]{ next: "rank", guard: "frame and method stated" }
+  @rank => ^["chosen"]{ next: "publish", trigger: "best available source chosen" }
+  @publish => ^["filed"]{ next: "intake", trigger: "the next report arrives" }
+  _ => "hold the number out of any claim"
+ }
+ #>markets_reading_triage
+ ^["triage_by_kind"]{
+  ?match[@kind]{
+   "probability survey" => "report the margin the publisher states and the field dates",
+   "opt-in panel" => "report the weighting note; a design-based margin does not apply",
+   "meter panel" => "report what devices and places the meter covers",
+   "server logs" => "report the counting rule, such as a download definition",
+   "model estimate" => "report the model owner and treat the figure as an estimate",
+   _ => "hold"
+  }
+ }
+}
+
+^["frames"]{
+ #>markets_reading_frame
+ ^["sampling_frame"]{
+  #:claim #!settled
+  statement: "A survey can describe only the population its frame reaches, so the frame, the sample design, and the response process decide what a percentage means."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_kish_1965", ~"../../registries/sources/economy-and-markets.spw#src_econ_groves_2009" ]
+ }
+ #>markets_reading_tse
+ ^["total_survey_error"]{
+  #:claim #!settled
+  statement: "Total survey error adds coverage, sampling, nonresponse, measurement, and processing error; the stated margin covers only sampling error."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_groves_lyberg_2010"
+ }
+ #>markets_reading_pew_base
+ ^["probability_panel"]{
+  #:claim #!settled
+  statement: "Pew drew its 2023 podcast findings from a probability-based panel of US adults fielded in December 2022, so the figures describe adults, not teens."
+  reads: %[econ.podcast.pew_2022_sample_n]
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_pew_2023_podcasts"
+ }
+}
+
+^["share_units"]{
+ #>markets_reading_listeners_vs_listening
+ ^["listeners_vs_listening"]{
+  #:claim #!settled
+  statement: "The Edison 2024 platform figures are shares of weekly podcast listeners aged 13 and up naming the service they use most, not shares of listening time or downloads."
+  reads: %[econ.podcast.edison_2024_youtube_pct, econ.podcast.edison_2024_spotify_pct]
+  also_reads: %[econ.podcast.edison_2024_apple_pct]
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_edison_2024_platforms"
+  share_of_listening: "a time share weights heavy listeners more; it can rank services differently"
+ }
+ #>markets_reading_tv_share
+ ^["tv_usage_share"]{
+  #:claim #!settled
+  statement: "Nielsen The Gauge reports shares of total television usage on TV sets in US homes, so viewing on phones and computers sits outside its frame."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_nielsen_gauge"
+ }
+ #>markets_reading_money_share
+ ^["revenue_share"]{
+  #:claim #!settled
+  statement: "The IAB report counts US internet advertising revenue compiled with PwC, a share of money that says nothing direct about audience time."
+  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_iab_2024"
+ }
+}
+
+^["standards"]{
+ #>markets_reading_rss
+ ^["feed_formats"]{
+  #:claim #!settled
+  statement: "RSS 2.0 is not a W3C standard; the RSS Advisory Board maintains it, at version 2.0.11 since 2009, while Atom is an IETF standard, RFC 4287."
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_rss_board_2009", ~"../../registries/sources/economy-and-markets.spw#src_econ_rfc_4287" ]
+  correction: "the raw podcasting market file called RSS a W3C standard"
+ }
+}
+
+^["try"]{
+ #>markets_reading_try_one_report
+ ^["one_report"]{
+  materials: [ "the Pew 2023 podcast report in a browser", "a notes file with six headings" ]
+  steps: << "copy the title, date, and address" ; "name the source kind" ; "copy one figure with its exact wording and base" ; "write the frame and field dates" ; "decide whether it beats the press coverage" ; "write it as a cell or mark it verify" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "none worth naming"
+  shows: ~"./reading-market-reports.spw#markets_reading_frame"
+ }
+}
+
+#>markets_reading_rank_q
+?["Would a share of listening time rank podcast services the way a share of listeners does?"]{
+ #:depth #!computational ~#lens(information flow)
+ #:claim #!speculative
+ ~#hypothesis: "A time-weighted share would move services with many heavy listeners up relative to a share of people naming a main service."
+ !probe{ "find a publisher that reports both bases for one quarter and compare the two rankings" =id[p_econ_reading_rank] =kind[lookup] }
+ $%[econ.podcast.edison_2024_youtube_pct, econ.podcast.edison_2024_spotify_pct]
+ ~"./reading-market-reports.spw#markets_reading_listeners_vs_listening" ~#neighbor(nearest)
+}
+
+#>markets_reading_polls_q
+?["Do opinion polls and market reports pass the same six steps?"]{
+ #:depth #!educational ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Readers who apply the six steps to market reports transfer them to opinion polls with only the qualify step changed."
+ !probe{ "give one group the protocol on a market report, then ask both groups to qualify a school opinion poll" =id[p_econ_reading_polls] =kind[field] }
+ breaks: "a market share can be audited against logs or receipts; an opinion has no ground truth to audit against"
+ ~"../../learning/generations/public-worry-hooks.spw#generations_worry_hooks" ~#neighbor(nearest)
+}

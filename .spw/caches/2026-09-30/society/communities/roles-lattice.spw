@@ -1,0 +1,249 @@
+# Community Roles Lattice
+#
+# Nineteen community roles placed on five closed facets and under six crew functions, so roles can be compared without ranking them.
+
+#>communities_roles_lattice
+#:layer #!reference
+#:domain #!communities
+#:form #!glossary
+#:level #!intro
+#:review #!spot_checked
+#:valence #!bone
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Community Roles Lattice"
+ ~#claim: "Community roles compare cleanly on five facets with closed values, scale, tenure, compensation, credential, and reciprocity, and each sits under one or two of six crew functions."
+ ~#proof: "Facet values summarize the four role dossiers; broader links point to the crew crosswalk functions; computed clusters are listed only as prompts."
+ ~#door: "Find a role you know, read its two facet lines, then follow its broader link to the function it serves."
+ ~#audience: "neighbors, organizers, and students of community life"
+ continuity: "Community Roles Lattice | five facets"
+ cold_open: "Every community role here sits on the same five facets, so you can compare a doula and a block captain without ranking either."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ gate_note: "r3 and r5 failed only on a forward ref to the planned spw theory surface clustering-hybrid, owned by another package; that surface has landed and r6 passes"
+ corrections: [
+  "fact check: the reading said no role here is licensed; urban foresters may need a state forester or arborist license, so the line now separates clinical licensure from technical licensure",
+  "fact check: the episodic cluster left out mutual aid coordinator and assembly facilitator, which this lattice marks episodic"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./crew-crosswalk.spw#communities_crew_crosswalk" ]
+ case_of: [ ~"../../spw/theory/clustering-hybrid.spw#spw_theory_clustering" ]
+ see: [ ~"../society-glossary.spw#society_term_role" ]
+}
+
+^["concepts"]{
+ primary: [ #role, #facet, #reciprocity ]
+ transfers: [ #crew_function, #computed_cluster ]
+ tensions: [ #ranking ]
+}
+
+^["facets"]{
+ #>communities_lattice_facets
+ ^["closed_sets"]{
+  scale: #[ block, neighborhood, city, network ]
+  tenure: #[ episodic, seasonal, standing, lifelong ]
+  compensation: #[ unpaid, stipend, wage, mixed ]
+  credential: #[ none, training, certified ]
+  reciprocity: #[ gift, mutual, exchange, service ]
+ }
+ #>communities_lattice_reading
+ ^["how_to_read"]{
+  #:claim #!interpretive
+  statement: "Facet values describe a typical United States instance of each role as of 2026; programs, cities, and countries differ, so a value is a starting guess, not a rule."
+  span: "the span line holds scale and tenure: how far the role reaches and how long it is held"
+  terms: "the terms line holds compensation, credential, and reciprocity: how it is paid, vouched for, and returned"
+  licensed: "no care role here is a licensed clinical role; some technical roles, such as urban forester, may need a state forester or arborist license depending on jurisdiction"
+ }
+}
+
+^["roles"]{
+ #>communities_role_block_captain
+ ^["block_captain"]{
+  span: .{ scale: #block, tenure: #standing }
+  terms: .{ compensation: #unpaid, credential: #none, reciprocity: #mutual }
+  broader: [ ~"./crew-crosswalk.spw#communities_crosswalk_convener" ]
+  home: ~"./civic-roles.spw#communities_civic_block_clubs"
+ }
+ #>communities_role_mutual_aid
+ ^["mutual_aid_coordinator"]{
+  span: .{ scale: #neighborhood, tenure: #episodic }
+  terms: .{ compensation: #unpaid, credential: #none, reciprocity: #mutual }
+  broader: [ ~"./crew-crosswalk.spw#communities_crosswalk_convener" ]
+  home: ~"./civic-roles.spw#communities_civic_mutual_aid"
+ }
+ #>communities_role_facilitator
+ ^["assembly_facilitator"]{
+  span: .{ scale: #city, tenure: #episodic }
+  terms: .{ compensation: #mixed, credential: #training, reciprocity: #service }
+  broader: [ ~"./crew-crosswalk.spw#communities_crosswalk_lead" ]
+  home: ~"./civic-roles.spw#communities_civic_roberts"
+ }
+ #>communities_role_tenant_organizer
+ ^["tenant_organizer"]{
+  span: .{ scale: #block, tenure: #standing }
+  terms: .{ compensation: #mixed, credential: #none, reciprocity: #mutual }
+  broader: [ ~"./crew-crosswalk.spw#communities_crosswalk_convener", ~"./crew-crosswalk.spw#communities_crosswalk_guardian" ]
+  home: ~"./civic-roles.spw#communities_civic_tenants"
+ }
+ #>communities_role_chw
+ ^["community_health_worker"]{
+  span: .{ scale: #neighborhood, tenure: #standing }
+  terms: .{ compensation: #wage, credential: #training, reciprocity: #service }
+  broader: [ ~"./crew-crosswalk.spw#communities_crosswalk_carrier" ]
+  narrower: [ ~"./roles-lattice.spw#communities_role_promotora" ]
+  home: ~"./care-roles.spw#communities_care_chw"
+ }
+ #>communities_role_promotora
+ ^["promotora"]{
+  span: .{ scale: #neighborhood, tenure: #standing }
+  terms: .{ compensation: #stipend, credential: #training, reciprocity: #service }
+  broader: [ ~"./roles-lattice.spw#communities_role_chw" ]
+  home: ~"./care-roles.spw#communities_care_promotoras"
+ }
+ #>communities_role_doula
+ ^["doula"]{
+  span: .{ scale: #network, tenure: #episodic }
+  terms: .{ compensation: #mixed, credential: #training, reciprocity: #service }
+  broader: [ ~"./crew-crosswalk.spw#communities_crosswalk_second" ]
+  home: ~"./care-roles.spw#communities_care_doula_role"
+ }
+ #>communities_role_peer_specialist
+ ^["peer_specialist"]{
+  span: .{ scale: #city, tenure: #standing }
+  terms: .{ compensation: #wage, credential: #certified, reciprocity: #mutual }
+  broader: [ ~"./crew-crosswalk.spw#communities_crosswalk_second" ]
+  home: ~"./care-roles.spw#communities_care_peer_medicaid"
+ }
+ #>communities_role_harm_reduction
+ ^["harm_reduction_worker"]{
+  span: .{ scale: #neighborhood, tenure: #standing }
+  terms: .{ compensation: #mixed, credential: #training, reciprocity: #service }
+  broader: [ ~"./crew-crosswalk.spw#communities_crosswalk_guardian" ]
+  home: ~"./care-roles.spw#communities_care_test_strips"
+ }
+ #>communities_role_death_cafe_host
+ ^["death_cafe_host"]{
+  span: .{ scale: #neighborhood, tenure: #episodic }
+  terms: .{ compensation: #unpaid, credential: #none, reciprocity: #gift }
+  broader: [ ~"./crew-crosswalk.spw#communities_crosswalk_convener" ]
+  home: ~"./care-roles.spw#communities_care_death_cafe"
+ }
+ #>communities_role_garden_steward
+ ^["garden_steward"]{
+  span: .{ scale: #block, tenure: #seasonal }
+  terms: .{ compensation: #unpaid, credential: #none, reciprocity: #mutual }
+  broader: [ ~"./crew-crosswalk.spw#communities_crosswalk_keeper" ]
+  home: ~"./commons-roles.spw#communities_commons_gardens"
+ }
+ #>communities_role_urban_forester
+ ^["urban_forester"]{
+  span: .{ scale: #city, tenure: #standing }
+  terms: .{ compensation: #wage, credential: #certified, reciprocity: #service }
+  broader: [ ~"./crew-crosswalk.spw#communities_crosswalk_keeper" ]
+  home: ~"./commons-roles.spw#communities_commons_heat"
+ }
+ #>communities_role_tool_librarian
+ ^["tool_librarian"]{
+  span: .{ scale: #neighborhood, tenure: #standing }
+  terms: .{ compensation: #mixed, credential: #none, reciprocity: #mutual }
+  broader: [ ~"./crew-crosswalk.spw#communities_crosswalk_keeper" ]
+  home: ~"./commons-roles.spw#communities_commons_tool_libraries"
+ }
+ #>communities_role_repair_volunteer
+ ^["repair_volunteer"]{
+  span: .{ scale: #neighborhood, tenure: #episodic }
+  terms: .{ compensation: #unpaid, credential: #none, reciprocity: #gift }
+  broader: [ ~"./crew-crosswalk.spw#communities_crosswalk_carrier" ]
+  home: ~"./commons-roles.spw#communities_commons_repair"
+ }
+ #>communities_role_elder
+ ^["elder"]{
+  span: .{ scale: #neighborhood, tenure: #lifelong }
+  terms: .{ compensation: #unpaid, credential: #none, reciprocity: #gift }
+  broader: [ ~"./crew-crosswalk.spw#communities_crosswalk_keeper" ]
+  home: ~"./custodian-roles.spw#communities_custodian_elder"
+ }
+ #>communities_role_storyteller
+ ^["storyteller"]{
+  span: .{ scale: #network, tenure: #lifelong }
+  terms: .{ compensation: #mixed, credential: #none, reciprocity: #exchange }
+  broader: [ ~"./crew-crosswalk.spw#communities_crosswalk_carrier" ]
+  home: ~"./custodian-roles.spw#communities_custodian_griots"
+ }
+ #>communities_role_mentor
+ ^["mentor"]{
+  span: .{ scale: #network, tenure: #standing }
+  terms: .{ compensation: #unpaid, credential: #training, reciprocity: #gift }
+  broader: [ ~"./crew-crosswalk.spw#communities_crosswalk_second" ]
+  narrower: [ ~"./roles-lattice.spw#communities_role_coach" ]
+  home: ~"./custodian-roles.spw#communities_custodian_mentoring"
+ }
+ #>communities_role_coach
+ ^["coach"]{
+  span: .{ scale: #neighborhood, tenure: #seasonal }
+  terms: .{ compensation: #stipend, credential: #training, reciprocity: #service }
+  broader: [ ~"./roles-lattice.spw#communities_role_mentor", ~"./crew-crosswalk.spw#communities_crosswalk_lead" ]
+  home: ~"./custodian-roles.spw#communities_custodian_coach"
+ }
+ #>communities_role_muralist
+ ^["muralist"]{
+  span: .{ scale: #city, tenure: #episodic }
+  terms: .{ compensation: #mixed, credential: #none, reciprocity: #exchange }
+  broader: [ ~"./crew-crosswalk.spw#communities_crosswalk_carrier" ]
+  home: ~"./custodian-roles.spw#communities_custodian_murals"
+ }
+}
+
+^["clusters"]{
+ #>communities_lattice_clusters
+ ^["prompts"]{
+  #:claim #!interpretive
+  rule: "a cluster is computed by matching facet values; it is a prompt to compare two roles, never a claim that they are alike"
+  prompts: [
+   "unpaid and mutual: block captain, mutual aid coordinator, garden steward; what keeps each from burning out?",
+   "wage and service: community health worker, urban forester; does a paycheck change whom neighbors trust?",
+   "certified: peer specialist, urban forester; what does a certificate add that lived experience lacks, and the reverse?",
+   "lifelong: elder, storyteller; who takes the role when the holder is gone?",
+   "episodic: mutual aid coordinator, assembly facilitator, doula, death cafe host, muralist, repair volunteer; what does a role leave behind after the gathering ends?"
+  ]
+ }
+}
+
+#>communities_lattice_break_q
+?["Which community role breaks the closed facets first?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Roles paid partly in kind, such as a storyteller fed by a host, will strain the compensation facet before any other role strains any other facet."
+ !probe{ "ask five people holding lattice roles to place themselves on each facet and log every value they had to invent" =id[p_lang_communities_facet_break] =kind[interview] }
+ $%[file.frame_count]
+ ~"./roles-lattice.spw#communities_lattice_facets" ~#neighbor(nearest)
+}
+
+#>communities_lattice_function_q
+?["Is a crew function the same thing as a role, seen from further away?"]{
+ #:depth #!computational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Functions behave like broader terms in a thesaurus: every role has at least one, and roles that share a function trade places more easily in a crisis."
+ breaks: "a thesaurus broader term is fixed by an editor; a person can hold several functions in one evening and none the next"
+ !probe{ "list which roles covered for which during one documented neighborhood emergency and check whether they shared a function" =id[p_lang_communities_function_swap] =kind[lit] }
+ ~"./roles-lattice.spw#communities_role_mutual_aid" ~#neighbor(nearest)
+}

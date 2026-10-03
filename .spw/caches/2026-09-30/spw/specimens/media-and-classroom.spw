@@ -1,0 +1,299 @@
+# Media and Classroom Specimens
+#
+# Timecode, call sheets, chat and Markdown, hashtags and emoticons, smart punctuation, and classroom locales fed to the Spw parser, with synthetic handles only.
+
+#>spw_spec_media_classroom
+#:layer #!semantics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!foundation
+#:review #!sourced
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Media and Classroom Specimens"
+ ~#claim: "Times, chat lines, Markdown, and smart punctuation restructure, swallow, or hide lexer errors; quoted strings come back clean."
+ ~#proof: "Each row was run through the parser at commit 1aa1dc23 with synthetic handles; every write_instead form parses without a fault."
+ ~#door: "Start with the call time row, then the chat line, then the smart quotes."
+ ~#audience: "crews, creators, and teachers pasting schedules, chat, and class notes into Spw"
+ continuity: "Media and Classroom Specimens | quotes"
+ cold_open: "Call times, chat lines, and curly quotes all change shape in Spw unless the words sit inside straight quotes."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/studies/persona-synthesis.json false_friends_top and contraption_catalog",
+  "writer probe run of every habit and every write_instead form at commit 1aa1dc23 on 2026-10-02",
+  "replay of every row and write_instead form against the parser on 2026-10-03, signatures, lexer errors, and loudness unchanged"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the persona notes counted the timecode 01:00:00:00 as three nested bindings; the tree holds three nested under tc, four in all"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes" ]
+ feeds: [ ~"../glossary/false-friends.spw#spw_false_friends" ]
+}
+
+#>spw_spec_media_classroom_observed
+^["observed"]{
+ #:claim #!settled
+ statement: "Each row was parsed at commit 1aa1dc23 as its habit line, any following line, and a final newline; signature, verdict, and loudness are what the tools then reported."
+ source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes"
+ cites: [ "packages/spw-seed/src/canonical/fingerprint.ts:49-70", "scripts/analyzers/spw-cut-gate.ts:193-217" ]
+}
+
+^["fixture"]{
+ status: #proposed
+ runner: "no repository code replays these rows as regression fixtures at 1aa1dc23; the writer probe script was scratch"
+}
+
+^["production"]{
+ #>spw_spec_media_classroom_timecode
+ ^["timecode"]{
+  habit: "tc: 01:00:00:00"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=4 Expression=5 Identifier=1 Literal=4 Seed=1 Sequence=1"
+  observed: "tc binds a chain of three nested bindings"
+  write_instead: "tc: \"01:00:00:00\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_colon"
+ }
+ #>spw_spec_media_classroom_drop_frame
+ ^["drop_frame"]{
+  habit: "tc: 01:00:00;00"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=3 Expression=5 Identifier=1 Literal=4 Seed=1 Sequence=1"
+  observed: "the semicolon is a sequence connector, so the frame field splits off after two nested bindings"
+  write_instead: "tc: \"01:00:00;00\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_colon"
+ }
+ #>spw_spec_media_classroom_call_time
+ ^["call_time"]{
+  habit: "call: 06:30"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=2 Expression=3 Identifier=1 Literal=2 Seed=1 Sequence=1"
+  observed: "call binds a nested binding of 06 to 30"
+  write_instead: "call: \"06:30\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_colon"
+ }
+ #>spw_spec_media_classroom_transition
+ ^["transition"]{
+  habit: "CUT TO:", followed_by: "next: 1"
+  verdict: #swallows, loudness: #gate
+  signature: "Binding=2 Expression=4 Identifier=3 Literal=1 Seed=1 Sequence=1"
+  observed: "CUT stands alone, and the trailing colon leaves TO empty, so it binds the next line"
+  write_instead: "transition: \"CUT TO:\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_colon"
+ }
+ #>spw_spec_media_classroom_slugline
+ ^["slugline"]{
+  habit: "slug: INT. KITCHEN - NIGHT"
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 1
+  signature: "Binding=1 Expression=4 Identifier=3 ModifierChain=1 Operation=1 Seed=1 Sequence=1"
+  observed: "the hyphen is a lexer error; slug binds INT, and the rest splits into an operation and NIGHT"
+  write_instead: "slug: \"INT. KITCHEN - NIGHT\""
+ }
+ refs: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_smpte_12_2014" ]
+}
+
+^["chat_and_markdown"]{
+ #>spw_spec_media_classroom_chat_line
+ ^["chat_line"]{
+  habit: "@viewer_a: is this live?"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=5 Identifier=3 Operation=1 Reference=1 Seed=1 Sequence=1"
+  observed: "viewer_a becomes a Reference key that binds is; the other words split off, and the ? becomes an operation"
+  write_instead: "line: .{ role: \"viewer\", text: \"is this live?\" }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_at"
+ }
+ #>spw_spec_media_classroom_title_words
+ ^["title_words"]{
+  habit: "title: The Return"
+  verdict: #splits, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=3 Seed=1 Sequence=1"
+  observed: "title binds The, and Return splits off as a sibling"
+  write_instead: "title: \"The Return\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_colon"
+ }
+ #>spw_spec_media_classroom_heading
+ ^["heading"]{
+  habit: "## Heading"
+  verdict: #drops, loudness: #silent
+  signature: "Expression=1 Operation=1 Seed=1 Sequence=1"
+  observed: "the first # is an operator, and the second # with a space starts a dropped note, so the heading text is gone"
+  write_instead: "heading: \"Heading\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_hash"
+ }
+ #>spw_spec_media_classroom_bullet
+ ^["bullet"]{
+  habit: "- item one"
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 1
+  signature: "Expression=2 Identifier=2 Seed=1 Sequence=1"
+  observed: "the hyphen is a lexer error, and item and one become separate identifiers"
+  write_instead: "items: [ \"item one\" ]"
+ }
+ #>spw_spec_media_classroom_blockquote
+ ^["blockquote"]{
+  habit: "> quoted line"
+  verdict: #degrades, loudness: #validator
+  signature: "Prose=1 ProseChunk=1 Seed=1"
+  observed: "the > closes a capsule that never opened, and the whole surface becomes prose"
+  write_instead: "quote: \"quoted line\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_comparison"
+ }
+ #>spw_spec_media_classroom_spoiler
+ ^["spoiler"]{
+  habit: "t: ||spoiler||"
+  verdict: #degrades, loudness: #validator
+  signature: "Prose=1 ProseChunk=1 Seed=1"
+  observed: "the parse stops at the || connector, and the whole surface becomes prose"
+  write_instead: "t: \"||spoiler||\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_comparison"
+ }
+ #>spw_spec_media_classroom_url
+ ^["url"]{
+  habit: "link: https://example.org/x", followed_by: "next: 1"
+  verdict: #swallows, loudness: #gate
+  signature: "Binding=3 Expression=4 Identifier=3 Literal=1 Seed=1 Sequence=1"
+  observed: "two slashes start a comment, so https is left empty and binds the next line"
+  write_instead: "link: \"https://example.org/x\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_swallow"
+ }
+ refs: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_commonmark_2024", ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_gruber_2004" ]
+}
+
+^["tags_and_emoticons"]{
+ #>spw_spec_media_classroom_hashtag
+ ^["hashtag"]{
+  habit: "tag: #BookTok"
+  verdict: #clean, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=1 Operation=1 Seed=1 Sequence=1"
+  observed: "a tag named BookTok; tags are case-sensitive identifiers, so #booktok is another tag"
+ }
+ #>spw_spec_media_classroom_shot_number
+ ^["shot_number"]{
+  habit: "shot: #1"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=1 Operation=1 ProseChunk=1 Seed=1 Sequence=1"
+  observed: "a # operation whose payload is the prose chunk 1"
+  write_instead: "shot: 1"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_hash"
+ }
+ #>spw_spec_media_classroom_smiley
+ ^["smiley"]{
+  habit: "r: :-)"
+  verdict: #degrades, loudness: #validator, lexer_errors: 1
+  signature: "Prose=1 ProseChunk=1 Seed=1"
+  observed: "the hyphen is a lexer error, the parse stops at the second colon, and the whole surface becomes prose"
+  write_instead: "r: \":-)\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_comparison"
+ }
+ refs: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_messina_2007", ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_fahlman_1982" ]
+}
+
+^["keyboard_and_locale"]{
+ #>spw_spec_media_classroom_curly_quotes
+ ^["curly_quotes"]{
+  habit: "q: “hello”"
+  codepoints: "U+201C and U+201D"
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 2
+  signature: "Binding=1 Expression=2 Identifier=2 Seed=1 Sequence=1"
+  observed: "both curly quotes are lexer errors, and hello becomes a bare identifier"
+  write_instead: "q: \"hello\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_typography"
+ }
+ #>spw_spec_media_classroom_em_dash
+ ^["em_dash"]{
+  habit: "t: a — b"
+  codepoints: "U+2014"
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 1
+  signature: "Binding=1 Expression=3 Identifier=3 Seed=1 Sequence=1"
+  observed: "the em dash is a lexer error, and b splits off"
+  write_instead: "t: \"a — b\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_typography"
+ }
+ #>spw_spec_media_classroom_accented_key
+ ^["accented_key"]{
+  habit: "café: 1"
+  codepoints: "U+00E9"
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 1
+  signature: "Binding=1 Expression=2 Identifier=1 Literal=1 Seed=1 Sequence=1"
+  observed: "the accented letter is a lexer error, and the key is truncated to caf"
+  write_instead: "cafe: 1, label: \"café\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_typography"
+ }
+ #>spw_spec_media_classroom_inverted_question
+ ^["inverted_question"]{
+  habit: "q: ¿qué?"
+  codepoints: "U+00BF and U+00E9"
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 2
+  signature: "Binding=1 Expression=3 Identifier=2 Operation=1 Seed=1 Sequence=1"
+  observed: "both characters are lexer errors; q binds qu, and the ? becomes an operation"
+  write_instead: "q: \"¿qué?\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_typography"
+ }
+ #>spw_spec_media_classroom_thousands_point
+ ^["thousands_point"]{
+  habit: "n: 1.250"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=2 Identifier=1 Literal=1 Seed=1 Sequence=1"
+  observed: "one decimal literal, one and a quarter; a writer from a point-grouping locale meant one thousand two hundred fifty"
+  write_instead: "n: 1250"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_media_classroom_euro
+ ^["euro"]{
+  habit: "p: €5"
+  codepoints: "U+20AC"
+  verdict: #hidden_error, loudness: #gate, lexer_errors: 1
+  signature: "Binding=1 Expression=2 Identifier=1 Literal=1 Seed=1 Sequence=1"
+  observed: "the euro sign is a lexer error, and p binds 5"
+  write_instead: "p: .{ n: 5, unit: \"EUR\" }"
+  case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
+ }
+ #>spw_spec_media_classroom_emoji
+ ^["emoji"]{
+  habit: "mood: 🎉", followed_by: "next: 1"
+  codepoints: "U+1F389"
+  verdict: #swallows, loudness: #gate, lexer_errors: 2
+  signature: "Binding=2 Expression=3 Identifier=2 Literal=1 Seed=1 Sequence=1"
+  observed: "the emoji is two lexer errors, one per UTF-16 half, which leaves mood empty, so it binds the next line"
+  write_instead: "mood: \"🎉\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_typography"
+ }
+ refs: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_unicode_18" ]
+}
+
+^["try"]{
+ #>spw_spec_media_classroom_try
+ ^["paste_check"]{
+  materials: [ "a short run sheet or lesson note you wrote", "a terminal at the repository root" ]
+  steps: << "turn off smart punctuation in the app you paste from" ; "paste three lines into a scratch file outside the cut" ; "pipe each line into npm run spw -- fingerprint --stdin --json" ; "quote every value that reports a lexer error" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "no hazard worth naming; use your own notes and no real handles"
+  shows: ~"./media-and-classroom.spw#spw_spec_media_classroom_curly_quotes"
+ }
+}
+
+#>spw_spec_media_classroom_setting_q
+?["Which single paste setting removes the most hidden errors at once?"]{
+ #:depth #!social ~#lens(applied attention)
+ #:claim #!speculative
+ ~#hypothesis: "Turning off smart punctuation removes more gate rows than any other single change, because curly quotes and dashes recur across chat, scripts, and class notes."
+ !probe{ "paste one shared class note with smart punctuation on and then off, and count gate failures per paste, never per person" =id[p_gloss_media_setting] =kind[field] }
+ $%[gloss.spec.gate_n, gloss.spec.rows_n]
+ ~"./media-and-classroom.spw#spw_spec_media_classroom_observed" ~#neighbor(nearest)
+}

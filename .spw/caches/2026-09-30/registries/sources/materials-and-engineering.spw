@@ -11,7 +11,7 @@
 #:valence #!bone
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-02"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -20,17 +20,27 @@
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "claude-opus-5.5", care: #read, outcome: #raw }
   ^["r2"]{ event: #fact_checked, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #partial }
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  checked: "most journal entries were matched against Crossref metadata and most book editions against Open Library on 2026-10-01; the rest come from the writer and keep the registry at spot_checked"
+ fact_check: "on 2026-10-02 a fact-checker matched about 170 entries against bibliographic records and found one error, the CRC editor; the 97th edition of 2016 was edited by William M. Haynes, and Rumble edits from the 98th"
+ added: "the 2026-10-02 additions were matched against Crossref, the NBER record, Open Library, or the Handbook of Mineralogy entry before entry"
+ economics: "Goetzmann 2004, Sigler 2002, Wellington 1887, Grant 1930, and Weingartner 1963 were added for the engineering economics leaf after matching NBER and Open Library records on 2026-10-02; the fact-checker has not seen them"
+ corrections: #[ "the CRC Handbook 97th edition of 2016 names William M. Haynes as editor, not John R. Rumble" ]
  groups: #[ matter_and_structure, material_histories, engineering ]
 }
 
 #>src_mateng_crc_handbook
 ^["crc_handbook"]{
  title: "CRC Handbook of Chemistry and Physics"
- editor: "John R. Rumble"
+ editor: "William M. Haynes"
  edition: "97th"
  year: 2016
+ publisher: "CRC Press"
  kind: #handbook
 }
 
@@ -88,6 +98,18 @@
  kind: #article
 }
 
+#>src_mateng_anderson_charles_rees_2022
+^["anderson_charles_rees_2022"]{ title: "Reexamining the Contribution of Public Health Efforts to the Decline in Urban Mortality", authors: "D. Mark Anderson; Kerwin Kofi Charles; Daniel I. Rees", year: 2022, venue: "American Economic Journal: Applied Economics 14(2):126-157; NBER Working Paper 25027, 2018", kind: #article }
+
+#>src_mateng_cutler_miller_2022
+^["cutler_miller_2022"]{ title: "Reexamining the Contribution of Public Health Efforts to the Decline in Urban Mortality: Comment", authors: "David M. Cutler; Grant Miller", year: 2022, venue: "American Economic Journal: Applied Economics 14(2):158-165; reply by Anderson, Charles, and Rees at 166-169", kind: #article }
+
+#>src_mateng_sharqawy_2010
+^["sharqawy_2010"]{ title: "Thermophysical Properties of Seawater: A Review of Existing Correlations and Data", authors: "Mostafa H. Sharqawy; John H. Lienhard V; Syed M. Zubair", year: 2010, venue: "Desalination and Water Treatment 16:354-380", kind: #article }
+
+#>src_mateng_si_brochure_2019
+^["si_brochure_2019"]{ title: "The International System of Units (SI)", authors: "Bureau International des Poids et Mesures", edition: "9th", year: 2019, publisher: "BIPM, Sevres", kind: #standard }
+
 ^["matter_and_structure"]{
  #>src_mateng_wagner_pruss_2002
  ^["wagner_pruss_2002"]{ title: "The IAPWS Formulation 1995 for the Thermodynamic Properties of Ordinary Water Substance for General and Scientific Use", authors: "W. Wagner; A. Pruss", year: 2002, venue: "Journal of Physical and Chemical Reference Data 31(2):387-535", kind: #article }
@@ -111,12 +133,18 @@
  ^["itc_vol_a_2016"]{ title: "International Tables for Crystallography, Volume A: Space-Group Symmetry", editor: "Mois I. Aroyo", edition: "6th", year: 2016, publisher: "International Union of Crystallography; Wiley", kind: #handbook }
  #>src_mateng_ima_mineral_list
  ^["ima_mineral_list"]{ title: "The IMA List of Minerals", authors: "International Mineralogical Association, Commission on New Minerals, Nomenclature and Classification", year: 2026, as_of: "2026-10-01", kind: #dataset }
+ #>src_mateng_anthony_2003
+ ^["anthony_2003"]{ title: "Handbook of Mineralogy, Volume V: Borates, Carbonates, Sulfates; entry Hydrocerussite", authors: "John W. Anthony; Richard A. Bideaux; Kenneth W. Bladh; Monte C. Nichols", year: 2003, publisher: "Mineral Data Publishing, Tucson", kind: #handbook }
  #>src_mateng_sze_ng_2007
  ^["sze_ng_2007"]{ title: "Physics of Semiconductor Devices", authors: "S. M. Sze; Kwok K. Ng", edition: "3rd", year: 2007, publisher: "Wiley", kind: #textbook }
  #>src_mateng_nassau_2001
  ^["nassau_2001"]{ title: "The Physics and Chemistry of Color: The Fifteen Causes of Color", authors: "Kurt Nassau", edition: "2nd", year: 2001, publisher: "Wiley", kind: #book }
  #>src_mateng_gibbs_1878
  ^["gibbs_1878"]{ title: "On the Equilibrium of Heterogeneous Substances", authors: "J. Willard Gibbs", year: 1878, venue: "Transactions of the Connecticut Academy of Arts and Sciences 3", kind: #primary }
+ #>src_mateng_goldstein_2018
+ ^["goldstein_2018"]{ title: "Scanning Electron Microscopy and X-Ray Microanalysis", authors: "Joseph I. Goldstein; Dale E. Newbury; Joseph R. Michael; Nicholas W. M. Ritchie; John Henry J. Scott; David C. Joy", edition: "4th", year: 2018, publisher: "Springer", kind: #textbook }
+ #>src_mateng_sivia_2011
+ ^["sivia_2011"]{ title: "Elementary Scattering Theory for X-ray and Neutron Users", authors: "D. S. Sivia", year: 2011, publisher: "Oxford University Press", kind: #textbook }
  #>src_mateng_miracle_senkov_2017
  ^["miracle_senkov_2017"]{ title: "A Critical Review of High Entropy Alloys and Related Concepts", authors: "D. B. Miracle; O. N. Senkov", year: 2017, venue: "Acta Materialia 122:448-511", kind: #article }
  #>src_mateng_yeh_2004
@@ -137,6 +165,8 @@
  ^["rubinstein_colby_2003"]{ title: "Polymer Physics", authors: "Michael Rubinstein; Ralph H. Colby", year: 2003, publisher: "Oxford University Press", kind: #textbook }
  #>src_mateng_de_gennes_1971
  ^["de_gennes_1971"]{ title: "Reptation of a Polymer Chain in the Presence of Fixed Obstacles", authors: "P.-G. de Gennes", year: 1971, venue: "Journal of Chemical Physics 55:572-579", kind: #article }
+ #>src_mateng_doi_edwards_1986
+ ^["doi_edwards_1986"]{ title: "The Theory of Polymer Dynamics", authors: "M. Doi; S. F. Edwards", year: 1986, publisher: "Clarendon Press, Oxford", kind: #book }
  #>src_mateng_cao_2018
  ^["cao_2018"]{ title: "Unconventional Superconductivity in Magic-Angle Graphene Superlattices", authors: "Yuan Cao; Valla Fatemi; Shiang Fang; et al.; Pablo Jarillo-Herrero", year: 2018, venue: "Nature 556:43-50", kind: #article }
  #>src_mateng_bistritzer_macdonald_2011
@@ -171,6 +201,24 @@
  ^["barnes_1989"]{ title: "An Introduction to Rheology", authors: "H. A. Barnes; J. F. Hutton; K. Walters", year: 1989, publisher: "Elsevier", kind: #textbook }
  #>src_mateng_brandrup_1999
  ^["brandrup_1999"]{ title: "Polymer Handbook", editors: "J. Brandrup; E. H. Immergut; E. A. Grulke", edition: "4th", year: 1999, publisher: "Wiley", kind: #handbook }
+ #>src_mateng_chen_2016
+ ^["chen_2016"]{ title: "Introduction to Plasma Physics and Controlled Fusion", authors: "Francis F. Chen", edition: "3rd", year: 2016, publisher: "Springer", kind: #textbook }
+ #>src_mateng_derjaguin_landau_1941
+ ^["derjaguin_landau_1941"]{ title: "Theory of the Stability of Strongly Charged Lyophobic Sols and of the Adhesion of Strongly Charged Particles in Solutions of Electrolytes", authors: "B. Derjaguin; L. Landau", year: 1941, venue: "Acta Physicochimica URSS 14:633-662", kind: #article }
+ #>src_mateng_hall_1951
+ ^["hall_1951"]{ title: "The Deformation and Ageing of Mild Steel: III Discussion of Results", authors: "E. O. Hall", year: 1951, venue: "Proceedings of the Physical Society B 64(9):747-753", kind: #article }
+ #>src_mateng_petch_1953
+ ^["petch_1953"]{ title: "The Cleavage Strength of Polycrystals", authors: "N. J. Petch", year: 1953, venue: "Journal of the Iron and Steel Institute 174:25-28", kind: #article }
+ #>src_mateng_schiotz_1998
+ ^["schiotz_1998"]{ title: "Softening of Nanocrystalline Metals at Very Small Grain Sizes", authors: "Jakob Schiotz; Francesco D. Di Tolla; Karsten W. Jacobsen", year: 1998, venue: "Nature 391:561-563", kind: #article }
+ #>src_mateng_wagner_1961
+ ^["wagner_1961"]{ title: "Theorie der Alterung von Niederschlagen durch Umlosen (Ostwald-Reifung)", authors: "Carl Wagner", year: 1961, venue: "Zeitschrift fur Elektrochemie 65(7-8):581-591", kind: #article }
+ #>src_mateng_tsai_2013
+ ^["tsai_2013"]{ title: "Sluggish Diffusion in Co-Cr-Fe-Mn-Ni High-Entropy Alloys", authors: "K.-Y. Tsai; M.-H. Tsai; J.-W. Yeh", year: 2013, venue: "Acta Materialia 61(13):4887-4897", kind: #article }
+ #>src_mateng_paul_2017
+ ^["paul_2017"]{ title: "Comments on Sluggish Diffusion in Co-Cr-Fe-Mn-Ni High-Entropy Alloys by K. Y. Tsai, M. H. Tsai and J. W. Yeh", authors: "Aloke Paul", year: 2017, venue: "Scripta Materialia 135:153-157, doi 10.1016/j.scriptamat.2017.03.026", kind: #article }
+ #>src_mateng_haider_1998
+ ^["haider_1998"]{ title: "Electron Microscopy Image Enhanced", authors: "Maximilian Haider; Stephan Uhlemann; Eugen Schwan; Harald Rose; Bernd Kabius; Knut Urban", year: 1998, venue: "Nature 392:768-769", kind: #article }
 }
 
 ^["material_histories"]{
@@ -226,6 +274,10 @@
  ^["apple_sims_1996"]{ title: "Harold Ridley and the Invention of the Intraocular Lens", authors: "David J. Apple; John Sims", year: 1996, venue: "Survey of Ophthalmology 40(4):279-292", kind: #article }
  #>src_mateng_kvavadze_2009
  ^["kvavadze_2009"]{ title: "30,000-Year-Old Wild Flax Fibers", authors: "Eliso Kvavadze; Ofer Bar-Yosef; Anna Belfer-Cohen; Elisabetta Boaretto; et al.", year: 2009, venue: "Science 325:1359", kind: #article }
+ #>src_mateng_bergfjord_2010
+ ^["bergfjord_2010"]{ title: "Comment on 30,000-Year-Old Wild Flax Fibers", authors: "Christian Bergfjord; Sabine Karg; Antoinette Rast-Eicher; Marie-Louise Nosch; Ulla Mannering; Robin G. Allaby; Bruce M. Murphy; Bodil Holst", year: 2010, venue: "Science 328(5986):1634, doi 10.1126/science.1186345", kind: #article }
+ #>src_mateng_kvavadze_2010
+ ^["kvavadze_2010"]{ title: "Response to Comment on 30,000-Year-Old Wild Flax Fibers", authors: "Eliso Kvavadze; Ofer Bar-Yosef; Anna Belfer-Cohen; Elisabetta Boaretto; et al.", year: 2010, venue: "Science 328(5986):1634, doi 10.1126/science.1187161", kind: #article }
  #>src_mateng_moulherat_2002
  ^["moulherat_2002"]{ title: "First Evidence of Cotton at Neolithic Mehrgarh, Pakistan: Analysis of Mineralized Fibres from a Copper Bead", authors: "Christophe Moulherat; Margareta Tengberg; Jerome-F. Haquet; Benoit Mille", year: 2002, venue: "Journal of Archaeological Science 29:1393-1401", kind: #article }
  #>src_mateng_riello_2013
@@ -256,6 +308,12 @@
  ^["morton_hearle_2008"]{ title: "Physical Properties of Textile Fibres", authors: "W. E. Morton; J. W. S. Hearle", edition: "4th", year: 2008, publisher: "Woodhead Publishing", kind: #textbook }
  #>src_mateng_hunter_1978
  ^["hunter_1978"]{ title: "Papermaking: The History and Technique of an Ancient Craft", authors: "Dard Hunter", year: 1978, publisher: "Dover Publications, reprint of the 1947 second edition", kind: #book }
+ #>src_mateng_locke_1923
+ ^["locke_1923"]{ title: "The Ancient Quipu or Peruvian Knot Record", authors: "L. Leland Locke", year: 1923, publisher: "American Museum of Natural History, New York", kind: #book }
+ #>src_mateng_locke_1912
+ ^["locke_1912"]{ title: "The Ancient Quipu, a Peruvian Knot Record", authors: "L. Leland Locke", year: 1912, venue: "American Anthropologist 14(2):325-332, doi 10.1525/aa.1912.14.2.02a00070", kind: #article }
+ #>src_mateng_rand_1841
+ ^["rand_1841"]{ title: "Improvement in the Construction of Vessels or Apparatus for Preserving Paint, US Patent 2,252", authors: "John Goffe Rand", year: 1841, publisher: "United States Patent Office", kind: #patent }
 }
 
 ^["engineering"]{
@@ -421,4 +479,40 @@
  ^["stevin_1582"]{ title: "Tafelen van Interest", authors: "Simon Stevin", year: 1582, publisher: "Christoffel Plantijn, Antwerp", kind: #primary }
  #>src_mateng_irs_pub_946
  ^["irs_pub_946"]{ title: "Publication 946: How To Depreciate Property", authors: "Internal Revenue Service, US Department of the Treasury", year: 2025, as_of: "2026-10-01", status: #verify, kind: #report }
+ #>src_mateng_kocher_2019
+ ^["kocher_2019"]{ title: "Spectre Attacks: Exploiting Speculative Execution", authors: "Paul Kocher; Jann Horn; Anders Fogh; et al.", year: 2019, venue: "2019 IEEE Symposium on Security and Privacy, 1-19", kind: #article }
+ #>src_mateng_yiu_2014
+ ^["yiu_2014"]{ title: "The Definitive Guide to ARM Cortex-M3 and Cortex-M4 Processors", authors: "Joseph Yiu", edition: "3rd", year: 2014, publisher: "Newnes", kind: #book }
+ #>src_mateng_3gpp_ts38212
+ ^["3gpp_ts38212"]{ title: "3GPP TS 38.212 NR; Multiplexing and Channel Coding, Release 15", authors: "3rd Generation Partnership Project", year: 2018, as_of: "2026-10-02", kind: #standard }
+ #>src_mateng_sheridan_verplank_1978
+ ^["sheridan_verplank_1978"]{ title: "Human and Computer Control of Undersea Teleoperators", authors: "Thomas B. Sheridan; William L. Verplank", year: 1978, publisher: "MIT Man-Machine Systems Laboratory, technical report", kind: #report }
+ #>src_mateng_hirshleifer_1958
+ ^["hirshleifer_1958"]{ title: "On the Theory of Optimal Investment Decision", authors: "J. Hirshleifer", year: 1958, venue: "Journal of Political Economy 66(4):329-352", kind: #article }
+ #>src_mateng_oppenheim_willsky_1997
+ ^["oppenheim_willsky_1997"]{ title: "Signals and Systems", authors: "Alan V. Oppenheim; Alan S. Willsky; with S. Hamid Nawab", edition: "2nd", year: 1997, publisher: "Prentice Hall", kind: #textbook }
+ #>src_mateng_gardner_2005
+ ^["gardner_2005"]{ title: "Phaselock Techniques", authors: "Floyd M. Gardner", edition: "3rd", year: 2005, publisher: "Wiley-Interscience", kind: #textbook }
+ #>src_mateng_thrun_2005
+ ^["thrun_2005"]{ title: "Probabilistic Robotics", authors: "Sebastian Thrun; Wolfram Burgard; Dieter Fox", year: 2005, publisher: "MIT Press", kind: #textbook }
+ #>src_mateng_weste_harris_2011
+ ^["weste_harris_2011"]{ title: "CMOS VLSI Design: A Circuits and Systems Perspective", authors: "Neil H. E. Weste; David Money Harris", edition: "4th", year: 2011, publisher: "Addison-Wesley", kind: #textbook }
+ #>src_mateng_rao_2017
+ ^["rao_2017"]{ title: "Mechanical Vibrations", authors: "Singiresu S. Rao", edition: "6th", year: 2017, publisher: "Pearson", kind: #textbook }
+ #>src_mateng_pugh_1991
+ ^["pugh_1991"]{ title: "Total Design: Integrated Methods for Successful Product Engineering", authors: "Stuart Pugh", year: 1991, publisher: "Addison-Wesley", kind: #book }
+ #>src_mateng_akao_1990
+ ^["akao_1990"]{ title: "Quality Function Deployment: Integrating Customer Requirements into Product Design", authors: "Yoji Akao", year: 1990, publisher: "Productivity Press", kind: #book }
+ #>src_mateng_asme_y14_5_2018
+ ^["asme_y14_5_2018"]{ title: "ASME Y14.5-2018 Dimensioning and Tolerancing", authors: "American Society of Mechanical Engineers", year: 2018, as_of: "2026-10-02", kind: #standard }
+ #>src_mateng_goetzmann_2004
+ ^["goetzmann_2004"]{ title: "Fibonacci and the Financial Revolution", authors: "William N. Goetzmann", year: 2004, venue: "NBER Working Paper 10352, National Bureau of Economic Research", kind: #report }
+ #>src_mateng_sigler_2002
+ ^["sigler_2002"]{ title: "Fibonacci's Liber Abaci: A Translation into Modern English of Leonardo Pisano's Book of Calculation", authors: "Leonardo Pisano; translated by Laurence E. Sigler", year: 2002, publisher: "Springer", kind: #primary }
+ #>src_mateng_wellington_1887
+ ^["wellington_1887"]{ title: "The Economic Theory of the Location of Railways", authors: "Arthur M. Wellington", year: 1887, publisher: "John Wiley and Sons; Engineering News, New York; first edition 1877", kind: #book }
+ #>src_mateng_grant_1930
+ ^["grant_1930"]{ title: "Principles of Engineering Economy", authors: "Eugene L. Grant", year: 1930, publisher: "Ronald Press, New York", kind: #textbook }
+ #>src_mateng_weingartner_1963
+ ^["weingartner_1963"]{ title: "Mathematical Programming and the Analysis of Capital Budgeting Problems", authors: "H. Martin Weingartner", year: 1963, publisher: "Prentice-Hall", kind: #book }
 }

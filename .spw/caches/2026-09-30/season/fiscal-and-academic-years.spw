@@ -7,7 +7,7 @@
 #:domain #!season
 #:form #!comparison
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 #:era #!current
 #:season #!reflection
@@ -28,12 +28,15 @@
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
- evidence: #[ "fetched 2026-10-01: NCSL FY 2026 State Budget Status for state fiscal year start dates" ]
+ evidence: #[ "fetched 2026-10-01: NCSL FY 2026 State Budget Status for state fiscal year start dates", "fetched 2026-10-02: NIH standard due dates", "Crossref metadata 2026-10-02 for Liebman and Mahoney 2017" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[ "the 4-5-4 retail year starts on the Sunday after the Saturday nearest 31 January, which can fall in late January", "added the NIH grant cycle row the plan named under grant cycles" ]
 }
 
 ^["edges"]{
@@ -132,7 +135,7 @@
  #>season_fiscal_retail
  ^["retail_454"]{
   #:claim #!settled
-  start: "early February, after the Saturday nearest 31 January"
+  start: "the Sunday after the Saturday nearest 31 January, in late January or early February"
   on_october_first: "the third quarter is closing; the holiday quarter opens in November"
   statement: "Many US retailers keep a 4-5-4 calendar of 13-week quarters, ending the year near 31 January so the holiday season sits whole in one quarter."
   reads: %[season.fiscal.retail_quarter_weeks]
@@ -187,6 +190,18 @@
 }
 
 ^["grants"]{
+ #>season_fiscal_grant_cycles
+ ^["nih_cycles"]{
+  #:claim #!settled
+  statement: "NIH sets three standard due-date cycles a year; new R01 applications are due 5 February, 5 June, and 5 October."
+  source: ~"../registries/sources/season.spw#src_season_nih_due_dates"
+  as_of: "2026-10-02"
+  on_october_first: "the third cycle closes in the first week of the season"
+  ^["limits"]{
+   holds: "NIH standard due dates for new R01 applications"
+   fails: "other activity codes, renewals, special funding announcements, and other funders keep their own dates"
+  }
+ }
  #>season_fiscal_continuing_resolution
  ^["continuing_resolution"]{
   #:claim #!settled

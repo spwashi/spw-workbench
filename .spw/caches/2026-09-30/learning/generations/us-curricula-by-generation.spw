@@ -7,7 +7,7 @@
 #:domain #!generations
 #:form #!timeline
 #:level #!intro
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 #:era #!modern
 
@@ -29,8 +29,10 @@
  method: #authored
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
  }
  school_years_rule: "school years are computed as birth year plus five through birth year plus eighteen, so each window is approximate"
 }
@@ -58,7 +60,7 @@
  ^["caution"]{
   #:claim #!interpretive
   statement: "Cohort lines are tools, not findings; Pew now warns that age, period, and cohort effects blur together and that labels invite stereotypes."
-  counter: ~"../../registries/sources/learning-and-generations.spw#src_learn_parker_2023"
+  source: ~"../../registries/sources/learning-and-generations.spw#src_learn_parker_2023"
  }
  order: <<
   "Silent" ;
@@ -127,6 +129,7 @@
    statement: "Age 9 scores on the NAEP long-term trend fell 5 points in reading and 7 in math from 2020 to 2022, the first math decline in the series."
    reads: %[learn.naep.ltt_age9_reading_drop_pts, learn.naep.ltt_age9_math_drop_pts]
    source: ~"../../registries/sources/learning-and-generations.spw#src_learn_naep_ltt_2022"
+   cohort_note: "children aged 9 in 2022 were born around 2012 and 2013, at the border of Generation Z and Generation Alpha"
   }
  }
 

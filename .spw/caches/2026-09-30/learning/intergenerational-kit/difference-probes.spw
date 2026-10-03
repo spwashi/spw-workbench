@@ -7,7 +7,7 @@
 #:domain #!generations
 #:form #!probe_battery
 #:level #!intro
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!boon
 #:era #!current
 
@@ -29,8 +29,10 @@
  method: #authored
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
  }
 }
 
@@ -147,12 +149,13 @@
  ^["one_probe_at_dinner"]{
   materials: [
    "one probe from this battery",
-   "two people from different generations who agree to answer"
+   "two people from different generations who agree to answer",
+   "two index cards and pens"
   ]
   steps: <<
-   "ask the older person first while the younger listens" ;
-   "ask the younger person the same words" ;
-   "name one difference out loud" ;
+   "read the probe aloud once to both people" ;
+   "each writes a short answer on a card without talking" ;
+   "read both cards aloud and name one difference" ;
    "look up the landmark linked to that probe together"
   >>
   time: .{ n: 20, unit: "minutes" }

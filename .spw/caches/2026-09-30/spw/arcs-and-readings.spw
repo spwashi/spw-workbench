@@ -1,0 +1,167 @@
+# Arcs and Readings
+#
+# How an arc is written as a stream of beats on the canon flow schedule, how a reader keeps personal readings outside the cut, and why the cursor and the charge stay off the arc.
+
+#>spw_arcs_readings
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!protocol
+#:level #!advanced
+#:review #!spot_checked
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Arcs and Readings"
+ ~#claim: "An arc is an ordered stream of beats a reader walks, and a reading is a note the reader keeps outside the cut that points back in."
+ ~#proof: "Canon gives the flow schedule in flow-protocol-sigils; the cut contract keeps readings in reader roots with one-way links."
+ ~#door: "Walk one beat: a question about the water density claim, then the claim itself."
+ ~#audience: "readers, teachers, and hosts who walk a surface with others"
+ continuity: "Arcs and Readings | one-way"
+ cold_open: "Walk the beats in order, keep your readings at home, and let every link run one-way into the cut."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  ".agents/plans/caches-cut-2026-09-30/references/studies/tokens-synthesis.md section 3, subvocalization, arcs, overlays",
+  ".agents/plans/caches-cut-2026-09-30/references/studies/render-synthesis.md sections 2.1 and 3",
+  "flow-protocol-sigils.spw and interpreter.ts re-read at 1aa1dc23"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the canon hold role sits at flow-protocol-sigils.spw:40, not :38; the tilde is named potential, not hold",
+  "say lines have one home in voice; this surface links there instead of restating them",
+  "the cut arc and marginalia rules are labeled a-cut; the charge rule is labeled an owner hold, not canon"
+ ]
+}
+
+^["edges"]{
+ needs: [ ~"./voice.spw#spw_voice" ]
+ grounds: [ ~"docs/theory/spw/flow-protocol-sigils.spw", ~"docs/theory/spw/apposition.spw#spw_apposition" ]
+ extends: [ ~"../contract.spw#cut_contract" ]
+}
+
+^["concepts"]{
+ primary: [ #arc, #overlay ]
+ transfers: [ #flow_schedule ]
+ tensions: [ #charge_on_arc ]
+}
+
+^["grammar"]{
+ #>spw_arcs_schedule
+ ^["schedule"]{
+  #:claim #!settled
+  statement: "Canon gives an ordered flow schedule of six marks, separates sequential steps with a semicolon and parallel ones with a double bar, and names the parenthesized at form as hold."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_canon_flow"
+  cites: [ "docs/theory/spw/flow-protocol-sigils.spw:33", "docs/theory/spw/flow-protocol-sigils.spw:40", "docs/theory/spw/flow-protocol-sigils.spw:48" ]
+  label: "a-canon"
+  example: `<< ~ ; ? ; % ; ! ; * ; ^ >>`
+ }
+ #>spw_arcs_beat
+ ^["beat"]{
+  #:claim #!interpretive
+  statement: "A beat is one glyph-headed frame: the glyph sets the attention mode, the frame label holds the spoken cue, and the body holds the target."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_tokens"
+  example: `?["Why does ice float?"]{ ~"../physical/materials/water.spw#materials_water_density_max" }`
+  excluded: "the equals glyph never heads a beat, because it would read as a bias edge"
+ }
+ #>spw_arcs_order_only
+ ^["order_only"]{
+  #:claim #!settled
+  statement: "A stream records order only; the runtime returns a stream as its arguments, so nothing steps, times, or schedules the beats."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_runtime"
+  cites: [ "packages/spw-runtime/src/interpreter/interpreter.ts:272-278" ]
+ }
+ #>spw_arcs_curiosity
+ ^["curiosity"]{
+  #:claim #!interpretive
+  statement: "Reading the question beat as opening an information gap and the action and ascension beats as closing it follows Loewenstein, as a reading rather than a mechanism."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_loewenstein_1994"
+ }
+ metaphor: "the flow schedule is a memory aid beside an observable mapping; the runtime does not run it as a learning loop"
+}
+
+^["cut_rules"]{
+ label: "a-cut rules from contract.spw arcs; the gate checks clock, archetype, steps, counts, limit, and the feeds edge"
+ clocks: #[ turn, minute, hour, day, week ]
+ clock_rule: "an arc clock never reuses a system clock name such as beat, pulse, or epoch"
+ prediction: "a prediction step is written as a question body followed by a capsule tagged prediction, so the guess is down before the check"
+ prediction_example: `?{ "Will ice float in salt water?" } ~<prediction>`
+ counts: "each arc names what a tool can count and what it cannot; a count never stands in for understanding"
+ exit: "an arc hands off through a feeds edge; nesting lives in the tree"
+ live_frames: "the arc frames themselves live in the trails class, written after this surface"
+ cites: [ "scripts/analyzers/spw-cut-voice.ts:93-104" ]
+}
+
+^["charge"]{
+ #>spw_arcs_charge_off
+ ^["charge_off_arc"]{
+  #:claim #!interpretive
+  statement: "Charge, what kind of difference a surface carries, stays off the arc position, how far along a reader is; valence never marks progress."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_owner_resume"
+  label: "owner hold for this revision, not site doctrine"
+  cites: [ ".spw/caches/resume/2026-09-30-direction.spw:67" ]
+ }
+}
+
+^["overlays"]{
+ #>spw_arcs_overlay
+ ^["reader_root"]{
+  #:claim #!interpretive
+  statement: "Personal readings live in a reader root outside the cut, point into the cut by path and anchor, and the cut never links back."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_render"
+  label: "a-cut convention from contract.spw marginalia"
+  status: #proposed
+ }
+ shape: "a reading frame holds of, as_of, its own claim status, an optional say reading, and an anonymous apposition"
+ promotion: "an anonymous reading that recurs is named, and the name joins the reading set in vocabulary.spw"
+ standing: "a reading may rank and disclose only; it never changes a claim status, and no tool scores the reader"
+
+ #>spw_arcs_overlay_rename
+ ^["rename_hazard"]{
+  #:claim #!settled
+  statement: "Anchor rename plans an edit to the particle alone, so overlay links to the old anchor would dangle after a rename."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_render"
+  cites: [ "packages/spw-seed/src/canonical/semantic-edit.ts:280-298" ]
+  as_of: "229aedcf, per the render and tokens studies"
+ }
+}
+
+^["cursor"]{
+ #>spw_arcs_cursor
+ ^["per_viewer"]{
+  #:claim #!speculative
+  statement: "An arc cursor naming arc, beat, branch, and phase would be per-viewer state, kept with the reader and never written into canon."
+  status: #proposed
+  source: ~"../registries/sources/spw-branch.spw#src_spw_study_tokens"
+ }
+ home: "where a cursor lives, in an overlay file or in editor memory, is an open question"
+}
+
+^["try"]{
+ #>spw_arcs_try_walk
+ ^["walk_three_beats"]{
+  materials: [ "the water exemplar surface", "a friend or a mirror", "an index card for your own reading" ]
+  steps: << "ask the question beat aloud" ; "write your guess on the card" ; "read the density claim" ; "write one anonymous reading on the card and keep it" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "none worth naming; if you walk it with a child, the card stays at home"
+  shows: ~"./arcs-and-readings.spw#spw_arcs_beat"
+ }
+}
+
+#>spw_arcs_reentry_q
+?["Should a looping arc re-enter at its first beat or where the reader left off?"]{
+ #:depth #!experiential ~#lens(applied attention)
+ #:claim #!speculative
+ ~#hypothesis: "Readers who re-enter where they left off revisit fewer beats they already hold than readers sent back to the first beat."
+ !probe{ "two groups walk one six-beat arc twice and note by hand which beats felt already known" =id[p_spw_arcs_reentry] =kind[field] }
+ ~"./arcs-and-readings.spw#spw_arcs_cursor" ~#neighbor(nearest)
+}

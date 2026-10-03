@@ -7,7 +7,7 @@
 #:domain #!linguistics
 #:form #!comparison
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-02"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/university-education/linguistics/morphology-and-syntax.spw" ]
@@ -29,12 +29,19 @@
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: [
   "the raw file credited island domains to Ross yet explained them by the Phase Impenetrability Condition; Ross named the islands in 1967, and phases are a Minimalist account from 2000",
   "the raw file presented only the Minimalist Program; HPSG, LFG, construction grammar, and dependency grammar are added as peers",
   "the raw hypothesis that syntax has no access to linear order is kept only as a contested position with a counter-account",
-  "X-bar as a universal template for every category is restated as a hypothesis of one framework family"
+  "X-bar as a universal template for every category is restated as a hypothesis of one framework family",
+  "fact check: the structure dependence claim folded the contested premise that children rarely hear deciding input into a settled result; the premise now sits apart with its counter",
+  "fact check: the network claim said tree structure was the only route to hierarchical generalization; the study found it was the only factor giving a consistent bias across two tasks"
  ]
 }
 
@@ -100,8 +107,10 @@
  #>linguistics_syntax_structure_dependence
  ^["structure_dependence"]{
   #:claim #!settled
-  statement: "Children forming yes-no questions move the main-clause auxiliary, not the first auxiliary in the string, even for sentences they rarely hear."
+  statement: "In elicited yes-no questions, children avoid structure-independent errors, fronting the main-clause auxiliary rather than the first auxiliary in the string when that one sits inside a relative clause."
   source: ~"../../registries/sources/language-and-communities.spw#src_lang_crain_nakayama_1987"
+  contested: "how rare the deciding input is, and whether the bias is innate, remain contested"
+  counter: ~"../../registries/sources/language-and-communities.spw#src_lang_pullum_scholz_2002"
   ^["limits"]{
    holds: "the behavioral finding in English-speaking children"
    fails: "whether the bias is innate or learned from distributional input remains contested"
@@ -110,7 +119,7 @@
  #>linguistics_syntax_nets
  ^["hierarchical_bias_in_networks"]{
   #:claim #!emerging
-  statement: "Sequence-to-sequence networks trained on question formation generalized hierarchically only when their architecture carried tree structure."
+  statement: "Across question formation and tense reinflection, only tree-structured sequence-to-sequence models showed a consistent hierarchical bias; other architectural choices also shifted how networks generalized."
   source: ~"../../registries/sources/language-and-communities.spw#src_lang_mccoy_2020"
   ^["limits"]{
    holds: "the 2020 architectures and synthetic training sets"

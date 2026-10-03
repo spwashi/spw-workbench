@@ -1,0 +1,194 @@
+# Optimization
+#
+# A method matrix for linear programs, convex problems, gradient methods, dynamic programming, and optimal control, with the duality that prices every constraint.
+
+#>mathematics_optimization
+#:layer #!reference
+#:domain #!mathematics
+#:form #!comparison
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Optimization"
+ ~#claim: "Every constrained optimum carries a price for each constraint, and convexity is what makes a local answer global and those prices sufficient."
+ ~#proof: "Kantorovich and Dantzig founded linear programming; Karush, Kuhn, and Tucker gave the conditions; Boyd and Vandenberghe state the convex theory."
+ ~#door: "Solve the bakery problem by hand, then read duality, then follow the bridge to revenue management."
+ ~#audience: "engineering, operations, and economics students after multivariable calculus"
+ continuity: "Optimization | price for each constraint"
+ cold_open: "Every constrained optimum carries a price for each constraint, and that price tells you what one more unit is worth."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ needs: [ ~"./calculus-and-linear-algebra.spw#mathematics_calc_gradient", ~"./numerical-methods.spw#mathematics_numerics_backward" ]
+ feeds: [ ~"../../../society/management/revenue-management.spw#management_revenue", ~"../../../physical/engineering/industrial-and-systems-engineering.spw#engineering_ise", ~"../../../physical/engineering/control-and-signals.spw#engineering_control_signals", ~"../../../society/economics/micro-and-macro-core.spw#economics_core" ]
+}
+
+^["concepts"]{
+ primary: [ #duality, #gradient, #convexity ]
+ transfers: [ #equilibrium, #search, #least_squares ]
+ tensions: [ #conditioning ]
+}
+
+^["matrix"]{
+ axes: #[ problem, method, guarantee, fails_when ]
+
+ #>mathematics_opt_row_lp
+ ^["linear_programming"]{
+  problem: "linear objective, linear inequality constraints"
+  method: "simplex walks vertices; interior-point methods cross the inside"
+  guarantee: "a global optimum with dual prices, when one exists"
+  fails_when: "the model is nonlinear or needs whole-number decisions, which makes it an integer program"
+ }
+ #>mathematics_opt_row_convex
+ ^["convex"]{
+  problem: "convex objective over a convex set"
+  method: "interior-point, projected gradient, proximal methods"
+  guarantee: "any local minimum is global; KKT conditions certify it under Slater"
+  fails_when: "the objective has several valleys, as most neural network losses do"
+ }
+ #>mathematics_opt_row_gradient
+ ^["gradient_methods"]{
+  problem: "smooth unconstrained or simply constrained objectives"
+  method: "gradient descent, momentum, stochastic gradient"
+  guarantee: "convergence to a stationary point; linear rate on strongly convex problems"
+  fails_when: "poor conditioning makes steps zigzag across a narrow valley"
+ }
+ #>mathematics_opt_row_newton
+ ^["newton_quasi_newton"]{
+  problem: "smooth objectives with usable second derivatives"
+  method: "Newton steps, BFGS, trust regions"
+  guarantee: "quadratic local convergence for Newton near a nondegenerate minimum"
+  fails_when: "the Hessian is indefinite or too costly to form far from the minimum"
+ }
+ #>mathematics_opt_row_dp
+ ^["dynamic_programming"]{
+  problem: "staged decisions with a state that summarizes the past"
+  method: "backward recursion on a value function"
+  guarantee: "an optimal policy for the modeled stages"
+  fails_when: "the state space grows with dimension, the curse Bellman named"
+ }
+ #>mathematics_opt_row_control
+ ^["optimal_control"]{
+  problem: "choose an input over time for a dynamical system"
+  method: "maximum principle, dynamic programming, model predictive control"
+  guarantee: "necessary conditions for optimal trajectories"
+  fails_when: "the model drifts from the plant, which feedback must then correct"
+ }
+}
+
+^["claims"]{
+ #>mathematics_opt_lp_origin
+ ^["lp_origin"]{
+  #:claim #!settled
+  statement: "Kantorovich formulated linear programs for production planning in Leningrad in 1939, and Dantzig devised the simplex method in 1947 for US Air Force planning."
+  sources: [ ~"../../../registries/sources/formal.spw#src_formal_kantorovich_1939", ~"../../../registries/sources/formal.spw#src_formal_dantzig_1963", ~"../../../registries/sources/formal.spw#src_formal_schrijver_2002" ]
+ }
+ #>mathematics_opt_duality
+ ^["lp_duality"]{
+  #:claim #!settled
+  statement: "If a linear program has an optimal solution, so does its dual, with equal values; each dual variable is the marginal worth of one more unit of its constraint."
+  source: ~"../../../registries/sources/formal.spw#src_formal_boyd_vandenberghe_2004"
+  ~#say(every constraint has a shadow price)
+  ^["limits"]{
+   holds: "feasible, bounded linear programs"
+   fails: "an infeasible primal leaves the dual infeasible or unbounded, and no prices exist"
+  }
+ }
+ #>mathematics_opt_simplex_worst
+ ^["simplex_worst_case"]{
+  #:claim #!settled
+  statement: "Simplex is fast in practice, but Klee and Minty built cubes where Dantzig pivoting visits every vertex; Khachiyan in 1979 and Karmarkar in 1984 gave polynomial methods."
+  sources: [ ~"../../../registries/sources/formal.spw#src_formal_klee_minty_1972", ~"../../../registries/sources/formal.spw#src_formal_khachiyan_1979", ~"../../../registries/sources/formal.spw#src_formal_karmarkar_1984" ]
+ }
+ #>mathematics_opt_convex
+ ^["convex_global"]{
+  #:claim #!settled
+  statement: "For a convex function on a convex set every local minimum is global, and when Slater holds the KKT conditions are both necessary and sufficient."
+  source: ~"../../../registries/sources/formal.spw#src_formal_boyd_vandenberghe_2004"
+ }
+ #>mathematics_opt_kkt
+ ^["kkt"]{
+  #:claim #!settled
+  statement: "Karush in 1939 and Kuhn and Tucker in 1951 gave optimality conditions with inequality constraints: stationarity, feasibility, nonnegative multipliers, and complementary slackness."
+  sources: [ ~"../../../registries/sources/formal.spw#src_formal_karush_1939", ~"../../../registries/sources/formal.spw#src_formal_kuhn_tucker_1951" ]
+  ^["limits"]{
+   holds: "necessary at a local optimum once a constraint qualification such as linear independence or Slater holds"
+   fails: "minimize x subject to x squared at most 0: the optimum is 0, yet no multiplier satisfies stationarity"
+  }
+ }
+ #>mathematics_opt_gd_rate
+ ^["gradient_rate"]{
+  #:claim #!settled
+  statement: "On a strongly convex function with Lipschitz gradient, gradient descent with a suitable fixed step converges linearly, and the rate worsens as the condition number grows."
+  source: ~"../../../registries/sources/formal.spw#src_formal_boyd_vandenberghe_2004"
+ }
+ #>mathematics_opt_robbins_monro
+ ^["stochastic_approximation"]{
+  #:claim #!settled
+  statement: "Robbins and Monro showed in 1951 that noisy root-finding converges when step sizes sum to infinity while their squares sum finitely; stochastic gradient descent descends from it."
+  source: ~"../../../registries/sources/formal.spw#src_formal_robbins_monro_1951"
+ }
+ #>mathematics_opt_bellman
+ ^["principle_of_optimality"]{
+  #:claim #!settled
+  statement: "Bellman principle of optimality: whatever the first decision, the remaining decisions of an optimal policy are optimal from the state it leads to, which yields the backward recursion."
+  source: ~"../../../registries/sources/formal.spw#src_formal_bellman_1957"
+ }
+ #>mathematics_opt_pontryagin
+ ^["maximum_principle"]{
+  #:claim #!settled
+  statement: "Pontryagin and colleagues showed that an optimal control maximizes a Hamiltonian at each instant along the state and costate trajectories, a necessary condition."
+  source: ~"../../../registries/sources/formal.spw#src_formal_pontryagin_1962"
+ }
+ #>mathematics_opt_littlewood
+ ^["littlewood_rule"]{
+  #:claim #!settled
+  statement: "Littlewood two-fare rule of 1972 accepts a low-fare booking only while the low fare is at least the high fare times the chance that high-fare demand reaches the seats left."
+  sources: [ ~"../../../registries/sources/formal.spw#src_formal_littlewood_1972", ~"../../../registries/sources/formal.spw#src_formal_talluri_vanryzin_2004" ]
+  ^["limits"]{
+   holds: "two fare classes, low-fare demand arriving first, independent demands"
+   fails: "many classes, mixed arrival order, or customers who buy down need EMSR heuristics or network models"
+  }
+ }
+}
+
+^["try"]{
+ #>mathematics_opt_try_bakery
+ ^["bakery_by_hand"]{
+  materials: [ "graph paper", "pencil", "ruler" ]
+  steps: << "a loaf needs 3 cups of flour and 1 oven hour and earns 4; a muffin tray needs 1 cup and 1 hour and earns 3" ; "with 12 cups and 6 oven hours, draw both constraints and shade the feasible corner" ; "evaluate profit at each corner and find the best, 3 loaves and 3 trays for 21" ; "give yourself 13 cups and solve again" ; "compare the gain with the flour price from solving 3 y1 plus y2 equals 4 and y1 plus y2 equals 3" >>
+  time: .{ n: 35, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./optimization.spw#mathematics_opt_duality"
+ }
+}
+
+#>mathematics_opt_overbooking_q
+?["Do hotels set overbooking closer to a newsvendor optimum or to a habit number?"]{
+ #:depth #!social ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "Properties without revenue-management software set overbooking from habit, and their levels move less with no-show variance than a newsvendor model says they should."
+ !probe{ "ask managers at several independent hotels how they set overbooking and compare with a newsvendor level from their own no-show records" =id[p_formal_opt_overbooking_habit] =kind[interview] }
+ breaks: "a newsvendor model ignores guest goodwill and walk costs that managers weigh but rarely write down"
+ $%[graph.out_degree]
+ ~"./optimization.spw#mathematics_opt_littlewood" ~#neighbor(nearest)
+}

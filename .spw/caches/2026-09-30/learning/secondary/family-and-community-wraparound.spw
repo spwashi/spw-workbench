@@ -7,7 +7,7 @@
 #:domain #!secondary_schooling
 #:form #!protocol
 #:level #!intro
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!boon
 #:era #!current
 
@@ -28,8 +28,10 @@
  lineage: #[ ".spw/caches/secondary-education/family-and-community-wraparound.spw" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
-  ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
-  ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass }
  }
  corrections: #[
   "HIPAA and FERPA interoperability guidelines: replaced by the boundary in the 2019 joint guidance; a record falls under one law or the other",
@@ -113,7 +115,12 @@
    source: ~"../../registries/sources/learning-and-generations.spw#src_learn_usda_cep_2023"
    as_of: "2026-10-01"
   }
-  categorical: "students identified as homeless are categorically eligible for free school meals"
+  #>secondary_schooling_wraparound_categorical
+  ^["categorical"]{
+   #:claim #!settled
+   statement: "Students identified as homeless by the district liaison are categorically eligible for free school meals without an application."
+   sources: [ ~"../../registries/sources/learning-and-generations.spw#src_learn_cnr_2004", ~"../../registries/sources/learning-and-generations.spw#src_learn_ehcy_guidance" ]
+  }
  }
 
  #>secondary_schooling_wraparound_language

@@ -1,0 +1,192 @@
+# CLI Arcs
+#
+# How the spw command line was gathered into one package, grew a sense loop and mutation verbs, and now waits on benchmarks, read as dated stills.
+
+#>workbench_history_cli
+#:layer #!reference
+#:domain #!workbench_history
+#:form #!dossier
+#:level #!practitioner
+#:review #!sourced
+#:valence #!bonk
+#:era #!current
+
+^"emit"{
+ ~#title: "CLI Arcs"
+ ~#claim: "The spw command line reads best as dated stills: one package from March 2026, a sense loop and mutation verbs from July, and a mode contract held until benchmarks name a cost."
+ ~#proof: "Commit dates from git log on packages/spw-cli, the spw help output and command registry at 1aa1dc23, the CLI plan cards, and the owner resume note."
+ ~#door: "Read the stills claim first, then the rungs, then the holds that decide what comes next."
+ ~#audience: "contributors who use or change the CLI and readers studying how a tool surface grows"
+ continuity: "CLI Arcs | dated stills"
+ cold_open: "The command names here are dated stills, and the next contract waits until a benchmark names a real cost."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ method_note: "spw help was run on 2026-10-03 at 1aa1dc23; command rows were matched to the registry in packages/spw-cli/src/commands.ts"
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/spw-hosts-and-history.spw#q_hosts_cli" ]
+ see: [ ~"../recipes.spw#spw_recipes", ~"../inspection-and-ir.spw#spw_inspection_and_ir" ]
+ contrasts: [ ~"./editor-extension-arcs.spw#workbench_history_extensions" ]
+}
+
+^["concepts"]{
+ primary: [ #command_surface, #plan_card, #sigil_arc ]
+ transfers: [ #code_verified ]
+ tensions: [ #status_drift ]
+}
+
+^["case"]{
+ question: "How does a command surface stay honest while its names keep changing?"
+ setting: "one package, packages/spw-cli, used by people, agents, editor instruments, and mounted consumer repositories"
+
+ #>workbench_history_cli_stills
+ ^["stills"]{
+  #:claim #!settled
+  statement: "The owner resume note says current command names, cards, tables, and JSON envelopes are stills, not the longitudinal product."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_resume_note"
+  cites: ".spw/caches/resume/2026-09-30-direction.spw:31"
+  provenance_label: "owner hold"
+ }
+ #>workbench_history_cli_scale
+ ^["scale"]{
+  #:claim #!settled
+  statement: "At 1aa1dc23, 71 commits touch packages/spw-cli, from the package scaffold of 2026-03-20 to a resolve change on 2026-09-29."
+  reads: %[hosts.cli.package_commit_count]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log"
+ }
+}
+
+^["surface_today"]{
+ #>workbench_history_cli_help
+ ^["help_groups"]{
+  #:claim #!settled
+  statement: "spw help lists 40 canonical commands in five groups, workspace, collate, select, shape, and effect, and 25 compatibility routes that each point to one canonical name."
+  reads: %[
+   hosts.cli.canonical_command_count,
+   hosts.cli.command_group_count,
+   hosts.cli.compat_route_count
+  ]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_cli_help"
+  cites: "packages/spw-cli/src/commands.ts, one registry row per command"
+ }
+ #>workbench_history_cli_names_lag
+ ^["names_lag"]{
+  #:claim #!settled
+  statement: "Four npm scripts call skim, seq, surface, and analyze, and the harness notes teach three of them, though help lists all four as routes to outline, ls, stack, and density."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_root_manifest"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_cli_help", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_claude_md" ]
+  cites: [ "package.json:101,107,113,115", "CLAUDE.md:89,99,102" ]
+  ^["limits"]{
+   holds: "as a sign that names outlive their own replacement"
+   fails: "as a defect: every route still runs, and help says which name to prefer"
+  }
+ }
+ #>workbench_history_cli_effect_verbs
+ ^["effect_verbs"]{
+  #:claim #!settled
+  statement: "pulse plans by default and writes one file atomically only with --write; mutate writes many files directly unless told --dry-run; beat never touches the tree."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_mutation_doc"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_cli_help" ]
+  cites: [ "docs/runtime/md/pulse-mutate-beat.md:22-29,111-120", "packages/spw-cli/src/commands.ts:405-425", "packages/spw-cli/src/mutate.ts:88,109" ]
+  ^["rows"]{
+   pulse: .{ ceiling: "effect.l0.measure, or effect.l2.workspace for one file with --write", status: #implemented }
+   mutate: .{ ceiling: "effect.l2.workspace across many files unless --dry-run", status: #implemented }
+   beat: .{ ceiling: "no tree effect", status: #implemented }
+   mode_contract: .{ ceiling: "every command declares its mode and ceiling", status: #proposed }
+  }
+ }
+}
+
+^["rungs"]{
+ #>workbench_history_cli_package
+ ^["package_2026_03_20"]{
+  #:claim #!settled
+  at: "2026-03-20"
+  statement: "The CLI and LSP entrypoints moved behind package boundaries, and the separate spwq selector tool was absorbed into the package-owned select command."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_cards_cli" ]
+  cites: [ "commit dbd03295", "commit 6a89cfff", "card absorb-spwq-cli, landed" ]
+ }
+ #>workbench_history_cli_gates
+ ^["gates_2026_07_21"]{ at: "2026-07-21", event: "pulse regains guarded probe and write gates, the first rung of the mutation verbs", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+ #>workbench_history_cli_sense
+ ^["sense_2026_07_22"]{
+  #:claim #!settled
+  at: "2026-07-22"
+  statement: "One commit landed brace and operator inspection, the sense loop verbs, and editor probes together; refactor, refresh, and atlas followed the next day."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log"
+  cites: [ "commit bb0ec2ef", "commits 7f958d46, ed556168, 8d21de2f on 2026-07-23" ]
+ }
+ #>workbench_history_cli_registry
+ ^["registry_2026_07_25"]{ at: "2026-07-25", event: "one registry starts to drive routing, the accepted-token list, and the help page", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+ #>workbench_history_cli_lattice
+ ^["lattice_2026_08_04"]{ at: "2026-08-04 to 2026-08-06", event: "lattice, delta, and stencil seeds arrive, and dual-read output becomes always on", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+ #>workbench_history_cli_copy
+ ^["copy_2026_08_24"]{
+  #:claim #!settled
+  at: "2026-08-24"
+  statement: "Help began to lead with outcomes and to mark aliases as compatibility routes, and the refactor plan became a review card."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_cards_cli"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" ]
+  cites: [ "card cli-copy-taste, done on 2026-08-24", "commit 75d8f9d2" ]
+ }
+ #>workbench_history_cli_consumers
+ ^["consumers_2026_09_07"]{ at: "2026-09-07", event: "mounted consumers get fingerprint, resolve, lint, walk isolation, and query stats", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+ #>workbench_history_cli_resolve
+ ^["resolve_2026_09_29"]{ at: "2026-09-29", event: "resolve reads a ref against the citing file first, then the consumer root", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+}
+
+^["holds"]{
+ #>workbench_history_cli_holds
+ ^["owner_holds"]{
+  #:claim #!settled
+  statement: "The owner leads with retained benchmark samples, holds the mode contract, and keeps the operator-count instrument dormant while its counts on quoted sigils are wrong."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_resume_note"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_cards_cli" ]
+  cites: [ ".spw/caches/resume/2026-09-30-direction.spw:38-54" ]
+  provenance_label: "owner hold"
+  ^["rows"]{
+   cli_benchmarking_infra: .{ standing: "lead", card_phase: "planning", note: "scripts/bench does not exist at 1aa1dc23" }
+   cli_mode_overhaul: .{ standing: "held", card_phase: "planning" }
+   geometric_analysis_tooling: .{ standing: "dormant", card_phase: "dormant" }
+  }
+  ^["limits"]{
+   holds: "as standing on 2026-09-30"
+   fails: "as a judgment of merit; a held card may be the right next step once its sample exists"
+  }
+ }
+ lesson: "a mode contract written before a retained cost sample would freeze names the note calls stills"
+}
+
+^["try"]{
+ #>workbench_history_cli_try_routes
+ ^["read_the_routes"]{
+  materials: [ "a checkout of the workbench", "a terminal" ]
+  steps: << "run npm run spw -- help" ; "count the commands under each group heading" ; "read the compatibility routes at the end" ; "open package.json and find a script that calls a route" ; "say which canonical name it should call" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "none worth naming; help and package.json only read"
+  shows: ~"./cli-arcs.spw#workbench_history_cli_names_lag"
+ }
+}
+
+#>workbench_history_cli_q
+?["Do compatibility routes shrink once help marks them, or do they keep their callers?"]{
+ #:depth #!historical ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "Routes named in scripts and harness notes should outlast routes used only by hand, because written callers do not read help."
+ !probe{ "at each later cut, list the 25 routes and grep scripts, docs, and plan cards for each; record which routes lose their last caller" =id[p_hosts_history_route_decay] =kind[census] }
+ $%[hosts.cli.compat_route_count, hosts.cli.canonical_command_count]
+ ~"./cli-arcs.spw#workbench_history_cli_names_lag" ~#neighbor(nearest)
+}

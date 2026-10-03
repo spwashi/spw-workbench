@@ -7,20 +7,24 @@
 #:domain #!registry
 #:form #!registry
 #:level #!mixed
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
- evidence: #[ "binary64 epsilon, normal quantiles, birthday probability, and log2 of 10 recomputed with Python 3 on 2026-10-01", "Hilbert matrix condition number recomputed on 2026-10-01 from the exact rational inverse and power iteration", "Ecma-262 edition list, Maglev post, ABET criteria, and GAO Patriot summary read on 2026-10-01" ]
+ evidence: #[ "binary64 epsilon, normal quantiles, birthday probability, and log2 of 10 recomputed with Python 3 on 2026-10-01", "Hilbert matrix condition number recomputed on 2026-10-01 from the exact rational inverse and power iteration", "Ecma-262 edition list, Maglev post, ABET criteria, and GAO Patriot summary read on 2026-10-01", "fact-check pass 2026-10-02 recomputed the epsilon, Hilbert, normal, birthday, and Gibbs cells and reframed the Byzantine replica cell for partial synchrony", "fact-check pass 2026-10-03 recomputed the normal, birthday, log2, Gibbs, epsilon, and Hilbert cells, and moved the ABET cell to the 2026-2027 criteria read that day" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
  }
  status_legend: "settled cells were checked against the linked source or recomputed on the access date; dated cells carry as_of"
 }
@@ -38,7 +42,7 @@
  }
  ^["stats"]{
   id: formal_stats, operator: "%", identifier: formal.stats
-  keys: #[ normal_two_sided_95_z, normal_within_1sd, normal_within_2sd, birthday_23_shared ]
+  keys: #[ normal_two_sided_95_z, normal_within_1sd, normal_within_2sd, birthday_23_shared, berkeley_1973_men_admit, berkeley_1973_women_admit ]
   plane: world, scope: corpus, scheme: tol, algorithm: world.registry_lookup, form: scalar
  }
  ^["transforms"]{
@@ -174,6 +178,22 @@
   src: ~"../sources/formal.spw#src_formal_blitzstein_hwang_2019"
   status: #settled
  }
+ %formal.stats.berkeley_1973_men_admit{
+  value: 0.44
+  unit: "fraction admitted"
+  at: "men applying to graduate study at Berkeley, fall 1973, pooled across departments"
+  abs: 0.01
+  src: ~"../sources/formal.spw#src_formal_bickel_1975"
+  status: #settled
+ }
+ %formal.stats.berkeley_1973_women_admit{
+  value: 0.35
+  unit: "fraction admitted"
+  at: "women applying to graduate study at Berkeley, fall 1973, pooled across departments"
+  abs: 0.01
+  src: ~"../sources/formal.spw#src_formal_bickel_1975"
+  status: #settled
+ }
 }
 
 #>q_formal_transforms
@@ -229,7 +249,7 @@
  %formal.consensus.bft_replicas_f1{
   value: 4
   unit: "replica"
-  at: "Byzantine agreement with oral messages needs at least 3f+1 replicas; PBFT uses exactly that; here f is 1"
+  at: "Byzantine agreement needs at least 3f+1 replicas with oral messages in synchronous systems, and with or without signatures under partial synchrony absent trusted components (Dwork, Lynch, Stockmeyer 1988); PBFT uses exactly that; here f is 1"
   abs: 0
   src: ~"../sources/formal.spw#src_formal_lsp_1982"
   status: #settled
@@ -295,10 +315,10 @@
  %formal.dated.abet_math_science_credits{
   value: 30
   unit: "semester credit hour"
-  at: "minimum combined college-level mathematics and basic sciences in ABET Criterion 5, 2025-2026 cycle"
-  as_of: "2026-10-01"
+  at: "minimum combined college-level mathematics and basic sciences in ABET EAC Criterion 5, 2026-2027 cycle, unchanged from 2025-2026"
+  as_of: "2026-10-03"
   abs: 0
-  src: ~"../sources/formal.spw#src_formal_abet_2025"
+  src: ~"../sources/formal.spw#src_formal_abet_2026"
   status: #settled
  }
 }

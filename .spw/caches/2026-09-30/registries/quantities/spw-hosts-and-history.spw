@@ -1,0 +1,317 @@
+# Quantities: Spw Hosts and History
+#
+# Counted cells for the editor hosts and the workbench history surfaces. Each cell was recounted from the repository at commit 1aa1dc23 or from a named document, and a verify cell is a question, not a fact.
+
+#>q_hosts_registry
+#:layer #!reference
+#:domain #!registry
+#:form #!registry
+#:level #!mixed
+#:review #!sourced
+#:valence #!bone
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+ }
+ commit: "1aa1dc23, the tip of main on 2026-10-02"
+ method_note: "counts come from reading the cited file or from git log on that commit; the cut census cells are a snapshot taken while wave 3 was still writing"
+ recount: "the cut census cells held a 2026-10-02 snapshot (268 files; care 135, 390, 115, 277, 219) and were recounted at 02:45 on 2026-10-03; a recount at the close of wave 3 should supersede them"
+ status_legend: "settled cells were counted from the linked source; verify cells hold a value that must be rechecked before use"
+}
+
+^["families"]{
+ ^["shared"]{ operator: "%", plane: world, scope: corpus, scheme: tol, form: scalar }
+ ^["lookup"]{ algorithm: world.registry_lookup }
+ ^["vscode"]{ id: hosts_vscode, identifier: hosts.vscode }
+ ^["lsp"]{ id: hosts_lsp, identifier: hosts.lsp }
+ ^["jb"]{ id: hosts_jb, identifier: hosts.jb }
+ ^["palette"]{ id: hosts_palette, identifier: hosts.palette }
+ ^["cli"]{ id: hosts_cli, identifier: hosts.cli }
+ ^["history"]{ id: hosts_history, identifier: hosts.history }
+ ^["plans"]{ id: hosts_plans, identifier: hosts.plans }
+ ^["cut"]{ id: hosts_cut, identifier: hosts.cut }
+}
+
+^["keys"]{
+ vscode: #[ command_count, setting_count, color_id_count, registered_only_command_count, custom_methods_called, decoration_refresh_ms, probe_ttl_ms ]
+ lsp: #[ provider_capability_count, custom_method_count, token_type_count, token_modifier_count ]
+ jb: #[ since_build, build_host_version, semantic_tokens_min_ide, native_lsp_rename_min_ide, action_count, live_template_count, java_toolchain ]
+ palette: #[ bone_light_contrast, potential_light_contrast, wcag_aa_text_ratio, distinct_dark_hex_count ]
+ cli: #[ canonical_command_count, compat_route_count, command_group_count, package_commit_count ]
+ history: #[ commit_count, episode_commit_count, rewrite_stamped_commit_count, first_commit_date, sigil_amp_count, sigil_dot_count, commits_2026_01, commits_2026_02, commits_2026_03, commits_2026_04, commits_2026_07, commits_2026_08, commits_2026_09, vscode_commit_count, intellij_commit_count, neovim_commit_count, extension_commit_count ]
+ plans: #[ card_count, archived_count, plan_map_coverage, lane_execution_count, lane_projection_count, lane_curriculum_count, curriculum_css_step_count, curriculum_svg_step_count, curriculum_logic_step_count ]
+ cut: #[ census_file_count, care_glance_count, care_skim_count, care_read_count, care_audit_count, care_adversarial_count ]
+}
+
+#>q_hosts_vscode
+^"vscode"{
+ %hosts.vscode.command_count{
+  value: 22, unit: "commands", abs: 0
+  at: "contributes.commands, extensions/vscode-spw/package.json:61-149", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_vscode_manifest", status: #settled
+ }
+ %hosts.vscode.setting_count{
+  value: 14, unit: "settings", abs: 0
+  at: "contributes.configuration.properties, extensions/vscode-spw/package.json:153-227", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_vscode_manifest", status: #settled
+ }
+ %hosts.vscode.color_id_count{
+  value: 23, unit: "theme color ids", abs: 0
+  at: "contributes.colors, extensions/vscode-spw/package.json:230-253", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_vscode_manifest", status: #settled
+ }
+ %hosts.vscode.registered_only_command_count{
+  value: 3, unit: "commands", abs: 0
+  at: "registered in code but absent from contributes: spwWorkspace.selectRoot, spwConcepts.openEntry, spwConcepts.filterToName", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_vscode_views", status: #settled
+ }
+ %hosts.vscode.custom_methods_called{
+  value: 14, unit: "distinct spw methods", abs: 0
+  at: "spw methods the VS Code client sends, counted across extensions/vscode-spw/src", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_vscode_custom_requests", status: #settled
+ }
+ %hosts.vscode.decoration_refresh_ms{
+  value: 120, unit: "ms", abs: 0
+  at: "default of spw.compute.decorationRefreshMs, floor 40, package.json:206-211", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_vscode_manifest", status: #settled
+ }
+ %hosts.vscode.probe_ttl_ms{
+  value: 8000, unit: "ms", abs: 0
+  at: "default of spw.cache.probeTtlMs; 0 disables the cache, package.json:217-222", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_vscode_manifest", status: #settled
+ }
+}
+
+#>q_hosts_lsp
+^"lsp"{
+ %hosts.lsp.provider_capability_count{
+  value: 17, unit: "provider capabilities", abs: 0
+  at: "initialize result besides textDocumentSync, packages/spw-lsp/src/stdio-server.ts:211-231", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_lsp_server", status: #settled
+ }
+ %hosts.lsp.custom_method_count{
+  value: 23, unit: "spw request methods", abs: 0
+  at: "custom cases in the request dispatcher, packages/spw-lsp/src/stdio-server.ts:328-392", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_lsp_server", status: #settled
+ }
+ %hosts.lsp.token_type_count{
+  value: 9, unit: "token types", abs: 0
+  at: "SEMANTIC_TOKENS_LEGEND, packages/spw-lsp/src/handlers/semantic-tokens.ts:75-78", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_lsp_semantic_tokens", status: #settled
+ }
+ %hosts.lsp.token_modifier_count{
+  value: 6, unit: "token modifiers", abs: 0
+  at: "SEMANTIC_TOKENS_LEGEND, packages/spw-lsp/src/handlers/semantic-tokens.ts:75-78", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_lsp_semantic_tokens", status: #settled
+ }
+}
+
+#>q_hosts_jb
+^"jb"{
+ %hosts.jb.since_build{
+  value: 242, unit: "IntelliJ build branch", abs: 0
+  at: "sinceBuild, with untilBuild 262.*, extensions/intellij-spw/build.gradle.kts:53-54", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_jb_build", status: #settled
+ }
+ %hosts.jb.build_host_version{
+  value: "2024.2.1", unit: "WebStorm version"
+  at: "oldestSupportedWebStorm, the compile host, build.gradle.kts:12", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_jb_build", status: #settled
+ }
+ %hosts.jb.semantic_tokens_min_ide{
+  value: "2024.2.2", unit: "IDE version"
+  at: "first JetBrains release whose native LSP client paints semanticTokens/full", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_jetbrains_lsp_docs", status: #settled
+ }
+ %hosts.jb.native_lsp_rename_min_ide{
+  value: "2026.1", unit: "IDE version"
+  at: "first JetBrains release listing LSP rename refactoring in its feature table", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_jetbrains_lsp_docs", status: #verify
+ }
+ %hosts.jb.action_count{
+  value: 5, unit: "actions", abs: 0
+  at: "the Spw.Instruments group in plugin.xml:76-99", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_jb_plugin_xml", status: #settled
+ }
+ %hosts.jb.live_template_count{
+  value: 7, unit: "templates", abs: 0
+  at: "liveTemplates/spwTemplates.xml", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_jb_templates", status: #settled
+ }
+ %hosts.jb.java_toolchain{
+  value: 21, unit: "Java language version", abs: 0
+  at: "java and kotlin toolchains, build.gradle.kts:38-46", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_jb_build", status: #settled
+ }
+}
+
+#>q_hosts_palette
+^"palette"{
+ %hosts.palette.bone_light_contrast{
+  value: 3.12, unit: "contrast ratio against white", abs: 0.01
+  at: "light default BF8803 of spw.valenceBone and spw.tierWarm, computed with the WCAG relative luminance formula", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_wcag_22", status: #settled
+ }
+ %hosts.palette.potential_light_contrast{
+  value: 4.05, unit: "contrast ratio against white", abs: 0.01
+  at: "light default 1B8F6A of spw.phasePotential, computed with the WCAG relative luminance formula", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_wcag_22", status: #settled
+ }
+ %hosts.palette.wcag_aa_text_ratio{
+  value: 4.5, unit: "contrast ratio", abs: 0
+  at: "WCAG 2.2 success criterion 1.4.3, level AA, normal-size text", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_wcag_22", status: #settled
+ }
+ %hosts.palette.distinct_dark_hex_count{
+  value: 13, unit: "distinct hex values", abs: 0
+  at: "dark defaults across the 23 contributed color ids; light defaults give 14", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_vscode_manifest", status: #settled
+ }
+}
+
+#>q_hosts_cli
+^"cli"{
+ %hosts.cli.canonical_command_count{
+  value: 40, unit: "commands", abs: 0
+  at: "spw help output at 1aa1dc23, five groups: workspace, collate, select, shape, effect", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_cli_help", status: #settled
+ }
+ %hosts.cli.compat_route_count{
+  value: 25, unit: "alias routes", abs: 0
+  at: "compatibility routes listed by spw help at 1aa1dc23", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_cli_help", status: #settled
+ }
+ %hosts.cli.command_group_count{
+  value: 5, unit: "groups", abs: 0
+  at: "spw help section headings at 1aa1dc23", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_cli_help", status: #settled
+ }
+ %hosts.cli.package_commit_count{
+  value: 71, unit: "commits", abs: 0
+  at: "commits touching packages/spw-cli, git log at 1aa1dc23", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
+ }
+}
+
+#>q_hosts_history
+^"history"{
+ %hosts.history.commit_count{
+  value: 514, unit: "commits", abs: 0
+  at: "git rev-list --count at 1aa1dc23", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
+ }
+ %hosts.history.episode_commit_count{
+  value: 421, unit: "commits", abs: 0
+  at: "commit bodies containing an episode block, git log at 1aa1dc23", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
+ }
+ %hosts.history.rewrite_stamped_commit_count{
+  value: 28, unit: "commits", abs: 0
+  at: "commits authored 2026-01-08 to 2026-02-14 whose committer date is 2026-02-15", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
+ }
+ %hosts.history.first_commit_date{
+  value: "2026-01-08", unit: "author date"
+  at: "root commit a1e509c6", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
+ }
+ %hosts.history.sigil_amp_count{
+  value: 178, unit: "commits", abs: 0
+  at: "subjects whose prefix, after any waypoint or number label, is the integrate sigil then a bracket, git log at 1aa1dc23", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
+ }
+ %hosts.history.sigil_dot_count{
+  value: 173, unit: "commits", abs: 0
+  at: "subjects whose prefix, after any waypoint or number label, is the documentation sigil then a bracket; seven more put a space between", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
+ }
+ %hosts.history.commits_2026_01{
+  value: 21, unit: "commits", abs: 0
+  at: "author month 2026-01", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
+ }
+ %hosts.history.commits_2026_02{
+  value: 146, unit: "commits", abs: 0
+  at: "author month 2026-02", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
+ }
+ %hosts.history.commits_2026_03{
+  value: 130, unit: "commits", abs: 0
+  at: "author month 2026-03", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
+ }
+ %hosts.history.commits_2026_04{
+  value: 17, unit: "commits", abs: 0
+  at: "author month 2026-04", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
+ }
+ %hosts.history.commits_2026_07{
+  value: 112, unit: "commits", abs: 0
+  at: "author month 2026-07", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
+ }
+ %hosts.history.commits_2026_08{
+  value: 66, unit: "commits", abs: 0
+  at: "author month 2026-08", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
+ }
+ %hosts.history.commits_2026_09{
+  value: 21, unit: "commits", abs: 0
+  at: "author month 2026-09", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
+ }
+ %hosts.history.vscode_commit_count{
+  value: 61, unit: "commits", abs: 0
+  at: "commits touching extensions/vscode-spw, git log at 1aa1dc23", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
+ }
+ %hosts.history.intellij_commit_count{
+  value: 23, unit: "commits", abs: 0
+  at: "commits touching extensions/intellij-spw, git log at 1aa1dc23", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
+ }
+ %hosts.history.neovim_commit_count{
+  value: 21, unit: "commits", abs: 0
+  at: "commits touching extensions/neovim-spw, git log at 1aa1dc23", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
+ }
+ %hosts.history.extension_commit_count{
+  value: 82, unit: "commits", abs: 0
+  at: "distinct commits touching any of the three extension directories, git log at 1aa1dc23", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
+ }
+}
+
+#>q_hosts_plans
+^"plans"{
+ %hosts.plans.card_count{
+  value: 77, unit: "plan cards", abs: 0
+  at: "rows in the derived phase frames of .agents/plans/index.spw at 1aa1dc23", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_plan_index", status: #settled
+ }
+ %hosts.plans.archived_count{
+  value: 32, unit: "archived plans", abs: 0
+  at: "entries under .agents/plans/_archive at 1aa1dc23", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_plan_index", status: #settled
+ }
+ %hosts.plans.plan_map_coverage{
+  value: 44, unit: "cards on the ecology map", abs: 0
+  at: "drift frame of the plan index: 44 of 77 cards appear in the clustering map", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_plan_index", status: #settled
+ }
+ %hosts.plans.lane_execution_count{
+  value: 43, unit: "cards", abs: 0
+  at: "cards whose lane glyph is the execution bang", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_plan_index", status: #settled
+ }
+ %hosts.plans.lane_projection_count{
+  value: 11, unit: "cards", abs: 0
+  at: "cards whose lane glyph is the projection at-sign", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_plan_index", status: #settled
+ }
+ %hosts.plans.lane_curriculum_count{
+  value: 6, unit: "cards", abs: 0
+  at: "cards whose lane glyph is the curriculum tilde", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_plan_index", status: #settled
+ }
+ %hosts.plans.curriculum_css_step_count{
+  value: 50, unit: "planned commits", abs: 0
+  at: "five labs of ten scaffold commits each, .agents/plans/curriculum-html-css-mastery/PLAN.md:63-140", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_plan_cards_curriculum", status: #settled
+ }
+ %hosts.plans.curriculum_svg_step_count{
+  value: 50, unit: "planned commits", abs: 0
+  at: "five phases of ten commits, expanded on 2026-02-20, .agents/plans/curriculum-html-svg-mastery/PLAN.md:16-31", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_plan_cards_curriculum", status: #settled
+ }
+ %hosts.plans.curriculum_logic_step_count{
+  value: 26, unit: "planned commits", abs: 0
+  at: "five phases, expanded from a 13-step draft on 2026-02-20, .agents/plans/curriculum-logic-terminal-mastery/PLAN.md:16-31", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_plan_cards_curriculum", status: #settled
+ }
+}
+
+#>q_hosts_cut
+^"cut"{
+ %hosts.cut.census_file_count{
+  value: 383, unit: ".spw files", abs: 0
+  at: "census of .spw/caches/2026-09-30 at 02:45 on 2026-10-03, during wave 3", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_cut_census", status: #settled
+ }
+ %hosts.cut.care_glance_count{
+  value: 154, unit: "receipts", abs: 0
+  at: "care glance, same census", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_cut_census", status: #settled
+ }
+ %hosts.cut.care_skim_count{
+  value: 635, unit: "receipts", abs: 0
+  at: "care skim, same census", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_cut_census", status: #settled
+ }
+ %hosts.cut.care_read_count{
+  value: 219, unit: "receipts", abs: 0
+  at: "care read, same census", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_cut_census", status: #settled
+ }
+ %hosts.cut.care_audit_count{
+  value: 430, unit: "receipts", abs: 0
+  at: "care audit, same census", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_cut_census", status: #settled
+ }
+ %hosts.cut.care_adversarial_count{
+  value: 285, unit: "receipts", abs: 0
+  at: "care adversarial, same census", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_cut_census", status: #settled
+ }
+}

@@ -1,0 +1,168 @@
+# JetBrains Platform
+#
+# The IntelliJ plugin toolchain, its declared build range, how it finds and launches the language server, and where that range meets the native LSP client feature table.
+
+#>editor_hosts_jetbrains_platform
+#:layer #!reference
+#:domain #!editor_hosts
+#:form #!registry
+#:level #!practitioner
+#:review #!sourced
+#:valence #!bone
+#:era #!current
+
+^"emit"{
+ ~#title: "JetBrains Platform"
+ ~#claim: "The plugin compiles against WebStorm 2024.2.1, declares builds 242 through 262, and finds its server in two stages: a tool root, then a launch command."
+ ~#proof: "Rows cite build.gradle.kts, plugin.xml, SpwLspLauncher.kt, and SpwLspServerSupportProvider.kt at commit 1aa1dc23, and the JetBrains LSP feature table."
+ ~#door: "Read the discovery stages, then the token floor row, then the feature radar for the substrate question."
+ ~#audience: "maintainers building, verifying, or launching the IntelliJ plugin"
+ continuity: "JetBrains Platform | two stages"
+ cold_open: "The JetBrains plugin finds its server in two stages, a tool root and then a command, inside one declared build range."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/jetbrains/compatibility.spw", ".spw/caches/jetbrains/lsp-client.spw" ]
+ method: #corrected
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: [
+  "the raw compatibility cache gave Gradle task paths under extensions:intellij-spw; the plugin is its own root project, so tasks are test, buildPlugin, and the verify tasks",
+  "the raw lsp-client cache named settings customCommand, customWorkingDirectory, and autoStart; the state fields are enabled, command, and workDir",
+  "the raw lsp-client cache put an environment variable and local source checkouts in the discovery ladder; the JetBrains launcher reads neither",
+  "the raw lsp-client cache said the working directory defaults to the consumer root; with a mount the server runs from the mounted workbench"
+ ]
+ kept: "Java 21, Gradle 9.5, Kotlin 2.4.10, the platform Gradle plugin 2.18.1, and the 242 to 262 range were exact in the raw compatibility cache"
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/spw-hosts-and-history.spw#q_hosts_jb" ]
+ needs: [ ~"./lsp-surface.spw#editor_hosts_lsp" ]
+ feeds: [ ~"./feature-radar.spw#editor_hosts_radar" ]
+ see: [ ~".spw/tooling/intellij-plugin.spw#spw_tooling_intellij" ]
+}
+
+^["concepts"]{
+ primary: [ #build_range, #tool_root, #native_lsp ]
+ transfers: [ #thin_client ]
+ tensions: [ #token_floor ]
+}
+
+^["toolchain"]{
+ #>editor_hosts_jetbrains_platform_toolchain
+ ^["coordinates"]{
+  #:claim #!settled
+  statement: "The plugin builds with Java 21, the Kotlin JVM plugin 2.4.10, the IntelliJ Platform Gradle plugin 2.18.1, and the Gradle 9.5.0 wrapper, compiling against WebStorm 2024.2.1."
+  reads: %[hosts.jb.java_toolchain, hosts.jb.build_host_version]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_build"
+  cites: [ "extensions/intellij-spw/build.gradle.kts:3-7,12,26-35,38-46", "extensions/intellij-spw/gradle/wrapper/gradle-wrapper.properties:3", "extensions/intellij-spw/.java-version:1" ]
+ }
+ #>editor_hosts_jetbrains_platform_range
+ ^["build_range"]{
+  #:claim #!settled
+  statement: "The plugin declares sinceBuild 242 and untilBuild 262 wildcard and is verified against WebStorm 2026.2.0.1 and 2026.2.1."
+  reads: %[hosts.jb.since_build]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_build"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_plugin_xml" ]
+  cites: [ "extensions/intellij-spw/build.gradle.kts:13-14,52-55,58-63", "extensions/intellij-spw/src/main/resources/META-INF/plugin.xml:10-11" ]
+ }
+ ^["tasks"]{
+  root: "extensions/intellij-spw/settings.gradle.kts names rootProject intellij-spw, so tasks have no parent path"
+  test: "npm run test:intellij runs gradlew test; package.json:153"
+  verify: "npm run verify:intellij runs test, buildPlugin, verifyPluginProjectConfiguration, verifyPluginStructure, verifyPlugin; package.json:154"
+  build: "npm run build:intellij runs gradlew buildPlugin; package.json:155"
+  status: #implemented
+ }
+ depends: #[ platform, textmate, lsp, spellchecker ]
+ depends_cites: "plugin.xml:28-31"
+}
+
+^["discovery"]{
+ #>editor_hosts_jetbrains_platform_two_stage
+ ^["two_stage"]{
+  #:claim #!settled
+  statement: "Stage one picks a tool root: a configured workDir, else the project if its package.json has an lsp script, else a mounted .spw/_workbench with one, else the project."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_launcher"
+  cites: "extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwLspLauncher.kt:18-41"
+ }
+ #>editor_hosts_jetbrains_platform_stage_two
+ ^["stage_two"]{
+  #:claim #!settled
+  statement: "Stage two launches a configured command if its executable exists; otherwise it requires a package.json, an lsp script, and npm on PATH, then runs npm run --silent lsp."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_lsp_provider"
+  cites: "extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwLspServerSupportProvider.kt:47-88"
+  on_failure: ?match[startup_issue]{
+   "no project root" => "warn once: open a project folder or set an absolute working directory",
+   "missing workDir" => "warn once with the path",
+   "no package.json" => "warn once naming the project or mounted workbench",
+   "no lsp script" => "warn once with the default launcher contract",
+   "no npm" => "warn once: Node.js with npm must be on PATH",
+   "missing command" => "warn once with the executable name"
+  }
+  failure_cites: "SpwLspServerSupportProvider.kt:28-84,100-120"
+ }
+ #>editor_hosts_jetbrains_platform_workdir
+ ^["workdir_is_tool_root"]{
+  #:claim #!settled
+  statement: "The resolved tool root is also the server process working directory, so with a mount the server runs inside .spw/_workbench while the consumer project keeps document identity."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_lsp_provider"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_tooling_intellij", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_server" ]
+  cites: [ "SpwLspServerSupportProvider.kt:36,136-142", ".spw/tooling/intellij-plugin.spw:53", "packages/spw-lsp/src/stdio-server.ts:195-197" ]
+ }
+ #>editor_hosts_jetbrains_platform_settings
+ ^["settings_state"]{
+  #:claim #!settled
+  statement: "The settings page Spw LSP under Tools stores three fields per project in the workspace file: enabled, command, and workDir."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_settings"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_plugin_xml" ]
+  cites: [ "settings/SpwLspSettings.kt:10-20", "plugin.xml:43-47" ]
+ }
+ ^["abbreviation"]{ kotlin: "Kotlin paths are under extensions/intellij-spw/src/main/kotlin/com/spwashi/spw" }
+}
+
+^["native_lsp"]{
+ #>editor_hosts_jetbrains_platform_token_floor
+ ^["token_floor"]{
+  #:claim #!settled
+  statement: "The JetBrains native client paints semanticTokens/full from 2024.2.2, while the plugin admits every 2024.2 build, so the earliest admitted hosts get no server token colors."
+  reads: %[hosts.jb.semantic_tokens_min_ide, hosts.jb.since_build]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jetbrains_lsp_docs"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_build", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_tokens_study" ]
+  as_of: "JetBrains documentation read 2026-10-02"
+ }
+ #>editor_hosts_jetbrains_platform_no_customization
+ ^["no_customization"]{
+  #:claim #!settled
+  statement: "The server descriptor overrides only isSupportedFile and createCommandLine; it sets no lspCustomization, so token colors follow the platform defaults."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_lsp_provider"
+  cites: "SpwLspServerSupportProvider.kt:128-143"
+  verify: "how the platform maps the nine server token types to TextAttributesKeys has not been checked in a running IDE"
+ }
+ #>editor_hosts_jetbrains_platform_feature_table
+ ^["feature_table"]{
+  #:claim #!emerging
+  statement: "The JetBrains feature table lists document links from 2025.1, inlay hints and folding from 2025.2, and code lens and rename from 2026.1, so admitted builds differ in what the server can show."
+  reads: %[hosts.jb.native_lsp_rename_min_ide]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jetbrains_lsp_docs"
+  as_of: "JetBrains documentation read 2026-10-02"
+  verify: "whether Rename Spw Symbol works on builds 242 through 253 has not been run; the raw cache said rename was verified on 262 only"
+ }
+ availability: "the LSP API ships in the commercial IntelliJ-based IDEs; JetBrains says plugins using it are unavailable in IntelliJ IDEA open source builds and Android Studio"
+ availability_source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jetbrains_lsp_docs"
+}
+
+#>editor_hosts_jetbrains_platform_q
+?["Does a build range wider than the token floor leave some hosts without server colors?"]{
+ #:depth #!computational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "On WebStorm 2024.2.1 the plugin should start the server yet show TextMate colors only, while 2024.2.2 should add server tokens."
+ !probe{ "run runIde on WebStorm 2024.2.1 and 2024.2.2 with the same project and compare token colors on one fixture" =id[p_hosts_jb_token_floor] =kind[build] }
+ $%[hosts.jb.since_build, hosts.jb.semantic_tokens_min_ide]
+ ~"./jetbrains-platform.spw#editor_hosts_jetbrains_platform_token_floor" ~#neighbor(nearest)
+}

@@ -1,0 +1,102 @@
+# Door: Cell
+#
+# One region, legible alone: a registry cell holds one world number once, with its unit, conditions, tolerance, source, and status, and claims cite it by handle.
+
+#>spw_door_cell
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!field_guide
+#:level #!intro
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Door: Cell"
+ ~#claim: "A registry cell holds one number once, with unit, conditions, tolerance, source, and status, and every claim that needs the number cites the cell by handle."
+ ~#proof: "The cut contract defines the cell and its handle grammar, and the gate fails any handle that resolves to no cell or is defined twice."
+ ~#door: "Open the water cells, pick the density maximum, and follow its handle back to the claim that reads it."
+ ~#audience: "engineers, physics students, and designers who keep data sheets or token libraries"
+ continuity: "Door: Cell | one number once"
+ cold_open: "A registry cell holds one number once, and every claim cites that cell by name."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "contract.spw quantities frame and the gate handle checks",
+  "the water cells in the materials and engineering registry, read only"
+ ]
+ ^["receipts"]{
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ feeds: [ ~"../contraptions/dimension-bench.spw#spw_lab_dimension_bench" ]
+}
+
+^["region"]{
+ #>spw_door_cell_shape
+ ^["cell_shape"]{
+  #:claim #!settled
+  statement: "A cell is a percent sign, a lowercase handle of namespace and quantity with its unit, and a body holding value, unit, conditions, a relative or absolute tolerance, a source link, and a status."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_contract"
+  label: "a-cut rule from the contract quantities frame, not repository canon"
+  example: ~"../../registries/quantities/materials-and-engineering.spw#q_mateng_water"
+  reads: %[mateng.water.t_rho_max_c]
+  ~#spoken(percent handle)
+  ^["limits"]{
+   holds: "quantity registries under registries/quantities in this cut"
+   fails: "a cell records one reported value under stated conditions; it is no uncertainty budget and no dimension check"
+  }
+ }
+ #>spw_door_cell_gate
+ ^["handle_checks"]{
+  #:claim #!settled
+  statement: "The gate collects every cell handle in the quantity registries, fails a handle defined twice, and fails any reading of a handle that resolves to no cell."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_gate"
+  cites: [ "scripts/analyzers/spw-cut-gate.ts:220-226", "scripts/analyzers/spw-cut-gate.ts:354-362" ]
+ }
+ #>spw_door_cell_numbers
+ ^["number_rule"]{
+  #:claim #!settled
+  statement: "Bare numbers in a cell are integers or decimals only; negatives, dates, units, and percentages go in strings, because the lexer splits or drops them otherwise."
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_lexer"
+  cites: [ "packages/spw-seed/src/lexer/matchers/literals.ts:95-120" ]
+ }
+}
+
+^["habits"]{
+ keep: "a data sheet row, a handbook table entry, or a design token: one named value kept in one place"
+ quote: [
+  "units, conditions, and any number with a sign, an exponent, or a percent",
+  "verify, written as a status, for a value not yet checked against its source"
+ ]
+ unlearn: "a number typed into a sentence is a claim without a home; give it a cell and cite the handle"
+ token_breaks: "a design token can alias another token, while a cell holds a value and its source and aliases nothing"
+}
+
+^["keyboard"]{
+ #>spw_door_cell_keys
+ ^["opening_mark"]{
+  #:claim #!settled
+  statement: "A cell opens with the percent sign, which needs Shift with the 5 key on both the Windows US and the Windows UK layouts."
+  reads: %[doors.key.percent_us_mods, doors.key.percent_uk_mods]
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_kbd_us"
+ }
+}
+
+#>spw_door_cell_q
+?["If a design token library and a registry shared one cell grammar, what would break first?"]{
+ #:depth #!stylistic ~#lens(scale and dimension)
+ #:claim #!speculative
+ ~#hypothesis: "Aliases break first, since token libraries lean on references between tokens while a cell expects a value with a source of its own."
+ !probe{ "rewrite five tokens from a design system you know as cells and note which fields have no place" =id[p_doors_cell_tokens] =kind[build] }
+ breaks: "a token carries intent for a renderer, while a cell carries a measurement for a reader"
+ ~"./cell.spw#spw_door_cell_shape" ~#neighbor(nearest)
+}

@@ -1,0 +1,137 @@
+# Engineering
+#
+# The engineering branch: shared cores for control, transport, and economics, discipline curricula that lean on them, and a stance on the abstraction stack.
+
+#>engineering_index
+#:layer #!reference
+#:domain #!engineering
+#:form #!index
+#:level #!foundation
+#:review #!sourced
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Engineering"
+ ~#claim: "Engineering disciplines share a few canonical cores, and every design abstraction holds only until the physics beneath it leaks through."
+ ~#proof: "Control, transport, and economics nodes cite their originators; the abstraction stance rests on Hennessy and Patterson and on the Spectre attacks of Kocher and coworkers."
+ ~#door: "Pick a discipline rung, then follow its needs edges into the shared cores."
+ ~#audience: "students choosing an engineering path and readers crossing between disciplines"
+ continuity: "Engineering | shared cores"
+ cold_open: "Engineering disciplines lean on a few shared cores, and every abstraction holds only until the physics underneath leaks through."
+}
+
+^"provenance"{
+ as_of: "2026-10-02"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ ".spw/caches/university-education/electrical-and-computer-engineering/taste.spw" ]
+ method: #revised
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the taste file said EUV lithography etches patterns narrower than a strand of DNA; EUV features stay several times wider than the double helix, and the errata surface carries the sources",
+  "the taste file put more transistors on a thumbnail-sized die than there are stars in the galaxy; no source supports that count for a die that size, so the comparison is dropped",
+  "the taste file said each abstraction layer is completely insulated from the one below; speculative-execution leaks and the power wall show layers leak, so the stance is restated as interpretive",
+  "the 2 percent of world electricity figure and the geomagnetic storm warning had no source and are dropped",
+  "the neuromorphic and tunneling-limit wonders carried invented magnitudes and are dropped; one direction-only question replaces them"
+ ]
+}
+
+^["edges"]{
+ see: [ ~"../../provenance/errata-technical.spw#provenance_errata_ece", ~"../../provenance/errata-technical.spw#provenance_errata_mechanical" ]
+}
+
+^["tree"]{
+ electrical: ~"./electrical-core.spw"
+ computer: ~"./computer-engineering-core.spw"
+ mechanical: ~"./mechanical-core.spw"
+ economics: ~"./engineering-economics.spw"
+ control: ~"./control-and-signals.spw"
+ transport: ~"./transport-phenomena.spw"
+ systems: ~"./industrial-and-systems-engineering.spw"
+ ece_advanced: ~"./ece-advanced.spw"
+ mechanical_advanced: ~"./mechanical-advanced.spw"
+}
+
+^["bundle"]{
+ ={ ~"./electrical-core.spw#engineering_electrical" }
+ ={ ~"./computer-engineering-core.spw#engineering_computer" }
+ ={ ~"./mechanical-core.spw#engineering_mechanical" }
+ ={ ~"./engineering-economics.spw#engineering_economics" }
+ ={ ~"./control-and-signals.spw#engineering_control_signals" }
+ ={ ~"./transport-phenomena.spw#engineering_transport" }
+ ={ ~"./industrial-and-systems-engineering.spw#engineering_ise" }
+ ={ ~"./ece-advanced.spw#engineering_ece_advanced" }
+ ={ ~"./mechanical-advanced.spw#engineering_mechanical_advanced" }
+}
+
+^["ladder"]{
+ rungs: << "foundation" ; "advanced" ; "graduate" >>
+ foundation: [
+  ~"./electrical-core.spw#engineering_electrical",
+  ~"./computer-engineering-core.spw#engineering_computer",
+  ~"./mechanical-core.spw#engineering_mechanical",
+  ~"./engineering-economics.spw#engineering_economics"
+ ]
+ advanced: [
+  ~"./control-and-signals.spw#engineering_control_signals",
+  ~"./transport-phenomena.spw#engineering_transport",
+  ~"./industrial-and-systems-engineering.spw#engineering_ise"
+ ]
+ graduate: [ ~"./ece-advanced.spw#engineering_ece_advanced", ~"./mechanical-advanced.spw#engineering_mechanical_advanced" ]
+}
+
+^["cores"]{
+ rule: "a discipline names a shared core with a needs edge and keeps only a short frame of its own"
+ control: ~"./control-and-signals.spw#engineering_control_signals"
+ transport: ~"./transport-phenomena.spw#engineering_transport"
+ economics: ~"./engineering-economics.spw#engineering_economics"
+ thermodynamics: ~"../physics/classical-thermodynamics.spw#physics_thermo_classical"
+ electromagnetism: ~"../physics/electromagnetism.spw#physics_em"
+}
+
+^["facets"]{
+ domain: "engineering throughout"
+ forms: "curriculum for prerequisite graphs, protocol for the control loop machine, comparison for transport and queueing, ledger for graduate mechanics, probe_battery for economics"
+ space: "curricula describe typical US programs accredited under ABET criteria; course names and years are typical structure, not rules"
+}
+
+^["stance"]{
+ #>engineering_index_abstraction_stack
+ ^["abstraction_stack"]{
+  #:claim #!interpretive
+  statement: "Each layer of the stack, from device physics through logic and instruction set to software, lets designers ignore the layer below until timing, power, or side channels make it matter again."
+  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_hennessy_patterson_2019", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_kocher_2019" ]
+  ~#counter(the raw said each layer is completely insulated from the one below)
+  see: [ ~"./ece-advanced.spw#engineering_ece_advanced_spectre", ~"./ece-advanced.spw#engineering_ece_advanced_power_wall" ]
+ }
+ #>engineering_index_limits_first
+ ^["limits_first"]{
+  #:claim #!interpretive
+  statement: "Across this branch the durable lessons are limits: Carnot bounds engines, Shannon bounds links, and queues bound throughput, so good design starts by naming which limit binds."
+  see: [
+   ~"./mechanical-core.spw#engineering_mechanical_carnot",
+   ~"./ece-advanced.spw#engineering_ece_advanced_shannon",
+   ~"./industrial-and-systems-engineering.spw#engineering_ise_kingman"
+  ]
+ }
+}
+
+^["gaps"]{
+ civil: "civil, structural, geotechnical, and environmental engineering have no leaf yet; expected neighbors are mechanical core and transport"
+ aerospace: "aerospace and nuclear engineering appear only through mechanical and transport topics"
+ biomedical: "biomedical engineering lives in the living branch under bioengineering"
+}
+
+#>engineering_index_leaky_layer_q
+?["Which layer of the stack will leak next as transistors keep shrinking?"]{
+ #:depth #!computational ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "With supply voltage no longer scaling, power and variability should leak upward first, pushing more design decisions out of circuits and into architecture and software."
+ !probe{ "trace where successive processor manuals added power or security guidance aimed at programmers" =id[p_mateng_index_leaky_layer] =kind[lit] }
+ $%[graph.out_degree]
+ ~"./index.spw#engineering_index_abstraction_stack" ~#neighbor(nearest)
+}

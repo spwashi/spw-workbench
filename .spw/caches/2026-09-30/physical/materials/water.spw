@@ -7,7 +7,7 @@
 #:domain #!materials
 #:form #!field_guide
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 #:era #!deep_time
 
@@ -22,7 +22,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-09-30"
+ as_of: "2026-10-02"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5"
  lineage: #[ ".spw/caches/materials-matter-and-history/water-the-universal-matrix.spw" ]
@@ -30,12 +30,23 @@
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-09-30", agent: "claude-opus-5.5", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-09-30", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
- corrections: #[ "Watt separate condenser is 1769; rotary output came with sun-and-planet gearing in 1781", "Wittfogel thesis marked contested; Grand Canal and Indus removed as supporting cases", "sanitation effect restated from Cutler and Miller 2005 instead of doubling life expectancy" ]
+ corrections: #[
+  "Watt patented the separate condenser in 1769; the sun-and-planet gearing the firm patented for rotary output in 1781 is usually credited to William Murdoch",
+  "Wittfogel thesis marked contested; Grand Canal and Indus removed as supporting cases",
+  "the raw said sanitation doubled life expectancy; that is dropped, and how much filtration and chlorination cut US urban mortality is marked contested between Cutler and Miller and Anderson, Charles, and Rees",
+  "the seawater osmotic pressure of 27 bar had no source; sourced correlations put standard seawater a little lower, so the number is dropped and the correlation is cited"
+ ]
 }
 
 ^["edges"]{
- grounds: [ ~"../../registries/quantities/materials-and-engineering.spw#q_mateng_water" ]
+ grounds: [ ~"../../registries/quantities/materials-and-engineering.spw#q_mateng_water", ~"../../living/plants/botany-core.spw#plant_science_botany" ]
+ see: [ ~"./bonding-and-states-of-matter.spw#materials_bonding_water_diagram" ]
 }
 
 ^["concepts"]{
@@ -73,7 +84,11 @@
  ^["density_maximum"]{
   #:claim #!settled
   statement: "Liquid water is densest near 3.98 C; ice Ih is about 8 percent less dense than that liquid, so ice floats and lakes freeze from the top."
-  reads: %[mateng.water.t_rho_max_c, mateng.water.rho_ice_g_cm3, mateng.water.rho_liquid_max_g_cm3]
+  reads: %[
+   mateng.water.t_rho_max_c,
+   mateng.water.rho_ice_g_cm3,
+   mateng.water.rho_liquid_max_g_cm3
+  ]
   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_crc_handbook"
  }
  #>materials_water_heat_capacity
@@ -104,7 +119,8 @@
   reads: %[mateng.water.dh_vap_kj_per_mol]
  }
  ^["desalination"]{
-  reverse_osmosis: "seawater has an osmotic pressure near 27 bar; reverse-osmosis plants push harder than that across polyamide membranes"
+  reverse_osmosis: "reverse-osmosis plants push seawater across polyamide membranes at a pressure above its osmotic pressure, which rises with salinity and temperature"
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_sharqawy_2010"
  }
 }
 
@@ -119,16 +135,24 @@
  #>materials_water_steam_engines
  ^["steam_engines"]{
   #:claim #!settled
-  statement: "Newcomen engines pumped mine water from 1712; Watt patented the separate condenser in 1769 and added rotary output with sun-and-planet gearing in 1781."
+  statement: "Newcomen engines pumped mine water from 1712; Watt patented the separate condenser in 1769, and in 1781 the firm patented sun-and-planet gearing, usually credited to William Murdoch, for rotary output."
   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_hills_1989"
   era: 1712..1781
  }
  #>materials_water_sanitation
  ^["sanitation"]{
   #:claim #!settled
-  statement: "Snow traced the 1854 Broad Street cholera cluster to a water pump; filtration and chlorination later account for a large share of the early twentieth-century fall in US urban mortality."
-  sources: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_snow_1855", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_cutler_miller_2005" ]
-  ~#(Cutler and Miller estimate about half of the 1900 to 1936 decline in major US cities)
+  statement: "Snow traced the 1854 Broad Street cholera cluster in London to a contaminated water pump, evidence that cholera travels in water."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_snow_1855"
+ }
+ #>materials_water_purification_mortality
+ ^["purification_and_mortality"]{
+  #:claim #!contested
+  statement: "Cutler and Miller credited filtration and chlorination with nearly half of the 1900 to 1936 mortality decline in major US cities; Anderson, Charles, and Rees find no substantial contribution."
+  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_cutler_miller_2005"
+  counter: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_anderson_charles_rees_2022"
+  see: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_cutler_miller_2022" ]
+  ~#(Cutler and Miller answered in a 2022 comment, and the authors replied)
  }
 }
 
