@@ -12,10 +12,12 @@ export interface AnnotationEntry {
     file: vscode.Uri
     /** Zero-based line number */
     line: number
-    /** Which flavour: #word, #:word, #!word, #>word, ##>word */
+    /** Which flavour: #word, #:word, #!word, #>word, ##>word, ~#word(reading) */
     kind: AnnotationKind
     /** The identifier after the sigil prefix (e.g. "physics" from #:physics) */
     name: string
+    /** The reading an `apposition` carries: "living system" from ~#lens(living system) */
+    body?: string
     /** Enclosing ^["section"] label, if any */
     sectionLabel?: string
     /** Full nested frame path active at this line */
@@ -73,15 +75,20 @@ export class AnnotationIndex {
                     line: raw.line,
                     kind: raw.kind,
                     name: raw.name,
+                    body: raw.body,
                     sectionLabel: raw.sectionLabel,
                     framePath: raw.framePath,
                 }
                 
                 this.entries.push(entry)
                 
-                const nameArr = this.byName.get(entry.name) || []
-                nameArr.push(entry)
-                this.byName.set(entry.name, nameArr)
+                // As on the server, a reading is not one more entry for the concept
+                // it shares a name with, so appositions stay out of the name map.
+                if (entry.kind !== 'apposition') {
+                    const nameArr = this.byName.get(entry.name) || []
+                    nameArr.push(entry)
+                    this.byName.set(entry.name, nameArr)
+                }
                 
                 const fileKey = entry.file.toString()
                 const fileArr = this.byFile.get(fileKey) || []
@@ -97,7 +104,7 @@ export class AnnotationIndex {
 
     // -- queries -------------------------------------------------------------
 
-    /** All entries matching annotation name (e.g. "physics") */
+    /** Particle and datum entries matching annotation name (e.g. "physics"); appositions are not included */
     lookup(name: string): AnnotationEntry[] {
         return this.byName.get(name) || []
     }
@@ -127,9 +134,9 @@ export class AnnotationIndex {
         return this.entries
     }
 
-    /** Search entries by name prefix (for filtered queries) */
+    /** Search entries by name, or by an apposition's reading (for filtered queries) */
     search(query: string): AnnotationEntry[] {
         const q = query.toLowerCase()
-        return this.entries.filter(e => e.name.toLowerCase().includes(q))
+        return this.entries.filter(e => e.name.toLowerCase().includes(q) || (e.body?.toLowerCase().includes(q) ?? false))
     }
 }

@@ -181,6 +181,50 @@ describe('compound patterns', () => {
     })
   })
 
+  it('~#name(reading) → property head, paren operators, one string body', () => {
+    const tokens = tokenize('~#lens(living system)')
+    expect(tokens).toEqual([
+      { line: 0, char: 0, length: 6, type: TT.property, modifiers: TM.declaration },  // ~#lens
+      { line: 0, char: 6, length: 1, type: TT.operator, modifiers: TM.declaration },  // (
+      { line: 0, char: 7, length: 13, type: TT.string, modifiers: 0 },                // living system
+      { line: 0, char: 20, length: 1, type: TT.operator, modifiers: 0 },              // )
+    ])
+  })
+
+  it('apposition body is prose: no number, keyword or string spill inside it', () => {
+    const line = "#:depth #!computational ~#lens(it's the root map, 50% (half) done) $%[x]"
+    const tokens = tokenize(line)
+    const bodyStart = line.indexOf('(') + 1
+    const bodyEnd = line.indexOf(') $%')
+    const inside = tokens.filter((t) => t.char >= bodyStart && t.char < bodyEnd)
+    expect(inside).toEqual([
+      { line: 0, char: bodyStart, length: bodyEnd - bodyStart, type: TT.string, modifiers: 0 },
+    ])
+    // Painting resumes after the closing paren.
+    expect(tokens.find((t) => t.char === bodyEnd + 2)).toMatchObject({ type: TT.keyword, length: 3 })
+  })
+
+  it('apposition parens paint as the same bracket material as bare parens', () => {
+    const bare = tokenize('(x)')
+    const apposition = tokenize('~#lens(x)')
+    const parens = (tokens: typeof bare, open: number, close: number) =>
+      [tokens.find((t) => t.char === open), tokens.find((t) => t.char === close)]
+        .map((t) => ({ type: t?.type, modifiers: t?.modifiers }))
+    expect(parens(apposition, 6, 8)).toEqual(parens(bare, 0, 2))
+  })
+
+  it('anonymous ~#(reading) paints its ~# head too', () => {
+    const tokens = tokenize('~#(nearest neighbor)')
+    expect(tokens[0]).toMatchObject({ char: 0, length: 2, type: TT.property, modifiers: TM.declaration })
+    expect(tokens[2]).toMatchObject({ char: 3, length: 16, type: TT.string })
+  })
+
+  it('unterminated ~#name( falls back to the trait painter', () => {
+    const tokens = tokenize('~#lens(open')
+    expect(tokens[0]).toMatchObject({ char: 0, length: 6, type: TT.property, modifiers: TM.declaration })
+    expect(tokens.some((t) => t.type === TT.string)).toBe(false)
+  })
+
   it('#annotation → type', () => {
     const tokens = tokenize('#layer')
     expect(tokens).toHaveLength(1)

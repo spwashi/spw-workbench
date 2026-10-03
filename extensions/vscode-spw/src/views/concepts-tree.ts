@@ -16,6 +16,7 @@
 import * as vscode from 'vscode'
 import type { SpwContext } from '../context'
 import type { AnnotationEntry } from '../annotation-index'
+import { KIND_PHASE, KIND_PREFIX, annotationLabel, bucketByPhase, conceptKey } from './annotation-kinds'
 
 // ── Core types ──────────────────────────────────────────────────
 
@@ -65,6 +66,7 @@ const KIND_GROUP_LABELS: Record<AnnotationKind, string> = {
   intent: 'Intents',
   anchor: 'Anchors',
   prompt_root: 'Prompt Roots',
+  apposition: 'Appositions',
 }
 
 const KIND_ICONS: Record<AnnotationKind, string> = {
@@ -73,6 +75,7 @@ const KIND_ICONS: Record<AnnotationKind, string> = {
   intent: 'zap',
   anchor: 'link',
   prompt_root: 'compass',
+  apposition: 'quote',
 }
 
 /** Maps annotation kinds to extension-contributed ThemeColor IDs */
@@ -82,6 +85,8 @@ const KIND_COLORS: Record<AnnotationKind, string> = {
   intent: 'spw.intent',
   anchor: 'spw.anchor',
   prompt_root: 'spw.promptRoot',
+  // No color of its own is contributed yet; it shares the `~#` family's.
+  apposition: 'spw.topic',
 }
 
 const KIND_NOUNS: Record<AnnotationKind, { singular: string; plural: string }> = {
@@ -90,35 +95,10 @@ const KIND_NOUNS: Record<AnnotationKind, { singular: string; plural: string }> =
   intent: { singular: 'intent', plural: 'intents' },
   anchor: { singular: 'anchor', plural: 'anchors' },
   prompt_root: { singular: 'prompt root', plural: 'prompt roots' },
+  apposition: { singular: 'apposition', plural: 'appositions' },
 }
 
-const KIND_PREFIX: Record<AnnotationKind, string> = {
-  topic: '#',
-  lens: '#:',
-  intent: '#!',
-  anchor: '#>',
-  prompt_root: '##>',
-}
-
-const ANNOTATION_KIND_ORDER: AnnotationKind[] = ['lens', 'intent', 'anchor', 'prompt_root', 'topic']
-
-/**
- * Spirit-sequence phase mapping for annotation kinds.
- * The spirit sequence ?~@&*^ maps wonder→potential→observer→merge→collapse→integration.
- * Annotation kinds map to phases by their semantic role:
- *   - lens (#:)    → ? wonder (probing, measurement)
- *   - intent (#!)  → ! action (injection, effect)
- *   - anchor (#>)  → ^ integration (framing, binding)
- *   - prompt_root (##>) → @ observer (navigation landmark, perspective)
- *   - topic (#)    → ~ potential (naming, superposition)
- */
-const KIND_PHASE: Record<AnnotationKind, { sigil: string; label: string; color: string }> = {
-  lens:        { sigil: '?', label: 'Wonder',      color: 'spw.phaseWonder' },
-  intent:      { sigil: '!', label: 'Action',       color: 'spw.phaseAction' },
-  anchor:      { sigil: '^', label: 'Integration',  color: 'spw.phaseIntegration' },
-  prompt_root: { sigil: '@', label: 'Observer',     color: 'spw.phaseMeta' },
-  topic:       { sigil: '~', label: 'Potential',    color: 'spw.phaseWonder' },
-}
+const ANNOTATION_KIND_ORDER: AnnotationKind[] = ['lens', 'intent', 'anchor', 'prompt_root', 'apposition', 'topic']
 
 /** Density bar using unicode block elements — visual frequency encoding */
 function densityBar(count: number, maxCount: number, width: number = 8): string {
@@ -259,7 +239,8 @@ class ConceptsTreeDataProvider implements vscode.TreeDataProvider<ConceptNode> {
   private renderEntryItem(element: ConceptEntryNode): vscode.TreeItem {
     const entry = element.entry
     const prefix = KIND_PREFIX[entry.kind] ?? '#'
-    const fullLabel = `${prefix}${entry.name}`
+    // An apposition shows its reading: `~#lens(living system)`, not one more bare `~#lens`.
+    const fullLabel = annotationLabel(entry)
 
     // TreeItemLabel with highlighted sigil prefix for visual cortex pattern recognition
     const highlightEnd = prefix.length
@@ -376,6 +357,7 @@ class ConceptsTreeDataProvider implements vscode.TreeDataProvider<ConceptNode> {
     return entries.filter((entry) => {
       const file = vscode.workspace.asRelativePath(entry.file).toLowerCase()
       return entry.name.toLowerCase().includes(query)
+        || entry.body?.toLowerCase().includes(query)
         || entry.kind.toLowerCase().includes(query)
         || file.includes(query)
         || entry.sectionLabel?.toLowerCase().includes(query)
@@ -409,9 +391,10 @@ class ConceptsTreeDataProvider implements vscode.TreeDataProvider<ConceptNode> {
   private groupByConcept(entries: AnnotationEntry[]): ConceptGroupNode[] {
     const groups = new Map<string, AnnotationEntry[]>()
     for (const entry of entries) {
-      const bucket = groups.get(entry.name) ?? []
+      const key = conceptKey(entry)
+      const bucket = groups.get(key) ?? []
       bucket.push(entry)
-      groups.set(entry.name, bucket)
+      groups.set(key, bucket)
     }
 
     return [...groups.entries()]
@@ -466,21 +449,16 @@ class ConceptsTreeDataProvider implements vscode.TreeDataProvider<ConceptNode> {
    * spirit sequence (?~@&*^).
    */
   private groupByPhase(entries: AnnotationEntry[]): ConceptGroupNode[] {
-    // Phase order follows the spirit sequence
-    const phaseOrder: AnnotationKind[] = ['lens', 'topic', 'prompt_root', 'intent', 'anchor']
-
-    return phaseOrder
-      .map((kind) => {
-        const phase = KIND_PHASE[kind]
-        return {
-          kind: 'group' as const,
-          groupKind: 'phase' as const,
-          key: phase.sigil,
-          label: phase.label,
-          entries: entries.filter((e) => e.kind === kind),
-        }
-      })
-      .filter((group) => group.entries.length > 0)
+    // One group per phase, in spirit order; kinds that share a phase share its group.
+    return bucketByPhase(entries)
+      .filter((bucket) => bucket.entries.length > 0)
+      .map((bucket) => ({
+        kind: 'group' as const,
+        groupKind: 'phase' as const,
+        key: bucket.phase.sigil,
+        label: bucket.phase.label,
+        entries: bucket.entries,
+      }))
   }
 
   private kindGroups(entries: AnnotationEntry[], groupKind: Extract<GroupNodeKind, 'kind' | 'concept-kind'>): ConceptGroupNode[] {
@@ -511,9 +489,10 @@ class ConceptsTreeDataProvider implements vscode.TreeDataProvider<ConceptNode> {
     for (const entry of allEntries) {
       const fileKey = entry.file.toString()
 
-      // Co-occurrence: track which names appear in which files
+      // Co-occurrence: track which names appear in which files. A reading is
+      // not the concept it shares a name with, so it stays out.
       const names = fileToNames.get(fileKey) ?? new Set()
-      names.add(entry.name)
+      if (entry.kind !== 'apposition') names.add(entry.name)
       fileToNames.set(fileKey, names)
 
       // Braid detection: same file + same line
@@ -561,7 +540,7 @@ class ConceptsTreeDataProvider implements vscode.TreeDataProvider<ConceptNode> {
       .sort((a, b) => b[1] - a[1])
       .slice(0, topN)
       .map(([name, sharedFileCount]) => {
-        const nameEntries = allEntries.filter((e) => e.name === name)
+        const nameEntries = allEntries.filter((e) => conceptKey(e) === name)
         const kindCounts = countKinds(nameEntries)
         return {
           kind: 'resonance' as const,
@@ -664,7 +643,7 @@ export function registerConceptsTreeView(spw: SpwContext): vscode.Disposable[] {
 // ── Utility functions ───────────────────────────────────────────
 
 function isAnnotationKind(value: string): value is AnnotationKind {
-  return value === 'topic' || value === 'lens' || value === 'intent' || value === 'anchor' || value === 'prompt_root'
+  return Object.hasOwn(KIND_ICONS, value)
 }
 
 function entryNodes(entries: AnnotationEntry[]): ConceptEntryNode[] {

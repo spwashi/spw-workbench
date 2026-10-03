@@ -25,6 +25,7 @@ import type {
   SpwContextAtPositionResult,
 } from '../lsp/custom-requests'
 import type { AnnotationEntry } from '../annotation-index'
+import { bucketByPhase } from './annotation-kinds'
 import { displayWorkspaceUri, openWorkspaceTarget } from '../navigation'
 
 // ── Node types ────────────────────────────────────────────────────
@@ -90,19 +91,7 @@ interface SpiritPhaseNode {
   phaseLabel: string
   count: number
   total: number
-  annotationKind: AnnotationEntry['kind']
-}
-
-// ── Phase mapping ─────────────────────────────────────────────────
-
-type AnnotationKind = AnnotationEntry['kind']
-
-const PHASE_MAP: Record<AnnotationKind, { sigil: string; label: string; color: string }> = {
-  lens:        { sigil: '?', label: 'Wonder',      color: 'spw.phaseWonder' },
-  topic:       { sigil: '~', label: 'Potential',    color: 'spw.phaseWonder' },
-  prompt_root: { sigil: '@', label: 'Observer',     color: 'spw.phaseMeta' },
-  intent:      { sigil: '!', label: 'Action',       color: 'spw.phaseAction' },
-  anchor:      { sigil: '^', label: 'Integration',  color: 'spw.phaseIntegration' },
+  color: string
 }
 
 const TIER_COLORS: Record<string, string> = {
@@ -415,7 +404,7 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
         item.description = `${bar} ${node.count} (${pct}%)`
         item.iconPath = new vscode.ThemeIcon(
           'circle-filled',
-          new vscode.ThemeColor(PHASE_MAP[node.annotationKind]?.color ?? 'spw.topic'),
+          new vscode.ThemeColor(node.color),
         )
         item.tooltip = `${node.phaseLabel} phase (${node.sigil})\n${node.count} of ${node.total} annotations (${pct}%)`
         item.contextValue = 'atlas-spirit-phase'
@@ -634,21 +623,16 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
     }
 
     const total = allEntries.length
-    // Spirit phase order: wonder(?), potential(~), observer(@), action(!), integration(^)
-    const phaseOrder: AnnotationEntry['kind'][] = ['lens', 'topic', 'prompt_root', 'intent', 'anchor']
-
-    return phaseOrder.map((annotationKind): SpiritPhaseNode => {
-      const phase = PHASE_MAP[annotationKind]
-      const count = allEntries.filter((e) => e.kind === annotationKind).length
-      return {
-        kind: 'spirit-phase',
-        sigil: phase.sigil,
-        phaseLabel: phase.label,
-        count,
-        total,
-        annotationKind,
-      }
-    })
+    // One row per phase in spirit order — wonder(?), potential(~), observer(@),
+    // action(!), integration(^) — so the rows partition the entries and sum to the total.
+    return bucketByPhase(allEntries).map((bucket): SpiritPhaseNode => ({
+      kind: 'spirit-phase',
+      sigil: bucket.phase.sigil,
+      phaseLabel: bucket.phase.label,
+      count: bucket.entries.length,
+      total,
+      color: bucket.phase.color,
+    }))
   }
 
   private getSpiritSummary(): string | undefined {
@@ -659,22 +643,17 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
     return `${dominant.sigil} ${dominant.label} dominant`
   }
 
+  /** The phase holding the most entries, counted per phase so kinds that share one add up; ties go to the earlier phase. */
   private getDominantPhase(entries: AnnotationEntry[]): { sigil: string; label: string } | null {
-    const counts = new Map<AnnotationEntry['kind'], number>()
-    for (const entry of entries) {
-      counts.set(entry.kind, (counts.get(entry.kind) ?? 0) + 1)
-    }
-    let maxKind: AnnotationEntry['kind'] | null = null
+    let dominant: { sigil: string; label: string } | null = null
     let maxCount = 0
-    for (const [kind, count] of counts) {
-      if (count > maxCount) {
-        maxCount = count
-        maxKind = kind
+    for (const bucket of bucketByPhase(entries)) {
+      if (bucket.entries.length > maxCount) {
+        maxCount = bucket.entries.length
+        dominant = { sigil: bucket.phase.sigil, label: bucket.phase.label }
       }
     }
-    if (!maxKind) return null
-    const phase = PHASE_MAP[maxKind]
-    return { sigil: phase.sigil, label: phase.label }
+    return dominant
   }
 }
 

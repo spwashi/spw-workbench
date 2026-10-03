@@ -46,6 +46,41 @@ describe('VS Code workspace request client', () => {
     expect(calls).toEqual([{ method: 'spw/workspaceManifest/v1', params: {} }])
   })
 
+  it('accepts apposition records with their reading and skips kinds it does not know', async () => {
+    const annotation = (kind: string, extra: Record<string, unknown> = {}) => ({
+      uri: 'file:///workspace/a.spw',
+      line: 2,
+      kind,
+      name: 'lens',
+      framePath: ['wonders'],
+      ...extra,
+    })
+    const transport: SpwRequestTransport = {
+      async sendRequest<R>(): Promise<R> {
+        return [
+          annotation('lens'),
+          annotation('apposition', { body: 'bandwidth symmetry', sectionLabel: 'wonders' }),
+          annotation('aspect-from-the-future'),
+        ] as R
+      },
+    }
+
+    const records = await createSpwCustomRequestClient(transport).annotations()
+    expect(records.map((record) => record.kind)).toEqual(['lens', 'apposition'])
+    expect(records[1]).toMatchObject({ kind: 'apposition', name: 'lens', body: 'bandwidth symmetry' })
+  })
+
+  it('still rejects a malformed annotation record', async () => {
+    const transport: SpwRequestTransport = {
+      async sendRequest<R>(): Promise<R> {
+        return [{ uri: 'file:///workspace/a.spw', line: 2, kind: 'apposition', name: 'lens', body: 7, framePath: [] }] as R
+      },
+    }
+
+    await expect(createSpwCustomRequestClient(transport).annotations())
+      .rejects.toThrow('spw/annotations returned an invalid annotation entry')
+  })
+
   it('rejects the path-bearing legacy response instead of adapting it locally', async () => {
     const transport: SpwRequestTransport = {
       async sendRequest<R>(): Promise<R> {

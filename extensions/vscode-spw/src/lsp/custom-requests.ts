@@ -10,7 +10,9 @@ export type SpwWorkspaceManifest = SpwWorkspaceManifestV1
 export type SpwWorkspaceRootEntry = SpwWorkspaceRootEvidence
 export type { SpwWorkspaceRootSource }
 
-export type SpwAnnotationKind = 'topic' | 'lens' | 'intent' | 'anchor' | 'prompt_root'
+/** Kinds this client can draw. `apposition` is a named `~#name(reading)`; `lens` is the `#:` particle. */
+const SPW_ANNOTATION_KINDS = ['topic', 'lens', 'intent', 'anchor', 'prompt_root', 'apposition'] as const
+export type SpwAnnotationKind = typeof SPW_ANNOTATION_KINDS[number]
 export type SpwMaterializationState = 'priming' | 'concept' | 'frame' | 'body'
 
 export interface SpwAnnotationRecord {
@@ -18,6 +20,8 @@ export interface SpwAnnotationRecord {
   line: number
   kind: SpwAnnotationKind
   name: string
+  /** The reading an `apposition` carries. */
+  body?: string
   sectionLabel?: string
   framePath: string[]
 }
@@ -286,20 +290,27 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function isAnnotationKind(value: unknown): value is SpwAnnotationKind {
-  return value === 'topic' || value === 'lens' || value === 'intent' || value === 'anchor' || value === 'prompt_root'
+  return (SPW_ANNOTATION_KINDS as readonly unknown[]).includes(value)
 }
 
-function isAnnotationRecord(value: unknown): value is SpwAnnotationRecord {
+/** A well-formed record whose kind may be one this client does not know yet. */
+function isAnnotationShape(value: unknown): value is Omit<SpwAnnotationRecord, 'kind'> & { kind: string } {
   if (!isRecord(value)) return false
   return typeof value.uri === 'string'
     && typeof value.line === 'number'
-    && isAnnotationKind(value.kind)
+    && typeof value.kind === 'string'
     && typeof value.name === 'string'
+    && (typeof value.body === 'undefined' || typeof value.body === 'string')
     && (typeof value.sectionLabel === 'undefined' || typeof value.sectionLabel === 'string')
     && Array.isArray(value.framePath)
     && value.framePath.every((segment) => typeof segment === 'string')
 }
 
+/**
+ * A malformed entry still fails the whole payload. An entry of an unknown kind
+ * is skipped: a newer server that indexes a new kind should cost this client
+ * that kind, not every annotation in the Concepts tree.
+ */
 function parseAnnotationRecords(value: unknown): SpwAnnotationRecord[] {
   if (!Array.isArray(value)) {
     throw new Error('spw/annotations returned a non-array payload')
@@ -307,10 +318,12 @@ function parseAnnotationRecords(value: unknown): SpwAnnotationRecord[] {
 
   const records: SpwAnnotationRecord[] = []
   for (const entry of value) {
-    if (!isAnnotationRecord(entry)) {
+    if (!isAnnotationShape(entry)) {
       throw new Error('spw/annotations returned an invalid annotation entry')
     }
-    records.push(entry)
+    const { kind } = entry
+    if (!isAnnotationKind(kind)) continue
+    records.push({ ...entry, kind })
   }
 
   return records

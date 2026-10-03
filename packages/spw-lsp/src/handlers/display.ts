@@ -7,19 +7,21 @@
 
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
-import { SIGIL_SEMANTICS } from '../server-index'
+import { SIGIL_SEMANTICS, type AnnotationKind } from '../server-index'
+import { annotationLabel } from '../apposition'
 import { findPathRefAtPosition } from '../spw-selector'
 import { statKind } from '../helpers'
-import type {
-    LspHover, LspDocumentSymbol, LspSymbolInfo, LspCodeLens, LspInlayHint,
-    LspDocumentHighlight,
-    LspPosition, LspRange,
-    HoverParams, DocumentParams, InlayHintParams, TextDocumentPositionParams,
-    HandlerDeps,
+import {
+    SK,
+    type LspHover, type LspDocumentSymbol, type LspSymbolInfo, type LspCodeLens, type LspInlayHint,
+    type LspDocumentHighlight,
+    type LspPosition, type LspRange,
+    type HoverParams, type DocumentParams, type InlayHintParams, type TextDocumentPositionParams,
+    type HandlerDeps,
 } from '../types'
-import { SK } from '../types'
 import { outlineFromSource } from './outline'
 import { formContextHover } from './form-context'
+import { buildWonderHint, codeSpan, hoverApposition, hoverWonder, parseWonderBlock, sourceTokens } from './wonder'
 import {
   formatCatalogEntryMarkdown,
   getSyntaxCatalogEntry,
@@ -27,6 +29,7 @@ import {
   scanExperimentalRefs,
   scanFlowProtocol,
   formatFlowProtocolSummary,
+  type Token,
 } from '@spwashi/spw-seed'
 import { scanBracePhrases, countPhrasesById, measureProbesAndSubstrate } from '@spwashi/spw-runtime'
 
@@ -34,14 +37,9 @@ type DisplayAnnotationKind = 'topic' | 'lens' | 'intent' | 'anchor'
 
 const ANNOTATION_RE = /(##>|#!|#:|#>|#)([a-zA-Z_][a-zA-Z0-9_]*)/g
 const ANCHOR_RE = /##?>([a-zA-Z_][a-zA-Z0-9_]*)/
-const PREFIX_BY_KIND: Record<DisplayAnnotationKind, string> = {
-    topic: '#',
-    lens: '#:',
-    intent: '#!',
-    anchor: '#>',
-}
 
-type VisibleStringDelimiter = '"' | "'" | '`' | null
+/** LSP SymbolKind.String — an apposition is a reading, and the shared SK table has no entry for it. */
+const SYMBOL_KIND_STRING = 15
 
 interface DisplayLineContext {
     framePath: string[]
@@ -58,17 +56,6 @@ interface ParsedAnnotationMatch {
     start: number
     end: number
     braid: string
-}
-
-interface WonderBlockSummary {
-    question: string
-    depth: string | null
-    lens: string | null
-    probe: string | null
-    metrics: string[]
-    neighbor: string | null
-    /** The block's following lines, so a hint can drop what they already show. */
-    bodyText: string
 }
 
 function annotationKindFromSigil(sigil: string | undefined): DisplayAnnotationKind {
@@ -246,116 +233,6 @@ function countBracesOutsideStrings(line: string, startDepth: number): number {
     return depth
 }
 
-function buildWonderHint(summary: WonderBlockSummary): { label: string; tooltip: string } | null {
-    // The hint sits on the `?[…]{` line; depth and lens are extracted from the
-    // block's own following lines, so when the block is visible they only
-    // repeat it. Keep the parts that genuinely compress — the metric count
-    // stands in for a whole `$%[…]` line — and drop the verbatim echoes.
-    const parts: string[] = []
-    if (summary.depth && !summary.bodyText.includes(summary.depth)) parts.push(summary.depth)
-    if (summary.lens && !summary.bodyText.includes(summary.lens)) parts.push(`lens: ${summary.lens}`)
-    if (summary.metrics.length > 0) parts.push(`${summary.metrics.length} metric${summary.metrics.length === 1 ? '' : 's'}`)
-    if (summary.neighbor) parts.push('neighbor')
-
-    // With nothing compressive left, the question is already on the line — no
-    // hint beats a hint that restates what the reader is looking at.
-    if (parts.length === 0) return null
-
-    const tooltip: string[] = [summary.question]
-    if (summary.probe) tooltip.push(`Probe: ${summary.probe}`)
-    if (summary.metrics.length > 0) tooltip.push(`Metrics: ${summary.metrics.join(', ')}`)
-    if (summary.neighbor) tooltip.push(`Neighbor: ${summary.neighbor}`)
-
-    return {
-        label: ` [? ${parts.join(' · ')}]`,
-        tooltip: tooltip.join('\n'),
-    }
-}
-
-function parseWonderBlock(lines: string[], startLine: number): WonderBlockSummary | null {
-    const line = lines[startLine] ?? ''
-    const wonderMatch = line.match(/\?\["([^"]+)"\]/)
-    if (!wonderMatch) return null
-
-    const bodyLines: string[] = []
-    let braceDepth = line.includes('{') ? 1 : 0
-
-    if (braceDepth > 0) {
-        for (let i = startLine + 1; i < lines.length && i < startLine + 12; i += 1) {
-            const bodyLine = lines[i] ?? ''
-            bodyLines.push(bodyLine)
-            braceDepth += countVisibleBraceDelta(bodyLine)
-            if (braceDepth <= 0) break
-        }
-    } else {
-        for (let i = startLine + 1; i < lines.length && i < startLine + 6; i += 1) {
-            const bodyLine = lines[i] ?? ''
-            if (bodyLine.startsWith('  ') || bodyLine.trim() === '') {
-                bodyLines.push(bodyLine)
-                continue
-            }
-            break
-        }
-    }
-
-    const bodyText = bodyLines.join('\n')
-    const depthLine = bodyLines.find((entry) => entry.includes('#:depth'))
-    const depth = depthLine?.match(/#!([a-z][a-z0-9_]*)/)?.[1] ?? null
-    const lens = depthLine?.match(/\/\/\s*lens:\s*(.+)/)?.[1]?.trim() ?? null
-    const probe = bodyText.match(/!probe\{\s*"([^"]+)"/s)?.[1] ?? null
-    const metrics = [...bodyText.matchAll(/\$%\[([^\]]+)\]/g)]
-        .flatMap((match) => match[1].split(',').map((value) => value.trim()).filter(Boolean))
-    const neighbor = bodyText.match(/~<([^>]+)>/)?.[1]?.trim() ?? null
-
-    return {
-        question: wonderMatch[1],
-        depth,
-        lens,
-        probe,
-        metrics,
-        neighbor,
-        bodyText,
-    }
-}
-
-function countVisibleBraceDelta(line: string): number {
-    let depth = 0
-    let delimiter: VisibleStringDelimiter = null
-    for (let i = 0; i < line.length; i += 1) {
-        const ch = line[i]
-        const nextDelimiter = nextVisibleStringDelimiter(line, i, delimiter)
-        if (nextDelimiter !== delimiter) {
-            delimiter = nextDelimiter
-            continue
-        }
-        if (delimiter) continue
-        if (ch === '/' && line[i + 1] === '/') break
-        if (ch === '{') depth += 1
-        else if (ch === '}') depth -= 1
-    }
-    return depth
-}
-
-function nextVisibleStringDelimiter(
-    text: string,
-    index: number,
-    current: VisibleStringDelimiter,
-): VisibleStringDelimiter {
-    const ch = text[index]
-    if (current) {
-        return ch === current && !isEscapedCharacter(text, index) ? null : current
-    }
-    return ch === '"' || ch === "'" || ch === '`' ? ch : null
-}
-
-function isEscapedCharacter(text: string, index: number): boolean {
-    let slashCount = 0
-    for (let i = index - 1; i >= 0 && text[i] === '\\'; i -= 1) {
-        slashCount += 1
-    }
-    return slashCount % 2 === 1
-}
-
 // ── Hover ───────────────────────────────────────────────────────
 
 /**
@@ -466,12 +343,21 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
     if (source === null) return null
 
     const docPath = deps.pathFromUri(uri)
-    const line = source.split('\n')[pos.line] ?? ''
+    const lines = source.split('\n')
+    const line = lines[pos.line] ?? ''
     const charAtPos = line[pos.character]
+    let tokens: readonly Token[] | undefined
+    const tokensOf = () => (tokens ??= sourceTokens(source, uri, deps))
+    const contextAt = (character: number) =>
+        buildContextMarkdown(deps.serverIndex.getContextAtPosition(uri, { line: pos.line, character }) as DisplayLineContext | null)
 
     // 0. Experimental catalog / dialect stack (plan-syntax presence)
     const expHover = hoverExperimentalOrDialect(source, line, pos, docPath, deps.workspaceRoot)
     if (expHover) return expHover
+
+    // 0.5 Apposition — before the annotation regex reads `~#lens(` as `#lens`
+    const appositionHover = hoverApposition(line, pos, tokensOf, deps, contextAt)
+    if (appositionHover) return appositionHover
 
     // 1. Annotation hover
     const annotationMatches = collectAnnotationMatches(line)
@@ -541,6 +427,10 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
         }
     }
 
+    // 1.2 Wonder block — before form geometry claims the question as a boundary
+    const wonderHover = hoverWonder(lines, pos, tokensOf, deps, contextAt)
+    if (wonderHover) return wonderHover
+
     // 1.5 Form geometry — coupling packet + label site (seed-owned)
     {
         const doc = deps.serverIndex.getDocument(uri)
@@ -586,7 +476,7 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
             let md = `**^["${frameName}"]** \u2014 *frame*\n\n`
             md += buildContextMarkdown(context)
             if (inSection.length > 0) {
-                md += 'Annotations: ' + inSection.map(e => `\`${PREFIX_BY_KIND[e.kind as DisplayAnnotationKind] ?? '#'}${e.name}\``).join(', ') + '\n\n'
+                md += 'Annotations: ' + inSection.map(e => codeSpan(annotationLabel(e))).join(', ') + '\n\n'
             }
             if (opCounts) md += `Operators: ${opCounts}\n\n`
             md += `Cache tier: ${cacheTier}\n`
@@ -622,35 +512,6 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
         return {
             contents: { kind: 'markdown', value: md },
             range: { start: { line: pos.line, character: start }, end: { line: pos.line, character: end } },
-        }
-    }
-
-    // 4. Wonder block hover
-    const wonderSummary = parseWonderBlock(source.split('\n'), pos.line)
-    const wonderRe = /\?\["([^"]+)"\]/
-    const wonderMatch = line.match(wonderRe)
-    if (wonderMatch && wonderSummary) {
-        const wStart = line.indexOf(wonderMatch[0])
-        const wEnd = wStart + wonderMatch[0].length
-        if (pos.character >= wStart && pos.character < wEnd) {
-            const context = deps.serverIndex.getContextAtPosition(uri, { line: pos.line, character: wStart }) as DisplayLineContext | null
-
-            let md = `**\u2753 Wonder**\n\n`
-            md += buildContextMarkdown(context)
-            md += `> ${wonderSummary.question}\n\n`
-            if (wonderSummary.depth) md += `**Depth axis:** ${wonderSummary.depth}`
-            if (wonderSummary.lens) md += ` \u00b7 **Lens:** ${wonderSummary.lens}`
-            if (wonderSummary.depth || wonderSummary.lens) md += '\n\n'
-            if (wonderSummary.metrics.length > 0) {
-                md += `**Metrics:** \`${wonderSummary.metrics.join(', ')}\`\n\n`
-            }
-            if (wonderSummary.neighbor) md += `**Neighbor:** \`${wonderSummary.neighbor}\`\n\n`
-            if (wonderSummary.probe) md += `**Probe:** ${wonderSummary.probe}\n`
-
-            return {
-                contents: { kind: 'markdown', value: md },
-                range: { start: { line: pos.line, character: wStart }, end: { line: pos.line, character: wEnd } },
-            }
         }
     }
 
@@ -895,7 +756,8 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
                             const layerDist = new Map<string, number>()
                             const seenFiles = new Set<string>()
                             for (const a of dirAnnotations) {
-                                annotFreq.set(a.name, (annotFreq.get(a.name) ?? 0) + 1)
+                                // A reading shares its name with a concept, not the concept itself.
+                                if (a.kind !== 'apposition') annotFreq.set(a.name, (annotFreq.get(a.name) ?? 0) + 1)
                                 if (!seenFiles.has(a.file)) {
                                     seenFiles.add(a.file)
                                     const fileAnnots = deps.serverIndex.annotationsForFile(a.file)
@@ -1037,11 +899,13 @@ export function workspaceSymbols(params: { query?: string }, deps: HandlerDeps):
 
     // Annotations
     const annotEntries = deps.serverIndex.searchAnnotations(query)
-    const kindMap: Record<string, number> = { topic: SK.Key, lens: SK.Enum, intent: SK.Event, anchor: SK.Interface, prompt_root: SK.Interface }
-    const prefixMap: Record<string, string> = { topic: '#', lens: '#:', intent: '#!', anchor: '#>', prompt_root: '##>' }
+    const kindMap: Record<AnnotationKind, number> = {
+        topic: SK.Key, lens: SK.Enum, intent: SK.Event, anchor: SK.Interface, prompt_root: SK.Interface,
+        apposition: SYMBOL_KIND_STRING,
+    }
     for (const entry of annotEntries.slice(0, 40)) {
         results.push({
-            name: `${prefixMap[entry.kind] ?? '#'}${entry.name}`,
+            name: annotationLabel(entry),
             kind: kindMap[entry.kind] ?? SK.Key,
             location: {
                 uri: deps.uriFromPath(entry.file),
@@ -1215,6 +1079,8 @@ export async function inlayHints(params: InlayHintParams, deps: HandlerDeps): Pr
     if (!doc) return []
 
     const lines = source.split('\n')
+    let tokens: readonly Token[] | undefined
+    const tokensOf = () => (tokens ??= sourceTokens(source, uri, deps))
     const hints: LspInlayHint[] = []
     const fileAnnotations = deps.serverIndex.annotationsForFile(docPath)
 
@@ -1267,7 +1133,7 @@ export async function inlayHints(params: InlayHintParams, deps: HandlerDeps): Pr
             }
 
             if (deps.config.inlayHints.annotations) {
-                const wonder = parseWonderBlock(lines, lineNo)
+                const wonder = parseWonderBlock(lines, lineNo, tokensOf)
                 const hint = wonder ? buildWonderHint(wonder) : null
                 if (hint) {
                     hints.push({

@@ -7,6 +7,7 @@ import {
   registerSnapshot,
   resonance,
 } from '../handlers/spw-probes'
+import { ServerIndex } from '../server-index'
 import type { HandlerDeps } from '../types'
 
 function makeDeps(text = '', overrides: Partial<HandlerDeps> = {}): HandlerDeps {
@@ -69,6 +70,24 @@ describe('spw probes', () => {
     const text = '#!intent somewhere'
     const r = await resonance({ uri: 'file:///workspace/a.spw' }, makeDeps(text))
     expect(r.some(e => e.channel === 'intent')).toBe(true)
+  })
+
+  it('resonance draws no #lens channel from readings that only share the word', async () => {
+    const serverIndex = new ServerIndex('/workspace')
+    const files: Record<string, string> = {
+      '/workspace/readings.spw': '~#lens(bandwidth symmetry)\n~#lens(ecological zone)',
+      '/workspace/particle.spw': '#:lens #!computational',
+    }
+    for (const [file, text] of Object.entries(files)) {
+      serverIndex.openDocument(`file://${file}`, file, text, 1)
+      serverIndex.saveDocument(`file://${file}`)
+    }
+    const text = '#:depth ~#lens(living system)'
+    const edges = await resonance({ uri: 'file:///workspace/a.spw' }, makeDeps(text, { serverIndex } as Partial<HandlerDeps>))
+    const lens = edges.filter((edge) => edge.channel === 'lens')
+    // The `#:lens` particle file resonates; the file that only holds readings does not.
+    expect(lens.map((edge) => edge.targetUri)).toEqual(['file:///workspace/particle.spw'])
+    expect(lens[0]!.strength).toBeCloseTo(0.45)
   })
 
   it('operatorFrequency uses document text', async () => {

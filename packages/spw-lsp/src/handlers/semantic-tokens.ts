@@ -9,9 +9,9 @@
  *   0  operator    — braces, &, <<>>, <>, generic operators
  *   1  type        — #-annotations, type-like constructs
  *   2  variable    — @-roots, $, navigable path refs (~"…", ~<path>, @root/path)
- *   3  property    — ~#traits, =-config, =exp[
+ *   3  property    — ~#traits, ~#name( apposition heads, =-config, =exp[
  *   4  function    — !-actions, !charge, ?-probes, #!intent
- *   5  string      — quoted strings
+ *   5  string      — quoted strings, apposition bodies
  *   6  keyword     — ^-framing, *, %, $%[, @dialect, ##>-anchors
  *   7  comment     — //-comments
  *   8  number      — numerics, times, fractions
@@ -62,6 +62,32 @@ function isAnglePathLike(inner: string): boolean {
     if (s.startsWith('.')) return true
     if (/\.(spw|ts|tsx|js|mjs|cjs|md|json)$/i.test(s)) return true
     return false
+}
+
+/**
+ * `~#name(` (name optional, as the apposition matcher allows) with a body that
+ * balances on this line. Returns the `~#name` length and the body length, or
+ * null when the paren never closes — that falls through to the trait painter.
+ */
+function appositionAt(rest: string): { head: number; body: number } | null {
+    const open = rest.match(/^~#[a-zA-Z0-9_-]*\(/)
+    if (!open) return null
+    const head = open[0].length - 1
+    let depth = 0
+    for (let i = head; i < rest.length; i++) {
+        if (rest[i] === '(') depth++
+        else if (rest[i] === ')' && --depth === 0) return { head, body: i - head - 1 }
+    }
+    return null
+}
+
+/**
+ * Bracket material — `{` `[` `(` and their closers — paints as operator. An
+ * opener carries `declaration` because it starts a shape; a closer carries
+ * none. An apposition's parens are the same material and paint the same way.
+ */
+function bracketModifiers(ch: string): number {
+    return ch === '{' || ch === '[' || ch === '(' ? TM.declaration : 0
 }
 
 // ── Result type ─────────────────────────────────────────────────
@@ -174,6 +200,20 @@ export function semanticTokens(params: DocumentParams, deps: HandlerDeps): LspSe
             if (promptAnchorMatch) {
                 push(lineIndex, col, promptAnchorMatch[0].length, TT.keyword, TM.declaration)
                 col += promptAnchorMatch[0].length
+                continue
+            }
+
+            // ~#name(reading) / ~#(reading) — apposition. The body is prose taken raw
+            // to the balancing paren, so it paints as one string: an apostrophe,
+            // a digit or a % inside it is not code.
+            const apposition = appositionAt(rest)
+            if (apposition) {
+                const bodyStart = col + apposition.head + 1
+                push(lineIndex, col, apposition.head, TT.property, TM.declaration)
+                push(lineIndex, bodyStart - 1, 1, TT.operator, bracketModifiers('('))
+                push(lineIndex, bodyStart, apposition.body, TT.string, 0)
+                push(lineIndex, bodyStart + apposition.body, 1, TT.operator, bracketModifiers(')'))
+                col += apposition.head + apposition.body + 2
                 continue
             }
 
@@ -338,8 +378,7 @@ export function semanticTokens(params: DocumentParams, deps: HandlerDeps): LspSe
 
             // Brace material — pair open/close as operator (shape literacy)
             if (ch === '{' || ch === '}' || ch === '[' || ch === ']' || ch === '(' || ch === ')') {
-                const open = ch === '{' || ch === '[' || ch === '('
-                push(lineIndex, col, 1, TT.operator, open ? TM.declaration : 0)
+                push(lineIndex, col, 1, TT.operator, bracketModifiers(ch))
                 col++
                 continue
             }

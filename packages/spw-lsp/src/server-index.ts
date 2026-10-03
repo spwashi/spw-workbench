@@ -25,16 +25,24 @@ import {
   type Token,
 } from '@spwashi/spw-seed'
 import { selectPathRefs, type SpwSelectorHit } from './spw-selector'
+import { BRAID_PREFIX, annotationFromApposition, normalizeReading } from './apposition'
 
 // ── Types ───────────────────────────────────────────────────────
 
-export type AnnotationKind = 'topic' | 'lens' | 'intent' | 'anchor' | 'prompt_root'
+/**
+ * `lens` is the `#:` particle (the seed calls it case); `apposition` is a named
+ * `~#name(reading)` — a reading laid beside a form. They share a word only by
+ * accident, so they stay distinct kinds.
+ */
+export type AnnotationKind = 'topic' | 'lens' | 'intent' | 'anchor' | 'prompt_root' | 'apposition'
 
 export interface AnnotationEntry {
   file: string
   line: number       // 0-indexed
   kind: AnnotationKind
   name: string
+  /** The reading an `apposition` carries — its paren body, trimmed. */
+  body?: string
   sectionLabel?: string
   framePath: string[]
 }
@@ -154,7 +162,7 @@ export const SIGIL_SEMANTICS: Record<string, SigilSemantic> = {
 const SPIRIT_SEQUENCE = '?~ <#.> @(#.) &[#.] *{#.} ^'
 const SPIRIT_PHASES = ['?~', '<#.>', '@(#.)', '&[#.]', '*{#.}', '^']
 
-function escapeMarkdownInline(value: string): string {
+export function escapeMarkdownInline(value: string): string {
   return value.replace(/[\\`*_{}\[\]()#+\-.!|]/g, '\\$&')
 }
 
@@ -163,7 +171,15 @@ function escapeMarkdownInline(value: string): string {
 export class ServerIndex {
   private documents = new Map<string, DocumentState>()
   private workspaceAnnotations: AnnotationEntry[] = []
+  /** Particle and datum entries by name. Appositions are kept out: see `appositionsByName`. */
   private annotationsByName = new Map<string, AnnotationEntry[]>()
+  /**
+   * `~#name(reading)` entries by name, apart from the particles: `~#lens(…)`
+   * and `#:lens` share a word, not a concept, so no lookup through the
+   * particle map counts a reading as one more `#lens`. Handlers that find the
+   * name in source with their own regex never consult this split.
+   */
+  private appositionsByName = new Map<string, AnnotationEntry[]>()
   private annotationsByFile = new Map<string, AnnotationEntry[]>()
   private workspaceFrames: FrameEntry[] = []
   private framesByName = new Map<string, FrameEntry[]>()
@@ -542,6 +558,7 @@ export class ServerIndex {
   async scanWorkspace(): Promise<void> {
     this.workspaceAnnotations = []
     this.annotationsByName.clear()
+    this.appositionsByName.clear()
     this.annotationsByFile.clear()
     this.workspaceFrames = []
     this.framesByName.clear()
@@ -599,14 +616,19 @@ export class ServerIndex {
 
   // ── Annotation extraction ─────────────────────────────────────
 
+  private nameMapFor(entry: AnnotationEntry): Map<string, AnnotationEntry[]> {
+    return entry.kind === 'apposition' ? this.appositionsByName : this.annotationsByName
+  }
+
   private addAnnotation(entry: AnnotationEntry): void {
     this.workspaceAnnotations.push(entry)
 
-    const byName = this.annotationsByName.get(entry.name)
+    const names = this.nameMapFor(entry)
+    const byName = names.get(entry.name)
     if (byName) {
       byName.push(entry)
     } else {
-      this.annotationsByName.set(entry.name, [entry])
+      names.set(entry.name, [entry])
     }
 
     const byFile = this.annotationsByFile.get(entry.file)
@@ -641,11 +663,12 @@ export class ServerIndex {
   private removeAnnotationsForFile(filePath: string): void {
     const old = this.annotationsByFile.get(filePath) || []
     for (const entry of old) {
-      const arr = this.annotationsByName.get(entry.name)
+      const names = this.nameMapFor(entry)
+      const arr = names.get(entry.name)
       if (arr) {
         const idx = arr.indexOf(entry)
         if (idx >= 0) arr.splice(idx, 1)
-        if (arr.length === 0) this.annotationsByName.delete(entry.name)
+        if (arr.length === 0) names.delete(entry.name)
       }
     }
     this.workspaceAnnotations = this.workspaceAnnotations.filter(e => e.file !== filePath)
@@ -676,13 +699,47 @@ export class ServerIndex {
 
   // ── Annotation queries ────────────────────────────────────────
 
+  /** Particle and datum entries named `name`; appositions are read through `lookupAppositions`. */
   lookupAnnotation(name: string): AnnotationEntry[] {
     return this.annotationsByName.get(name) || []
   }
 
+  /** Every `~#name(…)` apposition, whatever its reading. */
+  lookupAppositions(name: string): AnnotationEntry[] {
+    return this.appositionsByName.get(name) || []
+  }
+
+  /**
+   * Particles and data match on their name, appositions on their reading only:
+   * every `~#lens(…)` is named `lens`, and matching that name would bury the
+   * `#:lens` entries under a caller's cap. Ranked so a cap cuts readings
+   * first: exact names, then partial names, then readings, each in index order.
+   */
   searchAnnotations(query: string): AnnotationEntry[] {
     const q = query.toLowerCase()
-    return this.workspaceAnnotations.filter(e => e.name.toLowerCase().includes(q))
+    const exact: AnnotationEntry[] = []
+    const partial: AnnotationEntry[] = []
+    const readings: AnnotationEntry[] = []
+    for (const e of this.workspaceAnnotations) {
+      if (e.kind === 'apposition') {
+        if (e.body?.toLowerCase().includes(q)) readings.push(e)
+        continue
+      }
+      const name = e.name.toLowerCase()
+      if (name === q) exact.push(e)
+      else if (name.includes(q)) partial.push(e)
+    }
+    return [...exact, ...partial, ...readings]
+  }
+
+  /**
+   * Every `~#name(…)` apposition that states the same reading. Readings are
+   * compared through `normalizeReading`, so `living_system` and `Living System`
+   * count as one recurring lens rather than two one-offs.
+   */
+  lookupReading(name: string, body: string): AnnotationEntry[] {
+    const key = normalizeReading(body)
+    return this.lookupAppositions(name).filter(e => e.body !== undefined && normalizeReading(e.body) === key)
   }
 
   annotationsForFile(filePath: string): AnnotationEntry[] {
@@ -716,7 +773,7 @@ export class ServerIndex {
     return doc.lineContexts[line] ?? null
   }
 
-  /** Compute co-occurrence: annotations that appear in the same file */
+  /** Compute co-occurrence: annotations that appear in the same file. Appositions are readings, not concepts, and stay out. */
   coOccurrences(name: string): Map<string, number> {
     const entries = this.annotationsByName.get(name) || []
     const counts = new Map<string, number>()
@@ -724,7 +781,7 @@ export class ServerIndex {
     for (const entry of entries) {
       const siblings = this.annotationsByFile.get(entry.file) || []
       for (const sibling of siblings) {
-        if (sibling.name === name) continue
+        if (sibling.name === name || sibling.kind === 'apposition') continue
         counts.set(sibling.name, (counts.get(sibling.name) ?? 0) + 1)
       }
     }
@@ -1032,15 +1089,6 @@ interface ScopeContext {
   frameName: string | null
 }
 
-/** Annotation kind → the sigil a braid string carries. */
-const BRAID_PREFIX: Record<AnnotationKind, string> = {
-  topic: '#',
-  lens: '#:',
-  intent: '#!',
-  anchor: '#>',
-  prompt_root: '##>',
-}
-
 /** Particle sigil → the annotation kind it declares. */
 const PARTICLE_KINDS: Record<string, AnnotationKind> = {
   '>': 'anchor',
@@ -1165,6 +1213,23 @@ function analyzeFromTokens(
     // Extract annotations from this line's tokens
     for (let j = 0; j < sig.length; j++) {
       const tok = sig[j]
+      // ~#name(reading) — one APPOSITION token. Indexed for lookup and search,
+      // but kept out of the line's braids: a reading describes the form beside
+      // it, not the field that the following lines inherit.
+      if (tok.type === 'APPOSITION') {
+        const apposition = annotationFromApposition(tok)
+        if (!apposition) continue
+        annotations.push({
+          file: filePath,
+          line: i,
+          kind: 'apposition',
+          name: apposition.name,
+          body: apposition.body,
+          sectionLabel: framePath[framePath.length - 1],
+          framePath,
+        })
+        continue
+      }
       // ~#name — produced as ANNOTATION token (value = '~#identifier')
       if (tok.type === 'ANNOTATION') {
         const name = tok.value.startsWith('~#') ? tok.value.slice(2) : tok.value

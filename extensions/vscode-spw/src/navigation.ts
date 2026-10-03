@@ -2,6 +2,7 @@ import * as vscode from 'vscode'
 import type { AnnotationEntry } from './annotation-index'
 import type { SpwContext } from './context'
 import type { SpwWorkspaceRootEntry } from './lsp/custom-requests'
+import { annotationLabel } from './views/annotation-kinds'
 
 type NavigationTarget =
   | { kind: 'root', entry: SpwWorkspaceRootEntry }
@@ -17,6 +18,7 @@ const ANNOTATION_ICONS: Record<AnnotationEntry['kind'], string> = {
   intent: 'zap',
   anchor: 'link',
   prompt_root: 'compass',
+  apposition: 'quote',
 }
 
 export function registerSpwNavigation(spw: SpwContext): vscode.Disposable[] {
@@ -97,7 +99,8 @@ async function navigationItems(spw: SpwContext): Promise<NavigationItem[]> {
   }
   for (const entry of annotations) {
     items.push({
-      label: `$(${ANNOTATION_ICONS[entry.kind]}) ${entry.name}`,
+      // A reading is labeled by what it says; a bare `lens` would repeat for every one.
+      label: `$(${ANNOTATION_ICONS[entry.kind]}) ${entry.kind === 'apposition' ? annotationLabel(entry) : entry.name}`,
       description: `${displayWorkspaceUri(entry.file.toString())}:${entry.line + 1}`,
       detail: entry.framePath.length > 0 ? entry.framePath.join(' › ') : entry.kind,
       target: { kind: 'annotation', entry },
